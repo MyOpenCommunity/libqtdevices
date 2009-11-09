@@ -84,7 +84,7 @@ ThermalNavigation::ThermalNavigation(QWidget *parent)
 }
 
 
-NavigationPage *getPage(BannID id, QWidget *parent, QDomNode n, QString ind_centrale,
+NavigationPage *getPage(BannID id, QWidget *plant_menu, QDomNode n, QString ind_centrale,
 			TemperatureScale scale)
 {
 	NavigationPage *p = 0;
@@ -96,7 +96,7 @@ NavigationPage *getPage(BannID id, QWidget *parent, QDomNode n, QString ind_cent
 	switch (id)
 	{
 	case fs_nc_probe:
-		p = new PageSimpleProbe(NULL, n, scale);
+		p = new PageSimpleProbe(n, scale);
 		break;
 	case fs_4z_probe:
 		{
@@ -106,7 +106,7 @@ NavigationPage *getPage(BannID id, QWidget *parent, QDomNode n, QString ind_cent
 			QString thermr_where = QString("0#") + ind_centrale;
 			ThermalDevice *thermo_reg = static_cast<ThermalDevice *>(
 					bt_global::devices_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
-			p = new PageProbe(n, dev, thermo_reg, NULL, scale);
+			p = new PageProbe(n, dev, thermo_reg, scale);
 		}
 		break;
 	case fs_99z_probe:
@@ -117,7 +117,7 @@ NavigationPage *getPage(BannID id, QWidget *parent, QDomNode n, QString ind_cent
 			QString thermr_where = ind_centrale;
 			ThermalDevice *thermo_reg = static_cast<ThermalDevice *>(
 					bt_global::devices_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
-			p = new PageProbe(n, dev, thermo_reg, NULL, scale);
+			p = new PageProbe(n, dev, thermo_reg, scale);
 		}
 		break;
 	case fs_4z_fancoil:
@@ -128,7 +128,7 @@ NavigationPage *getPage(BannID id, QWidget *parent, QDomNode n, QString ind_cent
 			QString thermr_where = QString("0#") + ind_centrale;
 			ThermalDevice *thermo_reg = static_cast<ThermalDevice *>(
 					bt_global::devices_cache.get_thermal_regulator(thermr_where, THERMO_Z4));
-			p = new PageFancoil(n, dev, thermo_reg, NULL, scale);
+			p = new PageFancoil(n, dev, thermo_reg, scale);
 		}
 		break;
 	case fs_99z_fancoil:
@@ -139,7 +139,7 @@ NavigationPage *getPage(BannID id, QWidget *parent, QDomNode n, QString ind_cent
 			QString thermr_where = ind_centrale;
 			ThermalDevice *thermo_reg = static_cast<ThermalDevice *>(
 					bt_global::devices_cache.get_thermal_regulator(thermr_where, THERMO_Z99));
-			p = new PageFancoil(n, dev, thermo_reg, NULL, scale);
+			p = new PageFancoil(n, dev, thermo_reg, scale);
 		}
 		break;
 	case fs_4z_thermal_regulator:
@@ -147,7 +147,7 @@ NavigationPage *getPage(BannID id, QWidget *parent, QDomNode n, QString ind_cent
 			where_composed = QString("0#") + ind_centrale;
 			ThermalDevice4Zones *dev = static_cast<ThermalDevice4Zones *>(
 					bt_global::devices_cache.get_thermal_regulator(where_composed, THERMO_Z4));
-			p = new PageTermoReg4z(n, dev, NULL, parent);
+			p = new PageTermoReg4z(n, dev, plant_menu);
 		}
 		break;
 	case fs_99z_thermal_regulator:
@@ -155,7 +155,7 @@ NavigationPage *getPage(BannID id, QWidget *parent, QDomNode n, QString ind_cent
 			where_composed = ind_centrale;
 			ThermalDevice99Zones *dev = static_cast<ThermalDevice99Zones *>(
 					bt_global::devices_cache.get_thermal_regulator(where_composed, THERMO_Z99));
-			p = new PageTermoReg99z(n, dev, NULL, parent);
+			p = new PageTermoReg99z(n, dev, plant_menu);
 		}
 		break;
 	default:
@@ -165,7 +165,7 @@ NavigationPage *getPage(BannID id, QWidget *parent, QDomNode n, QString ind_cent
 	return p;
 }
 
-NavigationPage::NavigationPage(QWidget *parent)
+NavigationPage::NavigationPage()
 	: Page(0), nav_bar(0)
 {
 	content.setLayout(&main_layout);
@@ -189,8 +189,8 @@ NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
 	return nav_bar;
 }
 
-PageSimpleProbe::PageSimpleProbe(QWidget *parent, QDomNode n, TemperatureScale scale)
-	: NavigationPage(parent), temp_scale(scale)
+PageSimpleProbe::PageSimpleProbe(QDomNode n, TemperatureScale scale)
+	: temp_scale(scale)
 {
 	descr_label = new QLabel(this);
 	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
@@ -250,8 +250,8 @@ void PageSimpleProbe::status_changed(QList<device_status*> sl)
 }
 
 
-PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg, QWidget *parent,
-	TemperatureScale scale) : PageSimpleProbe(parent, n, scale),
+PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg,
+	TemperatureScale scale) : PageSimpleProbe(n, scale),
 	delta_setpoint(false),
 	setpoint_delay(2000),
 	setpoint_delta(5)
@@ -548,8 +548,8 @@ void PageProbe::status_changed(QList<device_status*> sl)
 	PageSimpleProbe::status_changed(sl);
 }
 
-PageFancoil::PageFancoil(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg, QWidget *parent,
-	TemperatureScale scale) : PageProbe(n, _dev, thermo_reg, parent, scale), fancoil_buttons(this)
+PageFancoil::PageFancoil(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg,
+	TemperatureScale scale) : PageProbe(n, _dev, thermo_reg, scale), fancoil_buttons(this)
 {
 	dev = _dev;
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), SLOT(status_changed(QList<device_status*>)));
@@ -884,7 +884,7 @@ static QString status_icons_ids[ThermalDevice::ST_COUNT] =
 	"regulator_weekend", "regulator_program", "regulator_scenario", "regulator_holiday"
 };
 
-PageTermoReg::PageTermoReg(QDomNode n, QWidget *parent) : NavigationPage(parent)
+PageTermoReg::PageTermoReg(QDomNode n)
 {
 	icon_summer = bt_global::skin->getImage("summer_flat");
 	icon_winter = bt_global::skin->getImage("winter_flat");
@@ -1082,8 +1082,8 @@ void PageTermoReg::createButtonsBanners(SettingsPage *settings, ThermalDevice *d
 	connect(summer_winter, SIGNAL(clicked()), parentWidget(), SLOT(showPage()));
 }
 
-PageTermoReg4z::PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device, QWidget *parent, QWidget *back)
-	: PageTermoReg(n, parent)
+PageTermoReg4z::PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device, QWidget *back)
+	: PageTermoReg(n)
 {
 	_dev = device;
 	connect(_dev, SIGNAL(status_changed(const StatusList &)),
@@ -1120,8 +1120,8 @@ void PageTermoReg4z::createSettingsMenu(QWidget *back)
 	createButtonsBanners(settings, _dev);
 }
 
-PageTermoReg99z::PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device, QWidget *parent, QWidget *back)
-	: PageTermoReg(n, parent)
+PageTermoReg99z::PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device, QWidget *back)
+	: PageTermoReg(n)
 {
 	_dev = device;
 	connect(_dev, SIGNAL(status_changed(const StatusList &)),

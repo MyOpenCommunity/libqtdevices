@@ -65,7 +65,7 @@ enum BannID
 };
 
 /// Factory function to get banners
-NavigationPage *getPage(BannID id, QWidget *parent, QDomNode n, QString ind_centrale,
+NavigationPage *getPage(BannID id, QWidget *plant_menu, QDomNode n, QString ind_centrale,
 			TemperatureScale scale = CELSIUS);
 
 
@@ -92,7 +92,7 @@ class NavigationPage : public Page
 {
 Q_OBJECT
 public:
-	NavigationPage(QWidget *parent);
+	NavigationPage();
 
 signals:
 	void backClick();
@@ -120,7 +120,7 @@ class PageSimpleProbe : public NavigationPage
 {
 Q_OBJECT
 public:
-	PageSimpleProbe(QWidget *parent, QDomNode n, TemperatureScale scale = CELSIUS);
+	PageSimpleProbe(QDomNode n, TemperatureScale scale = CELSIUS);
 public slots:
 	virtual void status_changed(QList<device_status*> sl);
 protected:
@@ -145,7 +145,7 @@ class PageProbe : public PageSimpleProbe
 {
 Q_OBJECT
 public:
-	PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg, QWidget *parent,
+	PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg,
 		  TemperatureScale scale = CELSIUS);
 public slots:
 	virtual void status_changed(QList<device_status*> sl);
@@ -221,7 +221,7 @@ class PageTermoReg : public NavigationPage
 {
 Q_OBJECT
 public:
-	PageTermoReg(QDomNode n, QWidget *parent = 0);
+	PageTermoReg(QDomNode n);
 	virtual ThermalDevice *dev() = 0;
 public slots:
 	virtual void status_changed(const StatusList &sl);
@@ -380,7 +380,7 @@ class PageTermoReg4z : public PageTermoReg
 {
 Q_OBJECT
 public:
-	PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device, QWidget *parent, QWidget *back);
+	PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device, QWidget *back);
 	virtual ThermalDevice *dev();
 protected:
 	virtual void createSettingsMenu(QWidget *back);
@@ -406,7 +406,7 @@ class PageTermoReg99z : public PageTermoReg
 {
 Q_OBJECT
 public:
-	PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device, QWidget *parent, QWidget *back);
+	PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device, QWidget *back);
 	virtual ThermalDevice *dev();
 protected:
 	virtual void createSettingsMenu(QWidget *back);
@@ -430,7 +430,7 @@ class PageFancoil : public PageProbe
 {
 Q_OBJECT
 public:
-	PageFancoil(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg, QWidget *parent,
+	PageFancoil(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg,
 		    TemperatureScale scale = CELSIUS);
 	virtual void status_changed(QList<device_status*> sl);
 protected:
