@@ -1181,7 +1181,9 @@ void PageTermoReg::manualSettings(SettingsPage *settings, ThermalDevice *dev)
 	connect(manual, SIGNAL(sxClick()), manual_page, SLOT(showPage()));
 
 	connect(manual_page, SIGNAL(temperatureSelected(unsigned)), SLOT(manualSelected(unsigned)));
-	connect(manual_page, SIGNAL(temperatureSelected(unsigned)), settings, SIGNAL(Closed()));
+	// when operation is activated, return to probe menu
+	connect(manual_page, SIGNAL(temperatureSelected(unsigned)), SLOT(showPage()));
+	// when operation is cancelled, return to settings page
 	connect(manual_page, SIGNAL(Closed()), settings, SLOT(showPage()));
 }
 
@@ -1203,7 +1205,7 @@ void PageTermoReg::weekSettings(SettingsPage *settings, QDomNode conf, ThermalDe
 
 	connect(program_menu, SIGNAL(Closed()), settings, SLOT(showPage()));
 	connect(program_menu, SIGNAL(programClicked(int)), this, SLOT(weekProgramSelected(int)));
-	connect(program_menu, SIGNAL(programClicked(int)), settings, SIGNAL(Closed()));
+	connect(program_menu, SIGNAL(programClicked(int)), SLOT(showPage()));
 }
 
 void PageTermoReg::weekProgramSelected(int program)
@@ -1263,7 +1265,7 @@ WeeklyMenu *PageTermoReg::createProgramChoice(SettingsPage *settings, QDomNode c
 {
 	WeeklyMenu *program_choice = new WeeklyMenu(0, conf);
 	connect(program_choice, SIGNAL(programClicked(int)), SLOT(weekendHolidaySettingsEnd(int)));
-	connect(program_choice, SIGNAL(programClicked(int)), settings, SIGNAL(Closed()));
+	connect(program_choice, SIGNAL(programClicked(int)), SLOT(showPage()));
 	connect(program_choice, SIGNAL(Closed()), SLOT(programCancelled()));
 	return program_choice;
 }
@@ -1328,7 +1330,7 @@ void PageTermoReg4z::timedManualSettings(SettingsPage *settings, ThermalDevice4Z
 
 	connect(timed_manual_page, SIGNAL(Closed()), settings, SLOT(showPage()));
 	connect(timed_manual_page, SIGNAL(timeAndTempSelected(BtTime, int)), SLOT(manualTimedSelected(BtTime, int)));
-	connect(timed_manual_page, SIGNAL(timeAndTempSelected(BtTime, int)), settings, SIGNAL(Closed()));
+	connect(timed_manual_page, SIGNAL(timeAndTempSelected(BtTime, int)), SLOT(showPage()));
 }
 
 void PageTermoReg4z::manualTimedSelected(BtTime time, int temp)
@@ -1349,7 +1351,7 @@ void PageTermoReg99z::scenarioSettings(SettingsPage *settings, QDomNode conf, Th
 
 	connect(scenario_menu, SIGNAL(Closed()), settings, SLOT(showPage()));
 	connect(scenario_menu, SIGNAL(programClicked(int)), this, SLOT(scenarioSelected(int)));
-	connect(scenario_menu, SIGNAL(programClicked(int)), settings, SIGNAL(Closed()));
+	connect(scenario_menu, SIGNAL(programClicked(int)), SLOT(showPage()));
 }
 
 void PageTermoReg99z::scenarioSelected(int scenario)
