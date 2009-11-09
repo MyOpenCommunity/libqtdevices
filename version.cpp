@@ -35,6 +35,16 @@ Version::Version()
 	indDisp = 0;
 	subscribe_monitor(13);
 	subscribe_monitor(1013);
+
+	vers = 0;
+	release = 0;
+	build = 0;
+	pic_version = 0;
+	pic_release = 0;
+	pic_build = 0;
+	hw_version = 0;
+	hw_release = 0;
+	hw_build = 0;
 }
 
 void Version::manageFrame(OpenMsg &msg)
