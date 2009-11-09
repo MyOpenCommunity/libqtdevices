@@ -260,7 +260,7 @@ void AlarmClock::aumVol()
 		for (int idx = 0; idx < AMPLI_NUM; idx++)
 		{
 			if (volSveglia[idx] >= conta2min)
-				dev->setVolume(idx / 10, idx, conta2min);
+				dev->setVolume(idx, conta2min);
 		}
 	}
 	else if (conta2min > 49)

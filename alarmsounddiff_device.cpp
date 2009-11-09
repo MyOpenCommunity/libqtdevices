@@ -38,8 +38,11 @@ void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmV
 		if (environment > 0 && environment < 9)
 			if (!environments[environment])
 				activateEnvironment(environment, source);
-		setVolume(environment, amplifier, alarmVolumes[amplifier]);
-		amplifierOn(environment, amplifier);
+		if (alarmVolumes[amplifier] < 10)
+			setVolume(amplifier, alarmVolumes[amplifier]);
+		else
+			setVolume(amplifier, 8);
+		amplifierOn(amplifier);
 	}
 }
 
@@ -50,44 +53,43 @@ void AlarmSoundDiffDevice::stopAlarm(int source, int *alarmVolumes)
 		if (alarmVolumes[amplifier] < 0)
 			continue;
 
-		int environment = amplifier / 10;
-		amplifierOff(environment, amplifier);
+		amplifierOff(amplifier);
 	}
 }
 
 void AlarmSoundDiffDevice::setRadioStation(int source, int radio_station)
 {
-	QString f = QString("*#22*2#%1*#6*%2##").arg(source - 100).arg(radio_station);
+	QString f = QString("*#22*2#%1*#6*%2##").arg(source).arg(radio_station);
 	sendFrame(f);
 }
 
 void AlarmSoundDiffDevice::activateSource(int source)
 {
-	QString f = QString("*22*35#4#0#%1*3#1#0##").arg(source - 100);
+	QString f = QString("*22*35#4#0#%1*3#1#0##").arg(source);
 	sendFrame(f);
 }
 
 void AlarmSoundDiffDevice::activateEnvironment(int environment, int source)
 {
-	QString f = QString("*22*35#4#%1#%2*3*1*%1*0##").arg(environment).arg(source - 100);
+	QString f = QString("*22*35#4#%1#%2*3*1*%1*0##").arg(environment).arg(source);
 	sendFrame(f);
 }
 
-void AlarmSoundDiffDevice::setVolume(int environment, int amplifier, int volume)
+void AlarmSoundDiffDevice::setVolume(int amplifier, int volume)
 {
-	QString f = QString("*#22*3#%1#%2*#1*%3##").arg(environment).arg(amplifier).arg(volume);
+	QString f = QString("*#22*3#%1#%2*#1*%3##").arg(amplifier / 10).arg(amplifier % 10).arg(volume);
 	sendFrame(f);
 }
 
-void AlarmSoundDiffDevice::amplifierOn(int environment, int amplifier)
+void AlarmSoundDiffDevice::amplifierOn(int amplifier)
 {
-	QString f = QString("*22*1#4#%1*3#%1#%2##").arg(environment).arg(amplifier);
+	QString f = QString("*22*1#4#%1*3#%1#%2##").arg(amplifier / 10).arg(amplifier % 10);
 	sendFrame(f);
 }
 
-void AlarmSoundDiffDevice::amplifierOff(int environment, int amplifier)
+void AlarmSoundDiffDevice::amplifierOff(int amplifier)
 {
-	QString f = QString("*22*0#4#%1*3#%1#%2##").arg(environment).arg(amplifier);
+	QString f = QString("*22*0#4#%1*3#%1#%2##").arg(amplifier / 10).arg(amplifier % 10);
 	sendFrame(f);
 }
 
