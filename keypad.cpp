@@ -8,6 +8,7 @@
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QVariant>
 
 
 // Keypad implementation
@@ -137,7 +138,6 @@ KeypadWithState::KeypadWithState(int s[8])
 	l->setSpacing(2);
 
 	QFont aFont = bt_global::font->get(FontManager::TEXT);
-	QString zone_style = "QLabel { background-color:white; color:black; }";
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -152,9 +152,8 @@ KeypadWithState::KeypadWithState(int s[8])
 		}
 		else
 		{
+			state->setProperty("ActiveState", bool(s[i]));
 			state->setText(QString::number(i + 1));
-			if (s[i])
-				state->setStyleSheet(zone_style);
 		}
 
 		l->addWidget(state);
