@@ -15,6 +15,11 @@ enum what_t
 	HOLIDAY_TIME_END = 31,           // set the end time of holiday mode, this is a dimension (grandezza)
 	MANUAL_TIMED_END = 32,           // set the end time of timed manual mode
 
+	// unhandled status notifications
+	REMOTE_CONTROL = 21,             // remote control enabled
+	MALFUNCTIONING_FOUND = 30,       // malfunctioning found
+	BATTERY_KO = 31,                 // battery ko
+
 	// summer specific identifiers
 	SUM_PROTECTION = 202,            // protection
 	SUM_OFF = 203,                   // off
@@ -46,6 +51,7 @@ enum what_t
 	// remember to add the program number to this number
 	HOLIDAY_NUM_DAYS = 33000,        // command to set the number of days of holiday mode (generic mode)
 	// remember to add the number of days to this number
+
 };
 
 
@@ -177,9 +183,9 @@ void ThermalDevice::manageFrame(OpenMsg &msg)
 
 	switch (command)
 	{
-	case 21: // remote control enabled
-	case 30: // malfunctioning found
-	case 31: // battery ko
+	case REMOTE_CONTROL:
+	case MALFUNCTIONING_FOUND:
+	case BATTERY_KO:
 		break;
 
 	case SUM_PROTECTION:
