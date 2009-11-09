@@ -100,19 +100,17 @@ NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString
 	/*
 	 * Create little banner in selection menu.
 	 */
-	bannPuls *bp = new bannPuls(this);
-	bp->SetIcons(bt_global::skin->getImage("forward"), QString(), central_icon);
-	bp->setText(getTextChild(n, "descr"));
-	bp->Draw();
+	BannSinglePuls *bp = new BannSinglePuls(this);
+	bp->initBanner(bt_global::skin->getImage("forward"), central_icon, getTextChild(n, "descr"));
 	page_content->appendBanner(bp);
 
 	/*
 	 * Create page in detail menu.
 	 */
 	TemperatureScale scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
-	NavigationPage *p = getPage(type, this, n, ind_centrale, scale);
+	NavigationPage *p = getPage(type, n, ind_centrale, scale);
 	connect(p, SIGNAL(Closed()), SLOT(showPage()));
-	connect(bp, SIGNAL(sxClick()), p, SLOT(showPage()));
+	connect(bp, SIGNAL(rightClick()), p, SLOT(showPage()));
 
 	return p;
 }

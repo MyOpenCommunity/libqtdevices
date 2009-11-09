@@ -64,8 +64,7 @@ enum BannID
 };
 
 /// Factory function to get banners
-NavigationPage *getPage(BannID id, QWidget *plant_menu, QDomNode n, QString ind_centrale,
-			TemperatureScale scale = CELSIUS);
+NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, TemperatureScale scale = CELSIUS);
 
 
 /**
@@ -234,7 +233,7 @@ protected:
 	/**
 	 * Utility function to create settings menu for the thermal regulator device.
 	 */
-	virtual void createSettingsMenu(QWidget *back) = 0;
+	virtual void createSettingsMenu() = 0;
 
 	/**
 	 * Set the icon on the main page of thermal regulator and calls setSeason() on
@@ -382,10 +381,10 @@ class PageTermoReg4z : public PageTermoReg
 {
 Q_OBJECT
 public:
-	PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device, QWidget *back);
+	PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device);
 	virtual ThermalDevice *dev();
 protected:
-	virtual void createSettingsMenu(QWidget *back);
+	virtual void createSettingsMenu();
 private:
 	/**
 	 * Utility function to create the submenu for timed manual operation mode.
@@ -408,10 +407,10 @@ class PageTermoReg99z : public PageTermoReg
 {
 Q_OBJECT
 public:
-	PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device, QWidget *back);
+	PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device);
 	virtual ThermalDevice *dev();
 protected:
-	virtual void createSettingsMenu(QWidget *back);
+	virtual void createSettingsMenu();
 	virtual void setSeason(Season new_season);
 private:
 	void scenarioSettings(SettingsPage *settings, QDomNode conf, ThermalDevice99Zones *dev);

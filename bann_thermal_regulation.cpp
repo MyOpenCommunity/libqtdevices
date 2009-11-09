@@ -84,8 +84,7 @@ ThermalNavigation::ThermalNavigation(QWidget *parent)
 }
 
 
-NavigationPage *getPage(BannID id, QWidget *plant_menu, QDomNode n, QString ind_centrale,
-			TemperatureScale scale)
+NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, TemperatureScale scale)
 {
 	NavigationPage *p = 0;
 	QString simple_address = getTextChild(n, "where");
@@ -143,20 +142,20 @@ NavigationPage *getPage(BannID id, QWidget *plant_menu, QDomNode n, QString ind_
 		}
 		break;
 	case fs_4z_thermal_regulator:
-		{
-			where_composed = QString("0#") + ind_centrale;
-			ThermalDevice4Zones *dev = static_cast<ThermalDevice4Zones *>(
-					bt_global::devices_cache.get_thermal_regulator(where_composed, THERMO_Z4));
-			p = new PageTermoReg4z(n, dev, plant_menu);
-		}
+	{
+		where_composed = QString("0#") + ind_centrale;
+		ThermalDevice4Zones *dev = static_cast<ThermalDevice4Zones *>(
+			bt_global::devices_cache.get_thermal_regulator(where_composed, THERMO_Z4));
+		p = new PageTermoReg4z(n, dev);
+	}
 		break;
 	case fs_99z_thermal_regulator:
-		{
-			where_composed = ind_centrale;
-			ThermalDevice99Zones *dev = static_cast<ThermalDevice99Zones *>(
-					bt_global::devices_cache.get_thermal_regulator(where_composed, THERMO_Z99));
-			p = new PageTermoReg99z(n, dev, plant_menu);
-		}
+	{
+		where_composed = ind_centrale;
+		ThermalDevice99Zones *dev = static_cast<ThermalDevice99Zones *>(
+			bt_global::devices_cache.get_thermal_regulator(where_composed, THERMO_Z99));
+		p = new PageTermoReg99z(n, dev);
+	}
 		break;
 	default:
 		qFatal("Unknown banner type %d on bannfullscreen", id);
@@ -1079,13 +1078,13 @@ void PageTermoReg::createButtonsBanners(SettingsPage *settings, ThermalDevice *d
 	connect(summer_winter, SIGNAL(clicked()), SLOT(showPage()));
 }
 
-PageTermoReg4z::PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device, QWidget *back)
+PageTermoReg4z::PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device)
 	: PageTermoReg(n)
 {
 	_dev = device;
 	connect(_dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
-	createSettingsMenu(back);
+	createSettingsMenu();
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
 }
 
@@ -1100,10 +1099,10 @@ void PageTermoReg4z::showSettingsMenu()
 	settings->showPage();
 }
 
-void PageTermoReg4z::createSettingsMenu(QWidget *back)
+void PageTermoReg4z::createSettingsMenu()
 {
 	settings = new SettingsPage;
-	connect(settings, SIGNAL(Closed()), back, SLOT(showPage()));
+	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
 
 	weekSettings(settings, conf_root, _dev);
 	manualSettings(settings, _dev);
@@ -1117,13 +1116,13 @@ void PageTermoReg4z::createSettingsMenu(QWidget *back)
 	createButtonsBanners(settings, _dev);
 }
 
-PageTermoReg99z::PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device, QWidget *back)
+PageTermoReg99z::PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device)
 	: PageTermoReg(n)
 {
 	_dev = device;
 	connect(_dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
-	createSettingsMenu(back);
+	createSettingsMenu();
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
 }
 
@@ -1147,10 +1146,10 @@ void PageTermoReg99z::showSettingsMenu()
 	settings->showPage();
 }
 
-void PageTermoReg99z::createSettingsMenu(QWidget *back)
+void PageTermoReg99z::createSettingsMenu()
 {
 	settings = new SettingsPage;
-	connect(settings, SIGNAL(Closed()), back, SLOT(showPage()));
+	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
 
 	weekSettings(settings, conf_root, _dev);
 	manualSettings(settings, _dev);
