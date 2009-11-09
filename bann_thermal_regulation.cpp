@@ -1066,17 +1066,17 @@ void PageTermoReg::createButtonsBanners(SettingsPage *settings, ThermalDevice *d
 	// off banner
 	BannOff *off = new BannOff(settings, dev);
 	settings->appendBanner(off);
-	connect(off, SIGNAL(clicked()), parentWidget(), SLOT(showPage()));
+	connect(off, SIGNAL(clicked()), SLOT(showPage()));
 
 	// antifreeze banner
 	BannAntifreeze *antifreeze = new BannAntifreeze(settings, dev);
 	settings->appendBanner(antifreeze);
-	connect(antifreeze, SIGNAL(clicked()), parentWidget(), SLOT(showPage()));
+	connect(antifreeze, SIGNAL(clicked()), SLOT(showPage()));
 
 	// summer_winter banner
 	BannSummerWinter *summer_winter = new BannSummerWinter(settings, dev);
 	settings->appendBanner(summer_winter);
-	connect(summer_winter, SIGNAL(clicked()), parentWidget(), SLOT(showPage()));
+	connect(summer_winter, SIGNAL(clicked()), SLOT(showPage()));
 }
 
 PageTermoReg4z::PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device, QWidget *back)
@@ -1360,7 +1360,7 @@ void PageTermoReg99z::scenarioSelected(int scenario)
 
 BannOff::BannOff(QWidget *parent, ThermalDevice *_dev) : bann3But(parent)
 {
-	SetIcons(QString(), QString(), QString(), bt_global::skin->getImage("regulator_off"));
+	SetIcons(QString(), QString(), QString(), bt_global::skin->getImage("off_button"));
 	dev = _dev;
 	connect(this, SIGNAL(centerClick()), this, SLOT(performAction()));
 	connect(this, SIGNAL(centerClick()), this, SIGNAL(clicked()));
