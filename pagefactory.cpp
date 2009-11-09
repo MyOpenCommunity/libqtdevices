@@ -69,7 +69,6 @@ Page *getPage(int id)
 	case TERMOREG_MULTI_PLANT:
 	{
 		ThermalMenu *p = new ThermalMenu(page_node);
-		p->forceDraw();
 		page = p;
 		break;
 	}
