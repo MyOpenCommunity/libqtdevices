@@ -1210,8 +1210,8 @@ void PageTermoReg::weekProgramSelected(int program)
 
 void PageTermoReg::holidaySettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev)
 {
-	banner *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_holiday"));
-	connect(bann, SIGNAL(sxClick()), this, SLOT(holidaySettingsStart()));
+	BannSinglePuls *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_holiday"));
+	connect(bann, SIGNAL(rightClick()), SLOT(holidaySettingsStart()));
 	if (!date_edit)
 		date_edit = createDateEdit(settings);
 	if (!time_edit)
@@ -1222,8 +1222,8 @@ void PageTermoReg::holidaySettings(SettingsPage *settings, QDomNode conf, Therma
 
 void PageTermoReg::weekendSettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev)
 {
-	banner *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_weekend"));
-	connect(bann, SIGNAL(sxClick()), this, SLOT(weekendSettingsStart()));
+	BannSinglePuls *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_weekend"));
+	connect(bann, SIGNAL(rightClick()), SLOT(weekendSettingsStart()));
 	if (!date_edit)
 		date_edit = createDateEdit(settings);
 	if (!time_edit)
@@ -1232,10 +1232,10 @@ void PageTermoReg::weekendSettings(SettingsPage *settings, QDomNode conf, Therma
 		program_choice = createProgramChoice(settings, conf, dev);
 }
 
-banner *PageTermoReg::createHolidayWeekendBanner(SettingsPage *settings, QString icon)
+BannSinglePuls *PageTermoReg::createHolidayWeekendBanner(SettingsPage *settings, QString icon)
 {
-	bannPuls *bann = new bannPuls(settings);
-	bann->SetIcons(bt_global::skin->getImage("forward"), 0, icon);
+	BannSinglePuls *bann = new BannSinglePuls(settings);
+	bann->initBanner(bt_global::skin->getImage("forward"), icon, "");
 	settings->appendBanner(bann);
 	return bann;
 }
@@ -1311,19 +1311,16 @@ void PageTermoReg::weekendHolidaySettingsEnd(int program)
 
 void PageTermoReg4z::timedManualSettings(SettingsPage *settings, ThermalDevice4Zones *dev)
 {
-	// timed manual banner
-	bannPuls *manual_timed = new bannPuls(settings);
-	manual_timed->SetIcons(bt_global::skin->getImage("forward"), QString(),
-			       bt_global::skin->getImage("regulator_manual_timed"));
-
-	settings->appendBanner(manual_timed);
-
 	PageManualTimed *timed_manual_page = new PageManualTimed(this, dev, temp_scale);
 	timed_manual_page->setMaxHours(25);
 
-	connect(manual_timed, SIGNAL(sxClick()), timed_manual_page, SLOT(showPage()));
+	// timed manual banner
+	BannSinglePuls *manual_timed = new BannSinglePuls(settings);
+	manual_timed->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_manual_timed"), "");
+	manual_timed->connectRightButton(timed_manual_page);
+	settings->appendBanner(manual_timed);
 
-	connect(timed_manual_page, SIGNAL(Closed()), settings, SLOT(showPage()));
+	connect(manual_timed, SIGNAL(pageClosed()), settings, SLOT(showPage()));
 	connect(timed_manual_page, SIGNAL(timeAndTempSelected(BtTime, int)), SLOT(manualTimedSelected(BtTime, int)));
 }
 
@@ -1335,16 +1332,14 @@ void PageTermoReg4z::manualTimedSelected(BtTime time, int temp)
 
 void PageTermoReg99z::scenarioSettings(SettingsPage *settings, QDomNode conf, ThermalDevice99Zones *dev)
 {
-	bannPuls *scenario = new bannPuls(settings);
-	scenario->SetIcons(bt_global::skin->getImage("forward"), QString(),
-			   bt_global::skin->getImage("regulator_scenario"));
-	settings->appendBanner(scenario);
-
 	scenario_menu = new ScenarioMenu(0, conf);
 
-	connect(scenario, SIGNAL(sxClick()), scenario_menu, SLOT(showPage()));
+	BannSinglePuls *scenario = new BannSinglePuls(settings);
+	scenario->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_scenario"), "");
+	scenario->connectRightButton(scenario_menu);
+	settings->appendBanner(scenario);
 
-	connect(scenario_menu, SIGNAL(Closed()), settings, SLOT(showPage()));
+	connect(scenario, SIGNAL(pageClosed()), settings, SLOT(showPage()));
 	connect(scenario_menu, SIGNAL(programClicked(int)), SLOT(scenarioSelected(int)));
 }
 

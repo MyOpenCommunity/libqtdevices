@@ -349,7 +349,7 @@ private:
 	 * \param icon The icon to be visualized on the banner
 	 * \return The banner that will open the date edit menu
 	 */
-	banner *createHolidayWeekendBanner(SettingsPage *settings, QString icon);
+	BannSinglePuls *createHolidayWeekendBanner(SettingsPage *settings, QString icon);
 
 	PageSetDate *createDateEdit(SettingsPage *settings);
 	PageSetTime *createTimeEdit(SettingsPage *settings);
