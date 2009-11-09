@@ -1169,21 +1169,18 @@ void PageTermoReg99z::createSettingsMenu(QWidget *back)
 //
 void PageTermoReg::manualSettings(SettingsPage *settings, ThermalDevice *dev)
 {
-	// manual banner
-	bannPuls *manual = new bannPuls(settings);
-	manual->SetIcons(bt_global::skin->getImage("forward"), QString(),
-			 bt_global::skin->getImage("regulator_manual"));
-
-	settings->appendBanner(manual);
-
 	PageManual *manual_page = new PageManual(this, dev, temp_scale);
 
-	connect(manual, SIGNAL(sxClick()), manual_page, SLOT(showPage()));
+	// manual banner
+	BannSinglePuls *manual = new BannSinglePuls(settings);
+	manual->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_manual"), "");
+	manual->connectRightButton(manual_page);
+	settings->appendBanner(manual);
 
 	// when operation is activated, return to probe menu
 	connect(manual_page, SIGNAL(temperatureSelected(unsigned)), SLOT(manualSelected(unsigned)));
 	// when operation is cancelled, return to settings page
-	connect(manual_page, SIGNAL(Closed()), settings, SLOT(showPage()));
+	connect(manual, SIGNAL(pageClosed()), settings, SLOT(showPage()));
 }
 
 void PageTermoReg::manualSelected(unsigned temp)
@@ -1194,16 +1191,14 @@ void PageTermoReg::manualSelected(unsigned temp)
 
 void PageTermoReg::weekSettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev)
 {
-	bannPuls *weekly = new bannPuls(settings);
-	weekly->SetIcons(bt_global::skin->getImage("forward"), QString(),
-			 bt_global::skin->getImage("regulator_program"));
-	settings->appendBanner(weekly);
-
 	program_menu = new WeeklyMenu(0, conf);
 
-	connect(weekly, SIGNAL(sxClick()), program_menu, SLOT(showPage()));
+	BannSinglePuls *weekly = new BannSinglePuls(settings);
+	weekly->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_program"), "");
+	weekly->connectRightButton(program_menu);
+	settings->appendBanner(weekly);
 
-	connect(program_menu, SIGNAL(Closed()), settings, SLOT(showPage()));
+	connect(weekly, SIGNAL(pageClosed()), settings, SLOT(showPage()));
 	connect(program_menu, SIGNAL(programClicked(int)), SLOT(weekProgramSelected(int)));
 }
 
