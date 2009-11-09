@@ -84,6 +84,17 @@ private:
 	QLabel *text;
 };
 
+// Single large button on the center, without bottom label
+class BannLargeButton : public BannerNew
+{
+Q_OBJECT
+protected:
+	BannLargeButton(QWidget *parent);
+	void initBanner(const QString &center);
+
+	BtButton *center_button;
+};
+
 
 
 /*!

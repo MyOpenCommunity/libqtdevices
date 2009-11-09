@@ -62,6 +62,22 @@ void BannSinglePuls::connectRightButton(Page *p)
 
 
 
+BannLargeButton::BannLargeButton(QWidget *parent) :
+	BannerNew(parent)
+{
+	center_button = new BtButton;
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	l->addWidget(center_button, 0, Qt::AlignTop);
+}
+
+void BannLargeButton::initBanner(const QString &center)
+{
+	center_button->setImage(center);
+}
+
+
 BannOn2Labels::BannOn2Labels(QWidget *parent) :
 	BannerNew(parent)
 {
