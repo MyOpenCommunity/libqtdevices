@@ -454,7 +454,7 @@ class PageManual : public Page
 {
 Q_OBJECT
 public:
-	PageManual(QWidget *parent, ThermalDevice *_dev, TemperatureScale scale = CELSIUS);
+	PageManual(ThermalDevice *_dev, TemperatureScale scale = CELSIUS);
 public slots:
 	void status_changed(const StatusList &sl);
 protected:
@@ -490,7 +490,7 @@ class PageManualTimed : public PageManual
 {
 Q_OBJECT
 public:
-	PageManualTimed(QWidget *parent, ThermalDevice4Zones *_dev, TemperatureScale scale = CELSIUS);
+	PageManualTimed(ThermalDevice4Zones *_dev, TemperatureScale scale = CELSIUS);
 	void setMaxHours(int max);
 	void setMaxMinutes(int max);
 private:
@@ -508,7 +508,7 @@ class PageSetDate : public Page
 {
 Q_OBJECT
 public:
-	PageSetDate(QWidget *parent = 0);
+	PageSetDate();
 	QDate date();
 signals:
 	void dateSelected(QDate);
@@ -525,7 +525,7 @@ class PageSetTime : public Page
 {
 Q_OBJECT
 public:
-	PageSetTime(QWidget *parent = 0);
+	PageSetTime();
 	BtTime time();
 signals:
 	void timeSelected(BtTime);

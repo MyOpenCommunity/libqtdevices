@@ -28,9 +28,6 @@
 #include <QWidget>
 #include <QString>
 
-class PageSetTime;
-class PageSetDate;
-
 
 class ThermalMenu : public BannerPage
 {

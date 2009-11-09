@@ -53,7 +53,6 @@ void SettingsPage::inizializza()
 
 void SettingsPage::appendBanner(banner *b)
 {
-	b->Draw(); // kill Draw
 	page_content->appendBanner(b);
 }
 
@@ -617,8 +616,8 @@ void PageFancoil::status_changed(QList<device_status*> sl)
 	PageProbe::status_changed(sl);
 }
 
-PageManual::PageManual(QWidget *parent, ThermalDevice *_dev, TemperatureScale scale)
-	: Page(0), temp_scale(scale), dev(_dev), setpoint_delta(5)
+PageManual::PageManual(ThermalDevice *_dev, TemperatureScale scale)
+	: temp_scale(scale), dev(_dev), setpoint_delta(5)
 {
 	descr_label = new QLabel(this);
 	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
@@ -772,8 +771,8 @@ void PageManual::status_changed(const StatusList &sl)
 	updateTemperature();
 }
 
-PageManualTimed::PageManualTimed(QWidget *parent, ThermalDevice4Zones *_dev, TemperatureScale scale)
-	: PageManual(parent, _dev, scale),
+PageManualTimed::PageManualTimed(ThermalDevice4Zones *_dev, TemperatureScale scale)
+	: PageManual(_dev, scale),
 	dev(_dev)
 {
 	time_edit = new BtTimeEdit(this);
@@ -813,7 +812,7 @@ void PageManualTimed::setMaxMinutes(int max)
 	time_edit->setMaxMinutes(max);
 }
 
-PageSetDate::PageSetDate(QWidget *parent) : Page(0)
+PageSetDate::PageSetDate()
 {
 	content.setLayout(&main_layout);
 
@@ -843,7 +842,7 @@ void PageSetDate::performAction()
 	emit dateSelected(date());
 }
 
-PageSetTime::PageSetTime(QWidget *parent) : Page(0)
+PageSetTime::PageSetTime()
 {
 	content.setLayout(&main_layout);
 
@@ -1168,7 +1167,7 @@ void PageTermoReg99z::createSettingsMenu()
 //
 void PageTermoReg::manualSettings(SettingsPage *settings, ThermalDevice *dev)
 {
-	PageManual *manual_page = new PageManual(this, dev, temp_scale);
+	PageManual *manual_page = new PageManual(dev, temp_scale);
 
 	// manual banner
 	BannSinglePuls *manual = new BannSinglePuls(settings);
@@ -1310,7 +1309,7 @@ void PageTermoReg::weekendHolidaySettingsEnd(int program)
 
 void PageTermoReg4z::timedManualSettings(SettingsPage *settings, ThermalDevice4Zones *dev)
 {
-	PageManualTimed *timed_manual_page = new PageManualTimed(this, dev, temp_scale);
+	PageManualTimed *timed_manual_page = new PageManualTimed(dev, temp_scale);
 	timed_manual_page->setMaxHours(25);
 
 	// timed manual banner
