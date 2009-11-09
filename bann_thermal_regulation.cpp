@@ -175,9 +175,6 @@ NavigationPage::NavigationPage()
 
 NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
 {
-	if (nav_bar)
-		return nav_bar;
-
 	nav_bar = new NavigationBar(icon);
 
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(backClick()));
