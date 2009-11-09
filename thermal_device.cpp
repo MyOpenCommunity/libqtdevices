@@ -183,13 +183,13 @@ void ThermalDevice::manageFrame(OpenMsg &msg)
 		break;
 
 	case SUM_PROTECTION:
-		sl[DIM_STATUS] = QVariant(ST_PROTECTION);
-		sl[DIM_SEASON] = QVariant(SE_SUMMER);
+		sl[DIM_STATUS] = ST_PROTECTION;
+		sl[DIM_SEASON] = SE_SUMMER;
 		break;
 
 	case SUM_OFF:
-		sl[DIM_STATUS] = QVariant(ST_OFF);
-		sl[DIM_SEASON] = QVariant(SE_SUMMER);
+		sl[DIM_STATUS] = ST_OFF;
+		sl[DIM_SEASON] = SE_SUMMER;
 		break;
 
 	case SUM_MANUAL:
@@ -197,42 +197,42 @@ void ThermalDevice::manageFrame(OpenMsg &msg)
 		{
 			Q_ASSERT_X(msg.whatArgCnt() > 0, "ThermalDevice::manageFrame", "Manual setting frame with no arguments received");
 			int sp = msg.whatArgN(0);
-			sl[DIM_TEMPERATURE] = QVariant(sp);
+			sl[DIM_TEMPERATURE] = sp;
 		}
-		sl[DIM_STATUS] = QVariant(command == SUM_MANUAL ? ST_MANUAL : ST_MANUAL_TIMED);
-		sl[DIM_SEASON] = QVariant(SE_SUMMER);
+		sl[DIM_STATUS] = command == SUM_MANUAL ? ST_MANUAL : ST_MANUAL_TIMED;
+		sl[DIM_SEASON] = SE_SUMMER;
 		break;
 
 	case SUM_WEEKEND:
-		sl[DIM_STATUS] = QVariant(ST_WEEKEND);
-		sl[DIM_SEASON] = QVariant(SE_SUMMER);
+		sl[DIM_STATUS] = ST_WEEKEND;
+		sl[DIM_SEASON] = SE_SUMMER;
 		break;
 
 	case SUM_PROGRAM:
-		sl[DIM_PROGRAM] = QVariant(program);
-		sl[DIM_STATUS] = QVariant(ST_PROGRAM);
-		sl[DIM_SEASON] = QVariant(SE_SUMMER);
+		sl[DIM_PROGRAM] = program;
+		sl[DIM_STATUS] = ST_PROGRAM;
+		sl[DIM_SEASON] = SE_SUMMER;
 		break;
 
 	case SUM_SCENARIO:
-		sl[DIM_SCENARIO] = QVariant(program);
-		sl[DIM_STATUS] = QVariant(ST_SCENARIO);
-		sl[DIM_SEASON] = QVariant(SE_SUMMER);
+		sl[DIM_SCENARIO] = program;
+		sl[DIM_STATUS] = ST_SCENARIO;
+		sl[DIM_SEASON] = SE_SUMMER;
 		break;
 
 	case SUM_HOLIDAY:
-		sl[DIM_STATUS] = QVariant(ST_HOLIDAY);
-		sl[DIM_SEASON] = QVariant(SE_SUMMER);
+		sl[DIM_STATUS] = ST_HOLIDAY;
+		sl[DIM_SEASON] = SE_SUMMER;
 		break;
 
 	case WIN_PROTECTION:
-		sl[DIM_STATUS] = QVariant(ST_PROTECTION);
-		sl[DIM_SEASON] = QVariant(SE_WINTER);
+		sl[DIM_STATUS] = ST_PROTECTION;
+		sl[DIM_SEASON] = SE_WINTER;
 		break;
 
 	case WIN_OFF:
-		sl[DIM_STATUS] = QVariant(ST_OFF);
-		sl[DIM_SEASON] = QVariant(SE_WINTER);
+		sl[DIM_STATUS] = ST_OFF;
+		sl[DIM_SEASON] = SE_WINTER;
 		break;
 
 	case WIN_MANUAL:
@@ -240,32 +240,32 @@ void ThermalDevice::manageFrame(OpenMsg &msg)
 		{
 			Q_ASSERT_X(msg.whatArgCnt() > 0, "ThermalDevice::manageFrame", "Manual setting frame with no arguments received");
 			int sp = msg.whatArgN(0);
-			sl[DIM_TEMPERATURE] = QVariant(sp);
+			sl[DIM_TEMPERATURE] = sp;
 		}
-		sl[DIM_STATUS] = QVariant(command == WIN_MANUAL ? ST_MANUAL : ST_MANUAL_TIMED);
-		sl[DIM_SEASON] = QVariant(SE_WINTER);
+		sl[DIM_STATUS] = command == WIN_MANUAL ? ST_MANUAL : ST_MANUAL_TIMED;
+		sl[DIM_SEASON] = SE_WINTER;
 		break;
 
 	case WIN_WEEKEND:
-		sl[DIM_STATUS] = QVariant(ST_WEEKEND);
-		sl[DIM_SEASON] = QVariant(SE_WINTER);
+		sl[DIM_STATUS] = ST_WEEKEND;
+		sl[DIM_SEASON] = SE_WINTER;
 		break;
 
 	case WIN_PROGRAM:
-		sl[DIM_PROGRAM] = QVariant(program);
-		sl[DIM_STATUS] = QVariant(ST_PROGRAM);
-		sl[DIM_SEASON] = QVariant(SE_WINTER);
+		sl[DIM_PROGRAM] = program;
+		sl[DIM_STATUS] = ST_PROGRAM;
+		sl[DIM_SEASON] = SE_WINTER;
 		break;
 
 	case WIN_SCENARIO:
-		sl[DIM_SCENARIO] = QVariant(program);
-		sl[DIM_STATUS] = QVariant(ST_SCENARIO);
-		sl[DIM_SEASON] = QVariant(SE_WINTER);
+		sl[DIM_SCENARIO] = program;
+		sl[DIM_STATUS] = ST_SCENARIO;
+		sl[DIM_SEASON] = SE_WINTER;
 		break;
 
 	case WIN_HOLIDAY:
-		sl[DIM_STATUS] = QVariant(ST_HOLIDAY);
-		sl[DIM_SEASON] = QVariant(SE_WINTER);
+		sl[DIM_STATUS] = ST_HOLIDAY;
+		sl[DIM_SEASON] = SE_WINTER;
 		break;
 
 	default:
