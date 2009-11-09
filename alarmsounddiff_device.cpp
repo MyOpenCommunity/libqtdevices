@@ -132,7 +132,7 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 	{
 		if (msg.whereArgCnt() != 2)
 			return;
-		// int environment = atoi(msg.whereArg(0).c_str());
+		int environment = atoi(msg.whereArg(0).c_str());
 		int amplifier = atoi(msg.whereArg(1).c_str());
 
 		if (what == 12)
@@ -144,7 +144,7 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 			// status_changed notification
 			if (state == 0)
 			{
-				sl[DIM_AMPLIFIER] = amplifier;
+				sl[DIM_AMPLIFIER] = environment * 10 + amplifier;
 				sl[DIM_STATUS] = false;
 			}
 		}
@@ -153,7 +153,7 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 			// got the volume
 			int volume = msg.whatArgN(0);
 
-			sl[DIM_AMPLIFIER] = amplifier;
+			sl[DIM_AMPLIFIER] = environment * 10 + amplifier;
 			sl[DIM_STATUS] = true;
 			sl[DIM_VOLUME] = volume;
 		}
