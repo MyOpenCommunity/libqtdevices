@@ -1400,10 +1400,10 @@ void BannSummerWinter::setWinter()
 }
 
 
-BannWeekly::BannWeekly(QWidget *parent) : bannPuls(parent)
+BannWeekly::BannWeekly(QWidget *parent) : BannSinglePuls(parent)
 {
 	program = 1;
-	connect(this, SIGNAL(click()), this, SLOT(performAction()));
+	connect(right_button, SIGNAL(clicked()), SLOT(performAction()));
 }
 
 void BannWeekly::setProgram(int prog)
@@ -1416,3 +1416,4 @@ void BannWeekly::performAction()
 {
 	emit programNumber(program);
 }
+

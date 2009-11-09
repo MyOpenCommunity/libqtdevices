@@ -61,6 +61,7 @@ void BannSinglePuls::connectRightButton(Page *p)
 }
 
 
+
 BannOn2Labels::BannOn2Labels(QWidget *parent) :
 	BannerNew(parent)
 {

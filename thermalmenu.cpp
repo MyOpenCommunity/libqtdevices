@@ -167,26 +167,25 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString what, c
 		{
 			bp = new BannWeekly(this);
 			page_content->appendBanner(bp);
-			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
+			connect(bp, SIGNAL(programNumber(int)), SIGNAL(programClicked(int)));
 		}
 		if (index >= page_content->bannerCount())
 		{
-			qWarning("ProgramMenu::createSeasonBanner: updating a menu with different number \
-of programs between summer and winter");
+			qWarning("ProgramMenu::createSeasonBanner: updating a menu with different number of programs between summer and winter");
 			break;
 		}
 		bp = static_cast<BannWeekly*>(page_content->getBanner(index));
 		++index;
-		bp->SetIcons(bt_global::skin->getImage("ok"), QString(), icon);
-		bp->Draw();
 		// set Text taken from conf.xml
+		QString text = "";
 		if (node.isElement())
 		{
-			bp->setText(node.toElement().text());
+			text = node.toElement().text();
 			// here node name is of the form "s12" or "p3"
 			int program_number = node.nodeName().mid(1).toInt();
 			bp->setProgram(program_number);
 		}
+		bp->initBanner(bt_global::skin->getImage("ok"), icon, text);
 	}
 }
 

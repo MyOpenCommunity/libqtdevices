@@ -616,16 +616,19 @@ signals:
  * It displays a not clickable image on the center, an ok button on the right and program description
  * below.
  */
-class BannWeekly : public bannPuls
+class BannWeekly : public BannSinglePuls
 {
 Q_OBJECT
 public:
 	BannWeekly(QWidget *parent);
 	void setProgram(int prog);
-public slots:
+
+private slots:
 	void performAction();
+
 private:
 	int program;
+
 signals:
 	void programNumber(int);
 };
