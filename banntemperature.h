@@ -47,7 +47,7 @@ public:
 	 * \param dev    The probe (device) connected with this banner
 	 */
 	BannTemperature(QWidget *parent, QString where, QString descr, device *dev);
-	virtual void Draw();
+
 public slots:
 	/**
 	 * Manages a change in status, like temperature change.
@@ -56,14 +56,11 @@ public slots:
 	 */
 	void status_changed(QList<device_status*> sl);
 private:
-	/// Name of the zone where the probe is installed (read from config)
-	QString  probe_descr;
+	void setTemperature();
 	/// Probed temperature (arrives from frame_interpreter directly in celsius, not in bt)
 	int temperature;
 	/// Temperature label
 	QLabel  *temp_label;
-	/// Zone name label
-	QLabel  *descr_label;
 	TemperatureScale temp_scale;
 };
 

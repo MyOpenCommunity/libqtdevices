@@ -110,8 +110,6 @@ ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 		device *dev = bt_global::devices_cache.get_temperature_probe(addr, are_probes_external);
 
 		banner *b = new BannTemperature(this, addr, text, dev);
-		b->setText(text);
-		b->Draw();
 
 		page_content->appendBanner(b);
 	}
