@@ -94,6 +94,9 @@ Q_OBJECT
 public:
 	NavigationPage();
 
+protected:
+	NavigationBar *createNavigationBar(const QString &forwardicon = QString());
+
 signals:
 	void backClick();
 	void upClick();
@@ -146,7 +149,7 @@ class PageProbe : public PageSimpleProbe
 Q_OBJECT
 public:
 	PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg,
-		  TemperatureScale scale = CELSIUS);
+		TemperatureScale scale = CELSIUS);
 public slots:
 	virtual void status_changed(QList<device_status*> sl);
 protected:
@@ -431,7 +434,7 @@ class PageFancoil : public PageProbe
 Q_OBJECT
 public:
 	PageFancoil(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg,
-		    TemperatureScale scale = CELSIUS);
+		TemperatureScale scale = CELSIUS);
 	virtual void status_changed(QList<device_status*> sl);
 protected:
 	void setFancoilStatus(int status);

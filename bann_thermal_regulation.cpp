@@ -166,7 +166,7 @@ NavigationPage *getPage(BannID id, QWidget *plant_menu, QDomNode n, QString ind_
 }
 
 NavigationPage::NavigationPage()
-	: Page(0), nav_bar(0)
+	: nav_bar(0)
 {
 	content.setLayout(&main_layout);
 	main_layout.setSpacing(0);
