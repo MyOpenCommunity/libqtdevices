@@ -92,9 +92,6 @@ Q_OBJECT
 public:
 	NavigationPage();
 
-protected:
-	NavigationBar *createNavigationBar(const QString &forwardicon = QString());
-
 signals:
 	void backClick();
 	void upClick();
