@@ -35,6 +35,9 @@ public:
 	void initBanner(const QString &right, const QString &center, const QString &banner_text);
 	void connectRightButton(Page *p);
 
+signals:
+	void rightClick();
+
 protected:
 	BtButton *right_button;
 

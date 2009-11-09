@@ -26,6 +26,7 @@ BannSinglePuls::BannSinglePuls(QWidget *parent) :
 	BannerNew(parent)
 {
 	right_button = new BtButton;
+	connect(right_button, SIGNAL(clicked()), SIGNAL(rightClick()));
 	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
 	center_icon = new QLabel;
 
