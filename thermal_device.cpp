@@ -152,11 +152,7 @@ void ThermalDevice::manageFrame(OpenMsg &msg)
 	case SUM_MANUAL:
 	case SUM_MANUAL_TIMED:
 		{
-			unsigned arg_count = msg.whatArgCnt();
-			if (arg_count < 1)
-			{
-				qDebug("manual frame (%s), no what args found!!! About to crash...", msg.frame_open);
-			}
+			Q_ASSERT_X(msg.whatArgCnt() > 0, "ThermalDevice::manageFrame", "Manual setting frame with no arguments received");
 			int sp = msg.whatArgN(0);
 			sl[DIM_TEMPERATURE] = QVariant(sp);
 		}
@@ -199,11 +195,7 @@ void ThermalDevice::manageFrame(OpenMsg &msg)
 	case WIN_MANUAL:
 	case WIN_MANUAL_TIMED:
 		{
-			unsigned arg_count = msg.whatArgCnt();
-			if (arg_count < 1)
-			{
-				qDebug("manual frame (%s), no what args found!!! About to crash...", msg.frame_open);
-			}
+			Q_ASSERT_X(msg.whatArgCnt() > 0, "ThermalDevice::manageFrame", "Manual setting frame with no arguments received");
 			int sp = msg.whatArgN(0);
 			sl[DIM_TEMPERATURE] = QVariant(sp);
 		}
