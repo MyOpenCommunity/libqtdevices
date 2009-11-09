@@ -13,9 +13,8 @@
 #define BANN_THERMAL_REGULATION_H
 
 #include "banner.h"
-#include "bann3_buttons.h" // bann3But
-#include "bann4_buttons.h" // bann4But
 #include "bann1_button.h" // bannPuls
+#include "bann2_buttons.h" // bann2CentralButtons
 #include "device_status.h"
 #include "bttime.h"
 #include "main.h"
@@ -546,12 +545,12 @@ private:
  * set the address of the thermal regulator.
  * It displays a button in the center with icon "OFF".
  */
-class BannOff : public bann3But
+class BannOff : public BannLargeButton
 {
 Q_OBJECT
 public:
 	BannOff(QWidget *parent, ThermalDevice *_dev);
-public slots:
+private slots:
 	/**
 	 * Shut down the thermal regulator
 	 */
@@ -569,12 +568,12 @@ signals:
  * address of the device.
  * It displays one button at the center with icon antifreeze on it.
  */
-class BannAntifreeze : public bann3But
+class BannAntifreeze : public BannLargeButton
 {
 Q_OBJECT
 public:
 	BannAntifreeze(QWidget *parent, ThermalDevice *_dev);
-public slots:
+private slots:
 	/**
 	 * Set thermal regulator in antifreeze protection
 	 */
@@ -592,7 +591,7 @@ signals:
  * button pressed.
  * It displays two buttons at the center, one with the summer icon and one with the winter icon.
  */
-class BannSummerWinter : public bann4But
+class BannSummerWinter : public Bann2CentralButtons
 {
 Q_OBJECT
 public:

@@ -1350,12 +1350,12 @@ void PageTermoReg99z::scenarioSelected(int scenario)
 }
 
 
-BannOff::BannOff(QWidget *parent, ThermalDevice *_dev) : bann3But(parent)
+BannOff::BannOff(QWidget *parent, ThermalDevice *_dev) : BannLargeButton(parent)
 {
-	SetIcons(QString(), QString(), QString(), bt_global::skin->getImage("off_button"));
+	initBanner(bt_global::skin->getImage("off_button"));
 	dev = _dev;
-	connect(this, SIGNAL(centerClick()), this, SLOT(performAction()));
-	connect(this, SIGNAL(centerClick()), this, SIGNAL(clicked()));
+	connect(center_button, SIGNAL(clicked()), SLOT(performAction()));
+	connect(center_button, SIGNAL(clicked()), SIGNAL(clicked()));
 }
 
 void BannOff::performAction()
@@ -1364,12 +1364,12 @@ void BannOff::performAction()
 }
 
 
-BannAntifreeze::BannAntifreeze(QWidget *parent, ThermalDevice *_dev) : bann3But(parent)
+BannAntifreeze::BannAntifreeze(QWidget *parent, ThermalDevice *_dev) : BannLargeButton(parent)
 {
-	SetIcons(QString(), QString(), QString(), bt_global::skin->getImage("regulator_antifreeze"));
+	initBanner(bt_global::skin->getImage("regulator_antifreeze"));
 	dev = _dev;
-	connect(this, SIGNAL(centerClick()), this, SLOT(performAction()));
-	connect(this, SIGNAL(centerClick()), this, SIGNAL(clicked()));
+	connect(center_button, SIGNAL(clicked()), SLOT(performAction()));
+	connect(center_button, SIGNAL(clicked()), SIGNAL(clicked()));
 }
 
 void BannAntifreeze::performAction()
@@ -1377,16 +1377,15 @@ void BannAntifreeze::performAction()
 	dev->setProtection();
 }
 
-BannSummerWinter::BannSummerWinter(QWidget *parent, ThermalDevice *_dev) : bann4But(parent)
+BannSummerWinter::BannSummerWinter(QWidget *parent, ThermalDevice *_dev) : Bann2CentralButtons(parent)
 {
-	// see banner:195 (don't know why it works, really)
-	SetIcons(QString(), QString(), bt_global::skin->getImage("summer"), bt_global::skin->getImage("winter"));
+	initBanner(bt_global::skin->getImage("winter"), bt_global::skin->getImage("summer"));
 	dev = _dev;
 
-	connect(this, SIGNAL(csxClick()), this, SLOT(setWinter()));
-	connect(this, SIGNAL(cdxClick()), this, SLOT(setSummer()));
-	connect(this, SIGNAL(csxClick()), this, SIGNAL(clicked()));
-	connect(this, SIGNAL(cdxClick()), this, SIGNAL(clicked()));
+	connect(center_left, SIGNAL(clicked()), SLOT(setWinter()));
+	connect(center_left, SIGNAL(clicked()), SIGNAL(clicked()));
+	connect(center_right, SIGNAL(clicked()), SLOT(setSummer()));
+	connect(center_right, SIGNAL(clicked()), SIGNAL(clicked()));
 }
 
 void BannSummerWinter::setSummer()
