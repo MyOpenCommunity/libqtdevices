@@ -15,6 +15,7 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "plantmenu.h"
 #include "xml_functions.h" // getChildren, getTextChild
+#include "navigation_bar.h"
 #include "bannfrecce.h"
 #include "content_widget.h" // content_widget
 #include "skinmanager.h"
@@ -41,17 +42,17 @@ ThermalMenu::ThermalMenu(const QDomNode &config_node)
 		connect(single_submenu, SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
-void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
+void ThermalMenu::createPlantMenu(QDomNode config, BannSinglePuls *bann)
 {
 	Page *sm = new PlantMenu(NULL, config);
-	connect(bann, SIGNAL(sxClick()), sm, SLOT(showPage()));
-	connect(sm, SIGNAL(Closed()), this, SLOT(showPage()));
+	bann->connectRightButton(sm);
+	connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
 	single_submenu = sm;
 }
 
 void ThermalMenu::loadBanners(const QDomNode &config_node)
 {
-	bannPuls *b = NULL;
+	BannSinglePuls *b = NULL;
 	foreach (const QDomNode &node, getChildren(config_node, "plant"))
 	{
 		b = addMenuItem(node.toElement(), i_plant);
@@ -69,43 +70,23 @@ void ThermalMenu::loadBanners(const QDomNode &config_node)
 	}
 }
 
-bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon)
+BannSinglePuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon)
 {
-	bannPuls *bp = new bannPuls(this);
+	BannSinglePuls *bp = new BannSinglePuls(this);
+	bp->initBanner(bt_global::skin->getImage("forward"), central_icon, getTextChild(e, "descr"));
 
-	bp->SetIcons(i_right_arrow, QString(), central_icon);
-	bp->setText(getTextChild(e, "descr"));
-	bp->Draw();
 	page_content->appendBanner(bp);
 	++bann_number;
 	return bp;
 }
 
-void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external)
+void ThermalMenu::createProbeMenu(QDomNode config, BannSinglePuls *bann, bool external)
 {
-	sottoMenu *sm = new sottoMenu;
+	ProbesPage *sm = new ProbesPage(config, external);
 	single_submenu = sm;
-	// we want to scroll external probes per pages and not per probes
-	// By default, submenus show only 3 banners in each page (see sottomenu.h:44)
-	unsigned submenu_scroll_step = NUM_RIGHE - 1;
-	sm->setScrollStep(submenu_scroll_step);
 
-	connect(bann, SIGNAL(sxClick()), sm, SLOT(showPage()));
-	connect(sm, SIGNAL(Closed()), this, SLOT(showPage()));
-
-	foreach (const QDomNode &item, getChildren(config, "item"))
-	{
-		QString addr = getTextChild(item, "where");
-		QString text = getTextChild(item, "descr");
-		if (external)
-			addr += "00";
-		device *dev = bt_global::devices_cache.get_temperature_probe(addr, external);
-
-		banner *b = new BannTemperature(sm, addr, text, dev);
-		b->setText(text);
-
-		sm->appendBanner(b);
-	}
+	bann->connectRightButton(sm);
+	connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
 }
 
 void ThermalMenu::showPage()
@@ -114,6 +95,26 @@ void ThermalMenu::showPage()
 		single_submenu->showPage();
 	else
 		Page::showPage();
+}
+
+
+ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
+{
+	buildPage(new ContentWidget, new NavigationBar);
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		QString addr = getTextChild(item, "where");
+		QString text = getTextChild(item, "descr");
+		if (are_probes_external)
+			addr += "00";
+		device *dev = bt_global::devices_cache.get_temperature_probe(addr, are_probes_external);
+
+		banner *b = new BannTemperature(this, addr, text, dev);
+		b->setText(text);
+		b->Draw();
+
+		page_content->appendBanner(b);
+	}
 }
 
 
