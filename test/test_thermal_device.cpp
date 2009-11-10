@@ -60,22 +60,22 @@ void TestThermalDevice::sendSetProtection()
 
 void TestThermalDevice::sendSetHolidayDateTime()
 {
-	dev->setHolidayDateTime(QDate(2009, 2, 13), BtTime(23, 31), 15);
+	dev->setHolidayDateTime(QDate(2009, 2, 13), BtTime(23, 31, 0), 15);
 	client_command->flush();
 	QString cmd = QString("*4*33002#3115") +
 		      "*" + dev->where +
 		      "##";
-	QCOMPARE(server->frameCommand(), cmd + holidayDateFrame(QDate(2009, 2, 13)) + holidayTimeFrame(BtTime(23, 31)));
+	QCOMPARE(server->frameCommand(), cmd + holidayDateFrame(QDate(2009, 2, 13)) + holidayTimeFrame(BtTime(23, 31, 0)));
 }
 
 void TestThermalDevice::sendSetWeekendDateTime()
 {
-	dev->setWeekendDateTime(QDate(2010, 1, 1), BtTime(4, 4), 12);
+	dev->setWeekendDateTime(QDate(2010, 1, 1), BtTime(4, 4, 0), 12);
 	client_command->flush();
 	QString cmd = QString("*4*315#3112") +
 		      "*" + dev->where +
 		      "##";
-	QCOMPARE(server->frameCommand(), cmd + holidayDateFrame(QDate(2010, 1, 1)) + holidayTimeFrame(BtTime(4, 4)));
+	QCOMPARE(server->frameCommand(), cmd + holidayDateFrame(QDate(2010, 1, 1)) + holidayTimeFrame(BtTime(4, 4, 0)));
 }
 
 void TestThermalDevice::sendSetWeekProgram()
@@ -269,7 +269,7 @@ void TestThermalDevice4Zones::cleanupTestCase()
 
 void TestThermalDevice4Zones::sendSetManualTempTimed()
 {
-	dev->setManualTempTimed(20, BtTime(13, 5));
+	dev->setManualTempTimed(20, BtTime(13, 5, 0));
 	client_command->flush();
 	QString cmd1 = QString("*4*312#0020#2") +
 		       "*" + dev->where +

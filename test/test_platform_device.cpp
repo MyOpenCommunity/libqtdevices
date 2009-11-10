@@ -71,7 +71,7 @@ void TestPlatformDevice::sendSetDate()
 
 void TestPlatformDevice::sendSetTime()
 {
-	dev->setTime(BtTimeSeconds(13, 12, 11));
+	dev->setTime(BtTime(13, 12, 11));
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*#13**#0*13*12*11**##"));
 }

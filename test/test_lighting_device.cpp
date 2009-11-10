@@ -189,7 +189,7 @@ void TestLightingDevice::receiveFixedTiming()
 void TestLightingDevice::receiveVariableTiming()
 {
 	DeviceTester t(dev, LightingDevice::DIM_VARIABLE_TIMING);
-	BtTimeSeconds tm(1, 3, 55);
+	BtTime tm(1, 3, 55);
 	QString timing = QString("*#1*%1*2*%2*%3*%4##").arg(dev->where)
 		.arg(1).arg(3).arg(55);
 
