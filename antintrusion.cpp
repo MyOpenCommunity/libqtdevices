@@ -277,10 +277,9 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 
 		// if the alarm arrive during the screensaver, we want to turn back to the alarm when the screensaver exit
 		if (bt_global::btmain->screenSaverRunning())
-		{
 			previous_page = bt_global::btmain->getPreviousPage();
-			curr->showPage();
-		}
+
+		curr->showPage();
 		ctrlAllarm();
 	}
 }
