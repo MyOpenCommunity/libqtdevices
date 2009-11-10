@@ -43,7 +43,6 @@ public:
 	/**
 	 * Returns the time set on the widget.
 	 */
-	BtTime time();
 	BtTimeSeconds timeWithSeconds();
 
 	void setMaxHours(int hours);

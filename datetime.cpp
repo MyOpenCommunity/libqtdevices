@@ -105,11 +105,6 @@ void BtTimeEdit::setMaxSeconds(int seconds)
 	_time.setMaxSeconds(seconds);
 }
 
-BtTime BtTimeEdit::time()
-{
-	return BtTime(_time);
-}
-
 BtTimeSeconds BtTimeEdit::timeWithSeconds()
 {
 	return _time;

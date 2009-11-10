@@ -19,7 +19,6 @@ class QTime;
 
 class BtTimeSeconds
 {
-	friend class BtTime;
 public:
 	/**
 	 * Constructs a BtTime with given hour, minute and second. The default value for
@@ -119,68 +118,6 @@ inline bool operator ==(const BtTimeSeconds &f, const BtTimeSeconds &s)
 }
 
 inline bool operator !=(const BtTimeSeconds &f, const BtTimeSeconds &s)
-{
-	return !(f == s);
-}
-
-
-class BtTime : private BtTimeSeconds
-{
-public:
-	/**
-	 * Constructs a BtTime with given hour and minute. The default value for
-	 * max_minutes is 60 and 24 for max_hours.
-	 */
-	BtTime(int h, int m);
-
-	/**
-	 * Defaults to hour = 0, minute = 0, max_hours = 24, max_minutes = 60
-	 */
-	BtTime();
-
-	/**
-	 * Takes hour and minute out of t,
-	 * max_hours and max_minutes are the default values.
-	 */
-	BtTime(const QTime &t);
-
-	/**
-	 * Takes hour, minute, max_hour, max_minute out of t,
-	 */
-	BtTime(const BtTimeSeconds &t);
-
-	/**
-	 * Returns a representation of time of the form h:mm.
-	 * \return A time in string format
-	 */
-	QString toString() const;
-
-	/**
-	 * Adds or subtracts a minute to the current time and returns a new BtTime instance.
-	 * \param minute Must be either 1 or -1
-	 * \return A new BtTime that is one minute earlier or later.
-	 */
-	BtTime addMinute(int minute) const;
-
-	/**
-	 * Adds or subtracts a hour to the current time and returns a new BtTime instance.
-	 * \param hour Must be either 1 or -1
-	 * \return A new BtTime that is one hour earlier or later.
-	 */
-	BtTime addHour(int hour) const;
-
-	using BtTimeSeconds::hour;
-	using BtTimeSeconds::minute;
-	using BtTimeSeconds::setMaxHours;
-	using BtTimeSeconds::setMaxMinutes;
-};
-
-inline bool operator ==(const BtTime &f, const BtTime &s)
-{
-	return f.hour() == s.hour() && f.minute() == s.minute();
-}
-
-inline bool operator !=(const BtTime &f, const BtTime &s)
 {
 	return !(f == s);
 }

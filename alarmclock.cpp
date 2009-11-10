@@ -398,7 +398,7 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 
 QTime AlarmClockTime::getAlarmTime() const
 {
-	BtTime t = edit->time();
+	BtTimeSeconds t = edit->timeWithSeconds();
 
 	return QTime(t.hour(), t.minute());
 }

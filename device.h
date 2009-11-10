@@ -16,7 +16,6 @@
 
 class frame_interpreter;
 class Client;
-class BtTime;
 class OpenMsg;
 
 typedef QHash<int, QVariant> StatusList;
