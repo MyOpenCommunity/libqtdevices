@@ -7,10 +7,10 @@
 #include "generic_functions.h" // setCfgValue
 #include "devices_cache.h" // bt_global::devices_cache
 #include "energy_device.h" // EnergyDevice
-#include "bannfrecce.h"
 #include "btmain.h" // bt_global::btmain
 #include "content_widget.h"
 #include "navigation_bar.h"
+#include "btbutton.h"
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -256,13 +256,18 @@ bool EnergyInterface::is_currency_view = false;
 
 EnergyInterface::EnergyInterface(const QDomNode &config_node)
 {
+	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency"));
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(toggleCurrency()));
+
+	buildPage(new ContentWidget, nav_bar);
+
 	is_any_interface_enabled = false;
-	loadItems(config_node);
-	if (elencoBanner.size() == 1)
+	loadItems(config_node, nav_bar);
+	if (page_content->bannerCount() == 1)
 		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
-void EnergyInterface::loadItems(const QDomNode &config_node)
+void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_bar)
 {
 	Q_ASSERT_X(bt_global::skin->hasContext() , "EnergyInterface::loadItems", "Skin context not set!");
 	int mode = getTextChild(config_node, "mode").toInt();
@@ -313,15 +318,13 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 		device *dev = bt_global::devices_cache[get_device_key("18", addr)];
 		connect(dev, SIGNAL(status_changed(const StatusList &)), b, SLOT(status_changed(const StatusList &)));
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-		appendBanner(b);
+		page_content->appendBanner(b);
+		b->Draw();
 	}
 
+	nav_bar->forward_button->setVisible(show_currency_button);
 	if (show_currency_button)
-	{
 		is_any_interface_enabled = show_currency_button;
-		setNavBarMode(10, bt_global::skin->getImage("currency"));
-		connect(bannNavigazione, SIGNAL(dxClick()), SLOT(toggleCurrency()));
-	}
 }
 
 void EnergyInterface::systemTimeChanged()
@@ -355,9 +358,9 @@ bool EnergyInterface::checkTypeForCurrency(const QString &type, const QDomNode &
 
 void EnergyInterface::updateBanners()
 {
-	for (int i = 0; i < elencoBanner.size(); ++i)
+	for (int i = 0; i < page_content->bannerCount(); ++i)
 	{
-		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(elencoBanner[i]);
+		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(page_content->getBanner(i));
 		b->updateText();
 	}
 }
@@ -369,7 +372,7 @@ void EnergyInterface::showPage()
 		toggleCurrencyView();
 
 	updateBanners();
-	if (elencoBanner.size() == 1)
+	if (page_content->bannerCount() == 1)
 		next_page->showPage();
 	else
 		Page::showPage();
@@ -379,9 +382,9 @@ void EnergyInterface::changeConsRate(float cons)
 {
 	for (int i = 0; i < views.size(); ++i)
 		views[i]->setConsFactor(cons);
-	for (int i = 0; i < elencoBanner.size(); ++i)
+	for (int i = 0; i < page_content->bannerCount(); ++i)
 	{
-		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(elencoBanner[i]);
+		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(page_content->getBanner(i));
 		b->setConsFactor(cons);
 	}
 }
@@ -390,9 +393,9 @@ void EnergyInterface::changeProdRate(float prod)
 {
 	for (int i = 0; i < views.size(); ++i)
 		views[i]->setProdFactor(prod);
-	for (int i = 0; i < elencoBanner.size(); ++i)
+	for (int i = 0; i < page_content->bannerCount(); ++i)
 	{
-		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(elencoBanner[i]);
+		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(page_content->getBanner(i));
 		b->setProdFactor(prod);
 	}
 }

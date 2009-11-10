@@ -73,7 +73,7 @@ private:
 };
 
 
-class EnergyInterface : public sottoMenu
+class EnergyInterface : public BannerPage
 {
 Q_OBJECT
 public:
@@ -89,7 +89,7 @@ public slots:
 	void toggleCurrency();
 
 private:
-	void loadItems(const QDomNode &config_node);
+	void loadItems(const QDomNode &config_node, NavigationBar *nav_bar);
 	bool checkTypeForCurrency(const QString &type, const QDomNode &conf);
 	void updateBanners();
 	EnergyView *next_page;
