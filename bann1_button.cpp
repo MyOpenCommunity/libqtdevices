@@ -1,5 +1,4 @@
 #include "bann1_button.h"
-#include "sottomenu.h"
 #include "titlelabel.h" // TextOnImageLabel
 #include "skinmanager.h" // bt_global::skin
 #include "btbutton.h"
