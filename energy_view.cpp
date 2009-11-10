@@ -5,7 +5,6 @@
 #include "icondispatcher.h" // icons_cache
 #include "generic_functions.h" // getPressName
 #include "fontmanager.h" // bt_global::font
-#include "bannfrecce.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // bt_global::skin
 #include "transitionwidget.h"
@@ -72,6 +71,43 @@ namespace
 		MONTHLY_PAGE,
 		YEARLY_PAGE
 	};
+}
+
+// helper class for the navigation bar
+
+EnergyViewNavigation::EnergyViewNavigation()
+{
+	BtButton *back_button = new BtButton();
+	back_button->setImage(bt_global::skin->getImage("back"));
+
+	currency_button = new BtButton;
+	currency_button->setImage(bt_global::skin->getImage("currency"));
+
+	table_button = new BtButton;
+	table_button->setImage(bt_global::skin->getImage("table"));
+
+	QHBoxLayout *l = new QHBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+
+	l->addWidget(back_button);
+	l->addStretch(1);
+	l->addWidget(table_button);
+	l->addWidget(currency_button);
+
+	connect(back_button, SIGNAL(clicked()), SIGNAL(backClick()));
+	connect(currency_button, SIGNAL(clicked()), SIGNAL(toggleCurrency()));
+	connect(table_button, SIGNAL(clicked()), SIGNAL(showTable()));
+}
+
+void EnergyViewNavigation::showTableButton(bool show)
+{
+	table_button->setVisible(show);
+}
+
+void EnergyViewNavigation::showCurrency(bool show)
+{
+	currency_button->setVisible(show);
 }
 
 
@@ -263,6 +299,11 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	mapper = new QSignalMapper(this);
 	connect(mapper, SIGNAL(mapped(int)), SLOT(showGraph(int)));
 
+	QWidget *content = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(content);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
+
 	main_layout->setAlignment(Qt::AlignTop);
 
 	// title section
@@ -284,21 +325,20 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	currency_symbol = _currency_symbol;
 	if (!currency_symbol.isNull())
 	{
-		bannNavigazione = new bannFrecce(this, 10, bt_global::skin->getImage("currency"));
-		connect(bannNavigazione, SIGNAL(dxClick()), SLOT(toggleCurrency()));
+		nav_bar = new EnergyViewNavigation();
+		connect(nav_bar, SIGNAL(toggleCurrency()), SLOT(toggleCurrency()));
 	}
 	else
 	{
-		bannNavigazione = new bannFrecce(this, 1);
+		nav_bar = new EnergyViewNavigation;
+		nav_bar->showTableButton(false);
+		nav_bar->showCurrency(false);
 	}
-	connect(bannNavigazione, SIGNAL(downClick()), table, SLOT(showPage()));
+	connect(nav_bar, SIGNAL(showTable()), table, SLOT(showPage()));
 	connect(table, SIGNAL(Closed()), SLOT(showPage()));
-	connect(bannNavigazione, SIGNAL(backClick()), SLOT(backClick()));
-	main_layout->addWidget(bannNavigazione);
+	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
 
-	bannNavigazione->addCdxButton();
-	bannNavigazione->setCdxIcon(bt_global::skin->getImage("table"));
-	bannNavigazione->Draw();
+	buildPage(content, nav_bar);
 
 	// default period, sync with default period in TimePeriodSelection
 	changeTimePeriod(TimePeriodSelection::DAY, QDate::currentDate());
@@ -617,7 +657,7 @@ void EnergyView::showGraph(int graph_type, bool request_update)
 	updateCurrentGraph();
 
 	QPixmap prev_image = QPixmap::grabWidget(this);
-	bannNavigazione->showCdxButton();
+	nav_bar->showTableButton(true);
 	widget_container->setCurrentIndex(current_widget);
 	if (current_graph == EnergyDevice::DAILY_AVERAGE)
 		time_period->hideCycleButton();
@@ -629,7 +669,7 @@ void EnergyView::showBannerWidget()
 {
 	current_widget = BANNER_WIDGET;
 	QPixmap prev_image = QPixmap::grabWidget(this);
-	bannNavigazione->hideCdxButton();
+	nav_bar->showTableButton(false);
 	time_period->showCycleButton();
 	widget_container->setCurrentIndex(current_widget);
 	startTransition(prev_image);
