@@ -1,6 +1,6 @@
 #include "energy_graph.h"
 #include "fontmanager.h" // bt_global::font
-#include "bannfrecce.h"
+#include "navigation_bar.h"
 
 #include <QSpacerItem>
 #include <QBoxLayout>
@@ -218,10 +218,15 @@ EnergyTable::EnergyTable(int n_dec)
 	rows_per_page = 8;
 	current_page = 0;
 	n_decimal = n_dec;
-	main_layout->addSpacing(10);
 
 	date_label = new QLabel;
 	date_label->setFont(bt_global::font->get(FontManager::SMALLTEXT));
+
+	QWidget *content = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(content);
+	main_layout->setContentsMargins(0, 10, 0, 10);
+	main_layout->setSpacing(0);
+
 	main_layout->addWidget(date_label, 0, Qt::AlignCenter);
 
 	createTable();
@@ -233,11 +238,12 @@ EnergyTable::EnergyTable(int n_dec)
 
 	main_layout->addWidget(central_widget, 1);
 
-	bannFrecce *nav_bar = new bannFrecce(this, 3);
+	NavigationBar *nav_bar = new NavigationBar;
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	connect(nav_bar, SIGNAL(downClick()), SLOT(pageUp()));
 	connect(nav_bar, SIGNAL(upClick()), SLOT(pageDown()));
-	main_layout->addWidget(nav_bar);
+
+	buildPage(content, nav_bar);
 }
 
 void EnergyTable::setNumDecimal(int n_dec)
