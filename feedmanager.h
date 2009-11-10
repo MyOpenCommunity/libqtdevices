@@ -21,7 +21,6 @@
 
 class FeedItemWidget;
 class ListBrowser;
-class bannFrecce;
 
 
 struct FeedPath
@@ -36,7 +35,7 @@ struct FeedPath
 };
 
 
-class FeedManager : public PageLayout
+class FeedManager : public Page
 {
 Q_OBJECT
 public:
@@ -60,8 +59,6 @@ private:
 	Status status;
 	FeedItemWidget *feed_widget;
 	QMap<QString, unsigned> page_indexes;
-
-	bannFrecce *bannNavigazione;
 
 	/// Load the feed list from the configuration file.
 	void loadFeedList();

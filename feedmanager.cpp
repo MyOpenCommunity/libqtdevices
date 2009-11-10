@@ -1,7 +1,7 @@
 #include "feedmanager.h"
 #include "feeditemwidget.h"
 #include "listbrowser.h"
-#include "bannfrecce.h"
+#include "navigation_bar.h"
 #include "main.h"
 
 #include <qregexp.h>
@@ -18,6 +18,11 @@ FeedManager::FeedManager()
 	loadFeedList();
 	status = SELECTION;
 
+	QWidget *content = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(content);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
+
 	list_browser = new ListBrowser(this, ROWS_PER_PAGE);
 	main_layout->addWidget(list_browser, 1);
 
@@ -25,17 +30,17 @@ FeedManager::FeedManager()
 	feed_widget->hide();
 	main_layout->addWidget(feed_widget, 1);
 
-	bannNavigazione = new bannFrecce(this, 3);
-	main_layout->addWidget(bannNavigazione);
+	NavigationBar *nav_bar = new NavigationBar;
+	buildPage(content, nav_bar);
 
 	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 	connect(feed_widget, SIGNAL(Closed()), feed_widget, SLOT(hide()));
 	connect(&parser, SIGNAL(feedReady()), SLOT(feedReady()));
 
 	// bannNavigazione up/down signals are inverted...
-	connect(bannNavigazione, SIGNAL(upClick()), SLOT(downClick()));
-	connect(bannNavigazione, SIGNAL(downClick()), SLOT(upClick()));
-	connect(bannNavigazione, SIGNAL(backClick()), SLOT(backClick()));
+	connect(nav_bar, SIGNAL(upClick()), SLOT(downClick()));
+	connect(nav_bar, SIGNAL(downClick()), SLOT(upClick()));
+	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
 }
 
 void FeedManager::loadFeedList()
