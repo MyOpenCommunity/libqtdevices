@@ -284,15 +284,21 @@ void Antintrusion::gesFrame(char*frame)
 		qDebug("ARRIVATO ALLARME!!!!");
 		Q_ASSERT_X(curr_alarm >= 0 && curr_alarm < allarmi.size(), "Antintrusion::gesFrame",
 			qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(curr_alarm).arg(allarmi.size())));
-		if (!previous_page)
-			previous_page = currentPage();
+
 		allarme *curr = allarmi.at(curr_alarm);
 		if (bt_global::btmain->screenSaverRunning())
 		{
-			previous_page = bt_global::btmain->getPreviousPage();
+			if (!previous_page)
+				previous_page = bt_global::btmain->getPreviousPage();
 			// if the alarm arrive during the screensaver, we want to turn back to the alarm when the screensaver exit
 			bt_global::btmain->setPreviousPage(curr);
 		}
+		else
+		{
+			if (!previous_page)
+				previous_page = currentPage();
+		}
+		// TODO: this should go a line above? Otherwise we override the screensaver page
 		curr->showPage();
 		ctrlAllarm();
 	}
