@@ -23,6 +23,9 @@ public:
 
 	void startAlarm(int source, int radio_station, int *alarmVolumes);
 	void stopAlarm(int source, int *alarmVolumes);
+	void setVolume(int amplifier, int volume);
+
+	void setReceiveFrames(bool receive);
 
 protected:
 	virtual void manageFrame(OpenMsg &msg);
@@ -32,9 +35,11 @@ private:
 	// TODO check function name
 	void activateEnvironment(int environment, int source);
 	void activateSource(int source);
-	void setVolume(int environment, int amplifier, int volume);
-	void amplifierOn(int environment, int amplifier);
-	void amplifierOff(int environment, int amplifier);
+	void amplifierOn(int amplifier);
+	void amplifierOff(int amplifier);
+
+private:
+	bool receive_frames;
 };
 
 #endif // ALARMSOUNDDIFF_DEVICE_H

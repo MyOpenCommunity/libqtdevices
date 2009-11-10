@@ -128,6 +128,15 @@ private:
 	QLabel *text, *center_icon;
 };
 
+class Bann2CentralButtons : public BannerNew
+{
+Q_OBJECT
+protected:
+	Bann2CentralButtons(QWidget *parent);
+	void initBanner(const QString &left, const QString &right);
+	BtButton *center_left, *center_right;
+};
+
 /*!
   \class bann2But
   \brief This is a class that describes a banner with a text between 2 buttons 

@@ -26,6 +26,7 @@ BannSinglePuls::BannSinglePuls(QWidget *parent) :
 	BannerNew(parent)
 {
 	right_button = new BtButton;
+	connect(right_button, SIGNAL(clicked()), SIGNAL(rightClick()));
 	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
 	center_icon = new QLabel;
 
@@ -57,6 +58,23 @@ void BannSinglePuls::loadIcons(const QString &right, const QString &center)
 void BannSinglePuls::connectRightButton(Page *p)
 {
 	connectButtonToPage(right_button, p);
+}
+
+
+
+BannLargeButton::BannLargeButton(QWidget *parent) :
+	BannerNew(parent)
+{
+	center_button = new BtButton;
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	l->addWidget(center_button, 0, Qt::AlignTop);
+}
+
+void BannLargeButton::initBanner(const QString &center)
+{
+	center_button->setImage(center);
 }
 
 

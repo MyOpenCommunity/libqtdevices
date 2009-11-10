@@ -10,6 +10,7 @@
 void TestAlarmSoundDiffDevice::initTestCase()
 {
 	dev = new AlarmSoundDiffDevice();
+	dev->setReceiveFrames(true);
 }
 
 void TestAlarmSoundDiffDevice::cleanupTestCase()
@@ -20,50 +21,50 @@ void TestAlarmSoundDiffDevice::cleanupTestCase()
 
 void TestAlarmSoundDiffDevice::sendSetRadioStation()
 {
-	dev->setRadioStation(107, 33);
+	dev->setRadioStation(7, 33);
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*#22*2#7*#6*33##"));
 }
 
 void TestAlarmSoundDiffDevice::sendActivateSource()
 {
-	dev->activateSource(107);
+	dev->activateSource(7);
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*22*35#4#0#7*3#1#0##"));
 }
 
 void TestAlarmSoundDiffDevice::sendActivateEnvironment()
 {
-	dev->activateEnvironment(5, 107);
+	dev->activateEnvironment(5, 7);
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*22*35#4#5#7*3*1*5*0##"));
 }
 
 void TestAlarmSoundDiffDevice::sendSetVolume()
 {
-	dev->setVolume(5, 57, 22);
+	dev->setVolume(57, 22);
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*#22*3#5#57*#1*22##"));
+	QCOMPARE(server->frameCommand(), QString("*#22*3#5#7*#1*22##"));
 }
 
 void TestAlarmSoundDiffDevice::sendAmplifierOn()
 {
-	dev->amplifierOn(5, 57);
+	dev->amplifierOn(57);
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*22*1#4#5*3#5#57##"));
+	QCOMPARE(server->frameCommand(), QString("*22*1#4#5*3#5#7##"));
 }
 
 void TestAlarmSoundDiffDevice::sendAmplifierOff()
 {
-	dev->amplifierOff(5, 57);
+	dev->amplifierOff(57);
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*22*0#4#5*3#5#57##"));
+	QCOMPARE(server->frameCommand(), QString("*22*0#4#5*3#5#7##"));
 }
 
 void TestAlarmSoundDiffDevice::receiveStatusOn()
 {
 	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_STATUS);
-	QString frame = QString("*#22*3#5#57*12*1*22##");
+	QString frame = QString("*#22*3#5#7*12*1*22##");
 
 	tss.checkSignals(frame, 0);
 }
@@ -73,7 +74,7 @@ void TestAlarmSoundDiffDevice::receiveVolume()
 	DeviceTester tsa(dev, AlarmSoundDiffDevice::DIM_AMPLIFIER, DeviceTester::MULTIPLE_VALUES);
 	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
 	DeviceTester tsv(dev, AlarmSoundDiffDevice::DIM_VOLUME, DeviceTester::MULTIPLE_VALUES);
-	QString frame = QString("*#22*3#5#57*1*13##");
+	QString frame = QString("*#22*3#5#7*1*13##");
 
 	tsa.check(frame, 57);
 	tss.check(frame, true);
@@ -84,7 +85,7 @@ void TestAlarmSoundDiffDevice::receiveStatusOff()
 {
 	DeviceTester tsa(dev, AlarmSoundDiffDevice::DIM_AMPLIFIER, DeviceTester::MULTIPLE_VALUES);
 	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
-	QString frame = QString("*#22*3#5#57*12*0*22##");
+	QString frame = QString("*#22*3#5#7*12*0*22##");
 
 	tsa.check(frame, 57);
 	tss.check(frame, false);
@@ -93,18 +94,18 @@ void TestAlarmSoundDiffDevice::receiveStatusOff()
 void TestAlarmSoundDiffDevice::receiveSource()
 {
 	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_SOURCE);
-	QString frame = QString("*#22*2#4#5*5#2#57##");
+	QString frame = QString("*22*2#4#5*5#2#21##");
 
-	tss.check(frame, 57);
+	tss.check(frame, 21);
 
-	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*#22*2#57*11##"));
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), QString("*#22*2#21*11##"));
 }
 
 void TestAlarmSoundDiffDevice::receiveRadioStation()
 {
 	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_RADIO_STATION);
-	QString frame = QString("*#22*2#57*11*22*33*7##");
+	QString frame = QString("*#22*2#21*11*22*33*7##");
 
 	tss.check(frame, 7);
 }

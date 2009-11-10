@@ -35,6 +35,9 @@ public:
 	void initBanner(const QString &right, const QString &center, const QString &banner_text);
 	void connectRightButton(Page *p);
 
+signals:
+	void rightClick();
+
 protected:
 	BtButton *right_button;
 
@@ -79,6 +82,17 @@ protected:
 
 private:
 	QLabel *text;
+};
+
+// Single large button on the center, without bottom label
+class BannLargeButton : public BannerNew
+{
+Q_OBJECT
+protected:
+	BannLargeButton(QWidget *parent);
+	void initBanner(const QString &center);
+
+	BtButton *center_button;
 };
 
 

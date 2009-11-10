@@ -15,19 +15,12 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "plantmenu.h"
 #include "xml_functions.h" // getChildren, getTextChild
-#include "bannfrecce.h"
+#include "navigation_bar.h"
 #include "content_widget.h" // content_widget
 #include "skinmanager.h"
 
 #include <QRegExp>
 #include <QDebug>
-
-#define IMG_OK IMG_PATH "btnok.png"
-
-static const QString i_right_arrow = QString("%1%2").arg(IMG_PATH).arg("arrrg.png");
-static const QString i_temp_probe = QString("%1%2").arg(IMG_PATH).arg("zona.png");
-static const QString i_ext_probe = QString("%1%2").arg(IMG_PATH).arg("sonda_esterna.png");
-static const QString i_plant = QString("%1%2").arg(IMG_PATH).arg("impianto.png");
 
 
 ThermalMenu::ThermalMenu(const QDomNode &config_node)
@@ -41,71 +34,52 @@ ThermalMenu::ThermalMenu(const QDomNode &config_node)
 		connect(single_submenu, SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
-void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
+void ThermalMenu::createPlantMenu(QDomNode config, BannSinglePuls *bann)
 {
 	Page *sm = new PlantMenu(NULL, config);
-	connect(bann, SIGNAL(sxClick()), sm, SLOT(showPage()));
-	connect(sm, SIGNAL(Closed()), this, SLOT(showPage()));
+	bann->connectRightButton(sm);
+	connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
 	single_submenu = sm;
 }
 
 void ThermalMenu::loadBanners(const QDomNode &config_node)
 {
-	bannPuls *b = NULL;
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	BannSinglePuls *b = NULL;
 	foreach (const QDomNode &node, getChildren(config_node, "plant"))
 	{
-		b = addMenuItem(node.toElement(), i_plant);
+		b = addMenuItem(node.toElement(), bt_global::skin->getImage("plant"));
 		createPlantMenu(node.toElement(), b);
 	}
 	foreach (const QDomNode &node, getChildren(config_node, "extprobe"))
 	{
-		b = addMenuItem(node.toElement(), i_ext_probe);
+		b = addMenuItem(node.toElement(), bt_global::skin->getImage("extprobe"));
 		createProbeMenu(node.toElement(), b, true);
 	}
 	foreach (const QDomNode &node, getChildren(config_node, "tempprobe"))
 	{
-		b = addMenuItem(node.toElement(), i_temp_probe);
+		b = addMenuItem(node.toElement(), bt_global::skin->getImage("probe"));
 		createProbeMenu(node.toElement(), b, false);
 	}
 }
 
-bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon)
+BannSinglePuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon)
 {
-	bannPuls *bp = new bannPuls(this);
+	BannSinglePuls *bp = new BannSinglePuls(this);
+	bp->initBanner(bt_global::skin->getImage("forward"), central_icon, getTextChild(e, "descr"));
 
-	bp->SetIcons(i_right_arrow, QString(), central_icon);
-	bp->setText(getTextChild(e, "descr"));
-	bp->Draw();
 	page_content->appendBanner(bp);
 	++bann_number;
 	return bp;
 }
 
-void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external)
+void ThermalMenu::createProbeMenu(QDomNode config, BannSinglePuls *bann, bool external)
 {
-	sottoMenu *sm = new sottoMenu;
+	ProbesPage *sm = new ProbesPage(config, external);
 	single_submenu = sm;
-	// we want to scroll external probes per pages and not per probes
-	// By default, submenus show only 3 banners in each page (see sottomenu.h:44)
-	unsigned submenu_scroll_step = NUM_RIGHE - 1;
-	sm->setScrollStep(submenu_scroll_step);
 
-	connect(bann, SIGNAL(sxClick()), sm, SLOT(showPage()));
-	connect(sm, SIGNAL(Closed()), this, SLOT(showPage()));
-
-	foreach (const QDomNode &item, getChildren(config, "item"))
-	{
-		QString addr = getTextChild(item, "where");
-		QString text = getTextChild(item, "descr");
-		if (external)
-			addr += "00";
-		device *dev = bt_global::devices_cache.get_temperature_probe(addr, external);
-
-		banner *b = new BannTemperature(sm, addr, text, dev);
-		b->setText(text);
-
-		sm->appendBanner(b);
-	}
+	bann->connectRightButton(sm);
+	connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
 }
 
 void ThermalMenu::showPage()
@@ -114,6 +88,24 @@ void ThermalMenu::showPage()
 		single_submenu->showPage();
 	else
 		Page::showPage();
+}
+
+
+ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
+{
+	buildPage(new ContentWidget, new NavigationBar);
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		QString addr = getTextChild(item, "where");
+		QString text = getTextChild(item, "descr");
+		if (are_probes_external)
+			addr += "00";
+		device *dev = bt_global::devices_cache.get_temperature_probe(addr, are_probes_external);
+
+		banner *b = new BannTemperature(this, addr, text, dev);
+
+		page_content->appendBanner(b);
+	}
 }
 
 
@@ -137,8 +129,6 @@ void ProgramMenu::setSeason(Season new_season)
 			createWinterBanners();
 			break;
 		}
-
-		forceDraw();
 	}
 }
 
@@ -167,26 +157,25 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString what, c
 		{
 			bp = new BannWeekly(this);
 			page_content->appendBanner(bp);
-			connect(bp, SIGNAL(programNumber(int)), this, SIGNAL(programClicked(int)));
+			connect(bp, SIGNAL(programNumber(int)), SIGNAL(programClicked(int)));
 		}
 		if (index >= page_content->bannerCount())
 		{
-			qWarning("ProgramMenu::createSeasonBanner: updating a menu with different number \
-of programs between summer and winter");
+			qWarning("ProgramMenu::createSeasonBanner: updating a menu with different number of programs between summer and winter");
 			break;
 		}
 		bp = static_cast<BannWeekly*>(page_content->getBanner(index));
 		++index;
-		bp->SetIcons(bt_global::skin->getImage("ok"), QString(), icon);
-		bp->Draw();
 		// set Text taken from conf.xml
+		QString text = "";
 		if (node.isElement())
 		{
-			bp->setText(node.toElement().text());
+			text = node.toElement().text();
 			// here node name is of the form "s12" or "p3"
 			int program_number = node.nodeName().mid(1).toInt();
 			bp->setProgram(program_number);
 		}
+		bp->initBanner(bt_global::skin->getImage("ok"), icon, text);
 	}
 }
 

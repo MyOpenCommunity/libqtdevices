@@ -223,6 +223,24 @@ void BannOnOff2Labels::setState(States new_state)
 }
 
 
+Bann2CentralButtons::Bann2CentralButtons(QWidget *parent) : BannerNew(parent)
+{
+	center_left = new BtButton;
+	center_right = new BtButton;
+	QHBoxLayout *l = new QHBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	l->addWidget(center_left, 0, Qt::AlignTop | Qt::AlignRight);
+	l->addWidget(center_right, 0, Qt::AlignTop | Qt::AlignLeft);
+}
+
+void Bann2CentralButtons::initBanner(const QString &left, const QString &right)
+{
+	center_left->setImage(left);
+	center_right->setImage(right);
+}
+
+
 bann2But::bann2But(QWidget *parent) : banner(parent)
 {
 	addItem(BUT1, 0,(banner_height - BAN2BUT_BUT_DIM)/2 , BAN2BUT_BUT_DIM , BAN2BUT_BUT_DIM);

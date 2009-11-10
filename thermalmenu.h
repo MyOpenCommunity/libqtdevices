@@ -28,9 +28,6 @@
 #include <QWidget>
 #include <QString>
 
-class PageSetTime;
-class PageSetDate;
-
 
 class ThermalMenu : public BannerPage
 {
@@ -49,7 +46,7 @@ public slots:
 	virtual void showPage();
 
 private:
-	bannPuls *addMenuItem(QDomElement, QString);
+	BannSinglePuls *addMenuItem(QDomElement, QString);
 	/**
 	 * Create a sottoMenu to show external and not controlled probes
 	 *
@@ -58,9 +55,9 @@ private:
 	 * sottoMenu
 	 * \param external  True if the probe is external, false otherwise
 	 */
-	void createProbeMenu(QDomNode config, bannPuls *bann, bool external);
+	void createProbeMenu(QDomNode config, BannSinglePuls *bann, bool external);
 
-	void createPlantMenu(QDomNode config, bannPuls *bann);
+	void createPlantMenu(QDomNode config, BannSinglePuls *bann);
 	void loadBanners(const QDomNode &config_node);
 
 	/// do NOT setAutoDelete(true), since banners are children of
@@ -69,6 +66,14 @@ private:
 	unsigned bann_number;
 	/// A reference to the only submenu below us
 	Page *single_submenu;
+};
+
+
+class ProbesPage : public BannerPage
+{
+Q_OBJECT
+public:
+	ProbesPage(const QDomNode &config_node, bool are_probes_external);
 };
 
 

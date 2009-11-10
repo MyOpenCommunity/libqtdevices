@@ -12,9 +12,7 @@
 
 #include "page.h"
 
-class QString;
 class QLabel;
-class BtButton;
 
 
 /*!
@@ -24,7 +22,7 @@ class BtButton;
   \author Ciminaghi
   \date lug 2006
   */
-class Aux : public PageLayout
+class Aux : public Page
 {
 Q_OBJECT
 public:
@@ -38,8 +36,7 @@ signals:
 	void Btnfwd();
 
 private:
-	QLabel *aux_name, *amb_descr;
-	BtButton *fwd_but;
+	QLabel *amb_descr;
 };
 
 

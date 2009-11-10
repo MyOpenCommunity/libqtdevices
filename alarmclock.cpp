@@ -11,6 +11,7 @@
 #include "sounddiffusion.h" // declare SoundDiffusion*
 #include "singlechoicecontent.h"
 #include "skinmanager.h"
+#include "alarmsounddiff_device.h"
 
 #include <openmsg.h>
 
@@ -75,7 +76,9 @@ AlarmClock::AlarmClock(Type t, Freq f, int hour, int minute)
 	connect(bt_global::btmain, SIGNAL(freezed(bool)), SLOT(freezed(bool)));
 	connect(alarm_type, SIGNAL(selectionChanged(AlarmClock::Freq)), SLOT(setFreq(AlarmClock::Freq)));
 
-	subscribe_monitor(16);
+	dev = new AlarmSoundDiffDevice();
+	connect(dev, SIGNAL(status_changed(const StatusList &)),
+		SLOT(status_changed(const StatusList &)));
 }
 
 void AlarmClock::showPage()
@@ -90,7 +93,7 @@ void AlarmClock::showTypePage()
 
 void AlarmClock::handleClose()
 {
-	gesFrameAbil = false;
+	dev->setReceiveFrames(false);
 	setActive(true);
 	emit Closed();
 	alarmTime = alarm_time->getAlarmTime();
@@ -111,7 +114,7 @@ void AlarmClock::showSoundDiffPage()
 	aggiornaDatiEEprom = 1;
 	sorgente = 101;
 	stazione = 0;
-	gesFrameAbil = true;
+	dev->setReceiveFrames(true);
 	for (unsigned idx = 0; idx < AMPLI_NUM; idx++)
 		volSveglia[idx] = -1;
 
@@ -148,63 +151,27 @@ void AlarmClock::_setActive(bool a)
 	}
 }
 
-void AlarmClock::manageFrame(OpenMsg &msg)
+void AlarmClock::status_changed(const StatusList &sl)
 {
-	if (gesFrameAbil == false)
-		return;
-
-	int deviceAddr = atoi(msg.Extract_dove());
-	if (deviceAddr >= 0 && deviceAddr <= AMPLI_NUM)
+	if (sl.contains(AlarmSoundDiffDevice::DIM_STATUS))
 	{
-		if (!msg.IsMeasureFrame())
-		{
-			if (!strcmp(msg.Extract_cosa(),"13"))
-			{
-				volSveglia[deviceAddr] = -1;
-				if (deviceAddr == 0)
-					for (uchar idx = 0; idx < AMPLI_NUM; idx++)
-						volSveglia[idx] = -1;
+		bool status = sl[AlarmSoundDiffDevice::DIM_STATUS].toBool();
+		int amplifier = sl[AlarmSoundDiffDevice::DIM_AMPLIFIER].toInt();
 
-				if (deviceAddr < 10)
-					for (uchar idx = 0;idx < 10; idx++)
-						volSveglia[deviceAddr * 10 + idx] = -1;
-			}
-			if (!strcmp(msg.Extract_cosa(),"3"))
-			{
-				qDebug("ho visto un ampli acceso!");
-				sendFrame("*#16*" + QString::number(deviceAddr) + "*1##");
-			}
+		if (status)
+		{
+			int volume = sl[AlarmSoundDiffDevice::DIM_VOLUME].toInt();
+
+			volSveglia[amplifier] = volume;
 		}
 		else
-		{
-			if (!strcmp(msg.Extract_grandezza(),"1"))
-			{
-				int vol;
-				vol = atoi(msg.Extract_valori(0)) & 0x1F;
-				volSveglia[deviceAddr] = vol;
-				qDebug("o visto un volume di %d pari a %d",deviceAddr, vol);
-			}
-		}
+			volSveglia[amplifier] = -1;
 	}
-	else
-	{
-		if (!strcmp(msg.Extract_cosa(),"3"))
-		{
-			sorgente = deviceAddr;
-			if (sorgente > 109)
-				sorgente = sorgente - ((sorgente-100)/10)*10;
-			qDebug("Sorgente %d", sorgente);
-		}
-		if (msg.IsMeasureFrame() && (!strcmp(msg.Extract_grandezza(),"7")))
-		{
-			stazione = atoi(msg.Extract_valori(1))&0x1F;
-			qDebug("Stazione %d",stazione);
-			sorgente = deviceAddr;
-			if (sorgente > 109)
-				sorgente = sorgente-((sorgente-100)/10)*10;
-			qDebug("Sorgente %d", sorgente);
-		}
-	}
+
+	if (sl.contains(AlarmSoundDiffDevice::DIM_SOURCE))
+		sorgente = sl[AlarmSoundDiffDevice::DIM_SOURCE].toInt();
+	if (sl.contains(AlarmSoundDiffDevice::DIM_RADIO_STATION))
+		stazione = sl[AlarmSoundDiffDevice::DIM_RADIO_STATION].toInt();
 }
 
 bool AlarmClock::eventFilter(QObject *obj, QEvent *ev)
@@ -281,112 +248,10 @@ bool AlarmClock::isActive()
 
 void AlarmClock::aumVol()
 {
-	bool amb1 = false;
-	bool amb2 = false;
-	bool amb3 = false;
-	bool amb4 = false;
-	bool amb5 = false;
-	bool amb6 = false;
-	bool amb7 = false;
-	bool amb8 = false;
-
 	if (conta2min == 0)
 	{
-		QString f = QString("*22*35#4#0#%2*3#1#0##").arg(sorgente-100);
-		sendFrame(f);
-		for (int idx = 0; idx < AMPLI_NUM; idx++)
-		{
-			if (volSveglia[idx] > -1)
-			{
-				if (idx >= 10 && idx <= 19)
-				{
-					if (!amb1)
-					{
-						amb1 = true;
-						f = QString("*22*35#4#1#%2*3#1#0##").arg(sorgente-100);
-						sendFrame(f);
-					}
-				}
-				if (idx >= 20 && idx <= 29)
-				{
-					if (!amb2)
-					{
-						amb2 = true;
-						f = QString("*22*35#4#2#%2*3#2#0##").arg(sorgente-100);
-						sendFrame(f);
-					}
-				}
-				if (idx >= 30 && idx <= 39)
-				{
-					if (!amb3)
-					{
-						amb3 = true;
-						f = QString("*22*35#4#3#%2*3#3#0##").arg(sorgente-100);
-						sendFrame(f);
-					}
-				}
-				if (idx >= 40 && idx <= 49)
-				{
-					if (!amb4)
-					{
-						amb4 = true;
-						f = QString("*22*35#4#4#%2*3#4#0##").arg(sorgente-100);
-						sendFrame(f);
-					}
-				}
-				if (idx >= 50 && idx <= 59)
-				{
-					if (!amb5)
-					{
-						amb5 = true;
-						f = QString("*22*35#4#5#%2*3#5#0##").arg(sorgente-100);
-						sendFrame(f);
-					}
-				}
-				if (idx >= 60 && idx <= 69)
-				{
-					if (!amb6)
-					{
-						amb6 = true;
-						f = QString("*22*35#4#6#%2*3#6#0##").arg(sorgente-100);
-						sendFrame(f);
-					}
-				}
-				if (idx >= 70 && idx <= 79)
-				{
-					if (!amb7)
-					{
-						amb7 = true;
-						f = QString("*22*35#4#7#%2*3#7#0##").arg(sorgente-100);
-						sendFrame(f);
-					}
-				}
-				if (idx >= 80 && idx <= 89)
-				{
-					if (!amb8)
-					{
-						amb8 = true;
-						f = QString("*22*35#4#8#%2*3#8#0##").arg(sorgente-100);
-						sendFrame(f);
-					}
-				}
-				if (volSveglia[idx] < 10)
-				{
-					QString f;
-					sendFrame(f.sprintf("*#16*%02d*#1*%d##", idx, volSveglia[idx]));
-				}
-				else
-				{
-					QString f;
-					sendFrame(f.sprintf("*#16*%02d*#1*8##", idx));
-				}
-
-				QString f;
-				sendFrame(f.sprintf("*16*3*%02d##", idx));
-			}
-		}
+		dev->startAlarm(sorgente, stazione, volSveglia);
 		conta2min = 9;
-		sendFrame("*#16*" + QString::number(sorgente) + "*#7*" + QString::number(stazione) + "##");
 	}
 
 	conta2min++;
@@ -395,10 +260,7 @@ void AlarmClock::aumVol()
 		for (int idx = 0; idx < AMPLI_NUM; idx++)
 		{
 			if (volSveglia[idx] >= conta2min)
-			{
-				QString f;
-				sendFrame(f.sprintf("*#16*%02d*#1*%d##", idx, conta2min));
-			}
+				dev->setVolume(idx, conta2min);
 		}
 	}
 	else if (conta2min > 49)
@@ -408,15 +270,8 @@ void AlarmClock::aumVol()
 		delete aumVolTimer;
 		aumVolTimer = NULL;
 
-		openwebnet msg_open;
-		for (int idx = 0; idx < AMPLI_NUM; idx++)
-		{
-			if (volSveglia[idx]>-1)
-			{
-				QString f;
-				sendFrame(f.sprintf("*16*13*%02d##", idx));
-			}
-		}
+		dev->stopAlarm(sorgente, volSveglia);
+
 		bt_global::btmain->freeze(false);
 		bt_global::btmain->svegl(false);
 		bt_global::display.forceOperativeMode(false);
@@ -474,6 +329,8 @@ void AlarmClock::spegniSveglia(bool b)
 			aumVolTimer->stop();
 			if (type == BUZZER)
 				setBeep(buzAbilOld,false);
+			else
+				dev->stopAlarm(sorgente, volSveglia);
 
 			delete aumVolTimer;
 			aumVolTimer = NULL;
@@ -518,6 +375,11 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 	QWidget *content = new QWidget;
 	QVBoxLayout *l = new QVBoxLayout(content);
 	QHBoxLayout *r = new QHBoxLayout;
+
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	r->setContentsMargins(0, 0, 0, 0);
+	r->setSpacing(0);
 
 	r->addSpacing(40);
 	r->addWidget(edit);
