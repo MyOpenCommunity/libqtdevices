@@ -20,14 +20,6 @@
 #include "banner.h"
 #include "main.h"  // TemperatureScale
 
-#include <QString>
-#include <QList>
-
-#define DESCR_LABEL_WIDTH 180
-#define BORDER_WIDTH        5
-#define DESCRIPTION_WIDTH 120
-#define TEMPERATURE_WIDTH 120
-
 class device_status;
 class device;
 class QLabel;
