@@ -122,7 +122,7 @@ scenEvo_cond_h::scenEvo_cond_h(const QDomNode &config_node, bool has_next) :
 	// +10 below is for compatibility reasons
 	const int TIME_EDIT_H = height() / 2 + 10;
 	time_edit.setGeometry(width()/2 - TIME_EDIT_W/2, height()/2 - TIME_EDIT_H/2, TIME_EDIT_W, TIME_EDIT_H);
-	time_edit.setTime(QTime(h.toInt(), m.toInt(), 0));
+	time_edit.setTimeWithSeconds(QTime(h.toInt(), m.toInt(), 0));
 
 	bottom_left = new BtButton(this);
 	bottom_left->setGeometry(0, height() - (BUT_DIM + BOTTOM_BORDER), BUT_DIM, BUT_DIM);
@@ -207,7 +207,7 @@ void scenEvo_cond_h::save()
 
 void scenEvo_cond_h::reset()
 {
-	time_edit.setTime(cond_time);
+	time_edit.setTimeWithSeconds(cond_time);
 }
 
 bool scenEvo_cond_h::isTrue()

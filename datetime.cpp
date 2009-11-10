@@ -84,12 +84,6 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, DisplayType type)
 	displayTime();
 }
 
-void BtTimeEdit::setTime(const BtTime& time)
-{
-	_time = BtTimeSeconds(time.hour(), time.minute(), 0);
-	displayTime();
-}
-
 void BtTimeEdit::setTimeWithSeconds(const BtTimeSeconds& time)
 {
 	_time = time;

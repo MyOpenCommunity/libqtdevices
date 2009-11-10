@@ -3,7 +3,7 @@
 
 #include "device.h"
 
-class BtTime;
+class BtTimeSeconds;
 
 
 class ThermalDevice : public device
@@ -46,7 +46,7 @@ public:
 	void setSummer();
 	void setWinter();
 	void setProtection();
-	void setHolidayDateTime(QDate date, BtTime time, int program);
+	void setHolidayDateTime(QDate date, BtTimeSeconds time, int program);
 
 	/**
 	 * Function to set weekend mode (giorno festivo) with end date and time, and program to be executed at the end of weekend mode.
@@ -54,7 +54,7 @@ public:
 	 * \param time The end time of weekend mode.
 	 * \param program The program to be executed at the end of weekend mode.
 	 */
-	void setWeekendDateTime(QDate date, BtTime time, int program);
+	void setWeekendDateTime(QDate date, BtTimeSeconds time, int program);
 	void setWeekProgram(int program);
 
 	/**
@@ -98,7 +98,7 @@ private:
 	 * Utility function to set end time for both holiday and weekend mode
 	 * \param time The end time of the mode.
 	 */
-	void setHolidayEndTime(BtTime time);
+	void setHolidayEndTime(BtTimeSeconds time);
 
 	/**
 	 * Utility function to check if `what' is a program or scenario command. This type of commands are in this form:
@@ -127,7 +127,7 @@ public:
 	 * \param temperature The temperature to be set
 	 * \param time The duration of the manual setting (24 hours max?)
 	 */
-	void setManualTempTimed(int temperature, BtTime time);
+	void setManualTempTimed(int temperature, BtTimeSeconds time);
 
 	virtual unsigned maximumTemp() const;
 	virtual thermo_type_t type() const;

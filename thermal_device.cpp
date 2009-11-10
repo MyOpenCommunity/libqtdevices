@@ -110,7 +110,7 @@ void ThermalDevice::setWeekProgram(int program)
 	sendCommand(QString::number(WEEK_PROGRAM + program));
 }
 
-void ThermalDevice::setWeekendDateTime(QDate date, BtTime time, int program)
+void ThermalDevice::setWeekendDateTime(QDate date, BtTimeSeconds time, int program)
 {
 	// we need to send 3 frames
 	// - frame at par. 2.3.9, to set what program has to be executed at the end of weekend mode
@@ -127,7 +127,7 @@ void ThermalDevice::setWeekendDateTime(QDate date, BtTime time, int program)
 	setHolidayEndTime(time);
 }
 
-void ThermalDevice::setHolidayDateTime(QDate date, BtTime time, int program)
+void ThermalDevice::setHolidayDateTime(QDate date, BtTimeSeconds time, int program)
 {
 	// we need to send 3 frames, as written in bug #44
 	// - frame at par. 2.3.10, with number_of_days = 2 (dummy number, we set end date and time explicitly with
@@ -155,7 +155,7 @@ void ThermalDevice::setHolidayEndDate(QDate date)
 	sendWriteRequest(what);
 }
 
-void ThermalDevice::setHolidayEndTime(BtTime time)
+void ThermalDevice::setHolidayEndTime(BtTimeSeconds time)
 {
 	QString what;
 	// hours and minutes must be padded with 0 if they have only one digit
@@ -300,7 +300,7 @@ ThermalDevice4Zones::ThermalDevice4Zones(QString where)
 {
 }
 
-void ThermalDevice4Zones::setManualTempTimed(int temperature, BtTime time)
+void ThermalDevice4Zones::setManualTempTimed(int temperature, BtTimeSeconds time)
 {
 	// we need to send 2 frames
 	// - frame at par. 2.3.13, with number_of_hours = 2 (dummy number, we set end time explicitly with

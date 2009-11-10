@@ -38,7 +38,6 @@ public:
 
 	BtTimeEdit(QWidget *parent, DisplayType type = DISPLAY_MINUTES);
 
-	void setTime(const BtTime& time);
 	void setTimeWithSeconds(const BtTimeSeconds& time);
 
 	/**

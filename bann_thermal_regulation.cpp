@@ -799,7 +799,7 @@ void PageManualTimed::performAction()
 		qWarning("BannManual::performAction: unknown scale, defaulting to celsius");
 		bt_temp = celsius2Bt(temp);
 	}
-	emit(timeAndTempSelected(time_edit->time(), bt_temp));
+	emit(timeAndTempSelected(time_edit->timeWithSeconds(), bt_temp));
 }
 
 void PageManualTimed::setMaxHours(int max)
@@ -862,9 +862,9 @@ PageSetTime::PageSetTime()
 	connect(nav, SIGNAL(backClicked()), SIGNAL(Closed()));
 }
 
-BtTime PageSetTime::time()
+BtTimeSeconds PageSetTime::time()
 {
-	return time_edit->time();
+	return time_edit->timeWithSeconds();
 }
 
 void PageSetTime::performAction()
@@ -1249,7 +1249,7 @@ PageSetDate *PageTermoReg::createDateEdit(SettingsPage *settings)
 PageSetTime *PageTermoReg::createTimeEdit(SettingsPage *settings)
 {
 	PageSetTime *time_edit = new PageSetTime;
-	connect(time_edit, SIGNAL(timeSelected(BtTime)), SLOT(timeSelected(BtTime)));
+	connect(time_edit, SIGNAL(timeSelected(BtTimeSeconds)), SLOT(timeSelected(BtTimeSeconds)));
 	connect(time_edit, SIGNAL(Closed()), SLOT(timeCancelled()));
 	return time_edit;
 }
@@ -1285,7 +1285,7 @@ void PageTermoReg::timeCancelled()
 	date_edit->showPage();
 }
 
-void PageTermoReg::timeSelected(BtTime t)
+void PageTermoReg::timeSelected(BtTimeSeconds t)
 {
 	time_end = t;
 	program_choice->showPage();
@@ -1319,10 +1319,10 @@ void PageTermoReg4z::timedManualSettings(SettingsPage *settings, ThermalDevice4Z
 	settings->appendBanner(manual_timed);
 
 	connect(manual_timed, SIGNAL(pageClosed()), settings, SLOT(showPage()));
-	connect(timed_manual_page, SIGNAL(timeAndTempSelected(BtTime, int)), SLOT(manualTimedSelected(BtTime, int)));
+	connect(timed_manual_page, SIGNAL(timeAndTempSelected(BtTimeSeconds, int)), SLOT(manualTimedSelected(BtTimeSeconds, int)));
 }
 
-void PageTermoReg4z::manualTimedSelected(BtTime time, int temp)
+void PageTermoReg4z::manualTimedSelected(BtTimeSeconds time, int temp)
 {
 	_dev->setManualTempTimed(temp, time);
 	showPage();
