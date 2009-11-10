@@ -799,7 +799,7 @@ void PageManualTimed::performAction()
 		qWarning("BannManual::performAction: unknown scale, defaulting to celsius");
 		bt_temp = celsius2Bt(temp);
 	}
-	emit(timeAndTempSelected(time_edit->timeWithSeconds(), bt_temp));
+	emit(timeAndTempSelected(time_edit->time(), bt_temp));
 }
 
 void PageManualTimed::setMaxHours(int max)
@@ -864,7 +864,7 @@ PageSetTime::PageSetTime()
 
 BtTime PageSetTime::time()
 {
-	return time_edit->timeWithSeconds();
+	return time_edit->time();
 }
 
 void PageSetTime::performAction()

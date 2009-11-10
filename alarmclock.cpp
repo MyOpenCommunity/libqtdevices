@@ -370,7 +370,7 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 	icon->setPixmap(bt_global::skin->getImage("alarm_icon"));
 
 	edit = new BtTimeEdit(this);
-	edit->setTimeWithSeconds(alarm_page->alarmTime);
+	edit->setTime(alarm_page->alarmTime);
 
 	QWidget *content = new QWidget;
 	QVBoxLayout *l = new QVBoxLayout(content);
@@ -398,7 +398,7 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 
 QTime AlarmClockTime::getAlarmTime() const
 {
-	BtTime t = edit->timeWithSeconds();
+	BtTime t = edit->time();
 
 	return QTime(t.hour(), t.minute());
 }

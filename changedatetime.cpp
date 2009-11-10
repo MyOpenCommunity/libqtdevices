@@ -41,7 +41,7 @@ ChangeTime::ChangeTime()
 
 void ChangeTime::acceptTime()
 {
-	dev->setTime(edit->timeWithSeconds());
+	dev->setTime(edit->time());
 
 	// go to page date and stop the timer to update seconds
 	date->showPage();
@@ -50,7 +50,7 @@ void ChangeTime::acceptTime()
 void ChangeTime::startTimeUpdate()
 {
 	// display current time and start the update timer
-	edit->setTimeWithSeconds(QTime::currentTime());
+	edit->setTime(QTime::currentTime());
 	if (timer_id == 0)
 		timer_id = startTimer(1000);
 }
@@ -70,8 +70,8 @@ void ChangeTime::hideEvent(QHideEvent *event)
 void ChangeTime::timerEvent(QTimerEvent *event)
 {
 	// update displayed time
-	BtTime t = edit->timeWithSeconds().addSecond(1);
-	edit->setTimeWithSeconds(t);
+	BtTime t = edit->time().addSecond(1);
+	edit->setTime(t);
 }
 
 void ChangeTime::showPage()

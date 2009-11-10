@@ -84,7 +84,7 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, DisplayType type)
 	displayTime();
 }
 
-void BtTimeEdit::setTimeWithSeconds(const BtTime& time)
+void BtTimeEdit::setTime(const BtTime& time)
 {
 	_time = time;
 	displayTime();
@@ -105,7 +105,7 @@ void BtTimeEdit::setMaxSeconds(int seconds)
 	_time.setMaxSeconds(seconds);
 }
 
-BtTime BtTimeEdit::timeWithSeconds()
+BtTime BtTimeEdit::time()
 {
 	return _time;
 }

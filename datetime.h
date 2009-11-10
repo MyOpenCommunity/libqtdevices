@@ -38,12 +38,12 @@ public:
 
 	BtTimeEdit(QWidget *parent, DisplayType type = DISPLAY_MINUTES);
 
-	void setTimeWithSeconds(const BtTime& time);
+	void setTime(const BtTime& time);
 
 	/**
 	 * Returns the time set on the widget.
 	 */
-	BtTime timeWithSeconds();
+	BtTime time();
 
 	void setMaxHours(int hours);
 	void setMaxMinutes(int minutes);
