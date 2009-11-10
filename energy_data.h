@@ -1,7 +1,6 @@
 #ifndef ENERGY_DATA_H
 #define ENERGY_DATA_H
 
-#include "sottomenu.h"
 #include "bann1_button.h" // bannPuls, bannTextOnImage
 #include "page.h"
 
