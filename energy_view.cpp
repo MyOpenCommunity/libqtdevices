@@ -323,17 +323,13 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	table = new EnergyTable(EnergyInterface::isCurrencyView() ? n_dec : 3);
 
 	currency_symbol = _currency_symbol;
-	if (!currency_symbol.isNull())
+	nav_bar = new EnergyViewNavigation();
+	if (currency_symbol.isNull())
 	{
-		nav_bar = new EnergyViewNavigation();
-		connect(nav_bar, SIGNAL(toggleCurrency()), SLOT(toggleCurrency()));
-	}
-	else
-	{
-		nav_bar = new EnergyViewNavigation;
 		nav_bar->showTableButton(false);
 		nav_bar->showCurrency(false);
 	}
+	connect(nav_bar, SIGNAL(toggleCurrency()), SLOT(toggleCurrency()));
 	connect(nav_bar, SIGNAL(showTable()), table, SLOT(showPage()));
 	connect(table, SIGNAL(Closed()), SLOT(showPage()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
