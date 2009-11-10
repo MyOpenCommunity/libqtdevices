@@ -23,7 +23,7 @@
 
 namespace
 {
-	QString formatTime(const BtTimeSeconds &t)
+	QString formatTime(const BtTime &t)
 	{
 		QString str;
 		int h = t.hour();
@@ -416,13 +416,13 @@ void TempLight::inizializza(bool forza)
 void TempLight::readTimes(const QDomNode &node)
 {
 	Q_UNUSED(node);
-	times << BtTimeSeconds(0, 1, 0); // 1 min
-	times << BtTimeSeconds(0, 2, 0);
-	times << BtTimeSeconds(0, 3, 0);
-	times << BtTimeSeconds(0, 4, 0);
-	times << BtTimeSeconds(0, 5, 0);
-	times << BtTimeSeconds(0, 15, 0);
-	times << BtTimeSeconds(0, 0, 30);
+	times << BtTime(0, 1, 0); // 1 min
+	times << BtTime(0, 2, 0);
+	times << BtTime(0, 3, 0);
+	times << BtTime(0, 4, 0);
+	times << BtTime(0, 5, 0);
+	times << BtTime(0, 15, 0);
+	times << BtTime(0, 0, 30);
 	Q_ASSERT_X(times.size() <= 7, "TempLight::readTimes",
 		"times length must be <= 7, otherwise activation will fail");
 }
@@ -435,7 +435,7 @@ void TempLight::cycleTime()
 
 void TempLight::updateTimeLabel()
 {
-	BtTimeSeconds t = times[time_index];
+	BtTime t = times[time_index];
 	setCentralText(formatTime(t));
 }
 
@@ -475,7 +475,7 @@ void TempLightVariable::readTimes(const QDomNode &node)
 	{
 		QString s = time.toElement().text();
 		QStringList sl = s.split("*");
-		times << BtTimeSeconds(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+		times << BtTime(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
 	}
 }
 
@@ -486,7 +486,7 @@ void TempLightVariable::inizializza(bool forza)
 
 void TempLightVariable::activate()
 {
-	BtTimeSeconds t = times[time_index];
+	BtTime t = times[time_index];
 	dev->variableTiming(t.hour(), t.minute(), t.second());
 }
 
@@ -510,7 +510,7 @@ TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
 		sl << tmp.toElement().text().split("*");
 
 	Q_ASSERT_X(sl.size() == 3, "TempLightFixed::TempLightFixed", "Time must have 3 fields");
-	BtTimeSeconds t(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+	BtTime t(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
 	total_time = t.hour() * 3600 + t.minute() * 60 + t.second();
 
 	QString where = getTextChild(config_node, "where");
@@ -569,7 +569,7 @@ void TempLightFixed::status_changed(const StatusList &sl)
 			break;
 		case LightingDevice::DIM_VARIABLE_TIMING:
 		{
-			BtTimeSeconds t = it.value().value<BtTimeSeconds>();
+			BtTime t = it.value().value<BtTime>();
 			// convert t to seconds, then compute the number of slices
 			int time = qRound((t.hour() * 3600 + t.minute() * 60 + t.second()) * TLF_TIME_STATES / total_time);
 			setElapsedTime(time);

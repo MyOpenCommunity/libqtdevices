@@ -14,7 +14,7 @@ PlatformDevice::PlatformDevice() : device(QString("13"), QString(""))
 {
 }
 
-void PlatformDevice::setTime(const BtTimeSeconds &t)
+void PlatformDevice::setTime(const BtTime &t)
 {
 	QString f;
 	f.sprintf("*#13**#0*%02u*%02u*%02u**##", t.hour(), t.minute(), t.second());

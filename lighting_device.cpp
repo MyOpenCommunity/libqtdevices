@@ -1,7 +1,7 @@
 #include "lighting_device.h"
 #include "openmsg.h"
 #include "generic_functions.h"
-#include "bttime.h" // BtTimeSeconds
+#include "bttime.h" // BtTime
 
 #include <QDebug>
 
@@ -105,7 +105,7 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 		{
 			Q_ASSERT_X(msg.whatArgCnt() == 3, "LightingDevice::parseFrame",
 				"Variable timing message has more than 3 what args");
-			BtTimeSeconds t(msg.whatArgN(0), msg.whatArgN(1), msg.whatArgN(2));
+			BtTime t(msg.whatArgN(0), msg.whatArgN(1), msg.whatArgN(2));
 			v.setValue(t);
 			status_index = what;
 		}

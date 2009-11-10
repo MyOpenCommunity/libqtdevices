@@ -176,7 +176,7 @@ void scenEvo_cond_h::setupTimer()
 
 void scenEvo_cond_h::Apply()
 {
-	BtTimeSeconds tmp = time_edit.timeWithSeconds();
+	BtTime tmp = time_edit.timeWithSeconds();
 	cond_time.setHMS(tmp.hour(), tmp.minute(), 0);
 	setupTimer();
 }

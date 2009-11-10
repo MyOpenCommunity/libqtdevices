@@ -314,7 +314,7 @@ private slots:
 	/**
 	 * User confirmed time editing, go on with program selection.
 	 */
-	void timeSelected(BtTimeSeconds t);
+	void timeSelected(BtTime t);
 
 	/**
 	 * User cancelled program selection, go back to time editing.
@@ -360,7 +360,7 @@ private:
 	QString icon_summer, icon_winter;
 	QStringList status_icons;
 	QDate date_end;
-	BtTimeSeconds time_end;
+	BtTime time_end;
 	PageSetTime *time_edit;
 	PageSetDate *date_edit;
 	ProgramMenu *program_choice;
@@ -391,7 +391,7 @@ private:
 
 	ThermalDevice4Zones *_dev;
 private slots:
-	void manualTimedSelected(BtTimeSeconds time, int temp);
+	void manualTimedSelected(BtTime time, int temp);
 	void showSettingsMenu();
 };
 
@@ -497,7 +497,7 @@ private:
 private slots:
 	void performAction();
 signals:
-	void timeAndTempSelected(BtTimeSeconds, int);
+	void timeAndTempSelected(BtTime, int);
 };
 
 
@@ -523,9 +523,9 @@ class PageSetTime : public Page
 Q_OBJECT
 public:
 	PageSetTime();
-	BtTimeSeconds time();
+	BtTime time();
 signals:
-	void timeSelected(BtTimeSeconds);
+	void timeSelected(BtTime);
 private slots:
 	void performAction();
 private:

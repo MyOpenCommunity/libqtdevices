@@ -4,7 +4,7 @@
 #include "bannregolaz.h"
 #include "bann2_buttons.h" // bannOnOff, bannOnOff2scr
 #include "bann1_button.h" // bannOn2scr
-#include "bttime.h" // BtTimeSeconds
+#include "bttime.h" // BtTime
 
 #include <QWidget>
 #include <QString>
@@ -152,7 +152,7 @@ protected:
 	virtual void readTimes(const QDomNode &node);
 	void updateTimeLabel();
 
-	QList<BtTimeSeconds> times;
+	QList<BtTime> times;
 	int time_index;
 	LightingDevice *dev;
 

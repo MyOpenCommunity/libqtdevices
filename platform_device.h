@@ -20,7 +20,7 @@
 
 
 class OpenMsg;
-class BtTimeSeconds;
+class BtTime;
 class QDate;
 
 
@@ -39,7 +39,7 @@ public:
 	PlatformDevice();
 
 	// date/time methods
-	void setTime(const BtTimeSeconds &t);
+	void setTime(const BtTime &t);
 	void setDate(const QDate &d);
 
 	// lan management methods

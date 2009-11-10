@@ -70,7 +70,7 @@ void ChangeTime::hideEvent(QHideEvent *event)
 void ChangeTime::timerEvent(QTimerEvent *event)
 {
 	// update displayed time
-	BtTimeSeconds t = edit->timeWithSeconds().addSecond(1);
+	BtTime t = edit->timeWithSeconds().addSecond(1);
 	edit->setTimeWithSeconds(t);
 }
 

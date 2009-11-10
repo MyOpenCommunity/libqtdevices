@@ -14,24 +14,24 @@
 
 #include <QDateTime>
 
-// BtTimeSeconds implementation
+// BtTime implementation
 
-BtTimeSeconds::BtTimeSeconds()
+BtTime::BtTime()
 {
 	init(0, 0, 0);
 }
 
-BtTimeSeconds::BtTimeSeconds(int h, int m, int s)
+BtTime::BtTime(int h, int m, int s)
 {
 	init(h, m , s);
 }
 
-BtTimeSeconds::BtTimeSeconds(const QTime &t)
+BtTime::BtTime(const QTime &t)
 {
 	init(t.hour(), t.minute(), t.second());
 }
 
-void BtTimeSeconds::init(int h, int m, int s)
+void BtTime::init(int h, int m, int s)
 {
 	_hour = h;
 	_minute = m;
@@ -41,24 +41,24 @@ void BtTimeSeconds::init(int h, int m, int s)
 	max_seconds = 60;
 }
 
-void BtTimeSeconds::setMaxHours(int max)
+void BtTime::setMaxHours(int max)
 {
 	max_hours = max;
 }
 
-void BtTimeSeconds::setMaxMinutes(int max)
+void BtTime::setMaxMinutes(int max)
 {
 	max_minutes = max;
 }
 
-void BtTimeSeconds::setMaxSeconds(int max)
+void BtTime::setMaxSeconds(int max)
 {
 	max_seconds = max;
 }
 
-BtTimeSeconds BtTimeSeconds::addSecond(int s) const
+BtTime BtTime::addSecond(int s) const
 {
-	BtTimeSeconds t = *this;
+	BtTime t = *this;
 	if (s == 1)
 	{
 		if (t._second == max_seconds - 1)
@@ -80,13 +80,13 @@ BtTimeSeconds BtTimeSeconds::addSecond(int s) const
 			--t._second;
 	}
 	else
-		qFatal("BtTimeSeconds::addSecond(): _second != +-1");
+		qFatal("BtTime::addSecond(): _second != +-1");
 	return t;
 }
 
-BtTimeSeconds BtTimeSeconds::addMinute(int m) const
+BtTime BtTime::addMinute(int m) const
 {
-	BtTimeSeconds t = *this;
+	BtTime t = *this;
 	if (m == 1)
 	{
 		if (t._minute == max_minutes - 1)
@@ -112,9 +112,9 @@ BtTimeSeconds BtTimeSeconds::addMinute(int m) const
 	return t;
 }
 
-BtTimeSeconds BtTimeSeconds::addHour(int h) const
+BtTime BtTime::addHour(int h) const
 {
-	BtTimeSeconds t = *this;
+	BtTime t = *this;
 	if (h == 1)
 	{
 		if (t._hour == max_hours - 1)
@@ -138,22 +138,22 @@ BtTimeSeconds BtTimeSeconds::addHour(int h) const
 	return t;
 }
 
-int BtTimeSeconds::hour() const
+int BtTime::hour() const
 {
 	return _hour;
 }
 
-int BtTimeSeconds::minute() const
+int BtTime::minute() const
 {
 	return _minute;
 }
 
-int BtTimeSeconds::second() const
+int BtTime::second() const
 {
 	return _second;
 }
 
-QString BtTimeSeconds::toString() const
+QString BtTime::toString() const
 {
 	QString str;
 	str.sprintf("%u:%02u:%02u", _hour, _minute, _second);
