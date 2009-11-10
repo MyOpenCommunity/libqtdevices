@@ -71,7 +71,7 @@ class BannPulsDynIcon : public bannPuls
 {
 Q_OBJECT
 public:
-	BannPulsDynIcon(QWidget *parent);
+	BannPulsDynIcon(QWidget *parent, const QString &where);
 	~BannPulsDynIcon();
 
 public slots:
