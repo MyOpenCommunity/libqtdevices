@@ -10,6 +10,7 @@
 #include "bannfrecce.h"
 #include "btmain.h" // bt_global::btmain
 #include "content_widget.h"
+#include "navigation_bar.h"
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -100,9 +101,13 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 	}
 }
 
-
 EnergyCost::EnergyCost(const QDomNode &config_node, int serial)
 {
+	QWidget *content = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(content);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
+
 	QDomElement currency_node = getElement(config_node, "currency");
 	Q_ASSERT_X(!currency_node.isNull(), "EnergyCost::EnergyCost", "currency node null!");
 
@@ -119,8 +124,8 @@ EnergyCost::EnergyCost(const QDomNode &config_node, int serial)
 	n_decimal = getTextChild(currency_node, "n_decimal").toUInt();
 	n_integer = getTextChild(currency_node, "n_integer").toUInt();
 
-	banner_cost = addBanner(getElement(config_node, "cons"), tr("Consumption") + " " + unit_measure, cons_rate);
-	banner_prod = addBanner(getElement(config_node, "prod"), tr("Production") + " " + unit_measure, prod_rate);
+	banner_cost = addBanner(main_layout, getElement(config_node, "cons"), tr("Consumption") + " " + unit_measure, cons_rate);
+	banner_prod = addBanner(main_layout, getElement(config_node, "prod"), tr("Production") + " " + unit_measure, prod_rate);
 
 	if (banner_cost)
 	{
@@ -136,12 +141,16 @@ EnergyCost::EnergyCost(const QDomNode &config_node, int serial)
 		temp_prod_rate = prod_rate;
 	}
 
-	main_layout->addStretch();
-	bannFrecce *nav_bar = new bannFrecce(this, 10, bt_global::skin->getImage("ok"));
+	main_layout->addStretch(1);
+
+	NavigationBar *nav_bar = new NavigationBar("ok");
+	nav_bar->displayScrollButtons(false);
+
 	connect(nav_bar, SIGNAL(backClick()), SLOT(closePage()));
-	connect(nav_bar, SIGNAL(dxClick()), SLOT(saveCostAndProd()));
-	main_layout->addWidget(nav_bar);
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(saveCostAndProd()));
 	serial_number = serial;
+
+	buildPage(content, nav_bar);
 }
 
 void EnergyCost::showValue(banner *b, float value)
@@ -153,7 +162,7 @@ void EnergyCost::showValue(banner *b, float value)
 	}
 }
 
-banner *EnergyCost::addBanner(const QDomNode &config_node, QString desc, float& rate)
+banner *EnergyCost::addBanner(QLayout *main_layout, const QDomNode &config_node, QString desc, float& rate)
 {
 	if (!config_node.isNull() && getTextChild(config_node, "ab").toInt() == 1)
 	{
