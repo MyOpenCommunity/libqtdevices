@@ -396,10 +396,13 @@ float EnergyConversions::convertToRawData(int bt_bus_data, EnergyConversions::En
 	switch (type)
 	{
 	case DEFAULT_ENERGY:
-		factor = 1.;
+		factor = 10.;
 		break;
 	case ELECTRICITY_CURRENT:
 		factor = 1000.;
+		break;
+	case OTHER_ENERGY:
+		factor = 1.;
 		break;
 	}
 	return bt_bus_data / factor;

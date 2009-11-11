@@ -409,7 +409,8 @@ QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 	// convert to raw data
 	QList<int> keys = data.keys();
 	for (int i = 0; i < keys.size(); ++i)
-		data[keys[i]] = EnergyConversions::convertToRawData(data[keys[i]]);
+		data[keys[i]] = EnergyConversions::convertToRawData(data[keys[i]],
+			is_electricity_view ? EnergyConversions::DEFAULT_ENERGY : EnergyConversions::OTHER_ENERGY);
 
 	if (gd->type == EnergyDevice::DAILY_AVERAGE)
 	{
@@ -746,12 +747,16 @@ void EnergyView::toggleCurrency()
 
 void EnergyView::updateBanners()
 {
-	float day = EnergyConversions::convertToRawData(cumulative_day_value);
+	float day = EnergyConversions::convertToRawData(cumulative_day_value,
+		is_electricity_view ? EnergyConversions::DEFAULT_ENERGY : EnergyConversions::OTHER_ENERGY);
 	float current = EnergyConversions::convertToRawData(current_value,
-		is_electricity_view ? EnergyConversions::ELECTRICITY_CURRENT : EnergyConversions::DEFAULT_ENERGY);
-	float month = EnergyConversions::convertToRawData(cumulative_month_value);
-	float year = EnergyConversions::convertToRawData(cumulative_year_value);
-	float average = EnergyConversions::convertToRawData(daily_av_value);
+		is_electricity_view ? EnergyConversions::ELECTRICITY_CURRENT : EnergyConversions::OTHER_ENERGY);
+	float month = EnergyConversions::convertToRawData(cumulative_month_value,
+		is_electricity_view ? EnergyConversions::DEFAULT_ENERGY : EnergyConversions::OTHER_ENERGY);
+	float year = EnergyConversions::convertToRawData(cumulative_year_value,
+		is_electricity_view ? EnergyConversions::DEFAULT_ENERGY : EnergyConversions::OTHER_ENERGY);
+	float average = EnergyConversions::convertToRawData(daily_av_value,
+		is_electricity_view ? EnergyConversions::DEFAULT_ENERGY : EnergyConversions::OTHER_ENERGY);
 	QString str = unit_measure;
 	QString str_med_inst = unit_measure_med_inst;
 
