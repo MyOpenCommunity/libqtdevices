@@ -616,13 +616,9 @@ class BannWeekly : public BannSinglePuls
 Q_OBJECT
 public:
 	BannWeekly(QWidget *parent);
-	void setProgram(int prog);
 
 private slots:
 	void performAction();
-
-private:
-	int program;
 
 signals:
 	void programNumber(int);
