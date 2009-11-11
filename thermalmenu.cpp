@@ -148,6 +148,7 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString what, c
 	QDomElement program = getElement(conf_root, season + "/" + what);
 	// The leaves we are looking for start with either "p" or "s"
 	QString name = what.left(1);
+	int id = getTextChild(conf_root, "id").toInt();
 
 	int index = 0;
 	foreach (const QDomNode &node, getChildren(program, name))
@@ -156,6 +157,10 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString what, c
 		if (create_banner)
 		{
 			bp = new BannWeekly(this);
+			// setting the banner ID, appendBanner() sets the banner serNum
+			// that is implicitly used to select the program number when the
+			// user chooses the program/scenario
+			bp->setId(id);
 			page_content->appendBanner(bp);
 			connect(bp, SIGNAL(programNumber(int)), SIGNAL(programClicked(int)));
 		}
@@ -166,15 +171,9 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString what, c
 		}
 		bp = static_cast<BannWeekly*>(page_content->getBanner(index));
 		++index;
-		// set Text taken from conf.xml
-		QString text = "";
+		QString text;
 		if (node.isElement())
-		{
 			text = node.toElement().text();
-			// here node name is of the form "s12" or "p3"
-			int program_number = node.nodeName().mid(1).toInt();
-			bp->setProgram(program_number);
-		}
 		bp->initBanner(bt_global::skin->getImage("ok"), icon, text);
 	}
 }
