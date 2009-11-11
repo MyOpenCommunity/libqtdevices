@@ -290,7 +290,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 		bannNavigazione = new bannFrecce(this, 1);
 	}
 	connect(bannNavigazione, SIGNAL(downClick()), table, SLOT(showPage()));
-	connect(table, SIGNAL(Closed()), SLOT(showPage()));
+	connect(table, SIGNAL(Closed()), SLOT(showPageFromTable()));
 	connect(bannNavigazione, SIGNAL(backClick()), SLOT(backClick()));
 	main_layout->addWidget(bannNavigazione);
 
@@ -385,6 +385,11 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 void EnergyView::showPage()
 {
 	time_period->forceDate(QDate::currentDate());
+	showPageFromTable();
+}
+
+void EnergyView::showPageFromTable()
+{
 	// switch back to raw data visualization if currency is not supported
 	if (EnergyInterface::isCurrencyView() && currency_symbol.isNull())
 		EnergyInterface::toggleCurrencyView();

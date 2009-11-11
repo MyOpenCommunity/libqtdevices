@@ -90,6 +90,7 @@ public:
 
 public slots:
 	virtual void showPage();
+	virtual void showPageFromTable();
 
 protected:
 	void timerEvent(QTimerEvent *e);
