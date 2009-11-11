@@ -571,7 +571,7 @@ class device_condition_temp : public device_condition
 Q_OBJECT
 public:
 	//! Constructor
-	device_condition_temp(QWidget *parent, QString *trigger);
+	device_condition_temp(QWidget *parent, QString *trigger, bool external = false);
 	//! Returns min value
 	int get_min();
 	//! Returns max value

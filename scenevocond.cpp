@@ -355,8 +355,14 @@ void scenEvo_cond_d::set_descr(QString d)
 
 void scenEvo_cond_d::set_where(QString w)
 {
-	qDebug() << "scenEvo_cond_d::set_where(" << w << ")";
 	*where = w;
+        switch (condition_type)
+        {
+        case 7:
+		*where += "00";
+		break;
+	}
+	qDebug() << "scenEvo_cond_d::set_where(" << *where << ")";
 }
 
 void scenEvo_cond_d::get_where(QString& out)
@@ -408,6 +414,8 @@ void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
 void scenEvo_cond_d::SetIcons()
 {
 	qDebug("scenEvo_cond_d::SetIcons()");
+	bool external = false;
+
 	QPixmap *Icon1 = new QPixmap();
 	for (int i=0; i<6; i++)
 		qDebug() << "icon[" << i << "] = " << getImg(i);
@@ -459,10 +467,11 @@ void scenEvo_cond_d::SetIcons()
 	case 2:
 		dc = new device_condition_dimming(this, trigger);
 		break;
-	case 3:
 	case 7:
+		external = true;
+	case 3:
 	case 8:
-		dc = new device_condition_temp(this, trigger);
+		dc = new device_condition_temp(this, trigger, external);
 		but[A3_BUTTON_INDEX]->setAutoRepeat(true);
 		but[A4_BUTTON_INDEX]->setAutoRepeat(true);
 		break;
@@ -1645,7 +1654,7 @@ void device_condition_volume::reset()
 /*****************************************************************
 ** Actual temperature device condition
 ****************************************************************/
-device_condition_temp::device_condition_temp(QWidget *parent, QString *c) :
+device_condition_temp::device_condition_temp(QWidget *parent, QString *c, bool external) :
 	device_condition(parent, c)
 {
 	// Temp condition is expressed in bticino format
@@ -1682,7 +1691,7 @@ device_condition_temp::device_condition_temp(QWidget *parent, QString *c) :
 	set_current_value(device_condition::get_condition_value());
 
 	Draw();
-	dev = new temperature_probe_notcontrolled(QString(""), false);
+	dev = new temperature_probe_notcontrolled(QString(""), external);
 }
 
 int device_condition_temp::get_min()
