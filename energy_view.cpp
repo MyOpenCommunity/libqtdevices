@@ -255,7 +255,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	// We can't use frame compressor as below (or with a single what as filter), because
 	// it filter also valid requests with different what.
-	//dev->installFrameCompressor(ENERGY_GRAPH_DELAY);
+	dev->installFrameCompressor(ENERGY_GRAPH_DELAY);
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
 	mapper = new QSignalMapper(this);
@@ -698,11 +698,17 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		break;
 	case TimePeriodSelection::MONTH:
 		// we have to preserve the current visualized graph (can be daily average)
-		current_graph == EnergyDevice::DAILY_AVERAGE ? graph_type = EnergyDevice::DAILY_AVERAGE :
+		if (current_graph == EnergyDevice::DAILY_AVERAGE)
+		{
+			graph_type = EnergyDevice::DAILY_AVERAGE;
+			dev->requestDailyAverageGraph(selection_date);
+		}
+		else
+		{
 			graph_type = EnergyDevice::CUMULATIVE_MONTH;
+			dev->requestCumulativeMonthGraph(selection_date);
+		}
 		dev->requestCumulativeMonth(selection_date);
-		dev->requestCumulativeMonthGraph(selection_date);
-		dev->requestDailyAverageGraph(selection_date);
 		dev->requestMontlyAverage(selection_date);
 		break;
 	case TimePeriodSelection::YEAR:

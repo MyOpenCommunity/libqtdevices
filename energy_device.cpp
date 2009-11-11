@@ -145,7 +145,7 @@ void EnergyDevice::requestCumulativeYearGraph() const
 {
 	QDate curr = QDate::currentDate();
 	for (int i = 0; i < 12; ++i)
-		requestCumulativeMonth(curr.addMonths(i * -1), true); // we compress the request of the graph data
+		requestCumulativeMonth(curr.addMonths(i * -1), false); // we compress the request of the graph data
 }
 
 void EnergyDevice::frame_rx_handler(char *frame)
