@@ -47,11 +47,11 @@ public slots:
 private:
 	BannSinglePuls *addMenuItem(QDomElement, QString);
 	/**
-	 * Create a sottoMenu to show external and not controlled probes
+	 * Create a banner list to show external and not controlled probes
 	 *
 	 * \param config    The node in the Dom tree that holds the `probe' section
 	 * \param bann      A pointer to the banner that gives access to the
-	 * sottoMenu
+	 * subpage
 	 * \param external  True if the probe is external, false otherwise
 	 */
 	void createProbeMenu(QDomNode config, BannSinglePuls *bann, bool external);
