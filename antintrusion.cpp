@@ -2,7 +2,7 @@
 #include "keypad.h"
 #include "bann_antintrusion.h"
 #include "xml_functions.h" // getChildren, getTextChild
-#include "allarme.h"
+#include "alarmpage.h"
 #include "btmain.h" // bt_global::btmain
 #include "content_widget.h"
 #include "navigation_bar.h"
@@ -193,9 +193,6 @@ void Antintrusion::draw()
 	ctrlAllarm();
 	if (allarmi.isEmpty())
 		return;
-
-	for (int i = 0; i < allarmi.size(); ++i)
-		allarmi.at(i)->draw();
 }
 
 void Antintrusion::inizializza()
@@ -216,31 +213,31 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 		QString descr;
 		char zona[3];
 		QString tipo = "Z";
-		allarme::altype t;
+		AlarmPage::altype t;
 
 		if  (!strncmp(msg.Extract_cosa(),"12",2) && !testoTecnico.isNull())
 		{
 			descr = testoTecnico;
-			t = allarme::TECNICO;
+			t = AlarmPage::TECNICO;
 			tipo = "AUX";
 		}
 
 		if  (!strncmp(msg.Extract_cosa(),"15",2) && !testoIntrusione.isNull())
 		{
 			descr = testoIntrusione;
-			t = allarme::INTRUSIONE;
+			t = AlarmPage::INTRUSIONE;
 		}
 
 		if  (!strncmp(msg.Extract_cosa(),"16",2) && !testoManom.isNull())
 		{
 			descr = testoManom;
-			t = allarme::MANOMISSIONE;
+			t = AlarmPage::MANOMISSIONE;
 		}
 
 		if  (!strncmp(msg.Extract_cosa(),"17",2) && !testoPanic.isNull())
 		{
 			descr = testoPanic;
-			t = allarme::PANIC;
+			t = AlarmPage::PANIC;
 		}
 
 		// To simulate old behaviour
@@ -255,10 +252,10 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 		descr += time;
 		descr.truncate(2 * MAX_PATH);
 
-		allarmi.append(new allarme(descr, NULL, ICON_DEL, t));
+		allarmi.append(new AlarmPage(descr, NULL, ICON_DEL, t));
 		// The current alarm is the last alarm inserted
 		curr_alarm = allarmi.size() - 1;
-		allarme *curr = allarmi.at(curr_alarm);
+		AlarmPage *curr = allarmi.at(curr_alarm);
 		connect(curr, SIGNAL(Closed()), SLOT(closeAlarms()));
 		connect(curr, SIGNAL(Next()), SLOT(nextAlarm()));
 		connect(curr, SIGNAL(Prev()), SLOT(prevAlarm()));
@@ -271,7 +268,7 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 		qDebug("ARRIVATO ALLARME!!!!");
 		Q_ASSERT_X(curr_alarm >= 0 && curr_alarm < allarmi.size(), "Antintrusion::gesFrame",
 			qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(curr_alarm).arg(allarmi.size())));
-		allarme *curr = allarmi.at(curr_alarm);
+		AlarmPage *curr = allarmi.at(curr_alarm);
 
 		// if the alarm arrive during the screensaver, we want to turn back to the alarm when the screensaver exit
 		if (bt_global::btmain->screenSaverRunning())
@@ -366,7 +363,7 @@ void Antintrusion::clearAlarms()
 	qDebug("antiintrusione::clearAlarms()");
 	while (!allarmi.isEmpty())
 	{
-		allarme *a = allarmi.takeFirst();
+		AlarmPage *a = allarmi.takeFirst();
 		a->disconnect();
 		a->deleteLater();
 	}

@@ -24,7 +24,7 @@ class impAnti;
 class zonaAnti;
 class BtButton;
 class Keypad;
-class allarme;
+class AlarmPage;
 class QDomNode;
 class QWidget;
 
@@ -109,7 +109,7 @@ private:
 /*!
   \param <allarmi> alarm's queue
 */
-	QList<allarme*> allarmi;
+	QList<AlarmPage*> allarmi;
 	int curr_alarm;
 /*!
   \param <testoManom> text for a manomission alarm

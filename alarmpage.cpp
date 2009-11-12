@@ -1,5 +1,5 @@
+#include "alarmpage.h"
 #include "banner.h"
-#include "allarme.h"
 #include "bannfrecce.h"
 #include "main.h"
 #include "fontmanager.h" // bt_global::font
@@ -15,9 +15,8 @@
 ** Generic alarm
 ****************************************************************/	
 
-allarme::allarme(const QString &name, char *indirizzo, QString IconaDx, altype t)
+AlarmPage::AlarmPage(const QString &name, char *indirizzo, QString IconaDx, altype t)
 {
-	qDebug("allarme::allarme()");
 	qDebug() << "indirizzo =" << indirizzo << ", IconaDx =" << IconaDx << ", tipo = " << t;
 	type = t;
 	SetIcons(IconaDx);
@@ -28,13 +27,13 @@ allarme::allarme(const QString &name, char *indirizzo, QString IconaDx, altype t
 	connect(bnav, SIGNAL(forwardClick()), this, SIGNAL(Delete()));
 }
 
-void allarme::SetIcons(QString icon)
+void AlarmPage::SetIcons(QString icon)
 {
 	qDebug("allarme::SetIcons()");
 	QString icon_name;
 	switch (type)
 	{
-    case allarme::TECNICO:
+	case AlarmPage::TECNICO:
 		icon_name = IMG_PATH "imgalltec.png";
 		break;
     default:
@@ -57,10 +56,5 @@ void allarme::SetIcons(QString icon)
 	bnav->show();
 	Immagine->show();
 	descr->show();
-}
-
-void allarme::draw()
-{
-    qDebug("allarme::draw()");
 }
 

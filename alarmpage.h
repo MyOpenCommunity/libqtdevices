@@ -1,18 +1,13 @@
-#ifndef _ALLARME_H_
-#define _ALLARME_H_
+#ifndef _ALARM_PAGE_H_
+#define _ALARM_PAGE_H_
 
 #include "page.h"
 
 class banner;
 class QLabel;
 
-/*!
-  \class allarme
-  \brief This class represents an alarm condition
-  \author Ciminaghi
-  \date April 2006
-*/
-class allarme : public Page
+
+class AlarmPage : public Page
 {
 Q_OBJECT
 public:
@@ -24,11 +19,7 @@ public:
 		PANIC,
 	} altype;
 
-	allarme(const QString &name, char *indirizzo, QString IconaDx, altype t);
-
-public slots:
-	/*! Draw widget */
-	void draw();
+	AlarmPage(const QString &name, char *indirizzo, QString IconaDx, altype t);
 
 private:
 	static const int ICON_DIM = 80;
@@ -46,4 +37,4 @@ signals:
 	void Delete();
 };
 
-#endif // _ALLARME_H_
+#endif // _ALARM_PAGE_H_
