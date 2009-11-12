@@ -293,7 +293,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	// We can't use frame compressor as below (or with a single what as filter), because
 	// it filter also valid requests with different what.
-	//dev->installFrameCompressor(ENERGY_GRAPH_DELAY);
+	dev->installFrameCompressor(ENERGY_GRAPH_DELAY);
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
 	mapper = new QSignalMapper(this);
@@ -320,7 +320,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	widget_container->addWidget(new EnergyGraph);
 
 	main_layout->addWidget(widget_container, 1);
-	table = new EnergyTable(EnergyInterface::isCurrencyView() ? n_dec : 3);
+	table = new EnergyTable(3);
 
 	currency_symbol = _currency_symbol;
 	nav_bar = new EnergyViewNavigation();
@@ -330,7 +330,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 		nav_bar->showCurrency(false);
 	}
 	connect(nav_bar, SIGNAL(toggleCurrency()), SLOT(toggleCurrency()));
-	connect(nav_bar, SIGNAL(showTable()), table, SLOT(showPage()));
+	connect(nav_bar, SIGNAL(showTable()), table, SLOT(showPageFromTable()));
 	connect(table, SIGNAL(Closed()), SLOT(showPage()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
 
@@ -423,6 +423,12 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 
 void EnergyView::showPage()
 {
+	time_period->forceDate(QDate::currentDate());
+	showPageFromTable();
+}
+
+void EnergyView::showPageFromTable()
+{
 	// switch back to raw data visualization if currency is not supported
 	if (EnergyInterface::isCurrencyView() && currency_symbol.isNull())
 		EnergyInterface::toggleCurrencyView();
@@ -442,7 +448,8 @@ QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 	// convert to raw data
 	QList<int> keys = data.keys();
 	for (int i = 0; i < keys.size(); ++i)
-		data[keys[i]] = EnergyConversions::convertToRawData(data[keys[i]]);
+		data[keys[i]] = EnergyConversions::convertToRawData(data[keys[i]],
+			is_electricity_view ? EnergyConversions::DEFAULT_ENERGY : EnergyConversions::OTHER_ENERGY);
 
 	if (gd->type == EnergyDevice::DAILY_AVERAGE)
 	{
@@ -731,11 +738,17 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		break;
 	case TimePeriodSelection::MONTH:
 		// we have to preserve the current visualized graph (can be daily average)
-		current_graph == EnergyDevice::DAILY_AVERAGE ? graph_type = EnergyDevice::DAILY_AVERAGE :
+		if (current_graph == EnergyDevice::DAILY_AVERAGE)
+		{
+			graph_type = EnergyDevice::DAILY_AVERAGE;
+			dev->requestDailyAverageGraph(selection_date);
+		}
+		else
+		{
 			graph_type = EnergyDevice::CUMULATIVE_MONTH;
+			dev->requestCumulativeMonthGraph(selection_date);
+		}
 		dev->requestCumulativeMonth(selection_date);
-		dev->requestCumulativeMonthGraph(selection_date);
-		dev->requestDailyAverageGraph(selection_date);
 		dev->requestMontlyAverage(selection_date);
 		break;
 	case TimePeriodSelection::YEAR:
@@ -773,23 +786,31 @@ void EnergyView::setBannerPage(int status, const QDate &selection_date)
 void EnergyView::toggleCurrency()
 {
 	EnergyInterface::toggleCurrencyView();
-	table->setNumDecimal(EnergyInterface::isCurrencyView() ? n_decimal : 3);
+	table->setNumDecimal(3);
 	updateBanners();
 	updateCurrentGraph();
 }
 
 void EnergyView::updateBanners()
 {
-	float day = EnergyConversions::convertToRawData(cumulative_day_value);
+	float day = EnergyConversions::convertToRawData(cumulative_day_value,
+		is_electricity_view ? EnergyConversions::DEFAULT_ENERGY : EnergyConversions::OTHER_ENERGY);
 	float current = EnergyConversions::convertToRawData(current_value,
-		is_electricity_view ? EnergyConversions::ELECTRICITY_CURRENT : EnergyConversions::DEFAULT_ENERGY);
-	float month = EnergyConversions::convertToRawData(cumulative_month_value);
-	float year = EnergyConversions::convertToRawData(cumulative_year_value);
-	float average = EnergyConversions::convertToRawData(daily_av_value);
+		is_electricity_view ? EnergyConversions::ELECTRICITY_CURRENT : EnergyConversions::OTHER_ENERGY);
+	float month = EnergyConversions::convertToRawData(cumulative_month_value,
+		is_electricity_view ? EnergyConversions::DEFAULT_ENERGY : EnergyConversions::OTHER_ENERGY);
+	float year = EnergyConversions::convertToRawData(cumulative_year_value,
+		is_electricity_view ? EnergyConversions::DEFAULT_ENERGY : EnergyConversions::OTHER_ENERGY);
+	float average = EnergyConversions::convertToRawData(daily_av_value,
+		is_electricity_view ? EnergyConversions::DEFAULT_ENERGY : EnergyConversions::OTHER_ENERGY);
 	QString str = unit_measure;
 	QString str_med_inst = unit_measure_med_inst;
 
 	float factor = is_production ? prod_factor : cons_factor;
+
+	// The number of decimals to show depends on the visualization mode
+	int dec = is_electricity_view ? 3 : 0;
+
 	if (EnergyInterface::isCurrencyView())
 	{
 		day = EnergyConversions::convertToMoney(day, factor);
@@ -799,10 +820,8 @@ void EnergyView::updateBanners()
 		average = EnergyConversions::convertToMoney(average, factor);
 		str = currency_symbol;
 		str_med_inst = currency_symbol+"/h";
+		dec = 3;
 	}
-
-	// The number of decimals to show depends on the visualization mode
-	int dec = EnergyInterface::isCurrencyView() ? n_decimal : 3;
 
 	cumulative_day_banner->setInternalText(QString("%1 %2")
 		.arg(loc.toString(day, 'f', dec)).arg(str));

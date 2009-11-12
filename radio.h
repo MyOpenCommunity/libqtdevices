@@ -60,6 +60,10 @@ public:
 	 * \brief Sets amb. description
 	 */
 	void setAmbDescr(const QString &);
+	/*!
+	 * \brief Gets the station number of the syntonized station
+	 */
+	uchar getStaz();
 
 signals:
 	/*!
@@ -162,10 +166,6 @@ private:
 	QLabel *rdsLabel, *radioName, *progrText, *ambDescr;
 	QLCDNumber *freq;
 
-	/*!
-	 * \brief Gets the station number of the syntonized station
-	 */
-	uchar getStaz();
 	/*!
 	 * \brief Retrieves if the selected search method is automatic or manual
 	 */

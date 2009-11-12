@@ -17,7 +17,7 @@ then
   export QTDIR=$QTDIR
   export QMAKESPEC=$QMAKESPEC
   export PATH=$PATH:$CROSS_LIB1
-  $QTDIR/bin/qmake
+  $QTDIR/bin/qmake CONFIG+=release
   #make clean
   make || exit 1
   cp BTouch BTouch_no_strip

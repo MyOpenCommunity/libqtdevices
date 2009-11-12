@@ -68,6 +68,9 @@ void myMessageOutput(QtMsgType type, const char *msg)
 		if (VERBOSITY_LEVEL > 0)
 			fprintf(StdLog, "<BTo> WARNING %s\n", msg);
 		break;
+	case QtCriticalMsg:
+		fprintf(stderr, "<BTo> Critical: %s\n", msg);
+		break;
 	case QtFatalMsg:
 	default:
 		fprintf(stderr, "<BTo> FATAL %s\n", msg);

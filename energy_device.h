@@ -28,6 +28,7 @@ namespace EnergyConversions
 	{
 		DEFAULT_ENERGY,            // default conversion, divide number by 10
 		ELECTRICITY_CURRENT,       // specific conversion for current electricity
+		OTHER_ENERGY,              // conversion for other current energy value
 	};
 
 	float convertToRawData(int bt_bus_data, EnergyTypology type = DEFAULT_ENERGY);

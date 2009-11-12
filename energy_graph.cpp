@@ -70,7 +70,7 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		QFontMetrics fm = p.fontMetrics();
 
 		// We use the max value as to calculate the shift on the x axis
-		QString val = loc.toString(max_value + 0.04999, 'f', 1);
+		QString val = loc.toString(max_value + 0.00499, 'f', 2);
 
 		int axis_left = left + fm.width(val) + SPACING * 2;
 		int axis_top = top + height - fm.ascent() - SPACING - AXIS_PEN_WIDTH;
@@ -102,8 +102,8 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		{
 			if (i == 0 || i == 2)
 			{
-				int value = i == 0 ? max_value : max_value / 2;
-				QString text = loc.toString(value + 0.04999, 'f', 1);
+				float value = i == 0 ? max_value : max_value / 2;
+				QString text = loc.toString(value + 0.00499, 'f', 2);
 				p.drawText(left, y_max_value + quarter*i + fm.ascent() / 2, text);
 			}
 			p.drawLine(axis_left, y_max_value + quarter*i, axis_left - MARGIN, y_max_value + quarter*i);

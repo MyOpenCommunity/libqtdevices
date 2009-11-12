@@ -145,7 +145,7 @@ void EnergyDevice::requestCumulativeYearGraph() const
 {
 	QDate curr = QDate::currentDate();
 	for (int i = 0; i < 12; ++i)
-		requestCumulativeMonth(curr.addMonths(i * -1), true); // we compress the request of the graph data
+		requestCumulativeMonth(curr.addMonths(i * -1), false); // we compress the request of the graph data
 }
 
 void EnergyDevice::manageFrame(OpenMsg &msg)
@@ -398,6 +398,9 @@ float EnergyConversions::convertToRawData(int bt_bus_data, EnergyConversions::En
 		break;
 	case ELECTRICITY_CURRENT:
 		factor = 1000.;
+		break;
+	case OTHER_ENERGY:
+		factor = 1.;
 		break;
 	}
 	return bt_bus_data / factor;

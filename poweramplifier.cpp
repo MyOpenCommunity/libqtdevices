@@ -146,7 +146,7 @@ void PowerAmplifierPreset::fillPresetDesc(const QMap<int, QString>& preset_list)
 	preset_desc.append(tr("Full Treble"));
 
 	for (int i = preset_desc.size(); i < num_preset; ++i)
-		preset_desc.append(QString("%1 %2").arg(tr("Preset")).arg(i + 1));
+		preset_desc.append(QString("%1 %2").arg(tr("User")).arg(i + 1 - 10));
 
 	QMapIterator<int, QString> it(preset_list);
 	while (it.hasNext())

@@ -260,6 +260,8 @@ scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
 	int condition_type = getTextChild(config_node, "value").toInt();
 	qDebug("#### Condition type = %d", condition_type);
 	QString icon;
+	QString w = getTextChild(config_node, "where");
+	bool external = false;
 	switch (condition_type)
 	{
 	case 1:
@@ -270,10 +272,12 @@ scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
 		dc = new device_condition_dimming(this, &trigger);
 		icon = bt_global::skin->getImage("dimmer");
 		break;
-	case 3:
 	case 7:
+		external = true;
+		w += "00";
+	case 3:
 	case 8:
-		dc = new device_condition_temp(this, &trigger);
+		dc = new device_condition_temp(this, &trigger, external);
 		condition_up->setAutoRepeat(true);
 		condition_down->setAutoRepeat(true);
 		icon = bt_global::skin->getImage("probe");
@@ -296,7 +300,6 @@ scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
 	}
 	area1_ptr->setPixmap(*bt_global::icons_cache.getIcon(icon));
 
-	QString w = getTextChild(config_node, "where");
 	if (dc)
 	{
 		dc->setGeometry(40,140,160,50);
@@ -1542,7 +1545,7 @@ void device_condition_volume::reset()
 /*****************************************************************
 ** Actual temperature device condition
 ****************************************************************/
-device_condition_temp::device_condition_temp(QWidget *parent, QString *c)
+device_condition_temp::device_condition_temp(QWidget *parent, QString *c, bool external)
 {
 	// Temp condition is expressed in bticino format
 	int temp_condition = c->toInt();
@@ -1578,7 +1581,7 @@ device_condition_temp::device_condition_temp(QWidget *parent, QString *c)
 	set_current_value(device_condition::get_condition_value());
 
 	Draw();
-	dev = new temperature_probe_notcontrolled(QString(""), false);
+	dev = new temperature_probe_notcontrolled(QString(""), external);
 }
 
 int device_condition_temp::get_min()

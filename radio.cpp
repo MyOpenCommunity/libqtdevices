@@ -193,7 +193,10 @@ void radio::draw()
 
 	progrText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	progrText->setFont(bt_global::font->get(FontManager::TEXT));
-	progrText->setText(QString::number((int)stazione)+":");
+	if (stazione)
+		progrText->setText(QString::number((int)stazione)+":");
+	else
+		progrText->setText("--:");
 }
 
 void radio::setName(const QString & s)
