@@ -14,7 +14,6 @@
 #include "main.h" //bt_global::config
 #include "bann1_button.h"
 #include "content_widget.h"
-#include "navigation_bar.h"
 #include "skinmanager.h"
 
 #include <QVariant>
@@ -23,7 +22,7 @@
 
 PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : BannerPage(parent)
 {
-	buildPage(new ContentWidget, new NavigationBar);
+	buildPage();
 
 	conf_root = conf;
 

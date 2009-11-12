@@ -43,7 +43,7 @@ public:
 SettingsPage::SettingsPage(QWidget *parent)
 	: BannerPage(parent)
 {
-	buildPage(new ContentWidget, new NavigationBar);
+	buildPage();
 }
 
 void SettingsPage::inizializza()

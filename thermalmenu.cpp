@@ -15,7 +15,6 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "plantmenu.h"
 #include "xml_functions.h" // getChildren, getTextChild
-#include "navigation_bar.h"
 #include "content_widget.h" // content_widget
 #include "skinmanager.h"
 
@@ -93,7 +92,7 @@ void ThermalMenu::showPage()
 
 ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 {
-	buildPage(new ContentWidget, new NavigationBar);
+	buildPage();
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		QString addr = getTextChild(item, "where");
