@@ -17,7 +17,6 @@
 #include "main.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bannercontent.h"
-#include "navigation_bar.h"
 
 #include <QDebug>
 
@@ -38,7 +37,7 @@ static Page *getStopNgoPage(Page *back, bannPuls* bnr, StopngoItem* itm)
 SupervisionMenu::SupervisionMenu(const QDomNode &config_node)
 {
 	stopngoSubmenu = NULL;
-	buildPage(new BannerContent, new NavigationBar);
+	buildPage();
 	loadItems(config_node);
 }
 
@@ -144,7 +143,7 @@ void SupervisionMenu::showPage()
 
 StopNGoMenu::StopNGoMenu(QList<StopngoItem*> stopngoList)
 {
-	buildPage(new BannerContent, new NavigationBar);
+	buildPage();
 
 	for (int i = 0; i < stopngoList.size(); ++i)
 	{
