@@ -46,6 +46,9 @@ void BannSinglePuls::initBanner(const QString &right, const QString &center, con
 {
 	loadIcons(right, center);
 	text->setText(banner_text);
+	// always set a text on the label, otherwise the sizeHint() height changes
+	if (banner_text.isEmpty())
+		text->setText(" ");
 }
 
 void BannSinglePuls::loadIcons(const QString &right, const QString &center)
