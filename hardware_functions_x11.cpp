@@ -5,6 +5,9 @@
 #include <QApplication>
 #include <QProcess>
 
+#include <stdio.h> // sprintf
+
+
 static bool buzzer_enabled = false;
 static bool backlight = false;
 static unsigned char contrast = 0;
