@@ -65,6 +65,7 @@ public:
 
 	Page *getPreviousPage();
 	bool screenSaverRunning();
+	void showScreensaverIfNeeded();
 
 public slots:
 	void startCalib();

@@ -416,6 +416,16 @@ void BtMain::currentPageChanged(Page *p)
 		prev_page = p;
 }
 
+// TODO: this method will be called when a page has modified the order of pages and
+// screensaver. We can do better if we use a more general way
+// TODO: this won't work with screensaver DEFORM. I'm leaving it here as a placeholder for a bugfix,
+// remove when a more general way to handle this case has been developed
+void BtMain::showScreensaverIfNeeded()
+{
+	if (screenSaverRunning())
+		screensaver->target()->showPage();
+}
+
 void BtMain::gesScrSav()
 {
 	unsigned long tiempo, tiempo_press;

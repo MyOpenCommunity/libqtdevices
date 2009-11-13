@@ -114,6 +114,8 @@ void Antintrusion::plantInserted()
 	if (previous_page)
 	{
 		previous_page->showPage();
+		// this is the only place where we call a showPage() and we need to restore the screensaver
+		bt_global::btmain->showScreensaverIfNeeded();
 		previous_page = 0;
 	}
 }
