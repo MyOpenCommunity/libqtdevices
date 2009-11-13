@@ -107,6 +107,9 @@ void Antintrusion::plantInserted()
 	if (previous_page)
 	{
 		previous_page->showPage();
+		// we need to put back the original page, since in some cases previous_page is an allarme*
+		// which are deleted by clearAlarms() above.
+		bt_global::btmain->setPreviousPage(previous_page);
 		previous_page = 0;
 	}
 }
