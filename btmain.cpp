@@ -402,6 +402,12 @@ void BtMain::setPreviousPage(Page *page)
 	prev_page = page;
 }
 
+void BtMain::showScreensaverIfNeeded()
+{
+	if (screenSaverRunning())
+		screensaver->target()->showPage();
+}
+
 void BtMain::gesScrSav()
 {
 	unsigned long tiempo, tiempo_press;

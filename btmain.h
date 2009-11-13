@@ -63,6 +63,7 @@ public:
 	void setPreviousPage(Page *page);
 	Page *getPreviousPage();
 	bool screenSaverRunning();
+	void showScreensaverIfNeeded();
 
 private slots:
 	void hom();
