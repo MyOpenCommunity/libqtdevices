@@ -20,6 +20,7 @@
 #include "transitionwidget.h"
 #include "frame_receiver.h"
 #include "main_window.h"
+#include "mainwidget.h"
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -69,7 +70,8 @@ BtMain::BtMain()
 	FrameReceiver::setClientMonitor(client_monitor);
 	banner::setClients(client_comandi, client_richieste);
 	Page::setClients(client_comandi, client_richieste);
-	main_window = new MainWindow(maxWidth(), maxHeight());
+	root_widget = new RootWidget(maxWidth(), maxHeight());
+	main_window = root_widget->centralLayout();
 	main_window->blockTransitions(true); // no transitions until homepage is showed
 	connect(main_window, SIGNAL(currentPageChanged(Page*)), SLOT(currentPageChanged(Page*)));
 	Page::setMainWindow(main_window);

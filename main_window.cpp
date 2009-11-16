@@ -21,15 +21,13 @@ namespace
 }
 
 
-MainWindow::MainWindow(unsigned int width, unsigned int height) : QStackedWidget(0) // no parent
+MainWindow::MainWindow(QWidget *parent) : QStackedWidget(parent) // no parent
 {
 	transition_widget = 0;
 	block_transitions = false;
 	prev_page = 0;
 	dest_page = 0;
 
-	showFullScreen();
-	setFixedSize(width, height);
 	// TODO: this ugly workaround is needed because the QStackedWidget in some ways
 	// invalidate the first widget inserted. FIX it asap!
 	addWidget(new QWidget);

@@ -124,6 +124,7 @@ HEADERS += actuators.h \
            listbrowser.h \
            loads.h \
            main.h \
+           mainwidget.h \
            main_window.h \
            mediaplayer.h \
            multimedia_source.h \
@@ -233,6 +234,7 @@ SOURCES += actuators.cpp \
            listbrowser.cpp \
            loads.cpp \
            main.cpp \
+           mainwidget.cpp \
            main_window.cpp \
            mediaplayer.cpp \
            multimedia_source.cpp \

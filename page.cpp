@@ -6,6 +6,7 @@
 #include "main_window.h"
 #include "navigation_bar.h"
 #include "content_widget.h"
+#include "hardware_functions.h" // hardwareType()
 
 #include <QVBoxLayout>
 #include <QMetaObject> // className
@@ -128,6 +129,11 @@ void Page::forceClosed()
 void Page::startTransition(const QPixmap &prev_image)
 {
 	main_window->startTransition(prev_image, this);
+}
+
+Page::PageType Page::pageType()
+{
+	return NONE;
 }
 
 

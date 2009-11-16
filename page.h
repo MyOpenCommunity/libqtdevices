@@ -47,6 +47,14 @@ class Page : public QWidget
 friend class BtMain;
 Q_OBJECT
 public:
+	// Indicates subsystem pagetype. For now it is used in touchx top_nav_bar
+	// TODO: is this the same as pagSecLiv in main.h?
+	enum PageType
+	{
+		NONE = 0,
+		HOMEPAGE,
+	};
+
 	// the type returned by page_content
 	// see the comment about page_content above
 	typedef QWidget ContentType;
@@ -57,6 +65,9 @@ public:
 	virtual void inizializza();
 	// TODO: needed for sound diffusion in AlarmClock. To be removed
 	virtual void forceDraw() { }
+	// Defaults to NONE, reimplement to change page type.
+	// TODO: This should really be pure virtual
+	virtual PageType pageType();
 
 	static void setClients(Client *command, Client *request);
 

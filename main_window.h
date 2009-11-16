@@ -11,7 +11,7 @@ class MainWindow : public QStackedWidget
 {
 Q_OBJECT
 public:
-	MainWindow(unsigned int width, unsigned int height);
+	MainWindow(QWidget *parent);
 
 	// Install a widget for the transition. The transition widget must have the public functions:
 	//
