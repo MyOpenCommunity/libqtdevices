@@ -5,6 +5,9 @@
 #include <QDebug>
 
 
+// TODO: add an abstract base class for the BTouch and TouchX content
+// widgets and remove this #ifdef
+
 #ifdef LAYOUT_BTOUCH
 
 ContentWidget::ContentWidget(QWidget *parent) : QWidget(parent)
