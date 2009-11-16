@@ -5,6 +5,8 @@
 #include <QDebug>
 
 
+#ifdef LAYOUT_BTOUCH
+
 ContentWidget::ContentWidget(QWidget *parent) : QWidget(parent)
 {
 	current_index = 0;
@@ -149,3 +151,4 @@ int ContentWidget::calculateNextIndex(bool up_to_down)
 	return -1;
 }
 
+#endif // LAYOUT_BTOUCH

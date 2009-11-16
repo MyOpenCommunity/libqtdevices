@@ -203,6 +203,7 @@ SOURCES += actuators.cpp \
            changedatetime.cpp \
            cleanscreen.cpp \
            content_widget.cpp \
+           content_widget_touchx.cpp \
            contrast.cpp \
            datetime.cpp \
            definitions.cpp \
