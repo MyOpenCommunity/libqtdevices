@@ -3,6 +3,9 @@
 
 TEMPLATE = app
 
+# DEFINES += LAYOUT_TOUCHX
+DEFINES += LAYOUT_BTOUCH
+
 # test architecture depending on the compiler used.
 # in this case we are searching for the substring 'arm'
 TEST_ARCH = $$find(QMAKE_CXX,arm)
