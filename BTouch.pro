@@ -42,7 +42,7 @@ CONFIG(release,debug|release) {
 DEFINES += QT_QWS_EBX BTWEB
 
 LIBS += -lssl
-INCLUDEPATH+= . QWSMOUSE ../bt_stackopen/common_files ../bt_stackopen ../bt_stackopen/common_develer/lib $(ARMLINUX)
+INCLUDEPATH+= . QWSMOUSE ../stackopen/common_files ../stackopen ../stackopen/common_develer/lib $(ARMLINUX)
 QT += network xml
 
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
