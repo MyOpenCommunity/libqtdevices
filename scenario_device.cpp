@@ -11,6 +11,14 @@ enum
 	UNLOCK = 44,
 };
 
+// PPTSce commands
+#define CMD_PPT_SCE_ON "11#0"
+#define CMD_PPT_SCE_OFF "12"
+#define CMD_PPT_SCE_INC "13#0#1"
+#define CMD_PPT_SCE_DEC "14#0#1"
+#define CMD_PPT_SCE_STOP "15"
+
+
 ScenarioDevice::ScenarioDevice(QString where) :
 	device(QString("0"), where)
 {
@@ -88,3 +96,34 @@ void ScenarioDevice::manageFrame(OpenMsg &msg)
 	sl[status_index] = v;
 	emit status_changed(sl);
 }
+
+
+PPTSceDevice::PPTSceDevice(QString address) : device(QString("25"), address)
+{
+}
+
+void PPTSceDevice::turnOn() const
+{
+	sendCommand(CMD_PPT_SCE_ON);
+}
+
+void PPTSceDevice::turnOff() const
+{
+	sendCommand(CMD_PPT_SCE_OFF);
+}
+
+void PPTSceDevice::increase() const
+{
+	sendCommand(CMD_PPT_SCE_INC);
+}
+
+void PPTSceDevice::decrease() const
+{
+	sendCommand(CMD_PPT_SCE_DEC);
+}
+
+void PPTSceDevice::stop() const
+{
+	sendCommand(CMD_PPT_SCE_STOP);
+}
+

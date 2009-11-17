@@ -49,20 +49,4 @@ public:
 	virtual void manageFrame(OpenMsg &msg);
 };
 
-
-// TODO: move in a separate file! (dev_scenario?)
-class PPTSceDevice : public device
-{
-Q_OBJECT
-public:
-	PPTSceDevice(QString address);
-	void increase() const;
-	void decrease() const;
-	void stop() const;
-
-public slots:
-	void turnOn() const;
-	void turnOff() const;
-};
-
 #endif // DEV_AUTOMATION_H

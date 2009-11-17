@@ -27,4 +27,19 @@ public:
 	virtual void manageFrame(OpenMsg &msg);
 };
 
+
+class PPTSceDevice : public device
+{
+Q_OBJECT
+public:
+	PPTSceDevice(QString address);
+	void increase() const;
+	void decrease() const;
+	void stop() const;
+
+public slots:
+	void turnOn() const;
+	void turnOff() const;
+};
+
 #endif // SCENARIO_DEVICE_H
