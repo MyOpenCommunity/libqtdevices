@@ -14,6 +14,7 @@
 #include "temperatureviewer.h"
 #include "btbutton.h"
 #include "xml_functions.h" // getChildren, getTextChild
+#include "hardware_functions.h"
 
 #include <QDomNode>
 
@@ -27,6 +28,9 @@ homePage::homePage(const QDomNode &config_node) : PageContainer(config_node)
 // Load only the item that is not a section page (which is loaded by PageContainer)
 void homePage::loadItems(const QDomNode &config_node)
 {
+	if (hardwareType() == TOUCH_X)
+		return;
+
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
