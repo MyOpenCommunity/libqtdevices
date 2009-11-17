@@ -14,6 +14,8 @@ ContentWidget::ContentWidget(QWidget *parent) : QWidget(parent)
 	QGridLayout *l = new QGridLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
+	l->setColumnStretch(0, 1);
+	l->setColumnStretch(1, 1);
 	need_update = true;
 }
 
@@ -63,6 +65,8 @@ void ContentWidget::drawContent()
 	if (!need_update)
 		return;
 
+	QGridLayout *l = qobject_cast<QGridLayout*>(layout());
+
 	if (pages.size() == 0)
 	{
 		int total_height[2] = {0, 0};
@@ -72,9 +76,11 @@ void ContentWidget::drawContent()
 
 		for (int i = 0; i < banner_list.size(); i += 2)
 		{
-			total_height[0] += banner_list.at(i)->sizeHint().height();
-			if (i + 1 < banner_list.size())
-				total_height[1] += banner_list.at(i + 1)->sizeHint().height();
+			for (int j = 0; j < 2 && i + j < banner_list.size(); ++j)
+			{
+				total_height[j] += banner_list.at(i + j)->sizeHint().height();
+				l->addWidget(banner_list.at(i + j), i / 2, j);
+			}
 			if (total_height[0] > area_height || total_height[1] > area_height)
 			{
 				total_height[0] = total_height[1] = 0;
@@ -84,30 +90,15 @@ void ContentWidget::drawContent()
 		}
 
 		pages.append(banner_list.size());
+		l->setRowStretch(l->rowCount(), 1);
 	}
 
 	emit displayScrollButtons(pageCount() > 1);
 
 	need_update = false;
 
-	// We want a circular list of banner, so we can't use a layout and hide/show
-	// the banner to display or when you click the up button the order is wrong.
-	// So we remove all the child from the layout, hide them and re-add to the
-	// layout only the banner to show.
-	QLayoutItem *child;
-	while ((child = layout()->takeAt(0)) != 0)
-		if (QWidget *w = child->widget())
-			w->hide();
-
-	QGridLayout *l = qobject_cast<QGridLayout*>(layout());
-
-	for (int i = 0; i < pages[current_page + 1] - pages[current_page]; ++i)
-	{
-		banner *b = banner_list.at(i + pages[current_page]);
-		b->show();
-		l->addWidget(b, i / 2, i % 2);
-	}
-	l->setRowStretch(l->rowCount(), 1);
+	for (int i = 0; i < banner_list.size(); ++i)
+		banner_list[i]->setVisible(i >= pages[current_page] && i < pages[current_page + 1]);
 }
 
 void ContentWidget::pgUp()
