@@ -16,6 +16,10 @@ NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up
 	{
 		main_layout = new QVBoxLayout(this);
 		main_layout->addStretch(1);
+		// TODO: Btouch code expects the forward button to be in the navigation
+		// bar; in TouchX the button is mostly in the page (except for a delete
+		// button in a couple of pages)
+		forward_button = createButton(forward_icon, SIGNAL(forwardClick()));
 		up_button = createButton(up_icon, SIGNAL(upClick()));
 		down_button = createButton(down_icon, SIGNAL(downClick()));
 		back_button = createButton(back_icon, SIGNAL(backClick()));
