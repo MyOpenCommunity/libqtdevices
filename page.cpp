@@ -9,10 +9,12 @@
 #include "hardware_functions.h" // hardwareType()
 
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QMetaObject> // className
 #include <QTime>
 #include <QDir>
 #include <QApplication>
+#include <QLabel>
 
 
 static const char *IMG_BACK = IMG_PATH "arrlf.png";
@@ -41,14 +43,40 @@ Page::Page(QWidget *parent) : QWidget(parent)
 
 void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget)
 {
-	QBoxLayout *l = new QVBoxLayout(this);
+	QBoxLayout *l;
+	if (hardwareType() == TOUCH_X)
+		l = new QHBoxLayout(this);
+	else
+		l = new QVBoxLayout(this);
+
 	// the top_widget (if present) is a widget that must be at the top of the page,
 	// limiting the height (so even the navigation) of the ContentWidget
 	if (top_widget)
 		l->addWidget(top_widget);
 
-	l->addWidget(content, 1);
-	l->addWidget(nav_bar);
+	if (hardwareType() == TOUCH_X)
+	{
+		// TODO add an API to set the page title and to set the page count
+		//      and current page number
+		l->addWidget(nav_bar);
+
+		QLabel *pageTitle = new QLabel("Page title");
+		pageTitle->setStyleSheet("QWidget { background-color: yellow; }");
+		pageTitle->setMinimumHeight(80);
+
+		QVBoxLayout *pl = new QVBoxLayout;
+		pl->setContentsMargins(0, 0, 0, 0);
+		pl->setSpacing(0);
+		pl->addWidget(pageTitle);
+		pl->addWidget(content, 1);
+
+		l->addLayout(pl);
+	}
+	else
+	{
+		l->addWidget(content, 1);
+		l->addWidget(nav_bar);
+	}
 	l->setContentsMargins(0, 5, 0, 10);
 	l->setSpacing(0);
 
