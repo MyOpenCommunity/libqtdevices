@@ -1,21 +1,40 @@
 #include "navigation_bar.h"
 #include "btbutton.h"
 #include "skinmanager.h" // bt_global::skin
+#include "hardware_functions.h"
 
 #include <QFileInfo>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 static const int buttons_dim = 60;
 
 
 NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up_icon, QString back_icon, QWidget *parent)
 {
-	back_button = createButton(back_icon, SIGNAL(backClick()), 0);
-	down_button = createButton(down_icon, SIGNAL(downClick()), 1);
-	up_button = createButton(up_icon, SIGNAL(upClick()), 2);
-	forward_button = createButton(forward_icon, SIGNAL(forwardClick()), 3);
+	if (hardwareType() == TOUCH_X)
+	{
+		main_layout = new QVBoxLayout(this);
+		main_layout->addStretch(1);
+		up_button = createButton(up_icon, SIGNAL(upClick()));
+		down_button = createButton(down_icon, SIGNAL(downClick()));
+		back_button = createButton(back_icon, SIGNAL(backClick()));
+	}
+	else
+	{
+		main_layout = new QHBoxLayout(this);
+		back_button = createButton(back_icon, SIGNAL(backClick()));
+		down_button = createButton(down_icon, SIGNAL(downClick()));
+		up_button = createButton(up_icon, SIGNAL(upClick()));
+		forward_button = createButton(forward_icon, SIGNAL(forwardClick()));
+		main_layout->addStretch(1);
+	}
+
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
 }
 
-BtButton *NavigationBar::createButton(QString icon, const char *signal, int pos)
+BtButton *NavigationBar::createButton(QString icon, const char *signal)
 {
 	if (!icon.isNull())
 	{
@@ -25,7 +44,7 @@ BtButton *NavigationBar::createButton(QString icon, const char *signal, int pos)
 			b->setImage(icon); // for retrocompatibility
 		else
 			b->setImage(bt_global::skin->getImage(icon));
-		b->setGeometry(buttons_dim * pos, 0, buttons_dim, buttons_dim);
+		main_layout->addWidget(b);
 		return b;
 	}
 	return 0;
@@ -33,7 +52,10 @@ BtButton *NavigationBar::createButton(QString icon, const char *signal, int pos)
 
 QSize NavigationBar::sizeHint() const
 {
-	return QSize(buttons_dim * 4, buttons_dim);
+	if (hardwareType() == TOUCH_X)
+		return QSize(75, 355);
+	else
+		return QSize(buttons_dim * 4, buttons_dim);
 }
 
 void NavigationBar::displayScrollButtons(bool display)

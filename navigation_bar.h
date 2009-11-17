@@ -4,6 +4,7 @@
 #include <QWidget>
 
 class BtButton;
+class QBoxLayout;
 
 
 class NavigationBar : public QWidget
@@ -31,8 +32,8 @@ protected:
 
 private:
 	BtButton *back_button, *up_button, *down_button;
-
-	BtButton *createButton(QString icon, const char *signal, int pos);
+	QBoxLayout *main_layout;
+	BtButton *createButton(QString icon, const char *signal);
 };
 
 
