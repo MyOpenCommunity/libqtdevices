@@ -63,3 +63,8 @@ void homePage::inizializza()
 	temp_viewer->inizializza();
 }
 
+Page::PageType homePage::pageType()
+{
+	return HOMEPAGE;
+}
+
