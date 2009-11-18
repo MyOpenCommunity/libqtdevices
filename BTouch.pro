@@ -3,8 +3,16 @@
 
 TEMPLATE = app
 
-# DEFINES += LAYOUT_TOUCHX
-DEFINES += LAYOUT_BTOUCH
+LAYOUT += btouch
+
+contains(LAYOUT, touchx) {
+	DEFINES += LAYOUT_TOUCHX
+	DEST_PREFIX = touchx
+} else {
+	DEFINES += LAYOUT_BTOUCH
+	DEST_PREFIX = .
+}
+DESTDIR = $$DEST_PREFIX
 
 # test architecture depending on the compiler used.
 # in this case we are searching for the substring 'arm'
@@ -14,15 +22,15 @@ isEmpty(TEST_ARCH) {
 	DEFINES += OPENSERVER_ADDR=\\\"btouch\\\"
 	DEFINES += MEDIASERVER_PATH=\\\"/video/mp3/bticino_test/\\\"
 	LIBS += -L../common_files/lib/x86 -lcommon
-	OBJECTS_DIR = obj/x86
-	MOC_DIR = moc/x86
+	OBJECTS_DIR = $$DEST_PREFIX/obj/x86
+	MOC_DIR = $$DEST_PREFIX/moc/x86
 	HARDWARE = x11
 	DEFINES += BT_HARDWARE_X11
 } else {
 	message(ARM architecture detected.)
 	LIBS += -L../common_files -lcommon
-	OBJECTS_DIR = obj/arm
-	MOC_DIR = moc/arm
+	OBJECTS_DIR = $$DEST_PREFIX/obj/arm
+	MOC_DIR = $$DEST_PREFIX/moc/arm
 	DEFINES += BT_EMBEDDED
 
 	HEADERS += QWSMOUSE/qmouse_qws.h \
@@ -33,7 +41,6 @@ isEmpty(TEST_ARCH) {
 	HARDWARE = btouch
 	DEFINES += BT_HARDWARE_BTOUCH
 }
-
 
 CONFIG += qt warn_on silent
 CONFIG -= debug_and_release
