@@ -39,6 +39,7 @@ enum DateFormat
 };
 
 QDomNode getPageNode(int id);
+QDomNode getPageNodeFromPageId(int pageid);
 
 // See getElement
 QDomElement getConfElement(QString path);

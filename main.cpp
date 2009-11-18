@@ -89,6 +89,14 @@ QDomNode getPageNode(int id)
 	return getChildWithId(n, QRegExp("page(\\d{1,2}|vct|special|menu\\d{1,2})"), id);
 }
 
+QDomNode getPageNodeFromPageId(int pageid)
+{
+	QDomElement gui = qdom_appconfig.documentElement().firstChildElement("gui");
+	QDomNode page = getChildWithId(gui, QRegExp("page"), "pageID", pageid);
+
+	return page;
+}
+
 static void loadGeneralConfig(QString xml_file, GeneralConfig &general_config)
 {
 	general_config.verbosity_level = VERBOSITY_LEVEL_DEFAULT;
