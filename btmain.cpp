@@ -203,6 +203,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		bt_global::display.current_screensaver = type;
 
 		QDomNode displaypages = getConfElement("displaypages");
+		QDomNode gui = getConfElement("gui");
 		if (!displaypages.isNull())
 		{
 			QDomNode pagemenu_home = getChildWithId(displaypages, QRegExp("pagemenu(\\d{1,2}|)"), 0);
@@ -222,8 +223,15 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			if (!orientation.isNull())
 				setOrientation(orientation);
 		}
+		else if (!gui.isNull())
+		{
+			// TODO read the id from the <homepage> node
+			QDomNode pagemenu_home = getPageNodeFromPageId(1);
+			Home = new homePage(pagemenu_home);
+			pagDefault = Home;
+		}
 		else
-			qFatal("displaypages node not found on xml config file!");
+			qFatal("neither displaypages nor gui nodes found on xml config file!");
 
 		// TODO: read the transition effect from configuration
 		main_window->installTransitionWidget(new BlendingTransition);
