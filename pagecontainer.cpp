@@ -5,6 +5,7 @@
 #include "hardware_functions.h" // rearmWDT
 #include "main.h" // IMG_PATH
 #include "navigation_bar.h"
+#include "skinmanager.h"
 
 #include <QDomNode>
 #include <QDebug>
@@ -49,6 +50,7 @@ void PageContainer::loadItems(const QDomNode &config_node)
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
+#ifdef LAYOUT_BTOUCH
 		int id = getTextChild(item, "id").toInt();
 		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
 		int x = getTextChild(item, "left").toInt();
@@ -57,6 +59,16 @@ void PageContainer::loadItems(const QDomNode &config_node)
 		// Within the pagemenu element, it can exists items that are not a page.
 		if (Page *p = getPage(id))
 			addPage(p, id, img1, x, y);
+#else
+		SkinContext cxt(getTextChild(item, "cid").toInt());
+		QString icon = bt_global::skin->getImage("link_icon");
+		int link_id = getTextChild(item, "id").toInt();
+
+		// TODO some ids are not links
+		int pageid = getTextChild(item, "lnk_pageID").toInt();
+		if (Page *p = getPage(pageid))
+			addPage(p, pageid, icon, 0, 0);
+#endif
 
 		if (wdtime.elapsed() > 1000)
 		{
