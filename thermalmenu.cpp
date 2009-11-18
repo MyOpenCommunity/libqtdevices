@@ -35,7 +35,7 @@ ThermalMenu::ThermalMenu(const QDomNode &config_node)
 
 void ThermalMenu::createPlantMenu(QDomNode config, BannSinglePuls *bann)
 {
-	Page *sm = new PlantMenu(NULL, config);
+	Page *sm = new PlantMenu(config);
 	bann->connectRightButton(sm);
 	connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
 	single_submenu = sm;

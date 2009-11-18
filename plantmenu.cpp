@@ -20,7 +20,7 @@
 #include <QRegExp>
 
 
-PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : BannerPage(parent)
+PlantMenu::PlantMenu(QDomNode conf) : BannerPage(0)
 {
 	buildPage();
 

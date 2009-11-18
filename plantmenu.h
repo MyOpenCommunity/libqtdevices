@@ -25,7 +25,7 @@ class PlantMenu : public BannerPage
 {
 Q_OBJECT
 public:
-	PlantMenu(QWidget *parent, QDomNode conf);
+	PlantMenu(QDomNode conf);
 	virtual void inizializza();
 
 private:
