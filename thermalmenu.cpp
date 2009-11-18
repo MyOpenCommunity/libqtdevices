@@ -21,6 +21,12 @@
 #include <QRegExp>
 #include <QDebug>
 
+enum
+{
+	PAGE_PLANT_MENU = 500,
+	PAGE_EXTERNAL_PROBES = 530,
+	PAGE_INTERNAL_PROBES = 540
+};
 
 ThermalMenu::ThermalMenu(const QDomNode &config_node)
 {
@@ -40,6 +46,8 @@ void ThermalMenu::createPlantMenu(QDomNode config, BannSinglePuls *bann)
 	connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
 	single_submenu = sm;
 }
+
+#ifdef LAYOUT_BTOUCH
 
 void ThermalMenu::loadBanners(const QDomNode &config_node)
 {
@@ -61,6 +69,43 @@ void ThermalMenu::loadBanners(const QDomNode &config_node)
 		createProbeMenu(node.toElement(), b, false);
 	}
 }
+
+#else
+
+void ThermalMenu::loadBanners(const QDomNode &config_node)
+{
+	foreach (const QDomNode &node, getChildren(config_node, "item"))
+	{
+		SkinContext context(getTextChild(node, "cid").toInt());
+		BannSinglePuls *bp = addMenuItem(node.toElement(), bt_global::skin->getImage("central_icon"));
+
+		int page_id = getTextChild(node, "lnk_pageID").toInt();
+		QDomNode page_node = getPageNodeFromPageId(page_id);
+		int id = getTextChild(page_node, "id").toInt();
+		Page *p;
+
+		switch (id)
+		{
+		case PAGE_PLANT_MENU:
+			p = new PlantMenu(page_node);
+			break;
+		case PAGE_EXTERNAL_PROBES:
+			p = new ProbesPage(page_node, true);
+			break;
+		case PAGE_INTERNAL_PROBES:
+			p = new ProbesPage(page_node, false);
+			break;
+		default:
+			qFatal("Unhandled id in ThermalMenu::loadBanners");
+		}
+		single_submenu = p;
+
+		bp->connectRightButton(p);
+		connect(bp, SIGNAL(pageClosed()), SLOT(showPage()));
+	}
+}
+
+#endif
 
 BannSinglePuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon)
 {
