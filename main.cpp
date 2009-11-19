@@ -97,6 +97,12 @@ QDomNode getPageNodeFromPageId(int pageid)
 	return page;
 }
 
+QDomNode getHomepageNode()
+{
+	// TODO read the id from the <homepage> node
+	return getPageNodeFromPageId(1);
+}
+
 static void loadGeneralConfig(QString xml_file, GeneralConfig &general_config)
 {
 	general_config.verbosity_level = VERBOSITY_LEVEL_DEFAULT;

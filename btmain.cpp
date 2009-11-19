@@ -224,7 +224,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		else if (!gui.isNull())
 		{
 			// TODO read the id from the <homepage> node
-			QDomNode pagemenu_home = getPageNodeFromPageId(1);
+			QDomNode pagemenu_home = getHomepageNode();
 			Home = new homePage(pagemenu_home);
 			pagDefault = Home;
 		}
