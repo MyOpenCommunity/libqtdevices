@@ -28,7 +28,7 @@ PageContainer::PageContainer(const QDomNode &config_node)
 
 void PageContainer::buildPage(IconContent *content, NavigationBar *nav_bar)
 {
-	Page::buildPage(content, nav_bar);
+	Page::buildPage(content, nav_bar, "", 35);
 
 	// TODO duplicated in BannerPage
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
