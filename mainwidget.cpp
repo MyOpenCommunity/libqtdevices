@@ -90,17 +90,22 @@ MainWidget::MainWidget()
 		main_layout->setSpacing(0);
 		main_layout->setContentsMargins(0, 0, 0, 0);
 		qDebug() << "adding top and right widgets";
+
 		central_widget = new MainWindow(this);
 		main_layout->addWidget(central_widget, 1, 0, 1, 1);
-		header_widget = new HeaderWidget;
-		main_layout->addWidget(header_widget, 0, 0, 1, 2);
 		connect(central_widget, SIGNAL(currentChanged(int)), SLOT(centralWidgetChanged(int)));
+		Page::setMainWindow(central_widget);
+
+		header_widget = new HeaderWidget(getPageNodeFromPageId(info_bar_pageid));
+		main_layout->addWidget(header_widget, 0, 0, 1, 2);
+
 		favorites_widget = new FavoritesWidget;
 		main_layout->addWidget(favorites_widget, 1, 1, 1, 1);
 	}
 	else
 	{
 		central_widget = new MainWindow(this);
+		Page::setMainWindow(central_widget);
 		central_widget->setFixedSize(maxWidth(), maxHeight());
 	}
 }

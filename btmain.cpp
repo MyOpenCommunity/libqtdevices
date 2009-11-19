@@ -75,7 +75,6 @@ BtMain::BtMain()
 	main_window = root_widget->centralLayout();
 	main_window->blockTransitions(true); // no transitions until homepage is showed
 	connect(main_window, SIGNAL(currentPageChanged(Page*)), SLOT(currentPageChanged(Page*)));
-	Page::setMainWindow(main_window);
 	device::setClients(client_comandi, client_richieste);
 
 	connect(client_monitor,SIGNAL(monitorSu()), SLOT(monitorReady()));
