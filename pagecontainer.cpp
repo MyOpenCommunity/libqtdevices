@@ -42,8 +42,12 @@ void PageContainer::buildPage(IconContent *content, NavigationBar *nav_bar)
 void PageContainer::loadItems(const QDomNode &config_node)
 {
 	if (hardwareType() == TOUCH_X)
-		// TODO hide back button in homepage
-		buildPage(new IconContent, new NavigationBar);
+	{
+		// only show the back icon if there is a lnk_itemID to a banner
+		QString back_icon = getTextChild(config_node, "lnk_itemID").isEmpty() ? "" : "back";
+		NavigationBar *nav_bar = new NavigationBar("", "scroll_down", "scroll_up", back_icon);
+		buildPage(new IconContent, nav_bar);
+	}
 
 	QTime wdtime;
 	wdtime.start(); // Start counting for wd refresh
