@@ -31,7 +31,7 @@ enum
 ThermalMenu::ThermalMenu(const QDomNode &config_node)
 {
 	bann_number = 0;
-	buildPage();
+	buildPage(getTextChild(config_node, "descr"));
 	loadBanners(config_node);
 
 	// check if plant menus are created?
