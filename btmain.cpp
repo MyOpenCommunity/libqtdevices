@@ -59,6 +59,7 @@ BtMain::BtMain()
 
 	QString font_file = QString(MY_FILE_CFG_FONT).arg(bt_global::config[LANGUAGE]);
 	bt_global::font = new FontManager(font_file);
+	bt_global::skin = new SkinManager(SKIN_FILE);
 
 	client_monitor = new Client(Client::MONITOR);
 	client_comandi = new Client(Client::COMANDI);
@@ -98,8 +99,6 @@ BtMain::BtMain()
 
 	tasti = NULL;
 	pwdOn = false;
-
-	bt_global::skin = new SkinManager(SKIN_FILE);
 
 	version = new Version;
 	version->setModel(bt_global::config[MODEL]);
