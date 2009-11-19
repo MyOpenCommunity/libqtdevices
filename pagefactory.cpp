@@ -108,7 +108,7 @@ Page *getPage(int page_id)
 	}
 	case ENERGY_MANAGEMENT:
 	{
-		PageContainer *p = new PageContainer(page_node);
+		SectionPageContainer *p = new SectionPageContainer(page_node);
 		p->addBackButton();
 		page = p;
 		break;

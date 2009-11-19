@@ -27,7 +27,7 @@ class QDomNode;
   \date lug 2005
 */
 
-class homePage : public PageContainer
+class homePage : public SectionPageContainer
 {
 Q_OBJECT
 public:
