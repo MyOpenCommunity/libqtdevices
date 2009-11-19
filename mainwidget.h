@@ -35,19 +35,19 @@ protected:
 	virtual QSize minimumSizeHint() const;
 };
 
+
 class HeaderWidget : public QWidget
 {
 Q_OBJECT
 public:
-	HeaderWidget();
+	HeaderWidget(const QDomNode &config_node);
 	void centralPageChanged(Page::PageType);
 
 private:
 	QVBoxLayout *main_layout;
 	QLabel *header_bar;
 	QLabel *top_nav_bar;
-	QLabel *info_bar;
-	QLabel *home_bar;
+	QWidget *home_bar;
 };
 
 class MainWidget : public QWidget

@@ -89,7 +89,7 @@ void HomeBar::loadItems(const QDomNode &config_node)
 }
 
 
-HeaderWidget::HeaderWidget()
+HeaderWidget::HeaderWidget(const QDomNode &config_node)
 {
 	setStyleSheet("QWidget {background-color:gray; }");
 	main_layout = new QVBoxLayout(this);
@@ -107,15 +107,8 @@ HeaderWidget::HeaderWidget()
 	top_nav_bar->hide();
 	main_layout->addWidget(top_nav_bar);
 
-	home_bar = new QLabel;
-	home_bar->setFixedSize(800, 50);
-	home_bar->setText("Home bar");
+	home_bar = new HomeBar(config_node);
 	main_layout->addWidget(home_bar);
-
-	info_bar = new QLabel;
-	info_bar->setFixedSize(800, 55);
-	info_bar->setText("Info bar");
-	main_layout->addWidget(info_bar);
 }
 
 void HeaderWidget::centralPageChanged(Page::PageType type)
@@ -127,13 +120,11 @@ void HeaderWidget::centralPageChanged(Page::PageType type)
 		top_nav_bar->hide();
 		header_bar->show();
 		home_bar->show();
-		info_bar->show();
 		break;
 	default:
 		top_nav_bar->show();
 		header_bar->show();
 		home_bar->hide();
-		info_bar->hide();
 		break;
 	}
 }
@@ -166,6 +157,11 @@ MainWidget::MainWidget()
 
 	if (hardwareType() == TOUCH_X)
 	{
+		QDomNode pagemenu_home = getHomepageNode();
+		int favourites_pageid = getTextChild(pagemenu_home, "h_lnk_pageID").toInt();
+		QDomNode favourites_node = getPageNodeFromPageId(favourites_pageid);
+		int info_bar_pageid = getTextChild(favourites_node, "h_lnk_pageID").toInt();
+
 		QGridLayout *main_layout = new QGridLayout(this);
 		main_layout->setSpacing(0);
 		main_layout->setContentsMargins(0, 0, 0, 0);
