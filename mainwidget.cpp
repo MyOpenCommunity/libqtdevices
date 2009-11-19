@@ -109,6 +109,9 @@ HeaderWidget::HeaderWidget(const QDomNode &config_node)
 
 	home_bar = new HomeBar(config_node);
 	main_layout->addWidget(home_bar);
+
+	connect(home_bar, SIGNAL(showSectionPage(int)), SIGNAL(showSectionPage(int)));
+	connect(home_bar, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
 }
 
 void HeaderWidget::centralPageChanged(Page::PageType type)
@@ -177,6 +180,9 @@ MainWidget::MainWidget()
 
 		favorites_widget = new FavoritesWidget;
 		main_layout->addWidget(favorites_widget, 1, 1, 1, 1);
+
+		connect(header_widget, SIGNAL(showSectionPage(int)), SIGNAL(showSectionPage(int)));
+		connect(header_widget, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
 	}
 	else
 	{
@@ -195,7 +201,6 @@ void MainWidget::centralWidgetChanged(int index)
 		header_widget->centralPageChanged(p->pageType());
 	}
 }
-
 
 MainWindow *MainWidget::centralLayout()
 {
@@ -220,4 +225,9 @@ RootWidget::RootWidget(int width, int height)
 MainWindow *RootWidget::centralLayout()
 {
 	return main->centralLayout();
+}
+
+MainWidget *RootWidget::mainWidget()
+{
+	return main;
 }

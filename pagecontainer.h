@@ -48,7 +48,7 @@ private:
 	QButtonGroup buttons_group;
 	QHash<int, Page*> page_list;
 
-private slots:
+protected slots:
 	void clicked(int id);
 };
 

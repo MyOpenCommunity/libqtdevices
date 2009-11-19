@@ -226,6 +226,9 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			// TODO read the id from the <homepage> node
 			QDomNode pagemenu_home = getHomepageNode();
 			Home = new homePage(pagemenu_home);
+			connect(root_widget->mainWidget(), SIGNAL(showHomePage()), Home, SLOT(showPage()));
+			connect(root_widget->mainWidget(), SIGNAL(showSectionPage(int)), Home, SLOT(showSectionPage(int)));
+
 			pagDefault = Home;
 		}
 		else

@@ -68,3 +68,7 @@ Page::PageType homePage::pageType()
 	return HOMEPAGE;
 }
 
+void homePage::showSectionPage(int page_id)
+{
+	clicked(page_id);
+}

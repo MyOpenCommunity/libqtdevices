@@ -17,6 +17,9 @@ Q_OBJECT
 public:
 	HomeBar(const QDomNode &config_node);
 
+signals:
+	void showHomePage();
+
 protected:
 	void paintEvent(QPaintEvent *);
 
@@ -43,6 +46,10 @@ public:
 	HeaderWidget(const QDomNode &config_node);
 	void centralPageChanged(Page::PageType);
 
+signals:
+	void showHomePage();
+	void showSectionPage(int page_id);
+
 private:
 	QVBoxLayout *main_layout;
 	QLabel *header_bar;
@@ -50,12 +57,17 @@ private:
 	QWidget *home_bar;
 };
 
+
 class MainWidget : public QWidget
 {
 Q_OBJECT
 public:
 	MainWidget();
 	MainWindow *centralLayout();
+
+signals:
+	void showHomePage();
+	void showSectionPage(int page_id);
 
 public slots:
 	void centralWidgetChanged(int index);
@@ -73,6 +85,7 @@ Q_OBJECT
 public:
 	RootWidget(int width, int height);
 	MainWindow *centralLayout();
+	MainWidget *mainWidget();
 
 private:
 	MainWidget *main;

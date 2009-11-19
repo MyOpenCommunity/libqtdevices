@@ -36,6 +36,9 @@ public:
 
 	virtual PageType pageType();
 
+public slots:
+	void showSectionPage(int page_id);
+
 private:
 	TemperatureViewer *temp_viewer;
 	void loadItems(const QDomNode &config_node);
