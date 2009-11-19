@@ -159,6 +159,7 @@ HEADERS += actuators.h \
            screensaver.h \
            screensaverpage.h \
            settings.h \
+           settings_touchx.h \
            singlechoicecontent.h \
            singlechoicepage.h \
            skinmanager.h \
@@ -269,6 +270,7 @@ SOURCES += actuators.cpp \
            screensaver.cpp \
            screensaverpage.cpp \
            settings.cpp \
+           settings_touchx.cpp \
            singlechoicecontent.cpp \
            singlechoicepage.cpp \
            skinmanager.cpp \
