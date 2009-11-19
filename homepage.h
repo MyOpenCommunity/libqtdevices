@@ -34,6 +34,8 @@ public:
 	homePage(const QDomNode &config_node);
 	void inizializza();
 
+	virtual PageType pageType();
+
 private:
 	TemperatureViewer *temp_viewer;
 	void loadItems(const QDomNode &config_node);
