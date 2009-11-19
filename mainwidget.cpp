@@ -6,6 +6,7 @@
 #include "skinmanager.h"
 #include "main.h" // getHomepageNode
 #include "btbutton.h"
+#include "settings_touchx.h"
 
 #include <QDebug>
 #include <QGridLayout>
@@ -69,6 +70,12 @@ void HomeBar::loadItems(const QDomNode &config_node)
 			button->setImage(bt_global::skin->getImage("link_icon"));
 			home_layout->addStretch(1);
 			home_layout->addWidget(button);
+
+			int page_id = getTextChild(item, "lnk_pageID").toInt();
+
+			Page *settings = new SettingsTouchX(getPageNodeFromPageId(page_id));
+			connect(button, SIGNAL(clicked()), settings, SLOT(showPage()));
+			connect(settings, SIGNAL(Closed()), SIGNAL(showHomePage()));
 
 			break;
 		}
