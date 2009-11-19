@@ -8,6 +8,21 @@
 
 class QLabel;
 class QVBoxLayout;
+class QDomNode;
+
+
+class HomeBar : public QWidget
+{
+Q_OBJECT
+public:
+	HomeBar(const QDomNode &config_node);
+
+protected:
+	void paintEvent(QPaintEvent *);
+
+private:
+	void loadItems(const QDomNode &config_node);
+};
 
 
 class FavoritesWidget : public QWidget

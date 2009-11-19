@@ -2,12 +2,92 @@
 #include "main_window.h"
 #include "page.h"
 #include "hardware_functions.h" // hardwareType()
+#include "xml_functions.h"
+#include "skinmanager.h"
+#include "main.h" // getHomepageNode
+#include "btbutton.h"
 
 #include <QDebug>
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QStackedLayout>
+#include <QStyleOption>
+#include <QPainter>
+
+
+enum
+{
+	ITEM_TIME = 987,
+	ITEM_DATE = 988,
+	ITEM_TEMPERATURE = 989,
+	ITEM_SETTINGS_LINK = 29
+};
+
+
+HomeBar::HomeBar(const QDomNode &config_node)
+{
+	SkinContext cxt(99);
+	setFixedSize(800, 105);
+
+	loadItems(config_node);
+}
+
+void HomeBar::paintEvent(QPaintEvent *)
+{
+	// required for Style Sheets on a QWidget subclass
+	QStyleOption opt;
+	opt.init(this);
+	QPainter p(this);
+	style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+void HomeBar::loadItems(const QDomNode &config_node)
+{
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(50, 0, 63, 0);
+	main_layout->setSpacing(0);
+
+	QHBoxLayout *home_layout = new QHBoxLayout;
+	home_layout->setContentsMargins(0, 5, 0, 5);
+	home_layout->setSpacing(0);
+
+	QHBoxLayout *info_layout = new QHBoxLayout;
+	info_layout->setContentsMargins(0, 7, 0, 8);
+	info_layout->setSpacing(0);
+
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		SkinContext cxt(getTextChild(item, "cid").toInt());
+		int id = getTextChild(item, "id").toInt();
+
+		switch (id)
+		{
+		case ITEM_SETTINGS_LINK:
+		{
+			BtButton *button = new BtButton(this);
+			button->setImage(bt_global::skin->getImage("link_icon"));
+			home_layout->addStretch(1);
+			home_layout->addWidget(button);
+
+			break;
+		}
+		default:
+			qWarning("Ignoring item in info bar");
+		}
+	}
+
+	main_layout->addLayout(home_layout);
+	if (info_layout->count() > 0)
+		main_layout->addLayout(info_layout);
+	else
+	{
+		// use a spacer if there are no items in the infobar layout
+		delete info_layout;
+		main_layout->addSpacing(55);
+	}
+}
+
 
 HeaderWidget::HeaderWidget()
 {
