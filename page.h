@@ -100,7 +100,8 @@ protected:
 	QWidget *content_widget;
 	Page *currentPage();
 	void startTransition(const QPixmap &prev_image);
-	void buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget=0);
+	void buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget=0, QWidget *title_widget=0);
+	void buildPage(QWidget *content, QWidget *nav_bar, const QString& label, int label_height, QWidget *top_widget=0);
 
 private:
 	static MainWindow *main_window;
@@ -132,7 +133,9 @@ public:
 
 protected:
 	void buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *top_widget=0);
+	void buildPage(ContentWidget *content, NavigationBar *nav_bar, const QString &title, QWidget *top_widget=0);
 	void buildPage(QWidget *top_widget=0);
+	void buildPage(const QString &title);
 };
 
 
