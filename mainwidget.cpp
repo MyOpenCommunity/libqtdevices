@@ -16,6 +16,7 @@
 #include <QStackedLayout>
 #include <QStyleOption>
 #include <QPainter>
+#include <QSignalMapper>
 
 
 enum
@@ -136,7 +137,7 @@ void TopNavigationBar::loadItems(const QDomNode &config_node)
 		QDomNode page_node = getPageNodeFromPageId(page_id);
 		int id = getTextChild(page_node, "id").toInt();
 
-		navigation->addButton(Page::SectionId(id), bt_global::skin->getImage("top_navigation_button"));
+		navigation->addButton(Page::SectionId(id), page_id, bt_global::skin->getImage("top_navigation_button"));
 	}
 }
 
@@ -170,6 +171,9 @@ TopNavigationWidget::TopNavigationWidget()
 	main_layout->addWidget(left, 0, Qt::AlignVCenter);
 	main_layout->addLayout(button_layout, 1);
 	main_layout->addWidget(right, 0, Qt::AlignVCenter);
+
+	mapper = new QSignalMapper(this);
+	connect(mapper, SIGNAL(mapped(int)), SIGNAL(pageSelected(int)));
 }
 
 void TopNavigationWidget::showEvent(QShowEvent *e)
@@ -178,11 +182,14 @@ void TopNavigationWidget::showEvent(QShowEvent *e)
 	QWidget::showEvent(e);
 }
 
-void TopNavigationWidget::addButton(Page::SectionId section_id, const QString &icon)
+void TopNavigationWidget::addButton(Page::SectionId section_id, int page_id, const QString &icon)
 {
 	BtButton *link = new BtButton;
 	link->setImage(icon);
 	buttons.append(link);
+
+	mapper->setMapping(link, page_id);
+	connect(link, SIGNAL(clicked()), mapper, SLOT(map()));
 
 	QLabel *active = new QLabel;
 	active->setPixmap(getBostikName(icon, "s"));

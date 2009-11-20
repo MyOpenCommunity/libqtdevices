@@ -13,6 +13,7 @@ class QDomNode;
 class QHBoxLayout;
 class BtButton;
 class TopNavigationWidget;
+class QSignalMapper;
 
 
 class HomeBar : public QWidget
@@ -61,7 +62,7 @@ Q_OBJECT
 public:
 	TopNavigationWidget();
 
-	void addButton(Page::SectionId section_id, const QString &icon);
+	void addButton(Page::SectionId section_id, int page_id, const QString &icon);
 	void setCurrentSection(Page::SectionId section_id);
 
 signals:
@@ -80,6 +81,7 @@ private:
 	QList<QWidget *> buttons, selected;
 	QHBoxLayout *button_layout;
 	BtButton *left, *right;
+	QSignalMapper *mapper;
 };
 
 class FavoritesWidget : public QWidget
