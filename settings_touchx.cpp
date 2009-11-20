@@ -19,6 +19,11 @@ SettingsTouchX::SettingsTouchX(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
+Page::SectionId SettingsTouchX::sectionId()
+{
+	return SETTINGS_SECTION;
+}
+
 void SettingsTouchX::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))

@@ -39,6 +39,11 @@ ThermalMenu::ThermalMenu(const QDomNode &config_node)
 		connect(single_submenu, SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
+Page::SectionId ThermalMenu::sectionId()
+{
+	return THERMAL_SECTION;
+}
+
 void ThermalMenu::createPlantMenu(QDomNode config, BannSinglePuls *bann)
 {
 	Page *sm = new PlantMenu(config);

@@ -37,6 +37,8 @@ public:
 	 */
 	ThermalMenu(const QDomNode &config_node);
 
+	virtual SectionId sectionId();
+
 public slots:
 	/**
 	 * Show ThermalMenu if there are two or more banners, show the only submenu below us

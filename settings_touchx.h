@@ -14,6 +14,8 @@ Q_OBJECT
 public:
 	SettingsTouchX(const QDomNode &config_node);
 
+	virtual SectionId sectionId();
+
 private:
 	void loadItems(const QDomNode &config_node);
 };
