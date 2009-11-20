@@ -22,8 +22,13 @@ static QList<QString> getAddresses(QDomNode item)
 
 Lighting::Lighting(const QDomNode &config_node)
 {
-	buildPage();
+	buildPage(getTextChild(config_node, "descr"));
 	loadItems(config_node);
+}
+
+Page::SectionId Lighting::sectionId()
+{
+	return LIGHTNING_SECTION;
 }
 
 void Lighting::loadItems(const QDomNode &config_node)
