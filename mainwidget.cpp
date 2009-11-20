@@ -133,21 +133,23 @@ void TopNavigationBar::loadItems(const QDomNode &config_node)
 	{
 		SkinContext cxt(getTextChild(item, "cid").toInt());
 		int page_id = getTextChild(item, "lnk_pageID").toInt();
+		QDomNode page_node = getPageNodeFromPageId(page_id);
+		int id = getTextChild(page_node, "id").toInt();
 
-		navigation->addButton(page_id, bt_global::skin->getImage("top_navigation_button"));
+		navigation->addButton(Page::SectionId(id), bt_global::skin->getImage("top_navigation_button"));
 	}
 }
 
-void TopNavigationBar::setCurrentSection(int page_id)
+void TopNavigationBar::setCurrentSection(Page::SectionId section_id)
 {
-	navigation->setCurrentSection(page_id);
+	navigation->setCurrentSection(section_id);
 }
 
 
 TopNavigationWidget::TopNavigationWidget()
 	:
 	current_index(0),
-	selected_page_id(-1),
+	selected_section_id(Page::NO_SECTION),
 	need_update(true)
 {
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
@@ -176,7 +178,7 @@ void TopNavigationWidget::showEvent(QShowEvent *e)
 	QWidget::showEvent(e);
 }
 
-void TopNavigationWidget::addButton(int page_id, const QString &icon)
+void TopNavigationWidget::addButton(Page::SectionId section_id, const QString &icon)
 {
 	BtButton *link = new BtButton;
 	link->setImage(icon);
@@ -186,7 +188,7 @@ void TopNavigationWidget::addButton(int page_id, const QString &icon)
 	active->setPixmap(getBostikName(icon, "s"));
 	selected.append(active);
 
-	page_ids.append(page_id);
+	section_ids.append(section_id);
 
 	need_update = true;
 }
@@ -204,35 +206,33 @@ void TopNavigationWidget::drawContent()
 
 	button_layout->addStretch(1);
 
-	if (buttons.size() < 10)
-	{
-		left->hide();
-		right->hide();
+	left->setVisible(buttons.size() > 10);
+	right->setVisible(buttons.size() > 10);
 
-		for (int i = 0; i < buttons.size(); ++i)
-			button_layout->addWidget(buttons[i]);
-	}
-	else
+	int max = buttons.size() > 10 ? 9 : buttons.size();
+	for (int i = 0; i < max; ++i)
 	{
-		left->show();
-		right->show();
-
-		for (int i = 0; i < 9; ++i)
-		{
-			int index = (current_index + i) % buttons.size();
-			button_layout->addWidget(buttons[index]);
-		}
+		int index = (current_index + i) % buttons.size();
+		QWidget *item;
+		if (section_ids[index] == selected_section_id)
+			item = selected[index];
+		else
+			 item = buttons[index];
+		item->show();
+		button_layout->addWidget(item);
 	}
 
 	button_layout->addStretch(1);
 }
 
-void TopNavigationWidget::setCurrentSection(int page_id)
+void TopNavigationWidget::setCurrentSection(Page::SectionId section_id)
 {
-	if (page_id == -1)
+	if (section_id == Page::NO_SECTION || section_id == selected_section_id)
 		return;
 
-	selected_page_id = page_id;
+	selected_section_id = section_id;
+	need_update = true;
+	drawContent();
 }
 
 
@@ -262,9 +262,9 @@ HeaderWidget::HeaderWidget(const QDomNode &homepage_node, const QDomNode &infoba
 	connect(home_bar, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
 }
 
-void HeaderWidget::centralPageChanged(int page_id, Page::PageType type)
+void HeaderWidget::centralPageChanged(Page::SectionId section_id, Page::PageType type)
 {
-	qDebug() << "new central widget = " << type << " id " << page_id;
+	qDebug() << "new central widget = " << type << " id " << section_id;
 	switch (type)
 	{
 	case Page::HOMEPAGE:
@@ -273,7 +273,7 @@ void HeaderWidget::centralPageChanged(int page_id, Page::PageType type)
 		home_bar->show();
 		break;
 	default:
-		top_nav_bar->setCurrentSection(page_id);
+		top_nav_bar->setCurrentSection(section_id);
 		top_nav_bar->show();
 		header_bar->show();
 		home_bar->hide();
