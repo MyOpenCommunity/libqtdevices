@@ -5,10 +5,14 @@
 
 #include <QStackedWidget>
 #include <QWidget>
+#include <QList>
 
 class QLabel;
 class QVBoxLayout;
 class QDomNode;
+class QHBoxLayout;
+class BtButton;
+class TopNavigationWidget;
 
 
 class HomeBar : public QWidget
@@ -28,6 +32,56 @@ private:
 };
 
 
+class TopNavigationBar : public QWidget
+{
+Q_OBJECT
+public:
+	TopNavigationBar(const QDomNode &config_node);
+
+	void setCurrentSection(int page_id);
+
+signals:
+	void showHomePage();
+	void showSectionPage(int page_id);
+
+protected:
+	void paintEvent(QPaintEvent *);
+
+private:
+	void loadItems(const QDomNode &config_node);
+
+private:
+	TopNavigationWidget *navigation;
+};
+
+
+class TopNavigationWidget : public QWidget
+{
+Q_OBJECT
+public:
+	TopNavigationWidget();
+
+	void addButton(int page_id, const QString &icon);
+	void setCurrentSection(int page_id);
+
+signals:
+	void pageSelected(int page_id);
+
+protected:
+	void showEvent(QShowEvent *e);
+
+private:
+	void drawContent();
+
+private:
+	int current_index, selected_page_id;
+	bool need_update;
+	QList<int> page_ids;
+	QList<QWidget *> buttons, selected;
+	QHBoxLayout *button_layout;
+	BtButton *left, *right;
+};
+
 class FavoritesWidget : public QWidget
 {
 Q_OBJECT
@@ -43,8 +97,8 @@ class HeaderWidget : public QWidget
 {
 Q_OBJECT
 public:
-	HeaderWidget(const QDomNode &config_node);
-	void centralPageChanged(Page::PageType);
+	HeaderWidget(const QDomNode &homepage_node, const QDomNode &infobar_node);
+	void centralPageChanged(int page_id, Page::PageType);
 
 signals:
 	void showHomePage();
@@ -53,7 +107,7 @@ signals:
 private:
 	QVBoxLayout *main_layout;
 	QLabel *header_bar;
-	QLabel *top_nav_bar;
+	TopNavigationBar *top_nav_bar;
 	QWidget *home_bar;
 };
 
