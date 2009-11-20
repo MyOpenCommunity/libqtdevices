@@ -24,6 +24,18 @@ class ContentWidget;
 class NavigationBar;
 
 
+// according to Qt Style Sheets Reference, QWidget subclasses need
+// to reimplement paintEvent() in order for the style sheet to be applied
+class StyledWidget : public QWidget
+{
+public:
+	StyledWidget(QWidget *parent=0);
+
+protected:
+	virtual void paintEvent(QPaintEvent *);
+};
+
+
 // This typedef is needed by slots status_changed(StatusList). In order to avoid
 // duplication the typedef is put here, so all pages can be use freely
 typedef QHash<int, QVariant> StatusList;
