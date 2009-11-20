@@ -68,6 +68,9 @@ public:
 	// Defaults to NONE, reimplement to change page type.
 	// TODO: This should really be pure virtual
 	virtual PageType pageType();
+	// page id of the first page of a section; internal pages of a section
+	// can return -1
+	virtual int sectionId();
 
 	static void setClients(Client *command, Client *request);
 

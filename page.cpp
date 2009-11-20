@@ -176,6 +176,11 @@ Page::PageType Page::pageType()
 	return NONE;
 }
 
+int Page::sectionId()
+{
+	return -1;
+}
+
 
 BannerPage::BannerPage(QWidget *parent)
 	: Page(parent)
