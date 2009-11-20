@@ -1,7 +1,7 @@
 #ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
-#include "page.h" // Page, PageType
+#include "page.h" // Page, PageType, StyledWidget
 
 #include <QStackedWidget>
 #include <QWidget>
@@ -16,7 +16,7 @@ class TopNavigationWidget;
 class QSignalMapper;
 
 
-class HomeBar : public QWidget
+class HomeBar : public StyledWidget
 {
 Q_OBJECT
 public:
@@ -25,15 +25,12 @@ public:
 signals:
 	void showHomePage();
 
-protected:
-	void paintEvent(QPaintEvent *);
-
 private:
 	void loadItems(const QDomNode &config_node);
 };
 
 
-class TopNavigationBar : public QWidget
+class TopNavigationBar : public StyledWidget
 {
 Q_OBJECT
 public:
@@ -44,9 +41,6 @@ public:
 signals:
 	void showHomePage();
 	void showSectionPage(int page_id);
-
-protected:
-	void paintEvent(QPaintEvent *);
 
 private:
 	void loadItems(const QDomNode &config_node);

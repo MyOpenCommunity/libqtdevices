@@ -14,8 +14,6 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QStackedLayout>
-#include <QStyleOption>
-#include <QPainter>
 #include <QSignalMapper>
 
 
@@ -34,15 +32,6 @@ HomeBar::HomeBar(const QDomNode &config_node)
 	setFixedSize(800, 105);
 
 	loadItems(config_node);
-}
-
-void HomeBar::paintEvent(QPaintEvent *)
-{
-	// required for Style Sheets on a QWidget subclass
-	QStyleOption opt;
-	opt.init(this);
-	QPainter p(this);
-	style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
 void HomeBar::loadItems(const QDomNode &config_node)
@@ -104,15 +93,6 @@ TopNavigationBar::TopNavigationBar(const QDomNode &config_node)
 	setFixedSize(800, 85);
 
 	loadItems(config_node);
-}
-
-void TopNavigationBar::paintEvent(QPaintEvent *)
-{
-	// required for Style Sheets on a QWidget subclass
-	QStyleOption opt;
-	opt.init(this);
-	QPainter p(this);
-	style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
 void TopNavigationBar::loadItems(const QDomNode &config_node)
