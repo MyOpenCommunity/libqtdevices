@@ -78,11 +78,13 @@ private:
 	QSignalMapper *mapper;
 };
 
+
 class FavoritesWidget : public QWidget
 {
 Q_OBJECT
 public:
-	FavoritesWidget();
+	FavoritesWidget(const QDomNode &config_node);
+
 protected:
 	virtual QSize sizeHint() const;
 	virtual QSize minimumSizeHint() const;

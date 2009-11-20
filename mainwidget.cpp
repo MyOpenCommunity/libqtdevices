@@ -8,6 +8,7 @@
 #include "btbutton.h"
 #include "settings_touchx.h"
 #include "generic_functions.h" // getBostikName
+#include "content_widget.h"
 
 #include <QDebug>
 #include <QGridLayout>
@@ -15,6 +16,7 @@
 #include <QLabel>
 #include <QStackedLayout>
 #include <QSignalMapper>
+#include <QVariant>
 
 
 enum
@@ -269,12 +271,19 @@ void HeaderWidget::centralPageChanged(Page::SectionId section_id, Page::PageType
 }
 
 
-FavoritesWidget::FavoritesWidget()
+FavoritesWidget::FavoritesWidget(const QDomNode &config_node)
 {
-	setStyleSheet("QWidget {background-color:blue; }");
-	QVBoxLayout *lay = new QVBoxLayout(this);
-	QLabel *l = new QLabel("Favorites widget", this);
-	lay->addWidget(l);
+	QVBoxLayout *l = new QVBoxLayout(this);
+	QLabel *title = new QLabel(getTextChild(config_node, "descr"));
+
+	title->setAlignment(Qt::AlignHCenter);
+
+	QWidget *p = new QWidget;
+
+	// TODO add banners from configuration
+
+	l->addWidget(title);
+	l->addWidget(p, 1);
 }
 
 QSize FavoritesWidget::sizeHint() const
@@ -314,8 +323,19 @@ MainWidget::MainWidget()
 		header_widget = new HeaderWidget(pagemenu_home, getPageNodeFromPageId(info_bar_pageid));
 		main_layout->addWidget(header_widget, 0, 0, 1, 2);
 
-		favorites_widget = new FavoritesWidget;
-		main_layout->addWidget(favorites_widget, 1, 1, 1, 1);
+		favorites_widget = new FavoritesWidget(favourites_node);
+
+		// container widget for favorites
+		QWidget *f = new QWidget;
+		f->setProperty("Favorites", true); // for stylesheet
+		QVBoxLayout *l = new QVBoxLayout(f);
+		l->setContentsMargins(0, 0, 0, 0);
+		l->setSpacing(0);
+
+		l->addStretch(1);
+		l->addWidget(favorites_widget, 1);
+
+		main_layout->addWidget(f, 1, 1, 1, 1);
 
 		connect(header_widget, SIGNAL(showSectionPage(int)), SIGNAL(showSectionPage(int)));
 		connect(header_widget, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
