@@ -17,6 +17,8 @@
 #include <QStackedLayout>
 #include <QSignalMapper>
 #include <QVariant>
+#include <QPainter>
+#include <QTime>
 
 
 enum
@@ -28,9 +30,67 @@ enum
 };
 
 
+class TimeDisplay : public QLabel
+{
+public:
+	TimeDisplay();
+	~TimeDisplay();
+
+protected:
+	void timerEvent(QTimerEvent *e);
+	void paintEvent(QPaintEvent *e);
+
+private:
+	int timer_id;
+};
+
+TimeDisplay::TimeDisplay()
+{
+	setPixmap(bt_global::skin->getImage("clock_background"));
+	timer_id = startTimer(7000);
+}
+
+TimeDisplay::~TimeDisplay()
+{
+	killTimer(timer_id);
+}
+
+void TimeDisplay::paintEvent(QPaintEvent *e)
+{
+	QLabel::paintEvent(e);
+	QPainter p(this);
+
+	p.drawText(rect(), Qt::AlignCenter, QTime::currentTime().toString("hh:mm"));
+}
+
+void TimeDisplay::timerEvent(QTimerEvent *e)
+{
+	update();
+}
+
+
+HeaderBar::HeaderBar()
+{
+	setFixedSize(800, 40);
+
+	time_display = new TimeDisplay;
+
+	QHBoxLayout *l = new QHBoxLayout(this);
+	l->setContentsMargins(3, 0, 3, 0);
+	l->setSpacing(0);
+
+	l->addWidget(time_display);
+	l->addStretch(1);
+}
+
+void HeaderBar::setControlsVisible(bool visible)
+{
+	time_display->setVisible(visible);
+}
+
+
 HomeBar::HomeBar(const QDomNode &config_node)
 {
-	SkinContext cxt(99);
 	setFixedSize(800, 105);
 
 	loadItems(config_node);
@@ -227,14 +287,11 @@ void TopNavigationWidget::setCurrentSection(Page::SectionId section_id)
 
 HeaderWidget::HeaderWidget(const QDomNode &homepage_node, const QDomNode &infobar_node)
 {
-	setStyleSheet("QWidget {background-color:gray; }");
 	main_layout = new QVBoxLayout(this);
 	main_layout->setSpacing(0);
 	main_layout->setContentsMargins(0, 0, 0, 0);
 
-	header_bar = new QLabel;
-	header_bar->setFixedSize(800, 40);
-	header_bar->setText("Header bar");
+	header_bar = new HeaderBar;
 	main_layout->addWidget(header_bar);
 
 	top_nav_bar = new TopNavigationBar(homepage_node);
@@ -257,11 +314,13 @@ void HeaderWidget::centralPageChanged(Page::SectionId section_id, Page::PageType
 	switch (type)
 	{
 	case Page::HOMEPAGE:
+		header_bar->setControlsVisible(false);
 		top_nav_bar->hide();
 		header_bar->show();
 		home_bar->show();
 		break;
 	default:
+		header_bar->setControlsVisible(true);
 		top_nav_bar->setCurrentSection(section_id);
 		top_nav_bar->show();
 		header_bar->show();
@@ -305,6 +364,8 @@ MainWidget::MainWidget()
 
 	if (hardwareType() == TOUCH_X)
 	{
+		SkinContext cxt(99);
+
 		QDomNode pagemenu_home = getHomepageNode();
 		int favourites_pageid = getTextChild(pagemenu_home, "h_lnk_pageID").toInt();
 		QDomNode favourites_node = getPageNodeFromPageId(favourites_pageid);

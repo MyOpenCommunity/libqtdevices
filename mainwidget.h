@@ -16,6 +16,19 @@ class TopNavigationWidget;
 class QSignalMapper;
 
 
+class HeaderBar : public StyledWidget
+{
+Q_OBJECT
+public:
+	HeaderBar();
+
+	void setControlsVisible(bool visible);
+
+private:
+	QWidget *time_display;
+};
+
+
 class HomeBar : public StyledWidget
 {
 Q_OBJECT
@@ -104,7 +117,7 @@ signals:
 
 private:
 	QVBoxLayout *main_layout;
-	QLabel *header_bar;
+	HeaderBar *header_bar;
 	TopNavigationBar *top_nav_bar;
 	QWidget *home_bar;
 };
