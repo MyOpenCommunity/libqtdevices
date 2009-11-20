@@ -66,7 +66,6 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, const QString& label, i
 	{
 		page_title = new QLabel(label);
 		page_title->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
-		page_title->setStyleSheet("QWidget { background-color: yellow; }");
 		page_title->setFixedHeight(label_height);
 	}
 
