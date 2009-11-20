@@ -47,7 +47,7 @@ void StyledWidget::paintEvent(QPaintEvent *)
 }
 
 
-Page::Page(QWidget *parent) : QWidget(parent)
+Page::Page(QWidget *parent) : StyledWidget(parent)
 {
 	Q_ASSERT_X(main_window, "Page::Page", "Main window not set!");
 	content_widget = 0;

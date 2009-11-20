@@ -54,7 +54,7 @@ typedef QHash<int, QVariant> StatusList;
  * This class should be the base class for all the fullscreen pages of application.
  * It offer at its children some facilities which can improve productivity.
  */
-class Page : public QWidget
+class Page : public StyledWidget
 {
 friend class BtMain;
 Q_OBJECT
