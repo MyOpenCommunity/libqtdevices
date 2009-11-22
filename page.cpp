@@ -15,6 +15,8 @@
 #include <QDir>
 #include <QApplication>
 #include <QLabel>
+#include <QStyleOption>
+#include <QPainter>
 
 
 static const char *IMG_BACK = IMG_PATH "arrlf.png";
@@ -30,7 +32,22 @@ Client *Page::client_richieste = 0;
 MainWindow *Page::main_window = 0;
 
 
-Page::Page(QWidget *parent) : QWidget(parent)
+StyledWidget::StyledWidget(QWidget *parent)
+	: QWidget(parent)
+{
+}
+
+void StyledWidget::paintEvent(QPaintEvent *)
+{
+	// required for Style Sheets on a QWidget subclass
+	QStyleOption opt;
+	opt.init(this);
+	QPainter p(this);
+	style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+
+Page::Page(QWidget *parent) : StyledWidget(parent)
 {
 	Q_ASSERT_X(main_window, "Page::Page", "Main window not set!");
 	content_widget = 0;
@@ -41,7 +58,21 @@ Page::Page(QWidget *parent) : QWidget(parent)
 		main_window->addPage(this);
 }
 
-void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget)
+void Page::buildPage(QWidget *content, QWidget *nav_bar, const QString& label, int label_height, QWidget *top_widget)
+{
+	QLabel *page_title = 0;
+
+	if (hardwareType() == TOUCH_X)
+	{
+		page_title = new QLabel(label);
+		page_title->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
+		page_title->setFixedHeight(label_height);
+	}
+
+	buildPage(content, nav_bar, top_widget, page_title);
+}
+
+void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget, QWidget *title_widget)
 {
 	QBoxLayout *l;
 	if (hardwareType() == TOUCH_X)
@@ -60,14 +91,11 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget)
 		//      and current page number
 		l->addWidget(nav_bar);
 
-		QLabel *pageTitle = new QLabel("Page title");
-		pageTitle->setStyleSheet("QWidget { background-color: yellow; }");
-		pageTitle->setMinimumHeight(80);
-
 		QVBoxLayout *pl = new QVBoxLayout;
 		pl->setContentsMargins(0, 0, 0, 0);
 		pl->setSpacing(0);
-		pl->addWidget(pageTitle);
+		if (title_widget)
+			pl->addWidget(title_widget);
 		pl->addWidget(content, 1);
 
 		l->addLayout(pl);
@@ -164,6 +192,11 @@ Page::PageType Page::pageType()
 	return NONE;
 }
 
+Page::SectionId Page::sectionId()
+{
+	return NO_SECTION;
+}
+
 
 BannerPage::BannerPage(QWidget *parent)
 	: Page(parent)
@@ -178,9 +211,9 @@ void BannerPage::activateLayout()
 		page_content->drawContent();
 }
 
-void BannerPage::buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *top_widget)
+void BannerPage::buildPage(ContentWidget *content, NavigationBar *nav_bar, const QString &title, QWidget *top_widget)
 {
-	Page::buildPage(content, nav_bar, top_widget);
+	Page::buildPage(content, nav_bar, title, 60, top_widget);
 
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
@@ -192,7 +225,17 @@ void BannerPage::buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidg
 
 void BannerPage::buildPage(QWidget *top_widget)
 {
-	buildPage(new ContentWidget, new NavigationBar, top_widget);
+	buildPage(new ContentWidget, new NavigationBar, "", top_widget);
+}
+
+void BannerPage::buildPage(const QString &title)
+{
+	buildPage(new ContentWidget, new NavigationBar, title, 0);
+}
+
+void BannerPage::buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *top_widget)
+{
+	buildPage(content, nav_bar, "", top_widget);
 }
 
 

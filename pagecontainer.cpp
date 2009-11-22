@@ -5,6 +5,7 @@
 #include "hardware_functions.h" // rearmWDT
 #include "main.h" // IMG_PATH
 #include "navigation_bar.h"
+#include "skinmanager.h"
 
 #include <QDomNode>
 #include <QDebug>
@@ -18,16 +19,15 @@
 #define IMG_BACK_BUTTON     IMG_PATH "arrlf.png"
 
 
-PageContainer::PageContainer(const QDomNode &config_node)
+PageContainer::PageContainer()
 	: buttons_group(this)
 {
 	connect(&buttons_group, SIGNAL(buttonClicked(int)), SLOT(clicked(int)));
-	loadItems(config_node);
 }
 
-void PageContainer::buildPage(IconContent *content, NavigationBar *nav_bar)
+void PageContainer::buildPage(IconContent *content, NavigationBar *nav_bar, const QString &label)
 {
-	Page::buildPage(content, nav_bar);
+	Page::buildPage(content, nav_bar, label, 35);
 
 	// TODO duplicated in BannerPage
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
@@ -36,34 +36,6 @@ void PageContainer::buildPage(IconContent *content, NavigationBar *nav_bar)
 	connect(nav_bar, SIGNAL(upClick()), content, SLOT(pgUp()));
 	connect(nav_bar, SIGNAL(downClick()), content, SLOT(pgDown()));
 	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
-}
-
-void PageContainer::loadItems(const QDomNode &config_node)
-{
-	if (hardwareType() == TOUCH_X)
-		// TODO hide back button in homepage
-		buildPage(new IconContent, new NavigationBar);
-
-	QTime wdtime;
-	wdtime.start(); // Start counting for wd refresh
-
-	foreach (const QDomNode &item, getChildren(config_node, "item"))
-	{
-		int id = getTextChild(item, "id").toInt();
-		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
-		int x = getTextChild(item, "left").toInt();
-		int y = getTextChild(item, "top").toInt();
-
-		// Within the pagemenu element, it can exists items that are not a page.
-		if (Page *p = getPage(id))
-			addPage(p, id, img1, x, y);
-
-		if (wdtime.elapsed() > 1000)
-		{
-			wdtime.restart();
-			rearmWDT();
-		}
-	}
 }
 
 void PageContainer::addPage(Page *page, int id, QString iconName, int x, int y)
@@ -190,3 +162,51 @@ int IconContent::pageCount() const
 	return pages.size() - 1;
 }
 
+
+SectionPageContainer::SectionPageContainer(const QDomNode &config_node)
+{
+	loadItems(config_node);
+}
+
+void SectionPageContainer::loadItems(const QDomNode &config_node)
+{
+	if (hardwareType() == TOUCH_X)
+	{
+		// only show the back icon if there is a lnk_itemID to a banner
+		QString back_icon = getTextChild(config_node, "lnk_itemID").isEmpty() ? "" : "back";
+		NavigationBar *nav_bar = new NavigationBar("", "scroll_down", "scroll_up", back_icon);
+		buildPage(new IconContent, nav_bar);
+	}
+
+	QTime wdtime;
+	wdtime.start(); // Start counting for wd refresh
+
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+#ifdef LAYOUT_BTOUCH
+		int id = getTextChild(item, "id").toInt();
+		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
+		int x = getTextChild(item, "left").toInt();
+		int y = getTextChild(item, "top").toInt();
+
+		// Within the pagemenu element, it can exists items that are not a page.
+		if (Page *p = getPage(id))
+			addPage(p, id, img1, x, y);
+#else
+		SkinContext cxt(getTextChild(item, "cid").toInt());
+		QString icon = bt_global::skin->getImage("link_icon");
+		int link_id = getTextChild(item, "id").toInt();
+
+		// TODO some ids are not links
+		int pageid = getTextChild(item, "lnk_pageID").toInt();
+		if (Page *p = getPage(pageid))
+			addPage(p, pageid, icon, 0, 0);
+#endif
+
+		if (wdtime.elapsed() > 1000)
+		{
+			wdtime.restart();
+			rearmWDT();
+		}
+	}
+}

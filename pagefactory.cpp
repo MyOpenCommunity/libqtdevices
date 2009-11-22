@@ -20,9 +20,15 @@
 
 #include <QObject>
 
-Page *getPage(int id)
+Page *getPage(int page_id)
 {
-	QDomNode page_node = getPageNode(id);
+#ifdef LAYOUT_BTOUCH
+	QDomNode page_node = getPageNode(page_id);
+	int id = page_id;
+#else
+	QDomNode page_node = getPageNodeFromPageId(page_id);
+	int id = getTextChild(page_node, "id").toInt();
+#endif
 	if (page_node.isNull())
 		return 0;
 
@@ -102,7 +108,7 @@ Page *getPage(int id)
 	}
 	case ENERGY_MANAGEMENT:
 	{
-		PageContainer *p = new PageContainer(page_node);
+		SectionPageContainer *p = new SectionPageContainer(page_node);
 		p->addBackButton();
 		page = p;
 		break;

@@ -39,6 +39,8 @@ enum DateFormat
 };
 
 QDomNode getPageNode(int id);
+QDomNode getPageNodeFromPageId(int pageid);
+QDomNode getHomepageNode();
 
 // See getElement
 QDomElement getConfElement(QString path);
@@ -158,6 +160,7 @@ void resetTimer(int signo);
  ****************************************************************/
 /*! \enum pagSecLiv
   This enum describes the various kind of pages*/
+#ifdef LAYOUT_BTOUCH
 enum pagSecLiv
 {
 	AUTOMAZIONE=1,                                /*!< Automation system */
@@ -179,6 +182,29 @@ enum pagSecLiv
 	ENERGY_DATA=17,                               /*!< Energy data system */
 	FEED_READER=99,                               /*!< Feed reader page */
 };
+#else
+enum pagSecLiv
+{
+	AUTOMAZIONE=1,                                /*!< Automation system */
+	ILLUMINAZIONE=2,                              /*!< Lighting system */
+	ANTIINTRUSIONE=3,                             /*!< Anti-intrusion system */
+	CARICHI=4,                                    /*!< Appliances managing system */
+	TERMOREGOLAZIONE=5,                           /*!< Thermoregulation system */
+	DIFSON=16,                                    /*!< Sound diffusion system */
+	SCENARI=-1,                                   /*!< Scenarios managing */
+	IMPOSTAZIONI=29,                              /*!< Settings */
+	BACK=9,                                       /*!< Back button - placed here for convenience */
+	SPECIAL=10,                                   /*!< Special button - placed here for convenience */
+	VIDEOCITOFONIA=22,
+	SCENARI_EVOLUTI=20,                           /*!< Advanced scenarios management */
+	DIFSON_MULTI=17,                              /*!< Multichannel sound diffusion system */
+	SUPERVISIONE=-2,                              /*!< Supervision system */
+	TERMOREG_MULTI_PLANT=-3,                      /*!< Thermoregulation system with one or more 4-zones plants */
+	ENERGY_MANAGEMENT=-4,                         /*!< Energy management system */
+	ENERGY_DATA=-5,                               /*!< Energy data system */
+	FEED_READER=-6,                               /*!< Feed reader page */
+};
+#endif
 
 
 /****************************************************************

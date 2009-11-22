@@ -27,7 +27,7 @@ class QDomNode;
   \date lug 2005
 */
 
-class homePage : public PageContainer
+class homePage : public SectionPageContainer
 {
 Q_OBJECT
 public:
@@ -35,6 +35,9 @@ public:
 	void inizializza();
 
 	virtual PageType pageType();
+
+public slots:
+	void showSectionPage(int page_id);
 
 private:
 	TemperatureViewer *temp_viewer;

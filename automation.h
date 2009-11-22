@@ -26,6 +26,9 @@ class Automation : public BannerPage
 Q_OBJECT
 public:
 	Automation(const QDomNode &config_node);
+
+	virtual SectionId sectionId();
+
 private:
 	void loadItems(const QDomNode &config_node);
 };

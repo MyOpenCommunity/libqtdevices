@@ -33,11 +33,16 @@ isEmpty(TEST_ARCH) {
 	MOC_DIR = $$DEST_PREFIX/moc/arm
 	DEFINES += BT_EMBEDDED
 
-	HEADERS += QWSMOUSE/qmouse_qws.h \
-		QWSMOUSE/qmouselinuxevent-2-6_qws.h
+	contains(LAYOUT, touchx) {
+		# use the default Qt handler
+	} else {
+		HEADERS += QWSMOUSE/qmouse_qws.h \
+			QWSMOUSE/qmouselinuxevent-2-6_qws.h
 
-	SOURCES += QWSMOUSE/qmouse_qws.cpp \
-		QWSMOUSE/qmouselinuxevent-2-6_qws.cpp
+		SOURCES += QWSMOUSE/qmouse_qws.cpp \
+			QWSMOUSE/qmouselinuxevent-2-6_qws.cpp
+	}
+
 	HARDWARE = btouch
 	DEFINES += BT_HARDWARE_BTOUCH
 }
@@ -154,6 +159,7 @@ HEADERS += actuators.h \
            screensaver.h \
            screensaverpage.h \
            settings.h \
+           settings_touchx.h \
            singlechoicecontent.h \
            singlechoicepage.h \
            skinmanager.h \
@@ -264,6 +270,7 @@ SOURCES += actuators.cpp \
            screensaver.cpp \
            screensaverpage.cpp \
            settings.cpp \
+           settings_touchx.cpp \
            singlechoicecontent.cpp \
            singlechoicepage.cpp \
            skinmanager.cpp \

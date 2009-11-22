@@ -37,19 +37,18 @@ public:
 	// the type returned by page_content
 	typedef IconContent ContentType;
 
-	PageContainer(const QDomNode &config_node);
+	PageContainer();
 	virtual void addBackButton();
 
 protected:
-	void buildPage(IconContent *content, NavigationBar *nav_bar);
+	void buildPage(IconContent *content, NavigationBar *nav_bar, const QString &label = QString());
+	void addPage(Page *page, int id, QString iconName, int x = 0, int y = 0);
 
 private:
 	QButtonGroup buttons_group;
 	QHash<int, Page*> page_list;
-	void loadItems(const QDomNode &config_node);
-	void addPage(Page *page, int id, QString iconName, int x, int y);
 
-private slots:
+protected slots:
 	void clicked(int id);
 };
 
@@ -89,6 +88,22 @@ private:
 	int current_page;
 	QList<int> pages;
 	QList<QWidget*> items;
+};
+
+
+/**
+ * \class SectionPageContainer
+ *
+ * A subclass of PageContainer that loads pages at construction time using getPage
+ */
+class SectionPageContainer : public PageContainer
+{
+Q_OBJECT
+public:
+	SectionPageContainer(const QDomNode &config_node);
+
+private:
+	void loadItems(const QDomNode &config_node);
 };
 
 #endif // PAGECONTAINER_H

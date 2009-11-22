@@ -59,6 +59,7 @@ BtMain::BtMain()
 
 	QString font_file = QString(MY_FILE_CFG_FONT).arg(bt_global::config[LANGUAGE]);
 	bt_global::font = new FontManager(font_file);
+	bt_global::skin = new SkinManager(SKIN_FILE);
 
 	client_monitor = new Client(Client::MONITOR);
 	client_comandi = new Client(Client::COMANDI);
@@ -74,7 +75,6 @@ BtMain::BtMain()
 	main_window = root_widget->centralLayout();
 	main_window->blockTransitions(true); // no transitions until homepage is showed
 	connect(main_window, SIGNAL(currentPageChanged(Page*)), SLOT(currentPageChanged(Page*)));
-	Page::setMainWindow(main_window);
 	device::setClients(client_comandi, client_richieste);
 
 	connect(client_monitor,SIGNAL(monitorSu()), SLOT(monitorReady()));
@@ -98,8 +98,6 @@ BtMain::BtMain()
 
 	tasti = NULL;
 	pwdOn = false;
-
-	bt_global::skin = new SkinManager(SKIN_FILE);
 
 	version = new Version;
 	version->setModel(bt_global::config[MODEL]);
@@ -203,6 +201,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		bt_global::display.current_screensaver = type;
 
 		QDomNode displaypages = getConfElement("displaypages");
+		QDomNode gui = getConfElement("gui");
 		if (!displaypages.isNull())
 		{
 			QDomNode pagemenu_home = getChildWithId(displaypages, QRegExp("pagemenu(\\d{1,2}|)"), 0);
@@ -222,8 +221,18 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			if (!orientation.isNull())
 				setOrientation(orientation);
 		}
+		else if (!gui.isNull())
+		{
+			// TODO read the id from the <homepage> node
+			QDomNode pagemenu_home = getHomepageNode();
+			Home = new homePage(pagemenu_home);
+			connect(root_widget->mainWidget(), SIGNAL(showHomePage()), Home, SLOT(showPage()));
+			connect(root_widget->mainWidget(), SIGNAL(showSectionPage(int)), Home, SLOT(showSectionPage(int)));
+
+			pagDefault = Home;
+		}
 		else
-			qFatal("displaypages node not found on xml config file!");
+			qFatal("neither displaypages nor gui nodes found on xml config file!");
 
 		// TODO: read the transition effect from configuration
 		main_window->installTransitionWidget(new BlendingTransition);

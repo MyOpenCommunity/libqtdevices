@@ -1,39 +1,127 @@
 #ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
-#include "page.h" // Page, PageType
+#include "page.h" // Page, PageType, StyledWidget
 
 #include <QStackedWidget>
 #include <QWidget>
+#include <QList>
 
 class QLabel;
 class QVBoxLayout;
+class QDomNode;
+class QHBoxLayout;
+class BtButton;
+class TopNavigationWidget;
+class QSignalMapper;
+
+
+class HeaderBar : public StyledWidget
+{
+Q_OBJECT
+public:
+	HeaderBar();
+
+	void setControlsVisible(bool visible);
+
+private:
+	QWidget *time_display;
+};
+
+
+class HomeBar : public StyledWidget
+{
+Q_OBJECT
+public:
+	HomeBar(const QDomNode &config_node);
+
+signals:
+	void showHomePage();
+
+private:
+	void loadItems(const QDomNode &config_node);
+};
+
+
+class TopNavigationBar : public StyledWidget
+{
+Q_OBJECT
+public:
+	TopNavigationBar(const QDomNode &config_node);
+
+	void setCurrentSection(Page::SectionId section_id);
+
+signals:
+	void showHomePage();
+	void showSectionPage(int page_id);
+
+private:
+	void loadItems(const QDomNode &config_node);
+
+private:
+	TopNavigationWidget *navigation;
+};
+
+
+class TopNavigationWidget : public QWidget
+{
+Q_OBJECT
+public:
+	TopNavigationWidget();
+
+	void addButton(Page::SectionId section_id, int page_id, const QString &icon);
+	void setCurrentSection(Page::SectionId section_id);
+
+signals:
+	void pageSelected(int page_id);
+
+protected:
+	void showEvent(QShowEvent *e);
+
+private:
+	void drawContent();
+
+private:
+	int current_index, selected_section_id;
+	bool need_update;
+	QList<int> section_ids;
+	QList<QWidget *> buttons, selected;
+	QHBoxLayout *button_layout;
+	BtButton *left, *right;
+	QSignalMapper *mapper;
+};
 
 
 class FavoritesWidget : public QWidget
 {
 Q_OBJECT
 public:
-	FavoritesWidget();
+	FavoritesWidget(const QDomNode &config_node);
+
 protected:
 	virtual QSize sizeHint() const;
 	virtual QSize minimumSizeHint() const;
 };
 
+
 class HeaderWidget : public QWidget
 {
 Q_OBJECT
 public:
-	HeaderWidget();
-	void centralPageChanged(Page::PageType);
+	HeaderWidget(const QDomNode &homepage_node, const QDomNode &infobar_node);
+	void centralPageChanged(Page::SectionId section_id, Page::PageType);
+
+signals:
+	void showHomePage();
+	void showSectionPage(int page_id);
 
 private:
 	QVBoxLayout *main_layout;
-	QLabel *header_bar;
-	QLabel *top_nav_bar;
-	QLabel *info_bar;
-	QLabel *home_bar;
+	HeaderBar *header_bar;
+	TopNavigationBar *top_nav_bar;
+	QWidget *home_bar;
 };
+
 
 class MainWidget : public QWidget
 {
@@ -41,6 +129,10 @@ Q_OBJECT
 public:
 	MainWidget();
 	MainWindow *centralLayout();
+
+signals:
+	void showHomePage();
+	void showSectionPage(int page_id);
 
 public slots:
 	void centralWidgetChanged(int index);
@@ -58,6 +150,7 @@ Q_OBJECT
 public:
 	RootWidget(int width, int height);
 	MainWindow *centralLayout();
+	MainWidget *mainWidget();
 
 private:
 	MainWidget *main;

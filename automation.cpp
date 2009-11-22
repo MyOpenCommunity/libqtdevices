@@ -13,8 +13,13 @@
 
 Automation::Automation(const QDomNode &config_node)
 {
-	buildPage();
+	buildPage(getTextChild(config_node, "descr"));
 	loadItems(config_node);
+}
+
+Page::SectionId Automation::sectionId()
+{
+	return AUTOMATION_SECTION;
 }
 
 void Automation::loadItems(const QDomNode &config_node)

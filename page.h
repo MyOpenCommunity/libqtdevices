@@ -24,6 +24,18 @@ class ContentWidget;
 class NavigationBar;
 
 
+// according to Qt Style Sheets Reference, QWidget subclasses need
+// to reimplement paintEvent() in order for the style sheet to be applied
+class StyledWidget : public QWidget
+{
+public:
+	StyledWidget(QWidget *parent=0);
+
+protected:
+	virtual void paintEvent(QPaintEvent *);
+};
+
+
 // This typedef is needed by slots status_changed(StatusList). In order to avoid
 // duplication the typedef is put here, so all pages can be use freely
 typedef QHash<int, QVariant> StatusList;
@@ -42,7 +54,7 @@ typedef QHash<int, QVariant> StatusList;
  * This class should be the base class for all the fullscreen pages of application.
  * It offer at its children some facilities which can improve productivity.
  */
-class Page : public QWidget
+class Page : public StyledWidget
 {
 friend class BtMain;
 Q_OBJECT
@@ -53,6 +65,20 @@ public:
 	{
 		NONE = 0,
 		HOMEPAGE,
+	};
+
+	enum SectionId
+	{
+		NO_SECTION = 0,
+		SETTINGS_SECTION = 29,
+		AUTOMATION_SECTION = 1,
+		LIGHTNING_SECTION = 2,
+		ALARM_SECTION = 3,
+		ENERGY_SECTION = 4,
+		THERMAL_SECTION = 5,
+		SOUND_DIFFUSION_SECTION = 17,
+		SCENARI_SECTION = 19,
+		SCENEVO_SECTION = 20
 	};
 
 	// the type returned by page_content
@@ -68,6 +94,9 @@ public:
 	// Defaults to NONE, reimplement to change page type.
 	// TODO: This should really be pure virtual
 	virtual PageType pageType();
+	// page id of the first page of a section; internal pages of a section
+	// can return NO_SECTION
+	virtual SectionId sectionId();
 
 	static void setClients(Client *command, Client *request);
 
@@ -100,7 +129,8 @@ protected:
 	QWidget *content_widget;
 	Page *currentPage();
 	void startTransition(const QPixmap &prev_image);
-	void buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget=0);
+	void buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget=0, QWidget *title_widget=0);
+	void buildPage(QWidget *content, QWidget *nav_bar, const QString& label, int label_height, QWidget *top_widget=0);
 
 private:
 	static MainWindow *main_window;
@@ -132,7 +162,9 @@ public:
 
 protected:
 	void buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *top_widget=0);
+	void buildPage(ContentWidget *content, NavigationBar *nav_bar, const QString &title, QWidget *top_widget=0);
 	void buildPage(QWidget *top_widget=0);
+	void buildPage(const QString &title);
 };
 
 
