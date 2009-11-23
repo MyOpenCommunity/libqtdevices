@@ -5,6 +5,7 @@
 #include "skinmanager.h"
 #include "btmain.h" // version page
 #include "version.h"
+#include "main.h" // pagSecLiv
 
 enum
 {
@@ -19,9 +20,9 @@ SettingsTouchX::SettingsTouchX(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
-Page::SectionId SettingsTouchX::sectionId()
+int SettingsTouchX::sectionId()
 {
-	return SETTINGS_SECTION;
+	return IMPOSTAZIONI;
 }
 
 void SettingsTouchX::loadItems(const QDomNode &config_node)

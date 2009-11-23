@@ -56,7 +56,7 @@ Q_OBJECT
 public:
 	TopNavigationBar(const QDomNode &config_node);
 
-	void setCurrentSection(Page::SectionId section_id);
+	void setCurrentSection(int section_id);
 
 signals:
 	void showHomePage();
@@ -78,8 +78,8 @@ Q_OBJECT
 public:
 	TopNavigationWidget();
 
-	void addButton(Page::SectionId section_id, int page_id, const QString &icon);
-	void setCurrentSection(Page::SectionId section_id);
+	void addButton(int section_id, int page_id, const QString &icon);
+	void setCurrentSection(int section_id);
 
 signals:
 	void pageSelected(int page_id);
@@ -119,7 +119,7 @@ class HeaderWidget : public QWidget
 Q_OBJECT
 public:
 	HeaderWidget(const QDomNode &homepage_node, const QDomNode &infobar_node);
-	void centralPageChanged(Page::SectionId section_id, Page::PageType);
+	void centralPageChanged(int section_id, Page::PageType);
 
 signals:
 	void showHomePage();

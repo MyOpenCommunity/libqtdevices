@@ -67,20 +67,6 @@ public:
 		HOMEPAGE,
 	};
 
-	enum SectionId
-	{
-		NO_SECTION = 0,
-		SETTINGS_SECTION = 29,
-		AUTOMATION_SECTION = 1,
-		LIGHTNING_SECTION = 2,
-		ALARM_SECTION = 3,
-		ENERGY_SECTION = 4,
-		THERMAL_SECTION = 5,
-		SOUND_DIFFUSION_SECTION = 17,
-		SCENARI_SECTION = 19,
-		SCENEVO_SECTION = 20
-	};
-
 	// the type returned by page_content
 	// see the comment about page_content above
 	typedef QWidget ContentType;
@@ -96,7 +82,7 @@ public:
 	virtual PageType pageType();
 	// page id of the first page of a section; internal pages of a section
 	// can return NO_SECTION
-	virtual SectionId sectionId();
+	virtual int sectionId();
 
 	static void setClients(Client *command, Client *request);
 

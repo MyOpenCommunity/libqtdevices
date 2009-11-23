@@ -37,7 +37,7 @@ public:
 	 */
 	ThermalMenu(const QDomNode &config_node);
 
-	virtual SectionId sectionId();
+	virtual int sectionId();
 
 public slots:
 	/**

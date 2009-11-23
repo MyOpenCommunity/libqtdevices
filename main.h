@@ -163,6 +163,7 @@ void resetTimer(int signo);
 #ifdef LAYOUT_BTOUCH
 enum pagSecLiv
 {
+	NO_SECTION=0,
 	AUTOMAZIONE=1,                                /*!< Automation system */
 	ILLUMINAZIONE=2,                              /*!< Lighting system */
 	ANTIINTRUSIONE=3,                             /*!< Anti-intrusion system */
@@ -185,6 +186,7 @@ enum pagSecLiv
 #else
 enum pagSecLiv
 {
+	NO_SECTION=0,
 	AUTOMAZIONE=1,                                /*!< Automation system */
 	ILLUMINAZIONE=2,                              /*!< Lighting system */
 	ANTIINTRUSIONE=3,                             /*!< Anti-intrusion system */

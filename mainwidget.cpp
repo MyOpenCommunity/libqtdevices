@@ -179,11 +179,11 @@ void TopNavigationBar::loadItems(const QDomNode &config_node)
 		QDomNode page_node = getPageNodeFromPageId(page_id);
 		int id = getTextChild(page_node, "id").toInt();
 
-		navigation->addButton(Page::SectionId(id), page_id, bt_global::skin->getImage("top_navigation_button"));
+		navigation->addButton(id, page_id, bt_global::skin->getImage("top_navigation_button"));
 	}
 }
 
-void TopNavigationBar::setCurrentSection(Page::SectionId section_id)
+void TopNavigationBar::setCurrentSection(int section_id)
 {
 	navigation->setCurrentSection(section_id);
 }
@@ -192,7 +192,7 @@ void TopNavigationBar::setCurrentSection(Page::SectionId section_id)
 TopNavigationWidget::TopNavigationWidget()
 	:
 	current_index(0),
-	selected_section_id(Page::NO_SECTION),
+	selected_section_id(NO_SECTION),
 	need_update(true)
 {
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
@@ -224,7 +224,7 @@ void TopNavigationWidget::showEvent(QShowEvent *e)
 	QWidget::showEvent(e);
 }
 
-void TopNavigationWidget::addButton(Page::SectionId section_id, int page_id, const QString &icon)
+void TopNavigationWidget::addButton(int section_id, int page_id, const QString &icon)
 {
 	BtButton *link = new BtButton;
 	link->setImage(icon);
@@ -274,9 +274,9 @@ void TopNavigationWidget::drawContent()
 	button_layout->addStretch(1);
 }
 
-void TopNavigationWidget::setCurrentSection(Page::SectionId section_id)
+void TopNavigationWidget::setCurrentSection(int section_id)
 {
-	if (section_id == Page::NO_SECTION || section_id == selected_section_id)
+	if (section_id == NO_SECTION || section_id == selected_section_id)
 		return;
 
 	selected_section_id = section_id;
@@ -308,7 +308,7 @@ HeaderWidget::HeaderWidget(const QDomNode &homepage_node, const QDomNode &infoba
 	connect(home_bar, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
 }
 
-void HeaderWidget::centralPageChanged(Page::SectionId section_id, Page::PageType type)
+void HeaderWidget::centralPageChanged(int section_id, Page::PageType type)
 {
 	qDebug() << "new central widget = " << type << " id " << section_id;
 	switch (type)

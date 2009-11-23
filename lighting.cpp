@@ -26,9 +26,9 @@ Lighting::Lighting(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
-Page::SectionId Lighting::sectionId()
+int Lighting::sectionId()
 {
-	return LIGHTNING_SECTION;
+	return ILLUMINAZIONE;
 }
 
 void Lighting::loadItems(const QDomNode &config_node)
