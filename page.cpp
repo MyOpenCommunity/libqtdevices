@@ -192,7 +192,7 @@ Page::PageType Page::pageType()
 	return NONE;
 }
 
-Page::SectionId Page::sectionId()
+int Page::sectionId()
 {
 	return NO_SECTION;
 }

@@ -27,7 +27,7 @@ Q_OBJECT
 public:
 	Automation(const QDomNode &config_node);
 
-	virtual SectionId sectionId();
+	virtual int sectionId();
 
 private:
 	void loadItems(const QDomNode &config_node);

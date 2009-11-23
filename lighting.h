@@ -27,7 +27,7 @@ Q_OBJECT
 public:
 	Lighting(const QDomNode &config_node);
 
-	virtual SectionId sectionId();
+	virtual int sectionId();
 
 protected:
 	virtual void showEvent(QShowEvent *event);

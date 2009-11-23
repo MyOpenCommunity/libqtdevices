@@ -9,6 +9,7 @@
 #include "settings_touchx.h"
 #include "generic_functions.h" // getBostikName
 #include "content_widget.h"
+#include "fontmanager.h"
 
 #include <QDebug>
 #include <QGridLayout>
@@ -19,6 +20,7 @@
 #include <QVariant>
 #include <QPainter>
 #include <QTime>
+#include <QDate>
 
 
 enum
@@ -30,42 +32,119 @@ enum
 };
 
 
-class TimeDisplay : public QLabel
+// base class for date/time dsiplay widgets
+class PollingDisplayWidget : public QLabel
 {
 public:
-	TimeDisplay();
-	~TimeDisplay();
+	PollingDisplayWidget();
+	~PollingDisplayWidget();
 
 protected:
 	void timerEvent(QTimerEvent *e);
 	void paintEvent(QPaintEvent *e);
 
+	virtual void paintLabel(QPainter &painter) = 0;
+
 private:
 	int timer_id;
 };
 
-TimeDisplay::TimeDisplay()
+PollingDisplayWidget::PollingDisplayWidget()
 {
-	setPixmap(bt_global::skin->getImage("clock_background"));
 	timer_id = startTimer(7000);
 }
 
-TimeDisplay::~TimeDisplay()
+PollingDisplayWidget::~PollingDisplayWidget()
 {
 	killTimer(timer_id);
 }
 
-void TimeDisplay::paintEvent(QPaintEvent *e)
+void PollingDisplayWidget::paintEvent(QPaintEvent *e)
 {
 	QLabel::paintEvent(e);
 	QPainter p(this);
 
-	p.drawText(rect(), Qt::AlignCenter, QTime::currentTime().toString("hh:mm"));
+	paintLabel(p);
 }
 
-void TimeDisplay::timerEvent(QTimerEvent *e)
+void PollingDisplayWidget::timerEvent(QTimerEvent *e)
 {
 	update();
+}
+
+
+// helper widget, display time for internal pages
+class TimeDisplay : public PollingDisplayWidget
+{
+public:
+	TimeDisplay();
+
+protected:
+	virtual void paintLabel(QPainter &painter);
+};
+
+TimeDisplay::TimeDisplay()
+{
+	setFont(bt_global::font->get(FontManager::SMALLTEXT)); // TODO check this is the correct font
+	setPixmap(bt_global::skin->getImage("clock_background"));
+}
+
+void TimeDisplay::paintLabel(QPainter &painter)
+{
+	painter.drawText(rect(), Qt::AlignCenter,
+			 QTime::currentTime().toString("hh:mm"));
+}
+
+
+// helper widget, displays time in the homepage
+class HomepageTimeDisplay : public PollingDisplayWidget
+{
+public:
+	HomepageTimeDisplay();
+
+protected:
+	virtual void paintLabel(QPainter &painter);
+};
+
+HomepageTimeDisplay::HomepageTimeDisplay()
+{
+	setFont(bt_global::font->get(FontManager::SUBTITLE)); // TODO check this is the correct font
+	setPixmap(bt_global::skin->getImage("background"));
+}
+
+void HomepageTimeDisplay::paintLabel(QPainter &painter)
+{
+	painter.drawText(rect().adjusted(15, 0, 0, 0), Qt::AlignCenter,
+			 QTime::currentTime().toString("hh:mm"));
+}
+
+
+// helper widget, displays date in the homepage
+class HomepageDateDisplay : public PollingDisplayWidget
+{
+public:
+	HomepageDateDisplay();
+
+protected:
+	virtual void paintLabel(QPainter &painter);
+};
+
+HomepageDateDisplay::HomepageDateDisplay()
+{
+	setFont(bt_global::font->get(FontManager::SUBTITLE)); // TODO check this is the correct font
+	setPixmap(bt_global::skin->getImage("background"));
+}
+
+void HomepageDateDisplay::paintLabel(QPainter &painter)
+{
+	QString format;
+	if (bt_global::config[DATE_FORMAT].toInt() == USA_DATE)
+		format = "MM/dd/yy";
+	else
+		format = "dd/MM/yy";
+
+	painter.drawText(rect().adjusted(35, 0, 0, 0), Qt::AlignCenter,
+			 QDate::currentDate().toString(format));
 }
 
 
@@ -104,7 +183,7 @@ void HomeBar::loadItems(const QDomNode &config_node)
 
 	QHBoxLayout *home_layout = new QHBoxLayout;
 	home_layout->setContentsMargins(0, 5, 0, 5);
-	home_layout->setSpacing(0);
+	home_layout->setSpacing(10);
 
 	QHBoxLayout *info_layout = new QHBoxLayout;
 	info_layout->setContentsMargins(0, 7, 0, 8);
@@ -117,6 +196,20 @@ void HomeBar::loadItems(const QDomNode &config_node)
 
 		switch (id)
 		{
+		case ITEM_TIME:
+		{
+			QWidget *item = new HomepageTimeDisplay();
+			home_layout->addWidget(item);
+
+			break;
+		}
+		case ITEM_DATE:
+		{
+			QWidget *item = new HomepageDateDisplay();
+			home_layout->addWidget(item);
+
+			break;
+		}
 		case ITEM_SETTINGS_LINK:
 		{
 			BtButton *button = new BtButton(this);
@@ -179,20 +272,20 @@ void TopNavigationBar::loadItems(const QDomNode &config_node)
 		QDomNode page_node = getPageNodeFromPageId(page_id);
 		int id = getTextChild(page_node, "id").toInt();
 
-		navigation->addButton(Page::SectionId(id), page_id, bt_global::skin->getImage("top_navigation_button"));
+		navigation->addButton(id, page_id, bt_global::skin->getImage("top_navigation_button"));
 	}
 }
 
-void TopNavigationBar::setCurrentSection(Page::SectionId section_id)
+void TopNavigationBar::setCurrentSection(int section_id)
 {
 	navigation->setCurrentSection(section_id);
 }
 
 
 TopNavigationWidget::TopNavigationWidget()
-	:
-	current_index(0),
-	selected_section_id(Page::NO_SECTION),
+	: current_index(0),
+	selected_section_id(NO_SECTION),
+	visible_buttons(0),
 	need_update(true)
 {
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
@@ -205,10 +298,12 @@ TopNavigationWidget::TopNavigationWidget()
 	left = new BtButton;
 	left->setAutoRepeat(true);
 	left->setImage(bt_global::skin->getImage("left"));
+	connect(left, SIGNAL(clicked()), SLOT(scrollLeft()));
 
 	right = new BtButton;
 	right->setAutoRepeat(true);
 	right->setImage(bt_global::skin->getImage("right"));
+	connect(right, SIGNAL(clicked()), SLOT(scrollRight()));
 
 	main_layout->addWidget(left, 0, Qt::AlignVCenter);
 	main_layout->addLayout(button_layout, 1);
@@ -224,7 +319,7 @@ void TopNavigationWidget::showEvent(QShowEvent *e)
 	QWidget::showEvent(e);
 }
 
-void TopNavigationWidget::addButton(Page::SectionId section_id, int page_id, const QString &icon)
+void TopNavigationWidget::addButton(int section_id, int page_id, const QString &icon)
 {
 	BtButton *link = new BtButton;
 	link->setImage(icon);
@@ -255,11 +350,30 @@ void TopNavigationWidget::drawContent()
 
 	button_layout->addStretch(1);
 
-	left->setVisible(buttons.size() > 10);
-	right->setVisible(buttons.size() > 10);
+	// first time, compute if there is need for scroll arrows
+	if (visible_buttons == 0)
+	{
+		int button_width = buttons[0]->sizeHint().width();
+		int button_spacing = button_layout->spacing();
+		// total size of all the buttons plus the spacing (does not take into account contents margins
+		int buttons_width = (buttons.size() - 1) * (button_width + button_spacing) + button_width;
 
-	int max = buttons.size() > 10 ? 9 : buttons.size();
-	for (int i = 0; i < max; ++i)
+		// if buttons_width > width(), show the scroll arrows
+		left->setVisible(buttons_width > width());
+		right->setVisible(buttons_width > width());
+
+		if (buttons_width > width())
+		{
+			// width of the scroll buttons and contents margins
+			int scroll_area_width = layout()->minimumSize().width();
+			// number of visible buttons
+			visible_buttons = (width() - scroll_area_width - button_width) / (button_width + button_spacing) + 1;
+		}
+		else
+			visible_buttons = buttons.size();
+	}
+
+	for (int i = 0; i < visible_buttons; ++i)
 	{
 		int index = (current_index + i) % buttons.size();
 		QWidget *item;
@@ -274,9 +388,23 @@ void TopNavigationWidget::drawContent()
 	button_layout->addStretch(1);
 }
 
-void TopNavigationWidget::setCurrentSection(Page::SectionId section_id)
+void TopNavigationWidget::scrollRight()
 {
-	if (section_id == Page::NO_SECTION || section_id == selected_section_id)
+	current_index = (current_index + 1) % buttons.size();
+	need_update = true;
+	drawContent();
+}
+
+void TopNavigationWidget::scrollLeft()
+{
+	current_index = (current_index - 1 + buttons.size()) % buttons.size();
+	need_update = true;
+	drawContent();
+}
+
+void TopNavigationWidget::setCurrentSection(int section_id)
+{
+	if (section_id == NO_SECTION || section_id == selected_section_id)
 		return;
 
 	selected_section_id = section_id;
@@ -308,7 +436,7 @@ HeaderWidget::HeaderWidget(const QDomNode &homepage_node, const QDomNode &infoba
 	connect(home_bar, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
 }
 
-void HeaderWidget::centralPageChanged(Page::SectionId section_id, Page::PageType type)
+void HeaderWidget::centralPageChanged(int section_id, Page::PageType type)
 {
 	qDebug() << "new central widget = " << type << " id " << section_id;
 	switch (type)
@@ -343,11 +471,6 @@ FavoritesWidget::FavoritesWidget(const QDomNode &config_node)
 
 	l->addWidget(title);
 	l->addWidget(p, 1);
-}
-
-QSize FavoritesWidget::sizeHint() const
-{
-	return QSize(237, 335);
 }
 
 QSize FavoritesWidget::minimumSizeHint() const

@@ -39,7 +39,6 @@ banner *ContentWidget::getBanner(int i)
 
 void ContentWidget::appendBanner(banner *b)
 {
-	Q_ASSERT_X(layout() != 0, "ContentWidget::appendBanner", "Unable to call appendBanner without a layout");
 	banner_list.append(b);
 	b->hide();
 

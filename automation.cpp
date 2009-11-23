@@ -17,9 +17,9 @@ Automation::Automation(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
-Page::SectionId Automation::sectionId()
+int Automation::sectionId()
 {
-	return AUTOMATION_SECTION;
+	return AUTOMAZIONE;
 }
 
 void Automation::loadItems(const QDomNode &config_node)

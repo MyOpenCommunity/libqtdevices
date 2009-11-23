@@ -37,7 +37,6 @@ banner *ContentWidget::getBanner(int i)
 
 void ContentWidget::appendBanner(banner *b)
 {
-	Q_ASSERT_X(layout() != 0, "ContentWidget::appendBanner", "Unable to call appendBanner without a layout");
 	banner_list.append(b);
 	b->hide();
 
@@ -60,8 +59,11 @@ void ContentWidget::showEvent(QShowEvent *e)
 	QWidget::showEvent(e);
 }
 
+// TODO try to unify layout computation with IconContent
 void ContentWidget::drawContent()
 {
+	const int LEFT_COLUMN = 0, RIGHT_COLUMN = 1, COLUMN_COUNT = 2;
+
 	if (!need_update)
 		return;
 
@@ -72,21 +74,30 @@ void ContentWidget::drawContent()
 		int total_height[2] = {0, 0};
 		int area_height = contentsRect().height();
 
+		// the pages array contains the starting indices of each page in banner_list
+		// to simplify the last page case, an additional item is added to the array
+		// and it contains banner_list.size()
+		// for example for a ContentWIdget with 15 items and 6 items per page, pages will
+		// contain: 0, 6, 12, 15
 		pages.append(0);
 
-		for (int i = 0; i < banner_list.size(); i += 2)
+		for (int i = 0; i < banner_list.size(); i += COLUMN_COUNT)
 		{
-			for (int j = 0; j < 2 && i + j < banner_list.size(); ++j)
-			{
+			// compute the height the two columns would have if adding the next
+			// two items
+			for (int j = 0; j < COLUMN_COUNT && i + j < banner_list.size(); ++j)
 				total_height[j] += banner_list.at(i + j)->sizeHint().height();
-				l->addWidget(banner_list.at(i + j), i / 2, j);
-			}
-			if (total_height[0] > area_height || total_height[1] > area_height)
+			// if the height of one of the two columns exceeds the page height,
+			// start a new page, otherwise add the widgets to the layout
+			if (total_height[LEFT_COLUMN] > area_height || total_height[LEFT_COLUMN] > area_height)
 			{
-				total_height[0] = total_height[1] = 0;
+				total_height[LEFT_COLUMN] = total_height[LEFT_COLUMN] = 0;
 				pages.append(i);
-				i -= 2;
+				i -= COLUMN_COUNT;
 			}
+			else
+				for (int j = 0; j < COLUMN_COUNT && i + j < banner_list.size(); ++j)
+					l->addWidget(banner_list.at(i + j), i / COLUMN_COUNT, j);
 		}
 
 		pages.append(banner_list.size());
@@ -97,6 +108,8 @@ void ContentWidget::drawContent()
 
 	need_update = false;
 
+	// works for all pages because the last item of the pages array always
+	// contains banner_list.size()
 	for (int i = 0; i < banner_list.size(); ++i)
 		banner_list[i]->setVisible(i >= pages[current_page] && i < pages[current_page + 1]);
 }

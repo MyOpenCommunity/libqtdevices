@@ -44,7 +44,7 @@ void PageContainer::addPage(Page *page, int id, QString iconName, int x, int y)
 	if (page_content == NULL)
 		b->setGeometry(x, y, DIM_BUT, DIM_BUT);
 	else
-		page_content->addPage(b);
+		page_content->addButton(b);
 	b->setImage(iconName);
 
 	buttons_group.addButton(b, id);
@@ -76,9 +76,8 @@ IconContent::IconContent(QWidget *parent) : QWidget(parent)
 	need_update = true;
 }
 
-void IconContent::addPage(QWidget *button)
+void IconContent::addButton(QWidget *button)
 {
-	Q_ASSERT_X(layout() != 0, "IconContent::addPage", "Unable to call addPage without a layout");
 	items.append(button);
 	button->hide();
 }
