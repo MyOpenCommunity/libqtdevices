@@ -95,7 +95,7 @@ private:
 	void drawContent();
 
 private:
-	int current_index, selected_section_id;
+	int current_index, selected_section_id, visible_buttons;
 	bool need_update;
 	QList<int> section_ids;
 	QList<QWidget *> buttons, selected;

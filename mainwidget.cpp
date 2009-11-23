@@ -190,9 +190,9 @@ void TopNavigationBar::setCurrentSection(int section_id)
 
 
 TopNavigationWidget::TopNavigationWidget()
-	:
-	current_index(0),
+	: current_index(0),
 	selected_section_id(NO_SECTION),
+	visible_buttons(0),
 	need_update(true)
 {
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
@@ -257,11 +257,30 @@ void TopNavigationWidget::drawContent()
 
 	button_layout->addStretch(1);
 
-	left->setVisible(buttons.size() > 10);
-	right->setVisible(buttons.size() > 10);
+	// first time, compute if there is need for scroll arrows
+	if (visible_buttons == 0)
+	{
+		int button_width = buttons[0]->sizeHint().width();
+		int button_spacing = button_layout->spacing();
+		// total size of all the buttons plus the spacing (does not take into account contents margins
+		int buttons_width = (buttons.size() - 1) * (button_width + button_spacing) + button_width;
 
-	int max = buttons.size() > 10 ? 9 : buttons.size();
-	for (int i = 0; i < max; ++i)
+		// if buttons_width > width(), show the scroll arrows
+		left->setVisible(buttons_width > width());
+		right->setVisible(buttons_width > width());
+
+		if (buttons_width > width())
+		{
+			// width of the scroll buttons and contents margins
+			int scroll_area_width = layout()->minimumSize().width();
+			// number of visible buttons
+			visible_buttons = (width() - scroll_area_width - button_width) / (button_width + button_spacing) + 1;
+		}
+		else
+			visible_buttons = buttons.size();
+	}
+
+	for (int i = 0; i < visible_buttons; ++i)
 	{
 		int index = (current_index + i) % buttons.size();
 		QWidget *item;
