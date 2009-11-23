@@ -61,7 +61,7 @@ class IconContent : public QWidget
 Q_OBJECT
 public:
 	IconContent(QWidget *parent=0);
-	void addPage(QWidget *button);
+	void addButton(QWidget *button);
 
 public slots:
 	void pgUp();
