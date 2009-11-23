@@ -34,8 +34,8 @@ Page *getPage(int page_id)
 		return 0;
 
 	// A section page can be built only once.
-	if (bt_global::btmain->page_list.contains(id))
-		return bt_global::btmain->page_list[id];
+	if (bt_global::btmain->page_list.contains(page_id))
+		return bt_global::btmain->page_list[page_id];
 
 	Page *page = 0;
 	switch (id)
