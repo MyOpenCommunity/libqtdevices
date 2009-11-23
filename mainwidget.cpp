@@ -205,10 +205,12 @@ TopNavigationWidget::TopNavigationWidget()
 	left = new BtButton;
 	left->setAutoRepeat(true);
 	left->setImage(bt_global::skin->getImage("left"));
+	connect(left, SIGNAL(clicked()), SLOT(scrollLeft()));
 
 	right = new BtButton;
 	right->setAutoRepeat(true);
 	right->setImage(bt_global::skin->getImage("right"));
+	connect(right, SIGNAL(clicked()), SLOT(scrollRight()));
 
 	main_layout->addWidget(left, 0, Qt::AlignVCenter);
 	main_layout->addLayout(button_layout, 1);
@@ -272,6 +274,20 @@ void TopNavigationWidget::drawContent()
 	}
 
 	button_layout->addStretch(1);
+}
+
+void TopNavigationWidget::scrollRight()
+{
+	current_index = (current_index + 1) % buttons.size();
+	need_update = true;
+	drawContent();
+}
+
+void TopNavigationWidget::scrollLeft()
+{
+	current_index = (current_index - 1 + buttons.size()) % buttons.size();
+	need_update = true;
+	drawContent();
 }
 
 void TopNavigationWidget::setCurrentSection(int section_id)

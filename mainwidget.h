@@ -81,6 +81,10 @@ public:
 	void addButton(int section_id, int page_id, const QString &icon);
 	void setCurrentSection(int section_id);
 
+public slots:
+	void scrollLeft();
+	void scrollRight();
+
 signals:
 	void pageSelected(int page_id);
 
