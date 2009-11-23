@@ -183,7 +183,7 @@ void HomeBar::loadItems(const QDomNode &config_node)
 
 	QHBoxLayout *home_layout = new QHBoxLayout;
 	home_layout->setContentsMargins(0, 5, 0, 5);
-	home_layout->setSpacing(0);
+	home_layout->setSpacing(10);
 
 	QHBoxLayout *info_layout = new QHBoxLayout;
 	info_layout->setContentsMargins(0, 7, 0, 8);
