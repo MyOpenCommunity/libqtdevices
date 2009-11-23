@@ -21,7 +21,7 @@ namespace
 }
 
 
-MainWindow::MainWindow(QWidget *parent) : QStackedWidget(parent) // no parent
+MainWindow::MainWindow(QWidget *parent) : QStackedWidget(parent)
 {
 	transition_widget = 0;
 	block_transitions = false;
