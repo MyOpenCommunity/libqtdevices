@@ -16,6 +16,8 @@ class TopNavigationWidget;
 class QSignalMapper;
 
 
+// topmost header, contains the BTicino logo and (on internal pages) the
+// clock and temperature display
 class HeaderBar : public StyledWidget
 {
 Q_OBJECT
@@ -29,6 +31,9 @@ private:
 };
 
 
+// only displayed on the home page, contains date, time and temperature
+// display, a link to the settings page and links to multimedia contents
+// (RSS feeds, web radio, web tv, web cams)
 class HomeBar : public StyledWidget
 {
 Q_OBJECT
@@ -43,6 +48,8 @@ private:
 };
 
 
+// navigation bar shown in internal pages; contains a link to the home page
+// and a scrollable list of links to section pages
 class TopNavigationBar : public StyledWidget
 {
 Q_OBJECT
@@ -63,6 +70,8 @@ private:
 };
 
 
+// helper class for TopNavigationBar, contains the scrollable list of links to
+// internal pages
 class TopNavigationWidget : public QWidget
 {
 Q_OBJECT
@@ -92,6 +101,7 @@ private:
 };
 
 
+// favorites widges, shown on the right, contains a list of banners
 class FavoritesWidget : public QWidget
 {
 Q_OBJECT
@@ -103,6 +113,7 @@ protected:
 };
 
 
+// contains all the header widgets and shows/hides them as the central page changes
 class HeaderWidget : public QWidget
 {
 Q_OBJECT
@@ -122,6 +133,8 @@ private:
 };
 
 
+// controls the layout of "normal" pages; contains the stack of pages and th
+// header and favorites widgets
 class MainWidget : public QWidget
 {
 Q_OBJECT
@@ -143,6 +156,8 @@ private:
 };
 
 
+// top level widget, contains the MainWidget and other special widgets that
+// need to be shown full screen (for example the screen saver and transition widgets)
 class RootWidget : public QStackedWidget
 {
 Q_OBJECT
