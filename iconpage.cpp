@@ -111,7 +111,7 @@ void IconContent::drawContent()
 			for (int j = 0; j < 4 && i + j < items.size(); ++j)
 			{
 				l->addWidget(items.at(i + j), i / 4, j);
-				total_height[j] += items.at(i + j)->sizeHint().height();
+				total_height[j] += items.at(i + j)->sizeHint().height() + l->spacing();
 			}
 			for (int j = 0; j < 4; ++j)
 			{
