@@ -94,6 +94,7 @@ HEADERS += actuators.h \
            bannciclaz.h \
            banner.h \
            bannercontent.h \
+           bannerfactory.h \
            bannfrecce.h \
            bann_thermal_regulation.h \
            bannonoffcombo.h \
@@ -209,6 +210,7 @@ SOURCES += actuators.cpp \
            banner.cpp \
            bannercontent.cpp \
            bannercontent_touchx.cpp \         
+           bannerfactory.cpp \
            bannfrecce.cpp \
            bann_thermal_regulation.cpp \
            bannonoffcombo.cpp \
