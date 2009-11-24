@@ -118,6 +118,7 @@ HEADERS += actuators.h \
            energy_device.h \
            energy_graph.h \
            energy_view.h \
+           favoriteswidget.h \
            feedmanager.h \
            feeditemwidget.h \
            feedparser.h \
@@ -127,7 +128,9 @@ HEADERS += actuators.h \
            generic_functions.h \
            genpage.h \
            hardware_functions.h \
+           headerwidget.h \
            homepage.h \
+           homewindow.h \
            icondispatcher.h \
            iconpage.h \
            iconsettings.h \
@@ -138,7 +141,6 @@ HEADERS += actuators.h \
            listbrowser.h \
            loads.h \
            main.h \
-           mainwidget.h \
            mediaplayer.h \
            multimedia_source.h \
            multisounddiff.h \
@@ -180,6 +182,7 @@ HEADERS += actuators.h \
            transitionwidget.h \
            version.h \
            videoentryphone.h \
+           windowcontainer.h \
            xml_functions.h
 
 SOURCES += actuators.cpp \
@@ -231,6 +234,7 @@ SOURCES += actuators.cpp \
            energy_device.cpp \
            energy_graph.cpp \
            energy_view.cpp \
+           favoriteswidget.cpp \
            feedmanager.cpp \
            feeditemwidget.cpp \
            feedparser.cpp \
@@ -239,7 +243,9 @@ SOURCES += actuators.cpp \
            frame_receiver.cpp \
            generic_functions.cpp \
            genpage.cpp \
+           headerwidget.cpp \
            homepage.cpp \
+           homewindow.cpp \
            icondispatcher.cpp \
            iconpage.cpp \
            iconsettings.cpp \
@@ -250,7 +256,6 @@ SOURCES += actuators.cpp \
            listbrowser.cpp \
            loads.cpp \
            main.cpp \
-           mainwidget.cpp \
            mediaplayer.cpp \
            multimedia_source.cpp \
            multisounddiff.cpp \
@@ -292,6 +297,7 @@ SOURCES += actuators.cpp \
            transitionwidget.cpp \
            version.cpp \
            videoentryphone.cpp \
+           windowcontainer.cpp \
            xml_functions.cpp
 
 contains(HARDWARE, x11) {

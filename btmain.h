@@ -26,7 +26,7 @@ class Keypad;
 class ScreenSaver;
 class Page;
 class PageContainer;
-class RootWidget;
+class WindowContainer;
 
 class QPixmap;
 class QString;
@@ -119,7 +119,7 @@ private:
 	Calibrate *calib;
 	ScreenSaver *screensaver;
 	PageContainer *page_container;
-	RootWidget *root_widget;
+	WindowContainer *window_container;
 
 	// A flag that is set when the client monitor socket is ready
 	bool monitor_ready;

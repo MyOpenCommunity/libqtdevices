@@ -1,26 +1,18 @@
-#include "mainwidget.h"
-#include "pagecontainer.h"
-#include "page.h"
-#include "hardware_functions.h" // hardwareType()
-#include "xml_functions.h"
+#include "headerwidget.h"
+#include "fontmanager.h"
 #include "skinmanager.h"
-#include "main.h" // getHomepageNode
+#include "main.h" // bt_global::config
+#include "xml_functions.h"
 #include "btbutton.h"
 #include "iconsettings.h"
 #include "generic_functions.h" // getBostikName
-#include "bannercontent.h"
-#include "fontmanager.h"
 
-#include <QDebug>
-#include <QGridLayout>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QStackedLayout>
 #include <QSignalMapper>
-#include <QVariant>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QPainter>
 #include <QTime>
-#include <QDate>
+#include <QtDebug>
 
 
 enum
@@ -148,7 +140,7 @@ void HomepageDateDisplay::paintLabel(QPainter &painter)
 }
 
 
-HeaderBar::HeaderBar()
+HeaderLogo::HeaderLogo()
 {
 	setFixedSize(800, 40);
 
@@ -162,20 +154,20 @@ HeaderBar::HeaderBar()
 	l->addStretch(1);
 }
 
-void HeaderBar::setControlsVisible(bool visible)
+void HeaderLogo::setControlsVisible(bool visible)
 {
 	time_display->setVisible(visible);
 }
 
 
-HomeBar::HomeBar(const QDomNode &config_node)
+HeaderInfo::HeaderInfo(const QDomNode &config_node)
 {
 	setFixedSize(800, 105);
 
 	loadItems(config_node);
 }
 
-void HomeBar::loadItems(const QDomNode &config_node)
+void HeaderInfo::loadItems(const QDomNode &config_node)
 {
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	main_layout->setContentsMargins(50, 0, 63, 0);
@@ -242,7 +234,7 @@ void HomeBar::loadItems(const QDomNode &config_node)
 }
 
 
-TopNavigationBar::TopNavigationBar(const QDomNode &config_node)
+HeaderNavigationBar::HeaderNavigationBar(const QDomNode &config_node)
 {
 	SkinContext cxt(0);
 	setFixedSize(800, 85);
@@ -250,7 +242,7 @@ TopNavigationBar::TopNavigationBar(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
-void TopNavigationBar::loadItems(const QDomNode &config_node)
+void HeaderNavigationBar::loadItems(const QDomNode &config_node)
 {
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
 	main_layout->setContentsMargins(10, 0, 0, 0);
@@ -261,7 +253,7 @@ void TopNavigationBar::loadItems(const QDomNode &config_node)
 	main_layout->addWidget(home);
 	connect(home, SIGNAL(clicked()), SIGNAL(showHomePage()));
 
-	navigation = new TopNavigationWidget;
+	navigation = new HeaderNavigationWidget;
 	main_layout->addWidget(navigation, 1);
 	connect(navigation, SIGNAL(pageSelected(int)), SIGNAL(showSectionPage(int)));
 
@@ -276,13 +268,13 @@ void TopNavigationBar::loadItems(const QDomNode &config_node)
 	}
 }
 
-void TopNavigationBar::setCurrentSection(int section_id)
+void HeaderNavigationBar::setCurrentSection(int section_id)
 {
 	navigation->setCurrentSection(section_id);
 }
 
 
-TopNavigationWidget::TopNavigationWidget()
+HeaderNavigationWidget::HeaderNavigationWidget()
 	: current_index(0),
 	selected_section_id(NO_SECTION),
 	visible_buttons(0),
@@ -313,13 +305,13 @@ TopNavigationWidget::TopNavigationWidget()
 	connect(mapper, SIGNAL(mapped(int)), SIGNAL(pageSelected(int)));
 }
 
-void TopNavigationWidget::showEvent(QShowEvent *e)
+void HeaderNavigationWidget::showEvent(QShowEvent *e)
 {
 	drawContent();
 	QWidget::showEvent(e);
 }
 
-void TopNavigationWidget::addButton(int section_id, int page_id, const QString &icon)
+void HeaderNavigationWidget::addButton(int section_id, int page_id, const QString &icon)
 {
 	BtButton *link = new BtButton;
 	link->setImage(icon);
@@ -337,7 +329,7 @@ void TopNavigationWidget::addButton(int section_id, int page_id, const QString &
 	need_update = true;
 }
 
-void TopNavigationWidget::drawContent()
+void HeaderNavigationWidget::drawContent()
 {
 	if (!need_update)
 		return;
@@ -388,21 +380,21 @@ void TopNavigationWidget::drawContent()
 	button_layout->addStretch(1);
 }
 
-void TopNavigationWidget::scrollRight()
+void HeaderNavigationWidget::scrollRight()
 {
 	current_index = (current_index + 1) % buttons.size();
 	need_update = true;
 	drawContent();
 }
 
-void TopNavigationWidget::scrollLeft()
+void HeaderNavigationWidget::scrollLeft()
 {
 	current_index = (current_index - 1 + buttons.size()) % buttons.size();
 	need_update = true;
 	drawContent();
 }
 
-void TopNavigationWidget::setCurrentSection(int section_id)
+void HeaderNavigationWidget::setCurrentSection(int section_id)
 {
 	if (section_id == NO_SECTION || section_id == selected_section_id)
 		return;
@@ -419,21 +411,21 @@ HeaderWidget::HeaderWidget(const QDomNode &homepage_node, const QDomNode &infoba
 	main_layout->setSpacing(0);
 	main_layout->setContentsMargins(0, 0, 0, 0);
 
-	header_bar = new HeaderBar;
-	main_layout->addWidget(header_bar);
+	header_logo = new HeaderLogo;
+	main_layout->addWidget(header_logo);
 
-	top_nav_bar = new TopNavigationBar(homepage_node);
+	top_nav_bar = new HeaderNavigationBar(homepage_node);
 	top_nav_bar->hide();
 	main_layout->addWidget(top_nav_bar);
 
 	connect(top_nav_bar, SIGNAL(showSectionPage(int)), SIGNAL(showSectionPage(int)));
 	connect(top_nav_bar, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
 
-	home_bar = new HomeBar(infobar_node);
-	main_layout->addWidget(home_bar);
+	header_info = new HeaderInfo(infobar_node);
+	main_layout->addWidget(header_info);
 
-	connect(home_bar, SIGNAL(showSectionPage(int)), SIGNAL(showSectionPage(int)));
-	connect(home_bar, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
+	connect(header_info, SIGNAL(showSectionPage(int)), SIGNAL(showSectionPage(int)));
+//	connect(header_info, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
 }
 
 void HeaderWidget::centralPageChanged(int section_id, Page::PageType type)
@@ -442,132 +434,17 @@ void HeaderWidget::centralPageChanged(int section_id, Page::PageType type)
 	switch (type)
 	{
 	case Page::HOMEPAGE:
-		header_bar->setControlsVisible(false);
+		header_logo->setControlsVisible(false);
 		top_nav_bar->hide();
-		header_bar->show();
-		home_bar->show();
+		header_logo->show();
+		header_info->show();
 		break;
 	default:
-		header_bar->setControlsVisible(true);
+		header_logo->setControlsVisible(true);
 		top_nav_bar->setCurrentSection(section_id);
 		top_nav_bar->show();
-		header_bar->show();
-		home_bar->hide();
+		header_logo->show();
+		header_info->hide();
 		break;
 	}
-}
-
-
-FavoritesWidget::FavoritesWidget(const QDomNode &config_node)
-{
-	QVBoxLayout *l = new QVBoxLayout(this);
-	QLabel *title = new QLabel(getTextChild(config_node, "descr"));
-
-	title->setAlignment(Qt::AlignHCenter);
-
-	QWidget *p = new QWidget;
-
-	// TODO add banners from configuration
-
-	l->addWidget(title);
-	l->addWidget(p, 1);
-}
-
-QSize FavoritesWidget::minimumSizeHint() const
-{
-	return QSize(237, 335);
-}
-
-
-MainWidget::MainWidget()
-{
-	header_widget = 0;
-	favorites_widget = 0;
-	central_widget = 0;
-
-	if (hardwareType() == TOUCH_X)
-	{
-		SkinContext cxt(99);
-
-		QDomNode pagemenu_home = getHomepageNode();
-		int favourites_pageid = getTextChild(pagemenu_home, "h_lnk_pageID").toInt();
-		QDomNode favourites_node = getPageNodeFromPageId(favourites_pageid);
-		int info_bar_pageid = getTextChild(favourites_node, "h_lnk_pageID").toInt();
-
-		QGridLayout *main_layout = new QGridLayout(this);
-		main_layout->setSpacing(0);
-		main_layout->setContentsMargins(0, 0, 0, 0);
-		qDebug() << "adding top and right widgets";
-
-		central_widget = new PageContainer(this);
-		main_layout->addWidget(central_widget, 1, 0, 1, 1);
-		connect(central_widget, SIGNAL(currentChanged(int)), SLOT(centralWidgetChanged(int)));
-		Page::setPageContainer(central_widget);
-
-		header_widget = new HeaderWidget(pagemenu_home, getPageNodeFromPageId(info_bar_pageid));
-		main_layout->addWidget(header_widget, 0, 0, 1, 2);
-
-		favorites_widget = new FavoritesWidget(favourites_node);
-
-		// container widget for favorites
-		QWidget *f = new QWidget;
-		f->setProperty("Favorites", true); // for stylesheet
-		QVBoxLayout *l = new QVBoxLayout(f);
-		l->setContentsMargins(0, 0, 0, 0);
-		l->setSpacing(0);
-
-		l->addStretch(1);
-		l->addWidget(favorites_widget, 1);
-
-		main_layout->addWidget(f, 1, 1, 1, 1);
-
-		connect(header_widget, SIGNAL(showSectionPage(int)), SIGNAL(showSectionPage(int)));
-		connect(header_widget, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
-	}
-	else
-	{
-		central_widget = new PageContainer(this);
-		Page::setPageContainer(central_widget);
-		central_widget->setFixedSize(maxWidth(), maxHeight());
-	}
-}
-
-void MainWidget::centralWidgetChanged(int index)
-{
-	// the check on header_widget shouldn't fail, but I don't want to rely on this...
-	if (header_widget && qobject_cast<Page *>(central_widget->widget(index)))
-	{
-		Page *p = static_cast<Page *>(central_widget->widget(index));
-		header_widget->centralPageChanged(p->sectionId(), p->pageType());
-	}
-}
-
-PageContainer *MainWidget::centralLayout()
-{
-	return central_widget;
-}
-
-
-RootWidget::RootWidget(int width, int height)
-{
-	main = new MainWidget;
-	addWidget(main);
-	QStackedLayout *root_layout = static_cast<QStackedLayout *>(layout());
-	root_layout->setSpacing(0);
-	root_layout->setContentsMargins(0, 0, 0, 0);
-
-	showFullScreen();
-	setFixedSize(width, height);
-
-	Page::setPageContainer(main->centralLayout());
-}
-
-PageContainer *RootWidget::centralLayout()
-{
-	return main->centralLayout();
-}
-
-MainWidget *RootWidget::mainWidget()
-{
-	return main;
 }

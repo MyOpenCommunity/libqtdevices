@@ -20,7 +20,8 @@
 #include "transitionwidget.h"
 #include "frame_receiver.h"
 #include "pagecontainer.h"
-#include "mainwidget.h"
+#include "homewindow.h"
+#include "windowcontainer.h"
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -71,8 +72,8 @@ BtMain::BtMain()
 	FrameReceiver::setClientMonitor(client_monitor);
 	banner::setClients(client_comandi, client_richieste);
 	Page::setClients(client_comandi, client_richieste);
-	root_widget = new RootWidget(maxWidth(), maxHeight());
-	page_container = root_widget->centralLayout();
+	window_container = new WindowContainer(maxWidth(), maxHeight());
+	page_container = window_container->centralLayout();
 	page_container->blockTransitions(true); // no transitions until homepage is showed
 	connect(page_container, SIGNAL(currentPageChanged(Page*)), SLOT(currentPageChanged(Page*)));
 	device::setClients(client_comandi, client_richieste);
@@ -223,8 +224,8 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		// TODO read the id from the <homepage> node
 		QDomNode pagemenu_home = getHomepageNode();
 		Home = new HomePage(pagemenu_home);
-		connect(root_widget->mainWidget(), SIGNAL(showHomePage()), Home, SLOT(showPage()));
-		connect(root_widget->mainWidget(), SIGNAL(showSectionPage(int)), Home, SLOT(showSectionPage(int)));
+		connect(window_container->homeWindow(), SIGNAL(showHomePage()), Home, SLOT(showPage()));
+		connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), Home, SLOT(showSectionPage(int)));
 
 		pagDefault = Home;
 #endif
