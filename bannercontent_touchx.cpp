@@ -1,9 +1,12 @@
 #include "bannercontent.h"
 #include "banner.h"
+#include "fontmanager.h"
 
 #include <QBoxLayout>
 #include <QGridLayout>
 #include <QDebug>
+#include <QVariant>
+#include <QFontMetrics>
 
 
 #ifdef LAYOUT_TOUCHX
@@ -14,8 +17,9 @@ BannerContent::BannerContent(QWidget *parent) : QWidget(parent)
 	QGridLayout *l = new QGridLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
+	// use column 1 for the vertical separator bar
 	l->setColumnStretch(0, 1);
-	l->setColumnStretch(1, 1);
+	l->setColumnStretch(2, 1);
 	need_update = true;
 }
 
@@ -81,7 +85,7 @@ void BannerContent::drawContent()
 		// contain: 0, 6, 12, 15
 		pages.append(0);
 
-		for (int i = 0; i < banner_list.size(); i += COLUMN_COUNT)
+		for (int i = 0, row = 0; i < banner_list.size(); i += COLUMN_COUNT, ++row)
 		{
 			// compute the height the two columns would have if adding the next
 			// two items
@@ -93,15 +97,32 @@ void BannerContent::drawContent()
 			{
 				total_height[LEFT_COLUMN] = total_height[RIGHT_COLUMN] = 0;
 				pages.append(i);
+				// reprocess current items starting at row 0
 				i -= COLUMN_COUNT;
+				row = -1;
 			}
 			else
 				for (int j = 0; j < COLUMN_COUNT && i + j < banner_list.size(); ++j)
-					l->addWidget(banner_list.at(i + j), i / COLUMN_COUNT, j);
+					l->addWidget(banner_list.at(i + j), row, j * 2);
 		}
 
 		pages.append(banner_list.size());
 		l->setRowStretch(l->rowCount(), 1);
+
+		// construct the vertical separator widget
+		QWidget *vertical_bar = new QWidget;
+		vertical_bar->setFixedWidth(20);
+		vertical_bar->setProperty("VerticalSeparator", true);
+
+		// create the layout with a spacer at the bottom, to
+		// mimick the layout of current code
+		QFont label_font = bt_global::font->get(FontManager::TEXT);
+		QVBoxLayout *bar_layout = new QVBoxLayout;
+		bar_layout->addWidget(vertical_bar, 1);
+		bar_layout->addSpacing(QFontMetrics(label_font).height());
+
+		// add the vertical bar to the layout
+		l->addLayout(bar_layout, 0, 1);
 	}
 
 	emit displayScrollButtons(pageCount() > 1);
@@ -112,6 +133,12 @@ void BannerContent::drawContent()
 	// contains banner_list.size()
 	for (int i = 0; i < banner_list.size(); ++i)
 		banner_list[i]->setVisible(i >= pages[current_page] && i < pages[current_page + 1]);
+	// resize the vertical separator to span all completely filled rows
+	// and ignore the last row if it only contains a single item
+	QLayoutItem *vertical_separator = l->itemAtPosition(0, 1);
+	l->removeItem(vertical_separator);
+	l->addItem(vertical_separator, 0, 1,
+		   (pages[current_page + 1] - pages[current_page]) / 2, 1);
 }
 
 void BannerContent::pgUp()
