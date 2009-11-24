@@ -4,6 +4,7 @@
 #include "navigation_bar.h"
 #include "main.h" // IMG_PATH
 #include "pagefactory.h" // getPage
+#include "skinmanager.h"
 
 #include <QTime>
 #include <QDomNode>
