@@ -21,11 +21,14 @@ IconPage::IconPage()
 	connect(&buttons_group, SIGNAL(buttonClicked(int)), SLOT(clicked(int)));
 }
 
-void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QString &label)
+void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QString &title)
 {
-	Page::buildPage(content, nav_bar, label, 35);
+	PageTitleWidget *title_widget = new PageTitleWidget(title, 35);
+	Page::buildPage(content, nav_bar, 0, title_widget);
 
 	// TODO duplicated in BannerPage
+	connect(content, SIGNAL(currentPageChanged(int, int)),
+		title_widget, SLOT(setCurrentPage(int, int)));
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(forwardClick()));
@@ -132,6 +135,7 @@ void IconContent::drawContent()
 	}
 
 	emit displayScrollButtons(pageCount() > 1);
+	emit currentPageChanged(current_page, pageCount());
 
 	need_update = false;
 
