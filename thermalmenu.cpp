@@ -15,7 +15,7 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "plantmenu.h"
 #include "xml_functions.h" // getChildren, getTextChild
-#include "content_widget.h" // content_widget
+#include "bannercontent.h"
 #include "skinmanager.h"
 
 #include <QRegExp>

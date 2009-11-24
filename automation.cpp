@@ -2,7 +2,7 @@
 #include "bann_automation.h"
 #include "actuators.h"
 #include "xml_functions.h" // getChildren, getTextChild
-#include "content_widget.h" // content_widget
+#include "bannercontent.h"
 #include "main.h"
 
 #include <QDomNode>

@@ -12,7 +12,7 @@
 #include "thermalmenu.h"
 #include "main.h" // bt_global::config
 #include "navigation_bar.h"
-#include "content_widget.h"
+#include "bannercontent.h"
 #include "skinmanager.h"
 
 #include <QVariant>

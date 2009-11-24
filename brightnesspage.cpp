@@ -11,7 +11,7 @@
 #include "brightnesspage.h"
 #include "displaycontrol.h" // bt_global::display
 #include "bann1_button.h" // bannOnSx
-#include "content_widget.h"
+#include "bannercontent.h"
 #include "banner.h"
 #include "btbutton.h"
 #include "singlechoicecontent.h"

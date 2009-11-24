@@ -1,4 +1,4 @@
-#include "content_widget.h"
+#include "bannercontent.h"
 #include "banner.h"
 
 #include <QBoxLayout>
@@ -10,7 +10,7 @@
 
 #ifdef LAYOUT_BTOUCH
 
-ContentWidget::ContentWidget(QWidget *parent) : QWidget(parent)
+BannerContent::BannerContent(QWidget *parent) : QWidget(parent)
 {
 	current_index = 0;
 	QVBoxLayout *l = new QVBoxLayout(this);
@@ -21,23 +21,23 @@ ContentWidget::ContentWidget(QWidget *parent) : QWidget(parent)
 	need_pagination = false;
 }
 
-int ContentWidget::bannerCount()
+int BannerContent::bannerCount()
 {
 	return banner_list.size();
 }
 
-void ContentWidget::initBanners()
+void BannerContent::initBanners()
 {
 	for (int i = 0; i < banner_list.size(); ++i)
 		banner_list.at(i)->inizializza();
 }
 
-banner *ContentWidget::getBanner(int i)
+banner *BannerContent::getBanner(int i)
 {
 	return banner_list.at(i);
 }
 
-void ContentWidget::appendBanner(banner *b)
+void BannerContent::appendBanner(banner *b)
 {
 	banner_list.append(b);
 	b->hide();
@@ -50,19 +50,19 @@ void ContentWidget::appendBanner(banner *b)
 		}
 }
 
-void ContentWidget::resetIndex()
+void BannerContent::resetIndex()
 {
 	current_index = 0;
 	need_update = true;
 }
 
-void ContentWidget::showEvent(QShowEvent *e)
+void BannerContent::showEvent(QShowEvent *e)
 {
 	drawContent();
 	QWidget::showEvent(e);
 }
 
-void ContentWidget::drawContent()
+void BannerContent::drawContent()
 {
 	if (!need_update)
 		return;
@@ -93,7 +93,7 @@ void ContentWidget::drawContent()
 	if (need_pagination)
 	{
 		int next_index = calculateNextIndex(true);
-		Q_ASSERT_X(current_index != -1, "ContentWidget::drawContent", "calculateNextIndex return -1!");
+		Q_ASSERT_X(current_index != -1, "BannerContent::drawContent", "calculateNextIndex return -1!");
 		int index = current_index;
 		while (true)
 		{
@@ -118,23 +118,23 @@ void ContentWidget::drawContent()
 	}
 }
 
-void ContentWidget::pgUp()
+void BannerContent::pgUp()
 {
 	current_index = calculateNextIndex(false);
-	Q_ASSERT_X(current_index != -1, "ContentWidget::pgUp", "calculateNextIndex return -1!");
+	Q_ASSERT_X(current_index != -1, "BannerContent::pgUp", "calculateNextIndex return -1!");
 	need_update = true;
 	drawContent();
 }
 
-void ContentWidget::pgDown()
+void BannerContent::pgDown()
 {
 	current_index = calculateNextIndex(true);
-	Q_ASSERT_X(current_index != -1, "ContentWidget::pgDown", "calculateNextIndex return -1!");
+	Q_ASSERT_X(current_index != -1, "BannerContent::pgDown", "calculateNextIndex return -1!");
 	need_update = true;
 	drawContent();
 }
 
-int ContentWidget::calculateNextIndex(bool up_to_down)
+int BannerContent::calculateNextIndex(bool up_to_down)
 {
 	int area_height = contentsRect().height();
 	int banners_height = 0;

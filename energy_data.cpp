@@ -8,7 +8,7 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "energy_device.h" // EnergyDevice
 #include "btmain.h" // bt_global::btmain
-#include "content_widget.h"
+#include "bannercontent.h"
 #include "navigation_bar.h"
 #include "btbutton.h"
 
@@ -259,7 +259,7 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node)
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency"));
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(toggleCurrency()));
 
-	buildPage(new ContentWidget, nav_bar);
+	buildPage(new BannerContent, nav_bar);
 
 	is_any_interface_enabled = false;
 	loadItems(config_node, nav_bar);

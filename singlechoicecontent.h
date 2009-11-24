@@ -1,11 +1,11 @@
 #ifndef SINGLECHOICECONTENT_H
 #define SINGLECHOICECONTENT_H
 
-#include "content_widget.h"
+#include "bannercontent.h"
 
 #include <QButtonGroup>
 
-class SingleChoiceContent : public ContentWidget
+class SingleChoiceContent : public BannerContent
 {
 Q_OBJECT
 public:

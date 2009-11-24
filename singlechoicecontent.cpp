@@ -4,7 +4,7 @@
 #include "btbutton.h"
 
 SingleChoiceContent::SingleChoiceContent(QWidget *parent)
-		: ContentWidget(parent)
+		: BannerContent(parent)
 {
 	buttons.setExclusive(true);
 

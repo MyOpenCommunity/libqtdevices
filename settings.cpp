@@ -8,7 +8,7 @@
 #include "brightnesspage.h"
 #include "displaypage.h"
 #include "version.h"
-#include "content_widget.h" // content_widget
+#include "bannercontent.h"
 #include "main.h"
 #include "skinmanager.h"
 

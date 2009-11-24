@@ -1,4 +1,4 @@
-#include "content_widget.h"
+#include "bannercontent.h"
 #include "banner.h"
 
 #include <QBoxLayout>
@@ -8,7 +8,7 @@
 
 #ifdef LAYOUT_TOUCHX
 
-ContentWidget::ContentWidget(QWidget *parent) : QWidget(parent)
+BannerContent::BannerContent(QWidget *parent) : QWidget(parent)
 {
 	current_page = 0;
 	QGridLayout *l = new QGridLayout(this);
@@ -19,23 +19,23 @@ ContentWidget::ContentWidget(QWidget *parent) : QWidget(parent)
 	need_update = true;
 }
 
-int ContentWidget::bannerCount()
+int BannerContent::bannerCount()
 {
 	return banner_list.size();
 }
 
-void ContentWidget::initBanners()
+void BannerContent::initBanners()
 {
 	for (int i = 0; i < banner_list.size(); ++i)
 		banner_list.at(i)->inizializza();
 }
 
-banner *ContentWidget::getBanner(int i)
+banner *BannerContent::getBanner(int i)
 {
 	return banner_list.at(i);
 }
 
-void ContentWidget::appendBanner(banner *b)
+void BannerContent::appendBanner(banner *b)
 {
 	banner_list.append(b);
 	b->hide();
@@ -48,19 +48,19 @@ void ContentWidget::appendBanner(banner *b)
 		}
 }
 
-void ContentWidget::resetIndex()
+void BannerContent::resetIndex()
 {
 	need_update = true;
 }
 
-void ContentWidget::showEvent(QShowEvent *e)
+void BannerContent::showEvent(QShowEvent *e)
 {
 	drawContent();
 	QWidget::showEvent(e);
 }
 
 // TODO try to unify layout computation with IconContent
-void ContentWidget::drawContent()
+void BannerContent::drawContent()
 {
 	const int LEFT_COLUMN = 0, RIGHT_COLUMN = 1, COLUMN_COUNT = 2;
 
@@ -77,7 +77,7 @@ void ContentWidget::drawContent()
 		// the pages array contains the starting indices of each page in banner_list
 		// to simplify the last page case, an additional item is added to the array
 		// and it contains banner_list.size()
-		// for example for a ContentWIdget with 15 items and 6 items per page, pages will
+		// for example for a BannerContent with 15 items and 6 items per page, pages will
 		// contain: 0, 6, 12, 15
 		pages.append(0);
 
@@ -114,21 +114,21 @@ void ContentWidget::drawContent()
 		banner_list[i]->setVisible(i >= pages[current_page] && i < pages[current_page + 1]);
 }
 
-void ContentWidget::pgUp()
+void BannerContent::pgUp()
 {
 	current_page = (current_page - 1 + pageCount()) % pageCount();
 	need_update = true;
 	drawContent();
 }
 
-void ContentWidget::pgDown()
+void BannerContent::pgDown()
 {
 	current_page = (current_page + 1) % pageCount();
 	need_update = true;
 	drawContent();
 }
 
-int ContentWidget::pageCount() const
+int BannerContent::pageCount() const
 {
 	return pages.size() - 1;
 }

@@ -1,7 +1,7 @@
 #include "videoentryphone.h"
 #include "bann_videoentryphone.h"
 #include "xml_functions.h" // getTextChild, getChildren
-#include "content_widget.h"
+#include "bannercontent.h"
 #include "main.h"
 
 
@@ -19,7 +19,7 @@ void VideoEntryPhone::loadDevices(const QDomNode &config_node)
 	{
 		int id = getTextChild(device, "id").toInt();
 		if (id != POSTO_ESTERNO)
-			qFatal("Type of device not handler by Video EntryPhone page!");
+			qFatal("Type of device not handled by Video EntryPhone page!");
 		QString img1 = IMG_PATH + getTextChild(device, "cimg1");
 		QString img2 = IMG_PATH + getTextChild(device, "cimg2");
 		QString img3 = IMG_PATH + getTextChild(device, "cimg3");

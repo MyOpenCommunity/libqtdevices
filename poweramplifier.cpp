@@ -3,7 +3,7 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "generic_functions.h" // int trasformaVol(int vol)
-#include "content_widget.h"
+#include "bannercontent.h"
 #include "btbutton.h" // needed to directly connect button signals with slots
 
 #include <QVariant> // setProperty

@@ -20,8 +20,8 @@ class Client;
 class PageContainer;
 class QVBoxLayout;
 class TransitionWidget;
-class ContentWidget;
 class NavigationBar;
+class BannerContent;
 
 
 // according to Qt Style Sheets Reference, QWidget subclasses need
@@ -40,7 +40,7 @@ protected:
 // duplication the typedef is put here, so all pages can be use freely
 typedef QHash<int, QVariant> StatusList;
 
-// Allows type-safe access to content_widget from page subclasses; by default
+// Allows type-safe access to __content from page subclasses; by default
 // it returns a QWidget; to return a different QWidget subtype, add a
 //
 // typedef TYPE ContentType;
@@ -108,11 +108,11 @@ protected:
 	template<class P>
 	typename P::ContentType* content(P*)
 	{
-		return (typename P::ContentType*)content_widget;
+		return (typename P::ContentType*)__content;
 	}
 
 	// WARNING: do not use this directly, use page_content #defined above
-	QWidget *content_widget;
+	QWidget *__content;
 	Page *currentPage();
 	void startTransition(const QPixmap &prev_image);
 	void buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget=0, QWidget *title_widget=0);
@@ -140,15 +140,15 @@ class BannerPage : public Page
 {
 public:
 	// the type returned by page_content
-	typedef ContentWidget ContentType;
+	typedef BannerContent ContentType;
 
 	BannerPage(QWidget *parent=0);
 
 	virtual void activateLayout();
 
 protected:
-	void buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *top_widget=0);
-	void buildPage(ContentWidget *content, NavigationBar *nav_bar, const QString &title, QWidget *top_widget=0);
+	void buildPage(BannerContent *content, NavigationBar *nav_bar, QWidget *top_widget=0);
+	void buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title, QWidget *top_widget=0);
 	void buildPage(QWidget *top_widget=0);
 	void buildPage(const QString &title);
 };

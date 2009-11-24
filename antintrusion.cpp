@@ -4,7 +4,7 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "alarmpage.h"
 #include "btmain.h" // bt_global::btmain
-#include "content_widget.h"
+#include "bannercontent.h"
 #include "navigation_bar.h"
 #include "btbutton.h"
 #include "main.h"
@@ -35,7 +35,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	// button and to obtain a reference of it (to show/hide the button).
 	// We can do better!
 	NavigationBar *nav_bar = new NavigationBar(IMG_PATH "btnparzializzazione.png");
-	buildPage(new ContentWidget, nav_bar, top_widget);
+	buildPage(new BannerContent, nav_bar, top_widget);
 	forward_button = nav_bar->forward_button;
 
 	connect(this, SIGNAL(abilitaParz(bool)), SLOT(IsParz(bool)));

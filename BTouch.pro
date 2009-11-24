@@ -93,6 +93,7 @@ HEADERS += actuators.h \
            bann_videoentryphone.h \
            bannciclaz.h \
            banner.h \
+           bannercontent.h \
            bannfrecce.h \
            bann_thermal_regulation.h \
            bannonoffcombo.h \
@@ -106,7 +107,6 @@ HEADERS += actuators.h \
            calibrate.h \
            changedatetime.h \
            cleanscreen.h \
-           content_widget.h \
            contrast.h \
            datetime.h \
            device.h \
@@ -204,6 +204,8 @@ SOURCES += actuators.cpp \
            bann_videoentryphone.cpp \
            bannciclaz.cpp \
            banner.cpp \
+           bannercontent.cpp \
+           bannercontent_touchx.cpp \         
            bannfrecce.cpp \
            bann_thermal_regulation.cpp \
            bannonoffcombo.cpp \
@@ -217,8 +219,6 @@ SOURCES += actuators.cpp \
            calibrate.cpp \
            changedatetime.cpp \
            cleanscreen.cpp \
-           content_widget.cpp \
-           content_widget_touchx.cpp \
            contrast.cpp \
            datetime.cpp \
            definitions.cpp \

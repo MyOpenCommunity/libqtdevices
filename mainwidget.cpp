@@ -8,7 +8,7 @@
 #include "btbutton.h"
 #include "iconsettings.h"
 #include "generic_functions.h" // getBostikName
-#include "content_widget.h"
+#include "bannercontent.h"
 #include "fontmanager.h"
 
 #include <QDebug>

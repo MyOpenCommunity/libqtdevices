@@ -11,14 +11,14 @@ class QShowEvent;
 
 
 /**
- * The ContentWidget class manage a list of banner usually put inside a Page.
+ * The BannerContent class manage a list of banner usually put inside a Page.
  */
-class ContentWidget : public QWidget
+class BannerContent : public QWidget
 {
 friend void BannerPage::activateLayout();
 Q_OBJECT
 public:
-	ContentWidget(QWidget *parent=0);
+	BannerContent(QWidget *parent=0);
 	void appendBanner(banner *b);
 	int bannerCount();
 	banner *getBanner(int i);
@@ -50,12 +50,12 @@ private:
 	QList<banner*> banner_list;
 
 #ifdef LAYOUT_BTOUCH
-	// The index of the banner showed at the top of the ContentWidget
+	// The index of the banner showed at the top of the BannerContent
 	int current_index;
 
 	bool first_time; // true if the page is shown for the first time
 
-	// true if the banners height exceed the ContentWidget height (so we have to do a pagination)
+	// true if the banners height exceed the BannerContent height (so we have to do a pagination)
 	bool need_pagination;
 #endif
 #ifdef LAYOUT_TOUCHX

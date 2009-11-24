@@ -6,7 +6,7 @@
 #include "xml_functions.h" // getElement
 #include "screensaverpage.h"
 #include "skinmanager.h" // SkinContext, bt_global::skin
-#include "content_widget.h"
+#include "bannercontent.h"
 #include "btmain.h" // bt_global::btmain
 
 

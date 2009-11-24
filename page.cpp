@@ -5,7 +5,7 @@
 #include "transitionwidget.h"
 #include "pagecontainer.h"
 #include "navigation_bar.h"
-#include "content_widget.h"
+#include "bannercontent.h"
 #include "hardware_functions.h" // hardwareType()
 
 #include <QVBoxLayout>
@@ -50,7 +50,7 @@ void StyledWidget::paintEvent(QPaintEvent *)
 Page::Page(QWidget *parent) : StyledWidget(parent)
 {
 	Q_ASSERT_X(page_container, "Page::Page", "PageContainer not set!");
-	content_widget = 0;
+	__content = 0;
 
 	// pages with parent have a special meaning (for example, sound diffusion)
 	// so they must not handled here
@@ -81,7 +81,7 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget, QW
 		l = new QVBoxLayout(this);
 
 	// the top_widget (if present) is a widget that must be at the top of the page,
-	// limiting the height (so even the navigation) of the ContentWidget
+	// limiting the height (so even the navigation) of the content
 	if (top_widget)
 		l->addWidget(top_widget);
 
@@ -108,7 +108,7 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget, QW
 	l->setContentsMargins(0, 5, 0, 10);
 	l->setSpacing(0);
 
-	content_widget = content;
+	__content = content;
 }
 
 void Page::activateLayout()
@@ -211,7 +211,7 @@ void BannerPage::activateLayout()
 		page_content->drawContent();
 }
 
-void BannerPage::buildPage(ContentWidget *content, NavigationBar *nav_bar, const QString &title, QWidget *top_widget)
+void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title, QWidget *top_widget)
 {
 	Page::buildPage(content, nav_bar, title, 60, top_widget);
 
@@ -225,15 +225,15 @@ void BannerPage::buildPage(ContentWidget *content, NavigationBar *nav_bar, const
 
 void BannerPage::buildPage(QWidget *top_widget)
 {
-	buildPage(new ContentWidget, new NavigationBar, "", top_widget);
+	buildPage(new BannerContent, new NavigationBar, "", top_widget);
 }
 
 void BannerPage::buildPage(const QString &title)
 {
-	buildPage(new ContentWidget, new NavigationBar, title, 0);
+	buildPage(new BannerContent, new NavigationBar, title, 0);
 }
 
-void BannerPage::buildPage(ContentWidget *content, NavigationBar *nav_bar, QWidget *top_widget)
+void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, QWidget *top_widget)
 {
 	buildPage(content, nav_bar, "", top_widget);
 }

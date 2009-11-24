@@ -16,7 +16,7 @@
 #include "bann1_button.h"
 #include "main.h"
 #include "xml_functions.h" // getChildren, getTextChild
-#include "content_widget.h"
+#include "bannercontent.h"
 
 #include <QDebug>
 
