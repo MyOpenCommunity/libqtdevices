@@ -236,7 +236,7 @@ void HeaderInfo::loadItems(const QDomNode &config_node)
 
 HeaderNavigationBar::HeaderNavigationBar(const QDomNode &config_node)
 {
-	SkinContext cxt(0);
+	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	setFixedSize(800, 85);
 
 	loadItems(config_node);

@@ -21,12 +21,12 @@ HomeWindow::HomeWindow()
 
 	if (hardwareType() == TOUCH_X)
 	{
-		SkinContext cxt(99);
-
 		QDomNode pagemenu_home = getHomepageNode();
 		int favourites_pageid = getTextChild(pagemenu_home, "h_lnk_pageID").toInt();
 		QDomNode favourites_node = getPageNodeFromPageId(favourites_pageid);
 		int info_bar_pageid = getTextChild(favourites_node, "h_lnk_pageID").toInt();
+
+		SkinContext cxt(getTextChild(pagemenu_home, "cid").toInt());
 
 		QGridLayout *main_layout = new QGridLayout(this);
 		main_layout->setSpacing(0);
