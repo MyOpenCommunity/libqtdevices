@@ -23,6 +23,8 @@ NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up
 		up_button = createButton(up_icon, SIGNAL(upClick()));
 		down_button = createButton(down_icon, SIGNAL(downClick()));
 		back_button = createButton(back_icon, SIGNAL(backClick()));
+		main_layout->setContentsMargins(13, 0, 12, 50);
+		main_layout->setSpacing(10);
 	}
 	else
 	{
@@ -32,10 +34,9 @@ NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up
 		up_button = createButton(up_icon, SIGNAL(upClick()));
 		forward_button = createButton(forward_icon, SIGNAL(forwardClick()));
 		main_layout->addStretch(1);
+		main_layout->setContentsMargins(0, 0, 0, 0);
+		main_layout->setSpacing(0);
 	}
-
-	main_layout->setContentsMargins(0, 0, 0, 0);
-	main_layout->setSpacing(0);
 }
 
 BtButton *NavigationBar::createButton(QString icon, const char *signal)
