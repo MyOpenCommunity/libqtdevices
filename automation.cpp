@@ -38,20 +38,20 @@ banner *Automation::getBanner(const QDomNode &item_node)
 	{
 	case ATTUAT_AUTOM_INT_SIC:
 		//b = new attuatAutomIntSic(this, where, img1, img2, img3, img4);
-		b = new SecureInterblockedActuator(this, item_node);
+		b = new SecureInterblockedActuator(0, item_node);
 		break;
 	case ATTUAT_AUTOM_INT:
 		//b = new attuatAutomInt(this, where, img1, img2, img3, img4);
-		b = new InterblockedActuator(this, item_node);
+		b = new InterblockedActuator(0, item_node);
 		break;
 	case ATTUAT_AUTOM:
 		// DELETE
 		//b = new attuatAutom(this, where, img1, img2, img3, img4);
-		b = new SingleActuator(this, item_node, where);
+		b = new SingleActuator(0, item_node, where);
 		break;
 	case ATTUAT_VCT_SERR:
 		//b = new attuatPuls(this, where, img1, img2, VCT_SERR);
-		b = new ButtonActuator(this, item_node, VCT_SERR);
+		b = new ButtonActuator(0, item_node, VCT_SERR);
 		break;
 	case GR_ATTUAT_INT:
 	{
@@ -63,23 +63,23 @@ banner *Automation::getBanner(const QDomNode &item_node)
 
 		b = new grAttuatInt(this, addresses, img1, img2, img3);
 		*/
-		b = new InterblockedActuatorGroup(this, item_node);
+		b = new InterblockedActuatorGroup(0, item_node);
 		break;
 	}
 	case AUTOM_CANC_ATTUAT_ILL:
 		//b = new automCancAttuatIll(this, where, img1, img2, time);
-		b = new GateLightingActuator(this, item_node);
+		b = new GateLightingActuator(0, item_node);
 		break;
 	case AUTOM_CANC_ATTUAT_VC:
 		//b = new automCancAttuatVC(this, where, img1, img2);
-		b = new GateEntryphoneActuator(this, item_node);
+		b = new GateEntryphoneActuator(0, item_node);
 		break;
 	case ATTUAT_AUTOM_PULS:
 		//b = new attuatPuls(this, where, img1, img2, AUTOMAZ);
-		b = new ButtonActuator(this, item_node, AUTOMAZ);
+		b = new ButtonActuator(0, item_node, AUTOMAZ);
 		break;
 	case PPT_STAT:
-		b = new PPTStat(this, where, cid);
+		b = new PPTStat(0, where, cid);
 		break;
 	}
 

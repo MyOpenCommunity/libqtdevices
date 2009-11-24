@@ -55,43 +55,43 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 	case DIMMER:
 		// DELETE: remove these comments when the classes are gone
 		//b = new dimmer(this, where, img1, img2, img3, img4, img5);
-		b = new DimmerNew(this, item_node, where);
+		b = new DimmerNew(0, item_node, where);
 		break;
 	case ATTUAT_AUTOM:
-		b = new SingleActuator(this, item_node, where);
+		b = new SingleActuator(0, item_node, where);
 		break;
 	case GR_DIMMER:
 		// DELETE:
 		//b = new grDimmer(this, getAddresses(item_node), img1, img2, img3, img4);
-		b = new DimmerGroup(this, item_node, getAddresses(item_node));
+		b = new DimmerGroup(0, item_node, getAddresses(item_node));
 		break;
 	case GR_ATTUAT_AUTOM:
-		b = new LightGroup(this, item_node, getAddresses(item_node));
+		b = new LightGroup(0, item_node, getAddresses(item_node));
 		break;
 	case ATTUAT_AUTOM_TEMP:
 		//DELETE
 		//b = new attuatAutomTemp(this, where, img1, img2, img3, img4, times);
-		b = new TempLight(this, item_node);
+		b = new TempLight(0, item_node);
 		break;
 	case ATTUAT_VCT_LS:
 		//DELETE
 		//b = new attuatPuls(this, where, img1, img2, VCT_LS);
-		b = new ButtonActuator(this, item_node, VCT_LS);
+		b = new ButtonActuator(0, item_node, VCT_LS);
 		break;
 	case DIMMER_100:
 		// DELETE
 		//b = new dimmer100(this, where, img1, img2 ,img3, img4, img5, getTextChild(item,"softstart").toInt(),
 		//		getTextChild(item_node,"softstop").toInt());
-		b = new Dimmer100New(this, item_node);
+		b = new Dimmer100New(0, item_node);
 		break;
 	case ATTUAT_AUTOM_TEMP_NUOVO_N:
 		// DELETE
 		//b = new attuatAutomTempNuovoN(this, where, img1, img2, img3, img4, times);
-		b = new TempLightVariable(this, item_node);
+		b = new TempLightVariable(0, item_node);
 		break;
 	case GR_DIMMER100:
 	{
-		b = new Dimmer100Group(this, item_node);
+		b = new Dimmer100Group(0, item_node);
 		// DELETE
 		/*
 		QList<int> sstart, sstop;
@@ -114,7 +114,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 			times.append("");
 		b = new attuatAutomTempNuovoF(this, where, img1, img2, img3, times.at(0));
 		*/
-		b = new TempLightFixed(this, item_node);
+		b = new TempLightFixed(0, item_node);
 		break;
 	}
 

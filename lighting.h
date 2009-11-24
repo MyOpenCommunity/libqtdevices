@@ -30,7 +30,7 @@ public:
 
 	virtual int sectionId();
 
-	banner *getBanner(const QDomNode &item_node);
+	static banner *getBanner(const QDomNode &item_node);
 
 protected:
 	virtual void showEvent(QShowEvent *event);

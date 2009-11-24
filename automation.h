@@ -30,7 +30,7 @@ public:
 
 	virtual int sectionId();
 
-	banner *getBanner(const QDomNode &item_node);
+	static banner *getBanner(const QDomNode &item_node);
 
 private:
 	void loadItems(const QDomNode &config_node);
