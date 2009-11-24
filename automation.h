@@ -19,6 +19,7 @@
 #include <QWidget>
 
 class QDomNode;
+class banner;
 
 
 class Automation : public BannerPage
@@ -28,6 +29,8 @@ public:
 	Automation(const QDomNode &config_node);
 
 	virtual int sectionId();
+
+	banner *getBanner(const QDomNode &item_node);
 
 private:
 	void loadItems(const QDomNode &config_node);

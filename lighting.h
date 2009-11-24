@@ -19,6 +19,7 @@
 #include <QWidget>
 
 class QDomNode;
+class banner;
 
 
 class Lighting : public BannerPage
@@ -28,6 +29,8 @@ public:
 	Lighting(const QDomNode &config_node);
 
 	virtual int sectionId();
+
+	banner *getBanner(const QDomNode &item_node);
 
 protected:
 	virtual void showEvent(QShowEvent *event);
