@@ -47,6 +47,32 @@ void StyledWidget::paintEvent(QPaintEvent *)
 }
 
 
+PageTitleWidget::PageTitleWidget(const QString &label, int height)
+{
+	QLabel *title = new QLabel(label);
+	title->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
+	title->setFixedHeight(height);
+
+	QLabel *current_page = new QLabel;
+	current_page->setAlignment(Qt::AlignTop|Qt::AlignRight);
+
+	QHBoxLayout *t = new QHBoxLayout(this);
+	t->addStretch(1);
+	t->addWidget(title);
+	t->addWidget(current_page, 1);
+}
+
+void PageTitleWidget::setCurrentPage(int current, int total)
+{
+	if (total == 1)
+		return;
+
+	QLabel *label = static_cast<QLabel*>(layout()->itemAt(2)->widget());
+
+	label->setText(QString("%1/%2").arg(current + 1).arg(total));
+}
+
+
 Page::Page(QWidget *parent) : StyledWidget(parent)
 {
 	Q_ASSERT_X(page_container, "Page::Page", "PageContainer not set!");

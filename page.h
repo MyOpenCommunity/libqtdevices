@@ -36,6 +36,19 @@ protected:
 };
 
 
+// helper widget containing a centered label and a label on the right
+// displaying the current page
+class PageTitleWidget : public QWidget
+{
+Q_OBJECT
+public:
+	PageTitleWidget(const QString &label, int height);
+
+public slots:
+	void setCurrentPage(int current, int total);
+};
+
+
 // This typedef is needed by slots status_changed(StatusList). In order to avoid
 // duplication the typedef is put here, so all pages can be use freely
 typedef QHash<int, QVariant> StatusList;
