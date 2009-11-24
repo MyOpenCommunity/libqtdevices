@@ -425,7 +425,7 @@ HeaderWidget::HeaderWidget(const QDomNode &homepage_node, const QDomNode &infoba
 	main_layout->addWidget(header_info);
 
 	connect(header_info, SIGNAL(showSectionPage(int)), SIGNAL(showSectionPage(int)));
-//	connect(header_info, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
+	connect(header_info, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
 }
 
 void HeaderWidget::centralPageChanged(int section_id, Page::PageType type)
