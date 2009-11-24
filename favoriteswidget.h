@@ -15,6 +15,9 @@ public:
 
 protected:
 	virtual QSize minimumSizeHint() const;
+
+private:
+	void loadItems(const QDomNode &config_node);
 };
 
 #endif // FAVORITESWIDGET_H
