@@ -15,7 +15,7 @@ BannerContent::BannerContent(QWidget *parent) : QWidget(parent)
 {
 	current_page = 0;
 	QGridLayout *l = new QGridLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
+	l->setContentsMargins(18, 0, 17, 0);
 	l->setSpacing(0);
 	// use column 1 for the vertical separator bar
 	l->setColumnStretch(0, 1);
