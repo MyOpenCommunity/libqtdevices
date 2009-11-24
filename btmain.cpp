@@ -19,7 +19,7 @@
 #include "banner.h"
 #include "transitionwidget.h"
 #include "frame_receiver.h"
-#include "main_window.h"
+#include "pagecontainer.h"
 #include "mainwidget.h"
 
 #include <QXmlSimpleReader>
@@ -72,9 +72,9 @@ BtMain::BtMain()
 	banner::setClients(client_comandi, client_richieste);
 	Page::setClients(client_comandi, client_richieste);
 	root_widget = new RootWidget(maxWidth(), maxHeight());
-	main_window = root_widget->centralLayout();
-	main_window->blockTransitions(true); // no transitions until homepage is showed
-	connect(main_window, SIGNAL(currentPageChanged(Page*)), SLOT(currentPageChanged(Page*)));
+	page_container = root_widget->centralLayout();
+	page_container->blockTransitions(true); // no transitions until homepage is showed
+	connect(page_container, SIGNAL(currentPageChanged(Page*)), SLOT(currentPageChanged(Page*)));
 	device::setClients(client_comandi, client_richieste);
 
 	connect(client_monitor,SIGNAL(monitorSu()), SLOT(monitorReady()));
@@ -208,7 +208,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			// homePage must be built after the loading of the configuration,
 			// to ensure that values displayed (by homePage or its child pages)
 			// is in according with saved values.
-			Home = new homePage(pagemenu_home);
+			Home = new HomePage(pagemenu_home);
 
 			QDomNode home_node = getChildWithName(displaypages, "homepage");
 			if (getTextChild(home_node, "isdefined").toInt())
@@ -225,7 +225,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		{
 			// TODO read the id from the <homepage> node
 			QDomNode pagemenu_home = getHomepageNode();
-			Home = new homePage(pagemenu_home);
+			Home = new HomePage(pagemenu_home);
 			connect(root_widget->mainWidget(), SIGNAL(showHomePage()), Home, SLOT(showPage()));
 			connect(root_widget->mainWidget(), SIGNAL(showSectionPage(int)), Home, SLOT(showSectionPage(int)));
 
@@ -235,8 +235,8 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			qFatal("neither displaypages nor gui nodes found on xml config file!");
 
 		// TODO: read the transition effect from configuration
-		main_window->installTransitionWidget(new BlendingTransition);
-//		main_window->installTransitionWidget(new MosaicTransition);
+		page_container->installTransitionWidget(new BlendingTransition);
+//		page_container->installTransitionWidget(new MosaicTransition);
 		return true;
 	}
 	return false;
@@ -302,7 +302,7 @@ void BtMain::myMain()
 	qDebug("entro MyMain");
 
 	init();
-	main_window->blockTransitions(false);
+	page_container->blockTransitions(false);
 	Home->showPage();
 	bt_global::devices_cache.init_devices();
 
@@ -405,17 +405,17 @@ static unsigned long now()
 void BtMain::unrollPages()
 {
 	int seq_pages = 0;
-	if (main_window->currentPage() != pagDefault && main_window->currentPage() != version)
-		while (main_window->currentPage() != Home)
+	if (page_container->currentPage() != pagDefault && page_container->currentPage() != version)
+		while (page_container->currentPage() != Home)
 		{
-			main_window->currentPage()->forceClosed();
+			page_container->currentPage()->forceClosed();
 			++seq_pages;
 			// To avoid infinite loop, we assume that the application
 			// can have a maximum number of sequential pages in the
 			// navigation equal to 50.
 			if (seq_pages > 50)
 			{
-				qWarning() << "Maximum number of sequential pages reached with" << main_window->currentPage();
+				qWarning() << "Maximum number of sequential pages reached with" << page_container->currentPage();
 				break;
 			}
 		}
@@ -500,15 +500,15 @@ void BtMain::gesScrSav()
 					screensaver = getScreenSaver(target_screensaver);
 
 				Page *target = pagDefault ? pagDefault : Home;
-				prev_page = main_window->currentPage();
+				prev_page = page_container->currentPage();
 
-				main_window->blockTransitions(true);
+				page_container->blockTransitions(true);
 				if (target == pagDefault)
 					unrollPages();
 
 				target->showPage();
-				main_window->blockTransitions(false);
-				qDebug() << "start screensaver:" << target_screensaver << "on:" << main_window->currentPage();
+				page_container->blockTransitions(false);
+				qDebug() << "start screensaver:" << target_screensaver << "on:" << page_container->currentPage();
 				screensaver->start(target);
 				emit startscreensaver(prev_page);
 				bt_global::display.setState(DISPLAY_SCREENSAVER);
@@ -518,7 +518,7 @@ void BtMain::gesScrSav()
 		{
 			Page *target = screensaver->target();
 			if (target != pagDefault)
-				main_window->setCurrentPage(prev_page);
+				page_container->setCurrentPage(prev_page);
 
 			screensaver->stop();
 		}
@@ -574,7 +574,7 @@ void BtMain::freeze(bool b)
 		{
 			Page *target = screensaver->target();
 			if (target != pagDefault)
-				main_window->setCurrentPage(prev_page);
+				page_container->setCurrentPage(prev_page);
 
 			screensaver->stop();
 		}
@@ -586,7 +586,7 @@ void BtMain::freeze(bool b)
 				tasti->setMode(Keypad::HIDDEN);
 				connect(tasti, SIGNAL(Closed()), this, SLOT(testPwd()));
 			}
-			if (main_window->currentPage() != tasti)
+			if (page_container->currentPage() != tasti)
 				tasti->showPage();
 		}
 		qApp->removeEventFilter(this);

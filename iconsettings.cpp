@@ -1,4 +1,4 @@
-#include "settings_touchx.h"
+#include "iconsettings.h"
 #include "changedatetime.h"
 #include "navigation_bar.h"
 #include "xml_functions.h"
@@ -14,18 +14,18 @@ enum
 };
 
 
-SettingsTouchX::SettingsTouchX(const QDomNode &config_node)
+IconSettings::IconSettings(const QDomNode &config_node)
 {
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 	loadItems(config_node);
 }
 
-int SettingsTouchX::sectionId()
+int IconSettings::sectionId()
 {
 	return IMPOSTAZIONI;
 }
 
-void SettingsTouchX::loadItems(const QDomNode &config_node)
+void IconSettings::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{

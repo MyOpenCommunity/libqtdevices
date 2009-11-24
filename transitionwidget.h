@@ -8,7 +8,6 @@
 #include <QRect>
 
 class Page;
-class MainWindow;
 
 
 /**
@@ -33,7 +32,6 @@ protected:
 	virtual void initTransition() {}
 
 private:
-	MainWindow *main_window;
 	QEventLoop local_loop;
 };
 

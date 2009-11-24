@@ -19,14 +19,14 @@
 #include <QDomNode>
 
 
-homePage::homePage(const QDomNode &config_node) : SectionPageContainer(config_node)
+HomePage::HomePage(const QDomNode &config_node) : SectionPage(config_node)
 {
 	temp_viewer = new TemperatureViewer(this);
 	loadItems(config_node);
 }
 
-// Load only the item that is not a section page (which is loaded by SectionPageContainer)
-void homePage::loadItems(const QDomNode &config_node)
+// Load only the item that is not a section page (which is loaded by SectionPage)
+void HomePage::loadItems(const QDomNode &config_node)
 {
 	if (hardwareType() == TOUCH_X)
 		return;
@@ -58,17 +58,17 @@ void homePage::loadItems(const QDomNode &config_node)
 	}
 }
 
-void homePage::inizializza()
+void HomePage::inizializza()
 {
 	temp_viewer->inizializza();
 }
 
-Page::PageType homePage::pageType()
+Page::PageType HomePage::pageType()
 {
 	return HOMEPAGE;
 }
 
-void homePage::showSectionPage(int page_id)
+void HomePage::showSectionPage(int page_id)
 {
 	clicked(page_id);
 }

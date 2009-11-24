@@ -17,7 +17,7 @@
 #include <QWidget>
 
 class Client;
-class MainWindow;
+class PageContainer;
 class QVBoxLayout;
 class TransitionWidget;
 class ContentWidget;
@@ -91,7 +91,7 @@ public:
 	void sendFrame(QString frame) const;
 	void sendInit(QString frame) const;
 
-	static void setMainWindow(MainWindow *window);
+	static void setPageContainer(PageContainer *window);
 	virtual void activateLayout();
 
 public slots:
@@ -119,7 +119,7 @@ protected:
 	void buildPage(QWidget *content, QWidget *nav_bar, const QString& label, int label_height, QWidget *top_widget=0);
 
 private:
-	static MainWindow *main_window;
+	static PageContainer *page_container;
 	static Client *client_richieste;
 	static Client *client_comandi;
 	void forceClosed();

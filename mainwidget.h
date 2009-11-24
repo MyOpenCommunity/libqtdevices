@@ -144,7 +144,7 @@ class MainWidget : public QWidget
 Q_OBJECT
 public:
 	MainWidget();
-	MainWindow *centralLayout();
+	PageContainer *centralLayout();
 
 signals:
 	void showHomePage();
@@ -154,7 +154,7 @@ public slots:
 	void centralWidgetChanged(int index);
 
 private:
-	MainWindow *central_widget;
+	PageContainer *central_widget;
 	HeaderWidget *header_widget;
 	FavoritesWidget *favorites_widget;
 };
@@ -167,7 +167,7 @@ class RootWidget : public QStackedWidget
 Q_OBJECT
 public:
 	RootWidget(int width, int height);
-	MainWindow *centralLayout();
+	PageContainer *centralLayout();
 	MainWidget *mainWidget();
 
 private:

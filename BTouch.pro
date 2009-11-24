@@ -129,6 +129,8 @@ HEADERS += actuators.h \
            hardware_functions.h \
            homepage.h \
            icondispatcher.h \
+           iconpage.h \
+           iconsettings.h \
            keypad.h \
            lansettings.h \
            lighting.h \
@@ -137,7 +139,6 @@ HEADERS += actuators.h \
            loads.h \
            main.h \
            mainwidget.h \
-           main_window.h \
            mediaplayer.h \
            multimedia_source.h \
            multisounddiff.h \
@@ -158,8 +159,8 @@ HEADERS += actuators.h \
            scenevocond.h \
            screensaver.h \
            screensaverpage.h \
+           sectionpage.h \
            settings.h \
-           settings_touchx.h \
            singlechoicecontent.h \
            singlechoicepage.h \
            skinmanager.h \
@@ -240,6 +241,8 @@ SOURCES += actuators.cpp \
            genpage.cpp \
            homepage.cpp \
            icondispatcher.cpp \
+           iconpage.cpp \
+           iconsettings.cpp \
            keypad.cpp \
            lansettings.cpp \
            lighting.cpp \
@@ -248,7 +251,6 @@ SOURCES += actuators.cpp \
            loads.cpp \
            main.cpp \
            mainwidget.cpp \
-           main_window.cpp \
            mediaplayer.cpp \
            multimedia_source.cpp \
            multisounddiff.cpp \
@@ -269,8 +271,8 @@ SOURCES += actuators.cpp \
            scenevocond.cpp \
            screensaver.cpp \
            screensaverpage.cpp \
+           sectionpage.cpp \
            settings.cpp \
-           settings_touchx.cpp \
            singlechoicecontent.cpp \
            singlechoicepage.cpp \
            skinmanager.cpp \

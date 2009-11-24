@@ -3,7 +3,7 @@
 #include "openclient.h" // Client
 #include "btbutton.h"
 #include "transitionwidget.h"
-#include "main_window.h"
+#include "pagecontainer.h"
 #include "navigation_bar.h"
 #include "content_widget.h"
 #include "hardware_functions.h" // hardwareType()
@@ -29,7 +29,7 @@ static const char *IMG_BACK = IMG_PATH "arrlf.png";
 // Inizialization of static member
 Client *Page::client_comandi = 0;
 Client *Page::client_richieste = 0;
-MainWindow *Page::main_window = 0;
+PageContainer *Page::page_container = 0;
 
 
 StyledWidget::StyledWidget(QWidget *parent)
@@ -49,13 +49,13 @@ void StyledWidget::paintEvent(QPaintEvent *)
 
 Page::Page(QWidget *parent) : StyledWidget(parent)
 {
-	Q_ASSERT_X(main_window, "Page::Page", "Main window not set!");
+	Q_ASSERT_X(page_container, "Page::Page", "PageContainer not set!");
 	content_widget = 0;
 
 	// pages with parent have a special meaning (for example, sound diffusion)
 	// so they must not handled here
 	if (!parent)
-		main_window->addPage(this);
+		page_container->addPage(this);
 }
 
 void Page::buildPage(QWidget *content, QWidget *nav_bar, const QString& label, int label_height, QWidget *top_widget)
@@ -125,24 +125,24 @@ void Page::inizializza()
 {
 }
 
-void Page::setMainWindow(MainWindow *window)
+void Page::setPageContainer(PageContainer *container)
 {
-	main_window = window;
+	page_container = container;
 }
 
 Page *Page::currentPage()
 {
-	return main_window->currentPage();
+	return page_container->currentPage();
 }
 
 void Page::setCurrentPage()
 {
-	main_window->setCurrentPage(this);
+	page_container->setCurrentPage(this);
 }
 
 void Page::showPage()
 {
-	main_window->showPage(this);
+	page_container->showPage(this);
 
 #if GRAB_PAGES
 	Page *p = currentPage();
@@ -184,7 +184,7 @@ void Page::forceClosed()
 
 void Page::startTransition(const QPixmap &prev_image)
 {
-	main_window->startTransition(prev_image, this);
+	page_container->startTransition(prev_image, this);
 }
 
 Page::PageType Page::pageType()

@@ -16,7 +16,8 @@
 #include "specialpage.h"
 #include "energy_data.h"
 #include "openclient.h"
-#include "pagecontainer.h"
+#include "iconpage.h"
+#include "sectionpage.h"
 
 #include <QObject>
 
@@ -108,7 +109,7 @@ Page *getPage(int page_id)
 	}
 	case ENERGY_MANAGEMENT:
 	{
-		SectionPageContainer *p = new SectionPageContainer(page_node);
+		SectionPage *p = new SectionPage(page_node);
 		p->addBackButton();
 		page = p;
 		break;

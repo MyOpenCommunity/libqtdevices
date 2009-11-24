@@ -4,10 +4,10 @@
 **
 ****************************************************************/
 
-#ifndef BT_HOMEPAGE
-#define BT_HOMEPAGE
+#ifndef HOME_PAGE_H
+#define HOME_PAGE_H
 
-#include "pagecontainer.h"
+#include "sectionpage.h"
 
 #include <QString>
 
@@ -18,7 +18,7 @@ class QDomNode;
 
 
 /*!
-  \class homePage
+  \class HomePage
   \brief This is the class used to implement the main page from which access to all
   the subtree of the various bticino functions.
 
@@ -27,11 +27,11 @@ class QDomNode;
   \date lug 2005
 */
 
-class homePage : public SectionPageContainer
+class HomePage : public SectionPage
 {
 Q_OBJECT
 public:
-	homePage(const QDomNode &config_node);
+	HomePage(const QDomNode &config_node);
 	void inizializza();
 
 	virtual PageType pageType();
@@ -45,4 +45,4 @@ private:
 };
 
 
-#endif // BT_HOMEPAGE
+#endif // HOME_PAGE_H

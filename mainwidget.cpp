@@ -1,12 +1,12 @@
 #include "mainwidget.h"
-#include "main_window.h"
+#include "pagecontainer.h"
 #include "page.h"
 #include "hardware_functions.h" // hardwareType()
 #include "xml_functions.h"
 #include "skinmanager.h"
 #include "main.h" // getHomepageNode
 #include "btbutton.h"
-#include "settings_touchx.h"
+#include "iconsettings.h"
 #include "generic_functions.h" // getBostikName
 #include "content_widget.h"
 #include "fontmanager.h"
@@ -219,7 +219,7 @@ void HomeBar::loadItems(const QDomNode &config_node)
 
 			int page_id = getTextChild(item, "lnk_pageID").toInt();
 
-			Page *settings = new SettingsTouchX(getPageNodeFromPageId(page_id));
+			Page *settings = new IconSettings(getPageNodeFromPageId(page_id));
 			connect(button, SIGNAL(clicked()), settings, SLOT(showPage()));
 			connect(settings, SIGNAL(Closed()), SIGNAL(showHomePage()));
 
@@ -499,10 +499,10 @@ MainWidget::MainWidget()
 		main_layout->setContentsMargins(0, 0, 0, 0);
 		qDebug() << "adding top and right widgets";
 
-		central_widget = new MainWindow(this);
+		central_widget = new PageContainer(this);
 		main_layout->addWidget(central_widget, 1, 0, 1, 1);
 		connect(central_widget, SIGNAL(currentChanged(int)), SLOT(centralWidgetChanged(int)));
-		Page::setMainWindow(central_widget);
+		Page::setPageContainer(central_widget);
 
 		header_widget = new HeaderWidget(pagemenu_home, getPageNodeFromPageId(info_bar_pageid));
 		main_layout->addWidget(header_widget, 0, 0, 1, 2);
@@ -526,8 +526,8 @@ MainWidget::MainWidget()
 	}
 	else
 	{
-		central_widget = new MainWindow(this);
-		Page::setMainWindow(central_widget);
+		central_widget = new PageContainer(this);
+		Page::setPageContainer(central_widget);
 		central_widget->setFixedSize(maxWidth(), maxHeight());
 	}
 }
@@ -542,7 +542,7 @@ void MainWidget::centralWidgetChanged(int index)
 	}
 }
 
-MainWindow *MainWidget::centralLayout()
+PageContainer *MainWidget::centralLayout()
 {
 	return central_widget;
 }
@@ -559,10 +559,10 @@ RootWidget::RootWidget(int width, int height)
 	showFullScreen();
 	setFixedSize(width, height);
 
-	Page::setMainWindow(main->centralLayout());
+	Page::setPageContainer(main->centralLayout());
 }
 
-MainWindow *RootWidget::centralLayout()
+PageContainer *RootWidget::centralLayout()
 {
 	return main->centralLayout();
 }

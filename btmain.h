@@ -18,14 +18,14 @@
 class SoundDiffusion;
 class MultiSoundDiffAlarm;
 class Version;
-class homePage;
+class HomePage;
 class Calibrate;
 class genPage;
 class Client;
 class Keypad;
 class ScreenSaver;
 class Page;
-class MainWindow;
+class PageContainer;
 class RootWidget;
 
 class QPixmap;
@@ -98,7 +98,7 @@ private:
 #endif
 	QHash<int, Page*> page_list;
 	QTime *boot_time;
-	homePage *Home;
+	HomePage *Home;
 	Page *pagDefault;
 	/// A pointer to the previous visualized page, to be used when resuming from screensaver
 	Page *prev_page;
@@ -118,7 +118,7 @@ private:
 	bool calibrating;
 	Calibrate *calib;
 	ScreenSaver *screensaver;
-	MainWindow *main_window;
+	PageContainer *page_container;
 	RootWidget *root_widget;
 
 	// A flag that is set when the client monitor socket is ready
