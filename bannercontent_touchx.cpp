@@ -89,9 +89,9 @@ void BannerContent::drawContent()
 				total_height[j] += banner_list.at(i + j)->sizeHint().height();
 			// if the height of one of the two columns exceeds the page height,
 			// start a new page, otherwise add the widgets to the layout
-			if (total_height[LEFT_COLUMN] > area_height || total_height[LEFT_COLUMN] > area_height)
+			if (total_height[LEFT_COLUMN] > area_height || total_height[RIGHT_COLUMN] > area_height)
 			{
-				total_height[LEFT_COLUMN] = total_height[LEFT_COLUMN] = 0;
+				total_height[LEFT_COLUMN] = total_height[RIGHT_COLUMN] = 0;
 				pages.append(i);
 				i -= COLUMN_COUNT;
 			}
