@@ -20,19 +20,17 @@
 #include <QRegExp>
 
 
-PlantMenu::PlantMenu(QDomNode conf) : BannerPage(0)
+PlantMenu::PlantMenu(const QDomNode &conf) : BannerPage(0)
 {
 	buildPage();
 
-	conf_root = conf;
-
-	QDomNode thermr_address = conf_root.namedItem("ind_centrale");
+	QDomNode thermr_address = conf.namedItem("ind_centrale");
 	if (thermr_address.isNull())
 		ind_centrale = "0";
 	else
 		ind_centrale = thermr_address.toElement().text();
 
-	QDomNode n = conf_root.firstChild();
+	QDomNode n = conf.firstChild();
 	int banner_id = 0;
 	NavigationPage *first = 0, *prev = 0;
 	while (!n.isNull())

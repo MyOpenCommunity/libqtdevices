@@ -25,7 +25,7 @@ class PlantMenu : public BannerPage
 {
 Q_OBJECT
 public:
-	PlantMenu(QDomNode conf);
+	PlantMenu(const QDomNode &conf);
 	virtual void inizializza();
 
 private:
@@ -42,9 +42,6 @@ private:
 	 * \return A pointer to the small banner that will show the corresponding full screen banner.
 	 */
 	NavigationPage *addMenuItem(QDomNode n, QString central_icon, QString descr, BannID type);
-
-	/// Node in the Dom tree that is a `plant' tag
-	QDomNode conf_root;
 
 	/// Address of the thermal regulation device
 	/// empty in case of 99z device
