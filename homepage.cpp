@@ -28,9 +28,7 @@ HomePage::HomePage(const QDomNode &config_node) : SectionPage(config_node)
 // Load only the item that is not a section page (which is loaded by SectionPage)
 void HomePage::loadItems(const QDomNode &config_node)
 {
-	if (hardwareType() == TOUCH_X)
-		return;
-
+#ifdef CONFIG_BTOUCH
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
@@ -56,6 +54,7 @@ void HomePage::loadItems(const QDomNode &config_node)
 			break;
 		}
 	}
+#endif
 }
 
 void HomePage::inizializza()

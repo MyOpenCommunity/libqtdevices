@@ -17,20 +17,19 @@ SectionPage::SectionPage(const QDomNode &config_node)
 
 void SectionPage::loadItems(const QDomNode &config_node)
 {
-	if (hardwareType() == TOUCH_X)
-	{
-		// only show the back icon if there is a lnk_itemID to a banner
-		QString back_icon = getTextChild(config_node, "lnk_itemID").isEmpty() ? "" : "back";
-		NavigationBar *nav_bar = new NavigationBar("", "scroll_down", "scroll_up", back_icon);
-		buildPage(new IconContent, nav_bar);
-	}
+#ifndef CONFIG_BTOUCH
+	// only show the back icon if there is a lnk_itemID to a banner
+	QString back_icon = getTextChild(config_node, "lnk_itemID").isEmpty() ? "" : "back";
+	NavigationBar *nav_bar = new NavigationBar("", "scroll_down", "scroll_up", back_icon);
+	buildPage(new IconContent, nav_bar);
+#endif
 
 	QTime wdtime;
 	wdtime.start(); // Start counting for wd refresh
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-#ifdef LAYOUT_BTOUCH
+#ifdef CONFIG_BTOUCH
 		int id = getTextChild(item, "id").toInt();
 		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
 		int x = getTextChild(item, "left").toInt();

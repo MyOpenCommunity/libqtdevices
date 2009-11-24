@@ -160,7 +160,7 @@ void resetTimer(int signo);
  ****************************************************************/
 /*! \enum pagSecLiv
   This enum describes the various kind of pages*/
-#ifdef LAYOUT_BTOUCH
+#ifdef CONFIG_BTOUCH
 enum pagSecLiv
 {
 	NO_SECTION=0,

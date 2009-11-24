@@ -52,7 +52,7 @@ void ThermalMenu::createPlantMenu(QDomNode config, BannSinglePuls *bann)
 	single_submenu = sm;
 }
 
-#ifdef LAYOUT_BTOUCH
+#ifdef CONFIG_BTOUCH
 
 void ThermalMenu::loadBanners(const QDomNode &config_node)
 {

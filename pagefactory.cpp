@@ -23,7 +23,7 @@
 
 Page *getPage(int page_id)
 {
-#ifdef LAYOUT_BTOUCH
+#ifdef CONFIG_BTOUCH
 	QDomNode page_node = getPageNode(page_id);
 	int id = page_id;
 #else

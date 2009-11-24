@@ -33,6 +33,7 @@ int Lighting::sectionId()
 
 void Lighting::loadItems(const QDomNode &config_node)
 {
+	for (int i = 0; i < 3; ++i)
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
