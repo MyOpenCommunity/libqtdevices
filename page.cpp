@@ -102,6 +102,8 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget, QW
 	}
 	else
 	{
+		Q_ASSERT_X(title_widget == NULL, "Page::buildPage",
+			   "BTouch pages can't have a title");
 		l->addWidget(content, 1);
 		l->addWidget(nav_bar);
 	}
