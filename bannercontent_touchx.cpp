@@ -116,7 +116,7 @@ void BannerContent::drawContent()
 
 		// create the layout with a spacer at the bottom, to
 		// mimick the layout of current code
-		QFont label_font = bt_global::font->get(FontManager::TEXT);
+		QFont label_font = bt_global::font->get(FontManager::BANNERDESCRIPTION);
 		QVBoxLayout *bar_layout = new QVBoxLayout;
 		bar_layout->addWidget(vertical_bar, 1);
 		bar_layout->addSpacing(QFontMetrics(label_font).height());

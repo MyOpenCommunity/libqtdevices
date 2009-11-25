@@ -17,7 +17,7 @@ Bann3Buttons::Bann3Buttons(QWidget *parent) :
 	right_button = new BtButton;
 	center_button = new BtButton;
 	left_button = new BtButton;
-	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
 	QHBoxLayout *hbox = new QHBoxLayout;
 	hbox->setContentsMargins(0, 0, 0, 0);

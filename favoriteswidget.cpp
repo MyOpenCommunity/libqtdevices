@@ -1,5 +1,6 @@
 #include "favoriteswidget.h"
 #include "xml_functions.h"
+#include "fontmanager.h"
 #include "bannerfactory.h"
 #include "banner.h"
 
@@ -18,6 +19,7 @@ void FavoritesWidget::loadItems(const QDomNode &config_node)
 	QVBoxLayout *l = new QVBoxLayout(this);
 	QLabel *title = new QLabel(getTextChild(config_node, "descr"));
 
+	title->setFont(bt_global::font->get(FontManager::TITLE));
 	title->setAlignment(Qt::AlignHCenter);
 
 	l->addWidget(title);

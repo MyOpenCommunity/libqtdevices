@@ -26,7 +26,7 @@ BannSinglePuls::BannSinglePuls(QWidget *parent) :
 {
 	right_button = new BtButton;
 	connect(right_button, SIGNAL(clicked()), SIGNAL(rightClick()));
-	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 	center_icon = new QLabel;
 
 	QHBoxLayout *hbox = new QHBoxLayout;
@@ -84,7 +84,7 @@ BannOn2Labels::BannOn2Labels(QWidget *parent) :
 	BannerNew(parent)
 {
 	right_button = new BtButton;
-	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 	center_text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::TEXT));
 	left_icon = new QLabel;
 	right_icon = new QLabel;
@@ -143,7 +143,7 @@ BannLeft::BannLeft(QWidget *parent) :
 	BannerNew(parent)
 {
 	left_button = new BtButton;
-	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::TEXT));
+	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::BANNERTEXT));
 
 	QHBoxLayout *l = new QHBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);

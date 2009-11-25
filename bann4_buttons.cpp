@@ -20,7 +20,7 @@ Bann4ButtonsIcon::Bann4ButtonsIcon(QWidget *parent) :
 	center_left_button = new BtButton;
 
 	center_icon = new QLabel;
-	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::TEXT));
+	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
 	QHBoxLayout *l = new QHBoxLayout;
 	l->setContentsMargins(0, 0, 0, 0);

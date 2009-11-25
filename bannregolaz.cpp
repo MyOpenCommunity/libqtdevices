@@ -33,7 +33,7 @@ BannLevel::BannLevel(QWidget *parent) :
 	hbox->addWidget(center_right_button);
 	hbox->addWidget(right_button);
 
-	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
 	QVBoxLayout *vbox = new QVBoxLayout(this);
 	vbox->setContentsMargins(0, 0, 0, 0);
