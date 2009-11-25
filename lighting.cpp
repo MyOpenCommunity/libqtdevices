@@ -31,7 +31,6 @@ int Lighting::sectionId()
 	return ILLUMINAZIONE;
 }
 
-
 banner *Lighting::getBanner(const QDomNode &item_node)
 {
 	int id = getTextChild(item_node, "id").toInt();

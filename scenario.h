@@ -17,10 +17,9 @@
 #include "page.h"
 
 #include <QWidget>
-#include <QList>
 
 class QDomNode;
-class scenEvo_cond;
+class banner;
 
 
 class Scenario : public BannerPage
@@ -28,8 +27,9 @@ class Scenario : public BannerPage
 Q_OBJECT
 public:
 	Scenario(const QDomNode &config_node);
+	static banner *getBanner(const QDomNode &item_node);
+
 private:
-	QList<scenEvo_cond*> loadConditions(const QDomNode &config_node);
 	void loadItems(const QDomNode &config_node);
 };
 

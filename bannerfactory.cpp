@@ -2,13 +2,22 @@
 #include "banner.h"
 #include "lighting.h"
 #include "automation.h"
+#include "settings.h"
+#include "scenario.h"
+
 
 banner *getBanner(const QDomNode &item_node)
 {
-	if (banner *b = Automation::getBanner(item_node))
-		return b;
-	if (banner *b = Lighting::getBanner(item_node))
-		return b;
+	typedef banner* (*getBannerFunc)(const QDomNode &);
+	QList<getBannerFunc> sections;
+	sections.append(&Automation::getBanner);
+	sections.append(&Lighting::getBanner);
+	sections.append(&Scenario::getBanner);
+	sections.append(&Settings::getBanner);
+
+	for (int i = 0; i < sections.size(); ++i)
+		if (banner *b = sections[i](item_node))
+			return b;
 
 	return 0;
 }
