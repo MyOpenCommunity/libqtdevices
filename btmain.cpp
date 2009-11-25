@@ -333,6 +333,7 @@ void BtMain::myMain()
 	init();
 	page_container->blockTransitions(false);
 	Home->showPage();
+	window_container->homeWindow()->showWindow();
 	bt_global::devices_cache.init_devices();
 
 	tempo1 = new QTimer(this);

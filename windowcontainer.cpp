@@ -8,6 +8,9 @@
 
 WindowContainer::WindowContainer(int width, int height)
 {
+	// needs to be done before HomeWindow is constructed
+	Window::setWindowContainer(this);
+
 	main = new HomeWindow;
 	addWidget(main);
 	QStackedLayout *root_layout = static_cast<QStackedLayout *>(layout());
