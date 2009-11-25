@@ -23,7 +23,12 @@
 PlantMenu::PlantMenu(const QDomNode &conf) : BannerPage(0)
 {
 	buildPage();
+	loadItems(conf);
+}
 
+#ifdef CONFIG_BTOUCH
+void PlantMenu::loadItems(const QDomNode &conf)
+{
 	QDomNode thermr_address = conf.namedItem("ind_centrale");
 	if (thermr_address.isNull())
 		ind_centrale = "0";
@@ -79,6 +84,15 @@ PlantMenu::PlantMenu(const QDomNode &conf) : BannerPage(0)
 
 	connect(prev, SIGNAL(downClick()), first, SLOT(showPage()));
 	connect(first, SIGNAL(upClick()), prev, SLOT(showPage()));
+}
+#else
+void PlantMenu::loadItems(const QDomNode &conf)
+{
+}
+#endif
+
+banner *PlantMenu::getBanner(const QDomNode &item_node)
+{
 }
 
 void PlantMenu::inizializza()

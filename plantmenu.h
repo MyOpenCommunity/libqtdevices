@@ -27,8 +27,11 @@ Q_OBJECT
 public:
 	PlantMenu(const QDomNode &conf);
 	virtual void inizializza();
+	static banner *getBanner(const QDomNode &item_node);
 
 private:
+	void loadItems(const QDomNode &conf);
+
 	/**
 	 * Utility function to create a banner in the plant menu and the corresponding full
 	 * screen banner.
