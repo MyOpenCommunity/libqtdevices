@@ -80,3 +80,9 @@ PageContainer *HomeWindow::centralLayout()
 {
 	return central_widget;
 }
+
+Page *HomeWindow::currentPage()
+{
+	return central_widget->currentPage();
+}
+

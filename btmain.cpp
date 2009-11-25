@@ -464,7 +464,11 @@ void BtMain::currentPageChanged(Page *p)
 void BtMain::showScreensaverIfNeeded()
 {
 	if (screenSaverRunning())
-		screensaver->target()->showPage();
+	{
+		if (Page *target = screensaver->targetPage())
+			target->showPage();
+		screensaver->targetWindow()->showWindow();
+	}
 }
 
 void BtMain::gesScrSav()
@@ -537,18 +541,20 @@ void BtMain::gesScrSav()
 					unrollPages();
 
 				target->showPage();
+				window_container->homeWindow()->showWindow();
 				page_container->blockTransitions(false);
 				qDebug() << "start screensaver:" << target_screensaver << "on:" << page_container->currentPage();
-				screensaver->start(target);
+				screensaver->start(window_container->homeWindow());
 				emit startscreensaver(prev_page);
 				bt_global::display.setState(DISPLAY_SCREENSAVER);
 			}
 		}
 		else if (screensaver && screensaver->isRunning())
 		{
-			Page *target = screensaver->target();
-			if (target != pagDefault)
+			Page *target = screensaver->targetPage();
+			if (target && target != pagDefault)
 				page_container->setCurrentPage(prev_page);
+			screensaver->targetWindow()->showWindow();;
 
 			screensaver->stop();
 		}
@@ -602,9 +608,10 @@ void BtMain::freeze(bool b)
 		bt_global::display.setState(DISPLAY_OPERATIVE);
 		if (screensaver && screensaver->isRunning())
 		{
-			Page *target = screensaver->target();
-			if (target != pagDefault)
+			Page *target = screensaver->targetPage();
+			if (target && target != pagDefault)
 				page_container->setCurrentPage(prev_page);
+			screensaver->targetWindow()->showWindow();
 
 			screensaver->stop();
 		}

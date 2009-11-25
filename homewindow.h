@@ -8,6 +8,7 @@
 class PageContainer;
 class HeaderWidget;
 class FavoritesWidget;
+class Page;
 
 // controls the layout of "normal" pages; contains the stack of pages and the
 // header and favorites widgets
@@ -17,6 +18,7 @@ Q_OBJECT
 public:
 	HomeWindow();
 	PageContainer *centralLayout();
+	Page *currentPage();
 
 signals:
 	void showHomePage();

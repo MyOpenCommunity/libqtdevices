@@ -11,7 +11,8 @@
 #ifndef SCREENSAVER_H
 #define SCREENSAVER_H
 
-#include <QWidget>
+#include "window.h"
+
 #include <QObject>
 #include <QHash>
 #include <QBasicTimer>
@@ -31,7 +32,7 @@ class QDomNode;
 /**
  * This abstract class is the interface of all screensavers.
  */
-class ScreenSaver : protected QWidget
+class ScreenSaver : protected Window
 {
 Q_OBJECT
 public:
@@ -45,15 +46,17 @@ public:
 		DEFORM,     // the deformer
 	};
 
-	virtual void start(Page *p);
+	virtual void start(Window *w);
 	virtual void stop();
 	bool isRunning();
 	virtual Type type() = 0;
-	Page *target() { return page; }
+	Page *targetPage() { return page; }
+	Window *targetWindow() { return window; }
 	static void initData(const QDomNode &config_node);
 
 protected:
 	Page *page;
+	Window *window;
 	static QString text;
 	ScreenSaver(int refresh_time);
 
@@ -77,7 +80,7 @@ class ScreenSaverLine : public ScreenSaver
 Q_OBJECT
 public:
 	ScreenSaverLine();
-	virtual void start(Page *p);
+	virtual void start(Window *w);
 	virtual void stop();
 	virtual Type type() { return LINES; }
 
@@ -107,7 +110,7 @@ class ScreenSaverBalls : public ScreenSaver
 Q_OBJECT
 public:
 	ScreenSaverBalls();
-	virtual void start(Page *p);
+	virtual void start(Window *w);
 	virtual void stop();
 	virtual Type type() { return BALLS; }
 
@@ -162,8 +165,7 @@ class ScreenSaverDeform : public ScreenSaver
 Q_OBJECT
 public:
 	ScreenSaverDeform();
-	virtual void start(Page *p);
-	virtual void stop();
+	virtual void start(Window *w);
 	virtual Type type() { return DEFORM; }
 
 protected:
