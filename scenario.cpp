@@ -50,6 +50,11 @@ Scenario::Scenario(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
+int Scenario::sectionId()
+{
+	return SCENARI;
+}
+
 banner *Scenario::getBanner(const QDomNode &item_node)
 {
 	int id = getTextChild(item_node, "id").toInt();

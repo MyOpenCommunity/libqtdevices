@@ -193,7 +193,7 @@ enum pagSecLiv
 	CARICHI=4,                                    /*!< Appliances managing system */
 	TERMOREGOLAZIONE=5,                           /*!< Thermoregulation system */
 	DIFSON=16,                                    /*!< Sound diffusion system */
-	SCENARI=-1,                                   /*!< Scenarios managing */
+	SCENARI=19,                                   /*!< Scenarios managing */
 	IMPOSTAZIONI=29,                              /*!< Settings */
 	BACK=9,                                       /*!< Back button - placed here for convenience */
 	SPECIAL=10,                                   /*!< Special button - placed here for convenience */
