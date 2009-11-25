@@ -34,7 +34,7 @@ BannOnOffNew::BannOnOffNew(QWidget *parent) :
 	hbox->addWidget(center_icon, 1, Qt::AlignCenter);
 	hbox->addWidget(right_button, 0, Qt::AlignRight);
 
-	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 	QVBoxLayout *vbox = new QVBoxLayout(this);
 	vbox->setContentsMargins(0, 0, 0, 0);
 	vbox->setSpacing(0);
@@ -107,7 +107,7 @@ BannOpenClose::BannOpenClose(QWidget *parent) :
 {
 	left_button = new BtButton;
 	right_button = new BtButton;
-	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 	center_icon = new QLabel;
 
 	QHBoxLayout *hbox = new QHBoxLayout;
@@ -168,9 +168,9 @@ BannOnOff2Labels::BannOnOff2Labels(QWidget *parent) :
 {
 	left_button = new BtButton;
 	right_button = new BtButton;
-	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 	center_icon = new QLabel;
-	center_text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::TEXT));
+	center_text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::BANNERTEXT));
 
 	QHBoxLayout *hbox = new QHBoxLayout;
 	hbox->setContentsMargins(0, 0, 0, 0);

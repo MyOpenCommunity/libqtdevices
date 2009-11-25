@@ -7,6 +7,7 @@
 #include "navigation_bar.h"
 #include "bannercontent.h"
 #include "hardware_functions.h" // hardwareType()
+#include "fontmanager.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -50,10 +51,12 @@ void StyledWidget::paintEvent(QPaintEvent *)
 PageTitleWidget::PageTitleWidget(const QString &label, int height)
 {
 	QLabel *title = new QLabel(label);
+	title->setFont(bt_global::font->get(FontManager::TITLE));
 	title->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 	title->setFixedHeight(height);
 
 	QLabel *current_page = new QLabel;
+	current_page->setFont(bt_global::font->get(FontManager::TEXT));
 	current_page->setAlignment(Qt::AlignTop|Qt::AlignRight);
 
 	QHBoxLayout *t = new QHBoxLayout(this);
@@ -91,6 +94,7 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, const QString& label, i
 	if (hardwareType() == TOUCH_X)
 	{
 		page_title = new QLabel(label);
+		page_title->setFont(bt_global::font->get(FontManager::TITLE));
 		page_title->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 		page_title->setFixedHeight(label_height);
 	}
@@ -246,7 +250,7 @@ void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, const
 		PageTitleWidget *title_widget = new PageTitleWidget(title, 60);
 		Page::buildPage(content, nav_bar, top_widget, title_widget);
 
-		connect(content, SIGNAL(currentPageChanged(int, int)),
+		connect(content, SIGNAL(contentScrolled(int, int)),
 			title_widget, SLOT(setCurrentPage(int, int)));
 	}
 	else

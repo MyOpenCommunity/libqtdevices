@@ -20,29 +20,28 @@
 #include <QRegExp>
 
 
-PlantMenu::PlantMenu(QDomNode conf) : BannerPage(0)
+PlantMenu::PlantMenu(const QDomNode &conf) : BannerPage(0)
 {
 	buildPage();
+	loadItems(conf);
+}
 
-	conf_root = conf;
-
-	QDomNode thermr_address = conf_root.namedItem("ind_centrale");
+#ifdef CONFIG_BTOUCH
+void PlantMenu::loadItems(const QDomNode &conf)
+{
+	QDomNode thermr_address = conf.namedItem("ind_centrale");
 	if (thermr_address.isNull())
 		ind_centrale = "0";
 	else
 		ind_centrale = thermr_address.toElement().text();
 
-	QDomNode n = conf_root.firstChild();
-	int banner_id = 0;
+	QDomNode n = conf.firstChild();
 	NavigationPage *first = 0, *prev = 0;
 	while (!n.isNull())
 	{
 		if (n.nodeName().contains(QRegExp("item(\\d\\d?)")))
 		{
 			NavigationPage *pg = 0;
-			QString descr = getTextChild(n, "descr");
-			if (descr.isNull())
-				qDebug("[TERMO] PlantMenu::PlantMenu, ``descr'' is null, prepare for strangeness...");
 
 			SkinContext context(getTextChild(n, "cid").toInt());
 
@@ -50,26 +49,24 @@ PlantMenu::PlantMenu(QDomNode conf) : BannerPage(0)
 			switch (id)
 			{
 				case TERMO_99Z:
-					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), descr, fs_99z_thermal_regulator);
+					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), fs_99z_thermal_regulator);
 					break;
 				case TERMO_4Z:
-					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), descr, fs_4z_thermal_regulator);
+					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), fs_4z_thermal_regulator);
 					break;
 				case TERMO_99Z_PROBE:
-					pg = addMenuItem(n, bt_global::skin->getImage("zone"), descr, fs_99z_probe);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), fs_99z_probe);
 					break;
 				case TERMO_99Z_PROBE_FANCOIL:
-					pg = addMenuItem(n, bt_global::skin->getImage("zone"), descr, fs_99z_fancoil);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), fs_99z_fancoil);
 					break;
 				case TERMO_4Z_PROBE:
-					pg = addMenuItem(n, bt_global::skin->getImage("zone"), descr, fs_4z_probe);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), fs_4z_probe);
 					break;
 				case TERMO_4Z_PROBE_FANCOIL:
-					pg = addMenuItem(n, bt_global::skin->getImage("zone"), descr, fs_4z_fancoil);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), fs_4z_fancoil);
 					break;
 			}
-
-			++ banner_id;
 
 			if (prev)
 			{
@@ -88,13 +85,22 @@ PlantMenu::PlantMenu(QDomNode conf) : BannerPage(0)
 	connect(prev, SIGNAL(downClick()), first, SLOT(showPage()));
 	connect(first, SIGNAL(upClick()), prev, SLOT(showPage()));
 }
+#else
+void PlantMenu::loadItems(const QDomNode &conf)
+{
+}
+#endif
+
+banner *PlantMenu::getBanner(const QDomNode &item_node)
+{
+}
 
 void PlantMenu::inizializza()
 {
 	page_content->initBanners();
 }
 
-NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr, BannID type)
+NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, BannID type)
 {
 	/*
 	 * Create little banner in selection menu.

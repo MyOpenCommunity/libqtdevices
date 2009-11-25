@@ -31,7 +31,7 @@ public slots:
 
 signals:
 	void displayScrollButtons(bool display);
-	void currentPageChanged(int current, int total);
+	void contentScrolled(int current, int total);
 
 protected:
 	void showEvent(QShowEvent *e);

@@ -77,7 +77,7 @@ protected:
 
 TimeDisplay::TimeDisplay()
 {
-	setFont(bt_global::font->get(FontManager::SMALLTEXT)); // TODO check this is the correct font
+	setFont(bt_global::font->get(FontManager::TEXT));
 	setPixmap(bt_global::skin->getImage("clock_background"));
 }
 
@@ -100,7 +100,7 @@ protected:
 
 HomepageTimeDisplay::HomepageTimeDisplay()
 {
-	setFont(bt_global::font->get(FontManager::SUBTITLE)); // TODO check this is the correct font
+	setFont(bt_global::font->get(FontManager::HOMEPAGEWIDGET));
 	setPixmap(bt_global::skin->getImage("background"));
 }
 
@@ -123,7 +123,7 @@ protected:
 
 HomepageDateDisplay::HomepageDateDisplay()
 {
-	setFont(bt_global::font->get(FontManager::SUBTITLE)); // TODO check this is the correct font
+	setFont(bt_global::font->get(FontManager::HOMEPAGEWIDGET));
 	setPixmap(bt_global::skin->getImage("background"));
 }
 
