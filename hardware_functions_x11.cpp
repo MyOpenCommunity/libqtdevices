@@ -4,6 +4,7 @@
 #include <QScreen>
 #include <QApplication>
 #include <QProcess>
+#include <QDateTime>
 
 #include <stdio.h> // sprintf
 
@@ -11,6 +12,8 @@
 static bool buzzer_enabled = false;
 static bool backlight = false;
 static unsigned char contrast = 0;
+static QDateTime lastPress = QDateTime::currentDateTime();
+
 
 int maxWidth()
 {
@@ -106,9 +109,14 @@ void beep()
 	beep(50);
 }
 
+void setTimePress(const QDateTime &press)
+{
+	lastPress = press;
+}
+
 unsigned long getTimePress()
 {
-	return 0;
+	return lastPress.secsTo(QDateTime::currentDateTime());
 }
 
 void rearmWDT()

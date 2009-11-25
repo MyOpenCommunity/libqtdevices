@@ -48,6 +48,35 @@ namespace
 }
 
 
+#ifdef BT_HARDWARE_X11
+
+// used to store the time of the last click; used by the screen saver code
+// on x86
+class LastClickTime : public QObject
+{
+public:
+	LastClickTime();
+
+protected:
+	bool eventFilter(QObject *obj, QEvent *ev);
+};
+
+LastClickTime::LastClickTime()
+{
+}
+
+bool LastClickTime::eventFilter(QObject *obj, QEvent *ev)
+{
+	// Save last click time
+	if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick)
+		setTimePress(QDateTime::currentDateTime());
+
+	return false;
+}
+
+#endif
+
+
 BtMain::BtMain()
 {
 	boot_time = new QTime();
@@ -68,6 +97,10 @@ BtMain::BtMain()
 #if DEBUG
 	client_supervisor = new Client(Client::SUPERVISOR);
 	client_supervisor->forwardFrame(client_monitor);
+#endif
+#ifdef BT_HARDWARE_X11
+	// save last click time for the screen saver
+	qApp->installEventFilter(new LastClickTime);
 #endif
 	FrameReceiver::setClientMonitor(client_monitor);
 	banner::setClients(client_comandi, client_richieste);

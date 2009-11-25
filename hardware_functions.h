@@ -95,6 +95,13 @@ bool getBeep();
 */
 unsigned long getTimePress();
 
+#ifdef BT_HARDWARE_X11
+class QDateTime;
+
+// stores the time of the last click for getTimePress()
+void setTimePress(const QDateTime &press);
+#endif
+
  /*!
   \brief WatchDog rearm.
 */
