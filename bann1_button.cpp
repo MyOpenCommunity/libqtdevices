@@ -259,10 +259,10 @@ bannTextOnImage::bannTextOnImage(QWidget *parent, const QString &text, QString b
 	QString img = bt_global::skin->getImage(bg_image);
 	QPixmap *p = bt_global::icons_cache.getIcon(img);
 	label->setBackgroundImage(img);
-	int left = MAX_WIDTH - BUT_DIM - p->width();
+	int left = banner_width - BUT_DIM - p->width();
 	label->setGeometry(left, 0,  p->width() ,BANPULS_ICON_DIM_Y);
-	addItem(BUT1, MAX_WIDTH-BUT_DIM, 0, BUT_DIM, BUT_DIM);
-	addItem(TEXT, left, BUT_DIM, p->width() , MAX_HEIGHT/NUM_RIGHE - BUT_DIM);
+	addItem(BUT1, banner_width-BUT_DIM, 0, BUT_DIM, BUT_DIM);
+	addItem(TEXT, left, BUT_DIM, p->width() , banner_height - BUT_DIM);
 	SetIcons(bt_global::skin->getImage(fwd_image), 1);
 }
 
