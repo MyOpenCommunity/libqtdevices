@@ -1,7 +1,6 @@
 #include "alarmpage.h"
-#include "banner.h"
-#include "bannfrecce.h"
-#include "main.h"
+#include "navigation_bar.h"
+#include "main.h" // IMG_PATH
 #include "fontmanager.h" // bt_global::font
 #include "icondispatcher.h" // bt_global::icons_cache
 
@@ -9,27 +8,17 @@
 #include <QWidget>
 #include <QDebug>
 #include <QLabel>
+#include <QVBoxLayout>
 
 
-/*****************************************************************
-** Generic alarm
-****************************************************************/	
-
-AlarmPage::AlarmPage(const QString &name, char *indirizzo, QString IconaDx, altype t)
+AlarmPage::AlarmPage(const QString &name, char *indirizzo, QString icon, altype t)
 {
-	qDebug() << "indirizzo =" << indirizzo << ", IconaDx =" << IconaDx << ", tipo = " << t;
+	NavigationBar *nav_bar = new NavigationBar(icon);
+	QWidget *content = new QWidget;
+	buildPage(content, nav_bar);
+
 	type = t;
-	SetIcons(IconaDx);
-	descr->setText(name);
-	connect(bnav, SIGNAL(backClick()), this, SIGNAL(Closed()));
-	connect(bnav, SIGNAL(upClick()), this, SIGNAL(Prev()));
-	connect(bnav, SIGNAL(downClick()), this, SIGNAL(Next()));
-	connect(bnav, SIGNAL(forwardClick()), this, SIGNAL(Delete()));
-}
 
-void AlarmPage::SetIcons(QString icon)
-{
-	qDebug("allarme::SetIcons()");
 	QString icon_name;
 	switch (type)
 	{
@@ -40,21 +29,24 @@ void AlarmPage::SetIcons(QString icon)
 		icon_name = IMG_PATH "imgallintr.png";
 		break;
 	}
-	Immagine = new QLabel(this);
-	Immagine->setPixmap(*bt_global::icons_cache.getIcon(icon_name));
-	Immagine->setGeometry(MAX_WIDTH/2 - ICON_DIM/2, MAX_HEIGHT/(4*NUM_RIGHE),
-		ICON_DIM, MAX_HEIGHT/NUM_RIGHE);
 
-	descr = new QLabel(this);
-	descr->setFont(bt_global::font->get(FontManager::TEXT));
-	descr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	descr->setGeometry(0, MAX_HEIGHT/2 - (MAX_HEIGHT/NUM_RIGHE)/2,MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+	QVBoxLayout *l = new QVBoxLayout(content);
+	l->setContentsMargins(0, 20, 0, 30);
+	l->setSpacing(10);
+	image = new QLabel;
+	image->setPixmap(*bt_global::icons_cache.getIcon(icon_name));
+	image->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	l->addWidget(image);
 
-	bnav = new bannFrecce(this, 4, icon);
-	bnav->setGeometry(0 , MAX_HEIGHT - MAX_HEIGHT/NUM_RIGHE, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+	description = new QLabel;
+	description->setFont(bt_global::font->get(FontManager::TEXT));
+	description->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	description->setText(name);
+	l->addWidget(description);
 
-	bnav->show();
-	Immagine->show();
-	descr->show();
+	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(upClick()), this, SIGNAL(Prev()));
+	connect(nav_bar, SIGNAL(downClick()), this, SIGNAL(Next()));
+	connect(nav_bar, SIGNAL(forwardClick()), this, SIGNAL(Delete()));
 }
 
