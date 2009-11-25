@@ -1,6 +1,7 @@
 #include "windowcontainer.h"
 #include "homewindow.h"
 #include "page.h" // Page::setPageContainer
+#include "window.h" // Window::setWindowContainer
 
 #include <QStackedLayout>
 
@@ -17,6 +18,17 @@ WindowContainer::WindowContainer(int width, int height)
 	setFixedSize(width, height);
 
 	Page::setPageContainer(main->centralLayout());
+}
+
+void WindowContainer::addWindow(Window *w)
+{
+	addWidget(w);
+	w->resize(width(), height());
+}
+
+void WindowContainer::showWindow(Window *w)
+{
+	setCurrentWidget(w);
 }
 
 PageContainer *WindowContainer::centralLayout()

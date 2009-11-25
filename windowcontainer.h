@@ -5,6 +5,7 @@
 
 class PageContainer;
 class HomeWindow;
+class Window;
 
 
 // top level widget, contains the HomeWindow and other special widgets that
@@ -16,6 +17,9 @@ public:
 	WindowContainer(int width, int height);
 	PageContainer *centralLayout();
 	HomeWindow *homeWindow();
+
+	void addWindow(Window *w);
+	void showWindow(Window *w);
 
 private:
 	HomeWindow *main;
