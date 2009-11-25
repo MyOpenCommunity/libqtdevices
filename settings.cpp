@@ -57,7 +57,6 @@ banner *Settings::getBanner(const QDomNode &item_node)
 	case SET_DATA_ORA:
 		b = new bannOnDx(0, bt_global::skin->getImage("info"), new ChangeTime);
 		break;
-#if !defined(BT_HARDWARE_X11)
 	case CONTRASTO:
 		b = new bannContrast(0, getTextChild(item_node, "value"),
 					 bt_global::skin->getImage("edit"));
@@ -65,11 +64,6 @@ banner *Settings::getBanner(const QDomNode &item_node)
 	case DISPLAY:
 		b = new bannOnDx(0, bt_global::skin->getImage("forward"), new DisplayPage(item_node));
 		break;
-#else
-	case CONTRASTO:
-	case DISPLAY:
-		return 0;
-#endif
 	case PROTEZIONE:
 		b = new impPassword(0,
 					bt_global::skin->getImage("state_on"),
@@ -99,8 +93,10 @@ void Settings::loadItems(const QDomNode &config_node)
 	foreach (const QDomNode& item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
-		if (id == CONTRASTO || id == DISPLAY)
+#ifdef BT_HARDWARE_X11
+		if (id == CONTRASTO)
 			continue;
+#endif
 		if (banner *b = getBanner(item))
 		{
 			page_content->appendBanner(b);

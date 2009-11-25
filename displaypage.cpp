@@ -34,7 +34,7 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	b->setText(tr("Clean Screen"));
 	b->Draw();
 	page_content->appendBanner(b);
-
+#ifndef BT_HARDWARE_X11
 	b = new calibration(this, img_items);
 	connect(b, SIGNAL(startCalib()), SLOT(startCalibration()));
 	connect(b, SIGNAL(endCalib()), SLOT(endCalibration()));
@@ -47,7 +47,7 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	b->setText(tr("Brightness"));
 	b->Draw();
 	page_content->appendBanner(b);
-
+#endif
 	b = new bannOnDx(this, img_items, new ScreenSaverPage());
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	b->setText(tr("Screen Saver"));
