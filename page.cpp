@@ -250,7 +250,7 @@ void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, const
 		PageTitleWidget *title_widget = new PageTitleWidget(title, 60);
 		Page::buildPage(content, nav_bar, top_widget, title_widget);
 
-		connect(content, SIGNAL(currentPageChanged(int, int)),
+		connect(content, SIGNAL(contentScrolled(int, int)),
 			title_widget, SLOT(setCurrentPage(int, int)));
 	}
 	else

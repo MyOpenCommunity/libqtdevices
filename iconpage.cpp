@@ -27,7 +27,7 @@ void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QSt
 	Page::buildPage(content, nav_bar, 0, title_widget);
 
 	// TODO duplicated in BannerPage
-	connect(content, SIGNAL(currentPageChanged(int, int)),
+	connect(content, SIGNAL(contentScrolled(int, int)),
 		title_widget, SLOT(setCurrentPage(int, int)));
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
@@ -135,7 +135,7 @@ void IconContent::drawContent()
 	}
 
 	emit displayScrollButtons(pageCount() > 1);
-	emit currentPageChanged(current_page, pageCount());
+	emit contentScrolled(current_page, pageCount());
 
 	need_update = false;
 

@@ -126,7 +126,7 @@ void BannerContent::drawContent()
 	}
 
 	emit displayScrollButtons(pageCount() > 1);
-	emit currentPageChanged(current_page, pageCount());
+	emit contentScrolled(current_page, pageCount());
 
 	need_update = false;
 
