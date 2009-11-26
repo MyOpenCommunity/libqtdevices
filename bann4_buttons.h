@@ -47,6 +47,20 @@ private:
 	QString left_icon, left_alt, right_icon, right_alt;
 };
 
+// substitute for bann4But
+class Bann4Buttons : public BannerNew
+{
+Q_OBJECT
+protected:
+	Bann4Buttons(QWidget *parent);
+	void initBanner(const QString &right, const QString &center_right, const QString &center_left,
+		const QString &left, const QString &banner_text);
+
+	BtButton *right_button, *center_right_button, *center_left_button, *left_button;
+private:
+	QLabel *text;
+};
+
 
 /*!
   \class bann4But
