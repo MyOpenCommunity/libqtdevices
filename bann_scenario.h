@@ -116,22 +116,23 @@ private slots:
  * \author Ciminaghi
  * \date apr 2006
  */
-class scenEvo : public bann3But
+class scenEvo : public Bann3Buttons
 {
 Q_OBJECT
 public:
-	scenEvo(QWidget *parent, QList<scenEvo_cond*> c, QString act, int enabled = 0);
+	scenEvo(QWidget *parent, const QDomNode &conf_node, QList<scenEvo_cond*> c);
 	~scenEvo();
-	void Draw();
 public slots:
 	void inizializza(bool forza = false);
 
 private:
 	QList<scenEvo_cond*> condList;
 	unsigned current_condition;
-	QString action;
+	QString action, enable_icon, disable_icon;
 	int serial_number;
 	static int next_serial_number;
+	bool enabled;
+
 private slots:
 	void toggleAttivaScev();
 	void configScev();
