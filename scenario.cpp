@@ -121,14 +121,13 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		b = new ModifyScenario(0, item_node);
 		break;
 	}
-#ifdef CONFIG_BTOUCH
 	case SCENARIO_EVOLUTO:
 	{
 		SkinContext context(getTextChild(item_node, "cid").toInt());
-		b = new scenEvo(0, loadConditions(item_node), getElement(item_node, "action/open").text(),
-			getTextChild(item_node, "enable").toInt());
+		b = new scenEvo(0, item_node, loadConditions(item_node));
 	}
 		break;
+#ifdef CONFIG_BTOUCH
 	case SCENARIO_SCHEDULATO:
 	{
 		SkinContext context(getTextChild(item_node, "cid").toInt());
@@ -194,12 +193,6 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		}
 		b = new scenSched(0, img[0], img[1], img[2], img[3], descr[0], descr[1], descr[2], descr[3]);
 		break;
-	}
-	case SCENARIO_EVOLUTO:
-	{
-		SkinContext context(getTextChild(item_node, "cid").toInt());
-		b = new scenEvo(0, loadConditions(item_node), getElement(item_node, "scen/action/open").text(),
-			getTextChild(item_node, "scen/status").toInt());
 	}
 	}
 #endif
