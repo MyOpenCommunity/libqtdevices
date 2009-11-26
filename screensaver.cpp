@@ -67,7 +67,7 @@ ScreenSaver::ScreenSaver(int refresh_time)
 void ScreenSaver::start(Window *w)
 {
 	window = w;
-	// TODO maybe we can assume that the Window will alwats be an HomeWindow
+	// TODO maybe we can assume that the Window will always be an HomeWindow
 	//      and page will always be != 0 and remove the checks in btmain.cpp
 	if (HomeWindow *hw = qobject_cast<HomeWindow*>(w))
 		page = hw->currentPage();

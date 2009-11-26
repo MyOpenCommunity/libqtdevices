@@ -99,6 +99,43 @@ void Bann4ButtonsIcon::setEditingState(EditingStates edit_state)
 }
 
 
+Bann4Buttons::Bann4Buttons(QWidget *parent) :
+	BannerNew(parent)
+{
+	right_button = new BtButton;
+	center_right_button = new BtButton;
+	center_left_button = new BtButton;
+	left_button = new BtButton;
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
+
+	QHBoxLayout *hbox = new QHBoxLayout;
+	hbox->setContentsMargins(0, 0, 0, 0);
+	hbox->setSpacing(0);
+	hbox->addWidget(left_button, 0, Qt::AlignLeft);
+	hbox->addWidget(center_left_button, 0, Qt::AlignHCenter);
+	hbox->addWidget(center_right_button, 0, Qt::AlignHCenter);
+	hbox->addWidget(right_button, 0, Qt::AlignRight);
+
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	l->addLayout(hbox);
+	l->addWidget(text);
+}
+
+void Bann4Buttons::initBanner(const QString &right, const QString &center_right,
+	const QString &center_left, const QString &left, const QString &banner_text)
+{
+	right_button->setImage(right);
+	center_right_button->setImage(center_right);
+	center_left_button->setImage(center_left);
+	left_button->setImage(left);
+	text->setText(banner_text);
+}
+
+
+
+
 bann4But::bann4But(QWidget *parent) : banner(parent)
 {
 	// sx

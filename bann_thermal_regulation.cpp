@@ -1348,7 +1348,7 @@ void PageTermoReg99z::scenarioSelected(int scenario)
 }
 
 
-BannOff::BannOff(QWidget *parent, ThermalDevice *_dev) : BannLargeButton(parent)
+BannOff::BannOff(QWidget *parent, ThermalDevice *_dev) : BannCenteredButton(parent)
 {
 	initBanner(bt_global::skin->getImage("off_button"));
 	dev = _dev;
@@ -1362,7 +1362,7 @@ void BannOff::performAction()
 }
 
 
-BannAntifreeze::BannAntifreeze(QWidget *parent, ThermalDevice *_dev) : BannLargeButton(parent)
+BannAntifreeze::BannAntifreeze(QWidget *parent, ThermalDevice *_dev) : BannCenteredButton(parent)
 {
 	initBanner(bt_global::skin->getImage("regulator_antifreeze"));
 	dev = _dev;

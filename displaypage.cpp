@@ -29,10 +29,9 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	if (!n.isNull())
 		wait_time = n.text().toInt();
 
-	b = new bannSimple(this, img_clean, new CleanScreen(img_clean, wait_time));
-	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-	b->setText(tr("Clean Screen"));
-	b->Draw();
+	Window *w = new CleanScreen(img_clean, wait_time);
+	b = new BannSimple(img_clean);
+	connect(b, SIGNAL(clicked()), w, SLOT(showWindow()));
 	page_content->appendBanner(b);
 #ifndef BT_HARDWARE_X11
 	b = new calibration(this, img_items);

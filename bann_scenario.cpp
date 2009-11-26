@@ -324,8 +324,8 @@ void gesModScen::inizializza(bool forza)
 
 int scenEvo::next_serial_number = 1;
 
-scenEvo::scenEvo(QWidget *parent, QList<scenEvo_cond*> c, QString act, int enable) :
-	bann3But(parent), condList(c)
+scenEvo::scenEvo(QWidget *parent, const QDomNode &conf_node, QList<scenEvo_cond*> c) :
+	Bann3Buttons(parent), condList(c)
 {
 	current_condition = 0;
 
@@ -341,29 +341,39 @@ scenEvo::scenEvo(QWidget *parent, QList<scenEvo_cond*> c, QString act, int enabl
 		connect(co, SIGNAL(resetAll()), this, SLOT(resetAll()));
 	}
 
-	action = act;
-	SetIcons(bt_global::skin->getImage("enable_scen"), bt_global::skin->getImage("disable_scen"),
-		bt_global::skin->getImage("start"), bt_global::skin->getImage("program"));
-	impostaAttivo(enable);
-	connect(this,SIGNAL(sxClick()), this, SLOT(toggleAttivaScev()));
-	connect(this,SIGNAL(dxClick()), this, SLOT(configScev()));
-	connect(this,SIGNAL(centerClick()), this, SLOT(forzaScev()));
+#ifdef CONFIG_BTOUCH
+	action = getElement(conf_node, "action/open").text();
+	enabled = getTextChild(conf_node, "enable").toInt();
+#else
+	action = getElement(conf_node, "scen/action/open").text();
+	enabled = getTextChild(conf_node, "scen/status").toInt();
+#endif
+	enable_icon = bt_global::skin->getImage("enable_scen");
+	disable_icon = bt_global::skin->getImage("disable_scen");
+	initBanner(enabled ? enable_icon : disable_icon, bt_global::skin->getImage("start"),
+		bt_global::skin->getImage("program"), getTextChild(conf_node, "descr"));
+
+	connect(left_button, SIGNAL(clicked()), SLOT(toggleAttivaScev()));
+	connect(right_button, SIGNAL(clicked()), SLOT(configScev()));
+	connect(center_button, SIGNAL(clicked()), SLOT(forzaScev()));
 }
 
 void scenEvo::toggleAttivaScev()
 {
 	qDebug("scenEvo::toggleAttivaScev");
-	impostaAttivo(!isActive());
-	Draw();
-	const char *s = isActive() ? "1" : "0";
+	enabled = !enabled;
+	left_button->setImage(enabled ? enable_icon : disable_icon);
+	const char *s = enabled ? "1" : "0";
+#ifdef CONFIG_BTOUCH
+	// TODO: how to save into config file?
 	setCfgValue("enable", s, SCENARIO_EVOLUTO, serial_number);
+#endif
 }
 
 void scenEvo::configScev()
 {
 	qDebug("scenEvo::configScev");
 	scenEvo_cond *co = condList.at(current_condition);
-	qDebug("Invoco %p->mostra()", co);
 	connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
 	connect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
@@ -372,10 +382,8 @@ void scenEvo::configScev()
 
 void scenEvo::forzaScev()
 {
-	qDebug("scenEvo::forzaScev");
 	// Forced trigger
 	trig(true);
-	Draw();
 }
 
 void scenEvo::nextCond()
@@ -401,12 +409,7 @@ void scenEvo::nextCond()
 		}
 	}
 	else
-	{
 		current_condition = 0;
-		Draw();
-		show();
-	}
-	old_cond->hide();
 }
 
 void scenEvo::prevCond()
@@ -430,12 +433,6 @@ void scenEvo::prevCond()
 			cond->showPage();
 		}
 	}
-	else
-	{
-		Draw();
-		show();
-	}
-	old_cond->hide();
 }
 
 void scenEvo::firstCond()
@@ -444,7 +441,6 @@ void scenEvo::firstCond()
 	scenEvo_cond *co = condList.at(current_condition);
 	disconnect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
 	current_condition = 0;
-	Draw();
 	emit pageClosed();
 }
 
@@ -470,51 +466,6 @@ void scenEvo::resetAll()
 	emit pageClosed();
 }
 
-void scenEvo::Draw()
-{
-	// Icon[0] => left button (inactive)
-	// pressIcon[0] => pressed left button (inactive)
-	// Icon[1] => left button (active)
-	// pressIcon[1] => pressed left button (active)
-	// Icon[3] => center button
-	// pressIcon[3] => pressed center button
-	// Icon[2] => right button
-	// pressIcon[2] => pressed right button
-	qDebug("scenEvo::Draw(%p)", this);
-	current_condition = 0;
-	if (sxButton && Icon[0] && Icon[1])
-	{
-		int sxb_index = isActive() ? 0 : 1;
-		sxButton->setPixmap(*Icon[sxb_index]);
-		if (pressIcon[sxb_index])
-			sxButton->setPressedPixmap(*pressIcon[sxb_index]);
-	}
-	if (dxButton && Icon[2])
-	{
-		dxButton->setPixmap(*Icon[2]);
-		if (pressIcon[2])
-			dxButton->setPressedPixmap(*pressIcon[2]);
-	}
-	if (csxButton && Icon[3])
-	{
-		csxButton->setPixmap(*Icon[3]);
-		if (pressIcon[3])
-			csxButton->setPressedPixmap(*pressIcon[3]);
-	}
-	if (BannerText)
-	{
-		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		BannerText->setFont(bt_global::font->get(FontManager::BANNERTEXT));
-		BannerText->setText(qtesto);
-	}
-	if (SecondaryText)
-	{
-		SecondaryText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		SecondaryText->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
-		SecondaryText->setText(qtestoSecondario);
-	}
-}
-
 void scenEvo::trigOnStatusChanged()
 {
 	qDebug("scenEvo::trigOnStatusChanged()");
@@ -537,7 +488,7 @@ void scenEvo::trig(bool forced)
 
 	if (!forced)
 	{
-		if (!isActive())
+		if (!enabled)
 		{
 			qDebug("scenEvo::trig(), non abilitato, non faccio niente");
 			return;
@@ -573,6 +524,59 @@ scenEvo::~scenEvo()
 {
 	while (!condList.isEmpty())
 		delete condList.takeFirst();
+}
+
+
+ScheduledScenario::ScheduledScenario(QWidget *parent, const QDomNode &config_node) :
+	Bann4Buttons(parent)
+{
+	initBanner(bt_global::skin->getImage("disable_scen"), bt_global::skin->getImage("stop"),
+		bt_global::skin->getImage("start"), bt_global::skin->getImage("enable_scen"),
+		getTextChild(config_node, "descr"));
+	connect(left_button, SIGNAL(clicked()), SLOT(enable()));
+	connect(center_left_button, SIGNAL(clicked()), SLOT(start()));
+	connect(center_right_button, SIGNAL(clicked()), SLOT(stop()));
+	connect(right_button, SIGNAL(clicked()), SLOT(disable()));
+
+#ifdef CONFIG_BTOUCH
+	QList<QString> nodes;
+	nodes << "unable" << "start" << "stop" << "disable";
+	QList<QString *> actions;
+	actions << &action_enable << &action_start << &action_stop << &action_disable;
+	// these must be in the same position as the list above!
+	QList<BtButton *> buttons;
+	buttons << left_button << center_left_button << center_right_button << right_button;
+
+	for (int i = 0; i < nodes.size(); ++i)
+	{
+		QDomNode node = getChildWithName(config_node, nodes[i]);
+		if (!node.isNull() && getTextChild(node, "value").toInt())
+			*actions[i] = getTextChild(node, "open");
+		else
+			buttons[i]->hide();
+	}
+#else
+#endif
+}
+
+void ScheduledScenario::enable()
+{
+	sendFrame(action_enable);
+}
+
+void ScheduledScenario::start()
+{
+	sendFrame(action_start);
+}
+
+void ScheduledScenario::stop()
+{
+	sendFrame(action_stop);
+}
+
+void ScheduledScenario::disable()
+{
+	sendFrame(action_disable);
 }
 
 

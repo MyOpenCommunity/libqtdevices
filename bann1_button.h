@@ -84,18 +84,27 @@ private:
 	QLabel *text;
 };
 
-// Single large button on the center, without bottom label
-class BannLargeButton : public BannerNew
+// Single button on the center, without bottom label
+class BannCenteredButton : public BannerNew
 {
 Q_OBJECT
 protected:
-	BannLargeButton(QWidget *parent);
+	BannCenteredButton(QWidget *parent);
 	void initBanner(const QString &center);
 
 	BtButton *center_button;
 };
 
+// replacement for bannSimple
+class BannSimple : public BannCenteredButton
+{
+Q_OBJECT
+public:
+	BannSimple(const QString &icon);
 
+signals:
+	void clicked();
+};
 
 /*!
   \class bannPuls
@@ -116,6 +125,8 @@ signals:
 	void released();
 };
 
+#if 0
+
 /*!
   \class bannSimple
   \brief A very simple banner with only a button in the center.
@@ -131,6 +142,7 @@ signals:
 	void click();
 };
 
+#endif
 
 /*!
   \class bannOnDx

@@ -37,7 +37,7 @@ void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QSt
 	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 }
 
-void IconPage::addPage(Page *page, int id, QString iconName, int x, int y)
+BtButton *IconPage::addButton(int id, QString iconName, int x, int y)
 {
 	BtButton *b = new BtButton(this);
 	if (page_content == NULL)
@@ -45,6 +45,13 @@ void IconPage::addPage(Page *page, int id, QString iconName, int x, int y)
 	else
 		page_content->addButton(b);
 	b->setImage(iconName);
+
+	return b;
+}
+
+void IconPage::addPage(Page *page, int id, QString iconName, int x, int y)
+{
+	BtButton *b = addButton(id, iconName, x, y);
 
 	buttons_group.addButton(b, id);
 	page_list[id] = page;

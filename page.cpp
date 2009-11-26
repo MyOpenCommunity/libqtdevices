@@ -16,8 +16,6 @@
 #include <QDir>
 #include <QApplication>
 #include <QLabel>
-#include <QStyleOption>
-#include <QPainter>
 
 
 static const char *IMG_BACK = IMG_PATH "arrlf.png";
@@ -31,21 +29,6 @@ static const char *IMG_BACK = IMG_PATH "arrlf.png";
 Client *Page::client_comandi = 0;
 Client *Page::client_richieste = 0;
 PageContainer *Page::page_container = 0;
-
-
-StyledWidget::StyledWidget(QWidget *parent)
-	: QWidget(parent)
-{
-}
-
-void StyledWidget::paintEvent(QPaintEvent *)
-{
-	// required for Style Sheets on a QWidget subclass
-	QStyleOption opt;
-	opt.init(this);
-	QPainter p(this);
-	style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-}
 
 
 PageTitleWidget::PageTitleWidget(const QString &label, int height)

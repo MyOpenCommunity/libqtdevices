@@ -64,7 +64,7 @@ void BannSinglePuls::connectRightButton(Page *p)
 
 
 
-BannLargeButton::BannLargeButton(QWidget *parent) :
+BannCenteredButton::BannCenteredButton(QWidget *parent) :
 	BannerNew(parent)
 {
 	center_button = new BtButton;
@@ -74,9 +74,18 @@ BannLargeButton::BannLargeButton(QWidget *parent) :
 	l->addWidget(center_button, 0, Qt::AlignTop);
 }
 
-void BannLargeButton::initBanner(const QString &center)
+void BannCenteredButton::initBanner(const QString &center)
 {
 	center_button->setImage(center);
+}
+
+
+BannSimple::BannSimple(const QString &icon)
+	: BannCenteredButton(0)
+{
+	banner_height = BUT_DIM;
+	initBanner(icon);
+	connect(center_button, SIGNAL(clicked()), SIGNAL(clicked()));
 }
 
 
@@ -174,6 +183,8 @@ bannPuls::bannPuls(QWidget *parent) : banner(parent)
 }
 
 
+#if 0
+
 bannSimple::bannSimple(QWidget *parent, QString icon, Page *page) : banner(parent)
 {
 	banner_height = BUT_DIM;
@@ -187,6 +198,8 @@ bannSimple::bannSimple(QWidget *parent, QString icon, Page *page) : banner(paren
 	connectDxButton(page);
 	Draw();
 }
+
+#endif
 
 
 bannOnDx::bannOnDx(QWidget *parent, QString icon, Page *page) : banner(parent)

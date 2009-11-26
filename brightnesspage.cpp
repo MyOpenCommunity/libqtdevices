@@ -42,9 +42,9 @@ void BrightnessPage::showEvent(QShowEvent *e)
 		bt_global::display.currentScreenSaver() != ScreenSaver::NONE);
 
 	setCheckedId(getCurrentId());
-	for (int i = 0; i < page_content->bannerCount(); ++i)
+	foreach (QAbstractButton *bt, page_content->getButtons())
 	{
-		BtButton *b = static_cast<bannOnSx*>(page_content->getBanner(i))->getButton();
+		BtButton *b = static_cast<BtButton*>(bt);
 
 		if (banners_active)
 			b->enable();

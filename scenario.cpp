@@ -14,6 +14,7 @@
 
 namespace
 {
+#ifdef CONFIG_BTOUCH
 	QList<scenEvo_cond*> loadConditions(const QDomNode &config_node)
 	{
 		// NOTE: the ownership of scenEvo_cond objects is taken by the object that
@@ -41,18 +42,50 @@ namespace
 		}
 		return l;
 	}
+#else
+	QList<scenEvo_cond*> loadConditions(const QDomNode &config_node)
+	{
+		// NOTE: the ownership of scenEvo_cond objects is taken by the object that
+		// store the list of conditions.
+		// TODO: we can have at maximum 1 condH and 1 condDevice, remove lists
+		bool has_next = getElement(config_node, "scen/device/status").text().toInt();
+		QList<scenEvo_cond*> l;
+		// parse time condition
+		QDomNode cond = getElement(config_node, "scen/time");
+		if (getTextChild(cond, "status").toInt())
+		{
+			scenEvo_cond_h *c = new scenEvo_cond_h(cond, has_next);
+			QObject::connect(bt_global::btmain, SIGNAL(resettimer()), c, SLOT(setupTimer()));
+			l.append(c);
+		}
+
+		/*
+		  TODO: enabling device condition means rewriting conf parsing!
+		foreach (const QDomNode &cond, getChildren(config_node, "condDevice"))
+		{
+			if (getTextChild(cond, "value").toInt())
+			{
+				scenEvo_cond_d *c = new scenEvo_cond_d(cond);
+				l.append(c);
+			}
+		}
+		*/
+		return l;
+	}
+#endif
 }
 
 
 Scenario::Scenario(const QDomNode &config_node)
 {
-	buildPage();
+	buildPage(getTextChild(config_node, "descr"));
 	loadItems(config_node);
+	section_id = getTextChild(config_node, "id").toInt();
 }
 
 int Scenario::sectionId()
 {
-	return SCENARI;
+	return section_id;
 }
 
 banner *Scenario::getBanner(const QDomNode &item_node)
@@ -91,14 +124,17 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 	case SCENARIO_EVOLUTO:
 	{
 		SkinContext context(getTextChild(item_node, "cid").toInt());
-		b = new scenEvo(0, loadConditions(item_node), getElement(item_node, "action/open").text(),
-			getTextChild(item_node, "enable").toInt());
+		b = new scenEvo(0, item_node, loadConditions(item_node));
 	}
 		break;
+#ifdef CONFIG_BTOUCH
 	case SCENARIO_SCHEDULATO:
 	{
-		QList<QString> names, img, descr;
+		SkinContext context(getTextChild(item_node, "cid").toInt());
+		QList<QString> names, img, descr, icon_names;
 		names << "unable" << "disable" << "start" << "stop";
+		icon_names << bt_global::skin->getImage("enable_scen") << bt_global::skin->getImage("disable_scen") <<
+			bt_global::skin->getImage("start") << bt_global::skin->getImage("stop");
 
 		for (int i = 0; i < names.size(); ++i)
 		{
@@ -106,7 +142,9 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 			if (!n.isNull())
 			{
 				int v = getTextChild(n, "value").toInt();
-				img.append(v ? IMG_PATH + getTextChild(n, "cimg1") : QString());
+				// TODO: this is just a quick fix to use the skin manager instead of "cimg" tags
+				//  Remove when scenSched banner is rewritten
+				img.append(v ? icon_names[i] : QString());
 				descr.append(v ? getTextChild(n, "open") : QString());
 			}
 			else
@@ -123,6 +161,41 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		b = new PPTSce(0, where, getTextChild(item_node, "cid").toInt());
 		break;
 	}
+#else
+	case SCENARIO_SCHEDULATO:
+	{
+		SkinContext context(getTextChild(item_node, "cid").toInt());
+		QList<QString> names, img, descr, icon_names;
+		names << "attiva" << "disattiva" << "start" << "stop";
+		icon_names << bt_global::skin->getImage("enable_scen") << bt_global::skin->getImage("disable_scen") <<
+			bt_global::skin->getImage("start") << bt_global::skin->getImage("stop");
+		for (int i = 0; i < names.size(); ++i)
+		{
+			// look for a node called where{attiva,disattiva,start,stop} to be similar to previous code
+			QDomElement where = getElement(item_node, QString("schedscen/where") + names[i]);
+			qDebug() << "where: " << where.nodeName();
+			if (!where.isNull())
+			{
+				img.append(icon_names[i]);
+				// build frame open to send.
+				// TODO: this is to reuse scenSched in its current form, it can be changed when
+				//  scenSched is rewritten
+				QDomElement what = getElement(item_node, QString("schedscen/what") + names[i]);
+				qDebug() << "what: " << what.nodeName();
+				QString frame = QString("*15*%1*%2##").arg(what.toElement().text()).arg(where.toElement().text());
+				descr.append(frame);
+			}
+			else
+			{
+				img.append(QString());
+				descr.append(QString());
+			}
+		}
+		b = new scenSched(0, img[0], img[1], img[2], img[3], descr[0], descr[1], descr[2], descr[3]);
+		break;
+	}
+	}
+#endif
 
 	if (b)
 	{

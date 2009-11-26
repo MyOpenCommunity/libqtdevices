@@ -16,24 +16,14 @@
 
 #include <QWidget>
 
+#include "styledwidget.h"
+
 class Client;
 class PageContainer;
 class QVBoxLayout;
 class TransitionWidget;
 class NavigationBar;
 class BannerContent;
-
-
-// according to Qt Style Sheets Reference, QWidget subclasses need
-// to reimplement paintEvent() in order for the style sheet to be applied
-class StyledWidget : public QWidget
-{
-public:
-	StyledWidget(QWidget *parent=0);
-
-protected:
-	virtual void paintEvent(QPaintEvent *);
-};
 
 
 // helper widget containing a centered label and a label on the right

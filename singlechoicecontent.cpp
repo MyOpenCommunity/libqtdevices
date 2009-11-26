@@ -54,3 +54,8 @@ void SingleChoiceContent::setCheckedId(int id)
 {
 	buttons.button(id)->setChecked(true);
 }
+
+QList<QAbstractButton*> SingleChoiceContent::getButtons()
+{
+	return buttons.buttons();
+}
