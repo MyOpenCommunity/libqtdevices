@@ -1,12 +1,12 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <QWidget>
+#include "styledwidget.h"
 
 class WindowContainer;
 
 
-class Window : public QWidget
+class Window : public StyledWidget
 {
 Q_OBJECT
 public:
