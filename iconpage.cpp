@@ -51,7 +51,7 @@ BtButton *IconPage::addButton(int id, QString iconName, int x, int y)
 
 void IconPage::addPage(Page *page, int id, QString iconName, int x, int y)
 {
-	BtButton *b = addButton(id, iconName);
+	BtButton *b = addButton(id, iconName, x, y);
 
 	buttons_group.addButton(b, id);
 	page_list[id] = page;
