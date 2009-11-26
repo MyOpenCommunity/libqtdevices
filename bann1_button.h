@@ -95,7 +95,16 @@ protected:
 	BtButton *center_button;
 };
 
+// replacement for bannSimple
+class BannSimple : public BannCenteredButton
+{
+Q_OBJECT
+public:
+	BannSimple(const QString &icon);
 
+signals:
+	void clicked();
+};
 
 /*!
   \class bannPuls

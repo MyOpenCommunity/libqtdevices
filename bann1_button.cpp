@@ -80,6 +80,14 @@ void BannCenteredButton::initBanner(const QString &center)
 }
 
 
+BannSimple::BannSimple(const QString &icon)
+	: BannCenteredButton(0)
+{
+	initBanner(icon);
+	connect(center_button, SIGNAL(clicked()), SIGNAL(clicked()));
+}
+
+
 BannOn2Labels::BannOn2Labels(QWidget *parent) :
 	BannerNew(parent)
 {
