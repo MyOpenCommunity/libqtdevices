@@ -97,8 +97,11 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		break;
 	case SCENARIO_SCHEDULATO:
 	{
-		QList<QString> names, img, descr;
+		SkinContext context(getTextChild(item_node, "cid").toInt());
+		QList<QString> names, img, descr, icon_names;
 		names << "unable" << "disable" << "start" << "stop";
+		icon_names << bt_global::skin->getImage("enable_scen") << bt_global::skin->getImage("disable_scen") <<
+			bt_global::skin->getImage("start") << bt_global::skin->getImage("stop");
 
 		for (int i = 0; i < names.size(); ++i)
 		{
@@ -106,7 +109,9 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 			if (!n.isNull())
 			{
 				int v = getTextChild(n, "value").toInt();
-				img.append(v ? IMG_PATH + getTextChild(n, "cimg1") : QString());
+				// TODO: this is just a quick fix to use the skin manager instead of "cimg" tags
+				//  Remove when scenSched banner is rewritten
+				img.append(v ? icon_names[i] : QString());
 				descr.append(v ? getTextChild(n, "open") : QString());
 			}
 			else
