@@ -35,7 +35,7 @@ void CleanScreen::updateRemainingTime()
 	update();
 }
 
-void CleanScreen::showPage()
+void CleanScreen::showWindow()
 {
 	if (!secs_timer.isActive())
 	{
@@ -45,14 +45,14 @@ void CleanScreen::showPage()
 		secs_counter = 0;
 		bt_global::display.forceOperativeMode(true);
 	}
-	Page::showPage();
+	Window::showWindow();
 }
 
 void CleanScreen::handleClose()
 {
 	bt_global::display.forceOperativeMode(false);
 	secs_timer.stop();
-	emit Closed();
+	bt_global::btmain->homeWindow()->showWindow();
 }
 
 void CleanScreen::paintEvent(QPaintEvent *e)
