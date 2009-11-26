@@ -76,9 +76,8 @@ QString SkinManager::getImage(QString name)
 		return IMG_PATH + images[-1][name];
 
 	qWarning("SkinManager: No image %s found", qPrintable(name));
-	return QString();
+	return QString("");
 }
-
 
 SkinContext::SkinContext(int cid)
 {
