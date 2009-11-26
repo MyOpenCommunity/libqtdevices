@@ -6,6 +6,8 @@
 #include "btmain.h" // version page
 #include "version.h"
 #include "screensaverpage.h"
+#include "cleanscreen.h"
+#include "btbutton.h"
 #include "main.h" // pagSecLiv
 
 enum
@@ -44,6 +46,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		int link_id = getTextChild(item, "id").toInt();
 		QString icon = bt_global::skin->getImage("link_icon");
 		Page *p = 0;
+		Window *w = 0;
 
 		switch (link_id)
 		{
@@ -56,11 +59,21 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		case PAGE_SCREENSAVER:
 			p = new ScreenSaverPage;
 			break;
+		case PAGE_CLEANSCREEN:
+			// TODO config file does not contain the clean screen value
+			w = new CleanScreen(bt_global::skin->getImage("cleanscreen"), 10);
+			break;
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");
 		};
 
 		if (p)
 			addPage(p, link_id, icon);
+		else if (w)
+		{
+			BtButton *b = addButton(link_id, icon);
+
+			connect(b, SIGNAL(clicked()), w, SLOT(showWindow()));
+		}
 	}
 }
