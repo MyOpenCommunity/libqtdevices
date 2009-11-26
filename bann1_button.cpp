@@ -83,6 +83,7 @@ void BannCenteredButton::initBanner(const QString &center)
 BannSimple::BannSimple(const QString &icon)
 	: BannCenteredButton(0)
 {
+	banner_height = BUT_DIM;
 	initBanner(icon);
 	connect(center_button, SIGNAL(clicked()), SIGNAL(clicked()));
 }
