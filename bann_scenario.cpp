@@ -527,6 +527,59 @@ scenEvo::~scenEvo()
 }
 
 
+ScheduledScenario::ScheduledScenario(QWidget *parent, const QDomNode &config_node) :
+	Bann4Buttons(parent)
+{
+	initBanner(bt_global::skin->getImage("disable_scen"), bt_global::skin->getImage("stop"),
+		bt_global::skin->getImage("start"), bt_global::skin->getImage("enable_scen"),
+		getTextChild(config_node, "descr"));
+	connect(left_button, SIGNAL(clicked()), SLOT(enable()));
+	connect(center_left_button, SIGNAL(clicked()), SLOT(start()));
+	connect(center_right_button, SIGNAL(clicked()), SLOT(stop()));
+	connect(right_button, SIGNAL(clicked()), SLOT(disable()));
+
+#ifdef CONFIG_BTOUCH
+	QList<QString> nodes;
+	nodes << "unable" << "start" << "stop" << "disable";
+	QList<QString *> actions;
+	actions << &action_enable << &action_start << &action_stop << &action_disable;
+	// these must be in the same position as the list above!
+	QList<BtButton *> buttons;
+	buttons << left_button << center_left_button << center_right_button << right_button;
+
+	for (int i = 0; i < nodes.size(); ++i)
+	{
+		QDomNode node = getChildWithName(config_node, nodes[i]);
+		if (!node.isNull() && getTextChild(node, "value").toInt())
+			*actions[i] = getTextChild(node, "open");
+		else
+			buttons[i]->hide();
+	}
+#else
+#endif
+}
+
+void ScheduledScenario::enable()
+{
+	sendFrame(action_enable);
+}
+
+void ScheduledScenario::start()
+{
+	sendFrame(action_start);
+}
+
+void ScheduledScenario::stop()
+{
+	sendFrame(action_stop);
+}
+
+void ScheduledScenario::disable()
+{
+	sendFrame(action_disable);
+}
+
+
 scenSched::scenSched(QWidget *parent, QString Icona1, QString Icona2, QString Icona3, QString Icona4,
 	QString act_enable, QString act_disable, QString act_start, QString act_stop) : bann4But(parent)
 {

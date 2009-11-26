@@ -147,6 +147,23 @@ private slots:
 };
 
 
+// substitute for scenSched
+class ScheduledScenario : public Bann4Buttons
+{
+Q_OBJECT
+public:
+	ScheduledScenario(QWidget *parent, const QDomNode &config_node);
+
+private slots:
+	void enable();
+	void disable();
+	void start();
+	void stop();
+
+private:
+	QString action_enable, action_disable, action_start, action_stop;
+};
+
 /*!
  * \class scenSched
  * \brief This class represents a scheduled scenario management object
