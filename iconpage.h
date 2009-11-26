@@ -20,6 +20,7 @@
 #include <QList>
 
 class IconContent;
+class BtButton;
 
 /**
  * \class IconPage
@@ -40,6 +41,7 @@ public:
 protected:
 	void buildPage(IconContent *content, NavigationBar *nav_bar, const QString &label = QString());
 	void addPage(Page *page, int id, QString iconName, int x = 0, int y = 0);
+	BtButton *addButton(int id, QString iconName, int x = 0, int y = 0);
 
 private:
 	QButtonGroup buttons_group;
