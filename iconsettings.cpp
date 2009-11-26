@@ -5,6 +5,7 @@
 #include "skinmanager.h"
 #include "btmain.h" // version page
 #include "version.h"
+#include "screensaverpage.h"
 #include "main.h" // pagSecLiv
 
 enum
@@ -48,6 +49,12 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		{
 		case PAGE_DATE_TIME:
 			p = new ChangeTime;
+			break;
+		case PAGE_DISPLAY:
+			p = new IconSettings(getPageNodeFromPageId(getTextChild(item, "lnk_pageID").toInt()));
+			break;
+		case PAGE_SCREENSAVER:
+			p = new ScreenSaverPage;
 			break;
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");
