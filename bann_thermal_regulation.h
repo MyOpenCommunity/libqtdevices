@@ -541,7 +541,7 @@ private:
  * set the address of the thermal regulator.
  * It displays a button in the center with icon "OFF".
  */
-class BannOff : public BannLargeButton
+class BannOff : public BannCenteredButton
 {
 Q_OBJECT
 public:
@@ -564,7 +564,7 @@ signals:
  * address of the device.
  * It displays one button at the center with icon antifreeze on it.
  */
-class BannAntifreeze : public BannLargeButton
+class BannAntifreeze : public BannCenteredButton
 {
 Q_OBJECT
 public:
