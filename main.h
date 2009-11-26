@@ -437,9 +437,11 @@ enum  bannerType
 	TERMO_4Z=68,                                  /*!< 4 zones thermal regulator */
 	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
 	ENERGY_TYPE=70,
-	// keep 69-71 free for energy management devices
 	LANSETTINGS=72,                               /*!< LAN settings and information */
-
+	AIR_SPLIT=74,                                 /*!< AIR conditioning single split (basic) */
+	AIR_GENERAL=75,                               /*!< AIR conditioning general split (basic) */
+	AIR_SPLIT_ADV=77,                             /*!< AIR conditioning single split (advanced) */
+	AIR_GENERAL_ADV=78,                           /*!< AIR conditioning general split (advanced) */
 };
 
 /*! \enum pulsType
