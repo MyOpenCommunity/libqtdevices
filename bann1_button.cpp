@@ -142,6 +142,9 @@ void BannOn2Labels::setElapsedTime(int time)
 BannLeft::BannLeft(QWidget *parent) :
 	BannerNew(parent)
 {
+	// Bannleft does not have the description label
+	banner_height = BUT_DIM;
+
 	left_button = new BtButton;
 	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
