@@ -32,7 +32,7 @@ public:
 
 private:
 	void loadItems(const QDomNode &config_node);
+	int section_id;
 };
-
 
 #endif
