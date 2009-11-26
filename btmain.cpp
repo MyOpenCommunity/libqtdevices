@@ -554,7 +554,7 @@ void BtMain::gesScrSav()
 			Page *target = screensaver->targetPage();
 			if (target && target != pagDefault)
 				page_container->setCurrentPage(prev_page);
-			screensaver->targetWindow()->showWindow();;
+			screensaver->targetWindow()->showWindow();
 
 			screensaver->stop();
 		}
