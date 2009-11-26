@@ -182,6 +182,8 @@ bannPuls::bannPuls(QWidget *parent) : banner(parent)
 }
 
 
+#if 0
+
 bannSimple::bannSimple(QWidget *parent, QString icon, Page *page) : banner(parent)
 {
 	banner_height = BUT_DIM;
@@ -195,6 +197,8 @@ bannSimple::bannSimple(QWidget *parent, QString icon, Page *page) : banner(paren
 	connectDxButton(page);
 	Draw();
 }
+
+#endif
 
 
 bannOnDx::bannOnDx(QWidget *parent, QString icon, Page *page) : banner(parent)

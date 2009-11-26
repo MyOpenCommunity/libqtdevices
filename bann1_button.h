@@ -125,6 +125,8 @@ signals:
 	void released();
 };
 
+#if 0
+
 /*!
   \class bannSimple
   \brief A very simple banner with only a button in the center.
@@ -140,6 +142,7 @@ signals:
 	void click();
 };
 
+#endif
 
 /*!
   \class bannOnDx
