@@ -1,6 +1,5 @@
 #include "singlechoicepage.h"
 #include "main.h" // for ICON_{OK,VUOTO}
-#include "bann1_button.h" // bannOnSx
 #include "navigation_bar.h"
 #include "singlechoicecontent.h"
 #include "btbutton.h"
