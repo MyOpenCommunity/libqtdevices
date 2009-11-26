@@ -61,6 +61,8 @@ void CleanScreen::handleClose()
 
 void CleanScreen::paintEvent(QPaintEvent *e)
 {
+	Window::paintEvent(e);
+
 	// we use QTime only to format the output
 	QTime remaining_time;
 	remaining_time = remaining_time.addMSecs((wait_time_sec - secs_counter) * 1000);
