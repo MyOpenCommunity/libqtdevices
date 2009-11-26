@@ -143,7 +143,7 @@ BannLeft::BannLeft(QWidget *parent) :
 	BannerNew(parent)
 {
 	left_button = new BtButton;
-	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::BANNERTEXT));
+	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
 	QHBoxLayout *l = new QHBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
