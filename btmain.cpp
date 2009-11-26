@@ -578,6 +578,11 @@ Page *BtMain::getPreviousPage()
 	return prev_page;
 }
 
+Window *BtMain::homeWindow()
+{
+	return window_container->homeWindow();
+}
+
 bool BtMain::screenSaverRunning()
 {
 	return screensaver && screensaver->isRunning();

@@ -27,6 +27,7 @@ class ScreenSaver;
 class Page;
 class PageContainer;
 class WindowContainer;
+class Window;
 
 class QPixmap;
 class QString;
@@ -67,6 +68,7 @@ public:
 	Page *getPreviousPage();
 	bool screenSaverRunning();
 	void showScreensaverIfNeeded();
+	Window *homeWindow();
 
 public slots:
 	void startCalib();
