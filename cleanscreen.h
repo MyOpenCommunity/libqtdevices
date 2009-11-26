@@ -46,16 +46,6 @@ private:
 	/// labels to show remaining time and cleanscreen icon
 	QLabel *time_label, *icon_label;
 
-	static const unsigned TIME_LABEL_X = 80;
-	static const unsigned TIME_LABEL_Y = 160;
-	static const unsigned TIME_LABEL_WIDTH = 80;
-	static const unsigned TIME_LABEL_HEIGHT = 40;
-
-	static const unsigned ICON_LABEL_X = 80;
-	static const unsigned ICON_LABEL_Y = 20;
-	static const unsigned ICON_LABEL_WIDTH = 80;
-	static const unsigned ICON_LABEL_HEIGHT = 80;
-
 private slots:
 	void handleClose();
 	void updateRemainingTime();
