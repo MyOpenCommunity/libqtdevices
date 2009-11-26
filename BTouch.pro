@@ -174,6 +174,7 @@ HEADERS += actuators.h \
            sounddiffusion.h \
            specialpage.h \
            stopngo.h \
+           styledwidget.h \
            supervisionmenu.h \
            temperatureviewer.h \
            thermal_device.h \
@@ -291,6 +292,7 @@ SOURCES += actuators.cpp \
            sounddiffusion.cpp \
            specialpage.cpp \
            stopngo.cpp \
+           styledwidget.cpp \
            supervisionmenu.cpp \
            temperatureviewer.cpp \
            thermal_device.cpp \
