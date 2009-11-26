@@ -16,6 +16,9 @@ public:
 	// add a new banner to the widget
 	void addBanner(const QString &text, int id);
 
+	// returns the list of buttons for customization
+	QList<QAbstractButton*> getButtons();
+
 public slots:
 	// Set the active button
 	void setCheckedId(int id);
