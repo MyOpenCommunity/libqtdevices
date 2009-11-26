@@ -30,9 +30,12 @@ void SingleChoicePage::setCheckedId(int id)
 
 void SingleChoicePage::okPressed()
 {
-	bannerSelected(page_content->checkedId()); // update the current id and do custom actions
-	setCheckedId(getCurrentId());
-
+	confirmSelection();
 	emit Closed();
 }
 
+void SingleChoicePage::confirmSelection()
+{
+	bannerSelected(page_content->checkedId()); // update the current id and do custom actions
+	setCheckedId(getCurrentId());
+}

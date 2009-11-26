@@ -18,8 +18,10 @@ public:
 	typedef SingleChoiceContent ContentType;
 
 	SingleChoicePage();
+
 private slots:
 	void okPressed();
+	void confirmSelection();
 
 protected:
 	// The current id used to choose which button is toggled
