@@ -164,6 +164,9 @@ private:
 	QString action_enable, action_disable, action_start, action_stop;
 };
 
+
+#if 0
+// DELETE
 /*!
  * \class scenSched
  * \brief This class represents a scheduled scenario management object
@@ -194,6 +197,7 @@ public slots:
 private:
 	QString action_enable, action_disable, action_start, action_stop;
 };
+#endif
 
 
 class PPTSce : public bann4But

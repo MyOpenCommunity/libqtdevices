@@ -235,33 +235,31 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		bt_global::display.current_screensaver = type;
 
 #ifdef CONFIG_BTOUCH
-		QDomNode displaypages = getConfElement("displaypages");
-		QDomNode pagemenu_home = getChildWithId(displaypages, QRegExp("pagemenu(\\d{1,2}|)"), 0);
+		QDomNode gui_node = getConfElement("displaypages");
+		QDomNode pagemenu_home = getChildWithId(gui_node, QRegExp("pagemenu(\\d{1,2}|)"), 0);
 		// homePage must be built after the loading of the configuration,
 		// to ensure that values displayed (by homePage or its child pages)
 		// is in according with saved values.
 		Home = new HomePage(pagemenu_home);
 
-		QDomNode home_node = getChildWithName(displaypages, "homepage");
-		if (getTextChild(home_node, "isdefined").toInt())
-		{
-			int id_default = getTextChild(home_node, "id").toInt();
-			pagDefault = !id_default ? Home : getPage(id_default);
-		}
-
-		QString orientation = getTextChild(displaypages, "orientation");
+		QString orientation = getTextChild(gui_node, "orientation");
 		if (!orientation.isNull())
 			setOrientation(orientation);
 #else
-		QDomNode gui = getConfElement("gui");
+		QDomNode gui_node = getConfElement("gui");
 		// TODO read the id from the <homepage> node
 		QDomNode pagemenu_home = getHomepageNode();
 		Home = new HomePage(pagemenu_home);
 		connect(window_container->homeWindow(), SIGNAL(showHomePage()), Home, SLOT(showPage()));
 		connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), Home, SLOT(showSectionPage(int)));
-
-		pagDefault = Home;
 #endif
+
+		QDomNode home_node = getChildWithName(gui_node, "homepage");
+		if (getTextChild(home_node, "isdefined").toInt())
+		{
+			int id_default = getTextChild(home_node, "id").toInt();
+			pagDefault = !id_default ? Home : getPage(id_default);
+		}
 
 		// TODO: read the transition effect from configuration
 		page_container->installTransitionWidget(new BlendingTransition);
