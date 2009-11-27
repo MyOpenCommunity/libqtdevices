@@ -19,4 +19,25 @@ private:
 };
 
 
+class SplitPage : public BannerPage
+{
+Q_OBJECT
+public:
+	SplitPage(const QDomNode &config_node);
+
+private:
+	void loadScenarios(const QDomNode &config_node);
+};
+
+
+class AdvancedSplitPage : public BannerPage
+{
+Q_OBJECT
+public:
+	AdvancedSplitPage(const QDomNode &config_node);
+
+private:
+	void loadScenarios(const QDomNode &config_node);
+};
+
 #endif // AIR_CONDITIONING_H

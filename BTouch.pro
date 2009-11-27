@@ -86,6 +86,7 @@ HEADERS += actuators.h \
            bann2_buttons.h \
            bann3_buttons.h \
            bann4_buttons.h \
+           bann_airconditioning.h \
            bann_antintrusion.h \
            bann_automation.h \
            bann_lighting.h \
@@ -204,6 +205,7 @@ SOURCES += actuators.cpp \
            bann2_buttons.cpp \
            bann3_buttons.cpp \
            bann4_buttons.cpp \
+           bann_airconditioning.cpp \
            bann_antintrusion.cpp \
            bann_automation.cpp \
            bann_lighting.cpp \
