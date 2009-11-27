@@ -538,15 +538,16 @@ ScheduledScenario::ScheduledScenario(QWidget *parent, const QDomNode &config_nod
 	connect(center_right_button, SIGNAL(clicked()), SLOT(stop()));
 	connect(right_button, SIGNAL(clicked()), SLOT(disable()));
 
-#ifdef CONFIG_BTOUCH
-	QList<QString> nodes;
-	nodes << "unable" << "start" << "stop" << "disable";
 	QList<QString *> actions;
 	actions << &action_enable << &action_start << &action_stop << &action_disable;
 	// these must be in the same position as the list above!
 	QList<BtButton *> buttons;
 	buttons << left_button << center_left_button << center_right_button << right_button;
 
+#ifdef CONFIG_BTOUCH
+	QList<QString> nodes;
+	// these must be in the order: unable, start, stop, disable (the same given by actions above)
+	nodes << "unable" << "start" << "stop" << "disable";
 	for (int i = 0; i < nodes.size(); ++i)
 	{
 		QDomNode node = getChildWithName(config_node, nodes[i]);
@@ -556,6 +557,21 @@ ScheduledScenario::ScheduledScenario(QWidget *parent, const QDomNode &config_nod
 			deleteButton(buttons[i]);
 	}
 #else
+	QList<QString> names;
+	// these must be in the order: attiva, start, stop, disattiva (the same given by actions above)
+	names << "attiva" << "start" << "stop" << "disattiva";
+	for (int i = 0; i < names.size(); ++i)
+	{
+		// look for a node called where{attiva,disattiva,start,stop} to decide if the action is enabled
+		QDomElement where = getElement(config_node, QString("schedscen/where") + names[i]);
+		if (!where.isNull())
+		{
+			QDomElement what = getElement(config_node, QString("schedscen/what") + names[i]);
+			*actions[i] = QString("*15*%1*%2##").arg(what.text()).arg(where.text());
+		}
+		else
+			deleteButton(buttons[i]);
+	}
 #endif
 }
 
