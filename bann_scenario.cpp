@@ -596,6 +596,8 @@ void ScheduledScenario::disable()
 }
 
 
+#if 0
+// DELETE
 scenSched::scenSched(QWidget *parent, QString Icona1, QString Icona2, QString Icona3, QString Icona4,
 	QString act_enable, QString act_disable, QString act_start, QString act_stop) : bann4But(parent)
 {
@@ -711,6 +713,7 @@ void scenSched::Draw()
 		BannerText->setText(qtesto);
 	}
 }
+#endif
 
 
 PPTSce::PPTSce(QWidget *parent, QString where, int cid) : bann4But(parent)

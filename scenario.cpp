@@ -127,75 +127,18 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		b = new scenEvo(0, item_node, loadConditions(item_node));
 	}
 		break;
-#ifdef CONFIG_BTOUCH
 	case SCENARIO_SCHEDULATO:
 	{
 		SkinContext context(getTextChild(item_node, "cid").toInt());
-		QList<QString> names, img, descr, icon_names;
-		names << "unable" << "disable" << "start" << "stop";
-		icon_names << bt_global::skin->getImage("enable_scen") << bt_global::skin->getImage("disable_scen") <<
-			bt_global::skin->getImage("start") << bt_global::skin->getImage("stop");
-
-		for (int i = 0; i < names.size(); ++i)
-		{
-			QDomNode n = getChildWithName(item_node, names[i]);
-			if (!n.isNull())
-			{
-				int v = getTextChild(n, "value").toInt();
-				// TODO: this is just a quick fix to use the skin manager instead of "cimg" tags
-				//  Remove when scenSched banner is rewritten
-				img.append(v ? icon_names[i] : QString());
-				descr.append(v ? getTextChild(n, "open") : QString());
-			}
-			else
-			{
-				qWarning() << "Unable to find node" << names[i] << "on scenario Schedulato configuration";
-				img.append(QString());
-				descr.append(QString());
-			}
-		}
-		b = new scenSched(0, img[0], img[1], img[2], img[3], descr[0], descr[1], descr[2], descr[3]);
+		b = new ScheduledScenario(0, item_node);
 		break;
 	}
+#ifdef CONFIG_BTOUCH
 	case PPT_SCE:
 		b = new PPTSce(0, where, getTextChild(item_node, "cid").toInt());
 		break;
-	}
-#else
-	case SCENARIO_SCHEDULATO:
-	{
-		SkinContext context(getTextChild(item_node, "cid").toInt());
-		QList<QString> names, img, descr, icon_names;
-		names << "attiva" << "disattiva" << "start" << "stop";
-		icon_names << bt_global::skin->getImage("enable_scen") << bt_global::skin->getImage("disable_scen") <<
-			bt_global::skin->getImage("start") << bt_global::skin->getImage("stop");
-		for (int i = 0; i < names.size(); ++i)
-		{
-			// look for a node called where{attiva,disattiva,start,stop} to be similar to previous code
-			QDomElement where = getElement(item_node, QString("schedscen/where") + names[i]);
-			qDebug() << "where: " << where.nodeName();
-			if (!where.isNull())
-			{
-				img.append(icon_names[i]);
-				// build frame open to send.
-				// TODO: this is to reuse scenSched in its current form, it can be changed when
-				//  scenSched is rewritten
-				QDomElement what = getElement(item_node, QString("schedscen/what") + names[i]);
-				qDebug() << "what: " << what.nodeName();
-				QString frame = QString("*15*%1*%2##").arg(what.toElement().text()).arg(where.toElement().text());
-				descr.append(frame);
-			}
-			else
-			{
-				img.append(QString());
-				descr.append(QString());
-			}
-		}
-		b = new scenSched(0, img[0], img[1], img[2], img[3], descr[0], descr[1], descr[2], descr[3]);
-		break;
-	}
-	}
 #endif
+	}
 
 	if (b)
 	{
