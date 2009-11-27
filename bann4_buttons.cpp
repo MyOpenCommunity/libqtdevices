@@ -108,18 +108,20 @@ Bann4Buttons::Bann4Buttons(QWidget *parent) :
 	left_button = new BtButton;
 	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
-	QHBoxLayout *hbox = new QHBoxLayout;
-	hbox->setContentsMargins(0, 0, 0, 0);
-	hbox->setSpacing(0);
-	hbox->addWidget(left_button, 0, Qt::AlignLeft);
-	hbox->addWidget(center_left_button, 0, Qt::AlignHCenter);
-	hbox->addWidget(center_right_button, 0, Qt::AlignHCenter);
-	hbox->addWidget(right_button, 0, Qt::AlignRight);
+	QGridLayout *grid = new QGridLayout;
+	grid->setContentsMargins(0, 0, 0, 0);
+	grid->setSpacing(0);
+	grid->addWidget(left_button, 0, 0);
+	grid->addWidget(center_left_button, 0, 1);
+	grid->addWidget(center_right_button, 0, 2);
+	grid->addWidget(right_button, 0, 3);
+	for (int i = 0; i < grid->columnCount(); ++i)
+		grid->setColumnStretch(i, 1);
 
 	QVBoxLayout *l = new QVBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
-	l->addLayout(hbox);
+	l->addLayout(grid);
 	l->addWidget(text);
 }
 
@@ -133,7 +135,14 @@ void Bann4Buttons::initBanner(const QString &right, const QString &center_right,
 	text->setText(banner_text);
 }
 
-
+void Bann4Buttons::deleteButton(BtButton *btn)
+{
+	Q_ASSERT_X(btn == right_button || btn == center_right_button || btn == center_left_button || btn == left_button,
+		"Bann4Buttons::deleteButton", "Button parameter is not a member of Bann4Buttons");
+	btn->hide();
+	btn->disconnect();
+	btn->deleteLater();
+}
 
 
 bann4But::bann4But(QWidget *parent) : banner(parent)

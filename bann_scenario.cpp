@@ -553,7 +553,7 @@ ScheduledScenario::ScheduledScenario(QWidget *parent, const QDomNode &config_nod
 		if (!node.isNull() && getTextChild(node, "value").toInt())
 			*actions[i] = getTextChild(node, "open");
 		else
-			buttons[i]->hide();
+			deleteButton(buttons[i]);
 	}
 #else
 #endif
