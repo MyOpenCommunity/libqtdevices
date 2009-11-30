@@ -11,7 +11,55 @@
 /// Forward Declarations
 class Keypad;
 class device;
+class QDomNode;
 
+
+class BannSingleLeft : public BannerNew
+{
+Q_OBJECT
+protected:
+	enum States
+	{
+		PARTIAL_ON,
+		PARTIAL_OFF,
+	};
+
+	BannSingleLeft(QWidget *parent = 0);
+	void initBanner(const QString &_left_on, const QString &_left_off, const QString &_center_on,
+		const QString &_center_off, const QString &zone, States init_state, const QString &banner_text);
+	void setState(States new_state);
+
+	BtButton *left_button;
+
+private:
+	QLabel *zone_icon, *center_icon, *text;
+	QString left_on, left_off, center_on, center_off;
+};
+
+
+
+// TODO: quick replacement for zonaAnti, to be cleaned up
+class AntintrusionZone : public BannSingleLeft
+{
+Q_OBJECT
+public:
+	AntintrusionZone(const QDomNode &config_node, QWidget *parent = 0);
+	void inizializza(bool forza = false);
+public slots:
+	void status_changed(QList<device_status*>);
+	void toggleParzializza();
+	void abilitaParz(bool ab);
+	void clearChanged();
+	int getIndex();
+
+private:
+	void setParzializzaOn(bool parz);
+	bool already_changed;
+	bool is_on;
+	device *dev;
+signals:
+	void partChanged(AntintrusionZone *);
+};
 
 /*!
  *  \class zonaAnti
