@@ -4,7 +4,7 @@
 #include "hardware_functions.h"
 
 #include <QFileInfo>
-#include <QHBoxLayout>
+#include <QGridLayout>
 #include <QVBoxLayout>
 
 static const int buttons_dim = 60;
@@ -14,28 +14,40 @@ NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up
 {
 	if (hardwareType() == TOUCH_X)
 	{
-		main_layout = new QVBoxLayout(this);
-		main_layout->addStretch(1);
+		QVBoxLayout *l = new QVBoxLayout(this);
+		l->addStretch(1);
 		// TODO: Btouch code expects the forward button to be in the navigation
 		// bar; in TouchX the button is mostly in the page (except for a delete
 		// button in a couple of pages)
 		forward_button = createButton(forward_icon, SIGNAL(forwardClick()));
+		l->addWidget(forward_button);
 		up_button = createButton(up_icon, SIGNAL(upClick()));
+		l->addWidget(up_button);
 		down_button = createButton(down_icon, SIGNAL(downClick()));
+		l->addWidget(down_button);
 		back_button = createButton(back_icon, SIGNAL(backClick()));
-		main_layout->setContentsMargins(13, 0, 12, 50);
-		main_layout->setSpacing(10);
+		l->addWidget(back_button);
+		l->setContentsMargins(13, 0, 12, 50);
+		l->setSpacing(10);
+		main_layout = l;
 	}
 	else
 	{
-		main_layout = new QHBoxLayout(this);
+		QGridLayout *l = new QGridLayout(this);
 		back_button = createButton(back_icon, SIGNAL(backClick()));
+		l->addWidget(back_button, 0, 0);
 		down_button = createButton(down_icon, SIGNAL(downClick()));
+		l->addWidget(down_button, 0, 1);
 		up_button = createButton(up_icon, SIGNAL(upClick()));
+		l->addWidget(up_button, 0, 2);
 		forward_button = createButton(forward_icon, SIGNAL(forwardClick()));
-		main_layout->addStretch(1);
-		main_layout->setContentsMargins(0, 0, 0, 0);
-		main_layout->setSpacing(0);
+		l->addWidget(forward_button, 0, 3);
+		l->setColumnStretch(1, 1);
+		l->setColumnStretch(2, 1);
+		l->setColumnStretch(3, 1);
+		l->setContentsMargins(0, 0, 0, 0);
+		l->setSpacing(0);
+		main_layout = l;
 	}
 }
 
@@ -49,7 +61,6 @@ BtButton *NavigationBar::createButton(QString icon, const char *signal)
 			b->setImage(icon); // for retrocompatibility
 		else
 			b->setImage(bt_global::skin->getImage(icon));
-		main_layout->addWidget(b);
 		return b;
 	}
 	return 0;
