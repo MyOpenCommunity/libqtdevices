@@ -31,6 +31,7 @@ BannSingleLeft::BannSingleLeft(QWidget *parent) :
 	QGridLayout *grid = new QGridLayout;
 	grid->setContentsMargins(0, 0, 0, 0);
 	grid->setSpacing(0);
+	grid->setColumnStretch(0, 1);
 	grid->setColumnStretch(2, 1);
 	grid->addWidget(left_button, 0, 0);
 	grid->addLayout(center, 0, 1);
@@ -59,11 +60,11 @@ void BannSingleLeft::setState(States new_state)
 {
 	switch (new_state)
 	{
-	case PARTIAL_ON:
+	case PARTIAL_OFF:
 		left_button->setImage(left_on);
 		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_off));
 		break;
-	case PARTIAL_OFF:
+	case PARTIAL_ON:
 		left_button->setImage(left_off);
 		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_on));
 		break;
@@ -82,7 +83,8 @@ AntintrusionZone::AntintrusionZone(const QDomNode &config_node, QWidget *parent)
 	QString zone = getZoneName(bt_global::skin->getImage("zone"), where);
 	initBanner(bt_global::skin->getImage("parz"), bt_global::skin->getImage("sparz"),
 		bt_global::skin->getImage("antintrusion_on"), bt_global::skin->getImage("antintrusion_off"),
-		zone, PARTIAL_ON, getTextChild(config_node, "descr"));
+		zone, PARTIAL_OFF, getTextChild(config_node, "descr"));
+	is_on = false;
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleParzializza()));
 	already_changed = false;
 
@@ -91,7 +93,6 @@ AntintrusionZone::AntintrusionZone(const QDomNode &config_node, QWidget *parent)
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), SLOT(status_changed(QList<device_status*>)));
 
 	abilitaParz(true);
-	is_on = false;
 }
 
 void AntintrusionZone::status_changed(QList<device_status *> sl)
