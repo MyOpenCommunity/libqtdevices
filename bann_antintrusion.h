@@ -45,6 +45,8 @@ Q_OBJECT
 public:
 	AntintrusionZone(const QDomNode &config_node, QWidget *parent = 0);
 	void inizializza(bool forza = false);
+	bool isActive();
+
 public slots:
 	void status_changed(QList<device_status*>);
 	void toggleParzializza();

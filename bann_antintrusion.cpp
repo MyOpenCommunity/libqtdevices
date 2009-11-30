@@ -24,17 +24,21 @@ BannSingleLeft::BannSingleLeft(QWidget *parent) :
 	center_icon = new QLabel;
 	zone_icon = new QLabel;
 
-	QHBoxLayout *hbox = new QHBoxLayout;
-	hbox->setContentsMargins(0, 0, 0, 0);
-	hbox->setSpacing(0);
-	hbox->addWidget(left_button, 0, Qt::AlignLeft);
-	hbox->addWidget(zone_icon, 1, Qt::AlignLeft);
-	hbox->addWidget(center_icon, 1, Qt::AlignLeft);
+	QGridLayout *center = new QGridLayout;
+	center->addWidget(zone_icon, 0, 0);
+	center->addWidget(center_icon, 0, 1);
+
+	QGridLayout *grid = new QGridLayout;
+	grid->setContentsMargins(0, 0, 0, 0);
+	grid->setSpacing(0);
+	grid->setColumnStretch(2, 1);
+	grid->addWidget(left_button, 0, 0);
+	grid->addLayout(center, 0, 1);
 
 	QVBoxLayout *l = new QVBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
-	l->addLayout(hbox);
+	l->addLayout(grid);
 	l->addWidget(text);
 }
 
@@ -57,11 +61,11 @@ void BannSingleLeft::setState(States new_state)
 	{
 	case PARTIAL_ON:
 		left_button->setImage(left_on);
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_on));
+		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_off));
 		break;
 	case PARTIAL_OFF:
 		left_button->setImage(left_off);
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_off));
+		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_on));
 		break;
 	}
 }
@@ -71,6 +75,7 @@ void BannSingleLeft::setState(States new_state)
 AntintrusionZone::AntintrusionZone(const QDomNode &config_node, QWidget *parent) :
 	BannSingleLeft(parent)
 {
+	SkinContext context(getTextChild(config_node, "cid").toInt());
 	QString where = getTextChild(config_node, "where");
 	setAddress(where);
 
@@ -78,7 +83,7 @@ AntintrusionZone::AntintrusionZone(const QDomNode &config_node, QWidget *parent)
 	initBanner(bt_global::skin->getImage("parz"), bt_global::skin->getImage("sparz"),
 		bt_global::skin->getImage("antintrusion_on"), bt_global::skin->getImage("antintrusion_off"),
 		zone, PARTIAL_ON, getTextChild(config_node, "descr"));
-	connect(left_button, SIGNAL(clicked()), SLOT(ToggleParzializza()));
+	connect(left_button, SIGNAL(clicked()), SLOT(toggleParzializza()));
 	already_changed = false;
 
 	dev = bt_global::devices_cache.get_zonanti_device(where);
@@ -171,6 +176,11 @@ int AntintrusionZone::getIndex()
 void AntintrusionZone::inizializza(bool forza)
 {
 	dev->sendInit("*#5*" + getAddress() + "##");
+}
+
+bool AntintrusionZone::isActive()
+{
+	return is_on;
 }
 
 
