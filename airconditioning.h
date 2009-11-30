@@ -40,4 +40,13 @@ private:
 	void loadScenarios(const QDomNode &config_node);
 };
 
+
+class SplitSettings : public BannerPage
+{
+Q_OBJECT
+public:
+	SplitSettings();
+};
+
+
 #endif // AIR_CONDITIONING_H

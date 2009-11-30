@@ -33,16 +33,14 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	{
 	case AIR_SPLIT:
 	{
-		SingleSplit *bann = new SingleSplit(0);
-		bann->initBanner(img_off, img_air_single, img_forward, descr);
+		SingleSplit *bann = new SingleSplit(0, descr);
 		b = bann;
 		bann->connectRightButton(new SplitPage(item_node));
 		break;
 	}
 	case AIR_GENERAL:
 	{
-		GeneralSplit *bann = new GeneralSplit(0);
-		bann->initBanner(img_off, img_air_gen, img_forward, descr);
+		GeneralSplit *bann = new GeneralSplit(0, descr);
 		b = bann;
 		break;
 	}
@@ -128,9 +126,20 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node)
 {
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 	{
-		AdvancedSplit *b = new AdvancedSplit(0, bt_global::skin->getImage("split_cmd"),
-			bt_global::skin->getImage("split_settings"), getTextChild(scenario, "descr"));
+		AdvancedSplit *b = new AdvancedSplit(0, getTextChild(scenario, "descr"));
+		b->connectSxButton(new SplitSettings);
+		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		page_content->appendBanner(b);
 	}
+}
+
+
+SplitSettings::SplitSettings()
+{
+	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
+	nav_bar->displayScrollButtons(false);
+	buildPage(new BannerContent, nav_bar);
+
+	page_content->appendBanner(new TemperatureSplit(0));
 }
 
