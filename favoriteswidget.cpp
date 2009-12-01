@@ -42,3 +42,8 @@ QSize FavoritesWidget::minimumSizeHint() const
 {
 	return QSize(237, 335);
 }
+
+QSize FavoritesWidget::sizeHint() const
+{
+	return QSize(237, 335);
+}

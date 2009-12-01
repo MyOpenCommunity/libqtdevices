@@ -14,6 +14,7 @@ public:
 	FavoritesWidget(const QDomNode &config_node);
 
 protected:
+	virtual QSize sizeHint() const;
 	virtual QSize minimumSizeHint() const;
 
 private:
