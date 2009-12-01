@@ -442,6 +442,7 @@ enum  bannerType
 	AIR_GENERAL=75,                               /*!< AIR conditioning general split (basic) */
 	AIR_SPLIT_ADV=77,                             /*!< AIR conditioning single split (advanced) */
 	AIR_GENERAL_ADV=78,                           /*!< AIR conditioning general split (advanced) */
+	BEEP_ICON=2901,                               /*!< Beep icon in touch 10 settings */
 };
 
 /*! \enum pulsType
@@ -453,7 +454,6 @@ enum pulsType
 	VCT_SERR,                  /*!< driving as a pulse a video-doorentrysystem actuator configured as "lock" */
 	VCT_LS,                    /*!< driving as a pulse a video-doorentrysystem actuator configured as "stairlight" */
 };
-
 
 /***************************************************************
  **definizioni di carattere generale
