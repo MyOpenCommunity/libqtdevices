@@ -57,9 +57,16 @@ public:
 	SplitMode(QList<int> modes, int current_mode);
 private:
 	QHash<int, QString> modes_descr;
+};
 
-private slots:
-	void currentChanged(int id);
+
+class SplitFanSpeed : public BannStates
+{
+Q_OBJECT
+public:
+	SplitFanSpeed(QList<int> speeds, int current_speed);
+private:
+	QHash<int, QString> speeds_descr;
 };
 
 

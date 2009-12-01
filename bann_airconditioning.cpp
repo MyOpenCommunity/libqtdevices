@@ -75,9 +75,20 @@ SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 	initBanner(bt_global::skin->getImage("cycle"), current_mode);
 }
 
-void SplitMode::currentChanged(int id)
-{
-	qDebug() << "CAMBIATO ID:" << id;
-}
 
+SplitFanSpeed::SplitFanSpeed(QList<int> speeds, int current_speed) : BannStates(0)
+{
+	speeds_descr[0] = tr("AUTO");
+	speeds_descr[1] = tr("HIGH");
+	speeds_descr[2] = tr("MEDIUM");
+	speeds_descr[3] = tr("LOW");
+
+	foreach (int speed_id, speeds)
+		if (speeds_descr.contains(speed_id))
+			addState(speed_id, speeds_descr[speed_id]);
+		else
+			qWarning("The fan speed id %d doesn't exists", speed_id);
+
+	initBanner(bt_global::skin->getImage("cycle"), current_speed);
+}
 

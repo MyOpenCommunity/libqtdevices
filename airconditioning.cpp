@@ -156,15 +156,27 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 
 	page_content->appendBanner(new SplitTemperature(0));
 
-	QDomNode mode = getChildWithName(config_node, "mode");
-	if (getTextChild(mode, "val1").toInt() != -1)
+	QDomNode mode_node = getChildWithName(config_node, "mode");
+	if (getTextChild(mode_node, "val1").toInt() != -1)
 	{
 		QList <int> modes;
-		foreach (const QDomNode &val, getChildren(mode, "val"))
+		foreach (const QDomNode &val, getChildren(mode_node, "val"))
 			modes.append(val.toElement().text().toInt());
 
 		int current_mode = getTextChild(values_node, "mode").toInt();
 		page_content->appendBanner(new SplitMode(modes, current_mode));
 	}
+
+	QDomNode speed_node = getChildWithName(config_node, "fan_speed");
+	if (getTextChild(speed_node, "val1").toInt() != -1)
+	{
+		QList <int> fan_speeds;
+		foreach (const QDomNode &val, getChildren(speed_node, "val"))
+			fan_speeds.append(val.toElement().text().toInt());
+
+		int current_speed = getTextChild(values_node, "fan_speed").toInt();
+		page_content->appendBanner(new SplitFanSpeed(fan_speeds, current_speed));
+	}
+
 }
 
