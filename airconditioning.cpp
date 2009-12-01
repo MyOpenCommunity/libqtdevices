@@ -3,10 +3,12 @@
 #include "main.h"
 #include "bann2_buttons.h" // BannOnOffNew
 #include "bann1_button.h" // BannLeft
-#include "xml_functions.h"
+#include "xml_functions.h" // getTextChild, getElement
 #include "bannercontent.h"
 #include "bann_airconditioning.h"
 #include "navigation_bar.h"
+#include "devices_cache.h" // bt_global::devices_cache
+#include "airconditioning_device.h"
 
 #include <QDomNode>
 #include <QString>
@@ -33,9 +35,12 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	{
 	case AIR_SPLIT:
 	{
-		SingleSplit *bann = new SingleSplit(0, descr);
+		QString where = getTextChild(item_node, "where");
+		QString off_cmd = getElement(item_node, "off/command").text();
+		AirConditioningDevice *dev = bt_global::add_device_to_cache(new AirConditioningDevice(where));
+		SingleSplit *bann = new SingleSplit(descr, off_cmd, dev);
 		b = bann;
-		bann->connectRightButton(new SplitPage(item_node));
+		bann->connectRightButton(new SplitPage(item_node, dev));
 		break;
 	}
 	case AIR_GENERAL:
@@ -87,7 +92,7 @@ void AirConditioning::loadItems(const QDomNode &config_node)
 }
 
 
-SplitPage::SplitPage(const QDomNode &config_node)
+SplitPage::SplitPage(const QDomNode &config_node, AirConditioningDevice *d)
 {
 	NavigationBar *nav_bar;
 	if (getElement(config_node, "off/list").text().toInt() == 1) // show the off button
@@ -96,6 +101,10 @@ SplitPage::SplitPage(const QDomNode &config_node)
 		nav_bar = new NavigationBar;
 
 	buildPage(new BannerContent, nav_bar);
+	off = getElement(config_node, "off/command").text();
+	connect(this, SIGNAL(forwardClick()), SLOT(sendOff()));
+	dev = d;
+
 	loadScenarios(config_node);
 }
 
@@ -107,6 +116,11 @@ void SplitPage::loadScenarios(const QDomNode &config_node)
 		b->initBanner(bt_global::skin->getImage("split_cmd"), getTextChild(scenario, "descr"));
 		page_content->appendBanner(b);
 	}
+}
+
+void SplitPage::sendOff()
+{
+	dev->sendCommand(off);
 }
 
 

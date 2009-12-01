@@ -3,6 +3,7 @@
 
 #include "bann2_buttons.h"
 
+class AirConditioningDevice;
 class QString;
 
 
@@ -10,7 +11,14 @@ class SingleSplit : public BannOnOffNew
 {
 Q_OBJECT
 public:
-	SingleSplit(QWidget *parent, QString descr);
+	SingleSplit(QString descr, QString off_cmd, AirConditioningDevice *d);
+
+private:
+	AirConditioningDevice *dev;
+	QString off;
+
+private slots:
+	void sendOff();
 };
 
 

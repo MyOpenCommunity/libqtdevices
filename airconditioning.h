@@ -3,8 +3,10 @@
 
 #include "page.h"
 
-class QDomNode;
+class AirConditioningDevice;
 class banner;
+class QDomNode;
+
 
 
 class AirConditioning : public BannerPage
@@ -23,10 +25,16 @@ class SplitPage : public BannerPage
 {
 Q_OBJECT
 public:
-	SplitPage(const QDomNode &config_node);
+	SplitPage(const QDomNode &config_node, AirConditioningDevice *d);
 
 private:
+	AirConditioningDevice *dev;
+	QString off;
+
 	void loadScenarios(const QDomNode &config_node);
+
+private slots:
+	void sendOff();
 };
 
 
@@ -47,6 +55,5 @@ Q_OBJECT
 public:
 	SplitSettings();
 };
-
 
 #endif // AIR_CONDITIONING_H
