@@ -19,14 +19,14 @@ NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up
 		// TODO: Btouch code expects the forward button to be in the navigation
 		// bar; in TouchX the button is mostly in the page (except for a delete
 		// button in a couple of pages)
-		forward_button = createButton(forward_icon, SIGNAL(forwardClick()));
-		l->addWidget(forward_button);
-		up_button = createButton(up_icon, SIGNAL(upClick()));
-		l->addWidget(up_button);
-		down_button = createButton(down_icon, SIGNAL(downClick()));
-		l->addWidget(down_button);
-		back_button = createButton(back_icon, SIGNAL(backClick()));
-		l->addWidget(back_button);
+		if ((forward_button = createButton(forward_icon, SIGNAL(forwardClick()))))
+			l->addWidget(forward_button);
+		if ((up_button = createButton(up_icon, SIGNAL(upClick()))))
+			l->addWidget(up_button);
+		if ((down_button = createButton(down_icon, SIGNAL(downClick()))))
+			l->addWidget(down_button);
+		if ((back_button = createButton(back_icon, SIGNAL(backClick()))))
+			l->addWidget(back_button);
 		l->setContentsMargins(13, 0, 12, 50);
 		l->setSpacing(10);
 		main_layout = l;
@@ -34,14 +34,14 @@ NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up
 	else
 	{
 		QGridLayout *l = new QGridLayout(this);
-		back_button = createButton(back_icon, SIGNAL(backClick()));
-		l->addWidget(back_button, 0, 0);
-		down_button = createButton(down_icon, SIGNAL(downClick()));
-		l->addWidget(down_button, 0, 1);
-		up_button = createButton(up_icon, SIGNAL(upClick()));
-		l->addWidget(up_button, 0, 2);
-		forward_button = createButton(forward_icon, SIGNAL(forwardClick()));
-		l->addWidget(forward_button, 0, 3);
+		if ((back_button = createButton(back_icon, SIGNAL(backClick()))))
+			l->addWidget(back_button, 0, 0);
+		if ((down_button = createButton(down_icon, SIGNAL(downClick()))))
+			l->addWidget(down_button, 0, 1);
+		if ((up_button = createButton(up_icon, SIGNAL(upClick()))))
+			l->addWidget(up_button, 0, 2);
+		if ((forward_button = createButton(forward_icon, SIGNAL(forwardClick()))))
+			l->addWidget(forward_button, 0, 3);
 		l->setColumnStretch(1, 1);
 		l->setColumnStretch(2, 1);
 		l->setColumnStretch(3, 1);
