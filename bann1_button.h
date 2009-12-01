@@ -14,6 +14,10 @@
 #include "banner.h"
 #include "energy_device.h"
 
+#include <QList>
+#include <QPair>
+#include <QString>
+
 class BtButton;
 class Page;
 class QWidget;
@@ -227,5 +231,39 @@ public:
 private:
 	TextOnImageLabel *label;
 };
+
+
+/**
+ * A banner that encapsulates a list of states that can be cycled using a button
+ * on the left. Every state has an id and a description.
+ */
+class BannStates : public BannerNew
+{
+Q_OBJECT
+public:
+	BannStates(QWidget *parent);
+	void addState(int id, QString descr);
+
+	// Init the banner [NOTE: must be called after addState]
+	void initBanner(const QString &left, int current_state);
+
+	// Return the id of the current state
+	int currentState();
+
+signals:
+	void currentStateChanged(int id);
+
+protected:
+	BtButton *left_button;
+
+private:
+	unsigned int current_index;
+	QLabel *text;
+	QList<QPair<int, QString> > states_list;
+
+private slots:
+	void changeState();
+};
+
 
 #endif // BANN1_BUTTON_H

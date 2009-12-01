@@ -148,8 +148,7 @@ void BannOn2Labels::setElapsedTime(int time)
 }
 
 
-BannLeft::BannLeft(QWidget *parent) :
-	BannerNew(parent)
+BannLeft::BannLeft(QWidget *parent) : BannerNew(parent)
 {
 	// Bannleft does not have the description label
 	banner_height = BUT_DIM;
@@ -286,3 +285,54 @@ void bannTextOnImage::setInternalText(const QString &text)
 {
 	label->setInternalText(text);
 }
+
+
+
+BannStates::BannStates(QWidget *parent) : BannerNew(parent)
+{
+	banner_height = BUT_DIM;
+
+	left_button = new BtButton;
+	current_index = 0;
+	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
+
+	QHBoxLayout *l = new QHBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	l->addWidget(left_button, 0, Qt::AlignLeft);
+	l->addWidget(text, 1, Qt::AlignHCenter);
+	connect(left_button, SIGNAL(clicked()), SLOT(changeState()));
+}
+
+void BannStates::addState(int id, QString descr)
+{
+	states_list.append(qMakePair(id, descr));
+}
+
+void BannStates::initBanner(const QString &left, int current_state)
+{
+	Q_ASSERT_X(states_list.size() > 0, "BannStates::initBanner", "The list of states is empty!");
+	left_button->setImage(left);
+
+	for (int i = 0; i < states_list.size(); ++i)
+		if (states_list[i].first == current_state)
+			current_index = i;
+
+	text->setText(states_list.at(current_index).second);
+}
+
+void BannStates::changeState()
+{
+	current_index = ++current_index % states_list.size();
+	text->setText(states_list.at(current_index).second);
+	emit currentStateChanged(states_list.at(current_index).first);
+}
+
+int BannStates::currentState()
+{
+	Q_ASSERT_X(states_list.size() > 0, "BannStates::currentState", "The list of states is empty!");
+	return states_list.at(current_index).first;
+}
+
+
+

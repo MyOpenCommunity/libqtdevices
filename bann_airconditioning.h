@@ -1,10 +1,14 @@
 #ifndef BANN_AIRCONDITIONING_H
 #define BANN_AIRCONDITIONING_H
 
-#include "bann2_buttons.h"
+#include "bann2_buttons.h" // BannOnOffNew, bann2But
+#include "bann1_button.h" // BannStates
+
+#include <QHash>
+#include <QString>
+#include <QtContainerFwd> // QList
 
 class AirConditioningDevice;
-class QString;
 
 
 class SingleSplit : public BannOnOffNew
@@ -38,11 +42,25 @@ public:
 };
 
 
-class TemperatureSplit : public bann2But
+class SplitTemperature : public bann2But
 {
 Q_OBJECT
 public:
-	TemperatureSplit(QWidget *parent); // TODO: altri parametri, tipo temperature/format, range, step, ecc..
+	SplitTemperature(QWidget *parent); // TODO: altri parametri, tipo temperature/format, range, step, ecc..
 };
+
+
+class SplitMode : public BannStates
+{
+Q_OBJECT
+public:
+	SplitMode(QList<int> modes, int current_mode);
+private:
+	QHash<int, QString> modes_descr;
+
+private slots:
+	void currentChanged(int id);
+};
+
 
 #endif // BANN_AIRCONDITIONING_H

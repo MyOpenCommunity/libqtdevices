@@ -5,6 +5,7 @@
 #include "btbutton.h"
 
 #include <QLabel> // BannerText
+#include <QDebug>
 
 
 SingleSplit::SingleSplit(QString descr, QString off_cmd, AirConditioningDevice *d) : BannOnOffNew(0)
@@ -45,7 +46,7 @@ AdvancedSplit::AdvancedSplit(QWidget *parent, QString descr): bann2But(parent)
 }
 
 
-TemperatureSplit::TemperatureSplit(QWidget *parent): bann2But(parent)
+SplitTemperature::SplitTemperature(QWidget *parent): bann2But(parent)
 {
 	QString icon_plus = bt_global::skin->getImage("plus");
 	QString icon_minus = bt_global::skin->getImage("minus");
@@ -56,4 +57,27 @@ TemperatureSplit::TemperatureSplit(QWidget *parent): bann2But(parent)
 	Draw(); // blah! la draw deve essere prima della setFont altrimenti non funziona nulla!
 	BannerText->setFont(bt_global::font->get(FontManager::SUBTITLE));
 }
+
+
+SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
+{
+	modes_descr[0] = tr("AUTO");
+	modes_descr[1] = tr("HEATING");
+	modes_descr[2] = tr("COOLING");
+	modes_descr[3] = tr("DRY AND FAN");
+
+	foreach (int mode_id, modes)
+		if (modes_descr.contains(mode_id))
+			addState(mode_id, modes_descr[mode_id]);
+		else
+			qWarning("The mode id %d doesn't exists", mode_id);
+
+	initBanner(bt_global::skin->getImage("cycle"), current_mode);
+}
+
+void SplitMode::currentChanged(int id)
+{
+	qDebug() << "CAMBIATO ID:" << id;
+}
+
 

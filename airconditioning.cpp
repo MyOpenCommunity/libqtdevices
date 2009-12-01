@@ -141,19 +141,30 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node)
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 	{
 		AdvancedSplit *b = new AdvancedSplit(0, getTextChild(scenario, "descr"));
-		b->connectSxButton(new SplitSettings);
+		b->connectSxButton(new SplitSettings(scenario, getChildWithName(config_node, "par")));
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		page_content->appendBanner(b);
 	}
 }
 
 
-SplitSettings::SplitSettings()
+SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config_node)
 {
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
 	nav_bar->displayScrollButtons(false);
 	buildPage(new BannerContent, nav_bar);
 
-	page_content->appendBanner(new TemperatureSplit(0));
+	page_content->appendBanner(new SplitTemperature(0));
+
+	QDomNode mode = getChildWithName(config_node, "mode");
+	if (getTextChild(mode, "val1").toInt() != -1)
+	{
+		QList <int> modes;
+		foreach (const QDomNode &val, getChildren(mode, "val"))
+			modes.append(val.toElement().text().toInt());
+
+		int current_mode = getTextChild(values_node, "mode").toInt();
+		page_content->appendBanner(new SplitMode(modes, current_mode));
+	}
 }
 

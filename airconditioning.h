@@ -53,7 +53,7 @@ class SplitSettings : public BannerPage
 {
 Q_OBJECT
 public:
-	SplitSettings();
+	SplitSettings(const QDomNode &values_node, const QDomNode &config_node);
 };
 
 #endif // AIR_CONDITIONING_H
