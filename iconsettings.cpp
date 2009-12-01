@@ -45,6 +45,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		SkinContext cxt(getTextChild(item, "cid").toInt());
 		int link_id = getTextChild(item, "id").toInt();
 		QString icon = bt_global::skin->getImage("link_icon");
+		QString descr = getTextChild(item, "descr");
 		Page *p = 0;
 		Window *w = 0;
 
@@ -68,10 +69,10 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		};
 
 		if (p)
-			addPage(p, link_id, icon);
+			addPage(p, link_id, descr, icon);
 		else if (w)
 		{
-			BtButton *b = addButton(link_id, icon);
+			BtButton *b = addButton(link_id, descr, icon);
 
 			connect(b, SIGNAL(clicked()), w, SLOT(showWindow()));
 		}
