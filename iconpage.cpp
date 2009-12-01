@@ -39,6 +39,17 @@ void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QSt
 	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 }
 
+void IconPage::activateLayout()
+{
+	if (page_content)
+		page_content->updateGeometry();
+
+	Page::activateLayout();
+
+	if (page_content)
+		page_content->drawContent();
+}
+
 BtButton *IconPage::addButton(int id, const QString &label, const QString& iconName, int x, int y)
 {
 	BtButton *b = new BtButton(this);

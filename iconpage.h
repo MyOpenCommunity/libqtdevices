@@ -37,6 +37,7 @@ public:
 
 	IconPage();
 	virtual void addBackButton();
+	virtual void activateLayout();
 
 protected:
 	void buildPage(IconContent *content, NavigationBar *nav_bar, const QString &label = QString());
@@ -57,6 +58,7 @@ protected slots:
  */
 class IconContent : public QWidget
 {
+friend void IconPage::activateLayout();
 Q_OBJECT
 public:
 	IconContent(QWidget *parent=0);
