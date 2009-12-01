@@ -6,6 +6,7 @@
 #include <QWidget>
 
 class QDomNode;
+class BtButton;
 
 
 class IconSettings : public IconPage
@@ -18,6 +19,21 @@ public:
 
 private:
 	void loadItems(const QDomNode &config_node);
+};
+
+
+// button to toggle on/off the beep sound
+class ToggleBeep : public QWidget
+{
+Q_OBJECT
+public:
+	ToggleBeep(bool status, QString label, QString icon_on, QString icon_off);
+
+private slots:
+	void toggleBeep();
+
+private:
+	BtButton *button;
 };
 
 #endif // ICON_SETTINGS_H

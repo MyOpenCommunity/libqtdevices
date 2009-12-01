@@ -46,7 +46,7 @@ void SectionPage::loadItems(const QDomNode &config_node)
 		// TODO some ids are not links
 		int pageid = getTextChild(item, "lnk_pageID").toInt();
 		if (Page *p = getPage(pageid))
-			addPage(p, pageid, icon, 0, 0);
+			addPage(p, pageid, QString(), icon, 0, 0);
 #endif
 
 		if (wdtime.elapsed() > 1000)

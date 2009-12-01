@@ -79,7 +79,11 @@ void setBeep(bool buzzer_enable, bool write_to_conf)
 
 	if (write_to_conf)
 	{
+#ifdef CONFIG_BTOUCH
 		setCfgValue("value", p, SUONO);
+#else
+		setCfgValue("enabled", p, BEEP_ICON);
+#endif
 	}
 }
 
