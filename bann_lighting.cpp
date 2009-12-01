@@ -501,6 +501,7 @@ TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
+#ifdef CONFIG_BTOUCH
 	// I think conf.xml will have only one node for time in this banner, however
 	// such node is indicated as "timeX", so I'm using the following overkill code
 	// to be safe
@@ -512,6 +513,10 @@ TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
 	Q_ASSERT_X(sl.size() == 3, "TempLightFixed::TempLightFixed", "Time must have 3 fields");
 	BtTime t(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
 	total_time = t.hour() * 3600 + t.minute() * 60 + t.second();
+#else
+	total_time = getTextChild(config_node, "time").toInt();
+	BtTime t(total_time / 3600, (total_time / 60) % 60, total_time % 60);
+#endif
 
 	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new LightingDevice(where));
