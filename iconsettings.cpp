@@ -9,10 +9,13 @@
 #include "cleanscreen.h"
 #include "btbutton.h"
 #include "main.h" // pagSecLiv
+#include "hardware_functions.h" // setBeep/getBeep/beep
+
+#include <QLabel>
+#include <QVBoxLayout>
 
 enum
 {
-	ICON_BEEP = 2901,
 	PAGE_DATE_TIME = 2902,
 	PAGE_BRIGHTNESS = 2903,
 	PAGE_PASSWORD = 2907,
@@ -25,6 +28,41 @@ enum
 	PAGE_DISPLAY = 2920,
 	PAGE_ALARMCLOCK = 2950
 };
+
+
+ToggleBeep::ToggleBeep(bool status, QString label, QString icon_on, QString icon_off)
+{
+	QLabel *lbl = new QLabel(label);
+	lbl->setText(label);
+
+	button = new BtButton;
+	button->setStatus(status);
+	button->setCheckable(true);
+	button->setImage(icon_off);
+	button->setPressedImage(icon_on);
+
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->addWidget(button);
+	l->addWidget(lbl);
+
+	setBeep(status, false);
+	connect(button, SIGNAL(clicked()), SLOT(toggleBeep()));
+}
+
+void ToggleBeep::toggleBeep()
+{
+	if (getBeep())
+	{
+		setBeep(false, true);
+		button->setStatus(false);
+	}
+	else
+	{
+		setBeep(true, true);
+		button->setStatus(true);
+		beep();
+	}
+}
 
 
 IconSettings::IconSettings(const QDomNode &config_node)
@@ -64,6 +102,14 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			// TODO config file does not contain the clean screen value
 			w = new CleanScreen(bt_global::skin->getImage("cleanscreen"), 10);
 			break;
+		case BEEP_ICON:
+		{
+			QWidget *t = new ToggleBeep(false, descr,
+						    bt_global::skin->getImage("state_on"),
+						    bt_global::skin->getImage("state_off"));
+			page_content->addWidget(t);
+			break;
+		}
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");
 		};
