@@ -220,6 +220,9 @@ BannerPage::BannerPage(QWidget *parent)
 
 void BannerPage::activateLayout()
 {
+	if (page_content)
+		page_content->updateGeometry();
+
 	Page::activateLayout();
 
 	if (page_content)
