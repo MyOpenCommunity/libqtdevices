@@ -12,9 +12,10 @@ Q_OBJECT
 public:
 	Window();
 
-	virtual void showWindow();
-
 	static void setWindowContainer(WindowContainer *container);
+
+public slots:
+	virtual void showWindow();
 
 private:
 	static WindowContainer *window_container;

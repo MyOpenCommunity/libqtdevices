@@ -8,6 +8,7 @@
 #include <QRect>
 
 class Page;
+class WindowContainer;
 
 
 /**
@@ -18,8 +19,11 @@ class TransitionWidget : public QWidget
 Q_OBJECT
 public:
 	TransitionWidget(int time);
-	void startTransition(const QPixmap &prev, const QPixmap &dest);
+	void prepareTransition();
+	void startTransition();
 	void cancelTransition();
+
+	void setContainer(WindowContainer *container);
 
 signals:
 	void endTransition();
@@ -32,6 +36,7 @@ protected:
 	virtual void initTransition() {}
 
 private:
+	WindowContainer *container;
 	QEventLoop local_loop;
 };
 

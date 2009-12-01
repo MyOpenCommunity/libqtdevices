@@ -1,4 +1,5 @@
 #include "transitionwidget.h"
+#include "windowcontainer.h"
 
 #include <QPainter>
 #include <QDebug>
@@ -16,14 +17,24 @@ void TransitionWidget::cancelTransition()
 	timeline.stop();
 }
 
-void TransitionWidget::startTransition(const QPixmap &prev, const QPixmap &next)
+void TransitionWidget::prepareTransition()
 {
-	prev_image = prev;
-	dest_image = next;
+	prev_image = container->grabHomeWindow();
+	container->setCurrentWidget(this);
+}
+
+void TransitionWidget::startTransition()
+{
+	dest_image = container->grabHomeWindow();
 	initTransition();
 
 	timeline.start();
 	local_loop.exec();
+}
+
+void TransitionWidget::setContainer(WindowContainer *c)
+{
+	container = c;
 }
 
 

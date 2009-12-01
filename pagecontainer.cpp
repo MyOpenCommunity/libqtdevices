@@ -35,15 +35,7 @@ PageContainer::PageContainer(QWidget *parent) : QStackedWidget(parent)
 
 void PageContainer::installTransitionWidget(TransitionWidget *tr)
 {
-	if (transition_widget)
-	{
-		removeWidget(transition_widget);
-		transition_widget->disconnect();
-		transition_widget->deleteLater();
-	}
-
 	transition_widget = tr;
-	addWidget(transition_widget);
 	connect(transition_widget, SIGNAL(endTransition()), SLOT(endTransition()));
 }
 
@@ -67,22 +59,26 @@ void PageContainer::showPage(Page *p)
 	{
 		prev_page = currentPage();
 
+		transition_widget->prepareTransition();
+
 		// Before grab the screenshot of the next page, we have to ensure that its
 		// visualization is correct.
 		fixVisualization(p, size());
+		setCurrentWidget(p);
 		startTransition(QPixmap::grabWidget(prev_page), p);
 	}
 	else
 		setCurrentPage(p);
 }
 
+// TODO fixing the transitions in energy_view.cpp and feedmanager.cpp is a
+//      battle for tomorrow
 void PageContainer::startTransition(const QPixmap &prev_image, Page *p)
 {
 	if (transition_widget)
 	{
-		setCurrentWidget(transition_widget);
 		dest_page = p;
-		transition_widget->startTransition(prev_image, QPixmap::grabWidget(p));
+		transition_widget->startTransition();
 	}
 }
 

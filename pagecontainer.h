@@ -19,8 +19,6 @@ public:
 	// void cancelTransition();
 	// and the signal:
 	// void endTransition();
-	//
-	// NOTE: PageContainer take the ownership of the TransitionWidget
 	void installTransitionWidget(TransitionWidget *tr);
 
 	// Set the argument page as the current page, without transition

@@ -2,11 +2,13 @@
 #include "homewindow.h"
 #include "page.h" // Page::setPageContainer
 #include "window.h" // Window::setWindowContainer
+#include "transitionwidget.h"
 
 #include <QStackedLayout>
 
 
 WindowContainer::WindowContainer(int width, int height)
+	: transition_widget(0)
 {
 	// needs to be done before HomeWindow is constructed
 	Window::setWindowContainer(this);
@@ -42,4 +44,25 @@ PageContainer *WindowContainer::centralLayout()
 HomeWindow *WindowContainer::homeWindow()
 {
 	return main;
+}
+
+void WindowContainer::installTransitionWidget(TransitionWidget *tr)
+{
+	if (transition_widget)
+	{
+		removeWidget(transition_widget);
+		transition_widget->disconnect();
+		transition_widget->deleteLater();
+	}
+
+	transition_widget = tr;
+	addWidget(transition_widget);
+	transition_widget->setContainer(this);
+	// TODO will need to replicate the current_page logic in btmain.cpp
+	connect(transition_widget, SIGNAL(endTransition()), main, SLOT(showWindow()));
+}
+
+QPixmap WindowContainer::grabHomeWindow()
+{
+	return QPixmap::grabWidget(main);
 }
