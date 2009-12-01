@@ -7,6 +7,8 @@
 #include <QDomNode>
 #include <QDebug>
 #include <QGridLayout>
+#include <QLabel>
+#include <QVBoxLayout>
 
 #define DIM_BUT 80
 #define BACK_BUTTON_X    0
@@ -37,21 +39,21 @@ void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QSt
 	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 }
 
-BtButton *IconPage::addButton(int id, QString iconName, int x, int y)
+BtButton *IconPage::addButton(int id, const QString &label, const QString& iconName, int x, int y)
 {
 	BtButton *b = new BtButton(this);
 	if (page_content == NULL)
 		b->setGeometry(x, y, DIM_BUT, DIM_BUT);
 	else
-		page_content->addButton(b);
+		page_content->addButton(b, label);
 	b->setImage(iconName);
 
 	return b;
 }
 
-void IconPage::addPage(Page *page, int id, QString iconName, int x, int y)
+void IconPage::addPage(Page *page, int id, const QString &label, const QString &iconName, int x, int y)
 {
-	BtButton *b = addButton(id, iconName, x, y);
+	BtButton *b = addButton(id, label, iconName, x, y);
 
 	buttons_group.addButton(b, id);
 	page_list[id] = page;
@@ -83,10 +85,30 @@ IconContent::IconContent(QWidget *parent) : QWidget(parent)
 	need_update = true;
 }
 
-void IconContent::addButton(QWidget *button)
+void IconContent::addButton(QWidget *button, const QString &label)
 {
-	items.append(button);
-	button->hide();
+	QWidget *w = button;
+
+	if (!label.isNull())
+	{
+		w = new QWidget;
+		QVBoxLayout *l = new QVBoxLayout(w);
+		QLabel *lbl = new QLabel(label);
+
+		lbl->setAlignment(Qt::AlignHCenter);
+
+		l->addWidget(button);
+		l->addWidget(lbl);
+	}
+
+	items.append(w);
+	w->hide();
+}
+
+void IconContent::addWidget(QWidget *widget)
+{
+	items.append(widget);
+	widget->hide();
 }
 
 void IconContent::resetIndex()

@@ -40,8 +40,8 @@ public:
 
 protected:
 	void buildPage(IconContent *content, NavigationBar *nav_bar, const QString &label = QString());
-	void addPage(Page *page, int id, QString iconName, int x = 0, int y = 0);
-	BtButton *addButton(int id, QString iconName, int x = 0, int y = 0);
+	void addPage(Page *page, int id, const QString &label, const QString &iconName, int x = 0, int y = 0);
+	BtButton *addButton(int id, const QString &label, const QString &iconName, int x = 0, int y = 0);
 
 private:
 	QButtonGroup buttons_group;
@@ -60,7 +60,8 @@ class IconContent : public QWidget
 Q_OBJECT
 public:
 	IconContent(QWidget *parent=0);
-	void addButton(QWidget *button);
+	void addButton(QWidget *button, const QString &label = QString());
+	void addWidget(QWidget *widget);
 
 public slots:
 	void pgUp();
