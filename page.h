@@ -117,7 +117,8 @@ protected:
 	// WARNING: do not use this directly, use page_content #defined above
 	QWidget *__content;
 	Page *currentPage();
-	void startTransition(const QPixmap &prev_image);
+	void prepareTransition();
+	void startTransition();
 	void buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget=0, QWidget *title_widget=0);
 	void buildPage(QWidget *content, QWidget *nav_bar, const QString& label, int label_height, QWidget *top_widget=0);
 

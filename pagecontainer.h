@@ -34,7 +34,8 @@ public:
 	// stop the transition effect implicity called by the showPage method.
 	void blockTransitions(bool block);
 
-	void startTransition(const QPixmap &prev_image, Page *p);
+	void prepareTransition();
+	void startTransition(Page *p);
 
 signals:
 	void currentPageChanged(Page *p);

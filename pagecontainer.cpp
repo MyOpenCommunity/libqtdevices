@@ -62,18 +62,22 @@ void PageContainer::showPage(Page *p)
 		transition_widget->prepareTransition();
 
 		// Before grab the screenshot of the next page, we have to ensure that its
-		// visualization is correct.
+		// visualization is correct and that it is shown.
 		fixVisualization(p, size());
 		setCurrentWidget(p);
-		startTransition(QPixmap::grabWidget(prev_page), p);
+		startTransition(p);
 	}
 	else
 		setCurrentPage(p);
 }
 
-// TODO fixing the transitions in energy_view.cpp and feedmanager.cpp is a
-//      battle for tomorrow
-void PageContainer::startTransition(const QPixmap &prev_image, Page *p)
+void PageContainer::prepareTransition()
+{
+	if (transition_widget && !block_transitions)
+		transition_widget->prepareTransition();
+}
+
+void PageContainer::startTransition(Page *p)
 {
 	if (transition_widget)
 	{
