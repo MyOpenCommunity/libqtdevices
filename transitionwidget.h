@@ -19,8 +19,17 @@ class TransitionWidget : public QWidget
 Q_OBJECT
 public:
 	TransitionWidget(int time);
+
+	// must be called before altering the state of the page
+	// grabs a screenshot of the current state of the HomeWidget and then
+	// shows itself as the top level widget
 	void prepareTransition();
+
+	// must be called after altering the state of the page to the final
+	// state; grabs a screenshot of the final state of the HomeWidget and
+	// starts performing the transition
 	void startTransition();
+
 	void cancelTransition();
 
 	void setContainer(WindowContainer *container);
