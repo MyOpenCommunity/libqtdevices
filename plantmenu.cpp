@@ -93,6 +93,7 @@ void PlantMenu::loadItems(const QDomNode &conf)
 
 banner *PlantMenu::getBanner(const QDomNode &item_node)
 {
+	return NULL;
 }
 
 void PlantMenu::inizializza()
