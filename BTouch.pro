@@ -4,15 +4,30 @@
 TEMPLATE = app
 
 LAYOUT += btouch
+#For compatibility reasons, default to BTouch conf file
+CONF_FILE += btouch
+# Change target name, to something like BTouch.arm or BTouch.x86.touchx
+TRGT_NAME = BTouch
+TRGT_SUFFIX =
+
 
 contains(LAYOUT, touchx) {
 	DEFINES += LAYOUT_TOUCHX
 	DEST_PREFIX = touchx
+	TRGT_NAME = TouchX
 } else {
-	DEFINES += LAYOUT_BTOUCH CONFIG_BTOUCH
+	DEFINES += LAYOUT_BTOUCH
 	DEST_PREFIX = .
 }
 DESTDIR = $$DEST_PREFIX
+
+contains(CONF_FILE, touchx) {
+	message(Using TouchX config file.)
+	TRGT_SUFFIX = $${TRGT_SUFFIX} ".touchx"
+} else {
+	DEFINES += CONFIG_BTOUCH
+	message(Using BTouch config file.)
+}
 
 # test architecture depending on the compiler used.
 # in this case we are searching for the substring 'arm'
@@ -26,6 +41,7 @@ isEmpty(TEST_ARCH) {
 	MOC_DIR = $$DEST_PREFIX/moc/x86
 	HARDWARE = x11
 	DEFINES += BT_HARDWARE_X11
+	TRGT_SUFFIX = $${TRGT_SUFFIX}.x86
 } else {
 	message(ARM architecture detected.)
 	LIBS += -L../common_files -lcommon
@@ -45,6 +61,7 @@ isEmpty(TEST_ARCH) {
 
 	HARDWARE = btouch
 	DEFINES += BT_HARDWARE_BTOUCH
+	TRGT_SUFFIX = $${TRGT_SUFFIX}.arm
 }
 
 CONFIG += qt warn_on silent
@@ -64,6 +81,10 @@ DEFINES += QT_QWS_EBX BTWEB
 LIBS += -lssl
 INCLUDEPATH += . QWSMOUSE ../bt_stackopen/common_files ../bt_stackopen ../bt_stackopen/common_develer/lib $(ARMLINUX)
 QT += network xml
+
+# note: do not use spaces to split values below
+TARGET = $$TRGT_NAME$$TRGT_SUFFIX
+message(Target name: $$TARGET)
 
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
 QMAKE_CXXFLAGS_DEBUG += -O0 -g3 -ggdb
