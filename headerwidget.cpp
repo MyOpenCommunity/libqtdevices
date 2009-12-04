@@ -421,7 +421,6 @@ HeaderWidget::HeaderWidget()
 	header_info = new HeaderInfo;
 	main_layout->addWidget(header_info);
 
-	connect(header_info, SIGNAL(showSectionPage(int)), SIGNAL(showSectionPage(int)));
 	connect(header_info, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
 }
 
