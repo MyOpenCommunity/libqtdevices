@@ -113,10 +113,10 @@ void FeedManager::setupPage()
 		break;
 	}
 
-	QPixmap prev_image = QPixmap::grabWidget(this);
+	prepareTransition();
 	list_browser->setList(item_list, page);
 	list_browser->showList();
-	startTransition(prev_image);
+	startTransition();
 }
 
 void FeedManager::itemIsClicked(int item)
@@ -137,10 +137,10 @@ void FeedManager::itemIsClicked(int item)
 			"Item index out of range!");
 		page_indexes[data.feed_title] = list_browser->getCurrentPage();
 		feed_widget->setFeedInfo(data.entry_list[item]);
-		QPixmap prev_image = QPixmap::grabWidget(this);
+		prepareTransition();
 		feed_widget->show();
 		list_browser->hide();
-		startTransition(prev_image);
+		startTransition();
 		status = READING;
 		break;
 	}
@@ -172,10 +172,10 @@ void FeedManager::backClick()
 	case READING:
 	{
 		status = BROWSING;
-		QPixmap prev_image = QPixmap::grabWidget(this);
+		prepareTransition();
 		feed_widget->hide();
 		list_browser->show();
-		startTransition(prev_image);
+		startTransition();
 		break;
 	}
 	default:

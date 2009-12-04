@@ -35,15 +35,7 @@ PageContainer::PageContainer(QWidget *parent) : QStackedWidget(parent)
 
 void PageContainer::installTransitionWidget(TransitionWidget *tr)
 {
-	if (transition_widget)
-	{
-		removeWidget(transition_widget);
-		transition_widget->disconnect();
-		transition_widget->deleteLater();
-	}
-
 	transition_widget = tr;
-	addWidget(transition_widget);
 	connect(transition_widget, SIGNAL(endTransition()), SLOT(endTransition()));
 }
 
@@ -67,22 +59,30 @@ void PageContainer::showPage(Page *p)
 	{
 		prev_page = currentPage();
 
+		transition_widget->prepareTransition();
+
 		// Before grab the screenshot of the next page, we have to ensure that its
-		// visualization is correct.
+		// visualization is correct and that it is shown.
 		fixVisualization(p, size());
-		startTransition(QPixmap::grabWidget(prev_page), p);
+		setCurrentWidget(p);
+		startTransition(p);
 	}
 	else
 		setCurrentPage(p);
 }
 
-void PageContainer::startTransition(const QPixmap &prev_image, Page *p)
+void PageContainer::prepareTransition()
+{
+	if (transition_widget && !block_transitions)
+		transition_widget->prepareTransition();
+}
+
+void PageContainer::startTransition(Page *p)
 {
 	if (transition_widget)
 	{
-		setCurrentWidget(transition_widget);
 		dest_page = p;
-		transition_widget->startTransition(prev_image, QPixmap::grabWidget(p));
+		transition_widget->startTransition();
 	}
 }
 

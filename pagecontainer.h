@@ -19,8 +19,6 @@ public:
 	// void cancelTransition();
 	// and the signal:
 	// void endTransition();
-	//
-	// NOTE: PageContainer take the ownership of the TransitionWidget
 	void installTransitionWidget(TransitionWidget *tr);
 
 	// Set the argument page as the current page, without transition
@@ -36,7 +34,8 @@ public:
 	// stop the transition effect implicity called by the showPage method.
 	void blockTransitions(bool block);
 
-	void startTransition(const QPixmap &prev_image, Page *p);
+	void prepareTransition();
+	void startTransition(Page *p);
 
 signals:
 	void currentPageChanged(Page *p);

@@ -6,6 +6,8 @@
 class PageContainer;
 class HomeWindow;
 class Window;
+class TransitionWidget;
+class QPixmap;
 
 
 // top level widget, contains the HomeWindow and other special widgets that
@@ -21,7 +23,14 @@ public:
 	void addWindow(Window *w);
 	void showWindow(Window *w);
 
+	// NOTE: WindowContainer take the ownership of the TransitionWidget
+	void installTransitionWidget(TransitionWidget *tr);
+
+	QPixmap grabHomeWindow();
+
 private:
+	TransitionWidget *transition_widget;
+
 	HomeWindow *main;
 };
 

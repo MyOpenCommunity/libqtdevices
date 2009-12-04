@@ -447,4 +447,5 @@ void HeaderWidget::centralPageChanged(int section_id, Page::PageType type)
 		header_info->hide();
 		break;
 	}
+	updateGeometry();
 }

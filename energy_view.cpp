@@ -659,23 +659,23 @@ void EnergyView::showGraph(int graph_type, bool request_update)
 
 	updateCurrentGraph();
 
-	QPixmap prev_image = QPixmap::grabWidget(this);
+	prepareTransition();
 	nav_bar->showTableButton(true);
 	widget_container->setCurrentIndex(current_widget);
 	if (current_graph == EnergyDevice::DAILY_AVERAGE)
 		time_period->hideCycleButton();
 
-	startTransition(prev_image);
+	startTransition();
 }
 
 void EnergyView::showBannerWidget()
 {
 	current_widget = BANNER_WIDGET;
-	QPixmap prev_image = QPixmap::grabWidget(this);
+	prepareTransition();
 	nav_bar->showTableButton(false);
 	time_period->showCycleButton();
 	widget_container->setCurrentIndex(current_widget);
-	startTransition(prev_image);
+	startTransition();
 }
 
 QWidget *EnergyView::buildBannerWidget()

@@ -197,9 +197,14 @@ void Page::forceClosed()
 	emit Closed();
 }
 
-void Page::startTransition(const QPixmap &prev_image)
+void Page::prepareTransition()
 {
-	page_container->startTransition(prev_image, this);
+	page_container->prepareTransition();
+}
+
+void Page::startTransition()
+{
+	page_container->startTransition(this);
 }
 
 Page::PageType Page::pageType()
@@ -220,6 +225,9 @@ BannerPage::BannerPage(QWidget *parent)
 
 void BannerPage::activateLayout()
 {
+	if (page_content)
+		page_content->updateGeometry();
+
 	Page::activateLayout();
 
 	if (page_content)

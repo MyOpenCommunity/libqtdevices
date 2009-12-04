@@ -262,8 +262,10 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		}
 
 		// TODO: read the transition effect from configuration
-		page_container->installTransitionWidget(new BlendingTransition);
-//		page_container->installTransitionWidget(new MosaicTransition);
+		TransitionWidget *tr = new BlendingTransition;
+//		TransitionWidget *tr = new MosaicTransition;
+		window_container->installTransitionWidget(tr);
+		page_container->installTransitionWidget(tr);
 		return true;
 	}
 	return false;

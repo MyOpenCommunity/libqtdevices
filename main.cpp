@@ -172,6 +172,10 @@ int main(int argc, char **argv)
 	QWSServer::setCursorVisible(false);
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8")); // force the locale as UTF8
 
+#if DEBUG
+	printf("File path: %s\n", qPrintable(a.applicationFilePath()));
+#endif
+
 	QFile file(MY_FILE_USER_CFG_DEFAULT);
 	if (!qdom_appconfig.setContent(&file))
 	{
