@@ -88,3 +88,17 @@ SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 	initBanner(bt_global::skin->getImage("cycle"), current_speed);
 }
 
+
+SplitScenario::SplitScenario(QString descr, QString cmd, AirConditioningDevice *d) : BannLeft(0)
+{
+	initBanner(bt_global::skin->getImage("split_cmd"), descr);
+	command = cmd;
+	dev = d;
+	connect(left_button, SIGNAL(clicked()), SLOT(sendScenarioCommand()));
+}
+
+void SplitScenario::sendScenarioCommand()
+{
+	dev->sendCommand(command);
+}
+

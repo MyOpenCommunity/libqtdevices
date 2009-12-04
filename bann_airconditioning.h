@@ -69,4 +69,18 @@ private:
 };
 
 
+class SplitScenario : public BannLeft
+{
+Q_OBJECT
+public:
+	SplitScenario(QString descr, QString cmd, AirConditioningDevice *d);
+
+private:
+	AirConditioningDevice *dev;
+	QString command;
+
+private slots:
+	void sendScenarioCommand();
+};
+
 #endif // BANN_AIRCONDITIONING_H

@@ -128,8 +128,8 @@ void SplitPage::loadScenarios(const QDomNode &config_node)
 {
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 	{
-		BannLeft *b = new BannLeft(0);
-		b->initBanner(bt_global::skin->getImage("split_cmd"), getTextChild(scenario, "descr"));
+		SplitScenario *b = new SplitScenario(getTextChild(scenario, "descr"),
+			getTextChild(scenario, "command"), dev);
 		page_content->appendBanner(b);
 	}
 }
