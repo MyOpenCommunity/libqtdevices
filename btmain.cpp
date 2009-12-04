@@ -234,6 +234,8 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		}
 		bt_global::display.current_screensaver = type;
 
+		window_container->homeWindow()->loadConfiguration();
+
 #ifdef CONFIG_BTOUCH
 		QDomNode gui_node = getConfElement("displaypages");
 		QDomNode pagemenu_home = getChildWithId(gui_node, QRegExp("pagemenu(\\d{1,2}|)"), 0);

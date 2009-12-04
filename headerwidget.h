@@ -32,13 +32,13 @@ class HeaderInfo : public StyledWidget
 {
 Q_OBJECT
 public:
-	HeaderInfo(const QDomNode &config_node);
+	HeaderInfo();
+
+	void loadItems(const QDomNode &config_node);
+	void createSettingsPage();
 
 signals:
 	void showHomePage();
-
-private:
-	void loadItems(const QDomNode &config_node);
 };
 
 
@@ -83,16 +83,14 @@ class HeaderNavigationBar : public StyledWidget
 {
 Q_OBJECT
 public:
-	HeaderNavigationBar(const QDomNode &config_node);
+	HeaderNavigationBar();
 
+	void loadItems(const QDomNode &config_node);
 	void setCurrentSection(int section_id);
 
 signals:
 	void showHomePage();
 	void showSectionPage(int page_id);
-
-private:
-	void loadItems(const QDomNode &config_node);
 
 private:
 	HeaderNavigationWidget *navigation;
@@ -104,8 +102,10 @@ class HeaderWidget : public QWidget
 {
 Q_OBJECT
 public:
-	HeaderWidget(const QDomNode &homepage_node, const QDomNode &infobar_node);
+	HeaderWidget();
 	void centralPageChanged(int section_id, Page::PageType);
+
+	void loadConfiguration(const QDomNode &homepage_node, const QDomNode &infobar_node);
 
 signals:
 	void showHomePage();
@@ -115,7 +115,7 @@ private:
 	QVBoxLayout *main_layout;
 	HeaderLogo *header_logo;
 	HeaderNavigationBar *top_nav_bar;
-	QWidget *header_info;
+	HeaderInfo *header_info;
 };
 
 #endif // HEADERWIDGET_H

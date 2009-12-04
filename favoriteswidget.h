@@ -11,14 +11,13 @@ class FavoritesWidget : public QWidget
 {
 Q_OBJECT
 public:
-	FavoritesWidget(const QDomNode &config_node);
+	FavoritesWidget();
+
+	void loadItems(const QDomNode &config_node);
 
 protected:
 	virtual QSize sizeHint() const;
 	virtual QSize minimumSizeHint() const;
-
-private:
-	void loadItems(const QDomNode &config_node);
 };
 
 #endif // FAVORITESWIDGET_H

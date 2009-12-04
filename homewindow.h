@@ -20,6 +20,8 @@ public:
 	PageContainer *centralLayout();
 	Page *currentPage();
 
+	void loadConfiguration();
+
 signals:
 	void showHomePage();
 	void showSectionPage(int page_id);
