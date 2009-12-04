@@ -37,8 +37,8 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	{
 		QString where = getTextChild(item_node, "where");
 		QString off_cmd = getElement(item_node, "off/command").text();
-		AirConditioningDevice *dev = bt_global::add_device_to_cache(new AirConditioningDevice(where));
-		SingleSplit *bann = new SingleSplit(descr, off_cmd, dev);
+		AirConditioningDevice *dev = bt_global::add_device_to_cache(new AirConditioningDevice(where, off_cmd));
+		SingleSplit *bann = new SingleSplit(descr, dev);
 		b = bann;
 		bann->connectRightButton(new SplitPage(item_node, dev));
 		break;
@@ -77,7 +77,6 @@ void AirConditioning::loadItems(const QDomNode &config_node)
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		// TODO: il generale va messo nel top_widget se presente?
 		if (banner *b = getBanner(item))
 		{
 			page_content->appendBanner(b);
@@ -94,17 +93,17 @@ void AirConditioning::loadItems(const QDomNode &config_node)
 
 SplitPage::SplitPage(const QDomNode &config_node, AirConditioningDevice *d)
 {
+	dev = d;
 	NavigationBar *nav_bar;
 	if (getElement(config_node, "off/list").text().toInt() == 1) // show the off button
+	{
 		nav_bar = new NavigationBar(bt_global::skin->getImage("off"));
+		connect(this, SIGNAL(forwardClick()), dev, SLOT(sendOff()));
+	}
 	else
 		nav_bar = new NavigationBar;
 
 	buildPage(new BannerContent, nav_bar);
-	off = getElement(config_node, "off/command").text();
-	connect(this, SIGNAL(forwardClick()), SLOT(sendOff()));
-	dev = d;
-
 	loadScenarios(config_node);
 }
 
@@ -116,11 +115,6 @@ void SplitPage::loadScenarios(const QDomNode &config_node)
 		b->initBanner(bt_global::skin->getImage("split_cmd"), getTextChild(scenario, "descr"));
 		page_content->appendBanner(b);
 	}
-}
-
-void SplitPage::sendOff()
-{
-	dev->sendCommand(off);
 }
 
 

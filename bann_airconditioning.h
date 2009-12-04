@@ -15,14 +15,10 @@ class SingleSplit : public BannOnOffNew
 {
 Q_OBJECT
 public:
-	SingleSplit(QString descr, QString off_cmd, AirConditioningDevice *d);
+	SingleSplit(QString descr, AirConditioningDevice *d);
 
 private:
 	AirConditioningDevice *dev;
-	QString off;
-
-public slots:
-	void sendOff();
 };
 
 

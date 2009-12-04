@@ -29,12 +29,8 @@ public:
 
 private:
 	AirConditioningDevice *dev;
-	QString off;
 
 	void loadScenarios(const QDomNode &config_node);
-
-private slots:
-	void sendOff();
 };
 
 
