@@ -8,7 +8,11 @@
 
 SingleChoicePage::SingleChoicePage()
 {
+#ifdef LAYOUT_BTOUCH
 	buildPage(new SingleChoiceContent, new NavigationBar("ok"));
+#else
+	buildPage(new SingleChoiceContent, new NavigationBar);
+#endif
 
 	connect(this, SIGNAL(forwardClick()), SLOT(okPressed()));
 }
