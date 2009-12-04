@@ -116,7 +116,10 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		};
 
 		if (p)
+		{
+			p->inizializza();
 			addPage(p, link_id, descr, icon);
+		}
 		else if (w)
 		{
 			BtButton *b = addButton(link_id, descr, icon);
