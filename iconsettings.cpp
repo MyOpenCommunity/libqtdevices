@@ -34,6 +34,7 @@ ToggleBeep::ToggleBeep(bool status, QString label, QString icon_on, QString icon
 {
 	QLabel *lbl = new QLabel(label);
 	lbl->setText(label);
+	lbl->setAlignment(Qt::AlignHCenter);
 
 	button = new BtButton;
 	button->setStatus(status);
