@@ -119,4 +119,7 @@ void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazion
 */
 void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione);
 
+// play a WAV file
+void playSound(const QString &wavFile);
+
 #endif // HARDWARE_FUNCTIONS_H

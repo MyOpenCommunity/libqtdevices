@@ -74,6 +74,10 @@ void resetTimer(int signo);
  *  Define path for Icons
  */
 #define IMG_PATH                    "cfg/extra/1/skin/"
+/*! \def SOUND_PATH
+ *  Define path for Sounds
+ */
+#define SOUND_PATH                    "cfg/extra/10/"
 /*! \def EXTRA_FILE
  *  Define xml file that contains extras (for istance fonts color and fonts background)
  */
