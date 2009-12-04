@@ -1,5 +1,4 @@
 #include "singlechoicepage.h"
-#include "main.h" // for ICON_{OK,VUOTO}
 #include "navigation_bar.h"
 #include "singlechoicecontent.h"
 #include "btbutton.h"
@@ -9,7 +8,7 @@
 
 SingleChoicePage::SingleChoicePage()
 {
-	buildPage(new SingleChoiceContent, new NavigationBar(ICON_OK));
+	buildPage(new SingleChoiceContent, new NavigationBar("ok"));
 
 	connect(this, SIGNAL(forwardClick()), SLOT(okPressed()));
 }
