@@ -45,7 +45,7 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	}
 	case AIR_GENERAL:
 	{
-		GeneralSplit *bann = new GeneralSplit(0, descr);
+		GeneralSplit *bann = new GeneralSplit(descr);
 		b = bann;
 		break;
 	}
@@ -167,15 +167,15 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 		page_content->appendBanner(new SplitMode(modes, current_mode));
 	}
 
-	QDomNode speed_node = getChildWithName(config_node, "fan_speed");
+	QDomNode speed_node = getChildWithName(config_node, "_speed");
 	if (getTextChild(speed_node, "val1").toInt() != -1)
 	{
-		QList <int> fan_speeds;
+		QList <int> speeds;
 		foreach (const QDomNode &val, getChildren(speed_node, "val"))
-			fan_speeds.append(val.toElement().text().toInt());
+			speeds.append(val.toElement().text().toInt());
 
-		int current_speed = getTextChild(values_node, "fan_speed").toInt();
-		page_content->appendBanner(new SplitFanSpeed(fan_speeds, current_speed));
+		int current_speed = getTextChild(values_node, "speed").toInt();
+		page_content->appendBanner(new SplitSpeed(speeds, current_speed));
 	}
 
 }

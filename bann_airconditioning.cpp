@@ -25,7 +25,7 @@ void SingleSplit::sendOff()
 }
 
 
-GeneralSplit::GeneralSplit(QWidget *parent, QString descr) : BannOnOffNew(parent)
+GeneralSplit::GeneralSplit(QString descr) : BannOnOffNew(0)
 {
 	QString img_off = bt_global::skin->getImage("off");
 	QString img_air_gen = bt_global::skin->getImage("air_general");
@@ -64,7 +64,8 @@ SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 	modes_descr[0] = tr("AUTO");
 	modes_descr[1] = tr("HEATING");
 	modes_descr[2] = tr("COOLING");
-	modes_descr[3] = tr("DRY AND FAN");
+	modes_descr[3] = tr("DRY");
+	modes_descr[4] = tr("FAN");
 
 	foreach (int mode_id, modes)
 		if (modes_descr.contains(mode_id))
@@ -76,7 +77,7 @@ SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 }
 
 
-SplitFanSpeed::SplitFanSpeed(QList<int> speeds, int current_speed) : BannStates(0)
+SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 {
 	speeds_descr[0] = tr("AUTO");
 	speeds_descr[1] = tr("HIGH");
@@ -87,7 +88,7 @@ SplitFanSpeed::SplitFanSpeed(QList<int> speeds, int current_speed) : BannStates(
 		if (speeds_descr.contains(speed_id))
 			addState(speed_id, speeds_descr[speed_id]);
 		else
-			qWarning("The fan speed id %d doesn't exists", speed_id);
+			qWarning("The speed id %d doesn't exists", speed_id);
 
 	initBanner(bt_global::skin->getImage("cycle"), current_speed);
 }

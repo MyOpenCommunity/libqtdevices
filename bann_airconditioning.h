@@ -21,7 +21,7 @@ private:
 	AirConditioningDevice *dev;
 	QString off;
 
-private slots:
+public slots:
 	void sendOff();
 };
 
@@ -30,7 +30,7 @@ class GeneralSplit : public BannOnOffNew
 {
 Q_OBJECT
 public:
-	GeneralSplit(QWidget *parent, QString descr);
+	GeneralSplit(QString descr);
 };
 
 
@@ -60,11 +60,11 @@ private:
 };
 
 
-class SplitFanSpeed : public BannStates
+class SplitSpeed : public BannStates
 {
 Q_OBJECT
 public:
-	SplitFanSpeed(QList<int> speeds, int current_speed);
+	SplitSpeed(QList<int> speeds, int current_speed);
 private:
 	QHash<int, QString> speeds_descr;
 };
