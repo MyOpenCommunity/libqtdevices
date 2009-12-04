@@ -67,6 +67,9 @@ HomeWindow::HomeWindow()
 
 void HomeWindow::loadConfiguration()
 {
+	if (!header_widget && !favorites_widget)
+		return;
+
 	QDomNode pagemenu_home = getHomepageNode();
 	int favourites_pageid = getTextChild(pagemenu_home, "h_lnk_pageID").toInt();
 	QDomNode favourites_node = getPageNodeFromPageId(favourites_pageid);
