@@ -62,12 +62,39 @@ private:
 
 private slots:
 	void handleClose();
+};
 
-signals:
+
+class bannAlarmClockIcon : public BannOnOffState
+{
+Q_OBJECT
+public:
+	bannAlarmClockIcon(int hour, int minute, QString icon_on,
+		QString icon_off, QString icon_state, QString icon_edit, QString text,
+		int enabled, int tipo, QList<bool> days);
+	/*!
+	\brief changes the abilitation af the alarm set
+	*/
+	void setAbil(bool);
+	/*!
+	\brief forces a eeprom read to initialyze alarm set settings
+	*/
+	void inizializza(bool forza = false);
+
+	virtual void setSerNum(int num);
+
+public slots:
 /*!
-\brief Emitted to turn alarm clock off
+\brief changes the alarm set abilitation
 */
-	void spegniSveglia();
+	void toggleAbil();
+	void setButtonIcon();
+
+private:
+	AlarmClock *alarm_clock;
+
+private slots:
+	void handleClose();
 };
 
 

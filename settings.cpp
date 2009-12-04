@@ -39,19 +39,43 @@ banner *Settings::getBanner(const QDomNode &item_node)
 				bt_global::skin->getImage("state_on"),
 				bt_global::skin->getImage("state_off"));
 		break;
+	case SET_SVEGLIA_SINGLEPAGE:
 	case SET_SVEGLIA:
 	{
 		int type = getTextChild(item_node, "type").toInt();
 		int enabled = getTextChild(item_node, "enabled").toInt();
-		int alarmset = getTextChild(item_node, "alarmset").toInt();
 		int hour = getTextChild(item_node, "hour").toInt();
 		int minute = getTextChild(item_node, "minute").toInt();
+		QString days = getTextChild(item_node, "days");
+		QList<bool> alarms;
+		for (int i = 0; i < 7; ++i)
+			alarms.append(false);
+		for (int i = 0; i < days.length(); ++i)
+		{
+			int day = days.mid(i, 1).toInt() - 1;
+			alarms[day] = true;
+		}
+		int alarmset = getTextChild(item_node, "alarmset").toInt();
 
-		b = new bannAlarmClock(0, hour, minute,
-					   bt_global::skin->getImage("state_on"),
-					   bt_global::skin->getImage("state_off"),
-					   bt_global::skin->getImage("edit"),
-					   enabled, type, alarmset);
+		if (id == SET_SVEGLIA_SINGLEPAGE)
+		{
+			b = new bannAlarmClockIcon(hour, minute,
+						    bt_global::skin->getImage("on"),
+						    bt_global::skin->getImage("off"),
+						    bt_global::skin->getImage("state_icon"),
+						    bt_global::skin->getImage("edit"),
+						    getTextChild(item_node, "descr"),
+						    enabled, type, alarms);
+		}
+		else
+		{
+			b = new bannAlarmClock(0, hour, minute,
+					       bt_global::skin->getImage("state_on"),
+					       bt_global::skin->getImage("state_off"),
+					       bt_global::skin->getImage("edit"),
+					       enabled, type, alarmset);
+		}
+
 		break;
 	}
 	case SET_DATA_ORA:

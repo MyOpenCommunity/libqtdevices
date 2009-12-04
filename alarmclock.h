@@ -25,6 +25,7 @@ class QLabel;
 class QTimer;
 class AlarmClockTime;
 class AlarmClockFreq;
+class AlarmClockTimeFreq;
 class AlarmClockSoundDiff;
 class AlarmSoundDiffDevice;
 class SingleChoiceContent;
@@ -41,6 +42,7 @@ class AlarmClock : public Page
 {
 	friend class AlarmClockTime;
 	friend class AlarmClockFreq;
+	friend class AlarmClockTimeFreq;
 	friend class AlarmClockSoundDiff;
 
 Q_OBJECT
@@ -50,6 +52,7 @@ public:
 */
 	enum Freq
 	{
+		// values used by BTouch
 		SEMPRE = 1,  /*!< Always -> every day*/
 		ONCE = 0,  /*!< Once -> only at the first occurrence of the time selected after the alarm set was setted*/
 		FERIALI = 2,  /*!< Week days -> only from monday to friday*/
@@ -66,7 +69,7 @@ public:
 		DI_SON = 1  /*!< The sound diffusion system is used*/
 	};
 
-	AlarmClock(Type t, Freq f, int hour, int minute);
+	AlarmClock(int id, Type t, Freq f, QList<bool> days, int hour, int minute);
 
 /*!
   \brief Reads from the eeprom the alarm set state.
@@ -140,18 +143,20 @@ private slots:
 	void buzzerAlarm();
 
 /*!
+  \brief Executed every 5 s to manage the \a wav  \a alarm \a set.
+*/
+	void wavAlarm();
+
+/*!
   \brief Stops the alarm set.
 */
 	void spegniSveglia(bool);
 
-/*!
-  \brief Sets the alarm frequency value
-  */
-	void setFreq(AlarmClock::Freq f);
-
 private:
+	int id;
 	Type type;
 	Freq freq;
+	QList<bool> days;
 	uchar conta2min,sorgente,stazione, aggiornaDatiEEprom;
 	int serNum;
 	bool buzAbilOld;
@@ -160,8 +165,13 @@ private:
 	int volSveglia[AMPLI_NUM];
 	bool active;
 	QTimer *minuTimer,*aumVolTimer;
+#ifdef LAYOUT_BTOUCH
 	AlarmClockTime *alarm_time;
 	AlarmClockFreq *alarm_type;
+#else
+	AlarmClockTimeFreq *alarm_time;
+	AlarmClockTimeFreq *alarm_type;
+#endif
 	AlarmClockSoundDiff *alarm_sound_diff;
 	AlarmSoundDiffDevice *dev;
 
@@ -184,6 +194,7 @@ public:
 	AlarmClockTime(AlarmClock *alarm_page);
 
 	QTime getAlarmTime() const;
+	void setActive(bool active) {}
 
 private:
 	BtTimeEdit *edit;
@@ -203,14 +214,15 @@ Q_OBJECT
 public:
 	AlarmClockFreq(AlarmClock *alarm_page);
 
+	AlarmClock::Freq getAlarmFreq() const;
+	QList<bool> getAlarmDays() const;
+
 private slots:
 	void setSelection(int freq);
 
-signals:
-	void selectionChanged(AlarmClock::Freq freq);
-
 private:
 	SingleChoiceContent *content;
+	AlarmClock::Freq frequency;
 };
 
 
@@ -233,6 +245,25 @@ private slots:
 
 private:
 	Page *difson;
+};
+
+
+class AlarmClockTimeFreq : public Page
+{
+public:
+	AlarmClockTimeFreq(AlarmClock *alarm_page);
+
+	QTime getAlarmTime() const;
+	AlarmClock::Freq getAlarmFreq() const;
+	QList<bool> getAlarmDays() const;
+
+	void setActive(bool active);
+
+private:
+	BtTimeEdit *edit;
+	QString alarm_icon;
+	QLabel *alarm_label;
+	BtButton *buttons[7];
 };
 
 
