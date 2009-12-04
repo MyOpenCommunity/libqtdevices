@@ -17,10 +17,14 @@
 #include "hardware_functions.h"
 
 #include <QDomNode>
+#include <QLayout>
 
 
 HomePage::HomePage(const QDomNode &config_node) : SectionPage(config_node)
 {
+#ifdef LAYOUT_TOUCHX
+	page_content->layout()->setContentsMargins(25, 0, 100, 0);
+#endif
 	temp_viewer = new TemperatureViewer(this);
 	loadItems(config_node);
 }
