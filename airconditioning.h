@@ -9,6 +9,23 @@ class QDomNode;
 
 
 
+namespace AirConditioningPrivate
+{
+	class DeviceContainer : public QObject
+	{
+	Q_OBJECT
+	public:
+		void append(AirConditioningDevice *d);
+
+	public slots:
+		void sendGeneralOff();
+
+	private:
+		QList<AirConditioningDevice*> devices_list;
+	};
+}
+
+
 class AirConditioning : public BannerPage
 {
 Q_OBJECT

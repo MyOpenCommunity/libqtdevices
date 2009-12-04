@@ -25,6 +25,7 @@ GeneralSplit::GeneralSplit(QString descr) : BannOnOffNew(0)
 	QString img_air_gen = bt_global::skin->getImage("air_general");
 	QString img_forward = bt_global::skin->getImage("forward");
 	initBanner(img_off, img_air_gen, img_forward, descr);
+	QObject::connect(left_button, SIGNAL(clicked()), SIGNAL(sendGeneralOff()));
 }
 
 

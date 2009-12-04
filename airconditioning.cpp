@@ -14,6 +14,21 @@
 #include <QString>
 
 
+void AirConditioningPrivate::DeviceContainer::append(AirConditioningDevice *d)
+{
+	devices_list.append(d);
+}
+
+void AirConditioningPrivate::DeviceContainer::sendGeneralOff()
+{
+	foreach (AirConditioningDevice *dev, devices_list)
+		dev->sendOff();
+}
+
+AirConditioningPrivate::DeviceContainer device_container;
+
+
+
 AirConditioning::AirConditioning(const QDomNode &config_node)
 {
 	buildPage(getTextChild(config_node, "descr"));
@@ -41,11 +56,13 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 		SingleSplit *bann = new SingleSplit(descr, dev);
 		b = bann;
 		bann->connectRightButton(new SplitPage(item_node, dev));
+		device_container.append(dev);
 		break;
 	}
 	case AIR_GENERAL:
 	{
 		GeneralSplit *bann = new GeneralSplit(descr);
+		QObject::connect(bann, SIGNAL(sendGeneralOff()), &device_container, SLOT(sendGeneralOff()));
 		b = bann;
 		break;
 	}

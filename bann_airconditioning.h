@@ -27,6 +27,9 @@ class GeneralSplit : public BannOnOffNew
 Q_OBJECT
 public:
 	GeneralSplit(QString descr);
+
+signals:
+	void sendGeneralOff();
 };
 
 
