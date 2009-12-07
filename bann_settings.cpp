@@ -9,9 +9,11 @@
 #include "hardware_functions.h" // setBeep, getBeep, beep, setContrast, getContrast
 #include "btmain.h" // bt_global::btmain
 #include "btbutton.h"
+#include "fontmanager.h"
 
 #include <QTimer>
 #include <QDebug>
+#include <QLabel>
 
 
 bannAlarmClock::bannAlarmClock(QWidget *parent, int hour, int minute, QString icon_on,
@@ -25,7 +27,10 @@ bannAlarmClock::bannAlarmClock(QWidget *parent, int hour, int minute, QString ic
 	SetIcons(1, icon_label);
 	Draw(); // Draw must be called before setAbil.. see impBeep
 
-	alarm_clock = new AlarmClock(static_cast<AlarmClock::Type>(tipo), static_cast<AlarmClock::Freq>(freq), hour, minute);
+	alarm_clock = new AlarmClock(SET_SVEGLIA,
+				     static_cast<AlarmClock::Type>(tipo),
+				     static_cast<AlarmClock::Freq>(freq), QList<bool>(),
+				     hour, minute);
 	alarm_clock->setSerNum(getSerNum());
 	alarm_clock->hide();
 
@@ -33,7 +38,7 @@ bannAlarmClock::bannAlarmClock(QWidget *parent, int hour, int minute, QString ic
 	connect(this, SIGNAL(dxClick()), alarm_clock, SLOT(showPage()));
 	connect(this, SIGNAL(sxClick()), this, SLOT(toggleAbil()));
 
-	connect(alarm_clock,SIGNAL(Closed()), SLOT(handleClose()));
+	connect(alarm_clock, SIGNAL(Closed()), SLOT(handleClose()));
 	connect(alarm_clock, SIGNAL(alarmClockFired()), SLOT(setButtonIcon()));
 }
 
@@ -70,6 +75,70 @@ void bannAlarmClock::toggleAbil()
 void bannAlarmClock::inizializza(bool forza)
 {
 	bann2But::inizializza(forza);
+	alarm_clock->inizializza();
+}
+
+
+bannAlarmClockIcon::bannAlarmClockIcon(int hour, int minute, QString icon_on,
+	QString icon_off, QString icon_state, QString icon_edit, QString text, int enabled, int tipo, QList<bool> days)
+	: BannOnOffState(0)
+{
+	initBanner(icon_on, icon_state, icon_edit, enabled ? ON : OFF, text);
+
+	left_button->setOnOff();
+	left_button->setPressedImage(icon_off);
+	left_button->setStatus(enabled == 1);
+
+	alarm_clock = new AlarmClock(SET_SVEGLIA_SINGLEPAGE,
+				     static_cast<AlarmClock::Type>(tipo),
+				     AlarmClock::NESSUNO,
+				     days, hour, minute);
+	alarm_clock->setSerNum(getSerNum());
+	alarm_clock->hide();
+
+	alarm_clock->_setActive(enabled == 1);
+	connect(right_button, SIGNAL(clicked()), alarm_clock, SLOT(showPage()));
+	connect(left_button, SIGNAL(clicked()), SLOT(toggleAbil()));
+
+	connect(alarm_clock,SIGNAL(Closed()), SLOT(handleClose()));
+	connect(alarm_clock, SIGNAL(alarmClockFired()), SLOT(setButtonIcon()));
+}
+
+void bannAlarmClockIcon::setSerNum(int num)
+{
+	banner::setSerNum(num);
+	alarm_clock->setSerNum(num);
+}
+
+void bannAlarmClockIcon::handleClose()
+{
+	// When the page of the alarmclock is closed, the alarm is always set as 'on'.
+	left_button->setStatus(true);
+	setState(ON);
+	emit pageClosed();
+}
+
+void bannAlarmClockIcon::setButtonIcon()
+{
+	if (!alarm_clock->isActive())
+		left_button->setStatus(false);
+}
+
+void bannAlarmClockIcon::setAbil(bool b)
+{
+	setState(b ? ON : OFF);
+	left_button->setStatus(b);
+	alarm_clock->setActive(b);
+}
+
+void bannAlarmClockIcon::toggleAbil()
+{
+	setAbil(!alarm_clock->isActive());
+}
+
+void bannAlarmClockIcon::inizializza(bool forza)
+{
+	BannOnOffState::inizializza(forza);
 	alarm_clock->inizializza();
 }
 

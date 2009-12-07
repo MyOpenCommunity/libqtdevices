@@ -229,6 +229,11 @@ void beep(int t)
 			close(fd);
 		}
 	}
+	else if (QFile::exists(SOUND_PATH "beep.wav"))
+	{
+		// needs BT_HARDWARE_TOUCHX
+		playSound(SOUND_PATH "beep.wav")
+	}
 }
 
 void beep()
@@ -336,4 +341,13 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 	write(eeprom,&sorgente,1);
 	write(eeprom,&stazione,1);
 	close(eeprom);
+}
+
+void playSound(const QString &wavFile)
+{
+	// needs BT_HARDWARE_TOUCHX
+	QProcess::startDetached("/bin/play",
+				QStringList() << "-t" << "wav" << "-s" << "w"
+				<< "-c" << "2" << "-f" << "s" << "-r" << "48000"
+				>> "-d" << "/dev/dsp1" << wavFile);
 }

@@ -95,7 +95,11 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, co
 		QDomElement el = getElement(n, it.key());
 		Q_ASSERT_X(!el.isNull(), "setCfgValue", qPrintable(QString("No element found: %1").arg(it.key())));
 		// To replace the text of the element
-		el.replaceChild(doc.createTextNode(it.value()), el.firstChild());
+		QDomText new_node = doc.createTextNode(it.value());
+		if (el.firstChild().isNull())
+			el.appendChild(new_node);
+		else
+			el.replaceChild(new_node, el.firstChild());
 	}
 
 	// Use a text stream to handle unicode properly

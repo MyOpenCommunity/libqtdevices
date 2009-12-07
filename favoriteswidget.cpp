@@ -8,10 +8,9 @@
 #include <QLabel>
 
 
-FavoritesWidget::FavoritesWidget(const QDomNode &config_node)
+FavoritesWidget::FavoritesWidget()
 {
 	setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-	loadItems(config_node);
 }
 
 void FavoritesWidget::loadItems(const QDomNode &config_node)

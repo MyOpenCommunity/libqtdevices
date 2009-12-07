@@ -14,7 +14,7 @@ WindowContainer::WindowContainer(int width, int height)
 	Window::setWindowContainer(this);
 
 	main = new HomeWindow;
-	addWidget(main);
+
 	QStackedLayout *root_layout = static_cast<QStackedLayout *>(layout());
 	root_layout->setSpacing(0);
 	root_layout->setContentsMargins(0, 0, 0, 0);

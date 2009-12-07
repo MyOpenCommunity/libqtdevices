@@ -15,11 +15,10 @@ public:
 CheckableBanner::CheckableBanner(const QString &text)
 	: BannLeft(0)
 {
-	initBanner("", text);
+	initBanner(bt_global::skin->getImage("unchecked"), text);
 	left_button->setCheckable(true);
 	// TODO touch 10 uses 4 icons for togglable BtButton: normal,
 	//      pressed normal, toggled, pressed toggled
-	left_button->setImage(bt_global::skin->getImage("unchecked"));
 	left_button->setPressedImage(bt_global::skin->getImage("checked"));
 }
 

@@ -24,7 +24,6 @@ HomeWindow::HomeWindow()
 		QDomNode pagemenu_home = getHomepageNode();
 		int favourites_pageid = getTextChild(pagemenu_home, "h_lnk_pageID").toInt();
 		QDomNode favourites_node = getPageNodeFromPageId(favourites_pageid);
-		int info_bar_pageid = getTextChild(favourites_node, "h_lnk_pageID").toInt();
 
 		SkinContext cxt(getTextChild(pagemenu_home, "cid").toInt());
 
@@ -38,10 +37,10 @@ HomeWindow::HomeWindow()
 		connect(central_widget, SIGNAL(currentChanged(int)), SLOT(centralWidgetChanged(int)));
 		Page::setPageContainer(central_widget);
 
-		header_widget = new HeaderWidget(pagemenu_home, getPageNodeFromPageId(info_bar_pageid));
+		header_widget = new HeaderWidget;
 		main_layout->addWidget(header_widget, 0, 0, 1, 2);
 
-		favorites_widget = new FavoritesWidget(favourites_node);
+		favorites_widget = new FavoritesWidget;
 
 		// container widget for favorites
 		QWidget *f = new QWidget;
@@ -64,6 +63,20 @@ HomeWindow::HomeWindow()
 		Page::setPageContainer(central_widget);
 		central_widget->setFixedSize(maxWidth(), maxHeight());
 	}
+}
+
+void HomeWindow::loadConfiguration()
+{
+	if (!header_widget && !favorites_widget)
+		return;
+
+	QDomNode pagemenu_home = getHomepageNode();
+	int favourites_pageid = getTextChild(pagemenu_home, "h_lnk_pageID").toInt();
+	QDomNode favourites_node = getPageNodeFromPageId(favourites_pageid);
+	int info_bar_pageid = getTextChild(favourites_node, "h_lnk_pageID").toInt();
+
+	header_widget->loadConfiguration(pagemenu_home, getPageNodeFromPageId(info_bar_pageid));
+	favorites_widget->loadItems(favourites_node);
 }
 
 void HomeWindow::centralWidgetChanged(int index)

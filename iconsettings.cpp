@@ -10,6 +10,9 @@
 #include "btbutton.h"
 #include "main.h" // pagSecLiv
 #include "hardware_functions.h" // setBeep/getBeep/beep
+#include "bannerfactory.h"
+#include "bannercontent.h"
+#include "banner.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -34,6 +37,7 @@ ToggleBeep::ToggleBeep(bool status, QString label, QString icon_on, QString icon
 {
 	QLabel *lbl = new QLabel(label);
 	lbl->setText(label);
+	lbl->setAlignment(Qt::AlignHCenter);
 
 	button = new BtButton;
 	button->setStatus(status);
@@ -65,6 +69,39 @@ void ToggleBeep::toggleBeep()
 }
 
 
+// this can be a generic class
+class AlarmClockListPage : public BannerPage
+{
+public:
+	AlarmClockListPage(const QDomNode &config_node);
+
+private:
+	void loadItems(const QDomNode &config_node);
+};
+
+AlarmClockListPage::AlarmClockListPage(const QDomNode &config_node)
+{
+	buildPage(getTextChild(config_node, "descr"));
+	loadItems(config_node);
+}
+
+void AlarmClockListPage::loadItems(const QDomNode &config_node)
+{
+	foreach (const QDomNode& item, getChildren(config_node, "item"))
+	{
+		int id = getTextChild(item, "id").toInt();
+
+		if (banner *b = getBanner(item))
+		{
+			page_content->appendBanner(b);
+			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+		}
+		else
+			qFatal("Type of item %d not handled on settings page!", id);
+	}
+}
+
+
 IconSettings::IconSettings(const QDomNode &config_node)
 {
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
@@ -92,6 +129,9 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		case PAGE_DATE_TIME:
 			p = new ChangeTime;
 			break;
+		case PAGE_ALARMCLOCK:
+			p = new AlarmClockListPage(getPageNodeFromPageId(getTextChild(item, "lnk_pageID").toInt()));
+			break;
 		case PAGE_DISPLAY:
 			p = new IconSettings(getPageNodeFromPageId(getTextChild(item, "lnk_pageID").toInt()));
 			break;
@@ -115,7 +155,10 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		};
 
 		if (p)
+		{
+			p->inizializza();
 			addPage(p, link_id, descr, icon);
+		}
 		else if (w)
 		{
 			BtButton *b = addButton(link_id, descr, icon);

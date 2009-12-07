@@ -74,6 +74,10 @@ void resetTimer(int signo);
  *  Define path for Icons
  */
 #define IMG_PATH                    "cfg/extra/1/skin/"
+/*! \def SOUND_PATH
+ *  Define path for Sounds
+ */
+#define SOUND_PATH                    "cfg/extra/10/"
 /*! \def EXTRA_FILE
  *  Define xml file that contains extras (for istance fonts color and fonts background)
  */
@@ -391,6 +395,7 @@ enum  bannerType
 	AMPLIFICATORE=18,                             /*!<  Amplifier */
 	GR_AMPLIFICATORI=19,                          /*!<  Amplifier's group */
 	SET_SVEGLIA=20,                               /*!<  AlarmClock setting */
+	SET_SVEGLIA_SINGLEPAGE=8800,                  /*!<  AlarmClock setting with state icon */
 	DISPLAY=21,                                   /*!<  Display */
 	ZONANTINTRUS=23,                              /*!<  Anti-intrusion zone */
 	IMPIANTINTRUS=24,                             /*!<  Anti-intrusion system */

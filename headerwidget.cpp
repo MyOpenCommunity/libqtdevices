@@ -160,11 +160,9 @@ void HeaderLogo::setControlsVisible(bool visible)
 }
 
 
-HeaderInfo::HeaderInfo(const QDomNode &config_node)
+HeaderInfo::HeaderInfo()
 {
 	setFixedSize(800, 105);
-
-	loadItems(config_node);
 }
 
 void HeaderInfo::loadItems(const QDomNode &config_node)
@@ -234,16 +232,15 @@ void HeaderInfo::loadItems(const QDomNode &config_node)
 }
 
 
-HeaderNavigationBar::HeaderNavigationBar(const QDomNode &config_node)
+HeaderNavigationBar::HeaderNavigationBar()
 {
-	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	setFixedSize(800, 85);
-
-	loadItems(config_node);
 }
 
 void HeaderNavigationBar::loadItems(const QDomNode &config_node)
 {
+	SkinContext cxt(getTextChild(config_node, "cid").toInt());
+
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
 	main_layout->setContentsMargins(10, 0, 0, 0);
 	main_layout->setSpacing(0);
@@ -405,7 +402,7 @@ void HeaderNavigationWidget::setCurrentSection(int section_id)
 }
 
 
-HeaderWidget::HeaderWidget(const QDomNode &homepage_node, const QDomNode &infobar_node)
+HeaderWidget::HeaderWidget()
 {
 	main_layout = new QVBoxLayout(this);
 	main_layout->setSpacing(0);
@@ -414,18 +411,23 @@ HeaderWidget::HeaderWidget(const QDomNode &homepage_node, const QDomNode &infoba
 	header_logo = new HeaderLogo;
 	main_layout->addWidget(header_logo);
 
-	top_nav_bar = new HeaderNavigationBar(homepage_node);
+	top_nav_bar = new HeaderNavigationBar;
 	top_nav_bar->hide();
 	main_layout->addWidget(top_nav_bar);
 
 	connect(top_nav_bar, SIGNAL(showSectionPage(int)), SIGNAL(showSectionPage(int)));
 	connect(top_nav_bar, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
 
-	header_info = new HeaderInfo(infobar_node);
+	header_info = new HeaderInfo;
 	main_layout->addWidget(header_info);
 
-	connect(header_info, SIGNAL(showSectionPage(int)), SIGNAL(showSectionPage(int)));
 	connect(header_info, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
+}
+
+void HeaderWidget::loadConfiguration(const QDomNode &homepage_node, const QDomNode &infobar_node)
+{
+	top_nav_bar->loadItems(homepage_node);
+	header_info->loadItems(infobar_node);
 }
 
 void HeaderWidget::centralPageChanged(int section_id, Page::PageType type)

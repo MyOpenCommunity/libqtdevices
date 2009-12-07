@@ -105,7 +105,11 @@ void setOrientation(QString orientation)
 void beep(int t)
 {
 	if (buzzer_enabled)
+#ifdef LAYOUT_TOUCHX
+		playSound(SOUND_PATH "beep.wav");
+#else
 		QProcess::execute("beep");
+#endif
 }
 
 void beep()
@@ -141,4 +145,9 @@ void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazion
 void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 {
 	// do nothing
+}
+
+void playSound(const QString &wavFile)
+{
+	QProcess::startDetached("mplayer", QStringList(wavFile));
 }
