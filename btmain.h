@@ -22,7 +22,7 @@ class HomePage;
 class Calibrate;
 class genPage;
 class Client;
-class Keypad;
+class KeypadWindow;
 class ScreenSaver;
 class Page;
 class PageContainer;
@@ -109,7 +109,7 @@ private:
 	QTimer *tempo2;
 	QString pwd;
 	bool pwdOn,svegliaIsOn,alreadyCalibrated;
-	Keypad *tasti;
+	KeypadWindow *tasti;
 	bool event_unfreeze;
 	bool firstTime, bloccato;
 	bool pd_shown;

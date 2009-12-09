@@ -644,12 +644,10 @@ void BtMain::freeze(bool b)
 		{
 			if (!tasti)
 			{
-				tasti = new Keypad();
-				tasti->setMode(Keypad::HIDDEN);
-				connect(tasti, SIGNAL(Closed()), this, SLOT(testPwd()));
+				tasti = new KeypadWindow(Keypad::HIDDEN);
+				connect(tasti, SIGNAL(Closed()), SLOT(testPwd()));
 			}
-			if (page_container->currentPage() != tasti)
-				tasti->showPage();
+			tasti->showWindow();
 		}
 		qApp->removeEventFilter(this);
 	}
