@@ -12,6 +12,7 @@
 #define KEYPAD_H
 
 #include "page.h"
+#include "window.h"
 
 class QLabel;
 class QVBoxLayout;
@@ -79,5 +80,19 @@ public:
 	KeypadWithState(int s[8]);
 };
 
+
+class KeypadWindow : public Window
+{
+Q_OBJECT
+public:
+	KeypadWindow(Keypad::Type type);
+
+	// merthods forwarded to the corresponding Keypad methods
+	QString getText();
+	void resetText();
+
+private:
+	Keypad *keypad;
+};
 
 #endif // KEYPAD_H
