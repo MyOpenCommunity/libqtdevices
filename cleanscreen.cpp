@@ -2,7 +2,6 @@
 #include "fontmanager.h" // bt_global::font
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "displaycontrol.h" // bt_global::display
-#include "btmain.h" //bt_global::btmain
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -56,7 +55,7 @@ void CleanScreen::handleClose()
 {
 	bt_global::display.forceOperativeMode(false);
 	secs_timer.stop();
-	bt_global::btmain->homeWindow()->showWindow();
+	emit Closed();
 }
 
 void CleanScreen::paintEvent(QPaintEvent *e)
