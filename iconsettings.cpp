@@ -162,7 +162,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		}
 		else if (w)
 		{
-			BtButton *b = addButton(link_id, descr, icon);
+			BtButton *b = addButton(descr, icon);
 
 			connect(b, SIGNAL(clicked()), w, SLOT(showWindow()));
 		}

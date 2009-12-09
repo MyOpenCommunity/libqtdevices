@@ -54,21 +54,21 @@ void IconPage::activateLayout()
 		page_content->drawContent();
 }
 
-BtButton *IconPage::addButton(int id, const QString &label, const QString& iconName, int x, int y)
+BtButton *IconPage::addButton(const QString &label, const QString& icon_path, int x, int y)
 {
 	BtButton *b = new BtButton(this);
 	if (page_content == NULL)
 		b->setGeometry(x, y, DIM_BUT, DIM_BUT);
 	else
 		page_content->addButton(b, label);
-	b->setImage(iconName);
+	b->setImage(icon_path);
 
 	return b;
 }
 
 void IconPage::addPage(Page *page, int id, const QString &label, const QString &iconName, int x, int y)
 {
-	BtButton *b = addButton(id, label, iconName, x, y);
+	BtButton *b = addButton(label, iconName, x, y);
 
 	buttons_group.addButton(b, id);
 	page_list[id] = page;
