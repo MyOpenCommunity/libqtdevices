@@ -186,6 +186,10 @@ enum pagSecLiv
 	ENERGY_MANAGEMENT=16,                         /*!< Energy management system */
 	ENERGY_DATA=17,                               /*!< Energy data system */
 	FEED_READER=99,                               /*!< Feed reader page */
+	/* Added to avoid compile problems... */
+	VIDEO_CONTROL=2000,                           /*!< Video control menu */
+	INTERCOM=2001,                                /*!< Intercom menu */
+	CALL_EXCLUSION=2003,                          /*!< Call exclusion */
 };
 #else
 enum pagSecLiv
@@ -209,6 +213,9 @@ enum pagSecLiv
 	ENERGY_MANAGEMENT=-4,                         /*!< Energy management system */
 	ENERGY_DATA=-5,                               /*!< Energy data system */
 	FEED_READER=-6,                               /*!< Feed reader page */
+	VIDEO_CONTROL=2200,                           /*!< Video control menu */
+	INTERCOM=2201,                                /*!< Intercom menu */
+	CALL_EXCLUSION=2203,                          /*!< Call exclusion */
 };
 #endif
 
