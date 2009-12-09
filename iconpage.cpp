@@ -93,7 +93,6 @@ IconContent::IconContent(QWidget *parent) : QWidget(parent)
 {
 	current_page = 0;
 	QGridLayout *l = new QGridLayout(this);
-	// TODO some internal page have 25px margins on both sides
 	l->setContentsMargins(25, 0, 25, 0);
 	l->setSpacing(28);
 	l->setColumnStretch(5, 1);
