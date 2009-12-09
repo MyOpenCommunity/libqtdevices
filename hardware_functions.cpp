@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QScreen>
 #include <QtDebug>
+#include <QProcess>
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -232,7 +233,7 @@ void beep(int t)
 	else if (QFile::exists(SOUND_PATH "beep.wav"))
 	{
 		// needs BT_HARDWARE_TOUCHX
-		playSound(SOUND_PATH "beep.wav")
+		playSound(SOUND_PATH "beep.wav");
 	}
 }
 
@@ -349,5 +350,5 @@ void playSound(const QString &wavFile)
 	QProcess::startDetached("/bin/play",
 				QStringList() << "-t" << "wav" << "-s" << "w"
 				<< "-c" << "2" << "-f" << "s" << "-r" << "48000"
-				>> "-d" << "/dev/dsp1" << wavFile);
+				<< "-d" << "/dev/dsp1" << wavFile);
 }
