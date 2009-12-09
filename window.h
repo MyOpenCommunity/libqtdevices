@@ -17,6 +17,9 @@ public:
 public slots:
 	virtual void showWindow();
 
+signals:
+	void Closed();
+
 private:
 	static WindowContainer *window_container;
 };
