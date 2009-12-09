@@ -25,12 +25,16 @@ IconPage::IconPage()
 
 void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QString &title)
 {
-	PageTitleWidget *title_widget = new PageTitleWidget(title, 35);
+	PageTitleWidget *title_widget = 0;
+	if (!title.isNull())
+	{
+		title_widget = new PageTitleWidget(title, 35);
+		connect(content, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
+	}
 	Page::buildPage(content, nav_bar, 0, title_widget);
 
 	// TODO duplicated in BannerPage
-	connect(content, SIGNAL(contentScrolled(int, int)),
-		title_widget, SLOT(setCurrentPage(int, int)));
+
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(forwardClick()));
