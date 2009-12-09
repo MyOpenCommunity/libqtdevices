@@ -21,6 +21,7 @@
 #include "frame_receiver.h"
 #include "pagecontainer.h"
 #include "homewindow.h"
+#include "iconwindow.h"
 #include "windowcontainer.h"
 
 #include <QXmlSimpleReader>
@@ -125,6 +126,7 @@ BtMain::BtMain()
 	prev_page = NULL;
 	Home = NULL;
 	screen = NULL;
+	version = NULL;
 	alreadyCalibrated = false;
 	svegliaIsOn = false;
 	tiempo_last_ev = 0;
@@ -133,13 +135,23 @@ BtMain::BtMain()
 	tasti = NULL;
 	pwdOn = false;
 
+	Window *loading = NULL;
+
+#ifdef LAYOUT_BTOUCH
 	version = new Version;
 	version->setModel(bt_global::config[MODEL]);
+#else
+	// the stylesheet on QApplication must be set later (see comment in hom())
+	loading = new IconWindow("splash_image", bt_global::skin->getStyle());
+#endif
 
 #if BT_EMBEDDED
 	if (QFile::exists("/etc/pointercal"))
 	{
-		version->showPage();
+		if (version)
+			version->showPage();
+		if (loading)
+			loading->showWindow();
 		waitBeforeInit();
 	}
 	else
@@ -153,7 +165,10 @@ BtMain::BtMain()
 		alreadyCalibrated = true;
 	}
 #else
-	version->showPage();
+	if (version)
+		version->showPage();
+	if (loading)
+		loading->showWindow();
 	waitBeforeInit();
 #endif
 }
@@ -200,7 +215,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 	if (QFile::exists(cfg_file))
 	{
 		QDomNode setup = getConfElement("setup");
-		if (!setup.isNull())
+		if (!setup.isNull() && version)
 		{
 			QDomElement addr = getElement(setup, "scs/coordinate_scs/diag_addr");
 			bool ok;
@@ -275,7 +290,8 @@ bool BtMain::loadConfiguration(QString cfg_file)
 
 void BtMain::hom()
 {
-	version->inizializza();
+	if (version)
+		version->inizializza();
 
 	if (!loadConfiguration(CFG_FILE))
 		qFatal("Unable to load configuration");
@@ -333,8 +349,10 @@ void BtMain::myMain()
 	qDebug("entro MyMain");
 
 	init();
-	page_container->blockTransitions(false);
 	Home->showPage();
+	// this needs to be after the showPage, and will be a no-op until transitions
+	// between windows are implemented
+	page_container->blockTransitions(false);
 	window_container->homeWindow()->showWindow();
 	bt_global::devices_cache.init_devices();
 

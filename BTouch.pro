@@ -159,6 +159,7 @@ HEADERS += actuators.h \
            icondispatcher.h \
            iconpage.h \
            iconsettings.h \
+           iconwindow.h \
            keypad.h \
            lansettings.h \
            lighting.h \
@@ -280,6 +281,7 @@ SOURCES += actuators.cpp \
            icondispatcher.cpp \
            iconpage.cpp \
            iconsettings.cpp \
+           iconwindow.cpp \
            keypad.cpp \
            lansettings.cpp \
            lighting.cpp \
