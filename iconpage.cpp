@@ -104,7 +104,7 @@ void IconContent::addButton(QWidget *button, const QString &label)
 {
 	QWidget *w = button;
 
-	if (!label.isNull())
+	if (!label.isEmpty())
 	{
 		w = new QWidget;
 		QVBoxLayout *l = new QVBoxLayout(w);
