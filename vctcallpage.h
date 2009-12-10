@@ -3,11 +3,27 @@
 
 #include "page.h"
 #include "bann2_buttons.h"
+#include "btbutton.h"
 
 #include <QStringList>
 
 class QDomNode;
 class device;
+
+
+class EnablingButton : public BtButton
+{
+Q_OBJECT
+public:
+	EnablingButton(QWidget *parent = 0);
+	void setDisabledPixmap(const QString &path);
+	virtual void enable();
+	virtual void disable();
+
+private:
+	QPixmap disabled_pixmap;
+};
+
 
 class BannTuning : public Bann2CentralButtons
 {

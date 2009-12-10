@@ -2,10 +2,35 @@
 #include "btbutton.h"
 #include "skinmanager.h"
 #include "generic_functions.h" //getBostikName
+#include "icondispatcher.h"
 
 #include <QDomNode>
 #include <QHBoxLayout>
 #include <QDebug>
+
+EnablingButton::EnablingButton(QWidget *parent) :
+	BtButton(parent)
+{
+}
+
+void EnablingButton::setDisabledPixmap(const QString &path)
+{
+	disabled_pixmap = *bt_global::icons_cache.getIcon(path);
+}
+
+void EnablingButton::enable()
+{
+	BtButton::enable();
+	setIcon(pixmap);
+}
+
+void EnablingButton::disable()
+{
+	BtButton::disable();
+	setIcon(disabled_pixmap);
+}
+
+
 
 BannTuning::BannTuning(const QString &banner_text, const QString &icon_name, QWidget *parent) :
 	Bann2CentralButtons(parent)
