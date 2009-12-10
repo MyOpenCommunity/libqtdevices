@@ -7,6 +7,7 @@
 #include <QStringList>
 
 class QDomNode;
+class device;
 
 class BannTuning : public Bann2CentralButtons
 {
@@ -25,6 +26,19 @@ private:
 
 signals:
 	void valueChanged(int);
+};
+
+
+// TODO: should be a StyledWidget??
+class CameraMove : public QWidget
+{
+Q_OBJECT
+public:
+	// TODO: we need a EntryphoneDevice to control the camera
+	CameraMove(device *dev);
+
+private:
+	BtButton *up, *left, *fullscreen, *right, *down;
 };
 
 

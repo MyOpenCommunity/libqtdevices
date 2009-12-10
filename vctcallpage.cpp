@@ -48,6 +48,35 @@ void BannTuning::changeIcons()
 }
 
 
+CameraMove::CameraMove(device *dev)
+{
+	up = new BtButton;
+	up->setImage(bt_global::skin->getImage("arrow_up"));
+	down = new BtButton;
+	down->setImage(bt_global::skin->getImage("arrow_down"));
+	right = new BtButton;
+	right->setImage(bt_global::skin->getImage("arrow_right"));
+	left = new BtButton;
+	left->setImage(bt_global::skin->getImage("arrow_left"));
+	fullscreen = new BtButton;
+	fullscreen->setImage(bt_global::skin->getImage("fullscreen"));
+
+	QHBoxLayout *center = new QHBoxLayout;
+	center->setContentsMargins(0, 0, 0, 0);
+	center->setSpacing(0);
+	center->addWidget(left);
+	center->addWidget(fullscreen);
+	center->addWidget(right);
+
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(5);
+	l->addWidget(up);
+	l->addLayout(center);
+	l->addWidget(down);
+}
+
+
 
 VCTCallPage::VCTCallPage()
 {
