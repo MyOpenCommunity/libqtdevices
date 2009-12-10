@@ -4,6 +4,7 @@
 #include "device.h"
 
 class QString;
+class OpenMsg;
 
 
 enum AddressType
