@@ -147,6 +147,7 @@ HEADERS += actuators.h \
            feedmanager.h \
            feeditemwidget.h \
            feedparser.h \
+           filebrowser.h \
            fontmanager.h \
            frame_interpreter.h \
            frame_receiver.h \
@@ -272,6 +273,7 @@ SOURCES += actuators.cpp \
            feedmanager.cpp \
            feeditemwidget.cpp \
            feedparser.cpp \
+           filebrowser.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
            frame_receiver.cpp \
