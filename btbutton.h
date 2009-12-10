@@ -31,8 +31,8 @@ public:
 	// down, changes its status manually, calling the 'setStatus' method.
 	void setOnOff();
 
-	void enable();
-	void disable();
+	virtual void enable();
+	virtual void disable();
 
 public slots:
 	void setStatus(bool on);
