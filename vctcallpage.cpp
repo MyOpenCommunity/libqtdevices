@@ -70,7 +70,7 @@ CameraMove::CameraMove(device *dev)
 
 	QVBoxLayout *l = new QVBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(5);
+	l->setSpacing(0);
 	l->addWidget(up);
 	l->addLayout(center);
 	l->addWidget(down);
@@ -84,6 +84,8 @@ VCTCallPage::VCTCallPage()
 
 	// sidebar
 	QVBoxLayout *sidebar = new QVBoxLayout;
+	sidebar->setContentsMargins(0, 0, 0, 15);
+	sidebar->setSpacing(0);
 
 	brightness = new BannTuning(tr("Brightness"), bt_global::skin->getImage("brightness"));
 	sidebar->addWidget(brightness);
@@ -91,10 +93,13 @@ VCTCallPage::VCTCallPage()
 	sidebar->addWidget(contrast);
 	color = new BannTuning(tr("Color"), bt_global::skin->getImage("color"));
 	sidebar->addWidget(color);
+	camera = new CameraMove(0);
+	sidebar->addWidget(camera);
 
 	setup_vct = new BtButton;
 	setup_vct_icon = bt_global::skin->getImage("setup_vct");
-	setup_vct->setImage(getBostikName(setup_vct_icon, "on"));
+	camera_settings_shown = false;
+	toggleCameraSettings();
 	connect(setup_vct, SIGNAL(clicked()), SLOT(toggleCameraSettings()));
 	sidebar->addWidget(setup_vct);
 
@@ -134,7 +139,7 @@ VCTCallPage::VCTCallPage()
 	cycle->setImage(bt_global::skin->getImage("cycle"));
 
 	QHBoxLayout *bottom = new QHBoxLayout;
-	bottom->setContentsMargins(0, 0, 30, 0);
+	bottom->setContentsMargins(0, 0, 30, 5);
 	bottom->setSpacing(15);
 	bottom->addWidget(back);
 	bottom->addWidget(call_accept);
@@ -151,7 +156,23 @@ VCTCallPage::VCTCallPage()
 
 void VCTCallPage::toggleCameraSettings()
 {
-	qDebug() << "toggleCameraSettings called";
+	camera_settings_shown = !camera_settings_shown;
+	if (camera_settings_shown)
+	{
+		brightness->hide();
+		color->hide();
+		contrast->hide();
+		camera->show();
+		setup_vct->setImage(getBostikName(setup_vct_icon, "off"));
+	}
+	else
+	{
+		brightness->show();
+		color->show();
+		contrast->show();
+		camera->hide();
+		setup_vct->setImage(getBostikName(setup_vct_icon, "on"));
+	}
 }
 
 void VCTCallPage::addExternalPlace(const QString &where)
