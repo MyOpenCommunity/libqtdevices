@@ -151,3 +151,7 @@ void playSound(const QString &wavFile)
 {
 	QProcess::startDetached("mplayer", QStringList(wavFile));
 }
+
+void setVctVideoValue(const QString &command, const QString &value)
+{
+}

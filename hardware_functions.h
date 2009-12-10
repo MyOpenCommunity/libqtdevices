@@ -122,4 +122,7 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 // play a WAV file
 void playSound(const QString &wavFile);
 
+// set contrast value for entryphone
+void setVctVideoValue(const QString &command, const QString &value);
+
 #endif // HARDWARE_FUNCTIONS_H

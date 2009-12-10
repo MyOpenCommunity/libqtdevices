@@ -352,3 +352,10 @@ void playSound(const QString &wavFile)
 				<< "-c" << "2" << "-f" << "s" << "-r" << "48000"
 				<< "-d" << "/dev/dsp1" << wavFile);
 }
+
+void setVctVideoValue(const QString &command, const QString &value)
+{
+	// needs BT_HARDWARE_TOUCHX
+	QProcess::startDetached("/home/bticino/bin/set_videocom",
+		QStringList() << command << value);
+}
