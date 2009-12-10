@@ -63,10 +63,11 @@ VCTCallPage::VCTCallPage()
 	BannTuning *color = new BannTuning(tr("Color"), bt_global::skin->getImage("color"));
 	sidebar->addWidget(color);
 
-	BtButton *setup_vct = new BtButton;
-	setup_vct->setImage(bt_global::skin->getImage("setup_vct"));
+	setup_vct = new BtButton;
+	setup_vct_icon = bt_global::skin->getImage("setup_vct");
+	setup_vct->setImage(getBostikName(setup_vct_icon, "on"));
+	connect(setup_vct, SIGNAL(clicked()), SLOT(toggleCameraSettings()));
 	sidebar->addWidget(setup_vct);
-	//connect(bright, SIGNAL(center_left_clicked()), SLOT(decreaseBrightness()));
 
 	QHBoxLayout *hbox = new QHBoxLayout;
 
@@ -117,6 +118,11 @@ VCTCallPage::VCTCallPage()
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addLayout(hbox);
 	layout->addLayout(bottom);
+}
+
+void VCTCallPage::toggleCameraSettings()
+{
+	qDebug() << "toggleCameraSettings called";
 }
 
 void VCTCallPage::addExternalPlace(const QString &where)

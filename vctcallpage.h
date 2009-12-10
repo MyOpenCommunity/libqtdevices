@@ -36,9 +36,12 @@ public:
 	VCTCallPage();
 	void addExternalPlace(const QString &where);
 
+private slots:
+	void toggleCameraSettings();
+
 private:
-	BtButton *mute_button, *call_accept, *stairlight, *unlock_door, *cycle;
-	QString mute_icon, call_icon, unlock_icon, stairlight_icon;
+	BtButton *mute_button, *call_accept, *stairlight, *unlock_door, *cycle, *setup_vct;
+	QString mute_icon, call_icon, unlock_icon, stairlight_icon, setup_vct_icon;
 	QStringList places;
 };
 #endif //VCTCALLPAGE_H
