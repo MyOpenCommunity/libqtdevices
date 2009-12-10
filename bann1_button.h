@@ -14,17 +14,102 @@
 #include "banner.h"
 #include "energy_device.h"
 
-class sottoMenu;
+#include <QList>
+#include <QPair>
+#include <QString>
+
 class BtButton;
 class Page;
 class QWidget;
 class TextOnImageLabel;
+class QLabel;
 
 
 #define BANPULS_BUT_DIM  60
 #define BANPULS_ICON_DIM_X 120
 #define BANPULS_ICON_DIM_Y 60
 
+
+// substitute for bannPuls
+class BannSinglePuls : public BannerNew
+{
+Q_OBJECT
+public:
+	BannSinglePuls(QWidget *parent);
+	void initBanner(const QString &right, const QString &center, const QString &banner_text);
+	void connectRightButton(Page *p);
+
+signals:
+	void rightClick();
+
+protected:
+	BtButton *right_button;
+
+private:
+	void loadIcons(const QString &right, const QString &center);
+	QLabel *center_icon, *text;
+};
+
+
+// substitute for bannOn2scr
+class BannOn2Labels : public BannerNew
+{
+Q_OBJECT
+protected:
+	enum States
+	{
+		ON,
+		OFF,
+	};
+	BannOn2Labels(QWidget *parent);
+	void initBanner(const QString &right, const QString &_right_icon, const QString &_left_icon,
+		const QString &banner_text, const QString &_center_text);
+	// 1 <= time <= 8
+	void setElapsedTime(int time);
+	void setState(States new_state);
+	BtButton *right_button;
+
+private:
+	QString center_right, center_left;
+	QLabel *left_icon, *right_icon, *text, *center_text;
+};
+
+
+// substitute for bannOnSx
+class BannLeft : public BannerNew
+{
+Q_OBJECT
+public:
+	BannLeft(QWidget *parent);
+	void initBanner(const QString &left, const QString &center);
+protected:
+	BtButton *left_button;
+
+private:
+	QLabel *text;
+};
+
+// Single button on the center, without bottom label
+class BannCenteredButton : public BannerNew
+{
+Q_OBJECT
+protected:
+	BannCenteredButton(QWidget *parent);
+	void initBanner(const QString &center);
+
+	BtButton *center_button;
+};
+
+// replacement for bannSimple
+class BannSimple : public BannCenteredButton
+{
+Q_OBJECT
+public:
+	BannSimple(const QString &icon);
+
+signals:
+	void clicked();
+};
 
 /*!
   \class bannPuls
@@ -45,6 +130,8 @@ signals:
 	void released();
 };
 
+#if 0
+
 /*!
   \class bannSimple
   \brief A very simple banner with only a button in the center.
@@ -54,12 +141,13 @@ class bannSimple : public banner
 {
 Q_OBJECT
 public:
-	bannSimple(sottoMenu *parent, QString icon=QString(), Page *page=0);
+	bannSimple(QWidget *parent, QString icon=QString(), Page *page=0);
 
 signals:
 	void click();
 };
 
+#endif
 
 /*!
   \class bannOnDx
@@ -71,7 +159,7 @@ class bannOnDx : public banner
 {
 Q_OBJECT
 public:
-	bannOnDx(sottoMenu *parent, QString icon=QString(), Page *page=0);
+	bannOnDx(QWidget *parent, QString icon=QString(), Page *page=0);
 
 signals:
 	void click();
@@ -88,7 +176,7 @@ class bannOnSx : public banner
 {
 Q_OBJECT
 public:
-	bannOnSx(sottoMenu *parent, QString icon=QString());
+	bannOnSx(QWidget *parent, QString icon=QString());
 	BtButton *getButton();
 signals:
 	void click();
@@ -143,5 +231,39 @@ public:
 private:
 	TextOnImageLabel *label;
 };
+
+
+/**
+ * A banner that encapsulates a list of states that can be cycled using a button
+ * on the left. Every state has an id and a description.
+ */
+class BannStates : public BannerNew
+{
+Q_OBJECT
+public:
+	BannStates(QWidget *parent);
+	void addState(int id, QString descr);
+
+	// Init the banner [NOTE: must be called after addState]
+	void initBanner(const QString &left, int current_state);
+
+	// Return the id of the current state
+	int currentState();
+
+signals:
+	void currentStateChanged(int id);
+
+protected:
+	BtButton *left_button;
+
+private:
+	unsigned int current_index;
+	QLabel *text;
+	QList<QPair<int, QString> > states_list;
+
+private slots:
+	void changeState();
+};
+
 
 #endif // BANN1_BUTTON_H

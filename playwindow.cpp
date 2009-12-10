@@ -14,7 +14,6 @@
 #include "mediaplayer.h"
 #include "fontmanager.h" // bt_global::font
 #include "buttons_bar.h"
-#include "main.h"
 #include "bannfrecce.h"
 
 #include <QLayout>
@@ -211,7 +210,7 @@ MediaPlayWindow::MediaPlayWindow(MediaPlayer *player) : PlayWindow(player)
 	tags_layout->addLayout(tags_text_layout);
 
 	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
-	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+	play_controls->setGeometry(0, height() - height()/(NUM_RIGHE+1), width(), height()/NUM_RIGHE);
 
 	play_controls->setButtonIcon(1, IMG_STOP);
 	play_controls->setButtonIcon(2, IMG_PREV);
@@ -250,10 +249,10 @@ void MediaPlayWindow::addNameLabels(QBoxLayout *layout, QFont& aFont)
 	QString label_d = tr("Length:");
 
 	// Set label names
-	TitleLabel *name_label   = new TitleLabel(this, MAX_WIDTH/3, 30, 9, 0);
-	TitleLabel *artist_label = new TitleLabel(this, MAX_WIDTH/3, 30, 9, 0);
-	TitleLabel *album_label  = new TitleLabel(this, MAX_WIDTH/3, 30, 9, 0);
-	TitleLabel *time_label   = new TitleLabel(this, MAX_WIDTH/3, 30, 9, 0);
+	TitleLabel *name_label   = new TitleLabel(this, width()/3, 30, 9, 0);
+	TitleLabel *artist_label = new TitleLabel(this, width()/3, 30, 9, 0);
+	TitleLabel *album_label  = new TitleLabel(this, width()/3, 30, 9, 0);
+	TitleLabel *time_label   = new TitleLabel(this, width()/3, 30, 9, 0);
 
 	// set font
 	name_label->setFont(aFont);
@@ -277,10 +276,10 @@ void MediaPlayWindow::addNameLabels(QBoxLayout *layout, QFont& aFont)
 void MediaPlayWindow::addTextLabels(QBoxLayout *layout, QFont& aFont)
 {
 	// create Labels containing INFO
-	meta_title_label  = new TitleLabel(this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE);
-	meta_artist_label = new TitleLabel(this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE);
-	meta_album_label  = new TitleLabel(this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE);
-	time_pos_label    = new TitleLabel(this, MAX_WIDTH - MAX_WIDTH/3, 30, 9, 0, FALSE);
+	meta_title_label  = new TitleLabel(this, width() - width()/3, 30, 9, 0, FALSE);
+	meta_artist_label = new TitleLabel(this, width() - width()/3, 30, 9, 0, FALSE);
+	meta_album_label  = new TitleLabel(this, width() - width()/3, 30, 9, 0, FALSE);
+	time_pos_label    = new TitleLabel(this, width() - width()/3, 30, 9, 0, FALSE);
 
 	// Set Font
 	meta_title_label->setFont(aFont);
@@ -418,14 +417,14 @@ RadioPlayWindow::RadioPlayWindow(MediaPlayer *player) : PlayWindow(player)
 
 	/// Create Labels (that contain tags)
 
-	meta_title_label = new TitleLabel(this, MAX_WIDTH, 30, 0, 0, TRUE);
+	meta_title_label = new TitleLabel(this, width(), 30, 0, 0, TRUE);
 	meta_title_label->setFont(bt_global::font->get(FontManager::TEXT));
 	meta_title_label->setAlignment(Qt::AlignHCenter);
 	main_layout->insertWidget(0, meta_title_label);
 	main_layout->insertStretch(1);
 
 	play_controls = new ButtonsBar(this, 4, Qt::Horizontal);
-	play_controls->setGeometry(0, MAX_HEIGHT - MAX_HEIGHT/(NUM_RIGHE+1), MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE);
+	play_controls->setGeometry(0, height() - height()/(NUM_RIGHE+1), width(), height()/NUM_RIGHE);
 
 	play_controls->setButtonIcon(0, IMG_PLAY);
 	play_controls->setButtonIcon(1, IMG_STOP);

@@ -19,7 +19,7 @@
 #include <QFrame>
 #include <QHash>
 
-class LanDevice;
+class PlatformDevice;
 class BtButton;
 class QGridLayout;
 class QDomNode;
@@ -50,7 +50,7 @@ private:
  * This class is a page used to show lan settings and enable activation
  * (disactivation) of lan interface.
  */
-class LanSettings : public PageLayout
+class LanSettings : public Page
 {
 Q_OBJECT
 public:
@@ -63,7 +63,7 @@ public slots:
 private:
 	BtButton *toggle_btn;
 	Text2Column *box_text;
-	LanDevice *dev;
+	PlatformDevice *dev;
 	// The real status of the lan
 	bool lan_status;
 	// The status of the lan as stored in the configuration file

@@ -14,19 +14,22 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "sottomenu.h"
+#include "page.h"
 
 #include <QWidget>
 
 class QDomNode;
+class banner;
 
 
-class Settings : public sottoMenu
+class Settings : public BannerPage
 {
 Q_OBJECT
 public:
 	Settings(const QDomNode &config_node);
+	virtual void inizializza();
 
+	static banner *getBanner(const QDomNode &item_node);
 private:
 	void loadItems(const QDomNode &config_node);
 };

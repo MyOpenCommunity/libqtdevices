@@ -1,10 +1,10 @@
 #include "screensaver.h"
-#include "main.h"
 #include "page.h"
 #include "timescript.h"
 #include "fontmanager.h" // bt_global::font
 #include "xml_functions.h"
 #include "titlelabel.h"
+#include "homewindow.h"
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -17,8 +17,6 @@
 #include <qmath.h>
 
 #include <stdlib.h> // RAND_MAX
-#include <assert.h>
-
 #define BALL_NUM 5
 
 inline void setRandomColor(QWidget *w)
@@ -49,8 +47,9 @@ ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 	case ScreenSaver::NONE:
 		return 0;
 	default:
-		assert(!"Type of screensaver not handled!");
+		qFatal("Type of screensaver not handled!");
 	}
+	return 0; // Only to silent warning from compiler
 }
 
 // Definition of static member
@@ -65,9 +64,13 @@ ScreenSaver::ScreenSaver(int refresh_time)
 	connect(timer, SIGNAL(timeout()), SLOT(refresh()));
 }
 
-void ScreenSaver::start(Page *p)
+void ScreenSaver::start(Window *w)
 {
-	page = p;
+	window = w;
+	// TODO maybe we can assume that the Window will always be an HomeWindow
+	//      and page will always be != 0 and remove the checks in btmain.cpp
+	if (HomeWindow *hw = qobject_cast<HomeWindow*>(w))
+		page = hw->currentPage();
 	timer->start();
 }
 
@@ -92,12 +95,12 @@ ScreenSaverBalls::ScreenSaverBalls() : ScreenSaver(120)
 {
 }
 
-void ScreenSaverBalls::start(Page *p)
+void ScreenSaverBalls::start(Window *w)
 {
-	ScreenSaver::start(p);
+	ScreenSaver::start(w);
 	for (int i = 0; i < BALL_NUM; ++i)
 	{
-		QLabel *l = new QLabel(p);
+		QLabel *l = new QLabel(w);
 		ball_list[l] = BallData();
 		initBall(l, ball_list[l]);
 		l->show();
@@ -161,10 +164,10 @@ void ScreenSaverBalls::refresh()
 			data.x = 0;
 			change_style = true;
 		}
-		if (data.y > MAX_HEIGHT - data.dim)
+		if (data.y > window->height() - data.dim)
 		{
 			data.vy = static_cast<int>(8.0 * rand() / (RAND_MAX + 1.0)) - 8;
-			data.y = MAX_HEIGHT - data.dim;
+			data.y = window->height() - data.dim;
 			change_style = true;
 		}
 
@@ -176,12 +179,12 @@ void ScreenSaverBalls::refresh()
 			data.y = 0;
 			change_style = true;
 		}
-		if (data.x > MAX_WIDTH - data.dim)
+		if (data.x > window->width() - data.dim)
 		{
 			data.vx = static_cast<int>(8.0 * rand() / (RAND_MAX + 1.0)) - 8;
 			if (data.vx == 0)
 				data.vx = 1;
-			data.x = MAX_WIDTH - data.dim;
+			data.x = window->width() - data.dim;
 			change_style = true;
 		}
 
@@ -198,10 +201,10 @@ ScreenSaverLine::ScreenSaverLine() : ScreenSaver(150)
 	line = 0;
 }
 
-void ScreenSaverLine::start(Page *p)
+void ScreenSaverLine::start(Window *w)
 {
-	ScreenSaver::start(p);
-	line = new QLabel(p);
+	ScreenSaver::start(w);
+	line = new QLabel(w);
 	customizeLine();
 	y = 0;
 	up_to_down = true;
@@ -216,7 +219,7 @@ void ScreenSaverLine::customizeLine()
 
 void ScreenSaverLine::setLineHeight(int height)
 {
-	line->resize(MAX_WIDTH, height);
+	line->resize(window->width(), height);
 	line_height = height;
 }
 
@@ -228,9 +231,9 @@ void ScreenSaverLine::stop()
 
 void ScreenSaverLine::refresh()
 {
-	if (y > MAX_HEIGHT)
+	if (y > window->height())
 	{
-		y = MAX_HEIGHT;
+		y = window->height();
 		up_to_down = false;
 		line->setStyleSheet(styleDownToUp());
 	}
@@ -265,7 +268,6 @@ void ScreenSaverTime::customizeLine()
 {
 	setLineHeight(30);
 	timeScript *time = new timeScript(line, 1);
-	time->setFrameStyle(QFrame::Plain);
 	time->setFont(bt_global::font->get(FontManager::TEXT));
 
 	QVBoxLayout *layout = new QVBoxLayout;
@@ -307,24 +309,18 @@ ScreenSaverDeform::ScreenSaverDeform() : ScreenSaver(500)
 	generateLensPixmap();
 }
 
-void ScreenSaverDeform::start(Page *p)
+void ScreenSaverDeform::start(Window *w)
 {
-	ScreenSaver::start(p);
-	showFullScreen();
+	ScreenSaver::start(w);
+	showWindow();
 	refresh();
 	raise();
 }
 
-void ScreenSaverDeform::stop()
-{
-	ScreenSaver::stop();
-	close();
-}
-
 void ScreenSaverDeform::refresh()
 {
-	QImage tmp_image(page->size(), QImage::Format_RGB16);
-	page->render(&tmp_image);
+	QImage tmp_image(window->size(), QImage::Format_RGB16);
+	window->render(&tmp_image);
 	// Copy the QImage is not a problem, thanks to implicit data sharing.
 	bg_image = tmp_image;
 	need_refresh = true;

@@ -11,6 +11,7 @@
 #ifndef SOUND_DIFFUSION_H
 #define SOUND_DIFFUSION_H
 
+#include "frame_receiver.h"
 #include "sottomenu.h"
 
 #include <QWidget>
@@ -75,13 +76,12 @@ private:
  * \author Davide
  * \date lug 2005
  */
-class SoundDiffusion : public Page
+class SoundDiffusion : public Page, FrameReceiver
 {
 Q_OBJECT
 public:
 	SoundDiffusion(const QDomNode &config_node);
 	SoundDiffusion(AudioSources *s, const QDomNode &config_node);
-
 	/*!
 	 * \brief Sets the row's number.
 	 */
@@ -118,14 +118,9 @@ public:
 
 	AudioSources *getAudioSources();
 
-public slots:
-	/*!
-	 * \brief Analyze \a Open \a frame to detect which source is active at a certain time.
-	 *
-	 * When a new source is seen to be active, a change in source is forced an it's redrawn.
-	 */
-	void gestFrame(char*);
+	virtual void manageFrame(OpenMsg &msg);
 
+public slots:
 	/*!
 	 * \brief sets first source given address
 	 */
@@ -134,7 +129,6 @@ public slots:
 	virtual void showPage();
 
 protected:
-
 	AudioSources *sorgenti;
 	AmpliContainer *amplificatori;
 	QLabel *linea;
@@ -159,11 +153,6 @@ private slots:
 
 signals:
 	void closed(SoundDiffusion*);
-
-	/*!
-	 * \brief Emitted when there are \a Open \a frame incoming to make them arrive to amplifiers and sources.
-	 */
-	void gesFrame(char*);
 };
 
 

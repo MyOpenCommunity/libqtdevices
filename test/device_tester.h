@@ -7,6 +7,7 @@
 #include <QVariant>
 #include <QMetaType>
 
+
 class QStringList;
 class QVariant;
 class device;
@@ -19,22 +20,29 @@ class device;
 class DeviceTester
 {
 public:
-	DeviceTester(device *d, int dim);
+	enum StatusListValues
+	{
+		ONE_VALUE,
+		MULTIPLE_VALUES,
+	};
+	DeviceTester(device *d, int dim, StatusListValues it = ONE_VALUE);
 
 	template<class T> void check(const QStringList &frames, const T &result);
+
+	// Overload methods, provided for convenience.
 	template<class T> void check(QString frame, const T &result);
 	void check(QString frame, const char *result);
 
 	// Verify the number of signals emitted
 	void checkSignals(const QStringList &frames, int num_signals);
 	void checkSignals(QString frame, int num_signals);
-
 	QVariant getResult(const QStringList& frames);
 
 private:
 	QSignalSpy spy;
 	int dim_type;
 	device *dev;
+	StatusListValues item_number;
 	void sendFrames(const QStringList& frames);
 };
 
@@ -42,8 +50,8 @@ private:
 template<class T> void DeviceTester::check(const QStringList &frames, const T &result)
 {
 	QVariant r = getResult(frames);
-	QVERIFY(r.canConvert<T>());
-	QVERIFY(result == r.value<T>());
+	QVERIFY2(r.canConvert<T>(), "Unable to convert the result in the proper type");
+	QCOMPARE(r.value<T>(), result);
 }
 
 template<class T> void DeviceTester::check(QString frame, const T &result)

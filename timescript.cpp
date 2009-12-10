@@ -17,6 +17,7 @@
 timeScript::timeScript(QWidget *parent, uchar tipo, QDateTime* mioOrol)
     : QLCDNumber(parent)
 {
+	setFrameStyle(QFrame::Plain);
 	type = tipo;
 	if (tipo != 2)
 		setNumDigits(8);

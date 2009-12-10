@@ -1,5 +1,4 @@
 #include "bann_videoentryphone.h"
-#include "openclient.h" // Client
 #include "device_status.h"
 #include "device.h"
 #include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH
@@ -11,6 +10,7 @@
 #include <QDebug>
 #include <QLabel>
 
+#include <openmsg.h>
 
 // Static pointer to call notifier manager
 call_notifier_manager *postoExt::cnm = NULL;
@@ -61,8 +61,6 @@ postoExt::postoExt(QWidget *parent, QString d, QString Icona1, QString Icona2, Q
 				this, SLOT(frame_captured_handler(call_notifier *)));
 		connect(cnm, SIGNAL(call_notifier_closed(call_notifier *)),
 				this, SLOT(call_notifier_closed(call_notifier *)));
-		connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)),
-				cnm, SLOT(gestFrame(char *)));
 	}
 	cnm->add_call_notifier(cn);
 	if (unknown && !unknown_notifier)
@@ -159,9 +157,7 @@ call_notifier::call_notifier(QWidget *parent, postoExt *ms) : QFrame(parent)
 	myTimer = new QTimer(this);
 	myTimer->setSingleShot(true);
 	connect(myTimer, SIGNAL(timeout()), this, SLOT(close()));
-	// Pass incoming frames on to device
-	connect(this, SIGNAL(frame_available(char *)),
-		station_dev, SLOT(frame_rx_handler(char *)));
+
 	// Get status changed events
 	connect(station_dev, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));
@@ -194,11 +190,10 @@ void call_notifier::showFullScreen()
 	myTimer->start(30000);
 }
 
-// FIXME: direct connection ?
 void call_notifier::frame_available_handler(char *f)
 {
 	qDebug("call_notifier::frame_available_handler()");
-	emit frame_available(f);
+	station_dev->frame_rx_handler(f);
 }
 
 void call_notifier::stairlight_pressed()
@@ -335,6 +330,7 @@ call_notifier_manager::call_notifier_manager()
 	qDebug("call_notifier_manager::call_notifier_manager()");
 	unknown_station_notifier = NULL;
 	known_station = false;
+	subscribe_monitor(6);
 }
 
 void call_notifier_manager::add_call_notifier(call_notifier *cn)
@@ -358,17 +354,17 @@ void call_notifier_manager::set_unknown_call_notifier(call_notifier *cn)
 		this, SIGNAL(call_notifier_closed(call_notifier *)));
 }
 
-void call_notifier_manager::gestFrame(char *f)
+void call_notifier_manager::manageFrame(OpenMsg &msg)
 {
-	qDebug("call_notifier_manager::gestFrame()");
+	qDebug("call_notifier_manager::manageFrame()");
 	known_station = false;
-	emit frame_available(f);
+	emit frame_available(msg.frame_open);
 	// Has one of the known stations' call_notifier objects captured
 	// this frame ?
 	if ((!known_station) && unknown_station_notifier)
 	{
 		qDebug("forwarding frame to unknown status call notifier");
-		unknown_station_notifier->frame_available_handler(f);
+		unknown_station_notifier->frame_available_handler(msg.frame_open);
 	}
 }
 

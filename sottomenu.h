@@ -141,12 +141,6 @@ private slots:
 
 signals:
 	/*!
-	\brief Emitted to connect the \a Open \a Frame coming from the openClient to the banners in the list.
-	*/
-	// NOTE: the signal gestFrame is automatically connected with the slot "gestFrame" on each banner.
-	void gestFrame(char*);
-
-	/*!
 	\brief Open ack received
 	*/
 	void openAckRx();
@@ -157,7 +151,6 @@ signals:
 	void openNakRx();
 
 	void richStato(QString);
-	void rispStato(char*);
 
 	/*!
 	\brief Emitted to go to a further page.
@@ -168,16 +161,6 @@ signals:
 	\brief Parent changed
 	*/
 	void parentChanged(QWidget *newParent);
-
-	/*!
-	\brief emitted on calibration start
-	*/
-	void startCalib();
-
-	/*!
-	\brief emitted on calibration end
-	*/
-	void endCalib();
 };
 
 #endif // SOTTOMENU_H

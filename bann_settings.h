@@ -37,8 +37,8 @@ class bannAlarmClock : public bann2But
 {
 Q_OBJECT
 public:
-	bannAlarmClock(QWidget *parent, int hour, int minute, QString icon1,
-		QString icon2, QString icon3, int enabled, int freq, int tipo);
+	bannAlarmClock(QWidget *parent, int hour, int minute, QString icon_on,
+		QString icon_off, QString icon_label, int enabled, int freq, int tipo);
 	/*!
 	\brief changes the abilitation af the alarm set
 	*/
@@ -46,15 +46,11 @@ public:
 	/*!
 	\brief forces a eeprom read to initialyze alarm set settings
 	*/
-	void inizializza();
+	void inizializza(bool forza = false);
 
 	virtual void setSerNum(int num);
 
 public slots:
-/*!
-\brief Analizes \a Open \a frames coming form the system
-*/
-	void gestFrame(char*);
 /*!
 \brief changes the alarm set abilitation
 */
@@ -66,12 +62,39 @@ private:
 
 private slots:
 	void handleClose();
+};
 
-signals:
+
+class bannAlarmClockIcon : public BannOnOffState
+{
+Q_OBJECT
+public:
+	bannAlarmClockIcon(int hour, int minute, QString icon_on,
+		QString icon_off, QString icon_state, QString icon_edit, QString text,
+		int enabled, int tipo, QList<bool> days);
+	/*!
+	\brief changes the abilitation af the alarm set
+	*/
+	void setAbil(bool);
+	/*!
+	\brief forces a eeprom read to initialyze alarm set settings
+	*/
+	void inizializza(bool forza = false);
+
+	virtual void setSerNum(int num);
+
+public slots:
 /*!
-\brief Emitted to turn alarm clock off
+\brief changes the alarm set abilitation
 */
-	void spegniSveglia();
+	void toggleAbil();
+	void setButtonIcon();
+
+private:
+	AlarmClock *alarm_clock;
+
+private slots:
+	void handleClose();
 };
 
 
@@ -88,7 +111,7 @@ class calibration : public bannOnDx
 {
 Q_OBJECT
 public:
-	calibration(sottoMenu *parent, QString icon);
+	calibration(QWidget *parent, QString icon);
 
 private slots:
 	void doCalib();
@@ -112,7 +135,7 @@ class impBeep : public bannOnSx
 {
 Q_OBJECT
 public:
-	impBeep(sottoMenu *parent, QString val, QString icon1, QString icon2);
+	impBeep(QWidget *parent, QString val, QString icon_on, QString icon_off);
 public slots:
 	void toggleBeep();
 };
@@ -122,7 +145,7 @@ class bannContrast : public bannOnDx
 {
 Q_OBJECT
 public:
-	bannContrast(sottoMenu *parent, QString val, QString icon);
+	bannContrast(QWidget *parent, QString val, QString icon);
 
 private slots:
 	void done();
@@ -133,7 +156,7 @@ class bannVersion : public bannOnDx
 {
 Q_OBJECT
 public:
-	bannVersion(sottoMenu *parent, QString icon, Version *ver);
+	bannVersion(QWidget *parent, QString icon, Version *ver);
 private slots:
 	void showVers();
 private:
@@ -153,7 +176,7 @@ class impPassword : public bann2But
 {
 Q_OBJECT
 public:
-	impPassword(QWidget *parent, QString icon1, QString icon2, QString icon3, QString pwd, int attiva);
+	impPassword(QWidget *parent, QString icon_on, QString icon_off, QString icon_label, QString pwd, int attiva);
 
 public slots:
 /*!
@@ -164,7 +187,7 @@ public slots:
 /*!
   \brief  Stops the error beep made when the password insertion is wrong
 */
-	void tiempout();
+	void restoreBeepState();
 
 protected:
 	virtual void showEvent(QShowEvent *event);

@@ -19,7 +19,6 @@
 #ifndef BTOUCH_THERMALMENU_H
 #define BTOUCH_THERMALMENU_H
 
-#include "sottomenu.h"
 #include "bann1_button.h"
 #include "bttime.h"
 #include "bann_thermal_regulation.h"
@@ -28,10 +27,8 @@
 #include <QWidget>
 #include <QString>
 
-class FSBannTime;
-class FSBannDate;
 
-class ThermalMenu : public sottoMenu
+class ThermalMenu : public BannerPage
 {
 Q_OBJECT
 public:
@@ -39,6 +36,8 @@ public:
 	 * 
 	 */
 	ThermalMenu(const QDomNode &config_node);
+
+	virtual int sectionId();
 
 public slots:
 	/**
@@ -48,18 +47,18 @@ public slots:
 	virtual void showPage();
 
 private:
-	bannPuls *addMenuItem(QDomElement, QString);
+	BannSinglePuls *addMenuItem(QDomElement, QString);
 	/**
-	 * Create a sottoMenu to show external and not controlled probes
+	 * Create a banner list to show external and not controlled probes
 	 *
 	 * \param config    The node in the Dom tree that holds the `probe' section
 	 * \param bann      A pointer to the banner that gives access to the
-	 * sottoMenu
+	 * subpage
 	 * \param external  True if the probe is external, false otherwise
 	 */
-	void createProbeMenu(QDomNode config, bannPuls *bann, bool external);
+	void createProbeMenu(QDomNode config, BannSinglePuls *bann, bool external);
 
-	void createPlantMenu(QDomNode config, bannPuls *bann);
+	void createPlantMenu(QDomNode config, BannSinglePuls *bann);
 	void loadBanners(const QDomNode &config_node);
 
 	/// do NOT setAutoDelete(true), since banners are children of
@@ -67,8 +66,17 @@ private:
 
 	unsigned bann_number;
 	/// A reference to the only submenu below us
-	sottoMenu *single_submenu;
+	Page *single_submenu;
 };
+
+
+class ProbesPage : public BannerPage
+{
+Q_OBJECT
+public:
+	ProbesPage(const QDomNode &config_node, bool are_probes_external);
+};
+
 
 /**
  * A base class for submenus that allow to choose one program in a list. The list changes
@@ -76,7 +84,7 @@ private:
  * This class emits a signal when a program is clicked. This signal should be used to close
  * the submenu and to take further action, for example sending a frame to the thermal regulator.
  */
-class ProgramMenu : public sottoMenu
+class ProgramMenu : public BannerPage
 {
 Q_OBJECT
 public:
@@ -85,6 +93,7 @@ public:
 	virtual void createWinterBanners() = 0;
 	void setSeason(Season new_season);
 protected:
+	QString summer_icon, winter_icon;
 	int season;
 	QDomNode conf_root;
 	/**
@@ -120,41 +129,6 @@ public:
 	ScenarioMenu(QWidget *parent, QDomNode conf);
 	virtual void createSummerBanners();
 	virtual void createWinterBanners();
-};
-
-/**
- * A submenu that let the user choose the time.
- */
-class TimeEditMenu : public sottoMenu
-{
-Q_OBJECT
-public:
-	TimeEditMenu(QWidget *parent=0);
-	BtTime time();
-private:
-	FSBannTime *time_edit;
-private slots:
-	void performAction();
-signals:
-	void timeSelected(BtTime);
-};
-
-/**
- * A submenu that let the users choose a date and emits a signal with the selected date when the user
- * confirms the choice.
- */
-class DateEditMenu : public sottoMenu
-{
-Q_OBJECT
-public:
-	DateEditMenu(QWidget *parent=0);
-	QDate date();
-private:
-	FSBannDate *date_edit;
-private slots:
-	void performAction();
-signals:
-	void dateSelected(QDate);
 };
 
 #endif

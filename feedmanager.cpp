@@ -1,15 +1,14 @@
 #include "feedmanager.h"
 #include "feeditemwidget.h"
 #include "listbrowser.h"
-#include "bannfrecce.h"
+#include "navigation_bar.h"
 #include "main.h"
 
 #include <qregexp.h>
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QVector>
-
-#include <assert.h>
+#include <QPixmap>
 
 #define ROWS_PER_PAGE 4
 
@@ -19,6 +18,11 @@ FeedManager::FeedManager()
 	loadFeedList();
 	status = SELECTION;
 
+	QWidget *content = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(content);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
+
 	list_browser = new ListBrowser(this, ROWS_PER_PAGE);
 	main_layout->addWidget(list_browser, 1);
 
@@ -26,17 +30,17 @@ FeedManager::FeedManager()
 	feed_widget->hide();
 	main_layout->addWidget(feed_widget, 1);
 
-	bannNavigazione = new bannFrecce(this, 3);
-	main_layout->addWidget(bannNavigazione);
+	NavigationBar *nav_bar = new NavigationBar;
+	buildPage(content, nav_bar);
 
 	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 	connect(feed_widget, SIGNAL(Closed()), feed_widget, SLOT(hide()));
 	connect(&parser, SIGNAL(feedReady()), SLOT(feedReady()));
 
 	// bannNavigazione up/down signals are inverted...
-	connect(bannNavigazione, SIGNAL(upClick()), SLOT(downClick()));
-	connect(bannNavigazione, SIGNAL(downClick()), SLOT(upClick()));
-	connect(bannNavigazione, SIGNAL(backClick()), SLOT(backClick()));
+	connect(nav_bar, SIGNAL(upClick()), SLOT(downClick()));
+	connect(nav_bar, SIGNAL(downClick()), SLOT(upClick()));
+	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
 }
 
 void FeedManager::loadFeedList()
@@ -105,11 +109,11 @@ void FeedManager::setupPage()
 		break;
 
 	default:
-		assert(!"Feed status not handled!");
+		qFatal("Feed status not handled!");
 		break;
 	}
 
-	initTransition();
+	prepareTransition();
 	list_browser->setList(item_list, page);
 	list_browser->showList();
 	startTransition();
@@ -120,25 +124,28 @@ void FeedManager::itemIsClicked(int item)
 	switch (status)
 	{
 	case SELECTION:
-		assert(item >= 0 && item < (int)feed_list.size() && "Item index out of range!");
+		Q_ASSERT_X(item >= 0 && item < (int)feed_list.size(), "FeedManager::itemIsClicked",
+			"Item index out of range!");
 		page_indexes["/"] = list_browser->getCurrentPage();
 		qDebug() << "parse url: " << feed_list[item].path;
 		parser.parse(feed_list[item].path);
 		break;
 
 	case BROWSING:
-		assert(item >= 0 && item < (int)data.entry_list.size() && "Item index out of range!");
+	{
+		Q_ASSERT_X(item >= 0 && item < (int)data.entry_list.size(), "FeedManager::itemIsClicked",
+			"Item index out of range!");
 		page_indexes[data.feed_title] = list_browser->getCurrentPage();
 		feed_widget->setFeedInfo(data.entry_list[item]);
-		initTransition();
+		prepareTransition();
 		feed_widget->show();
 		list_browser->hide();
 		startTransition();
 		status = READING;
 		break;
-
+	}
 	default:
-		assert(!"Feed status not handled!");
+		qFatal("Feed status not handled!");
 		break;
 	}
 }
@@ -163,14 +170,16 @@ void FeedManager::backClick()
 		setupPage();
 		break;
 	case READING:
+	{
 		status = BROWSING;
-		initTransition();
+		prepareTransition();
 		feed_widget->hide();
 		list_browser->show();
 		startTransition();
 		break;
+	}
 	default:
-		assert(!"Feed status not handled!");
+		qFatal("Feed status not handled!");
 		break;
 	}
 }
@@ -187,7 +196,7 @@ void FeedManager::upClick()
 		feed_widget->scrollUp();
 		break;
 	default:
-		assert(!"Feed status not handled!");
+		qFatal("Feed status not handled!");
 		break;
 	}
 }
@@ -204,7 +213,7 @@ void FeedManager::downClick()
 		feed_widget->scrollDown();
 		break;
 	default:
-		assert(!"Feed status not handled!");
+		qFatal("Feed status not handled!");
 		break;
 	}
 }

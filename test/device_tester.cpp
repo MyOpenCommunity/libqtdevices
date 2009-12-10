@@ -1,6 +1,7 @@
 #include "device_tester.h"
 
 #include <device.h>
+#include <openmsg.h>
 
 #include <QStringList>
 #include <QVariant>
@@ -13,42 +14,53 @@
 Q_DECLARE_METATYPE(StatusList)
 
 
-DeviceTester::DeviceTester(device *d, int type) : spy(d, SIGNAL(status_changed(const StatusList&)))
+DeviceTester::DeviceTester(device *d, int type, StatusListValues it) :
+	spy(d, SIGNAL(status_changed(const StatusList&)))
 {
 	dim_type = type;
 	dev = d;
+	item_number = it;
 }
 
 void DeviceTester::sendFrames(const QStringList& frames)
 {
 	spy.clear();
 	for (int i = 0; i < frames.size(); ++i)
-		dev->frame_rx_handler(frames[i].toAscii().data());
+	{
+		OpenMsg msg;
+		msg.CreateMsgOpen(frames[i].toAscii().data(), frames[i].length());
+		dev->manageFrame(msg);
+	}
 }
 
 void DeviceTester::checkSignals(QString frame, int num_signals)
 {
 	sendFrames(QStringList(frame));
-	QVERIFY(spy.count() == num_signals);
+	QCOMPARE(spy.count(), num_signals);
 }
 
 void DeviceTester::checkSignals(const QStringList& frames, int num_signals)
 {
 	sendFrames(frames);
-	QVERIFY(spy.count() == num_signals);
+	QCOMPARE(spy.count(), num_signals);
 }
 
 QVariant DeviceTester::getResult(const QStringList& frames)
 {
 	sendFrames(frames);
-	assert(spy.count() > 0 && "DeviceTester: No signal emitted!");
-	assert(spy.last().count() > 0 && "DeviceTester: No arguments for the last signal emitted!");
+	Q_ASSERT_X(spy.count() > 0, "DeviceTester::getResult", "DeviceTester: No signal emitted!");
+	Q_ASSERT_X(spy.last().count() > 0, "DeviceTester::getResult", "DeviceTester: No arguments for the last signal emitted!");
 	QVariant signal_arg = spy.last().at(0); // get the first argument from last signal
 	if (signal_arg.canConvert<StatusList>())
 	{
 		StatusList sl = signal_arg.value<StatusList>();
 		if (sl.contains(dim_type))
+		{
+			if (item_number == ONE_VALUE)
+				Q_ASSERT_X(sl.size() == 1, "DeviceTester::getResult",
+					"StatusList must contain only one item");
 			return sl[dim_type];
+		}
 	}
 	return QVariant();
 }

@@ -1,10 +1,12 @@
 #ifndef DISPLAYPAGE_H
 #define DISPLAYPAGE_H
 
-#include "sottomenu.h"
+#include "page.h"
+
+class QDomNode;
 
 
-class DisplayPage : public sottoMenu
+class DisplayPage : public BannerPage
 {
 Q_OBJECT
 public:
@@ -12,6 +14,10 @@ public:
 
 private:
 	void loadItems(const QDomNode &config_node);
+
+private slots:
+	void startCalibration();
+	void endCalibration();
 };
 
 

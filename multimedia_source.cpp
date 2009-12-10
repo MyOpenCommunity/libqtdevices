@@ -19,16 +19,13 @@
 #include "titlelabel.h"
 #include "xml_functions.h" // getChildren, getTextChild
 
-#include <QApplication>
+#include <QApplication> // processEvents
 #include <QButtonGroup>
 #include <QStringList>
-#include <QDomNode>
 #include <QLayout>
 #include <QRegExp>
 #include <QDebug>
 #include <QTime>
-
-#include <assert.h>
 
 #define BROWSER_ROWS_PER_PAGE 4
 
@@ -73,11 +70,11 @@ SourceChoice::SourceChoice()
 	setFont(bt_global::font->get(FontManager::TEXT));
 	buttons_group = new QButtonGroup(this);
 
-	TitleLabel *l = new TitleLabel(0, MAX_WIDTH - 60, 50, 9, 5);
+	TitleLabel *l = new TitleLabel(0, width() - 60, 50, 9, 5);
 	l->setText(tr("IP Radio"));
 	addHorizontalBox(main_layout, l, BUTTON_RADIO);
 
-	l = new TitleLabel(0, MAX_WIDTH - 60, 50, 9, 15);
+	l = new TitleLabel(0, width() - 60, 50, 9, 15);
 	l->setText(tr("Servers"));
 	addHorizontalBox(main_layout, l, BUTTON_MEDIA);
 
@@ -256,7 +253,7 @@ void MultimediaSource::handleChoiceSource(int button_id)
 		sourceMenu(FILE_SOURCE);
 		play_window->stop();
 	}
-	assert(play_window && "PlayWindow not set!");
+	Q_ASSERT_X(play_window, "MultimediaSource::handleChoiceSource", "PlayWindow not set!");
 
 	if (play_window->isPlaying())
 		play_window->showPage();
@@ -332,6 +329,7 @@ FileSelector::FileSelector(unsigned rows_per_page, QString start_path)
 
 void FileSelector::showPage()
 {
+	Selector::showPage();
 	// refresh QDir information
 	current_dir.refresh();
 
@@ -348,8 +346,6 @@ void FileSelector::showPage()
 
 	waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
 	destroyWaitDialog(l);
-
-	Selector::showPage();
 }
 
 void FileSelector::itemIsClicked(int item)
@@ -471,7 +467,7 @@ QLabel *FileSelector::createWaitDialog()
 	l->setPixmap(*icon);
 
 	QRect r = icon->rect();
-	r.moveCenter(QPoint(MAX_WIDTH / 2, MAX_HEIGHT / 2));
+	r.moveCenter(QPoint(width() / 2, height() / 2));
 	l->setGeometry(r);
 
 	l->showFullScreen();

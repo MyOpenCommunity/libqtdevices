@@ -12,7 +12,6 @@
 #include "ambdiffson.h"
 #include "device.h"
 #include "device_status.h"
-#include "alarmclock.h"
 #include "sounddiffusion.h"
 #include "scenevocond.h"
 #include "devices_cache.h" // bt_global::devices_cache
@@ -21,8 +20,6 @@
 #include <QTimer>
 #include <QPoint>
 #include <QDebug>
-
-#include <assert.h>
 
 AudioSources *MultiSoundDiffInterface::sorgenti = 0;
 
@@ -100,7 +97,6 @@ MultiSoundDiff::MultiSoundDiff(const QDomNode &config_node)
 	if (!sorgenti)
 		sorgenti = new AudioSources(this, config_node);
 	sorgenti->hide();
-	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));
 	connect(sorgenti, SIGNAL(actSrcChanged(int, int)), this, SIGNAL(actSrcChanged(int, int)));
 
 	matr = bt_global::devices_cache.get_sound_matr_device();
@@ -165,10 +161,6 @@ void MultiSoundDiff::status_changed(QList<device_status*> sl)
 	}
 }
 
-void MultiSoundDiff::gestFrame(char*frame)
-{
-	emit gesFrame(frame);
-}
 
 
 MultiSoundDiffAlarm::MultiSoundDiffAlarm(const QDomNode &config_node)

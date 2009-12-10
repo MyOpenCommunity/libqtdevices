@@ -10,8 +10,8 @@
  * \author Gianni Valdambrini <aleister@develer.com>
  */
 
-#ifndef LANDEVICE_H
-#define LANDEVICE_H
+#ifndef PLATFORM_DEVICE_H
+#define PLATFORM_DEVICE_H
 
 #include "device.h"
 
@@ -19,19 +19,30 @@
 #include <QVariant>
 
 
+class OpenMsg;
+class BtTime;
+class QDate;
+
+
 /**
- * \class LanDevice
+ * \class PlatformDevice
  *
  * This class represent a device for managing lan settings. It has a method to
  * activate/deactivate the lan, and some methods to obtain information about
  * actual settings. When a request of information is done, the response is sent
  * through the signal status_changed.
  */
-class LanDevice : public device
+class PlatformDevice : public device
 {
 Q_OBJECT
 public:
-	LanDevice();
+	PlatformDevice();
+
+	// date/time methods
+	void setTime(const BtTime &t);
+	void setDate(const QDate &d);
+
+	// lan management methods
 	void enableLan(bool enable);
 
 	// The request methods, used to request an information
@@ -41,6 +52,8 @@ public:
 	void requestGateway() const;
 	void requestDNS1() const;
 	void requestDNS2() const;
+
+	virtual void manageFrame(OpenMsg &msg);
 
 	enum Type
 	{
@@ -54,8 +67,7 @@ public:
 	};
 
 public slots:
-	virtual void frame_rx_handler(char *);
 	void requestStatus() const;
 };
 
-#endif // LANDEVICE_H
+#endif // PLATFORM_DEVICE_H

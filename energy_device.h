@@ -64,6 +64,8 @@ public:
 	void requestCumulativeMonthGraph(QDate date) const;
 	void requestCumulativeYearGraph() const;
 
+	virtual void manageFrame(OpenMsg &msg);
+
 	enum Type
 	{
 		DIM_CUMULATIVE_YEAR   = 51,
@@ -87,8 +89,6 @@ public:
 		DAILY_AVERAGE
 	};
 
-public slots:
-	void frame_rx_handler(char *frame);
 
 private:
 	void requestCumulativeMonth(QDate date, bool use_compressed_init) const;
@@ -122,7 +122,7 @@ struct GraphData
 	QMap<int, int> graph;
 	QDate date;
 	EnergyDevice::GraphType type;
-	bool operator==(const GraphData &other)
+	bool operator==(const GraphData &other) const
 	{
 		return (graph == other.graph) && (date == other.date) &&
 			(type == other.type);

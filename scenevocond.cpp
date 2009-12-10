@@ -1,25 +1,22 @@
 #include "scenevocond.h"
 #include "device.h"
-#include "devices_cache.h" // bt_global::devices_cache
+#include "devices_cache.h" // add_device_to_cache
 #include "generic_functions.h" // setCfgValue
 #include "btbutton.h"
-#include "timescript.h"
 #include "fontmanager.h" // bt_global::font
 #include "scaleconversion.h"
 #include "main.h" // bt_global::config
+#include "skinmanager.h"
+#include "icondispatcher.h" // icons_cache
+#include "xml_functions.h" //getTextChild
 
-#include <QDateTime>
+#include "lighting_device.h"
+
 #include <QLocale>
-#include <QPixmap>
-#include <QWidget>
 #include <QDebug>
 #include <QLabel>
-#include <QTimer>
-#include <QDir>
-#include <QFile>
 
-#include <assert.h>
-
+#define BOTTOM_BORDER 10
 
 // TODO: create a global locale object
 namespace
@@ -35,41 +32,12 @@ QLocale loc(QLocale::Italian);
 
 scenEvo_cond::scenEvo_cond()
 {
-	condition_type = -1;
-	for (int i = 0; i < MAX_EVO_COND_IMG; i++)
-		img[i] = new QString("");
 	hasTimeCondition = false;
-}
-
-QString scenEvo_cond::getImg(int index)
-{
-	if (index >= MAX_EVO_COND_IMG)
-		return "";
-	return *img[index];
-}
-
-void scenEvo_cond::setImg(int index, QString s)
-{
-	qDebug() << "scenEvo_cond: setting image " << index << " to " << s;
-	if (index >= MAX_EVO_COND_IMG)
-		return;
-	*img[index] = s;
-}
-
-void scenEvo_cond::setConditionType(int t)
-{
-	condition_type = t;
 }
 
 const char *scenEvo_cond::getDescription()
 {
 	return "Generic scenEvo condition";
-}
-
-void scenEvo_cond::SetIcons()
-{
-	// Does nothing by default
-	qDebug("scenEvo_cond::SetIcons()");
 }
 
 void scenEvo_cond::Next()
@@ -132,19 +100,56 @@ bool scenEvo_cond::isTrue()
  ** Advanced scenario management, time condition
 ****************************************************************/
 
-scenEvo_cond_h::scenEvo_cond_h(QString h, QString m)
+scenEvo_cond_h::scenEvo_cond_h(const QDomNode &config_node, bool has_next) :
+	time_edit(this)
 {
 	qDebug("***** scenEvo_cond_h::scenEvo_cond_h");
-	ora = NULL;
-	timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(scaduta()));
-	cond_time = new QDateTime(QDateTime::currentDateTime());
-	ora = new timeScript(this, 2 , cond_time);
+
+	timer.setSingleShot(true);
+	connect(&timer, SIGNAL(timeout()), SLOT(scaduta()));
+
+	const int BUT_DIM = 60;
+	// Top icon
+	QLabel *image = new QLabel(this);
+	image->setPixmap(bt_global::skin->getImage("watch"));
+	image->setGeometry(width()/2 - BUT_DIM/2, 0, BUT_DIM, BUT_DIM);
+
+	QString h = getTextChild(config_node, "hour");
+	QString m = getTextChild(config_node, "minute");
+	time_edit.setMaxHours(24);
+	time_edit.setMaxMinutes(60);
+	const int TIME_EDIT_W = width() / 2;
+	// +10 below is for compatibility reasons
+	const int TIME_EDIT_H = height() / 2 + 10;
+	time_edit.setGeometry(width()/2 - TIME_EDIT_W/2, height()/2 - TIME_EDIT_H/2, TIME_EDIT_W, TIME_EDIT_H);
+	time_edit.setTime(QTime(h.toInt(), m.toInt(), 0));
+
+	bottom_left = new BtButton(this);
+	bottom_left->setGeometry(0, height() - (BUT_DIM + BOTTOM_BORDER), BUT_DIM, BUT_DIM);
+	bottom_left->setImage(bt_global::skin->getImage("ok"));
+	connect(bottom_left, SIGNAL(released()), SLOT(OK()));
+
+	bottom_right = new BtButton(this);
+	bottom_right->setGeometry(width() - BUT_DIM, height() - (BUT_DIM + BOTTOM_BORDER), BUT_DIM, BUT_DIM);
+
+	if (has_next)
+	{
+		bottom_center = new BtButton(this);
+		bottom_center->setGeometry(width()/2 - BUT_DIM/2, height() - (BUT_DIM + BOTTOM_BORDER), BUT_DIM, BUT_DIM);
+		bottom_center->setImage(bt_global::skin->getImage("back"));
+		connect(bottom_center, SIGNAL(released()),SLOT(Prev()));
+
+		bottom_right->setImage(bt_global::skin->getImage("forward"));
+		connect(bottom_right, SIGNAL(released()), SLOT(Next()));
+	}
+	else
+	{
+		bottom_right->setImage(bt_global::skin->getImage("back"));
+		connect(bottom_right, SIGNAL(released()), SLOT(Prev()));
+	}
+
 	hasTimeCondition = true;
-	QTime t(h.toInt(), m.toInt(), 0);
-	cond_time->setTime(t);
-	ora->setDataOra(QDateTime(QDate::currentDate(), t));
-	ora->showTime();
+	cond_time.setHMS(h.toInt(), m.toInt(), 0);
 	setupTimer();
 }
 
@@ -153,129 +158,10 @@ const char *scenEvo_cond_h::getDescription()
 	return "scenEvo hour condition";
 }
 
-void scenEvo_cond_h::SetIcons()
-{
-	qDebug("scenEvo_cond_h::SetIcons()");
-	for (int i = 0; i < 6; i++)
-		qDebug() << "icon[" << i << "] = " << getImg(i);
-
-	for (uchar idx = 0; idx < 2; idx++)
-	{
-		but[idx] = new BtButton(this);
-		but[idx]->setGeometry(idx*80+50, 80, 60, 60);
-		but[idx]->setAutoRepeat(true);
-		but[idx]->setImage(ICON_FRECCIA_SU);
-	}
-
-	// Pulsanti giu`
-	for (uchar idx = 2; idx < 4; idx++)
-	{
-		but[idx] = new BtButton(this);
-		but[idx]->setGeometry((idx-2)*80+50,190,60,60);
-		but[idx]->setAutoRepeat(true);
-		but[idx]->setImage(ICON_FRECCIA_GIU);
-	}
-
-	// Orologio
-	Immagine = new QLabel(this);
-	QPixmap Icon1;
-	if (Icon1.load(getImg(0)))
-		Immagine->setPixmap(Icon1);
-	Immagine->setGeometry(90,0,60,60);
-
-	// Pulsante in basso a sinistra, area 6 (SE C'E` L'ICONA)
-	if (!getImg(A6_ICON_INDEX).isEmpty())
-	{
-		qDebug() << "Area 6: loaded icon " << getImg(A6_ICON_INDEX);
-		but[A6_BUTTON_INDEX] = new BtButton(this);
-		but[A6_BUTTON_INDEX]->setGeometry(0, MAX_HEIGHT - 60, 60, 60);
-		but[A6_BUTTON_INDEX]->setImage(getImg(A6_ICON_INDEX));
-	}
-	else
-		but[A6_BUTTON_INDEX] = NULL;
-
-	// Pulsante in basso al centro, area 7
-	if (!getImg(A7_ICON_INDEX).isEmpty())
-	{
-		qDebug() << "Area 7: loaded icon " << getImg(A7_ICON_INDEX);
-		but[A7_BUTTON_INDEX] = new BtButton(this);
-		but[A7_BUTTON_INDEX]->setGeometry(MAX_WIDTH/2 - 30, MAX_HEIGHT - 60, 60, 60);
-		but[A7_BUTTON_INDEX]->setImage(getImg(A7_ICON_INDEX));
-	}
-	else
-		but[A7_BUTTON_INDEX] = NULL;
-
-	// Pulsante in basso a destra, area 8
-	if (!getImg(A8_ICON_INDEX).isEmpty())
-	{
-		qDebug() << "Area 8: loaded icon " << getImg(A8_ICON_INDEX);
-		but[A8_BUTTON_INDEX] = new BtButton(this);
-		but[A8_BUTTON_INDEX]->setGeometry(MAX_WIDTH - 60, MAX_HEIGHT - 60, 60, 60);
-		but[A8_BUTTON_INDEX]->setImage(getImg(A8_ICON_INDEX));
-	}
-	else
-		but[A8_BUTTON_INDEX] = NULL;
-	ora->setGeometry(40, 140, 160, 50);
-	ora->setFrameStyle(QFrame::Plain);
-	ora->setLineWidth(0);
-	qDebug("scenEvo_cond_h::SetIcons(), fine");
-}
-
-void scenEvo_cond_h::showPage()
-{
-	scenEvo_cond::showPage();
-	qDebug("scenEvo_cond_h::showPage()");
-	for (uchar idx = 0; idx < 8; idx++)
-		if (but[idx])
-			but[idx]->show();
-	ora->show();
-	Immagine->show();
-
-	disconnect(but[0] ,SIGNAL(clicked()), ora, SLOT(aumOra()));
-	disconnect(but[1] ,SIGNAL(clicked()), ora, SLOT(aumMin()));
-	disconnect(but[2] ,SIGNAL(clicked()), ora, SLOT(diminOra()));
-	disconnect(but[3] ,SIGNAL(clicked()), ora, SLOT(diminMin()));
-	connect(but[0] , SIGNAL(clicked()), ora, SLOT(aumOra()));
-	connect(but[1] , SIGNAL(clicked()), ora, SLOT(aumMin()));
-	connect(but[2] ,SIGNAL(clicked()), ora, SLOT(diminOra()));
-	connect(but[3] ,SIGNAL(clicked()), ora, SLOT(diminMin()));
-
-	if (but[A6_BUTTON_INDEX])
-	{
-		disconnect(but[A6_BUTTON_INDEX], SIGNAL(released()), this, SLOT(OK()));
-		connect(but[A6_BUTTON_INDEX], SIGNAL(released()), this, SLOT(OK()));
-	}
-	if (getImg(3).isEmpty())
-	{
-	// cimg4 is empty
-		if (but[A8_BUTTON_INDEX])
-		{
-			qDebug("connecting A8 to Prev");
-			disconnect(but[A8_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Prev()));
-			connect(but[A8_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Prev()));
-		}
-	}
-	else
-	{
-		if (but[A7_BUTTON_INDEX])
-		{
-			qDebug("connecting A7 to Prev");
-			disconnect(but[A7_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Prev()));
-			connect(but[A7_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Prev()));
-		}
-		if (but[A8_BUTTON_INDEX])
-		{
-			qDebug("connecting A8 to Next");
-			disconnect(but[A8_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Next()));
-			connect(but[A8_BUTTON_INDEX], SIGNAL(released()),this, SLOT(Next()));
-		}
-	}
-}
-
 void scenEvo_cond_h::setupTimer()
 {
 	QTime now = QTime::currentTime();
-	int msecsto = now.msecsTo(cond_time->time());
+	int msecsto = now.msecsTo(cond_time);
 
 	while (msecsto <= 0) // Do it tomorrow
 		msecsto += 24 * 60 * 60 * 1000;
@@ -284,14 +170,14 @@ void scenEvo_cond_h::setupTimer()
 		msecsto -= 24 * 60 * 60 * 1000;
 
 	qDebug("(re)starting timer with interval = %d", msecsto);
-	timer->stop();
-	timer->setSingleShot(true);
-	timer->start(msecsto);
+	timer.stop();
+	timer.start(msecsto);
 }
 
 void scenEvo_cond_h::Apply()
 {
-	*cond_time = ora->getDataOra();
+	BtTime tmp = time_edit.time();
+	cond_time.setHMS(tmp.hour(), tmp.minute(), 0);
 	setupTimer();
 }
 
@@ -314,189 +200,118 @@ void scenEvo_cond_h::save()
 	qDebug("scenEvo_cond_h::save()");
 
 	QMap<QString, QString> data;
-	data["condH/hour"] = cond_time->time().toString("hh");
-	data["condH/minute"] = cond_time->time().toString("mm");
+	data["condH/hour"] = cond_time.toString("hh");
+	data["condH/minute"] = cond_time.toString("mm");
 	setCfgValue(data, SCENARIO_EVOLUTO, get_serial_number());
 }
 
 void scenEvo_cond_h::reset()
 {
-	qDebug("scenEvo_cond_h::reset()");
-	ora->setDataOra(*cond_time);
-	ora->showTime();
+	time_edit.setTime(cond_time);
 }
 
 bool scenEvo_cond_h::isTrue()
 {
 	QTime cur = QDateTime::currentDateTime().time();
-	return ((cond_time->time().hour() == cur.hour()) &&
-			(cond_time->time().minute() == cur.minute()));
+	return ((cond_time.hour() == cur.hour()) &&
+			(cond_time.minute() == cur.minute()));
 }
 
 /*****************************************************************
 ** Advanced scenario management, device condition
 ****************************************************************/
 
-scenEvo_cond_d::scenEvo_cond_d()
+scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
 {
-	qDebug("scenEvo_cond_d::scenEvo_cond_d()");
-	descr = new QString("");
-	where = new QString("");
-	trigger = new QString("");
-	memset(but, 0, sizeof(but));
-	qDebug("scenEvo_cond_d::scenEvo_cond_d(), end");
-}
-
-void scenEvo_cond_d::set_descr(QString d)
-{
-	qDebug() << "scenEvo_cond_d::set_descr("<< d << ")";
-	*descr = d;
-}
-
-void scenEvo_cond_d::set_where(QString w)
-{
-	*where = w;
-        switch (condition_type)
-        {
-        case 7:
-		*where += "00";
-		break;
-	}
-	qDebug() << "scenEvo_cond_d::set_where(" << *where << ")";
-}
-
-void scenEvo_cond_d::get_where(QString& out)
-{
-	out = *where;
-}
-
-void scenEvo_cond_d::set_trigger(QString t)
-{
-	qDebug() << "scenEvo_cond_d::set_trigger(" << t << ")";
-	*trigger = t;
-}
-
-const char *scenEvo_cond_d::getDescription()
-{
-	return "scenEvo device condition";
-}
-
-void scenEvo_cond_d::showPage()
-{
-	scenEvo_cond::showPage();
-	qDebug("scenEvo_cond_d::showPage()");
-	for (uchar idx = 0; idx < 8; idx++)
-		if (but[idx])
-			but[idx]->show();
-
-	area1_ptr->show();
-	area2_ptr->setText(*descr);
-	area2_ptr->show();
-	if (actual_condition)
-		actual_condition->show();
-}
-
-void scenEvo_cond_d::SetButtonIcon(int icon_index, int button_index)
-{
-	if (getImg(icon_index).isEmpty())
-	{
-		but[button_index] = NULL;
-		return;
-	}
-
-	if (QFile::exists(getImg(icon_index)))
-	{
-		if (but[button_index])
-			but[button_index]->setImage(getImg(icon_index));
-	}
-}
-
-void scenEvo_cond_d::SetIcons()
-{
-	qDebug("scenEvo_cond_d::SetIcons()");
-	bool external = false;
-
-	QPixmap *Icon1 = new QPixmap();
-	for (int i=0; i<6; i++)
-		qDebug() << "icon[" << i << "] = " << getImg(i);
-
-	area1_ptr = new QLabel(this);
+	QLabel *area1_ptr = new QLabel(this);
 	area1_ptr->setGeometry(0, 0, BUTTON_DIM, BUTTON_DIM);
-	area2_ptr = new QLabel(this);
-	area2_ptr->setGeometry(BUTTON_DIM, BUTTON_DIM/2 - TEXT_Y_DIM/2,	TEXT_X_DIM, TEXT_Y_DIM);
+
+	QLabel *area2_ptr = new QLabel(this);
+	area2_ptr->setGeometry(BUTTON_DIM, BUTTON_DIM/2 - TEXT_Y_DIM/2, width() - BUTTON_DIM, TEXT_Y_DIM);
 	area2_ptr->setFont(bt_global::font->get(FontManager::TEXT));
-	area2_ptr->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	area2_ptr->setAlignment(Qt::AlignCenter);
+	area2_ptr->setText(getTextChild(config_node, "descr"));
+
+	// create condition buttons
+	BtButton *condition_up = new BtButton(this);
+	condition_up->setGeometry(width()/2 - BUTTON_DIM/2, 80, BUTTON_DIM, BUTTON_DIM);
+	condition_up->setImage(bt_global::skin->getImage("plus"));
+	connect(condition_up, SIGNAL(clicked()), SLOT(Up()));
+
+	BtButton *condition_down = new BtButton(this);
+	condition_down->setGeometry(width()/2 - BUTTON_DIM/2, 190, BUTTON_DIM, BUTTON_DIM);
+	condition_down->setImage(bt_global::skin->getImage("minus"));
+	connect(condition_down, SIGNAL(clicked()), SLOT(Down()));
+
+	// create bottom (navigation) buttons
 	BtButton *b = new BtButton(this);
-	but[A3_BUTTON_INDEX] = b;
-	b->setGeometry(MAX_WIDTH/2 - BUTTON_DIM/2, 80, BUTTON_DIM, BUTTON_DIM);
-	connect(b, SIGNAL(clicked()), this, SLOT(Up()));
+	b->setGeometry(0, height() - (BUTTON_DIM + BOTTOM_BORDER), BUTTON_DIM, BUTTON_DIM);
+	b->setImage(bt_global::skin->getImage("ok"));
+	connect(b, SIGNAL(clicked()), SLOT(OK()));
+
 	b = new BtButton(this);
-	but[A4_BUTTON_INDEX] = b;
-	b->setGeometry(MAX_WIDTH/2 - BUTTON_DIM/2, 190, BUTTON_DIM, BUTTON_DIM);
-	connect(b, SIGNAL(clicked()), this, SLOT(Down()));
-	b = new BtButton(this);
-	but[A5_BUTTON_INDEX] = b;
-	b->setGeometry(0, MAX_HEIGHT - BUTTON_DIM, BUTTON_DIM, BUTTON_DIM);
-	connect(b, SIGNAL(clicked()), this, SLOT(OK()));
-	b = new BtButton(this);
-	but[A6_BUTTON_INDEX] = b;
-	b->setGeometry(MAX_WIDTH - BUTTON_DIM, MAX_HEIGHT - BUTTON_DIM,
-		BUTTON_DIM, BUTTON_DIM);
-	connect(b, SIGNAL(clicked()), this, SLOT(Prev()));
-	// area #1
-	if (QFile::exists(getImg(A1_ICON_INDEX)))
-		Icon1->load(getImg(A1_ICON_INDEX));
-	area1_ptr->setPixmap(*Icon1);
-	delete Icon1;
-	// area #3
-	SetButtonIcon(A3_ICON_INDEX, A3_BUTTON_INDEX);
-	// area #4
-	SetButtonIcon(A4_ICON_INDEX, A4_BUTTON_INDEX);
-	// area #5
-	SetButtonIcon(A5_ICON_INDEX, A5_BUTTON_INDEX);
-	// area #8
-	SetButtonIcon(A6_ICON_INDEX, A6_BUTTON_INDEX);
+	b->setGeometry(width() - BUTTON_DIM, height() - (BUTTON_DIM + BOTTOM_BORDER), BUTTON_DIM, BUTTON_DIM);
+	b->setImage(bt_global::skin->getImage("back"));
+	connect(b, SIGNAL(clicked()), SLOT(Prev()));
+
+	QString trigger = getTextChild(config_node, "trigger");
 	// Create actual device condition
 	device_condition *dc;
+	int condition_type = getTextChild(config_node, "value").toInt();
 	qDebug("#### Condition type = %d", condition_type);
+	QString icon;
+	QString w = getTextChild(config_node, "where");
+	bool external = false;
 	switch (condition_type)
 	{
 	case 1:
-		dc = new device_condition_light_status(this, trigger);
+		dc = new device_condition_light_status(this, &trigger);
+		icon = bt_global::skin->getImage("light");
 		break;
 	case 2:
-		dc = new device_condition_dimming(this, trigger);
+		dc = new device_condition_dimming(this, &trigger);
+		icon = bt_global::skin->getImage("dimmer");
 		break;
 	case 7:
 		external = true;
+		w += "00";
 	case 3:
 	case 8:
-		dc = new device_condition_temp(this, trigger, external);
-		but[A3_BUTTON_INDEX]->setAutoRepeat(true);
-		but[A4_BUTTON_INDEX]->setAutoRepeat(true);
+		dc = new device_condition_temp(this, &trigger, external);
+		condition_up->setAutoRepeat(true);
+		condition_down->setAutoRepeat(true);
+		icon = bt_global::skin->getImage("probe");
 		break;
 	case 9:
-		dc = new device_condition_aux(this, trigger);
+		dc = new device_condition_aux(this, &trigger);
+		icon = bt_global::skin->getImage("aux");
 		break;
 	case 4:
-		dc = new device_condition_volume(this, trigger);
+		dc = new device_condition_volume(this, &trigger);
+		icon = bt_global::skin->getImage("amplifier");
 		break;
 	case 6:
-		dc = new device_condition_dimming_100(this, trigger);
+		dc = new device_condition_dimming_100(this, &trigger);
+		icon = bt_global::skin->getImage("dimmer");
 		break;
 	default:
 		qDebug("Unknown device condition");
 		dc = NULL;
 	}
+	area1_ptr->setPixmap(*bt_global::icons_cache.getIcon(icon));
 
 	if (dc)
 	{
 		dc->setGeometry(40,140,160,50);
-		connect(dc, SIGNAL(condSatisfied()), this, SIGNAL(condSatisfied()));
-		dc->setup_device(*where);
+		connect(dc, SIGNAL(condSatisfied()), SIGNAL(condSatisfied()));
+		dc->setup_device(w);
 	}
 	actual_condition = dc;
-	qDebug("scenEvo_cond_d::SetIcons(), end");
+}
+
+const char *scenEvo_cond_d::getDescription()
+{
+	return "scenEvo device condition";
 }
 
 void scenEvo_cond_d::Up()
@@ -554,10 +369,8 @@ bool scenEvo_cond_d::isTrue()
 /*****************************************************************
  ** Actual generic device condition
 ****************************************************************/
-device_condition::device_condition(QWidget *p, QString *s)
+device_condition::device_condition()
 {
-	qDebug() << "device_condition::device_condition(" << s << ")";
-	parent = p;
 	satisfied = false;
 }
 
@@ -614,12 +427,6 @@ void device_condition::get_condition_value(QString& out)
 	out = tmp;
 }
 
-void device_condition::show()
-{
-	qDebug("device_condition::show()");
-	frame->show();
-}
-
 void device_condition::Draw()
 {
 	QString tmp;
@@ -644,7 +451,6 @@ void device_condition::Up()
 	set_current_value(val);
 	qDebug("val = %d", get_current_value());
 	Draw();
-	show();
 }
 
 void device_condition::Down()
@@ -654,7 +460,6 @@ void device_condition::Down()
 	val -= get_step();
 	set_current_value(val);
 	Draw();
-	show();
 }
 
 void device_condition::OK()
@@ -676,11 +481,6 @@ int device_condition::set_current_value(int v)
 		v = get_min();
 	current_value = v;
 	return current_value;
-}
-
-scenEvo_cond_d *device_condition::get_parent()
-{
-	return (scenEvo_cond_d *)parent;
 }
 
 QString device_condition::get_unit()
@@ -713,26 +513,21 @@ void device_condition::setup_device(QString s)
 	// Add the device to cache, or replace it with the instance found in cache
 	dev = bt_global::add_device_to_cache(dev);
 	// Get status changed events back
+	//DELETE
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
-void device_condition::set_pul(bool p)
+void device_condition::status_changed(const StatusList &sl)
 {
-	dev->set_pul(p);
-}
-
-void device_condition::set_group(int g)
-{
-	dev->set_group(g);
 }
 
 
 /*****************************************************************
 ** Actual light status device condition
 ****************************************************************/
-device_condition_light_status::device_condition_light_status(QWidget *parent, QString *c) :
-	device_condition(parent, c)
+device_condition_light_status::device_condition_light_status(QWidget *parent, QString *c)
 {
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
@@ -741,7 +536,9 @@ device_condition_light_status::device_condition_light_status(QWidget *parent, QS
 	frame = l;
 	set_condition_value(*c);
 	set_current_value(device_condition::get_condition_value());
-	dev = new light(QString(""));
+	//dev = new light(QString(""));
+	// TODO: we just need dummy device here, address will be set later on by setup_device()
+	dev = new LightingDevice("", PULL);
 	Draw();
 }
 
@@ -755,8 +552,35 @@ void device_condition_light_status::Draw()
 	((QLabel *)frame)->setText(get_string());
 }
 
+void device_condition_light_status::status_changed(const StatusList &sl)
+{
+	StatusList::const_iterator it = sl.constBegin();
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		case LightingDevice::DIM_DEVICE_ON:
+			if (device_condition::get_condition_value() == static_cast<int>(it.value().toBool()))
+			{
+				if (!satisfied)
+				{
+					satisfied = true;
+					emit condSatisfied();
+				}
+			}
+			else
+				satisfied = false;
+			break;
+		}
+		++it;
+	}
+}
+
+//DELETE
 void device_condition_light_status::status_changed(QList<device_status*> sl)
 {
+	qFatal("Old status changed on device_condition_light_status not implemented!");
+	/*
 	int trig_v = device_condition::get_condition_value();
 	stat_var curr_status(stat_var::ON_OFF);
 	qDebug("device_condition_light_status::status_changed()");
@@ -800,6 +624,7 @@ void device_condition_light_status::status_changed(QList<device_status*> sl)
 			break;
 		}
 	}
+	*/
 }
 
 int device_condition_light_status::get_max()
@@ -829,8 +654,7 @@ void device_condition_light_status::get_condition_value(QString& out)
 /*****************************************************************
 ** Actual dimming value device condition
 ****************************************************************/
-device_condition_dimming::device_condition_dimming(QWidget *parent, QString *c) :
-	device_condition(parent, c)
+device_condition_dimming::device_condition_dimming(QWidget *parent, QString *c)
 {
 	qDebug() << "device_condition_dimming::device_condition_dimming(" << c << ")";
 	QLabel *l = new QLabel(parent);
@@ -852,7 +676,10 @@ device_condition_dimming::device_condition_dimming(QWidget *parent, QString *c) 
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
 	// A dimmer is actually a light
-	dev = new dimm(QString(""));
+	//DELETE
+	//dev = new dimm(QString(""));
+	// TODO: to PULL or not to PULL? That is the question...
+	dev = new DimmerDevice("", PULL);
 	Draw();
 }
 
@@ -903,7 +730,6 @@ void device_condition_dimming::Up()
 		break;
 	}
 	Draw();
-	show();
 }
 
 void device_condition_dimming::Down()
@@ -928,7 +754,6 @@ void device_condition_dimming::Down()
 		break;
 	}
 	Draw();
-	show();
 }
 
 void device_condition_dimming::Draw()
@@ -1042,8 +867,43 @@ void device_condition_dimming::get_condition_value(QString& out)
 	out =  tmp;
 }
 
+void device_condition_dimming::status_changed(const StatusList &sl)
+{
+	StatusList::const_iterator it = sl.constBegin();
+	int trig_min = get_condition_value_min();
+	int trig_max = get_condition_value_max();
+
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		// TODO: what about on level? is this code ok?
+		case LightingDevice::DIM_DEVICE_ON:
+		case LightingDevice::DIM_DIMMER_LEVEL:
+		{
+			int level = it.value().toInt() / 10;
+			if (level >= trig_min && level <= trig_max)
+			{
+				if (!satisfied)
+				{
+					satisfied = true;
+					emit condSatisfied();
+				}
+			}
+			else
+				satisfied = false;
+		}
+			break;
+		}
+		++it;
+	}
+}
+
+//DELETE
 void device_condition_dimming::status_changed(QList<device_status*> sl)
 {
+	qFatal("Old status changed on device_condition_dimming not implemented!");
+	/*
 	int trig_v_min = get_condition_value_min();
 	int trig_v_max = get_condition_value_max();
 	stat_var curr_lev(stat_var::LEV);
@@ -1090,13 +950,13 @@ void device_condition_dimming::status_changed(QList<device_status*> sl)
 			break;
 		}
 	}
+	*/
 }
 
 /*****************************************************************
  ** Actual dimming 100 value device condition
 ****************************************************************/
-device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QString *c) :
-device_condition(parent, c)
+device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QString *c)
 {
 	char sup[10];
 	qDebug() << "device_condition_dimming_100::device_condition_dimming_100(" << c << ")";
@@ -1121,7 +981,8 @@ device_condition(parent, c)
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
 	// A dimmer is actually a light
-	dev = new dimm100(QString(""));
+	//dev = new dimm100(QString(""));
+	dev = new Dimmer100Device("", PULL);
 	Draw();
 }
 
@@ -1175,7 +1036,6 @@ void device_condition_dimming_100::Up()
 		break;
 	}
 	Draw();
-	show();
 }
 
 void device_condition_dimming_100::Down()
@@ -1204,7 +1064,6 @@ void device_condition_dimming_100::Down()
 		break;
 	}
 	Draw();
-	show();
 }
 
 void device_condition_dimming_100::Draw()
@@ -1318,8 +1177,42 @@ void device_condition_dimming_100::get_condition_value(QString& out)
 	out =  tmp;
 }
 
+void device_condition_dimming_100::status_changed(const StatusList &sl)
+{
+	StatusList::const_iterator it = sl.constBegin();
+	int trig_min = get_condition_value_min();
+	int trig_max = get_condition_value_max();
+
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		// TODO: previous code ignored dim_dimmer_level. What should I do?
+		case LightingDevice::DIM_DIMMER100_LEVEL:
+		{
+			int level = it.value().toInt();
+			if (level >= trig_min && level <= trig_max)
+			{
+				if (!satisfied)
+				{
+					satisfied = true;
+					emit condSatisfied();
+				}
+			}
+			else
+				satisfied = false;
+		}
+			break;
+		}
+		++it;
+	}
+}
+
+//DELETE
 void device_condition_dimming_100::status_changed(QList<device_status*> sl)
 {
+	qFatal("Old status changed on device_condition_dimmin_100 not implemented!");
+	/*
 	int trig_v_min = get_condition_value_min();
 	int trig_v_max = get_condition_value_max();
 	stat_var curr_lev(stat_var::LEV);
@@ -1369,13 +1262,13 @@ void device_condition_dimming_100::status_changed(QList<device_status*> sl)
 			break;
 		}
 	}
+	*/
 }
 
 /*****************************************************************
 ** Actual volume device condition
 ****************************************************************/
-device_condition_volume::device_condition_volume(QWidget *parent, QString *c) :
-	device_condition(parent, c)
+device_condition_volume::device_condition_volume(QWidget *parent, QString *c)
 {
 	char sup[10];
 	QLabel *l = new QLabel(parent);
@@ -1519,7 +1412,6 @@ void device_condition_volume::Up()
 	set_current_value_min(v_m);
 	set_current_value_max(v_M);
 	Draw();
-	show();
 }
 
 void device_condition_volume::Down()
@@ -1557,7 +1449,6 @@ void device_condition_volume::Down()
 	set_current_value_min(v_m);
 	set_current_value_max(v_M);
 	Draw();
-	show();
 }
 
 void device_condition_volume::OK()
@@ -1654,8 +1545,7 @@ void device_condition_volume::reset()
 /*****************************************************************
 ** Actual temperature device condition
 ****************************************************************/
-device_condition_temp::device_condition_temp(QWidget *parent, QString *c, bool external) :
-	device_condition(parent, c)
+device_condition_temp::device_condition_temp(QWidget *parent, QString *c, bool external)
 {
 	// Temp condition is expressed in bticino format
 	int temp_condition = c->toInt();
@@ -1821,7 +1711,7 @@ void device_condition_temp::status_changed(QList<device_status*> sl)
 ****************************************************************/
 
 device_condition_aux::device_condition_aux(QWidget *parent, QString *c) :
-	device_condition(parent, c), device_initialized(false), device_value(-1)
+	device_initialized(false), device_value(-1)
 {
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
@@ -1898,7 +1788,7 @@ void device_condition_aux::set_condition_value(QString s)
 
 void device_condition_aux::status_changed(QList<device_status*> sl)
 {
-	assert(!"Old status changed on device_condition_aux not implemented!");
+	qFatal("Old status changed on device_condition_aux not implemented!");
 }
 
 void device_condition_aux::OK()

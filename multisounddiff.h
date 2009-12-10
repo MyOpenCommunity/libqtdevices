@@ -22,7 +22,6 @@ class SoundDiffusion;
 class AudioSources;
 class device;
 class device_status;
-class AlarmClock;
 
 
 class MultiSoundDiffInterface : public sottoMenu
@@ -63,14 +62,12 @@ public:
 
 public slots:
 	void status_changed(QList<device_status*> sl);
-	void gestFrame(char*);
 
 private:
 	device *matr;
 
 signals:
 	void actSrcChanged(int, int);
-	void gesFrame(char *);
 };
 
 

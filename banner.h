@@ -19,9 +19,9 @@
 
 
 class BtButton;
-class sottoMenu;
 class Client;
 class Page;
+class BannerContent;
 
 class QPixmap;
 class QTimer;
@@ -42,6 +42,7 @@ class QLabel;
 
 class banner : public QWidget
 {
+friend class BannerContent;
 Q_OBJECT
 public:
 	banner(QWidget *parent);
@@ -178,12 +179,12 @@ public:
 	/*!
 	 *  \brief Retrieves the Id of the object controlled by the banner.
 	 */
-	char getId();
+	int getId();
 
 	/*!
 	 *  \brief Sets the Id of the object controlled by the banner.
 	 */
-	void setId(char);
+	void setId(int);
 
 	/*!
 	 *  \brief Sets the Value for the object controlled by the banner.
@@ -271,14 +272,6 @@ public:
 
 public slots:
 	/*!
-	 *  \brief Must be reimplemented to analyze the \a Open \a Frame incoming.
-	 */
-	virtual void gestFrame(char *);
-	/*!
-	 *  \brief Must be reimplemented to retrieve the state ofthe object controlled by the banner.
-	 */
-	virtual void  rispStato(char*);
-	/*!
 	 *  \brief Invoked on open ack reception
 	 */
 	virtual void openAckRx();
@@ -314,9 +307,14 @@ protected:
 
 	QString qtesto, qtestoSecondario;
 
-	char attivo,value,maxValue,minValue,id,step;
+	char attivo,value,maxValue,minValue,step;
+	int id;
 	int periodo, numFrame,contFrame,serNum;
 	QString address;
+
+	// Width and height of the banner. Used for the sizeHint method!
+	int banner_width;
+	int banner_height;
 
 	/**
 	 * Utility function to draw all buttons except the rightmost one
@@ -406,6 +404,21 @@ signals:
 	void pageClosed();
 };
 
+class BannerNew : public banner
+{
+Q_OBJECT
+public:
+	BannerNew(QWidget *parent) : banner(parent) { }
+	virtual void Draw() { }
+protected:
+	QLabel *createTextLabel(const QRect &size, Qt::Alignment align, const QFont &font);
+	QLabel *createTextLabel(Qt::Alignment align, const QFont &font);
+	void connectButtonToPage(BtButton *b, Page *p);
+	virtual void hideEvent(QHideEvent *event);
+
+private:
+	QVector<Page *> linked_pages;
+};
 
 
 #endif //BANNER

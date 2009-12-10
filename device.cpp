@@ -9,12 +9,69 @@
 #include <QStringList>
 #include <QDebug>
 
-#include <assert.h>
-
 // Inizialization of static member
 Client *device::client_comandi = 0;
 Client *device::client_richieste = 0;
-Client *device::client_monitor = 0;
+
+/*
+ * Split a where into a+pf part and address extension.
+ */
+QPair<QString, QString> splitWhere(const QString &w)
+{
+	int idx = w.indexOf("#");
+	if (idx < 0)
+		return qMakePair(w.left(idx), QString());
+	else
+		return qMakePair(w.left(idx), w.mid(idx));
+}
+
+/*
+ * Return the environment part from a+pf string
+ */
+QString getEnvironment(const QString &w)
+{
+	if (w.length() == 2)
+		return w.mid(0, 1);
+	else if (w.length() == 4)
+		return w.mid(0, 2);
+	else if (w.length() == 3)
+	{
+		Q_ASSERT_X(w == "100", "getEnvironment", "Environment with legth 3 must be 100 only");
+		return "10";
+	}
+	else if (w.length() == 1)
+		return w;
+
+	return QString();
+}
+
+AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_where)
+{
+	if (msg_where == dev_where)
+		return P2P;
+
+	// frame where (input)
+	QPair<QString, QString> in = splitWhere(msg_where);
+	// device where (our)
+	QPair<QString, QString> our = splitWhere(dev_where);
+
+	if (!(in.second == "#3" && our.second.isEmpty()))
+		if (!(in.second.isEmpty()) && (in.second != our.second))
+			return NOT_MINE;
+
+	// here we don't need to care about extension anymore
+	// general address
+	if (in.first == "0")
+		return GLOBAL;
+
+	// environment address. The first part must be "00", "100" or numbers 1 to 9
+	// use toInt() to remove differences between "00" "0" and so on.
+	if (in.first == "00" || in.first == "100" || in.first.length() == 1)
+		if (getEnvironment(our.first).toInt() == getEnvironment(in.first).toInt())
+			return ENVIRONMENT;
+
+	return NOT_MINE;
+}
 
 
 FrameCompressor::FrameCompressor(int timeout, int w)
@@ -53,6 +110,113 @@ void FrameCompressor::emitFrame()
 }
 
 
+enum
+{
+	INVALID_STATE = -1,
+};
+
+PullStateManager::PullStateManager(PullMode m)
+{
+	mode = m;
+	status = INVALID_STATE;
+	status_requested = false;
+}
+
+PullMode PullStateManager::getPullMode()
+{
+	return mode;
+}
+
+bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
+{
+	// PullStateManager will be used for automation and lighting only.
+	// I'll handle all 'what' combinations here, split to a different function or class when needed
+	// We need to look for write environment commands
+	int what;
+	bool measure_frame = (is_environment && msg.IsWriteFrame()) || (!is_environment && msg.IsMeasureFrame());
+	if (measure_frame)
+	{
+		// dimmer 100 status
+		if (msg.what() == 1)
+			what = msg.whatArgN(0) - 100;
+		// variable temporization
+		else
+		{
+			// use a dirty trick/ugly hack/beard trick
+			// avoid requesting status if we are 'on' by making what == status
+			if (status > 0)
+				what = status;
+		}
+	}
+	else
+		what = msg.what();
+
+	if (is_environment)
+	{
+		if (status == INVALID_STATE || status != what)
+		{
+			status_requested = true;
+			return true;
+		}
+	}
+	else
+	{
+		// We can decide the mode only if we have seen an environment frame previously.
+		// If we just get PP frames, we can't decide the mode!
+		if (status_requested && status != INVALID_STATE)
+		{
+			if (status == what)
+				mode = PULL;
+			else
+				mode = NOT_PULL;
+		}
+		else
+		{
+			status = what;
+			status_requested = false;
+		}
+	}
+
+	return false;
+}
+
+PullDevice::PullDevice(QString who, QString where, PullMode m) :
+	device(who, where),
+	state(m)
+{
+}
+
+
+void PullDevice::manageFrame(OpenMsg &msg)
+{
+	switch (checkAddressIsForMe(QString::fromStdString(msg.whereFull()), where))
+	{
+	case NOT_MINE:
+		return;
+	case GLOBAL:
+	case ENVIRONMENT:
+		if (state.getPullMode() == PULL_UNKNOWN)
+		{
+			if (state.moreFrameNeeded(msg, true))
+				requestPullStatus();
+			return;
+		}
+		else if (state.getPullMode() == PULL)
+			return;
+		// when NOT_PULL we must parse the frame and emit status_changed() signal
+		break;
+	default:
+		if (state.getPullMode() == PULL_UNKNOWN)
+			state.moreFrameNeeded(msg, false);
+		break;
+	}
+
+	StatusList sl;
+	parseFrame(msg, &sl);
+	emit status_changed(sl);
+}
+
+
 // Device implementation
 
 device::device(QString _who, QString _where, bool p, int g) : interpreter(0)
@@ -64,20 +228,19 @@ device::device(QString _who, QString _where, bool p, int g) : interpreter(0)
 	refcount = 0;
 	cmd_compressor = 0;
 	req_compressor = 0;
-	assert(client_monitor && "Client monitor not set!");
-	connect(client_monitor, SIGNAL(frameIn(char *)), SLOT(frame_rx_handler(char *)));
+	subscribe_monitor(who.toInt());
 }
 
 void device::sendFrame(QString frame) const
 {
-	assert(client_comandi && "Client comandi not set!");
+	Q_ASSERT_X(client_comandi, "device::sendFrame", "Client comandi not set!");
 	QByteArray buf = frame.toAscii();
 	client_comandi->ApriInviaFrameChiudi(buf.constData());
 }
 
 void device::sendInit(QString frame) const
 {
-	assert(client_richieste && "Client richieste not set!");
+	Q_ASSERT_X(client_richieste, "device::sendInit", "Client richieste not set!");
 	QByteArray buf = frame.toAscii();
 	client_richieste->ApriInviaFrameChiudi(buf.constData());
 }
@@ -111,14 +274,16 @@ void device::sendCommand(QString what) const
 
 void device::sendRequest(QString what) const
 {
-	sendInit(createRequestOpen(who, what, where));
+	if (what.isEmpty())
+		sendInit(createStatusRequestOpen(who, where));
+	else
+		sendInit(createRequestOpen(who, what, where));
 }
 
-void device::setClients(Client *command, Client *request, Client *monitor)
+void device::setClients(Client *command, Client *request)
 {
 	client_comandi = command;
 	client_richieste = request;
-	client_monitor = monitor;
 }
 
 void device::installFrameCompressor(int timeout, int what)
@@ -139,9 +304,6 @@ void device::installFrameCompressor(int timeout, int what)
 
 void device::init(bool force)
 {
-	qDebug("device::init()");
-	// True if all device has already been initialized
-
 	QList<device_status*> dsl;
 	for (int i = 0; i < stat.size(); ++i)
 	{
@@ -149,15 +311,12 @@ void device::init(bool force)
 
 		QStringList msgl;
 		msgl.clear();
-		qDebug("ds = %p", ds);
 		if (force)
 		{
-			qDebug("device status force initialize");
-			assert(interpreter && "interpreter not set!");
+			Q_ASSERT_X(interpreter, "device::init", "interpreter not set!");
 			interpreter->get_init_messages(ds, msgl);
 			for (QStringList::Iterator it = msgl.begin(); it != msgl.end(); ++it)
 			{
-				qDebug() << "init message is " << *it;
 				if (*it != "")
 					sendFrame(*it);
 			}
@@ -166,7 +325,6 @@ void device::init(bool force)
 		{
 			if (ds->initialized())
 			{
-				qDebug("device status has already been initialized");
 				emit initialized(ds);
 				dsl.append(ds);
 			}
@@ -174,12 +332,10 @@ void device::init(bool force)
 				qDebug("device status init already requested");
 			else
 			{
-				qDebug("getting init message");
-				assert(interpreter && "interpreter not set!");
+				Q_ASSERT_X(interpreter, "device::init", "interpreter not set!");
 				interpreter->get_init_messages(ds, msgl);
 				for (QStringList::Iterator it = msgl.begin();it != msgl.end(); ++it)
 				{
-					qDebug() << "init message is %s" << *it;
 					if (*it != "")
 						sendFrame(*it);
 				}
@@ -189,7 +345,6 @@ void device::init(bool force)
 	}
 	if (!dsl.isEmpty())
 		emit status_changed(dsl);
-	qDebug("device::init() end");
 }
 
 void device::init_requested_handler(QString msg)
@@ -242,6 +397,13 @@ device::~device()
 {
 	while (!stat.isEmpty())
 		delete stat.takeFirst();
+}
+
+// TODO: this method is just for compatibility, remove it when all the device
+// will support the new "manageFrame interface".
+void device::manageFrame(OpenMsg &msg)
+{
+	frame_rx_handler(msg.frame_open);
 }
 
 void device::frame_rx_handler(char *s)
@@ -340,7 +502,7 @@ doorphone_device::doorphone_device(QString w, bool p, int g) : device(QString("6
 }
 
 // Imp.anti device
-impanti_device::impanti_device(QString w, bool p, int g) : device(QString("16"), w, p, g)
+impanti_device::impanti_device(QString w, bool p, int g) : device(QString("5"), w, p, g)
 {
 	qDebug("impanti_device::impanti_device()");
 	stat.append(new device_status_impanti());
@@ -353,205 +515,6 @@ zonanti_device::zonanti_device(QString w, bool p, int g) : device(QString("5"), 
 	qDebug("zonanti_device::impanti_device()");
 	stat.append(new device_status_zonanti());
 	setup_frame_interpreter(new frame_interpreter_zonanti_device(w, p, g));
-}
-
-thermal_regulator::thermal_regulator(QString where, bool p, int g) : device(QString("4"), where, p, g)
-{
-}
-
-void thermal_regulator::setOff()
-{
-	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(GENERIC_OFF)).arg(QString("#") + where);
-	sendFrame(msg);
-}
-
-void thermal_regulator::setProtection()
-{
-	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(GENERIC_PROTECTION)).arg(QString("#") + where);
-	sendFrame(msg);
-}
-
-void thermal_regulator::setSummer()
-{
-	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(SUMMER)).arg(QString("#") + where);
-	sendFrame(msg);
-}
-
-void thermal_regulator::setWinter()
-{
-	QString msg = QString("*%1*%2*%3##").arg(who).arg(QString::number(WINTER)).arg(QString("#") + where);
-	sendFrame(msg);
-}
-
-void thermal_regulator::setManualTemp(unsigned temperature)
-{
-	// sanity check on input
-	if (temperature > 1000)
-	{
-		unsigned tmp = temperature - 1000;
-		if (tmp < 50 || tmp > 400)
-			return;
-	}
-
-	const QString sharp_where = QString("#") + where;
-	QString what;
-	// temperature is 4 digits wide
-	// prepend some 0 if temperature is positive
-	what.sprintf("#%d*%04d*%d", TEMPERATURE_SET, temperature, GENERIC_MODE);
-
-	QString msg = QString("*#") + who + "*" + sharp_where + "*" + what + "##";
-	sendFrame(msg);
-}
-
-void thermal_regulator::setWeekProgram(int program)
-{
-	const QString what = QString::number(WEEK_PROGRAM + program);
-	const QString sharp_where = QString("#") + where;
-	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
-	sendFrame(msg);
-}
-
-void thermal_regulator::setWeekendDateTime(QDate date, BtTime time, int program)
-{
-	const QString sharp_where = QString("#") + where;
-
-	// we need to send 3 frames
-	// - frame at par. 2.3.9, to set what program has to be executed at the end of weekend mode
-	// - frame at par. 2.3.16 to set date
-	// - frame at par. 2.3.17 to set time
-	//
-	// First frame: set program
-	const int what_program = WEEK_PROGRAM + program;
-	QString what = QString::number(GENERIC_WEEKEND) + "#" + QString::number(what_program);
-
-	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
-	sendFrame(msg);
-
-	// Second frame: set date
-	setHolidayEndDate(date);
-
-	// Third frame: set time
-	setHolidayEndTime(time);
-}
-
-void thermal_regulator::setHolidayDateTime(QDate date, BtTime time, int program)
-{
-	const QString sharp_where = QString("#") + where;
-
-	// we need to send 3 frames, as written in bug #44
-	// - frame at par. 2.3.10, with number_of_days = 2 (dummy number, we set end date and time explicitly with
-	// next frames), to set what program has to be executed at the end of holiday mode
-	// - frame at par. 2.3.16 to set date
-	// - frame at par. 2.3.17 to set time
-	//
-	// First frame: set program
-	const int number_of_days = 2;
-	QString what;
-	what.sprintf("%d#%d", HOLIDAY_NUM_DAYS + number_of_days, WEEK_PROGRAM + program);
-
-	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
-	sendFrame(msg);
-
-	// Second frame: set date
-	setHolidayEndDate(date);
-
-	// Third frame: set time
-	setHolidayEndTime(time);
-}
-
-void thermal_regulator::setHolidayEndDate(QDate date)
-{
-	const QString sharp_where = QString("#") + where;
-
-	QString what;
-	// day and month must be padded with 0 if they have only one digit
-	what.sprintf("#%d*%02d*%02d*%d", HOLIDAY_DATE_END, date.day(), date.month(), date.year());
-
-	QString msg = QString("*#") + who + "*" + sharp_where + "*" + what + "##";
-	sendFrame(msg);
-}
-
-void thermal_regulator::setHolidayEndTime(BtTime time)
-{
-	const QString sharp_where = QString("#") + where;
-
-	QString what;
-	// hours and minutes must be padded with 0 if they have only one digit
-	what.sprintf("#%d*%02d*%02d", HOLIDAY_TIME_END, time.hour(), time.minute());
-
-	QString msg = QString("*#") + who + "*" + sharp_where + "*" + what + "##";
-	sendFrame(msg);
-}
-
-unsigned thermal_regulator::minimumTemp() const
-{
-	return 30;
-}
-
-thermal_regulator_4z::thermal_regulator_4z(QString where, bool p, int g) : thermal_regulator(where, p, g)
-{
-	stat.append(new device_status_thermal_regulator_4z());
-	setup_frame_interpreter(new frame_interpreter_thermal_regulator(who, where, p, g));
-}
-
-void thermal_regulator_4z::setManualTempTimed(int temperature, BtTime time)
-{
-	const QString sharp_where = QString("#") + where;
-
-	// we need to send 2 frames
-	// - frame at par. 2.3.13, with number_of_hours = 2 (dummy number, we set end time explicitly with
-	// next frame), to set the temperature of timed manual operation
-	// - frame at par. 2.3.18 to set hours and minutes of mode end. Timed manual operation can't last longer
-	// than 24 hours.
-	//
-	// First frame: set temperature
-	const char* number_of_hours = "2";
-	QString what;
-	what.sprintf("%d#%04d#%s", GENERIC_MANUAL_TIMED, temperature, number_of_hours);
-
-	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
-	sendFrame(msg);
-
-	// Second frame: set end time
-	QString what2;
-	what2.sprintf("#%d*%02d*%02d", MANUAL_TIMED_END, time.hour(), time.minute());
-
-	msg = QString("*#") + who + "*" + sharp_where + "*" + what2 + "##";
-	sendFrame(msg);
-}
-
-unsigned thermal_regulator_4z::maximumTemp() const
-{
-	return 350;
-}
-
-thermo_type_t thermal_regulator_4z::type() const
-{
-	return THERMO_Z4;
-}
-
-thermal_regulator_99z::thermal_regulator_99z(QString where, bool p, int g) : thermal_regulator(where, p, g)
-{
-	stat.append(new device_status_thermal_regulator_99z());
-	setup_frame_interpreter(new frame_interpreter_thermal_regulator(who, where, p, g));
-}
-
-void thermal_regulator_99z::setScenario(int scenario)
-{
-	const QString what = QString::number(SCENARIO_PROGRAM + scenario);
-	const QString sharp_where = QString("#") + where;
-	QString msg = QString("*") + who + "*" + what + "*" + sharp_where + "##";
-	sendFrame(msg);
-}
-
-unsigned thermal_regulator_99z::maximumTemp() const
-{
-	return 400;
-}
-
-thermo_type_t thermal_regulator_99z::type() const
-{
-	return THERMO_Z99;
 }
 
 // Controlled temperature probe implementation
@@ -645,16 +608,12 @@ void aux_device::init(bool force)
 	sendInit(msg.frame_open);
 }
 
-void aux_device::frame_rx_handler(char *frame)
+void aux_device::manageFrame(OpenMsg &msg)
 {
-	OpenMsg msg;
-	msg.CreateMsgOpen(frame, strlen(frame));
-
-	if (who.toInt() != msg.who() || where.toInt() != msg.where())
+	if (where.toInt() != msg.where())
 		return;
 
-	qDebug("aux_device::frame_rx_handler");
-	qDebug("frame read:%s", frame);
+	qDebug("aux_device::manageFrame -> frame read:%s", msg.frame_open);
 
 	if (msg.IsNormalFrame())
 	{

@@ -14,19 +14,25 @@
 #include "temperatureviewer.h"
 #include "btbutton.h"
 #include "xml_functions.h" // getChildren, getTextChild
+#include "hardware_functions.h"
 
 #include <QDomNode>
+#include <QLayout>
 
 
-homePage::homePage(const QDomNode &config_node) : PageContainer(config_node)
+HomePage::HomePage(const QDomNode &config_node) : SectionPage(config_node)
 {
+#ifdef LAYOUT_TOUCHX
+	page_content->layout()->setContentsMargins(25, 35, 100, 0);
+#endif
 	temp_viewer = new TemperatureViewer(this);
 	loadItems(config_node);
 }
 
-// Load only the item that is not a section page (which is loaded by PageContainer)
-void homePage::loadItems(const QDomNode &config_node)
+// Load only the item that is not a section page (which is loaded by SectionPage)
+void HomePage::loadItems(const QDomNode &config_node)
 {
+#ifdef CONFIG_BTOUCH
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
@@ -40,28 +46,32 @@ void homePage::loadItems(const QDomNode &config_node)
 		{
 			timeScript *d = new timeScript(this, id == DATA ? 25 : 1);
 			d->setGeometry(x + 10, y + 10, 220, 60);
-			d->setFrameStyle(QFrame::Plain);
 			d->setLineWidth(3);
 			break;
 		}
 		case TEMPERATURA:
 		case TERMO_HOME_NC_PROBE:
-			temp_viewer->add(getTextChild(item, "where"), x, y, 220, 60, QFrame::Plain, 3, "", "0");
+			temp_viewer->add(getTextChild(item, "where"), x, y, 220, 60, "", "0");
 			break;
 		case TERMO_HOME_NC_EXTPROBE:
-			temp_viewer->add(getTextChild(item, "where"), x, y, 220, 60, QFrame::Plain, 3, "", "1");
+			temp_viewer->add(getTextChild(item, "where"), x, y, 220, 60, "", "1");
 			break;
 		}
 	}
+#endif
 }
 
-void homePage::inizializza()
+void HomePage::inizializza()
 {
 	temp_viewer->inizializza();
 }
 
-void homePage::gestFrame(char* frame)
+Page::PageType HomePage::pageType()
 {
-	temp_viewer->gestFrame(frame);
+	return HOMEPAGE;
 }
 
+void HomePage::showSectionPage(int page_id)
+{
+	clicked(page_id);
+}

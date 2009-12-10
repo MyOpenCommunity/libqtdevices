@@ -1,15 +1,10 @@
 #include "cleanscreen.h"
-#include "xml_functions.h" // getChildWithId
 #include "fontmanager.h" // bt_global::font
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "displaycontrol.h" // bt_global::display
-#include "main.h" // IMG_PATH
-#include "btmain.h" //bt_global::btmain
 
 #include <QLabel>
-
-#include <assert.h>
-
+#include <QVBoxLayout>
 
 CleanScreen::CleanScreen(QString img_clean, int clean_time)
 {
@@ -18,15 +13,21 @@ CleanScreen::CleanScreen(QString img_clean, int clean_time)
 	connect(&timer, SIGNAL(timeout()), SLOT(handleClose()));
 	timer.setSingleShot(true);
 
-	time_label = new QLabel(this);
+	icon_label = new QLabel;
+	icon_label->setPixmap(*bt_global::icons_cache.getIcon(img_clean));
+	icon_label->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
+
+	time_label = new QLabel;
 	time_label->setFont(bt_global::font->get(FontManager::TEXT));
 	time_label->setAlignment(Qt::AlignHCenter);
-	time_label->setGeometry(TIME_LABEL_X, TIME_LABEL_Y, TIME_LABEL_WIDTH, TIME_LABEL_HEIGHT);
 
-	icon_label = new QLabel(this);
-	icon_label->setPixmap(*bt_global::icons_cache.getIcon(img_clean));
-	icon_label->setAlignment(Qt::AlignHCenter);
-	icon_label->setGeometry(ICON_LABEL_X, ICON_LABEL_Y, ICON_LABEL_WIDTH, ICON_LABEL_HEIGHT);
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setSpacing(0);
+	l->setContentsMargins(0, 20, 0, 20);
+
+	l->addWidget(icon_label, 1);
+	l->addWidget(time_label);
+	l->addStretch(1);
 
 	wait_time_sec = clean_time;
 }
@@ -37,7 +38,7 @@ void CleanScreen::updateRemainingTime()
 	update();
 }
 
-void CleanScreen::showPage()
+void CleanScreen::showWindow()
 {
 	if (!secs_timer.isActive())
 	{
@@ -47,7 +48,7 @@ void CleanScreen::showPage()
 		secs_counter = 0;
 		bt_global::display.forceOperativeMode(true);
 	}
-	Page::showPage();
+	Window::showWindow();
 }
 
 void CleanScreen::handleClose()
@@ -59,6 +60,8 @@ void CleanScreen::handleClose()
 
 void CleanScreen::paintEvent(QPaintEvent *e)
 {
+	Window::paintEvent(e);
+
 	// we use QTime only to format the output
 	QTime remaining_time;
 	remaining_time = remaining_time.addMSecs((wait_time_sec - secs_counter) * 1000);

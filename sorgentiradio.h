@@ -39,7 +39,7 @@ class banradio : public bannCiclaz
 {
 Q_OBJECT
 public:
-	banradio(QWidget *parent, QString indirizzo, int nbut=4, const QString & ambdescr="");
+	banradio(QWidget *parent, QString indirizzo, int nbut=4, const QString &ambdescr="");
 	void inizializza(bool forza = false);
 
 protected:
@@ -82,7 +82,7 @@ class sorgenteMultiRadio : public banradio
 {
 Q_OBJECT
 public:
-	sorgenteMultiRadio(QWidget *parent, QString indirizzo, QString Icona1, QString Icona2, QString Icona3, char *ambDescr="");
+	sorgenteMultiRadio(QWidget *parent, QString indirizzo, QString Icona1, QString Icona2, QString Icona3, const QString &ambDescr="");
 
 public slots:
 	void attiva();

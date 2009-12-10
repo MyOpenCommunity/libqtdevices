@@ -53,7 +53,7 @@ public:
 };
 
 
-class EnergyTable : public PageLayout
+class EnergyTable : public Page
 {
 Q_OBJECT
 public:

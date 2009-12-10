@@ -7,65 +7,36 @@
  **definizioni della pagina di visualizzazione aux
  **
  ****************************************************************/
-
 #ifndef AUX_H
 #define AUX_H
 
-#include <QWidget>
-#include <QString>
+#include "page.h"
 
 class QLabel;
-class BtButton;
-class bannFrecce;
+
 
 /*!
-  \class aux
+  \class Aux
   \brief This class implements the management of the aux source page
 
   \author Ciminaghi
   \date lug 2006
   */
-class  aux : public QWidget
+class Aux : public Page
 {
 Q_OBJECT
 public:
-	aux(QWidget *parent=0, const QString & name="", const QString & amb="");
-
-	QLabel *auxName, *ambDescr;
-	BtButton *fwdBut;
-
-	/*!
-	\brief Sets amb. description
-	*/
+	Aux(const QString &name, const QString &amb);
 	void setAmbDescr(const QString &);
 
-	/*!
-	\brief Draws the page
-	*/
-	void draw();
-
 signals:
-	/*!
-	\brief Emitted when the page is going to be closed
-	*/
-	void Closed();
-
 	/*!
 	\brief Emitted when fwd button is pressed
 	*/
 	void Btnfwd();
 
-public slots:
-	/*!
-	\brief Shows the aux details page
-	*/
-	void showAux();
-
 private:
-	char amb[80];
-	char nome[15];
-	bannFrecce * bannNavigazione;
-
+	QLabel *amb_descr;
 };
 
 

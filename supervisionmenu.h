@@ -15,13 +15,9 @@
 #ifndef BTOUCH_SUPERVISION_MENU_H
 #define BTOUCH_SUPERVISION_MENU_H
 
-
-#include "sottomenu.h"
-#include "bann1_button.h"
-#include "main.h"
+#include "page.h"
 #include "stopngo.h"
 
-#include <QWidget>
 #include <QDomNode>
 #include <QList>
 
@@ -32,7 +28,7 @@
   \author Lucio Macellari
   \date May 2008
 */
-class SupervisionMenu : public sottoMenu
+class SupervisionMenu : public BannerPage
 {
 Q_OBJECT
 public:
@@ -40,21 +36,28 @@ public:
 	~SupervisionMenu();
 
 private:
-	sottoMenu *stopngoSubmenu;
+	BannerPage *stopngoSubmenu;
 	QList<StopngoItem*> stopngoList;
-	QList<StopngoPage*> stopngoPages;
+	QList<Page*> stopngoPages;
 	int classesCount;
 
 	void Create2ButBanner(QDomElement, QString, QString);
 	void CreateStopnGoMenu(QDomNode, bannPuls*);
 	void loadItems(const QDomNode &config_node);
-	void LinkBanner2Page(bannPuls*, StopngoItem*);
 
 public slots:
 	virtual void showPage();
 
 signals:
 	void quickOpen();
+};
+
+
+class StopNGoMenu : public BannerPage
+{
+Q_OBJECT
+public:
+	StopNGoMenu(QList<StopngoItem*> stopngoList);
 };
 
 #endif

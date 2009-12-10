@@ -11,22 +11,24 @@
 #ifndef ALARMCLOCK_H
 #define ALARMCLOCK_H
 
+#include "frame_receiver.h"
+#include "hardware_functions.h"
 #include "page.h"
 
-#define AMPLI_NUM 100
-#define BASE_EEPROM 11360
-#define KEY_LENGTH 5
-#define AL_KEY "\125\252\125\252\125"
-#define SORG_PAR 2
+#include <QTime>
 
 class BtButton;
-class bannFrecce;
-class timeScript;
+class BtTimeEdit;
 
-class QDateTime;
 class QWidget;
 class QLabel;
 class QTimer;
+class AlarmClockTime;
+class AlarmClockFreq;
+class AlarmClockTimeFreq;
+class AlarmClockSoundDiff;
+class AlarmSoundDiffDevice;
+class SingleChoiceContent;
 
 
 /*!
@@ -38,6 +40,11 @@ class QTimer;
 */
 class AlarmClock : public Page
 {
+	friend class AlarmClockTime;
+	friend class AlarmClockFreq;
+	friend class AlarmClockTimeFreq;
+	friend class AlarmClockSoundDiff;
+
 Q_OBJECT
 public:
 /*! \enum  Freq
@@ -45,6 +52,7 @@ public:
 */
 	enum Freq
 	{
+		// values used by BTouch
 		SEMPRE = 1,  /*!< Always -> every day*/
 		ONCE = 0,  /*!< Once -> only at the first occurrence of the time selected after the alarm set was setted*/
 		FERIALI = 2,  /*!< Week days -> only from monday to friday*/
@@ -61,7 +69,12 @@ public:
 		DI_SON = 1  /*!< The sound diffusion system is used*/
 	};
 
-	AlarmClock(Type t, Freq f, int hour, int minute);
+	AlarmClock(int id, Type t, Freq f, QList<bool> days, int hour, int minute);
+
+/*!
+  \brief Reads from the eeprom the alarm set state.
+*/
+	void inizializza();
 
 /*!
   \brief Sets the number of the actual instance of this class among all the alarm set present in the project.
@@ -85,16 +98,18 @@ public:
 	 */
 	bool isActive();
 
-/*!
-  \brief Reads from the eeprom the alarm set state.
-*/
-	void inizializza();
-
 public slots:
 /*!
-  \brief Analyzes the \a Open \a Frame incoming to understand how the end-user want his a sound \a diffusion \a alarm \a set to work.
+  \brief Show the frequency (once-always-mon/fri-sat-sun).
 */
-	void gestFrame(char *f);
+	void showTypePage();
+
+/*!
+  \brief Show the sound diffusion page.
+*/
+	void showSoundDiffPage();
+
+	void status_changed(const StatusList &sl);
 
 protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
@@ -103,44 +118,14 @@ private slots:
 	void freezed(bool b);
 
 /*!
-  \brief Execute when the time for the alarm set is chosen to show the frequency (once-always-mon/fri-sat-sun).
-*/
-	void okTime();
-
-/*!
   \brief Draws the first page for alarm set setting and initializes some connections.
 */
 	virtual void showPage();
 
 /*!
-  \brief Executed when "once" frequency is selected.
-*/
-	void sel1(bool);
-
-/*!
-  \brief Executed when "always" frequency is selected.
-*/
-	void sel2(bool);
-
-/*!
-  \brief Executed when "mon-fri" frequency is selected.
-*/
-	void sel3(bool);
-
-/*!
-  \brief Executed when "sat-sun" frequency is selected.
-*/
-	void sel4(bool);
-
-/*!
   \brief Executed when the alarm set sequency is closed to save the data and adjust sound diffusion page if necessary.
 */
 	void handleClose();
-
-/*!
-  \brief Execute when the frequency for the alarm set is chosen to show the sound diffusion page if necessary.
-*/
-	void okTipo();
 
 /*!
   \brief Executed every minute when alarm set is active to detect if it's time to make the alarm ser start.
@@ -158,33 +143,147 @@ private slots:
 	void buzzerAlarm();
 
 /*!
+  \brief Executed every 5 s to manage the \a wav  \a alarm \a set.
+*/
+	void wavAlarm();
+
+/*!
   \brief Stops the alarm set.
 */
 	void spegniSveglia(bool);
 
 private:
-	BtButton *but[4];
-	QLabel *Immagine;
-	BtButton *choice[4];
-	QLabel *testiChoice[4];
+	int id;
 	Type type;
 	Freq freq;
-	void drawSelectPage();
-	timeScript *dataOra;
-	bannFrecce *bannNavigazione;
+	QList<bool> days;
 	uchar conta2min,sorgente,stazione, aggiornaDatiEEprom;
 	int serNum;
 	bool buzAbilOld;
 	unsigned int contaBuzzer;
-	QDateTime *oraSveglia;
-	Page *difson;
+	QTime alarmTime;
 	int volSveglia[AMPLI_NUM];
-	bool gesFrameAbil, active, onceToGest;
+	bool active;
 	QTimer *minuTimer,*aumVolTimer;
-	QString frame;
+#ifdef LAYOUT_BTOUCH
+	AlarmClockTime *alarm_time;
+	AlarmClockFreq *alarm_type;
+#else
+	AlarmClockTimeFreq *alarm_time;
+	AlarmClockTimeFreq *alarm_type;
+#endif
+	AlarmClockSoundDiff *alarm_sound_diff;
+	AlarmSoundDiffDevice *dev;
 
 signals:
 	void alarmClockFired();
 };
+
+
+/*!
+  \class AlarmClockTime
+  \brief Used to set the alarm time.
+
+  \author Davide
+  \date lug 2005
+*/
+class AlarmClockTime : public Page
+{
+Q_OBJECT
+public:
+	AlarmClockTime(AlarmClock *alarm_page);
+
+	QTime getAlarmTime() const;
+	void setActive(bool active) {}
+
+private:
+	BtTimeEdit *edit;
+};
+
+
+/*!
+  \class AlarmClockFreq
+  \brief Used to set the alarm frequency.
+
+  \author Davide
+  \date lug 2005
+*/
+class AlarmClockFreq : public Page
+{
+Q_OBJECT
+public:
+	AlarmClockFreq(AlarmClock *alarm_page);
+
+	AlarmClock::Freq getAlarmFreq() const;
+	QList<bool> getAlarmDays() const;
+
+private slots:
+	void setSelection(int freq);
+
+private:
+	SingleChoiceContent *content;
+	AlarmClock::Freq frequency;
+};
+
+
+class AlarmClockSoundDiff : public Page
+{
+Q_OBJECT
+public:
+	AlarmClockSoundDiff(AlarmClock *alarm_page);
+
+/*!
+  \brief Draws the first page for alarm set setting and initializes some connections.
+*/
+	virtual void showPage();
+
+private slots:
+/*!
+  \brief Executed when the alarm set sequency is closed to save the data and adjust sound diffusion page if necessary.
+*/
+	void handleClose();
+
+private:
+	Page *difson;
+};
+
+
+class AlarmClockTimeFreq : public Page
+{
+public:
+	AlarmClockTimeFreq(AlarmClock *alarm_page);
+
+	QTime getAlarmTime() const;
+	AlarmClock::Freq getAlarmFreq() const;
+	QList<bool> getAlarmDays() const;
+
+	void setActive(bool active);
+
+private:
+	BtTimeEdit *edit;
+	QString alarm_icon;
+	QLabel *alarm_label;
+	BtButton *buttons[7];
+};
+
+
+/*!
+  \class AlarmNavigation
+  \brief helper class for the bottom navigation bar.
+
+  \author Davide
+  \date lug 2005
+*/
+class AlarmNavigation : public QWidget
+{
+Q_OBJECT
+public:
+	AlarmNavigation(bool forwardButton, QWidget *parent = 0);
+
+signals:
+	void forwardClicked();
+	void okClicked();
+};
+
 
 #endif // ALARMCLOCK_H

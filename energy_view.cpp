@@ -5,7 +5,6 @@
 #include "icondispatcher.h" // icons_cache
 #include "generic_functions.h" // getPressName
 #include "fontmanager.h" // bt_global::font
-#include "bannfrecce.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // bt_global::skin
 #include "transitionwidget.h"
@@ -14,6 +13,7 @@
 
 #include <QDebug>
 #include <QLabel>
+#include <QPixmap>
 #include <QTimerEvent>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -73,6 +73,43 @@ namespace
 	};
 }
 
+// helper class for the navigation bar
+
+EnergyViewNavigation::EnergyViewNavigation()
+{
+	BtButton *back_button = new BtButton();
+	back_button->setImage(bt_global::skin->getImage("back"));
+
+	currency_button = new BtButton;
+	currency_button->setImage(bt_global::skin->getImage("currency"));
+
+	table_button = new BtButton;
+	table_button->setImage(bt_global::skin->getImage("table"));
+
+	QHBoxLayout *l = new QHBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+
+	l->addWidget(back_button);
+	l->addStretch(1);
+	l->addWidget(table_button);
+	l->addWidget(currency_button);
+
+	connect(back_button, SIGNAL(clicked()), SIGNAL(backClick()));
+	connect(currency_button, SIGNAL(clicked()), SIGNAL(toggleCurrency()));
+	connect(table_button, SIGNAL(clicked()), SIGNAL(showTable()));
+}
+
+void EnergyViewNavigation::showTableButton(bool show)
+{
+	table_button->setVisible(show);
+}
+
+void EnergyViewNavigation::showCurrency(bool show)
+{
+	currency_button->setVisible(show);
+}
+
 
 TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 {
@@ -116,6 +153,7 @@ QString TimePeriodSelection::formatDate(const QDate &date, TimePeriod period)
 		// no need to modify the format to american
 		return date.toString("MM.yy");
 	case YEAR:
+	default:
 		return tr("Last 12 months");
 	}
 }
@@ -261,6 +299,11 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	mapper = new QSignalMapper(this);
 	connect(mapper, SIGNAL(mapped(int)), SLOT(showGraph(int)));
 
+	QWidget *content = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(content);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
+
 	main_layout->setAlignment(Qt::AlignTop);
 
 	// title section
@@ -280,26 +323,22 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	table = new EnergyTable(3);
 
 	currency_symbol = _currency_symbol;
-	if (!currency_symbol.isNull())
+	nav_bar = new EnergyViewNavigation();
+	if (currency_symbol.isNull())
 	{
-		bannNavigazione = new bannFrecce(this, 10, bt_global::skin->getImage("currency"));
-		connect(bannNavigazione, SIGNAL(dxClick()), SLOT(toggleCurrency()));
+		nav_bar->showTableButton(false);
+		nav_bar->showCurrency(false);
 	}
-	else
-	{
-		bannNavigazione = new bannFrecce(this, 1);
-	}
-	connect(bannNavigazione, SIGNAL(downClick()), table, SLOT(showPage()));
-	connect(table, SIGNAL(Closed()), SLOT(showPageFromTable()));
-	connect(bannNavigazione, SIGNAL(backClick()), SLOT(backClick()));
-	main_layout->addWidget(bannNavigazione);
+	connect(nav_bar, SIGNAL(toggleCurrency()), SLOT(toggleCurrency()));
+	connect(nav_bar, SIGNAL(showTable()), table, SLOT(showPageFromTable()));
+	connect(table, SIGNAL(Closed()), SLOT(showPage()));
+	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
 
-	bannNavigazione->addCdxButton();
-	bannNavigazione->setCdxIcon(bt_global::skin->getImage("table"));
-	bannNavigazione->Draw();
+	buildPage(content, nav_bar);
 
 	// default period, sync with default period in TimePeriodSelection
 	changeTimePeriod(TimePeriodSelection::DAY, QDate::currentDate());
+
 	switch(mode)
 	{
 		case 1:
@@ -620,19 +659,20 @@ void EnergyView::showGraph(int graph_type, bool request_update)
 
 	updateCurrentGraph();
 
-	initTransition();
-	bannNavigazione->showCdxButton();
+	prepareTransition();
+	nav_bar->showTableButton(true);
 	widget_container->setCurrentIndex(current_widget);
 	if (current_graph == EnergyDevice::DAILY_AVERAGE)
 		time_period->hideCycleButton();
+
 	startTransition();
 }
 
 void EnergyView::showBannerWidget()
 {
 	current_widget = BANNER_WIDGET;
-	initTransition();
-	bannNavigazione->hideCdxButton();
+	prepareTransition();
+	nav_bar->showTableButton(false);
 	time_period->showCycleButton();
 	widget_container->setCurrentIndex(current_widget);
 	startTransition();

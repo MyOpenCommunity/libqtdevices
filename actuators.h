@@ -13,11 +13,45 @@
 
 #include "bann2_buttons.h" // bannOnOff
 #include "bann1_button.h" // bannPuls
-#include "main.h" // MAX_PATH
 
 class device;
 class device_status;
+class LightingDevice;
+class QDomNode;
 
+
+class SingleActuator : public BannOnOffState
+{
+Q_OBJECT
+public:
+	SingleActuator(QWidget *parent, const QDomNode &config_node, QString address);
+	virtual void inizializza(bool forza = false);
+
+private slots:
+	void activate();
+	void deactivate();
+	void status_changed(const StatusList &status_list);
+
+private:
+	LightingDevice *dev;
+};
+
+class ButtonActuator : public BannSinglePuls
+{
+Q_OBJECT
+public:
+	ButtonActuator(QWidget *parent, const QDomNode &config_node, int type);
+
+private slots:
+	void activate();
+	void deactivate();
+
+private:
+	int type;
+};
+
+
+#if 0
 /*!
  * \class attuatAutom
  * \brief This is the \a automation \a actuator-banner class.
@@ -64,5 +98,6 @@ private slots:
 private:
 	char type;
 };
+#endif
 
 #endif

@@ -14,7 +14,8 @@
 #ifndef TEMPERATUREVIEWER_H
 #define TEMPERATUREVIEWER_H
 
-#include "main.h"
+#include "frame_receiver.h"
+#include "main.h" // TemperatureScale
 
 #include <QObject>
 #include <QList>
@@ -26,13 +27,14 @@ class QString;
 class QLCDNumber;
 
 
-class TemperatureViewer : public QObject
+class TemperatureViewer : public QObject, FrameReceiver
 {
 public:
 	TemperatureViewer(Page *page);
-	void add(QString where, int x, int y, int width, int height, int style, int line, QString descr, QString ext);
+	void add(QString where, int x, int y, int width, int height, QString descr, QString ext);
 	void inizializza();
-	void gestFrame(char *frame);
+
+	virtual void manageFrame(OpenMsg &msg);
 
 private:
 	Page *linked_page; /// the page in which the temperature objects are displayed.

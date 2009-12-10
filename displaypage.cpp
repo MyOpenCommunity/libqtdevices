@@ -6,13 +6,13 @@
 #include "xml_functions.h" // getElement
 #include "screensaverpage.h"
 #include "skinmanager.h" // SkinContext, bt_global::skin
-
-#include <QDebug>
+#include "bannercontent.h"
+#include "btmain.h" // bt_global::btmain
 
 
 DisplayPage::DisplayPage(const QDomNode &config_node)
 {
-	setNumRighe(4);
+	buildPage();
 	loadItems(config_node);
 }
 
@@ -29,25 +29,40 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	if (!n.isNull())
 		wait_time = n.text().toInt();
 
-	b = new bannSimple(this, img_clean, new CleanScreen(img_clean, wait_time));
-	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-	b->setText(tr("Clean Screen"));
-	appendBanner(b);
+	Window *w = new CleanScreen(img_clean, wait_time);
+	connect(w, SIGNAL(Closed()), bt_global::btmain->homeWindow(), SLOT(showWindow()));
 
+	b = new BannSimple(img_clean);
+	connect(b, SIGNAL(clicked()), w, SLOT(showWindow()));
+	page_content->appendBanner(b);
+#ifndef BT_HARDWARE_X11
 	b = new calibration(this, img_items);
-	connect(b, SIGNAL(startCalib()), this, SIGNAL(startCalib()));
-	connect(b, SIGNAL(endCalib()), this, SIGNAL(endCalib()));
+	connect(b, SIGNAL(startCalib()), SLOT(startCalibration()));
+	connect(b, SIGNAL(endCalib()), SLOT(endCalibration()));
 	b->setText(tr("Calibration"));
-	appendBanner(b);
+	b->Draw();
+	page_content->appendBanner(b);
 
 	b = new bannOnDx(this,img_items, new BrightnessPage());
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	b->setText(tr("Brightness"));
-	appendBanner(b);
-
-	b = new bannOnDx(this,img_items, new ScreenSaverPage());
+	b->Draw();
+	page_content->appendBanner(b);
+#endif
+	b = new bannOnDx(this, img_items, new ScreenSaverPage());
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	b->setText(tr("Screen Saver"));
-	appendBanner(b);
+	b->Draw();
+	page_content->appendBanner(b);
+}
+
+void DisplayPage::startCalibration()
+{
+	bt_global::btmain->startCalib();
+}
+
+void DisplayPage::endCalibration()
+{
+	bt_global::btmain->endCalib();
 }
 

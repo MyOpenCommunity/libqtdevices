@@ -14,14 +14,16 @@
 #ifndef VIDEOENTRYPHONE_H
 #define VIDEOENTRYPHONE_H
 
-#include "sottomenu.h"
+#include "page.h"
+#include "sectionpage.h"
 
 #include <QWidget>
 
 class QDomNode;
 
 
-class VideoEntryPhone : public sottoMenu
+#ifdef LAYOUT_BTOUCH
+class VideoEntryPhone : public BannerPage
 {
 Q_OBJECT
 public:
@@ -30,5 +32,38 @@ public:
 private:
 	void loadDevices(const QDomNode &config_node);
 };
+#else
+class VideoEntryPhone : public SectionPage
+{
+Q_OBJECT
+public:
+	VideoEntryPhone(const QDomNode &config_node);
+	virtual int sectionId();
+};
+
+
+class CallExclusion : public BannerPage
+{
+Q_OBJECT
+public:
+	CallExclusion(const QDomNode &config_node);
+};
+
+
+class VideoControl : public IconPage
+{
+Q_OBJECT
+public:
+	VideoControl(const QDomNode &config_node);
+};
+
+
+class Intercom : public IconPage
+{
+Q_OBJECT
+public:
+	Intercom(const QDomNode &config_node);
+};
+#endif
 
 #endif

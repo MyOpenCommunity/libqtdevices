@@ -4,6 +4,7 @@
 #define __DEVICE_H__
 
 #include "device_status.h"
+#include "frame_receiver.h"
 
 #include <QDateTime>
 #include <QVariant>
@@ -15,9 +16,34 @@
 
 class frame_interpreter;
 class Client;
-class BtTime;
+class OpenMsg;
 
 typedef QHash<int, QVariant> StatusList;
+
+
+enum AddressType
+{
+	NOT_MINE = 0,
+	ENVIRONMENT,
+	GLOBAL,
+	P2P,
+};
+
+enum PullMode
+{
+	PULL,
+	NOT_PULL,
+	PULL_UNKNOWN,
+};
+
+/**
+ * Check if the address found in a frame is valid for the device.
+ *
+ * Frame address must be environment or general. Addresses must be complete, ie
+ * must have a+pf and extension part (if any).
+ * \return true if msg_where includes the device, false otherwise.
+ */
+AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_where);
 
 
 class FrameCompressor : public QObject
@@ -42,7 +68,7 @@ signals:
 
 
 //! Generic device
-class device : public QObject
+class device : public QObject, FrameReceiver
 {
 friend class TestDevice;
 Q_OBJECT
@@ -66,8 +92,10 @@ public:
 	QString get_key();
 	virtual ~device();
 
-	static void setClients(Client *command, Client *request, Client *monitor);
+	static void setClients(Client *command, Client *request);
 	void installFrameCompressor(int timeout, int what = -1);
+
+	virtual void manageFrame(OpenMsg &msg);
 
 signals:
 	/// Old Status changed
@@ -128,8 +156,51 @@ private:
 	FrameCompressor *req_compressor;
 
 	static Client *client_comandi;
-	static Client *client_monitor;
 	static Client *client_richieste;
+};
+
+
+class PullStateManager
+{
+friend class TestLightingDevice;
+public:
+	PullStateManager(PullMode m);
+	bool moreFrameNeeded(OpenMsg &msg, bool is_environment);
+	PullMode getPullMode();
+
+private:
+	int status;
+	bool status_requested;
+	PullMode mode;
+};
+
+
+/*
+ * Class to encapsulate PULL mode discovering behaviour.
+ *
+ * Derived classes must reimplement the two pure virtual functions
+ * parseFrame(): function called for every received frame. Derived classes must parse the frame and put the
+ *    results into the StatusList.
+ * requestPullStatus(): send a status request to the device. This can be reimplemented depending on device
+ *    necessities.
+ * Derived classes MUST NOT reimplement manageFrame(), as they will override PULL mode discovery logic
+ */
+class PullDevice : public device
+{
+friend class TestLightingDevice;
+Q_OBJECT
+public:
+	virtual void manageFrame(OpenMsg &msg);
+
+protected:
+	PullDevice(QString who, QString where, PullMode m);
+	// parse the frame and put the results into the provided StatusList
+	virtual void parseFrame(OpenMsg &msg, StatusList *sl) = 0;
+	// different devices may need different status requests (eg. Dimmer100)
+	virtual void requestPullStatus() = 0;
+
+private:
+	PullStateManager state;
 };
 
 /********************* Specific class device children classes **********************/
@@ -179,140 +250,6 @@ class autom : public device
 	public:
 		//! Constructor
 		autom(QString, bool p=false, int g=-1);
-};
-
-class thermal_regulator : public device
-{
-Q_OBJECT
-public:
-	void setOff();
-	void setSummer();
-	void setWinter();
-	void setProtection();
-	void setHolidayDateTime(QDate date, BtTime time, int program);
-
-	/**
-	 * Function to set weekend mode (giorno festivo) with end date and time, and program to be executed at the end of weekend mode.
-	 * \param date The end date of weekend mode.
-	 * \param time The end time of weekend mode.
-	 * \param program The program to be executed at the end of weekend mode.
-	 */
-	void setWeekendDateTime(QDate date, BtTime time, int program);
-	void setWeekProgram(int program);
-
-	/**
-	 * Sends a frame to the thermal regulator to set the temperature in manual mode.
-	 * The frame sent is generic (not winter nor summer).
-	 * \param temperature The temperature to be set, ranges from 50 to 400, step is 5.
-	 */
-	void setManualTemp(unsigned temperature);
-
-	/**
-	 * Getter methods that return the maximum temperature allowed by the thermal regulator.
-	 * \return The maximum temperature allowed by the thermal regulator, in 10th of Celsius degrees.
-	 */
-	virtual unsigned maximumTemp() const = 0;
-	/**
-	 * Getter method that return the minimum temperature allowed by the thermal regulator.
-	 * \return The minimum temperature allowed by the thermal regulator , in 10th of Celsius degrees.
-	 */
-	virtual unsigned minimumTemp() const;
-
-	/**
-	 * Getter method for thermal regulator type.
-	 * \return The type of thermal regulator.
-	 */
-	virtual thermo_type_t type() const = 0;
-
-	enum what_t
-	{
-		SUMMER = 0,
-		WINTER = 1,
-		GENERIC_MODE = 3,
-		TEMPERATURE_SET = 14,            // set the temperature in manual operation, this is a dimension
-		HOLIDAY_DATE_END = 30,           // set the end date of holiday mode, this is a dimension (grandezza)
-		HOLIDAY_TIME_END = 31,           // set the end time of holiday mode, this is a dimension (grandezza)
-		MANUAL_TIMED_END = 32,           // set the end time of timed manual mode
-
-		// summer specific identifiers
-		SUM_PROTECTION = 202,            // protection
-		SUM_OFF = 203,                   // off
-		SUM_MANUAL = 210,                // manual operation (all zones in setpoint temperature)
-		SUM_MANUAL_TIMED = 212,          // manual operation (24h maximum)
-		SUM_WEEKEND = 215,               // weekend operation (festivo)
-		SUM_PROGRAM = 2100,              // weekly program (1 out of 3)
-		SUM_SCENARIO = 2200,             // scenario (1 out of 16, 99zones thermal regulator only)
-		SUM_HOLIDAY = 23000,             // holiday operation (programma ferie)
-
-		// winter specific identifiers
-		WIN_PROTECTION = 102,
-		WIN_OFF = 103,                   // off
-		WIN_MANUAL = 110,                // manual operation (all zones in setpoint temperature)
-		WIN_MANUAL_TIMED = 112,          // manual operation (24h maximum)
-		WIN_WEEKEND = 115,               // weekend operation (festivo)
-		WIN_PROGRAM = 1100,              // weekly program (1 out of 3)
-		WIN_SCENARIO = 1200,             // scenario (1 out of 16, 99zones thermal regulator only)
-		WIN_HOLIDAY = 13000,             // holiday operation (programma ferie)
-
-		// generic identifiers (useful for issuing commands)
-		GENERIC_PROTECTION = 302,
-		GENERIC_OFF = 303,
-		GENERIC_MANUAL_TIMED = 312,      // timed manual operation (generic mode)
-		GENERIC_WEEKEND = 315,           // command to set weekend mode
-		WEEK_PROGRAM = 3100,             // command to set the program to be executed (generic mode)
-		                                 // remember to add the program number to this number
-		SCENARIO_PROGRAM = 3200,         // command to set the scenario to be executed (generic mode)
-		                                 // remember to add the program number to this number
-		HOLIDAY_NUM_DAYS = 33000,        // command to set the number of days of holiday mode (generic mode)
-		                                 // remember to add the number of days to this number
-	};
-protected:
-	thermal_regulator(QString where, bool p=false, int g=-1);
-private:
-	/**
-	 * Utility function to set end date for both holiday and weekend mode
-	 * \param date The end date of the mode.
-	 */
-	void setHolidayEndDate(QDate date);
-
-	/**
-	 * Utility function to set end time for both holiday and weekend mode
-	 * \param time The end time of the mode.
-	 */
-	void setHolidayEndTime(BtTime time);
-};
-
-class thermal_regulator_4z : public thermal_regulator
-{
-Q_OBJECT
-public:
-	thermal_regulator_4z(QString where, bool p=false, int g=-1);
-
-	/**
-	 * Sets the temperature for a limited time.
-	 * \param temperature The temperature to be set
-	 * \param time The duration of the manual setting (24 hours max?)
-	 */
-	void setManualTempTimed(int temperature, BtTime time);
-
-	virtual unsigned maximumTemp() const;
-	virtual thermo_type_t type() const;
-};
-
-class thermal_regulator_99z : public thermal_regulator
-{
-Q_OBJECT
-public:
-	thermal_regulator_99z(QString where, bool p=false, int g=-1);
-
-	/**
-	 * Sets the scenario on the thermal regulator.
-	 * \param scenario The scenario to be activated (16 max).
-	 */
-	void setScenario(int scenario);
-
-	virtual unsigned maximumTemp() const;
-	virtual thermo_type_t type() const;
 };
 
 /**
@@ -422,8 +359,7 @@ public:
 	aux_device(QString w, bool p=false, int g=-1);
 	virtual void init(bool force = false);
 
-public slots:
-	virtual void frame_rx_handler(char *);
+	virtual void manageFrame(OpenMsg &msg);
 
 private:
 	stat_var status;

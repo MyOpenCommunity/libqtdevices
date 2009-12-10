@@ -1,24 +1,29 @@
 #include "screensaverpage.h"
 #include "screensaver.h"
 #include "displaycontrol.h" // bt_global::display
+#include "hardware_functions.h"
+#include "singlechoicecontent.h"
 
 #include <QAbstractButton>
 
-ScreenSaverPage::ScreenSaverPage() : SingleChoicePage(true)
+ScreenSaverPage::ScreenSaverPage()
 {
-	setNumRighe(4);
-	setScrollStep(4);
 	addBanner(tr("No screensaver"), ScreenSaver::NONE);
 	addBanner(tr("Line"), ScreenSaver::LINES);
 	addBanner(tr("Balls"), ScreenSaver::BALLS);
 	addBanner(tr("Time"), ScreenSaver::TIME);
 	addBanner(tr("Text"), ScreenSaver::TEXT);
 	//addBanner(tr("Deform"), ScreenSaver::DEFORM); // the deform is for now unavailable!
+
+	// TODO maybe we want an OK button for touch 10 as well
+	if (hardwareType() == TOUCH_X)
+		connect(page_content, SIGNAL(bannerSelected(int)),
+			SLOT(confirmSelection()));
 }
 
 void ScreenSaverPage::showPage()
 {
-	buttons.button(getCurrentId())->setChecked(true);
+	setCheckedId(getCurrentId());
 	SingleChoicePage::showPage();
 }
 

@@ -15,6 +15,18 @@
 
 class QWidget;
 
+class Bann3Buttons : public BannerNew
+{
+Q_OBJECT
+protected:
+	Bann3Buttons(QWidget *parent);
+	void initBanner(const QString &left, const QString &center, const QString &right,
+		const QString &banner_text);
+	BtButton *right_button, *center_button, *left_button;
+
+private:
+	QLabel *text;
+};
 
 /*!
   \class bann3But

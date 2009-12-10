@@ -89,6 +89,20 @@ QDomNode getPageNode(int id)
 	return getChildWithId(n, QRegExp("page(\\d{1,2}|vct|special|menu\\d{1,2})"), id);
 }
 
+QDomNode getPageNodeFromPageId(int pageid)
+{
+	QDomElement gui = qdom_appconfig.documentElement().firstChildElement("gui");
+	QDomNode page = getChildWithId(gui, QRegExp("page"), "pageID", pageid);
+
+	return page;
+}
+
+QDomNode getHomepageNode()
+{
+	// TODO read the id from the <homepage> node
+	return getPageNodeFromPageId(1);
+}
+
 static void loadGeneralConfig(QString xml_file, GeneralConfig &general_config)
 {
 	general_config.verbosity_level = VERBOSITY_LEVEL_DEFAULT;
@@ -157,6 +171,10 @@ int main(int argc, char **argv)
 	QApplication a(argc, argv);
 	QWSServer::setCursorVisible(false);
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8")); // force the locale as UTF8
+
+#if DEBUG
+	printf("File path: %s\n", qPrintable(a.applicationFilePath()));
+#endif
 
 	QFile file(MY_FILE_USER_CFG_DEFAULT);
 	if (!qdom_appconfig.setContent(&file))

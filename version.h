@@ -10,6 +10,7 @@
 #ifndef VERSION_H
 #define VERSION_H
 
+#include "frame_receiver.h"
 #include "page.h"
 
 #include <QString>
@@ -25,7 +26,7 @@ class QLabel;
   \author Davide
   \date lug 2005
 */  
-class Version : public Page
+class Version : public Page, FrameReceiver
 {
 Q_OBJECT
 public:
@@ -43,11 +44,8 @@ public:
 	*/
 	void setModel(const QString &);
 
-public slots:
-	/*!
-	\brief Analyze the \a Open \a frame incoming to verify the versions to be shown
-	*/
-	void gestFrame(char*);
+	virtual void manageFrame(OpenMsg &msg);
+
 private:
 	unsigned char vers;
 	unsigned char release;

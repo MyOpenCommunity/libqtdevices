@@ -14,18 +14,24 @@
 #ifndef AUTOMATION_H
 #define AUTOMATION_H
 
-#include "sottomenu.h"
+#include "page.h"
 
 #include <QWidget>
 
 class QDomNode;
+class banner;
 
 
-class Automation : public sottoMenu
+class Automation : public BannerPage
 {
 Q_OBJECT
 public:
 	Automation(const QDomNode &config_node);
+
+	virtual int sectionId();
+
+	static banner *getBanner(const QDomNode &item_node);
+
 private:
 	void loadItems(const QDomNode &config_node);
 };

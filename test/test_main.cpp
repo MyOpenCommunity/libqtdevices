@@ -1,23 +1,88 @@
 #include <QtTest/QtTest>
+#include <QList>
 
-#include "test_landevice.h"
+#include "test_platform_device.h"
 #include "test_energy_device.h"
 #include "test_poweramplifier_device.h"
 #include "test_dev_automation.h"
+#include "test_lighting_device.h"
+#include "test_automation_device.h"
+#include "test_checkaddress.h"
+#include "test_scenario_device.h"
+#include "test_thermal_device.h"
+#include "test_pull_manager.h"
+#include "test_alarmsounddiff_device.h"
+
+
+// This empty function is required because frame_interpreter use a rearmWDT
+// function, so we have to define it. We don't want to include hardware_functions,
+// in order to compile and execute all tests with the standard version of Qt.
+void rearmWDT() {}
+
 
 int main(int argc, char *argv[])
 {
 	QCoreApplication app(argc, argv);
-	TestLanDevice test_lan_device;
-	QTest::qExec(&test_lan_device, argc, argv);
+
+	QList<TestDevice *> test_list;
+
+	TestPlatformDevice test_platform_device;
+	test_list << &test_platform_device;
 
 	TestEnergyDevice test_energy_device;
-	QTest::qExec(&test_energy_device, argc, argv);
+	test_list << &test_energy_device;
 
 	TestPowerAmplifierDevice test_poweramplifier_device;
-	QTest::qExec(&test_poweramplifier_device, argc, argv);
+	test_list << &test_poweramplifier_device;
 
 	TestPPTStatDevice test_pptstat_device;
-	QTest::qExec(&test_pptstat_device, argc, argv);
+	test_list << &test_pptstat_device;
+
+	TestCheckAddress test_checkaddress;
+	test_list << &test_checkaddress;
+
+	TestPullManager test_pull_manager;
+	test_list << &test_pull_manager;
+
+	TestLightingDevice test_lighting_device;
+	test_list << &test_lighting_device;
+
+	TestDimmer test_dimmer;
+	test_list << &test_dimmer;
+
+	TestDimmer100 test_dimmer100;
+	test_list << &test_dimmer100;
+
+	TestAutomationDevice test_automation_device;
+	test_list << &test_automation_device;
+
+	TestScenarioDevice test_scenario_device;
+	test_list << &test_scenario_device;
+
+	TestThermalDevice4Zones test_thermal_regulator_4zones_device;
+	test_list << &test_thermal_regulator_4zones_device;
+
+	TestThermalDevice99Zones test_thermal_regulator_99zones_device;
+	test_list << &test_thermal_regulator_99zones_device;
+
+	TestAlarmSoundDiffDevice test_alarm_sound_diff_device;
+	test_list << &test_alarm_sound_diff_device;
+
+	QStringList arglist = app.arguments();
+	QString testingClass;
+	int custom_param_pos = arglist.indexOf("--test-class");
+	if (custom_param_pos != -1 && custom_param_pos < arglist.size() - 1)
+	{
+		testingClass = arglist.at(custom_param_pos + 1);
+		arglist.removeAt(custom_param_pos + 1);
+		arglist.removeAt(custom_param_pos);
+	}
+
+	foreach (TestDevice *tester, test_list)
+		if (testingClass.isEmpty() || tester->metaObject()->className() == testingClass)
+		{
+			tester->initTestDevice();
+			QTest::qExec(tester, arglist);
+		}
 }
 

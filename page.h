@@ -16,15 +16,40 @@
 
 #include <QWidget>
 
+#include "styledwidget.h"
+
 class Client;
-class QStackedWidget;
+class PageContainer;
 class QVBoxLayout;
 class TransitionWidget;
+class NavigationBar;
+class BannerContent;
+
+
+// helper widget containing a centered label and a label on the right
+// displaying the current page
+class PageTitleWidget : public QWidget
+{
+Q_OBJECT
+public:
+	PageTitleWidget(const QString &label, int height);
+
+public slots:
+	void setCurrentPage(int current, int total);
+};
+
 
 // This typedef is needed by slots status_changed(StatusList). In order to avoid
 // duplication the typedef is put here, so all pages can be use freely
 typedef QHash<int, QVariant> StatusList;
 
+// Allows type-safe access to __content from page subclasses; by default
+// it returns a QWidget; to return a different QWidget subtype, add a
+//
+// typedef TYPE ContentType;
+//
+// inside the page subclass (see BannerPage for an example)
+#define page_content (content(this))
 
 /**
  * \class Page
@@ -32,17 +57,35 @@ typedef QHash<int, QVariant> StatusList;
  * This class should be the base class for all the fullscreen pages of application.
  * It offer at its children some facilities which can improve productivity.
  */
-class Page : public QWidget
+class Page : public StyledWidget
 {
 friend class BtMain;
 Q_OBJECT
 public:
+	// Indicates subsystem pagetype. For now it is used in touchx top_nav_bar
+	// TODO: is this the same as pagSecLiv in main.h?
+	enum PageType
+	{
+		NONE = 0,
+		HOMEPAGE,
+	};
+
+	// the type returned by page_content
+	// see the comment about page_content above
+	typedef QWidget ContentType;
+
 	// Normally, the page is a fullscreen window, but sometimes is a part of
 	// another page (see Antintrusion or SoundDiffusion)
 	Page(QWidget *parent=0);
 	virtual void inizializza();
 	// TODO: needed for sound diffusion in AlarmClock. To be removed
 	virtual void forceDraw() { }
+	// Defaults to NONE, reimplement to change page type.
+	// TODO: This should really be pure virtual
+	virtual PageType pageType();
+	// page id of the first page of a section; internal pages of a section
+	// can return NO_SECTION
+	virtual int sectionId();
 
 	static void setClients(Client *command, Client *request);
 
@@ -51,36 +94,67 @@ public:
 	void sendFrame(QString frame) const;
 	void sendInit(QString frame) const;
 
-	static void setMainWindow(QStackedWidget *window);
-	static void installTransitionWidget(TransitionWidget *tr);
-
-	// block the current transition if present and the future transitions until the "unlock"
-	static void blockTransitions(bool);
+	static void setPageContainer(PageContainer *window);
+	virtual void activateLayout();
 
 public slots:
 	/// An handle to allow customization of the page showed. Default implementation
-	/// only show the page in fullscreen mode.
+	/// show the page in fullscreen mode and call the transition effect if present.
 	virtual void showPage();
 
-protected:
-	// Init the transition widget with the current page
-	void initTransition();
-	// Let's start the transition
-	void startTransition();
+	// The the page as the current page on the main window
+	void setCurrentPage();
 
-	static Page *currentPage();
+protected:
+	// used by page_content
+	// see the comment about page_content
+	template<class P>
+	typename P::ContentType* content(P*)
+	{
+		return (typename P::ContentType*)__content;
+	}
+
+	// WARNING: do not use this directly, use page_content #defined above
+	QWidget *__content;
+	Page *currentPage();
+	void prepareTransition();
+	void startTransition();
+	void buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget=0, QWidget *title_widget=0);
+	void buildPage(QWidget *content, QWidget *nav_bar, const QString& label, int label_height, QWidget *top_widget=0);
 
 private:
+	static PageContainer *page_container;
 	static Client *client_richieste;
 	static Client *client_comandi;
-	static QStackedWidget *main_window;
-	static TransitionWidget *transition_widget;
-	static bool block_transitions;
 	void forceClosed();
 
 signals:
 	/// Emitted when the page is closed.
 	void Closed();
+	void forwardClick();
+};
+
+
+/**
+ * \class BannerPage
+ *
+ * A page containing a list of banners.
+ */
+class BannerPage : public Page
+{
+public:
+	// the type returned by page_content
+	typedef BannerContent ContentType;
+
+	BannerPage(QWidget *parent=0);
+
+	virtual void activateLayout();
+
+protected:
+	void buildPage(BannerContent *content, NavigationBar *nav_bar, QWidget *top_widget=0);
+	void buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title, QWidget *top_widget=0);
+	void buildPage(QWidget *top_widget=0);
+	void buildPage(const QString &title);
 };
 
 

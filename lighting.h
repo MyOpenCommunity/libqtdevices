@@ -14,18 +14,23 @@
 #ifndef LIGHTING_H
 #define LIGHTING_H
 
-#include "sottomenu.h"
+#include "page.h"
 
 #include <QWidget>
 
 class QDomNode;
+class banner;
 
 
-class Lighting : public sottoMenu
+class Lighting : public BannerPage
 {
 Q_OBJECT
 public:
 	Lighting(const QDomNode &config_node);
+
+	virtual int sectionId();
+
+	static banner *getBanner(const QDomNode &item_node);
 
 protected:
 	virtual void showEvent(QShowEvent *event);

@@ -10,16 +10,14 @@
 
 #include "sorgentiaux.h"
 #include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW
-#include "aux.h" // class myAux
+#include "aux.h" // class Aux
 #include "generic_functions.h" // createMsgOpen
 
 #include <QWidget>
 #include <QDebug>
 
-/*****************************************************************
- **sorgente_aux
- ****************************************************************/
-sorgente_aux::sorgente_aux(QWidget *parent, QString aux_name, QString indirizzo, bool vecchio, QString ambdescr)
+
+sorgente_aux::sorgente_aux(QWidget *parent, QString indirizzo, bool vecchio)
 	: bannCiclaz(parent, vecchio ? 4 : 3)
 {
 	SetIcons(ICON_CICLA, QString(), ICON_FFWD, ICON_REW);
@@ -31,15 +29,7 @@ sorgente_aux::sorgente_aux(QWidget *parent, QString aux_name, QString indirizzo,
 		connect(this, SIGNAL(csxClick()), this, SLOT(decBrano()));
 		connect(this, SIGNAL(cdxClick()), this, SLOT(aumBrano()));
 		nascondi(BUT2);
-		myAux = 0;
 	}
-	else
-		myAux = new aux(NULL, aux_name, ambdescr);
-}
-
-sorgente_aux::~sorgente_aux()
-{
-	delete myAux;
 }
 
 void sorgente_aux::ciclaSorg()
@@ -54,36 +44,28 @@ void sorgente_aux::decBrano()
 
 void sorgente_aux::aumBrano()
 {
-        sendFrame(QString("*22*9*2#%1##").arg(getAddress().at(2)));
+	sendFrame(QString("*22*9*2#%1##").arg(getAddress().at(2)));
 }
 
-void sorgente_aux::inizializza(bool forza)
-{
-}
-
-void sorgente_aux::hideEvent(QHideEvent *event)
-{
-	if (myAux)
-		myAux->hide();
-}
-
-/*****************************************************************
- ** Sorgente aux diffusione sonora multicanale
- ****************************************************************/
 
 sorgenteMultiAux::sorgenteMultiAux(QWidget *parent, QString aux_name, QString indirizzo, QString Icona1, QString Icona2,
-	QString Icona3, QString ambdescr) : sorgente_aux(parent, aux_name, indirizzo, false, ambdescr)
+	QString Icona3, QString ambdescr) : sorgente_aux(parent, indirizzo, false)
 {
 	qDebug("sorgenteMultiAux::sorgenteMultiAux()");
 	SetIcons(Icona1, Icona2, QString(), Icona3);
 	indirizzo_semplice = indirizzo;
 	indirizzi_ambienti.clear();
-	connect(this, SIGNAL(dxClick()), myAux, SLOT(showAux()));
-	connect(this, SIGNAL(sxClick()), this, SLOT(attiva()));
-	connect(myAux, SIGNAL(Closed()), myAux, SLOT(hide()));
-	connect(myAux, SIGNAL(Closed()), this, SLOT(show()));
-	connect(myAux, SIGNAL(Btnfwd()), this, SLOT(aumBrano()));
+	myAux = new Aux(aux_name, ambdescr);
+	connect(this, SIGNAL(dxClick()), myAux, SLOT(showPage()));
+	connect(this, SIGNAL(sxClick()), SLOT(attiva()));
+	connect(myAux, SIGNAL(Closed()), SIGNAL(pageClosed()));
+	connect(myAux, SIGNAL(Btnfwd()), SLOT(aumBrano()));
 	multiamb = false;
+}
+
+sorgenteMultiAux::~sorgenteMultiAux()
+{
+	delete myAux;
 }
 
 void sorgenteMultiAux::attiva()

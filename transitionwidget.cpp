@@ -1,69 +1,44 @@
 #include "transitionwidget.h"
-#include "page.h"
-#include "main.h"
-#include "sottomenu.h"
+#include "windowcontainer.h"
 
 #include <QPainter>
-#include <QStackedWidget>
-#include <QLayout>
 #include <QDebug>
 
-#include <assert.h>
 
-
-TransitionWidget::TransitionWidget(QStackedWidget *win, int time) : timeline(time, this)
+TransitionWidget::TransitionWidget(int time) : timeline(time, this)
 {
-	main_window = win;
-	main_window->addWidget(this);
 	connect(&timeline, SIGNAL(finished()), &local_loop, SLOT(quit()));
-	connect(&timeline, SIGNAL(finished()), SLOT(transitionEnd()));
-}
-
-void TransitionWidget::setStartingPage(Page *prev)
-{
-	prev_page = prev;
-	prev_image = QPixmap::grabWidget(prev);
-	// this shows the transition widget (that now shows the prev page)
-	main_window->setCurrentWidget(this);
+	connect(&timeline, SIGNAL(finished()), SIGNAL(endTransition()));
 }
 
 void TransitionWidget::cancelTransition()
 {
 	local_loop.quit();
 	timeline.stop();
-	main_window->setCurrentWidget(prev_page);
 }
 
-void TransitionWidget::transitionEnd()
+void TransitionWidget::prepareTransition()
 {
-	dest_page->show();
-	main_window->setCurrentWidget(dest_page);
+	prev_image = container->grabHomeWindow();
+	container->setCurrentWidget(this);
 }
 
-void TransitionWidget::startTransition(Page *next)
+void TransitionWidget::startTransition()
 {
-	dest_page = next;
+	dest_image = container->grabHomeWindow();
 	initTransition();
-
-	// Before grab the screenshot of the next page, we have to ensure that its
-	// visualization is correct.
-	next->resize(main_window->size());
-	if (QLayout *layout = next->layout())
-	{
-		layout->activate();
-		layout->update();
-	}
-	else if (sottoMenu *p = qobject_cast<sottoMenu*>(next))
-		p->forceDraw();
-
-	// this sets the next page and applies all layout computation before starting the transition
-	next_image = QPixmap::grabWidget(next);
 
 	timeline.start();
 	local_loop.exec();
 }
 
-BlendingTransition::BlendingTransition(QStackedWidget *win) : TransitionWidget(win, 400)
+void TransitionWidget::setContainer(WindowContainer *c)
+{
+	container = c;
+}
+
+
+BlendingTransition::BlendingTransition() : TransitionWidget(400)
 {
 	connect(&timeline, SIGNAL(valueChanged(qreal)), SLOT(triggerRepaint(qreal)));
 	blending_factor = 0.0;
@@ -87,11 +62,11 @@ void BlendingTransition::paintEvent(QPaintEvent *e)
 	p.setRenderHint(QPainter::SmoothPixmapTransform, true);
 	p.drawPixmap(QPoint(0,0), prev_image);
 	p.setOpacity(blending_factor);
-	p.drawPixmap(QPoint(0,0), next_image);
+	p.drawPixmap(QPoint(0,0), dest_image);
 }
 
 
-MosaicTransition::MosaicTransition(QStackedWidget *win) : TransitionWidget(win, 500)
+MosaicTransition::MosaicTransition() : TransitionWidget(500)
 {
 	// be careful: changing the parameters of the timeline has severe impacts on performance and
 	// smoothness of transition
@@ -109,8 +84,8 @@ void MosaicTransition::initTransition()
 	mosaic_map.clear();
 	const int SQUARE_DIM = 10;
 
-	int num_x = MAX_WIDTH / SQUARE_DIM;
-	int num_y = MAX_HEIGHT / SQUARE_DIM;
+	int num_x = width() / SQUARE_DIM;
+	int num_y = height() / SQUARE_DIM;
 
 	QList<QRect> ordered_list;
 	for (int i = 0; i < num_x; ++i)
@@ -130,7 +105,8 @@ void MosaicTransition::initTransition()
 
 void MosaicTransition::triggerRepaint(int index)
 {
-	assert(index < mosaic_map.size() && "Invalid index value!");
+	Q_ASSERT_X(index < mosaic_map.size(), "MosaicTransition::triggerRepaint",
+		"Invalid index value!");
 	prev_index = curr_index;
 	curr_index = index;
 	update();
@@ -144,7 +120,7 @@ void MosaicTransition::paintEvent(QPaintEvent *e)
 
 	QPainter paint(&dest_pix);
 	for (int i = prev_index; i < curr_index; ++i)
-		paint.drawPixmap(mosaic_map.at(i), next_image.copy(mosaic_map.at(i)));
+		paint.drawPixmap(mosaic_map.at(i), dest_image.copy(mosaic_map.at(i)));
 
 	QPainter p(this);
 	p.drawPixmap(QPoint(0,0), dest_pix);

@@ -45,7 +45,6 @@ class BtButton;
 class QLabel;
 class QButtonGroup;
 class QBoxLayout;
-class QDomNode;
 
 
 enum AudioSourceType

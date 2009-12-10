@@ -1,12 +1,13 @@
 #include "lansettings.h"
 #include "btbutton.h"
 #include "main.h" // bt_global::config
-#include "landevice.h"
+#include "platform_device.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "fontmanager.h" // bt_global::font
 #include "xml_functions.h" // getTextChild
 #include "skinmanager.h" // bt_global::skin, SkinContext
 #include "generic_functions.h" // setCfgValue
+#include "navigation_bar.h"
 
 #include <QDebug>
 #include <QLabel>
@@ -16,7 +17,7 @@
 
 namespace
 {
-	void requestNetworkInfo(LanDevice *dev)
+	void requestNetworkInfo(PlatformDevice *dev)
 	{
 		dev->requestStatus();
 		dev->requestIp();
@@ -73,6 +74,11 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	box_text->addRow(tr("DNS"), "");
 	box_text->addRow("", "");
 
+	QWidget *content = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(content);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
+
 	QHBoxLayout *label_layout = new QHBoxLayout;
 	label_layout->setContentsMargins(5, 0, 5, 0);
 	label_layout->addWidget(box_text);
@@ -86,8 +92,12 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	connect(toggle_btn, SIGNAL(clicked()), SLOT(toggleLan()));
 	main_layout->addWidget(toggle_btn, 0, Qt::AlignHCenter);
 
-	addBackButton();
-	dev = bt_global::add_device_to_cache(new LanDevice);
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	buildPage(content, nav_bar);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+
+	dev = bt_global::add_device_to_cache(new PlatformDevice);
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
 	// Set the network to the initial status
@@ -104,7 +114,7 @@ void LanSettings::inizializza()
 void LanSettings::showPage()
 {
 	requestNetworkInfo(dev);
-	PageLayout::showPage();
+	Page::showPage();
 }
 
 void LanSettings::toggleLan()
@@ -122,19 +132,19 @@ void LanSettings::status_changed(const StatusList &status_list)
 	const int DNS2_ROW = 9;
 
 	QHash<int, int> dim_to_row;
-	dim_to_row[LanDevice::DIM_IP] = IP_ROW;
-	dim_to_row[LanDevice::DIM_NETMASK] = NETMASK_ROW;
-	dim_to_row[LanDevice::DIM_MACADDR] = MACADDR_ROW;
-	dim_to_row[LanDevice::DIM_GATEWAY] = GATEWAY_ROW;
-	dim_to_row[LanDevice::DIM_DNS1] = DNS1_ROW;
-	dim_to_row[LanDevice::DIM_DNS2] = DNS2_ROW;
+	dim_to_row[PlatformDevice::DIM_IP] = IP_ROW;
+	dim_to_row[PlatformDevice::DIM_NETMASK] = NETMASK_ROW;
+	dim_to_row[PlatformDevice::DIM_MACADDR] = MACADDR_ROW;
+	dim_to_row[PlatformDevice::DIM_GATEWAY] = GATEWAY_ROW;
+	dim_to_row[PlatformDevice::DIM_DNS1] = DNS1_ROW;
+	dim_to_row[PlatformDevice::DIM_DNS2] = DNS2_ROW;
 
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (dim_to_row.contains(it.key()))
 			box_text->setText(dim_to_row[it.key()], it.value().toString());
-		else if (it.key() == LanDevice::DIM_STATUS)
+		else if (it.key() == PlatformDevice::DIM_STATUS)
 		{
 			lan_status = it.value().toBool();
 			toggle_btn->setStatus(lan_status);

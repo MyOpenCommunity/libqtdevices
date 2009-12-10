@@ -1,14 +1,20 @@
 #include "videoentryphone.h"
 #include "bann_videoentryphone.h"
+#include "bann2_buttons.h"
 #include "xml_functions.h" // getTextChild, getChildren
+#include "bannercontent.h"
+#include "main.h"
+#include "skinmanager.h"
+#include "btbutton.h"
+#include "navigation_bar.h"
 
 #include <QDebug>
 
-#include <assert.h>
 
-
+#ifdef LAYOUT_BTOUCH
 VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 {
+	buildPage();
 	loadDevices(config_node);
 }
 
@@ -20,7 +26,7 @@ void VideoEntryPhone::loadDevices(const QDomNode &config_node)
 	{
 		int id = getTextChild(device, "id").toInt();
 		if (id != POSTO_ESTERNO)
-			assert(!"Type of device not handler by Video EntryPhone page!");
+			qFatal("Type of device not handled by Video EntryPhone page!");
 		QString img1 = IMG_PATH + getTextChild(device, "cimg1");
 		QString img2 = IMG_PATH + getTextChild(device, "cimg2");
 		QString img3 = IMG_PATH + getTextChild(device, "cimg3");
@@ -33,6 +39,51 @@ void VideoEntryPhone::loadDevices(const QDomNode &config_node)
 		banner *b = new postoExt(this, descr, img1, img2, img3, img4, where, light, key, unknown);
 		b->setText(descr);
 		b->setId(id);
-		appendBanner(b);
+		b->Draw();
+		page_content->appendBanner(b);
 	}
 }
+#else
+VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node) :
+	SectionPage(config_node)
+{
+}
+
+int VideoEntryPhone::sectionId()
+{
+	return VIDEOCITOFONIA;
+}
+
+
+CallExclusion::CallExclusion(const QDomNode &config_node)
+{
+	buildPage();
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	BannOnOffState *b = new BannOnOffState(0);
+	b->initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("call_exclusion"),
+		bt_global::skin->getImage("on"), BannOnOffState::ON, tr("Call exclusion"));
+	page_content->appendBanner(b);
+}
+
+
+VideoControl::VideoControl(const QDomNode &config_node)
+{
+	buildPage(new IconContent, new NavigationBar);
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		SkinContext ctx(getTextChild(item, "cid").toInt());
+		BtButton *btn = addButton(getTextChild(item, "descr"), bt_global::skin->getImage("link_icon"), 0, 0);
+	}
+}
+
+
+Intercom::Intercom(const QDomNode &config_node)
+{
+	buildPage(new IconContent, new NavigationBar);
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		SkinContext ctx(getTextChild(item, "cid").toInt());
+		BtButton *btn = addButton(getTextChild(item, "descr"), bt_global::skin->getImage("link_icon"), 0, 0);
+	}
+}
+#endif

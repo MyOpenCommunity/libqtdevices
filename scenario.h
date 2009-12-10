@@ -14,22 +14,25 @@
 #ifndef SCENARIO_H
 #define SCENARIO_H
 
-#include "sottomenu.h"
+#include "page.h"
 
 #include <QWidget>
 
 class QDomNode;
+class banner;
 
 
-class Scenario : public sottoMenu
+class Scenario : public BannerPage
 {
 Q_OBJECT
 public:
 	Scenario(const QDomNode &config_node);
-private:
-	QList<scenEvo_cond*> loadConditions(const QDomNode &config_node);
-	void loadItems(const QDomNode &config_node);
-};
+	virtual int sectionId();
+	static banner *getBanner(const QDomNode &item_node);
 
+private:
+	void loadItems(const QDomNode &config_node);
+	int section_id;
+};
 
 #endif

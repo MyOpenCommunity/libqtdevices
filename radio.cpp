@@ -10,27 +10,18 @@
  ****************************************************************/
 
 #include "radio.h"
-#include "banner.h"
 #include "bannfrecce.h"
-#include "main.h"
 #include "btbutton.h"
 #include "fontmanager.h" // bt_global::font
 
 #include <QLabel>
-#include <QPixmap>
-#include <QFrame>
-#include <QDateTime>
 #include <QLCDNumber>
-#include <QFile>
 
 
 radio::radio(const QString &amb)
 {
-	setGeometry(0,0,MAX_WIDTH,MAX_HEIGHT);
-	setFixedSize(QSize(MAX_WIDTH, MAX_HEIGHT));
-
 	bannNavigazione = new bannFrecce(this,1);
-	bannNavigazione->setGeometry(0 ,MAX_HEIGHT- MAX_HEIGHT/NUM_RIGHE ,MAX_WIDTH , MAX_HEIGHT/NUM_RIGHE);
+	bannNavigazione->setGeometry(0, height() - height()/NUM_RIGHE, width(), height()/NUM_RIGHE);
 
 	memoBut = new BtButton(this);
 	decBut = new BtButton(this);
@@ -133,12 +124,12 @@ void radio::showPage()
 
 void radio::setFreq(float f)
 {
-	frequenza=f;
+	frequenza = f;
 }
 
 float radio::getFreq()
 {
-	return(frequenza);
+	return frequenza;
 }
 
 void radio::setRDS(const QString & s)
@@ -147,24 +138,24 @@ void radio::setRDS(const QString & s)
 	qrds.truncate(8);
 }
 
-QString * radio::getRDS()
+QString *radio::getRDS()
 {
-	return & qrds;
+	return &qrds;
 }
 
 void radio::setStaz(uchar st)
 {
-	stazione=st;
+	stazione = st;
 }
 
 uchar radio::getStaz()
 {
-	return	(stazione);
+	return stazione;
 }
 
 bool radio::isManual()
 {
-	return (manual);
+	return manual;
 }
 
 void radio::setAmbDescr(const QString & d)
@@ -181,8 +172,8 @@ void radio::draw()
 	radioName->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 	radioName->setText(qnome);
 	rdsLabel->setText(qrds);
-	char fr[10];
-	sprintf(fr,"%.2f",frequenza);
+	QString fr;
+	fr.sprintf("%.2f",frequenza);
 	freq->display(fr);
 
 	if (manual!=wasManual)

@@ -16,8 +16,6 @@
 #include <qdom.h>
 #include <QDebug>
 
-#include <assert.h>
-
 
 static void parseRSS20Item(QDomNode item, FeedData *feed_data);
 static void parseRSS20Channel(QDomNode channel, FeedData *feed_data);
@@ -82,7 +80,7 @@ void FeedParser::downloadFinished(bool error)
 		else
 		{
 			QByteArray xml_data = connection.readAll();
-			assert(xml_data.size() != 0);
+			Q_ASSERT(xml_data.size() != 0);
 			extractFeedData(xml_data);
 		}
 	}
@@ -135,7 +133,7 @@ void FeedParser::parseRSS20(const QByteArray &xml_data)
 	QDomDocument doc;
 	doc.setContent(xml_data);
 	QDomElement root = doc.documentElement();
-	assert(root.nodeName() == "rss");
+	Q_ASSERT(root.nodeName() == "rss");
 
 	QDomNode n = root.firstChild();
 	while (!n.isNull())
@@ -151,7 +149,7 @@ void FeedParser::parseAtom10(const QByteArray &xml_data)
 	QDomDocument doc;
 	doc.setContent(xml_data);
 	QDomElement root = doc.documentElement();
-	assert(root.nodeName() == "feed");
+	Q_ASSERT(root.nodeName() == "feed");
 
 	QDomNode n = root.firstChild();
 
@@ -181,7 +179,7 @@ void FeedParser::parseAtom10(const QByteArray &xml_data)
 
 static void parseRSS20Item(QDomNode item, FeedData *feed_data)
 {
-	assert(item.toElement().tagName() == "item");
+	Q_ASSERT(item.toElement().tagName() == "item");
 
 	FeedItemInfo feed_item;
 
@@ -210,7 +208,7 @@ static void parseRSS20Item(QDomNode item, FeedData *feed_data)
 
 static void parseRSS20Channel(QDomNode channel, FeedData *feed_data)
 {
-	assert(channel.toElement().tagName() == "channel");
+	Q_ASSERT(channel.toElement().tagName() == "channel");
 
 	QDomNode n = channel.firstChild();
 	while (!n.isNull())
@@ -231,7 +229,7 @@ static void parseRSS20Channel(QDomNode channel, FeedData *feed_data)
 
 static void parseATOM10Entry(QDomNode entry, FeedData *data)
 {
-	assert(entry.toElement().tagName() == "entry");
+	Q_ASSERT(entry.toElement().tagName() == "entry");
 	FeedItemInfo feed_entry;
 	QDomNode n = entry.firstChild();
 	while (!n.isNull())

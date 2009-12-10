@@ -1,48 +1,56 @@
-/**
- * \file
- * <!--
- * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
- * All rights reserved.
- * -->
- *
- * \brief This is a container for other pages.
- *
- * \author Gianni Valdambrini <aleister@develer.com>
- * \date December 2008
- */
+#ifndef PAGE_CONTAINER_H
+#define PAGE_CONTAINER_H
 
-#ifndef PAGECONTAINER_H
-#define PAGECONTAINER_H
+#include <QStackedWidget>
 
-#include "page.h"
+class TransitionWidget;
+class Page;
 
-#include <QButtonGroup>
-#include <QHash>
 
-class QDomNode;
-
-/**
- * \class PageContainer
- *
- * A container for other pages. Show a list of buttons, each of them is automatically
- * connected (in addPage method) with the correspondent page through the slot
- * 'showPage' and signal 'Closed'.
- */
-class PageContainer : public Page
+class PageContainer : public QStackedWidget
 {
 Q_OBJECT
 public:
-	PageContainer(const QDomNode &config_node);
-	virtual void addBackButton();
+	PageContainer(QWidget *parent);
+
+	// Install a widget for the transition. The transition widget must have the public functions:
+	//
+	// void startTransition(const QPixmap &prev, const QPixmap &dest);
+	// void cancelTransition();
+	// and the signal:
+	// void endTransition();
+	void installTransitionWidget(TransitionWidget *tr);
+
+	// Set the argument page as the current page, without transition
+	void setCurrentPage(Page *p);
+	// Set the argument page as the current page, with transition if active
+	void showPage(Page *p);
+
+	// add the page at the stack of the pages
+	void addPage(Page *p);
+	// return the current page (or the previous if during a transition)
+	Page *currentPage();
+
+	// stop the transition effect implicity called by the showPage method.
+	void blockTransitions(bool block);
+
+	void prepareTransition();
+	void startTransition(Page *p);
+
+signals:
+	void currentPageChanged(Page *p);
 
 private:
-	QButtonGroup buttons_group;
-	QHash<int, Page*> page_list;
-	void loadItems(const QDomNode &config_node);
-	void addPage(Page *page, int id, QString iconName, int x, int y);
+	bool block_transitions;
+	TransitionWidget *transition_widget;
+
+	// The previous page if during the transition, 0 otherwise
+	Page *prev_page;
+	// The destination page if during the transition, 0 otherwise
+	Page *dest_page;
 
 private slots:
-	void clicked(int id);
+	void endTransition();
 };
 
-#endif // PAGECONTAINER_H
+#endif // PAGE_CONTAINER_H

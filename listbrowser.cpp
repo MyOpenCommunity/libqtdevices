@@ -11,7 +11,6 @@
 #include "listbrowser.h"
 #include "fontmanager.h" // bt_global::font
 #include "btbutton.h"
-#include "main.h" // MAX_WIDTH
 #include "titlelabel.h"
 #include "icondispatcher.h" // icons_cache
 #include "generic_functions.h" // getPressName
@@ -83,9 +82,12 @@ void ListBrowser::showList()
 
 	QFont aFont = bt_global::font->get(FontManager::TEXT);
 
+	// REMEMBER: as the ListBrowser is not a Page, its width() depends on the page in
+	// which the ListBrowser is put in. So, for a correct width(), the parent page
+	// must to be showed or, if has a layout, its layout must to be activated.
 	for (int i = 0; i < count; ++i)
 	{
-		TitleLabel *l = new TitleLabel(0, MAX_WIDTH - 60, 50, 9, h_offsets[i], true);
+		TitleLabel *l = new TitleLabel(0, width() - 60, 50, 9, h_offsets[i], true);
 		l->setText(item_list[start + i]);
 		l->setFont(aFont);
 		addHorizontalBox(main_layout, l, i);

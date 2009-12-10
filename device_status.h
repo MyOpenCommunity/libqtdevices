@@ -250,55 +250,6 @@ public:
 };
 
 /**
- * Device status for thermal regulator device
- */
-class device_status_thermal_regulator : public device_status
-{
-public:
-	enum
-	{
-		SP_INDEX = 0,
-		SEASON_INDEX,
-		PROGRAM_INDEX,
-		SCENARIO_INDEX,
-		STATUS_INDEX,           // status may be: off, protection, manual, week program, scenario, holiday, weekend
-	} ind;
-
-	enum
-	{
-		OFF = 0,
-		PROTECTION,
-		MANUAL,                 // manual temperature
-		MANUAL_TIMED,           // manual temperature, with timer
-		WEEK_PROGRAM,           // weekly program
-		SCENARIO,               // scenario
-		HOLIDAY,                // festivo
-		WEEKEND,                // ferie
-	} status;
-
-protected:
-	device_status_thermal_regulator(device_status::type _type);
-};
-
-/**
- * Device status for thermal regulator device
- */
-class device_status_thermal_regulator_4z : public device_status_thermal_regulator
-{
-public:
-	device_status_thermal_regulator_4z();
-};
-
-/**
- * Device status for thermal regulator device
- */
-class device_status_thermal_regulator_99z : public device_status_thermal_regulator
-{
-public:
-	device_status_thermal_regulator_99z();
-};
-
-/**
  * Device status for extra thermal information present only in a controlled probe.
  */
 class device_status_temperature_probe_extra : public device_status {

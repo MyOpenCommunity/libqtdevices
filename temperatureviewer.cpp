@@ -4,7 +4,7 @@
 #include "page.h"
 #include "main.h" // bt_global::config
 
-#include <openwebnet.h>
+#include <openmsg.h>
 
 #include <QLCDNumber>
 #include <QString>
@@ -17,12 +17,15 @@
 TemperatureViewer::TemperatureViewer(Page *page) : linked_page(page)
 {
 	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+	subscribe_monitor(4);
 }
 
-void TemperatureViewer::add(QString where, int x, int y, int width, int height, int style, int line, QString descr, QString ext)
+void TemperatureViewer::add(QString where, int x, int y, int width, int height, QString descr, QString ext)
 {
 	TemperatureData temp;
 	QLCDNumber *l = new QLCDNumber(linked_page);
+	int style = QFrame::Plain;
+	int line = 3; // line width
 	temp.lcd = l;
 	temp.lcd->setGeometry(x, y, width, height - H_SCR_TEMP);
 	temp.lcd->setFrameStyle(style);
@@ -83,29 +86,22 @@ void TemperatureViewer::updateDisplay(unsigned new_bt_temperature, TemperatureDa
 	temp->lcd->display(displayed_temp);
 }
 
-void TemperatureViewer::gestFrame(char* frame)
+void TemperatureViewer::manageFrame(OpenMsg &msg)
 {
-	openwebnet msg_open;
+	char dove[30];
+	strcpy(dove, msg.Extract_dove());
+	if (dove[0] == '#')
+		strcpy(&dove[0], &dove[1]);
 
-	msg_open.CreateMsgOpen(frame, strstr(frame,"##") - frame + 2);
-
-	if (!strcmp(msg_open.Extract_chi(), "4"))
+	foreach (TemperatureData temp, temp_list)
 	{
-		char dove[30];
-		strcpy(dove, msg_open.Extract_dove());
-		if (dove[0] == '#')
-			strcpy(&dove[0], &dove[1]);
-
-		foreach (TemperatureData temp, temp_list)
-		{
-			int icx = -1;
-			if (temp.ext == "0" && temp.where == QString(dove) && !strcmp(msg_open.Extract_grandezza(), "0"))
-				icx = atoi(msg_open.Extract_valori(0));
-			else if (temp.ext == "1" && !strcmp(msg_open.Extract_grandezza(),"15") && temp.where.at(0) == dove[0])
-				icx = atoi(msg_open.Extract_valori(1));
-			if (icx > -1)
-				updateDisplay(icx, &temp);
-		}
+		int icx = -1;
+		if (temp.ext == "0" && temp.where == QString(dove) && !strcmp(msg.Extract_grandezza(), "0"))
+			icx = atoi(msg.Extract_valori(0));
+		else if (temp.ext == "1" && !strcmp(msg.Extract_grandezza(),"15") && temp.where.at(0) == dove[0])
+			icx = atoi(msg.Extract_valori(1));
+		if (icx > -1)
+			updateDisplay(icx, &temp);
 	}
 }
 

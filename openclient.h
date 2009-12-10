@@ -25,6 +25,10 @@
 
 #define OPENSERVER_PORT 20000
 
+
+class FrameReceiver;
+
+
 /*!
   \class Client
   \brief This class manages the socket communication throught the application and the \a openserver.
@@ -42,6 +46,7 @@ public:
 	enum Type
 	{
 		MONITOR = 0,
+		SUPERVISOR,
 		RICHIESTE,
 		COMANDI
 	};
@@ -50,7 +55,12 @@ public:
 	void ApriInviaFrameChiudi(const char *);
 	void installFrameCompressor(int timeout, const QString &regex);
 	void flush() { socket->flush(); }
+	void subscribe(FrameReceiver *obj, int who);
+	void unsubscribe(FrameReceiver *obj);
 	~Client();
+#if DEBUG
+	void forwardFrame(Client *c);
+#endif
 
 private slots:
 	void connetti();
@@ -79,6 +89,11 @@ private:
 	openwebnet last_msg_open_read;
 	openwebnet last_msg_open_write;
 	bool ackRx;
+	QHash<int, QList<FrameReceiver*> > subscribe_list;
+
+#if DEBUG
+	Client *to_forward;
+#endif
 
 	void socketStateRead(char*);
 	void manageFrame(QByteArray frame);
@@ -86,12 +101,11 @@ private:
 
 	//! Wait for ack (returns 0 on ack, -1 on nak or when socket is a monitor socket)
 	int socketWaitForAck();
+	void dispatchFrame(QString frame);
 
 signals:
-	void frameIn(char*);
-	void rispStato(char*);
 	void monitorSu();
-	void frameToAutoread(char*);
+
 	//! Openwebnet ack received
 	void openAckRx();
 	//! Openwebnet nak received

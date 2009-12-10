@@ -16,19 +16,26 @@
 #include "specialpage.h"
 #include "energy_data.h"
 #include "openclient.h"
-#include "pagecontainer.h"
+#include "iconpage.h"
+#include "sectionpage.h"
 
 #include <QObject>
 
-Page *getPage(int id)
+Page *getPage(int page_id)
 {
-	QDomNode page_node = getPageNode(id);
+#ifdef CONFIG_BTOUCH
+	QDomNode page_node = getPageNode(page_id);
+	int id = page_id;
+#else
+	QDomNode page_node = getPageNodeFromPageId(page_id);
+	int id = getTextChild(page_node, "id").toInt();
+#endif
 	if (page_node.isNull())
 		return 0;
 
 	// A section page can be built only once.
-	if (bt_global::btmain->page_list.contains(id))
-		return bt_global::btmain->page_list[id];
+	if (bt_global::btmain->page_list.contains(page_id))
+		return bt_global::btmain->page_list[page_id];
 
 	Page *page = 0;
 	switch (id)
@@ -36,15 +43,16 @@ Page *getPage(int id)
 	case AUTOMAZIONE:
 	{
 		Automation *p = new Automation(page_node);
-		p->forceDraw();
+		//p->forceDraw();
 		page = p;
 		break;
 	}
 	case ILLUMINAZIONE:
 	{
 		Lighting *p = new Lighting(page_node);
-		p->forceDraw();
-		QObject::connect(p, SIGNAL(richStato(QString)), bt_global::btmain->client_richieste, SLOT(richStato(QString)));
+		//p->forceDraw();
+		// DELETE
+		//QObject::connect(p, SIGNAL(richStato(QString)), bt_global::btmain->client_richieste, SLOT(richStato(QString)));
 		page = p;
 		break;
 	}
@@ -54,14 +62,13 @@ Page *getPage(int id)
 		p->draw();
 		QObject::connect(bt_global::btmain->client_comandi, SIGNAL(openAckRx()), p, SIGNAL(openAckRx()));
 		QObject::connect(bt_global::btmain->client_comandi, SIGNAL(openNakRx()), p, SIGNAL(openNakRx()));
-		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gesFrame(char *)));
 		page = p;
 		break;
 	}
 	case CARICHI:
 	{
 		Loads *p = new Loads(page_node);
-		p->forceDraw();
+		//p->forceDraw();
 		page = p;
 		break;
 	}
@@ -69,8 +76,6 @@ Page *getPage(int id)
 	case TERMOREG_MULTI_PLANT:
 	{
 		ThermalMenu *p = new ThermalMenu(page_node);
-		p->forceDraw();
-		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SIGNAL(gestFrame(char *)));
 		page = p;
 		break;
 	}
@@ -78,7 +83,6 @@ Page *getPage(int id)
 	{
 		SoundDiffusion *p = new SoundDiffusion(page_node);
 		p->draw();
-		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
 		page = p;
 
 		if (!bt_global::btmain->difSon)
@@ -93,7 +97,6 @@ Page *getPage(int id)
 	{
 		MultiSoundDiff *p = new MultiSoundDiff(page_node);
 		p->forceDraw();
-		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
 		page = p;
 
 		if (!bt_global::btmain->dm)
@@ -106,7 +109,7 @@ Page *getPage(int id)
 	}
 	case ENERGY_MANAGEMENT:
 	{
-		PageContainer *p = new PageContainer(page_node);
+		SectionPage *p = new SectionPage(page_node);
 		p->addBackButton();
 		page = p;
 		break;
@@ -122,25 +125,34 @@ Page *getPage(int id)
 	case IMPOSTAZIONI:
 	{
 		Settings *p = new Settings(page_node);
-		p->forceDraw();
-		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SIGNAL(gestFrame(char *)));
-		QObject::connect(p, SIGNAL(startCalib()), bt_global::btmain, SLOT(startCalib()));
-		QObject::connect(p, SIGNAL(endCalib()), bt_global::btmain, SLOT(endCalib()));
+		//p->forceDraw();
 		page = p;
 		break;
 	}
 	case VIDEOCITOFONIA:
 	{
 		VideoEntryPhone *p = new VideoEntryPhone(page_node);
-		p->forceDraw();
+		//p->forceDraw();
 		page = p;
 		break;
 	}
+// TODO: this won't magically fix running BTouch with the new config file, but at least will
+// let us compile for BTouch (old conf) without problems.
+#ifdef LAYOUT_TOUCHX
+	case INTERCOM:
+		page = new Intercom(page_node);
+		break;
+	case VIDEO_CONTROL:
+		page = new VideoControl(page_node);
+		break;
+	case CALL_EXCLUSION:
+		page = new CallExclusion(page_node);
+		break;
+#endif
 	case SUPERVISIONE:
 	{
 		SupervisionMenu *p = new SupervisionMenu(page_node);
 		p->forceDraw();
-		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SIGNAL(gestFrame(char *)));
 		QObject::connect(p, SIGNAL(richStato(QString)), bt_global::btmain->client_richieste, SLOT(richStato(QString)));
 		page = p;
 		break;
@@ -148,7 +160,6 @@ Page *getPage(int id)
 	case SPECIAL:
 	{
 		SpecialPage *p = new SpecialPage(page_node);
-		QObject::connect(bt_global::btmain->client_monitor, SIGNAL(frameIn(char *)), p, SLOT(gestFrame(char *)));
 		page = p;
 		break;
 	}

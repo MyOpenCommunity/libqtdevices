@@ -6,8 +6,6 @@
 #include <QDebug>
 #include <QFile>
 
-#include <assert.h>
-
 
 SkinManager::SkinManager(QString filename)
 {
@@ -51,7 +49,7 @@ QString SkinManager::getStyle()
 
 void SkinManager::addToContext(int cid)
 {
-	assert(cid >=0 && "Invalid cid context");
+	Q_ASSERT_X(cid >=0, "SkinManager::addToContext", "Invalid cid context");
 	cid_lookup_list.append(cid);
 }
 
@@ -67,21 +65,23 @@ bool SkinManager::hasContext()
 
 QString SkinManager::getImage(QString name)
 {
-	foreach (int cid, cid_lookup_list)
+	for (int i = cid_lookup_list.size() - 1; i >= 0; --i)
+	{
+		int cid = cid_lookup_list[i];
 		if (images[cid].contains(name))
 			return IMG_PATH + images[cid][name];
+	}
 
 	if (images[-1].contains(name))
 		return IMG_PATH + images[-1][name];
 
 	qWarning("SkinManager: No image %s found", qPrintable(name));
-	return QString();
+	return QString("");
 }
-
 
 SkinContext::SkinContext(int cid)
 {
-	assert(bt_global::skin && "SkinManager not yet built!");
+	Q_ASSERT_X(bt_global::skin, "SkinContext::SkinContext", "SkinManager not yet built!");
 	bt_global::skin->addToContext(cid);
 }
 

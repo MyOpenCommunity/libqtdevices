@@ -12,93 +12,111 @@
 #include "device.h"
 #include "xml_functions.h"
 #include "main.h" //bt_global::config
+#include "bann1_button.h"
+#include "bannercontent.h"
+#include "skinmanager.h"
 
 #include <QVariant>
 #include <QRegExp>
 
 
-static const QString i_right_arrow = QString("%1%2").arg(IMG_PATH).arg("arrrg.png");
-static const QString i_zone = QString("%1%2").arg(IMG_PATH).arg("zona.png");
-static const QString i_thermr = QString("%1%2").arg(IMG_PATH).arg("centrale.png");
-
-
-PlantMenu::PlantMenu(QWidget *parent, QDomNode conf) : sottoMenu(parent),
-	items_submenu(0, 3, MAX_WIDTH, MAX_HEIGHT, 1),  // submenu with one item per page
-	signal_mapper(0)
+PlantMenu::PlantMenu(const QDomNode &conf) : BannerPage(0)
 {
-	conf_root = conf;
+	buildPage();
+	loadItems(conf);
+}
 
-	QDomNode thermr_address = conf_root.namedItem("ind_centrale");
+#ifdef CONFIG_BTOUCH
+void PlantMenu::loadItems(const QDomNode &conf)
+{
+	QDomNode thermr_address = conf.namedItem("ind_centrale");
 	if (thermr_address.isNull())
 		ind_centrale = "0";
 	else
 		ind_centrale = thermr_address.toElement().text();
 
-	QDomNode n = conf_root.firstChild();
-	int banner_id = 0;
+	QDomNode n = conf.firstChild();
+	NavigationPage *first = 0, *prev = 0;
 	while (!n.isNull())
 	{
 		if (n.nodeName().contains(QRegExp("item(\\d\\d?)")))
 		{
-			bannPuls *bp = 0;
-			QString descr = getTextChild(n, "descr");
-			if (descr.isNull())
-				qDebug("[TERMO] PlantMenu::PlantMenu, ``descr'' is null, prepare for strangeness...");
+			NavigationPage *pg = 0;
+
+			SkinContext context(getTextChild(n, "cid").toInt());
 
 			int id = n.namedItem("id").toElement().text().toInt();
 			switch (id)
 			{
 				case TERMO_99Z:
-					bp = addMenuItem(n, i_thermr, descr, fs_99z_thermal_regulator);
+					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), fs_99z_thermal_regulator);
 					break;
 				case TERMO_4Z:
-					bp = addMenuItem(n, i_thermr, descr, fs_4z_thermal_regulator);
+					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), fs_4z_thermal_regulator);
 					break;
 				case TERMO_99Z_PROBE:
-					bp = addMenuItem(n, i_zone, descr, fs_99z_probe);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), fs_99z_probe);
 					break;
 				case TERMO_99Z_PROBE_FANCOIL:
-					bp = addMenuItem(n, i_zone, descr, fs_99z_fancoil);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), fs_99z_fancoil);
 					break;
 				case TERMO_4Z_PROBE:
-					bp = addMenuItem(n, i_zone, descr, fs_4z_probe);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), fs_4z_probe);
 					break;
 				case TERMO_4Z_PROBE_FANCOIL:
-					bp = addMenuItem(n, i_zone, descr, fs_4z_fancoil);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), fs_4z_fancoil);
 					break;
 			}
 
-			signal_mapper.setMapping(bp, banner_id);
-			connect(bp, SIGNAL(sxClick()), &signal_mapper, SLOT(map()));
-			connect(bp, SIGNAL(sxClick()), &items_submenu, SLOT(showPage()));
+			if (prev)
+			{
+				connect(prev, SIGNAL(downClick()), pg, SLOT(showPage()));
+				connect(pg, SIGNAL(upClick()), prev, SLOT(showPage()));
+			}
+			connect(pg, SIGNAL(backClick()), SLOT(showPage()));
 
-			connect(&signal_mapper, SIGNAL(mapped(int)), &items_submenu, SLOT(showItem(int)));
-
-			++ banner_id;
+			prev = pg;
+			if (!first)
+				first = pg;
 		}
 		n = n.nextSibling();
 	}
-	connect(&items_submenu, SIGNAL(Closed()), this, SLOT(showPage()));
+
+	connect(prev, SIGNAL(downClick()), first, SLOT(showPage()));
+	connect(first, SIGNAL(upClick()), prev, SLOT(showPage()));
+}
+#else
+void PlantMenu::loadItems(const QDomNode &conf)
+{
+}
+#endif
+
+banner *PlantMenu::getBanner(const QDomNode &item_node)
+{
+	return NULL;
 }
 
-bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr, BannID type)
+void PlantMenu::inizializza()
+{
+	page_content->initBanners();
+}
+
+NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, BannID type)
 {
 	/*
 	 * Create little banner in selection menu.
 	 */
-	bannPuls *bp = new bannPuls(this);
-	bp->SetIcons(i_right_arrow, QString(), central_icon);
-	bp->setText(getTextChild(n, "descr"));
-	elencoBanner.append(bp);
-	connectLastBanner();
+	BannSinglePuls *bp = new BannSinglePuls(this);
+	bp->initBanner(bt_global::skin->getImage("forward"), central_icon, getTextChild(n, "descr"));
+	page_content->appendBanner(bp);
 
 	/*
-	 * Create full screen banner in detail menu.
+	 * Create page in detail menu.
 	 */
 	TemperatureScale scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
-	BannFullScreen *fsb = getBanner(type, &items_submenu, n, ind_centrale, scale);
-	fsb->setText(getTextChild(n, "descr"));
-	items_submenu.appendBanner(fsb);
+	NavigationPage *p = getPage(type, n, ind_centrale, scale);
+	connect(p, SIGNAL(Closed()), SLOT(showPage()));
+	connect(bp, SIGNAL(rightClick()), p, SLOT(showPage()));
 
-	return bp;
+	return p;
 }

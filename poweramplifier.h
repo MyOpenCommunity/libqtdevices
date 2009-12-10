@@ -17,7 +17,7 @@
 #include "bann2_buttons.h" // bannOnOff, bannOnOff2scr
 #include "bannonoffcombo.h"
 #include "poweramplifier_device.h"
-#include "sottomenu.h"
+#include "page.h"
 
 #include <QVector>
 #include <QString>
@@ -57,7 +57,7 @@ private:
  * The page of the settings of the power amplifier. It simply delegate the
  * functionality to the correct banner.
  */
-class PowerAmplifier : public sottoMenu
+class PowerAmplifier : public BannerPage
 {
 Q_OBJECT
 public:
@@ -68,7 +68,7 @@ private:
 };
 
 
-class PowerAmplifierPreset : public bannOnOff
+class PowerAmplifierPreset : public BannOnOffNew
 {
 Q_OBJECT
 public:
@@ -88,11 +88,11 @@ private:
 };
 
 
-class PowerAmplifierTreble : public bannOnOff2scr
+class PowerAmplifierTreble : public BannOnOff2Labels
 {
 Q_OBJECT
 public:
-	PowerAmplifierTreble(PowerAmplifierDevice *d, QWidget *parent=0);
+	PowerAmplifierTreble(PowerAmplifierDevice *d, const QString &banner_text, QWidget *parent=0);
 	virtual void inizializza(bool forza=false);
 
 private slots:
@@ -106,11 +106,11 @@ private:
 };
 
 
-class PowerAmplifierBass : public bannOnOff2scr
+class PowerAmplifierBass : public BannOnOff2Labels
 {
 Q_OBJECT
 public:
-	PowerAmplifierBass(PowerAmplifierDevice *d, QWidget *parent=0);
+	PowerAmplifierBass(PowerAmplifierDevice *d, const QString &banner_text, QWidget *parent=0);
 	virtual void inizializza(bool forza=false);
 
 private slots:
@@ -142,11 +142,11 @@ private:
 };
 
 
-class PowerAmplifierLoud : public bannOnOff
+class PowerAmplifierLoud : public BannOnOffState
 {
 Q_OBJECT
 public:
-	PowerAmplifierLoud(PowerAmplifierDevice *d, QWidget *parent=0);
+	PowerAmplifierLoud(PowerAmplifierDevice *d, const QString &banner_text, QWidget *parent=0);
 	virtual void inizializza(bool forza=false);
 
 private slots:

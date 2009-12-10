@@ -1,6 +1,7 @@
 #include "btbutton.h"
 #include "icondispatcher.h" // bt_global::icons_cache
-#include "generic_functions.h" // beep
+#include "hardware_functions.h" // beep
+#include "generic_functions.h" // getPressName
 
 #include <QDebug>
 #include <QFile>

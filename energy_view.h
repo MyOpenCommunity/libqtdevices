@@ -17,7 +17,7 @@ class EnergyTable;
 class QLabel;
 class QStackedWidget;
 class QSignalMapper;
-class bannFrecce;
+class EnergyViewNavigation;
 
 typedef QCache<QString, GraphData> GraphCache;
 
@@ -66,7 +66,27 @@ signals:
 };
 
 
-class EnergyView : public PageLayout
+class EnergyViewNavigation : public QWidget
+{
+Q_OBJECT
+public:
+	EnergyViewNavigation();
+
+	void showTableButton(bool show);
+	void showCurrency(bool show);
+
+signals:
+	void toggleCurrency();
+	void backClick();
+	void showTable();
+
+private:
+	BtButton *table_button;
+	BtButton *currency_button;
+};
+
+
+class EnergyView : public Page
 {
 Q_OBJECT
 public:
@@ -110,7 +130,7 @@ private:
 		GRAPH_WIDGET = 1
 	};
 
-	bannFrecce *bannNavigazione;
+	EnergyViewNavigation *nav_bar;
 	bannTextOnImage *current_banner, *daily_av_banner;
 	bannTextOnImage *cumulative_day_banner, *cumulative_month_banner, *cumulative_year_banner;
 	int current_value, daily_av_value;

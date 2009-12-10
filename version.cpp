@@ -1,18 +1,18 @@
 #include "version.h"
-#include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH
+#include "skinmanager.h"
 #include "fontmanager.h" // bt_global::font
 
-#include <openwebnet.h>
+#include <openmsg.h>
 
 #include <QStringList>
 #include <QVariant> // setProperty
-#include <QWidget>
-#include <QPixmap>
 #include <QLabel>
 
 
 Version::Version()
 {
+	SkinContext version_cxt(806);
+
 	setProperty("noStyle", true);
 	box_text = new QLabel(this);
 	box_text->setGeometry(15, 150, 210, 160);
@@ -24,48 +24,57 @@ Version::Version()
 	QLabel *myHome = new QLabel(this);
 	myHome->setGeometry(30, 12, 181, 128);
 	myHome->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	myHome->setPixmap(QPixmap(IMG_PATH "my_home.png"));
+	myHome->setPixmap(bt_global::skin->getImage("logo"));
 
 	QLabel *bticino = new QLabel(this);
 	bticino->setGeometry(129, 258, 92, 42);
 	bticino->setFrameStyle(QFrame::Plain);
-	bticino->setPixmap(QPixmap(IMG_PATH "bticino.png"));
+	bticino->setPixmap(bt_global::skin->getImage("bticino"));
 
 	box_text->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	indDisp = 0;
+	subscribe_monitor(13);
+	subscribe_monitor(1013);
+
+	vers = 0;
+	release = 0;
+	build = 0;
+	pic_version = 0;
+	pic_release = 0;
+	pic_build = 0;
+	hw_version = 0;
+	hw_release = 0;
+	hw_build = 0;
 }
 
-void Version::gestFrame(char* frame)
+void Version::manageFrame(OpenMsg &msg)
 {
-	openwebnet msg_open;
-
 	bool reload = false;
-	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 
-	if (!strcmp(msg_open.Extract_chi(),"13"))
+	if (msg.who() == 13)
 	{
-		if (!strcmp(msg_open.Extract_grandezza(),"16"))
+		if (!strcmp(msg.Extract_grandezza(),"16"))
 		{
-			vers = atoi(msg_open.Extract_valori(0));
-			release = atoi(msg_open.Extract_valori(1));
-			build = atoi(msg_open.Extract_valori(2));
+			vers = atoi(msg.Extract_valori(0));
+			release = atoi(msg.Extract_valori(1));
+			build = atoi(msg.Extract_valori(2));
 			reload = true;
 		}
 	}
-	if (!strcmp(msg_open.Extract_chi(),"1013"))
+	else // who == 1013
 	{
-		if (!strcmp(msg_open.Extract_grandezza(),"6"))
+		if (!strcmp(msg.Extract_grandezza(),"6"))
 		{
-			pic_version = atoi(msg_open.Extract_valori(0));
-			pic_release = atoi(msg_open.Extract_valori(1));
-			pic_build = atoi(msg_open.Extract_valori(2));
+			pic_version = atoi(msg.Extract_valori(0));
+			pic_release = atoi(msg.Extract_valori(1));
+			pic_build = atoi(msg.Extract_valori(2));
 			reload = true;
 		}
-		if (!strcmp(msg_open.Extract_grandezza(),"3"))
+		if (!strcmp(msg.Extract_grandezza(),"3"))
 		{
-			hw_version = atoi(msg_open.Extract_valori(0));
-			hw_release = atoi(msg_open.Extract_valori(1));
-			hw_build = atoi(msg_open.Extract_valori(2));
+			hw_version = atoi(msg.Extract_valori(0));
+			hw_release = atoi(msg.Extract_valori(1));
+			hw_build = atoi(msg.Extract_valori(2));
 			reload = true;
 			qDebug("presa vers HW = %d.%d.%d",hw_version, hw_release, hw_build);
 		}

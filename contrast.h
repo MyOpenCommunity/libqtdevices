@@ -13,9 +13,6 @@
 
 #include "page.h"
 
-class BtButton;
-class QLabel;
-
 /*!
   \class Contrast
   \brief This is a class that manage the contrast of the LCD. 
@@ -31,18 +28,10 @@ class Contrast : public Page
 Q_OBJECT
 public:
 	Contrast();
-	void draw();
-
-	BtButton *aumBut, *decBut, *okBut;
-	QLabel *paintLabel, *colorBar;
 
 private slots:
-	void aumContr();
-	void decContr();
+	void incContrast();
+	void decContrast();
 };
-
-#define BUT_DIM 60
-#define IMG_X 181
-#define IMG_Y 128
 
 #endif // CONTRAST_H

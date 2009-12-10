@@ -39,6 +39,8 @@ enum DateFormat
 };
 
 QDomNode getPageNode(int id);
+QDomNode getPageNodeFromPageId(int pageid);
+QDomNode getHomepageNode();
 
 // See getElement
 QDomElement getConfElement(QString path);
@@ -72,6 +74,10 @@ void resetTimer(int signo);
  *  Define path for Icons
  */
 #define IMG_PATH                    "cfg/extra/1/skin/"
+/*! \def SOUND_PATH
+ *  Define path for Sounds
+ */
+#define SOUND_PATH                    "cfg/extra/10/"
 /*! \def EXTRA_FILE
  *  Define xml file that contains extras (for istance fonts color and fonts background)
  */
@@ -158,8 +164,10 @@ void resetTimer(int signo);
  ****************************************************************/
 /*! \enum pagSecLiv
   This enum describes the various kind of pages*/
+#ifdef CONFIG_BTOUCH
 enum pagSecLiv
 {
+	NO_SECTION=0,
 	AUTOMAZIONE=1,                                /*!< Automation system */
 	ILLUMINAZIONE=2,                              /*!< Lighting system */
 	ANTIINTRUSIONE=3,                             /*!< Anti-intrusion system */
@@ -178,7 +186,38 @@ enum pagSecLiv
 	ENERGY_MANAGEMENT=16,                         /*!< Energy management system */
 	ENERGY_DATA=17,                               /*!< Energy data system */
 	FEED_READER=99,                               /*!< Feed reader page */
+	/* Added to avoid compile problems... */
+	VIDEO_CONTROL=2000,                           /*!< Video control menu */
+	INTERCOM=2001,                                /*!< Intercom menu */
+	CALL_EXCLUSION=2003,                          /*!< Call exclusion */
 };
+#else
+enum pagSecLiv
+{
+	NO_SECTION=0,
+	AUTOMAZIONE=1,                                /*!< Automation system */
+	ILLUMINAZIONE=2,                              /*!< Lighting system */
+	ANTIINTRUSIONE=3,                             /*!< Anti-intrusion system */
+	CARICHI=4,                                    /*!< Appliances managing system */
+	TERMOREGOLAZIONE=5,                           /*!< Thermoregulation system */
+	DIFSON=16,                                    /*!< Sound diffusion system */
+	SCENARI=19,                                   /*!< Scenarios managing */
+	IMPOSTAZIONI=29,                              /*!< Settings */
+	BACK=9,                                       /*!< Back button - placed here for convenience */
+	SPECIAL=10,                                   /*!< Special button - placed here for convenience */
+	VIDEOCITOFONIA=22,
+	SCENARI_EVOLUTI=20,                           /*!< Advanced scenarios management */
+	DIFSON_MULTI=17,                              /*!< Multichannel sound diffusion system */
+	SUPERVISIONE=-2,                              /*!< Supervision system */
+	TERMOREG_MULTI_PLANT=-3,                      /*!< Thermoregulation system with one or more 4-zones plants */
+	ENERGY_MANAGEMENT=-4,                         /*!< Energy management system */
+	ENERGY_DATA=-5,                               /*!< Energy data system */
+	FEED_READER=-6,                               /*!< Feed reader page */
+	VIDEO_CONTROL=2200,                           /*!< Video control menu */
+	INTERCOM=2201,                                /*!< Intercom menu */
+	CALL_EXCLUSION=2203,                          /*!< Call exclusion */
+};
+#endif
 
 
 /****************************************************************
@@ -363,6 +402,7 @@ enum  bannerType
 	AMPLIFICATORE=18,                             /*!<  Amplifier */
 	GR_AMPLIFICATORI=19,                          /*!<  Amplifier's group */
 	SET_SVEGLIA=20,                               /*!<  AlarmClock setting */
+	SET_SVEGLIA_SINGLEPAGE=8800,                  /*!<  AlarmClock setting with state icon */
 	DISPLAY=21,                                   /*!<  Display */
 	ZONANTINTRUS=23,                              /*!<  Anti-intrusion zone */
 	IMPIANTINTRUS=24,                             /*!<  Anti-intrusion system */
@@ -409,9 +449,12 @@ enum  bannerType
 	TERMO_4Z=68,                                  /*!< 4 zones thermal regulator */
 	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
 	ENERGY_TYPE=70,
-	// keep 69-71 free for energy management devices
 	LANSETTINGS=72,                               /*!< LAN settings and information */
-
+	AIR_SPLIT=74,                                 /*!< AIR conditioning single split (basic) */
+	AIR_GENERAL=75,                               /*!< AIR conditioning general split (basic) */
+	AIR_SPLIT_ADV=77,                             /*!< AIR conditioning single split (advanced) */
+	AIR_GENERAL_ADV=78,                           /*!< AIR conditioning general split (advanced) */
+	BEEP_ICON=2901,                               /*!< Beep icon in touch 10 settings */
 };
 
 /*! \enum pulsType
@@ -424,7 +467,6 @@ enum pulsType
 	VCT_LS,                    /*!< driving as a pulse a video-doorentrysystem actuator configured as "stairlight" */
 };
 
-
 /***************************************************************
  **definizioni di carattere generale
  ***************************************************************/
@@ -432,9 +474,6 @@ enum pulsType
  * maximum number of characters describing a file path
  */
 #define MAX_PATH 50
-/*! \def TIME_RIP_REGOLAZ  time [ms] between two repetitionof a regulation command during the same pressure
- */
-#define TIME_RIP_REGOLAZ 500
 
 /// The simbol of temperature degrees
 #define TEMP_DEGREES "\272"

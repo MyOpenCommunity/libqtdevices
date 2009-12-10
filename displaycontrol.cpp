@@ -1,7 +1,6 @@
 #include "displaycontrol.h"
-#include "generic_functions.h" // setCfgValue, setBrightnessLevel, setBacklightOn
-
-#include <assert.h>
+#include "generic_functions.h" // setCfgValue
+#include "hardware_functions.h" // setBrightnessLevel, setBacklightOn
 
 
 DisplayControl::DisplayControl()
@@ -52,7 +51,7 @@ void DisplayControl::_setBrightness(BrightnessLevel level)
 		break;
 
 	default:
-		assert(!"Unknown level for brightness");
+		qFatal("Unknown level for brightness");
 	}
 
 	// Operative status has the same values for all levels
@@ -88,7 +87,7 @@ bool DisplayControl::isForcedOperativeMode()
 
 void DisplayControl::setState(DisplayStatus status)
 {
-	if (!forced_operative_mode || forced_operative_mode && status == DISPLAY_OPERATIVE)
+	if (!forced_operative_mode || (forced_operative_mode && status == DISPLAY_OPERATIVE))
 	{
 		setBacklightOn(data[status].backlight);
 		setBrightnessLevel(data[status].brightness);
@@ -103,7 +102,10 @@ DisplayStatus DisplayControl::currentState()
 
 void DisplayControl::setScreenSaver(ScreenSaver::Type t)
 {
+	// TODO find the correct place to save the information
+#ifdef CONFIG_TOUCHX
 	setCfgValue("screensaver/type", QString::number(t), DISPLAY);
+#endif
 	current_screensaver = t;
 }
 

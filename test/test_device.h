@@ -20,6 +20,7 @@ class TestDevice : public QObject
 {
 public:
 	TestDevice();
+	void initTestDevice();
 	virtual ~TestDevice();
 
 protected:
@@ -27,6 +28,7 @@ protected:
 	Client *client_command;
 	Client *client_request;
 	Client *client_monitor;
+	void cleanBuffers();
 };
 
 

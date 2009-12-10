@@ -8,7 +8,7 @@
 #include <QRect>
 
 class Page;
-class QStackedWidget;
+class WindowContainer;
 
 
 /**
@@ -16,30 +16,37 @@ class QStackedWidget;
  */
 class TransitionWidget : public QWidget
 {
-friend class Page;
 Q_OBJECT
 public:
-	TransitionWidget(QStackedWidget *win, int time);
-	void setStartingPage(Page *prev);
-	void startTransition(Page *next);
+	TransitionWidget(int time);
+
+	// must be called before altering the state of the page
+	// grabs a screenshot of the current state of the HomeWidget and then
+	// shows itself as the top level widget
+	void prepareTransition();
+
+	// must be called after altering the state of the page to the final
+	// state; grabs a screenshot of the final state of the HomeWidget and
+	// starts performing the transition
+	void startTransition();
+
+	void cancelTransition();
+
+	void setContainer(WindowContainer *container);
+
+signals:
+	void endTransition();
 
 protected:
-	QStackedWidget *main_window;
 	QTimeLine timeline;
 	QPixmap prev_image;
-	QPixmap next_image;
+	QPixmap dest_image;
 
 	virtual void initTransition() {}
 
-private slots:
-	void transitionEnd();
-
 private:
-	Page *prev_page;
-	Page *dest_page;
+	WindowContainer *container;
 	QEventLoop local_loop;
-
-	void cancelTransition();
 };
 
 
@@ -50,7 +57,7 @@ class BlendingTransition : public TransitionWidget
 {
 Q_OBJECT
 public:
-	BlendingTransition(QStackedWidget *win);
+	BlendingTransition();
 
 protected:
 	virtual void paintEvent(QPaintEvent *e);
@@ -61,8 +68,8 @@ private slots:
 
 private:
 	qreal blending_factor;
-
 };
+
 
 /**
  * Do a mosaic transition between two widgets
@@ -71,7 +78,7 @@ class MosaicTransition : public TransitionWidget
 {
 Q_OBJECT
 public:
-	MosaicTransition(QStackedWidget *win);
+	MosaicTransition();
 
 protected:
 	virtual void paintEvent(QPaintEvent *e);

@@ -10,8 +10,7 @@
 #ifndef PLANTMENU_H
 #define PLANTMENU_H
 
-#include "sottomenu.h"
-#include "bann1_button.h"
+#include "page.h"
 #include "bann_thermal_regulation.h"
 
 #include <QSignalMapper>
@@ -19,48 +18,33 @@
 #include <QDomNode>
 
 class device;
-class thermal_regulator_99z;
-class thermal_regulator_4z;
-class thermal_regulator;
+class NavigationPage;
 
 
-class PlantMenu : public sottoMenu
+class PlantMenu : public BannerPage
 {
 Q_OBJECT
 public:
-	PlantMenu(QWidget *parent, QDomNode conf);
+	PlantMenu(const QDomNode &conf);
+	virtual void inizializza();
+	static banner *getBanner(const QDomNode &item_node);
 
 private:
+	void loadItems(const QDomNode &conf);
+
 	/**
 	 * Utility function to create a banner in the plant menu and the corresponding full
 	 * screen banner.
 	 * \param n             The node in the configuration DOM which is a `item' tag
 	 * \param central_icon  The path of the icon to be shown in plant menu banner
-	 * \param descr         The text to be shown in the banner in plant menu
 	 * \param type          The type of full screen banner that is linked to the banner in plant menu
-	 * \param addr          The address of the device observed by the banner
-	 * \param dev           A pointer to the device observed by the banner
-	 * \param bannfullscreen The full screen banner that is created with the call to \a addMenuItem
 	 * \return A pointer to the small banner that will show the corresponding full screen banner.
 	 */
-	bannPuls *addMenuItem(QDomNode n, QString central_icon, QString descr, BannID type);
-
-	/// Node in the Dom tree that is a `plant' tag
-	QDomNode conf_root;
+	NavigationPage *addMenuItem(QDomNode n, QString central_icon, BannID type);
 
 	/// Address of the thermal regulation device
 	/// empty in case of 99z device
 	QString ind_centrale;
-
-	/*
-	 * Sub-sub menu used to show the full screen banners corresponding to the
-	 * same small banners present in the plant menu.
-	 */
-	sottoMenu items_submenu;
-
-	/*
-	 * Used to call show(int) on SottoMenu based on which banner is clicked.
-	 */
-	QSignalMapper signal_mapper;
 };
+
 #endif // PLANTMENU_H

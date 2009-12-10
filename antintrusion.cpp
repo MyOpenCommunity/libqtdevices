@@ -1,50 +1,55 @@
 #include "antintrusion.h"
 #include "keypad.h"
 #include "bann_antintrusion.h"
-#include "sottomenu.h"
 #include "xml_functions.h" // getChildren, getTextChild
-#include "allarme.h"
+#include "alarmpage.h"
 #include "btmain.h" // bt_global::btmain
+#include "bannercontent.h"
+#include "navigation_bar.h"
+#include "btbutton.h"
+#include "main.h"
 
-#include <openwebnet.h> // class openwebnet
+#include <openmsg.h>
 
 #include <QDateTime>
 #include <QDebug>
 #include <QDomNode>
 #include <QWidget>
+#include <QVBoxLayout>
 
 
 Antintrusion::Antintrusion(const QDomNode &config_node)
 {
 	tasti = NULL;
-	numRighe = NUM_RIGHE;
 	previous_page = 0;
 
-	// TODO: the "impianto" is a sottoMenu, but only one banner can be put inside
-	// it (an impAnti instance).. so replace the sottomenu with the banner!
-	impianto = new sottoMenu(this, 0 ,MAX_WIDTH, MAX_HEIGHT/numRighe, 1);
+	// We have to use a layout for the top_widget, in order to define an appropriate
+	// sizeHint (needed by the main layout added to the Page)
+	// An alternative is to define a custom widget that rimplement the sizeHint method.
+	top_widget = new QWidget;
+	QVBoxLayout *l = new QVBoxLayout(top_widget);
+	l->setSpacing(0);
+	l->setContentsMargins(0, 0, 0, 0);
 
-	zone = new sottoMenu(this,4,MAX_WIDTH, MAX_HEIGHT-MAX_HEIGHT/numRighe,2);
-	zone->setNavBarMode(4, IMG_PATH "btnparzializzazione.png");
-	zone->move(0, MAX_HEIGHT/numRighe);
+	// TODO: we introduce a double dependency to customize the image of the forward
+	// button and to obtain a reference of it (to show/hide the button).
+	// We can do better!
+	NavigationBar *nav_bar = new NavigationBar(IMG_PATH "btnparzializzazione.png");
+	buildPage(new BannerContent, nav_bar, top_widget);
+	forward_button = nav_bar->forward_button;
 
-	connect(this, SIGNAL(Closed()), zone, SLOT(resetIndex()));
-	connect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
-	connect(this, SIGNAL(abilitaParz(bool)), this, SLOT(IsParz(bool)));
+	connect(this, SIGNAL(abilitaParz(bool)), SLOT(IsParz(bool)));
+	connect(this, SIGNAL(forwardClick()), SLOT(Parzializza()));
 	curr_alarm = -1;
-	connect(zone,SIGNAL(Closed()), this, SIGNAL(Closed()));
-	connect(this,SIGNAL(gestFrame(char *)),zone,SIGNAL(gestFrame(char *)));
-	connect(this,SIGNAL(gestFrame(char *)),impianto,SIGNAL(gestFrame(char *)));
-	connect(this, SIGNAL(openAckRx()), impianto, SIGNAL(openAckRx()));
-	connect(this, SIGNAL(openNakRx()), impianto, SIGNAL(openNakRx()));
-	connect(impianto, SIGNAL(goDx()), this, SLOT(showAlarms()));
 	loadItems(config_node);
+	Q_ASSERT_X(impianto, "Antintrusion::Antintrusion", "Impianto not found on the configuration file!");
 	t = new QTimer(this);
 	t->setSingleShot(true);
 	connect(t, SIGNAL(timeout()), SLOT(ctrlAllarm()));
 	connect(this, SIGNAL(Closed()), SLOT(requestZoneStatus()));
 	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)),
 			SLOT(requestStatusIfCurrentWidget(Page*)));
+	subscribe_monitor(5);
 }
 
 void Antintrusion::loadItems(const QDomNode &config_node)
@@ -62,39 +67,41 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 
 		if (id == IMPIANTINTRUS)
 		{
-			b = new impAnti(impianto, img1, img2, img3, img4);
-			b->setText(descr);
-			b->setId(id);
-			impianto->appendBanner(b);
-			connect(b, SIGNAL(impiantoInserito()), SLOT(plantInserted()));
-			connect(b, SIGNAL(abilitaParz(bool)), SIGNAL(abilitaParz(bool)));
-			connect(b, SIGNAL(clearChanged()), SIGNAL(clearChanged()));
-			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-			connect(this, SIGNAL(partChanged(zonaAnti*)), b, SLOT(partChanged(zonaAnti*)));
-			connect(impianto, SIGNAL(openAckRx()), b, SLOT(openAckRx()));
-			connect(impianto, SIGNAL(openNakRx()), b, SLOT(openNakRx()));
+			impianto = new impAnti(top_widget, img1, img2, img3, img4);
+			impianto->setText(descr);
+			impianto->Draw();
+			impianto->setId(id);
+			top_widget->layout()->addWidget(impianto);
+
+			connect(impianto, SIGNAL(impiantoInserito()), SLOT(plantInserted()));
+			connect(impianto, SIGNAL(abilitaParz(bool)), SIGNAL(abilitaParz(bool)));
+			connect(impianto, SIGNAL(clearChanged()), SIGNAL(clearChanged()));
+			connect(impianto, SIGNAL(pageClosed()), SLOT(showPage()));
+			connect(impianto, SIGNAL(sxClick()), SLOT(showAlarms()));
+
+			connect(this, SIGNAL(partChanged(zonaAnti*)), impianto, SLOT(partChanged(zonaAnti*)));
+			connect(this, SIGNAL(openAckRx()), impianto, SLOT(openAckRx()));
+			connect(this, SIGNAL(openNakRx()), impianto, SLOT(openNakRx()));
 
 			testoTecnico = tr("technical");
 			testoIntrusione = tr("intrusion");
 			testoManom = tr("tamper");
 			testoPanic = tr("anti-panic");
-			impianto->forceDraw();
 		}
 		else if (id == ZONANTINTRUS)
 		{
-			b = new zonaAnti(zone, descr, getTextChild(item, "where"), img1, img2, img3);
+			b = new zonaAnti(this, descr, getTextChild(item, "where"), img1, img2, img3);
 			b->setText(descr);
 			b->setId(id);
-			zone->appendBanner(b);
+			b->Draw();
+			page_content->appendBanner(b);
 			connect(this, SIGNAL(abilitaParz(bool)), b, SLOT(abilitaParz(bool)));
 			connect(this, SIGNAL(clearChanged()), b, SLOT(clearChanged()));
 			connect(b, SIGNAL(partChanged(zonaAnti*)), SIGNAL(partChanged(zonaAnti*)));
 			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-			// Alhtough looking at the source one would say that more than
-			// one "impianto" could be configured, in real life only one
-			// impianto can exist
-			((impAnti *)impianto->getLast())->setZona((zonaAnti *)b);
-			zone->forceDraw();
+			// We assume that the antintrusion impianto came before all the zones
+			Q_ASSERT_X(impianto, "Antintrusion::loadItems", "Found a zone before the impianto!");
+			impianto->setZona((zonaAnti *)b);
 		}
 		else
 			Q_ASSERT_X(false, "Antintrusion::loadItems", qPrintable(QString("Type of item %1 not handled!").arg(id)));
@@ -109,9 +116,6 @@ void Antintrusion::plantInserted()
 		previous_page->showPage();
 		// this is the only place where we call a showPage() and we need to restore the screensaver
 		bt_global::btmain->showScreensaverIfNeeded();
-		// we need to put back the original page, since in some cases previous_page is an allarme*
-		// which are deleted by clearAlarms() above.
-		bt_global::btmain->setPreviousPage(previous_page);
 		previous_page = 0;
 	}
 }
@@ -124,17 +128,18 @@ Antintrusion::~Antintrusion()
 void Antintrusion::IsParz(bool ab)
 {
 	qDebug("antintrusione::IsParz(%d)", ab);
+
 	if (ab)
 	{
-		connect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
-		zone->setNavBarMode(4, IMG_PATH "btnparzializzazione.png");
+		connect(this, SIGNAL(forwardClick()), SLOT(Parzializza()));
+		forward_button->show();
 	}
 	else
 	{
-		disconnect(zone, SIGNAL(goDx()), this, SLOT(Parzializza()));
-		zone->setNavBarMode(3,"");
+		disconnect(this, SIGNAL(forwardClick()), this, SLOT(Parzializza()));
+		forward_button->hide();
 	}
-	zone->forceDraw();
+
 }
 
 void Antintrusion::Parzializza()
@@ -142,14 +147,13 @@ void Antintrusion::Parzializza()
 	qDebug("antintrusione::Parzializza()");
 	int s[MAX_ZONE];
 	for (int i = 0; i < MAX_ZONE; i++)
-	{
-		s[i] = ((impAnti *)impianto->getLast())->getIsActive(i);
-	}
+		s[i] = impianto->getIsActive(i);
+
 	if (tasti)
 		delete tasti;
 	tasti = new KeypadWithState(s);
-	connect(tasti, SIGNAL(Closed()), this, SLOT(Parz()));
-	connect(tasti, SIGNAL(Closed()), this, SLOT(showPage()));
+	connect(tasti, SIGNAL(Closed()), SLOT(Parz()));
+	connect(tasti, SIGNAL(Closed()), SLOT(showPage()));
 	tasti->setMode(Keypad::HIDDEN);
 	tasti->showPage();
 }
@@ -162,13 +166,13 @@ void Antintrusion::Parz()
 	{
 		QString f = "*5*50#" + pwd + "#";
 		for (int i = 0; i < MAX_ZONE; i++)
-			f += ((impAnti *)impianto->getLast())->getIsActive(i) ? "0" : "1";
+			f += impianto->getIsActive(i) ? "0" : "1";
 		f += "*0##";
 		qDebug() << "sending part frame" << f;
 		sendFrame(f);
-		((impAnti *)impianto->getLast())->ToSendParz(false);
+		impianto->ToSendParz(false);
 	}
-	connect(&request_timer, SIGNAL(timeout()), this, SLOT(request()));
+	connect(&request_timer, SIGNAL(timeout()), SLOT(request()));
 	request_timer.start(5000);
 }
 
@@ -181,129 +185,105 @@ void Antintrusion:: ctrlAllarm()
 {
 	qDebug("ctrlAllarm %d", allarmi.size());
 	if (!allarmi.isEmpty())
-		impianto->getLast()->mostra(banner::BUT1);
+		impianto->mostra(banner::BUT1);
 	else
-		impianto->getLast()->nascondi(banner::BUT1);
+		impianto->nascondi(banner::BUT1);
 }
 
 void Antintrusion::draw()
 {
 	ctrlAllarm();
-	if (impianto)
-		impianto->draw();
-	if (zone)
-		zone->draw();
 	if (allarmi.isEmpty())
 		return;
-
-	for (int i = 0; i < allarmi.size(); ++i)
-		allarmi.at(i)->draw();
-}
-
-void Antintrusion::setNumRighe(uchar n)
-{
-	numRighe = n;
-	zone->setNumRighe(n - 1);
-	impianto->setNumRighe(1);
-	zone->draw();
-	impianto->draw();
 }
 
 void Antintrusion::inizializza()
 {
-	zone->inizializza();
 	impianto->inizializza();
-	connect(((impAnti *)impianto->getLast()), SIGNAL(clearAlarms()), this, SLOT(doClearAlarms()));
+	page_content->initBanners();
+	connect(impianto, SIGNAL(clearAlarms()), this, SLOT(doClearAlarms()));
 }
 
-void Antintrusion::gesFrame(char*frame)
+void Antintrusion::manageFrame(OpenMsg &msg)
 {
-	emit gestFrame(frame);
-	openwebnet msg_open;
-	char aggiorna;
+	bool aggiorna = false;
 
-	aggiorna = 0;
 
-	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-
-	if (!strcmp(msg_open.Extract_chi(),"5"))
+	if ((!strncmp(msg.Extract_cosa(),"12",2)) || (! strncmp(msg.Extract_cosa(),"15",2)) || \
+		(!strncmp(msg.Extract_cosa(),"16",2)) || (! strncmp(msg.Extract_cosa(),"17",2)))
 	{
-		if ((!strncmp(msg_open.Extract_cosa(),"12",2)) || (! strncmp(msg_open.Extract_cosa(),"15",2)) || \
-			(!strncmp(msg_open.Extract_cosa(),"16",2)) || (! strncmp(msg_open.Extract_cosa(),"17",2)))
+		QString descr;
+		char zona[3];
+		QString tipo = "Z";
+		AlarmPage::altype t;
+
+		if  (!strncmp(msg.Extract_cosa(),"12",2) && !testoTecnico.isNull())
 		{
-			QString descr;
-			char zona[3];
-			QString tipo = "Z";
-			allarme::altype t;
-
-			if  (!strncmp(msg_open.Extract_cosa(),"12",2) && !testoTecnico.isNull())
-			{
-				descr = testoTecnico;
-				t = allarme::TECNICO;
-				tipo = "AUX";
-			}
-
-			if  (!strncmp(msg_open.Extract_cosa(),"15",2) && !testoIntrusione.isNull())
-			{
-				descr = testoIntrusione;
-				t = allarme::INTRUSIONE;
-			}
-
-			if  (!strncmp(msg_open.Extract_cosa(),"16",2) && !testoManom.isNull())
-			{
-				descr = testoManom;
-				t = allarme::MANOMISSIONE;
-			}
-
-			if  (!strncmp(msg_open.Extract_cosa(),"17",2) && !testoPanic.isNull())
-			{
-				descr = testoPanic;
-				t = allarme::PANIC;
-			}
-
-			// To simulate old behaviour
-			descr.truncate(MAX_PATH);
-
-			strcpy(zona,msg_open.Extract_dove());
-
-			QString hhmm = QDateTime::currentDateTime().toString("hh:mm");
-			QString ddMM = QDateTime::currentDateTime().toString("dd.MM");
-			QString time = QString("\n%1   %2    %3 %4").arg(hhmm).arg(ddMM).arg(tipo).arg(&zona[1]);
-
-			descr += time;
-			descr.truncate(2 * MAX_PATH);
-
-			allarmi.append(new allarme(descr, NULL, ICON_DEL, t));
-			// The current alarm is the last alarm inserted
-			curr_alarm = allarmi.size() - 1;
-			allarme *curr = allarmi.at(curr_alarm);
-			connect(curr, SIGNAL(Closed()), this, SLOT(closeAlarms()));
-			connect(curr, SIGNAL(Next()), this, SLOT(nextAlarm()));
-			connect(curr, SIGNAL(Prev()), this, SLOT(prevAlarm()));
-			connect(curr, SIGNAL(Delete()), this, SLOT(deleteAlarm()));
-			aggiorna = 1;
+			descr = testoTecnico;
+			t = AlarmPage::TECNICO;
+			tipo = "AUX";
 		}
+
+		if  (!strncmp(msg.Extract_cosa(),"15",2) && !testoIntrusione.isNull())
+		{
+			descr = testoIntrusione;
+			t = AlarmPage::INTRUSIONE;
+		}
+
+		if  (!strncmp(msg.Extract_cosa(),"16",2) && !testoManom.isNull())
+		{
+			descr = testoManom;
+			t = AlarmPage::MANOMISSIONE;
+		}
+
+		if  (!strncmp(msg.Extract_cosa(),"17",2) && !testoPanic.isNull())
+		{
+			descr = testoPanic;
+			t = AlarmPage::PANIC;
+		}
+
+		// To simulate old behaviour
+		descr.truncate(MAX_PATH);
+
+		strcpy(zona,msg.Extract_dove());
+
+		QString hhmm = QDateTime::currentDateTime().toString("hh:mm");
+		QString ddMM = QDateTime::currentDateTime().toString("dd.MM");
+		QString time = QString("\n%1   %2    %3 %4").arg(hhmm).arg(ddMM).arg(tipo).arg(&zona[1]);
+
+		descr += time;
+		descr.truncate(2 * MAX_PATH);
+
+		allarmi.append(new AlarmPage(descr, NULL, ICON_DEL, t));
+		// The current alarm is the last alarm inserted
+		curr_alarm = allarmi.size() - 1;
+		AlarmPage *curr = allarmi.at(curr_alarm);
+		connect(curr, SIGNAL(Closed()), SLOT(closeAlarms()));
+		connect(curr, SIGNAL(Next()), SLOT(nextAlarm()));
+		connect(curr, SIGNAL(Prev()), SLOT(prevAlarm()));
+		connect(curr, SIGNAL(Delete()), SLOT(deleteAlarm()));
+		aggiorna = true;
 	}
+
 	if (aggiorna)
 	{
 		qDebug("ARRIVATO ALLARME!!!!");
 		Q_ASSERT_X(curr_alarm >= 0 && curr_alarm < allarmi.size(), "Antintrusion::gesFrame",
 			qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(curr_alarm).arg(allarmi.size())));
+		AlarmPage *curr = allarmi.at(curr_alarm);
 
-		allarme *curr = allarmi.at(curr_alarm);
+		// if the alarm arrive during the screensaver, we want to turn back to the alarm when the screensaver exit
 		if (bt_global::btmain->screenSaverRunning())
 		{
 			if (!previous_page)
 				previous_page = bt_global::btmain->getPreviousPage();
-			// if the alarm arrive during the screensaver, we want to turn back to the alarm when the screensaver exit
-			bt_global::btmain->setPreviousPage(curr);
 		}
 		else
 		{
 			if (!previous_page)
 				previous_page = currentPage();
 		}
-		// TODO: this should go a line above? Otherwise we override the screensaver page
+
 		curr->showPage();
 		ctrlAllarm();
 	}
@@ -320,11 +300,6 @@ void Antintrusion::closeAlarms()
 	}
 	else
 		showPage();
-}
-
-void Antintrusion::setNavBarMode(uchar c)
-{
-	zone->setNavBarMode(c);
 }
 
 void Antintrusion::nextAlarm()
@@ -390,7 +365,7 @@ void Antintrusion::clearAlarms()
 	qDebug("antiintrusione::clearAlarms()");
 	while (!allarmi.isEmpty())
 	{
-		allarme *a = allarmi.takeFirst();
+		AlarmPage *a = allarmi.takeFirst();
 		a->disconnect();
 		a->deleteLater();
 	}

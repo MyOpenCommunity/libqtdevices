@@ -1,8 +1,8 @@
 #ifndef ENERGY_DATA_H
 #define ENERGY_DATA_H
 
-#include "sottomenu.h"
 #include "bann1_button.h" // bannPuls, bannTextOnImage
+#include "page.h"
 
 #include <QHash>
 #include <QTimer>
@@ -13,7 +13,7 @@ class EnergyView;
 class EnergyInterface;
 
 
-class EnergyData : public sottoMenu
+class EnergyData : public BannerPage
 {
 Q_OBJECT
 public:
@@ -35,11 +35,15 @@ private:
 /**
  * The page to set the related cost and incentive of an energy typology.
  */
-class EnergyCost : public PageLayout
+class EnergyCost : public Page
 {
 Q_OBJECT
 public:
 	EnergyCost(const QDomNode &config_node, int serial);
+
+signals:
+	void prodValueChanged(float);
+	void consValueChanged(float);
 
 private slots:
 	void closePage();
@@ -48,6 +52,10 @@ private slots:
 	void increaseCost();
 	void decreaseProd();
 	void increaseProd();
+
+private:
+	banner *addBanner(QLayout *main_layout, const QDomNode &config_node, QString desc, float& rate);
+	void showValue(banner *b, float value);
 
 private:
 	int serial_number;
@@ -61,16 +69,10 @@ private:
 	unsigned int n_decimal;
 	// The maximum number of integer to show in cunsumption and production.
 	unsigned int n_integer;
-	banner *addBanner(const QDomNode &config_node, QString desc, float& rate);
-	void showValue(banner *b, float value);
-
-signals:
-	void prodValueChanged(float);
-	void consValueChanged(float);
 };
 
 
-class EnergyInterface : public sottoMenu
+class EnergyInterface : public BannerPage
 {
 Q_OBJECT
 public:
@@ -86,7 +88,7 @@ public slots:
 	void toggleCurrency();
 
 private:
-	void loadItems(const QDomNode &config_node);
+	void loadItems(const QDomNode &config_node, NavigationBar *nav_bar);
 	bool checkTypeForCurrency(const QString &type, const QDomNode &conf);
 	void updateBanners();
 	EnergyView *next_page;

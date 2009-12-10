@@ -13,19 +13,21 @@
 
 #include <QObject>
 #include <QHash>
-#include <QStackedWidget>
 
 
 class SoundDiffusion;
 class MultiSoundDiffAlarm;
 class Version;
-class homePage;
+class HomePage;
 class Calibrate;
 class genPage;
 class Client;
-class Keypad;
+class KeypadWindow;
 class ScreenSaver;
 class Page;
+class PageContainer;
+class WindowContainer;
+class Window;
 
 class QPixmap;
 class QString;
@@ -45,12 +47,15 @@ class BtMain : public QObject
 {
 Q_OBJECT
 friend Page *getPage(int id);
+
 public:
 	BtMain();
 	~BtMain();
 	Client *client_richieste;
 	Client *client_comandi;
-	Client *client_monitor;
+	SoundDiffusion *difSon;
+	MultiSoundDiffAlarm *dm;
+	Version *version;
 
 	void resetTimer();
 	/// Freeze or unfreeze the application
@@ -60,10 +65,23 @@ public:
 
 	void setPwd(bool, QString);
 
-	void setPreviousPage(Page *page);
 	Page *getPreviousPage();
 	bool screenSaverRunning();
 	void showScreensaverIfNeeded();
+	Window *homeWindow();
+
+public slots:
+	void startCalib();
+	void endCalib();
+
+signals:
+	void resettimer();
+	void freezed(bool);
+	void startscreensaver(Page*);
+
+protected:
+	virtual bool eventFilter(QObject *obj, QEvent *ev);
+
 
 private slots:
 	void hom();
@@ -73,24 +91,16 @@ private slots:
 	void testFiles();
 	void waitBeforeInit();
 	void monitorReady();
-
-public slots:
-	void startCalib();
-	void endCalib();
-
-protected:
-	virtual bool eventFilter(QObject *obj, QEvent *ev);
-
-public:
-	// TODO: vedere se ci puo' evitare di rendere questi membri pubblici!
-	SoundDiffusion *difSon;
-	MultiSoundDiffAlarm *dm;
-	Version *version;
+	void currentPageChanged(Page *p);
 
 private:
+	Client *client_monitor;
+#if DEBUG
+	Client *client_supervisor;
+#endif
 	QHash<int, Page*> page_list;
 	QTime *boot_time;
-	homePage *Home;
+	HomePage *Home;
 	Page *pagDefault;
 	/// A pointer to the previous visualized page, to be used when resuming from screensaver
 	Page *prev_page;
@@ -99,7 +109,7 @@ private:
 	QTimer *tempo2;
 	QString pwd;
 	bool pwdOn,svegliaIsOn,alreadyCalibrated;
-	Keypad *tasti;
+	KeypadWindow *tasti;
 	bool event_unfreeze;
 	bool firstTime, bloccato;
 	bool pd_shown;
@@ -110,7 +120,8 @@ private:
 	bool calibrating;
 	Calibrate *calib;
 	ScreenSaver *screensaver;
-	QStackedWidget main_window;
+	PageContainer *page_container;
+	WindowContainer *window_container;
 
 	// A flag that is set when the client monitor socket is ready
 	bool monitor_ready;
@@ -125,11 +136,6 @@ private:
 	void loadGlobalConfig();
 	// Unroll all the pages until homepage
 	void unrollPages();
-
-signals:
-	void resettimer();
-	void freezed(bool);
-	void startscreensaver(Page*);
 };
 
 namespace bt_global { extern BtMain *btmain; }

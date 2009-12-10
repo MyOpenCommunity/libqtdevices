@@ -7,16 +7,17 @@
 #include "generic_functions.h" // setCfgValue
 #include "devices_cache.h" // bt_global::devices_cache
 #include "energy_device.h" // EnergyDevice
-#include "bannfrecce.h"
 #include "btmain.h" // bt_global::btmain
+#include "bannercontent.h"
+#include "navigation_bar.h"
+#include "btbutton.h"
 
 #include <QVBoxLayout>
 #include <QDomNode>
 #include <QLocale>
 #include <QDebug>
 
-#include <assert.h>
-#include <math.h>
+#include <math.h> // pow
 
 // The language used for the floating point number
 QLocale loc(QLocale::Italian);
@@ -24,6 +25,7 @@ QLocale loc(QLocale::Italian);
 
 EnergyData::EnergyData(const QDomNode &config_node)
 {
+	buildPage();
 	loadTypes(config_node);
 	connect(bt_global::btmain, SIGNAL(resettimer()), SLOT(systemTimeChanged()));
 	connect(&day_timer, SIGNAL(timeout()), SLOT(updateDayTimer()));
@@ -60,42 +62,54 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 		SkinContext cont(getTextChild(type, "cid").toInt());
 		banner *b;
 		EnergyCost *ec_cost = 0;
-		if (getElement(type, "currency/ab").text().toInt() == 1)
-		{
-			b = new bannOnOff(this);
-			appendBanner(b); // to increase the serial number
-			b->SetIcons(bt_global::skin->getImage("select"), bt_global::skin->getImage("currency_exchange"),
-					QString(), bt_global::skin->getImage("energy_type"));
-
-			ec_cost = new EnergyCost(type, b->getSerNum());
-			b->connectSxButton(ec_cost);
-		}
-		else
-		{
-			b = new bannPuls(this);
-			appendBanner(b);
-			b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("energy_type"));
-		}
+		QString descr = getTextChild(type, "descr");
 
 		EnergyInterface *en_interf = new EnergyInterface(type);
 		interfaces.push_back(en_interf);
-		b->connectDxButton(en_interf);
+
+		if (getElement(type, "currency/ab").text().toInt() == 1)
+		{
+			BannOnOffNew *bann = new BannOnOffNew(this);
+
+			page_content->appendBanner(bann); // to increase the serial number
+			bann->initBanner(bt_global::skin->getImage("currency_exchange"),
+				bt_global::skin->getImage("energy_type"), bt_global::skin->getImage("select"),
+				descr);
+
+			ec_cost = new EnergyCost(type, bann->getSerNum());
+			bann->connectLeftButton(ec_cost);
+			bann->connectRightButton(en_interf);
+			b = bann;
+		}
+		else
+		{
+			BannSinglePuls *bann = new BannSinglePuls(this);
+			page_content->appendBanner(bann);
+			bann->initBanner(bt_global::skin->getImage("select"),
+				bt_global::skin->getImage("energy_type"), descr);
+			bann->connectRightButton(en_interf);
+			b = bann;
+		}
+
 		if (ec_cost)
 		{
 			connect(ec_cost, SIGNAL(consValueChanged(float)), en_interf, SLOT(changeConsRate(float)));
 			connect(ec_cost, SIGNAL(prodValueChanged(float)), en_interf, SLOT(changeProdRate(float)));
 		}
-		b->setText(getTextChild(type, "descr"));
 		b->setId(getTextChild(type, "id").toInt());
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 }
 
-
 EnergyCost::EnergyCost(const QDomNode &config_node, int serial)
 {
+	QWidget *content = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(content);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
+
 	QDomElement currency_node = getElement(config_node, "currency");
-	assert(!currency_node.isNull() && "currency node null!");
+	Q_ASSERT_X(!currency_node.isNull(), "EnergyCost::EnergyCost", "currency node null!");
 
 	bool ok = true;
 	delta = loc.toFloat(getTextChild(currency_node, "delta"), &ok);
@@ -110,8 +124,8 @@ EnergyCost::EnergyCost(const QDomNode &config_node, int serial)
 	n_decimal = getTextChild(currency_node, "n_decimal").toUInt();
 	n_integer = getTextChild(currency_node, "n_integer").toUInt();
 
-	banner_cost = addBanner(getElement(config_node, "cons"), tr("Consumption") + " " + unit_measure, cons_rate);
-	banner_prod = addBanner(getElement(config_node, "prod"), tr("Production") + " " + unit_measure, prod_rate);
+	banner_cost = addBanner(main_layout, getElement(config_node, "cons"), tr("Consumption") + " " + unit_measure, cons_rate);
+	banner_prod = addBanner(main_layout, getElement(config_node, "prod"), tr("Production") + " " + unit_measure, prod_rate);
 
 	if (banner_cost)
 	{
@@ -127,12 +141,16 @@ EnergyCost::EnergyCost(const QDomNode &config_node, int serial)
 		temp_prod_rate = prod_rate;
 	}
 
-	main_layout->addStretch();
-	bannFrecce *nav_bar = new bannFrecce(this, 10, bt_global::skin->getImage("ok"));
+	main_layout->addStretch(1);
+
+	NavigationBar *nav_bar = new NavigationBar("ok");
+	nav_bar->displayScrollButtons(false);
+
 	connect(nav_bar, SIGNAL(backClick()), SLOT(closePage()));
-	connect(nav_bar, SIGNAL(dxClick()), SLOT(saveCostAndProd()));
-	main_layout->addWidget(nav_bar);
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(saveCostAndProd()));
 	serial_number = serial;
+
+	buildPage(content, nav_bar);
 }
 
 void EnergyCost::showValue(banner *b, float value)
@@ -144,7 +162,7 @@ void EnergyCost::showValue(banner *b, float value)
 	}
 }
 
-banner *EnergyCost::addBanner(const QDomNode &config_node, QString desc, float& rate)
+banner *EnergyCost::addBanner(QLayout *main_layout, const QDomNode &config_node, QString desc, float& rate)
 {
 	if (!config_node.isNull() && getTextChild(config_node, "ab").toInt() == 1)
 	{
@@ -238,15 +256,20 @@ bool EnergyInterface::is_currency_view = false;
 
 EnergyInterface::EnergyInterface(const QDomNode &config_node)
 {
+	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency"));
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(toggleCurrency()));
+
+	buildPage(new BannerContent, nav_bar);
+
 	is_any_interface_enabled = false;
-	loadItems(config_node);
-	if (elencoBanner.size() == 1)
+	loadItems(config_node, nav_bar);
+	if (page_content->bannerCount() == 1)
 		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
-void EnergyInterface::loadItems(const QDomNode &config_node)
+void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_bar)
 {
-	assert(bt_global::skin->hasContext() && "Skin context not set!");
+	Q_ASSERT_X(bt_global::skin->hasContext() , "EnergyInterface::loadItems", "Skin context not set!");
 	int mode = getTextChild(config_node, "mode").toInt();
 	QString energy_type = getTextChild(config_node, "descr");
 	QString measure = getTextChild(config_node, "measure");
@@ -295,15 +318,13 @@ void EnergyInterface::loadItems(const QDomNode &config_node)
 		device *dev = bt_global::devices_cache[get_device_key("18", addr)];
 		connect(dev, SIGNAL(status_changed(const StatusList &)), b, SLOT(status_changed(const StatusList &)));
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-		appendBanner(b);
+		page_content->appendBanner(b);
+		b->Draw();
 	}
 
+	nav_bar->forward_button->setVisible(show_currency_button);
 	if (show_currency_button)
-	{
 		is_any_interface_enabled = show_currency_button;
-		setNavBarMode(10, bt_global::skin->getImage("currency"));
-		connect(bannNavigazione, SIGNAL(dxClick()), SLOT(toggleCurrency()));
-	}
 }
 
 void EnergyInterface::systemTimeChanged()
@@ -337,9 +358,9 @@ bool EnergyInterface::checkTypeForCurrency(const QString &type, const QDomNode &
 
 void EnergyInterface::updateBanners()
 {
-	for (int i = 0; i < elencoBanner.size(); ++i)
+	for (int i = 0; i < page_content->bannerCount(); ++i)
 	{
-		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(elencoBanner[i]);
+		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(page_content->getBanner(i));
 		b->updateText();
 	}
 }
@@ -351,7 +372,7 @@ void EnergyInterface::showPage()
 		toggleCurrencyView();
 
 	updateBanners();
-	if (elencoBanner.size() == 1)
+	if (page_content->bannerCount() == 1)
 		next_page->showPage();
 	else
 		Page::showPage();
@@ -361,9 +382,9 @@ void EnergyInterface::changeConsRate(float cons)
 {
 	for (int i = 0; i < views.size(); ++i)
 		views[i]->setConsFactor(cons);
-	for (int i = 0; i < elencoBanner.size(); ++i)
+	for (int i = 0; i < page_content->bannerCount(); ++i)
 	{
-		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(elencoBanner[i]);
+		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(page_content->getBanner(i));
 		b->setConsFactor(cons);
 	}
 }
@@ -372,9 +393,9 @@ void EnergyInterface::changeProdRate(float prod)
 {
 	for (int i = 0; i < views.size(); ++i)
 		views[i]->setProdFactor(prod);
-	for (int i = 0; i < elencoBanner.size(); ++i)
+	for (int i = 0; i < page_content->bannerCount(); ++i)
 	{
-		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(elencoBanner[i]);
+		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(page_content->getBanner(i));
 		b->setProdFactor(prod);
 	}
 }

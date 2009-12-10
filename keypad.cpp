@@ -1,140 +1,130 @@
 #include "keypad.h"
-#include "banner.h"
 #include "fontmanager.h" // bt_global::font
+#include "skinmanager.h"
 #include "btbutton.h"
 
-#include <QFrame>
 #include <QLabel>
-#include <QWidget>
-#include <QString>
-#include <QFile>
-#include <QDebug>
 #include <QButtonGroup>
-
-#define BUT_DIM 60
-#define POSX1 (MAX_WIDTH-BUT_DIM*3)/6
-#define POSX2 POSX1*3+BUT_DIM
-#define POSX3 POSX2+POSX1*2+BUT_DIM
-
-#define BUT_SMALL_DIM (MAX_WIDTH-POSX1*2)/8
-#define POSX1_SMALL POSX1
+#include <QGridLayout>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QVariant>
 
 
-Keypad::Keypad(int line)
+// Keypad implementation
+
+Keypad::Keypad()
 {
-	buttons_group = new QButtonGroup(this);
-	unoBut = new BtButton(this);
-	dueBut = new BtButton(this);
-	treBut = new BtButton(this);
-	quatBut = new BtButton(this);
-	cinBut = new BtButton(this);
-	seiBut = new BtButton(this);
-	setBut = new BtButton(this);
-	ottBut = new BtButton(this);
-	novBut = new BtButton(this);
-	zeroBut = new BtButton(this);
-	okBut = new BtButton(this);
-	cancBut = new BtButton(this);
+	BtButton *ok = new BtButton;
+	BtButton *canc = new BtButton;
+	BtButton *digits[10];
 
-	digitLabel = new QLabel(this);
-	scrittaLabel = new QLabel(this);
+	QButtonGroup *buttons = new QButtonGroup;
 
-	unoBut->setGeometry(POSX1,line*0,BUT_DIM,BUT_DIM);
-	dueBut->setGeometry(POSX2,line*0,BUT_DIM,BUT_DIM);
-	treBut->setGeometry(POSX3,line*0,BUT_DIM,BUT_DIM);
-	quatBut->setGeometry(POSX1,line*1,BUT_DIM,BUT_DIM);
-	cinBut->setGeometry(POSX2,line*1,BUT_DIM,BUT_DIM);
-	seiBut->setGeometry(POSX3,line*1,BUT_DIM,BUT_DIM);
-	setBut->setGeometry(POSX1,line*2,BUT_DIM,BUT_DIM);
-	ottBut->setGeometry(POSX2,line*2,BUT_DIM,BUT_DIM);
-	novBut->setGeometry(POSX3,line*2,BUT_DIM,BUT_DIM);
-	zeroBut->setGeometry(POSX2,line*3,BUT_DIM,BUT_DIM);
-	okBut->setGeometry(POSX3,line*3,BUT_DIM,BUT_DIM);
-	cancBut->setGeometry(POSX1, line*3,BUT_DIM,BUT_DIM);
-	scrittaLabel->setGeometry(0,line*4,MAX_WIDTH/2,line);
-	digitLabel->setGeometry(MAX_WIDTH/2,line*4,MAX_WIDTH/2,line);
+	for (int i = 0; i < 10; ++i)
+	{
+		digits[i] = new BtButton;
+		digits[i]->setImage(bt_global::skin->getImage("num_" + QString::number(i)));
+		buttons->addButton(digits[i], i);
+	}
 
-	unoBut->setImage(ICON_UNO);
-	buttons_group->addButton(unoBut, 1);
-	dueBut->setImage(ICON_DUE);
-	buttons_group->addButton(dueBut, 2);
-	treBut->setImage(ICON_TRE);
-	buttons_group->addButton(treBut, 3);
-	quatBut->setImage(ICON_QUATTRO);
-	buttons_group->addButton(quatBut, 4);
-	cinBut->setImage(ICON_CINQUE);
-	buttons_group->addButton(cinBut, 5);
-	seiBut->setImage(ICON_SEI);
-	buttons_group->addButton(seiBut, 6);
-	setBut->setImage(ICON_SETTE);
-	buttons_group->addButton(setBut, 7);
-	ottBut->setImage(ICON_OTTO);
-	buttons_group->addButton(ottBut, 8);
-	novBut->setImage(ICON_NOVE);
-	buttons_group->addButton(novBut, 9);
-	zeroBut->setImage(ICON_ZERO);
-	buttons_group->addButton(zeroBut, 0);
+	digitLabel = new QLabel;
+	QLabel *pwdLabel = new QLabel;
 
-	okBut->setImage(ICON_OK);
-	cancBut->setImage(ICON_CANC);
+	ok->setImage(bt_global::skin->getImage("ok"));
+	canc->setImage(bt_global::skin->getImage("cancel"));
 
 	mode = CLEAN;
 
-	scrittaLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	scrittaLabel->setFont(bt_global::font->get(FontManager::TEXT));
-	scrittaLabel->setText(tr("PASSWORD:"));
+	pwdLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	pwdLabel->setFont(bt_global::font->get(FontManager::TEXT));
+	pwdLabel->setText(tr("PASSWORD:"));
 
 	digitLabel->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
 	digitLabel->setFont(bt_global::font->get(FontManager::TEXT));
 
-	connect(buttons_group, SIGNAL(buttonClicked(int)), SLOT(buttonClicked(int)));
-	connect(cancBut,SIGNAL(clicked()),this,SLOT(canc()));
-	connect(okBut,SIGNAL(clicked()),this,SLOT(ok()));
+	connect(buttons, SIGNAL(buttonClicked(int)), SLOT(buttonClicked(int)));
+	connect(canc, SIGNAL(clicked()), SLOT(deleteChar()));
+	connect(ok, SIGNAL(clicked()), SIGNAL(Closed()));
+
+	// digits, ok, cancel buttons
+	QGridLayout *k = new QGridLayout;
+#ifdef LAYOUT_TOUCHX
+	k->setSpacing(20);
+#endif
+	k->setContentsMargins(0, 0, 0, 0);
+
+	for (int i = 0; i < 9; ++i)
+		k->addWidget(digits[i + 1], i / 3, i % 3);
+
+	k->addWidget(canc, 3, 0);
+	k->addWidget(digits[0], 3, 1);
+	k->addWidget(ok, 3, 2);
+
+	// bottom labels
+	QHBoxLayout *p = new QHBoxLayout;
+	p->setContentsMargins(0, 0, 0, 0);
+	p->setSpacing(0);
+
+	p->addWidget(pwdLabel, 1);
+	p->addWidget(digitLabel, 1);
+
+	// top layout
+	topLayout = new QVBoxLayout(this);
+	topLayout->setContentsMargins(0, 0, 0, 10);
+#ifdef LAYOUT_BTOUCH
+	topLayout->setSpacing(0);
+#else
+	topLayout->setSpacing(15);
+#endif
+
+	// when modifying this, modify insertLayout below
+	topLayout->addLayout(k);
+	topLayout->addLayout(p);
+
+	updateText();
 }
 
-void Keypad::showEvent(QShowEvent *event)
+void Keypad::insertLayout(QLayout *l)
 {
-	draw();
+	topLayout->insertLayout(1, l);
 }
 
-void Keypad::draw()
+void Keypad::updateText()
 {
-	qDebug("tastiera::draw(), mode = %d", mode);
 	if (mode == CLEAN)
 		digitLabel->setText(text);
 	else
 		digitLabel->setText(QString(text.length(),'*'));
+	// always set a text on the label, otherwise the sizeHint() height changes
+	if (text.length() == 0)
+		digitLabel->setText(" ");
 }
 
 void Keypad::buttonClicked(int number)
 {
-	qDebug() << "button clicked " << number;
 	if (text.length() < 5)
 		text += QString::number(number);
-	draw();
+	updateText();
 }
 
-void Keypad::canc()
+void Keypad::deleteChar()
 {
 	if (text.length() > 0)
+	{
 		text.chop(1);
+		updateText();
+	}
 	else
 	{
-		text = "";
 		emit Closed();
 	}
-	draw();
-}
-
-void Keypad::ok()
-{
-	emit Closed();
 }
 
 void Keypad::setMode(Type t)
 {
 	mode = t;
-	draw();
+	updateText();
 }
 
 QString Keypad::getText()
@@ -145,43 +135,72 @@ QString Keypad::getText()
 void Keypad::resetText()
 {
 	text = "";
-	draw();
+	updateText();
 }
 
 
-KeypadWithState::KeypadWithState(int s[8]) : Keypad(MAX_HEIGHT/6)
+// KeypadWithState implementation
+
+KeypadWithState::KeypadWithState(int s[8])
 {
-	int i, x;
-	char tmp[2] = "1";
+	QHBoxLayout *l = new QHBoxLayout;
+	l->setContentsMargins(5, 5, 5, 5);
+	l->setSpacing(2);
+
 	QFont aFont = bt_global::font->get(FontManager::TEXT);
-	QString zone_style = "BtButton { background-color:white; color:black; }";
 
-	for (i = 0, x = POSX1_SMALL; i < 8; i++, x += BUT_SMALL_DIM)
+	for (int i = 0; i < 8; i++)
 	{
-		// Create button
-		stati[i] = new BtButton(this);
-		stati[i]->setEnabled(0);
+		QLabel *state = new QLabel;
 
-		stati[i]->setFont(aFont);
+		state->setFont(aFont);
+		state->setAlignment(Qt::AlignCenter);
+
 		if (s[i] == -1)
 		{
-			stati[i]->setText("-");
-			st[i] = false;
+			state->setText("-");
 		}
 		else
 		{
-			stati[i]->setText(tmp);
-			st[i] = s[i];
-			if (st[i])
-				stati[i]->setStyleSheet(zone_style);
+			state->setProperty("ActiveState", bool(s[i]));
+			state->setText(QString::number(i + 1));
 		}
-		tmp[0]++;
-		stati[i]->setGeometry(x, (MAX_HEIGHT/6)*4 + MAX_HEIGHT/12, BUT_SMALL_DIM, BUT_SMALL_DIM);
-		stati[i]->show();
+
+		l->addWidget(state);
 	}
 
-	scrittaLabel->setGeometry(0,(MAX_HEIGHT/6)*5,MAX_WIDTH/2,(MAX_HEIGHT/6));
-	digitLabel->setGeometry(MAX_WIDTH/2,(MAX_HEIGHT/6)*5,MAX_WIDTH/2, MAX_HEIGHT/6);
-	scrittaLabel->show();
-	digitLabel->show();
+	insertLayout(l);
+}
+
+
+// KeypadWindow implementation
+
+KeypadWindow::KeypadWindow(Keypad::Type type)
+{
+	keypad = new Keypad;
+	keypad->setMode(type);
+
+	connect(keypad, SIGNAL(Closed()), SIGNAL(Closed()));
+
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+
+#ifdef LAYOUT_BTOUCH
+	l->addWidget(keypad, 1);
+#else
+	l->addWidget(keypad, 1, Qt::AlignCenter);
+#endif
+
+	keypad->show();
+}
+
+QString KeypadWindow::getText()
+{
+	return keypad->getText();
+}
+
+void KeypadWindow::resetText()
+{
+	keypad->resetText();
 }

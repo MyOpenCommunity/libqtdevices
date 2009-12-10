@@ -14,6 +14,7 @@
 #ifndef SPECIALPAGE_H
 #define SPECIALPAGE_H
 
+#include "frame_receiver.h"
 #include "page.h"
 
 class timeScript;
@@ -22,12 +23,13 @@ class TemperatureViewer;
 class QDomNode;
 
 
-class SpecialPage : public Page
+class SpecialPage : public Page, FrameReceiver
 {
 Q_OBJECT
 public:
 	SpecialPage(const QDomNode &config_node);
 	virtual void inizializza();
+	virtual void manageFrame(OpenMsg &msg);
 
 private:
 	void loadItems(const QDomNode &config_node);
@@ -49,7 +51,6 @@ private slots:
 	void clickedButton();
 	void pressedButton();
 	void releasedButton();
-	void gestFrame(char *frame);
 };
 
 #endif // SPECIALPAGE_H

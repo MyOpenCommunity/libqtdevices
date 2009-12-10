@@ -4,10 +4,10 @@
 **
 ****************************************************************/
 
-#ifndef BT_HOMEPAGE
-#define BT_HOMEPAGE
+#ifndef HOME_PAGE_H
+#define HOME_PAGE_H
 
-#include "pagecontainer.h"
+#include "sectionpage.h"
 
 #include <QString>
 
@@ -18,23 +18,26 @@ class QDomNode;
 
 
 /*!
-  \class homePage
-  \brief This is the class used to implement the main page from which access to all the subtree (sottoMenu) of the various bticino functions. This class is also used for the special page.
+  \class HomePage
+  \brief This is the class used to implement the main page from which access to all
+  the subtree of the various bticino functions.
 
   It can be composed of a date field, a time field, up to three temperatures, a number of BtButton and a special command. 
   \author Davide
   \date lug 2005
 */
 
-class homePage : public PageContainer
+class HomePage : public SectionPage
 {
 Q_OBJECT
 public:
-	homePage(const QDomNode &config_node);
+	HomePage(const QDomNode &config_node);
 	void inizializza();
 
-private slots:
-	void gestFrame(char*);
+	virtual PageType pageType();
+
+public slots:
+	void showSectionPage(int page_id);
 
 private:
 	TemperatureViewer *temp_viewer;
@@ -42,4 +45,4 @@ private:
 };
 
 
-#endif // BT_HOMEPAGE
+#endif // HOME_PAGE_H

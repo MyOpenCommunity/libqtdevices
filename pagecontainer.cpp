@@ -1,71 +1,111 @@
 #include "pagecontainer.h"
-#include "btbutton.h"
-#include "pagefactory.h" // getPage
-#include "xml_functions.h" // getTextChild, getChildren
-#include "generic_functions.h" // rearmWDT
+#include "transitionwidget.h"
+#include "sottomenu.h"
+#include "page.h"
 
-#include <QDomNode>
 #include <QDebug>
-#include <QTime>
-
-#define DIM_BUT 80
-#define BACK_BUTTON_X    0
-#define BACK_BUTTON_Y  250
-#define BACK_BUTTON_DIM 60
-#define IMG_BACK_BUTTON     IMG_PATH "arrlf.png"
+#include <QLayout>
 
 
-PageContainer::PageContainer(const QDomNode &config_node) : buttons_group(this)
+namespace
 {
-	connect(&buttons_group, SIGNAL(buttonClicked(int)), SLOT(clicked(int)));
-	loadItems(config_node);
-}
-
-void PageContainer::loadItems(const QDomNode &config_node)
-{
-	QTime wdtime;
-	wdtime.start(); // Start counting for wd refresh
-
-	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	void fixVisualization(Page *p, QSize size)
 	{
-		int id = getTextChild(item, "id").toInt();
-		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
-		int x = getTextChild(item, "left").toInt();
-		int y = getTextChild(item, "top").toInt();
+		p->resize(size);
 
-		// Within the pagemenu element, it can exists items that are not a page.
-		if (Page *p = getPage(id))
-			addPage(p, id, img1, x, y);
-
-		if (wdtime.elapsed() > 1000)
-		{
-			wdtime.restart();
-			rearmWDT();
-		}
+		if (p->layout())
+			p->activateLayout();
+		else if (sottoMenu *s = qobject_cast<sottoMenu*>(p))
+			s->forceDraw();
 	}
 }
 
-void PageContainer::addPage(Page *page, int id, QString iconName, int x, int y)
-{
-	BtButton *b = new BtButton(this);
-	b->setGeometry(x, y, DIM_BUT, DIM_BUT);
-	b->setImage(iconName);
 
-	buttons_group.addButton(b, id);
-	page_list[id] = page;
-	connect(page, SIGNAL(Closed()), this, SLOT(showPage()));
+PageContainer::PageContainer(QWidget *parent) : QStackedWidget(parent)
+{
+	transition_widget = 0;
+	block_transitions = false;
+	prev_page = 0;
+	dest_page = 0;
+
+	// TODO: this ugly workaround is needed because the QStackedWidget in some ways
+	// invalidate the first widget inserted. FIX it asap!
+	addWidget(new QWidget);
 }
 
-void PageContainer::addBackButton()
+void PageContainer::installTransitionWidget(TransitionWidget *tr)
 {
-	BtButton *b = new BtButton(this);
-	b->setGeometry(BACK_BUTTON_X, BACK_BUTTON_Y, BACK_BUTTON_DIM, BACK_BUTTON_DIM);
-	b->setImage(IMG_BACK_BUTTON);
-	connect(b, SIGNAL(clicked()), SIGNAL(Closed()));
+	transition_widget = tr;
+	connect(transition_widget, SIGNAL(endTransition()), SLOT(endTransition()));
 }
 
-void PageContainer::clicked(int id)
+void PageContainer::endTransition()
 {
-	page_list[id]->showPage();
+	setCurrentPage(dest_page);
+	prev_page = 0;
+	dest_page = 0;
+}
+
+void PageContainer::setCurrentPage(Page *p)
+{
+	qDebug() << "PageContainer::setCurrentPage on" << p;
+	setCurrentWidget(p);
+	emit currentPageChanged(p);
+}
+
+void PageContainer::showPage(Page *p)
+{
+	if (transition_widget && !block_transitions)
+	{
+		prev_page = currentPage();
+
+		transition_widget->prepareTransition();
+
+		// Before grab the screenshot of the next page, we have to ensure that its
+		// visualization is correct and that it is shown.
+		fixVisualization(p, size());
+		setCurrentWidget(p);
+		startTransition(p);
+	}
+	else
+		setCurrentPage(p);
+}
+
+void PageContainer::prepareTransition()
+{
+	if (transition_widget && !block_transitions)
+		transition_widget->prepareTransition();
+}
+
+void PageContainer::startTransition(Page *p)
+{
+	if (transition_widget)
+	{
+		dest_page = p;
+		transition_widget->startTransition();
+	}
+}
+
+Page *PageContainer::currentPage()
+{
+	// if we are in the middle of a transition, we use the previous page as the current page
+	return prev_page ? prev_page : static_cast<Page*>(currentWidget());
+}
+
+void PageContainer::blockTransitions(bool block)
+{
+	block_transitions = block;
+	if (block && transition_widget)
+	{
+		transition_widget->cancelTransition();
+		if (prev_page)
+			setCurrentWidget(prev_page);
+	}
+}
+
+void PageContainer::addPage(Page *p)
+{
+	addWidget(p);
+	p->resize(width(), height());
 }
 

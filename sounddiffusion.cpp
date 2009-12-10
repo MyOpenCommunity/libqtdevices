@@ -18,13 +18,11 @@
 #include "poweramplifier.h"
 #include "icondispatcher.h" //bt_global::icons_cache
 
-#include <openwebnet.h> // class openwebnet
+#include <openmsg.h>
 
 #include <QVariant> // setProperty
 #include <QDebug>
 #include <QLabel>
-
-#include <assert.h>
 
 
 AudioSources::AudioSources(QWidget *parent, const QDomNode &config_node) : sottoMenu(parent, 0, MAX_WIDTH, MAX_HEIGHT/NUM_RIGHE, 1)
@@ -54,7 +52,7 @@ void AudioSources::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case SORGENTE_AUX:
-			b = new sorgente_aux(this, descr, where);
+			b = new sorgente_aux(this, where);
 			break;
 		case SORGENTE_RADIO:
 			b = new banradio(this, where);
@@ -228,6 +226,7 @@ SoundDiffusion::SoundDiffusion(const QDomNode &config_node)
 	connect(this, SIGNAL(Closed()), SLOT(handleClose()));
 }
 
+
 void SoundDiffusion::drawLine()
 {
 	if (!linea)
@@ -244,14 +243,14 @@ void SoundDiffusion::init(const QDomNode &config_node)
 
 	amplificatori = new AmpliContainer(this, config_node);
 	connect(amplificatori, SIGNAL(Closed()), SLOT(fineVis()));
-	connect(this, SIGNAL(gesFrame(char *)), amplificatori, SIGNAL(gestFrame(char *)));
+	subscribe_monitor(16);
+	subscribe_monitor(22);
 }
 
 void SoundDiffusion::setSorgenti(AudioSources *s)
 {
 	sorgenti = s;
 	setGeom(0, 0, MAX_WIDTH, MAX_HEIGHT);
-	connect(this, SIGNAL(gesFrame(char *)), sorgenti, SIGNAL(gestFrame(char *)));
 }
 
 void SoundDiffusion::setNumRighe(uchar n)
@@ -275,20 +274,15 @@ void SoundDiffusion::inizializza()
 	sendInit("*16*53*100##");
 }
 
-void SoundDiffusion::gestFrame(char*frame)
+void SoundDiffusion::manageFrame(OpenMsg &msg)
 {
-	emit gesFrame(frame);
-	openwebnet msg_open;
-	char aggiorna;
+	bool aggiorna = false;
 	int w;
 
-	aggiorna = 0;
 
-	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
-
-	if (!strcmp(msg_open.Extract_chi(),"16"))
+	if (msg.who() == 16)
 	{
-		w = strtoul(msg_open.Extract_dove(), NULL, 10);
+		w = strtoul(msg.Extract_dove(), NULL, 10);
 		if (w < 100)
 			goto not_ours;
 		while (w >= 100)
@@ -296,22 +290,22 @@ void SoundDiffusion::gestFrame(char*frame)
 		while (w >= 10)
 			w -= 10;
 		{
-			if ((!strcmp(msg_open.Extract_cosa(),"0")) || (!strcmp(msg_open.Extract_cosa(),"3")))
+			if ((!strcmp(msg.Extract_cosa(),"0")) || (!strcmp(msg.Extract_cosa(),"3")))
 			{
 				sorgenti->setIndex(QString::number(w+100));
-				aggiorna = 1;
+				aggiorna = true;
 				qDebug("accesa sorg: %d", w);
 			}
 		}
 	}
-	else if (!strcmp(msg_open.Extract_chi(),"22"))
+	else // who == 22
 	{
-		if (!strncmp(msg_open.Extract_cosa(),"2", 1) && (!strcmp(msg_open.Extract_dove(),"5") &&
-			(!strcmp(msg_open.Extract_livello(),"2"))))
+		if (!strncmp(msg.Extract_cosa(),"2", 1) && (!strcmp(msg.Extract_dove(),"5") &&
+			(!strcmp(msg.Extract_livello(),"2"))))
 		{
-			w = strtoul(msg_open.Extract_interfaccia(), NULL, 10);
+			w = strtoul(msg.Extract_interfaccia(), NULL, 10);
 			sorgenti->setIndex(QString::number(w+100));
-			aggiorna = 1;
+			aggiorna = true;
 			qDebug("accesa sorg(WHO=22): %d", w);
 		}
 	}

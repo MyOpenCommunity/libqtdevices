@@ -1,21 +1,34 @@
-#include "landevice.h"
+#include "platform_device.h"
+#include "bttime.h"
 
 #include <openmsg.h>
 
 #include <QDebug>
 #include <QStringList>
 
-#include <assert.h>
-
 // the request delay in milliseconds
 #define STATUS_REQUEST_DELAY 1000
 
 
-LanDevice::LanDevice() : device(QString("13"), QString(""))
+PlatformDevice::PlatformDevice() : device(QString("13"), QString(""))
 {
 }
 
-void LanDevice::enableLan(bool enable)
+void PlatformDevice::setTime(const BtTime &t)
+{
+	QString f;
+	f.sprintf("*#13**#0*%02u*%02u*%02u**##", t.hour(), t.minute(), t.second());
+	sendFrame(f);
+}
+
+void PlatformDevice::setDate(const QDate &d)
+{
+	QString f;
+	f.sprintf("*#13**#1*00*%02d*%02d*%04d##", d.day(), d.month(), d.year());
+	sendFrame(f);
+}
+
+void PlatformDevice::enableLan(bool enable)
 {
 	int val = enable ? 1 : 0;
 	int what = DIM_STATUS;
@@ -28,48 +41,43 @@ void LanDevice::enableLan(bool enable)
 	QTimer::singleShot(STATUS_REQUEST_DELAY, this, SLOT(requestStatus()));
 }
 
-void LanDevice::requestStatus() const
+void PlatformDevice::requestStatus() const
 {
 	sendRequest(QString::number(DIM_STATUS));
 }
 
-void LanDevice::requestIp() const
+void PlatformDevice::requestIp() const
 {
 	sendRequest(QString::number(DIM_IP));
 }
 
-void LanDevice::requestNetmask() const
+void PlatformDevice::requestNetmask() const
 {
 	sendRequest(QString::number(DIM_NETMASK));
 }
 
-void LanDevice::requestMacAddress() const
+void PlatformDevice::requestMacAddress() const
 {
 	sendRequest(QString::number(DIM_MACADDR));
 }
 
-void LanDevice::requestGateway() const
+void PlatformDevice::requestGateway() const
 {
 	sendRequest(QString::number(DIM_GATEWAY));
 }
 
-void LanDevice::requestDNS1() const
+void PlatformDevice::requestDNS1() const
 {
 	sendRequest(QString::number(DIM_DNS1));
 }
 
-void LanDevice::requestDNS2() const
+void PlatformDevice::requestDNS2() const
 {
 	sendRequest(QString::number(DIM_DNS2));
 }
 
-void LanDevice::frame_rx_handler(char *frame)
+void PlatformDevice::manageFrame(OpenMsg &msg)
 {
-	OpenMsg msg;
-	msg.CreateMsgOpen(frame, strlen(frame));
-
-	if (who.toInt() != msg.who())
-		return;
 
 	int what = msg.what();
 	int what_args = msg.whatArgCnt();
@@ -81,7 +89,7 @@ void LanDevice::frame_rx_handler(char *frame)
 		what == DIM_GATEWAY || what == DIM_DNS1 || what == DIM_DNS2 ||
 		what == DIM_STATUS)
 	{
-		qDebug("LanDevice::frame_rx_handler -> frame read:%s", frame);
+		qDebug("PlatformDevice::manageFrame -> frame read:%s", msg.frame_open);
 
 		switch (what)
 		{
@@ -101,7 +109,7 @@ void LanDevice::frame_rx_handler(char *frame)
 		}
 		default:
 		{
-			assert(what_args == 4); // IPv4 ip are composed by 4 parts
+			Q_ASSERT(what_args == 4); // IPv4 ip are composed by 4 parts
 			QStringList parts;
 			for (int i = 0; i < what_args; ++i)
 				parts << QString::number(msg.whatArgN(i));

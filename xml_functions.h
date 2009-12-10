@@ -35,6 +35,9 @@ QDomElement getElement(const QDomNode &root, const QString &path);
 /// Return the node child of 'parent' that match the 'regexp' and have an attribute with id 'id'.
 QDomNode getChildWithId(const QDomNode &parent, const QRegExp &node_regexp, int id);
 
+/// Return the node child of 'parent' that match the 'regexp' and has a child with name idName and value=id.
+QDomNode getChildWithId(const QDomNode &parent, const QRegExp &node_regexp, const QString &idName, int id);
+
 /// A wrapper function around getChildWithName. Return the text of child if present, a null QString otherwise.
 QString getTextChild(const QDomNode &parent, const QString &name);
 

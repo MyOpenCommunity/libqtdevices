@@ -9,11 +9,15 @@
 ****************************************************************/
 
 #include "openclient.h"
-#include "generic_functions.h" // rearmWDT
+#include "hardware_functions.h" // rearmWDT
+#include "frame_receiver.h"
+
+#include <openmsg.h>
 
 #include <QDebug>
 
 #define SOCKET_MONITOR "*99*1##"
+#define SOCKET_SUPERVISOR "*99*10##"
 #define SOCKET_COMANDI "*99*9##"
 #define SOCKET_RICHIESTE "*99*0##"
 
@@ -21,6 +25,9 @@
 Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host), port(_port)
 {
 	qDebug("Client::Client()");
+#if DEBUG
+	to_forward = 0;
+#endif
 
 	socket = new QTcpSocket(this);
 
@@ -56,6 +63,11 @@ void Client::socketConnected()
 	{
 		qDebug("TRY TO START request");
 		socket->write(SOCKET_RICHIESTE);
+	}
+	else if (type == SUPERVISOR)
+	{
+		qDebug("TRY TO START supervisor");
+		socket->write(SOCKET_SUPERVISOR);
 	}
 	else
 	{
@@ -98,7 +110,7 @@ void Client::ApriInviaFrameChiudiw(char *frame)
 	qDebug("Client::ApriInviaFrameChiudiw()");
 	ApriInviaFrameChiudi(frame);
 	qDebug("Frame sent waiting for ack");
-	while (socketWaitForAck() < 0);
+	while (socketWaitForAck() < 0) {}
 	qDebug("Ack received");
 }
 
@@ -133,7 +145,7 @@ QByteArray Client::readFromServer()
 
 void Client::manageFrame(QByteArray frame)
 {
-	if (type == MONITOR)
+	if (type == MONITOR || type == SUPERVISOR)
 	{
 		qDebug() << "frame read: " << frame;
 		if (frame == "*#*1##")
@@ -146,7 +158,7 @@ void Client::manageFrame(QByteArray frame)
 			last_msg_open_read.CreateMsgOpen(frame.data(),frame.size());
 			Open_read.setSingleShot(true);
 			Open_read.start(1000);
-			emit frameIn(frame.data());
+			dispatchFrame(frame);
 		}
 		else
 			qDebug("Frame Open duplicated");
@@ -167,6 +179,55 @@ void Client::manageFrame(QByteArray frame)
 		}
 	}
 }
+
+#if DEBUG
+void Client::forwardFrame(Client *c)
+{
+	to_forward = c;
+}
+#endif
+
+void Client::dispatchFrame(QString frame)
+{
+#if DEBUG
+	if (to_forward)
+	{
+		to_forward->dispatchFrame(frame);
+		return;
+	}
+#endif
+	OpenMsg msg;
+	msg.CreateMsgOpen(frame.toAscii().data(), frame.length());
+	if (subscribe_list.contains(msg.who()))
+	{
+		QList<FrameReceiver*> &l = subscribe_list[msg.who()];
+		for (int i = 0; i < l.size(); ++i)
+			l[i]->manageFrame(msg);
+	}
+}
+
+void Client::subscribe(FrameReceiver *obj, int who)
+{
+	subscribe_list[who].append(obj);
+}
+
+void Client::unsubscribe(FrameReceiver *obj)
+{
+	// A frame receiver can be subscribed for one or more "who".
+	QMutableHashIterator<int, QList<FrameReceiver*> > it(subscribe_list);
+	while (it.hasNext())
+	{
+		it.next();
+		QMutableListIterator<FrameReceiver*> it_list(it.value());
+		while (it_list.hasNext())
+		{
+			it_list.next();
+			if (it_list.value() == obj)
+				it_list.remove();
+		}
+	}
+}
+
 
 int Client::socketFrameRead()
 {
@@ -200,7 +261,7 @@ int Client::socketWaitForAck()
 {
 	qDebug("Client::socketWaitForAck()");
 
-	if (type == MONITOR)
+	if (type == MONITOR || type == SUPERVISOR)
 		return -1;
 	ackRx = false;
 	connect(this, SIGNAL(openAckRx()), this, SLOT(ackReceived()));
@@ -219,16 +280,16 @@ void Client::ackReceived()
 void Client::socketConnectionClosed()
 {
 	qDebug("Client::socketConnectionClosed()");
-	if (type == MONITOR)
+	if (type == MONITOR || type == SUPERVISOR)
 		connetti();
 }
 
 void Client::socketError(QAbstractSocket::SocketError e)
 {
-	if (e != QAbstractSocket::RemoteHostClosedError || type == MONITOR)
+	if (e != QAbstractSocket::RemoteHostClosedError || type == MONITOR || type == SUPERVISOR)
 		qWarning() << "OpenClient: error " << e << "occurred " << socket->errorString()
 			<< "on client" << type;
 
-	if (type == MONITOR)
+	if (type == MONITOR || type == SUPERVISOR)
 		QTimer::singleShot(500, this, SLOT(connetti()));
 }

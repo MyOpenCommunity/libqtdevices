@@ -12,13 +12,10 @@
 #define KEYPAD_H
 
 #include "page.h"
-#include "main.h"
+#include "window.h"
 
-class BtButton;
 class QLabel;
-class QButtonGroup;
-
-#define LINE MAX_HEIGHT/5
+class QVBoxLayout;
 
 /*!
   \class Keypad
@@ -31,11 +28,7 @@ class Keypad : public Page
 {
 Q_OBJECT
 public:
-	Keypad(int line=LINE);
-/*!
-  \brief Draws the page
-*/
-	void draw();
+	Keypad();
 
 /*! \enum Type
   differentiate between encripted and clean mode
@@ -57,28 +50,24 @@ public:
 	/// A function to reset the text inserted by virtual Keyboard.
 	void resetText();
 
-public slots:
-/*!
-  \brief Executed when the \a ok \a button is clicked. Hides the object and closes.
-*/
-	void ok();
-
-/*!
-  \brief Executed when the \a canc \a button is clicked. Hides the object and closes with NULL result.
-*/
-	void canc();
-
 protected:
-	QLabel *digitLabel, *scrittaLabel;
-	virtual void showEvent(QShowEvent *event);
+	// used by KeypadWithState to add the row with the zone state
+	void insertLayout(QLayout *l);
 
 private:
-	BtButton *zeroBut, *unoBut, *dueBut, *treBut, *quatBut, *cinBut, *seiBut, *setBut, *ottBut, *novBut, *cancBut, *okBut;
+	void updateText();
+
+private:
+	QVBoxLayout *topLayout;
+	QLabel *digitLabel;
 	QString text;
 	Type mode;
-	QButtonGroup *buttons_group;
 
 private slots:
+	// remove a digit from the value; close the page if the value is empty
+	void deleteChar();
+
+	// add a digit to the value
 	void buttonClicked(int number);
 };
 
@@ -89,10 +78,21 @@ class KeypadWithState : public Keypad
 Q_OBJECT
 public:
 	KeypadWithState(int s[8]);
-private:
-	BtButton *stati[8];
-	bool st[8];
 };
 
+
+class KeypadWindow : public Window
+{
+Q_OBJECT
+public:
+	KeypadWindow(Keypad::Type type);
+
+	// merthods forwarded to the corresponding Keypad methods
+	QString getText();
+	void resetText();
+
+private:
+	Keypad *keypad;
+};
 
 #endif // KEYPAD_H
