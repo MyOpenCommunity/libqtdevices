@@ -144,6 +144,7 @@ VCTCallPage::VCTCallPage()
 	color = new BannTuning(tr("Color"), bt_global::skin->getImage("color"));
 	sidebar->addWidget(color);
 	camera = new CameraMove(0);
+	camera->setMoveEnabled(false);
 	sidebar->addWidget(camera);
 
 	setup_vct = new BtButton;
@@ -167,23 +168,19 @@ VCTCallPage::VCTCallPage()
 	back->setImage(bt_global::skin->getImage("back"));
 	connect(back, SIGNAL(clicked()), SIGNAL(Closed()));
 
-	call_accept = new BtButton;
 	call_icon = bt_global::skin->getImage("call");
+	call_accept = new EnablingButton;
 	call_accept->setImage(getBostikName(call_icon, "off"));
+	call_accept->setDisabledPixmap(getBostikName(call_icon, "dis"));
 
 	BannTuning *volume = new BannTuning("", bt_global::skin->getImage("volume"));
 
-	mute_button = new BtButton;
 	mute_icon = bt_global::skin->getImage("mute");
-	mute_button->setImage(getBostikName(mute_icon, "offdis"));
+	mute_button = getButton(getBostikName(mute_icon, "off"));
+	mute_button->disable();
 
-	stairlight = new BtButton;
-	stairlight_icon = bt_global::skin->getImage("stairlight");
-	stairlight->setImage(stairlight_icon);
-
-	unlock_door = new BtButton;
-	unlock_icon = bt_global::skin->getImage("unlock_door");
-	unlock_door->setImage(unlock_icon);
+	stairlight = getButton(bt_global::skin->getImage("stairlight"));
+	unlock_door = getButton(bt_global::skin->getImage("unlock_door"));
 
 	cycle = new BtButton;
 	cycle->setImage(bt_global::skin->getImage("cycle"));

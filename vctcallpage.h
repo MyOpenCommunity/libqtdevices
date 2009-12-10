@@ -72,10 +72,11 @@ private slots:
 	void toggleCameraSettings();
 
 private:
-	BtButton *mute_button, *call_accept, *stairlight, *unlock_door, *cycle, *setup_vct;
+	BtButton *cycle, *setup_vct;
+	EnablingButton *call_accept, *mute_button, *stairlight, *unlock_door;
 	BannTuning *contrast, *brightness, *color;
 	CameraMove *camera;
-	QString mute_icon, call_icon, unlock_icon, stairlight_icon, setup_vct_icon;
+	QString mute_icon, call_icon, setup_vct_icon;
 	QStringList places;
 	bool camera_settings_shown;
 };
