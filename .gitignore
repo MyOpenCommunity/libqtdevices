@@ -1,10 +1,13 @@
 BTouch
+BTouch.*
 BTouch_no_strip
 BTouch_qws
 test/test
+test/test.pro.user
 BTouch.pro.user
 moc
 obj
 cfg
+cfg.*
 Makefile
 *.qm

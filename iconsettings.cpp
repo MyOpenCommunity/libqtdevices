@@ -141,6 +141,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		case PAGE_CLEANSCREEN:
 			// TODO config file does not contain the clean screen value
 			w = new CleanScreen(bt_global::skin->getImage("cleanscreen"), 10);
+			connect(w, SIGNAL(Closed()), bt_global::btmain->homeWindow(), SLOT(showWindow()));
 			break;
 		case BEEP_ICON:
 		{
@@ -161,7 +162,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		}
 		else if (w)
 		{
-			BtButton *b = addButton(link_id, descr, icon);
+			BtButton *b = addButton(descr, icon);
 
 			connect(b, SIGNAL(clicked()), w, SLOT(showWindow()));
 		}

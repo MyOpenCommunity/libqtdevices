@@ -1,10 +1,17 @@
 #include "videoentryphone.h"
 #include "bann_videoentryphone.h"
+#include "bann2_buttons.h"
 #include "xml_functions.h" // getTextChild, getChildren
 #include "bannercontent.h"
 #include "main.h"
+#include "skinmanager.h"
+#include "btbutton.h"
+#include "navigation_bar.h"
+
+#include <QDebug>
 
 
+#ifdef LAYOUT_BTOUCH
 VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 {
 	buildPage();
@@ -36,3 +43,47 @@ void VideoEntryPhone::loadDevices(const QDomNode &config_node)
 		page_content->appendBanner(b);
 	}
 }
+#else
+VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node) :
+	SectionPage(config_node)
+{
+}
+
+int VideoEntryPhone::sectionId()
+{
+	return VIDEOCITOFONIA;
+}
+
+
+CallExclusion::CallExclusion(const QDomNode &config_node)
+{
+	buildPage();
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	BannOnOffState *b = new BannOnOffState(0);
+	b->initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("call_exclusion"),
+		bt_global::skin->getImage("on"), BannOnOffState::ON, tr("Call exclusion"));
+	page_content->appendBanner(b);
+}
+
+
+VideoControl::VideoControl(const QDomNode &config_node)
+{
+	buildPage(new IconContent, new NavigationBar);
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		SkinContext ctx(getTextChild(item, "cid").toInt());
+		BtButton *btn = addButton(getTextChild(item, "descr"), bt_global::skin->getImage("link_icon"), 0, 0);
+	}
+}
+
+
+Intercom::Intercom(const QDomNode &config_node)
+{
+	buildPage(new IconContent, new NavigationBar);
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		SkinContext ctx(getTextChild(item, "cid").toInt());
+		BtButton *btn = addButton(getTextChild(item, "descr"), bt_global::skin->getImage("link_icon"), 0, 0);
+	}
+}
+#endif

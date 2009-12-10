@@ -60,7 +60,7 @@ private:
 class BannOnOffState : public BannOnOffNew
 {
 Q_OBJECT
-protected:
+public:
 	enum States
 	{
 		ON,

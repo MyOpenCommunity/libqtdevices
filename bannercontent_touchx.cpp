@@ -111,7 +111,6 @@ void BannerContent::drawContent()
 
 		// construct the vertical separator widget
 		QWidget *vertical_bar = new QWidget;
-		vertical_bar->setFixedWidth(20);
 		vertical_bar->setProperty("VerticalSeparator", true);
 
 		// create the layout with a spacer at the bottom, to
@@ -119,7 +118,7 @@ void BannerContent::drawContent()
 		QFont label_font = bt_global::font->get(FontManager::BANNERDESCRIPTION);
 		QVBoxLayout *bar_layout = new QVBoxLayout;
 		bar_layout->addWidget(vertical_bar, 1);
-		bar_layout->addSpacing(QFontMetrics(label_font).height());
+		bar_layout->addItem(new QSpacerItem(20, QFontMetrics(label_font).height()));
 
 		// add the vertical bar to the layout
 		l->addLayout(bar_layout, 0, 1);
@@ -135,9 +134,14 @@ void BannerContent::drawContent()
 	for (int i = 0; i < banner_list.size(); ++i)
 		banner_list[i]->setVisible(i >= pages[current_page] && i < pages[current_page + 1]);
 	// resize the vertical separator to span all completely filled rows
-	// and ignore the last row if it only contains a single item
+	// and ignore the last row if it only contains a single item; pages with only
+	// one item need to be handled as a special case because QGridLayout does not
+	// support items wiht colspan 0
+	bool show_vertical_bar = pages[current_page + 1] - pages[current_page] >= 2;
+
 	QLayoutItem *vertical_separator = l->itemAtPosition(0, 1);
 	l->removeItem(vertical_separator);
+	vertical_separator->layout()->itemAt(0)->widget()->setVisible(show_vertical_bar);
 	l->addItem(vertical_separator, 0, 1,
 		   (pages[current_page + 1] - pages[current_page]) / 2, 1);
 }

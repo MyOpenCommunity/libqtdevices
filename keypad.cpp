@@ -49,6 +49,9 @@ Keypad::Keypad()
 
 	// digits, ok, cancel buttons
 	QGridLayout *k = new QGridLayout;
+#ifdef LAYOUT_TOUCHX
+	k->setSpacing(20);
+#endif
 	k->setContentsMargins(0, 0, 0, 0);
 
 	for (int i = 0; i < 9; ++i)
@@ -69,7 +72,11 @@ Keypad::Keypad()
 	// top layout
 	topLayout = new QVBoxLayout(this);
 	topLayout->setContentsMargins(0, 0, 0, 10);
+#ifdef LAYOUT_BTOUCH
 	topLayout->setSpacing(0);
+#else
+	topLayout->setSpacing(15);
+#endif
 
 	// when modifying this, modify insertLayout below
 	topLayout->addLayout(k);
@@ -89,6 +96,9 @@ void Keypad::updateText()
 		digitLabel->setText(text);
 	else
 		digitLabel->setText(QString(text.length(),'*'));
+	// always set a text on the label, otherwise the sizeHint() height changes
+	if (text.length() == 0)
+		digitLabel->setText(" ");
 }
 
 void Keypad::buttonClicked(int number)
@@ -160,4 +170,37 @@ KeypadWithState::KeypadWithState(int s[8])
 	}
 
 	insertLayout(l);
+}
+
+
+// KeypadWindow implementation
+
+KeypadWindow::KeypadWindow(Keypad::Type type)
+{
+	keypad = new Keypad;
+	keypad->setMode(type);
+
+	connect(keypad, SIGNAL(Closed()), SIGNAL(Closed()));
+
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+
+#ifdef LAYOUT_BTOUCH
+	l->addWidget(keypad, 1);
+#else
+	l->addWidget(keypad, 1, Qt::AlignCenter);
+#endif
+
+	keypad->show();
+}
+
+QString KeypadWindow::getText()
+{
+	return keypad->getText();
+}
+
+void KeypadWindow::resetText()
+{
+	keypad->resetText();
 }

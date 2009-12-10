@@ -25,12 +25,16 @@ IconPage::IconPage()
 
 void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QString &title)
 {
-	PageTitleWidget *title_widget = new PageTitleWidget(title, 35);
+	PageTitleWidget *title_widget = 0;
+	if (!title.isNull())
+	{
+		title_widget = new PageTitleWidget(title, 35);
+		connect(content, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
+	}
 	Page::buildPage(content, nav_bar, 0, title_widget);
 
 	// TODO duplicated in BannerPage
-	connect(content, SIGNAL(contentScrolled(int, int)),
-		title_widget, SLOT(setCurrentPage(int, int)));
+
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(forwardClick()));
@@ -50,21 +54,21 @@ void IconPage::activateLayout()
 		page_content->drawContent();
 }
 
-BtButton *IconPage::addButton(int id, const QString &label, const QString& iconName, int x, int y)
+BtButton *IconPage::addButton(const QString &label, const QString& icon_path, int x, int y)
 {
 	BtButton *b = new BtButton(this);
 	if (page_content == NULL)
 		b->setGeometry(x, y, DIM_BUT, DIM_BUT);
 	else
 		page_content->addButton(b, label);
-	b->setImage(iconName);
+	b->setImage(icon_path);
 
 	return b;
 }
 
 void IconPage::addPage(Page *page, int id, const QString &label, const QString &iconName, int x, int y)
 {
-	BtButton *b = addButton(id, label, iconName, x, y);
+	BtButton *b = addButton(label, iconName, x, y);
 
 	buttons_group.addButton(b, id);
 	page_list[id] = page;
@@ -89,7 +93,6 @@ IconContent::IconContent(QWidget *parent) : QWidget(parent)
 {
 	current_page = 0;
 	QGridLayout *l = new QGridLayout(this);
-	// TODO some internal page have 25px margins on both sides
 	l->setContentsMargins(25, 0, 25, 0);
 	l->setSpacing(28);
 	l->setColumnStretch(5, 1);
@@ -100,7 +103,7 @@ void IconContent::addButton(QWidget *button, const QString &label)
 {
 	QWidget *w = button;
 
-	if (!label.isNull())
+	if (!label.isEmpty())
 	{
 		w = new QWidget;
 		QVBoxLayout *l = new QVBoxLayout(w);

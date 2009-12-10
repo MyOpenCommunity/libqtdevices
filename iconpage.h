@@ -42,7 +42,7 @@ public:
 protected:
 	void buildPage(IconContent *content, NavigationBar *nav_bar, const QString &label = QString());
 	void addPage(Page *page, int id, const QString &label, const QString &iconName, int x = 0, int y = 0);
-	BtButton *addButton(int id, const QString &label, const QString &iconName, int x = 0, int y = 0);
+	BtButton *addButton(const QString &label, const QString &iconName, int x = 0, int y = 0);
 
 private:
 	QButtonGroup buttons_group;
