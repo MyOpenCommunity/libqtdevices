@@ -16,6 +16,7 @@
 
 #include "page.h"
 #include "sectionpage.h"
+#include "vctcallpage.h"
 
 #include <QWidget>
 
@@ -55,6 +56,9 @@ class VideoControl : public IconPage
 Q_OBJECT
 public:
 	VideoControl(const QDomNode &config_node);
+
+private:
+	VCTCallPage *call_page;
 };
 
 

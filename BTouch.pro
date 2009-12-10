@@ -210,6 +210,7 @@ HEADERS += actuators.h \
            transitionwidget.h \
            version.h \
            videoentryphone.h \
+           vctcallpage.h \
            window.h \
            windowcontainer.h \
            xml_functions.h
@@ -333,6 +334,7 @@ SOURCES += actuators.cpp \
            transitionwidget.cpp \
            version.cpp \
            videoentryphone.cpp \
+           vctcallpage.cpp \
            window.cpp \
            windowcontainer.cpp \
            xml_functions.cpp

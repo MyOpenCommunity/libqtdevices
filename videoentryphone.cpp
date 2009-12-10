@@ -69,10 +69,14 @@ CallExclusion::CallExclusion(const QDomNode &config_node)
 VideoControl::VideoControl(const QDomNode &config_node)
 {
 	buildPage(new IconContent, new NavigationBar);
+	call_page = new VCTCallPage;
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		SkinContext ctx(getTextChild(item, "cid").toInt());
 		BtButton *btn = addButton(getTextChild(item, "descr"), bt_global::skin->getImage("link_icon"), 0, 0);
+		call_page->addExternalPlace(getTextChild(item, "where"));
+		connect(btn, SIGNAL(clicked()), call_page, SLOT(showPage()));
+		connect(call_page, SIGNAL(Closed()), SLOT(showPage()));
 	}
 }
 
