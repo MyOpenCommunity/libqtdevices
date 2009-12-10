@@ -70,6 +70,9 @@ public:
 
 private slots:
 	void toggleCameraSettings();
+	void setBrightness(int value);
+	void setColor(int value);
+	void setContrast(int value);
 
 private:
 	BtButton *cycle, *setup_vct;

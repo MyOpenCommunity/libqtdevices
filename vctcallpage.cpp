@@ -2,6 +2,7 @@
 #include "btbutton.h"
 #include "skinmanager.h"
 #include "generic_functions.h" //getBostikName
+#include "hardware_functions.h" // setVctContrast
 #include "icondispatcher.h"
 
 #include <QDomNode>
@@ -138,11 +139,17 @@ VCTCallPage::VCTCallPage()
 	sidebar->setSpacing(0);
 
 	brightness = new BannTuning(tr("Brightness"), bt_global::skin->getImage("brightness"));
+	connect(brightness, SIGNAL(valueChanged(int)), SLOT(setBrightness(int)));
 	sidebar->addWidget(brightness);
+
 	contrast = new BannTuning(tr("Contrast"), bt_global::skin->getImage("contrast"));
+	connect(contrast, SIGNAL(valueChanged(int)), SLOT(setContrast(int)));
 	sidebar->addWidget(contrast);
+
 	color = new BannTuning(tr("Color"), bt_global::skin->getImage("color"));
+	connect(color, SIGNAL(valueChanged(int)), SLOT(setColor(int)));
 	sidebar->addWidget(color);
+
 	camera = new CameraMove(0);
 	camera->setMoveEnabled(false);
 	sidebar->addWidget(camera);
@@ -220,6 +227,26 @@ void VCTCallPage::toggleCameraSettings()
 		camera->hide();
 		setup_vct->setImage(getBostikName(setup_vct_icon, "on"));
 	}
+}
+
+void VCTCallPage::setContrast(int value)
+{
+	// TODO: original code set this value into a global struct which at some point is written to
+	// /dev/nvram...what should we do?
+	static const QString contrast_command("1");
+	setVctVideoValue(contrast_command, QString::number(value));
+}
+
+void VCTCallPage::setColor(int value)
+{
+	static const QString color_command("2");
+	setVctVideoValue(color_command, QString::number(value));
+}
+
+void VCTCallPage::setBrightness(int value)
+{
+	static const QString brightness_command("3");
+	setVctVideoValue(brightness_command, QString::number(value));
 }
 
 void VCTCallPage::addExternalPlace(const QString &where)
