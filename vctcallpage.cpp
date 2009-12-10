@@ -56,11 +56,11 @@ VCTCallPage::VCTCallPage()
 	// sidebar
 	QVBoxLayout *sidebar = new QVBoxLayout;
 
-	BannTuning *bright = new BannTuning(tr("Brightness"), bt_global::skin->getImage("brightness"));
-	sidebar->addWidget(bright);
-	BannTuning *contrast = new BannTuning(tr("Contrast"), bt_global::skin->getImage("contrast"));
+	brightness = new BannTuning(tr("Brightness"), bt_global::skin->getImage("brightness"));
+	sidebar->addWidget(brightness);
+	contrast = new BannTuning(tr("Contrast"), bt_global::skin->getImage("contrast"));
 	sidebar->addWidget(contrast);
-	BannTuning *color = new BannTuning(tr("Color"), bt_global::skin->getImage("color"));
+	color = new BannTuning(tr("Color"), bt_global::skin->getImage("color"));
 	sidebar->addWidget(color);
 
 	setup_vct = new BtButton;

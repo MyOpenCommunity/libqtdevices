@@ -41,6 +41,7 @@ private slots:
 
 private:
 	BtButton *mute_button, *call_accept, *stairlight, *unlock_door, *cycle, *setup_vct;
+	BannTuning *contrast, *brightness, *color;
 	QString mute_icon, call_icon, unlock_icon, stairlight_icon, setup_vct_icon;
 	QStringList places;
 };
