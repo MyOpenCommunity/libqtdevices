@@ -180,6 +180,7 @@ HEADERS += actuators.h \
            playwindow.h \
            poweramplifier.h \
            poweramplifier_device.h \
+           pulldevice.h \
            radio.h \
            scaleconversion.h \
            scenario.h \
@@ -302,6 +303,7 @@ SOURCES += actuators.cpp \
            playwindow.cpp \
            poweramplifier.cpp \
            poweramplifier_device.cpp \
+           pulldevice.cpp \
            radio.cpp \
            scaleconversion.cpp \
            scenario.cpp \

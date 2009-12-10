@@ -1,7 +1,7 @@
 #ifndef DEV_AUTOMATION_H
 #define DEV_AUTOMATION_H
 
-#include "device.h"
+#include "pulldevice.h"
 
 class OpenMsg;
 

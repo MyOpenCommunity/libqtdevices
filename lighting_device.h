@@ -1,7 +1,7 @@
 #ifndef LIGHTINGDEVICE_H
 #define LIGHTINGDEVICE_H
 
-#include "device.h"
+#include "pulldevice.h"
 
 
 class LightingDevice : public PullDevice
