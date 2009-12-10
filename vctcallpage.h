@@ -52,9 +52,11 @@ Q_OBJECT
 public:
 	// TODO: we need a EntryphoneDevice to control the camera
 	CameraMove(device *dev);
+	void setFullscreenEnabled(bool fs);
+	void setMoveEnabled(bool move);
 
 private:
-	BtButton *up, *left, *fullscreen, *right, *down;
+	EnablingButton *up, *left, *fullscreen, *right, *down;
 };
 
 

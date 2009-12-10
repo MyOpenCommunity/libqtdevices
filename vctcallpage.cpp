@@ -72,19 +72,21 @@ void BannTuning::changeIcons()
 	center_right->setImage(getBostikName(center_icon, QString("dxl") + QString::number(current_level)));
 }
 
+EnablingButton *getButton(const QString &image_path)
+{
+	EnablingButton *btn = new EnablingButton;
+	btn->setImage(image_path);
+	btn->setDisabledPixmap(getBostikName(image_path, "dis"));
+	return btn;
+}
 
 CameraMove::CameraMove(device *dev)
 {
-	up = new BtButton;
-	up->setImage(bt_global::skin->getImage("arrow_up"));
-	down = new BtButton;
-	down->setImage(bt_global::skin->getImage("arrow_down"));
-	right = new BtButton;
-	right->setImage(bt_global::skin->getImage("arrow_right"));
-	left = new BtButton;
-	left->setImage(bt_global::skin->getImage("arrow_left"));
-	fullscreen = new BtButton;
-	fullscreen->setImage(bt_global::skin->getImage("fullscreen"));
+	up = getButton(bt_global::skin->getImage("arrow_up"));
+	down = getButton(bt_global::skin->getImage("arrow_down"));
+	right = getButton(bt_global::skin->getImage("arrow_right"));
+	left = getButton(bt_global::skin->getImage("arrow_left"));
+	fullscreen = getButton(bt_global::skin->getImage("fullscreen"));
 
 	QHBoxLayout *center = new QHBoxLayout;
 	center->setContentsMargins(0, 0, 0, 0);
@@ -99,6 +101,29 @@ CameraMove::CameraMove(device *dev)
 	l->addWidget(up);
 	l->addLayout(center);
 	l->addWidget(down);
+}
+
+void CameraMove::setFullscreenEnabled(bool fs)
+{
+	fs ? fullscreen->enable() : fullscreen->disable();
+}
+
+void CameraMove::setMoveEnabled(bool move)
+{
+	if (move)
+	{
+		up->enable();
+		down->enable();
+		left->enable();
+		right->enable();
+	}
+	else
+	{
+		up->disable();
+		down->disable();
+		left->disable();
+		right->disable();
+	}
 }
 
 
