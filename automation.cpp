@@ -33,34 +33,42 @@ void Automation::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case ATTUAT_AUTOM_INT_SIC:
-			b = new attuatAutomIntSic(this, where, img1, img2, img3, img4);
+//			b = new attuatAutomIntSic(this, where, img1, img2, img3, img4);
+			b = new SecureInterblockedActuator(this, item);
 			break;
 		case ATTUAT_AUTOM_INT:
-			b = new attuatAutomInt(this, where, img1, img2, img3, img4);
+//			b = new attuatAutomInt(this, where, img1, img2, img3, img4);
+			b = new InterblockedActuator(this, item);
 			break;
 		case ATTUAT_AUTOM:
-			b = new attuatAutom(this, where, img1, img2, img3, img4);
+//			b = new attuatAutom(this, where, img1, img2, img3, img4);
+			b = new SingleActuator(this, item, where);
 			break;
 		case ATTUAT_VCT_SERR:
-			b = new attuatPuls(this, where, img1, img2, VCT_SERR);
+//			b = new attuatPuls(this, where, img1, img2, VCT_SERR);
+			b = new ButtonActuator(this, item, VCT_SERR);
 			break;
 		case GR_ATTUAT_INT:
 		{
-			QList<QString> addresses;
-			foreach (const QDomNode &el, getChildren(item, "element"))
-				addresses.append(getTextChild(el, "where"));
-
-			b = new grAttuatInt(this, addresses, img1, img2, img3);
+//			QList<QString> addresses;
+//			foreach (const QDomNode &el, getChildren(item, "element"))
+//				addresses.append(getTextChild(el, "where"));
+//
+//			b = new grAttuatInt(this, addresses, img1, img2, img3);
+			b = new InterblockedActuatorGroup(this, item);
 			break;
 		}
 		case AUTOM_CANC_ATTUAT_ILL:
-			b = new automCancAttuatIll(this, where, img1, img2, time);
+//			b = new automCancAttuatIll(this, where, img1, img2, time);
+			b = new GateLightingActuator(this, item);
 			break;
 		case AUTOM_CANC_ATTUAT_VC:
-			b = new automCancAttuatVC(this, where, img1, img2);
+//			b = new automCancAttuatVC(this, where, img1, img2);
+			b = new GateEntryphoneActuator(this, item);
 			break;
 		case ATTUAT_AUTOM_PULS:
-			b = new attuatPuls(this, where, img1, img2, AUTOMAZ);
+//			b = new attuatPuls(this, where, img1, img2, AUTOMAZ);
+			b = new ButtonActuator(this, item, AUTOMAZ);
 			break;
 		case PPT_STAT:
 			b = new PPTStat(this, where, cid);

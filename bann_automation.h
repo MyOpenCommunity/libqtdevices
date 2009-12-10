@@ -12,7 +12,92 @@
 class device;
 class device_status;
 class PPTStatDevice;
+class AutomationDevice;
+class LightingDevice;
+class QDomNode;
 
+
+class InterblockedActuator : public BannOpenClose
+{
+Q_OBJECT
+public:
+	InterblockedActuator(QWidget *parent, const QDomNode &config_node);
+	virtual void inizializza(bool forza = false);
+
+private slots:
+	void sendGoUp();
+	void sendGoDown();
+	void sendStop();
+	void status_changed(const StatusList &sl);
+
+private:
+	AutomationDevice *dev;
+};
+
+
+class SecureInterblockedActuator : public BannOpenClose
+{
+Q_OBJECT
+public:
+	SecureInterblockedActuator(QWidget *parent, const QDomNode &config_node);
+	virtual void inizializza(bool forza = false);
+
+private slots:
+	void sendOpen();
+	void sendClose();
+	void buttonReleased();
+	void sendStop();
+	void status_changed(const StatusList &sl);
+
+private:
+	AutomationDevice *dev;
+};
+
+class GateEntryphoneActuator : public BannSinglePuls
+{
+Q_OBJECT
+public:
+	GateEntryphoneActuator(QWidget *parent, const QDomNode &config_node);
+
+private slots:
+	void activate();
+
+private:
+	QString where;
+	device *dev;
+};
+
+class GateLightingActuator : public BannSinglePuls
+{
+Q_OBJECT
+public:
+	GateLightingActuator(QWidget *parent, const QDomNode &config_node);
+
+private slots:
+	void activate();
+
+private:
+	int time_h, time_m, time_s;
+	LightingDevice *dev;
+};
+
+
+class InterblockedActuatorGroup : public Bann3Buttons
+{
+Q_OBJECT
+public:
+	InterblockedActuatorGroup(QWidget *parent, const QDomNode &config_node);
+
+private slots:
+	void sendOpen();
+	void sendClose();
+	void sendStop();
+
+private:
+	QList<AutomationDevice *> actuators;
+};
+
+#if 0
 /*!
  * \class
  * \brief This class represents an automated video-doorphone actuator
@@ -132,6 +217,7 @@ private:
 	QList<QString> elencoDisp;
 	void sendAllFrames(QString msg);
 };
+#endif
 
 
 class PPTStat : public banner

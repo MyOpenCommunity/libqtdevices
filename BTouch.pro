@@ -58,6 +58,7 @@ HEADERS += actuators.h \
            amplificatori.h \
            antintrusion.h \
            automation.h \
+           automation_device.h \
            aux.h \
            bann1_button.h \
            bann2_buttons.h \
@@ -85,7 +86,6 @@ HEADERS += actuators.h \
            cleanscreen.h \
            contrast.h \
            datetime.h \
-           dev_automation.h \
            device.h \
            device_status.h \
            devices_cache.h \
@@ -109,6 +109,7 @@ HEADERS += actuators.h \
            landevice.h \
            lansettings.h \
            lighting.h \
+           lighting_device.h \
            listbrowser.h \
            loads.h \
            main.h \
@@ -123,9 +124,11 @@ HEADERS += actuators.h \
            playwindow.h \
            poweramplifier.h \
            poweramplifier_device.h \
+           pulldevice.h \
            radio.h \
            scaleconversion.h \
            scenario.h \
+           scenario_device.h \           
            scenevocond.h \
            screensaver.h \
            screensaverpage.h \
@@ -147,7 +150,7 @@ HEADERS += actuators.h \
            transitionwidget.h \
            version.h \
            videoentryphone.h \
-		   xml_functions.h
+           xml_functions.h
 
 SOURCES += actuators.cpp \
            alarmclock.cpp \
@@ -156,6 +159,7 @@ SOURCES += actuators.cpp \
            amplificatori.cpp \
            antintrusion.cpp \
            automation.cpp \
+           automation_device.cpp \           
            aux.cpp \
            bann1_button.cpp \
            bann2_buttons.cpp \
@@ -184,7 +188,6 @@ SOURCES += actuators.cpp \
            contrast.cpp \
            datetime.cpp \
            definitions.cpp \
-           dev_automation.cpp \
            device.cpp \
            device_status.cpp \
            devices_cache.cpp \
@@ -208,6 +211,7 @@ SOURCES += actuators.cpp \
            landevice.cpp \
            lansettings.cpp \
            lighting.cpp \
+           lighting_device.cpp \
            listbrowser.cpp \
            loads.cpp \
            main.cpp \
@@ -222,9 +226,11 @@ SOURCES += actuators.cpp \
            playwindow.cpp \
            poweramplifier.cpp \
            poweramplifier_device.cpp \
+           pulldevice.cpp \
            radio.cpp \
            scaleconversion.cpp \
            scenario.cpp \
+           scenario_device.cpp \
            scenevocond.cpp \
            screensaver.cpp \
            screensaverpage.cpp \
@@ -246,7 +252,7 @@ SOURCES += actuators.cpp \
            transitionwidget.cpp \
            version.cpp \
            videoentryphone.cpp \
-		   xml_functions.cpp
+           xml_functions.cpp
 
 TRANSLATIONS += linguist-ts/btouch_ar.ts \
                 linguist-ts/btouch_de.ts \

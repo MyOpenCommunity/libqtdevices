@@ -5,18 +5,133 @@
 #include "generic_functions.h" // setCfgValue
 #include "fontmanager.h" // bt_global::font
 #include "devices_cache.h" // bt_global::devices_cache
-#include "dev_automation.h"
+#include "automation_device.h"
 #include "skinmanager.h" // SkinContext, bt_global::skin
+#include "scenario_device.h"
+#include "xml_functions.h" // getTextChild
 
 #include <QDir>
 #include <QDebug>
 #include <QLabel>
 #include <QTimerEvent>
+#include <QDomNode>
 
 #define PPTSCE_INTERVAL 1000
 
 
-bannScenario::bannScenario(sottoMenu *parent, QString where, QString IconaSx) : bannOnSx(parent)
+BannSimpleScenario::BannSimpleScenario(QWidget *parent, const QDomNode &config_node) :
+	BannLeft(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	initBanner(bt_global::skin->getImage("on"), getTextChild(config_node, "descr"));
+
+	QString where = getTextChild(config_node, "where");
+	dev = bt_global::add_device_to_cache(new ScenarioDevice(where));
+
+	scenario_number = getTextChild(config_node, "what").toInt();
+
+	connect(left_button, SIGNAL(clicked()), SLOT(activate()));
+}
+
+void BannSimpleScenario::activate()
+{
+	dev->activateScenario(scenario_number);
+}
+
+
+ModifyScenario::ModifyScenario(QWidget *parent, const QDomNode &config_node) :
+	Bann4ButtonsIcon(parent)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
+	initBanner(bt_global::skin->getImage("edit"), bt_global::skin->getImage("forward"),
+		bt_global::skin->getImage("label"), bt_global::skin->getImage("start_prog"),
+		bt_global::skin->getImage("del_scen"), bt_global::skin->getImage("on"),
+		bt_global::skin->getImage("stop"), LOCKED, getTextChild(config_node, "descr"));
+
+	QString where = getTextChild(config_node, "where");
+	dev = bt_global::add_device_to_cache(new ScenarioDevice(where));
+
+	scenario_number = getTextChild(config_node, "what").toInt();
+	is_editing = false;
+	connect(left_button, SIGNAL(clicked()), SLOT(activate()));
+	connect(right_button, SIGNAL(clicked()), SLOT(editScenario()));
+	connect(center_left_button, SIGNAL(clicked()), SLOT(startEditing()));
+	connect(center_right_button, SIGNAL(clicked()), SLOT(deleteScenario()));
+	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(const StatusList &)));
+}
+
+void ModifyScenario::activate()
+{
+	dev->activateScenario(scenario_number);
+}
+
+void ModifyScenario::editScenario()
+{
+	is_editing = !is_editing;
+	setState(is_editing ? EDIT_VIEW : UNLOCKED);
+}
+
+void ModifyScenario::startEditing()
+{
+	dev->startProgramming(scenario_number);
+}
+
+void ModifyScenario::deleteScenario()
+{
+	dev->deleteScenario(scenario_number);
+}
+
+void ModifyScenario::changeLeftFunction(const char *slot)
+{
+	left_button->disconnect(SIGNAL(clicked()));
+	connect(left_button, SIGNAL(clicked()), slot);
+}
+
+void ModifyScenario::stopEditing()
+{
+	dev->stopProgramming(scenario_number);
+}
+
+void ModifyScenario::status_changed(const StatusList &sl)
+{
+	StatusList::const_iterator it = sl.constBegin();
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		case ScenarioDevice::DIM_LOCK:
+			setState(it.value().toBool() ? LOCKED : UNLOCKED);
+			// TODO: it seems reasonable that when LOCKED the left function returns
+			// to activate(), since the device won't care about our frames.
+			// Ask Agresta.
+			// When UNLOCKED, however, the left function mustn't be touched
+			//changeLeftFunction(SLOT(activate()));
+			break;
+		case ScenarioDevice::DIM_START:
+		{
+			bool is_start_edit = it.value().toBool();
+			if (is_start_edit)
+			{
+				setEditingState(EDIT_ACTIVE);
+				changeLeftFunction(SLOT(stopEditing()));
+			}
+			else
+			{
+				setEditingState(EDIT_INACTIVE);
+				changeLeftFunction(SLOT(activate()));
+			}
+		}
+			break;
+		}
+		++it;
+	}
+}
+
+
+#if 1
+
+bannScenario::bannScenario(QWidget *parent, QString where, QString IconaSx) : bannOnSx(parent)
 {
 	SetIcons(IconaSx, 1);
 	setAddress(where);
@@ -204,11 +319,13 @@ void gesModScen::inizializza(bool forza)
 	nascondi(BUT2);
 }
 
+#endif
+
 
 int scenEvo::next_serial_number = 1;
 
-scenEvo::scenEvo(QWidget *parent, QList<scenEvo_cond*> c, QString i1, QString i2,
-	QString i3, QString i4, QString act, int enable) : bann3But(parent), condList(c)
+scenEvo::scenEvo(QWidget *parent, const QDomNode &conf_node, QList<scenEvo_cond*> c) :
+	Bann3Buttons(parent), condList(c)
 {
 	current_condition = 0;
 
@@ -224,28 +341,39 @@ scenEvo::scenEvo(QWidget *parent, QList<scenEvo_cond*> c, QString i1, QString i2
 		connect(co, SIGNAL(resetAll()), this, SLOT(resetAll()));
 	}
 
-	action = act;
-	SetIcons(i1, i2, i3, i4);
-	impostaAttivo(enable);
-	connect(this,SIGNAL(sxClick()), this, SLOT(toggleAttivaScev()));
-	connect(this,SIGNAL(dxClick()), this, SLOT(configScev()));
-	connect(this,SIGNAL(centerClick()), this, SLOT(forzaScev()));
+#ifdef CONFIG_BTOUCH
+	action = getElement(conf_node, "action/open").text();
+	enabled = getTextChild(conf_node, "enable").toInt();
+#else
+	action = getElement(conf_node, "scen/action/open").text();
+	enabled = getTextChild(conf_node, "scen/status").toInt();
+#endif
+	enable_icon = bt_global::skin->getImage("enable_scen");
+	disable_icon = bt_global::skin->getImage("disable_scen");
+	initBanner(enabled ? enable_icon : disable_icon, bt_global::skin->getImage("start"),
+		bt_global::skin->getImage("program"), getTextChild(conf_node, "descr"));
+
+	connect(left_button, SIGNAL(clicked()), SLOT(toggleAttivaScev()));
+	connect(right_button, SIGNAL(clicked()), SLOT(configScev()));
+	connect(center_button, SIGNAL(clicked()), SLOT(forzaScev()));
 }
 
 void scenEvo::toggleAttivaScev()
 {
 	qDebug("scenEvo::toggleAttivaScev");
-	impostaAttivo(!isActive());
-	Draw();
-	const char *s = isActive() ? "1" : "0";
+	enabled = !enabled;
+	left_button->setImage(enabled ? enable_icon : disable_icon);
+	const char *s = enabled ? "1" : "0";
+#ifdef CONFIG_BTOUCH
+	// TODO: how to save into config file?
 	setCfgValue("enable", s, SCENARIO_EVOLUTO, serial_number);
+#endif
 }
 
 void scenEvo::configScev()
 {
 	qDebug("scenEvo::configScev");
 	scenEvo_cond *co = condList.at(current_condition);
-	qDebug("Invoco %p->mostra()", co);
 	connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
 	connect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
@@ -254,10 +382,8 @@ void scenEvo::configScev()
 
 void scenEvo::forzaScev()
 {
-	qDebug("scenEvo::forzaScev");
 	// Forced trigger
 	trig(true);
-	Draw();
 }
 
 void scenEvo::nextCond()
@@ -283,12 +409,7 @@ void scenEvo::nextCond()
 		}
 	}
 	else
-	{
 		current_condition = 0;
-		Draw();
-		show();
-	}
-	old_cond->hide();
 }
 
 void scenEvo::prevCond()
@@ -312,12 +433,6 @@ void scenEvo::prevCond()
 			cond->showPage();
 		}
 	}
-	else
-	{
-		Draw();
-		show();
-	}
-	old_cond->hide();
 }
 
 void scenEvo::firstCond()
@@ -326,7 +441,6 @@ void scenEvo::firstCond()
 	scenEvo_cond *co = condList.at(current_condition);
 	disconnect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
 	current_condition = 0;
-	Draw();
 	emit pageClosed();
 }
 
@@ -352,51 +466,6 @@ void scenEvo::resetAll()
 	emit pageClosed();
 }
 
-void scenEvo::Draw()
-{
-	// Icon[0] => left button (inactive)
-	// pressIcon[0] => pressed left button (inactive)
-	// Icon[1] => left button (active)
-	// pressIcon[1] => pressed left button (active)
-	// Icon[3] => center button
-	// pressIcon[3] => pressed center button
-	// Icon[2] => right button
-	// pressIcon[2] => pressed right button
-	qDebug("scenEvo::Draw(%p)", this);
-	current_condition = 0;
-	if (sxButton && Icon[0] && Icon[1])
-	{
-		int sxb_index = isActive() ? 0 : 1;
-		sxButton->setPixmap(*Icon[sxb_index]);
-		if (pressIcon[sxb_index])
-			sxButton->setPressedPixmap(*pressIcon[sxb_index]);
-	}
-	if (dxButton && Icon[2])
-	{
-		dxButton->setPixmap(*Icon[2]);
-		if (pressIcon[2])
-			dxButton->setPressedPixmap(*pressIcon[2]);
-	}
-	if (csxButton && Icon[3])
-	{
-		csxButton->setPixmap(*Icon[3]);
-		if (pressIcon[3])
-			csxButton->setPressedPixmap(*pressIcon[3]);
-	}
-	if (BannerText)
-	{
-		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		BannerText->setFont(bt_global::font->get(FontManager::TEXT));
-		BannerText->setText(qtesto);
-	}
-	if (SecondaryText)
-	{
-		SecondaryText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		SecondaryText->setFont(bt_global::font->get(FontManager::TEXT));
-		SecondaryText->setText(qtestoSecondario);
-	}
-}
-
 void scenEvo::trigOnStatusChanged()
 {
 	qDebug("scenEvo::trigOnStatusChanged()");
@@ -419,7 +488,7 @@ void scenEvo::trig(bool forced)
 
 	if (!forced)
 	{
-		if (!isActive())
+		if (!enabled)
 		{
 			qDebug("scenEvo::trig(), non abilitato, non faccio niente");
 			return;
@@ -458,6 +527,77 @@ scenEvo::~scenEvo()
 }
 
 
+ScheduledScenario::ScheduledScenario(QWidget *parent, const QDomNode &config_node) :
+	Bann4Buttons(parent)
+{
+	initBanner(bt_global::skin->getImage("disable_scen"), bt_global::skin->getImage("stop"),
+		bt_global::skin->getImage("start"), bt_global::skin->getImage("enable_scen"),
+		getTextChild(config_node, "descr"));
+	connect(left_button, SIGNAL(clicked()), SLOT(enable()));
+	connect(center_left_button, SIGNAL(clicked()), SLOT(start()));
+	connect(center_right_button, SIGNAL(clicked()), SLOT(stop()));
+	connect(right_button, SIGNAL(clicked()), SLOT(disable()));
+
+	QList<QString *> actions;
+	actions << &action_enable << &action_start << &action_stop << &action_disable;
+	// these must be in the same position as the list above!
+	QList<BtButton *> buttons;
+	buttons << left_button << center_left_button << center_right_button << right_button;
+
+#ifdef CONFIG_BTOUCH
+	QList<QString> nodes;
+	// these must be in the order: unable, start, stop, disable (the same given by actions above)
+	nodes << "unable" << "start" << "stop" << "disable";
+	for (int i = 0; i < nodes.size(); ++i)
+	{
+		QDomNode node = getChildWithName(config_node, nodes[i]);
+		if (!node.isNull() && getTextChild(node, "value").toInt())
+			*actions[i] = getTextChild(node, "open");
+		else
+			deleteButton(buttons[i]);
+	}
+#else
+	QList<QString> names;
+	// these must be in the order: attiva, start, stop, disattiva (the same given by actions above)
+	names << "attiva" << "start" << "stop" << "disattiva";
+	for (int i = 0; i < names.size(); ++i)
+	{
+		// look for a node called where{attiva,disattiva,start,stop} to decide if the action is enabled
+		QDomElement where = getElement(config_node, QString("schedscen/where") + names[i]);
+		if (!where.isNull())
+		{
+			QDomElement what = getElement(config_node, QString("schedscen/what") + names[i]);
+			*actions[i] = QString("*15*%1*%2##").arg(what.text()).arg(where.text());
+		}
+		else
+			deleteButton(buttons[i]);
+	}
+#endif
+}
+
+void ScheduledScenario::enable()
+{
+	sendFrame(action_enable);
+}
+
+void ScheduledScenario::start()
+{
+	sendFrame(action_start);
+}
+
+void ScheduledScenario::stop()
+{
+	sendFrame(action_stop);
+}
+
+void ScheduledScenario::disable()
+{
+	sendFrame(action_disable);
+}
+
+
+#if 0
+// DELETE
 scenSched::scenSched(QWidget *parent, QString Icona1, QString Icona2, QString Icona3, QString Icona4,
 	QString act_enable, QString act_disable, QString act_start, QString act_stop) : bann4But(parent)
 {
@@ -569,10 +709,11 @@ void scenSched::Draw()
 	if (BannerText)
 	{
 		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		BannerText->setFont(bt_global::font->get(FontManager::TEXT));
+		BannerText->setFont(bt_global::font->get(FontManager::BANNERTEXT));
 		BannerText->setText(qtesto);
 	}
 }
+#endif
 
 
 PPTSce::PPTSce(QWidget *parent, QString where, int cid) : bann4But(parent)

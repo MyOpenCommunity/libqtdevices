@@ -12,28 +12,33 @@
 
 #include "bttime.h"
 
+#include <QDateTime>
+
+// BtTime implementation
+
 BtTime::BtTime()
-	: _hour(0),
-	_minute(0),
-	max_hours(24),
-	max_minutes(60)
 {
+	init(0, 0, 0);
 }
 
-BtTime::BtTime(int h, int m)
-	: max_hours(24),
-	max_minutes(60)
+BtTime::BtTime(int h, int m, int s)
 {
-	_hour = h;
-	_minute = m;
+	init(h, m , s);
 }
 
 BtTime::BtTime(const QTime &t)
-	: max_hours(24),
-	max_minutes(60)
 {
-	_hour = t.hour();
-	_minute = t.minute();
+	init(t.hour(), t.minute(), t.second());
+}
+
+void BtTime::init(int h, int m, int s)
+{
+	_hour = h;
+	_minute = m;
+	_second = s;
+	max_hours = 24;
+	max_minutes = 60;
+	max_seconds = 60;
 }
 
 void BtTime::setMaxHours(int max)
@@ -46,11 +51,42 @@ void BtTime::setMaxMinutes(int max)
 	max_minutes = max;
 }
 
+void BtTime::setMaxSeconds(int max)
+{
+	max_seconds = max;
+}
+
+BtTime BtTime::addSecond(int s) const
+{
+	BtTime t = *this;
+	if (s == 1)
+	{
+		if (t._second == max_seconds - 1)
+		{
+			t._second = 0;
+			t = t.addMinute(s);
+		}
+		else
+			++t._second;
+	}
+	else if (s == -1)
+	{
+		if (t._second == 0)
+		{
+			t._second = max_seconds - 1;
+			t = t.addMinute(s);
+		}
+		else
+			--t._second;
+	}
+	else
+		qFatal("BtTime::addSecond(): _second != +-1");
+	return t;
+}
+
 BtTime BtTime::addMinute(int m) const
 {
-	BtTime t(this->_hour, this->_minute);
-	t.setMaxHours(max_hours);
-	t.setMaxMinutes(max_minutes);
+	BtTime t = *this;
 	if (m == 1)
 	{
 		if (t._minute == max_minutes - 1)
@@ -78,9 +114,7 @@ BtTime BtTime::addMinute(int m) const
 
 BtTime BtTime::addHour(int h) const
 {
-	BtTime t(this->_hour, this->_minute);
-	t.setMaxHours(max_hours);
-	t.setMaxMinutes(max_minutes);
+	BtTime t = *this;
 	if (h == 1)
 	{
 		if (t._hour == max_hours - 1)
@@ -114,9 +148,15 @@ int BtTime::minute() const
 	return _minute;
 }
 
+int BtTime::second() const
+{
+	return _second;
+}
+
 QString BtTime::toString() const
 {
 	QString str;
-	str.sprintf("%u:%02u", _hour, _minute);
+	str.sprintf("%u:%02u:%02u", _hour, _minute, _second);
 	return str;
 }
+

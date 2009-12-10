@@ -37,6 +37,15 @@ QString createStatusRequestOpen(QString who, QString where)
 	return QString("*#%1*%2##").arg(who).arg(where);
 }
 
+QString getBostikName(const QString &name, const QString &suffix)
+{
+	int pos = name.indexOf(".");
+	if (pos != -1)
+		return name.left(pos) + suffix + name.mid(pos);
+
+	return QString();
+}
+
 // TODO: unificare queste tre funzioni praticamente identiche!
 QString getPressName(QString name)
 {

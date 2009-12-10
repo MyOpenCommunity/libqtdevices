@@ -16,7 +16,50 @@ class scenEvo_cond;
 class device;
 class QTimerEvent;
 class QWidget;
+class QDomNode;
+class ScenarioDevice;
 
+
+
+class BannSimpleScenario : public BannLeft
+{
+Q_OBJECT
+public:
+	BannSimpleScenario(QWidget *parent, const QDomNode &config_node);
+
+private slots:
+	void activate();
+
+private:
+	ScenarioDevice *dev;
+	int scenario_number;
+};
+
+
+// substitute for gesModScen
+class ModifyScenario : public Bann4ButtonsIcon
+{
+Q_OBJECT
+public:
+	ModifyScenario(QWidget *parent, const QDomNode &config_node);
+
+private slots:
+	void status_changed(const StatusList &sl);
+	void activate();
+	void editScenario();
+	void startEditing();
+	void deleteScenario();
+	void stopEditing();
+
+private:
+	void changeLeftFunction(const char *slot);
+	ScenarioDevice *dev;
+	int scenario_number;
+	bool is_editing;
+};
+
+
+#if 1
 /*!
  * \class bannScenario
  * \brief This class is made to control a scenario of a \a scenario \a unit.
@@ -28,7 +71,7 @@ class bannScenario : public bannOnSx
 {
 Q_OBJECT
 public:
-	bannScenario(sottoMenu *parent, QString where, QString IconaSx);
+	bannScenario(QWidget *parent, QString where, QString IconaSx);
 private slots:
 	void Attiva();
 };
@@ -64,6 +107,8 @@ private slots:
 	void cancScen();
 };
 
+#endif
+
 
 /*!
  * \class scenEvo
@@ -71,22 +116,23 @@ private slots:
  * \author Ciminaghi
  * \date apr 2006
  */
-class scenEvo : public bann3But
+class scenEvo : public Bann3Buttons
 {
 Q_OBJECT
 public:
-	scenEvo(QWidget *parent, QList<scenEvo_cond*> c, QString i1=QString(), QString i2=QString(), QString i3=QString(), QString i4=QString(), QString act="", int enabled = 0);
+	scenEvo(QWidget *parent, const QDomNode &conf_node, QList<scenEvo_cond*> c);
 	~scenEvo();
-	void Draw();
 public slots:
 	void inizializza(bool forza = false);
 
 private:
 	QList<scenEvo_cond*> condList;
 	unsigned current_condition;
-	QString action;
+	QString action, enable_icon, disable_icon;
 	int serial_number;
 	static int next_serial_number;
+	bool enabled;
+
 private slots:
 	void toggleAttivaScev();
 	void configScev();
@@ -101,6 +147,26 @@ private slots:
 };
 
 
+// substitute for scenSched
+class ScheduledScenario : public Bann4Buttons
+{
+Q_OBJECT
+public:
+	ScheduledScenario(QWidget *parent, const QDomNode &config_node);
+
+private slots:
+	void enable();
+	void disable();
+	void start();
+	void stop();
+
+private:
+	QString action_enable, action_disable, action_start, action_stop;
+};
+
+
+#if 0
+// DELETE
 /*!
  * \class scenSched
  * \brief This class represents a scheduled scenario management object
@@ -131,6 +197,7 @@ public slots:
 private:
 	QString action_enable, action_disable, action_start, action_stop;
 };
+#endif
 
 
 class PPTSce : public bann4But

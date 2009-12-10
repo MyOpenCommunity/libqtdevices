@@ -45,48 +45,58 @@ void Lighting::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case DIMMER:
-			b = new dimmer(this, where, img1, img2, img3, img4, img5);
+//			b = new dimmer(this, where, img1, img2, img3, img4, img5);
+			b = new DimmerNew(this, item, where);
 			break;
 		case ATTUAT_AUTOM:
-			b = new attuatAutom(this, where, img1, img2, img3, img4);
+//			b = new attuatAutom(this, where, img1, img2, img3, img4);
+			b = new SingleActuator(this, item, where);
 			break;
 		case GR_DIMMER:
-			b = new grDimmer(this, getAddresses(item), img1, img2, img3, img4);
+//			b = new grDimmer(this, getAddresses(item), img1, img2, img3, img4);
+			b = new DimmerGroup(this, item, getAddresses(item));
 			break;
 		case GR_ATTUAT_AUTOM:
-			b = new grAttuatAutom(this, getAddresses(item), img1, img2, img3);
+//			b = new grAttuatAutom(this, getAddresses(item), img1, img2, img3);
+			b = new LightGroup(this, item, getAddresses(item));
 			break;
 		case ATTUAT_AUTOM_TEMP:
-			b = new attuatAutomTemp(this, where, img1, img2, img3, img4, times);
+//			b = new attuatAutomTemp(this, where, img1, img2, img3, img4, times);
+			b = new TempLight(this, item);
 			break;
 		case ATTUAT_VCT_LS:
-			b = new attuatPuls(this, where, img1, img2, VCT_LS);
+//			b = new attuatPuls(this, where, img1, img2, VCT_LS);
+			b = new ButtonActuator(this, item, VCT_LS);
 			break;
 		case DIMMER_100:
-			b = new dimmer100(this, where, img1, img2 ,img3, img4, img5, getTextChild(item,"softstart").toInt(),
-					getTextChild(item,"softstop").toInt());
+//			b = new dimmer100(this, where, img1, img2 ,img3, img4, img5, getTextChild(item,"softstart").toInt(),
+//					getTextChild(item,"softstop").toInt());
+			b = new Dimmer100New(this, item);
 			break;
 		case ATTUAT_AUTOM_TEMP_NUOVO_N:
-			b = new attuatAutomTempNuovoN(this, where, img1, img2, img3, img4, times);
+//			b = new attuatAutomTempNuovoN(this, where, img1, img2, img3, img4, times);
+			b = new TempLightVariable(this, item);
 			break;
 		case ATTUAT_AUTOM_TEMP_NUOVO_F:
-			if (!times.count())
-				times.append("");
-			b = new attuatAutomTempNuovoF(this, where, img1, img2, img3, times.at(0));
+//			if (!times.count())
+//				times.append("");
+//			b = new attuatAutomTempNuovoF(this, where, img1, img2, img3, times.at(0));
+			b = new TempLightFixed(this, item);
 			break;
 		case GR_DIMMER100:
 		{
-			QList<int> sstart, sstop;
-			QList<QString> addresses;
-
-			foreach (const QDomNode &el, getChildren(item, "element"))
-			{
-				sstart.append(getTextChild(el, "softstart").toInt());
-				sstop.append(getTextChild(el, "softstop").toInt());
-				addresses.append(getTextChild(el, "where"));
-			}
-
-			b = new grDimmer100(this, addresses, img1, img2, img3, img4, sstart, sstop);
+//			QList<int> sstart, sstop;
+//			QList<QString> addresses;
+//
+//			foreach (const QDomNode &el, getChildren(item, "element"))
+//			{
+//				sstart.append(getTextChild(el, "softstart").toInt());
+//				sstop.append(getTextChild(el, "softstop").toInt());
+//				addresses.append(getTextChild(el, "where"));
+//			}
+//
+//			b = new grDimmer100(this, addresses, img1, img2, img3, img4, sstart, sstop);
+			b = new Dimmer100Group(this, item);
 			break;
 		}
 		default:

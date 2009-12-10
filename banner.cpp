@@ -24,8 +24,6 @@
 #include <QDebug>
 #include <QApplication> //qapp
 
-#include <assert.h> // assert
-
 
 // Inizialization of static member
 Client *banner::client_comandi = 0;
@@ -34,6 +32,9 @@ Client *banner::client_richieste = 0;
 
 banner::banner(QWidget *parent) : QWidget(parent)
 {
+	banner_width = 240;
+	banner_height = 80;
+
 	linked_sx_page = 0;
 	linked_dx_page = 0;
 	BannerIcon = 0;
@@ -56,6 +57,7 @@ banner::banner(QWidget *parent) : QWidget(parent)
 	step = 1;
 	animationTimer = NULL;
 	serNum = 1;
+	id = -1;
 }
 
 banner::~banner()
@@ -108,7 +110,7 @@ QString banner::getPressedIconName(QString iconname)
 
 void banner::SetIcons(int id, QString name, QString pressed_name)
 {
-	assert(id < MAX_PRESS_ICON && id >= 0 && "Index of icon out of range!");
+	Q_ASSERT_X(id < MAX_PRESS_ICON && id >= 0, "banner::SetIcons", "Index of icon out of range!");
 	Icon[id]      = bt_global::icons_cache.getIcon(name);
 	if (pressed_name.isNull())
 		pressed_name = getPressedIconName(name);
@@ -202,18 +204,14 @@ void banner::SetIcons(QString sxIcon, QString dxIcon,QString centerActiveIcon, Q
 	Icon[2] = bt_global::icons_cache.getIcon(QString("%1sxl0.png").arg(inactive_root_of_name));
 	Icon[3] = bt_global::icons_cache.getIcon(QString("%1dxl0.png").arg(inactive_root_of_name));
 
-	qDebug() << "New Icon[2] <- " << QString("%1sxl0.png").arg(inactive_root_of_name);
-	qDebug() << "New Icon[3] <- " << QString("%1dxl0.png").arg(inactive_root_of_name);
 	for (int i = minValue, y = 0; i <= maxValue; i+=step, y++)
 	{
 		nomeFile = QString("%1sxl%2.png").arg(active_root_of_name).arg(i);
 		Icon[4+y*2] = bt_global::icons_cache.getIcon(nomeFile);
-		qDebug() << "New Icon[" << 4+y*2 << "] <- " << nomeFile;
 		if (inactiveLevel)
 		{
 			nomeFile = QString("%1sxl%2.png").arg(inactive_root_of_name).arg(i);
 			Icon[22+y*2] = bt_global::icons_cache.getIcon(nomeFile);
-			qDebug() << "New Icon[" << 22+y*2 << "] <- " << nomeFile;
 		}
 	}
 
@@ -221,12 +219,10 @@ void banner::SetIcons(QString sxIcon, QString dxIcon,QString centerActiveIcon, Q
 	{
 		nomeFile = QString("%1dxl%2.png").arg(active_root_of_name).arg(i);
 		Icon[5+y*2] = bt_global::icons_cache.getIcon(nomeFile);
-		qDebug() << "New Icon[" << 5+y*2 << "] <- " << nomeFile;
 		if (inactiveLevel)
 		{
 			nomeFile = QString("%1dxl%2.png").arg(inactive_root_of_name).arg(i);
 			Icon[23+y*2] = bt_global::icons_cache.getIcon(nomeFile);
-			qDebug() << "New Icon[" << 23+y*2 << "] <- " << nomeFile;
 		}
 	}
 	
@@ -235,10 +231,8 @@ void banner::SetIcons(QString sxIcon, QString dxIcon,QString centerActiveIcon, Q
 		QString break_root_of_name = getNameRoot(breakIcon, ".png");
 		nomeFile = QString("%1sx.png").arg(break_root_of_name);
 		Icon[44] = bt_global::icons_cache.getIcon(nomeFile);
-		qDebug() << "New Icon[" << 44 << "] <- " << nomeFile;
 		nomeFile = QString("%1dx.png").arg(break_root_of_name);
 		Icon[45] = bt_global::icons_cache.getIcon(nomeFile);
-		qDebug() << "New Icon[" << 45 << "] <- " << nomeFile;
 	}
 }
 
@@ -334,7 +328,7 @@ void banner::nascondi(char item)
 
 QSize banner::sizeHint() const
 {
-	return QSize(MAX_WIDTH, MAX_HEIGHT / NUM_RIGHE);
+	return QSize(banner_width, banner_height);
 }
 
 void banner::mostra(char item)
@@ -498,7 +492,6 @@ void banner::drawAllButRightButton()
 
 void banner::Draw()
 {
-	qDebug("banner::Draw(), attivo = %d, value = %d", attivo, value);
 	drawAllButRightButton();
 	if (dxButton && Icon[1])
 	{
@@ -521,10 +514,6 @@ void banner::impostaAttivo(char Attivo)
 void banner::setAddress(QString addr)
 {
 	address = addr;
-}
-
-void banner::gestFrame(char*)
-{
 }
 
 void banner::setValue(char val)
@@ -588,10 +577,6 @@ void banner::inizializza(bool forza)
 		linked_dx_page->inizializza();
 }
 
-void  banner::rispStato(char*)
-{
-}
-
 void banner::openAckRx()
 {
 	qDebug("openAckRx()");
@@ -612,12 +597,12 @@ int banner::getSerNum()
 	return serNum;
 }
 
-char banner::getId()
+int banner::getId()
 {
 	return id;
 }
 
-void banner::setId(char i)
+void banner::setId(int i)
 {
 	id = i;
 }
@@ -642,14 +627,14 @@ QString banner::getNameRoot(QString full_string, QString text_to_strip)
 
 void banner::sendFrame(QString frame) const
 {
-	assert(client_comandi && "Client comandi not set!");
+	Q_ASSERT_X(client_comandi, "banner::sendFrame", "Client comandi not set!");
 	QByteArray buf = frame.toAscii();
 	client_comandi->ApriInviaFrameChiudi(buf.constData());
 }
 
 void banner::sendInit(QString frame) const
 {
-	assert(client_richieste && "Client richieste not set!");
+	Q_ASSERT_X(client_richieste, "banner::sendInit", "Client richieste not set!");
 	QByteArray buf = frame.toAscii();
 	client_richieste->ApriInviaFrameChiudi(buf.constData());
 }
@@ -687,5 +672,41 @@ void banner::hideEvent(QHideEvent *event)
 
 	if (linked_dx_page && !linked_dx_page->isHidden())
 		linked_dx_page->hide();
+}
+
+
+
+QLabel *BannerNew::createTextLabel(const QRect &size, Qt::Alignment align, const QFont &font)
+{
+	QLabel *text = new QLabel(this);
+	text->setGeometry(size);
+	text->setAlignment(align);
+	text->setFont(font);
+	return text;
+}
+
+QLabel *BannerNew::createTextLabel(Qt::Alignment align, const QFont &font)
+{
+	QLabel *text = new QLabel(this);
+	text->setAlignment(align);
+	text->setFont(font);
+	return text;
+}
+
+void BannerNew::connectButtonToPage(BtButton *b, Page *p)
+{
+	if (p)
+	{
+		linked_pages.append(p);
+		connect(b, SIGNAL(clicked()), p, SLOT(showPage()));
+		connect(p, SIGNAL(Closed()), SIGNAL(pageClosed()));
+	}
+}
+
+void BannerNew::hideEvent(QHideEvent *event)
+{
+	foreach (Page *p, linked_pages)
+		if (!p->isHidden())
+			p->hide();
 }
 

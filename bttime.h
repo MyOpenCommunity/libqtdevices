@@ -12,25 +12,27 @@
 #ifndef BTTIME_H
 #define BTTIME_H
 
-#include <QDateTime>
 #include <QString>
+#include <QVariant>
+
+class QTime;
 
 class BtTime
 {
 public:
 	/**
-	 * Constructs a BtTime with given hour and minute. The default value for
-	 * max_minutes is 60 and max_hours is 24.
+	 * Constructs a BtTime with given hour, minute and second. The default value for
+	 * max_minutes and max_seconds is 60, 24 for max_hours.
 	 */
-	BtTime(int h, int m);
+	BtTime(int h, int m, int s=0);
 
 	/**
-	 * Defaults to hour = 0, minute = 0, max_hours = 24, max_minutes = 60
+	 * Defaults to hour = 0, minute = 0, second = 0, max_hours = 24, max_minutes = 60, max_seconds = 60
 	 */
 	BtTime();
 
 	/**
-	 * Takes hour and minute out of t, max_hours and max_minutes are the default values.
+	 * Takes hour, minute and second out of t, max_hours, max_minutes and max_seconds are the default values.
 	 */
 	BtTime(const QTime &t);
 
@@ -49,10 +51,24 @@ public:
 	void setMaxMinutes(int max);
 
 	/**
-	 * Returns a representation of time of the form h:mm.
+	 * Set the maximum value for seconds. The range of values allowed are [0..max_seconds-1]
+	 * Default value is 60.
+	 * \param max The maximum number of seconds allowed.
+	 */
+	void setMaxSeconds(int max);
+
+	/**
+	 * Returns a representation of time of the form h:mm:ss.
 	 * \return A time in string format
 	 */
 	QString toString() const;
+
+	/**
+	 * Adds or subtracts a second to the current time and returns a new BtTime instance.
+	 * \param second Must be either 1 or -1
+	 * \return A new BtTime that is one second earlier or later.
+	 */
+	BtTime addSecond(int second) const;
 
 	/**
 	 * Adds or subtracts a minute to the current time and returns a new BtTime instance.
@@ -79,8 +95,31 @@ public:
 	 * \return Current minute.
 	 */
 	int minute() const;
+
+	/**
+	 * Getter method for seconds.
+	 * \return Current second.
+	 */
+	int second() const;
 private:
-	int _hour, _minute;
-	int max_hours, max_minutes;
+	// used by constructors
+	void init(int h, int m, int s);
+
+private:
+	int _hour, _minute, _second;
+	int max_hours, max_minutes, max_seconds;
 };
+
+Q_DECLARE_METATYPE(BtTime);
+
+inline bool operator ==(const BtTime &f, const BtTime &s)
+{
+	return f.hour() == s.hour() && f.minute() == s.minute() && f.second() == s.second();
+}
+
+inline bool operator !=(const BtTime &f, const BtTime &s)
+{
+	return !(f == s);
+}
+
 #endif //BTTIME_H
