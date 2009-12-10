@@ -227,17 +227,35 @@ Bann2CentralButtons::Bann2CentralButtons(QWidget *parent) : BannerNew(parent)
 {
 	center_left = new BtButton;
 	center_right = new BtButton;
-	QHBoxLayout *l = new QHBoxLayout(this);
+
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
+	QGridLayout *l = new QGridLayout;
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
-	l->addWidget(center_left, 0, Qt::AlignTop | Qt::AlignRight);
-	l->addWidget(center_right, 0, Qt::AlignTop | Qt::AlignLeft);
+	l->setColumnStretch(0, 1);
+	l->addWidget(center_left, 0, 1, Qt::AlignTop);
+	l->addWidget(center_right, 0, 2, Qt::AlignTop);
+	l->setColumnStretch(3, 1);
+
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->setContentsMargins(0, 0, 0, 0);
+	layout->setSpacing(0);
+	layout->addLayout(l);
+	layout->addWidget(text);
 }
 
-void Bann2CentralButtons::initBanner(const QString &left, const QString &right)
+void Bann2CentralButtons::initBanner(const QString &left, const QString &right, const QString &banner_text)
 {
 	center_left->setImage(left);
 	center_right->setImage(right);
+	if (banner_text.isEmpty())
+	{
+		// just to avoid surprises...
+		text->disconnect();
+		text->deleteLater();
+	}
+	else
+		text->setText(banner_text);
 }
 
 

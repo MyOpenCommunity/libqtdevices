@@ -1377,7 +1377,7 @@ void BannAntifreeze::performAction()
 
 BannSummerWinter::BannSummerWinter(QWidget *parent, ThermalDevice *_dev) : Bann2CentralButtons(parent)
 {
-	initBanner(bt_global::skin->getImage("winter"), bt_global::skin->getImage("summer"));
+	initBanner(bt_global::skin->getImage("winter"), bt_global::skin->getImage("summer"), "");
 	dev = _dev;
 
 	connect(center_left, SIGNAL(clicked()), SLOT(setWinter()));

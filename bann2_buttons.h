@@ -133,8 +133,10 @@ class Bann2CentralButtons : public BannerNew
 Q_OBJECT
 protected:
 	Bann2CentralButtons(QWidget *parent);
-	void initBanner(const QString &left, const QString &right);
+	void initBanner(const QString &left, const QString &right, const QString &banner_text);
 	BtButton *center_left, *center_right;
+private:
+	QLabel *text;
 };
 
 /*!
