@@ -81,6 +81,11 @@ bool SlideshowController::slideshowActive()
 	return timer->isActive();
 }
 
+int SlideshowController::currentImage()
+{
+	return current_image;
+}
+
 
 static inline BtButton *getButton(const QString &icon)
 {
@@ -144,6 +149,7 @@ void PlaybackButtons::stopped()
 SlideshowPage::SlideshowPage()
 {
 	controller = new SlideshowController(this);
+	window = new SlideshowWindow(this);
 
 	QWidget *content = new QWidget;
 	QVBoxLayout *l = new QVBoxLayout(content);
@@ -170,6 +176,7 @@ SlideshowPage::SlideshowPage()
 	connect(buttons, SIGNAL(stop()), SLOT(handleClose()));
 	connect(buttons, SIGNAL(play()), controller, SLOT(startSlideshow()));
 	connect(buttons, SIGNAL(pause()), controller, SLOT(stopSlideshow()));
+	connect(buttons, SIGNAL(fullScreen()), SLOT(displayFullScreen()));
 
 	connect(controller, SIGNAL(slideshowStarted()), buttons, SLOT(started()));
 	connect(controller, SIGNAL(slideshowStopped()), buttons, SLOT(stopped()));
@@ -200,6 +207,11 @@ void SlideshowPage::showImage(int index)
 	title->setText(QFileInfo(image_list[index]).fileName());
 }
 
+void SlideshowPage::startSlideshow()
+{
+	controller->startSlideshow();
+}
+
 void SlideshowPage::handleClose()
 {
 	controller->stopSlideshow();
@@ -211,4 +223,87 @@ void SlideshowPage::hideEvent(QHideEvent *event)
 	controller->stopSlideshow();
 }
 
+void SlideshowPage::displayFullScreen()
+{
+	bool active = controller->slideshowActive();
+	controller->stopSlideshow();
+	window->displayImages(image_list, controller->currentImage());
+	if (active)
+		window->startSlideshow();
+}
 
+
+SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
+{
+	controller = new SlideshowController(this);
+	page = slideshow_page;
+
+	QVBoxLayout *l = new QVBoxLayout(this);
+
+	// pixmap used to display the image
+	image = new QLabel;
+	image->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+	image->setAlignment(Qt::AlignCenter);
+
+	PlaybackButtons *buttons = new PlaybackButtons(PlaybackButtons::IN_WINDOW);
+	buttons->setParent(image);
+
+	l->addWidget(image, 1);
+
+	connect(buttons, SIGNAL(previous()), controller, SLOT(prevImageUser()));
+	connect(buttons, SIGNAL(next()), controller, SLOT(nextImageUser()));
+	connect(buttons, SIGNAL(stop()), SLOT(handleClose()));
+	connect(buttons, SIGNAL(play()), controller, SLOT(startSlideshow()));
+	connect(buttons, SIGNAL(pause()), controller, SLOT(stopSlideshow()));
+	connect(buttons, SIGNAL(noFullScreen()), SLOT(displayNoFullScreen()));
+
+	connect(controller, SIGNAL(slideshowStarted()), buttons, SLOT(started()));
+	connect(controller, SIGNAL(slideshowStopped()), buttons, SLOT(stopped()));
+	connect(controller, SIGNAL(showImage(int)), this, SLOT(showImage(int)));
+}
+
+void SlideshowWindow::displayImages(QList<QString> images, unsigned element)
+{
+	controller->initialize(images.size(), element);
+	image_list = images;
+	showImage(element);
+	showWindow();
+}
+
+void SlideshowWindow::showImage(int index)
+{
+	QPixmap pixmap(image_list[index]);
+	QSize screen_size = image->size(), pixmap_size = pixmap.size();
+
+	// resize the pixmap if it's too big for the screen
+	if (pixmap_size.width() > screen_size.width() ||
+	    pixmap_size.height() > screen_size.height())
+		pixmap = pixmap.scaled(screen_size, Qt::KeepAspectRatio);
+
+	image->setPixmap(pixmap);
+}
+
+void SlideshowWindow::startSlideshow()
+{
+	controller->startSlideshow();
+}
+
+void SlideshowWindow::handleClose()
+{
+	controller->stopSlideshow();
+	emit Closed();
+}
+
+void SlideshowWindow::hideEvent(QHideEvent *event)
+{
+	controller->stopSlideshow();
+}
+
+void SlideshowWindow::displayNoFullScreen()
+{
+	bool active = controller->slideshowActive();
+	controller->stopSlideshow();
+	page->displayImages(image_list, controller->currentImage());
+	if (active)
+		page->startSlideshow();
+}

@@ -2,12 +2,14 @@
 #define SLIDESHOW_H
 
 #include "page.h"
+#include "window.h"
 
 #include <QList>
 
 class BtButton;
 class QLabel;
 class QTimer;
+class SlideshowWindow;
 
 
 class SlideshowController : public QObject
@@ -18,6 +20,7 @@ public:
 
 	void initialize(int total, int current);
 	bool slideshowActive();
+	int currentImage();
 
 public slots:
 	void prevImageUser();
@@ -79,6 +82,7 @@ public:
 
 public slots:
 	void displayImages(QList<QString> images, unsigned element);
+	void startSlideshow();
 
 protected:
 	// kills the slideshow timer
@@ -87,11 +91,40 @@ protected:
 private slots:
 	void handleClose();
 	void showImage(int image);
+	void displayFullScreen();
 
 private:
 	QLabel *title, *image;
 	QList<QString> image_list;
 	SlideshowController *controller;
+	SlideshowWindow *window;
+};
+
+
+class SlideshowWindow : public Window
+{
+Q_OBJECT
+public:
+	SlideshowWindow(SlideshowPage *slideshow_page);
+
+public slots:
+	void displayImages(QList<QString> images, unsigned element);
+	void startSlideshow();
+
+protected:
+	// kills the slideshow timer
+	void hideEvent(QHideEvent *event);
+
+private slots:
+	void handleClose();
+	void showImage(int image);
+	void displayNoFullScreen();
+
+private:
+	QLabel *image;
+	QList<QString> image_list;
+	SlideshowController *controller;
+	SlideshowPage *page;
 };
 
 #endif // SLIDESHOW_H
