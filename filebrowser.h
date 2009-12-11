@@ -47,6 +47,12 @@ public slots:
 	void prevItem();
 
 private:
+	int pageCount();
+
+private slots:
+	void clicked(int item);
+
+private:
 	/// For pagination
 	int rows_per_page;
 	int current_page;
@@ -58,9 +64,6 @@ private:
 	QList<FileInfo> item_list;
 
 	void addHorizontalBox(QBoxLayout *layout, const FileInfo &item, int id_btn);
-
-private slots:
-	void clicked(int item);
 };
 
 #endif

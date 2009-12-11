@@ -108,7 +108,7 @@ void FileBrowser::nextItem()
 {
 	current_page += 1;
 	// wrap around to the first page
-	if (current_page * rows_per_page >= item_list.count())
+	if (current_page >= pageCount())
 		current_page = 0;
 	showList();
 }
@@ -126,4 +126,10 @@ void FileBrowser::prevItem()
 void FileBrowser::clicked(int item)
 {
 	emit itemIsClicked(current_page * rows_per_page + item);
+}
+
+int FileBrowser::pageCount()
+{
+	return item_list.count() / rows_per_page +
+			(item_list.count() % rows_per_page ? 1 : 0);
 }
