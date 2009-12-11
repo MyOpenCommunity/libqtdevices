@@ -10,6 +10,33 @@ class QLabel;
 class QTimer;
 
 
+class SlideshowController : public QObject
+{
+Q_OBJECT
+public:
+	SlideshowController(QObject *parent);
+
+	void initialize(int total, int current);
+	bool slideshowActive();
+
+public slots:
+	void prevImageUser();
+	void nextImageUser();
+	void nextImageSlideshow();
+	void startSlideshow();
+	void stopSlideshow();
+
+signals:
+	void slideshowStarted();
+	void slideshowStopped();
+	void showImage(int);
+
+private:
+	int total_images, current_image;
+	QTimer *timer;
+};
+
+
 class PlaybackButtons : public QWidget
 {
 Q_OBJECT
@@ -53,31 +80,18 @@ public:
 public slots:
 	void displayImages(QList<QString> images, unsigned element);
 
-signals:
-	void slideshowStarted();
-	void slideshowStopped();
-
 protected:
 	// kills the slideshow timer
 	void hideEvent(QHideEvent *event);
 
-private:
-	void showCurrentImage();
-	bool slideshowActive();
-
 private slots:
-	void prevImageUser();
-	void nextImageUser();
-	void nextImageSlideshow();
 	void handleClose();
-	void startSlideshow();
-	void stopSlideshow();
+	void showImage(int image);
 
 private:
 	QLabel *title, *image;
 	QList<QString> image_list;
-	int current_image;
-	QTimer *timer;
+	SlideshowController *controller;
 };
 
 #endif // SLIDESHOW_H

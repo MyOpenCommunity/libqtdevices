@@ -9,6 +9,78 @@
 #include <QFileInfo>
 #include <QTimer>
 
+#define SLIDESHOW_TIMEOUT 10000
+
+
+SlideshowController::SlideshowController(QObject *parent)
+	: QObject(parent)
+{
+	timer = new QTimer(this);
+	connect(timer, SIGNAL(timeout()), SLOT(nextImageSlideshow()));
+}
+
+void SlideshowController::initialize(int total, int current)
+{
+	total_images = total;
+	current_image = current;
+}
+
+void SlideshowController::prevImageUser()
+{
+	bool active = slideshowActive();
+	if (active)
+		timer->stop();
+
+	current_image -= 1;
+	if (current_image < 0)
+		current_image = total_images - 1;
+	emit showImage(current_image);
+
+	if (active)
+		timer->start(SLIDESHOW_TIMEOUT);
+}
+
+void SlideshowController::nextImageUser()
+{
+	bool active = slideshowActive();
+	if (active)
+		timer->stop();
+
+	nextImageSlideshow();
+
+	if (active)
+		timer->start(SLIDESHOW_TIMEOUT);
+}
+
+void SlideshowController::nextImageSlideshow()
+{
+	current_image += 1;
+	if (current_image >= total_images)
+		current_image = 0;
+	emit showImage(current_image);
+}
+
+void SlideshowController::startSlideshow()
+{
+	if (slideshowActive())
+		return;
+	timer->start(SLIDESHOW_TIMEOUT);
+	emit slideshowStarted();
+}
+
+void SlideshowController::stopSlideshow()
+{
+	if (!slideshowActive())
+		return;
+	timer->stop();
+	emit slideshowStopped();
+}
+
+bool SlideshowController::slideshowActive()
+{
+	return timer->isActive();
+}
+
 
 static inline BtButton *getButton(const QString &icon)
 {
@@ -71,8 +143,7 @@ void PlaybackButtons::stopped()
 
 SlideshowPage::SlideshowPage()
 {
-	timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), SLOT(nextImageSlideshow()));
+	controller = new SlideshowController(this);
 
 	QWidget *content = new QWidget;
 	QVBoxLayout *l = new QVBoxLayout(content);
@@ -94,29 +165,30 @@ SlideshowPage::SlideshowPage()
 	NavigationBar *nav_bar = new NavigationBar(QString(), QString(), QString(), "back");
 	buildPage(content, nav_bar);
 
-	connect(buttons, SIGNAL(previous()), SLOT(prevImageUser()));
-	connect(buttons, SIGNAL(next()), SLOT(nextImageUser()));
+	connect(buttons, SIGNAL(previous()), controller, SLOT(prevImageUser()));
+	connect(buttons, SIGNAL(next()), controller, SLOT(nextImageUser()));
 	connect(buttons, SIGNAL(stop()), SLOT(handleClose()));
-	connect(buttons, SIGNAL(play()), SLOT(startSlideshow()));
-	connect(buttons, SIGNAL(pause()), SLOT(stopSlideshow()));
+	connect(buttons, SIGNAL(play()), controller, SLOT(startSlideshow()));
+	connect(buttons, SIGNAL(pause()), controller, SLOT(stopSlideshow()));
 
-	connect(this, SIGNAL(slideshowStarted()), buttons, SLOT(started()));
-	connect(this, SIGNAL(slideshowStopped()), buttons, SLOT(stopped()));
+	connect(controller, SIGNAL(slideshowStarted()), buttons, SLOT(started()));
+	connect(controller, SIGNAL(slideshowStopped()), buttons, SLOT(stopped()));
+	connect(controller, SIGNAL(showImage(int)), this, SLOT(showImage(int)));
 
 	connect(nav_bar, SIGNAL(backClick()), SLOT(handleClose()));
 }
 
 void SlideshowPage::displayImages(QList<QString> images, unsigned element)
 {
+	controller->initialize(images.size(), element);
 	image_list = images;
-	current_image = element;
-	showCurrentImage();
+	showImage(element);
 	showPage();
 }
 
-void SlideshowPage::showCurrentImage()
+void SlideshowPage::showImage(int index)
 {
-	QPixmap pixmap(image_list[current_image]);
+	QPixmap pixmap(image_list[index]);
 	QSize screen_size = image->size(), pixmap_size = pixmap.size();
 
 	// resize the pixmap if it's too big for the screen
@@ -125,72 +197,18 @@ void SlideshowPage::showCurrentImage()
 		pixmap = pixmap.scaled(screen_size, Qt::KeepAspectRatio);
 
 	image->setPixmap(pixmap);
-	title->setText(QFileInfo(image_list[current_image]).fileName());
+	title->setText(QFileInfo(image_list[index]).fileName());
 }
 
 void SlideshowPage::handleClose()
 {
-	stopSlideshow();
+	controller->stopSlideshow();
 	emit Closed();
-}
-
-void SlideshowPage::prevImageUser()
-{
-	bool active = slideshowActive();
-	if (active)
-		timer->stop();
-
-	current_image -= 1;
-	if (current_image < 0)
-		current_image = image_list.size() - 1;
-	showCurrentImage();
-
-	if (active)
-		timer->start(10000);
-}
-
-void SlideshowPage::nextImageUser()
-{
-	bool active = slideshowActive();
-	if (active)
-		timer->stop();
-
-	nextImageSlideshow();
-
-	if (active)
-		timer->start(10000);
-}
-
-void SlideshowPage::nextImageSlideshow()
-{
-	current_image += 1;
-	if (current_image >= image_list.size())
-		current_image = 0;
-	showCurrentImage();
-}
-
-void SlideshowPage::startSlideshow()
-{
-	if (slideshowActive())
-		return;
-	timer->start(10000);
-	emit slideshowStarted();
-}
-
-void SlideshowPage::stopSlideshow()
-{
-	if (!slideshowActive())
-		return;
-	timer->stop();
-	emit slideshowStopped();
-}
-
-bool SlideshowPage::slideshowActive()
-{
-	return timer->isActive();
 }
 
 void SlideshowPage::hideEvent(QHideEvent *event)
 {
-	stopSlideshow();
+	controller->stopSlideshow();
 }
+
+
