@@ -5,6 +5,7 @@
 
 class QDomNode;
 class FileBrowser;
+class SlideshowPage;
 
 
 class MultimediaFileListPage : public FileSelector
@@ -28,6 +29,9 @@ public slots:
 	virtual void nextItem();
 	virtual void prevItem();
 
+signals:
+	void displayImages(QList<QString> images, unsigned element);
+
 protected:
 	virtual bool browseFiles(const QDir &directory, QList<QFileInfo> &files);
 	virtual int currentPage();
@@ -35,12 +39,23 @@ protected:
 private:
 	static Type fileType(const QFileInfo &file);
 
+	// returns the files in the current directory with the same type as the "item"
+	// file; on return, type contains the file type and current is the index of the
+	// item in the output list
+	QList<QString> filterFileList(int item, Type &type, int &current);
+
+private slots:
+	void startPlayback(int item);
+
 private:
 	// icons for different file type
 	QList<QString> file_icons;
 
 	// button icons for files/directories
 	QString play_file, browse_directory;
+
+	// page to display images
+	SlideshowPage *slideshow;
 };
 
 #endif // MULTIMEDIA_FILELIST_H

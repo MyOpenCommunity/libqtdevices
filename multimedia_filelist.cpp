@@ -2,6 +2,7 @@
 #include "navigation_bar.h"
 #include "skinmanager.h"
 #include "filebrowser.h"
+#include "slideshow.h"
 
 #include <QLayout>
 #include <QDebug>
@@ -56,6 +57,12 @@ MultimediaFileListPage::MultimediaFileListPage()
 
 	play_file = bt_global::skin->getImage("play_file");
 	browse_directory = bt_global::skin->getImage("browse_directory");
+
+	slideshow = new SlideshowPage;
+	connect(this, SIGNAL(displayImages(QList<QString>, unsigned)),
+		slideshow, SLOT(displayImages(QList<QString>, unsigned)));
+	// TODO this means the "loading" page is displayed when closing a slideshow
+	connect(slideshow, SIGNAL(Closed()), SLOT(showPage()));
 }
 
 bool MultimediaFileListPage::browseFiles(const QDir &directory, QList<QFileInfo> &files)
@@ -127,6 +134,37 @@ MultimediaFileListPage::Type MultimediaFileListPage::fileType(const QFileInfo &f
 			return AUDIO;
 
 	return UNKNOWN;
+}
+
+QList<QString> MultimediaFileListPage::filterFileList(int item, Type &type, int &current)
+{
+	const QList<QFileInfo> &files_list = getFiles();
+	const QFileInfo &current_file = files_list[item];
+	QList<QString> files;
+
+	type = fileType(current_file);
+	for (int i = 0; i < files_list.size(); ++i)
+	{
+		const QFileInfo& fn = files_list[i];
+		if (fn.isDir() || fileType(fn) != type)
+			continue;
+		if (fn == current_file)
+			current = files.size();
+
+		files.append(fn.absoluteFilePath());
+	}
+
+	return files;
+}
+
+void MultimediaFileListPage::startPlayback(int item)
+{
+	Type type;
+	int current;
+	QList<QString> files = filterFileList(item, type, current);
+
+	if (type == IMAGE)
+		emit displayImages(files, current);
 }
 
 int MultimediaFileListPage::currentPage()
