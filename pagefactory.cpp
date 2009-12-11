@@ -4,6 +4,7 @@
 #include "sounddiffusion.h"
 #include "multisounddiff.h"
 #include "videoentryphone.h"
+#include "multimedia.h"
 #include "antintrusion.h"
 #include "automation.h"
 #include "lighting.h"
@@ -172,6 +173,12 @@ Page *getPage(int page_id)
 	case FEED_READER:
 	{
 		FeedManager *p = new FeedManager;
+		page = p;
+		break;
+	}
+	case MULTIMEDIA:
+	{
+		MultimediaSectionPage *p = new MultimediaSectionPage(page_node);
 		page = p;
 		break;
 	}

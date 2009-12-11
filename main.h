@@ -187,6 +187,7 @@ enum pagSecLiv
 	ENERGY_DATA=17,                               /*!< Energy data system */
 	FEED_READER=99,                               /*!< Feed reader page */
 	/* Added to avoid compile problems... */
+	MULTIMEDIA=26,
 	VIDEO_CONTROL=2000,                           /*!< Video control menu */
 	INTERCOM=2001,                                /*!< Intercom menu */
 	CALL_EXCLUSION=2003,                          /*!< Call exclusion */
@@ -206,6 +207,7 @@ enum pagSecLiv
 	BACK=9,                                       /*!< Back button - placed here for convenience */
 	SPECIAL=10,                                   /*!< Special button - placed here for convenience */
 	VIDEOCITOFONIA=22,
+	MULTIMEDIA=26,
 	SCENARI_EVOLUTI=20,                           /*!< Advanced scenarios management */
 	DIFSON_MULTI=17,                              /*!< Multichannel sound diffusion system */
 	SUPERVISIONE=-2,                              /*!< Supervision system */
