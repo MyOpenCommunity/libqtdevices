@@ -142,6 +142,7 @@ private slots:
 	void displayNoFullScreen();
 
 private:
+	PlaybackButtons *buttons;
 	SlideshowImage *image;
 	QList<QString> image_list;
 	SlideshowController *controller;

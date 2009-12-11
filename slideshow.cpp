@@ -254,14 +254,21 @@ SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
 	controller = new SlideshowController(this);
 	page = slideshow_page;
 
-	QVBoxLayout *l = new QVBoxLayout(this);
-
 	// pixmap used to display the image
 	image = new SlideshowImage;
 
-	PlaybackButtons *buttons = new PlaybackButtons(PlaybackButtons::IN_WINDOW);
-	buttons->setParent(image);
+	buttons = new PlaybackButtons(PlaybackButtons::IN_WINDOW);
+	buttons->hide();
 
+	QGridLayout *button_layout = new QGridLayout(image);
+	button_layout->setContentsMargins(0, 0, 0, 0);
+	button_layout->setColumnStretch(0, 1);
+	button_layout->setColumnStretch(2, 1);
+	button_layout->setRowStretch(0, 1);
+	button_layout->addWidget(buttons, 1, 1);
+
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
 	l->addWidget(image, 1);
 
 	connect(buttons, SIGNAL(previous()), controller, SLOT(prevImageUser()));
