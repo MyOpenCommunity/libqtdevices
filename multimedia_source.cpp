@@ -298,8 +298,6 @@ AudioFileSelector::AudioFileSelector(unsigned rows_per_page, QString start_path)
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
 
 	buildPage(list_browser, nav_bar);
-
-	browseDirectory(start_path);
 }
 
 void AudioFileSelector::startPlayback(int item)

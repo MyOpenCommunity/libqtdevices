@@ -32,6 +32,7 @@ FileSelector::FileSelector(unsigned rows_per_page, QString start_path)
 
 	current_dir.setSorting(QDir::DirsFirst | QDir::Name);
 	current_dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable);
+	current_dir.setPath(start_path);
 }
 
 const QList<QFileInfo> &FileSelector::getFiles() const
