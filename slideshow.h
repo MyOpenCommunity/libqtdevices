@@ -140,8 +140,10 @@ private slots:
 	void handleClose();
 	void showImage(int image);
 	void displayNoFullScreen();
+	void showButtons();
 
 private:
+	QTimer *buttons_timer;
 	PlaybackButtons *buttons;
 	SlideshowImage *image;
 	QList<QString> image_list;

@@ -283,6 +283,19 @@ SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
 	connect(controller, SIGNAL(slideshowStarted()), buttons, SLOT(started()));
 	connect(controller, SIGNAL(slideshowStopped()), buttons, SLOT(stopped()));
 	connect(controller, SIGNAL(showImage(int)), this, SLOT(showImage(int)));
+
+	buttons_timer = new QTimer(this);
+	buttons_timer->setSingleShot(true);
+	connect(buttons_timer, SIGNAL(timeout()), buttons, SLOT(hide()));
+
+	// this shows the buttons
+	connect(image, SIGNAL(clicked()), SLOT(showButtons()));
+
+	// these reset the buttons timer on each click
+	connect(buttons, SIGNAL(previous()), SLOT(showButtons()));
+	connect(buttons, SIGNAL(next()), SLOT(showButtons()));
+	connect(buttons, SIGNAL(play()), SLOT(showButtons()));
+	connect(buttons, SIGNAL(pause()), SLOT(showButtons()));
 }
 
 void SlideshowWindow::displayImages(QList<QString> images, unsigned element)
@@ -295,8 +308,14 @@ void SlideshowWindow::displayImages(QList<QString> images, unsigned element)
 
 void SlideshowWindow::showImage(int index)
 {
-
 	image->setPixmap(image_list[index]);
+}
+
+void SlideshowWindow::showButtons()
+{
+	buttons_timer->stop();
+	buttons->show();
+	buttons_timer->start(5000);
 }
 
 void SlideshowWindow::startSlideshow()
