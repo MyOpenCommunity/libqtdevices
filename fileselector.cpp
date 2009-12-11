@@ -43,11 +43,12 @@ const QList<QFileInfo> &FileSelector::getFiles() const
 void FileSelector::showPage()
 {
 	Selector::showPage();
-	// refresh QDir information
-	current_dir.refresh();
 
 	QLabel *l = createWaitDialog();
 	QTime time_counter = startTimeCounter();
+
+	// refresh QDir information
+	current_dir.refresh();
 
 	if (!browseFiles(current_dir, files_list))
 	{
