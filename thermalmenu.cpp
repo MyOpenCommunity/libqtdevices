@@ -10,6 +10,7 @@
  * \author Luca Ottaviano
  */
 
+
 #include "thermalmenu.h"
 #include "banntemperature.h"
 #include "devices_cache.h" // bt_global::devices_cache
