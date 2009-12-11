@@ -41,6 +41,7 @@ public:
 signals:
 	void itemIsClicked(int item);
 	void displayScrollButtons(bool);
+	void contentScrolled(int, int);
 
 public slots:
 	void nextItem();

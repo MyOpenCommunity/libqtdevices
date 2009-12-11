@@ -87,6 +87,7 @@ void FileBrowser::showList()
 	}
 
 	emit displayScrollButtons(item_list.count() > rows_per_page);
+	emit contentScrolled(current_page, pageCount());
 
 	for (int i = 0; i < count; ++i)
 		addHorizontalBox(main_layout, item_list[start + i], i);
@@ -118,8 +119,7 @@ void FileBrowser::prevItem()
 	current_page -= 1;
 	// wrap around to the last page
 	if (current_page < 0)
-		current_page = item_list.count() / rows_per_page +
-				(item_list.count() % rows_per_page ? 1 : 0);
+		current_page = pageCount() - 1;
 	showList();
 }
 
