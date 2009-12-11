@@ -13,9 +13,12 @@ private slots:
 	void cleanupTestCase();
 
 	void sendAnswerCall();
-	void sendCallEnd();
+	void sendEndCall();
+
+	void receiveIncomingCall();
 
 private:
+	void simulateIncomingCall(int kind, int mmtype);
 	EntryphoneDevice *dev;
 };
 
