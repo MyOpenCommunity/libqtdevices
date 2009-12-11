@@ -531,7 +531,10 @@ void BtMain::gesScrSav()
 				{
 					pd_shown = true;
 					if (pagDefault)
+					{
 						pagDefault->showPage();
+						prev_page = pagDefault;
+					}
 				}
 			}
 
@@ -561,10 +564,12 @@ void BtMain::gesScrSav()
 					unrollPages();
 
 				target->showPage();
+
 				window_container->homeWindow()->showWindow();
 				page_container->blockTransitions(false);
 				qDebug() << "start screensaver:" << target_screensaver << "on:" << page_container->currentPage();
 				screensaver->start(window_container->homeWindow());
+				prev_page = target;
 				emit startscreensaver(prev_page);
 				bt_global::display.setState(DISPLAY_SCREENSAVER);
 			}
