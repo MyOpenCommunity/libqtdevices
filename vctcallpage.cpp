@@ -4,6 +4,9 @@
 #include "generic_functions.h" //getBostikName
 #include "hardware_functions.h" // setVctContrast
 #include "icondispatcher.h"
+#include "entryphone_device.h"
+#include "xml_functions.h"
+#include "devices_cache.h"
 
 #include <QDomNode>
 #include <QHBoxLayout>
@@ -81,7 +84,7 @@ EnablingButton *getButton(const QString &image_path)
 	return btn;
 }
 
-CameraMove::CameraMove(device *dev)
+CameraMove::CameraMove(EntryphoneDevice *dev)
 {
 	up = getButton(bt_global::skin->getImage("arrow_up"));
 	down = getButton(bt_global::skin->getImage("arrow_down"));
@@ -129,8 +132,19 @@ void CameraMove::setMoveEnabled(bool move)
 
 
 
-VCTCallPage::VCTCallPage()
+VCTCallPage::VCTCallPage(const QDomNode &config_node)
 {
+	// we have a random configuration node and we must get our internal unit address
+	// which on the very top of conf file.
+	QDomNode n = config_node;
+	while (n.nodeName() != "configuratore")
+		n = n.parentNode();
+	QString where = getElement(n, "setup/scs/coordinate_scs/my_piaddress").text();
+	//transform address into internal address
+	where.prepend("1");
+	// we must have only one entryphone device since we need to remember some state
+	dev = bt_global::add_device_to_cache(new EntryphoneDevice(where));
+
 	SkinContext ctx(666);
 
 	// sidebar
@@ -150,7 +164,7 @@ VCTCallPage::VCTCallPage()
 	connect(color, SIGNAL(valueChanged(int)), SLOT(setColor(int)));
 	sidebar->addWidget(color);
 
-	camera = new CameraMove(0);
+	camera = new CameraMove(dev);
 	camera->setMoveEnabled(false);
 	sidebar->addWidget(camera);
 

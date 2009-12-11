@@ -8,7 +8,7 @@
 #include <QStringList>
 
 class QDomNode;
-class device;
+class EntryphoneDevice;
 
 
 class EnablingButton : public BtButton
@@ -51,7 +51,7 @@ class CameraMove : public QWidget
 Q_OBJECT
 public:
 	// TODO: we need a EntryphoneDevice to control the camera
-	CameraMove(device *dev);
+	CameraMove(EntryphoneDevice *dev);
 	void setFullscreenEnabled(bool fs);
 	void setMoveEnabled(bool move);
 
@@ -65,7 +65,7 @@ class VCTCallPage : public Page
 {
 Q_OBJECT
 public:
-	VCTCallPage();
+	VCTCallPage(const QDomNode &config_node);
 	void addExternalPlace(const QString &where);
 
 private slots:
@@ -82,5 +82,6 @@ private:
 	QString mute_icon, call_icon, setup_vct_icon;
 	QStringList places;
 	bool camera_settings_shown;
+	EntryphoneDevice *dev;
 };
 #endif //VCTCALLPAGE_H

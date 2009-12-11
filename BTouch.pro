@@ -144,6 +144,7 @@ HEADERS += actuators.h \
            energy_device.h \
            energy_graph.h \
            energy_view.h \
+           entryphone_device.h \
            favoriteswidget.h \
            feedmanager.h \
            feeditemwidget.h \
@@ -274,6 +275,7 @@ SOURCES += actuators.cpp \
            energy_device.cpp \
            energy_graph.cpp \
            energy_view.cpp \
+           entryphone_device.cpp \
            favoriteswidget.cpp \
            feedmanager.cpp \
            feeditemwidget.cpp \

@@ -69,7 +69,7 @@ CallExclusion::CallExclusion(const QDomNode &config_node)
 VideoControl::VideoControl(const QDomNode &config_node)
 {
 	buildPage(new IconContent, new NavigationBar);
-	call_page = new VCTCallPage;
+	call_page = new VCTCallPage(config_node);
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		SkinContext ctx(getTextChild(item, "cid").toInt());
