@@ -27,6 +27,7 @@ isEmpty(TEST_ARCH) {
 		QWSMOUSE/qmouselinuxevent-2-6_qws.cpp
 }
 
+DEFINES += CONFIG_BTOUCH
 
 CONFIG += qt warn_on silent
 CONFIG -= debug_and_release

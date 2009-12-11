@@ -16,6 +16,8 @@
 #include "plantmenu.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bannfrecce.h"
+#include "airconditioning.h"
+#include "skinmanager.h" // bt_global::skin
 
 #include <QRegExp>
 #include <QDebug>
@@ -69,6 +71,13 @@ void ThermalMenu::loadBanners(const QDomNode &config_node)
 	{
 		b = addMenuItem(node.toElement(), i_temp_probe);
 		createProbeMenu(node.toElement(), b, false);
+	}
+	QDomNode air_node = getChildWithName(config_node, "airconditioning");
+	if (!air_node.isNull())
+	{
+		b = addMenuItem(air_node.toElement(), bt_global::skin->getImage("air_conditioning"));
+		b->connectDxButton(new AirConditioning(air_node));
+		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 }
 
