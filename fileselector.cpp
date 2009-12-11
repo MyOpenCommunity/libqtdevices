@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QLabel>
 #include <QApplication>
+#include <QVariant>
 
 
 #define MEDIASERVER_MSEC_WAIT_TIME 2000
@@ -163,15 +164,12 @@ void FileSelector::destroyWaitDialog(QLabel *l)
 
 QLabel *FileSelector::createWaitDialog()
 {
-	QLabel* l = new QLabel(0);
-	QPixmap *icon = bt_global::icons_cache.getIcon(IMG_PATH "loading.png");
-	l->setPixmap(*icon);
+	QLabel* l = new QLabel(this);
+	l->setProperty("Loading", true);
+	l->setGeometry(geometry());
 
-	QRect r = icon->rect();
-	r.moveCenter(QPoint(width() / 2, height() / 2));
-	l->setGeometry(r);
-
-	l->showFullScreen();
+	l->show();
 	qApp->processEvents();
+
 	return l;
 }
