@@ -198,6 +198,7 @@ HEADERS += actuators.h \
            singlechoicecontent.h \
            singlechoicepage.h \
            skinmanager.h \
+           slideshow.h \
            sorgentiaux.h \
            sorgentimedia.h \
            sorgentiradio.h \
@@ -326,6 +327,7 @@ SOURCES += actuators.cpp \
            singlechoicecontent.cpp \
            singlechoicepage.cpp \
            skinmanager.cpp \
+           slideshow.cpp \
            sorgentiaux.cpp \
            sorgentimedia.cpp \
            sorgentiradio.cpp \
