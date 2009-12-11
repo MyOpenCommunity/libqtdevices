@@ -1,6 +1,6 @@
 #include "test_checkaddress.h"
 
-#include <device.h> // checkAddressIsForMe()
+#include <pulldevice.h> // checkAddressIsForMe()
 
 #include <QtTest/QtTest>
 
