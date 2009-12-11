@@ -84,7 +84,12 @@ void FileSelector::itemIsClicked(int item)
 		}
 	}
 	else
+	{
+		// save the info of old directory
+		pages_indexes[current_dir.absolutePath()] = currentPage();
+
 		emit fileClicked(item);
+	}
 
 	waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
 	destroyWaitDialog(l);
@@ -147,6 +152,7 @@ bool FileSelector::changePath(QString new_path)
 		current_dir.setPath(new_path_string);
 		return true;
 	}
+
 	return false;
 }
 
