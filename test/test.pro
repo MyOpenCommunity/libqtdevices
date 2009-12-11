@@ -39,6 +39,7 @@ HEADERS += device_tester.h \
            ../lighting_device.h \
            ../poweramplifier_device.h \
            ../platform_device.h \
+           ../pulldevice.h \
            ../automation_device.h \
            ../scenario_device.h \
            ../thermal_device.h \
@@ -72,6 +73,7 @@ SOURCES += test_main.cpp \
            ../lighting_device.cpp \
            ../poweramplifier_device.cpp \
            ../platform_device.cpp \
+           ../pulldevice.cpp \
            ../automation_device.cpp \
            ../scenario_device.cpp \
            ../thermal_device.cpp \
