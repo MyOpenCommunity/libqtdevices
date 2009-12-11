@@ -5,6 +5,7 @@
 #include "window.h"
 
 #include <QList>
+#include <QLabel>
 
 class BtButton;
 class QLabel;
@@ -74,6 +75,25 @@ private:
 };
 
 
+// common code to display an image
+class SlideshowImage : public QLabel
+{
+Q_OBJECT
+public:
+	SlideshowImage();
+
+	// if the pixmap is too big for the label, it is scaled down, respecting
+	// proportions, otherwise it is displayed as it is
+	void setPixmap(const QPixmap &pixmap);
+
+signals:
+	void clicked();
+
+protected:
+	void mouseReleaseEvent(QMouseEvent *e);
+};
+
+
 class SlideshowPage : public Page
 {
 Q_OBJECT
@@ -94,7 +114,8 @@ private slots:
 	void displayFullScreen();
 
 private:
-	QLabel *title, *image;
+	QLabel *title;
+	SlideshowImage *image;
 	QList<QString> image_list;
 	SlideshowController *controller;
 	SlideshowWindow *window;
@@ -121,7 +142,7 @@ private slots:
 	void displayNoFullScreen();
 
 private:
-	QLabel *image;
+	SlideshowImage *image;
 	QList<QString> image_list;
 	SlideshowController *controller;
 	SlideshowPage *page;

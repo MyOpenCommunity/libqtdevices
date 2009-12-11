@@ -3,7 +3,6 @@
 #include "skinmanager.h"
 #include "navigation_bar.h"
 
-#include <QLabel>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QFileInfo>
@@ -146,6 +145,33 @@ void PlaybackButtons::stopped()
 }
 
 
+SlideshowImage::SlideshowImage()
+{
+	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+	setAlignment(Qt::AlignCenter);
+}
+
+void SlideshowImage::setPixmap(const QPixmap &pixmap)
+{
+	QSize screen_size = size(), pixmap_size = pixmap.size();
+	QPixmap scaled = pixmap;
+
+	// resize the pixmap if it's too big for the screen
+	if (pixmap_size.width() > screen_size.width() ||
+	    pixmap_size.height() > screen_size.height())
+		scaled = pixmap.scaled(screen_size, Qt::KeepAspectRatio);
+
+	QLabel::setPixmap(scaled);
+}
+
+void SlideshowImage::mouseReleaseEvent(QMouseEvent *e)
+{
+	QLabel::mouseReleaseEvent(e);
+
+	emit clicked();
+}
+
+
 SlideshowPage::SlideshowPage()
 {
 	controller = new SlideshowController(this);
@@ -158,9 +184,7 @@ SlideshowPage::SlideshowPage()
 	title = new QLabel("File name here");
 
 	// pixmap used to display the image
-	image = new QLabel;
-	image->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-	image->setAlignment(Qt::AlignCenter);
+	image = new SlideshowImage;
 
 	PlaybackButtons *buttons = new PlaybackButtons(PlaybackButtons::IN_PAGE);
 
@@ -195,15 +219,7 @@ void SlideshowPage::displayImages(QList<QString> images, unsigned element)
 
 void SlideshowPage::showImage(int index)
 {
-	QPixmap pixmap(image_list[index]);
-	QSize screen_size = image->size(), pixmap_size = pixmap.size();
-
-	// resize the pixmap if it's too big for the screen
-	if (pixmap_size.width() > screen_size.width() ||
-	    pixmap_size.height() > screen_size.height())
-		pixmap = pixmap.scaled(screen_size, Qt::KeepAspectRatio);
-
-	image->setPixmap(pixmap);
+	image->setPixmap(image_list[index]);
 	title->setText(QFileInfo(image_list[index]).fileName());
 }
 
@@ -241,9 +257,7 @@ SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
 	QVBoxLayout *l = new QVBoxLayout(this);
 
 	// pixmap used to display the image
-	image = new QLabel;
-	image->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-	image->setAlignment(Qt::AlignCenter);
+	image = new SlideshowImage;
 
 	PlaybackButtons *buttons = new PlaybackButtons(PlaybackButtons::IN_WINDOW);
 	buttons->setParent(image);
@@ -272,15 +286,8 @@ void SlideshowWindow::displayImages(QList<QString> images, unsigned element)
 
 void SlideshowWindow::showImage(int index)
 {
-	QPixmap pixmap(image_list[index]);
-	QSize screen_size = image->size(), pixmap_size = pixmap.size();
 
-	// resize the pixmap if it's too big for the screen
-	if (pixmap_size.width() > screen_size.width() ||
-	    pixmap_size.height() > screen_size.height())
-		pixmap = pixmap.scaled(screen_size, Qt::KeepAspectRatio);
-
-	image->setPixmap(pixmap);
+	image->setPixmap(image_list[index]);
 }
 
 void SlideshowWindow::startSlideshow()
