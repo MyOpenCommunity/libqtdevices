@@ -28,6 +28,7 @@ HEADERS += device_tester.h \
            test_scenario_device.h \
            test_device.h \
            test_energy_device.h \
+           test_entryphone_device.h \
            test_lighting_device.h \
            test_platform_device.h \
            test_poweramplifier_device.h \
@@ -36,6 +37,7 @@ HEADERS += device_tester.h \
            openserver_mock.h \
            ../alarmsounddiff_device.h \
            ../energy_device.h \
+           ../entryphone_device.h \
            ../lighting_device.h \
            ../poweramplifier_device.h \
            ../platform_device.h \
@@ -62,6 +64,7 @@ SOURCES += test_main.cpp \
            test_scenario_device.cpp \
            test_device.cpp \
            test_energy_device.cpp \
+           test_entryphone_device.cpp \
            test_lighting_device.cpp \
            test_platform_device.cpp \
            test_poweramplifier_device.cpp \
@@ -70,6 +73,7 @@ SOURCES += test_main.cpp \
            openserver_mock.cpp \
            ../alarmsounddiff_device.cpp \
            ../energy_device.cpp \
+           ../entryphone_device.cpp \
            ../lighting_device.cpp \
            ../poweramplifier_device.cpp \
            ../platform_device.cpp \
