@@ -20,10 +20,21 @@ class Client;
 class QStackedWidget;
 class QVBoxLayout;
 class TransitionWidget;
+class BannerContent;
+class NavigationBar;
+
 
 // This typedef is needed by slots status_changed(StatusList). In order to avoid
 // duplication the typedef is put here, so all pages can be use freely
 typedef QHash<int, QVariant> StatusList;
+
+// Allows type-safe access to __content from page subclasses; by default
+// it returns a QWidget; to return a different QWidget subtype, add a
+//
+// typedef TYPE ContentType;
+//
+// inside the page subclass (see BannerPage for an example)
+#define page_content (content(this))
 
 
 /**
@@ -81,6 +92,39 @@ private:
 signals:
 	/// Emitted when the page is closed.
 	void Closed();
+};
+
+
+/**
+ * \class BannerPage
+ *
+ * A page containing a list of banners.
+ */
+class BannerPage : public Page
+{
+public:
+	// the type returned by page_content
+	typedef BannerContent ContentType;
+
+	BannerPage(QWidget *parent=0);
+
+	virtual void activateLayout();
+
+protected:
+	// used by page_content
+	// see the comment about page_content
+	template<class P>
+	typename P::ContentType* content(P*)
+	{
+		return (typename P::ContentType*)__content;
+	}
+
+	// WARNING: do not use this directly, use page_content #defined above
+	QWidget *__content;
+
+	void buildPage(BannerContent *content, NavigationBar *nav_bar, QWidget *top_widget=0);
+	void buildPage(QWidget *top_widget=0);
+	void buildPage(QString title) { buildPage(); } // for compatibility
 };
 
 

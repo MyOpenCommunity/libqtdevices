@@ -52,6 +52,8 @@ QMAKE_CXXFLAGS_RELEASE += -O3
 
 # Input
 HEADERS += actuators.h \
+           airconditioning.h \
+           airconditioning_device.h \
            alarmclock.h \
            allarme.h \
            ambdiffson.h \
@@ -64,6 +66,7 @@ HEADERS += actuators.h \
            bann2_buttons.h \
            bann3_buttons.h \
            bann4_buttons.h \
+           bann_airconditioning.h \
            bann_antintrusion.h \
            bann_automation.h \
            bann_lighting.h \
@@ -72,6 +75,7 @@ HEADERS += actuators.h \
            bann_videoentryphone.h \
            bannciclaz.h \
            banner.h \
+           bannercontent.h \
            bannfrecce.h \
            bann_thermal_regulation.h \
            bannonoffcombo.h \
@@ -116,6 +120,7 @@ HEADERS += actuators.h \
            mediaplayer.h \
            multimedia_source.h \
            multisounddiff.h \
+           navigation_bar.h \
            openclient.h \
            page.h \
            pagecontainer.h \
@@ -153,6 +158,8 @@ HEADERS += actuators.h \
            xml_functions.h
 
 SOURCES += actuators.cpp \
+           airconditioning.cpp \
+           airconditioning_device.cpp \
            alarmclock.cpp \
            allarme.cpp \
            ambdiffson.cpp \
@@ -165,6 +172,7 @@ SOURCES += actuators.cpp \
            bann2_buttons.cpp \
            bann3_buttons.cpp \
            bann4_buttons.cpp \
+           bann_airconditioning.cpp \
            bann_antintrusion.cpp \
            bann_automation.cpp \
            bann_lighting.cpp \
@@ -173,6 +181,7 @@ SOURCES += actuators.cpp \
            bann_videoentryphone.cpp \
            bannciclaz.cpp \
            banner.cpp \
+           bannercontent.cpp \
            bannfrecce.cpp \
            bann_thermal_regulation.cpp \
            bannonoffcombo.cpp \
@@ -218,6 +227,7 @@ SOURCES += actuators.cpp \
            mediaplayer.cpp \
            multimedia_source.cpp \
            multisounddiff.cpp \
+           navigation_bar.cpp \
            openclient.cpp \
            page.cpp \
            pagecontainer.cpp \

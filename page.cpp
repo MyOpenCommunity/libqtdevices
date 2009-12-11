@@ -3,6 +3,8 @@
 #include "openclient.h" // Client
 #include "btbutton.h"
 #include "transitionwidget.h"
+#include "navigation_bar.h"
+#include "bannercontent.h"
 
 #include <QStackedWidget>
 #include <QVBoxLayout>
@@ -129,6 +131,59 @@ void Page::forceClosed()
 {
 	emit Closed();
 }
+
+BannerPage::BannerPage(QWidget *parent)
+	: Page(parent)
+{
+}
+
+void BannerPage::activateLayout()
+{
+	if (page_content)
+		page_content->updateGeometry();
+
+	QLayout *main_layout = layout();
+	if (main_layout)
+	{
+		main_layout->activate();
+		main_layout->update();
+	}
+
+	if (page_content)
+		page_content->drawContent();
+}
+
+void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, QWidget *top_widget)
+{
+	QBoxLayout *l = new QVBoxLayout(this);
+
+	// the top_widget (if present) is a widget that must be at the top of the page,
+	// limiting the height (so even the navigation) of the content
+	if (top_widget)
+		l->addWidget(top_widget);
+
+	l->addWidget(content, 1);
+	l->addWidget(nav_bar);
+
+	l->setContentsMargins(0, 5, 0, 10);
+	l->setSpacing(0);
+
+	__content = content;
+
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(forwardClick()));
+	connect(nav_bar, SIGNAL(upClick()), content, SLOT(pgUp()));
+	connect(nav_bar, SIGNAL(downClick()), content, SLOT(pgDown()));
+	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+}
+
+void BannerPage::buildPage(QWidget *top_widget)
+{
+	buildPage(new BannerContent, new NavigationBar, top_widget);
+}
+
+
 
 PageLayout::PageLayout(QWidget *parent) : Page(parent)
 {
