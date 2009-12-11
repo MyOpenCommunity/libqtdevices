@@ -137,11 +137,13 @@ void PlaybackButtons::playToggled(bool playing)
 void PlaybackButtons::started()
 {
 	play_button->setStatus(true);
+	play_button->setChecked(true);
 }
 
 void PlaybackButtons::stopped()
 {
 	play_button->setStatus(false);
+	play_button->setChecked(false);
 }
 
 
