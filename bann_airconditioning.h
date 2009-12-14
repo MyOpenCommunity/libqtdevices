@@ -4,9 +4,10 @@
 #include "bann2_buttons.h" // BannOnOffNew, bann2But
 #include "bann1_button.h" // BannStates
 
+#include <QList>
+#include <QPair>
 #include <QHash>
 #include <QString>
-#include <QtContainerFwd> // QList
 
 class AirConditioningDevice;
 
@@ -82,5 +83,21 @@ private:
 private slots:
 	void sendScenarioCommand();
 };
+
+
+class GeneralSplitScenario : public BannLeft
+{
+Q_OBJECT
+public:
+	GeneralSplitScenario(QString descr);
+	void appendDevice(QString cmd, AirConditioningDevice *d);
+
+private:
+	QList<QPair<QString, AirConditioningDevice*> > devices_list;
+
+private slots:
+	void sendScenarioCommand();
+};
+
 
 #endif // BANN_AIRCONDITIONING_H

@@ -69,4 +69,15 @@ public:
 	SplitSettings(const QDomNode &values_node, const QDomNode &config_node);
 };
 
+
+class GeneralSplitPage : public BannerPage
+{
+Q_OBJECT
+public:
+	GeneralSplitPage(const QDomNode &config_node);
+
+private:
+	void loadScenarios(const QDomNode &config_node);
+};
+
 #endif // AIR_CONDITIONING_H

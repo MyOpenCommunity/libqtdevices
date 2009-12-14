@@ -1,9 +1,8 @@
 #include "airconditioning_device.h"
 
 
-AirConditioningDevice::AirConditioningDevice(QString where, QString off_cmd) : device("0", where)
+AirConditioningDevice::AirConditioningDevice(QString where) : device("0", where)
 {
-	off = off_cmd;
 }
 
 void AirConditioningDevice::sendCommand(QString cmd) const
@@ -13,6 +12,12 @@ void AirConditioningDevice::sendCommand(QString cmd) const
 
 void AirConditioningDevice::sendOff() const
 {
+	Q_ASSERT_X(!off.isNull(), "AirConditioningDevice::sendOff", "Off command not set!");
 	sendCommand(off);
+}
+
+void AirConditioningDevice::setOffCommand(QString off_cmd)
+{
+	off = off_cmd;
 }
 
