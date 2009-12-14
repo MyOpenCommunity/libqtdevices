@@ -209,6 +209,10 @@ SlideshowPage::SlideshowPage()
 	connect(controller, SIGNAL(showImage(int)), this, SLOT(showImage(int)));
 
 	connect(nav_bar, SIGNAL(backClick()), SLOT(handleClose()));
+
+	// close the slideshow page when the user clicks the stop button on the
+	// full screen slide show
+	connect(window, SIGNAL(Closed()), SLOT(handleClose()));
 }
 
 void SlideshowPage::displayImages(QList<QString> images, unsigned element)
