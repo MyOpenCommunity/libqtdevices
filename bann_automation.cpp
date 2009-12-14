@@ -56,6 +56,12 @@ void InterblockedActuator::sendStop()
 	dev->stop();
 }
 
+void InterblockedActuator::connectButton(BtButton *btn, const char *slot)
+{
+	btn->disconnect();
+	connect(btn, SIGNAL(clicked()), slot);
+}
+
 void InterblockedActuator::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
@@ -66,17 +72,21 @@ void InterblockedActuator::status_changed(const StatusList &sl)
 		case AutomationDevice::DIM_UP:
 			setState(OPENING);
 			right_button->enable();
+			connectButton(right_button, SLOT(sendStop()));
 			left_button->disable();
 			break;
 		case AutomationDevice::DIM_DOWN:
 			setState(CLOSING);
 			right_button->disable();
 			left_button->enable();
+			connectButton(left_button, SLOT(sendStop()));
 			break;
 		case AutomationDevice::DIM_STOP:
 			setState(STOP);
 			right_button->enable();
+			connectButton(right_button, SLOT(sendGoUp()));
 			left_button->enable();
+			connectButton(left_button, SLOT(sendGoDown()));
 			break;
 		}
 		++it;
