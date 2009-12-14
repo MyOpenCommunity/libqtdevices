@@ -144,6 +144,7 @@ VCTCallPage::VCTCallPage(const QDomNode &config_node)
 	where.prepend("1");
 	// we must have only one entryphone device since we need to remember some state
 	dev = bt_global::add_device_to_cache(new EntryphoneDevice(where));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 
 	SkinContext ctx(666);
 
@@ -220,6 +221,24 @@ VCTCallPage::VCTCallPage(const QDomNode &config_node)
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addLayout(hbox);
 	layout->addLayout(bottom);
+}
+
+void VCTCallPage::status_changed(const StatusList &sl)
+{
+	StatusList::const_iterator it = sl.constBegin();
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		case EntryphoneDevice::INCOMING_CALL:
+			showPage();
+			break;
+		case EntryphoneDevice::END_OF_CALL:
+			emit Closed();
+			break;
+		}
+		++it;
+	}
 }
 
 void VCTCallPage::toggleCameraSettings()

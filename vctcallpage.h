@@ -73,6 +73,7 @@ private slots:
 	void setBrightness(int value);
 	void setColor(int value);
 	void setContrast(int value);
+	void status_changed(const StatusList &sl);
 
 private:
 	BtButton *cycle, *setup_vct;
