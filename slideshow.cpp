@@ -9,7 +9,10 @@
 #include <QTimer>
 
 #define SLIDESHOW_TIMEOUT 10000
+#define BUTTONS_TIMEOUT 5000
 
+
+// SlideshowController implementation
 
 SlideshowController::SlideshowController(QObject *parent)
 	: QObject(parent)
@@ -26,6 +29,7 @@ void SlideshowController::initialize(int total, int current)
 
 void SlideshowController::prevImageUser()
 {
+	// if the slideshow timer is active, restart it after changing current image
 	bool active = slideshowActive();
 	if (active)
 		timer->stop();
@@ -41,6 +45,7 @@ void SlideshowController::prevImageUser()
 
 void SlideshowController::nextImageUser()
 {
+	// if the slideshow timer is active, restart it after changing current image
 	bool active = slideshowActive();
 	if (active)
 		timer->stop();
@@ -85,6 +90,8 @@ int SlideshowController::currentImage()
 	return current_image;
 }
 
+
+// PlaybackButtons implementation
 
 static inline BtButton *getButton(const QString &icon)
 {
@@ -147,6 +154,8 @@ void PlaybackButtons::stopped()
 }
 
 
+// SlideshowImage implementation
+
 SlideshowImage::SlideshowImage()
 {
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
@@ -174,6 +183,8 @@ void SlideshowImage::mouseReleaseEvent(QMouseEvent *e)
 }
 
 
+// SlideshowPage implementation
+
 SlideshowPage::SlideshowPage()
 {
 	controller = new SlideshowController(this);
@@ -197,6 +208,7 @@ SlideshowPage::SlideshowPage()
 	NavigationBar *nav_bar = new NavigationBar(QString(), QString(), QString(), "back");
 	buildPage(content, nav_bar);
 
+	// signals for navigation and to start/stop slideshow
 	connect(buttons, SIGNAL(previous()), controller, SLOT(prevImageUser()));
 	connect(buttons, SIGNAL(next()), controller, SLOT(nextImageUser()));
 	connect(buttons, SIGNAL(stop()), SLOT(handleClose()));
@@ -204,10 +216,11 @@ SlideshowPage::SlideshowPage()
 	connect(buttons, SIGNAL(pause()), controller, SLOT(stopSlideshow()));
 	connect(buttons, SIGNAL(fullScreen()), SLOT(displayFullScreen()));
 
+	// update the icon of the play button
 	connect(controller, SIGNAL(slideshowStarted()), buttons, SLOT(started()));
 	connect(controller, SIGNAL(slideshowStopped()), buttons, SLOT(stopped()));
-	connect(controller, SIGNAL(showImage(int)), this, SLOT(showImage(int)));
 
+	connect(controller, SIGNAL(showImage(int)), SLOT(showImage(int)));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(handleClose()));
 
 	// close the slideshow page when the user clicks the stop button on the
@@ -255,6 +268,8 @@ void SlideshowPage::displayFullScreen()
 }
 
 
+// SlideshowWindow implementation
+
 SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
 {
 	controller = new SlideshowController(this);
@@ -277,6 +292,7 @@ SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
 	l->setContentsMargins(0, 0, 0, 0);
 	l->addWidget(image, 1);
 
+	// signals for navigation and to start/stop slideshow
 	connect(buttons, SIGNAL(previous()), controller, SLOT(prevImageUser()));
 	connect(buttons, SIGNAL(next()), controller, SLOT(nextImageUser()));
 	connect(buttons, SIGNAL(stop()), SLOT(handleClose()));
@@ -284,15 +300,18 @@ SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
 	connect(buttons, SIGNAL(pause()), controller, SLOT(stopSlideshow()));
 	connect(buttons, SIGNAL(noFullScreen()), SLOT(displayNoFullScreen()));
 
+	// update the icon of the play button
 	connect(controller, SIGNAL(slideshowStarted()), buttons, SLOT(started()));
 	connect(controller, SIGNAL(slideshowStopped()), buttons, SLOT(stopped()));
+
 	connect(controller, SIGNAL(showImage(int)), this, SLOT(showImage(int)));
 
+	// timer to hide the buttons
 	buttons_timer = new QTimer(this);
 	buttons_timer->setSingleShot(true);
 	connect(buttons_timer, SIGNAL(timeout()), buttons, SLOT(hide()));
 
-	// this shows the buttons
+	// this shows the buttons when the user clicks the screen
 	connect(image, SIGNAL(clicked()), SLOT(showButtons()));
 
 	// these reset the buttons timer on each click
@@ -319,7 +338,7 @@ void SlideshowWindow::showButtons()
 {
 	buttons_timer->stop();
 	buttons->show();
-	buttons_timer->start(5000);
+	buttons_timer->start(BUTTONS_TIMEOUT);
 }
 
 void SlideshowWindow::startSlideshow()

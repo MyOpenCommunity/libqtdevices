@@ -13,6 +13,8 @@ class QTimer;
 class SlideshowWindow;
 
 
+// helper class, handles manual navigation over an item list,
+// with an optional slide show mode
 class SlideshowController : public QObject
 {
 Q_OBJECT
@@ -24,15 +26,25 @@ public:
 	int currentImage();
 
 public slots:
+	// call when the user clicks on the "previous" button
 	void prevImageUser();
+
+	// call when the user clicks on the "next" button
 	void nextImageUser();
+
+	// called internally by the slideshow timer
 	void nextImageSlideshow();
+
+	// start/stop the slideshow
 	void startSlideshow();
 	void stopSlideshow();
 
 signals:
+	// emitted when the slideshow is starting/stopping
 	void slideshowStarted();
 	void slideshowStopped();
+
+	// emitted when the current image changes
 	void showImage(int);
 
 private:
@@ -41,6 +53,7 @@ private:
 };
 
 
+// contains previous/next, play/pause/stop and fullscreen buttons
 class PlaybackButtons : public QWidget
 {
 Q_OBJECT
@@ -54,6 +67,7 @@ public:
 	PlaybackButtons(Type type);
 
 public slots:
+	// update the icon of the play button
 	void started();
 	void stopped();
 
@@ -101,7 +115,10 @@ public:
 	SlideshowPage();
 
 public slots:
+	// displays the page and stores the image list for the slide show
 	void displayImages(QList<QString> images, unsigned element);
+
+	// starts the slide show from the current image
 	void startSlideshow();
 
 protected:
@@ -129,7 +146,10 @@ public:
 	SlideshowWindow(SlideshowPage *slideshow_page);
 
 public slots:
+	// displays the page and stores the image list for the slide show
 	void displayImages(QList<QString> images, unsigned element);
+
+	// starts the slide show from the current image
 	void startSlideshow();
 
 protected:
@@ -143,6 +163,7 @@ private slots:
 	void showButtons();
 
 private:
+	// used to automatically hide the buttons
 	QTimer *buttons_timer;
 	PlaybackButtons *buttons;
 	SlideshowImage *image;
