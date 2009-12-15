@@ -9,6 +9,7 @@
 
 class QDomNode;
 class EntryphoneDevice;
+class QHBoxLayout;
 
 
 class EnablingButton : public BtButton
@@ -60,6 +61,20 @@ private:
 };
 
 
+class CallControl : public QWidget
+{
+Q_OBJECT
+public:
+	CallControl(EntryphoneDevice *d);
+
+private:
+	EntryphoneDevice *dev;
+	EnablingButton *call_accept, *mute_button, *stairlight, *unlock_door;
+	BtButton *cycle;
+	QString mute_icon, call_icon;
+};
+
+
 
 class VCTCallPage : public Page
 {
@@ -76,11 +91,13 @@ private slots:
 	void status_changed(const StatusList &sl);
 
 private:
-	BtButton *cycle, *setup_vct;
-	EnablingButton *call_accept, *mute_button, *stairlight, *unlock_door;
+	QHBoxLayout *buildBottomLayout();
+
+	BtButton *setup_vct;
 	BannTuning *contrast, *brightness, *color;
 	CameraMove *camera;
-	QString mute_icon, call_icon, setup_vct_icon;
+	CallControl *call_control;
+	QString setup_vct_icon;
 	QStringList places;
 	bool camera_settings_shown;
 	EntryphoneDevice *dev;

@@ -12,6 +12,8 @@
 #include <QHBoxLayout>
 #include <QDebug>
 
+#define BOTTOM_SPACING 15
+
 EnablingButton::EnablingButton(QWidget *parent) :
 	BtButton(parent)
 {
@@ -132,6 +134,44 @@ void CameraMove::setMoveEnabled(bool move)
 
 
 
+CallControl::CallControl(EntryphoneDevice *d)
+{
+	dev = d;
+
+	call_icon = bt_global::skin->getImage("call");
+	call_accept = new EnablingButton;
+	call_accept->setImage(getBostikName(call_icon, "off"));
+	call_accept->setDisabledPixmap(getBostikName(call_icon, "dis"));
+	// TODO: connect to accept call
+
+	BannTuning *volume = new BannTuning("", bt_global::skin->getImage("volume"));
+	// TODO: connect to volume settings
+
+	mute_icon = bt_global::skin->getImage("mute");
+	mute_button = getButton(getBostikName(mute_icon, "off"));
+	mute_button->disable();
+	// TODO: connect to mute settings
+
+	stairlight = getButton(bt_global::skin->getImage("stairlight"));
+	// TODO: connect
+	unlock_door = getButton(bt_global::skin->getImage("unlock_door"));
+	// TODO: connect
+
+	cycle = new BtButton;
+	cycle->setImage(bt_global::skin->getImage("cycle"));
+	// TODO: connect
+
+	QHBoxLayout *bottom = new QHBoxLayout(this);
+	bottom->setContentsMargins(0, 0, 30, 0);
+	bottom->setSpacing(BOTTOM_SPACING);
+	bottom->addWidget(call_accept);
+	bottom->addWidget(volume);
+	bottom->addWidget(mute_button);
+	bottom->addWidget(stairlight);
+	bottom->addWidget(unlock_door);
+	bottom->addWidget(cycle);
+}
+
 VCTCallPage::VCTCallPage(const QDomNode &config_node)
 {
 	// we have a random configuration node and we must get our internal unit address
@@ -186,41 +226,11 @@ VCTCallPage::VCTCallPage(const QDomNode &config_node)
 	hbox->addWidget(video);
 	hbox->addLayout(sidebar);
 
-	BtButton *back = new BtButton;
-	back->setImage(bt_global::skin->getImage("back"));
-	connect(back, SIGNAL(clicked()), SIGNAL(Closed()));
-
-	call_icon = bt_global::skin->getImage("call");
-	call_accept = new EnablingButton;
-	call_accept->setImage(getBostikName(call_icon, "off"));
-	call_accept->setDisabledPixmap(getBostikName(call_icon, "dis"));
-
-	BannTuning *volume = new BannTuning("", bt_global::skin->getImage("volume"));
-
-	mute_icon = bt_global::skin->getImage("mute");
-	mute_button = getButton(getBostikName(mute_icon, "off"));
-	mute_button->disable();
-
-	stairlight = getButton(bt_global::skin->getImage("stairlight"));
-	unlock_door = getButton(bt_global::skin->getImage("unlock_door"));
-
-	cycle = new BtButton;
-	cycle->setImage(bt_global::skin->getImage("cycle"));
-
-	QHBoxLayout *bottom = new QHBoxLayout;
-	bottom->setContentsMargins(0, 0, 30, 5);
-	bottom->setSpacing(15);
-	bottom->addWidget(back);
-	bottom->addWidget(call_accept);
-	bottom->addWidget(volume);
-	bottom->addWidget(mute_button);
-	bottom->addWidget(stairlight);
-	bottom->addWidget(unlock_door);
-	bottom->addWidget(cycle);
+	QHBoxLayout *bottom = buildBottomLayout();
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
-	layout->addLayout(hbox);
-	layout->addLayout(bottom);
+	layout->addLayout(hbox, 1);
+	layout->addLayout(bottom, 0);
 }
 
 void VCTCallPage::status_changed(const StatusList &sl)
@@ -260,6 +270,20 @@ void VCTCallPage::toggleCameraSettings()
 		camera->hide();
 		setup_vct->setImage(getBostikName(setup_vct_icon, "on"));
 	}
+}
+
+QHBoxLayout *VCTCallPage::buildBottomLayout()
+{
+	BtButton *back = new BtButton;
+	back->setImage(bt_global::skin->getImage("back"));
+	connect(back, SIGNAL(clicked()), SIGNAL(Closed()));
+	call_control = new CallControl(dev);
+	QHBoxLayout *bottom = new QHBoxLayout;
+	bottom->setContentsMargins(0, 0, 0, 0);
+	bottom->setSpacing(BOTTOM_SPACING);
+	bottom->addWidget(back);
+	bottom->addWidget(call_control);
+	return bottom;
 }
 
 void VCTCallPage::setContrast(int value)
