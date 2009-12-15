@@ -70,6 +70,19 @@ private:
 };
 
 
+class SplitSwing : public BannLeft
+{
+Q_OBJECT
+public:
+	SplitSwing(QString descr);
+
+private slots:
+	void toggleSwing();
+private:
+	bool status;
+};
+
+
 class SplitScenario : public BannLeft
 {
 Q_OBJECT

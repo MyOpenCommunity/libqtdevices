@@ -167,10 +167,9 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	nav_bar->displayScrollButtons(false);
 	buildPage(new BannerContent, nav_bar);
 
-	page_content->appendBanner(new SplitTemperature(0));
 
 	QDomNode mode_node = getChildWithName(config_node, "mode");
-	if (getTextChild(mode_node, "val1").toInt() != -1)
+	if (getTextChild(mode_node, "val1").toInt() != -1) // TODO: verificare se puo' essere disabilitato o no!
 	{
 		QList <int> modes;
 		foreach (const QDomNode &val, getChildren(mode_node, "val"))
@@ -179,6 +178,8 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 		int current_mode = getTextChild(values_node, "mode").toInt();
 		page_content->appendBanner(new SplitMode(modes, current_mode));
 	}
+
+	page_content->appendBanner(new SplitTemperature(0));
 
 	QDomNode speed_node = getChildWithName(config_node, "speed");
 	if (getTextChild(speed_node, "val1").toInt() != -1)
@@ -191,6 +192,9 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 		page_content->appendBanner(new SplitSpeed(speeds, current_speed));
 	}
 
+	QDomNode swing = getChildWithName(config_node, "fan_swing");
+	if (getTextChild(swing, "val1").toInt() != -1)
+		page_content->appendBanner(new SplitSwing(tr("SWING")));
 }
 
 
