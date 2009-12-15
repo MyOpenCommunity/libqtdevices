@@ -172,20 +172,18 @@ void VideoPlayerPage::displayNoFullScreen()
 
 void VideoPlayerPage::displayFullScreen(bool fs)
 {
-	int go_to = current_time - 1;
-
 	player->quitAndWait();
 
 	fullscreen = fs;
 	if (fullscreen)
 	{
 		window->showWindow();
-		player->playVideoFullScreen(video_list[current_video], go_to);
+		player->playVideoFullScreen(video_list[current_video], current_time);
 	}
 	else
 	{
 		showPage();
-		player->playVideo(video_list[current_video], playbackGeometry(), go_to);
+		player->playVideo(video_list[current_video], playbackGeometry(), current_time);
 	}
 }
 
