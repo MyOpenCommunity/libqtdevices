@@ -76,6 +76,8 @@ private:
 
 	bool runMPlayer(const char *mplayer_args[], bool write_output);
 
+	QMap<QString, QString> getMediaInfo(const QMap<QString, QString> &data_search);
+
 	bool _isPlaying;
 	bool paused, fullscreen;
 

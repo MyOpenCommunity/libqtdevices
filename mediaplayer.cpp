@@ -282,23 +282,7 @@ QMap<QString, QString> MediaPlayer::getVideoInfo()
 	QMap<QString, QString> data_search;
 	data_search["current_time"] = "A:\\s+(\\d+\\.\\d+)\\s+";
 
-	/// READ ROW output from MPlayer
-	QString row_data = readOutput();
-
-	/// Create output Map
-	QMap<QString, QString> info_data;
-
-	/// Parse ROW data to get info
-	QMap<QString, QString>::Iterator it;
-	for (it = data_search.begin(); it != data_search.end(); ++it)
-	{
-		QRegExp rx(it.value());
-
-		if (rx.indexIn(row_data) > -1)
-			info_data[it.key()] = rx.cap(1);
-	}
-
-	return info_data;
+	return getMediaInfo(data_search);
 }
 
 
@@ -316,6 +300,11 @@ QMap<QString, QString> MediaPlayer::getPlayingInfo()
 	data_search["total_time"]   = "[(](\\d+:\\d+\\.\\d+)[)] \\d+\\.\\d+";
 	data_search["current_time"] = "A:\\s+\\d+\\.\\d+\\s+[(](\\d*:*\\d+\\.\\d+)[)]";
 
+	return getMediaInfo(data_search);
+}
+
+QMap<QString, QString> MediaPlayer::getMediaInfo(const QMap<QString, QString> &data_search)
+{
 	/// READ ROW output from MPlayer
 	QString row_data = readOutput();
 
@@ -323,7 +312,7 @@ QMap<QString, QString> MediaPlayer::getPlayingInfo()
 	QMap<QString, QString> info_data;
 
 	/// Parse ROW data to get info
-	QMap<QString, QString>::Iterator it;
+	QMap<QString, QString>::ConstIterator it;
 	for (it = data_search.begin(); it != data_search.end(); ++it)
 	{
 		QRegExp rx(it.value());
