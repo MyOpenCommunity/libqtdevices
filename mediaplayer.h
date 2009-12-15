@@ -46,6 +46,11 @@ public:
 	/// moves the playback backward/forward by the given offset
 	void seek(int seconds);
 
+	/// set full screen mode
+	void setFullscreen(bool fullscreen);
+
+	bool isFullscreen() { return fullscreen; }
+
 private:
 	/// mplayer PID
 	int mplayer_pid;
@@ -66,7 +71,7 @@ private:
 	bool runMPlayer(const char *mplayer_args[], bool write_output);
 
 	bool _isPlaying;
-	bool paused;
+	bool paused, fullscreen;
 
 signals:
 	/// mplayer child process quit gracefully and done it's work.

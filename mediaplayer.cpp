@@ -1,5 +1,5 @@
-
 #include "mediaplayer.h"
+#include "hardware_functions.h" // maxWidth, maxHeight
 
 #include <QRegExp>
 #include <QDebug>
@@ -40,6 +40,7 @@ MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 
 	mplayer_pid = 0;
 	paused = false;
+	fullscreen = false;
 	_isPlaying = false;
 	_globalMediaPlayer = this;
 
@@ -172,6 +173,14 @@ void MediaPlayer::seek(int seconds)
 		execCmd("\x1b[D"); // left arrow
 	else
 		execCmd("\x1b[C"); // right arrow
+}
+
+void MediaPlayer::setFullscreen(bool fs)
+{
+	if (fs == fullscreen)
+		return;
+	execCmd("f");
+	fullscreen = fs;
 }
 
 void MediaPlayer::execCmd(QString command)
