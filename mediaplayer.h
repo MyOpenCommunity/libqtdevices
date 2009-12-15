@@ -40,6 +40,8 @@ public:
 	/// Read ASYNCHRONOUSLY the output from the PIPE and parse it to get INFO
 	QMap<QString, QString> getPlayingInfo();
 
+	QMap<QString, QString> getVideoInfo();
+
 	/// Need to be public because called by signal handler
 	void sigChildReceived(int dead_pid, int status);
 

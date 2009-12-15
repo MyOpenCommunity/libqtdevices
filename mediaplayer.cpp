@@ -218,6 +218,32 @@ bool MediaPlayer::isInstanceRunning()
 }
 
 
+QMap<QString, QString> MediaPlayer::getVideoInfo()
+{
+	/// Define Search Data Map
+	QMap<QString, QString> data_search;
+	data_search["current_time"] = "A:\\s+(\\d+\\.\\d+)\\s+";
+
+	/// READ ROW output from MPlayer
+	QString row_data = readOutput();
+
+	/// Create output Map
+	QMap<QString, QString> info_data;
+
+	/// Parse ROW data to get info
+	QMap<QString, QString>::Iterator it;
+	for (it = data_search.begin(); it != data_search.end(); ++it)
+	{
+		QRegExp rx(it.value());
+
+		if (rx.indexIn(row_data) > -1)
+			info_data[it.key()] = rx.cap(1);
+	}
+
+	return info_data;
+}
+
+
 QMap<QString, QString> MediaPlayer::getPlayingInfo()
 {
 	/// Define Search Data Map
