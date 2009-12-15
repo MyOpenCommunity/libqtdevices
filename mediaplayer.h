@@ -6,6 +6,9 @@
 
 #include <stdio.h>
 
+class QRect;
+
+
 class MediaPlayer : public QObject
 {
 Q_OBJECT
@@ -15,6 +18,9 @@ public:
 
 	/// Starts MPlayer playing a single track
 	bool play(QString track, bool write_output = true);
+
+	/// Starts MPlayer playing a video
+	bool playVideo(QString track, QRect geometry, bool write_output = true);
 
 	/// Pause playing of current song
 	void pause();
@@ -53,6 +59,8 @@ private:
 	void execCmd(QString command);
 	/// Read output from mplayer process.
 	QString readOutput();
+
+	bool runMPlayer(const char *mplayer_args[], bool write_output);
 
 	bool _isPlaying;
 	bool paused;

@@ -3,6 +3,7 @@
 
 #include <QRegExp>
 #include <QDebug>
+#include <QRect>
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -51,7 +52,40 @@ MediaPlayer::~MediaPlayer()
 	_globalMediaPlayer = NULL;
 }
 
+bool MediaPlayer::playVideo(QString track, QRect geometry, bool write_output)
+{
+	const char *mplayer_args[] = {MPLAYER_FILENAME, NULL, NULL, NULL, NULL, NULL, NULL};
+
+	QByteArray t = track.toLocal8Bit();
+	QByteArray pos = QString("%1:%2").arg(geometry.left()).arg(geometry.top()).toAscii();
+	QByteArray size = QString("scale=%1:%2").arg(geometry.width()).arg(geometry.height()).toAscii();
+
+	mplayer_args[1] = "-vf";
+	mplayer_args[2] = size.constData();
+	mplayer_args[3] = "-geometry";
+	mplayer_args[4] = pos.constData();
+	mplayer_args[5] = t.constData();
+
+	return runMPlayer(mplayer_args, write_output);
+}
+
 bool MediaPlayer::play(QString track, bool write_output)
+{
+	const char *mplayer_args[] = {MPLAYER_FILENAME, NULL, NULL, NULL, NULL, NULL};
+
+	QByteArray t = track.toLocal8Bit();
+	if ((track.endsWith(".m3u", Qt::CaseInsensitive)) || (track.endsWith(".asx", Qt::CaseInsensitive)))
+	{
+		mplayer_args[1] = "-playlist";
+		mplayer_args[2] = t.constData();
+	}
+	else
+		mplayer_args[1] = t.constData();
+
+	return runMPlayer(mplayer_args, write_output);
+}
+
+bool MediaPlayer::runMPlayer(const char *mplayer_args[], bool write_output)
 {
 	int control_pipe[2];
 	int output_pipe[2];
@@ -85,19 +119,6 @@ bool MediaPlayer::play(QString track, bool write_output)
 				qDebug("[AUDIO] unable to open /dev/null");
 		}
 
-		//char * const mplayer_args[] = { "mplayer", "-slave", "-idle", NULL };
-		//const char *mplayer_args[] = {MPLAYER_FILENAME, "-af", "pan=2:1:1", NULL, NULL, NULL};
-		const char *mplayer_args[] = {MPLAYER_FILENAME, NULL, NULL, NULL, NULL, NULL};
-
-		QByteArray t = track.toLocal8Bit();
-		if ((track.endsWith(".m3u", Qt::CaseInsensitive)) || (track.endsWith(".asx", Qt::CaseInsensitive)))
-		{
-			mplayer_args[1] = "-playlist";
-			mplayer_args[2] = t.constData();
-		}
-		else
-			mplayer_args[1] = t.constData();
-
 		execve(MPLAYER_FILENAME, const_cast<char * const *>(mplayer_args), environ);
 	}
 	else
@@ -118,8 +139,6 @@ bool MediaPlayer::play(QString track, bool write_output)
 
 		ctrlf = fdopen(control_fd, "w");
 		outf  = fdopen(output_fd, "r");
-
-		qDebug() << "[AUDIO] playing track: "<< track;
 	}
 
 	return true;
