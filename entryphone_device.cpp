@@ -7,6 +7,7 @@ enum
 {
 	ANSWER = 2,
 	CALL_END = 3,
+	READY = 37
 };
 
 EntryphoneDevice::EntryphoneDevice(const QString &where) :
@@ -31,6 +32,15 @@ void EntryphoneDevice::answerCall() const
 void EntryphoneDevice::endCall() const
 {
 	QString what = QString("%1#%2#%3").arg(CALL_END).arg(kind).arg(mmtype);
+	sendCommand(what);
+}
+
+void EntryphoneDevice::initVctProcess()
+{
+	// TODO: enumerate the values for type, which can be: scs only, ip only, both scs and ip
+	// TODO: find out values
+	int type = 1;
+	QString what = QString("%1#%2").arg(READY).arg(type);
 	sendCommand(what);
 }
 

@@ -29,6 +29,7 @@ public:
 	virtual void manageFrame(OpenMsg &msg);
 
 private:
+	void initVctProcess();
 	// call parameters
 	int kind, mmtype;
 };
