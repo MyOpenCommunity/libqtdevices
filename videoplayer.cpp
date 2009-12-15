@@ -1,5 +1,5 @@
 #include "videoplayer.h"
-#include "slideshow.h" // TODO killme
+#include "multimedia_buttons.h"
 #include "navigation_bar.h"
 #include "mediaplayer.h"
 
@@ -26,7 +26,7 @@ VideoPlayerPage::VideoPlayerPage()
 	v->addWidget(video);
 	v->addStretch(1);
 
-	PlaybackButtons *buttons = new PlaybackButtons(PlaybackButtons::IN_PAGE);
+	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::IN_PAGE);
 
 	l->addWidget(title, 0, Qt::AlignHCenter);
 	l->addLayout(v, 1);

@@ -173,6 +173,7 @@ HEADERS += actuators.h \
            main.h \
            mediaplayer.h \
            multimedia.h \
+           multimedia_buttons.h \
            multimedia_filelist.h \
            multimedia_source.h \
            multisounddiff.h \
@@ -304,6 +305,7 @@ SOURCES += actuators.cpp \
            main.cpp \
            mediaplayer.cpp \
            multimedia.cpp \
+           multimedia_buttons.cpp \
            multimedia_filelist.cpp \
            multimedia_source.cpp \
            multisounddiff.cpp \

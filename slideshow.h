@@ -7,10 +7,10 @@
 #include <QList>
 #include <QLabel>
 
-class BtButton;
 class QLabel;
 class QTimer;
 class SlideshowWindow;
+class MultimediaPlayerButtons;
 
 
 // helper class, handles manual navigation over an item list,
@@ -50,42 +50,6 @@ signals:
 private:
 	int total_images, current_image;
 	QTimer *timer;
-};
-
-
-// contains previous/next, play/pause/stop and fullscreen buttons
-class PlaybackButtons : public QWidget
-{
-Q_OBJECT
-public:
-	enum Type
-	{
-		IN_PAGE = 1,
-		IN_WINDOW = 2
-	};
-
-	PlaybackButtons(Type type);
-
-public slots:
-	// update the icon of the play button
-	void started();
-	void stopped();
-
-signals:
-	void play();
-	void pause();
-	void stop();
-	void previous();
-	void next();
-	void fullScreen();
-	void noFullScreen();
-
-private slots:
-	void playToggled(bool playing);
-
-private:
-	BtButton *play_button;
-	QString play_icon, pause_icon;
 };
 
 
@@ -165,7 +129,7 @@ private slots:
 private:
 	// used to automatically hide the buttons
 	QTimer *buttons_timer;
-	PlaybackButtons *buttons;
+	MultimediaPlayerButtons *buttons;
 	SlideshowImage *image;
 	QList<QString> image_list;
 	SlideshowController *controller;
