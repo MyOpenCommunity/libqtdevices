@@ -20,7 +20,8 @@ public:
 	bool play(QString track, bool write_output = true);
 
 	/// Starts MPlayer playing a video
-	bool playVideo(QString track, QRect geometry, bool write_output = true);
+	bool playVideo(QString track, QRect geometry, int start_time, bool write_output = true);
+	bool playVideoFullScreen(QString track, int start_time, bool write_output = true);
 
 	/// Pause playing of current song
 	void pause();

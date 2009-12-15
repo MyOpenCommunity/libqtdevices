@@ -4,6 +4,7 @@
 #include <QRegExp>
 #include <QDebug>
 #include <QRect>
+#include <QFile>
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -53,19 +54,76 @@ MediaPlayer::~MediaPlayer()
 	_globalMediaPlayer = NULL;
 }
 
-bool MediaPlayer::playVideo(QString track, QRect geometry, bool write_output)
+bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool write_output)
 {
-	const char *mplayer_args[] = {MPLAYER_FILENAME, NULL, NULL, NULL, NULL, NULL, NULL};
+	QFile sk("/tmp/start_seek");
+
+	sk.open(QFile::WriteOnly);
+	sk.write(QString("seek %1 2\n").arg(start_time).toAscii());
+	sk.close();
+
+	const char *mplayer_args[19];
 
 	QByteArray t = track.toLocal8Bit();
 	QByteArray pos = QString("%1:%2").arg(geometry.left()).arg(geometry.top()).toAscii();
 	QByteArray size = QString("scale=%1:%2").arg(geometry.width()).arg(geometry.height()).toAscii();
+	QByteArray width = QString::number(maxWidth()).toAscii();
+	QByteArray height = QString::number(maxHeight()).toAscii();
 
+	mplayer_args[0] = MPLAYER_FILENAME;
 	mplayer_args[1] = "-vf";
 	mplayer_args[2] = size.constData();
 	mplayer_args[3] = "-geometry";
 	mplayer_args[4] = pos.constData();
-	mplayer_args[5] = t.constData();
+	mplayer_args[5] = "-screenw";
+	mplayer_args[6] = width.constData();
+	mplayer_args[7] = "-screenh";
+	mplayer_args[8] = height.constData();
+	mplayer_args[9] = "-ac";
+	mplayer_args[10] = "mad,";
+	mplayer_args[11] = "-af";
+	mplayer_args[12] = "channels=2,resample=48000";
+	mplayer_args[13] = "-ao";
+	mplayer_args[14] = "oss:/dev/dsp1";
+	mplayer_args[15] = "-input";
+	mplayer_args[16] = "file=/tmp/start_seek";
+	mplayer_args[17] = t.constData();
+	mplayer_args[18] = NULL;
+
+	return runMPlayer(mplayer_args, write_output);
+}
+
+bool MediaPlayer::playVideoFullScreen(QString track, int start_time, bool write_output)
+{
+	QFile sk("/tmp/start_seek");
+
+	sk.open(QFile::WriteOnly);
+	sk.write(QString("seek %1 2\n").arg(start_time).toAscii());
+	sk.close();
+
+	const char *mplayer_args[20];
+
+	QByteArray t = track.toLocal8Bit();
+	// QByteArray size = QString("scale=%1:%2").arg(geometry.width()).arg(geometry.height()).toAscii();
+	QByteArray width = QString::number(maxWidth()).toAscii();
+	QByteArray height = QString::number(maxHeight()).toAscii();
+
+	mplayer_args[0] = MPLAYER_FILENAME;
+	mplayer_args[1] = "-screenw";
+	mplayer_args[2] = width.constData();
+	mplayer_args[3] = "-screenh";
+	mplayer_args[4] = height.constData();
+	mplayer_args[5] = "-ac";
+	mplayer_args[6] = "mad,";
+	mplayer_args[7] = "-af";
+	mplayer_args[8] = "channels=2,resample=48000";
+	mplayer_args[9] = "-ao";
+	mplayer_args[10] = "oss:/dev/dsp1";
+	mplayer_args[11] = "-input";
+	mplayer_args[12] = "file=/tmp/start_seek";
+	mplayer_args[13] = "-fs";
+	mplayer_args[14] = t.constData();
+	mplayer_args[15] = NULL;
 
 	return runMPlayer(mplayer_args, write_output);
 }
