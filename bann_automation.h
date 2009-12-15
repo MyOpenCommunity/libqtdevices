@@ -31,6 +31,7 @@ private slots:
 	void status_changed(const StatusList &sl);
 
 private:
+	void connectButton(BtButton *btn, const char *slot);
 	AutomationDevice *dev;
 };
 
