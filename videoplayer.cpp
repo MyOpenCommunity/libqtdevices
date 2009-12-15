@@ -43,6 +43,8 @@ VideoPlayerPage::VideoPlayerPage()
 	connect(buttons, SIGNAL(stop()), SLOT(handleClose()));
 	connect(buttons, SIGNAL(play()), SLOT(resume()));
 	connect(buttons, SIGNAL(pause()), SLOT(pause()));
+	connect(buttons, SIGNAL(skipForward()), SLOT(skipForward()));
+	connect(buttons, SIGNAL(skipBack()), SLOT(skipBack()));
 //	connect(buttons, SIGNAL(fullScreen()), SLOT(displayFullScreen()));
 
 	// update the icon of the play button
@@ -116,6 +118,16 @@ void VideoPlayerPage::next()
 		current_video = 0;
 
 	displayVideo(current_video);
+}
+
+void VideoPlayerPage::skipForward()
+{
+	player->seek(10);
+}
+
+void VideoPlayerPage::skipBack()
+{
+	player->seek(-10);
 }
 
 QRect VideoPlayerPage::playbackGeometry()

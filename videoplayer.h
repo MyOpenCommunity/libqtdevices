@@ -37,6 +37,8 @@ private slots:
 	void pause();
 	void previous();
 	void next();
+	void skipForward();
+	void skipBack();
 
 private:
 	QLabel *title, *video;
