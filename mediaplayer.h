@@ -32,6 +32,9 @@ public:
 	/// Stop and quit mplayer
 	void quit();
 
+	/// Like quit, but wait for mplayer to terminate
+	void quitAndWait();
+
 	/// Wheather the player is on pause
 	bool isPaused() { return paused; }
 

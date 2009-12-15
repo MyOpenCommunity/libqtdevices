@@ -342,6 +342,14 @@ void MediaPlayer::quit()
 		kill(mplayer_pid, SIGINT);
 }
 
+void MediaPlayer::quitAndWait()
+{
+	quit();
+	// wait for the player to terminate
+	while (isInstanceRunning())
+		;
+}
+
 void MediaPlayer::sigChildReceived(int dead_pid, int status)
 {
 	/// Check if the dead child is mplayer or not
