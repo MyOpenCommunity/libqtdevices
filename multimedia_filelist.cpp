@@ -3,6 +3,7 @@
 #include "skinmanager.h"
 #include "filebrowser.h"
 #include "slideshow.h"
+#include "videoplayer.h"
 
 #include <QLayout>
 #include <QDebug>
@@ -29,7 +30,7 @@ void addFilters(QStringList &filters, const char **extensions, int size)
 }
 
 MultimediaFileListPage::MultimediaFileListPage()
-	: FileSelector(4, "/video/music")
+	: FileSelector(4, "/video")
 {
 	FileBrowser *file_browser = new FileBrowser(0, 4);
 	connect(file_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
@@ -63,6 +64,12 @@ MultimediaFileListPage::MultimediaFileListPage()
 		slideshow, SLOT(displayImages(QList<QString>, unsigned)));
 	// TODO this means the "loading" page is displayed when closing a slideshow
 	connect(slideshow, SIGNAL(Closed()), SLOT(showPage()));
+
+	videoplayer = new VideoPlayerPage;
+	connect(this, SIGNAL(displayVideos(QList<QString>, unsigned)),
+		videoplayer, SLOT(displayVideos(QList<QString>, unsigned)));
+	// TODO this means the "loading" page is displayed when closing a video
+	connect(videoplayer, SIGNAL(Closed()), SLOT(showPage()));
 }
 
 bool MultimediaFileListPage::browseFiles(const QDir &directory, QList<QFileInfo> &files)
@@ -165,6 +172,8 @@ void MultimediaFileListPage::startPlayback(int item)
 
 	if (type == IMAGE)
 		emit displayImages(files, current);
+	else if (type == VIDEO)
+		emit displayVideos(files, current);
 }
 
 int MultimediaFileListPage::currentPage()
