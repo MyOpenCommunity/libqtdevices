@@ -4,8 +4,8 @@ MOC_DIR = moc
 
 DEFINES += QT_QWS_EBX BT_EMBEDDED BTWEB QT_NO_DEBUG_OUTPUT
 
-INCLUDEPATH+= . .. ../../bt_stackopen/common_files ../../bt_stackopen
-INCLUDEPATH+= ../../bt_stackopen/common_develer/lib
+INCLUDEPATH+= . .. ../../stackopen/common_files ../../stackopen
+INCLUDEPATH+= ../../stackopen/common_develer/lib
 
 TARGET = test
 CONFIG   += console
