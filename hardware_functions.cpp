@@ -359,3 +359,11 @@ void setVctVideoValue(const QString &command, const QString &value)
 	QProcess::startDetached("/home/bticino/bin/set_videocom",
 		QStringList() << command << value);
 }
+
+void initMultimedia()
+{
+	// needs BT_HARDWARE_TOUCHX
+	QProcess::execute("/bin/init_audio_system");
+	QProcess::execute("/bin/init_video_system");
+	QProcess::execute("/bin/rca2_on");
+}

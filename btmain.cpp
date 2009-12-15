@@ -145,6 +145,8 @@ BtMain::BtMain()
 	loading = new IconWindow("splash_image", bt_global::skin->getStyle());
 #endif
 
+	initMultimedia();
+
 #if BT_EMBEDDED
 	if (QFile::exists("/etc/pointercal"))
 	{

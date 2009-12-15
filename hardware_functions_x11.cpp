@@ -155,3 +155,7 @@ void playSound(const QString &wavFile)
 void setVctVideoValue(const QString &command, const QString &value)
 {
 }
+
+void initMultimedia()
+{
+}

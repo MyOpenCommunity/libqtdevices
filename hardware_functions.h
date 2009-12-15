@@ -125,4 +125,7 @@ void playSound(const QString &wavFile);
 // set contrast value for entryphone
 void setVctVideoValue(const QString &command, const QString &value);
 
+// init multimedia playback
+void initMultimedia();
+
 #endif // HARDWARE_FUNCTIONS_H
