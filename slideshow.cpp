@@ -135,7 +135,7 @@ SlideshowPage::SlideshowPage()
 	// pixmap used to display the image
 	image = new SlideshowImage;
 
-	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::IN_PAGE);
+	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::IMAGE_PAGE);
 
 	l->addWidget(title, 0, Qt::AlignHCenter);
 	l->addWidget(image, 1);
@@ -214,7 +214,7 @@ SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
 	// pixmap used to display the image
 	image = new SlideshowImage;
 
-	buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::IN_WINDOW);
+	buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::IMAGE_WINDOW);
 	buttons->hide();
 
 	QGridLayout *button_layout = new QGridLayout(image);

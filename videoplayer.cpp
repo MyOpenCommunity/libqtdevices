@@ -26,7 +26,7 @@ VideoPlayerPage::VideoPlayerPage()
 	v->addWidget(video);
 	v->addStretch(1);
 
-	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::IN_PAGE);
+	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::VIDEO_PAGE);
 
 	l->addWidget(title, 0, Qt::AlignHCenter);
 	l->addLayout(v, 1);

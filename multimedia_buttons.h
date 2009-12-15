@@ -12,8 +12,10 @@ Q_OBJECT
 public:
 	enum Type
 	{
-		IN_PAGE = 1,
-		IN_WINDOW = 2
+		IMAGE_PAGE = 1,
+		IMAGE_WINDOW = 2,
+		VIDEO_PAGE = 3,
+		VIDEO_WINDOW = 4
 	};
 
 	MultimediaPlayerButtons(Type type);
@@ -29,11 +31,16 @@ signals:
 	void stop();
 	void previous();
 	void next();
+	void skipForward();
+	void skipBack();
 	void fullScreen();
 	void noFullScreen();
 
 private slots:
 	void playToggled(bool playing);
+
+private:
+	BtButton *getButton(const QString &icon, const char *destination);
 
 private:
 	BtButton *play_button;

@@ -5,44 +5,55 @@
 #include <QHBoxLayout>
 
 
-static inline BtButton *getButton(const QString &icon)
-{
-	BtButton *button = new BtButton;
-	button->setImage(icon);
-
-	return button;
-}
-
 MultimediaPlayerButtons::MultimediaPlayerButtons(Type type)
 {
+	bool is_window = type == IMAGE_WINDOW || type == VIDEO_WINDOW;
+
 	QHBoxLayout *l = new QHBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(type == IN_WINDOW ? 0 : 5);
+	l->setSpacing(is_window ? 0 : 5);
 
 	play_icon = bt_global::skin->getImage("start");
 	pause_icon = bt_global::skin->getImage("pause");
 
-	BtButton *prev = getButton(bt_global::skin->getImage("previous"));
-	BtButton *next = getButton(bt_global::skin->getImage("next"));
-	BtButton *stop = getButton(bt_global::skin->getImage("stop"));
-	BtButton *screen = getButton(bt_global::skin->getImage(type == IN_WINDOW ? "nofullscreen" : "fullscreen"));
+	BtButton *prev = getButton("previous", SIGNAL(previous()));
+	BtButton *next = getButton("next", SIGNAL(next()));
+	BtButton *stop = getButton("stop", SIGNAL(stop()));
+	BtButton *screen = getButton(is_window ? "nofullscreen" : "fullscreen",
+				     is_window ? SIGNAL(noFullScreen()) : SIGNAL(fullScreen()));
 
-	play_button = getButton(play_icon);
+	BtButton *forward = NULL, *rewind = NULL;
+	if (type == VIDEO_PAGE || type == VIDEO_WINDOW)
+	{
+		forward = getButton("skip_forward", SIGNAL(skipForward()));
+		rewind = getButton("skip_back", SIGNAL(skipBack()));
+	}
+
+	play_button = new BtButton;
+	play_button->setImage(play_icon);
 	play_button->setPressedImage(pause_icon);
 	play_button->setCheckable(true);
 	play_button->setOnOff();
+	connect(play_button, SIGNAL(toggled(bool)), SLOT(playToggled(bool)));
 
 	l->addWidget(prev);
+	if (rewind)
+		l->addWidget(rewind);
 	l->addWidget(play_button);
 	l->addWidget(stop);
+	if (forward)
+		l->addWidget(forward);
 	l->addWidget(next);
 	l->addWidget(screen);
+}
 
-	connect(play_button, SIGNAL(toggled(bool)), SLOT(playToggled(bool)));
-	connect(prev, SIGNAL(clicked()), SIGNAL(previous()));
-	connect(next, SIGNAL(clicked()), SIGNAL(next()));
-	connect(stop, SIGNAL(clicked()), SIGNAL(stop()));
-	connect(screen, SIGNAL(clicked()), type == IN_PAGE ? SIGNAL(fullScreen()) : SIGNAL(noFullScreen()));
+BtButton *MultimediaPlayerButtons::getButton(const QString &icon, const char *destination)
+{
+	BtButton *button = new BtButton;
+	button->setImage(bt_global::skin->getImage(icon));
+	QObject::connect(button, SIGNAL(clicked()), destination);
+
+	return button;
 }
 
 void MultimediaPlayerButtons::playToggled(bool playing)
