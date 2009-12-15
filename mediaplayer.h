@@ -74,7 +74,8 @@ private:
 	/// Read output from mplayer process.
 	QString readOutput();
 
-	bool runMPlayer(const char *mplayer_args[], bool write_output);
+	bool runMPlayer(const char * const mplayer_args[], bool write_output);
+	bool runMPlayer(const QList<QString> &args, bool write_output);
 
 	QMap<QString, QString> getMediaInfo(const QMap<QString, QString> &data_search);
 

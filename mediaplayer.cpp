@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QRect>
 #include <QFile>
+#include <QVector>
+#include <QList>
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -62,33 +64,17 @@ bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool 
 	sk.write(QString("seek %1 2\n").arg(start_time).toAscii());
 	sk.close();
 
-	const char *mplayer_args[19];
+	QList<QString> mplayer_args;
 
-	QByteArray t = track.toLocal8Bit();
-	QByteArray pos = QString("%1:%2").arg(geometry.left()).arg(geometry.top()).toAscii();
-	QByteArray size = QString("scale=%1:%2").arg(geometry.width()).arg(geometry.height()).toAscii();
-	QByteArray width = QString::number(maxWidth()).toAscii();
-	QByteArray height = QString::number(maxHeight()).toAscii();
-
-	mplayer_args[0] = MPLAYER_FILENAME;
-	mplayer_args[1] = "-vf";
-	mplayer_args[2] = size.constData();
-	mplayer_args[3] = "-geometry";
-	mplayer_args[4] = pos.constData();
-	mplayer_args[5] = "-screenw";
-	mplayer_args[6] = width.constData();
-	mplayer_args[7] = "-screenh";
-	mplayer_args[8] = height.constData();
-	mplayer_args[9] = "-ac";
-	mplayer_args[10] = "mad,";
-	mplayer_args[11] = "-af";
-	mplayer_args[12] = "channels=2,resample=48000";
-	mplayer_args[13] = "-ao";
-	mplayer_args[14] = "oss:/dev/dsp1";
-	mplayer_args[15] = "-input";
-	mplayer_args[16] = "file=/tmp/start_seek";
-	mplayer_args[17] = t.constData();
-	mplayer_args[18] = NULL;
+	mplayer_args << MPLAYER_FILENAME
+		     << "-vf" << QString("scale=%1:%2").arg(geometry.width()).arg(geometry.height())
+		     <<	"-geometry" << QString("%1:%2").arg(geometry.left()).arg(geometry.top())
+		     << "-screenw" << QString::number(maxWidth())
+		     << "-screenh" << QString::number(maxHeight())
+		     << "-ac" << "mad," << "-af" << "channels=2,resample=48000"
+		     << "-ao" << "oss:/dev/dsp1"
+		     << "-input" << "file=/tmp/start_seek"
+		     << track;
 
 	return runMPlayer(mplayer_args, write_output);
 }
@@ -101,29 +87,16 @@ bool MediaPlayer::playVideoFullScreen(QString track, int start_time, bool write_
 	sk.write(QString("seek %1 2\n").arg(start_time).toAscii());
 	sk.close();
 
-	const char *mplayer_args[20];
+	QList<QString> mplayer_args;
 
-	QByteArray t = track.toLocal8Bit();
-	// QByteArray size = QString("scale=%1:%2").arg(geometry.width()).arg(geometry.height()).toAscii();
-	QByteArray width = QString::number(maxWidth()).toAscii();
-	QByteArray height = QString::number(maxHeight()).toAscii();
-
-	mplayer_args[0] = MPLAYER_FILENAME;
-	mplayer_args[1] = "-screenw";
-	mplayer_args[2] = width.constData();
-	mplayer_args[3] = "-screenh";
-	mplayer_args[4] = height.constData();
-	mplayer_args[5] = "-ac";
-	mplayer_args[6] = "mad,";
-	mplayer_args[7] = "-af";
-	mplayer_args[8] = "channels=2,resample=48000";
-	mplayer_args[9] = "-ao";
-	mplayer_args[10] = "oss:/dev/dsp1";
-	mplayer_args[11] = "-input";
-	mplayer_args[12] = "file=/tmp/start_seek";
-	mplayer_args[13] = "-fs";
-	mplayer_args[14] = t.constData();
-	mplayer_args[15] = NULL;
+	mplayer_args << MPLAYER_FILENAME
+		     << "-screenw" << QString::number(maxWidth())
+		     << "-screenh" << QString::number(maxHeight())
+		     << "-ac" << "mad," << "-af" << "channels=2,resample=48000"
+		     << "-ao" << "oss:/dev/dsp1"
+		     << "-input" << "file=/tmp/start_seek"
+		     << "-fs"
+		     << track;
 
 	return runMPlayer(mplayer_args, write_output);
 }
@@ -144,7 +117,22 @@ bool MediaPlayer::play(QString track, bool write_output)
 	return runMPlayer(mplayer_args, write_output);
 }
 
-bool MediaPlayer::runMPlayer(const char *mplayer_args[], bool write_output)
+bool MediaPlayer::runMPlayer(const QList<QString> &args, bool write_output)
+{
+	QList<QByteArray> byte_args;
+	QVector<const char *> mplayer_args;
+
+	for (int i = 0; i < args.size(); ++i)
+	{
+		byte_args.append(args[i].toLocal8Bit());
+		mplayer_args.append(byte_args[i].constData());
+	}
+	mplayer_args.append(NULL);
+
+	return runMPlayer(mplayer_args.constData(), write_output);
+}
+
+bool MediaPlayer::runMPlayer(const char * const mplayer_args[], bool write_output)
 {
 	int control_pipe[2];
 	int output_pipe[2];
