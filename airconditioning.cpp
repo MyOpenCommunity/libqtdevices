@@ -52,7 +52,8 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	{
 		QString where = getTextChild(item_node, "where");
 		QString off_cmd = getElement(item_node, "off/command").text();
-		AirConditioningDevice *dev = bt_global::add_device_to_cache(new AirConditioningDevice(where, off_cmd));
+		AirConditioningDevice *dev = bt_global::add_device_to_cache(new AirConditioningDevice(where));
+		dev->setOffCommand(off_cmd);
 		SingleSplit *bann = new SingleSplit(descr, dev);
 		b = bann;
 		bann->connectRightButton(new SplitPage(item_node, dev));
@@ -63,6 +64,7 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	{
 		GeneralSplit *bann = new GeneralSplit(descr);
 		QObject::connect(bann, SIGNAL(sendGeneralOff()), &device_container, SLOT(sendGeneralOff()));
+		bann->connectRightButton(new GeneralSplitPage(item_node));
 		b = bann;
 		break;
 	}
@@ -165,10 +167,9 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	nav_bar->displayScrollButtons(false);
 	buildPage(new BannerContent, nav_bar);
 
-	page_content->appendBanner(new SplitTemperature(0));
 
 	QDomNode mode_node = getChildWithName(config_node, "mode");
-	if (getTextChild(mode_node, "val1").toInt() != -1)
+	if (getTextChild(mode_node, "val1").toInt() != -1) // TODO: verificare se puo' essere disabilitato o no!
 	{
 		QList <int> modes;
 		foreach (const QDomNode &val, getChildren(mode_node, "val"))
@@ -178,7 +179,9 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 		page_content->appendBanner(new SplitMode(modes, current_mode));
 	}
 
-	QDomNode speed_node = getChildWithName(config_node, "_speed");
+	page_content->appendBanner(new SplitTemperature(0));
+
+	QDomNode speed_node = getChildWithName(config_node, "speed");
 	if (getTextChild(speed_node, "val1").toInt() != -1)
 	{
 		QList <int> speeds;
@@ -189,5 +192,30 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 		page_content->appendBanner(new SplitSpeed(speeds, current_speed));
 	}
 
+	QDomNode swing = getChildWithName(config_node, "fan_swing");
+	if (getTextChild(swing, "val1").toInt() != -1)
+		page_content->appendBanner(new SplitSwing(tr("SWING")));
+}
+
+
+GeneralSplitPage::GeneralSplitPage(const QDomNode &config_node)
+{
+	buildPage();
+	loadScenarios(config_node);
+}
+
+void GeneralSplitPage::loadScenarios(const QDomNode &config_node)
+{
+	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
+	{
+		GeneralSplitScenario *b = new GeneralSplitScenario(getTextChild(scenario, "descr"));
+		foreach (const QDomNode &split, getChildren(scenario, "split"))
+		{
+			AirConditioningDevice *dev = new AirConditioningDevice(getTextChild(split, "where"));
+			b->appendDevice(getTextChild(split, "command"), bt_global::add_device_to_cache(dev));
+		}
+
+		page_content->appendBanner(b);
+	}
 }
 

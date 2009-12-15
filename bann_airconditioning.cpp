@@ -89,6 +89,25 @@ SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 }
 
 
+SplitSwing::SplitSwing(QString descr) : BannLeft(0)
+{
+	left_button->setOnOff();
+	left_button->setImage(bt_global::skin->getImage("off"));
+	left_button->setPressedImage(bt_global::skin->getImage("on"));
+	text->setText(descr);
+
+	status = false;
+	connect(left_button, SIGNAL(clicked()), SLOT(toggleSwing()));
+}
+
+
+void SplitSwing::toggleSwing()
+{
+	status = !status;
+	left_button->setStatus(status);
+}
+
+
 SplitScenario::SplitScenario(QString descr, QString cmd, AirConditioningDevice *d) : BannLeft(0)
 {
 	initBanner(bt_global::skin->getImage("split_cmd"), descr);
@@ -100,5 +119,23 @@ SplitScenario::SplitScenario(QString descr, QString cmd, AirConditioningDevice *
 void SplitScenario::sendScenarioCommand()
 {
 	dev->sendCommand(command);
+}
+
+
+GeneralSplitScenario::GeneralSplitScenario(QString descr) : BannLeft(0)
+{
+	initBanner(bt_global::skin->getImage("split_cmd"), descr);
+	connect(left_button, SIGNAL(clicked()), SLOT(sendScenarioCommand()));
+}
+
+void GeneralSplitScenario::appendDevice(QString cmd, AirConditioningDevice *d)
+{
+	devices_list.append(qMakePair(cmd, d));
+}
+
+void GeneralSplitScenario::sendScenarioCommand()
+{
+	for (int i = 0; i < devices_list.size(); ++i)
+		devices_list[i].second->sendCommand(devices_list[i].first);
 }
 

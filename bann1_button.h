@@ -82,10 +82,9 @@ Q_OBJECT
 public:
 	BannLeft(QWidget *parent);
 	void initBanner(const QString &left, const QString &center);
+
 protected:
 	BtButton *left_button;
-
-private:
 	QLabel *text;
 };
 

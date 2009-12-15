@@ -8,8 +8,10 @@ class AirConditioningDevice : public device
 {
 Q_OBJECT
 public:
-	AirConditioningDevice(QString where, QString off_cmd);
+	AirConditioningDevice(QString where);
 	void sendCommand(QString cmd) const;
+
+	void setOffCommand(QString off_cmd);
 
 public slots:
 	void sendOff() const;
