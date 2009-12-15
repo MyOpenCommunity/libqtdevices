@@ -162,6 +162,18 @@ void MediaPlayer::resume()
 	}
 }
 
+void MediaPlayer::seek(int seconds)
+{
+	// at some point we should probably switch to slave MPlayer
+	Q_ASSERT_X(seconds == 10 || seconds == -10, "MediaPlayer::seek", "Can only seek 10 seconds");
+
+	// the keybindings can be remapped in /.mplayer/input.conf
+	if (seconds < 0)
+		execCmd("\x1b[D"); // left arrow
+	else
+		execCmd("\x1b[C"); // right arrow
+}
+
 void MediaPlayer::execCmd(QString command)
 {
 	if (ctrlf)

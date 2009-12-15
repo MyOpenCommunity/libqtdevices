@@ -43,6 +43,9 @@ public:
 	/// Need to be public because called by signal handler
 	void sigChildReceived(int dead_pid, int status);
 
+	/// moves the playback backward/forward by the given offset
+	void seek(int seconds);
+
 private:
 	/// mplayer PID
 	int mplayer_pid;
