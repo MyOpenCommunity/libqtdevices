@@ -220,6 +220,10 @@ void VideoPlayerPage::displayFullScreen(bool fs)
 		showPage();
 		player->playVideo(video_list[current_video], playbackGeometry(), current_time);
 	}
+
+	// needed because we stop and restart MPlayer
+	refresh_data->start(500);
+	emit started();
 }
 
 QRect VideoPlayerPage::playbackGeometry()
