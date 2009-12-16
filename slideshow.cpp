@@ -15,10 +15,10 @@
 // SlideshowController implementation
 
 SlideshowController::SlideshowController(QObject *parent)
-	: QObject(parent)
+	: QObject(parent),
+	timer(this)
 {
-	timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), SLOT(nextImageSlideshow()));
+	connect(&timer, SIGNAL(timeout()), SLOT(nextImageSlideshow()));
 }
 
 void SlideshowController::initialize(int total, int current)
@@ -32,7 +32,7 @@ void SlideshowController::prevImageUser()
 	// if the slideshow timer is active, restart it after changing current image
 	bool active = slideshowActive();
 	if (active)
-		timer->stop();
+		timer.stop();
 
 	current_image -= 1;
 	if (current_image < 0)
@@ -40,7 +40,7 @@ void SlideshowController::prevImageUser()
 	emit showImage(current_image);
 
 	if (active)
-		timer->start(SLIDESHOW_TIMEOUT);
+		timer.start(SLIDESHOW_TIMEOUT);
 }
 
 void SlideshowController::nextImageUser()
@@ -48,12 +48,12 @@ void SlideshowController::nextImageUser()
 	// if the slideshow timer is active, restart it after changing current image
 	bool active = slideshowActive();
 	if (active)
-		timer->stop();
+		timer.stop();
 
 	nextImageSlideshow();
 
 	if (active)
-		timer->start(SLIDESHOW_TIMEOUT);
+		timer.start(SLIDESHOW_TIMEOUT);
 }
 
 void SlideshowController::nextImageSlideshow()
@@ -68,7 +68,7 @@ void SlideshowController::startSlideshow()
 {
 	if (slideshowActive())
 		return;
-	timer->start(SLIDESHOW_TIMEOUT);
+	timer.start(SLIDESHOW_TIMEOUT);
 	bt_global::display.forceOperativeMode(true);
 	emit slideshowStarted();
 }
@@ -77,14 +77,14 @@ void SlideshowController::stopSlideshow()
 {
 	if (!slideshowActive())
 		return;
-	timer->stop();
+	timer.stop();
 	bt_global::display.forceOperativeMode(false);
 	emit slideshowStopped();
 }
 
 bool SlideshowController::slideshowActive()
 {
-	return timer->isActive();
+	return timer.isActive();
 }
 
 int SlideshowController::currentImage()
@@ -210,6 +210,7 @@ void SlideshowPage::displayFullScreen()
 // SlideshowWindow implementation
 
 SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
+	: buttons_timer(this)
 {
 	controller = new SlideshowController(this);
 	page = slideshow_page;
@@ -246,9 +247,8 @@ SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
 	connect(controller, SIGNAL(showImage(int)), this, SLOT(showImage(int)));
 
 	// timer to hide the buttons
-	buttons_timer = new QTimer(this);
-	buttons_timer->setSingleShot(true);
-	connect(buttons_timer, SIGNAL(timeout()), buttons, SLOT(hide()));
+	buttons_timer.setSingleShot(true);
+	connect(&buttons_timer, SIGNAL(timeout()), buttons, SLOT(hide()));
 
 	// this shows the buttons when the user clicks the screen
 	connect(image, SIGNAL(clicked()), SLOT(showButtons()));
@@ -275,9 +275,9 @@ void SlideshowWindow::showImage(int index)
 
 void SlideshowWindow::showButtons()
 {
-	buttons_timer->stop();
+	buttons_timer.stop();
 	buttons->show();
-	buttons_timer->start(BUTTONS_TIMEOUT);
+	buttons_timer.start(BUTTONS_TIMEOUT);
 }
 
 void SlideshowWindow::startSlideshow()

@@ -6,9 +6,9 @@
 
 #include <QList>
 #include <QLabel>
+#include <QTimer>
 
 class QLabel;
-class QTimer;
 class SlideshowWindow;
 class MultimediaPlayerButtons;
 
@@ -49,7 +49,7 @@ signals:
 
 private:
 	int total_images, current_image;
-	QTimer *timer;
+	QTimer timer;
 };
 
 
@@ -128,7 +128,7 @@ private slots:
 
 private:
 	// used to automatically hide the buttons
-	QTimer *buttons_timer;
+	QTimer buttons_timer;
 	MultimediaPlayerButtons *buttons;
 	SlideshowImage *image;
 	QList<QString> image_list;

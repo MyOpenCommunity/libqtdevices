@@ -4,11 +4,12 @@
 #include "page.h"
 #include "window.h"
 
+#include <QTimer>
+
 class QLabel;
 class MediaPlayer;
 class VideoPlayerWindow;
 class MultimediaPlayerButtons;
-class QTimer;
 
 
 // page for video playback
@@ -60,7 +61,7 @@ private:
 	QList<QString> video_list;
 	MediaPlayer *player;
 	VideoPlayerWindow *window;
-	QTimer *refresh_data;
+	QTimer refresh_data;
 	int current_time;
 	bool fullscreen;
 };
@@ -84,7 +85,7 @@ private slots:
 
 private:
 	MultimediaPlayerButtons *buttons;
-	QTimer *buttons_timer;
+	QTimer buttons_timer;
 };
 
 #endif // VIDEOPLAYER_H

@@ -21,6 +21,7 @@
 // VideoPlayerPage implementation
 
 VideoPlayerPage::VideoPlayerPage()
+	: refresh_data(this)
 {
 	QWidget *content = new QWidget;
 	QVBoxLayout *l = new QVBoxLayout(content);
@@ -74,8 +75,7 @@ VideoPlayerPage::VideoPlayerPage()
 	connect(this, SIGNAL(started()), SLOT(playbackStarted()));
 	connect(this, SIGNAL(stopped()), SLOT(playbackStopped()));
 
-	refresh_data = new QTimer;
-	connect(refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
+	connect(&refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
 
 	// handle mplayer termination
 	connect(player, SIGNAL(mplayerDone()), SLOT(next()));
@@ -102,7 +102,7 @@ void VideoPlayerPage::displayVideo(int index)
 {
 	title->setText(QFileInfo(video_list[index]).fileName());
 	player->playVideo(video_list[index], playbackGeometry(), 0);
-	refresh_data->start(MPLAYER_POLLING);
+	refresh_data.start(MPLAYER_POLLING);
 	emit started();
 }
 
@@ -119,7 +119,7 @@ void VideoPlayerPage::displayVideos(QList<QString> videos, unsigned element)
 void VideoPlayerPage::playbackTerminated()
 {
 	emit stopped();
-	refresh_data->stop();
+	refresh_data.stop();
 	video->update();
 	bt_global::display.forceOperativeMode(false);
 }
@@ -140,14 +140,14 @@ void VideoPlayerPage::hideEvent(QHideEvent *event)
 		return;
 
 	player->pause();
-	refresh_data->stop();
+	refresh_data.stop();
 	emit stopped();
 }
 
 void VideoPlayerPage::handleClose()
 {
 	player->quit();
-	refresh_data->stop();
+	refresh_data.stop();
 	emit stopped();
 	emit Closed();
 }
@@ -159,14 +159,14 @@ void VideoPlayerPage::resume()
 	else
 		player->playVideo(video_list[current_video], playbackGeometry(), 0);
 
-	refresh_data->start(MPLAYER_POLLING);
+	refresh_data.start(MPLAYER_POLLING);
 	emit started();
 }
 
 void VideoPlayerPage::pause()
 {
 	player->pause();
-	refresh_data->stop();
+	refresh_data.stop();
 	emit stopped();
 }
 
@@ -227,7 +227,7 @@ void VideoPlayerPage::displayFullScreen(bool fs)
 	}
 
 	// needed because we stop and restart MPlayer
-	refresh_data->start(MPLAYER_POLLING);
+	refresh_data.start(MPLAYER_POLLING);
 	emit started();
 }
 
@@ -250,6 +250,7 @@ void VideoPlayerPage::refreshPlayInfo()
 // VideoPlayerWindow implementation
 
 VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
+	: buttons_timer(this)
 {
 	buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::VIDEO_WINDOW);
 	buttons->hide();
@@ -277,9 +278,8 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
 	connect(buttons, SIGNAL(noFullScreen()), page, SLOT(displayNoFullScreen()));
 
 	// timer to hide the buttons
-	buttons_timer = new QTimer(this);
-	buttons_timer->setSingleShot(true);
-	connect(buttons_timer, SIGNAL(timeout()), buttons, SLOT(hide()));
+	buttons_timer.setSingleShot(true);
+	connect(&buttons_timer, SIGNAL(timeout()), buttons, SLOT(hide()));
 
 	// this shows the buttons when the user clicks the screen
 	connect(this, SIGNAL(clicked()), SLOT(showButtons()));
@@ -300,7 +300,7 @@ void VideoPlayerWindow::mouseReleaseEvent(QMouseEvent *e)
 
 void VideoPlayerWindow::showButtons()
 {
-	buttons_timer->stop();
+	buttons_timer.stop();
 	buttons->show();
-	buttons_timer->start(BUTTONS_TIMEOUT);
+	buttons_timer.start(BUTTONS_TIMEOUT);
 }
