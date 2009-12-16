@@ -29,7 +29,7 @@ GeneralSplit::GeneralSplit(QString descr) : BannOnOffNew(0)
 }
 
 
-AdvancedSplit::AdvancedSplit(QWidget *parent, QString descr): bann2But(parent)
+AdvancedSplitScenario::AdvancedSplitScenario(QWidget *parent, QString descr): bann2But(parent)
 {
 	QString icon_cmd = bt_global::skin->getImage("split_cmd");
 	QString icon_settings = bt_global::skin->getImage("split_settings");
@@ -92,8 +92,8 @@ SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 SplitSwing::SplitSwing(QString descr) : BannLeft(0)
 {
 	left_button->setOnOff();
-	left_button->setImage(bt_global::skin->getImage("off"));
-	left_button->setPressedImage(bt_global::skin->getImage("on"));
+	left_button->setImage(bt_global::skin->getImage("swing_off"));
+	left_button->setPressedImage(bt_global::skin->getImage("swing_on"));
 	text->setText(descr);
 
 	status = false;
