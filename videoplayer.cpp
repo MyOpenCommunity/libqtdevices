@@ -2,6 +2,7 @@
 #include "multimedia_buttons.h"
 #include "navigation_bar.h"
 #include "mediaplayer.h"
+#include "displaycontrol.h" // forceOperativeMode
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -65,6 +66,10 @@ VideoPlayerPage::VideoPlayerPage()
 	// full screen playback window
 	connect(window, SIGNAL(Closed()), SLOT(handleClose()));
 
+	// disable/reenable screen saver
+	connect(this, SIGNAL(started()), SLOT(playbackStarted()));
+	connect(this, SIGNAL(stopped()), SLOT(playbackStopped()));
+
 	refresh_data = new QTimer;
 	connect(refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
 }
@@ -97,6 +102,16 @@ void VideoPlayerPage::displayVideos(QList<QString> videos, unsigned element)
 	showPage();
 
 	displayVideo(current_video);
+}
+
+void VideoPlayerPage::playbackStarted()
+{
+	bt_global::display.forceOperativeMode(true);
+}
+
+void VideoPlayerPage::playbackStopped()
+{
+	bt_global::display.forceOperativeMode(false);
 }
 
 void VideoPlayerPage::hideEvent(QHideEvent *event)

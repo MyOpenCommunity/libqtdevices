@@ -1,6 +1,7 @@
 #include "slideshow.h"
 #include "navigation_bar.h"
 #include "multimedia_buttons.h"
+#include "displaycontrol.h" // forceOperativeMode
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -68,6 +69,7 @@ void SlideshowController::startSlideshow()
 	if (slideshowActive())
 		return;
 	timer->start(SLIDESHOW_TIMEOUT);
+	bt_global::display.forceOperativeMode(true);
 	emit slideshowStarted();
 }
 
@@ -76,6 +78,7 @@ void SlideshowController::stopSlideshow()
 	if (!slideshowActive())
 		return;
 	timer->stop();
+	bt_global::display.forceOperativeMode(false);
 	emit slideshowStopped();
 }
 
