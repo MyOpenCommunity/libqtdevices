@@ -16,6 +16,7 @@
 class QWidget;
 class QLabel;
 class BtButton;
+class TextOnImageLabel;
 
 
 /*
@@ -33,12 +34,8 @@ class BtButton;
  * Buttons are created protected so that logic banners can manipulate them directly, thus
  * avoiding BtButton interface duplication. All other elements are created private.
  */
-class BannOnOffState;
 class BannOnOffNew : public BannerNew
 {
-// Avoid duplicating code between nearly identical classes. This class doesn't have states, so it simply
-// displays the center icon provided. BannOnOffState can change states (and thus the center icon).
-friend class BannOnOffState;
 Q_OBJECT
 public:
 	BannOnOffNew(QWidget *parent);
@@ -48,15 +45,18 @@ public:
 
 protected:
 	void setBannerText(const QString &str);
+	void setInternalText(const QString &text);
 	BtButton *left_button, *right_button;
 
-private:
-	void loadIcons(const QString &l, const QString &c, const QString &r);
-	QLabel *center_icon;
+	TextOnImageLabel *center_icon;
 	QLabel *text;
-	QString left, center, right;
+	QString center;
 };
 
+
+/**
+ * A class similar to the BannOnOffNew class that changes the state and thus the center icon.
+ */
 class BannOnOffState : public BannOnOffNew
 {
 Q_OBJECT

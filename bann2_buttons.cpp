@@ -3,6 +3,7 @@
 #include "fontmanager.h" // FontManager
 #include "icondispatcher.h" // icons_cache
 #include "generic_functions.h" // getBostikName
+#include "titlelabel.h"
 
 #include <QWidget>
 #include <QLabel>
@@ -25,7 +26,7 @@ BannOnOffNew::BannOnOffNew(QWidget *parent) :
 {
 	left_button = new BtButton;
 	right_button = new BtButton;
-	center_icon = new QLabel;
+	center_icon = new TextOnImageLabel;
 
 	QHBoxLayout *hbox = new QHBoxLayout;
 	hbox->setContentsMargins(0, 0, 0, 0);
@@ -42,22 +43,15 @@ BannOnOffNew::BannOnOffNew(QWidget *parent) :
 	vbox->addWidget(text);
 }
 
-void BannOnOffNew::initBanner(const QString &left, const QString &center, const QString &right,
+void BannOnOffNew::initBanner(const QString &l, const QString &c, const QString &r,
 	const QString &banner_text)
 {
-	loadIcons(left, center, right);
-	text->setText(banner_text);
-}
-
-void BannOnOffNew::loadIcons(const QString &l, const QString &c, const QString &r)
-{
-	left = l;
 	center = c;
-	right = r;
 
-	left_button->setImage(left);
-	right_button->setImage(right);
-	center_icon->setPixmap(*bt_global::icons_cache.getIcon(c));
+	left_button->setImage(l);
+	right_button->setImage(r);
+	center_icon->setBackgroundImage(c);
+	text->setText(banner_text);
 }
 
 void BannOnOffNew::setBannerText(const QString &str)
@@ -75,6 +69,11 @@ void BannOnOffNew::connectRightButton(Page *p)
 	connectButtonToPage(right_button, p);
 }
 
+void BannOnOffNew::setInternalText(const QString &text)
+{
+	center_icon->setInternalText(text);
+}
+
 
 BannOnOffState::BannOnOffState(QWidget *parent) :
 	BannOnOffNew(parent)
@@ -90,15 +89,7 @@ void BannOnOffState::initBanner(const QString &left, const QString &center, cons
 
 void BannOnOffState::setState(States new_state)
 {
-	switch (new_state)
-	{
-	case ON:
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center, "on")));
-		break;
-	case OFF:
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center, "off")));
-		break;
-	}
+	center_icon->setBackgroundImage(getBostikName(center, new_state == ON ? "on" : "off"));
 }
 
 
