@@ -73,8 +73,18 @@ Q_OBJECT
 public:
 	VideoPlayerWindow(VideoPlayerPage *videoplayer_page, MediaPlayer *mediaplayer);
 
+signals:
+	void clicked();
+
+protected:
+	void mouseReleaseEvent(QMouseEvent *e);
+
+private slots:
+	void showButtons();
+
 private:
 	MultimediaPlayerButtons *buttons;
+	QTimer *buttons_timer;
 };
 
 #endif // VIDEOPLAYER_H

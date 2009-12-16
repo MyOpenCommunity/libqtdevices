@@ -13,6 +13,8 @@
 
 #include <QtDebug>
 
+#define BUTTONS_TIMEOUT 5000
+
 
 // VideoPlayerPage implementation
 
@@ -241,7 +243,7 @@ void VideoPlayerPage::refreshPlayInfo()
 VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
 {
 	buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::VIDEO_WINDOW);
-//	buttons->hide();
+	buttons->hide();
 
 	QGridLayout *button_layout = new QGridLayout(this);
 	button_layout->setContentsMargins(0, 0, 0, 0);
@@ -264,4 +266,32 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
 	connect(page, SIGNAL(stopped()), buttons, SLOT(stopped()));
 
 	connect(buttons, SIGNAL(noFullScreen()), page, SLOT(displayNoFullScreen()));
+
+	// timer to hide the buttons
+	buttons_timer = new QTimer(this);
+	buttons_timer->setSingleShot(true);
+	connect(buttons_timer, SIGNAL(timeout()), buttons, SLOT(hide()));
+
+	// this shows the buttons when the user clicks the screen
+	connect(this, SIGNAL(clicked()), SLOT(showButtons()));
+
+	// these reset the buttons timer on each click
+	connect(buttons, SIGNAL(previous()), SLOT(showButtons()));
+	connect(buttons, SIGNAL(next()), SLOT(showButtons()));
+	connect(buttons, SIGNAL(play()), SLOT(showButtons()));
+	connect(buttons, SIGNAL(pause()), SLOT(showButtons()));
+}
+
+void VideoPlayerWindow::mouseReleaseEvent(QMouseEvent *e)
+{
+	Window::mouseReleaseEvent(e);
+
+	emit clicked();
+}
+
+void VideoPlayerWindow::showButtons()
+{
+	buttons_timer->stop();
+	buttons->show();
+	buttons_timer->start(BUTTONS_TIMEOUT);
 }
