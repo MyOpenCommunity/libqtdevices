@@ -196,6 +196,10 @@ QRect VideoPlayerPage::playbackGeometry()
 void VideoPlayerPage::refreshPlayInfo()
 {
 	QString timeS = player->getVideoInfo()["current_time"];
+	if (timeS.isEmpty())
+		return;
+
+	// remove after recompiling with the correct toolchain
 	current_time = timeS.left(timeS.indexOf(QChar('.'))).toInt();
 }
 
