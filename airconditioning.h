@@ -40,7 +40,7 @@ private:
 	void loadItems(const QDomNode &config_node);
 };
 
-/*
+/**
  * The page for a split (basic) which contains all the scenarios configured for
  * that split.
  */
@@ -57,7 +57,7 @@ private:
 };
 
 
-/*
+/**
  * The page for a split (advanced) which contains all the scenarios configured
  * for that split.
  */
@@ -72,7 +72,7 @@ private:
 };
 
 
-/*
+/**
  * The page of the settings (also known as custom page) for an advanced scenario.
  */
 class SplitSettings : public BannerPage
@@ -83,9 +83,9 @@ public:
 };
 
 
-/*
-* The page for a general split which contains all the scenarios for that.
-*/
+/**
+ * The page for a general split which contains all the scenarios for that.
+ */
 class GeneralSplitPage : public BannerPage
 {
 Q_OBJECT

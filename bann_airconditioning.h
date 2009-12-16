@@ -13,6 +13,9 @@ class AirConditioningDevice;
 class NonControlledProbeDevice;
 
 
+/**
+ * The banner for a split
+ */
 class SingleSplit : public BannOnOffNew
 {
 Q_OBJECT
@@ -29,6 +32,9 @@ private slots:
 };
 
 
+/**
+ * The banner for managing the whole list of splits.
+ */
 class GeneralSplit : public BannOnOffNew
 {
 Q_OBJECT
@@ -40,14 +46,20 @@ signals:
 };
 
 
-class AdvancedSplit : public bann2But
+/**
+ * The banner for a scenario of a single split (configured as advanced)
+ */
+class AdvancedSplitScenario : public bann2But
 {
 Q_OBJECT
 public:
-	AdvancedSplit(QWidget *parent, QString descr);
+	AdvancedSplitScenario(QWidget *parent, QString descr);
 };
 
 
+/**
+ * The banner that represent the temperature of the split
+ */
 class SplitTemperature : public bann2But
 {
 Q_OBJECT
@@ -56,6 +68,9 @@ public:
 };
 
 
+/**
+ * The banner that represent the mode of the split
+ */
 class SplitMode : public BannStates
 {
 Q_OBJECT
@@ -66,6 +81,9 @@ private:
 };
 
 
+/**
+ * The banner that represent the speed of the split
+ */
 class SplitSpeed : public BannStates
 {
 Q_OBJECT
@@ -76,6 +94,9 @@ private:
 };
 
 
+/**
+ * The banner that represent the swing of the split
+ */
 class SplitSwing : public BannLeft
 {
 Q_OBJECT
@@ -89,6 +110,9 @@ private:
 };
 
 
+/**
+ * The banner for a scenario of a single split (configured as basic)
+ */
 class SplitScenario : public BannLeft
 {
 Q_OBJECT
@@ -104,6 +128,9 @@ private slots:
 };
 
 
+/**
+ * The banner for a scenario of a general split
+ */
 class GeneralSplitScenario : public BannLeft
 {
 Q_OBJECT

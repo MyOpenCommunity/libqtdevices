@@ -76,6 +76,7 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	}
 	case AIR_SPLIT_ADV:
 	{
+		// TODO: replace BannOnOffNew with a specialized class
 		BannOnOffNew *bann = new BannOnOffNew(0);
 		bann->initBanner(img_off, img_air_single, img_forward, descr);
 		bann->connectRightButton(new AdvancedSplitPage(item_node));
@@ -84,6 +85,7 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	}
 	case AIR_GENERAL_ADV:
 	{
+		// TODO: replace BannOnOffNew with a specialized class
 		BannOnOffNew *bann = new BannOnOffNew(0);
 		bann->initBanner(img_off, img_air_gen, img_forward, descr);
 		b = bann;
@@ -159,7 +161,7 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node)
 {
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 	{
-		AdvancedSplit *b = new AdvancedSplit(0, getTextChild(scenario, "descr"));
+		AdvancedSplitScenario *b = new AdvancedSplitScenario(0, getTextChild(scenario, "descr"));
 		b->connectSxButton(new SplitSettings(scenario, getChildWithName(config_node, "par")));
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		page_content->appendBanner(b);
