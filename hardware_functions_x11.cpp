@@ -159,3 +159,7 @@ void setVctVideoValue(const QString &command, const QString &value)
 void initMultimedia()
 {
 }
+
+void setVolume(VolumeType type, int value)
+{
+}

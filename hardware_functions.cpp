@@ -367,3 +367,10 @@ void initMultimedia()
 	QProcess::execute("/bin/init_video_system");
 	QProcess::execute("/bin/rca2_on");
 }
+
+void setVolume(VolumeType type, int value)
+{
+	QProcess::startDetached("/home/bticino/bin/set_volume",
+				QStringList() << QString::number(type) << QString::number(value));
+}
+
