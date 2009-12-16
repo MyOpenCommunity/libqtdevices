@@ -15,6 +15,7 @@
 #include <QtDebug>
 
 #define BUTTONS_TIMEOUT 5000
+#define MPLAYER_POLLING 500
 
 
 // VideoPlayerPage implementation
@@ -101,7 +102,7 @@ void VideoPlayerPage::displayVideo(int index)
 {
 	title->setText(QFileInfo(video_list[index]).fileName());
 	player->playVideo(video_list[index], playbackGeometry(), 0);
-	refresh_data->start(500);
+	refresh_data->start(MPLAYER_POLLING);
 	emit started();
 }
 
@@ -158,7 +159,7 @@ void VideoPlayerPage::resume()
 	else
 		player->playVideo(video_list[current_video], playbackGeometry(), 0);
 
-	refresh_data->start(500);
+	refresh_data->start(MPLAYER_POLLING);
 	emit started();
 }
 
@@ -226,7 +227,7 @@ void VideoPlayerPage::displayFullScreen(bool fs)
 	}
 
 	// needed because we stop and restart MPlayer
-	refresh_data->start(500);
+	refresh_data->start(MPLAYER_POLLING);
 	emit started();
 }
 
