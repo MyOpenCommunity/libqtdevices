@@ -79,7 +79,7 @@ Q_OBJECT
 Q_PROPERTY(QString text_color READ textColor WRITE setTextColor)
 
 public:
-	TextOnImageLabel(QWidget *parent, const QString &text = QString());
+	TextOnImageLabel(QWidget *parent=0, const QString &text = QString());
 	void setBackgroundImage(const QString &path);
 	void setInternalText(const QString &text);
 
