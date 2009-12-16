@@ -72,6 +72,11 @@ VideoPlayerPage::VideoPlayerPage()
 
 	refresh_data = new QTimer;
 	connect(refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
+
+	// handle mplayer termination
+	connect(player, SIGNAL(mplayerDone()), SLOT(next()));
+	connect(player, SIGNAL(mplayerAborted()), SLOT(playbackTerminated()));
+	connect(player, SIGNAL(mplayerKilled()), SLOT(playbackTerminated()));
 }
 
 VideoPlayerPage::~VideoPlayerPage()
@@ -104,6 +109,14 @@ void VideoPlayerPage::displayVideos(QList<QString> videos, unsigned element)
 	displayVideo(current_video);
 }
 
+void VideoPlayerPage::playbackTerminated()
+{
+	emit stopped();
+	refresh_data->stop();
+	video->update();
+	bt_global::display.forceOperativeMode(false);
+}
+
 void VideoPlayerPage::playbackStarted()
 {
 	bt_global::display.forceOperativeMode(true);
@@ -134,7 +147,11 @@ void VideoPlayerPage::handleClose()
 
 void VideoPlayerPage::resume()
 {
-	player->resume();\
+	if (player->isInstanceRunning())
+		player->resume();
+	else
+		player->playVideo(video_list[current_video], playbackGeometry(), 0);
+
 	refresh_data->start(500);
 	emit started();
 }

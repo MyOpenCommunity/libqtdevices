@@ -52,6 +52,7 @@ private slots:
 	void displayNoFullScreen();
 	void playbackStarted();
 	void playbackStopped();
+	void playbackTerminated();
 
 private:
 	QLabel *title, *video;
