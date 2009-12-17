@@ -4,54 +4,40 @@
 #include "hardware_functions.h"
 
 #include <QFileInfo>
-#include <QGridLayout>
-#include <QVBoxLayout>
 
 static const int buttons_dim = 60;
 
 
+#ifdef LAYOUT_BTOUCH
+
 NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up_icon, QString back_icon, QWidget *parent)
 {
-	if (hardwareType() == TOUCH_X)
-	{
-		QVBoxLayout *l = new QVBoxLayout(this);
-		l->addStretch(1);
-		// TODO: Btouch code expects the forward button to be in the navigation
-		// bar; in TouchX the button is mostly in the page (except for a delete
-		// button in a couple of pages)
-		if ((forward_button = createButton(forward_icon, SIGNAL(forwardClick()))))
-			l->addWidget(forward_button);
-		if ((up_button = createButton(up_icon, SIGNAL(upClick()))))
-			l->addWidget(up_button);
-		if ((down_button = createButton(down_icon, SIGNAL(downClick()))))
-			l->addWidget(down_button);
-		if ((back_button = createButton(back_icon, SIGNAL(backClick()))))
-			l->addWidget(back_button);
-		l->setContentsMargins(13, 0, 12, 50);
-		l->setSpacing(10);
-		main_layout = l;
-	}
-	else
-	{
-		QGridLayout *l = new QGridLayout(this);
-		if ((back_button = createButton(back_icon, SIGNAL(backClick()))))
-			l->addWidget(back_button, 0, 0);
-		if ((down_button = createButton(down_icon, SIGNAL(downClick()))))
-			l->addWidget(down_button, 0, 1);
-		if ((up_button = createButton(up_icon, SIGNAL(upClick()))))
-			l->addWidget(up_button, 0, 2);
-		if ((forward_button = createButton(forward_icon, SIGNAL(forwardClick()))))
-			l->addWidget(forward_button, 0, 3);
-		l->setColumnStretch(1, 1);
-		l->setColumnStretch(2, 1);
-		l->setColumnStretch(3, 1);
-		l->setContentsMargins(0, 0, 0, 0);
-		l->setSpacing(0);
-		main_layout = l;
-	}
+	back_button = createButton(back_icon, SIGNAL(backClick()), 0);
+	down_button = createButton(down_icon, SIGNAL(downClick()), 1);
+	up_button = createButton(up_icon, SIGNAL(upClick()), 2);
+	forward_button = createButton(forward_icon, SIGNAL(forwardClick()), 3);
+
+	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 }
 
-BtButton *NavigationBar::createButton(QString icon, const char *signal)
+#else
+
+NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up_icon, QString back_icon, QWidget *parent)
+{
+	// TODO: Btouch code expects the forward button to be in the navigation
+	// bar; in TouchX the button is mostly in the page (except for a delete
+	// button in a couple of pages)
+	forward_button = createButton(forward_icon, SIGNAL(forwardClick()), 0);
+	up_button = createButton(up_icon, SIGNAL(upClick()), 1);
+	down_button = createButton(down_icon, SIGNAL(downClick()), 2);
+	back_button = createButton(back_icon, SIGNAL(backClick()), 3);
+
+	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+}
+
+#endif
+
+BtButton *NavigationBar::createButton(QString icon, const char *signal, int pos)
 {
 	if (!icon.isNull())
 	{
@@ -61,6 +47,11 @@ BtButton *NavigationBar::createButton(QString icon, const char *signal)
 			b->setImage(icon); // for retrocompatibility
 		else
 			b->setImage(bt_global::skin->getImage(icon));
+#ifdef LAYOUT_BTOUCH
+		b->setGeometry(buttons_dim * pos, 0, buttons_dim, buttons_dim);
+#else
+		b->setGeometry(13, 60 + buttons_dim * pos, buttons_dim, buttons_dim);
+#endif
 		return b;
 	}
 	return 0;

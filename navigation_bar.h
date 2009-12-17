@@ -32,8 +32,7 @@ protected:
 
 private:
 	BtButton *back_button, *up_button, *down_button;
-	QLayout *main_layout;
-	BtButton *createButton(QString icon, const char *signal);
+	BtButton *createButton(QString icon, const char *signal, int pos);
 };
 
 
