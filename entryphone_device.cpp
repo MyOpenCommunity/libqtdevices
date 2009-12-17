@@ -15,6 +15,7 @@ EntryphoneDevice::EntryphoneDevice(const QString &where) :
 {
 	// invalid values
 	kind = mmtype = -1;
+	initVctProcess();
 }
 
 void EntryphoneDevice::answerCall() const
@@ -54,6 +55,7 @@ void EntryphoneDevice::cycleCamera() const
 
 void EntryphoneDevice::manageFrame(OpenMsg &msg)
 {
+	// TODO: this is not true...this check must be done just once, when communication starts
 	if (QString::fromStdString(msg.whereFull()) != where)
 		return;
 
