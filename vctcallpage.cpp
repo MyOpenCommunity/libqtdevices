@@ -100,6 +100,49 @@ void CameraMove::setMoveEnabled(bool move)
 
 
 
+
+CameraImageControl::CameraImageControl(QWidget *parent) :
+	QWidget(parent)
+{
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	brightness = new BannTuning(tr("Brightness"), bt_global::skin->getImage("brightness"));
+	connect(brightness, SIGNAL(valueChanged(int)), SLOT(setBrightness(int)));
+	l->addWidget(brightness);
+
+	contrast = new BannTuning(tr("Contrast"), bt_global::skin->getImage("contrast"));
+	connect(contrast, SIGNAL(valueChanged(int)), SLOT(setContrast(int)));
+	l->addWidget(contrast);
+
+	color = new BannTuning(tr("Color"), bt_global::skin->getImage("color"));
+	connect(color, SIGNAL(valueChanged(int)), SLOT(setColor(int)));
+	l->addWidget(color);
+}
+
+void CameraImageControl::setContrast(int value)
+{
+	// TODO: original code set this value into a global struct which at some point is written to
+	// /dev/nvram...what should we do?
+	static const QString contrast_command("1");
+	setVctVideoValue(contrast_command, QString::number(value));
+}
+
+void CameraImageControl::setColor(int value)
+{
+	static const QString color_command("2");
+	setVctVideoValue(color_command, QString::number(value));
+}
+
+void CameraImageControl::setBrightness(int value)
+{
+	static const QString brightness_command("3");
+	setVctVideoValue(brightness_command, QString::number(value));
+}
+
+
+
+
 CallControl::CallControl(EntryphoneDevice *d)
 {
 	dev = d;
@@ -163,21 +206,12 @@ VCTCallPage::VCTCallPage(const QDomNode &config_node)
 	sidebar->setContentsMargins(0, 0, 0, 15);
 	sidebar->setSpacing(0);
 
-	brightness = new BannTuning(tr("Brightness"), bt_global::skin->getImage("brightness"));
-	connect(brightness, SIGNAL(valueChanged(int)), SLOT(setBrightness(int)));
-	sidebar->addWidget(brightness);
-
-	contrast = new BannTuning(tr("Contrast"), bt_global::skin->getImage("contrast"));
-	connect(contrast, SIGNAL(valueChanged(int)), SLOT(setContrast(int)));
-	sidebar->addWidget(contrast);
-
-	color = new BannTuning(tr("Color"), bt_global::skin->getImage("color"));
-	connect(color, SIGNAL(valueChanged(int)), SLOT(setColor(int)));
-	sidebar->addWidget(color);
+	image_control = new CameraImageControl;
 
 	camera = new CameraMove(dev);
 	camera->setMoveEnabled(false);
 	sidebar->addWidget(camera);
+	sidebar->addWidget(image_control);
 
 	setup_vct = new BtButton;
 	setup_vct_icon = bt_global::skin->getImage("setup_vct");
@@ -238,17 +272,13 @@ void VCTCallPage::toggleCameraSettings()
 	camera_settings_shown = !camera_settings_shown;
 	if (camera_settings_shown)
 	{
-		brightness->hide();
-		color->hide();
-		contrast->hide();
+		image_control->hide();
 		camera->show();
 		setup_vct->setImage(getBostikName(setup_vct_icon, "off"));
 	}
 	else
 	{
-		brightness->show();
-		color->show();
-		contrast->show();
+		image_control->show();
 		camera->hide();
 		setup_vct->setImage(getBostikName(setup_vct_icon, "on"));
 	}
@@ -279,26 +309,6 @@ void VCTCallPage::closePage()
 	video_grabber.terminate();
 	emit Closed();
 	bt_global::display.forceOperativeMode(false);
-}
-
-void VCTCallPage::setContrast(int value)
-{
-	// TODO: original code set this value into a global struct which at some point is written to
-	// /dev/nvram...what should we do?
-	static const QString contrast_command("1");
-	setVctVideoValue(contrast_command, QString::number(value));
-}
-
-void VCTCallPage::setColor(int value)
-{
-	static const QString color_command("2");
-	setVctVideoValue(color_command, QString::number(value));
-}
-
-void VCTCallPage::setBrightness(int value)
-{
-	static const QString brightness_command("3");
-	setVctVideoValue(brightness_command, QString::number(value));
 }
 
 void VCTCallPage::addExternalPlace(const QString &where)

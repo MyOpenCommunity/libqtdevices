@@ -42,6 +42,21 @@ private:
 	EnablingButton *up, *left, *fullscreen, *right, *down;
 };
 
+class CameraImageControl : public QWidget
+{
+Q_OBJECT
+public:
+	CameraImageControl(QWidget *parent = 0);
+
+private slots:
+	void setBrightness(int value);
+	void setColor(int value);
+	void setContrast(int value);
+
+private:
+	BannTuning *contrast, *brightness, *color;
+};
+
 
 class CallControl : public QWidget
 {
@@ -68,9 +83,7 @@ public:
 private slots:
 	virtual void showPage();
 	void toggleCameraSettings();
-	void setBrightness(int value);
-	void setColor(int value);
-	void setContrast(int value);
+
 	void closeCall();
 	void status_changed(const StatusList &sl);
 
@@ -79,8 +92,8 @@ private:
 	void closePage();
 
 	BtButton *setup_vct;
-	BannTuning *contrast, *brightness, *color;
 	CameraMove *camera;
+	CameraImageControl *image_control;
 	QLabel *video_box;
 	CallControl *call_control;
 	QString setup_vct_icon;
