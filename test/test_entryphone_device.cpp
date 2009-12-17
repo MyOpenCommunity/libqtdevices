@@ -11,6 +11,9 @@
 void TestEntryphoneDevice::initTestCase()
 {
 	dev = new EntryphoneDevice("11");
+
+	// test if ctor really sends vct init frame
+	testVctInitialization();
 }
 
 void TestEntryphoneDevice::cleanupTestCase()
@@ -55,9 +58,27 @@ void TestEntryphoneDevice::sendEndCall()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
+void TestEntryphoneDevice::sendInitVctProcess()
+{
+	// call type accepted, 1 = scs bus only
+	int type = 1;
+	dev->initVctProcess();
+	client_command->flush();
+	QString frame = QString("*8*37#%1*%2##").arg(type).arg(dev->where);
+	QCOMPARE(server->frameCommand(), frame);
+}
+
 void TestEntryphoneDevice::receiveIncomingCall()
 {
 	DeviceTester t(dev, EntryphoneDevice::INCOMING_CALL);
 	QString frame = QString("*8*1#%1#%2#21*%3##").arg(1).arg(4).arg(dev->where);
 	t.check(frame, true);
+}
+
+void TestEntryphoneDevice::testVctInitialization()
+{
+	int type = 1;
+	client_command->flush();
+	QString frame = QString("*8*37#%1*%2##").arg(type).arg(dev->where);
+	QCOMPARE(server->frameCommand(), frame);
 }

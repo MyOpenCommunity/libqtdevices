@@ -14,10 +14,13 @@ private slots:
 
 	void sendAnswerCall();
 	void sendEndCall();
+	void sendInitVctProcess();
 
 	void receiveIncomingCall();
 
 private:
+	// init frame must be sent at constuction time
+	void testVctInitialization();
 	void simulateIncomingCall(int kind, int mmtype);
 	EntryphoneDevice *dev;
 };
