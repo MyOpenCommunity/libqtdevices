@@ -4,6 +4,8 @@
 #include "test_checkaddress.h"
 
 class AutomationDevice;
+class PPTStatDevice;
+class QString;
 
 class TestAutomationDevice : public TestCheckAddress
 {
@@ -24,5 +26,22 @@ private slots:
 private:
 	AutomationDevice *dev;
 };
+
+
+class TestPPTStatDevice : public TestDevice
+{
+Q_OBJECT
+private slots:
+	void initTestCase();
+	void cleanupTestCase();
+
+	void sendRequestStatus();
+	void receiveStatus();
+
+private:
+	PPTStatDevice *dev;
+	QString where;
+};
+
 
 #endif // TEST_AUTOMATION_DEVICE_H

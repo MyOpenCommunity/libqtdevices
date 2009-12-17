@@ -24,7 +24,6 @@ HEADERS += device_tester.h \
            test_alarmsounddiff_device.h \
            test_automation_device.h \
            test_checkaddress.h \
-           test_dev_automation.h \
            test_scenario_device.h \
            test_device.h \
            test_energy_device.h \
@@ -60,7 +59,6 @@ SOURCES += test_main.cpp \
            test_alarmsounddiff_device.cpp \
            test_automation_device.cpp \
            test_checkaddress.cpp \
-           test_dev_automation.cpp \
            test_scenario_device.cpp \
            test_device.cpp \
            test_energy_device.cpp \

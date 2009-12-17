@@ -4,7 +4,6 @@
 #include "test_platform_device.h"
 #include "test_energy_device.h"
 #include "test_poweramplifier_device.h"
-#include "test_dev_automation.h"
 #include "test_lighting_device.h"
 #include "test_automation_device.h"
 #include "test_checkaddress.h"
