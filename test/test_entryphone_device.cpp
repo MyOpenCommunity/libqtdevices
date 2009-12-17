@@ -22,6 +22,11 @@ void TestEntryphoneDevice::cleanupTestCase()
 	delete dev;
 }
 
+void TestEntryphoneDevice::init()
+{
+	dev->resetCallState();
+}
+
 void TestEntryphoneDevice::simulateIncomingCall(int kind, int mmtype)
 {
 	QString incoming_call = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
@@ -77,9 +82,24 @@ void TestEntryphoneDevice::receiveIncomingCall()
 	t.check(frame, true);
 }
 
+void TestEntryphoneDevice::receiveCallerAddress()
+{
+	int kind = 1;
+	int mmtype = 4;
+	simulateIncomingCall(kind, mmtype);
+
+	QString caller_addr = "20";
+	QString frame = QString("*8*9#%1#%2*%3##").arg(kind).arg(mmtype).arg(caller_addr);
+
+	OpenMsg msg(frame.toStdString());
+	dev->manageFrame(msg);
+	QCOMPARE(dev->caller_address, caller_addr);
+}
+
 void TestEntryphoneDevice::testVctInitialization()
 {
 	// reset client_command internal state...I HATE YOU!
+	// send a dummy command to avoid that client_command swallows the last frame if it's same as the previous
 	dev->endCall();
 	client_command->flush();
 	server->frameCommand();

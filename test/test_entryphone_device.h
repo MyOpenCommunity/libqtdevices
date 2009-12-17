@@ -11,12 +11,14 @@ Q_OBJECT
 private slots:
 	void initTestCase();
 	void cleanupTestCase();
+	void init();
 
 	void sendAnswerCall();
 	void sendEndCall();
 	void sendInitVctProcess();
 
 	void receiveIncomingCall();
+	void receiveCallerAddress();
 
 	void testVctInitialization();
 private:
