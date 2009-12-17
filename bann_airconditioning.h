@@ -19,10 +19,11 @@ class SingleSplit : public BannOnOffNew
 {
 Q_OBJECT
 public:
-	SingleSplit(QString descr, AirConditioningDevice *d);
+	SingleSplit(QString descr, AirConditioningDevice *d, device *d_probe=0);
 
 private:
 	AirConditioningDevice *dev;
+	device *dev_probe; // TODO: replace this placeholder with the proper device of thermal regulation.
 };
 
 

@@ -8,14 +8,23 @@
 #include <QDebug>
 
 
-SingleSplit::SingleSplit(QString descr, AirConditioningDevice *d) : BannOnOffNew(0)
+SingleSplit::SingleSplit(QString descr, AirConditioningDevice *d, device *d_probe) : BannOnOffNew(0)
 {
 	QString img_off = bt_global::skin->getImage("off");
-	QString img_air_single = bt_global::skin->getImage("air_single");
 	QString img_forward = bt_global::skin->getImage("forward");
-	initBanner(img_off, img_air_single, img_forward, descr);
+
+	dev_probe = d_probe;
 	dev = d;
-	QObject::connect(left_button, SIGNAL(clicked()), dev, SLOT(sendOff()));
+
+	QString air_single = "air_single";
+	if (dev_probe)
+	{
+		setInternalText("");
+		air_single = "air_single_temp";
+	}
+
+	initBanner(img_off, bt_global::skin->getImage(air_single), img_forward, descr);
+	connect(left_button, SIGNAL(clicked()), dev, SLOT(sendOff()));
 }
 
 
