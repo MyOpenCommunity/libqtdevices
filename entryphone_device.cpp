@@ -1,7 +1,12 @@
 #include "entryphone_device.h"
+#include "generic_functions.h"
 
 #include <openmsg.h>
 #include <QDebug>
+
+// this value must be sent before the address of the unit that terminates the call
+// otherwise CALL_END frame is not valid.
+static const char *END_ALL_CALLS = "4";
 
 enum
 {
@@ -33,7 +38,7 @@ void EntryphoneDevice::answerCall() const
 void EntryphoneDevice::endCall() const
 {
 	QString what = QString("%1#%2#%3").arg(CALL_END).arg(kind).arg(mmtype);
-	sendCommand(what);
+	sendFrame(createMsgOpen(who, what, QString(END_ALL_CALLS) + where));
 }
 
 void EntryphoneDevice::initVctProcess()
