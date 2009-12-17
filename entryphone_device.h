@@ -20,7 +20,7 @@ public:
 	EntryphoneDevice(const QString &where);
 
 	void answerCall() const;
-	void endCall() const;
+	void endCall();
 	// used to light a video camera in video control
 	void autoSwitching() const;
 	// aka CameraSliding
@@ -30,8 +30,12 @@ public:
 
 private:
 	void initVctProcess();
+	void resetCallState();
+
 	// call parameters
 	int kind, mmtype;
+	QString caller_address;
+	bool is_calling;
 };
 
 #endif //ENTRYPHONE_DEVICE_H

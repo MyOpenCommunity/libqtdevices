@@ -11,7 +11,6 @@ static const char *END_ALL_CALLS = "4";
 enum
 {
 	ANSWER = 2,
-	CALL_END = 3,
 	READY = 37
 };
 
@@ -20,6 +19,7 @@ EntryphoneDevice::EntryphoneDevice(const QString &where) :
 {
 	// invalid values
 	kind = mmtype = -1;
+	is_calling = false;
 	initVctProcess();
 }
 
@@ -35,10 +35,11 @@ void EntryphoneDevice::answerCall() const
 	sendCommand(what);
 }
 
-void EntryphoneDevice::endCall() const
+void EntryphoneDevice::endCall()
 {
-	QString what = QString("%1#%2#%3").arg(CALL_END).arg(kind).arg(mmtype);
+	QString what = QString("%1#%2#%3").arg(END_OF_CALL).arg(kind).arg(mmtype);
 	sendFrame(createMsgOpen(who, what, QString(END_ALL_CALLS) + where));
+	resetCallState();
 }
 
 void EntryphoneDevice::initVctProcess()
@@ -60,8 +61,7 @@ void EntryphoneDevice::cycleCamera() const
 
 void EntryphoneDevice::manageFrame(OpenMsg &msg)
 {
-	// TODO: this is not true...this check must be done just once, when communication starts
-	if (QString::fromStdString(msg.whereFull()) != where)
+	if ((!is_calling) && (QString::fromStdString(msg.whereFull()) != where))
 		return;
 
 	int what = msg.what();
@@ -76,8 +76,23 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 		mmtype = msg.whatArgN(1);
 		// we can safely ignore caller address, we will receive a frame later.
 		v.setValue(true);
+		is_calling = true;
+		break;
+	case END_OF_CALL:
+		resetCallState();
 		break;
 	}
 	sl[what] = v;
+	emit status_changed(sl);
+}
+
+void EntryphoneDevice::resetCallState()
+{
+	is_calling = false;
+	caller_address = "";
+
+	// TODO: this must be factored out to a separate method
+	StatusList sl;
+	sl[END_OF_CALL] = QVariant();
 	emit status_changed(sl);
 }
