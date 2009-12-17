@@ -289,6 +289,10 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
 	connect(page, SIGNAL(started()), buttons, SLOT(started()));
 	connect(page, SIGNAL(stopped()), buttons, SLOT(stopped()));
 
+	// reapint control buttons after MPlayer starts
+	connect(page, SIGNAL(started()), controls, SLOT(update()));
+	connect(page, SIGNAL(stopped()), controls, SLOT(update()));
+
 	connect(buttons, SIGNAL(noFullScreen()), page, SLOT(displayNoFullScreen()));
 
 	// timer to hide the buttons
