@@ -12,8 +12,9 @@ void TestEntryphoneDevice::initTestCase()
 {
 	dev = new EntryphoneDevice("11");
 
-	// test if ctor really sends vct init frame
-	testVctInitialization();
+	// the ctor sends vct init frame, remove it before running other tests
+	client_command->flush();
+	server->frameCommand();
 }
 
 void TestEntryphoneDevice::cleanupTestCase()
@@ -77,6 +78,16 @@ void TestEntryphoneDevice::receiveIncomingCall()
 
 void TestEntryphoneDevice::testVctInitialization()
 {
+	// reset client_command internal state...I HATE YOU!
+	dev->endCall();
+	client_command->flush();
+	server->frameCommand();
+
+	// real test starts here
+	QString where = dev->where;
+	delete dev;
+	dev = new EntryphoneDevice(where);
+
 	int type = 1;
 	client_command->flush();
 	QString frame = QString("*8*37#%1*%2##").arg(type).arg(dev->where);

@@ -18,9 +18,9 @@ private slots:
 
 	void receiveIncomingCall();
 
+	void testVctInitialization();
 private:
 	// init frame must be sent at constuction time
-	void testVctInitialization();
 	void simulateIncomingCall(int kind, int mmtype);
 	EntryphoneDevice *dev;
 };
