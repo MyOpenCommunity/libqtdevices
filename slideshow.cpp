@@ -133,7 +133,7 @@ SlideshowPage::SlideshowPage()
 	QVBoxLayout *l = new QVBoxLayout(content);
 
 	// file name
-	title = new QLabel("File name here");
+	title = new QLabel;
 
 	// pixmap used to display the image
 	image = new SlideshowImage;

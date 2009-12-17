@@ -30,7 +30,7 @@ VideoPlayerPage::VideoPlayerPage()
 	QHBoxLayout *v = new QHBoxLayout;
 
 	// file name
-	title = new QLabel("File name here");
+	title = new QLabel;
 
 	// only used for layout
 	video = new QLabel;
