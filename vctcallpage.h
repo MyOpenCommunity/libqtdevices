@@ -2,7 +2,6 @@
 #define VCTCALLPAGE_H
 
 #include "page.h"
-#include "bann2_buttons.h"
 #include "btbutton.h"
 
 #include <QStringList>
@@ -10,6 +9,7 @@
 class QDomNode;
 class EntryphoneDevice;
 class QHBoxLayout;
+class BannTuning;
 
 
 class EnablingButton : public BtButton
@@ -23,26 +23,6 @@ public:
 
 private:
 	QPixmap disabled_pixmap;
-};
-
-
-class BannTuning : public Bann2CentralButtons
-{
-Q_OBJECT
-public:
-	BannTuning(const QString &banner_text, const QString &icon_name, QWidget *parent = 0);
-
-private slots:
-	void decreaseLevel();
-	void increaseLevel();
-
-private:
-	void changeIcons();
-	int current_level;
-	QString center_icon;
-
-signals:
-	void valueChanged(int);
 };
 
 

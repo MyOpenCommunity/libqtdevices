@@ -7,6 +7,7 @@
 #include "entryphone_device.h"
 #include "xml_functions.h"
 #include "devices_cache.h"
+#include "bann2_buttons.h"
 
 #include <QDomNode>
 #include <QHBoxLayout>
@@ -37,46 +38,6 @@ void EnablingButton::disable()
 }
 
 
-
-BannTuning::BannTuning(const QString &banner_text, const QString &icon_name, QWidget *parent) :
-	Bann2CentralButtons(parent)
-{
-	// levels go from 0 to 8 inclusive
-	current_level = 4;
-	center_icon = icon_name;
-
-	initBanner(getBostikName(center_icon, QString("sxl") + QString::number(current_level)),
-		getBostikName(center_icon, QString("dxl") + QString::number(current_level)),
-		banner_text);
-	connect(center_left, SIGNAL(clicked()), SLOT(decreaseLevel()));
-	connect(center_right, SIGNAL(clicked()), SLOT(increaseLevel()));
-}
-
-void BannTuning::decreaseLevel()
-{
-	if (current_level > 0)
-	{
-		--current_level;
-		changeIcons();
-		emit valueChanged(current_level);
-	}
-}
-
-void BannTuning::increaseLevel()
-{
-	if (current_level < 8)
-	{
-		++current_level;
-		changeIcons();
-		emit valueChanged(current_level);
-	}
-}
-
-void BannTuning::changeIcons()
-{
-	center_left->setImage(getBostikName(center_icon, QString("sxl") + QString::number(current_level)));
-	center_right->setImage(getBostikName(center_icon, QString("dxl") + QString::number(current_level)));
-}
 
 EnablingButton *getButton(const QString &image_path)
 {
