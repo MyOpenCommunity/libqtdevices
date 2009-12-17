@@ -88,6 +88,7 @@ private slots:
 	void setBrightness(int value);
 	void setColor(int value);
 	void setContrast(int value);
+	void closeCall();
 	void status_changed(const StatusList &sl);
 
 private:

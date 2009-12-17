@@ -172,6 +172,10 @@ CallControl::CallControl(EntryphoneDevice *d)
 	bottom->addWidget(cycle);
 }
 
+
+
+
+
 VCTCallPage::VCTCallPage(const QDomNode &config_node)
 {
 	// we have a random configuration node and we must get our internal unit address
@@ -276,7 +280,7 @@ QHBoxLayout *VCTCallPage::buildBottomLayout()
 {
 	BtButton *back = new BtButton;
 	back->setImage(bt_global::skin->getImage("back"));
-	connect(back, SIGNAL(clicked()), SIGNAL(Closed()));
+	connect(back, SIGNAL(clicked()), SLOT(closeCall()));
 	call_control = new CallControl(dev);
 	QHBoxLayout *bottom = new QHBoxLayout;
 	bottom->setContentsMargins(0, 0, 0, 0);
@@ -284,6 +288,12 @@ QHBoxLayout *VCTCallPage::buildBottomLayout()
 	bottom->addWidget(back);
 	bottom->addWidget(call_control);
 	return bottom;
+}
+
+void VCTCallPage::closeCall()
+{
+	dev->endCall();
+	emit Closed();
 }
 
 void VCTCallPage::setContrast(int value)
