@@ -66,6 +66,7 @@ public:
 	void addExternalPlace(const QString &where);
 
 private slots:
+	virtual void showPage();
 	void toggleCameraSettings();
 	void setBrightness(int value);
 	void setColor(int value);

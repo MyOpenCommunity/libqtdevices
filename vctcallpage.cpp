@@ -3,6 +3,7 @@
 #include "skinmanager.h"
 #include "generic_functions.h" //getBostikName
 #include "hardware_functions.h" // setVctContrast
+#include "displaycontrol.h" //forceOperativeMode
 #include "icondispatcher.h"
 #include "entryphone_device.h"
 #include "xml_functions.h"
@@ -198,8 +199,14 @@ VCTCallPage::VCTCallPage(const QDomNode &config_node)
 	QHBoxLayout *bottom = buildBottomLayout();
 
 	QVBoxLayout *layout = new QVBoxLayout(this);
-	layout->addLayout(hbox, 1);
-	layout->addLayout(bottom, 0);
+	layout->addLayout(hbox);
+	layout->addLayout(bottom);
+}
+
+void VCTCallPage::showPage()
+{
+	bt_global::display.forceOperativeMode(true);
+	Page::showPage();
 }
 
 void VCTCallPage::status_changed(const StatusList &sl)
@@ -271,6 +278,7 @@ void VCTCallPage::closePage()
 {
 	video_grabber.terminate();
 	emit Closed();
+	bt_global::display.forceOperativeMode(false);
 }
 
 void VCTCallPage::setContrast(int value)
