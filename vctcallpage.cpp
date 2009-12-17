@@ -12,8 +12,12 @@
 #include <QDomNode>
 #include <QHBoxLayout>
 #include <QDebug>
+#include <QLabel>
 
 #define BOTTOM_SPACING 15
+const QString video_grabber_path = "/home/bticino/bin/rsize";
+const QString video_grabber_normal = "0";
+const QString video_grabber_fullscreen = "1";
 
 EnablingButton::EnablingButton(QWidget *parent) :
 	BtButton(parent)
@@ -184,11 +188,11 @@ VCTCallPage::VCTCallPage(const QDomNode &config_node)
 	QHBoxLayout *hbox = new QHBoxLayout;
 
 	// widget where video will be displayed
-	QWidget *video = new QWidget;
-	video->setFixedSize(352, 240);
-	video->setStyleSheet("background-color: black");
+	video_box = new QLabel;
+	video_box->setFixedSize(352, 240);
+	video_box->setStyleSheet("background-color: black");
 
-	hbox->addWidget(video);
+	hbox->addWidget(video_box);
 	hbox->addLayout(sidebar);
 
 	QHBoxLayout *bottom = buildBottomLayout();
@@ -206,10 +210,16 @@ void VCTCallPage::status_changed(const StatusList &sl)
 		switch (it.key())
 		{
 		case EntryphoneDevice::INCOMING_CALL:
+		{
 			showPage();
+			QStringList args;
+			QPoint top_left = video_box->mapToGlobal(QPoint(0, 0));
+			args << QString::number(top_left.x()) << QString::number(top_left.y()) << video_grabber_normal;
+			video_grabber.start(video_grabber_path, args);
+		}
 			break;
 		case EntryphoneDevice::END_OF_CALL:
-			emit Closed();
+			closePage();
 			break;
 		}
 		++it;
@@ -254,6 +264,12 @@ QHBoxLayout *VCTCallPage::buildBottomLayout()
 void VCTCallPage::closeCall()
 {
 	dev->endCall();
+	closePage();
+}
+
+void VCTCallPage::closePage()
+{
+	video_grabber.terminate();
 	emit Closed();
 }
 

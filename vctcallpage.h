@@ -5,11 +5,13 @@
 #include "btbutton.h"
 
 #include <QStringList>
+#include <QProcess>
 
 class QDomNode;
 class EntryphoneDevice;
 class QHBoxLayout;
 class BannTuning;
+class QLabel;
 
 
 class EnablingButton : public BtButton
@@ -73,14 +75,17 @@ private slots:
 
 private:
 	QHBoxLayout *buildBottomLayout();
+	void closePage();
 
 	BtButton *setup_vct;
 	BannTuning *contrast, *brightness, *color;
 	CameraMove *camera;
+	QLabel *video_box;
 	CallControl *call_control;
 	QString setup_vct_icon;
 	QStringList places;
 	bool camera_settings_shown;
 	EntryphoneDevice *dev;
+	QProcess video_grabber;
 };
 #endif //VCTCALLPAGE_H
