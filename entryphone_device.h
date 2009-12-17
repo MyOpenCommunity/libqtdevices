@@ -5,6 +5,21 @@
 
 class OpenMsg;
 
+/*
+ * Controls entryphone functionality. There can be only one instance of this class, since Touch 10 is only
+ * one destination for calls.
+ * This device has two states: not connected and connected.
+ *
+ * Connected state:
+ * The device switces to the connected state when an INCOMING_CALL frame arrives; in this state,
+ * the field 'where' in incoming frames contains the address of the sender, not the device own address.
+ *
+ * Unconnected state:
+ * The device switches to unconnected state when an END_OF_CALL frame arrives, or the user refuses the call.
+ * [TODO: are there any other cases? AUTOSWITCHING maybe?]
+ * In this state, the device must check the 'where' field of incoming frames with its own address.
+ */
+
 class EntryphoneDevice : public device
 {
 friend class TestEntryphoneDevice;
