@@ -232,7 +232,7 @@ void VideoPlayerPage::displayFullScreen(bool fs)
 	else
 		showPage();
 
-	startMPlayer(current_video, 0);
+	startMPlayer(current_video, current_time);
 	emit started();
 }
 
