@@ -36,10 +36,6 @@ public:
 
 	void answerCall() const;
 	void endCall();
-	// used to light a video camera in video control
-	void autoSwitching() const;
-	// aka CameraSliding
-	void cycleCamera() const;
 
 	virtual void manageFrame(OpenMsg &msg);
 

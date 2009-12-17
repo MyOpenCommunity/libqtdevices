@@ -51,14 +51,6 @@ void EntryphoneDevice::initVctProcess()
 	sendCommand(what);
 }
 
-void EntryphoneDevice::autoSwitching() const
-{
-}
-
-void EntryphoneDevice::cycleCamera() const
-{
-}
-
 void EntryphoneDevice::manageFrame(OpenMsg &msg)
 {
 	if ((!is_calling) && (QString::fromStdString(msg.whereFull()) != where))
@@ -90,9 +82,6 @@ void EntryphoneDevice::resetCallState()
 {
 	is_calling = false;
 	caller_address = "";
-
-	// TODO: this must be factored out to a separate method
-	StatusList sl;
-	sl[END_OF_CALL] = QVariant();
-	emit status_changed(sl);
+	kind = -1;
+	mmtype = -1;
 }
