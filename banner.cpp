@@ -23,6 +23,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <QApplication> //qapp
+#include <QLayout>
 
 
 // Inizialization of static member
@@ -328,6 +329,8 @@ void banner::nascondi(char item)
 
 QSize banner::sizeHint() const
 {
+	if (QLayout *l = layout())
+		return l->sizeHint();
 	return QSize(banner_width, banner_height);
 }
 

@@ -30,7 +30,7 @@ VideoPlayerPage::VideoPlayerPage()
 	QHBoxLayout *v = new QHBoxLayout;
 
 	// file name
-	title = new QLabel("File name here");
+	title = new QLabel;
 
 	// only used for layout
 	video = new QLabel;
@@ -100,11 +100,19 @@ void VideoPlayerPage::showPage()
 	fullscreen = false;
 }
 
+void VideoPlayerPage::startMPlayer(int index, int time)
+{
+	if (fullscreen)
+		player->playVideoFullScreen(video_list[index], time);
+	else
+		player->playVideo(video_list[index], playbackGeometry(), time);
+	refresh_data.start(MPLAYER_POLLING);
+}
+
 void VideoPlayerPage::displayVideo(int index)
 {
 	title->setText(QFileInfo(video_list[index]).fileName());
-	player->playVideo(video_list[index], playbackGeometry(), 0);
-	refresh_data.start(MPLAYER_POLLING);
+	startMPlayer(index, 0);
 	emit started();
 }
 
@@ -157,11 +165,13 @@ void VideoPlayerPage::handleClose()
 void VideoPlayerPage::resume()
 {
 	if (player->isInstanceRunning())
+	{
 		player->resume();
+		refresh_data.start(MPLAYER_POLLING);
+	}
 	else
-		player->playVideo(video_list[current_video], playbackGeometry(), 0);
+		startMPlayer(current_video, 0);
 
-	refresh_data.start(MPLAYER_POLLING);
 	emit started();
 }
 
@@ -218,18 +228,11 @@ void VideoPlayerPage::displayFullScreen(bool fs)
 
 	fullscreen = fs;
 	if (fullscreen)
-	{
 		window->showWindow();
-		player->playVideoFullScreen(video_list[current_video], current_time);
-	}
 	else
-	{
 		showPage();
-		player->playVideo(video_list[current_video], playbackGeometry(), current_time);
-	}
 
-	// needed because we stop and restart MPlayer
-	refresh_data.start(MPLAYER_POLLING);
+	startMPlayer(current_video, 0);
 	emit started();
 }
 
@@ -285,6 +288,10 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
 	// update the icon of the play button
 	connect(page, SIGNAL(started()), buttons, SLOT(started()));
 	connect(page, SIGNAL(stopped()), buttons, SLOT(stopped()));
+
+	// reapint control buttons after MPlayer starts
+	connect(page, SIGNAL(started()), controls, SLOT(update()));
+	connect(page, SIGNAL(stopped()), controls, SLOT(update()));
 
 	connect(buttons, SIGNAL(noFullScreen()), page, SLOT(displayNoFullScreen()));
 

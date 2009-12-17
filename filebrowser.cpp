@@ -28,7 +28,7 @@ FileBrowser::FileBrowser(QWidget *parent, int _rows_per_page)
 
 	main_layout = new QVBoxLayout(this);
 	main_layout->setContentsMargins(0, 5, 5, 0);
-	main_layout->setSpacing(5);
+	main_layout->setSpacing(3);
 	buttons_group = new QButtonGroup(this);
 	connect(buttons_group, SIGNAL(buttonClicked(int)), SLOT(clicked(int)));
 }
