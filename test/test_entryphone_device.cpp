@@ -52,10 +52,11 @@ void TestEntryphoneDevice::sendEndCall()
 	// audio and video call
 	int mmtype = 4;
 	simulateIncomingCall(kind, mmtype);
+	const char *end_all_calls = "4";
 
 	dev->endCall();
 	client_command->flush();
-	QString frame = QString("*8*3#%1#%2*%3##").arg(kind).arg(mmtype).arg(dev->where);
+	QString frame = QString("*8*3#%1#%2*%3%4##").arg(kind).arg(mmtype).arg(end_all_calls).arg(dev->where);
 	QCOMPARE(server->frameCommand(), frame);
 }
 
