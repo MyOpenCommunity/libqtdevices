@@ -4,6 +4,8 @@
 #include "mediaplayer.h"
 #include "displaycontrol.h" // forceOperativeMode
 #include "hardware_functions.h" // setVolume
+#include "bann2_buttons.h" // BannTuning
+#include "skinmanager.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -250,17 +252,26 @@ void VideoPlayerPage::refreshPlayInfo()
 // VideoPlayerWindow implementation
 
 VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
-	: buttons_timer(this)
+	: controls_timer(this)
 {
-	buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::VIDEO_WINDOW);
-	buttons->hide();
+	controls = new QWidget;
+	controls->hide();
 
-	QGridLayout *button_layout = new QGridLayout(this);
-	button_layout->setContentsMargins(0, 0, 0, 0);
-	button_layout->setColumnStretch(0, 1);
-	button_layout->setColumnStretch(2, 1);
-	button_layout->setRowStretch(0, 1);
-	button_layout->addWidget(buttons, 1, 1);
+	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::VIDEO_WINDOW);
+	BannTuning *volume = new BannTuning(QString(), bt_global::skin->getImage("volume"));
+
+	QHBoxLayout *control_layout = new QHBoxLayout(controls);
+	control_layout->setContentsMargins(0, 0, 0, 0);
+	control_layout->addWidget(buttons);
+	control_layout->addSpacing(50);
+	control_layout->addWidget(volume);
+
+	QGridLayout *window_layout = new QGridLayout(this);
+	window_layout->setContentsMargins(0, 0, 0, 0);
+	window_layout->setColumnStretch(0, 1);
+	window_layout->setColumnStretch(2, 1);
+	window_layout->setRowStretch(0, 1);
+	window_layout->addWidget(controls, 1, 1);
 
 	// signals for navigation and to start/stop playback
 	connect(buttons, SIGNAL(previous()), page, SLOT(previous()));
@@ -278,8 +289,8 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
 	connect(buttons, SIGNAL(noFullScreen()), page, SLOT(displayNoFullScreen()));
 
 	// timer to hide the buttons
-	buttons_timer.setSingleShot(true);
-	connect(&buttons_timer, SIGNAL(timeout()), buttons, SLOT(hide()));
+	controls_timer.setSingleShot(true);
+	connect(&controls_timer, SIGNAL(timeout()), controls, SLOT(hide()));
 
 	// this shows the buttons when the user clicks the screen
 	connect(this, SIGNAL(clicked()), SLOT(showButtons()));
@@ -289,6 +300,10 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
 	connect(buttons, SIGNAL(next()), SLOT(showButtons()));
 	connect(buttons, SIGNAL(play()), SLOT(showButtons()));
 	connect(buttons, SIGNAL(pause()), SLOT(showButtons()));
+	connect(volume, SIGNAL(valueChanged(int)), SLOT(showButtons()));
+
+	// volume up/down
+	connect(volume, SIGNAL(valueChanged(int)), SLOT(setVolume(int)));
 }
 
 void VideoPlayerWindow::mouseReleaseEvent(QMouseEvent *e)
@@ -300,7 +315,12 @@ void VideoPlayerWindow::mouseReleaseEvent(QMouseEvent *e)
 
 void VideoPlayerWindow::showButtons()
 {
-	buttons_timer.stop();
-	buttons->show();
-	buttons_timer.start(BUTTONS_TIMEOUT);
+	controls_timer.stop();
+	controls->show();
+	controls_timer.start(BUTTONS_TIMEOUT);
+}
+
+void VideoPlayerWindow::setVolume(int value)
+{
+	::setVolume(VOLUME_MMDIFFUSION, value);
 }

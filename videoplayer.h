@@ -82,10 +82,11 @@ protected:
 
 private slots:
 	void showButtons();
+	void setVolume(int value);
 
 private:
-	MultimediaPlayerButtons *buttons;
-	QTimer buttons_timer;
+	QWidget *controls;
+	QTimer controls_timer;
 };
 
 #endif // VIDEOPLAYER_H
