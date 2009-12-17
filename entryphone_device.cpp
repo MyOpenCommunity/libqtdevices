@@ -11,7 +11,8 @@ static const char *END_ALL_CALLS = "4";
 enum
 {
 	ANSWER = 2,
-	READY = 37
+	CALLER_ADDRESS = 9,
+	READY = 37,
 };
 
 EntryphoneDevice::EntryphoneDevice(const QString &where) :
@@ -59,6 +60,7 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 	int what = msg.what();
 	StatusList sl;
 	QVariant v;
+	bool send_status_update = true;
 	switch (what)
 	{
 	case INCOMING_CALL:
@@ -70,12 +72,20 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 		v.setValue(true);
 		is_calling = true;
 		break;
+	case CALLER_ADDRESS:
+		caller_address = QString::fromStdString(msg.whereFull());
+		send_status_update = false;
+		break;
 	case END_OF_CALL:
 		resetCallState();
 		break;
 	}
-	sl[what] = v;
-	emit status_changed(sl);
+
+	if (send_status_update)
+	{
+		sl[what] = v;
+		emit status_changed(sl);
+	}
 }
 
 void EntryphoneDevice::resetCallState()
