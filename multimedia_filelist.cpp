@@ -42,7 +42,7 @@ MultimediaFileListPage::MultimediaFileListPage()
 	NavigationBar *nav_bar = new NavigationBar("eject");
 
 	buildPage(file_browser, nav_bar, 0, title_widget);
-	layout()->setContentsMargins(5, 0, 25, 15);
+	layout()->setContentsMargins(0, 5, 25, 10);
 
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
 	connect(this, SIGNAL(notifyExit()), SIGNAL(Closed()));
