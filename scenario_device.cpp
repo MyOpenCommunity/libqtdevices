@@ -24,6 +24,13 @@ ScenarioDevice::ScenarioDevice(QString where) :
 {
 }
 
+void ScenarioDevice::frame_rx_handler(char *frame)
+{
+	OpenMsg msg;
+	msg.CreateMsgOpen(frame, strlen(frame));
+	manageFrame(msg);
+}
+
 void ScenarioDevice::activateScenario(int scen)
 {
 	Q_ASSERT_X(scen >= 1 && scen <= 31, "ScenarioDevice::activateScenario",

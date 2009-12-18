@@ -62,6 +62,8 @@ class PullDevice : public device
 friend class TestLightingDevice;
 Q_OBJECT
 public:
+	// TODO: hack to avoid too many changes in device.h, REMOVE when new device parsing is ok.
+	virtual void frame_rx_handler(char *frame);
 	virtual void manageFrame(OpenMsg &msg);
 
 protected:

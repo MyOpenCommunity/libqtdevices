@@ -142,6 +142,12 @@ PullDevice::PullDevice(QString who, QString where, PullMode m) :
 {
 }
 
+void PullDevice::frame_rx_handler(char *frame)
+{
+	OpenMsg msg;
+	msg.CreateMsgOpen(frame, strlen(frame));
+	manageFrame(msg);
+}
 
 void PullDevice::manageFrame(OpenMsg &msg)
 {
