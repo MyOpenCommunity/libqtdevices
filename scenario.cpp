@@ -3,13 +3,77 @@
 #include "scenevocond.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "btmain.h" // bt_global::btmain
+#include "bannercontent.h"
+#include "main.h"
+#include "skinmanager.h" //SkinContext
 
 #include <QDomNode>
 #include <QString>
 #include <QDebug>
 #include <QList>
 
-#include <assert.h>
+namespace
+{
+#ifdef CONFIG_BTOUCH
+	QList<scenEvo_cond*> loadConditions(const QDomNode &config_node)
+	{
+		// NOTE: the ownership of scenEvo_cond objects is taken by the object that
+		// store the list of conditions.
+		// TODO: we can have at maximum 1 condH and 1 condDevice, remove lists
+		bool has_next = getElement(config_node, "condDevice/value").text().toInt();
+		QList<scenEvo_cond*> l;
+		foreach (const QDomNode &cond, getChildren(config_node, "condH"))
+		{
+			if (getTextChild(cond, "value").toInt())
+			{
+				scenEvo_cond_h *c = new scenEvo_cond_h(cond, has_next);
+				QObject::connect(bt_global::btmain, SIGNAL(resettimer()), c, SLOT(setupTimer()));
+				l.append(c);
+			}
+		}
+
+		foreach (const QDomNode &cond, getChildren(config_node, "condDevice"))
+		{
+			if (getTextChild(cond, "value").toInt())
+			{
+				scenEvo_cond_d *c = new scenEvo_cond_d(cond);
+				l.append(c);
+			}
+		}
+		return l;
+	}
+#else
+	QList<scenEvo_cond*> loadConditions(const QDomNode &config_node)
+	{
+		// NOTE: the ownership of scenEvo_cond objects is taken by the object that
+		// store the list of conditions.
+		// TODO: we can have at maximum 1 condH and 1 condDevice, remove lists
+		bool has_next = getElement(config_node, "scen/device/status").text().toInt();
+		QList<scenEvo_cond*> l;
+		// parse time condition
+		QDomNode cond = getElement(config_node, "scen/time");
+		if (getTextChild(cond, "status").toInt())
+		{
+			scenEvo_cond_h *c = new scenEvo_cond_h(cond, has_next);
+			QObject::connect(bt_global::btmain, SIGNAL(resettimer()), c, SLOT(setupTimer()));
+			l.append(c);
+		}
+
+		/*
+		  TODO: enabling device condition means rewriting conf parsing!
+		foreach (const QDomNode &cond, getChildren(config_node, "condDevice"))
+		{
+			if (getTextChild(cond, "value").toInt())
+			{
+				scenEvo_cond_d *c = new scenEvo_cond_d(cond);
+				l.append(c);
+			}
+		}
+		*/
+		return l;
+	}
+#endif
+}
 
 
 Scenario::Scenario(const QDomNode &config_node)
@@ -17,123 +81,81 @@ Scenario::Scenario(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
+banner *Scenario::getBanner(const QDomNode &item_node)
+{
+	int id = getTextChild(item_node, "id").toInt();
+	QString where = getTextChild(item_node, "where");
+
+	QString what = getTextChild(item_node, "what");
+	if (!what.isEmpty())
+		where = what + "*" + where;
+
+	// DELETE
+//		QString img1 = IMG_PATH + getTextChild(item_node, "cimg1");
+//		QString img2 = IMG_PATH + getTextChild(item_node, "cimg2");
+//		QString img3 = IMG_PATH + getTextChild(item_node, "cimg3");
+//		QString img4 = IMG_PATH + getTextChild(item_node, "cimg4");
+
+	banner *b = 0;
+	switch (id)
+	{
+	case SCENARIO:
+		// DELETE
+		//b = new bannScenario(0, where, img1);
+		b = new BannSimpleScenario(this, item_node);
+		break;
+	case MOD_SCENARI:
+	{
+		QString img5 = IMG_PATH + getTextChild(item_node, "cimg5");
+		QString img6 = IMG_PATH + getTextChild(item_node, "cimg6");
+		QString img7 = IMG_PATH + getTextChild(item_node, "cimg7");
+		// DELETE
+		//b = new gesModScen(0, where, img1, img2, img3, img4, img5, img6, img7);
+		b = new ModifyScenario(this, item_node);
+		break;
+	}
+	case SCENARIO_EVOLUTO:
+	{
+		SkinContext context(getTextChild(item_node, "cid").toInt());
+		b = new scenEvo(this, item_node, loadConditions(item_node));
+	}
+		break;
+	case SCENARIO_SCHEDULATO:
+	{
+		SkinContext context(getTextChild(item_node, "cid").toInt());
+		b = new ScheduledScenario(this, item_node);
+		break;
+	}
+#ifdef CONFIG_BTOUCH
+	case PPT_SCE:
+		b = new PPTSce(this, where, getTextChild(item_node, "cid").toInt());
+		break;
+#endif
+	}
+
+	if (b)
+	{
+		b->setText(getTextChild(item_node, "descr"));
+		b->setId(id);
+		b->Draw();
+	}
+	return b;
+}
+
 void Scenario::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode& item, getChildren(config_node, "item"))
 	{
-		int id = getTextChild(item, "id").toInt();
-		QString where = getTextChild(item, "where");
-
-		QString what = getTextChild(item, "what");
-		if (!what.isEmpty())
-			where = what + "*" + where;
-
-		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
-		QString img2 = IMG_PATH + getTextChild(item, "cimg2");
-		QString img3 = IMG_PATH + getTextChild(item, "cimg3");
-		QString img4 = IMG_PATH + getTextChild(item, "cimg4");
-
-		banner *b;
-		switch (id)
+		if (banner *b = getBanner(item))
 		{
-		case SCENARIO:
-//			b = new bannScenario(this, where, img1);
-			b = new BannSimpleScenario(this, item);
-			break;
-
-		case PPT_SCE:
-			b = new PPTSce(this, where, getTextChild(item, "cid").toInt());
-			break;
-		case MOD_SCENARI:
+			appendBanner(b);
+			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+		}
+		else
 		{
-//			QString img5 = IMG_PATH + getTextChild(item, "cimg5");
-//			QString img6 = IMG_PATH + getTextChild(item, "cimg6");
-//			QString img7 = IMG_PATH + getTextChild(item, "cimg7");
-//			b = new gesModScen(this, where, img1, img2, img3, img4, img5, img6, img7);
-			b = new ModifyScenario(this, item);
-			break;
+			int id = getTextChild(item, "id").toInt();
+			qFatal("Type of item %d not handled on scenario page!", id);
 		}
-		case SCENARIO_EVOLUTO:
-//			b = new scenEvo(this, loadConditions(item), img1, img2, img3, img4,
-//				getElement(item, "action/open").text(), getTextChild(item, "enable").toInt());
-			b = new scenEvo(this, item, loadConditions(item));
-			break;
-
-		case SCENARIO_SCHEDULATO:
-		{
-			QList<QString> names, img, descr;
-			names << "unable" << "disable" << "start" << "stop";
-
-			for (int i = 0; i < names.size(); ++i)
-			{
-				QDomNode n = getChildWithName(item, names[i]);
-				if (!n.isNull())
-				{
-					int v = getTextChild(n, "value").toInt();
-					img.append(v ? IMG_PATH + getTextChild(n, "cimg1") : QString());
-					descr.append(v ? getTextChild(n, "open") : QString());
-				}
-				else
-				{
-					qWarning() << "Unable to find node" << names[i] << "on scenario Schedulato configuration";
-					img.append(QString());
-					descr.append(QString());
-				}
-			}
-			b = new ScheduledScenario(this, item);
-//			b = new scenSched(this, img[0], img[1], img[2], img[3], descr[0], descr[1], descr[2], descr[3]);
-			break;
-		}
-		default:
-			assert(!"Type of item not handled on scenario page!");
-		}
-		b->setText(getTextChild(item, "descr"));
-		b->setId(id);
-		appendBanner(b); // TODO: deve gestire tutte le connect??
-		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 }
 
-QList<scenEvo_cond*> Scenario::loadConditions(const QDomNode &config_node)
-{
-	// Note: the ownership of scenEvo_cond objects is taken by scenEvo instance.
-	QList<scenEvo_cond*> l;
-	foreach (const QDomNode &cond, getChildren(config_node, "condH"))
-	{
-		scenEvo_cond_h *c = new scenEvo_cond_h(getTextChild(cond, "hour"), getTextChild(cond, "minute"));
-		if (int v = getTextChild(cond, "value").toInt())
-		{
-			c->setConditionType(v);
-			for (int i = 1; i <= 4; ++i)
-			{
-				QString img = getTextChild(cond, "cimg" + QString::number(i));
-				if (!img.isEmpty())
-					c->setImg(i - 1,  IMG_PATH + img);
-			}
-			connect(bt_global::btmain, SIGNAL(resettimer()), c, SLOT(setupTimer()));
-			c->SetIcons();
-			l.append(c);
-		}
-	}
-
-	foreach (const QDomNode &cond, getChildren(config_node, "condDevice"))
-	{
-		scenEvo_cond_d *c = new scenEvo_cond_d;
-		if (int v = getTextChild(cond, "value").toInt())
-		{
-			c->setConditionType(v);
-			c->set_descr(getTextChild(cond, "descr"));
-			c->set_where(getTextChild(cond, "where"));
-			c->set_trigger(getTextChild(cond, "trigger"));
-			for (int i = 1; i <= 5; ++i)
-			{
-				QString img = getTextChild(cond, "cimg" + QString::number(i));
-				if (!img.isNull())
-					c->setImg(i - 1,  IMG_PATH + img);
-			}
-			c->SetIcons();
-			l.append(c);
-		}
-	}
-	return l;
-}
