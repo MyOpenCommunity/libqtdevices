@@ -9,7 +9,7 @@
 #include "test_checkaddress.h"
 #include "test_scenario_device.h"
 #include "test_pull_manager.h"
-
+#include "include "test_probe_device.h"
 
 int main(int argc, char *argv[])
 {
@@ -46,6 +46,12 @@ int main(int argc, char *argv[])
 
 	TestScenarioDevice test_scenario_device;
 	test_list << &test_scenario_device;
+
+	TestNonControlledProbeDevice test_non_controlled_probe_device;
+	test_list << &test_non_controlled_probe_device;
+
+	TestExternalProbeDevice test_external_probe_device;
+	test_list << &test_external_probe_device;
 
 	QStringList arglist = app.arguments();
 	QString testingClass;
