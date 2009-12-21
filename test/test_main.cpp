@@ -12,7 +12,7 @@
 #include "test_pull_manager.h"
 #include "test_alarmsounddiff_device.h"
 #include "test_entryphone_device.h"
-
+#include "test_probe_device.h"
 
 // This empty function is required because frame_interpreter use a rearmWDT
 // function, so we have to define it. We don't want to include hardware_functions,
@@ -70,6 +70,12 @@ int main(int argc, char *argv[])
 
 	TestEntryphoneDevice test_entryphone_device;
 	test_list << &test_entryphone_device;
+
+	TestNonControlledProbeDevice test_non_controlled_probe_device;
+	test_list << &test_non_controlled_probe_device;
+
+	TestExternalProbeDevice test_external_probe_device;
+	test_list << &test_external_probe_device;
 
 	QStringList arglist = app.arguments();
 	QString testingClass;
