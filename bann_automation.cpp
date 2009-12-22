@@ -146,13 +146,18 @@ void SecureInterblockedActuator::status_changed(const StatusList &sl)
 		{
 		case AutomationDevice::DIM_UP:
 			setState(OPENING);
+			// see below for explanation
 			right_button->enable();
+			right_button->setStatus(true);
 			left_button->disable();
 			break;
 		case AutomationDevice::DIM_DOWN:
 			setState(CLOSING);
 			right_button->disable();
 			left_button->enable();
+			// Icons are changed above, but no mousePressEvent is issued because the button is
+			// already down, so we need to change the icon manually
+			left_button->setStatus(true);
 			break;
 		case AutomationDevice::DIM_STOP:
 			setState(STOP);
