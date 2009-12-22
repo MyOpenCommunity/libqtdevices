@@ -9,7 +9,7 @@
 #include "test_checkaddress.h"
 #include "test_scenario_device.h"
 #include "test_pull_manager.h"
-#include "include "test_probe_device.h"
+#include "test_probe_device.h"
 
 int main(int argc, char *argv[])
 {
