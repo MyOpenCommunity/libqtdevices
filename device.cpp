@@ -111,7 +111,10 @@ void device::sendCommand(QString what) const
 
 void device::sendRequest(QString what) const
 {
-	sendInit(createRequestOpen(who, what, where));
+	if (what.isEmpty())
+		sendInit(createStatusRequestOpen(who, where));
+	else
+		sendInit(createRequestOpen(who, what, where));
 }
 
 void device::setClients(Client *command, Client *request, Client *monitor)
