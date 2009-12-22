@@ -15,6 +15,13 @@ NonControlledProbeDevice::NonControlledProbeDevice(QString where, ProbeType t)
 {
 }
 
+void NonControlledProbeDevice::frame_rx_handler(char *frame)
+{
+	OpenMsg msg;
+	msg.CreateMsgOpen(frame, strlen(frame));
+	manageFrame(msg);
+}
+
 void NonControlledProbeDevice::requestStatus()
 {
 	sendRequest(type == EXTERNAL ? "15#1" : "0");

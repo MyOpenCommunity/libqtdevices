@@ -3,6 +3,8 @@
 
 #include "device.h"
 
+class OpenMsg;
+
 
 class NonControlledProbeDevice : public device
 {
@@ -22,6 +24,8 @@ public:
 	NonControlledProbeDevice(QString where, ProbeType type);
 
 	void requestStatus();
+
+	virtual void frame_rx_handler(char *frame);
 
 protected:
 	virtual void manageFrame(OpenMsg &msg);
