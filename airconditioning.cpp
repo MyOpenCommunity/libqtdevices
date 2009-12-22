@@ -9,6 +9,7 @@
 #include "navigation_bar.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "airconditioning_device.h"
+#include "probe_device.h" // NonControlledProbeDevice
 
 #include <QDomNode>
 #include <QString>
@@ -35,6 +36,11 @@ AirConditioning::AirConditioning(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
+void AirConditioning::inizializza()
+{
+	page_content->initBanners();
+}
+
 banner *AirConditioning::getBanner(const QDomNode &item_node)
 {
 	int id = getTextChild(item_node, "id").toInt();
@@ -54,7 +60,12 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 		QString off_cmd = getElement(item_node, "off/command").text();
 		AirConditioningDevice *dev = bt_global::add_device_to_cache(new AirConditioningDevice(where));
 		dev->setOffCommand(off_cmd);
-		SingleSplit *bann = new SingleSplit(descr, dev);
+
+		NonControlledProbeDevice *dev_probe = 0;
+		QString where_probe = getTextChild(item_node, "where_probe");
+		if (!where_probe.isNull())
+			dev_probe = new NonControlledProbeDevice(where_probe, NonControlledProbeDevice::INTERNAL);
+		SingleSplit *bann = new SingleSplit(descr, dev, dev_probe);
 		b = bann;
 		bann->connectRightButton(new SplitPage(item_node, dev));
 		device_container.append(dev);

@@ -10,6 +10,7 @@
 #include <QString>
 
 class AirConditioningDevice;
+class NonControlledProbeDevice;
 
 
 /**
@@ -19,11 +20,15 @@ class SingleSplit : public BannOnOffNew
 {
 Q_OBJECT
 public:
-	SingleSplit(QString descr, AirConditioningDevice *d, device *d_probe=0);
+	SingleSplit(QString descr, AirConditioningDevice *d, NonControlledProbeDevice *d_probe=0);
+	virtual void inizializza(bool forza=false);
 
 private:
 	AirConditioningDevice *dev;
-	device *dev_probe; // TODO: replace this placeholder with the proper device of thermal regulation.
+	NonControlledProbeDevice *dev_probe;
+
+private slots:
+	void status_changed(const StatusList &status_list);
 };
 
 
