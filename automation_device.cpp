@@ -87,3 +87,10 @@ void PPTStatDevice::manageFrame(OpenMsg &msg)
 	}
 }
 
+void PPTStatDevice::frame_rx_handler(char *frame)
+{
+	OpenMsg msg;
+	msg.CreateMsgOpen(frame, strlen(frame));
+	manageFrame(msg);
+}
+

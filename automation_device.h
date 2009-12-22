@@ -47,6 +47,7 @@ public:
 	};
 
 	virtual void manageFrame(OpenMsg &msg);
+	virtual void frame_rx_handler(char *c);
 };
 
 #endif // DEV_AUTOMATION_H
