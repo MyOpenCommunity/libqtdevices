@@ -323,15 +323,31 @@ void Dimmer100New::status_changed(const StatusList &sl)
 			int l = it.value().toInt();
 			// light values are between 0 (min) and 100 (max)
 			light_value = l;
-			if (light_value < 5)
-				light_value = 5;
-			setLevel(light_value);
-			setState(ON);
+			if (light_value == 0)
+				setState(OFF);
+			else
+			{
+				light_value = roundTo5(light_value);
+				setLevel(light_value);
+				setState(ON);
+			}
 		}
 			break;
 		}
 		++it;
 	}
+}
+
+// Round a value to the nearest greater multiple of 5, eg. numbers 1-5 map to 5, 6-10 to 10 and so on.
+int Dimmer100New::roundTo5(int value)
+{
+	// I really hope the compiler optimizes this case!
+	int div = value / 5;
+	int mod = value % 5;
+	if (mod == 0)
+		return value;
+	else
+		return (div + 1) * 5;
 }
 
 
