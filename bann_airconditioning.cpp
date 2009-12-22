@@ -3,21 +3,54 @@
 #include "fontmanager.h" // bt_global::font
 #include "airconditioning_device.h"
 #include "btbutton.h"
+#include "probe_device.h"
+#include "main.h" // bt_global::config
+#include "scaleconversion.h"
 
 #include <QLabel> // BannerText
 #include <QDebug>
 
 
-SingleSplit::SingleSplit(QString descr, AirConditioningDevice *d) : BannOnOffNew(0)
+SingleSplit::SingleSplit(QString descr, AirConditioningDevice *d, NonControlledProbeDevice *d_probe) : BannOnOffNew(0)
 {
 	QString img_off = bt_global::skin->getImage("off");
 	QString img_air_single = bt_global::skin->getImage("air_single");
 	QString img_forward = bt_global::skin->getImage("forward");
 	initBanner(img_off, img_air_single, img_forward, descr);
 	dev = d;
-	QObject::connect(left_button, SIGNAL(clicked()), dev, SLOT(sendOff()));
+
+	QString air_single = "air_single";
+	if (dev_probe)
+	{
+		setInternalText("---");
+		air_single = "air_single_temp";
+	}
+
+	initBanner(img_off, bt_global::skin->getImage(air_single), img_forward, descr);
+	connect(left_button, SIGNAL(clicked()), dev, SLOT(sendOff()));
+
+	connect(dev_probe, SIGNAL(status_changed(const StatusList &)),
+			SLOT(status_changed(const StatusList &)));
 }
 
+void SingleSplit::status_changed(const StatusList &status_list)
+{
+	int temp = status_list[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
+	TemperatureScale scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+
+	QString text;
+	if (scale == FAHRENHEIT)
+		text = fahrenheitString(bt2Fahrenheit(temp));
+	else
+		text = celsiusString(bt2Celsius(temp));
+	setInternalText(text);
+}
+
+void SingleSplit::inizializza(bool)
+{
+	if (dev_probe)
+		dev_probe->requestStatus();
+}
 
 GeneralSplit::GeneralSplit(QString descr) : BannOnOffNew(0)
 {
