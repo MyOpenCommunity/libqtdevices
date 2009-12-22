@@ -61,16 +61,20 @@ void TestScenarioDevice::sendRequestStatus()
 
 void TestScenarioDevice::receiveStartProgramming()
 {
+	int scenario_number = 22;
 	DeviceTester t(dev, ScenarioDevice::DIM_START);
-	QString frame = QString("*0*40#22*%1##").arg(dev->where);
-	t.check(frame, true);
+	QString frame = QString("*0*40#%1*%2##").arg(scenario_number).arg(dev->where);
+	QPair<bool, int> check_value(true, scenario_number);
+	t.check(frame, check_value);
 }
 
 void TestScenarioDevice::receiveStopProgramming()
 {
+	int scenario_number = 22;
 	DeviceTester t(dev, ScenarioDevice::DIM_START);
-	QString frame = QString("*0*41#22*%1##").arg(dev->where);
-	t.check(frame, false);
+	QString frame = QString("*0*41#%1*%2##").arg(scenario_number).arg(dev->where);
+	QPair<bool, int> check_value(false, scenario_number);
+	t.check(frame, check_value);
 }
 
 void TestScenarioDevice::receiveLockDevice()
