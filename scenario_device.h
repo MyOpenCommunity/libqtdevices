@@ -5,6 +5,8 @@
 
 class OpenMsg;
 
+typedef QPair<bool, int> ScenarioProgrammingStatus;
+Q_DECLARE_METATYPE(ScenarioProgrammingStatus);
 
 class ScenarioDevice : public device
 {

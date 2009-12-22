@@ -89,14 +89,20 @@ void ScenarioDevice::manageFrame(OpenMsg &msg)
 		v.setValue(false);
 		break;
 	case START_PROG:
+	{
 		// TODO: here I'm discarding the scenario being modified.
 		// Does GUI need to know it?
+		ScenarioProgrammingStatus p (true, msg.whatArgN(0));
 		status_index = DIM_START;
-		v.setValue(true);
+		v.setValue(p);
+	}
 		break;
 	case STOP_PROG:
+	{
+		ScenarioProgrammingStatus p (false, msg.whatArgN(0));
 		status_index = DIM_START;
-		v.setValue(false);
+		v.setValue(p);
+	}
 		break;
 	}
 
