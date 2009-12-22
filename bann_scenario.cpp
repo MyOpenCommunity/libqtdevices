@@ -61,6 +61,11 @@ ModifyScenario::ModifyScenario(QWidget *parent, const QDomNode &config_node) :
 	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(const StatusList &)));
 }
 
+void ModifyScenario::inizializza(bool forza)
+{
+	dev->requestStatus();
+}
+
 void ModifyScenario::activate()
 {
 	dev->activateScenario(scenario_number);
