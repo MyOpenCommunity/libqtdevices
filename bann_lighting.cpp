@@ -511,11 +511,11 @@ TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
 		sl << tmp.toElement().text().split("*");
 
 	Q_ASSERT_X(sl.size() == 3, "TempLightFixed::TempLightFixed", "Time must have 3 fields");
-	BtTime t(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
-	total_time = t.hour() * 3600 + t.minute() * 60 + t.second();
+	lighting_time = BtTime(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+	total_time = lighting_time.hour() * 3600 + lighting_time.minute() * 60 + lighting_time.second();
 #else
 	total_time = getTextChild(config_node, "time").toInt();
-	BtTime t(total_time / 3600, (total_time / 60) % 60, total_time % 60);
+	lighting_time = BtTime(total_time / 3600, (total_time / 60) % 60, total_time % 60);
 #endif
 
 	QString where = getTextChild(config_node, "where");
@@ -523,7 +523,7 @@ TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
 
 	QString descr = getTextChild(config_node, "descr");
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("lamp_status"),
-		bt_global::skin->getImage("lamp_time"), descr, formatTime(t));
+		bt_global::skin->getImage("lamp_time"), descr, formatTime(lighting_time));
 
 	request_timer.setInterval((total_time / TLF_TIME_STATES) * 1000);
 	request_timer.setSingleShot(true);
@@ -545,7 +545,7 @@ void TempLightFixed::requestStatus()
 
 void TempLightFixed::setOn()
 {
-	dev->turnOn();
+	dev->variableTiming(lighting_time.hour(), lighting_time.minute(), lighting_time.second());
 }
 
 void TempLightFixed::status_changed(const StatusList &sl)
