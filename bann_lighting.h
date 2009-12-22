@@ -193,6 +193,7 @@ private slots:
 
 private:
 	int total_time;
+	BtTime lighting_time;
 	QTimer request_timer;
 	LightingDevice *dev;
 };
