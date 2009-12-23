@@ -14,9 +14,9 @@
 SingleSplit::SingleSplit(QString descr, AirConditioningDevice *d, NonControlledProbeDevice *d_probe) : BannOnOffNew(0)
 {
 	QString img_off = bt_global::skin->getImage("off");
-	QString img_air_single = bt_global::skin->getImage("air_single");
 	QString img_forward = bt_global::skin->getImage("forward");
-	initBanner(img_off, img_air_single, img_forward, descr);
+
+	dev_probe = d_probe;
 	dev = d;
 
 	QString air_single = "air_single";
