@@ -33,14 +33,14 @@ void NonControlledProbeDevice::manageFrame(OpenMsg &msg)
 	if (where.toInt() != msg.where())
 		return;
 
-	if (type == EXTERNAL && msg.what() == EXTERNAL_TEMPERATURE)
+	if (type == EXTERNAL && what_t(msg.what()) == EXTERNAL_TEMPERATURE)
 	{
 		StatusList sl;
 
 		sl[DIM_TEMPERATURE] = msg.whatArgN(1);
 		emit status_changed(sl);
 	}
-	else if (type == INTERNAL && msg.what() == TEMPERATURE)
+	else if (type == INTERNAL && what_t(msg.what()) == TEMPERATURE)
 	{
 		StatusList sl;
 
