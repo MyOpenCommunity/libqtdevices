@@ -34,8 +34,6 @@ class SettingsPage : public BannerPage
 public:
 	SettingsPage(QWidget *parent = 0);
 
-	virtual void inizializza();
-
 	void appendBanner(banner *b);
 	void resetIndex();
 };
@@ -44,11 +42,6 @@ SettingsPage::SettingsPage(QWidget *parent)
 	: BannerPage(parent)
 {
 	buildPage();
-}
-
-void SettingsPage::inizializza()
-{
-	page_content->initBanners();
 }
 
 void SettingsPage::appendBanner(banner *b)

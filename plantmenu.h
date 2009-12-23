@@ -26,7 +26,6 @@ class PlantMenu : public BannerPage
 Q_OBJECT
 public:
 	PlantMenu(const QDomNode &conf);
-	virtual void inizializza();
 	static banner *getBanner(const QDomNode &item_node);
 
 private:

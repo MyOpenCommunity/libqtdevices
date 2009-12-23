@@ -149,6 +149,7 @@ public:
 	BannerPage(QWidget *parent=0);
 
 	virtual void activateLayout();
+	virtual void inizializza();
 
 protected:
 	void buildPage(BannerContent *content, NavigationBar *nav_bar, QWidget *top_widget=0);

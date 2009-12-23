@@ -223,6 +223,12 @@ BannerPage::BannerPage(QWidget *parent)
 {
 }
 
+void BannerPage::inizializza()
+{
+	if (page_content)
+		page_content->initBanners();
+}
+
 void BannerPage::activateLayout()
 {
 	if (page_content)

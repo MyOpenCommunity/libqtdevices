@@ -199,8 +199,9 @@ void Antintrusion::draw()
 
 void Antintrusion::inizializza()
 {
+	BannerPage::inizializza();
+
 	impianto->inizializza();
-	page_content->initBanners();
 	connect(impianto, SIGNAL(clearAlarms()), this, SLOT(doClearAlarms()));
 }
 

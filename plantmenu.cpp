@@ -96,11 +96,6 @@ banner *PlantMenu::getBanner(const QDomNode &item_node)
 	return NULL;
 }
 
-void PlantMenu::inizializza()
-{
-	page_content->initBanners();
-}
-
 NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, BannID type)
 {
 	/*

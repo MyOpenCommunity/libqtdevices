@@ -21,11 +21,6 @@ Settings::Settings(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
-void Settings::inizializza()
-{
-	page_content->initBanners();
-}
-
 banner *Settings::getBanner(const QDomNode &item_node)
 {
 	SkinContext context(getTextChild(item_node, "cid").toInt());

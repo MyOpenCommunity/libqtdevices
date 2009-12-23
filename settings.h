@@ -27,7 +27,6 @@ class Settings : public BannerPage
 Q_OBJECT
 public:
 	Settings(const QDomNode &config_node);
-	virtual void inizializza();
 
 	static banner *getBanner(const QDomNode &item_node);
 private:
