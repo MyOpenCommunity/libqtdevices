@@ -212,11 +212,22 @@ void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
 		Q_ASSERT_X(msg.whatArgCnt() == 2, "Dimmer100Device::parseFrame",
 			"Dimmer 100 status frame must have 2 what args");
 		// convert the value in 0-100 range
-		v.setValue(msg.whatArgN(0) - 100);
-		(*sl)[DIM_DIMMER100_LEVEL] = v;
+		int level = msg.whatArgN(0) - 100;
 
-		v.setValue(msg.whatArgN(1));
-		(*sl)[DIM_DIMMER100_SPEED] = v;
+		// if level == 0 device is off
+		if (level == 0)
+		{
+			v.setValue(false);
+			(*sl)[DIM_DEVICE_ON] = v;
+		}
+		else
+		{
+			v.setValue(level);
+			(*sl)[DIM_DIMMER100_LEVEL] = v;
+
+			v.setValue(msg.whatArgN(1));
+			(*sl)[DIM_DIMMER100_SPEED] = v;
+		}
 	}
 }
 
