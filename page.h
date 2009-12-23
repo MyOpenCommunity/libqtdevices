@@ -102,6 +102,7 @@ signals:
  */
 class BannerPage : public Page
 {
+Q_OBJECT
 public:
 	// the type returned by page_content
 	typedef BannerContent ContentType;
@@ -109,6 +110,9 @@ public:
 	BannerPage(QWidget *parent=0);
 
 	virtual void activateLayout();
+
+signals:
+	void forwardClick();
 
 protected:
 	// used by page_content

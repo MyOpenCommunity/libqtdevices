@@ -60,6 +60,14 @@ banner::banner(QWidget *parent) : QWidget(parent)
 	id = -1;
 }
 
+void banner::gestFrame(char*)
+{
+}
+
+void banner::rispStato(char*)
+{
+}
+
 banner::~banner()
 {
 	delete BannerIcon;
