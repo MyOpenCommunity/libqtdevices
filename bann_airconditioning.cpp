@@ -24,13 +24,13 @@ SingleSplit::SingleSplit(QString descr, AirConditioningDevice *d, NonControlledP
 	{
 		setInternalText("---");
 		air_single = "air_single_temp";
+
+		connect(dev_probe, SIGNAL(status_changed(const StatusList &)),
+				SLOT(status_changed(const StatusList &)));
 	}
 
 	initBanner(img_off, bt_global::skin->getImage(air_single), img_forward, descr);
 	connect(left_button, SIGNAL(clicked()), dev, SLOT(sendOff()));
-
-	connect(dev_probe, SIGNAL(status_changed(const StatusList &)),
-			SLOT(status_changed(const StatusList &)));
 }
 
 void SingleSplit::status_changed(const StatusList &status_list)
