@@ -77,6 +77,9 @@ int main(int argc, char *argv[])
 	TestExternalProbeDevice test_external_probe_device;
 	test_list << &test_external_probe_device;
 
+	TestControlledProbeDevice test_controlled_probe_device;
+	test_list << &test_controlled_probe_device;
+
 	QStringList arglist = app.arguments();
 	QString testingClass;
 	int custom_param_pos = arglist.indexOf("--test-class");

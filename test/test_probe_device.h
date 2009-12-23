@@ -4,6 +4,7 @@
 #include "test_device.h"
 
 class NonControlledProbeDevice;
+class ControlledProbeDevice;
 
 class TestNonControlledProbeDevice : public TestDevice
 {
@@ -33,6 +34,35 @@ private slots:
 
 private:
 	NonControlledProbeDevice *dev;
+};
+
+class TestControlledProbeDevice : public TestDevice
+{
+Q_OBJECT
+private slots:
+	void initTestCase();
+	void cleanupTestCase();
+
+	void sendSetManual();
+	void sendSetAutomatic();
+	void sendSetFancoilSpeed();
+	void sendRequestFancoilStatus();
+	void sendRequestStatus();
+
+	void receiveFancoilStatus();
+	void receiveTemperature();
+	void receiveManual();
+	void receiveAuto();
+	void receiveAntifreeze();
+	void receiveOff();
+	void receiveSetPoint();
+	void receiveLocalOffset();
+	void receiveLocalOff();
+	void receiveLocalAntifreeze();
+	void receiveSetPointAdjusted();
+
+private:
+	ControlledProbeDevice *dev;
 };
 
 #endif // TEST_PROBE_DEVICE_H
