@@ -713,3 +713,8 @@ void BannerNew::hideEvent(QHideEvent *event)
 			p->hide();
 }
 
+void BannerNew::inizializza(bool forza)
+{
+	foreach (Page *p, linked_pages)
+		p->inizializza();
+}
