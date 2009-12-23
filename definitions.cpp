@@ -1,5 +1,7 @@
 #include "main.h"
 
+#include <stdio.h>
+
 // A global pointer to the log file
 FILE *StdLog = stdout;
 
