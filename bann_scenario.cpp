@@ -61,6 +61,11 @@ ModifyScenario::ModifyScenario(QWidget *parent, const QDomNode &config_node) :
 	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(const StatusList &)));
 }
 
+void ModifyScenario::inizializza(bool forza)
+{
+	dev->requestStatus();
+}
+
 void ModifyScenario::activate()
 {
 	dev->activateScenario(scenario_number);
@@ -110,15 +115,29 @@ void ModifyScenario::status_changed(const StatusList &sl)
 			break;
 		case ScenarioDevice::DIM_START:
 		{
-			bool is_start_edit = it.value().toBool();
-			if (is_start_edit)
+			Q_ASSERT_X(it.value().canConvert<ScenarioProgrammingStatus>(), "ModifyScenario::status_changed",
+				"Cannot convert values in DIM_START");
+			ScenarioProgrammingStatus val = it.value().value<ScenarioProgrammingStatus>();
+			if (val.first)
 			{
-				setEditingState(EDIT_ACTIVE);
-				changeLeftFunction(SLOT(stopEditing()));
+				if (val.second == scenario_number)
+				{
+					setEditingState(EDIT_ACTIVE);
+					changeLeftFunction(SLOT(stopEditing()));
+				}
+				else
+				{
+					setState(LOCKED);
+					changeLeftFunction(SLOT(activate()));
+				}
 			}
 			else
 			{
-				setEditingState(EDIT_INACTIVE);
+				if (val.second == scenario_number)
+					setEditingState(EDIT_INACTIVE);
+				else
+					setState(UNLOCKED);
+
 				changeLeftFunction(SLOT(activate()));
 			}
 		}
