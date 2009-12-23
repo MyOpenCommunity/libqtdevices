@@ -535,6 +535,7 @@ TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
 
 void TempLightFixed::inizializza(bool forza)
 {
+	dev->requestStatus();
 	dev->requestVariableTiming();
 }
 
@@ -558,12 +559,10 @@ void TempLightFixed::status_changed(const StatusList &sl)
 		case LightingDevice::DIM_DEVICE_ON:
 		{
 			bool is_on = it.value().toBool();
-			// TODO: what's the state of elapsed time?
-			//setElapsedTime(0);
+			setElapsedTime(0);
 			if (is_on)
 			{
 				setState(ON);
-				requestStatus();
 			}
 			else
 			{
@@ -575,6 +574,15 @@ void TempLightFixed::status_changed(const StatusList &sl)
 		case LightingDevice::DIM_VARIABLE_TIMING:
 		{
 			BtTime t = it.value().value<BtTime>();
+			// all 0's means either the light is on or timer is stopped anyway, so stop request timer
+			if ((t.hour() == 0) && (t.minute() == 0) && (t.second() == 0))
+			{
+				request_timer.stop();
+				break;
+			}
+			// ignore strange frames (taken from old code)
+			if ((t.hour() == 255) && (t.minute() == 255) && (t.second() == 255))
+				break;
 			// convert t to seconds, then compute the number of slices
 			int time = qRound((t.hour() * 3600 + t.minute() * 60 + t.second()) * TLF_TIME_STATES / total_time);
 			setElapsedTime(time);
