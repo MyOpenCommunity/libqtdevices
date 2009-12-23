@@ -17,7 +17,6 @@
 #include <QString>
 #include <QDomNode>
 
-class device;
 class NavigationPage;
 
 
