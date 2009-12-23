@@ -146,7 +146,8 @@ void PullDevice::frame_rx_handler(char *frame)
 {
 	OpenMsg msg;
 	msg.CreateMsgOpen(frame, strlen(frame));
-	manageFrame(msg);
+	if (who.toInt() == msg.who())
+		manageFrame(msg);
 }
 
 void PullDevice::manageFrame(OpenMsg &msg)
