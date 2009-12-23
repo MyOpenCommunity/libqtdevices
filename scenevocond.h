@@ -488,9 +488,14 @@ public:
 	int intValue();
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
+
+	virtual void inizializza();
+
 public slots:
 	//! Invoked when status changes
-	virtual void status_changed(QList<device_status*>);
+	virtual void status_changed(const StatusList &);
+	void status_changed(QList<device_status*>);
+
 private:
 	/// Maximum and minimum values for temperature conditions
 	int max_temp, min_temp;

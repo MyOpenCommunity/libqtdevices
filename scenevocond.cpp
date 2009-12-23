@@ -9,6 +9,7 @@
 #include "skinmanager.h"
 #include "icondispatcher.h" // icons_cache
 #include "xml_functions.h" //getTextChild
+#include "probe_device.h" // NonControlledProbeDevice
 
 #include "lighting_device.h"
 
@@ -1581,7 +1582,7 @@ device_condition_temp::device_condition_temp(QWidget *parent, QString *c, bool e
 	set_current_value(device_condition::get_condition_value());
 
 	Draw();
-	dev = new temperature_probe_notcontrolled(QString(""), external);
+	dev = new NonControlledProbeDevice(QString(""), external ? NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL);
 }
 
 int device_condition_temp::get_min()
@@ -1652,56 +1653,57 @@ void device_condition_temp::get_condition_value(QString& out)
 	out = QString("%1").arg(temp, 4, 10, QChar('0'));
 }
 
-void device_condition_temp::status_changed(QList<device_status*> sl)
+void device_condition_temp::status_changed(QList<device_status*>)
 {
+	// never called
+}
+
+void device_condition_temp::inizializza()
+{
+	device_condition::inizializza();
+
+	// send init frame
+	static_cast<NonControlledProbeDevice *>(dev)->requestStatus();
+}
+
+void device_condition_temp::status_changed(const StatusList &sl)
+{
+	if (!sl.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
+		return;
+
 	// get_condition_value() returns an int, which is Celsius or Fahrenheit
 	int trig_v = device_condition::get_condition_value();
-	stat_var curr_temp(stat_var::TEMPERATURE);
-	qDebug("device_condition_temp::status_changed()");
-	qDebug("trig_v = %d", trig_v);
+	int temp = sl[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
 
-	for (int i = 0; i < sl.size(); ++i)
+	qDebug("Temperature changed");
+	qDebug("Current temperature %d", temp);
+	int measured_temp;
+	switch (temp_scale)
 	{
-		device_status *ds = sl.at(i);
-		switch (ds->get_type())
-		{
-		case device_status::TEMPERATURE_PROBE:
-			qDebug("Temperature changed");
-			ds->read(device_status_temperature_probe::TEMPERATURE_INDEX, curr_temp);
-			qDebug("Current temperature %d", curr_temp.get_val());
-			int measured_temp;
-			switch (temp_scale)
-			{
-			case CELSIUS:
-				measured_temp = bt2Celsius(curr_temp.get_val());
-				break;
-			case FAHRENHEIT:
-				measured_temp = bt2Fahrenheit(curr_temp.get_val());
-				break;
-			default:
-				qWarning("Wrong temperature scale, defaulting to celsius");
-				measured_temp = bt2Celsius(curr_temp.get_val());
-			}
+	case CELSIUS:
+		measured_temp = bt2Celsius(temp);
+		break;
+	case FAHRENHEIT:
+		measured_temp = bt2Fahrenheit(temp);
+		break;
+	default:
+		qWarning("Wrong temperature scale, defaulting to celsius");
+		measured_temp = bt2Celsius(temp);
+	}
 
-			if (measured_temp >= (trig_v - 10) && measured_temp <= (trig_v + 10))
-			{
-				qDebug("Condition triggered");
-				if (!satisfied)
-				{
-					satisfied = true;
-					emit condSatisfied();
-				}
-			}
-			else
-			{
-				qDebug("Condition not triggered");
-				satisfied = false;
-			}
-			break;
-		default:
-			qDebug("device status of unknown type (%d)", ds->get_type());
-			break;
+	if (measured_temp >= (trig_v - 10) && measured_temp <= (trig_v + 10))
+	{
+		qDebug("Condition triggered");
+		if (!satisfied)
+		{
+			satisfied = true;
+			emit condSatisfied();
 		}
+	}
+	else
+	{
+		qDebug("Condition not triggered");
+		satisfied = false;
 	}
 }
 
