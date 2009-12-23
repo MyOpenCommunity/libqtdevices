@@ -20,9 +20,9 @@
 #include "banner.h"
 #include "main.h"  // TemperatureScale
 
-class device_status;
-class device;
+class NonControlledProbeDevice;
 class QLabel;
+typedef QHash<int, QVariant> StatusList;
 
 
 class BannTemperature : public banner
@@ -38,15 +38,15 @@ public:
 	 * \param config The node in the Dom tree that acts as root of this device
 	 * \param dev    The probe (device) connected with this banner
 	 */
-	BannTemperature(QWidget *parent, QString where, QString descr, device *dev);
+	BannTemperature(QWidget *parent, QString where, QString descr, NonControlledProbeDevice *dev);
+
+	virtual void inizializza(bool forza=false);
 
 public slots:
 	/**
 	 * Manages a change in status, like temperature change.
-	 *
-	 * \param list A list of device_status objects
 	 */
-	void status_changed(QList<device_status*> sl);
+	void status_changed(const StatusList &sl);
 private:
 	void setTemperature();
 	/// Probed temperature (arrives from frame_interpreter directly in celsius, not in bt)
@@ -54,6 +54,7 @@ private:
 	/// Temperature label
 	QLabel  *temp_label;
 	TemperatureScale temp_scale;
+	NonControlledProbeDevice *dev;
 };
 
 #endif // BANNTEMPERATURE_H

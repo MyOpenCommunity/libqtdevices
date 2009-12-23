@@ -15,7 +15,6 @@
 #include "banner.h"
 #include "bann1_button.h" // bannPuls
 #include "bann2_buttons.h" // bann2CentralButtons
-#include "device_status.h"
 #include "bttime.h"
 #include "main.h"
 #include "page.h"
@@ -30,7 +29,7 @@ class device;
 class ThermalDevice;
 class ThermalDevice4Zones;
 class ThermalDevice99Zones;
-class temperature_probe_controlled;
+class ControlledProbeDevice;
 class TimeEditMenu;
 class DateEditMenu;
 class ProgramMenu;
@@ -120,7 +119,7 @@ Q_OBJECT
 public:
 	PageSimpleProbe(QDomNode n, TemperatureScale scale = CELSIUS);
 public slots:
-	virtual void status_changed(QList<device_status*> sl);
+	virtual void status_changed(const StatusList &sl);
 protected:
 	void setTemperature(unsigned temp);
 	void setDescription(const QString &descr);
@@ -143,10 +142,13 @@ class PageProbe : public PageSimpleProbe
 {
 Q_OBJECT
 public:
-	PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg,
+	PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
 		TemperatureScale scale = CELSIUS);
+
+	virtual void inizializza();
+
 public slots:
-	virtual void status_changed(QList<device_status*> sl);
+	virtual void status_changed(const StatusList &sl);
 protected:
 	void updatePointLabel();
 	void updateControlState();
@@ -169,7 +171,7 @@ protected:
 	QLabel *local_temp_label;
 
 	QDomNode conf_root;
-	temperature_probe_controlled *dev;
+	ControlledProbeDevice *dev;
 private:
 	/**
 	 * Called when it's needed to set the device to manual operation. A conversion to Celsius degrees is done if needed.
@@ -428,9 +430,9 @@ class PageFancoil : public PageProbe
 {
 Q_OBJECT
 public:
-	PageFancoil(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg,
+	PageFancoil(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
 		TemperatureScale scale = CELSIUS);
-	virtual void status_changed(QList<device_status*> sl);
+	virtual void status_changed(const StatusList &sl);
 protected:
 	void setFancoilStatus(int status);
 private:

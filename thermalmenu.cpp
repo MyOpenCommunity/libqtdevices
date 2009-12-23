@@ -14,6 +14,7 @@
 #include "thermalmenu.h"
 #include "banntemperature.h"
 #include "devices_cache.h" // bt_global::devices_cache
+#include "probe_device.h"
 #include "plantmenu.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bannercontent.h"
@@ -159,7 +160,8 @@ ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 		QString text = getTextChild(item, "descr");
 		if (are_probes_external)
 			addr += "00";
-		device *dev = bt_global::devices_cache.get_temperature_probe(addr, are_probes_external);
+		NonControlledProbeDevice *dev = static_cast<NonControlledProbeDevice *>(
+				bt_global::devices_cache.get_temperature_probe(addr, are_probes_external));
 
 		banner *b = new BannTemperature(this, addr, text, dev);
 

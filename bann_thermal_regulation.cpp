@@ -2,11 +2,11 @@
 #include "bann_thermal_regulation.h"
 #include "fontmanager.h" // bt_global::font
 #include "btbutton.h"
-#include "device.h"
 #include "scaleconversion.h"
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "devices_cache.h" // bt_global::devices_cache
 #include "thermal_device.h"
+#include "probe_device.h"
 #include "datetime.h"
 #include "xml_functions.h"
 #include "thermalmenu.h"
@@ -91,7 +91,7 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, Temperature
 		break;
 	case fs_4z_probe:
 		{
-			temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
+			ControlledProbeDevice *dev = static_cast<ControlledProbeDevice *>(
 					bt_global::devices_cache.get_temperature_probe_controlled(
 						where_composed, THERMO_Z4, false, ind_centrale, simple_address));
 			QString thermr_where = QString("0#") + ind_centrale;
@@ -102,7 +102,7 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, Temperature
 		break;
 	case fs_99z_probe:
 		{
-			temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
+			ControlledProbeDevice *dev = static_cast<ControlledProbeDevice *>(
 					bt_global::devices_cache.get_temperature_probe_controlled(
 						simple_address, THERMO_Z99, false, ind_centrale, simple_address));
 			QString thermr_where = ind_centrale;
@@ -113,7 +113,7 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, Temperature
 		break;
 	case fs_4z_fancoil:
 		{
-			temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
+			ControlledProbeDevice *dev = static_cast<ControlledProbeDevice *>(
 					bt_global::devices_cache.get_temperature_probe_controlled(
 						where_composed, THERMO_Z4, true, ind_centrale, simple_address));
 			QString thermr_where = QString("0#") + ind_centrale;
@@ -124,7 +124,7 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, Temperature
 		break;
 	case fs_99z_fancoil:
 		{
-			temperature_probe_controlled *dev = static_cast<temperature_probe_controlled *>(
+			ControlledProbeDevice *dev = static_cast<ControlledProbeDevice *>(
 					bt_global::devices_cache.get_temperature_probe_controlled(
 						simple_address, THERMO_Z99, true, ind_centrale, simple_address));
 			QString thermr_where = ind_centrale;
@@ -223,22 +223,16 @@ void PageSimpleProbe::setTemperature(unsigned temp)
 	}
 }
 
-void PageSimpleProbe::status_changed(QList<device_status*> sl)
+void PageSimpleProbe::status_changed(const StatusList &sl)
 {
-	for (int i = 0; i < sl.size(); ++i)
-	{
-		device_status *ds = sl.at(i);
-		if (ds->get_type() == device_status::TEMPERATURE_PROBE)
-		{
-			stat_var curr_temp(stat_var::TEMPERATURE);
-			ds->read(device_status_temperature_probe::TEMPERATURE_INDEX, curr_temp);
-			setTemperature(curr_temp.get_val());
-		}
-	}
+	if (!sl.contains(ControlledProbeDevice::DIM_TEMPERATURE))
+		return;
+
+	setTemperature(sl[ControlledProbeDevice::DIM_TEMPERATURE].toInt());
 }
 
 
-PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg,
+PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
 	TemperatureScale scale) : PageSimpleProbe(n, scale),
 	delta_setpoint(false),
 	setpoint_delay(2000),
@@ -253,7 +247,7 @@ PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevi
 	conf_root = n;
 	dev = _dev;
 
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)), SLOT(status_changed(QList<device_status*>)));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(changeStatus()));
 	//install compressor
 	dev->installFrameCompressor(setpoint_delay);
@@ -326,6 +320,11 @@ PageProbe::PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevi
 
 	updatePointLabel();
 	updateControlState();
+}
+
+void PageProbe::inizializza()
+{
+	dev->requestStatus();
 }
 
 void PageProbe::setDeviceToManual()
@@ -404,129 +403,106 @@ void PageProbe::updateControlState()
 	local_temp_label->setText(local_temp);
 }
 
-void PageProbe::status_changed(QList<device_status*> sl)
+void PageProbe::status_changed(const StatusList &sl)
 {
 	bool update = false;
 
-	for (int i = 0; i < sl.size(); ++i)
+	if (sl.contains(ControlledProbeDevice::DIM_SETPOINT))
 	{
-		device_status *ds = sl.at(i);
-		if (ds->get_type() == device_status::TEMPERATURE_PROBE_EXTRA)
+		unsigned sp = sl[ControlledProbeDevice::DIM_SETPOINT].toInt();
+
+		if (delta_setpoint)
 		{
-			stat_var curr_sp(stat_var::SP);
-			ds->read(device_status_temperature_probe_extra::SP_INDEX, curr_sp);
-			if (delta_setpoint)
+			switch (temp_scale)
 			{
-				int sp;
-				switch (temp_scale)
-				{
-				case FAHRENHEIT:
-					sp = static_cast<int>(fahrenheit2Bt(setpoint));
-					break;
-				default:
-					qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
-					// fall through
-				case CELSIUS:
-					sp = static_cast<int>(celsius2Bt(setpoint));
-					break;
-				}
-
-				curr_sp.set_val(sp);
-				ds->write_val(device_status_temperature_probe_extra::SP_INDEX, curr_sp);
-				ds->read(device_status_temperature_probe_extra::SP_INDEX, curr_sp);
-				delta_setpoint = false;
+			case FAHRENHEIT:
+				sp = fahrenheit2Bt(sp);
+				break;
+			default:
+				qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
+				// fall through
+			case CELSIUS:
+				sp = celsius2Bt(sp);
+				break;
 			}
 
-			stat_var curr_local(stat_var::LOCAL);
-			ds->read(device_status_temperature_probe_extra::LOCAL_INDEX, curr_local);
-			if (curr_local.initialized())
-			{
-				update = true;
-				if ((curr_local.get_val() >= 0  && curr_local.get_val() <= 3) ||
-						(curr_local.get_val() >= 11 && curr_local.get_val() <= 13))
-				{
-					local_temp = QString::number(curr_local.get_val() % 10);
-					if (curr_local.get_val() >= 11)
-						local_temp = local_temp.insert(0, "-");
-					else if (curr_local.get_val() >= 1)
-						local_temp = local_temp.insert(0, "+");
+			delta_setpoint = false;
+		}
 
-					isOff = false;
-					isAntigelo = false;
-				}
-				else if (curr_local.get_val() == 4)
-				{
-					local_temp = "0";
-					isOff = true;
-					isAntigelo = false;
-				}
-				else if (curr_local.get_val() == 5)
-				{
-					local_temp = "0";
-					isOff = false;
-					isAntigelo = true;
-				}
-				else
-				{
-					update = false;
-					qDebug("[TERMO] PageProbe::status_changed(): local status case not handled!");
-				}
-			}
+		switch (temp_scale)
+		{
+		case CELSIUS:
+			setpoint = bt2Celsius(sp);
+			break;
+		case FAHRENHEIT:
+			setpoint = bt2Fahrenheit(sp);
+			break;
+		default:
+			qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
+			setpoint = bt2Celsius(sp);
+		}
 
-			if (curr_sp.initialized() && !delta_setpoint)
-			{
-				switch (temp_scale)
-				{
-				case CELSIUS:
-					setpoint = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
-					break;
-				case FAHRENHEIT:
-					setpoint = bt2Fahrenheit(static_cast<unsigned>(curr_sp.get_val()));
-					break;
-				default:
-					qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
-					setpoint = bt2Celsius(static_cast<unsigned>(curr_sp.get_val()));
-				}
-				updatePointLabel();
-			}
+		updatePointLabel();
+	}
 
-			stat_var curr_stat(stat_var::STAT);
-			ds->read(device_status_temperature_probe_extra::STAT_INDEX, curr_stat);
-			if (curr_stat.initialized())
-			{
-				switch (curr_stat.get_val())
-				{
-				case device_status_temperature_probe_extra::S_MAN:
-					status = MANUAL;
-					nav_bar->forward_button->setImage(probe_icon_auto);
-					update = true;
-					break;
-				case device_status_temperature_probe_extra::S_AUTO:
-					status = AUTOMATIC;
-					nav_bar->forward_button->setImage(probe_icon_manual);
-					update = true;
-					break;
-				case device_status_temperature_probe_extra::S_ANTIGELO:
-				case device_status_temperature_probe_extra::S_TERM:
-				case device_status_temperature_probe_extra::S_GEN:
-					isOff = false;
-					isAntigelo = true;
-					update = true;
-					break;
-				case device_status_temperature_probe_extra::S_OFF:
-					isOff = true;
-					isAntigelo = false;
-					update = true;
-					break;
-				case device_status_temperature_probe_extra::S_NONE:
-					status = AUTOMATIC;
-					update = true;
-					break;
-				default:
-					update = false;
-					break;
-				}
-			}
+	if (sl.contains(ControlledProbeDevice::DIM_LOCAL_STATUS))
+	{
+		int stat = sl[ControlledProbeDevice::DIM_LOCAL_STATUS].toInt();
+
+		if (stat == ControlledProbeDevice::ST_NORMAL)
+		{
+			int off = sl[ControlledProbeDevice::DIM_OFFSET].toInt();
+
+			isOff = false;
+			isAntigelo = false;
+			if (off != 0)
+				local_temp.sprintf("%+d", off);
+			else
+				local_temp = "0";
+		}
+		else if (stat == ControlledProbeDevice::ST_OFF)
+		{
+			local_temp = "0";
+			isOff = true;
+			isAntigelo = false;
+		}
+		else if (stat == ControlledProbeDevice::ST_PROTECTION)
+		{
+			local_temp = "0";
+			isOff = false;
+			isAntigelo = true;
+		}
+
+		update = true;
+	}
+
+	if (sl.contains(ControlledProbeDevice::DIM_STATUS))
+	{
+		switch (sl[ControlledProbeDevice::DIM_STATUS].toInt())
+		{
+		case ControlledProbeDevice::ST_MANUAL:
+			status = MANUAL;
+			nav_bar->forward_button->setImage(probe_icon_auto);
+			update = true;
+			break;
+		case ControlledProbeDevice::ST_AUTO:
+			status = AUTOMATIC;
+			nav_bar->forward_button->setImage(probe_icon_manual);
+			update = true;
+			break;
+		case ControlledProbeDevice::ST_PROTECTION:
+			isOff = false;
+			isAntigelo = true;
+			update = true;
+			break;
+		case ControlledProbeDevice::ST_OFF:
+			isOff = true;
+			isAntigelo = false;
+			update = true;
+			break;
+		default:
+			update = false;
+			break;
 		}
 	}
 
@@ -536,11 +512,11 @@ void PageProbe::status_changed(QList<device_status*> sl)
 	PageSimpleProbe::status_changed(sl);
 }
 
-PageFancoil::PageFancoil(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg,
+PageFancoil::PageFancoil(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
 	TemperatureScale scale) : PageProbe(n, _dev, thermo_reg, scale), fancoil_buttons(this)
 {
 	dev = _dev;
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)), SLOT(status_changed(QList<device_status*>)));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 
 	createFancoilButtons();
 	fancoil_buttons.setExclusive(true);
@@ -587,23 +563,17 @@ void PageFancoil::handleFancoilButtons(int pressedButton)
 	dev->requestFancoilStatus();
 }
 
-void PageFancoil::status_changed(QList<device_status*> sl)
+void PageFancoil::status_changed(const StatusList &sl)
 {
-	for (int i = 0; i < sl.size(); ++i)
+	if (sl.contains(ControlledProbeDevice::DIM_FANCOIL_STATUS))
 	{
-		device_status *ds = sl.at(i);
-		if (ds->get_type() == device_status::FANCOIL)
-		{
+		int spd = sl[ControlledProbeDevice::DIM_FANCOIL_STATUS].toInt();
 
-			stat_var speed_var(stat_var::FANCOIL_SPEED);
-			ds->read((int)device_status_fancoil::SPEED_INDEX, speed_var);
-
-			// Set the fancoil Button in the buttons bar
-			if (speed_to_btn_tbl.contains(speed_var.get_val()))
-				setFancoilStatus(speed_to_btn_tbl[speed_var.get_val()]);
-			else
-				qDebug("Fancoil speed val out of range (%d)", speed_var.get_val());
-		}
+		// Set the fancoil Button in the buttons bar
+		if (speed_to_btn_tbl.contains(spd))
+			setFancoilStatus(speed_to_btn_tbl[spd]);
+		else
+			qDebug("Fancoil speed val out of range (%d)", spd);
 	}
 
 	PageProbe::status_changed(sl);

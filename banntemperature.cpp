@@ -10,8 +10,7 @@
 
 #include "banntemperature.h"
 #include "fontmanager.h" // bt_global::font
-#include "device.h"
-#include "device_status.h"
+#include "probe_device.h"
 #include "main.h" // bt_global::config
 #include "scaleconversion.h"
 
@@ -19,7 +18,9 @@
 #include <QHBoxLayout>
 
 
-BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, device *dev) : banner(parent)
+BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, NonControlledProbeDevice *_dev)
+	: banner(parent),
+	dev(_dev)
 {
 	temperature = -235;
 	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
@@ -39,23 +40,22 @@ BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, 
 	l->addWidget(descr_label, 0, Qt::AlignLeft);
 	l->addWidget(temp_label, 0, Qt::AlignRight);
 
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
-			SLOT(status_changed(QList<device_status*>)));
+	connect(dev, SIGNAL(status_changed(const StatusList &)),
+			SLOT(status_changed(const StatusList &)));
 }
 
-void BannTemperature::status_changed(QList<device_status*> sl)
+void BannTemperature::inizializza(bool forza)
 {
-	for (int i = 0; i < sl.size(); ++i)
-	{
-		device_status *ds = sl.at(i);
-		if (ds->get_type() == device_status::TEMPERATURE_PROBE)
-		{
-			stat_var curr_temp(stat_var::TEMPERATURE);
-			ds->read(device_status_temperature_probe::TEMPERATURE_INDEX, curr_temp);
-			temperature = curr_temp.get_val();
-			setTemperature();
-		}
-	}
+	dev->requestStatus();
+}
+
+void BannTemperature::status_changed(const StatusList &sl)
+{
+	if (!sl.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
+		return;
+
+	temperature = sl[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
+	setTemperature();
 }
 
 void BannTemperature::setTemperature()

@@ -1,5 +1,6 @@
 #include "devices_cache.h"
 #include "thermal_device.h"
+#include "probe_device.h"
 
 #include <QWidget>
 #include <QDebug>
@@ -257,16 +258,15 @@ device *DevicesCache::get_thermal_regulator(QString where, thermo_type_t type)
 device *DevicesCache::get_temperature_probe_controlled(QString w, thermo_type_t type,
 		bool fancoil, QString ind_centrale, QString indirizzo)
 {
-	QByteArray buf_centrale = ind_centrale.toAscii();
-	QByteArray buf_indirizzo = indirizzo.toAscii();
-
 	QString k = get_device_key(QString("4"), w);
 	qDebug() << "DevicesCache::get_temperature_probe_controlled(), key=" << k
 		<< " type=" << type << " fancoil=" << (fancoil ? "yes" : "no");
 	device *out = (*this)[k];
 	if (!out)
 	{
-		out = new temperature_probe_controlled(w, type, fancoil, buf_centrale.constData(), buf_indirizzo.constData());
+		out = new ControlledProbeDevice(w, ind_centrale, indirizzo,
+						static_cast<ControlledProbeDevice::CentralType>(type),
+						fancoil ? ControlledProbeDevice::FANCOIL : ControlledProbeDevice::NORMAL);
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
 	}
@@ -284,7 +284,7 @@ device *DevicesCache::get_temperature_probe(QString w, bool external)
 	device *out = (*this)[k];
 	if (!out)
 	{
-		out = new temperature_probe_notcontrolled(w, external);
+		out = new NonControlledProbeDevice(w, external ? NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL);
 		qDebug("device is not there, creating device %p", out);
 		(*this)[k] = out;
 	}
