@@ -5,7 +5,7 @@
 
 enum what_t
 {
-	TEMPERATURE = 0,
+	INTERNAL_TEMPERATURE = 0,
 	EXTERNAL_TEMPERATURE = 15
 };
 
@@ -40,7 +40,7 @@ void NonControlledProbeDevice::manageFrame(OpenMsg &msg)
 		sl[DIM_TEMPERATURE] = msg.whatArgN(1);
 		emit status_changed(sl);
 	}
-	else if (type == INTERNAL && what_t(msg.what()) == TEMPERATURE)
+	else if (type == INTERNAL && what_t(msg.what()) == INTERNAL_TEMPERATURE)
 	{
 		StatusList sl;
 
