@@ -320,17 +320,10 @@ void Dimmer100New::status_changed(const StatusList &sl)
 			break;
 		case LightingDevice::DIM_DIMMER100_LEVEL:
 		{
-			int l = it.value().toInt();
 			// light values are between 0 (min) and 100 (max)
-			light_value = l;
-			if (light_value == 0)
-				setState(OFF);
-			else
-			{
-				light_value = roundTo5(light_value);
-				setLevel(light_value);
-				setState(ON);
-			}
+			light_value = roundTo5(it.value().toInt());
+			setLevel(light_value);
+			setState(ON);
 		}
 			break;
 		}
