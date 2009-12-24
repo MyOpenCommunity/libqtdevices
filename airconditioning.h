@@ -97,4 +97,15 @@ private:
 	void loadScenarios(const QDomNode &config_node);
 };
 
+
+class AdvancedGeneralSplitPage : public BannerPage
+{
+Q_OBJECT
+public:
+	AdvancedGeneralSplitPage(const QDomNode &config_node);
+
+private:
+	void loadScenarios(const QDomNode &config_node);
+};
+
 #endif // AIR_CONDITIONING_H

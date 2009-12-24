@@ -14,6 +14,10 @@
 #include <QDomNode>
 #include <QString>
 
+typedef AdvancedAirConditioningDevice::Mode Mode;
+typedef AdvancedAirConditioningDevice::Swing Swing;
+typedef AdvancedAirConditioningDevice::Velocity Velocity;
+
 
 void AirConditioningPrivate::DeviceContainer::append(AirConditioningDevice *d)
 {
@@ -91,8 +95,9 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	case AIR_GENERAL_ADV:
 	{
 		// TODO: replace BannOnOffNew with a specialized class
-		BannOnOffNew *bann = new BannOnOffNew(0);
+		GeneralSplit *bann = new GeneralSplit(descr);
 		bann->initBanner(img_off, img_air_gen, img_forward, descr);
+		bann->connectRightButton(new AdvancedGeneralSplitPage(item_node));
 		b = bann;
 		break;
 	}
@@ -232,3 +237,28 @@ void GeneralSplitPage::loadScenarios(const QDomNode &config_node)
 	}
 }
 
+
+AdvancedGeneralSplitPage::AdvancedGeneralSplitPage(const QDomNode &config_node)
+{
+	buildPage();
+	loadScenarios(config_node);
+}
+
+void AdvancedGeneralSplitPage::loadScenarios(const QDomNode &config_node)
+{
+	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
+	{
+		AdvancedGeneralSplitScenario *b = new AdvancedGeneralSplitScenario(getTextChild(scenario, "descr"));
+		foreach (const QDomNode &split, getChildren(scenario, "split"))
+		{
+			AdvancedAirConditioningDevice *dev = new AdvancedAirConditioningDevice(getTextChild(split, "where"));
+			Mode m = static_cast<Mode>(getTextChild(split, "mode").toInt());
+			int t = getTextChild(split, "setpoint").toInt();
+			Velocity v = static_cast<Velocity>(getTextChild(split, "speed").toInt());
+			Swing s = static_cast<Swing>(getTextChild(split, "fan_swing").toInt());
+			b->appendDevice(AirConditionerStatus(m, t, v, s), bt_global::add_device_to_cache(dev));
+		}
+		page_content->appendBanner(b);
+
+	}
+}
