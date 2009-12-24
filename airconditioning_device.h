@@ -35,6 +35,7 @@ private:
 
 class AdvancedAirConditioningDevice : public device, public AirConditioningInterface
 {
+friend class TestAdvancedAirConditioningDevice;
 Q_OBJECT
 public:
 	AdvancedAirConditioningDevice(QString where);

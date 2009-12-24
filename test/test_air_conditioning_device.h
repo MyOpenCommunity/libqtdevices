@@ -23,6 +23,19 @@ private:
 	AirConditioningDevice *dev;
 };
 
+class TestAdvancedAirConditioningDevice : public TestDevice
+{
+Q_OBJECT
+private slots:
+	void initTestCase();
+	void cleanupTestCase();
 
+	void sendRequestStatus();
+
+	void testStatusToString();
+
+private:
+	AdvancedAirConditioningDevice *dev;
+};
 
 #endif // TESTAIRCONDITIONINGDEVICE_H

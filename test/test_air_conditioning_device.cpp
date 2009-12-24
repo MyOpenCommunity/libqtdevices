@@ -52,3 +52,35 @@ void TestAirConditioningDevice::sendTurnOff()
 	dev->sendOff();
 	compareCommand(off_cmd);
 }
+
+
+#define ADVANCED_AIR_COND_DIM 22
+typedef AdvancedAirConditioningDevice::AirConditionerStatus AirConditionerStatus;
+
+void TestAdvancedAirConditioningDevice::initTestCase()
+{
+	dev = new AdvancedAirConditioningDevice("45#1");
+}
+
+void TestAdvancedAirConditioningDevice::cleanupTestCase()
+{
+	delete dev;
+}
+
+void TestAdvancedAirConditioningDevice::sendRequestStatus()
+{
+	dev->requestStatus();
+	client_request->flush();
+	QString frame = QString ("*#4*%1*%2##").arg(dev->where).arg(ADVANCED_AIR_COND_DIM);
+	QCOMPARE(server->frameRequest(), frame);
+}
+
+void TestAdvancedAirConditioningDevice::testStatusToString()
+{
+	int temp = 300;
+	AirConditionerStatus st(AdvancedAirConditioningDevice::MODE_OFF, temp, AdvancedAirConditioningDevice::VEL_MED,
+		AdvancedAirConditioningDevice::SWING_ON);
+	QString str = dev->statusToString(st);
+	QString check = QString("22*0***");
+	QCOMPARE(str, check);
+}

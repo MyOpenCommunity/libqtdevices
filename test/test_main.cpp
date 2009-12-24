@@ -57,6 +57,9 @@ int main(int argc, char *argv[])
 	TestAirConditioningDevice test_air_conditioning_device;
 	test_list << &test_air_conditioning_device;
 
+	TestAdvancedAirConditioningDevice test_advanced_air_conditioning_device;
+	test_list << &test_advanced_air_conditioning_device;
+
 	QStringList arglist = app.arguments();
 	QString testingClass;
 	int custom_param_pos = arglist.indexOf("--test-class");
