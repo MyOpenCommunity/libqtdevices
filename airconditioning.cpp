@@ -76,6 +76,7 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 		break;
 	}
 	case AIR_GENERAL:
+	case AIR_GENERAL_ADV:
 	{
 		GeneralSplit *bann = new GeneralSplit(descr);
 		QObject::connect(bann, SIGNAL(sendGeneralOff()), &device_container, SLOT(sendGeneralOff()));
@@ -89,15 +90,6 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 		BannOnOffNew *bann = new BannOnOffNew(0);
 		bann->initBanner(img_off, img_air_single, img_forward, descr);
 		bann->connectRightButton(new AdvancedSplitPage(item_node));
-		b = bann;
-		break;
-	}
-	case AIR_GENERAL_ADV:
-	{
-		// TODO: replace BannOnOffNew with a specialized class
-		GeneralSplit *bann = new GeneralSplit(descr);
-		bann->initBanner(img_off, img_air_gen, img_forward, descr);
-		bann->connectRightButton(new AdvancedGeneralSplitPage(item_node));
 		b = bann;
 		break;
 	}
