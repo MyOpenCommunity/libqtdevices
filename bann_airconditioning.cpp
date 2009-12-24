@@ -159,7 +159,7 @@ GeneralSplitScenario::GeneralSplitScenario(QString descr) : BannLeft(0)
 	connect(left_button, SIGNAL(clicked()), SLOT(sendScenarioCommand()));
 }
 
-void GeneralSplitScenario::appendDevice(QString cmd, AirConditioningDevice *d)
+void GeneralSplitScenario::appendDevice(QString cmd, AirConditioningInterface *d)
 {
 	devices_list.append(qMakePair(cmd, d));
 }
@@ -167,24 +167,5 @@ void GeneralSplitScenario::appendDevice(QString cmd, AirConditioningDevice *d)
 void GeneralSplitScenario::sendScenarioCommand()
 {
 	for (int i = 0; i < devices_list.size(); ++i)
-		devices_list[i].second->sendCommand(devices_list[i].first);
-}
-
-
-AdvancedGeneralSplitScenario::AdvancedGeneralSplitScenario(QString descr) :
-	BannLeft(0)
-{
-	initBanner(bt_global::skin->getImage("split_cmd"), descr);
-	connect(left_button, SIGNAL(clicked()), SLOT(setScenarioStatus()));
-}
-
-void AdvancedGeneralSplitScenario::appendDevice(AirConditionerStatus st, AdvancedAirConditioningDevice *d)
-{
-	devices_list.append(qMakePair(st, d));
-}
-
-void AdvancedGeneralSplitScenario::setScenarioStatus()
-{
-	for (int i = 0; i < devices_list.size(); ++i)
-		devices_list[i].second->setStatus(devices_list[i].first);
+		devices_list[i].second->activateScenario(devices_list[i].first);
 }

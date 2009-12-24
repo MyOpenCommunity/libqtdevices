@@ -137,31 +137,13 @@ class GeneralSplitScenario : public BannLeft
 Q_OBJECT
 public:
 	GeneralSplitScenario(QString descr);
-	void appendDevice(QString cmd, AirConditioningDevice *d);
+	void appendDevice(QString cmd, AirConditioningInterface *d);
 
 private:
-	QList<QPair<QString, AirConditioningDevice*> > devices_list;
+	QList<QPair<QString, AirConditioningInterface*> > devices_list;
 
 private slots:
 	void sendScenarioCommand();
 };
-
-/**
- * Banner for an advanced scenario of a general split
- */
-class AdvancedGeneralSplitScenario : public BannLeft
-{
-Q_OBJECT
-public:
-	AdvancedGeneralSplitScenario(QString descr);
-	void appendDevice(AirConditionerStatus st, AdvancedAirConditioningDevice *d);
-
-private slots:
-	void setScenarioStatus();
-
-private:
-	QList<QPair<AirConditionerStatus, AdvancedAirConditioningDevice*> > devices_list;
-};
-
 
 #endif // BANN_AIRCONDITIONING_H
