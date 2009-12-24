@@ -11,7 +11,7 @@ TARGET = test
 CONFIG   += console
 CONFIG   -= app_bundle
 
-CONFIG += debug
+CONFIG += debug silent
 CONFIG -= release
 
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
@@ -22,6 +22,7 @@ LIBS+= -L ../../common_files/lib/x86 -lcommon -lssl
 
 HEADERS += device_tester.h \
             test_automation_device.h \
+            test_air_conditioning_device.h \
             test_checkaddress.h \
             test_scenario_device.h \
             test_device.h \
@@ -38,6 +39,7 @@ HEADERS += device_tester.h \
             ../landevice.h \
             ../pulldevice.h \
             ../automation_device.h \
+            ../airconditioning_device.h \
             ../scenario_device.h \
             ../probe_device.h \
             ../device.h \
@@ -52,6 +54,7 @@ HEADERS += device_tester.h \
 SOURCES += test_main.cpp \
             device_tester.cpp \
             test_automation_device.cpp \
+            test_air_conditioning_device.cpp \
             test_checkaddress.cpp \
             test_scenario_device.cpp \
             test_device.cpp \
@@ -60,7 +63,7 @@ SOURCES += test_main.cpp \
             test_lighting_device.cpp \
             test_poweramplifier_device.cpp \
             test_pull_manager.cpp \
-            test_probe_device.cpp \            
+            test_probe_device.cpp \
             openserver_mock.cpp \
             ../energy_device.cpp \
             ../lighting_device.cpp \
@@ -68,8 +71,9 @@ SOURCES += test_main.cpp \
             ../landevice.cpp \
             ../pulldevice.cpp \
             ../automation_device.cpp \
+            ../airconditioning_device.cpp \
             ../scenario_device.cpp \
-            ../probe_device.cpp \            
+            ../probe_device.cpp \
             ../device.cpp \
             ../device_status.cpp \
             ../frame_interpreter.cpp \
