@@ -27,6 +27,11 @@ void AirConditioningDevice::setOffCommand(QString off_cmd)
 	off = off_cmd;
 }
 
+void AirConditioningDevice::turnOff() const
+{
+	sendOff();
+}
+
 
 
 AdvancedAirConditioningDevice::AdvancedAirConditioningDevice(QString where) : device("4", where)
@@ -74,4 +79,9 @@ void AdvancedAirConditioningDevice::frame_rx_handler(char *frame)
 
 	if (who.toInt() != msg.who() || msg.where() != where.toInt())
 		return;
+}
+
+void AdvancedAirConditioningDevice::turnOff() const
+{
+	// TODO: to be implemented
 }

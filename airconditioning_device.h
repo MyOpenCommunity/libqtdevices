@@ -3,8 +3,14 @@
 
 #include "device.h"
 
+class AirConditioningInterface
+{
+public:
+	virtual void turnOff() const = 0;
+};
 
-class AirConditioningDevice : public device
+
+class AirConditioningDevice : public device, public AirConditioningInterface
 {
 Q_OBJECT
 public:
@@ -12,6 +18,7 @@ public:
 	void sendCommand(QString cmd) const;
 
 	void setOffCommand(QString off_cmd);
+	virtual void turnOff() const;
 
 public slots:
 	void sendOff() const;
@@ -21,7 +28,7 @@ private:
 };
 
 
-class AdvancedAirConditioningDevice : public device
+class AdvancedAirConditioningDevice : public device, public AirConditioningInterface
 {
 Q_OBJECT
 public:
@@ -67,6 +74,7 @@ public:
 
 	void setStatus(Mode mode, int temp, Velocity vel, Swing swing);
 	void setStatus(AirConditionerStatus st);
+	virtual void turnOff() const;
 
 public slots:
 	//! receive a frame
