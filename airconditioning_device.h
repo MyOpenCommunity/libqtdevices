@@ -7,6 +7,8 @@ class AirConditioningInterface
 {
 public:
 	virtual void turnOff() const = 0;
+	template<class T> QString commandToString(const T &info);
+	virtual void activateScenario(const QString &what) const = 0;
 };
 
 
@@ -15,10 +17,12 @@ class AirConditioningDevice : public device, public AirConditioningInterface
 Q_OBJECT
 public:
 	AirConditioningDevice(QString where);
-	void sendCommand(QString cmd) const;
+	void sendCommand(const QString &cmd) const;
 
 	void setOffCommand(QString off_cmd);
 	virtual void turnOff() const;
+	virtual void activateScenario(const QString &what) const;
+	template<class T> QString commandToString(const T &info) { return info; };
 
 public slots:
 	void sendOff() const;
@@ -75,10 +79,15 @@ public:
 	void setStatus(Mode mode, int temp, Velocity vel, Swing swing);
 	void setStatus(AirConditionerStatus st);
 	virtual void turnOff() const;
+	virtual void activateScenario(const QString &what) const;
+	template<class T> QString commandToString(const T &info) { return statusToString(info); };
 
 public slots:
 	//! receive a frame
 	void frame_rx_handler(char *frame);
+
+private:
+	QString statusToString(const AirConditionerStatus &st) const;
 };
 
 #endif // AIRCONDITIONING_DEVICE_H
