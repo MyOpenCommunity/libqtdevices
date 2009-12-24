@@ -76,8 +76,8 @@ public:
 
 	void requestStatus() const;
 
-	void setStatus(Mode mode, int temp, Velocity vel, Swing swing);
-	void setStatus(AirConditionerStatus st);
+	void setStatus(Mode mode, int temp, Velocity vel, Swing swing) const;
+	void setStatus(AirConditionerStatus st) const;
 	virtual void turnOff() const;
 	virtual void activateScenario(const QString &what) const;
 	template<class T> QString commandToString(const T &info) { return statusToString(info); };

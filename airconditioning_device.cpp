@@ -71,14 +71,14 @@ QString AdvancedAirConditioningDevice::statusToString(const AirConditionerStatus
 	return what;
 }
 
-void AdvancedAirConditioningDevice::setStatus(Mode mode, int temp, Velocity vel, Swing swing)
+void AdvancedAirConditioningDevice::setStatus(Mode mode, int temp, Velocity vel, Swing swing) const
 {
 	AirConditionerStatus st(mode, temp, vel, swing);
 	setStatus(st);
 }
 
 // overload for the above function, useful to pass all the parameters around packed together
-void AdvancedAirConditioningDevice::setStatus(AirConditionerStatus st)
+void AdvancedAirConditioningDevice::setStatus(AirConditionerStatus st) const
 {
 	QString what = statusToString(st);
 	sendFrame(createWriteRequestOpen(who, what, where));
@@ -95,10 +95,10 @@ void AdvancedAirConditioningDevice::frame_rx_handler(char *frame)
 
 void AdvancedAirConditioningDevice::turnOff() const
 {
-	// TODO: to be implemented
+	setStatus(MODE_OFF, 0, VEL_AUTO, SWING_OFF);
 }
 
 void AdvancedAirConditioningDevice::activateScenario(const QString &what) const
 {
-	// TODO: to be implemented
+	sendFrame(createWriteRequestOpen(who, what, where));
 }
