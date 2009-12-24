@@ -3,13 +3,14 @@
 
 #include "bann2_buttons.h" // BannOnOffNew, bann2But
 #include "bann1_button.h" // BannStates
+#include "airconditioning_device.h"
 
 #include <QList>
 #include <QPair>
 #include <QHash>
 #include <QString>
 
-class AirConditioningDevice;
+typedef AdvancedAirConditioningDevice::AirConditionerStatus AirConditionerStatus;
 class NonControlledProbeDevice;
 
 
@@ -143,6 +144,23 @@ private:
 
 private slots:
 	void sendScenarioCommand();
+};
+
+/**
+ * Banner for an advanced scenario of a general split
+ */
+class AdvancedGeneralSplitScenario : public BannLeft
+{
+Q_OBJECT
+public:
+	AdvancedGeneralSplitScenario(QString descr);
+	void appendDevice(AirConditionerStatus st, AdvancedAirConditioningDevice *d);
+
+private slots:
+	void setScenarioStatus();
+
+private:
+	QList<QPair<AirConditionerStatus, AdvancedAirConditioningDevice*> > devices_list;
 };
 
 
