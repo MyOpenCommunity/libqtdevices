@@ -19,15 +19,15 @@ typedef AdvancedAirConditioningDevice::Swing Swing;
 typedef AdvancedAirConditioningDevice::Velocity Velocity;
 
 
-void AirConditioningPrivate::DeviceContainer::append(AirConditioningDevice *d)
+void AirConditioningPrivate::DeviceContainer::append(AirConditioningInterface *d)
 {
 	devices_list.append(d);
 }
 
 void AirConditioningPrivate::DeviceContainer::sendGeneralOff()
 {
-	foreach (AirConditioningDevice *dev, devices_list)
-		dev->sendOff();
+	foreach (AirConditioningInterface *dev, devices_list)
+		dev->turnOff();
 }
 
 AirConditioningPrivate::DeviceContainer device_container;
