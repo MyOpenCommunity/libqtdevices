@@ -3,15 +3,27 @@
 
 #include "device.h"
 
-
-class AirConditioningDevice : public device
+class AirConditioningInterface
 {
+public:
+	virtual void turnOff() const = 0;
+	template<class T> QString commandToString(const T &info);
+	virtual void activateScenario(const QString &what) const = 0;
+};
+
+
+class AirConditioningDevice : public device, public AirConditioningInterface
+{
+friend class TestAirConditioningDevice;
 Q_OBJECT
 public:
 	AirConditioningDevice(QString where);
-	void sendCommand(QString cmd) const;
+	void sendCommand(const QString &cmd) const;
 
 	void setOffCommand(QString off_cmd);
+	virtual void turnOff() const;
+	virtual void activateScenario(const QString &what) const;
+	template<class T> QString commandToString(const T &info) { return info; };
 
 public slots:
 	void sendOff() const;
@@ -21,9 +33,9 @@ private:
 };
 
 
-
-class AdvancedAirConditioningDevice : public device
+class AdvancedAirConditioningDevice : public device, public AirConditioningInterface
 {
+friend class TestAdvancedAirConditioningDevice;
 Q_OBJECT
 public:
 	AdvancedAirConditioningDevice(QString where);
@@ -54,13 +66,30 @@ public:
 		SWING_ON = 1
 	};
 
+
+	struct AirConditionerStatus
+	{
+		AirConditionerStatus(Mode m, int t, Velocity v, Swing s) : mode(m), temp(t), vel(v), swing(s) { }
+		Mode mode;
+		int temp;
+		Velocity vel;
+		Swing swing;
+	};
+
 	void requestStatus() const;
 
-	void setStatus(Mode mode, int temp, Velocity vel, Swing swing);
+	void setStatus(Mode mode, int temp, Velocity vel, Swing swing) const;
+	void setStatus(AirConditionerStatus st) const;
+	virtual void turnOff() const;
+	virtual void activateScenario(const QString &what) const;
+	template<class T> QString commandToString(const T &info) { return statusToString(info); };
 
 public slots:
 	//! receive a frame
 	void frame_rx_handler(char *frame);
+
+private:
+	QString statusToString(const AirConditionerStatus &st) const;
 };
 
 #endif // AIRCONDITIONING_DEVICE_H

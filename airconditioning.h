@@ -3,6 +3,7 @@
 
 #include "page.h"
 
+class AirConditioningInterface;
 class AirConditioningDevice;
 class banner;
 class QDomNode;
@@ -17,13 +18,13 @@ namespace AirConditioningPrivate
 	{
 	Q_OBJECT
 	public:
-		void append(AirConditioningDevice *d);
+		void append(AirConditioningInterface *d);
 
 	public slots:
 		void sendGeneralOff();
 
 	private:
-		QList<AirConditioningDevice*> devices_list;
+		QList<AirConditioningInterface*> devices_list;
 	};
 }
 
@@ -91,6 +92,17 @@ class GeneralSplitPage : public BannerPage
 Q_OBJECT
 public:
 	GeneralSplitPage(const QDomNode &config_node);
+
+private:
+	void loadScenarios(const QDomNode &config_node);
+};
+
+
+class AdvancedGeneralSplitPage : public BannerPage
+{
+Q_OBJECT
+public:
+	AdvancedGeneralSplitPage(const QDomNode &config_node);
 
 private:
 	void loadScenarios(const QDomNode &config_node);

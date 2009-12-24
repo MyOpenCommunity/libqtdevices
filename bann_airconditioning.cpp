@@ -1,7 +1,6 @@
 #include "bann_airconditioning.h"
 #include "skinmanager.h" // bt_global::skin
 #include "fontmanager.h" // bt_global::font
-#include "airconditioning_device.h"
 #include "btbutton.h"
 #include "probe_device.h"
 #include "main.h" // bt_global::config
@@ -9,7 +8,6 @@
 
 #include <QLabel> // BannerText
 #include <QDebug>
-
 
 SingleSplit::SingleSplit(QString descr, AirConditioningDevice *d, NonControlledProbeDevice *d_probe) : BannOnOffNew(0)
 {
@@ -161,7 +159,7 @@ GeneralSplitScenario::GeneralSplitScenario(QString descr) : BannLeft(0)
 	connect(left_button, SIGNAL(clicked()), SLOT(sendScenarioCommand()));
 }
 
-void GeneralSplitScenario::appendDevice(QString cmd, AirConditioningDevice *d)
+void GeneralSplitScenario::appendDevice(QString cmd, AirConditioningInterface *d)
 {
 	devices_list.append(qMakePair(cmd, d));
 }
@@ -169,6 +167,5 @@ void GeneralSplitScenario::appendDevice(QString cmd, AirConditioningDevice *d)
 void GeneralSplitScenario::sendScenarioCommand()
 {
 	for (int i = 0; i < devices_list.size(); ++i)
-		devices_list[i].second->sendCommand(devices_list[i].first);
+		devices_list[i].second->activateScenario(devices_list[i].first);
 }
-

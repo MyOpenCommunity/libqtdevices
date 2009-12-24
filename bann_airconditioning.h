@@ -3,13 +3,14 @@
 
 #include "bann2_buttons.h" // BannOnOffNew, bann2But
 #include "bann1_button.h" // BannStates
+#include "airconditioning_device.h"
 
 #include <QList>
 #include <QPair>
 #include <QHash>
 #include <QString>
 
-class AirConditioningDevice;
+typedef AdvancedAirConditioningDevice::AirConditionerStatus AirConditionerStatus;
 class NonControlledProbeDevice;
 
 
@@ -136,14 +137,13 @@ class GeneralSplitScenario : public BannLeft
 Q_OBJECT
 public:
 	GeneralSplitScenario(QString descr);
-	void appendDevice(QString cmd, AirConditioningDevice *d);
+	void appendDevice(QString cmd, AirConditioningInterface *d);
 
 private:
-	QList<QPair<QString, AirConditioningDevice*> > devices_list;
+	QList<QPair<QString, AirConditioningInterface*> > devices_list;
 
 private slots:
 	void sendScenarioCommand();
 };
-
 
 #endif // BANN_AIRCONDITIONING_H
