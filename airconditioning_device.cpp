@@ -61,6 +61,12 @@ void AdvancedAirConditioningDevice::setStatus(Mode mode, int temp, Velocity vel,
 	sendFrame(createWriteRequestOpen(who, what, where));
 }
 
+// overload for the above function, useful to pass all the parameters around packed together
+void AdvancedAirConditioningDevice::setStatus(AirConditionerStatus st)
+{
+	setStatus(st.mode, st.temp, st.vel, st.swing);
+}
+
 void AdvancedAirConditioningDevice::frame_rx_handler(char *frame)
 {
 	OpenMsg msg;

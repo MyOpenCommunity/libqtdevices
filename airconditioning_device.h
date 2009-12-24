@@ -21,7 +21,6 @@ private:
 };
 
 
-
 class AdvancedAirConditioningDevice : public device
 {
 Q_OBJECT
@@ -54,9 +53,19 @@ public:
 		SWING_ON = 1
 	};
 
+
+	struct AirConditionerStatus
+	{
+		Mode mode;
+		int temp;
+		Velocity vel;
+		Swing swing;
+	};
+
 	void requestStatus() const;
 
 	void setStatus(Mode mode, int temp, Velocity vel, Swing swing);
+	void setStatus(AirConditionerStatus st);
 
 public slots:
 	//! receive a frame
