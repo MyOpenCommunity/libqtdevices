@@ -185,18 +185,10 @@ CallControl::CallControl(EntryphoneDevice *d)
 
 
 
-VCTCallPage::VCTCallPage(const QDomNode &config_node)
+VCTCallPage::VCTCallPage()
 {
-	// we have a random configuration node and we must get our internal unit address
-	// which on the very top of conf file.
-	QDomNode n = config_node;
-	while (n.nodeName() != "configuratore")
-		n = n.parentNode();
-	QString where = getElement(n, "setup/scs/coordinate_scs/my_piaddress").text();
-	//transform address into internal address
-	where.prepend("1");
 	// we must have only one entryphone device since we need to remember some state
-	dev = bt_global::add_device_to_cache(new EntryphoneDevice(where));
+	dev = bt_global::add_device_to_cache(new EntryphoneDevice(bt_global::config[PI_ADDRESS]));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 
 	SkinContext ctx(666);

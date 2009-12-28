@@ -205,6 +205,12 @@ void BtMain::loadGlobalConfig()
 	setConfigValue(n, "clock/dateformat", config[DATE_FORMAT]);
 	setConfigValue(n, "modello", config[MODEL]);
 	setConfigValue(n, "nome", config[NAME]);
+
+	QDomNode scs_node = getConfElement("setup/scs");
+
+	setConfigValue(scs_node, "coordinate_scs/my_piaddress", config[PI_ADDRESS]);
+	// transform address into internal address
+	config[PI_ADDRESS].prepend("1");
 }
 
 void BtMain::waitBeforeInit()

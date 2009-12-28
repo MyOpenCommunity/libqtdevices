@@ -77,7 +77,7 @@ class VCTCallPage : public Page
 {
 Q_OBJECT
 public:
-	VCTCallPage(const QDomNode &config_node);
+	VCTCallPage();
 	void addExternalPlace(const QString &where);
 
 private slots:
