@@ -97,6 +97,10 @@ void VideoControl::cameraOn(QString where)
 	dev->cameraOn(where);
 }
 
+void VideoControl::inizializza()
+{
+	dev->initVctProcess();
+}
 
 Intercom::Intercom(const QDomNode &config_node)
 {

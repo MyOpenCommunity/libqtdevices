@@ -60,6 +60,7 @@ class VideoControl : public IconPage
 Q_OBJECT
 public:
 	VideoControl(const QDomNode &config_node);
+	virtual void inizializza();
 
 private slots:
 	void cameraOn(QString where);

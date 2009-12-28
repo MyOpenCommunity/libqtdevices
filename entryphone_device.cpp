@@ -22,7 +22,6 @@ EntryphoneDevice::EntryphoneDevice(const QString &where) :
 	// invalid values
 	kind = mmtype = -1;
 	is_calling = false;
-	initVctProcess();
 }
 
 void EntryphoneDevice::answerCall() const

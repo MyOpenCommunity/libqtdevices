@@ -38,12 +38,12 @@ public:
 	void endCall();
 
 	virtual void manageFrame(OpenMsg &msg);
+	void initVctProcess();
 
 public slots:
 	void cameraOn(QString _where);
 
 private:
-	void initVctProcess();
 	void resetCallState();
 
 	// call parameters
