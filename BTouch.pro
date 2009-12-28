@@ -34,7 +34,13 @@ contains(CONF_FILE, touchx) {
 TEST_ARCH = $$find(QMAKE_CXX,arm)
 isEmpty(TEST_ARCH) {
 	message(x86 architecture detected.)
-	DEFINES += OPENSERVER_ADDR=\\\"btouch\\\"
+
+	contains(LAYOUT, touchx) {
+		DEFINES += OPENSERVER_ADDR=\\\"touchx\\\"
+	} else {
+		DEFINES += OPENSERVER_ADDR=\\\"btouch\\\"
+	}
+
 	DEFINES += MEDIASERVER_PATH=\\\"/video/mp3/bticino_test/\\\"
 	LIBS += -L../common_files/lib/x86 -lcommon
 	OBJECTS_DIR = $$DEST_PREFIX/obj/x86
