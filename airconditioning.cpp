@@ -189,7 +189,7 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 		page_content->appendBanner(new SplitMode(modes, current_mode));
 	}
 
-	page_content->appendBanner(new SplitTemperature(0));
+	page_content->appendBanner(new SplitTemperature(200, 400, 120, 5));
 
 	QDomNode speed_node = getChildWithName(config_node, "speed");
 	if (getTextChild(speed_node, "val1").toInt() != -1)
@@ -248,6 +248,7 @@ void AdvancedGeneralSplitPage::loadScenarios(const QDomNode &config_node)
 			int t = getTextChild(split, "setpoint").toInt();
 			Velocity v = static_cast<Velocity>(getTextChild(split, "speed").toInt());
 			Swing s = static_cast<Swing>(getTextChild(split, "fan_swing").toInt());
+			// TODO: this is wrong since the command can be modified using the custom page
 			b->appendDevice(dev->commandToString(AirConditionerStatus(m, t, v, s)),
 				bt_global::add_device_to_cache(dev));
 		}
