@@ -141,7 +141,7 @@ BtMain::BtMain()
 	version = new Version;
 	version->setModel(bt_global::config[MODEL]);
 #else
-	// the stylesheet on QApplication must be set later (see comment in hom())
+	// the stylesheet on QApplication must be set later (see comment in init())
 	loading = new IconWindow("splash_image", bt_global::skin->getStyle());
 #endif
 
@@ -215,7 +215,7 @@ void BtMain::loadGlobalConfig()
 
 void BtMain::waitBeforeInit()
 {
-	QTimer::singleShot(200, this, SLOT(hom()));
+	QTimer::singleShot(200, this, SLOT(init()));
 }
 
 bool BtMain::loadConfiguration(QString cfg_file)
@@ -296,7 +296,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 	return false;
 }
 
-void BtMain::hom()
+void BtMain::init()
 {
 	if (version)
 		version->inizializza();
@@ -328,9 +328,10 @@ void BtMain::monitorReady()
 		myMain();
 }
 
-void BtMain::init()
+void BtMain::myMain()
 {
-	qDebug("BtMain::init()");
+	// Called when both monitor is up and config is loaded.
+	qDebug("entro MyMain");
 
 	Home->inizializza();
 	if (version)
@@ -350,13 +351,7 @@ void BtMain::init()
 		alreadyCalibrated = true;
 	}
 #endif
-}
 
-void BtMain::myMain()
-{
-	qDebug("entro MyMain");
-
-	init();
 	Home->showPage();
 	// this needs to be after the showPage, and will be a no-op until transitions
 	// between windows are implemented

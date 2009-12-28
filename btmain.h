@@ -84,7 +84,6 @@ protected:
 
 
 private slots:
-	void hom();
 	void init();
 	void gesScrSav();
 	void testPwd();
