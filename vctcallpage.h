@@ -77,8 +77,7 @@ class VCTCallPage : public Page
 {
 Q_OBJECT
 public:
-	VCTCallPage();
-	void addExternalPlace(const QString &where);
+	VCTCallPage(EntryphoneDevice *d);
 
 private slots:
 	virtual void showPage();
@@ -97,9 +96,9 @@ private:
 	QLabel *video_box;
 	CallControl *call_control;
 	QString setup_vct_icon;
-	QStringList places;
 	bool camera_settings_shown;
 	EntryphoneDevice *dev;
 	QProcess video_grabber;
 };
+
 #endif //VCTCALLPAGE_H

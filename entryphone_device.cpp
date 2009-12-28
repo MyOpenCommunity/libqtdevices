@@ -11,6 +11,7 @@ static const char *END_ALL_CALLS = "4";
 enum
 {
 	ANSWER = 2,
+	AUTOSWITCHING = 4,
 	CALLER_ADDRESS = 9,
 	READY = 37,
 };
@@ -34,6 +35,12 @@ void EntryphoneDevice::answerCall() const
 	}
 	QString what = QString("%1#%2#%3").arg(ANSWER).arg(kind).arg(mmtype);
 	sendCommand(what);
+}
+
+void EntryphoneDevice::cameraOn(QString _where)
+{
+	QString what = QString("%1#%2").arg(AUTOSWITCHING).arg(where);
+	sendCommand(what, _where);
 }
 
 void EntryphoneDevice::endCall()

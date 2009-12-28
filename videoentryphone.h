@@ -21,9 +21,11 @@
 #include <QWidget>
 
 class QDomNode;
+class QSignalMapper;
 
 
 #ifdef LAYOUT_BTOUCH
+
 class VideoEntryPhone : public BannerPage
 {
 Q_OBJECT
@@ -33,7 +35,9 @@ public:
 private:
 	void loadDevices(const QDomNode &config_node);
 };
+
 #else
+
 class VideoEntryPhone : public SectionPage
 {
 Q_OBJECT
@@ -57,8 +61,13 @@ Q_OBJECT
 public:
 	VideoControl(const QDomNode &config_node);
 
+private slots:
+	void cameraOn(QString where);
+
 private:
 	VCTCallPage *call_page;
+	QSignalMapper *mapper;
+	EntryphoneDevice *dev;
 };
 
 
@@ -68,6 +77,7 @@ Q_OBJECT
 public:
 	Intercom(const QDomNode &config_node);
 };
-#endif
+
+#endif // #ifdef LAYOUT_BTOUCH
 
 #endif

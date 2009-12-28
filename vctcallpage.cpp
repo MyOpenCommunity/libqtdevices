@@ -7,7 +7,6 @@
 #include "icondispatcher.h"
 #include "entryphone_device.h"
 #include "xml_functions.h"
-#include "devices_cache.h"
 #include "bann2_buttons.h"
 
 #include <QDomNode>
@@ -15,10 +14,13 @@
 #include <QDebug>
 #include <QLabel>
 
+
 #define BOTTOM_SPACING 15
+
 const QString video_grabber_path = "/home/bticino/bin/rsize";
 const QString video_grabber_normal = "0";
 const QString video_grabber_fullscreen = "1";
+
 
 EnablingButton::EnablingButton(QWidget *parent) :
 	BtButton(parent)
@@ -42,8 +44,6 @@ void EnablingButton::disable()
 	setIcon(disabled_pixmap);
 }
 
-
-
 EnablingButton *getButton(const QString &image_path)
 {
 	EnablingButton *btn = new EnablingButton;
@@ -51,6 +51,7 @@ EnablingButton *getButton(const QString &image_path)
 	btn->setDisabledPixmap(getBostikName(image_path, "dis"));
 	return btn;
 }
+
 
 CameraMove::CameraMove(EntryphoneDevice *dev)
 {
@@ -99,8 +100,6 @@ void CameraMove::setMoveEnabled(bool move)
 }
 
 
-
-
 CameraImageControl::CameraImageControl(QWidget *parent) :
 	QWidget(parent)
 {
@@ -139,8 +138,6 @@ void CameraImageControl::setBrightness(int value)
 	static const QString brightness_command("3");
 	setVctVideoValue(brightness_command, QString::number(value));
 }
-
-
 
 
 CallControl::CallControl(EntryphoneDevice *d)
@@ -182,13 +179,9 @@ CallControl::CallControl(EntryphoneDevice *d)
 }
 
 
-
-
-
-VCTCallPage::VCTCallPage()
+VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 {
-	// we must have only one entryphone device since we need to remember some state
-	dev = bt_global::add_device_to_cache(new EntryphoneDevice(bt_global::config[PI_ADDRESS]));
+	dev = d;
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 
 	SkinContext ctx(666);
@@ -303,7 +296,3 @@ void VCTCallPage::closePage()
 	bt_global::display.forceOperativeMode(false);
 }
 
-void VCTCallPage::addExternalPlace(const QString &where)
-{
-	places << where;
-}

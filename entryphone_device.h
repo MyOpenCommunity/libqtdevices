@@ -39,6 +39,9 @@ public:
 
 	virtual void manageFrame(OpenMsg &msg);
 
+public slots:
+	void cameraOn(QString _where);
+
 private:
 	void initVctProcess();
 	void resetCallState();
