@@ -6,11 +6,9 @@ class OpenMsg;
 
 
 /**
- * This class should be an abstract class, in order to offer a common interface
+ * This class is an abstract class, in order to offer a common interface
  * for all the objects that would manage frames from socket (inheriting from this
  * class).
- *
- * A day in the future, manageFrame should be a virtual pure method.
  */
 class FrameReceiver
 {
