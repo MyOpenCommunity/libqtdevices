@@ -2,7 +2,7 @@
 #include "datetime.h"
 #include "btbutton.h"
 #include "skinmanager.h"
-#include "main.h" // getConfElement, bt_global::config
+#include "main.h" // getConfElement
 #include "platform_device.h"
 #include "devices_cache.h"
 
