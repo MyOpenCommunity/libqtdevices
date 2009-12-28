@@ -100,9 +100,14 @@ void device::sendCompressedInit(const QString &frame) const
 		sendInit(frame);
 }
 
+void device::sendCommand(QString what, QString _where) const
+{
+	sendFrame(createMsgOpen(who, what, _where));
+}
+
 void device::sendCommand(QString what) const
 {
-	sendFrame(createMsgOpen(who, what, where));
+	sendCommand(what, where);
 }
 
 void device::sendRequest(QString what) const

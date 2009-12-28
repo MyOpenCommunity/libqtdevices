@@ -117,6 +117,7 @@ protected:
 	void sendCompressedFrame(const QString &frame) const;
 	void sendCompressedInit(const QString &frame) const;
 
+	void sendCommand(QString what, QString _where) const;
 	void sendCommand(QString what) const;
 	void sendRequest(QString what) const;
 
