@@ -1,8 +1,6 @@
 #include "airconditioning.h"
 #include "skinmanager.h"
 #include "main.h"
-#include "bann2_buttons.h" // BannOnOffNew
-#include "bann1_button.h" // BannLeft
 #include "xml_functions.h" // getTextChild, getElement
 #include "bannercontent.h"
 #include "bann_airconditioning.h"
