@@ -34,7 +34,8 @@ public:
 		TITLE = 0,
 		SUBTITLE = 1,
 		TEXT = 2,
-		SMALLTEXT = 3
+		SMALLTEXT = 3,
+		FONT_COUNT = 4,  // this must be the last one
 	};
 
 	const QFont& get(Type t);

@@ -73,6 +73,27 @@ public:
 	void setState(States new_state);
 };
 
+/**
+ * Two buttons on the sides + description in the center.
+ * Either button can be removed by giving an empty string as the icon parameter to initBanner()
+ * Nicer replacement for bann2but, will replace also BannLeft, BannRight, bannOnDx, bannOnSx
+ */
+class Bann2Buttons : public BannerNew
+{
+Q_OBJECT
+protected:
+	Bann2Buttons(QWidget *parent = 0);
+	void initBanner(const QString &left, const QString &right, const QString &text,
+		int font_type = -1);
+	void setCentralText(const QString &t);
+
+	BtButton *left_button, *right_button;
+
+private:
+	void initButton(BtButton *btn, const QString &icon);
+	QLabel *text;
+};
+
 
 class BannOnOff2Labels : public BannerNew
 {
