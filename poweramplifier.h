@@ -14,7 +14,7 @@
 #define POWER_AMPLIFIER_H
 
 #include "bannregolaz.h"
-#include "bann2_buttons.h" // bannOnOff, bannOnOff2scr
+#include "bann2_buttons.h" // bannOnOff, BannOnOff2Labels
 #include "bannonoffcombo.h"
 #include "poweramplifier_device.h"
 #include "page.h"

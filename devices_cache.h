@@ -18,16 +18,6 @@ public:
 	DevicesCache();
 	//! Inits all devices
 	void init_devices();
-	//! Get simple light device
-	device *get_light(QString where);
-	//! Get old dimmer device
-	device *get_dimmer(QString where);
-	//! Get new dimmer device
-	device *get_dimmer100(QString where);
-	//! Get old timed device
-	//device *get_oldtimed(QString where);
-	//! Get new timed device
-	device *get_newtimed(QString where);
 	//! Get doorphone device
 	device *get_doorphone_device(QString where);
 	//! Get autom device
@@ -52,8 +42,6 @@ public:
 		bool fancoil, QString ind_centrale, QString indirizzo);
 	//! Get stand-alone or external temperature probe
 	device *get_temperature_probe(QString w, bool external);
-	//! Get modscen
-	device *get_modscen_device(QString where);
 	//! Get modscen
 	device *get_mci_device(QString where);
 	//! Destroy device given key

@@ -31,77 +31,6 @@ void DevicesCache::init_devices()
 		it.value()->init();
 }
 
-// Get light device given address
-device *DevicesCache::get_light(QString w)
-{
-	QString k = get_device_key(QString("1"), w);
-	qDebug() << "DevicesCache::get_light(" << k << ")";
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new light(w);
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	qDebug("DevicesCache::get_light() returning %p", out);
-	return out;
-}
-
-// Get old dimmer given key
-device *DevicesCache::get_dimmer(QString w)
-{
-	QString k = get_device_key(QString("1"), w);
-	qDebug() << "DevicesCache::get_dimmer(" << k << ")";
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new light(w);
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	out->add_device_status(new device_status_dimmer());
-	qDebug("DevicesCache::get_dimmer() returning %p", out);
-	return out;
-}
-
-// Get new dimmer given key
-device *DevicesCache::get_dimmer100(QString w)
-{
-	QString k = get_device_key(QString("1"), w);
-	qDebug() << "DevicesCache::get_dimmer100(" << k << ")";
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new light(w);
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	out->add_device_status(new device_status_dimmer100());
-	qDebug("DevicesCache::get_dimmer100() returning %p", out);
-	return out;
-}
-
-// Get new timed device given key
-device *DevicesCache::get_newtimed(QString w)
-{
-	QString k = get_device_key(QString("1"), w);
-	qDebug() << "DevicesCache::get_newtimed(" << k << ")";
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new light(w);
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	out->add_device_status(new device_status_new_timed());
-	qDebug("DevicesCache::get_newtimed() returning %p", out);
-	return out;
-}
-
 // Get doorphone device given address
 device *DevicesCache::get_doorphone_device(QString w)
 {
@@ -116,23 +45,6 @@ device *DevicesCache::get_doorphone_device(QString w)
 	}
 	out->get();
 	qDebug("DevicesCache::get_doorphone_device() returning %p", out);
-	return out;
-}
-
-// Get autom device given address
-device *DevicesCache::get_autom_device(QString w)
-{
-	QString k = get_device_key(QString("2"), w);
-	qDebug() << "DevicesCache::get_autom_device(" << k << ")";
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new autom(w);
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	qDebug("DevicesCache::get_autom_device() returning %p", out);
 	return out;
 }
 
@@ -293,23 +205,6 @@ device *DevicesCache::get_temperature_probe(QString w, bool external)
 	return out;
 }
 
-
-// Get modscen device
-device *DevicesCache::get_modscen_device(QString w)
-{
-	QString k = get_device_key(QString("0"), w);
-	qDebug() << "DevicesCache::get_modscen_device(" << k << ")";
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new modscen_device(w);
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	qDebug("DevicesCache::get_modscen_device() returning %p", out);
-	return out;
-}
 
 // Get MCI device
 device *DevicesCache::get_mci_device(QString w)

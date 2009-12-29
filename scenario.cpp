@@ -97,30 +97,15 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 	if (!what.isEmpty())
 		where = what + "*" + where;
 
-	// DELETE
-//		QString img1 = IMG_PATH + getTextChild(item_node, "cimg1");
-//		QString img2 = IMG_PATH + getTextChild(item_node, "cimg2");
-//		QString img3 = IMG_PATH + getTextChild(item_node, "cimg3");
-//		QString img4 = IMG_PATH + getTextChild(item_node, "cimg4");
-
 	banner *b = 0;
 	switch (id)
 	{
 	case SCENARIO:
-		// DELETE
-		//b = new bannScenario(0, where, img1);
 		b = new BannSimpleScenario(0, item_node);
 		break;
 	case MOD_SCENARI:
-	{
-		QString img5 = IMG_PATH + getTextChild(item_node, "cimg5");
-		QString img6 = IMG_PATH + getTextChild(item_node, "cimg6");
-		QString img7 = IMG_PATH + getTextChild(item_node, "cimg7");
-		// DELETE
-		//b = new gesModScen(0, where, img1, img2, img3, img4, img5, img6, img7);
 		b = new ModifyScenario(0, item_node);
 		break;
-	}
 	case SCENARIO_EVOLUTO:
 	{
 		SkinContext context(getTextChild(item_node, "cid").toInt());
@@ -142,6 +127,7 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 
 	if (b)
 	{
+		// TODO: these are needed for PPTSce
 		b->setText(getTextChild(item_node, "descr"));
 		b->setId(id);
 		b->Draw();

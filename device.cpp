@@ -282,34 +282,6 @@ mci_device::mci_device(QString w, bool p, int g) : device(QString("18"), w, p, g
 	setup_frame_interpreter(new frame_interpreter_mci(w, p, g));
 }
 
-// Light implementation
-light::light(QString w, bool p, int g) : device(QString("1"), w, p, g) 
-{
-	stat.append(new device_status_light());
-	setup_frame_interpreter(new frame_interpreter_lights(w, p, g));
-}
-
-// Dimmer implementation
-dimm::dimm(QString w, bool p, int g) : device(QString("1"), w, p, g)
-{
-	stat.append(new device_status_dimmer());
-	setup_frame_interpreter(new frame_interpreter_dimmer(w, p, g));
-}
-
-// Dimmer100 implementation
-dimm100::dimm100(QString w, bool p, int g) : device(QString("1"), w, p, g)
-{
-	stat.append(new device_status_dimmer100());
-	setup_frame_interpreter(new frame_interpreter_lights(w, p, g));
-}
-
-// Autom implementation
-autom::autom(QString w, bool p, int g) : device(QString("2"), w, p, g)
-{
-	stat.append(new device_status_autom());
-	setup_frame_interpreter(new frame_interpreter_autom(w, p, g));
-}
-
 // Sound device implementation
 sound_device::sound_device(QString w, bool p, int g) : device(QString("16"), w, p, g)
 {
@@ -423,13 +395,6 @@ temperature_probe_notcontrolled::temperature_probe_notcontrolled(QString w, bool
 	setup_frame_interpreter(new frame_interpreter_temperature_probe(w, external, p, g));
 }
 
-// modscen device
-modscen_device::modscen_device(QString w, bool p, int g) : device(QString("0"), w, p, g)
-{
-	qDebug("modscen_device::modscen_device()");
-	stat.append(new device_status_modscen());
-	setup_frame_interpreter(new frame_interpreter_modscen_device(w, p, g));
-}
 
 
 aux_device::aux_device(QString w, bool p, int g) : device(QString("9"), w, p, g)

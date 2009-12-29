@@ -147,44 +147,6 @@ public:
 	mci_device(QString, bool p=false, int g=-1);
 };
 
-//! Light (might be a simple light, a dimmer or a dimmer 100)
-class light : public device
-{
-Q_OBJECT
-public:
-	//! Constructor
-	light(QString, bool p=false, int g=-1);
-	//! Destructor
-	//virtual ~light();
-};
-
-//! Dimmer
-class dimm : public device
-{
-Q_OBJECT
-public:
-	//! Constructor
-	dimm(QString, bool p=false, int g=-1);
-};
-
-//! Dimmer
-class dimm100 : public device
-{
-Q_OBJECT
-public:
-	//! Constructor
-	dimm100(QString, bool p=false, int g=-1);
-};
-
-//! Automatismo
-class autom : public device
-{
-	Q_OBJECT
-	public:
-		//! Constructor
-		autom(QString, bool p=false, int g=-1);
-};
-
 /**
  * Controlled temperature probe device.
  */
@@ -273,15 +235,6 @@ Q_OBJECT
 public:
 	//! Constructor
 	zonanti_device(QString, bool p=false, int g=-1);
-};
-
-//! Modscen device
-class modscen_device : public device
-{
-Q_OBJECT
-public:
-	//! Constructor
-	modscen_device(QString, bool p=false, int g=-1);
 };
 
 //! Aux device
