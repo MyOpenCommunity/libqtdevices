@@ -10,7 +10,6 @@
 
 #include "actuators.h"
 #include "device_status.h"
-#include "device.h"
 #include "btbutton.h"
 #include "generic_functions.h" // getPressName, createMsgOpen
 #include "devices_cache.h" // bt_global::devices_cache

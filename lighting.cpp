@@ -35,95 +35,44 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 {
 	int id = getTextChild(item_node, "id").toInt();
 	QString where = getTextChild(item_node, "where");
-	QString img1 = IMG_PATH + getTextChild(item_node, "cimg1");
-	QString img2 = IMG_PATH + getTextChild(item_node, "cimg2");
-	/*
-	DELETE:
-	QString img3 = IMG_PATH + getTextChild(item_node, "cimg3");
-	QString img4 = IMG_PATH + getTextChild(item_node, "cimg4");
-	QString img5 = IMG_PATH + getTextChild(item_node, "cimg5");
-
-	QList<QString> times;
-	foreach (const QDomNode &el, getChildren(item_node, "time"))
-		times.append(el.toElement().text());
-	*/
 
 	banner *b = 0;
 	switch (id)
 	{
 	case DIMMER:
-		// DELETE: remove these comments when the classes are gone
-		//b = new dimmer(this, where, img1, img2, img3, img4, img5);
 		b = new DimmerNew(0, item_node, where);
 		break;
 	case ATTUAT_AUTOM:
 		b = new SingleActuator(0, item_node, where);
 		break;
 	case GR_DIMMER:
-		// DELETE:
-		//b = new grDimmer(this, getAddresses(item_node), img1, img2, img3, img4);
 		b = new DimmerGroup(0, item_node, getAddresses(item_node));
 		break;
 	case GR_ATTUAT_AUTOM:
 		b = new LightGroup(0, item_node, getAddresses(item_node));
 		break;
 	case ATTUAT_AUTOM_TEMP:
-		//DELETE
-		//b = new attuatAutomTemp(this, where, img1, img2, img3, img4, times);
 		b = new TempLight(0, item_node);
 		break;
 	case ATTUAT_VCT_LS:
-		//DELETE
-		//b = new attuatPuls(this, where, img1, img2, VCT_LS);
 		b = new ButtonActuator(0, item_node, VCT_LS);
 		break;
 	case DIMMER_100:
-		// DELETE
-		//b = new dimmer100(this, where, img1, img2 ,img3, img4, img5, getTextChild(item,"softstart").toInt(),
-		//		getTextChild(item_node,"softstop").toInt());
 		b = new Dimmer100New(0, item_node);
 		break;
 	case ATTUAT_AUTOM_TEMP_NUOVO_N:
-		// DELETE
-		//b = new attuatAutomTempNuovoN(this, where, img1, img2, img3, img4, times);
 		b = new TempLightVariable(0, item_node);
 		break;
 	case GR_DIMMER100:
-	{
 		b = new Dimmer100Group(0, item_node);
-		// DELETE
-		/*
-		QList<int> sstart, sstop;
-		QList<QString> addresses;
-
-		foreach (const QDomNode &el, getChildren(item_node, "element"))
-		{
-			sstart.append(getTextChild(el, "softstart").toInt());
-			sstop.append(getTextChild(el, "softstop").toInt());
-			addresses.append(getTextChild(el, "where"));
-		}
-
-		b = new grDimmer100(this, addresses, img1, img2, img3, img4, sstart, sstop);
-		*/
 		break;
-	}
 	case ATTUAT_AUTOM_TEMP_NUOVO_F:
-		/*
-		if (!times.count())
-			times.append("");
-		b = new attuatAutomTempNuovoF(this, where, img1, img2, img3, times.at(0));
-		*/
 		b = new TempLightFixed(0, item_node);
 		break;
 	}
 
 	if (b)
-	{
-		//DELETE
-		//b->setText(getTextChild(item, "descr"));
 		b->setId(id);
-		//b->Draw();
-	}
 	return b;
 }
 

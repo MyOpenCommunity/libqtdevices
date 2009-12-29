@@ -12,11 +12,9 @@
 #define BANN1_BUTTON_H
 
 #include "banner.h"
-#include "energy_device.h"
 
 #include <QList>
 #include <QPair>
-#include <QString>
 
 class BtButton;
 class Page;
@@ -129,25 +127,6 @@ signals:
 	void released();
 };
 
-#if 0
-
-/*!
-  \class bannSimple
-  \brief A very simple banner with only a button in the center.
-*/
-
-class bannSimple : public banner
-{
-Q_OBJECT
-public:
-	bannSimple(QWidget *parent, QString icon=QString(), Page *page=0);
-
-signals:
-	void click();
-};
-
-#endif
-
 /*!
   \class bannOnDx
   \brief This is a class that describes a banner with a button on the right and a text on the remaining area
@@ -188,20 +167,6 @@ class bannOnIcons : public banner
 Q_OBJECT
 public:
 	bannOnIcons(QWidget *parent);
-};
-
-
-/*!
-  \class bannOn2scr
-  \brief This is a class that describes a banner with a button on the right, text on the bottom area and on the left, plus a couple of icons in the middle
-  \author Ciminaghi
-  \date apr 2006
-*/
-class bannOn2scr : public banner
-{
-Q_OBJECT
-public:
-	bannOn2scr(QWidget *w=0);
 };
 
 

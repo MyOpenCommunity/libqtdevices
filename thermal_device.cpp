@@ -4,6 +4,7 @@
 #include "generic_functions.h" // createWriteRequestOpen
 
 #include <QDebug>
+#include <QDate>
 
 enum what_t
 {

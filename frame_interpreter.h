@@ -1,18 +1,12 @@
-//! Frame interpreter classes
-
 #ifndef __FRAME_INTERPRETER_H__
 #define __FRAME_INTERPRETER_H__
 
-#include "openclient.h"
+#include "openwebnet.h"
 #include "device_status.h"
 
-#include <QString>
-#include <QObject>
 #include <QDateTime>
 #include <QTimer>
 #include <QList>
-
-#include <stdlib.h>
 
 
 class frame_interpreter;
@@ -136,75 +130,6 @@ protected slots:
 	void request_init(device_status *, int delay = 0);
 	//! Request initialization after deferred time
 	void deferred_request_init();
-public slots:
-	//! Receive a frame
-	virtual void handle_frame_handler(char *, QList<device_status*>);
-};
-
-//! Lights frame interpreter
-class frame_interpreter_lights : public frame_interpreter
-{
-Q_OBJECT
-private:
-	//! Set status, lights
-	void set_status(device_status_light *ds, int s);
-	//! Analyze a frame for a pl status
-	void handle_frame(openwebnet_ext, device_status_light *);
-	//! Set status, dimmer
-	void set_status(device_status_dimmer *ds, int s);
-	//! Analyze a frame for a dimmer status
-	void handle_frame(openwebnet_ext, device_status_dimmer *);
-	//! Set status, dimmer 100
-	void set_status(device_status_dimmer100 *ds, int lev, int speed);
-	//! Analyze a frame for a dimmer 100 status
-	void handle_frame(openwebnet_ext, device_status_dimmer100 *);
-	//! Set status, new timed device
-	void set_status(device_status_new_timed *ds, int hh, int mm, int ss, int on = -1);
-	//! Analyze a frame for a ...
-	void handle_frame(openwebnet_ext, device_status_new_timed *);
-public:
-	//! Constructor
-	frame_interpreter_lights(QString, bool, int);
-	//! Returns init message given device status
-	void get_init_message(device_status *, QString&);
-public slots:
-	//! Receive a frame
-	virtual void handle_frame_handler(char *, QList<device_status*>);
-};
-
-//! Dimmer frame interpreter
-class frame_interpreter_dimmer : public frame_interpreter
-{
-Q_OBJECT
-private:
-	//! Set status, dimmer
-	void set_status(device_status_dimmer *ds, int s);
-	//! Analyze a frame for a dimmer status
-	void handle_frame(openwebnet_ext, device_status_dimmer *);
-public:
-	//! Constructor
-	frame_interpreter_dimmer(QString, bool, int);
-	//! Returns init message given device status
-	void get_init_message(device_status *, QString&);
-public slots:
-	//! Receive a frame
-	virtual void handle_frame_handler(char *, QList<device_status*>);
-};
-
-//! Autom frame interpreter
-class frame_interpreter_autom : public frame_interpreter
-{
-Q_OBJECT
-private:
-	//! Set status
-	void set_status(device_status_autom *ds, int s);
-	//! Analyze a frame for a pl status
-	void handle_frame(openwebnet_ext, device_status_autom *);
-public:
-	//! Constructor
-	frame_interpreter_autom(QString, bool, int);
-	//! Returns init message given device status
-	void get_init_message(device_status *, QString&);
 public slots:
 	//! Receive a frame
 	virtual void handle_frame_handler(char *, QList<device_status*>);
@@ -392,26 +317,6 @@ public:
 	frame_interpreter_temperature_probe_controlled(QString,
 		thermo_type_t type,
 		const char *ind_centrale, const char *indirizzo, bool, int);
-	//! Returns init message given device status
-	void get_init_message(device_status *, QString&);
-public slots:
-	//! Receive a frame
-	virtual void handle_frame_handler(char *, QList<device_status*>);
-};
-
-//! Modscen device frame interpreter
-class frame_interpreter_modscen_device : public frame_interpreter
-{
-Q_OBJECT
-private:
-	//! Analyze a frame
-	void handle_frame(openwebnet_ext, device_status_modscen *);
-protected:
-	//! Returns true when frame is ours (reimplemented for modscen device)
-	//bool is_frame_ours(openwebnet_ext);
-public:
-	//! Constructor
-	frame_interpreter_modscen_device(QString, bool, int);
 	//! Returns init message given device status
 	void get_init_message(device_status *, QString&);
 public slots:

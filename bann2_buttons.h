@@ -190,34 +190,4 @@ protected:
 	virtual QSize sizeHint() const;
 };
 
-
-#if 0
-/*!
-  \class bannOnOff
-  \brief This is a class that describes a banner with a button on the right and on the left, an icon on the center and a text on the bottom
-  \author Davide
-  \date lug 2005
-*/
-class bannOnOff : public banner
-{
-Q_OBJECT
-public:
-	bannOnOff(QWidget *w=0);
-};
-
-
-/*!
-  \class bannOnOff2scr
-  \brief This is a class that describes a banner with a button on the right and on the left and a text on the bottom area and an other the center-left
-  \author Davide
-  \date lug 2005
-*/
-class bannOnOff2scr : public banner
-{
-Q_OBJECT
-public:
-	bannOnOff2scr(QWidget *w=0);
-};
-#endif
-
 #endif // BANN2_BUTTONS_H

@@ -5,6 +5,7 @@
 
 #include <QDebug>
 #include <QStringList>
+#include <QDate>
 
 // the request delay in milliseconds
 #define STATUS_REQUEST_DELAY 1000

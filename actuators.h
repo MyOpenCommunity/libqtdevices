@@ -13,6 +13,7 @@
 
 #include "bann2_buttons.h" // bannOnOff
 #include "bann1_button.h" // bannPuls
+#include "device.h" //StatusList
 
 class device;
 class device_status;

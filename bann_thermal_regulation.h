@@ -12,18 +12,19 @@
 #ifndef BANN_THERMAL_REGULATION_H
 #define BANN_THERMAL_REGULATION_H
 
-#include "banner.h"
 #include "bann1_button.h" // bannPuls
 #include "bann2_buttons.h" // bann2CentralButtons
 #include "bttime.h"
 #include "main.h"
 #include "page.h"
+#include "device.h" // thermo_type_t, StatusList
 
 #include <QLayout>
 #include <QButtonGroup>
 #include <QDomNode>
 #include <QLCDNumber>
 #include <QMap>
+#include <QDate>
 
 class device;
 class ThermalDevice;

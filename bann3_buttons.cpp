@@ -42,15 +42,6 @@ void Bann3Buttons::initBanner(const QString &left, const QString &center, const 
 	text->setText(banner_text);
 }
 
-bann3But::bann3But(QWidget *parent) : banner(parent)
-{
-	addItem(BUT1, 0, 0, BAN3BUT_BUT_DIM, BAN3BUT_BUT_DIM);
-	addItem(BUT2, banner_width - BAN3BUT_BUT_DIM, 0 , BAN3BUT_BUT_DIM , BAN3BUT_BUT_DIM);
-	addItem(TEXT, 0, BAN3BUT_BUT_DIM, banner_width, banner_height - BAN3BUT_BUT_DIM);
-	addItem(BUT3, banner_width/2 - BAN3BUT_BUTCEN_DIM/2, 0, BAN3BUT_BUTCEN_DIM, BAN3BUT_BUT_DIM);
-	connect(this,SIGNAL(csxClick()),this,SIGNAL(centerClick()));
-}
-
 
 bann3ButLab::bann3ButLab(QWidget *parent) : banner(parent)
 {

@@ -182,25 +182,6 @@ bannPuls::bannPuls(QWidget *parent) : banner(parent)
 }
 
 
-#if 0
-
-bannSimple::bannSimple(QWidget *parent, QString icon, Page *page) : banner(parent)
-{
-	banner_height = BUT_DIM;
-	// This banner uses a dx button but shows it in central position.
-	addItem(BUT1, (banner_width - BANPULS_BUT_DIM) / 2, 0,  BANPULS_BUT_DIM, BANPULS_BUT_DIM);
-	connect(this, SIGNAL(sxClick()), this, SIGNAL(click()));
-
-	if (!icon.isEmpty())
-		SetIcons(icon, 1);
-
-	connectDxButton(page);
-	Draw();
-}
-
-#endif
-
-
 bannOnDx::bannOnDx(QWidget *parent, QString icon, Page *page) : banner(parent)
 {
 	banner_height = BUT_DIM;
@@ -240,22 +221,6 @@ bannOnIcons::bannOnIcons(QWidget *parent) : banner(parent)
 	addItem(TEXT, 0, BUT_DIM, banner_width, banner_height-BUT_DIM);
 	addItem(ICON, BUT_DIM, 0, BUT_DIM, BUT_DIM);
 	addItem(ICON2, 2*BUT_DIM, 0, BUT_DIM, BUT_DIM);
-}
-
-
-bannOn2scr::bannOn2scr(QWidget *parent) : banner(parent)
-{
-	int x = 0, y = 0;
-	addItem(TEXT2, x, y, BANON2SCR_TEXT1_DIM_X, BANON2SCR_TEXT1_DIM_Y);
-	x = BANON2SCR_TEXT1_DIM_X;
-	addItem(ICON, x, y, BUTON2SCR_ICON_DIM_X, BUTON2SCR_ICON_DIM_Y);
-	x += BUTON2SCR_ICON_DIM_X;
-	addItem(ICON2, x, y, BUTON2SCR_ICON_DIM_X, BUTON2SCR_ICON_DIM_Y);
-	x += BUTON2SCR_ICON_DIM_X;
-	addItem(BUT2, x, y, BUT_DIM, BUT_DIM);
-	y = BUT_DIM;
-	x = 0;
-	addItem(TEXT, x, y, banner_width, banner_height - BUT_DIM);
 }
 
 
