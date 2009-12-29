@@ -220,12 +220,22 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addLayout(hbox);
 	layout->addLayout(bottom);
+	prev_page = 0;
 }
 
 void VCTCallPage::showPage()
 {
+	prev_page = currentPage();
 	bt_global::display.forceOperativeMode(true);
 	Page::showPage();
+}
+
+void VCTCallPage::showPreviousPage()
+{
+	// TODO: la previous page non tiene conto della gestione dello screensaver.
+	// Gestire in modo migliore con un oggetto globale!
+	Q_ASSERT_X(prev_page, "VCTCallPage::showPreviousPage", "Previous page not set!");
+	prev_page->showPage();
 }
 
 void VCTCallPage::status_changed(const StatusList &sl)

@@ -88,7 +88,7 @@ VideoControl::VideoControl(const QDomNode &config_node)
 		mapper->setMapping(btn, where);
 	}
 
-	connect(call_page, SIGNAL(Closed()), SLOT(showPage()));
+	connect(call_page, SIGNAL(Closed()), call_page, SLOT(showPreviousPage()));
 	connect(mapper, SIGNAL(mapped(QString)), SLOT(cameraOn(QString)));
 }
 
@@ -102,6 +102,7 @@ void VideoControl::inizializza()
 	dev->initVctProcess();
 }
 
+
 Intercom::Intercom(const QDomNode &config_node)
 {
 	buildPage(new IconContent, new NavigationBar);
@@ -111,4 +112,5 @@ Intercom::Intercom(const QDomNode &config_node)
 		BtButton *btn = addButton(getTextChild(item, "descr"), bt_global::skin->getImage("link_icon"), 0, 0);
 	}
 }
+
 #endif

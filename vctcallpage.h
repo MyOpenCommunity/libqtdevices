@@ -42,6 +42,7 @@ private:
 	EnablingButton *up, *left, *fullscreen, *right, *down;
 };
 
+
 class CameraImageControl : public QWidget
 {
 Q_OBJECT
@@ -79,6 +80,9 @@ Q_OBJECT
 public:
 	VCTCallPage(EntryphoneDevice *d);
 
+public slots:
+	void showPreviousPage();
+
 private slots:
 	virtual void showPage();
 	void toggleCameraSettings();
@@ -99,6 +103,7 @@ private:
 	bool camera_settings_shown;
 	EntryphoneDevice *dev;
 	QProcess video_grabber;
+	Page *prev_page;
 };
 
 #endif //VCTCALLPAGE_H
