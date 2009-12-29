@@ -31,7 +31,6 @@ public:
 
 	enum Type
 	{
-		FONT_NONE = -1,  // a number not present in configuration files
 		TITLE = 0,
 		SUBTITLE = 1,
 		TEXT = 2,

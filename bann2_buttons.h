@@ -98,7 +98,7 @@ Q_OBJECT
 protected:
 	Bann2Buttons(QWidget *parent = 0);
 	void initBanner(const QString &left, const QString &right, const QString &banner_text,
-		FontManager::Type font_type = FontManager::FONT_NONE);
+		FontManager::Type font_type = FontManager::TEXT);
 	void setCentralText(const QString &t);
 
 private:
