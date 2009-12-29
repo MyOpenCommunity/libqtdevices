@@ -125,7 +125,7 @@ void Bann2Buttons::initBanner(const QString &left, const QString &right, const Q
 	text->setText(banner_text);
 	QFont central_font;
 	if (font_type != FontManager::FONT_NONE)
-		central_font = bt_global::font->get(static_cast<FontManager::Type>(font_type));
+		central_font = bt_global::font->get(font_type);
 	else
 		central_font = bt_global::font->get(FontManager::TEXT);
 
