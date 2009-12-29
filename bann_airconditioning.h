@@ -107,7 +107,7 @@ private:
 /**
  * The banner that represent the swing of the split
  */
-class SplitSwing : public BannLeft
+class SplitSwing : public Bann2Buttons
 {
 Q_OBJECT
 public:
@@ -123,7 +123,7 @@ private:
 /**
  * The banner for a scenario of a single split (configured as basic)
  */
-class SplitScenario : public BannLeft
+class SplitScenario : public Bann2Buttons
 {
 Q_OBJECT
 public:
@@ -141,7 +141,7 @@ private slots:
 /**
  * The banner for a scenario of a general split
  */
-class GeneralSplitScenario : public BannLeft
+class GeneralSplitScenario : public Bann2Buttons
 {
 Q_OBJECT
 public:

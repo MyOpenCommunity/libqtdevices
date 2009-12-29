@@ -151,13 +151,11 @@ SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 }
 
 
-SplitSwing::SplitSwing(QString descr) : BannLeft(0)
+SplitSwing::SplitSwing(QString descr) : Bann2Buttons(0)
 {
-	left_button->setOnOff();
-	left_button->setImage(bt_global::skin->getImage("swing_off"));
-	left_button->setPressedImage(bt_global::skin->getImage("swing_on"));
-	text->setText(descr);
+	initBanner(bt_global::skin->getImage("swing_off"), bt_global::skin->getImage("swing_on"), descr);
 
+	// TODO: this is all wrong, we need a button group. I will fix it shortly
 	status = false;
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleSwing()));
 }
@@ -170,9 +168,9 @@ void SplitSwing::toggleSwing()
 }
 
 
-SplitScenario::SplitScenario(QString descr, QString cmd, AirConditioningDevice *d) : BannLeft(0)
+SplitScenario::SplitScenario(QString descr, QString cmd, AirConditioningDevice *d) : Bann2Buttons(0)
 {
-	initBanner(bt_global::skin->getImage("split_cmd"), descr);
+	initBanner(bt_global::skin->getImage("split_cmd"), QString(), descr);
 	command = cmd;
 	dev = d;
 	connect(left_button, SIGNAL(clicked()), SLOT(sendScenarioCommand()));
@@ -184,9 +182,9 @@ void SplitScenario::sendScenarioCommand()
 }
 
 
-GeneralSplitScenario::GeneralSplitScenario(QString descr) : BannLeft(0)
+GeneralSplitScenario::GeneralSplitScenario(QString descr) : Bann2Buttons(0)
 {
-	initBanner(bt_global::skin->getImage("split_cmd"), descr);
+	initBanner(bt_global::skin->getImage("split_cmd"), QString(), descr);
 	connect(left_button, SIGNAL(clicked()), SLOT(sendScenarioCommand()));
 }
 
