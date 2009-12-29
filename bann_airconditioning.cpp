@@ -60,24 +60,20 @@ GeneralSplit::GeneralSplit(QString descr) : BannOnOffNew(0)
 }
 
 
-AdvancedSplitScenario::AdvancedSplitScenario(QWidget *parent, QString descr): bann2But(parent)
+AdvancedSplitScenario::AdvancedSplitScenario(QWidget *parent, QString descr): Bann2Buttons(parent)
 {
 	QString icon_cmd = bt_global::skin->getImage("split_cmd");
 	QString icon_settings = bt_global::skin->getImage("split_settings");
-
-	SetIcons(0, icon_cmd);
-	SetIcons(1, icon_settings);
-	setText(descr);
-	Draw();
+	initBanner(icon_cmd, icon_settings, descr);
 }
 
 
 SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, int step) :
-	Bann2ButNew(0)
+	Bann2Buttons(0)
 {
 	QString icon_plus = bt_global::skin->getImage("plus");
 	QString icon_minus = bt_global::skin->getImage("minus");
-	initBanner(icon_minus, icon_plus, "---", bt_global::font->get(FontManager::SUBTITLE));
+	initBanner(icon_minus, icon_plus, "---", FontManager::SUBTITLE);
 
 	Q_ASSERT_X(init_temp >= level_min && init_temp <= level_max, "SplitTemperature::SplitTemperature",
 		"Initial temperature is outside the given range.");
@@ -155,13 +151,11 @@ SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 }
 
 
-SplitSwing::SplitSwing(QString descr) : BannLeft(0)
+SplitSwing::SplitSwing(QString descr) : Bann2Buttons(0)
 {
-	left_button->setOnOff();
-	left_button->setImage(bt_global::skin->getImage("swing_off"));
-	left_button->setPressedImage(bt_global::skin->getImage("swing_on"));
-	text->setText(descr);
+	initBanner(bt_global::skin->getImage("swing_off"), bt_global::skin->getImage("swing_on"), descr);
 
+	// TODO: this is all wrong, we need a button group. I will fix it shortly
 	status = false;
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleSwing()));
 }
@@ -174,9 +168,9 @@ void SplitSwing::toggleSwing()
 }
 
 
-SplitScenario::SplitScenario(QString descr, QString cmd, AirConditioningDevice *d) : BannLeft(0)
+SplitScenario::SplitScenario(QString descr, QString cmd, AirConditioningDevice *d) : Bann2Buttons(0)
 {
-	initBanner(bt_global::skin->getImage("split_cmd"), descr);
+	initBanner(bt_global::skin->getImage("split_cmd"), QString(), descr);
 	command = cmd;
 	dev = d;
 	connect(left_button, SIGNAL(clicked()), SLOT(sendScenarioCommand()));
@@ -188,9 +182,9 @@ void SplitScenario::sendScenarioCommand()
 }
 
 
-GeneralSplitScenario::GeneralSplitScenario(QString descr) : BannLeft(0)
+GeneralSplitScenario::GeneralSplitScenario(QString descr) : Bann2Buttons(0)
 {
-	initBanner(bt_global::skin->getImage("split_cmd"), descr);
+	initBanner(bt_global::skin->getImage("split_cmd"), QString(), descr);
 	connect(left_button, SIGNAL(clicked()), SLOT(sendScenarioCommand()));
 }
 

@@ -1,6 +1,5 @@
 #include "bann2_buttons.h"
 #include "btbutton.h"
-#include "fontmanager.h" // FontManager
 #include "icondispatcher.h" // icons_cache
 #include "generic_functions.h" // getBostikName
 #include "titlelabel.h"
@@ -21,8 +20,25 @@
 
 
 
-BannOnOffNew::BannOnOffNew(QWidget *parent) :
+Bann2LinkedPages::Bann2LinkedPages(QWidget *parent) :
 	BannerNew(parent)
+{
+}
+
+void Bann2LinkedPages::connectLeftButton(Page *p)
+{
+	connectButtonToPage(left_button, p);
+}
+
+void Bann2LinkedPages::connectRightButton(Page *p)
+{
+	connectButtonToPage(right_button, p);
+}
+
+
+
+BannOnOffNew::BannOnOffNew(QWidget *parent) :
+	Bann2LinkedPages(parent)
 {
 	left_button = new BtButton;
 	right_button = new BtButton;
@@ -59,16 +75,6 @@ void BannOnOffNew::setBannerText(const QString &str)
 	text->setText(str);
 }
 
-void BannOnOffNew::connectLeftButton(Page *p)
-{
-	connectButtonToPage(left_button, p);
-}
-
-void BannOnOffNew::connectRightButton(Page *p)
-{
-	connectButtonToPage(right_button, p);
-}
-
 void BannOnOffNew::setInternalText(const QString &text)
 {
 	center_icon->setInternalText(text);
@@ -94,7 +100,7 @@ void BannOnOffState::setState(States new_state)
 
 
 Bann2Buttons::Bann2Buttons(QWidget *parent) :
-	BannerNew(parent)
+	Bann2LinkedPages(parent)
 {
 	left_button = new BtButton;
 	right_button = new BtButton;
@@ -112,18 +118,14 @@ Bann2Buttons::Bann2Buttons(QWidget *parent) :
 }
 
 void Bann2Buttons::initBanner(const QString &left, const QString &right, const QString &banner_text,
-	int font_type)
+	FontManager::Type font_type)
 {
 	initButton(left_button, left);
 	initButton(right_button, right);
 	text->setText(banner_text);
 	QFont central_font;
-	if (font_type != -1)
-	{
-		Q_ASSERT_X(font_type <= FontManager::FONT_COUNT, "Bann2Buttons::initBanner",
-			"The provided font type is invalid");
+	if (font_type != FontManager::FONT_NONE)
 		central_font = bt_global::font->get(static_cast<FontManager::Type>(font_type));
-	}
 	else
 		central_font = bt_global::font->get(FontManager::TEXT);
 
@@ -343,36 +345,6 @@ void BannTuning::changeIcons()
 {
 	center_left->setImage(getBostikName(center_icon, QString("sxl") + QString::number(current_level)));
 	center_right->setImage(getBostikName(center_icon, QString("dxl") + QString::number(current_level)));
-}
-
-
-
-Bann2ButNew::Bann2ButNew(QWidget *parent) :
-	BannerNew(parent)
-{
-	left_button = new BtButton;
-	right_button = new BtButton;
-	center_text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::TEXT));
-	QHBoxLayout *l = new QHBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	l->addWidget(left_button, 0, Qt::AlignLeft);
-	l->addWidget(center_text, 0, Qt::AlignCenter);
-	l->addWidget(right_button, 0, Qt::AlignRight);
-}
-
-void Bann2ButNew::initBanner(const QString &left, const QString &right, const QString &text,
-	const QFont &central_font)
-{
-	left_button->setImage(left);
-	right_button->setImage(right);
-	center_text->setText(text);
-	center_text->setFont(central_font);
-}
-
-void Bann2ButNew::setCentralText(const QString &text)
-{
-	center_text->setText(text);
 }
 
 

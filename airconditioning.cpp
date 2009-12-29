@@ -1,8 +1,6 @@
 #include "airconditioning.h"
 #include "skinmanager.h"
 #include "main.h"
-#include "bann2_buttons.h" // BannOnOffNew
-#include "bann1_button.h" // BannLeft
 #include "xml_functions.h" // getTextChild, getElement
 #include "bannercontent.h"
 #include "bann_airconditioning.h"
@@ -159,7 +157,7 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node)
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 	{
 		AdvancedSplitScenario *b = new AdvancedSplitScenario(0, getTextChild(scenario, "descr"));
-		b->connectSxButton(new SplitSettings(scenario, getChildWithName(config_node, "par")));
+		b->connectRightButton(new SplitSettings(scenario, getChildWithName(config_node, "par")));
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		page_content->appendBanner(b);
 	}
@@ -171,6 +169,7 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
 	nav_bar->displayScrollButtons(false);
 	buildPage(new BannerContent, nav_bar);
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(acceptChanges()));
 
 
 	QDomNode mode_node = getChildWithName(config_node, "mode");
@@ -181,10 +180,18 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 			modes.append(val.toElement().text().toInt());
 
 		int current_mode = getTextChild(values_node, "mode").toInt();
-		page_content->appendBanner(new SplitMode(modes, current_mode));
+		SplitMode *m = new SplitMode(modes, current_mode);
+		connect(m, SIGNAL(currentStateChanged(int)), SLOT(modeChanged(int)));
+		page_content->appendBanner(m);
 	}
 
-	page_content->appendBanner(new SplitTemperature(200, 400, 120, 5));
+	QDomNode temp_node = getChildWithName(config_node, "setpoint");
+	int min = getTextChild(temp_node, "min").toInt();
+	int max = getTextChild(temp_node, "max").toInt();
+	int step = getTextChild(temp_node, "step").toInt();
+
+	int current_temp = getTextChild(values_node, "setpoint").toInt();
+	page_content->appendBanner(new SplitTemperature(current_temp, max, min, step));
 
 	QDomNode speed_node = getChildWithName(config_node, "speed");
 	if (getTextChild(speed_node, "val1").toInt() != -1)
@@ -194,12 +201,29 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 			speeds.append(val.toElement().text().toInt());
 
 		int current_speed = getTextChild(values_node, "speed").toInt();
-		page_content->appendBanner(new SplitSpeed(speeds, current_speed));
+		SplitSpeed *s = new SplitSpeed(speeds, current_speed);
+		connect(s, SIGNAL(currentStateChanged(int)), SLOT(speedChanged(int)));
+		page_content->appendBanner(s);
 	}
 
 	QDomNode swing = getChildWithName(config_node, "fan_swing");
 	if (getTextChild(swing, "val1").toInt() != -1)
 		page_content->appendBanner(new SplitSwing(tr("SWING")));
+}
+
+void SplitSettings::acceptChanges()
+{
+	// TODO: to be implemented
+}
+
+void SplitSettings::modeChanged(int m)
+{
+	selected_mode = m;
+}
+
+void SplitSettings::speedChanged(int s)
+{
+	selected_fan_speed = s;
 }
 
 
