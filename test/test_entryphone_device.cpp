@@ -11,10 +11,6 @@
 void TestEntryphoneDevice::initTestCase()
 {
 	dev = new EntryphoneDevice("11");
-
-	// the ctor sends vct init frame, remove it before running other tests
-	client_command->flush();
-	server->frameCommand();
 }
 
 void TestEntryphoneDevice::cleanupTestCase()
@@ -75,6 +71,30 @@ void TestEntryphoneDevice::sendInitVctProcess()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
+void TestEntryphoneDevice::sendCameraOn()
+{
+	QString where_camera = "20";
+	dev->cameraOn(where_camera);
+	client_command->flush();
+	QString frame = QString("*8*4#%1*%2##").arg(dev->where).arg(where_camera);
+	QCOMPARE(server->frameCommand(), frame);
+}
+
+void TestEntryphoneDevice::sendStairLightActivate()
+{
+	dev->stairLightActivate();
+	client_command->flush();
+	QString frame = QString("*8*21*%1##").arg(dev->where);
+	QCOMPARE(server->frameCommand(), frame);
+}
+
+void TestEntryphoneDevice::sendStairLightRelease()
+{
+	dev->stairLightRelease();
+	client_command->flush();
+	QString frame = QString("*8*22*%1##").arg(dev->where);
+	QCOMPARE(server->frameCommand(), frame);
+}
 void TestEntryphoneDevice::receiveIncomingCall()
 {
 	DeviceTester t(dev, EntryphoneDevice::INCOMING_CALL);
@@ -96,21 +116,3 @@ void TestEntryphoneDevice::receiveCallerAddress()
 	QCOMPARE(dev->caller_address, caller_addr);
 }
 
-void TestEntryphoneDevice::testVctInitialization()
-{
-	// reset client_command internal state...I HATE YOU!
-	// send a dummy command to avoid that client_command swallows the last frame if it's same as the previous
-	dev->endCall();
-	client_command->flush();
-	server->frameCommand();
-
-	// real test starts here
-	QString where = dev->where;
-	delete dev;
-	dev = new EntryphoneDevice(where);
-
-	int type = 1;
-	client_command->flush();
-	QString frame = QString("*8*37#%1*%2##").arg(type).arg(dev->where);
-	QCOMPARE(server->frameCommand(), frame);
-}

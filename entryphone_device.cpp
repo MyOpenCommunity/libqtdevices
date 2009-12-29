@@ -13,6 +13,8 @@ enum
 	ANSWER = 2,
 	AUTOSWITCHING = 4,
 	CALLER_ADDRESS = 9,
+	STAIRCASE_ACTIVATE = 21,
+	STAIRCASE_RELEASE = 22,
 	READY = 37,
 };
 
@@ -36,10 +38,20 @@ void EntryphoneDevice::answerCall() const
 	sendCommand(what);
 }
 
-void EntryphoneDevice::cameraOn(QString _where)
+void EntryphoneDevice::cameraOn(QString _where) const
 {
 	QString what = QString("%1#%2").arg(AUTOSWITCHING).arg(where);
 	sendCommand(what, _where);
+}
+
+void EntryphoneDevice::stairLightActivate() const
+{
+	sendCommand(QString::number(STAIRCASE_ACTIVATE));
+}
+
+void EntryphoneDevice::stairLightRelease() const
+{
+	sendCommand(QString::number(STAIRCASE_RELEASE));
 }
 
 void EntryphoneDevice::endCall()

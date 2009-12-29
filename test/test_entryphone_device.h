@@ -16,11 +16,13 @@ private slots:
 	void sendAnswerCall();
 	void sendEndCall();
 	void sendInitVctProcess();
+	void sendCameraOn();
+	void sendStairLightActivate();
+	void sendStairLightRelease();
 
 	void receiveIncomingCall();
 	void receiveCallerAddress();
 
-	void testVctInitialization();
 private:
 	// init frame must be sent at constuction time
 	void simulateIncomingCall(int kind, int mmtype);

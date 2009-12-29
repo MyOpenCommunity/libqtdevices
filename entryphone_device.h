@@ -36,12 +36,13 @@ public:
 
 	void answerCall() const;
 	void endCall();
-
 	virtual void manageFrame(OpenMsg &msg);
 	void initVctProcess();
 
 public slots:
-	void cameraOn(QString _where);
+	void cameraOn(QString _where) const;
+	void stairLightActivate() const;
+	void stairLightRelease() const;
 
 private:
 	void resetCallState();

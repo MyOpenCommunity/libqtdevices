@@ -165,7 +165,9 @@ CallControl::CallControl(EntryphoneDevice *d)
 	// TODO: connect to mute settings
 
 	stairlight = getButton(bt_global::skin->getImage("stairlight"));
-	// TODO: connect
+	connect(stairlight, SIGNAL(pressed()), dev, SLOT(stairLightActivate()));
+	connect(stairlight, SIGNAL(released()), dev, SLOT(stairLightRelease()));
+
 	unlock_door = getButton(bt_global::skin->getImage("unlock_door"));
 	// TODO: connect
 
