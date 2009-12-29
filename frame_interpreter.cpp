@@ -1,5 +1,3 @@
-//! Implementation of frame interpreter classes
-
 #include "frame_interpreter.h"
 #include "hardware_functions.h" // rearmWDT
 #include "device.h"
@@ -8,10 +6,6 @@
 
 #include <QStringList>
 #include <QDebug>
-#include <QMap>
-
-//#include <stdlib.h> // forse non serve
-
 
 // Openwebnet where class
 openwebnet_where::openwebnet_where(char *s) : QString(s) 

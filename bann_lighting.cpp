@@ -1,25 +1,18 @@
 #include "bann_lighting.h"
-#include "device_status.h"
-#include "device.h"
 #include "btbutton.h"
 #include "fontmanager.h" // bt_global::font
 #include "devices_cache.h" // bt_global::devices_cache
-#include "generic_functions.h" // createMsgOpen
+#include "generic_functions.h" //getBostikName
 #include "icondispatcher.h" //bt_global::icons_cache
 #include "skinmanager.h" // skincontext
 #include "xml_functions.h" // getTextChild
 #include "lighting_device.h"
 
 
-#include <openwebnet.h> // class openwebnet
-
 #include <QLabel>
 #include <QTimer>
 #include <QDebug>
-#include <QFile>
 #include <QDomNode>
-
-#include <stdlib.h> // atoi
 
 namespace
 {

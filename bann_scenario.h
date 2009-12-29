@@ -1,13 +1,11 @@
-
 #ifndef BANN_SCENARIO_H
 #define BANN_SCENARIO_H
 
 #include "bann1_button.h" // BannLeft
 #include "bann3_buttons.h" // Bann3Buttons
 #include "bann4_buttons.h" // Bann4ButtonsIcon, bann4But
+#include "device.h" // StatusList
 
-#include <QObject>
-#include <QString>
 #include <QList>
 
 class PPTSceDevice;

@@ -1,15 +1,10 @@
-//!  Header file for device classes
-
 #ifndef __DEVICE_H__
 #define __DEVICE_H__
 
 #include "device_status.h"
 #include "frame_receiver.h"
 
-#include <QDateTime>
 #include <QVariant>
-#include <QString>
-#include <QObject>
 #include <QHash>
 #include <QList>
 #include <QTimer>

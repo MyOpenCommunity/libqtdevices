@@ -1,10 +1,9 @@
 #include "bann_scenario.h"
-#include "device.h"
 #include "scenevocond.h"
 #include "btbutton.h"
 #include "generic_functions.h" // setCfgValue
 #include "fontmanager.h" // bt_global::font
-#include "devices_cache.h" // bt_global::devices_cache
+#include "devices_cache.h" // bt_global::add_device_to_cache
 #include "automation_device.h"
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "scenario_device.h"

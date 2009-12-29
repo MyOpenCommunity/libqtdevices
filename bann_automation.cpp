@@ -1,9 +1,7 @@
 #include "bann_automation.h"
 #include "generic_functions.h" // createMsgOpen
-#include "device_status.h"
 #include "btbutton.h"
-#include "device.h"
-#include "devices_cache.h" // bt_global::devices_cache
+#include "devices_cache.h" // bt_global::add_device_to_cache
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "automation_device.h" // PPTStatDevice
 #include "lighting_device.h" // LightingDevice
@@ -12,9 +10,6 @@
 
 #include <QTimer>
 #include <QDebug>
-#include <QVariant>
-
-#include <openwebnet.h> // class openwebnet
 
 #define BUT_DIM     60
 

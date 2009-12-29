@@ -16,7 +16,6 @@
 #include <QTimer>
 #include <QTcpSocket>
 #include <QByteArray>
-#include <QRegExp>
 #include <QHash>
 
 #ifndef OPENSERVER_ADDR

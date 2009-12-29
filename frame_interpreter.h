@@ -1,18 +1,12 @@
-//! Frame interpreter classes
-
 #ifndef __FRAME_INTERPRETER_H__
 #define __FRAME_INTERPRETER_H__
 
-#include "openclient.h"
+#include "openwebnet.h"
 #include "device_status.h"
 
-#include <QString>
-#include <QObject>
 #include <QDateTime>
 #include <QTimer>
 #include <QList>
-
-#include <stdlib.h>
 
 
 class frame_interpreter;

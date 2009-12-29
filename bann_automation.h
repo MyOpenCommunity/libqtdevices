@@ -1,12 +1,10 @@
 #ifndef BANN_AUTOMATION_H
 #define BANN_AUTOMATION_H
 
-#include "bann1_button.h" // bannPuls
-#include "bann3_buttons.h" // bann3But
-#include "bann2_buttons.h"
-
-#include <QWidget>
-#include <QString>
+#include "bann1_button.h" // BannSinglePuls
+#include "bann3_buttons.h" // Bann3Buttons
+#include "bann2_buttons.h" // BannOpenClose
+#include "device.h" // StatusList
 
 /// Forward Declarations
 class device;
