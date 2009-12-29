@@ -82,6 +82,13 @@ class SplitSettings : public BannerPage
 Q_OBJECT
 public:
 	SplitSettings(const QDomNode &values_node, const QDomNode &config_node);
+
+private slots:
+	void modeChanged(int m);
+	void speedChanged(int s);
+	void acceptChanges();
+private:
+	int selected_mode, selected_temp, selected_fan_speed, selected_swing;
 };
 
 
