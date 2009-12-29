@@ -148,27 +148,6 @@ void BannOn2Labels::setElapsedTime(int time)
 }
 
 
-BannLeft::BannLeft(QWidget *parent) : BannerNew(parent)
-{
-	// Bannleft does not have the description label
-	banner_height = BUT_DIM;
-
-	left_button = new BtButton;
-	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::TEXT));
-
-	QHBoxLayout *l = new QHBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	l->addWidget(left_button, 0, Qt::AlignLeft);
-	l->addWidget(text, 1, Qt::AlignHCenter);
-}
-
-void BannLeft::initBanner(const QString &left, const QString &center)
-{
-	left_button->setImage(left);
-	text->setText(center);
-}
-
 
 bannPuls::bannPuls(QWidget *parent) : banner(parent)
 {

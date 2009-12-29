@@ -75,19 +75,6 @@ private:
 };
 
 
-// substitute for bannOnSx
-class BannLeft : public BannerNew
-{
-Q_OBJECT
-public:
-	BannLeft(QWidget *parent);
-	void initBanner(const QString &left, const QString &center);
-
-protected:
-	BtButton *left_button;
-	QLabel *text;
-};
-
 // Single button on the center, without bottom label
 class BannCenteredButton : public BannerNew
 {
