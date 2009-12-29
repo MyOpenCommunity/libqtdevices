@@ -20,10 +20,10 @@
 
 
 BannSimpleScenario::BannSimpleScenario(QWidget *parent, const QDomNode &config_node) :
-	BannLeft(parent)
+	Bann2Buttons(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	initBanner(bt_global::skin->getImage("on"), getTextChild(config_node, "descr"));
+	initBanner(bt_global::skin->getImage("on"), QString(), getTextChild(config_node, "descr"));
 
 	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new ScenarioDevice(where));
