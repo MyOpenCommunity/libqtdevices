@@ -220,6 +220,9 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->addLayout(hbox);
 	layout->addLayout(bottom);
+	layout->setContentsMargins(0, 0, 0, 0);
+	layout->setSpacing(0);
+
 	prev_page = 0;
 }
 
