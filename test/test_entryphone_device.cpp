@@ -31,6 +31,14 @@ void TestEntryphoneDevice::simulateIncomingCall(int kind, int mmtype)
 	dev->manageFrame(msg);
 }
 
+void TestEntryphoneDevice::simulateCallerAddress(int kind, int mmtype, QString where)
+{
+	QString frame = QString("*8*9#%1#%2*%3##").arg(kind).arg(mmtype).arg(where);
+
+	OpenMsg msg(frame.toStdString());
+	dev->manageFrame(msg);
+}
+
 void TestEntryphoneDevice::sendAnswerCall()
 {
 	// ringtone 1
@@ -95,6 +103,35 @@ void TestEntryphoneDevice::sendStairLightRelease()
 	QString frame = QString("*8*22*%1##").arg(dev->where);
 	QCOMPARE(server->frameCommand(), frame);
 }
+
+void TestEntryphoneDevice::sendOpenLock()
+{
+	int kind = 1;
+	int mmtype = 4;
+	QString caller_addr = "20";
+	simulateIncomingCall(kind, mmtype);
+	simulateCallerAddress(kind, mmtype, caller_addr);
+
+	dev->openLock();
+	client_command->flush();
+	QString frame = QString("*8*19*%1##").arg(caller_addr);
+	QCOMPARE(server->frameCommand(), frame);
+}
+
+void TestEntryphoneDevice::sendReleaseLock()
+{
+	int kind = 1;
+	int mmtype = 4;
+	QString caller_addr = "20";
+	simulateIncomingCall(kind, mmtype);
+	simulateCallerAddress(kind, mmtype, caller_addr);
+
+	dev->releaseLock();
+	client_command->flush();
+	QString frame = QString("*8*20*%1##").arg(caller_addr);
+	QCOMPARE(server->frameCommand(), frame);
+}
+
 void TestEntryphoneDevice::receiveIncomingCall()
 {
 	DeviceTester t(dev, EntryphoneDevice::INCOMING_CALL);
@@ -106,13 +143,10 @@ void TestEntryphoneDevice::receiveCallerAddress()
 {
 	int kind = 1;
 	int mmtype = 4;
-	simulateIncomingCall(kind, mmtype);
-
 	QString caller_addr = "20";
-	QString frame = QString("*8*9#%1#%2*%3##").arg(kind).arg(mmtype).arg(caller_addr);
+	simulateIncomingCall(kind, mmtype);
+	simulateCallerAddress(kind, mmtype, caller_addr);
 
-	OpenMsg msg(frame.toStdString());
-	dev->manageFrame(msg);
 	QCOMPARE(dev->caller_address, caller_addr);
 }
 

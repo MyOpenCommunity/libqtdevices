@@ -169,7 +169,8 @@ CallControl::CallControl(EntryphoneDevice *d)
 	connect(stairlight, SIGNAL(released()), dev, SLOT(stairLightRelease()));
 
 	unlock_door = getButton(bt_global::skin->getImage("unlock_door"));
-	// TODO: connect
+	connect(unlock_door, SIGNAL(pressed()), dev, SLOT(openLock()));
+	connect(unlock_door, SIGNAL(released()), dev, SLOT(releaseLock()));
 
 	cycle = new BtButton;
 	cycle->setImage(bt_global::skin->getImage("cycle"));

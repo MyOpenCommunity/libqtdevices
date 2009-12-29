@@ -43,6 +43,8 @@ public slots:
 	void cameraOn(QString _where) const;
 	void stairLightActivate() const;
 	void stairLightRelease() const;
+	void openLock() const;
+	void releaseLock() const;
 
 private:
 	void resetCallState();

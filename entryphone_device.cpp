@@ -13,6 +13,8 @@ enum
 	ANSWER = 2,
 	AUTOSWITCHING = 4,
 	CALLER_ADDRESS = 9,
+	OPEN_LOCK = 19,
+	RELEASE_LOCK = 20,
 	STAIRCASE_ACTIVATE = 21,
 	STAIRCASE_RELEASE = 22,
 	READY = 37,
@@ -52,6 +54,16 @@ void EntryphoneDevice::stairLightActivate() const
 void EntryphoneDevice::stairLightRelease() const
 {
 	sendCommand(QString::number(STAIRCASE_RELEASE));
+}
+
+void EntryphoneDevice::openLock() const
+{
+	sendCommand(QString::number(OPEN_LOCK), caller_address);
+}
+
+void EntryphoneDevice::releaseLock() const
+{
+	sendCommand(QString::number(RELEASE_LOCK), caller_address);
 }
 
 void EntryphoneDevice::endCall()

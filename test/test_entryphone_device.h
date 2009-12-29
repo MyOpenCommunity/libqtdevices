@@ -4,6 +4,8 @@
 #include "test_device.h"
 
 class EntryphoneDevice;
+class QString;
+
 
 class TestEntryphoneDevice : public TestDevice
 {
@@ -19,6 +21,8 @@ private slots:
 	void sendCameraOn();
 	void sendStairLightActivate();
 	void sendStairLightRelease();
+	void sendOpenLock();
+	void sendReleaseLock();
 
 	void receiveIncomingCall();
 	void receiveCallerAddress();
@@ -26,6 +30,8 @@ private slots:
 private:
 	// init frame must be sent at constuction time
 	void simulateIncomingCall(int kind, int mmtype);
+	void simulateCallerAddress(int kind, int mmtype, QString where);
+
 	EntryphoneDevice *dev;
 };
 
