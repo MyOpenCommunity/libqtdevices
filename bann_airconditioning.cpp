@@ -69,11 +69,11 @@ AdvancedSplitScenario::AdvancedSplitScenario(QWidget *parent, QString descr): Ba
 
 
 SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, int step) :
-	Bann2ButNew(0)
+	Bann2Buttons(0)
 {
 	QString icon_plus = bt_global::skin->getImage("plus");
 	QString icon_minus = bt_global::skin->getImage("minus");
-	initBanner(icon_minus, icon_plus, "---", bt_global::font->get(FontManager::SUBTITLE));
+	initBanner(icon_minus, icon_plus, "---", FontManager::SUBTITLE);
 
 	Q_ASSERT_X(init_temp >= level_min && init_temp <= level_max, "SplitTemperature::SplitTemperature",
 		"Initial temperature is outside the given range.");

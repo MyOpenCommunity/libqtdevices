@@ -61,7 +61,7 @@ public:
 /**
  * The banner that represent the temperature of the split
  */
-class SplitTemperature : public Bann2ButNew
+class SplitTemperature : public Bann2Buttons
 {
 Q_OBJECT
 public:
