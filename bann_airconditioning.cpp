@@ -72,16 +72,51 @@ AdvancedSplitScenario::AdvancedSplitScenario(QWidget *parent, QString descr): ba
 }
 
 
-SplitTemperature::SplitTemperature(QWidget *parent): bann2But(parent)
+SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, int step) :
+	Bann2ButNew(0)
 {
 	QString icon_plus = bt_global::skin->getImage("plus");
 	QString icon_minus = bt_global::skin->getImage("minus");
+	initBanner(icon_minus, icon_plus, "---", bt_global::font->get(FontManager::SUBTITLE));
 
-	SetIcons(0, icon_minus);
-	SetIcons(1, icon_plus);
-	setText("23.5 C"); // temperatura!
-	Draw(); // blah! la draw deve essere prima della setFont altrimenti non funziona nulla!
-	BannerText->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	Q_ASSERT_X(init_temp >= level_min && init_temp <= level_max, "SplitTemperature::SplitTemperature",
+		"Initial temperature is outside the given range.");
+	current_temp = init_temp;
+	max_temp = level_max;
+	min_temp = level_min;
+	temp_step = step;
+	updateText();
+
+	left_button->setAutoRepeat(true);
+	connect(left_button, SIGNAL(clicked()), SLOT(decreseTemp()));
+	right_button->setAutoRepeat(true);
+	connect(right_button, SIGNAL(clicked()), SLOT(increaseTemp()));
+}
+
+void SplitTemperature::increaseTemp()
+{
+	int tmp = current_temp + temp_step;
+	if (tmp <= max_temp)
+	{
+		current_temp = tmp;
+		updateText();
+	}
+}
+
+void SplitTemperature::decreseTemp()
+{
+	int tmp = current_temp - temp_step;
+	if (tmp >= min_temp)
+	{
+		current_temp = tmp;
+		updateText();
+	}
+}
+
+void SplitTemperature::updateText()
+{
+	// TODO: what about fahrenheit temperature?
+	setCentralText(celsiusString(current_temp));
 }
 
 
@@ -106,9 +141,9 @@ SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 {
 	speeds_descr[0] = tr("AUTO");
-	speeds_descr[1] = tr("HIGH");
+	speeds_descr[1] = tr("LOW");
 	speeds_descr[2] = tr("MEDIUM");
-	speeds_descr[3] = tr("LOW");
+	speeds_descr[3] = tr("HIGH");
 
 	foreach (int speed_id, speeds)
 		if (speeds_descr.contains(speed_id))

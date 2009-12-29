@@ -61,11 +61,20 @@ public:
 /**
  * The banner that represent the temperature of the split
  */
-class SplitTemperature : public bann2But
+class SplitTemperature : public Bann2ButNew
 {
 Q_OBJECT
 public:
-	SplitTemperature(QWidget *parent); // TODO: altri parametri, tipo temperature/format, range, step, ecc..
+	 // TODO: altri parametri, tipo temperature/format, range, step, ecc..
+	SplitTemperature(int init_temp, int level_max, int level_min, int step);
+
+private slots:
+	void increaseTemp();
+	void decreseTemp();
+
+private:
+	void updateText();
+	int current_temp, max_temp, min_temp, temp_step;
 };
 
 

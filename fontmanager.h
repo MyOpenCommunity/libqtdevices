@@ -42,7 +42,8 @@ public:
 		BANNERTEXT = 2,
 		BANNERDESCRIPTION = 2,
 		SMALLTEXT = 3,
-		HOMEPAGEWIDGET = 6
+		HOMEPAGEWIDGET = 6,
+		FONT_COUNT = 7,  // this must be the last one
 	};
 #else
 	enum Type
@@ -53,7 +54,8 @@ public:
 		BANNERTEXT = 4,
 		BANNERDESCRIPTION = 5,
 		SMALLTEXT = 2, // TBD, same as TEXT for now
-		HOMEPAGEWIDGET = 6
+		HOMEPAGEWIDGET = 6,
+		FONT_COUNT = 7,  // this must be the last one
 	};
 #endif
 

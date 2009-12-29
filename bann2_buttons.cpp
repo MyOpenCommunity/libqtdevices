@@ -93,6 +93,61 @@ void BannOnOffState::setState(States new_state)
 }
 
 
+Bann2Buttons::Bann2Buttons(QWidget *parent) :
+	BannerNew(parent)
+{
+	left_button = new BtButton;
+	right_button = new BtButton;
+	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::TEXT));
+
+	QGridLayout *l = new QGridLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	l->addWidget(left_button, 0, 0);
+	l->setColumnStretch(0, 1);
+	l->addWidget(text, 0, 1);
+	l->setColumnStretch(1, 2);
+	l->addWidget(right_button, 0, 2);
+	l->setColumnStretch(2, 1);
+}
+
+void Bann2Buttons::initBanner(const QString &left, const QString &right, const QString &banner_text,
+	int font_type)
+{
+	initButton(left_button, left);
+	initButton(right_button, right);
+	text->setText(banner_text);
+	QFont central_font;
+	if (font_type != -1)
+	{
+		Q_ASSERT_X(font_type <= FontManager::FONT_COUNT, "Bann2Buttons::initBanner",
+			"The provided font type is invalid");
+		central_font = bt_global::font->get(static_cast<FontManager::Type>(font_type));
+	}
+	else
+		central_font = bt_global::font->get(FontManager::TEXT);
+
+	text->setFont(central_font);
+}
+
+void Bann2Buttons::initButton(BtButton *btn, const QString &icon)
+{
+	if (icon.isEmpty())
+	{
+		btn->hide();
+		btn->disconnect();
+		btn->deleteLater();
+	}
+	else
+		btn->setImage(icon);
+}
+
+void Bann2Buttons::setCentralText(const QString &t)
+{
+	text->setText(t);
+}
+
+
 BannOpenClose::BannOpenClose(QWidget *parent) :
 	BannerNew(parent)
 {
@@ -288,6 +343,36 @@ void BannTuning::changeIcons()
 {
 	center_left->setImage(getBostikName(center_icon, QString("sxl") + QString::number(current_level)));
 	center_right->setImage(getBostikName(center_icon, QString("dxl") + QString::number(current_level)));
+}
+
+
+
+Bann2ButNew::Bann2ButNew(QWidget *parent) :
+	BannerNew(parent)
+{
+	left_button = new BtButton;
+	right_button = new BtButton;
+	center_text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::TEXT));
+	QHBoxLayout *l = new QHBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	l->addWidget(left_button, 0, Qt::AlignLeft);
+	l->addWidget(center_text, 0, Qt::AlignCenter);
+	l->addWidget(right_button, 0, Qt::AlignRight);
+}
+
+void Bann2ButNew::initBanner(const QString &left, const QString &right, const QString &text,
+	const QFont &central_font)
+{
+	left_button->setImage(left);
+	right_button->setImage(right);
+	center_text->setText(text);
+	center_text->setFont(central_font);
+}
+
+void Bann2ButNew::setCentralText(const QString &text)
+{
+	center_text->setText(text);
 }
 
 
