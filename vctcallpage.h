@@ -7,11 +7,13 @@
 #include <QStringList>
 #include <QProcess>
 
-class QDomNode;
-class EntryphoneDevice;
-class QHBoxLayout;
+
 class BannTuning;
+class EntryphoneDevice;
+class QDomNode;
+class QHBoxLayout;
 class QLabel;
+class QShowEvent;
 
 
 class EnablingButton : public BtButton
@@ -77,11 +79,21 @@ Q_OBJECT
 public:
 	CallControl(EntryphoneDevice *d);
 
+signals:
+	void endCall();
+
+protected:
+	virtual void showEvent(QShowEvent *);
+
+private slots:
+	void toggleCall();
+
 private:
 	EntryphoneDevice *dev;
-	EnablingButton *call_accept, *mute_button, *stairlight, *unlock_door;
-	BtButton *cycle;
+	EnablingButton *mute_button, *stairlight, *unlock_door;
+	BtButton *cycle, *call_accept;
 	QString mute_icon, call_icon;
+	bool connected;
 };
 
 

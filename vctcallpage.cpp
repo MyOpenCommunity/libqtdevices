@@ -144,11 +144,17 @@ CallControl::CallControl(EntryphoneDevice *d)
 {
 	dev = d;
 
+	connected = false;
 	call_icon = bt_global::skin->getImage("call");
-	call_accept = new EnablingButton;
+	call_accept = new BtButton;
+	call_accept->setOnOff();
 	call_accept->setImage(getBostikName(call_icon, "off"));
-	call_accept->setDisabledPixmap(getBostikName(call_icon, "dis"));
-	// TODO: connect to accept call
+	call_accept->setPressedImage(getBostikName(call_icon, "on"));
+	connect(call_accept, SIGNAL(clicked()), SLOT(toggleCall()));
+
+	// TODO: verificare in che situazione posso avere lo stato disabilitato per il
+	// pulsante per accettare le videochiamate!
+//	call_accept->setDisabledPixmap(getBostikName(call_icon, "dis"));
 
 	BannTuning *volume = new BannTuning("", bt_global::skin->getImage("volume"));
 	// TODO: connect to volume settings
@@ -176,6 +182,24 @@ CallControl::CallControl(EntryphoneDevice *d)
 	bottom->addWidget(stairlight);
 	bottom->addWidget(unlock_door);
 	bottom->addWidget(cycle);
+}
+
+void CallControl::showEvent(QShowEvent *)
+{
+	// Every time that the control is shown, the status of the connection must be
+	// reset in order to be sync with the effective call status.
+	connected = false;
+}
+
+void CallControl::toggleCall()
+{
+	connected = !connected;
+
+	call_accept->setStatus(connected);
+	if (connected)
+		dev->answerCall();
+	else
+		emit endCall();
 }
 
 
@@ -287,7 +311,10 @@ QHBoxLayout *VCTCallPage::buildBottomLayout()
 	BtButton *back = new BtButton;
 	back->setImage(bt_global::skin->getImage("back"));
 	connect(back, SIGNAL(clicked()), SLOT(closeCall()));
+
 	call_control = new CallControl(dev);
+	connect(call_control, SIGNAL(endCall()), SLOT(closeCall()));
+
 	QHBoxLayout *bottom = new QHBoxLayout;
 	bottom->setContentsMargins(0, 0, 0, 0);
 	bottom->setSpacing(BOTTOM_SPACING);
