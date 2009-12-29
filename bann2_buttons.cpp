@@ -1,6 +1,5 @@
 #include "bann2_buttons.h"
 #include "btbutton.h"
-#include "fontmanager.h" // FontManager
 #include "icondispatcher.h" // icons_cache
 #include "generic_functions.h" // getBostikName
 #include "titlelabel.h"
@@ -112,18 +111,14 @@ Bann2Buttons::Bann2Buttons(QWidget *parent) :
 }
 
 void Bann2Buttons::initBanner(const QString &left, const QString &right, const QString &banner_text,
-	int font_type)
+	FontManager::Type font_type)
 {
 	initButton(left_button, left);
 	initButton(right_button, right);
 	text->setText(banner_text);
 	QFont central_font;
-	if (font_type != -1)
-	{
-		Q_ASSERT_X(font_type <= FontManager::FONT_COUNT, "Bann2Buttons::initBanner",
-			"The provided font type is invalid");
+	if (font_type != FontManager::FONT_NONE)
 		central_font = bt_global::font->get(static_cast<FontManager::Type>(font_type));
-	}
 	else
 		central_font = bt_global::font->get(FontManager::TEXT);
 

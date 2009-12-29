@@ -12,6 +12,7 @@
 #define BANN2_BUTTONS_H
 
 #include "banner.h"
+#include "fontmanager.h" // FontManager
 
 class QWidget;
 class QLabel;
@@ -83,8 +84,8 @@ class Bann2Buttons : public BannerNew
 Q_OBJECT
 protected:
 	Bann2Buttons(QWidget *parent = 0);
-	void initBanner(const QString &left, const QString &right, const QString &text,
-		int font_type = -1);
+	void initBanner(const QString &left, const QString &right, const QString &banner_text,
+		FontManager::Type font_type = FontManager::FONT_NONE);
 	void setCentralText(const QString &t);
 
 	BtButton *left_button, *right_button;

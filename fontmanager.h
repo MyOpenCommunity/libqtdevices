@@ -31,11 +31,11 @@ public:
 
 	enum Type
 	{
+		FONT_NONE = -1,  // a number not present in configuration files
 		TITLE = 0,
 		SUBTITLE = 1,
 		TEXT = 2,
 		SMALLTEXT = 3,
-		FONT_COUNT = 4,  // this must be the last one
 	};
 
 	const QFont& get(Type t);
