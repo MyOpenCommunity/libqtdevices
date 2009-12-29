@@ -1,7 +1,7 @@
 #ifndef BANN_AIRCONDITIONING_H
 #define BANN_AIRCONDITIONING_H
 
-#include "bann2_buttons.h" // BannOnOffNew, bann2But
+#include "bann2_buttons.h" // BannOnOffNew, Bann2Buttons
 #include "bann1_button.h" // BannStates
 #include "airconditioning_device.h"
 
@@ -50,7 +50,7 @@ signals:
 /**
  * The banner for a scenario of a single split (configured as advanced)
  */
-class AdvancedSplitScenario : public bann2But
+class AdvancedSplitScenario : public Bann2Buttons
 {
 Q_OBJECT
 public:

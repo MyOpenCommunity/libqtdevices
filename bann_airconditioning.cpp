@@ -60,15 +60,11 @@ GeneralSplit::GeneralSplit(QString descr) : BannOnOffNew(0)
 }
 
 
-AdvancedSplitScenario::AdvancedSplitScenario(QWidget *parent, QString descr): bann2But(parent)
+AdvancedSplitScenario::AdvancedSplitScenario(QWidget *parent, QString descr): Bann2Buttons(parent)
 {
 	QString icon_cmd = bt_global::skin->getImage("split_cmd");
 	QString icon_settings = bt_global::skin->getImage("split_settings");
-
-	SetIcons(0, icon_cmd);
-	SetIcons(1, icon_settings);
-	setText(descr);
-	Draw();
+	initBanner(icon_cmd, icon_settings, descr);
 }
 
 
