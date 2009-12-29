@@ -20,8 +20,25 @@
 
 
 
-BannOnOffNew::BannOnOffNew(QWidget *parent) :
+Bann2LinkedPages::Bann2LinkedPages(QWidget *parent) :
 	BannerNew(parent)
+{
+}
+
+void Bann2LinkedPages::connectLeftButton(Page *p)
+{
+	connectButtonToPage(left_button, p);
+}
+
+void Bann2LinkedPages::connectRightButton(Page *p)
+{
+	connectButtonToPage(right_button, p);
+}
+
+
+
+BannOnOffNew::BannOnOffNew(QWidget *parent) :
+	Bann2LinkedPages(parent)
 {
 	left_button = new BtButton;
 	right_button = new BtButton;
@@ -58,16 +75,6 @@ void BannOnOffNew::setBannerText(const QString &str)
 	text->setText(str);
 }
 
-void BannOnOffNew::connectLeftButton(Page *p)
-{
-	connectButtonToPage(left_button, p);
-}
-
-void BannOnOffNew::connectRightButton(Page *p)
-{
-	connectButtonToPage(right_button, p);
-}
-
 void BannOnOffNew::setInternalText(const QString &text)
 {
 	center_icon->setInternalText(text);
@@ -93,7 +100,7 @@ void BannOnOffState::setState(States new_state)
 
 
 Bann2Buttons::Bann2Buttons(QWidget *parent) :
-	BannerNew(parent)
+	Bann2LinkedPages(parent)
 {
 	left_button = new BtButton;
 	right_button = new BtButton;
