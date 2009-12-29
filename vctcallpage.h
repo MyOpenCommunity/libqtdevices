@@ -28,8 +28,11 @@ private:
 };
 
 
-// TODO: should be a StyledWidget??
-class CameraMove : public QWidget
+/**
+ * The pad to control the movements of the camera (if the camera support them)
+ * and to show the video call page as a window.
+ */
+class CameraMove : public QWidget // TODO: should be a StyledWidget??
 {
 Q_OBJECT
 public:
@@ -43,6 +46,10 @@ private:
 };
 
 
+/**
+ * The widget that contains the controls for the image of the video call (usually
+ * placed on the right of the video area).
+ */
 class CameraImageControl : public QWidget
 {
 Q_OBJECT
@@ -59,6 +66,11 @@ private:
 };
 
 
+
+/**
+ * The widget that contains all the button to control the videocall (usually
+ * placed at the bottom of the page).
+ */
 class CallControl : public QWidget
 {
 Q_OBJECT
@@ -73,7 +85,10 @@ private:
 };
 
 
-
+/**
+ * The page of the video call. It is showed indirecly when a call frame came
+ * from the Openserver.
+ */
 class VCTCallPage : public Page
 {
 Q_OBJECT
