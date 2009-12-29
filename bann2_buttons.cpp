@@ -282,36 +282,6 @@ void Bann2CentralButtons::initBanner(const QString &left, const QString &right)
 }
 
 
-
-Bann2ButNew::Bann2ButNew(QWidget *parent) :
-	BannerNew(parent)
-{
-	left_button = new BtButton;
-	right_button = new BtButton;
-	center_text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::TEXT));
-	QHBoxLayout *l = new QHBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	l->addWidget(left_button, 0, Qt::AlignLeft);
-	l->addWidget(center_text, 0, Qt::AlignCenter);
-	l->addWidget(right_button, 0, Qt::AlignRight);
-}
-
-void Bann2ButNew::initBanner(const QString &left, const QString &right, const QString &text,
-	const QFont &central_font)
-{
-	left_button->setImage(left);
-	right_button->setImage(right);
-	center_text->setText(text);
-	center_text->setFont(central_font);
-}
-
-void Bann2ButNew::setCentralText(const QString &text)
-{
-	center_text->setText(text);
-}
-
-
 bann2But::bann2But(QWidget *parent) : banner(parent)
 {
 	banner_height = BAN2BUT_BUT_DIM;
