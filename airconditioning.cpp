@@ -162,7 +162,7 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node)
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 	{
 		AdvancedSplitScenario *b = new AdvancedSplitScenario(0, getTextChild(scenario, "descr"));
-		b->connectSxButton(new SplitSettings(scenario, getChildWithName(config_node, "par")));
+		b->connectRightButton(new SplitSettings(scenario, getChildWithName(config_node, "par")));
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		page_content->appendBanner(b);
 	}
