@@ -60,28 +60,59 @@ GeneralSplit::GeneralSplit(QString descr) : BannOnOffNew(0)
 }
 
 
-AdvancedSplitScenario::AdvancedSplitScenario(QWidget *parent, QString descr): bann2But(parent)
+AdvancedSplitScenario::AdvancedSplitScenario(QWidget *parent, QString descr): Bann2Buttons(parent)
 {
 	QString icon_cmd = bt_global::skin->getImage("split_cmd");
 	QString icon_settings = bt_global::skin->getImage("split_settings");
-
-	SetIcons(0, icon_cmd);
-	SetIcons(1, icon_settings);
-	setText(descr);
-	Draw();
+	initBanner(icon_cmd, icon_settings, descr);
 }
 
 
-SplitTemperature::SplitTemperature(QWidget *parent): bann2But(parent)
+SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, int step) :
+	Bann2Buttons(0)
 {
 	QString icon_plus = bt_global::skin->getImage("plus");
 	QString icon_minus = bt_global::skin->getImage("minus");
+	initBanner(icon_minus, icon_plus, "---", FontManager::SUBTITLE);
 
-	SetIcons(0, icon_minus);
-	SetIcons(1, icon_plus);
-	setText("23.5 C"); // temperatura!
-	Draw(); // blah! la draw deve essere prima della setFont altrimenti non funziona nulla!
-	BannerText->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	Q_ASSERT_X(init_temp >= level_min && init_temp <= level_max, "SplitTemperature::SplitTemperature",
+		"Initial temperature is outside the given range.");
+	current_temp = init_temp;
+	max_temp = level_max;
+	min_temp = level_min;
+	temp_step = step;
+	updateText();
+
+	left_button->setAutoRepeat(true);
+	connect(left_button, SIGNAL(clicked()), SLOT(decreseTemp()));
+	right_button->setAutoRepeat(true);
+	connect(right_button, SIGNAL(clicked()), SLOT(increaseTemp()));
+}
+
+void SplitTemperature::increaseTemp()
+{
+	int tmp = current_temp + temp_step;
+	if (tmp <= max_temp)
+	{
+		current_temp = tmp;
+		updateText();
+	}
+}
+
+void SplitTemperature::decreseTemp()
+{
+	int tmp = current_temp - temp_step;
+	if (tmp >= min_temp)
+	{
+		current_temp = tmp;
+		updateText();
+	}
+}
+
+void SplitTemperature::updateText()
+{
+	// TODO: what about fahrenheit temperature?
+	setCentralText(celsiusString(current_temp));
 }
 
 
@@ -106,9 +137,9 @@ SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 {
 	speeds_descr[0] = tr("AUTO");
-	speeds_descr[1] = tr("HIGH");
+	speeds_descr[1] = tr("LOW");
 	speeds_descr[2] = tr("MEDIUM");
-	speeds_descr[3] = tr("LOW");
+	speeds_descr[3] = tr("HIGH");
 
 	foreach (int speed_id, speeds)
 		if (speeds_descr.contains(speed_id))
@@ -120,13 +151,11 @@ SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 }
 
 
-SplitSwing::SplitSwing(QString descr) : BannLeft(0)
+SplitSwing::SplitSwing(QString descr) : Bann2Buttons(0)
 {
-	left_button->setOnOff();
-	left_button->setImage(bt_global::skin->getImage("swing_off"));
-	left_button->setPressedImage(bt_global::skin->getImage("swing_on"));
-	text->setText(descr);
+	initBanner(bt_global::skin->getImage("swing_off"), bt_global::skin->getImage("swing_on"), descr);
 
+	// TODO: this is all wrong, we need a button group. I will fix it shortly
 	status = false;
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleSwing()));
 }
@@ -139,9 +168,9 @@ void SplitSwing::toggleSwing()
 }
 
 
-SplitScenario::SplitScenario(QString descr, QString cmd, AirConditioningDevice *d) : BannLeft(0)
+SplitScenario::SplitScenario(QString descr, QString cmd, AirConditioningDevice *d) : Bann2Buttons(0)
 {
-	initBanner(bt_global::skin->getImage("split_cmd"), descr);
+	initBanner(bt_global::skin->getImage("split_cmd"), QString(), descr);
 	command = cmd;
 	dev = d;
 	connect(left_button, SIGNAL(clicked()), SLOT(sendScenarioCommand()));
@@ -153,9 +182,9 @@ void SplitScenario::sendScenarioCommand()
 }
 
 
-GeneralSplitScenario::GeneralSplitScenario(QString descr) : BannLeft(0)
+GeneralSplitScenario::GeneralSplitScenario(QString descr) : Bann2Buttons(0)
 {
-	initBanner(bt_global::skin->getImage("split_cmd"), descr);
+	initBanner(bt_global::skin->getImage("split_cmd"), QString(), descr);
 	connect(left_button, SIGNAL(clicked()), SLOT(sendScenarioCommand()));
 }
 

@@ -12,11 +12,28 @@
 #define BANN2_BUTTONS_H
 
 #include "banner.h"
+#include "fontmanager.h" // FontManager
 
 class QWidget;
 class QLabel;
 class BtButton;
 class TextOnImageLabel;
+
+
+/*
+ * Small base class for all 2 buttons banners that can have linked pages.
+ */
+class Bann2LinkedPages : public BannerNew
+{
+Q_OBJECT
+public:
+	Bann2LinkedPages(QWidget *parent = 0);
+	void connectLeftButton(Page *p);
+	void connectRightButton(Page *p);
+
+protected:
+	BtButton *left_button, *right_button;
+};
 
 
 /*
@@ -34,19 +51,16 @@ class TextOnImageLabel;
  * Buttons are created protected so that logic banners can manipulate them directly, thus
  * avoiding BtButton interface duplication. All other elements are created private.
  */
-class BannOnOffNew : public BannerNew
+class BannOnOffNew : public Bann2LinkedPages
 {
 Q_OBJECT
 public:
 	BannOnOffNew(QWidget *parent);
 	void initBanner(const QString &left, const QString &center, const QString &right, const QString &text);
-	void connectLeftButton(Page *p);
-	void connectRightButton(Page *p);
 
 protected:
 	void setBannerText(const QString &str);
 	void setInternalText(const QString &text);
-	BtButton *left_button, *right_button;
 
 	TextOnImageLabel *center_icon;
 	QLabel *text;
@@ -71,6 +85,25 @@ public:
 	void initBanner(const QString &left, const QString &center, const QString &right,
 		States init_state, const QString &banner_text);
 	void setState(States new_state);
+};
+
+/**
+ * Two buttons on the sides + description in the center.
+ * Either button can be removed by giving an empty string as the icon parameter to initBanner()
+ * Nicer replacement for bann2but, will replace also BannLeft, BannRight, bannOnDx, bannOnSx
+ */
+class Bann2Buttons : public Bann2LinkedPages
+{
+Q_OBJECT
+protected:
+	Bann2Buttons(QWidget *parent = 0);
+	void initBanner(const QString &left, const QString &right, const QString &banner_text,
+		FontManager::Type font_type = FontManager::FONT_NONE);
+	void setCentralText(const QString &t);
+
+private:
+	void initButton(BtButton *btn, const QString &icon);
+	QLabel *text;
 };
 
 

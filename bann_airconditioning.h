@@ -1,7 +1,7 @@
 #ifndef BANN_AIRCONDITIONING_H
 #define BANN_AIRCONDITIONING_H
 
-#include "bann2_buttons.h" // BannOnOffNew, bann2But
+#include "bann2_buttons.h" // BannOnOffNew, Bann2Buttons
 #include "bann1_button.h" // BannStates
 #include "airconditioning_device.h"
 
@@ -50,7 +50,7 @@ signals:
 /**
  * The banner for a scenario of a single split (configured as advanced)
  */
-class AdvancedSplitScenario : public bann2But
+class AdvancedSplitScenario : public Bann2Buttons
 {
 Q_OBJECT
 public:
@@ -61,11 +61,20 @@ public:
 /**
  * The banner that represent the temperature of the split
  */
-class SplitTemperature : public bann2But
+class SplitTemperature : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	SplitTemperature(QWidget *parent); // TODO: altri parametri, tipo temperature/format, range, step, ecc..
+	 // TODO: altri parametri, tipo temperature/format, range, step, ecc..
+	SplitTemperature(int init_temp, int level_max, int level_min, int step);
+
+private slots:
+	void increaseTemp();
+	void decreseTemp();
+
+private:
+	void updateText();
+	int current_temp, max_temp, min_temp, temp_step;
 };
 
 
@@ -98,7 +107,7 @@ private:
 /**
  * The banner that represent the swing of the split
  */
-class SplitSwing : public BannLeft
+class SplitSwing : public Bann2Buttons
 {
 Q_OBJECT
 public:
@@ -114,7 +123,7 @@ private:
 /**
  * The banner for a scenario of a single split (configured as basic)
  */
-class SplitScenario : public BannLeft
+class SplitScenario : public Bann2Buttons
 {
 Q_OBJECT
 public:
@@ -132,7 +141,7 @@ private slots:
 /**
  * The banner for a scenario of a general split
  */
-class GeneralSplitScenario : public BannLeft
+class GeneralSplitScenario : public Bann2Buttons
 {
 Q_OBJECT
 public:

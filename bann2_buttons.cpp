@@ -1,6 +1,5 @@
 #include "bann2_buttons.h"
 #include "btbutton.h"
-#include "fontmanager.h" // FontManager
 #include "icondispatcher.h" // icons_cache
 #include "generic_functions.h" // getBostikName
 #include "titlelabel.h"
@@ -21,8 +20,25 @@
 
 
 
-BannOnOffNew::BannOnOffNew(QWidget *parent) :
+Bann2LinkedPages::Bann2LinkedPages(QWidget *parent) :
 	BannerNew(parent)
+{
+}
+
+void Bann2LinkedPages::connectLeftButton(Page *p)
+{
+	connectButtonToPage(left_button, p);
+}
+
+void Bann2LinkedPages::connectRightButton(Page *p)
+{
+	connectButtonToPage(right_button, p);
+}
+
+
+
+BannOnOffNew::BannOnOffNew(QWidget *parent) :
+	Bann2LinkedPages(parent)
 {
 	left_button = new BtButton;
 	right_button = new BtButton;
@@ -59,16 +75,6 @@ void BannOnOffNew::setBannerText(const QString &str)
 	text->setText(str);
 }
 
-void BannOnOffNew::connectLeftButton(Page *p)
-{
-	connectButtonToPage(left_button, p);
-}
-
-void BannOnOffNew::connectRightButton(Page *p)
-{
-	connectButtonToPage(right_button, p);
-}
-
 void BannOnOffNew::setInternalText(const QString &text)
 {
 	center_icon->setInternalText(text);
@@ -90,6 +96,57 @@ void BannOnOffState::initBanner(const QString &left, const QString &center, cons
 void BannOnOffState::setState(States new_state)
 {
 	center_icon->setBackgroundImage(getBostikName(center, new_state == ON ? "on" : "off"));
+}
+
+
+Bann2Buttons::Bann2Buttons(QWidget *parent) :
+	Bann2LinkedPages(parent)
+{
+	left_button = new BtButton;
+	right_button = new BtButton;
+	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::TEXT));
+
+	QGridLayout *l = new QGridLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	l->addWidget(left_button, 0, 0);
+	l->setColumnStretch(0, 1);
+	l->addWidget(text, 0, 1);
+	l->setColumnStretch(1, 2);
+	l->addWidget(right_button, 0, 2);
+	l->setColumnStretch(2, 1);
+}
+
+void Bann2Buttons::initBanner(const QString &left, const QString &right, const QString &banner_text,
+	FontManager::Type font_type)
+{
+	initButton(left_button, left);
+	initButton(right_button, right);
+	text->setText(banner_text);
+	QFont central_font;
+	if (font_type != FontManager::FONT_NONE)
+		central_font = bt_global::font->get(static_cast<FontManager::Type>(font_type));
+	else
+		central_font = bt_global::font->get(FontManager::TEXT);
+
+	text->setFont(central_font);
+}
+
+void Bann2Buttons::initButton(BtButton *btn, const QString &icon)
+{
+	if (icon.isEmpty())
+	{
+		btn->hide();
+		btn->disconnect();
+		btn->deleteLater();
+	}
+	else
+		btn->setImage(icon);
+}
+
+void Bann2Buttons::setCentralText(const QString &t)
+{
+	text->setText(t);
 }
 
 

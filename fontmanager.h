@@ -36,24 +36,26 @@ public:
 #ifdef LAYOUT_BTOUCH
 	enum Type
 	{
+		FONT_NONE = -1,  // a number not present in configuration files
 		TITLE = 0,
 		SUBTITLE = 1,
 		TEXT = 2,
 		BANNERTEXT = 2,
 		BANNERDESCRIPTION = 2,
 		SMALLTEXT = 3,
-		HOMEPAGEWIDGET = 6
+		HOMEPAGEWIDGET = 6,
 	};
 #else
 	enum Type
 	{
+		FONT_NONE = -1,  // a number not present in configuration files
 		TITLE = 0,
 		SUBTITLE = 0, // TBD, same as TITLE for now
 		TEXT = 2,
 		BANNERTEXT = 4,
 		BANNERDESCRIPTION = 5,
 		SMALLTEXT = 2, // TBD, same as TEXT for now
-		HOMEPAGEWIDGET = 6
+		HOMEPAGEWIDGET = 6,
 	};
 #endif
 
