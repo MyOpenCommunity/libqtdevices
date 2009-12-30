@@ -92,9 +92,8 @@ protected:
 
 private slots:
 	void handleClose();
-	void modeChanged(int m);
-	void speedChanged(int s);
 	void acceptChanges();
+
 private:
 	SplitSwing *swing;
 	SplitTemperature *temperature;

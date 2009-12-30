@@ -242,16 +242,6 @@ void SplitSettings::handleClose()
 	swing->setSwingOn(selected_swing);
 }
 
-void SplitSettings::modeChanged(int m)
-{
-	selected_mode = m;
-}
-
-void SplitSettings::speedChanged(int s)
-{
-	selected_fan_speed = s;
-}
-
 
 GeneralSplitPage::GeneralSplitPage(const QDomNode &config_node)
 {
