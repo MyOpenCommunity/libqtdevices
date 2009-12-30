@@ -96,6 +96,7 @@ private slots:
 	void acceptChanges();
 
 private:
+	void readBannerValues();
 	SplitSwing *swing;
 	SplitTemperature *temperature;
 	SplitMode *mode;

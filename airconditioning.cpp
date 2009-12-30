@@ -220,7 +220,7 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	}
 }
 
-void SplitSettings::showEvent(QShowEvent *)
+void SplitSettings::readBannerValues()
 {
 	current_fan_speed = speed->currentState();
 	current_mode = mode->currentState();
@@ -228,9 +228,14 @@ void SplitSettings::showEvent(QShowEvent *)
 	current_swing = swing->swing();
 }
 
+void SplitSettings::showEvent(QShowEvent *)
+{
+	readBannerValues();
+}
+
 void SplitSettings::acceptChanges()
 {
-	// TODO: read correctly current data!
+	readBannerValues();
 	// TODO: save values to config_file!
 	AirConditionerStatus status(static_cast<Mode>(current_mode), current_temp,
 		static_cast<Velocity>(current_fan_speed), static_cast<Swing>(current_swing));
