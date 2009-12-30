@@ -292,7 +292,7 @@ void BannStates::initBanner(const QString &left, int current_state)
 	setCurrentState(current_state);
 }
 
-// To maintain the same semantics of currentStateChanged() and currentState(), we need to search
+// To maintain the same semantics of currentState(), we need to search
 // the new state in the whole array.
 void BannStates::setCurrentState(int new_state)
 {
@@ -309,7 +309,6 @@ void BannStates::changeState()
 {
 	current_index = ++current_index % states_list.size();
 	updateText();
-	emit currentStateChanged(states_list.at(current_index).first);
 }
 
 void BannStates::updateText()

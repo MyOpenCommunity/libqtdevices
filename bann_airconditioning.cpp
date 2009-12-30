@@ -95,7 +95,6 @@ void SplitTemperature::setTemperature(int new_temp)
 	{
 		current_temp = new_temp;
 		updateText();
-		emit valueChanged(current_temp);
 	}
 	else
 		qWarning() << "SplitTemperature::setTemperature: provided temp is outside limits, ignoring.";
@@ -108,7 +107,6 @@ void SplitTemperature::increaseTemp()
 	{
 		current_temp = tmp;
 		updateText();
-		emit valueChanged(current_temp);
 	}
 }
 
@@ -119,7 +117,6 @@ void SplitTemperature::decreaseTemp()
 	{
 		current_temp = tmp;
 		updateText();
-		emit valueChanged(current_temp);
 	}
 }
 
@@ -185,15 +182,6 @@ SplitSwing::SplitSwing(QString descr, bool init_swing) : Bann2Buttons(0)
 	right_button->setCheckable(true);
 	left_button->setCheckable(true);
 	setSwingOn(init_swing);
-
-	connect(&buttons, SIGNAL(buttonClicked(int)), SLOT(handleButtonClick(int)));
-}
-
-void SplitSwing::handleButtonClick(int button_id)
-{
-	// convert int to bool
-	bool swing_on = button_id;
-	emit swingOn(swing_on);
 }
 
 void SplitSwing::setSwingOn(bool swing_on)

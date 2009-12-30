@@ -78,9 +78,6 @@ private slots:
 private:
 	void updateText();
 	int current_temp, max_temp, min_temp, temp_step;
-
-signals:
-	void valueChanged(int);
 };
 
 
@@ -121,14 +118,8 @@ public:
 	void setSwingOn(bool swing_on);
 	bool swing();
 
-private slots:
-	void handleButtonClick(int button_id);
-
 private:
 	QButtonGroup buttons;
-
-signals:
-	void swingOn(bool);
 };
 
 

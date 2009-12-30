@@ -235,11 +235,8 @@ public:
 	int currentState();
 
 	// Set a different state. The state must be previously added with addBanner().
-	// You can use states given from currentState() and currentStateChanged().
+	// You can use states given from currentState().
 	void setCurrentState(int new_state);
-
-signals:
-	void currentStateChanged(int id);
 
 protected:
 	BtButton *left_button;
