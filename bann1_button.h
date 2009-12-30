@@ -234,6 +234,10 @@ public:
 	// Return the id of the current state
 	int currentState();
 
+	// Set a different state. The state must be previously added with addBanner().
+	// You can use states given from currentState() and currentStateChanged().
+	void setCurrentState(int new_state);
+
 signals:
 	void currentStateChanged(int id);
 
@@ -241,7 +245,8 @@ protected:
 	BtButton *left_button;
 
 private:
-	unsigned int current_index;
+	void updateText();
+	int current_index;
 	QLabel *text;
 	QList<QPair<int, QString> > states_list;
 

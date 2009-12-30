@@ -289,18 +289,32 @@ void BannStates::initBanner(const QString &left, int current_state)
 	Q_ASSERT_X(states_list.size() > 0, "BannStates::initBanner", "The list of states is empty!");
 	left_button->setImage(left);
 
-	for (int i = 0; i < states_list.size(); ++i)
-		if (states_list[i].first == current_state)
-			current_index = i;
+	setCurrentState(current_state);
+}
 
-	text->setText(states_list.at(current_index).second);
+// To maintain the same semantics of currentStateChanged() and currentState(), we need to search
+// the new state in the whole array.
+void BannStates::setCurrentState(int new_state)
+{
+	for (int i = 0; i < states_list.size(); ++i)
+		if (states_list[i].first == new_state)
+		{
+			current_index = new_state;
+			break;
+		}
+	updateText();
 }
 
 void BannStates::changeState()
 {
 	current_index = ++current_index % states_list.size();
-	text->setText(states_list.at(current_index).second);
+	updateText();
 	emit currentStateChanged(states_list.at(current_index).first);
+}
+
+void BannStates::updateText()
+{
+	text->setText(states_list.at(current_index).second);
 }
 
 int BannStates::currentState()
