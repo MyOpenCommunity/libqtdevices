@@ -223,10 +223,10 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 
 void SplitSettings::showEvent(QShowEvent *)
 {
-	selected_fan_speed = speed->currentState();
-	selected_mode = mode->currentState();
-	selected_temp = temperature->temperature();
-	selected_swing = swing->swing();
+	current_fan_speed = speed->currentState();
+	current_mode = mode->currentState();
+	current_temp = temperature->temperature();
+	current_swing = swing->swing();
 }
 
 void SplitSettings::acceptChanges()
@@ -236,10 +236,10 @@ void SplitSettings::acceptChanges()
 
 void SplitSettings::handleClose()
 {
-	speed->setCurrentState(selected_fan_speed);
-	mode->setCurrentState(selected_mode);
-	temperature->setTemperature(selected_temp);
-	swing->setSwingOn(selected_swing);
+	speed->setCurrentState(current_fan_speed);
+	mode->setCurrentState(current_mode);
+	temperature->setTemperature(current_temp);
+	swing->setSwingOn(current_swing);
 }
 
 

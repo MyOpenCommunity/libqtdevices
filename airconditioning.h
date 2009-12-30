@@ -99,7 +99,7 @@ private:
 	SplitTemperature *temperature;
 	SplitMode *mode;
 	SplitSpeed *speed;
-	int selected_mode, selected_temp, selected_fan_speed, selected_swing;
+	int current_mode, current_temp, current_fan_speed, current_swing;
 };
 
 
