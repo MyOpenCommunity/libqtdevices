@@ -2,6 +2,7 @@
 #define AIR_CONDITIONING_H
 
 #include "page.h"
+#include "airconditioning_device.h"
 
 class AirConditioningInterface;
 class AirConditioningDevice;
@@ -12,7 +13,7 @@ class SplitMode;
 class SplitTemperature;
 class SplitSpeed;
 
-
+typedef AdvancedAirConditioningDevice::AirConditionerStatus AirConditionerStatus;
 
 namespace AirConditioningPrivate
 {
@@ -100,6 +101,9 @@ private:
 	SplitMode *mode;
 	SplitSpeed *speed;
 	int current_mode, current_temp, current_fan_speed, current_swing;
+
+signals:
+	void splitSettingsChanged(const AirConditionerStatus &);
 };
 
 

@@ -6,7 +6,6 @@
 #include "bann_airconditioning.h"
 #include "navigation_bar.h"
 #include "devices_cache.h" // bt_global::devices_cache
-#include "airconditioning_device.h"
 #include "probe_device.h" // NonControlledProbeDevice
 
 #include <QDomNode>
@@ -231,7 +230,11 @@ void SplitSettings::showEvent(QShowEvent *)
 
 void SplitSettings::acceptChanges()
 {
-	// TODO: to be implemented
+	// TODO: read correctly current data!
+	// TODO: save values to config_file!
+	AirConditionerStatus status(static_cast<Mode>(current_mode), current_temp,
+		static_cast<Velocity>(current_fan_speed), static_cast<Swing>(current_swing));
+	emit splitSettingsChanged(status);
 }
 
 void SplitSettings::handleClose()
