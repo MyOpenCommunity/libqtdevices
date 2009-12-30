@@ -212,8 +212,12 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	}
 
 	QDomNode swing = getChildWithName(config_node, "fan_swing");
+
 	if (getTextChild(swing, "val1").toInt() != -1)
-		page_content->appendBanner(new SplitSwing(tr("SWING")));
+	{
+		bool swing_on = getTextChild(values_node, "fan_swing").toInt();
+		page_content->appendBanner(new SplitSwing(tr("SWING"), swing_on));
+	}
 }
 
 void SplitSettings::acceptChanges()

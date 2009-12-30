@@ -165,20 +165,35 @@ SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 }
 
 
-SplitSwing::SplitSwing(QString descr) : Bann2Buttons(0)
+// The button group guarantees that only one button is pressed at a given time.
+// Button ids are chosen so that they can be converted to bool values, ie. are 0 or 1.
+SplitSwing::SplitSwing(QString descr, bool init_swing) : Bann2Buttons(0)
 {
 	initBanner(bt_global::skin->getImage("swing_off"), bt_global::skin->getImage("swing_on"), descr);
 
-	// TODO: this is all wrong, we need a button group. I will fix it shortly
-	status = false;
-	connect(left_button, SIGNAL(clicked()), SLOT(toggleSwing()));
+	// left = OFF button, so id is 0
+	buttons.addButton(left_button, 0);
+	// right = ON button, so id is 1
+	buttons.addButton(right_button, 1);
+	buttons.setExclusive(true);
+
+	right_button->setCheckable(true);
+	left_button->setCheckable(true);
+	setSwingOn(init_swing);
+
+	connect(&buttons, SIGNAL(buttonClicked(int)), SLOT(handleButtonClick(int)));
 }
 
-
-void SplitSwing::toggleSwing()
+void SplitSwing::handleButtonClick(int button_id)
 {
-	status = !status;
-	left_button->setStatus(status);
+	// convert int to bool
+	bool swing_on = button_id;
+	emit swingOn(swing_on);
+}
+
+void SplitSwing::setSwingOn(bool swing_on)
+{
+	swing_on ? right_button->setChecked(true) : left_button->setChecked(true);
 }
 
 

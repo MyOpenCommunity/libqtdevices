@@ -8,7 +8,7 @@
 #include <QList>
 #include <QPair>
 #include <QHash>
-#include <QString>
+#include <QButtonGroup>
 
 typedef AdvancedAirConditioningDevice::AirConditionerStatus AirConditionerStatus;
 class NonControlledProbeDevice;
@@ -116,12 +116,17 @@ class SplitSwing : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	SplitSwing(QString descr);
+	SplitSwing(QString descr, bool init_swing);
+	void setSwingOn(bool swing_on);
 
 private slots:
-	void toggleSwing();
+	void handleButtonClick(int button_id);
+
 private:
-	bool status;
+	QButtonGroup buttons;
+
+signals:
+	void swingOn(bool);
 };
 
 
