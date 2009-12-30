@@ -87,7 +87,11 @@ Q_OBJECT
 public:
 	SplitSettings(const QDomNode &values_node, const QDomNode &config_node);
 
+protected:
+	virtual void showEvent(QShowEvent *);
+
 private slots:
+	void handleClose();
 	void modeChanged(int m);
 	void speedChanged(int s);
 	void acceptChanges();

@@ -175,6 +175,7 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	nav_bar->displayScrollButtons(false);
 	buildPage(new BannerContent, nav_bar);
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(acceptChanges()));
+	connect(nav_bar, SIGNAL(backClick()), SLOT(handleClose()));
 
 
 	QDomNode mode_node = getChildWithName(config_node, "mode");
@@ -186,7 +187,6 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 
 		int current_mode = getTextChild(values_node, "mode").toInt();
 		mode = new SplitMode(modes, current_mode);
-		connect(mode, SIGNAL(currentStateChanged(int)), SLOT(modeChanged(int)));
 		page_content->appendBanner(mode);
 	}
 
@@ -208,7 +208,6 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 
 		int current_speed = getTextChild(values_node, "speed").toInt();
 		speed = new SplitSpeed(speeds, current_speed);
-		connect(speed, SIGNAL(currentStateChanged(int)), SLOT(speedChanged(int)));
 		page_content->appendBanner(speed);
 	}
 
@@ -222,9 +221,25 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	}
 }
 
+void SplitSettings::showEvent(QShowEvent *)
+{
+	selected_fan_speed = speed->currentState();
+	selected_mode = mode->currentState();
+	selected_temp = temperature->temperature();
+	selected_swing = swing->swing();
+}
+
 void SplitSettings::acceptChanges()
 {
 	// TODO: to be implemented
+}
+
+void SplitSettings::handleClose()
+{
+	speed->setCurrentState(selected_fan_speed);
+	mode->setCurrentState(selected_mode);
+	temperature->setTemperature(selected_temp);
+	swing->setSwingOn(selected_swing);
 }
 
 void SplitSettings::modeChanged(int m)
