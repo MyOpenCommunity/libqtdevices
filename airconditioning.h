@@ -7,6 +7,10 @@ class AirConditioningInterface;
 class AirConditioningDevice;
 class banner;
 class QDomNode;
+class SplitSwing;
+class SplitMode;
+class SplitTemperature;
+class SplitSpeed;
 
 
 
@@ -88,6 +92,10 @@ private slots:
 	void speedChanged(int s);
 	void acceptChanges();
 private:
+	SplitSwing *swing;
+	SplitTemperature *temperature;
+	SplitMode *mode;
+	SplitSpeed *speed;
 	int selected_mode, selected_temp, selected_fan_speed, selected_swing;
 };
 

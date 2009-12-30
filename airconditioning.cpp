@@ -185,9 +185,9 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 			modes.append(val.toElement().text().toInt());
 
 		int current_mode = getTextChild(values_node, "mode").toInt();
-		SplitMode *m = new SplitMode(modes, current_mode);
-		connect(m, SIGNAL(currentStateChanged(int)), SLOT(modeChanged(int)));
-		page_content->appendBanner(m);
+		mode = new SplitMode(modes, current_mode);
+		connect(mode, SIGNAL(currentStateChanged(int)), SLOT(modeChanged(int)));
+		page_content->appendBanner(mode);
 	}
 
 	QDomNode temp_node = getChildWithName(config_node, "setpoint");
@@ -196,7 +196,8 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	int step = getTextChild(temp_node, "step").toInt();
 
 	int current_temp = getTextChild(values_node, "setpoint").toInt();
-	page_content->appendBanner(new SplitTemperature(current_temp, max, min, step));
+	temperature = new SplitTemperature(current_temp, max, min, step);
+	page_content->appendBanner(temperature);
 
 	QDomNode speed_node = getChildWithName(config_node, "speed");
 	if (getTextChild(speed_node, "val1").toInt() != -1)
@@ -206,17 +207,18 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 			speeds.append(val.toElement().text().toInt());
 
 		int current_speed = getTextChild(values_node, "speed").toInt();
-		SplitSpeed *s = new SplitSpeed(speeds, current_speed);
-		connect(s, SIGNAL(currentStateChanged(int)), SLOT(speedChanged(int)));
-		page_content->appendBanner(s);
+		speed = new SplitSpeed(speeds, current_speed);
+		connect(speed, SIGNAL(currentStateChanged(int)), SLOT(speedChanged(int)));
+		page_content->appendBanner(speed);
 	}
 
-	QDomNode swing = getChildWithName(config_node, "fan_swing");
+	QDomNode swing_node = getChildWithName(config_node, "fan_swing");
 
-	if (getTextChild(swing, "val1").toInt() != -1)
+	if (getTextChild(swing_node, "val1").toInt() != -1)
 	{
 		bool swing_on = getTextChild(values_node, "fan_swing").toInt();
-		page_content->appendBanner(new SplitSwing(tr("SWING"), swing_on));
+		swing = new SplitSwing(tr("SWING"), swing_on);
+		page_content->appendBanner(swing);
 	}
 }
 
