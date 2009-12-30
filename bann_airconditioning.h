@@ -69,6 +69,7 @@ public:
 	// TODO: what is the scale for this temp? The easiest thing is to assume
 	// the same scale that was given when the object was created.
 	void setTemperature(int new_temp);
+	int temperature();
 
 private slots:
 	void increaseTemp();
@@ -118,6 +119,7 @@ Q_OBJECT
 public:
 	SplitSwing(QString descr, bool init_swing);
 	void setSwingOn(bool swing_on);
+	bool swing();
 
 private slots:
 	void handleButtonClick(int button_id);

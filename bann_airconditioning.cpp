@@ -129,6 +129,11 @@ void SplitTemperature::updateText()
 	setCentralText(celsiusString(current_temp));
 }
 
+int SplitTemperature::temperature()
+{
+	return current_temp;
+}
+
 
 SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 {
@@ -194,6 +199,11 @@ void SplitSwing::handleButtonClick(int button_id)
 void SplitSwing::setSwingOn(bool swing_on)
 {
 	swing_on ? right_button->setChecked(true) : left_button->setChecked(true);
+}
+
+bool SplitSwing::swing()
+{
+	return buttons.checkedId();
 }
 
 
