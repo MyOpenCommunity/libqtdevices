@@ -44,8 +44,14 @@ friend class TestDevice;
 Q_OBJECT
 
 public:
-	//! Init device: send messages initializing data
-	virtual void init(bool force = false);
+	// TODO: The old init with force parameter, to be removed
+	void init(bool force);
+
+	// Init device: send messages to initialize data. Every device should
+	// re-implement this method, in order to update the related graphic object
+	// with the right value.
+	virtual void init() { init(false); }
+
 	//! Set where
 	void set_where(QString);
 	//! Set pul status
@@ -238,7 +244,7 @@ class aux_device : public device
 Q_OBJECT
 public:
 	aux_device(QString w, bool p=false, int g=-1);
-	virtual void init(bool force = false);
+	virtual void init();
 
 	virtual void manageFrame(OpenMsg &msg);
 

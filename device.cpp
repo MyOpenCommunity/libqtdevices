@@ -404,7 +404,7 @@ aux_device::aux_device(QString w, bool p, int g) : device(QString("9"), w, p, g)
 	status = stat_var(stat_var::NONE, -1, 0, 1, 1);
 }
 
-void aux_device::init(bool force)
+void aux_device::init()
 {
 	OpenMsg msg = OpenMsg::createReadDim(who.toStdString(), where.toStdString());
 	qDebug("aux_device::init message: %s", msg.frame_open);
