@@ -65,8 +65,10 @@ class SplitTemperature : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	 // TODO: altri parametri, tipo temperature/format, range, step, ecc..
 	SplitTemperature(int init_temp, int level_max, int level_min, int step);
+	// TODO: what is the scale for this temp? The easiest thing is to assume
+	// the same scale that was given when the object was created.
+	void setTemperature(int new_temp);
 
 private slots:
 	void increaseTemp();
@@ -75,6 +77,9 @@ private slots:
 private:
 	void updateText();
 	int current_temp, max_temp, min_temp, temp_step;
+
+signals:
+	void valueChanged(int);
 };
 
 

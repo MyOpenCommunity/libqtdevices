@@ -89,6 +89,18 @@ SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, 
 	connect(right_button, SIGNAL(clicked()), SLOT(increaseTemp()));
 }
 
+void SplitTemperature::setTemperature(int new_temp)
+{
+	if (new_temp >= min_temp && new_temp <= max_temp)
+	{
+		current_temp = new_temp;
+		updateText();
+		emit valueChanged(current_temp);
+	}
+	else
+		qWarning() << "SplitTemperature::setTemperature: provided temp is outside limits, ignoring.";
+}
+
 void SplitTemperature::increaseTemp()
 {
 	int tmp = current_temp + temp_step;
@@ -96,6 +108,7 @@ void SplitTemperature::increaseTemp()
 	{
 		current_temp = tmp;
 		updateText();
+		emit valueChanged(current_temp);
 	}
 }
 
@@ -106,6 +119,7 @@ void SplitTemperature::decreaseTemp()
 	{
 		current_temp = tmp;
 		updateText();
+		emit valueChanged(current_temp);
 	}
 }
 
