@@ -84,7 +84,7 @@ SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, 
 	updateText();
 
 	left_button->setAutoRepeat(true);
-	connect(left_button, SIGNAL(clicked()), SLOT(decreseTemp()));
+	connect(left_button, SIGNAL(clicked()), SLOT(decreaseTemp()));
 	right_button->setAutoRepeat(true);
 	connect(right_button, SIGNAL(clicked()), SLOT(increaseTemp()));
 }
@@ -99,7 +99,7 @@ void SplitTemperature::increaseTemp()
 	}
 }
 
-void SplitTemperature::decreseTemp()
+void SplitTemperature::decreaseTemp()
 {
 	int tmp = current_temp - temp_step;
 	if (tmp >= min_temp)

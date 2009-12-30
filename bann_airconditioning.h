@@ -70,7 +70,7 @@ public:
 
 private slots:
 	void increaseTemp();
-	void decreseTemp();
+	void decreaseTemp();
 
 private:
 	void updateText();
