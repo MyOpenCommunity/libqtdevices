@@ -254,8 +254,13 @@ void SplitSettings::showEvent(QShowEvent *)
 
 void SplitSettings::acceptChanges()
 {
-	readBannerValues();
 	// TODO: save values to config_file!
+	sendUpdatedValues();
+}
+
+void SplitSettings::sendUpdatedValues()
+{
+	readBannerValues();
 	AirConditionerStatus status(static_cast<Mode>(current_mode), current_temp,
 		static_cast<Velocity>(current_fan_speed), static_cast<Swing>(current_swing));
 	emit splitSettingsChanged(status);

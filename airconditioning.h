@@ -101,6 +101,7 @@ private:
 	void readTempConfig(const QDomNode &temp_node, const QDomNode &values);
 	void readSwingConfig(const QDomNode &swing_node, const QDomNode &values);
 	void readSpeedConfig(const QDomNode &speed_node, const QDomNode &values);
+	void sendUpdatedValues();
 	SplitSwing *swing;
 	SplitTemperature *temperature;
 	SplitMode *mode;
