@@ -124,7 +124,7 @@ SplitPage::SplitPage(const QDomNode &config_node, AirConditioningDevice *d)
 	if (getElement(config_node, "off/list").text().toInt() == 1) // show the off button
 	{
 		nav_bar = new NavigationBar(bt_global::skin->getImage("off"));
-		connect(this, SIGNAL(forwardClick()), dev, SLOT(sendOff()));
+		connect(this, SIGNAL(forwardClick()), SLOT(setDeviceOff()));
 	}
 	else
 		nav_bar = new NavigationBar;
@@ -141,6 +141,11 @@ void SplitPage::loadScenarios(const QDomNode &config_node)
 			getTextChild(scenario, "command"), dev);
 		page_content->appendBanner(b);
 	}
+}
+
+void SplitPage::setDeviceOff()
+{
+	dev->turnOff();
 }
 
 

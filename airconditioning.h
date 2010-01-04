@@ -61,6 +61,9 @@ private:
 	AirConditioningDevice *dev;
 
 	void loadScenarios(const QDomNode &config_node);
+
+private slots:
+	void setDeviceOff();
 };
 
 
