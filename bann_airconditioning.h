@@ -54,7 +54,18 @@ class AdvancedSplitScenario : public Bann2Buttons
 {
 Q_OBJECT
 public:
+	// TODO: add device to constructor!
 	AdvancedSplitScenario(QWidget *parent, QString descr);
+
+public slots:
+	void splitValuesChanged(const AirConditionerStatus &st);
+
+private:
+	AirConditionerStatus status;
+	AdvancedAirConditioningDevice *dev;
+
+private slots:
+	void onButtonClicked();
 };
 
 

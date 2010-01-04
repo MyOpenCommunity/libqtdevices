@@ -60,11 +60,24 @@ GeneralSplit::GeneralSplit(QString descr) : BannOnOffNew(0)
 }
 
 
-AdvancedSplitScenario::AdvancedSplitScenario(QWidget *parent, QString descr): Bann2Buttons(parent)
+AdvancedSplitScenario::AdvancedSplitScenario(QWidget *parent, QString descr) :
+	Bann2Buttons(parent)
 {
 	QString icon_cmd = bt_global::skin->getImage("split_cmd");
 	QString icon_settings = bt_global::skin->getImage("split_settings");
 	initBanner(icon_cmd, icon_settings, descr);
+
+	connect(left_button, SIGNAL(clicked()), SLOT(onButtonClicked()));
+}
+
+void AdvancedSplitScenario::splitValuesChanged(const AirConditionerStatus &st)
+{
+	status = st;
+}
+
+void AdvancedSplitScenario::onButtonClicked()
+{
+	// TODO: to be implemented
 }
 
 
