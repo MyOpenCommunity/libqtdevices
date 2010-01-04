@@ -13,6 +13,7 @@ class SplitMode;
 class SplitTemperature;
 class SplitSpeed;
 class NonControlledProbeDevice;
+class GeneralSplit;
 
 typedef AdvancedAirConditioningDevice::AirConditionerStatus AirConditionerStatus;
 
@@ -46,6 +47,7 @@ public:
 
 private:
 	static NonControlledProbeDevice *createProbeDevice(const QDomNode &item_node);
+	static GeneralSplit *createGeneralBanner(Page *gen_split_page, const QString &descr);
 	void loadItems(const QDomNode &config_node);
 };
 
