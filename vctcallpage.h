@@ -9,7 +9,6 @@
 #include <QProcess>
 
 
-class BannTuning;
 class EntryphoneDevice;
 class QDomNode;
 class QHBoxLayout;
