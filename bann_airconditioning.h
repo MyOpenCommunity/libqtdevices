@@ -56,7 +56,7 @@ class AdvancedSplitScenario : public Bann2Buttons
 Q_OBJECT
 public:
 	// TODO: add device to constructor!
-	AdvancedSplitScenario(QWidget *parent, QString descr, AdvancedAirConditioningDevice *d);
+	AdvancedSplitScenario(QString descr, AdvancedAirConditioningDevice *d, QWidget *parent = 0);
 
 public slots:
 	void splitValuesChanged(const AirConditionerStatus &st);

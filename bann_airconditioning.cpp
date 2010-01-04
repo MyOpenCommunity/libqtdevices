@@ -66,7 +66,7 @@ GeneralSplit::GeneralSplit(QString descr) : BannOnOffNew(0)
 }
 
 
-AdvancedSplitScenario::AdvancedSplitScenario(QWidget *parent, QString descr, AdvancedAirConditioningDevice *d) :
+AdvancedSplitScenario::AdvancedSplitScenario(QString descr, AdvancedAirConditioningDevice *d, QWidget *parent) :
 	Bann2Buttons(parent)
 {
 	QString icon_cmd = bt_global::skin->getImage("split_cmd");
