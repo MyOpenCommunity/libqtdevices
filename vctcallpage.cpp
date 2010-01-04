@@ -8,11 +8,14 @@
 #include "entryphone_device.h"
 #include "xml_functions.h"
 #include "bann2_buttons.h"
+#include "items.h"
 
 #include <QDomNode>
 #include <QHBoxLayout>
 #include <QDebug>
 #include <QLabel>
+#include <QSpacerItem>
+#include <QGridLayout>
 
 
 #define BOTTOM_SPACING 15
@@ -61,19 +64,14 @@ CameraMove::CameraMove(EntryphoneDevice *dev)
 	left = getButton(bt_global::skin->getImage("arrow_left"));
 	fullscreen = getButton(bt_global::skin->getImage("fullscreen"));
 
-	QHBoxLayout *center = new QHBoxLayout;
-	center->setContentsMargins(0, 0, 0, 0);
-	center->setSpacing(0);
-	center->addWidget(left);
-	center->addWidget(fullscreen);
-	center->addWidget(right);
-
-	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	l->addWidget(up);
-	l->addLayout(center);
-	l->addWidget(down);
+	QGridLayout *main_layout = new QGridLayout(this);
+	main_layout->setContentsMargins(5, 5, 5, 5);
+	main_layout->setSpacing(5);
+	main_layout->addWidget(up, 0, 1);
+	main_layout->addWidget(left, 1, 0);
+	main_layout->addWidget(fullscreen, 1, 1);
+	main_layout->addWidget(right, 1, 2);
+	main_layout->addWidget(down, 2, 1);
 }
 
 void CameraMove::setFullscreenEnabled(bool fs)
@@ -106,17 +104,17 @@ CameraImageControl::CameraImageControl(QWidget *parent) :
 	QVBoxLayout *l = new QVBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
-	brightness = new BannTuning(tr("Brightness"), bt_global::skin->getImage("brightness"));
+	brightness = new ItemTuning(tr("Brightness"), bt_global::skin->getImage("brightness"));
 	connect(brightness, SIGNAL(valueChanged(int)), SLOT(setBrightness(int)));
-	l->addWidget(brightness);
+	l->addWidget(brightness, 1, Qt::AlignHCenter);
 
-	contrast = new BannTuning(tr("Contrast"), bt_global::skin->getImage("contrast"));
+	contrast = new ItemTuning(tr("Contrast"), bt_global::skin->getImage("contrast"));
 	connect(contrast, SIGNAL(valueChanged(int)), SLOT(setContrast(int)));
-	l->addWidget(contrast);
+	l->addWidget(contrast, 1, Qt::AlignHCenter);
 
-	color = new BannTuning(tr("Color"), bt_global::skin->getImage("color"));
+	color = new ItemTuning(tr("Color"), bt_global::skin->getImage("color"));
 	connect(color, SIGNAL(valueChanged(int)), SLOT(setColor(int)));
-	l->addWidget(color);
+	l->addWidget(color, 1, Qt::AlignHCenter);
 }
 
 void CameraImageControl::setContrast(int value)
@@ -156,7 +154,7 @@ CallControl::CallControl(EntryphoneDevice *d)
 	// pulsante per accettare le videochiamate!
 //	call_accept->setDisabledPixmap(getBostikName(call_icon, "dis"));
 
-	BannTuning *volume = new BannTuning("", bt_global::skin->getImage("volume"));
+	ItemTuning *volume = new ItemTuning("", bt_global::skin->getImage("volume"));
 	// TODO: connect to volume settings
 
 	mute_icon = bt_global::skin->getImage("mute");
@@ -215,15 +213,16 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 
 	// sidebar
 	QVBoxLayout *sidebar = new QVBoxLayout;
-	sidebar->setContentsMargins(0, 0, 0, 15);
-	sidebar->setSpacing(0);
+	sidebar->setContentsMargins(0, 0, 0, 5);
+	sidebar->setSpacing(5);
 
 	image_control = new CameraImageControl;
 
 	camera = new CameraMove(dev);
 	camera->setMoveEnabled(false);
-	sidebar->addWidget(camera);
-	sidebar->addWidget(image_control);
+	sidebar->addStretch(1);
+	sidebar->addWidget(camera, 0, Qt::AlignCenter);
+	sidebar->addWidget(image_control, 0, Qt::AlignCenter);
 
 	setup_vct = new BtButton;
 	setup_vct_icon = bt_global::skin->getImage("setup_vct");
@@ -232,23 +231,20 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 	connect(setup_vct, SIGNAL(clicked()), SLOT(toggleCameraSettings()));
 	sidebar->addWidget(setup_vct);
 
-	QHBoxLayout *hbox = new QHBoxLayout;
-
 	// widget where video will be displayed
 	video_box = new QLabel;
 	video_box->setFixedSize(352, 240);
 	video_box->setStyleSheet("background-color: black");
 
-	hbox->addWidget(video_box);
-	hbox->addLayout(sidebar);
-
 	QHBoxLayout *bottom = buildBottomLayout();
 
-	QVBoxLayout *layout = new QVBoxLayout(this);
-	layout->addLayout(hbox);
-	layout->addLayout(bottom);
-	layout->setContentsMargins(0, 0, 0, 0);
-	layout->setSpacing(0);
+	QGridLayout *layout = new QGridLayout(this);
+	layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Preferred, QSizePolicy::Expanding), 0, 0, 1, 1);
+	layout->addLayout(sidebar, 0, 1, 2, 1);
+	layout->addWidget(video_box, 1, 0);
+	layout->addLayout(bottom, 2, 0, 1, 2, Qt::AlignLeft);
+	layout->setContentsMargins(10, 0, 0, 10);
+	layout->setSpacing(10);
 
 	prev_page = 0;
 }

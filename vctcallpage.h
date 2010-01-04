@@ -4,6 +4,7 @@
 #include "page.h"
 #include "btbutton.h"
 
+#include <QString>
 #include <QStringList>
 #include <QProcess>
 
@@ -14,6 +15,7 @@ class QDomNode;
 class QHBoxLayout;
 class QLabel;
 class QShowEvent;
+class ItemTuning;
 
 
 class EnablingButton : public BtButton
@@ -64,7 +66,7 @@ private slots:
 	void setContrast(int value);
 
 private:
-	BannTuning *contrast, *brightness, *color;
+	ItemTuning *contrast, *brightness, *color;
 };
 
 
