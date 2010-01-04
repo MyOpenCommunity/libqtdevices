@@ -81,7 +81,7 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, Temperature
 	NavigationPage *p = 0;
 	QString simple_address = getTextChild(n, "where");
 	QString where_composed;
-	if (!simple_address.isNull())
+	if (id != fs_4z_thermal_regulator && id != fs_99z_thermal_regulator && !simple_address.isEmpty())
 		where_composed = simple_address + "#" + ind_centrale;
 #ifdef CONFIG_BTOUCH
 	QDomNode page_node;
