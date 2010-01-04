@@ -62,11 +62,7 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 		AirConditioningDevice *dev = bt_global::add_device_to_cache(new AirConditioningDevice(where));
 		dev->setOffCommand(off_cmd);
 
-		NonControlledProbeDevice *dev_probe = 0;
-		QString where_probe = getTextChild(item_node, "where_probe");
-		if (!where_probe.isNull())
-			dev_probe = new NonControlledProbeDevice(where_probe, NonControlledProbeDevice::INTERNAL);
-		SingleSplit *bann = new SingleSplit(descr, dev, dev_probe);
+		SingleSplit *bann = new SingleSplit(descr, dev, createProbeDevice(item_node));
 		b = bann;
 		bann->connectRightButton(new SplitPage(item_node, dev));
 		device_container.append(dev);
@@ -83,11 +79,14 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	}
 	case AIR_SPLIT_ADV:
 	{
-		// TODO: replace BannOnOffNew with a specialized class
-		BannOnOffNew *bann = new BannOnOffNew(0);
-		bann->initBanner(img_off, img_air_single, img_forward, descr);
-		bann->connectRightButton(new AdvancedSplitPage(item_node));
+		QString where = getTextChild(item_node, "where");
+		AdvancedAirConditioningDevice *dev = bt_global::add_device_to_cache(new AdvancedAirConditioningDevice(where));
+
+		SingleSplit *bann = new SingleSplit(descr, dev, createProbeDevice(item_node));
 		b = bann;
+		bann->connectRightButton(new AdvancedSplitPage(item_node));
+		// TODO: do we REALLY need this device_container?? maybe it's possible to do without it...
+		device_container.append(dev);
 		break;
 	}
 	}
@@ -96,6 +95,15 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 		b->setId(id);
 
 	return b;
+}
+
+NonControlledProbeDevice *AirConditioning::createProbeDevice(const QDomNode &item_node)
+{
+	NonControlledProbeDevice *d = 0;
+	QString where_probe = getTextChild(item_node, "where_probe");
+	if (!where_probe.isNull())
+		d = bt_global::add_device_to_cache(new NonControlledProbeDevice(where_probe, NonControlledProbeDevice::INTERNAL));
+	return d;
 }
 
 void AirConditioning::loadItems(const QDomNode &config_node)
@@ -320,7 +328,7 @@ void AdvancedGeneralSplitPage::loadScenarios(const QDomNode &config_node)
 			int t = getTextChild(split, "setpoint").toInt();
 			Velocity v = static_cast<Velocity>(getTextChild(split, "speed").toInt());
 			Swing s = static_cast<Swing>(getTextChild(split, "fan_swing").toInt());
-			// TODO: this is wrong since the command can be modified using the custom page
+			// this is ok, since general scenarios are taken from conf file and never change
 			b->appendDevice(dev->commandToString(AirConditionerStatus(m, t, v, s)),
 				bt_global::add_device_to_cache(dev));
 		}

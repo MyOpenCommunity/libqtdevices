@@ -12,6 +12,7 @@ class SplitSwing;
 class SplitMode;
 class SplitTemperature;
 class SplitSpeed;
+class NonControlledProbeDevice;
 
 typedef AdvancedAirConditioningDevice::AirConditionerStatus AirConditionerStatus;
 
@@ -44,6 +45,7 @@ public:
 	virtual void inizializza();
 
 private:
+	static NonControlledProbeDevice *createProbeDevice(const QDomNode &item_node);
 	void loadItems(const QDomNode &config_node);
 };
 
