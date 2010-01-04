@@ -8,10 +8,11 @@
 #include <QList>
 #include <QPair>
 #include <QHash>
-#include <QString>
+#include <QButtonGroup>
 
 typedef AdvancedAirConditioningDevice::AirConditionerStatus AirConditionerStatus;
 class NonControlledProbeDevice;
+class AdvancedSplitPage;
 
 
 /**
@@ -21,15 +22,34 @@ class SingleSplit : public BannOnOffNew
 {
 Q_OBJECT
 public:
-	SingleSplit(QString descr, AirConditioningDevice *d, NonControlledProbeDevice *d_probe=0);
+	SingleSplit(QString descr, AirConditioningInterface *d, NonControlledProbeDevice *d_probe=0);
 	virtual void inizializza(bool forza=false);
 
 private:
-	AirConditioningDevice *dev;
+	AirConditioningInterface *dev;
 	NonControlledProbeDevice *dev_probe;
 
 private slots:
+	void setDeviceOff();
 	void status_changed(const StatusList &status_list);
+};
+
+/**
+ * Banner for an advanced split.
+ *
+ * This is mostly the same as SingleSplit, except for setSerNum() call (and a member and a ctor parameter,
+ * but they're needed for setSerNum implementation).
+ * Its sole purpose is support for saving the configuration for an advanced split in conf file.
+ */
+class AdvancedSingleSplit : public SingleSplit
+{
+Q_OBJECT
+public:
+	AdvancedSingleSplit(QString descr, AdvancedSplitPage *p, AirConditioningInterface *d, NonControlledProbeDevice *probe = 0);
+	virtual void setSerNum(int ser);
+
+private:
+	AdvancedSplitPage *page;
 };
 
 
@@ -54,7 +74,24 @@ class AdvancedSplitScenario : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	AdvancedSplitScenario(QWidget *parent, QString descr);
+	AdvancedSplitScenario(QString descr, const QString &conf_node, AdvancedAirConditioningDevice *d, QWidget *parent = 0);
+	/*
+	 * Set initial values when 'ON' is pressed.
+	 * Split settings parameters are parsed only in SplitSettings, at startup the 'ON' command sends
+	 * the default command (ie. 'OFF'). This method is called to set the correct command.
+	 */
+	void setCurrentValues(const AirConditionerStatus &st);
+
+public slots:
+	void splitValuesChanged(const AirConditionerStatus &st);
+
+private:
+	AirConditionerStatus status;
+	AdvancedAirConditioningDevice *dev;
+	QString conf_name;
+
+private slots:
+	void onButtonClicked();
 };
 
 
@@ -65,12 +102,15 @@ class SplitTemperature : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	 // TODO: altri parametri, tipo temperature/format, range, step, ecc..
 	SplitTemperature(int init_temp, int level_max, int level_min, int step);
+	// TODO: what is the scale for this temp? The easiest thing is to assume
+	// the same scale that was given when the object was created.
+	void setTemperature(int new_temp);
+	int temperature();
 
 private slots:
 	void increaseTemp();
-	void decreseTemp();
+	void decreaseTemp();
 
 private:
 	void updateText();
@@ -111,12 +151,12 @@ class SplitSwing : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	SplitSwing(QString descr);
+	SplitSwing(QString descr, bool init_swing);
+	void setSwingOn(bool swing_on);
+	bool swing();
 
-private slots:
-	void toggleSwing();
 private:
-	bool status;
+	QButtonGroup buttons;
 };
 
 

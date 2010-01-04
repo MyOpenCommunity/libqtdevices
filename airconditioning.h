@@ -2,13 +2,20 @@
 #define AIR_CONDITIONING_H
 
 #include "page.h"
+#include "airconditioning_device.h"
 
 class AirConditioningInterface;
 class AirConditioningDevice;
 class banner;
 class QDomNode;
+class SplitSwing;
+class SplitMode;
+class SplitTemperature;
+class SplitSpeed;
+class NonControlledProbeDevice;
+class GeneralSplit;
 
-
+typedef AdvancedAirConditioningDevice::AirConditionerStatus AirConditionerStatus;
 
 namespace AirConditioningPrivate
 {
@@ -38,6 +45,8 @@ public:
 	static banner *getBanner(const QDomNode &item_node);
 
 private:
+	static NonControlledProbeDevice *createProbeDevice(const QDomNode &item_node);
+	static GeneralSplit *createGeneralBanner(Page *gen_split_page, const QString &descr);
 	void loadItems(const QDomNode &config_node);
 };
 
@@ -52,9 +61,11 @@ public:
 	SplitPage(const QDomNode &config_node, AirConditioningDevice *d);
 
 private:
+	void loadScenarios(const QDomNode &config_node);
 	AirConditioningDevice *dev;
 
-	void loadScenarios(const QDomNode &config_node);
+private slots:
+	void setDeviceOff();
 };
 
 
@@ -66,10 +77,13 @@ class AdvancedSplitPage : public BannerPage
 {
 Q_OBJECT
 public:
-	AdvancedSplitPage(const QDomNode &config_node);
+	AdvancedSplitPage(const QDomNode &config_node, AdvancedAirConditioningDevice *d);
+	// Yuck! The only purpose of such ugliness is to support saving the new split settings into conf file
+	// DELETE it when porting to the new conf file
+	void setSerialNumber(int ser);
 
 private:
-	void loadScenarios(const QDomNode &config_node);
+	void loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d);
 };
 
 
@@ -81,13 +95,30 @@ class SplitSettings : public BannerPage
 Q_OBJECT
 public:
 	SplitSettings(const QDomNode &values_node, const QDomNode &config_node);
+	AirConditionerStatus getCurrentStatus();
+
+protected:
+	virtual void showEvent(QShowEvent *);
 
 private slots:
-	void modeChanged(int m);
-	void speedChanged(int s);
+	void handleClose();
 	void acceptChanges();
+
 private:
-	int selected_mode, selected_temp, selected_fan_speed, selected_swing;
+	void readBannerValues();
+	void readModeConfig(const QDomNode &mode_node, const QDomNode &values);
+	void readTempConfig(const QDomNode &temp_node, const QDomNode &values);
+	void readSwingConfig(const QDomNode &swing_node, const QDomNode &values);
+	void readSpeedConfig(const QDomNode &speed_node, const QDomNode &values);
+	void sendUpdatedValues();
+	SplitSwing *swing;
+	SplitTemperature *temperature;
+	SplitMode *mode;
+	SplitSpeed *speed;
+	int current_mode, current_temp, current_fan_speed, current_swing;
+
+signals:
+	void splitSettingsChanged(const AirConditionerStatus &);
 };
 
 

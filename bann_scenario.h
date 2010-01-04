@@ -1,7 +1,7 @@
 #ifndef BANN_SCENARIO_H
 #define BANN_SCENARIO_H
 
-#include "bann1_button.h" // BannLeft
+#include "bann2_buttons.h" // Bann2Buttons
 #include "bann3_buttons.h" // Bann3Buttons
 #include "bann4_buttons.h" // Bann4ButtonsIcon, bann4But
 #include "device.h" // StatusList
@@ -18,7 +18,7 @@ class ScenarioDevice;
 
 
 
-class BannSimpleScenario : public BannLeft
+class BannSimpleScenario : public Bann2Buttons
 {
 Q_OBJECT
 public:

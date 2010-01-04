@@ -16,7 +16,6 @@ private slots:
 	void sendActivateScenario();
 	void sendSendCommand();
 	void sendTurnOff();
-	void sendSendOff();
 
 private:
 	void compareCommand(const QString &what);

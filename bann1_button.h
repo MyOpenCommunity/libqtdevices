@@ -73,19 +73,6 @@ private:
 };
 
 
-// substitute for bannOnSx
-class BannLeft : public BannerNew
-{
-Q_OBJECT
-public:
-	BannLeft(QWidget *parent);
-	void initBanner(const QString &left, const QString &center);
-
-protected:
-	BtButton *left_button;
-	QLabel *text;
-};
-
 // Single button on the center, without bottom label
 class BannCenteredButton : public BannerNew
 {
@@ -214,14 +201,16 @@ public:
 	// Return the id of the current state
 	int currentState();
 
-signals:
-	void currentStateChanged(int id);
+	// Set a different state. The state must be previously added with addBanner().
+	// You can use states given from currentState().
+	void setCurrentState(int new_state);
 
 protected:
 	BtButton *left_button;
 
 private:
-	unsigned int current_index;
+	void updateText();
+	int current_index;
 	QLabel *text;
 	QList<QPair<int, QString> > states_list;
 

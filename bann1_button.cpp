@@ -148,28 +148,6 @@ void BannOn2Labels::setElapsedTime(int time)
 }
 
 
-BannLeft::BannLeft(QWidget *parent) : BannerNew(parent)
-{
-	// Bannleft does not have the description label
-	banner_height = BUT_DIM;
-
-	left_button = new BtButton;
-	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
-
-	QHBoxLayout *l = new QHBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	l->addWidget(left_button, 0, Qt::AlignLeft);
-	l->addWidget(text, 1, Qt::AlignHCenter);
-}
-
-void BannLeft::initBanner(const QString &left, const QString &center)
-{
-	left_button->setImage(left);
-	text->setText(center);
-}
-
-
 bannPuls::bannPuls(QWidget *parent) : banner(parent)
 {
 	addItem(BUT1, banner_width - BANPULS_BUT_DIM, 0,  BANPULS_BUT_DIM ,BANPULS_BUT_DIM);
@@ -279,18 +257,31 @@ void BannStates::initBanner(const QString &left, int current_state)
 	Q_ASSERT_X(states_list.size() > 0, "BannStates::initBanner", "The list of states is empty!");
 	left_button->setImage(left);
 
-	for (int i = 0; i < states_list.size(); ++i)
-		if (states_list[i].first == current_state)
-			current_index = i;
+	setCurrentState(current_state);
+}
 
-	text->setText(states_list.at(current_index).second);
+// To maintain the same semantics of currentState(), we need to search
+// the new state in the whole array.
+void BannStates::setCurrentState(int new_state)
+{
+	for (int i = 0; i < states_list.size(); ++i)
+		if (states_list[i].first == new_state)
+		{
+			current_index = new_state;
+			break;
+		}
+	updateText();
 }
 
 void BannStates::changeState()
 {
 	current_index = ++current_index % states_list.size();
+	updateText();
+}
+
+void BannStates::updateText()
+{
 	text->setText(states_list.at(current_index).second);
-	emit currentStateChanged(states_list.at(current_index).first);
 }
 
 int BannStates::currentState()
