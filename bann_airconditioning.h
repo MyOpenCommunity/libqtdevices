@@ -21,14 +21,15 @@ class SingleSplit : public BannOnOffNew
 {
 Q_OBJECT
 public:
-	SingleSplit(QString descr, AirConditioningDevice *d, NonControlledProbeDevice *d_probe=0);
+	SingleSplit(QString descr, AirConditioningInterface *d, NonControlledProbeDevice *d_probe=0);
 	virtual void inizializza(bool forza=false);
 
 private:
-	AirConditioningDevice *dev;
+	AirConditioningInterface *dev;
 	NonControlledProbeDevice *dev_probe;
 
 private slots:
+	void setDeviceOff();
 	void status_changed(const StatusList &status_list);
 };
 

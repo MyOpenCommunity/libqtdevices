@@ -9,7 +9,8 @@
 #include <QLabel> // BannerText
 #include <QDebug>
 
-SingleSplit::SingleSplit(QString descr, AirConditioningDevice *d, NonControlledProbeDevice *d_probe) : BannOnOffNew(0)
+SingleSplit::SingleSplit(QString descr, AirConditioningInterface *d, NonControlledProbeDevice *d_probe) :
+	BannOnOffNew(0)
 {
 	QString img_off = bt_global::skin->getImage("off");
 	QString img_forward = bt_global::skin->getImage("forward");
@@ -28,7 +29,7 @@ SingleSplit::SingleSplit(QString descr, AirConditioningDevice *d, NonControlledP
 	}
 
 	initBanner(img_off, bt_global::skin->getImage(air_single), img_forward, descr);
-	connect(left_button, SIGNAL(clicked()), dev, SLOT(sendOff()));
+	connect(left_button, SIGNAL(clicked()), SLOT(setDeviceOff()));
 }
 
 void SingleSplit::status_changed(const StatusList &status_list)
@@ -48,6 +49,11 @@ void SingleSplit::inizializza(bool)
 {
 	if (dev_probe)
 		dev_probe->requestStatus();
+}
+
+void SingleSplit::setDeviceOff()
+{
+	dev->turnOff();
 }
 
 GeneralSplit::GeneralSplit(QString descr) : BannOnOffNew(0)
