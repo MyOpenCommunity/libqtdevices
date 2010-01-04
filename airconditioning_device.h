@@ -69,6 +69,7 @@ public:
 
 	struct AirConditionerStatus
 	{
+		AirConditionerStatus() : mode(MODE_OFF) { }
 		AirConditionerStatus(Mode m, int t, Velocity v, Swing s) : mode(m), temp(t), vel(v), swing(s) { }
 		Mode mode;
 		int temp;
