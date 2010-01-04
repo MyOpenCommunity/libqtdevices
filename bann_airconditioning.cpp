@@ -5,6 +5,8 @@
 #include "probe_device.h"
 #include "main.h" // bt_global::config
 #include "scaleconversion.h"
+#include "generic_functions.h" // setCfgValue()
+#include "airconditioning.h" // AdvancedSplitPage
 
 #include <QLabel> // BannerText
 #include <QDebug>
@@ -66,7 +68,7 @@ AdvancedSingleSplit::AdvancedSingleSplit(QString descr, AdvancedSplitPage *p, Ai
 void AdvancedSingleSplit::setSerNum(int ser)
 {
 	banner::setSerNum(ser);
-	// TODO: setSerNum() on linked page
+	page->setSerialNumber(ser);
 }
 
 
@@ -80,13 +82,14 @@ GeneralSplit::GeneralSplit(QString descr) : BannOnOffNew(0)
 }
 
 
-AdvancedSplitScenario::AdvancedSplitScenario(QString descr, AdvancedAirConditioningDevice *d, QWidget *parent) :
+AdvancedSplitScenario::AdvancedSplitScenario(QString descr, const QString &conf_node, AdvancedAirConditioningDevice *d, QWidget *parent) :
 	Bann2Buttons(parent)
 {
 	QString icon_cmd = bt_global::skin->getImage("split_cmd");
 	QString icon_settings = bt_global::skin->getImage("split_settings");
 	initBanner(icon_cmd, icon_settings, descr);
 	dev = d;
+	conf_name = conf_node;
 
 	connect(left_button, SIGNAL(clicked()), SLOT(onButtonClicked()));
 }
@@ -94,7 +97,13 @@ AdvancedSplitScenario::AdvancedSplitScenario(QString descr, AdvancedAirCondition
 void AdvancedSplitScenario::splitValuesChanged(const AirConditionerStatus &st)
 {
 	setCurrentValues(st);
-	// TODO: save values on config file!
+	QMap<QString, QString> m;
+	m[conf_name + "/mode"] = QString::number(st.mode);
+	m[conf_name + "/setpoint"] = QString::number(st.temp);
+	m[conf_name + "/speed"] = QString::number(st.vel);
+	m[conf_name + "/fan_swing"] = QString::number(st.swing);
+	if (!setCfgValue(m, id, serNum))
+		qWarning() << "AdvancedSplitScenario::splitValuesChanged setCfgValue failed!";
 }
 
 void AdvancedSplitScenario::setCurrentValues(const AirConditionerStatus &st)

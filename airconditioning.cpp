@@ -174,13 +174,14 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 
 void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d)
 {
+	int id = getTextChild(config_node, "id").toInt();
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 	{
-		qDebug() << "AdvancedSplitPage::loadScenarios, scenario name: " << scenario.nodeName();
-		AdvancedSplitScenario *b = new AdvancedSplitScenario(getTextChild(scenario, "descr"), d);
+		AdvancedSplitScenario *b = new AdvancedSplitScenario(getTextChild(scenario, "descr"), scenario.nodeName(), d);
 		SplitSettings *sp = new SplitSettings(scenario, getChildWithName(config_node, "par"));
 		b->setCurrentValues(sp->getCurrentStatus());
 		b->connectRightButton(sp);
+		b->setId(id);
 		connect(sp, SIGNAL(splitSettingsChanged(const AirConditionerStatus &)), b, SLOT(splitValuesChanged(const AirConditionerStatus &)));
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		page_content->appendBanner(b);
@@ -294,7 +295,6 @@ void SplitSettings::showEvent(QShowEvent *)
 
 void SplitSettings::acceptChanges()
 {
-	// TODO: save values to config_file!
 	sendUpdatedValues();
 }
 
