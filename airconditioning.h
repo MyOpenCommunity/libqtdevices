@@ -79,10 +79,10 @@ class AdvancedSplitPage : public BannerPage
 {
 Q_OBJECT
 public:
-	AdvancedSplitPage(const QDomNode &config_node);
+	AdvancedSplitPage(const QDomNode &config_node, AdvancedAirConditioningDevice *d);
 
 private:
-	void loadScenarios(const QDomNode &config_node);
+	void loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d);
 };
 
 

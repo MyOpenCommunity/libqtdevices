@@ -75,7 +75,7 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 
 		SingleSplit *bann = new SingleSplit(descr, dev, createProbeDevice(item_node));
 		b = bann;
-		bann->connectRightButton(new AdvancedSplitPage(item_node));
+		bann->connectRightButton(new AdvancedSplitPage(item_node, dev));
 		// TODO: do we REALLY need this device_container?? maybe it's possible to do without it...
 		device_container.append(dev);
 		break;
@@ -162,7 +162,7 @@ void SplitPage::setDeviceOff()
 }
 
 
-AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node)
+AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirConditioningDevice *d)
 {
 	NavigationBar *nav_bar;
 	if (getElement(config_node, "off/list").text().toInt() == 1) // show the off button
@@ -171,15 +171,17 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node)
 		nav_bar = new NavigationBar;
 
 	buildPage(new BannerContent, nav_bar);
-	loadScenarios(config_node);
+	loadScenarios(config_node, d);
 }
 
-void AdvancedSplitPage::loadScenarios(const QDomNode &config_node)
+void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d)
 {
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 	{
-		AdvancedSplitScenario *b = new AdvancedSplitScenario(0, getTextChild(scenario, "descr"));
-		b->connectRightButton(new SplitSettings(scenario, getChildWithName(config_node, "par")));
+		AdvancedSplitScenario *b = new AdvancedSplitScenario(0, getTextChild(scenario, "descr"), d);
+		SplitSettings *sp = new SplitSettings(scenario, getChildWithName(config_node, "par"));
+		b->connectRightButton(sp);
+		connect(sp, SIGNAL(splitSettingsChanged(const AirConditionerStatus &)), b, SLOT(splitValuesChanged(const AirConditionerStatus &)));
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		page_content->appendBanner(b);
 	}
@@ -206,6 +208,9 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 
 	QDomNode swing_node = getChildWithName(config_node, "fan_swing");
 	readSwingConfig(swing_node, values_node);
+
+	// nobody has read config values for this scenario, so a status update is needed
+	sendUpdatedValues();
 }
 
 void SplitSettings::readModeConfig(const QDomNode &mode_node, const QDomNode &values)
