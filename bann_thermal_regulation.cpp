@@ -172,7 +172,7 @@ NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
 	connect(nav_bar, SIGNAL(upClick()), SIGNAL(upClick()));
 	connect(nav_bar, SIGNAL(downClick()), SIGNAL(downClick()));
 
-	buildPage(&content, nav_bar);
+	buildPage(&content, nav_bar, "", 60);
 
 	return nav_bar;
 }
@@ -844,6 +844,8 @@ static QString status_icons_ids[ThermalDevice::ST_COUNT] =
 
 PageTermoReg::PageTermoReg(QDomNode n)
 {
+	SkinContext context(getTextChild(n, "cid").toInt());
+
 	icon_summer = bt_global::skin->getImage("summer_flat");
 	icon_winter = bt_global::skin->getImage("winter_flat");
 
@@ -874,6 +876,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	main_layout.addWidget(mode_icon);
 	main_layout.addWidget(description_label);
 	main_layout.addWidget(season_icon);
+	main_layout.addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
 	main_layout.setAlignment(Qt::AlignHCenter);
 
 	date_edit = 0;
