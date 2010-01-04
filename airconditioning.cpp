@@ -205,6 +205,10 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(acceptChanges()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(handleClose()));
 
+	// init values, temperature is always present so it will be initialized always
+	current_fan_speed = 0;
+	current_mode = 0;
+	current_swing = 0;
 
 	QDomNode mode_node = getChildWithName(config_node, "mode");
 	readModeConfig(mode_node, values_node);
@@ -267,6 +271,8 @@ void SplitSettings::readSpeedConfig(const QDomNode &speed_node, const QDomNode &
 		speed = new SplitSpeed(speeds, current_speed);
 		page_content->appendBanner(speed);
 	}
+	else
+		speed = 0;
 }
 
 void SplitSettings::readSwingConfig(const QDomNode &swing_node, const QDomNode &values)
@@ -277,14 +283,18 @@ void SplitSettings::readSwingConfig(const QDomNode &swing_node, const QDomNode &
 		swing = new SplitSwing(tr("SWING"), swing_on);
 		page_content->appendBanner(swing);
 	}
+	else
+		swing = 0;
 }
 
 void SplitSettings::readBannerValues()
 {
-	current_fan_speed = speed->currentState();
 	current_mode = mode->currentState();
 	current_temp = temperature->temperature();
-	current_swing = swing->swing();
+	if (speed)
+		current_fan_speed = speed->currentState();
+	if (swing)
+		current_swing = swing->swing();
 }
 
 void SplitSettings::showEvent(QShowEvent *)
@@ -307,10 +317,12 @@ void SplitSettings::sendUpdatedValues()
 
 void SplitSettings::handleClose()
 {
-	speed->setCurrentState(current_fan_speed);
 	mode->setCurrentState(current_mode);
 	temperature->setTemperature(current_temp);
-	swing->setSwingOn(current_swing);
+	if (speed)
+		speed->setCurrentState(current_fan_speed);
+	if (swing)
+		swing->setSwingOn(current_swing);
 }
 
 
