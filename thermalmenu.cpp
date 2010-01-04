@@ -26,7 +26,8 @@
 
 enum
 {
-	PAGE_PLANT_MENU = 500,
+	PAGE_PLANT_MENU_4ZONES = 501,
+	PAGE_PLANT_MENU_99ZONES = 500,
 	PAGE_EXTERNAL_PROBES = 530,
 	PAGE_INTERNAL_PROBES = 540
 };
@@ -102,7 +103,8 @@ void ThermalMenu::loadBanners(const QDomNode &config_node)
 
 		switch (id)
 		{
-		case PAGE_PLANT_MENU:
+		case PAGE_PLANT_MENU_4ZONES:
+		case PAGE_PLANT_MENU_99ZONES:
 			p = new PlantMenu(page_node);
 			break;
 		case PAGE_EXTERNAL_PROBES:

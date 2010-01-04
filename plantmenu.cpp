@@ -85,8 +85,66 @@ void PlantMenu::loadItems(const QDomNode &conf)
 	connect(first, SIGNAL(upClick()), prev, SLOT(showPage()));
 }
 #else
-void PlantMenu::loadItems(const QDomNode &conf)
+void PlantMenu::loadItems(const QDomNode &config_node)
 {
+	// find thermal regulator address
+	foreach (const QDomNode& item, getChildren(config_node, "item"))
+	{
+		int id = getTextChild(item, "id").toInt();
+
+		if (id == TERMO_99Z || id == TERMO_4Z)
+		{
+			ind_centrale = getTextChild(item, "where");
+			break;
+		}
+	}
+
+	NavigationPage *first = 0, *prev = 0;
+	foreach (const QDomNode& item, getChildren(config_node, "item"))
+	{
+		SkinContext context(getTextChild(item, "cid").toInt());
+		int id = getTextChild(item, "id").toInt();
+
+		NavigationPage *pg = 0;
+
+		QString icon = bt_global::skin->getImage("central_icon");
+
+		switch (id)
+		{
+		case TERMO_99Z:
+			pg = addMenuItem(item, icon, fs_99z_thermal_regulator);
+			break;
+		case TERMO_4Z:
+			pg = addMenuItem(item, icon, fs_4z_thermal_regulator);
+			break;
+		case TERMO_99Z_PROBE:
+			pg = addMenuItem(item, icon, fs_99z_probe);
+			break;
+		case TERMO_99Z_PROBE_FANCOIL:
+			pg = addMenuItem(item, icon, fs_99z_fancoil);
+			break;
+		case TERMO_4Z_PROBE:
+			pg = addMenuItem(item, icon, fs_4z_probe);
+			break;
+		case TERMO_4Z_PROBE_FANCOIL:
+			pg = addMenuItem(item, icon, fs_4z_fancoil);
+			break;
+		}
+
+		if (prev)
+		{
+			connect(prev, SIGNAL(downClick()), pg, SLOT(showPage()));
+			connect(pg, SIGNAL(upClick()), prev, SLOT(showPage()));
+		}
+		connect(pg, SIGNAL(backClick()), SLOT(showPage()));
+
+		prev = pg;
+		if (!first)
+			first = pg;
+	}
+
+	connect(prev, SIGNAL(downClick()), first, SLOT(showPage()));
+	connect(first, SIGNAL(upClick()), prev, SLOT(showPage()));
 }
 #endif
 
