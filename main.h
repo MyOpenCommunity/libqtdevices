@@ -41,6 +41,7 @@ enum DateFormat
 
 QDomNode getPageNode(int id);
 QDomNode getPageNodeFromPageId(int pageid);
+QDomNode getPageNodeFromChildNode(QDomNode node, QString child_name);
 QDomNode getHomepageNode();
 
 // See getElement

@@ -97,6 +97,14 @@ QDomNode getPageNodeFromPageId(int pageid)
 	return page;
 }
 
+QDomNode getPageNodeFromChildNode(QDomNode n, QString child_name)
+{
+	int page_id = getTextChild(n, child_name).toInt();
+	QDomNode page_node = getPageNodeFromPageId(page_id);
+
+	return page_node;
+}
+
 QDomNode getHomepageNode()
 {
 	// TODO read the id from the <homepage> node
