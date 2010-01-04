@@ -25,9 +25,6 @@ public:
 	virtual void activateScenario(const QString &what) const;
 	template<class T> QString commandToString(const T &info) { return info; };
 
-public slots:
-	void sendOff() const;
-
 private:
 	QString off;
 };
