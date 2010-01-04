@@ -172,7 +172,7 @@ CallControl::CallControl(EntryphoneDevice *d)
 
 	cycle = new BtButton;
 	cycle->setImage(bt_global::skin->getImage("cycle"));
-	// TODO: connect
+	connect(cycle, SIGNAL(clicked()), dev, SLOT(cycleExternalUnits()));
 
 	QHBoxLayout *bottom = new QHBoxLayout(this);
 	bottom->setContentsMargins(0, 0, 30, 0);
