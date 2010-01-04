@@ -23,6 +23,7 @@ private slots:
 	void sendStairLightRelease();
 	void sendOpenLock();
 	void sendReleaseLock();
+	void sendCycleExternalUnits();
 
 	void receiveIncomingCall();
 	void receiveCallerAddress();

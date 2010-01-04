@@ -45,6 +45,7 @@ public slots:
 	void stairLightRelease() const;
 	void openLock() const;
 	void releaseLock() const;
+	void cycleExternalUnits() const;
 
 private:
 	void resetCallState();

@@ -150,3 +150,16 @@ void TestEntryphoneDevice::receiveCallerAddress()
 	QCOMPARE(dev->caller_address, caller_addr);
 }
 
+void TestEntryphoneDevice::sendCycleExternalUnits()
+{
+	int kind = 1;
+	int mmtype = 4;
+	QString caller_addr = "20";
+	simulateIncomingCall(kind, mmtype);
+	simulateCallerAddress(kind, mmtype, caller_addr);
+
+	dev->cycleExternalUnits();
+	client_command->flush();
+	QString frame = QString("*8*6#%1*%2##").arg(dev->where).arg(caller_addr);
+	QCOMPARE(server->frameCommand(), frame);
+}

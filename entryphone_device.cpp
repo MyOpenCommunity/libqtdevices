@@ -12,6 +12,7 @@ enum
 {
 	ANSWER = 2,
 	AUTOSWITCHING = 4,
+	CYCLE_EXT_UNIT = 6,
 	CALLER_ADDRESS = 9,
 	OPEN_LOCK = 19,
 	RELEASE_LOCK = 20,
@@ -64,6 +65,11 @@ void EntryphoneDevice::openLock() const
 void EntryphoneDevice::releaseLock() const
 {
 	sendCommand(QString::number(RELEASE_LOCK), caller_address);
+}
+
+void EntryphoneDevice::cycleExternalUnits() const
+{
+	sendCommand(QString("%1#%2").arg(CYCLE_EXT_UNIT).arg(where), caller_address);
 }
 
 void EntryphoneDevice::endCall()
