@@ -71,11 +71,10 @@ void HomeWindow::loadConfiguration()
 		return;
 
 	QDomNode pagemenu_home = getHomepageNode();
-	int favourites_pageid = getTextChild(pagemenu_home, "h_lnk_pageID").toInt();
-	QDomNode favourites_node = getPageNodeFromPageId(favourites_pageid);
-	int info_bar_pageid = getTextChild(favourites_node, "h_lnk_pageID").toInt();
+	QDomNode favourites_node = getPageNodeFromChildNode(pagemenu_home, "h_lnk_pageID");
+	QDomNode infobar_node = getPageNodeFromChildNode(favourites_node, "h_lnk_pageID");
 
-	header_widget->loadConfiguration(pagemenu_home, getPageNodeFromPageId(info_bar_pageid));
+	header_widget->loadConfiguration(pagemenu_home, infobar_node);
 	favorites_widget->loadItems(favourites_node);
 }
 

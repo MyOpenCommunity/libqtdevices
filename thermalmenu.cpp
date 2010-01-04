@@ -96,8 +96,7 @@ void ThermalMenu::loadBanners(const QDomNode &config_node)
 		SkinContext context(getTextChild(node, "cid").toInt());
 		BannSinglePuls *bp = addMenuItem(node.toElement(), bt_global::skin->getImage("central_icon"));
 
-		int page_id = getTextChild(node, "lnk_pageID").toInt();
-		QDomNode page_node = getPageNodeFromPageId(page_id);
+		QDomNode page_node = getPageNodeFromChildNode(node, "lnk_pageID");
 		int id = getTextChild(page_node, "id").toInt();
 		Page *p;
 
