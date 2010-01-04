@@ -178,43 +178,62 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 
 
 	QDomNode mode_node = getChildWithName(config_node, "mode");
+	readModeConfig(mode_node, values_node);
+
+	QDomNode temp_node = getChildWithName(config_node, "setpoint");
+	readTempConfig(temp_node, values_node);
+
+	QDomNode speed_node = getChildWithName(config_node, "speed");
+	readSpeedConfig(speed_node, values_node);
+
+	QDomNode swing_node = getChildWithName(config_node, "fan_swing");
+	readSwingConfig(swing_node, values_node);
+}
+
+void SplitSettings::readModeConfig(const QDomNode &mode_node, const QDomNode &values)
+{
 	if (getTextChild(mode_node, "val1").toInt() != -1) // TODO: verificare se puo' essere disabilitato o no!
 	{
 		QList <int> modes;
 		foreach (const QDomNode &val, getChildren(mode_node, "val"))
 			modes.append(val.toElement().text().toInt());
 
-		int current_mode = getTextChild(values_node, "mode").toInt();
+		int current_mode = getTextChild(values, "mode").toInt();
 		mode = new SplitMode(modes, current_mode);
 		page_content->appendBanner(mode);
 	}
+}
 
-	QDomNode temp_node = getChildWithName(config_node, "setpoint");
+void SplitSettings::readTempConfig(const QDomNode &temp_node, const QDomNode &values)
+{
 	int min = getTextChild(temp_node, "min").toInt();
 	int max = getTextChild(temp_node, "max").toInt();
 	int step = getTextChild(temp_node, "step").toInt();
 
-	int current_temp = getTextChild(values_node, "setpoint").toInt();
+	int current_temp = getTextChild(values, "setpoint").toInt();
 	temperature = new SplitTemperature(current_temp, max, min, step);
 	page_content->appendBanner(temperature);
+}
 
-	QDomNode speed_node = getChildWithName(config_node, "speed");
+void SplitSettings::readSpeedConfig(const QDomNode &speed_node, const QDomNode &values)
+{
 	if (getTextChild(speed_node, "val1").toInt() != -1)
 	{
 		QList <int> speeds;
 		foreach (const QDomNode &val, getChildren(speed_node, "val"))
 			speeds.append(val.toElement().text().toInt());
 
-		int current_speed = getTextChild(values_node, "speed").toInt();
+		int current_speed = getTextChild(values, "speed").toInt();
 		speed = new SplitSpeed(speeds, current_speed);
 		page_content->appendBanner(speed);
 	}
+}
 
-	QDomNode swing_node = getChildWithName(config_node, "fan_swing");
-
+void SplitSettings::readSwingConfig(const QDomNode &swing_node, const QDomNode &values)
+{
 	if (getTextChild(swing_node, "val1").toInt() != -1)
 	{
-		bool swing_on = getTextChild(values_node, "fan_swing").toInt();
+		bool swing_on = getTextChild(values, "fan_swing").toInt();
 		swing = new SplitSwing(tr("SWING"), swing_on);
 		page_content->appendBanner(swing);
 	}
