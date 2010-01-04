@@ -47,10 +47,6 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	int id = getTextChild(item_node, "id").toInt();
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	QString descr = getTextChild(item_node, "descr");
-	QString img_off = bt_global::skin->getImage("off");
-	QString img_air_single = bt_global::skin->getImage("air_single");
-	QString img_air_gen = bt_global::skin->getImage("air_general");
-	QString img_forward = bt_global::skin->getImage("forward");
 
 	banner *b = 0;
 	switch (id)

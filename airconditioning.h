@@ -62,9 +62,8 @@ public:
 	SplitPage(const QDomNode &config_node, AirConditioningDevice *d);
 
 private:
-	AirConditioningDevice *dev;
-
 	void loadScenarios(const QDomNode &config_node);
+	AirConditioningDevice *dev;
 
 private slots:
 	void setDeviceOff();
