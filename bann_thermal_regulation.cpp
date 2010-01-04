@@ -32,16 +32,16 @@ QLabel *getLabelWithPixmap(const QString &img, QWidget *parent, int alignment)
 class SettingsPage : public BannerPage
 {
 public:
-	SettingsPage(QWidget *parent = 0);
+	SettingsPage(QDomNode node, QWidget *parent = 0);
 
 	void appendBanner(banner *b);
 	void resetIndex();
 };
 
-SettingsPage::SettingsPage(QWidget *parent)
+SettingsPage::SettingsPage(QDomNode n, QWidget *parent)
 	: BannerPage(parent)
 {
-	buildPage();
+	buildPage(getTextChild(n, "descr"));
 }
 
 void SettingsPage::appendBanner(banner *b)
@@ -83,6 +83,11 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, Temperature
 	QString where_composed;
 	if (!simple_address.isNull())
 		where_composed = simple_address + "#" + ind_centrale;
+#ifdef CONFIG_BTOUCH
+	QDomNode page_node;
+#else
+	QDomNode page_node = getPageNodeFromChildNode(n, "lnk_pageID");
+#endif
 
 	switch (id)
 	{
@@ -138,7 +143,7 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, Temperature
 		where_composed = QString("0#") + ind_centrale;
 		ThermalDevice4Zones *dev = static_cast<ThermalDevice4Zones *>(
 			bt_global::devices_cache.get_thermal_regulator(where_composed, THERMO_Z4));
-		p = new PageTermoReg4z(n, dev);
+		p = new PageTermoReg4z(page_node, dev);
 	}
 		break;
 	case fs_99z_thermal_regulator:
@@ -146,7 +151,7 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, Temperature
 		where_composed = ind_centrale;
 		ThermalDevice99Zones *dev = static_cast<ThermalDevice99Zones *>(
 			bt_global::devices_cache.get_thermal_regulator(where_composed, THERMO_Z99));
-		p = new PageTermoReg99z(n, dev);
+		p = new PageTermoReg99z(page_node, dev);
 	}
 		break;
 	default:
@@ -1049,7 +1054,7 @@ PageTermoReg4z::PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device)
 	_dev = device;
 	connect(_dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
-	createSettingsMenu();
+	createSettingsMenu(n);
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
 }
 
@@ -1064,9 +1069,13 @@ void PageTermoReg4z::showSettingsMenu()
 	settings->showPage();
 }
 
-void PageTermoReg4z::createSettingsMenu()
+void PageTermoReg4z::createSettingsMenu(QDomNode regulator_node)
 {
-	settings = new SettingsPage;
+	QDomNode n = getPageNodeFromChildNode(regulator_node, "h_lnk_pageID");
+
+	SkinContext context(getTextChild(n, "cid").toInt());
+
+	settings = new SettingsPage(n);
 	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
 
 	weekSettings(settings, conf_root, _dev);
@@ -1087,7 +1096,7 @@ PageTermoReg99z::PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device)
 	_dev = device;
 	connect(_dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
-	createSettingsMenu();
+	createSettingsMenu(n);
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
 }
 
@@ -1111,9 +1120,12 @@ void PageTermoReg99z::showSettingsMenu()
 	settings->showPage();
 }
 
-void PageTermoReg99z::createSettingsMenu()
+void PageTermoReg99z::createSettingsMenu(QDomNode regulator_node)
 {
-	settings = new SettingsPage;
+	QDomNode n = getPageNodeFromChildNode(regulator_node, "h_lnk_pageID");
+	SkinContext context(getTextChild(n, "cid").toInt());
+
+	settings = new SettingsPage(n);
 	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
 
 	weekSettings(settings, conf_root, _dev);

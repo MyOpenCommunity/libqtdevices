@@ -233,7 +233,7 @@ protected:
 	/**
 	 * Utility function to create settings menu for the thermal regulator device.
 	 */
-	virtual void createSettingsMenu() = 0;
+	virtual void createSettingsMenu(QDomNode regulator_node) = 0;
 
 	/**
 	 * Set the icon on the main page of thermal regulator and calls setSeason() on
@@ -384,7 +384,7 @@ public:
 	PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device);
 	virtual ThermalDevice *dev();
 protected:
-	virtual void createSettingsMenu();
+	virtual void createSettingsMenu(QDomNode regulator_node);
 private:
 	/**
 	 * Utility function to create the submenu for timed manual operation mode.
@@ -410,7 +410,7 @@ public:
 	PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device);
 	virtual ThermalDevice *dev();
 protected:
-	virtual void createSettingsMenu();
+	virtual void createSettingsMenu(QDomNode regulator_node);
 	virtual void setSeason(Season new_season);
 private:
 	void scenarioSettings(SettingsPage *settings, QDomNode conf, ThermalDevice99Zones *dev);
