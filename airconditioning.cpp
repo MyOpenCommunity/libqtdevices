@@ -233,16 +233,15 @@ AirConditionerStatus SplitSettings::getCurrentStatus()
 
 void SplitSettings::readModeConfig(const QDomNode &mode_node, const QDomNode &values)
 {
-	if (getTextChild(mode_node, "val1").toInt() != -1) // TODO: verificare se puo' essere disabilitato o no!
-	{
-		QList <int> modes;
-		foreach (const QDomNode &val, getChildren(mode_node, "val"))
-			modes.append(val.toElement().text().toInt());
+	int m = getTextChild(mode_node, "val1").toInt();
+	Q_ASSERT_X(m != -1, "SplitSettings::readModeConfig", "Mode cannot be disabled");
+	QList <int> modes;
+	foreach (const QDomNode &val, getChildren(mode_node, "val"))
+		modes.append(val.toElement().text().toInt());
 
-		int current_mode = getTextChild(values, "mode").toInt();
-		mode = new SplitMode(modes, current_mode);
-		page_content->appendBanner(mode);
-	}
+	int current_mode = getTextChild(values, "mode").toInt();
+	mode = new SplitMode(modes, current_mode);
+	page_content->appendBanner(mode);
 }
 
 void SplitSettings::readTempConfig(const QDomNode &temp_node, const QDomNode &values)
