@@ -68,12 +68,6 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 		device_container.append(dev);
 		break;
 	}
-	case AIR_GENERAL:
-		b = createGeneralBanner(new GeneralSplitPage(item_node), descr);
-		break;
-	case AIR_GENERAL_ADV:
-		b = createGeneralBanner(new AdvancedGeneralSplitPage(item_node), descr);
-		break;
 	case AIR_SPLIT_ADV:
 	{
 		QString where = getTextChild(item_node, "where");
@@ -86,6 +80,12 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 		device_container.append(dev);
 		break;
 	}
+	case AIR_GENERAL:
+		b = createGeneralBanner(new GeneralSplitPage(item_node), descr);
+		break;
+	case AIR_GENERAL_ADV:
+		b = createGeneralBanner(new AdvancedGeneralSplitPage(item_node), descr);
+		break;
 	}
 
 	if (b)
