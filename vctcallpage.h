@@ -99,6 +99,46 @@ private:
 };
 
 
+
+class VCTCall : public QObject
+{
+Q_OBJECT
+public:
+	enum FormatVideo
+	{
+		NORMAL_VIDEO = 0,
+		FULLSCREEN_VIDEO = 1,
+	};
+
+	VCTCall(EntryphoneDevice *d, FormatVideo f);
+
+	BtButton *setup_vct;
+	CameraMove *camera;
+	CameraImageControl *image_control;
+	QLabel *video_box;
+	CallControl *call_control;
+	QString setup_vct_icon;
+
+public slots:
+	void endCall();
+
+signals:
+	void callClosed();
+	void incomingCall();
+
+private slots:
+	void status_changed(const StatusList &sl);
+	void toggleCameraSettings();
+	void handleClose();
+
+private:
+	FormatVideo format;
+	bool camera_settings_shown;
+	EntryphoneDevice *dev;
+	QProcess video_grabber;
+};
+
+
 /**
  * The page of the video call. It is showed indirecly when a call frame came
  * from the Openserver.
@@ -112,27 +152,16 @@ public:
 public slots:
 	void showPreviousPage();
 
+protected:
+	virtual void showEvent(QShowEvent *);
+	virtual void hideEvent(QHideEvent *);
+
 private slots:
 	virtual void showPage();
-	void toggleCameraSettings();
-
-	void closeCall();
-	void status_changed(const StatusList &sl);
 
 private:
-	QHBoxLayout *buildBottomLayout();
-	void closePage();
-
-	BtButton *setup_vct;
-	CameraMove *camera;
-	CameraImageControl *image_control;
-	QLabel *video_box;
-	CallControl *call_control;
-	QString setup_vct_icon;
-	bool camera_settings_shown;
-	EntryphoneDevice *dev;
-	QProcess video_grabber;
 	Page *prev_page;
 };
+
 
 #endif //VCTCALLPAGE_H

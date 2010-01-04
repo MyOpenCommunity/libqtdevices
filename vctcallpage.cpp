@@ -204,67 +204,34 @@ void CallControl::toggleCall()
 }
 
 
-VCTCallPage::VCTCallPage(EntryphoneDevice *d)
+VCTCall::VCTCall(EntryphoneDevice *d, FormatVideo f)
 {
+	format = f;
 	dev = d;
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 
 	SkinContext ctx(666);
 
-	// sidebar
-	QVBoxLayout *sidebar = new QVBoxLayout;
-	sidebar->setContentsMargins(0, 0, 0, 5);
-	sidebar->setSpacing(5);
-
 	image_control = new CameraImageControl;
 
 	camera = new CameraMove(dev);
 	camera->setMoveEnabled(false);
-	sidebar->addStretch(1);
-	sidebar->addWidget(camera, 0, Qt::AlignCenter);
-	sidebar->addWidget(image_control, 0, Qt::AlignCenter);
 
 	setup_vct = new BtButton;
 	setup_vct_icon = bt_global::skin->getImage("setup_vct");
 	camera_settings_shown = false;
 	toggleCameraSettings();
 	connect(setup_vct, SIGNAL(clicked()), SLOT(toggleCameraSettings()));
-	sidebar->addWidget(setup_vct);
 
-	// widget where video will be displayed
 	video_box = new QLabel;
-	video_box->setFixedSize(352, 240);
 	video_box->setStyleSheet("background-color: black");
 
-	QHBoxLayout *bottom = buildBottomLayout();
-
-	QGridLayout *layout = new QGridLayout(this);
-	layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Preferred, QSizePolicy::Expanding), 0, 0, 1, 1);
-	layout->addLayout(sidebar, 0, 1, 2, 1);
-	layout->addWidget(video_box, 1, 0);
-	layout->addLayout(bottom, 2, 0, 1, 2, Qt::AlignLeft);
-	layout->setContentsMargins(10, 0, 0, 10);
-	layout->setSpacing(10);
-
-	prev_page = 0;
+	call_control = new CallControl(dev);
+	connect(call_control, SIGNAL(endCall()), SLOT(handleClose()));
 }
 
-void VCTCallPage::showPage()
-{
-	prev_page = currentPage();
-	bt_global::display.forceOperativeMode(true);
-	Page::showPage();
-}
 
-void VCTCallPage::showPreviousPage()
-{
-	// TODO: la previous page non tiene conto della gestione dello screensaver.
-	// Gestire in modo migliore con un oggetto globale!
-	Q_ASSERT_X(prev_page, "VCTCallPage::showPreviousPage", "Previous page not set!");
-	prev_page->showPage();
-}
-
-void VCTCallPage::status_changed(const StatusList &sl)
+void VCTCall::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
@@ -273,22 +240,23 @@ void VCTCallPage::status_changed(const StatusList &sl)
 		{
 		case EntryphoneDevice::INCOMING_CALL:
 		{
-			showPage();
+			emit incomingCall();
 			QStringList args;
 			QPoint top_left = video_box->mapToGlobal(QPoint(0, 0));
-			args << QString::number(top_left.x()) << QString::number(top_left.y()) << video_grabber_normal;
+			args << QString::number(top_left.x()) << QString::number(top_left.y()) << QString::number(format);
 			video_grabber.start(video_grabber_path, args);
 		}
 			break;
 		case EntryphoneDevice::END_OF_CALL:
-			closePage();
+			video_grabber.terminate();
+			emit callClosed();
 			break;
 		}
 		++it;
 	}
 }
 
-void VCTCallPage::toggleCameraSettings()
+void VCTCall::toggleCameraSettings()
 {
 	camera_settings_shown = !camera_settings_shown;
 	if (camera_settings_shown)
@@ -305,33 +273,79 @@ void VCTCallPage::toggleCameraSettings()
 	}
 }
 
-QHBoxLayout *VCTCallPage::buildBottomLayout()
+void VCTCall::endCall()
 {
+	dev->endCall();
+	video_grabber.terminate();
+}
+
+void VCTCall::handleClose()
+{
+	endCall();
+	emit callClosed();
+}
+
+
+VCTCallPage::VCTCallPage(EntryphoneDevice *d)
+{
+	VCTCall *vct_call = new VCTCall(d, VCTCall::NORMAL_VIDEO);
+	connect(vct_call, SIGNAL(callClosed()), this, SIGNAL(Closed()));
+	connect(vct_call, SIGNAL(incomingCall()), SLOT(showPage()));
+
+	// sidebar
+	QVBoxLayout *sidebar = new QVBoxLayout;
+	sidebar->setContentsMargins(0, 0, 0, 5);
+	sidebar->setSpacing(5);
+	sidebar->addStretch(1);
+	sidebar->addWidget(vct_call->camera, 0, Qt::AlignCenter);
+	sidebar->addWidget(vct_call->image_control, 0, Qt::AlignCenter);
+	sidebar->addWidget(vct_call->setup_vct);
+
+	vct_call->video_box->setFixedSize(352, 240);
+
 	BtButton *back = new BtButton;
 	back->setImage(bt_global::skin->getImage("back"));
-	connect(back, SIGNAL(clicked()), SLOT(closeCall()));
-
-	call_control = new CallControl(dev);
-	connect(call_control, SIGNAL(endCall()), SLOT(closeCall()));
+	connect(back, SIGNAL(clicked()), vct_call, SLOT(endCall()));
+	connect(back, SIGNAL(clicked()), this, SIGNAL(Closed()));
 
 	QHBoxLayout *bottom = new QHBoxLayout;
 	bottom->setContentsMargins(0, 0, 0, 0);
 	bottom->setSpacing(BOTTOM_SPACING);
 	bottom->addWidget(back);
-	bottom->addWidget(call_control);
-	return bottom;
+	bottom->addWidget(vct_call->call_control);
+
+	QGridLayout *layout = new QGridLayout(this);
+	layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Preferred, QSizePolicy::Expanding), 0, 0, 1, 1);
+	layout->addLayout(sidebar, 0, 1, 2, 1);
+	layout->addWidget(vct_call->video_box, 1, 0);
+	layout->addLayout(bottom, 2, 0, 1, 2, Qt::AlignLeft);
+	layout->setContentsMargins(10, 0, 0, 10);
+	layout->setSpacing(10);
+
+	prev_page = 0;
 }
 
-void VCTCallPage::closeCall()
+void VCTCallPage::showPage()
 {
-	dev->endCall();
-	closePage();
+	prev_page = currentPage();
+	Page::showPage();
 }
 
-void VCTCallPage::closePage()
+void VCTCallPage::showPreviousPage()
 {
-	video_grabber.terminate();
-	emit Closed();
+	// TODO: la previous page non tiene conto della gestione dello screensaver.
+	// Gestire in modo migliore con un oggetto globale!
+	Q_ASSERT_X(prev_page, "VCTCallPage::showPreviousPage", "Previous page not set!");
+	prev_page->showPage();
+}
+
+void VCTCallPage::showEvent(QShowEvent *)
+{
+	bt_global::display.forceOperativeMode(true);
+}
+
+void VCTCallPage::hideEvent(QHideEvent *)
+{
 	bt_global::display.forceOperativeMode(false);
 }
 
