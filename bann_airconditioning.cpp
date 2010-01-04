@@ -56,6 +56,20 @@ void SingleSplit::setDeviceOff()
 	dev->turnOff();
 }
 
+
+AdvancedSingleSplit::AdvancedSingleSplit(QString descr, AdvancedSplitPage *p, AirConditioningInterface *d, NonControlledProbeDevice *probe) :
+	SingleSplit(descr, d, probe)
+{
+	page = p;
+}
+
+void AdvancedSingleSplit::setSerNum(int ser)
+{
+	banner::setSerNum(ser);
+	// TODO: setSerNum() on linked page
+}
+
+
 GeneralSplit::GeneralSplit(QString descr) : BannOnOffNew(0)
 {
 	QString img_off = bt_global::skin->getImage("off");

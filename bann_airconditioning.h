@@ -12,6 +12,7 @@
 
 typedef AdvancedAirConditioningDevice::AirConditionerStatus AirConditionerStatus;
 class NonControlledProbeDevice;
+class AdvancedSplitPage;
 
 
 /**
@@ -31,6 +32,24 @@ private:
 private slots:
 	void setDeviceOff();
 	void status_changed(const StatusList &status_list);
+};
+
+/**
+ * Banner for an advanced split.
+ *
+ * This is mostly the same as SingleSplit, except for setSerNum() call (and a member and a ctor parameter,
+ * but they're needed for setSerNum implementation).
+ * Its sole purpose is support for saving the configuration for an advanced split in conf file.
+ */
+class AdvancedSingleSplit : public SingleSplit
+{
+Q_OBJECT
+public:
+	AdvancedSingleSplit(QString descr, AdvancedSplitPage *p, AirConditioningInterface *d, NonControlledProbeDevice *probe = 0);
+	virtual void setSerNum(int ser);
+
+private:
+	AdvancedSplitPage *page;
 };
 
 

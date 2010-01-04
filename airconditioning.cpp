@@ -70,9 +70,10 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 		QString where = getTextChild(item_node, "where");
 		AdvancedAirConditioningDevice *dev = bt_global::add_device_to_cache(new AdvancedAirConditioningDevice(where));
 
-		SingleSplit *bann = new SingleSplit(descr, dev, createProbeDevice(item_node));
+		AdvancedSplitPage *p = new AdvancedSplitPage(item_node, dev);
+		SingleSplit *bann = new AdvancedSingleSplit(descr, p, dev, createProbeDevice(item_node));
 		b = bann;
-		bann->connectRightButton(new AdvancedSplitPage(item_node, dev));
+		bann->connectRightButton(p);
 		// TODO: do we REALLY need this device_container?? maybe it's possible to do without it...
 		device_container.append(dev);
 		break;
@@ -186,6 +187,14 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirCo
 	}
 }
 
+void AdvancedSplitPage::setSerialNumber(int ser)
+{
+	for (int i = 0; i < page_content->bannerCount(); ++i)
+	{
+		banner *b = page_content->getBanner(i);
+		b->setSerNum(ser);
+	}
+}
 
 SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config_node)
 {
