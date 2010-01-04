@@ -10,6 +10,7 @@
 
 #include <QDomNode>
 #include <QString>
+#include <QDebug>
 
 typedef AdvancedAirConditioningDevice::Mode Mode;
 typedef AdvancedAirConditioningDevice::Swing Swing;
@@ -174,8 +175,10 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirCo
 {
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 	{
+		qDebug() << "AdvancedSplitPage::loadScenarios, scenario name: " << scenario.nodeName();
 		AdvancedSplitScenario *b = new AdvancedSplitScenario(getTextChild(scenario, "descr"), d);
 		SplitSettings *sp = new SplitSettings(scenario, getChildWithName(config_node, "par"));
+		b->setCurrentValues(sp->getCurrentStatus());
 		b->connectRightButton(sp);
 		connect(sp, SIGNAL(splitSettingsChanged(const AirConditionerStatus &)), b, SLOT(splitValuesChanged(const AirConditionerStatus &)));
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
@@ -204,9 +207,18 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 
 	QDomNode swing_node = getChildWithName(config_node, "fan_swing");
 	readSwingConfig(swing_node, values_node);
+}
 
-	// nobody has read config values for this scenario, so a status update is needed
-	sendUpdatedValues();
+/*
+ * Returns the current status. Useful at startup, since this page is the only thing that reads the current
+ * configuration from config file.
+ */
+AirConditionerStatus SplitSettings::getCurrentStatus()
+{
+	readBannerValues();
+	AirConditionerStatus status(static_cast<Mode>(current_mode), current_temp,
+		static_cast<Velocity>(current_fan_speed), static_cast<Swing>(current_swing));
+	return status;
 }
 
 void SplitSettings::readModeConfig(const QDomNode &mode_node, const QDomNode &values)

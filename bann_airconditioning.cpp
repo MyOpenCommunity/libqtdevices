@@ -79,6 +79,12 @@ AdvancedSplitScenario::AdvancedSplitScenario(QString descr, AdvancedAirCondition
 
 void AdvancedSplitScenario::splitValuesChanged(const AirConditionerStatus &st)
 {
+	setCurrentValues(st);
+	// TODO: save values on config file!
+}
+
+void AdvancedSplitScenario::setCurrentValues(const AirConditionerStatus &st)
+{
 	status = st;
 }
 

@@ -93,6 +93,7 @@ class SplitSettings : public BannerPage
 Q_OBJECT
 public:
 	SplitSettings(const QDomNode &values_node, const QDomNode &config_node);
+	AirConditionerStatus getCurrentStatus();
 
 protected:
 	virtual void showEvent(QShowEvent *);
