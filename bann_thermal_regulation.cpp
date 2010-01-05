@@ -194,7 +194,7 @@ PageSimpleProbe::PageSimpleProbe(QDomNode n, TemperatureScale scale)
 	main_layout.setSpacing(0);
 
 	temp_label = new QLabel(this);
-	temp_label->setFont(bt_global::font->get(FontManager::TITLE));
+	temp_label->setFont(bt_global::font->get(FontManager::PROBE_TEMPERATURE));
 	temp_label->setAlignment(Qt::AlignHCenter);
 
 	main_layout.addWidget(temp_label);
@@ -268,7 +268,7 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	hbox->addStretch();
 
 	setpoint_label = new QLabel(this);
-	setpoint_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	setpoint_label->setFont(bt_global::font->get(FontManager::PROBE_SETPOINT));
 	setpoint_label->setAlignment(Qt::AlignHCenter);
 	setpoint_label->setProperty("SecondFgColor", true);
 
@@ -618,7 +618,7 @@ PageManual::PageManual(ThermalDevice *_dev, TemperatureScale scale)
 	}
 
 	temp_label = new QLabel(this);
-	temp_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	temp_label->setFont(bt_global::font->get(FontManager::REGULATOR_TEMPERATURE));
 	temp_label->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	temp_label->setProperty("SecondFgColor", true);
 	QHBoxLayout *hbox = new QHBoxLayout();
@@ -870,7 +870,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 		description = "Wrong node";
 	}
 	description_label = new QLabel(this);
-	description_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	description_label->setFont(bt_global::font->get(FontManager::REGULATOR_DESCRIPTION));
 	description_label->setAlignment(Qt::AlignHCenter);
 	description_label->setProperty("SecondFgColor", true);
 
