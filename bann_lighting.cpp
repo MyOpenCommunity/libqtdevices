@@ -141,8 +141,8 @@ DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where
 	dev = bt_global::add_device_to_cache(new DimmerDevice(where));
 	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
 	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
-	connect(this, SIGNAL(center_left_clicked()), SLOT(increaseLevel()));
-	connect(this, SIGNAL(center_right_clicked()), SLOT(decreaseLevel()));
+	connect(this, SIGNAL(center_left_clicked()), SLOT(decreaseLevel()));
+	connect(this, SIGNAL(center_right_clicked()), SLOT(increaseLevel()));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 

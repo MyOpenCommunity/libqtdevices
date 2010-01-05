@@ -83,7 +83,7 @@ void BannLevel::startLeftTimer()
 {
 	if (!timer.isActive())
 	{
-		disconnect(&timer, SIGNAL(timeout()));
+		timer.disconnect(SIGNAL(timeout()));
 		connect(&timer, SIGNAL(timeout()), SIGNAL(center_left_clicked()));
 		timer.start();
 	}
@@ -93,7 +93,7 @@ void BannLevel::startRightTimer()
 {
 	if (!timer.isActive())
 	{
-		disconnect(&timer, SIGNAL(timeout()));
+		timer.disconnect(SIGNAL(timeout()));
 		connect(&timer, SIGNAL(timeout()), SIGNAL(center_right_clicked()));
 		timer.start();
 	}
