@@ -537,6 +537,7 @@ TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
 	request_timer.setInterval((total_time / TLF_TIME_STATES) * 1000);
 	request_timer.setSingleShot(true);
 	connect(&request_timer, SIGNAL(timeout()), SLOT(requestStatus()));
+	has_started_timer = false;
 
 	connect(right_button, SIGNAL(clicked()), SLOT(setOn()));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
@@ -556,6 +557,8 @@ void TempLightFixed::requestStatus()
 void TempLightFixed::setOn()
 {
 	dev->variableTiming(lighting_time.hour(), lighting_time.minute(), lighting_time.second());
+	request_timer.start();
+	has_started_timer = true;
 }
 
 void TempLightFixed::status_changed(const StatusList &sl)
@@ -576,7 +579,7 @@ void TempLightFixed::status_changed(const StatusList &sl)
 			else
 			{
 				setState(OFF);
-				request_timer.stop();
+				stopTimer();
 			}
 		}
 			break;
@@ -586,7 +589,7 @@ void TempLightFixed::status_changed(const StatusList &sl)
 			// all 0's means either the light is on or timer is stopped anyway, so stop request timer
 			if ((t.hour() == 0) && (t.minute() == 0) && (t.second() == 0))
 			{
-				request_timer.stop();
+				stopTimer();
 				break;
 			}
 			// ignore strange frames (taken from old code)
@@ -596,12 +599,19 @@ void TempLightFixed::status_changed(const StatusList &sl)
 			int time = qRound((t.hour() * 3600 + t.minute() * 60 + t.second()) * TLF_TIME_STATES / total_time);
 			setElapsedTime(time);
 			setState(ON);
-			request_timer.start();
+			if (has_started_timer)
+				request_timer.start();
 		}
 			break;
 		}
 		++it;
 	}
+}
+
+void TempLightFixed::stopTimer()
+{
+	request_timer.stop();
+	has_started_timer = false;
 }
 
 

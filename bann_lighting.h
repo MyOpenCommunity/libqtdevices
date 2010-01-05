@@ -193,7 +193,10 @@ private slots:
 	void setOn();
 
 private:
+	void stopTimer();
 	int total_time;
+	// indicate if this banner has issued a status request
+	bool has_started_timer;
 	BtTime lighting_time;
 	QTimer request_timer;
 	LightingDevice *dev;
