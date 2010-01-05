@@ -48,6 +48,10 @@ BannLevel::BannLevel(QWidget *parent) :
 
 	connect(center_left_button, SIGNAL(released()), &timer, SLOT(stop()));
 	connect(center_right_button, SIGNAL(released()), &timer, SLOT(stop()));
+
+	// we also want the user to be able to bash the button until the screen is broken
+	connect(center_left_button, SIGNAL(clicked()), SIGNAL(center_left_clicked()));
+	connect(center_right_button, SIGNAL(clicked()), SIGNAL(center_right_clicked()));
 }
 
 void BannLevel::initBanner(const QString &banner_text)
