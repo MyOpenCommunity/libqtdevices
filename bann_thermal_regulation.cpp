@@ -84,7 +84,7 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, Temperature
 	if (id != fs_4z_thermal_regulator && id != fs_99z_thermal_regulator && !simple_address.isEmpty())
 		where_composed = simple_address + "#" + ind_centrale;
 #ifdef CONFIG_BTOUCH
-	QDomNode page_node;
+	QDomNode page_node = n;
 #else
 	QDomNode page_node = getPageNodeFromChildNode(n, "lnk_pageID");
 #endif
@@ -1071,9 +1071,12 @@ void PageTermoReg4z::showSettingsMenu()
 
 void PageTermoReg4z::createSettingsMenu(QDomNode regulator_node)
 {
+#ifdef CONFIG_BTOUCH
+	QDomNode n = regulator_node;
+#else
 	QDomNode n = getPageNodeFromChildNode(regulator_node, "h_lnk_pageID");
-
 	SkinContext context(getTextChild(n, "cid").toInt());
+#endif
 
 	settings = new SettingsPage(n);
 	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
@@ -1122,8 +1125,12 @@ void PageTermoReg99z::showSettingsMenu()
 
 void PageTermoReg99z::createSettingsMenu(QDomNode regulator_node)
 {
+#ifdef CONFIG_BTOUCH
+	QDomNode n = regulator_node;
+#else
 	QDomNode n = getPageNodeFromChildNode(regulator_node, "h_lnk_pageID");
 	SkinContext context(getTextChild(n, "cid").toInt());
+#endif
 
 	settings = new SettingsPage(n);
 	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
