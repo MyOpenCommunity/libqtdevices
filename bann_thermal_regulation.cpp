@@ -533,6 +533,13 @@ PageFancoil::PageFancoil(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice 
 void PageFancoil::createFancoilButtons()
 {
 	QHBoxLayout *hbox = new QHBoxLayout();
+
+	hbox->setAlignment(Qt::AlignHCenter);
+	hbox->setSpacing(10);
+#ifdef LAYOUT_TOUCHX
+	hbox->setContentsMargins(0, 0, 0, 60);
+#endif
+
 	for (int id = 0; id < 4; ++id)
 	{
 		QString path = bt_global::skin->getImage(QString("fan_%1_off").arg(id + 1));
