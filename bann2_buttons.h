@@ -90,7 +90,7 @@ public:
 /**
  * Two buttons on the sides + description in the center.
  * Either button can be removed by giving an empty string as the icon parameter to initBanner()
- * Nicer replacement for bann2but, will replace also BannLeft, BannRight, bannOnDx, bannOnSx
+ * Nicer replacement for bann2but, will replace also bannOnDx, bannOnSx
  */
 class Bann2Buttons : public Bann2LinkedPages
 {
@@ -98,7 +98,7 @@ Q_OBJECT
 protected:
 	Bann2Buttons(QWidget *parent = 0);
 	void initBanner(const QString &left, const QString &right, const QString &banner_text,
-		FontManager::Type font_type = FontManager::FONT_NONE);
+		FontManager::Type font_type = FontManager::TEXT);
 	void setCentralText(const QString &t);
 
 private:
@@ -170,26 +170,6 @@ protected:
 	BtButton *center_left, *center_right;
 private:
 	QLabel *text;
-};
-
-
-class BannTuning : public Bann2CentralButtons
-{
-Q_OBJECT
-public:
-	BannTuning(const QString &banner_text, const QString &icon_name, QWidget *parent = 0);
-
-private slots:
-	void decreaseLevel();
-	void increaseLevel();
-
-private:
-	void changeIcons();
-	int current_level;
-	QString center_icon;
-
-signals:
-	void valueChanged(int);
 };
 
 

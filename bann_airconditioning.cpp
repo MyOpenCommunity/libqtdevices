@@ -5,11 +5,14 @@
 #include "probe_device.h"
 #include "main.h" // bt_global::config
 #include "scaleconversion.h"
+#include "generic_functions.h" // setCfgValue()
+#include "airconditioning.h" // AdvancedSplitPage
 
 #include <QLabel> // BannerText
 #include <QDebug>
 
-SingleSplit::SingleSplit(QString descr, AirConditioningDevice *d, NonControlledProbeDevice *d_probe) : BannOnOffNew(0)
+SingleSplit::SingleSplit(QString descr, AirConditioningInterface *d, NonControlledProbeDevice *d_probe) :
+	BannOnOffNew(0)
 {
 	QString img_off = bt_global::skin->getImage("off");
 	QString img_forward = bt_global::skin->getImage("forward");
@@ -28,7 +31,7 @@ SingleSplit::SingleSplit(QString descr, AirConditioningDevice *d, NonControlledP
 	}
 
 	initBanner(img_off, bt_global::skin->getImage(air_single), img_forward, descr);
-	connect(left_button, SIGNAL(clicked()), dev, SLOT(sendOff()));
+	connect(left_button, SIGNAL(clicked()), SLOT(setDeviceOff()));
 }
 
 void SingleSplit::status_changed(const StatusList &status_list)
@@ -50,6 +53,25 @@ void SingleSplit::inizializza(bool)
 		dev_probe->requestStatus();
 }
 
+void SingleSplit::setDeviceOff()
+{
+	dev->turnOff();
+}
+
+
+AdvancedSingleSplit::AdvancedSingleSplit(QString descr, AdvancedSplitPage *p, AirConditioningInterface *d, NonControlledProbeDevice *probe) :
+	SingleSplit(descr, d, probe)
+{
+	page = p;
+}
+
+void AdvancedSingleSplit::setSerNum(int ser)
+{
+	banner::setSerNum(ser);
+	page->setSerialNumber(ser);
+}
+
+
 GeneralSplit::GeneralSplit(QString descr) : BannOnOffNew(0)
 {
 	QString img_off = bt_global::skin->getImage("off");
@@ -60,11 +82,38 @@ GeneralSplit::GeneralSplit(QString descr) : BannOnOffNew(0)
 }
 
 
-AdvancedSplitScenario::AdvancedSplitScenario(QWidget *parent, QString descr): Bann2Buttons(parent)
+AdvancedSplitScenario::AdvancedSplitScenario(QString descr, const QString &conf_node, AdvancedAirConditioningDevice *d, QWidget *parent) :
+	Bann2Buttons(parent)
 {
 	QString icon_cmd = bt_global::skin->getImage("split_cmd");
 	QString icon_settings = bt_global::skin->getImage("split_settings");
 	initBanner(icon_cmd, icon_settings, descr);
+	dev = d;
+	conf_name = conf_node;
+
+	connect(left_button, SIGNAL(clicked()), SLOT(onButtonClicked()));
+}
+
+void AdvancedSplitScenario::splitValuesChanged(const AirConditionerStatus &st)
+{
+	setCurrentValues(st);
+	QMap<QString, QString> m;
+	m[conf_name + "/mode"] = QString::number(st.mode);
+	m[conf_name + "/setpoint"] = QString::number(st.temp);
+	m[conf_name + "/speed"] = QString::number(st.vel);
+	m[conf_name + "/fan_swing"] = QString::number(st.swing);
+	if (!setCfgValue(m, id, serNum))
+		qWarning() << "AdvancedSplitScenario::splitValuesChanged setCfgValue failed!";
+}
+
+void AdvancedSplitScenario::setCurrentValues(const AirConditionerStatus &st)
+{
+	status = st;
+}
+
+void AdvancedSplitScenario::onButtonClicked()
+{
+	dev->setStatus(status);
 }
 
 
@@ -84,9 +133,20 @@ SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, 
 	updateText();
 
 	left_button->setAutoRepeat(true);
-	connect(left_button, SIGNAL(clicked()), SLOT(decreseTemp()));
+	connect(left_button, SIGNAL(clicked()), SLOT(decreaseTemp()));
 	right_button->setAutoRepeat(true);
 	connect(right_button, SIGNAL(clicked()), SLOT(increaseTemp()));
+}
+
+void SplitTemperature::setTemperature(int new_temp)
+{
+	if (new_temp >= min_temp && new_temp <= max_temp)
+	{
+		current_temp = new_temp;
+		updateText();
+	}
+	else
+		qWarning() << "SplitTemperature::setTemperature: provided temp is outside limits, ignoring.";
 }
 
 void SplitTemperature::increaseTemp()
@@ -99,7 +159,7 @@ void SplitTemperature::increaseTemp()
 	}
 }
 
-void SplitTemperature::decreseTemp()
+void SplitTemperature::decreaseTemp()
 {
 	int tmp = current_temp - temp_step;
 	if (tmp >= min_temp)
@@ -113,6 +173,11 @@ void SplitTemperature::updateText()
 {
 	// TODO: what about fahrenheit temperature?
 	setCentralText(celsiusString(current_temp));
+}
+
+int SplitTemperature::temperature()
+{
+	return current_temp;
 }
 
 
@@ -151,20 +216,31 @@ SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 }
 
 
-SplitSwing::SplitSwing(QString descr) : Bann2Buttons(0)
+// The button group guarantees that only one button is pressed at a given time.
+// Button ids are chosen so that they can be converted to bool values, ie. are 0 or 1.
+SplitSwing::SplitSwing(QString descr, bool init_swing) : Bann2Buttons(0)
 {
 	initBanner(bt_global::skin->getImage("swing_off"), bt_global::skin->getImage("swing_on"), descr);
 
-	// TODO: this is all wrong, we need a button group. I will fix it shortly
-	status = false;
-	connect(left_button, SIGNAL(clicked()), SLOT(toggleSwing()));
+	// left = OFF button, so id is 0
+	buttons.addButton(left_button, 0);
+	// right = ON button, so id is 1
+	buttons.addButton(right_button, 1);
+	buttons.setExclusive(true);
+
+	right_button->setCheckable(true);
+	left_button->setCheckable(true);
+	setSwingOn(init_swing);
 }
 
-
-void SplitSwing::toggleSwing()
+void SplitSwing::setSwingOn(bool swing_on)
 {
-	status = !status;
-	left_button->setStatus(status);
+	swing_on ? right_button->setChecked(true) : left_button->setChecked(true);
+}
+
+bool SplitSwing::swing()
+{
+	return buttons.checkedId();
 }
 
 

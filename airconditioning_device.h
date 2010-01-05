@@ -25,9 +25,6 @@ public:
 	virtual void activateScenario(const QString &what) const;
 	template<class T> QString commandToString(const T &info) { return info; };
 
-public slots:
-	void sendOff() const;
-
 private:
 	QString off;
 };
@@ -69,6 +66,7 @@ public:
 
 	struct AirConditionerStatus
 	{
+		AirConditionerStatus() : mode(MODE_OFF) { }
 		AirConditionerStatus(Mode m, int t, Velocity v, Swing s) : mode(m), temp(t), vel(v), swing(s) { }
 		Mode mode;
 		int temp;

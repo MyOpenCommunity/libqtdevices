@@ -1,10 +1,10 @@
 #include "singlechoicecontent.h"
-#include "bann1_button.h" // BannLeft
+#include "bann2_buttons.h" // Bann2Buttons
 #include "btbutton.h"
 #include "skinmanager.h"
 
 
-class CheckableBanner : public BannLeft
+class CheckableBanner : public Bann2Buttons
 {
 public:
 	CheckableBanner(const QString &text);
@@ -13,9 +13,9 @@ public:
 };
 
 CheckableBanner::CheckableBanner(const QString &text)
-	: BannLeft(0)
+	: Bann2Buttons(0)
 {
-	initBanner(bt_global::skin->getImage("unchecked"), text);
+	initBanner(bt_global::skin->getImage("unchecked"), QString(), text);
 	left_button->setCheckable(true);
 	// TODO touch 10 uses 4 icons for togglable BtButton: normal,
 	//      pressed normal, toggled, pressed toggled

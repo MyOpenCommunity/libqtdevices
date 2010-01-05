@@ -37,19 +37,11 @@ void TestAirConditioningDevice::compareCommand(const QString &what)
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestAirConditioningDevice::sendSendOff()
-{
-	QString off_cmd = "90";
-	dev->setOffCommand(off_cmd);
-	dev->sendOff();
-	compareCommand(off_cmd);
-}
-
 void TestAirConditioningDevice::sendTurnOff()
 {
 	QString off_cmd = "18";
 	dev->setOffCommand(off_cmd);
-	dev->sendOff();
+	dev->turnOff();
 	compareCommand(off_cmd);
 }
 

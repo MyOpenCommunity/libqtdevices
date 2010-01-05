@@ -4,7 +4,7 @@
 #include "mediaplayer.h"
 #include "displaycontrol.h" // forceOperativeMode
 #include "hardware_functions.h" // setVolume
-#include "bann2_buttons.h" // BannTuning
+#include "items.h" // ItemTuning
 #include "skinmanager.h"
 
 #include <QLabel>
@@ -261,7 +261,7 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
 	controls->hide();
 
 	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::VIDEO_WINDOW);
-	BannTuning *volume = new BannTuning(QString(), bt_global::skin->getImage("volume"));
+	ItemTuning *volume = new ItemTuning(QString(), bt_global::skin->getImage("volume"));
 
 	QHBoxLayout *control_layout = new QHBoxLayout(controls);
 	control_layout->setContentsMargins(0, 0, 0, 0);
