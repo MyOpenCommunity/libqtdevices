@@ -1039,6 +1039,14 @@ QString PageTermoReg::lookupProgramDescription(QString season, QString what, int
 
 void PageTermoReg::createButtonsBanners(SettingsPage *settings, ThermalDevice *dev)
 {
+	// TODO: when we have the small button icons for BTouch,
+	//       remove the code to create the two separate banners
+#ifdef LAYOUT_TOUCHX
+	// off_antifreeze banner
+	BannOffAntifreeze *off = new BannOffAntifreeze(settings, dev);
+	settings->appendBanner(off);
+	connect(off, SIGNAL(clicked()), SLOT(showPage()));
+#else
 	// off banner
 	BannOff *off = new BannOff(settings, dev);
 	settings->appendBanner(off);
@@ -1048,6 +1056,7 @@ void PageTermoReg::createButtonsBanners(SettingsPage *settings, ThermalDevice *d
 	BannAntifreeze *antifreeze = new BannAntifreeze(settings, dev);
 	settings->appendBanner(antifreeze);
 	connect(antifreeze, SIGNAL(clicked()), SLOT(showPage()));
+#endif
 
 	// summer_winter banner
 	BannSummerWinter *summer_winter = new BannSummerWinter(settings, dev);
@@ -1366,6 +1375,30 @@ void BannAntifreeze::performAction()
 {
 	dev->setProtection();
 }
+
+
+BannOffAntifreeze::BannOffAntifreeze(QWidget *parent, ThermalDevice *_dev)
+	: Bann2CentralButtons(parent)
+{
+	initBanner(bt_global::skin->getImage("off_button"), bt_global::skin->getImage("regulator_antifreeze"), "");
+	dev = _dev;
+
+	connect(center_left, SIGNAL(clicked()), SLOT(setOff()));
+	connect(center_left, SIGNAL(clicked()), SIGNAL(clicked()));
+	connect(center_right, SIGNAL(clicked()), SLOT(setAntifreeze()));
+	connect(center_right, SIGNAL(clicked()), SIGNAL(clicked()));
+}
+
+void BannOffAntifreeze::setOff()
+{
+	dev->setOff();
+}
+
+void BannOffAntifreeze::setAntifreeze()
+{
+	dev->setProtection();
+}
+
 
 BannSummerWinter::BannSummerWinter(QWidget *parent, ThermalDevice *_dev) : Bann2CentralButtons(parent)
 {

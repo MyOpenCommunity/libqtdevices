@@ -586,6 +586,29 @@ signals:
 
 
 /**
+ * Banner with two buttons, one to set the thermal regulator to "off" and one
+ * to set antifreeze mode.
+ */
+class BannOffAntifreeze : public Bann2CentralButtons
+{
+Q_OBJECT
+public:
+	BannOffAntifreeze(QWidget *parent, ThermalDevice *_dev);
+
+signals:
+	void clicked();
+
+private slots:
+	void setOff();
+	void setAntifreeze();
+
+private:
+	/// The device that this banner sends commands to
+	ThermalDevice *dev;
+};
+
+
+/**
  * This banner sets the thermal regulator in summer or winter status, depending on the
  * button pressed.
  * It displays two buttons at the center, one with the summer icon and one with the winter icon.
