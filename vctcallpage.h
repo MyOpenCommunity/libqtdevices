@@ -2,6 +2,7 @@
 #define VCTCALLPAGE_H
 
 #include "page.h"
+#include "window.h"
 #include "btbutton.h"
 
 #include <QString>
@@ -45,6 +46,9 @@ public:
 	void setFullscreenEnabled(bool fs);
 	void setMoveEnabled(bool move);
 
+signals:
+	void toggleFullScreen();
+
 private:
 	EnablingButton *up, *left, *fullscreen, *right, *down;
 };
@@ -70,34 +74,17 @@ private:
 };
 
 
-
-/**
- * The widget that contains all the button to control the videocall (usually
- * placed at the bottom of the page).
- */
-class CallControl : public QWidget
+struct VCTCallStatus
 {
-Q_OBJECT
-public:
-	CallControl(EntryphoneDevice *d);
-
-signals:
-	void endCall();
-
-protected:
-	virtual void showEvent(QShowEvent *);
-
-private slots:
-	void toggleCall();
-
-private:
-	EntryphoneDevice *dev;
-	EnablingButton *mute_button, *stairlight, *unlock_door;
-	BtButton *cycle, *call_accept;
-	QString mute_icon, call_icon;
 	bool connected;
-};
 
+	VCTCallStatus() { init(); }
+
+	void init()
+	{
+		connected = false;
+	}
+};
 
 
 class VCTCall : public QObject
@@ -110,14 +97,21 @@ public:
 		FULLSCREEN_VIDEO = 1,
 	};
 
-	VCTCall(EntryphoneDevice *d, FormatVideo f);
+	VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f);
+	void refreshStatus();
+	void startVideo();
+	void stopVideo();
 
 	BtButton *setup_vct;
 	CameraMove *camera;
 	CameraImageControl *image_control;
 	QLabel *video_box;
-	CallControl *call_control;
 	QString setup_vct_icon;
+
+	EnablingButton *mute_button, *stairlight, *unlock_door;
+	BtButton *cycle, *call_accept;
+	QString mute_icon, call_icon;
+	ItemTuning *volume;
 
 public slots:
 	void endCall();
@@ -130,12 +124,34 @@ private slots:
 	void status_changed(const StatusList &sl);
 	void toggleCameraSettings();
 	void handleClose();
+	void toggleCall();
 
 private:
 	FormatVideo format;
 	bool camera_settings_shown;
 	EntryphoneDevice *dev;
 	QProcess video_grabber;
+	VCTCallStatus *call_status;
+};
+
+
+class VCTCallWindow : public Window
+{
+Q_OBJECT
+public:
+	VCTCallWindow(EntryphoneDevice *d, VCTCallStatus *call_status);
+
+public slots:
+	virtual void showWindow();
+
+signals:
+	void exitFullScreen();
+
+private slots:
+	void handleClose();
+
+private:
+	VCTCall *vct_call;
 };
 
 
@@ -152,15 +168,18 @@ public:
 public slots:
 	void showPreviousPage();
 
-protected:
-	virtual void showEvent(QShowEvent *);
-	virtual void hideEvent(QHideEvent *);
 
 private slots:
 	virtual void showPage();
+	void handleClose();
+	void enterFullScreen();
+	void exitFullScreen();
 
 private:
 	Page *prev_page;
+	Window *window;
+	VCTCallStatus *call_status;
+	VCTCall *vct_call;
 };
 
 

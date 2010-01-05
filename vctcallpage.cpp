@@ -63,6 +63,7 @@ CameraMove::CameraMove(EntryphoneDevice *dev)
 	right = getButton(bt_global::skin->getImage("arrow_right"));
 	left = getButton(bt_global::skin->getImage("arrow_left"));
 	fullscreen = getButton(bt_global::skin->getImage("fullscreen"));
+	connect(fullscreen, SIGNAL(clicked()), this, SIGNAL(toggleFullScreen()));
 
 	QGridLayout *main_layout = new QGridLayout(this);
 	main_layout->setContentsMargins(5, 5, 5, 5);
@@ -138,74 +139,9 @@ void CameraImageControl::setBrightness(int value)
 }
 
 
-CallControl::CallControl(EntryphoneDevice *d)
+VCTCall::VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f)
 {
-	dev = d;
-
-	connected = false;
-	call_icon = bt_global::skin->getImage("call");
-	call_accept = new BtButton;
-	call_accept->setOnOff();
-	call_accept->setImage(getBostikName(call_icon, "off"));
-	call_accept->setPressedImage(getBostikName(call_icon, "on"));
-	connect(call_accept, SIGNAL(clicked()), SLOT(toggleCall()));
-
-	// TODO: verificare in che situazione posso avere lo stato disabilitato per il
-	// pulsante per accettare le videochiamate!
-//	call_accept->setDisabledPixmap(getBostikName(call_icon, "dis"));
-
-	ItemTuning *volume = new ItemTuning("", bt_global::skin->getImage("volume"));
-	// TODO: connect to volume settings
-
-	mute_icon = bt_global::skin->getImage("mute");
-	mute_button = getButton(getBostikName(mute_icon, "off"));
-	mute_button->disable();
-	// TODO: connect to mute settings
-
-	stairlight = getButton(bt_global::skin->getImage("stairlight"));
-	connect(stairlight, SIGNAL(pressed()), dev, SLOT(stairLightActivate()));
-	connect(stairlight, SIGNAL(released()), dev, SLOT(stairLightRelease()));
-
-	unlock_door = getButton(bt_global::skin->getImage("unlock_door"));
-	connect(unlock_door, SIGNAL(pressed()), dev, SLOT(openLock()));
-	connect(unlock_door, SIGNAL(released()), dev, SLOT(releaseLock()));
-
-	cycle = new BtButton;
-	cycle->setImage(bt_global::skin->getImage("cycle"));
-	connect(cycle, SIGNAL(clicked()), dev, SLOT(cycleExternalUnits()));
-
-	QHBoxLayout *bottom = new QHBoxLayout(this);
-	bottom->setContentsMargins(0, 0, 30, 0);
-	bottom->setSpacing(BOTTOM_SPACING);
-	bottom->addWidget(call_accept);
-	bottom->addWidget(volume);
-	bottom->addWidget(mute_button);
-	bottom->addWidget(stairlight);
-	bottom->addWidget(unlock_door);
-	bottom->addWidget(cycle);
-}
-
-void CallControl::showEvent(QShowEvent *)
-{
-	// Every time that the control is shown, the status of the connection must be
-	// reset in order to be sync with the effective call status.
-	connected = false;
-}
-
-void CallControl::toggleCall()
-{
-	connected = !connected;
-
-	call_accept->setStatus(connected);
-	if (connected)
-		dev->answerCall();
-	else
-		emit endCall();
-}
-
-
-VCTCall::VCTCall(EntryphoneDevice *d, FormatVideo f)
-{
+	call_status = st;
 	format = f;
 	dev = d;
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
@@ -226,10 +162,66 @@ VCTCall::VCTCall(EntryphoneDevice *d, FormatVideo f)
 	video_box = new QLabel;
 	video_box->setStyleSheet("background-color: black");
 
-	call_control = new CallControl(dev);
-	connect(call_control, SIGNAL(endCall()), SLOT(handleClose()));
+	call_icon = bt_global::skin->getImage("call");
+	call_accept = new BtButton;
+	call_accept->setOnOff();
+	call_accept->setImage(getBostikName(call_icon, "off"));
+	call_accept->setPressedImage(getBostikName(call_icon, "on"));
+	connect(call_accept, SIGNAL(clicked()), SLOT(toggleCall()));
+
+	volume = new ItemTuning("", bt_global::skin->getImage("volume"));
+	// TODO: connect to volume settings
+
+	mute_icon = bt_global::skin->getImage("mute");
+	mute_button = getButton(getBostikName(mute_icon, "off"));
+	mute_button->disable();
+	// TODO: connect to mute settings
+
+	stairlight = getButton(bt_global::skin->getImage("stairlight"));
+	connect(stairlight, SIGNAL(pressed()), dev, SLOT(stairLightActivate()));
+	connect(stairlight, SIGNAL(released()), dev, SLOT(stairLightRelease()));
+
+	unlock_door = getButton(bt_global::skin->getImage("unlock_door"));
+	connect(unlock_door, SIGNAL(pressed()), dev, SLOT(openLock()));
+	connect(unlock_door, SIGNAL(released()), dev, SLOT(releaseLock()));
+
+	cycle = new BtButton;
+	cycle->setImage(bt_global::skin->getImage("cycle"));
+	connect(cycle, SIGNAL(clicked()), dev, SLOT(cycleExternalUnits()));
 }
 
+
+void VCTCall::refreshStatus()
+{
+	call_accept->setStatus(call_status->connected);
+}
+
+void VCTCall::toggleCall()
+{
+	call_status->connected = !call_status->connected;
+	refreshStatus();
+	if (call_status->connected)
+		dev->answerCall();
+	else
+		handleClose();
+}
+
+void VCTCall::startVideo()
+{
+	if (video_grabber.state() == QProcess::NotRunning)
+	{
+		QStringList args;
+		QPoint top_left = video_box->mapToGlobal(QPoint(0, 0));
+		args << QString::number(top_left.x()) << QString::number(top_left.y()) << QString::number(format);
+		video_grabber.start(video_grabber_path, args);
+	}
+}
+
+void VCTCall::stopVideo()
+{
+	if (video_grabber.state() == QProcess::Running)
+		video_grabber.terminate();
+}
 
 void VCTCall::status_changed(const StatusList &sl)
 {
@@ -239,16 +231,11 @@ void VCTCall::status_changed(const StatusList &sl)
 		switch (it.key())
 		{
 		case EntryphoneDevice::INCOMING_CALL:
-		{
+			startVideo();
 			emit incomingCall();
-			QStringList args;
-			QPoint top_left = video_box->mapToGlobal(QPoint(0, 0));
-			args << QString::number(top_left.x()) << QString::number(top_left.y()) << QString::number(format);
-			video_grabber.start(video_grabber_path, args);
-		}
 			break;
 		case EntryphoneDevice::END_OF_CALL:
-			video_grabber.terminate();
+			stopVideo();
 			emit callClosed();
 			break;
 		}
@@ -288,9 +275,16 @@ void VCTCall::handleClose()
 
 VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 {
-	VCTCall *vct_call = new VCTCall(d, VCTCall::NORMAL_VIDEO);
-	connect(vct_call, SIGNAL(callClosed()), this, SIGNAL(Closed()));
+	call_status = new VCTCallStatus;
+
+	vct_call = new VCTCall(d, call_status, VCTCall::NORMAL_VIDEO);
+	connect(vct_call, SIGNAL(callClosed()), SLOT(handleClose()));
 	connect(vct_call, SIGNAL(incomingCall()), SLOT(showPage()));
+
+	window = new VCTCallWindow(d, call_status);
+	connect(window, SIGNAL(Closed()), SLOT(handleClose()));
+	connect(vct_call->camera, SIGNAL(toggleFullScreen()), SLOT(enterFullScreen()));
+	connect(window, SIGNAL(exitFullScreen()), SLOT(exitFullScreen()));
 
 	// sidebar
 	QVBoxLayout *sidebar = new QVBoxLayout;
@@ -306,13 +300,19 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 	BtButton *back = new BtButton;
 	back->setImage(bt_global::skin->getImage("back"));
 	connect(back, SIGNAL(clicked()), vct_call, SLOT(endCall()));
-	connect(back, SIGNAL(clicked()), this, SIGNAL(Closed()));
+	connect(back, SIGNAL(clicked()), SLOT(handleClose()));
 
 	QHBoxLayout *bottom = new QHBoxLayout;
 	bottom->setContentsMargins(0, 0, 0, 0);
 	bottom->setSpacing(BOTTOM_SPACING);
 	bottom->addWidget(back);
-	bottom->addWidget(vct_call->call_control);
+
+	bottom->addWidget(vct_call->call_accept);
+	bottom->addWidget(vct_call->volume);
+	bottom->addWidget(vct_call->mute_button);
+	bottom->addWidget(vct_call->stairlight);
+	bottom->addWidget(vct_call->unlock_door);
+	bottom->addWidget(vct_call->cycle);
 
 	QGridLayout *layout = new QGridLayout(this);
 	layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Preferred, QSizePolicy::Expanding), 0, 0, 1, 1);
@@ -325,8 +325,27 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 	prev_page = 0;
 }
 
+void VCTCallPage::enterFullScreen()
+{
+	vct_call->stopVideo();
+	window->showWindow();
+}
+
+void VCTCallPage::exitFullScreen()
+{
+	vct_call->startVideo();
+	vct_call->refreshStatus();
+
+	// TODO: come fa a funzionare? Per qualche misterioso motivo la window diventa
+	// quella giusta.. ma come?!?!?
+	Page::showPage();
+}
+
 void VCTCallPage::showPage()
 {
+	call_status->init();
+	vct_call->refreshStatus();
+	bt_global::display.forceOperativeMode(true);
 	prev_page = currentPage();
 	Page::showPage();
 }
@@ -339,13 +358,59 @@ void VCTCallPage::showPreviousPage()
 	prev_page->showPage();
 }
 
-void VCTCallPage::showEvent(QShowEvent *)
-{
-	bt_global::display.forceOperativeMode(true);
-}
 
-void VCTCallPage::hideEvent(QHideEvent *)
+void VCTCallPage::handleClose()
 {
 	bt_global::display.forceOperativeMode(false);
+	emit Closed();
 }
 
+
+VCTCallWindow::VCTCallWindow(EntryphoneDevice *d, VCTCallStatus *call_status)
+{
+	vct_call = new VCTCall(d, call_status, VCTCall::FULLSCREEN_VIDEO);
+
+	// TODO: Chi deve gestire la callClosed?
+//	connect(vct_call, SIGNAL(callClosed()), this, SIGNAL(Closed()));
+	connect(vct_call->camera, SIGNAL(toggleFullScreen()), this, SIGNAL(exitFullScreen()));
+
+	QGridLayout *buttons_layout = new QGridLayout;
+	buttons_layout->setContentsMargins(23, 0, 23, 0);
+	buttons_layout->setSpacing(5);
+	buttons_layout->addWidget(vct_call->call_accept, 0, 0);
+	buttons_layout->addWidget(vct_call->setup_vct, 0, 1);
+	buttons_layout->addWidget(vct_call->volume, 1, 0, 1, 2, Qt::AlignCenter);
+	buttons_layout->addWidget(vct_call->mute_button, 2, 0);
+	buttons_layout->addWidget(vct_call->unlock_door, 2, 1);
+	buttons_layout->addWidget(vct_call->stairlight, 3, 0);
+	buttons_layout->addWidget(vct_call->cycle, 3, 1);
+
+	QVBoxLayout *sidebar = new QVBoxLayout;
+	sidebar->setContentsMargins(0, 0, 0, 5);
+	sidebar->setSpacing(5);
+	sidebar->addStretch(1);
+	sidebar->addWidget(vct_call->camera, 0, Qt::AlignCenter);
+	sidebar->addWidget(vct_call->image_control, 0, Qt::AlignCenter);
+	sidebar->addSpacing(20);
+	sidebar->addLayout(buttons_layout);
+	vct_call->video_box->setFixedSize(610, 460);
+
+	QGridLayout *layout = new QGridLayout(this);
+	layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Preferred, QSizePolicy::Expanding), 0, 0, 1, 1);
+	layout->addLayout(sidebar, 0, 1, 2, 1);
+	layout->addWidget(vct_call->video_box, 1, 0);
+	layout->setContentsMargins(10, 0, 0, 10);
+	layout->setSpacing(10);
+}
+
+void VCTCallWindow::showWindow()
+{
+	vct_call->startVideo();
+	vct_call->refreshStatus();
+	Window::showWindow();
+}
+
+void VCTCallWindow::handleClose()
+{
+	vct_call->stopVideo();
+}
