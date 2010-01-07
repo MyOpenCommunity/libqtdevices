@@ -304,7 +304,8 @@ void SplitSettings::readBannerValues()
 	current_mode = mode->currentState();
 	current_temp = temperature->temperature();
 	current_fan_speed = speed ? speed->currentState() : AdvancedAirConditioningDevice::VEL_INVALID;
-	current_swing = swing ? swing->swing() : AdvancedAirConditioningDevice::SWING_INVALID;
+	// silent a warning here
+	current_swing = swing ? (int) swing->swing() : AdvancedAirConditioningDevice::SWING_INVALID;
 }
 
 void SplitSettings::showEvent(QShowEvent *)
@@ -332,7 +333,12 @@ void SplitSettings::resetChanges()
 	if (speed)
 		speed->setCurrentState(current_fan_speed);
 	if (swing)
-		swing->setSwingOn(current_swing);
+	{
+		Q_ASSERT_X(current_swing == 0 || current_swing == 1, "SplitSettings::resetChanges",
+			"Using a value that is not bool.");
+		// this function takes a bool: watch out when changing the values that swing can take
+		swing->setSwingOn(static_cast<bool>(current_swing));
+	}
 }
 
 
