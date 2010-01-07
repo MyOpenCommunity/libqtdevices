@@ -215,6 +215,7 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	buildPage(new BannerContent, nav_bar);
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(acceptChanges()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(handleClose()));
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
 
 	// init values, temperature is always present so it will be initialized always
 	current_fan_speed = 0;
