@@ -535,9 +535,7 @@ TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
 		bt_global::skin->getImage("lamp_time"), descr, formatTime(lighting_time));
 
 	request_timer.setInterval((total_time / TLF_TIME_STATES) * 1000);
-	request_timer.setSingleShot(true);
-	connect(&request_timer, SIGNAL(timeout()), SLOT(requestStatus()));
-	has_started_timer = false;
+	connect(&request_timer, SIGNAL(timeout()), SLOT(updateTimerLabel()));
 
 	connect(right_button, SIGNAL(clicked()), SLOT(setOn()));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
@@ -557,8 +555,10 @@ void TempLightFixed::requestStatus()
 void TempLightFixed::setOn()
 {
 	dev->variableTiming(lighting_time.hour(), lighting_time.minute(), lighting_time.second());
+	// TODO: is this ok? does it update correctly the timer slice the first time?
 	request_timer.start();
-	has_started_timer = true;
+	valid_update = false;
+	update_retries = 0;
 }
 
 void TempLightFixed::status_changed(const StatusList &sl)
@@ -599,8 +599,7 @@ void TempLightFixed::status_changed(const StatusList &sl)
 			int time = qRound((t.hour() * 3600 + t.minute() * 60 + t.second()) * TLF_TIME_STATES / total_time);
 			setElapsedTime(time);
 			setState(ON);
-			if (has_started_timer)
-				request_timer.start();
+			valid_update = true;
 		}
 			break;
 		}
@@ -608,10 +607,25 @@ void TempLightFixed::status_changed(const StatusList &sl)
 	}
 }
 
+#define MAX_RETRY 2
+
+void TempLightFixed::updateTimerLabel()
+{
+	if (!valid_update)
+	{
+		++update_retries;
+		if (update_retries > MAX_RETRY)
+			stopTimer();
+	}
+	requestStatus();
+	valid_update = false;
+}
+
 void TempLightFixed::stopTimer()
 {
 	request_timer.stop();
-	has_started_timer = false;
+	valid_update = false;
+	update_retries = 0;
 }
 
 
