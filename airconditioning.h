@@ -106,7 +106,7 @@ protected:
 	virtual void showEvent(QShowEvent *);
 
 private slots:
-	void handleClose();
+	void resetChanges();
 	void acceptChanges();
 
 private:

@@ -214,7 +214,7 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	nav_bar->displayScrollButtons(false);
 	buildPage(new BannerContent, nav_bar);
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(acceptChanges()));
-	connect(nav_bar, SIGNAL(backClick()), SLOT(handleClose()));
+	connect(nav_bar, SIGNAL(backClick()), SLOT(resetChanges()));
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
 
 	// init values, temperature is always present so it will be initialized always
@@ -325,7 +325,7 @@ void SplitSettings::sendUpdatedValues()
 	emit splitSettingsChanged(status);
 }
 
-void SplitSettings::handleClose()
+void SplitSettings::resetChanges()
 {
 	mode->setCurrentState(current_mode);
 	temperature->setTemperature(current_temp);
