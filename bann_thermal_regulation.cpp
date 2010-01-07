@@ -293,7 +293,7 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	connect(btn_plus, SIGNAL(clicked()), SLOT(incSetpoint()));
 	hbox->addWidget(btn_plus);
 #ifdef LAYOUT_TOUCHX
-	hbox->addStretch();
+	hbox->addStretch(1);
 #endif
 
 	main_layout.addLayout(hbox);
