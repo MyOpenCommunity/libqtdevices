@@ -91,7 +91,7 @@ QDomNode getPageNode(int id)
 
 QDomNode getPageNodeFromPageId(int pageid)
 {
-	QDomElement gui = qdom_appconfig.documentElement().firstChildElement("gui");
+	QDomElement gui = getConfElement("gui");
 	QDomNode page = getChildWithId(gui, QRegExp("page"), "pageID", pageid);
 
 	return page;
