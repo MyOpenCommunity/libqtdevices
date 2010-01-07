@@ -547,11 +547,6 @@ void TempLightFixed::inizializza(bool forza)
 	dev->requestVariableTiming();
 }
 
-void TempLightFixed::requestStatus()
-{
-	dev->requestVariableTiming();
-}
-
 void TempLightFixed::setOn()
 {
 	dev->variableTiming(lighting_time.hour(), lighting_time.minute(), lighting_time.second());
@@ -617,7 +612,7 @@ void TempLightFixed::updateTimerLabel()
 		if (update_retries > MAX_RETRY)
 			stopTimer();
 	}
-	requestStatus();
+	dev->requestVariableTiming();
 	valid_update = false;
 }
 

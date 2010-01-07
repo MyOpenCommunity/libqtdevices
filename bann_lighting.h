@@ -189,7 +189,6 @@ public:
 
 private slots:
 	void status_changed(const StatusList &sl);
-	void requestStatus();
 	void setOn();
 	void updateTimerLabel();
 
