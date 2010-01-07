@@ -254,13 +254,13 @@ protected:
 	 * Utility function to create the submenu to set the weekly program in thermal
 	 * regulator device.
 	 */
-	void weekSettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev);
+	void weekSettings(SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create the submenu to set the scenario program in thermal
 	 * regulator device.
 	 */
-	void scenarioSettings(SettingsPage *settings, QDomNode conf, ThermalDevice99Zones *dev);
+	void scenarioSettings(SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev);
 
 	/**
 	 * Utility function to create the submenu to set manually the temperature
@@ -271,12 +271,12 @@ protected:
 	/**
 	 * Utility function to create the submenu for holiday settings.
 	 */
-	void holidaySettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev);
+	void holidaySettings(SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create the submenu for weekend settings.
 	 */
-	void weekendSettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev);
+	void weekendSettings(SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create off, antifreeze and summer/winter banners.
@@ -285,8 +285,9 @@ protected:
 
 	/// The settings menu of the thermal regulator
 	SettingsPage *settings;
-	/// A reference to the configuration of the thermal regulator
-	QDomNode conf_root;
+
+	/// list of programs/scenarios defined in the configuration
+	QMap<QString, QString> programs, scenarios;
 
 	TemperatureScale temp_scale;
 private slots:
@@ -351,7 +352,7 @@ private:
 
 	PageSetDate *createDateEdit(SettingsPage *settings);
 	PageSetTime *createTimeEdit(SettingsPage *settings);
-	WeeklyMenu *createProgramChoice(SettingsPage *settings, QDomNode conf, device *dev);
+	WeeklyMenu *createProgramChoice(SettingsPage *settings, QMap<QString, QString> programs, device *dev);
 
 	/// Label and string that may be visualized
 	QLabel *description_label;
@@ -413,7 +414,7 @@ protected:
 	virtual void createSettingsMenu(QDomNode regulator_node);
 	virtual void setSeason(Season new_season);
 private:
-	void scenarioSettings(SettingsPage *settings, QDomNode conf, ThermalDevice99Zones *dev);
+	void scenarioSettings(SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev);
 
 	ThermalDevice99Zones *_dev;
 	ScenarioMenu *scenario_menu;
@@ -641,13 +642,16 @@ class BannWeekly : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	BannWeekly(QWidget *parent);
+	BannWeekly(QWidget *parent, int index);
 
 private slots:
 	void performAction();
 
 signals:
 	void programNumber(int);
+
+private:
+	int index;
 };
 
 #endif // BANN_THERMAL_REGULATION_H

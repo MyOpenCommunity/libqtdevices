@@ -88,19 +88,19 @@ class ProgramMenu : public BannerPage
 {
 Q_OBJECT
 public:
-	ProgramMenu(QWidget *parent, QDomNode conf);
+	ProgramMenu(QWidget *parent, QMap<QString, QString> descriptions);
 	virtual void createSummerBanners() = 0;
 	virtual void createWinterBanners() = 0;
 	void setSeason(Season new_season);
 protected:
 	QString summer_icon, winter_icon;
 	int season;
-	QDomNode conf_root;
+	QMap<QString, QString> descriptions;
 	/**
 	 * \param season Either "summer" or "winter"
 	 * \param what Either "prog" or "scen"
 	 */
-	void createSeasonBanner(QString season, QString what, QString icon);
+	void createSeasonBanner(QString season, QString icon);
 signals:
 	void programClicked(int);
 };
@@ -113,7 +113,7 @@ class WeeklyMenu : public ProgramMenu
 {
 Q_OBJECT
 public:
-	WeeklyMenu(QWidget *parent, QDomNode conf);
+	WeeklyMenu(QWidget *parent, QMap<QString, QString> programs);
 	virtual void createSummerBanners();
 	virtual void createWinterBanners();
 };
@@ -126,7 +126,7 @@ class ScenarioMenu : public ProgramMenu
 {
 Q_OBJECT
 public:
-	ScenarioMenu(QWidget *parent, QDomNode conf);
+	ScenarioMenu(QWidget *parent, QMap<QString, QString> scenarios);
 	virtual void createSummerBanners();
 	virtual void createWinterBanners();
 };

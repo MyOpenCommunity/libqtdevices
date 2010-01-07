@@ -171,9 +171,9 @@ ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 }
 
 
-ProgramMenu::ProgramMenu(QWidget *parent, QDomNode conf) : BannerPage(parent)
+ProgramMenu::ProgramMenu(QWidget *parent, QMap<QString, QString> _descriptions) : BannerPage(parent)
 {
-	conf_root = conf;
+	descriptions = _descriptions;
 	buildPage();
 }
 
@@ -194,35 +194,22 @@ void ProgramMenu::setSeason(Season new_season)
 	}
 }
 
-void ProgramMenu::createSeasonBanner(const QString season, const QString what, const QString icon)
+void ProgramMenu::createSeasonBanner(const QString season, const QString icon)
 {
-	Q_ASSERT_X(what == "scen" || what == "prog", "ProgramMenu::createSeasonBanner",
-		"'what' must be either 'prog' or 'scen'");
-
 	bool create_banner = false;
 	if (page_content->bannerCount() == 0)
 		create_banner = true;
 
-	if (conf_root.nodeName().contains(QRegExp("item(\\d\\d?)")) == 0)
+	for (int index = 0; ; ++index)
 	{
-		qFatal("[TERMO] WeeklyMenu:wrong node in config file");
-	}
-	QDomElement program = getElement(conf_root, season + "/" + what);
-	// The leaves we are looking for start with either "p" or "s"
-	QString name = what.left(1);
-	int id = getTextChild(conf_root, "id").toInt();
+		QString key = season + QString::number(index + 1);
+		if (!descriptions.contains(key))
+			break;
 
-	int index = 0;
-	foreach (const QDomNode &node, getChildren(program, name))
-	{
 		BannWeekly *bp = 0;
 		if (create_banner)
 		{
-			bp = new BannWeekly(this);
-			// setting the banner ID, appendBanner() sets the banner serNum
-			// that is implicitly used to select the program number when the
-			// user chooses the program/scenario
-			bp->setId(id);
+			bp = new BannWeekly(this, index + 1);
 			page_content->appendBanner(bp);
 			connect(bp, SIGNAL(programNumber(int)), SIGNAL(programClicked(int)));
 		}
@@ -232,15 +219,12 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString what, c
 			break;
 		}
 		bp = static_cast<BannWeekly*>(page_content->getBanner(index));
-		++index;
-		QString text;
-		if (node.isElement())
-			text = node.toElement().text();
-		bp->initBanner(bt_global::skin->getImage("ok"), icon, text);
+		bp->initBanner(bt_global::skin->getImage("ok"), icon, descriptions[key]);
 	}
 }
 
-WeeklyMenu::WeeklyMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, conf)
+WeeklyMenu::WeeklyMenu(QWidget *parent, QMap<QString, QString> programs)
+	: ProgramMenu(parent, programs)
 {
 	summer_icon = bt_global::skin->getImage("summer_program");
 	winter_icon = bt_global::skin->getImage("winter_program");
@@ -250,15 +234,16 @@ WeeklyMenu::WeeklyMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, con
 
 void WeeklyMenu::createSummerBanners()
 {
-	createSeasonBanner("summer", "prog", summer_icon);
+	createSeasonBanner("summer", summer_icon);
 }
 
 void WeeklyMenu::createWinterBanners()
 {
-	createSeasonBanner("winter", "prog", winter_icon);
+	createSeasonBanner("winter", winter_icon);
 }
 
-ScenarioMenu::ScenarioMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent, conf)
+ScenarioMenu::ScenarioMenu(QWidget *parent, QMap<QString, QString> scenarios)
+	: ProgramMenu(parent, scenarios)
 {
 	summer_icon = bt_global::skin->getImage("summer_scenario");
 	winter_icon = bt_global::skin->getImage("winter_scenario");
@@ -268,11 +253,11 @@ ScenarioMenu::ScenarioMenu(QWidget *parent, QDomNode conf) : ProgramMenu(parent,
 
 void ScenarioMenu::createSummerBanners()
 {
-	createSeasonBanner("summer", "scen", summer_icon);
+	createSeasonBanner("summer", summer_icon);
 
 }
 
 void ScenarioMenu::createWinterBanners()
 {
-	createSeasonBanner("winter", "scen", winter_icon);
+	createSeasonBanner("winter", winter_icon);
 }
