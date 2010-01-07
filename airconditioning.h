@@ -84,6 +84,10 @@ public:
 
 private:
 	void loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d);
+	AdvancedAirConditioningDevice *dev;
+
+private slots:
+	void setDeviceOff();
 };
 
 

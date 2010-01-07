@@ -188,11 +188,17 @@ public:
 
 private slots:
 	void status_changed(const StatusList &sl);
-	void requestStatus();
 	void setOn();
+	void updateTimerLabel();
 
 private:
+	void stopTimer();
 	int total_time;
+	// we have received a valid variable timing update since last request
+	bool valid_update;
+	// retries when no response to a variable timing request has been received
+	int update_retries;
+
 	BtTime lighting_time;
 	QTimer request_timer;
 	LightingDevice *dev;

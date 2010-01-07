@@ -17,6 +17,7 @@ private slots:
 	void testVariableTiming();
 	void testVariableTiming2();
 	void testVariableTiming3();
+	void testVariableTiming4();
 };
 
 #endif //TEST_PULL_MANAGER_H

@@ -125,3 +125,15 @@ void TestPullManager::testVariableTiming3()
 	parseFrames("*#1*12*1*140*255##", &psm, false);
 	QCOMPARE(psm.getPullMode(), NOT_PULL);
 }
+
+// test pull devices with variable temporization
+void TestPullManager::testVariableTiming4()
+{
+	PullStateManager psm(PULL_UNKNOWN);
+	// light off, variable timing, environment on, light off
+	parseFrames("*1*0*12##", &psm, false);
+	parseFrames("*#1*11*2*0*0*0##", &psm, false);
+	parseFrames("*1*1*1##", &psm, true);
+	parseFrames("*1*0*12##", &psm, false);
+	QCOMPARE(psm.getPullMode(), PULL);
+}

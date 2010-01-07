@@ -3,6 +3,7 @@
 #include <openmsg.h>
 
 #include <QPair>
+#include <QDebug>
 #include <QString>
 
 /*
@@ -69,6 +70,8 @@ AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_whe
 enum
 {
 	INVALID_STATE = -1,
+	VARIABLE_TIMING_STATE = 1234,   // something different from all other 'what' of automation system (ie 0 to 18
+	                                // for normal frames and 100 to 200 for dimmer100 level frames).
 };
 
 PullStateManager::PullStateManager(PullMode m)
@@ -83,33 +86,43 @@ PullMode PullStateManager::getPullMode()
 	return mode;
 }
 
+/*
+ * When ignoring the frame, return false so that the calling code doesn't generate useless
+ * traffic on the bus.
+ */
 bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 {
 	// PullStateManager will be used for automation and lighting only.
 	// I'll handle all 'what' combinations here, split to a different function or class when needed
 	// We need to look for write environment commands
-	int what;
+	int new_state = msg.what();
 	bool measure_frame = (is_environment && msg.IsWriteFrame()) || (!is_environment && msg.IsMeasureFrame());
+	bool ignore_frame = false;
 	if (measure_frame)
 	{
 		// dimmer 100 status
 		if (msg.what() == 1)
-			what = msg.whatArgN(0) - 100;
+			new_state = msg.whatArgN(0) - 100;
 		// variable temporization
+		// this is the trickiest one. Remember that devices don't send status updates if they are light on
+		// by a general var timing frame. We have two cases:
+		// - if the frame is environment and we are ON, we can't decide anything; we need to skip this frame
+		// - if the frame is PP, we skip the frame since we can decide the state based on other PP frames
 		else
 		{
-			// use a dirty trick/ugly hack/beard trick
-			// avoid requesting status if we are 'on' by making what == status
-			if (status > 0)
-				what = status;
+			if (is_environment)
+				status > 0 ? ignore_frame = true : new_state = VARIABLE_TIMING_STATE;
+			else
+				ignore_frame = true;
 		}
 	}
-	else
-		what = msg.what();
+
+	if (ignore_frame)
+		return false;
 
 	if (is_environment)
 	{
-		if (status == INVALID_STATE || status != what)
+		if (status == INVALID_STATE || status != new_state)
 		{
 			status_requested = true;
 			return true;
@@ -121,14 +134,14 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 		// If we just get PP frames, we can't decide the mode!
 		if (status_requested && status != INVALID_STATE)
 		{
-			if (status == what)
+			if (status == new_state)
 				mode = PULL;
 			else
 				mode = NOT_PULL;
 		}
 		else
 		{
-			status = what;
+			status = new_state;
 			status_requested = false;
 		}
 	}

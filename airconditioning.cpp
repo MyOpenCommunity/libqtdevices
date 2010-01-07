@@ -159,9 +159,13 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 {
 	NavigationBar *nav_bar;
 	if (getElement(config_node, "off/list").text().toInt() == 1) // show the off button
+	{
 		nav_bar = new NavigationBar(bt_global::skin->getImage("off"));
+		connect(nav_bar, SIGNAL(forwardClick()), SLOT(setDeviceOff()));
+	}
 	else
 		nav_bar = new NavigationBar;
+	dev = d;
 
 	buildPage(new BannerContent, nav_bar);
 	loadScenarios(config_node, d);
@@ -191,6 +195,13 @@ void AdvancedSplitPage::setSerialNumber(int ser)
 		b->setSerNum(ser);
 	}
 }
+
+void AdvancedSplitPage::setDeviceOff()
+{
+	dev->turnOff();
+}
+
+
 
 SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config_node)
 {

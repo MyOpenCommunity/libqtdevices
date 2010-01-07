@@ -37,6 +37,11 @@ class PullStateManager
 friend class TestLightingDevice;
 public:
 	PullStateManager(PullMode m);
+	/**
+	 * Logic for the state manager.
+	 * Return true if a point-to-point status frame is needed to choose device's mode, false
+	 * if no request frame must be sent.
+	 */
 	bool moreFrameNeeded(OpenMsg &msg, bool is_environment);
 	PullMode getPullMode();
 
