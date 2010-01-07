@@ -26,6 +26,7 @@ QSize BtButton::sizeHint() const
 void BtButton::setOnOff()
 {
 	is_on_off = true;
+	current_status = false;
 }
 
 bool BtButton::isToggle()
@@ -92,12 +93,19 @@ void BtButton::mouseReleaseEvent(QMouseEvent *event)
 	QPushButton::mouseReleaseEvent(event);
 }
 
-void BtButton::setStatus(bool on)
+void BtButton::setStatus(bool st)
 {
 	// If the pressed_pixmap doesn't exists, there is nothing to do (because the
 	// pixmap is already the normal one)
 	if (!pressed_pixmap.isNull())
-		setIcon(!on ? pixmap : pressed_pixmap);
+		setIcon(!st ? pixmap : pressed_pixmap);
+
+	current_status = st;
+}
+
+bool BtButton::getStatus()
+{
+	return current_status;
 }
 
 void BtButton::enable()
