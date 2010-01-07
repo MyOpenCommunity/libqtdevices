@@ -24,6 +24,8 @@ const QString video_grabber_path = "/home/bticino/bin/rsize";
 const QString video_grabber_normal = "0";
 const QString video_grabber_fullscreen = "1";
 
+using namespace VCTCallPrivate;
+
 
 EnablingButton::EnablingButton(QWidget *parent) :
 	BtButton(parent)
@@ -327,7 +329,9 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 
 void VCTCallPage::enterFullScreen()
 {
+	// Signals from vct_call must be managed only when the window is not visible.
 	vct_call->stopVideo();
+	vct_call->blockSignals(true);
 	window->showWindow();
 }
 
@@ -335,6 +339,7 @@ void VCTCallPage::exitFullScreen()
 {
 	vct_call->startVideo();
 	vct_call->refreshStatus();
+	vct_call->blockSignals(false);
 
 	// TODO: come fa a funzionare? Per qualche misterioso motivo la window diventa
 	// quella giusta.. ma come?!?!?
@@ -369,10 +374,11 @@ void VCTCallPage::handleClose()
 VCTCallWindow::VCTCallWindow(EntryphoneDevice *d, VCTCallStatus *call_status)
 {
 	vct_call = new VCTCall(d, call_status, VCTCall::FULLSCREEN_VIDEO);
+	vct_call->blockSignals(true);
 
-	// TODO: Chi deve gestire la callClosed?
-//	connect(vct_call, SIGNAL(callClosed()), this, SIGNAL(Closed()));
-	connect(vct_call->camera, SIGNAL(toggleFullScreen()), this, SIGNAL(exitFullScreen()));
+	// Signals from vct_call must be managed only when the window is visible.
+	connect(vct_call, SIGNAL(callClosed()), SLOT(handleClose()));
+	connect(vct_call->camera, SIGNAL(toggleFullScreen()), SLOT(fullScreenExit()));
 
 	QGridLayout *buttons_layout = new QGridLayout;
 	buttons_layout->setContentsMargins(23, 0, 23, 0);
@@ -405,12 +411,23 @@ VCTCallWindow::VCTCallWindow(EntryphoneDevice *d, VCTCallStatus *call_status)
 
 void VCTCallWindow::showWindow()
 {
+	vct_call->blockSignals(false);
 	vct_call->startVideo();
 	vct_call->refreshStatus();
 	Window::showWindow();
 }
 
+void VCTCallWindow::fullScreenExit()
+{
+	vct_call->stopVideo();
+	vct_call->blockSignals(true);
+	emit exitFullScreen();
+}
+
 void VCTCallWindow::handleClose()
 {
 	vct_call->stopVideo();
+	vct_call->blockSignals(true);
+	emit Closed();
 }
+

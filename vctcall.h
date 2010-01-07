@@ -32,127 +32,140 @@ private:
 };
 
 
-/**
- * The pad to control the movements of the camera (if the camera support them)
- * and to show the video call page as a window.
- */
-class CameraMove : public QWidget // TODO: should be a StyledWidget??
+namespace VCTCallPrivate
 {
-Q_OBJECT
-public:
-	// TODO: we need a EntryphoneDevice to control the camera
-	CameraMove(EntryphoneDevice *dev);
-	void setFullscreenEnabled(bool fs);
-	void setMoveEnabled(bool move);
 
-signals:
-	void toggleFullScreen();
-
-private:
-	EnablingButton *up, *left, *fullscreen, *right, *down;
-};
-
-
-/**
- * The widget that contains the controls for the image of the video call (usually
- * placed on the right of the video area).
- */
-class CameraImageControl : public QWidget
-{
-Q_OBJECT
-public:
-	CameraImageControl(QWidget *parent = 0);
-
-private slots:
-	void setBrightness(int value);
-	void setColor(int value);
-	void setContrast(int value);
-
-private:
-	ItemTuning *contrast, *brightness, *color;
-};
-
-
-struct VCTCallStatus
-{
-	bool connected;
-
-	VCTCallStatus() { init(); }
-
-	void init()
+	/**
+	 * The pad to control the movements of the camera (if the camera support them)
+	 * and to show the video call page as a window.
+	 */
+	class CameraMove : public QWidget // TODO: should be a StyledWidget??
 	{
-		connected = false;
-	}
-};
+	Q_OBJECT
+	public:
+		// TODO: we need a EntryphoneDevice to control the camera
+		CameraMove(EntryphoneDevice *dev);
+		void setFullscreenEnabled(bool fs);
+		void setMoveEnabled(bool move);
 
+	signals:
+		void toggleFullScreen();
 
-class VCTCall : public QObject
-{
-Q_OBJECT
-public:
-	enum FormatVideo
-	{
-		NORMAL_VIDEO = 0,
-		FULLSCREEN_VIDEO = 1,
+	private:
+		EnablingButton *up, *left, *fullscreen, *right, *down;
 	};
 
-	VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f);
-	void refreshStatus();
-	void startVideo();
-	void stopVideo();
 
-	BtButton *setup_vct;
-	CameraMove *camera;
-	CameraImageControl *image_control;
-	QLabel *video_box;
-	QString setup_vct_icon;
+	/**
+	 * The widget that contains the controls for the image of the video call (usually
+	 * placed on the right of the video area).
+	 */
+	class CameraImageControl : public QWidget
+	{
+	Q_OBJECT
+	public:
+		CameraImageControl(QWidget *parent = 0);
 
-	EnablingButton *mute_button, *stairlight, *unlock_door;
-	BtButton *cycle, *call_accept;
-	QString mute_icon, call_icon;
-	ItemTuning *volume;
+	private slots:
+		void setBrightness(int value);
+		void setColor(int value);
+		void setContrast(int value);
 
-public slots:
-	void endCall();
-
-signals:
-	void callClosed();
-	void incomingCall();
-
-private slots:
-	void status_changed(const StatusList &sl);
-	void toggleCameraSettings();
-	void handleClose();
-	void toggleCall();
-
-private:
-	FormatVideo format;
-	bool camera_settings_shown;
-	EntryphoneDevice *dev;
-	QProcess video_grabber;
-	VCTCallStatus *call_status;
-};
+	private:
+		ItemTuning *contrast, *brightness, *color;
+	};
 
 
-class VCTCallWindow : public Window
-{
-Q_OBJECT
-public:
-	VCTCallWindow(EntryphoneDevice *d, VCTCallStatus *call_status);
+	struct VCTCallStatus
+	{
+		bool connected;
 
-public slots:
-	virtual void showWindow();
+		VCTCallStatus() { init(); }
 
-signals:
-	void exitFullScreen();
+		void init()
+		{
+			connected = false;
+		}
+	};
 
-private slots:
-	void handleClose();
 
-private:
-	VCTCall *vct_call;
-};
+	/**
+	 * This object encapsulates the common stuff between the VCTCallPage and VCTCallWindow.
+	 * Graphical objects are created here but placed by the page or the window.
+	 */
+	class VCTCall : public QObject
+	{
+	Q_OBJECT
+	public:
+		enum FormatVideo
+		{
+			NORMAL_VIDEO = 0,
+			FULLSCREEN_VIDEO = 1,
+		};
 
+		VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f);
+		void refreshStatus();
+		void startVideo();
+		void stopVideo();
+
+		// Common graphical objects
+		BtButton *setup_vct;
+		CameraMove *camera;
+		CameraImageControl *image_control;
+		QLabel *video_box;
+		QString setup_vct_icon;
+
+		EnablingButton *mute_button, *stairlight, *unlock_door;
+		BtButton *cycle, *call_accept;
+		QString mute_icon, call_icon;
+		ItemTuning *volume;
+
+	public slots:
+		void endCall();
+
+	signals:
+		void callClosed();
+		void incomingCall();
+
+	private slots:
+		void status_changed(const StatusList &sl);
+		void toggleCameraSettings();
+		void handleClose();
+		void toggleCall();
+
+	private:
+		FormatVideo format;
+		bool camera_settings_shown;
+		EntryphoneDevice *dev;
+		QProcess video_grabber;
+		VCTCallStatus *call_status;
+	};
+
+
+	/**
+	 * The window of the video call. It is showed only by the page.
+	 */
+	class VCTCallWindow : public Window
+	{
+	Q_OBJECT
+	public:
+		VCTCallWindow(EntryphoneDevice *d, VCTCallStatus *call_status);
+
+	public slots:
+		virtual void showWindow();
+
+	signals:
+		void exitFullScreen();
+
+	private slots:
+		void handleClose();
+		void fullScreenExit();
+
+	private:
+		VCTCall *vct_call;
+	};
+
+}
 
 /**
  * The page of the video call. It is showed indirecly when a call frame came
@@ -176,9 +189,9 @@ private slots:
 
 private:
 	Page *prev_page;
-	Window *window;
-	VCTCallStatus *call_status;
-	VCTCall *vct_call;
+	VCTCallPrivate::VCTCallWindow *window;
+	VCTCallPrivate::VCTCallStatus *call_status;
+	VCTCallPrivate::VCTCall *vct_call;
 };
 
 
