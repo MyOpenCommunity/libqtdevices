@@ -226,7 +226,7 @@ HEADERS += actuators.h \
            transitionwidget.h \
            version.h \
            videoentryphone.h \
-           vctcallpage.h \
+           vctcall.h \
            videoplayer.h \
            window.h \
            windowcontainer.h \
@@ -360,7 +360,7 @@ SOURCES += actuators.cpp \
            transitionwidget.cpp \
            version.cpp \
            videoentryphone.cpp \
-           vctcallpage.cpp \
+           vctcall.cpp \
            videoplayer.cpp \
            window.cpp \
            windowcontainer.cpp \

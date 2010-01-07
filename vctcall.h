@@ -1,5 +1,5 @@
-#ifndef VCTCALLPAGE_H
-#define VCTCALLPAGE_H
+#ifndef VCTCALL_H
+#define VCTCALL_H
 
 #include "page.h"
 #include "window.h"
@@ -182,4 +182,4 @@ private:
 };
 
 
-#endif //VCTCALLPAGE_H
+#endif //VCTCALL_H

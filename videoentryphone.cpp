@@ -9,6 +9,7 @@
 #include "navigation_bar.h"
 #include "entryphone_device.h"
 #include "devices_cache.h" // bt_global::add_device_to_cache
+#include "vctcall.h"
 
 #include <QSignalMapper>
 #include <QDebug>

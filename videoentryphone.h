@@ -16,10 +16,11 @@
 
 #include "page.h"
 #include "sectionpage.h"
-#include "vctcallpage.h"
 
 #include <QWidget>
 
+class VCTCallPage;
+class EntryphoneDevice;
 class QDomNode;
 class QSignalMapper;
 

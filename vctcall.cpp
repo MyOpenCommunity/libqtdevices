@@ -1,4 +1,4 @@
-#include "vctcallpage.h"
+#include "vctcall.h"
 #include "btbutton.h"
 #include "skinmanager.h"
 #include "generic_functions.h" //getBostikName
