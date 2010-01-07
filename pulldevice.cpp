@@ -86,6 +86,10 @@ PullMode PullStateManager::getPullMode()
 	return mode;
 }
 
+/*
+ * When ignoring the frame, return false so that the calling code doesn't generate useless
+ * traffic on the bus.
+ */
 bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 {
 	// PullStateManager will be used for automation and lighting only.
@@ -93,6 +97,7 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 	// We need to look for write environment commands
 	int new_state = msg.what();
 	bool measure_frame = (is_environment && msg.IsWriteFrame()) || (!is_environment && msg.IsMeasureFrame());
+	bool ignore_frame = false;
 	if (measure_frame)
 	{
 		// dimmer 100 status
@@ -102,17 +107,18 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 		// this is the trickiest one. Remember that devices don't send status updates if they are light on
 		// by a general var timing frame. We have two cases:
 		// - if the frame is environment and we are ON, we can't decide anything; we need to skip this frame
-		// - if the frame is PP, we can use it to test device status
+		// - if the frame is PP, we skip the frame since we can decide the state based on other PP frames
 		else
 		{
-			// use a dirty trick/ugly hack/beard trick
-			// avoid requesting status if we are 'on' by making what == status
-			if (status > 0)
-				new_state = status;
+			if (is_environment)
+				status > 0 ? ignore_frame = true : new_state = VARIABLE_TIMING_STATE;
 			else
-				new_state = VARIABLE_TIMING_STATE;
+				ignore_frame = true;
 		}
 	}
+
+	if (ignore_frame)
+		return false;
 
 	if (is_environment)
 	{
