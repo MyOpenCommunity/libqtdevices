@@ -176,8 +176,10 @@ VCTCall::VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f)
 
 	mute_icon = bt_global::skin->getImage("mute");
 	mute_button = getButton(getBostikName(mute_icon, "off"));
+	mute_button->setPressedImage(getBostikName(mute_icon, "on"));
 	mute_button->disable();
-	// TODO: connect to mute settings
+	mute_button->setOnOff();
+	connect(mute_button, SIGNAL(clicked()), SLOT(toggleMute()));
 
 	stairlight = getButton(bt_global::skin->getImage("stairlight"));
 	connect(stairlight, SIGNAL(pressed()), dev, SLOT(stairLightActivate()));
@@ -198,14 +200,27 @@ void VCTCall::refreshStatus()
 	call_accept->setStatus(call_status->connected);
 }
 
+void VCTCall::toggleMute()
+{
+	bool st = mute_button->getStatus();
+	setVolume(VOLUME_MIC, st ? 0 : 1);
+	mute_button->setStatus(!st);
+}
+
 void VCTCall::toggleCall()
 {
 	call_status->connected = !call_status->connected;
 	refreshStatus();
 	if (call_status->connected)
+	{
 		dev->answerCall();
+		mute_button->enable();
+	}
 	else
+	{
+		mute_button->disable();
 		handleClose();
+	}
 }
 
 void VCTCall::startVideo()

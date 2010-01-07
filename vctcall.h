@@ -132,6 +132,7 @@ namespace VCTCallPrivate
 		void toggleCameraSettings();
 		void handleClose();
 		void toggleCall();
+		void toggleMute();
 
 	private:
 		FormatVideo format;
