@@ -70,6 +70,8 @@ AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_whe
 enum
 {
 	INVALID_STATE = -1,
+	VARIABLE_TIMING_STATE = 1234,   // something different from all other 'what' of automation system (ie 0 to 18
+	                                // for normal frames and 100 to 200 for dimmer100 level frames).
 };
 
 PullStateManager::PullStateManager(PullMode m)
@@ -89,7 +91,7 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 	// PullStateManager will be used for automation and lighting only.
 	// I'll handle all 'what' combinations here, split to a different function or class when needed
 	// We need to look for write environment commands
-	int new_state;
+	int new_state = msg.what();
 	bool measure_frame = (is_environment && msg.IsWriteFrame()) || (!is_environment && msg.IsMeasureFrame());
 	if (measure_frame)
 	{
@@ -107,10 +109,10 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 			// avoid requesting status if we are 'on' by making what == status
 			if (status > 0)
 				new_state = status;
+			else
+				new_state = VARIABLE_TIMING_STATE;
 		}
 	}
-	else
-		new_state = msg.what();
 
 	if (is_environment)
 	{
