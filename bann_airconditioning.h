@@ -94,6 +94,23 @@ private slots:
 	void onButtonClicked();
 };
 
+/**
+ * Banner for the single button that accesses the custom page (no scenario).
+ * This banner doesn't save on conf file.
+ */
+class CustomScenario : public BannCenteredButton
+{
+Q_OBJECT
+public:
+	CustomScenario(AdvancedAirConditioningDevice *d);
+
+public slots:
+	void splitValuesChanged(const AirConditionerStatus &st);
+
+private:
+	AdvancedAirConditioningDevice *dev;
+};
+
 
 /**
  * The banner that represent the temperature of the split

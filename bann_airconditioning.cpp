@@ -119,6 +119,23 @@ void AdvancedSplitScenario::onButtonClicked()
 }
 
 
+
+CustomScenario::CustomScenario(AdvancedAirConditioningDevice *d) :
+	BannCenteredButton(0)
+{
+	// TODO: modify skin file
+	initBanner(bt_global::skin->getImage("custom_button"));
+	dev = d;
+}
+
+void CustomScenario::splitValuesChanged(const AirConditionerStatus &st)
+{
+	dev->setStatus(st);
+}
+
+
+
+
 SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, int step) :
 	Bann2Buttons(0)
 {
