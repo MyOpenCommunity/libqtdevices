@@ -77,7 +77,7 @@ public:
 	AdvancedSplitScenario(QString descr, const QString &conf_node, AdvancedAirConditioningDevice *d, QWidget *parent = 0);
 	/*
 	 * Set initial values when 'ON' is pressed.
-	 * Split settings parameters are parsed only in SplitSettings, at startup the 'ON' command sends
+	 * Split settings parameters are parsed only in SplitSettings, at startup the 'ON' button sends
 	 * the default command (ie. 'OFF'). This method is called to set the correct command.
 	 */
 	void setCurrentValues(const AirConditionerStatus &st);
