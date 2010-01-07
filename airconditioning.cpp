@@ -302,10 +302,8 @@ void SplitSettings::readBannerValues()
 {
 	current_mode = mode->currentState();
 	current_temp = temperature->temperature();
-	if (speed)
-		current_fan_speed = speed->currentState();
-	if (swing)
-		current_swing = swing->swing();
+	current_fan_speed = speed ? speed->currentState() : AdvancedAirConditioningDevice::VEL_INVALID;
+	current_swing = swing ? swing->swing() : AdvancedAirConditioningDevice::SWING_INVALID;
 }
 
 void SplitSettings::showEvent(QShowEvent *)
