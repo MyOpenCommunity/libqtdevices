@@ -92,9 +92,14 @@ void PlantMenu::loadItems(const QDomNode &config_node)
 	{
 		int id = getTextChild(item, "id").toInt();
 
-		if (id == TERMO_99Z || id == TERMO_4Z)
+		if (id == TERMO_4Z)
 		{
 			ind_centrale = getTextChild(item, "where");
+			break;
+		}
+		else if (id == TERMO_99Z)
+		{
+			ind_centrale = "0";
 			break;
 		}
 	}
