@@ -269,8 +269,10 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	btn_minus->hide();
 	btn_minus->setAutoRepeat(true);
 	connect(btn_minus, SIGNAL(clicked()), SLOT(decSetpoint()));
+#ifdef LAYOUT_TOUCHX
+	hbox->addStretch(1);
+#endif
 	hbox->addWidget(btn_minus);
-	hbox->addStretch();
 
 	setpoint_label = new QLabel(this);
 	setpoint_label->setFont(bt_global::font->get(FontManager::PROBE_SETPOINT));
@@ -290,6 +292,9 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	btn_plus->setAutoRepeat(true);
 	connect(btn_plus, SIGNAL(clicked()), SLOT(incSetpoint()));
 	hbox->addWidget(btn_plus);
+#ifdef LAYOUT_TOUCHX
+	hbox->addStretch();
+#endif
 
 	main_layout.addLayout(hbox);
 
