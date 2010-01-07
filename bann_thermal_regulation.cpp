@@ -889,7 +889,7 @@ void parseTouchXProgramList(QDomNode page, QMap<QString, QString> &entries)
 		QString text = getTextChild(node, "descr");
 
 		// TODO: must change config file to have different ID for winter/summer items
-		if (cid == 11000)
+		if (cid == 11000 || cid == 12000)
 			entries["winter" + QString::number(++index_winter)] = text;
 		else
 			entries["summer" + QString::number(++index_summer)] = text;
@@ -928,7 +928,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 		if (id == BANNER_PROGRAMS) // programs
 			parseTouchXProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), programs);
 		else if (id == BANNER_SCENARIOS) // scenarios
-			parseTouchXProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), programs);
+			parseTouchXProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), scenarios);
 	}
 #endif
 
