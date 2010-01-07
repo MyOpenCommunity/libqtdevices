@@ -19,6 +19,11 @@
 #include <QLabel>
 #include <QDebug>
 
+enum
+{
+	BANNER_PROGRAMS = 11,
+	BANNER_SCENARIOS = 12,
+};
 
 QLabel *getLabelWithPixmap(const QString &img, QWidget *parent, int alignment)
 {
@@ -32,16 +37,16 @@ QLabel *getLabelWithPixmap(const QString &img, QWidget *parent, int alignment)
 class SettingsPage : public BannerPage
 {
 public:
-	SettingsPage(QWidget *parent = 0);
+	SettingsPage(QDomNode node, QWidget *parent = 0);
 
 	void appendBanner(banner *b);
 	void resetIndex();
 };
 
-SettingsPage::SettingsPage(QWidget *parent)
+SettingsPage::SettingsPage(QDomNode n, QWidget *parent)
 	: BannerPage(parent)
 {
-	buildPage();
+	buildPage(getTextChild(n, "descr"));
 }
 
 void SettingsPage::appendBanner(banner *b)
@@ -81,8 +86,13 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, Temperature
 	NavigationPage *p = 0;
 	QString simple_address = getTextChild(n, "where");
 	QString where_composed;
-	if (!simple_address.isNull())
+	if (id != fs_4z_thermal_regulator && id != fs_99z_thermal_regulator && !simple_address.isEmpty())
 		where_composed = simple_address + "#" + ind_centrale;
+#ifdef CONFIG_BTOUCH
+	QDomNode page_node = n;
+#else
+	QDomNode page_node = getPageNodeFromChildNode(n, "lnk_pageID");
+#endif
 
 	switch (id)
 	{
@@ -138,7 +148,7 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, Temperature
 		where_composed = QString("0#") + ind_centrale;
 		ThermalDevice4Zones *dev = static_cast<ThermalDevice4Zones *>(
 			bt_global::devices_cache.get_thermal_regulator(where_composed, THERMO_Z4));
-		p = new PageTermoReg4z(n, dev);
+		p = new PageTermoReg4z(page_node, dev);
 	}
 		break;
 	case fs_99z_thermal_regulator:
@@ -146,7 +156,7 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, Temperature
 		where_composed = ind_centrale;
 		ThermalDevice99Zones *dev = static_cast<ThermalDevice99Zones *>(
 			bt_global::devices_cache.get_thermal_regulator(where_composed, THERMO_Z99));
-		p = new PageTermoReg99z(n, dev);
+		p = new PageTermoReg99z(page_node, dev);
 	}
 		break;
 	default:
@@ -172,7 +182,7 @@ NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
 	connect(nav_bar, SIGNAL(upClick()), SIGNAL(upClick()));
 	connect(nav_bar, SIGNAL(downClick()), SIGNAL(downClick()));
 
-	buildPage(&content, nav_bar);
+	buildPage(&content, nav_bar, "", 60);
 
 	return nav_bar;
 }
@@ -189,7 +199,7 @@ PageSimpleProbe::PageSimpleProbe(QDomNode n, TemperatureScale scale)
 	main_layout.setSpacing(0);
 
 	temp_label = new QLabel(this);
-	temp_label->setFont(bt_global::font->get(FontManager::TITLE));
+	temp_label->setFont(bt_global::font->get(FontManager::PROBE_TEMPERATURE));
 	temp_label->setAlignment(Qt::AlignHCenter);
 
 	main_layout.addWidget(temp_label);
@@ -259,11 +269,13 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	btn_minus->hide();
 	btn_minus->setAutoRepeat(true);
 	connect(btn_minus, SIGNAL(clicked()), SLOT(decSetpoint()));
+#ifdef LAYOUT_TOUCHX
+	hbox->addStretch(1);
+#endif
 	hbox->addWidget(btn_minus);
-	hbox->addStretch();
 
 	setpoint_label = new QLabel(this);
-	setpoint_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	setpoint_label->setFont(bt_global::font->get(FontManager::PROBE_SETPOINT));
 	setpoint_label->setAlignment(Qt::AlignHCenter);
 	setpoint_label->setProperty("SecondFgColor", true);
 
@@ -280,6 +292,9 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	btn_plus->setAutoRepeat(true);
 	connect(btn_plus, SIGNAL(clicked()), SLOT(incSetpoint()));
 	hbox->addWidget(btn_plus);
+#ifdef LAYOUT_TOUCHX
+	hbox->addStretch();
+#endif
 
 	main_layout.addLayout(hbox);
 
@@ -528,6 +543,13 @@ PageFancoil::PageFancoil(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice 
 void PageFancoil::createFancoilButtons()
 {
 	QHBoxLayout *hbox = new QHBoxLayout();
+
+	hbox->setAlignment(Qt::AlignHCenter);
+	hbox->setSpacing(10);
+#ifdef LAYOUT_TOUCHX
+	hbox->setContentsMargins(0, 0, 0, 60);
+#endif
+
 	for (int id = 0; id < 4; ++id)
 	{
 		QString path = bt_global::skin->getImage(QString("fan_%1_off").arg(id + 1));
@@ -613,7 +635,7 @@ PageManual::PageManual(ThermalDevice *_dev, TemperatureScale scale)
 	}
 
 	temp_label = new QLabel(this);
-	temp_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	temp_label->setFont(bt_global::font->get(FontManager::REGULATOR_TEMPERATURE));
 	temp_label->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	temp_label->setProperty("SecondFgColor", true);
 	QHBoxLayout *hbox = new QHBoxLayout();
@@ -842,18 +864,81 @@ static QString status_icons_ids[ThermalDevice::ST_COUNT] =
 	"regulator_weekend", "regulator_program", "regulator_scenario", "regulator_holiday"
 };
 
+#ifdef CONFIG_BTOUCH
+
+void parseBTouchProgramList(QDomNode conf_root, QString season, QString what, QMap<QString, QString> &entries)
+{
+	QDomElement program = getElement(conf_root, season + "/" + what);
+	// The leaves we are looking for start with either "p" or "s"
+	QString name = what.left(1);
+
+	int index = 0;
+	foreach (const QDomNode &node, getChildren(program, name))
+	{
+		QString text;
+		if (node.isElement())
+			text = node.toElement().text();
+
+		entries[season + QString::number(++index)] = text;
+	}
+}
+
+#else
+
+void parseTouchXProgramList(QDomNode page, QMap<QString, QString> &entries)
+{
+	int index_summer = 0, index_winter = 0;
+	foreach (const QDomNode &node, getChildren(page, "item"))
+	{
+		int cid = getTextChild(node, "cid").toInt();
+		QString text = getTextChild(node, "descr");
+
+		// TODO: must change config file to have different ID for winter/summer items
+		if (cid == 11000 || cid == 12000)
+			entries["winter" + QString::number(++index_winter)] = text;
+		else
+			entries["summer" + QString::number(++index_summer)] = text;
+	}
+}
+
+#endif
+
 PageTermoReg::PageTermoReg(QDomNode n)
 {
+	SkinContext context(getTextChild(n, "cid").toInt());
+
 	icon_summer = bt_global::skin->getImage("summer_flat");
 	icon_winter = bt_global::skin->getImage("winter_flat");
 
 	for (int i = 0; i < ThermalDevice::ST_COUNT; ++i)
 		status_icons.append(bt_global::skin->getImage(status_icons_ids[i]));
 
-	conf_root = n;
+#ifdef CONFIG_BTOUCH
+	// parse program/scenario list
+	if (n.nodeName().contains(QRegExp("item(\\d\\d?)")) == 0)
+	{
+		qFatal("[TERMO] WeeklyMenu:wrong node in config file");
+	}
+
+	parseBTouchProgramList(n, "summer", "prog", programs);
+	parseBTouchProgramList(n, "winter", "prog", programs);
+	parseBTouchProgramList(n, "summer", "scen", scenarios);
+	parseBTouchProgramList(n, "winter", "scen", scenarios);
+#else
+	// parse program/scenario list
+	foreach (const QDomNode &item, getChildren(getPageNodeFromChildNode(n, "h_lnk_pageID"), "item"))
+	{
+		int id = getTextChild(item, "id").toInt();
+
+		if (id == BANNER_PROGRAMS) // programs
+			parseTouchXProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), programs);
+		else if (id == BANNER_SCENARIOS) // scenarios
+			parseTouchXProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), scenarios);
+	}
+#endif
 
 	// Put a sensible default for the description
-	QDomNode descr = conf_root.namedItem("descr");
+	QDomNode descr = n.namedItem("descr");
 	QString description;
 	if (!descr.isNull())
 		description = descr.toElement().text();
@@ -863,7 +948,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 		description = "Wrong node";
 	}
 	description_label = new QLabel(this);
-	description_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	description_label->setFont(bt_global::font->get(FontManager::REGULATOR_DESCRIPTION));
 	description_label->setAlignment(Qt::AlignHCenter);
 	description_label->setProperty("SecondFgColor", true);
 
@@ -874,6 +959,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	main_layout.addWidget(mode_icon);
 	main_layout.addWidget(description_label);
 	main_layout.addWidget(season_icon);
+	main_layout.addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
 	main_layout.setAlignment(Qt::AlignHCenter);
 
 	date_edit = 0;
@@ -1013,17 +1099,25 @@ QString PageTermoReg::lookupProgramDescription(QString season, QString what, int
 	// summer/prog/p[program_number]
 	Q_ASSERT_X(what == "prog" || what == "scen", "PageTermoReg::lookupProgramDescription",
 		"'what' must be either 'prog' or 'scen'");
-	QString name = what.left(1);
-	QString path = season + "/" + what + "/" + name + QString::number(program_number);
-	QDomElement node = getElement(conf_root, path);
-	if (node.isNull())
+
+	const QMap<QString, QString> &map = what == "prog" ? programs : scenarios;
+	QString key = season + QString::number(program_number);
+	if (!map.contains(key))
 		return "";
 	else
-		return node.text();
+		return map[key];
 }
 
 void PageTermoReg::createButtonsBanners(SettingsPage *settings, ThermalDevice *dev)
 {
+	// TODO: when we have the small button icons for BTouch,
+	//       remove the code to create the two separate banners
+#ifdef LAYOUT_TOUCHX
+	// off_antifreeze banner
+	BannOffAntifreeze *off = new BannOffAntifreeze(settings, dev);
+	settings->appendBanner(off);
+	connect(off, SIGNAL(clicked()), SLOT(showPage()));
+#else
 	// off banner
 	BannOff *off = new BannOff(settings, dev);
 	settings->appendBanner(off);
@@ -1033,6 +1127,7 @@ void PageTermoReg::createButtonsBanners(SettingsPage *settings, ThermalDevice *d
 	BannAntifreeze *antifreeze = new BannAntifreeze(settings, dev);
 	settings->appendBanner(antifreeze);
 	connect(antifreeze, SIGNAL(clicked()), SLOT(showPage()));
+#endif
 
 	// summer_winter banner
 	BannSummerWinter *summer_winter = new BannSummerWinter(settings, dev);
@@ -1046,7 +1141,7 @@ PageTermoReg4z::PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device)
 	_dev = device;
 	connect(_dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
-	createSettingsMenu();
+	createSettingsMenu(n);
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
 }
 
@@ -1061,19 +1156,26 @@ void PageTermoReg4z::showSettingsMenu()
 	settings->showPage();
 }
 
-void PageTermoReg4z::createSettingsMenu()
+void PageTermoReg4z::createSettingsMenu(QDomNode regulator_node)
 {
-	settings = new SettingsPage;
+#ifdef CONFIG_BTOUCH
+	QDomNode n = regulator_node;
+#else
+	QDomNode n = getPageNodeFromChildNode(regulator_node, "h_lnk_pageID");
+	SkinContext context(getTextChild(n, "cid").toInt());
+#endif
+
+	settings = new SettingsPage(n);
 	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
 
-	weekSettings(settings, conf_root, _dev);
+	weekSettings(settings, programs, _dev);
 	manualSettings(settings, _dev);
 
 	timedManualSettings(settings, _dev);
 
-	holidaySettings(settings, conf_root, _dev);
+	holidaySettings(settings, programs, _dev);
 
-	weekendSettings(settings, conf_root, _dev);
+	weekendSettings(settings, programs, _dev);
 
 	createButtonsBanners(settings, _dev);
 }
@@ -1084,7 +1186,7 @@ PageTermoReg99z::PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device)
 	_dev = device;
 	connect(_dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
-	createSettingsMenu();
+	createSettingsMenu(n);
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
 }
 
@@ -1108,19 +1210,26 @@ void PageTermoReg99z::showSettingsMenu()
 	settings->showPage();
 }
 
-void PageTermoReg99z::createSettingsMenu()
+void PageTermoReg99z::createSettingsMenu(QDomNode regulator_node)
 {
-	settings = new SettingsPage;
+#ifdef CONFIG_BTOUCH
+	QDomNode n = regulator_node;
+#else
+	QDomNode n = getPageNodeFromChildNode(regulator_node, "h_lnk_pageID");
+	SkinContext context(getTextChild(n, "cid").toInt());
+#endif
+
+	settings = new SettingsPage(n);
 	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
 
-	weekSettings(settings, conf_root, _dev);
+	weekSettings(settings, programs, _dev);
 	manualSettings(settings, _dev);
 
-	scenarioSettings(settings, conf_root, _dev);
+	scenarioSettings(settings, scenarios, _dev);
 
-	holidaySettings(settings, conf_root, _dev);
+	holidaySettings(settings, programs, _dev);
 
-	weekendSettings(settings, conf_root, _dev);
+	weekendSettings(settings, programs, _dev);
 
 	createButtonsBanners(settings, _dev);
 }
@@ -1150,9 +1259,9 @@ void PageTermoReg::manualSelected(unsigned temp)
 	showPage();
 }
 
-void PageTermoReg::weekSettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev)
+void PageTermoReg::weekSettings(SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev)
 {
-	program_menu = new WeeklyMenu(0, conf);
+	program_menu = new WeeklyMenu(0, programs);
 
 	BannSinglePuls *weekly = new BannSinglePuls(settings);
 	weekly->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_program"), "");
@@ -1169,7 +1278,7 @@ void PageTermoReg::weekProgramSelected(int program)
 	showPage();
 }
 
-void PageTermoReg::holidaySettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev)
+void PageTermoReg::holidaySettings(SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev)
 {
 	BannSinglePuls *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_holiday"));
 	connect(bann, SIGNAL(rightClick()), SLOT(holidaySettingsStart()));
@@ -1178,10 +1287,10 @@ void PageTermoReg::holidaySettings(SettingsPage *settings, QDomNode conf, Therma
 	if (!time_edit)
 		time_edit = createTimeEdit(settings);
 	if (!program_choice)
-		program_choice = createProgramChoice(settings, conf, dev);
+		program_choice = createProgramChoice(settings, programs, dev);
 }
 
-void PageTermoReg::weekendSettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev)
+void PageTermoReg::weekendSettings(SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev)
 {
 	BannSinglePuls *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_weekend"));
 	connect(bann, SIGNAL(rightClick()), SLOT(weekendSettingsStart()));
@@ -1190,7 +1299,7 @@ void PageTermoReg::weekendSettings(SettingsPage *settings, QDomNode conf, Therma
 	if (!time_edit)
 		time_edit = createTimeEdit(settings);
 	if (!program_choice)
-		program_choice = createProgramChoice(settings, conf, dev);
+		program_choice = createProgramChoice(settings, programs, dev);
 }
 
 BannSinglePuls *PageTermoReg::createHolidayWeekendBanner(SettingsPage *settings, QString icon)
@@ -1217,9 +1326,9 @@ PageSetTime *PageTermoReg::createTimeEdit(SettingsPage *settings)
 	return time_edit;
 }
 
-WeeklyMenu *PageTermoReg::createProgramChoice(SettingsPage *settings, QDomNode conf, device *dev)
+WeeklyMenu *PageTermoReg::createProgramChoice(SettingsPage *settings, QMap<QString, QString> programs, device *dev)
 {
-	WeeklyMenu *program_choice = new WeeklyMenu(0, conf);
+	WeeklyMenu *program_choice = new WeeklyMenu(0, programs);
 	connect(program_choice, SIGNAL(programClicked(int)), SLOT(weekendHolidaySettingsEnd(int)));
 	connect(program_choice, SIGNAL(Closed()), SLOT(programCancelled()));
 	return program_choice;
@@ -1291,9 +1400,9 @@ void PageTermoReg4z::manualTimedSelected(BtTime time, int temp)
 	showPage();
 }
 
-void PageTermoReg99z::scenarioSettings(SettingsPage *settings, QDomNode conf, ThermalDevice99Zones *dev)
+void PageTermoReg99z::scenarioSettings(SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev)
 {
-	scenario_menu = new ScenarioMenu(0, conf);
+	scenario_menu = new ScenarioMenu(0, scenarios);
 
 	BannSinglePuls *scenario = new BannSinglePuls(settings);
 	scenario->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_scenario"), "");
@@ -1338,6 +1447,30 @@ void BannAntifreeze::performAction()
 	dev->setProtection();
 }
 
+
+BannOffAntifreeze::BannOffAntifreeze(QWidget *parent, ThermalDevice *_dev)
+	: Bann2CentralButtons(parent)
+{
+	initBanner(bt_global::skin->getImage("off_button"), bt_global::skin->getImage("regulator_antifreeze"), "");
+	dev = _dev;
+
+	connect(center_left, SIGNAL(clicked()), SLOT(setOff()));
+	connect(center_left, SIGNAL(clicked()), SIGNAL(clicked()));
+	connect(center_right, SIGNAL(clicked()), SLOT(setAntifreeze()));
+	connect(center_right, SIGNAL(clicked()), SIGNAL(clicked()));
+}
+
+void BannOffAntifreeze::setOff()
+{
+	dev->setOff();
+}
+
+void BannOffAntifreeze::setAntifreeze()
+{
+	dev->setProtection();
+}
+
+
 BannSummerWinter::BannSummerWinter(QWidget *parent, ThermalDevice *_dev) : Bann2CentralButtons(parent)
 {
 	initBanner(bt_global::skin->getImage("winter"), bt_global::skin->getImage("summer"), "");
@@ -1360,13 +1493,15 @@ void BannSummerWinter::setWinter()
 }
 
 
-BannWeekly::BannWeekly(QWidget *parent) : BannSinglePuls(parent)
+BannWeekly::BannWeekly(QWidget *parent, int _index)
+	: BannSinglePuls(parent)
 {
+	index = _index;
 	connect(right_button, SIGNAL(clicked()), SLOT(performAction()));
 }
 
 void BannWeekly::performAction()
 {
-	emit programNumber(serNum);
+	emit programNumber(index);
 }
 

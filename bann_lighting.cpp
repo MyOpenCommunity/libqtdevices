@@ -134,8 +134,8 @@ DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where
 	dev = bt_global::add_device_to_cache(new DimmerDevice(where));
 	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
 	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
-	connect(this, SIGNAL(center_left_clicked()), SLOT(increaseLevel()));
-	connect(this, SIGNAL(center_right_clicked()), SLOT(decreaseLevel()));
+	connect(this, SIGNAL(center_left_clicked()), SLOT(decreaseLevel()));
+	connect(this, SIGNAL(center_right_clicked()), SLOT(increaseLevel()));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
@@ -528,8 +528,7 @@ TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
 		bt_global::skin->getImage("lamp_time"), descr, formatTime(lighting_time));
 
 	request_timer.setInterval((total_time / TLF_TIME_STATES) * 1000);
-	request_timer.setSingleShot(true);
-	connect(&request_timer, SIGNAL(timeout()), SLOT(requestStatus()));
+	connect(&request_timer, SIGNAL(timeout()), SLOT(updateTimerLabel()));
 
 	connect(right_button, SIGNAL(clicked()), SLOT(setOn()));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
@@ -541,14 +540,13 @@ void TempLightFixed::inizializza(bool forza)
 	dev->requestVariableTiming();
 }
 
-void TempLightFixed::requestStatus()
-{
-	dev->requestVariableTiming();
-}
-
 void TempLightFixed::setOn()
 {
 	dev->variableTiming(lighting_time.hour(), lighting_time.minute(), lighting_time.second());
+	// TODO: is this ok? does it update correctly the timer slice the first time?
+	request_timer.start();
+	valid_update = false;
+	update_retries = 0;
 }
 
 void TempLightFixed::status_changed(const StatusList &sl)
@@ -569,7 +567,7 @@ void TempLightFixed::status_changed(const StatusList &sl)
 			else
 			{
 				setState(OFF);
-				request_timer.stop();
+				stopTimer();
 			}
 		}
 			break;
@@ -579,7 +577,7 @@ void TempLightFixed::status_changed(const StatusList &sl)
 			// all 0's means either the light is on or timer is stopped anyway, so stop request timer
 			if ((t.hour() == 0) && (t.minute() == 0) && (t.second() == 0))
 			{
-				request_timer.stop();
+				stopTimer();
 				break;
 			}
 			// ignore strange frames (taken from old code)
@@ -589,10 +587,32 @@ void TempLightFixed::status_changed(const StatusList &sl)
 			int time = qRound((t.hour() * 3600 + t.minute() * 60 + t.second()) * TLF_TIME_STATES / total_time);
 			setElapsedTime(time);
 			setState(ON);
-			request_timer.start();
+			valid_update = true;
 		}
 			break;
 		}
 		++it;
 	}
 }
+
+#define MAX_RETRY 2
+
+void TempLightFixed::updateTimerLabel()
+{
+	if (!valid_update)
+	{
+		++update_retries;
+		if (update_retries > MAX_RETRY)
+			stopTimer();
+	}
+	dev->requestVariableTiming();
+	valid_update = false;
+}
+
+void TempLightFixed::stopTimer()
+{
+	request_timer.stop();
+	valid_update = false;
+	update_retries = 0;
+}
+

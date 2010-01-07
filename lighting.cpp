@@ -90,6 +90,11 @@ void Lighting::loadItems(const QDomNode &config_node)
 	}
 }
 
+void Lighting::inizializza()
+{
+	initDimmer();
+}
+
 void Lighting::initDimmer()
 {
 	qDebug("Lighting::initDimmer()");
@@ -112,10 +117,3 @@ void Lighting::initDimmer()
 	}
 }
 
-void Lighting::showEvent(QShowEvent *event)
-{
-	qDebug() << "Lighting::showEvent()";
-	initDimmer();
-
-	Page::showEvent(event);
-}

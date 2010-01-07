@@ -275,7 +275,11 @@ Bann2CentralButtons::Bann2CentralButtons(QWidget *parent) : BannerNew(parent)
 	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 	QGridLayout *l = new QGridLayout;
 	l->setContentsMargins(0, 0, 0, 0);
+#ifdef LAYOUT_TOUCHX
+	l->setSpacing(5);
+#else
 	l->setSpacing(0);
+#endif
 	l->setColumnStretch(0, 1);
 	l->addWidget(center_left, 0, 1, Qt::AlignTop);
 	l->addWidget(center_right, 0, 2, Qt::AlignTop);

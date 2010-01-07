@@ -31,9 +31,7 @@ public:
 	virtual int sectionId();
 
 	static banner *getBanner(const QDomNode &item_node);
-
-protected:
-	virtual void showEvent(QShowEvent *event);
+	virtual void inizializza();
 
 private:
 	void initDimmer();

@@ -130,10 +130,10 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			p = new ChangeTime;
 			break;
 		case PAGE_ALARMCLOCK:
-			p = new AlarmClockListPage(getPageNodeFromPageId(getTextChild(item, "lnk_pageID").toInt()));
+			p = new AlarmClockListPage(getPageNodeFromChildNode(item, "lnk_pageID"));
 			break;
 		case PAGE_DISPLAY:
-			p = new IconSettings(getPageNodeFromPageId(getTextChild(item, "lnk_pageID").toInt()));
+			p = new IconSettings(getPageNodeFromChildNode(item, "lnk_pageID"));
 			break;
 		case PAGE_SCREENSAVER:
 			p = new ScreenSaverPage;

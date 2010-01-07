@@ -207,9 +207,7 @@ void HeaderInfo::loadItems(const QDomNode &config_node)
 			home_layout->addStretch(1);
 			home_layout->addWidget(button);
 
-			int page_id = getTextChild(item, "lnk_pageID").toInt();
-
-			Page *settings = new IconSettings(getPageNodeFromPageId(page_id));
+			Page *settings = new IconSettings(getPageNodeFromChildNode(item, "lnk_pageID"));
 			connect(button, SIGNAL(clicked()), settings, SLOT(showPage()));
 			connect(settings, SIGNAL(Closed()), SIGNAL(showHomePage()));
 

@@ -233,7 +233,7 @@ protected:
 	/**
 	 * Utility function to create settings menu for the thermal regulator device.
 	 */
-	virtual void createSettingsMenu() = 0;
+	virtual void createSettingsMenu(QDomNode regulator_node) = 0;
 
 	/**
 	 * Set the icon on the main page of thermal regulator and calls setSeason() on
@@ -254,13 +254,13 @@ protected:
 	 * Utility function to create the submenu to set the weekly program in thermal
 	 * regulator device.
 	 */
-	void weekSettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev);
+	void weekSettings(SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create the submenu to set the scenario program in thermal
 	 * regulator device.
 	 */
-	void scenarioSettings(SettingsPage *settings, QDomNode conf, ThermalDevice99Zones *dev);
+	void scenarioSettings(SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev);
 
 	/**
 	 * Utility function to create the submenu to set manually the temperature
@@ -271,12 +271,12 @@ protected:
 	/**
 	 * Utility function to create the submenu for holiday settings.
 	 */
-	void holidaySettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev);
+	void holidaySettings(SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create the submenu for weekend settings.
 	 */
-	void weekendSettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev);
+	void weekendSettings(SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create off, antifreeze and summer/winter banners.
@@ -285,8 +285,9 @@ protected:
 
 	/// The settings menu of the thermal regulator
 	SettingsPage *settings;
-	/// A reference to the configuration of the thermal regulator
-	QDomNode conf_root;
+
+	/// list of programs/scenarios defined in the configuration
+	QMap<QString, QString> programs, scenarios;
 
 	TemperatureScale temp_scale;
 private slots:
@@ -351,7 +352,7 @@ private:
 
 	PageSetDate *createDateEdit(SettingsPage *settings);
 	PageSetTime *createTimeEdit(SettingsPage *settings);
-	WeeklyMenu *createProgramChoice(SettingsPage *settings, QDomNode conf, device *dev);
+	WeeklyMenu *createProgramChoice(SettingsPage *settings, QMap<QString, QString> programs, device *dev);
 
 	/// Label and string that may be visualized
 	QLabel *description_label;
@@ -384,7 +385,7 @@ public:
 	PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device);
 	virtual ThermalDevice *dev();
 protected:
-	virtual void createSettingsMenu();
+	virtual void createSettingsMenu(QDomNode regulator_node);
 private:
 	/**
 	 * Utility function to create the submenu for timed manual operation mode.
@@ -410,10 +411,10 @@ public:
 	PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device);
 	virtual ThermalDevice *dev();
 protected:
-	virtual void createSettingsMenu();
+	virtual void createSettingsMenu(QDomNode regulator_node);
 	virtual void setSeason(Season new_season);
 private:
-	void scenarioSettings(SettingsPage *settings, QDomNode conf, ThermalDevice99Zones *dev);
+	void scenarioSettings(SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev);
 
 	ThermalDevice99Zones *_dev;
 	ScenarioMenu *scenario_menu;
@@ -586,6 +587,29 @@ signals:
 
 
 /**
+ * Banner with two buttons, one to set the thermal regulator to "off" and one
+ * to set antifreeze mode.
+ */
+class BannOffAntifreeze : public Bann2CentralButtons
+{
+Q_OBJECT
+public:
+	BannOffAntifreeze(QWidget *parent, ThermalDevice *_dev);
+
+signals:
+	void clicked();
+
+private slots:
+	void setOff();
+	void setAntifreeze();
+
+private:
+	/// The device that this banner sends commands to
+	ThermalDevice *dev;
+};
+
+
+/**
  * This banner sets the thermal regulator in summer or winter status, depending on the
  * button pressed.
  * It displays two buttons at the center, one with the summer icon and one with the winter icon.
@@ -618,13 +642,16 @@ class BannWeekly : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	BannWeekly(QWidget *parent);
+	BannWeekly(QWidget *parent, int index);
 
 private slots:
 	void performAction();
 
 signals:
 	void programNumber(int);
+
+private:
+	int index;
 };
 
 #endif // BANN_THERMAL_REGULATION_H

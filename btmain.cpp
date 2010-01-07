@@ -222,16 +222,19 @@ bool BtMain::loadConfiguration(QString cfg_file)
 {
 	if (QFile::exists(cfg_file))
 	{
-		QDomNode setup = getConfElement("setup");
-		if (!setup.isNull() && version)
+		if (version)
 		{
-			QDomElement addr = getElement(setup, "scs/coordinate_scs/diag_addr");
-			bool ok;
-			if (!addr.isNull())
-				version->setAddr(addr.text().toInt(&ok, 16) - 768);
+			QDomNode setup = getConfElement("setup");
+			if (!setup.isNull())
+			{
+				QDomElement addr = getElement(setup, "scs/coordinate_scs/diag_addr");
+				bool ok;
+				if (!addr.isNull())
+					version->setAddr(addr.text().toInt(&ok, 16) - 768);
+			}
+			else
+				qWarning("setup node not found on xml config file!");
 		}
-		else
-			qWarning("setup node not found on xml config file!");
 
 		QDomNode display_node = getChildWithId(getPageNode(IMPOSTAZIONI), QRegExp("item\\d{1,2}"), DISPLAY);
 

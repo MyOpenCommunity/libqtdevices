@@ -43,6 +43,11 @@ public:
 		BANNERDESCRIPTION = 2,
 		SMALLTEXT = 3,
 		HOMEPAGEWIDGET = 6,
+		// thermal regulation
+		PROBE_TEMPERATURE = 0,
+		PROBE_SETPOINT = 1,
+		REGULATOR_TEMPERATURE = 1,
+		REGULATOR_DESCRIPTION = 1,
 	};
 #else
 	enum Type
@@ -55,6 +60,11 @@ public:
 		BANNERDESCRIPTION = 5,
 		SMALLTEXT = 2, // TBD, same as TEXT for now
 		HOMEPAGEWIDGET = 6,
+		// thermal regulation
+		PROBE_TEMPERATURE = 7,
+		PROBE_SETPOINT = 8,
+		REGULATOR_TEMPERATURE = 8,
+		REGULATOR_DESCRIPTION = 8,
 	};
 #endif
 
