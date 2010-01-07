@@ -104,6 +104,8 @@ void AdvancedSplitScenario::splitValuesChanged(const AirConditionerStatus &st)
 	m[conf_name + "/fan_swing"] = QString::number(st.swing);
 	if (!setCfgValue(m, id, serNum))
 		qWarning() << "AdvancedSplitScenario::splitValuesChanged setCfgValue failed!";
+	// send frame to device
+	dev->setStatus(status);
 }
 
 void AdvancedSplitScenario::setCurrentValues(const AirConditionerStatus &st)
