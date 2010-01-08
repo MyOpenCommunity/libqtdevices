@@ -47,6 +47,8 @@ QString AdvancedAirConditioningDevice::statusToString(const AirConditionerStatus
 {
 	QString what;
 
+	QString speed = st.vel == VEL_INVALID ? QString() : QString::number(st.vel);
+	QString swing = st.swing == SWING_INVALID ? QString() : QString::number(st.swing);
 	switch (st.mode)
 	{
 	case MODE_OFF:
@@ -55,11 +57,11 @@ QString AdvancedAirConditioningDevice::statusToString(const AirConditionerStatus
 
 	case MODE_FAN:
 	case MODE_DEHUM:
-		what = QString("%1*%2**%3*%4").arg(ADVANCED_SPLIT_DIM).arg(st.mode).arg(st.vel).arg(st.swing);
+		what = QString("%1*%2**%3*%4").arg(ADVANCED_SPLIT_DIM).arg(st.mode).arg(speed).arg(swing);
 		break;
 
 	default:
-		what = QString("%1*%2*%3*%4*%5").arg(ADVANCED_SPLIT_DIM).arg(st.mode).arg(st.temp).arg(st.vel).arg(st.swing);
+		what = QString("%1*%2*%3*%4*%5").arg(ADVANCED_SPLIT_DIM).arg(st.mode).arg(st.temp).arg(speed).arg(swing);
 		break;
 	}
 

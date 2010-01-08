@@ -1,5 +1,6 @@
 #include <QtTest/QtTest>
 #include <QList>
+#include <QRegExp>
 
 #include "test_platform_device.h"
 #include "test_energy_device.h"
@@ -97,11 +98,16 @@ int main(int argc, char *argv[])
 		arglist.removeAt(custom_param_pos);
 	}
 
+	// use regular expressions to avoid writing the full class name each time
+	QRegExp re(testingClass, Qt::CaseInsensitive);
 	foreach (TestDevice *tester, test_list)
-		if (testingClass.isEmpty() || tester->metaObject()->className() == testingClass)
+	{
+		QString class_name = tester->metaObject()->className();
+		if (testingClass.isEmpty() || class_name.contains(re))
 		{
 			tester->initTestDevice();
 			QTest::qExec(tester, arglist);
 		}
+	}
 }
 

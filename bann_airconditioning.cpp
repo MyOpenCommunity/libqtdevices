@@ -104,6 +104,8 @@ void AdvancedSplitScenario::splitValuesChanged(const AirConditionerStatus &st)
 	m[conf_name + "/fan_swing"] = QString::number(st.swing);
 	if (!setCfgValue(m, id, serNum))
 		qWarning() << "AdvancedSplitScenario::splitValuesChanged setCfgValue failed!";
+	// send frame to device
+	dev->setStatus(status);
 }
 
 void AdvancedSplitScenario::setCurrentValues(const AirConditionerStatus &st)
@@ -115,6 +117,23 @@ void AdvancedSplitScenario::onButtonClicked()
 {
 	dev->setStatus(status);
 }
+
+
+
+CustomScenario::CustomScenario(AdvancedAirConditioningDevice *d) :
+	BannCenteredButton(0)
+{
+	// TODO: modify skin file
+	initBanner(bt_global::skin->getImage("custom_button"));
+	dev = d;
+}
+
+void CustomScenario::splitValuesChanged(const AirConditionerStatus &st)
+{
+	dev->setStatus(st);
+}
+
+
 
 
 SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, int step) :

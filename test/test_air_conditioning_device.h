@@ -32,6 +32,9 @@ private slots:
 	void sendRequestStatus();
 
 	void testStatusToString();
+	void testStatusToString2();
+	void testStatusToString3();
+	void testStatusToString4();
 
 private:
 	AdvancedAirConditioningDevice *dev;

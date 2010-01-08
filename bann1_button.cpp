@@ -79,6 +79,11 @@ void BannCenteredButton::initBanner(const QString &center)
 	center_button->setImage(center);
 }
 
+void BannCenteredButton::connectButton(Page *linked_page)
+{
+	connectButtonToPage(center_button, linked_page);
+}
+
 
 BannSimple::BannSimple(const QString &icon)
 	: BannCenteredButton(0)

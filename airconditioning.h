@@ -81,10 +81,12 @@ public:
 	// Yuck! The only purpose of such ugliness is to support saving the new split settings into conf file
 	// DELETE it when porting to the new conf file
 	void setSerialNumber(int ser);
+	virtual void showPage();
 
 private:
 	void loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d);
 	AdvancedAirConditioningDevice *dev;
+	Page *single_page;
 
 private slots:
 	void setDeviceOff();
@@ -105,13 +107,13 @@ protected:
 	virtual void showEvent(QShowEvent *);
 
 private slots:
-	void handleClose();
+	void resetChanges();
 	void acceptChanges();
 
 private:
 	void readBannerValues();
-	void readModeConfig(const QDomNode &mode_node, const QDomNode &values);
-	void readTempConfig(const QDomNode &temp_node, const QDomNode &values);
+	void readModeConfig(const QDomNode &mode_node, int init_mode);
+	void readTempConfig(const QDomNode &temp_node, int init_temp);
 	void readSwingConfig(const QDomNode &swing_node, const QDomNode &values);
 	void readSpeedConfig(const QDomNode &speed_node, const QDomNode &values);
 	void sendUpdatedValues();
