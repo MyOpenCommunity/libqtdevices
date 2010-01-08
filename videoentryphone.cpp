@@ -84,8 +84,7 @@ VideoControl::VideoControl(const QDomNode &config_node)
 		BtButton *btn = addButton(getTextChild(item, "descr"), bt_global::skin->getImage("link_icon"), 0, 0);
 		connect(btn, SIGNAL(clicked()), mapper, SLOT(map()));
 
-		// TODO: aggiungo 2 nell'ipotesi che videocontrol gestisca solo posti esterni..verificare!!
-		QString where = "2" + getTextChild(item, "where");
+		QString where = getTextChild(item, "dev") + getTextChild(item, "where");
 		mapper->setMapping(btn, where);
 	}
 
