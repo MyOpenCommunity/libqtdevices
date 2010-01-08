@@ -41,6 +41,7 @@ class BtDateEdit;
 class NavigationPage;
 class PageSetDate;
 class PageSetTime;
+class PageSetDateTime;
 class SettingsPage;
 
 class QLabel;
@@ -311,6 +312,11 @@ private slots:
 	void dateSelected(QDate d);
 
 	/**
+	 * User confirmed date and time, go to time editing.
+	 */
+	void dateTimeSelected(QDate d, BtTime t);
+
+	/**
 	 * User cancelled time editing, go back to date editing.
 	 */
 	void timeCancelled();
@@ -352,6 +358,7 @@ private:
 
 	PageSetDate *createDateEdit(SettingsPage *settings);
 	PageSetTime *createTimeEdit(SettingsPage *settings);
+	PageSetDateTime *createDateTimeEdit(SettingsPage *settings);
 	WeeklyMenu *createProgramChoice(SettingsPage *settings, QMap<QString, QString> programs, device *dev);
 
 	/// Label and string that may be visualized
@@ -367,6 +374,7 @@ private:
 	BtTime time_end;
 	PageSetTime *time_edit;
 	PageSetDate *date_edit;
+	PageSetDateTime *date_time_edit;
 	ProgramMenu *program_choice;
 	WeeklyMenu *program_menu;
 };
@@ -536,7 +544,29 @@ private:
 	QWidget content;
 	QVBoxLayout main_layout;
 	BtTimeEdit *time_edit;
-	int hours, minutes;
+};
+
+
+class PageSetDateTime : public Page
+{
+Q_OBJECT
+public:
+	PageSetDateTime();
+	QDate date();
+	BtTime time();
+
+signals:
+	void dateTimeSelected(QDate, BtTime);
+
+private slots:
+	void performAction();
+
+private:
+	QWidget content;
+	QVBoxLayout main_layout;
+	QHBoxLayout top_layout;
+	BtDateEdit *date_edit;
+	BtTimeEdit *time_edit;
 };
 
 

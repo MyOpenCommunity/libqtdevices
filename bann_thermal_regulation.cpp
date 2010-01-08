@@ -857,7 +857,49 @@ void PageSetTime::performAction()
 	emit timeSelected(time());
 }
 
-// match the ormer of enum Status in ThermalDevice
+PageSetDateTime::PageSetDateTime()
+{
+	content.setLayout(&main_layout);
+
+	BtButton *program = new BtButton(this);
+	program->setImage(bt_global::skin->getImage("settings"));
+
+	date_edit = new BtDateEdit(this);
+	time_edit = new BtTimeEdit(this);
+
+	top_layout.addWidget(date_edit);
+	top_layout.addStretch(1);
+	top_layout.addWidget(time_edit);
+	top_layout.setSpacing(20);
+
+	main_layout.addLayout(&top_layout);
+	main_layout.addWidget(program, 1, Qt::AlignRight|Qt::AlignVCenter);
+	main_layout.setContentsMargins(40, 0, 40, 0);
+
+	NavigationBar *nav = new NavigationBar;
+	nav->displayScrollButtons(false);
+	buildPage(&content, nav, "Change title dynamically", TITLE_HEIGHT);
+
+	connect(program, SIGNAL(clicked()), SLOT(performAction()));
+	connect(nav, SIGNAL(backClick()), SIGNAL(Closed()));
+}
+
+QDate PageSetDateTime::date()
+{
+	return date_edit->date();
+}
+
+BtTime PageSetDateTime::time()
+{
+	return time_edit->time();
+}
+
+void PageSetDateTime::performAction()
+{
+	emit dateTimeSelected(date(), time());
+}
+
+// match the order of enum Status in ThermalDevice
 static QString status_icons_ids[ThermalDevice::ST_COUNT] =
 {
 	"regulator_off", "regulator_antifreeze", "regulator_manual", "regulator_manual_timed",
@@ -964,6 +1006,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 
 	date_edit = 0;
 	time_edit = 0;
+	date_time_edit = 0;
 	program_choice = 0;
 	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
 
@@ -1282,10 +1325,15 @@ void PageTermoReg::holidaySettings(SettingsPage *settings, QMap<QString, QString
 {
 	BannSinglePuls *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_holiday"));
 	connect(bann, SIGNAL(rightClick()), SLOT(holidaySettingsStart()));
+#ifdef LAYOUT_TOUCHX
+	if (!date_time_edit)
+		date_time_edit = createDateTimeEdit(settings);
+#else
 	if (!date_edit)
 		date_edit = createDateEdit(settings);
 	if (!time_edit)
 		time_edit = createTimeEdit(settings);
+#endif
 	if (!program_choice)
 		program_choice = createProgramChoice(settings, programs, dev);
 }
@@ -1294,10 +1342,15 @@ void PageTermoReg::weekendSettings(SettingsPage *settings, QMap<QString, QString
 {
 	BannSinglePuls *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_weekend"));
 	connect(bann, SIGNAL(rightClick()), SLOT(weekendSettingsStart()));
+#ifdef LAYOUT_TOUCHX
+	if (!date_time_edit)
+		date_time_edit = createDateTimeEdit(settings);
+#else
 	if (!date_edit)
 		date_edit = createDateEdit(settings);
 	if (!time_edit)
 		time_edit = createTimeEdit(settings);
+#endif
 	if (!program_choice)
 		program_choice = createProgramChoice(settings, programs, dev);
 }
@@ -1316,6 +1369,14 @@ PageSetDate *PageTermoReg::createDateEdit(SettingsPage *settings)
 	connect(date_edit, SIGNAL(Closed()), settings, SLOT(showPage()));
 	connect(date_edit, SIGNAL(dateSelected(QDate)), SLOT(dateSelected(QDate)));
 	return date_edit;
+}
+
+PageSetDateTime *PageTermoReg::createDateTimeEdit(SettingsPage *settings)
+{
+	PageSetDateTime *date_time_edit = new PageSetDateTime;
+	connect(date_time_edit, SIGNAL(Closed()), settings, SLOT(showPage()));
+	connect(date_time_edit, SIGNAL(dateTimeSelected(QDate, BtTime)), SLOT(dateTimeSelected(QDate, BtTime)));
+	return date_time_edit;
 }
 
 PageSetTime *PageTermoReg::createTimeEdit(SettingsPage *settings)
@@ -1337,19 +1398,34 @@ WeeklyMenu *PageTermoReg::createProgramChoice(SettingsPage *settings, QMap<QStri
 void PageTermoReg::holidaySettingsStart()
 {
 	weekendHolidayStatus = HOLIDAY;
+#ifdef LAYOUT_TOUCHX
+	date_time_edit->showPage();
+#else
 	date_edit->showPage();
+#endif
 }
 
 void PageTermoReg::weekendSettingsStart()
 {
 	weekendHolidayStatus = WEEKEND;
+#ifdef LAYOUT_TOUCHX
+	date_time_edit->showPage();
+#else
 	date_edit->showPage();
+#endif
 }
 
 void PageTermoReg::dateSelected(QDate d)
 {
 	date_end = d;
 	time_edit->showPage();
+}
+
+void PageTermoReg::dateTimeSelected(QDate d, BtTime t)
+{
+	date_end = d;
+	time_end = t;
+	program_choice->showPage();
 }
 
 void PageTermoReg::timeCancelled()
