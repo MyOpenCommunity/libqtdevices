@@ -30,30 +30,41 @@ using namespace VCTCallPrivate;
 EnablingButton::EnablingButton(QWidget *parent) :
 	BtButton(parent)
 {
+	setStatus(OFF);
 }
 
-void EnablingButton::setDisabledPixmap(const QString &path)
+void EnablingButton::setDisabledImage(const QString &path)
 {
 	disabled_pixmap = *bt_global::icons_cache.getIcon(path);
 }
 
-void EnablingButton::enable()
+void EnablingButton::setStatus(EnablingButton::Status st)
 {
-	BtButton::enable();
-	setIcon(pixmap);
+	status = st;
+	switch (status)
+	{
+	case DISABLED:
+		setIcon(disabled_pixmap);
+		disable();
+		break;
+	case ON:
+		setIcon(pressed_pixmap);
+		enable();
+		break;
+	case OFF:
+	default:
+		setIcon(pixmap);
+		enable();
+		break;
+	}
 }
 
-void EnablingButton::disable()
-{
-	BtButton::disable();
-	setIcon(disabled_pixmap);
-}
 
 EnablingButton *getButton(const QString &image_path)
 {
 	EnablingButton *btn = new EnablingButton;
 	btn->setImage(image_path);
-	btn->setDisabledPixmap(getBostikName(image_path, "dis"));
+	btn->setDisabledImage(getBostikName(image_path, "dis"));
 	return btn;
 }
 
@@ -79,25 +90,15 @@ CameraMove::CameraMove(EntryphoneDevice *dev)
 
 void CameraMove::setFullscreenEnabled(bool fs)
 {
-	fs ? fullscreen->enable() : fullscreen->disable();
+	fullscreen->setStatus(fs ? EnablingButton::OFF : EnablingButton::DISABLED);
 }
 
 void CameraMove::setMoveEnabled(bool move)
 {
-	if (move)
-	{
-		up->enable();
-		down->enable();
-		left->enable();
-		right->enable();
-	}
-	else
-	{
-		up->disable();
-		down->disable();
-		left->disable();
-		right->disable();
-	}
+	up->setStatus(move ? EnablingButton::OFF : EnablingButton::DISABLED);
+	down->setStatus(move ? EnablingButton::OFF : EnablingButton::DISABLED);
+	left->setStatus(move ? EnablingButton::OFF : EnablingButton::DISABLED);
+	right->setStatus(move ? EnablingButton::OFF : EnablingButton::DISABLED);
 }
 
 
@@ -150,7 +151,7 @@ VCTCallStatus::VCTCallStatus()
 void VCTCallStatus::init()
 {
 	connected = false;
-	mute = false;
+	mute = EnablingButton::DISABLED;
 }
 
 VCTCallStatus::~VCTCallStatus()
@@ -195,8 +196,7 @@ VCTCall::VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f)
 	mute_icon = bt_global::skin->getImage("mute");
 	mute_button = getButton(getBostikName(mute_icon, "off"));
 	mute_button->setPressedImage(getBostikName(mute_icon, "on"));
-	mute_button->disable();
-	mute_button->setOnOff();
+	mute_button->setStatus(EnablingButton::DISABLED);
 	connect(mute_button, SIGNAL(clicked()), SLOT(toggleMute()));
 
 	stairlight = getButton(bt_global::skin->getImage("stairlight"));
@@ -225,27 +225,36 @@ void VCTCall::changeVolume(int value)
 void VCTCall::refreshStatus()
 {
 	call_accept->setStatus(call_status->connected);
-	if (call_status->connected)
-		mute_button->enable();
-	else
-		mute_button->disable();
-
 	volume->setStatus(call_status->volume_status);
-	// TODO: sistemare l'enabling button! In questo modo non potra' mai funzionare!
 	mute_button->setStatus(call_status->mute);
 }
 
 void VCTCall::toggleMute()
 {
-	bool st = mute_button->getStatus();
-	setVolume(VOLUME_MIC, st ? 0 : 1);
-	mute_button->setStatus(!st);
-	call_status->mute = !st;
+	EnablingButton::Status st = mute_button->getStatus();
+	setVolume(VOLUME_MIC, st == EnablingButton::ON ? 0 : 1);
+
+	if (st == EnablingButton::ON)
+	{
+		mute_button->setStatus(EnablingButton::OFF);
+		call_status->mute = EnablingButton::OFF;
+	}
+	else
+	{
+		mute_button->setStatus(EnablingButton::ON);
+		call_status->mute = EnablingButton::ON;
+	}
 }
 
 void VCTCall::toggleCall()
 {
 	call_status->connected = !call_status->connected;
+	if (call_status->connected)
+		mute_button->setStatus(EnablingButton::OFF);
+	else
+		mute_button->setStatus(EnablingButton::DISABLED);
+	call_status->mute = mute_button->getStatus();
+
 	refreshStatus();
 	if (call_status->connected)
 		dev->answerCall();

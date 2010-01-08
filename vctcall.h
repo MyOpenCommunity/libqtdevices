@@ -19,17 +19,28 @@ class QLabel;
 class QShowEvent;
 
 
-class EnablingButton : public BtButton
+class EnablingButton : protected BtButton
 {
 Q_OBJECT
 public:
+using BtButton::setImage;
+using BtButton::setPressedImage;
+
+	enum Status
+	{
+		ON,
+		OFF,
+		DISABLED
+	};
+
 	EnablingButton(QWidget *parent = 0);
-	void setDisabledPixmap(const QString &path);
-	virtual void enable();
-	virtual void disable();
+	void setDisabledImage(const QString &path);
+	void setStatus(Status st);
+	Status getStatus() { return status; }
 
 private:
 	QPixmap disabled_pixmap;
+	Status status;
 };
 
 
@@ -80,7 +91,7 @@ namespace VCTCallPrivate
 	struct VCTCallStatus
 	{
 		bool connected;
-		bool mute;
+		EnablingButton::Status mute;
 		ItemTuningStatus *volume_status;
 
 		VCTCallStatus();
