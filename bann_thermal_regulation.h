@@ -235,6 +235,7 @@ protected:
 	 * Utility function to create settings menu for the thermal regulator device.
 	 */
 	virtual void createSettingsMenu(QDomNode regulator_node) = 0;
+	void createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice *dev);
 
 	/**
 	 * Set the icon on the main page of thermal regulator and calls setSeason() on
@@ -255,29 +256,29 @@ protected:
 	 * Utility function to create the submenu to set the weekly program in thermal
 	 * regulator device.
 	 */
-	void weekSettings(SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
+	void weekSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create the submenu to set the scenario program in thermal
 	 * regulator device.
 	 */
-	void scenarioSettings(SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev);
+	void scenarioSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev);
 
 	/**
 	 * Utility function to create the submenu to set manually the temperature
 	 * for the thermal regulator device.
 	 */
-	void manualSettings(SettingsPage *settings, ThermalDevice *dev);
+	void manualSettings(QDomNode n, SettingsPage *settings, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create the submenu for holiday settings.
 	 */
-	void holidaySettings(SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
+	void holidaySettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create the submenu for weekend settings.
 	 */
-	void weekendSettings(SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
+	void weekendSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create off, antifreeze and summer/winter banners.
@@ -349,12 +350,14 @@ private:
 	};
 	/// A flag to determine if the user started a weekend or holiday selection
 	weekend_t weekendHolidayStatus;
+	QString holiday_title, weekend_title;
+
 	/**
 	 * Utility function to create the submenu structure needed for holiday and weekend mode.
 	 * \param icon The icon to be visualized on the banner
 	 * \return The banner that will open the date edit menu
 	 */
-	BannSinglePuls *createHolidayWeekendBanner(SettingsPage *settings, QString icon);
+	BannSinglePuls *createHolidayWeekendBanner(SettingsPage *settings, QString icon, QString description);
 
 	PageSetDate *createDateEdit(SettingsPage *settings);
 	PageSetTime *createTimeEdit(SettingsPage *settings);
@@ -394,12 +397,13 @@ public:
 	virtual ThermalDevice *dev();
 protected:
 	virtual void createSettingsMenu(QDomNode regulator_node);
+	void createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice4Zones *dev);
 private:
 	/**
 	 * Utility function to create the submenu for timed manual operation mode.
 	 * This is used only with 4 zones thermal regulators
 	 */
-	void timedManualSettings(SettingsPage *settings, ThermalDevice4Zones *dev);
+	void timedManualSettings(QDomNode n, SettingsPage *settings, ThermalDevice4Zones *dev);
 
 	ThermalDevice4Zones *_dev;
 private slots:
@@ -421,8 +425,9 @@ public:
 protected:
 	virtual void createSettingsMenu(QDomNode regulator_node);
 	virtual void setSeason(Season new_season);
+	void createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice99Zones *dev);
 private:
-	void scenarioSettings(SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev);
+	void scenarioSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev);
 
 	ThermalDevice99Zones *_dev;
 	ScenarioMenu *scenario_menu;
@@ -552,8 +557,10 @@ class PageSetDateTime : public Page
 Q_OBJECT
 public:
 	PageSetDateTime();
+
 	QDate date();
 	BtTime time();
+	void setTitle(QString title);
 
 signals:
 	void dateTimeSelected(QDate, BtTime);
@@ -562,6 +569,7 @@ private slots:
 	void performAction();
 
 private:
+	PageTitleWidget title_widget;
 	QWidget content;
 	QVBoxLayout main_layout;
 	QHBoxLayout top_layout;

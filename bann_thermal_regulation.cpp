@@ -23,6 +23,10 @@ enum
 {
 	BANNER_PROGRAMS = 11,
 	BANNER_SCENARIOS = 12,
+	BANNER_MANUAL_TIMED_MODE = 15,
+	BANNER_MANUAL_MODE = 31,
+	BANNER_WEEKEND_MODE = 32,
+	BANNER_HOLIDAY_MODE = 33,
 };
 
 QLabel *getLabelWithPixmap(const QString &img, QWidget *parent, int alignment)
@@ -858,6 +862,7 @@ void PageSetTime::performAction()
 }
 
 PageSetDateTime::PageSetDateTime()
+	: title_widget("Change title dynamically", TITLE_HEIGHT)
 {
 	content.setLayout(&main_layout);
 
@@ -878,7 +883,7 @@ PageSetDateTime::PageSetDateTime()
 
 	NavigationBar *nav = new NavigationBar;
 	nav->displayScrollButtons(false);
-	buildPage(&content, nav, "Change title dynamically", TITLE_HEIGHT);
+	buildPage(&content, nav, NULL, &title_widget);
 
 	connect(program, SIGNAL(clicked()), SLOT(performAction()));
 	connect(nav, SIGNAL(backClick()), SIGNAL(Closed()));
@@ -892,6 +897,11 @@ QDate PageSetDateTime::date()
 BtTime PageSetDateTime::time()
 {
 	return time_edit->time();
+}
+
+void PageSetDateTime::setTitle(QString title)
+{
+	title_widget.setTitle(title);
 }
 
 void PageSetDateTime::performAction()
@@ -1023,6 +1033,30 @@ void PageTermoReg::showDescription(const QString &desc)
 void PageTermoReg::hideDescription()
 {
 	description_label->setVisible(false);
+}
+
+void PageTermoReg::createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice *_dev)
+{
+	int id = getTextChild(item, "id").toInt();
+
+	switch (id)
+	{
+	case BANNER_PROGRAMS:
+		weekSettings(item, settings, programs, _dev);
+		break;
+	case BANNER_MANUAL_MODE:
+		manualSettings(item, settings, _dev);
+		break;
+	case BANNER_HOLIDAY_MODE:
+		holidaySettings(item, settings, programs, _dev);
+		break;
+	case BANNER_WEEKEND_MODE:
+		weekendSettings(item, settings, programs, _dev);
+		break;
+	default:
+		qFatal("Unhandled item in thermal regulator settings");
+		break;
+	}
 }
 
 void PageTermoReg::status_changed(const StatusList &sl)
@@ -1199,29 +1233,61 @@ void PageTermoReg4z::showSettingsMenu()
 	settings->showPage();
 }
 
+void PageTermoReg4z::createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice4Zones *_dev)
+{
+	int id = getTextChild(item, "id").toInt();
+
+	switch (id)
+	{
+	case BANNER_MANUAL_TIMED_MODE:
+		manualSettings(item, settings, _dev);
+		break;
+	default:
+		PageTermoReg::createSettingsItem(item, settings, _dev);
+		break;
+	}
+}
+
+#ifdef CONFIG_BTOUCH
+
 void PageTermoReg4z::createSettingsMenu(QDomNode regulator_node)
 {
-#ifdef CONFIG_BTOUCH
 	QDomNode n = regulator_node;
-#else
-	QDomNode n = getPageNodeFromChildNode(regulator_node, "h_lnk_pageID");
-	SkinContext context(getTextChild(n, "cid").toInt());
-#endif
+	QDomNode dummy;
 
 	settings = new SettingsPage(n);
 	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
 
-	weekSettings(settings, programs, _dev);
-	manualSettings(settings, _dev);
+	weekSettings(dummy, settings, programs, _dev);
+	manualSettings(dummy, settings, _dev);
 
-	timedManualSettings(settings, _dev);
+	timedManualSettings(dummy, settings, _dev);
 
-	holidaySettings(settings, programs, _dev);
+	holidaySettings(dummy, settings, programs, _dev);
 
-	weekendSettings(settings, programs, _dev);
+	weekendSettings(dummy, settings, programs, _dev);
 
 	createButtonsBanners(settings, _dev);
 }
+
+#else
+
+void PageTermoReg4z::createSettingsMenu(QDomNode regulator_node)
+{
+	QDomNode n = getPageNodeFromChildNode(regulator_node, "h_lnk_pageID");
+	SkinContext context(getTextChild(n, "cid").toInt());
+
+	settings = new SettingsPage(n);
+	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
+
+	foreach (const QDomNode &item, getChildren(n, "item"))
+		createSettingsItem(item, settings, _dev);
+
+	// these do not have items
+	createButtonsBanners(settings, _dev);
+}
+
+#endif
 
 PageTermoReg99z::PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device)
 	: PageTermoReg(n)
@@ -1253,40 +1319,73 @@ void PageTermoReg99z::showSettingsMenu()
 	settings->showPage();
 }
 
+void PageTermoReg99z::createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice99Zones *_dev)
+{
+	int id = getTextChild(item, "id").toInt();
+
+	switch (id)
+	{
+	case BANNER_SCENARIOS:
+		scenarioSettings(item, settings, scenarios, _dev);
+		break;
+	default:
+		PageTermoReg::createSettingsItem(item, settings, _dev);
+		break;
+	}
+}
+
+#ifdef CONFIG_BTOUCH
+
 void PageTermoReg99z::createSettingsMenu(QDomNode regulator_node)
 {
-#ifdef CONFIG_BTOUCH
 	QDomNode n = regulator_node;
-#else
-	QDomNode n = getPageNodeFromChildNode(regulator_node, "h_lnk_pageID");
-	SkinContext context(getTextChild(n, "cid").toInt());
-#endif
+	QDomNode dummy;
 
 	settings = new SettingsPage(n);
 	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
 
-	weekSettings(settings, programs, _dev);
-	manualSettings(settings, _dev);
+	weekSettings(dummy, settings, programs, _dev);
+	manualSettings(dummy, settings, _dev);
 
-	scenarioSettings(settings, scenarios, _dev);
+	scenarioSettings(dummy, settings, scenarios, _dev);
 
-	holidaySettings(settings, programs, _dev);
+	holidaySettings(dummy, settings, programs, _dev);
 
-	weekendSettings(settings, programs, _dev);
+	weekendSettings(dummy, settings, programs, _dev);
 
 	createButtonsBanners(settings, _dev);
 }
 
+#else
+
+void PageTermoReg99z::createSettingsMenu(QDomNode regulator_node)
+{
+	QDomNode n = getPageNodeFromChildNode(regulator_node, "h_lnk_pageID");
+	SkinContext context(getTextChild(n, "cid").toInt());
+
+	settings = new SettingsPage(n);
+	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
+
+	foreach (const QDomNode &item, getChildren(n, "item"))
+		createSettingsItem(item, settings, _dev);
+
+	// these do not have items
+	createButtonsBanners(settings, _dev);
+}
+
+#endif
+
 //
 // ------------- Utility functions to create thermal regulator settings menus -------------------
 //
-void PageTermoReg::manualSettings(SettingsPage *settings, ThermalDevice *dev)
+void PageTermoReg::manualSettings(QDomNode n, SettingsPage *settings, ThermalDevice *dev)
 {
 	PageManual *manual_page = new PageManual(dev, temp_scale);
 
 	// manual banner
 	BannSinglePuls *manual = new BannSinglePuls(settings);
-	manual->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_manual"), "");
+	manual->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_manual"),
+			   getTextChild(n, "descr"));
 	manual->connectRightButton(manual_page);
 	settings->appendBanner(manual);
 
@@ -1302,12 +1401,13 @@ void PageTermoReg::manualSelected(unsigned temp)
 	showPage();
 }
 
-void PageTermoReg::weekSettings(SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev)
+void PageTermoReg::weekSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev)
 {
-	program_menu = new WeeklyMenu(0, programs);
+	program_menu = new WeeklyMenu(0, programs, getTextChild(n, "descr"));
 
 	BannSinglePuls *weekly = new BannSinglePuls(settings);
-	weekly->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_program"), "");
+	weekly->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_program"),
+			   getTextChild(n, "descr"));
 	weekly->connectRightButton(program_menu);
 	settings->appendBanner(weekly);
 
@@ -1321,9 +1421,11 @@ void PageTermoReg::weekProgramSelected(int program)
 	showPage();
 }
 
-void PageTermoReg::holidaySettings(SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev)
+void PageTermoReg::holidaySettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev)
 {
-	BannSinglePuls *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_holiday"));
+	holiday_title = getTextChild(n, "descr");
+	BannSinglePuls *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_holiday"),
+							  getTextChild(n, "descr"));
 	connect(bann, SIGNAL(rightClick()), SLOT(holidaySettingsStart()));
 #ifdef LAYOUT_TOUCHX
 	if (!date_time_edit)
@@ -1338,9 +1440,11 @@ void PageTermoReg::holidaySettings(SettingsPage *settings, QMap<QString, QString
 		program_choice = createProgramChoice(settings, programs, dev);
 }
 
-void PageTermoReg::weekendSettings(SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev)
+void PageTermoReg::weekendSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev)
 {
-	BannSinglePuls *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_weekend"));
+	weekend_title = getTextChild(n, "descr");
+	BannSinglePuls *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_weekend"),
+							  getTextChild(n, "descr"));
 	connect(bann, SIGNAL(rightClick()), SLOT(weekendSettingsStart()));
 #ifdef LAYOUT_TOUCHX
 	if (!date_time_edit)
@@ -1355,10 +1459,10 @@ void PageTermoReg::weekendSettings(SettingsPage *settings, QMap<QString, QString
 		program_choice = createProgramChoice(settings, programs, dev);
 }
 
-BannSinglePuls *PageTermoReg::createHolidayWeekendBanner(SettingsPage *settings, QString icon)
+BannSinglePuls *PageTermoReg::createHolidayWeekendBanner(SettingsPage *settings, QString icon, QString description)
 {
 	BannSinglePuls *bann = new BannSinglePuls(settings);
-	bann->initBanner(bt_global::skin->getImage("forward"), icon, "");
+	bann->initBanner(bt_global::skin->getImage("forward"), icon, description);
 	settings->appendBanner(bann);
 	return bann;
 }
@@ -1399,6 +1503,7 @@ void PageTermoReg::holidaySettingsStart()
 {
 	weekendHolidayStatus = HOLIDAY;
 #ifdef LAYOUT_TOUCHX
+	date_time_edit->setTitle(holiday_title);
 	date_time_edit->showPage();
 #else
 	date_edit->showPage();
@@ -1409,6 +1514,7 @@ void PageTermoReg::weekendSettingsStart()
 {
 	weekendHolidayStatus = WEEKEND;
 #ifdef LAYOUT_TOUCHX
+	date_time_edit->setTitle(weekend_title);
 	date_time_edit->showPage();
 #else
 	date_edit->showPage();
@@ -1441,7 +1547,11 @@ void PageTermoReg::timeSelected(BtTime t)
 
 void PageTermoReg::programCancelled()
 {
+#ifdef LAYOUT_TOUCHX
+	date_time_edit->showPage();
+#else
 	time_edit->showPage();
+#endif
 }
 
 void PageTermoReg::weekendHolidaySettingsEnd(int program)
@@ -1455,14 +1565,15 @@ void PageTermoReg::weekendHolidaySettingsEnd(int program)
 	showPage();
 }
 
-void PageTermoReg4z::timedManualSettings(SettingsPage *settings, ThermalDevice4Zones *dev)
+void PageTermoReg4z::timedManualSettings(QDomNode n, SettingsPage *settings, ThermalDevice4Zones *dev)
 {
 	PageManualTimed *timed_manual_page = new PageManualTimed(dev, temp_scale);
 	timed_manual_page->setMaxHours(25);
 
 	// timed manual banner
 	BannSinglePuls *manual_timed = new BannSinglePuls(settings);
-	manual_timed->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_manual_timed"), "");
+	manual_timed->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_manual_timed"),
+				 getTextChild(n, "descr"));
 	manual_timed->connectRightButton(timed_manual_page);
 	settings->appendBanner(manual_timed);
 
@@ -1476,12 +1587,13 @@ void PageTermoReg4z::manualTimedSelected(BtTime time, int temp)
 	showPage();
 }
 
-void PageTermoReg99z::scenarioSettings(SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev)
+void PageTermoReg99z::scenarioSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev)
 {
-	scenario_menu = new ScenarioMenu(0, scenarios);
+	scenario_menu = new ScenarioMenu(0, scenarios, getTextChild(n, "descr"));
 
 	BannSinglePuls *scenario = new BannSinglePuls(settings);
-	scenario->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_scenario"), "");
+	scenario->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_scenario"),
+			     getTextChild(n, "descr"));
 	scenario->connectRightButton(scenario_menu);
 	settings->appendBanner(scenario);
 
