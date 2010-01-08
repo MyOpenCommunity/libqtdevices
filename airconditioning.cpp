@@ -312,7 +312,7 @@ void SplitSettings::readSpeedConfig(const QDomNode &speed_node, const QDomNode &
 
 		int current_speed = 0;
 		if (!values.isNull())
-			getTextChild(values, "speed").toInt();
+			current_speed = getTextChild(values, "speed").toInt();
 		speed = new SplitSpeed(speeds, current_speed);
 		page_content->appendBanner(speed);
 	}
