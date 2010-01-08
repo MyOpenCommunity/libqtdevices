@@ -218,15 +218,22 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
 
 	// init values, temperature is always present so it will be initialized always
-	current_fan_speed = 0;
-	current_mode = 0;
-	current_swing = 0;
+	if (!values_node.isNull())
+	{
+		current_mode = getTextChild(values_node, "mode").toInt();
+		current_temp = getTextChild(values_node, "setpoint").toInt();
+	}
+	else
+	{
+		current_mode = AdvancedAirConditioningDevice::MODE_OFF;
+		current_temp = 200;
+	}
 
 	QDomNode mode_node = getChildWithName(config_node, "mode");
-	readModeConfig(mode_node, values_node);
+	readModeConfig(mode_node, current_mode);
 
 	QDomNode temp_node = getChildWithName(config_node, "setpoint");
-	readTempConfig(temp_node, values_node);
+	readTempConfig(temp_node, current_temp);
 
 	QDomNode speed_node = getChildWithName(config_node, "speed");
 	readSpeedConfig(speed_node, values_node);
@@ -247,7 +254,7 @@ AirConditionerStatus SplitSettings::getCurrentStatus()
 	return status;
 }
 
-void SplitSettings::readModeConfig(const QDomNode &mode_node, const QDomNode &values)
+void SplitSettings::readModeConfig(const QDomNode &mode_node, int init_mode)
 {
 	int m = getTextChild(mode_node, "val1").toInt();
 	Q_ASSERT_X(m != -1, "SplitSettings::readModeConfig", "Mode cannot be disabled");
@@ -255,19 +262,17 @@ void SplitSettings::readModeConfig(const QDomNode &mode_node, const QDomNode &va
 	foreach (const QDomNode &val, getChildren(mode_node, "val"))
 		modes.append(val.toElement().text().toInt());
 
-	int current_mode = getTextChild(values, "mode").toInt();
-	mode = new SplitMode(modes, current_mode);
+	mode = new SplitMode(modes, init_mode);
 	page_content->appendBanner(mode);
 }
 
-void SplitSettings::readTempConfig(const QDomNode &temp_node, const QDomNode &values)
+void SplitSettings::readTempConfig(const QDomNode &temp_node, int init_temp)
 {
 	int min = getTextChild(temp_node, "min").toInt();
 	int max = getTextChild(temp_node, "max").toInt();
 	int step = getTextChild(temp_node, "step").toInt();
 
-	int current_temp = getTextChild(values, "setpoint").toInt();
-	temperature = new SplitTemperature(current_temp, max, min, step);
+	temperature = new SplitTemperature(init_temp, max, min, step);
 	page_content->appendBanner(temperature);
 }
 
@@ -279,7 +284,9 @@ void SplitSettings::readSpeedConfig(const QDomNode &speed_node, const QDomNode &
 		foreach (const QDomNode &val, getChildren(speed_node, "val"))
 			speeds.append(val.toElement().text().toInt());
 
-		int current_speed = getTextChild(values, "speed").toInt();
+		int current_speed = 0;
+		if (!values.isNull())
+			getTextChild(values, "speed").toInt();
 		speed = new SplitSpeed(speeds, current_speed);
 		page_content->appendBanner(speed);
 	}
@@ -291,7 +298,10 @@ void SplitSettings::readSwingConfig(const QDomNode &swing_node, const QDomNode &
 {
 	if (getTextChild(swing_node, "val1").toInt() != -1)
 	{
-		bool swing_on = getTextChild(values, "fan_swing").toInt();
+		bool swing_on = false;
+		// read values from conf if present
+		if (!values.isNull())
+			swing_on = getTextChild(values, "fan_swing").toInt();
 		swing = new SplitSwing(tr("SWING"), swing_on);
 		page_content->appendBanner(swing);
 	}
