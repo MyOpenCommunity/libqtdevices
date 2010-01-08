@@ -48,6 +48,13 @@ PageTitleWidget::PageTitleWidget(const QString &label, int height)
 	t->addWidget(current_page, 1);
 }
 
+void PageTitleWidget::setTitle(QString title)
+{
+	QLabel *label = static_cast<QLabel*>(layout()->itemAt(1)->widget());
+
+	label->setText(title);
+}
+
 void PageTitleWidget::setCurrentPage(int current, int total)
 {
 	if (total == 1)

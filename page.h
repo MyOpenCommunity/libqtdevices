@@ -36,6 +36,7 @@ public:
 
 public slots:
 	void setCurrentPage(int current, int total);
+	void setTitle(QString title);
 };
 
 
