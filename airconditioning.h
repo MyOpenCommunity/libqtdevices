@@ -82,10 +82,12 @@ public:
 	// Yuck! The only purpose of such ugliness is to support saving the new split settings into conf file
 	// DELETE it when porting to the new conf file
 	void setSerialNumber(int ser);
+	virtual void showPage();
 
 private:
 	void loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d);
 	AdvancedAirConditioningDevice *dev;
+	Page *single_page;
 
 private slots:
 	void setDeviceOff();

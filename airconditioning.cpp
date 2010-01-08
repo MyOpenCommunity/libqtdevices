@@ -162,6 +162,7 @@ void SplitPage::setDeviceOff()
 
 AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirConditioningDevice *d)
 {
+	single_page = 0;
 	NavigationBar *nav_bar;
 	if (getElement(config_node, "off/list").text().toInt() == 1) // show the off button
 	{
@@ -179,6 +180,12 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d)
 {
 	int id = getTextChild(config_node, "id").toInt();
+	CustomScenario *bann = new CustomScenario(d);
+	SplitSettings *split = new SplitSettings(QDomNode(), getChildWithName(config_node, "par"));
+	connect(split, SIGNAL(splitSettingsChanged(const AirConditionerStatus &)), bann,
+		SLOT(splitValuesChanged(const AirConditionerStatus &)));
+	page_content->appendBanner(bann);
+
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 	{
 		AdvancedSplitScenario *b = new AdvancedSplitScenario(getTextChild(scenario, "descr"), scenario.nodeName(), d);
@@ -189,6 +196,18 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirCo
 		connect(sp, SIGNAL(splitSettingsChanged(const AirConditionerStatus &)), b, SLOT(splitValuesChanged(const AirConditionerStatus &)));
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		page_content->appendBanner(b);
+	}
+
+	// skip showing scenario page (_this_ page) if we have only the custom button
+	if (page_content->bannerCount() == 1)
+	{
+		single_page = split;
+		connect(single_page, SIGNAL(Closed()), SIGNAL(Closed()));
+	}
+	else
+	{
+		bann->connectButton(split);
+		connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 }
 
@@ -206,6 +225,14 @@ void AdvancedSplitPage::setDeviceOff()
 	dev->turnOff();
 }
 
+void AdvancedSplitPage::showPage()
+{
+	if (single_page)
+		single_page->showPage();
+	else
+		Page::showPage();
+}
+
 
 
 SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config_node)
@@ -221,6 +248,7 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	if (!values_node.isNull())
 	{
 		current_mode = getTextChild(values_node, "mode").toInt();
+		Q_ASSERT_X(current_mode != -1, "SplitSettings::readModeConfig", "Mode cannot be disabled");
 		current_temp = getTextChild(values_node, "setpoint").toInt();
 	}
 	else
@@ -256,8 +284,6 @@ AirConditionerStatus SplitSettings::getCurrentStatus()
 
 void SplitSettings::readModeConfig(const QDomNode &mode_node, int init_mode)
 {
-	int m = getTextChild(mode_node, "val1").toInt();
-	Q_ASSERT_X(m != -1, "SplitSettings::readModeConfig", "Mode cannot be disabled");
 	QList <int> modes;
 	foreach (const QDomNode &val, getChildren(mode_node, "val"))
 		modes.append(val.toElement().text().toInt());
