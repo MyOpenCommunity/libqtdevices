@@ -21,7 +21,7 @@
 
 PlantMenu::PlantMenu(const QDomNode &conf) : BannerPage(0)
 {
-	buildPage();
+	buildPage(getTextChild(conf, "descr"));
 	loadItems(conf);
 }
 
