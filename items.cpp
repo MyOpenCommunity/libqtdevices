@@ -51,7 +51,6 @@ void ItemTuning::decreaseLevel()
 	if (current_level > 0)
 	{
 		--current_level;
-		changeIcons();
 		emit valueChanged(current_level);
 	}
 }
@@ -61,7 +60,6 @@ void ItemTuning::increaseLevel()
 	if (current_level < 8)
 	{
 		++current_level;
-		changeIcons();
 		emit valueChanged(current_level);
 	}
 }
