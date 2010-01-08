@@ -538,7 +538,7 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 
 	NavigationBar *nav = new NavigationBar;
 	nav->displayScrollButtons(false);
-	buildPage(content, nav, tr("Wake up"), 60);
+	buildPage(content, nav, tr("Wake up"), TITLE_HEIGHT);
 
 	//connect(nav, SIGNAL(backClick()), alarm_page, SIGNAL(Closed()));
 	connect(nav, SIGNAL(backClick()), alarm_page, SLOT(handleClose()));

@@ -182,7 +182,7 @@ NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
 	connect(nav_bar, SIGNAL(upClick()), SIGNAL(upClick()));
 	connect(nav_bar, SIGNAL(downClick()), SIGNAL(downClick()));
 
-	buildPage(&content, nav_bar, "", 60);
+	buildPage(&content, nav_bar, "", TITLE_HEIGHT);
 
 	return nav_bar;
 }

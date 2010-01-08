@@ -244,7 +244,7 @@ void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, const
 {
 	if (hardwareType() == TOUCH_X)
 	{
-		PageTitleWidget *title_widget = new PageTitleWidget(title, 60);
+		PageTitleWidget *title_widget = new PageTitleWidget(title, TITLE_HEIGHT);
 		Page::buildPage(content, nav_bar, top_widget, title_widget);
 
 		connect(content, SIGNAL(contentScrolled(int, int)),
