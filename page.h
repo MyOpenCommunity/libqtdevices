@@ -62,6 +62,8 @@ class Page : public StyledWidget
 friend class BtMain;
 Q_OBJECT
 public:
+	static const int TITLE_HEIGHT = 60;
+
 	// Indicates subsystem pagetype. For now it is used in touchx top_nav_bar
 	// TODO: is this the same as pagSecLiv in main.h?
 	enum PageType
@@ -120,7 +122,8 @@ protected:
 	void prepareTransition();
 	void startTransition();
 	void buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget=0, QWidget *title_widget=0);
-	void buildPage(QWidget *content, QWidget *nav_bar, const QString& label, int label_height, QWidget *top_widget=0);
+	void buildPage(QWidget *content, QWidget *nav_bar, const QString& label,
+		       int label_height=TITLE_HEIGHT, QWidget *top_widget=0);
 
 private:
 	static PageContainer *page_container;

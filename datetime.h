@@ -16,8 +16,10 @@
 #include "bttime.h"
 
 #include <QWidget>
-#include <QLCDNumber>
 #include <QDateTime>
+
+class QLabel;
+class QLCDNumber;
 
 /**
  * A widget that emulates QTimeEdit
@@ -59,7 +61,11 @@ private:
 	void displayTime();
 private:
 	BtTime _time;
+#ifdef LAYOUT_TOUCHX
+	QLabel *hour, *minute, *second;
+#else
 	QLCDNumber *num;
+#endif
 	DisplayType _display_type;
 };
 
@@ -83,12 +89,21 @@ public:
 	QDate date();
 
 	void setAllowPastDates(bool v);
+
+private:
+	void displayDate();
+
 private:
 	/// display date set
+#ifdef LAYOUT_TOUCHX
+	QLabel *year, *month, *day;
+#else
 	QLCDNumber *date_display;
+#endif
 	QDate _date;
 	bool _allow_past_dates;
 	static QString FORMAT_STRING;
+
 private slots:
 	void incDay();
 	void incMonth();

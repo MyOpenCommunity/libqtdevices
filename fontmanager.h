@@ -65,6 +65,8 @@ public:
 		PROBE_SETPOINT = 8,
 		REGULATOR_TEMPERATURE = 8,
 		REGULATOR_DESCRIPTION = 8,
+		// date/time edit
+		DATE_TIME = 0,
 	};
 #endif
 

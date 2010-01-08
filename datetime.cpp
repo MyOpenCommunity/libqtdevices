@@ -11,9 +11,12 @@
 #include "datetime.h"
 #include "btbutton.h"
 #include "main.h" // bt_global::config
+#include "fontmanager.h"
 #include "skinmanager.h"
 
 #include <QLayout>
+#include <QLabel>
+#include <QLCDNumber>
 
 
 BtButton *getButton(QString img, QWidget *parent, bool autorepeat)
@@ -25,61 +28,98 @@ BtButton *getButton(QString img, QWidget *parent, bool autorepeat)
 	return btn;
 }
 
+#ifdef LAYOUT_TOUCHX
+
+QLabel *getLabel(QString text = "")
+{
+	QLabel *l = new QLabel(text);
+	l->setFont(bt_global::font->get(FontManager::DATE_TIME));
+	l->setAlignment(Qt::AlignCenter);
+
+	return l;
+}
+
+#endif
+
 BtTimeEdit::BtTimeEdit(QWidget *parent, DisplayType type)
 		: QWidget(parent),
 		_time(0, 0, 0),
 		_display_type(type)
 {
-	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	QGridLayout *main_layout = new QGridLayout(this);
 	main_layout->setSpacing(0);
 	main_layout->setContentsMargins(0, 0, 0, 0);
 
 	BtButton *btn1, *btn2, *btn3;
-	QHBoxLayout *hbox = new QHBoxLayout();
 	const QString btn_up_img = bt_global::skin->getImage("arrow_up");
 
 	btn1 = getButton(btn_up_img, this, true);
 	connect(btn1, SIGNAL(clicked()), this, SLOT(incHours()));
-	hbox->addWidget(btn1);
+	main_layout->addWidget(btn1, 0, 0);
 
 	btn2 = getButton(btn_up_img, this, true);
 	connect(btn2, SIGNAL(clicked()), this, SLOT(incMin()));
-	hbox->addWidget(btn2);
+	main_layout->addWidget(btn2, 0, 2);
 
 	if (_display_type == DISPLAY_SECONDS)
 	{
 		btn3 = getButton(btn_up_img, this, true);
 		connect(btn3, SIGNAL(clicked()), this, SLOT(incSec()));
-		hbox->addWidget(btn3);
+		main_layout->addWidget(btn3, 0, 4);
 	}
 
-	main_layout->addLayout(hbox);
+#ifdef LAYOUT_TOUCHX
+	hour = getLabel();
+	main_layout->addWidget(hour, 1, 0);
 
+	main_layout->addWidget(getLabel(":"), 1, 1);
+
+	minute = getLabel();
+	main_layout->addWidget(minute, 1, 2);
+
+	if (_display_type == DISPLAY_SECONDS)
+	{
+		main_layout->addWidget(getLabel(":"), 1, 3);
+
+		second = getLabel();
+		main_layout->addWidget(second, 1, 4);
+	}
+	else
+		second = NULL;
+
+	main_layout->setRowStretch(1, 1);
+	main_layout->setColumnMinimumWidth(1, 25);
+	if (second)
+		main_layout->setColumnMinimumWidth(3, 25);
+#else
 	num = new QLCDNumber(this);
 	num->setSegmentStyle(QLCDNumber::Flat);
 	num->setNumDigits(_display_type == DISPLAY_SECONDS ? 8 : 5);
 	num->setFrameStyle(QFrame::NoFrame);
-	main_layout->addWidget(num, 1);
+	main_layout->addWidget(num, 1, 0, 1, main_layout->columnCount());
+	main_layout->setRowStretch(1, 1);
+#endif
 
-	hbox = new QHBoxLayout();
 	const QString btn_down_img = bt_global::skin->getImage("arrow_down");
 
 	btn1 = getButton(btn_down_img, this, true);
 	connect(btn1, SIGNAL(clicked()), this, SLOT(decHours()));
-	hbox->addWidget(btn1);
+	main_layout->addWidget(btn1, 2, 0);
 
 	btn2 = getButton(btn_down_img, this, true);
 	connect(btn2, SIGNAL(clicked()), this, SLOT(decMin()));
-	hbox->addWidget(btn2);
+	main_layout->addWidget(btn2, 2, 2);
 
 	if (_display_type == DISPLAY_SECONDS)
 	{
 		btn3 = getButton(btn_down_img, this, true);
 		connect(btn3, SIGNAL(clicked()), this, SLOT(decSec()));
-		hbox->addWidget(btn3);
+		main_layout->addWidget(btn3, 2, 4);
 	}
 
-	main_layout->addLayout(hbox);
+	// add stretch for the columns containing buttons
+	for (int i = 0; i < main_layout->columnCount(); i += 2)
+		main_layout->setColumnStretch(i, 1);
 
 	displayTime();
 }
@@ -148,6 +188,13 @@ void BtTimeEdit::decSec()
 
 void BtTimeEdit::displayTime()
 {
+#ifdef LAYOUT_TOUCHX
+	hour->setText(QString("%1").arg(_time.hour(), 2, 10, QChar('0')));
+	minute->setText(QString("%1").arg(_time.minute(), 2, 10, QChar('0')));
+
+	if (second)
+		second->setText(QString("%1").arg(_time.second(), 2, 10, QChar('0')));
+#else
 	QString str;
 	if (_display_type == DISPLAY_SECONDS)
 		str.sprintf("%02u:%02u:%02u", _time.hour(), _time.minute(), _time.second());
@@ -155,6 +202,7 @@ void BtTimeEdit::displayTime()
 		str.sprintf("%u:%02u", _time.hour(), _time.minute());
 
 	num->display(str);
+#endif
 }
 
 QString BtDateEdit::FORMAT_STRING;
@@ -165,10 +213,14 @@ BtDateEdit::BtDateEdit(QWidget *parent)
 		_date(QDate::currentDate()),
 		_allow_past_dates(false)
 {
+	DateFormat fmt = static_cast<DateFormat>(bt_global::config[DATE_FORMAT].toInt());
+
 	_date = _date.addDays(1);
-	QVBoxLayout *main_layout = new QVBoxLayout(this);
+
+	QGridLayout *main_layout = new QGridLayout(this);
 	main_layout->setSpacing(0);
 	main_layout->setContentsMargins(0, 0, 0, 0);
+
 	// Buttons to increase day, month, year
 	BtButton *btn_top_left, *btn_top_center, *btn_top_right;
 	// Buttons to decrease day, month, year
@@ -179,17 +231,35 @@ BtDateEdit::BtDateEdit(QWidget *parent)
 	btn_top_center = getButton(btn_up_img, this, true);
 	btn_top_right = getButton(btn_up_img, this, true);
 
-	QHBoxLayout *h_up_box = new QHBoxLayout();
-	h_up_box->addWidget(btn_top_left);
-	h_up_box->addWidget(btn_top_center);
-	h_up_box->addWidget(btn_top_right);
-	main_layout->addLayout(h_up_box);
+	main_layout->addWidget(btn_top_left, 0, 0);
+	main_layout->addWidget(btn_top_center, 0, 2);
+	main_layout->addWidget(btn_top_right, 0, 4);
 
+#ifdef LAYOUT_TOUCHX
+	day = getLabel();
+	main_layout->addWidget(day, 1, fmt == USA_DATE ? 2 : 0);
+
+	main_layout->addWidget(getLabel("/"), 1, 1);
+
+	month = getLabel();
+	main_layout->addWidget(month, 1, fmt == USA_DATE ? 0 : 2);
+
+	main_layout->addWidget(getLabel("/"), 1, 3);
+
+	year = getLabel();
+	main_layout->addWidget(year, 1, 4);
+
+	main_layout->setRowStretch(1, 1);
+	main_layout->setColumnMinimumWidth(1, 25);
+	main_layout->setColumnMinimumWidth(3, 25);
+#else
 	date_display = new QLCDNumber(this);
 	date_display->setSegmentStyle(QLCDNumber::Flat);
 	date_display->setNumDigits(8);
 	date_display->setFrameStyle(QFrame::NoFrame);
-	main_layout->addWidget(date_display, 1);
+	main_layout->addWidget(date_display, 1, 0, 1, 5);
+	main_layout->setRowStretch(1, 1);
+#endif
 
 	const QString btn_down_img = bt_global::skin->getImage("arrow_down");
 
@@ -197,13 +267,9 @@ BtDateEdit::BtDateEdit(QWidget *parent)
 	btn_bottom_center = getButton(btn_down_img, this, true);
 	btn_bottom_right = getButton(btn_down_img, this, true);
 
-	QHBoxLayout *h_down_box = new QHBoxLayout();
-	h_down_box->addWidget(btn_bottom_left);
-	h_down_box->addWidget(btn_bottom_center);
-	h_down_box->addWidget(btn_bottom_right);
-	main_layout->addLayout(h_down_box);
-
-	DateFormat fmt = static_cast<DateFormat>(bt_global::config[DATE_FORMAT].toInt());
+	main_layout->addWidget(btn_bottom_left, 2, 0);
+	main_layout->addWidget(btn_bottom_center, 2, 2);
+	main_layout->addWidget(btn_bottom_right, 2, 4);
 
 	switch (fmt)
 	{
@@ -228,7 +294,11 @@ BtDateEdit::BtDateEdit(QWidget *parent)
 		break;
 	}
 
-	date_display->display(_date.toString(FORMAT_STRING));
+	// add stretch for the columns containing buttons
+	for (int i = 0; i < main_layout->columnCount(); i += 2)
+		main_layout->setColumnStretch(i, 1);
+
+	displayDate();
 }
 
 void BtDateEdit::setAllowPastDates(bool v)
@@ -239,7 +309,18 @@ void BtDateEdit::setAllowPastDates(bool v)
 void BtDateEdit::setDate(const QDate &d)
 {
 	_date = d;
+	displayDate();
+}
+
+void BtDateEdit::displayDate()
+{
+#ifdef LAYOUT_TOUCHX
+	year->setText(QString("%1").arg(_date.year(), 4, 10, QChar('0')));
+	month->setText(QString("%1").arg(_date.month(), 2, 10, QChar('0')));
+	day->setText(QString("%1").arg(_date.day(), 2, 10, QChar('0')));
+#else
 	date_display->display(_date.toString(FORMAT_STRING));
+#endif
 }
 
 QDate BtDateEdit::date()
