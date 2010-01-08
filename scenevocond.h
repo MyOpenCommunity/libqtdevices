@@ -13,6 +13,7 @@ class BtButton;
 class device;
 class QLabel;
 class device_condition;
+class QFrame;
 
 
 /*!
