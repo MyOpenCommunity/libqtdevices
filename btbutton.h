@@ -51,11 +51,11 @@ protected:
 	/// The pixmap to show when the button is in normal state
 	QPixmap pixmap;
 
-private:
-	bool is_enabled;
-
 	/// The pixmap to show when the button is down, cheched or on.
 	QPixmap pressed_pixmap;
+
+private:
+	bool is_enabled;
 
 	bool is_on_off; // a flag that mark if the button is a on-off button
 	bool current_status; // the current status of a on off button.
