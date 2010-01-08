@@ -133,6 +133,7 @@ namespace VCTCallPrivate
 		void handleClose();
 		void toggleCall();
 		void toggleMute();
+		void changeVolume(int value);
 
 	private:
 		FormatVideo format;

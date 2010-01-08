@@ -2,7 +2,7 @@
 #include "btbutton.h"
 #include "skinmanager.h"
 #include "generic_functions.h" //getBostikName
-#include "hardware_functions.h" // setVctContrast
+#include "hardware_functions.h" // setVctContrast, setVolume
 #include "displaycontrol.h" //forceOperativeMode
 #include "icondispatcher.h"
 #include "entryphone_device.h"
@@ -172,7 +172,7 @@ VCTCall::VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f)
 	connect(call_accept, SIGNAL(clicked()), SLOT(toggleCall()));
 
 	volume = new ItemTuning("", bt_global::skin->getImage("volume"));
-	// TODO: connect to volume settings
+	connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
 
 	mute_icon = bt_global::skin->getImage("mute");
 	mute_button = getButton(getBostikName(mute_icon, "off"));
@@ -194,6 +194,11 @@ VCTCall::VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f)
 	connect(cycle, SIGNAL(clicked()), dev, SLOT(cycleExternalUnits()));
 }
 
+void VCTCall::changeVolume(int value)
+{
+	if (call_status->connected)
+		setVolume(VOLUME_VIDEOCONTROL, value);
+}
 
 void VCTCall::refreshStatus()
 {
