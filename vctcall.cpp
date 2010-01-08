@@ -141,6 +141,24 @@ void CameraImageControl::setBrightness(int value)
 }
 
 
+VCTCallStatus::VCTCallStatus()
+{
+	init();
+	volume_status = 0;
+}
+
+void VCTCallStatus::init()
+{
+	connected = false;
+	mute = false;
+}
+
+VCTCallStatus::~VCTCallStatus()
+{
+	delete volume_status;
+}
+
+
 VCTCall::VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f)
 {
 	call_status = st;
@@ -196,6 +214,10 @@ VCTCall::VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f)
 
 void VCTCall::changeVolume(int value)
 {
+	if (call_status->volume_status)
+		delete call_status->volume_status;
+	call_status->volume_status = volume->getStatus();
+
 	if (call_status->connected)
 		setVolume(VOLUME_VIDEOCONTROL, value);
 }
@@ -203,6 +225,14 @@ void VCTCall::changeVolume(int value)
 void VCTCall::refreshStatus()
 {
 	call_accept->setStatus(call_status->connected);
+	if (call_status->connected)
+		mute_button->enable();
+	else
+		mute_button->disable();
+
+	volume->setStatus(call_status->volume_status);
+	// TODO: sistemare l'enabling button! In questo modo non potra' mai funzionare!
+	mute_button->setStatus(call_status->mute);
 }
 
 void VCTCall::toggleMute()
@@ -210,6 +240,7 @@ void VCTCall::toggleMute()
 	bool st = mute_button->getStatus();
 	setVolume(VOLUME_MIC, st ? 0 : 1);
 	mute_button->setStatus(!st);
+	call_status->mute = !st;
 }
 
 void VCTCall::toggleCall()
@@ -217,15 +248,9 @@ void VCTCall::toggleCall()
 	call_status->connected = !call_status->connected;
 	refreshStatus();
 	if (call_status->connected)
-	{
 		dev->answerCall();
-		mute_button->enable();
-	}
 	else
-	{
-		mute_button->disable();
 		handleClose();
-	}
 }
 
 void VCTCall::startVideo()
@@ -300,6 +325,8 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 	call_status = new VCTCallStatus;
 
 	vct_call = new VCTCall(d, call_status, VCTCall::NORMAL_VIDEO);
+	call_status->volume_status = vct_call->volume->getStatus();
+
 	connect(vct_call, SIGNAL(callClosed()), SLOT(handleClose()));
 	connect(vct_call, SIGNAL(incomingCall()), SLOT(showPage()));
 

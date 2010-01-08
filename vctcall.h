@@ -11,11 +11,12 @@
 
 
 class EntryphoneDevice;
+class ItemTuning;
+class ItemTuningStatus;
 class QDomNode;
 class QHBoxLayout;
 class QLabel;
 class QShowEvent;
-class ItemTuning;
 
 
 class EnablingButton : public BtButton
@@ -79,13 +80,17 @@ namespace VCTCallPrivate
 	struct VCTCallStatus
 	{
 		bool connected;
+		bool mute;
+		ItemTuningStatus *volume_status;
 
-		VCTCallStatus() { init(); }
+		VCTCallStatus();
 
-		void init()
-		{
-			connected = false;
-		}
+		// This method is used to initialize the status of the call every time
+		// a new videocall is performed (so, attributes like the volume of the
+		// audio are not set in the init method because they must to be
+		// preserved betweeen different calls).
+		void init();
+		~VCTCallStatus();
 	};
 
 
