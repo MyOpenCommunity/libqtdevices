@@ -580,9 +580,6 @@ void TempLightFixed::status_changed(const StatusList &sl)
 				stopTimer();
 				break;
 			}
-			// ignore strange frames (taken from old code)
-			if ((t.hour() == 255) && (t.minute() == 255) && (t.second() == 255))
-				break;
 			// convert t to seconds, then compute the number of slices
 			int time = qRound((t.hour() * 3600 + t.minute() * 60 + t.second()) * TLF_TIME_STATES / total_time);
 			setElapsedTime(time);
