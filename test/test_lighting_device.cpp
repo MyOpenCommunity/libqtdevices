@@ -196,6 +196,14 @@ void TestLightingDevice::receiveVariableTiming()
 	t.check(timing, tm);
 }
 
+void TestLightingDevice::receiveInvalidVariableTiming()
+{
+	DeviceTester t(dev, LightingDevice::DIM_VARIABLE_TIMING);
+	QString timing = QString("*#1*%1*2*%2*%3*%4##").arg(dev->where)
+		.arg(255).arg(255).arg(255);
+
+	t.checkSignals(timing, 0);
+}
 
 void TestDimmer::initTestCase()
 {

@@ -43,6 +43,8 @@ private slots:
 	void receiveLightOnOffUnknownExt();
 	void receiveFixedTiming();
 	void receiveVariableTiming();
+	void receiveInvalidVariableTiming();
+
 private:
 	void checkPullUnknown();
 
