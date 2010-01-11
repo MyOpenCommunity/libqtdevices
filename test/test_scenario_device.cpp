@@ -100,3 +100,19 @@ void TestScenarioDevice::receiveGenericModuleIsProgramming()
 	QString frame = QString("*0*40*%1##").arg(where_other);
 	t.checkSignals(frame, 1);
 }
+
+void TestScenarioDevice::receiveGenericStopProgramming()
+{
+	DeviceTester t(dev, ScenarioDevice::DIM_START);
+	QString frame = QString("*0*41*%1##").arg(dev->where);
+	QPair<bool, int> check_value(false, ScenarioDevice::ALL_SCENARIOS);
+	t.check(frame, check_value);
+}
+
+void TestScenarioDevice::receiveGenericStartProgramming()
+{
+	DeviceTester t(dev, ScenarioDevice::DIM_START);
+	QString frame = QString("*0*40*%1##").arg(dev->where);
+	QPair<bool, int> check_value(true, ScenarioDevice::ALL_SCENARIOS);
+	t.check(frame, check_value);
+}
