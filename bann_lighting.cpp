@@ -552,6 +552,7 @@ void TempLightFixed::setOn()
 	dev->variableTiming(lighting_time.hour(), lighting_time.minute(), lighting_time.second());
 	// TODO: is this ok? does it update correctly the timer slice the first time?
 	request_timer.start();
+	QTimer::singleShot(100, this, SLOT(updateTimerLabel()));
 	valid_update = false;
 	update_retries = 0;
 }
