@@ -319,6 +319,17 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	// avoid moving of fancoil buttons bar
 	main_layout.addStretch();
 
+	// layout for the control buttons and fancoil icons
+	bottom_icons.setAlignment(Qt::AlignHCenter);
+	bottom_icons.setSpacing(10);
+
+	main_layout.addLayout(&bottom_icons);
+
+#ifdef LAYOUT_TOUCHX
+	bottom_icons.addWidget(toggle_mode);
+	bottom_icons.setContentsMargins(0, 0, 0, 60);
+#endif
+
 	switch (temp_scale)
 	{
 	case CELSIUS:
@@ -558,14 +569,6 @@ PageFancoil::PageFancoil(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice 
 
 void PageFancoil::createFancoilButtons()
 {
-	QHBoxLayout *hbox = new QHBoxLayout();
-
-	hbox->setAlignment(Qt::AlignHCenter);
-	hbox->setSpacing(10);
-#ifdef LAYOUT_TOUCHX
-	hbox->setContentsMargins(0, 0, 0, 60);
-#endif
-
 	for (int id = 0; id < 4; ++id)
 	{
 		QString path = bt_global::skin->getImage(QString("fan_%1_off").arg(id + 1));
@@ -575,13 +578,12 @@ void PageFancoil::createFancoilButtons()
 		btn->setPressedImage(path_pressed);
 		btn->setCheckable(true);
 
-		hbox->addWidget(btn);
+		bottom_icons.addWidget(btn);
 		fancoil_buttons.addButton(btn, id);
 
 		speed_to_btn_tbl[(id + 1) % 4] = id;
 		btn_to_speed_tbl[id] = (id + 1) % 4;
 	}
-	main_layout.insertLayout(-1, hbox);
 }
 
 void PageFancoil::setFancoilStatus(int status)

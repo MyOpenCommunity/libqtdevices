@@ -176,6 +176,7 @@ protected:
 	// ie. 0 = (rotella su) 0, 1 = 1, ... , 11 = -1, 12 = -2, 13 = -3, 4 = Off, 5 = Antigelo
 	QString local_temp;
 	QLabel *local_temp_label;
+	QHBoxLayout bottom_icons;
 
 	QDomNode conf_root;
 	ControlledProbeDevice *dev;
