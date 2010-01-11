@@ -43,6 +43,7 @@ PageTitleWidget::PageTitleWidget(const QString &label, int height)
 	current_page->setAlignment(Qt::AlignTop|Qt::AlignRight);
 
 	QHBoxLayout *t = new QHBoxLayout(this);
+	t->setContentsMargins(10, 0, 10, 10);
 	t->addStretch(1);
 	t->addWidget(title);
 	t->addWidget(current_page, 1);

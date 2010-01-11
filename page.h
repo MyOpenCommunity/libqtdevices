@@ -63,7 +63,7 @@ class Page : public StyledWidget
 friend class BtMain;
 Q_OBJECT
 public:
-	static const int TITLE_HEIGHT = 60;
+	static const int TITLE_HEIGHT = 70;
 
 	// Indicates subsystem pagetype. For now it is used in touchx top_nav_bar
 	// TODO: is this the same as pagSecLiv in main.h?
