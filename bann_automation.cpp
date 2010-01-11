@@ -105,10 +105,9 @@ SecureInterblockedActuator::SecureInterblockedActuator(QWidget *parent, const QD
 		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP,
 		getTextChild(config_node, "descr"));
 
-	connect(right_button, SIGNAL(pressed()), SLOT(sendOpen()));
-	connect(left_button, SIGNAL(pressed()), SLOT(sendClose()));
-	connect(right_button, SIGNAL(released()), SLOT(buttonReleased()));
-	connect(left_button, SIGNAL(released()), SLOT(buttonReleased()));
+	is_any_button_pressed = false;
+
+	connectButtons();
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
@@ -120,16 +119,19 @@ void SecureInterblockedActuator::inizializza(bool forza)
 void SecureInterblockedActuator::sendOpen()
 {
 	dev->goUp();
+	is_any_button_pressed = true;
 }
 
 void SecureInterblockedActuator::sendClose()
 {
 	dev->goDown();
+	is_any_button_pressed = true;
 }
 
 void SecureInterblockedActuator::buttonReleased()
 {
 	QTimer::singleShot(500, this, SLOT(sendStop()));
+	is_any_button_pressed = false;
 }
 
 void SecureInterblockedActuator::sendStop()
@@ -146,26 +148,52 @@ void SecureInterblockedActuator::status_changed(const StatusList &sl)
 		{
 		case AutomationDevice::DIM_UP:
 			setState(OPENING);
-			// see below for explanation
-			right_button->enable();
-			right_button->setStatus(true);
 			left_button->disable();
+			right_button->enable();
+			changeButtonStatus(right_button);
 			break;
 		case AutomationDevice::DIM_DOWN:
 			setState(CLOSING);
 			right_button->disable();
 			left_button->enable();
-			// Icons are changed above, but no mousePressEvent is issued because the button is
-			// already down, so we need to change the icon manually
-			left_button->setStatus(true);
+			changeButtonStatus(left_button);
 			break;
 		case AutomationDevice::DIM_STOP:
 			setState(STOP);
 			right_button->enable();
 			left_button->enable();
+			if (!is_any_button_pressed)
+			{
+				right_button->disconnect();
+				left_button->disconnect();
+				connectButtons();
+			}
 			break;
 		}
 		++it;
+	}
+}
+
+void SecureInterblockedActuator::connectButtons()
+{
+	connect(right_button, SIGNAL(pressed()), SLOT(sendOpen()));
+	connect(left_button, SIGNAL(pressed()), SLOT(sendClose()));
+	connect(right_button, SIGNAL(released()), SLOT(buttonReleased()));
+	connect(left_button, SIGNAL(released()), SLOT(buttonReleased()));
+}
+
+void SecureInterblockedActuator::changeButtonStatus(BtButton *btn)
+{
+	if (is_any_button_pressed)
+	{
+		// Icons are changed above, but no mousePressEvent is issued because the button is
+		// already down, so we need to change the icon manually
+		btn->setStatus(true);
+	}
+	else
+	{
+		btn->disconnect();
+		connect(btn, SIGNAL(clicked()), SLOT(sendStop()));
 	}
 }
 

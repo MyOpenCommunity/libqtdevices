@@ -51,7 +51,10 @@ private slots:
 	void status_changed(const StatusList &sl);
 
 private:
+	void connectButtons();
+	void changeButtonStatus(BtButton *btn);
 	AutomationDevice *dev;
+	bool is_any_button_pressed;
 };
 
 class GateEntryphoneActuator : public BannSinglePuls
