@@ -120,11 +120,14 @@ class PageSimpleProbe : public NavigationPage
 Q_OBJECT
 public:
 	PageSimpleProbe(QDomNode n, TemperatureScale scale = CELSIUS);
+
 public slots:
 	virtual void status_changed(const StatusList &sl);
+
 protected:
 	void setTemperature(unsigned temp);
 	void setDescription(const QString &descr);
+
 protected:
 	/// Measured temperature label and string
 	QLabel *temp_label;
@@ -132,6 +135,8 @@ protected:
 	QLabel *descr_label;
 	/// Temperature scale
 	TemperatureScale temp_scale;
+	// button to toggle manual/automatic mode
+	BtButton *toggle_mode;
 };
 
 
@@ -225,8 +230,10 @@ Q_OBJECT
 public:
 	PageTermoReg(QDomNode n);
 	virtual ThermalDevice *dev() = 0;
+
 public slots:
 	virtual void status_changed(const StatusList &sl);
+
 protected:
 	void showDescription(const QString &desc);
 	void hideDescription();
@@ -292,6 +299,7 @@ protected:
 	QMap<QString, QString> programs, scenarios;
 
 	TemperatureScale temp_scale;
+
 private slots:
 	/**
 	 * The following slots are used to control the status of input for holiday/weekend mode.

@@ -213,7 +213,14 @@ PageSimpleProbe::PageSimpleProbe(QDomNode n, TemperatureScale scale)
 	setDescription(n.namedItem("descr").toElement().text());
 
 	createNavigationBar(bt_global::skin->getImage("probe_manual"));
-	nav_bar->forward_button->hide();
+#ifdef LAYOUT_BTOUCH
+	toggle_mode = nav_bar->forward_button;
+#else
+	toggle_mode = new BtButton;
+	toggle_mode->setImage(bt_global::skin->getImage("probe_manual"));
+#endif
+
+	toggle_mode->hide();
 }
 
 void PageSimpleProbe::setDescription(const QString &descr)
@@ -418,7 +425,12 @@ void PageProbe::updateControlState()
 	local_temp_label->setVisible(!isOff && !isAntigelo && local_temp != "0");
 	icon_off->setVisible(isOff);
 	icon_antifreeze->setVisible(isAntigelo);
-	nav_bar->forward_button->setVisible(probe_type == THERMO_Z99 && !isOff && !isAntigelo);
+#ifdef LAYOUT_BTOUCH
+	toggle_mode->setVisible(probe_type == THERMO_Z99 && !isOff && !isAntigelo);
+#else
+	// TODO needs to be checked after ticket #17 is resolved
+	toggle_mode->setVisible(probe_type == THERMO_Z99);
+#endif
 	local_temp_label->setText(local_temp);
 }
 
@@ -501,12 +513,12 @@ void PageProbe::status_changed(const StatusList &sl)
 		{
 		case ControlledProbeDevice::ST_MANUAL:
 			status = MANUAL;
-			nav_bar->forward_button->setImage(probe_icon_auto);
+			toggle_mode->setImage(probe_icon_auto);
 			update = true;
 			break;
 		case ControlledProbeDevice::ST_AUTO:
 			status = AUTOMATIC;
-			nav_bar->forward_button->setImage(probe_icon_manual);
+			toggle_mode->setImage(probe_icon_manual);
 			update = true;
 			break;
 		case ControlledProbeDevice::ST_PROTECTION:
