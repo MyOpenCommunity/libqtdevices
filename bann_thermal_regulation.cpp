@@ -1022,9 +1022,25 @@ PageTermoReg::PageTermoReg(QDomNode n)
 
 	mode_icon = getLabelWithPixmap(bt_global::skin->getImage("regulator"), this, Qt::AlignHCenter);
 
+	QHBoxLayout *hbox = new QHBoxLayout;
+	hbox->setAlignment(Qt::AlignCenter);
+
+	hbox->addStretch(1);
+	hbox->addWidget(season_icon, 1);
+
+#ifdef LAYOUT_BTOUCH
+	hbox->addStretch(1);
+#else
+	BtButton *settings = new BtButton;
+	settings->setImage(bt_global::skin->getImage("settings"));
+	connect(settings, SIGNAL(clicked()), SLOT(showSettingsMenu()));
+
+	hbox->addWidget(settings, 1);
+#endif
+
 	main_layout.addWidget(mode_icon);
 	main_layout.addWidget(description_label);
-	main_layout.addWidget(season_icon);
+	main_layout.addLayout(hbox);
 	main_layout.addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
 	main_layout.setAlignment(Qt::AlignHCenter);
 
@@ -1035,6 +1051,8 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
 
 	createNavigationBar(bt_global::skin->getImage("settings"));
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
+
 	showDescription(description);
 }
 
@@ -1226,6 +1244,13 @@ void PageTermoReg::createButtonsBanners(SettingsPage *settings, ThermalDevice *d
 	connect(summer_winter, SIGNAL(clicked()), SLOT(showPage()));
 }
 
+void PageTermoReg::showSettingsMenu()
+{
+	settings->resetIndex();
+	settings->showPage();
+}
+
+
 PageTermoReg4z::PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device)
 	: PageTermoReg(n)
 {
@@ -1233,18 +1258,11 @@ PageTermoReg4z::PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device)
 	connect(_dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
 	createSettingsMenu(n);
-	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
 }
 
 ThermalDevice *PageTermoReg4z::dev()
 {
 	return _dev;
-}
-
-void PageTermoReg4z::showSettingsMenu()
-{
-	settings->resetIndex();
-	settings->showPage();
 }
 
 void PageTermoReg4z::createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice4Zones *_dev)
@@ -1310,7 +1328,6 @@ PageTermoReg99z::PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device)
 	connect(_dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
 	createSettingsMenu(n);
-	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
 }
 
 ThermalDevice *PageTermoReg99z::dev()
@@ -1325,12 +1342,6 @@ void PageTermoReg99z::setSeason(Season new_season)
 	else
 		qWarning("Received season is not SUMMER or WINTER, ignoring");
 	PageTermoReg::setSeason(new_season);
-}
-
-void PageTermoReg99z::showSettingsMenu()
-{
-	settings->resetIndex();
-	settings->showPage();
 }
 
 void PageTermoReg99z::createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice99Zones *_dev)

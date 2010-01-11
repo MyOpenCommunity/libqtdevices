@@ -351,6 +351,10 @@ private slots:
 	void manualSelected(unsigned temp);
 
 	void weekProgramSelected(int program);
+
+	// display the settings menu page
+	void showSettingsMenu();
+
 private:
 	enum weekend_t
 	{
@@ -417,7 +421,6 @@ private:
 	ThermalDevice4Zones *_dev;
 private slots:
 	void manualTimedSelected(BtTime time, int temp);
-	void showSettingsMenu();
 };
 
 
@@ -431,18 +434,20 @@ Q_OBJECT
 public:
 	PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device);
 	virtual ThermalDevice *dev();
+
 protected:
 	virtual void createSettingsMenu(QDomNode regulator_node);
 	virtual void setSeason(Season new_season);
 	void createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice99Zones *dev);
+
 private:
 	void scenarioSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev);
 
 	ThermalDevice99Zones *_dev;
 	ScenarioMenu *scenario_menu;
+
 private slots:
 	void scenarioSelected(int scenario);
-	void showSettingsMenu();
 };
 
 
