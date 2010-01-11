@@ -96,10 +96,12 @@ void ScenarioDevice::manageFrame(OpenMsg &msg)
 		break;
 	case START_PROG:
 	{
-		// TODO: use SCENARIO_ALL to indicate we are locking the whole device
+		// use SCENARIO_ALL to indicate we are locking the whole device
 		ScenarioProgrammingStatus p;
 		if (what_arg_count > 0)
 			p = ScenarioProgrammingStatus(true, msg.whatArgN(0));
+		else
+			p = ScenarioProgrammingStatus(true, ALL_SCENARIOS);
 		status_index = DIM_START;
 		v.setValue(p);
 	}
