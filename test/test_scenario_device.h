@@ -23,6 +23,7 @@ private slots:
 	void receiveStopProgramming();
 	void receiveLockDevice();
 	void receiveUnlockDevice();
+	void receiveGenericModuleIsProgramming();
 
 private:
 	ScenarioDevice *dev;
