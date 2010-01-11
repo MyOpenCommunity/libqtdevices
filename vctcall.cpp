@@ -286,7 +286,7 @@ void VCTCall::status_changed(const StatusList &sl)
 	{
 		switch (it.key())
 		{
-		case EntryphoneDevice::INCOMING_CALL:
+		case EntryphoneDevice::CALL:
 			startVideo();
 			emit incomingCall();
 			break;

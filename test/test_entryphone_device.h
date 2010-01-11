@@ -24,6 +24,8 @@ private slots:
 	void sendOpenLock();
 	void sendReleaseLock();
 	void sendCycleExternalUnits();
+	void sendInternalIntercomCall();
+	void sendExternalIntercomCall();
 
 	void receiveIncomingCall();
 	void receiveCallerAddress();

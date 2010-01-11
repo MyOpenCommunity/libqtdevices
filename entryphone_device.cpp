@@ -41,6 +41,18 @@ void EntryphoneDevice::answerCall() const
 	sendCommand(what);
 }
 
+void EntryphoneDevice::internalIntercomCall(QString _where) const
+{
+	QString what = QString("%1#6#2#%2").arg(CALL).arg(where);
+	sendCommand(what, _where);
+}
+
+void EntryphoneDevice::externalIntercomCall(QString _where) const
+{
+	QString what = QString("%1#7#2#%2").arg(CALL).arg(where);
+	sendCommand(what, _where);
+}
+
 void EntryphoneDevice::cameraOn(QString _where) const
 {
 	QString what = QString("%1#%2").arg(AUTOSWITCHING).arg(where);
@@ -99,7 +111,7 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 	bool send_status_update = true;
 	switch (what)
 	{
-	case INCOMING_CALL:
+	case CALL:
 		Q_ASSERT_X(msg.whatSubArgCnt() < 2, "EntryphoneDevice::manageFrame",
 			"Incomplete open frame received");
 		kind = msg.whatArgN(0);

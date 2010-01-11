@@ -11,7 +11,7 @@ class OpenMsg;
  * This device has two states: not connected and connected.
  *
  * Connected state:
- * The device switces to the connected state when an INCOMING_CALL frame arrives; in this state,
+ * The device switces to the connected state when a CALL frame arrives; in this state,
  * the field 'where' in incoming frames contains the address of the sender, not the device own address.
  *
  * Unconnected state:
@@ -27,7 +27,7 @@ Q_OBJECT
 public:
 	enum Type
 	{
-		INCOMING_CALL = 1,
+		CALL = 1,
 		END_OF_CALL = 3,
 	};
 	// WARNING: this where has already indications about internal/external address
@@ -46,6 +46,8 @@ public slots:
 	void openLock() const;
 	void releaseLock() const;
 	void cycleExternalUnits() const;
+	void internalIntercomCall(QString _where) const; // an intercom between devices among the same SCS bus.
+	void externalIntercomCall(QString _where) const; // an intercom between devices in different SCS bus.
 
 private:
 	void resetCallState();

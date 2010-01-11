@@ -134,7 +134,7 @@ void TestEntryphoneDevice::sendReleaseLock()
 
 void TestEntryphoneDevice::receiveIncomingCall()
 {
-	DeviceTester t(dev, EntryphoneDevice::INCOMING_CALL);
+	DeviceTester t(dev, EntryphoneDevice::CALL);
 	QString frame = QString("*8*1#%1#%2#21*%3##").arg(1).arg(4).arg(dev->where);
 	t.check(frame, true);
 }
@@ -163,3 +163,22 @@ void TestEntryphoneDevice::sendCycleExternalUnits()
 	QString frame = QString("*8*6#%1*%2##").arg(dev->where).arg(caller_addr);
 	QCOMPARE(server->frameCommand(), frame);
 }
+
+void TestEntryphoneDevice::sendInternalIntercomCall()
+{
+	QString where = "16";
+	dev->internalIntercomCall(where);
+	client_command->flush();
+	QString frame = QString("*8*1#6#2#%1*%2##").arg(dev->where).arg(where);
+	QCOMPARE(server->frameCommand(), frame);
+}
+
+void TestEntryphoneDevice::sendExternalIntercomCall()
+{
+	QString where = "16";
+	dev->externalIntercomCall(where);
+	client_command->flush();
+	QString frame = QString("*8*1#7#2#%1*%2##").arg(dev->where).arg(where);
+	QCOMPARE(server->frameCommand(), frame);
+}
+
