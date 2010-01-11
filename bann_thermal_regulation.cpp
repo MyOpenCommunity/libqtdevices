@@ -198,9 +198,12 @@ NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
 PageSimpleProbe::PageSimpleProbe(QDomNode n, TemperatureScale scale)
 	: temp_scale(scale)
 {
-	descr_label = new QLabel(this);
+	QLabel *descr_label = new QLabel(n.namedItem("descr").toElement().text());
 	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignHCenter);
+#ifdef LAYOUT_TOUCHX
+	descr_label->setFixedHeight(TITLE_HEIGHT);
+#endif
 
 	main_layout.addWidget(descr_label);
 	main_layout.setContentsMargins(0, 0, 0, 0);
@@ -214,7 +217,6 @@ PageSimpleProbe::PageSimpleProbe(QDomNode n, TemperatureScale scale)
 	main_layout.setAlignment(Qt::AlignHCenter);
 
 	setTemperature(1235);
-	setDescription(n.namedItem("descr").toElement().text());
 
 	createNavigationBar(bt_global::skin->getImage("probe_manual"));
 #ifdef LAYOUT_BTOUCH
@@ -225,11 +227,6 @@ PageSimpleProbe::PageSimpleProbe(QDomNode n, TemperatureScale scale)
 #endif
 
 	toggle_mode->hide();
-}
-
-void PageSimpleProbe::setDescription(const QString &descr)
-{
-	descr_label->setText(descr);
 }
 
 void PageSimpleProbe::setTemperature(unsigned temp)
@@ -626,15 +623,21 @@ void PageFancoil::status_changed(const StatusList &sl)
 PageManual::PageManual(ThermalDevice *_dev, TemperatureScale scale)
 	: temp_scale(scale), dev(_dev), setpoint_delta(5)
 {
-	descr_label = new QLabel(this);
+	QLabel *descr_label = new QLabel(tr("Manual"));
 	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 
 	content.setLayout(&main_layout);
+#ifdef LAYOUT_TOUCHX
+	descr_label->setFixedHeight(TITLE_HEIGHT);
+
+	main_layout.setSpacing(10);
+	main_layout.setContentsMargins(30, 0, 30, 30);
+#else
 	main_layout.setSpacing(0);
 	main_layout.setContentsMargins(0, 0, 0, 10);
+#endif
 	main_layout.addWidget(descr_label);
-	main_layout.addStretch(1);
 
 	switch (temp_scale)
 	{
@@ -679,8 +682,24 @@ PageManual::PageManual(ThermalDevice *_dev, TemperatureScale scale)
 	hbox->addWidget(btn);
 
 	main_layout.addLayout(hbox);
+	main_layout.addStretch();
 
-	nav_bar = new ThermalNavigation;
+#ifdef LAYOUT_BTOUCH
+	ThermalNavigation *nav_bar = new ThermalNavigation;
+#else
+	QHBoxLayout *ok_layout = new QHBoxLayout;
+	BtButton *ok = new BtButton;
+	ok->setImage(bt_global::skin->getImage("ok"));
+
+	ok_layout->addWidget(ok, 0, Qt::AlignRight);
+
+	main_layout.addLayout(ok_layout);
+
+	connect(ok, SIGNAL(clicked()), SLOT(performAction()));
+
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+#endif
 	buildPage(&content, nav_bar);
 
 	connect(nav_bar, SIGNAL(okClick()), SLOT(performAction()));
@@ -689,7 +708,6 @@ PageManual::PageManual(ThermalDevice *_dev, TemperatureScale scale)
 	connect(dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
 
-	setDescription(tr("Manual"));
 	updateTemperature();
 }
 
@@ -728,11 +746,6 @@ void PageManual::decSetpoint()
 	else
 		temp -= setpoint_delta;
 	updateTemperature();
-}
-
-void PageManual::setDescription(const QString &descr)
-{
-	descr_label->setText(descr);
 }
 
 void PageManual::updateTemperature()
@@ -783,16 +796,20 @@ PageManualTimed::PageManualTimed(ThermalDevice4Zones *_dev, TemperatureScale sca
 	dev(_dev)
 {
 	time_edit = new BtTimeEdit(this);
-	// TODO refactor widget creation
-	main_layout.insertWidget(main_layout.count() - 1, time_edit);
+#ifdef LAYOUT_TOUCHX
+	main_layout.insertWidget(2, time_edit, 0, Qt::AlignHCenter);
+#else
+	main_layout.insertWidget(2, time_edit);
+#endif
 
 	connect(dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
-	connect(nav_bar, SIGNAL(okClick()), SLOT(performAction()));
 }
 
 void PageManualTimed::performAction()
 {
+	PageManual::performAction();
+
 	unsigned bt_temp;
 	switch (temp_scale)
 	{

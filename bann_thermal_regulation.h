@@ -126,13 +126,10 @@ public slots:
 
 protected:
 	void setTemperature(unsigned temp);
-	void setDescription(const QString &descr);
 
 protected:
 	/// Measured temperature label and string
 	QLabel *temp_label;
-	/// Zone description label and string
-	QLabel *descr_label;
 	/// Temperature scale
 	TemperatureScale temp_scale;
 	// button to toggle manual/automatic mode
@@ -483,29 +480,34 @@ class PageManual : public Page
 Q_OBJECT
 public:
 	PageManual(ThermalDevice *_dev, TemperatureScale scale = CELSIUS);
+
 public slots:
 	void status_changed(const StatusList &sl);
+
 protected:
-	void setDescription(const QString &descr);
 	void updateTemperature();
+
+protected slots:
+	virtual void performAction();
+
 protected:
 	QWidget content;
 	QVBoxLayout main_layout;
 	/// The setpoint temperature set on the interface. The scale is given by temp_scale
 	int temp;
 	TemperatureScale temp_scale;
-	ThermalNavigation *nav_bar;
+
 private:
-	QLabel *descr_label;
 	QLabel *temp_label;
 	ThermalDevice *dev;
 	int maximum_manual_temp;
 	int minimum_manual_temp;
 	unsigned setpoint_delta;
+
 private slots:
 	void incSetpoint();
 	void decSetpoint();
-	void performAction();
+
 signals:
 	void temperatureSelected(unsigned);
 };
@@ -521,12 +523,15 @@ public:
 	PageManualTimed(ThermalDevice4Zones *_dev, TemperatureScale scale = CELSIUS);
 	void setMaxHours(int max);
 	void setMaxMinutes(int max);
+
+protected slots:
+	virtual void performAction();
+
 private:
 	ThermalDevice4Zones *dev;
 	/// TimeEdit widget
 	BtTimeEdit *time_edit;
-private slots:
-	void performAction();
+
 signals:
 	void timeAndTempSelected(BtTime, int);
 };
