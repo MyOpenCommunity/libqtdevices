@@ -1,6 +1,7 @@
 #include "scenario_device.h"
 
 #include "openmsg.h"
+#include <QDebug>
 
 enum
 {
@@ -72,10 +73,14 @@ void ScenarioDevice::requestStatus()
 
 void ScenarioDevice::manageFrame(OpenMsg &msg)
 {
-	if (QString::fromStdString(msg.whereFull()) != where)
+	int what = msg.what();
+	int what_arg_count = msg.whatArgCnt();
+	// Here we need to check if incoming frame is in the form
+	// *0*40*<where>##
+	// since this locks all devices (not only our own address).
+	if ((!(what == START_PROG && what_arg_count == 0)) && (QString::fromStdString(msg.whereFull()) != where))
 		return;
 
-	int what = msg.what();
 	QVariant v;
 	StatusList sl;
 	int status_index;
@@ -91,16 +96,21 @@ void ScenarioDevice::manageFrame(OpenMsg &msg)
 		break;
 	case START_PROG:
 	{
-		// TODO: here I'm discarding the scenario being modified.
-		// Does GUI need to know it?
-		ScenarioProgrammingStatus p (true, msg.whatArgN(0));
+		// TODO: use SCENARIO_ALL to indicate we are locking the whole device
+		ScenarioProgrammingStatus p;
+		if (what_arg_count > 0)
+			p = ScenarioProgrammingStatus(true, msg.whatArgN(0));
 		status_index = DIM_START;
 		v.setValue(p);
 	}
 		break;
 	case STOP_PROG:
 	{
-		ScenarioProgrammingStatus p (false, msg.whatArgN(0));
+		// TODO: use SCENARIO_ALL when receiving
+		// *0*41*<where>## frames
+		ScenarioProgrammingStatus p;
+		if (what_arg_count > 0)
+			p = ScenarioProgrammingStatus(false, msg.whatArgN(0));
 		status_index = DIM_START;
 		v.setValue(p);
 	}
