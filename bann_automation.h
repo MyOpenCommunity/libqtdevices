@@ -35,7 +35,15 @@ private:
 	AutomationDevice *dev;
 };
 
-
+/**
+ * Send open/close frame on button press and send stop on button release.
+ *
+ * Banner behaviour must change (both graphically and logically) depending on who was the origin of the action.
+ * In case of update from bus, the icon must be STOP not pressed and a stop frame must be sent when the button
+ * is clicked.
+ * In case of command sent after the user pressed the touch screen, the icon must be STOP pressed and a stop
+ * frame must be sent on button release.
+ */
 class SecureInterblockedActuator : public BannOpenClose
 {
 Q_OBJECT
