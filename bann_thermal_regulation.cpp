@@ -201,9 +201,6 @@ PageSimpleProbe::PageSimpleProbe(QDomNode n, TemperatureScale scale)
 	QLabel *descr_label = new QLabel(n.namedItem("descr").toElement().text());
 	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignHCenter);
-#ifdef LAYOUT_TOUCHX
-	descr_label->setFixedHeight(TITLE_HEIGHT);
-#endif
 
 	main_layout.addWidget(descr_label);
 	main_layout.setContentsMargins(0, 0, 0, 0);
