@@ -98,11 +98,12 @@ void ScenarioDevice::manageFrame(OpenMsg &msg)
 		break;
 	case STOP_PROG:
 	{
-		// TODO: use SCENARIO_ALL when receiving
-		// *0*41*<where>## frames
+		// use SCENARIO_ALL when receiving *0*41*<where>## frames
 		ScenarioProgrammingStatus p;
 		if (what_arg_count > 0)
 			p = ScenarioProgrammingStatus(false, msg.whatArgN(0));
+		else
+			p = ScenarioProgrammingStatus(false, ALL_SCENARIOS);
 		status_index = DIM_START;
 		v.setValue(p);
 	}
