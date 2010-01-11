@@ -1276,7 +1276,7 @@ void PageTermoReg4z::createSettingsItem(QDomNode item, SettingsPage *settings, T
 	switch (id)
 	{
 	case BANNER_MANUAL_TIMED_MODE:
-		manualSettings(item, settings, _dev);
+		timedManualSettings(item, settings, _dev);
 		break;
 	default:
 		PageTermoReg::createSettingsItem(item, settings, _dev);
