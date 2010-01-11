@@ -105,7 +105,12 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 		{
 			Q_ASSERT_X(msg.whatArgCnt() == 3, "LightingDevice::parseFrame",
 				"Variable timing message has more than 3 what args");
-			BtTime t(msg.whatArgN(0), msg.whatArgN(1), msg.whatArgN(2));
+			int hour = msg.whatArgN(0);
+			int minute = msg.whatArgN(1);
+			int second = msg.whatArgN(2);
+			if (hour == 255 && minute == 255 && second == 255)
+				return;
+			BtTime t(hour, minute, second);
 			v.setValue(t);
 			status_index = what;
 		}
