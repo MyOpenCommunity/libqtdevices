@@ -180,7 +180,11 @@ NavigationPage::NavigationPage()
 
 NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
 {
+#ifdef LAYOUT_BTOUCH
 	nav_bar = new NavigationBar(icon);
+#else
+	nav_bar = new NavigationBar();
+#endif
 
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(backClick()));
 	connect(nav_bar, SIGNAL(upClick()), SIGNAL(upClick()));
