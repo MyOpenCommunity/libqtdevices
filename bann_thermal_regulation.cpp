@@ -72,14 +72,14 @@ ThermalNavigation::ThermalNavigation(QWidget *parent)
 	l->setSpacing(0);
 
 	BtButton *back = new BtButton();
-	connect(back, SIGNAL(clicked()), SIGNAL(backClicked()));
+	connect(back, SIGNAL(clicked()), SIGNAL(backClick()));
 	back->setImage(bt_global::skin->getImage("back"));
 	l->addWidget(back);
 
 	l->addStretch(1);
 
 	BtButton *ok = new BtButton();
-	connect(ok, SIGNAL(clicked()), SIGNAL(okClicked()));
+	connect(ok, SIGNAL(clicked()), SIGNAL(okClick()));
 	ok->setImage(bt_global::skin->getImage("ok"));
 	l->addWidget(ok);
 }
@@ -683,8 +683,8 @@ PageManual::PageManual(ThermalDevice *_dev, TemperatureScale scale)
 	nav_bar = new ThermalNavigation;
 	buildPage(&content, nav_bar);
 
-	connect(nav_bar, SIGNAL(okClicked()), SLOT(performAction()));
-	connect(nav_bar, SIGNAL(backClicked()), SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(okClick()), SLOT(performAction()));
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
 	connect(dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
@@ -788,7 +788,7 @@ PageManualTimed::PageManualTimed(ThermalDevice4Zones *_dev, TemperatureScale sca
 
 	connect(dev, SIGNAL(status_changed(const StatusList &)),
 		SLOT(status_changed(const StatusList &)));
-	connect(nav_bar, SIGNAL(okClicked()), SLOT(performAction()));
+	connect(nav_bar, SIGNAL(okClick()), SLOT(performAction()));
 }
 
 void PageManualTimed::performAction()
@@ -835,8 +835,8 @@ PageSetDate::PageSetDate()
 	ThermalNavigation *nav = new ThermalNavigation;
 	buildPage(&content, nav);
 
-	connect(nav, SIGNAL(okClicked()), SLOT(performAction()));
-	connect(nav, SIGNAL(backClicked()), SIGNAL(Closed()));
+	connect(nav, SIGNAL(okClick()), SLOT(performAction()));
+	connect(nav, SIGNAL(backClick()), SIGNAL(Closed()));
 }
 
 QDate PageSetDate::date()
@@ -865,8 +865,8 @@ PageSetTime::PageSetTime()
 	ThermalNavigation *nav = new ThermalNavigation;
 	buildPage(&content, nav);
 
-	connect(nav, SIGNAL(okClicked()), SLOT(performAction()));
-	connect(nav, SIGNAL(backClicked()), SIGNAL(Closed()));
+	connect(nav, SIGNAL(okClick()), SLOT(performAction()));
+	connect(nav, SIGNAL(backClick()), SIGNAL(Closed()));
 }
 
 BtTime PageSetTime::time()
