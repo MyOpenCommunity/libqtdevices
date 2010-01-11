@@ -18,6 +18,11 @@ public:
 		DIM_LOCK,      // device lock enabled (false when unlock)
 	};
 
+	enum
+	{
+		ALL_SCENARIOS = -1,     // all scenarios (dummy value, must be different from legal values)
+	};
+
 	ScenarioDevice(QString where);
 
 	void activateScenario(int scen);
@@ -27,7 +32,6 @@ public:
 	void deleteScenario(int scen);
 
 	void requestStatus();
-	// TODO: we shouldn't need lock/unlock methods, the GUI can't lock
 
 	// TODO: hack to avoid too many changes in device.h, REMOVE when new device parsing is ok.
 	virtual void frame_rx_handler(char *frame);
