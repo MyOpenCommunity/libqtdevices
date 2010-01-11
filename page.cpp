@@ -269,19 +269,9 @@ void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, const
 	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 }
 
-void BannerPage::buildPage(QWidget *top_widget)
+void BannerPage::buildPage(const QString &title, QWidget *top_widget)
 {
-	buildPage(new BannerContent, new NavigationBar, "", top_widget);
-}
-
-void BannerPage::buildPage(const QString &title)
-{
-	buildPage(new BannerContent, new NavigationBar, title, 0);
-}
-
-void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, QWidget *top_widget)
-{
-	buildPage(content, nav_bar, "", top_widget);
+	buildPage(new BannerContent, new NavigationBar, title, top_widget);
 }
 
 

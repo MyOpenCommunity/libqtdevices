@@ -35,7 +35,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	// button and to obtain a reference of it (to show/hide the button).
 	// We can do better!
 	NavigationBar *nav_bar = new NavigationBar(IMG_PATH "btnparzializzazione.png");
-	buildPage(new BannerContent, nav_bar, top_widget);
+	buildPage(new BannerContent, nav_bar, QString(), top_widget);
 	forward_button = nav_bar->forward_button;
 
 	connect(this, SIGNAL(abilitaParz(bool)), SLOT(IsParz(bool)));

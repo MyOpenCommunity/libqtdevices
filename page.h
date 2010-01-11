@@ -156,10 +156,8 @@ public:
 	virtual void inizializza();
 
 protected:
-	void buildPage(BannerContent *content, NavigationBar *nav_bar, QWidget *top_widget=0);
-	void buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title, QWidget *top_widget=0);
-	void buildPage(QWidget *top_widget=0);
-	void buildPage(const QString &title);
+	void buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title = QString(), QWidget *top_widget=0);
+	void buildPage(const QString &title = QString(), QWidget *top_widget=0);
 };
 
 
