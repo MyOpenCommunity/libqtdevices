@@ -107,11 +107,6 @@ void ModifyScenario::status_changed(const StatusList &sl)
 		{
 		case ScenarioDevice::DIM_LOCK:
 			setState(it.value().toBool() ? LOCKED : UNLOCKED);
-			// TODO: it seems reasonable that when LOCKED the left function returns
-			// to activate(), since the device won't care about our frames.
-			// Ask Agresta.
-			// When UNLOCKED, however, the left function mustn't be touched
-			//changeLeftFunction(SLOT(activate()));
 			break;
 		case ScenarioDevice::DIM_START:
 		{
@@ -134,7 +129,10 @@ void ModifyScenario::status_changed(const StatusList &sl)
 			else
 			{
 				if (val.second == scenario_number)
+				{
+					setState(UNLOCKED);
 					setEditingState(EDIT_INACTIVE);
+				}
 				else
 					setState(UNLOCKED);
 
