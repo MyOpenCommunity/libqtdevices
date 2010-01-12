@@ -21,6 +21,8 @@
 
 class VCTCallPage;
 class EntryphoneDevice;
+class EnablingButton;
+class ItemTuning;
 class QDomNode;
 class QSignalMapper;
 
@@ -73,11 +75,37 @@ private:
 };
 
 
+
+class IntercomCallPage : public Page
+{
+Q_OBJECT
+public:
+	IntercomCallPage(EntryphoneDevice *d);
+	virtual void showPage();
+
+private slots:
+	void status_changed(const StatusList &sl);
+	void toggleCall();
+	void handleClose();
+
+private:
+	EntryphoneDevice *dev;
+	BtButton *call_accept;
+	EnablingButton *mute_button;
+	ItemTuning *volume;
+	Page *prev_page;
+};
+
+
 class Intercom : public IconPage
 {
 Q_OBJECT
 public:
 	Intercom(const QDomNode &config_node);
+
+private:
+	QSignalMapper *mapper_ext_intercom;
+	QSignalMapper *mapper_int_intercom;
 };
 
 #endif // #ifdef LAYOUT_BTOUCH
