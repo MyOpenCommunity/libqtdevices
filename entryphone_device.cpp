@@ -10,6 +10,7 @@ static const char *END_ALL_CALLS = "4";
 
 enum
 {
+	CALL = 1,
 	ANSWER = 2,
 	AUTOSWITCHING = 4,
 	CYCLE_EXT_UNIT = 6,
@@ -116,6 +117,18 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 			"Incomplete open frame received");
 		kind = msg.whatArgN(0);
 		mmtype = msg.whatArgN(1);
+
+		if (kind >= 1 && kind <= 4)
+			what = VCT_CALL;
+		// TODO: serve differenziare perche' nel caso di kind == 5 (autochiamata)
+		// non bisogna far suonare una suoneria.. al contrario della vct call
+		// normale.. aggiungere una grandezza che indica il numero della suoneria
+		// per le vct!
+		else if (kind == 5)
+			what = VCT_CALL;
+		else
+			what = INTERCOM_CALL;
+
 		// we can safely ignore caller address, we will receive a frame later.
 		v.setValue(true);
 		is_calling = true;

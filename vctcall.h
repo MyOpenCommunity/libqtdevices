@@ -96,8 +96,8 @@ namespace VCTCallPrivate
 
 		VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f);
 		void refreshStatus();
-		void startVideo();
-		void stopVideo();
+		bool startVideo();
+		bool stopVideo();
 
 		// Common graphical objects
 		BtButton *setup_vct;

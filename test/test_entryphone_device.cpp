@@ -134,7 +134,7 @@ void TestEntryphoneDevice::sendReleaseLock()
 
 void TestEntryphoneDevice::receiveIncomingCall()
 {
-	DeviceTester t(dev, EntryphoneDevice::CALL);
+	DeviceTester t(dev, EntryphoneDevice::VCT_CALL);
 	QString frame = QString("*8*1#%1#%2#21*%3##").arg(1).arg(4).arg(dev->where);
 	t.check(frame, true);
 }

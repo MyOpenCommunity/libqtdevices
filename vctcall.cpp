@@ -3,12 +3,12 @@
 #include "skinmanager.h"
 #include "generic_functions.h" //getBostikName
 #include "hardware_functions.h" // setVctContrast, setVolume
-#include "displaycontrol.h" //forceOperativeMode
+#include "displaycontrol.h" // bt_global::display
 #include "icondispatcher.h"
 #include "entryphone_device.h"
 #include "xml_functions.h"
 #include "bann2_buttons.h"
-#include "items.h"
+#include "items.h" // ItemTuning
 
 #include <QDomNode>
 #include <QHBoxLayout>
@@ -230,7 +230,7 @@ void VCTCall::toggleCall()
 		handleClose();
 }
 
-void VCTCall::startVideo()
+bool VCTCall::startVideo()
 {
 	if (video_grabber.state() == QProcess::NotRunning)
 	{
@@ -238,13 +238,19 @@ void VCTCall::startVideo()
 		QPoint top_left = video_box->mapToGlobal(QPoint(0, 0));
 		args << QString::number(top_left.x()) << QString::number(top_left.y()) << QString::number(format);
 		video_grabber.start(video_grabber_path, args);
+		return true;
 	}
+	return false;
 }
 
-void VCTCall::stopVideo()
+bool VCTCall::stopVideo()
 {
 	if (video_grabber.state() == QProcess::Running)
+	{
 		video_grabber.terminate();
+		return true;
+	}
+	return false;
 }
 
 void VCTCall::status_changed(const StatusList &sl)
@@ -254,13 +260,13 @@ void VCTCall::status_changed(const StatusList &sl)
 	{
 		switch (it.key())
 		{
-		case EntryphoneDevice::CALL:
-			startVideo();
-			emit incomingCall();
+		case EntryphoneDevice::VCT_CALL:
+			if (startVideo())
+				emit incomingCall();
 			break;
 		case EntryphoneDevice::END_OF_CALL:
-			stopVideo();
-			emit callClosed();
+			if (stopVideo())
+				emit callClosed();
 			break;
 		}
 		++it;

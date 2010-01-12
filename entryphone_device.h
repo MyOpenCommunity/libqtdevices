@@ -16,7 +16,6 @@ class OpenMsg;
  *
  * Unconnected state:
  * The device switches to unconnected state when an END_OF_CALL frame arrives, or the user refuses the call.
- * [TODO: are there any other cases? AUTOSWITCHING maybe?]
  * In this state, the device must check the 'where' field of incoming frames with its own address.
  */
 
@@ -27,19 +26,19 @@ Q_OBJECT
 public:
 	enum Type
 	{
-		CALL = 1,
+		VCT_CALL = 1,
+		INTERCOM_CALL = 100, // the value doesn't matter
 		END_OF_CALL = 3,
 	};
-	// WARNING: this where has already indications about internal/external address
-	// ie. it must be "1[conf_where]" for internal units and "2[conf_where]" for external units
+
 	EntryphoneDevice(const QString &where);
 
 	void answerCall() const;
-	void endCall();
 	virtual void manageFrame(OpenMsg &msg);
 	void initVctProcess();
 
 public slots:
+	void endCall();
 	void cameraOn(QString _where) const;
 	void stairLightActivate() const;
 	void stairLightRelease() const;
