@@ -58,10 +58,6 @@ void WindowContainer::installTransitionWidget(TransitionWidget *tr)
 	transition_widget = tr;
 	addWidget(transition_widget);
 	transition_widget->setContainer(this);
-	// TODO will need to replicate the current_page logic in btmain.cpp
-	//      this makes calls to showPage() show the main window even if another
-	//      window is shown
-	connect(transition_widget, SIGNAL(endTransition()), main, SLOT(showWindow()));
 }
 
 QPixmap WindowContainer::grabHomeWindow()

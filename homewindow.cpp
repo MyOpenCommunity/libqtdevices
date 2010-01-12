@@ -63,6 +63,8 @@ HomeWindow::HomeWindow()
 		Page::setPageContainer(central_widget);
 		central_widget->setFixedSize(maxWidth(), maxHeight());
 	}
+
+	central_widget->setContainerWindow(this);
 }
 
 void HomeWindow::loadConfiguration()
