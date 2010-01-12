@@ -157,6 +157,7 @@ void SplitPage::setDeviceOff()
 
 AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirConditioningDevice *d)
 {
+	single_page = 0;
 	NavigationBar *nav_bar;
 	if (getElement(config_node, "off/list").text().toInt() == 1) // show the off button
 	{
@@ -174,6 +175,12 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d)
 {
 	int id = getTextChild(config_node, "id").toInt();
+	CustomScenario *bann = new CustomScenario(d);
+	SplitSettings *split = new SplitSettings(QDomNode(), getChildWithName(config_node, "par"));
+	connect(split, SIGNAL(splitSettingsChanged(const AirConditionerStatus &)), bann,
+		SLOT(splitValuesChanged(const AirConditionerStatus &)));
+	page_content->appendBanner(bann);
+
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 	{
 		AdvancedSplitScenario *b = new AdvancedSplitScenario(getTextChild(scenario, "descr"), scenario.nodeName(), d);
@@ -184,6 +191,18 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirCo
 		connect(sp, SIGNAL(splitSettingsChanged(const AirConditionerStatus &)), b, SLOT(splitValuesChanged(const AirConditionerStatus &)));
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		page_content->appendBanner(b);
+	}
+
+	// skip showing scenario page (_this_ page) if we have only the custom button
+	if (page_content->bannerCount() == 1)
+	{
+		single_page = split;
+		connect(single_page, SIGNAL(Closed()), SIGNAL(Closed()));
+	}
+	else
+	{
+		bann->connectButton(split);
+		connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 }
 
@@ -201,6 +220,14 @@ void AdvancedSplitPage::setDeviceOff()
 	dev->turnOff();
 }
 
+void AdvancedSplitPage::showPage()
+{
+	if (single_page)
+		single_page->showPage();
+	else
+		Page::showPage();
+}
+
 
 
 SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config_node)
@@ -209,18 +236,27 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	nav_bar->displayScrollButtons(false);
 	buildPage(new BannerContent, nav_bar);
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(acceptChanges()));
-	connect(nav_bar, SIGNAL(backClick()), SLOT(handleClose()));
+	connect(nav_bar, SIGNAL(backClick()), SLOT(resetChanges()));
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
 
 	// init values, temperature is always present so it will be initialized always
-	current_fan_speed = 0;
-	current_mode = 0;
-	current_swing = 0;
+	if (!values_node.isNull())
+	{
+		current_mode = getTextChild(values_node, "mode").toInt();
+		Q_ASSERT_X(current_mode != -1, "SplitSettings::readModeConfig", "Mode cannot be disabled");
+		current_temp = getTextChild(values_node, "setpoint").toInt();
+	}
+	else
+	{
+		current_mode = AdvancedAirConditioningDevice::MODE_OFF;
+		current_temp = 200;
+	}
 
 	QDomNode mode_node = getChildWithName(config_node, "mode");
-	readModeConfig(mode_node, values_node);
+	readModeConfig(mode_node, current_mode);
 
 	QDomNode temp_node = getChildWithName(config_node, "setpoint");
-	readTempConfig(temp_node, values_node);
+	readTempConfig(temp_node, current_temp);
 
 	QDomNode speed_node = getChildWithName(config_node, "speed");
 	readSpeedConfig(speed_node, values_node);
@@ -241,27 +277,23 @@ AirConditionerStatus SplitSettings::getCurrentStatus()
 	return status;
 }
 
-void SplitSettings::readModeConfig(const QDomNode &mode_node, const QDomNode &values)
+void SplitSettings::readModeConfig(const QDomNode &mode_node, int init_mode)
 {
-	int m = getTextChild(mode_node, "val1").toInt();
-	Q_ASSERT_X(m != -1, "SplitSettings::readModeConfig", "Mode cannot be disabled");
 	QList <int> modes;
 	foreach (const QDomNode &val, getChildren(mode_node, "val"))
 		modes.append(val.toElement().text().toInt());
 
-	int current_mode = getTextChild(values, "mode").toInt();
-	mode = new SplitMode(modes, current_mode);
+	mode = new SplitMode(modes, init_mode);
 	page_content->appendBanner(mode);
 }
 
-void SplitSettings::readTempConfig(const QDomNode &temp_node, const QDomNode &values)
+void SplitSettings::readTempConfig(const QDomNode &temp_node, int init_temp)
 {
 	int min = getTextChild(temp_node, "min").toInt();
 	int max = getTextChild(temp_node, "max").toInt();
 	int step = getTextChild(temp_node, "step").toInt();
 
-	int current_temp = getTextChild(values, "setpoint").toInt();
-	temperature = new SplitTemperature(current_temp, max, min, step);
+	temperature = new SplitTemperature(init_temp, max, min, step);
 	page_content->appendBanner(temperature);
 }
 
@@ -273,7 +305,9 @@ void SplitSettings::readSpeedConfig(const QDomNode &speed_node, const QDomNode &
 		foreach (const QDomNode &val, getChildren(speed_node, "val"))
 			speeds.append(val.toElement().text().toInt());
 
-		int current_speed = getTextChild(values, "speed").toInt();
+		int current_speed = 0;
+		if (!values.isNull())
+			current_speed = getTextChild(values, "speed").toInt();
 		speed = new SplitSpeed(speeds, current_speed);
 		page_content->appendBanner(speed);
 	}
@@ -285,7 +319,10 @@ void SplitSettings::readSwingConfig(const QDomNode &swing_node, const QDomNode &
 {
 	if (getTextChild(swing_node, "val1").toInt() != -1)
 	{
-		bool swing_on = getTextChild(values, "fan_swing").toInt();
+		bool swing_on = false;
+		// read values from conf if present
+		if (!values.isNull())
+			swing_on = getTextChild(values, "fan_swing").toInt();
 		swing = new SplitSwing(tr("SWING"), swing_on);
 		page_content->appendBanner(swing);
 	}
@@ -297,10 +334,9 @@ void SplitSettings::readBannerValues()
 {
 	current_mode = mode->currentState();
 	current_temp = temperature->temperature();
-	if (speed)
-		current_fan_speed = speed->currentState();
-	if (swing)
-		current_swing = swing->swing();
+	current_fan_speed = speed ? speed->currentState() : AdvancedAirConditioningDevice::VEL_INVALID;
+	// silent a warning here
+	current_swing = swing ? (int) swing->swing() : AdvancedAirConditioningDevice::SWING_INVALID;
 }
 
 void SplitSettings::showEvent(QShowEvent *)
@@ -321,14 +357,19 @@ void SplitSettings::sendUpdatedValues()
 	emit splitSettingsChanged(status);
 }
 
-void SplitSettings::handleClose()
+void SplitSettings::resetChanges()
 {
 	mode->setCurrentState(current_mode);
 	temperature->setTemperature(current_temp);
 	if (speed)
 		speed->setCurrentState(current_fan_speed);
 	if (swing)
-		swing->setSwingOn(current_swing);
+	{
+		Q_ASSERT_X(current_swing == 0 || current_swing == 1, "SplitSettings::resetChanges",
+			"Using a value that is not bool.");
+		// this function takes a bool: watch out when changing the values that swing can take
+		swing->setSwingOn(static_cast<bool>(current_swing));
+	}
 }
 
 

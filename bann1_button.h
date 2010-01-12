@@ -77,6 +77,9 @@ private:
 class BannCenteredButton : public BannerNew
 {
 Q_OBJECT
+public:
+	void connectButton(Page *linked_page);
+
 protected:
 	BannCenteredButton(QWidget *parent);
 	void initBanner(const QString &center);

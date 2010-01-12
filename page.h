@@ -36,6 +36,7 @@ public:
 
 public slots:
 	void setCurrentPage(int current, int total);
+	void setTitle(QString title);
 };
 
 
@@ -62,7 +63,7 @@ class Page : public StyledWidget
 friend class BtMain;
 Q_OBJECT
 public:
-	static const int TITLE_HEIGHT = 60;
+	static const int TITLE_HEIGHT = 70;
 
 	// Indicates subsystem pagetype. For now it is used in touchx top_nav_bar
 	// TODO: is this the same as pagSecLiv in main.h?
@@ -155,10 +156,8 @@ public:
 	virtual void inizializza();
 
 protected:
-	void buildPage(BannerContent *content, NavigationBar *nav_bar, QWidget *top_widget=0);
-	void buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title, QWidget *top_widget=0);
-	void buildPage(QWidget *top_widget=0);
-	void buildPage(const QString &title);
+	void buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title = QString(), QWidget *top_widget=0);
+	void buildPage(const QString &title = QString(), QWidget *top_widget=0);
 };
 
 

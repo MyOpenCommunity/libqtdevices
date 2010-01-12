@@ -19,7 +19,7 @@ class QLabel;
 class QShowEvent;
 
 
-class EnablingButton : protected BtButton
+class EnablingButton : public BtButton
 {
 Q_OBJECT
 public:

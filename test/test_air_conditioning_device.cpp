@@ -76,3 +76,33 @@ void TestAdvancedAirConditioningDevice::testStatusToString()
 	QString check = QString("22*0***");
 	QCOMPARE(str, check);
 }
+
+void TestAdvancedAirConditioningDevice::testStatusToString2()
+{
+	int temp = 50;
+	AirConditionerStatus st(AdvancedAirConditioningDevice::MODE_WINTER, temp, AdvancedAirConditioningDevice::VEL_MED,
+		AdvancedAirConditioningDevice::SWING_INVALID);
+	QString str = dev->statusToString(st);
+	QString check = "22*1*50*2*";
+	QCOMPARE(str, check);
+}
+
+void TestAdvancedAirConditioningDevice::testStatusToString3()
+{
+	int temp = 50;
+	AirConditionerStatus st(AdvancedAirConditioningDevice::MODE_WINTER, temp, AdvancedAirConditioningDevice::VEL_INVALID,
+		AdvancedAirConditioningDevice::SWING_ON);
+	QString str = dev->statusToString(st);
+	QString check = "22*1*50**1";
+	QCOMPARE(str, check);
+}
+
+void TestAdvancedAirConditioningDevice::testStatusToString4()
+{
+	int temp = 50;
+	AirConditionerStatus st(AdvancedAirConditioningDevice::MODE_WINTER, temp, AdvancedAirConditioningDevice::VEL_INVALID,
+		AdvancedAirConditioningDevice::SWING_INVALID);
+	QString str = dev->statusToString(st);
+	QString check = "22*1*50**";
+	QCOMPARE(str, check);
+}

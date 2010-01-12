@@ -90,3 +90,29 @@ void TestScenarioDevice::receiveUnlockDevice()
 	QString frame = QString("*0*44*%1##").arg(dev->where);
 	t.check(frame, false);
 }
+
+// what = 40 frames must be processed by all devices
+void TestScenarioDevice::receiveGenericModuleIsProgramming()
+{
+	DeviceTester t(dev, ScenarioDevice::DIM_START);
+	// use a frame addressed to another device
+	QString where_other = QString::number(dev->where.toInt() + 1);
+	QString frame = QString("*0*40*%1##").arg(where_other);
+	t.checkSignals(frame, 1);
+}
+
+void TestScenarioDevice::receiveGenericStopProgramming()
+{
+	DeviceTester t(dev, ScenarioDevice::DIM_START);
+	QString frame = QString("*0*41*%1##").arg(dev->where);
+	QPair<bool, int> check_value(false, ScenarioDevice::ALL_SCENARIOS);
+	t.check(frame, check_value);
+}
+
+void TestScenarioDevice::receiveGenericStartProgramming()
+{
+	DeviceTester t(dev, ScenarioDevice::DIM_START);
+	QString frame = QString("*0*40*%1##").arg(dev->where);
+	QPair<bool, int> check_value(true, ScenarioDevice::ALL_SCENARIOS);
+	t.check(frame, check_value);
+}

@@ -48,19 +48,22 @@ public:
 		MODE_AUTO = 5
 	};
 
+	// Velocity and swing sometimes may not be always present, we need a value to indicate this
 	enum Velocity
 	{
 		VEL_AUTO = 0,
 		VEL_MIN = 1,
 		VEL_MED = 2,
 		VEL_MAX = 3,
-		VEL_SILENT = 4
+		VEL_SILENT = 4,
+		VEL_INVALID,           // none of the above values
 	};
 
 	enum Swing
 	{
 		SWING_OFF = 0,
-		SWING_ON = 1
+		SWING_ON = 1,
+		SWING_INVALID,        // none of the above values
 	};
 
 

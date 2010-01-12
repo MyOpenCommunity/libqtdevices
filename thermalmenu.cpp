@@ -154,7 +154,8 @@ void ThermalMenu::showPage()
 
 ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 {
-	buildPage();
+	buildPage(getTextChild(config_node, "descr"));
+
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		QString addr = getTextChild(item, "where");
@@ -171,10 +172,11 @@ ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 }
 
 
-ProgramMenu::ProgramMenu(QWidget *parent, QMap<QString, QString> _descriptions) : BannerPage(parent)
+ProgramMenu::ProgramMenu(QWidget *parent, QMap<QString, QString> _descriptions, QString title)
+	: BannerPage(parent)
 {
 	descriptions = _descriptions;
-	buildPage();
+	buildPage(title);
 }
 
 void ProgramMenu::setSeason(Season new_season)
@@ -223,8 +225,8 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString icon)
 	}
 }
 
-WeeklyMenu::WeeklyMenu(QWidget *parent, QMap<QString, QString> programs)
-	: ProgramMenu(parent, programs)
+WeeklyMenu::WeeklyMenu(QWidget *parent, QMap<QString, QString> programs, QString title)
+	: ProgramMenu(parent, programs, title)
 {
 	summer_icon = bt_global::skin->getImage("summer_program");
 	winter_icon = bt_global::skin->getImage("winter_program");
@@ -242,8 +244,8 @@ void WeeklyMenu::createWinterBanners()
 	createSeasonBanner("winter", winter_icon);
 }
 
-ScenarioMenu::ScenarioMenu(QWidget *parent, QMap<QString, QString> scenarios)
-	: ProgramMenu(parent, scenarios)
+ScenarioMenu::ScenarioMenu(QWidget *parent, QMap<QString, QString> scenarios, QString title)
+	: ProgramMenu(parent, scenarios, title)
 {
 	summer_icon = bt_global::skin->getImage("summer_scenario");
 	winter_icon = bt_global::skin->getImage("winter_scenario");

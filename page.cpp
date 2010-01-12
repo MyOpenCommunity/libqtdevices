@@ -43,9 +43,17 @@ PageTitleWidget::PageTitleWidget(const QString &label, int height)
 	current_page->setAlignment(Qt::AlignTop|Qt::AlignRight);
 
 	QHBoxLayout *t = new QHBoxLayout(this);
+	t->setContentsMargins(10, 0, 10, 10);
 	t->addStretch(1);
 	t->addWidget(title);
 	t->addWidget(current_page, 1);
+}
+
+void PageTitleWidget::setTitle(QString title)
+{
+	QLabel *label = static_cast<QLabel*>(layout()->itemAt(1)->widget());
+
+	label->setText(title);
 }
 
 void PageTitleWidget::setCurrentPage(int current, int total)
@@ -261,19 +269,9 @@ void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, const
 	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 }
 
-void BannerPage::buildPage(QWidget *top_widget)
+void BannerPage::buildPage(const QString &title, QWidget *top_widget)
 {
-	buildPage(new BannerContent, new NavigationBar, "", top_widget);
-}
-
-void BannerPage::buildPage(const QString &title)
-{
-	buildPage(new BannerContent, new NavigationBar, title, 0);
-}
-
-void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, QWidget *top_widget)
-{
-	buildPage(content, nav_bar, "", top_widget);
+	buildPage(new BannerContent, new NavigationBar, title, top_widget);
 }
 
 
