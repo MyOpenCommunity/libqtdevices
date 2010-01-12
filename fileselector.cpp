@@ -40,6 +40,11 @@ const QList<QFileInfo> &FileSelector::getFiles() const
 	return files_list;
 }
 
+void FileSelector::showPageNoReload()
+{
+	Selector::showPage();
+}
+
 void FileSelector::showPage()
 {
 	Selector::showPage();
