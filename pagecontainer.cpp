@@ -2,6 +2,7 @@
 #include "transitionwidget.h"
 #include "sottomenu.h"
 #include "page.h"
+#include "window.h"
 
 #include <QDebug>
 #include <QLayout>
@@ -42,6 +43,7 @@ void PageContainer::installTransitionWidget(TransitionWidget *tr)
 void PageContainer::endTransition()
 {
 	setCurrentPage(dest_page);
+	parent_window->showWindow();
 	prev_page = 0;
 	dest_page = 0;
 }
@@ -69,6 +71,11 @@ void PageContainer::showPage(Page *p)
 	}
 	else
 		setCurrentPage(p);
+
+	// This makes showPage() always show the HomeWindow as a side effect.
+	// If this is removed, the code in vctcall.cpp, slideshow.cpp and
+	// videoplayer.cpp must be changed to show the HomeWindow.
+	parent_window->showWindow();
 }
 
 void PageContainer::prepareTransition()
@@ -109,3 +116,7 @@ void PageContainer::addPage(Page *p)
 	p->resize(width(), height());
 }
 
+void PageContainer::setContainerWindow(Window *window)
+{
+	parent_window = window;
+}

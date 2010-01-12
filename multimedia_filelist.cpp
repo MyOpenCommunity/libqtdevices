@@ -62,14 +62,12 @@ MultimediaFileListPage::MultimediaFileListPage()
 	slideshow = new SlideshowPage;
 	connect(this, SIGNAL(displayImages(QList<QString>, unsigned)),
 		slideshow, SLOT(displayImages(QList<QString>, unsigned)));
-	// TODO this means the "loading" page is displayed when closing a slideshow
-	connect(slideshow, SIGNAL(Closed()), SLOT(showPage()));
+	connect(slideshow, SIGNAL(Closed()), SLOT(showPageNoReload()));
 
 	videoplayer = new VideoPlayerPage;
 	connect(this, SIGNAL(displayVideos(QList<QString>, unsigned)),
 		videoplayer, SLOT(displayVideos(QList<QString>, unsigned)));
-	// TODO this means the "loading" page is displayed when closing a video
-	connect(videoplayer, SIGNAL(Closed()), SLOT(showPage()));
+	connect(videoplayer, SIGNAL(Closed()), SLOT(showPageNoReload()));
 }
 
 bool MultimediaFileListPage::browseFiles(const QDir &directory, QList<QFileInfo> &files)

@@ -198,7 +198,7 @@ NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
 PageSimpleProbe::PageSimpleProbe(QDomNode n, TemperatureScale scale)
 	: temp_scale(scale)
 {
-	QLabel *descr_label = new QLabel(n.namedItem("descr").toElement().text());
+	QLabel *descr_label = new QLabel(getTextChild(n, "descr"));
 	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignHCenter);
 
@@ -805,8 +805,6 @@ PageManualTimed::PageManualTimed(ThermalDevice4Zones *_dev, TemperatureScale sca
 
 void PageManualTimed::performAction()
 {
-	PageManual::performAction();
-
 	unsigned bt_temp;
 	switch (temp_scale)
 	{

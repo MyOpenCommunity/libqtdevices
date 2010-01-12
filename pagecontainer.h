@@ -5,6 +5,7 @@
 
 class TransitionWidget;
 class Page;
+class Window;
 
 
 class PageContainer : public QStackedWidget
@@ -37,6 +38,8 @@ public:
 	void prepareTransition();
 	void startTransition(Page *p);
 
+	void setContainerWindow(Window *window);
+
 signals:
 	void currentPageChanged(Page *p);
 
@@ -48,6 +51,8 @@ private:
 	Page *prev_page;
 	// The destination page if during the transition, 0 otherwise
 	Page *dest_page;
+
+	Window *parent_window;
 
 private slots:
 	void endTransition();
