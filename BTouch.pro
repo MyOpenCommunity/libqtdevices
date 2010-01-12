@@ -146,6 +146,7 @@ HEADERS += actuators.h \
            devices_cache.h \
            displaycontrol.h \
            displaypage.h \
+           enabling_button.h \
            energy_data.h \
            energy_device.h \
            energy_graph.h \
@@ -281,6 +282,7 @@ SOURCES += actuators.cpp \
            devices_cache.cpp \
            displaycontrol.cpp \
            displaypage.cpp \
+           enabling_button.cpp \
            energy_data.cpp \
            energy_device.cpp \
            energy_graph.cpp \
