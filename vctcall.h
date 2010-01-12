@@ -108,7 +108,7 @@ namespace VCTCallPrivate
 
 		EnablingButton *mute_button, *stairlight, *unlock_door;
 		BtButton *cycle, *call_accept;
-		QString mute_icon, call_icon;
+		QString mute_icon;
 		ItemTuning *volume;
 
 	public slots:

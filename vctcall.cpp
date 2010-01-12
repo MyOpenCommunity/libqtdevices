@@ -151,7 +151,7 @@ VCTCall::VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f)
 	video_box = new QLabel;
 	video_box->setStyleSheet("background-color: black");
 
-	call_icon = bt_global::skin->getImage("call");
+	QString call_icon = bt_global::skin->getImage("call");
 	call_accept = new BtButton;
 	call_accept->setOnOff();
 	call_accept->setImage(getBostikName(call_icon, "off"));
