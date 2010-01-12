@@ -89,14 +89,12 @@ void IconPage::clicked(int id)
 }
 
 
-IconContent::IconContent(QWidget *parent) : QWidget(parent)
+IconContent::IconContent(QWidget *parent) : GridContent(parent)
 {
-	current_page = 0;
-	QGridLayout *l = new QGridLayout(this);
+	QGridLayout *l = static_cast<QGridLayout *>(layout());
 	l->setContentsMargins(25, 0, 25, 0);
 	l->setSpacing(28);
 	l->setColumnStretch(5, 1);
-	need_update = true;
 }
 
 void IconContent::addButton(QWidget *button, const QString &label)
@@ -125,83 +123,25 @@ void IconContent::addWidget(QWidget *widget)
 	widget->hide();
 }
 
-void IconContent::resetIndex()
-{
-	need_update = true;
-	current_page = 0;
-}
-
-void IconContent::showEvent(QShowEvent *e)
-{
-	drawContent();
-	QWidget::showEvent(e);
-}
-
 void IconContent::drawContent()
 {
-	if (!need_update)
-		return;
-
 	QGridLayout *l = qobject_cast<QGridLayout*>(layout());
 
 	if (pages.size() == 0)
 	{
-		int total_height[4];
-		int area_height = contentsRect().height();
+		// compute the page list
+		prepareLayout(items, 4);
 
-		for (int k = 0; k < 4; ++k)
-			total_height[k] = 0;
-		pages.append(0);
-
-		for (int i = 0; i < items.size(); i += 4)
+		// add icons to the layout
+		for (int i = 0; i < pages.size() - 1; ++i)
 		{
-			for (int j = 0; j < 4 && i + j < items.size(); ++j)
-			{
-				l->addWidget(items.at(i + j), i / 4, j);
-				total_height[j] += items.at(i + j)->sizeHint().height() + l->spacing();
-			}
-			for (int j = 0; j < 4; ++j)
-			{
-				if (total_height[j] > area_height)
-				{
-					for (int k = 0; k < 4; ++k)
-						total_height[k] = 0;
-					pages.append(i);
-					i -= 4;
-					break;
-				}
-			}
+			int base = pages[i];
+			for (int j = 0; base + j < pages[i + 1]; ++j)
+				l->addWidget(items.at(base + j), j / 4, j % 4);
 		}
 
-		pages.append(items.size());
 		l->setRowStretch(l->rowCount(), 1);
 	}
 
-	emit displayScrollButtons(pageCount() > 1);
-	emit contentScrolled(current_page, pageCount());
-
-	need_update = false;
-
-	for (int i = 0; i < items.size(); ++i)
-		items[i]->setVisible(i >= pages[current_page] && i < pages[current_page + 1]);
+	updateLayout(items);
 }
-
-void IconContent::pgUp()
-{
-	current_page = (current_page - 1 + pageCount()) % pageCount();
-	need_update = true;
-	drawContent();
-}
-
-void IconContent::pgDown()
-{
-	current_page = (current_page + 1) % pageCount();
-	need_update = true;
-	drawContent();
-}
-
-int IconContent::pageCount() const
-{
-	return pages.size() - 1;
-}
-

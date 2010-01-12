@@ -14,6 +14,7 @@
 #define ICONPAGE_H
 
 #include "page.h"
+#include "gridcontent.h"
 
 #include <QButtonGroup>
 #include <QHash>
@@ -56,7 +57,7 @@ protected slots:
 /**
  * The IconContent class manages a grid of buttons.
  */
-class IconContent : public QWidget
+class IconContent : public GridContent
 {
 friend void IconPage::activateLayout();
 Q_OBJECT
@@ -65,31 +66,13 @@ public:
 	void addButton(QWidget *button, const QString &label = QString());
 	void addWidget(QWidget *widget);
 
-public slots:
-	void pgUp();
-	void pgDown();
-	void resetIndex();
-
-signals:
-	void displayScrollButtons(bool display);
-	void contentScrolled(int current, int total);
-
 protected:
-	void showEvent(QShowEvent *e);
-
-private:
 	// The drawContent is the place where this widget is actually drawed. In order
 	// to have a correct transition effect, this method is also called by the
 	// Page _before_ that the Page is showed.
-	void drawContent();
-
-	int pageCount() const;
+	virtual void drawContent();
 
 private:
-	bool need_update; // a flag to avoid useless call to drawContent
-
-	int current_page;
-	QList<int> pages;
 	QList<QWidget*> items;
 };
 

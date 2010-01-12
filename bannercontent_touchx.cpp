@@ -11,16 +11,14 @@
 
 #ifdef LAYOUT_TOUCHX
 
-BannerContent::BannerContent(QWidget *parent) : QWidget(parent)
+BannerContent::BannerContent(QWidget *parent) : GridContent(parent)
 {
-	current_page = 0;
-	QGridLayout *l = new QGridLayout(this);
+	QGridLayout *l = static_cast<QGridLayout *>(layout());
 	l->setContentsMargins(18, 0, 17, 0);
 	l->setSpacing(0);
 	// use column 1 for the vertical separator bar
 	l->setColumnStretch(0, 1);
 	l->setColumnStretch(2, 1);
-	need_update = true;
 }
 
 int BannerContent::bannerCount()
@@ -52,61 +50,29 @@ void BannerContent::appendBanner(banner *b)
 		}
 }
 
-void BannerContent::resetIndex()
-{
-	need_update = true;
-}
-
-void BannerContent::showEvent(QShowEvent *e)
-{
-	drawContent();
-	QWidget::showEvent(e);
-}
-
-// TODO try to unify layout computation with IconContent
 void BannerContent::drawContent()
 {
-	const int LEFT_COLUMN = 0, RIGHT_COLUMN = 1, COLUMN_COUNT = 2;
-
-	if (!need_update)
-		return;
-
 	QGridLayout *l = qobject_cast<QGridLayout*>(layout());
+
+	// copy the list to pass it to GridContent methods; as an alternative
+	// we could change them to template methods
+	QList<QWidget *> items;
+	for (int i = 0; i < banner_list.size(); ++i)
+		items.append(banner_list[i]);
 
 	if (pages.size() == 0)
 	{
-		int total_height[2] = {0, 0};
-		int area_height = contentsRect().height();
+		// prepare the page list
+		prepareLayout(items, 2);
 
-		// the pages array contains the starting indices of each page in banner_list
-		// to simplify the last page case, an additional item is added to the array
-		// and it contains banner_list.size()
-		// for example for a BannerContent with 15 items and 6 items per page, pages will
-		// contain: 0, 6, 12, 15
-		pages.append(0);
-
-		for (int i = 0, row = 0; i < banner_list.size(); i += COLUMN_COUNT, ++row)
+		// add items to the layout
+		for (int i = 0; i < pages.size() - 1; ++i)
 		{
-			// compute the height the two columns would have if adding the next
-			// two items
-			for (int j = 0; j < COLUMN_COUNT && i + j < banner_list.size(); ++j)
-				total_height[j] += banner_list.at(i + j)->sizeHint().height();
-			// if the height of one of the two columns exceeds the page height,
-			// start a new page, otherwise add the widgets to the layout
-			if (total_height[LEFT_COLUMN] > area_height || total_height[RIGHT_COLUMN] > area_height)
-			{
-				total_height[LEFT_COLUMN] = total_height[RIGHT_COLUMN] = 0;
-				pages.append(i);
-				// reprocess current items starting at row 0
-				i -= COLUMN_COUNT;
-				row = -1;
-			}
-			else
-				for (int j = 0; j < COLUMN_COUNT && i + j < banner_list.size(); ++j)
-					l->addWidget(banner_list.at(i + j), row, j * 2);
+			int base = pages[i];
+			for (int j = 0; base + j < pages[i + 1]; ++j)
+				l->addWidget(banner_list.at(base + j), j / 2, (j % 2) * 2);
 		}
 
-		pages.append(banner_list.size());
 		l->setRowStretch(l->rowCount(), 1);
 
 		// construct the vertical separator widget
@@ -124,15 +90,8 @@ void BannerContent::drawContent()
 		l->addLayout(bar_layout, 0, 1);
 	}
 
-	emit displayScrollButtons(pageCount() > 1);
-	emit contentScrolled(current_page, pageCount());
+	updateLayout(items);
 
-	need_update = false;
-
-	// works for all pages because the last item of the pages array always
-	// contains banner_list.size()
-	for (int i = 0; i < banner_list.size(); ++i)
-		banner_list[i]->setVisible(i >= pages[current_page] && i < pages[current_page + 1]);
 	// resize the vertical separator to span all completely filled rows
 	// and ignore the last row if it only contains a single item; pages with only
 	// one item need to be handled as a special case because QGridLayout does not
@@ -144,25 +103,6 @@ void BannerContent::drawContent()
 	vertical_separator->layout()->itemAt(0)->widget()->setVisible(show_vertical_bar);
 	l->addItem(vertical_separator, 0, 1,
 		   (pages[current_page + 1] - pages[current_page]) / 2, 1);
-}
-
-void BannerContent::pgUp()
-{
-	current_page = (current_page - 1 + pageCount()) % pageCount();
-	need_update = true;
-	drawContent();
-}
-
-void BannerContent::pgDown()
-{
-	current_page = (current_page + 1) % pageCount();
-	need_update = true;
-	drawContent();
-}
-
-int BannerContent::pageCount() const
-{
-	return pages.size() - 1;
 }
 
 #endif // LAYOUT_TOUCHX
