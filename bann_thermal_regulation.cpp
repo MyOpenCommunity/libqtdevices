@@ -805,8 +805,6 @@ PageManualTimed::PageManualTimed(ThermalDevice4Zones *_dev, TemperatureScale sca
 
 void PageManualTimed::performAction()
 {
-	PageManual::performAction();
-
 	unsigned bt_temp;
 	switch (temp_scale)
 	{
