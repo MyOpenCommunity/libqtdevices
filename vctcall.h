@@ -12,7 +12,6 @@
 
 class EntryphoneDevice;
 class ItemTuning;
-class ItemTuningStatus;
 class QDomNode;
 class QHBoxLayout;
 class QLabel;
@@ -21,6 +20,7 @@ class QShowEvent;
 
 namespace VCTCallPrivate
 {
+	class VCTCallStatus;
 
 	/**
 	 * The pad to control the movements of the camera (if the camera support them)
@@ -60,23 +60,6 @@ namespace VCTCallPrivate
 
 	private:
 		ItemTuning *contrast, *brightness, *color;
-	};
-
-
-	struct VCTCallStatus
-	{
-		bool connected;
-		EnablingButton::Status mute;
-		ItemTuningStatus *volume_status;
-
-		VCTCallStatus();
-
-		// This method is used to initialize the status of the call every time
-		// a new videocall is performed (so, attributes like the volume of the
-		// audio are not set in the init method because they must to be
-		// preserved betweeen different calls).
-		void init();
-		~VCTCallStatus();
 	};
 
 

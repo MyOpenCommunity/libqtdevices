@@ -31,8 +31,8 @@ Q_OBJECT
 public:
 	ItemTuning(QString text, QString icon, QWidget *parent=0);
 
-	ItemTuningStatus *getStatus();
-	void setStatus(ItemTuningStatus *st);
+	ItemTuningStatus getStatus();
+	void setStatus(const ItemTuningStatus &st);
 
 public slots:
 	void decreaseLevel();

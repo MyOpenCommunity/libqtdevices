@@ -24,8 +24,27 @@ const QString video_grabber_path = "/home/bticino/bin/rsize";
 const QString video_grabber_normal = "0";
 const QString video_grabber_fullscreen = "1";
 
-using namespace VCTCallPrivate;
 
+namespace VCTCallPrivate
+{
+	// The struct used to save and restore the status of a video call
+	struct VCTCallStatus
+	{
+		bool connected;
+		EnablingButton::Status mute;
+		ItemTuningStatus volume_status;
+
+		VCTCallStatus();
+
+		// This method is used to initialize the status of the call every time
+		// a new videocall is performed (so, attributes like the volume of the
+		// audio are not set in the init method because they must to be
+		// preserved betweeen different calls).
+		void init();
+	};
+}
+
+using namespace VCTCallPrivate;
 
 
 EnablingButton *getButton(const QString &image_path)
@@ -113,7 +132,6 @@ void CameraImageControl::setBrightness(int value)
 VCTCallStatus::VCTCallStatus()
 {
 	init();
-	volume_status = 0;
 }
 
 void VCTCallStatus::init()
@@ -122,10 +140,6 @@ void VCTCallStatus::init()
 	mute = EnablingButton::DISABLED;
 }
 
-VCTCallStatus::~VCTCallStatus()
-{
-	delete volume_status;
-}
 
 
 VCTCall::VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f)
@@ -182,8 +196,6 @@ VCTCall::VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f)
 
 void VCTCall::changeVolume(int value)
 {
-	if (call_status->volume_status)
-		delete call_status->volume_status;
 	call_status->volume_status = volume->getStatus();
 
 	if (call_status->connected)
