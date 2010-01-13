@@ -167,8 +167,18 @@ void IntercomCallPage::showPage()
 {
 	bt_global::display.forceOperativeMode(true);
 	call_accept->setStatus(true);
+	mute_button->setStatus(EnablingButton::DISABLED);
 	Page::showPage();
 }
+
+void IntercomCallPage::showPageIncomingCall()
+{
+	bt_global::display.forceOperativeMode(true);
+	call_accept->setStatus(false);
+	mute_button->setStatus(EnablingButton::OFF);
+	Page::showPage();
+}
+
 
 void IntercomCallPage::handleClose()
 {
@@ -225,8 +235,7 @@ void IntercomCallPage::status_changed(const StatusList &sl)
 		{
 		case EntryphoneDevice::INTERCOM_CALL:
 			prev_page = currentPage();
-			showPage();
-			call_accept->setStatus(false);
+			showPageIncomingCall();
 			break;
 		case EntryphoneDevice::END_OF_CALL:
 			handleClose();
