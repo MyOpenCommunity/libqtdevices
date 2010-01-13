@@ -133,6 +133,7 @@ void ModifyScenario::status_changed(const StatusList &sl)
 				{
 					setState(UNLOCKED);
 					setEditingState(EDIT_INACTIVE);
+					is_editing = false;
 				}
 				else
 					setState(UNLOCKED);
