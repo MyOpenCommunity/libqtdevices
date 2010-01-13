@@ -190,6 +190,7 @@ void IntercomCallPage::toggleCall()
 	if (connected)
 	{
 		mute_button->setStatus(EnablingButton::DISABLED);
+		dev->endCall();
 		handleClose();
 	}
 	else
@@ -225,6 +226,7 @@ void IntercomCallPage::status_changed(const StatusList &sl)
 		case EntryphoneDevice::INTERCOM_CALL:
 			prev_page = currentPage();
 			showPage();
+			call_accept->setStatus(false);
 			break;
 		case EntryphoneDevice::END_OF_CALL:
 			handleClose();

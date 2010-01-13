@@ -45,8 +45,8 @@ public slots:
 	void openLock() const;
 	void releaseLock() const;
 	void cycleExternalUnits() const;
-	void internalIntercomCall(QString _where) const; // an intercom between devices among the same SCS bus.
-	void externalIntercomCall(QString _where) const; // an intercom between devices in different SCS bus.
+	void internalIntercomCall(QString _where); // an intercom between devices among the same SCS bus.
+	void externalIntercomCall(QString _where); // an intercom between devices in different SCS bus.
 
 private:
 	void resetCallState();

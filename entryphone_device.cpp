@@ -42,15 +42,21 @@ void EntryphoneDevice::answerCall() const
 	sendCommand(what);
 }
 
-void EntryphoneDevice::internalIntercomCall(QString _where) const
+void EntryphoneDevice::internalIntercomCall(QString _where)
 {
-	QString what = QString("%1#6#2#%2").arg(CALL).arg(where);
+	kind = 6;
+	mmtype = 2;
+
+	QString what = QString("%1#%2#%3#%4").arg(CALL).arg(kind).arg(mmtype).arg(where);
 	sendCommand(what, _where);
 }
 
-void EntryphoneDevice::externalIntercomCall(QString _where) const
+void EntryphoneDevice::externalIntercomCall(QString _where)
 {
-	QString what = QString("%1#7#2#%2").arg(CALL).arg(where);
+	kind = 6;
+	mmtype = 2;
+
+	QString what = QString("%1#%2#%3#%4").arg(CALL).arg(kind).arg(mmtype).arg(where);
 	sendCommand(what, _where);
 }
 
