@@ -52,7 +52,6 @@ public:
 #else
 	enum Type
 	{
-		FONT_NONE = -1,  // a number not present in configuration files
 		TITLE = 0,
 		SUBTITLE = 0, // TBD, same as TITLE for now
 		TEXT = 2,
