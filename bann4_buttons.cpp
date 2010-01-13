@@ -65,8 +65,6 @@ void Bann4ButtonsIcon::setState(States new_state)
 		center_left_button->hide();
 		center_right_button->hide();
 		right_button->hide();
-		// TODO: this seems reasonable, but ask Agresta
-		//left_button->setImage(left_icon);
 		break;
 	case UNLOCKED:
 		center_icon->show();

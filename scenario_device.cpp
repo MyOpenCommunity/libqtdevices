@@ -23,6 +23,7 @@ enum
 ScenarioDevice::ScenarioDevice(QString where) :
 	device(QString("0"), where)
 {
+	is_unlocked = false;
 }
 
 void ScenarioDevice::activateScenario(int scen)
@@ -75,19 +76,26 @@ void ScenarioDevice::manageFrame(OpenMsg &msg)
 
 	QVariant v;
 	StatusList sl;
-	int status_index;
+	int status_index = -1;
 	switch (what)
 	{
 	case LOCK:
 		status_index = DIM_LOCK;
 		v.setValue(true);
+		is_unlocked = false;
 		break;
 	case UNLOCK:
-		status_index = DIM_LOCK;
-		v.setValue(false);
+		if (!is_unlocked)
+		{
+			status_index = DIM_LOCK;
+			v.setValue(false);
+			is_unlocked = true;
+		}
 		break;
 	case START_PROG:
 	{
+		// if we receive a start programming, the device is unlocked
+		is_unlocked = true;
 		// use SCENARIO_ALL to indicate we are locking the whole device
 		ScenarioProgrammingStatus p;
 		if (what_arg_count > 0)
@@ -112,8 +120,11 @@ void ScenarioDevice::manageFrame(OpenMsg &msg)
 		break;
 	}
 
-	sl[status_index] = v;
-	emit status_changed(sl);
+	if (status_index > -1)
+	{
+		sl[status_index] = v;
+		emit status_changed(sl);
+	}
 }
 
 

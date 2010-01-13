@@ -104,7 +104,7 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		b = new BannSimpleScenario(0, item_node);
 		break;
 	case MOD_SCENARI:
-		b = new ModifyScenario(0, item_node);
+		b = new ScenarioModule(0, item_node);
 		break;
 	case SCENARIO_EVOLUTO:
 	{
