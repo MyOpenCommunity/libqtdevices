@@ -38,11 +38,11 @@ private:
 
 
 // substitute for gesModScen
-class ModifyScenario : public Bann4ButtonsIcon
+class ScenarioModule : public Bann4ButtonsIcon
 {
 Q_OBJECT
 public:
-	ModifyScenario(QWidget *parent, const QDomNode &config_node);
+	ScenarioModule(QWidget *parent, const QDomNode &config_node);
 	virtual void inizializza(bool forza = false);
 
 private slots:

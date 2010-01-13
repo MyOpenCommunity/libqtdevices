@@ -111,7 +111,7 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		QString img7 = IMG_PATH + getTextChild(item_node, "cimg7");
 		// DELETE
 		//b = new gesModScen(0, where, img1, img2, img3, img4, img5, img6, img7);
-		b = new ModifyScenario(this, item_node);
+		b = new ScenarioModule(this, item_node);
 		break;
 	}
 	case SCENARIO_EVOLUTO:

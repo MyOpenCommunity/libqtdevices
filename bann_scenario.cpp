@@ -39,7 +39,7 @@ void BannSimpleScenario::activate()
 }
 
 
-ModifyScenario::ModifyScenario(QWidget *parent, const QDomNode &config_node) :
+ScenarioModule::ScenarioModule(QWidget *parent, const QDomNode &config_node) :
 	Bann4ButtonsIcon(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
@@ -61,44 +61,44 @@ ModifyScenario::ModifyScenario(QWidget *parent, const QDomNode &config_node) :
 	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(const StatusList &)));
 }
 
-void ModifyScenario::inizializza(bool forza)
+void ScenarioModule::inizializza(bool forza)
 {
 	dev->requestStatus();
 }
 
-void ModifyScenario::activate()
+void ScenarioModule::activate()
 {
 	dev->activateScenario(scenario_number);
 }
 
-void ModifyScenario::editScenario()
+void ScenarioModule::editScenario()
 {
 	is_editing = !is_editing;
 	setState(is_editing ? EDIT_VIEW : UNLOCKED);
 }
 
-void ModifyScenario::startEditing()
+void ScenarioModule::startEditing()
 {
 	dev->startProgramming(scenario_number);
 }
 
-void ModifyScenario::deleteScenario()
+void ScenarioModule::deleteScenario()
 {
 	dev->deleteScenario(scenario_number);
 }
 
-void ModifyScenario::changeLeftFunction(const char *slot)
+void ScenarioModule::changeLeftFunction(const char *slot)
 {
 	left_button->disconnect(SIGNAL(clicked()));
 	connect(left_button, SIGNAL(clicked()), slot);
 }
 
-void ModifyScenario::stopEditing()
+void ScenarioModule::stopEditing()
 {
 	dev->stopProgramming(scenario_number);
 }
 
-void ModifyScenario::status_changed(const StatusList &sl)
+void ScenarioModule::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
