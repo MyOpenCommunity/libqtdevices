@@ -13,6 +13,7 @@
 #include "generic_functions.h" //getBostikName
 #include "items.h" // ItemTuning
 #include "displaycontrol.h" // bt_global::display
+#include "hardware_functions.h" // setVolume
 
 #include <QGridLayout>
 #include <QSignalMapper>
@@ -151,11 +152,11 @@ IntercomCallPage::IntercomCallPage(EntryphoneDevice *d)
 	mute_button->setDisabledImage(getBostikName(getBostikName(mute_icon, "off"), "dis"));
 	mute_button->setPressedImage(getBostikName(mute_icon, "on"));
 	mute_button->setStatus(EnablingButton::DISABLED);
-//	connect(mute_button, SIGNAL(clicked()), SLOT(toggleMute()));
+	connect(mute_button, SIGNAL(clicked()), SLOT(toggleMute()));
 	buttons_layout->addWidget(mute_button, 2, 1);
 
 	volume = new ItemTuning("", bt_global::skin->getImage("volume"));
-//	connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
+	connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
 	buttons_layout->addWidget(volume, 3, 0, 1, 2, Qt::AlignHCenter);
 
 	layout->addLayout(buttons_layout, 0, 1, Qt::AlignHCenter);
@@ -171,12 +172,9 @@ void IntercomCallPage::showPage()
 
 void IntercomCallPage::handleClose()
 {
-	qDebug() << "HANDLE CLOSE" << __LINE__;
 	bt_global::display.forceOperativeMode(false);
-	qDebug() << "HANDLE CLOSE" << __LINE__;
 	if (prev_page)
 	{
-		qDebug() << "HANDLE CLOSE" << __LINE__;
 		prev_page->showPage();
 		prev_page = 0;
 	}
@@ -201,6 +199,22 @@ void IntercomCallPage::toggleCall()
 	}
 }
 
+void IntercomCallPage::toggleMute()
+{
+	EnablingButton::Status st = mute_button->getStatus();
+	setVolume(VOLUME_MIC, st == EnablingButton::ON ? 0 : 1);
+
+	if (st == EnablingButton::ON)
+		mute_button->setStatus(EnablingButton::OFF);
+	else
+		mute_button->setStatus(EnablingButton::ON);
+}
+
+void IntercomCallPage::changeVolume(int value)
+{
+	setVolume(VOLUME_VIDEOCONTROL, value);
+}
+
 void IntercomCallPage::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
@@ -210,7 +224,6 @@ void IntercomCallPage::status_changed(const StatusList &sl)
 		{
 		case EntryphoneDevice::INTERCOM_CALL:
 			prev_page = currentPage();
-			qDebug() << "PREV PAGE" << prev_page;
 			showPage();
 			break;
 		case EntryphoneDevice::END_OF_CALL:

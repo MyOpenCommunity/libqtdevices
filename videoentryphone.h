@@ -87,6 +87,8 @@ private slots:
 	void status_changed(const StatusList &sl);
 	void toggleCall();
 	void handleClose();
+	void changeVolume(int value);
+	void toggleMute();
 
 private:
 	EntryphoneDevice *dev;
