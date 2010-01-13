@@ -163,6 +163,7 @@ HEADERS += actuators.h \
            frame_receiver.h \
            generic_functions.h \
            genpage.h \
+           gridcontent.h \
            hardware_functions.h \
            headerwidget.h \
            homepage.h \
@@ -299,6 +300,7 @@ SOURCES += actuators.cpp \
            frame_receiver.cpp \
            generic_functions.cpp \
            genpage.cpp \
+           gridcontent.cpp \
            headerwidget.cpp \
            homepage.cpp \
            homewindow.cpp \

@@ -250,16 +250,23 @@ void BannerPage::activateLayout()
 
 void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title, QWidget *top_widget)
 {
+	buildPage(content, content, nav_bar, title, TITLE_HEIGHT, top_widget);
+}
+
+void BannerPage::buildPage(QWidget *parent, BannerContent *content, NavigationBar *nav_bar,
+			   const QString &title, int title_height, QWidget *top_widget)
+{
 	if (hardwareType() == TOUCH_X)
 	{
-		PageTitleWidget *title_widget = new PageTitleWidget(title, TITLE_HEIGHT);
-		Page::buildPage(content, nav_bar, top_widget, title_widget);
+		PageTitleWidget *title_widget = new PageTitleWidget(title, title_height);
+		Page::buildPage(parent, nav_bar, top_widget, title_widget);
 
 		connect(content, SIGNAL(contentScrolled(int, int)),
 			title_widget, SLOT(setCurrentPage(int, int)));
 	}
 	else
-		Page::buildPage(content, nav_bar, top_widget);
+		Page::buildPage(parent, nav_bar, top_widget);
+	__content = content;
 
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));

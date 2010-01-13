@@ -75,6 +75,9 @@ class ProbesPage : public BannerPage
 Q_OBJECT
 public:
 	ProbesPage(const QDomNode &config_node, bool are_probes_external);
+
+private:
+	void loadItems(const QDomNode &config_node, bool are_probes_external);
 };
 
 

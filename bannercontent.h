@@ -7,8 +7,9 @@
 #include "page.h"
 
 class banner;
-class QShowEvent;
 
+
+#ifdef LAYOUT_BTOUCH
 
 /**
  * The BannerContent class manage a list of banner usually put inside a Page.
@@ -50,7 +51,6 @@ private:
 
 	QList<banner*> banner_list;
 
-#ifdef LAYOUT_BTOUCH
 	// The index of the banner showed at the top of the BannerContent
 	int current_index;
 
@@ -58,11 +58,35 @@ private:
 
 	// true if the banners height exceed the BannerContent height (so we have to do a pagination)
 	bool need_pagination;
-#endif
-#ifdef LAYOUT_TOUCHX
-	int current_page;
-	QList<int> pages;
-#endif
 };
+
+#else
+
+#include "gridcontent.h"
+
+/**
+ * The BannerContent class manage a list of banner usually put inside a Page.
+ */
+class BannerContent : public GridContent
+{
+friend void BannerPage::activateLayout();
+Q_OBJECT
+public:
+	// columns can be either 1 or 2
+	BannerContent(QWidget *parent=0, int columns=2);
+	void appendBanner(banner *b);
+	int bannerCount();
+	banner *getBanner(int i);
+	void initBanners();
+
+protected:
+	void drawContent();
+
+private:
+	QList<banner*> banner_list;
+	int columns;
+};
+
+#endif
 
 #endif // CONTENT_WIDGET_H
