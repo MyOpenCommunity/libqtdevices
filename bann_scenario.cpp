@@ -107,6 +107,7 @@ void ModifyScenario::status_changed(const StatusList &sl)
 		{
 		case ScenarioDevice::DIM_LOCK:
 			setState(it.value().toBool() ? LOCKED : UNLOCKED);
+			is_editing = false;
 			break;
 		case ScenarioDevice::DIM_START:
 		{
