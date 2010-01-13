@@ -20,9 +20,13 @@
 #include "bannercontent.h"
 #include "skinmanager.h"
 #include "airconditioning.h"
+#include "navigation_bar.h"
+#include "icondispatcher.h"
+#include "fontmanager.h"
 
 #include <QRegExp>
 #include <QDebug>
+#include <QLabel>
 
 enum
 {
@@ -152,10 +156,51 @@ void ThermalMenu::showPage()
 }
 
 
+#ifdef LAYOUT_BTOUCH
+
 ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 {
 	buildPage(getTextChild(config_node, "descr"));
+	loadItems(config_node, are_probes_external);
+}
 
+#else
+
+static QLabel *getLabel(const QString &text)
+{
+	QLabel *l = new QLabel(text);
+	l->setAlignment(Qt::AlignCenter);
+	l->setFont(bt_global::font->get(FontManager::TITLE));
+
+	return l;
+}
+
+ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
+{
+	QWidget *content = new QWidget;
+	QGridLayout *l = new QGridLayout(content);
+	BannerContent *banners = new BannerContent(0, 1);
+
+	QLabel *icon = new QLabel;
+	icon->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("central_icon")));
+
+	l->addWidget(getLabel(tr("Zone")), 0, 1);
+	l->addWidget(getLabel(tr("Temperature")), 0, 2);
+	l->addWidget(icon, 1, 0);
+	l->addWidget(banners, 1, 1, 2, 2);
+	l->setRowStretch(2, 1);
+	l->setColumnStretch(1, 1);
+	l->setColumnStretch(2, 1);
+
+	buildPage(content, banners, new NavigationBar,
+		  getTextChild(config_node, "descr"), 40);
+	loadItems(config_node, are_probes_external);
+}
+
+#endif
+
+void ProbesPage::loadItems(const QDomNode &config_node, bool are_probes_external)
+{
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		QString addr = getTextChild(item, "where");
