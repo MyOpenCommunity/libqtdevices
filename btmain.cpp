@@ -137,6 +137,9 @@ void BtMain::loadGlobalConfig()
 
 	// Load the current values
 	setConfigValue(n, "temperature/format", config[TEMPERATURE_SCALE]);
+	Q_ASSERT_X((config[TEMPERATURE_SCALE] == QString::number(CELSIUS)) ||
+		(config[TEMPERATURE_SCALE] == QString::number(FAHRENHEIT)), "BtMain::loadGlobalConfig",
+		"Temperature scale is invalid.");
 	setConfigValue(n, "language", config[LANGUAGE]);
 	setConfigValue(n, "clock/dateformat", config[DATE_FORMAT]);
 	setConfigValue(n, "modello", config[MODEL]);

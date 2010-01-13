@@ -29,7 +29,6 @@ enum TemperatureScale
 {
 	CELSIUS = 0,
 	FAHRENHEIT,
-	NONE,
 };
 
 enum DateFormat
