@@ -98,14 +98,11 @@ public:
 		DIMMER100 ,
 		NEWTIMED,
 		AUTOM,
-		TEMPERATURE_PROBE,
 		AMPLIFIER,
 		RADIO,
 		DOORPHONE,
 		IMPANTI,
 		ZONANTI,
-		TEMPERATURE_PROBE_EXTRA,
-		FANCOIL,
 		MODSCEN,
 		SOUNDMATR,
  		SUPERVISION_MCI,
@@ -247,53 +244,6 @@ public:
 	device_status_autom();
 	//! Return delay for init request deferral (msecs)
 	virtual int init_request_delay() { return AUTOM_REQ_DELAY; }
-};
-
-/**
- * Device status for extra thermal information present only in a controlled probe.
- */
-class device_status_temperature_probe_extra : public device_status {
-public:
-	enum {
-		STAT_INDEX = 0,
-		LOCAL_INDEX,
-		SP_INDEX,
-		CRONO,
-		INFO_CENTRALE,
-	} ind;
-	enum {
-		S_MAN = 0,
-		S_AUTO,
-		S_ANTIGELO,
-		S_TERM,
-		S_GEN,
-		S_OFF,
-		S_NONE,  // 4 zones: no status
-	} val;
-
-	device_status_temperature_probe_extra(thermo_type_t);
-};
-
-/**
- * Device status for temperature measured by temperature probes, thermal regulators, etc.
- */
-class device_status_temperature_probe : public device_status {
-public:
-	enum {
-		TEMPERATURE_INDEX = 0,
-	} ind;
-	device_status_temperature_probe();
-};
-
-/**
- * Fancoil element present in some controlled temperature probes.
- */
-class device_status_fancoil : public device_status {
-public:
-	enum {
-		SPEED_INDEX = 0,
-	} ind;
-	device_status_fancoil();
 };
 
 //! Amplifier status

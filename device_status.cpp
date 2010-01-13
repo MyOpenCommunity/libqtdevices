@@ -368,39 +368,6 @@ device_status_zonanti::device_status_zonanti() :
 			new stat_var(stat_var::ON_OFF, 0, 0, 1, 1));
 }
 
-device_status_temperature_probe::device_status_temperature_probe() :
-	device_status(TEMPERATURE_PROBE)
-{
-	add_var((int)TEMPERATURE_INDEX, new stat_var(stat_var::TEMPERATURE, 0, -999, 999, 1));
-}
-
-device_status_temperature_probe_extra::device_status_temperature_probe_extra(thermo_type_t type) :
-	device_status(TEMPERATURE_PROBE_EXTRA)
-{
-	/*
-	 * Initial value -1: not a possible one, so when the probe is
-	 * read the first time, we are sure the previous value is different
-	 * and the relevant display item is refreshed.
-	 */
-	add_var((int)STAT_INDEX, new stat_var(stat_var::STAT, -1, 0, 5, 1));
-	add_var((int)LOCAL_INDEX, new stat_var(stat_var::LOCAL, -1, 0, 13, 1));
-	add_var((int)SP_INDEX, new stat_var(stat_var::SP, -1, 0, INT_MAX, 1));
-	add_var((int)CRONO, new stat_var(stat_var::CRONO, -1, 0, 1, 1));
-	add_var((int)INFO_CENTRALE, new stat_var(stat_var::INFO_CENTRALE, -1, 0, 1, 1));
-}
-
-// Device status for fancoil
-device_status_fancoil::device_status_fancoil() :
-	device_status(FANCOIL)
-{
-	/*
-	 * Initial value -1: not a possible one, so when the probe is
-	 * read the first time, we are sure the previous value is different
-	 * and the relevant display item is refreshed.
-	 */
-	add_var((int)SPEED_INDEX, new stat_var(stat_var::FANCOIL_SPEED, -1, 0, 3, 1));
-}
-
 // Device status for modscen
 device_status_modscen::device_status_modscen() :
 	device_status(MODSCEN)

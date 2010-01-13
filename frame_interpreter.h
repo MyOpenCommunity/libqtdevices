@@ -135,34 +135,6 @@ public slots:
 	virtual void handle_frame_handler(char *, QList<device_status*>);
 };
 
-//! Temperature probe frame interpreter
-class frame_interpreter_temperature_probe : public frame_interpreter
-{
-Q_OBJECT
-private:
-	//! Set status, lights
-	void set_status(device_status_temperature_probe *ds, int s);
-	//! Analyze a frame for a pl status
-	void handle_frame(openwebnet_ext, device_status_temperature_probe *);
-
-	//! Whether the probe is of external (uncontrolled) type.
-	bool external;
-protected:
-	//! Returns true when frame is ours (reimplemented for thermr, device
-	bool is_frame_ours(openwebnet_ext, bool& request_status);
-public:
-	/**
-	 * Constructor
-	 * if \a external is true, the probe is of external (uncontrolled) type.
-	 */
-	frame_interpreter_temperature_probe(QString, bool external, bool, int);
-	//! Returns init message given device status
-	void get_init_message(device_status *, QString&);
-public slots:
-	//! Receive a frame
-	virtual void handle_frame_handler(char *, QList<device_status*>);
-};
-
 //! Sound device frame interpreter
 class frame_interpreter_sound_device : public frame_interpreter
 {
@@ -272,51 +244,6 @@ public:
 	frame_interpreter_zonanti_device(QString, bool, int);
 	//! Returns true when frame is ours (reimplemented for zonanti dev.)
 	bool is_frame_ours(openwebnet_ext m, bool& request_status);
-	//! Returns init message given device status
-	void get_init_message(device_status *, QString&);
-public slots:
-	//! Receive a frame
-	virtual void handle_frame_handler(char *, QList<device_status*>);
-};
-
-//! Temperature probe device frame interpreter
-class frame_interpreter_temperature_probe_controlled : public frame_interpreter
-{
-Q_OBJECT
-private:
-	//! Analyze a frame
-	void handle_frame(openwebnet_ext, device_status_temperature_probe_extra *);
-	//! As above, but for temperature status
-	void handle_frame(openwebnet_ext, device_status_temperature_probe *);
-	//! Analyze fancoil frame
-	void handle_frame(openwebnet_ext m, device_status_fancoil *ds);
-
-	//! True when frame has been analyzed
-	bool elaborato;
-
-	//! Type of thermal regulator
-	thermo_type_t type;
-
-	QString ind_centrale;
-	QString indirizzo;
-
-	/// Time to wait (in msec) before allowing another status request on the bus
-	static const int TIMEOUT_TIME = 10000;
-	/// This timer is used to compact all status requests done in TIMEOUT_TIME milliseconds in one frame only
-	QTimer new_request_timer;
-	/// If true, a new request frame can be sent
-	bool new_request_allowed;
-private slots:
-	void timeoutElapsed();
-
-protected:
-	//! Returns true when frame is ours (reimplemented for thermr, device
-	bool is_frame_ours(openwebnet_ext, bool& request_status);
-public:
-	//! Constructor
-	frame_interpreter_temperature_probe_controlled(QString,
-		thermo_type_t type,
-		const char *ind_centrale, const char *indirizzo, bool, int);
 	//! Returns init message given device status
 	void get_init_message(device_status *, QString&);
 public slots:
