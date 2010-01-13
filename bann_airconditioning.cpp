@@ -4,12 +4,13 @@
 #include "btbutton.h"
 #include "probe_device.h"
 #include "main.h" // bt_global::config
-#include "scaleconversion.h"
+#include "scaleconversion.h" // celsiusString, fahrenheitString, toCelsius, toFahrenheit
 #include "generic_functions.h" // setCfgValue()
 #include "airconditioning.h" // AdvancedSplitPage
 
 #include <QLabel> // BannerText
 #include <QDebug>
+#include <cmath> // round
 
 SingleSplit::SingleSplit(QString descr, AirConditioningInterface *d, NonControlledProbeDevice *d_probe) :
 	BannOnOffNew(0)
@@ -123,7 +124,6 @@ void AdvancedSplitScenario::onButtonClicked()
 CustomScenario::CustomScenario(AdvancedAirConditioningDevice *d) :
 	BannCenteredButton(0)
 {
-	// TODO: modify skin file
 	initBanner(bt_global::skin->getImage("custom_button"));
 	dev = d;
 }
@@ -143,6 +143,7 @@ SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, 
 	QString icon_minus = bt_global::skin->getImage("minus");
 	initBanner(icon_minus, icon_plus, "---", FontManager::SUBTITLE);
 
+	scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
 	Q_ASSERT_X(init_temp >= level_min && init_temp <= level_max, "SplitTemperature::SplitTemperature",
 		"Initial temperature is outside the given range.");
 	current_temp = init_temp;
@@ -157,11 +158,22 @@ SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, 
 	connect(right_button, SIGNAL(clicked()), SLOT(increaseTemp()));
 }
 
-void SplitTemperature::setTemperature(int new_temp)
+void SplitTemperature::setTemperature(int new_temp_celsius)
 {
-	if (new_temp >= min_temp && new_temp <= max_temp)
+	int tmp = new_temp_celsius;
+	switch (scale)
 	{
-		current_temp = new_temp;
+	case CELSIUS:
+		tmp = new_temp_celsius;
+		break;
+	case FAHRENHEIT:
+		tmp = roundTo5(static_cast<int>(toFahrenheit(new_temp_celsius)));
+		break;
+	}
+
+	if (tmp >= min_temp && tmp <= max_temp)
+	{
+		current_temp = tmp;
 		updateText();
 	}
 	else
@@ -190,13 +202,43 @@ void SplitTemperature::decreaseTemp()
 
 void SplitTemperature::updateText()
 {
-	// TODO: what about fahrenheit temperature?
-	setCentralText(celsiusString(current_temp));
+	switch (scale)
+	{
+	case CELSIUS:
+		setCentralText(celsiusString(current_temp));
+		break;
+	case FAHRENHEIT:
+		setCentralText(fahrenheitString(current_temp));
+		break;
+	}
 }
 
 int SplitTemperature::temperature()
 {
-	return current_temp;
+	switch (scale)
+	{
+	case CELSIUS:
+		return current_temp;
+	case FAHRENHEIT:
+		return static_cast<int>(round(toCelsius(current_temp)));
+	}
+}
+
+int SplitTemperature::roundTo5(int temp)
+{
+	// 13/5 = 2 ---> (2 + 1)*5 = 15
+	// 12%5 = 2 ---> 12 - 2 = 10;
+	int div = temp / 5;
+	int mod = temp % 5;
+	if (mod == 0)
+		return temp;
+	else
+	{
+		if (mod < 3)
+			return temp - mod;
+		else
+			return (div + 1) * 5;
+	}
 }
 
 

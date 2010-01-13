@@ -4,6 +4,8 @@
 #include "bann2_buttons.h" // BannOnOffNew, Bann2Buttons
 #include "bann1_button.h" // BannStates
 #include "airconditioning_device.h"
+#include "main.h" // bt_global::config, TemperatureScale
+
 
 #include <QList>
 #include <QPair>
@@ -119,10 +121,20 @@ class SplitTemperature : public Bann2Buttons
 {
 Q_OBJECT
 public:
+	/**
+	 * All values are assumed to be in the temperature scale set in conf.xml
+	 */
 	SplitTemperature(int init_temp, int level_max, int level_min, int step);
-	// TODO: what is the scale for this temp? The easiest thing is to assume
-	// the same scale that was given when the object was created.
-	void setTemperature(int new_temp);
+
+	/**
+	 * Set the current temperature. new_temp must be in celsius degrees.
+	 */
+	void setTemperature(int new_temp_celsius);
+
+	/**
+	 * Return the current temperature in celsius degrees, so that external users don't need check
+	 * the temperature scale.
+	 */
 	int temperature();
 
 private slots:
@@ -130,8 +142,11 @@ private slots:
 	void decreaseTemp();
 
 private:
+	// round a temperature to the nearest multiple of 5
+	int roundTo5(int temp);
 	void updateText();
 	int current_temp, max_temp, min_temp, temp_step;
+	TemperatureScale scale;
 };
 
 
