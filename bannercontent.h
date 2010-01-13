@@ -72,7 +72,8 @@ class BannerContent : public GridContent
 friend void BannerPage::activateLayout();
 Q_OBJECT
 public:
-	BannerContent(QWidget *parent=0);
+	// columns can be either 1 or 2
+	BannerContent(QWidget *parent=0, int columns=2);
 	void appendBanner(banner *b);
 	int bannerCount();
 	banner *getBanner(int i);
@@ -83,6 +84,7 @@ protected:
 
 private:
 	QList<banner*> banner_list;
+	int columns;
 };
 
 #endif
