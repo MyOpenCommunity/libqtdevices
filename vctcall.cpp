@@ -370,9 +370,6 @@ void VCTCallPage::exitFullScreen()
 	vct_call->startVideo();
 	vct_call->refreshStatus();
 	vct_call->blockSignals(false);
-
-	// TODO: come fa a funzionare? Per qualche misterioso motivo la window diventa
-	// quella giusta.. ma come?!?!?
 	Page::showPage();
 }
 

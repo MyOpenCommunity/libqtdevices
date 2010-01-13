@@ -26,7 +26,7 @@ namespace VCTCallPrivate
 	 * The pad to control the movements of the camera (if the camera support them)
 	 * and to show the video call page as a window.
 	 */
-	class CameraMove : public QWidget // TODO: should be a StyledWidget??
+	class CameraMove : public QWidget
 	{
 	Q_OBJECT
 	public:
