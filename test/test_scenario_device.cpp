@@ -17,6 +17,11 @@ void TestScenarioDevice::cleanupTestCase()
 	delete dev;
 }
 
+void TestScenarioDevice::init()
+{
+	dev->is_unlocked = false;
+}
+
 void TestScenarioDevice::sendActivateScenario()
 {
 	dev->activateScenario(22);
@@ -115,4 +120,15 @@ void TestScenarioDevice::receiveGenericStartProgramming()
 	QString frame = QString("*0*40*%1##").arg(dev->where);
 	QPair<bool, int> check_value(true, ScenarioDevice::ALL_SCENARIOS);
 	t.check(frame, check_value);
+}
+
+void TestScenarioDevice::receiveDeviceIsProgrammingAtStartup()
+{
+	DeviceTester tl(dev, ScenarioDevice::DIM_LOCK);
+	QString is_programming_frame = QString("*0*40*%1##").arg(dev->where);
+	QString unlock_frame = QString("*0*44*%1##").arg(dev->where);
+	QStringList sl;
+	sl << is_programming_frame << unlock_frame;
+	// we expect just one signal due to is_programming_frame
+	tl.checkSignals(sl, 1);
 }
