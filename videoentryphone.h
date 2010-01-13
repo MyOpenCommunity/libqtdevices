@@ -75,7 +75,10 @@ private:
 };
 
 
-
+/**
+ * The page for an intercom call, that allow the user to set the parameters of
+ * the call (that is only audio).
+ */
 class IntercomCallPage : public Page
 {
 Q_OBJECT
@@ -89,6 +92,7 @@ private slots:
 	void handleClose();
 	void changeVolume(int value);
 	void toggleMute();
+	void showPageIncomingCall();
 
 private:
 	EntryphoneDevice *dev;
@@ -99,6 +103,10 @@ private:
 };
 
 
+/**
+ * The main class of an intercom call, which shows a button for each internal place,
+ * that allow the user to call the place.
+ */
 class Intercom : public IconPage
 {
 Q_OBJECT
