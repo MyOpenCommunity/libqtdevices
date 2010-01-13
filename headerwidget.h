@@ -2,12 +2,53 @@
 #define HEADERWIDGET_H
 
 #include "page.h" // StyledWidget
+#include "device.h" // StatusList
+#include "main.h" // TemperatureScale
+
+#include <QLabel>
 
 class QDomNode;
 class QHBoxLayout;
 class QSignalMapper;
 class HeaderNavigationBar;
 class BtButton;
+
+
+// helper widgets, to display the temperature
+
+class TemperatureDisplay : public QLabel
+{
+Q_OBJECT
+public:
+	TemperatureDisplay(device *probe);
+
+private slots:
+	void status_changed(const StatusList &sl);
+
+protected:
+	QString label;
+	TemperatureScale temp_scale;
+};
+
+class HomepageTemperatureDisplay : public TemperatureDisplay
+{
+Q_OBJECT
+public:
+	HomepageTemperatureDisplay(device *probe);
+
+protected:
+	void paintEvent(QPaintEvent *e);
+};
+
+class InnerPageTemperatureDisplay : public TemperatureDisplay
+{
+Q_OBJECT
+public:
+	InnerPageTemperatureDisplay(device *probe);
+
+protected:
+	void paintEvent(QPaintEvent *e);
+};
 
 
 // topmost header, contains the BTicino logo and (on internal pages) the
@@ -18,10 +59,11 @@ Q_OBJECT
 public:
 	HeaderLogo();
 
+	void loadItems(const QDomNode &config_node);
 	void setControlsVisible(bool visible);
 
 private:
-	QWidget *time_display;
+	QWidget *time_display, *temperature_display;
 };
 
 

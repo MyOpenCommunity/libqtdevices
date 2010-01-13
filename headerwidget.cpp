@@ -6,6 +6,9 @@
 #include "btbutton.h"
 #include "iconsettings.h"
 #include "generic_functions.h" // getBostikName
+#include "probe_device.h" // NonControlledProbeDevice
+#include "scaleconversion.h"
+#include "devices_cache.h"
 
 #include <QSignalMapper>
 #include <QHBoxLayout>
@@ -24,7 +27,7 @@ enum
 };
 
 
-// base class for date/time dsiplay widgets
+// base class for date/time display widgets
 class PollingDisplayWidget : public QLabel
 {
 public:
@@ -140,10 +143,77 @@ void HomepageDateDisplay::paintLabel(QPainter &painter)
 }
 
 
+TemperatureDisplay::TemperatureDisplay(device *probe)
+{
+	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+	label = "-";
+
+	connect(probe, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+}
+
+void TemperatureDisplay::status_changed(const StatusList &sl)
+{
+	if (!sl.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
+		return;
+
+	int temperature = sl[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
+	switch (temp_scale)
+	{
+		case CELSIUS:
+			label = celsiusString(temperature);
+			break;
+		case FAHRENHEIT:
+			// we don't have a direct conversion from celsius degrees to farhrenheit degrees
+			label = fahrenheitString(bt2Fahrenheit(celsius2Bt(temperature)));
+			break;
+		default:
+			qWarning("BannTemperature: unknown scale");
+	}
+
+	update();
+}
+
+
+HomepageTemperatureDisplay::HomepageTemperatureDisplay(device *probe)
+	: TemperatureDisplay(probe)
+{
+	setFont(bt_global::font->get(FontManager::HOMEPAGEWIDGET));
+	setPixmap(bt_global::skin->getImage("background"));
+}
+
+void HomepageTemperatureDisplay::paintEvent(QPaintEvent *e)
+{
+	QLabel::paintEvent(e);
+	QPainter p(this);
+
+	p.drawText(rect().adjusted(35, 0, 0, 0),
+		   Qt::AlignCenter, label);
+}
+
+
+InnerPageTemperatureDisplay::InnerPageTemperatureDisplay(device *probe)
+	: TemperatureDisplay(probe)
+{
+	setFont(bt_global::font->get(FontManager::TEXT));
+	setPixmap(bt_global::skin->getImage("temperature_background"));
+}
+
+void InnerPageTemperatureDisplay::paintEvent(QPaintEvent *e)
+{
+	QLabel::paintEvent(e);
+	QPainter p(this);
+
+	p.drawText(rect(), Qt::AlignCenter, label);
+}
+
+
 HeaderLogo::HeaderLogo()
 {
 	setFixedSize(800, 40);
+}
 
+void HeaderLogo::loadItems(const QDomNode &config_node)
+{
 	time_display = new TimeDisplay;
 
 	QHBoxLayout *l = new QHBoxLayout(this);
@@ -152,11 +222,29 @@ HeaderLogo::HeaderLogo()
 
 	l->addWidget(time_display);
 	l->addStretch(1);
+
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		int id = getTextChild(item, "id").toInt();
+
+		switch (id)
+		{
+		case ITEM_TEMPERATURE:
+			// TODO add flag for the probe type in confiugration
+			device *probe = bt_global::devices_cache.get_temperature_probe(getTextChild(item, "where"), false);
+
+			temperature_display = new InnerPageTemperatureDisplay(probe);
+			l->addWidget(temperature_display);
+			break;
+		}
+	}
 }
 
 void HeaderLogo::setControlsVisible(bool visible)
 {
 	time_display->setVisible(visible);
+	if (temperature_display)
+		temperature_display->setVisible(visible);
 }
 
 
@@ -210,6 +298,15 @@ void HeaderInfo::loadItems(const QDomNode &config_node)
 			Page *settings = new IconSettings(getPageNodeFromChildNode(item, "lnk_pageID"));
 			connect(button, SIGNAL(clicked()), settings, SLOT(showPage()));
 			connect(settings, SIGNAL(Closed()), SIGNAL(showHomePage()));
+
+			break;
+		}
+		case ITEM_TEMPERATURE:
+		{
+			// TODO add flag for the probe type in confiugration
+			device *probe = bt_global::devices_cache.get_temperature_probe(getTextChild(item, "where"), false);
+			QWidget *item = new HomepageTemperatureDisplay(probe);
+			home_layout->addWidget(item);
 
 			break;
 		}
@@ -424,6 +521,7 @@ HeaderWidget::HeaderWidget()
 
 void HeaderWidget::loadConfiguration(const QDomNode &homepage_node, const QDomNode &infobar_node)
 {
+	header_logo->loadItems(infobar_node);
 	top_nav_bar->loadItems(homepage_node);
 	header_info->loadItems(infobar_node);
 }

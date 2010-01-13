@@ -76,6 +76,8 @@ void HomeWindow::loadConfiguration()
 	QDomNode favourites_node = getPageNodeFromChildNode(pagemenu_home, "h_lnk_pageID");
 	QDomNode infobar_node = getPageNodeFromChildNode(favourites_node, "h_lnk_pageID");
 
+	SkinContext cxt(getTextChild(pagemenu_home, "cid").toInt());
+
 	header_widget->loadConfiguration(pagemenu_home, infobar_node);
 	favorites_widget->loadItems(favourites_node);
 }
@@ -99,4 +101,3 @@ Page *HomeWindow::currentPage()
 {
 	return central_widget->currentPage();
 }
-
