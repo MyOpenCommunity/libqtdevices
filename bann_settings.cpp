@@ -223,8 +223,8 @@ void bannVersion::showVers()
 }
 
 
-impPassword::impPassword(QWidget *parent, QString icon_on, QString icon_off, QString icon_label, QString pwd, int attiva)
-	: bann2But(parent)
+impPassword::impPassword(QWidget *parent, QString icon_on, QString icon_off, QString icon_label, QString descr, QString pwd, int attiva)
+	: Bann2Buttons(parent)
 {
 	password = pwd;
 	tasti = new Keypad();
@@ -238,20 +238,18 @@ impPassword::impPassword(QWidget *parent, QString icon_on, QString icon_off, QSt
 		status = PASSWD_SET;
 		tasti->setMode(Keypad::HIDDEN);
 	}
+	initBanner(icon_off, icon_label, descr);
 
-	connect(this, SIGNAL(dxClick()), tasti, SLOT(showPage()));
-	connect(this, SIGNAL(sxClick()), this, SLOT(toggleActivation()));
-	connect(tasti, SIGNAL(Closed()), this, SLOT(checkPasswd()));
-
-	SetIcons(1, icon_label);
-	SetIcons(0, icon_off, icon_on);
-	Draw();
+	connect(right_button, SIGNAL(clicked()), tasti, SLOT(showPage()));
+	connect(left_button, SIGNAL(clicked()), SLOT(toggleActivation()));
+	connect(tasti, SIGNAL(Closed()), SLOT(checkPasswd()));
 
 	active = (attiva == 1);
 	bt_global::btmain->setPwd(active, password);
 
-	sxButton->setOnOff();
-	sxButton->setStatus(active);
+	left_button->setOnOff();
+	left_button->setPressedImage(icon_on);
+	left_button->setStatus(active);
 }
 
 void impPassword::toggleActivation()
@@ -259,7 +257,7 @@ void impPassword::toggleActivation()
 	active = !active;
 	setCfgValue("enabled", QString::number(active), PROTEZIONE, getSerNum());
 	bt_global::btmain->setPwd(active, password);
-	sxButton->setStatus(active);
+	left_button->setStatus(active);
 }
 
 void impPassword::showEvent(QShowEvent *event)

@@ -172,11 +172,11 @@ private:
   \author Davide
   \date lug 2005
 */
-class impPassword : public bann2But
+class impPassword : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	impPassword(QWidget *parent, QString icon_on, QString icon_off, QString icon_label, QString pwd, int attiva);
+	impPassword(QWidget *parent, QString icon_on, QString icon_off, QString icon_label, QString descr, QString pwd, int attiva);
 
 public slots:
 /*!

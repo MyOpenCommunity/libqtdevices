@@ -85,10 +85,9 @@ banner *Settings::getBanner(const QDomNode &item_node)
 		break;
 	case PROTEZIONE:
 		b = new impPassword(0,
-					bt_global::skin->getImage("state_on"),
-					bt_global::skin->getImage("state_off"),
-					bt_global::skin->getImage("edit"),
-					getTextChild(item_node, "value"), getTextChild(item_node, "enabled").toInt());
+			bt_global::skin->getImage("state_on"), bt_global::skin->getImage("state_off"),
+			bt_global::skin->getImage("edit"), getTextChild(item_node, "descr"),
+			getTextChild(item_node, "value"), getTextChild(item_node, "enabled").toInt());
 		break;
 	case VERSIONE:
 		b = new bannVersion(0, bt_global::skin->getImage("info"), bt_global::btmain->version);
