@@ -1,5 +1,5 @@
-#ifndef FILE_BROWSER_H
-#define FILE_BROWSER_H
+#ifndef ITEM_LIST_H
+#define ITEM_LIST_H
 
 #include <QList>
 #include <QString>
@@ -11,18 +11,18 @@ class QBoxLayout;
 class QLabel;
 
 /**
- * \class FileBrowser
+ * \class ItemList
  *
- * This class show a list of files and supply a list of signal/slot for handling
- * the user choices.
+ * This class show a list of item (files or other "virtual" items) and supply a
+ * list of signal/slot for handling the user choices.
  */
-class FileBrowser : public QWidget
+class ItemList : public QWidget
 {
 Q_OBJECT
 public:
-	struct FileInfo
+	struct ItemInfo
 	{
-		FileInfo(QString name = QString(), QString desc = QString(),
+		ItemInfo(QString name = QString(), QString desc = QString(),
 			 QString icon = QString(), QString button_icon = QString());
 
 		QString name;
@@ -31,9 +31,9 @@ public:
 		QString button_icon;
 	};
 
-	FileBrowser(QWidget *parent, int rows_per_page);
+	ItemList(QWidget *parent, int rows_per_page);
 
-	void setList(QList<FileInfo> items, int page = 0);
+	void setList(QList<ItemInfo> items, int page = 0);
 	void showList();
 
 	unsigned getCurrentPage();
@@ -62,9 +62,9 @@ private:
 	QVBoxLayout *main_layout;
 
 	/// The list of items displayed
-	QList<FileInfo> item_list;
+	QList<ItemInfo> item_list;
 
-	void addHorizontalBox(QBoxLayout *layout, const FileInfo &item, int id_btn);
+	void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
 };
 
 #endif

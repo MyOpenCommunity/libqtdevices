@@ -1,7 +1,7 @@
 #include "multimedia_filelist.h"
 #include "navigation_bar.h"
 #include "skinmanager.h"
-#include "filebrowser.h"
+#include "itemlist.h"
 #include "slideshow.h"
 #include "videoplayer.h"
 
@@ -32,23 +32,23 @@ void addFilters(QStringList &filters, const char **extensions, int size)
 MultimediaFileListPage::MultimediaFileListPage()
 	: FileSelector(4, "/video")
 {
-	FileBrowser *file_browser = new FileBrowser(0, 4);
-	connect(file_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
+	ItemList *item_list = new ItemList(0, 4);
+	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 	connect(this, SIGNAL(fileClicked(int)), SLOT(startPlayback(int)));
 
 	PageTitleWidget *title_widget = new PageTitleWidget(tr("Folder"), 35);
-	connect(file_browser, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
+	connect(item_list, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
 
 	NavigationBar *nav_bar = new NavigationBar("eject");
 
-	buildPage(file_browser, nav_bar, 0, title_widget);
+	buildPage(item_list, nav_bar, 0, title_widget);
 	layout()->setContentsMargins(0, 5, 25, 10);
 
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
 	connect(this, SIGNAL(notifyExit()), SIGNAL(Closed()));
-	connect(nav_bar, SIGNAL(upClick()), file_browser, SLOT(prevItem()));
-	connect(nav_bar, SIGNAL(downClick()), file_browser, SLOT(nextItem()));
-	connect(file_browser, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
+	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(nextItem()));
+	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 
 	// order here must match the order in enum Type
 	file_icons.append(bt_global::skin->getImage("directory_icon"));
@@ -88,7 +88,7 @@ bool MultimediaFileListPage::browseFiles(const QDir &directory, QList<QFileInfo>
 
 	files.clear();
 
-	QList<FileBrowser::FileInfo> names_list;
+	QList<ItemList::ItemInfo> names_list;
 
 	for (int i = 0; i < temp_files_list.size(); ++i)
 	{
@@ -98,7 +98,7 @@ bool MultimediaFileListPage::browseFiles(const QDir &directory, QList<QFileInfo>
 
 		if (f.isFile())
 		{
-			FileBrowser::FileInfo info(f.fileName(), QString(),
+			ItemList::ItemInfo info(f.fileName(), QString(),
 						   file_icons[fileType(f)],
 						   play_file);
 
@@ -107,7 +107,7 @@ bool MultimediaFileListPage::browseFiles(const QDir &directory, QList<QFileInfo>
 		}
 		else if (f.isDir())
 		{
-			FileBrowser::FileInfo info(f.fileName(), QString(),
+			ItemList::ItemInfo info(f.fileName(), QString(),
 						   file_icons[DIRECTORY],
 						   browse_directory);
 

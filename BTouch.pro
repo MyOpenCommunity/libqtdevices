@@ -156,7 +156,6 @@ HEADERS += actuators.h \
            feedmanager.h \
            feeditemwidget.h \
            feedparser.h \
-           filebrowser.h \
            fileselector.h \
            fontmanager.h \
            frame_interpreter.h \
@@ -172,6 +171,7 @@ HEADERS += actuators.h \
            iconpage.h \
            iconsettings.h \
            iconwindow.h \
+           itemlist.h \
            items.h \
            keypad.h \
            lansettings.h \
@@ -230,6 +230,7 @@ HEADERS += actuators.h \
            videoentryphone.h \
            vctcall.h \
            videoplayer.h \
+           webcam_list.h \
            window.h \
            windowcontainer.h \
            xml_functions.h
@@ -293,7 +294,6 @@ SOURCES += actuators.cpp \
            feedmanager.cpp \
            feeditemwidget.cpp \
            feedparser.cpp \
-           filebrowser.cpp \
            fileselector.cpp \
            fontmanager.cpp \
            frame_interpreter.cpp \
@@ -308,6 +308,7 @@ SOURCES += actuators.cpp \
            iconpage.cpp \
            iconsettings.cpp \
            iconwindow.cpp \
+           itemlist.cpp \
            items.cpp \
            keypad.cpp \
            lansettings.cpp \
@@ -366,6 +367,7 @@ SOURCES += actuators.cpp \
            videoentryphone.cpp \
            vctcall.cpp \
            videoplayer.cpp \
+           webcam_list.cpp \
            window.cpp \
            windowcontainer.cpp \
            xml_functions.cpp

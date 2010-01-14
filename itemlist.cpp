@@ -1,4 +1,4 @@
-#include "filebrowser.h"
+#include "itemlist.h"
 #include "fontmanager.h" // bt_global::font
 #include "btbutton.h"
 #include "icondispatcher.h" // icons_cache
@@ -10,7 +10,7 @@
 #include <QFont>
 
 
-FileBrowser::FileInfo::FileInfo(QString n, QString d, QString i, QString bi)
+ItemList::ItemInfo::ItemInfo(QString n, QString d, QString i, QString bi)
 {
 	name = n;
 	description = d;
@@ -19,7 +19,7 @@ FileBrowser::FileInfo::FileInfo(QString n, QString d, QString i, QString bi)
 }
 
 
-FileBrowser::FileBrowser(QWidget *parent, int _rows_per_page)
+ItemList::ItemList(QWidget *parent, int _rows_per_page)
 	: QWidget(parent)
 {
 	// Set the number of elements shown
@@ -33,7 +33,7 @@ FileBrowser::FileBrowser(QWidget *parent, int _rows_per_page)
 	connect(buttons_group, SIGNAL(buttonClicked(int)), SLOT(clicked(int)));
 }
 
-void FileBrowser::addHorizontalBox(QBoxLayout *layout, const FileInfo &item, int id_btn)
+void ItemList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
 {
 	QFont font = bt_global::font->get(FontManager::TEXT);
 
@@ -70,7 +70,7 @@ void FileBrowser::addHorizontalBox(QBoxLayout *layout, const FileInfo &item, int
 	layout->addWidget(boxWidget);
 }
 
-void FileBrowser::showList()
+void ItemList::showList()
 {
 	int start = current_page * rows_per_page;
 	int count = qMin(start + rows_per_page, item_list.count()) - start;
@@ -94,18 +94,18 @@ void FileBrowser::showList()
 	main_layout->addStretch();
 }
 
-void FileBrowser::setList(QList<FileInfo> items, int page)
+void ItemList::setList(QList<ItemInfo> items, int page)
 {
 	item_list = items;
 	current_page = page;
 }
 
-unsigned FileBrowser::getCurrentPage()
+unsigned ItemList::getCurrentPage()
 {
 	return current_page;
 }
 
-void FileBrowser::nextItem()
+void ItemList::nextItem()
 {
 	current_page += 1;
 	// wrap around to the first page
@@ -114,7 +114,7 @@ void FileBrowser::nextItem()
 	showList();
 }
 
-void FileBrowser::prevItem()
+void ItemList::prevItem()
 {
 	current_page -= 1;
 	// wrap around to the last page
@@ -123,12 +123,12 @@ void FileBrowser::prevItem()
 	showList();
 }
 
-void FileBrowser::clicked(int item)
+void ItemList::clicked(int item)
 {
 	emit itemIsClicked(current_page * rows_per_page + item);
 }
 
-int FileBrowser::pageCount()
+int ItemList::pageCount()
 {
 	return item_list.count() / rows_per_page +
 			(item_list.count() % rows_per_page ? 1 : 0);

@@ -4,7 +4,7 @@
 #include "fileselector.h"
 
 class QDomNode;
-class FileBrowser;
+class ItemList;
 class SlideshowPage;
 class VideoPlayerPage;
 
@@ -22,7 +22,7 @@ public:
 		IMAGE = 3
 	};
 
-	typedef FileBrowser ContentType;
+	typedef ItemList ContentType;
 
 	MultimediaFileListPage();
 
