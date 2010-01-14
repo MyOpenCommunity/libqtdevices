@@ -16,25 +16,29 @@
 
 #include "frame_receiver.h"
 #include "main.h" // TemperatureScale
+#include "device.h" // StatusList
 
 #include <QObject>
 #include <QList>
 
 class Page;
+class NonControlledProbeDevice;
 
 class QLabel;
 class QString;
 class QLCDNumber;
 
 
-class TemperatureViewer : public QObject, FrameReceiver
+class TemperatureViewer : public QObject
 {
+Q_OBJECT
 public:
 	TemperatureViewer(Page *page);
 	void add(QString where, int x, int y, int width, int height, QString descr, QString ext);
 	void inizializza();
 
-	virtual void manageFrame(OpenMsg &msg);
+private slots:
+	void status_changed(const StatusList &sl);
 
 private:
 	Page *linked_page; /// the page in which the temperature objects are displayed.
@@ -43,8 +47,7 @@ private:
 	{
 		QLCDNumber *lcd;
 		QLabel *text;
-		QString ext;
-		QString where;
+		NonControlledProbeDevice *device;
 	};
 
 	QList<TemperatureData> temp_list;

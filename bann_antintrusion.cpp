@@ -1,6 +1,6 @@
 #include "bann_antintrusion.h"
 #include "main.h" // MAX_PATH, IMG_PATH
-#include "generic_functions.h" // void getZoneName(...)
+#include "generic_functions.h" // void getZoneName(...), getBostikName
 #include "fontmanager.h" // bt_global::font
 #include "btbutton.h"
 #include "skinmanager.h" // bt_global::skin
@@ -16,8 +16,8 @@
 #include <QHBoxLayout>
 
 
-BannSingleLeft::BannSingleLeft(QWidget *parent) :
-	BannerNew(parent)
+BannSingleLeft::BannSingleLeft() :
+	BannerNew(0)
 {
 	left_button = new BtButton;
 	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
@@ -73,17 +73,15 @@ void BannSingleLeft::setState(States new_state)
 
 
 
-AntintrusionZone::AntintrusionZone(const QDomNode &config_node, QWidget *parent) :
-	BannSingleLeft(parent)
+AntintrusionZone::AntintrusionZone(const QString &name, const QString &where) :
+	BannSingleLeft()
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-	QString where = getTextChild(config_node, "where");
 	setAddress(where);
 
 	QString zone = getZoneName(bt_global::skin->getImage("zone"), where);
-	initBanner(bt_global::skin->getImage("parz"), bt_global::skin->getImage("sparz"),
-		bt_global::skin->getImage("antintrusion_on"), bt_global::skin->getImage("antintrusion_off"),
-		zone, PARTIAL_OFF, getTextChild(config_node, "descr"));
+	initBanner(bt_global::skin->getImage("partial_on"), bt_global::skin->getImage("partial_off"),
+		bt_global::skin->getImage("alarm_on"), bt_global::skin->getImage("alarm_off"),
+		zone, PARTIAL_OFF, name);
 	is_on = false;
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleParzializza()));
 	already_changed = false;
@@ -184,6 +182,7 @@ bool AntintrusionZone::isActive()
 	return is_on;
 }
 
+#if 0
 
 zonaAnti::zonaAnti(QWidget *parent, const QString &name, QString indirizzo, QString iconzona, QString IconDisactive,
 	QString IconActive) : bannOnIcons(parent)
@@ -191,8 +190,8 @@ zonaAnti::zonaAnti(QWidget *parent, const QString &name, QString indirizzo, QStr
 	setAddress(indirizzo);
 	qDebug("zonaAnti::zonaAnti()");
 	// Mail agresta 22/06
-	parzIName = IMG_PATH "btnparzializza.png";
-	sparzIName = IMG_PATH "btnsparzializza.png";
+	parzIName = bt_global::skin->getImage("partial_on");
+	sparzIName = bt_global::skin->getImage("partial_off");
 
 	SetIcons(1, sparzIName);
 	SetIcons(2, getZoneName(iconzona, indirizzo));
@@ -337,18 +336,16 @@ void zonaAnti::inizializza(bool forza)
 	dev->sendInit("*#5*" + getAddress() + "##");
 }
 
+#endif
 
-impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString IconActive)
+impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString Icon)
 	: bann3ButLab(parent)
 {
+	banner_height = 60;
+
 	tasti = NULL;
-	QString disactive_icon_path;
-	if (!IconActive.isNull())
-		disactive_icon_path = IconActive.left(IconActive.indexOf('.') - 3);
 
-	disactive_icon_path += "dis" + IconActive.mid(IconActive.indexOf('.'));
-
-	SetIcons(IconInfo, IconOff, disactive_icon_path, IconOn, IconActive);
+	SetIcons(IconInfo, IconOff, getBostikName(Icon, "dis"), IconOn, getBostikName(Icon, "ins"));
 	send_part_msg = false;
 	inserting = false;
 	memset(le_zone, 0, sizeof(le_zone));
@@ -358,6 +355,9 @@ impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconI
 	// BUT2 and 4 are actually both on the left of the banner.
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disinserisci()));
 	connect(this,SIGNAL(cdxClick()),this,SLOT(Inserisci()));
+
+	// probably needs to be set for all banners (or minimumSizeHint defined)
+	setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
 
 	// Crea o preleva il dispositivo dalla cache
 	dev = bt_global::devices_cache.get_impanti_device();
@@ -543,14 +543,14 @@ void impAnti::openNakRx()
 	part_msg_sent = false;
 }
 
-void impAnti::setZona(zonaAnti *za)
+void impAnti::setZona(AntintrusionZone *za)
 {
 	int index = za->getIndex() - 1;
 	if ((index >= 0) && (index < MAX_ZONE))
 		le_zone[index] = za;
 }
 
-void impAnti::partChanged(zonaAnti *za)
+void impAnti::partChanged(AntintrusionZone *za)
 {
 	qDebug("impAnti::partChanged");
 	send_part_msg = true;

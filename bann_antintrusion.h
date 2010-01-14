@@ -24,7 +24,7 @@ protected:
 		PARTIAL_OFF,
 	};
 
-	BannSingleLeft(QWidget *parent = 0);
+	BannSingleLeft();
 	void initBanner(const QString &_left_on, const QString &_left_off, const QString &_center_on,
 		const QString &_center_off, const QString &zone, States init_state, const QString &banner_text);
 	void setState(States new_state);
@@ -43,7 +43,7 @@ class AntintrusionZone : public BannSingleLeft
 {
 Q_OBJECT
 public:
-	AntintrusionZone(const QDomNode &config_node, QWidget *parent = 0);
+	AntintrusionZone(const QString &name, const QString &where);
 	void inizializza(bool forza = false);
 	bool isActive();
 
@@ -62,6 +62,8 @@ private:
 signals:
 	void partChanged(AntintrusionZone *);
 };
+
+#if 0
 
 /*!
  *  \class zonaAnti
@@ -96,6 +98,9 @@ signals:
 	void partChanged(zonaAnti *);
 };
 
+typedef zonaAnti AntintrusionZone;
+
+#endif
 
 /*!
  * \class impAnti
@@ -114,8 +119,8 @@ public:
 
 public slots:
 	void status_changed(QList<device_status*>);
-	void partChanged(zonaAnti*);
-	void setZona(zonaAnti*);
+	void partChanged(AntintrusionZone *);
+	void setZona(AntintrusionZone *);
 	int getIsActive(int zona);
 	void ToSendParz(bool s);
 	void openAckRx();
@@ -131,7 +136,7 @@ signals:
 private:
 	static const int MAX_ZONE = 8;
 	Keypad *tasti;
-	zonaAnti *le_zone[MAX_ZONE];
+	AntintrusionZone *le_zone[MAX_ZONE];
 	bool send_part_msg;
 	bool part_msg_sent;
 	bool inserting;

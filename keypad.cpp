@@ -1,7 +1,10 @@
 #include "keypad.h"
 #include "fontmanager.h" // bt_global::font
 #include "skinmanager.h"
+#include "icondispatcher.h"
 #include "btbutton.h"
+#include "navigation_bar.h"
+#include "generic_functions.h" // getBostikName
 
 #include <QLabel>
 #include <QButtonGroup>
@@ -15,6 +18,17 @@
 
 Keypad::Keypad()
 {
+#ifdef LAYOUT_TOUCHX
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	buildPage(new QWidget, nav_bar);
+	QWidget *top_widget = page_content;
+#else
+	QWidget *top_widget = this;
+#endif
+
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+
 	BtButton *ok = new BtButton;
 	BtButton *canc = new BtButton;
 	BtButton *digits[10];
@@ -70,7 +84,7 @@ Keypad::Keypad()
 	p->addWidget(digitLabel, 1);
 
 	// top layout
-	topLayout = new QVBoxLayout(this);
+	topLayout = new QVBoxLayout(top_widget);
 	topLayout->setContentsMargins(0, 0, 0, 10);
 #ifdef LAYOUT_BTOUCH
 	topLayout->setSpacing(0);
@@ -141,6 +155,8 @@ void Keypad::resetText()
 
 // KeypadWithState implementation
 
+#ifdef LAYOUT_BTOUCH
+
 KeypadWithState::KeypadWithState(int s[8])
 {
 	QHBoxLayout *l = new QHBoxLayout;
@@ -171,6 +187,34 @@ KeypadWithState::KeypadWithState(int s[8])
 
 	insertLayout(l);
 }
+
+#else
+
+KeypadWithState::KeypadWithState(int s[8])
+{
+	QHBoxLayout *l = new QHBoxLayout;
+	l->setContentsMargins(5, 5, 5, 5);
+	l->setSpacing(5);
+	l->setAlignment(Qt::AlignHCenter);
+
+	for (int i = 0; i < 8 && s[i] != -1; i++)
+	{
+		QLabel *state = new QLabel;
+		QString icon = bt_global::skin->getImage("small_" + QString::number(i + 1));
+
+		if (s[i])
+			icon = getBostikName(icon, "on");
+		else
+			icon = getBostikName(icon, "off");
+		state->setPixmap(*bt_global::icons_cache.getIcon(icon));
+
+		l->addWidget(state);
+	}
+
+	insertLayout(l);
+}
+
+#endif
 
 
 // KeypadWindow implementation

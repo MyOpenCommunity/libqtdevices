@@ -148,41 +148,6 @@ public:
 	mci_device(QString, bool p=false, int g=-1);
 };
 
-/**
- * Controlled temperature probe device.
- */
-class temperature_probe_controlled : public device
-{
-Q_OBJECT
-public:
-	temperature_probe_controlled(QString, thermo_type_t, bool _fancoil,
-		const char *ind_centrale, const char *indirizzo, bool p=false, int g=-1);
-
-	void setManual(unsigned setpoint);
-	void setAutomatic();
-
-	/**
-	 * Sets fancoil speed, if present. The values for the parameters are defined in the protocol.
-	 * \param speed 0 = auto, 1 = min, 2 = med, 3 = max
-	 */
-	void setFancoilSpeed(int speed);
-	void requestFancoilStatus();
-private:
-	/// This is the address of the device as read from configuration file (ie. if where= #15#14, simple_where = 15)
-	QString simple_where;
-	bool fancoil;
-};
-
-/**
- * Not controlled temperature probe device (external or internal).
- */
-class temperature_probe_notcontrolled : public device
-{
-Q_OBJECT
-public:
-	//! Constructor
-	temperature_probe_notcontrolled(QString, bool external, bool p=false, int g=-1);
-};
 
 //! Sound device (ampli)
 class sound_device : public device

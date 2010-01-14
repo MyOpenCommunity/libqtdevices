@@ -14,7 +14,8 @@ friend class TestScenarioDevice;
 public:
 	enum Type
 	{
-		DIM_START,     // scenario programming start (false when stops)
+		DIM_START,     // scenario programming start (false when stops). A DIM_START update means
+		               // the device is also unlocked.
 		DIM_LOCK,      // device lock enabled (false when unlock)
 	};
 
@@ -34,6 +35,9 @@ public:
 	void requestStatus();
 
 	virtual void manageFrame(OpenMsg &msg);
+
+private:
+	bool is_unlocked;
 };
 
 

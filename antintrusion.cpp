@@ -8,6 +8,7 @@
 #include "navigation_bar.h"
 #include "btbutton.h"
 #include "main.h"
+#include "skinmanager.h"
 
 #include <openmsg.h>
 
@@ -20,26 +21,35 @@
 
 Antintrusion::Antintrusion(const QDomNode &config_node)
 {
+	SkinContext cxt(getTextChild(config_node, "cid").toInt());
+
 	tasti = NULL;
+	impianto = 0;
 	previous_page = 0;
+	forward_button = 0;
 
-	// We have to use a layout for the top_widget, in order to define an appropriate
-	// sizeHint (needed by the main layout added to the Page)
-	// An alternative is to define a custom widget that rimplement the sizeHint method.
+	testoTecnico = tr("technical");
+	testoIntrusione = tr("intrusion");
+	testoManom = tr("tamper");
+	testoPanic = tr("anti-panic");
+
 	top_widget = new QWidget;
-	QVBoxLayout *l = new QVBoxLayout(top_widget);
-	l->setSpacing(0);
-	l->setContentsMargins(0, 0, 0, 0);
 
+#ifdef LAYOUT_BTOUCH
 	// TODO: we introduce a double dependency to customize the image of the forward
 	// button and to obtain a reference of it (to show/hide the button).
 	// We can do better!
-	NavigationBar *nav_bar = new NavigationBar(IMG_PATH "btnparzializzazione.png");
+
+	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("partial"));
 	buildPage(new BannerContent, nav_bar, QString(), top_widget);
 	forward_button = nav_bar->forward_button;
+#else
+	buildPage(getTextChild(config_node, "descr"), top_widget);
+#endif
 
 	connect(this, SIGNAL(abilitaParz(bool)), SLOT(IsParz(bool)));
 	connect(this, SIGNAL(forwardClick()), SLOT(Parzializza()));
+
 	curr_alarm = -1;
 	loadItems(config_node);
 	Q_ASSERT_X(impianto, "Antintrusion::Antintrusion", "Impianto not found on the configuration file!");
@@ -52,45 +62,78 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	subscribe_monitor(5);
 }
 
+void Antintrusion::createImpianto(const QString &descr)
+{
+	// We have to use a layout for the top_widget, in order to define an appropriate
+	// sizeHint (needed by the main layout added to the Page)
+	// An alternative is to define a custom widget that rimplement the sizeHint method.
+	QHBoxLayout *l = new QHBoxLayout(top_widget);
+	l->setSpacing(10);
+	int mleft, mright;
+	page_content->layout()->getContentsMargins(&mleft, NULL, &mright, NULL);
+	l->setContentsMargins(mleft, 0, mright, 10);
+
+	impianto = new impAnti(top_widget,
+			       bt_global::skin->getImage("on"),
+			       bt_global::skin->getImage("off"),
+			       bt_global::skin->getImage("info"),
+			       bt_global::skin->getImage("alarm_state"));
+	impianto->setText(descr);
+	impianto->Draw();
+	impianto->setId(IMPIANTINTRUS); // can probably be removed
+	l->addWidget(impianto);
+
+	connect(impianto, SIGNAL(impiantoInserito()), SLOT(plantInserted()));
+	connect(impianto, SIGNAL(abilitaParz(bool)), SIGNAL(abilitaParz(bool)));
+	connect(impianto, SIGNAL(clearChanged()), SIGNAL(clearChanged()));
+	connect(impianto, SIGNAL(pageClosed()), SLOT(showPage()));
+	connect(impianto, SIGNAL(sxClick()), SLOT(showAlarms()));
+
+	connect(this, SIGNAL(partChanged(AntintrusionZone*)), impianto, SLOT(partChanged(AntintrusionZone*)));
+	connect(this, SIGNAL(openAckRx()), impianto, SLOT(openAckRx()));
+	connect(this, SIGNAL(openNakRx()), impianto, SLOT(openNakRx()));
+
+#ifdef LAYOUT_TOUCHX
+	l->addStretch(1);
+
+	forward_button = new BtButton;
+	forward_button->setImage(bt_global::skin->getImage("partial"));
+	l->addWidget(forward_button);
+	connect(forward_button, SIGNAL(clicked()), SIGNAL(forwardClick()));
+
+	BtButton *alarm_list = new BtButton;
+	alarm_list->setImage(bt_global::skin->getImage("alarm_list"));
+	l->addWidget(alarm_list);
+#endif
+}
+
 void Antintrusion::loadItems(const QDomNode &config_node)
 {
+#ifndef CONFIG_BTOUCH
+	createImpianto("");
+#endif
+
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
-		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
-		QString img2 = IMG_PATH + getTextChild(item, "cimg2");
-		QString img3 = IMG_PATH + getTextChild(item, "cimg3");
-		QString img4 = IMG_PATH + getTextChild(item, "cimg4");
 		QString descr = getTextChild(item, "descr");
 
 		banner *b;
 
+#ifdef CONFIG_BTOUCH
 		if (id == IMPIANTINTRUS)
+			createImpianto(descr);
+		else
+#endif
+		if (id == ZONANTINTRUS)
 		{
-			impianto = new impAnti(top_widget, img1, img2, img3, img4);
-			impianto->setText(descr);
-			impianto->Draw();
-			impianto->setId(id);
-			top_widget->layout()->addWidget(impianto);
-
-			connect(impianto, SIGNAL(impiantoInserito()), SLOT(plantInserted()));
-			connect(impianto, SIGNAL(abilitaParz(bool)), SIGNAL(abilitaParz(bool)));
-			connect(impianto, SIGNAL(clearChanged()), SIGNAL(clearChanged()));
-			connect(impianto, SIGNAL(pageClosed()), SLOT(showPage()));
-			connect(impianto, SIGNAL(sxClick()), SLOT(showAlarms()));
-
-			connect(this, SIGNAL(partChanged(zonaAnti*)), impianto, SLOT(partChanged(zonaAnti*)));
-			connect(this, SIGNAL(openAckRx()), impianto, SLOT(openAckRx()));
-			connect(this, SIGNAL(openNakRx()), impianto, SLOT(openNakRx()));
-
-			testoTecnico = tr("technical");
-			testoIntrusione = tr("intrusion");
-			testoManom = tr("tamper");
-			testoPanic = tr("anti-panic");
-		}
-		else if (id == ZONANTINTRUS)
-		{
-			b = new zonaAnti(this, descr, getTextChild(item, "where"), img1, img2, img3);
+			b = new AntintrusionZone(descr, getTextChild(item, "where"));
+#if 0
+			b = new zonaAnti(this, descr, getTextChild(item, "where"),
+					 bt_global::skin->getImage("zone"),
+					 bt_global::skin->getImage("alarm_off"),
+					 bt_global::skin->getImage("alarm_on"));
+#endif
 			b->setText(descr);
 			b->setId(id);
 			b->Draw();
@@ -101,7 +144,7 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 			// We assume that the antintrusion impianto came before all the zones
 			Q_ASSERT_X(impianto, "Antintrusion::loadItems", "Found a zone before the impianto!");
-			impianto->setZona((zonaAnti *)b);
+			impianto->setZona((AntintrusionZone *)b);
 		}
 		else
 			Q_ASSERT_X(false, "Antintrusion::loadItems", qPrintable(QString("Type of item %1 not handled!").arg(id)));
@@ -130,16 +173,9 @@ void Antintrusion::IsParz(bool ab)
 	qDebug("antintrusione::IsParz(%d)", ab);
 
 	if (ab)
-	{
-		connect(this, SIGNAL(forwardClick()), SLOT(Parzializza()));
 		forward_button->show();
-	}
 	else
-	{
-		disconnect(this, SIGNAL(forwardClick()), this, SLOT(Parzializza()));
 		forward_button->hide();
-	}
-
 }
 
 void Antintrusion::Parzializza()
@@ -255,7 +291,7 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 		descr += time;
 		descr.truncate(2 * MAX_PATH);
 
-		allarmi.append(new AlarmPage(descr, NULL, ICON_DEL, t));
+		allarmi.append(new AlarmPage(descr, NULL, bt_global::skin->getImage("alarm_del"), t));
 		// The current alarm is the last alarm inserted
 		curr_alarm = allarmi.size() - 1;
 		AlarmPage *curr = allarmi.at(curr_alarm);

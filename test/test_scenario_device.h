@@ -11,6 +11,7 @@ Q_OBJECT
 private slots:
 	void initTestCase();
 	void cleanupTestCase();
+	void init();
 
 	void sendActivateScenario();
 	void sendStartProgramming();
@@ -26,6 +27,7 @@ private slots:
 	void receiveGenericModuleIsProgramming();
 	void receiveGenericStopProgramming();
 	void receiveGenericStartProgramming();
+	void receiveDeviceIsProgrammingAtStartup();
 
 private:
 	ScenarioDevice *dev;

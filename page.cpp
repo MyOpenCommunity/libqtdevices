@@ -102,9 +102,8 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget, QW
 		l = new QVBoxLayout(this);
 
 	// the top_widget (if present) is a widget that must be at the top of the page,
-	// limiting the height (so even the navigation) of the content
-	if (top_widget)
-		l->addWidget(top_widget);
+	// limiting the height (so even the navigation) of the content; for TouchX
+	// it must be between the title and the content
 
 	if (hardwareType() == TOUCH_X)
 	{
@@ -117,12 +116,17 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget, QW
 		pl->setSpacing(0);
 		if (title_widget)
 			pl->addWidget(title_widget);
+		if (top_widget)
+			pl->addWidget(top_widget);
 		pl->addWidget(content, 1);
 
 		l->addLayout(pl);
 	}
 	else
 	{
+		if (top_widget)
+			l->addWidget(top_widget);
+
 		Q_ASSERT_X(title_widget == NULL, "Page::buildPage",
 			   "BTouch pages can't have a title");
 		l->addWidget(content, 1);
