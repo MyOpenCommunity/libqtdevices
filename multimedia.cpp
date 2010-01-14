@@ -2,9 +2,9 @@
 #include "multimedia_filelist.h"
 #include "navigation_bar.h"
 #include "xml_functions.h"
-#include "main.h"
+#include "main.h" // MULTIMEDIA
 #include "skinmanager.h"
-
+#include "webcam_list.h"
 
 enum
 {
@@ -43,6 +43,9 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		{
 		case PAGE_USB:
 			p = new MultimediaFileListPage;
+			break;
+		case PAGE_WEB_CAM:
+			p = new WebcamListPage;
 			break;
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");
