@@ -26,6 +26,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	tasti = NULL;
 	impianto = 0;
 	previous_page = 0;
+	forward_button = 0;
 
 	testoTecnico = tr("technical");
 	testoIntrusione = tr("intrusion");
@@ -34,15 +35,21 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 
 	top_widget = new QWidget;
 
+#ifdef LAYOUT_BTOUCH
 	// TODO: we introduce a double dependency to customize the image of the forward
 	// button and to obtain a reference of it (to show/hide the button).
 	// We can do better!
+
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("partial"));
 	buildPage(new BannerContent, nav_bar, QString(), top_widget);
 	forward_button = nav_bar->forward_button;
+#else
+	buildPage(getTextChild(config_node, "descr"), top_widget);
+#endif
 
 	connect(this, SIGNAL(abilitaParz(bool)), SLOT(IsParz(bool)));
 	connect(this, SIGNAL(forwardClick()), SLOT(Parzializza()));
+
 	curr_alarm = -1;
 	loadItems(config_node);
 	Q_ASSERT_X(impianto, "Antintrusion::Antintrusion", "Impianto not found on the configuration file!");
@@ -60,11 +67,11 @@ void Antintrusion::createImpianto(const QString &descr)
 	// We have to use a layout for the top_widget, in order to define an appropriate
 	// sizeHint (needed by the main layout added to the Page)
 	// An alternative is to define a custom widget that rimplement the sizeHint method.
-	QVBoxLayout *l = new QVBoxLayout(top_widget);
-	l->setSpacing(0);
+	QHBoxLayout *l = new QHBoxLayout(top_widget);
+	l->setSpacing(10);
 	int mleft, mright;
 	page_content->layout()->getContentsMargins(&mleft, NULL, &mright, NULL);
-	l->setContentsMargins(mleft, 0, mright, 0);
+	l->setContentsMargins(mleft, 0, mright, 10);
 
 	impianto = new impAnti(top_widget,
 			       bt_global::skin->getImage("on"),
@@ -74,7 +81,7 @@ void Antintrusion::createImpianto(const QString &descr)
 	impianto->setText(descr);
 	impianto->Draw();
 	impianto->setId(IMPIANTINTRUS); // can probably be removed
-	top_widget->layout()->addWidget(impianto);
+	l->addWidget(impianto);
 
 	connect(impianto, SIGNAL(impiantoInserito()), SLOT(plantInserted()));
 	connect(impianto, SIGNAL(abilitaParz(bool)), SIGNAL(abilitaParz(bool)));
@@ -85,6 +92,19 @@ void Antintrusion::createImpianto(const QString &descr)
 	connect(this, SIGNAL(partChanged(AntintrusionZone*)), impianto, SLOT(partChanged(AntintrusionZone*)));
 	connect(this, SIGNAL(openAckRx()), impianto, SLOT(openAckRx()));
 	connect(this, SIGNAL(openNakRx()), impianto, SLOT(openNakRx()));
+
+#ifdef LAYOUT_TOUCHX
+	l->addStretch(1);
+
+	forward_button = new BtButton;
+	forward_button->setImage(bt_global::skin->getImage("partial"));
+	l->addWidget(forward_button);
+	connect(forward_button, SIGNAL(clicked()), SIGNAL(forwardClick()));
+
+	BtButton *alarm_list = new BtButton;
+	alarm_list->setImage(bt_global::skin->getImage("alarm_list"));
+	l->addWidget(alarm_list);
+#endif
 }
 
 void Antintrusion::loadItems(const QDomNode &config_node)
@@ -153,16 +173,9 @@ void Antintrusion::IsParz(bool ab)
 	qDebug("antintrusione::IsParz(%d)", ab);
 
 	if (ab)
-	{
-		connect(this, SIGNAL(forwardClick()), SLOT(Parzializza()));
 		forward_button->show();
-	}
 	else
-	{
-		disconnect(this, SIGNAL(forwardClick()), this, SLOT(Parzializza()));
 		forward_button->hide();
-	}
-
 }
 
 void Antintrusion::Parzializza()
