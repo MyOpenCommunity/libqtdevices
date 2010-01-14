@@ -171,6 +171,7 @@ HEADERS += actuators.h \
            iconpage.h \
            iconsettings.h \
            iconwindow.h \
+           imagelabel.h \
            itemlist.h \
            items.h \
            keypad.h \
@@ -308,6 +309,7 @@ SOURCES += actuators.cpp \
            iconpage.cpp \
            iconsettings.cpp \
            iconwindow.cpp \
+           imagelabel.cpp \
            itemlist.cpp \
            items.cpp \
            keypad.cpp \

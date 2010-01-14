@@ -2,6 +2,7 @@
 #include "navigation_bar.h"
 #include "multimedia_buttons.h"
 #include "displaycontrol.h" // forceOperativeMode
+#include "imagelabel.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -93,35 +94,6 @@ int SlideshowController::currentImage()
 }
 
 
-// SlideshowImage implementation
-
-SlideshowImage::SlideshowImage()
-{
-	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-	setAlignment(Qt::AlignCenter);
-}
-
-void SlideshowImage::setPixmap(const QPixmap &pixmap)
-{
-	QSize screen_size = size(), pixmap_size = pixmap.size();
-	QPixmap scaled = pixmap;
-
-	// resize the pixmap if it's too big for the screen
-	if (pixmap_size.width() > screen_size.width() ||
-	    pixmap_size.height() > screen_size.height())
-		scaled = pixmap.scaled(screen_size, Qt::KeepAspectRatio);
-
-	QLabel::setPixmap(scaled);
-}
-
-void SlideshowImage::mouseReleaseEvent(QMouseEvent *e)
-{
-	QLabel::mouseReleaseEvent(e);
-
-	emit clicked();
-}
-
-
 // SlideshowPage implementation
 
 SlideshowPage::SlideshowPage()
@@ -136,7 +108,7 @@ SlideshowPage::SlideshowPage()
 	title = new QLabel;
 
 	// pixmap used to display the image
-	image = new SlideshowImage;
+	image = new ImageLabel;
 
 	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::IMAGE_PAGE);
 
@@ -216,7 +188,7 @@ SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
 	page = slideshow_page;
 
 	// pixmap used to display the image
-	image = new SlideshowImage;
+	image = new ImageLabel;
 
 	buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::IMAGE_WINDOW);
 	buttons->hide();

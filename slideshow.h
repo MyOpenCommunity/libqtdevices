@@ -5,10 +5,10 @@
 #include "window.h"
 
 #include <QList>
-#include <QLabel>
 #include <QTimer>
 
 class QLabel;
+class ImageLabel;
 class SlideshowWindow;
 class MultimediaPlayerButtons;
 
@@ -53,25 +53,6 @@ private:
 };
 
 
-// common code to display an image
-class SlideshowImage : public QLabel
-{
-Q_OBJECT
-public:
-	SlideshowImage();
-
-	// if the pixmap is too big for the label, it is scaled down, respecting
-	// proportions, otherwise it is displayed as it is
-	void setPixmap(const QPixmap &pixmap);
-
-signals:
-	void clicked();
-
-protected:
-	void mouseReleaseEvent(QMouseEvent *e);
-};
-
-
 class SlideshowPage : public Page
 {
 Q_OBJECT
@@ -96,7 +77,7 @@ private slots:
 
 private:
 	QLabel *title;
-	SlideshowImage *image;
+	ImageLabel *image;
 	QList<QString> image_list;
 	SlideshowController *controller;
 	SlideshowWindow *window;
@@ -130,7 +111,7 @@ private:
 	// used to automatically hide the buttons
 	QTimer buttons_timer;
 	MultimediaPlayerButtons *buttons;
-	SlideshowImage *image;
+	ImageLabel *image;
 	QList<QString> image_list;
 	SlideshowController *controller;
 	SlideshowPage *page;
