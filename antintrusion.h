@@ -21,7 +21,7 @@
 #include <QList>
 
 class impAnti;
-class zonaAnti;
+class AntintrusionZone;
 class BtButton;
 class Keypad;
 class AlarmPage;
@@ -94,7 +94,7 @@ signals:
 /*!
   \brief part. changed events
 */
-	void partChanged(zonaAnti*);
+	void partChanged(AntintrusionZone *);
 /*!
   \brief clear changed flags
 */

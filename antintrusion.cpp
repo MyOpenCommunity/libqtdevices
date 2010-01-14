@@ -82,7 +82,7 @@ void Antintrusion::createImpianto(const QString &descr)
 	connect(impianto, SIGNAL(pageClosed()), SLOT(showPage()));
 	connect(impianto, SIGNAL(sxClick()), SLOT(showAlarms()));
 
-	connect(this, SIGNAL(partChanged(zonaAnti*)), impianto, SLOT(partChanged(zonaAnti*)));
+	connect(this, SIGNAL(partChanged(AntintrusionZone*)), impianto, SLOT(partChanged(AntintrusionZone*)));
 	connect(this, SIGNAL(openAckRx()), impianto, SLOT(openAckRx()));
 	connect(this, SIGNAL(openNakRx()), impianto, SLOT(openNakRx()));
 }
@@ -107,10 +107,13 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 #endif
 		if (id == ZONANTINTRUS)
 		{
+			b = new AntintrusionZone(descr, getTextChild(item, "where"));
+#if 0
 			b = new zonaAnti(this, descr, getTextChild(item, "where"),
 					 bt_global::skin->getImage("zone"),
 					 bt_global::skin->getImage("alarm_off"),
 					 bt_global::skin->getImage("alarm_on"));
+#endif
 			b->setText(descr);
 			b->setId(id);
 			b->Draw();
@@ -121,7 +124,7 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 			// We assume that the antintrusion impianto came before all the zones
 			Q_ASSERT_X(impianto, "Antintrusion::loadItems", "Found a zone before the impianto!");
-			impianto->setZona((zonaAnti *)b);
+			impianto->setZona((AntintrusionZone *)b);
 		}
 		else
 			Q_ASSERT_X(false, "Antintrusion::loadItems", qPrintable(QString("Type of item %1 not handled!").arg(id)));

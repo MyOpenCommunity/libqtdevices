@@ -16,8 +16,8 @@
 #include <QHBoxLayout>
 
 
-BannSingleLeft::BannSingleLeft(QWidget *parent) :
-	BannerNew(parent)
+BannSingleLeft::BannSingleLeft() :
+	BannerNew(0)
 {
 	left_button = new BtButton;
 	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
@@ -73,17 +73,15 @@ void BannSingleLeft::setState(States new_state)
 
 
 
-AntintrusionZone::AntintrusionZone(const QDomNode &config_node, QWidget *parent) :
-	BannSingleLeft(parent)
+AntintrusionZone::AntintrusionZone(const QString &name, const QString &where) :
+	BannSingleLeft()
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-	QString where = getTextChild(config_node, "where");
 	setAddress(where);
 
 	QString zone = getZoneName(bt_global::skin->getImage("zone"), where);
-	initBanner(bt_global::skin->getImage("parz"), bt_global::skin->getImage("sparz"),
-		bt_global::skin->getImage("antintrusion_on"), bt_global::skin->getImage("antintrusion_off"),
-		zone, PARTIAL_OFF, getTextChild(config_node, "descr"));
+	initBanner(bt_global::skin->getImage("partial_on"), bt_global::skin->getImage("partial_off"),
+		bt_global::skin->getImage("alarm_on"), bt_global::skin->getImage("alarm_off"),
+		zone, PARTIAL_OFF, name);
 	is_on = false;
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleParzializza()));
 	already_changed = false;
@@ -184,6 +182,7 @@ bool AntintrusionZone::isActive()
 	return is_on;
 }
 
+#if 0
 
 zonaAnti::zonaAnti(QWidget *parent, const QString &name, QString indirizzo, QString iconzona, QString IconDisactive,
 	QString IconActive) : bannOnIcons(parent)
@@ -337,6 +336,7 @@ void zonaAnti::inizializza(bool forza)
 	dev->sendInit("*#5*" + getAddress() + "##");
 }
 
+#endif
 
 impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString Icon)
 	: bann3ButLab(parent)
@@ -538,14 +538,14 @@ void impAnti::openNakRx()
 	part_msg_sent = false;
 }
 
-void impAnti::setZona(zonaAnti *za)
+void impAnti::setZona(AntintrusionZone *za)
 {
 	int index = za->getIndex() - 1;
 	if ((index >= 0) && (index < MAX_ZONE))
 		le_zone[index] = za;
 }
 
-void impAnti::partChanged(zonaAnti *za)
+void impAnti::partChanged(AntintrusionZone *za)
 {
 	qDebug("impAnti::partChanged");
 	send_part_msg = true;
