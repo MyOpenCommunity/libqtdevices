@@ -12,6 +12,7 @@
 #include "hardware_functions.h" // setBeep/getBeep/beep
 #include "bannerfactory.h"
 #include "bannercontent.h"
+#include "lansettings.h" // LanSettings
 #include "banner.h"
 
 #include <QLabel>
@@ -19,6 +20,7 @@
 
 enum
 {
+	PAGE_LANSETTINGS = 72,  // TODO: this is not unique in touchx configuration file
 	PAGE_DATE_TIME = 2902,
 	PAGE_BRIGHTNESS = 2903,
 	PAGE_PASSWORD = 2907,
@@ -142,6 +144,9 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			// TODO config file does not contain the clean screen value
 			w = new CleanScreen(bt_global::skin->getImage("cleanscreen"), 10);
 			connect(w, SIGNAL(Closed()), bt_global::btmain->homeWindow(), SLOT(showWindow()));
+			break;
+		case PAGE_LANSETTINGS:
+			p = new LanSettings(item);
 			break;
 		case BEEP_ICON:
 		{
