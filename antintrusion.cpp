@@ -8,6 +8,7 @@
 #include "navigation_bar.h"
 #include "btbutton.h"
 #include "main.h"
+#include "skinmanager.h"
 
 #include <openmsg.h>
 
@@ -20,9 +21,16 @@
 
 Antintrusion::Antintrusion(const QDomNode &config_node)
 {
+	SkinContext cxt(getTextChild(config_node, "cid").toInt());
+
 	tasti = NULL;
 	impianto = 0;
 	previous_page = 0;
+
+	testoTecnico = tr("technical");
+	testoIntrusione = tr("intrusion");
+	testoManom = tr("tamper");
+	testoPanic = tr("anti-panic");
 
 	// We have to use a layout for the top_widget, in order to define an appropriate
 	// sizeHint (needed by the main layout added to the Page)
@@ -35,7 +43,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	// TODO: we introduce a double dependency to customize the image of the forward
 	// button and to obtain a reference of it (to show/hide the button).
 	// We can do better!
-	NavigationBar *nav_bar = new NavigationBar(IMG_PATH "btnparzializzazione.png");
+	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("partial"));
 	buildPage(new BannerContent, nav_bar, QString(), top_widget);
 	forward_button = nav_bar->forward_button;
 
@@ -58,17 +66,17 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
-		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
-		QString img2 = IMG_PATH + getTextChild(item, "cimg2");
-		QString img3 = IMG_PATH + getTextChild(item, "cimg3");
-		QString img4 = IMG_PATH + getTextChild(item, "cimg4");
 		QString descr = getTextChild(item, "descr");
 
 		banner *b;
 
 		if (id == IMPIANTINTRUS)
 		{
-			impianto = new impAnti(top_widget, img1, img2, img3, img4);
+			impianto = new impAnti(top_widget,
+					       bt_global::skin->getImage("on"),
+					       bt_global::skin->getImage("off"),
+					       bt_global::skin->getImage("info"),
+					       bt_global::skin->getImage("alarm_state"));
 			impianto->setText(descr);
 			impianto->Draw();
 			impianto->setId(id);
@@ -83,15 +91,13 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 			connect(this, SIGNAL(partChanged(zonaAnti*)), impianto, SLOT(partChanged(zonaAnti*)));
 			connect(this, SIGNAL(openAckRx()), impianto, SLOT(openAckRx()));
 			connect(this, SIGNAL(openNakRx()), impianto, SLOT(openNakRx()));
-
-			testoTecnico = tr("technical");
-			testoIntrusione = tr("intrusion");
-			testoManom = tr("tamper");
-			testoPanic = tr("anti-panic");
 		}
 		else if (id == ZONANTINTRUS)
 		{
-			b = new zonaAnti(this, descr, getTextChild(item, "where"), img1, img2, img3);
+			b = new zonaAnti(this, descr, getTextChild(item, "where"),
+					 bt_global::skin->getImage("zone"),
+					 bt_global::skin->getImage("alarm_off"),
+					 bt_global::skin->getImage("alarm_on"));
 			b->setText(descr);
 			b->setId(id);
 			b->Draw();
@@ -256,7 +262,7 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 		descr += time;
 		descr.truncate(2 * MAX_PATH);
 
-		allarmi.append(new AlarmPage(descr, NULL, ICON_DEL, t));
+		allarmi.append(new AlarmPage(descr, NULL, bt_global::skin->getImage("alarm_del"), t));
 		// The current alarm is the last alarm inserted
 		curr_alarm = allarmi.size() - 1;
 		AlarmPage *curr = allarmi.at(curr_alarm);

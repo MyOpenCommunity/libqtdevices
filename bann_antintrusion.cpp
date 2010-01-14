@@ -1,6 +1,6 @@
 #include "bann_antintrusion.h"
 #include "main.h" // MAX_PATH, IMG_PATH
-#include "generic_functions.h" // void getZoneName(...)
+#include "generic_functions.h" // void getZoneName(...), getBostikName
 #include "fontmanager.h" // bt_global::font
 #include "btbutton.h"
 #include "skinmanager.h" // bt_global::skin
@@ -191,8 +191,8 @@ zonaAnti::zonaAnti(QWidget *parent, const QString &name, QString indirizzo, QStr
 	setAddress(indirizzo);
 	qDebug("zonaAnti::zonaAnti()");
 	// Mail agresta 22/06
-	parzIName = IMG_PATH "btnparzializza.png";
-	sparzIName = IMG_PATH "btnsparzializza.png";
+	parzIName = bt_global::skin->getImage("partial_on");
+	sparzIName = bt_global::skin->getImage("partial_off");
 
 	SetIcons(1, sparzIName);
 	SetIcons(2, getZoneName(iconzona, indirizzo));
@@ -338,17 +338,12 @@ void zonaAnti::inizializza(bool forza)
 }
 
 
-impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString IconActive)
+impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString Icon)
 	: bann3ButLab(parent)
 {
 	tasti = NULL;
-	QString disactive_icon_path;
-	if (!IconActive.isNull())
-		disactive_icon_path = IconActive.left(IconActive.indexOf('.') - 3);
 
-	disactive_icon_path += "dis" + IconActive.mid(IconActive.indexOf('.'));
-
-	SetIcons(IconInfo, IconOff, disactive_icon_path, IconOn, IconActive);
+	SetIcons(IconInfo, IconOff, getBostikName(Icon, "dis"), IconOn, getBostikName(Icon, "ins"));
 	send_part_msg = false;
 	inserting = false;
 	memset(le_zone, 0, sizeof(le_zone));
