@@ -215,6 +215,7 @@ HeaderLogo::HeaderLogo()
 void HeaderLogo::loadItems(const QDomNode &config_node)
 {
 	time_display = new TimeDisplay;
+	temperature_display = 0;
 
 	QHBoxLayout *l = new QHBoxLayout(this);
 	l->setContentsMargins(3, 0, 3, 0);
