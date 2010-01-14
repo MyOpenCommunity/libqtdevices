@@ -65,6 +65,7 @@ QString getAmbName(QString name, QString amb)
  */
 bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
 {
+#ifdef CONFIG_BTOUCH
 	QFile config_file(filename);
 	if (!config_file.open(QIODevice::ReadOnly))
 		return false;
@@ -124,6 +125,7 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, co
 
 		return true;
 	}
+#endif
 
 	return false;
 }
