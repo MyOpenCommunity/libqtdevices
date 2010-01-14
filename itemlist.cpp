@@ -10,12 +10,13 @@
 #include <QFont>
 
 
-ItemList::ItemInfo::ItemInfo(QString n, QString d, QString i, QString bi)
+ItemList::ItemInfo::ItemInfo(QString n, QString descr, QString i, QString bi, QVariant d)
 {
 	name = n;
-	description = d;
+	description = descr;
 	icon = i;
 	button_icon = bi;
+	data = d;
 }
 
 

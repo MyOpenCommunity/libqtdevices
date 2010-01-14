@@ -4,6 +4,8 @@
 #include <QList>
 #include <QString>
 #include <QWidget>
+#include <QVariant>
+
 
 class QButtonGroup;
 class QVBoxLayout;
@@ -23,12 +25,13 @@ public:
 	struct ItemInfo
 	{
 		ItemInfo(QString name = QString(), QString desc = QString(),
-			 QString icon = QString(), QString button_icon = QString());
+			 QString icon = QString(), QString button_icon = QString(), QVariant data=QVariant());
 
 		QString name;
 		QString description;
 		QString icon;
 		QString button_icon;
+		QVariant data;
 	};
 
 	ItemList(QWidget *parent, int rows_per_page);

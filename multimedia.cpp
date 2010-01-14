@@ -45,7 +45,7 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 			p = new MultimediaFileListPage;
 			break;
 		case PAGE_WEB_CAM:
-			p = new WebcamListPage;
+			p = new WebcamListPage(getPageNodeFromChildNode(item, "lnk_pageID"));
 			break;
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");
