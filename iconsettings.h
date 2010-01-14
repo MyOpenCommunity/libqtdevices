@@ -36,4 +36,11 @@ private:
 	BtButton *button;
 };
 
+class PasswordPage : public BannerPage
+{
+Q_OBJECT
+public:
+	PasswordPage(const QDomNode &config_node);
+};
+
 #endif // ICON_SETTINGS_H

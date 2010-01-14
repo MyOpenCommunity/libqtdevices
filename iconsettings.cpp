@@ -14,6 +14,7 @@
 #include "bannercontent.h"
 #include "lansettings.h" // LanSettings
 #include "banner.h"
+#include "bann_settings.h" // impPassword
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -156,6 +157,9 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			page_content->addWidget(t);
 			break;
 		}
+		case PAGE_PASSWORD:
+			p = new PasswordPage(item);
+			break;
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");
 		};
@@ -172,4 +176,22 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			connect(b, SIGNAL(clicked()), w, SLOT(showWindow()));
 		}
 	}
+}
+
+
+// TODO: password item in conf file hasn't its own page; this has two consequences:
+// 1. I need to parse here the conf file
+// 2. I can't use Settings::getBanner() because I don't have the correct item_node to pass to it (and xml tags
+//    are different from the ones used in btouch conf anyway).
+PasswordPage::PasswordPage(const QDomNode &config_node)
+{
+	SkinContext cxt(getTextChild(config_node, "cid").toInt());
+	QString descr = getTextChild(config_node, "descr");
+	buildPage(descr);
+
+	banner *b = new impPassword(0, bt_global::skin->getImage("state_on"),
+		bt_global::skin->getImage("state_off"), bt_global::skin->getImage("edit"), descr,
+		getTextChild(config_node, "password"), getTextChild(config_node, "activated").toInt());
+	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+	page_content->appendBanner(b);
 }
