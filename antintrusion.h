@@ -101,6 +101,9 @@ signals:
 	void clearChanged();
 
 private:
+	void createImpianto(const QString &description);
+
+private:
 /*!
   \param <impianto> alarm plant
 */

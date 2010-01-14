@@ -32,13 +32,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	testoManom = tr("tamper");
 	testoPanic = tr("anti-panic");
 
-	// We have to use a layout for the top_widget, in order to define an appropriate
-	// sizeHint (needed by the main layout added to the Page)
-	// An alternative is to define a custom widget that rimplement the sizeHint method.
 	top_widget = new QWidget;
-	QVBoxLayout *l = new QVBoxLayout(top_widget);
-	l->setSpacing(0);
-	l->setContentsMargins(0, 0, 0, 0);
 
 	// TODO: we introduce a double dependency to customize the image of the forward
 	// button and to obtain a reference of it (to show/hide the button).
@@ -61,8 +55,44 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	subscribe_monitor(5);
 }
 
+void Antintrusion::createImpianto(const QString &descr)
+{
+	// We have to use a layout for the top_widget, in order to define an appropriate
+	// sizeHint (needed by the main layout added to the Page)
+	// An alternative is to define a custom widget that rimplement the sizeHint method.
+	QVBoxLayout *l = new QVBoxLayout(top_widget);
+	l->setSpacing(0);
+	int mleft, mright;
+	page_content->layout()->getContentsMargins(&mleft, NULL, &mright, NULL);
+	l->setContentsMargins(mleft, 0, mright, 0);
+
+	impianto = new impAnti(top_widget,
+			       bt_global::skin->getImage("on"),
+			       bt_global::skin->getImage("off"),
+			       bt_global::skin->getImage("info"),
+			       bt_global::skin->getImage("alarm_state"));
+	impianto->setText(descr);
+	impianto->Draw();
+	impianto->setId(IMPIANTINTRUS); // can probably be removed
+	top_widget->layout()->addWidget(impianto);
+
+	connect(impianto, SIGNAL(impiantoInserito()), SLOT(plantInserted()));
+	connect(impianto, SIGNAL(abilitaParz(bool)), SIGNAL(abilitaParz(bool)));
+	connect(impianto, SIGNAL(clearChanged()), SIGNAL(clearChanged()));
+	connect(impianto, SIGNAL(pageClosed()), SLOT(showPage()));
+	connect(impianto, SIGNAL(sxClick()), SLOT(showAlarms()));
+
+	connect(this, SIGNAL(partChanged(zonaAnti*)), impianto, SLOT(partChanged(zonaAnti*)));
+	connect(this, SIGNAL(openAckRx()), impianto, SLOT(openAckRx()));
+	connect(this, SIGNAL(openNakRx()), impianto, SLOT(openNakRx()));
+}
+
 void Antintrusion::loadItems(const QDomNode &config_node)
 {
+#ifndef CONFIG_BTOUCH
+	createImpianto("");
+#endif
+
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
@@ -70,29 +100,12 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 
 		banner *b;
 
+#ifdef CONFIG_BTOUCH
 		if (id == IMPIANTINTRUS)
-		{
-			impianto = new impAnti(top_widget,
-					       bt_global::skin->getImage("on"),
-					       bt_global::skin->getImage("off"),
-					       bt_global::skin->getImage("info"),
-					       bt_global::skin->getImage("alarm_state"));
-			impianto->setText(descr);
-			impianto->Draw();
-			impianto->setId(id);
-			top_widget->layout()->addWidget(impianto);
-
-			connect(impianto, SIGNAL(impiantoInserito()), SLOT(plantInserted()));
-			connect(impianto, SIGNAL(abilitaParz(bool)), SIGNAL(abilitaParz(bool)));
-			connect(impianto, SIGNAL(clearChanged()), SIGNAL(clearChanged()));
-			connect(impianto, SIGNAL(pageClosed()), SLOT(showPage()));
-			connect(impianto, SIGNAL(sxClick()), SLOT(showAlarms()));
-
-			connect(this, SIGNAL(partChanged(zonaAnti*)), impianto, SLOT(partChanged(zonaAnti*)));
-			connect(this, SIGNAL(openAckRx()), impianto, SLOT(openAckRx()));
-			connect(this, SIGNAL(openNakRx()), impianto, SLOT(openNakRx()));
-		}
-		else if (id == ZONANTINTRUS)
+			createImpianto(descr);
+		else
+#endif
+		if (id == ZONANTINTRUS)
 		{
 			b = new zonaAnti(this, descr, getTextChild(item, "where"),
 					 bt_global::skin->getImage("zone"),
