@@ -2,6 +2,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "skinmanager.h"
 #include "btbutton.h"
+#include "navigation_bar.h"
 
 #include <QLabel>
 #include <QButtonGroup>
@@ -15,6 +16,17 @@
 
 Keypad::Keypad()
 {
+#ifdef LAYOUT_TOUCHX
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	buildPage(new QWidget, nav_bar);
+	QWidget *top_widget = page_content;
+#else
+	QWidget *top_widget = this;
+#endif
+
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+
 	BtButton *ok = new BtButton;
 	BtButton *canc = new BtButton;
 	BtButton *digits[10];
@@ -70,7 +82,7 @@ Keypad::Keypad()
 	p->addWidget(digitLabel, 1);
 
 	// top layout
-	topLayout = new QVBoxLayout(this);
+	topLayout = new QVBoxLayout(top_widget);
 	topLayout->setContentsMargins(0, 0, 0, 10);
 #ifdef LAYOUT_BTOUCH
 	topLayout->setSpacing(0);
