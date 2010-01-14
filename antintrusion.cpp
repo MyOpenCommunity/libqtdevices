@@ -21,6 +21,7 @@
 Antintrusion::Antintrusion(const QDomNode &config_node)
 {
 	tasti = NULL;
+	impianto = 0;
 	previous_page = 0;
 
 	// We have to use a layout for the top_widget, in order to define an appropriate
