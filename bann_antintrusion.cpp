@@ -341,6 +341,8 @@ void zonaAnti::inizializza(bool forza)
 impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString Icon)
 	: bann3ButLab(parent)
 {
+	banner_height = 60;
+
 	tasti = NULL;
 
 	SetIcons(IconInfo, IconOff, getBostikName(Icon, "dis"), IconOn, getBostikName(Icon, "ins"));
@@ -353,6 +355,9 @@ impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconI
 	// BUT2 and 4 are actually both on the left of the banner.
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disinserisci()));
 	connect(this,SIGNAL(cdxClick()),this,SLOT(Inserisci()));
+
+	// probably needs to be set for all banners (or minimumSizeHint defined)
+	setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
 
 	// Crea o preleva il dispositivo dalla cache
 	dev = bt_global::devices_cache.get_impanti_device();
