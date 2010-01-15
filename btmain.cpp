@@ -23,6 +23,7 @@
 #include "homewindow.h"
 #include "iconwindow.h"
 #include "windowcontainer.h"
+#include "ringtonesmanager.h"
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -91,6 +92,7 @@ BtMain::BtMain()
 	QString font_file = QString(MY_FILE_CFG_FONT).arg(bt_global::config[LANGUAGE]);
 	bt_global::font = new FontManager(font_file);
 	bt_global::skin = new SkinManager(SKIN_FILE);
+	bt_global::ringtones = new RingtonesManager();
 
 	client_monitor = new Client(Client::MONITOR);
 	client_comandi = new Client(Client::COMANDI);
