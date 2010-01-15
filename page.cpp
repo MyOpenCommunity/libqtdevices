@@ -109,7 +109,7 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget, QW
 	{
 		// TODO add an API to set the page title and to set the page count
 		//      and current page number
-		l->addWidget(nav_bar);
+		l->addWidget(nav_bar, 0);
 
 		QVBoxLayout *pl = new QVBoxLayout;
 		pl->setContentsMargins(0, 0, 0, 0);
@@ -120,7 +120,7 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget, QW
 			pl->addWidget(top_widget);
 		pl->addWidget(content, 1);
 
-		l->addLayout(pl);
+		l->addLayout(pl, 1);
 	}
 	else
 	{
