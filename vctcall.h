@@ -18,6 +18,9 @@ class QLabel;
 class QShowEvent;
 
 
+#ifdef LAYOUT_TOUCHX
+
+
 namespace VCTCallPrivate
 {
 	class VCTCallStatus;
@@ -170,5 +173,6 @@ private:
 	VCTCallPrivate::VCTCall *vct_call;
 };
 
+#endif // #ifdef LAYOUT_TOUCHX
 
 #endif //VCTCALL_H

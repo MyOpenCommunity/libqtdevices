@@ -17,6 +17,7 @@
 #include <QSpacerItem>
 #include <QGridLayout>
 
+#ifdef LAYOUT_TOUCHX
 
 #define BOTTOM_SPACING 15
 
@@ -470,3 +471,4 @@ void VCTCallWindow::handleClose()
 	emit Closed();
 }
 
+#endif
