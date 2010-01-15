@@ -23,11 +23,10 @@ Keypad::Keypad()
 	nav_bar->displayScrollButtons(false);
 	buildPage(new QWidget, nav_bar);
 	QWidget *top_widget = page_content;
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 #else
 	QWidget *top_widget = this;
 #endif
-
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
 	BtButton *ok = new BtButton;
 	BtButton *canc = new BtButton;
