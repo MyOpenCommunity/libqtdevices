@@ -231,7 +231,7 @@ HEADERS += actuators.h \
            videoentryphone.h \
            vctcall.h \
            videoplayer.h \
-           webcam_list.h \
+           webcam.h \
            window.h \
            windowcontainer.h \
            xml_functions.h
@@ -369,7 +369,7 @@ SOURCES += actuators.cpp \
            videoentryphone.cpp \
            vctcall.cpp \
            videoplayer.cpp \
-           webcam_list.cpp \
+           webcam.cpp \
            window.cpp \
            windowcontainer.cpp \
            xml_functions.cpp

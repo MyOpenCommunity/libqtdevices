@@ -4,7 +4,7 @@
 #include "xml_functions.h"
 #include "main.h" // MULTIMEDIA
 #include "skinmanager.h"
-#include "webcam_list.h"
+#include "webcam.h"
 
 enum
 {
