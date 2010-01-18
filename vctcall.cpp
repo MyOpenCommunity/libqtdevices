@@ -198,9 +198,7 @@ VCTCall::VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f)
 void VCTCall::changeVolume(int value)
 {
 	call_status->volume_status = volume->getStatus();
-
-	if (call_status->connected)
-		setVolume(VOLUME_VIDEOCONTROL, value);
+	setVolume(VOLUME_VIDEOCONTROL, value);
 }
 
 void VCTCall::refreshStatus()
