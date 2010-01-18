@@ -304,7 +304,9 @@ void BannStates::setCurrentState(int new_state)
 	for (int i = 0; i < states_list.size(); ++i)
 		if (states_list[i].first == new_state)
 		{
-			current_index = new_state;
+			// we can't use new_state because it can be an invalid index
+			// for example if we set state 5 but we have defined only 3 states
+			current_index = i;
 			break;
 		}
 	updateText();
