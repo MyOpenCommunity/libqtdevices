@@ -9,6 +9,7 @@
 #include "btbutton.h"
 #include "main.h"
 #include "skinmanager.h"
+#include "icondispatcher.h"
 
 #include <openmsg.h>
 
@@ -17,6 +18,8 @@
 #include <QDomNode>
 #include <QWidget>
 #include <QVBoxLayout>
+#include <QLabel>
+#include <QSignalMapper>
 
 
 Antintrusion::Antintrusion(const QDomNode &config_node)
@@ -34,6 +37,9 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	testoPanic = tr("anti-panic");
 
 	top_widget = new QWidget;
+
+	alarms = new AlarmList;
+	connect(alarms, SIGNAL(Closed()), SLOT(showPage()));
 
 #ifdef LAYOUT_BTOUCH
 	// TODO: we introduce a double dependency to customize the image of the forward
@@ -294,6 +300,8 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 		connect(curr, SIGNAL(Prev()), SLOT(prevAlarm()));
 		connect(curr, SIGNAL(Delete()), SLOT(deleteAlarm()));
 		aggiorna = true;
+
+		alarms->addAlarm(t, tipo + " " + &zona[1], QDateTime::currentDateTime());
 	}
 
 	if (aggiorna)
@@ -375,6 +383,8 @@ void Antintrusion::deleteAlarm()
 	allarmi.at(curr_alarm)->showPage();
 }
 
+#ifdef LAYOUT_BTOUCH
+
 void Antintrusion::showAlarms()
 {
 	qDebug("antiintrusione::showAlarms()");
@@ -384,6 +394,15 @@ void Antintrusion::showAlarms()
 	curr_alarm = allarmi.size() - 1;
 	allarmi.at(curr_alarm)->showPage();
 }
+
+#else
+
+void Antintrusion::showAlarms()
+{
+	alarms->showPage();
+}
+
+#endif
 
 void Antintrusion::doClearAlarms()
 {
@@ -424,3 +443,144 @@ void Antintrusion::requestStatusIfCurrentWidget(Page *curr)
 		requestZoneStatus();
 }
 
+
+// keep the same order as the altype enum in alarmpage.cpp
+static const char *alarm_icons[] = { "technic_alarm", "intrusion_alarm", "tamper_alarm", "panic_alarm" };
+
+AlarmItems::AlarmItems()
+{
+	for (int i = 0; i < 4; ++i)
+		icons.append(bt_global::skin->getImage(alarm_icons[i]));
+	trash_icon = bt_global::skin->getImage("alarm_del");
+
+	connect(&mapper, SIGNAL(mapped(QWidget *)), SLOT(removeAlarm(QWidget *)));
+}
+
+void AlarmItems::addAlarm(int type, const QString &zone, const QDateTime &date)
+{
+	QWidget *alarm = new QWidget(this);
+	QHBoxLayout *l = new QHBoxLayout(alarm);
+
+	// alarm type icon
+	QLabel *icon = new QLabel;
+	icon->setPixmap(*bt_global::icons_cache.getIcon(icons[type]));
+
+	// alarm description
+	QLabel *z = new QLabel(zone);
+	z->setAlignment(Qt::AlignCenter);
+
+	QLabel *d = new QLabel(date.toString("dd/MM/yyyy\nhh:mm:ss"));
+	d->setAlignment(Qt::AlignCenter);
+
+	// delete button
+	BtButton *trash = new BtButton;
+	trash->setImage(trash_icon);
+
+	l->addWidget(icon);
+	l->addWidget(z, 1);
+	l->addWidget(d, 1);
+	l->addWidget(trash);
+
+	alarms.append(alarm);
+	mapper.setMapping(trash, alarm);
+	connect(trash, SIGNAL(clicked()), &mapper, SLOT(map()));
+
+	prepareLayout();
+	updateLayout(alarms);
+}
+
+void AlarmItems::removeAlarm(QWidget *item)
+{
+	// TODO after removing the alarm, needs to:
+	// - close the alarm list page if it was the last alarm
+	// - hide the link to the alarm list page in the parent page
+	int i = 0;
+	foreach (QWidget *a, alarms)
+	{
+		if (a == item)
+		{
+			removeAlarm(i);
+			break;
+		}
+
+		++i;
+	}
+}
+
+void AlarmItems::removeAlarm(int index)
+{
+	alarms[index]->hide();
+	alarms[index]->deleteLater();
+	alarms.removeAt(index);
+
+	prepareLayout();
+	if (current_page >= pageCount())
+		current_page = pageCount() - 1;
+
+	updateLayout(alarms);
+}
+
+void AlarmItems::prepareLayout()
+{
+	QGridLayout *l = qobject_cast<QGridLayout*>(layout());
+	QLayoutItem *child;
+
+	while ((child = l->takeAt(0)) != 0)
+		if (QWidget *w = child->widget())
+			w->hide();
+	pages.clear();
+
+	GridContent::prepareLayout(alarms, 1);
+
+	// add alarms to the layout
+	for (int i = 0; i < pages.size() - 1; ++i)
+	{
+		int base = pages[i];
+		for (int j = 0; base + j < pages[i + 1]; ++j)
+			l->addWidget(alarms.at(base + j), j, 0);
+	}
+
+	l->setRowStretch(l->rowCount(), 1);
+}
+
+void AlarmItems::drawContent()
+{
+	updateLayout(alarms);
+}
+
+
+AlarmList::AlarmList()
+{
+	QWidget *header = new QWidget;
+	QHBoxLayout *l = new QHBoxLayout(header);
+
+	l->addWidget(new QLabel(tr("Alarm type")));
+	l->addWidget(new QLabel(tr("Zone")));
+	l->addWidget(new QLabel(tr("Date & Hour")));
+
+	NavigationBar *nav_bar = new NavigationBar;
+	alarms = new AlarmItems;
+	buildPage(alarms, nav_bar, tr("Alarms"), 35, header);
+
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(this, SIGNAL(Closed()), alarms, SLOT(resetIndex()));
+	connect(nav_bar, SIGNAL(upClick()), alarms, SLOT(pgUp()));
+	connect(nav_bar, SIGNAL(downClick()), alarms, SLOT(pgDown()));
+	connect(alarms, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+}
+
+void AlarmList::activateLayout()
+{
+	if (page_content)
+		page_content->updateGeometry();
+
+	Page::activateLayout();
+
+	if (page_content)
+		page_content->drawContent();
+}
+
+void AlarmList::addAlarm(int type, const QString &zone, const QDateTime &date)
+{
+	alarms->addAlarm(type, zone, date);
+}

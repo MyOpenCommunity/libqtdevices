@@ -14,11 +14,13 @@
 
 #include "frame_receiver.h"
 #include "page.h"
+#include "gridcontent.h"
 
 
 #include <QString>
 #include <QTimer>
 #include <QList>
+#include <QSignalMapper>
 
 class impAnti;
 class AntintrusionZone;
@@ -27,6 +29,8 @@ class Keypad;
 class AlarmPage;
 class QDomNode;
 class QWidget;
+class AlarmList;
+class QDateTime;
 
 
 /*!
@@ -113,6 +117,7 @@ private:
   \param <allarmi> alarm's queue
 */
 	QList<AlarmPage*> allarmi;
+	AlarmList *alarms;
 	int curr_alarm;
 /*!
   \param <testoManom> text for a manomission alarm
@@ -139,5 +144,44 @@ private slots:
 	void plantInserted();
 };
 
+
+class AlarmItems : public GridContent
+{
+Q_OBJECT
+public:
+	AlarmItems();
+
+	void addAlarm(int type, const QString &zone, const QDateTime &date);
+	void removeAlarm(int index);
+
+	void drawContent();
+	void prepareLayout();
+
+private slots:
+	void removeAlarm(QWidget *);
+
+private:
+	QList<QWidget*> alarms;
+	QStringList icons;
+	QString trash_icon;
+	QSignalMapper mapper;
+};
+
+
+class AlarmList : public Page
+{
+Q_OBJECT
+public:
+	typedef AlarmItems ContentType;
+
+	AlarmList();
+
+	void addAlarm(int type, const QString &zone, const QDateTime &date);
+
+	virtual void activateLayout();
+
+private:
+	AlarmItems *alarms;
+};
 
 #endif // ANTINTRUSION_H
