@@ -42,7 +42,7 @@ ThermalMenu::ThermalMenu(const QDomNode &config_node)
 	// check if plant menus are created?
 	if (bann_number == 1)
 	{
-		connect(single_submenu, SIGNAL(Closed()), SIGNAL(Closed()));
+		connect(single_page, SIGNAL(Closed()), SIGNAL(Closed()));
 	}
 }
 
@@ -52,7 +52,7 @@ void ThermalMenu::createPlantMenu(QDomNode config, bannPuls *bann)
 
 	connect(bann, SIGNAL(sxClick()), sm, SLOT(showPage()));
 	connect(sm, SIGNAL(Closed()), this, SLOT(showPage()));
-	single_submenu = sm;
+	single_page = sm;
 }
 
 void ThermalMenu::loadBanners(const QDomNode &config_node)
@@ -77,7 +77,8 @@ void ThermalMenu::loadBanners(const QDomNode &config_node)
 	if (!air_node.isNull())
 	{
 		b = addMenuItem(air_node.toElement(), bt_global::skin->getImage("air_conditioning"));
-		b->connectDxButton(new AirConditioning(air_node));
+		single_page = new AirConditioning(air_node);
+		b->connectDxButton(single_page);
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 }
@@ -99,7 +100,7 @@ bannPuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon)
 void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external)
 {
 	sottoMenu *sm = new sottoMenu;
-	single_submenu = sm;
+	single_page = sm;
 	// we want to scroll external probes per pages and not per probes
 	// By default, submenus show only 3 banners in each page (see sottomenu.h:44)
 	unsigned submenu_scroll_step = NUM_RIGHE - 1;
@@ -126,7 +127,7 @@ void ThermalMenu::createProbeMenu(QDomNode config, bannPuls *bann, bool external
 void ThermalMenu::showPage()
 {
 	if (bann_number == 1)
-		single_submenu->showPage();
+		single_page->showPage();
 	else
 		sottoMenu::showPage();
 }

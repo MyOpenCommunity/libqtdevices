@@ -67,7 +67,7 @@ private:
 
 	unsigned bann_number;
 	/// A reference to the only submenu below us
-	sottoMenu *single_submenu;
+	Page *single_page;
 };
 
 /**
