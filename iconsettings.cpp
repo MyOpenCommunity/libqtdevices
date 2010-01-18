@@ -18,6 +18,7 @@
 
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QDebug>
 
 enum
 {
@@ -176,6 +177,9 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		}
 		case PAGE_PASSWORD:
 			p = new PasswordPage(item);
+			break;
+		case PAGE_RINGTONES:
+			p = new AlarmClockListPage(getPageNodeFromChildNode(item, "lnk_pageID"));
 			break;
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");
