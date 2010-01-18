@@ -4,6 +4,7 @@
 #include "automation.h"
 #include "settings.h"
 #include "scenario.h"
+#include "iconsettings.h"
 
 
 banner *getBanner(const QDomNode &item_node)
@@ -14,6 +15,7 @@ banner *getBanner(const QDomNode &item_node)
 	sections.append(&Lighting::getBanner);
 	sections.append(&Scenario::getBanner);
 	sections.append(&Settings::getBanner);
+	sections.append(&IconSettings::getBanner);
 
 	for (int i = 0; i < sections.size(); ++i)
 		if (banner *b = sections[i](item_node))

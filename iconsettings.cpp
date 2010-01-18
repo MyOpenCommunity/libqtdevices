@@ -116,6 +116,23 @@ int IconSettings::sectionId()
 	return IMPOSTAZIONI;
 }
 
+banner *IconSettings::getBanner(const QDomNode &item_node)
+{
+	SkinContext ctx(getTextChild(item_node, "cid").toInt());
+	int id = getTextChild(item_node, "id").toInt();
+	banner *b = 0;
+	QString descr = getTextChild(item_node, "descr");
+	switch (id)
+	{
+	case RINGTONE:
+		// TODO: type should be read from config file
+		b = new BannRingtone(descr, RingtonesManager::RINGTONE_PE1);
+		break;
+	}
+
+	return b;
+}
+
 void IconSettings::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
