@@ -10,6 +10,7 @@
 #include "btmain.h" // bt_global::btmain
 #include "btbutton.h"
 #include "fontmanager.h"
+#include "skinmanager.h" // bt_global::skin
 
 #include <QTimer>
 #include <QDebug>
@@ -323,3 +324,30 @@ void impPassword::restoreBeepState()
 	setBeep(sb,false);
 }
 
+
+
+BannRingtone::BannRingtone(const QString &descr, RingtonesManager::RingtoneType type) :
+	Bann2CentralButtons(0)
+{
+	// TODO: buttons on the banner will be separated because of a setSpacing(5) in Bann2CentralButtons,
+	// that will be removed when all borders are removed from images.
+	initBanner(bt_global::skin->getImage("prev_ring"), bt_global::skin->getImage("next_ring"), descr);
+	connect(center_left, SIGNAL(clicked()), SLOT(minusClicked()));
+	connect(center_right, SIGNAL(clicked()), SLOT(plusClicked()));
+
+	current_ring = bt_global::ringtones->getRingtone(type);
+}
+
+void BannRingtone::minusClicked()
+{
+	--current_ring;
+	if (current_ring < 0)
+		current_ring = bt_global::ringtones->getRingtonesNumber() - 1;
+	bt_global::ringtones->playRingtone(current_ring);
+}
+
+void BannRingtone::plusClicked()
+{
+	current_ring = (current_ring + 1) % bt_global::ringtones->getRingtonesNumber();
+	bt_global::ringtones->playRingtone(current_ring);
+}

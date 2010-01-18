@@ -15,6 +15,7 @@
 #include "banner.h"
 #include "bann1_button.h" // bannOnDx, bannOnSx
 #include "bann2_buttons.h" // bann2But
+#include "ringtonesmanager.h" // RingtoneType
 
 #include <QWidget>
 
@@ -212,6 +213,24 @@ signals:
   \brief  Emitted when the password is (dis)abilitated so BtMain knows if has to ask password or not
 */
 	void activatePaswd(bool);
+};
+
+
+/**
+ * Banner to set ringtone for a specific function (ringtone 1-4 from external units, alarms etc.).
+ */
+class BannRingtone : public Bann2CentralButtons
+{
+Q_OBJECT
+public:
+	BannRingtone(const QString &descr, RingtonesManager::RingtoneType type);
+
+private:
+	int current_ring;
+
+private slots:
+	void plusClicked();
+	void minusClicked();
 };
 
 #endif
