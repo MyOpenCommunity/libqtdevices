@@ -69,6 +69,11 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	subscribe_monitor(5);
 }
 
+int Antintrusion::sectionId()
+{
+	return ANTIINTRUSIONE;
+}
+
 void Antintrusion::createImpianto(const QString &descr)
 {
 	// We have to use a layout for the top_widget, in order to define an appropriate
