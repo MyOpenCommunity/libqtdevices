@@ -285,6 +285,8 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 			t = AlarmPage::PANIC;
 		}
 
+		QString alarm_description = descr;
+
 		// To simulate old behaviour
 		descr.truncate(MAX_PATH);
 
@@ -307,7 +309,8 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 		connect(curr, SIGNAL(Delete()), SLOT(deleteAlarm()));
 		aggiorna = true;
 
-		alarms->addAlarm(t, tipo + " " + &zona[1], QDateTime::currentDateTime());
+		alarms->addAlarm(t, alarm_description, tipo + " " + &zona[1],
+				 QDateTime::currentDateTime());
 	}
 
 	if (aggiorna)
@@ -462,7 +465,7 @@ AlarmItems::AlarmItems()
 	connect(&mapper, SIGNAL(mapped(QWidget *)), SLOT(removeAlarm(QWidget *)));
 }
 
-void AlarmItems::addAlarm(int type, const QString &zone, const QDateTime &date)
+void AlarmItems::addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date)
 {
 	QWidget *alarm = new QWidget(this);
 	QHBoxLayout *l = new QHBoxLayout(alarm);
@@ -472,17 +475,22 @@ void AlarmItems::addAlarm(int type, const QString &zone, const QDateTime &date)
 	icon->setPixmap(*bt_global::icons_cache.getIcon(icons[type]));
 
 	// alarm description
+	QLabel *s = new QLabel(description);
+	s->setAlignment(Qt::AlignTop|Qt::AlignLeft);
+
+	// alarm zone
 	QLabel *z = new QLabel(zone);
-	z->setAlignment(Qt::AlignCenter);
+	z->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 
 	QLabel *d = new QLabel(date.toString("dd/MM/yyyy\nhh:mm:ss"));
-	d->setAlignment(Qt::AlignCenter);
+	d->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 
 	// delete button
 	BtButton *trash = new BtButton;
 	trash->setImage(trash_icon);
 
 	l->addWidget(icon);
+	l->addWidget(s, 1);
 	l->addWidget(z, 1);
 	l->addWidget(d, 1);
 	l->addWidget(trash);
@@ -560,9 +568,17 @@ AlarmList::AlarmList()
 	QWidget *header = new QWidget;
 	QHBoxLayout *l = new QHBoxLayout(header);
 
-	l->addWidget(new QLabel(tr("Alarm type")));
-	l->addWidget(new QLabel(tr("Zone")));
-	l->addWidget(new QLabel(tr("Date & Hour")));
+	QLabel *t = new QLabel(tr("Alarm type"));
+	t->setAlignment(Qt::AlignHCenter);
+	l->addWidget(t, 1);
+
+	QLabel *z = new QLabel(tr("Zone"));
+	z->setAlignment(Qt::AlignHCenter);
+	l->addWidget(z, 1);
+
+	QLabel *d = new QLabel(tr("Date & Hour"));
+	d->setAlignment(Qt::AlignLeft);
+	l->addWidget(d, 1);
 
 	NavigationBar *nav_bar = new NavigationBar;
 	alarms = new AlarmItems;
@@ -586,7 +602,7 @@ void AlarmList::activateLayout()
 		page_content->drawContent();
 }
 
-void AlarmList::addAlarm(int type, const QString &zone, const QDateTime &date)
+void AlarmList::addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date)
 {
-	alarms->addAlarm(type, zone, date);
+	alarms->addAlarm(type, description, zone, date);
 }

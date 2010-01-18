@@ -154,7 +154,7 @@ Q_OBJECT
 public:
 	AlarmItems();
 
-	void addAlarm(int type, const QString &zone, const QDateTime &date);
+	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date);
 	void removeAlarm(int index);
 
 	void drawContent();
@@ -179,7 +179,7 @@ public:
 
 	AlarmList();
 
-	void addAlarm(int type, const QString &zone, const QDateTime &date);
+	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date);
 
 	virtual void activateLayout();
 
