@@ -74,22 +74,22 @@ void ToggleBeep::toggleBeep()
 
 
 // this can be a generic class
-class AlarmClockListPage : public BannerPage
+class ListPage : public BannerPage
 {
 public:
-	AlarmClockListPage(const QDomNode &config_node);
+	ListPage(const QDomNode &config_node);
 
 private:
 	void loadItems(const QDomNode &config_node);
 };
 
-AlarmClockListPage::AlarmClockListPage(const QDomNode &config_node)
+ListPage::ListPage(const QDomNode &config_node)
 {
 	buildPage(getTextChild(config_node, "descr"));
 	loadItems(config_node);
 }
 
-void AlarmClockListPage::loadItems(const QDomNode &config_node)
+void ListPage::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode& item, getChildren(config_node, "item"))
 	{
@@ -151,7 +151,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			p = new ChangeTime;
 			break;
 		case PAGE_ALARMCLOCK:
-			p = new AlarmClockListPage(getPageNodeFromChildNode(item, "lnk_pageID"));
+			p = new ListPage(getPageNodeFromChildNode(item, "lnk_pageID"));
 			break;
 		case PAGE_DISPLAY:
 			p = new IconSettings(getPageNodeFromChildNode(item, "lnk_pageID"));
@@ -179,7 +179,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			p = new PasswordPage(item);
 			break;
 		case PAGE_RINGTONES:
-			p = new AlarmClockListPage(getPageNodeFromChildNode(item, "lnk_pageID"));
+			p = new ListPage(getPageNodeFromChildNode(item, "lnk_pageID"));
 			break;
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");
