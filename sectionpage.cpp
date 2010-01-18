@@ -41,14 +41,13 @@ void SectionPage::loadItems(const QDomNode &config_node)
 #else
 		SkinContext cxt(getTextChild(item, "cid").toInt());
 		QString icon = bt_global::skin->getImage("link_icon");
-		int link_id = getTextChild(item, "id").toInt();
 		// Home page buttons don't have description set
 		QString descr = getTextChild(item, "descr");
 
 		// TODO some ids are not links
 		int pageid = getTextChild(item, "lnk_pageID").toInt();
 		if (Page *p = getPage(pageid))
-			addPage(p, pageid, descr, icon, 0, 0);
+			addPage(p, descr, icon, 0, 0);
 #endif
 
 		if (wdtime.elapsed() > 1000)

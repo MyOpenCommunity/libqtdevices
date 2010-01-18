@@ -47,6 +47,7 @@ class BtMain : public QObject
 {
 Q_OBJECT
 friend Page *getPage(int id);
+friend class HomePage;
 
 public:
 	BtMain();

@@ -36,21 +36,13 @@ public:
 	// the type returned by page_content
 	typedef IconContent ContentType;
 
-	IconPage();
 	virtual void addBackButton();
 	virtual void activateLayout();
 
 protected:
 	void buildPage(IconContent *content, NavigationBar *nav_bar, const QString &label = QString());
-	void addPage(Page *page, int id, const QString &label, const QString &iconName, int x = 0, int y = 0);
+	void addPage(Page *page, const QString &label, const QString &iconName, int x = 0, int y = 0);
 	BtButton *addButton(const QString &label, const QString &iconName, int x = 0, int y = 0);
-
-private:
-	QButtonGroup buttons_group;
-	QHash<int, Page*> page_list;
-
-protected slots:
-	void clicked(int id);
 };
 
 

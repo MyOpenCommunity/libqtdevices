@@ -37,9 +37,13 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		int link_id = getTextChild(item, "id").toInt();
 		QString icon = bt_global::skin->getImage("link_icon");
 		QString descr = getTextChild(item, "descr");
+
+		QDomNode page_node = getPageNodeFromChildNode(item, "lnk_pageID");
+		int page_id = getTextChild(page_node, "id").toInt();
+
 		Page *p = 0;
 
-		switch (link_id)
+		switch (page_id)
 		{
 		case PAGE_USB:
 			p = new MultimediaFileListPage;
@@ -54,7 +58,7 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		if (p)
 		{
 			p->inizializza();
-			addPage(p, link_id, descr, icon);
+			addPage(p, descr, icon);
 		}
 	}
 }

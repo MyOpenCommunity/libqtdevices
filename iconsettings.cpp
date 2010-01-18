@@ -121,22 +121,24 @@ void IconSettings::loadItems(const QDomNode &config_node)
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		SkinContext cxt(getTextChild(item, "cid").toInt());
-		int link_id = getTextChild(item, "id").toInt();
 		QString icon = bt_global::skin->getImage("link_icon");
 		QString descr = getTextChild(item, "descr");
 		Page *p = 0;
 		Window *w = 0;
 
-		switch (link_id)
+		QDomNode page_node = getPageNodeFromChildNode(item, "lnk_pageID");
+		int page_id = getTextChild(page_node, "id").toInt();
+
+		switch (page_id)
 		{
 		case PAGE_DATE_TIME:
 			p = new ChangeTime;
 			break;
 		case PAGE_ALARMCLOCK:
-			p = new AlarmClockListPage(getPageNodeFromChildNode(item, "lnk_pageID"));
+			p = new AlarmClockListPage(page_node);
 			break;
 		case PAGE_DISPLAY:
-			p = new IconSettings(getPageNodeFromChildNode(item, "lnk_pageID"));
+			p = new IconSettings(page_node);
 			break;
 		case PAGE_SCREENSAVER:
 			p = new ScreenSaverPage;
@@ -167,7 +169,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		if (p)
 		{
 			p->inizializza();
-			addPage(p, link_id, descr, icon);
+			addPage(p, descr, icon);
 		}
 		else if (w)
 		{

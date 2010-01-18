@@ -17,12 +17,6 @@
 #define IMG_BACK_BUTTON IMG_PATH "arrlf.png"
 
 
-IconPage::IconPage()
-	: buttons_group(this)
-{
-	connect(&buttons_group, SIGNAL(buttonClicked(int)), SLOT(clicked(int)));
-}
-
 void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QString &title)
 {
 	PageTitleWidget *title_widget = 0;
@@ -66,12 +60,10 @@ BtButton *IconPage::addButton(const QString &label, const QString& icon_path, in
 	return b;
 }
 
-void IconPage::addPage(Page *page, int id, const QString &label, const QString &iconName, int x, int y)
+void IconPage::addPage(Page *page, const QString &label, const QString &iconName, int x, int y)
 {
 	BtButton *b = addButton(label, iconName, x, y);
-
-	buttons_group.addButton(b, id);
-	page_list[id] = page;
+	connect(b, SIGNAL(clicked()), page, SLOT(showPage()));
 	connect(page, SIGNAL(Closed()), this, SLOT(showPage()));
 }
 
@@ -81,11 +73,6 @@ void IconPage::addBackButton()
 	b->setGeometry(BACK_BUTTON_X, BACK_BUTTON_Y, BACK_BUTTON_DIM, BACK_BUTTON_DIM);
 	b->setImage(IMG_BACK_BUTTON);
 	connect(b, SIGNAL(clicked()), SIGNAL(Closed()));
-}
-
-void IconPage::clicked(int id)
-{
-	page_list[id]->showPage();
 }
 
 

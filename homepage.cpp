@@ -15,6 +15,7 @@
 #include "btbutton.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "hardware_functions.h"
+#include "btmain.h"
 
 #include <QDomNode>
 #include <QLayout>
@@ -73,5 +74,7 @@ Page::PageType HomePage::pageType()
 
 void HomePage::showSectionPage(int page_id)
 {
-	clicked(page_id);
+	// TODO: a section page can be built only once, so pass as argument the id instead of the page_id!
+	int id = getTextChild(getPageNodeFromPageId(page_id), "id").toInt();
+	bt_global::btmain->page_list[id]->showPage();
 }

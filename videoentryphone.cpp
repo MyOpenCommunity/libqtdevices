@@ -93,8 +93,7 @@ void VideoEntryPhone::loadItems(const QDomNode &config_node)
 		{
 			QString icon = bt_global::skin->getImage("link_icon");
 			QString descr = getTextChild(item, "descr");
-			int link_id = getTextChild(item, "id").toInt();
-			addPage(p, link_id, descr, icon);
+			addPage(p, descr, icon);
 		}
 
 	}
