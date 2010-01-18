@@ -42,21 +42,11 @@ Page *getPage(int page_id)
 	switch (id)
 	{
 	case AUTOMAZIONE:
-	{
-		Automation *p = new Automation(page_node);
-		//p->forceDraw();
-		page = p;
+		page = new Automation(page_node);
 		break;
-	}
 	case ILLUMINAZIONE:
-	{
-		Lighting *p = new Lighting(page_node);
-		//p->forceDraw();
-		// DELETE
-		//QObject::connect(p, SIGNAL(richStato(QString)), bt_global::btmain->client_richieste, SLOT(richStato(QString)));
-		page = p;
+		page = new Lighting(page_node);
 		break;
-	}
 	case ANTIINTRUSIONE:
 	{
 		Antintrusion *p = new Antintrusion(page_node);
@@ -67,19 +57,12 @@ Page *getPage(int page_id)
 		break;
 	}
 	case CARICHI:
-	{
-		Loads *p = new Loads(page_node);
-		//p->forceDraw();
-		page = p;
+		page = new Loads(page_node);
 		break;
-	}
 	case TERMOREGOLAZIONE:
 	case TERMOREG_MULTI_PLANT:
-	{
-		ThermalMenu *p = new ThermalMenu(page_node);
-		page = p;
+		page = new ThermalMenu(page_node);
 		break;
-	}
 	case DIFSON:
 	{
 		SoundDiffusion *p = new SoundDiffusion(page_node);
@@ -117,26 +100,14 @@ Page *getPage(int page_id)
 	}
 	case SCENARI:
 	case SCENARI_EVOLUTI:
-	{
-		Scenario *p = new Scenario(page_node);
-		p->forceDraw();
-		page = p;
+		page = new Scenario(page_node);
 		break;
-	}
 	case IMPOSTAZIONI:
-	{
-		Settings *p = new Settings(page_node);
-		//p->forceDraw();
-		page = p;
+		page = new Settings(page_node);
 		break;
-	}
 	case VIDEOCITOFONIA:
-	{
-		VideoEntryPhone *p = new VideoEntryPhone(page_node);
-		//p->forceDraw();
-		page = p;
+		page = new VideoEntryPhone(page_node);
 		break;
-	}
 // TODO: this won't magically fix running BTouch with the new config file, but at least will
 // let us compile for BTouch (old conf) without problems.
 #ifdef LAYOUT_TOUCHX
@@ -159,29 +130,17 @@ Page *getPage(int page_id)
 		break;
 	}
 	case SPECIAL:
-	{
-		SpecialPage *p = new SpecialPage(page_node);
-		page = p;
+		page = new SpecialPage(page_node);
 		break;
-	}
 	case ENERGY_DATA:
-	{
-		EnergyData *p = new EnergyData(page_node);
-		page = p;
+		page = new EnergyData(page_node);
 		break;
-	}
 	case FEED_READER:
-	{
-		FeedManager *p = new FeedManager;
-		page = p;
+		page = new FeedManager;
 		break;
-	}
 	case MULTIMEDIA:
-	{
-		MultimediaSectionPage *p = new MultimediaSectionPage(page_node);
-		page = p;
+		page = new MultimediaSectionPage(page_node);
 		break;
-	}
 	default:
 		qFatal("Page %d not found on xml config file!", id);
 	}
