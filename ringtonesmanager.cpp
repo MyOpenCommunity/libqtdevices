@@ -31,12 +31,24 @@ void RingtonesManager::playRingtone(RingtoneType t)
 	playSound(typeToFilePath(t));
 }
 
+void RingtonesManager::playRingtone(int ring)
+{
+	Q_ASSERT_X(ring >= 0 && ring < ringtone_to_file.size(), "RingtonesManager::playRingtone(int)",
+		"Given ringtone is outside valid range.");
+	playSound(ringtone_to_file[ring]);
+}
+
 void RingtonesManager::setRingtone(RingtoneType t, int ring)
 {
 	Q_ASSERT_X(ring >= 0 && ring < ringtone_to_file.size(), "RingtonesManager::setRingtone",
 		"Given ringtone is outside valid range.");
 	type_to_ringtone[t] = ring;
 	// TODO: save the map to flash memory
+}
+
+int RingtonesManager::getRingtone(RingtoneType t)
+{
+	return type_to_ringtone[t];
 }
 
 int RingtonesManager::getRingtonesNumber()

@@ -29,11 +29,18 @@ public:
 	 * Play the current ringtone set for the given ringtone type.
 	 */
 	void playRingtone(RingtoneType t);
+	// play the ringtone set for the given id
+	void playRingtone(int ring);
 
 	/**
 	 * Set a new ringtone for a given ringtone type.
 	 */
 	void setRingtone(RingtoneType t, int ring);
+
+	/**
+	 * Return the current ringtone for a given type.
+	 */
+	int getRingtone(RingtoneType t);
 
 	int getRingtonesNumber();
 
