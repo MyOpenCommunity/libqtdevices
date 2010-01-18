@@ -5,6 +5,9 @@
 #include <QDebug>
 #include <QDir>
 
+#include <unistd.h> // lseek, read
+#include <fcntl.h>  // open
+
 // TODO: this is not absolute for testing
 #define RINGTONE_DIR "cfg/extra/2/"
 
@@ -20,7 +23,7 @@ RingtonesManager::RingtonesManager()
 		qDebug() << fi.filePath();
 		++id;
 	}
-	// TODO: read the map type_to_ringtone saved on flash memory
+	readRingtonesFromFlash();
 
 	qDebug() << "Found the following ringtones: " << ringtone_to_file;
 }
@@ -73,6 +76,32 @@ QList<QFileInfo> RingtonesManager::scanDirectory(const QDir &dir, const QStringL
 	}
 
 	return temp_files_list;
+}
+
+#define E2_BASE_RINGS       11673
+#define DEV_E2 "/dev/nvram"
+// how many different types of ringtones we have
+#define RINGTONE_COUNT 11
+
+void RingtonesManager::readRingtonesFromFlash()
+{
+#ifdef BT_EMBEDDED
+	char saved_values[RINGTONE_COUNT];
+	memset(saved_values, 0, RINGTONE_COUNT);
+	int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
+	if (eeprom > 0)
+	{
+		lseek(eeprom, E2_BASE_RINGS, SEEK_SET);
+		ssize_t bytes = read(eeprom, saved_values, RINGTONE_COUNT);
+		close(eeprom);
+
+		if (bytes < 0)
+			qWarning() << "RingtonesManager::readRingtonesFromFlash: an error occurred while reading flash memory; using default values.";
+		// saved_values is already all zero, we don't set random values here
+		for (int i = 0; i < RINGTONE_COUNT; ++i)
+			type_to_ringtone[static_cast<RingtoneType>(i)] = saved_values[i];
+	}
+#endif
 }
 
 RingtonesManager *bt_global::ringtones = 0;
