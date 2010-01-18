@@ -126,6 +126,7 @@ private:
   \param <testoIntrusione> text for a intrusion alarm  
 */
 	QString testoManom, testoTecnico, testoIntrusione, testoPanic;
+	QString trash_icon;
 	Keypad *tasti;
 	static const int MAX_ZONE = 8;
 	QTimer request_timer;

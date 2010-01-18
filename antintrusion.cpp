@@ -35,6 +35,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	testoIntrusione = tr("intrusion");
 	testoManom = tr("tamper");
 	testoPanic = tr("anti-panic");
+	trash_icon = bt_global::skin->getImage("alarm_del");
 
 	top_widget = new QWidget;
 
@@ -291,7 +292,7 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 		descr += time;
 		descr.truncate(2 * MAX_PATH);
 
-		allarmi.append(new AlarmPage(descr, NULL, bt_global::skin->getImage("alarm_del"), t));
+		allarmi.append(new AlarmPage(descr, NULL, trash_icon, t));
 		// The current alarm is the last alarm inserted
 		curr_alarm = allarmi.size() - 1;
 		AlarmPage *curr = allarmi.at(curr_alarm);
