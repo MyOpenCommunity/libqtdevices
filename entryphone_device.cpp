@@ -1,5 +1,6 @@
 #include "entryphone_device.h"
 #include "generic_functions.h"
+#include "ringtonesmanager.h"
 
 #include <openmsg.h>
 #include <QDebug>
@@ -119,26 +120,55 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 	switch (what)
 	{
 	case CALL:
+	{
 		Q_ASSERT_X(msg.whatSubArgCnt() < 2, "EntryphoneDevice::manageFrame",
 			"Incomplete open frame received");
 		kind = msg.whatArgN(0);
 		mmtype = msg.whatArgN(1);
 
-		if (kind >= 1 && kind <= 4)
+		int ringtone = -1;
+		switch (kind)
+		{
+		case 1:
 			what = VCT_CALL;
-		// TODO: serve differenziare perche' nel caso di kind == 5 (autochiamata)
-		// non bisogna far suonare una suoneria.. al contrario della vct call
-		// normale.. aggiungere una grandezza che indica il numero della suoneria
-		// per le vct!
-		else if (kind == 5)
+			ringtone = RingtonesManager::RINGTONE_PE1;
+			break;
+		case 2:
 			what = VCT_CALL;
-		else
+			ringtone = RingtonesManager::RINGTONE_PE2;
+			break;
+		case 3:
+			what = VCT_CALL;
+			ringtone = RingtonesManager::RINGTONE_PE3;
+			break;
+		case 4:
+			what = VCT_CALL;
+			ringtone = RingtonesManager::RINGTONE_PE4;
+			break;
+		case 5:
+			what = VCT_CALL;
+			break;
+		case 6:
 			what = INTERCOM_CALL;
+			ringtone = RingtonesManager::RINGTONE_PE4;
+			break;
+		case 7:
+			what = INTERCOM_CALL;
+			ringtone = RingtonesManager::RINGTONE_PE4;
+			break;
+		default:
+			qWarning("Kind not supported by EntryphoneDevice, skin frame");
+			return;
+		}
+
+		if (ringtone != -1)
+			sl[RINGTONE] = ringtone;
 
 		// we can safely ignore caller address, we will receive a frame later.
 		v.setValue(true);
 		is_calling = true;
 		break;
+	}
 	case CALLER_ADDRESS:
 		caller_address = QString::fromStdString(msg.whereFull());
 		send_status_update = false;

@@ -29,6 +29,7 @@ public:
 		VCT_CALL = 1,
 		INTERCOM_CALL = 100, // the value doesn't matter
 		END_OF_CALL = 3,
+		RINGTONE = 200, // the value doesn't matter
 	};
 
 	EntryphoneDevice(const QString &where);
