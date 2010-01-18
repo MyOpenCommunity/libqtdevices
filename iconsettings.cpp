@@ -18,6 +18,7 @@
 
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QDebug>
 
 enum
 {
@@ -73,22 +74,22 @@ void ToggleBeep::toggleBeep()
 
 
 // this can be a generic class
-class AlarmClockListPage : public BannerPage
+class ListPage : public BannerPage
 {
 public:
-	AlarmClockListPage(const QDomNode &config_node);
+	ListPage(const QDomNode &config_node);
 
 private:
 	void loadItems(const QDomNode &config_node);
 };
 
-AlarmClockListPage::AlarmClockListPage(const QDomNode &config_node)
+ListPage::ListPage(const QDomNode &config_node)
 {
 	buildPage(getTextChild(config_node, "descr"));
 	loadItems(config_node);
 }
 
-void AlarmClockListPage::loadItems(const QDomNode &config_node)
+void ListPage::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode& item, getChildren(config_node, "item"))
 	{
@@ -116,6 +117,23 @@ int IconSettings::sectionId()
 	return IMPOSTAZIONI;
 }
 
+banner *IconSettings::getBanner(const QDomNode &item_node)
+{
+	SkinContext ctx(getTextChild(item_node, "cid").toInt());
+	int id = getTextChild(item_node, "id").toInt();
+	banner *b = 0;
+	QString descr = getTextChild(item_node, "descr");
+	switch (id)
+	{
+	case RINGTONE:
+		// TODO: type should be read from config file
+		b = new BannRingtone(descr, RingtonesManager::RINGTONE_PE1);
+		break;
+	}
+
+	return b;
+}
+
 void IconSettings::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
@@ -135,7 +153,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			p = new ChangeTime;
 			break;
 		case PAGE_ALARMCLOCK:
-			p = new AlarmClockListPage(page_node);
+			p = new ListPage(page_node);
 			break;
 		case PAGE_DISPLAY:
 			p = new IconSettings(page_node);
@@ -161,6 +179,9 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		}
 		case PAGE_PASSWORD:
 			p = new PasswordPage(item);
+			break;
+		case PAGE_RINGTONES:
+			p = new ListPage(getPageNodeFromChildNode(item, "lnk_pageID"));
 			break;
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");

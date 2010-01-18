@@ -25,6 +25,7 @@ HomePage::HomePage(const QDomNode &config_node) : SectionPage(config_node)
 {
 #ifdef LAYOUT_TOUCHX
 	page_content->layout()->setContentsMargins(25, 35, 100, 0);
+	page_content->layout()->setSpacing(28);
 #endif
 	temp_viewer = new TemperatureViewer(this);
 	loadItems(config_node);

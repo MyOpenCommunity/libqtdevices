@@ -458,6 +458,7 @@ enum  bannerType
 	AIR_SPLIT_ADV=77,                             /*!< AIR conditioning single split (advanced) */
 	AIR_GENERAL_ADV=78,                           /*!< AIR conditioning general split (advanced) */
 	BEEP_ICON=2901,                               /*!< Beep icon in touch 10 settings */
+	RINGTONE=2060,                                /*!< Ringtone selection banner in touch 10 settings */
 };
 
 /*! \enum pulsType

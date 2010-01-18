@@ -80,7 +80,7 @@ IconContent::IconContent(QWidget *parent) : GridContent(parent)
 {
 	QGridLayout *l = static_cast<QGridLayout *>(layout());
 	l->setContentsMargins(25, 0, 25, 0);
-	l->setSpacing(28);
+	l->setSpacing(15);
 	l->setColumnStretch(5, 1);
 }
 

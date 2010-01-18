@@ -7,6 +7,7 @@
 
 class QDomNode;
 class BtButton;
+class banner;
 
 
 class IconSettings : public IconPage
@@ -16,6 +17,7 @@ public:
 	IconSettings(const QDomNode &config_node);
 
 	virtual int sectionId();
+	static banner *getBanner(const QDomNode &item_node);
 
 private:
 	void loadItems(const QDomNode &config_node);

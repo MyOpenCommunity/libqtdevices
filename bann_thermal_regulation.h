@@ -79,7 +79,7 @@ public:
 	ThermalNavigation(QWidget *parent = 0);
 
 signals:
-	void okClick();
+	void forwardClick();
 	void backClick();
 };
 

@@ -65,6 +65,8 @@ signals:
 
 #if 0
 
+typedef class zonaAnti AntintrusionZone;
+
 /*!
  *  \class zonaAnti
  * \brief This class is made to manage an anti-intrusion zone.
@@ -95,10 +97,8 @@ private:
 	bool already_changed;
 	device *dev;
 signals:
-	void partChanged(zonaAnti *);
+	void partChanged(AntintrusionZone *);
 };
-
-typedef zonaAnti AntintrusionZone;
 
 #endif
 

@@ -14,11 +14,13 @@
 
 #include "frame_receiver.h"
 #include "page.h"
+#include "gridcontent.h"
 
 
 #include <QString>
 #include <QTimer>
 #include <QList>
+#include <QSignalMapper>
 
 class impAnti;
 class AntintrusionZone;
@@ -27,6 +29,8 @@ class Keypad;
 class AlarmPage;
 class QDomNode;
 class QWidget;
+class AlarmList;
+class QDateTime;
 
 
 /*!
@@ -47,6 +51,8 @@ public:
 	virtual void inizializza();
 	void draw();
 	virtual void manageFrame(OpenMsg &msg);
+
+	virtual int sectionId();
 
 public slots:
 	void Parzializza();
@@ -113,6 +119,7 @@ private:
   \param <allarmi> alarm's queue
 */
 	QList<AlarmPage*> allarmi;
+	AlarmList *alarms;
 	int curr_alarm;
 /*!
   \param <testoManom> text for a manomission alarm
@@ -121,6 +128,7 @@ private:
   \param <testoIntrusione> text for a intrusion alarm  
 */
 	QString testoManom, testoTecnico, testoIntrusione, testoPanic;
+	QString trash_icon;
 	Keypad *tasti;
 	static const int MAX_ZONE = 8;
 	QTimer request_timer;
@@ -139,5 +147,44 @@ private slots:
 	void plantInserted();
 };
 
+
+class AlarmItems : public GridContent
+{
+Q_OBJECT
+public:
+	AlarmItems();
+
+	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date);
+	void removeAlarm(int index);
+
+	void drawContent();
+	void prepareLayout();
+
+private slots:
+	void removeAlarm(QWidget *);
+
+private:
+	QList<QWidget*> alarms;
+	QStringList icons;
+	QString trash_icon;
+	QSignalMapper mapper;
+};
+
+
+class AlarmList : public Page
+{
+Q_OBJECT
+public:
+	typedef AlarmItems ContentType;
+
+	AlarmList();
+
+	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date);
+
+	virtual void activateLayout();
+
+private:
+	AlarmItems *alarms;
+};
 
 #endif // ANTINTRUSION_H

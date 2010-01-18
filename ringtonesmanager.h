@@ -45,6 +45,7 @@ public:
 	int getRingtonesNumber();
 
 private:
+	void readRingtonesFromFlash();
 	QList<QFileInfo> scanDirectory(const QDir &dir, const QStringList &filters);
 	QString typeToFilePath(RingtoneType t);
 	QHash<int, QString> ringtone_to_file;
