@@ -200,6 +200,7 @@ HEADERS += actuators.h \
            probe_device.h \
            pulldevice.h \
            radio.h \
+           ringtonesmanager.h \
            scaleconversion.h \
            scenario.h \
            scenario_device.h \
@@ -338,6 +339,7 @@ SOURCES += actuators.cpp \
            probe_device.cpp \
            pulldevice.cpp \
            radio.cpp \
+           ringtonesmanager.cpp \
            scaleconversion.cpp \
            scenario.cpp \
            scenario_device.cpp \
