@@ -141,7 +141,7 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 			page_content->appendBanner(b);
 			connect(this, SIGNAL(abilitaParz(bool)), b, SLOT(abilitaParz(bool)));
 			connect(this, SIGNAL(clearChanged()), b, SLOT(clearChanged()));
-			connect(b, SIGNAL(partChanged(zonaAnti*)), SIGNAL(partChanged(zonaAnti*)));
+			connect(b, SIGNAL(partChanged(AntintrusionZone*)), SIGNAL(partChanged(AntintrusionZone*)));
 			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 			// We assume that the antintrusion impianto came before all the zones
 			Q_ASSERT_X(impianto, "Antintrusion::loadItems", "Found a zone before the impianto!");
