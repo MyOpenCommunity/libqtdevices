@@ -94,16 +94,10 @@ void Antintrusion::createImpianto(const QString &descr)
 	connect(this, SIGNAL(openNakRx()), impianto, SLOT(openNakRx()));
 
 #ifdef LAYOUT_TOUCHX
-	l->addStretch(1);
-
 	forward_button = new BtButton;
 	forward_button->setImage(bt_global::skin->getImage("partial"));
 	l->addWidget(forward_button);
 	connect(forward_button, SIGNAL(clicked()), SIGNAL(forwardClick()));
-
-	BtButton *alarm_list = new BtButton;
-	alarm_list->setImage(bt_global::skin->getImage("alarm_list"));
-	l->addWidget(alarm_list);
 #endif
 }
 
