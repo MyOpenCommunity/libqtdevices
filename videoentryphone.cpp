@@ -54,14 +54,50 @@ void VideoEntryPhone::loadDevices(const QDomNode &config_node)
 	}
 }
 #else
-VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node) :
-	SectionPage(config_node)
+VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 {
+	buildPage(new IconContent, new NavigationBar);
+	loadItems(config_node);
 }
 
 int VideoEntryPhone::sectionId()
 {
 	return VIDEOCITOFONIA;
+}
+
+void VideoEntryPhone::loadItems(const QDomNode &config_node)
+{
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		SkinContext cxt(getTextChild(item, "cid").toInt());
+		QDomNode page_node = getPageNodeFromChildNode(item, "lnk_pageID");
+		int page_id = getTextChild(page_node, "id").toInt();
+		Page *p = 0;
+
+		switch (page_id)
+		{
+		case INTERCOM:
+			p = new Intercom(page_node);
+			break;
+		case VIDEO_CONTROL:
+			p = new VideoControl(page_node);
+			break;
+		case CALL_EXCLUSION:
+			p = new CallExclusion(page_node);
+			break;
+		default:
+			qFatal("Unhandled page id in VideoEntryPhone::loadItems");
+		};
+
+		if (p)
+		{
+			QString icon = bt_global::skin->getImage("link_icon");
+			QString descr = getTextChild(item, "descr");
+			int link_id = getTextChild(item, "id").toInt();
+			addPage(p, link_id, descr, icon);
+		}
+
+	}
 }
 
 

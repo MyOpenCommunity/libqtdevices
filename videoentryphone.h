@@ -15,7 +15,7 @@
 #define VIDEOENTRYPHONE_H
 
 #include "page.h"
-#include "sectionpage.h"
+#include "iconpage.h"
 
 #include <QWidget>
 
@@ -41,12 +41,15 @@ private:
 
 #else
 
-class VideoEntryPhone : public SectionPage
+class VideoEntryPhone : public IconPage
 {
 Q_OBJECT
 public:
 	VideoEntryPhone(const QDomNode &config_node);
 	virtual int sectionId();
+
+private:
+	void loadItems(const QDomNode &config_node);
 };
 
 

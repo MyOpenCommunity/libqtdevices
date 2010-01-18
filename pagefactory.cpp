@@ -108,19 +108,6 @@ Page *getPage(int page_id)
 	case VIDEOCITOFONIA:
 		page = new VideoEntryPhone(page_node);
 		break;
-// TODO: this won't magically fix running BTouch with the new config file, but at least will
-// let us compile for BTouch (old conf) without problems.
-#ifdef LAYOUT_TOUCHX
-	case INTERCOM:
-		page = new Intercom(page_node);
-		break;
-	case VIDEO_CONTROL:
-		page = new VideoControl(page_node);
-		break;
-	case CALL_EXCLUSION:
-		page = new CallExclusion(page_node);
-		break;
-#endif
 	case SUPERVISIONE:
 	{
 		SupervisionMenu *p = new SupervisionMenu(page_node);
