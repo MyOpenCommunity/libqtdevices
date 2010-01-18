@@ -79,7 +79,7 @@ ThermalNavigation::ThermalNavigation(QWidget *parent)
 	l->addStretch(1);
 
 	BtButton *ok = new BtButton();
-	connect(ok, SIGNAL(clicked()), SIGNAL(okClick()));
+	connect(ok, SIGNAL(clicked()), SIGNAL(forwardClick()));
 	ok->setImage(bt_global::skin->getImage("ok"));
 	l->addWidget(ok);
 }
@@ -699,7 +699,7 @@ PageManual::PageManual(ThermalDevice *_dev, TemperatureScale scale)
 #endif
 	buildPage(&content, nav_bar);
 
-	connect(nav_bar, SIGNAL(okClick()), SLOT(performAction()));
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(performAction()));
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
 	connect(dev, SIGNAL(status_changed(const StatusList &)),
@@ -847,7 +847,7 @@ PageSetDate::PageSetDate()
 	ThermalNavigation *nav = new ThermalNavigation;
 	buildPage(&content, nav);
 
-	connect(nav, SIGNAL(okClick()), SLOT(performAction()));
+	connect(nav, SIGNAL(forwardClick()), SLOT(performAction()));
 	connect(nav, SIGNAL(backClick()), SIGNAL(Closed()));
 }
 
@@ -877,7 +877,7 @@ PageSetTime::PageSetTime()
 	ThermalNavigation *nav = new ThermalNavigation;
 	buildPage(&content, nav);
 
-	connect(nav, SIGNAL(okClick()), SLOT(performAction()));
+	connect(nav, SIGNAL(forwardClick()), SLOT(performAction()));
 	connect(nav, SIGNAL(backClick()), SIGNAL(Closed()));
 }
 
