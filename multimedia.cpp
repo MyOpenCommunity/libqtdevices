@@ -34,7 +34,6 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		SkinContext cxt(getTextChild(item, "cid").toInt());
-		int link_id = getTextChild(item, "id").toInt();
 		QString icon = bt_global::skin->getImage("link_icon");
 		QString descr = getTextChild(item, "descr");
 
@@ -49,7 +48,7 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 			p = new MultimediaFileListPage;
 			break;
 		case PAGE_WEB_CAM:
-			p = new WebcamListPage(getPageNodeFromChildNode(item, "lnk_pageID"));
+			p = new WebcamListPage(page_node);
 			break;
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");
