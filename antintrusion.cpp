@@ -253,22 +253,16 @@ void Antintrusion::inizializza()
 
 void Antintrusion::manageFrame(OpenMsg &msg)
 {
-	bool aggiorna = false;
-
-
 	if ((!strncmp(msg.Extract_cosa(),"12",2)) || (! strncmp(msg.Extract_cosa(),"15",2)) || \
 		(!strncmp(msg.Extract_cosa(),"16",2)) || (! strncmp(msg.Extract_cosa(),"17",2)))
 	{
 		QString descr;
-		char zona[3];
-		QString tipo = "Z";
 		AlarmPage::altype t;
 
 		if  (!strncmp(msg.Extract_cosa(),"12",2) && !testoTecnico.isNull())
 		{
 			descr = testoTecnico;
 			t = AlarmPage::TECNICO;
-			tipo = "AUX";
 		}
 
 		if  (!strncmp(msg.Extract_cosa(),"15",2) && !testoIntrusione.isNull())
@@ -289,56 +283,53 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 			t = AlarmPage::PANIC;
 		}
 
-		QString alarm_description = descr;
+		QString zona = QString(msg.Extract_dove()).mid(1);
 
-		// To simulate old behaviour
-		descr.truncate(MAX_PATH);
-
-		strcpy(zona,msg.Extract_dove());
-
-		QString hhmm = QDateTime::currentDateTime().toString("hh:mm");
-		QString ddMM = QDateTime::currentDateTime().toString("dd.MM");
-		QString time = QString("\n%1   %2    %3 %4").arg(hhmm).arg(ddMM).arg(tipo).arg(&zona[1]);
-
-		descr += time;
-		descr.truncate(2 * MAX_PATH);
-
-		allarmi.append(new AlarmPage(descr, NULL, trash_icon, t));
-		// The current alarm is the last alarm inserted
-		curr_alarm = allarmi.size() - 1;
-		AlarmPage *curr = allarmi.at(curr_alarm);
-		connect(curr, SIGNAL(Closed()), SLOT(closeAlarms()));
-		connect(curr, SIGNAL(Next()), SLOT(nextAlarm()));
-		connect(curr, SIGNAL(Prev()), SLOT(prevAlarm()));
-		connect(curr, SIGNAL(Delete()), SLOT(deleteAlarm()));
-		aggiorna = true;
-
-		alarms->addAlarm(t, alarm_description, tipo + " " + &zona[1],
-				 QDateTime::currentDateTime());
+		addAlarm(descr, t, zona);
 	}
+}
 
-	if (aggiorna)
+void Antintrusion::addAlarm(QString descr, int t, QString zona)
+{
+	QString alarm_description = descr;
+	QString tipo = t == AlarmPage::TECNICO ? "AUX" : "Z";
+
+	// To simulate old behaviour
+	descr.truncate(MAX_PATH);
+
+	QString hhmm = QDateTime::currentDateTime().toString("hh:mm");
+	QString ddMM = QDateTime::currentDateTime().toString("dd.MM");
+	QString time = QString("\n%1   %2    %3 %4").arg(hhmm).arg(ddMM).arg(tipo).arg(zona);
+
+	descr += time;
+	descr.truncate(2 * MAX_PATH);
+
+	allarmi.append(new AlarmPage(descr, NULL, trash_icon, static_cast<AlarmPage::altype>(t)));
+	// The current alarm is the last alarm inserted
+	curr_alarm = allarmi.size() - 1;
+	AlarmPage *curr = allarmi.at(curr_alarm);
+	connect(curr, SIGNAL(Closed()), SLOT(closeAlarms()));
+	connect(curr, SIGNAL(Next()), SLOT(nextAlarm()));
+	connect(curr, SIGNAL(Prev()), SLOT(prevAlarm()));
+	connect(curr, SIGNAL(Delete()), SLOT(deleteAlarm()));
+
+	alarms->addAlarm(t, alarm_description, tipo + " " + zona,
+			 QDateTime::currentDateTime());
+
+	// if the alarm arrive during the screensaver, we want to turn back to the alarm when the screensaver exit
+	if (bt_global::btmain->screenSaverRunning())
 	{
-		qDebug("ARRIVATO ALLARME!!!!");
-		Q_ASSERT_X(curr_alarm >= 0 && curr_alarm < allarmi.size(), "Antintrusion::gesFrame",
-			qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(curr_alarm).arg(allarmi.size())));
-		AlarmPage *curr = allarmi.at(curr_alarm);
-
-		// if the alarm arrive during the screensaver, we want to turn back to the alarm when the screensaver exit
-		if (bt_global::btmain->screenSaverRunning())
-		{
-			if (!previous_page)
-				previous_page = bt_global::btmain->getPreviousPage();
-		}
-		else
-		{
-			if (!previous_page)
-				previous_page = currentPage();
-		}
-
-		curr->showPage();
-		ctrlAllarm();
+		if (!previous_page)
+			previous_page = bt_global::btmain->getPreviousPage();
 	}
+	else
+	{
+		if (!previous_page)
+			previous_page = currentPage();
+	}
+
+	curr->showPage();
+	ctrlAllarm();
 }
 
 void Antintrusion::closeAlarms()

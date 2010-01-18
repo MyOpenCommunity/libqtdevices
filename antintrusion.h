@@ -139,6 +139,7 @@ private:
 	void loadItems(const QDomNode &config_node);
 
 	void clearAlarms();
+	void addAlarm(QString descr, int t, QString zona);
 
 private slots:
 	void closeAlarms();
