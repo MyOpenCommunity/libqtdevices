@@ -33,10 +33,10 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	previous_page = 0;
 	forward_button = 0;
 
-	testoTecnico = tr("technical");
-	testoIntrusione = tr("intrusion");
-	testoManom = tr("tamper");
-	testoPanic = tr("anti-panic");
+	alarmTexts[0] = tr("technical");
+	alarmTexts[1] = tr("intrusion");
+	alarmTexts[2] = tr("tamper");
+	alarmTexts[3] = tr("anti-panic");
 
 	top_widget = new QWidget;
 
@@ -242,39 +242,24 @@ void Antintrusion::inizializza()
 
 void Antintrusion::manageFrame(OpenMsg &msg)
 {
-	if ((!strncmp(msg.Extract_cosa(),"12",2)) || (! strncmp(msg.Extract_cosa(),"15",2)) || \
-		(!strncmp(msg.Extract_cosa(),"16",2)) || (! strncmp(msg.Extract_cosa(),"17",2)))
+	int what = QString(msg.Extract_cosa()).mid(0, 2).toInt();
+
+	if (what == 12 || what == 15 || what == 16 || what == 17)
 	{
-		QString descr;
 		AlarmPage::altype t;
 
-		if  (!strncmp(msg.Extract_cosa(),"12",2) && !testoTecnico.isNull())
-		{
-			descr = testoTecnico;
+		if (what == 12)
 			t = AlarmPage::TECNICO;
-		}
-
-		if  (!strncmp(msg.Extract_cosa(),"15",2) && !testoIntrusione.isNull())
-		{
-			descr = testoIntrusione;
+		else if (what == 15)
 			t = AlarmPage::INTRUSIONE;
-		}
-
-		if  (!strncmp(msg.Extract_cosa(),"16",2) && !testoManom.isNull())
-		{
-			descr = testoManom;
+		else if (what == 16)
 			t = AlarmPage::MANOMISSIONE;
-		}
-
-		if  (!strncmp(msg.Extract_cosa(),"17",2) && !testoPanic.isNull())
-		{
-			descr = testoPanic;
+		else if (what == 17)
 			t = AlarmPage::PANIC;
-		}
 
 		QString zona = QString(msg.Extract_dove()).mid(1);
 
-		addAlarm(descr, t, zona);
+		addAlarm(alarmTexts[t], t, zona);
 	}
 }
 

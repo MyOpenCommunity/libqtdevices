@@ -121,12 +121,9 @@ private:
 	AlarmList *alarms;
 	int curr_alarm;
 /*!
-  \param <testoManom> text for a manomission alarm
-  \param <testoTecnico> text for a tecnical alarm
-  \param <testoPanic> text for a panic alarm  
-  \param <testoIntrusione> text for a intrusion alarm  
+  \param <alarmTexts[altype]> text for a given alarm
 */
-	QString testoManom, testoTecnico, testoIntrusione, testoPanic;
+	QString alarmTexts[4];
 	Keypad *tasti;
 	static const int MAX_ZONE = 8;
 	QTimer request_timer;
