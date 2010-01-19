@@ -9,7 +9,7 @@ class QDomNode;
 /**
  * \class SectionPage
  *
- * A subclass of IconPage that loads pages at construction time using getPage
+ * A subclass of IconPage that can be used to collect sections
  */
 class SectionPage : public IconPage
 {
