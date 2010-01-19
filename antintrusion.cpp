@@ -22,6 +22,10 @@
 #include <QSignalMapper>
 
 
+// TODO: only for compatibility, remove it asap!
+#define MAX_PATH 50
+
+
 Antintrusion::Antintrusion(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());

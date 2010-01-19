@@ -21,6 +21,14 @@
 #include <QLabel>
 
 
+enum Pages
+{
+	VIDEO_CONTROL=2200,  /*!< Video control menu */
+	INTERCOM=2201,       /*!< Intercom menu */
+	CALL_EXCLUSION=2203, /*!< Call exclusion */
+};
+
+
 #ifdef LAYOUT_BTOUCH
 VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 {

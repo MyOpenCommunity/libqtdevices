@@ -48,9 +48,6 @@ QDomElement getConfElement(QString path);
 
 void resetTimer(int signo);
 
-/****************************************************************
- ** Default configurazione applicativo
- ****************************************************************/
 /*! \def MY_FILE_CFG_DEFAULT
  *  The default configuration file
  */
@@ -116,9 +113,7 @@ void resetTimer(int signo);
  *  Default language used in BTouch
  */
 
-/****************************************************************
- **  definizione dimensioni schermo
- ****************************************************************/
+
 /*! \def MAX_WIDTH
  *  Maximum width of the screen
  */
@@ -132,13 +127,12 @@ void resetTimer(int signo);
  */
 #define NUM_RIGHE                  4
 
-/****************************************************************
- **  definizione dei sottomenù
- ****************************************************************/
-/*! \enum pagSecLiv
-  This enum describes the various kind of pages*/
+/// The simbol of temperature degrees
+#define TEMP_DEGREES "\272"
+
+
 #ifdef CONFIG_BTOUCH
-enum pagSecLiv
+enum Section
 {
 	NO_SECTION=0,
 	AUTOMAZIONE=1,                                /*!< Automation system */
@@ -161,12 +155,9 @@ enum pagSecLiv
 	FEED_READER=99,                               /*!< Feed reader page */
 	/* Added to avoid compile problems... */
 	MULTIMEDIA=26,
-	VIDEO_CONTROL=2000,                           /*!< Video control menu */
-	INTERCOM=2001,                                /*!< Intercom menu */
-	CALL_EXCLUSION=2003,                          /*!< Call exclusion */
 };
 #else
-enum pagSecLiv
+enum Section
 {
 	NO_SECTION=0,
 	AUTOMAZIONE=1,                                /*!< Automation system */
@@ -188,9 +179,6 @@ enum pagSecLiv
 	ENERGY_MANAGEMENT=-4,                         /*!< Energy management system */
 	ENERGY_DATA=-5,                               /*!< Energy data system */
 	FEED_READER=-6,                               /*!< Feed reader page */
-	VIDEO_CONTROL=2200,                           /*!< Video control menu */
-	INTERCOM=2201,                                /*!< Intercom menu */
-	CALL_EXCLUSION=2203,                          /*!< Call exclusion */
 };
 #endif
 
@@ -432,19 +420,6 @@ enum  bannerType
 	BEEP_ICON=2901,                               /*!< Beep icon in touch 10 settings */
 	RINGTONE=2060,                                /*!< Ringtone selection banner in touch 10 settings */
 };
-
-
-/***************************************************************
- **definizioni di carattere generale
- ***************************************************************/
-/*! \def MAX_PATH
- * maximum number of characters describing a file path
- */
-#define MAX_PATH 50
-
-/// The simbol of temperature degrees
-#define TEMP_DEGREES "\272"
-
 
 #endif //MAIN_H
 

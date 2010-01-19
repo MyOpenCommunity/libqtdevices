@@ -1,5 +1,4 @@
 #include "bann_antintrusion.h"
-#include "main.h" // MAX_PATH, IMG_PATH
 #include "generic_functions.h" // void getZoneName(...), getBostikName
 #include "fontmanager.h" // bt_global::font
 #include "btbutton.h"
