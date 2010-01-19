@@ -23,6 +23,27 @@ private:
 	void loadItems(const QDomNode &config_node);
 };
 
+// this can be a generic class
+class ListPage : public BannerPage
+{
+public:
+	ListPage(const QDomNode &config_node);
+
+private:
+	void loadItems(const QDomNode &config_node);
+};
+
+
+class RingtonesPage : public ListPage
+{
+Q_OBJECT
+public:
+	RingtonesPage(const QDomNode &config_node);
+
+private slots:
+	void stopRingtones();
+};
+
 
 // button to toggle on/off the beep sound
 class ToggleBeep : public QWidget

@@ -73,15 +73,7 @@ void ToggleBeep::toggleBeep()
 }
 
 
-// this can be a generic class
-class ListPage : public BannerPage
-{
-public:
-	ListPage(const QDomNode &config_node);
 
-private:
-	void loadItems(const QDomNode &config_node);
-};
 
 ListPage::ListPage(const QDomNode &config_node)
 {
@@ -104,6 +96,19 @@ void ListPage::loadItems(const QDomNode &config_node)
 			qFatal("Type of item %d not handled on settings page!", id);
 	}
 }
+
+
+RingtonesPage::RingtonesPage(const QDomNode &config_node) : ListPage(config_node)
+{
+	QObject::connect(this, SIGNAL(Closed()), SLOT(stopRingtones()));
+}
+
+void RingtonesPage::stopRingtones()
+{
+	bt_global::ringtones->stopRingtone();
+}
+
+
 
 
 IconSettings::IconSettings(const QDomNode &config_node)
@@ -181,7 +186,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			p = new PasswordPage(item);
 			break;
 		case PAGE_RINGTONES:
-			p = new ListPage(getPageNodeFromChildNode(item, "lnk_pageID"));
+			p = new RingtonesPage(page_node);
 			break;
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");
