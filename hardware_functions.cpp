@@ -364,6 +364,11 @@ void playSound(const QString &wavFile)
 				<< "-d" << "/dev/dsp1" << wavFile);
 }
 
+void stopSound()
+{
+	play_sound_process.terminate();
+}
+
 void setVctVideoValue(const QString &command, const QString &value)
 {
 	// needs BT_HARDWARE_TOUCHX

@@ -158,6 +158,11 @@ void playSound(const QString &wavFile)
 	play_sound_process.start("mplayer", QStringList(wavFile));
 }
 
+void stopSound()
+{
+	play_sound_process.terminate();
+}
+
 void setVctVideoValue(const QString &command, const QString &value)
 {
 }
