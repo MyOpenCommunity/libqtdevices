@@ -390,6 +390,11 @@ void BtMain::myMain()
 	connect(tempo2,SIGNAL(timeout()),this,SLOT(testFiles()));
 }
 
+void BtMain::showHomePage()
+{
+	Home->showPage();
+}
+
 void BtMain::testFiles()
 {
 	if (QFile::exists(FILE_TEST1))
