@@ -1,6 +1,5 @@
 #include "fileselector.h"
 #include "icondispatcher.h"
-#include "main.h" // IMG_PATH
 
 #include <QTime>
 #include <QDebug>
