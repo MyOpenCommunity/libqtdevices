@@ -4,6 +4,7 @@
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "btbutton.h"
 #include "skinmanager.h"
+#include "main.h" // MAX_PATH
 
 #include <QPixmap>
 #include <QWidget>
@@ -11,19 +12,31 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QPainter>
+#include <QDateTime>
 
 // keep the same order as the altype enum in alarmpage.h
 static const char *alarm_icons[] = { "technic_alarm_page", "intrusion_alarm_page", "tamper_alarm_page", "panic_alarm_page" };
 
 #ifdef LAYOUT_BTOUCH
 
-AlarmPage::AlarmPage(const QString &name, altype t)
+AlarmPage::AlarmPage(altype t, const QString &d, const QString &zone,
+		     const QDateTime &time)
 {
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("alarm_del"));
 	QWidget *content = new QWidget;
 	buildPage(content, nav_bar);
 
-	type = t;
+	QString descr = d;
+
+	// To simulate old behaviour
+	descr.truncate(MAX_PATH);
+
+	QString hhmm = time.toString("hh:mm");
+	QString ddMM = time.toString("dd.MM");
+
+	descr += QString("\n%1   %2    %3").arg(hhmm).arg(ddMM).arg(zone);
+	descr.truncate(2 * MAX_PATH);
+
 	QString icon_name = bt_global::skin->getImage(alarm_icons[t]);
 
 	QVBoxLayout *l = new QVBoxLayout(content);
@@ -37,7 +50,7 @@ AlarmPage::AlarmPage(const QString &name, altype t)
 	description = new QLabel;
 	description->setFont(bt_global::font->get(FontManager::TEXT));
 	description->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	description->setText(name);
+	description->setText(descr);
 	l->addWidget(description);
 
 	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
@@ -84,9 +97,11 @@ void AlarmPageData::paintEvent(QPaintEvent *e)
 		p.drawText(QRect(w * i, h, w, h), Qt::AlignCenter, values[i]);
 }
 
-AlarmPage::AlarmPage(const QString &name, altype t)
+
+AlarmPage::AlarmPage(altype t, const QString &description, const QString &zone,
+		     const QDateTime &time)
 {
-	QLabel *title = new QLabel(tr("Technical"));
+	QLabel *title = new QLabel(description);
 	title->setAlignment(Qt::AlignHCenter);
 	title->setFont(bt_global::font->get(FontManager::TITLE));
 
@@ -94,7 +109,7 @@ AlarmPage::AlarmPage(const QString &name, altype t)
 	i->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage(alarm_icons[t])));
 
 	QLabel *d = new AlarmPageData(QStringList() << "Hour" << "Date" << "Zone",
-				      QStringList() << "15:47" << "18/01" << "Z 5");
+				      QStringList() << time.toString("hh:mm") << time.toString("dd/MM") << zone);
 
 	BtButton *home = new BtButton;
 	home->setImage(bt_global::skin->getImage("go_home"));

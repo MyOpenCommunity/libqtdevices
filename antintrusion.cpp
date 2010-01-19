@@ -296,20 +296,12 @@ void Antintrusion::addAlarm(QString descr, int t, QString zona)
 
 	QString alarm_description = descr;
 	QString tipo = t == AlarmPage::TECNICO ? "AUX" : "Z";
+	QDateTime now = QDateTime::currentDateTime();
 
-	// To simulate old behaviour
-	descr.truncate(MAX_PATH);
-
-	QString hhmm = QDateTime::currentDateTime().toString("hh:mm");
-	QString ddMM = QDateTime::currentDateTime().toString("dd.MM");
-	QString time = QString("\n%1   %2    %3 %4").arg(hhmm).arg(ddMM).arg(tipo).arg(zona);
-
-	descr += time;
-	descr.truncate(2 * MAX_PATH);
-
-	allarmi.append(new AlarmPage(descr, static_cast<AlarmPage::altype>(t)));
+	allarmi.append(new AlarmPage(static_cast<AlarmPage::altype>(t), alarm_description, tipo + " " + zona, now));
 	// The current alarm is the last alarm inserted
 	curr_alarm = allarmi.size() - 1;
+
 	AlarmPage *curr = allarmi.at(curr_alarm);
 	connect(curr, SIGNAL(Closed()), SLOT(closeAlarms()));
 	connect(curr, SIGNAL(Next()), SLOT(nextAlarm()));
@@ -318,8 +310,7 @@ void Antintrusion::addAlarm(QString descr, int t, QString zona)
 	connect(curr, SIGNAL(showHomePage()), SLOT(showHomePage()));
 	connect(curr, SIGNAL(showAlarmList()), SLOT(showAlarms()));
 
-	alarms->addAlarm(t, alarm_description, tipo + " " + zona,
-			 QDateTime::currentDateTime());
+	alarms->addAlarm(t, alarm_description, tipo + " " + zona, now);
 
 	// if the alarm arrive during the screensaver, we want to turn back to the alarm when the screensaver exit
 	if (bt_global::btmain->screenSaverRunning())
