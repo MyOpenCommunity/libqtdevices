@@ -158,6 +158,7 @@ public:
 
 	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date);
 	void removeAlarm(int index);
+	int alarmCount();
 
 	void drawContent();
 	void prepareLayout();
@@ -181,6 +182,7 @@ public:
 	AlarmList();
 
 	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date);
+	int alarmCount();
 
 	virtual void activateLayout();
 	virtual int sectionId();

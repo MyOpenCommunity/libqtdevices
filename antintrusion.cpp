@@ -42,6 +42,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 
 	alarms = new AlarmList;
 	connect(alarms, SIGNAL(Closed()), SLOT(showPage()));
+	connect(alarms, SIGNAL(Closed()), SLOT(ctrlAllarm()));
 
 #ifdef LAYOUT_BTOUCH
 	// TODO: we introduce a double dependency to customize the image of the forward
@@ -226,8 +227,9 @@ void Antintrusion::testranpo()
 
 void Antintrusion:: ctrlAllarm()
 {
-	qDebug("ctrlAllarm %d", allarmi.size());
-	if (!allarmi.isEmpty())
+	qDebug("ctrlAllarm %d %d", allarmi.size(), alarms->alarmCount());
+	// the first condition is for BTouch, the second for TouchX
+	if (!allarmi.isEmpty() || alarms->alarmCount() != 0)
 		impianto->mostra(banner::BUT1);
 	else
 		impianto->nascondi(banner::BUT1);
@@ -553,6 +555,11 @@ void AlarmItems::drawContent()
 	updateLayout(alarms);
 }
 
+int AlarmItems::alarmCount()
+{
+	return alarms.count();
+}
+
 
 AlarmList::AlarmList()
 {
@@ -601,4 +608,9 @@ void AlarmList::activateLayout()
 void AlarmList::addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date)
 {
 	alarms->addAlarm(type, description, zone, date);
+}
+
+int AlarmList::alarmCount()
+{
+	return alarms->alarmCount();
 }
