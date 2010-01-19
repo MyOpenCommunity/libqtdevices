@@ -403,6 +403,7 @@ void Antintrusion::showAlarms()
 
 void Antintrusion::showAlarms()
 {
+	doClearAlarms();
 	alarms->showPage();
 }
 
