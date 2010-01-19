@@ -30,6 +30,8 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 
+	skin_cid = bt_global::skin->getCidState();
+
 	tasti = NULL;
 	impianto = 0;
 	previous_page = 0;
@@ -39,7 +41,6 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	testoIntrusione = tr("intrusion");
 	testoManom = tr("tamper");
 	testoPanic = tr("anti-panic");
-	trash_icon = bt_global::skin->getImage("alarm_del");
 
 	top_widget = new QWidget;
 
@@ -253,22 +254,16 @@ void Antintrusion::inizializza()
 
 void Antintrusion::manageFrame(OpenMsg &msg)
 {
-	bool aggiorna = false;
-
-
 	if ((!strncmp(msg.Extract_cosa(),"12",2)) || (! strncmp(msg.Extract_cosa(),"15",2)) || \
 		(!strncmp(msg.Extract_cosa(),"16",2)) || (! strncmp(msg.Extract_cosa(),"17",2)))
 	{
 		QString descr;
-		char zona[3];
-		QString tipo = "Z";
 		AlarmPage::altype t;
 
 		if  (!strncmp(msg.Extract_cosa(),"12",2) && !testoTecnico.isNull())
 		{
 			descr = testoTecnico;
 			t = AlarmPage::TECNICO;
-			tipo = "AUX";
 		}
 
 		if  (!strncmp(msg.Extract_cosa(),"15",2) && !testoIntrusione.isNull())
@@ -289,56 +284,54 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 			t = AlarmPage::PANIC;
 		}
 
-		QString alarm_description = descr;
+		QString zona = QString(msg.Extract_dove()).mid(1);
 
-		// To simulate old behaviour
-		descr.truncate(MAX_PATH);
-
-		strcpy(zona,msg.Extract_dove());
-
-		QString hhmm = QDateTime::currentDateTime().toString("hh:mm");
-		QString ddMM = QDateTime::currentDateTime().toString("dd.MM");
-		QString time = QString("\n%1   %2    %3 %4").arg(hhmm).arg(ddMM).arg(tipo).arg(&zona[1]);
-
-		descr += time;
-		descr.truncate(2 * MAX_PATH);
-
-		allarmi.append(new AlarmPage(descr, NULL, trash_icon, t));
-		// The current alarm is the last alarm inserted
-		curr_alarm = allarmi.size() - 1;
-		AlarmPage *curr = allarmi.at(curr_alarm);
-		connect(curr, SIGNAL(Closed()), SLOT(closeAlarms()));
-		connect(curr, SIGNAL(Next()), SLOT(nextAlarm()));
-		connect(curr, SIGNAL(Prev()), SLOT(prevAlarm()));
-		connect(curr, SIGNAL(Delete()), SLOT(deleteAlarm()));
-		aggiorna = true;
-
-		alarms->addAlarm(t, alarm_description, tipo + " " + &zona[1],
-				 QDateTime::currentDateTime());
+		addAlarm(descr, t, zona);
 	}
+}
 
-	if (aggiorna)
+void Antintrusion::addAlarm(QString descr, int t, QString zona)
+{
+	bt_global::skin->setCidState(skin_cid);
+
+	QString alarm_description = descr;
+	QString tipo = t == AlarmPage::TECNICO ? "AUX" : "Z";
+	QDateTime now = QDateTime::currentDateTime();
+
+	allarmi.append(new AlarmPage(static_cast<AlarmPage::altype>(t), alarm_description, tipo + " " + zona, now));
+	// The current alarm is the last alarm inserted
+	curr_alarm = allarmi.size() - 1;
+
+	AlarmPage *curr = allarmi.at(curr_alarm);
+	connect(curr, SIGNAL(Closed()), SLOT(closeAlarms()));
+	connect(curr, SIGNAL(Next()), SLOT(nextAlarm()));
+	connect(curr, SIGNAL(Prev()), SLOT(prevAlarm()));
+	connect(curr, SIGNAL(Delete()), SLOT(deleteAlarm()));
+	connect(curr, SIGNAL(showHomePage()), SLOT(showHomePage()));
+	connect(curr, SIGNAL(showAlarmList()), SLOT(showAlarms()));
+
+	alarms->addAlarm(t, alarm_description, tipo + " " + zona, now);
+
+	// if the alarm arrive during the screensaver, we want to turn back to the alarm when the screensaver exit
+	if (bt_global::btmain->screenSaverRunning())
 	{
-		qDebug("ARRIVATO ALLARME!!!!");
-		Q_ASSERT_X(curr_alarm >= 0 && curr_alarm < allarmi.size(), "Antintrusion::gesFrame",
-			qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(curr_alarm).arg(allarmi.size())));
-		AlarmPage *curr = allarmi.at(curr_alarm);
-
-		// if the alarm arrive during the screensaver, we want to turn back to the alarm when the screensaver exit
-		if (bt_global::btmain->screenSaverRunning())
-		{
-			if (!previous_page)
-				previous_page = bt_global::btmain->getPreviousPage();
-		}
-		else
-		{
-			if (!previous_page)
-				previous_page = currentPage();
-		}
-
-		curr->showPage();
-		ctrlAllarm();
+		if (!previous_page)
+			previous_page = bt_global::btmain->getPreviousPage();
 	}
+	else
+	{
+		if (!previous_page)
+			previous_page = currentPage();
+	}
+
+	curr->showPage();
+	ctrlAllarm();
+}
+
+void Antintrusion::showHomePage()
+{
+	doClearAlarms();
+	bt_global::btmain->showHomePage();
 }
 
 void Antintrusion::closeAlarms()
@@ -412,6 +405,7 @@ void Antintrusion::showAlarms()
 
 void Antintrusion::showAlarms()
 {
+	doClearAlarms();
 	alarms->showPage();
 }
 
@@ -457,14 +451,13 @@ void Antintrusion::requestStatusIfCurrentWidget(Page *curr)
 }
 
 
-// keep the same order as the altype enum in alarmpage.cpp
+// keep the same order as the altype enum in alarmpage.h
 static const char *alarm_icons[] = { "technic_alarm", "intrusion_alarm", "tamper_alarm", "panic_alarm" };
 
 AlarmItems::AlarmItems()
 {
 	for (int i = 0; i < 4; ++i)
 		icons.append(bt_global::skin->getImage(alarm_icons[i]));
-	trash_icon = bt_global::skin->getImage("alarm_del");
 
 	connect(&mapper, SIGNAL(mapped(QWidget *)), SLOT(removeAlarm(QWidget *)));
 }
@@ -491,7 +484,7 @@ void AlarmItems::addAlarm(int type, const QString &description, const QString &z
 
 	// delete button
 	BtButton *trash = new BtButton;
-	trash->setImage(trash_icon);
+	trash->setImage(bt_global::skin->getImage("alarm_del"));
 
 	l->addWidget(icon);
 	l->addWidget(s, 1);
@@ -593,6 +586,11 @@ AlarmList::AlarmList()
 	connect(nav_bar, SIGNAL(upClick()), alarms, SLOT(pgUp()));
 	connect(nav_bar, SIGNAL(downClick()), alarms, SLOT(pgDown()));
 	connect(alarms, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+}
+
+int AlarmList::sectionId()
+{
+	return ANTIINTRUSIONE;
 }
 
 void AlarmList::activateLayout()

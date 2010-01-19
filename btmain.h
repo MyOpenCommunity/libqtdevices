@@ -70,6 +70,7 @@ public:
 	bool screenSaverRunning();
 	void showScreensaverIfNeeded();
 	Window *homeWindow();
+	void showHomePage();
 
 public slots:
 	void startCalib();

@@ -79,6 +79,17 @@ QString SkinManager::getImage(QString name)
 	return QString("");
 }
 
+SkinManager::CidState SkinManager::getCidState()
+{
+	return cid_lookup_list;
+}
+
+void SkinManager::setCidState(const CidState &state)
+{
+	cid_lookup_list = state;
+}
+
+
 SkinContext::SkinContext(int cid)
 {
 	Q_ASSERT_X(bt_global::skin, "SkinContext::SkinContext", "SkinManager not yet built!");

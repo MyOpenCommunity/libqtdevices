@@ -4,6 +4,7 @@
 #include "page.h"
 
 class QLabel;
+class QDateTime;
 
 
 class AlarmPage : public Page
@@ -18,18 +19,19 @@ public:
 		PANIC,
 	} altype;
 
-	AlarmPage(const QString &name, char *indirizzo, QString Icon, altype t);
-
-private:
-	QLabel *image;
-	QLabel *description;
-
-	altype type;
+	AlarmPage(altype t, const QString &description, const QString &zone,
+		  const QDateTime &time);
 
 signals:
 	void Next();
 	void Prev();
 	void Delete();
+	void showHomePage();
+	void showAlarmList();
+
+private:
+	QLabel *image;
+	QLabel *description;
 };
 
 #endif // _ALARM_PAGE_H_

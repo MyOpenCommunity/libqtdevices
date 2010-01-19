@@ -15,7 +15,7 @@
 #include "frame_receiver.h"
 #include "page.h"
 #include "gridcontent.h"
-
+#include "skinmanager.h" // SkinManager::CidState
 
 #include <QString>
 #include <QTimer>
@@ -128,19 +128,21 @@ private:
   \param <testoIntrusione> text for a intrusion alarm  
 */
 	QString testoManom, testoTecnico, testoIntrusione, testoPanic;
-	QString trash_icon;
 	Keypad *tasti;
 	static const int MAX_ZONE = 8;
 	QTimer request_timer;
 	QTimer *t;
 	BtButton *forward_button; // the forward button of the navigation bar
+	SkinManager::CidState skin_cid;
 
 	Page *previous_page;
 	void loadItems(const QDomNode &config_node);
 
 	void clearAlarms();
+	void addAlarm(QString descr, int t, QString zona);
 
 private slots:
+	void showHomePage();
 	void closeAlarms();
 	void requestZoneStatus();
 	void requestStatusIfCurrentWidget(Page *curr);
@@ -166,7 +168,6 @@ private slots:
 private:
 	QList<QWidget*> alarms;
 	QStringList icons;
-	QString trash_icon;
 	QSignalMapper mapper;
 };
 
@@ -182,6 +183,7 @@ public:
 	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date);
 
 	virtual void activateLayout();
+	virtual int sectionId();
 
 private:
 	AlarmItems *alarms;

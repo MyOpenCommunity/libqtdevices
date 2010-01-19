@@ -344,10 +344,21 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 	close(eeprom);
 }
 
+
+// local variable to control an external process
+// TODO: sound playing really should be centralized, since only one process at the time can access /dev/dsp
+// For example, alarm or doorbell sound fails if an mp3 is playing.
+static QProcess play_sound_process;
 void playSound(const QString &wavFile)
 {
 	// needs BT_HARDWARE_TOUCHX
-	QProcess::startDetached("/bin/play",
+	if (play_sound_process.state() != QProcess::NotRunning)
+	{
+		play_sound_process.terminate();
+		play_sound_process.waitForFinished();
+	}
+
+	play_sound_process.start("/bin/play",
 				QStringList() << "-t" << "wav" << "-s" << "w"
 				<< "-c" << "2" << "-f" << "s" << "-r" << "48000"
 				<< "-d" << "/dev/dsp1" << wavFile);
