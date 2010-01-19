@@ -37,7 +37,7 @@ void SectionPage::loadItems(const QDomNode &config_node)
 
 		// Within the pagemenu element, it can exists items that are not a page.
 		if (Page *p = getPage(id))
-			addPage(p, id, QString(), img1, x, y);
+			addPage(p, QString(), img1, x, y);
 #else
 		SkinContext cxt(getTextChild(item, "cid").toInt());
 		QString icon = bt_global::skin->getImage("link_icon");
