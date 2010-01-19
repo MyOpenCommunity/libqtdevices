@@ -28,6 +28,8 @@
 class SkinManager
 {
 public:
+	typedef QList<int> CidState;
+
 	SkinManager(QString filename);
 	QString getStyle();
 
@@ -43,6 +45,10 @@ public:
 	// Return the full image path. The argument name is the same of the tag in
 	// the xml file without the prefix "img_".
 	QString getImage(QString name);
+
+	// save and restore the context state
+	CidState getCidState();
+	void setCidState(const CidState &state);
 
 private:
 	QString style;
