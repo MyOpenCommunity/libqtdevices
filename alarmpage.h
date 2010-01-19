@@ -18,7 +18,7 @@ public:
 		PANIC,
 	} altype;
 
-	AlarmPage(const QString &name, char *indirizzo, QString Icon, altype t);
+	AlarmPage(const QString &name, altype t);
 
 signals:
 	void Next();

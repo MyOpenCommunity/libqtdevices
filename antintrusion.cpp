@@ -30,6 +30,8 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 
+	skin_cid = bt_global::skin->getCidState();
+
 	tasti = NULL;
 	impianto = 0;
 	previous_page = 0;
@@ -39,7 +41,6 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	testoIntrusione = tr("intrusion");
 	testoManom = tr("tamper");
 	testoPanic = tr("anti-panic");
-	trash_icon = bt_global::skin->getImage("alarm_del");
 
 	top_widget = new QWidget;
 
@@ -291,6 +292,8 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 
 void Antintrusion::addAlarm(QString descr, int t, QString zona)
 {
+	bt_global::skin->setCidState(skin_cid);
+
 	QString alarm_description = descr;
 	QString tipo = t == AlarmPage::TECNICO ? "AUX" : "Z";
 
@@ -304,7 +307,7 @@ void Antintrusion::addAlarm(QString descr, int t, QString zona)
 	descr += time;
 	descr.truncate(2 * MAX_PATH);
 
-	allarmi.append(new AlarmPage(descr, NULL, trash_icon, static_cast<AlarmPage::altype>(t)));
+	allarmi.append(new AlarmPage(descr, static_cast<AlarmPage::altype>(t)));
 	// The current alarm is the last alarm inserted
 	curr_alarm = allarmi.size() - 1;
 	AlarmPage *curr = allarmi.at(curr_alarm);
@@ -457,14 +460,13 @@ void Antintrusion::requestStatusIfCurrentWidget(Page *curr)
 }
 
 
-// keep the same order as the altype enum in alarmpage.cpp
+// keep the same order as the altype enum in alarmpage.h
 static const char *alarm_icons[] = { "technic_alarm", "intrusion_alarm", "tamper_alarm", "panic_alarm" };
 
 AlarmItems::AlarmItems()
 {
 	for (int i = 0; i < 4; ++i)
 		icons.append(bt_global::skin->getImage(alarm_icons[i]));
-	trash_icon = bt_global::skin->getImage("alarm_del");
 
 	connect(&mapper, SIGNAL(mapped(QWidget *)), SLOT(removeAlarm(QWidget *)));
 }
@@ -491,7 +493,7 @@ void AlarmItems::addAlarm(int type, const QString &description, const QString &z
 
 	// delete button
 	BtButton *trash = new BtButton;
-	trash->setImage(trash_icon);
+	trash->setImage(bt_global::skin->getImage("alarm_del"));
 
 	l->addWidget(icon);
 	l->addWidget(s, 1);
