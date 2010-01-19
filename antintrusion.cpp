@@ -62,9 +62,6 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	curr_alarm = -1;
 	loadItems(config_node);
 	Q_ASSERT_X(impianto, "Antintrusion::Antintrusion", "Impianto not found on the configuration file!");
-	t = new QTimer(this);
-	t->setSingleShot(true);
-	connect(t, SIGNAL(timeout()), SLOT(ctrlAllarm()));
 	connect(this, SIGNAL(Closed()), SLOT(requestZoneStatus()));
 	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)),
 			SLOT(requestStatusIfCurrentWidget(Page*)));
@@ -220,9 +217,9 @@ void Antintrusion::Parz()
 	request_timer.start(5000);
 }
 
-void Antintrusion::testranpo()
+void Antintrusion::delayCtrlAlarm()
 {
-	t->start(150);
+	QTimer::singleShot(150, this, SLOT(ctrlAllarm()));
 }
 
 void Antintrusion:: ctrlAllarm()
@@ -376,7 +373,7 @@ void Antintrusion::deleteAlarm()
 	{
 		curr_alarm = -1;
 		closeAlarms();
-		testranpo();
+		delayCtrlAlarm();
 		return;
 	}
 	else if (curr_alarm >= allarmi.size())

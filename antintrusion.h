@@ -66,7 +66,7 @@ public slots:
 /*!
   \brief arms a timer and calls ctrlAllarm after 150ms. This is necessary because some time is necessary to destroy the object from the queue
 */
-	void testranpo();
+	void delayCtrlAlarm();
 /*!
   \brief Invoked when next alarm must be displayed
 */
@@ -131,7 +131,6 @@ private:
 	Keypad *tasti;
 	static const int MAX_ZONE = 8;
 	QTimer request_timer;
-	QTimer *t;
 	BtButton *forward_button; // the forward button of the navigation bar
 	SkinManager::CidState skin_cid;
 
