@@ -142,6 +142,7 @@ private:
 	void addAlarm(QString descr, int t, QString zona);
 
 private slots:
+	void showHomePage();
 	void closeAlarms();
 	void requestZoneStatus();
 	void requestStatusIfCurrentWidget(Page *curr);

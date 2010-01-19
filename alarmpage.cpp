@@ -123,6 +123,10 @@ AlarmPage::AlarmPage(const QString &name, char *indirizzo, QString icon, altype 
 	l->addWidget(home, 2, 1);
 	l->addWidget(list, 2, 2);
 	l->addWidget(trash, 2, 3);
+
+	connect(home, SIGNAL(clicked()), SIGNAL(showHomePage()));
+	connect(list, SIGNAL(clicked()), SIGNAL(showAlarmList()));
+	connect(trash, SIGNAL(clicked()), SIGNAL(Delete()));
 }
 
 #endif

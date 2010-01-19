@@ -20,16 +20,18 @@ public:
 
 	AlarmPage(const QString &name, char *indirizzo, QString Icon, altype t);
 
+signals:
+	void Next();
+	void Prev();
+	void Delete();
+	void showHomePage();
+	void showAlarmList();
+
 private:
 	QLabel *image;
 	QLabel *description;
 
 	altype type;
-
-signals:
-	void Next();
-	void Prev();
-	void Delete();
 };
 
 #endif // _ALARM_PAGE_H_

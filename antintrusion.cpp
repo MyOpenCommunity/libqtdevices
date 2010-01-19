@@ -312,6 +312,8 @@ void Antintrusion::addAlarm(QString descr, int t, QString zona)
 	connect(curr, SIGNAL(Next()), SLOT(nextAlarm()));
 	connect(curr, SIGNAL(Prev()), SLOT(prevAlarm()));
 	connect(curr, SIGNAL(Delete()), SLOT(deleteAlarm()));
+	connect(curr, SIGNAL(showHomePage()), SLOT(showHomePage()));
+	connect(curr, SIGNAL(showAlarmList()), SLOT(showAlarms()));
 
 	alarms->addAlarm(t, alarm_description, tipo + " " + zona,
 			 QDateTime::currentDateTime());
@@ -330,6 +332,12 @@ void Antintrusion::addAlarm(QString descr, int t, QString zona)
 
 	curr->showPage();
 	ctrlAllarm();
+}
+
+void Antintrusion::showHomePage()
+{
+	doClearAlarms();
+	bt_global::btmain->showHomePage();
 }
 
 void Antintrusion::closeAlarms()
