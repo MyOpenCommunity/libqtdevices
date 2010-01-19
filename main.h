@@ -461,15 +461,6 @@ enum  bannerType
 	RINGTONE=2060,                                /*!< Ringtone selection banner in touch 10 settings */
 };
 
-/*! \enum pulsType
- * differentiate various type of pulse banner
- */
-enum pulsType
-{
-	AUTOMAZ,                   /*!< driving as a pulse an automation actuator */
-	VCT_SERR,                  /*!< driving as a pulse a video-doorentrysystem actuator configured as "lock" */
-	VCT_LS,                    /*!< driving as a pulse a video-doorentrysystem actuator configured as "stairlight" */
-};
 
 /***************************************************************
  **definizioni di carattere generale

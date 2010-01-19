@@ -21,6 +21,14 @@ class LightingDevice;
 class QDomNode;
 
 
+enum ActuatorType
+{
+	AUTOMAZ,  /*!< driving as a pulse an automation actuator */
+	VCT_SERR, /*!< driving as a pulse a video-doorentrysystem actuator configured as "lock" */
+	VCT_LS,   /*!< driving as a pulse a video-doorentrysystem actuator configured as "stairlight" */
+};
+
+
 class SingleActuator : public BannOnOffState
 {
 Q_OBJECT
