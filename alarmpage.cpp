@@ -4,7 +4,6 @@
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "btbutton.h"
 #include "skinmanager.h"
-#include "main.h" // MAX_PATH
 
 #include <QPixmap>
 #include <QWidget>
@@ -27,15 +26,10 @@ AlarmPage::AlarmPage(altype t, const QString &d, const QString &zone,
 	buildPage(content, nav_bar);
 
 	QString descr = d;
-
-	// To simulate old behaviour
-	descr.truncate(MAX_PATH);
-
 	QString hhmm = time.toString("hh:mm");
 	QString ddMM = time.toString("dd.MM");
 
 	descr += QString("\n%1   %2    %3").arg(hhmm).arg(ddMM).arg(zone);
-	descr.truncate(2 * MAX_PATH);
 
 	QString icon_name = bt_global::skin->getImage(alarm_icons[t]);
 
