@@ -39,6 +39,20 @@
 
 #define CFG_FILE MY_FILE_USER_CFG_DEFAULT
 
+
+// The file name to watch to generate a RED page
+#define FILE_TEST1                 "MODALITA_TEST1"
+
+// The file name to watch to generate a GREEN page
+#define FILE_TEST2                 "MODALITA_TEST2"
+
+// The file name to watch to generate a BLUE page
+#define FILE_TEST3                 "MODALITA_TEST3"
+
+// The file name to watch to generate the \a configuration page
+#define FILE_AGGIORNAMENTO	   "MODALITA_AGGIORNAMENTO"
+
+
 namespace
 {
 	void setConfigValue(QDomNode root, QString path, QString &dest)
