@@ -30,7 +30,6 @@ RingtonesManager::RingtonesManager()
 
 void RingtonesManager::playRingtone(RingtoneType t)
 {
-	// TODO: maybe we will need a stopRingtone too
 	playSound(typeToFilePath(t));
 }
 
