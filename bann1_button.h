@@ -49,7 +49,6 @@ private:
 };
 
 
-// substitute for bannOn2scr
 class BannOn2Labels : public BannerNew
 {
 Q_OBJECT
@@ -87,7 +86,7 @@ protected:
 	BtButton *center_button;
 };
 
-// replacement for bannSimple
+
 class BannSimple : public BannCenteredButton
 {
 Q_OBJECT
@@ -98,13 +97,13 @@ signals:
 	void clicked();
 };
 
+
 /*!
   \class bannPuls
   \brief This is a class that describes a banner with a button on the right, an icon in the center and a text on the bottom
   \author Davide
   \date lug 2005
 */
-
 class bannPuls : public banner
 {
 Q_OBJECT
@@ -116,6 +115,7 @@ signals:
 	void pressed();
 	void released();
 };
+
 
 /*!
   \class bannOnDx
@@ -204,7 +204,7 @@ public:
 	// Return the id of the current state
 	int currentState();
 
-	// Set a different state. The state must be previously added with addBanner().
+	// Set a different state. The state must be previously added with addState().
 	// You can use states given from currentState().
 	void setCurrentState(int new_state);
 
