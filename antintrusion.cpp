@@ -232,11 +232,6 @@ void Antintrusion:: ctrlAllarm()
 		impianto->nascondi(banner::BUT1);
 }
 
-void Antintrusion::draw()
-{
-	ctrlAllarm();
-}
-
 void Antintrusion::inizializza()
 {
 	BannerPage::inizializza();

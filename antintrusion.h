@@ -49,7 +49,6 @@ public:
 	Antintrusion(const QDomNode &config_node);
 	~Antintrusion();
 	virtual void inizializza();
-	void draw();
 	virtual void manageFrame(OpenMsg &msg);
 
 	virtual int sectionId();
