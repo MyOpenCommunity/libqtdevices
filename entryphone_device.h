@@ -37,6 +37,7 @@ public:
 	void answerCall() const;
 	virtual void manageFrame(OpenMsg &msg);
 	void initVctProcess();
+	virtual void init() { initVctProcess(); }
 
 public slots:
 	void endCall();

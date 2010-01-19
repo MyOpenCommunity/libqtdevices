@@ -141,11 +141,6 @@ void VideoControl::cameraOn(QString where)
 	dev->cameraOn(where);
 }
 
-void VideoControl::inizializza()
-{
-	dev->initVctProcess();
-}
-
 
 IntercomCallPage::IntercomCallPage(EntryphoneDevice *d)
 {
