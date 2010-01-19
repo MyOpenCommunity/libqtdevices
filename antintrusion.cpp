@@ -236,8 +236,6 @@ void Antintrusion:: ctrlAllarm()
 void Antintrusion::draw()
 {
 	ctrlAllarm();
-	if (allarmi.isEmpty())
-		return;
 }
 
 void Antintrusion::inizializza()
