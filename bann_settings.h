@@ -223,7 +223,7 @@ class BannRingtone : public Bann2CentralButtons
 {
 Q_OBJECT
 public:
-	BannRingtone(const QString &descr, RingtonesManager::RingtoneType type);
+	BannRingtone(const QString &descr, RingtoneType type);
 
 private:
 	int current_ring;

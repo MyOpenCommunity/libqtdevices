@@ -23,6 +23,8 @@ class VCTCallPage;
 class EntryphoneDevice;
 class EnablingButton;
 class ItemTuning;
+class CallExclusion;
+class CallExclusionPage;
 class QDomNode;
 class QSignalMapper;
 
@@ -48,16 +50,25 @@ public:
 	VideoEntryPhone(const QDomNode &config_node);
 	virtual int sectionId();
 
+private slots:
+	void status_changed(const StatusList &sl);
+
 private:
+	EntryphoneDevice *dev;
+	CallExclusionPage *call_exclusion;
 	void loadItems(const QDomNode &config_node);
 };
 
 
-class CallExclusion : public BannerPage
+class CallExclusionPage : public BannerPage
 {
 Q_OBJECT
 public:
-	CallExclusion(const QDomNode &config_node);
+	CallExclusionPage(const QDomNode &config_node);
+	bool getStatus();
+
+private:
+	CallExclusion *b;
 };
 
 

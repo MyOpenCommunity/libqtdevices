@@ -3,6 +3,7 @@
 
 #include "bann4_buttons.h"
 #include "frame_receiver.h"
+#include "bann2_buttons.h"
 
 #include <QWidget>
 #include <QString>
@@ -161,5 +162,25 @@ private:
 
 };
 
+
+
+/**
+ * The banner for the call exclusion, used to silence the ringtone for an
+ * incoming call (videocall or intercom)
+ */
+class CallExclusion : public BannOnOffState
+{
+Q_OBJECT
+public:
+	CallExclusion();
+	bool getStatus();
+
+private slots:
+	void excludeCallOff();
+	void excludeCallOn();
+
+private:
+	States curr_status;
+};
 
 #endif

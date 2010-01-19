@@ -14,6 +14,7 @@
 #include "items.h" // ItemTuning
 #include "displaycontrol.h" // bt_global::display
 #include "hardware_functions.h" // setVolume
+#include "ringtonesmanager.h" // bt_global::ringtones
 
 #include <QGridLayout>
 #include <QSignalMapper>
@@ -66,6 +67,26 @@ VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 {
 	buildPage(new IconContent, new NavigationBar);
 	loadItems(config_node);
+	dev = bt_global::add_device_to_cache(new EntryphoneDevice(bt_global::config[PI_ADDRESS]));
+	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+}
+
+void VideoEntryPhone::status_changed(const StatusList &sl)
+{
+	StatusList::const_iterator it = sl.constBegin();
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		case EntryphoneDevice::RINGTONE:
+			RingtoneType ringtone = static_cast<RingtoneType>(it.value().toInt());
+			if (!call_exclusion->getStatus())
+				bt_global::ringtones->playRingtone(ringtone);
+
+			break;
+		}
+		++it;
+	}
 }
 
 int VideoEntryPhone::sectionId()
@@ -91,7 +112,8 @@ void VideoEntryPhone::loadItems(const QDomNode &config_node)
 			p = new VideoControl(page_node);
 			break;
 		case CALL_EXCLUSION:
-			p = new CallExclusion(page_node);
+			call_exclusion = new CallExclusionPage(page_node);
+			p = call_exclusion;
 			break;
 		default:
 			qFatal("Unhandled page id in VideoEntryPhone::loadItems");
@@ -108,15 +130,20 @@ void VideoEntryPhone::loadItems(const QDomNode &config_node)
 }
 
 
-CallExclusion::CallExclusion(const QDomNode &config_node)
+CallExclusionPage::CallExclusionPage(const QDomNode &config_node)
 {
 	buildPage();
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	BannOnOffState *b = new BannOnOffState(0);
-	b->initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("call_exclusion"),
-		bt_global::skin->getImage("on"), BannOnOffState::ON, tr("Call exclusion"));
+	b = new CallExclusion;
 	page_content->appendBanner(b);
 }
+
+bool CallExclusionPage::getStatus()
+{
+	return b->getStatus();
+}
+
+
 
 
 VideoControl::VideoControl(const QDomNode &config_node)

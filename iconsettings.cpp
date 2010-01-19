@@ -127,7 +127,7 @@ banner *IconSettings::getBanner(const QDomNode &item_node)
 	{
 	case RINGTONE:
 		// TODO: type should be read from config file
-		b = new BannRingtone(descr, RingtonesManager::RINGTONE_PE1);
+		b = new BannRingtone(descr, RINGTONE_PE1);
 		break;
 	}
 

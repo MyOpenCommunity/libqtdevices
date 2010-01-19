@@ -326,7 +326,7 @@ void impPassword::restoreBeepState()
 
 
 
-BannRingtone::BannRingtone(const QString &descr, RingtonesManager::RingtoneType type) :
+BannRingtone::BannRingtone(const QString &descr, RingtoneType type) :
 	Bann2CentralButtons(0)
 {
 	// TODO: buttons on the banner will be separated because of a setSpacing(5) in Bann2CentralButtons,

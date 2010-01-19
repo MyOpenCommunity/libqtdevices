@@ -5,6 +5,18 @@
 #include <QFileInfo>
 #include <QHash>
 
+
+enum RingtoneType
+{
+	RINGTONE_PE1, // call from external unit with ringtone 1
+	RINGTONE_PE2,
+	RINGTONE_PE3,
+	RINGTONE_PE4,
+	RINGTONE_PI_INTERCOM,
+	RINGTONE_PE_INTERCOM
+};
+
+
 /**
  * Manages ringtones globally.
  *
@@ -14,15 +26,6 @@ class RingtonesManager : public QObject
 {
 Q_OBJECT
 public:
-	enum RingtoneType
-	{
-		RINGTONE_PE1 = 1,    // call from external unit with ringtone 1
-		RINGTONE_PE2,
-		RINGTONE_PE3,
-		RINGTONE_PE4,
-		// TODO: add more ringtones types
-	};
-
 	RingtonesManager();
 
 	/**

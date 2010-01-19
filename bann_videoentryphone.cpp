@@ -6,6 +6,7 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "btbutton.h"
 #include "fontmanager.h" // bt_global::font
+#include "skinmanager.h" // bt_global::skin
 
 #include <QDebug>
 #include <QLabel>
@@ -376,3 +377,32 @@ void call_notifier_manager::frame_captured_handler(call_notifier *cn)
 	cn->showFullScreen();
 	emit frame_captured(cn);
 }
+
+
+CallExclusion::CallExclusion() : BannOnOffState(0)
+{
+	curr_status = OFF;
+	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("call_exclusion"),
+		bt_global::skin->getImage("on"), curr_status, tr("Call exclusion"));
+
+	connect(left_button, SIGNAL(clicked()), SLOT(excludeCallOff()));
+	connect(right_button, SIGNAL(clicked()), SLOT(excludeCallOn()));
+}
+
+void CallExclusion::excludeCallOff()
+{
+	curr_status = OFF;
+	setState(curr_status);
+}
+
+void CallExclusion::excludeCallOn()
+{
+	curr_status = ON;
+	setState(curr_status);
+}
+
+bool CallExclusion::getStatus()
+{
+	return curr_status == ON;
+}
+

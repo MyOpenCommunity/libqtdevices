@@ -131,30 +131,30 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 		{
 		case 1:
 			what = VCT_CALL;
-			ringtone = RingtonesManager::RINGTONE_PE1;
+			ringtone = RINGTONE_PE1;
 			break;
 		case 2:
 			what = VCT_CALL;
-			ringtone = RingtonesManager::RINGTONE_PE2;
+			ringtone = RINGTONE_PE2;
 			break;
 		case 3:
 			what = VCT_CALL;
-			ringtone = RingtonesManager::RINGTONE_PE3;
+			ringtone = RINGTONE_PE3;
 			break;
 		case 4:
 			what = VCT_CALL;
-			ringtone = RingtonesManager::RINGTONE_PE4;
+			ringtone = RINGTONE_PE4;
 			break;
 		case 5:
 			what = VCT_CALL;
 			break;
 		case 6:
 			what = INTERCOM_CALL;
-			ringtone = RingtonesManager::RINGTONE_PE4;
+			ringtone = RINGTONE_PI_INTERCOM;
 			break;
 		case 7:
 			what = INTERCOM_CALL;
-			ringtone = RingtonesManager::RINGTONE_PE4;
+			ringtone = RINGTONE_PE_INTERCOM;
 			break;
 		default:
 			qWarning("Kind not supported by EntryphoneDevice, skin frame");
