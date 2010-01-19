@@ -183,6 +183,7 @@ public:
 	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date);
 
 	virtual void activateLayout();
+	virtual int sectionId();
 
 private:
 	AlarmItems *alarms;

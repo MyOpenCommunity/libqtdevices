@@ -587,6 +587,11 @@ AlarmList::AlarmList()
 	connect(alarms, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 }
 
+int AlarmList::sectionId()
+{
+	return ANTIINTRUSIONE;
+}
+
 void AlarmList::activateLayout()
 {
 	if (page_content)
