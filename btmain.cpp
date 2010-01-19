@@ -297,9 +297,9 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		// TODO read the id from the <homepage> node
 		QDomNode pagemenu_home = getHomepageNode();
 		Home = new HomePage(pagemenu_home);
+#endif
 		connect(window_container->homeWindow(), SIGNAL(showHomePage()), Home, SLOT(showPage()));
 		connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), Home, SLOT(showSectionPage(int)));
-#endif
 
 		QDomNode home_node = getChildWithName(gui_node, "homepage");
 		if (getTextChild(home_node, "isdefined").toInt())
