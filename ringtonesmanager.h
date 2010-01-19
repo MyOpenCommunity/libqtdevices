@@ -34,6 +34,8 @@ public:
 	void playRingtone(RingtoneType t);
 	// play the ringtone set for the given id
 	void playRingtone(int ring);
+	// stops playing a ringtone, if any
+	void stopRingtone();
 
 	/**
 	 * Set a new ringtone for a given ringtone type.
