@@ -145,9 +145,9 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		Window *w = 0;
 
 		QDomNode page_node = getPageNodeFromChildNode(item, "lnk_pageID");
-		int page_id = getTextChild(page_node, "id").toInt();
+		int link_id = getTextChild(item, "id").toInt();
 
-		switch (page_id)
+		switch (link_id)
 		{
 		case PAGE_DATE_TIME:
 			p = new ChangeTime;
