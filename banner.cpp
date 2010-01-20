@@ -698,7 +698,8 @@ QLabel *BannerNew::createTextLabel(Qt::Alignment align, const QFont &font)
 
 void BannerNew::connectButtonToPage(BtButton *b, Page *p)
 {
-	if (p)
+	// check both the page and the button, which can be deleted if there's no icon set (see initButton)
+	if (p && b)
 	{
 		linked_pages.append(p);
 		connect(b, SIGNAL(clicked()), p, SLOT(showPage()));
@@ -718,3 +719,17 @@ void BannerNew::inizializza(bool forza)
 	foreach (Page *p, linked_pages)
 		p->inizializza();
 }
+
+void BannerNew::initButton(BtButton *btn, const QString &icon)
+{
+	if (icon.isEmpty())
+	{
+		Q_ASSERT_X(linked_pages.isEmpty(), "BannerNew::initButton", "Deleting a button with (possibly) linked pages. Maybe you called connectButton() before initBanner()? Aborting.");
+		btn->hide();
+		btn->disconnect();
+		btn->deleteLater();
+	}
+	else
+		btn->setImage(icon);
+}
+

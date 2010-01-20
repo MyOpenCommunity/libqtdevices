@@ -64,8 +64,8 @@ void BannOnOffNew::initBanner(const QString &l, const QString &c, const QString 
 {
 	center = c;
 
-	left_button->setImage(l);
-	right_button->setImage(r);
+	initButton(left_button, l);
+	initButton(right_button, r);
 	center_icon->setBackgroundImage(c);
 	text->setText(banner_text);
 }
@@ -126,18 +126,6 @@ void Bann2Buttons::initBanner(const QString &left, const QString &right, const Q
 	QFont central_font = bt_global::font->get(font_type);
 
 	text->setFont(central_font);
-}
-
-void Bann2Buttons::initButton(BtButton *btn, const QString &icon)
-{
-	if (icon.isEmpty())
-	{
-		btn->hide();
-		btn->disconnect();
-		btn->deleteLater();
-	}
-	else
-		btn->setImage(icon);
 }
 
 void Bann2Buttons::setCentralText(const QString &t)

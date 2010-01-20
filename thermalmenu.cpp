@@ -44,7 +44,7 @@ ThermalMenu::ThermalMenu(const QDomNode &config_node)
 
 	// check if plant menus are created?
 	if (bann_number == 1)
-		connect(single_submenu, SIGNAL(Closed()), SIGNAL(Closed()));
+		connect(single_page, SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
 int ThermalMenu::sectionId()
@@ -57,7 +57,7 @@ void ThermalMenu::createPlantMenu(QDomNode config, BannSinglePuls *bann)
 	Page *sm = new PlantMenu(config);
 	bann->connectRightButton(sm);
 	connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
-	single_submenu = sm;
+	single_page = sm;
 }
 
 #ifdef CONFIG_BTOUCH
@@ -86,7 +86,8 @@ void ThermalMenu::loadBanners(const QDomNode &config_node)
 	if (!air_node.isNull())
 	{
 		b = addMenuItem(air_node.toElement(), bt_global::skin->getImage("air_conditioning"));
-		b->connectRightButton(new AirConditioning(air_node));
+		single_page = new AirConditioning(air_node);
+		b->connectRightButton(single_page);
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 }
@@ -141,7 +142,7 @@ BannSinglePuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon)
 void ThermalMenu::createProbeMenu(QDomNode config, BannSinglePuls *bann, bool external)
 {
 	ProbesPage *sm = new ProbesPage(config, external);
-	single_submenu = sm;
+	single_page = sm;
 
 	bann->connectRightButton(sm);
 	connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
@@ -150,7 +151,7 @@ void ThermalMenu::createProbeMenu(QDomNode config, BannSinglePuls *bann, bool ex
 void ThermalMenu::showPage()
 {
 	if (bann_number == 1)
-		single_submenu->showPage();
+		single_page->showPage();
 	else
 		Page::showPage();
 }

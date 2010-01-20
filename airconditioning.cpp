@@ -44,6 +44,8 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	QString descr = getTextChild(item_node, "descr");
 
+	QList<QDomNode> commands = getChildren(item_node, "cmd");
+
 	banner *b = 0;
 	switch (id)
 	{
@@ -54,9 +56,10 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 		AirConditioningDevice *dev = bt_global::add_device_to_cache(new AirConditioningDevice(where));
 		dev->setOffCommand(off_cmd);
 
-		SingleSplit *bann = new SingleSplit(descr, dev, createProbeDevice(item_node));
+		SingleSplit *bann = new SingleSplit(descr, !commands.isEmpty(), dev, createProbeDevice(item_node));
 		b = bann;
-		bann->connectRightButton(new SplitPage(item_node, dev));
+		if (!commands.isEmpty())
+			bann->connectRightButton(new SplitPage(item_node, dev));
 		device_container.append(dev);
 		break;
 	}
@@ -65,19 +68,20 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 		QString where = getTextChild(item_node, "where");
 		AdvancedAirConditioningDevice *dev = bt_global::add_device_to_cache(new AdvancedAirConditioningDevice(where));
 
-		AdvancedSplitPage *p = new AdvancedSplitPage(item_node, dev);
-		SingleSplit *bann = new AdvancedSingleSplit(descr, p, dev, createProbeDevice(item_node));
+		bool command_is_empty = commands.isEmpty();
+		AdvancedSplitPage *p = command_is_empty ? 0 : new AdvancedSplitPage(item_node, dev);
+		SingleSplit *bann = new AdvancedSingleSplit(descr, !command_is_empty, p, dev, createProbeDevice(item_node));
 		b = bann;
-		bann->connectRightButton(p);
-		// TODO: do we REALLY need this device_container?? maybe it's possible to do without it...
+		if (!command_is_empty)
+			bann->connectRightButton(p);
 		device_container.append(dev);
 		break;
 	}
 	case AIR_GENERAL:
-		b = createGeneralBanner(new GeneralSplitPage(item_node), descr);
+		b = createGeneralBanner(commands.isEmpty() ? 0 : new GeneralSplitPage(item_node), descr);
 		break;
 	case AIR_GENERAL_ADV:
-		b = createGeneralBanner(new AdvancedGeneralSplitPage(item_node), descr);
+		b = createGeneralBanner(commands.isEmpty() ? 0 : new AdvancedGeneralSplitPage(item_node), descr);
 		break;
 	}
 
@@ -98,9 +102,10 @@ NonControlledProbeDevice *AirConditioning::createProbeDevice(const QDomNode &ite
 
 GeneralSplit *AirConditioning::createGeneralBanner(Page *gen_split_page, const QString &descr)
 {
-	GeneralSplit *bann = new GeneralSplit(descr);
+	GeneralSplit *bann = new GeneralSplit(descr, gen_split_page != 0);
 	QObject::connect(bann, SIGNAL(sendGeneralOff()), &device_container, SLOT(sendGeneralOff()));
-	bann->connectRightButton(gen_split_page);
+	if (gen_split_page)
+		bann->connectRightButton(gen_split_page);
 	return bann;
 }
 

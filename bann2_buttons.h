@@ -102,7 +102,6 @@ protected:
 	void setCentralText(const QString &t);
 
 private:
-	void initButton(BtButton *btn, const QString &icon);
 	QLabel *text;
 };
 
