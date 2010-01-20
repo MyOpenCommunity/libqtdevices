@@ -62,7 +62,7 @@ class GeneralSplit : public BannOnOffNew
 {
 Q_OBJECT
 public:
-	GeneralSplit(QString descr);
+	GeneralSplit(QString descr, bool show_right_button);
 
 signals:
 	void sendGeneralOff();
