@@ -20,6 +20,8 @@ private slots:
 	void receiveGateway();
 	void receiveDns1();
 	void receiveDns2();
+	void receiveFirmwareVersion();
+	void receiveKernelVersion();
 
 	void sendSetDate();
 	void sendSetTime();

@@ -75,3 +75,16 @@ void TestPlatformDevice::sendSetTime()
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*#13**#0*13*12*11**##"));
 }
+
+void TestPlatformDevice::receiveFirmwareVersion()
+{
+	DeviceTester t(dev, PlatformDevice::DIM_FW_VERS);
+	QString frame = "*#13**16*1*1*26##";
+	t.check(frame, "1.1.26");
+}
+
+void TestPlatformDevice::receiveKernelVersion()
+{
+	DeviceTester t(dev, PlatformDevice::DIM_KERN_VERS);
+	t.check("*#13**23*2*3*3##", "2.3.3");
+}
