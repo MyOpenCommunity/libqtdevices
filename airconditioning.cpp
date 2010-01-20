@@ -61,9 +61,10 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 		AirConditioningDevice *dev = bt_global::add_device_to_cache(new AirConditioningDevice(where));
 		dev->setOffCommand(off_cmd);
 
-		SingleSplit *bann = new SingleSplit(descr, dev, createProbeDevice(item_node));
+		SingleSplit *bann = new SingleSplit(descr, !commands.isEmpty(), dev, createProbeDevice(item_node));
 		b = bann;
-		bann->connectRightButton(new SplitPage(item_node, dev));
+		if (!commands.isEmpty())
+			bann->connectRightButton(new SplitPage(item_node, dev));
 		device_container.append(dev);
 		break;
 	}
@@ -72,11 +73,12 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 		QString where = getTextChild(item_node, "where");
 		AdvancedAirConditioningDevice *dev = bt_global::add_device_to_cache(new AdvancedAirConditioningDevice(where));
 
-		AdvancedSplitPage *p = new AdvancedSplitPage(item_node, dev);
-		SingleSplit *bann = new AdvancedSingleSplit(descr, p, dev, createProbeDevice(item_node));
+		bool command_is_empty = commands.isEmpty();
+		AdvancedSplitPage *p = command_is_empty ? 0 : new AdvancedSplitPage(item_node, dev);
+		SingleSplit *bann = new AdvancedSingleSplit(descr, !command_is_empty, p, dev, createProbeDevice(item_node));
 		b = bann;
-		bann->connectRightButton(p);
-		// TODO: do we REALLY need this device_container?? maybe it's possible to do without it...
+		if (!command_is_empty)
+			bann->connectRightButton(p);
 		device_container.append(dev);
 		break;
 	}
