@@ -77,6 +77,16 @@ void PlatformDevice::requestDNS2() const
 	sendRequest(QString::number(DIM_DNS2));
 }
 
+void PlatformDevice::requestKernelVersion() const
+{
+	sendRequest(QString::number(DIM_KERN_VERS));
+}
+
+void PlatformDevice::requestFirmwareVersion() const
+{
+	sendRequest(QString::number(DIM_FW_VERS));
+}
+
 void PlatformDevice::manageFrame(OpenMsg &msg)
 {
 
@@ -88,7 +98,7 @@ void PlatformDevice::manageFrame(OpenMsg &msg)
 
 	if (what == DIM_MACADDR || what == DIM_IP || what == DIM_NETMASK ||
 		what == DIM_GATEWAY || what == DIM_DNS1 || what == DIM_DNS2 ||
-		what == DIM_STATUS)
+		what == DIM_STATUS || what == DIM_KERN_VERS || what == DIM_FW_VERS)
 	{
 		qDebug("PlatformDevice::manageFrame -> frame read:%s", msg.frame_open);
 
@@ -108,6 +118,12 @@ void PlatformDevice::manageFrame(OpenMsg &msg)
 			v.setValue(parts.join(":"));
 			break;
 		}
+		case DIM_KERN_VERS:
+			v.setValue(extractVersionValues(msg));
+			break;
+		case DIM_FW_VERS:
+			v.setValue(extractVersionValues(msg));
+			break;
 		default:
 		{
 			Q_ASSERT(what_args == 4); // IPv4 ip are composed by 4 parts
@@ -122,4 +138,15 @@ void PlatformDevice::manageFrame(OpenMsg &msg)
 		status_list[what] = v;
 		emit status_changed(status_list);
 	}
+}
+
+QString PlatformDevice::extractVersionValues(OpenMsg &msg)
+{
+	Q_ASSERT_X(msg.whatArgCnt() == 3, "PlatformDevice::extractVersionValues", "Open message invalid, must have 3 values.");
+	QString str;
+	// don't remove the following check, in production we won't have the assert above and don't rely on
+	// frames to be always well formed
+	if (msg.whatArgCnt() == 3)
+		str = QString("%1.%2.%3").arg(msg.whatArgN(0)).arg(msg.whatArgN(1)).arg(msg.whatArgN(2));
+	return str;
 }
