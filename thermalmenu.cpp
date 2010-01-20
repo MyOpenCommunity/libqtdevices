@@ -120,7 +120,7 @@ void ThermalMenu::loadBanners(const QDomNode &config_node)
 		default:
 			qFatal("Unhandled id in ThermalMenu::loadBanners");
 		}
-		single_submenu = p;
+		single_page = p;
 
 		bp->connectRightButton(p);
 		connect(bp, SIGNAL(pageClosed()), SLOT(showPage()));
