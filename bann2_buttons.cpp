@@ -64,8 +64,8 @@ void BannOnOffNew::initBanner(const QString &l, const QString &c, const QString 
 {
 	center = c;
 
-	left_button->setImage(l);
-	right_button->setImage(r);
+	initButton(left_button, l);
+	initButton(right_button, r);
 	center_icon->setBackgroundImage(c);
 	text->setText(banner_text);
 }
