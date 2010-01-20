@@ -721,3 +721,15 @@ void BannerNew::hideEvent(QHideEvent *event)
 			p->hide();
 }
 
+void BannerNew::initButton(BtButton *btn, const QString &icon)
+{
+	if (icon.isEmpty())
+	{
+		btn->hide();
+		btn->disconnect();
+		btn->deleteLater();
+	}
+	else
+		btn->setImage(icon);
+}
+

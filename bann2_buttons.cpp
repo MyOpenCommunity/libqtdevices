@@ -128,18 +128,6 @@ void Bann2Buttons::initBanner(const QString &left, const QString &right, const Q
 	text->setFont(central_font);
 }
 
-void Bann2Buttons::initButton(BtButton *btn, const QString &icon)
-{
-	if (icon.isEmpty())
-	{
-		btn->hide();
-		btn->disconnect();
-		btn->deleteLater();
-	}
-	else
-		btn->setImage(icon);
-}
-
 void Bann2Buttons::setCentralText(const QString &t)
 {
 	text->setText(t);
