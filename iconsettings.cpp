@@ -15,6 +15,7 @@
 #include "lansettings.h" // LanSettings
 #include "banner.h"
 #include "bann_settings.h" // impPassword
+#include "items.h" // ItemTuning
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -109,6 +110,23 @@ void RingtonesPage::stopRingtones()
 }
 
 
+VolumePage::VolumePage(const QDomNode &config_node)
+{
+	// TODO: is this text ok for the banner? Should it be read from conf?
+	ItemTuning *volume = new ItemTuning(tr("Volume"), bt_global::skin->getImage("volume"));
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	buildPage(volume, nav_bar, getTextChild(config_node, "descr"));
+}
+
+void VolumePage::changeVolume(int new_vol)
+{
+	setVolume(VOLUME_RING, new_vol);
+	bt_global::ringtones->playRingtone(RINGTONE_PE1);
+}
+
+
 
 
 IconSettings::IconSettings(const QDomNode &config_node)
@@ -187,6 +205,9 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			break;
 		case PAGE_RINGTONES:
 			p = new RingtonesPage(page_node);
+			break;
+		case PAGE_VOLUME:
+			p = new VolumePage(item);
 			break;
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");

@@ -45,6 +45,19 @@ private slots:
 };
 
 
+
+class VolumePage : public Page
+{
+Q_OBJECT
+public:
+	VolumePage(const QDomNode &config_node);
+
+public slots:
+	void changeVolume(int new_vol);
+};
+
+
+
 // button to toggle on/off the beep sound
 class ToggleBeep : public QWidget
 {
