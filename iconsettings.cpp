@@ -12,10 +12,12 @@
 #include "hardware_functions.h" // setBeep/getBeep/beep
 #include "bannerfactory.h"
 #include "bannercontent.h"
-#include "lansettings.h" // LanSettings
+#include "lansettings.h" // LanSettings, Text2Column
 #include "banner.h"
 #include "bann_settings.h" // impPassword
 #include "items.h" // ItemTuning
+#include "devices_cache.h" // bt_global::add_device_to_cache
+#include "platform_device.h" // PlatformDevice
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -127,6 +129,60 @@ void VolumePage::changeVolume(int new_vol)
 }
 
 
+VersionPage::VersionPage(const QDomNode &config_node)
+{
+	dev = bt_global::add_device_to_cache(new PlatformDevice);
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+	dev->requestFirmwareVersion();
+	dev->requestKernelVersion();
+	dev->requestIp();
+	dev->requestNetmask();
+
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+
+	text_area = new Text2Column;
+	text_area->addRow(tr("Model"), bt_global::config[MODEL]);
+	text_area->addRow(tr("Firmware version"), "");
+	text_area->addRow(tr("Kernel version"), "");
+	text_area->addRow(tr("IP address"), "");
+	text_area->addRow(tr("Netmask"), "");
+
+	buildPage(text_area, nav_bar, getTextChild(config_node, "descr"));
+}
+
+void VersionPage::status_changed(const StatusList &sl)
+{
+	const int FW_ROW = 2;
+	const int KERN_ROW = 3;
+	const int IP_ROW = 4;
+	const int NETMASK_ROW = 5;
+
+	StatusList::const_iterator it = sl.constBegin();
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		case PlatformDevice::DIM_KERN_VERS:
+			text_area->setText(KERN_ROW, it.value().toString());
+			qDebug() << "LUCA Kernel version: " << it.value().toString();
+			break;
+		case PlatformDevice::DIM_FW_VERS:
+			text_area->setText(FW_ROW, it.value().toString());
+			qDebug() << "LUCA Firmware version: " << it.value().toString();
+			break;
+		case PlatformDevice::DIM_IP:
+			text_area->setText(IP_ROW, it.value().toString());
+			break;
+		case PlatformDevice::DIM_NETMASK:
+			text_area->setText(NETMASK_ROW, it.value().toString());
+			break;
+		}
+
+		++it;
+	}
+}
 
 
 IconSettings::IconSettings(const QDomNode &config_node)
@@ -208,6 +264,9 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			break;
 		case PAGE_VOLUME:
 			p = new VolumePage(item);
+			break;
+		case PAGE_VERSION:
+			p = new VersionPage(item);
 			break;
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");

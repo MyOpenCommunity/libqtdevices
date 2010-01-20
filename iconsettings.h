@@ -8,6 +8,8 @@
 class QDomNode;
 class BtButton;
 class banner;
+class PlatformDevice;
+class Text2Column;
 
 
 class IconSettings : public IconPage
@@ -54,6 +56,21 @@ public:
 
 public slots:
 	void changeVolume(int new_vol);
+};
+
+
+class VersionPage : public Page
+{
+Q_OBJECT
+public:
+	VersionPage(const QDomNode &config_node);
+
+private:
+	Text2Column *text_area;
+	PlatformDevice *dev;
+
+private slots:
+	void status_changed(const StatusList &sl);
 };
 
 
