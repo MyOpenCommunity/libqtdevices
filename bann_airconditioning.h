@@ -24,7 +24,7 @@ class SingleSplit : public BannOnOffNew
 {
 Q_OBJECT
 public:
-	SingleSplit(QString descr, AirConditioningInterface *d, NonControlledProbeDevice *d_probe=0);
+	SingleSplit(QString descr, bool show_right_button, AirConditioningInterface *d, NonControlledProbeDevice *d_probe=0);
 	virtual void inizializza(bool forza=false);
 
 private:
@@ -47,7 +47,7 @@ class AdvancedSingleSplit : public SingleSplit
 {
 Q_OBJECT
 public:
-	AdvancedSingleSplit(QString descr, AdvancedSplitPage *p, AirConditioningInterface *d, NonControlledProbeDevice *probe = 0);
+	AdvancedSingleSplit(QString descr, bool show_right_button, AdvancedSplitPage *p, AirConditioningInterface *d, NonControlledProbeDevice *probe = 0);
 	virtual void setSerNum(int ser);
 
 private:

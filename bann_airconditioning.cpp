@@ -12,7 +12,7 @@
 #include <QDebug>
 #include <cmath> // round
 
-SingleSplit::SingleSplit(QString descr, AirConditioningInterface *d, NonControlledProbeDevice *d_probe) :
+SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningInterface *d, NonControlledProbeDevice *d_probe) :
 	BannOnOffNew(0)
 {
 	QString img_off = bt_global::skin->getImage("off");
@@ -31,7 +31,7 @@ SingleSplit::SingleSplit(QString descr, AirConditioningInterface *d, NonControll
 				SLOT(status_changed(const StatusList &)));
 	}
 
-	initBanner(img_off, bt_global::skin->getImage(air_single), img_forward, descr);
+	initBanner(img_off, bt_global::skin->getImage(air_single), show_right_button ? img_forward : QString(), descr);
 	connect(left_button, SIGNAL(clicked()), SLOT(setDeviceOff()));
 }
 
@@ -60,8 +60,8 @@ void SingleSplit::setDeviceOff()
 }
 
 
-AdvancedSingleSplit::AdvancedSingleSplit(QString descr, AdvancedSplitPage *p, AirConditioningInterface *d, NonControlledProbeDevice *probe) :
-	SingleSplit(descr, d, probe)
+AdvancedSingleSplit::AdvancedSingleSplit(QString descr, bool show_right_button, AdvancedSplitPage *p, AirConditioningInterface *d, NonControlledProbeDevice *probe) :
+	SingleSplit(descr, show_right_button, d, probe)
 {
 	page = p;
 }
@@ -69,7 +69,8 @@ AdvancedSingleSplit::AdvancedSingleSplit(QString descr, AdvancedSplitPage *p, Ai
 void AdvancedSingleSplit::setSerNum(int ser)
 {
 	banner::setSerNum(ser);
-	page->setSerialNumber(ser);
+	if (page)
+		page->setSerialNumber(ser);
 }
 
 
