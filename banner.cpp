@@ -706,7 +706,8 @@ QLabel *BannerNew::createTextLabel(Qt::Alignment align, const QFont &font)
 
 void BannerNew::connectButtonToPage(BtButton *b, Page *p)
 {
-	if (p)
+	// check both the page and the button, which can be deleted if there's no icon set (see initButton)
+	if (p && b)
 	{
 		linked_pages.append(p);
 		connect(b, SIGNAL(clicked()), p, SLOT(showPage()));
