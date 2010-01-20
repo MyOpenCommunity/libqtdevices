@@ -726,6 +726,7 @@ void BannerNew::initButton(BtButton *btn, const QString &icon)
 {
 	if (icon.isEmpty())
 	{
+		Q_ASSERT_X(linked_pages.isEmpty(), "BannerNew::initButton", "Deleting a button with (possibly) linked pages. Maybe you called connectButton() before initBanner()? Aborting.");
 		btn->hide();
 		btn->disconnect();
 		btn->deleteLater();
