@@ -49,6 +49,8 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	QString descr = getTextChild(item_node, "descr");
 
+	QList<QDomNode> commands = getChildren(item_node, "cmd");
+
 	banner *b = 0;
 	switch (id)
 	{
@@ -79,10 +81,10 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 		break;
 	}
 	case AIR_GENERAL:
-		b = createGeneralBanner(new GeneralSplitPage(item_node), descr);
+		b = createGeneralBanner(commands.isEmpty() ? 0 : new GeneralSplitPage(item_node), descr);
 		break;
 	case AIR_GENERAL_ADV:
-		b = createGeneralBanner(new AdvancedGeneralSplitPage(item_node), descr);
+		b = createGeneralBanner(commands.isEmpty() ? 0 : new AdvancedGeneralSplitPage(item_node), descr);
 		break;
 	}
 
@@ -103,9 +105,10 @@ NonControlledProbeDevice *AirConditioning::createProbeDevice(const QDomNode &ite
 
 GeneralSplit *AirConditioning::createGeneralBanner(Page *gen_split_page, const QString &descr)
 {
-	GeneralSplit *bann = new GeneralSplit(descr);
+	GeneralSplit *bann = new GeneralSplit(descr, gen_split_page != 0);
 	QObject::connect(bann, SIGNAL(sendGeneralOff()), &device_container, SLOT(sendGeneralOff()));
-	bann->connectRightButton(gen_split_page);
+	if (gen_split_page)
+		bann->connectRightButton(gen_split_page);
 	return bann;
 }
 
