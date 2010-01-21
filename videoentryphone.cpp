@@ -65,7 +65,7 @@ void VideoEntryPhone::loadDevices(const QDomNode &config_node)
 #else
 VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 {
-	buildPage(new IconContent, new NavigationBar);
+	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 	loadItems(config_node);
 	dev = bt_global::add_device_to_cache(new EntryphoneDevice(bt_global::config[PI_ADDRESS]));
 	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
@@ -132,7 +132,7 @@ void VideoEntryPhone::loadItems(const QDomNode &config_node)
 
 CallExclusionPage::CallExclusionPage(const QDomNode &config_node)
 {
-	buildPage();
+	buildPage(getTextChild(config_node, "descr"));
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	b = new CallExclusion;
 	page_content->appendBanner(b);
@@ -154,7 +154,7 @@ VideoControl::VideoControl(const QDomNode &config_node)
 	mapper = new QSignalMapper(this);
 	connect(mapper, SIGNAL(mapped(QString)), SLOT(cameraOn(QString)));
 
-	buildPage(new IconContent, new NavigationBar);
+	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 	call_page = new VCTCallPage(dev);
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
@@ -323,7 +323,7 @@ Intercom::Intercom(const QDomNode &config_node)
 	IntercomCallPage *call_page = new IntercomCallPage(dev);
 	connect(call_page, SIGNAL(Closed()), SLOT(showPage()));
 
-	buildPage(new IconContent, new NavigationBar);
+	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		SkinContext ctx(getTextChild(item, "cid").toInt());
