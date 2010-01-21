@@ -2,6 +2,7 @@
 #define ICON_SETTINGS_H
 
 #include "iconpage.h"
+#include "datetime.h" // PageSetDateTime
 
 #include <QWidget>
 
@@ -71,6 +72,20 @@ private:
 
 private slots:
 	void status_changed(const StatusList &sl);
+};
+
+
+class ChangeDateTime : public PageSetDateTime
+{
+Q_OBJECT
+public:
+	ChangeDateTime(const QString &ok_button_icon);
+
+private:
+	PlatformDevice *dev;
+
+private slots:
+	void dateTimeChanged(QDate date, BtTime time);
 };
 
 

@@ -1,5 +1,4 @@
 #include "iconsettings.h"
-#include "changedatetime.h"
 #include "navigation_bar.h"
 #include "xml_functions.h"
 #include "skinmanager.h"
@@ -185,6 +184,23 @@ void VersionPage::status_changed(const StatusList &sl)
 }
 
 
+ChangeDateTime::ChangeDateTime(const QString &ok_button_icon) :
+	PageSetDateTime(ok_button_icon)
+{
+	connect(this, SIGNAL(dateTimeSelected(QDate,BtTime)), SLOT(dateTimeChanged(QDate, BtTime)));
+	connect(this, SIGNAL(dateTimeSelected(QDate,BtTime)), SIGNAL(Closed()));
+	dev = bt_global::add_device_to_cache(new PlatformDevice);
+}
+
+void ChangeDateTime::dateTimeChanged(QDate date, BtTime time)
+{
+	dev->setTime(time);
+	dev->setDate(date);
+}
+
+
+
+
 IconSettings::IconSettings(const QDomNode &config_node)
 {
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
@@ -229,7 +245,11 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		switch (link_id)
 		{
 		case PAGE_DATE_TIME:
-			p = new ChangeTime;
+		{
+			ChangeDateTime *page = new ChangeDateTime(bt_global::skin->getImage("ok"));
+			page->setTitle(descr);
+			p = page;
+		}
 			break;
 		case PAGE_ALARMCLOCK:
 			p = new ListPage(page_node);
