@@ -15,6 +15,7 @@
 #include <QDebug>
 #include <QPaintEvent>
 #include <qmath.h>
+#include <QDir>
 
 #include <stdlib.h> // RAND_MAX
 #define BALL_NUM 5
@@ -42,6 +43,8 @@ ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 		return new ScreenSaverTime;
 	case ScreenSaver::TEXT:
 		return new ScreenSaverText;
+	case ScreenSaver::SLIDESHOW:
+		return new ScreenSaverSlideshow;
 	case ScreenSaver::DEFORM:
 		return new ScreenSaverDeform;
 	case ScreenSaver::NONE:
@@ -282,6 +285,49 @@ void ScreenSaverText::customizeLine()
 	line->setFont(bt_global::font->get(FontManager::TEXT));
 	line->setAlignment(Qt::AlignCenter);
 	line->setText(text);
+}
+
+
+ScreenSaverSlideshow::ScreenSaverSlideshow() : ScreenSaver(10000)
+{
+	QDir image_dir("cfg/slideshow");
+	QStringList name_filter;
+	name_filter << "*.[Jj][Pp][Gg]" << "*.[Pp][Nn][Gg]";
+
+	QFileInfoList fl = image_dir.entryInfoList(name_filter);
+	foreach (const QFileInfo &fi, fl)
+		images << fi.absoluteFilePath();
+
+	if (images.isEmpty())
+		qWarning() << "Slideshow directory empty or no usable file";
+	image_on_screen = new QLabel(this);
+	image_on_screen->setGeometry(0, 0, width(), height());
+	current_image = 0;
+}
+
+void ScreenSaverSlideshow::start(Window *w)
+{
+	ScreenSaver::start(w);
+	showWindow();
+	refresh();
+	// TODO: add code here
+}
+
+void ScreenSaverSlideshow::stop()
+{
+	// TODO: add code here
+	ScreenSaver::stop();
+}
+
+void ScreenSaverSlideshow::refresh()
+{
+	if (!images.isEmpty())
+	{
+		current_image = (current_image + 1) % images.size();
+		QPixmap p(images[current_image]);
+		image_on_screen->setPixmap(p);
+		image_on_screen->show();
+	}
 }
 
 

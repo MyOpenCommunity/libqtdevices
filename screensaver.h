@@ -44,6 +44,7 @@ public:
 		TIME,       // a single line with a clock inside
 		TEXT,       // a line with a text
 		DEFORM,     // the deformer
+		SLIDESHOW,  // image slideshow
 	};
 
 	virtual void start(Window *w);
@@ -154,6 +155,28 @@ public:
 	virtual Type type() { return TEXT; }
 protected:
 	virtual void customizeLine();
+};
+
+
+class ScreenSaverSlideshow : public ScreenSaver
+{
+Q_OBJECT
+public:
+	ScreenSaverSlideshow();
+	virtual void start(Window *w);
+	virtual void stop();
+	virtual Type type() { return SLIDESHOW; }
+
+protected slots:
+	virtual void refresh();
+
+private:
+	// index for images list
+	int current_image;
+	// shows the image on the window
+	QLabel *image_on_screen;
+	// must contain file paths
+	QStringList images;
 };
 
 
