@@ -364,13 +364,13 @@ void BtDateEdit::decYear()
 
 
 
-PageSetDateTime::PageSetDateTime()
+PageSetDateTime::PageSetDateTime(const QString &extra_button_icon)
 	: title_widget("Change title dynamically", TITLE_HEIGHT)
 {
 	content.setLayout(&main_layout);
 
 	BtButton *program = new BtButton(this);
-	program->setImage(bt_global::skin->getImage("settings"));
+	program->setImage(extra_button_icon);
 
 	date_edit = new BtDateEdit(this);
 	time_edit = new BtTimeEdit(this);

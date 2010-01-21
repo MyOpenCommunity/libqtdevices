@@ -120,7 +120,7 @@ class PageSetDateTime : public Page
 {
 Q_OBJECT
 public:
-	PageSetDateTime();
+	PageSetDateTime(const QString &extra_button_icon);
 
 	QDate date();
 	BtTime time();
