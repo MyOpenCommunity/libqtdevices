@@ -14,9 +14,11 @@
 #define DATETIME_H
 
 #include "bttime.h"
+#include "page.h"
 
 #include <QWidget>
 #include <QDateTime>
+#include <QHBoxLayout>
 
 class QLabel;
 class QLCDNumber;
@@ -111,6 +113,32 @@ private slots:
 	void decDay();
 	void decMonth();
 	void decYear();
+};
+
+
+class PageSetDateTime : public Page
+{
+Q_OBJECT
+public:
+	PageSetDateTime();
+
+	QDate date();
+	BtTime time();
+	void setTitle(QString title);
+
+signals:
+	void dateTimeSelected(QDate, BtTime);
+
+private slots:
+	void performAction();
+
+private:
+	PageTitleWidget title_widget;
+	QWidget content;
+	QVBoxLayout main_layout;
+	QHBoxLayout top_layout;
+	BtDateEdit *date_edit;
+	BtTimeEdit *time_edit;
 };
 #endif // DATETIME_H
 

@@ -13,6 +13,7 @@
 #include "main.h" // bt_global::config
 #include "fontmanager.h"
 #include "skinmanager.h"
+#include "navigation_bar.h" // NavigationBar
 
 #include <QLayout>
 #include <QLabel>
@@ -360,3 +361,54 @@ void BtDateEdit::decYear()
 	if (_allow_past_dates || _date.addYears(-1) >= QDate::currentDate())
 		setDate(_date.addYears(-1));
 }
+
+
+
+PageSetDateTime::PageSetDateTime()
+	: title_widget("Change title dynamically", TITLE_HEIGHT)
+{
+	content.setLayout(&main_layout);
+
+	BtButton *program = new BtButton(this);
+	program->setImage(bt_global::skin->getImage("settings"));
+
+	date_edit = new BtDateEdit(this);
+	time_edit = new BtTimeEdit(this);
+
+	top_layout.addWidget(date_edit);
+	top_layout.addStretch(1);
+	top_layout.addWidget(time_edit);
+	top_layout.setSpacing(20);
+
+	main_layout.addLayout(&top_layout);
+	main_layout.addWidget(program, 1, Qt::AlignRight|Qt::AlignVCenter);
+	main_layout.setContentsMargins(40, 0, 40, 0);
+
+	NavigationBar *nav = new NavigationBar;
+	nav->displayScrollButtons(false);
+	buildPage(&content, nav, NULL, &title_widget);
+
+	connect(program, SIGNAL(clicked()), SLOT(performAction()));
+	connect(nav, SIGNAL(backClick()), SIGNAL(Closed()));
+}
+
+QDate PageSetDateTime::date()
+{
+	return date_edit->date();
+}
+
+BtTime PageSetDateTime::time()
+{
+	return time_edit->time();
+}
+
+void PageSetDateTime::setTitle(QString title)
+{
+	title_widget.setTitle(title);
+}
+
+void PageSetDateTime::performAction()
+{
+	emit dateTimeSelected(date(), time());
+}
+
