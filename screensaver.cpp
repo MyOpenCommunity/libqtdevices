@@ -324,7 +324,9 @@ void ScreenSaverSlideshow::refresh()
 	if (!images.isEmpty())
 	{
 		current_image = (current_image + 1) % images.size();
-		QPixmap p(images[current_image]);
+		QImage im(images[current_image]);
+		QPixmap p = QPixmap::fromImage(im.scaled(this->size(), Qt::KeepAspectRatio));
+		qDebug() << "Showing image: " << images[current_image];
 		image_on_screen->setPixmap(p);
 		image_on_screen->show();
 	}
