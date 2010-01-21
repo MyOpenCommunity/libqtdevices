@@ -45,6 +45,12 @@ protected:
  * - one to set text on each label that has text;
  * - one function to change state: icon changes are managed by logic banners only through
  * this function.
+ *
+ * The function that initializes the graphical banner is conventionally called initBanner(); it
+ * sets icons and text on the banner. We need a separate function from constructor since some information
+ * needed to initialize the graphic banner may not be ready when the banner is constructed.
+ * TODO: maybe we could use initialization lists?
+ *
  * These are only guidelines, each graphics banner can declare its own interface (for example
  * to set the volume level or dimmer level). However you are invited to make the interface
  * similar to this one to maintain a standard coding style.
@@ -89,7 +95,8 @@ public:
 
 /**
  * Two buttons on the sides + description in the center.
- * Either button can be removed by giving an empty string as the icon parameter to initBanner()
+ * Either button can be removed by giving an empty string as the icon parameter to initBanner(). Each button
+ * can also be linked to a page.
  * Nicer replacement for bann2but, will replace also bannOnDx, bannOnSx
  */
 class Bann2Buttons : public Bann2LinkedPages
