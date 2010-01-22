@@ -120,6 +120,7 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 	createImpianto("");
 #endif
 
+	int zone_count = 0;
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
@@ -134,6 +135,7 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 #endif
 		if (id == ZONANTINTRUS)
 		{
+			zones[zone_count] = descr;
 			b = new AntintrusionZone(descr, getTextChild(item, "where"));
 #if 0
 			b = new zonaAnti(this, descr, getTextChild(item, "where"),
@@ -152,6 +154,8 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 			// We assume that the antintrusion impianto came before all the zones
 			Q_ASSERT_X(impianto, "Antintrusion::loadItems", "Found a zone before the impianto!");
 			impianto->setZona((AntintrusionZone *)b);
+
+			++zone_count;
 		}
 		else
 			Q_ASSERT_X(false, "Antintrusion::loadItems", qPrintable(QString("Type of item %1 not handled!").arg(id)));
@@ -259,21 +263,26 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 		else if (what == 17)
 			t = AlarmPage::PANIC;
 
-		QString zona = QString(msg.Extract_dove()).mid(1);
+		int zona = QString(msg.Extract_dove()).mid(1).toInt();
 
 		addAlarm(alarmTexts[t], t, zona);
 	}
 }
 
-void Antintrusion::addAlarm(QString descr, int t, QString zona)
+void Antintrusion::addAlarm(QString descr, int t, int zona)
 {
 	bt_global::skin->setCidState(skin_cid);
 
 	QString alarm_description = descr;
-	QString tipo = t == AlarmPage::TECNICO ? "AUX" : "Z";
+	QString zone_description;
+	if (t == AlarmPage::TECNICO)
+		zone_description = QString("AUX:%1").arg(zona);
+	else
+		zone_description = zones[zona - 1];
+
 	QDateTime now = QDateTime::currentDateTime();
 
-	allarmi.append(new AlarmPage(static_cast<AlarmPage::altype>(t), alarm_description, tipo + " " + zona, now));
+	allarmi.append(new AlarmPage(static_cast<AlarmPage::altype>(t), alarm_description, zone_description, now));
 	// The current alarm is the last alarm inserted
 	curr_alarm = allarmi.size() - 1;
 
@@ -285,7 +294,7 @@ void Antintrusion::addAlarm(QString descr, int t, QString zona)
 	connect(curr, SIGNAL(showHomePage()), SLOT(showHomePage()));
 	connect(curr, SIGNAL(showAlarmList()), SLOT(showAlarms()));
 
-	alarms->addAlarm(t, alarm_description, tipo + " " + zona, now);
+	alarms->addAlarm(t, alarm_description, zone_description, now);
 
 	// if the alarm arrive during the screensaver, we want to turn back to the alarm when the screensaver exit
 	if (bt_global::btmain->screenSaverRunning())

@@ -124,6 +124,7 @@ private:
   \param <alarmTexts[altype]> text for a given alarm
 */
 	QString alarmTexts[4];
+	QString zones[8];
 	Keypad *tasti;
 	static const int MAX_ZONE = 8;
 	QTimer request_timer;
@@ -134,7 +135,7 @@ private:
 	void loadItems(const QDomNode &config_node);
 
 	void clearAlarms();
-	void addAlarm(QString descr, int t, QString zona);
+	void addAlarm(QString descr, int t, int zona);
 
 private slots:
 	void showHomePage();
