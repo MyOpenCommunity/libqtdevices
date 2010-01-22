@@ -30,6 +30,7 @@ public:
 		INTERCOM_CALL = 100, // the value doesn't matter
 		END_OF_CALL = 3,
 		RINGTONE = 200, // the value doesn't matter
+		MOVING_CAMERA = 201, // the value doesn't matter
 	};
 
 	EntryphoneDevice(const QString &where);
@@ -49,9 +50,20 @@ public slots:
 	void cycleExternalUnits() const;
 	void internalIntercomCall(QString _where); // an intercom between devices among the same SCS bus.
 	void externalIntercomCall(QString _where); // an intercom between devices in different SCS bus.
+	// Movements
+	void moveUpPress() const;
+	void moveUpRelease() const;
+	void moveDownPress() const;
+	void moveDownRelease() const;
+	void moveLeftPress() const;
+	void moveLeftRelease() const;
+	void moveRightPress() const;
+	void moveRightRelease() const;
 
 private:
 	void resetCallState();
+	void cameraMovePress(int move_type) const;
+	void cameraMoveRelease(int move_type) const;
 
 	// call parameters
 	int kind, mmtype;

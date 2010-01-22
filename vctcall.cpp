@@ -60,9 +60,21 @@ EnablingButton *getButton(const QString &image_path)
 CameraMove::CameraMove(EntryphoneDevice *dev)
 {
 	up = getButton(bt_global::skin->getImage("arrow_up"));
+	connect(up, SIGNAL(pressed()), dev, SLOT(moveUpPress()));
+	connect(up, SIGNAL(released()), dev, SLOT(moveUpRelease()));
+
 	down = getButton(bt_global::skin->getImage("arrow_down"));
-	right = getButton(bt_global::skin->getImage("arrow_right"));
+	connect(down, SIGNAL(pressed()), dev, SLOT(moveDownPress()));
+	connect(down, SIGNAL(released()), dev, SLOT(moveDownRelease()));
+
 	left = getButton(bt_global::skin->getImage("arrow_left"));
+	connect(left, SIGNAL(pressed()), dev, SLOT(moveLeftPress()));
+	connect(left, SIGNAL(released()), dev, SLOT(moveLeftRelease()));
+
+	right = getButton(bt_global::skin->getImage("arrow_right"));
+	connect(right, SIGNAL(pressed()), dev, SLOT(moveRightPress()));
+	connect(right, SIGNAL(released()), dev, SLOT(moveRightRelease()));
+
 	fullscreen = getButton(bt_global::skin->getImage("fullscreen"));
 	connect(fullscreen, SIGNAL(clicked()), this, SIGNAL(toggleFullScreen()));
 
@@ -279,6 +291,10 @@ void VCTCall::status_changed(const StatusList &sl)
 			if (stopVideo())
 				emit callClosed();
 			break;
+		case EntryphoneDevice::MOVING_CAMERA:
+			camera->setMoveEnabled(it.value().toBool());
+			break;
+
 		}
 		++it;
 	}

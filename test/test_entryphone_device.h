@@ -26,6 +26,14 @@ private slots:
 	void sendCycleExternalUnits();
 	void sendInternalIntercomCall();
 	void sendExternalIntercomCall();
+	void sendMoveUpPress();
+	void sendMoveUpRelease();
+	void sendMoveDownPress();
+	void sendMoveDownRelease();
+	void sendMoveLeftPress();
+	void sendMoveLeftRelease();
+	void sendMoveRightPress();
+	void sendMoveRightRelease();
 
 	void receiveIncomingCall();
 	void receiveCallerAddress();
