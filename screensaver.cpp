@@ -302,15 +302,21 @@ ScreenSaverSlideshow::ScreenSaverSlideshow() : ScreenSaver(10000)
 		qWarning() << "Slideshow directory empty or no usable file";
 	image_on_screen = new QLabel(this);
 	image_on_screen->setGeometry(0, 0, width(), height());
-	current_image = 0;
+	image_index = 0;
+	blending_timeline.setDuration(2000);
+	blending_timeline.setFrameRange(1, 30);
+	connect(&blending_timeline, SIGNAL(valueChanged(qreal)), SLOT(updateImage(qreal)));
 }
 
 void ScreenSaverSlideshow::start(Window *w)
 {
 	ScreenSaver::start(w);
 	showWindow();
+	next_image = QPixmap(width(), height());
+	// TODO: take background from skin
+	next_image.fill(QColor(Qt::black));
+	// this call will update both current_image and next_image
 	refresh();
-	// TODO: add code here
 }
 
 void ScreenSaverSlideshow::stop()
@@ -323,13 +329,24 @@ void ScreenSaverSlideshow::refresh()
 {
 	if (!images.isEmpty())
 	{
-		current_image = (current_image + 1) % images.size();
-		QPixmap p(images[current_image]);
-		p = p.scaled(this->size(), Qt::KeepAspectRatio);
-		qDebug() << "Showing image: " << images[current_image];
-		image_on_screen->setPixmap(p);
-		image_on_screen->show();
+		current_image = next_image;
+		image_index = (image_index + 1) % images.size();
+		next_image.load(images[image_index]);
+		next_image = next_image.scaled(this->size(), Qt::KeepAspectRatio);
+		qDebug() << "Showing image: " << images[image_index];
+		blending_timeline.start();
 	}
+	// else turn off screen
+}
+
+void ScreenSaverSlideshow::updateImage(qreal new_value)
+{
+	QPixmap pix(current_image);
+	QPainter p(&pix);
+	p.setRenderHint(QPainter::SmoothPixmapTransform, false);
+	p.setOpacity(new_value);
+	p.drawPixmap(QPoint(0,0), next_image);
+	image_on_screen->setPixmap(pix);
 }
 
 
