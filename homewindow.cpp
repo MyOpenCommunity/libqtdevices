@@ -89,6 +89,9 @@ void HomeWindow::centralWidgetChanged(int index)
 	{
 		Page *p = static_cast<Page *>(central_widget->widget(index));
 		header_widget->centralPageChanged(p->sectionId(), p->pageType());
+		// force a relayout, because changing the central page might change
+		// the window header size; see also the comment in PageContainer::showPage()
+		layout()->activate();
 	}
 }
 
