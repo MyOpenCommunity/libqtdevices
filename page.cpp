@@ -280,9 +280,11 @@ void BannerPage::buildPage(QWidget *parent, BannerContent *content, NavigationBa
 	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 }
 
-void BannerPage::buildPage(const QString &title, QWidget *top_widget)
+void BannerPage::buildPage(const QString &title, int title_height, QWidget *top_widget)
 {
-	buildPage(new BannerContent, new NavigationBar, title, top_widget);
+	BannerContent *content = new BannerContent;
+
+	buildPage(content, content, new NavigationBar, title, title_height, top_widget);
 }
 
 

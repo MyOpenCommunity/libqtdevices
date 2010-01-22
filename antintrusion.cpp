@@ -53,7 +53,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	buildPage(new BannerContent, nav_bar, QString(), top_widget);
 	forward_button = nav_bar->forward_button;
 #else
-	buildPage(getTextChild(config_node, "descr"), top_widget);
+	buildPage(getTextChild(config_node, "descr"), TITLE_HEIGHT, top_widget);
 #endif
 
 	connect(this, SIGNAL(abilitaParz(bool)), SLOT(IsParz(bool)));
