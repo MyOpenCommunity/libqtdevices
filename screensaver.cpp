@@ -288,7 +288,7 @@ void ScreenSaverText::customizeLine()
 }
 
 
-ScreenSaverSlideshow::ScreenSaverSlideshow() : ScreenSaver(10000)
+ScreenSaverSlideshow::ScreenSaverSlideshow() : ScreenSaver(12000)
 {
 	QDir image_dir("cfg/slideshow");
 	QStringList name_filter;
@@ -333,7 +333,6 @@ void ScreenSaverSlideshow::refresh()
 		image_index = (image_index + 1) % images.size();
 		next_image.load(images[image_index]);
 		next_image = next_image.scaled(this->size(), Qt::KeepAspectRatio);
-		qDebug() << "Showing image: " << images[image_index];
 		blending_timeline.start();
 	}
 	// else turn off screen
@@ -344,8 +343,12 @@ void ScreenSaverSlideshow::updateImage(qreal new_value)
 	QPixmap pix(current_image);
 	QPainter p(&pix);
 	p.setRenderHint(QPainter::SmoothPixmapTransform, false);
-	p.setOpacity(new_value);
-	p.drawPixmap(QPoint(0,0), next_image);
+	// with 0.0 (ie. the first value), the destination image is painted. This is just a hack...
+	if (new_value > 0.01)
+	{
+		p.setOpacity(new_value);
+		p.drawPixmap(QPoint(0,0), next_image);
+	}
 	image_on_screen->setPixmap(pix);
 }
 
