@@ -20,8 +20,8 @@ BannSingleLeft::BannSingleLeft() :
 {
 }
 
-void BannSingleLeft::initBanner(const QString &_left_on, const QString &_left_off, const QString &_center_on,
-		const QString &_center_off, const QString &zone, States init_state, const QString &banner_text)
+void BannSingleLeft::initBanner(const QString &_left_on, const QString &_left_off,
+				States init_state, const QString &banner_text)
 {
 	Bann2Buttons::initBanner(_left_off, QString(), banner_text);
 
@@ -53,8 +53,7 @@ AntintrusionZone::AntintrusionZone(const QString &name, const QString &where) :
 
 	QString zone = getZoneName(bt_global::skin->getImage("zone"), where);
 	initBanner(bt_global::skin->getImage("partial_on"), bt_global::skin->getImage("partial_off"),
-		bt_global::skin->getImage("alarm_on"), bt_global::skin->getImage("alarm_off"),
-		zone, PARTIAL_OFF, name);
+		   PARTIAL_OFF, name);
 	is_on = false;
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleParzializza()));
 	already_changed = false;

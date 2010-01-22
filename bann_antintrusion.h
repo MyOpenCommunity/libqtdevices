@@ -25,8 +25,8 @@ protected:
 	};
 
 	BannSingleLeft();
-	void initBanner(const QString &_left_on, const QString &_left_off, const QString &_center_on,
-		const QString &_center_off, const QString &zone, States init_state, const QString &banner_text);
+	void initBanner(const QString &_left_on, const QString &_left_off,
+			States init_state, const QString &banner_text);
 	void setState(States new_state);
 
 private:
