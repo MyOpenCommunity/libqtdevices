@@ -1,5 +1,4 @@
 #include "iconsettings.h"
-#include "changedatetime.h"
 #include "navigation_bar.h"
 #include "xml_functions.h"
 #include "skinmanager.h"
@@ -12,9 +11,12 @@
 #include "hardware_functions.h" // setBeep/getBeep/beep
 #include "bannerfactory.h"
 #include "bannercontent.h"
-#include "lansettings.h" // LanSettings
+#include "lansettings.h" // LanSettings, Text2Column
 #include "banner.h"
 #include "bann_settings.h" // impPassword
+#include "items.h" // ItemTuning
+#include "devices_cache.h" // bt_global::add_device_to_cache
+#include "platform_device.h" // PlatformDevice
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -73,15 +75,7 @@ void ToggleBeep::toggleBeep()
 }
 
 
-// this can be a generic class
-class ListPage : public BannerPage
-{
-public:
-	ListPage(const QDomNode &config_node);
 
-private:
-	void loadItems(const QDomNode &config_node);
-};
 
 ListPage::ListPage(const QDomNode &config_node)
 {
@@ -104,6 +98,107 @@ void ListPage::loadItems(const QDomNode &config_node)
 			qFatal("Type of item %d not handled on settings page!", id);
 	}
 }
+
+
+RingtonesPage::RingtonesPage(const QDomNode &config_node) : ListPage(config_node)
+{
+	QObject::connect(this, SIGNAL(Closed()), SLOT(stopRingtones()));
+}
+
+void RingtonesPage::stopRingtones()
+{
+	bt_global::ringtones->stopRingtone();
+}
+
+
+VolumePage::VolumePage(const QDomNode &config_node)
+{
+	// TODO: is this text ok for the banner? Should it be read from conf?
+	ItemTuning *volume = new ItemTuning(tr("Volume"), bt_global::skin->getImage("volume"));
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	buildPage(volume, nav_bar, getTextChild(config_node, "descr"));
+}
+
+void VolumePage::changeVolume(int new_vol)
+{
+	setVolume(VOLUME_RING, new_vol);
+	bt_global::ringtones->playRingtone(RINGTONE_PE1);
+}
+
+
+VersionPage::VersionPage(const QDomNode &config_node)
+{
+	dev = bt_global::add_device_to_cache(new PlatformDevice);
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+	dev->requestFirmwareVersion();
+	dev->requestKernelVersion();
+	dev->requestIp();
+	dev->requestNetmask();
+
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+
+	text_area = new Text2Column;
+	text_area->addRow(tr("Model"), bt_global::config[MODEL]);
+	text_area->addRow(tr("Firmware version"), "");
+	text_area->addRow(tr("Kernel version"), "");
+	text_area->addRow(tr("IP address"), "");
+	text_area->addRow(tr("Netmask"), "");
+
+	buildPage(text_area, nav_bar, getTextChild(config_node, "descr"));
+}
+
+void VersionPage::status_changed(const StatusList &sl)
+{
+	const int FW_ROW = 2;
+	const int KERN_ROW = 3;
+	const int IP_ROW = 4;
+	const int NETMASK_ROW = 5;
+
+	StatusList::const_iterator it = sl.constBegin();
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		case PlatformDevice::DIM_KERN_VERS:
+			text_area->setText(KERN_ROW, it.value().toString());
+			qDebug() << "LUCA Kernel version: " << it.value().toString();
+			break;
+		case PlatformDevice::DIM_FW_VERS:
+			text_area->setText(FW_ROW, it.value().toString());
+			qDebug() << "LUCA Firmware version: " << it.value().toString();
+			break;
+		case PlatformDevice::DIM_IP:
+			text_area->setText(IP_ROW, it.value().toString());
+			break;
+		case PlatformDevice::DIM_NETMASK:
+			text_area->setText(NETMASK_ROW, it.value().toString());
+			break;
+		}
+
+		++it;
+	}
+}
+
+
+ChangeDateTime::ChangeDateTime(const QString &ok_button_icon) :
+	PageSetDateTime(ok_button_icon)
+{
+	connect(this, SIGNAL(dateTimeSelected(QDate,BtTime)), SLOT(dateTimeChanged(QDate, BtTime)));
+	connect(this, SIGNAL(dateTimeSelected(QDate,BtTime)), SIGNAL(Closed()));
+	dev = bt_global::add_device_to_cache(new PlatformDevice);
+}
+
+void ChangeDateTime::dateTimeChanged(QDate date, BtTime time)
+{
+	dev->setTime(time);
+	dev->setDate(date);
+}
+
+
 
 
 IconSettings::IconSettings(const QDomNode &config_node)
@@ -145,12 +240,16 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		Window *w = 0;
 
 		QDomNode page_node = getPageNodeFromChildNode(item, "lnk_pageID");
-		int page_id = getTextChild(page_node, "id").toInt();
+		int link_id = getTextChild(item, "id").toInt();
 
-		switch (page_id)
+		switch (link_id)
 		{
 		case PAGE_DATE_TIME:
-			p = new ChangeTime;
+		{
+			ChangeDateTime *page = new ChangeDateTime(bt_global::skin->getImage("ok"));
+			page->setTitle(descr);
+			p = page;
+		}
 			break;
 		case PAGE_ALARMCLOCK:
 			p = new ListPage(page_node);
@@ -181,7 +280,13 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			p = new PasswordPage(item);
 			break;
 		case PAGE_RINGTONES:
-			p = new ListPage(getPageNodeFromChildNode(item, "lnk_pageID"));
+			p = new RingtonesPage(page_node);
+			break;
+		case PAGE_VOLUME:
+			p = new VolumePage(item);
+			break;
+		case PAGE_VERSION:
+			p = new VersionPage(item);
 			break;
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");

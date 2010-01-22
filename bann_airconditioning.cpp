@@ -12,7 +12,7 @@
 #include <QDebug>
 #include <cmath> // round
 
-SingleSplit::SingleSplit(QString descr, AirConditioningInterface *d, NonControlledProbeDevice *d_probe) :
+SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningInterface *d, NonControlledProbeDevice *d_probe) :
 	BannOnOffNew(0)
 {
 	QString img_off = bt_global::skin->getImage("off");
@@ -31,7 +31,7 @@ SingleSplit::SingleSplit(QString descr, AirConditioningInterface *d, NonControll
 				SLOT(status_changed(const StatusList &)));
 	}
 
-	initBanner(img_off, bt_global::skin->getImage(air_single), img_forward, descr);
+	initBanner(img_off, bt_global::skin->getImage(air_single), show_right_button ? img_forward : QString(), descr);
 	connect(left_button, SIGNAL(clicked()), SLOT(setDeviceOff()));
 }
 
@@ -60,8 +60,8 @@ void SingleSplit::setDeviceOff()
 }
 
 
-AdvancedSingleSplit::AdvancedSingleSplit(QString descr, AdvancedSplitPage *p, AirConditioningInterface *d, NonControlledProbeDevice *probe) :
-	SingleSplit(descr, d, probe)
+AdvancedSingleSplit::AdvancedSingleSplit(QString descr, bool show_right_button, AdvancedSplitPage *p, AirConditioningInterface *d, NonControlledProbeDevice *probe) :
+	SingleSplit(descr, show_right_button, d, probe)
 {
 	page = p;
 }
@@ -69,16 +69,17 @@ AdvancedSingleSplit::AdvancedSingleSplit(QString descr, AdvancedSplitPage *p, Ai
 void AdvancedSingleSplit::setSerNum(int ser)
 {
 	banner::setSerNum(ser);
-	page->setSerialNumber(ser);
+	if (page)
+		page->setSerialNumber(ser);
 }
 
 
-GeneralSplit::GeneralSplit(QString descr) : BannOnOffNew(0)
+GeneralSplit::GeneralSplit(QString descr, bool show_right_button) : BannOnOffNew(0)
 {
 	QString img_off = bt_global::skin->getImage("off");
 	QString img_air_gen = bt_global::skin->getImage("air_general");
 	QString img_forward = bt_global::skin->getImage("forward");
-	initBanner(img_off, img_air_gen, img_forward, descr);
+	initBanner(img_off, img_air_gen, show_right_button ? img_forward : QString(), descr);
 	QObject::connect(left_button, SIGNAL(clicked()), SIGNAL(sendGeneralOff()));
 }
 
@@ -244,11 +245,12 @@ int SplitTemperature::roundTo5(int temp)
 
 SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 {
-	modes_descr[0] = tr("AUTO");
+	modes_descr[0] = tr("OFF");
 	modes_descr[1] = tr("HEATING");
 	modes_descr[2] = tr("COOLING");
 	modes_descr[3] = tr("DRY");
 	modes_descr[4] = tr("FAN");
+	modes_descr[5] = tr("AUTO");
 
 	foreach (int mode_id, modes)
 		if (modes_descr.contains(mode_id))
@@ -266,6 +268,7 @@ SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 	speeds_descr[1] = tr("LOW");
 	speeds_descr[2] = tr("MEDIUM");
 	speeds_descr[3] = tr("HIGH");
+	speeds_descr[4] = tr("SILENT");
 
 	foreach (int speed_id, speeds)
 		if (speeds_descr.contains(speed_id))

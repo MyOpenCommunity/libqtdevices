@@ -38,6 +38,11 @@ void RingtonesManager::playRingtone(int ring)
 	playSound(ringtone_to_file[ring]);
 }
 
+void RingtonesManager::stopRingtone()
+{
+	stopSound();
+}
+
 void RingtonesManager::setRingtone(RingtoneType t, int ring)
 {
 	Q_ASSERT_X(ring >= 0 && ring < ringtone_to_file.size(), "RingtonesManager::setRingtone",

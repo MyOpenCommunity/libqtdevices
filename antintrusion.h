@@ -49,7 +49,6 @@ public:
 	Antintrusion(const QDomNode &config_node);
 	~Antintrusion();
 	virtual void inizializza();
-	void draw();
 	virtual void manageFrame(OpenMsg &msg);
 
 	virtual int sectionId();
@@ -66,7 +65,7 @@ public slots:
 /*!
   \brief arms a timer and calls ctrlAllarm after 150ms. This is necessary because some time is necessary to destroy the object from the queue
 */
-	void testranpo();
+	void delayCtrlAlarm();
 /*!
   \brief Invoked when next alarm must be displayed
 */
@@ -122,16 +121,12 @@ private:
 	AlarmList *alarms;
 	int curr_alarm;
 /*!
-  \param <testoManom> text for a manomission alarm
-  \param <testoTecnico> text for a tecnical alarm
-  \param <testoPanic> text for a panic alarm  
-  \param <testoIntrusione> text for a intrusion alarm  
+  \param <alarmTexts[altype]> text for a given alarm
 */
-	QString testoManom, testoTecnico, testoIntrusione, testoPanic;
+	QString alarmTexts[4];
 	Keypad *tasti;
 	static const int MAX_ZONE = 8;
 	QTimer request_timer;
-	QTimer *t;
 	BtButton *forward_button; // the forward button of the navigation bar
 	SkinManager::CidState skin_cid;
 
@@ -158,6 +153,7 @@ public:
 
 	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date);
 	void removeAlarm(int index);
+	int alarmCount();
 
 	void drawContent();
 	void prepareLayout();
@@ -181,6 +177,7 @@ public:
 	AlarmList();
 
 	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date);
+	int alarmCount();
 
 	virtual void activateLayout();
 	virtual int sectionId();

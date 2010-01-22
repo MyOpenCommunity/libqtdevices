@@ -22,10 +22,6 @@
 #include <QSignalMapper>
 
 
-// TODO: only for compatibility, remove it asap!
-#define MAX_PATH 50
-
-
 Antintrusion::Antintrusion(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
@@ -37,15 +33,16 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	previous_page = 0;
 	forward_button = 0;
 
-	testoTecnico = tr("technical");
-	testoIntrusione = tr("intrusion");
-	testoManom = tr("tamper");
-	testoPanic = tr("anti-panic");
+	alarmTexts[0] = tr("technical");
+	alarmTexts[1] = tr("intrusion");
+	alarmTexts[2] = tr("tamper");
+	alarmTexts[3] = tr("anti-panic");
 
 	top_widget = new QWidget;
 
 	alarms = new AlarmList;
 	connect(alarms, SIGNAL(Closed()), SLOT(showPage()));
+	connect(alarms, SIGNAL(Closed()), SLOT(ctrlAllarm()));
 
 #ifdef LAYOUT_BTOUCH
 	// TODO: we introduce a double dependency to customize the image of the forward
@@ -56,7 +53,9 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	buildPage(new BannerContent, nav_bar, QString(), top_widget);
 	forward_button = nav_bar->forward_button;
 #else
-	buildPage(getTextChild(config_node, "descr"), top_widget);
+	buildPage(getTextChild(config_node, "descr"), 35, top_widget);
+
+	page_content->layout()->setSpacing(5);
 #endif
 
 	connect(this, SIGNAL(abilitaParz(bool)), SLOT(IsParz(bool)));
@@ -65,9 +64,6 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	curr_alarm = -1;
 	loadItems(config_node);
 	Q_ASSERT_X(impianto, "Antintrusion::Antintrusion", "Impianto not found on the configuration file!");
-	t = new QTimer(this);
-	t->setSingleShot(true);
-	connect(t, SIGNAL(timeout()), SLOT(ctrlAllarm()));
 	connect(this, SIGNAL(Closed()), SLOT(requestZoneStatus()));
 	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)),
 			SLOT(requestStatusIfCurrentWidget(Page*)));
@@ -223,25 +219,19 @@ void Antintrusion::Parz()
 	request_timer.start(5000);
 }
 
-void Antintrusion::testranpo()
+void Antintrusion::delayCtrlAlarm()
 {
-	t->start(150);
+	QTimer::singleShot(150, this, SLOT(ctrlAllarm()));
 }
 
 void Antintrusion:: ctrlAllarm()
 {
-	qDebug("ctrlAllarm %d", allarmi.size());
-	if (!allarmi.isEmpty())
+	qDebug("ctrlAllarm %d %d", allarmi.size(), alarms->alarmCount());
+	// the first condition is for BTouch, the second for TouchX
+	if (!allarmi.isEmpty() || alarms->alarmCount() != 0)
 		impianto->mostra(banner::BUT1);
 	else
 		impianto->nascondi(banner::BUT1);
-}
-
-void Antintrusion::draw()
-{
-	ctrlAllarm();
-	if (allarmi.isEmpty())
-		return;
 }
 
 void Antintrusion::inizializza()
@@ -254,39 +244,24 @@ void Antintrusion::inizializza()
 
 void Antintrusion::manageFrame(OpenMsg &msg)
 {
-	if ((!strncmp(msg.Extract_cosa(),"12",2)) || (! strncmp(msg.Extract_cosa(),"15",2)) || \
-		(!strncmp(msg.Extract_cosa(),"16",2)) || (! strncmp(msg.Extract_cosa(),"17",2)))
+	int what = QString(msg.Extract_cosa()).mid(0, 2).toInt();
+
+	if (what == 12 || what == 15 || what == 16 || what == 17)
 	{
-		QString descr;
 		AlarmPage::altype t;
 
-		if  (!strncmp(msg.Extract_cosa(),"12",2) && !testoTecnico.isNull())
-		{
-			descr = testoTecnico;
+		if (what == 12)
 			t = AlarmPage::TECNICO;
-		}
-
-		if  (!strncmp(msg.Extract_cosa(),"15",2) && !testoIntrusione.isNull())
-		{
-			descr = testoIntrusione;
+		else if (what == 15)
 			t = AlarmPage::INTRUSIONE;
-		}
-
-		if  (!strncmp(msg.Extract_cosa(),"16",2) && !testoManom.isNull())
-		{
-			descr = testoManom;
+		else if (what == 16)
 			t = AlarmPage::MANOMISSIONE;
-		}
-
-		if  (!strncmp(msg.Extract_cosa(),"17",2) && !testoPanic.isNull())
-		{
-			descr = testoPanic;
+		else if (what == 17)
 			t = AlarmPage::PANIC;
-		}
 
 		QString zona = QString(msg.Extract_dove()).mid(1);
 
-		addAlarm(descr, t, zona);
+		addAlarm(alarmTexts[t], t, zona);
 	}
 }
 
@@ -380,7 +355,7 @@ void Antintrusion::deleteAlarm()
 	{
 		curr_alarm = -1;
 		closeAlarms();
-		testranpo();
+		delayCtrlAlarm();
 		return;
 	}
 	else if (curr_alarm >= allarmi.size())
@@ -559,6 +534,11 @@ void AlarmItems::drawContent()
 	updateLayout(alarms);
 }
 
+int AlarmItems::alarmCount()
+{
+	return alarms.count();
+}
+
 
 AlarmList::AlarmList()
 {
@@ -577,9 +557,13 @@ AlarmList::AlarmList()
 	d->setAlignment(Qt::AlignLeft);
 	l->addWidget(d, 1);
 
+	PageTitleWidget *title_widget = new PageTitleWidget(tr("Alarms"), 35);
 	NavigationBar *nav_bar = new NavigationBar;
 	alarms = new AlarmItems;
-	buildPage(alarms, nav_bar, tr("Alarms"), 35, header);
+	buildPage(alarms, nav_bar, header, title_widget);
+
+	connect(alarms, SIGNAL(contentScrolled(int, int)),
+		title_widget, SLOT(setCurrentPage(int, int)));
 
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	connect(this, SIGNAL(Closed()), alarms, SLOT(resetIndex()));
@@ -607,4 +591,9 @@ void AlarmList::activateLayout()
 void AlarmList::addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date)
 {
 	alarms->addAlarm(type, description, zone, date);
+}
+
+int AlarmList::alarmCount()
+{
+	return alarms->alarmCount();
 }

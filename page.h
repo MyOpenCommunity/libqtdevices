@@ -157,7 +157,7 @@ public:
 
 protected:
 	void buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title = QString(), QWidget *top_widget=0);
-	void buildPage(const QString &title = QString(), QWidget *top_widget=0);
+	void buildPage(const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget=0);
 
 	// allows creating a BannerPage where the content is a generic QWidget containing a BannerContent
 	void buildPage(QWidget *content, BannerContent *banners, NavigationBar *nav_bar,

@@ -65,8 +65,11 @@ void PageContainer::showPage(Page *p)
 
 		// Before grab the screenshot of the next page, we have to ensure that its
 		// visualization is correct and that it is shown.
-		fixVisualization(p, size());
 		setCurrentWidget(p);
+		// fixVisualization must be after setCurrentWidget, because setCurrentWidget
+		// might cause the window header to change size, and fixVisualization must
+		// run with the correct page size
+		fixVisualization(p, size());
 		startTransition(p);
 	}
 	else

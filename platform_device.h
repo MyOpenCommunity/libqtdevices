@@ -52,6 +52,8 @@ public:
 	void requestGateway() const;
 	void requestDNS1() const;
 	void requestDNS2() const;
+	void requestKernelVersion() const;
+	void requestFirmwareVersion() const;
 
 	virtual void manageFrame(OpenMsg &msg);
 
@@ -61,6 +63,8 @@ public:
 		DIM_IP = 10,
 		DIM_NETMASK = 11,
 		DIM_MACADDR = 12,
+		DIM_FW_VERS = 16,                 // firmware version
+		DIM_KERN_VERS = 23,               // kernel version
 		DIM_GATEWAY = 50,
 		DIM_DNS1 = 51,
 		DIM_DNS2 = 52
@@ -68,6 +72,9 @@ public:
 
 public slots:
 	void requestStatus() const;
+
+private:
+	QString extractVersionValues(OpenMsg &msg);
 };
 
 #endif // PLATFORM_DEVICE_H

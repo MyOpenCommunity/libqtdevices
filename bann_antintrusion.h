@@ -1,7 +1,7 @@
 #ifndef BANN_ANTINTRUSION_H
 #define BANN_ANTINTRUSION_H
 
-#include "bann1_button.h" // bannOnIcons
+#include "bann2_buttons.h" // Bann2Buttons
 #include "bann3_buttons.h" // bann3ButLab
 #include "device_status.h"
 
@@ -14,7 +14,7 @@ class device;
 class QDomNode;
 
 
-class BannSingleLeft : public BannerNew
+class BannSingleLeft : public Bann2Buttons
 {
 Q_OBJECT
 protected:
@@ -25,15 +25,12 @@ protected:
 	};
 
 	BannSingleLeft();
-	void initBanner(const QString &_left_on, const QString &_left_off, const QString &_center_on,
-		const QString &_center_off, const QString &zone, States init_state, const QString &banner_text);
+	void initBanner(const QString &_left_on, const QString &_left_off,
+			States init_state, const QString &banner_text);
 	void setState(States new_state);
 
-	BtButton *left_button;
-
 private:
-	QLabel *zone_icon, *center_icon, *text;
-	QString left_on, left_off, center_on, center_off;
+	QString left_on, left_off;
 };
 
 

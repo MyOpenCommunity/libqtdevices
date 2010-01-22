@@ -16,42 +16,18 @@
 
 
 BannSingleLeft::BannSingleLeft() :
-	BannerNew(0)
+	Bann2Buttons(0)
 {
-	left_button = new BtButton;
-	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
-	center_icon = new QLabel;
-	zone_icon = new QLabel;
-
-	QGridLayout *center = new QGridLayout;
-	center->addWidget(zone_icon, 0, 0);
-	center->addWidget(center_icon, 0, 1);
-
-	QGridLayout *grid = new QGridLayout;
-	grid->setContentsMargins(0, 0, 0, 0);
-	grid->setSpacing(0);
-	grid->setColumnStretch(0, 1);
-	grid->setColumnStretch(2, 1);
-	grid->addWidget(left_button, 0, 0);
-	grid->addLayout(center, 0, 1);
-
-	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	l->addLayout(grid);
-	l->addWidget(text);
 }
 
-void BannSingleLeft::initBanner(const QString &_left_on, const QString &_left_off, const QString &_center_on,
-		const QString &_center_off, const QString &zone, States init_state, const QString &banner_text)
+void BannSingleLeft::initBanner(const QString &_left_on, const QString &_left_off,
+				States init_state, const QString &banner_text)
 {
+	Bann2Buttons::initBanner(_left_off, QString(), banner_text);
+
 	left_on = _left_on;
 	left_off = _left_off;
-	center_on = _center_on;
-	center_off = _center_off;
 
-	zone_icon->setPixmap(*bt_global::icons_cache.getIcon(zone));
-	text->setText(banner_text);
 	setState(init_state);
 }
 
@@ -61,11 +37,9 @@ void BannSingleLeft::setState(States new_state)
 	{
 	case PARTIAL_OFF:
 		left_button->setImage(left_on);
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_off));
 		break;
 	case PARTIAL_ON:
 		left_button->setImage(left_off);
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_on));
 		break;
 	}
 }
@@ -79,8 +53,7 @@ AntintrusionZone::AntintrusionZone(const QString &name, const QString &where) :
 
 	QString zone = getZoneName(bt_global::skin->getImage("zone"), where);
 	initBanner(bt_global::skin->getImage("partial_on"), bt_global::skin->getImage("partial_off"),
-		bt_global::skin->getImage("alarm_on"), bt_global::skin->getImage("alarm_off"),
-		zone, PARTIAL_OFF, name);
+		   PARTIAL_OFF, name);
 	is_on = false;
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleParzializza()));
 	already_changed = false;

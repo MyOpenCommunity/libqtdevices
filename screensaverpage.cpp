@@ -17,8 +17,11 @@ ScreenSaverPage::ScreenSaverPage()
 
 	// TODO maybe we want an OK button for touch 10 as well
 	if (hardwareType() == TOUCH_X)
+	{
+		addBanner(tr("Slideshow"), ScreenSaver::SLIDESHOW);
 		connect(page_content, SIGNAL(bannerSelected(int)),
 			SLOT(confirmSelection()));
+	}
 }
 
 void ScreenSaverPage::showPage()

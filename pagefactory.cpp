@@ -50,7 +50,6 @@ Page *getPage(int page_id)
 	case ANTIINTRUSIONE:
 	{
 		Antintrusion *p = new Antintrusion(page_node);
-		p->draw();
 		QObject::connect(bt_global::btmain->client_comandi, SIGNAL(openAckRx()), p, SIGNAL(openAckRx()));
 		QObject::connect(bt_global::btmain->client_comandi, SIGNAL(openNakRx()), p, SIGNAL(openNakRx()));
 		page = p;
