@@ -60,8 +60,8 @@ void SingleSplit::setDeviceOff()
 }
 
 
-AdvancedSingleSplit::AdvancedSingleSplit(QString descr, bool show_right_button, AdvancedSplitPage *p, AirConditioningInterface *d, NonControlledProbeDevice *probe) :
-	SingleSplit(descr, show_right_button, d, probe)
+AdvancedSingleSplit::AdvancedSingleSplit(QString descr, AdvancedSplitPage *p, AirConditioningInterface *d, NonControlledProbeDevice *probe) :
+	SingleSplit(descr, true, d, probe)
 {
 	page = p;
 }
