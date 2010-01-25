@@ -12,6 +12,7 @@ class QHBoxLayout;
 class QSignalMapper;
 class HeaderNavigationBar;
 class BtButton;
+class TrayBar;
 
 
 // helper widgets, to display the temperature
@@ -57,13 +58,14 @@ class HeaderLogo : public StyledWidget
 {
 Q_OBJECT
 public:
-	HeaderLogo();
+	HeaderLogo(TrayBar *tray);
 
 	void loadItems(const QDomNode &config_node);
 	void setControlsVisible(bool visible);
 
 private:
 	QWidget *time_display, *temperature_display;
+	TrayBar *tray_bar;
 };
 
 
@@ -144,7 +146,7 @@ class HeaderWidget : public QWidget
 {
 Q_OBJECT
 public:
-	HeaderWidget();
+	HeaderWidget(TrayBar *tray_bar);
 	void centralPageChanged(int section_id, Page::PageType);
 
 	void loadConfiguration(const QDomNode &homepage_node, const QDomNode &infobar_node);

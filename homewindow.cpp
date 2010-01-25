@@ -7,10 +7,25 @@
 #include "main.h" // getHomepageNode
 #include "xml_functions.h"
 #include "pagecontainer.h"
+#include "btbutton.h"
 
+#include <QHBoxLayout>
 #include <QGridLayout>
 #include <QtDebug>
 #include <QVariant>
+
+
+TrayBar::TrayBar()
+{
+	QHBoxLayout *l = new QHBoxLayout(this);
+	l->setContentsMargins(2, 0, 2, 0);
+	l->setSpacing(3);
+}
+
+void TrayBar::addButton(BtButton *b)
+{
+	layout()->addWidget(b);
+}
 
 
 HomeWindow::HomeWindow()
@@ -37,7 +52,8 @@ HomeWindow::HomeWindow()
 		connect(central_widget, SIGNAL(currentChanged(int)), SLOT(centralWidgetChanged(int)));
 		Page::setPageContainer(central_widget);
 
-		header_widget = new HeaderWidget;
+		tray_bar = new TrayBar;
+		header_widget = new HeaderWidget(tray_bar);
 		main_layout->addWidget(header_widget, 0, 0, 1, 2);
 
 		favorites_widget = new FavoritesWidget;
@@ -104,3 +120,4 @@ Page *HomeWindow::currentPage()
 {
 	return central_widget->currentPage();
 }
+

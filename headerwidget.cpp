@@ -9,6 +9,7 @@
 #include "probe_device.h" // NonControlledProbeDevice
 #include "scaleconversion.h"
 #include "devices_cache.h"
+#include "homewindow.h"
 
 #include <QSignalMapper>
 #include <QHBoxLayout>
@@ -207,9 +208,10 @@ void InnerPageTemperatureDisplay::paintEvent(QPaintEvent *e)
 }
 
 
-HeaderLogo::HeaderLogo()
+HeaderLogo::HeaderLogo(TrayBar *tray)
 {
 	setFixedSize(800, 40);
+	tray_bar = tray;
 }
 
 void HeaderLogo::loadItems(const QDomNode &config_node)
@@ -221,8 +223,10 @@ void HeaderLogo::loadItems(const QDomNode &config_node)
 	l->setContentsMargins(3, 0, 3, 0);
 	l->setSpacing(0);
 
-	l->addWidget(time_display);
+	l->addWidget(tray_bar);
+
 	l->addStretch(1);
+	l->addWidget(time_display);
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
@@ -498,13 +502,13 @@ void HeaderNavigationWidget::setCurrentSection(int section_id)
 }
 
 
-HeaderWidget::HeaderWidget()
+HeaderWidget::HeaderWidget(TrayBar *tray_bar)
 {
 	main_layout = new QVBoxLayout(this);
 	main_layout->setSpacing(0);
 	main_layout->setContentsMargins(0, 0, 0, 0);
 
-	header_logo = new HeaderLogo;
+	header_logo = new HeaderLogo(tray_bar);
 	main_layout->addWidget(header_logo);
 
 	top_nav_bar = new HeaderNavigationBar;

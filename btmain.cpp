@@ -633,6 +633,11 @@ Page *BtMain::getPreviousPage()
 	return prev_page;
 }
 
+TrayBar *BtMain::trayBar()
+{
+	return window_container->homeWindow()->tray_bar;
+}
+
 Window *BtMain::homeWindow()
 {
 	return window_container->homeWindow();

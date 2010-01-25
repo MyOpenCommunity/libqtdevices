@@ -52,10 +52,12 @@ public:
 
 private slots:
 	void status_changed(const StatusList &sl);
+	void toggleCallExclusion();
 
 private:
+	BtButton *call_exclusion;
 	EntryphoneDevice *dev;
-	CallExclusionPage *call_exclusion;
+	CallExclusionPage *call_ex_page;
 	void loadItems(const QDomNode &config_node);
 };
 
@@ -65,7 +67,10 @@ class CallExclusionPage : public BannerPage
 Q_OBJECT
 public:
 	CallExclusionPage(const QDomNode &config_node);
-	bool getStatus();
+	void setStatus(bool st);
+
+signals:
+	void statusChanged(bool on);
 
 private:
 	CallExclusion *b;

@@ -9,6 +9,17 @@ class PageContainer;
 class HeaderWidget;
 class FavoritesWidget;
 class Page;
+class BtButton;
+
+
+class TrayBar : public QWidget
+{
+Q_OBJECT
+public:
+	TrayBar();
+	void addButton(BtButton *b);
+};
+
 
 // controls the layout of "normal" pages; contains the stack of pages and the
 // header and favorites widgets
@@ -21,6 +32,7 @@ public:
 	Page *currentPage();
 
 	void loadConfiguration();
+	TrayBar *tray_bar;
 
 signals:
 	void showHomePage();
@@ -34,5 +46,6 @@ private:
 	HeaderWidget *header_widget;
 	FavoritesWidget *favorites_widget;
 };
+
 
 #endif // HOMEWINDOW_H

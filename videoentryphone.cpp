@@ -15,6 +15,8 @@
 #include "displaycontrol.h" // bt_global::display
 #include "hardware_functions.h" // setVolume
 #include "ringtonesmanager.h" // bt_global::ringtones
+#include "btmain.h" // bt_global::btmain
+#include "homewindow.h"
 
 #include <QGridLayout>
 #include <QSignalMapper>
@@ -65,10 +67,28 @@ void VideoEntryPhone::loadDevices(const QDomNode &config_node)
 #else
 VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 {
+	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	buildPage(new IconContent, new NavigationBar);
+
+	call_ex_page = 0;
+	call_exclusion = new BtButton;
+	call_exclusion->setOnOff();
+	call_exclusion->setImage(bt_global::skin->getImage("tray_call_ex_off"));
+	call_exclusion->setPressedImage(bt_global::skin->getImage("tray_call_ex_on"));
+	connect(call_exclusion, SIGNAL(clicked()), SLOT(toggleCallExclusion()));
+	bt_global::btmain->trayBar()->addButton(call_exclusion);
+
 	loadItems(config_node);
 	dev = bt_global::add_device_to_cache(new EntryphoneDevice(bt_global::config[PI_ADDRESS]));
 	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+}
+
+void VideoEntryPhone::toggleCallExclusion()
+{
+	bool new_status = !call_exclusion->getStatus();
+	call_exclusion->setStatus(new_status);
+	if (call_ex_page)
+		call_ex_page->setStatus(new_status);
 }
 
 void VideoEntryPhone::status_changed(const StatusList &sl)
@@ -81,7 +101,12 @@ void VideoEntryPhone::status_changed(const StatusList &sl)
 		case EntryphoneDevice::RINGTONE:
 			RingtoneType ringtone = static_cast<RingtoneType>(it.value().toInt());
 			if (!call_exclusion->getStatus())
+			{
 				bt_global::ringtones->playRingtone(ringtone);
+				qDebug() << "SUONO LA SUONERIA" << ringtone;
+			}
+			else
+				qDebug() << "ESCLUSIONE CHIAMATA ATTIVA";
 
 			break;
 		}
@@ -112,8 +137,9 @@ void VideoEntryPhone::loadItems(const QDomNode &config_node)
 			p = new VideoControl(page_node);
 			break;
 		case CALL_EXCLUSION:
-			call_exclusion = new CallExclusionPage(page_node);
-			p = call_exclusion;
+			call_ex_page = new CallExclusionPage(page_node);
+			connect(call_ex_page, SIGNAL(statusChanged(bool)), call_exclusion, SLOT(setStatus(bool)));
+			p = call_ex_page;
 			break;
 		default:
 			qFatal("Unhandled page id in VideoEntryPhone::loadItems");
@@ -135,15 +161,17 @@ CallExclusionPage::CallExclusionPage(const QDomNode &config_node)
 	buildPage();
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	b = new CallExclusion;
+	connect(b, SIGNAL(statusChanged(bool)), this, SIGNAL(statusChanged(bool)));
 	page_content->appendBanner(b);
 }
 
-bool CallExclusionPage::getStatus()
+void CallExclusionPage::setStatus(bool st)
 {
-	return b->getStatus();
+	if (st)
+		b->excludeCallOn();
+	else
+		b->excludeCallOff();
 }
-
-
 
 
 VideoControl::VideoControl(const QDomNode &config_node)

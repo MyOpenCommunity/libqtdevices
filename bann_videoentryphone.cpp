@@ -393,16 +393,13 @@ void CallExclusion::excludeCallOff()
 {
 	curr_status = OFF;
 	setState(curr_status);
+	emit statusChanged(false);
 }
 
 void CallExclusion::excludeCallOn()
 {
 	curr_status = ON;
 	setState(curr_status);
-}
-
-bool CallExclusion::getStatus()
-{
-	return curr_status == ON;
+	emit statusChanged(true);
 }
 

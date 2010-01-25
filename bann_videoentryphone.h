@@ -173,11 +173,13 @@ class CallExclusion : public BannOnOffState
 Q_OBJECT
 public:
 	CallExclusion();
-	bool getStatus();
 
-private slots:
+public slots:
 	void excludeCallOff();
 	void excludeCallOn();
+
+signals:
+	void statusChanged(bool on);
 
 private:
 	States curr_status;

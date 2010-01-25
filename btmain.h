@@ -28,6 +28,7 @@ class Page;
 class PageContainer;
 class WindowContainer;
 class Window;
+class TrayBar;
 
 class QPixmap;
 class QString;
@@ -70,6 +71,7 @@ public:
 	bool screenSaverRunning();
 	void showScreensaverIfNeeded();
 	Window *homeWindow();
+	TrayBar *trayBar();
 	void showHomePage();
 
 public slots:
