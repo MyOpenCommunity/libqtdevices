@@ -22,6 +22,7 @@
 #include <QPointF>
 #include <QTime>
 #include <QVector>
+#include <QTimeLine>
 
 class Page;
 class QLabel;
@@ -172,11 +173,16 @@ protected slots:
 
 private:
 	// index for images list
-	int current_image;
+	int image_index;
 	// shows the image on the window
 	QLabel *image_on_screen;
+	QPixmap current_image, next_image;
 	// must contain file paths
 	QStringList images;
+	QTimeLine blending_timeline;
+
+private slots:
+	void updateImage(qreal new_value);
 };
 
 

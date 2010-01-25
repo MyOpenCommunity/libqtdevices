@@ -68,7 +68,7 @@ void VideoEntryPhone::loadDevices(const QDomNode &config_node)
 VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
-	buildPage(new IconContent, new NavigationBar);
+	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 
 	call_ex_page = 0;
 	call_exclusion = new BtButton;
@@ -101,12 +101,7 @@ void VideoEntryPhone::status_changed(const StatusList &sl)
 		case EntryphoneDevice::RINGTONE:
 			RingtoneType ringtone = static_cast<RingtoneType>(it.value().toInt());
 			if (!call_exclusion->getStatus())
-			{
 				bt_global::ringtones->playRingtone(ringtone);
-				qDebug() << "SUONO LA SUONERIA" << ringtone;
-			}
-			else
-				qDebug() << "ESCLUSIONE CHIAMATA ATTIVA";
 
 			break;
 		}
@@ -158,7 +153,7 @@ void VideoEntryPhone::loadItems(const QDomNode &config_node)
 
 CallExclusionPage::CallExclusionPage(const QDomNode &config_node)
 {
-	buildPage();
+	buildPage(getTextChild(config_node, "descr"));
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	b = new CallExclusion;
 	connect(b, SIGNAL(statusChanged(bool)), this, SIGNAL(statusChanged(bool)));
@@ -182,7 +177,7 @@ VideoControl::VideoControl(const QDomNode &config_node)
 	mapper = new QSignalMapper(this);
 	connect(mapper, SIGNAL(mapped(QString)), SLOT(cameraOn(QString)));
 
-	buildPage(new IconContent, new NavigationBar);
+	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 	call_page = new VCTCallPage(dev);
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
@@ -351,7 +346,7 @@ Intercom::Intercom(const QDomNode &config_node)
 	IntercomCallPage *call_page = new IntercomCallPage(dev);
 	connect(call_page, SIGNAL(Closed()), SLOT(showPage()));
 
-	buildPage(new IconContent, new NavigationBar);
+	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		SkinContext ctx(getTextChild(item, "cid").toInt());
