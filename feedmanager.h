@@ -20,18 +20,21 @@
 #include <QList>
 
 class FeedItemWidget;
-class ListBrowser;
+class ItemList;
 class QDomNode;
 
 
-struct FeedPath
+struct FeedInfo
 {
 	QString path;
 	QString desc;
-	FeedPath(QString p="", QString d="")
+	QString icon;
+
+	FeedInfo(QString p, QString d, QString i="")
 	{
 		path = p;
 		desc = d;
+		icon = i;
 	}
 };
 
@@ -55,11 +58,13 @@ public slots:
 private:
 	FeedParser parser;
 	FeedData data;
-	ListBrowser *list_browser;
-	QList<FeedPath> feed_list;
+	ItemList *list_browser;
+	QList<FeedInfo> feed_list;
 	Status status;
 	FeedItemWidget *feed_widget;
+	PageTitleWidget *title_widget;
 	QMap<QString, unsigned> page_indexes;
+	QString title, feed_icon, forward_icon;
 
 	/// Load the feed list from the configuration file.
 	void loadFeedList(const QDomNode &conf_node);

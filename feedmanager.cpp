@@ -1,9 +1,10 @@
 #include "feedmanager.h"
 #include "feeditemwidget.h"
-#include "listbrowser.h"
+#include "itemlist.h"
 #include "navigation_bar.h"
 #include "main.h"
 #include "xml_functions.h" // getChildren, getTextChild
+#include "skinmanager.h"
 
 #include <qregexp.h>
 #include <QVBoxLayout>
@@ -16,15 +17,20 @@
 
 FeedManager::FeedManager(const QDomNode &conf_node)
 {
+	forward_icon = bt_global::skin->getImage("forward_icon");
+	feed_icon = bt_global::skin->getImage("feed_icon");
+
 	loadFeedList(conf_node);
+	title = getTextChild(conf_node, "descr");
 	status = SELECTION;
+	title_widget = new PageTitleWidget(title, 35);
 
 	QWidget *content = new QWidget;
 	QVBoxLayout *main_layout = new QVBoxLayout(content);
-	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setContentsMargins(0, 5, 25, 10);
 	main_layout->setSpacing(0);
 
-	list_browser = new ListBrowser(this, ROWS_PER_PAGE);
+	list_browser = new ItemList(this, ROWS_PER_PAGE);
 	main_layout->addWidget(list_browser, 1);
 
 	feed_widget = new FeedItemWidget(this);
@@ -32,15 +38,14 @@ FeedManager::FeedManager(const QDomNode &conf_node)
 	main_layout->addWidget(feed_widget, 1);
 
 	NavigationBar *nav_bar = new NavigationBar;
-	buildPage(content, nav_bar);
+	buildPage(content, nav_bar, 0, title_widget);
 
 	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 	connect(feed_widget, SIGNAL(Closed()), feed_widget, SLOT(hide()));
 	connect(&parser, SIGNAL(feedReady()), SLOT(feedReady()));
 
-	// bannNavigazione up/down signals are inverted...
-	connect(nav_bar, SIGNAL(upClick()), SLOT(downClick()));
-	connect(nav_bar, SIGNAL(downClick()), SLOT(upClick()));
+	connect(nav_bar, SIGNAL(upClick()), SLOT(upClick()));
+	connect(nav_bar, SIGNAL(downClick()), SLOT(downClick()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
 }
 
@@ -48,10 +53,13 @@ void FeedManager::loadFeedList(const QDomNode &conf_node)
 {
 	foreach (const QDomNode &item, getChildren(conf_node, "item"))
 	{
+		SkinContext cxt(getTextChild(item, "cid").toInt());
+
 		QString descr = getTextChild(item, "descr");
 		QString url = getTextChild(item, "url");
+		QString icon = bt_global::skin->getImage("feed_icon");
 
-		feed_list.append(FeedPath(url, descr));
+		feed_list.append(FeedInfo(url, descr, icon));
 	}
 }
 
@@ -64,13 +72,19 @@ void FeedManager::showPage()
 void FeedManager::setupPage()
 {
 	int page = 0;
-	QVector<QString> item_list;
+	QList<ItemList::ItemInfo> item_list;
 
 	switch (status)
 	{
 	case SELECTION:
 		for (int i = 0; i < feed_list.size(); ++i)
-			item_list.append(feed_list[i].desc);
+		{
+			ItemList::ItemInfo item(feed_list[i].desc, QString(),
+						feed_list[i].icon, forward_icon);
+
+			item_list.append(item);
+		}
+		title_widget->setTitle(title);
 
 		if (page_indexes.contains("/"))
 			page = page_indexes["/"];
@@ -78,7 +92,13 @@ void FeedManager::setupPage()
 
 	case BROWSING:
 		for (int i = 0; i < data.entry_list.size(); ++i)
-			item_list.append(data.entry_list[i].title);
+		{
+			ItemList::ItemInfo item(data.entry_list[i].title, data.entry_list[i].last_updated,
+						feed_icon, forward_icon);
+
+			item_list.append(item);
+		}
+		title_widget->setTitle(data.feed_title);
 
 		if (page_indexes.contains("/"))
 			page = page_indexes["/"];
