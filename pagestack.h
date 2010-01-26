@@ -32,7 +32,7 @@ public:
 	// register when different types of window/pages are shown; must be
 	// called before Page::showPage() and Window::showWindow()
 	void showAlarm(Page *alarm_page);
-	void showVCTCall(Page *call_page);
+	void showVCTPage(Page *page); // used for VCTCallPage and IntercomPage
 	void showUserWindow(Window *window);
 	void showScreensaver(Window *screensaver);
 	void showKeypad(Window *keypad);

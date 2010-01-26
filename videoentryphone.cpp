@@ -17,6 +17,7 @@
 #include "ringtonesmanager.h" // bt_global::ringtones
 #include "btmain.h" // bt_global::btmain
 #include "homewindow.h"
+#include "pagestack.h" // bt_global::page_stack
 
 #include <QGridLayout>
 #include <QSignalMapper>
@@ -245,11 +246,11 @@ IntercomCallPage::IntercomCallPage(EntryphoneDevice *d)
 	buttons_layout->addWidget(volume, 3, 0, 1, 2, Qt::AlignHCenter);
 
 	layout->addLayout(buttons_layout, 0, 1, Qt::AlignHCenter);
-	prev_page = 0;
 }
 
 void IntercomCallPage::showPage()
 {
+	bt_global::page_stack.showVCTPage(this);
 	bt_global::display.forceOperativeMode(true);
 	call_accept->setStatus(true);
 	mute_button->setStatus(EnablingButton::DISABLED);
@@ -258,23 +259,18 @@ void IntercomCallPage::showPage()
 
 void IntercomCallPage::showPageIncomingCall()
 {
-	bt_global::display.forceOperativeMode(true);
+	bt_global::page_stack.showVCTPage(this);
+	if (bt_global::display.currentState() != DISPLAY_FREEZED)
+		bt_global::display.forceOperativeMode(true);
 	call_accept->setStatus(false);
 	mute_button->setStatus(EnablingButton::OFF);
 	Page::showPage();
 }
 
-
 void IntercomCallPage::handleClose()
 {
 	bt_global::display.forceOperativeMode(false);
-	if (prev_page)
-	{
-		prev_page->showPage();
-		prev_page = 0;
-	}
-	else
-		emit Closed();
+	emit Closed();
 }
 
 void IntercomCallPage::toggleCall()
@@ -319,7 +315,6 @@ void IntercomCallPage::status_changed(const StatusList &sl)
 		switch (it.key())
 		{
 		case EntryphoneDevice::INTERCOM_CALL:
-			prev_page = currentPage();
 			showPageIncomingCall();
 			break;
 		case EntryphoneDevice::END_OF_CALL:
@@ -341,7 +336,6 @@ Intercom::Intercom(const QDomNode &config_node)
 	connect(mapper_ext_intercom, SIGNAL(mapped(QString)), dev, SLOT(externalIntercomCall(QString)));
 
 	IntercomCallPage *call_page = new IntercomCallPage(dev);
-//	connect(call_page, SIGNAL(Closed()), SLOT(showPage()));
 
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 	foreach (const QDomNode &item, getChildren(config_node, "item"))

@@ -9,7 +9,7 @@
 #include "xml_functions.h"
 #include "bann2_buttons.h"
 #include "items.h" // ItemTuning
-#include "pagestack.h"
+#include "pagestack.h" // bt_global::page_stack
 
 #include <QDomNode>
 #include <QHBoxLayout>
@@ -395,7 +395,7 @@ void VCTCallPage::exitFullScreen()
 
 void VCTCallPage::showPage()
 {
-	bt_global::page_stack.showVCTCall(this);
+	bt_global::page_stack.showVCTPage(this);
 	call_status->init();
 	vct_call->refreshStatus();
 	if (bt_global::display.currentState() != DISPLAY_FREEZED)

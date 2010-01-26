@@ -62,6 +62,9 @@ private:
 };
 
 
+/**
+ * The page that contains the banner of call exclusion.
+ */
 class CallExclusionPage : public BannerPage
 {
 Q_OBJECT
@@ -117,7 +120,6 @@ private:
 	BtButton *call_accept;
 	EnablingButton *mute_button;
 	ItemTuning *volume;
-	Page *prev_page;
 };
 
 

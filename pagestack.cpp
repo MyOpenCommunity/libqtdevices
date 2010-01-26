@@ -38,11 +38,11 @@ void PageStack::showAlarm(Page *alarm_page)
 	bt_global::btmain->makeActiveAndFreeze();
 }
 
-void PageStack::showVCTCall(Page *call_page)
+void PageStack::showVCTPage(Page *page)
 {
-	addState(State(call_page));
+	addState(State(page));
 
-	connect(call_page, SIGNAL(Closed()), SLOT(closed()));
+	connect(page, SIGNAL(Closed()), SLOT(closed()));
 
 	bt_global::btmain->makeActiveAndFreeze();
 }
