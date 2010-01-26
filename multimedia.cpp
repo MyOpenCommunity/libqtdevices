@@ -39,10 +39,13 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 
 		QDomNode page_node = getPageNodeFromChildNode(item, "lnk_pageID");
 		int page_id = getTextChild(page_node, "id").toInt();
+		int item_id = getTextChild(item, "id").toInt();
 
 		Page *p = 0;
 
-		switch (page_id)
+		// use the item_id for now because some of the items do not
+		// have a linked page
+		switch (item_id)
 		{
 		case PAGE_USB:
 			p = new MultimediaFileListPage;
