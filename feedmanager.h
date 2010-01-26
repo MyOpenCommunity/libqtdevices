@@ -21,6 +21,7 @@
 
 class FeedItemWidget;
 class ListBrowser;
+class QDomNode;
 
 
 struct FeedPath
@@ -46,7 +47,7 @@ public:
 		READING
 	};
 
-	FeedManager();
+	FeedManager(const QDomNode &conf_node);
 
 public slots:
 	virtual void showPage();
@@ -61,7 +62,7 @@ private:
 	QMap<QString, unsigned> page_indexes;
 
 	/// Load the feed list from the configuration file.
-	void loadFeedList();
+	void loadFeedList(const QDomNode &conf_node);
 	void setupPage();
 
 private slots:

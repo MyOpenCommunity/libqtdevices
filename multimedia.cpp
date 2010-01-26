@@ -5,6 +5,8 @@
 #include "main.h" // MULTIMEDIA
 #include "skinmanager.h"
 #include "webcam.h"
+#include "feedmanager.h"
+
 
 enum
 {
@@ -52,6 +54,9 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 			break;
 		case PAGE_WEB_CAM:
 			p = new WebcamListPage(page_node);
+			break;
+		case PAGE_RSS:
+			p = new FeedManager(page_node);
 			break;
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");

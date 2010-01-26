@@ -3,6 +3,7 @@
 #include "listbrowser.h"
 #include "navigation_bar.h"
 #include "main.h"
+#include "xml_functions.h" // getChildren, getTextChild
 
 #include <qregexp.h>
 #include <QVBoxLayout>
@@ -13,9 +14,9 @@
 #define ROWS_PER_PAGE 4
 
 
-FeedManager::FeedManager()
+FeedManager::FeedManager(const QDomNode &conf_node)
 {
-	loadFeedList();
+	loadFeedList(conf_node);
 	status = SELECTION;
 
 	QWidget *content = new QWidget;
@@ -43,39 +44,14 @@ FeedManager::FeedManager()
 	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
 }
 
-void FeedManager::loadFeedList()
+void FeedManager::loadFeedList(const QDomNode &conf_node)
 {
-	QDomNode node_page = getPageNode(FEED_READER);
-	if (node_page.isNull())
+	foreach (const QDomNode &item, getChildren(conf_node, "item"))
 	{
-		qDebug("[FEED] ERROR loading configuration");
-		return;
-	}
+		QString descr = getTextChild(item, "descr");
+		QString url = getTextChild(item, "url");
 
-	QDomNode n = node_page.firstChild();
-	while (!n.isNull())
-	{
-		if (n.isElement() && n.nodeName().contains(QRegExp("item\\d{1,2}")))
-		{
-			QString descr, url;
-			QDomNode child = n.firstChild();
-			while (!child.isNull())
-			{
-				if (child.nodeName() == "descr")
-					descr = child.toElement().text();
-				else if (child.nodeName() == "url")
-					url = child.toElement().text();
-
-				if (descr.length() > 0 && url.length() > 0)
-					break;
-				child = child.nextSibling();
-			}
-			if (descr.length() > 0 && url.length() > 0)
-				feed_list.append(FeedPath(url, descr));
-			else
-				qDebug() << "[FEED] Error loading feed item " << n.nodeName();
-		}
-		n = n.nextSibling();
+		feed_list.append(FeedPath(url, descr));
 	}
 }
 

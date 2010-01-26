@@ -12,7 +12,6 @@
 #include "settings.h"
 #include "loads.h"
 #include "thermalmenu.h"
-#include "feedmanager.h"
 #include "supervisionmenu.h"
 #include "specialpage.h"
 #include "energy_data.h"
@@ -120,9 +119,6 @@ Page *getPage(int page_id)
 		break;
 	case ENERGY_DATA:
 		page = new EnergyData(page_node);
-		break;
-	case FEED_READER:
-		page = new FeedManager;
 		break;
 	case MULTIMEDIA:
 		page = new MultimediaSectionPage(page_node);
