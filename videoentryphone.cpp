@@ -189,9 +189,6 @@ VideoControl::VideoControl(const QDomNode &config_node)
 		QString where = getTextChild(item, "dev") + getTextChild(item, "where");
 		mapper->setMapping(btn, where);
 	}
-
-	connect(call_page, SIGNAL(Closed()), call_page, SLOT(showPreviousPage()));
-
 }
 
 void VideoControl::cameraOn(QString where)
@@ -344,7 +341,7 @@ Intercom::Intercom(const QDomNode &config_node)
 	connect(mapper_ext_intercom, SIGNAL(mapped(QString)), dev, SLOT(externalIntercomCall(QString)));
 
 	IntercomCallPage *call_page = new IntercomCallPage(dev);
-	connect(call_page, SIGNAL(Closed()), SLOT(showPage()));
+//	connect(call_page, SIGNAL(Closed()), SLOT(showPage()));
 
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 	foreach (const QDomNode &item, getChildren(config_node, "item"))

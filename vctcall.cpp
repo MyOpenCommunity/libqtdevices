@@ -254,7 +254,7 @@ void VCTCall::toggleCall()
 		handleClose();
 }
 
-bool VCTCall::startVideo()
+void VCTCall::startVideo()
 {
 	if (video_grabber.state() == QProcess::NotRunning)
 	{
@@ -262,19 +262,13 @@ bool VCTCall::startVideo()
 		QPoint top_left = video_box->mapToGlobal(QPoint(0, 0));
 		args << QString::number(top_left.x()) << QString::number(top_left.y()) << QString::number(format);
 		video_grabber.start(video_grabber_path, args);
-		return true;
 	}
-	return false;
 }
 
-bool VCTCall::stopVideo()
+void VCTCall::stopVideo()
 {
 	if (video_grabber.state() == QProcess::Running)
-	{
 		video_grabber.terminate();
-		return true;
-	}
-	return false;
 }
 
 void VCTCall::status_changed(const StatusList &sl)
@@ -285,12 +279,12 @@ void VCTCall::status_changed(const StatusList &sl)
 		switch (it.key())
 		{
 		case EntryphoneDevice::VCT_CALL:
-			if (startVideo())
-				emit incomingCall();
+			startVideo();
+			emit incomingCall();
 			break;
 		case EntryphoneDevice::END_OF_CALL:
-			if (stopVideo())
-				emit callClosed();
+			stopVideo();
+			emit callClosed();
 			break;
 		case EntryphoneDevice::MOVING_CAMERA:
 			camera->setMoveEnabled(it.value().toBool());
@@ -413,6 +407,7 @@ void VCTCallPage::showPage()
 void VCTCallPage::handleClose()
 {
 	bt_global::display.forceOperativeMode(false);
+	vct_call->blockSignals(false);
 	emit Closed();
 }
 
