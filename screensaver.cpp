@@ -5,6 +5,7 @@
 #include "xml_functions.h"
 #include "titlelabel.h"
 #include "homewindow.h"
+#include "pagestack.h"
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -69,6 +70,8 @@ ScreenSaver::ScreenSaver(int refresh_time)
 
 void ScreenSaver::start(Window *w)
 {
+	bt_global::page_stack.showScreensaver(this);
+
 	window = w;
 	// TODO maybe we can assume that the Window will always be an HomeWindow
 	//      and page will always be != 0 and remove the checks in btmain.cpp
@@ -81,6 +84,7 @@ void ScreenSaver::stop()
 {
 	page = 0;
 	timer->stop();
+	emit Closed(); // for PageStack to catch
 }
 
 bool ScreenSaver::isRunning()

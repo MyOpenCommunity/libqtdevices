@@ -131,7 +131,6 @@ private:
 	BtButton *forward_button; // the forward button of the navigation bar
 	SkinManager::CidState skin_cid;
 
-	Page *previous_page;
 	void loadItems(const QDomNode &config_node);
 
 	void clearAlarms();
@@ -139,7 +138,6 @@ private:
 
 private slots:
 	void showHomePage();
-	void closeAlarms();
 	void requestZoneStatus();
 	void requestStatusIfCurrentWidget(Page *curr);
 	void plantInserted();

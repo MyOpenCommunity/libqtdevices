@@ -30,7 +30,6 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 		wait_time = n.text().toInt();
 
 	Window *w = new CleanScreen(img_clean, wait_time);
-	connect(w, SIGNAL(Closed()), bt_global::btmain->homeWindow(), SLOT(showWindow()));
 
 	b = new BannSimple(img_clean);
 	connect(b, SIGNAL(clicked()), w, SLOT(showWindow()));

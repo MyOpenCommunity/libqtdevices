@@ -24,6 +24,7 @@
 #include "iconwindow.h"
 #include "windowcontainer.h"
 #include "ringtonesmanager.h"
+#include "pagestack.h"
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -125,7 +126,7 @@ BtMain::BtMain()
 	window_container = new WindowContainer(maxWidth(), maxHeight());
 	page_container = window_container->centralLayout();
 	page_container->blockTransitions(true); // no transitions until homepage is showed
-	connect(page_container, SIGNAL(currentPageChanged(Page*)), SLOT(currentPageChanged(Page*)));
+	connect(page_container, SIGNAL(currentPageChanged(Page*)), &bt_global::page_stack, SLOT(currentPageChanged(Page *)));
 	device::setClients(client_comandi, client_richieste);
 
 	connect(client_monitor,SIGNAL(monitorSu()), SLOT(monitorReady()));
@@ -139,7 +140,6 @@ BtMain::BtMain()
 	event_unfreeze = false;
 	firstTime = true;
 	pagDefault = NULL;
-	prev_page = NULL;
 	Home = NULL;
 	screen = NULL;
 	version = NULL;
@@ -501,23 +501,22 @@ void BtMain::unrollPages()
 		}
 }
 
-void BtMain::currentPageChanged(Page *p)
+void BtMain::makeActiveAndFreeze()
 {
 	if (screensaver && screensaver->isRunning())
-		prev_page = p;
-}
-
-// TODO: this method will be called when a page has modified the order of pages and
-// screensaver. We can do better if we use a more general way
-// TODO: this won't work with screensaver DEFORM. I'm leaving it here as a placeholder for a bugfix,
-// remove when a more general way to handle this case has been developed
-void BtMain::showScreensaverIfNeeded()
-{
-	if (screenSaverRunning())
 	{
-		if (Page *target = screensaver->targetPage())
-			target->showPage();
-		screensaver->targetWindow()->showWindow();
+		screensaver->stop();
+		bt_global::display.setState(DISPLAY_FREEZED);
+		event_unfreeze = true; // gesScrSav must die
+
+		if (pwdOn)
+			freeze(true);
+	}
+
+	if (tasti)
+	{
+		bt_global::page_stack.closeWindow(tasti);
+		freeze(true);
 	}
 }
 
@@ -563,7 +562,6 @@ void BtMain::gesScrSav()
 					if (pagDefault)
 					{
 						pagDefault->showPage();
-						prev_page = pagDefault;
 					}
 				}
 			}
@@ -587,7 +585,7 @@ void BtMain::gesScrSav()
 					screensaver = getScreenSaver(target_screensaver);
 
 				Page *target = pagDefault ? pagDefault : Home;
-				prev_page = page_container->currentPage();
+				Page *prev_page = page_container->currentPage();
 
 				page_container->blockTransitions(true);
 				if (target == pagDefault)
@@ -606,11 +604,6 @@ void BtMain::gesScrSav()
 		}
 		else if (screensaver && screensaver->isRunning())
 		{
-			Page *target = screensaver->targetPage();
-			if (target && target != pagDefault)
-				page_container->setCurrentPage(prev_page);
-			screensaver->targetWindow()->showWindow();
-
 			screensaver->stop();
 		}
 	}
@@ -626,11 +619,6 @@ void BtMain::gesScrSav()
 		tempo1->start(2000);
 		bloccato = false;
 	}
-}
-
-Page *BtMain::getPreviousPage()
-{
-	return prev_page;
 }
 
 TrayBar *BtMain::trayBar()
@@ -673,11 +661,6 @@ void BtMain::freeze(bool b)
 		bt_global::display.setState(DISPLAY_OPERATIVE);
 		if (screensaver && screensaver->isRunning())
 		{
-			Page *target = screensaver->targetPage();
-			if (target && target != pagDefault)
-				page_container->setCurrentPage(prev_page);
-			screensaver->targetWindow()->showWindow();
-
 			screensaver->stop();
 		}
 		if (pwdOn)
@@ -687,6 +670,7 @@ void BtMain::freeze(bool b)
 				tasti = new KeypadWindow(Keypad::HIDDEN);
 				connect(tasti, SIGNAL(Closed()), SLOT(testPwd()));
 			}
+			bt_global::page_stack.showKeypad(tasti);
 			tasti->showWindow();
 		}
 		qApp->removeEventFilter(this);
@@ -719,13 +703,12 @@ void BtMain::testPwd()
 		else
 		{
 			qDebug() << "pwd ok!";
-			if (pagDefault)
-				pagDefault->showPage();
-			else
-				Home->showPage();
-			tasti->disconnect();
-			tasti->deleteLater();
+			Window *t = tasti;
+			// set to NULL to avoid freezing again in makeActiveAndFreeze
 			tasti = NULL;
+			bt_global::page_stack.closeWindow(t);
+			t->disconnect();
+			t->deleteLater();
 		}
 	}
 }

@@ -52,8 +52,6 @@ public:
 	virtual void stop();
 	bool isRunning();
 	virtual Type type() = 0;
-	Page *targetPage() { return page; }
-	Window *targetWindow() { return window; }
 	static void initData(const QDomNode &config_node);
 
 protected:

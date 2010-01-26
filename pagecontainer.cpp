@@ -76,7 +76,7 @@ void PageContainer::showPage(Page *p)
 		setCurrentPage(p);
 
 	// This makes showPage() always show the HomeWindow as a side effect.
-	// If this is removed, the code in vctcall.cpp, slideshow.cpp and
+	// If this is removed, the code in vctcall.cpp, slideshow.cpp, pagestack.cpp
 	// videoplayer.cpp must be changed to show the HomeWindow.
 	parent_window->showWindow();
 }

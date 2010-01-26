@@ -30,7 +30,6 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 
 	tasti = NULL;
 	impianto = 0;
-	previous_page = 0;
 	forward_button = 0;
 
 	alarmTexts[0] = tr("technical");
@@ -165,13 +164,6 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 void Antintrusion::plantInserted()
 {
 	clearAlarms();
-	if (previous_page)
-	{
-		previous_page->showPage();
-		// this is the only place where we call a showPage() and we need to restore the screensaver
-		bt_global::btmain->showScreensaverIfNeeded();
-		previous_page = 0;
-	}
 }
 
 Antintrusion::~Antintrusion()
@@ -287,7 +279,6 @@ void Antintrusion::addAlarm(QString descr, int t, int zona)
 	curr_alarm = allarmi.size() - 1;
 
 	AlarmPage *curr = allarmi.at(curr_alarm);
-	connect(curr, SIGNAL(Closed()), SLOT(closeAlarms()));
 	connect(curr, SIGNAL(Next()), SLOT(nextAlarm()));
 	connect(curr, SIGNAL(Prev()), SLOT(prevAlarm()));
 	connect(curr, SIGNAL(Delete()), SLOT(deleteAlarm()));
@@ -295,18 +286,6 @@ void Antintrusion::addAlarm(QString descr, int t, int zona)
 	connect(curr, SIGNAL(showAlarmList()), SLOT(showAlarms()));
 
 	alarms->addAlarm(t, alarm_description, zone_description, now);
-
-	// if the alarm arrive during the screensaver, we want to turn back to the alarm when the screensaver exit
-	if (bt_global::btmain->screenSaverRunning())
-	{
-		if (!previous_page)
-			previous_page = bt_global::btmain->getPreviousPage();
-	}
-	else
-	{
-		if (!previous_page)
-			previous_page = currentPage();
-	}
 
 	curr->showPage();
 	ctrlAllarm();
@@ -316,19 +295,6 @@ void Antintrusion::showHomePage()
 {
 	doClearAlarms();
 	bt_global::btmain->showHomePage();
-}
-
-void Antintrusion::closeAlarms()
-{
-	// An alarm can arrive in every moment, so when closing the alarm page it is
-	// required to move back to the original page.
-	if (previous_page)
-	{
-		previous_page->showPage();
-		previous_page = 0;
-	}
-	else
-		showPage();
 }
 
 void Antintrusion::nextAlarm()
@@ -363,7 +329,6 @@ void Antintrusion::deleteAlarm()
 	if (allarmi.isEmpty())
 	{
 		curr_alarm = -1;
-		closeAlarms();
 		delayCtrlAlarm();
 		return;
 	}
@@ -398,7 +363,6 @@ void Antintrusion::showAlarms()
 void Antintrusion::doClearAlarms()
 {
 	clearAlarms();
-	previous_page = 0;
 }
 
 void Antintrusion::clearAlarms()

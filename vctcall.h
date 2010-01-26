@@ -156,10 +156,6 @@ Q_OBJECT
 public:
 	VCTCallPage(EntryphoneDevice *d);
 
-public slots:
-	void showPreviousPage();
-
-
 private slots:
 	virtual void showPage();
 	void handleClose();
@@ -167,7 +163,6 @@ private slots:
 	void exitFullScreen();
 
 private:
-	Page *prev_page;
 	VCTCallPrivate::VCTCallWindow *window;
 	VCTCallPrivate::VCTCallStatus *call_status;
 	VCTCallPrivate::VCTCall *vct_call;

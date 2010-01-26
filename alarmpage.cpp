@@ -4,6 +4,7 @@
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "btbutton.h"
 #include "skinmanager.h"
+#include "pagestack.h"
 
 #include <QPixmap>
 #include <QWidget>
@@ -131,3 +132,9 @@ AlarmPage::AlarmPage(altype t, const QString &description, const QString &zone,
 }
 
 #endif
+
+void AlarmPage::showPage()
+{
+	bt_global::page_stack.showAlarm(this);
+	Page::showPage();
+}

@@ -192,6 +192,7 @@ HEADERS += actuators.h \
            page.h \
            pagecontainer.h \
            pagefactory.h \
+           pagestack.h \
            plantmenu.h \
            platform_device.h \
            playwindow.h \
@@ -331,6 +332,7 @@ SOURCES += actuators.cpp \
            page.cpp \
            pagecontainer.cpp \
            pagefactory.cpp \
+           pagestack.cpp \
            plantmenu.cpp \
            platform_device.cpp \
            playwindow.cpp \

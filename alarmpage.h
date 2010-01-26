@@ -22,6 +22,9 @@ public:
 	AlarmPage(altype t, const QString &description, const QString &zone,
 		  const QDateTime &time);
 
+public slots:
+	virtual void showPage();
+
 signals:
 	void Next();
 	void Prev();

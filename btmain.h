@@ -67,12 +67,14 @@ public:
 
 	void setPwd(bool, QString);
 
-	Page *getPreviousPage();
 	bool screenSaverRunning();
-	void showScreensaverIfNeeded();
 	Window *homeWindow();
 	TrayBar *trayBar();
 	void showHomePage();
+
+	// stop the screen saver and hide the password keypad but keep the
+	// screen frozen if password protection is active
+	void makeActiveAndFreeze();
 
 public slots:
 	void startCalib();
@@ -94,7 +96,6 @@ private slots:
 	void testFiles();
 	void waitBeforeInit();
 	void monitorReady();
-	void currentPageChanged(Page *p);
 
 private:
 	Client *client_monitor;
@@ -105,8 +106,6 @@ private:
 	QTime *boot_time;
 	HomePage *Home;
 	Page *pagDefault;
-	/// A pointer to the previous visualized page, to be used when resuming from screensaver
-	Page *prev_page;
 
 	QTimer *tempo1;
 	QTimer *tempo2;

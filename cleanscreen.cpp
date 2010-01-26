@@ -2,6 +2,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "displaycontrol.h" // bt_global::display
+#include "pagestack.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -48,6 +49,7 @@ void CleanScreen::showWindow()
 		secs_counter = 0;
 		bt_global::display.forceOperativeMode(true);
 	}
+	bt_global::page_stack.showUserWindow(this);
 	Window::showWindow();
 }
 

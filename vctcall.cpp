@@ -9,6 +9,7 @@
 #include "xml_functions.h"
 #include "bann2_buttons.h"
 #include "items.h" // ItemTuning
+#include "pagestack.h"
 
 #include <QDomNode>
 #include <QHBoxLayout>
@@ -380,8 +381,6 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 	layout->addLayout(bottom, 2, 0, 1, 2, Qt::AlignLeft);
 	layout->setContentsMargins(10, 0, 0, 10);
 	layout->setSpacing(10);
-
-	prev_page = 0;
 }
 
 void VCTCallPage::enterFullScreen()
@@ -402,19 +401,12 @@ void VCTCallPage::exitFullScreen()
 
 void VCTCallPage::showPage()
 {
+	bt_global::page_stack.showVCTCall(this);
 	call_status->init();
 	vct_call->refreshStatus();
-	bt_global::display.forceOperativeMode(true);
-	prev_page = currentPage();
+	if (bt_global::display.currentState() != DISPLAY_FREEZED)
+		bt_global::display.forceOperativeMode(true);
 	Page::showPage();
-}
-
-void VCTCallPage::showPreviousPage()
-{
-	// TODO: la previous page non tiene conto della gestione dello screensaver.
-	// Gestire in modo migliore con un oggetto globale!
-	Q_ASSERT_X(prev_page, "VCTCallPage::showPreviousPage", "Previous page not set!");
-	prev_page->showPage();
 }
 
 
