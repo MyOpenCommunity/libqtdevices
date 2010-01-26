@@ -25,6 +25,8 @@ Q_OBJECT
 public:
 	FeedItemWidget(QWidget *parent = 0);
 	void setFeedInfo(const FeedItemInfo &feed_item);
+
+public slots:
 	void scrollUp();
 	void scrollDown();
 
