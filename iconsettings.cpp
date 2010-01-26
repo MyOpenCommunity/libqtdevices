@@ -258,7 +258,8 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			p = new IconSettings(page_node);
 			break;
 		case PAGE_SCREENSAVER:
-			p = new ScreenSaverPage;
+			//p = new ScreenSaverPage;
+			p = new SlideshowSelectionPage("cfg/slideshow");
 			break;
 		case PAGE_CLEANSCREEN:
 			// TODO config file does not contain the clean screen value
