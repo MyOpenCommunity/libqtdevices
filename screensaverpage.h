@@ -40,6 +40,13 @@ private:
 };
 
 
+class SlideshowSettings : public QWidget
+{
+Q_OBJECT
+public:
+	SlideshowSettings();
+};
+
 class SlideshowImageContent : public GridContent
 {
 Q_OBJECT

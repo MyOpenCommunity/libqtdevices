@@ -5,6 +5,7 @@
 #include "singlechoicecontent.h"
 #include "navigation_bar.h" // NavigationBar
 #include "skinmanager.h" // bt_global::skin
+#include "btbutton.h" // BtButton
 
 #include <QAbstractButton>
 #include <QGridLayout>
@@ -101,18 +102,36 @@ void SlideshowImageContent::prevItem()
 }
 
 
+SlideshowSettings::SlideshowSettings() :
+	QWidget(0)
+{
+	BtButton *add_images = new BtButton;
+	add_images->setImage(bt_global::skin->getImage("add_image"));
+	BtButton *remove_images = new BtButton;
+	remove_images->setImage(bt_global::skin->getImage("remove_image"));
+	QHBoxLayout *l = new QHBoxLayout(this);
+	l->addWidget(add_images);
+	l->addWidget(remove_images);
+}
+
+
 
 SlideshowSelectionPage::SlideshowSelectionPage(const QString &start_path) :
 	Page(0),
 	current_dir(start_path),
 	level(0)
 {
+	SlideshowImageContent *content = new SlideshowImageContent;
+	PageTitleWidget *title_widget = new PageTitleWidget("Select photos", Page::TITLE_HEIGHT);
+	connect(content, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int,int)));
+
 	NavigationBar *nav_bar = new NavigationBar;
-	buildPage(new SlideshowImageContent, nav_bar, "Select photos");
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
-	connect(nav_bar, SIGNAL(upClick()), page_content, SLOT(prevItem()));
-	connect(nav_bar, SIGNAL(downClick()), page_content, SLOT(nextItem()));
-	connect(page_content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+	connect(nav_bar, SIGNAL(upClick()), content, SLOT(prevItem()));
+	connect(nav_bar, SIGNAL(downClick()), content, SLOT(nextItem()));
+	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+
+	buildPage(content, nav_bar, new SlideshowSettings, title_widget);
 
 	checked_icon = bt_global::skin->getImage("checked");
 	unchecked_icon = bt_global::skin->getImage("unchecked");
