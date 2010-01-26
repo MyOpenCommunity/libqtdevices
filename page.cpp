@@ -87,7 +87,8 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, const QString& label, i
 		page_title = new QLabel(label);
 		page_title->setFont(bt_global::font->get(FontManager::TITLE));
 		page_title->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
-		page_title->setFixedHeight(label_height);
+		// the 10 here must match the margins in the PageTitleWidget above
+		page_title->setFixedHeight(label_height + 10);
 	}
 
 	buildPage(content, nav_bar, top_widget, page_title);
