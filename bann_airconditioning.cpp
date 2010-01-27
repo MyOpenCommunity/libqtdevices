@@ -245,12 +245,12 @@ int SplitTemperature::roundTo5(int temp)
 
 SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 {
-	modes_descr[0] = tr("OFF");
-	modes_descr[1] = tr("HEATING");
-	modes_descr[2] = tr("COOLING");
-	modes_descr[3] = tr("DRY");
-	modes_descr[4] = tr("FAN");
-	modes_descr[5] = tr("AUTO");
+	modes_descr[AdvancedAirConditioningDevice::MODE_OFF] = tr("OFF");
+	modes_descr[AdvancedAirConditioningDevice::MODE_WINTER] = tr("HEATING");
+	modes_descr[AdvancedAirConditioningDevice::MODE_SUMMER] = tr("COOLING");
+	modes_descr[AdvancedAirConditioningDevice::MODE_DEHUM] = tr("DRY");
+	modes_descr[AdvancedAirConditioningDevice::MODE_FAN] = tr("FAN");
+	modes_descr[AdvancedAirConditioningDevice::MODE_AUTO] = tr("AUTO");
 
 	foreach (int mode_id, modes)
 		if (modes_descr.contains(mode_id))
@@ -264,11 +264,11 @@ SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 
 SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 {
-	speeds_descr[0] = tr("AUTO");
-	speeds_descr[1] = tr("LOW");
-	speeds_descr[2] = tr("MEDIUM");
-	speeds_descr[3] = tr("HIGH");
-	speeds_descr[4] = tr("SILENT");
+	speeds_descr[AdvancedAirConditioningDevice::VEL_AUTO] = tr("AUTO");
+	speeds_descr[AdvancedAirConditioningDevice::VEL_MIN] = tr("LOW");
+	speeds_descr[AdvancedAirConditioningDevice::VEL_MED] = tr("MEDIUM");
+	speeds_descr[AdvancedAirConditioningDevice::VEL_MAX] = tr("HIGH");
+	speeds_descr[AdvancedAirConditioningDevice::VEL_SILENT] = tr("SILENT");
 
 	foreach (int speed_id, speeds)
 		if (speeds_descr.contains(speed_id))
