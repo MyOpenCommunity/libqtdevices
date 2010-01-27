@@ -98,7 +98,7 @@ NonControlledProbeDevice *AirConditioning::createProbeDevice(const QDomNode &ite
 {
 	NonControlledProbeDevice *d = 0;
 	QString where_probe = getTextChild(item_node, "where_probe");
-	if (!where_probe.isNull())
+	if (where_probe != "000")
 		d = bt_global::add_device_to_cache(new NonControlledProbeDevice(where_probe, NonControlledProbeDevice::INTERNAL));
 	return d;
 }
