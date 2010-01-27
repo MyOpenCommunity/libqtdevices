@@ -67,7 +67,6 @@ public:
 
 	void setPwd(bool, QString);
 
-	bool screenSaverRunning();
 	Window *homeWindow();
 	TrayBar *trayBar();
 	void showHomePage();

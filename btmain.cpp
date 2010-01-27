@@ -631,11 +631,6 @@ Window *BtMain::homeWindow()
 	return window_container->homeWindow();
 }
 
-bool BtMain::screenSaverRunning()
-{
-	return screensaver && screensaver->isRunning();
-}
-
 bool BtMain::eventFilter(QObject *obj, QEvent *ev)
 {
 	// Discard the mouse press and mouse double click

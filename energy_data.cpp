@@ -1,5 +1,4 @@
 #include "energy_data.h"
-#include "main.h" // IMG_PATH
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bann2_buttons.h" // bann2But, bannOnOff
 #include "energy_view.h" // EnergyView

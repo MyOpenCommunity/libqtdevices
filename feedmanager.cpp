@@ -1,8 +1,10 @@
 #include "feedmanager.h"
 #include "feeditemwidget.h"
-#include "listbrowser.h"
+#include "itemlist.h"
 #include "navigation_bar.h"
 #include "main.h"
+#include "xml_functions.h" // getChildren, getTextChild
+#include "skinmanager.h"
 
 #include <qregexp.h>
 #include <QVBoxLayout>
@@ -13,207 +15,153 @@
 #define ROWS_PER_PAGE 4
 
 
-FeedManager::FeedManager()
+// FeedManager implementation
+
+FeedManager::FeedManager(const QDomNode &conf_node)
 {
-	loadFeedList();
-	status = SELECTION;
-
-	QWidget *content = new QWidget;
-	QVBoxLayout *main_layout = new QVBoxLayout(content);
-	main_layout->setContentsMargins(0, 0, 0, 0);
-	main_layout->setSpacing(0);
-
-	list_browser = new ListBrowser(this, ROWS_PER_PAGE);
-	main_layout->addWidget(list_browser, 1);
-
-	feed_widget = new FeedItemWidget(this);
-	feed_widget->hide();
-	main_layout->addWidget(feed_widget, 1);
-
+	ItemList *feeds = new ItemList(this, ROWS_PER_PAGE);
 	NavigationBar *nav_bar = new NavigationBar;
-	buildPage(content, nav_bar);
 
-	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
-	connect(feed_widget, SIGNAL(Closed()), feed_widget, SLOT(hide()));
+	buildPage(feeds, nav_bar, getTextChild(conf_node, "descr"), 35);
+	layout()->setContentsMargins(0, 5, 25, 10);
+
+	feed_items = new FeedItemList;
+
 	connect(&parser, SIGNAL(feedReady()), SLOT(feedReady()));
 
-	// bannNavigazione up/down signals are inverted...
-	connect(nav_bar, SIGNAL(upClick()), SLOT(downClick()));
-	connect(nav_bar, SIGNAL(downClick()), SLOT(upClick()));
-	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
+	connect(nav_bar, SIGNAL(upClick()), feeds, SLOT(prevItem()));
+	connect(nav_bar, SIGNAL(downClick()), feeds, SLOT(nextItem()));
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+
+	connect(feeds, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+	connect(feeds, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
+
+	connect(feed_items, SIGNAL(Closed()), SLOT(feedClosed()));
+
+	// read and display feed list
+	loadFeedList(conf_node);
 }
 
-void FeedManager::loadFeedList()
+void FeedManager::loadFeedList(const QDomNode &conf_node)
 {
-	QDomNode node_page = getPageNode(FEED_READER);
-	if (node_page.isNull())
+	foreach (const QDomNode &item, getChildren(conf_node, "item"))
 	{
-		qDebug("[FEED] ERROR loading configuration");
-		return;
+		SkinContext cxt(getTextChild(item, "cid").toInt());
+
+		QString descr = getTextChild(item, "descr");
+		QString url = getTextChild(item, "url");
+		QString icon = bt_global::skin->getImage("feed_icon");
+
+		feed_list.append(FeedInfo(url, descr, icon));
 	}
 
-	QDomNode n = node_page.firstChild();
-	while (!n.isNull())
+	QList<ItemList::ItemInfo> item_list;
+	for (int i = 0; i < feed_list.size(); ++i)
 	{
-		if (n.isElement() && n.nodeName().contains(QRegExp("item\\d{1,2}")))
-		{
-			QString descr, url;
-			QDomNode child = n.firstChild();
-			while (!child.isNull())
-			{
-				if (child.nodeName() == "descr")
-					descr = child.toElement().text();
-				else if (child.nodeName() == "url")
-					url = child.toElement().text();
+		ItemList::ItemInfo item(feed_list[i].desc, QString(),
+					feed_list[i].icon, bt_global::skin->getImage("forward_icon"));
 
-				if (descr.length() > 0 && url.length() > 0)
-					break;
-				child = child.nextSibling();
-			}
-			if (descr.length() > 0 && url.length() > 0)
-				feed_list.append(FeedPath(url, descr));
-			else
-				qDebug() << "[FEED] Error loading feed item " << n.nodeName();
-		}
-		n = n.nextSibling();
-	}
-}
-
-void FeedManager::showPage()
-{
-	setupPage();
-	Page::showPage();
-}
-
-void FeedManager::setupPage()
-{
-	int page = 0;
-	QVector<QString> item_list;
-
-	switch (status)
-	{
-	case SELECTION:
-		for (int i = 0; i < feed_list.size(); ++i)
-			item_list.append(feed_list[i].desc);
-
-		if (page_indexes.contains("/"))
-			page = page_indexes["/"];
-		break;
-
-	case BROWSING:
-		for (int i = 0; i < data.entry_list.size(); ++i)
-			item_list.append(data.entry_list[i].title);
-
-		if (page_indexes.contains("/"))
-			page = page_indexes["/"];
-		break;
-
-	default:
-		qFatal("Feed status not handled!");
-		break;
+		item_list.append(item);
 	}
 
-	prepareTransition();
-	list_browser->setList(item_list, page);
-	list_browser->showList();
-	startTransition();
+	page_content->setList(item_list, 0);
+	page_content->showList();
 }
 
 void FeedManager::itemIsClicked(int item)
 {
-	switch (status)
-	{
-	case SELECTION:
-		Q_ASSERT_X(item >= 0 && item < (int)feed_list.size(), "FeedManager::itemIsClicked",
-			"Item index out of range!");
-		page_indexes["/"] = list_browser->getCurrentPage();
-		qDebug() << "parse url: " << feed_list[item].path;
-		parser.parse(feed_list[item].path);
-		break;
-
-	case BROWSING:
-	{
-		Q_ASSERT_X(item >= 0 && item < (int)data.entry_list.size(), "FeedManager::itemIsClicked",
-			"Item index out of range!");
-		page_indexes[data.feed_title] = list_browser->getCurrentPage();
-		feed_widget->setFeedInfo(data.entry_list[item]);
-		prepareTransition();
-		feed_widget->show();
-		list_browser->hide();
-		startTransition();
-		status = READING;
-		break;
-	}
-	default:
-		qFatal("Feed status not handled!");
-		break;
-	}
+	current_feed = item;
+	parser.parse(feed_list[item].path);
 }
 
 void FeedManager::feedReady()
 {
-	data = parser.getFeedData();
-	status = BROWSING;
-	setupPage();
+	feed_items->setFeedInfo(feed_list[current_feed].current_page, parser.getFeedData());
+	feed_items->showPage();
 }
 
-void FeedManager::backClick()
+void FeedManager::feedClosed()
 {
-	switch (status)
-	{
-	case SELECTION:
-		emit Closed();
-		break;
-	case BROWSING:
-		// va salvato anche il page index?
-		status = SELECTION;
-		setupPage();
-		break;
-	case READING:
-	{
-		status = BROWSING;
-		prepareTransition();
-		feed_widget->hide();
-		list_browser->show();
-		startTransition();
-		break;
-	}
-	default:
-		qFatal("Feed status not handled!");
-		break;
-	}
+	feed_list[current_feed].current_page = feed_items->currentPage();
+	showPage();
 }
 
-void FeedManager::upClick()
+
+// FeedItemList implementation
+
+FeedItemList::FeedItemList()
 {
-	switch (status)
-	{
-	case SELECTION:
-	case BROWSING:
-		list_browser->prevItem();
-		break;
-	case READING:
-		feed_widget->scrollUp();
-		break;
-	default:
-		qFatal("Feed status not handled!");
-		break;
-	}
+	forward_icon = bt_global::skin->getImage("forward_icon");
+	feed_icon = bt_global::skin->getImage("feed_icon");
+
+	ItemList *feed_items = new ItemList(this, ROWS_PER_PAGE);
+	title_widget = new PageTitleWidget("", 35);
+	NavigationBar *nav_bar = new NavigationBar;
+
+	buildPage(feed_items, nav_bar, 0, title_widget);
+	layout()->setContentsMargins(0, 5, 25, 10);
+
+	feed_item = new FeedItem();
+
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(upClick()), feed_items, SLOT(prevItem()));
+	connect(nav_bar, SIGNAL(downClick()), feed_items, SLOT(nextItem()));
+
+	connect(feed_items, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
+	connect(feed_items, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+	connect(feed_items, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
+
+	connect(feed_item, SIGNAL(Closed()), SLOT(showPage()));
 }
 
-void FeedManager::downClick()
+void FeedItemList::setFeedInfo(int page, const FeedData &feed_data)
 {
-	switch (status)
+	data = feed_data;
+
+	QList<ItemList::ItemInfo> item_list;
+	for (int i = 0; i < data.entry_list.size(); ++i)
 	{
-	case SELECTION:
-	case BROWSING:
-		list_browser->nextItem();
-		break;
-	case READING:
-		feed_widget->scrollDown();
-		break;
-	default:
-		qFatal("Feed status not handled!");
-		break;
+		ItemList::ItemInfo item(data.entry_list[i].title, data.entry_list[i].last_updated,
+					feed_icon, forward_icon);
+
+		item_list.append(item);
 	}
+	title_widget->setTitle(data.feed_title);
+
+	page_content->setList(item_list, page);
+	page_content->showList();
 }
+
+void FeedItemList::itemIsClicked(int item)
+{
+	feed_item->setInfo(data.feed_title, data.entry_list[item]);
+	feed_item->showPage();
+}
+
+int FeedItemList::currentPage()
+{
+	return page_content->getCurrentPage();
+}
+
+
+// FeedItem implementation
+
+FeedItem::FeedItem()
+{
+	item_widget = new FeedItemWidget;
+	title_widget = new PageTitleWidget("", 35);
+	NavigationBar *nav_bar = new NavigationBar;
+
+	buildPage(item_widget, nav_bar, 0, title_widget);
+
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(upClick()), item_widget, SLOT(scrollUp()));
+	connect(nav_bar, SIGNAL(downClick()), item_widget, SLOT(scrollDown()));
+}
+
+void FeedItem::setInfo(const QString &feed_title, const FeedItemInfo &feed_item)
+{
+	title_widget->setTitle(feed_title);
+	item_widget->setFeedInfo(feed_item);
+}
+

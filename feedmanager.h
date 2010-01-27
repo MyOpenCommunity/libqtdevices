@@ -16,61 +16,93 @@
 #include "feedparser.h"
 #include "page.h"
 
-#include <qmap.h>
 #include <QList>
 
 class FeedItemWidget;
-class ListBrowser;
+class ItemList;
+class QDomNode;
+class FeedItem;
+class FeedItemList;
 
 
-struct FeedPath
+struct FeedInfo
 {
 	QString path;
 	QString desc;
-	FeedPath(QString p="", QString d="")
+	QString icon;
+	int current_page;
+
+	FeedInfo(QString p, QString d, QString i="")
 	{
 		path = p;
 		desc = d;
+		icon = i;
+		current_page = 0;
 	}
 };
 
 
+// displays the list of RSS feeds
 class FeedManager : public Page
 {
 Q_OBJECT
 public:
-	enum Status
-	{
-		SELECTION = 0,
-		BROWSING,
-		READING
-	};
+	typedef ItemList ContentType;
 
-	FeedManager();
-
-public slots:
-	virtual void showPage();
+	FeedManager(const QDomNode &conf_node);
 
 private:
-	FeedParser parser;
-	FeedData data;
-	ListBrowser *list_browser;
-	QList<FeedPath> feed_list;
-	Status status;
-	FeedItemWidget *feed_widget;
-	QMap<QString, unsigned> page_indexes;
-
 	/// Load the feed list from the configuration file.
-	void loadFeedList();
-	void setupPage();
+	void loadFeedList(const QDomNode &conf_node);
 
 private slots:
 	void itemIsClicked(int item);
 	void feedReady();
+	void feedClosed();
 
-	void backClick();
-	void downClick();
-	void upClick();
+private:
+	FeedParser parser;
+	FeedItemList *feed_items;
+	QList<FeedInfo> feed_list;
+	int current_feed;
+};
+
+
+// display the items of an RSS feed
+class FeedItemList : public Page
+{
+Q_OBJECT
+public:
+	typedef ItemList ContentType;
+
+	FeedItemList();
+
+	void setFeedInfo(int page, const FeedData &feed_data);
+	int currentPage();
+
+private slots:
+	void itemIsClicked(int item);
+
+private:
+	FeedData data;
+	PageTitleWidget *title_widget;
+	FeedItem *feed_item;
+	QString forward_icon, feed_icon;
+};
+
+
+// display a single RSS news item
+class FeedItem : public Page
+{
+Q_OBJECT
+public:
+	FeedItem();
+
+	void setInfo(const QString &feed_title, const FeedItemInfo &feed_item);
+
+private:
+	FeedItemWidget *item_widget;
+	PageTitleWidget *title_widget;
 };
 
 #endif

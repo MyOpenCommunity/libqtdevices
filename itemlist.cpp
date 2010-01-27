@@ -43,7 +43,7 @@ void ItemList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id
 	boxWidget->setFixedHeight(68);
 
 	QHBoxLayout *box = new QHBoxLayout(boxWidget);
-	box->setContentsMargins(5, 0, 5, 0);
+	box->setContentsMargins(5, 5, 5, 5);
 
 	// file icon on the left
 	QLabel *icon = new QLabel;
@@ -57,8 +57,8 @@ void ItemList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id
 	name->setFont(font);
 	description->setFont(font);
 
-	labels->addWidget(name);
-	labels->addWidget(description);
+	labels->addWidget(name, 1);
+	labels->addWidget(description, 1);
 
 	box->addLayout(labels, 1);
 
