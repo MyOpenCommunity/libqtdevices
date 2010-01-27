@@ -108,6 +108,7 @@ HEADERS += actuators.h \
            ambdiffson.h \
            amplificatori.h \
            antintrusion.h \
+           audiostatemachine.h \
            automation.h \
            automation_device.h \
            aux.h \
@@ -247,6 +248,7 @@ SOURCES += actuators.cpp \
            ambdiffson.cpp \
            amplificatori.cpp \
            antintrusion.cpp \
+           audiostatemachine.cpp \
            automation.cpp \
            automation_device.cpp \
            aux.cpp \
