@@ -60,8 +60,8 @@ void SingleSplit::setDeviceOff()
 }
 
 
-AdvancedSingleSplit::AdvancedSingleSplit(QString descr, bool show_right_button, AdvancedSplitPage *p, AirConditioningInterface *d, NonControlledProbeDevice *probe) :
-	SingleSplit(descr, show_right_button, d, probe)
+AdvancedSingleSplit::AdvancedSingleSplit(QString descr, AdvancedSplitPage *p, AirConditioningInterface *d, NonControlledProbeDevice *probe) :
+	SingleSplit(descr, true, d, probe)
 {
 	page = p;
 }
@@ -181,6 +181,22 @@ void SplitTemperature::setTemperature(int new_temp_celsius)
 		qWarning() << "SplitTemperature::setTemperature: provided temp is outside limits, ignoring.";
 }
 
+void SplitTemperature::currentModeChanged(int new_mode)
+{
+	switch (new_mode)
+	{
+	case AdvancedAirConditioningDevice::MODE_DEHUM:
+	case AdvancedAirConditioningDevice::MODE_FAN:
+		left_button->disable();
+		right_button->disable();
+		break;
+	default:
+		left_button->enable();
+		right_button->enable();
+		break;
+	}
+}
+
 void SplitTemperature::increaseTemp()
 {
 	int tmp = current_temp + temp_step;
@@ -245,12 +261,12 @@ int SplitTemperature::roundTo5(int temp)
 
 SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 {
-	modes_descr[0] = tr("OFF");
-	modes_descr[1] = tr("HEATING");
-	modes_descr[2] = tr("COOLING");
-	modes_descr[3] = tr("DRY");
-	modes_descr[4] = tr("FAN");
-	modes_descr[5] = tr("AUTO");
+	modes_descr[AdvancedAirConditioningDevice::MODE_OFF] = tr("OFF");
+	modes_descr[AdvancedAirConditioningDevice::MODE_WINTER] = tr("HEATING");
+	modes_descr[AdvancedAirConditioningDevice::MODE_SUMMER] = tr("COOLING");
+	modes_descr[AdvancedAirConditioningDevice::MODE_DEHUM] = tr("DRY");
+	modes_descr[AdvancedAirConditioningDevice::MODE_FAN] = tr("FAN");
+	modes_descr[AdvancedAirConditioningDevice::MODE_AUTO] = tr("AUTO");
 
 	foreach (int mode_id, modes)
 		if (modes_descr.contains(mode_id))
@@ -259,16 +275,22 @@ SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 			qWarning("The mode id %d doesn't exists", mode_id);
 
 	initBanner(bt_global::skin->getImage("cycle"), current_mode);
+	connect(left_button, SIGNAL(clicked()), SLOT(buttonClicked()));
+}
+
+void SplitMode::buttonClicked()
+{
+	emit modeChanged(currentState());
 }
 
 
 SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 {
-	speeds_descr[0] = tr("AUTO");
-	speeds_descr[1] = tr("LOW");
-	speeds_descr[2] = tr("MEDIUM");
-	speeds_descr[3] = tr("HIGH");
-	speeds_descr[4] = tr("SILENT");
+	speeds_descr[AdvancedAirConditioningDevice::VEL_AUTO] = tr("AUTO");
+	speeds_descr[AdvancedAirConditioningDevice::VEL_MIN] = tr("LOW");
+	speeds_descr[AdvancedAirConditioningDevice::VEL_MED] = tr("MEDIUM");
+	speeds_descr[AdvancedAirConditioningDevice::VEL_MAX] = tr("HIGH");
+	speeds_descr[AdvancedAirConditioningDevice::VEL_SILENT] = tr("SILENT");
 
 	foreach (int speed_id, speeds)
 		if (speeds_descr.contains(speed_id))

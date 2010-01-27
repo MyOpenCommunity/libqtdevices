@@ -68,12 +68,10 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 		QString where = getTextChild(item_node, "where");
 		AdvancedAirConditioningDevice *dev = bt_global::add_device_to_cache(new AdvancedAirConditioningDevice(where));
 
-		bool command_is_empty = commands.isEmpty();
-		AdvancedSplitPage *p = command_is_empty ? 0 : new AdvancedSplitPage(item_node, dev);
-		SingleSplit *bann = new AdvancedSingleSplit(descr, !command_is_empty, p, dev, createProbeDevice(item_node));
+		AdvancedSplitPage *p = new AdvancedSplitPage(item_node, dev);
+		SingleSplit *bann = new AdvancedSingleSplit(descr, p, dev, createProbeDevice(item_node));
 		b = bann;
-		if (!command_is_empty)
-			bann->connectRightButton(p);
+		bann->connectRightButton(p);
 		device_container.append(dev);
 		break;
 	}
@@ -95,7 +93,7 @@ NonControlledProbeDevice *AirConditioning::createProbeDevice(const QDomNode &ite
 {
 	NonControlledProbeDevice *d = 0;
 	QString where_probe = getTextChild(item_node, "where_probe");
-	if (!where_probe.isNull())
+	if (where_probe != "000")
 		d = bt_global::add_device_to_cache(new NonControlledProbeDevice(where_probe, NonControlledProbeDevice::INTERNAL));
 	return d;
 }
@@ -262,6 +260,7 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 
 	QDomNode temp_node = getChildWithName(config_node, "setpoint");
 	readTempConfig(temp_node, current_temp);
+	connect(mode, SIGNAL(modeChanged(int)), temperature, SLOT(currentModeChanged(int)));
 
 	QDomNode speed_node = getChildWithName(config_node, "speed");
 	readSpeedConfig(speed_node, values_node);

@@ -47,7 +47,7 @@ class AdvancedSingleSplit : public SingleSplit
 {
 Q_OBJECT
 public:
-	AdvancedSingleSplit(QString descr, bool show_right_button, AdvancedSplitPage *p, AirConditioningInterface *d, NonControlledProbeDevice *probe = 0);
+	AdvancedSingleSplit(QString descr, AdvancedSplitPage *p, AirConditioningInterface *d, NonControlledProbeDevice *probe = 0);
 	virtual void setSerNum(int ser);
 
 private:
@@ -137,6 +137,9 @@ public:
 	 */
 	int temperature();
 
+public slots:
+	void currentModeChanged(int new_mode);
+
 private slots:
 	void increaseTemp();
 	void decreaseTemp();
@@ -158,8 +161,15 @@ class SplitMode : public BannStates
 Q_OBJECT
 public:
 	SplitMode(QList<int> modes, int current_mode);
+
 private:
 	QHash<int, QString> modes_descr;
+
+private slots:
+	void buttonClicked();
+
+signals:
+	void modeChanged(int);
 };
 
 
