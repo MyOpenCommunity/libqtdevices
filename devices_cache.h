@@ -78,6 +78,7 @@ namespace bt_global
 	// the key already exists.
 	template<class T> T* add_device_to_cache(T *device)
 	{
+		QString orig_class_name = device->metaObject()->className();
 		QString key = device->get_key();
 		if (bt_global::devices_cache.contains(key))
 		{
@@ -87,6 +88,8 @@ namespace bt_global
 		else
 			bt_global::devices_cache[key] = device;
 
+		QString current_class_name = device->metaObject()->className();
+		Q_ASSERT_X(orig_class_name == current_class_name, "bt_global::add_device_to_cache", "Device returned is different from the given one. Maybe two devices have the same address?");
 		return device;
 	}
 
