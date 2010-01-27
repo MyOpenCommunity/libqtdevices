@@ -39,6 +39,14 @@ void TestEntryphoneDevice::simulateCallerAddress(int kind, int mmtype, QString w
 	dev->manageFrame(msg);
 }
 
+void TestEntryphoneDevice::simulateRearmSession(int kind, int mmtype, QString where)
+{
+	QString frame = QString("*8*40#%1#%2*%3##").arg(kind).arg(mmtype).arg(where);
+
+	OpenMsg msg(frame.toStdString());
+	dev->manageFrame(msg);
+}
+
 void TestEntryphoneDevice::sendAnswerCall()
 {
 	// ringtone 1
@@ -47,6 +55,8 @@ void TestEntryphoneDevice::sendAnswerCall()
 	int mmtype = 4;
 	// simulate an incoming call, since we must remember kind and mmtype
 	simulateIncomingCall(kind, mmtype);
+	QString caller_addr = "20";
+	simulateCallerAddress(kind, mmtype, caller_addr);
 
 	dev->answerCall();
 	client_command->flush();
@@ -62,6 +72,9 @@ void TestEntryphoneDevice::sendEndCall()
 	int mmtype = 4;
 	simulateIncomingCall(kind, mmtype);
 	const char *end_all_calls = "4";
+
+	QString caller_addr = "20";
+	simulateCallerAddress(kind, mmtype, caller_addr);
 
 	dev->endCall();
 	client_command->flush();
@@ -148,6 +161,21 @@ void TestEntryphoneDevice::receiveCallerAddress()
 	simulateCallerAddress(kind, mmtype, caller_addr);
 
 	QCOMPARE(dev->caller_address, caller_addr);
+	QCOMPARE(dev->master_caller_address, caller_addr);
+}
+
+void TestEntryphoneDevice::receiveRearmSession()
+{
+	int kind = 1;
+	int mmtype = 4;
+	QString caller_addr = "20";
+	QString master_caller_addr = "21";
+	simulateIncomingCall(kind, mmtype);
+	simulateCallerAddress(kind, mmtype, master_caller_addr);
+	simulateRearmSession(kind, mmtype, caller_addr);
+
+	QCOMPARE(dev->caller_address, caller_addr);
+	QCOMPARE(dev->master_caller_address, master_caller_addr);
 }
 
 void TestEntryphoneDevice::sendCycleExternalUnits()

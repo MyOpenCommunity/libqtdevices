@@ -68,6 +68,7 @@ private:
 	// call parameters
 	int kind, mmtype;
 	QString caller_address;
+	QString master_caller_address;
 	bool is_calling;
 };
 

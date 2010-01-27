@@ -21,6 +21,7 @@ enum
 	STAIRCASE_ACTIVATE = 21,
 	STAIRCASE_RELEASE = 22,
 	READY = 37,
+	REARM_SESSION = 40,
 	MOVE_UP = 59,
 	MOVE_DOWN = 60,
 	MOVE_LEFT = 61,
@@ -93,7 +94,10 @@ void EntryphoneDevice::releaseLock() const
 
 void EntryphoneDevice::cycleExternalUnits() const
 {
-	sendCommand(QString("%1#%2").arg(CYCLE_EXT_UNIT).arg(where), caller_address);
+	// Cycling on the external units configured means send a specific frame to
+	// the first unit that we turn on, no matter what is the current camera
+	// displayed.
+	sendCommand(QString("%1#%2").arg(CYCLE_EXT_UNIT).arg(where), master_caller_address);
 }
 
 void EntryphoneDevice::endCall()
@@ -172,7 +176,7 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 	int what = msg.what();
 	StatusList sl;
 	QVariant v;
-	bool send_status_update = true;
+
 	switch (what)
 	{
 	case CALL:
@@ -180,14 +184,8 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 		Q_ASSERT_X(msg.whatSubArgCnt() < 2, "EntryphoneDevice::manageFrame",
 			"Incomplete open frame received");
 		kind = msg.whatArgN(0);
-		mmtype = msg.whatArgN(1);
 
-		// The third digit means if the camera can receive movement instructions
-		// or not.
-		int kind_m = kind % 1000;
-		sl[MOVING_CAMERA] = (kind_m >= 101 && kind_m <= 105);
-
-		int kind_val = kind % 100;
+		int kind_val = msg.whatArgN(0) % 100;
 		int ringtone = -1;
 		switch (kind_val)
 		{
@@ -232,25 +230,37 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 		break;
 	}
 	case CALLER_ADDRESS:
+		master_caller_address = QString::fromStdString(msg.whereFull());
+		// manage the other things like in the rearm session case
+	case REARM_SESSION:
+	{
 		caller_address = QString::fromStdString(msg.whereFull());
-		send_status_update = false;
+
+		Q_ASSERT_X(msg.whatSubArgCnt() < 2, "EntryphoneDevice::manageFrame",
+			"Incomplete open frame received");
+		kind = msg.whatArgN(0);
+		mmtype = msg.whatArgN(1);
+		// The third digit means if the camera can receive movement instructions
+		// or not.
+		int kind_m = kind % 1000;
+		sl[MOVING_CAMERA] = (kind_m >= 101 && kind_m <= 105);
 		break;
+	}
+
 	case END_OF_CALL:
 		resetCallState();
 		break;
 	}
 
-	if (send_status_update)
-	{
-		sl[what] = v;
-		emit status_changed(sl);
-	}
+	sl[what] = v;
+	emit status_changed(sl);
 }
 
 void EntryphoneDevice::resetCallState()
 {
 	is_calling = false;
 	caller_address = "";
+	master_caller_address = "";
 	kind = -1;
 	mmtype = -1;
 }

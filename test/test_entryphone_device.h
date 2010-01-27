@@ -37,11 +37,13 @@ private slots:
 
 	void receiveIncomingCall();
 	void receiveCallerAddress();
+	void receiveRearmSession();
 
 private:
 	// init frame must be sent at constuction time
 	void simulateIncomingCall(int kind, int mmtype);
 	void simulateCallerAddress(int kind, int mmtype, QString where);
+	void simulateRearmSession(int kind, int mmtype, QString where);
 
 	EntryphoneDevice *dev;
 };
