@@ -10,6 +10,7 @@
 #include "scaleconversion.h"
 #include "devices_cache.h"
 #include "homewindow.h"
+#include "feedmanager.h"
 
 #include <QSignalMapper>
 #include <QHBoxLayout>
@@ -24,7 +25,8 @@ enum
 	ITEM_TIME = 987,
 	ITEM_DATE = 988,
 	ITEM_TEMPERATURE = 989,
-	ITEM_SETTINGS_LINK = 29
+	ITEM_SETTINGS_LINK = 29,
+	ITEM_RSS_LINK = 992,
 };
 
 
@@ -208,6 +210,44 @@ void InnerPageTemperatureDisplay::paintEvent(QPaintEvent *e)
 }
 
 
+HomepageFeedLink::HomepageFeedLink(const QString &description, const QString &feed)
+{
+	QBoxLayout *l = new QHBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(10);
+
+	BtButton *button = new BtButton;
+	button->setImage(bt_global::skin->getImage("link_icon"));
+
+	QLabel *label = new QLabel(description);
+	label->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
+	label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+
+	l->addWidget(button);
+	l->addWidget(label, 1);
+
+	url = feed;
+	feed_items = new FeedItemList;
+	parser = new FeedParser;
+
+	connect(button, SIGNAL(clicked()), SLOT(displayFeed()));
+	connect(parser, SIGNAL(feedReady()), SLOT(feedReady()));
+
+	connect(feed_items, SIGNAL(Closed()), SIGNAL(pageClosed()));
+}
+
+void HomepageFeedLink::displayFeed()
+{
+	parser->parse(url);
+}
+
+void HomepageFeedLink::feedReady()
+{
+	feed_items->setFeedInfo(0, parser->getFeedData());
+	feed_items->showPage();
+}
+
+
 HeaderLogo::HeaderLogo(TrayBar *tray)
 {
 	setFixedSize(800, 40);
@@ -312,6 +352,14 @@ void HeaderInfo::loadItems(const QDomNode &config_node)
 			device *probe = bt_global::devices_cache.get_temperature_probe(getTextChild(item, "where"), false);
 			QWidget *item = new HomepageTemperatureDisplay(probe);
 			home_layout->addWidget(item);
+
+			break;
+		}
+		case ITEM_RSS_LINK:
+		{
+			HomepageFeedLink *feed_display = new HomepageFeedLink(getTextChild(item, "descr"), getTextChild(item, "url"));
+			info_layout->addWidget(feed_display);
+			connect(feed_display, SIGNAL(pageClosed()), SIGNAL(showHomePage()));
 
 			break;
 		}

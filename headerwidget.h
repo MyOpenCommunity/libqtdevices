@@ -13,6 +13,8 @@ class QSignalMapper;
 class HeaderNavigationBar;
 class BtButton;
 class TrayBar;
+class FeedParser;
+class FeedItemList;
 
 
 // helper widgets, to display the temperature
@@ -49,6 +51,28 @@ public:
 
 protected:
 	void paintEvent(QPaintEvent *e);
+};
+
+
+// link to RSS feed
+
+class HomepageFeedLink : public QWidget
+{
+Q_OBJECT
+public:
+	HomepageFeedLink(const QString &description, const QString &feed);
+
+signals:
+	void pageClosed();
+
+private slots:
+	void displayFeed();
+	void feedReady();
+
+private:
+	FeedParser *parser;
+	FeedItemList *feed_items;
+	QString url;
 };
 
 
