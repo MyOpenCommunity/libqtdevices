@@ -265,6 +265,7 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 
 	QDomNode temp_node = getChildWithName(config_node, "setpoint");
 	readTempConfig(temp_node, current_temp);
+	connect(mode, SIGNAL(modeChanged(int)), temperature, SLOT(currentModeChanged(int)));
 
 	QDomNode speed_node = getChildWithName(config_node, "speed");
 	readSpeedConfig(speed_node, values_node);

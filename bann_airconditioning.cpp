@@ -181,6 +181,22 @@ void SplitTemperature::setTemperature(int new_temp_celsius)
 		qWarning() << "SplitTemperature::setTemperature: provided temp is outside limits, ignoring.";
 }
 
+void SplitTemperature::currentModeChanged(int new_mode)
+{
+	switch (new_mode)
+	{
+	case AdvancedAirConditioningDevice::MODE_DEHUM:
+	case AdvancedAirConditioningDevice::MODE_FAN:
+		left_button->disable();
+		right_button->disable();
+		break;
+	default:
+		left_button->enable();
+		right_button->enable();
+		break;
+	}
+}
+
 void SplitTemperature::increaseTemp()
 {
 	int tmp = current_temp + temp_step;
@@ -259,6 +275,12 @@ SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 			qWarning("The mode id %d doesn't exists", mode_id);
 
 	initBanner(bt_global::skin->getImage("cycle"), current_mode);
+	connect(left_button, SIGNAL(clicked()), SLOT(buttonClicked()));
+}
+
+void SplitMode::buttonClicked()
+{
+	emit modeChanged(currentState());
 }
 
 

@@ -137,6 +137,9 @@ public:
 	 */
 	int temperature();
 
+public slots:
+	void currentModeChanged(int new_mode);
+
 private slots:
 	void increaseTemp();
 	void decreaseTemp();
@@ -158,8 +161,15 @@ class SplitMode : public BannStates
 Q_OBJECT
 public:
 	SplitMode(QList<int> modes, int current_mode);
+
 private:
 	QHash<int, QString> modes_descr;
+
+private slots:
+	void buttonClicked();
+
+signals:
+	void modeChanged(int);
 };
 
 
