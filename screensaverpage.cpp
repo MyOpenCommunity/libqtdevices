@@ -192,11 +192,11 @@ SlideshowSelectionPage::SlideshowSelectionPage(const QString &start_path) :
 	connect(nav_bar, SIGNAL(downClick()), content, SLOT(nextItem()));
 	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 
-	buildPage(content, nav_bar, new SlideshowSettings, title_widget);
+	buildPage(content, nav_bar, 0, title_widget);
 
 	checked_icon = bt_global::skin->getImage("checked");
 	unchecked_icon = bt_global::skin->getImage("unchecked");
-	forward_icon = bt_global::skin->getImage("forward");
+	photo_icon = bt_global::skin->getImage("photo_album");
 
 	current_dir.setSorting(QDir::DirsFirst | QDir::Name);
 	current_dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable);
@@ -213,7 +213,11 @@ void SlideshowSelectionPage::showFiles()
 	{
 		QWidget *w = 0;
 		if (fi.isDir())
-			w = new QLabel(fi.fileName());
+		{
+			SlideshowItemDir *it = new SlideshowItemDir(fi.fileName(), checked_icon, unchecked_icon, photo_icon);
+			connect(it, SIGNAL(browseDirectory(QString)), SLOT(enterDirectory(QString)));
+			w = it;
+		}
 
 		if (fi.isFile())
 		{
@@ -232,12 +236,32 @@ void SlideshowSelectionPage::browseUp()
 {
 	if (level > 0)
 	{
-		--level;
-		current_dir.cdUp();
-		showFiles();
+		if (current_dir.cdUp())
+		{
+			--level;
+			refreshContent();
+		}
 	}
 	else
 		emit Closed();
+}
+
+void SlideshowSelectionPage::enterDirectory(QString dir)
+{
+	if (current_dir.cd(dir))
+	{
+		++level;
+		refreshContent();
+	}
+	else
+		qWarning() << "Selected directory is not readable: " << current_dir.absolutePath() + "/" + dir;
+}
+
+void SlideshowSelectionPage::refreshContent()
+{
+	page_content->clearContent();
+	showFiles();
+	page_content->showContent();
 }
 
 

@@ -36,9 +36,13 @@ public slots:
 
 private:
 	void showFiles();
+	void refreshContent();
 	QDir current_dir;
 	int level;
-	QString checked_icon, unchecked_icon, forward_icon;
+	QString checked_icon, unchecked_icon, photo_icon;
+
+private slots:
+	void enterDirectory(QString dir);
 };
 
 
