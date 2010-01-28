@@ -33,7 +33,7 @@ FeedItemWidget::FeedItemWidget(QWidget *parent) : QWidget(parent)
 
 void FeedItemWidget::removeImages(QString &html)
 {
-	QRegExp image_alternate("<img[^>]*alt=\"(\\w*)\"[^>]*/>", Qt::CaseInsensitive);
+	QRegExp image_alternate("<img[^>]*(?:alt=\"([^\"]*)\")?[^>]*>", Qt::CaseInsensitive);
 	// capture only the smallest subset
 	image_alternate.setMinimal(true);
 	int index = html.indexOf(image_alternate);
