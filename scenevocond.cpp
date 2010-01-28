@@ -258,7 +258,11 @@ scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
 	QString trigger = getTextChild(config_node, "trigger");
 	// Create actual device condition
 	device_condition *dc;
+#ifdef CONFIG_BTOUCH
 	int condition_type = getTextChild(config_node, "value").toInt();
+#else
+	int condition_type = getTextChild(config_node, "objectID").toInt();
+#endif
 	qDebug("#### Condition type = %d", condition_type);
 	QString icon;
 	QString w = getTextChild(config_node, "where");

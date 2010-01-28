@@ -59,17 +59,13 @@ namespace
 			l.append(c);
 		}
 
-		/*
-		  TODO: enabling device condition means rewriting conf parsing!
-		foreach (const QDomNode &cond, getChildren(config_node, "condDevice"))
+		QDomNode device = getElement(config_node, "scen/device");
+		if (getTextChild(device, "objectID").toInt())
 		{
-			if (getTextChild(cond, "value").toInt())
-			{
-				scenEvo_cond_d *c = new scenEvo_cond_d(cond);
-				l.append(c);
-			}
+			scenEvo_cond_d *c = new scenEvo_cond_d(device);
+			l.append(c);
 		}
-		*/
+
 		return l;
 	}
 #endif
