@@ -112,4 +112,22 @@ signals:
 	void directoryToggled(bool, QString);
 };
 
+class SlideshowItemImage : public QWidget
+{
+Q_OBJECT
+public:
+	SlideshowItemImage(const QString &path, const QString &checked_icon, const QString &unchecked_icon);
+
+private:
+	BtButton *check_button;
+	QLabel *thumbnail, *text;
+	QString file_path;
+
+private slots:
+	void checked(bool check);
+
+signals:
+	void fileToggled(bool, QString);
+};
+
 #endif // SCREENSAVERPAGE_H
