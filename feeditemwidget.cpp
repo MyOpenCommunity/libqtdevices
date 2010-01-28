@@ -56,12 +56,20 @@ void FeedItemWidget::removeImages(QString &html)
 	}
 }
 
+void FeedItemWidget::removeLinks(QString &html)
+{
+	QRegExp a_tags("<a[^>]*>");
+
+	html.remove(a_tags);
+}
+
 void FeedItemWidget::setFeedInfo(const FeedItemInfo &feed_item)
 {
 	text_area->insertHtml("<h2>" + feed_item.title + "</h2><br>");
 	text_area->insertHtml("<h2>" + feed_item.last_updated + "</h2><br>");
 	QString descr = feed_item.description;
 	removeImages(descr);
+	removeLinks(descr);
 	text_area->insertHtml(descr);
 	text_area->moveCursor(QTextCursor::Start);
 }

@@ -41,6 +41,10 @@ private:
 	 * \param html A text in html format
 	 */
 	void removeImages(QString &html);
+
+	// remove <a> tags
+	void removeLinks(QString &html);
+
 	QVBoxLayout *main_layout;
 	QTextEdit *text_area;
 };
