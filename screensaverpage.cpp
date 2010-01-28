@@ -105,6 +105,41 @@ void SlideshowImageContent::prevItem()
 }
 
 
+
+SlideshowItemDir::SlideshowItemDir(const QString &path, const QString &checked_icon, const QString &unchecked_icon,
+		const QString &main_icon) :
+	QWidget(0),
+	dir_path(path)
+{
+	dir_button = new BtButton;
+	dir_button->setImage(main_icon);
+	text = new QLabel(path);
+	check_button = new BtButton;
+	check_button->setImage(unchecked_icon, BtButton::NO_FLAG);
+	check_button->setPressedImage(checked_icon);
+	check_button->setCheckable(true);
+
+	// position main button and dir path below it
+	QVBoxLayout *left = new QVBoxLayout;
+	left->addWidget(dir_button);
+	left->addWidget(text, 0, Qt::AlignHCenter);
+	// position the check button
+	QHBoxLayout *l = new QHBoxLayout(this);
+	l->addLayout(left);
+	l->addWidget(check_button, 0, Qt::AlignTop);
+}
+
+void SlideshowItemDir::checked()
+{
+	emit directoryToggled(check_button->isChecked(), dir_path);
+}
+
+void SlideshowItemDir::dirButtonClicked()
+{
+	emit browseDirectory(dir_path);
+}
+
+
 SlideshowSettings::SlideshowSettings() :
 	QWidget(0)
 {

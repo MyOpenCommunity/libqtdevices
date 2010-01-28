@@ -6,6 +6,8 @@
 
 #include <QDir>
 
+class BtButton;
+class QLabel;
 
 class ScreenSaverPage : public SingleChoicePage
 {
@@ -80,6 +82,28 @@ protected:
 
 private:
 	QList<QWidget *> items;
+};
+
+
+
+class SlideshowItemDir : public QWidget
+{
+Q_OBJECT
+public:
+	SlideshowItemDir(const QString &path, const QString &checked_icon, const QString &unchecked_icon, const QString &main_icon);
+
+private:
+	BtButton *dir_button, *check_button;
+	QLabel *text;
+	QString dir_path;
+
+private slots:
+	void checked();
+	void dirButtonClicked();
+
+signals:
+	void browseDirectory(QString);
+	void directoryToggled(bool, QString);
 };
 
 #endif // SCREENSAVERPAGE_H
