@@ -104,6 +104,23 @@ void SlideshowImageContent::prevItem()
 	drawContent();
 }
 
+void SlideshowImageContent::clearContent()
+{
+	foreach (QWidget *i, items)
+	{
+		i->disconnect();
+		i->hide();
+		i->deleteLater();
+	}
+	items.clear();
+	pages.clear();
+}
+
+void SlideshowImageContent::showContent()
+{
+	drawContent();
+}
+
 
 
 SlideshowItemDir::SlideshowItemDir(const QString &path, const QString &checked_icon, const QString &unchecked_icon,

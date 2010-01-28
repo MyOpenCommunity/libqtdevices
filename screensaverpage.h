@@ -72,6 +72,8 @@ Q_OBJECT
 public:
 	SlideshowImageContent(QWidget *parent=0);
 	void addItem(QWidget *item);
+	void clearContent();
+	void showContent();
 
 public slots:
 	void nextItem();
