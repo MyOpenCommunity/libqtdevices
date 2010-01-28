@@ -24,7 +24,7 @@ FeedItemWidget::FeedItemWidget(QWidget *parent) : QWidget(parent)
 {
 	main_layout = new QVBoxLayout(this);
 	text_area = new QTextEdit;
-	text_area->setReadOnly(true);
+	text_area->setTextInteractionFlags(Qt::NoTextInteraction);
 	text_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	text_area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	text_area->setFrameShape(QFrame::NoFrame);
