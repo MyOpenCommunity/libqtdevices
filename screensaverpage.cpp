@@ -161,15 +161,15 @@ void SlideshowItemDir::dirButtonClicked()
 
 
 
-SlideshowItemImage::SlideshowItemImage(const QString &path, const QString &checked_icon, const QString &unchecked_icon) :
+SlideshowItemImage::SlideshowItemImage(const QString &filename, const QString &working_dir, const QString &checked_icon, const QString &unchecked_icon) :
 	QWidget(0),
-	file_path(path)
+	file_name(filename)
 {
-	QPixmap p(path);
+	QPixmap p(working_dir + file_name);
 	p = p.scaled(QSize(100, 100), Qt::KeepAspectRatio);
 	thumbnail = new QLabel;
 	thumbnail->setPixmap(p);
-	text = new QLabel(file_path);
+	text = new QLabel(file_name);
 	check_button = new BtButton;
 	check_button->setImage(unchecked_icon, BtButton::NO_FLAG);
 	check_button->setPressedImage(checked_icon);
@@ -188,7 +188,7 @@ SlideshowItemImage::SlideshowItemImage(const QString &path, const QString &check
 
 void SlideshowItemImage::checked(bool check)
 {
-	emit fileToggled(check, file_path);
+	emit fileToggled(check, file_name);
 }
 
 
@@ -253,7 +253,7 @@ void SlideshowSelectionPage::showFiles()
 
 		if (fi.isFile())
 		{
-			SlideshowItemImage *im = new SlideshowItemImage(fi.filePath(), checked_icon, unchecked_icon);
+			SlideshowItemImage *im = new SlideshowItemImage(fi.fileName(), current_dir.absolutePath() + QDir::separator(), checked_icon, unchecked_icon);
 			w = im;
 		}
 		Q_ASSERT_X(w!=0, "SlideshowImageSelection::browseFiles", "w is 0");

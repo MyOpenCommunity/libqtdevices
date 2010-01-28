@@ -116,12 +116,12 @@ class SlideshowItemImage : public QWidget
 {
 Q_OBJECT
 public:
-	SlideshowItemImage(const QString &path, const QString &checked_icon, const QString &unchecked_icon);
+	SlideshowItemImage(const QString &filename, const QString &working_dir, const QString &checked_icon, const QString &unchecked_icon);
 
 private:
 	BtButton *check_button;
 	QLabel *thumbnail, *text;
-	QString file_path;
+	QString file_name;
 
 private slots:
 	void checked(bool check);
