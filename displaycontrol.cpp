@@ -103,7 +103,7 @@ DisplayStatus DisplayControl::currentState()
 void DisplayControl::setScreenSaver(ScreenSaver::Type t)
 {
 	// TODO find the correct place to save the information
-#ifdef CONFIG_TOUCHX
+#ifdef CONFIG_BTOUCH
 	setCfgValue("screensaver/type", QString::number(t), DISPLAY);
 #endif
 	current_screensaver = t;
