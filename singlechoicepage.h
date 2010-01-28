@@ -5,6 +5,7 @@
 
 class QString;
 class SingleChoiceContent;
+class CheckableBanner;
 
 /*
  * This abstract class is designed to provide a list of bannOnDx. Each of them
@@ -32,7 +33,7 @@ protected:
 	void setCheckedId(int id);
 
 protected:
-	void addBanner(const QString &text, int id);
+	void addBanner(CheckableBanner *bann, int id);
 };
 
 #endif // SINGLECHOICEPAGE_H

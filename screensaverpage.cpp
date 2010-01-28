@@ -13,17 +13,19 @@
 
 ScreenSaverPage::ScreenSaverPage()
 {
-	addBanner(tr("No screensaver"), ScreenSaver::NONE);
-	addBanner(tr("Line"), ScreenSaver::LINES);
-	addBanner(tr("Balls"), ScreenSaver::BALLS);
-	addBanner(tr("Time"), ScreenSaver::TIME);
-	addBanner(tr("Text"), ScreenSaver::TEXT);
+	addBanner(SingleChoice::createBanner(tr("No screensaver")), ScreenSaver::NONE);
+	addBanner(SingleChoice::createBanner(tr("Line")), ScreenSaver::LINES);
+	addBanner(SingleChoice::createBanner(tr("Balls")), ScreenSaver::BALLS);
+	addBanner(SingleChoice::createBanner(tr("Time")), ScreenSaver::TIME);
+	addBanner(SingleChoice::createBanner(tr("Text")), ScreenSaver::TEXT);
 	//addBanner(tr("Deform"), ScreenSaver::DEFORM); // the deform is for now unavailable!
 
 	// TODO maybe we want an OK button for touch 10 as well
 	if (hardwareType() == TOUCH_X)
 	{
-		addBanner(tr("Slideshow"), ScreenSaver::SLIDESHOW);
+		CheckableBanner *b = SingleChoice::createBanner(tr("Slideshow"), bt_global::skin->getImage("change_settings"));
+		addBanner(b, ScreenSaver::SLIDESHOW);
+		b->connectRightButton(new SlideshowSelectionPage("cfg/slideshow"));
 		connect(page_content, SIGNAL(bannerSelected(int)),
 			SLOT(confirmSelection()));
 	}

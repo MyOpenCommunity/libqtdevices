@@ -17,9 +17,9 @@ SingleChoicePage::SingleChoicePage()
 	connect(this, SIGNAL(forwardClick()), SLOT(okPressed()));
 }
 
-void SingleChoicePage::addBanner(const QString &text, int id)
+void SingleChoicePage::addBanner(CheckableBanner *bann, int id)
 {
-	page_content->addBanner(text, id);
+	page_content->addBanner(bann, id);
 
 	if (id == getCurrentId())
 		setCheckedId(id);

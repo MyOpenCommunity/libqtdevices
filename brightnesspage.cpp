@@ -20,10 +20,10 @@
 
 BrightnessPage::BrightnessPage()
 {
-	addBanner(tr("Off"), BRIGHTNESS_OFF);
-	addBanner(tr("Low brightness"), BRIGHTNESS_LOW);
-	addBanner(tr("Normal brightness"), BRIGHTNESS_NORMAL);
-	addBanner(tr("High brightness"), BRIGHTNESS_HIGH);
+	addBanner(SingleChoice::createBanner(tr("Off")), BRIGHTNESS_OFF);
+	addBanner(SingleChoice::createBanner(tr("Low brightness")), BRIGHTNESS_LOW);
+	addBanner(SingleChoice::createBanner(tr("Normal brightness")), BRIGHTNESS_NORMAL);
+	addBanner(SingleChoice::createBanner(tr("High brightness")), BRIGHTNESS_HIGH);
 }
 
 int BrightnessPage::getCurrentId()
