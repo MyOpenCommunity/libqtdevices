@@ -66,6 +66,18 @@ void VideoEntryPhone::loadDevices(const QDomNode &config_node)
 	}
 }
 #else
+
+
+void VideoEntryPhone::loadHiddenPages()
+{
+	EntryphoneDevice *dev = bt_global::add_device_to_cache(new EntryphoneDevice(bt_global::config[PI_ADDRESS]));
+
+	// This pages are showed only after the receiving of a call frame, so we
+	// don't store any pointer to these. The destruction is provided by the PageContainer.
+	(void) new IntercomCallPage(dev);
+	(void) new VCTCallPage(dev);
+}
+
 VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());

@@ -50,6 +50,8 @@ public:
 	VideoEntryPhone(const QDomNode &config_node);
 	virtual int sectionId();
 
+	static void loadHiddenPages();
+
 private slots:
 	void status_changed(const StatusList &sl);
 	void toggleCallExclusion();

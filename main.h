@@ -39,9 +39,12 @@ enum DateFormat
 };
 
 QDomNode getPageNode(int id);
+
+#ifndef CONFIG_BTOUCH
 QDomNode getPageNodeFromPageId(int pageid);
 QDomNode getPageNodeFromChildNode(QDomNode node, QString child_name);
 QDomNode getHomepageNode();
+#endif
 
 // See getElement
 QDomElement getConfElement(QString path);

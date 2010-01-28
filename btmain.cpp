@@ -25,6 +25,7 @@
 #include "windowcontainer.h"
 #include "ringtonesmanager.h"
 #include "pagestack.h"
+#include "videoentryphone.h"
 
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
@@ -229,7 +230,8 @@ void BtMain::loadGlobalConfig()
 
 	setConfigValue(scs_node, "coordinate_scs/my_piaddress", config[PI_ADDRESS]);
 	// transform address into internal address
-	config[PI_ADDRESS].prepend("1");
+	if (!config[PI_ADDRESS].isNull())
+		config[PI_ADDRESS].prepend("1");
 }
 
 void BtMain::waitBeforeInit()
@@ -297,6 +299,13 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		// TODO read the id from the <homepage> node
 		QDomNode pagemenu_home = getHomepageNode();
 		Home = new HomePage(pagemenu_home);
+
+		QDomNode video_node = getPageNode(VIDEOCITOFONIA);
+		// Touch X can receive calls even if the videoentryphone section is not
+		// configured (but the configuration specifies it as an internal place).
+		if (video_node.isNull() && !bt_global::config[PI_ADDRESS].isEmpty())
+			VideoEntryPhone::loadHiddenPages();
+
 #endif
 		connect(window_container->homeWindow(), SIGNAL(showHomePage()), Home, SLOT(showPage()));
 		connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), Home, SLOT(showSectionPage(int)));
