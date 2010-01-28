@@ -25,9 +25,10 @@ ScreenSaverPage::ScreenSaverPage()
 	{
 		CheckableBanner *b = SingleChoice::createBanner(tr("Slideshow"), bt_global::skin->getImage("change_settings"));
 		addBanner(b, ScreenSaver::SLIDESHOW);
-		b->connectRightButton(new SlideshowSelectionPage("cfg/slideshow"));
-		connect(page_content, SIGNAL(bannerSelected(int)),
-			SLOT(confirmSelection()));
+		Page *p = new ImageRemovalPage;
+		b->connectRightButton(p);
+		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+		connect(page_content, SIGNAL(bannerSelected(int)), SLOT(confirmSelection()));
 	}
 }
 
@@ -109,8 +110,11 @@ SlideshowSettings::SlideshowSettings() :
 {
 	BtButton *add_images = new BtButton;
 	add_images->setImage(bt_global::skin->getImage("add_image"));
+	connect(add_images, SIGNAL(clicked()), SIGNAL(addMoreImages()));
 	BtButton *remove_images = new BtButton;
 	remove_images->setImage(bt_global::skin->getImage("remove_image"));
+	connect(remove_images, SIGNAL(clicked()), SIGNAL(clearAllImages()));
+
 	QHBoxLayout *l = new QHBoxLayout(this);
 	l->addWidget(add_images);
 	l->addWidget(remove_images);
@@ -181,3 +185,31 @@ void SlideshowSelectionPage::browseUp()
 		emit Closed();
 }
 
+
+
+ImageRemovalPage::ImageRemovalPage() :
+	Page(0)
+{
+	SlideshowImageContent *content = new SlideshowImageContent;
+	PageTitleWidget *title_widget = new PageTitleWidget("Select photos", Page::TITLE_HEIGHT);
+	connect(content, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int,int)));
+
+	NavigationBar *nav_bar = new NavigationBar;
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(upClick()), content, SLOT(prevItem()));
+	connect(nav_bar, SIGNAL(downClick()), content, SLOT(nextItem()));
+	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+
+	SlideshowSettings *settings = new SlideshowSettings;
+	Page *p = new SlideshowSelectionPage("cfg/slideshow");
+	connect(settings, SIGNAL(addMoreImages()), p, SLOT(showPage()));
+	connect(p, SIGNAL(Closed()), SLOT(showPage()));
+	buildPage(content, nav_bar, settings, title_widget);
+
+	loadImages();
+}
+
+void ImageRemovalPage::loadImages()
+{
+	// TODO: load images from file
+}

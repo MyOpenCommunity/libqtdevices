@@ -40,11 +40,28 @@ private:
 };
 
 
+class ImageRemovalPage : public Page
+{
+Q_OBJECT
+public:
+	typedef SlideshowImageContent ContentType;
+
+	ImageRemovalPage();
+
+private:
+	void loadImages();
+};
+
+
 class SlideshowSettings : public QWidget
 {
 Q_OBJECT
 public:
 	SlideshowSettings();
+
+signals:
+	void clearAllImages();
+	void addMoreImages();
 };
 
 class SlideshowImageContent : public GridContent
