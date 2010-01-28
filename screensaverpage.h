@@ -100,7 +100,7 @@ private:
 	QString dir_path;
 
 private slots:
-	void checked();
+	void checked(bool check);
 	void dirButtonClicked();
 
 signals:

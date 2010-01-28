@@ -10,6 +10,7 @@
 #include <QAbstractButton>
 #include <QGridLayout>
 #include <QLabel>
+#include <QDebug>
 
 ScreenSaverPage::ScreenSaverPage()
 {
@@ -130,11 +131,13 @@ SlideshowItemDir::SlideshowItemDir(const QString &path, const QString &checked_i
 {
 	dir_button = new BtButton;
 	dir_button->setImage(main_icon);
+	connect(dir_button, SIGNAL(clicked()), SLOT(dirButtonClicked()));
 	text = new QLabel(path);
 	check_button = new BtButton;
 	check_button->setImage(unchecked_icon, BtButton::NO_FLAG);
 	check_button->setPressedImage(checked_icon);
 	check_button->setCheckable(true);
+	connect(check_button, SIGNAL(toggled(bool)), SLOT(checked(bool)));
 
 	// position main button and dir path below it
 	QVBoxLayout *left = new QVBoxLayout;
@@ -146,9 +149,9 @@ SlideshowItemDir::SlideshowItemDir(const QString &path, const QString &checked_i
 	l->addWidget(check_button, 0, Qt::AlignTop);
 }
 
-void SlideshowItemDir::checked()
+void SlideshowItemDir::checked(bool check)
 {
-	emit directoryToggled(check_button->isChecked(), dir_path);
+	emit directoryToggled(check, dir_path);
 }
 
 void SlideshowItemDir::dirButtonClicked()
