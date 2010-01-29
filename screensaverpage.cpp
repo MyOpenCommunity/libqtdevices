@@ -162,6 +162,11 @@ void SlideshowItemDir::dirButtonClicked()
 	emit browseDirectory(dir_path);
 }
 
+void SlideshowItemDir::setChecked(bool check)
+{
+	check_button->setChecked(check);
+}
+
 
 
 SlideshowItemImage::SlideshowItemImage(const QString &filename, const QString &working_dir, const QString &checked_icon, const QString &unchecked_icon) :
@@ -192,6 +197,11 @@ SlideshowItemImage::SlideshowItemImage(const QString &filename, const QString &w
 void SlideshowItemImage::checked(bool check)
 {
 	emit fileToggled(check, file_name);
+}
+
+void SlideshowItemImage::setChecked(bool check)
+{
+	check_button->setChecked(check);
 }
 
 
@@ -229,6 +239,7 @@ SlideshowSelectionPage::SlideshowSelectionPage(const QString &start_path) :
 	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 
 	buildPage(content, nav_bar, 0, title_widget);
+	connect(this, SIGNAL(Closed()), SLOT(clearCaches()));
 
 	checked_icon = bt_global::skin->getImage("checked");
 	unchecked_icon = bt_global::skin->getImage("unchecked");
@@ -246,12 +257,20 @@ void SlideshowSelectionPage::showFiles()
 	filters << "*.jpg" << "*.png";
 
 	QFileInfoList list = current_dir.entryInfoList(filters);
+	bool is_all_selected = true;
 	foreach (const QFileInfo &fi, list)
 	{
+		QString abs_path = current_dir.absolutePath() + QDir::separator() + fi.fileName();
+		// if there's at least one not selected item we can't compact the directory
+		bool is_selected = isItemSelected(abs_path);
+		if (!is_selected)
+			is_all_selected = false;
 		QWidget *w = 0;
 		if (fi.isDir())
 		{
 			SlideshowItemDir *it = new SlideshowItemDir(fi.fileName(), checked_icon, unchecked_icon, photo_icon);
+			if (is_selected)
+				it->setChecked(true);
 			connect(it, SIGNAL(browseDirectory(QString)), SLOT(enterDirectory(QString)));
 			connect(it, SIGNAL(directoryToggled(bool,QString)), SLOT(itemSelected(bool, QString)));
 			w = it;
@@ -260,12 +279,17 @@ void SlideshowSelectionPage::showFiles()
 		if (fi.isFile())
 		{
 			SlideshowItemImage *im = new SlideshowItemImage(fi.fileName(), current_dir.absolutePath() + QDir::separator(), checked_icon, unchecked_icon);
+			if (is_selected)
+				im->setChecked(true);
 			connect(im, SIGNAL(fileToggled(bool,QString)), SLOT(itemSelected(bool, QString)));
 			w = im;
 		}
 		Q_ASSERT_X(w!=0, "SlideshowImageSelection::browseFiles", "w is 0");
 		page_content->addItem(w);
 	}
+	if (is_all_selected)
+		//compactDir(current_dir.absolutePath());
+		qDebug() << "Compacting directory: " << current_dir.absolutePath();
 }
 
 void SlideshowSelectionPage::browseUp()
@@ -297,11 +321,7 @@ void SlideshowSelectionPage::confirmSelection()
 {
 	selected_images.subtract(removed_images);
 	selected_images.unite(inserted_images);
-	removed_images.clear();
-	inserted_images.clear();
-	qDebug() << "Currently selected files: " << selected_images;
 	// TODO: emit signal to notify image changes
-	// TODO: save selection to file
 	saveSlideshowToFile();
 	// TODO: unroll directories
 	emit Closed();
@@ -321,7 +341,10 @@ void SlideshowSelectionPage::itemSelected(bool is_checked, QString relative_path
 	{
 		if (inserted_images.contains(abs_path))
 			inserted_images.remove(abs_path);
+		// TODO: this must become removeCurrentFile()
 		removed_images.insert(abs_path);
+		qDebug() << "Removing current file and unselecting parent directory";
+		//removeCurrentFile(abs_path);
 	}
 }
 
@@ -349,11 +372,36 @@ void SlideshowSelectionPage::saveSlideshowToFile()
 		qDebug() << "An error occurred while moving file";
 }
 
+bool SlideshowSelectionPage::isItemSelected(QString abs_path)
+{
+	while (!abs_path.isEmpty())
+	{
+		if ((selected_images.contains(abs_path) || inserted_images.contains(abs_path)) && !(removed_images.contains(abs_path)))
+		{
+			return true;
+		}
+		// find the previous separator and remove everything from that point
+		int pos = abs_path.lastIndexOf(QDir::separator(), -2);
+		if (pos < 0)
+			// terminate the loop
+			abs_path = QString();
+		else
+			abs_path = abs_path.left(pos);
+	}
+	return false;
+}
+
 void SlideshowSelectionPage::refreshContent()
 {
 	page_content->clearContent();
 	showFiles();
 	page_content->showContent();
+}
+
+void SlideshowSelectionPage::clearCaches()
+{
+	removed_images.clear();
+	inserted_images.clear();
 }
 
 
