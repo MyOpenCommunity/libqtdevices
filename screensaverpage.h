@@ -23,6 +23,9 @@ protected:
 
 class SlideshowImageContent;
 
+/**
+ * Select images to show during the slideshow.
+ */
 class SlideshowSelectionPage : public Page
 {
 Q_OBJECT
@@ -46,6 +49,9 @@ private slots:
 };
 
 
+/**
+ * Show currently selected images for slideshow with option to remove them. Also select slideshow preferences.
+ */
 class ImageRemovalPage : public Page
 {
 Q_OBJECT
@@ -59,6 +65,9 @@ private:
 };
 
 
+/**
+ * Select slideshow settings: add images, remove all, delay between images.
+ */
 class SlideshowSettings : public QWidget
 {
 Q_OBJECT
@@ -70,6 +79,10 @@ signals:
 	void addMoreImages();
 };
 
+
+/**
+ * Display items in a grid with 2 columns.
+ */
 class SlideshowImageContent : public GridContent
 {
 Q_OBJECT
@@ -91,11 +104,16 @@ private:
 };
 
 
-
+/**
+ * Slideshow content item to display a directory (directory button, check button, label below).
+ */
 class SlideshowItemDir : public QWidget
 {
 Q_OBJECT
 public:
+	/**
+	 * \param path Returned when directoryToggled() is emitted.
+	 */
 	SlideshowItemDir(const QString &path, const QString &checked_icon, const QString &unchecked_icon, const QString &main_icon);
 
 private:
@@ -112,10 +130,18 @@ signals:
 	void directoryToggled(bool, QString);
 };
 
+
+/**
+ * Slideshow content item to display a thumbnail (thumbnail label, check button, label below)
+ */
 class SlideshowItemImage : public QWidget
 {
 Q_OBJECT
 public:
+	/**
+	 * \param filename Returned when fileToggled() is emitted.
+	 * \param working_dir Used internally to load the image with path working_dir + filename
+	 */
 	SlideshowItemImage(const QString &filename, const QString &working_dir, const QString &checked_icon, const QString &unchecked_icon);
 
 private:
