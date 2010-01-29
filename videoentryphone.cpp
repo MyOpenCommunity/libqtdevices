@@ -9,7 +9,9 @@
 #include "navigation_bar.h"
 #include "entryphone_device.h"
 #include "devices_cache.h" // bt_global::add_device_to_cache
+#ifdef LAYOUT_TOUCHX
 #include "vctcall.h"
+#endif
 #include "generic_functions.h" //getBostikName
 #include "items.h" // ItemTuning
 #include "displaycontrol.h" // bt_global::display

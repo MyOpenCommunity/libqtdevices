@@ -4,7 +4,9 @@
 #include "sounddiffusion.h"
 #include "multisounddiff.h"
 #include "videoentryphone.h"
+#ifdef LAYOUT_TOUCHX
 #include "multimedia.h"
+#endif
 #include "antintrusion.h"
 #include "automation.h"
 #include "lighting.h"

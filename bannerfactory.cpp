@@ -4,7 +4,9 @@
 #include "automation.h"
 #include "settings.h"
 #include "scenario.h"
+#ifdef LAYOUT_TOUCHX
 #include "iconsettings.h"
+#endif
 
 
 banner *getBanner(const QDomNode &item_node)

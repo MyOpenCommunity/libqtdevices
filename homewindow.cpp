@@ -1,6 +1,9 @@
 #include "homewindow.h"
+#include "page.h"
+#ifdef LAYOUT_TOUCHX
 #include "headerwidget.h"
 #include "favoriteswidget.h"
+#endif
 
 #include "hardware_functions.h"
 #include "skinmanager.h"
