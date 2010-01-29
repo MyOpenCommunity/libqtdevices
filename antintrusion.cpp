@@ -530,13 +530,17 @@ AlarmList::AlarmList()
 	d->setAlignment(Qt::AlignLeft);
 	l->addWidget(d, 1);
 
-	PageTitleWidget *title_widget = new PageTitleWidget(tr("Alarms"), 35);
-	NavigationBar *nav_bar = new NavigationBar;
 	alarms = new AlarmItems;
-	buildPage(alarms, nav_bar, header, title_widget);
+
+	PageTitleWidget *title_widget = 0;
+#ifdef LAYOUT_TOUCHX
+	title_widget = new PageTitleWidget(tr("Alarms"), 35);
 
 	connect(alarms, SIGNAL(contentScrolled(int, int)),
 		title_widget, SLOT(setCurrentPage(int, int)));
+#endif
+	NavigationBar *nav_bar = new NavigationBar;
+	buildPage(alarms, nav_bar, header, title_widget);
 
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	connect(this, SIGNAL(Closed()), alarms, SLOT(resetIndex()));
