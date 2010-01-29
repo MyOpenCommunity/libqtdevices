@@ -3,7 +3,7 @@
 *.arm
 *.x86
 BTouch_qws
-test/test
+devices/test/test
 moc
 obj
 cfg

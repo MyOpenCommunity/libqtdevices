@@ -4,7 +4,9 @@
 LAYOUT = touchx
 CONF_FILE = touchx
 
+VPATH = ../devices
 include(../common.pri)
+include(../devices.pri)
 
 HEADERS += ../headerwidget.h \
            ../iconsettings.h \

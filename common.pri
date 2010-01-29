@@ -83,7 +83,7 @@ DEFINES += QT_QWS_EBX BTWEB
 
 LIBS += -lssl
 
-INCLUDEPATH += . QWSMOUSE ../../stackopen/common_files ../../stackopen ../../stackopen/common_develer/lib $(ARMLINUX)
+INCLUDEPATH += . QWSMOUSE ../devices ../../stackopen/common_files ../../stackopen ../../stackopen/common_develer/lib $(ARMLINUX)
 QT += network xml
 
 # note: do not use spaces to split values below
@@ -98,16 +98,13 @@ QMAKE_CXXFLAGS_RELEASE += -O3
 # Input
 HEADERS += ../actuators.h \
            ../airconditioning.h \
-           ../airconditioning_device.h \
            ../alarmclock.h \
-           ../alarmsounddiff_device.h \
            ../alarmpage.h \
            ../ambdiffson.h \
            ../amplificatori.h \
            ../antintrusion.h \
            ../audiostatemachine.h \
            ../automation.h \
-           ../automation_device.h \
            ../aux.h \
            ../bann1_button.h \
            ../bann2_buttons.h \
@@ -139,25 +136,19 @@ HEADERS += ../actuators.h \
            ../cleanscreen.h \
            ../contrast.h \
            ../datetime.h \
-           ../device.h \
-           ../device_status.h \
            ../devices_cache.h \
            ../displaycontrol.h \
            ../displaypage.h \
            ../enabling_button.h \
            ../energy_data.h \
-           ../energy_device.h \
            ../energy_graph.h \
            ../energy_view.h \
-           ../entryphone_device.h \
            ../favoriteswidget.h \
            ../feedmanager.h \
            ../feeditemwidget.h \
            ../feedparser.h \
            ../fileselector.h \
            ../fontmanager.h \
-           ../frame_interpreter.h \
-           ../frame_receiver.h \
            ../generic_functions.h \
            ../genpage.h \
            ../gridcontent.h \
@@ -173,7 +164,6 @@ HEADERS += ../actuators.h \
            ../keypad.h \
            ../lansettings.h \
            ../lighting.h \
-           ../lighting_device.h \
            ../listbrowser.h \
            ../loads.h \
            ../main.h \
@@ -187,17 +177,12 @@ HEADERS += ../actuators.h \
            ../pagefactory.h \
            ../pagestack.h \
            ../plantmenu.h \
-           ../platform_device.h \
            ../playwindow.h \
            ../poweramplifier.h \
-           ../poweramplifier_device.h \
-           ../probe_device.h \
-           ../pulldevice.h \
            ../radio.h \
            ../ringtonesmanager.h \
            ../scaleconversion.h \
            ../scenario.h \
-           ../scenario_device.h \
            ../scenevocond.h \
            ../screensaver.h \
            ../screensaverpage.h \
@@ -216,7 +201,6 @@ HEADERS += ../actuators.h \
            ../styledwidget.h \
            ../supervisionmenu.h \
            ../temperatureviewer.h \
-           ../thermal_device.h \
            ../thermalmenu.h \
            ../timescript.h \
            ../titlelabel.h \
@@ -229,16 +213,13 @@ HEADERS += ../actuators.h \
 
 SOURCES += ../actuators.cpp \
            ../airconditioning.cpp \
-           ../airconditioning_device.cpp \
            ../alarmclock.cpp \
-           ../alarmsounddiff_device.cpp \
            ../alarmpage.cpp \
            ../ambdiffson.cpp \
            ../amplificatori.cpp \
            ../antintrusion.cpp \
            ../audiostatemachine.cpp \
            ../automation.cpp \
-           ../automation_device.cpp \
            ../aux.cpp \
            ../bann1_button.cpp \
            ../bann2_buttons.cpp \
@@ -270,25 +251,19 @@ SOURCES += ../actuators.cpp \
            ../contrast.cpp \
            ../datetime.cpp \
            ../definitions.cpp \
-           ../device.cpp \
-           ../device_status.cpp \
            ../devices_cache.cpp \
            ../displaycontrol.cpp \
            ../displaypage.cpp \
            ../enabling_button.cpp \
            ../energy_data.cpp \
-           ../energy_device.cpp \
            ../energy_graph.cpp \
            ../energy_view.cpp \
-           ../entryphone_device.cpp \
            ../favoriteswidget.cpp \
            ../feedmanager.cpp \
            ../feeditemwidget.cpp \
            ../feedparser.cpp \
            ../fileselector.cpp \
            ../fontmanager.cpp \
-           ../frame_interpreter.cpp \
-           ../frame_receiver.cpp \
            ../generic_functions.cpp \
            ../genpage.cpp \
            ../gridcontent.cpp \
@@ -303,7 +278,6 @@ SOURCES += ../actuators.cpp \
            ../keypad.cpp \
            ../lansettings.cpp \
            ../lighting.cpp \
-           ../lighting_device.cpp \
            ../listbrowser.cpp \
            ../loads.cpp \
            ../main.cpp \
@@ -317,17 +291,12 @@ SOURCES += ../actuators.cpp \
            ../pagefactory.cpp \
            ../pagestack.cpp \
            ../plantmenu.cpp \
-           ../platform_device.cpp \
            ../playwindow.cpp \
            ../poweramplifier.cpp \
-           ../poweramplifier_device.cpp \
-           ../probe_device.cpp \
-           ../pulldevice.cpp \
            ../radio.cpp \
            ../ringtonesmanager.cpp \
            ../scaleconversion.cpp \
            ../scenario.cpp \
-           ../scenario_device.cpp \
            ../scenevocond.cpp \
            ../screensaver.cpp \
            ../screensaverpage.cpp \
@@ -346,7 +315,6 @@ SOURCES += ../actuators.cpp \
            ../styledwidget.cpp \
            ../supervisionmenu.cpp \
            ../temperatureviewer.cpp \
-           ../thermal_device.cpp \
            ../thermalmenu.cpp \
            ../timescript.cpp \
            ../titlelabel.cpp \
