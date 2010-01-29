@@ -15,7 +15,9 @@ banner *getBanner(const QDomNode &item_node)
 	sections.append(&Lighting::getBanner);
 	sections.append(&Scenario::getBanner);
 	sections.append(&Settings::getBanner);
+#ifdef LAYOUT_TOUCHX
 	sections.append(&IconSettings::getBanner);
+#endif
 
 	for (int i = 0; i < sections.size(); ++i)
 		if (banner *b = sections[i](item_node))

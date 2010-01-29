@@ -120,9 +120,11 @@ Page *getPage(int page_id)
 	case ENERGY_DATA:
 		page = new EnergyData(page_node);
 		break;
+#ifdef LAYOUT_TOUCHX
 	case MULTIMEDIA:
 		page = new MultimediaSectionPage(page_node);
 		break;
+#endif
 	default:
 		qFatal("Page %d not found on xml config file!", id);
 	}
