@@ -240,7 +240,7 @@ void Antintrusion::inizializza()
 
 void Antintrusion::manageFrame(OpenMsg &msg)
 {
-	int what = QString(msg.Extract_cosa()).mid(0, 2).toInt();
+	int what = msg.what();
 
 	if (what == 12 || what == 15 || what == 16 || what == 17)
 	{
