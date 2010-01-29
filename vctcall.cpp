@@ -18,8 +18,6 @@
 #include <QSpacerItem>
 #include <QGridLayout>
 
-#ifdef LAYOUT_TOUCHX
-
 #define BOTTOM_SPACING 15
 
 const QString video_grabber_path = "/home/bticino/bin/rsize";
@@ -471,5 +469,3 @@ void VCTCallWindow::handleClose()
 	vct_call->blockSignals(true);
 	emit Closed();
 }
-
-#endif

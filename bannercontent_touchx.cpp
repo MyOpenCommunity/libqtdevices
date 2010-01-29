@@ -9,8 +9,6 @@
 #include <QFontMetrics>
 
 
-#ifdef LAYOUT_TOUCHX
-
 BannerContent::BannerContent(QWidget *parent, int _columns)
 	: GridContent(parent),
 	columns(_columns)
@@ -107,5 +105,3 @@ void BannerContent::drawContent()
 	l->addItem(vertical_separator, 0, 1,
 		   (pages[current_page + 1] - pages[current_page]) / 2, 1);
 }
-
-#endif // LAYOUT_TOUCHX
