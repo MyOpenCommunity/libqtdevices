@@ -11,6 +11,9 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QDebug>
+#include <QTemporaryFile>
+
+#define SLIDESHOW_FILENAME "cfg/extra/slideshow_images"
 
 ScreenSaverPage::ScreenSaverPage()
 {
@@ -218,10 +221,11 @@ SlideshowSelectionPage::SlideshowSelectionPage(const QString &start_path) :
 	PageTitleWidget *title_widget = new PageTitleWidget("Select photos", Page::TITLE_HEIGHT);
 	connect(content, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int,int)));
 
-	NavigationBar *nav_bar = new NavigationBar;
+	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
 	connect(nav_bar, SIGNAL(upClick()), content, SLOT(prevItem()));
 	connect(nav_bar, SIGNAL(downClick()), content, SLOT(nextItem()));
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(confirmSelection()));
 	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 
 	buildPage(content, nav_bar, 0, title_widget);
@@ -233,6 +237,7 @@ SlideshowSelectionPage::SlideshowSelectionPage(const QString &start_path) :
 	current_dir.setSorting(QDir::DirsFirst | QDir::Name);
 	current_dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable);
 	showFiles();
+	// TODO: reload from saved file all the selected images
 }
 
 void SlideshowSelectionPage::showFiles()
@@ -248,12 +253,14 @@ void SlideshowSelectionPage::showFiles()
 		{
 			SlideshowItemDir *it = new SlideshowItemDir(fi.fileName(), checked_icon, unchecked_icon, photo_icon);
 			connect(it, SIGNAL(browseDirectory(QString)), SLOT(enterDirectory(QString)));
+			connect(it, SIGNAL(directoryToggled(bool,QString)), SLOT(itemSelected(bool, QString)));
 			w = it;
 		}
 
 		if (fi.isFile())
 		{
 			SlideshowItemImage *im = new SlideshowItemImage(fi.fileName(), current_dir.absolutePath() + QDir::separator(), checked_icon, unchecked_icon);
+			connect(im, SIGNAL(fileToggled(bool,QString)), SLOT(itemSelected(bool, QString)));
 			w = im;
 		}
 		Q_ASSERT_X(w!=0, "SlideshowImageSelection::browseFiles", "w is 0");
@@ -284,6 +291,62 @@ void SlideshowSelectionPage::enterDirectory(QString dir)
 	}
 	else
 		qWarning() << "Selected directory is not readable: " << current_dir.absolutePath() + "/" + dir;
+}
+
+void SlideshowSelectionPage::confirmSelection()
+{
+	selected_images.subtract(removed_images);
+	selected_images.unite(inserted_images);
+	removed_images.clear();
+	inserted_images.clear();
+	qDebug() << "Currently selected files: " << selected_images;
+	// TODO: emit signal to notify image changes
+	// TODO: save selection to file
+	saveSlideshowToFile();
+	// TODO: unroll directories
+	emit Closed();
+}
+
+void SlideshowSelectionPage::itemSelected(bool is_checked, QString relative_path)
+{
+	QString abs_path = current_dir.absolutePath() + QDir::separator() + relative_path;
+	if (is_checked)
+	{
+		// this check is to avoid incorrect results when the user clicks more than once on the button
+		if (removed_images.contains(abs_path))
+			removed_images.remove(abs_path);
+		inserted_images.insert(abs_path);
+	}
+	else
+	{
+		if (inserted_images.contains(abs_path))
+			inserted_images.remove(abs_path);
+		removed_images.insert(abs_path);
+	}
+}
+
+void SlideshowSelectionPage::saveSlideshowToFile()
+{
+	QFile f("/tmp/temp_slideshow.txt");
+	if (!f.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		qWarning() << "Error creating temporary file for slideshow images";
+		return;
+	}
+
+	foreach (const QString &path, selected_images)
+	{
+		qDebug() << "writing path to file: " << path;
+		f.write(path.toLocal8Bit());
+		f.write("\n");
+	}
+	f.close();
+	QFileInfo fi(f);
+	qDebug() << "Saved file to " << fi.absoluteFilePath();
+
+	// TODO: see why it's not working
+	if (::rename(qPrintable(fi.absolutePath()), SLIDESHOW_FILENAME))
+		qDebug() << "An error occurred while moving file";
 }
 
 void SlideshowSelectionPage::refreshContent()

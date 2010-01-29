@@ -5,6 +5,7 @@
 #include "gridcontent.h" // GridContent
 
 #include <QDir>
+#include <QSet>
 
 class BtButton;
 class QLabel;
@@ -40,12 +41,20 @@ public slots:
 private:
 	void showFiles();
 	void refreshContent();
+	void saveSlideshowToFile();
 	QDir current_dir;
 	int level;
 	QString checked_icon, unchecked_icon, photo_icon;
+	// removed_images: will be removed from selected_images
+	// inserted_images: will be added to selected_images
+	// selected_images: contains full path names for files. Full path names for directories if all files and dir
+	//                  below are selected.
+	QSet<QString> selected_images, removed_images, inserted_images;
 
 private slots:
 	void enterDirectory(QString dir);
+	void confirmSelection();
+	void itemSelected(bool is_selected, QString relative_path);
 };
 
 
