@@ -243,7 +243,11 @@ void EnergyCost::saveCostAndProd()
 		data["cons/rate"] = loc.toString(cons_rate, 'f', n_decimal);
 	if (banner_prod)
 		data["prod/rate"] = loc.toString(prod_rate, 'f', n_decimal);
+#ifdef CONFIG_BTOUCH
 	setCfgValue(data, ENERGY_TYPE, serial_number);
+#else
+	setCfgValue(data, ENERGY_TYPE); // TODO wait for TouchX configuration
+#endif
 
 	emit prodValueChanged(prod_rate);
 	emit consValueChanged(cons_rate);

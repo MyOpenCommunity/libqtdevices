@@ -58,9 +58,10 @@ AlarmNavigation::AlarmNavigation(bool forwardButton, QWidget *parent)
 
 // AlarmClock implementation
 
-AlarmClock::AlarmClock(int config_id, Type t, Freq f, QList<bool> active, int hour, int minute)
+AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, QList<bool> active, int hour, int minute)
 {
 	id = config_id;
+	item_id = _item_id;
 	aumVolTimer = NULL;
 	alarmTime = QTime(hour, minute);
 	minuTimer = NULL;
@@ -123,7 +124,11 @@ void AlarmClock::handleClose()
 	else
 		data["alarmset"] = QString::number(freq);
 
+#ifdef CONFIG_BTOUCH
 	setCfgValue(data, id, serNum);
+#else
+	setCfgValue(data, item_id);
+#endif
 
 	if (aggiornaDatiEEprom)
 		setAlarmVolumes(serNum-1, volSveglia, sorgente, stazione);
@@ -142,12 +147,6 @@ void AlarmClock::showSoundDiffPage()
 }
 
 void AlarmClock::setActive(bool a)
-{
-	_setActive(a);
-	setCfgValue("enabled", active ? "1" : "0", id, serNum);
-}
-
-void AlarmClock::_setActive(bool a)
 {
 	alarm_time->setActive(a);
 
@@ -171,6 +170,12 @@ void AlarmClock::_setActive(bool a)
 			minuTimer = NULL;
 		}
 	}
+
+#ifdef CONFIG_BTOUCH
+	setCfgValue("enabled", active, id, serNum);
+#else
+	setCfgValue("enabled", active, item_id);
+#endif
 }
 
 void AlarmClock::status_changed(const StatusList &sl)

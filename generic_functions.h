@@ -64,11 +64,23 @@ QString getAmbName(QString name, QString amb);
  * \param item_id the unique id of the object
  * \param num_item the serial number of the object
  */
+#ifdef CONFIG_BTOUCH
+
 bool setCfgValue(QMap<QString, QString> data, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
 // Some convenient overloads for the above function
 bool setCfgValue(QString field, QString value, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 bool setCfgValue(QString field, int value, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
+
+#else
+
+bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
+
+// Some convenient overloads for the above function
+bool setCfgValue(QString field, QString value, int item_id, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
+bool setCfgValue(QString field, int value, int item_id, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
+
+#endif
 
 int trasformaVol(int vol);
 

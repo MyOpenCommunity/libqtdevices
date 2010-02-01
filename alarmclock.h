@@ -69,7 +69,7 @@ public:
 		DI_SON = 1  /*!< The sound diffusion system is used*/
 	};
 
-	AlarmClock(int id, Type t, Freq f, QList<bool> days, int hour, int minute);
+	AlarmClock(int id, int item_id, Type t, Freq f, QList<bool> days, int hour, int minute);
 
 /*!
   \brief Reads from the eeprom the alarm set state.
@@ -85,11 +85,6 @@ public:
   \brief Sets the alarm set (dis)active.
 */
 	void setActive(bool);
-
-	/**
-	 * Sets the alarm state according to the parameter. It doesn't update the configuration file.
-	 */
-	void _setActive(bool a);
 
 	/**
 	 * Returns the active state of the alarm clock. When alarm clock type is ONCE, this method
@@ -153,7 +148,7 @@ private slots:
 	void spegniSveglia(bool);
 
 private:
-	int id;
+	int id, item_id;
 	Type type;
 	Freq freq;
 	QList<bool> days;

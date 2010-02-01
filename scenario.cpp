@@ -26,7 +26,7 @@ namespace
 		{
 			if (getTextChild(cond, "value").toInt())
 			{
-				scenEvo_cond_h *c = new scenEvo_cond_h(cond, has_next);
+				scenEvo_cond_h *c = new scenEvo_cond_h(0, cond, has_next);
 				QObject::connect(bt_global::btmain, SIGNAL(resettimer()), c, SLOT(setupTimer()));
 				l.append(c);
 			}
@@ -36,7 +36,7 @@ namespace
 		{
 			if (getTextChild(cond, "value").toInt())
 			{
-				scenEvo_cond_d *c = new scenEvo_cond_d(cond);
+				scenEvo_cond_d *c = new scenEvo_cond_d(0, cond);
 				l.append(c);
 			}
 		}
@@ -45,6 +45,8 @@ namespace
 #else
 	QList<scenEvo_cond*> loadConditions(const QDomNode &config_node)
 	{
+		int item_id = getTextChild(config_node, "itemID").toInt();
+
 		// NOTE: the ownership of scenEvo_cond objects is taken by the object that
 		// store the list of conditions.
 		// TODO: we can have at maximum 1 condH and 1 condDevice, remove lists
@@ -54,7 +56,7 @@ namespace
 		QDomNode cond = getElement(config_node, "scen/time");
 		if (getTextChild(cond, "status").toInt())
 		{
-			scenEvo_cond_h *c = new scenEvo_cond_h(cond, has_next);
+			scenEvo_cond_h *c = new scenEvo_cond_h(item_id, cond, has_next);
 			QObject::connect(bt_global::btmain, SIGNAL(resettimer()), c, SLOT(setupTimer()));
 			l.append(c);
 		}
@@ -62,7 +64,7 @@ namespace
 		QDomNode device = getElement(config_node, "scen/device");
 		if (getTextChild(device, "objectID").toInt())
 		{
-			scenEvo_cond_d *c = new scenEvo_cond_d(device);
+			scenEvo_cond_d *c = new scenEvo_cond_d(item_id, device);
 			l.append(c);
 		}
 

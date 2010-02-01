@@ -151,7 +151,8 @@ void LanSettings::status_changed(const StatusList &status_list)
 			if (lan_status != saved_status)
 			{
 				saved_status = lan_status;
-				setCfgValue("value", lan_status ? "1": "0", LANSETTINGS);
+				// TODO needs to be modified when removing CONFIG_BTOUCH
+				setCfgValue("value", lan_status, LANSETTINGS);
 			}
 		}
 		++it;

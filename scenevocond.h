@@ -63,6 +63,9 @@ protected:
 private:
 	int serial_number;
 
+protected:
+	int item_id;
+
 signals:
 	//! Emitted when user clicks Next icon
 	void SwitchToNext();
@@ -90,7 +93,7 @@ class scenEvo_cond_h : public scenEvo_cond
 {
 Q_OBJECT
 public:
-	scenEvo_cond_h(const QDomNode &config_node, bool has_next);
+	scenEvo_cond_h(int item_id, const QDomNode &config_node, bool has_next);
 	/*!
 	\brief Returns condition description
 	*/
@@ -137,7 +140,7 @@ class scenEvo_cond_d : public scenEvo_cond
 {
 Q_OBJECT
 public:
-	scenEvo_cond_d(const QDomNode &config_node);
+	scenEvo_cond_d(int item_id, const QDomNode &config_node);
 
 	/*!
 	\brief Returns condition description in human language

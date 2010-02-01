@@ -89,20 +89,21 @@ private slots:
 };
 
 
-
 // button to toggle on/off the beep sound
 class ToggleBeep : public QWidget
 {
 Q_OBJECT
 public:
-	ToggleBeep(bool status, QString label, QString icon_on, QString icon_off);
+	ToggleBeep(int item_id, bool status, QString label, QString icon_on, QString icon_off);
 
 private slots:
 	void toggleBeep();
 
 private:
 	BtButton *button;
+	int item_id;
 };
+
 
 class PasswordPage : public BannerPage
 {

@@ -101,10 +101,12 @@ bool scenEvo_cond::isTrue()
  ** Advanced scenario management, time condition
 ****************************************************************/
 
-scenEvo_cond_h::scenEvo_cond_h(const QDomNode &config_node, bool has_next) :
+scenEvo_cond_h::scenEvo_cond_h(int _item_id, const QDomNode &config_node, bool has_next) :
 	time_edit(this)
 {
 	qDebug("***** scenEvo_cond_h::scenEvo_cond_h");
+
+	item_id = _item_id;
 
 	timer.setSingleShot(true);
 	connect(&timer, SIGNAL(timeout()), SLOT(scaduta()));
@@ -201,9 +203,15 @@ void scenEvo_cond_h::save()
 	qDebug("scenEvo_cond_h::save()");
 
 	QMap<QString, QString> data;
+#ifdef CONFIG_BTOUCH
 	data["condH/hour"] = cond_time.toString("hh");
 	data["condH/minute"] = cond_time.toString("mm");
 	setCfgValue(data, SCENARIO_EVOLUTO, get_serial_number());
+#else
+	data["scen/time/hour"] = cond_time.toString("hh");
+	data["scen/time/minute"] = cond_time.toString("mm");
+	setCfgValue(data, item_id);
+#endif
 }
 
 void scenEvo_cond_h::reset()
@@ -222,8 +230,10 @@ bool scenEvo_cond_h::isTrue()
 ** Advanced scenario management, device condition
 ****************************************************************/
 
-scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
+scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 {
+	item_id = _item_id;
+
 	QLabel *area1_ptr = new QLabel(this);
 	area1_ptr->setGeometry(0, 0, BUTTON_DIM, BUTTON_DIM);
 
@@ -349,7 +359,11 @@ void scenEvo_cond_d::save()
 	qDebug("scenEvo_cond_d::save()");
 	QString s;
 	actual_condition->get_condition_value(s);
+#ifdef CONFIG_BTOUCH
 	setCfgValue("condDevice/trigger", s, SCENARIO_EVOLUTO, get_serial_number());
+#else
+	setCfgValue("scen/device/trigger", s, item_id);
+#endif
 	reset();
 	inizializza();
 }
