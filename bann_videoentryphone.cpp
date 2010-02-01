@@ -149,7 +149,7 @@ call_notifier::call_notifier(QWidget *parent, postoExt *ms) : QFrame(parent)
 		// Unknown station, ANY where is ok
 		where = "ANY";
 
-	station_dev = bt_global::devices_cache.get_doorphone_device(where);
+	station_dev = bt_global::add_device_to_cache(new doorphone_device(where));
 	if (!station_dev)
 	{
 		qDebug("Bad thing, cannot create device");

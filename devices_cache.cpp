@@ -31,57 +31,6 @@ void DevicesCache::init_devices()
 		it.value()->init();
 }
 
-// Get doorphone device given address
-device *DevicesCache::get_doorphone_device(QString w)
-{
-	QString k = get_device_key(QString("6"), w);
-	qDebug() << "DevicesCache::get_doorphone_device(" << k << ")";
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new doorphone_device(w);
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	qDebug("DevicesCache::get_doorphone_device() returning %p", out);
-	return out;
-}
-
-// Get amplifier
-device *DevicesCache::get_sound_device(QString w)
-{
-	QString k = get_device_key(QString("16"), w);
-	qDebug() << "DevicesCache::get_sound_device(" << k << ")";
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new sound_device(w);
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	qDebug("DevicesCache::get_sound_device() returning %p", out);
-	return out;
-}
-
-// Get sound matrix device
-device *DevicesCache::get_sound_matr_device()
-{
-	QString k = get_device_key(QString("16"), QString("1000"));
-	qDebug() << "DevicesCache::get_sound_matr_device(" << k << ")";
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new sound_matr(QString("1000"));
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	qDebug("DevicesCache::get_sound_matr_device() returning %p", out);
-	return out;
-}
-
 // Get radio device
 device *DevicesCache::get_radio_device(QString w)
 {
@@ -108,39 +57,6 @@ device *DevicesCache::get_radio_device(QString w)
 	return out;
 }
 
-// Get anti-intrusion system
-device *DevicesCache::get_impanti_device()
-{
-	QString k = get_device_key(QString("16"), QString("0"));
-	qDebug() << "DevicesCache::get_impanti_device(" << k << ")";
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new impanti_device(QString("0"));
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	qDebug("DevicesCache::get_impanti_device() returning %p", out);
-	return out;
-}
-
-// Get anti-intrusion system (single zone)
-device *DevicesCache::get_zonanti_device(QString w)
-{
-	QString k = get_device_key(QString("16"), w);
-	qDebug() << "DevicesCache::get_zonanti_device(" << k << ")";
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new zonanti_device(w);
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	qDebug("DevicesCache::get_zonanti_device() returning %p", out);
-	return out;
-}
 
 device *DevicesCache::get_thermal_regulator(QString where, thermo_type_t type)
 {
@@ -205,23 +121,6 @@ device *DevicesCache::get_temperature_probe(QString w, bool external)
 	return out;
 }
 
-
-// Get MCI device
-device *DevicesCache::get_mci_device(QString w)
-{
-	QString k = get_device_key(QString("18"), w);
-	qDebug() << "DevicesCache::get_mci_device(" << k << ")";
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new mci_device(w);
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	qDebug("DevicesCache::get_mci_device() returning %p", out);
-	return out;
-}
 
 // Destroy device given key
 void DevicesCache::put_device(QString k)

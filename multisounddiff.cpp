@@ -99,7 +99,7 @@ MultiSoundDiff::MultiSoundDiff(const QDomNode &config_node)
 	sorgenti->hide();
 	connect(sorgenti, SIGNAL(actSrcChanged(int, int)), this, SIGNAL(actSrcChanged(int, int)));
 
-	matr = bt_global::devices_cache.get_sound_matr_device();
+	matr = bt_global::add_device_to_cache(new sound_matr(QString("1000")));
 	// Get status changed events back
 	connect(matr, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));
@@ -170,7 +170,7 @@ MultiSoundDiffAlarm::MultiSoundDiffAlarm(const QDomNode &config_node)
 	// are already done.
 	connect(sorgenti, SIGNAL(actSrcChanged(int, int)), this, SIGNAL(actSrcChanged(int, int)));
 
-	device *matr = bt_global::devices_cache.get_sound_matr_device();
+	device *matr = bt_global::add_device_to_cache(new sound_matr(QString("1000")));
 	// Get status changed events back
 	connect(matr, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));

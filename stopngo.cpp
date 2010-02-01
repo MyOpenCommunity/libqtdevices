@@ -145,7 +145,7 @@ QString StopngoItem::GetWhere()
 BannPulsDynIcon::BannPulsDynIcon(QWidget *parent, const QString &where) : bannPuls(parent)
 {
 	// Get status changed events back
-	mci_device* dev = (mci_device*)bt_global::devices_cache.get_mci_device(where);
+	mci_device* dev = bt_global::add_device_to_cache(new mci_device(where));
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 		SLOT(status_changed(QList<device_status*>)));
 }
@@ -241,7 +241,7 @@ StopngoPage::StopngoPage(QString where, int id, QString pageTitle)
 	AddItems();
 
 	// Get status changed events back
-	mci_device* dev = (mci_device*)bt_global::devices_cache.get_mci_device(where);
+	mci_device* dev = bt_global::add_device_to_cache(new mci_device(where));
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 		SLOT(status_changed(QList<device_status*>)));
 }

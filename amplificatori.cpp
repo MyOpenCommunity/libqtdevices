@@ -29,7 +29,7 @@ amplificatore::amplificatore(QWidget *parent, QString indirizzo, QString IconaSx
 	setValue(1);
 	impostaAttivo(0);
 	// Crea o preleva il dispositivo dalla cache
-	dev = bt_global::devices_cache.get_sound_device(getAddress());
+	dev = bt_global::add_device_to_cache(new sound_device(getAddress()));
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));

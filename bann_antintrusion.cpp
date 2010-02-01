@@ -58,7 +58,7 @@ AntintrusionZone::AntintrusionZone(const QString &name, const QString &where) :
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleParzializza()));
 	already_changed = false;
 
-	dev = bt_global::devices_cache.get_zonanti_device(where);
+	dev = bt_global::add_device_to_cache(new zonanti_device(where));
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), SLOT(status_changed(QList<device_status*>)));
 
@@ -331,8 +331,7 @@ impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconI
 	// probably needs to be set for all banners (or minimumSizeHint defined)
 	setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
 
-	// Crea o preleva il dispositivo dalla cache
-	dev = bt_global::devices_cache.get_impanti_device();
+	dev = bt_global::add_device_to_cache(new impanti_device(QString("0")));
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));

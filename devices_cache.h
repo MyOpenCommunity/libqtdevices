@@ -18,20 +18,9 @@ public:
 	DevicesCache();
 	//! Inits all devices
 	void init_devices();
-	//! Get doorphone device
-	device *get_doorphone_device(QString where);
-	//! Get autom device
-	device *get_autom_device(QString where);
-	//! Get sound device
-	device *get_sound_device(QString where);
-	//! Get sound matr device
-	device *get_sound_matr_device();
 	//! Get radio
 	device *get_radio_device(QString where);
-	//! Get anti-intrusion system
-	device *get_impanti_device();
-	//! Get anti-intrusion system zone
-	device *get_zonanti_device(QString where);
+
 	/// Get a thermal regulator device
 	device *get_thermal_regulator(QString where, thermo_type_t type);
 
@@ -40,8 +29,6 @@ public:
 		bool fancoil, QString ind_centrale, QString indirizzo);
 	//! Get stand-alone or external temperature probe
 	device *get_temperature_probe(QString w, bool external);
-	//! Get modscen
-	device *get_mci_device(QString where);
 	//! Destroy device given key
 	void put_device(QString k);
 	//! Destructor
