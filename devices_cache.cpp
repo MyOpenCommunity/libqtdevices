@@ -58,26 +58,6 @@ device *DevicesCache::get_radio_device(QString w)
 }
 
 
-device *DevicesCache::get_temperature_probe_controlled(QString w, thermo_type_t type,
-		bool fancoil, QString ind_centrale, QString indirizzo)
-{
-	QString k = get_device_key(QString("4"), w);
-	qDebug() << "DevicesCache::get_temperature_probe_controlled(), key=" << k
-		<< " type=" << type << " fancoil=" << (fancoil ? "yes" : "no");
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new ControlledProbeDevice(w, ind_centrale, indirizzo,
-						static_cast<ControlledProbeDevice::CentralType>(type),
-						fancoil ? ControlledProbeDevice::FANCOIL : ControlledProbeDevice::NORMAL);
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	qDebug("DevicesCache::get_temperature_probe_controlled() returning %p", out);
-	return out;
-}
-
 // Get temperature probe device
 device *DevicesCache::get_temperature_probe(QString w, bool external)
 {
