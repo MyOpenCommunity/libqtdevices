@@ -276,7 +276,8 @@ void HeaderLogo::loadItems(const QDomNode &config_node)
 		{
 		case ITEM_TEMPERATURE:
 			// TODO add flag for the probe type in confiugration
-			device *probe = bt_global::devices_cache.get_temperature_probe(getTextChild(item, "where"), false);
+			device *probe = bt_global::add_device_to_cache(new NonControlledProbeDevice(getTextChild(item, "where"),
+				NonControlledProbeDevice::INTERNAL));
 
 			temperature_display = new InnerPageTemperatureDisplay(probe);
 			l->addWidget(temperature_display);
@@ -349,10 +350,10 @@ void HeaderInfo::loadItems(const QDomNode &config_node)
 		case ITEM_TEMPERATURE:
 		{
 			// TODO add flag for the probe type in confiugration
-			device *probe = bt_global::devices_cache.get_temperature_probe(getTextChild(item, "where"), false);
+			device *probe = bt_global::add_device_to_cache(new NonControlledProbeDevice(getTextChild(item, "where"),
+				NonControlledProbeDevice::INTERNAL));
 			QWidget *item = new HomepageTemperatureDisplay(probe);
 			home_layout->addWidget(item);
-
 			break;
 		}
 		case ITEM_RSS_LINK:

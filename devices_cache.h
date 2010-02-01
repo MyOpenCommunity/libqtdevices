@@ -21,8 +21,6 @@ public:
 	//! Get radio
 	device *get_radio_device(QString where);
 
-	//! Get stand-alone or external temperature probe
-	device *get_temperature_probe(QString w, bool external);
 	//! Destroy device given key
 	void put_device(QString k);
 	//! Destructor

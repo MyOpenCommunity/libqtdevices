@@ -43,7 +43,8 @@ void TemperatureViewer::add(QString where, int x, int y, int width, int height, 
 		temp.text->setGeometry(x, y + height - H_SCR_TEMP, width, H_SCR_TEMP);
 	}
 
-	temp.device = static_cast<NonControlledProbeDevice *>(bt_global::devices_cache.get_temperature_probe(where, ext == "1"));
+	temp.device = bt_global::add_device_to_cache(new NonControlledProbeDevice(where, ext == "1" ?
+		NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL));
 	connect(temp.device, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
 
 	unsigned default_bt_temp = 1235;

@@ -58,25 +58,6 @@ device *DevicesCache::get_radio_device(QString w)
 }
 
 
-// Get temperature probe device
-device *DevicesCache::get_temperature_probe(QString w, bool external)
-{
-	QString k = get_device_key(QString("4"), w);
-	qDebug() << "DevicesCache::get_temperature_probe(), key=" << k
-		<< " external=" << (external ? "true" : "false");
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new NonControlledProbeDevice(w, external ? NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL);
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	qDebug("DevicesCache::get_temperature_probe() returning %p", out);
-	return out;
-}
-
-
 // Destroy device given key
 void DevicesCache::put_device(QString k)
 {

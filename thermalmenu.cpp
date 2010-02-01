@@ -208,9 +208,9 @@ void ProbesPage::loadItems(const QDomNode &config_node, bool are_probes_external
 		QString text = getTextChild(item, "descr");
 		if (are_probes_external)
 			addr += "00";
-		NonControlledProbeDevice *dev = static_cast<NonControlledProbeDevice *>(
-				bt_global::devices_cache.get_temperature_probe(addr, are_probes_external));
 
+		NonControlledProbeDevice *dev = bt_global::add_device_to_cache(new NonControlledProbeDevice(addr,
+			are_probes_external ? NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL));
 		banner *b = new BannTemperature(this, addr, text, dev);
 
 		page_content->appendBanner(b);
