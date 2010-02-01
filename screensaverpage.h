@@ -58,6 +58,14 @@ private:
 	void removeCurrentFile(const QString &path);
 
 	/*
+	 * Compact a directory when all its enclosed items are selected.
+	 * \param dir Directory to be compacted
+	 * \param items_in_dir List of items individually selected. This should contain the same items as a call
+	 * to getFilteredFiles(dir) [otherwise there's a bug somewhere...]
+	 */
+	void compactDirectory(const QString &dir, const QFileInfoList &items_in_dir);
+
+	/*
 	 * Return a list of image entries.
 	 */
 	QFileInfoList getFilteredFiles(const QString &dir_path);

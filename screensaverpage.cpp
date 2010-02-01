@@ -297,9 +297,21 @@ void SlideshowSelectionPage::showFiles()
 		Q_ASSERT_X(w!=0, "SlideshowImageSelection::browseFiles", "w is 0");
 		page_content->addItem(w);
 	}
+
 	if (are_all_selected)
-		//compactDir(current_dir.absolutePath());
-		qDebug() << "Compacting directory: " << current_dir.absolutePath();
+		compactDirectory(current_dir.absolutePath(), list);
+}
+
+void SlideshowSelectionPage::compactDirectory(const QString &dir, const QFileInfoList &items_in_dir)
+{
+	qDebug() << "compacting directory " << dir;
+	foreach (const QFileInfo &fi, items_in_dir)
+	{
+		inserted_images.remove(fi.absoluteFilePath());
+		removed_images.insert(fi.absoluteFilePath());
+	}
+	inserted_images.insert(dir);
+	qDebug() << "Result of compacting the directory: " << selected_images + inserted_images - removed_images;
 }
 
 void SlideshowSelectionPage::browseUp()
@@ -360,7 +372,11 @@ void SlideshowSelectionPage::removeCurrentFile(const QString &path)
 		foreach (const QFileInfo &fi, getFilteredFiles(parent))
 		{
 			if (fi.fileName() != basename)
+			{
+				// this may be inserted by compactDirectory()
+				removed_images.remove(fi.absoluteFilePath());
 				inserted_images.insert(fi.absoluteFilePath());
+			}
 		}
 
 		// then exclude parent directory itself and terminate if we are the outermost selected directory
