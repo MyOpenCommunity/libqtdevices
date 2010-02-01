@@ -18,8 +18,6 @@ public:
 	DevicesCache();
 	//! Inits all devices
 	void init_devices();
-	//! Get radio
-	device *get_radio_device(QString where);
 
 	//! Destroy device given key
 	void put_device(QString k);

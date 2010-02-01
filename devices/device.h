@@ -65,7 +65,7 @@ public:
 	//! Decrement reference count, return reference count after decrement
 	int put();
 	//! Returns cache key
-	QString get_key();
+	virtual QString get_key();
 	virtual ~device();
 
 	static void setClients(Client *command, Client *request);
@@ -165,6 +165,7 @@ Q_OBJECT
 public:
 	//! Constructor
 	radio_device(QString, bool p=false, int g=-1);
+	virtual QString get_key();
 };
 
 //! Sound matrix

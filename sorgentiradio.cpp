@@ -62,8 +62,7 @@ banradio::banradio(QWidget *parent, QString indirizzo, int nbut, const QString &
 	connect(myRadio,SIGNAL(memoFreq(uchar)),this,SLOT(memoStaz(uchar)));
 	connect(myRadio,SIGNAL(richFreq()),this,SLOT(richFreq()));
 
-	// Crea o preleva il dispositivo dalla cache
-	dev = bt_global::devices_cache.get_radio_device(getAddress());
+	dev = bt_global::add_device_to_cache(new radio_device(getAddress()));
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), this, SLOT(status_changed(QList<device_status*>)));
 }

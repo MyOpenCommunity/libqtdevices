@@ -296,6 +296,19 @@ radio_device::radio_device(QString w, bool p, int g) : device(QString("16"), w, 
 	setup_frame_interpreter(new frame_interpreter_radio_device(w, p, g));
 }
 
+QString radio_device::get_key()
+{
+	// Radio devices are different, we build the key based only on
+	// the least significant digit
+	int wh = where.toInt();
+	while (wh >= 100)
+		wh -= 100;
+	while (wh >= 10)
+		wh -= 10;
+
+	return who + "*" + QString::number(wh);
+}
+
 // Sound matrix device implementation
 sound_matr::sound_matr(QString w, bool p, int g) : device(QString("16"), QString("1000"), p, g)
 {

@@ -31,32 +31,6 @@ void DevicesCache::init_devices()
 		it.value()->init();
 }
 
-// Get radio device
-device *DevicesCache::get_radio_device(QString w)
-{
-	// Radio devices are different, we build the key based only on 
-	// the least significant digit
-	int wh = w.toInt() ;
-	while(wh >= 100)
-		wh -= 100;
-	while(wh >= 10)
-		wh -= 10;
-	w = QString::number(wh);
-	qDebug() << "Modified w to " << w;
-	QString k = get_device_key(QString("16"), w);
-	qDebug() << "DevicesCache::get_radio_device(" << k << ")";
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new radio_device(w);
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	qDebug("DevicesCache::get_radio_device() returning %p", out);
-	return out;
-}
-
 
 // Destroy device given key
 void DevicesCache::put_device(QString k)
