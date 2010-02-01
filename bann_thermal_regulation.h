@@ -194,9 +194,6 @@ private:
 	thermo_type_t probe_type;
 	QString probe_icon_auto, probe_icon_manual;
 
-	/// Time to wait (in msec) before sending a frame when the user presses on plus or minus buttons to modify setpoint temperature
-	/// \sa setpoint
-	const unsigned setpoint_delay;
 	/// The delta of temperature (in 1/10 of degrees) when the user presses on plus or minus
 	const unsigned setpoint_delta;
 	/// The minimum temperature that can be set with manual operation

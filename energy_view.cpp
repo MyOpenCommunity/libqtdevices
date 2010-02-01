@@ -24,8 +24,6 @@
 #define POLLING_CURRENT 5 // time to refresh data visualized in the current banner (in sec.)
 #define POLLING_CUMULATIVE_DAY 60 * 60 // time to refresh data visualized in the comulative day banner (in sec.)
 
-#define ENERGY_GRAPH_DELAY 1000 // msec to wait before request a graph data
-
 namespace
 {
 // The language used for the floating point number
@@ -291,9 +289,6 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	cumulative_day_value = cumulative_month_value = cumulative_year_value = 0;
 	daily_av_value = current_value = 0;
 
-	// We can't use frame compressor as below (or with a single what as filter), because
-	// it filter also valid requests with different what.
-	dev->installFrameCompressor(ENERGY_GRAPH_DELAY);
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
 	mapper = new QSignalMapper(this);

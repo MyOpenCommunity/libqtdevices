@@ -14,44 +14,7 @@ Client *device::client_comandi = 0;
 Client *device::client_richieste = 0;
 
 
-FrameCompressor::FrameCompressor(int timeout, int w)
-{
-	what = w;
-	timer.setInterval(timeout);
-	timer.setSingleShot(true);
-	connect(&timer, SIGNAL(timeout()), SLOT(emitFrame()));
-}
-
-bool FrameCompressor::analyzeFrame(const QString &frame_open)
-{
-	OpenMsg msg(frame_open.toStdString());
-
-	// TODO: accept more than one what
-	if (what == -1)
-	{
-		frame = frame_open;
-		timer.start();
-		return true;
-	}
-	else if (what == msg.what())
-	{
-		frame = frame_open;
-		timer.start();
-		return true;
-	}
-	else
-		return false;
-}
-
-void FrameCompressor::emitFrame()
-{
-	qDebug() << "FrameCompressor, now emitting frame: " << frame;
-	emit compressedFrame(frame);
-}
-
-
 // Device implementation
-
 device::device(QString _who, QString _where, bool p, int g) : interpreter(0)
 {
 	who = _who;
@@ -59,8 +22,6 @@ device::device(QString _who, QString _where, bool p, int g) : interpreter(0)
 	pul = p;
 	group = g;
 	refcount = 0;
-	cmd_compressor = 0;
-	req_compressor = 0;
 	subscribe_monitor(who.toInt());
 }
 
@@ -76,28 +37,6 @@ void device::sendInit(QString frame) const
 	Q_ASSERT_X(client_richieste, "device::sendInit", "Client richieste not set!");
 	QByteArray buf = frame.toAscii();
 	client_richieste->ApriInviaFrameChiudi(buf.constData());
-}
-
-void device::sendCompressedFrame(const QString &frame) const
-{
-	if (cmd_compressor)
-	{
-		if (!cmd_compressor->analyzeFrame(frame))
-			sendFrame(frame);
-	}
-	else
-		sendFrame(frame);
-}
-
-void device::sendCompressedInit(const QString &frame) const
-{
-	if (req_compressor)
-	{
-		if (!req_compressor->analyzeFrame(frame))
-			sendInit(frame);
-	}
-	else
-		sendInit(frame);
 }
 
 void device::sendCommand(QString what, QString _where) const
@@ -122,22 +61,6 @@ void device::setClients(Client *command, Client *request)
 {
 	client_comandi = command;
 	client_richieste = request;
-}
-
-void device::installFrameCompressor(int timeout, int what)
-{
-	// TODO: add the possibility to install a compressor on a specific what
-	// TODO: add an interface to install the compressors independently
-	if (!cmd_compressor)
-	{
-		cmd_compressor = new FrameCompressor(timeout);
-		connect(cmd_compressor, SIGNAL(compressedFrame(QString)), SLOT(sendFrame(QString)));
-	}
-	if (!req_compressor)
-	{
-		req_compressor = new FrameCompressor(timeout);
-		connect(req_compressor, SIGNAL(compressedFrame(QString)), SLOT(sendInit(QString)));
-	}
 }
 
 void device::init(bool force)

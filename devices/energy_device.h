@@ -91,12 +91,11 @@ public:
 
 
 private:
-	void requestCumulativeMonth(QDate date, bool use_compressed_init) const;
 
 	// EnergyDevice doesn't use the sendRequest of the device (because it should use the compression
 	// of the frames) but instead it defines its own version.
-	void sendRequest(int what, bool use_compressed_init=false) const;
-	void sendRequest(QString what, bool use_compressed_init=false) const;
+	void sendRequest(int what) const;
+	void sendRequest(QString what) const;
 	void parseCumulativeDayGraph(const QStringList &buffer_frame, QVariant &v);
 	void parseCumulativeMonthGraph(const QStringList &buffer_frame, QVariant &v);
 	void parseDailyAverageGraph(const QStringList &buffer_frame, QVariant &v);

@@ -244,7 +244,6 @@ void PageSimpleProbe::status_changed(const StatusList &sl)
 PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
 	TemperatureScale scale) : PageSimpleProbe(n, scale),
 	delta_setpoint(false),
-	setpoint_delay(2000),
 	setpoint_delta(5)
 {
 	probe_icon_auto = bt_global::skin->getImage("probe_auto");
@@ -259,7 +258,6 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(changeStatus()));
 	//install compressor
-	dev->installFrameCompressor(setpoint_delay);
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 

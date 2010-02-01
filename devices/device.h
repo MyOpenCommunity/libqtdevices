@@ -16,26 +16,6 @@ class OpenMsg;
 typedef QHash<int, QVariant> StatusList;
 
 
-class FrameCompressor : public QObject
-{
-Q_OBJECT
-public:
-	// w is 'what'
-	FrameCompressor(int timeout, int w = -1);
-	/// If frame_open matches regex, start the timer and save the frame for later use
-	bool analyzeFrame(const QString &frame_open);
-
-private slots:
-	void emitFrame();
-
-private:
-	QTimer timer;
-	int what;
-	QString frame;
-signals:
-	void compressedFrame(QString);
-};
-
 
 //! Generic device
 class device : public QObject, FrameReceiver
@@ -69,7 +49,6 @@ public:
 	virtual ~device();
 
 	static void setClients(Client *command, Client *request);
-	void installFrameCompressor(int timeout, int what = -1);
 
 	virtual void manageFrame(OpenMsg &msg);
 
@@ -114,9 +93,7 @@ protected:
 
 	/// connect the frame interpreter with the device
 	void setup_frame_interpreter(frame_interpreter* i);
-	// Send a frame using the frame compressor
-	void sendCompressedFrame(const QString &frame) const;
-	void sendCompressedInit(const QString &frame) const;
+
 
 	void sendCommand(QString what, QString _where) const;
 	void sendCommand(QString what) const;
@@ -129,8 +106,6 @@ private:
 	int group;
 	//! Number of users
 	int refcount;
-	FrameCompressor *cmd_compressor;
-	FrameCompressor *req_compressor;
 
 	static Client *client_comandi;
 	static Client *client_richieste;

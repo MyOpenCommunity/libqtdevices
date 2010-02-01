@@ -98,7 +98,7 @@ void ControlledProbeDevice::setManual(unsigned setpoint)
 	QString what = QString("#14*%1*3").arg(setpoint, 4, 10, QChar('0'));
 	QString frame = "*#" + who + "*" + where + "*" + what + "##";
 
-	sendCompressedFrame(frame);
+	sendFrame(frame);
 }
 
 void ControlledProbeDevice::setAutomatic()
