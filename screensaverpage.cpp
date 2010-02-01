@@ -248,8 +248,13 @@ SlideshowSelectionPage::SlideshowSelectionPage(const QString &start_path) :
 
 	current_dir.setSorting(QDir::DirsFirst | QDir::Name);
 	current_dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable);
-	showFiles();
-	// TODO: reload from saved file all the selected images
+}
+
+void SlideshowSelectionPage::showPage()
+{
+	loadSlideshowFromFile();
+	refreshContent();
+	Page::showPage();
 }
 
 void SlideshowSelectionPage::showFiles()
@@ -322,6 +327,7 @@ void SlideshowSelectionPage::confirmSelection()
 {
 	selected_images.subtract(removed_images);
 	selected_images.unite(inserted_images);
+	clearCaches();
 	// TODO: emit signal to notify image changes
 	saveSlideshowToFile();
 	// TODO: unroll directories
@@ -358,9 +364,9 @@ void SlideshowSelectionPage::saveSlideshowToFile()
 		return;
 	}
 
-	foreach (const QString &path, selected_images)
+	foreach (QString path, selected_images)
 	{
-		qDebug() << "writing path to file: " << path;
+		path = path.simplified();
 		f.write(path.toLocal8Bit());
 		f.write("\n");
 	}
@@ -372,14 +378,30 @@ void SlideshowSelectionPage::saveSlideshowToFile()
 		qWarning() << "Could not correctly save slideshow file, error code = " << errno;
 }
 
+void SlideshowSelectionPage::loadSlideshowFromFile()
+{
+	QFile f(SLIDESHOW_FILENAME);
+	if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+	{
+		qWarning() << "Could not read slideshow images file: " << QDir::currentPath() + SLIDESHOW_FILENAME;
+		return;
+	}
+
+	while (!f.atEnd())
+	{
+		QString path = f.readLine().simplified();
+		selected_images.insert(path);
+	}
+	qDebug() << "loadSlideshowFromFile, result: " << selected_images;
+}
+
 bool SlideshowSelectionPage::isItemSelected(QString abs_path)
 {
 	while (!abs_path.isEmpty())
 	{
 		if ((selected_images.contains(abs_path) || inserted_images.contains(abs_path)) && !(removed_images.contains(abs_path)))
-		{
 			return true;
-		}
+
 		// find the previous separator and remove everything from that point
 		int pos = abs_path.lastIndexOf(QDir::separator(), -2);
 		if (pos < 0)

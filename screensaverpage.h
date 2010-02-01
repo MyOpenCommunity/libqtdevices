@@ -34,6 +34,7 @@ public:
 	typedef SlideshowImageContent ContentType;
 
 	SlideshowSelectionPage(const QString &start_path);
+	virtual void showPage();
 
 public slots:
 	void browseUp();
@@ -42,6 +43,7 @@ private:
 	void showFiles();
 	void refreshContent();
 	void saveSlideshowToFile();
+	void loadSlideshowFromFile();
 	/*
 	 * Check if an item is selected.
 	 * By design we don't query the interface but rely only on the QSets below (it may well be that the interface
