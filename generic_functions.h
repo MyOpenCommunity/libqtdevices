@@ -15,7 +15,7 @@
 #include <QString>
 #include <QMap>
 
-#include "main.h" // MY_FILE_USER_CFG_DEFAULT
+#include "main.h" // MY_FILE_USER_CFG_DEFAULT, bt_global::config
 
 /// Create a 'command' frame
 /// This function is similar to openwebnet::CreateMsgOpen but unlike that the result
@@ -62,8 +62,9 @@ QString getAmbName(QString name, QString amb);
  */
 bool setCfgValue(QMap<QString, QString> data, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
-// A convenient overload for the above function
+// Some convenient overloads for the above function
 bool setCfgValue(QString field, QString value, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
+bool setCfgValue(QString field, int value, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
 int trasformaVol(int vol);
 

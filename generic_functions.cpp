@@ -137,6 +137,13 @@ bool setCfgValue(QString field, QString value, int item_id, int num_item, const 
 	return setCfgValue(m, item_id, num_item, filename);
 }
 
+bool setCfgValue(QString field, int value, int item_id, int num_item, const QString &filename)
+{
+	QMap<QString, QString> m;
+	m[field] = QString::number(value);
+	return setCfgValue(m, item_id, num_item, filename);
+}
+
 int trasformaVol(int vol)
 {
 	if (vol < 0)
