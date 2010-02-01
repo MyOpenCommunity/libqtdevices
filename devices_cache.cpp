@@ -58,31 +58,6 @@ device *DevicesCache::get_radio_device(QString w)
 }
 
 
-device *DevicesCache::get_thermal_regulator(QString where, thermo_type_t type)
-{
-	QString k = get_device_key(QString("4"), where);
-	device *out = (*this)[k];
-	if (!out)
-	{
-		switch(type)
-		{
-			case THERMO_Z4:
-				out = new ThermalDevice4Zones(where);
-				break;
-			case THERMO_Z99:
-				out = new ThermalDevice99Zones(where);
-				break;
-		}
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-
-	}
-	out->get();
-	qDebug("DevicesCache::get_thermal_regulator() returning %p", out);
-	return out;
-}
-
-
 device *DevicesCache::get_temperature_probe_controlled(QString w, thermo_type_t type,
 		bool fancoil, QString ind_centrale, QString indirizzo)
 {
