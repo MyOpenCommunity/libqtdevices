@@ -3,7 +3,6 @@
 #ifndef __DEVICESCACHE_H__
 #define __DEVICESCACHE_H__
 
-#include "device_status.h"
 
 #include <QMap>
 #include <QString>
@@ -19,17 +18,10 @@ public:
 	//! Inits all devices
 	void init_devices();
 
-	//! Destroy device given key
-	void put_device(QString k);
 	//! Destructor
 	~DevicesCache();
 };
 
-
-// Extern functions
-
-QString get_device_key(QString who, QString where);
-QString get_device_key(char *who, char *where);
 
 namespace bt_global
 {
