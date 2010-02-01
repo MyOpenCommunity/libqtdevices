@@ -6,11 +6,11 @@
 DisplayControl::DisplayControl()
 {
 	forced_operative_mode = false;
-	_setBrightness(BRIGHTNESS_NORMAL);
+	setBrightness(BRIGHTNESS_NORMAL);
 	setState(DISPLAY_OPERATIVE);
 }
 
-void DisplayControl::_setBrightness(BrightnessLevel level)
+void DisplayControl::setBrightness(BrightnessLevel level)
 {
 	switch (level)
 	{
@@ -59,13 +59,8 @@ void DisplayControl::_setBrightness(BrightnessLevel level)
 	data[DISPLAY_OPERATIVE].backlight = true;
 	data[DISPLAY_OPERATIVE].screensaver = false;
 
+	setCfgValue("brightness/level", level, DISPLAY);
 	current_brightness = level;
-}
-
-void DisplayControl::setBrightness(BrightnessLevel level)
-{
-	_setBrightness(level);
-	setCfgValue("brightness/level", QString::number(level), DISPLAY);
 }
 
 BrightnessLevel DisplayControl::currentBrightness()

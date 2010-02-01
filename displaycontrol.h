@@ -58,11 +58,6 @@ private:
 	ScreenSaver::Type current_screensaver;
 	DisplayStatus current_state;
 	bool forced_operative_mode;
-
-	// Set the brightness. The difference between this method and the one without
-	// underscore is that the other also store the brightness level in the configuration
-	// file. So, use this method only in inizialization.
-	void _setBrightness(BrightnessLevel level);
 };
 
 namespace bt_global { extern DisplayControl display; }

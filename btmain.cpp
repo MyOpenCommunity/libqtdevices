@@ -266,7 +266,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			if (!n.isNull())
 				level = static_cast<BrightnessLevel>(n.text().toInt());
 		}
-		bt_global::display._setBrightness(level);
+		bt_global::display.setBrightness(level);
 
 		ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
 		if (!display_node.isNull())
