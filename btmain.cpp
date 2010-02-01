@@ -347,6 +347,8 @@ void BtMain::init()
 		qApp->setStyleSheet(style);
 
 	config_loaded = true;
+	qDebug("Initialization complete, from now on will write to configuration");
+	bt_global::config[INIT_COMPLETE] = "1"; // maybe change config to contain QVariant?
 
 	if (monitor_ready)
 		myMain();

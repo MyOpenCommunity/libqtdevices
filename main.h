@@ -21,7 +21,8 @@ enum GlobalFields
 	DATE_FORMAT,
 	MODEL,
 	NAME,
-	PI_ADDRESS
+	PI_ADDRESS,
+	INIT_COMPLETE
 };
 
 namespace bt_global { extern QHash<GlobalFields, QString> config; }

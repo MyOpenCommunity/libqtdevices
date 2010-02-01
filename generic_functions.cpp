@@ -65,6 +65,13 @@ QString getAmbName(QString name, QString amb)
  */
 bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
 {
+	if (!bt_global::config.contains(INIT_COMPLETE))
+	{
+		qDebug() << "Not writing to configuration during init: " << item_id << serial_number << data;
+
+		return true;
+	}
+
 #ifdef CONFIG_BTOUCH
 	QFile config_file(filename);
 	if (!config_file.open(QIODevice::ReadOnly))
@@ -168,4 +175,3 @@ int trasformaVol(int vol)
 		return 9;
 	return -1;
 }
-

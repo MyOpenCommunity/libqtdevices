@@ -57,6 +57,10 @@ QString getAmbName(QString name, QString amb);
  * \param data the map of the fields to save. The map has as key the path of the node (see
  * the function getElement to more details about the path) and as value the value that must
  * to be saved.
+ *
+ * As a convenience, the function is a no-op during constructions and configuration loading
+ * and starts actually writing to the file just before page initialization
+ *
  * \param item_id the unique id of the object
  * \param num_item the serial number of the object
  */
