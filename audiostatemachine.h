@@ -103,8 +103,8 @@ public:
 
 private slots:
 	// declare state handlers here
-	void stateAlarmClockEntered();
-	void stateAlarmClockExited();
+	void stateAlarmClockEntered(int state, int old_state);
+	void stateAlarmClockExited(int state, int old_state);
 	void stateVideoCallEntered();
 };
 

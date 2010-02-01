@@ -139,12 +139,12 @@ AudioStateMachine::AudioStateMachine()
 	start(ALARM_CLOCK);
 }
 
-void AudioStateMachine::stateAlarmClockEntered()
+void AudioStateMachine::stateAlarmClockEntered(int state, int old_state)
 {
 	// do something when entering the alarm clock state
 }
 
-void AudioStateMachine::stateAlarmClockExited()
+void AudioStateMachine::stateAlarmClockExited(int state, int old_state)
 {
 	// do something when leaving the alarm clock state
 }
