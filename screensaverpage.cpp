@@ -12,8 +12,9 @@
 #include <QLabel>
 #include <QDebug>
 #include <QTemporaryFile>
+#include <errno.h>
 
-#define SLIDESHOW_FILENAME "cfg/extra/slideshow_images"
+#define SLIDESHOW_FILENAME "cfg/extra/slideshow_images.txt"
 
 ScreenSaverPage::ScreenSaverPage()
 {
@@ -350,8 +351,8 @@ void SlideshowSelectionPage::itemSelected(bool is_checked, QString relative_path
 
 void SlideshowSelectionPage::saveSlideshowToFile()
 {
-	QFile f("/tmp/temp_slideshow.txt");
-	if (!f.open(QIODevice::WriteOnly | QIODevice::Text))
+	QTemporaryFile f("./temp_slideshowXXXXXX.txt");
+	if (!f.open())
 	{
 		qWarning() << "Error creating temporary file for slideshow images";
 		return;
@@ -367,9 +368,8 @@ void SlideshowSelectionPage::saveSlideshowToFile()
 	QFileInfo fi(f);
 	qDebug() << "Saved file to " << fi.absoluteFilePath();
 
-	// TODO: see why it's not working
-	if (::rename(qPrintable(fi.absolutePath()), SLIDESHOW_FILENAME))
-		qDebug() << "An error occurred while moving file";
+	if (::rename(qPrintable(fi.absoluteFilePath()), SLIDESHOW_FILENAME))
+		qWarning() << "Could not correctly save slideshow file, error code = " << errno;
 }
 
 bool SlideshowSelectionPage::isItemSelected(QString abs_path)
