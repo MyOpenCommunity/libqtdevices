@@ -17,9 +17,9 @@
 #include <QLabel>
 
 
-bannAlarmClock::bannAlarmClock(QWidget *parent, int hour, int minute, QString icon_on,
+bannAlarmClock::bannAlarmClock(int item_id, int hour, int minute, QString icon_on,
 	QString icon_off, QString icon_label, int enabled, int tipo, int freq)
-	: bann2But(parent)
+	: bann2But(0)
 {
 	sxButton->setOnOff();
 	sxButton->setStatus(enabled == 1);
@@ -28,7 +28,7 @@ bannAlarmClock::bannAlarmClock(QWidget *parent, int hour, int minute, QString ic
 	SetIcons(1, icon_label);
 	Draw(); // Draw must be called before setAbil.. see impBeep
 
-	alarm_clock = new AlarmClock(SET_SVEGLIA,
+	alarm_clock = new AlarmClock(SET_SVEGLIA, item_id,
 				     static_cast<AlarmClock::Type>(tipo),
 				     static_cast<AlarmClock::Freq>(freq), QList<bool>(),
 				     hour, minute);
@@ -80,7 +80,7 @@ void bannAlarmClock::inizializza(bool forza)
 }
 
 
-bannAlarmClockIcon::bannAlarmClockIcon(int hour, int minute, QString icon_on,
+bannAlarmClockIcon::bannAlarmClockIcon(int item_id, int hour, int minute, QString icon_on,
 	QString icon_off, QString icon_state, QString icon_edit, QString text, int enabled, int tipo, QList<bool> days)
 	: BannOnOffState(0)
 {
@@ -90,7 +90,7 @@ bannAlarmClockIcon::bannAlarmClockIcon(int hour, int minute, QString icon_on,
 	left_button->setPressedImage(icon_off);
 	left_button->setStatus(enabled == 1);
 
-	alarm_clock = new AlarmClock(SET_SVEGLIA_SINGLEPAGE,
+	alarm_clock = new AlarmClock(SET_SVEGLIA_SINGLEPAGE, item_id,
 				     static_cast<AlarmClock::Type>(tipo),
 				     AlarmClock::NESSUNO,
 				     days, hour, minute);
@@ -167,18 +167,19 @@ void calibration::fineCalib()
 }
 
 
-impBeep::impBeep(QWidget *parent, QString val, QString icon_on, QString icon_off)
-	: bannOnSx(parent)
+impBeep::impBeep(int _item_id, bool enabled, QString icon_on, QString icon_off)
+	: bannOnSx(0)
 {
+	item_id = _item_id;
+
 	connect(this, SIGNAL(click()), this, SLOT(toggleBeep()));
 
-	bool on = (val.toInt() == 1);
 	sxButton->setOnOff();
-	setBeep(on);
+	setBeep(enabled);
 
 	SetIcons(0, icon_off, icon_on);
 	Draw(); // Draw must be called before setStatus (because it calls the setPixmap function)
-	sxButton->setStatus(on);
+	sxButton->setStatus(enabled);
 }
 
 void impBeep::toggleBeep()
@@ -191,7 +192,7 @@ void impBeep::toggleBeep()
 #ifdef CONFIG_BTOUCH
 	setCfgValue("value", beep_on, SUONO);
 #else
-	setCfgValue("enabled", beep_on, BEEP_ICON);
+	setCfgValue("enabled", beep_on, item_id);
 #endif
 
 	if (beep_on)
@@ -199,10 +200,11 @@ void impBeep::toggleBeep()
 }
 
 
-bannContrast::bannContrast(QWidget *parent, QString val, QString icon) :
-	bannOnDx(parent, icon, new Contrast())
+bannContrast::bannContrast(int _item_id, int val, QString icon) :
+	bannOnDx(0, icon, new Contrast())
 {
-	setContrast(val.toInt());
+	item_id = _item_id;
+	setContrast(val);
 	connect(linked_dx_page, SIGNAL(Closed()), SLOT(done()));
 }
 
@@ -211,7 +213,7 @@ void bannContrast::done()
 	int c = getContrast();
 
 	setContrast(c);
-	setCfgValue("value", c, CONTRASTO);
+	setCfgValue("value", c, item_id); // TODO check if "value" is correct when removing CONFIG_BTOUCH
 }
 
 
@@ -229,9 +231,11 @@ void bannVersion::showVers()
 }
 
 
-impPassword::impPassword(QWidget *parent, QString icon_on, QString icon_off, QString icon_label, QString descr, QString pwd, int attiva)
-	: Bann2Buttons(parent)
+impPassword::impPassword(QString icon_on, QString icon_off, QString icon_label, QString descr,
+			 int _item_id, QString pwd, int attiva)
+	: Bann2Buttons(0)
 {
+	item_id = _item_id;
 	password = pwd;
 	tasti = new Keypad();
 	if (password.isEmpty())
@@ -261,7 +265,11 @@ impPassword::impPassword(QWidget *parent, QString icon_on, QString icon_off, QSt
 void impPassword::toggleActivation()
 {
 	active = !active;
-	setCfgValue("enabled", QString::number(active), PROTEZIONE, getSerNum());
+#ifdef CONFIG_BTOUCH
+	setCfgValue("enabled", QString::number(active), item_id);
+#else
+	setCfgValue("actived", active, item_id);
+#endif
 	bt_global::btmain->setPwd(active, password);
 	left_button->setStatus(active);
 }
@@ -292,7 +300,11 @@ void impPassword::checkPasswd()
 		if (!c.isEmpty())
 		{
 			password = c;
-			setCfgValue("value", password, PROTEZIONE, getSerNum());
+#ifdef CONFIG_BTOUCH
+			setCfgValue("value", password, item_id);
+#else
+			setCfgValue("password", password, item_id);
+#endif
 			bt_global::btmain->setPwd(active, password);
 			status = PASSWD_SET;
 		}

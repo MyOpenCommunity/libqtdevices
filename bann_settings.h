@@ -38,7 +38,7 @@ class bannAlarmClock : public bann2But
 {
 Q_OBJECT
 public:
-	bannAlarmClock(QWidget *parent, int hour, int minute, QString icon_on,
+	bannAlarmClock(int item_id, int hour, int minute, QString icon_on,
 		QString icon_off, QString icon_label, int enabled, int freq, int tipo);
 	/*!
 	\brief changes the abilitation af the alarm set
@@ -70,7 +70,7 @@ class bannAlarmClockIcon : public BannOnOffState
 {
 Q_OBJECT
 public:
-	bannAlarmClockIcon(int hour, int minute, QString icon_on,
+	bannAlarmClockIcon(int item_id, int hour, int minute, QString icon_on,
 		QString icon_off, QString icon_state, QString icon_edit, QString text,
 		int enabled, int tipo, QList<bool> days);
 	/*!
@@ -136,9 +136,13 @@ class impBeep : public bannOnSx
 {
 Q_OBJECT
 public:
-	impBeep(QWidget *parent, QString val, QString icon_on, QString icon_off);
+	impBeep(int item_id, bool enabled, QString icon_on, QString icon_off);
+
 public slots:
 	void toggleBeep();
+
+private:
+	int item_id;
 };
 
 
@@ -146,10 +150,13 @@ class bannContrast : public bannOnDx
 {
 Q_OBJECT
 public:
-	bannContrast(QWidget *parent, QString val, QString icon);
+	bannContrast(int item_id, int val, QString icon);
 
 private slots:
 	void done();
+
+private:
+	int item_id;
 };
 
 
@@ -177,7 +184,8 @@ class impPassword : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	impPassword(QWidget *parent, QString icon_on, QString icon_off, QString icon_label, QString descr, QString pwd, int attiva);
+	impPassword(QString icon_on, QString icon_off, QString icon_label, QString descr,
+		    int item_id, QString pwd, int attiva);
 
 public slots:
 /*!
@@ -207,6 +215,7 @@ private:
 	QString password;
 	Keypad *tasti;
 	bool sb;
+	int item_id;
 
 signals:
 /*!

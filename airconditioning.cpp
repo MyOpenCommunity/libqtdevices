@@ -186,7 +186,8 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirCo
 
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 	{
-		AdvancedSplitScenario *b = new AdvancedSplitScenario(getTextChild(scenario, "descr"), scenario.nodeName(), d);
+		int item_id = getTextChild(scenario, "itemID").toInt();
+		AdvancedSplitScenario *b = new AdvancedSplitScenario(getTextChild(scenario, "descr"), item_id, scenario.nodeName(), d);
 		SplitSettings *sp = new SplitSettings(scenario, getChildWithName(config_node, "par"));
 		b->setCurrentValues(sp->getCurrentStatus());
 		b->connectRightButton(sp);

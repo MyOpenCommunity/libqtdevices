@@ -69,7 +69,7 @@ public:
 		DI_SON = 1  /*!< The sound diffusion system is used*/
 	};
 
-	AlarmClock(int id, Type t, Freq f, QList<bool> days, int hour, int minute);
+	AlarmClock(int id, int item_id, Type t, Freq f, QList<bool> days, int hour, int minute);
 
 /*!
   \brief Reads from the eeprom the alarm set state.
@@ -148,7 +148,7 @@ private slots:
 	void spegniSveglia(bool);
 
 private:
-	int id;
+	int id, item_id;
 	Type type;
 	Freq freq;
 	QList<bool> days;

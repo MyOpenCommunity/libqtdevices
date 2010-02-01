@@ -76,7 +76,7 @@ class AdvancedSplitScenario : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	AdvancedSplitScenario(QString descr, const QString &conf_node, AdvancedAirConditioningDevice *d, QWidget *parent = 0);
+	AdvancedSplitScenario(QString descr, int item_id, const QString &conf_node, AdvancedAirConditioningDevice *d, QWidget *parent = 0);
 	/*
 	 * Set initial values when 'ON' is pressed.
 	 * Split settings parameters are parsed only in SplitSettings, at startup the 'ON' button sends
@@ -91,6 +91,7 @@ private:
 	AirConditionerStatus status;
 	AdvancedAirConditioningDevice *dev;
 	QString conf_name;
+	int item_id;
 
 private slots:
 	void onButtonClicked();

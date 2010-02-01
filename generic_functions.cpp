@@ -63,16 +63,23 @@ QString getAmbName(QString name, QString amb)
  * Changes a value in conf.xml file atomically.
  * It works on a temporary file and then moves that file on conf.xml with a call to ::rename().
  */
+#ifdef CONFIG_BTOUCH
 bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
+#else
+bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filename)
+#endif
 {
 	if (!bt_global::config.contains(INIT_COMPLETE))
 	{
+#ifdef CONFIG_BTOUCH
 		qDebug() << "Not writing to configuration during init: " << item_id << serial_number << data;
+#else
+		qDebug() << "Not writing to configuration during init: " << item_id << data;
+#endif
 
 		return true;
 	}
 
-#ifdef CONFIG_BTOUCH
 	QFile config_file(filename);
 	if (!config_file.open(QIODevice::ReadOnly))
 		return false;
@@ -93,7 +100,19 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, co
 	}
 	config_file.close();
 
+#ifdef CONFIG_BTOUCH
 	QDomNode n = findXmlNode(doc, QRegExp(".*"), item_id, serial_number);
+#else
+	QDomElement gui = getElement(doc.documentElement(), "gui");
+	QDomNode n;
+
+	foreach (const QDomNode &page, getChildren(gui, "page"))
+	{
+		n = getChildWithId(page, QRegExp("item"), "itemID", item_id);
+		if (!n.isNull())
+			break;
+	}
+#endif
 	Q_ASSERT_X(!n.isNull(), "setCfgValue", qPrintable(QString("No object found with id %1").arg(item_id)));
 
 	QMapIterator<QString, QString> it(data);
@@ -132,10 +151,11 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, co
 
 		return true;
 	}
-#endif
 
 	return false;
 }
+
+#ifdef CONFIG_BTOUCH
 
 bool setCfgValue(QString field, QString value, int item_id, int num_item, const QString &filename)
 {
@@ -150,6 +170,24 @@ bool setCfgValue(QString field, int value, int item_id, int num_item, const QStr
 	m[field] = QString::number(value);
 	return setCfgValue(m, item_id, num_item, filename);
 }
+
+#else
+
+bool setCfgValue(QString field, QString value, int item_id, const QString &filename)
+{
+	QMap<QString, QString> m;
+	m[field] = value;
+	return setCfgValue(m, item_id, filename);
+}
+
+bool setCfgValue(QString field, int value, int item_id, const QString &filename)
+{
+	QMap<QString, QString> m;
+	m[field] = QString::number(value);
+	return setCfgValue(m, item_id, filename);
+}
+
+#endif
 
 int trasformaVol(int vol)
 {

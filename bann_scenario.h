@@ -68,6 +68,7 @@ Q_OBJECT
 public:
 	scenEvo(QWidget *parent, const QDomNode &conf_node, QList<scenEvo_cond*> c);
 	~scenEvo();
+
 public slots:
 	void inizializza(bool forza = false);
 
@@ -78,6 +79,7 @@ private:
 	int serial_number;
 	static int next_serial_number;
 	bool enabled;
+	int item_id;
 
 private slots:
 	void toggleAttivaScev();

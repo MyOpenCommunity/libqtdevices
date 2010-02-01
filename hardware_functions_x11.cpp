@@ -66,8 +66,6 @@ void setBacklight(bool b)
 
 void setBeep(bool buzzer_enable)
 {
-	const char *p = buzzer_enable ? "1" : "0";
-
 	buzzer_enabled = buzzer_enable;
 }
 

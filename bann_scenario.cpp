@@ -151,6 +151,8 @@ int scenEvo::next_serial_number = 1;
 scenEvo::scenEvo(QWidget *parent, const QDomNode &conf_node, QList<scenEvo_cond*> c) :
 	Bann3Buttons(parent), condList(c)
 {
+	item_id = getTextChild(conf_node, "itemID").toInt();
+
 	current_condition = 0;
 
 	serial_number = next_serial_number++;
@@ -170,7 +172,7 @@ scenEvo::scenEvo(QWidget *parent, const QDomNode &conf_node, QList<scenEvo_cond*
 	enabled = getTextChild(conf_node, "enable").toInt();
 #else
 	action = getElement(conf_node, "scen/action/open").text();
-	enabled = getTextChild(conf_node, "scen/status").toInt();
+	enabled = getElement(conf_node, "scen/status").text().toInt();
 #endif
 	enable_icon = bt_global::skin->getImage("enable_scen");
 	disable_icon = bt_global::skin->getImage("disable_scen");
@@ -187,10 +189,10 @@ void scenEvo::toggleAttivaScev()
 	qDebug("scenEvo::toggleAttivaScev");
 	enabled = !enabled;
 	left_button->setImage(enabled ? enable_icon : disable_icon);
-	const char *s = enabled ? "1" : "0";
 #ifdef CONFIG_BTOUCH
-	// TODO: how to save into config file?
-	setCfgValue("enable", s, SCENARIO_EVOLUTO, serial_number);
+	setCfgValue("enable", enabled, SCENARIO_EVOLUTO, serial_number);
+#else
+	setCfgValue("scen/status", enabled, item_id);
 #endif
 }
 

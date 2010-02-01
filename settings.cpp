@@ -30,13 +30,15 @@ banner *Settings::getBanner(const QDomNode &item_node)
 	switch (id)
 	{
 	case SUONO:
-		b = new impBeep(0, getTextChild(item_node, "value"),
+		b = new impBeep(getTextChild(item_node, "itemID").toInt(),
+				getTextChild(item_node, "value").toInt(),
 				bt_global::skin->getImage("state_on"),
 				bt_global::skin->getImage("state_off"));
 		break;
 	case SET_SVEGLIA_SINGLEPAGE:
 	case SET_SVEGLIA:
 	{
+		int item_id = getTextChild(item_node, "itemID").toInt();
 		int type = getTextChild(item_node, "type").toInt();
 		int enabled = getTextChild(item_node, "enabled").toInt();
 		int hour = getTextChild(item_node, "hour").toInt();
@@ -54,7 +56,7 @@ banner *Settings::getBanner(const QDomNode &item_node)
 
 		if (id == SET_SVEGLIA_SINGLEPAGE)
 		{
-			b = new bannAlarmClockIcon(hour, minute,
+			b = new bannAlarmClockIcon(item_id, hour, minute,
 						    bt_global::skin->getImage("on"),
 						    bt_global::skin->getImage("off"),
 						    bt_global::skin->getImage("state_icon"),
@@ -64,7 +66,7 @@ banner *Settings::getBanner(const QDomNode &item_node)
 		}
 		else
 		{
-			b = new bannAlarmClock(0, hour, minute,
+			b = new bannAlarmClock(item_id, hour, minute,
 					       bt_global::skin->getImage("state_on"),
 					       bt_global::skin->getImage("state_off"),
 					       bt_global::skin->getImage("edit"),
@@ -77,16 +79,18 @@ banner *Settings::getBanner(const QDomNode &item_node)
 		b = new bannOnDx(0, bt_global::skin->getImage("info"), new ChangeTime);
 		break;
 	case CONTRASTO:
-		b = new bannContrast(0, getTextChild(item_node, "value"),
+		// TODO CONTRASTO below needs to be changed when removing CONFIG_BTOUCH
+		b = new bannContrast(CONTRASTO, getTextChild(item_node, "value").toInt(),
 					 bt_global::skin->getImage("edit"));
 		break;
 	case DISPLAY:
 		b = new bannOnDx(0, bt_global::skin->getImage("forward"), new DisplayPage(item_node));
 		break;
 	case PROTEZIONE:
-		b = new impPassword(0,
+		// TODO PROTEZIONE below needs to be changed when removing CONFIG_BTOUCH
+		b = new impPassword(
 			bt_global::skin->getImage("state_on"), bt_global::skin->getImage("state_off"),
-			bt_global::skin->getImage("edit"), getTextChild(item_node, "descr"),
+			bt_global::skin->getImage("edit"), getTextChild(item_node, "descr"), PROTEZIONE,
 			getTextChild(item_node, "value"), getTextChild(item_node, "enabled").toInt());
 		break;
 	case VERSIONE:

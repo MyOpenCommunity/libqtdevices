@@ -40,17 +40,19 @@ enum
 };
 
 
-ToggleBeep::ToggleBeep(bool status, QString label, QString icon_on, QString icon_off)
+ToggleBeep::ToggleBeep(int _item_id, bool status, QString label, QString icon_on, QString icon_off)
 {
+	item_id = _item_id;
+
 	QLabel *lbl = new QLabel(label);
 	lbl->setText(label);
 	lbl->setAlignment(Qt::AlignHCenter);
 
 	button = new BtButton;
-	button->setStatus(status);
 	button->setCheckable(true);
 	button->setImage(icon_off);
 	button->setPressedImage(icon_on);
+	button->setStatus(status);
 
 	QVBoxLayout *l = new QVBoxLayout(this);
 	l->addWidget(button);
@@ -70,14 +72,12 @@ void ToggleBeep::toggleBeep()
 #ifdef CONFIG_BTOUCH
 	setCfgValue("value", beep_on, SUONO);
 #else
-	setCfgValue("enabled", beep_on, BEEP_ICON);
+	setCfgValue("enabled", beep_on, item_id);
 #endif
 
 	if (beep_on)
 		beep();
 }
-
-
 
 
 ListPage::ListPage(const QDomNode &config_node)
@@ -272,7 +272,8 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			break;
 		case BEEP_ICON:
 		{
-			QWidget *t = new ToggleBeep(false, descr,
+			QWidget *t = new ToggleBeep(getTextChild(item, "itemID").toInt(),
+						    getTextChild(item, "enabled").toInt(), descr,
 						    bt_global::skin->getImage("state_on"),
 						    bt_global::skin->getImage("state_off"));
 			page_content->addWidget(t);
@@ -317,11 +318,12 @@ PasswordPage::PasswordPage(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	QString descr = getTextChild(config_node, "descr");
+	int item_id = getTextChild(config_node, "itemID").toInt();
 	buildPage(descr);
 
-	banner *b = new impPassword(0, bt_global::skin->getImage("state_on"),
-		bt_global::skin->getImage("state_off"), bt_global::skin->getImage("edit"), descr,
-		getTextChild(config_node, "password"), getTextChild(config_node, "activated").toInt());
+	banner *b = new impPassword(bt_global::skin->getImage("state_on"),
+		bt_global::skin->getImage("state_off"), bt_global::skin->getImage("edit"), descr, item_id,
+		getTextChild(config_node, "password"), getTextChild(config_node, "actived").toInt());
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	page_content->appendBanner(b);
 }
