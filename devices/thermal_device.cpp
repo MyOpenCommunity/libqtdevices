@@ -58,8 +58,7 @@ enum what_t
 
 // ThermalDevice implementation
 
-ThermalDevice::ThermalDevice(QString where)
-	: device(QString("4"), QString("#") + where, false, -1)
+ThermalDevice::ThermalDevice(QString where) : device(QString("4"), QString("#") + where)
 {
 }
 

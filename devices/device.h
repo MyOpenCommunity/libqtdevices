@@ -16,7 +16,6 @@ class OpenMsg;
 typedef QHash<int, QVariant> StatusList;
 
 
-
 //! Generic device
 class device : public QObject, FrameReceiver
 {
@@ -34,16 +33,10 @@ public:
 
 	//! Set where
 	void set_where(QString);
-	//! Set pul status
-	void set_pul(bool);
-	//! Set group
-	void set_group(int);
+
 	//! Add device status
 	void add_device_status(device_status *);
-	//! Increment reference count
-	void get();
-	//! Decrement reference count, return reference count after decrement
-	int put();
+
 	//! Returns cache key
 	virtual QString get_key();
 	virtual ~device();
@@ -81,7 +74,7 @@ public slots:
 
 protected:
 	// The costructor is protected only to make device abstract.
-	device(QString who, QString where, bool p=false, int g=-1);
+	device(QString who, QString where);
 	//! Interpreter
 	frame_interpreter *interpreter;
 	//! List of device stats
@@ -94,22 +87,15 @@ protected:
 	/// connect the frame interpreter with the device
 	void setup_frame_interpreter(frame_interpreter* i);
 
-
 	void sendCommand(QString what, QString _where) const;
 	void sendCommand(QString what) const;
 	void sendRequest(QString what) const;
 
 private:
-	//! Pul status
-	bool pul;
-	//! Device's group
-	int group;
-	//! Number of users
-	int refcount;
-
 	static Client *client_comandi;
 	static Client *client_richieste;
 };
+
 
 
 /********************* Specific class device children classes **********************/
