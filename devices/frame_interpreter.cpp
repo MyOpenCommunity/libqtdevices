@@ -317,7 +317,9 @@ bool frame_interpreter::is_frame_ours(openwebnet_ext m, bool& request_status)
 	qDebug() << "msg who = " << m.Extract_chi() << ", msg where = " << m.get_where();
 	bool out = m.is_target(this, request_status);
 	if (out)
+	{
 		qDebug("FRAME IS OURS !!");
+	}
 	return out;
 }
 
@@ -730,7 +732,9 @@ bool frame_interpreter_radio_device::is_frame_ours(openwebnet_ext m, bool& reque
 	bool out = m.is_target(this, get_who(), QString::number(wh, 10), 
 			request_status);
 	if (out)
+	{
 		qDebug("FRAME IS OURS !!");
+	}
 	return out;
 }
 
