@@ -1,3 +1,9 @@
+######################################################################
+# Manual mantained!
+#
+# This file contains all the devices and their dependencies.
+
+
 HEADERS += airconditioning_device.h \
            alarmsounddiff_device.h \
            automation_device.h \

@@ -1,9 +1,12 @@
 ######################################################################
 # Manual mantained!
+#
+# This file contains all the common stuff for the Graphical User Interface
+
 
 TEMPLATE = app
 
-# define:
+# You have to define:
 # LAYOUT = btouch|touchx
 # CONF_FILE = btouch|touchx
 # before including this file in the project
@@ -16,7 +19,7 @@ contains(LAYOUT, touchx) {
 	TRGT_NAME = TouchX
 } else {
 	DEFINES += LAYOUT_BTOUCH
-        TRGT_NAME = BTouch
+	TRGT_NAME = BTouch
 }
 
 contains(CONF_FILE, touchx) {
@@ -26,17 +29,9 @@ contains(CONF_FILE, touchx) {
 	message(Using BTouch config file.)
 }
 
-# test architecture depending on the compiler used.
-# in this case we are searching for the substring 'arm'
-TEST_ARCH = $$find(QMAKE_CXX,arm)
+
 isEmpty(TEST_ARCH) {
 	message(x86 architecture detected.)
-
-	contains(LAYOUT, touchx) {
-		DEFINES += OPENSERVER_ADDR=\\\"touchx\\\"
-	} else {
-		DEFINES += OPENSERVER_ADDR=\\\"btouch\\\"
-	}
 
 	DEFINES += MEDIASERVER_PATH=\\\"/video/mp3/bticino_test/\\\"
 	LIBS += -L../../common_files/lib/x86 -lcommon
@@ -51,16 +46,6 @@ isEmpty(TEST_ARCH) {
 	OBJECTS_DIR = obj/arm
 	MOC_DIR = moc/arm
 	DEFINES += BT_EMBEDDED
-
-	contains(LAYOUT, touchx) {
-		# use the default Qt handler
-	} else {
-		HEADERS += ../QWSMOUSE/qmouse_qws.h \
-			../QWSMOUSE/qmouselinuxevent-2-6_qws.h
-
-		SOURCES += ../QWSMOUSE/qmouse_qws.cpp \
-			../QWSMOUSE/qmouselinuxevent-2-6_qws.cpp
-	}
 
 	HARDWARE = btouch
 	DEFINES += BT_HARDWARE_BTOUCH
@@ -83,7 +68,7 @@ DEFINES += QT_QWS_EBX BTWEB
 
 LIBS += -lssl
 
-INCLUDEPATH += . .. QWSMOUSE ../devices ../../stackopen/common_files ../../stackopen ../../stackopen/common_develer/lib $(ARMLINUX)
+INCLUDEPATH += . .. ../devices ../../stackopen/common_files ../../stackopen ../../stackopen/common_develer/lib $(ARMLINUX)
 QT += network xml
 
 # note: do not use spaces to split values below
@@ -94,6 +79,33 @@ QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
 QMAKE_CXXFLAGS_DEBUG += -O0 -g3 -ggdb
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CXXFLAGS_RELEASE += -O3
+
+contains(HARDWARE, x11) {
+	SOURCES += hardware_functions_x11.cpp
+}
+contains(HARDWARE, btouch) {
+	SOURCES += hardware_functions.cpp
+}
+
+TRANSLATIONS += ../linguist-ts/btouch_ar.ts \
+				../linguist-ts/btouch_de.ts \
+				../linguist-ts/btouch_def.ts \
+				../linguist-ts/btouch_en.ts \
+				../linguist-ts/btouch_es.ts \
+				../linguist-ts/btouch_fr.ts \
+				../linguist-ts/btouch_it.ts \
+				../linguist-ts/btouch_nl.ts \
+				../linguist-ts/btouch_pt.ts \
+				../linguist-ts/btouch_ru.ts \
+				../linguist-ts/btouch_zh_CN.ts \
+				../linguist-ts/btouch_zh_TW.ts \
+				../linguist-ts/btouch_hr.ts \
+				../linguist-ts/btouch_hu.ts \
+				../linguist-ts/btouch_sl.ts \
+				../linguist-ts/btouch_el.ts \
+				../linguist-ts/btouch_pl.ts \
+				../linguist-ts/btouch_tr.ts
+
 
 # Input
 HEADERS += actuators.h \
@@ -323,28 +335,3 @@ SOURCES += actuators.cpp \
            windowcontainer.cpp \
            xml_functions.cpp
 
-contains(HARDWARE, x11) {
-	SOURCES += hardware_functions_x11.cpp
-}
-contains(HARDWARE, btouch) {
-	SOURCES += hardware_functions.cpp
-}
-
-TRANSLATIONS += ../linguist-ts/btouch_ar.ts \
-                ../linguist-ts/btouch_de.ts \
-                ../linguist-ts/btouch_def.ts \
-                ../linguist-ts/btouch_en.ts \
-                ../linguist-ts/btouch_es.ts \
-                ../linguist-ts/btouch_fr.ts \
-                ../linguist-ts/btouch_it.ts \
-                ../linguist-ts/btouch_nl.ts \
-                ../linguist-ts/btouch_pt.ts \
-                ../linguist-ts/btouch_ru.ts \
-                ../linguist-ts/btouch_zh_CN.ts \
-                ../linguist-ts/btouch_zh_TW.ts \
-                ../linguist-ts/btouch_hr.ts \
-                ../linguist-ts/btouch_hu.ts \
-                ../linguist-ts/btouch_sl.ts \
-                ../linguist-ts/btouch_el.ts \
-                ../linguist-ts/btouch_pl.ts \
-                ../linguist-ts/btouch_tr.ts

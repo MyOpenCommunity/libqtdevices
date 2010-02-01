@@ -1,8 +1,21 @@
 ######################################################################
 # Manual mantained!
+#
+# This project file is designed to compile the Graphical User Interface
+# for the BTicino touchscreen 10''. It shares large pieces of code with
+# the BTicino touchscreen 3.5'' code.
 
 LAYOUT = touchx
 CONF_FILE = touchx
+
+# Test architecture depending on the compiler used.
+# In this case we are searching for the substring 'arm'
+TEST_ARCH = $$find(QMAKE_CXX,arm)
+
+isEmpty(TEST_ARCH) {
+	# x86
+	DEFINES += OPENSERVER_ADDR=\\\"touchx\\\"
+}
 
 VPATH = ../devices ..
 include(../common.pri)
