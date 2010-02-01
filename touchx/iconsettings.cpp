@@ -17,6 +17,7 @@
 #include "items.h" // ItemTuning
 #include "devices_cache.h" // bt_global::add_device_to_cache
 #include "platform_device.h" // PlatformDevice
+#include "generic_functions.h" // setCfgValue
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -55,23 +56,25 @@ ToggleBeep::ToggleBeep(bool status, QString label, QString icon_on, QString icon
 	l->addWidget(button);
 	l->addWidget(lbl);
 
-	setBeep(status, false);
+	setBeep(status);
 	connect(button, SIGNAL(clicked()), SLOT(toggleBeep()));
 }
 
 void ToggleBeep::toggleBeep()
 {
-	if (getBeep())
-	{
-		setBeep(false, true);
-		button->setStatus(false);
-	}
-	else
-	{
-		setBeep(true, true);
-		button->setStatus(true);
+	bool beep_on = !getBeep();
+
+	setBeep(beep_on);
+	button->setStatus(beep_on);
+
+#ifdef CONFIG_BTOUCH
+	setCfgValue("value", beep_on, SUONO);
+#else
+	setCfgValue("enabled", beep_on, BEEP_ICON);
+#endif
+
+	if (beep_on)
 		beep();
-	}
 }
 
 

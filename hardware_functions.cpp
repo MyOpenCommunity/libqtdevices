@@ -1,5 +1,5 @@
 #include "hardware_functions.h"
-#include "generic_functions.h"
+#include "main.h"
 
 #include <QFile>
 #include <QScreen>
@@ -36,7 +36,7 @@ HardwareType hardwareType()
 	return BTOUCH;
 }
 
-void setContrast(unsigned char c,bool b)
+void setContrast(unsigned char c)
 {
 	char contr[4];
 
@@ -50,11 +50,6 @@ void setContrast(unsigned char c,bool b)
 			write(fd, contr, 4);
 			close(fd);
 		}
-	}
-	if (b)
-	{
-		sprintf(contr,"%03d",c);
-		setCfgValue("value", contr, CONTRASTO);
 	}
 }
 
@@ -126,7 +121,7 @@ void setBacklight(bool b)
 		setBacklightOn(b);
 }
 
-void setBeep(bool buzzer_enable, bool write_to_conf)
+void setBeep(bool buzzer_enable)
 {
 	const char *p = buzzer_enable ? "1" : "0";
 	if (QFile::exists("/proc/sys/dev/btweb/buzzer_enable"))
@@ -137,15 +132,6 @@ void setBeep(bool buzzer_enable, bool write_to_conf)
 			fwrite(p, 1, 1, fd);
 			fclose(fd);
 		}
-	}
-
-	if (write_to_conf)
-	{
-#ifdef CONFIG_BTOUCH
-		setCfgValue("value", p, SUONO);
-#else
-		setCfgValue("enabled", p, BEEP_ICON); //
-#endif
 	}
 }
 

@@ -321,7 +321,7 @@ void AlarmClock::buzzerAlarm()
 	if (contaBuzzer == 0)
 	{
 		buzAbilOld = getBeep();
-		setBeep(true,false);
+		setBeep(true);
 	}
 	if  (contaBuzzer % 2 == 0)
 	{
@@ -339,7 +339,7 @@ void AlarmClock::buzzerAlarm()
 	{
 		qDebug("SPENGO LA SVEGLIA");
 		aumVolTimer->stop();
-		setBeep(buzAbilOld,false);
+		setBeep(buzAbilOld);
 		delete aumVolTimer;
 		aumVolTimer = NULL;
 		bt_global::btmain->freeze(false);
@@ -382,7 +382,7 @@ void AlarmClock::spegniSveglia(bool b)
 			qDebug("SPENGO LA SVEGLIA");
 			aumVolTimer->stop();
 			if (type == BUZZER)
-				setBeep(buzAbilOld,false);
+				setBeep(buzAbilOld);
 			else
 				dev->stopAlarm(sorgente, volSveglia);
 

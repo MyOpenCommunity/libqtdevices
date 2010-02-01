@@ -61,12 +61,12 @@ void Contrast::incContrast()
 {
 	int c = getContrast();
 	if (c < 140)
-		setContrast(c+10, FALSE);
+		setContrast(c+10);
 }
 
 void Contrast::decContrast()
 {
 	int c = getContrast();
 	if (c >= 10)
-		setContrast(c-10,FALSE);
+		setContrast(c-10);
 }

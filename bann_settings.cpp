@@ -174,7 +174,7 @@ impBeep::impBeep(QWidget *parent, QString val, QString icon_on, QString icon_off
 
 	bool on = (val.toInt() == 1);
 	sxButton->setOnOff();
-	setBeep(on, false);
+	setBeep(on);
 
 	SetIcons(0, icon_off, icon_on);
 	Draw(); // Draw must be called before setStatus (because it calls the setPixmap function)
@@ -183,30 +183,35 @@ impBeep::impBeep(QWidget *parent, QString val, QString icon_on, QString icon_off
 
 void impBeep::toggleBeep()
 {
-	if (getBeep())
-	{
-		setBeep(false, true);
-		sxButton->setStatus(false);
-	}
-	else
-	{
-		setBeep(true, true);
-		sxButton->setStatus(true);
+	bool beep_on = !getBeep();
+
+	setBeep(beep_on);
+	sxButton->setStatus(beep_on);
+
+#ifdef CONFIG_BTOUCH
+	setCfgValue("value", beep_on, SUONO);
+#else
+	setCfgValue("enabled", beep_on, BEEP_ICON);
+#endif
+
+	if (beep_on)
 		beep();
-	}
 }
 
 
 bannContrast::bannContrast(QWidget *parent, QString val, QString icon) :
 	bannOnDx(parent, icon, new Contrast())
 {
-	setContrast(val.toInt(), false);
+	setContrast(val.toInt());
 	connect(linked_dx_page, SIGNAL(Closed()), SLOT(done()));
 }
 
 void bannContrast::done()
 {
-	setContrast(getContrast(), true);
+	int c = getContrast();
+
+	setContrast(c);
+	setCfgValue("value", c, CONTRASTO);
 }
 
 
@@ -304,7 +309,7 @@ void impPassword::checkPasswd()
 		{
 			qDebug() << "password errata doveva essere " << password;
 			sb = getBeep();
-			setBeep(true,false);
+			setBeep(true);
 			beep(1000);
 			QTimer::singleShot(1100, this, SLOT(restoreBeepState()));
 			emit pageClosed();
@@ -321,7 +326,7 @@ void impPassword::checkPasswd()
 
 void impPassword::restoreBeepState()
 {
-	setBeep(sb,false);
+	setBeep(sb);
 }
 
 
