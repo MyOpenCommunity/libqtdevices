@@ -306,11 +306,8 @@ void SlideshowSelectionPage::compactDirectory(const QString &dir, const QFileInf
 {
 	qDebug() << "compacting directory " << dir;
 	foreach (const QFileInfo &fi, items_in_dir)
-	{
-		inserted_images.remove(fi.absoluteFilePath());
-		removed_images.insert(fi.absoluteFilePath());
-	}
-	inserted_images.insert(dir);
+		removeItem(fi.absoluteFilePath());
+	insertItem(dir);
 	qDebug() << "Result of compacting the directory: " << selected_images + inserted_images - removed_images;
 }
 
@@ -356,9 +353,7 @@ void SlideshowSelectionPage::removeCurrentFile(const QString &path)
 	// simple case: path is a file and is selected explicitly
 	if (selected_images.contains(path) || inserted_images.contains(path))
 	{
-		// this is harmless if path is in selected_images
-		inserted_images.remove(path);
-		removed_images.insert(path);
+		removeItem(path);
 		qDebug() << "Removing explicitly selected file: " << path;
 		return;
 	}
@@ -372,18 +367,13 @@ void SlideshowSelectionPage::removeCurrentFile(const QString &path)
 		foreach (const QFileInfo &fi, getFilteredFiles(parent))
 		{
 			if (fi.fileName() != basename)
-			{
-				// this may be inserted by compactDirectory()
-				removed_images.remove(fi.absoluteFilePath());
-				inserted_images.insert(fi.absoluteFilePath());
-			}
+				insertItem(fi.absoluteFilePath());
 		}
 
 		// then exclude parent directory itself and terminate if we are the outermost selected directory
 		if (selected_images.contains(parent) || inserted_images.contains(parent))
 		{
-			inserted_images.remove(parent);
-			removed_images.insert(parent);
+			removeItem(parent);
 			qDebug() << "Outermost directory: " << parent;
 			break;
 		}
@@ -395,12 +385,7 @@ void SlideshowSelectionPage::itemSelected(bool is_checked, QString relative_path
 {
 	QString abs_path = current_dir.absolutePath() + QDir::separator() + relative_path;
 	if (is_checked)
-	{
-		// needed when the user clicks more than once on a check button, harmless otherwise
-		removed_images.remove(abs_path);
-		// and this is also harmless if the image is already in selected_images
-		inserted_images.insert(abs_path);
-	}
+		insertItem(abs_path);
 	else
 		removeCurrentFile(abs_path);
 }
@@ -480,6 +465,19 @@ void SlideshowSelectionPage::clearCaches()
 {
 	removed_images.clear();
 	inserted_images.clear();
+}
+
+void SlideshowSelectionPage::insertItem(const QString &path)
+{
+	// this is harmless if path is in selected_images
+	removed_images.remove(path);
+	inserted_images.insert(path);
+}
+
+void SlideshowSelectionPage::removeItem(const QString &path)
+{
+	inserted_images.remove(path);
+	removed_images.insert(path);
 }
 
 

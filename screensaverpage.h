@@ -93,6 +93,20 @@ private:
 	QDir current_dir;
 	int level;
 	QString checked_icon, unchecked_icon, photo_icon;
+
+	// Utility functions that correctly add or remove a path. Remember that any time a path can in only one
+	// between removed or inserted images sets (selected_images is really useful only for cancel operations).
+	/*
+	 * Remove an item.
+	 * Must first remove from inserted_images set then add to removed_images.
+	 */
+	void removeItem(const QString &path);
+	/*
+	 * Add an item
+	 * Must first remove from removed_images set then add to inserted_images.
+	 */
+	void insertItem(const QString &path);
+
 	// removed_images: will be removed from selected_images
 	// inserted_images: will be added to selected_images
 	// selected_images: contains full path names for files. Full path names for directories if all files and dir
