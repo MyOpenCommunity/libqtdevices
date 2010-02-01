@@ -353,7 +353,11 @@ void SlideshowSelectionPage::confirmSelection()
 	clearCaches();
 	// TODO: emit signal to notify image changes
 	saveSlideshowToFile();
-	// TODO: unroll directories
+	while (level > 0)
+	{
+		current_dir.cdUp();
+		--level;
+	}
 	emit Closed();
 }
 
