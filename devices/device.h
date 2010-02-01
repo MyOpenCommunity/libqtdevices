@@ -34,9 +34,6 @@ public:
 	//! Set where
 	void set_where(QString);
 
-	//! Add device status
-	void add_device_status(device_status *);
-
 	//! Returns cache key
 	virtual QString get_key();
 	virtual ~device();
@@ -97,11 +94,18 @@ private:
 };
 
 
+class DeviceOld : public device
+{
+Q_OBJECT
+public:
+	DeviceOld(QString who, QString where) : device(who, where) {}
+};
+
 
 /********************* Specific class device children classes **********************/
 
 //! MCI
-class mci_device : public device
+class mci_device : public DeviceOld
 {
 Q_OBJECT
 public:
@@ -111,7 +115,7 @@ public:
 
 
 //! Sound device (ampli)
-class sound_device : public device
+class sound_device : public DeviceOld
 {
 Q_OBJECT
 public:
@@ -120,7 +124,7 @@ public:
 };
 
 //! Radio
-class radio_device : public device
+class radio_device : public DeviceOld
 {
 Q_OBJECT
 public:
@@ -130,7 +134,7 @@ public:
 };
 
 //! Sound matrix
-class sound_matr : public device
+class sound_matr : public DeviceOld
 {
 Q_OBJECT
 public:
@@ -139,7 +143,7 @@ public:
 };
 
 //! Doorphone device
-class doorphone_device : public device
+class doorphone_device : public DeviceOld
 {
 Q_OBJECT
 public:
@@ -148,7 +152,7 @@ public:
 };
 
 //! ??
-class impanti_device : public device
+class impanti_device : public DeviceOld
 {
 Q_OBJECT
 public:
@@ -157,7 +161,7 @@ public:
 };
 
 //! ??
-class zonanti_device : public device
+class zonanti_device : public DeviceOld
 {
 Q_OBJECT
 public:
@@ -166,7 +170,7 @@ public:
 };
 
 //! Aux device
-class aux_device : public device
+class aux_device : public DeviceOld
 {
 Q_OBJECT
 public:

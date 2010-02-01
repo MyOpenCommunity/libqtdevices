@@ -120,22 +120,6 @@ void device::set_where(QString w)
 		interpreter->set_where(w);
 }
 
-void device::add_device_status(device_status *_ds)
-{
-	qDebug("device::add_device_status()");
-
-	for (int i = 0; i < stat.size(); ++i)
-	{
-		device_status *ds = stat.at(i);
-		if (ds->get_type() == _ds->get_type())
-		{
-			qDebug("Status already there, skip");
-			return;
-		}
-	}
-	stat.append(_ds);
-}
-
 QString device::get_key()
 {
 	return who + "*" + where;
@@ -175,21 +159,21 @@ void device::setup_frame_interpreter(frame_interpreter* i)
 
 
 // MCI implementation
-mci_device::mci_device(QString w, bool p, int g) : device(QString("18"), w)
+mci_device::mci_device(QString w, bool p, int g) : DeviceOld(QString("18"), w)
 {
 	stat.append(new device_status_mci());
 	setup_frame_interpreter(new frame_interpreter_mci(w, p, g));
 }
 
 // Sound device implementation
-sound_device::sound_device(QString w, bool p, int g) : device(QString("16"), w)
+sound_device::sound_device(QString w, bool p, int g) : DeviceOld(QString("16"), w)
 {
 	stat.append(new device_status_amplifier());
 	setup_frame_interpreter(new frame_interpreter_sound_device(w, p, g));
 }
 
 // Radio device implementation
-radio_device::radio_device(QString w, bool p, int g) : device(QString("16"), w)
+radio_device::radio_device(QString w, bool p, int g) : DeviceOld(QString("16"), w)
 {
 	stat.append(new device_status_radio());
 	setup_frame_interpreter(new frame_interpreter_radio_device(w, p, g));
@@ -209,14 +193,14 @@ QString radio_device::get_key()
 }
 
 // Sound matrix device implementation
-sound_matr::sound_matr(QString w, bool p, int g) : device(QString("16"), QString("1000"))
+sound_matr::sound_matr(QString w, bool p, int g) : DeviceOld(QString("16"), QString("1000"))
 {
 	stat.append(new device_status_sound_matr());
 	setup_frame_interpreter(new frame_interpreter_sound_matr_device(QString("1000"), p, g));
 }
 
 // Doorphone device implementation
-doorphone_device::doorphone_device(QString w, bool p, int g) : device(QString("6"), w)
+doorphone_device::doorphone_device(QString w, bool p, int g) : DeviceOld(QString("6"), w)
 {
 	qDebug("doorphone_device::doorphone_device()");
 	stat.append(new device_status_doorphone());
@@ -224,7 +208,7 @@ doorphone_device::doorphone_device(QString w, bool p, int g) : device(QString("6
 }
 
 // Imp.anti device
-impanti_device::impanti_device(QString w, bool p, int g) : device(QString("5"), w)
+impanti_device::impanti_device(QString w, bool p, int g) : DeviceOld(QString("5"), w)
 {
 	qDebug("impanti_device::impanti_device()");
 	stat.append(new device_status_impanti());
@@ -232,14 +216,14 @@ impanti_device::impanti_device(QString w, bool p, int g) : device(QString("5"), 
 }
 
 // Zon.anti device
-zonanti_device::zonanti_device(QString w, bool p, int g) : device(QString("5"), w)
+zonanti_device::zonanti_device(QString w, bool p, int g) : DeviceOld(QString("5"), w)
 {
 	qDebug("zonanti_device::impanti_device()");
 	stat.append(new device_status_zonanti());
 	setup_frame_interpreter(new frame_interpreter_zonanti_device(w, p, g));
 }
 
-aux_device::aux_device(QString w, bool p, int g) : device(QString("9"), w)
+aux_device::aux_device(QString w, bool p, int g) : DeviceOld(QString("9"), w)
 {
 	// We set an initial value out of admitted range to force the emission of
 	// status_changed signal.
