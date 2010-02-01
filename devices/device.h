@@ -23,27 +23,27 @@ friend class TestDevice;
 Q_OBJECT
 
 public:
-	// TODO: The old init with force parameter, to be removed
-	void init(bool force);
-
 	// Init device: send messages to initialize data. Every device should
 	// re-implement this method, in order to update the related graphic object
 	// with the right value.
-	virtual void init() { init(false); }
-
-	//! Set where
-	void set_where(QString);
+	virtual void init() { }
 
 	//! Returns cache key
 	virtual QString get_key();
-	virtual ~device();
+	virtual ~device() {}
 
 	static void setClients(Client *command, Client *request);
 
-	virtual void manageFrame(OpenMsg &msg);
+	virtual void manageFrame(OpenMsg &msg) {}
+
+
+	// TODO: the following method are part of the public interface only for
+	// compatibility with the old devices. Remove it asap.
+	virtual void set_where(QString w) { where = w; }
+	virtual void init(bool force) {}
 
 signals:
-	/// Old Status changed
+	// Old Status changed, to be removed (see above)
 	void status_changed(QList<device_status*>);
 
 	/// The status changed signal, used to inform that a dimension of device
@@ -55,34 +55,18 @@ signals:
 	/// and concrete device class.
 	void status_changed(const StatusList &status_list);
 
-	//! Invoked after successful initialization
-	void initialized(device_status *);
-	//! We want a frame to be handled
-	void handle_frame(char *, QList<device_status*>);
-
 public slots:
-	//! receive a frame
-	virtual void frame_rx_handler(char *);
-	//! Initialization requested by frame interpreter
-	void init_requested_handler(QString msg);
-
 	void sendFrame(QString frame) const;
 	void sendInit(QString frame) const;
 
 protected:
 	// The costructor is protected only to make device abstract.
 	device(QString who, QString where);
-	//! Interpreter
-	frame_interpreter *interpreter;
-	//! List of device stats
-	QList<device_status*> stat;
-	//! Node's who
-	QString who;
-	//! Node's where
-	QString where;
 
-	/// connect the frame interpreter with the device
-	void setup_frame_interpreter(frame_interpreter* i);
+	//! The system of the device
+	QString who;
+	//! The address of the device
+	QString where;
 
 	void sendCommand(QString what, QString _where) const;
 	void sendCommand(QString what) const;
@@ -98,7 +82,37 @@ class DeviceOld : public device
 {
 Q_OBJECT
 public:
-	DeviceOld(QString who, QString where) : device(who, where) {}
+
+	virtual void init(bool force);
+	virtual void init() { init(false); }
+
+	virtual void set_where(QString);
+	virtual ~DeviceOld();
+	virtual void manageFrame(OpenMsg &msg);
+
+signals:
+
+	//! Invoked after successful initialization
+	void initialized(device_status *);
+	//! We want a frame to be handled
+	void handle_frame(char *, QList<device_status*>);
+
+public slots:
+	//! receive a frame
+	virtual void frame_rx_handler(char *);
+	//! Initialization requested by frame interpreter
+	void init_requested_handler(QString msg);
+
+protected:
+	DeviceOld(QString who, QString where);
+
+	//! Interpreter
+	frame_interpreter *interpreter;
+	//! List of device stats
+	QList<device_status*> stat;
+
+	/// connect the frame interpreter with the device
+	void setup_frame_interpreter(frame_interpreter* i);
 };
 
 

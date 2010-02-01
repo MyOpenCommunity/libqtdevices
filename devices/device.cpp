@@ -13,9 +13,8 @@
 Client *device::client_comandi = 0;
 Client *device::client_richieste = 0;
 
-
 // Device implementation
-device::device(QString _who, QString _where) : interpreter(0)
+device::device(QString _who, QString _where)
 {
 	who = _who;
 	where = _where;
@@ -60,7 +59,17 @@ void device::setClients(Client *command, Client *request)
 	client_richieste = request;
 }
 
-void device::init(bool force)
+QString device::get_key()
+{
+	return who + "*" + where;
+}
+
+
+DeviceOld::DeviceOld(QString who, QString where) : device(who, where), interpreter(0)
+{
+}
+
+void DeviceOld::init(bool force)
 {
 	QList<device_status*> dsl;
 	for (int i = 0; i < stat.size(); ++i)
@@ -71,7 +80,7 @@ void device::init(bool force)
 		msgl.clear();
 		if (force)
 		{
-			Q_ASSERT_X(interpreter, "device::init", "interpreter not set!");
+			Q_ASSERT_X(interpreter, "DeviceOld::init", "interpreter not set!");
 			interpreter->get_init_messages(ds, msgl);
 			for (QStringList::Iterator it = msgl.begin(); it != msgl.end(); ++it)
 			{
@@ -90,7 +99,7 @@ void device::init(bool force)
 				qDebug("device status init already requested");
 			else
 			{
-				Q_ASSERT_X(interpreter, "device::init", "interpreter not set!");
+				Q_ASSERT_X(interpreter, "DeviceOld::init", "interpreter not set!");
 				interpreter->get_init_messages(ds, msgl);
 				for (QStringList::Iterator it = msgl.begin();it != msgl.end(); ++it)
 				{
@@ -105,27 +114,22 @@ void device::init(bool force)
 		emit status_changed(dsl);
 }
 
-void device::init_requested_handler(QString msg)
+void DeviceOld::init_requested_handler(QString msg)
 {
-	qDebug("device::init_requested_handler()");
+	qDebug("DeviceOld::init_requested_handler()");
 	if (msg != "")
 		sendFrame(msg);
 }
 
-void device::set_where(QString w)
+void DeviceOld::set_where(QString w)
 {
-	qDebug() << "device::set_where(" << w << ")";
-	where = w;
+	qDebug() << "DeviceOld::set_where(" << w << ")";
 	if (interpreter)
 		interpreter->set_where(w);
+	device::set_where(w);
 }
 
-QString device::get_key()
-{
-	return who + "*" + where;
-}
-
-device::~device()
+DeviceOld::~DeviceOld()
 {
 	while (!stat.isEmpty())
 		delete stat.takeFirst();
@@ -133,18 +137,18 @@ device::~device()
 
 // TODO: this method is just for compatibility, remove it when all the device
 // will support the new "manageFrame interface".
-void device::manageFrame(OpenMsg &msg)
+void DeviceOld::manageFrame(OpenMsg &msg)
 {
 	frame_rx_handler(msg.frame_open);
 }
 
-void device::frame_rx_handler(char *s)
+void DeviceOld::frame_rx_handler(char *s)
 {
 	qDebug("device::frame_rx_handler");
 	emit handle_frame(s, stat);
 }
 
-void device::setup_frame_interpreter(frame_interpreter* i)
+void DeviceOld::setup_frame_interpreter(frame_interpreter* i)
 {
 	interpreter = i;
 

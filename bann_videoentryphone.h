@@ -14,7 +14,7 @@
 class call_notifier_manager;
 class call_notifier;
 class device_status;
-class device;
+class doorphone_device;
 
 
 /*!
@@ -95,7 +95,7 @@ public slots:
 	void showFullScreen();
 private:
 	postoExt *my_station;
-	device *station_dev;
+	doorphone_device *station_dev;
 	//! Pointer to area1 label
 	QLabel *area1_ptr;
 	//! Pointer to area3 label
