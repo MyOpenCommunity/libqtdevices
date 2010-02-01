@@ -151,7 +151,7 @@ void LanSettings::status_changed(const StatusList &status_list)
 			if (lan_status != saved_status)
 			{
 				saved_status = lan_status;
-				setCfgValue("value", lan_status ? "1": "0", LANSETTINGS);
+				setCfgValue("value", lan_status, LANSETTINGS);
 			}
 		}
 		++it;
