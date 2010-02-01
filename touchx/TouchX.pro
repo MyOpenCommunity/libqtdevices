@@ -19,7 +19,7 @@ HEADERS += favoriteswidget.h \
            videoplayer.h \
            webcam.h
 
-SOURCES += bannercontent_touchx.cpp \
+SOURCES += bannercontent.cpp \
            favoriteswidget.cpp \
            headerwidget.cpp \
            iconsettings.cpp \
