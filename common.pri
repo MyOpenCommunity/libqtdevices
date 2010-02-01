@@ -68,7 +68,7 @@ DEFINES += QT_QWS_EBX BTWEB
 
 LIBS += -lssl
 
-INCLUDEPATH += . .. ../devices ../../stackopen/common_files ../../stackopen ../../stackopen/common_develer/lib $(ARMLINUX)
+INCLUDEPATH += . .. ../devices ../../stackopen/common_files ../../stackopen ../../stackopen/common_develer/lib
 QT += network xml
 
 # note: do not use spaces to split values below

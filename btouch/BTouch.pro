@@ -17,13 +17,15 @@ isEmpty(TEST_ARCH) {
 	DEFINES += OPENSERVER_ADDR=\\\"btouch\\\"
 }
 else {
+	# You must define the environment variable ARMLINUX before executing the
+	# make step.
+	INCLUDEPATH += QWSMOUSE $(ARMLINUX)
 	HEADERS += QWSMOUSE/qmouse_qws.h \
 		QWSMOUSE/qmouselinuxevent-2-6_qws.h
 
 	SOURCES += QWSMOUSE/qmouse_qws.cpp \
 		QWSMOUSE/qmouselinuxevent-2-6_qws.cpp
 
-	INCLUDEPATH += QWSMOUSE
 }
 
 VPATH = ../devices ..
