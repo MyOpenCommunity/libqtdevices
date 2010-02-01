@@ -143,12 +143,6 @@ void AlarmClock::showSoundDiffPage()
 
 void AlarmClock::setActive(bool a)
 {
-	_setActive(a);
-	setCfgValue("enabled", active ? "1" : "0", id, serNum);
-}
-
-void AlarmClock::_setActive(bool a)
-{
 	alarm_time->setActive(a);
 
 	active = a;
@@ -171,6 +165,8 @@ void AlarmClock::_setActive(bool a)
 			minuTimer = NULL;
 		}
 	}
+
+	setCfgValue("enabled", active, id, serNum);
 }
 
 void AlarmClock::status_changed(const StatusList &sl)

@@ -87,11 +87,6 @@ public:
 	void setActive(bool);
 
 	/**
-	 * Sets the alarm state according to the parameter. It doesn't update the configuration file.
-	 */
-	void _setActive(bool a);
-
-	/**
 	 * Returns the active state of the alarm clock. When alarm clock type is ONCE, this method
 	 * returns false as soon as the alarm clock fires.
 	 * \return True if the alarm clock is set, false otherwise.

@@ -35,7 +35,7 @@ bannAlarmClock::bannAlarmClock(QWidget *parent, int hour, int minute, QString ic
 	alarm_clock->setSerNum(getSerNum());
 	alarm_clock->hide();
 
-	alarm_clock->_setActive(enabled == 1);
+	alarm_clock->setActive(enabled == 1);
 	connect(this, SIGNAL(dxClick()), alarm_clock, SLOT(showPage()));
 	connect(this, SIGNAL(sxClick()), this, SLOT(toggleAbil()));
 
@@ -97,7 +97,7 @@ bannAlarmClockIcon::bannAlarmClockIcon(int hour, int minute, QString icon_on,
 	alarm_clock->setSerNum(getSerNum());
 	alarm_clock->hide();
 
-	alarm_clock->_setActive(enabled == 1);
+	alarm_clock->setActive(enabled == 1);
 	connect(right_button, SIGNAL(clicked()), alarm_clock, SLOT(showPage()));
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleAbil()));
 
