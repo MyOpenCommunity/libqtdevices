@@ -44,6 +44,34 @@ private:
 	void refreshContent();
 	void saveSlideshowToFile();
 	void loadSlideshowFromFile();
+
+	/*
+	 * Remove a file from currently selected set.
+	 * Assumes that either path or one of its containing directories is selected.
+	 * It operates by looking for the containing directory, deselects it, then adds all files and directories
+	 * that do NOT contain the path; then recurse into the not selected directory.
+	 * Eg. path = /usr/local/images/slideshow/photo.jpg. If /usr/local/images is selected:
+	 * 1. remove /usr/local/images
+	 * 2. add /usr/local/images/ *.jpg and directories (except slideshow/)
+	 * 3. add /usr/local/images/slideshow/ *.jpg and directories (except photo.jpg)
+	 */
+	void removeCurrentFile(const QString &path);
+
+	/*
+	 * Return a list of image entries.
+	 */
+	QFileInfoList getFilteredFiles(const QString &dir_path);
+
+	/*
+	 * Extract parent directory path from parameter.
+	 * Eg. /usr/local/file.txt will return /usr/local (without final separator). file_path will be file.txt
+	 *
+	 * \param path Path you want the parent directory of
+	 * \param file_path If not NULL, name of the file or directory stripped away
+	 * \return Empty string if no parent is found, the parent directory otherwise.
+	 */
+	QString getParentDirectory(const QString &path, QString *file_path = 0);
+
 	/*
 	 * Check if an item is selected.
 	 * By design we don't query the interface but rely only on the QSets below (it may well be that the interface
