@@ -315,6 +315,16 @@ void SlideshowSelectionPage::browseUp()
 {
 	if (level > 0)
 	{
+		// compact the directory we are leaving otherwise the visualization is incorrect
+		QFileInfoList list = getFilteredFiles(current_dir.absolutePath());
+		bool are_all_selected = true;
+		foreach (const QFileInfo &fi, list)
+			// here we don't need isItemSelected(), we just need to check all individual items in this dir
+			if (!selected_images.contains(fi.absoluteFilePath()) && !inserted_images.contains(fi.absoluteFilePath()))
+				are_all_selected = false;
+		if (are_all_selected)
+			compactDirectory(current_dir.absolutePath(), list);
+
 		if (current_dir.cdUp())
 		{
 			--level;
