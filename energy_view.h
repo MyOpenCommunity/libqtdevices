@@ -18,6 +18,7 @@ class QLabel;
 class QStackedWidget;
 class QSignalMapper;
 class bannFrecce;
+struct EnergyRate;
 
 typedef QCache<QString, GraphData> GraphCache;
 
@@ -80,12 +81,9 @@ public:
 	 * \param n_dec the number of decimals to show in the labels
 	 * \param is_production True if the data must be interpreted as production, false for consumption
 	 */
-	EnergyView(QString measure, QString energy_type, QString address, int mode, const QString &_currency_symbol,
-		int n_dec, bool is_prod);
+	EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id);
 	~EnergyView();
 	virtual void inizializza();
-	void setProdFactor(float p);
-	void setConsFactor(float c);
 	void systemTimeChanged();
 
 public slots:
@@ -122,17 +120,14 @@ private:
 	EnergyDevice *dev;
 	QString unit_measure;
 	QString unit_measure_med_inst;
-	QString currency_symbol;
 	QSignalMapper *mapper;
 	EnergyDevice::GraphType current_graph;
 	QDate current_date;
 	QHash<EnergyDevice::GraphType, GraphCache*> graph_data_cache;
-	float cons_factor, prod_factor;
 	bool is_electricity_view;
-	bool is_production;
-	int n_decimal;
 	// the id of the timers used to poll data
 	int current_banner_timer_id, cumulative_day_banner_timer_id;
+	const EnergyRate &rate;
 
 private slots:
 	void toggleCurrency();

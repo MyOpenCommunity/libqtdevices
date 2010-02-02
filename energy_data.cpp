@@ -9,6 +9,7 @@
 #include "energy_device.h" // EnergyDevice
 #include "bannfrecce.h"
 #include "btmain.h" // bt_global::btmain
+#include "energy_rates.h"
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -54,37 +55,25 @@ void EnergyData::systemTimeChanged()
 
 void EnergyData::loadTypes(const QDomNode &config_node)
 {
+	bt_global::energy_rates.loadRates();
+
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	foreach (const QDomNode& type, getChildren(config_node, "energy_type"))
 	{
 		SkinContext cont(getTextChild(type, "cid").toInt());
 		banner *b;
-		EnergyCost *ec_cost = 0;
-		if (getElement(type, "currency/ab").text().toInt() == 1)
-		{
-			b = new bannOnOff(this);
-			appendBanner(b); // to increase the serial number
-			b->SetIcons(bt_global::skin->getImage("select"), bt_global::skin->getImage("currency_exchange"),
-					QString(), bt_global::skin->getImage("energy_type"));
 
-			ec_cost = new EnergyCost(type, b->getSerNum());
-			b->connectSxButton(ec_cost);
-		}
-		else
-		{
-			b = new bannPuls(this);
-			appendBanner(b);
-			b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("energy_type"));
-		}
+		// TODO	energy kill bannPuls
+		b = new bannPuls(this);
+		appendBanner(b);
+		b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("energy_type"));
 
 		EnergyInterface *en_interf = new EnergyInterface(type);
 		interfaces.push_back(en_interf);
 		b->connectDxButton(en_interf);
-		if (ec_cost)
-		{
-			connect(ec_cost, SIGNAL(consValueChanged(float)), en_interf, SLOT(changeConsRate(float)));
-			connect(ec_cost, SIGNAL(prodValueChanged(float)), en_interf, SLOT(changeProdRate(float)));
-		}
+
+		// TODO energy propagate rate changes to banner/pages
+
 		b->setText(getTextChild(type, "descr"));
 		b->setId(getTextChild(type, "id").toInt());
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
@@ -247,48 +236,29 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node)
 void EnergyInterface::loadItems(const QDomNode &config_node)
 {
 	assert(bt_global::skin->hasContext() && "Skin context not set!");
-	int mode = getTextChild(config_node, "mode").toInt();
 	QString energy_type = getTextChild(config_node, "descr");
-	QString measure = getTextChild(config_node, "measure");
 	bool show_currency_button = false;
+
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		bool is_currency_enabled = checkTypeForCurrency(getTextChild(item, "type"), config_node);
+		int mode = getTextChild(item, "mode").toInt();
+		QString measure = getTextChild(item, "measure");
+
+		bool is_currency_enabled = getElement(item, "rate/ab").text().toInt();
+		int rate_id = is_currency_enabled ? getElement(item, "rate/rate_id").text().toInt() : -1;
+
 		// check if any of the interfaces have currency enabled
 		show_currency_button |= is_currency_enabled;
 
-		QString currency;
-		if (is_currency_enabled)
-			currency = getElement(config_node, "currency/symbol").text();
-
-		int n_decimal = getElement(config_node, "currency/n_decimal").text().toInt();
-		bool is_production = (getElement(item, "type").text().toInt() == 1);
-
-		bannEnergyInterface *b = new bannEnergyInterface(this, currency, n_decimal, is_production, mode == 1);
+		bannEnergyInterface *b = new bannEnergyInterface(this, rate_id, mode == 1);
 		b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("empty"));
 		QString addr = getTextChild(item, "address");
-		next_page = new EnergyView(measure, energy_type, addr, mode, currency, n_decimal, is_production);
+		next_page = new EnergyView(measure, energy_type, addr, mode, rate_id);
 		b->connectDxButton(next_page);
 		b->setText(getTextChild(item, "descr"));
 		b->setId(getTextChild(item, "id").toInt());
 		b->setInternalText("---");
 		b->setUnitMeasure(measure);
-
-		// set production/consumption rates
-		QDomElement prod_node = getElement(config_node, "prod/rate");
-		if (!prod_node.isNull())
-		{
-			float rate = loc.toFloat(prod_node.text());
-			next_page->setProdFactor(rate);
-			b->setProdFactor(rate);
-		}
-		QDomElement cons_node = getElement(config_node, "cons/rate");
-		if (!cons_node.isNull())
-		{
-			float rate = loc.toFloat(cons_node.text());
-			next_page->setConsFactor(rate);
-			b->setConsFactor(rate);
-		}
 
 		views.append(next_page);
 
@@ -357,28 +327,6 @@ void EnergyInterface::showPage()
 		Page::showPage();
 }
 
-void EnergyInterface::changeConsRate(float cons)
-{
-	for (int i = 0; i < views.size(); ++i)
-		views[i]->setConsFactor(cons);
-	for (int i = 0; i < elencoBanner.size(); ++i)
-	{
-		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(elencoBanner[i]);
-		b->setConsFactor(cons);
-	}
-}
-
-void EnergyInterface::changeProdRate(float prod)
-{
-	for (int i = 0; i < views.size(); ++i)
-		views[i]->setProdFactor(prod);
-	for (int i = 0; i < elencoBanner.size(); ++i)
-	{
-		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(elencoBanner[i]);
-		b->setProdFactor(prod);
-	}
-}
-
 void EnergyInterface::toggleCurrency()
 {
 	toggleCurrencyView();
@@ -396,31 +344,12 @@ bool EnergyInterface::isCurrencyView()
 }
 
 
-bannEnergyInterface::bannEnergyInterface(QWidget *parent, const QString &_currency_symbol,
-	int n_dec, bool is_prod, bool is_ele) : bannTextOnImage(parent)
+bannEnergyInterface::bannEnergyInterface(QWidget *parent, const int rate_id, bool is_ele) :
+	bannTextOnImage(parent),
+	rate(bt_global::energy_rates.getRate(rate_id))
 {
-	currency_symbol = _currency_symbol;
-	is_production = is_prod;
 	is_electricity = is_ele;
-	n_decimal = n_dec;
 	device_value = 0;
-}
-
-void bannEnergyInterface::setProdFactor(float prod)
-{
-	prod_factor = prod;
-	updateText();
-}
-
-void bannEnergyInterface::setConsFactor(float cons)
-{
-	cons_factor = cons;
-	updateText();
-}
-
-void bannEnergyInterface::setType(EnergyFactorType t)
-{
-	type = t;
 }
 
 void bannEnergyInterface::setUnitMeasure(const QString &m)
@@ -431,24 +360,21 @@ void bannEnergyInterface::setUnitMeasure(const QString &m)
 void bannEnergyInterface::updateText()
 {
 	QString text("---");
+
 	if (device_value)
 	{
 		float data = EnergyConversions::convertToRawData(device_value,
 			is_electricity ? EnergyConversions::ELECTRICITY_CURRENT : EnergyConversions::DEFAULT_ENERGY);
-		float factor = is_production ? prod_factor : cons_factor;
-		QString str = measure;
-		if (EnergyInterface::isCurrencyView())
+
+		if (EnergyInterface::isCurrencyView() && rate.isValid())
 		{
-			if (!currency_symbol.isNull())
-			{
-				data = EnergyConversions::convertToMoney(data, factor);
-				str = currency_symbol;
-				text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(str);
-			}
+			data = EnergyConversions::convertToMoney(data, rate.rate);
+			text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(rate.currency_symbol);
 		}
 		else
-			text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(str);
+			text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(measure);
 	}
+
 	setInternalText(text);
 }
 

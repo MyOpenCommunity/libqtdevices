@@ -11,6 +11,7 @@ class banner;
 class QDomNode;
 class EnergyView;
 class EnergyInterface;
+struct EnergyRate;
 
 
 class EnergyData : public sottoMenu
@@ -81,8 +82,6 @@ public:
 	void systemTimeChanged();
 
 public slots:
-	void changeProdRate(float prod);
-	void changeConsRate(float cons);
 	void toggleCurrency();
 
 private:
@@ -100,23 +99,12 @@ class bannEnergyInterface : public bannTextOnImage
 {
 Q_OBJECT
 public:
-	enum EnergyFactorType
-	{
-		PRODUCTION = 0,
-		CONSUMPTION,
-	};
-
 	/**
-	 * \param parent The parent widget
-	 * \param _currency_symbol The symbol to use to show economic data. If it's null, then currency is not
-	 *     enabled for this banner
+	 * \param rate_id the id of the rate in the rate_info tag
 	 * \param n_dec the number of decimals to show in the labels
-	 * \param is_prod True if the data must be interpreted as production, false for consumption
+	 * \param is_electricity true if we are measuring electricity
 	 */
-	bannEnergyInterface(QWidget *parent, const QString &_currency_symbol, int n_dec, bool is_prod, bool is_ele);
-	void setProdFactor(float prod);
-	void setConsFactor(float cons);
-	void setType(EnergyFactorType t);
+	bannEnergyInterface(QWidget *parent, int rate_id, bool is_ele);
 	void setUnitMeasure(const QString &m);
 	void updateText();
 
@@ -124,12 +112,10 @@ public slots:
 	void status_changed(const StatusList &status_list);
 
 private:
-	EnergyFactorType type;
-	float prod_factor, cons_factor;
 	int device_value;
-	QString currency_symbol;
 	QString measure;
-	bool is_production, is_electricity;
-	int n_decimal;
+	bool is_electricity;
+	const EnergyRate &rate;
 };
+
 #endif // ENERGY_DATA_H

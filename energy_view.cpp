@@ -11,6 +11,7 @@
 #include "transitionwidget.h"
 #include "bann1_button.h" // bannTextOnImage
 #include "energy_data.h" // EnergyInterface
+#include "energy_rates.h"
 
 #include <QDebug>
 #include <QLabel>
@@ -240,15 +241,12 @@ bannTextOnImage *getBanner(QWidget *parent, QString primary_text)
 }
 
 
-EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, const QString &_currency_symbol,
-		int n_dec, bool is_prod)
+EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id) :
+	rate(bt_global::energy_rates.getRate(rate_id))
 {
 	Q_ASSERT_X(bt_global::skin->hasContext(), "EnergyView::EnergyView", "Skin context not set!");
 	dev = bt_global::add_device_to_cache(new EnergyDevice(address, mode));
 	is_electricity_view = (mode == 1);
-
-	is_production = is_prod;
-	n_decimal = n_dec;
 
 	cumulative_day_value = cumulative_month_value = cumulative_year_value = 0;
 	daily_av_value = current_value = 0;
@@ -279,8 +277,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	main_layout->addWidget(widget_container, 1);
 	table = new EnergyTable(3);
 
-	currency_symbol = _currency_symbol;
-	if (!currency_symbol.isNull())
+	if (rate.isValid())
 	{
 		bannNavigazione = new bannFrecce(this, 10, bt_global::skin->getImage("currency"));
 		connect(bannNavigazione, SIGNAL(dxClick()), SLOT(toggleCurrency()));
@@ -289,6 +286,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	{
 		bannNavigazione = new bannFrecce(this, 1);
 	}
+
 	connect(bannNavigazione, SIGNAL(downClick()), table, SLOT(showPage()));
 	connect(table, SIGNAL(Closed()), SLOT(showPageFromTable()));
 	connect(bannNavigazione, SIGNAL(backClick()), SLOT(backClick()));
@@ -391,7 +389,7 @@ void EnergyView::showPage()
 void EnergyView::showPageFromTable()
 {
 	// switch back to raw data visualization if currency is not supported
-	if (EnergyInterface::isCurrencyView() && currency_symbol.isNull())
+	if (EnergyInterface::isCurrencyView() && !rate.isValid())
 		EnergyInterface::toggleCurrencyView();
 	Page::showPage();
 }
@@ -426,9 +424,8 @@ QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 	// convert to economic data
 	if (EnergyInterface::isCurrencyView())
 	{
-		float factor = is_production ? prod_factor : cons_factor;
 		for (int i = 0; i < keys.size(); ++i)
-			data[keys[i]] = EnergyConversions::convertToMoney(data[keys[i]], factor);
+			data[keys[i]] = EnergyConversions::convertToMoney(data[keys[i]], rate.rate);
 	}
 	return data;
 }
@@ -546,7 +543,7 @@ void EnergyView::updateCurrentGraph()
 {
 	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
 	current_date = time_period->date();
-	QString label = EnergyInterface::isCurrencyView() ? currency_symbol : unit_measure;
+	QString label = EnergyInterface::isCurrencyView() ? rate.currency_symbol : unit_measure;
 	QMap<int, QString> graph_x_axis;
 
 	switch (current_graph)
@@ -766,20 +763,18 @@ void EnergyView::updateBanners()
 	QString str = unit_measure;
 	QString str_med_inst = unit_measure_med_inst;
 
-	float factor = is_production ? prod_factor : cons_factor;
-
 	// The number of decimals to show depends on the visualization mode
 	int dec = is_electricity_view ? 3 : 0;
 
 	if (EnergyInterface::isCurrencyView())
 	{
-		day = EnergyConversions::convertToMoney(day, factor);
-		current = EnergyConversions::convertToMoney(current, factor);
-		month = EnergyConversions::convertToMoney(month, factor);
-		year = EnergyConversions::convertToMoney(year, factor);
-		average = EnergyConversions::convertToMoney(average, factor);
-		str = currency_symbol;
-		str_med_inst = currency_symbol+"/h";
+		day = EnergyConversions::convertToMoney(day, rate.rate);
+		current = EnergyConversions::convertToMoney(current, rate.rate);
+		month = EnergyConversions::convertToMoney(month, rate.rate);
+		year = EnergyConversions::convertToMoney(year, rate.rate);
+		average = EnergyConversions::convertToMoney(average, rate.rate);
+		str = rate.currency_symbol;
+		str_med_inst = rate.currency_symbol+"/h";
 		dec = 3;
 	}
 
@@ -797,16 +792,6 @@ void EnergyView::updateBanners()
 
 	current_banner->setInternalText(QString("%1 %2")
 		.arg(loc.toString(current, 'f', dec)).arg(str_med_inst));
-}
-
-void EnergyView::setProdFactor(float p)
-{
-	prod_factor = p;
-}
-
-void EnergyView::setConsFactor(float c)
-{
-	cons_factor = c;
 }
 
 void EnergyView::systemTimeChanged()
