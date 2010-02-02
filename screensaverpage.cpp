@@ -16,6 +16,20 @@
 
 #define SLIDESHOW_FILENAME "cfg/extra/slideshow_images.txt"
 
+namespace
+{
+	QFileInfoList getFilteredFiles(const QString &dir_path)
+	{
+		QDir dir(dir_path);
+		dir.setSorting(QDir::DirsFirst | QDir::Name);
+		dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable);
+		QStringList filters;
+		filters << "*.jpg" << "*.png";
+		return dir.entryInfoList(filters);
+	}
+}
+
+
 ScreenSaverPage::ScreenSaverPage()
 {
 	addBanner(SingleChoice::createBanner(tr("No screensaver")), ScreenSaver::NONE);
@@ -392,16 +406,6 @@ void SlideshowSelectionPage::showPage()
 	image_handler = new ImageSelectionHandler;
 	refreshContent();
 	Page::showPage();
-}
-
-QFileInfoList SlideshowSelectionPage::getFilteredFiles(const QString &dir_path)
-{
-	QDir dir(dir_path);
-	dir.setSorting(QDir::DirsFirst | QDir::Name);
-	dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable);
-	QStringList filters;
-	filters << "*.jpg" << "*.png";
-	return dir.entryInfoList(filters);
 }
 
 void SlideshowSelectionPage::showFiles()

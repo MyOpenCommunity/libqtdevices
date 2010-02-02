@@ -122,10 +122,6 @@ private:
 	void showFiles();
 	void refreshContent();
 
-	/*
-	 * Return a list of image entries.
-	 */
-	QFileInfoList getFilteredFiles(const QString &dir_path);
 	QDir current_dir;
 	int level;
 	QString checked_icon, unchecked_icon, photo_icon;
