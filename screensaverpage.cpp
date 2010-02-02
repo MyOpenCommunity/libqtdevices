@@ -6,13 +6,14 @@
 #include "navigation_bar.h" // NavigationBar
 #include "skinmanager.h" // bt_global::skin
 #include "btbutton.h" // BtButton
+#include "generic_functions.h" //getPressName
 
 #include <QAbstractButton>
 #include <QGridLayout>
 #include <QLabel>
 #include <QDebug>
 #include <QTemporaryFile>
-#include <errno.h>
+#include <errno.h> // errno
 
 #define SLIDESHOW_FILENAME "cfg/extra/slideshow_images.txt"
 
@@ -189,7 +190,7 @@ SlideshowItemImage::SlideshowItemImage(const QString &filename, const QString &w
 	file_name(filename)
 {
 	QPixmap p(working_dir + file_name);
-	p = p.scaled(QSize(100, 100), Qt::KeepAspectRatio);
+	p = p.scaled(QSize(80, 80), Qt::KeepAspectRatio);
 	thumbnail = new QLabel;
 	thumbnail->setPixmap(p);
 	text = new QLabel(file_name);
@@ -374,6 +375,11 @@ bool ImageSelectionHandler::isItemExplicitlySelected(const QString &abs_path)
 	return (!selected_images.contains(abs_path)) && (!inserted_images.contains(abs_path));
 }
 
+QSet<QString> ImageSelectionHandler::getSelectedImages()
+{
+	return selected_images + inserted_images - removed_images;
+}
+
 
 
 
@@ -516,7 +522,7 @@ ImageRemovalPage::ImageRemovalPage() :
 	Page(0)
 {
 	SlideshowImageContent *content = new SlideshowImageContent;
-	PageTitleWidget *title_widget = new PageTitleWidget("Select photos", Page::TITLE_HEIGHT);
+	PageTitleWidget *title_widget = new PageTitleWidget("Select photos", 20);
 	connect(content, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int,int)));
 
 	NavigationBar *nav_bar = new NavigationBar;
@@ -527,14 +533,56 @@ ImageRemovalPage::ImageRemovalPage() :
 
 	SlideshowSettings *settings = new SlideshowSettings;
 	Page *p = new SlideshowSelectionPage("cfg/slideshow");
+	// TODO: create SD/USB selection page
+	// TODO: connect SlideshowSettings signal imageSaved with imagesChanged slot
 	connect(settings, SIGNAL(addMoreImages()), p, SLOT(showPage()));
 	connect(p, SIGNAL(Closed()), SLOT(showPage()));
 	buildPage(content, nav_bar, settings, title_widget);
 
-	loadImages();
+	button_icon = bt_global::skin->getImage("trash");
+	image_handler = new ImageSelectionHandler;
 }
 
-void ImageRemovalPage::loadImages()
+void ImageRemovalPage::showPage()
 {
-	// TODO: load images from file
+	Page::showPage();
+	refreshContent();
+}
+
+void ImageRemovalPage::activateLayout()
+{
+	if (page_content)
+		page_content->updateGeometry();
+
+	Page::activateLayout();
+}
+
+void ImageRemovalPage::imagesChanged()
+{
+	image_handler->loadSlideshowFromFile();
+	refreshContent();
+}
+
+void ImageRemovalPage::refreshContent()
+{
+	page_content->clearContent();
+	foreach (const QString &path, image_handler->getSelectedImages())
+		addItemToContent(path);
+	page_content->showContent();
+}
+
+void ImageRemovalPage::addItemToContent(const QString &path)
+{
+	QFileInfo fi(path);
+	if (fi.isDir())
+	{
+		foreach (QFileInfo info, getFilteredFiles(fi.absoluteFilePath()))
+			addItemToContent(info.absoluteFilePath());
+	}
+	if (fi.isFile())
+	{
+		SlideshowItemImage *im = new SlideshowItemImage(fi.fileName(), fi.absolutePath() + QDir::separator(),
+			getPressName(button_icon), button_icon);
+		page_content->addItem(im);
+	}
 }

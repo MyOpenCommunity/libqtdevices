@@ -77,6 +77,8 @@ public:
 	void saveSlideshowToFile();
 	void loadSlideshowFromFile();
 
+	QSet<QString> getSelectedImages();
+
 private:
 	// Utility functions that correctly add or remove a path. Remember that any time a path can in only one
 	// between removed or inserted images sets (selected_images is really useful only for cancel operations).
@@ -102,6 +104,8 @@ private:
 	//                  below are selected.
 	QSet<QString> selected_images, removed_images, inserted_images;
 };
+
+
 
 /**
  * Select images to show during the slideshow.
@@ -144,9 +148,18 @@ public:
 	typedef SlideshowImageContent ContentType;
 
 	ImageRemovalPage();
+	virtual void showPage();
+	virtual void activateLayout();
+
+private slots:
+	void imagesChanged();
 
 private:
+	void refreshContent();
 	void loadImages();
+	void addItemToContent(const QString &path);
+	QString button_icon;
+	ImageSelectionHandler *image_handler;
 };
 
 
