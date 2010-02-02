@@ -19,7 +19,7 @@
 #include <math.h>
 
 // The language used for the floating point number
-QLocale loc(QLocale::Italian);
+static QLocale loc(QLocale::Italian);
 
 
 EnergyData::EnergyData(const QDomNode &config_node)
