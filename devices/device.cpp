@@ -10,8 +10,8 @@
 #include <QDebug>
 
 // Inizialization of static member
-Client *device::client_comandi = 0;
-Client *device::client_richieste = 0;
+QHash<int, QPair<Client*, Client*> > device::clients;
+
 
 // Device implementation
 device::device(QString _who, QString _where)
@@ -23,16 +23,16 @@ device::device(QString _who, QString _where)
 
 void device::sendFrame(QString frame) const
 {
-	Q_ASSERT_X(client_comandi, "device::sendFrame", "Client comandi not set!");
+	Q_ASSERT_X(clients.contains(0) && clients[0].first, "device::sendFrame", "Client comandi not set!");
 	QByteArray buf = frame.toAscii();
-	client_comandi->ApriInviaFrameChiudi(buf.constData());
+	clients[0].first->ApriInviaFrameChiudi(buf.constData());
 }
 
 void device::sendInit(QString frame) const
 {
-	Q_ASSERT_X(client_richieste, "device::sendInit", "Client richieste not set!");
+	Q_ASSERT_X(clients.contains(0) && clients[0].second, "device::sendInit", "Client richieste not set!");
 	QByteArray buf = frame.toAscii();
-	client_richieste->ApriInviaFrameChiudi(buf.constData());
+	clients[0].second->ApriInviaFrameChiudi(buf.constData());
 }
 
 void device::sendCommand(QString what, QString _where) const
@@ -55,8 +55,8 @@ void device::sendRequest(QString what) const
 
 void device::setClients(Client *command, Client *request)
 {
-	client_comandi = command;
-	client_richieste = request;
+	clients[0].first = command;
+	clients[0].second = request;
 }
 
 QString device::get_key()

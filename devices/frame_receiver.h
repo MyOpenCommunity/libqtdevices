@@ -1,6 +1,8 @@
 #ifndef FRAME_RECEIVER_H
 #define FRAME_RECEIVER_H
 
+#include <QHash>
+
 class Client;
 class OpenMsg;
 
@@ -27,7 +29,7 @@ protected:
 	void subscribe_monitor(int who);
 
 private:
-	static Client *client_monitor;
+	static QHash<int, Client*> clients_monitor;
 	bool subscribed;
 };
 

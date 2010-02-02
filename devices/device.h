@@ -73,8 +73,7 @@ protected:
 	void sendRequest(QString what) const;
 
 private:
-	static Client *client_comandi;
-	static Client *client_richieste;
+	static QHash<int, QPair<Client*, Client*> > clients;
 };
 
 

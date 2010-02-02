@@ -2,7 +2,7 @@
 #include "openclient.h" // client_monitor
 
 // Inizialization of static member
-Client *FrameReceiver::client_monitor = 0;
+QHash<int, Client*> FrameReceiver::clients_monitor;
 
 
 FrameReceiver::FrameReceiver()
@@ -13,17 +13,17 @@ FrameReceiver::FrameReceiver()
 FrameReceiver::~FrameReceiver()
 {
 	if (subscribed)
-		client_monitor->unsubscribe(this);
+		clients_monitor[0]->unsubscribe(this);
 }
 
 void FrameReceiver::setClientMonitor(Client *monitor)
 {
-	client_monitor = monitor;
+	clients_monitor[0] = monitor;
 }
 
 void FrameReceiver::subscribe_monitor(int who)
 {
-	client_monitor->subscribe(this, who);
+	clients_monitor[0]->subscribe(this, who);
 	subscribed = true;
 }
 
