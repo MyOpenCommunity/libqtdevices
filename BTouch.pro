@@ -99,6 +99,7 @@ HEADERS += actuators.h \
            energy_data.h \
            energy_device.h \
            energy_graph.h \
+           energy_rates.h \
            energy_view.h \
            feedmanager.h \
            feeditemwidget.h \
@@ -207,6 +208,7 @@ SOURCES += actuators.cpp \
            energy_data.cpp \
            energy_device.cpp \
            energy_graph.cpp \
+           energy_rates.cpp \
            energy_view.cpp \
            feedmanager.cpp \
            feeditemwidget.cpp \
