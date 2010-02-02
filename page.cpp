@@ -153,7 +153,7 @@ void BannerPage::activateLayout()
 		page_content->drawContent();
 }
 
-void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, QWidget *top_widget)
+void BannerPage::buildPage(BannerContentBase *content, NavigationBar *nav_bar, QWidget *top_widget)
 {
 	QBoxLayout *l = new QVBoxLayout(this);
 

@@ -11,6 +11,7 @@ class QShowEvent;
 
 class BannerContentBase : public QWidget
 {
+friend void BannerPage::activateLayout();
 Q_OBJECT
 public:
 	BannerContentBase(QWidget *parent=0);
@@ -41,7 +42,6 @@ signals:
  */
 class BannerContent : public BannerContentBase
 {
-friend void BannerPage::activateLayout();
 Q_OBJECT
 public:
 	BannerContent();
