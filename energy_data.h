@@ -2,7 +2,7 @@
 #define ENERGY_DATA_H
 
 #include "sottomenu.h"
-#include "bann1_button.h" // bannPuls, bannTextOnImage
+#include "bann1_button.h" // bannPuls
 
 #include <QHash>
 #include <QTimer>
@@ -92,30 +92,6 @@ private:
 	QList<EnergyView*> views;
 	bool is_any_interface_enabled;
 	static bool is_currency_view;
-};
-
-
-class bannEnergyInterface : public bannTextOnImage
-{
-Q_OBJECT
-public:
-	/**
-	 * \param rate_id the id of the rate in the rate_info tag
-	 * \param n_dec the number of decimals to show in the labels
-	 * \param is_electricity true if we are measuring electricity
-	 */
-	bannEnergyInterface(QWidget *parent, int rate_id, bool is_ele);
-	void setUnitMeasure(const QString &m);
-	void updateText();
-
-public slots:
-	void status_changed(const StatusList &status_list);
-
-private:
-	int device_value;
-	QString measure;
-	bool is_electricity;
-	const EnergyRate &rate;
 };
 
 #endif // ENERGY_DATA_H
