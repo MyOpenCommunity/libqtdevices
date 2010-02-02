@@ -106,7 +106,7 @@ void AdvancedSplitScenario::splitValuesChanged(const AirConditionerStatus &st)
 	m[conf_name + "/speed"] = QString::number(st.vel);
 	m[conf_name + "/fan_swing"] = QString::number(st.swing);
 #ifdef CONFIG_BTOUCH
-	if (!setCfgValue(m, id, serNum))
+	if (!setCfgValue(m, getId(), getSerNum()))
 		qWarning() << "AdvancedSplitScenario::splitValuesChanged setCfgValue failed!";
 #else
 	if (!setCfgValue(m, item_id))
