@@ -7,9 +7,6 @@
 
 BannerContentBase::BannerContentBase(QWidget *parent) : QWidget(parent)
 {
-	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
 }
 
 int BannerContentBase::bannerCount()
@@ -46,6 +43,10 @@ void BannerContentBase::appendBanner(banner *b)
 
 BannerContent::BannerContent()
 {
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+
 	current_index = 0;
 	need_update = true;
 	first_time = true;
