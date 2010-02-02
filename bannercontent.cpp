@@ -5,34 +5,30 @@
 #include <QDebug>
 
 
-BannerContent::BannerContent(QWidget *parent) : QWidget(parent)
+BannerContentBase::BannerContentBase(QWidget *parent) : QWidget(parent)
 {
-	current_index = 0;
 	QVBoxLayout *l = new QVBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
-	need_update = true;
-	first_time = true;
-	need_pagination = false;
 }
 
-int BannerContent::bannerCount()
+int BannerContentBase::bannerCount()
 {
 	return banner_list.size();
 }
 
-void BannerContent::initBanners()
+void BannerContentBase::initBanners()
 {
 	for (int i = 0; i < banner_list.size(); ++i)
 		banner_list.at(i)->inizializza();
 }
 
-banner *BannerContent::getBanner(int i)
+banner *BannerContentBase::getBanner(int i)
 {
 	return banner_list.at(i);
 }
 
-void BannerContent::appendBanner(banner *b)
+void BannerContentBase::appendBanner(banner *b)
 {
 	banner_list.append(b);
 	b->hide();
@@ -43,6 +39,17 @@ void BannerContent::appendBanner(banner *b)
 			b->setSerNum(banner_list.at(idx)->getSerNum() + 1);
 			idx = -1;
 		}
+}
+
+
+
+
+BannerContent::BannerContent()
+{
+	current_index = 0;
+	need_update = true;
+	first_time = true;
+	need_pagination = false;
 }
 
 void BannerContent::resetIndex()
