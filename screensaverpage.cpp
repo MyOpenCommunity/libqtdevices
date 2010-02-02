@@ -170,7 +170,7 @@ void SlideshowItemDir::setChecked(bool check)
 
 
 
-SlideshowItemImage::SlideshowItemImage(const QString &filename, const QString &working_dir, const QString &checked_icon, const QString &unchecked_icon) :
+SlideshowItemImage::SlideshowItemImage(const QString &filename, const QString &working_dir, const QString &pressed_icon, const QString &icon) :
 	QWidget(0),
 	file_name(filename)
 {
@@ -180,8 +180,8 @@ SlideshowItemImage::SlideshowItemImage(const QString &filename, const QString &w
 	thumbnail->setPixmap(p);
 	text = new QLabel(file_name);
 	check_button = new BtButton;
-	check_button->setImage(unchecked_icon, BtButton::NO_FLAG);
-	check_button->setPressedImage(checked_icon);
+	check_button->setImage(icon, BtButton::NO_FLAG);
+	check_button->setPressedImage(pressed_icon);
 	check_button->setCheckable(true);
 	connect(check_button, SIGNAL(toggled(bool)), SLOT(checked(bool)));
 

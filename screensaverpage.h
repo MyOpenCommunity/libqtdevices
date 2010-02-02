@@ -232,7 +232,7 @@ public:
 	 * \param filename Returned when fileToggled() is emitted.
 	 * \param working_dir Used internally to load the image with path working_dir + filename
 	 */
-	SlideshowItemImage(const QString &filename, const QString &working_dir, const QString &checked_icon, const QString &unchecked_icon);
+	SlideshowItemImage(const QString &filename, const QString &working_dir, const QString &pressed_icon, const QString &icon);
 	void setChecked(bool check);
 
 private:
