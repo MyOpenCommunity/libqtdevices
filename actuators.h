@@ -58,6 +58,7 @@ private slots:
 
 private:
 	int type;
+	QString where;
 };
 
 #endif

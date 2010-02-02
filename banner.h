@@ -46,8 +46,76 @@ friend class BannerContent;
 Q_OBJECT
 public:
 	banner(QWidget *parent);
-	virtual ~banner();
+	virtual ~banner() {}
 
+	// TODO: only the setId method should be part of the public interface of the
+	// banner. The others following methods are only for compatibility. Remove
+	// them asap!
+	/*!
+	 *  \brief Sets the Id of the object controlled by the banner.
+	 */
+	void setId(int);
+
+	/*!
+	 *  \brief Retrieves the Id of the object controlled by the banner.
+	 */
+	int getId();
+
+	/*!
+	 *  \brief Sets the serial number of the banner.
+	 *
+	 *  The \a serial \a number is the progressive number among the total amount of similar banners present in the same subtree.
+	 *  It is quite usefull to discriminate, for instance, between different \a wide \a awake in the setting subtree
+	 */
+	virtual void setSerNum(int);
+
+	/*!
+	 *  \brief Retrieves the serial number of the banner.
+	 *
+	 *  The \a serial \a number is the progressive number among the total amount of similar banners present in the same subtree.
+	 *  It is quite usefull to discriminate, for instance, between different \a wide \a awake in the setting subtree
+	 */
+	int getSerNum();
+
+	static void setClients(Client *command, Client *request);
+	virtual void inizializza(bool forza=false) {}
+	virtual void Draw() {}
+	virtual void setText(const QString &) {}
+	virtual BtButton *customButton() { return 0; }
+
+signals:
+	/// Emitted when any of the linked pages is closed
+	void pageClosed();
+
+protected:
+	// Width and height of the banner. Used for the sizeHint method!
+	int banner_width;
+	int banner_height;
+
+	// The sizeHint method is required to have a layout management that work fine.
+	// Note that this sizeHint is ok for banner with a standard dimension, banner
+	// bigger or smaller should be re-define this method.
+	virtual QSize sizeHint() const;
+
+	// A global way to send frames/init requests. Do not use these directly, prefer using
+	// devices specific methods, unless you have to send frames without reading responses.
+	void sendFrame(QString frame) const;
+	void sendInit(QString frame) const;
+
+private:
+	static Client *client_richieste;
+	static Client *client_comandi;
+	int id;
+	int serNum;
+};
+
+
+class BannerOld : public banner
+{
+Q_OBJECT
+public:
+	BannerOld(QWidget *parent);
+	~BannerOld();
 	/*!
 	 * \brief sets the foundamental text one can see on the banner
 	 */
@@ -111,8 +179,8 @@ public:
 	/*!
 	 *  \brief sets the Icon of left and right button and the central variable in different levels label when the banner is active or not. Also an image representing broken state is passed.
 	 *
-	 * the arguments describe the images to put on the buttons and into the describing label passing the file names. 
-	 * The last argument tells the number of graphical levels (just as in amplifiers and dimmers) the interface has 
+	 * the arguments describe the images to put on the buttons and into the describing label passing the file names.
+	 * The last argument tells the number of graphical levels (just as in amplifiers and dimmers) the interface has
 	 * to visualize when the banner is in active state. The 5° argument represent the broken state image path.
 	 */
 	void SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon, QString breakIcon, bool inactiveLevel);
@@ -161,32 +229,6 @@ public:
 	QString getAddress();
 
 	/*!
-	 *  \brief Sets the serial number of the banner.
-	 *
-	 *  The \a serial \a number is the progressive number among the total amount of similar banners present in the same subtree.
-	 *  It is quite usefull to discriminate, for instance, between different \a wide \a awake in the setting subtree
-	 */
-	virtual void setSerNum(int);
-
-	/*!
-	 *  \brief Retrieves the serial number of the banner.
-	 *
-	 *  The \a serial \a number is the progressive number among the total amount of similar banners present in the same subtree.
-	 *  It is quite usefull to discriminate, for instance, between different \a wide \a awake in the setting subtree
-	 */
-	int getSerNum();
-
-	/*!
-	 *  \brief Retrieves the Id of the object controlled by the banner.
-	 */
-	int getId();
-
-	/*!
-	 *  \brief Sets the Id of the object controlled by the banner.
-	 */
-	void setId(int);
-
-	/*!
 	 *  \brief Sets the Value for the object controlled by the banner.
 	 *
 	 *  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier.
@@ -205,7 +247,7 @@ public:
 	/*!
 	 *  \brief Sets the value range for the object controlled by the banner.
 	 *
-	 *  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier. 
+	 *  There's need of using this function when controlling a levelled device such as a dimmer or an amplifier.
 	 *  The function in used to determine the minimum and maximum (in this order) value for such an object.
 	 */
 	void setRange(char,char);
@@ -249,9 +291,9 @@ public:
 	 *  \enum oggettinoDelBanner
 	 *  \brief describes the possible items one can have into a banner
 	 *
-	 *  BUT1 - BUT2 - BUT3 - BUT4 are 4 possible button 
+	 *  BUT1 - BUT2 - BUT3 - BUT4 are 4 possible button
 	 *  TEXT is the describing text
-	 *  TEXT2 is an additional text 
+	 *  TEXT2 is an additional text
 	 *  ICON - ICON2 are possibles image describing the banner or its state
 	 */
 	enum oggettinoDelBanner
@@ -267,8 +309,6 @@ public:
 	};
 
 	virtual void addAmb(QString);
-
-	static void setClients(Client *command, Client *request);
 
 public slots:
 	/*!
@@ -308,33 +348,19 @@ protected:
 	QString qtesto, qtestoSecondario;
 
 	char attivo,value,maxValue,minValue,step;
-	int id;
-	int periodo, numFrame,contFrame,serNum;
+
+	int periodo, numFrame,contFrame;
 	QString address;
 
-	// Width and height of the banner. Used for the sizeHint method!
-	int banner_width;
-	int banner_height;
 
 	/**
 	 * Utility function to draw all buttons except the rightmost one
 	 */
 	void drawAllButRightButton();
 
-	// A global way to send frames/init requests. Do not use these directly, prefer using
-	// devices specific methods, unless you have to send frames without reading responses.
-	void sendFrame(QString frame) const;
-	void sendInit(QString frame) const;
-
 	virtual void hideEvent(QHideEvent *event);
-	// The sizeHint method is required to have a layout management that work fine.
-	// Note that this sizeHint is ok for banner with a standard dimension, banner
-	// bigger or smaller should be re-define this method.
-	virtual QSize sizeHint() const;
 
 private:
-	static Client *client_richieste;
-	static Client *client_comandi;
 
 	QTimer *animationTimer;
 	/**
@@ -399,17 +425,6 @@ signals:
 	// di stato e usare direttamente BTouch.. ma poi c'e' anche il rischio di abusare
 	// troppo di quella variabile globale!
 	void richStato(QString);
-
-	/// Emitted when any of the linked pages is closed
-	void pageClosed();
-};
-
-
-class BannerOld : public banner
-{
-Q_OBJECT
-public:
-	BannerOld(QWidget *parent) : banner(parent) {}
 };
 
 

@@ -42,7 +42,7 @@ void Loads::loadItems(const QDomNode &config_node)
 		QString where = getTextChild(item, "where");
 		QString img = IMG_PATH + getTextChild(item, "cimg1");
 
-		banner *b = new bannLoads(this, where, img);
+		bannLoads *b = new bannLoads(this, where, img);
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);
 		b->Draw();

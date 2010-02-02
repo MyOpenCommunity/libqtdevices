@@ -683,7 +683,7 @@ QWidget *EnergyView::buildBannerWidget()
 	mapper->setMapping(cumulative_day_banner, EnergyDevice::CUMULATIVE_DAY);
 
 	current_banner = getBanner(this, tr("Current"));
-	current_banner->nascondi(banner::BUT1);
+	current_banner->nascondi(BannerOld::BUT1);
 
 	QWidget *daily_widget = createWidgetWithVBoxLayout();
 	daily_widget->layout()->addWidget(cumulative_day_banner);

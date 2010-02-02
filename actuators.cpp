@@ -73,7 +73,7 @@ ButtonActuator::ButtonActuator(QWidget *parent, const QDomNode &config_node, int
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("action_icon"),
 		getTextChild(config_node, "descr"));
-	setAddress(getTextChild(config_node, "where"));
+	where = getTextChild(config_node, "where");
 
 	type = t;
 
@@ -88,13 +88,13 @@ void ButtonActuator::activate()
 	switch (type)
 	{
 	case  AUTOMAZ:
-		sendFrame(createMsgOpen("1", "1", getAddress()));
+		sendFrame(createMsgOpen("1", "1", where));
 		break;
 	case  VCT_SERR:
-		sendFrame(createMsgOpen("6", "10", getAddress()));
+		sendFrame(createMsgOpen("6", "10", where));
 		break;
 	case  VCT_LS:
-		sendFrame(createMsgOpen("6", "12", getAddress()));
+		sendFrame(createMsgOpen("6", "12", where));
 		break;
 	}
 }
@@ -104,12 +104,12 @@ void ButtonActuator::deactivate()
 	switch (type)
 	{
 	case  AUTOMAZ:
-		sendFrame(createMsgOpen("1", "0", getAddress()));
+		sendFrame(createMsgOpen("1", "0", where));
 		break;
 	case  VCT_SERR:
 		break;
 	case  VCT_LS:
-		sendFrame(createMsgOpen("6", "11", getAddress()));
+		sendFrame(createMsgOpen("6", "11", where));
 		break;
 	}
 }

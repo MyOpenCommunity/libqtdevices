@@ -50,7 +50,7 @@ void MultiSoundDiffInterface::loadAmbienti(const QDomNode &config_node)
 			dslist.append(ds);
 		}
 
-		banner *b = 0;
+		BannerOld *b = 0;
 		switch (id)
 		{
 		case INSIEME_AMBIENTI:

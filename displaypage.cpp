@@ -48,11 +48,11 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	b->Draw();
 	page_content->appendBanner(b);
 #endif
-	b = new bannOnDx(this, img_items, new ScreenSaverPage());
-	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-	b->setText(tr("Screen Saver"));
-	b->Draw();
-	page_content->appendBanner(b);
+	bannOnDx *bann = new bannOnDx(this, img_items, new ScreenSaverPage());
+	connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
+	bann->setText(tr("Screen Saver"));
+	bann->Draw();
+	page_content->appendBanner(bann);
 }
 
 void DisplayPage::startCalibration()

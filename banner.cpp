@@ -35,7 +35,59 @@ banner::banner(QWidget *parent) : QWidget(parent)
 {
 	banner_width = 240;
 	banner_height = 80;
+	serNum = 1;
+	id = -1;
+}
 
+QSize banner::sizeHint() const
+{
+	if (QLayout *l = layout())
+		return l->sizeHint();
+	return QSize(banner_width, banner_height);
+}
+
+void banner::sendFrame(QString frame) const
+{
+	Q_ASSERT_X(client_comandi, "banner::sendFrame", "Client comandi not set!");
+	QByteArray buf = frame.toAscii();
+	client_comandi->ApriInviaFrameChiudi(buf.constData());
+}
+
+void banner::sendInit(QString frame) const
+{
+	Q_ASSERT_X(client_richieste, "banner::sendInit", "Client richieste not set!");
+	QByteArray buf = frame.toAscii();
+	client_richieste->ApriInviaFrameChiudi(buf.constData());
+}
+
+void banner::setClients(Client *command, Client *request)
+{
+	client_comandi = command;
+	client_richieste = request;
+}
+
+void banner::setSerNum(int s)
+{
+	serNum = s;
+}
+
+int banner::getSerNum()
+{
+	return serNum;
+}
+
+void banner::setId(int i)
+{
+	id = i;
+}
+
+int banner::getId()
+{
+	return id;
+}
+
+BannerOld::BannerOld(QWidget *parent) : banner(parent)
+{
 	linked_sx_page = 0;
 	linked_dx_page = 0;
 	BannerIcon = 0;
@@ -57,11 +109,9 @@ banner::banner(QWidget *parent) : QWidget(parent)
 	minValue = maxValue = 0;
 	step = 1;
 	animationTimer = NULL;
-	serNum = 1;
-	id = -1;
 }
 
-banner::~banner()
+BannerOld::~BannerOld()
 {
 	delete BannerIcon;
 	delete BannerText;
@@ -80,22 +130,22 @@ banner::~banner()
 	delete linked_dx_page;
 }
 
-void banner::setText(const QString &text)
+void BannerOld::setText(const QString &text)
 {
 	qtesto = text;
 }
 
-void banner::setSecondaryText(const QString &text)
+void BannerOld::setSecondaryText(const QString &text)
 {
 	qtestoSecondario = text;
 }
 
-BtButton *banner::customButton()
+BtButton *BannerOld::customButton()
 {
 	return 0;
 }
 
-QString banner::getPressedIconName(QString iconname)
+QString BannerOld::getPressedIconName(QString iconname)
 {
 	/** This method wraps the previous pressIconName function.
 	 *  The main fix introduced is to return the NOT-Pressed Icon Name if
@@ -109,7 +159,7 @@ QString banner::getPressedIconName(QString iconname)
 	return QFile::exists(pressIconName) ? pressIconName : iconname;
 }
 
-void banner::SetIcons(int id, QString name, QString pressed_name)
+void BannerOld::SetIcons(int id, QString name, QString pressed_name)
 {
 	Q_ASSERT_X(id < MAX_PRESS_ICON && id >= 0, "banner::SetIcons", "Index of icon out of range!");
 	Icon[id]      = bt_global::icons_cache.getIcon(name);
@@ -118,7 +168,7 @@ void banner::SetIcons(int id, QString name, QString pressed_name)
 	pressIcon[id] = bt_global::icons_cache.getIcon(pressed_name);
 }
 
-void banner::SetIcons(QString name, int type)
+void BannerOld::SetIcons(QString name, int type)
 {
 	int id;
 	switch (type)
@@ -136,7 +186,7 @@ void banner::SetIcons(QString name, int type)
 	SetIcons(id, name);
 }
 
-void banner::SetIcons(QString sxIcon, QString dxIcon)
+void BannerOld::SetIcons(QString sxIcon, QString dxIcon)
 {
 	if (!sxIcon.isNull())
 		SetIcons(0, sxIcon);
@@ -145,7 +195,7 @@ void banner::SetIcons(QString sxIcon, QString dxIcon)
 		SetIcons(1, dxIcon);
 }
 
-void banner::SetIcons(QString sxIcon , QString dxIcon, QString centerIcon)
+void BannerOld::SetIcons(QString sxIcon , QString dxIcon, QString centerIcon)
 {
 	SetIcons(sxIcon, dxIcon);
 
@@ -157,7 +207,7 @@ void banner::SetIcons(QString sxIcon , QString dxIcon, QString centerIcon)
 	impostaAttivo(1);
 }
 
-void banner::SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon)
+void BannerOld::SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon)
 {
 	SetIcons(sxIcon, dxIcon);
 
@@ -168,7 +218,7 @@ void banner::SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, 
 		SetIcons(2, centerInactiveIcon);
 }
 
-void banner::SetIcons(QString sxIcon, QString dxIcon, QString centerInactiveIcon, QString centerUpIcon, QString centerDownIcon)
+void BannerOld::SetIcons(QString sxIcon, QString dxIcon, QString centerInactiveIcon, QString centerUpIcon, QString centerDownIcon)
 {
 	SetIcons(sxIcon, dxIcon);
 
@@ -182,12 +232,12 @@ void banner::SetIcons(QString sxIcon, QString dxIcon, QString centerInactiveIcon
 		SetIcons(4, centerDownIcon);
 }
 
-void banner::SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon, bool inactiveLevel)
+void BannerOld::SetIcons(QString sxIcon, QString dxIcon, QString centerActiveIcon, QString centerInactiveIcon, bool inactiveLevel)
 {
 	SetIcons(sxIcon, dxIcon, centerActiveIcon, centerInactiveIcon, QString(), inactiveLevel);
 }
 
-void banner::SetIcons(QString sxIcon, QString dxIcon,QString centerActiveIcon, QString centerInactiveIcon, QString breakIcon, bool inactiveLevel)
+void BannerOld::SetIcons(QString sxIcon, QString dxIcon,QString centerActiveIcon, QString centerInactiveIcon, QString breakIcon, bool inactiveLevel)
 {
 	SetIcons(sxIcon, dxIcon);
 	// Load base Icon that can be *sxl0 or *dxl0
@@ -238,7 +288,7 @@ void banner::SetIcons(QString sxIcon, QString dxIcon,QString centerActiveIcon, Q
 }
 
 
-void banner::addItem(char item,int x,int y,int dimX, int dimY)
+void BannerOld::addItem(char item,int x,int y,int dimX, int dimY)
 {
 	QWidget *Item = NULL;
 
@@ -292,7 +342,7 @@ void banner::addItem(char item,int x,int y,int dimX, int dimY)
 	Item->setGeometry(x,y,dimX,dimY);
 }
 
-void banner::nascondi(char item)
+void BannerOld::nascondi(char item)
 {
 	switch(item)
 	{
@@ -327,14 +377,7 @@ void banner::nascondi(char item)
 	}
 }
 
-QSize banner::sizeHint() const
-{
-	if (QLayout *l = layout())
-		return l->sizeHint();
-	return QSize(banner_width, banner_height);
-}
-
-void banner::mostra(char item)
+void BannerOld::mostra(char item)
 {
 	switch(item)
 	{
@@ -363,7 +406,7 @@ void banner::mostra(char item)
 	}
 }
 
-void banner::drawAllButRightButton()
+void BannerOld::drawAllButRightButton()
 {
 	if (sxButton && Icon[0])
 	{
@@ -493,7 +536,7 @@ void banner::drawAllButRightButton()
 	}
 }
 
-void banner::Draw()
+void BannerOld::Draw()
 {
 	drawAllButRightButton();
 	if (dxButton && Icon[1])
@@ -504,7 +547,7 @@ void banner::Draw()
 	}
 }
 
-void banner::impostaAttivo(char Attivo)
+void BannerOld::impostaAttivo(char Attivo)
 {
 	attivo = Attivo;
 	if (animationTimer && !Attivo)
@@ -514,39 +557,39 @@ void banner::impostaAttivo(char Attivo)
 	}
 }
 
-void banner::setAddress(QString addr)
+void BannerOld::setAddress(QString addr)
 {
 	address = addr;
 }
 
-void banner::setValue(char val)
+void BannerOld::setValue(char val)
 {
 	if (val >= minValue && val <= maxValue)
 		value = val;
 }
 
-void banner::setRange(char minval,char maxval)
+void BannerOld::setRange(char minval,char maxval)
 {
 	maxValue = maxval;
 	minValue = minval;
 }
 
-void banner::setStep(char s)
+void BannerOld::setStep(char s)
 {
 	step = s;
 }
 
-unsigned char banner::isActive()
+unsigned char BannerOld::isActive()
 {
 	return attivo;
 }
 
-char banner::getValue()
+char BannerOld::getValue()
 {
 	return value;
 }
 
-void banner::animate()
+void BannerOld::animate()
 {
 	contFrame++;
 	if (contFrame >= numFrame)
@@ -554,24 +597,24 @@ void banner::animate()
 	Draw();
 }
 
-void banner::setAnimationParams(int per, int num)
+void BannerOld::setAnimationParams(int per, int num)
 {
 	periodo = per;
 	numFrame = num;
 }
 
-void banner::getAnimationParams(int& per, int& num)
+void BannerOld::getAnimationParams(int& per, int& num)
 {
 	per = periodo;
 	num = numFrame;
 }
 
-QString banner::getAddress()
+QString BannerOld::getAddress()
 {
 	return address;
 }
 
-void banner::inizializza(bool forza)
+void BannerOld::inizializza(bool forza)
 {
 	if (linked_sx_page)
 		linked_sx_page->inizializza();
@@ -580,75 +623,35 @@ void banner::inizializza(bool forza)
 		linked_dx_page->inizializza();
 }
 
-void banner::openAckRx()
+void BannerOld::openAckRx()
 {
 	qDebug("openAckRx()");
 }
 
-void banner::openNakRx()
+void BannerOld::openNakRx()
 {
 	qDebug("openNakRx()");
 }
 
-void banner::setSerNum(int s)
-{
-	serNum = s;
-}
-
-int banner::getSerNum()
-{
-	return serNum;
-}
-
-int banner::getId()
-{
-	return id;
-}
-
-void banner::setId(int i)
-{
-	id = i;
-}
-
-void banner::ambChanged(const QString &, bool, QString)
+void BannerOld::ambChanged(const QString &, bool, QString)
 {
 	qDebug("[WARNING] empty slot ambChanged called!");
 };
 
-void banner::parentChanged(QWidget *newParent)
+void BannerOld::parentChanged(QWidget *newParent)
 {
 }
 
-void banner::addAmb(QString)
+void BannerOld::addAmb(QString)
 {
 }
 
-QString banner::getNameRoot(QString full_string, QString text_to_strip)
+QString BannerOld::getNameRoot(QString full_string, QString text_to_strip)
 {
 	return full_string.mid(0, full_string.lastIndexOf('.'));
 }
 
-void banner::sendFrame(QString frame) const
-{
-	Q_ASSERT_X(client_comandi, "banner::sendFrame", "Client comandi not set!");
-	QByteArray buf = frame.toAscii();
-	client_comandi->ApriInviaFrameChiudi(buf.constData());
-}
-
-void banner::sendInit(QString frame) const
-{
-	Q_ASSERT_X(client_richieste, "banner::sendInit", "Client richieste not set!");
-	QByteArray buf = frame.toAscii();
-	client_richieste->ApriInviaFrameChiudi(buf.constData());
-}
-
-void banner::setClients(Client *command, Client *request)
-{
-	client_comandi = command;
-	client_richieste = request;
-}
-
-void banner::connectDxButton(Page *page)
+void BannerOld::connectDxButton(Page *page)
 {
 	linked_dx_page = page;
 	if (page)
@@ -658,7 +661,7 @@ void banner::connectDxButton(Page *page)
 	}
 }
 
-void banner::connectSxButton(Page *page)
+void BannerOld::connectSxButton(Page *page)
 {
 	linked_sx_page = page;
 	if (page)
@@ -668,7 +671,7 @@ void banner::connectSxButton(Page *page)
 	}
 }
 
-void banner::hideEvent(QHideEvent *event)
+void BannerOld::hideEvent(QHideEvent *event)
 {
 	if (linked_sx_page && !linked_sx_page->isHidden())
 		linked_sx_page->hide();

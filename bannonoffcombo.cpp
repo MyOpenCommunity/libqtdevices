@@ -21,7 +21,7 @@ BannOnOffCombo::BannOnOffCombo(QWidget *parent) : BannerOld(parent)
 
 void BannOnOffCombo::changeStatus(ComboStatus st)
 {
-	banner::SetIcons(2, status_icon[st]);
+	BannerOld::SetIcons(2, status_icon[st]);
 
 	switch (st)
 	{
@@ -49,5 +49,5 @@ void BannOnOffCombo::SetIcons(QString sxIcon, QString dxIcon, QString centerIcon
 	status_icon[CENTER] = centerIcon;
 	status_icon[SX] = centerSxIcon;
 	status_icon[DX] = centerDxIcon;
-	banner::SetIcons(sxIcon, dxIcon, QString(), centerIcon);
+	BannerOld::SetIcons(sxIcon, dxIcon, QString(), centerIcon);
 }

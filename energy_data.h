@@ -54,8 +54,8 @@ private slots:
 	void increaseProd();
 
 private:
-	banner *addBanner(QLayout *main_layout, const QDomNode &config_node, QString desc, float& rate);
-	void showValue(banner *b, float value);
+	BannerOld *addBanner(QLayout *main_layout, const QDomNode &config_node, QString desc, float& rate);
+	void showValue(BannerOld *b, float value);
 
 private:
 	int serial_number;
@@ -64,7 +64,7 @@ private:
 	// to modify the real values (the attributes without temp_) only when the user
 	// click on the "ok" button.
 	float cons_rate, prod_rate, temp_cons_rate, temp_prod_rate;
-	banner *banner_cost, *banner_prod;
+	BannerOld *banner_cost, *banner_prod;
 	// The number of decimal to show in cunsumption and production.
 	unsigned int n_decimal;
 	// The maximum number of integer to show in cunsumption and production.

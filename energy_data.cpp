@@ -152,7 +152,7 @@ EnergyCost::EnergyCost(const QDomNode &config_node, int serial)
 	buildPage(content, nav_bar);
 }
 
-void EnergyCost::showValue(banner *b, float value)
+void EnergyCost::showValue(BannerOld *b, float value)
 {
 	if (b)
 	{
@@ -161,7 +161,7 @@ void EnergyCost::showValue(banner *b, float value)
 	}
 }
 
-banner *EnergyCost::addBanner(QLayout *main_layout, const QDomNode &config_node, QString desc, float& rate)
+BannerOld *EnergyCost::addBanner(QLayout *main_layout, const QDomNode &config_node, QString desc, float& rate)
 {
 	if (!config_node.isNull() && getTextChild(config_node, "ab").toInt() == 1)
 	{

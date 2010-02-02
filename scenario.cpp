@@ -118,7 +118,9 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 	}
 #ifdef CONFIG_BTOUCH
 	case PPT_SCE:
-		b = new PPTSce(0, where, getTextChild(item_node, "cid").toInt());
+		PPTSce *bann = new PPTSce(0, where, getTextChild(item_node, "cid").toInt());
+		bann->setText(getTextChild(item_node, "descr"));
+		b = bann;
 		break;
 #endif
 	}
@@ -126,7 +128,6 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 	if (b)
 	{
 		// TODO: these are needed for PPTSce
-		b->setText(getTextChild(item_node, "descr"));
 		b->setId(id);
 		b->Draw();
 	}

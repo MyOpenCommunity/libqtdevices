@@ -141,10 +141,10 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 					 bt_global::skin->getImage("zone"),
 					 bt_global::skin->getImage("alarm_off"),
 					 bt_global::skin->getImage("alarm_on"));
-#endif
 			b->setText(descr);
 			b->setId(id);
 			b->Draw();
+#endif
 			page_content->appendBanner(b);
 			connect(this, SIGNAL(abilitaParz(bool)), b, SLOT(abilitaParz(bool)));
 			connect(this, SIGNAL(clearChanged()), b, SLOT(clearChanged()));
@@ -225,9 +225,9 @@ void Antintrusion:: ctrlAllarm()
 	qDebug("ctrlAllarm %d %d", allarmi.size(), alarms->alarmCount());
 	// the first condition is for BTouch, the second for TouchX
 	if (!allarmi.isEmpty() || alarms->alarmCount() != 0)
-		impianto->mostra(banner::BUT1);
+		impianto->mostra(BannerOld::BUT1);
 	else
-		impianto->nascondi(banner::BUT1);
+		impianto->nascondi(BannerOld::BUT1);
 }
 
 void Antintrusion::inizializza()

@@ -106,10 +106,10 @@ void PowerAmplifier::loadBanners(PowerAmplifierDevice *dev, const QDomNode &conf
 	b = new PowerAmplifierBass(dev, tr("Bass"), this);
 	page_content->appendBanner(b);
 
-	b = new PowerAmplifierBalance(dev, this);
-	b->setText(tr("Balance"));
-	b->Draw();
-	page_content->appendBanner(b);
+	PowerAmplifierBalance *bann = new PowerAmplifierBalance(dev, this);
+	bann->setText(tr("Balance"));
+	bann->Draw();
+	page_content->appendBanner(bann);
 
 	b = new PowerAmplifierLoud(dev, tr("Loud"), this);
 	page_content->appendBanner(b);

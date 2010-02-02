@@ -40,7 +40,7 @@ class AntintrusionZone : public BannSingleLeft
 {
 Q_OBJECT
 public:
-	AntintrusionZone(const QString &name, const QString &where);
+	AntintrusionZone(const QString &name, const QString &_where);
 	void inizializza(bool forza = false);
 	bool isActive();
 
@@ -56,6 +56,8 @@ private:
 	bool already_changed;
 	bool is_on;
 	device *dev;
+	QString where;
+
 signals:
 	void partChanged(AntintrusionZone *);
 };

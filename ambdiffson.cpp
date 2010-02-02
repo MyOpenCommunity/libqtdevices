@@ -140,7 +140,7 @@ void insAmbDiffSon::configura()
 	emit ambChanged(descr, true, QString());
 	qDebug("sorgenti->parent() = %p", sorgenti->parent());
 	sorgenti->reparent(diffson, 0, diffson->geometry().topLeft());
-	sorgenti->mostra_all(banner::BUT2);
+	sorgenti->mostra_all(BannerOld::BUT2);
 	diffson->forceDraw();
 	diffson->showPage();
 }

@@ -46,10 +46,10 @@ void BannSingleLeft::setState(States new_state)
 
 
 
-AntintrusionZone::AntintrusionZone(const QString &name, const QString &where) :
+AntintrusionZone::AntintrusionZone(const QString &name, const QString &_where) :
 	BannSingleLeft()
 {
-	setAddress(where);
+	where = _where;
 
 	QString zone = getZoneName(bt_global::skin->getImage("zone"), where);
 	initBanner(bt_global::skin->getImage("partial_on"), bt_global::skin->getImage("partial_off"),
@@ -139,14 +139,14 @@ void AntintrusionZone::clearChanged()
 
 int AntintrusionZone::getIndex()
 {
-	QString addr = getAddress();
+	QString addr = where;
 	addr.remove(0, 1);
 	return addr.toInt();
 }
 
 void AntintrusionZone::inizializza(bool forza)
 {
-	dev->sendInit("*#5*" + getAddress() + "##");
+	dev->sendInit("*#5*" + where + "##");
 }
 
 bool AntintrusionZone::isActive()

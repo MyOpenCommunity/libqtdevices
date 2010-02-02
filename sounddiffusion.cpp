@@ -33,7 +33,9 @@ AudioSources::AudioSources(QWidget *parent, const QDomNode &config_node) : sotto
 void AudioSources::addAmb(QString a)
 {
 	for (int idx = elencoBanner.count() - 1; idx >= 0; idx--)
-		elencoBanner.at(idx)->addAmb(a);
+	{
+		static_cast<BannerOld*>(elencoBanner.at(idx))->addAmb(a);
+	}
 }
 
 void AudioSources::loadItems(const QDomNode &config_node)
@@ -46,7 +48,7 @@ void AudioSources::loadItems(const QDomNode &config_node)
 		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
 		QString img2 = IMG_PATH + getTextChild(item, "cimg2");
 		QString img3 = IMG_PATH + getTextChild(item, "cimg3");
-		banner *b = 0;
+		BannerOld *b = 0;
 		bool multi_channel = false;
 
 		switch (id)
@@ -105,20 +107,21 @@ void AudioSources::setIndex(QString addr)
 {
 	for (int i = 0; i < elencoBanner.size(); ++i)
 	{
-		if (elencoBanner.at(i)->getAddress() == addr)
+		BannerOld *b = static_cast<BannerOld*>(elencoBanner.at(i));
+		if (b->getAddress() == addr)
 		{
-			elencoBanner.at(i)->mostra(banner::BUT2);
+			b->mostra(BannerOld::BUT2);
 			indice = i;
 		}
 		else
-			elencoBanner.at(i)->nascondi(banner::BUT2);
+			b->nascondi(BannerOld::BUT2);
 	}
 }
 
 void AudioSources::mostra_all(char but)
 {
 	for (int i = 0; i < elencoBanner.size(); ++i)
-		elencoBanner.at(i)->mostra(but);
+		static_cast<BannerOld*>(elencoBanner.at(i))->mostra(but);
 }
 
 

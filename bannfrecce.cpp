@@ -105,7 +105,7 @@ void bannFrecce::Draw()
 	if (dxButton != original_dx_button)
 		drawAllButRightButton();
 	else
-		banner::Draw();
+		BannerOld::Draw();
 }
 
 void bannFrecce::setCustomButton(BtButton *btn)
