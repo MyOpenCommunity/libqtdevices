@@ -143,7 +143,7 @@ void Bann4Buttons::deleteButton(BtButton *btn)
 }
 
 
-bann4But::bann4But(QWidget *parent) : banner(parent)
+bann4But::bann4But(QWidget *parent) : BannerOld(parent)
 {
 	// sx
 	addItem(BUT1,(banner_width/4-BAN4BUT_DIM)/2, 0, BAN4BUT_DIM , BAN4BUT_DIM);
@@ -158,7 +158,7 @@ bann4But::bann4But(QWidget *parent) : banner(parent)
 }
 
 
-bann4tasLab::bann4tasLab(QWidget *parent) : banner(parent)
+bann4tasLab::bann4tasLab(QWidget *parent) : BannerOld(parent)
 {
 	// sx
 	addItem(BUT1, (banner_width/4-BUT4TL_DIM)/2, 0, BUT4TL_DIM, BUT4TL_DIM);

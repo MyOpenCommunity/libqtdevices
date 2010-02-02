@@ -25,7 +25,7 @@
   \date lug 2005
 */
 
-class bannFrecce : public banner
+class bannFrecce : public BannerOld
 {
 Q_OBJECT
 public:

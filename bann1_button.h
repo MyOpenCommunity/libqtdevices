@@ -104,7 +104,7 @@ signals:
   \author Davide
   \date lug 2005
 */
-class bannPuls : public banner
+class bannPuls : public BannerOld
 {
 Q_OBJECT
 public:
@@ -123,7 +123,7 @@ signals:
   \author Davide
   \date lug 2005
 */
-class bannOnDx : public banner
+class bannOnDx : public BannerOld
 {
 Q_OBJECT
 public:
@@ -140,7 +140,7 @@ signals:
   \author Davide
   \date lug 2005
 */
-class bannOnSx : public banner
+class bannOnSx : public BannerOld
 {
 Q_OBJECT
 public:
@@ -152,7 +152,7 @@ signals:
 
 
 
-class bannOnIcons : public banner
+class bannOnIcons : public BannerOld
 {
 Q_OBJECT
 public:
@@ -167,7 +167,7 @@ public:
   \author Ciminaghi
   \date jun 2006
 */
-class bannBut2Icon : public banner
+class bannBut2Icon : public BannerOld
 {
 Q_OBJECT
 public:
@@ -175,7 +175,7 @@ public:
 };
 
 
-class bannTextOnImage : public banner
+class bannTextOnImage : public BannerOld
 {
 Q_OBJECT
 public:

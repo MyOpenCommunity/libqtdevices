@@ -185,7 +185,7 @@ private:
   \author Davide
   \date lug 2005
 */
-class bann2But : public banner
+class bann2But : public BannerOld
 {
 Q_OBJECT
 public:
@@ -199,7 +199,7 @@ public:
   \author Davide
   \date lug 2005
 */
-class bann2ButLab : public banner
+class bann2ButLab : public BannerOld
 {
 Q_OBJECT
 public:

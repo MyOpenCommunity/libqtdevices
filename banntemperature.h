@@ -25,7 +25,7 @@ class QLabel;
 typedef QHash<int, QVariant> StatusList;
 
 
-class BannTemperature : public banner
+class BannTemperature : public BannerOld
 {
 Q_OBJECT
 public:

@@ -9,7 +9,7 @@
 #define BUTONOFFCOMBO_ICON_DIM_MIN_X 80
 
 
-BannOnOffCombo::BannOnOffCombo(QWidget *parent) : banner(parent)
+BannOnOffCombo::BannOnOffCombo(QWidget *parent) : BannerOld(parent)
 {
 	addItem(BUT1, banner_width-BANONOFFCOMBO_BUT_DIM, 0, BANONOFFCOMBO_BUT_DIM, BANONOFFCOMBO_BUT_DIM);
 	addItem(BUT2, 0, 0, BANONOFFCOMBO_BUT_DIM, BANONOFFCOMBO_BUT_DIM);

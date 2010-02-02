@@ -27,7 +27,7 @@
  * \author Davide
  * \date lug 2005
  */
-class bannCiclaz : public banner
+class bannCiclaz : public BannerOld
 {
 Q_OBJECT
 public:

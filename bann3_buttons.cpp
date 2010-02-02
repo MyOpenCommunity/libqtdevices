@@ -43,7 +43,7 @@ void Bann3Buttons::initBanner(const QString &left, const QString &center, const 
 }
 
 
-bann3ButLab::bann3ButLab(QWidget *parent) : banner(parent)
+bann3ButLab::bann3ButLab(QWidget *parent) : BannerOld(parent)
 {
 	addItem(BUT1, banner_width - BAN3BL_BUT_DIM, 0, BAN3BL_BUT_DIM, BAN3BL_BUT_DIM);
 	addItem(BUT2, 0, 0, BAN3BL_BUT_DIM, BAN3BL_BUT_DIM);

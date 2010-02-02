@@ -28,6 +28,7 @@ else {
 
 }
 
+DEFINES += TEST_ENERGY_GRAPH
 VPATH = ../devices ..
 include(../common.pri)
 include(../devices.pri)

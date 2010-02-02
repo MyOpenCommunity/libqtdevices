@@ -27,7 +27,7 @@ enum ComboStatus
 };
 
 
-class BannOnOffCombo : public banner
+class BannOnOffCombo : public BannerOld
 {
 	Q_OBJECT
 public:

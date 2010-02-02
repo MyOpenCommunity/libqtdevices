@@ -69,7 +69,7 @@ private:
   \author Ciminaghi
   \date June 2006
 */
-class bann4But : public banner
+class bann4But : public BannerOld
 {
 Q_OBJECT
 public:
@@ -84,7 +84,7 @@ In this banner it is possible to have 4 buttons visible and the label hidden or 
 \author Davide
 \date lug 2005
 */
-class bann4tasLab : public banner
+class bann4tasLab : public BannerOld
 {
 Q_OBJECT
 public:

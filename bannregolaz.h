@@ -62,7 +62,7 @@ signals:
   \date lug 2005
 */
 
-class bannRegolaz : public banner
+class bannRegolaz : public BannerOld
 {
 	Q_OBJECT
 public:

@@ -108,7 +108,7 @@ private:
 };
 
 
-class PPTStat : public banner
+class PPTStat : public BannerOld
 {
 Q_OBJECT
 public:

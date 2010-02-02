@@ -281,7 +281,7 @@ void InterblockedActuatorGroup::sendStop()
 }
 
 
-PPTStat::PPTStat(QWidget *parent, QString where, int cid) : banner(parent)
+PPTStat::PPTStat(QWidget *parent, QString where, int cid) : BannerOld(parent)
 {
 	dev = bt_global::add_device_to_cache(new PPTStatDevice(where));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));

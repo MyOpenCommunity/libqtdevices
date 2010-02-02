@@ -15,7 +15,7 @@
 #define BANCICL_H_SCRITTA 20
 
 
-bannCiclaz::bannCiclaz(QWidget *parent,int nbut) : banner(parent)
+bannCiclaz::bannCiclaz(QWidget *parent,int nbut) : BannerOld(parent)
 {
 	addItem(BUT1, 0, (banner_height - BANCICL_BUT_DIM_Y)/2, BANCICL_BUT_DIM_X, BANCICL_BUT_DIM_Y);
 	addItem(BUT2, banner_width-BANCICL_BUT_DIM_X, (banner_height-BANCICL_BUT_DIM_Y)/2, BANCICL_BUT_DIM_X, BANCICL_BUT_DIM_Y);

@@ -36,7 +36,7 @@ private:
   \author Davide
   \date lug 2005
 */
-class bann3ButLab : public banner
+class bann3ButLab : public BannerOld
 {
 Q_OBJECT
 public:

@@ -404,6 +404,15 @@ signals:
 	void pageClosed();
 };
 
+
+class BannerOld : public banner
+{
+Q_OBJECT
+public:
+	BannerOld(QWidget *parent) : banner(parent) {}
+};
+
+
 class BannerNew : public banner
 {
 Q_OBJECT

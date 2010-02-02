@@ -21,7 +21,7 @@
 
 
 BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, NonControlledProbeDevice *_dev)
-	: banner(parent),
+	: BannerOld(parent),
 	dev(_dev)
 {
 	temperature = -235;

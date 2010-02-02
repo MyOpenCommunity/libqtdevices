@@ -101,7 +101,7 @@ void BannLevel::startRightTimer()
 
 
 
-bannRegolaz::bannRegolaz(QWidget *parent) : banner(parent)
+bannRegolaz::bannRegolaz(QWidget *parent) : BannerOld(parent)
 {
 	addItem(BUT2, 0, 0, BANREGOL_BUT_DIM , BANREGOL_BUT_DIM);
 	addItem(BUT1, banner_width - BANREGOL_BUT_DIM, 0, BANREGOL_BUT_DIM , BANREGOL_BUT_DIM);

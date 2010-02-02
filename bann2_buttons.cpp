@@ -297,7 +297,7 @@ void Bann2CentralButtons::initBanner(const QString &left, const QString &right, 
 }
 
 
-bann2But::bann2But(QWidget *parent) : banner(parent)
+bann2But::bann2But(QWidget *parent) : BannerOld(parent)
 {
 	banner_height = BAN2BUT_BUT_DIM;
 	addItem(BUT1, 0,(banner_height - BAN2BUT_BUT_DIM)/2 , BAN2BUT_BUT_DIM , BAN2BUT_BUT_DIM);
@@ -306,7 +306,7 @@ bann2But::bann2But(QWidget *parent) : banner(parent)
 }
 
 
-bann2ButLab::bann2ButLab(QWidget *parent) : banner(parent)
+bann2ButLab::bann2ButLab(QWidget *parent) : BannerOld(parent)
 {
 	addItem(BUT1, 0, 0, BAN2BUT_BUT_DIM , BAN2BUT_BUT_DIM);
 	addItem(BUT2, banner_width - BAN2BUT_BUT_DIM, 0, BAN2BUT_BUT_DIM, BAN2BUT_BUT_DIM);

@@ -153,7 +153,7 @@ void BannOn2Labels::setElapsedTime(int time)
 }
 
 
-bannPuls::bannPuls(QWidget *parent) : banner(parent)
+bannPuls::bannPuls(QWidget *parent) : BannerOld(parent)
 {
 	addItem(BUT1, banner_width - BANPULS_BUT_DIM, 0,  BANPULS_BUT_DIM ,BANPULS_BUT_DIM);
 	addItem(ICON,BANPULS_BUT_DIM, 0,  BANPULS_ICON_DIM_X ,BANPULS_ICON_DIM_Y);
@@ -165,7 +165,7 @@ bannPuls::bannPuls(QWidget *parent) : banner(parent)
 }
 
 
-bannOnDx::bannOnDx(QWidget *parent, QString icon, Page *page) : banner(parent)
+bannOnDx::bannOnDx(QWidget *parent, QString icon, Page *page) : BannerOld(parent)
 {
 	banner_height = BUT_DIM;
 	addItem(BUT1, banner_width - BUT_DIM, (banner_height - BUT_DIM)/2, BUT_DIM, BUT_DIM);
@@ -180,7 +180,7 @@ bannOnDx::bannOnDx(QWidget *parent, QString icon, Page *page) : banner(parent)
 }
 
 
-bannOnSx::bannOnSx(QWidget *parent, QString icon) : banner(parent)
+bannOnSx::bannOnSx(QWidget *parent, QString icon) : BannerOld(parent)
 {
 	banner_height = BUT_DIM;
 	addItem(BUT1, 0, (banner_height - BUT_DIM)/2, BUT_DIM, BUT_DIM);
@@ -198,7 +198,7 @@ BtButton *bannOnSx::getButton()
 }
 
 
-bannOnIcons::bannOnIcons(QWidget *parent) : banner(parent)
+bannOnIcons::bannOnIcons(QWidget *parent) : BannerOld(parent)
 {
 	addItem(BUT1, 0, 0, BUT_DIM, BUT_DIM);
 	addItem(TEXT, 0, BUT_DIM, banner_width, banner_height-BUT_DIM);
@@ -207,7 +207,7 @@ bannOnIcons::bannOnIcons(QWidget *parent) : banner(parent)
 }
 
 
-bannBut2Icon::bannBut2Icon(QWidget *parent) : banner(parent)
+bannBut2Icon::bannBut2Icon(QWidget *parent) : BannerOld(parent)
 {
 	addItem(BUT1, banner_width - BUT_DIM, 0, BUT_DIM, BUT_DIM);
 	addItem(ICON, BUT_DIM, 0, BANNBUT2ICON_ICON_DIM_X, BANNBUT2ICON_ICON_DIM_Y);
@@ -216,7 +216,7 @@ bannBut2Icon::bannBut2Icon(QWidget *parent) : banner(parent)
 }
 
 
-bannTextOnImage::bannTextOnImage(QWidget *parent, const QString &text, QString bg_image, QString fwd_image) : banner(parent)
+bannTextOnImage::bannTextOnImage(QWidget *parent, const QString &text, QString bg_image, QString fwd_image) : BannerOld(parent)
 {
 	label = new TextOnImageLabel(this, text);
 	QString img = bt_global::skin->getImage(bg_image);
