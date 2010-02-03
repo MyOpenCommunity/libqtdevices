@@ -112,6 +112,10 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 }
 
 
+static const char *family_cost_icons[] = {
+	"cost_electricity", "cost_water", "cost_gas", "cost_dhw", "cost_conditioning"
+};
+
 EnergyCost::EnergyCost()
 {
 	buildPage();
@@ -131,8 +135,8 @@ EnergyCost::EnergyCost()
 			// create banner
 			BannSinglePuls *b = new BannSinglePuls(0);
 
-			b->initBanner(bt_global::skin->getImage("right"),
-				      bt_global::skin->getImage("ok"),
+			b->initBanner(bt_global::skin->getImage("select"),
+				      bt_global::skin->getImage(family_cost_icons[rate.mode - 1]),
 				      rate.description);
 			b->connectRightButton(costs[rate.mode]);
 
