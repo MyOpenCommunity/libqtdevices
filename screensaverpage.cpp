@@ -417,14 +417,11 @@ void SlideshowSelectionPage::showPage()
 void SlideshowSelectionPage::showFiles()
 {
 	QFileInfoList list = getFilteredFiles(current_dir.absolutePath());
-	bool are_all_selected = true;
 	foreach (const QFileInfo &fi, list)
 	{
 		QString abs_path = current_dir.absolutePath() + QDir::separator() + fi.fileName();
 		// if there's at least one not selected item we can't compact the directory
 		bool is_selected = image_handler->isItemSelected(abs_path);
-		if (!is_selected)
-			are_all_selected = false;
 		QWidget *w = 0;
 		if (fi.isDir())
 		{
@@ -448,7 +445,7 @@ void SlideshowSelectionPage::showFiles()
 		page_content->addItem(w);
 	}
 
-	if (are_all_selected)
+	if (areAllItemsSelected(list))
 		image_handler->compactDirectory(current_dir.absolutePath(), list);
 }
 
@@ -484,6 +481,9 @@ void SlideshowSelectionPage::enterDirectory(QString dir)
 
 void SlideshowSelectionPage::confirmSelection()
 {
+	QFileInfoList list = getFilteredFiles(current_dir.absolutePath());
+	if (areAllItemsSelected(list))
+		image_handler->compactDirectory(current_dir.absolutePath(), list);
 
 	image_handler->saveSlideshowToFile();
 	delete image_handler;
