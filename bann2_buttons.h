@@ -106,7 +106,7 @@ protected:
 	 */
 	void initBanner(const QString &left, const QString &right, const QString &banner_text,
 		FontManager::Type text_font = FontManager::TEXT, const QString &banner_description = QString(),
-		FontManager::Type description_font = FontManager::SMALLTEXT);
+		FontManager::Type description_font = FontManager::TEXT);
 
 	void setCentralText(const QString &t);
 	void setDescriptionText(const QString &t);
