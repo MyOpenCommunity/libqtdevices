@@ -70,14 +70,15 @@ void EnergyData::showPage()
 
 void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 {
-	bt_global::energy_rates.loadRates();
+	SkinContext context(getTextChild(config_node, "cid").toInt());
 
+	bt_global::energy_rates.loadRates();
 	QList<QDomNode> families = getChildren(config_node, "energy_type");
 
 	// display the button to edit rates if more than one family
 	if (edit_rates && families.count() > 1)
 	{
-		NavigationBar *nav = new NavigationBar("currency_exchange");
+		NavigationBar *nav = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 		buildPage(new BannerContent, nav);
 
 		Page *costs = new EnergyCost;
@@ -88,7 +89,6 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 	else
 		buildPage();
 
-	SkinContext context(getTextChild(config_node, "cid").toInt());
 	foreach (const QDomNode& type, families)
 	{
 		SkinContext cont(getTextChild(type, "cid").toInt());
