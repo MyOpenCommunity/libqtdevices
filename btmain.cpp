@@ -124,6 +124,8 @@ BtMain::BtMain()
 	client_supervisor->forwardFrame(monitors[0]);
 #endif
 
+	// The configuration is usually loaded in the "init()" method, but in this
+	// case (that should be an exception) we need to know the list of openserver.
 	QDomNode openservers_node = getConfElement("setup/openserver");
 	if (!openservers_node.isNull())
 		foreach (const QDomNode &item, getChildren(openservers_node, "item"))
