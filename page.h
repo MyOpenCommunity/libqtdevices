@@ -110,6 +110,7 @@ public:
 	BannerPage(QWidget *parent=0);
 
 	virtual void activateLayout();
+	virtual void showPage();
 
 signals:
 	void forwardClick();
