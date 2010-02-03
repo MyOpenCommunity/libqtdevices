@@ -1,6 +1,7 @@
 #include "energy_rates.h"
 #include "xml_functions.h"
 #include "main.h" // getConfElement
+#include "generic_functions.h" // setGlobalCfgValue
 
 #include <QLocale>
 
@@ -77,4 +78,10 @@ void EnergyRates::setRate(const EnergyRate &new_rate)
 
 	rates[new_rate.id] = new_rate;
 	emit rateChanged(new_rate.id);
+
+	// CONFIG_BTOUCH implement for touchx
+	QMap<QString, QString> map;
+
+	map["tariff"] = loc.toString(new_rate.rate, 'f', 3);
+	setGlobalCfgValue(map, "rate_id", new_rate.id);
 }
