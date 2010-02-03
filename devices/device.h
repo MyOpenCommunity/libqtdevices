@@ -61,7 +61,7 @@ public slots:
 
 protected:
 	// The costructor is protected only to make device abstract.
-	device(QString who, QString where);
+	device(QString who, QString where, int oid=0);
 
 	//! The system of the device
 	QString who;
@@ -74,6 +74,7 @@ protected:
 
 private:
 	static QHash<int, QPair<Client*, Client*> > clients;
+	int openserver_id;
 };
 
 

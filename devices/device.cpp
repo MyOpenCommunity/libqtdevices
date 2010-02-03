@@ -14,25 +14,28 @@ QHash<int, QPair<Client*, Client*> > device::clients;
 
 
 // Device implementation
-device::device(QString _who, QString _where)
+device::device(QString _who, QString _where, int oid) : FrameReceiver(oid)
 {
 	who = _who;
 	where = _where;
+	openserver_id = oid;
 	subscribe_monitor(who.toInt());
 }
 
 void device::sendFrame(QString frame) const
 {
-	Q_ASSERT_X(clients.contains(0) && clients[0].first, "device::sendFrame", "Client comandi not set!");
+	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].first,
+		"device::sendFrame", "Client comandi not set!");
 	QByteArray buf = frame.toAscii();
-	clients[0].first->ApriInviaFrameChiudi(buf.constData());
+	clients[openserver_id].first->ApriInviaFrameChiudi(buf.constData());
 }
 
 void device::sendInit(QString frame) const
 {
-	Q_ASSERT_X(clients.contains(0) && clients[0].second, "device::sendInit", "Client richieste not set!");
+	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].second,
+		"device::sendInit", "Client richieste not set!");
 	QByteArray buf = frame.toAscii();
-	clients[0].second->ApriInviaFrameChiudi(buf.constData());
+	clients[openserver_id].second->ApriInviaFrameChiudi(buf.constData());
 }
 
 void device::sendCommand(QString what, QString _where) const

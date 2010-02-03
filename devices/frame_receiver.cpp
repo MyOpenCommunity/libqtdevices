@@ -5,15 +5,16 @@
 QHash<int, Client*> FrameReceiver::clients_monitor;
 
 
-FrameReceiver::FrameReceiver()
+FrameReceiver::FrameReceiver(int oid)
 {
 	subscribed = false;
+	openserver_id = oid;
 }
 
 FrameReceiver::~FrameReceiver()
 {
 	if (subscribed)
-		clients_monitor[0]->unsubscribe(this);
+		clients_monitor[openserver_id]->unsubscribe(this);
 }
 
 void FrameReceiver::setClientMonitor(Client *monitor)
@@ -23,7 +24,7 @@ void FrameReceiver::setClientMonitor(Client *monitor)
 
 void FrameReceiver::subscribe_monitor(int who)
 {
-	clients_monitor[0]->subscribe(this, who);
+	clients_monitor[openserver_id]->subscribe(this, who);
 	subscribed = true;
 }
 

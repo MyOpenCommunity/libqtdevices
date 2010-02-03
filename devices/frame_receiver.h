@@ -15,7 +15,7 @@ class OpenMsg;
 class FrameReceiver
 {
 public:
-	FrameReceiver();
+	FrameReceiver(int oid=0);
 	virtual ~FrameReceiver();
 	static void setClientMonitor(Client *monitor);
 
@@ -31,6 +31,7 @@ protected:
 private:
 	static QHash<int, Client*> clients_monitor;
 	bool subscribed;
+	int openserver_id;
 };
 
 
