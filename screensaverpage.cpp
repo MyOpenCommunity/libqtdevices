@@ -372,7 +372,7 @@ bool ImageSelectionHandler::isItemSelected(QString abs_path)
 bool ImageSelectionHandler::isItemExplicitlySelected(const QString &abs_path)
 {
 	// TODO: this should also check if abs_path is in removed_images
-	return (!selected_images.contains(abs_path)) && (!inserted_images.contains(abs_path));
+	return selected_images.contains(abs_path) || inserted_images.contains(abs_path);
 }
 
 QSet<QString> ImageSelectionHandler::getSelectedImages()
@@ -517,7 +517,7 @@ bool SlideshowSelectionPage::areAllItemsSelected(const QFileInfoList &file_list)
 	bool are_all_selected = true;
 	foreach (const QFileInfo &fi, file_list)
 		// here we don't need isItemSelected(), we just need to check all individual items in this dir
-		if (image_handler->isItemExplicitlySelected(fi.absoluteFilePath()))
+		if (!image_handler->isItemExplicitlySelected(fi.absoluteFilePath()))
 		{
 			are_all_selected = false;
 			break;
