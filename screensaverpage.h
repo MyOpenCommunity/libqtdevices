@@ -125,6 +125,7 @@ public slots:
 private:
 	void showFiles();
 	void refreshContent();
+	bool areAllItemsSelected(const QFileInfoList &file_list);
 
 	QDir current_dir;
 	int level;

@@ -458,12 +458,7 @@ void SlideshowSelectionPage::browseUp()
 	{
 		// compact the directory we are leaving otherwise the visualization is incorrect
 		QFileInfoList list = getFilteredFiles(current_dir.absolutePath());
-		bool are_all_selected = true;
-		foreach (const QFileInfo &fi, list)
-			// here we don't need isItemSelected(), we just need to check all individual items in this dir
-			if (image_handler->isItemExplicitlySelected(fi.absoluteFilePath()))
-				are_all_selected = false;
-		if (are_all_selected)
+		if (areAllItemsSelected(list))
 			image_handler->compactDirectory(current_dir.absolutePath(), list);
 
 		if (current_dir.cdUp())
@@ -489,6 +484,7 @@ void SlideshowSelectionPage::enterDirectory(QString dir)
 
 void SlideshowSelectionPage::confirmSelection()
 {
+
 	image_handler->saveSlideshowToFile();
 	delete image_handler;
 	// TODO: emit signal to notify image changes
@@ -514,6 +510,19 @@ void SlideshowSelectionPage::refreshContent()
 	page_content->clearContent();
 	showFiles();
 	page_content->showContent();
+}
+
+bool SlideshowSelectionPage::areAllItemsSelected(const QFileInfoList &file_list)
+{
+	bool are_all_selected = true;
+	foreach (const QFileInfo &fi, file_list)
+		// here we don't need isItemSelected(), we just need to check all individual items in this dir
+		if (image_handler->isItemExplicitlySelected(fi.absoluteFilePath()))
+		{
+			are_all_selected = false;
+			break;
+		}
+	return are_all_selected;
 }
 
 
