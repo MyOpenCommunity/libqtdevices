@@ -43,6 +43,11 @@ class EnergyCost : public BannerPage
 Q_OBJECT
 public:
 	EnergyCost();
+
+	virtual void showPage();
+
+private:
+	Page *next_page;
 };
 
 

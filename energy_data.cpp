@@ -126,7 +126,7 @@ EnergyCost::EnergyCost()
 		if (!costs.contains(rate.mode))
 		{
 			// create family cost page
-			costs[rate.mode] = new EditEnergyCost;
+			next_page = costs[rate.mode] = new EditEnergyCost;
 
 			// create banner
 			BannSinglePuls *b = new BannSinglePuls(0);
@@ -143,6 +143,19 @@ EnergyCost::EnergyCost()
 
 		costs[rate.mode]->addRate(rate_id);
 	}
+
+	if (page_content->bannerCount() > 1)
+		next_page = NULL;
+	if (next_page)
+		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
+}
+
+void EnergyCost::showPage()
+{
+	if (next_page)
+		next_page->showPage();
+	else
+		BannerPage::showPage();
 }
 
 
