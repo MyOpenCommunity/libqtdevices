@@ -17,7 +17,7 @@ class AirConditioningDevice : public device, public AirConditioningInterface
 friend class TestAirConditioningDevice;
 Q_OBJECT
 public:
-	AirConditioningDevice(QString where);
+	AirConditioningDevice(QString where, int openserver_id=0);
 	void sendCommand(const QString &cmd) const;
 
 	void setOffCommand(QString off_cmd);
@@ -35,7 +35,7 @@ class AdvancedAirConditioningDevice : public device, public AirConditioningInter
 friend class TestAdvancedAirConditioningDevice;
 Q_OBJECT
 public:
-	AdvancedAirConditioningDevice(QString where);
+	AdvancedAirConditioningDevice(QString where, int openserver_id=0);
 
 
 	enum Mode

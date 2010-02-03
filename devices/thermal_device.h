@@ -82,7 +82,7 @@ public:
 	virtual thermo_type_t type() const = 0;
 
 protected:
-	ThermalDevice(QString where);
+	ThermalDevice(QString where, int openserver_id);
 
 	void sendWriteRequest(const QString &what);
 	virtual void manageFrame(OpenMsg &msg);
@@ -120,7 +120,7 @@ class ThermalDevice4Zones : public ThermalDevice
 {
 Q_OBJECT
 public:
-	ThermalDevice4Zones(QString where);
+	ThermalDevice4Zones(QString where, int openserver_id=0);
 
 	/**
 	 * Sets the temperature for a limited time.
@@ -138,7 +138,7 @@ class ThermalDevice99Zones : public ThermalDevice
 {
 Q_OBJECT
 public:
-	ThermalDevice99Zones(QString where);
+	ThermalDevice99Zones(QString where, int openserver_id=0);
 
 	/**
 	 * Sets the scenario on the thermal regulator.

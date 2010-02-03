@@ -7,7 +7,8 @@
 #define ADVANCED_SPLIT_DIM 22
 
 
-AirConditioningDevice::AirConditioningDevice(QString where) : device("0", where)
+AirConditioningDevice::AirConditioningDevice(QString where, int openserver_id) :
+	device("0", where, openserver_id)
 {
 }
 
@@ -34,7 +35,8 @@ void AirConditioningDevice::activateScenario(const QString &what) const
 
 
 
-AdvancedAirConditioningDevice::AdvancedAirConditioningDevice(QString where) : device("4", where)
+AdvancedAirConditioningDevice::AdvancedAirConditioningDevice(QString where, int openserver_id) :
+	device("4", where, openserver_id)
 {
 }
 

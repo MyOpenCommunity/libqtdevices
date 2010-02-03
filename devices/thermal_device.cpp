@@ -58,7 +58,7 @@ enum what_t
 
 // ThermalDevice implementation
 
-ThermalDevice::ThermalDevice(QString where) : device(QString("4"), QString("#") + where)
+ThermalDevice::ThermalDevice(QString where, int openserver_id) : device(QString("4"), QString("#") + where, openserver_id)
 {
 }
 
@@ -295,8 +295,8 @@ int ThermalDevice::commandRange(int what)
 
 // ThermalDevice4Zones implementation
 
-ThermalDevice4Zones::ThermalDevice4Zones(QString where)
-	: ThermalDevice(where)
+ThermalDevice4Zones::ThermalDevice4Zones(QString where, int openserver_id)
+	: ThermalDevice(where, openserver_id)
 {
 }
 
@@ -334,8 +334,8 @@ thermo_type_t ThermalDevice4Zones::type() const
 
 // ThermalDevice99Zones implementation
 
-ThermalDevice99Zones::ThermalDevice99Zones(QString where)
-	: ThermalDevice(where)
+ThermalDevice99Zones::ThermalDevice99Zones(QString where, int openserver_id)
+	: ThermalDevice(where, openserver_id)
 {
 }
 
