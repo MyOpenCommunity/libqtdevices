@@ -194,7 +194,7 @@ int main(int argc, char **argv)
 	if (!qdom_appconfig.setContent(&file))
 	{
 		file.close();
-		qFatal("Error in qdom_appconfig file, exiting");
+		qFatal("Unable to load the configuration file: %s, exiting", MY_FILE_USER_CFG_DEFAULT);
 	}
 	file.close();
 

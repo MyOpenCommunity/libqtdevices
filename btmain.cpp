@@ -39,9 +39,6 @@
 #include <QTime>
 
 
-#define CFG_FILE MY_FILE_USER_CFG_DEFAULT
-
-
 // The file name to watch to generate a RED page
 #define FILE_TEST1                 "MODALITA_TEST1"
 
@@ -239,92 +236,86 @@ void BtMain::waitBeforeInit()
 	QTimer::singleShot(200, this, SLOT(init()));
 }
 
-bool BtMain::loadConfiguration(QString cfg_file)
+void BtMain::loadConfiguration()
 {
-	if (QFile::exists(cfg_file))
+	if (version)
 	{
-		if (version)
+		QDomNode setup = getConfElement("setup");
+		if (!setup.isNull())
 		{
-			QDomNode setup = getConfElement("setup");
-			if (!setup.isNull())
-			{
-				QDomElement addr = getElement(setup, "scs/coordinate_scs/diag_addr");
-				bool ok;
-				if (!addr.isNull())
-					version->setAddr(addr.text().toInt(&ok, 16) - 768);
-			}
-			else
-				qWarning("setup node not found on xml config file!");
+			QDomElement addr = getElement(setup, "scs/coordinate_scs/diag_addr");
+			bool ok;
+			if (!addr.isNull())
+				version->setAddr(addr.text().toInt(&ok, 16) - 768);
 		}
+		else
+			qWarning("setup node not found on xml config file!");
+	}
 
-		QDomNode display_node = getChildWithId(getPageNode(IMPOSTAZIONI), QRegExp("item\\d{1,2}"), DISPLAY);
+	QDomNode display_node = getChildWithId(getPageNode(IMPOSTAZIONI), QRegExp("item\\d{1,2}"), DISPLAY);
 
-		BrightnessLevel level = BRIGHTNESS_NORMAL; // default brightness
-		if (!display_node.isNull())
-		{
-			QDomElement n = getElement(display_node, "brightness/level");
-			if (!n.isNull())
-				level = static_cast<BrightnessLevel>(n.text().toInt());
-		}
-		bt_global::display.setBrightness(level);
+	BrightnessLevel level = BRIGHTNESS_NORMAL; // default brightness
+	if (!display_node.isNull())
+	{
+		QDomElement n = getElement(display_node, "brightness/level");
+		if (!n.isNull())
+			level = static_cast<BrightnessLevel>(n.text().toInt());
+	}
+	bt_global::display.setBrightness(level);
 
-		ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
-		if (!display_node.isNull())
-		{
-			QDomElement screensaver_node = getElement(display_node, "screensaver");
-			QDomElement n = getElement(screensaver_node, "type");
-			if (!n.isNull())
-				type = static_cast<ScreenSaver::Type>(n.text().toInt());
-			ScreenSaver::initData(screensaver_node);
-			if (type == ScreenSaver::DEFORM) // deform is for now disabled!
-				type = ScreenSaver::LINES;
-		}
-		bt_global::display.current_screensaver = type;
+	ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
+	if (!display_node.isNull())
+	{
+		QDomElement screensaver_node = getElement(display_node, "screensaver");
+		QDomElement n = getElement(screensaver_node, "type");
+		if (!n.isNull())
+			type = static_cast<ScreenSaver::Type>(n.text().toInt());
+		ScreenSaver::initData(screensaver_node);
+		if (type == ScreenSaver::DEFORM) // deform is for now disabled!
+			type = ScreenSaver::LINES;
+	}
+	bt_global::display.current_screensaver = type;
 
-		window_container->homeWindow()->loadConfiguration();
+	window_container->homeWindow()->loadConfiguration();
 
 #ifdef CONFIG_BTOUCH
-		QDomNode gui_node = getConfElement("displaypages");
-		QDomNode pagemenu_home = getChildWithId(gui_node, QRegExp("pagemenu(\\d{1,2}|)"), 0);
-		// homePage must be built after the loading of the configuration,
-		// to ensure that values displayed (by homePage or its child pages)
-		// is in according with saved values.
-		Home = new HomePage(pagemenu_home);
+	QDomNode gui_node = getConfElement("displaypages");
+	QDomNode pagemenu_home = getChildWithId(gui_node, QRegExp("pagemenu(\\d{1,2}|)"), 0);
+	// homePage must be built after the loading of the configuration,
+	// to ensure that values displayed (by homePage or its child pages)
+	// is in according with saved values.
+	Home = new HomePage(pagemenu_home);
 
-		QString orientation = getTextChild(gui_node, "orientation");
-		if (!orientation.isNull())
-			setOrientation(orientation);
+	QString orientation = getTextChild(gui_node, "orientation");
+	if (!orientation.isNull())
+		setOrientation(orientation);
 #else
-		QDomNode gui_node = getConfElement("gui");
-		// TODO read the id from the <homepage> node
-		QDomNode pagemenu_home = getHomepageNode();
-		Home = new HomePage(pagemenu_home);
+	QDomNode gui_node = getConfElement("gui");
+	// TODO read the id from the <homepage> node
+	QDomNode pagemenu_home = getHomepageNode();
+	Home = new HomePage(pagemenu_home);
 
-		QDomNode video_node = getPageNode(VIDEOCITOFONIA);
-		// Touch X can receive calls even if the videoentryphone section is not
-		// configured (but the configuration specifies it as an internal place).
-		if (video_node.isNull() && !bt_global::config[PI_ADDRESS].isEmpty())
-			VideoEntryPhone::loadHiddenPages();
+	QDomNode video_node = getPageNode(VIDEOCITOFONIA);
+	// Touch X can receive calls even if the videoentryphone section is not
+	// configured (but the configuration specifies it as an internal place).
+	if (video_node.isNull() && !bt_global::config[PI_ADDRESS].isEmpty())
+		VideoEntryPhone::loadHiddenPages();
 
 #endif
-		connect(window_container->homeWindow(), SIGNAL(showHomePage()), Home, SLOT(showPage()));
-		connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), Home, SLOT(showSectionPage(int)));
+	connect(window_container->homeWindow(), SIGNAL(showHomePage()), Home, SLOT(showPage()));
+	connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), Home, SLOT(showSectionPage(int)));
 
-		QDomNode home_node = getChildWithName(gui_node, "homepage");
-		if (getTextChild(home_node, "isdefined").toInt())
-		{
-			int id_default = getTextChild(home_node, "id").toInt();
-			pagDefault = !id_default ? Home : getPage(id_default);
-		}
-
-		// TODO: read the transition effect from configuration
-		TransitionWidget *tr = new BlendingTransition;
-//		TransitionWidget *tr = new MosaicTransition;
-		window_container->installTransitionWidget(tr);
-		page_container->installTransitionWidget(tr);
-		return true;
+	QDomNode home_node = getChildWithName(gui_node, "homepage");
+	if (getTextChild(home_node, "isdefined").toInt())
+	{
+		int id_default = getTextChild(home_node, "id").toInt();
+		pagDefault = !id_default ? Home : getPage(id_default);
 	}
-	return false;
+
+	// TODO: read the transition effect from configuration
+	TransitionWidget *tr = new BlendingTransition;
+	window_container->installTransitionWidget(tr);
+	page_container->installTransitionWidget(tr);
 }
 
 void BtMain::init()
@@ -332,8 +323,7 @@ void BtMain::init()
 	if (version)
 		version->inizializza();
 
-	if (!loadConfiguration(CFG_FILE))
-		qFatal("Unable to load configuration");
+	loadConfiguration();
 
 	if (pagDefault)
 		connect(pagDefault, SIGNAL(Closed()), Home, SLOT(showPage()));
