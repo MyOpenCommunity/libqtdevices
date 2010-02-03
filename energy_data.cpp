@@ -27,13 +27,16 @@
 static QLocale loc(QLocale::Italian);
 
 
-EnergyData::EnergyData(const QDomNode &config_node)
+EnergyData::EnergyData(const QDomNode &config_node, bool edit_rates)
 {
-	loadTypes(config_node);
+	loadTypes(config_node, edit_rates);
 	connect(bt_global::btmain, SIGNAL(resettimer()), SLOT(systemTimeChanged()));
 	connect(&day_timer, SIGNAL(timeout()), SLOT(updateDayTimer()));
 	connect(&day_timer, SIGNAL(timeout()), SLOT(updateInterfaces()));
 	day_timer.setSingleShot(true);
+
+	if (interfaces.count() == 1)
+		connect(interfaces[0], SIGNAL(Closed()), SLOT(Closed()));
 }
 
 void EnergyData::updateDayTimer()
@@ -57,15 +60,22 @@ void EnergyData::systemTimeChanged()
 	updateInterfaces();
 }
 
-void EnergyData::loadTypes(const QDomNode &config_node)
+void EnergyData::showPage()
+{
+	if  (interfaces.count() == 1)
+		interfaces[0]->showPage();
+	else
+		BannerPage::showPage();
+}
+
+void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 {
 	bt_global::energy_rates.loadRates();
 
 	QList<QDomNode> families = getChildren(config_node, "energy_type");
-	bool edit_rates = families.count() > 1;
 
 	// display the button to edit rates if more than one family
-	if (edit_rates)
+	if (edit_rates && families.count() > 1)
 	{
 		NavigationBar *nav = new NavigationBar("currency_exchange");
 		buildPage(new BannerContent, nav);
@@ -88,7 +98,8 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 			      getTextChild(type, "descr"));
 		page_content->appendBanner(b);
 
-		EnergyInterface *en_interf = new EnergyInterface(type);
+		EnergyInterface *en_interf = new EnergyInterface(type, edit_rates && families.count() == 1,
+								 families.count() == 1);
 		interfaces.push_back(en_interf);
 		b->connectRightButton(en_interf);
 
@@ -151,16 +162,28 @@ void EditEnergyCost::addRate(int rate_id)
 
 bool EnergyInterface::is_currency_view = false;
 
-EnergyInterface::EnergyInterface(const QDomNode &config_node)
+EnergyInterface::EnergyInterface(const QDomNode &config_node, bool edit_rates, bool parent_skipped)
 {
-	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency"));
-	connect(nav_bar, SIGNAL(forwardClick()), SLOT(toggleCurrency()));
-
+	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 	buildPage(new BannerContent, nav_bar);
+
+	if (edit_rates)
+	{
+		Page *costs = new EnergyCost;
+
+		connect(this, SIGNAL(forwardClick()), costs, SLOT(showPage()));
+		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
+	}
+	else
+		nav_bar->forward_button->setVisible(false);
 
 	is_any_interface_enabled = false;
 	loadItems(config_node, nav_bar);
-	if (page_content->bannerCount() == 1)
+
+	// only skip page if parent was not skipped
+	if (parent_skipped)
+		next_page = NULL;
+	if (next_page)
 		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
@@ -200,9 +223,11 @@ void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_
 		b->Draw();
 	}
 
-	nav_bar->forward_button->setVisible(show_currency_button);
 	if (show_currency_button)
 		is_any_interface_enabled = show_currency_button;
+
+	if (page_content->bannerCount() > 1)
+		next_page = NULL;
 }
 
 void EnergyInterface::systemTimeChanged()
@@ -250,10 +275,10 @@ void EnergyInterface::showPage()
 		toggleCurrencyView();
 
 	updateBanners();
-	if (page_content->bannerCount() == 1)
+	if (next_page)
 		next_page->showPage();
 	else
-		Page::showPage();
+		BannerPage::showPage();
 }
 
 void EnergyInterface::toggleCurrency()

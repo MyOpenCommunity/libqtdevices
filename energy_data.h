@@ -18,7 +18,9 @@ class EnergyData : public BannerPage
 {
 Q_OBJECT
 public:
-	EnergyData(const QDomNode &config_node);
+	EnergyData(const QDomNode &config_node, bool edit_rates = true);
+
+	virtual void showPage();
 
 private slots:
 	void systemTimeChanged();
@@ -26,7 +28,7 @@ private slots:
 	void updateDayTimer();
 
 private:
-	void loadTypes(const QDomNode &config_node);
+	void loadTypes(const QDomNode &config_node, bool edit_rates);
 
 	QTimer day_timer;
 	QList<EnergyInterface *> interfaces;
@@ -58,7 +60,7 @@ class EnergyInterface : public BannerPage
 {
 Q_OBJECT
 public:
-	EnergyInterface(const QDomNode &config_node);
+	EnergyInterface(const QDomNode &config_node, bool edit_rates, bool parent_skipped);
 
 	virtual void showPage();
 	static void toggleCurrencyView();
