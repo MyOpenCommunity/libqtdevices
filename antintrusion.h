@@ -89,9 +89,6 @@ public slots:
 	void request();
 
 signals:
-	void openAckRx();
-	void openNakRx();
-
 /*!
   \brief enable/disable area partialization enable events
 */

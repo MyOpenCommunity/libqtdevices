@@ -8,6 +8,7 @@
 #include "device.h"
 #include "keypad.h"
 #include "xml_functions.h"
+#include "openclient.h"
 
 #include <QDebug>
 #include <QTimer>
@@ -335,6 +336,9 @@ impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconI
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));
+
+	connect(client_comandi, SIGNAL(openAckRx()), SLOT(openAckRx()));
+	connect(client_comandi, SIGNAL(openNakRx()), SLOT(openNakRx()));
 }
 
 void impAnti::status_changed(QList<device_status*> sl)

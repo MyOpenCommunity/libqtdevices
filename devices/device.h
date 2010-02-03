@@ -32,7 +32,7 @@ public:
 	virtual QString get_key();
 	virtual ~device() {}
 
-	static void setClients(Client *command, Client *request);
+	static void setClients(const QHash<int, QPair<Client*, Client*> > &c);
 
 	virtual void manageFrame(OpenMsg &msg) {}
 

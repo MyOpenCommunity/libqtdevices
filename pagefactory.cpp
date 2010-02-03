@@ -17,7 +17,6 @@
 #include "supervisionmenu.h"
 #include "specialpage.h"
 #include "energy_data.h"
-#include "openclient.h"
 #include "iconpage.h"
 #include "sectionpage.h"
 
@@ -49,13 +48,8 @@ Page *getPage(int page_id)
 		page = new Lighting(page_node);
 		break;
 	case ANTIINTRUSIONE:
-	{
-		Antintrusion *p = new Antintrusion(page_node);
-		QObject::connect(bt_global::btmain->client_comandi, SIGNAL(openAckRx()), p, SIGNAL(openAckRx()));
-		QObject::connect(bt_global::btmain->client_comandi, SIGNAL(openNakRx()), p, SIGNAL(openNakRx()));
-		page = p;
+		page = new Antintrusion(page_node);
 		break;
-	}
 	case CARICHI:
 		page = new Loads(page_node);
 		break;
@@ -112,7 +106,6 @@ Page *getPage(int page_id)
 	{
 		SupervisionMenu *p = new SupervisionMenu(page_node);
 		p->forceDraw();
-		QObject::connect(p, SIGNAL(richStato(QString)), bt_global::btmain->client_richieste, SLOT(richStato(QString)));
 		page = p;
 		break;
 	}

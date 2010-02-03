@@ -98,7 +98,6 @@ void sottoMenu::setModeIcon(QString iconBut4)
 void sottoMenu::appendBanner(banner *b)
 {
 	elencoBanner.append(b);
-	connectLastBanner();
 
 	for (int idx = elencoBanner.size() - 2; idx >= 0; idx--)
 	{
@@ -108,12 +107,6 @@ void sottoMenu::appendBanner(banner *b)
 			idx = -1;
 		}
 	}
-}
-
-void sottoMenu::connectLastBanner()
-{
-	banner *last = elencoBanner.last();
-	connect(last, SIGNAL(richStato(QString)), this, SIGNAL(richStato(QString)));
 }
 
 void sottoMenu::showItem(int id)

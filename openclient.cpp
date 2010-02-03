@@ -114,15 +114,6 @@ void Client::ApriInviaFrameChiudiw(char *frame)
 	qDebug("Ack received");
 }
 
-// richiesta stato all'openserver
-void Client::richStato(QString richiesta)
-{
-	qDebug("Client::richStato()");
-	if (socket->state() == QAbstractSocket::UnconnectedState)
-		connetti();
-	socket->write(richiesta.toAscii());
-}
-
 void Client::connetti()
 {
 	qDebug("Client::connetti()");

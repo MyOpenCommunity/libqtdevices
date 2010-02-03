@@ -17,13 +17,15 @@ FrameReceiver::~FrameReceiver()
 		clients_monitor[openserver_id]->unsubscribe(this);
 }
 
-void FrameReceiver::setClientMonitor(Client *monitor)
+void FrameReceiver::setClientsMonitor(const QHash<int, Client*> &monitors)
 {
-	clients_monitor[0] = monitor;
+	clients_monitor = monitors;
 }
 
 void FrameReceiver::subscribe_monitor(int who)
 {
+	Q_ASSERT_X(clients_monitor.contains(openserver_id), "FrameReceiver::subscribe_monitor",
+		qPrintable(QString("Client monitor not set for id: %1!").arg(openserver_id)));
 	clients_monitor[openserver_id]->subscribe(this, who);
 	subscribed = true;
 }

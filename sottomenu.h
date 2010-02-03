@@ -105,7 +105,6 @@ public slots:
 	void resetIndex();
 
 protected:
-	void connectLastBanner();
 
 	virtual void showEvent(QShowEvent *event);
 	QList<banner*> elencoBanner;
@@ -149,8 +148,6 @@ signals:
 	\brief Open nak received
 	*/
 	void openNakRx();
-
-	void richStato(QString);
 
 	/*!
 	\brief Emitted to go to a further page.

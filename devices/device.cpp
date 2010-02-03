@@ -24,18 +24,16 @@ device::device(QString _who, QString _where, int oid) : FrameReceiver(oid)
 
 void device::sendFrame(QString frame) const
 {
-	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].first,
-		"device::sendFrame", "Client comandi not set!");
-	QByteArray buf = frame.toAscii();
-	clients[openserver_id].first->ApriInviaFrameChiudi(buf.constData());
+	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].first, "device::sendFrame",
+			   qPrintable(QString("Client comandi not set for id: %1!").arg(openserver_id)));
+	clients[openserver_id].first->ApriInviaFrameChiudi(frame.toAscii().constData());
 }
 
 void device::sendInit(QString frame) const
 {
-	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].second,
-		"device::sendInit", "Client richieste not set!");
-	QByteArray buf = frame.toAscii();
-	clients[openserver_id].second->ApriInviaFrameChiudi(buf.constData());
+	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].second, "device::sendInit",
+		qPrintable(QString("Client richieste not set for id: %1!").arg(openserver_id)));
+	clients[openserver_id].second->ApriInviaFrameChiudi(frame.toAscii().constData());
 }
 
 void device::sendCommand(QString what, QString _where) const
@@ -56,10 +54,9 @@ void device::sendRequest(QString what) const
 		sendInit(createRequestOpen(who, what, where));
 }
 
-void device::setClients(Client *command, Client *request)
+void device::setClients(const QHash<int, QPair<Client*, Client*> > &c)
 {
-	clients[0].first = command;
-	clients[0].second = request;
+	clients = c;
 }
 
 QString device::get_key()

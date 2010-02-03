@@ -102,8 +102,6 @@ void Antintrusion::createImpianto(const QString &descr)
 	connect(impianto, SIGNAL(sxClick()), SLOT(showAlarms()));
 
 	connect(this, SIGNAL(partChanged(AntintrusionZone*)), impianto, SLOT(partChanged(AntintrusionZone*)));
-	connect(this, SIGNAL(openAckRx()), impianto, SLOT(openAckRx()));
-	connect(this, SIGNAL(openNakRx()), impianto, SLOT(openNakRx()));
 
 #ifdef LAYOUT_TOUCHX
 	forward_button = new BtButton;

@@ -13,6 +13,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <QPair>
 
 
 class SoundDiffusion;
@@ -53,8 +54,6 @@ friend class HomePage;
 public:
 	BtMain();
 	~BtMain();
-	Client *client_richieste;
-	Client *client_comandi;
 	SoundDiffusion *difSon;
 	MultiSoundDiffAlarm *dm;
 	Version *version;
@@ -97,7 +96,9 @@ private slots:
 	void monitorReady();
 
 private:
-	Client *client_monitor;
+	QHash<int, QPair<Client*, Client*> > clients;
+	QHash<int, Client*> monitors;
+
 #if DEBUG
 	Client *client_supervisor;
 #endif

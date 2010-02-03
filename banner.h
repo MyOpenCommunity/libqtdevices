@@ -92,6 +92,9 @@ protected:
 	int banner_width;
 	int banner_height;
 
+	static Client *client_richieste;
+	static Client *client_comandi;
+
 	// The sizeHint method is required to have a layout management that work fine.
 	// Note that this sizeHint is ok for banner with a standard dimension, banner
 	// bigger or smaller should be re-define this method.
@@ -103,8 +106,6 @@ protected:
 	void sendInit(QString frame) const;
 
 private:
-	static Client *client_richieste;
-	static Client *client_comandi;
 	int id;
 	int serNum;
 };
@@ -421,10 +422,6 @@ signals:
 	 *  \brief Emitted when the center-right button is pressed.
 	 */
 	void cdxPressed();
-	// TODO: forse sarebbe meglio evitare il rimpallo di segnali per fare una richiesta
-	// di stato e usare direttamente BTouch.. ma poi c'e' anche il rischio di abusare
-	// troppo di quella variabile globale!
-	void richStato(QString);
 };
 
 

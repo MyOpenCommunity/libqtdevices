@@ -27,6 +27,7 @@
 #include "pagestack.h"
 #include "videoentryphone.h"
 
+#include <QMutableHashIterator>
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
 #include <QApplication>
@@ -107,27 +108,43 @@ BtMain::BtMain()
 	bt_global::skin = new SkinManager(SKIN_FILE);
 	bt_global::ringtones = new RingtonesManager();
 
-	client_monitor = new Client(Client::MONITOR);
-	client_comandi = new Client(Client::COMANDI);
-	client_richieste = new Client(Client::RICHIESTE);
-#if DEBUG
-	client_supervisor = new Client(Client::SUPERVISOR);
-	client_supervisor->forwardFrame(client_monitor);
-#endif
 #ifdef BT_HARDWARE_X11
 	// save last click time for the screen saver
 	qApp->installEventFilter(new LastClickTime);
 #endif
-	FrameReceiver::setClientMonitor(client_monitor);
-	banner::setClients(client_comandi, client_richieste);
-	Page::setClients(client_comandi, client_richieste);
+
+	QHash<int, QPair<Client*, Client*> > clients;
+	QHash<int, Client*> monitors;
+	monitors[LOCAL_OPENSERVER] = new Client(Client::MONITOR);
+	clients[LOCAL_OPENSERVER].first = new Client(Client::COMANDI);
+	clients[LOCAL_OPENSERVER].second = new Client(Client::RICHIESTE);
+
+#if DEBUG
+	client_supervisor = new Client(Client::SUPERVISOR);
+	client_supervisor->forwardFrame(monitors[0]);
+#endif
+
+	QDomNode openservers_node = getConfElement("setup/openserver");
+	if (!openservers_node.isNull())
+		foreach (const QDomNode &item, getChildren(openservers_node, "item"))
+		{
+			int id = getTextChild(item, "id").toInt();
+			QString host = getTextChild(item, "address");
+			monitors[id] = new Client(Client::MONITOR, host);
+			clients[id].first = new Client(Client::COMANDI, host);
+			clients[id].second = new Client(Client::RICHIESTE, host);
+		}
+
+	banner::setClients(clients[LOCAL_OPENSERVER].first, clients[LOCAL_OPENSERVER].second);
+	Page::setClients(clients[LOCAL_OPENSERVER].first, clients[LOCAL_OPENSERVER].second);
+	FrameReceiver::setClientsMonitor(monitors);
+	device::setClients(clients);
+	connect(monitors[LOCAL_OPENSERVER], SIGNAL(monitorSu()), SLOT(monitorReady()));
+
 	window_container = new WindowContainer(maxWidth(), maxHeight());
 	page_container = window_container->centralLayout();
 	page_container->blockTransitions(true); // no transitions until homepage is showed
 	connect(page_container, SIGNAL(currentPageChanged(Page*)), &bt_global::page_stack, SLOT(currentPageChanged(Page *)));
-	device::setClients(client_comandi, client_richieste);
-
-	connect(client_monitor,SIGNAL(monitorSu()), SLOT(monitorReady()));
 
 	monitor_ready = false;
 	config_loaded = false;
@@ -194,9 +211,21 @@ BtMain::~BtMain()
 	delete screensaver;
 	delete bt_global::skin;
 	delete bt_global::font;
-	delete client_comandi;
-	delete client_monitor;
-	delete client_richieste;
+
+	QMutableHashIterator<int, QPair<Client*, Client*> > it(clients);
+	while (it.hasNext())
+	{
+		it.next();
+		delete it.value().first;
+		delete it.value().second;
+	}
+
+	QMutableHashIterator<int, Client*> mit(monitors);
+	while (mit.hasNext())
+	{
+		mit.next();
+		delete mit.value();
+	}
 #if DEBUG
 	delete client_supervisor;
 #endif

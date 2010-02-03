@@ -24,6 +24,8 @@
 
 #define OPENSERVER_PORT 20000
 
+// The id for the local openserver
+#define LOCAL_OPENSERVER 0
 
 class FrameReceiver;
 
@@ -72,7 +74,6 @@ private slots:
 
 	/// Send an \a Open \aFrame through the socket and wait for ack
 	void ApriInviaFrameChiudiw(char*);
-	void richStato(QString richiesta);
 	void ackReceived();
 	void sendFrameOpen(const QString &frame_open);
 

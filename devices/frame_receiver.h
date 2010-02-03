@@ -17,7 +17,7 @@ class FrameReceiver
 public:
 	FrameReceiver(int oid=0);
 	virtual ~FrameReceiver();
-	static void setClientMonitor(Client *monitor);
+	static void setClientsMonitor(const QHash<int, Client*> &monitors);
 
 	// The method called every time that a frame with the 'who' subscribed arrive
 	// from the openserver.
