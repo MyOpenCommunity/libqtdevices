@@ -2,7 +2,6 @@
 #define ENERGY_DATA_H
 
 #include "page.h" // BannerPage
-#include "sottomenu.h"
 #include "bann1_button.h" // bannPuls
 
 #include <QHash>
@@ -55,11 +54,12 @@ public:
 };
 
 
-class EnergyInterface : public sottoMenu
+class EnergyInterface : public BannerPage
 {
 Q_OBJECT
 public:
 	EnergyInterface(const QDomNode &config_node);
+
 	virtual void showPage();
 	static void toggleCurrencyView();
 	static bool isCurrencyView();
@@ -69,7 +69,7 @@ public slots:
 	void toggleCurrency();
 
 private:
-	void loadItems(const QDomNode &config_node);
+	void loadItems(const QDomNode &config_node, NavigationBar *nav_bar);
 	bool checkTypeForCurrency(const QString &type, const QDomNode &conf);
 	void updateBanners();
 	EnergyView *next_page;
