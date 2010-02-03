@@ -5,34 +5,27 @@
 #include <QDebug>
 
 
-BannerContent::BannerContent(QWidget *parent) : QWidget(parent)
+BannerContentBase::BannerContentBase(QWidget *parent) : QWidget(parent)
 {
-	current_index = 0;
-	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	need_update = true;
-	first_time = true;
-	need_pagination = false;
 }
 
-int BannerContent::bannerCount()
+int BannerContentBase::bannerCount()
 {
 	return banner_list.size();
 }
 
-void BannerContent::initBanners()
+void BannerContentBase::initBanners()
 {
 	for (int i = 0; i < banner_list.size(); ++i)
 		banner_list.at(i)->inizializza();
 }
 
-banner *BannerContent::getBanner(int i)
+banner *BannerContentBase::getBanner(int i)
 {
 	return banner_list.at(i);
 }
 
-void BannerContent::appendBanner(banner *b)
+void BannerContentBase::appendBanner(banner *b)
 {
 	banner_list.append(b);
 	b->hide();
@@ -45,106 +38,125 @@ void BannerContent::appendBanner(banner *b)
 		}
 }
 
-void BannerContent::resetIndex()
+
+
+BannerContent::BannerContent()
 {
-	current_index = 0;
-	need_update = true;
-}
+	QGridLayout *layout = new QGridLayout(this);
+	layout->setSpacing(0);
+	layout->setContentsMargins(0, 0, 0, 0);
 
-void BannerContent::showEvent(QShowEvent *e)
-{
-	drawContent();
-	QWidget::showEvent(e);
-}
-
-void BannerContent::drawContent()
-{
-	if (!need_update)
-		return;
-
-	if (first_time)
-	{
-		int total_height = 0;
-		int area_height = contentsRect().height();
-
-		for (int i = 0; i < banner_list.size(); ++i)
-			total_height += banner_list.at(i)->sizeHint().height();
-
-		need_pagination = total_height > area_height;
-		emit displayScrollButtons(need_pagination);
-	}
-
-	need_update = false;
-
-	// We want a circular list of banner, so we can't use a layout and hide/show
-	// the banner to display or when you click the up button the order is wrong.
-	// So we remove all the child from the layout, hide them and re-add to the
-	// layout only the banner to show.
-	QLayoutItem *child;
-	while ((child = layout()->takeAt(0)) != 0)
-		if (QWidget *w = child->widget())
-			w->hide();
-
-	if (need_pagination)
-	{
-		int next_index = calculateNextIndex(true);
-		Q_ASSERT_X(current_index != -1, "BannerContent::drawContent", "calculateNextIndex return -1!");
-		int index = current_index;
-		while (true)
-		{
-			banner *b = banner_list.at(index);
-			b->show();
-			layout()->addWidget(b);
-			index = (index + 1) % banner_list.size();
-			if (index == current_index || index == next_index)
-				break;
-		}
-	}
-	else
-	{
-		QBoxLayout *l = qobject_cast<QVBoxLayout*>(layout());
-		for (int i = 0; i < banner_list.size(); ++i)
-		{
-			banner *b = banner_list.at(i);
-			b->show();
-			l->addWidget(b);
-		}
-		l->addStretch(1);
-	}
+	resetIndex();
 }
 
 void BannerContent::pgUp()
 {
-	current_index = calculateNextIndex(false);
-	Q_ASSERT_X(current_index != -1, "BannerContent::pgUp", "calculateNextIndex return -1!");
-	need_update = true;
+	current_page = (current_page - 1 + pageCount()) % pageCount();
 	drawContent();
+	need_update = false;
 }
 
 void BannerContent::pgDown()
 {
-	current_index = calculateNextIndex(true);
-	Q_ASSERT_X(current_index != -1, "BannerContent::pgDown", "calculateNextIndex return -1!");
-	need_update = true;
+	current_page = (current_page + 1) % pageCount();
 	drawContent();
+	need_update = false;
 }
 
-int BannerContent::calculateNextIndex(bool up_to_down)
+void BannerContent::resetIndex()
 {
-	int area_height = contentsRect().height();
-	int banners_height = 0;
-	int index = current_index;
+	current_page = 0;
+	need_update = true;
+}
 
-	while (true)
+int BannerContent::pageCount() const
+{
+	return pages.size() - 1;
+}
+
+void BannerContent::drawContent()
+{
+	QGridLayout *l = qobject_cast<QGridLayout*>(layout());
+
+	// copy the list to pass it to GridContent methods; as an alternative
+	// we could change them to template methods
+	QList<QWidget *> items;
+	for (int i = 0; i < banner_list.size(); ++i)
+		items.append(banner_list[i]);
+
+	if (pages.size() == 0)
 	{
-		banner *b = banner_list.at(index);
-		banners_height += b->sizeHint().height();
-		if (banners_height > area_height)
-			return index;
+		// prepare the page list
+		prepareLayout(items, 1);
 
-		// We add "banner_list.size()" to ensure that the module is always a positive number
-		index = (index + (up_to_down ? 1 : -1) + banner_list.size()) % banner_list.size();
+		// add items to the layout
+		for (int i = 0; i < pages.size() - 1; ++i)
+		{
+			int base = pages[i];
+			for (int j = 0; base + j < pages[i + 1]; ++j)
+				l->addWidget(banner_list.at(base + j), j, 1);
+		}
+
+		l->setRowStretch(l->rowCount(), 1);
 	}
-	return -1;
+
+	updateLayout(items);
+}
+
+void BannerContent::updateLayout(QList<QWidget *> items)
+{
+	emit displayScrollButtons(pageCount() > 1);
+	emit contentScrolled(current_page, pageCount());
+
+	need_update = false;
+
+	// works for all pages because the last item of the pages array always
+	// contains banner_list.size()
+	for (int i = 0; i < items.size(); ++i)
+		items[i]->setVisible(i >= pages[current_page] && i < pages[current_page + 1]);
+}
+
+// This is exactly the same as GridContent found in master; I hope we can easily merge this code
+// with master once we decide that all banner pages on btouch must scroll by page
+void BannerContent::prepareLayout(QList<QWidget *> items, int columns)
+{
+	QGridLayout *l = static_cast<QGridLayout *>(layout());
+	QList<int> total_height;
+	int area_height = contentsRect().height();
+
+	for (int k = 0; k < columns; ++k)
+		total_height.append(0);
+
+	// the pages array contains the starting indices of each page in banner_list
+	// to simplify the last page case, an additional item is added to the array
+	// and it contains banner_list.size()
+	// for example for a BannerContent with 15 items and 6 items per page, pages will
+	// contain: 0, 6, 12, 15
+	pages.append(0);
+
+	for (int i = 0; i < items.size(); i += columns)
+	{
+		// compute the height the columns would have if adding the next items
+		for (int j = 0; j < columns && i + j < items.size(); ++j)
+		{
+			total_height[j] += items.at(i + j)->sizeHint().height() + l->spacing();
+		}
+
+		// if the height of one of the two columns exceeds the page height,
+		// start a new page, otherwise add the widgets to the layout
+		for (int j = 0; j < columns; ++j)
+		{
+			if (total_height[j] > area_height)
+			{
+				for (int k = 0; k < columns; ++k)
+					total_height[k] = 0;
+				pages.append(i);
+				i -= columns;
+				break;
+			}
+		}
+	}
+
+	pages.append(items.size());
 }
 

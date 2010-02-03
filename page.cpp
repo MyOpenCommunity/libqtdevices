@@ -36,7 +36,10 @@ Page::Page(QWidget *parent) : QWidget(parent)
 	// pages with parent have a special meaning (for example, sound diffusion)
 	// so they must not handled here
 	if (!parent)
+	{
+		resize(main_window->size());
 		main_window->addWidget(this);
+	}
 }
 
 void Page::inizializza()
@@ -153,7 +156,13 @@ void BannerPage::activateLayout()
 		page_content->drawContent();
 }
 
-void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, QWidget *top_widget)
+void BannerPage::showPage()
+{
+	activateLayout();
+	Page::showPage();
+}
+
+void BannerPage::buildPage(BannerContentBase *content, NavigationBar *nav_bar, QWidget *top_widget)
 {
 	QBoxLayout *l = new QVBoxLayout(this);
 

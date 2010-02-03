@@ -32,6 +32,7 @@ AirConditioningPrivate::DeviceContainer device_container;
 
 
 
+
 AirConditioning::AirConditioning(const QDomNode &config_node)
 {
 	buildPage(getTextChild(config_node, "descr"));
@@ -233,7 +234,7 @@ void AdvancedSplitPage::showPage()
 	if (single_page)
 		single_page->showPage();
 	else
-		Page::showPage();
+		BannerPage::showPage();
 }
 
 
