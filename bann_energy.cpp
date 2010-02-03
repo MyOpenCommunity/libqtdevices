@@ -122,3 +122,16 @@ void BannEnergyCost::updateLabel()
 
 	setCentralText(loc.toString(current_value, 'f', rate.display_decimals) + " " + unit_measure);
 }
+
+void BannEnergyCost::saveRate()
+{
+	rate.rate = current_value;
+
+	bt_global::energy_rates.setRate(rate);
+}
+
+void BannEnergyCost::resetRate()
+{
+	current_value = rate.rate;
+	updateLabel();
+}

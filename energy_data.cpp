@@ -173,8 +173,13 @@ void EnergyCost::showPage()
 
 EditEnergyCost::EditEnergyCost()
 {
-	buildPage();
+	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
+	buildPage(new BannerContent, nav_bar);
+
 	production_count = consumption_count = 0;
+
+	connect(nav_bar, SIGNAL(backClick()), SLOT(resetRates()));
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(saveRates()));
 }
 
 void EditEnergyCost::addRate(int rate_id)
@@ -203,6 +208,28 @@ void EditEnergyCost::addRate(int rate_id)
 					       descr);
 
 	page_content->appendBanner(b);
+}
+
+void EditEnergyCost::saveRates()
+{
+	for (int i = 0; i < page_content->bannerCount(); ++i)
+	{
+		BannEnergyCost *b = static_cast<BannEnergyCost *>(page_content->getBanner(i));
+
+		b->saveRate();
+	}
+
+	emit Closed();
+}
+
+void EditEnergyCost::resetRates()
+{
+	for (int i = 0; i < page_content->bannerCount(); ++i)
+	{
+		BannEnergyCost *b = static_cast<BannEnergyCost *>(page_content->getBanner(i));
+
+		b->resetRate();
+	}
 }
 
 
