@@ -36,7 +36,10 @@ Page::Page(QWidget *parent) : QWidget(parent)
 	// pages with parent have a special meaning (for example, sound diffusion)
 	// so they must not handled here
 	if (!parent)
+	{
+		resize(main_window->size());
 		main_window->addWidget(this);
+	}
 }
 
 void Page::inizializza()
