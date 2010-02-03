@@ -138,6 +138,7 @@ private slots:
 	void backClick();
 	void status_changed(const StatusList &status_list);
 	void handleClose();
+	void rateChanged(int rate_id);
 };
 
 

@@ -17,6 +17,8 @@ bannEnergyInterface::bannEnergyInterface(QWidget *parent, int rate_id, bool is_e
 	bannTextOnImage(parent)
 {
 	rate = bt_global::energy_rates.getRate(rate_id);
+	connect(&bt_global::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
+
 	is_electricity = is_ele;
 	device_value = 0;
 }
@@ -62,6 +64,15 @@ void bannEnergyInterface::status_changed(const StatusList &status_list)
 		}
 		++it;
 	}
+}
+
+void bannEnergyInterface::rateChanged(int rate_id)
+{
+	if (rate.id != rate_id)
+		return;
+
+	rate = bt_global::energy_rates.getRate(rate_id);
+	updateText();
 }
 
 

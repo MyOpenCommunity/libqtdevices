@@ -24,6 +24,9 @@ public:
 public slots:
 	void status_changed(const StatusList &status_list);
 
+private slots:
+	void rateChanged(int rate_id);
+
 private:
 	int device_value;
 	QString measure;
