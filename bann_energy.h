@@ -1,7 +1,8 @@
 #ifndef BANN_ENERGY_H
 #define BANN_ENERGY_H
 
-#include "bann1_button.h"
+#include "bann1_button.h"  // bannTextOnImage
+#include "energy_rates.h"  // EnergyRate
 
 struct EnergyRate;
 
@@ -26,7 +27,7 @@ private:
 	int device_value;
 	QString measure;
 	bool is_electricity;
-	const EnergyRate &rate;
+	EnergyRate rate;
 };
 
 #endif // BANN_ENERGY_H

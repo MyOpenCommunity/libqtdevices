@@ -1,6 +1,6 @@
 #include "energy_rates.h"
 #include "xml_functions.h"
-#include "main.h"
+#include "main.h" // getConfElement
 
 #include <QLocale>
 
@@ -56,7 +56,7 @@ void EnergyRates::loadRates()
 	}
 }
 
-const EnergyRate &EnergyRates::getRate(int rate_id)
+EnergyRate EnergyRates::getRate(int rate_id) const
 {
 	if (rate_id == -1)
 		return invalid_rate;

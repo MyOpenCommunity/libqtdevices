@@ -3,6 +3,7 @@
 
 #include "page.h"
 #include "energy_device.h" // GraphData
+#include "energy_rates.h"  // EnergyRate
 
 #include <QColor>
 #include <QDate>
@@ -127,7 +128,7 @@ private:
 	bool is_electricity_view;
 	// the id of the timers used to poll data
 	int current_banner_timer_id, cumulative_day_banner_timer_id;
-	const EnergyRate &rate;
+	EnergyRate rate;
 
 private slots:
 	void toggleCurrency();

@@ -8,10 +8,12 @@
 static QLocale loc(QLocale::Italian);
 
 
-bannEnergyInterface::bannEnergyInterface(QWidget *parent, const int rate_id, bool is_ele) :
-	bannTextOnImage(parent),
-	rate(bt_global::energy_rates.getRate(rate_id))
+// bannEnergyInterface implementation
+
+bannEnergyInterface::bannEnergyInterface(QWidget *parent, int rate_id, bool is_ele) :
+	bannTextOnImage(parent)
 {
+	rate = bt_global::energy_rates.getRate(rate_id);
 	is_electricity = is_ele;
 	device_value = 0;
 }

@@ -241,9 +241,10 @@ bannTextOnImage *getBanner(QWidget *parent, QString primary_text)
 }
 
 
-EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id) :
-	rate(bt_global::energy_rates.getRate(rate_id))
+EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id)
 {
+	rate = bt_global::energy_rates.getRate(rate_id);
+
 	Q_ASSERT_X(bt_global::skin->hasContext(), "EnergyView::EnergyView", "Skin context not set!");
 	dev = bt_global::add_device_to_cache(new EnergyDevice(address, mode));
 	is_electricity_view = (mode == 1);
@@ -427,6 +428,7 @@ QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 		for (int i = 0; i < keys.size(); ++i)
 			data[keys[i]] = EnergyConversions::convertToMoney(data[keys[i]], rate.rate);
 	}
+
 	return data;
 }
 
