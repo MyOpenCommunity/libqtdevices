@@ -49,6 +49,31 @@ private:
 
 
 /**
+ * Base class for slideshow thumbnail items.
+ * Derived classes must provide their own layout.
+ */
+class SlideshowItem : public QWidget
+{
+Q_OBJECT
+public:
+	SlideshowItem(const QString &path, const QString &icon, const QString &pressed_icon);
+	void setChecked(bool check);
+	void setCheckable(bool is_checkable);
+
+protected:
+	BtButton *check_button;
+	QLabel *text;
+	QString item_path;
+
+private slots:
+	void checked(bool check);
+
+signals:
+	void itemToggled(bool, QString);
+};
+
+
+/**
  * Slideshow content item to display a directory (directory button, check button, label below).
  */
 class SlideshowItemDir : public QWidget

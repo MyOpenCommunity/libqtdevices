@@ -143,6 +143,35 @@ void SlideshowImageContent::showContent()
 
 
 
+SlideshowItem::SlideshowItem(const QString &path, const QString &icon, const QString &pressed_icon) :
+	QWidget(0),
+	item_path(path)
+{
+	check_button = new BtButton;
+	check_button->setImage(icon, BtButton::NO_FLAG);
+	check_button->setPressedImage(pressed_icon);
+	connect(check_button, SIGNAL(toggled(bool)), SLOT(checked(bool)));
+
+	text = new QLabel(item_path);
+}
+
+void SlideshowItem::checked(bool check)
+{
+	emit itemToggled(check, item_path);
+}
+
+void SlideshowItem::setChecked(bool check)
+{
+	check_button->setChecked(check);
+}
+
+void SlideshowItem::setCheckable(bool is_checkable)
+{
+	check_button->setCheckable(is_checkable);
+}
+
+
+
 SlideshowItemDir::SlideshowItemDir(const QString &path, const QString &checked_icon, const QString &unchecked_icon,
 		const QString &main_icon) :
 	QWidget(0),
@@ -235,7 +264,6 @@ SlideshowSettings::SlideshowSettings() :
 	l->addWidget(add_images);
 	l->addWidget(remove_images);
 }
-
 
 
 ImageSelectionHandler::ImageSelectionHandler()
@@ -583,6 +611,8 @@ void ImageRemovalPage::refreshContent()
 void ImageRemovalPage::addItemToContent(const QString &path)
 {
 	QFileInfo fi(path);
+	// TODO: here we can nuke all the entries of the file we don't find on the physical device.
+	//    Be careful not to remove entries from SD card if the user inserts an USB!
 	if (fi.isDir())
 	{
 		foreach (QFileInfo info, getFilteredFiles(fi.absoluteFilePath()))
