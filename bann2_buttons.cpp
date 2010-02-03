@@ -288,27 +288,6 @@ bann2But::bann2But(QWidget *parent) : banner(parent)
 }
 
 
-bann2ButLab::bann2ButLab(QWidget *parent) : banner(parent)
-{
-	addItem(BUT1, 0, 0, BAN2BUT_BUT_DIM , BAN2BUT_BUT_DIM);
-	addItem(BUT2, banner_width - BAN2BUT_BUT_DIM, 0, BAN2BUT_BUT_DIM, BAN2BUT_BUT_DIM);
-	addItem(TEXT, BAN2BUT_BUT_DIM , 0,banner_width - 2 * BAN2BUT_BUT_DIM , BAN2BUT_BUT_DIM);
-	addItem(TEXT2, 0, BAN2BUT_BUT_DIM-5, banner_width , 25);
-}
-
-void bann2ButLab::setAutoRepeat()
-{
-	sxButton->setAutoRepeat(true);
-	dxButton->setAutoRepeat(true);
-}
-
-
-QSize bann2ButLab::sizeHint() const
-{
-	return banner::sizeHint() + QSize(0, 20);
-}
-
-
 bannOnOff::bannOnOff(QWidget *parent) : banner(parent)
 {
 	addItem(BUT1, banner_width-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
