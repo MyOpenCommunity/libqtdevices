@@ -116,6 +116,14 @@ static const char *family_cost_icons[] = {
 	"cost_electricity", "cost_water", "cost_gas", "cost_dhw", "cost_conditioning"
 };
 
+static const char *family_descriptions[] = {
+	QT_TR_NOOP("Electricity"),
+	QT_TR_NOOP("Water"),
+	QT_TR_NOOP("Gas"),
+	QT_TR_NOOP("DHW"),
+	QT_TR_NOOP("Heating/Cooling")
+};
+
 EnergyCost::EnergyCost()
 {
 	buildPage();
@@ -137,7 +145,7 @@ EnergyCost::EnergyCost()
 
 			b->initBanner(bt_global::skin->getImage("select"),
 				      bt_global::skin->getImage(family_cost_icons[rate.mode - 1]),
-				      rate.description);
+				      family_descriptions[rate.mode - 1]);
 			b->connectRightButton(costs[rate.mode]);
 
 			page_content->appendBanner(b);
