@@ -11,6 +11,7 @@
 #include "btmain.h" // bt_global::btmain
 #include "energy_rates.h"
 #include "bann_energy.h" // bannEnergyInterface
+#include "bann1_button.h" // BannSinglePuls
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -62,16 +63,15 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 	foreach (const QDomNode& type, getChildren(config_node, "energy_type"))
 	{
 		SkinContext cont(getTextChild(type, "cid").toInt());
-		banner *b;
+		BannSinglePuls *b = new BannSinglePuls(0);
 
-		// TODO	energy kill bannPuls
-		b = new bannPuls(this);
-		appendBanner(b);
-		b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("energy_type"));
+		b->initBanner(bt_global::skin->getImage("select"), bt_global::skin->getImage("energy_type"),
+			      getTextChild(type, "descr"));
+		page_content->appendBanner(b);
 
 		EnergyInterface *en_interf = new EnergyInterface(type);
 		interfaces.push_back(en_interf);
-		b->connectDxButton(en_interf);
+		b->connectRightButton(en_interf);
 
 		// TODO energy propagate rate changes to banner/pages
 
