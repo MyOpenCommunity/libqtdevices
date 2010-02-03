@@ -107,6 +107,7 @@ Bann2Buttons::Bann2Buttons(QWidget *parent) :
 	left_button = new BtButton;
 	right_button = new BtButton;
 	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::TEXT));
+	description = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::SMALLTEXT));
 
 	QGridLayout *l = new QGridLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
@@ -117,17 +118,20 @@ Bann2Buttons::Bann2Buttons(QWidget *parent) :
 	l->setColumnStretch(1, 2);
 	l->addWidget(right_button, 0, 2);
 	l->setColumnStretch(2, 1);
+	l->addWidget(description, 1, 1);
 }
 
 void Bann2Buttons::initBanner(const QString &left, const QString &right, const QString &banner_text,
-	FontManager::Type font_type)
+	FontManager::Type text_font, const QString &banner_description, FontManager::Type description_font)
 {
 	initButton(left_button, left);
 	initButton(right_button, right);
 	text->setText(banner_text);
-	QFont central_font = bt_global::font->get(font_type);
+	QFont central_font = bt_global::font->get(text_font);
 
 	text->setFont(central_font);
+
+	initLabel(description, banner_description, bt_global::font->get(description_font));
 }
 
 void Bann2Buttons::setCentralText(const QString &t)
