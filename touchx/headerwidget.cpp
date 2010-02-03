@@ -275,9 +275,9 @@ void HeaderLogo::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case ITEM_TEMPERATURE:
-			// TODO add flag for the probe type in confiugration
+			// TODO add flag for the probe type in configuration
 			device *probe = bt_global::add_device_to_cache(new NonControlledProbeDevice(getTextChild(item, "where"),
-				NonControlledProbeDevice::INTERNAL));
+				NonControlledProbeDevice::INTERNAL, getTextChild(item, "openserver_id").toInt()));
 
 			temperature_display = new InnerPageTemperatureDisplay(probe);
 			l->addWidget(temperature_display);
@@ -349,9 +349,9 @@ void HeaderInfo::loadItems(const QDomNode &config_node)
 		}
 		case ITEM_TEMPERATURE:
 		{
-			// TODO add flag for the probe type in confiugration
+			// TODO add flag for the probe type in configuration
 			device *probe = bt_global::add_device_to_cache(new NonControlledProbeDevice(getTextChild(item, "where"),
-				NonControlledProbeDevice::INTERNAL));
+				NonControlledProbeDevice::INTERNAL, getTextChild(item, "openserver_id").toInt()));
 			QWidget *item = new HomepageTemperatureDisplay(probe);
 			home_layout->addWidget(item);
 			break;

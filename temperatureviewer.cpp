@@ -54,8 +54,6 @@ void TemperatureViewer::add(QString where, int x, int y, int width, int height, 
 
 void TemperatureViewer::inizializza()
 {
-	foreach (const TemperatureData &temp, temp_list)
-		temp.device->requestStatus();
 }
 
 void TemperatureViewer::updateDisplay(unsigned new_bt_temperature, TemperatureData *temp)

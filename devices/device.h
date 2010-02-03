@@ -68,13 +68,14 @@ protected:
 	//! The address of the device
 	QString where;
 
+	int openserver_id;
+
 	void sendCommand(QString what, QString _where) const;
 	void sendCommand(QString what) const;
 	void sendRequest(QString what) const;
 
 private:
 	static QHash<int, QPair<Client*, Client*> > clients;
-	int openserver_id;
 };
 
 

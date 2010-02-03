@@ -60,7 +60,6 @@ BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, 
 
 void BannTemperature::inizializza(bool forza)
 {
-	dev->requestStatus();
 }
 
 void BannTemperature::status_changed(const StatusList &sl)

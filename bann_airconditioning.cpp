@@ -50,8 +50,6 @@ void SingleSplit::status_changed(const StatusList &status_list)
 
 void SingleSplit::inizializza(bool)
 {
-	if (dev_probe)
-		dev_probe->requestStatus();
 }
 
 void SingleSplit::setDeviceOff()

@@ -39,9 +39,8 @@ enum what_t
 
 // NonControlledProbeDevice implementation
 
-NonControlledProbeDevice::NonControlledProbeDevice(QString where, ProbeType t)
-	: device(QString("4"), where),
-	type(t)
+NonControlledProbeDevice::NonControlledProbeDevice(QString where, ProbeType t, int openserver_id)
+	: device(QString("4"), where, openserver_id), type(t)
 {
 }
 

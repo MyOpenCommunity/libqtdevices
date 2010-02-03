@@ -61,7 +61,7 @@ void device::setClients(const QHash<int, QPair<Client*, Client*> > &c)
 
 QString device::get_key()
 {
-	return who + "*" + where;
+	return QString("%1#%2*%3").arg(openserver_id).arg(who).arg(where);
 }
 
 
@@ -193,7 +193,7 @@ QString radio_device::get_key()
 	while (wh >= 10)
 		wh -= 10;
 
-	return who + "*" + QString::number(wh);
+	return QString("%1#%2*%3").arg(openserver_id).arg(who).arg(wh);
 }
 
 // Sound matrix device implementation

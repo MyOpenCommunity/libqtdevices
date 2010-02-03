@@ -19,9 +19,10 @@ public:
 		DIM_TEMPERATURE = 1,
 	};
 
-	NonControlledProbeDevice(QString where, ProbeType type);
+	NonControlledProbeDevice(QString where, ProbeType type, int openserver_id=0);
 
 	void requestStatus();
+	virtual void init() { requestStatus(); }
 
 protected:
 	virtual void manageFrame(OpenMsg &msg);
