@@ -24,6 +24,89 @@ protected:
 
 class SlideshowImageContent;
 
+
+/**
+ * Handles image selection/removal and saving to file
+ */
+class ImageSelectionHandler
+{
+public:
+	ImageSelectionHandler();
+	/*
+	 * Remove a file from currently selected set.
+	 * Assumes that either path or one of its containing directories is selected.
+	 * It operates by looking for the containing directory, deselects it, then adds all files and directories
+	 * that do NOT contain the path; then recurse into the not selected directory.
+	 * Eg. path = /usr/local/images/slideshow/photo.jpg. If /usr/local/images is selected:
+	 * 1. remove /usr/local/images
+	 * 2. add /usr/local/images/ *.jpg and directories (except slideshow/)
+	 * 3. add /usr/local/images/slideshow/ *.jpg and directories (except photo.jpg)
+	 */
+	void removeCurrentFile(const QString &path, const QFileInfoList &items_in_dir);
+
+	/*
+	 * Compact a directory when all its enclosed items are selected.
+	 * \param dir Directory to be compacted
+	 * \param items_in_dir List of items individually selected. This should contain the same items as a call
+	 * to getFilteredFiles(dir) [otherwise there's a bug somewhere...]
+	 */
+	void compactDirectory(const QString &dir, const QFileInfoList &items_in_dir);
+
+	/*
+	 * Check if an item is selected.
+	 * By design we don't query the interface but rely only on the QSets below (it may well be that the interface
+	 * doesn't hold as many buttons as items in the directory).
+	 * Compared to pixmap loading or scaling, this operation is rather cheap; however, use it sparingly since
+	 * it involves 3 set lookups for each level of depth of the given path. For example the path:
+	 * /media/disk/photos/img001.jpg
+	 * will require 12 (3 * 4) lookups if the file and any directory below it are not selected.
+	 */
+	bool isItemSelected(QString abs_path);
+
+	/*
+	 * Check if an item is explicitly selected, don't check for parent directories.
+	 */
+	bool isItemExplicitlySelected(const QString &abs_path);
+
+	/*
+	 * Add an item
+	 * Must first remove from removed_images set then add to inserted_images.
+	 */
+	void insertItem(const QString &path);
+
+	void saveSlideshowToFile();
+	void loadSlideshowFromFile();
+
+	QSet<QString> getSelectedImages();
+
+private:
+	// Utility functions that correctly add or remove a path. Remember that any time a path can in only one
+	// between removed or inserted images sets (selected_images is really useful only for cancel operations).
+	/*
+	 * Remove an item.
+	 * Must first remove from inserted_images set then add to removed_images.
+	 */
+	void removeItem(const QString &path);
+
+	/*
+	 * Extract parent directory path from parameter.
+	 * Eg. /usr/local/file.txt will return /usr/local (without final separator). file_path will be file.txt
+	 *
+	 * \param path Path you want the parent directory of
+	 * \param file_path If not NULL, name of the file or directory stripped away
+	 * \return Empty string if no parent is found, the parent directory otherwise.
+	 */
+	QString getParentDirectory(const QString &path, QString *file_path = 0);
+
+	// removed_images: will be removed from selected_images
+	// inserted_images: will be added to selected_images
+	// selected_images: contains full path names for files. Full path names for directories if all files and dir
+	//                  below are selected.
+	QSet<QString> selected_images, removed_images, inserted_images;
+};
+
+
+
 /**
  * Select images to show during the slideshow.
  */
@@ -42,32 +125,16 @@ public slots:
 private:
 	void showFiles();
 	void refreshContent();
-	void saveSlideshowToFile();
-	void loadSlideshowFromFile();
-	/*
-	 * Check if an item is selected.
-	 * By design we don't query the interface but rely only on the QSets below (it may well be that the interface
-	 * doesn't hold as many buttons as items in the directory).
-	 * Compared to pixmap loading or scaling, this operation is rather cheap; however, use it sparingly since
-	 * it involves 3 set lookups for each level of depth of the given path. For example the path:
-	 * /media/disk/photos/img001.jpg
-	 * will require 12 (3 * 4) lookups if the file and any directory below it are not selected.
-	 */
-	bool isItemSelected(QString abs_path);
+
 	QDir current_dir;
 	int level;
 	QString checked_icon, unchecked_icon, photo_icon;
-	// removed_images: will be removed from selected_images
-	// inserted_images: will be added to selected_images
-	// selected_images: contains full path names for files. Full path names for directories if all files and dir
-	//                  below are selected.
-	QSet<QString> selected_images, removed_images, inserted_images;
+	ImageSelectionHandler *image_handler;
 
 private slots:
 	void enterDirectory(QString dir);
 	void confirmSelection();
 	void itemSelected(bool is_selected, QString relative_path);
-	void clearCaches();
 };
 
 
@@ -81,9 +148,18 @@ public:
 	typedef SlideshowImageContent ContentType;
 
 	ImageRemovalPage();
+	virtual void showPage();
+	virtual void activateLayout();
+
+private slots:
+	void imagesChanged();
 
 private:
+	void refreshContent();
 	void loadImages();
+	void addItemToContent(const QString &path);
+	QString button_icon;
+	ImageSelectionHandler *image_handler;
 };
 
 
@@ -165,7 +241,7 @@ public:
 	 * \param filename Returned when fileToggled() is emitted.
 	 * \param working_dir Used internally to load the image with path working_dir + filename
 	 */
-	SlideshowItemImage(const QString &filename, const QString &working_dir, const QString &checked_icon, const QString &unchecked_icon);
+	SlideshowItemImage(const QString &filename, const QString &working_dir, const QString &pressed_icon, const QString &icon);
 	void setChecked(bool check);
 
 private:
