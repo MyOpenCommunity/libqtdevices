@@ -58,6 +58,10 @@ public:
 	EditEnergyCost();
 
 	void addRate(int rate_id);
+
+private:
+	// TODO CONFIG_BTOUCH
+	int production_count, consumption_count;
 };
 
 

@@ -67,13 +67,14 @@ void bannEnergyInterface::status_changed(const StatusList &status_list)
 
 // BannEnergyCost implementation
 
-BannEnergyCost::BannEnergyCost(int rate_id, const QString &left, const QString &right)
+BannEnergyCost::BannEnergyCost(int rate_id, const QString &left, const QString &right,
+			       const QString &descr)
 {
 	rate = bt_global::energy_rates.getRate(rate_id);
 	current_value = rate.rate;
 
-	// TODO energy here must use the interface description
-	initBanner(left, right, " ", FontManager::TEXT, rate.description, FontManager::TEXT);
+	// TODO BTOUCH_CONFIG use rate.description with new config
+	initBanner(left, right, " ", FontManager::TEXT, descr, FontManager::TEXT);
 
 	left_button->setAutoRepeat(true);
 	right_button->setAutoRepeat(true);

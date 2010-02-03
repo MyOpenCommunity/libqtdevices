@@ -36,7 +36,8 @@ class BannEnergyCost : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	BannEnergyCost(int rate_id, const QString &left, const QString &right);
+	BannEnergyCost(int rate_id, const QString &left, const QString &right,
+		       const QString &descr);
 
 	void saveRate();
 	void resetRate();
