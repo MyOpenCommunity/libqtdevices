@@ -6,6 +6,7 @@ DEFINES += QT_QWS_EBX BT_EMBEDDED BTWEB QT_NO_DEBUG_OUTPUT
 
 INCLUDEPATH+= . .. ../.. ../../../stackopen/common_files ../../../stackopen
 INCLUDEPATH+= ../../../stackopen/common_develer/lib
+DEPENDPATH+= . .. ../..
 
 TARGET = test
 CONFIG   += console
