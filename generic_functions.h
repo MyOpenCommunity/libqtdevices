@@ -137,6 +137,9 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int num_item=1, const
 // A convenient overload for the above function
 bool setCfgValue(QString field, QString value, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
+// sets config values for nodes that do not have an id
+bool setGlobalCfgValue(QMap<QString, QString> data, const QString &id_name, int id_value, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
+
 void getName(char *name);
 
 int trasformaVol(int vol);

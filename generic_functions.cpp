@@ -74,25 +74,12 @@ QString getAmbName(QString name, QString amb)
 	return QString();
 }
 
-/**
- * Changes a value in conf.xml file atomically.
- * It works on a temporary file and then moves that file on conf.xml with a call to ::rename().
- */
-bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
+bool prepareWriteCfgFile(QDomDocument &doc, const QString &filename)
 {
 	QFile config_file(filename);
 	if (!config_file.open(QIODevice::ReadOnly))
 		return false;
 
-	const QString tmp_filename = "cfg/appoggio.xml";
-	if (QFile::exists(tmp_filename))
-		QFile::remove(tmp_filename);
-
-	QFile tmp_file(tmp_filename);
-	if (!tmp_file.open(QIODevice::WriteOnly))
-		return false;
-
-	QDomDocument doc("config_document");
 	if (!doc.setContent(&config_file))
 	{
 		config_file.close();
@@ -100,18 +87,18 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, co
 	}
 	config_file.close();
 
-	QDomNode n = findXmlNode(doc, QRegExp(".*"), item_id, serial_number);
-	Q_ASSERT_X(!n.isNull(), "setCfgValue", qPrintable(QString("No object found with id %1").arg(item_id)));
+	return true;
+}
 
-	QMapIterator<QString, QString> it(data);
-	while (it.hasNext())
-	{
-		it.next();
-		QDomElement el = getElement(n, it.key());
-		Q_ASSERT_X(!el.isNull(), "setCfgValue", qPrintable(QString("No element found: %1").arg(it.key())));
-		// To replace the text of the element
-		el.replaceChild(doc.createTextNode(it.value()), el.firstChild());
-	}
+bool writeCfgFile(const QDomDocument &doc, const QString &filename)
+{
+	const QString tmp_filename = "cfg/appoggio.xml";
+	if (QFile::exists(tmp_filename))
+		QFile::remove(tmp_filename);
+
+	QFile tmp_file(tmp_filename);
+	if (!tmp_file.open(QIODevice::WriteOnly))
+		return false;
 
 	// Use a text stream to handle unicode properly
 	QTextStream tmp_stream(&tmp_file);
@@ -126,7 +113,7 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, co
 	tmp_file.close();
 
 	// QDir::rename fails if destination file exists so we use rename system call
-	if (!::rename(qPrintable(tmp_filename), qPrintable(filename)))
+	if (!::rename(qPrintable(tmp_file.fileName()), qPrintable(filename)))
 	{
 		// Write an empty file to warn other process that the configuration file has changed.
 		int fd = open(FILE_CHANGE_CONF, O_CREAT, 0666);
@@ -137,6 +124,58 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, co
 	}
 
 	return false;
+}
+
+/**
+ * Changes a value in conf.xml file atomically.
+ * It works on a temporary file and then moves that file on conf.xml with a call to ::rename().
+ */
+bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
+{
+	QDomDocument doc("config_document");
+	if (!prepareWriteCfgFile(doc, filename))
+		return false;
+
+	QDomNode n = findXmlNode(doc, QRegExp(".*"), item_id, serial_number);
+	Q_ASSERT_X(!n.isNull(), "setCfgValue", qPrintable(QString("No object found with id %1").arg(item_id)));
+
+	// TODO maybe refactor & move to xml_functions.cpp/h
+	QMapIterator<QString, QString> it(data);
+	while (it.hasNext())
+	{
+		it.next();
+		QDomElement el = getElement(n, it.key());
+		Q_ASSERT_X(!el.isNull(), "setCfgValue", qPrintable(QString("No element found: %1").arg(it.key())));
+		// To replace the text of the element
+		el.replaceChild(doc.createTextNode(it.value()), el.firstChild());
+	}
+
+	return writeCfgFile(doc, filename);
+}
+
+// CONFIG_BTOUCH rewrite setCfgValue using setGlobalCfgValue
+bool setGlobalCfgValue(QMap<QString, QString> data, const QString &id_name, int id_value, const QString &filename)
+{
+	QDomDocument doc("config_document");
+	if (!prepareWriteCfgFile(doc, filename))
+		return false;
+
+	int serial_number = 1; // dummy
+	QDomNode n = findXmlNode(doc, QRegExp(".*"), id_name, id_value, serial_number);
+	Q_ASSERT_X(!n.isNull(), "setCfgValue", qPrintable(QString("No object found with id %1").arg(id_value)));
+
+	// TODO maybe refactor & move to xml_functions.cpp/h
+	QMapIterator<QString, QString> it(data);
+	while (it.hasNext())
+	{
+		it.next();
+		QDomElement el = getElement(n, it.key());
+		Q_ASSERT_X(!el.isNull(), "setGlobalCfgValue", qPrintable(QString("No element found: %1").arg(it.key())));
+		// To replace the text of the element
+		el.replaceChild(doc.createTextNode(it.value()), el.firstChild());
+	}
+
+	return writeCfgFile(doc, filename);
 }
 
 bool setCfgValue(QString field, QString value, int item_id, int num_item, const QString &filename)
