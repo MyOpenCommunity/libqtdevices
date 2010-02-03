@@ -70,3 +70,11 @@ QList<int> EnergyRates::allRateId() const
 {
 	return rates.keys();
 }
+
+void EnergyRates::setRate(const EnergyRate &new_rate)
+{
+	Q_ASSERT_X(rates.contains(new_rate.id), "EnergyRates::setRate", "missing rate");
+
+	rates[new_rate.id] = new_rate;
+	emit rateChanged(new_rate.id);
+}

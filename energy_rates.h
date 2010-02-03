@@ -1,8 +1,8 @@
 #ifndef ENERGY_RATES_H
 #define ENERGY_RATES_H
 
+#include <QObject>
 #include <QMap>
-#include <QString>
 
 class QDomNode;
 
@@ -33,8 +33,9 @@ struct EnergyRate
 
 
 // object to read the rate list from disk
-class EnergyRates
+class EnergyRates : public QObject
 {
+Q_OBJECT
 public:
 	EnergyRates();
 
@@ -48,6 +49,12 @@ public:
 
 	// returns the list of all the rate ids
 	QList<int> allRateId() const;
+
+	// updates the given rate and sends rateChanged() signal
+	void setRate(const EnergyRate &new_rate);
+
+signals:
+	void rateChanged(int rate_id);
 
 private:
 	// TODO energy use a list if the rate ids are contiguous
