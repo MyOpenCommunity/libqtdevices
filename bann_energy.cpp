@@ -1,8 +1,11 @@
 #include "bann_energy.h"
 #include "energy_rates.h"
 #include "energy_data.h" // EnergyInterface
+#include "btbutton.h"
 
 #include <QLocale>
+
+#include <math.h> // pow
 
 // The language used for the floating point number
 static QLocale loc(QLocale::Italian);
@@ -61,3 +64,48 @@ void bannEnergyInterface::status_changed(const StatusList &status_list)
 	}
 }
 
+
+// BannEnergyCost implementation
+
+BannEnergyCost::BannEnergyCost(int rate_id, const QString &left, const QString &right)
+{
+	rate = bt_global::energy_rates.getRate(rate_id);
+	current_value = rate.rate;
+
+	initBanner(left, right, " ", FontManager::TEXT, rate.description, FontManager::SMALLTEXT);
+
+	left_button->setAutoRepeat(true);
+	right_button->setAutoRepeat(true);
+
+	connect(left_button, SIGNAL(clicked()), SLOT(decRate()));
+	connect(right_button, SIGNAL(clicked()), SLOT(incRate()));
+
+	updateLabel();
+}
+
+void BannEnergyCost::incRate()
+{
+	if (current_value + rate.delta < pow(10, rate.display_integers))
+	{
+		current_value += rate.delta;
+		updateLabel();
+	}
+}
+
+void BannEnergyCost::decRate()
+{
+	if (current_value - rate.delta >= rate.delta)
+	{
+		current_value -= rate.delta;
+		updateLabel();
+	}
+}
+
+void BannEnergyCost::updateLabel()
+{
+	QString unit_measure = rate.currency_symbol + "/" + rate.unit;
+	if (rate.mode == 1 || rate.mode == 5)
+		unit_measure += "h";
+
+	setCentralText(loc.toString(current_value, 'f', rate.display_decimals) + " " + unit_measure);
+}

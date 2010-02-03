@@ -2,6 +2,7 @@
 #define BANN_ENERGY_H
 
 #include "bann1_button.h"  // bannTextOnImage
+#include "bann2_buttons.h" // Bann2Buttons
 #include "energy_rates.h"  // EnergyRate
 
 struct EnergyRate;
@@ -28,6 +29,28 @@ private:
 	QString measure;
 	bool is_electricity;
 	EnergyRate rate;
+};
+
+
+class BannEnergyCost : public Bann2Buttons
+{
+Q_OBJECT
+public:
+	BannEnergyCost(int rate_id, const QString &left, const QString &right);
+
+	void saveRate();
+	void resetRate();
+
+private:
+	void updateLabel();
+
+private slots:
+	void incRate();
+	void decRate();
+
+private:
+	EnergyRate rate;
+	float current_value;
 };
 
 #endif // BANN_ENERGY_H
