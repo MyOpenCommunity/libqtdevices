@@ -72,6 +72,7 @@ BannEnergyCost::BannEnergyCost(int rate_id, const QString &left, const QString &
 	rate = bt_global::energy_rates.getRate(rate_id);
 	current_value = rate.rate;
 
+	// TODO energy here must use the interface description
 	initBanner(left, right, " ", FontManager::TEXT, rate.description, FontManager::SMALLTEXT);
 
 	left_button->setAutoRepeat(true);

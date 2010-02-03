@@ -1,6 +1,7 @@
 #ifndef ENERGY_DATA_H
 #define ENERGY_DATA_H
 
+#include "page.h" // BannerPage
 #include "sottomenu.h"
 #include "bann1_button.h" // bannPuls
 
@@ -14,7 +15,7 @@ class EnergyInterface;
 struct EnergyRate;
 
 
-class EnergyData : public sottoMenu
+class EnergyData : public BannerPage
 {
 Q_OBJECT
 public:
@@ -36,38 +37,21 @@ private:
 /**
  * The page to set the related cost and incentive of an energy typology.
  */
-class EnergyCost : public PageLayout
+class EnergyCost : public BannerPage
 {
 Q_OBJECT
 public:
-	EnergyCost(const QDomNode &config_node, int serial);
+	EnergyCost();
+};
 
-private slots:
-	void closePage();
-	void saveCostAndProd();
-	void decreaseCost();
-	void increaseCost();
-	void decreaseProd();
-	void increaseProd();
 
-private:
-	int serial_number;
-	float delta;
-	// The rates for consumption and production. The temp_ attribute are used
-	// to modify the real values (the attributes without temp_) only when the user
-	// click on the "ok" button.
-	float cons_rate, prod_rate, temp_cons_rate, temp_prod_rate;
-	banner *banner_cost, *banner_prod;
-	// The number of decimal to show in cunsumption and production.
-	unsigned int n_decimal;
-	// The maximum number of integer to show in cunsumption and production.
-	unsigned int n_integer;
-	banner *addBanner(const QDomNode &config_node, QString desc, float& rate);
-	void showValue(banner *b, float value);
+class EditEnergyCost : public BannerPage
+{
+Q_OBJECT
+public:
+	EditEnergyCost();
 
-signals:
-	void prodValueChanged(float);
-	void consValueChanged(float);
+	void addRate(int rate_id);
 };
 
 

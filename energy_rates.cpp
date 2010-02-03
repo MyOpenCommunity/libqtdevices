@@ -65,3 +65,8 @@ EnergyRate EnergyRates::getRate(int rate_id) const
 
 	return rates[rate_id];
 }
+
+QList<int> EnergyRates::allRateId() const
+{
+	return rates.keys();
+}

@@ -11,6 +11,8 @@
 #include "btmain.h" // bt_global::btmain
 #include "energy_rates.h"
 #include "bann_energy.h" // bannEnergyInterface
+#include "bannercontent.h"
+#include "navigation_bar.h"
 #include "bann1_button.h" // BannSinglePuls
 
 #include <QVBoxLayout>
@@ -19,7 +21,6 @@
 #include <QDebug>
 
 #include <assert.h>
-#include <math.h>
 
 // The language used for the floating point number
 static QLocale loc(QLocale::Italian);
@@ -59,8 +60,25 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 {
 	bt_global::energy_rates.loadRates();
 
+	QList<QDomNode> families = getChildren(config_node, "energy_type");
+	bool edit_rates = families.count() > 1;
+
+	// display the button to edit rates if more than one family
+	if (edit_rates)
+	{
+		NavigationBar *nav = new NavigationBar("currency_exchange");
+		buildPage(new BannerContent, nav);
+
+		Page *costs = new EnergyCost;
+
+		connect(this, SIGNAL(forwardClick()), costs, SLOT(showPage()));
+		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
+	}
+	else
+		buildPage();
+
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	foreach (const QDomNode& type, getChildren(config_node, "energy_type"))
+	foreach (const QDomNode& type, families)
 	{
 		SkinContext cont(getTextChild(type, "cid").toInt());
 		BannSinglePuls *b = new BannSinglePuls(0);
@@ -82,145 +100,51 @@ void EnergyData::loadTypes(const QDomNode &config_node)
 }
 
 
-EnergyCost::EnergyCost(const QDomNode &config_node, int serial)
+EnergyCost::EnergyCost()
 {
-	QDomElement currency_node = getElement(config_node, "currency");
-	assert(!currency_node.isNull() && "currency node null!");
+	buildPage();
 
-	bool ok = true;
-	delta = loc.toFloat(getTextChild(currency_node, "delta"), &ok);
-	if (!ok)
-		qFatal("Delta is in wrong format, you should use ',' instead of '.'");
+	bt_global::energy_rates.loadRates();
 
-	QString unit_measure = getTextChild(currency_node, "symbol") + "/" +
-		getTextChild(config_node, "measure");
-	if((getTextChild(config_node, "mode").toInt()  == 1) || (getTextChild(config_node, "mode").toInt()  == 5))
-		unit_measure += "h";
-
-	n_decimal = getTextChild(currency_node, "n_decimal").toUInt();
-	n_integer = getTextChild(currency_node, "n_integer").toUInt();
-
-	banner_cost = addBanner(getElement(config_node, "cons"), tr("Consumption") + " " + unit_measure, cons_rate);
-	banner_prod = addBanner(getElement(config_node, "prod"), tr("Production") + " " + unit_measure, prod_rate);
-
-	if (banner_cost)
+	QMap<int, EditEnergyCost *> costs;
+	foreach (int rate_id, bt_global::energy_rates.allRateId())
 	{
-		connect(banner_cost, SIGNAL(sxClick()), SLOT(decreaseCost()));
-		connect(banner_cost, SIGNAL(dxClick()), SLOT(increaseCost()));
-		temp_cons_rate = cons_rate;
-	}
+		const EnergyRate &rate = bt_global::energy_rates.getRate(rate_id);
 
-	if (banner_prod)
-	{
-		connect(banner_prod, SIGNAL(sxClick()), SLOT(decreaseProd()));
-		connect(banner_prod, SIGNAL(dxClick()), SLOT(increaseProd()));
-		temp_prod_rate = prod_rate;
-	}
+		if (!costs.contains(rate.mode))
+		{
+			// create family cost page
+			costs[rate.mode] = new EditEnergyCost;
 
-	main_layout->addStretch();
-	bannFrecce *nav_bar = new bannFrecce(this, 10, bt_global::skin->getImage("ok"));
-	connect(nav_bar, SIGNAL(backClick()), SLOT(closePage()));
-	connect(nav_bar, SIGNAL(dxClick()), SLOT(saveCostAndProd()));
-	main_layout->addWidget(nav_bar);
-	serial_number = serial;
-}
+			// create banner
+			BannSinglePuls *b = new BannSinglePuls(0);
 
-void EnergyCost::showValue(banner *b, float value)
-{
-	if (b)
-	{
-		b->setText(loc.toString(value, 'f', n_decimal));
-		b->Draw();
+			b->initBanner(bt_global::skin->getImage("right"),
+				      bt_global::skin->getImage("ok"),
+				      rate.description);
+			b->connectRightButton(costs[rate.mode]);
+
+			page_content->appendBanner(b);
+
+			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+		}
+
+		costs[rate.mode]->addRate(rate_id);
 	}
 }
 
-banner *EnergyCost::addBanner(const QDomNode &config_node, QString desc, float& rate)
-{
-	if (!config_node.isNull() && getTextChild(config_node, "ab").toInt() == 1)
-	{
-		bann2ButLab *b = new bann2ButLab(this);
-		b->setAutoRepeat();
-		b->SetIcons(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"));
 
-		bool ok;
-		rate = loc.toFloat(getTextChild(config_node, "rate"), &ok);
-		if (!ok)
-			qFatal("Rate is in wrong format, you should use ',' instead of '.'");
-		showValue(b, rate);
-		b->setSecondaryText(desc);
-		b->Draw();
-		main_layout->addWidget(b);
-		return b;
-	}
-	return 0;
+EditEnergyCost::EditEnergyCost()
+{
+	buildPage();
 }
 
-void EnergyCost::closePage()
+void EditEnergyCost::addRate(int rate_id)
 {
-	// rollback the changes
-	temp_cons_rate = cons_rate;
-	temp_prod_rate = prod_rate;
-	// refresh the values visualized
-	showValue(banner_cost, temp_cons_rate);
-	showValue(banner_prod, temp_prod_rate);
-	emit Closed();
-}
+	BannEnergyCost *b = new BannEnergyCost(rate_id, bt_global::skin->getImage("minus"),
+					       bt_global::skin->getImage("plus"));
 
-void EnergyCost::decreaseCost()
-{
-	if (temp_cons_rate - delta >= delta)
-	{
-		temp_cons_rate -= delta;
-		showValue(banner_cost, temp_cons_rate);
-	}
-}
-
-void EnergyCost::increaseCost()
-{
-	if (temp_cons_rate + delta < pow(10, n_integer))
-	{
-		temp_cons_rate += delta;
-		showValue(banner_cost, temp_cons_rate);
-	}
-}
-
-void EnergyCost::decreaseProd()
-{
-	if (temp_prod_rate - delta >= delta)
-	{
-		temp_prod_rate -= delta;
-		showValue(banner_prod, temp_prod_rate);
-	}
-}
-
-void EnergyCost::increaseProd()
-{
-	if (temp_prod_rate + delta < pow(10, n_integer))
-	{
-		temp_prod_rate += delta;
-		showValue(banner_prod, temp_prod_rate);
-	}
-}
-
-void EnergyCost::saveCostAndProd()
-{
-	// save the cost and prod
-	cons_rate = temp_cons_rate;
-	prod_rate = temp_prod_rate;
-	// refresh the values visualized
-	showValue(banner_cost, temp_cons_rate);
-	showValue(banner_prod, temp_prod_rate);
-
-	QMap<QString, QString> data;
-	if (banner_cost)
-		data["cons/rate"] = loc.toString(cons_rate, 'f', n_decimal);
-	if (banner_prod)
-		data["prod/rate"] = loc.toString(prod_rate, 'f', n_decimal);
-	setCfgValue(data, ENERGY_TYPE, serial_number);
-
-	emit prodValueChanged(prod_rate);
-	emit consValueChanged(cons_rate);
-	emit Closed();
+	page_content->appendBanner(b);
 }
 
 

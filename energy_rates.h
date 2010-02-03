@@ -46,6 +46,9 @@ public:
 	// returns an invalid rate
 	EnergyRate getRate(int rate_id) const;
 
+	// returns the list of all the rate ids
+	QList<int> allRateId() const;
+
 private:
 	// TODO energy use a list if the rate ids are contiguous
 	QMap<int, EnergyRate> rates;
