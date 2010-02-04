@@ -249,6 +249,7 @@ SOURCES += actuators.cpp \
            bann_videoentryphone.cpp \
            bannciclaz.cpp \
            banner.cpp \
+           bannercontent.cpp \
            bannerfactory.cpp \
            bannfrecce.cpp \
            bann_thermal_regulation.cpp \

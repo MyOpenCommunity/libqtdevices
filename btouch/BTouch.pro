@@ -33,4 +33,4 @@ VPATH = ../devices ..
 include(../common.pri)
 include(../devices.pri)
 
-SOURCES += bannercontent.cpp
+# Add SOURCES and HEADERS with BTouch-specific source files

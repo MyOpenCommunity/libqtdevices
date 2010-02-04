@@ -9,9 +9,15 @@
 #include <QFontMetrics>
 
 
-BannerContent::BannerContent(QWidget *parent, int _columns)
-	: GridContent(parent),
+#ifdef LAYOUT_BTOUCH
+BannerContent::BannerContent(QWidget *parent) :
+	GridContent(parent),
+	columns(1)
+#else
+BannerContent::BannerContent(QWidget *parent, int _columns) :
+	GridContent(parent),
 	columns(_columns)
+#endif
 {
 	QGridLayout *l = static_cast<QGridLayout *>(layout());
 	l->setContentsMargins(18, 0, 17, 0);
