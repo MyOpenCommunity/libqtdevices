@@ -55,6 +55,9 @@ void EnergyRates::loadRates()
 
 		rates[rate.id] = rate;
 	}
+
+	Q_ASSERT_X(!rates.isEmpty(), "EnergyRates::loadRates",
+		   "Energy management configured but no rates defined");
 }
 
 EnergyRate EnergyRates::getRate(int rate_id) const
