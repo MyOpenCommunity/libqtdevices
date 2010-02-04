@@ -307,7 +307,7 @@ SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 		else
 			qWarning("The mode id %d doesn't exists", mode_id);
 
-	initBanner(bt_global::skin->getImage("cycle"), current_mode);
+	initBanner(bt_global::skin->getImage("cycle_mode"), current_mode);
 	connect(left_button, SIGNAL(clicked()), SLOT(buttonClicked()));
 }
 
@@ -331,7 +331,7 @@ SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 		else
 			qWarning("The speed id %d doesn't exists", speed_id);
 
-	initBanner(bt_global::skin->getImage("cycle"), current_speed);
+	initBanner(bt_global::skin->getImage("cycle_speed"), current_speed);
 }
 
 
