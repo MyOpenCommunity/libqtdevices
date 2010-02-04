@@ -15,6 +15,7 @@
 #include "bannercontent.h"
 #include "bann1_button.h" // BannSinglePuls
 #include "btbutton.h"
+#include "energy_management.h"
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -27,9 +28,9 @@
 static QLocale loc(QLocale::Italian);
 
 
-EnergyData::EnergyData(const QDomNode &config_node, bool edit_rates)
+EnergyData::EnergyData(const QDomNode &config_node)
 {
-	loadTypes(config_node, edit_rates);
+	loadTypes(config_node, EnergyManagement::isRateEditDisplayed());
 	connect(bt_global::btmain, SIGNAL(resettimer()), SLOT(systemTimeChanged()));
 	connect(&day_timer, SIGNAL(timeout()), SLOT(updateDayTimer()));
 	connect(&day_timer, SIGNAL(timeout()), SLOT(updateInterfaces()));
@@ -143,7 +144,7 @@ EnergyCost::EnergyCost()
 			// create banner
 			BannSinglePuls *b = new BannSinglePuls(0);
 
-			b->initBanner(bt_global::skin->getImage("select"),
+			b->initBanner(bt_global::skin->getImage("forward"),
 				      bt_global::skin->getImage(family_cost_icons[rate.mode - 1]),
 				      family_descriptions[rate.mode - 1]);
 			b->connectRightButton(costs[rate.mode]);
