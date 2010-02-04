@@ -191,8 +191,6 @@ public slots:
 	virtual void Down();
 	//! Invoked when OK button is pressed
 	virtual void OK();
-	//! Invoked by device when status changes
-	virtual void status_changed(QList<device_status*>) = 0;
 
 protected:
 	device_condition();
@@ -230,8 +228,6 @@ protected:
 	virtual void inizializza();
 	//! Resets condition
 	virtual void reset();
-	//! Setup the device
-	virtual void setup_device(QString);
 
 	//! Returns true when actual condition is satisfied
 	bool isTrue();
@@ -242,9 +238,6 @@ protected:
 	device *dev;
 	//! True when condition is satisfied
 	bool satisfied;
-
-private slots:
-	virtual void status_changed(const StatusList &sl);
 
 private:
 	//! Condition value
@@ -277,9 +270,6 @@ public:
 	virtual void set_condition_value(QString);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
-public slots:
-	//! Invoked when status changes
-	virtual void status_changed(QList<device_status*>);
 
 private slots:
 	void status_changed(const StatusList &sl);
@@ -336,8 +326,6 @@ public slots:
 	void Up();
 	//! Invoked when DOWN button is pressed
 	void Down();
-	//! Invoked when status changes
-	virtual void status_changed(QList<device_status*>);
 
 private slots:
 	void status_changed(const StatusList &sl);
@@ -396,8 +384,6 @@ public slots:
 	void Up();
 	//! Invoked when DOWN button is pressed
 	void Down();
-	//! Invoked when status changes
-	virtual void status_changed(QList<device_status*>);
 
 private slots:
 	void status_changed(const StatusList &sl);
@@ -447,7 +433,7 @@ public:
 public slots:
 	void OK();
 	//! Invoked when status changes
-	virtual void status_changed(QList<device_status*>);
+	void status_changed(QList<device_status*>);
 	//! Invoked when UP button is pressed
 	void Up();
 	//! Invoked when DOWN button is pressed
@@ -495,10 +481,9 @@ public:
 
 	virtual void inizializza();
 
-public slots:
+private slots:
 	//! Invoked when status changes
-	virtual void status_changed(const StatusList &);
-	void status_changed(QList<device_status*>);
+	void status_changed(const StatusList &);
 
 private:
 	/// Maximum and minimum values for temperature conditions
@@ -523,18 +508,13 @@ public:
 	virtual int get_max();
 	virtual void set_condition_value(QString);
 
-	//! Setup the device
-	virtual void setup_device(QString);
-
 public slots:
 	void OK();
-
-protected slots:
-	virtual void status_changed(QList<device_status*> sl);
 
 private slots:
 	// TODO: use a more generic approach!
 	void status_changed(stat_var status);
+
 private:
 	/// check if the condition is satisfied
 	void check_condition(bool emit_signal);

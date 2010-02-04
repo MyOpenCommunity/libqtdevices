@@ -319,7 +319,6 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 	{
 		dc->setGeometry(40,140,160,50);
 		connect(dc, SIGNAL(condSatisfied()), SIGNAL(condSatisfied()));
-		dc->setup_device(w);
 	}
 	actual_condition = dc;
 }
@@ -525,19 +524,6 @@ bool device_condition::isTrue()
 	return satisfied;
 }
 
-void device_condition::setup_device(QString s)
-{
-	// Get status changed events back
-	//DELETE
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
-		this, SLOT(status_changed(QList<device_status*>)));
-	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
-}
-
-void device_condition::status_changed(const StatusList &sl)
-{
-}
-
 
 /*****************************************************************
 ** Actual light status device condition
@@ -552,6 +538,7 @@ device_condition_light_status::device_condition_light_status(QWidget *parent, QS
 	set_condition_value(trigger);
 	set_current_value(device_condition::get_condition_value());
 	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 	Draw();
 }
 
@@ -587,57 +574,6 @@ void device_condition_light_status::status_changed(const StatusList &sl)
 		}
 		++it;
 	}
-}
-
-//DELETE
-void device_condition_light_status::status_changed(QList<device_status*> sl)
-{
-	qFatal("Old status changed on device_condition_light_status not implemented!");
-	/*
-	int trig_v = device_condition::get_condition_value();
-	stat_var curr_status(stat_var::ON_OFF);
-	qDebug("device_condition_light_status::status_changed()");
-
-	for (int i = 0; i < sl.size(); ++i)
-	{
-		device_status *ds = sl.at(i);
-		switch (ds->get_type())
-		{
-		case device_status::LIGHTS:
-			ds->read(device_status_light::ON_OFF_INDEX, curr_status);
-			qDebug("Light status variation");
-			qDebug("trigger value = %d, current value = %d\n", trig_v,
-			curr_status.get_val());
-			if (trig_v == curr_status.get_val())
-			{
-				qDebug("light condition (%d) satisfied", trig_v);
-				if (!satisfied)
-				{
-					satisfied = true;
-					emit condSatisfied();
-				}
-			}
-			else
-			{
-				qDebug("light condition (%d) NOT satisfied", trig_v);
-				satisfied = false;
-			}
-			break;
-		case device_status::DIMMER:
-			qDebug("dimmer status variation, ignored");
-			break;
-		case device_status::DIMMER100:
-			qDebug("new dimmer status variation, ignored");
-			break;
-		case device_status::NEWTIMED:
-			qDebug("new timed device status variation, ignored");
-			break;
-		default:
-			qDebug("device status of unknown type (%d)", ds->get_type());
-			break;
-		}
-	}
-	*/
 }
 
 int device_condition_light_status::get_max()
@@ -689,6 +625,7 @@ device_condition_dimming::device_condition_dimming(QWidget *parent, QString trig
 	set_current_value_max(get_condition_value_max());
 	// TODO: to PULL or not to PULL? That is the question...
 	dev = bt_global::add_device_to_cache(new DimmerDevice(where, PULL));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 	Draw();
 }
 
@@ -714,7 +651,6 @@ int device_condition_dimming::get_step()
 {
 	return 10;
 }
-
 
 void device_condition_dimming::Up()
 {
@@ -908,59 +844,6 @@ void device_condition_dimming::status_changed(const StatusList &sl)
 	}
 }
 
-//DELETE
-void device_condition_dimming::status_changed(QList<device_status*> sl)
-{
-	qFatal("Old status changed on device_condition_dimming not implemented!");
-	/*
-	int trig_v_min = get_condition_value_min();
-	int trig_v_max = get_condition_value_max();
-	stat_var curr_lev(stat_var::LEV);
-	stat_var curr_speed(stat_var::SPEED);
-	stat_var curr_status(stat_var::ON_OFF);
-
-	qDebug("device_condition_dimming::status_changed()");
-	for (int i = 0; i < sl.size(); ++i)
-	{
-		device_status *ds = sl.at(i);
-		switch (ds->get_type())
-		{
-		case device_status::LIGHTS:
-			qDebug("Light status variation, ignored");
-			break;
-			case device_status::DIMMER:
-			ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
-			qDebug("dimmer status variation");
-			qDebug("level = %d", curr_lev.get_val()/10);
-			qDebug("trigger value min is %d - max is %d, val10 = %d", trig_v_min, trig_v_max, curr_lev.get_val()/10);
-			if ((curr_lev.get_val()/10 >= trig_v_min) && (curr_lev.get_val()/10 <= trig_v_max))
-			{
-				qDebug("Condition triggered");
-				if (!satisfied)
-				{
-					satisfied = true;
-					emit condSatisfied();
-				}
-			}
-			else
-			{
-				qDebug("Condition not triggered");
-				satisfied = false;
-			}
-			break;
-		case device_status::DIMMER100:
-			qDebug("dimmer 100 status variation, ignored");
-			break;
-		case device_status::NEWTIMED:
-			qDebug("new timed device status variation, ignored");
-			break;
-		default:
-			qDebug("device status of unknown type (%d)", ds->get_type());
-			break;
-		}
-	}
-	*/
-}
 
 /*****************************************************************
  ** Actual dimming 100 value device condition
@@ -989,6 +872,7 @@ device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QStr
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
 	dev = bt_global::add_device_to_cache(new Dimmer100Device(where, PULL));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 	Draw();
 }
 
@@ -1214,62 +1098,6 @@ void device_condition_dimming_100::status_changed(const StatusList &sl)
 	}
 }
 
-//DELETE
-void device_condition_dimming_100::status_changed(QList<device_status*> sl)
-{
-	qFatal("Old status changed on device_condition_dimmin_100 not implemented!");
-	/*
-	int trig_v_min = get_condition_value_min();
-	int trig_v_max = get_condition_value_max();
-	stat_var curr_lev(stat_var::LEV);
-	stat_var curr_speed(stat_var::SPEED);
-	stat_var curr_status(stat_var::ON_OFF);
-	int val10;
-	qDebug("device_condition_dimming_100::status_changed()");
-	for (int i = 0; i < sl.size(); ++i)
-	{
-		device_status *ds = sl.at(i);
-		switch (ds->get_type())
-		{
-		case device_status::LIGHTS:
-			qDebug("Light status variation, ignored");
-			break;
-		case device_status::DIMMER:
-			ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
-			qDebug("dimmer status variation, ignored");
-		case device_status::DIMMER100:
-			qDebug("dimmer 100 status variation");
-			ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
-			ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
-			qDebug("level = %d, speed = %d", curr_lev.get_val(),
-			curr_speed.get_val());
-			val10 = curr_lev.get_val();
-			qDebug("trigger value min is %d - max is %d, val = %d", trig_v_min, trig_v_max, val10);
-			if ((val10 >= trig_v_min) && (val10 <= trig_v_max))
-			{
-				qDebug("Condition triggered");
-				if (!satisfied)
-				{
-					satisfied = true;
-					emit condSatisfied();
-				}
-			}
-			else
-			{
-				qDebug("Condition not triggered");
-				satisfied = false;
-			}
-			break;
-		case device_status::NEWTIMED:
-			qDebug("new timed device status variation, ignored");
-			break;
-		default:
-			qDebug("device status of unknown type (%d)", ds->get_type());
-			break;
-		}
-	}
-	*/
-}
 
 /*****************************************************************
 ** Actual volume device condition
@@ -1298,6 +1126,8 @@ device_condition_volume::device_condition_volume(QWidget *parent, QString trigge
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
 	dev = bt_global::add_device_to_cache(new sound_device(QString(where)));
+	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
+		this, SLOT(status_changed(QList<device_status*>)));
 	Draw();
 }
 
@@ -1587,6 +1417,7 @@ device_condition_temp::device_condition_temp(QWidget *parent, QString trigger, Q
 	set_current_value(device_condition::get_condition_value());
 	dev = bt_global::add_device_to_cache(new NonControlledProbeDevice(where,
 		external ? NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 	Draw();
 }
 
@@ -1658,11 +1489,6 @@ void device_condition_temp::get_condition_value(QString& out)
 	out = QString("%1").arg(temp, 4, 10, QChar('0'));
 }
 
-void device_condition_temp::status_changed(QList<device_status*>)
-{
-	// never called
-}
-
 void device_condition_temp::inizializza()
 {
 	device_condition::inizializza();
@@ -1728,16 +1554,8 @@ device_condition_aux::device_condition_aux(QWidget *parent, QString trigger, QSt
 	set_condition_value(trigger);
 	set_current_value(device_condition::get_condition_value());
 	dev = bt_global::add_device_to_cache(new aux_device(where));
-
-	Draw();
-}
-
-void device_condition_aux::setup_device(QString s)
-{
-	device_condition::setup_device(s);
-	// The device can be replaced by "add_device" method of device_cache, thus
-	// the connection must be after that.
 	connect(dev, SIGNAL(status_changed(stat_var)), SLOT(status_changed(stat_var)));
+	Draw();
 }
 
 void device_condition_aux::Draw()
@@ -1791,11 +1609,6 @@ void device_condition_aux::set_condition_value(QString s)
 		qDebug() << "Unknown condition value " << s << " for device_condition_aux";
 	device_condition::set_condition_value(v);
 	check_condition(false);
-}
-
-void device_condition_aux::status_changed(QList<device_status*> sl)
-{
-	qFatal("Old status changed on device_condition_aux not implemented!");
 }
 
 void device_condition_aux::OK()
