@@ -280,11 +280,11 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 	switch (condition_type)
 	{
 	case 1:
-		dc = new device_condition_light_status(this, &trigger);
+		dc = new device_condition_light_status(this, trigger, w);
 		icon = bt_global::skin->getImage("light");
 		break;
 	case 2:
-		dc = new device_condition_dimming(this, &trigger);
+		dc = new device_condition_dimming(this, trigger, w);
 		icon = bt_global::skin->getImage("dimmer");
 		break;
 	case 7:
@@ -292,21 +292,21 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 		w += "00";
 	case 3:
 	case 8:
-		dc = new device_condition_temp(this, &trigger, external);
+		dc = new device_condition_temp(this, trigger, w, external);
 		condition_up->setAutoRepeat(true);
 		condition_down->setAutoRepeat(true);
 		icon = bt_global::skin->getImage("probe");
 		break;
 	case 9:
-		dc = new device_condition_aux(this, &trigger);
+		dc = new device_condition_aux(this, trigger, w);
 		icon = bt_global::skin->getImage("aux");
 		break;
 	case 4:
-		dc = new device_condition_volume(this, &trigger);
+		dc = new device_condition_volume(this, trigger, w);
 		icon = bt_global::skin->getImage("amplifier");
 		break;
 	case 6:
-		dc = new device_condition_dimming_100(this, &trigger);
+		dc = new device_condition_dimming_100(this, trigger, w);
 		icon = bt_global::skin->getImage("dimmer");
 		break;
 	default:
@@ -527,10 +527,6 @@ bool device_condition::isTrue()
 
 void device_condition::setup_device(QString s)
 {
-	qDebug() << "device_condition::setup_device(" << s << ")";
-	dev->set_where(s);
-	// Add the device to cache, or replace it with the instance found in cache
-	dev = bt_global::add_device_to_cache(dev);
 	// Get status changed events back
 	//DELETE
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
@@ -546,18 +542,16 @@ void device_condition::status_changed(const StatusList &sl)
 /*****************************************************************
 ** Actual light status device condition
 ****************************************************************/
-device_condition_light_status::device_condition_light_status(QWidget *parent, QString *c)
+device_condition_light_status::device_condition_light_status(QWidget *parent, QString trigger, QString where)
 {
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	l->setFont(bt_global::font->get(FontManager::TEXT));
 
 	frame = l;
-	set_condition_value(*c);
+	set_condition_value(trigger);
 	set_current_value(device_condition::get_condition_value());
-	//dev = new light(QString(""));
-	// TODO: we just need dummy device here, address will be set later on by setup_device()
-	dev = new LightingDevice("", PULL);
+	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL));
 	Draw();
 }
 
@@ -673,32 +667,28 @@ void device_condition_light_status::get_condition_value(QString& out)
 /*****************************************************************
 ** Actual dimming value device condition
 ****************************************************************/
-device_condition_dimming::device_condition_dimming(QWidget *parent, QString *c)
+device_condition_dimming::device_condition_dimming(QWidget *parent, QString trigger, QString where)
 {
-	qDebug() << "device_condition_dimming::device_condition_dimming(" << c << ")";
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	l->setFont(bt_global::font->get(FontManager::TEXT));
 
 	frame = l;
-	if (*c == "0")
+	if (trigger == "0")
 	{
 		set_condition_value_min(0);
 		set_condition_value_max(0);
 	}
 	else
 	{
-		set_condition_value_min((QString) c->at(0));
-		QByteArray buf = c->toAscii();
+		set_condition_value_min((QString) trigger.at(0));
+		QByteArray buf = trigger.toAscii();
 		set_condition_value_max(buf.constData()+2);
 	}
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
-	// A dimmer is actually a light
-	//DELETE
-	//dev = new dimm(QString(""));
 	// TODO: to PULL or not to PULL? That is the question...
-	dev = new DimmerDevice("", PULL);
+	dev = bt_global::add_device_to_cache(new DimmerDevice(where, PULL));
 	Draw();
 }
 
@@ -975,22 +965,21 @@ void device_condition_dimming::status_changed(QList<device_status*> sl)
 /*****************************************************************
  ** Actual dimming 100 value device condition
 ****************************************************************/
-device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QString *c)
+device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QString trigger, QString where)
 {
 	char sup[10];
-	qDebug() << "device_condition_dimming_100::device_condition_dimming_100(" << c << ")";
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	l->setFont(bt_global::font->get(FontManager::TEXT));
 	frame = l;
-	if (*c == "0")
+	if (trigger == "0")
 	{
 		set_condition_value_min(0);
 		set_condition_value_max(0);
 	}
 	else
 	{
-		QByteArray buf = c->toAscii();
+		QByteArray buf = trigger.toAscii();
 		sprintf(sup, "%s", buf.constData());
 		strtok(sup, "-");
 		set_condition_value_min(sup);
@@ -999,9 +988,7 @@ device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QStr
 	}
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
-	// A dimmer is actually a light
-	//dev = new dimm100(QString(""));
-	dev = new Dimmer100Device("", PULL);
+	dev = bt_global::add_device_to_cache(new Dimmer100Device(where, PULL));
 	Draw();
 }
 
@@ -1287,21 +1274,21 @@ void device_condition_dimming_100::status_changed(QList<device_status*> sl)
 /*****************************************************************
 ** Actual volume device condition
 ****************************************************************/
-device_condition_volume::device_condition_volume(QWidget *parent, QString *c)
+device_condition_volume::device_condition_volume(QWidget *parent, QString trigger, QString where)
 {
 	char sup[10];
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	l->setFont(bt_global::font->get(FontManager::TEXT));
 	frame = l;
-	if (*c == "-1")
+	if (trigger == "-1")
 	{
 		set_condition_value_min(-1);
 		set_condition_value_max(-1);
 	}
 	else
 	{
-		QByteArray buf = c->toAscii();
+		QByteArray buf = trigger.toAscii();
 		sprintf(sup, "%s", buf.constData());
 		strtok(sup, "-");
 		set_condition_value_min(sup);
@@ -1310,8 +1297,8 @@ device_condition_volume::device_condition_volume(QWidget *parent, QString *c)
 	}
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
+	dev = bt_global::add_device_to_cache(new sound_device(QString(where)));
 	Draw();
-	dev = new sound_device(QString(""));
 }
 
 void device_condition_volume::set_condition_value_min(int s)
@@ -1564,10 +1551,10 @@ void device_condition_volume::reset()
 /*****************************************************************
 ** Actual temperature device condition
 ****************************************************************/
-device_condition_temp::device_condition_temp(QWidget *parent, QString *c, bool external)
+device_condition_temp::device_condition_temp(QWidget *parent, QString trigger, QString where, bool external)
 {
 	// Temp condition is expressed in bticino format
-	int temp_condition = c->toInt();
+	int temp_condition = trigger.toInt();
 
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
@@ -1598,9 +1585,9 @@ device_condition_temp::device_condition_temp(QWidget *parent, QString *c, bool e
 
 	// The condition value and the current value are stored in Celsius or Fahrenheit
 	set_current_value(device_condition::get_condition_value());
-
+	dev = bt_global::add_device_to_cache(new NonControlledProbeDevice(where,
+		external ? NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL));
 	Draw();
-	dev = new NonControlledProbeDevice(QString(""), external ? NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL);
 }
 
 int device_condition_temp::get_min()
@@ -1730,7 +1717,7 @@ void device_condition_temp::status_changed(const StatusList &sl)
 ** Aux device condition
 ****************************************************************/
 
-device_condition_aux::device_condition_aux(QWidget *parent, QString *c) :
+device_condition_aux::device_condition_aux(QWidget *parent, QString trigger, QString where) :
 	device_initialized(false), device_value(-1)
 {
 	QLabel *l = new QLabel(parent);
@@ -1738,9 +1725,9 @@ device_condition_aux::device_condition_aux(QWidget *parent, QString *c) :
 	l->setFont(bt_global::font->get(FontManager::TEXT));
 
 	frame = l;
-	set_condition_value(*c);
+	set_condition_value(trigger);
 	set_current_value(device_condition::get_condition_value());
-	dev = new aux_device(QString(""));
+	dev = bt_global::add_device_to_cache(new aux_device(where));
 
 	Draw();
 }

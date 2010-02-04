@@ -268,7 +268,7 @@ class device_condition_light_status : public device_condition
 Q_OBJECT
 public:
 	//! Constructor
-	device_condition_light_status(QWidget *parent, QString *trigger);
+	device_condition_light_status(QWidget *parent, QString trigger, QString where);
 	//! Draws frame
 	virtual void Draw();
 	//! Returns max value
@@ -300,7 +300,7 @@ class device_condition_dimming : public device_condition
 Q_OBJECT
 public:
 	//! Constructor
-	device_condition_dimming(QWidget *parent, QString *trigger);
+	device_condition_dimming(QWidget *parent, QString trigger, QString where);
 	//! Returns min value
 	int get_min();
 	//! Returns max value
@@ -361,7 +361,7 @@ class device_condition_dimming_100 : public device_condition
 Q_OBJECT
 public:
 	//! Constructor
-	device_condition_dimming_100(QWidget *parent, QString *trigger);
+	device_condition_dimming_100(QWidget *parent, QString trigger, QString where);
 	//! Returns min value
 	int get_min();
 	//! Returns max value
@@ -420,7 +420,7 @@ class device_condition_volume : public device_condition
 Q_OBJECT
 public:
 	//! Constructor
-	device_condition_volume(QWidget *parent, QString *trigger);
+	device_condition_volume(QWidget *parent, QString trigger, QString where);
 
 	//! Returns min value
 	int get_min();
@@ -473,7 +473,7 @@ class device_condition_temp : public device_condition
 Q_OBJECT
 public:
 	//! Constructor
-	device_condition_temp(QWidget *parent, QString *trigger, bool external = false);
+	device_condition_temp(QWidget *parent, QString trigger, QString where, bool external = false);
 	//! Returns min value
 	int get_min();
 	//! Returns max value
@@ -518,7 +518,7 @@ class device_condition_aux : public device_condition
 {
 Q_OBJECT
 public:
-	device_condition_aux(QWidget *parent, QString *trigger);
+	device_condition_aux(QWidget *parent, QString trigger, QString where);
 	virtual void Draw();
 	virtual int get_max();
 	virtual void set_condition_value(QString);
