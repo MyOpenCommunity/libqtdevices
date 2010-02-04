@@ -151,6 +151,7 @@ private:
 	void updateText();
 	int current_temp, max_temp, min_temp, temp_step;
 	TemperatureScale scale;
+	QString icon_plus, icon_plus_disabled, icon_minus, icon_minus_disabled;
 };
 
 

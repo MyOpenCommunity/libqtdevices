@@ -140,8 +140,10 @@ void CustomScenario::splitValuesChanged(const AirConditionerStatus &st)
 SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, int step) :
 	Bann2Buttons(0)
 {
-	QString icon_plus = bt_global::skin->getImage("plus");
-	QString icon_minus = bt_global::skin->getImage("minus");
+	icon_plus = bt_global::skin->getImage("plus");
+	icon_minus = bt_global::skin->getImage("minus");
+	icon_plus_disabled = bt_global::skin->getImage("plus_disabled");
+	icon_minus_disabled = bt_global::skin->getImage("minus_disabled");
 	initBanner(icon_minus, icon_plus, "---", FontManager::SUBTITLE);
 
 	scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
@@ -262,13 +264,17 @@ void SplitTemperature::setBannerEnabled(bool enable)
 	if (enable)
 	{
 		left_button->enable();
+		left_button->setImage(icon_minus);
 		right_button->enable();
+		right_button->setImage(icon_plus);
 		updateText();
 	}
 	else
 	{
 		left_button->disable();
+		left_button->setImage(icon_minus_disabled);
 		right_button->disable();
+		right_button->setImage(icon_plus_disabled);
 		// in this case the text must be "--.- C/F" (depending on scale)
 		QString text("--.- " TEMP_DEGREES);
 		switch (scale)
