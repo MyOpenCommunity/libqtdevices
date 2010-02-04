@@ -82,19 +82,22 @@ void BannerContent::drawContent()
 
 		l->setRowStretch(l->rowCount(), 1);
 
-		// construct the vertical separator widget
-		QWidget *vertical_bar = new QWidget;
-		vertical_bar->setProperty("VerticalSeparator", true);
+		if (columns == 2)
+		{
+			// construct the vertical separator widget
+			QWidget *vertical_bar = new QWidget;
+			vertical_bar->setProperty("VerticalSeparator", true);
 
-		// create the layout with a spacer at the bottom, to
-		// mimick the layout of current code
-		QFont label_font = bt_global::font->get(FontManager::BANNERDESCRIPTION);
-		QVBoxLayout *bar_layout = new QVBoxLayout;
-		bar_layout->addWidget(vertical_bar, 1);
-		bar_layout->addItem(new QSpacerItem(20, QFontMetrics(label_font).height()));
+			// create the layout with a spacer at the bottom, to
+			// mimick the layout of current code
+			QFont label_font = bt_global::font->get(FontManager::BANNERDESCRIPTION);
+			QVBoxLayout *bar_layout = new QVBoxLayout;
+			bar_layout->addWidget(vertical_bar, 1);
+			bar_layout->addItem(new QSpacerItem(20, QFontMetrics(label_font).height()));
 
-		// add the vertical bar to the layout
-		l->addLayout(bar_layout, 0, 1);
+			// add the vertical bar to the layout
+			l->addLayout(bar_layout, 0, 1);
+		}
 	}
 
 	updateLayout(items);
@@ -105,9 +108,12 @@ void BannerContent::drawContent()
 	// support items wiht colspan 0
 	bool show_vertical_bar = columns == 2 && pages[current_page + 1] - pages[current_page] >= 2;
 
-	QLayoutItem *vertical_separator = l->itemAtPosition(0, 1);
-	l->removeItem(vertical_separator);
-	vertical_separator->layout()->itemAt(0)->widget()->setVisible(show_vertical_bar);
-	l->addItem(vertical_separator, 0, 1,
-		   (pages[current_page + 1] - pages[current_page]) / 2, 1);
+	if (columns == 2)
+	{
+		QLayoutItem *vertical_separator = l->itemAtPosition(0, 1);
+		l->removeItem(vertical_separator);
+		vertical_separator->layout()->itemAt(0)->widget()->setVisible(show_vertical_bar);
+		l->addItem(vertical_separator, 0, 1,
+			   (pages[current_page + 1] - pages[current_page]) / 2, 1);
+	}
 }
