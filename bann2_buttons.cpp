@@ -69,7 +69,14 @@ void BannOnOffNew::initBanner(const QString &l, const QString &c, const QString 
 	initButton(left_button, l);
 	initButton(right_button, r);
 	center_icon->setBackgroundImage(c);
-	text->setText(banner_text);
+	if (banner_text.isEmpty())
+	{
+		text->hide();
+		text->disconnect();
+		text->deleteLater();
+	}
+	else
+		text->setText(banner_text);
 }
 
 void BannOnOffNew::setBannerText(const QString &str)
