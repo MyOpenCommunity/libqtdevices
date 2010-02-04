@@ -508,8 +508,6 @@ QString device_condition::get_unit()
 
 void device_condition::inizializza()
 {
-	qDebug("device_condition::inizializza()");
-	dev->init(true);
 }
 
 void device_condition::reset()
@@ -540,6 +538,11 @@ device_condition_light_status::device_condition_light_status(QWidget *parent, QS
 	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 	Draw();
+}
+
+void device_condition_light_status::inizializza()
+{
+	dev->requestStatus();
 }
 
 QString device_condition_light_status::get_string()
@@ -627,6 +630,11 @@ device_condition_dimming::device_condition_dimming(QWidget *parent, QString trig
 	dev = bt_global::add_device_to_cache(new DimmerDevice(where, PULL));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 	Draw();
+}
+
+void device_condition_dimming::inizializza()
+{
+	dev->requestStatus();
 }
 
 QString device_condition_dimming::get_current_value()
@@ -874,6 +882,11 @@ device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QStr
 	dev = bt_global::add_device_to_cache(new Dimmer100Device(where, PULL));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 	Draw();
+}
+
+void device_condition_dimming_100::inizializza()
+{
+	dev->requestStatus();
 }
 
 QString device_condition_dimming_100::get_current_value()
@@ -1129,6 +1142,11 @@ device_condition_volume::device_condition_volume(QWidget *parent, QString trigge
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));
 	Draw();
+}
+
+void device_condition_volume::inizializza()
+{
+	dev->init();
 }
 
 void device_condition_volume::set_condition_value_min(int s)
@@ -1491,10 +1509,7 @@ void device_condition_temp::get_condition_value(QString& out)
 
 void device_condition_temp::inizializza()
 {
-	device_condition::inizializza();
-
-	// send init frame
-	static_cast<NonControlledProbeDevice *>(dev)->requestStatus();
+	dev->requestStatus();
 }
 
 void device_condition_temp::status_changed(const StatusList &sl)
@@ -1556,6 +1571,11 @@ device_condition_aux::device_condition_aux(QWidget *parent, QString trigger, QSt
 	dev = bt_global::add_device_to_cache(new aux_device(where));
 	connect(dev, SIGNAL(status_changed(stat_var)), SLOT(status_changed(stat_var)));
 	Draw();
+}
+
+void device_condition_aux::inizializza()
+{
+	dev->init();
 }
 
 void device_condition_aux::Draw()

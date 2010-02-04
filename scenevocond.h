@@ -15,6 +15,13 @@ class QLabel;
 class device_condition;
 class QFrame;
 
+class NonControlledProbeDevice;
+class aux_device;
+class LightingDevice;
+class DimmerDevice;
+class Dimmer100Device;
+class sound_device;
+
 
 /*!
   \class scenEvo_cond
@@ -234,8 +241,6 @@ protected:
 
 protected:
 	QFrame *frame;
-	// Our "real" device
-	device *dev;
 	//! True when condition is satisfied
 	bool satisfied;
 
@@ -271,12 +276,16 @@ public:
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 
+protected:
+	virtual void inizializza();
+
 private slots:
 	void status_changed(const StatusList &sl);
 
 private:
 	//! Returns string to be displayed as a function of value
 	QString get_string();
+	LightingDevice *dev;
 };
 
 /*!
@@ -327,6 +336,9 @@ public slots:
 	//! Invoked when DOWN button is pressed
 	void Down();
 
+protected:
+	virtual void inizializza();
+
 private slots:
 	void status_changed(const StatusList &sl);
 
@@ -335,6 +347,7 @@ private:
 	int max_val;
 	int current_value_min;
 	int current_value_max;
+	DimmerDevice *dev;
 };
 
 
@@ -378,12 +391,16 @@ public:
 	virtual void set_condition_value(QString);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
+
 public slots:
 	void OK();
 	//! Invoked when UP button is pressed
 	void Up();
 	//! Invoked when DOWN button is pressed
 	void Down();
+
+protected:
+	virtual void inizializza();
 
 private slots:
 	void status_changed(const StatusList &sl);
@@ -393,6 +410,7 @@ private:
 	int max_val;
 	int current_value_min;
 	int current_value_max;
+	Dimmer100Device *dev;
 };
 
 /*!
@@ -430,6 +448,7 @@ public:
 	virtual void set_condition_value(QString);
 	//! Gets condition's meas unit
 	virtual QString get_unit();
+
 public slots:
 	void OK();
 	//! Invoked when status changes
@@ -438,11 +457,16 @@ public slots:
 	void Up();
 	//! Invoked when DOWN button is pressed
 	void Down();
+
+protected:
+	virtual void inizializza();
+
 private:
 	int min_val;
 	int max_val;
 	int current_value_min;
 	int current_value_max;
+	sound_device *dev;
 };
 
 
@@ -479,6 +503,7 @@ public:
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 
+protected:
 	virtual void inizializza();
 
 private slots:
@@ -491,6 +516,7 @@ private:
 	/// Step value for temperature conditions
 	int step;
 	TemperatureScale temp_scale;
+	NonControlledProbeDevice *dev;
 };
 
 
@@ -511,6 +537,9 @@ public:
 public slots:
 	void OK();
 
+protected:
+	virtual void inizializza();
+
 private slots:
 	// TODO: use a more generic approach!
 	void status_changed(stat_var status);
@@ -520,6 +549,7 @@ private:
 	void check_condition(bool emit_signal);
 	bool device_initialized;
 	int device_value;
+	aux_device *dev;
 };
 
 #endif // _SCENEVOCOND_H_
