@@ -83,5 +83,8 @@ void EnergyRates::setRate(const EnergyRate &new_rate)
 	QMap<QString, QString> map;
 
 	map["tariff"] = loc.toString(new_rate.rate, 'f', 3);
+#ifdef CONFIG_BTOUCH
+	// TODO needs a test TouchX config
 	setGlobalCfgValue(map, "rate_id", new_rate.id);
+#endif
 }
