@@ -147,6 +147,7 @@ private slots:
 private:
 	// round a temperature to the nearest multiple of 5
 	int roundTo5(int temp);
+	void setBannerEnabled(bool enable);
 	void updateText();
 	int current_temp, max_temp, min_temp, temp_step;
 	TemperatureScale scale;

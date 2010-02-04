@@ -187,12 +187,10 @@ void SplitTemperature::currentModeChanged(int new_mode)
 	{
 	case AdvancedAirConditioningDevice::MODE_DEHUM:
 	case AdvancedAirConditioningDevice::MODE_FAN:
-		left_button->disable();
-		right_button->disable();
+		setBannerEnabled(false);
 		break;
 	default:
-		left_button->enable();
-		right_button->enable();
+		setBannerEnabled(true);
 		break;
 	}
 }
@@ -255,6 +253,35 @@ int SplitTemperature::roundTo5(int temp)
 			return temp - mod;
 		else
 			return (div + 1) * 5;
+	}
+}
+
+void SplitTemperature::setBannerEnabled(bool enable)
+{
+	// TODO: change +/- icons
+	if (enable)
+	{
+		left_button->enable();
+		right_button->enable();
+		updateText();
+	}
+	else
+	{
+		left_button->disable();
+		right_button->disable();
+		// in this case the text must be "--.- C/F" (depending on scale)
+		QString text("--.- " TEMP_DEGREES);
+		switch (scale)
+		{
+		case CELSIUS:
+			text += "C";
+			break;
+		case FAHRENHEIT:
+			text += "F";
+			break;
+		}
+
+		setCentralText(text);
 	}
 }
 
