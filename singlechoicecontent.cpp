@@ -24,8 +24,7 @@ BtButton *CheckableBanner::getButton()
 }
 
 
-SingleChoiceContent::SingleChoiceContent(QWidget *parent)
-		: BannerContent(parent)
+SingleChoiceContent::SingleChoiceContent()
 {
 	buttons.setExclusive(true);
 

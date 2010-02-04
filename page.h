@@ -22,6 +22,7 @@ class Client;
 class PageContainer;
 class QVBoxLayout;
 class TransitionWidget;
+class BannerContentBase;
 class NavigationBar;
 class BannerContent;
 
@@ -148,7 +149,7 @@ class BannerPage : public Page
 {
 public:
 	// the type returned by page_content
-	typedef BannerContent ContentType;
+	typedef BannerContentBase ContentType;
 
 	BannerPage(QWidget *parent=0);
 
@@ -156,11 +157,11 @@ public:
 	virtual void inizializza();
 
 protected:
-	void buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title = QString(), QWidget *top_widget=0);
+	void buildPage(BannerContentBase *content, NavigationBar *nav_bar, const QString &title = QString(), QWidget *top_widget=0);
 	void buildPage(const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget=0);
 
 	// allows creating a BannerPage where the content is a generic QWidget containing a BannerContent
-	void buildPage(QWidget *content, BannerContent *banners, NavigationBar *nav_bar,
+	void buildPage(QWidget *content, BannerContentBase *banners, NavigationBar *nav_bar,
 		       const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget = 0);
 };
 

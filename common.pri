@@ -126,6 +126,7 @@ HEADERS += actuators.h \
            bann_airconditioning.h \
            bann_antintrusion.h \
            bann_automation.h \
+           bann_energy.h \
            bann_lighting.h \
            bann_scenario.h \
            bann_settings.h \
@@ -155,6 +156,7 @@ HEADERS += actuators.h \
            enabling_button.h \
            energy_data.h \
            energy_graph.h \
+           energy_rates.h \
            energy_view.h \
            feedmanager.h \
            feeditemwidget.h \
@@ -240,6 +242,7 @@ SOURCES += actuators.cpp \
            bann_airconditioning.cpp \
            bann_antintrusion.cpp \
            bann_automation.cpp \
+           bann_energy.cpp \
            bann_lighting.cpp \
            bann_scenario.cpp \
            bann_settings.cpp \
@@ -269,6 +272,7 @@ SOURCES += actuators.cpp \
            enabling_button.cpp \
            energy_data.cpp \
            energy_graph.cpp \
+           energy_rates.cpp \
            energy_view.cpp \
            feedmanager.cpp \
            feeditemwidget.cpp \

@@ -463,7 +463,7 @@ AlarmClockFreq::AlarmClockFreq(AlarmClock *alarm_page)
 {
 	AlarmNavigation *navigation = new AlarmNavigation(alarm_page->type == AlarmClock::DI_SON);
 
-	content = new SingleChoiceContent(this);
+	content = new SingleChoiceContent;
 	content->addBanner(SingleChoice::createBanner(tr("once")), AlarmClock::ONCE);
 	content->addBanner(SingleChoice::createBanner(tr("always")), AlarmClock::SEMPRE);
 	content->addBanner(SingleChoice::createBanner(tr("mon-fri")), AlarmClock::FERIALI);

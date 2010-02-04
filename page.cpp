@@ -253,12 +253,12 @@ void BannerPage::activateLayout()
 		page_content->drawContent();
 }
 
-void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title, QWidget *top_widget)
+void BannerPage::buildPage(BannerContentBase *content, NavigationBar *nav_bar, const QString &title, QWidget *top_widget)
 {
 	buildPage(content, content, nav_bar, title, TITLE_HEIGHT, top_widget);
 }
 
-void BannerPage::buildPage(QWidget *parent, BannerContent *content, NavigationBar *nav_bar,
+void BannerPage::buildPage(QWidget *parent, BannerContentBase *content, NavigationBar *nav_bar,
 			   const QString &title, int title_height, QWidget *top_widget)
 {
 	if (hardwareType() == TOUCH_X)

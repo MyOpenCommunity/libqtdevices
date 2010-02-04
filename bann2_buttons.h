@@ -104,12 +104,22 @@ class Bann2Buttons : public Bann2LinkedPages
 Q_OBJECT
 protected:
 	Bann2Buttons(QWidget *parent = 0);
+
+	/**
+	 * \param left icon path for the left button
+	 * \param right icon path for the right button
+	 * \param banner_text text of the label between the two buttons
+	 * \param banner_description text of the label below the banner; if empty, the label is deleted
+	 */
 	void initBanner(const QString &left, const QString &right, const QString &banner_text,
-		FontManager::Type font_type = FontManager::TEXT);
+		FontManager::Type text_font = FontManager::TEXT, const QString &banner_description = QString(),
+		FontManager::Type description_font = FontManager::TEXT);
+
 	void setCentralText(const QString &t);
+	void setDescriptionText(const QString &t);
 
 private:
-	QLabel *text;
+	QLabel *text, *description;
 };
 
 
@@ -194,19 +204,30 @@ public:
 
 
 /*!
-  \class bann2ButLa
-  \brief This is a class that describes a banner with a text between 2 buttons and a text on the bottom
+  \class bannOnOff
+  \brief This is a class that describes a banner with a button on the right and on the left, an icon on the center and a text on the bottom
   \author Davide
   \date lug 2005
 */
-class bann2ButLab : public BannerOld
+class bannOnOff : public BannerOld
 {
 Q_OBJECT
 public:
-	bann2ButLab(QWidget *parent);
-	void setAutoRepeat();
-protected:
-	virtual QSize sizeHint() const;
+	bannOnOff(QWidget *w=0);
+};
+
+
+/*!
+  \class bannOnOff2scr
+  \brief This is a class that describes a banner with a button on the right and on the left and a text on the bottom area and an other the center-left
+  \author Davide
+  \date lug 2005
+*/
+class bannOnOff2scr : public BannerOld
+{
+Q_OBJECT
+public:
+	bannOnOff2scr(QWidget *w=0);
 };
 
 #endif // BANN2_BUTTONS_H
