@@ -22,6 +22,7 @@ class Client;
 class PageContainer;
 class QVBoxLayout;
 class TransitionWidget;
+class BannerContent;
 class NavigationBar;
 class BannerContent;
 

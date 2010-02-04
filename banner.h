@@ -439,6 +439,7 @@ protected:
 	void connectButtonToPage(BtButton *b, Page *p);
 	virtual void hideEvent(QHideEvent *event);
 	void initButton(BtButton *btn, const QString &icon);
+	void initLabel(QLabel *lbl, const QString &text, const QFont &font);
 
 private:
 	QVector<Page *> linked_pages;

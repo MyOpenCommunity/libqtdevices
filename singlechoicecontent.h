@@ -26,7 +26,7 @@ class SingleChoiceContent : public BannerContent
 {
 Q_OBJECT
 public:
-	SingleChoiceContent(QWidget *parent = 0);
+	SingleChoiceContent();
 
 	// Get the active button
 	int checkedId() const;

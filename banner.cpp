@@ -736,3 +736,17 @@ void BannerNew::initButton(BtButton *btn, const QString &icon)
 		btn->setImage(icon);
 }
 
+void BannerNew::initLabel(QLabel *lbl, const QString &text, const QFont &font)
+{
+	if (text.isEmpty())
+	{
+		lbl->hide();
+		lbl->disconnect();
+		lbl->deleteLater();
+	}
+	else
+	{
+		lbl->setText(text);
+		lbl->setFont(font);
+	}
+}

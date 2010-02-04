@@ -63,27 +63,24 @@ QString getAmbName(QString name, QString amb)
  * Changes a value in conf.xml file atomically.
  * It works on a temporary file and then moves that file on conf.xml with a call to ::rename().
  */
-#ifdef CONFIG_BTOUCH
-bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
-#else
-bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filename)
-#endif
+bool prepareWriteCfgFile(QDomDocument &doc, const QString &filename)
 {
-	if (!bt_global::config.contains(INIT_COMPLETE))
-	{
-#ifdef CONFIG_BTOUCH
-		qDebug() << "Not writing to configuration during init: " << item_id << serial_number << data;
-#else
-		qDebug() << "Not writing to configuration during init: " << item_id << data;
-#endif
-
-		return true;
-	}
-
 	QFile config_file(filename);
 	if (!config_file.open(QIODevice::ReadOnly))
 		return false;
 
+	if (!doc.setContent(&config_file))
+	{
+		config_file.close();
+		return false;
+	}
+	config_file.close();
+
+	return true;
+}
+
+bool writeCfgFile(const QDomDocument &doc, const QString &filename)
+{
 	const QString tmp_filename = "cfg/appoggio.xml";
 	if (QFile::exists(tmp_filename))
 		QFile::remove(tmp_filename);
@@ -92,13 +89,45 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filena
 	if (!tmp_file.open(QIODevice::WriteOnly))
 		return false;
 
-	QDomDocument doc("config_document");
-	if (!doc.setContent(&config_file))
+	// Use a text stream to handle unicode properly
+	QTextStream tmp_stream(&tmp_file);
+	tmp_stream.setCodec("UTF-8");
+	QString xml = doc.toString(0);
+	// Other processes don't support empty tags on xml, so we replace it with tags
+	// with empty content.
+	QRegExp empty_tag_reg("<([^>]+)/>");
+	empty_tag_reg.setMinimal(true);
+	tmp_stream << xml.replace(empty_tag_reg, "<\\1></\\1>");
+	tmp_stream.flush();
+	tmp_file.close();
+
+	// QDir::rename fails if destination file exists so we use rename system call
+	if (!::rename(qPrintable(tmp_file.fileName()), qPrintable(filename)))
 	{
-		config_file.close();
-		return false;
+		// Write an empty file to warn other process that the configuration file has changed.
+		int fd = open(FILE_CHANGE_CONF, O_CREAT, 0666);
+		if (fd >= 0)
+			close(fd);
+
+		return true;
 	}
-	config_file.close();
+
+	return false;
+}
+
+/**
+ * Changes a value in conf.xml file atomically.
+ * It works on a temporary file and then moves that file on conf.xml with a call to ::rename().
+ */
+#ifdef CONFIG_BTOUCH
+bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
+#else
+bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filename)
+#endif
+{
+	QDomDocument doc("config_document");
+	if (!prepareWriteCfgFile(doc, filename))
+		return false;
 
 #ifdef CONFIG_BTOUCH
 	QDomNode n = findXmlNode(doc, QRegExp(".*"), item_id, serial_number);
@@ -115,6 +144,7 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filena
 #endif
 	Q_ASSERT_X(!n.isNull(), "setCfgValue", qPrintable(QString("No object found with id %1").arg(item_id)));
 
+	// TODO maybe refactor & move to xml_functions.cpp/h
 	QMapIterator<QString, QString> it(data);
 	while (it.hasNext())
 	{
@@ -122,38 +152,40 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filena
 		QDomElement el = getElement(n, it.key());
 		Q_ASSERT_X(!el.isNull(), "setCfgValue", qPrintable(QString("No element found: %1").arg(it.key())));
 		// To replace the text of the element
-		QDomText new_node = doc.createTextNode(it.value());
-		if (el.firstChild().isNull())
-			el.appendChild(new_node);
-		else
-			el.replaceChild(new_node, el.firstChild());
+		el.replaceChild(doc.createTextNode(it.value()), el.firstChild());
 	}
 
-	// Use a text stream to handle unicode properly
-	QTextStream tmp_stream(&tmp_file);
-	tmp_stream.setCodec("UTF-8");
-	QString xml = doc.toString(0);
-	// Other processes don't support empty tags on xml, so we replace it with tags
-	// with empty content.
-	QRegExp empty_tag_reg("<([^>]+)/>");
-	empty_tag_reg.setMinimal(true);
-	tmp_stream << xml.replace(empty_tag_reg, "<\\1></\\1>");
-	tmp_stream.flush();
-	tmp_file.close();
-
-	// QDir::rename fails if destination file exists so we use rename system call
-	if (!::rename(qPrintable(tmp_filename), qPrintable(filename)))
-	{
-		// Write an empty file to warn other process that the configuration file has changed.
-		int fd = open(FILE_CHANGE_CONF, O_CREAT, 0666);
-		if (fd >= 0)
-			close(fd);
-
-		return true;
-	}
-
-	return false;
+	return writeCfgFile(doc, filename);
 }
+
+#ifdef CONFIG_BTOUCH
+
+// TODO rewrite setCfgValue using setGlobalCfgValue when removing CONFIG_BTOUCH
+bool setGlobalCfgValue(QMap<QString, QString> data, const QString &id_name, int id_value, const QString &filename)
+{
+	QDomDocument doc("config_document");
+	if (!prepareWriteCfgFile(doc, filename))
+		return false;
+
+	int serial_number = 1; // dummy
+	QDomNode n = findXmlNode(doc, QRegExp(".*"), id_name, id_value, serial_number);
+	Q_ASSERT_X(!n.isNull(), "setCfgValue", qPrintable(QString("No object found with id %1").arg(id_value)));
+
+	// TODO maybe refactor & move to xml_functions.cpp/h
+	QMapIterator<QString, QString> it(data);
+	while (it.hasNext())
+	{
+		it.next();
+		QDomElement el = getElement(n, it.key());
+		Q_ASSERT_X(!el.isNull(), "setGlobalCfgValue", qPrintable(QString("No element found: %1").arg(it.key())));
+		// To replace the text of the element
+		el.replaceChild(doc.createTextNode(it.value()), el.firstChild());
+	}
+
+	return writeCfgFile(doc, filename);
+}
+
+#endif
 
 #ifdef CONFIG_BTOUCH
 

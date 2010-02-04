@@ -32,8 +32,7 @@ HEADERS += favoriteswidget.h \
            videoplayer.h \
            webcam.h
 
-SOURCES += bannercontent.cpp \
-           favoriteswidget.cpp \
+SOURCES += favoriteswidget.cpp \
            headerwidget.cpp \
            iconsettings.cpp \
            multimedia.cpp \
