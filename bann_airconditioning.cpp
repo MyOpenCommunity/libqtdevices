@@ -123,9 +123,9 @@ void AdvancedSplitScenario::onButtonClicked()
 
 
 CustomScenario::CustomScenario(AdvancedAirConditioningDevice *d) :
-	BannCenteredButton(0)
+	BannOnOffNew(0)
 {
-	initBanner(bt_global::skin->getImage("custom_button"));
+	initBanner(QString(), bt_global::skin->getImage("custom_button"), bt_global::skin->getImage("split_settings"), QString());
 	dev = d;
 }
 

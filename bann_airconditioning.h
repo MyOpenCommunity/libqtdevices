@@ -100,7 +100,7 @@ private slots:
  * Banner for the single button that accesses the custom page (no scenario).
  * This banner doesn't save on conf file.
  */
-class CustomScenario : public BannCenteredButton
+class CustomScenario : public BannOnOffNew
 {
 Q_OBJECT
 public:

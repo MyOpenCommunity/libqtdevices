@@ -210,7 +210,7 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirCo
 	}
 	else
 	{
-		bann->connectButton(split);
+		bann->connectRightButton(split);
 		connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 }
