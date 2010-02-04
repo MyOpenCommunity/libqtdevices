@@ -104,8 +104,6 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 		interfaces.push_back(en_interf);
 		b->connectRightButton(en_interf);
 
-		// TODO energy propagate rate changes to banner/pages
-
 		b->setText(getTextChild(type, "descr"));
 		b->setId(getTextChild(type, "id").toInt());
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
