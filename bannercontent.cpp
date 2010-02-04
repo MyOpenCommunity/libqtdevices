@@ -20,7 +20,11 @@ BannerContent::BannerContent(QWidget *parent, int _columns) :
 #endif
 {
 	QGridLayout *l = static_cast<QGridLayout *>(layout());
+#ifdef LAYOUT_BTOUCH
+	l->setContentsMargins(0, 0, 0, 0);
+#else
 	l->setContentsMargins(18, 0, 17, 0);
+#endif
 	l->setSpacing(0);
 	// use column 1 for the vertical separator bar
 	l->setColumnStretch(0, 1);
