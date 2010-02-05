@@ -137,12 +137,7 @@ signals:
 	void condSatisfied();
 };
 
-/*!
-\class DeviceConditionLight
-\brief This class represents a light status based condition
-\author Ciminaghi
-\date May 2006
-*/
+
 class DeviceConditionLight : public DeviceCondition
 {
 Q_OBJECT
@@ -170,12 +165,7 @@ private:
 	DeviceConditionDisplayOnOff *condition_display;
 };
 
-/*!
-\class device_condition_dimming
-\brief This class represents a dimming value based condition
-\author Ciminaghi
-\date May 2006
-*/
+
 class DeviceConditionDimming : public DeviceCondition
 {
 Q_OBJECT
@@ -229,18 +219,12 @@ private:
 };
 
 
-/*!
-\class device_condition_dimming_100
-\brief This class represents a dimming 100 value based condition
-\author Ciminaghi/Agresta
-\date May 2006
-*/
-class device_condition_dimming_100 : public DeviceCondition
+class DeviceConditionDimming100 : public DeviceCondition
 {
 Q_OBJECT
 public:
 	//! Constructor
-	device_condition_dimming_100(QWidget *parent, QString trigger, QString where);
+	DeviceConditionDimming100(QWidget *parent, QString trigger, QString where);
 	//! Returns min value
 	int get_min();
 	//! Returns max value
@@ -289,18 +273,13 @@ private:
 	Dimmer100Device *dev;
 };
 
-/*!
-\class device_condition_volume
-\brief This class represents a volume based condition
-\author Ciminaghi
-\date May 2006
-*/
-class device_condition_volume : public DeviceCondition
+
+class DeviceConditionVolume : public DeviceCondition
 {
 Q_OBJECT
 public:
 	//! Constructor
-	device_condition_volume(QWidget *parent, QString trigger, QString where);
+	DeviceConditionVolume(QWidget *parent, QString trigger, QString where);
 
 	//! Returns min value
 	int get_min();
@@ -346,20 +325,14 @@ private:
 };
 
 
-/*!
-\class device_condition_temp
-\brief This class represents a temperature based condition
-\author Ciminaghi
-\date May 2006
-*/
 #define CONDITION_MIN_TEMP 1050
 #define CONDITION_MAX_TEMP  500
-class device_condition_temp : public DeviceCondition
+class DeviceConditionTemperature : public DeviceCondition
 {
 Q_OBJECT
 public:
 	//! Constructor
-	device_condition_temp(QWidget *parent, QString trigger, QString where, bool external = false);
+	DeviceConditionTemperature(QWidget *parent, QString trigger, QString where, bool external = false);
 	//! Returns min value
 	int get_min();
 	//! Returns max value
@@ -396,11 +369,6 @@ private:
 };
 
 
-/*!
-\class device_condition_aux
-\brief This class represent a condition on a aux device
-\author Gianni Valdambrini <aleister@develer.com>
-*/
 class DeviceConditionAux : public DeviceCondition
 {
 Q_OBJECT

@@ -280,7 +280,7 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 		w += "00";
 	case 3:
 	case 8:
-		dc = new device_condition_temp(this, trigger, w, external);
+		dc = new DeviceConditionTemperature(this, trigger, w, external);
 		condition_up->setAutoRepeat(true);
 		condition_down->setAutoRepeat(true);
 		icon = bt_global::skin->getImage("probe");
@@ -290,11 +290,11 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 		icon = bt_global::skin->getImage("aux");
 		break;
 	case 4:
-		dc = new device_condition_volume(this, trigger, w);
+		dc = new DeviceConditionVolume(this, trigger, w);
 		icon = bt_global::skin->getImage("amplifier");
 		break;
 	case 6:
-		dc = new device_condition_dimming_100(this, trigger, w);
+		dc = new DeviceConditionDimming100(this, trigger, w);
 		icon = bt_global::skin->getImage("dimmer");
 		break;
 	default:

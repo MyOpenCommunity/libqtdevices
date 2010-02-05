@@ -56,9 +56,6 @@ void DeviceConditionDisplayDimming::updateText(int min_condition_value, int max_
 }
 
 
-/*****************************************************************
- ** Actual generic device condition
-****************************************************************/
 DeviceCondition::DeviceCondition()
 {
 	satisfied = false;
@@ -100,13 +97,11 @@ void DeviceCondition::set_condition_value(int v)
 
 void DeviceCondition::set_condition_value(QString s)
 {
-	qDebug() << "DeviceCondition::set_condition_value (" << s << ")";
 	set_condition_value(s.toInt());
 }
 
 void DeviceCondition::get_condition_value(QString& out)
 {
-	qDebug("DeviceCondition::get_condition_value(QString&)");
 	char tmp[100];
 	sprintf(tmp, "%d", get_condition_value());
 	out = tmp;
@@ -119,7 +114,6 @@ void DeviceCondition::setGeometry(int x, int y, int sx, int sy)
 
 void DeviceCondition::Up()
 {
-	qDebug("DeviceCondition::Up()");
 	int val = get_current_value();
 	val += get_step();
 	set_current_value(val);
@@ -129,7 +123,6 @@ void DeviceCondition::Up()
 
 void DeviceCondition::Down()
 {
-	qDebug("DeviceCondition::Down()");
 	int val = get_current_value();
 	val -= get_step();
 	set_current_value(val);
@@ -138,7 +131,6 @@ void DeviceCondition::Down()
 
 void DeviceCondition::OK()
 {
-	qDebug("DeviceCondition::OK()");
 	set_condition_value(get_current_value());
 }
 
@@ -168,7 +160,6 @@ void DeviceCondition::inizializza()
 
 void DeviceCondition::reset()
 {
-	qDebug("DeviceCondition::reset()");
 	set_current_value(get_condition_value());
 	Draw();
 }
@@ -179,9 +170,6 @@ bool DeviceCondition::isTrue()
 }
 
 
-/*****************************************************************
-** Actual light status device condition
-****************************************************************/
 DeviceConditionLight::DeviceConditionLight(QWidget *parent, QString trigger, QString where)
 {
 	condition_display = new DeviceConditionDisplayOnOff(parent);
@@ -233,7 +221,6 @@ int DeviceConditionLight::get_max()
 
 void DeviceConditionLight::set_condition_value(QString s)
 {
-	qDebug("DeviceConditionLight::set_condition_value");
 	int v = 0;
 	if (s == "1")
 		v = 1;
@@ -254,9 +241,7 @@ void DeviceConditionLight::setGeometry(int x, int y, int sx, int sy)
 	condition_display->setGeometry(x, y, sx, sy);
 }
 
-/*****************************************************************
-** Actual dimming value device condition
-****************************************************************/
+
 DeviceConditionDimming::DeviceConditionDimming(QWidget *parent, QString trigger, QString where)
 {
 	condition_display = new DeviceConditionDisplayDimming(parent);
@@ -465,10 +450,7 @@ void DeviceConditionDimming::status_changed(const StatusList &sl)
 }
 
 
-/*****************************************************************
- ** Actual dimming 100 value device condition
-****************************************************************/
-device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QString trigger, QString where)
+DeviceConditionDimming100::DeviceConditionDimming100(QWidget *parent, QString trigger, QString where)
 {
 	char sup[10];
 	QLabel *l = new QLabel(parent);
@@ -496,12 +478,12 @@ device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QStr
 	Draw();
 }
 
-void device_condition_dimming_100::inizializza()
+void DeviceConditionDimming100::inizializza()
 {
 	dev->requestStatus();
 }
 
-QString device_condition_dimming_100::get_current_value()
+QString DeviceConditionDimming100::get_current_value()
 {
 	char val[50];
 	int val_m = get_condition_value_min();
@@ -509,25 +491,23 @@ QString device_condition_dimming_100::get_current_value()
 	return val;
 }
 
-int device_condition_dimming_100::get_min()
+int DeviceConditionDimming100::get_min()
 {
 	return 0;
 }
 
-int device_condition_dimming_100::get_max()
+int DeviceConditionDimming100::get_max()
 {
 	return 100;
 }
 
-int device_condition_dimming_100::get_step()
+int DeviceConditionDimming100::get_step()
 {
 	return 10;
 }
 
-void device_condition_dimming_100::Up()
+void DeviceConditionDimming100::Up()
 {
-	qDebug("device_condition_dimming_100::Up()");
-
 	int val = get_current_value_min();
 	switch (val)
 	{
@@ -553,9 +533,8 @@ void device_condition_dimming_100::Up()
 	Draw();
 }
 
-void device_condition_dimming_100::Down()
+void DeviceConditionDimming100::Down()
 {
-	qDebug("device_condition_dimming_100::Down()");
 	int val = get_current_value_min();
 	switch (val)
 	{
@@ -581,10 +560,9 @@ void device_condition_dimming_100::Down()
 	Draw();
 }
 
-void device_condition_dimming_100::Draw()
+void DeviceConditionDimming100::Draw()
 {
 	QString tmp;
-	qDebug("device_condition_dimming_100::Draw()");
 	QString u = get_unit();
 	int v = get_current_value_min();
 	if (!v)
@@ -597,89 +575,82 @@ void device_condition_dimming_100::Draw()
 	((QLabel *)frame)->setText(tmp);
 }
 
-void device_condition_dimming_100::OK()
+void DeviceConditionDimming100::OK()
 {
-	qDebug("device_condition_dimming_100::OK()");
 	set_condition_value_min(get_current_value_min());
 	set_condition_value_max(get_current_value_max());
 }
 
-void device_condition_dimming_100::reset()
+void DeviceConditionDimming100::reset()
 {
-	qDebug("device_condition_dimming_100::reset()");
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
 	Draw();
 }
 
-QString device_condition_dimming_100::get_unit()
+QString DeviceConditionDimming100::get_unit()
 {
 	return "%";
 }
 
-void device_condition_dimming_100::set_condition_value_min(int s)
+void DeviceConditionDimming100::set_condition_value_min(int s)
 {
-	qDebug("device_condition_dimming_100::set_condition_value_min(%d)", s);
 	min_val = s;
 }
 
-void device_condition_dimming_100::set_condition_value_min(QString s)
+void DeviceConditionDimming100::set_condition_value_min(QString s)
 {
-	qDebug() << "device_condition_dimming_100::set_condition_value_min(" << s << ")";
 	min_val = s.toInt();
 }
 
-int device_condition_dimming_100::get_condition_value_min()
+int DeviceConditionDimming100::get_condition_value_min()
 {
 	return min_val;
 }
 
-void device_condition_dimming_100::set_condition_value_max(int s)
+void DeviceConditionDimming100::set_condition_value_max(int s)
 {
-	qDebug("device_condition_dimming_100::set_condition_value_max(%d)", s);
 	max_val = s;
 }
 
-void device_condition_dimming_100::set_condition_value_max(QString s)
+void DeviceConditionDimming100::set_condition_value_max(QString s)
 {
-	qDebug() << "device_condition_dimming_100::set_condition_value_max(" << s << ")";
 	max_val = s.toInt();
 }
 
-int device_condition_dimming_100::get_condition_value_max()
+int DeviceConditionDimming100::get_condition_value_max()
 {
 	return max_val;
 }
 
-int device_condition_dimming_100::get_current_value_min()
+int DeviceConditionDimming100::get_current_value_min()
 {
 	return current_value_min;
 }
 
-void device_condition_dimming_100::set_current_value_min(int min)
+void DeviceConditionDimming100::set_current_value_min(int min)
 {
 	current_value_min = min;
 }
 
-int device_condition_dimming_100::get_current_value_max()
+int DeviceConditionDimming100::get_current_value_max()
 {
 	return current_value_max;
 }
 
-void device_condition_dimming_100::set_current_value_max(int max)
+void DeviceConditionDimming100::set_current_value_max(int max)
 {
 	current_value_max = max;
 }
 
-void device_condition_dimming_100::set_condition_value(QString s)
+void DeviceConditionDimming100::set_condition_value(QString s)
 {
 	DeviceCondition::set_condition_value(s.toInt() * 10);
 }
 
-void device_condition_dimming_100::get_condition_value(QString& out)
+void DeviceConditionDimming100::get_condition_value(QString& out)
 {
 	char tmp[100];
-	qDebug("device_condition_dimming_100::get_condition_value()");
 	if (get_condition_value_min() == 0)
 		sprintf(tmp, "0");
 	else
@@ -687,7 +658,7 @@ void device_condition_dimming_100::get_condition_value(QString& out)
 	out =  tmp;
 }
 
-void device_condition_dimming_100::status_changed(const StatusList &sl)
+void DeviceConditionDimming100::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
 	int trig_min = get_condition_value_min();
@@ -719,10 +690,7 @@ void device_condition_dimming_100::status_changed(const StatusList &sl)
 }
 
 
-/*****************************************************************
-** Actual volume device condition
-****************************************************************/
-device_condition_volume::device_condition_volume(QWidget *parent, QString trigger, QString where)
+DeviceConditionVolume::DeviceConditionVolume(QWidget *parent, QString trigger, QString where)
 {
 	char sup[10];
 	QLabel *l = new QLabel(parent);
@@ -751,86 +719,80 @@ device_condition_volume::device_condition_volume(QWidget *parent, QString trigge
 	Draw();
 }
 
-void device_condition_volume::inizializza()
+void DeviceConditionVolume::inizializza()
 {
 	dev->init();
 }
 
-void device_condition_volume::set_condition_value_min(int s)
+void DeviceConditionVolume::set_condition_value_min(int s)
 {
-	qDebug("device_condition_volume::set_condition_value_min(%d)", s);
 	min_val = s;
 }
 
-void device_condition_volume::set_condition_value_min(QString s)
+void DeviceConditionVolume::set_condition_value_min(QString s)
 {
-	qDebug() << "device_condition_volume::set_condition_value_min(" << s << ")";
 	min_val = s.toInt();
 }
 
-int device_condition_volume::get_condition_value_min()
+int DeviceConditionVolume::get_condition_value_min()
 {
 	return min_val;
 }
 
-void device_condition_volume::set_condition_value_max(int s)
+void DeviceConditionVolume::set_condition_value_max(int s)
 {
-	qDebug("device_condition_volume::set_condition_value_max(%d)", s);
 	max_val = s;
 }
 
-void device_condition_volume::set_condition_value_max(QString s)
+void DeviceConditionVolume::set_condition_value_max(QString s)
 {
-	qDebug() << "device_condition_volume::set_condition_value_max(" << s << ")";
 	max_val = s.toInt();
 }
 
-int device_condition_volume::get_condition_value_max()
+int DeviceConditionVolume::get_condition_value_max()
 {
 	return max_val;
 }
 
-int device_condition_volume::get_current_value_min()
+int DeviceConditionVolume::get_current_value_min()
 {
 	return current_value_min;
 }
 
-void device_condition_volume::set_current_value_min(int min)
+void DeviceConditionVolume::set_current_value_min(int min)
 {
 	current_value_min = min;
 }
 
-int device_condition_volume::get_current_value_max()
+int DeviceConditionVolume::get_current_value_max()
 {
 	return current_value_max;
 }
 
-void device_condition_volume::set_current_value_max(int max)
+void DeviceConditionVolume::set_current_value_max(int max)
 {
 	current_value_max = max;
 }
 
-int device_condition_volume::get_min()
+int DeviceConditionVolume::get_min()
 {
 	return 0;
 }
 
-int device_condition_volume::get_max()
+int DeviceConditionVolume::get_max()
 {
 	return 31;
 }
 
-void device_condition_volume::set_condition_value(QString s)
+void DeviceConditionVolume::set_condition_value(QString s)
 {
 	int v = s.toInt();
-	qDebug("setting condition value to %d", v);
 	DeviceCondition::set_condition_value(v);
 }
 
-void device_condition_volume::get_condition_value(QString& out)
+void DeviceConditionVolume::get_condition_value(QString& out)
 {
 	char tmp[100];
-	qDebug("device_condition_volume::get_condition_value()");
 	if (get_condition_value_min() == -1)
 		sprintf(tmp, "-1");
 	else
@@ -838,9 +800,8 @@ void device_condition_volume::get_condition_value(QString& out)
 	out =  tmp;
 }
 
-void device_condition_volume::Up()
+void DeviceConditionVolume::Up()
 {
-	qDebug("device_condition_volume::Up()");
 	int v_m = get_current_value_min();
 	int v_M = get_current_value_max();
 	qDebug("v_m = %d - v_M = %d", v_m, v_M);
@@ -875,9 +836,8 @@ void device_condition_volume::Up()
 	Draw();
 }
 
-void device_condition_volume::Down()
+void DeviceConditionVolume::Down()
 {
-	qDebug("device_condition_volume::Down()");
 	int v_m = get_current_value_min();
 	int v_M = get_current_value_max();
 	qDebug("v_m = %d - v_M = %d", v_m, v_M);
@@ -912,14 +872,13 @@ void device_condition_volume::Down()
 	Draw();
 }
 
-void device_condition_volume::OK()
+void DeviceConditionVolume::OK()
 {
-	qDebug("device_condition_volume::OK()");
 	set_condition_value_min(get_current_value_min());
 	set_condition_value_max(get_current_value_max());
 }
 
-void device_condition_volume::Draw()
+void DeviceConditionVolume::Draw()
 {
 	QString tmp;
 	QString u = get_unit();
@@ -940,13 +899,12 @@ void device_condition_volume::Draw()
 	((QLabel *)frame)->setText(tmp);
 }
 
-void device_condition_volume::status_changed(QList<device_status*> sl)
+void DeviceConditionVolume::status_changed(QList<device_status*> sl)
 {
 	int trig_v_min = get_condition_value_min();
 	int trig_v_max = get_condition_value_max();
 	stat_var curr_volume(stat_var::AUDIO_LEVEL);
 	stat_var curr_stato(stat_var::ON_OFF);
-	qDebug("device_condition_volume::status_changed()");
 
 	for (int i = 0; i < sl.size(); ++i)
 	{
@@ -990,12 +948,12 @@ void device_condition_volume::status_changed(QList<device_status*> sl)
 	}
 }
 
-QString device_condition_volume::get_unit()
+QString DeviceConditionVolume::get_unit()
 {
 	return "%";
 }
 
-void device_condition_volume::reset()
+void DeviceConditionVolume::reset()
 {
 	qDebug("device_condition_volume::reset()");
 	set_current_value_min(get_condition_value_min());
@@ -1003,10 +961,8 @@ void device_condition_volume::reset()
 	Draw();
 }
 
-/*****************************************************************
-** Actual temperature device condition
-****************************************************************/
-device_condition_temp::device_condition_temp(QWidget *parent, QString trigger, QString where, bool external)
+
+DeviceConditionTemperature::DeviceConditionTemperature(QWidget *parent, QString trigger, QString where, bool external)
 {
 	// Temp condition is expressed in bticino format
 	int temp_condition = trigger.toInt();
@@ -1046,27 +1002,27 @@ device_condition_temp::device_condition_temp(QWidget *parent, QString trigger, Q
 	Draw();
 }
 
-int device_condition_temp::get_min()
+int DeviceConditionTemperature::get_min()
 {
 	return min_temp;
 }
 
-int device_condition_temp::get_max()
+int DeviceConditionTemperature::get_max()
 {
 	return max_temp;
 }
 
-int device_condition_temp::get_step()
+int DeviceConditionTemperature::get_step()
 {
 	return step;
 }
 
-int device_condition_temp::get_divisor()
+int DeviceConditionTemperature::get_divisor()
 {
 	return 10;
 }
 
-QString device_condition_temp::get_unit()
+QString DeviceConditionTemperature::get_unit()
 {
 	switch (temp_scale)
 	{
@@ -1080,7 +1036,7 @@ QString device_condition_temp::get_unit()
 	}
 }
 
-void device_condition_temp::Draw()
+void DeviceConditionTemperature::Draw()
 {
 	QString u = get_unit();
 	// val is an integer either in Celsius or in Fahrenheit degrees
@@ -1093,7 +1049,7 @@ void device_condition_temp::Draw()
 	((QLabel *)frame)->setText(tmp);
 }
 
-void device_condition_temp::get_condition_value(QString& out)
+void DeviceConditionTemperature::get_condition_value(QString& out)
 {
 	// transform an int value to a string in bticino 4-digit form
 	int val = DeviceCondition::get_condition_value();
@@ -1114,12 +1070,12 @@ void device_condition_temp::get_condition_value(QString& out)
 	out = QString("%1").arg(temp, 4, 10, QChar('0'));
 }
 
-void device_condition_temp::inizializza()
+void DeviceConditionTemperature::inizializza()
 {
 	dev->requestStatus();
 }
 
-void device_condition_temp::status_changed(const StatusList &sl)
+void DeviceConditionTemperature::status_changed(const StatusList &sl)
 {
 	if (!sl.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
 		return;
@@ -1159,11 +1115,6 @@ void device_condition_temp::status_changed(const StatusList &sl)
 		satisfied = false;
 	}
 }
-
-
-/*****************************************************************
-** Aux device condition
-****************************************************************/
 
 
 DeviceConditionAux::DeviceConditionAux(QWidget *parent, QString trigger, QString where) :
@@ -1210,7 +1161,6 @@ void DeviceConditionAux::check_condition(bool emit_signal)
 
 void DeviceConditionAux::status_changed(stat_var status)
 {
-	qDebug("DeviceConditionAux::status_changed");
 	device_value = status.get_val();
 	// We emit signal condSatisfied only if the device is initialized.
 	check_condition(device_initialized);
@@ -1224,7 +1174,6 @@ int DeviceConditionAux::get_max()
 
 void DeviceConditionAux::set_condition_value(QString s)
 {
-	qDebug("DeviceConditionAux::set_condition_value");
 	int v = 0;
 	if (s == "1")
 		v = 1;
@@ -1238,7 +1187,6 @@ void DeviceConditionAux::set_condition_value(QString s)
 
 void DeviceConditionAux::OK()
 {
-	qDebug("DeviceConditionAux::OK()");
 	DeviceCondition::OK();
 	check_condition(false);
 }
