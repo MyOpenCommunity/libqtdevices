@@ -37,15 +37,16 @@ namespace
 }
 
 
-void TestEnergyDevice::initTestCase()
+void TestEnergyDevice::init()
 {
 	where = "20";
 	dev = new EnergyDevice(where, 1);
 }
 
-void TestEnergyDevice::cleanupTestCase()
+void TestEnergyDevice::cleanup()
 {
 	delete dev;
+	dev = NULL;
 }
 
 void TestEnergyDevice::sendRequestCumulativeMonth()
@@ -483,3 +484,112 @@ void TestEnergyDevice::testConsecutiveGraphFrames()
 }
 
 
+// test automatic updates
+
+void TestEnergyDevice::sendUpdateStart()
+{
+	dev->sendUpdateStart();
+	client_command->flush();
+
+	QString req(QString("*#18*%1*#1200#%2*1##").arg(where).arg(dev->mode));
+	QCOMPARE(server->frameCommand(), req);
+}
+
+void TestEnergyDevice::sendUpdateStop()
+{
+	dev->sendUpdateStop();
+	client_command->flush();
+
+	QString req(QString("*#18*%1*#1200#%2*0##").arg(where).arg(dev->mode));
+	QCOMPARE(server->frameCommand(), req);
+}
+
+void TestEnergyDevice::receiveUpdateInterval()
+{
+	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR); // the dim doesn't matter
+
+	t.checkSignals(QString("*#18*%1*1200#%2*2##").arg(where).arg(dev->mode), 0);
+	QCOMPARE(dev->need_polling, false);
+	QCOMPARE(dev->update_timer, (QTimer *)NULL);
+}
+
+void TestEnergyDevice::receiveUpdateStop()
+{
+	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR); // the dim doesn't matter
+
+	t.checkSignals(QString("*#18*%1*1200#%2*0##").arg(where).arg(dev->mode), 0);
+	QCOMPARE(dev->need_polling, false);
+	QCOMPARE(dev->update_timer, (QTimer *)NULL);
+}
+
+void TestEnergyDevice::testUpdateStartPolling()
+{
+	dev->requestCurrentUpdateStart();
+	client_command->flush();
+	client_request->flush();
+
+	QString reqr = QString("*#18*%1*113##").arg(where);
+	QString reqc = QString("*#18*%1*#1200#%2*1##").arg(where).arg(dev->mode);
+	QCOMPARE(server->frameCommand(), reqc);
+	QCOMPARE(server->frameRequest(), reqr);
+	QCOMPARE(dev->update_timer->isActive(), true);
+	QCOMPARE(dev->update_count, 1);
+	QCOMPARE(dev->update_state, EnergyDevice::UPDATE_AUTO);
+
+	dev->requestCurrentUpdateStart();
+	QCOMPARE(dev->update_count, 2);
+}
+
+void TestEnergyDevice::testUpdateStartAutomatic()
+{
+	dev->setPollingOff();
+	dev->requestCurrentUpdateStart();
+	client_command->flush();
+
+	QString req = QString("*#18*%1*#1200#%2*1##").arg(where).arg(dev->mode);
+	QCOMPARE(server->frameCommand(), req);
+	QCOMPARE(dev->update_count, 1);
+	QCOMPARE(dev->update_state, EnergyDevice::UPDATE_AUTO);
+
+	dev->requestCurrentUpdateStart();
+	QCOMPARE(dev->update_count, 2);
+}
+
+void TestEnergyDevice::testUpdateStop()
+{
+	dev->update_count = 1;
+	dev->update_state = EnergyDevice::UPDATE_AUTO;
+	dev->requestCurrentUpdateStop();
+
+	QCOMPARE(dev->update_state, EnergyDevice::UPDATE_STOPPING);
+
+	// avoid waiting for the timer to expire
+	dev->stoppingTimeout();
+	dev->stoppingTimeout();
+
+	client_command->flush();
+
+	QString req = QString("*#18*%1*#1200#%2*0##").arg(where).arg(dev->mode);
+	QCOMPARE(server->frameCommand(), req);
+	QCOMPARE(dev->update_count, 0);
+	QCOMPARE(dev->update_state, EnergyDevice::UPDATE_IDLE);
+
+	dev->requestCurrentUpdateStop();
+	dev->stoppingTimeout();
+	QCOMPARE(dev->update_count, 0);
+}
+
+// TODO energy tests:
+// - requestCurrentUpdateStart
+// - requestCurrentUpdateStop
+// - frame parsing
+//
+// combined width
+// - polling mode
+// - auto-update mode
+//
+// combined with
+// - the three states for update state
+//
+// combined with
+// - update_count == 0, update_count > 0

@@ -278,12 +278,14 @@ void BannStates::setCurrentState(int new_state)
 			break;
 		}
 	updateText();
+	emit stateChanged(currentState());
 }
 
 void BannStates::changeState()
 {
 	current_index = ++current_index % states_list.size();
 	updateText();
+	emit stateChanged(currentState());
 }
 
 void BannStates::updateText()

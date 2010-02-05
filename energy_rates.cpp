@@ -9,7 +9,7 @@
 static QLocale loc(QLocale::Italian);
 static EnergyRate invalid_rate;
 
-EnergyRates bt_global::energy_rates;
+EnergyRates EnergyRates::energy_rates;
 
 
 bool EnergyRate::isValid() const
@@ -55,6 +55,9 @@ void EnergyRates::loadRates()
 
 		rates[rate.id] = rate;
 	}
+
+	Q_ASSERT_X(!rates.isEmpty(), "EnergyRates::loadRates",
+		   "Energy management configured but no rates defined");
 }
 
 EnergyRate EnergyRates::getRate(int rate_id) const

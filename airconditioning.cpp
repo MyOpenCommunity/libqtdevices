@@ -206,7 +206,7 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirCo
 	}
 	else
 	{
-		bann->connectButton(split);
+		bann->connectRightButton(split);
 		connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 }
@@ -299,7 +299,7 @@ void SplitSettings::readTempConfig(const QDomNode &temp_node, int init_temp)
 	int max = getTextChild(temp_node, "max").toInt();
 	int step = getTextChild(temp_node, "step").toInt();
 
-	temperature = new SplitTemperature(init_temp, max, min, step);
+	temperature = new SplitTemperature(init_temp, max, min, step, current_mode);
 	page_content->appendBanner(temperature);
 }
 
@@ -366,6 +366,12 @@ void SplitSettings::sendUpdatedValues()
 void SplitSettings::resetChanges()
 {
 	mode->setCurrentState(current_mode);
+	// Beware: this call must stay in the same method of mode->setCurrentState()
+	// Reason: on user cancel, we call setTemperature(), which updates the displayed temp. However, displayed
+	// temperature also depends on the current mode, which is also reset on user cancel. Since we don't know
+	// which mode we will land on, we rely on mode::modeChanged() signal to set the correct mode on reset.
+	// If the methods setCurrentState() and setTemperature() are called in the same function, we are guaranteed
+	// that the signal will be processed some time after the end of the function, leading to correct results.
 	temperature->setTemperature(current_temp);
 	if (speed)
 		speed->setCurrentState(current_fan_speed);

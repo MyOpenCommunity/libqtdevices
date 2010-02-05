@@ -101,7 +101,7 @@ private slots:
  * Banner for the single button that accesses the custom page (no scenario).
  * This banner doesn't save on conf file.
  */
-class CustomScenario : public BannCenteredButton
+class CustomScenario : public BannOnOffNew
 {
 Q_OBJECT
 public:
@@ -125,7 +125,7 @@ public:
 	/**
 	 * All values are assumed to be in the temperature scale set in conf.xml
 	 */
-	SplitTemperature(int init_temp, int level_max, int level_min, int step);
+	SplitTemperature(int init_temp, int level_max, int level_min, int step, int initial_mode);
 
 	/**
 	 * Set the current temperature. new_temp must be in celsius degrees.
@@ -148,9 +148,12 @@ private slots:
 private:
 	// round a temperature to the nearest multiple of 5
 	int roundTo5(int temp);
+	void setBannerEnabled(bool enable);
 	void updateText();
 	int current_temp, max_temp, min_temp, temp_step;
 	TemperatureScale scale;
+	bool is_enabled;
+	QString icon_plus, icon_plus_disabled, icon_minus, icon_minus_disabled;
 };
 
 
@@ -165,9 +168,6 @@ public:
 
 private:
 	QHash<int, QString> modes_descr;
-
-private slots:
-	void buttonClicked();
 
 signals:
 	void modeChanged(int);

@@ -63,6 +63,8 @@ public:
 	void requestCumulativeDayGraph(QDate date) const;
 	void requestCumulativeMonthGraph(QDate date) const;
 	void requestCumulativeYearGraph() const;
+	void requestCurrentUpdateStart();
+	void requestCurrentUpdateStop();
 
 	virtual void manageFrame(OpenMsg &msg);
 
@@ -106,8 +108,43 @@ private:
 	void fillYearGraphData(StatusList &status_list, OpenMsg &msg);
 	void fillMonthlyAverage(StatusList &status_list, OpenMsg &msg);
 	void fillCumulativeDay(StatusList &status_list, QString frame9, QString frame10);
+	void handleAutomaticUpdate(StatusList &status_list, OpenMsg &msg);
+
+	// frames for automatic updates
+	void sendUpdateStart();
+	void sendUpdateStop();
+
+	void setPollingOff();
 
 	QDate getDateFromFrame(OpenMsg &msg);
+
+private slots:
+	void pollingTimeout();
+	void stoppingTimeout();
+
+private:
+	enum UpdateState
+	{
+		// automatic updates are disabled
+		UPDATE_IDLE,
+		// automatic updates are enabled
+		UPDATE_AUTO,
+		// automatic updates will be stopped after a timeout expires
+		UPDATE_STOPPING,
+	};
+
+	UpdateState update_state;
+
+	// true if the device does not support automatic updates
+	bool need_polling;
+
+	// number of pages/banners that have requested automatic updates
+	int update_count;
+
+	// timer used to request updates when automatic updates are active
+	// but the device does not support automatic update frames
+	QTimer *update_timer;
+
 	mutable QStringList buffer_frame;
 	int mode;
 
