@@ -220,6 +220,7 @@ bool scenEvo_cond_h::isTrue()
 
 scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 {
+	device_cond = 0;
 	item_id = _item_id;
 
 	QLabel *area1_ptr = new QLabel(this);
@@ -254,8 +255,7 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 	connect(b, SIGNAL(clicked()), SLOT(Prev()));
 
 	QString trigger = getTextChild(config_node, "trigger");
-	// Create actual device condition
-	DeviceCondition *dc;
+
 #ifdef CONFIG_BTOUCH
 	int condition_type = getTextChild(config_node, "value").toInt();
 #else
@@ -271,12 +271,12 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 	{
 	case 1:
 		condition_display = new DeviceConditionDisplayOnOff(this);
-		dc = new DeviceConditionLight(condition_display, trigger, w);
+		device_cond = new DeviceConditionLight(condition_display, trigger, w);
 		icon = bt_global::skin->getImage("light");
 		break;
 	case 2:
 		condition_display = new DeviceConditionDisplayDimming(this);
-		dc = new DeviceConditionDimming(condition_display, trigger, w);
+		device_cond = new DeviceConditionDimming(condition_display, trigger, w);
 		icon = bt_global::skin->getImage("dimmer");
 		break;
 	case 7:
@@ -285,38 +285,41 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 	case 3:
 	case 8:
 		condition_display = new DeviceConditionDisplayTemperature(this);
-		dc = new DeviceConditionTemperature(condition_display, trigger, w, external);
+		device_cond = new DeviceConditionTemperature(condition_display, trigger, w, external);
 		condition_up->setAutoRepeat(true);
 		condition_down->setAutoRepeat(true);
 		icon = bt_global::skin->getImage("probe");
 		break;
 	case 9:
 		condition_display = new DeviceConditionDisplayOnOff(this);
-		dc = new DeviceConditionAux(condition_display, trigger, w);
+		device_cond = new DeviceConditionAux(condition_display, trigger, w);
 		icon = bt_global::skin->getImage("aux");
 		break;
 	case 4:
 		condition_display = new DeviceConditionDisplayVolume(this);
-		dc = new DeviceConditionVolume(condition_display, trigger, w);
+		device_cond = new DeviceConditionVolume(condition_display, trigger, w);
 		icon = bt_global::skin->getImage("amplifier");
 		break;
 	case 6:
 		condition_display = new DeviceConditionDisplayDimming(this);
-		dc = new DeviceConditionDimming100(condition_display, trigger, w);
+		device_cond = new DeviceConditionDimming100(condition_display, trigger, w);
 		icon = bt_global::skin->getImage("dimmer");
 		break;
 	default:
-		qDebug("Unknown device condition");
-		dc = NULL;
+		qWarning("Unknown device condition");
 	}
 	area1_ptr->setPixmap(*bt_global::icons_cache.getIcon(icon));
 
-	if (dc)
+	if (device_cond)
 	{
 		condition_display->setGeometry(40,140,160,50);
-		connect(dc, SIGNAL(condSatisfied()), SIGNAL(condSatisfied()));
+		connect(device_cond, SIGNAL(condSatisfied()), SIGNAL(condSatisfied()));
 	}
-	actual_condition = dc;
+}
+
+scenEvo_cond_d::~scenEvo_cond_d()
+{
+	delete device_cond;
 }
 
 const char *scenEvo_cond_d::getDescription()
@@ -326,19 +329,17 @@ const char *scenEvo_cond_d::getDescription()
 
 void scenEvo_cond_d::Up()
 {
-	qDebug("scenEvo_cond_d::Up()");
-	actual_condition->Up();
+	device_cond->Up();
 }
 
 void scenEvo_cond_d::Down()
 {
-	qDebug("scenEvo_cond_d::Down()");
-	actual_condition->Down();
+	device_cond->Down();
 }
 
 void scenEvo_cond_d::Apply()
 {
-	actual_condition->OK();
+	device_cond->OK();
 }
 
 void scenEvo_cond_d::OK()
@@ -353,7 +354,7 @@ void scenEvo_cond_d::save()
 {
 	qDebug("scenEvo_cond_d::save()");
 	QString s;
-	actual_condition->get_condition_value(s);
+	device_cond->get_condition_value(s);
 #ifdef CONFIG_BTOUCH
 	setCfgValue("condDevice/trigger", s, SCENARIO_EVOLUTO, get_serial_number());
 #else
@@ -366,17 +367,17 @@ void scenEvo_cond_d::save()
 void scenEvo_cond_d::reset()
 {
 	qDebug("scenEvo_cond_d::reset()");
-	actual_condition->reset();
+	device_cond->reset();
 }
 
 void scenEvo_cond_d::inizializza()
 {
-	if (actual_condition)
-		actual_condition->inizializza();
+	if (device_cond)
+		device_cond->inizializza();
 }
 
 bool scenEvo_cond_d::isTrue()
 {
-	return actual_condition ? actual_condition->isTrue() : false;
+	return device_cond ? device_cond->isTrue() : false;
 }
 

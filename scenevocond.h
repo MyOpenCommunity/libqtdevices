@@ -137,6 +137,7 @@ class scenEvo_cond_d : public scenEvo_cond
 Q_OBJECT
 public:
 	scenEvo_cond_d(int item_id, const QDomNode &config_node);
+	~scenEvo_cond_d();
 
 	/*!
 	\brief Returns condition description in human language
@@ -146,6 +147,7 @@ public:
 	virtual void save();
 	//! Return true when condition is satisfied
 	bool isTrue();
+
 public slots:
 	//! OK method
 	void OK();
@@ -157,6 +159,7 @@ public slots:
 	void Down();
 	//! Reset condition
 	void reset();
+
 private:
 	//! Button width/height
 	static const int BUTTON_DIM = 60;
@@ -164,7 +167,7 @@ private:
 	static const int TEXT_Y_DIM = 20;
 
 	//! Specific device condition
-	DeviceCondition *actual_condition;
+	DeviceCondition *device_cond;
 	//! Inits condition
 	void inizializza();
 };
