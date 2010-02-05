@@ -19,13 +19,7 @@ class QString;
 class QFrame;
 
 
-/*!
-  \class device_condition
-  \brief This class represent a device based condition
-  \author Ciminaghi
-  \date May 2006
-*/
-class device_condition : public QObject
+class DeviceCondition : public QObject
 {
 friend class scenEvo_cond_d;
 Q_OBJECT
@@ -38,7 +32,7 @@ public slots:
 	virtual void OK();
 
 protected:
-	device_condition();
+	DeviceCondition();
 
 	//! Returns min value
 	virtual int get_min();
@@ -99,7 +93,7 @@ signals:
 \author Ciminaghi
 \date May 2006
 */
-class device_condition_light_status : public device_condition
+class device_condition_light_status : public DeviceCondition
 {
 Q_OBJECT
 public:
@@ -132,7 +126,7 @@ private:
 \author Ciminaghi
 \date May 2006
 */
-class device_condition_dimming : public device_condition
+class device_condition_dimming : public DeviceCondition
 {
 Q_OBJECT
 public:
@@ -195,7 +189,7 @@ private:
 \author Ciminaghi/Agresta
 \date May 2006
 */
-class device_condition_dimming_100 : public device_condition
+class device_condition_dimming_100 : public DeviceCondition
 {
 Q_OBJECT
 public:
@@ -257,7 +251,7 @@ private:
 \author Ciminaghi
 \date May 2006
 */
-class device_condition_volume : public device_condition
+class device_condition_volume : public DeviceCondition
 {
 Q_OBJECT
 public:
@@ -316,7 +310,7 @@ private:
 */
 #define CONDITION_MIN_TEMP 1050
 #define CONDITION_MAX_TEMP  500
-class device_condition_temp : public device_condition
+class device_condition_temp : public DeviceCondition
 {
 Q_OBJECT
 public:
@@ -363,7 +357,7 @@ private:
 \brief This class represent a condition on a aux device
 \author Gianni Valdambrini <aleister@develer.com>
 */
-class device_condition_aux : public device_condition
+class device_condition_aux : public DeviceCondition
 {
 Q_OBJECT
 public:

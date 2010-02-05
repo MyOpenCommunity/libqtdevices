@@ -9,7 +9,7 @@
 
 
 class BtButton;
-class device_condition;
+class DeviceCondition;
 
 
 /*!
@@ -164,7 +164,7 @@ private:
 	static const int TEXT_Y_DIM = 20;
 
 	//! Specific device condition
-	device_condition *actual_condition;
+	DeviceCondition *actual_condition;
 	//! Inits condition
 	void inizializza();
 };

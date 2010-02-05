@@ -17,42 +17,42 @@ static QLocale loc(QLocale::Italian);
 /*****************************************************************
  ** Actual generic device condition
 ****************************************************************/
-device_condition::device_condition()
+DeviceCondition::DeviceCondition()
 {
 	satisfied = false;
 }
 
-int device_condition::get_min()
+int DeviceCondition::get_min()
 {
 	return 0;
 }
 
-int device_condition::get_max()
+int DeviceCondition::get_max()
 {
 	return 0;
 }
 
-int device_condition::get_step()
+int DeviceCondition::get_step()
 {
 	return 1;
 }
 
-int device_condition::get_divisor()
+int DeviceCondition::get_divisor()
 {
 	return 1;
 }
 
-bool device_condition::show_OFF_on_zero()
+bool DeviceCondition::show_OFF_on_zero()
 {
 	return false;
 }
 
-int device_condition::get_condition_value()
+int DeviceCondition::get_condition_value()
 {
 	return cond_value;
 }
 
-void device_condition::set_condition_value(int v)
+void DeviceCondition::set_condition_value(int v)
 {
 	if (v > get_max())
 		v = get_max();
@@ -61,21 +61,21 @@ void device_condition::set_condition_value(int v)
 	cond_value = v;
 }
 
-void device_condition::set_condition_value(QString s)
+void DeviceCondition::set_condition_value(QString s)
 {
-	qDebug() << "device_condition::set_condition_value (" << s << ")";
+	qDebug() << "DeviceCondition::set_condition_value (" << s << ")";
 	set_condition_value(s.toInt());
 }
 
-void device_condition::get_condition_value(QString& out)
+void DeviceCondition::get_condition_value(QString& out)
 {
-	qDebug("device_condition::get_condition_value(QString&)");
+	qDebug("DeviceCondition::get_condition_value(QString&)");
 	char tmp[100];
 	sprintf(tmp, "%d", get_condition_value());
 	out = tmp;
 }
 
-void device_condition::Draw()
+void DeviceCondition::Draw()
 {
 	QString tmp;
 	int v = get_current_value();
@@ -86,14 +86,14 @@ void device_condition::Draw()
 	((QLabel *)frame)->setText(tmp);
 }
 
-void device_condition::setGeometry(int x, int y, int sx, int sy)
+void DeviceCondition::setGeometry(int x, int y, int sx, int sy)
 {
 	frame->setGeometry(x, y, sx, sy);
 }
 
-void device_condition::Up()
+void DeviceCondition::Up()
 {
-	qDebug("device_condition::Up()");
+	qDebug("DeviceCondition::Up()");
 	int val = get_current_value();
 	val += get_step();
 	set_current_value(val);
@@ -101,27 +101,27 @@ void device_condition::Up()
 	Draw();
 }
 
-void device_condition::Down()
+void DeviceCondition::Down()
 {
-	qDebug("device_condition::Down()");
+	qDebug("DeviceCondition::Down()");
 	int val = get_current_value();
 	val -= get_step();
 	set_current_value(val);
 	Draw();
 }
 
-void device_condition::OK()
+void DeviceCondition::OK()
 {
-	qDebug("device_condition::OK()");
+	qDebug("DeviceCondition::OK()");
 	set_condition_value(get_current_value());
 }
 
-int device_condition::get_current_value()
+int DeviceCondition::get_current_value()
 {
 	return current_value;
 }
 
-int device_condition::set_current_value(int v)
+int DeviceCondition::set_current_value(int v)
 {
 	if (v > get_max())
 		v = get_max();
@@ -131,23 +131,23 @@ int device_condition::set_current_value(int v)
 	return current_value;
 }
 
-QString device_condition::get_unit()
+QString DeviceCondition::get_unit()
 {
 	return "";
 }
 
-void device_condition::inizializza()
+void DeviceCondition::inizializza()
 {
 }
 
-void device_condition::reset()
+void DeviceCondition::reset()
 {
-	qDebug("device_condition::reset()");
+	qDebug("DeviceCondition::reset()");
 	set_current_value(get_condition_value());
 	Draw();
 }
 
-bool device_condition::isTrue()
+bool DeviceCondition::isTrue()
 {
 	return satisfied;
 }
@@ -164,7 +164,7 @@ device_condition_light_status::device_condition_light_status(QWidget *parent, QS
 
 	frame = l;
 	set_condition_value(trigger);
-	set_current_value(device_condition::get_condition_value());
+	set_current_value(DeviceCondition::get_condition_value());
 	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 	Draw();
@@ -193,7 +193,7 @@ void device_condition_light_status::status_changed(const StatusList &sl)
 		switch (it.key())
 		{
 		case LightingDevice::DIM_DEVICE_ON:
-			if (device_condition::get_condition_value() == static_cast<int>(it.value().toBool()))
+			if (DeviceCondition::get_condition_value() == static_cast<int>(it.value().toBool()))
 			{
 				if (!satisfied)
 				{
@@ -224,12 +224,12 @@ void device_condition_light_status::set_condition_value(QString s)
 		v = 0;
 	else
 		qDebug() << "Unknown condition value " << s << " for device_condition_light_status";
-	device_condition::set_condition_value(v);
+	DeviceCondition::set_condition_value(v);
 }
 
 void device_condition_light_status::get_condition_value(QString& out)
 {
-	out = device_condition::get_condition_value() ? "1" : "0";
+	out = DeviceCondition::get_condition_value() ? "1" : "0";
 }
 
 
@@ -436,7 +436,7 @@ void device_condition_dimming::set_current_value_max(int max)
 
 void device_condition_dimming::set_condition_value(QString s)
 {
-	device_condition::set_condition_value(s.toInt() * 10);
+	DeviceCondition::set_condition_value(s.toInt() * 10);
 }
 
 void device_condition_dimming::get_condition_value(QString& out)
@@ -696,7 +696,7 @@ void device_condition_dimming_100::set_current_value_max(int max)
 
 void device_condition_dimming_100::set_condition_value(QString s)
 {
-	device_condition::set_condition_value(s.toInt() * 10);
+	DeviceCondition::set_condition_value(s.toInt() * 10);
 }
 
 void device_condition_dimming_100::get_condition_value(QString& out)
@@ -847,7 +847,7 @@ void device_condition_volume::set_condition_value(QString s)
 {
 	int v = s.toInt();
 	qDebug("setting condition value to %d", v);
-	device_condition::set_condition_value(v);
+	DeviceCondition::set_condition_value(v);
 }
 
 void device_condition_volume::get_condition_value(QString& out)
@@ -1062,7 +1062,7 @@ device_condition_temp::device_condition_temp(QWidget *parent, QString trigger, Q
 	step = 1;
 
 	// The condition value and the current value are stored in Celsius or Fahrenheit
-	set_current_value(device_condition::get_condition_value());
+	set_current_value(DeviceCondition::get_condition_value());
 	dev = bt_global::add_device_to_cache(new NonControlledProbeDevice(where,
 		external ? NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
@@ -1119,7 +1119,7 @@ void device_condition_temp::Draw()
 void device_condition_temp::get_condition_value(QString& out)
 {
 	// transform an int value to a string in bticino 4-digit form
-	int val = device_condition::get_condition_value();
+	int val = DeviceCondition::get_condition_value();
 	int temp;
 	switch (temp_scale)
 	{
@@ -1148,7 +1148,7 @@ void device_condition_temp::status_changed(const StatusList &sl)
 		return;
 
 	// get_condition_value() returns an int, which is Celsius or Fahrenheit
-	int trig_v = device_condition::get_condition_value();
+	int trig_v = DeviceCondition::get_condition_value();
 	int temp = sl[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
 
 	qDebug("Temperature changed");
@@ -1197,7 +1197,7 @@ device_condition_aux::device_condition_aux(QWidget *parent, QString trigger, QSt
 
 	frame = l;
 	set_condition_value(trigger);
-	set_current_value(device_condition::get_condition_value());
+	set_current_value(DeviceCondition::get_condition_value());
 	dev = bt_global::add_device_to_cache(new aux_device(where));
 	connect(dev, SIGNAL(status_changed(stat_var)), SLOT(status_changed(stat_var)));
 	Draw();
@@ -1215,7 +1215,7 @@ void device_condition_aux::Draw()
 
 void device_condition_aux::check_condition(bool emit_signal)
 {
-	int trig_v = device_condition::get_condition_value();
+	int trig_v = DeviceCondition::get_condition_value();
 	if (trig_v == device_value)
 	{
 		qDebug("aux condition (%d) satisfied", trig_v);
@@ -1257,14 +1257,14 @@ void device_condition_aux::set_condition_value(QString s)
 		v = 0;
 	else
 		qDebug() << "Unknown condition value " << s << " for device_condition_aux";
-	device_condition::set_condition_value(v);
+	DeviceCondition::set_condition_value(v);
 	check_condition(false);
 }
 
 void device_condition_aux::OK()
 {
 	qDebug("device_condition_aux::OK()");
-	device_condition::OK();
+	DeviceCondition::OK();
 	check_condition(false);
 }
 
