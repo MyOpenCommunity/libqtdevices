@@ -260,7 +260,6 @@ int SplitTemperature::roundTo5(int temp)
 
 void SplitTemperature::setBannerEnabled(bool enable)
 {
-	// TODO: change +/- icons
 	if (enable)
 	{
 		left_button->enable();
@@ -308,13 +307,9 @@ SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 			qWarning("The mode id %d doesn't exists", mode_id);
 
 	initBanner(bt_global::skin->getImage("cycle_mode"), current_mode);
-	connect(left_button, SIGNAL(clicked()), SLOT(buttonClicked()));
+	connect(this, SIGNAL(stateChanged(int)), SIGNAL(modeChanged(int)));
 }
 
-void SplitMode::buttonClicked()
-{
-	emit modeChanged(currentState());
-}
 
 
 SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)

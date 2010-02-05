@@ -167,9 +167,6 @@ public:
 private:
 	QHash<int, QString> modes_descr;
 
-private slots:
-	void buttonClicked();
-
 signals:
 	void modeChanged(int);
 };
