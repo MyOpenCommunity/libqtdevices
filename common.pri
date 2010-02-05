@@ -198,6 +198,7 @@ HEADERS += actuators.h \
            scaleconversion.h \
            scenario.h \
            scenevocond.h \
+           scenevodevicescond.h \
            screensaver.h \
            screensaverpage.h \
            sectionpage.h \
@@ -314,6 +315,7 @@ SOURCES += actuators.cpp \
            scaleconversion.cpp \
            scenario.cpp \
            scenevocond.cpp \
+           scenevodevicescond.cpp \
            screensaver.cpp \
            screensaverpage.cpp \
            sectionpage.cpp \
