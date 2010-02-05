@@ -272,7 +272,7 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 		icon = bt_global::skin->getImage("light");
 		break;
 	case 2:
-		dc = new device_condition_dimming(this, trigger, w);
+		dc = new DeviceConditionDimming(this, trigger, w);
 		icon = bt_global::skin->getImage("dimmer");
 		break;
 	case 7:

@@ -15,7 +15,7 @@
 static QLocale loc(QLocale::Italian);
 
 
-DeviceConditionDisplayOnOff::DeviceConditionDisplayOnOff(QWidget *parent) : QWidget(parent)
+DeviceConditionDisplay::DeviceConditionDisplay(QWidget *parent) : QWidget(parent)
 {
 	label = new QLabel;
 	label->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
@@ -26,9 +26,33 @@ DeviceConditionDisplayOnOff::DeviceConditionDisplayOnOff(QWidget *parent) : QWid
 	layout->addWidget(label);
 }
 
-void DeviceConditionDisplayOnOff::updateText(int new_value)
+
+DeviceConditionDisplayOnOff::DeviceConditionDisplayOnOff(QWidget *parent) :
+	DeviceConditionDisplay(parent)
 {
-	label->setText(new_value ? tr("ON") : tr("OFF"));
+
+}
+
+void DeviceConditionDisplayOnOff::updateText(int min_condition_value, int max_condition_value)
+{
+	Q_UNUSED(max_condition_value)
+	label->setText(min_condition_value ? tr("ON") : tr("OFF"));
+}
+
+
+DeviceConditionDisplayDimming::DeviceConditionDisplayDimming(QWidget *parent) :
+	DeviceConditionDisplay(parent)
+{
+
+}
+
+void DeviceConditionDisplayDimming::updateText(int min_condition_value, int max_condition_value)
+{
+	Q_UNUSED(max_condition_value)
+	if (min_condition_value == 0)
+		label->setText(tr("OFF"));
+	else
+		label->setText(QString("%1% - %3%").arg(min_condition_value).arg(max_condition_value));
 }
 
 
@@ -175,7 +199,7 @@ void DeviceConditionLight::inizializza()
 
 void DeviceConditionLight::Draw()
 {
-	condition_display->updateText(get_current_value());
+	condition_display->updateText(get_current_value(), get_current_value());
 }
 
 void DeviceConditionLight::status_changed(const StatusList &sl)
@@ -233,13 +257,10 @@ void DeviceConditionLight::setGeometry(int x, int y, int sx, int sy)
 /*****************************************************************
 ** Actual dimming value device condition
 ****************************************************************/
-device_condition_dimming::device_condition_dimming(QWidget *parent, QString trigger, QString where)
+DeviceConditionDimming::DeviceConditionDimming(QWidget *parent, QString trigger, QString where)
 {
-	QLabel *l = new QLabel(parent);
-	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	l->setFont(bt_global::font->get(FontManager::TEXT));
+	condition_display = new DeviceConditionDisplayDimming(parent);
 
-	frame = l;
 	if (trigger == "0")
 	{
 		set_condition_value_min(0);
@@ -247,50 +268,48 @@ device_condition_dimming::device_condition_dimming(QWidget *parent, QString trig
 	}
 	else
 	{
-		set_condition_value_min((QString) trigger.at(0));
-		QByteArray buf = trigger.toAscii();
-		set_condition_value_max(buf.constData()+2);
+		QStringList parts = trigger.split('-');
+		Q_ASSERT_X(parts.size() == 2, "", "");
+		set_condition_value_min(parts[0].toInt());
+		set_condition_value_max(parts[1].toInt());
 	}
+
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
+
 	// TODO: to PULL or not to PULL? That is the question...
 	dev = bt_global::add_device_to_cache(new DimmerDevice(where, PULL));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 	Draw();
 }
 
-void device_condition_dimming::inizializza()
+void DeviceConditionDimming::inizializza()
 {
 	dev->requestStatus();
 }
 
-QString device_condition_dimming::get_current_value()
+QString DeviceConditionDimming::get_current_value()
 {
-	char val[50];
-	int val_m = get_condition_value_min();
-	sprintf(val, "%d", val_m);
-	return val;
+	return QString::number(get_condition_value_min());
 }
 
-int device_condition_dimming::get_min()
+int DeviceConditionDimming::get_min()
 {
 	return 0;
 }
 
-int device_condition_dimming::get_max()
+int DeviceConditionDimming::get_max()
 {
 	return 100;
 }
 
-int device_condition_dimming::get_step()
+int DeviceConditionDimming::get_step()
 {
 	return 10;
 }
 
-void device_condition_dimming::Up()
+void DeviceConditionDimming::Up()
 {
-	qDebug("device_condition_dimming::Up()");
-
 	int val = get_current_value_min();
 	switch (val)
 	{
@@ -312,9 +331,8 @@ void device_condition_dimming::Up()
 	Draw();
 }
 
-void device_condition_dimming::Down()
+void DeviceConditionDimming::Down()
 {
-	qDebug("device_condition_dimming::Down()");
 	int val = get_current_value_min();
 	switch (val)
 	{
@@ -336,105 +354,72 @@ void device_condition_dimming::Down()
 	Draw();
 }
 
-void device_condition_dimming::Draw()
+void DeviceConditionDimming::Draw()
 {
-	QString tmp;
-	qDebug("device_condition_dimming::Draw()");
-	int v = get_current_value_min();
-	if (!v)
-		tmp = tr("OFF");
-	else
-	{
-		QString u = get_unit();
-		int M = get_current_value_max();
-		tmp = QString("%1%2 - %3%4").arg(v*10).arg(u).arg(M*10).arg(u);
-	}
-	((QLabel *)frame)->setText(tmp);
+	condition_display->updateText(get_current_value_min()*10, get_current_value_max()*10);
 }
 
-void device_condition_dimming::OK()
+void DeviceConditionDimming::OK()
 {
-	qDebug("device_condition_dimming::OK()");
 	set_condition_value_min(get_current_value_min());
 	set_condition_value_max(get_current_value_max());
 }
 
-void device_condition_dimming::reset()
+void DeviceConditionDimming::reset()
 {
-	qDebug("device_condition_dimming::reset()");
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
 	Draw();
 }
 
-QString device_condition_dimming::get_unit()
+void DeviceConditionDimming::set_condition_value_min(int s)
 {
-	return "%";
-}
-
-void device_condition_dimming::set_condition_value_min(int s)
-{
-	qDebug("device_condition_dimming::set_condition_value_min(%d)", s);
 	min_val = s;
 }
 
-void device_condition_dimming::set_condition_value_min(QString s)
-{
-	qDebug() << "device_condition_dimming::set_condition_value_min(" << s << ")";
-	min_val = s.toInt();
-}
-
-int device_condition_dimming::get_condition_value_min()
+int DeviceConditionDimming::get_condition_value_min()
 {
 	return min_val;
 }
 
-void device_condition_dimming::set_condition_value_max(int s)
+void DeviceConditionDimming::set_condition_value_max(int s)
 {
-	qDebug("device_condition_dimming::set_condition_value_max(%d)", s);
 	max_val = s;
 }
 
-void device_condition_dimming::set_condition_value_max(QString s)
-{
-	qDebug() << "device_condition_dimming::set_condition_value_max(" << s << ")";
-	max_val = s.toInt();
-}
-
-int device_condition_dimming::get_condition_value_max()
+int DeviceConditionDimming::get_condition_value_max()
 {
 	return max_val;
 }
 
-int device_condition_dimming::get_current_value_min()
+int DeviceConditionDimming::get_current_value_min()
 {
 	return current_value_min;
 }
 
-void device_condition_dimming::set_current_value_min(int min)
+void DeviceConditionDimming::set_current_value_min(int min)
 {
 	current_value_min = min;
 }
 
-int device_condition_dimming::get_current_value_max()
+int DeviceConditionDimming::get_current_value_max()
 {
 	return current_value_max;
 }
 
-void device_condition_dimming::set_current_value_max(int max)
+void DeviceConditionDimming::set_current_value_max(int max)
 {
 	current_value_max = max;
 }
 
-void device_condition_dimming::set_condition_value(QString s)
+void DeviceConditionDimming::set_condition_value(QString s)
 {
 	DeviceCondition::set_condition_value(s.toInt() * 10);
 }
 
-void device_condition_dimming::get_condition_value(QString& out)
+void DeviceConditionDimming::get_condition_value(QString& out)
 {
 	char tmp[100];
-	qDebug("device_condition_dimming::get_condition_value()");
 	if (get_condition_value_min() == 0)
 		sprintf(tmp, "0");
 	else
@@ -442,7 +427,12 @@ void device_condition_dimming::get_condition_value(QString& out)
 	out =  tmp;
 }
 
-void device_condition_dimming::status_changed(const StatusList &sl)
+void DeviceConditionDimming::setGeometry(int x, int y, int sx, int sy)
+{
+	condition_display->setGeometry(x, y, sx, sy);
+}
+
+void DeviceConditionDimming::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
 	int trig_min = get_condition_value_min();
@@ -1195,7 +1185,7 @@ void DeviceConditionAux::inizializza()
 
 void DeviceConditionAux::Draw()
 {
-	condition_display->updateText(get_current_value());
+	condition_display->updateText(get_current_value(), get_current_value());
 }
 
 void DeviceConditionAux::check_condition(bool emit_signal)

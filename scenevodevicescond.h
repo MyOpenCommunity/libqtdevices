@@ -22,21 +22,52 @@ class QLabel;
 
 
 /**
- * This class is (stub of) a widget that can be used to represent a device condition
- * which can have only the ON or the OFF status.
+ * This abstract class is a widget that can be used to represent a device
+ * condition. Reimplement the updateText method to format properly the condition
+ * when its value changes.
  */
-class DeviceConditionDisplayOnOff : public QWidget
+class DeviceConditionDisplay : public QWidget
+{
+Q_OBJECT
+public:
+	DeviceConditionDisplay(QWidget *parent);
+
+public slots:
+	virtual void updateText(int min_condition_value, int max_condition_value) = 0;
+
+protected:
+	QLabel *label;
+};
+
+
+/**
+ * This class can be used to represent a device condition which can have only
+ * the ON or the OFF status.
+ */
+class DeviceConditionDisplayOnOff : public DeviceConditionDisplay
 {
 Q_OBJECT
 public:
 	DeviceConditionDisplayOnOff(QWidget *parent);
 
 public slots:
-	void updateText(int new_value);
-
-private:
-	QLabel *label;
+	void updateText(int min_condition_value, int max_condition_value);
 };
+
+
+/**
+ * This class can be used for represent a dimming device condition.
+ */
+class DeviceConditionDisplayDimming : public DeviceConditionDisplay
+{
+Q_OBJECT
+public:
+	DeviceConditionDisplayDimming(QWidget *parent);
+
+public slots:
+	void updateText(int min_condition_value, int max_condition_value);
+};
+
 
 
 class DeviceCondition : public QObject
@@ -145,25 +176,21 @@ private:
 \author Ciminaghi
 \date May 2006
 */
-class device_condition_dimming : public DeviceCondition
+class DeviceConditionDimming : public DeviceCondition
 {
 Q_OBJECT
 public:
 	//! Constructor
-	device_condition_dimming(QWidget *parent, QString trigger, QString where);
+	DeviceConditionDimming(QWidget *parent, QString trigger, QString where);
 	//! Returns min value
 	int get_min();
 	//! Returns max value
 	virtual int get_max();
 	//! Returns step
 	int get_step();
-	//! Gets condition's meas unit
-	virtual QString get_unit();
 	void set_condition_value_min(int);
-	void set_condition_value_min(QString);
 	int get_condition_value_min();
 	void set_condition_value_max(int);
-	void set_condition_value_max(QString);
 	int get_condition_value_max();
 	int get_current_value_min();
 	void set_current_value_min(int min);
@@ -187,6 +214,7 @@ public slots:
 
 protected:
 	virtual void inizializza();
+	virtual void setGeometry(int, int, int ,int);
 
 private slots:
 	void status_changed(const StatusList &sl);
@@ -197,6 +225,7 @@ private:
 	int current_value_min;
 	int current_value_max;
 	DimmerDevice *dev;
+	DeviceConditionDisplayDimming *condition_display;
 };
 
 
