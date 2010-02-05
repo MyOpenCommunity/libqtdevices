@@ -38,15 +38,16 @@ namespace
 }
 
 
-void TestEnergyDevice::initTestCase()
+void TestEnergyDevice::init()
 {
 	where = "20";
 	dev = new EnergyDevice(where, 1);
 }
 
-void TestEnergyDevice::cleanupTestCase()
+void TestEnergyDevice::cleanup()
 {
 	delete dev;
+	dev = NULL;
 }
 
 void TestEnergyDevice::sendRequestCumulativeMonth()
