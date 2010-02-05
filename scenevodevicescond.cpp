@@ -14,6 +14,9 @@
 // The language used for the floating point number
 static QLocale loc(QLocale::Italian);
 
+#define CONDITION_MIN_TEMP 1050
+#define CONDITION_MAX_TEMP  500
+
 
 DeviceConditionDisplay::DeviceConditionDisplay(QWidget *parent) : QWidget(parent)
 {
@@ -27,12 +30,6 @@ DeviceConditionDisplay::DeviceConditionDisplay(QWidget *parent) : QWidget(parent
 }
 
 
-DeviceConditionDisplayOnOff::DeviceConditionDisplayOnOff(QWidget *parent) :
-	DeviceConditionDisplay(parent)
-{
-
-}
-
 void DeviceConditionDisplayOnOff::updateText(int min_condition_value, int max_condition_value)
 {
 	Q_UNUSED(max_condition_value)
@@ -40,11 +37,6 @@ void DeviceConditionDisplayOnOff::updateText(int min_condition_value, int max_co
 }
 
 
-DeviceConditionDisplayDimming::DeviceConditionDisplayDimming(QWidget *parent) :
-	DeviceConditionDisplay(parent)
-{
-
-}
 
 void DeviceConditionDisplayDimming::updateText(int min_condition_value, int max_condition_value)
 {
@@ -54,12 +46,6 @@ void DeviceConditionDisplayDimming::updateText(int min_condition_value, int max_
 		label->setText(QString("%1% - %3%").arg(min_condition_value).arg(max_condition_value));
 }
 
-
-DeviceConditionDisplayVolume::DeviceConditionDisplayVolume(QWidget *parent) :
-	DeviceConditionDisplay(parent)
-{
-
-}
 
 void DeviceConditionDisplayVolume::updateText(int min_condition_value, int max_condition_value)
 {

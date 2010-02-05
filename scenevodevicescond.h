@@ -48,7 +48,7 @@ class DeviceConditionDisplayOnOff : public DeviceConditionDisplay
 {
 Q_OBJECT
 public:
-	DeviceConditionDisplayOnOff(QWidget *parent);
+	DeviceConditionDisplayOnOff(QWidget *parent) : DeviceConditionDisplay(parent) {}
 
 public slots:
 	void updateText(int min_condition_value, int max_condition_value);
@@ -62,7 +62,7 @@ class DeviceConditionDisplayDimming : public DeviceConditionDisplay
 {
 Q_OBJECT
 public:
-	DeviceConditionDisplayDimming(QWidget *parent);
+	DeviceConditionDisplayDimming(QWidget *parent) : DeviceConditionDisplay(parent) {}
 
 public slots:
 	void updateText(int min_condition_value, int max_condition_value);
@@ -76,7 +76,7 @@ class DeviceConditionDisplayVolume : public DeviceConditionDisplay
 {
 Q_OBJECT
 public:
-	DeviceConditionDisplayVolume(QWidget *parent);
+	DeviceConditionDisplayVolume(QWidget *parent) : DeviceConditionDisplay(parent) {}
 
 public slots:
 	void updateText(int min_condition_value, int max_condition_value);
@@ -336,8 +336,6 @@ private:
 };
 
 
-#define CONDITION_MIN_TEMP 1050
-#define CONDITION_MAX_TEMP  500
 class DeviceConditionTemperature : public DeviceCondition
 {
 Q_OBJECT
