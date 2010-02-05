@@ -265,14 +265,18 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 	QString icon;
 	QString w = getTextChild(config_node, "where");
 	bool external = false;
+	DeviceConditionDisplay *condition_display;
+
 	switch (condition_type)
 	{
 	case 1:
-		dc = new DeviceConditionLight(this, trigger, w);
+		condition_display = new DeviceConditionDisplayOnOff(this);
+		dc = new DeviceConditionLight(condition_display, trigger, w);
 		icon = bt_global::skin->getImage("light");
 		break;
 	case 2:
-		dc = new DeviceConditionDimming(this, trigger, w);
+		condition_display = new DeviceConditionDisplayDimming(this);
+		dc = new DeviceConditionDimming(condition_display, trigger, w);
 		icon = bt_global::skin->getImage("dimmer");
 		break;
 	case 7:
@@ -280,21 +284,25 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 		w += "00";
 	case 3:
 	case 8:
-		dc = new DeviceConditionTemperature(this, trigger, w, external);
+		condition_display = new DeviceConditionDisplayTemperature(this);
+		dc = new DeviceConditionTemperature(condition_display, trigger, w, external);
 		condition_up->setAutoRepeat(true);
 		condition_down->setAutoRepeat(true);
 		icon = bt_global::skin->getImage("probe");
 		break;
 	case 9:
-		dc = new DeviceConditionAux(this, trigger, w);
+		condition_display = new DeviceConditionDisplayOnOff(this);
+		dc = new DeviceConditionAux(condition_display, trigger, w);
 		icon = bt_global::skin->getImage("aux");
 		break;
 	case 4:
-		dc = new DeviceConditionVolume(this, trigger, w);
+		condition_display = new DeviceConditionDisplayVolume(this);
+		dc = new DeviceConditionVolume(condition_display, trigger, w);
 		icon = bt_global::skin->getImage("amplifier");
 		break;
 	case 6:
-		dc = new DeviceConditionDimming100(this, trigger, w);
+		condition_display = new DeviceConditionDisplayDimming(this);
+		dc = new DeviceConditionDimming100(condition_display, trigger, w);
 		icon = bt_global::skin->getImage("dimmer");
 		break;
 	default:
@@ -305,7 +313,7 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 
 	if (dc)
 	{
-		dc->setGeometry(40,140,160,50);
+		condition_display->setGeometry(40,140,160,50);
 		connect(dc, SIGNAL(condSatisfied()), SIGNAL(condSatisfied()));
 	}
 	actual_condition = dc;

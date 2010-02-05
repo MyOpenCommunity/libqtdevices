@@ -84,9 +84,15 @@ void DeviceConditionDisplayTemperature::updateText(int min_condition_value, int 
 }
 
 
-DeviceCondition::DeviceCondition()
+DeviceCondition::DeviceCondition(DeviceConditionDisplay *cond_display)
 {
+	condition_display = cond_display;
 	satisfied = false;
+}
+
+void DeviceCondition::updateText(int min_condition_value, int max_condition_value)
+{
+	condition_display->updateText(min_condition_value, max_condition_value);
 }
 
 int DeviceCondition::get_min()
@@ -193,11 +199,9 @@ bool DeviceCondition::isTrue()
 }
 
 
-DeviceConditionLight::DeviceConditionLight(QWidget *parent, QString trigger, QString where)
+DeviceConditionLight::DeviceConditionLight(DeviceConditionDisplay* cond_display, QString trigger, QString where)
+	: DeviceCondition(cond_display)
 {
-	condition_display = new DeviceConditionDisplayOnOff(parent);
-	connect(this, SIGNAL(conditionChanged(int,int)), condition_display, SLOT(updateText(int,int)));
-
 	set_condition_value(trigger);
 	set_current_value(DeviceCondition::get_condition_value());
 	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL));
@@ -212,7 +216,7 @@ void DeviceConditionLight::inizializza()
 
 void DeviceConditionLight::Draw()
 {
-	emit conditionChanged(get_current_value(), get_current_value());
+	updateText(get_current_value(), get_current_value());
 }
 
 void DeviceConditionLight::status_changed(const StatusList &sl)
@@ -261,17 +265,11 @@ void DeviceConditionLight::get_condition_value(QString& out)
 	out = DeviceCondition::get_condition_value() ? "1" : "0";
 }
 
-void DeviceConditionLight::setGeometry(int x, int y, int sx, int sy)
+
+
+DeviceConditionDimming::DeviceConditionDimming(DeviceConditionDisplay* cond_display, QString trigger, QString where)
+	: DeviceCondition(cond_display)
 {
-	condition_display->setGeometry(x, y, sx, sy);
-}
-
-
-DeviceConditionDimming::DeviceConditionDimming(QWidget *parent, QString trigger, QString where)
-{
-	condition_display = new DeviceConditionDisplayDimming(parent);
-	connect(this, SIGNAL(conditionChanged(int,int)), condition_display, SLOT(updateText(int,int)));
-
 	if (trigger == "0")
 	{
 		set_condition_value_min(0);
@@ -368,7 +366,7 @@ void DeviceConditionDimming::Down()
 
 void DeviceConditionDimming::Draw()
 {
-	emit conditionChanged(get_current_value_min()*10, get_current_value_max()*10);
+	updateText(get_current_value_min()*10, get_current_value_max()*10);
 }
 
 void DeviceConditionDimming::OK()
@@ -439,10 +437,6 @@ void DeviceConditionDimming::get_condition_value(QString& out)
 	out =  tmp;
 }
 
-void DeviceConditionDimming::setGeometry(int x, int y, int sx, int sy)
-{
-	condition_display->setGeometry(x, y, sx, sy);
-}
 
 void DeviceConditionDimming::status_changed(const StatusList &sl)
 {
@@ -477,10 +471,9 @@ void DeviceConditionDimming::status_changed(const StatusList &sl)
 }
 
 
-DeviceConditionDimming100::DeviceConditionDimming100(QWidget *parent, QString trigger, QString where)
+DeviceConditionDimming100::DeviceConditionDimming100(DeviceConditionDisplay* cond_display, QString trigger, QString where)
+	: DeviceCondition(cond_display)
 {
-	condition_display = new DeviceConditionDisplayDimming(parent);
-	connect(this, SIGNAL(conditionChanged(int,int)), condition_display, SLOT(updateText(int,int)));
 	if (trigger == "0")
 	{
 		set_condition_value_min(0);
@@ -501,10 +494,6 @@ DeviceConditionDimming100::DeviceConditionDimming100(QWidget *parent, QString tr
 	Draw();
 }
 
-void DeviceConditionDimming100::setGeometry(int x, int y, int sx, int sy)
-{
-	condition_display->setGeometry(x, y, sx, sy);
-}
 
 void DeviceConditionDimming100::inizializza()
 {
@@ -587,7 +576,7 @@ void DeviceConditionDimming100::Down()
 
 void DeviceConditionDimming100::Draw()
 {
-	emit conditionChanged(get_current_value_min(), get_current_value_max());
+	updateText(get_current_value_min(), get_current_value_max());
 }
 
 void DeviceConditionDimming100::OK()
@@ -691,11 +680,9 @@ void DeviceConditionDimming100::status_changed(const StatusList &sl)
 }
 
 
-DeviceConditionVolume::DeviceConditionVolume(QWidget *parent, QString trigger, QString where)
+DeviceConditionVolume::DeviceConditionVolume(DeviceConditionDisplay* cond_display, QString trigger, QString where)
+	: DeviceCondition(cond_display)
 {
-	condition_display = new DeviceConditionDisplayVolume(parent);
-	connect(this, SIGNAL(conditionChanged(int,int)), condition_display, SLOT(updateText(int,int)));
-
 	if (trigger == "-1")
 	{
 		set_condition_value_min(-1);
@@ -718,10 +705,6 @@ DeviceConditionVolume::DeviceConditionVolume(QWidget *parent, QString trigger, Q
 	Draw();
 }
 
-void DeviceConditionVolume::setGeometry(int x, int y, int sx, int sy)
-{
-	condition_display->setGeometry(x, y, sx, sy);
-}
 
 void DeviceConditionVolume::inizializza()
 {
@@ -874,7 +857,7 @@ void DeviceConditionVolume::OK()
 
 void DeviceConditionVolume::Draw()
 {
-	emit conditionChanged(get_current_value_min(), get_current_value_max());
+	updateText(get_current_value_min(), get_current_value_max());
 }
 
 void DeviceConditionVolume::status_changed(QList<device_status*> sl)
@@ -935,11 +918,9 @@ void DeviceConditionVolume::reset()
 }
 
 
-DeviceConditionTemperature::DeviceConditionTemperature(QWidget *parent, QString trigger, QString where, bool external)
+DeviceConditionTemperature::DeviceConditionTemperature(DeviceConditionDisplay *cond_display, QString trigger, QString where, bool external)
+	: DeviceCondition(cond_display)
 {
-	condition_display = new DeviceConditionDisplayTemperature(parent);
-	connect(this, SIGNAL(conditionChanged(int,int)), condition_display, SLOT(updateText(int,int)));
-
 	// Temp condition is expressed in bticino format
 	int temp_condition = trigger.toInt();
 
@@ -995,7 +976,7 @@ int DeviceConditionTemperature::get_divisor()
 
 void DeviceConditionTemperature::Draw()
 {
-	emit conditionChanged(get_current_value(), get_current_value());
+	updateText(get_current_value(), get_current_value());
 }
 
 void DeviceConditionTemperature::get_condition_value(QString& out)
@@ -1065,18 +1046,10 @@ void DeviceConditionTemperature::status_changed(const StatusList &sl)
 	}
 }
 
-void DeviceConditionTemperature::setGeometry(int x, int y, int sx, int sy)
+
+DeviceConditionAux::DeviceConditionAux(DeviceConditionDisplay* cond_display, QString trigger, QString where) :
+	DeviceCondition(cond_display), device_initialized(false), device_value(-1)
 {
-	condition_display->setGeometry(x, y, sx, sy);
-}
-
-
-DeviceConditionAux::DeviceConditionAux(QWidget *parent, QString trigger, QString where) :
-	device_initialized(false), device_value(-1)
-{
-	condition_display = new DeviceConditionDisplayOnOff(parent);
-	connect(this, SIGNAL(conditionChanged(int,int)), condition_display, SLOT(updateText(int,int)));
-
 	set_condition_value(trigger);
 	set_current_value(DeviceCondition::get_condition_value());
 	dev = bt_global::add_device_to_cache(new aux_device(where));
@@ -1091,7 +1064,7 @@ void DeviceConditionAux::inizializza()
 
 void DeviceConditionAux::Draw()
 {
-	emit conditionChanged(get_current_value(), get_current_value());
+	updateText(get_current_value(), get_current_value());
 }
 
 void DeviceConditionAux::check_condition(bool emit_signal)
@@ -1144,10 +1117,5 @@ void DeviceConditionAux::OK()
 {
 	DeviceCondition::OK();
 	check_condition(false);
-}
-
-void DeviceConditionAux::setGeometry(int x, int y, int sx, int sy)
-{
-	condition_display->setGeometry(x, y, sx, sy);
 }
 

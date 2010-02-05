@@ -113,10 +113,13 @@ public slots:
 signals:
 	//! Emitted when the condition on device is satisfied
 	void condSatisfied();
-	void conditionChanged(int min_condition_value, int max_condition_value);
 
 protected:
-	DeviceCondition();
+	DeviceCondition(DeviceConditionDisplay *cond_display);
+
+	// The method to update the descriptive text of the condition using the
+	// the DeviceConditionDisplay widget.
+	void updateText(int min_condition_value, int max_condition_value);
 
 	//! Returns min value
 	virtual int get_min();
@@ -137,8 +140,6 @@ protected:
 	//! Gets condition's meas unit
 	virtual QString get_unit();
 
-	//! Sets geometry
-	virtual void setGeometry(int, int, int ,int) = 0;
 	//! Draws frame
 	virtual void Draw() = 0;
 
@@ -162,7 +163,7 @@ private:
 	int cond_value;
 	//! Current value (displayed, not confirmed)
 	int current_value;
-
+	DeviceConditionDisplay *condition_display;
 };
 
 
@@ -171,7 +172,7 @@ class DeviceConditionLight : public DeviceCondition
 Q_OBJECT
 public:
 	//! Constructor
-	DeviceConditionLight(QWidget *parent, QString trigger, QString where);
+	DeviceConditionLight(DeviceConditionDisplay* condition_display, QString trigger, QString where);
 	//! Draws frame
 	virtual void Draw();
 	//! Returns max value
@@ -183,14 +184,12 @@ public:
 
 protected:
 	virtual void inizializza();
-	virtual void setGeometry(int, int, int, int);
 
 private slots:
 	void status_changed(const StatusList &sl);
 
 private:
 	LightingDevice *dev;
-	DeviceConditionDisplayOnOff *condition_display;
 };
 
 
@@ -199,7 +198,7 @@ class DeviceConditionDimming : public DeviceCondition
 Q_OBJECT
 public:
 	//! Constructor
-	DeviceConditionDimming(QWidget *parent, QString trigger, QString where);
+	DeviceConditionDimming(DeviceConditionDisplay* cond_display, QString trigger, QString where);
 	//! Returns min value
 	int get_min();
 	//! Returns max value
@@ -232,7 +231,6 @@ public slots:
 
 protected:
 	virtual void inizializza();
-	virtual void setGeometry(int, int, int ,int);
 
 private slots:
 	void status_changed(const StatusList &sl);
@@ -243,7 +241,6 @@ private:
 	int current_value_min;
 	int current_value_max;
 	DimmerDevice *dev;
-	DeviceConditionDisplayDimming *condition_display;
 };
 
 
@@ -252,7 +249,7 @@ class DeviceConditionDimming100 : public DeviceCondition
 Q_OBJECT
 public:
 	//! Constructor
-	DeviceConditionDimming100(QWidget *parent, QString trigger, QString where);
+	DeviceConditionDimming100(DeviceConditionDisplay* cond_display, QString trigger, QString where);
 	//! Returns min value
 	int get_min();
 	//! Returns max value
@@ -285,7 +282,6 @@ public slots:
 
 protected:
 	virtual void inizializza();
-	virtual void setGeometry(int, int, int ,int);
 
 private slots:
 	void status_changed(const StatusList &sl);
@@ -295,8 +291,7 @@ private:
 	int max_val;
 	int current_value_min;
 	int current_value_max;
-	Dimmer100Device *dev;
-	DeviceConditionDisplayDimming *condition_display;
+	Dimmer100Device *dev;;
 };
 
 
@@ -305,7 +300,7 @@ class DeviceConditionVolume : public DeviceCondition
 Q_OBJECT
 public:
 	//! Constructor
-	DeviceConditionVolume(QWidget *parent, QString trigger, QString where);
+	DeviceConditionVolume(DeviceConditionDisplay* cond_display, QString trigger, QString where);
 
 	//! Returns min value
 	int get_min();
@@ -338,7 +333,6 @@ public slots:
 
 protected:
 	virtual void inizializza();
-	virtual void setGeometry(int, int, int ,int);
 
 private:
 	int min_val;
@@ -346,7 +340,6 @@ private:
 	int current_value_min;
 	int current_value_max;
 	sound_device *dev;
-	DeviceConditionDisplayVolume *condition_display;
 };
 
 
@@ -355,7 +348,7 @@ class DeviceConditionTemperature : public DeviceCondition
 Q_OBJECT
 public:
 	//! Constructor
-	DeviceConditionTemperature(QWidget *parent, QString trigger, QString where, bool external = false);
+	DeviceConditionTemperature(DeviceConditionDisplay* cond_display, QString trigger, QString where, bool external = false);
 	//! Returns min value
 	int get_min();
 	//! Returns max value
@@ -375,7 +368,6 @@ public:
 
 protected:
 	virtual void inizializza();
-	virtual void setGeometry(int, int, int, int);
 
 private slots:
 	//! Invoked when status changes
@@ -388,7 +380,6 @@ private:
 	int step;
 	TemperatureScale temp_scale;
 	NonControlledProbeDevice *dev;
-	DeviceConditionDisplayTemperature *condition_display;
 };
 
 
@@ -396,7 +387,7 @@ class DeviceConditionAux : public DeviceCondition
 {
 Q_OBJECT
 public:
-	DeviceConditionAux(QWidget *parent, QString trigger, QString where);
+	DeviceConditionAux(DeviceConditionDisplay* cond_display, QString trigger, QString where);
 	virtual void Draw();
 	virtual int get_max();
 	virtual void set_condition_value(QString);
@@ -406,7 +397,6 @@ public slots:
 
 protected:
 	virtual void inizializza();
-	virtual void setGeometry(int, int, int, int);
 
 private slots:
 	// TODO: use a more generic approach!
@@ -418,7 +408,6 @@ private:
 	bool device_initialized;
 	int device_value;
 	aux_device *dev;
-	DeviceConditionDisplayOnOff *condition_display;
 };
 
 
