@@ -24,6 +24,7 @@ private slots:
 	void sendRequestCurrent2();
 	void sendRequestCurrent3();
 	void sendRequestCurrent4();
+
 	void receiveCumulativeDay();
 	void receiveCumulativeDay2();
 	void receiveCurrent();
@@ -44,6 +45,13 @@ private slots:
 
 	void testGetDateFromFrame();
 	void testConsecutiveGraphFrames();
+
+	// automatic updates
+	void sendUpdateStart();
+	void sendUpdateStop();
+
+	void receiveUpdateInterval();
+	void receiveUpdateStop();
 
 private:
 	EnergyDevice *dev;
