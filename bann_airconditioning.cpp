@@ -123,9 +123,9 @@ void AdvancedSplitScenario::onButtonClicked()
 
 
 CustomScenario::CustomScenario(AdvancedAirConditioningDevice *d) :
-	BannCenteredButton(0)
+	BannOnOffNew(0)
 {
-	initBanner(bt_global::skin->getImage("custom_button"));
+	initBanner(QString(), bt_global::skin->getImage("custom_button"), bt_global::skin->getImage("split_settings"), QString());
 	dev = d;
 }
 
@@ -137,11 +137,13 @@ void CustomScenario::splitValuesChanged(const AirConditionerStatus &st)
 
 
 
-SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, int step) :
+SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, int step, int initial_mode) :
 	Bann2Buttons(0)
 {
-	QString icon_plus = bt_global::skin->getImage("plus");
-	QString icon_minus = bt_global::skin->getImage("minus");
+	icon_plus = bt_global::skin->getImage("plus");
+	icon_minus = bt_global::skin->getImage("minus");
+	icon_plus_disabled = bt_global::skin->getImage("plus_disabled");
+	icon_minus_disabled = bt_global::skin->getImage("minus_disabled");
 	initBanner(icon_minus, icon_plus, "---", FontManager::SUBTITLE);
 
 	scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
@@ -151,7 +153,7 @@ SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, 
 	max_temp = level_max;
 	min_temp = level_min;
 	temp_step = step;
-	updateText();
+	currentModeChanged(initial_mode);
 
 	left_button->setAutoRepeat(true);
 	connect(left_button, SIGNAL(clicked()), SLOT(decreaseTemp()));
@@ -187,12 +189,10 @@ void SplitTemperature::currentModeChanged(int new_mode)
 	{
 	case AdvancedAirConditioningDevice::MODE_DEHUM:
 	case AdvancedAirConditioningDevice::MODE_FAN:
-		left_button->disable();
-		right_button->disable();
+		setBannerEnabled(false);
 		break;
 	default:
-		left_button->enable();
-		right_button->enable();
+		setBannerEnabled(true);
 		break;
 	}
 }
@@ -219,14 +219,33 @@ void SplitTemperature::decreaseTemp()
 
 void SplitTemperature::updateText()
 {
-	switch (scale)
+	if (is_enabled)
 	{
-	case CELSIUS:
-		setCentralText(celsiusString(current_temp));
-		break;
-	case FAHRENHEIT:
-		setCentralText(fahrenheitString(current_temp));
-		break;
+		switch (scale)
+		{
+		case CELSIUS:
+			setCentralText(celsiusString(current_temp));
+			break;
+		case FAHRENHEIT:
+			setCentralText(fahrenheitString(current_temp));
+			break;
+		}
+	}
+	else
+	{
+		// in this case the text must be "--.- C/F" (depending on scale)
+		QString text("--.- " TEMP_DEGREES);
+		switch (scale)
+		{
+		case CELSIUS:
+			text += "C";
+			break;
+		case FAHRENHEIT:
+			text += "F";
+			break;
+		}
+
+		setCentralText(text);
 	}
 }
 
@@ -258,6 +277,26 @@ int SplitTemperature::roundTo5(int temp)
 	}
 }
 
+void SplitTemperature::setBannerEnabled(bool enable)
+{
+	is_enabled = enable;
+	if (is_enabled)
+	{
+		left_button->enable();
+		left_button->setImage(icon_minus);
+		right_button->enable();
+		right_button->setImage(icon_plus);
+	}
+	else
+	{
+		left_button->disable();
+		left_button->setImage(icon_minus_disabled);
+		right_button->disable();
+		right_button->setImage(icon_plus_disabled);
+	}
+	updateText();
+}
+
 
 SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 {
@@ -274,14 +313,10 @@ SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 		else
 			qWarning("The mode id %d doesn't exists", mode_id);
 
-	initBanner(bt_global::skin->getImage("cycle"), current_mode);
-	connect(left_button, SIGNAL(clicked()), SLOT(buttonClicked()));
+	initBanner(bt_global::skin->getImage("cycle_mode"), current_mode);
+	connect(this, SIGNAL(stateChanged(int)), SIGNAL(modeChanged(int)));
 }
 
-void SplitMode::buttonClicked()
-{
-	emit modeChanged(currentState());
-}
 
 
 SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
@@ -298,7 +333,7 @@ SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 		else
 			qWarning("The speed id %d doesn't exists", speed_id);
 
-	initBanner(bt_global::skin->getImage("cycle"), current_speed);
+	initBanner(bt_global::skin->getImage("cycle_speed"), current_speed);
 }
 
 

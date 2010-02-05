@@ -252,6 +252,9 @@ private:
 
 private slots:
 	void changeState();
+
+signals:
+	void stateChanged(int);
 };
 
 

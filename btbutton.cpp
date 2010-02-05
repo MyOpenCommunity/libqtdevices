@@ -4,6 +4,7 @@
 
 #include <QDebug>
 #include <QFile>
+#include <QEvent>
 
 
 BtButton::BtButton(QWidget *parent) : QPushButton(parent)
@@ -67,10 +68,38 @@ void BtButton::setPixmap(const QPixmap &p)
 	}
 }
 
+bool BtButton::event(QEvent *e)
+{
+	// this code is taken from QAbstractButton::event().
+	// Whenever we change Qt version, check the source to see if the check changed (eg. multitouch mouse events)
+	if (!is_enabled)
+	{
+		switch (e->type())
+		{
+		case QEvent::TabletPress:
+		case QEvent::TabletRelease:
+		case QEvent::TabletMove:
+		case QEvent::MouseButtonPress:
+		case QEvent::MouseButtonRelease:
+		case QEvent::MouseButtonDblClick:
+		case QEvent::MouseMove:
+		case QEvent::HoverMove:
+		case QEvent::HoverEnter:
+		case QEvent::HoverLeave:
+		case QEvent::ContextMenu:
+	#ifndef QT_NO_WHEELEVENT
+		case QEvent::Wheel:
+	#endif
+			return true;
+		default:
+			break;
+		}
+	}
+	return QPushButton::event(e);
+}
+
 void BtButton::mousePressEvent(QMouseEvent *event)
 {
-	if (!is_enabled)
-		return;
 	// Toggle buttons are managed by toggled slot, that is always called when
 	// the button changes its state.
 	if (!isToggle() && !pressed_pixmap.isNull())
@@ -82,8 +111,6 @@ void BtButton::mousePressEvent(QMouseEvent *event)
 
 void BtButton::mouseReleaseEvent(QMouseEvent *event)
 {
-	if (!is_enabled)
-		return;
 	// Manages only normal buttons. Toggle buttons are managed by toggled slot.
 	if (!isToggle() && !pressed_pixmap.isNull())
 		setIcon(pixmap);
