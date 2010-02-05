@@ -59,7 +59,10 @@ void DisplayControl::setBrightness(BrightnessLevel level)
 	data[DISPLAY_OPERATIVE].backlight = true;
 	data[DISPLAY_OPERATIVE].screensaver = false;
 
+#ifdef CONFIG_BTOUCH
+	// TODO: to be changed on TouchX
 	setCfgValue("brightness/level", level, DISPLAY);
+#endif
 	current_brightness = level;
 }
 
