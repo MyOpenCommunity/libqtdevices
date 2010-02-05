@@ -121,14 +121,6 @@ void DeviceOld::init_requested_handler(QString msg)
 		sendFrame(msg);
 }
 
-void DeviceOld::set_where(QString w)
-{
-	qDebug() << "DeviceOld::set_where(" << w << ")";
-	if (interpreter)
-		interpreter->set_where(w);
-	device::set_where(w);
-}
-
 DeviceOld::~DeviceOld()
 {
 	while (!stat.isEmpty())

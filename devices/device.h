@@ -36,14 +36,8 @@ public:
 
 	virtual void manageFrame(OpenMsg &msg) {}
 
-
-	// TODO: the following method are part of the public interface only for
-	// compatibility with the old devices. Remove it asap.
-	virtual void set_where(QString w) { where = w; }
-	virtual void init(bool force) {}
-
 signals:
-	// Old Status changed, to be removed (see above)
+	// TODO: Old Status changed, to be removed asap.
 	void status_changed(QList<device_status*>);
 
 	/// The status changed signal, used to inform that a dimension of device
@@ -83,26 +77,22 @@ class DeviceOld : public device
 {
 Q_OBJECT
 public:
-
-	virtual void init(bool force);
 	virtual void init() { init(false); }
 
-	virtual void set_where(QString);
 	virtual ~DeviceOld();
 	virtual void manageFrame(OpenMsg &msg);
-
-signals:
-
-	//! Invoked after successful initialization
-	void initialized(device_status *);
-	//! We want a frame to be handled
-	void handle_frame(char *, QList<device_status*>);
 
 public slots:
 	//! receive a frame
 	virtual void frame_rx_handler(char *);
 	//! Initialization requested by frame interpreter
 	void init_requested_handler(QString msg);
+
+signals:
+	//! Invoked after successful initialization
+	void initialized(device_status *);
+	//! We want a frame to be handled
+	void handle_frame(char *, QList<device_status*>);
 
 protected:
 	DeviceOld(QString who, QString where);
@@ -114,6 +104,9 @@ protected:
 
 	/// connect the frame interpreter with the device
 	void setup_frame_interpreter(frame_interpreter* i);
+
+private:
+	void init(bool force);
 };
 
 
