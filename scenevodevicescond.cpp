@@ -174,7 +174,7 @@ bool DeviceCondition::isTrue()
 /*****************************************************************
 ** Actual light status device condition
 ****************************************************************/
-device_condition_light_status::device_condition_light_status(QWidget *parent, QString trigger, QString where)
+DeviceConditionLight::DeviceConditionLight(QWidget *parent, QString trigger, QString where)
 {
 	condition_display = new DeviceConditionDisplayOnOff(parent);
 	set_condition_value(trigger);
@@ -184,17 +184,17 @@ device_condition_light_status::device_condition_light_status(QWidget *parent, QS
 	Draw();
 }
 
-void device_condition_light_status::inizializza()
+void DeviceConditionLight::inizializza()
 {
 	dev->requestStatus();
 }
 
-void device_condition_light_status::Draw()
+void DeviceConditionLight::Draw()
 {
 	condition_display->updateText(get_current_value());
 }
 
-void device_condition_light_status::status_changed(const StatusList &sl)
+void DeviceConditionLight::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
@@ -218,14 +218,14 @@ void device_condition_light_status::status_changed(const StatusList &sl)
 	}
 }
 
-int device_condition_light_status::get_max()
+int DeviceConditionLight::get_max()
 {
 	return 1;
 }
 
-void device_condition_light_status::set_condition_value(QString s)
+void DeviceConditionLight::set_condition_value(QString s)
 {
-	qDebug("device_condition_light_status::set_condition_value");
+	qDebug("DeviceConditionLight::set_condition_value");
 	int v = 0;
 	if (s == "1")
 		v = 1;
@@ -236,12 +236,12 @@ void device_condition_light_status::set_condition_value(QString s)
 	DeviceCondition::set_condition_value(v);
 }
 
-void device_condition_light_status::get_condition_value(QString& out)
+void DeviceConditionLight::get_condition_value(QString& out)
 {
 	out = DeviceCondition::get_condition_value() ? "1" : "0";
 }
 
-void device_condition_light_status::setGeometry(int x, int y, int sx, int sy)
+void DeviceConditionLight::setGeometry(int x, int y, int sx, int sy)
 {
 	condition_display->setGeometry(x, y, sx, sy);
 }
@@ -1202,7 +1202,7 @@ void device_condition_temp::status_changed(const StatusList &sl)
 ****************************************************************/
 
 
-device_condition_aux::device_condition_aux(QWidget *parent, QString trigger, QString where) :
+DeviceConditionAux::DeviceConditionAux(QWidget *parent, QString trigger, QString where) :
 	device_initialized(false), device_value(-1)
 {
 	condition_display = new DeviceConditionDisplayOnOff(parent);
@@ -1214,17 +1214,17 @@ device_condition_aux::device_condition_aux(QWidget *parent, QString trigger, QSt
 	Draw();
 }
 
-void device_condition_aux::inizializza()
+void DeviceConditionAux::inizializza()
 {
 	dev->init();
 }
 
-void device_condition_aux::Draw()
+void DeviceConditionAux::Draw()
 {
 	condition_display->updateText(get_current_value());
 }
 
-void device_condition_aux::check_condition(bool emit_signal)
+void DeviceConditionAux::check_condition(bool emit_signal)
 {
 	int trig_v = DeviceCondition::get_condition_value();
 	if (trig_v == device_value)
@@ -1244,23 +1244,23 @@ void device_condition_aux::check_condition(bool emit_signal)
 	}
 }
 
-void device_condition_aux::status_changed(stat_var status)
+void DeviceConditionAux::status_changed(stat_var status)
 {
-	qDebug("device_condition_aux::status_changed");
+	qDebug("DeviceConditionAux::status_changed");
 	device_value = status.get_val();
 	// We emit signal condSatisfied only if the device is initialized.
 	check_condition(device_initialized);
 	device_initialized = true;
 }
 
-int device_condition_aux::get_max()
+int DeviceConditionAux::get_max()
 {
 	return 1;
 }
 
-void device_condition_aux::set_condition_value(QString s)
+void DeviceConditionAux::set_condition_value(QString s)
 {
-	qDebug("device_condition_aux::set_condition_value");
+	qDebug("DeviceConditionAux::set_condition_value");
 	int v = 0;
 	if (s == "1")
 		v = 1;
@@ -1272,14 +1272,14 @@ void device_condition_aux::set_condition_value(QString s)
 	check_condition(false);
 }
 
-void device_condition_aux::OK()
+void DeviceConditionAux::OK()
 {
-	qDebug("device_condition_aux::OK()");
+	qDebug("DeviceConditionAux::OK()");
 	DeviceCondition::OK();
 	check_condition(false);
 }
 
-void device_condition_aux::setGeometry(int x, int y, int sx, int sy)
+void DeviceConditionAux::setGeometry(int x, int y, int sx, int sy)
 {
 	condition_display->setGeometry(x, y, sx, sy);
 }

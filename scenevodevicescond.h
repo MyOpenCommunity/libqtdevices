@@ -108,17 +108,17 @@ signals:
 };
 
 /*!
-\class device_condition_light_status
+\class DeviceConditionLight
 \brief This class represents a light status based condition
 \author Ciminaghi
 \date May 2006
 */
-class device_condition_light_status : public DeviceCondition
+class DeviceConditionLight : public DeviceCondition
 {
 Q_OBJECT
 public:
 	//! Constructor
-	device_condition_light_status(QWidget *parent, QString trigger, QString where);
+	DeviceConditionLight(QWidget *parent, QString trigger, QString where);
 	//! Draws frame
 	virtual void Draw();
 	//! Returns max value
@@ -377,11 +377,11 @@ private:
 \brief This class represent a condition on a aux device
 \author Gianni Valdambrini <aleister@develer.com>
 */
-class device_condition_aux : public DeviceCondition
+class DeviceConditionAux : public DeviceCondition
 {
 Q_OBJECT
 public:
-	device_condition_aux(QWidget *parent, QString trigger, QString where);
+	DeviceConditionAux(QWidget *parent, QString trigger, QString where);
 	virtual void Draw();
 	virtual int get_max();
 	virtual void set_condition_value(QString);

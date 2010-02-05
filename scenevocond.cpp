@@ -268,7 +268,7 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 	switch (condition_type)
 	{
 	case 1:
-		dc = new device_condition_light_status(this, trigger, w);
+		dc = new DeviceConditionLight(this, trigger, w);
 		icon = bt_global::skin->getImage("light");
 		break;
 	case 2:
@@ -286,7 +286,7 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 		icon = bt_global::skin->getImage("probe");
 		break;
 	case 9:
-		dc = new device_condition_aux(this, trigger, w);
+		dc = new DeviceConditionAux(this, trigger, w);
 		icon = bt_global::skin->getImage("aux");
 		break;
 	case 4:
