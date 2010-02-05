@@ -26,7 +26,7 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 		QPoint pos = rect().bottomRight();
 		pos -= QPoint(80, 80);
 
-		bt_global::energy_rates.loadRates();
+		EnergyRates::energy_rates.loadRates();
 		addPage(new EnergyCost, -1, bt_global::skin->getImage("currency_exchange"), pos.x(), pos.y());
 	}
 

@@ -243,8 +243,8 @@ bannTextOnImage *getBanner(QWidget *parent, QString primary_text)
 
 EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id)
 {
-	rate = bt_global::energy_rates.getRate(rate_id);
-	connect(&bt_global::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
+	rate = EnergyRates::energy_rates.getRate(rate_id);
+	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
 
 	Q_ASSERT_X(bt_global::skin->hasContext(), "EnergyView::EnergyView", "Skin context not set!");
 	dev = bt_global::add_device_to_cache(new EnergyDevice(address, mode));
@@ -828,6 +828,6 @@ void EnergyView::rateChanged(int rate_id)
 	if (rate.id != rate_id)
 		return;
 
-	rate = bt_global::energy_rates.getRate(rate_id);
+	rate = EnergyRates::energy_rates.getRate(rate_id);
 	updateBanners();
 }

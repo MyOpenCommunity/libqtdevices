@@ -9,7 +9,7 @@
 static QLocale loc(QLocale::Italian);
 static EnergyRate invalid_rate;
 
-EnergyRates bt_global::energy_rates;
+EnergyRates EnergyRates::energy_rates;
 
 
 bool EnergyRate::isValid() const

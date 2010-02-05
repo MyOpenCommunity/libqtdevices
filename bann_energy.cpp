@@ -16,8 +16,8 @@ static QLocale loc(QLocale::Italian);
 bannEnergyInterface::bannEnergyInterface(QWidget *parent, int rate_id, bool is_ele) :
 	bannTextOnImage(parent)
 {
-	rate = bt_global::energy_rates.getRate(rate_id);
-	connect(&bt_global::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
+	rate = EnergyRates::energy_rates.getRate(rate_id);
+	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
 
 	is_electricity = is_ele;
 	device_value = 0;
@@ -71,7 +71,7 @@ void bannEnergyInterface::rateChanged(int rate_id)
 	if (rate.id != rate_id)
 		return;
 
-	rate = bt_global::energy_rates.getRate(rate_id);
+	rate = EnergyRates::energy_rates.getRate(rate_id);
 	updateText();
 }
 
@@ -81,7 +81,7 @@ void bannEnergyInterface::rateChanged(int rate_id)
 BannEnergyCost::BannEnergyCost(int rate_id, const QString &left, const QString &right,
 			       const QString &descr)
 {
-	rate = bt_global::energy_rates.getRate(rate_id);
+	rate = EnergyRates::energy_rates.getRate(rate_id);
 	current_value = rate.rate;
 
 	// TODO BTOUCH_CONFIG use rate.description with new config
@@ -127,7 +127,7 @@ void BannEnergyCost::saveRate()
 {
 	rate.rate = current_value;
 
-	bt_global::energy_rates.setRate(rate);
+	EnergyRates::energy_rates.setRate(rate);
 }
 
 void BannEnergyCost::resetRate()

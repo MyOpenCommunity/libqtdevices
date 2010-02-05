@@ -73,7 +73,7 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
-	bt_global::energy_rates.loadRates();
+	EnergyRates::energy_rates.loadRates();
 	QList<QDomNode> families = getChildren(config_node, "energy_type");
 
 	// display the button to edit rates if more than one family
@@ -127,12 +127,12 @@ EnergyCost::EnergyCost()
 {
 	buildPage();
 
-	bt_global::energy_rates.loadRates();
+	EnergyRates::energy_rates.loadRates();
 
 	QMap<int, EditEnergyCost *> costs;
-	foreach (int rate_id, bt_global::energy_rates.allRateId())
+	foreach (int rate_id, EnergyRates::energy_rates.allRateId())
 	{
-		const EnergyRate &rate = bt_global::energy_rates.getRate(rate_id);
+		const EnergyRate &rate = EnergyRates::energy_rates.getRate(rate_id);
 
 		if (!costs.contains(rate.mode))
 		{
@@ -185,7 +185,7 @@ void EditEnergyCost::addRate(int rate_id)
 {
 	// TODO BTOUCH_CONFIG Use a generic description for old Btouch config,
 	//      rate.config for new config format
-	const EnergyRate &rate = bt_global::energy_rates.getRate(rate_id);
+	const EnergyRate &rate = EnergyRates::energy_rates.getRate(rate_id);
 
 	QString descr = rate.is_production ? tr("Production") : tr("Consumption");
 	if (rate.is_production)
