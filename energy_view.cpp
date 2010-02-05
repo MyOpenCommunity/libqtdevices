@@ -315,7 +315,6 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 			unit_measure = measure;
 			break;
 	}
-	current_banner_timer_id = startTimer(POLLING_CURRENT * 1000);
 	cumulative_day_banner_timer_id = startTimer(POLLING_CUMULATIVE_DAY * 1000);
 
 	// this must be after creating bannNavigazione, otherwise segfault
@@ -337,13 +336,25 @@ void EnergyView::timerEvent(QTimerEvent *e)
 	// Poll only if the selected day is today.
 	if (current_banner->isVisible())
 	{
-		if (e->timerId() == current_banner_timer_id)
-			dev->requestCurrent();
-		else if (e->timerId() == cumulative_day_banner_timer_id)
+		if (e->timerId() == cumulative_day_banner_timer_id)
 			dev->requestCumulativeDay(QDate::currentDate());
 		else
 			Q_ASSERT_X(false, "EnergyView::timerEvent", qPrintable(QString::number(e->timerId())));
 	}
+}
+
+// TODO energy: derive a subclass from bannOnImage and put this logic there,
+//              also remove the logic in setBannerPage
+void EnergyView::showEvent(QShowEvent *e)
+{
+	if (current_banner->isVisible())
+		dev->requestCurrentUpdateStart();
+}
+
+void EnergyView::hideEvent(QHideEvent *e)
+{
+	if (current_banner->isVisible())
+		dev->requestCurrentUpdateStop();
 }
 
 void EnergyView::inizializza()
@@ -727,11 +738,12 @@ void EnergyView::setBannerPage(int status, const QDate &selection_date)
 {
 	QStackedWidget *w = static_cast<QStackedWidget*>(widget_container->widget(BANNER_WIDGET));
 
+	bool was_visible = current_banner->isVisible();
+
 	switch (status)
 	{
 	case TimePeriodSelection::DAY:
 		w->setCurrentIndex(DAILY_PAGE);
-		// The request for the current is automatically done by the timerEvent slot.
 		current_banner->setVisible(QDate::currentDate() == selection_date);
 		break;
 	case TimePeriodSelection::MONTH:
@@ -740,6 +752,15 @@ void EnergyView::setBannerPage(int status, const QDate &selection_date)
 	case TimePeriodSelection::YEAR:
 		w->setCurrentIndex(YEARLY_PAGE);
 		break;
+	}
+
+	bool is_visible = current_banner->isVisible();
+	if (was_visible != is_visible)
+	{
+		if (is_visible)
+			dev->requestCurrentUpdateStart();
+		else
+			dev->requestCurrentUpdateStop();
 	}
 }
 

@@ -93,6 +93,8 @@ public slots:
 
 protected:
 	void timerEvent(QTimerEvent *e);
+	void showEvent(QShowEvent *event);
+	void hideEvent(QHideEvent *event);
 
 private:
 	QWidget *buildBannerWidget();
@@ -127,7 +129,7 @@ private:
 	QHash<EnergyDevice::GraphType, GraphCache*> graph_data_cache;
 	bool is_electricity_view;
 	// the id of the timers used to poll data
-	int current_banner_timer_id, cumulative_day_banner_timer_id;
+	int cumulative_day_banner_timer_id;
 	EnergyRate rate;
 
 private slots:
