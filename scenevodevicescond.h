@@ -231,13 +231,9 @@ public:
 	virtual int get_max();
 	//! Returns step
 	int get_step();
-	//! Gets condition's meas unit
-	virtual QString get_unit();
 	void set_condition_value_min(int);
-	void set_condition_value_min(QString);
 	int get_condition_value_min();
 	void set_condition_value_max(int);
-	void set_condition_value_max(QString);
 	int get_condition_value_max();
 	int get_current_value_min();
 	void set_current_value_min(int min);
@@ -261,6 +257,7 @@ public slots:
 
 protected:
 	virtual void inizializza();
+	virtual void setGeometry(int, int, int ,int);
 
 private slots:
 	void status_changed(const StatusList &sl);
@@ -271,6 +268,7 @@ private:
 	int current_value_min;
 	int current_value_max;
 	Dimmer100Device *dev;
+	DeviceConditionDisplayDimming *condition_display;
 };
 
 

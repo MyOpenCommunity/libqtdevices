@@ -254,7 +254,8 @@ DeviceConditionDimming::DeviceConditionDimming(QWidget *parent, QString trigger,
 	else
 	{
 		QStringList parts = trigger.split('-');
-		Q_ASSERT_X(parts.size() == 2, "", "");
+		Q_ASSERT_X(parts.size() == 2, "DeviceConditionDimming::DeviceConditionDimming",
+			"the trigger value must have 0 or 2 digit with - as separator");
 		set_condition_value_min(parts[0].toInt());
 		set_condition_value_max(parts[1].toInt());
 	}
@@ -452,11 +453,7 @@ void DeviceConditionDimming::status_changed(const StatusList &sl)
 
 DeviceConditionDimming100::DeviceConditionDimming100(QWidget *parent, QString trigger, QString where)
 {
-	char sup[10];
-	QLabel *l = new QLabel(parent);
-	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	l->setFont(bt_global::font->get(FontManager::TEXT));
-	frame = l;
+	condition_display = new DeviceConditionDisplayDimming(parent);
 	if (trigger == "0")
 	{
 		set_condition_value_min(0);
@@ -464,18 +461,22 @@ DeviceConditionDimming100::DeviceConditionDimming100(QWidget *parent, QString tr
 	}
 	else
 	{
-		QByteArray buf = trigger.toAscii();
-		sprintf(sup, "%s", buf.constData());
-		strtok(sup, "-");
-		set_condition_value_min(sup);
-		sprintf(sup, "%s", strchr(buf.constData(), '-')+1);
-		set_condition_value_max(sup);
+		QStringList parts = trigger.split('-');
+		Q_ASSERT_X(parts.size() == 2, "DeviceConditionDimming100::DeviceConditionDimming100",
+			"the trigger value must have 0 or 2 digit with - as separator");
+		set_condition_value_min(parts[0].toInt());
+		set_condition_value_max(parts[1].toInt());
 	}
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
 	dev = bt_global::add_device_to_cache(new Dimmer100Device(where, PULL));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 	Draw();
+}
+
+void DeviceConditionDimming100::setGeometry(int x, int y, int sx, int sy)
+{
+	condition_display->setGeometry(x, y, sx, sy);
 }
 
 void DeviceConditionDimming100::inizializza()
@@ -485,10 +486,7 @@ void DeviceConditionDimming100::inizializza()
 
 QString DeviceConditionDimming100::get_current_value()
 {
-	char val[50];
-	int val_m = get_condition_value_min();
-	sprintf(val, "%d", val_m);
-	return val;
+	return QString::number(get_condition_value_min());
 }
 
 int DeviceConditionDimming100::get_min()
@@ -562,17 +560,7 @@ void DeviceConditionDimming100::Down()
 
 void DeviceConditionDimming100::Draw()
 {
-	QString tmp;
-	QString u = get_unit();
-	int v = get_current_value_min();
-	if (!v)
-		tmp = tr("OFF");
-	else
-	{
-		int M = get_current_value_max();
-		tmp = QString("%1%2 - %3%4").arg(v).arg(u).arg(M).arg(u);
-	}
-	((QLabel *)frame)->setText(tmp);
+	condition_display->updateText(get_current_value_min(), get_current_value_max());
 }
 
 void DeviceConditionDimming100::OK()
@@ -588,19 +576,10 @@ void DeviceConditionDimming100::reset()
 	Draw();
 }
 
-QString DeviceConditionDimming100::get_unit()
-{
-	return "%";
-}
 
 void DeviceConditionDimming100::set_condition_value_min(int s)
 {
 	min_val = s;
-}
-
-void DeviceConditionDimming100::set_condition_value_min(QString s)
-{
-	min_val = s.toInt();
 }
 
 int DeviceConditionDimming100::get_condition_value_min()
@@ -611,11 +590,6 @@ int DeviceConditionDimming100::get_condition_value_min()
 void DeviceConditionDimming100::set_condition_value_max(int s)
 {
 	max_val = s;
-}
-
-void DeviceConditionDimming100::set_condition_value_max(QString s)
-{
-	max_val = s.toInt();
 }
 
 int DeviceConditionDimming100::get_condition_value_max()
