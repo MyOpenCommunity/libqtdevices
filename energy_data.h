@@ -18,7 +18,7 @@ class EnergyData : public BannerPage
 {
 Q_OBJECT
 public:
-	EnergyData(const QDomNode &config_node, bool edit_rates = true);
+	EnergyData(const QDomNode &config_node);
 
 	virtual void showPage();
 

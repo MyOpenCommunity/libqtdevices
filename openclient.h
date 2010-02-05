@@ -87,7 +87,6 @@ private:
 	QByteArray data_read;
 	QTimer Open_read;
 	openwebnet last_msg_open_read;
-	openwebnet last_msg_open_write;
 	bool ackRx;
 	QHash<int, QList<FrameReceiver*> > subscribe_list;
 

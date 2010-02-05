@@ -12,8 +12,8 @@ class TestEnergyDevice : public TestDevice
 {
 Q_OBJECT
 private slots:
-	void initTestCase();
-	void cleanupTestCase();
+	void init();
+	void cleanup();
 
 	void sendRequestCumulativeDayGraph();
 	void sendRequestCumulativeMonthGraph();
@@ -24,6 +24,7 @@ private slots:
 	void sendRequestCurrent2();
 	void sendRequestCurrent3();
 	void sendRequestCurrent4();
+
 	void receiveCumulativeDay();
 	void receiveCumulativeDay2();
 	void receiveCurrent();
@@ -44,6 +45,18 @@ private slots:
 
 	void testGetDateFromFrame();
 	void testConsecutiveGraphFrames();
+
+	// automatic updates
+	void sendUpdateStart();
+	void sendUpdateStop();
+
+	void receiveUpdateInterval();
+	void receiveUpdateStop();
+
+	void testUpdateStartPolling();
+	void testUpdateStartAutomatic();
+
+	void testUpdateStop();
 
 private:
 	EnergyDevice *dev;

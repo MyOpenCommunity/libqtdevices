@@ -8,6 +8,9 @@
 #include <QList>
 
 const int MAX_VALUE = 255;
+const int POLLING_INTERVAL = 10;
+const int UPDATE_INTERVAL = 1;
+const int STOPPING_TIMEOUT = 5;
 
 
 namespace
@@ -21,6 +24,7 @@ namespace
 enum RequestDimension
 {
 	_DIM_CUMULATIVE_MONTH = 52, // An implementation detail, ignore this
+	_DIM_STATE_UPDATE_INTERVAL = 1200,   // used to detect start/stop of automatic updates
 
 	REQ_DAILY_AVERAGE_GRAPH      = 53,   // graph data for daily average
 	REQ_DAY_GRAPH                = 52,   // request graph data for a specific day
@@ -41,6 +45,11 @@ enum RequestCurrent
 EnergyDevice::EnergyDevice(QString where, int _mode) : device(QString("18"), where)
 {
 	mode = _mode;
+	update_state = UPDATE_IDLE;
+	need_polling = true;
+	update_count = 0;
+	update_timer = new QTimer(this);
+	connect(update_timer, SIGNAL(timeout()), SLOT(pollingTimeout()));
 
 	for (int i = 1; i <= 12; ++i)
 		buffer_year_data[i] = 0;
@@ -89,6 +98,84 @@ void EnergyDevice::requestCurrent() const
 		qFatal("Unknown mode on the energy management!");
 	}
 	sendRequest(what);
+}
+
+void EnergyDevice::sendUpdateStart()
+{
+	sendFrame(createRequestOpen(who, QString("#1200#%1*%2").arg(mode).arg(UPDATE_INTERVAL), where));
+}
+
+void EnergyDevice::sendUpdateStop()
+{
+	sendFrame(createRequestOpen(who, QString("#1200#%1*%2").arg(mode).arg(0), where));
+}
+
+void EnergyDevice::requestCurrentUpdateStart()
+{
+	update_count += 1;
+
+	if (update_count == 1)
+	{
+		switch (update_state)
+		{
+		case UPDATE_IDLE:
+			update_state = UPDATE_AUTO;
+
+			if (need_polling)
+			{
+				requestCurrent();
+				update_timer->start(POLLING_INTERVAL * 1000);
+			}
+			sendUpdateStart();
+
+			break;
+		case UPDATE_STOPPING:
+			update_state = UPDATE_AUTO;
+
+			break;
+		default:
+			qFatal("Invalid transition: update_count == 1 and state is UPDATE_AUTO");
+			break;
+		}
+	}
+}
+
+void EnergyDevice::requestCurrentUpdateStop()
+{
+	if (update_count == 0)
+		return;
+	update_count -= 1;
+
+	if (update_count == 0)
+	{
+		switch (update_state)
+		{
+		case UPDATE_AUTO:
+			update_state = UPDATE_STOPPING;
+
+			QTimer::singleShot(STOPPING_TIMEOUT * 1000, this, SLOT(stoppingTimeout()));
+			break;
+		default:
+			qFatal("State is UPDATE_STOPPING or UPDATE_IDLE update_count > 0");
+			break;
+		}
+	}
+}
+
+void EnergyDevice::pollingTimeout()
+{
+	requestCurrent();
+}
+
+void EnergyDevice::stoppingTimeout()
+{
+	if (update_state == UPDATE_STOPPING)
+	{
+		if (update_timer)
+			update_timer->stop();
+		sendUpdateStop();
+		update_state = UPDATE_IDLE;
+	}
 }
 
 void EnergyDevice::requestCumulativeYear() const
@@ -214,6 +301,65 @@ void EnergyDevice::manageFrame(OpenMsg &msg)
 			fillMonthlyAverage(status_list, msg);
 		}
 		emit status_changed(status_list);
+	}
+
+	if (what == _DIM_STATE_UPDATE_INTERVAL)
+	{
+		if (msg.whatArgCnt() != 1)
+			return;
+
+		handleAutomaticUpdate(status_list, msg);
+	}
+}
+
+void EnergyDevice::setPollingOff()
+{
+	need_polling = false;
+	update_timer->stop();
+	update_timer->deleteLater();
+	update_timer = NULL;
+}
+
+void EnergyDevice::handleAutomaticUpdate(StatusList &status_list, OpenMsg &msg)
+{
+	int time = msg.whatArgN(0);
+
+	if (need_polling)
+	{
+		qDebug("Switching from polling mode to auto-update mode");
+
+		setPollingOff();
+
+		// this might send one unneeded frame, but removes the need for
+		// an additional state
+		if (update_state == UPDATE_AUTO && time != 0)
+			sendUpdateStart();
+		else if (update_state == UPDATE_STOPPING)
+			// to force resending the start frame if restarted
+			update_state = UPDATE_IDLE;
+	}
+
+	// at this point need_polling is always false
+	if (time == 0)
+	{
+		qDebug("Received auto-update stop frame");
+
+		switch (update_state)
+		{
+		case UPDATE_AUTO:
+			// restart automatic updates since we need them
+			sendUpdateStart();
+
+			break;
+		case UPDATE_STOPPING:
+			// to force resending the start frame if restarted
+			update_state = UPDATE_IDLE;
+
+			break;
+		default:
+			// no handling needed for UPDATE_IDLE
+			break;
+		}
 	}
 }
 

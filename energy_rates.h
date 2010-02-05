@@ -53,6 +53,9 @@ public:
 	// updates the given rate and sends rateChanged() signal
 	void setRate(const EnergyRate &new_rate);
 
+	// the global object containing energy rates
+	static EnergyRates energy_rates;
+
 signals:
 	void rateChanged(int rate_id);
 
@@ -61,7 +64,5 @@ private:
 	QMap<int, EnergyRate> rates;
 };
 
-
-namespace bt_global { extern EnergyRates energy_rates; }
 
 #endif // ENERGY_RATES_H

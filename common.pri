@@ -156,6 +156,7 @@ HEADERS += actuators.h \
            enabling_button.h \
            energy_data.h \
            energy_graph.h \
+           energy_management.h \
            energy_rates.h \
            energy_view.h \
            feedmanager.h \
@@ -274,6 +275,7 @@ SOURCES += actuators.cpp \
            enabling_button.cpp \
            energy_data.cpp \
            energy_graph.cpp \
+           energy_management.cpp \
            energy_rates.cpp \
            energy_view.cpp \
            feedmanager.cpp \

@@ -14,6 +14,7 @@
 #include "bannercontent.h"
 #include "bann1_button.h" // BannSinglePuls
 #include "btbutton.h"
+#include "energy_management.h"
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -24,9 +25,9 @@
 static QLocale loc(QLocale::Italian);
 
 
-EnergyData::EnergyData(const QDomNode &config_node, bool edit_rates)
+EnergyData::EnergyData(const QDomNode &config_node)
 {
-	loadTypes(config_node, edit_rates);
+	loadTypes(config_node, EnergyManagement::isRateEditDisplayed());
 	connect(bt_global::btmain, SIGNAL(resettimer()), SLOT(systemTimeChanged()));
 	connect(&day_timer, SIGNAL(timeout()), SLOT(updateDayTimer()));
 	connect(&day_timer, SIGNAL(timeout()), SLOT(updateInterfaces()));
@@ -69,7 +70,7 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
-	bt_global::energy_rates.loadRates();
+	EnergyRates::energy_rates.loadRates();
 	QList<QDomNode> families = getChildren(config_node, "energy_type");
 
 	// display the button to edit rates if more than one family
@@ -100,8 +101,6 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 		interfaces.push_back(en_interf);
 		b->connectRightButton(en_interf);
 
-		// TODO energy propagate rate changes to banner/pages
-
 		b->setText(getTextChild(type, "descr"));
 		b->setId(getTextChild(type, "id").toInt());
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
@@ -125,12 +124,12 @@ EnergyCost::EnergyCost()
 {
 	buildPage();
 
-	bt_global::energy_rates.loadRates();
+	EnergyRates::energy_rates.loadRates();
 
 	QMap<int, EditEnergyCost *> costs;
-	foreach (int rate_id, bt_global::energy_rates.allRateId())
+	foreach (int rate_id, EnergyRates::energy_rates.allRateId())
 	{
-		const EnergyRate &rate = bt_global::energy_rates.getRate(rate_id);
+		const EnergyRate &rate = EnergyRates::energy_rates.getRate(rate_id);
 
 		if (!costs.contains(rate.mode))
 		{
@@ -140,7 +139,7 @@ EnergyCost::EnergyCost()
 			// create banner
 			BannSinglePuls *b = new BannSinglePuls(0);
 
-			b->initBanner(bt_global::skin->getImage("select"),
+			b->initBanner(bt_global::skin->getImage("forward"),
 				      bt_global::skin->getImage(family_cost_icons[rate.mode - 1]),
 				      family_descriptions[rate.mode - 1]);
 			b->connectRightButton(costs[rate.mode]);
@@ -183,7 +182,7 @@ void EditEnergyCost::addRate(int rate_id)
 {
 	// TODO BTOUCH_CONFIG Use a generic description for old Btouch config,
 	//      rate.config for new config format
-	const EnergyRate &rate = bt_global::energy_rates.getRate(rate_id);
+	const EnergyRate &rate = EnergyRates::energy_rates.getRate(rate_id);
 
 	QString descr = rate.is_production ? tr("Production") : tr("Consumption");
 	if (rate.is_production)
