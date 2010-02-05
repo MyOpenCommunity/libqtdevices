@@ -115,6 +115,8 @@ private:
 	void sendUpdateStart();
 	void sendUpdateStop();
 
+	void setPollingOff();
+
 	QDate getDateFromFrame(OpenMsg &msg);
 
 private slots:

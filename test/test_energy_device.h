@@ -53,6 +53,11 @@ private slots:
 	void receiveUpdateInterval();
 	void receiveUpdateStop();
 
+	void testUpdateStartPolling();
+	void testUpdateStartAutomatic();
+
+	void testUpdateStop();
+
 private:
 	EnergyDevice *dev;
 	QString where;

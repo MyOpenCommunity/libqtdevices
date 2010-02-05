@@ -326,6 +326,14 @@ void EnergyDevice::frame_rx_handler(char *frame)
 	}
 }
 
+void EnergyDevice::setPollingOff()
+{
+	need_polling = false;
+	update_timer->stop();
+	update_timer->deleteLater();
+	update_timer = NULL;
+}
+
 void EnergyDevice::handleAutomaticUpdate(StatusList &status_list, OpenMsg &msg)
 {
 	int time = msg.whatArgN(0);
@@ -334,9 +342,7 @@ void EnergyDevice::handleAutomaticUpdate(StatusList &status_list, OpenMsg &msg)
 	{
 		qDebug("Switching from polling mode to auto-update mode");
 
-		need_polling = false;
-		update_timer->deleteLater();
-		update_timer = NULL;
+		setPollingOff();
 
 		// this might send one unneeded frame, but removes the need for
 		// an additional state
