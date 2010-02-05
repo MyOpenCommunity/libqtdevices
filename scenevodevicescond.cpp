@@ -176,11 +176,7 @@ bool DeviceCondition::isTrue()
 ****************************************************************/
 device_condition_light_status::device_condition_light_status(QWidget *parent, QString trigger, QString where)
 {
-	QLabel *l = new QLabel(parent);
-	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	l->setFont(bt_global::font->get(FontManager::TEXT));
-
-	frame = l;
+	condition_display = new DeviceConditionDisplayOnOff(parent);
 	set_condition_value(trigger);
 	set_current_value(DeviceCondition::get_condition_value());
 	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL));
@@ -193,14 +189,9 @@ void device_condition_light_status::inizializza()
 	dev->requestStatus();
 }
 
-QString device_condition_light_status::get_string()
-{
-	return get_current_value() ? tr("ON") : tr("OFF");
-}
-
 void device_condition_light_status::Draw()
 {
-	((QLabel *)frame)->setText(get_string());
+	condition_display->updateText(get_current_value());
 }
 
 void device_condition_light_status::status_changed(const StatusList &sl)
@@ -250,6 +241,10 @@ void device_condition_light_status::get_condition_value(QString& out)
 	out = DeviceCondition::get_condition_value() ? "1" : "0";
 }
 
+void device_condition_light_status::setGeometry(int x, int y, int sx, int sy)
+{
+	condition_display->setGeometry(x, y, sx, sy);
+}
 
 /*****************************************************************
 ** Actual dimming value device condition

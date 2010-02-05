@@ -130,14 +130,14 @@ public:
 
 protected:
 	virtual void inizializza();
+	virtual void setGeometry(int, int, int, int);
 
 private slots:
 	void status_changed(const StatusList &sl);
 
 private:
-	//! Returns string to be displayed as a function of value
-	QString get_string();
 	LightingDevice *dev;
+	DeviceConditionDisplayOnOff *condition_display;
 };
 
 /*!
