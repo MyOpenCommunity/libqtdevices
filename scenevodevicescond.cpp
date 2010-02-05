@@ -110,11 +110,6 @@ int DeviceCondition::get_step()
 	return 1;
 }
 
-int DeviceCondition::get_divisor()
-{
-	return 1;
-}
-
 int DeviceCondition::get_condition_value()
 {
 	return cond_value;
@@ -176,11 +171,6 @@ int DeviceCondition::set_current_value(int v)
 		v = get_min();
 	current_value = v;
 	return current_value;
-}
-
-QString DeviceCondition::get_unit()
-{
-	return "";
 }
 
 void DeviceCondition::inizializza()
@@ -967,11 +957,6 @@ int DeviceConditionTemperature::get_max()
 int DeviceConditionTemperature::get_step()
 {
 	return step;
-}
-
-int DeviceConditionTemperature::get_divisor()
-{
-	return 10;
 }
 
 void DeviceConditionTemperature::Draw()

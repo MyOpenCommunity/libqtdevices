@@ -127,8 +127,6 @@ protected:
 	virtual int get_max();
 	//! Returns step
 	virtual int get_step();
-	//! Returns value divisor
-	virtual int get_divisor();
 	//! Sets condition value
 	void set_condition_value(int);
 	//! Translates trigger condition from open encoding to int and sets val
@@ -137,9 +135,6 @@ protected:
 	virtual void get_condition_value(QString&);
 	//! Gets condition value
 	virtual int get_condition_value();
-	//! Gets condition's meas unit
-	virtual QString get_unit();
-
 	//! Draws frame
 	virtual void Draw() = 0;
 
@@ -355,8 +350,6 @@ public:
 	virtual int get_max();
 	//! Returns step
 	int get_step();
-	//! Returns divisor
-	int get_divisor();
 
 	//! Draws condition
 	virtual void Draw();
