@@ -32,9 +32,8 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 	// connect to the server
 	connetti();
 
-	// azzero la variabile last_msg_open_read e last_msg_open_write
+	// azzero la variabile last_msg_open_read
 	last_msg_open_read.CreateNullMsgOpen();
-	last_msg_open_write.CreateNullMsgOpen();
 
 	connect(&Open_read, SIGNAL(timeout()), this, SLOT(clear_last_msg_open_read()));
 }
@@ -66,10 +65,7 @@ void Client::socketConnected()
 
 void Client::ApriInviaFrameChiudi(const char* frame)
 {
-	if (strcmp(frame, last_msg_open_write.frame_open) != 0)
-		sendFrameOpen(frame);
-	else
-		qDebug("Client::ApriInviaFrameChiudi() Frame Open <%s> already send", frame);
+	sendFrameOpen(frame);
 
 	// TODO: questa funzione dovra' gestire anche i Nak e ack (e la sua versione "w"
 	// dovra' sparire), attendendo che arrivi o un ack o un nack con un ciclo tipo:
@@ -80,7 +76,6 @@ void Client::ApriInviaFrameChiudi(const char* frame)
 void Client::sendFrameOpen(const QString &frame_open)
 {
 	QByteArray frame = frame_open.toLatin1();
-	last_msg_open_write.CreateMsgOpen(frame.data(), strlen(frame.data()));
 	if (socket->state() == QAbstractSocket::UnconnectedState || socket->state() == QAbstractSocket::ClosingState)
 	{
 		connetti();
@@ -156,13 +151,11 @@ void Client::manageFrame(QByteArray frame)
 		if (frame == "*#*1##")
 		{
 			qDebug("ack received");
-			last_msg_open_write.CreateNullMsgOpen();
 			emit openAckRx();
 		}
 		else if (frame == "*#*0##")
 		{
 			qDebug("nak received");
-			last_msg_open_write.CreateNullMsgOpen();
 			emit openNakRx();
 		}
 	}
