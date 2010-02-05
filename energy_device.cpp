@@ -145,6 +145,8 @@ void EnergyDevice::requestCurrentUpdateStart()
 
 void EnergyDevice::requestCurrentUpdateStop()
 {
+	if (update_count == 0)
+		return;
 	update_count -= 1;
 
 	if (update_count == 0)
