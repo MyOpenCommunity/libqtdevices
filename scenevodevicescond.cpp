@@ -60,11 +60,6 @@ int DeviceCondition::get_divisor()
 	return 1;
 }
 
-bool DeviceCondition::show_OFF_on_zero()
-{
-	return false;
-}
-
 int DeviceCondition::get_condition_value()
 {
 	return cond_value;
@@ -91,17 +86,6 @@ void DeviceCondition::get_condition_value(QString& out)
 	char tmp[100];
 	sprintf(tmp, "%d", get_condition_value());
 	out = tmp;
-}
-
-void DeviceCondition::Draw()
-{
-	QString tmp;
-	int v = get_current_value();
-	if (show_OFF_on_zero() && !v)
-		tmp = tr("OFF");
-	else
-		tmp = QString("%1%2").arg(v).arg(get_unit());
-	((QLabel *)frame)->setText(tmp);
 }
 
 void DeviceCondition::setGeometry(int x, int y, int sx, int sy)
@@ -388,11 +372,6 @@ QString device_condition_dimming::get_unit()
 	return "%";
 }
 
-bool device_condition_dimming::show_OFF_on_zero()
-{
-	return true;
-}
-
 void device_condition_dimming::set_condition_value_min(int s)
 {
 	qDebug("device_condition_dimming::set_condition_value_min(%d)", s);
@@ -646,11 +625,6 @@ void device_condition_dimming_100::reset()
 QString device_condition_dimming_100::get_unit()
 {
 	return "%";
-}
-
-bool device_condition_dimming_100::show_OFF_on_zero()
-{
-	return true;
 }
 
 void device_condition_dimming_100::set_condition_value_min(int s)

@@ -62,8 +62,6 @@ protected:
 	virtual int get_step();
 	//! Returns value divisor
 	virtual int get_divisor();
-	//! Returns true if OFF must be shown instead of 0
-	virtual bool show_OFF_on_zero();
 	//! Sets condition value
 	void set_condition_value(int);
 	//! Translates trigger condition from open encoding to int and sets val
@@ -78,7 +76,8 @@ protected:
 	//! Sets geometry
 	virtual void setGeometry(int, int, int ,int);
 	//! Draws frame
-	virtual void Draw();
+	virtual void Draw() = 0;
+
 	//! Returns current value for condition
 	int get_current_value();
 	//! Sets current value for condition
@@ -160,8 +159,6 @@ public:
 	int get_step();
 	//! Gets condition's meas unit
 	virtual QString get_unit();
-	//! Returns true if OFF must be shown instead of 0
-	bool show_OFF_on_zero();
 	void set_condition_value_min(int);
 	void set_condition_value_min(QString);
 	int get_condition_value_min();
@@ -223,8 +220,6 @@ public:
 	int get_step();
 	//! Gets condition's meas unit
 	virtual QString get_unit();
-	//! Returns true if OFF must be shown instead of 0
-	bool show_OFF_on_zero();
 	void set_condition_value_min(int);
 	void set_condition_value_min(QString);
 	int get_condition_value_min();
