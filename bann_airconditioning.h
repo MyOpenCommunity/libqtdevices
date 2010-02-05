@@ -124,7 +124,7 @@ public:
 	/**
 	 * All values are assumed to be in the temperature scale set in conf.xml
 	 */
-	SplitTemperature(int init_temp, int level_max, int level_min, int step);
+	SplitTemperature(int init_temp, int level_max, int level_min, int step, int initial_mode);
 
 	/**
 	 * Set the current temperature. new_temp must be in celsius degrees.
@@ -151,6 +151,7 @@ private:
 	void updateText();
 	int current_temp, max_temp, min_temp, temp_step;
 	TemperatureScale scale;
+	bool is_enabled;
 	QString icon_plus, icon_plus_disabled, icon_minus, icon_minus_disabled;
 };
 

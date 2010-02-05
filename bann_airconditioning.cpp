@@ -137,7 +137,7 @@ void CustomScenario::splitValuesChanged(const AirConditionerStatus &st)
 
 
 
-SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, int step) :
+SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, int step, int initial_mode) :
 	Bann2Buttons(0)
 {
 	icon_plus = bt_global::skin->getImage("plus");
@@ -153,7 +153,7 @@ SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, 
 	max_temp = level_max;
 	min_temp = level_min;
 	temp_step = step;
-	updateText();
+	currentModeChanged(initial_mode);
 
 	left_button->setAutoRepeat(true);
 	connect(left_button, SIGNAL(clicked()), SLOT(decreaseTemp()));
@@ -219,14 +219,33 @@ void SplitTemperature::decreaseTemp()
 
 void SplitTemperature::updateText()
 {
-	switch (scale)
+	if (is_enabled)
 	{
-	case CELSIUS:
-		setCentralText(celsiusString(current_temp));
-		break;
-	case FAHRENHEIT:
-		setCentralText(fahrenheitString(current_temp));
-		break;
+		switch (scale)
+		{
+		case CELSIUS:
+			setCentralText(celsiusString(current_temp));
+			break;
+		case FAHRENHEIT:
+			setCentralText(fahrenheitString(current_temp));
+			break;
+		}
+	}
+	else
+	{
+		// in this case the text must be "--.- C/F" (depending on scale)
+		QString text("--.- " TEMP_DEGREES);
+		switch (scale)
+		{
+		case CELSIUS:
+			text += "C";
+			break;
+		case FAHRENHEIT:
+			text += "F";
+			break;
+		}
+
+		setCentralText(text);
 	}
 }
 
@@ -260,13 +279,13 @@ int SplitTemperature::roundTo5(int temp)
 
 void SplitTemperature::setBannerEnabled(bool enable)
 {
-	if (enable)
+	is_enabled = enable;
+	if (is_enabled)
 	{
 		left_button->enable();
 		left_button->setImage(icon_minus);
 		right_button->enable();
 		right_button->setImage(icon_plus);
-		updateText();
 	}
 	else
 	{
@@ -274,20 +293,8 @@ void SplitTemperature::setBannerEnabled(bool enable)
 		left_button->setImage(icon_minus_disabled);
 		right_button->disable();
 		right_button->setImage(icon_plus_disabled);
-		// in this case the text must be "--.- C/F" (depending on scale)
-		QString text("--.- " TEMP_DEGREES);
-		switch (scale)
-		{
-		case CELSIUS:
-			text += "C";
-			break;
-		case FAHRENHEIT:
-			text += "F";
-			break;
-		}
-
-		setCentralText(text);
 	}
+	updateText();
 }
 
 
