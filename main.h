@@ -176,6 +176,7 @@ enum pagSecLiv
 	TERMOREG_MULTI_PLANT=15,                      /*!< Thermoregulation system with one or more 4-zones plants */
 	ENERGY_MANAGEMENT=16,                         /*!< Energy management system */
 	ENERGY_DATA=17,                               /*!< Energy data system */
+	LOAD_MANAGEMENT=18,                           /*!< Load management system */
 	FEED_READER=99,                               /*!< Feed reader page */
 };
 
@@ -412,6 +413,8 @@ enum  bannerType
 	AIR_GENERAL=75,                               /*!< AIR conditioning general split (basic) */
 	AIR_SPLIT_ADV=77,                             /*!< AIR conditioning single split (advanced) */
 	AIR_GENERAL_ADV=78,                           /*!< AIR conditioning general split (advanced) */
+	LOAD_WITH_CU=80,                              /*!< Load with central unit */
+	LOAD_WITHOUT_CU=81,                           /*!< Load without central unit */
 
 	// keep 69-71 free for energy management devices
 	LANSETTINGS=72,                               /*!< LAN settings and information */

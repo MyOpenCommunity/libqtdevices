@@ -17,6 +17,7 @@
 #include "energy_data.h"
 #include "openclient.h"
 #include "energy_management.h"
+#include "load_management.h"
 
 #include <QObject>
 
@@ -154,6 +155,12 @@ Page *getPage(int id)
 	case ENERGY_DATA:
 	{
 		EnergyData *p = new EnergyData(page_node);
+		page = p;
+		break;
+	}
+	case LOAD_MANAGEMENT:
+	{
+		LoadManagement *p = new LoadManagement(page_node);
 		page = p;
 		break;
 	}
