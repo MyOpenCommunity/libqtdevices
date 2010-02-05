@@ -70,14 +70,26 @@ void BtButton::setPixmap(const QPixmap &p)
 
 bool BtButton::event(QEvent *e)
 {
+	// this code is taken from QAbstractButton::event().
+	// Whenever we change Qt version, check the source to see if the check changed (eg. multitouch mouse events)
 	if (!is_enabled)
 	{
 		switch (e->type())
 		{
+		case QEvent::TabletPress:
+		case QEvent::TabletRelease:
+		case QEvent::TabletMove:
 		case QEvent::MouseButtonPress:
 		case QEvent::MouseButtonRelease:
 		case QEvent::MouseButtonDblClick:
 		case QEvent::MouseMove:
+		case QEvent::HoverMove:
+		case QEvent::HoverEnter:
+		case QEvent::HoverLeave:
+		case QEvent::ContextMenu:
+	#ifndef QT_NO_WHEELEVENT
+		case QEvent::Wheel:
+	#endif
 			return true;
 		default:
 			break;
