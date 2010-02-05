@@ -1,6 +1,7 @@
 #ifndef SCENEVODEVICESCOND_H
 #define SCENEVODEVICESCOND_H
 
+#include <QWidget>
 #include <QObject>
 #include <QList>
 
@@ -17,6 +18,25 @@ class device_status;
 class stat_var;
 class QString;
 class QFrame;
+class QLabel;
+
+
+/**
+ * This class is (stub of) a widget that can be used to represent a device condition
+ * which can have only the ON or the OFF status.
+ */
+class DeviceConditionDisplayOnOff : public QWidget
+{
+Q_OBJECT
+public:
+	DeviceConditionDisplayOnOff(QWidget *parent);
+
+public slots:
+	void updateText(int new_value);
+
+private:
+	QLabel *label;
+};
 
 
 class DeviceCondition : public QObject
@@ -56,7 +76,7 @@ protected:
 	virtual QString get_unit();
 
 	//! Sets geometry
-	void setGeometry(int, int, int ,int);
+	virtual void setGeometry(int, int, int ,int);
 	//! Draws frame
 	virtual void Draw();
 	//! Returns current value for condition
@@ -371,6 +391,7 @@ public slots:
 
 protected:
 	virtual void inizializza();
+	virtual void setGeometry(int, int, int, int);
 
 private slots:
 	// TODO: use a more generic approach!
@@ -382,6 +403,7 @@ private:
 	bool device_initialized;
 	int device_value;
 	aux_device *dev;
+	DeviceConditionDisplayOnOff *condition_display;
 };
 
 

@@ -6,12 +6,30 @@
 #include "scaleconversion.h"
 #include "fontmanager.h" // bt_global::font
 
+#include <QVBoxLayout>
 #include <QLabel>
 #include <QFrame>
 #include <QDebug>
 
 // The language used for the floating point number
 static QLocale loc(QLocale::Italian);
+
+
+DeviceConditionDisplayOnOff::DeviceConditionDisplayOnOff(QWidget *parent) : QWidget(parent)
+{
+	label = new QLabel;
+	label->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	label->setFont(bt_global::font->get(FontManager::TEXT));
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->setContentsMargins(0, 0, 0, 0);
+	layout->setSpacing(0);
+	layout->addWidget(label);
+}
+
+void DeviceConditionDisplayOnOff::updateText(int new_value)
+{
+	label->setText(new_value ? tr("ON") : tr("OFF"));
+}
 
 
 /*****************************************************************
@@ -1188,14 +1206,12 @@ void device_condition_temp::status_changed(const StatusList &sl)
 ** Aux device condition
 ****************************************************************/
 
+
 device_condition_aux::device_condition_aux(QWidget *parent, QString trigger, QString where) :
 	device_initialized(false), device_value(-1)
 {
-	QLabel *l = new QLabel(parent);
-	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	l->setFont(bt_global::font->get(FontManager::TEXT));
+	condition_display = new DeviceConditionDisplayOnOff(parent);
 
-	frame = l;
 	set_condition_value(trigger);
 	set_current_value(DeviceCondition::get_condition_value());
 	dev = bt_global::add_device_to_cache(new aux_device(where));
@@ -1210,7 +1226,7 @@ void device_condition_aux::inizializza()
 
 void device_condition_aux::Draw()
 {
-	((QLabel *)frame)->setText(get_current_value() ? tr("ON") : tr("OFF"));
+	condition_display->updateText(get_current_value());
 }
 
 void device_condition_aux::check_condition(bool emit_signal)
@@ -1266,5 +1282,10 @@ void device_condition_aux::OK()
 	qDebug("device_condition_aux::OK()");
 	DeviceCondition::OK();
 	check_condition(false);
+}
+
+void device_condition_aux::setGeometry(int x, int y, int sx, int sy)
+{
+	condition_display->setGeometry(x, y, sx, sy);
 }
 
