@@ -69,6 +69,20 @@ public slots:
 };
 
 
+/**
+ * This class can be used for represent a volume device condition.
+ */
+class DeviceConditionDisplayVolume : public DeviceConditionDisplay
+{
+Q_OBJECT
+public:
+	DeviceConditionDisplayVolume(QWidget *parent);
+
+public slots:
+	void updateText(int min_condition_value, int max_condition_value);
+};
+
+
 
 class DeviceCondition : public QObject
 {
@@ -284,10 +298,8 @@ public:
 	//! Returns max value
 	virtual int get_max();
 	void set_condition_value_min(int);
-	void set_condition_value_min(QString);
 	int get_condition_value_min();
 	void set_condition_value_max(int);
-	void set_condition_value_max(QString);
 	int get_condition_value_max();
 	int get_current_value_min();
 	void set_current_value_min(int min);
@@ -299,8 +311,7 @@ public:
 	virtual void Draw();
 	//! Translates trigger condition from open encoding to int and sets val
 	virtual void set_condition_value(QString);
-	//! Gets condition's meas unit
-	virtual QString get_unit();
+
 
 public slots:
 	void OK();
@@ -313,6 +324,7 @@ public slots:
 
 protected:
 	virtual void inizializza();
+	virtual void setGeometry(int, int, int ,int);
 
 private:
 	int min_val;
@@ -320,6 +332,7 @@ private:
 	int current_value_min;
 	int current_value_max;
 	sound_device *dev;
+	DeviceConditionDisplayVolume *condition_display;
 };
 
 

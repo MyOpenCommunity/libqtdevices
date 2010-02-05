@@ -48,12 +48,35 @@ DeviceConditionDisplayDimming::DeviceConditionDisplayDimming(QWidget *parent) :
 
 void DeviceConditionDisplayDimming::updateText(int min_condition_value, int max_condition_value)
 {
-	Q_UNUSED(max_condition_value)
 	if (min_condition_value == 0)
 		label->setText(tr("OFF"));
 	else
 		label->setText(QString("%1% - %3%").arg(min_condition_value).arg(max_condition_value));
 }
+
+
+DeviceConditionDisplayVolume::DeviceConditionDisplayVolume(QWidget *parent) :
+	DeviceConditionDisplay(parent)
+{
+
+}
+
+void DeviceConditionDisplayVolume::updateText(int min_condition_value, int max_condition_value)
+{
+	if (min_condition_value == -1)
+		label->setText(tr("OFF"));
+	else if (min_condition_value == 0 && max_condition_value == 31)
+		label->setText(tr("ON"));
+	else
+	{
+		int val_min = min_condition_value;
+		int val_max = max_condition_value;
+		int vmin = (val_min == 0 ? 0 : (10 * (val_min <= 15 ? val_min/3 : (val_min-1)/3) + 1));
+		int vmax = 10 * (val_max <= 15 ? val_max/3 : (val_max-1)/3);
+		label->setText(QString("%1% - %3%").arg(vmin).arg(vmax));
+	}
+}
+
 
 
 DeviceCondition::DeviceCondition()
@@ -666,11 +689,7 @@ void DeviceConditionDimming100::status_changed(const StatusList &sl)
 
 DeviceConditionVolume::DeviceConditionVolume(QWidget *parent, QString trigger, QString where)
 {
-	char sup[10];
-	QLabel *l = new QLabel(parent);
-	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	l->setFont(bt_global::font->get(FontManager::TEXT));
-	frame = l;
+	condition_display = new DeviceConditionDisplayVolume(parent);
 	if (trigger == "-1")
 	{
 		set_condition_value_min(-1);
@@ -678,19 +697,24 @@ DeviceConditionVolume::DeviceConditionVolume(QWidget *parent, QString trigger, Q
 	}
 	else
 	{
-		QByteArray buf = trigger.toAscii();
-		sprintf(sup, "%s", buf.constData());
-		strtok(sup, "-");
-		set_condition_value_min(sup);
-		sprintf(sup, "%s", strchr(buf.constData(), '-')+1);
-		set_condition_value_max(sup);
+		QStringList parts = trigger.split('-');
+		Q_ASSERT_X(parts.size() == 2, "DeviceConditionVolume::DeviceConditionVolume",
+			"the trigger value must have 0 or 2 digit with - as separator");
+		set_condition_value_min(parts[0].toInt());
+		set_condition_value_max(parts[1].toInt());
 	}
+
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
 	dev = bt_global::add_device_to_cache(new sound_device(QString(where)));
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));
 	Draw();
+}
+
+void DeviceConditionVolume::setGeometry(int x, int y, int sx, int sy)
+{
+	condition_display->setGeometry(x, y, sx, sy);
 }
 
 void DeviceConditionVolume::inizializza()
@@ -703,11 +727,6 @@ void DeviceConditionVolume::set_condition_value_min(int s)
 	min_val = s;
 }
 
-void DeviceConditionVolume::set_condition_value_min(QString s)
-{
-	min_val = s.toInt();
-}
-
 int DeviceConditionVolume::get_condition_value_min()
 {
 	return min_val;
@@ -716,11 +735,6 @@ int DeviceConditionVolume::get_condition_value_min()
 void DeviceConditionVolume::set_condition_value_max(int s)
 {
 	max_val = s;
-}
-
-void DeviceConditionVolume::set_condition_value_max(QString s)
-{
-	max_val = s.toInt();
 }
 
 int DeviceConditionVolume::get_condition_value_max()
@@ -854,23 +868,7 @@ void DeviceConditionVolume::OK()
 
 void DeviceConditionVolume::Draw()
 {
-	QString tmp;
-	QString u = get_unit();
-	int val_min = get_current_value_min();
-	int val_max = get_current_value_max();
-	qDebug("device_condition_volume::Draw(), val_min = %d - val_max = %d", val_min, val_max);
-	if (val_min == -1)
-		tmp = tr("OFF");
-	else if (val_min == 0 && val_max == 31)
-		tmp = tr("ON");
-	else
-	{
-		int vmin = (val_min == 0 ? 0 : (10 * (val_min <= 15 ? val_min/3 : (val_min-1)/3) + 1));
-		int vmax = 10 * (val_max <= 15 ? val_max/3 : (val_max-1)/3);
-
-		tmp = QString("%1%2 - %3%4").arg(vmin).arg(u).arg(vmax).arg(u);
-	}
-	((QLabel *)frame)->setText(tmp);
+	condition_display->updateText(get_current_value_min(), get_current_value_max());
 }
 
 void DeviceConditionVolume::status_changed(QList<device_status*> sl)
@@ -920,11 +918,6 @@ void DeviceConditionVolume::status_changed(QList<device_status*> sl)
 			break;
 		}
 	}
-}
-
-QString DeviceConditionVolume::get_unit()
-{
-	return "%";
 }
 
 void DeviceConditionVolume::reset()
