@@ -22,7 +22,126 @@ protected:
 	virtual void bannerSelected(int id);
 };
 
-class SlideshowImageContent;
+
+
+/**
+ * Display items in a grid with 2 columns.
+ */
+class SlideshowImageContent : public GridContent
+{
+Q_OBJECT
+public:
+	SlideshowImageContent(QWidget *parent=0);
+	void addItem(QWidget *item);
+	void clearContent();
+	void showContent();
+
+public slots:
+	void nextItem();
+	void prevItem();
+
+protected:
+	virtual void drawContent();
+
+private:
+	QList<QWidget *> items;
+};
+
+
+/**
+ * Base class for slideshow thumbnail items.
+ * Derived classes must provide their own layout.
+ */
+class SlideshowItem : public QWidget
+{
+Q_OBJECT
+public:
+	SlideshowItem(const QString &path, const QString &icon, const QString &pressed_icon);
+	void setChecked(bool check);
+	void setCheckable(bool is_checkable);
+
+protected:
+	BtButton *check_button;
+	QLabel *text;
+	QString item_path;
+
+private slots:
+	void checked(bool check);
+
+signals:
+	void itemToggled(bool, QString);
+};
+
+
+/**
+ * Slideshow content item to display a directory (directory button, check button, label below).
+ */
+class SlideshowItemDir : public QWidget
+{
+Q_OBJECT
+public:
+	/**
+	 * \param path Returned when directoryToggled() is emitted.
+	 */
+	SlideshowItemDir(const QString &path, const QString &checked_icon, const QString &unchecked_icon, const QString &main_icon);
+	void setChecked(bool check);
+
+private:
+	BtButton *dir_button, *check_button;
+	QLabel *text;
+	QString dir_path;
+
+private slots:
+	void checked(bool check);
+	void dirButtonClicked();
+
+signals:
+	void browseDirectory(QString);
+	void directoryToggled(bool, QString);
+};
+
+
+/**
+ * Slideshow content item to display a thumbnail (thumbnail label, check button, label below)
+ */
+class SlideshowItemImage : public QWidget
+{
+Q_OBJECT
+public:
+	/**
+	 * \param filename Returned when fileToggled() is emitted.
+	 * \param working_dir Used internally to load the image with path working_dir + filename
+	 */
+	SlideshowItemImage(const QString &filename, const QString &working_dir, const QString &pressed_icon, const QString &icon);
+	void setChecked(bool check);
+
+private:
+	BtButton *check_button;
+	QLabel *thumbnail, *text;
+	QString file_name;
+
+private slots:
+	void checked(bool check);
+
+signals:
+	void fileToggled(bool, QString);
+};
+
+
+
+/**
+ * Select slideshow settings: add images, remove all, delay between images.
+ */
+class SlideshowSettings : public QWidget
+{
+Q_OBJECT
+public:
+	SlideshowSettings();
+
+signals:
+	void clearAllImages();
+	void addMoreImages();
+};
 
 
 /**
@@ -125,6 +244,7 @@ public slots:
 private:
 	void showFiles();
 	void refreshContent();
+	bool areAllItemsSelected(const QFileInfoList &file_list);
 
 	QDir current_dir;
 	int level;
@@ -160,100 +280,6 @@ private:
 	void addItemToContent(const QString &path);
 	QString button_icon;
 	ImageSelectionHandler *image_handler;
-};
-
-
-/**
- * Select slideshow settings: add images, remove all, delay between images.
- */
-class SlideshowSettings : public QWidget
-{
-Q_OBJECT
-public:
-	SlideshowSettings();
-
-signals:
-	void clearAllImages();
-	void addMoreImages();
-};
-
-
-/**
- * Display items in a grid with 2 columns.
- */
-class SlideshowImageContent : public GridContent
-{
-Q_OBJECT
-public:
-	SlideshowImageContent(QWidget *parent=0);
-	void addItem(QWidget *item);
-	void clearContent();
-	void showContent();
-
-public slots:
-	void nextItem();
-	void prevItem();
-
-protected:
-	virtual void drawContent();
-
-private:
-	QList<QWidget *> items;
-};
-
-
-/**
- * Slideshow content item to display a directory (directory button, check button, label below).
- */
-class SlideshowItemDir : public QWidget
-{
-Q_OBJECT
-public:
-	/**
-	 * \param path Returned when directoryToggled() is emitted.
-	 */
-	SlideshowItemDir(const QString &path, const QString &checked_icon, const QString &unchecked_icon, const QString &main_icon);
-	void setChecked(bool check);
-
-private:
-	BtButton *dir_button, *check_button;
-	QLabel *text;
-	QString dir_path;
-
-private slots:
-	void checked(bool check);
-	void dirButtonClicked();
-
-signals:
-	void browseDirectory(QString);
-	void directoryToggled(bool, QString);
-};
-
-
-/**
- * Slideshow content item to display a thumbnail (thumbnail label, check button, label below)
- */
-class SlideshowItemImage : public QWidget
-{
-Q_OBJECT
-public:
-	/**
-	 * \param filename Returned when fileToggled() is emitted.
-	 * \param working_dir Used internally to load the image with path working_dir + filename
-	 */
-	SlideshowItemImage(const QString &filename, const QString &working_dir, const QString &pressed_icon, const QString &icon);
-	void setChecked(bool check);
-
-private:
-	BtButton *check_button;
-	QLabel *thumbnail, *text;
-	QString file_name;
-
-private slots:
-	void checked(bool check);
-
-signals:
-	void fileToggled(bool, QString);
 };
 
 #endif // SCREENSAVERPAGE_H

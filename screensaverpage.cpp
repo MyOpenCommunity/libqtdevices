@@ -143,6 +143,35 @@ void SlideshowImageContent::showContent()
 
 
 
+SlideshowItem::SlideshowItem(const QString &path, const QString &icon, const QString &pressed_icon) :
+	QWidget(0),
+	item_path(path)
+{
+	check_button = new BtButton;
+	check_button->setImage(icon, BtButton::NO_FLAG);
+	check_button->setPressedImage(pressed_icon);
+	connect(check_button, SIGNAL(toggled(bool)), SLOT(checked(bool)));
+
+	text = new QLabel(item_path);
+}
+
+void SlideshowItem::checked(bool check)
+{
+	emit itemToggled(check, item_path);
+}
+
+void SlideshowItem::setChecked(bool check)
+{
+	check_button->setChecked(check);
+}
+
+void SlideshowItem::setCheckable(bool is_checkable)
+{
+	check_button->setCheckable(is_checkable);
+}
+
+
+
 SlideshowItemDir::SlideshowItemDir(const QString &path, const QString &checked_icon, const QString &unchecked_icon,
 		const QString &main_icon) :
 	QWidget(0),
@@ -235,7 +264,6 @@ SlideshowSettings::SlideshowSettings() :
 	l->addWidget(add_images);
 	l->addWidget(remove_images);
 }
-
 
 
 ImageSelectionHandler::ImageSelectionHandler()
@@ -372,7 +400,7 @@ bool ImageSelectionHandler::isItemSelected(QString abs_path)
 bool ImageSelectionHandler::isItemExplicitlySelected(const QString &abs_path)
 {
 	// TODO: this should also check if abs_path is in removed_images
-	return (!selected_images.contains(abs_path)) && (!inserted_images.contains(abs_path));
+	return selected_images.contains(abs_path) || inserted_images.contains(abs_path);
 }
 
 QSet<QString> ImageSelectionHandler::getSelectedImages()
@@ -417,14 +445,11 @@ void SlideshowSelectionPage::showPage()
 void SlideshowSelectionPage::showFiles()
 {
 	QFileInfoList list = getFilteredFiles(current_dir.absolutePath());
-	bool are_all_selected = true;
 	foreach (const QFileInfo &fi, list)
 	{
 		QString abs_path = current_dir.absolutePath() + QDir::separator() + fi.fileName();
 		// if there's at least one not selected item we can't compact the directory
 		bool is_selected = image_handler->isItemSelected(abs_path);
-		if (!is_selected)
-			are_all_selected = false;
 		QWidget *w = 0;
 		if (fi.isDir())
 		{
@@ -448,7 +473,7 @@ void SlideshowSelectionPage::showFiles()
 		page_content->addItem(w);
 	}
 
-	if (are_all_selected)
+	if (areAllItemsSelected(list))
 		image_handler->compactDirectory(current_dir.absolutePath(), list);
 }
 
@@ -458,12 +483,7 @@ void SlideshowSelectionPage::browseUp()
 	{
 		// compact the directory we are leaving otherwise the visualization is incorrect
 		QFileInfoList list = getFilteredFiles(current_dir.absolutePath());
-		bool are_all_selected = true;
-		foreach (const QFileInfo &fi, list)
-			// here we don't need isItemSelected(), we just need to check all individual items in this dir
-			if (image_handler->isItemExplicitlySelected(fi.absoluteFilePath()))
-				are_all_selected = false;
-		if (are_all_selected)
+		if (areAllItemsSelected(list))
 			image_handler->compactDirectory(current_dir.absolutePath(), list);
 
 		if (current_dir.cdUp())
@@ -489,6 +509,10 @@ void SlideshowSelectionPage::enterDirectory(QString dir)
 
 void SlideshowSelectionPage::confirmSelection()
 {
+	QFileInfoList list = getFilteredFiles(current_dir.absolutePath());
+	if (areAllItemsSelected(list))
+		image_handler->compactDirectory(current_dir.absolutePath(), list);
+
 	image_handler->saveSlideshowToFile();
 	delete image_handler;
 	// TODO: emit signal to notify image changes
@@ -514,6 +538,19 @@ void SlideshowSelectionPage::refreshContent()
 	page_content->clearContent();
 	showFiles();
 	page_content->showContent();
+}
+
+bool SlideshowSelectionPage::areAllItemsSelected(const QFileInfoList &file_list)
+{
+	bool are_all_selected = true;
+	foreach (const QFileInfo &fi, file_list)
+		// here we don't need isItemSelected(), we just need to check all individual items in this dir
+		if (!image_handler->isItemExplicitlySelected(fi.absoluteFilePath()))
+		{
+			are_all_selected = false;
+			break;
+		}
+	return are_all_selected;
 }
 
 
@@ -574,6 +611,8 @@ void ImageRemovalPage::refreshContent()
 void ImageRemovalPage::addItemToContent(const QString &path)
 {
 	QFileInfo fi(path);
+	// TODO: here we can nuke all the entries of the file we don't find on the physical device.
+	//    Be careful not to remove entries from SD card if the user inserts an USB!
 	if (fi.isDir())
 	{
 		foreach (QFileInfo info, getFilteredFiles(fi.absoluteFilePath()))
