@@ -48,7 +48,7 @@ EnergyDevice::EnergyDevice(QString where, int _mode) : device(QString("18"), whe
 	update_state = UPDATE_IDLE;
 	need_polling = true;
 	update_count = 0;
-	update_timer = new QTimer;
+	update_timer = new QTimer(this);
 	connect(update_timer, SIGNAL(timeout()), SLOT(pollingTimeout()));
 
 	for (int i = 1; i <= 12; ++i)
