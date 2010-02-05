@@ -125,6 +125,13 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, co
 bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filename)
 #endif
 {
+	if (!bt_global::config.contains(INIT_COMPLETE))
+	{
+		qDebug() << "Not writing to configuration during init";
+
+		return true;
+	}
+
 	QDomDocument doc("config_document");
 	if (!prepareWriteCfgFile(doc, filename))
 		return false;
@@ -163,6 +170,13 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filena
 // TODO rewrite setCfgValue using setGlobalCfgValue when removing CONFIG_BTOUCH
 bool setGlobalCfgValue(QMap<QString, QString> data, const QString &id_name, int id_value, const QString &filename)
 {
+	if (!bt_global::config.contains(INIT_COMPLETE))
+	{
+		qDebug() << "Not writing to configuration during init";
+
+		return true;
+	}
+
 	QDomDocument doc("config_document");
 	if (!prepareWriteCfgFile(doc, filename))
 		return false;
