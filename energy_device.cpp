@@ -25,6 +25,7 @@ enum RequestDimension
 {
 	_DIM_CUMULATIVE_MONTH = 52, // An implementation detail, ignore this
 	_DIM_STATE_UPDATE_INTERVAL = 1200,   // used to detect start/stop of automatic updates
+	_DIM_DAY_GRAPH_16BIT       = 511,    // used internally, the status list contains DIM_DAY_GRAPH
 
 	REQ_DAILY_AVERAGE_GRAPH      = 53,   // graph data for daily average
 	REQ_DAY_GRAPH                = 52,   // request graph data for a specific day
@@ -250,7 +251,8 @@ void EnergyDevice::frame_rx_handler(char *frame)
 	if (what == DIM_CUMULATIVE_DAY || what == REQ_CURRENT_MODE_1 || what == REQ_CURRENT_MODE_2 ||
 		what == REQ_CURRENT_MODE_3 || what == REQ_CURRENT_MODE_4 || what == REQ_CURRENT_MODE_5 ||
 		what == DIM_CUMULATIVE_MONTH || what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR ||
-		what == DIM_DAILY_AVERAGE_GRAPH || what == DIM_DAY_GRAPH || what == DIM_CUMULATIVE_MONTH_GRAPH)
+		what == DIM_DAILY_AVERAGE_GRAPH || what == DIM_DAY_GRAPH || what == DIM_CUMULATIVE_MONTH_GRAPH ||
+		what == _DIM_DAY_GRAPH_16BIT)
 	{
 
 		// In some cases (when more than a ts is present in the system)
@@ -276,13 +278,19 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		{
 			if (num_frame > 0 && num_frame < 10)
 				buffer_frame.append(frame);
-			parseCumulativeDayGraph(buffer_frame, v);
+			parseCumulativeDayGraph8Bit(buffer_frame, v);
 		}
 		else if (what == DIM_CUMULATIVE_MONTH_GRAPH)
 		{
 			if (num_frame > 0 && num_frame < 22)
 				buffer_frame.append(frame);
 			parseCumulativeMonthGraph(buffer_frame, v);
+		}
+		else if (what == _DIM_DAY_GRAPH_16BIT)
+		{
+			if (num_frame > 0 && num_frame < 25)
+				buffer_frame.append(frame);
+			parseCumulativeDayGraph16Bit(buffer_frame, v);
 		}
 		else
 		{
@@ -297,6 +305,8 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		{
 			status_list[DIM_CURRENT] = v;
 		}
+		else if (what == _DIM_DAY_GRAPH_16BIT)
+			status_list[DIM_DAY_GRAPH] = v;
 		else
 			status_list[what] = v;
 
@@ -308,12 +318,23 @@ void EnergyDevice::frame_rx_handler(char *frame)
 			if (QDate::currentDate() != getDateFromFrame(msg))
 				fillCumulativeDay(status_list, buffer_frame.at(8), frame);
 		}
+		else if (what == _DIM_DAY_GRAPH_16BIT && num_frame == 25)
+		{
+			// see comment above
+			if (QDate::currentDate() != getDateFromFrame(msg))
+			{
+				QVariant v;
+				v.setValue(EnergyValue(getDateFromFrame(msg), msg.whatArgN(1)));
+				status_list[DIM_CUMULATIVE_DAY] = v;
+			}
+		}
 
 		if (what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_MONTH)
 		{
 			fillYearGraphData(status_list, msg);
 			fillMonthlyAverage(status_list, msg);
 		}
+
 		emit status_changed(status_list);
 	}
 
@@ -450,7 +471,7 @@ void EnergyDevice::parseDailyAverageGraph(const QStringList &buffer_frame, QVari
 	v.setValue(data);
 }
 
-void EnergyDevice::parseCumulativeDayGraph(const QStringList &buffer_frame, QVariant &v)
+void EnergyDevice::parseCumulativeDayGraph8Bit(const QStringList &buffer_frame, QVariant &v)
 {
 	QList<int> values;
 	GraphData data;
@@ -467,7 +488,6 @@ void EnergyDevice::parseCumulativeDayGraph(const QStringList &buffer_frame, QVar
 			values.append(frame_parser.whatArgN(2));
 		else if (frame_parser.whatArgN(0) == 9)
 		{
-
 			values.append(frame_parser.whatArgN(1));
 			values.append(frame_parser.whatArgN(2));
 		}
@@ -478,6 +498,24 @@ void EnergyDevice::parseCumulativeDayGraph(const QStringList &buffer_frame, QVar
 
 	for (int i = 0; i < values.size(); ++i)
 		data.graph[i + 1] = values[i] == MAX_VALUE ? 0 : values[i];
+
+	v.setValue(data);
+}
+
+void EnergyDevice::parseCumulativeDayGraph16Bit(const QStringList &buffer_frame, QVariant &v)
+{
+	GraphData data;
+	OpenMsg tmp(buffer_frame[0].toStdString());
+	data.date = getDateFromFrame(tmp);
+	data.type = CUMULATIVE_DAY;
+
+	for (int i = 0; i < buffer_frame.size(); ++i)
+	{
+		OpenMsg frame_parser(buffer_frame[i].toStdString());
+		Q_ASSERT_X(frame_parser.whatArgCnt() > 1, "EnergyDevice::parseCumulativeDayGraph", frame_parser.frame_open);
+
+		data.graph[i + 1] = frame_parser.whatArgN(1);
+	}
 
 	v.setValue(data);
 }
@@ -518,7 +556,7 @@ QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)
 {
 	int what = msg.what();
 	if (what == DIM_DAILY_AVERAGE_GRAPH || what == DIM_CUMULATIVE_MONTH_GRAPH ||
-		what == DIM_DAY_GRAPH)
+		what == DIM_DAY_GRAPH || what == _DIM_DAY_GRAPH_16BIT)
 	{
 		Q_ASSERT_X(msg.whatSubArgCnt() > 0, "EnergyDevice::getDateFromFrame", msg.frame_open);
 		QDate current = QDate::currentDate();

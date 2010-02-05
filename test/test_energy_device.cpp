@@ -163,6 +163,24 @@ void TestEnergyDevice::receiveCumulativeDay2()
 	t.check(frames, EnergyValue(QDate(year, 8, 1), 525));
 }
 
+void TestEnergyDevice::receiveCumulativeDay16Bit()
+{
+	dev->buffer_frame.clear();
+	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_DAY, DeviceTester::MULTIPLE_VALUES);
+	QString tmp(QString("*#18*%1*%2#8#1").arg(where).arg(511));
+	QStringList frames;
+
+	for (int i = 0; i < 24; ++i)
+		frames << tmp + QString("*%1*%2##").arg(i + 1).arg(i * 37 + 13);
+	frames << tmp + QString("*%1*%2##").arg(25).arg(17477);
+
+	int year = QDate::currentDate().year();
+	if (QDate::currentDate().month() < 8)
+		--year;
+
+	t.check(frames, EnergyValue(QDate(year, 8, 1), 17477));
+}
+
 void TestEnergyDevice::receiveCurrent()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CURRENT);
@@ -334,6 +352,28 @@ void TestEnergyDevice::receiveDayGraph3()
 	data.graph[22] = 224;
 	data.graph[23] = 253;
 	data.graph[24] = 254;
+	data.date = getDate(month, day);
+	data.type = EnergyDevice::CUMULATIVE_DAY;
+
+	t.check(frames, data);
+}
+
+void TestEnergyDevice::receiveDayGraph16Bit()
+{
+	int month = 8;
+	int day = 1;
+	dev->buffer_frame.clear();
+	DeviceTester t(dev, EnergyDevice::DIM_DAY_GRAPH, DeviceTester::MULTIPLE_VALUES);
+	QString tmp(QString("*#18*%1*%2#%3#%4").arg(where).arg(511).arg(month).arg(day));
+	QStringList frames;
+
+	GraphData data;
+	for (int i = 0; i < 24; ++i)
+	{
+		frames << tmp + QString("*%1*%2##").arg(i + 1).arg(i * 37 + 13);
+		data.graph[i + 1] = i * 37 + 13;
+	}
+	frames << tmp + QString("*%1*%2##").arg(25).arg(17477);
 	data.date = getDate(month, day);
 	data.type = EnergyDevice::CUMULATIVE_DAY;
 

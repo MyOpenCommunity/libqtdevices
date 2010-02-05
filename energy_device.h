@@ -99,7 +99,8 @@ private:
 	// of the frames) but instead it defines its own version.
 	void sendRequest(int what, bool use_compressed_init=false) const;
 	void sendRequest(QString what, bool use_compressed_init=false) const;
-	void parseCumulativeDayGraph(const QStringList &buffer_frame, QVariant &v);
+	void parseCumulativeDayGraph8Bit(const QStringList &buffer_frame, QVariant &v);
+	void parseCumulativeDayGraph16Bit(const QStringList &buffer_frame, QVariant &v);
 	void parseCumulativeMonthGraph(const QStringList &buffer_frame, QVariant &v);
 	void parseDailyAverageGraph(const QStringList &buffer_frame, QVariant &v);
 	void computeMonthGraphData(int days_in_month, const QList<int> &values, QMap<int, int> &graph);

@@ -27,6 +27,7 @@ private slots:
 
 	void receiveCumulativeDay();
 	void receiveCumulativeDay2();
+	void receiveCumulativeDay16Bit();
 	void receiveCurrent();
 	void receiveCumulativeMonth();
 	void receiveCumulativeYear();
@@ -35,6 +36,7 @@ private slots:
 	void receiveDayGraph();
 	void receiveDayGraph2();
 	void receiveDayGraph3();
+	void receiveDayGraph16Bit();
 	void receiveCumulativeMonthGraph();
 	void receiveCumulativeMonthGraph2();
 	void receiveCumulativeMonthGraph3();
