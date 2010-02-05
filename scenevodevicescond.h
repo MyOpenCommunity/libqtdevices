@@ -83,6 +83,21 @@ public slots:
 };
 
 
+/**
+ * This class can be used for represent a temperature device condition
+ * (in celsius or Fahrenheit, depending from the configuration).
+ */
+class DeviceConditionDisplayTemperature : public DeviceConditionDisplay
+{
+Q_OBJECT
+public:
+	DeviceConditionDisplayTemperature(QWidget *parent) : DeviceConditionDisplay(parent) {}
+
+public slots:
+	void updateText(int min_condition_value, int max_condition_value);
+};
+
+
 
 class DeviceCondition : public QObject
 {
@@ -350,8 +365,6 @@ public:
 	int get_step();
 	//! Returns divisor
 	int get_divisor();
-	//! Gets condition's meas unit
-	virtual QString get_unit();
 
 	//! Draws condition
 	virtual void Draw();
@@ -363,6 +376,7 @@ public:
 
 protected:
 	virtual void inizializza();
+	virtual void setGeometry(int, int, int, int);
 
 private slots:
 	//! Invoked when status changes
@@ -375,6 +389,7 @@ private:
 	int step;
 	TemperatureScale temp_scale;
 	NonControlledProbeDevice *dev;
+	DeviceConditionDisplayTemperature *condition_display;
 };
 
 

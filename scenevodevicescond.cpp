@@ -37,7 +37,6 @@ void DeviceConditionDisplayOnOff::updateText(int min_condition_value, int max_co
 }
 
 
-
 void DeviceConditionDisplayDimming::updateText(int min_condition_value, int max_condition_value)
 {
 	if (min_condition_value == 0)
@@ -63,6 +62,27 @@ void DeviceConditionDisplayVolume::updateText(int min_condition_value, int max_c
 	}
 }
 
+
+void DeviceConditionDisplayTemperature::updateText(int min_condition_value, int max_condition_value)
+{
+	Q_UNUSED(max_condition_value)
+	QString tmp = loc.toString(min_condition_value / 10.0, 'f', 1);
+	TemperatureScale temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+
+	switch (temp_scale)
+	{
+	case CELSIUS:
+		tmp += TEMP_DEGREES"C \2611"TEMP_DEGREES"C";
+		break;
+	case FAHRENHEIT:
+		tmp += TEMP_DEGREES"F \2611"TEMP_DEGREES"F";
+		break;
+	default:
+		qWarning("Wrong temperature scale, defaulting to celsius");
+		tmp += TEMP_DEGREES"C \2611"TEMP_DEGREES"C";
+	}
+	label->setText(tmp);
+}
 
 
 DeviceCondition::DeviceCondition()
@@ -917,13 +937,10 @@ void DeviceConditionVolume::reset()
 
 DeviceConditionTemperature::DeviceConditionTemperature(QWidget *parent, QString trigger, QString where, bool external)
 {
+	condition_display = new DeviceConditionDisplayTemperature(parent);
+
 	// Temp condition is expressed in bticino format
 	int temp_condition = trigger.toInt();
-
-	QLabel *l = new QLabel(parent);
-	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	l->setFont(bt_global::font->get(FontManager::TEXT));
-	frame = l;
 
 	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
 	switch (temp_scale)
@@ -975,31 +992,9 @@ int DeviceConditionTemperature::get_divisor()
 	return 10;
 }
 
-QString DeviceConditionTemperature::get_unit()
-{
-	switch (temp_scale)
-	{
-	case CELSIUS:
-		return TEMP_DEGREES"C \2611"TEMP_DEGREES"C";
-	case FAHRENHEIT:
-		return TEMP_DEGREES"F \2611"TEMP_DEGREES"F";
-	default:
-		qWarning("Wrong temperature scale, defaulting to celsius");
-		return TEMP_DEGREES"C \2611"TEMP_DEGREES"C";
-	}
-}
-
 void DeviceConditionTemperature::Draw()
 {
-	QString u = get_unit();
-	// val is an integer either in Celsius or in Fahrenheit degrees
-	int val = get_current_value();
-	qDebug("device_condition_temp::Draw(), val = %d", val);
-
-	QString tmp = loc.toString(val / 10.0, 'f', 1);
-	tmp += u;
-
-	((QLabel *)frame)->setText(tmp);
+	condition_display->updateText(get_current_value(), get_current_value());
 }
 
 void DeviceConditionTemperature::get_condition_value(QString& out)
@@ -1067,6 +1062,11 @@ void DeviceConditionTemperature::status_changed(const StatusList &sl)
 		qDebug("Condition not triggered");
 		satisfied = false;
 	}
+}
+
+void DeviceConditionTemperature::setGeometry(int x, int y, int sx, int sy)
+{
+	condition_display->setGeometry(x, y, sx, sy);
 }
 
 
