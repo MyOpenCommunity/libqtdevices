@@ -17,7 +17,6 @@ class sound_device;
 class device_status;
 class stat_var;
 class QString;
-class QFrame;
 class QLabel;
 
 
@@ -111,6 +110,11 @@ public slots:
 	//! Invoked when OK button is pressed
 	virtual void OK();
 
+signals:
+	//! Emitted when the condition on device is satisfied
+	void condSatisfied();
+	void conditionChanged(int min_condition_value, int max_condition_value);
+
 protected:
 	DeviceCondition();
 
@@ -134,7 +138,7 @@ protected:
 	virtual QString get_unit();
 
 	//! Sets geometry
-	virtual void setGeometry(int, int, int ,int);
+	virtual void setGeometry(int, int, int ,int) = 0;
 	//! Draws frame
 	virtual void Draw() = 0;
 
@@ -150,8 +154,6 @@ protected:
 	//! Returns true when actual condition is satisfied
 	bool isTrue();
 
-protected:
-	QFrame *frame;
 	//! True when condition is satisfied
 	bool satisfied;
 
@@ -161,9 +163,6 @@ private:
 	//! Current value (displayed, not confirmed)
 	int current_value;
 
-signals:
-	//! Emitted when the condition on device is satisfied
-	void condSatisfied();
 };
 
 
