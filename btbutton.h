@@ -40,6 +40,7 @@ public slots:
 protected:
 	virtual void mousePressEvent(QMouseEvent *event);
 	virtual void mouseReleaseEvent(QMouseEvent *event);
+	virtual bool event(QEvent *e);
 
 	// The sizeHint method is required to obtain a layout management that work fine.
 	virtual QSize sizeHint() const;
