@@ -142,8 +142,8 @@ void BannEnergyCost::resetRate()
 
 BannLoadNoCU::BannLoadNoCU(const QString &descr) : Bann3ButtonsLabel(0)
 {
-	qDebug() << "BannLoadNoCU ctor";
-	initBanner(QString(), QString(), bt_global::skin->getImage("load"), bt_global::skin->getImage("info"), descr);
+	initBanner(QString(), QString(), QString(), bt_global::skin->getImage("load"), bt_global::skin->getImage("info"),
+		ENABLED, NOT_FORCED, descr);
 }
 
 void BannLoadNoCU::connectRightButton(Page *p)

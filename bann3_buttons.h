@@ -36,15 +36,30 @@ class Bann3ButtonsLabel : public BannerNew
 {
 Q_OBJECT
 protected:
+	enum State
+	{
+		DISABLED,
+		ENABLED,
+	};
+
+	enum Forced
+	{
+		NOT_FORCED,
+		FORCED,
+	};
+
 	Bann3ButtonsLabel(QWidget *parent=0);
-	void initBanner(const QString &left, const QString &center_but, const QString &center_lab, const QString &right,
-		const QString &banner_text);
+	void initBanner(const QString &_left_forced, const QString &_left_not_forced, const QString &center_but, const QString &center_lab,
+		const QString &right, State init_state, Forced init_forced, const QString &banner_text);
+	void setState(State new_state);
+	void setForced(Forced is_forced);
 
 	// TODO: add states (active, not active...)
 	BtButton *right_button, *center_button, *left_button;
 
 private:
 	QLabel *text, *center_label;
+	QString left_forced, left_not_forced;
 };
 
 /*!
