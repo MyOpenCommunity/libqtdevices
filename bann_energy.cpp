@@ -78,6 +78,27 @@ void bannEnergyInterface::rateChanged(int rate_id)
 }
 
 
+// BannCurrentEnergy implementation
+
+BannCurrentEnergy::BannCurrentEnergy(const QString &text, EnergyDevice *_dev) :
+	bannTextOnImage(0, "---", "bg_banner", "graph")
+{
+	dev = _dev;
+	setText(text);
+	Draw();
+}
+
+void BannCurrentEnergy::showEvent(QShowEvent *e)
+{
+	dev->requestCurrentUpdateStart();
+}
+
+void BannCurrentEnergy::hideEvent(QHideEvent *e)
+{
+	dev->requestCurrentUpdateStop();
+}
+
+
 // BannEnergyCost implementation
 
 BannEnergyCost::BannEnergyCost(int rate_id, const QString &left, const QString &right,

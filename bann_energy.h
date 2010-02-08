@@ -7,6 +7,7 @@
 #include "energy_rates.h"  // EnergyRate
 
 struct EnergyRate;
+class EnergyDevice;
 
 
 class bannEnergyInterface : public bannTextOnImage
@@ -36,6 +37,20 @@ private:
 };
 
 
+class BannCurrentEnergy : public bannTextOnImage
+{
+public:
+	BannCurrentEnergy(const QString &text, EnergyDevice *dev);
+
+protected:
+	virtual void showEvent(QShowEvent *e);
+	virtual void hideEvent(QHideEvent *e);
+
+private:
+	EnergyDevice *dev;
+};
+
+
 class BannEnergyCost : public Bann2Buttons
 {
 Q_OBJECT
@@ -57,7 +72,6 @@ private:
 	EnergyRate rate;
 	float current_value;
 };
-
 
 
 class BannLoadNoCU : public Bann3ButtonsLabel
