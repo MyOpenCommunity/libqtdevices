@@ -118,7 +118,7 @@ private:
 	void sendUpdateStart();
 	void sendUpdateStop();
 
-	void setPollingOff();
+	void setHasNewFrames(bool restart_update_requests = false);
 
 	QDate getDateFromFrame(OpenMsg &msg);
 
@@ -137,10 +137,11 @@ private:
 		UPDATE_STOPPING,
 	};
 
-	UpdateState update_state;
+	// true if the device supports automatic updates without polling
+	// and the new 16/32 bit frames for graphs
+	bool has_new_frames;
 
-	// true if the device does not support automatic updates
-	bool need_polling;
+	UpdateState update_state;
 
 	// number of pages/banners that have requested automatic updates
 	int update_count;

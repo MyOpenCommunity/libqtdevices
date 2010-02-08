@@ -50,7 +50,7 @@ EnergyDevice::EnergyDevice(QString where, int _mode) : device(QString("18"), whe
 {
 	mode = _mode;
 	update_state = UPDATE_IDLE;
-	need_polling = true;
+	has_new_frames = false;
 	update_count = 0;
 	update_timer = new QTimer(this);
 	connect(update_timer, SIGNAL(timeout()), SLOT(pollingTimeout()));
@@ -128,7 +128,7 @@ void EnergyDevice::requestCurrentUpdateStart()
 		case UPDATE_IDLE:
 			update_state = UPDATE_AUTO;
 
-			if (need_polling)
+			if (!has_new_frames)
 			{
 				requestCurrent();
 				update_timer->start(POLLING_INTERVAL * 1000);
@@ -373,31 +373,34 @@ void EnergyDevice::frame_rx_handler(char *frame)
 	}
 }
 
-void EnergyDevice::setPollingOff()
+void EnergyDevice::setHasNewFrames(bool restart_update_requests)
 {
-	need_polling = false;
+	has_new_frames = true;
+
+	// delete the polling timer and send the frame to request
+	// automatic updates
 	update_timer->stop();
 	update_timer->deleteLater();
 	update_timer = NULL;
+
+	// this might send one unneeded frame, but removes the need for
+	// an additional state
+	if (restart_update_requests)
+		sendUpdateStart();
+	else if (update_state == UPDATE_STOPPING)
+		// to force resending the start frame if restarted
+		update_state = UPDATE_IDLE;
 }
 
 void EnergyDevice::handleAutomaticUpdate(StatusList &status_list, OpenMsg &msg)
 {
 	int time = msg.whatArgN(0);
 
-	if (need_polling)
+	if (!has_new_frames)
 	{
 		qDebug("Switching from polling mode to auto-update mode");
 
-		setPollingOff();
-
-		// this might send one unneeded frame, but removes the need for
-		// an additional state
-		if (update_state == UPDATE_AUTO && time != 0)
-			sendUpdateStart();
-		else if (update_state == UPDATE_STOPPING)
-			// to force resending the start frame if restarted
-			update_state = UPDATE_IDLE;
+		setHasNewFrames(update_state == UPDATE_AUTO && time != 0);
 	}
 
 	// at this point need_polling is always false
