@@ -95,6 +95,13 @@ public slots:
 private:
 	void requestCumulativeMonth(QDate date, bool use_compressed_init) const;
 
+	void requestCumulativeDayGraph8Bit(QDate date) const;
+	void requestCumulativeDayGraph16Bit(QDate date) const;
+	void requestCumulativeMonthGraph8Bit(QDate date) const;
+	void requestCumulativeMonthGraph32Bit(QDate date) const;
+	void requestDailyAverageGraph8Bit(QDate date) const;
+	void requestDailyAverageGraph16Bit(QDate date) const;
+
 	// EnergyDevice doesn't use the sendRequest of the device (because it should use the compression
 	// of the frames) but instead it defines its own version.
 	void sendRequest(int what, bool use_compressed_init=false) const;
@@ -141,6 +148,11 @@ private:
 	// and the new 16/32 bit frames for graphs
 	bool has_new_frames;
 
+	// last graph request
+	mutable int pending_graph_request;
+	mutable QDate pending_request_date;
+
+	// status of automatic updates
 	UpdateState update_state;
 
 	// number of pages/banners that have requested automatic updates

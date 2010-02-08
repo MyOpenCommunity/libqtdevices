@@ -64,19 +64,43 @@ void TestEnergyDevice::sendRequestCumulativeMonth2()
 	QCOMPARE(server->frameRequest(), QString("*#18*20*52#9#1##"));
 }
 
-void TestEnergyDevice::sendRequestCumulativeDayGraph()
+void TestEnergyDevice::sendRequestCumulativeDayGraph8Bit()
 {
-	dev->requestCumulativeDayGraph(QDate(2009, 1, 9));
+	dev->requestCumulativeDayGraph8Bit(QDate(2009, 1, 9));
 	client_command->flush();
 	QString req(QString("*18*52#1#9*%1##").arg(where));
 	QCOMPARE(server->frameCommand(), req);
 }
 
-void TestEnergyDevice::sendRequestCumulativeMonthGraph()
+void TestEnergyDevice::sendRequestCumulativeMonthGraph8Bit()
 {
-	dev->requestCumulativeMonthGraph(QDate(2009, 1, 9));
+	dev->requestCumulativeMonthGraph8Bit(QDate(2009, 1, 9));
 	client_command->flush();
 	QString req(QString("*18*56#1*%1##").arg(where));
+	QCOMPARE(server->frameCommand(), req);
+}
+
+void TestEnergyDevice::sendRequestDailyAverageGraph16Bit()
+{
+	dev->requestDailyAverageGraph16Bit(QDate(2009, 1, 9));
+	client_command->flush();
+	QString req(QString("*18*58#1*%1##").arg(where));
+	QCOMPARE(server->frameCommand(), req);
+}
+
+void TestEnergyDevice::sendRequestCumulativeDayGraph16Bit()
+{
+	dev->requestCumulativeDayGraph16Bit(QDate(2009, 1, 9));
+	client_command->flush();
+	QString req(QString("*18*57#1#9*%1##").arg(where));
+	QCOMPARE(server->frameCommand(), req);
+}
+
+void TestEnergyDevice::sendRequestCumulativeMonthGraph32Bit()
+{
+	dev->requestCumulativeMonthGraph32Bit(QDate(2009, 1, 9));
+	client_command->flush();
+	QString req(QString("*18*59#1*%1##").arg(where));
 	QCOMPARE(server->frameCommand(), req);
 }
 
@@ -573,7 +597,6 @@ void TestEnergyDevice::receiveMonthlyAverage()
 void TestEnergyDevice::receiveMonthlyAverage16Bit()
 {
 	int month = 8;
-	int day = 1;
 	dev->buffer_frame.clear();
 	DeviceTester t(dev, EnergyDevice::DIM_MONTLY_AVERAGE, DeviceTester::MULTIPLE_VALUES);
 	QString tmp(QString("*#18*%1*%2#%3").arg(where).arg(512).arg(month));
@@ -622,6 +645,54 @@ void TestEnergyDevice::testConsecutiveGraphFrames()
 		dev->frame_rx_handler(frames[i].toAscii().data());
 
 	QCOMPARE(dev->buffer_frame.size(), 1);
+}
+
+
+// test switch from 8 bit graph frames to 16/32 bit graph frames
+
+void TestEnergyDevice::receiveInvalidFrameRequestDailyAverageGraph16Bit()
+{
+	DeviceTester t(dev, EnergyDevice::DIM_MONTLY_AVERAGE); // dim is not used
+
+	dev->requestDailyAverageGraph(QDate(2009, 9, 1));
+	client_command->flush();
+
+	QCOMPARE(server->frameCommand(), QString("*18*53#9*%1##").arg(where));
+
+	t.checkSignals(QString("*#18*%1*777##").arg(where), 0);
+	client_command->flush();
+
+	QCOMPARE(server->frameCommand(), QString("*18*58#9*%1##").arg(where));
+}
+
+void TestEnergyDevice::receiveInvalidFrameRequestCumulativeDayGraph16Bit()
+{
+	DeviceTester t(dev, EnergyDevice::DIM_MONTLY_AVERAGE); // dim is not used
+
+	dev->requestCumulativeDayGraph(QDate(2009, 9, 1));
+	client_command->flush();
+
+	QCOMPARE(server->frameCommand(), QString("*18*52#9#1*%1##").arg(where));
+
+	t.checkSignals(QString("*#18*%1*777##").arg(where), 0);
+	client_command->flush();
+
+	QCOMPARE(server->frameCommand(), QString("*18*57#9#1*%1##").arg(where));
+}
+
+void TestEnergyDevice::receiveInvalidFrameRequestCumulativeMonthGraph32Bit()
+{
+	DeviceTester t(dev, EnergyDevice::DIM_MONTLY_AVERAGE); // dim is not used
+
+	dev->requestCumulativeMonthGraph(QDate(2009, 9, 1));
+	client_command->flush();
+
+	QCOMPARE(server->frameCommand(), QString("*18*56#9*%1##").arg(where));
+
+	t.checkSignals(QString("*#18*%1*777##").arg(where), 0);
+	client_command->flush();
+
+	QCOMPARE(server->frameCommand(), QString("*18*59#9*%1##").arg(where));
 }
 
 

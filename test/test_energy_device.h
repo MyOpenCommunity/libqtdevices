@@ -15,8 +15,8 @@ private slots:
 	void init();
 	void cleanup();
 
-	void sendRequestCumulativeDayGraph();
-	void sendRequestCumulativeMonthGraph();
+	void sendRequestCumulativeDayGraph8Bit();
+	void sendRequestCumulativeMonthGraph8Bit();
 	void sendRequestCumulativeYearGraph();
 	void sendRequestCumulativeMonth();
 	void sendRequestCumulativeMonth2();
@@ -24,6 +24,9 @@ private slots:
 	void sendRequestCurrent2();
 	void sendRequestCurrent3();
 	void sendRequestCurrent4();
+	void sendRequestDailyAverageGraph16Bit();
+	void sendRequestCumulativeDayGraph16Bit();
+	void sendRequestCumulativeMonthGraph32Bit();
 
 	void receiveCumulativeDay();
 	void receiveCumulativeDay2();
@@ -52,6 +55,11 @@ private slots:
 
 	void testGetDateFromFrame();
 	void testConsecutiveGraphFrames();
+
+	// logic for automatic switch from 8 bit to 16/32 bit frames
+	void receiveInvalidFrameRequestDailyAverageGraph16Bit();
+	void receiveInvalidFrameRequestCumulativeDayGraph16Bit();
+	void receiveInvalidFrameRequestCumulativeMonthGraph32Bit();
 
 	// automatic updates
 	void sendUpdateStart();

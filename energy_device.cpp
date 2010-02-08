@@ -23,16 +23,22 @@ namespace
 
 enum RequestDimension
 {
-	_DIM_CUMULATIVE_MONTH = 52, // An implementation detail, ignore this
-	_DIM_STATE_UPDATE_INTERVAL = 1200,   // used to detect start/stop of automatic updates
-	_DIM_DAY_GRAPH_16BIT       = 511,    // used internally, the status list contains DIM_DAY_GRAPH
-	_DIM_DAILY_AVERAGE_GRAPH_16BIT = 512,// used internally, the status list contains DIM_DAILY_AVERAGE_GRAPH
-	_DIM_CUMULATIVE_MONTH_GRAPH_32BIT = 513, // used internally, the status list contains DIM_CUMULATIVE_MONTH_GRAPH
+	_DIM_CUMULATIVE_MONTH                  = 52, // An implementation detail, ignore this
+	_DIM_STATE_UPDATE_INTERVAL             = 1200,   // used to detect start/stop of automatic updates
+	_DIM_DAY_GRAPH_16BIT                   = 511,    // used internally, the status list contains DIM_DAY_GRAPH
+	_DIM_DAILY_AVERAGE_GRAPH_16BIT         = 512,// used internally, the status list contains DIM_DAILY_AVERAGE_GRAPH
+	_DIM_CUMULATIVE_MONTH_GRAPH_32BIT      = 513, // used internally, the status list contains DIM_CUMULATIVE_MONTH_GRAPH
 	_DIM_CUMULATIVE_MONTH_GRAPH_PREV_32BIT = 514, // used internally, the status list contains DIM_CUMULATIVE_MONTH_GRAPH
+	// TODO change the invalid frame what when it's finalized
+	_DIM_INVALID_FRAME = 777,            // if received, it means the device supports auto updates and the
+					     // 16/32 bit graph frames
 
-	REQ_DAILY_AVERAGE_GRAPH      = 53,   // graph data for daily average
-	REQ_DAY_GRAPH                = 52,   // request graph data for a specific day
-	REQ_CUMULATIVE_MONTH_GRAPH   = 56,   // request graph data for cumulative month
+	REQ_DAILY_AVERAGE_GRAPH           = 53,   // graph data for daily average
+	REQ_DAILY_AVERAGE_GRAPH_16BIT     = 58,   // graph data for daily average (16bit frames)
+	REQ_DAY_GRAPH                     = 52,   // request graph data for a specific day
+	REQ_DAY_GRAPH_16BIT               = 57,   // request graph data for a specific day (16bit frames)
+	REQ_CUMULATIVE_MONTH_GRAPH        = 56,   // request graph data for cumulative month
+	REQ_CUMULATIVE_MONTH_GRAPH_32BIT  = 59,   // request graph data for cumulative month (32 bit frames)
 };
 
 
@@ -49,6 +55,7 @@ enum RequestCurrent
 EnergyDevice::EnergyDevice(QString where, int _mode) : device(QString("18"), where)
 {
 	mode = _mode;
+	pending_graph_request = 0;
 	update_state = UPDATE_IDLE;
 	has_new_frames = false;
 	update_count = 0;
@@ -192,7 +199,25 @@ void EnergyDevice::requestCumulativeYear() const
 
 void EnergyDevice::requestDailyAverageGraph(QDate date) const
 {
+	if (!has_new_frames)
+	{
+		pending_request_date = date;
+		pending_graph_request = REQ_DAILY_AVERAGE_GRAPH;
+		requestDailyAverageGraph8Bit(date);
+	}
+	else
+		requestDailyAverageGraph16Bit(date);
+}
+
+void EnergyDevice::requestDailyAverageGraph8Bit(QDate date) const
+{
 	sendCompressedFrame(createMsgOpen(who, QString("%1#%2").arg(REQ_DAILY_AVERAGE_GRAPH)
+		.arg(date.month()), where));
+}
+
+void EnergyDevice::requestDailyAverageGraph16Bit(QDate date) const
+{
+	sendCompressedFrame(createMsgOpen(who, QString("%1#%2").arg(REQ_DAILY_AVERAGE_GRAPH_16BIT)
 		.arg(date.month()), where));
 }
 
@@ -203,13 +228,49 @@ void EnergyDevice::requestMontlyAverage(QDate date) const
 
 void EnergyDevice::requestCumulativeDayGraph(QDate date) const
 {
+	if (!has_new_frames)
+	{
+		pending_request_date = date;
+		pending_graph_request = REQ_DAY_GRAPH;
+		requestCumulativeDayGraph8Bit(date);
+	}
+	else
+		requestCumulativeDayGraph16Bit(date);
+}
+
+void EnergyDevice::requestCumulativeDayGraph8Bit(QDate date) const
+{
 	sendCompressedFrame(createMsgOpen(who, QString("%1#%2#%3").arg(REQ_DAY_GRAPH)
+		.arg(date.month()).arg(date.day()), where));
+}
+
+void EnergyDevice::requestCumulativeDayGraph16Bit(QDate date) const
+{
+	sendCompressedFrame(createMsgOpen(who, QString("%1#%2#%3").arg(REQ_DAY_GRAPH_16BIT)
 		.arg(date.month()).arg(date.day()), where));
 }
 
 void EnergyDevice::requestCumulativeMonthGraph(QDate date) const
 {
+	if (!has_new_frames)
+	{
+		pending_request_date = date;
+		pending_graph_request = REQ_CUMULATIVE_MONTH_GRAPH;
+		requestCumulativeMonthGraph8Bit(date);
+	}
+	else
+		requestCumulativeMonthGraph32Bit(date);
+}
+
+void EnergyDevice::requestCumulativeMonthGraph8Bit(QDate date) const
+{
 	sendCompressedFrame(createMsgOpen(who, QString("%1#%2").arg(REQ_CUMULATIVE_MONTH_GRAPH)
+		.arg(date.month()), where));
+}
+
+void EnergyDevice::requestCumulativeMonthGraph32Bit(QDate date) const
+{
+	sendCompressedFrame(createMsgOpen(who, QString("%1#%2").arg(REQ_CUMULATIVE_MONTH_GRAPH_32BIT)
 		.arg(date.month()), where));
 }
 
@@ -371,6 +432,13 @@ void EnergyDevice::frame_rx_handler(char *frame)
 
 		handleAutomaticUpdate(status_list, msg);
 	}
+
+	if (what == _DIM_INVALID_FRAME)
+	{
+		// switch the flag for old/new frame support and resend
+		// the auto update request if needed
+		setHasNewFrames(update_timer->isActive());
+	}
 }
 
 void EnergyDevice::setHasNewFrames(bool restart_update_requests)
@@ -390,6 +458,22 @@ void EnergyDevice::setHasNewFrames(bool restart_update_requests)
 	else if (update_state == UPDATE_STOPPING)
 		// to force resending the start frame if restarted
 		update_state = UPDATE_IDLE;
+
+	// resend the last graph request using 16/32 bit frames
+	switch (pending_graph_request)
+	{
+	case REQ_DAILY_AVERAGE_GRAPH:
+		requestDailyAverageGraph(pending_request_date);
+		break;
+	case REQ_DAY_GRAPH:
+		requestCumulativeDayGraph(pending_request_date);
+		break;
+	case REQ_CUMULATIVE_MONTH_GRAPH:
+		requestCumulativeMonthGraph(pending_request_date);
+		break;
+	};
+
+	pending_graph_request = 0;
 }
 
 void EnergyDevice::handleAutomaticUpdate(StatusList &status_list, OpenMsg &msg)
