@@ -3,8 +3,10 @@
 #include "energy_data.h" // EnergyInterface
 #include "btbutton.h"
 #include "energy_device.h"
+#include "skinmanager.h" // skin
 
 #include <QLocale>
+#include <QDebug>
 
 #include <math.h> // pow
 
@@ -135,4 +137,17 @@ void BannEnergyCost::resetRate()
 {
 	current_value = rate.rate;
 	updateLabel();
+}
+
+
+
+BannLoadNoCU::BannLoadNoCU(const QString &descr) : Bann3ButtonsLabel(0)
+{
+	qDebug() << "BannLoadNoCU ctor";
+	initBanner(QString(), QString(), bt_global::skin->getImage("load"), bt_global::skin->getImage("info"), descr);
+}
+
+void BannLoadNoCU::connectRightButton(Page *p)
+{
+	connectButtonToPage(right_button, p);
 }

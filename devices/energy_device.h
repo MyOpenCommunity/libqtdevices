@@ -94,13 +94,23 @@ public:
 
 private:
 
+	void requestCumulativeDayGraph8Bit(QDate date) const;
+	void requestCumulativeDayGraph16Bit(QDate date) const;
+	void requestCumulativeMonthGraph8Bit(QDate date) const;
+	void requestCumulativeMonthGraph32Bit(QDate date) const;
+	void requestDailyAverageGraph8Bit(QDate date) const;
+	void requestDailyAverageGraph16Bit(QDate date) const;
+
 	// EnergyDevice doesn't use the sendRequest of the device (because it should use the compression
 	// of the frames) but instead it defines its own version.
 	void sendRequest(int what) const;
 	void sendRequest(QString what) const;
-	void parseCumulativeDayGraph(const QStringList &buffer_frame, QVariant &v);
-	void parseCumulativeMonthGraph(const QStringList &buffer_frame, QVariant &v);
-	void parseDailyAverageGraph(const QStringList &buffer_frame, QVariant &v);
+	void parseCumulativeDayGraph8Bit(const QStringList &buffer_frame, QVariant &v);
+	void parseCumulativeDayGraph16Bit(const QStringList &buffer_frame, QVariant &v);
+	void parseCumulativeMonthGraph8Bit(const QStringList &buffer_frame, QVariant &v);
+	void parseCumulativeMonthGraph32Bit(const QStringList &buffer_frame, QVariant &v, bool prev_year);
+	void parseDailyAverageGraph8Bit(const QStringList &buffer_frame, QVariant &v);
+	void parseDailyAverageGraph16Bit(const QStringList &buffer_frame, QVariant &v);
 	void computeMonthGraphData(int days_in_month, const QList<int> &values, QMap<int, int> &graph);
 
 	// The following fill* methods are special methods that handle the case when a single
@@ -114,7 +124,7 @@ private:
 	void sendUpdateStart();
 	void sendUpdateStop();
 
-	void setPollingOff();
+	void setHasNewFrames(bool restart_update_requests = false);
 
 	QDate getDateFromFrame(OpenMsg &msg);
 
@@ -133,10 +143,16 @@ private:
 		UPDATE_STOPPING,
 	};
 
-	UpdateState update_state;
+	// true if the device supports automatic updates without polling
+	// and the new 16/32 bit frames for graphs
+	bool has_new_frames;
 
-	// true if the device does not support automatic updates
-	bool need_polling;
+	// last graph request
+	mutable int pending_graph_request;
+	mutable QDate pending_request_date;
+
+	// status of automatic updates
+	UpdateState update_state;
 
 	// number of pages/banners that have requested automatic updates
 	int update_count;

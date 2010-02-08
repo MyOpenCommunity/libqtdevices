@@ -27,12 +27,12 @@ BannSinglePuls::BannSinglePuls(QWidget *parent) :
 	right_button = new BtButton;
 	connect(right_button, SIGNAL(clicked()), SIGNAL(rightClick()));
 	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
-	center_icon = new QLabel;
+	center = new TextOnImageLabel;
 
 	QHBoxLayout *hbox = new QHBoxLayout;
 	hbox->setContentsMargins(0, 0, 0, 0);
 	hbox->setSpacing(0);
-	hbox->addWidget(center_icon, 1, Qt::AlignRight);
+	hbox->addWidget(center, 1, Qt::AlignRight);
 	hbox->addWidget(right_button, 0, Qt::AlignRight);
 
 	QVBoxLayout *l = new QVBoxLayout(this);
@@ -42,19 +42,19 @@ BannSinglePuls::BannSinglePuls(QWidget *parent) :
 	l->addWidget(text);
 }
 
-void BannSinglePuls::initBanner(const QString &right, const QString &center, const QString &banner_text)
+void BannSinglePuls::initBanner(const QString &right, const QString &_center, const QString &banner_text)
 {
-	loadIcons(right, center);
+	right_button->setImage(right);
+	center->setBackgroundImage(_center);
 	text->setText(banner_text);
 	// always set a text on the label, otherwise the sizeHint() height changes
 	if (banner_text.isEmpty())
 		text->setText(" ");
 }
 
-void BannSinglePuls::loadIcons(const QString &right, const QString &center)
+void BannSinglePuls::setCentralText(const QString &t)
 {
-	right_button->setImage(right);
-	center_icon->setPixmap(*bt_global::icons_cache.getIcon(center));
+	center->setInternalText(t);
 }
 
 void BannSinglePuls::connectRightButton(Page *p)
