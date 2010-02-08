@@ -11,6 +11,22 @@
 #include <QDebug>
 #include <QVBoxLayout>
 
+
+namespace
+{
+	QString getDescriptionWithPriority(const QDomNode &n)
+	{
+		QString where = getTextChild(n, "where");
+		int pos = where.indexOf('#');
+		Q_ASSERT_X(pos > -1, "getDescriptionWithPriority", "Device where must have a '#' character");
+		QString descr = getTextChild(n, "descr");
+		// remove part after '#'
+		QString priority = where.left(pos);
+		// remove first 7
+		priority = priority.mid(1);
+		return priority + ". " + descr;
+	}
+}
 LoadManagement::LoadManagement(const QDomNode &config_node) :
 	BannerPage(0)
 {
@@ -20,6 +36,7 @@ LoadManagement::LoadManagement(const QDomNode &config_node) :
 
 void LoadManagement::loadItems(const QDomNode &config_node)
 {
+	SkinContext context(getTextChild(config_node, "cid").toInt());
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		banner *b = getBanner(item);
@@ -35,29 +52,27 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 {
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
-	QString where = getTextChild(item_node, "where");
-	int pos = where.indexOf('#');
-	Q_ASSERT_X(pos > -1, "LoadManagement::getBanner", "Device where must have a '#' character");
-	QString descr = getTextChild(item_node, "descr");
-	// remove part after '#'
-	QString priority = where.left(pos);
-	// remove first 7
-	priority = priority.mid(1);
-
 	banner *b = 0;
 	switch (id)
 	{
 	case LOAD_WITH_CU:
 	{
 		bool advanced = getTextChild(item_node, "advanced").toInt();
-		BannLoadWithCU *bann = new BannLoadWithCU(priority + ". " + descr, advanced ? BannLoadWithCU::ADVANCED_MODE : BannLoadWithCU::BASE_MODE);
-		// TODO: connect to next page if advanced
+		BannLoadWithCU *bann = new BannLoadWithCU(getDescriptionWithPriority(item_node),
+			advanced ? BannLoadWithCU::ADVANCED_MODE : BannLoadWithCU::BASE_MODE);
+		if (advanced)
+		{
+			Page *p = new LoadDataPage(item_node);
+			bann->connectRightButton(p);
+			connect(p, SIGNAL(Closed()), bann, SIGNAL(pageClosed()));
+		}
+
 		b = bann;
 	}
 		break;
 	case LOAD_WITHOUT_CU:
 	{
-		BannLoadNoCU *bann = new BannLoadNoCU(descr);
+		BannLoadNoCU *bann = new BannLoadNoCU(getTextChild(item_node, "descr"));
 		Page *p = new LoadDataPage(item_node);
 		bann->connectRightButton(p);
 		connect(p, SIGNAL(Closed()), bann, SIGNAL(pageClosed()));
@@ -107,10 +122,10 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node)
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	content = new LoadDataContent;
 
-	QLabel *page_title = new QLabel(getTextChild(config_node, "descr"));
+	QLabel *page_title = new QLabel(getDescriptionWithPriority(config_node));
 	page_title->setFont(bt_global::font->get(FontManager::TEXT));
 
-	NavigationBar *nav_bar = new NavigationBar;
+	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	QVBoxLayout *main = new QVBoxLayout(this);
