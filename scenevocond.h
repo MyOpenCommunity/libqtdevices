@@ -19,35 +19,22 @@ class ScenEvoCondition : public Page
 {
 Q_OBJECT
 public:
-	//! A type flag, used because RTTI is disabled.
-	bool hasTimeCondition;
-
-	/*!
-	\brief returns description of condition
-	*/
-	virtual const char *getDescription();
-	//! Set serial number
+	virtual const char *getDescription() = 0;
 	void set_serial_number(int);
-	//! Get serial number
 	int get_serial_number();
-	//! Inits condition
-	virtual void inizializza();
+
 	//! Returns true when condition is satisfied
-	virtual bool isTrue();
+	virtual bool isTrue() = 0;
 
 public slots:
-	//! Next button pressed
 	virtual void Next();
-	//! Prev button pressed
 	virtual void Prev();
-	//! OK button pressed
 	virtual void OK();
-	//! Apply button pressed
-	virtual void Apply();
-	//! Save condition
-	virtual void save();
+
+	virtual void Apply() = 0;
+	virtual void save() = 0;
 	//! Reset condition (on cancel)
-	virtual void reset();
+	virtual void reset() = 0;
 
 signals:
 	//! Emitted when user clicks Next icon
@@ -68,9 +55,6 @@ signals:
 protected:
 	int item_id;
 
-	// The constructor is protected to avoid the building of ScenEvoCondition objects.
-	ScenEvoCondition();
-
 private:
 	int serial_number;
 };
@@ -84,26 +68,19 @@ class ScenEvoTimeCondition : public ScenEvoCondition
 Q_OBJECT
 public:
 	ScenEvoTimeCondition(int item_id, const QDomNode &config_node, bool has_next);
-	/*!
-	\brief Returns condition description
-	*/
-	const char *getDescription();
+	virtual const char *getDescription();
+	virtual bool isTrue();
 
-	//! Save condition
-	void save();
-	//! Return true when condition is satisfied
-	bool isTrue();
 public slots:
-	//! OK method
-	void OK();
-	//! Apply method
-	void Apply();
-	//! Reset condition
-	void reset();
+	virtual void OK();
+	virtual void save();
+	virtual void Apply();
+	virtual void reset();
 	//! Timer expired method
 	void scaduta();
 	//! Just setup qt timer (based on cond_time)
 	void setupTimer();
+
 private:
 	QTime cond_time;
 	BtButton *bottom_left, *bottom_center, *bottom_right;
@@ -123,28 +100,19 @@ public:
 	ScenEvoDeviceCondition(int item_id, const QDomNode &config_node);
 	~ScenEvoDeviceCondition();
 
-	/*!
-	\brief Returns condition description in human language
-	*/
-	const char *getDescription();
-	//! Save condition
-	virtual void save();
-	//! Return true when condition is satisfied
-	bool isTrue();
+	virtual const char *getDescription();
+	virtual bool isTrue();
+	virtual void inizializza();
 
 public slots:
-	//! OK method
-	void OK();
-	//!  Apply method
-	void Apply();
-	//! Reset condition
-	void reset();
+	virtual void OK();
+	virtual void save();
+	virtual void Apply();
+	virtual void reset();
 
 private:
 	//! Specific device condition
 	DeviceCondition *device_cond;
-	//! Inits condition
-	void inizializza();
 };
 
 #endif // _SCENEVOCOND_H_

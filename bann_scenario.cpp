@@ -296,11 +296,8 @@ void scenEvo::trigOnStatusChanged()
 {
 	qDebug("scenEvo::trigOnStatusChanged()");
 	for (int i = 0; i < condList.size(); ++i)
-	{
-		ScenEvoCondition *co = condList.at(i);
-		if (co->hasTimeCondition)
+		if (qobject_cast<ScenEvoTimeCondition*>(condList.at(i)))
 			return;
-	}
 	trig();
 }
 

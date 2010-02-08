@@ -13,25 +13,13 @@
 #include <QDebug>
 
 
-ScenEvoCondition::ScenEvoCondition()
-{
-	hasTimeCondition = false;
-}
-
-const char *ScenEvoCondition::getDescription()
-{
-	return "Generic scenEvo condition";
-}
-
 void ScenEvoCondition::Next()
 {
-	qDebug("ScenEvoCondition::Next()");
 	emit SwitchToNext();
 }
 
 void ScenEvoCondition::Prev()
 {
-	qDebug("ScenEvoCondition::Prev()");
 	reset();
 	emit resetAll();
 	emit SwitchToFirst();
@@ -39,24 +27,8 @@ void ScenEvoCondition::Prev()
 
 void ScenEvoCondition::OK()
 {
-	qDebug("ScenEvoCondition::OK()");
 	save();
 	emit SwitchToFirst();
-}
-
-void ScenEvoCondition::Apply()
-{
-	qDebug("ScenEvoCondition::Apply()");
-}
-
-void ScenEvoCondition::save()
-{
-	qDebug("ScenEvoCondition::save()");
-}
-
-void ScenEvoCondition::reset()
-{
-	qDebug("ScenEvoCondition::reset()");
 }
 
 int ScenEvoCondition::get_serial_number()
@@ -67,15 +39,6 @@ int ScenEvoCondition::get_serial_number()
 void ScenEvoCondition::set_serial_number(int n)
 {
 	serial_number = n;
-}
-
-void ScenEvoCondition::inizializza()
-{
-}
-
-bool ScenEvoCondition::isTrue()
-{
-	return false;
 }
 
 
@@ -130,7 +93,6 @@ ScenEvoTimeCondition::ScenEvoTimeCondition(int _item_id, const QDomNode &config_
 
 	main_layout->addLayout(bottom_layout);
 
-	hasTimeCondition = true;
 	cond_time.setHMS(h.toInt(), m.toInt(), 0);
 	setupTimer();
 }
