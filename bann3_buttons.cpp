@@ -1,6 +1,7 @@
 #include "bann3_buttons.h"
 #include "fontmanager.h" // FontManager
 #include "btbutton.h"
+#include "icondispatcher.h" // icons_cache
 
 #include <QLabel>
 #include <QHBoxLayout>
@@ -40,6 +41,38 @@ void Bann3Buttons::initBanner(const QString &left, const QString &center, const 
 	center_button->setImage(center);
 	left_button->setImage(left);
 	text->setText(banner_text);
+}
+
+
+Bann3ButtonsLabel::Bann3ButtonsLabel(QWidget *parent) :
+	BannerNew(parent)
+{
+	right_button = new BtButton;
+	center_button = new BtButton;
+	left_button = new BtButton;
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
+	center_label = new QLabel;
+
+	QGridLayout *l = new QGridLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	l->addWidget(left_button, 0, 0);
+	l->addWidget(center_button, 0, 1);
+	l->addWidget(center_label, 0, 1);
+	l->addWidget(right_button, 0, 2);
+	l->addWidget(text, 1, 0, 1, 3);
+}
+
+void Bann3ButtonsLabel::initBanner(const QString &left, const QString &center_but, const QString &center_lab,
+	const QString &right, const QString &banner_text)
+{
+	initButton(left_button, left);
+	initButton(center_button, center_but);
+	initButton(right_button, right);
+	initLabel(text, banner_text, bt_global::font->get(FontManager::TEXT));
+
+	center_label->setPixmap(*bt_global::icons_cache.getIcon(center_lab));
+	center_label->hide();
 }
 
 bann3But::bann3But(QWidget *parent) : banner(parent)
