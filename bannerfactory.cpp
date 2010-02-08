@@ -2,10 +2,11 @@
 #include "banner.h"
 #include "lighting.h"
 #include "automation.h"
-#include "settings.h"
 #include "scenario.h"
 #ifdef LAYOUT_TOUCHX
 #include "iconsettings.h"
+#else
+#include "settings.h"
 #endif
 
 
@@ -16,9 +17,10 @@ banner *getBanner(const QDomNode &item_node)
 	sections.append(&Automation::getBanner);
 	sections.append(&Lighting::getBanner);
 	sections.append(&Scenario::getBanner);
-	sections.append(&Settings::getBanner);
 #ifdef LAYOUT_TOUCHX
 	sections.append(&IconSettings::getBanner);
+#else
+	sections.append(&Settings::getBanner);
 #endif
 
 	for (int i = 0; i < sections.size(); ++i)

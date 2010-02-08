@@ -6,12 +6,13 @@
 #include "videoentryphone.h"
 #ifdef LAYOUT_TOUCHX
 #include "multimedia.h"
+#else
+#include "settings.h"
 #endif
 #include "antintrusion.h"
 #include "automation.h"
 #include "lighting.h"
 #include "scenario.h"
-#include "settings.h"
 #include "loads.h"
 #include "thermalmenu.h"
 #include "supervisionmenu.h"
@@ -95,9 +96,11 @@ Page *getPage(int page_id)
 	case SCENARI_EVOLUTI:
 		page = new Scenario(page_node);
 		break;
+#ifndef LAYOUT_TOUCHX
 	case IMPOSTAZIONI:
 		page = new Settings(page_node);
 		break;
+#endif
 	case VIDEOCITOFONIA:
 		page = new VideoEntryPhone(page_node);
 		break;

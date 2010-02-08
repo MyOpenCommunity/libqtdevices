@@ -203,7 +203,6 @@ HEADERS += actuators.h \
            screensaver.h \
            screensaverpage.h \
            sectionpage.h \
-           settings.h \
            singlechoicecontent.h \
            singlechoicepage.h \
            skinmanager.h \
@@ -321,7 +320,6 @@ SOURCES += actuators.cpp \
            screensaver.cpp \
            screensaverpage.cpp \
            sectionpage.cpp \
-           settings.cpp \
            singlechoicecontent.cpp \
            singlechoicepage.cpp \
            skinmanager.cpp \
