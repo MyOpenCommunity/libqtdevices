@@ -18,6 +18,7 @@ class device_status;
 class stat_var;
 class QString;
 class QLabel;
+class BtButton;
 
 
 /**
@@ -29,13 +30,18 @@ class DeviceConditionDisplay : public QWidget
 {
 Q_OBJECT
 public:
-	DeviceConditionDisplay(QWidget *parent);
+	DeviceConditionDisplay(QWidget *parent, QString descr, QString top_icon);
 
 public slots:
 	virtual void updateText(int min_condition_value, int max_condition_value) = 0;
 
+signals:
+	void upClicked();
+	void downClicked();
+
 protected:
-	QLabel *label;
+	QLabel *condition;
+	BtButton *up_button, *down_button;
 };
 
 
@@ -47,7 +53,8 @@ class DeviceConditionDisplayOnOff : public DeviceConditionDisplay
 {
 Q_OBJECT
 public:
-	DeviceConditionDisplayOnOff(QWidget *parent) : DeviceConditionDisplay(parent) {}
+	DeviceConditionDisplayOnOff(QWidget *parent, QString descr, QString top_icon) :
+		DeviceConditionDisplay(parent, descr, top_icon) {}
 
 public slots:
 	void updateText(int min_condition_value, int max_condition_value);
@@ -61,7 +68,8 @@ class DeviceConditionDisplayDimming : public DeviceConditionDisplay
 {
 Q_OBJECT
 public:
-	DeviceConditionDisplayDimming(QWidget *parent) : DeviceConditionDisplay(parent) {}
+	DeviceConditionDisplayDimming(QWidget *parent, QString descr, QString top_icon) :
+		DeviceConditionDisplay(parent, descr, top_icon) {}
 
 public slots:
 	void updateText(int min_condition_value, int max_condition_value);
@@ -75,7 +83,8 @@ class DeviceConditionDisplayVolume : public DeviceConditionDisplay
 {
 Q_OBJECT
 public:
-	DeviceConditionDisplayVolume(QWidget *parent) : DeviceConditionDisplay(parent) {}
+	DeviceConditionDisplayVolume(QWidget *parent, QString descr, QString top_icon) :
+		DeviceConditionDisplay(parent, descr, top_icon) {}
 
 public slots:
 	void updateText(int min_condition_value, int max_condition_value);
@@ -90,7 +99,8 @@ class DeviceConditionDisplayTemperature : public DeviceConditionDisplay
 {
 Q_OBJECT
 public:
-	DeviceConditionDisplayTemperature(QWidget *parent) : DeviceConditionDisplay(parent) {}
+	DeviceConditionDisplayTemperature(QWidget *parent, QString descr, QString top_icon) :
+		DeviceConditionDisplay(parent, descr, top_icon) {}
 
 public slots:
 	void updateText(int min_condition_value, int max_condition_value);

@@ -5,6 +5,10 @@
 #include "lighting_device.h"
 #include "scaleconversion.h"
 #include "fontmanager.h" // bt_global::font
+#include "icondispatcher.h" // bt_global::icons_cache
+#include "skinmanager.h" // bt_global::skin
+#include "xml_functions.h" // getTextChild
+#include "btbutton.h"
 
 #include <QVBoxLayout>
 #include <QLabel>
@@ -17,53 +21,89 @@ static QLocale loc(QLocale::Italian);
 #define CONDITION_MAX_TEMP  500
 
 
-DeviceConditionDisplay::DeviceConditionDisplay(QWidget *parent) : QWidget(parent)
+
+DeviceConditionDisplay::DeviceConditionDisplay(QWidget *parent, QString descr, QString top_icon) : QWidget(parent)
 {
-	label = new QLabel;
-	label->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	label->setFont(bt_global::font->get(FontManager::TEXT));
-	QVBoxLayout *layout = new QVBoxLayout(this);
-	layout->setContentsMargins(0, 0, 0, 0);
-	layout->setSpacing(0);
-	layout->addWidget(label);
+	QHBoxLayout *top_layout = new QHBoxLayout;
+	top_layout->setContentsMargins(0, 0, 0, 0);
+	top_layout->setSpacing(0);
+
+	QLabel *top_image = new QLabel;
+	top_image->setPixmap(*bt_global::icons_cache.getIcon(top_icon));
+	top_layout->addWidget(top_image);
+
+	QLabel *description = new QLabel;
+	description->setFont(bt_global::font->get(FontManager::TEXT));
+	description->setText(descr);
+	top_layout->addWidget(description, 1, Qt::AlignHCenter);
+
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
+
+	main_layout->addLayout(top_layout);
+	main_layout->addStretch(1);
+
+	QBoxLayout *central_layout = new QVBoxLayout;
+	central_layout->setContentsMargins(0, 0, 0, 0);
+	central_layout->setSpacing(12);
+
+	up_button = new BtButton;
+	up_button->setImage(bt_global::skin->getImage("plus"));
+	connect(up_button, SIGNAL(clicked()), this, SIGNAL(upClicked()));
+	central_layout->addWidget(up_button);
+
+	condition = new QLabel;
+	condition->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	condition->setFont(bt_global::font->get(FontManager::TEXT));
+	central_layout->addWidget(condition);
+
+	down_button = new BtButton;
+	down_button->setImage(bt_global::skin->getImage("minus"));
+	connect(down_button, SIGNAL(clicked()), this, SIGNAL(downClicked()));
+	central_layout->addWidget(down_button);
+
+	main_layout->addLayout(central_layout);
 }
 
 
 void DeviceConditionDisplayOnOff::updateText(int min_condition_value, int max_condition_value)
 {
 	Q_UNUSED(max_condition_value)
-	label->setText(min_condition_value ? tr("ON") : tr("OFF"));
+	condition->setText(min_condition_value ? tr("ON") : tr("OFF"));
 }
 
 
 void DeviceConditionDisplayDimming::updateText(int min_condition_value, int max_condition_value)
 {
 	if (min_condition_value == 0)
-		label->setText(tr("OFF"));
+		condition->setText(tr("OFF"));
 	else
-		label->setText(QString("%1% - %3%").arg(min_condition_value).arg(max_condition_value));
+		condition->setText(QString("%1% - %3%").arg(min_condition_value).arg(max_condition_value));
 }
 
 
 void DeviceConditionDisplayVolume::updateText(int min_condition_value, int max_condition_value)
 {
 	if (min_condition_value == -1)
-		label->setText(tr("OFF"));
+		condition->setText(tr("OFF"));
 	else if (min_condition_value == 0 && max_condition_value == 31)
-		label->setText(tr("ON"));
+		condition->setText(tr("ON"));
 	else
 	{
 		int val_min = min_condition_value;
 		int val_max = max_condition_value;
 		int vmin = (val_min == 0 ? 0 : (10 * (val_min <= 15 ? val_min/3 : (val_min-1)/3) + 1));
 		int vmax = 10 * (val_max <= 15 ? val_max/3 : (val_max-1)/3);
-		label->setText(QString("%1% - %3%").arg(vmin).arg(vmax));
+		condition->setText(QString("%1% - %3%").arg(vmin).arg(vmax));
 	}
 }
 
 
 void DeviceConditionDisplayTemperature::updateText(int min_condition_value, int max_condition_value)
 {
+	up_button->setAutoRepeat(true);
+	down_button->setAutoRepeat(true);
 	Q_UNUSED(max_condition_value)
 	QString tmp = loc.toString(min_condition_value / 10.0, 'f', 1);
 	TemperatureScale temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
@@ -80,7 +120,7 @@ void DeviceConditionDisplayTemperature::updateText(int min_condition_value, int 
 		qWarning("Wrong temperature scale, defaulting to celsius");
 		tmp += TEMP_DEGREES"C \2611"TEMP_DEGREES"C";
 	}
-	label->setText(tmp);
+	condition->setText(tmp);
 }
 
 

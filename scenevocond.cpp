@@ -220,39 +220,11 @@ bool scenEvo_cond_h::isTrue()
 
 scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 {
-	device_cond = 0;
 	item_id = _item_id;
 
-	QLabel *area1_ptr = new QLabel(this);
-	area1_ptr->setGeometry(0, 0, BUTTON_DIM, BUTTON_DIM);
-
-	QLabel *area2_ptr = new QLabel(this);
-	area2_ptr->setGeometry(BUTTON_DIM, BUTTON_DIM/2 - TEXT_Y_DIM/2, width() - BUTTON_DIM, TEXT_Y_DIM);
-	area2_ptr->setFont(bt_global::font->get(FontManager::TEXT));
-	area2_ptr->setAlignment(Qt::AlignCenter);
-	area2_ptr->setText(getTextChild(config_node, "descr"));
-
-	// create condition buttons
-	BtButton *condition_up = new BtButton(this);
-	condition_up->setGeometry(width()/2 - BUTTON_DIM/2, 80, BUTTON_DIM, BUTTON_DIM);
-	condition_up->setImage(bt_global::skin->getImage("plus"));
-	connect(condition_up, SIGNAL(clicked()), SLOT(Up()));
-
-	BtButton *condition_down = new BtButton(this);
-	condition_down->setGeometry(width()/2 - BUTTON_DIM/2, 190, BUTTON_DIM, BUTTON_DIM);
-	condition_down->setImage(bt_global::skin->getImage("minus"));
-	connect(condition_down, SIGNAL(clicked()), SLOT(Down()));
-
-	// create bottom (navigation) buttons
-	BtButton *b = new BtButton(this);
-	b->setGeometry(0, height() - (BUTTON_DIM + BOTTOM_BORDER), BUTTON_DIM, BUTTON_DIM);
-	b->setImage(bt_global::skin->getImage("ok"));
-	connect(b, SIGNAL(clicked()), SLOT(OK()));
-
-	b = new BtButton(this);
-	b->setGeometry(width() - BUTTON_DIM, height() - (BUTTON_DIM + BOTTOM_BORDER), BUTTON_DIM, BUTTON_DIM);
-	b->setImage(bt_global::skin->getImage("back"));
-	connect(b, SIGNAL(clicked()), SLOT(Prev()));
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(0, 5, 0, 10);
+	main_layout->setSpacing(0);
 
 	QString trigger = getTextChild(config_node, "trigger");
 
@@ -261,8 +233,8 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 #else
 	int condition_type = getTextChild(config_node, "objectID").toInt();
 #endif
-	qDebug("#### Condition type = %d", condition_type);
-	QString icon;
+
+	QString descr = getTextChild(config_node, "descr");
 	QString w = getTextChild(config_node, "where");
 	bool external = false;
 	DeviceConditionDisplay *condition_display;
@@ -270,51 +242,57 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 	switch (condition_type)
 	{
 	case 1:
-		condition_display = new DeviceConditionDisplayOnOff(this);
+		condition_display = new DeviceConditionDisplayOnOff(this, descr, bt_global::skin->getImage("light"));
 		device_cond = new DeviceConditionLight(condition_display, trigger, w);
-		icon = bt_global::skin->getImage("light");
 		break;
 	case 2:
-		condition_display = new DeviceConditionDisplayDimming(this);
+		condition_display = new DeviceConditionDisplayDimming(this, descr, bt_global::skin->getImage("dimmer"));
 		device_cond = new DeviceConditionDimming(condition_display, trigger, w);
-		icon = bt_global::skin->getImage("dimmer");
 		break;
 	case 7:
 		external = true;
 		w += "00";
 	case 3:
 	case 8:
-		condition_display = new DeviceConditionDisplayTemperature(this);
+		condition_display = new DeviceConditionDisplayTemperature(this, descr, bt_global::skin->getImage("probe"));
 		device_cond = new DeviceConditionTemperature(condition_display, trigger, w, external);
-		condition_up->setAutoRepeat(true);
-		condition_down->setAutoRepeat(true);
-		icon = bt_global::skin->getImage("probe");
 		break;
 	case 9:
-		condition_display = new DeviceConditionDisplayOnOff(this);
+		condition_display = new DeviceConditionDisplayOnOff(this, descr, bt_global::skin->getImage("aux"));
 		device_cond = new DeviceConditionAux(condition_display, trigger, w);
-		icon = bt_global::skin->getImage("aux");
 		break;
 	case 4:
-		condition_display = new DeviceConditionDisplayVolume(this);
+		condition_display = new DeviceConditionDisplayVolume(this, descr, bt_global::skin->getImage("amplifier"));
 		device_cond = new DeviceConditionVolume(condition_display, trigger, w);
-		icon = bt_global::skin->getImage("amplifier");
 		break;
 	case 6:
-		condition_display = new DeviceConditionDisplayDimming(this);
+		condition_display = new DeviceConditionDisplayDimming(this, descr, bt_global::skin->getImage("dimmer"));
 		device_cond = new DeviceConditionDimming100(condition_display, trigger, w);
-		icon = bt_global::skin->getImage("dimmer");
 		break;
 	default:
-		qWarning("Unknown device condition");
+		qFatal("Unknown device condition: %d", condition_type);
 	}
-	area1_ptr->setPixmap(*bt_global::icons_cache.getIcon(icon));
 
-	if (device_cond)
-	{
-		condition_display->setGeometry(40,140,160,50);
-		connect(device_cond, SIGNAL(condSatisfied()), SIGNAL(condSatisfied()));
-	}
+	connect(condition_display, SIGNAL(upClicked()), device_cond, SLOT(Up()));
+	connect(condition_display, SIGNAL(downClicked()), device_cond, SLOT(Down()));
+	connect(device_cond, SIGNAL(condSatisfied()), SIGNAL(condSatisfied()));
+
+	main_layout->addWidget(condition_display);
+
+	QHBoxLayout *bottom_layout = new QHBoxLayout;
+
+	BtButton *back = new BtButton;
+	back->setImage(bt_global::skin->getImage("back"));
+	connect(back, SIGNAL(clicked()), SLOT(Prev()));
+	bottom_layout->addWidget(back);
+	bottom_layout->addStretch(1);
+
+	BtButton *ok = new BtButton;
+	ok->setImage(bt_global::skin->getImage("ok"));
+	bottom_layout->addWidget(ok);
+	connect(ok, SIGNAL(clicked()), SLOT(OK()));
+
+	main_layout->addLayout(bottom_layout);
 }
 
 scenEvo_cond_d::~scenEvo_cond_d()
@@ -325,16 +303,6 @@ scenEvo_cond_d::~scenEvo_cond_d()
 const char *scenEvo_cond_d::getDescription()
 {
 	return "scenEvo device condition";
-}
-
-void scenEvo_cond_d::Up()
-{
-	device_cond->Up();
-}
-
-void scenEvo_cond_d::Down()
-{
-	device_cond->Down();
 }
 
 void scenEvo_cond_d::Apply()

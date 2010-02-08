@@ -153,10 +153,6 @@ public slots:
 	void OK();
 	//!  Apply method
 	void Apply();
-	//! Up method
-	void Up();
-	//! Down method
-	void Down();
 	//! Reset condition
 	void reset();
 
