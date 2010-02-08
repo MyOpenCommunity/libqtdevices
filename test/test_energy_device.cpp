@@ -266,6 +266,28 @@ void TestEnergyDevice::receiveDailyAverageGraph2()
 	t.check(frames, data);
 }
 
+void TestEnergyDevice::receiveDailyAverageGraph16Bit()
+{
+	int month = 8;
+	int day = 1;
+	dev->buffer_frame.clear();
+	DeviceTester t(dev, EnergyDevice::DIM_DAILY_AVERAGE_GRAPH, DeviceTester::MULTIPLE_VALUES);
+	QString tmp(QString("*#18*%1*%2#%3").arg(where).arg(512).arg(month));
+	QStringList frames;
+
+	GraphData data;
+	for (int i = 0; i < 24; ++i)
+	{
+		frames << tmp + QString("*%1*%2##").arg(i + 1).arg(i * 37 + 13);
+		data.graph[i + 1] = i * 37 + 13;
+	}
+	frames << tmp + QString("*%1*%2##").arg(25).arg(174);
+	data.date = getDate(month, day);
+	data.type = EnergyDevice::DAILY_AVERAGE;
+
+	t.check(frames, data);
+}
+
 void TestEnergyDevice::receiveDayGraph()
 {
 	int month = 8;
@@ -487,6 +509,26 @@ void TestEnergyDevice::receiveMonthlyAverage()
 			EnergyValue(QDate::currentDate(), qRound(1.0 * 95 / QDate::currentDate().day())));
 	t.check(QString("*#18*%1*53*4294967295##").arg(where),
 			EnergyValue(QDate::currentDate(), 0));
+}
+
+void TestEnergyDevice::receiveMonthlyAverage16Bit()
+{
+	int month = 8;
+	int day = 1;
+	dev->buffer_frame.clear();
+	DeviceTester t(dev, EnergyDevice::DIM_MONTLY_AVERAGE, DeviceTester::MULTIPLE_VALUES);
+	QString tmp(QString("*#18*%1*%2#%3").arg(where).arg(512).arg(month));
+	QStringList frames;
+
+	GraphData data;
+	for (int i = 0; i < 24; ++i)
+	{
+		frames << tmp + QString("*%1*%2##").arg(i + 1).arg(i * 37 + 13);
+		data.graph[i + 1] = i * 37 + 13;
+	}
+	frames << tmp + QString("*%1*%2##").arg(25).arg(174);
+
+	t.check(frames, EnergyValue(getDate(8, 1), 174));
 }
 
 void TestEnergyDevice::receiveCumulativeDayRequest()

@@ -102,7 +102,8 @@ private:
 	void parseCumulativeDayGraph8Bit(const QStringList &buffer_frame, QVariant &v);
 	void parseCumulativeDayGraph16Bit(const QStringList &buffer_frame, QVariant &v);
 	void parseCumulativeMonthGraph(const QStringList &buffer_frame, QVariant &v);
-	void parseDailyAverageGraph(const QStringList &buffer_frame, QVariant &v);
+	void parseDailyAverageGraph8Bit(const QStringList &buffer_frame, QVariant &v);
+	void parseDailyAverageGraph16Bit(const QStringList &buffer_frame, QVariant &v);
 	void computeMonthGraphData(int days_in_month, const QList<int> &values, QMap<int, int> &graph);
 
 	// The following fill* methods are special methods that handle the case when a single

@@ -33,6 +33,7 @@ private slots:
 	void receiveCumulativeYear();
 	void receiveDailyAverageGraph();
 	void receiveDailyAverageGraph2();
+	void receiveDailyAverageGraph16Bit();
 	void receiveDayGraph();
 	void receiveDayGraph2();
 	void receiveDayGraph3();
@@ -42,6 +43,7 @@ private slots:
 	void receiveCumulativeMonthGraph3();
 	void receiveCumulativeYearGraph();
 	void receiveMonthlyAverage();
+	void receiveMonthlyAverage16Bit();
 	void receiveCumulativeDayRequest();
 	void receiveCumulativeMonthRequest();
 
