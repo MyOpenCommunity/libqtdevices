@@ -41,6 +41,9 @@ private slots:
 	void receiveCumulativeMonthGraph();
 	void receiveCumulativeMonthGraph2();
 	void receiveCumulativeMonthGraph3();
+	void receiveCumulativeMonthGraph32Bit();
+	void receiveCumulativeMonthGraph32Bit2();
+	void receiveCumulativeMonthGraphPrevYear32Bit();
 	void receiveCumulativeYearGraph();
 	void receiveMonthlyAverage();
 	void receiveMonthlyAverage16Bit();

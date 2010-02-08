@@ -27,6 +27,8 @@ enum RequestDimension
 	_DIM_STATE_UPDATE_INTERVAL = 1200,   // used to detect start/stop of automatic updates
 	_DIM_DAY_GRAPH_16BIT       = 511,    // used internally, the status list contains DIM_DAY_GRAPH
 	_DIM_DAILY_AVERAGE_GRAPH_16BIT = 512,// used internally, the status list contains DIM_DAILY_AVERAGE_GRAPH
+	_DIM_CUMULATIVE_MONTH_GRAPH_32BIT = 513, // used internally, the status list contains DIM_CUMULATIVE_MONTH_GRAPH
+	_DIM_CUMULATIVE_MONTH_GRAPH_PREV_32BIT = 514, // used internally, the status list contains DIM_CUMULATIVE_MONTH_GRAPH
 
 	REQ_DAILY_AVERAGE_GRAPH      = 53,   // graph data for daily average
 	REQ_DAY_GRAPH                = 52,   // request graph data for a specific day
@@ -253,7 +255,8 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		what == REQ_CURRENT_MODE_3 || what == REQ_CURRENT_MODE_4 || what == REQ_CURRENT_MODE_5 ||
 		what == DIM_CUMULATIVE_MONTH || what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR ||
 		what == DIM_DAILY_AVERAGE_GRAPH || what == DIM_DAY_GRAPH || what == DIM_CUMULATIVE_MONTH_GRAPH ||
-		what == _DIM_DAY_GRAPH_16BIT || what == _DIM_DAILY_AVERAGE_GRAPH_16BIT)
+		what == _DIM_DAY_GRAPH_16BIT || what == _DIM_DAILY_AVERAGE_GRAPH_16BIT ||
+		what == _DIM_CUMULATIVE_MONTH_GRAPH_32BIT || what == _DIM_CUMULATIVE_MONTH_GRAPH_PREV_32BIT)
 	{
 
 		// In some cases (when more than a ts is present in the system)
@@ -285,7 +288,7 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		{
 			if (num_frame > 0 && num_frame < 22)
 				buffer_frame.append(frame);
-			parseCumulativeMonthGraph(buffer_frame, v);
+			parseCumulativeMonthGraph8Bit(buffer_frame, v);
 		}
 		else if (what == _DIM_DAY_GRAPH_16BIT)
 		{
@@ -298,6 +301,12 @@ void EnergyDevice::frame_rx_handler(char *frame)
 			if (num_frame > 0 && num_frame < 25)
 				buffer_frame.append(frame);
 			parseDailyAverageGraph16Bit(buffer_frame, v);
+		}
+		else if (what == _DIM_CUMULATIVE_MONTH_GRAPH_32BIT ||  what == _DIM_CUMULATIVE_MONTH_GRAPH_PREV_32BIT)
+		{
+			if (num_frame > 0 && num_frame < 32) // should not be necessary, but just in case
+				buffer_frame.append(frame);
+			parseCumulativeMonthGraph32Bit(buffer_frame, v, what == _DIM_CUMULATIVE_MONTH_GRAPH_PREV_32BIT);
 		}
 		else
 		{
@@ -316,6 +325,8 @@ void EnergyDevice::frame_rx_handler(char *frame)
 			status_list[DIM_DAY_GRAPH] = v;
 		else if (what == _DIM_DAILY_AVERAGE_GRAPH_16BIT)
 			status_list[DIM_DAILY_AVERAGE_GRAPH] = v;
+		else if (what == _DIM_CUMULATIVE_MONTH_GRAPH_32BIT || what == _DIM_CUMULATIVE_MONTH_GRAPH_PREV_32BIT)
+			status_list[DIM_CUMULATIVE_MONTH_GRAPH] = v;
 		else
 			status_list[what] = v;
 
@@ -553,7 +564,7 @@ void EnergyDevice::parseCumulativeDayGraph16Bit(const QStringList &buffer_frame,
 	v.setValue(data);
 }
 
-void EnergyDevice::parseCumulativeMonthGraph(const QStringList &buffer_frame, QVariant &v)
+void EnergyDevice::parseCumulativeMonthGraph8Bit(const QStringList &buffer_frame, QVariant &v)
 {
 	GraphData data;
 	QList<int> values;
@@ -575,6 +586,29 @@ void EnergyDevice::parseCumulativeMonthGraph(const QStringList &buffer_frame, QV
 	v.setValue(data);
 }
 
+void EnergyDevice::parseCumulativeMonthGraph32Bit(const QStringList &buffer_frame, QVariant &v, bool prev_year)
+{
+	GraphData data;
+	OpenMsg tmp(buffer_frame[0].toStdString());
+	QDate d = getDateFromFrame(tmp);
+	data.type = CUMULATIVE_MONTH;
+
+	if (prev_year)
+		data.date.setYMD(d.year() - 1, d.month(), d.day());
+	else
+		data.date = d;
+
+	for (int i = 0; i < buffer_frame.size() && i < data.date.daysInMonth(); ++i)
+	{
+		OpenMsg frame_parser(buffer_frame[i].toStdString());
+		Q_ASSERT_X(frame_parser.whatArgCnt() > 1, "EnergyDevice::parseCumulativeMonthGraph", frame_parser.frame_open);
+
+		data.graph[i + 1] = frame_parser.whatArgN(1);
+	}
+
+	v.setValue(data);
+}
+
 void EnergyDevice::computeMonthGraphData(int days_in_month, const QList<int> &values, QMap<int, int> &graph)
 {
 	for (int i = 0; i + 1 < values.size(); i += 2)
@@ -590,7 +624,8 @@ QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)
 	int what = msg.what();
 	if (what == DIM_DAILY_AVERAGE_GRAPH || what == DIM_CUMULATIVE_MONTH_GRAPH ||
 		what == DIM_DAY_GRAPH || what == _DIM_DAY_GRAPH_16BIT ||
-		what == _DIM_DAILY_AVERAGE_GRAPH_16BIT)
+		what == _DIM_DAILY_AVERAGE_GRAPH_16BIT || what == _DIM_CUMULATIVE_MONTH_GRAPH_32BIT ||
+		what == _DIM_CUMULATIVE_MONTH_GRAPH_PREV_32BIT)
 	{
 		Q_ASSERT_X(msg.whatSubArgCnt() > 0, "EnergyDevice::getDateFromFrame", msg.frame_open);
 		QDate current = QDate::currentDate();
