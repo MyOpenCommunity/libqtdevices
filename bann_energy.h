@@ -3,6 +3,7 @@
 
 #include "bann1_button.h"  // bannTextOnImage
 #include "bann2_buttons.h" // Bann2Buttons
+#include "bann3_buttons.h" // Bann3ButtonsLabel
 #include "energy_rates.h"  // EnergyRate
 
 struct EnergyRate;
@@ -55,6 +56,17 @@ private slots:
 private:
 	EnergyRate rate;
 	float current_value;
+};
+
+
+
+class BannLoadNoCU : public Bann3ButtonsLabel
+{
+Q_OBJECT
+public:
+	// TODO: Add device
+	BannLoadNoCU(const QString &descr);
+	void connectRightButton(Page *p);
 };
 
 #endif // BANN_ENERGY_H
