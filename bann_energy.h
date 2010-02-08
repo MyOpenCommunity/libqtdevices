@@ -69,4 +69,18 @@ public:
 	void connectRightButton(Page *p);
 };
 
+
+class BannLoadWithCU : public Bann3ButtonsLabel
+{
+Q_OBJECT
+public:
+	enum Type
+	{
+		BASE_MODE,
+		ADVANCED_MODE,
+	};
+	BannLoadWithCU(const QString &descr, Type t);
+	void connectRightButton(Page *p);
+};
+
 #endif // BANN_ENERGY_H

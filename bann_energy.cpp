@@ -150,3 +150,17 @@ void BannLoadNoCU::connectRightButton(Page *p)
 {
 	connectButtonToPage(right_button, p);
 }
+
+
+
+BannLoadWithCU::BannLoadWithCU(const QString &descr, Type t) : Bann3ButtonsLabel(0)
+{
+	QString right = t == ADVANCED_MODE ? bt_global::skin->getImage("info") : QString();
+	initBanner(bt_global::skin->getImage("forced"), bt_global::skin->getImage("not_forced"), bt_global::skin->getImage("on"),
+		bt_global::skin->getImage("load"), right, ENABLED, NOT_FORCED, descr);
+}
+
+void BannLoadWithCU::connectRightButton(Page *p)
+{
+	connectButtonToPage(right_button, p);
+}
