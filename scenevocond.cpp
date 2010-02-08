@@ -15,85 +15,75 @@
 #define BOTTOM_BORDER 10
 
 
-/*****************************************************************
-** Advanced scenario management generic condition
-****************************************************************/
-
-scenEvo_cond::scenEvo_cond()
+ScenEvoCondition::ScenEvoCondition()
 {
 	hasTimeCondition = false;
 }
 
-const char *scenEvo_cond::getDescription()
+const char *ScenEvoCondition::getDescription()
 {
 	return "Generic scenEvo condition";
 }
 
-void scenEvo_cond::Next()
+void ScenEvoCondition::Next()
 {
-	qDebug("scenEvo_cond::Next()");
+	qDebug("ScenEvoCondition::Next()");
 	emit SwitchToNext();
 }
 
-void scenEvo_cond::Prev()
+void ScenEvoCondition::Prev()
 {
-	qDebug("scenEvo_cond::Prev()");
+	qDebug("ScenEvoCondition::Prev()");
 	reset();
 	emit resetAll();
 	emit SwitchToFirst();
 }
 
-void scenEvo_cond::OK()
+void ScenEvoCondition::OK()
 {
-	qDebug("scenEvo_cond::OK()");
+	qDebug("ScenEvoCondition::OK()");
 	save();
 	emit SwitchToFirst();
 }
 
-void scenEvo_cond::Apply()
+void ScenEvoCondition::Apply()
 {
-	qDebug("scenEvo_cond::Apply()");
+	qDebug("ScenEvoCondition::Apply()");
 }
 
-void scenEvo_cond::save()
+void ScenEvoCondition::save()
 {
-	qDebug("scenEvo_cond::save()");
+	qDebug("ScenEvoCondition::save()");
 }
 
-void scenEvo_cond::reset()
+void ScenEvoCondition::reset()
 {
-	qDebug("scenEvo_cond::reset()");
+	qDebug("ScenEvoCondition::reset()");
 }
 
-int scenEvo_cond::get_serial_number()
+int ScenEvoCondition::get_serial_number()
 {
 	return serial_number;
 }
 
-void scenEvo_cond::set_serial_number(int n)
+void ScenEvoCondition::set_serial_number(int n)
 {
 	serial_number = n;
 }
 
-void scenEvo_cond::inizializza()
+void ScenEvoCondition::inizializza()
 {
 }
 
-bool scenEvo_cond::isTrue()
+bool ScenEvoCondition::isTrue()
 {
 	return false;
 }
 
 
-/*****************************************************************
- ** Advanced scenario management, time condition
-****************************************************************/
-
-scenEvo_cond_h::scenEvo_cond_h(int _item_id, const QDomNode &config_node, bool has_next) :
+ScenEvoTimeCondition::ScenEvoTimeCondition(int _item_id, const QDomNode &config_node, bool has_next) :
 	time_edit(this)
 {
-	qDebug("***** scenEvo_cond_h::scenEvo_cond_h");
-
 	item_id = _item_id;
 
 	timer.setSingleShot(true);
@@ -144,12 +134,12 @@ scenEvo_cond_h::scenEvo_cond_h(int _item_id, const QDomNode &config_node, bool h
 	setupTimer();
 }
 
-const char *scenEvo_cond_h::getDescription()
+const char *ScenEvoTimeCondition::getDescription()
 {
 	return "scenEvo hour condition";
 }
 
-void scenEvo_cond_h::setupTimer()
+void ScenEvoTimeCondition::setupTimer()
 {
 	QTime now = QTime::currentTime();
 	int msecsto = now.msecsTo(cond_time);
@@ -165,30 +155,30 @@ void scenEvo_cond_h::setupTimer()
 	timer.start(msecsto);
 }
 
-void scenEvo_cond_h::Apply()
+void ScenEvoTimeCondition::Apply()
 {
 	BtTime tmp = time_edit.time();
 	cond_time.setHMS(tmp.hour(), tmp.minute(), 0);
 	setupTimer();
 }
 
-void scenEvo_cond_h::OK()
+void ScenEvoTimeCondition::OK()
 {
-	qDebug("scenEvo_cond_h::OK()");
+	qDebug("ScenEvoTimeCondition::OK()");
 	Apply();
-	scenEvo_cond::OK();
+	ScenEvoCondition::OK();
 }
 
-void scenEvo_cond_h::scaduta()
+void ScenEvoTimeCondition::scaduta()
 {
-	qDebug("scenEvo_cond_h::scaduta()");
+	qDebug("ScenEvoTimeCondition::scaduta()");
 	emit verificata();
 	setupTimer();
 }
 
-void scenEvo_cond_h::save()
+void ScenEvoTimeCondition::save()
 {
-	qDebug("scenEvo_cond_h::save()");
+	qDebug("ScenEvoTimeCondition::save()");
 
 	QMap<QString, QString> data;
 #ifdef CONFIG_BTOUCH
@@ -202,23 +192,20 @@ void scenEvo_cond_h::save()
 #endif
 }
 
-void scenEvo_cond_h::reset()
+void ScenEvoTimeCondition::reset()
 {
 	time_edit.setTime(cond_time);
 }
 
-bool scenEvo_cond_h::isTrue()
+bool ScenEvoTimeCondition::isTrue()
 {
 	QTime cur = QDateTime::currentDateTime().time();
 	return ((cond_time.hour() == cur.hour()) &&
 			(cond_time.minute() == cur.minute()));
 }
 
-/*****************************************************************
-** Advanced scenario management, device condition
-****************************************************************/
 
-scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
+ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &config_node)
 {
 	item_id = _item_id;
 
@@ -295,32 +282,32 @@ scenEvo_cond_d::scenEvo_cond_d(int _item_id, const QDomNode &config_node)
 	main_layout->addLayout(bottom_layout);
 }
 
-scenEvo_cond_d::~scenEvo_cond_d()
+ScenEvoDeviceCondition::~ScenEvoDeviceCondition()
 {
 	delete device_cond;
 }
 
-const char *scenEvo_cond_d::getDescription()
+const char *ScenEvoDeviceCondition::getDescription()
 {
 	return "scenEvo device condition";
 }
 
-void scenEvo_cond_d::Apply()
+void ScenEvoDeviceCondition::Apply()
 {
 	device_cond->OK();
 }
 
-void scenEvo_cond_d::OK()
+void ScenEvoDeviceCondition::OK()
 {
-	qDebug("scenEvo_cond_d::OK()");
+	qDebug("ScenEvoDeviceCondition::OK()");
 	// Save ALL conditions here (not just this one)
 	emit okAll();
 	emit SwitchToFirst();
 }
 
-void scenEvo_cond_d::save()
+void ScenEvoDeviceCondition::save()
 {
-	qDebug("scenEvo_cond_d::save()");
+	qDebug("ScenEvoDeviceCondition::save()");
 	QString s;
 	device_cond->get_condition_value(s);
 #ifdef CONFIG_BTOUCH
@@ -332,19 +319,19 @@ void scenEvo_cond_d::save()
 	inizializza();
 }
 
-void scenEvo_cond_d::reset()
+void ScenEvoDeviceCondition::reset()
 {
-	qDebug("scenEvo_cond_d::reset()");
+	qDebug("ScenEvoDeviceCondition::reset()");
 	device_cond->reset();
 }
 
-void scenEvo_cond_d::inizializza()
+void ScenEvoDeviceCondition::inizializza()
 {
 	if (device_cond)
 		device_cond->inizializza();
 }
 
-bool scenEvo_cond_d::isTrue()
+bool ScenEvoDeviceCondition::isTrue()
 {
 	return device_cond ? device_cond->isTrue() : false;
 }

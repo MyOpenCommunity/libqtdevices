@@ -148,7 +148,7 @@ void ScenarioModule::status_changed(const StatusList &sl)
 
 int scenEvo::next_serial_number = 1;
 
-scenEvo::scenEvo(QWidget *parent, const QDomNode &conf_node, QList<scenEvo_cond*> c) :
+scenEvo::scenEvo(QWidget *parent, const QDomNode &conf_node, QList<ScenEvoCondition*> c) :
 	Bann3Buttons(parent), condList(c)
 {
 	item_id = getTextChild(conf_node, "itemID").toInt();
@@ -158,7 +158,7 @@ scenEvo::scenEvo(QWidget *parent, const QDomNode &conf_node, QList<scenEvo_cond*
 	serial_number = next_serial_number++;
 	for (int i = 0; i < condList.size(); ++i)
 	{
-		scenEvo_cond *co = condList.at(i);
+		ScenEvoCondition *co = condList.at(i);
 		qDebug() << "connecting condition: " << co->getDescription();
 		co->set_serial_number(serial_number);
 		connect(co, SIGNAL(verificata()), this, SLOT(trig()));
@@ -199,7 +199,7 @@ void scenEvo::toggleAttivaScev()
 void scenEvo::configScev()
 {
 	qDebug("scenEvo::configScev");
-	scenEvo_cond *co = condList.at(current_condition);
+	ScenEvoCondition *co = condList.at(current_condition);
 	connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
 	connect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
@@ -215,7 +215,7 @@ void scenEvo::forzaScev()
 void scenEvo::nextCond()
 {
 	qDebug("scenEvo::nextCond()");
-	scenEvo_cond *old_cond = condList.at(current_condition);
+	ScenEvoCondition *old_cond = condList.at(current_condition);
 	disconnect(old_cond, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	disconnect(old_cond, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
 	disconnect(old_cond, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
@@ -223,7 +223,7 @@ void scenEvo::nextCond()
 	if (current_condition + 1 < static_cast<unsigned>(condList.size()))
 	{
 		++current_condition;
-		scenEvo_cond *cond = condList.at(current_condition);
+		ScenEvoCondition *cond = condList.at(current_condition);
 		qDebug("cond = %p", cond);
 		if (cond)
 		{
@@ -241,7 +241,7 @@ void scenEvo::nextCond()
 void scenEvo::prevCond()
 {
 	qDebug("scenEvo::prevCond()");
-	scenEvo_cond *old_cond = condList.at(current_condition);
+	ScenEvoCondition *old_cond = condList.at(current_condition);
 	disconnect(old_cond, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	disconnect(old_cond, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
 	disconnect(old_cond, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
@@ -249,7 +249,7 @@ void scenEvo::prevCond()
 	if (current_condition > 0)
 	{
 		--current_condition;
-		scenEvo_cond *cond = condList.at(current_condition);
+		ScenEvoCondition *cond = condList.at(current_condition);
 		qDebug("cond = %p", cond);
 		if (cond)
 		{
@@ -264,7 +264,7 @@ void scenEvo::prevCond()
 void scenEvo::firstCond()
 {
 	qDebug("scenEvo::firstCond()");
-	scenEvo_cond *co = condList.at(current_condition);
+	ScenEvoCondition *co = condList.at(current_condition);
 	disconnect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
 	current_condition = 0;
 	emit pageClosed();
@@ -275,7 +275,7 @@ void scenEvo::saveAndApplyAll()
 	qDebug("scenEvo::saveAndApplyAll()");
 	for (int i = 0; i < condList.size(); ++i)
 	{
-		scenEvo_cond *co = condList.at(i);
+		ScenEvoCondition *co = condList.at(i);
 		co->Apply();
 		co->save();
 	}
@@ -286,7 +286,7 @@ void scenEvo::resetAll()
 	qDebug("scenEvo::resetAll()");
 	for (int i = 0; i < condList.size(); ++i)
 	{
-		scenEvo_cond *co = condList.at(i);
+		ScenEvoCondition *co = condList.at(i);
 		co->reset();
 	}
 	emit pageClosed();
@@ -297,7 +297,7 @@ void scenEvo::trigOnStatusChanged()
 	qDebug("scenEvo::trigOnStatusChanged()");
 	for (int i = 0; i < condList.size(); ++i)
 	{
-		scenEvo_cond *co = condList.at(i);
+		ScenEvoCondition *co = condList.at(i);
 		if (co->hasTimeCondition)
 			return;
 	}
@@ -321,7 +321,7 @@ void scenEvo::trig(bool forced)
 		}
 		for (int i = 0; i < condList.size(); ++i)
 		{
-			scenEvo_cond *co = condList.at(i);
+			ScenEvoCondition *co = condList.at(i);
 			if (!co->isTrue())
 			{
 				qDebug("Condizione %p (%s), non verificata, non faccio niente",
@@ -340,7 +340,7 @@ void scenEvo::inizializza(bool forza)
 	qDebug("scenEvo::inizializza()");
 	for (int i = 0; i < condList.size(); ++i)
 	{
-		scenEvo_cond *co = condList.at(i);
+		ScenEvoCondition *co = condList.at(i);
 		qDebug() << "Ciclo n. " << i << co->getDescription();
 		co->inizializza();
 	}

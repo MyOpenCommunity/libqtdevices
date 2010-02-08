@@ -12,13 +12,10 @@ class BtButton;
 class DeviceCondition;
 
 
-/*!
-  \class scenEvo_cond
-  \brief This class represents a generic advanced scenario condition
-  \author Ciminaghi
-  \date April 2006
-*/
-class scenEvo_cond : public Page
+/**
+ * This class is an abstract class that represent an evolved scenario condition.
+ */
+class ScenEvoCondition : public Page
 {
 Q_OBJECT
 public:
@@ -71,24 +68,22 @@ signals:
 protected:
 	int item_id;
 
-	// The constructor is protected to avoid the building of scenEvo_cond objects.
-	scenEvo_cond();
+	// The constructor is protected to avoid the building of ScenEvoCondition objects.
+	ScenEvoCondition();
 
 private:
 	int serial_number;
 };
 
-/*!
-  \class scenEvo_cond_h
-  \brief This class represent a time based advanced scenario condition
-  \author Ciminaghi
-  \date April 2006
-*/
-class scenEvo_cond_h : public scenEvo_cond
+
+/**
+ * This class represent a time based evolved scenario condition.
+ */
+class ScenEvoTimeCondition : public ScenEvoCondition
 {
 Q_OBJECT
 public:
-	scenEvo_cond_h(int item_id, const QDomNode &config_node, bool has_next);
+	ScenEvoTimeCondition(int item_id, const QDomNode &config_node, bool has_next);
 	/*!
 	\brief Returns condition description
 	*/
@@ -118,18 +113,15 @@ private:
 };
 
 
-/*!
-\class scenEvo_cond_d
-\brief This class represent a device based advanced scenario condition
-\author Ciminaghi
-\date April 2006
-*/
-class scenEvo_cond_d : public scenEvo_cond
+/**
+ * This class represent a device based evolved scenario condition.
+ */
+class ScenEvoDeviceCondition : public ScenEvoCondition
 {
 Q_OBJECT
 public:
-	scenEvo_cond_d(int item_id, const QDomNode &config_node);
-	~scenEvo_cond_d();
+	ScenEvoDeviceCondition(int item_id, const QDomNode &config_node);
+	~ScenEvoDeviceCondition();
 
 	/*!
 	\brief Returns condition description in human language

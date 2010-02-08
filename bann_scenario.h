@@ -9,7 +9,7 @@
 #include <QList>
 
 class PPTSceDevice;
-class scenEvo_cond;
+class ScenEvoCondition;
 class device;
 class QTimerEvent;
 class QWidget;
@@ -66,14 +66,14 @@ class scenEvo : public Bann3Buttons
 {
 Q_OBJECT
 public:
-	scenEvo(QWidget *parent, const QDomNode &conf_node, QList<scenEvo_cond*> c);
+	scenEvo(QWidget *parent, const QDomNode &conf_node, QList<ScenEvoCondition*> c);
 	~scenEvo();
 
 public slots:
 	void inizializza(bool forza = false);
 
 private:
-	QList<scenEvo_cond*> condList;
+	QList<ScenEvoCondition*> condList;
 	unsigned current_condition;
 	QString action, enable_icon, disable_icon;
 	int serial_number;

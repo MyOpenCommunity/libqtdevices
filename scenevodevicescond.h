@@ -110,7 +110,7 @@ public slots:
 
 class DeviceCondition : public QObject
 {
-friend class scenEvo_cond_d;
+friend class ScenEvoDeviceCondition;
 Q_OBJECT
 public slots:
 	//! Invoked when UP button is pressed
