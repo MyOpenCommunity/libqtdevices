@@ -52,16 +52,6 @@ public slots:
 	//! Reset condition (on cancel)
 	virtual void reset();
 
-protected:
-	// The constructor is protected to avoid the building of scenEvo_cond objects.
-	scenEvo_cond();
-
-private:
-	int serial_number;
-
-protected:
-	int item_id;
-
 signals:
 	//! Emitted when user clicks Next icon
 	void SwitchToNext();
@@ -77,6 +67,15 @@ signals:
 	void okAll();
 	//! After a status changed, a condition is satisfied
 	void condSatisfied();
+
+protected:
+	int item_id;
+
+	// The constructor is protected to avoid the building of scenEvo_cond objects.
+	scenEvo_cond();
+
+private:
+	int serial_number;
 };
 
 /*!
@@ -111,13 +110,6 @@ public slots:
 	//! Just setup qt timer (based on cond_time)
 	void setupTimer();
 private:
-	//! OK icon index (area #7)
-	static const int A7_ICON_INDEX = 3;
-	//! Area #6 (prev) icon index
-	static const int A6_ICON_INDEX = 1;
-	//! Area #8 (next) icon index
-	static const int A8_ICON_INDEX = 2;
-
 	QTime cond_time;
 	BtButton *bottom_left, *bottom_center, *bottom_right;
 
@@ -157,11 +149,6 @@ public slots:
 	void reset();
 
 private:
-	//! Button width/height
-	static const int BUTTON_DIM = 60;
-	//! Text area height
-	static const int TEXT_Y_DIM = 20;
-
 	//! Specific device condition
 	DeviceCondition *device_cond;
 	//! Inits condition
