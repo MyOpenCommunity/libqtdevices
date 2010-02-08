@@ -109,7 +109,7 @@ void ScenarioModule::status_changed(const StatusList &sl)
 			break;
 		case ScenarioDevice::DIM_START:
 		{
-			Q_ASSERT_X(it.value().canConvert<ScenarioProgrammingStatus>(), "ModifyScenario::status_changed",
+			Q_ASSERT_X(it.value().canConvert<ScenarioProgrammingStatus>(), "ScenarioModule::status_changed",
 				"Cannot convert values in DIM_START");
 			ScenarioProgrammingStatus val = it.value().value<ScenarioProgrammingStatus>();
 			if (val.first)
@@ -146,9 +146,9 @@ void ScenarioModule::status_changed(const StatusList &sl)
 }
 
 
-int scenEvo::next_serial_number = 1;
+int ScenarioEvolved::next_serial_number = 1;
 
-scenEvo::scenEvo(QWidget *parent, const QDomNode &conf_node, QList<ScenEvoCondition*> c) :
+ScenarioEvolved::ScenarioEvolved(QWidget *parent, const QDomNode &conf_node, QList<ScenEvoCondition*> c) :
 	Bann3Buttons(parent), condList(c)
 {
 	item_id = getTextChild(conf_node, "itemID").toInt();
@@ -184,9 +184,9 @@ scenEvo::scenEvo(QWidget *parent, const QDomNode &conf_node, QList<ScenEvoCondit
 	connect(center_button, SIGNAL(clicked()), SLOT(forzaScev()));
 }
 
-void scenEvo::toggleAttivaScev()
+void ScenarioEvolved::toggleAttivaScev()
 {
-	qDebug("scenEvo::toggleAttivaScev");
+	qDebug("ScenarioEvolved::toggleAttivaScev");
 	enabled = !enabled;
 	left_button->setImage(enabled ? enable_icon : disable_icon);
 #ifdef CONFIG_BTOUCH
@@ -196,9 +196,9 @@ void scenEvo::toggleAttivaScev()
 #endif
 }
 
-void scenEvo::configScev()
+void ScenarioEvolved::configScev()
 {
-	qDebug("scenEvo::configScev");
+	qDebug("ScenarioEvolved::configScev");
 	ScenEvoCondition *co = condList.at(current_condition);
 	connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
@@ -206,15 +206,15 @@ void scenEvo::configScev()
 	co->showPage();
 }
 
-void scenEvo::forzaScev()
+void ScenarioEvolved::forzaScev()
 {
 	// Forced trigger
 	trig(true);
 }
 
-void scenEvo::nextCond()
+void ScenarioEvolved::nextCond()
 {
-	qDebug("scenEvo::nextCond()");
+	qDebug("ScenarioEvolved::nextCond()");
 	ScenEvoCondition *old_cond = condList.at(current_condition);
 	disconnect(old_cond, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	disconnect(old_cond, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
@@ -238,9 +238,9 @@ void scenEvo::nextCond()
 		current_condition = 0;
 }
 
-void scenEvo::prevCond()
+void ScenarioEvolved::prevCond()
 {
-	qDebug("scenEvo::prevCond()");
+	qDebug("ScenarioEvolved::prevCond()");
 	ScenEvoCondition *old_cond = condList.at(current_condition);
 	disconnect(old_cond, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
 	disconnect(old_cond, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
@@ -261,18 +261,18 @@ void scenEvo::prevCond()
 	}
 }
 
-void scenEvo::firstCond()
+void ScenarioEvolved::firstCond()
 {
-	qDebug("scenEvo::firstCond()");
+	qDebug("ScenarioEvolved::firstCond()");
 	ScenEvoCondition *co = condList.at(current_condition);
 	disconnect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
 	current_condition = 0;
 	emit pageClosed();
 }
 
-void scenEvo::saveAndApplyAll()
+void ScenarioEvolved::saveAndApplyAll()
 {
-	qDebug("scenEvo::saveAndApplyAll()");
+	qDebug("ScenarioEvolved::saveAndApplyAll()");
 	for (int i = 0; i < condList.size(); ++i)
 	{
 		ScenEvoCondition *co = condList.at(i);
@@ -281,9 +281,9 @@ void scenEvo::saveAndApplyAll()
 	}
 }
 
-void scenEvo::resetAll()
+void ScenarioEvolved::resetAll()
 {
-	qDebug("scenEvo::resetAll()");
+	qDebug("ScenarioEvolved::resetAll()");
 	for (int i = 0; i < condList.size(); ++i)
 	{
 		ScenEvoCondition *co = condList.at(i);
@@ -292,20 +292,20 @@ void scenEvo::resetAll()
 	emit pageClosed();
 }
 
-void scenEvo::trigOnStatusChanged()
+void ScenarioEvolved::trigOnStatusChanged()
 {
-	qDebug("scenEvo::trigOnStatusChanged()");
+	qDebug("ScenarioEvolved::trigOnStatusChanged()");
 	for (int i = 0; i < condList.size(); ++i)
 		if (qobject_cast<ScenEvoTimeCondition*>(condList.at(i)))
 			return;
 	trig();
 }
 
-void scenEvo::trig(bool forced)
+void ScenarioEvolved::trig(bool forced)
 {
 	if (action.isEmpty())
 	{
-		qDebug("scenEvo::trig(), act = NULL, non faccio niente");
+		qDebug("ScenarioEvolved::trig(), act = NULL, non faccio niente");
 		return;
 	}
 
@@ -313,7 +313,7 @@ void scenEvo::trig(bool forced)
 	{
 		if (!enabled)
 		{
-			qDebug("scenEvo::trig(), non abilitato, non faccio niente");
+			qDebug("ScenarioEvolved::trig(), non abilitato, non faccio niente");
 			return;
 		}
 		for (int i = 0; i < condList.size(); ++i)
@@ -328,13 +328,13 @@ void scenEvo::trig(bool forced)
 		}
 	}
 
-	qDebug() << "scenEvo::trig(), act = " << action;
+	qDebug() << "ScenarioEvolved::trig(), act = " << action;
 	sendFrame(action);
 }
 
-void scenEvo::inizializza(bool forza)
+void ScenarioEvolved::inizializza(bool forza)
 {
-	qDebug("scenEvo::inizializza()");
+	qDebug("ScenarioEvolved::inizializza()");
 	for (int i = 0; i < condList.size(); ++i)
 	{
 		ScenEvoCondition *co = condList.at(i);
@@ -343,7 +343,7 @@ void scenEvo::inizializza(bool forza)
 	}
 }
 
-scenEvo::~scenEvo()
+ScenarioEvolved::~ScenarioEvolved()
 {
 	while (!condList.isEmpty())
 		delete condList.takeFirst();

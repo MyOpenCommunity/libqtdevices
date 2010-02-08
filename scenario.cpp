@@ -107,7 +107,7 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 	case SCENARIO_EVOLUTO:
 	{
 		SkinContext context(getTextChild(item_node, "cid").toInt());
-		b = new scenEvo(0, item_node, loadConditions(item_node));
+		b = new ScenarioEvolved(0, item_node, loadConditions(item_node));
 	}
 		break;
 	case SCENARIO_SCHEDULATO:

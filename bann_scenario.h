@@ -56,30 +56,19 @@ private:
 };
 
 
-/*!
- * \class scenEvo
- * \brief This class represents an advanced scenario management object
- * \author Ciminaghi
- * \date apr 2006
+/**
+ * This banner represent an evolved scenario, that can do actions based on devices
+ * and times based conditions.
  */
-class scenEvo : public Bann3Buttons
+class ScenarioEvolved : public Bann3Buttons
 {
 Q_OBJECT
 public:
-	scenEvo(QWidget *parent, const QDomNode &conf_node, QList<ScenEvoCondition*> c);
-	~scenEvo();
+	ScenarioEvolved(QWidget *parent, const QDomNode &conf_node, QList<ScenEvoCondition*> c);
+	~ScenarioEvolved();
 
 public slots:
 	void inizializza(bool forza = false);
-
-private:
-	QList<ScenEvoCondition*> condList;
-	unsigned current_condition;
-	QString action, enable_icon, disable_icon;
-	int serial_number;
-	static int next_serial_number;
-	bool enabled;
-	int item_id;
 
 private slots:
 	void toggleAttivaScev();
@@ -92,6 +81,15 @@ private slots:
 	void saveAndApplyAll();
 	void resetAll();
 	void trigOnStatusChanged();
+
+private:
+	QList<ScenEvoCondition*> condList;
+	unsigned current_condition;
+	QString action, enable_icon, disable_icon;
+	int serial_number;
+	static int next_serial_number;
+	bool enabled;
+	int item_id;
 };
 
 
