@@ -1,9 +1,8 @@
 #include "scenevodevicescond.h"
-#include "device_status.h"
 #include "probe_device.h" // NonControlledProbeDevice
 #include "devices_cache.h" // add_device_to_cache
 #include "lighting_device.h"
-#include "scaleconversion.h"
+#include "scaleconversion.h" // bt2Celsius, bt2Fahrenheit, celsius2Bt, fahrenheit2Bt
 #include "fontmanager.h" // bt_global::font
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "skinmanager.h" // bt_global::skin

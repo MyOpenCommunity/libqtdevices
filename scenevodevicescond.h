@@ -2,7 +2,6 @@
 #define SCENEVODEVICESCOND_H
 
 #include <QWidget>
-#include <QObject>
 #include <QList>
 
 #include "main.h" // TemperatureScale

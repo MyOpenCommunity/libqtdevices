@@ -13,7 +13,7 @@ class DeviceCondition;
 
 
 /**
- * This class is an abstract class that represent an evolved scenario condition.
+ * This class is an abstract page that represent an evolved scenario condition.
  */
 class ScenEvoCondition : public Page
 {

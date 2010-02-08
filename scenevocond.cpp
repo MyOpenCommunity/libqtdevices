@@ -1,16 +1,11 @@
 #include "scenevocond.h"
 #include "generic_functions.h" // setCfgValue
 #include "btbutton.h"
-#include "fontmanager.h" // bt_global::font
-#include "main.h" // bt_global::config
-#include "skinmanager.h"
-#include "icondispatcher.h" // icons_cache
-#include "xml_functions.h" //getTextChild
+#include "skinmanager.h" // bt_global::skin
+#include "xml_functions.h" // getTextChild
 #include "scenevodevicescond.h"
 
 #include <QLabel>
-#include <QLocale>
-#include <QDebug>
 
 
 void ScenEvoCondition::Next()
