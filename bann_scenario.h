@@ -10,6 +10,8 @@
 
 class PPTSceDevice;
 class ScenEvoCondition;
+class ScenEvoTimeCondition;
+class ScenEvoDeviceCondition;
 class device;
 class QTimerEvent;
 class QWidget;
@@ -64,7 +66,9 @@ class ScenarioEvolved : public Bann3Buttons
 {
 Q_OBJECT
 public:
-	ScenarioEvolved(QWidget *parent, const QDomNode &conf_node, QList<ScenEvoCondition*> c);
+	ScenarioEvolved(int _item_id, QString descr, QString _action, bool _enabled,
+		ScenEvoTimeCondition *time_cond, ScenEvoDeviceCondition *device_cond);
+
 	~ScenarioEvolved();
 
 public slots:

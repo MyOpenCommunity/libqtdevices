@@ -148,13 +148,20 @@ void ScenarioModule::status_changed(const StatusList &sl)
 
 int ScenarioEvolved::next_serial_number = 1;
 
-ScenarioEvolved::ScenarioEvolved(QWidget *parent, const QDomNode &conf_node, QList<ScenEvoCondition*> c) :
-	Bann3Buttons(parent), condList(c)
+ScenarioEvolved::ScenarioEvolved(int _item_id, QString descr, QString _action, bool _enabled,
+	ScenEvoTimeCondition *time_cond,  ScenEvoDeviceCondition *device_cond) : Bann3Buttons(0)
 {
-	item_id = getTextChild(conf_node, "itemID").toInt();
+	item_id = _item_id;
+	action = _action;
+	enabled = _enabled;
+
+	if (time_cond)
+		condList.append(time_cond);
+
+	if (device_cond)
+		condList.append(device_cond);
 
 	current_condition = 0;
-
 	serial_number = next_serial_number++;
 	for (int i = 0; i < condList.size(); ++i)
 	{
@@ -167,17 +174,10 @@ ScenarioEvolved::ScenarioEvolved(QWidget *parent, const QDomNode &conf_node, QLi
 		connect(co, SIGNAL(resetAll()), this, SLOT(resetAll()));
 	}
 
-#ifdef CONFIG_BTOUCH
-	action = getElement(conf_node, "action/open").text();
-	enabled = getTextChild(conf_node, "enable").toInt();
-#else
-	action = getElement(conf_node, "scen/action/open").text();
-	enabled = getElement(conf_node, "scen/status").text().toInt();
-#endif
 	enable_icon = bt_global::skin->getImage("enable_scen");
 	disable_icon = bt_global::skin->getImage("disable_scen");
 	initBanner(enabled ? enable_icon : disable_icon, bt_global::skin->getImage("start"),
-		bt_global::skin->getImage("program"), getTextChild(conf_node, "descr"));
+		bt_global::skin->getImage("program"), descr);
 
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleAttivaScev()));
 	connect(right_button, SIGNAL(clicked()), SLOT(configScev()));

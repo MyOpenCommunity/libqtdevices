@@ -12,67 +12,6 @@
 #include <QDebug>
 #include <QList>
 
-namespace
-{
-#ifdef CONFIG_BTOUCH
-	QList<ScenEvoCondition*> loadConditions(const QDomNode &config_node)
-	{
-		// NOTE: the ownership of ScenEvoCondition objects is taken by the object that
-		// store the list of conditions.
-		// TODO: we can have at maximum 1 condH and 1 condDevice, remove lists
-		bool has_next = getElement(config_node, "condDevice/value").text().toInt();
-		QList<ScenEvoCondition*> l;
-		foreach (const QDomNode &cond, getChildren(config_node, "condH"))
-		{
-			if (getTextChild(cond, "value").toInt())
-			{
-				ScenEvoTimeCondition *c = new ScenEvoTimeCondition(0, cond, has_next);
-				QObject::connect(bt_global::btmain, SIGNAL(resettimer()), c, SLOT(setupTimer()));
-				l.append(c);
-			}
-		}
-
-		foreach (const QDomNode &cond, getChildren(config_node, "condDevice"))
-		{
-			if (getTextChild(cond, "value").toInt())
-			{
-				ScenEvoDeviceCondition *c = new ScenEvoDeviceCondition(0, cond);
-				l.append(c);
-			}
-		}
-		return l;
-	}
-#else
-	QList<ScenEvoCondition*> loadConditions(const QDomNode &config_node)
-	{
-		int item_id = getTextChild(config_node, "itemID").toInt();
-
-		// NOTE: the ownership of ScenEvoCondition objects is taken by the object that
-		// store the list of conditions.
-		// TODO: we can have at maximum 1 condH and 1 condDevice, remove lists
-		bool has_next = getElement(config_node, "scen/device/status").text().toInt();
-		QList<ScenEvoCondition*> l;
-		// parse time condition
-		QDomNode cond = getElement(config_node, "scen/time");
-		if (getTextChild(cond, "status").toInt())
-		{
-			ScenEvoTimeCondition *c = new ScenEvoTimeCondition(item_id, cond, has_next);
-			QObject::connect(bt_global::btmain, SIGNAL(resettimer()), c, SLOT(setupTimer()));
-			l.append(c);
-		}
-
-		QDomNode device = getElement(config_node, "scen/device");
-		if (getTextChild(device, "objectID").toInt())
-		{
-			ScenEvoDeviceCondition *c = new ScenEvoDeviceCondition(item_id, device);
-			l.append(c);
-		}
-
-		return l;
-	}
-#endif
-}
-
 
 Scenario::Scenario(const QDomNode &config_node)
 {
@@ -107,7 +46,44 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 	case SCENARIO_EVOLUTO:
 	{
 		SkinContext context(getTextChild(item_node, "cid").toInt());
-		b = new ScenarioEvolved(0, item_node, loadConditions(item_node));
+		ScenEvoTimeCondition *time_cond = 0;
+		ScenEvoDeviceCondition *device_cond = 0;
+		QString descr = getTextChild(item_node, "descr");
+		QString action;
+		bool enabled;
+
+#ifdef CONFIG_BTOUCH
+		bool has_next = getElement(item_node, "condDevice/value").text().toInt();
+		int item_id = 0;
+		QDomNode time_node = getChildWithName(item_node, "condH");
+
+		if (!time_node.isNull() && getTextChild(time_node, "value").toInt())
+			time_cond = new ScenEvoTimeCondition(item_id, time_node, has_next);
+
+		QDomNode device_node = getChildWithName(item_node, "condDevice");
+		if (!device_node.isNull() && getTextChild(device_node, "value").toInt())
+			device_cond = new ScenEvoDeviceCondition(0, device_node);
+
+		action = getElement(item_node, "action/open").text();
+		enabled = getTextChild(item_node, "enable").toInt();
+#else
+		bool has_next = getElement(item_node, "scen/device/status").text().toInt();
+		int item_id = getTextChild(item_node, "itemID").toInt();
+		QDomNode time_node = getChildWithName(item_node, "scen/time");
+		if (!time_node.isNull() && getTextChild(time_node, "status").toInt())
+			time_cond = new ScenEvoTimeCondition(item_id, time_node, has_next);
+
+		QDomNode device_node = getChildWithName(item_node, "scen/device");
+		if (!device_node.isNull() && getTextChild(device_node, "objectID").toInt())
+			device_cond = new ScenEvoDeviceCondition(item_id, device_node);
+
+		action = getElement(item_node, "scen/action/open").text();
+		enabled = getElement(item_node, "scen/status").text().toInt();
+#endif
+		if (time_cond)
+			QObject::connect(bt_global::btmain, SIGNAL(resettimer()), time_cond, SLOT(setupTimer()));
+
+		b = new ScenarioEvolved(item_id, descr, action, enabled, time_cond, device_cond);
 	}
 		break;
 	case SCENARIO_SCHEDULATO:
