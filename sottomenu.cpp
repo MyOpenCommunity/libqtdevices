@@ -155,14 +155,11 @@ void sottoMenu::draw()
 					int tmp = (indice + i) % elencoBanner.size();
 					int y = i * (height - MAX_HEIGHT / NUM_RIGHE) / numRighe;
 					int h = (height - MAX_HEIGHT / NUM_RIGHE) / numRighe;
-					qDebug("elencoBanner.at(%d)->setGeometry(%d, %d, %d, %d)", tmp, 0, y, width, h);
 					elencoBanner.at(tmp)->setGeometry(0, y, width, h);
 					elencoBanner.at(tmp)->Draw();
 					elencoBanner.at(tmp)->show();
 				}
 			}
-			qDebug("Invoking bannNavigazione->setGeometry(%d, %d, %d, %d)",
-					0, height - MAX_HEIGHT / NUM_RIGHE, width, MAX_HEIGHT / NUM_RIGHE);
 			bannNavigazione->setGeometry(0, height - MAX_HEIGHT / NUM_RIGHE, width, MAX_HEIGHT / NUM_RIGHE);
 			bannNavigazione->Draw();
 			bannNavigazione->show();
@@ -283,7 +280,6 @@ void sottoMenu::resetIndex()
 
 void sottoMenu::showEvent(QShowEvent *event)
 {
-	qDebug() << "sottoMenu::showEvent()";
 	forceDraw();
 }
 

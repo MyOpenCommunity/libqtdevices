@@ -9,7 +9,6 @@
 
 bannFrecce::bannFrecce(QWidget *parent, uchar num, QString IconBut4) : banner(parent)
 {
-	qDebug("bannFrecce::bannFrecce(%d)", num);
 	addItem(BUT1,(MAX_WIDTH/4-BUTFRECCE_DIM_X)/2,
 		(MAX_HEIGHT/NUM_RIGHE-BUTFRECCE_DIM_Y)/2, BUTFRECCE_DIM_X,
 		BUTFRECCE_DIM_Y);
