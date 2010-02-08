@@ -12,8 +12,6 @@
 #include <QLocale>
 #include <QDebug>
 
-#define BOTTOM_BORDER 10
-
 
 ScenEvoCondition::ScenEvoCondition()
 {
@@ -86,48 +84,51 @@ ScenEvoTimeCondition::ScenEvoTimeCondition(int _item_id, const QDomNode &config_
 {
 	item_id = _item_id;
 
-	timer.setSingleShot(true);
-	connect(&timer, SIGNAL(timeout()), SLOT(scaduta()));
-
-	const int BUT_DIM = 60;
-	// Top icon
-	QLabel *image = new QLabel(this);
-	image->setPixmap(bt_global::skin->getImage("watch"));
-	image->setGeometry(width()/2 - BUT_DIM/2, 0, BUT_DIM, BUT_DIM);
-
 	QString h = getTextChild(config_node, "hour");
 	QString m = getTextChild(config_node, "minute");
 	time_edit.setMaxHours(24);
 	time_edit.setMaxMinutes(60);
-	const int TIME_EDIT_W = width() / 2;
-	// +10 below is for compatibility reasons
-	const int TIME_EDIT_H = height() / 2 + 10;
-	time_edit.setGeometry(width()/2 - TIME_EDIT_W/2, height()/2 - TIME_EDIT_H/2, TIME_EDIT_W, TIME_EDIT_H);
+
 	time_edit.setTime(QTime(h.toInt(), m.toInt(), 0));
 
-	bottom_left = new BtButton(this);
-	bottom_left->setGeometry(0, height() - (BUT_DIM + BOTTOM_BORDER), BUT_DIM, BUT_DIM);
-	bottom_left->setImage(bt_global::skin->getImage("ok"));
-	connect(bottom_left, SIGNAL(released()), SLOT(OK()));
+	timer.setSingleShot(true);
+	connect(&timer, SIGNAL(timeout()), SLOT(scaduta()));
 
-	bottom_right = new BtButton(this);
-	bottom_right->setGeometry(width() - BUT_DIM, height() - (BUT_DIM + BOTTOM_BORDER), BUT_DIM, BUT_DIM);
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(0, 5, 0, 10);
+	main_layout->setSpacing(0);
+
+	QLabel *top_image = new QLabel;
+	top_image->setPixmap(bt_global::skin->getImage("watch"));
+	main_layout->addWidget(top_image, 0, Qt::AlignHCenter);
+
+	main_layout->addWidget(&time_edit, 0, Qt::AlignHCenter);
+
+	QHBoxLayout *bottom_layout = new QHBoxLayout;
+	bottom_layout->setContentsMargins(0, 0, 0, 0);
+	bottom_layout->setSpacing(0);
+
+	BtButton *prev = new BtButton;
+	prev->setImage(bt_global::skin->getImage("back"));
+	connect(prev, SIGNAL(clicked()), SLOT(Prev()));
+	bottom_layout->addWidget(prev);
+	bottom_layout->addStretch(1);
 
 	if (has_next)
 	{
-		bottom_center = new BtButton(this);
-		bottom_center->setGeometry(width()/2 - BUT_DIM/2, height() - (BUT_DIM + BOTTOM_BORDER), BUT_DIM, BUT_DIM);
-		bottom_center->setImage(bt_global::skin->getImage("back"));
-		connect(bottom_center, SIGNAL(released()),SLOT(Prev()));
+		BtButton *next = new BtButton;
+		next->setImage(bt_global::skin->getImage("forward"));
+		connect(next, SIGNAL(clicked()), SLOT(Next()));
+		bottom_layout->addWidget(next);
+		bottom_layout->addStretch(1);
+	}
 
-		bottom_right->setImage(bt_global::skin->getImage("forward"));
-		connect(bottom_right, SIGNAL(released()), SLOT(Next()));
-	}
-	else
-	{
-		bottom_right->setImage(bt_global::skin->getImage("back"));
-		connect(bottom_right, SIGNAL(released()), SLOT(Prev()));
-	}
+	BtButton *ok = new BtButton;
+	ok->setImage(bt_global::skin->getImage("ok"));
+	connect(ok, SIGNAL(clicked()), SLOT(OK()));
+	bottom_layout->addWidget(ok);
+
+	main_layout->addLayout(bottom_layout);
 
 	hasTimeCondition = true;
 	cond_time.setHMS(h.toInt(), m.toInt(), 0);
