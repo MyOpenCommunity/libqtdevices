@@ -325,7 +325,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	}
 
 	connect(nav_bar, SIGNAL(toggleCurrency()), SLOT(toggleCurrency()));
-	connect(nav_bar, SIGNAL(showTable()), table, SLOT(showPageFromTable()));
+	connect(nav_bar, SIGNAL(showTable()), table, SLOT(showPage()));
 	connect(table, SIGNAL(Closed()), SLOT(showPage()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
 
