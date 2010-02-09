@@ -42,9 +42,10 @@ BannOnOffState::BannOnOffState(QWidget *parent) :
 {
 }
 
-void BannOnOffState::initBanner(const QString &left, const QString &center, const QString &right,
+void BannOnOffState::initBanner(const QString &left, const QString &_center, const QString &right,
 	States init_state, const QString &banner_text)
 {
+	center = _center;
 	Bann2Buttons::initBanner(left, center, right, banner_text);
 	setState(init_state);
 }
