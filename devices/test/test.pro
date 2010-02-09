@@ -33,6 +33,7 @@ HEADERS += device_tester.h \
             test_device.h \
             test_lighting_device.h \
             test_platform_device.h \
+            test_loads_device.h \
             test_energy_device.h \
             test_entryphone_device.h \
             test_poweramplifier_device.h \
@@ -55,6 +56,7 @@ SOURCES += test_main.cpp \
             test_thermal_device.cpp \
             test_device.cpp \
             test_platform_device.cpp \
+            test_loads_device.cpp \
             test_energy_device.cpp \
             test_entryphone_device.cpp \
             test_lighting_device.cpp \
