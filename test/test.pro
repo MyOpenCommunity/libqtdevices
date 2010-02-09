@@ -28,6 +28,7 @@ HEADERS += device_tester.h \
             test_device.h \
             test_lighting_device.h \
             test_landevice.h \
+            test_loads_device.h \
             test_energy_device.h \
             test_poweramplifier_device.h \
             test_pull_manager.h \
@@ -37,6 +38,7 @@ HEADERS += device_tester.h \
             ../lighting_device.h \
             ../poweramplifier_device.h \
             ../landevice.h \
+            ../loads_device.h \
             ../pulldevice.h \
             ../automation_device.h \
             ../airconditioning_device.h \
@@ -59,6 +61,7 @@ SOURCES += test_main.cpp \
             test_scenario_device.cpp \
             test_device.cpp \
             test_landevice.cpp \
+            test_loads_device.cpp \
             test_energy_device.cpp \
             test_lighting_device.cpp \
             test_poweramplifier_device.cpp \
@@ -69,6 +72,7 @@ SOURCES += test_main.cpp \
             ../lighting_device.cpp \
             ../poweramplifier_device.cpp \
             ../landevice.cpp \
+            ../loads_device.cpp \
             ../pulldevice.cpp \
             ../automation_device.cpp \
             ../airconditioning_device.cpp \

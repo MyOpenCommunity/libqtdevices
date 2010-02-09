@@ -120,6 +120,7 @@ HEADERS += actuators.h \
            lighting_device.h \
            listbrowser.h \
            loads.h \
+           loads_device.h \
            load_management.h \
            main.h \
            mediaplayer.h \
@@ -232,6 +233,7 @@ SOURCES += actuators.cpp \
            lighting_device.cpp \
            listbrowser.cpp \
            loads.cpp \
+           loads_device.cpp \
            load_management.cpp \
            main.cpp \
            mediaplayer.cpp \

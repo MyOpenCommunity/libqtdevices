@@ -12,6 +12,7 @@
 #include "test_pull_manager.h"
 #include "test_probe_device.h"
 #include "test_air_conditioning_device.h"
+#include "test_loads_device.h"
 
 int main(int argc, char *argv[])
 {
@@ -60,6 +61,9 @@ int main(int argc, char *argv[])
 
 	TestAdvancedAirConditioningDevice test_advanced_air_conditioning_device;
 	test_list << &test_advanced_air_conditioning_device;
+
+	TestLoadsDevice test_loads_device;
+	test_list << &test_loads_device;
 
 	QStringList arglist = app.arguments();
 	QString testingClass;
