@@ -27,6 +27,20 @@ namespace
 		priority = priority.mid(1);
 		return priority + ". " + descr;
 	}
+
+	bool isRateEnabled(const QDomNode &n)
+	{
+		QDomElement e = getElement(n, "rate/ab");
+		bool ok;
+		int tmp = e.text().toInt(&ok);
+		if (ok)
+			return (tmp == 1);
+		else
+		{
+			qDebug() << "isRateEnabled() failed, text was: " << e.text();
+			return false;
+		}
+	}
 }
 LoadManagement::LoadManagement(const QDomNode &config_node) :
 	BannerPage(0)
@@ -166,7 +180,13 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node)
 	connect(confirm, SIGNAL(accept()), SLOT(reset()));
 	reset_number = 0;
 
-	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
+	// read the correct measure unit
+	QString forward_button;
+	if (isRateEnabled(config_node))
+		forward_button = bt_global::skin->getImage("currency_exchange");
+	// measure unit here will always be kWh
+
+	NavigationBar *nav_bar = new NavigationBar(forward_button);
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	QVBoxLayout *main = new QVBoxLayout(this);
@@ -189,21 +209,9 @@ void LoadDataPage::reset()
 }
 
 
-DeactivationTimeContent::DeactivationTimeContent()
-{
-	DeactivationTime *t = new DeactivationTime(BtTime(2, 30, 0));
-	QVBoxLayout *main = new QVBoxLayout(this);
-	main->setContentsMargins(0, 0, 0, 0);
-	main->setSpacing(0);
-	main->addWidget(t);
-}
-
-
-
 DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	content = new DeactivationTimeContent;
 
 	QLabel *page_title = new QLabel(getDescriptionWithPriority(config_node));
 	page_title->setFont(bt_global::font->get(FontManager::TEXT));
@@ -215,6 +223,7 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node)
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(sendDeactivateDevice()));
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
 
+	content = new DeactivationTime(BtTime(2, 30, 0));
 	QVBoxLayout *main = new QVBoxLayout(this);
 	main->setContentsMargins(0, 5, 0, 10);
 	main->setSpacing(0);
@@ -225,5 +234,6 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node)
 
 void DeactivationTimePage::sendDeactivateDevice()
 {
-	qDebug() << "Deactivating device for time: xxx";
+	// TODO: send a deactivation frame
+	qDebug() << "Deactivating device for time: " << content->currentTime().toString();
 }

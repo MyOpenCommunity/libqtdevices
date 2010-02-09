@@ -8,6 +8,7 @@
 class QDomNode;
 class banner;
 class QLabel;
+class DeactivationTime;
 
 class LoadManagement : public BannerPage
 {
@@ -69,13 +70,6 @@ private slots:
 
 
 
-class DeactivationTimeContent : public QWidget
-{
-Q_OBJECT
-public:
-	DeactivationTimeContent();
-};
-
 class DeactivationTimePage : public Page
 {
 Q_OBJECT
@@ -86,7 +80,7 @@ private slots:
 	void sendDeactivateDevice();
 
 private:
-	DeactivationTimeContent *content;
+	DeactivationTime *content;
 };
 
 #endif // LOAD_MANAGEMENT_H
