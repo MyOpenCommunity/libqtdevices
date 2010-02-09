@@ -43,6 +43,7 @@ class LoadDataPage : public Page
 {
 Q_OBJECT
 public:
+	typedef LoadDataContent ContentType;
 	// TODO: add LoadManagement device
 	LoadDataPage(const QDomNode &config_node);
 
@@ -63,6 +64,7 @@ class DeactivationTimePage : public Page
 {
 Q_OBJECT
 public:
+	typedef DeactivationTimeContent ContentType;
 	DeactivationTimePage(const QDomNode &config_node);
 
 private slots:

@@ -26,6 +26,16 @@ namespace
 		priority = priority.mid(1);
 		return priority + ". " + descr;
 	}
+
+	QWidget *buildTitle(const QString &title)
+	{
+		QWidget *top = new QWidget;
+		QLabel *page_title = new QLabel(title);
+		page_title->setFont(bt_global::font->get(FontManager::TEXT));
+		QHBoxLayout *top_l = new QHBoxLayout(top);
+		top_l->addWidget(page_title, 1, Qt::AlignCenter);
+		return top;
+	}
 }
 LoadManagement::LoadManagement(const QDomNode &config_node) :
 	BannerPage(0)
@@ -121,22 +131,12 @@ void LoadDataContent::currentConsumptionChanged(int new_value)
 
 LoadDataPage::LoadDataPage(const QDomNode &config_node)
 {
-	// TODO: this should be ported when merging into master
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	content = new LoadDataContent;
-
-	QLabel *page_title = new QLabel(getDescriptionWithPriority(config_node));
-	page_title->setFont(bt_global::font->get(FontManager::TEXT));
-
+	QWidget *top = buildTitle(getDescriptionWithPriority(config_node));
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
-	QVBoxLayout *main = new QVBoxLayout(this);
-	main->setContentsMargins(0, 5, 0, 10);
-	main->setSpacing(0);
-	main->addWidget(page_title, 0, Qt::AlignHCenter);
-	main->addWidget(content, 1);
-	main->addWidget(nav_bar);
+	buildPage(new LoadDataContent, nav_bar, "", 0, top);
 }
 
 
@@ -155,10 +155,8 @@ DeactivationTimeContent::DeactivationTimeContent()
 DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	content = new DeactivationTimeContent;
 
-	QLabel *page_title = new QLabel(getDescriptionWithPriority(config_node));
-	page_title->setFont(bt_global::font->get(FontManager::TEXT));
+	QWidget *top = buildTitle(getDescriptionWithPriority(config_node));
 
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
 	nav_bar->displayScrollButtons(false);
@@ -167,12 +165,7 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node)
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(sendDeactivateDevice()));
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
 
-	QVBoxLayout *main = new QVBoxLayout(this);
-	main->setContentsMargins(0, 5, 0, 10);
-	main->setSpacing(0);
-	main->addWidget(page_title, 0, Qt::AlignHCenter);
-	main->addWidget(content, 1);
-	main->addWidget(nav_bar);
+	buildPage(new DeactivationTimeContent, nav_bar, "", 0, top);
 }
 
 void DeactivationTimePage::sendDeactivateDevice()
