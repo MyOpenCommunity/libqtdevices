@@ -114,21 +114,26 @@ ConfirmationPage::ConfirmationPage(const QString &text)
 
 LoadDataContent::LoadDataContent()
 {
+	const int FIRST_RESET = 1;
+	const int SECOND_RESET = 2;
+
 	current_consumption = new QLabel;
 	current_consumption->setText("Current consumption");
 	current_consumption->setFont(bt_global::font->get(FontManager::SUBTITLE));
 
-
 	BannSinglePuls *first_period = new BannSinglePuls(0);
 	first_period->initBanner(bt_global::skin->getImage("ok"), bt_global::skin->getImage("empty_background"), "data/ora del reset");
 	first_period->setCentralText("Total consumption 1");
-	connect(first_period, SIGNAL(rightClick()), SIGNAL(firstReset()));
+	connect(first_period, SIGNAL(rightClick()), &mapper, SLOT(map()));
+	mapper.setMapping(first_period, FIRST_RESET);
 
 	BannSinglePuls *second_period = new BannSinglePuls(0);
 	second_period->initBanner(bt_global::skin->getImage("ok"), bt_global::skin->getImage("empty_background"), "data/ora del reset");
 	second_period->setCentralText("Total consumption 2");
-	connect(second_period, SIGNAL(rightClick()), SIGNAL(secondReset()));
+	connect(second_period, SIGNAL(rightClick()), &mapper, SLOT(map()));
+	mapper.setMapping(second_period, SECOND_RESET);
 
+	connect(&mapper, SIGNAL(mapped(int)), SIGNAL(resetActuator(int)));
 
 	QVBoxLayout *main = new QVBoxLayout(this);
 	main->setContentsMargins(0, 0, 0, 0);
@@ -146,7 +151,6 @@ void LoadDataContent::currentConsumptionChanged(int new_value)
 
 LoadDataPage::LoadDataPage(const QDomNode &config_node)
 {
-	// TODO: this should be ported when merging into master
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	content = new LoadDataContent;
 
@@ -154,8 +158,13 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node)
 	page_title->setFont(bt_global::font->get(FontManager::TEXT));
 
 	ConfirmationPage *confirm = new ConfirmationPage(tr("Are you sure to delete all consumption data?"));
-	connect(content, SIGNAL(firstReset()), confirm, SLOT(showPage()));
+	// show pages correctly
+	connect(content, SIGNAL(resetActuator(int)), confirm, SLOT(showPage()));
 	connect(confirm, SIGNAL(Closed()), SLOT(showPage()));
+	// these connects handle the logic
+	connect(content, SIGNAL(resetActuator(int)), SLOT(resetRequested(int)));
+	connect(confirm, SIGNAL(accept()), SLOT(reset()));
+	reset_number = 0;
 
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 	nav_bar->displayScrollButtons(false);
@@ -166,6 +175,17 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node)
 	main->addWidget(page_title, 0, Qt::AlignHCenter);
 	main->addWidget(content, 1);
 	main->addWidget(nav_bar);
+}
+
+void LoadDataPage::resetRequested(int which)
+{
+	reset_number = which;
+}
+
+void LoadDataPage::reset()
+{
+	// TODO: send reset frame with correct reset_number
+	qDebug() << "Sending reset number: " << reset_number;
 }
 
 

@@ -3,6 +3,8 @@
 
 #include "page.h"
 
+#include <QSignalMapper>
+
 class QDomNode;
 class banner;
 class QLabel;
@@ -43,11 +45,10 @@ public slots:
 
 private:
 	QLabel *current_consumption;
+	QSignalMapper mapper;
 
 signals:
-	// TODO: is this interface right?
-	void firstReset();
-	void secondReset();
+	void resetActuator(int);
 };
 
 class LoadDataPage : public Page
@@ -59,6 +60,11 @@ public:
 
 private:
 	LoadDataContent *content;
+	int reset_number;
+
+private slots:
+	void resetRequested(int which);
+	void reset();
 };
 
 
