@@ -101,6 +101,7 @@ public:
 	 * \return Current second.
 	 */
 	int second() const;
+
 private:
 	// used by constructors
 	void init(int h, int m, int s);
@@ -121,5 +122,8 @@ inline bool operator !=(const BtTime &f, const BtTime &s)
 {
 	return !(f == s);
 }
+
+QString formatTime(const BtTime &t);
+
 
 #endif //BTTIME_H
