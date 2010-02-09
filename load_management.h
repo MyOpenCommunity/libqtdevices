@@ -3,6 +3,7 @@
 
 #include "page.h"
 #include "bttime.h"
+#include "energy_rates.h" // EnergyRate
 
 #include <QSignalMapper>
 #include <QDate>
@@ -42,11 +43,11 @@ class LoadDataContent : public QWidget
 {
 Q_OBJECT
 public:
-	LoadDataContent();
+	LoadDataContent(int rate_id = -1);
 	/**
 	 * Set text on consumption label
 	 */
-	void setConsumptionText(const QString &text);
+	void setConsumptionValue(int new_value);
 
 	/**
 	 * Update time frame for the given period.
@@ -60,12 +61,19 @@ public:
 	 *
 	 * \param period Extracted from frame
 	 */
-	void updatePeriodValue(int period, const QString &text);
+	void updatePeriodValue(int period, int new_value);
 
 private:
+	void updateValues();
 	QLabel *current_consumption;
 	QSignalMapper mapper;
 	Bann2Buttons *first_period, *second_period;
+	int first_period_value, second_period_value, current_value;
+	int rate_id;
+	EnergyRate rate;
+
+private slots:
+	void rateChanged(int id);
 
 signals:
 	void resetActuator(int);

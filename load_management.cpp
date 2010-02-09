@@ -126,7 +126,7 @@ ConfirmationPage::ConfirmationPage(const QString &text)
 }
 
 
-LoadDataContent::LoadDataContent()
+LoadDataContent::LoadDataContent(int _rate_id)
 {
 	const int FIRST_RESET = 1;
 	const int SECOND_RESET = 2;
@@ -155,6 +155,10 @@ LoadDataContent::LoadDataContent()
 	main->addWidget(current_consumption, 0, Qt::AlignHCenter);
 	main->addWidget(first_period);
 	main->addWidget(second_period);
+
+	rate_id = _rate_id;
+	rate = EnergyRates::energy_rates.getRate(rate_id);
+	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
 }
 
 void LoadDataContent::updatePeriodDate(int period, QDate date, BtTime time)
@@ -172,24 +176,45 @@ void LoadDataContent::updatePeriodDate(int period, QDate date, BtTime time)
 		qDebug() << "LoadDataContent::updatePeriodDate: Invalid period";
 }
 
-void LoadDataContent::updatePeriodValue(int period, const QString &text)
+void LoadDataContent::updatePeriodValue(int period, int new_value)
 {
 	if (period == 1)
 	{
-		first_period->setCentralText(text);
+		first_period_value = new_value;
 	}
 	else if (period == 2)
 	{
-		second_period->setCentralText(text);
+		second_period_value = new_value;
 	}
 	else
 		qDebug() << "LoadDataContent::updatePeriodValue: Invalid period";
+	updateValues();
 }
 
-void LoadDataContent::setConsumptionText(const QString &text)
+void LoadDataContent::setConsumptionValue(int new_value)
 {
-	current_consumption->setText(text);
+	current_value = new_value;
+	updateValues();
 }
+
+void LoadDataContent::rateChanged(int id)
+{
+	if (id == rate_id)
+	{
+		rate = EnergyRates::energy_rates.getRate(id);
+		updateValues();
+	}
+}
+
+void LoadDataContent::updateValues()
+{
+	// TODO: update all values
+	// TODO: do conversions
+}
+
+// TODO: update banner values. These are the steps
+// - current and total consumption: convert using convertToRawData(), with ELECTRICITY_CURRENT as parameter
+// - create the text for the label, use the precision specified in conf file
 
 
 LoadDataPage::LoadDataPage(const QDomNode &config_node)
@@ -236,6 +261,7 @@ void LoadDataPage::reset()
 	// TODO: send reset frame with correct reset_number
 	qDebug() << "Sending reset number: " << reset_number;
 }
+
 
 
 DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node)
