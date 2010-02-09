@@ -25,6 +25,7 @@
 #include <QDomNode>
 #include <QLCDNumber>
 #include <QMap>
+#include <QDate>
 
 class device;
 class thermal_regulator;

@@ -11,8 +11,9 @@
 #ifndef ACTUATORS_H
 #define ACTUATORS_H
 
-#include "bann2_buttons.h" // bannOnOff
-#include "bann1_button.h" // bannPuls
+#include "bann2_buttons.h" // BannOnOffState
+#include "bann1_button.h"  // BannSinglePuls
+#include "device.h"        // StatusList
 
 class device;
 class device_status;

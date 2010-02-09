@@ -7,6 +7,7 @@
 #include "bann3_buttons.h" // bann3But
 #include "bann4_buttons.h" // bann4But, bann4tasLab
 #include "device_status.h"
+#include "device.h"        // StatusList
 
 #include <QObject>
 #include <QString>

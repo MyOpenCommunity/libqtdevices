@@ -12,7 +12,6 @@
 #define BANN1_BUTTON_H
 
 #include "banner.h"
-#include "energy_device.h"
 
 #include <QList>
 #include <QPair>

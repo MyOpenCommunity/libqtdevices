@@ -5,6 +5,7 @@
 #include "bann2_buttons.h" // bannOnOff, bannOnOff2scr
 #include "bann1_button.h" // bannOn2scr
 #include "bttime.h" // BtTime
+#include "device.h" // StatusList
 
 #include <QWidget>
 #include <QString>
