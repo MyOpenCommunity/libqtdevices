@@ -179,9 +179,51 @@ BannLoadWithCU::BannLoadWithCU(const QString &descr, Type t) : Bann3ButtonsLabel
 	QString right = t == ADVANCED_MODE ? bt_global::skin->getImage("info") : QString();
 	initBanner(bt_global::skin->getImage("forced"), bt_global::skin->getImage("not_forced"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("load"), right, ENABLED, NOT_FORCED, descr);
+	// TODO: this should be changed on mode change too
+	connect(left_button, SIGNAL(clicked()), SIGNAL(deactivateDevice()));
 }
 
 void BannLoadWithCU::connectRightButton(Page *p)
 {
 	connectButtonToPage(right_button, p);
 }
+
+
+DeactivationTime::DeactivationTime(const BtTime &start_time) :
+	current_time(start_time)
+{
+	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), formatTime(current_time), FontManager::SUBTITLE);
+	right_button->setAutoRepeat(true);
+	left_button->setAutoRepeat(true);
+	connect(right_button, SIGNAL(clicked()), SLOT(plusClicked()));
+	connect(left_button, SIGNAL(clicked()), SLOT(minusClicked()));
+}
+
+BtTime DeactivationTime::currentTime() const
+{
+	return current_time;
+}
+
+void DeactivationTime::setCurrentTime(const BtTime &t)
+{
+	current_time = t;
+}
+
+void DeactivationTime::plusClicked()
+{
+	current_time = current_time.addMinute(1);
+	updateDisplay();
+}
+
+void DeactivationTime::minusClicked()
+{
+	current_time = current_time.addMinute(-1);
+	updateDisplay();
+}
+
+void DeactivationTime::updateDisplay()
+{
+	setCentralText(formatTime(current_time));
+}
+
+

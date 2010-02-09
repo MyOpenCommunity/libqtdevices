@@ -5,6 +5,7 @@
 #include "bann2_buttons.h" // Bann2Buttons
 #include "bann3_buttons.h" // Bann3ButtonsLabel
 #include "energy_rates.h"  // EnergyRate
+#include "bttime.h" // BtTime
 
 struct EnergyRate;
 class EnergyDevice;
@@ -95,6 +96,30 @@ public:
 	};
 	BannLoadWithCU(const QString &descr, Type t);
 	void connectRightButton(Page *p);
+
+signals:
+	// this should be emitted only if the device is active
+	void deactivateDevice();
+};
+
+
+
+class DeactivationTime : public Bann2Buttons
+{
+Q_OBJECT
+public:
+	DeactivationTime(const BtTime &start_time);
+	// TODO: this interface supports user cancel. If it's not needed, just use a timeChanged() signal
+	BtTime currentTime() const;
+	void setCurrentTime(const BtTime &t);
+
+private:
+	void updateDisplay();
+	BtTime current_time;
+
+private slots:
+	void plusClicked();
+	void minusClicked();
 };
 
 #endif // BANN_ENERGY_H
