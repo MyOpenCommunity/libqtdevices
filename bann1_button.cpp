@@ -248,26 +248,6 @@ bannBut2Icon::bannBut2Icon(QWidget *parent) : banner(parent)
 }
 
 
-bannTextOnImage::bannTextOnImage(QWidget *parent, const QString &text, QString bg_image, QString fwd_image) : banner(parent)
-{
-	label = new TextOnImageLabel(this, text);
-	QString img = bt_global::skin->getImage(bg_image);
-	QPixmap *p = bt_global::icons_cache.getIcon(img);
-	label->setBackgroundImage(img);
-	int left = banner_width - BUT_DIM - p->width();
-	label->setGeometry(left, 0,  p->width() ,BANPULS_ICON_DIM_Y);
-	addItem(BUT1, banner_width-BUT_DIM, 0, BUT_DIM, BUT_DIM);
-	addItem(TEXT, left, BUT_DIM, p->width() , banner_height - BUT_DIM);
-	SetIcons(bt_global::skin->getImage(fwd_image), 1);
-}
-
-void bannTextOnImage::setInternalText(const QString &text)
-{
-	label->setInternalText(text);
-}
-
-
-
 BannStates::BannStates(QWidget *parent) : BannerNew(parent)
 {
 	banner_height = BUT_DIM;
