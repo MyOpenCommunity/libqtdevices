@@ -36,6 +36,50 @@ protected:
 };
 
 
+/**
+ * Two buttons on the sides + description in the center.
+ * Either button can be removed by giving an empty string as the icon parameter to initBanner()
+ * Nicer replacement for bann2but, will replace also bannOnDx, bannOnSx
+ */
+class Bann2Buttons : public Bann2LinkedPages
+{
+Q_OBJECT
+public:
+	Bann2Buttons(QWidget *parent = 0);
+
+	/**
+	 * \param left icon path for the left button
+	 * \param right icon path for the right button
+	 * \param banner_text text of the label between the two buttons
+	 * \param banner_description text of the label below the banner; if empty, the label is deleted
+	 */
+	void initBanner(const QString &left, const QString &right, const QString &banner_text,
+		FontManager::Type text_font = FontManager::TEXT, const QString &banner_description = QString(),
+		FontManager::Type description_font = FontManager::TEXT);
+
+	/**
+	 * \param left icon path for the left button
+	 * \param center icon path for the banner background
+	 * \param right icon path for the right button
+	 * \param description text of the label below the banner; if empty, the label is deleted
+	 */
+	void initBanner(const QString &left, const QString &center, const QString &right, const QString &description,
+			FontManager::Type description_font = FontManager::TEXT);
+
+	void setCentralText(const QString &t);
+	void setDescriptionText(const QString &t);
+	void setBackgroundImage(const QString &i);
+
+signals:
+	// this is here for energy_view.cpp _ONLY_, do not use in new code
+	void rightClicked();
+
+private:
+	TextOnImageLabel *center_icon;
+	QLabel *description;
+};
+
+
 /*
  * This class is a new style banner which creates and has handles to its own buttons
  * and labels.
@@ -51,7 +95,7 @@ protected:
  * Buttons are created protected so that logic banners can manipulate them directly, thus
  * avoiding BtButton interface duplication. All other elements are created private.
  */
-class BannOnOffNew : public Bann2LinkedPages
+class BannOnOffNew : public Bann2Buttons
 {
 Q_OBJECT
 public:
@@ -61,10 +105,6 @@ public:
 protected:
 	void setBannerText(const QString &str);
 	void setInternalText(const QString &text);
-
-	TextOnImageLabel *center_icon;
-	QLabel *text;
-	QString center;
 };
 
 
@@ -85,34 +125,9 @@ public:
 	void initBanner(const QString &left, const QString &center, const QString &right,
 		States init_state, const QString &banner_text);
 	void setState(States new_state);
-};
-
-/**
- * Two buttons on the sides + description in the center.
- * Either button can be removed by giving an empty string as the icon parameter to initBanner()
- * Nicer replacement for bann2but, will replace also bannOnDx, bannOnSx
- */
-class Bann2Buttons : public Bann2LinkedPages
-{
-Q_OBJECT
-protected:
-	Bann2Buttons(QWidget *parent = 0);
-
-	/**
-	 * \param left icon path for the left button
-	 * \param right icon path for the right button
-	 * \param banner_text text of the label between the two buttons
-	 * \param banner_description text of the label below the banner; if empty, the label is deleted
-	 */
-	void initBanner(const QString &left, const QString &right, const QString &banner_text,
-		FontManager::Type text_font = FontManager::TEXT, const QString &banner_description = QString(),
-		FontManager::Type description_font = FontManager::TEXT);
-
-	void setCentralText(const QString &t);
-	void setDescriptionText(const QString &t);
 
 private:
-	QLabel *text, *description;
+	QString center;
 };
 
 

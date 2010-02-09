@@ -38,55 +38,24 @@ void Bann2LinkedPages::connectRightButton(Page *p)
 
 
 BannOnOffNew::BannOnOffNew(QWidget *parent) :
-	Bann2LinkedPages(parent)
+	Bann2Buttons(parent)
 {
-	left_button = new BtButton;
-	right_button = new BtButton;
-	center_icon = new TextOnImageLabel;
-
-	QGridLayout *grid = new QGridLayout;
-	grid->setContentsMargins(0, 0, 0, 0);
-	grid->setSpacing(0);
-	grid->addWidget(left_button, 0, 0);
-	grid->setColumnStretch(0, 1);
-	grid->addWidget(center_icon, 0, 1, Qt::AlignCenter);
-	grid->addWidget(right_button, 0, 2);
-	grid->setColumnStretch(2, 1);
-
-	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
-	QVBoxLayout *vbox = new QVBoxLayout(this);
-	vbox->setContentsMargins(0, 0, 0, 0);
-	vbox->setSpacing(0);
-	vbox->addLayout(grid);
-	vbox->addWidget(text);
 }
 
 void BannOnOffNew::initBanner(const QString &l, const QString &c, const QString &r,
-	const QString &banner_text)
+			      const QString &banner_text)
 {
-	center = c;
-
-	initButton(left_button, l);
-	initButton(right_button, r);
-	center_icon->setBackgroundImage(c);
-	if (banner_text.isEmpty())
-	{
-		text->hide();
-		text->disconnect();
-		text->deleteLater();
-	}
-	else
-		text->setText(banner_text);
+	Bann2Buttons::initBanner(l, c, r, banner_text);
 }
 
 void BannOnOffNew::setBannerText(const QString &str)
 {
-	text->setText(str);
+	Bann2Buttons::setDescriptionText(str);
 }
 
 void BannOnOffNew::setInternalText(const QString &text)
 {
-	center_icon->setInternalText(text);
+	Bann2Buttons::setCentralText(text);
 }
 
 
@@ -104,7 +73,7 @@ void BannOnOffState::initBanner(const QString &left, const QString &center, cons
 
 void BannOnOffState::setState(States new_state)
 {
-	center_icon->setBackgroundImage(getBostikName(center, new_state == ON ? "on" : "off"));
+	Bann2Buttons::setBackgroundImage(getBostikName(center, new_state == ON ? "on" : "off"));
 }
 
 
@@ -113,7 +82,7 @@ Bann2Buttons::Bann2Buttons(QWidget *parent) :
 {
 	left_button = new BtButton;
 	right_button = new BtButton;
-	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::TEXT));
+	center_icon = new TextOnImageLabel;
 	description = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::SMALLTEXT));
 
 	QGridLayout *l = new QGridLayout(this);
@@ -121,11 +90,13 @@ Bann2Buttons::Bann2Buttons(QWidget *parent) :
 	l->setSpacing(0);
 	l->addWidget(left_button, 0, 0);
 	l->setColumnStretch(0, 1);
-	l->addWidget(text, 0, 1);
+	l->addWidget(center_icon, 0, 1);
 	l->setColumnStretch(1, 2);
 	l->addWidget(right_button, 0, 2);
 	l->setColumnStretch(2, 1);
 	l->addWidget(description, 1, 1);
+
+	connect(right_button, SIGNAL(clicked()), SIGNAL(rightClicked()));
 }
 
 void Bann2Buttons::initBanner(const QString &left, const QString &right, const QString &banner_text,
@@ -133,17 +104,37 @@ void Bann2Buttons::initBanner(const QString &left, const QString &right, const Q
 {
 	initButton(left_button, left);
 	initButton(right_button, right);
-	text->setText(banner_text);
+	center_icon->setText(banner_text);
 	QFont central_font = bt_global::font->get(text_font);
 
-	text->setFont(central_font);
+	center_icon->setFont(central_font);
 
 	initLabel(description, banner_description, bt_global::font->get(description_font));
 }
 
+void Bann2Buttons::initBanner(const QString &left, const QString &center, const QString &right, const QString &descr,
+			      FontManager::Type description_font)
+{
+	initButton(left_button, left);
+	initButton(right_button, right);
+	center_icon->setBackgroundImage(center);
+
+	initLabel(description, descr, bt_global::font->get(description_font));
+}
+
 void Bann2Buttons::setCentralText(const QString &t)
 {
-	text->setText(t);
+	center_icon->setInternalText(t);
+}
+
+void Bann2Buttons::setDescriptionText(const QString &t)
+{
+	description->setText(t);
+}
+
+void Bann2Buttons::setBackgroundImage(const QString &path)
+{
+	center_icon->setBackgroundImage(path);
 }
 
 
