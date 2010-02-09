@@ -67,6 +67,13 @@ namespace
 		return w;
 	}
 
+	void addWidgetToLayout(QWidget *parent, QWidget *child)
+	{
+		QVBoxLayout *l = static_cast<QVBoxLayout *>(parent->layout());
+
+		l->addWidget(child, 1);
+	}
+
 	enum EnergyViewPage
 	{
 		DAILY_PAGE = 0,
@@ -650,8 +657,8 @@ QWidget *EnergyView::buildBannerWidget()
 	current_banner = new BannCurrentEnergy(tr("Current"), dev);
 
 	QWidget *daily_widget = createWidgetWithVBoxLayout();
-	daily_widget->layout()->addWidget(cumulative_day_banner);
-	daily_widget->layout()->addWidget(current_banner);
+	addWidgetToLayout(daily_widget, cumulative_day_banner);
+	addWidgetToLayout(daily_widget, current_banner);
 
 	// Monthly page
 	cumulative_month_banner = getBanner(this, cumulative_text);
@@ -663,8 +670,8 @@ QWidget *EnergyView::buildBannerWidget()
 	mapper->setMapping(daily_av_banner, EnergyDevice::DAILY_AVERAGE);
 
 	QWidget *monthly_widget = createWidgetWithVBoxLayout();
-	monthly_widget->layout()->addWidget(cumulative_month_banner);
-	monthly_widget->layout()->addWidget(daily_av_banner);
+	addWidgetToLayout(monthly_widget, cumulative_month_banner);
+	addWidgetToLayout(monthly_widget, daily_av_banner);
 
 	// Yearly page
 	cumulative_year_banner = getBanner(this, cumulative_text);
@@ -672,7 +679,8 @@ QWidget *EnergyView::buildBannerWidget()
 	mapper->setMapping(cumulative_year_banner, EnergyDevice::CUMULATIVE_YEAR);
 
 	QWidget *yearly_widget = createWidgetWithVBoxLayout();
-	yearly_widget->layout()->addWidget(cumulative_year_banner);
+	addWidgetToLayout(yearly_widget, cumulative_year_banner);
+	static_cast<QVBoxLayout *>(yearly_widget->layout())->addStretch(1);
 
 	QStackedWidget *w = new QStackedWidget;
 	w->insertWidget(DAILY_PAGE, daily_widget);
