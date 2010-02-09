@@ -109,8 +109,13 @@ public slots:
 
 class DeviceCondition : public QObject
 {
-friend class ScenEvoDeviceCondition;
 Q_OBJECT
+public:
+	//! Returns true when actual condition is satisfied
+	bool isTrue();
+	//! Translates current trigger condition to open
+	virtual void get_condition_value(QString&);
+
 public slots:
 	//! Invoked when UP button is pressed
 	virtual void Up();
@@ -118,6 +123,10 @@ public slots:
 	virtual void Down();
 	//! Invoked when OK button is pressed
 	virtual void OK();
+	//! Resets condition
+	virtual void reset();
+	//! Inits condition
+	virtual void inizializza();
 
 signals:
 	//! Emitted when the condition on device is satisfied
@@ -140,8 +149,6 @@ protected:
 	void set_condition_value(int);
 	//! Translates trigger condition from open encoding to int and sets val
 	virtual void set_condition_value(QString);
-	//! Translates current trigger condition to open
-	virtual void get_condition_value(QString&);
 	//! Gets condition value
 	virtual int get_condition_value();
 	//! Draws frame
@@ -151,13 +158,6 @@ protected:
 	int get_current_value();
 	//! Sets current value for condition
 	int set_current_value(int);
-	//! Inits condition
-	virtual void inizializza();
-	//! Resets condition
-	virtual void reset();
-
-	//! Returns true when actual condition is satisfied
-	bool isTrue();
 
 	//! True when condition is satisfied
 	bool satisfied;
@@ -177,17 +177,15 @@ Q_OBJECT
 public:
 	//! Constructor
 	DeviceConditionLight(DeviceConditionDisplay* condition_display, QString trigger, QString where);
-	//! Draws frame
+	//! Translates current trigger condition to open
+	virtual void get_condition_value(QString&);
+	virtual void inizializza();
+
+protected:
 	virtual void Draw();
-	//! Returns max value
 	virtual int get_max();
 	//! Translates trigger condition from open encoding to int and sets val
 	virtual void set_condition_value(QString);
-	//! Translates current trigger condition to open
-	virtual void get_condition_value(QString&);
-
-protected:
-	virtual void inizializza();
 
 private slots:
 	void status_changed(const StatusList &sl);
@@ -201,14 +199,23 @@ class DeviceConditionDimming : public DeviceCondition
 {
 Q_OBJECT
 public:
-	//! Constructor
 	DeviceConditionDimming(DeviceConditionDisplay* cond_display, QString trigger, QString where);
-	//! Returns min value
-	int get_min();
-	//! Returns max value
+	//! Translates current trigger condition to open
+	virtual void get_condition_value(QString&);
+	virtual void inizializza();
+
+public slots:
+	virtual void OK();
+	virtual void Up();
+	virtual void Down();
+	virtual void reset();
+
+protected:
+	virtual int get_min();
 	virtual int get_max();
-	//! Returns step
-	int get_step();
+	virtual int get_step();
+	virtual void Draw();
+
 	void set_condition_value_min(int);
 	int get_condition_value_min();
 	void set_condition_value_max(int);
@@ -218,23 +225,9 @@ public:
 	int get_current_value_max();
 	void set_current_value_max(int max);
 	QString get_current_value();
-	void reset();
-	//! Draws condition
-	virtual void Draw();
+
 	//! Translates trigger condition from open encoding to int and sets val
 	virtual void set_condition_value(QString);
-	//! Translates current trigger condition to open
-	virtual void get_condition_value(QString&);
-
-public slots:
-	void OK();
-	//! Invoked when UP button is pressed
-	void Up();
-	//! Invoked when DOWN button is pressed
-	void Down();
-
-protected:
-	virtual void inizializza();
 
 private slots:
 	void status_changed(const StatusList &sl);
@@ -254,6 +247,17 @@ Q_OBJECT
 public:
 	//! Constructor
 	DeviceConditionDimming100(DeviceConditionDisplay* cond_display, QString trigger, QString where);
+	//! Translates current trigger condition to open
+	virtual void get_condition_value(QString&);
+	virtual void inizializza();
+
+public slots:
+	virtual void OK();
+	virtual void Up();
+	virtual void Down();
+	virtual void reset();
+
+protected:
 	//! Returns min value
 	int get_min();
 	//! Returns max value
@@ -269,23 +273,10 @@ public:
 	int get_current_value_max();
 	void set_current_value_max(int max);
 	QString get_current_value();
-	void reset();
-	//! Draws condition
-	virtual void Draw();
+
 	//! Translates trigger condition from open encoding to int and sets val
 	virtual void set_condition_value(QString);
-	//! Translates current trigger condition to open
-	virtual void get_condition_value(QString&);
-
-public slots:
-	void OK();
-	//! Invoked when UP button is pressed
-	void Up();
-	//! Invoked when DOWN button is pressed
-	void Down();
-
-protected:
-	virtual void inizializza();
+	virtual void Draw();
 
 private slots:
 	void status_changed(const StatusList &sl);
@@ -305,10 +296,17 @@ Q_OBJECT
 public:
 	//! Constructor
 	DeviceConditionVolume(DeviceConditionDisplay* cond_display, QString trigger, QString where);
+	void get_condition_value(QString& out);
+	virtual void inizializza();
 
-	//! Returns min value
+public slots:
+	virtual void OK();
+	virtual void Up();
+	virtual void Down();
+	virtual void reset();
+
+protected:
 	int get_min();
-	//! Returns max value
 	virtual int get_max();
 	void set_condition_value_min(int);
 	int get_condition_value_min();
@@ -318,25 +316,14 @@ public:
 	void set_current_value_min(int min);
 	int get_current_value_max();
 	void set_current_value_max(int max);
-	void get_condition_value(QString& out);
-	void reset();
-	//! Draws condition
+
 	virtual void Draw();
 	//! Translates trigger condition from open encoding to int and sets val
 	virtual void set_condition_value(QString);
 
-
-public slots:
-	void OK();
+private slots:
 	//! Invoked when status changes
 	void status_changed(QList<device_status*>);
-	//! Invoked when UP button is pressed
-	void Up();
-	//! Invoked when DOWN button is pressed
-	void Down();
-
-protected:
-	virtual void inizializza();
 
 private:
 	int min_val;
@@ -351,25 +338,16 @@ class DeviceConditionTemperature : public DeviceCondition
 {
 Q_OBJECT
 public:
-	//! Constructor
 	DeviceConditionTemperature(DeviceConditionDisplay* cond_display, QString trigger, QString where, bool external = false);
-	//! Returns min value
-	int get_min();
-	//! Returns max value
-	virtual int get_max();
-	//! Returns step
-	int get_step();
-
-	//! Draws condition
-	virtual void Draw();
-
-	//! Returns value
-	int intValue();
-	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
+	virtual void inizializza();
 
 protected:
-	virtual void inizializza();
+	int get_min();
+	virtual int get_max();
+	int get_step();
+	int intValue();
+	virtual void Draw();
 
 private slots:
 	//! Invoked when status changes
@@ -390,15 +368,16 @@ class DeviceConditionAux : public DeviceCondition
 Q_OBJECT
 public:
 	DeviceConditionAux(DeviceConditionDisplay* cond_display, QString trigger, QString where);
-	virtual void Draw();
-	virtual int get_max();
-	virtual void set_condition_value(QString);
+	virtual void inizializza();
 
 public slots:
 	void OK();
 
 protected:
-	virtual void inizializza();
+	virtual void Draw();
+	virtual int get_max();
+	virtual void set_condition_value(QString);
+
 
 private slots:
 	// TODO: use a more generic approach!
