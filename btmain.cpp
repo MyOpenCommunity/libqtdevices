@@ -616,20 +616,27 @@ void BtMain::gesScrSav()
 				if (!screensaver)
 					screensaver = getScreenSaver(target_screensaver);
 
-				Page *target = pagDefault ? pagDefault : Home;
+				// TODO move the code until the end of the block to PageStack and/or ScreenSaver
 				Page *prev_page = page_container->currentPage();
 
 				page_container->blockTransitions(true);
-				if (target == pagDefault)
+				if (pagDefault)
+				{
 					unrollPages();
-
-				target->showPage();
+					pagDefault->showPage();
+				}
+				else
+				{
+					Home->showPage();
+					// this makes the screen saver go back to prev_page
+					// when exited
+					bt_global::page_stack.currentPageChanged(prev_page);
+				}
 
 				window_container->homeWindow()->showWindow();
 				page_container->blockTransitions(false);
 				qDebug() << "start screensaver:" << target_screensaver << "on:" << page_container->currentPage();
 				screensaver->start(window_container->homeWindow());
-				prev_page = target;
 				emit startscreensaver(prev_page);
 				bt_global::display.setState(DISPLAY_SCREENSAVER);
 			}
