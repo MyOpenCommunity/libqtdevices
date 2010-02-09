@@ -20,6 +20,17 @@ private:
 };
 
 
+class ConfirmationPage : public Page
+{
+Q_OBJECT
+public:
+	ConfirmationPage(const QString &text);
+
+signals:
+	void accept();
+	void cancel();
+};
+
 
 class LoadDataContent : public QWidget
 {

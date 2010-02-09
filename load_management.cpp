@@ -91,6 +91,26 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 }
 
 
+ConfirmationPage::ConfirmationPage(const QString &text)
+{
+	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(cancel()));
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(accept()));
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
+	nav_bar->displayScrollButtons(false);
+
+	QLabel *content = new QLabel(text);
+	content->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	content->setWordWrap(true);
+
+	QVBoxLayout *main = new QVBoxLayout(this);
+	main->setContentsMargins(0, 5, 0, 10);
+	main->setSpacing(0);
+	main->addWidget(content, 1);
+	main->addWidget(nav_bar);
+}
+
 
 LoadDataContent::LoadDataContent()
 {
@@ -98,14 +118,18 @@ LoadDataContent::LoadDataContent()
 	current_consumption->setText("Current consumption");
 	current_consumption->setFont(bt_global::font->get(FontManager::SUBTITLE));
 
+
 	BannSinglePuls *first_period = new BannSinglePuls(0);
 	first_period->initBanner(bt_global::skin->getImage("ok"), bt_global::skin->getImage("empty_background"), "data/ora del reset");
 	first_period->setCentralText("Total consumption 1");
 	connect(first_period, SIGNAL(rightClick()), SIGNAL(firstReset()));
+
 	BannSinglePuls *second_period = new BannSinglePuls(0);
 	second_period->initBanner(bt_global::skin->getImage("ok"), bt_global::skin->getImage("empty_background"), "data/ora del reset");
 	second_period->setCentralText("Total consumption 2");
 	connect(second_period, SIGNAL(rightClick()), SIGNAL(secondReset()));
+
+
 	QVBoxLayout *main = new QVBoxLayout(this);
 	main->setContentsMargins(0, 0, 0, 0);
 	main->setSpacing(0);
@@ -129,6 +153,10 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node)
 	QLabel *page_title = new QLabel(getDescriptionWithPriority(config_node));
 	page_title->setFont(bt_global::font->get(FontManager::TEXT));
 
+	ConfirmationPage *confirm = new ConfirmationPage(tr("Are you sure to delete all consumption data?"));
+	connect(content, SIGNAL(firstReset()), confirm, SLOT(showPage()));
+	connect(confirm, SIGNAL(Closed()), SLOT(showPage()));
+
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
@@ -139,7 +167,6 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node)
 	main->addWidget(content, 1);
 	main->addWidget(nav_bar);
 }
-
 
 
 DeactivationTimeContent::DeactivationTimeContent()
