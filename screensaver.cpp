@@ -62,7 +62,7 @@ QString ScreenSaver::text;
 
 ScreenSaver::ScreenSaver(int refresh_time)
 {
-	page = 0;
+	window = 0;
 	timer = new QTimer(this);
 	timer->setInterval(refresh_time);
 	connect(timer, SIGNAL(timeout()), SLOT(refresh()));
@@ -73,23 +73,19 @@ void ScreenSaver::start(Window *w)
 	bt_global::page_stack.showScreensaver(this);
 
 	window = w;
-	// TODO maybe we can assume that the Window will always be an HomeWindow
-	//      and page will always be != 0 and remove the checks in btmain.cpp
-	if (HomeWindow *hw = qobject_cast<HomeWindow*>(w))
-		page = hw->currentPage();
 	timer->start();
 }
 
 void ScreenSaver::stop()
 {
-	page = 0;
+	window = 0;
 	timer->stop();
 	emit Closed(); // for PageStack to catch
 }
 
 bool ScreenSaver::isRunning()
 {
-	return page != 0;
+	return window != 0;
 }
 
 void ScreenSaver::initData(const QDomNode &config_node)
