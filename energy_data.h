@@ -2,7 +2,6 @@
 #define ENERGY_DATA_H
 
 #include "page.h" // BannerPage
-#include "bann1_button.h" // bannPuls
 
 #include <QHash>
 #include <QTimer>
