@@ -50,4 +50,26 @@ private:
 	LoadDataContent *content;
 };
 
+
+
+class DeactivationTimeContent : public QWidget
+{
+Q_OBJECT
+public:
+	DeactivationTimeContent();
+};
+
+class DeactivationTimePage : public Page
+{
+Q_OBJECT
+public:
+	DeactivationTimePage(const QDomNode &config_node);
+
+private slots:
+	void sendDeactivateDevice();
+
+private:
+	DeactivationTimeContent *content;
+};
+
 #endif // LOAD_MANAGEMENT_H

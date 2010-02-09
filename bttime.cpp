@@ -14,6 +14,25 @@
 
 #include <QDateTime>
 
+QString formatTime(const BtTime &t)
+{
+	QString str;
+	int h = t.hour();
+	int m = t.minute();
+	int s = t.second();
+	if (h == 0 && m == 0)  // time in secs
+		str = QString("%1''").arg(s);
+	else if (h == 0) // time in mins
+		str = QString("%1'").arg(m);
+	else if (h < 10)   // time in hh:mm
+		str = QString("%1:%2").arg(h).arg(m, 2, 10, QChar('0'));
+	else
+		str = QString("%1h").arg(h);
+	return str;
+}
+
+
+
 // BtTime implementation
 
 BtTime::BtTime()

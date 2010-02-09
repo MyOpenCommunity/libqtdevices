@@ -113,8 +113,6 @@ public slots:
 
 protected:
 	void timerEvent(QTimerEvent *e);
-	void showEvent(QShowEvent *event);
-	void hideEvent(QHideEvent *event);
 
 private:
 	QWidget *buildBannerWidget();

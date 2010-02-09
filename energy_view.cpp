@@ -11,6 +11,7 @@
 #include "bann1_button.h" // bannTextOnImage
 #include "energy_data.h" // EnergyInterface
 #include "energy_rates.h"
+#include "bann_energy.h"
 
 #include <QDebug>
 #include <QLabel>
@@ -377,20 +378,6 @@ void EnergyView::timerEvent(QTimerEvent *e)
 	}
 }
 
-// TODO energy: derive a subclass from bannOnImage and put this logic there,
-//              also remove the logic in setBannerPage
-void EnergyView::showEvent(QShowEvent *e)
-{
-	if (current_banner->isVisible())
-		dev->requestCurrentUpdateStart();
-}
-
-void EnergyView::hideEvent(QHideEvent *e)
-{
-	if (current_banner->isVisible())
-		dev->requestCurrentUpdateStop();
-}
-
 void EnergyView::inizializza()
 {
 	// Ask for the data showed in the default period.
@@ -693,7 +680,7 @@ QWidget *EnergyView::buildBannerWidget()
 	connect(cumulative_day_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
 	mapper->setMapping(cumulative_day_banner, EnergyDevice::CUMULATIVE_DAY);
 
-	current_banner = getBanner(this, tr("Current"));
+	current_banner = new BannCurrentEnergy(tr("Current"), dev);
 	current_banner->nascondi(BannerOld::BUT1);
 
 	QWidget *daily_widget = createWidgetWithVBoxLayout();
@@ -773,8 +760,6 @@ void EnergyView::setBannerPage(int status, const QDate &selection_date)
 {
 	QStackedWidget *w = static_cast<QStackedWidget*>(widget_container->widget(BANNER_WIDGET));
 
-	bool was_visible = current_banner->isVisible();
-
 	switch (status)
 	{
 	case TimePeriodSelection::DAY:
@@ -787,15 +772,6 @@ void EnergyView::setBannerPage(int status, const QDate &selection_date)
 	case TimePeriodSelection::YEAR:
 		w->setCurrentIndex(YEARLY_PAGE);
 		break;
-	}
-
-	bool is_visible = current_banner->isVisible();
-	if (was_visible != is_visible)
-	{
-		if (is_visible)
-			dev->requestCurrentUpdateStart();
-		else
-			dev->requestCurrentUpdateStop();
 	}
 }
 
