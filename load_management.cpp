@@ -6,7 +6,7 @@
 #include "skinmanager.h" // SkinContext
 #include "fontmanager.h" // FontManager
 #include "navigation_bar.h" //NavigationBar
-#include "bann1_button.h" // BannSinglePuls
+#include "bann2_buttons.h" // Bann2Buttons
 
 #include <QLabel>
 #include <QDebug>
@@ -135,16 +135,16 @@ LoadDataContent::LoadDataContent()
 	current_consumption->setText("Current consumption");
 	current_consumption->setFont(bt_global::font->get(FontManager::SUBTITLE));
 
-	BannSinglePuls *first_period = new BannSinglePuls(0);
-	first_period->initBanner(bt_global::skin->getImage("ok"), bt_global::skin->getImage("empty_background"), "data/ora del reset");
+	first_period = new Bann2Buttons;
+	first_period->initBanner(QString(), bt_global::skin->getImage("empty_background"), bt_global::skin->getImage("ok"), "data/ora del reset");
 	first_period->setCentralText("Total consumption 1");
-	connect(first_period, SIGNAL(rightClick()), &mapper, SLOT(map()));
+	connect(first_period, SIGNAL(rightClicked()), &mapper, SLOT(map()));
 	mapper.setMapping(first_period, FIRST_RESET);
 
-	BannSinglePuls *second_period = new BannSinglePuls(0);
-	second_period->initBanner(bt_global::skin->getImage("ok"), bt_global::skin->getImage("empty_background"), "data/ora del reset");
+	second_period = new Bann2Buttons;
+	second_period->initBanner(QString(), bt_global::skin->getImage("empty_background"), bt_global::skin->getImage("ok"), "data/ora del reset");
 	second_period->setCentralText("Total consumption 2");
-	connect(second_period, SIGNAL(rightClick()), &mapper, SLOT(map()));
+	connect(second_period, SIGNAL(rightClicked()), &mapper, SLOT(map()));
 	mapper.setMapping(second_period, SECOND_RESET);
 
 	connect(&mapper, SIGNAL(mapped(int)), SIGNAL(resetActuator(int)));
@@ -157,9 +157,38 @@ LoadDataContent::LoadDataContent()
 	main->addWidget(second_period);
 }
 
-void LoadDataContent::currentConsumptionChanged(int new_value)
+void LoadDataContent::updatePeriodDate(int period, QDate date, BtTime time)
 {
-	// TODO: to be implemented
+	QString text = date.toString() + " " + time.toString();
+	if (period == 1)
+	{
+		first_period->setDescriptionText(text);
+	}
+	else if (period == 2)
+	{
+		second_period->setDescriptionText(text);
+	}
+	else
+		qDebug() << "LoadDataContent::updatePeriodDate: Invalid period";
+}
+
+void LoadDataContent::updatePeriodValue(int period, const QString &text)
+{
+	if (period == 1)
+	{
+		first_period->setCentralText(text);
+	}
+	else if (period == 2)
+	{
+		second_period->setCentralText(text);
+	}
+	else
+		qDebug() << "LoadDataContent::updatePeriodValue: Invalid period";
+}
+
+void LoadDataContent::setConsumptionText(const QString &text)
+{
+	current_consumption->setText(text);
 }
 
 

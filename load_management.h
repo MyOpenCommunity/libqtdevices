@@ -2,13 +2,16 @@
 #define LOAD_MANAGEMENT_H
 
 #include "page.h"
+#include "bttime.h"
 
 #include <QSignalMapper>
+#include <QDate>
 
 class QDomNode;
 class banner;
 class QLabel;
 class DeactivationTime;
+class Bann2Buttons;
 
 class LoadManagement : public BannerPage
 {
@@ -40,13 +43,29 @@ class LoadDataContent : public QWidget
 Q_OBJECT
 public:
 	LoadDataContent();
+	/**
+	 * Set text on consumption label
+	 */
+	void setConsumptionText(const QString &text);
 
-public slots:
-	void currentConsumptionChanged(int new_value);
+	/**
+	 * Update time frame for the given period.
+	 *
+	 * \param period Extracted from frame
+	 */
+	void updatePeriodDate(int period, QDate date, BtTime time);
+
+	/**
+	 * Update consuption value for the given period.
+	 *
+	 * \param period Extracted from frame
+	 */
+	void updatePeriodValue(int period, const QString &text);
 
 private:
 	QLabel *current_consumption;
 	QSignalMapper mapper;
+	Bann2Buttons *first_period, *second_period;
 
 signals:
 	void resetActuator(int);
