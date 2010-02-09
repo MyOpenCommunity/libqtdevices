@@ -66,6 +66,9 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 			bann->connectRightButton(p);
 			connect(p, SIGNAL(Closed()), bann, SIGNAL(pageClosed()));
 		}
+		Page *d = new DeactivationTimePage(item_node);
+		connect(bann, SIGNAL(deactivateDevice()), d, SLOT(showPage()));
+		connect(d, SIGNAL(Closed()), bann, SIGNAL(pageClosed()));
 
 		b = bann;
 	}
@@ -131,7 +134,48 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node)
 	QVBoxLayout *main = new QVBoxLayout(this);
 	main->setContentsMargins(0, 5, 0, 10);
 	main->setSpacing(0);
-	main->addWidget(page_title, 1, Qt::AlignHCenter);
+	main->addWidget(page_title, 0, Qt::AlignHCenter);
 	main->addWidget(content, 1);
 	main->addWidget(nav_bar);
+}
+
+
+
+DeactivationTimeContent::DeactivationTimeContent()
+{
+	DeactivationTime *t = new DeactivationTime(BtTime(2, 30, 0));
+	QVBoxLayout *main = new QVBoxLayout(this);
+	main->setContentsMargins(0, 0, 0, 0);
+	main->setSpacing(0);
+	main->addWidget(t);
+}
+
+
+
+DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	content = new DeactivationTimeContent;
+
+	QLabel *page_title = new QLabel(getDescriptionWithPriority(config_node));
+	page_title->setFont(bt_global::font->get(FontManager::TEXT));
+
+	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
+	nav_bar->displayScrollButtons(false);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	// TODO: cancel user selection?
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(sendDeactivateDevice()));
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
+
+	QVBoxLayout *main = new QVBoxLayout(this);
+	main->setContentsMargins(0, 5, 0, 10);
+	main->setSpacing(0);
+	main->addWidget(page_title, 0, Qt::AlignHCenter);
+	main->addWidget(content, 1);
+	main->addWidget(nav_bar);
+}
+
+void DeactivationTimePage::sendDeactivateDevice()
+{
+	qDebug() << "Deactivating device for time: xxx";
 }
