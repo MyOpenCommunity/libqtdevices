@@ -6,6 +6,7 @@
 #include "skinmanager.h" // SkinContext
 #include "fontmanager.h" // FontManager
 #include "navigation_bar.h" //NavigationBar
+#include "bann1_button.h" // BannSinglePuls
 
 #include <QLabel>
 #include <QDebug>

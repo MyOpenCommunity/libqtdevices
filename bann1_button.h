@@ -176,18 +176,6 @@ public:
 };
 
 
-class bannTextOnImage : public BannerOld
-{
-Q_OBJECT
-public:
-	bannTextOnImage(QWidget *parent, const QString &text = QString(), QString bg_image = "empty_icon", QString fwd_image = "forward");
-	void setInternalText(const QString &text);
-
-private:
-	TextOnImageLabel *label;
-};
-
-
 /**
  * A banner that encapsulates a list of states that can be cycled using a button
  * on the left. Every state has an id and a description.

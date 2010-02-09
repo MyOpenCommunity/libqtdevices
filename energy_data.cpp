@@ -8,7 +8,7 @@
 #include "energy_device.h" // EnergyDevice
 #include "btmain.h" // bt_global::btmain
 #include "energy_rates.h"
-#include "bann_energy.h" // bannEnergyInterface
+#include "bann_energy.h" // BannEnergyInterface
 #include "bannercontent.h"
 #include "navigation_bar.h"
 #include "bannercontent.h"
@@ -273,14 +273,11 @@ void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_
 		// check if any of the interfaces have currency enabled
 		show_currency_button |= is_currency_enabled;
 
-		bannEnergyInterface *b = new bannEnergyInterface(this, rate_id, mode == 1);
-		b->SetIcons(bt_global::skin->getImage("select"), QString(), bt_global::skin->getImage("empty"));
 		QString addr = getTextChild(item, "address");
 		next_page = new EnergyView(measure, energy_type, addr, mode, rate_id);
-		b->connectDxButton(next_page);
-		b->setText(getTextChild(item, "descr"));
-		b->setId(getTextChild(item, "id").toInt());
-		b->setInternalText("---");
+
+		BannEnergyInterface *b = new BannEnergyInterface(rate_id, mode == 1, getTextChild(item, "descr"));
+		b->connectRightButton(next_page);
 		b->setUnitMeasure(measure);
 
 		views.append(next_page);
@@ -289,7 +286,6 @@ void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_
 		connect(dev, SIGNAL(status_changed(const StatusList &)), b, SLOT(status_changed(const StatusList &)));
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		page_content->appendBanner(b);
-		b->Draw();
 	}
 
 	nav_bar->forward_button->setVisible(show_currency_button);
@@ -333,7 +329,7 @@ void EnergyInterface::updateBanners()
 {
 	for (int i = 0; i < page_content->bannerCount(); ++i)
 	{
-		bannEnergyInterface *b = static_cast<bannEnergyInterface*>(page_content->getBanner(i));
+		BannEnergyInterface *b = static_cast<BannEnergyInterface*>(page_content->getBanner(i));
 		b->updateText();
 	}
 }
