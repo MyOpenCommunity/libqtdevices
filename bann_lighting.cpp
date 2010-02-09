@@ -23,7 +23,7 @@
 
 
 LightGroup::LightGroup(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses)
-	: BannOnOffNew(parent)
+	: Bann2Buttons(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 

@@ -1,7 +1,7 @@
 #ifndef BANN_AIRCONDITIONING_H
 #define BANN_AIRCONDITIONING_H
 
-#include "bann2_buttons.h" // BannOnOffNew, Bann2Buttons
+#include "bann2_buttons.h" // Bann2Buttons
 #include "bann1_button.h" // BannStates
 #include "airconditioning_device.h"
 #include "main.h" // bt_global::config, TemperatureScale
@@ -20,7 +20,7 @@ class AdvancedSplitPage;
 /**
  * The banner for a split
  */
-class SingleSplit : public BannOnOffNew
+class SingleSplit : public Bann2Buttons
 {
 Q_OBJECT
 public:
@@ -58,7 +58,7 @@ private:
 /**
  * The banner for managing the whole list of splits.
  */
-class GeneralSplit : public BannOnOffNew
+class GeneralSplit : public Bann2Buttons
 {
 Q_OBJECT
 public:
@@ -100,7 +100,7 @@ private slots:
  * Banner for the single button that accesses the custom page (no scenario).
  * This banner doesn't save on conf file.
  */
-class CustomScenario : public BannOnOffNew
+class CustomScenario : public Bann2Buttons
 {
 Q_OBJECT
 public:

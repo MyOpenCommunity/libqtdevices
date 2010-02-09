@@ -37,43 +37,21 @@ void Bann2LinkedPages::connectRightButton(Page *p)
 
 
 
-BannOnOffNew::BannOnOffNew(QWidget *parent) :
-	Bann2Buttons(parent)
-{
-}
-
-void BannOnOffNew::initBanner(const QString &l, const QString &c, const QString &r,
-			      const QString &banner_text)
-{
-	Bann2Buttons::initBanner(l, c, r, banner_text);
-}
-
-void BannOnOffNew::setBannerText(const QString &str)
-{
-	Bann2Buttons::setDescriptionText(str);
-}
-
-void BannOnOffNew::setInternalText(const QString &text)
-{
-	Bann2Buttons::setCentralText(text);
-}
-
-
 BannOnOffState::BannOnOffState(QWidget *parent) :
-	BannOnOffNew(parent)
+	Bann2Buttons(parent)
 {
 }
 
 void BannOnOffState::initBanner(const QString &left, const QString &center, const QString &right,
 	States init_state, const QString &banner_text)
 {
-	BannOnOffNew::initBanner(left, center, right, banner_text);
+	Bann2Buttons::initBanner(left, center, right, banner_text);
 	setState(init_state);
 }
 
 void BannOnOffState::setState(States new_state)
 {
-	Bann2Buttons::setBackgroundImage(getBostikName(center, new_state == ON ? "on" : "off"));
+	setBackgroundImage(getBostikName(center, new_state == ON ? "on" : "off"));
 }
 
 

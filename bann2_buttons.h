@@ -36,6 +36,22 @@ protected:
 };
 
 
+/*
+ * This class is a new style banner which creates and has handles to its own buttons
+ * and labels.
+ * New style banners have business logic and graphics divided in two classes: the graphics class
+ * (base class for logic banners) will expose to logic banners a simple interface:
+ * - one function to set icons: the graphics banner knows how to load icons;
+ * - one to set text on each label that has text;
+ * - one function to change state: icon changes are managed by logic banners only through
+ * this function.
+ * These are only guidelines, each graphics banner can declare its own interface (for example
+ * to set the volume level or dimmer level). However you are invited to make the interface
+ * similar to this one to maintain a standard coding style.
+ * Buttons are created protected so that logic banners can manipulate them directly, thus
+ * avoiding BtButton interface duplication. All other elements are created private.
+ */
+
 /**
  * Two buttons on the sides + description in the center.
  * Either button can be removed by giving an empty string as the icon parameter to initBanner()
@@ -80,38 +96,10 @@ private:
 };
 
 
-/*
- * This class is a new style banner which creates and has handles to its own buttons
- * and labels.
- * New style banners have business logic and graphics divided in two classes: the graphics class
- * (base class for logic banners) will expose to logic banners a simple interface:
- * - one function to set icons: the graphics banner knows how to load icons;
- * - one to set text on each label that has text;
- * - one function to change state: icon changes are managed by logic banners only through
- * this function.
- * These are only guidelines, each graphics banner can declare its own interface (for example
- * to set the volume level or dimmer level). However you are invited to make the interface
- * similar to this one to maintain a standard coding style.
- * Buttons are created protected so that logic banners can manipulate them directly, thus
- * avoiding BtButton interface duplication. All other elements are created private.
- */
-class BannOnOffNew : public Bann2Buttons
-{
-Q_OBJECT
-public:
-	BannOnOffNew(QWidget *parent);
-	void initBanner(const QString &left, const QString &center, const QString &right, const QString &text);
-
-protected:
-	void setBannerText(const QString &str);
-	void setInternalText(const QString &text);
-};
-
-
 /**
  * A class similar to the BannOnOffNew class that changes the state and thus the center icon.
  */
-class BannOnOffState : public BannOnOffNew
+class BannOnOffState : public Bann2Buttons
 {
 Q_OBJECT
 public:

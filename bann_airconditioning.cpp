@@ -13,7 +13,7 @@
 #include <cmath> // round
 
 SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningInterface *d, NonControlledProbeDevice *d_probe) :
-	BannOnOffNew(0)
+	Bann2Buttons(0)
 {
 	QString img_off = bt_global::skin->getImage("off");
 	QString img_forward = bt_global::skin->getImage("forward");
@@ -24,7 +24,7 @@ SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningI
 	QString air_single = "air_single";
 	if (dev_probe)
 	{
-		setInternalText("---");
+		setCentralText("---");
 		air_single = "air_single_temp";
 
 		connect(dev_probe, SIGNAL(status_changed(const StatusList &)),
@@ -45,7 +45,7 @@ void SingleSplit::status_changed(const StatusList &status_list)
 		text = fahrenheitString(bt2Fahrenheit(temp));
 	else
 		text = celsiusString(bt2Celsius(temp));
-	setInternalText(text);
+	setCentralText(text);
 }
 
 void SingleSplit::inizializza(bool)
@@ -74,7 +74,7 @@ void AdvancedSingleSplit::setSerNum(int ser)
 }
 
 
-GeneralSplit::GeneralSplit(QString descr, bool show_right_button) : BannOnOffNew(0)
+GeneralSplit::GeneralSplit(QString descr, bool show_right_button) : Bann2Buttons(0)
 {
 	QString img_off = bt_global::skin->getImage("off");
 	QString img_air_gen = bt_global::skin->getImage("air_general");
@@ -123,7 +123,7 @@ void AdvancedSplitScenario::onButtonClicked()
 
 
 CustomScenario::CustomScenario(AdvancedAirConditioningDevice *d) :
-	BannOnOffNew(0)
+	Bann2Buttons(0)
 {
 	initBanner(QString(), bt_global::skin->getImage("custom_button"), bt_global::skin->getImage("split_settings"), QString());
 	dev = d;
