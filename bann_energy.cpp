@@ -3,9 +3,11 @@
 #include "energy_data.h" // EnergyInterface
 #include "btbutton.h"
 #include "skinmanager.h" // skin
+#include "energy_device.h"
 
 #include <QLocale>
 #include <QDebug>
+#include <QGridLayout>
 
 #include <math.h> // pow
 
@@ -13,11 +15,15 @@
 static QLocale loc(QLocale::Italian);
 
 
-// bannEnergyInterface implementation
+// BannEnergyInterface implementation
 
-bannEnergyInterface::bannEnergyInterface(QWidget *parent, int rate_id, bool is_ele) :
-	bannTextOnImage(parent)
+BannEnergyInterface::BannEnergyInterface(int rate_id, bool is_ele, const QString &description) :
+	Bann2Buttons(0)
 {
+	initBanner(QString(), bt_global::skin->getImage("empty"), bt_global::skin->getImage("select"),
+		   description);
+	setCentralText("---");
+
 	rate = EnergyRates::energy_rates.getRate(rate_id);
 	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
 
@@ -25,12 +31,12 @@ bannEnergyInterface::bannEnergyInterface(QWidget *parent, int rate_id, bool is_e
 	device_value = 0;
 }
 
-void bannEnergyInterface::setUnitMeasure(const QString &m)
+void BannEnergyInterface::setUnitMeasure(const QString &m)
 {
 	measure = m;
 }
 
-void bannEnergyInterface::updateText()
+void BannEnergyInterface::updateText()
 {
 	QString text("---");
 
@@ -48,10 +54,10 @@ void bannEnergyInterface::updateText()
 			text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(measure);
 	}
 
-	setInternalText(text);
+	setCentralText(text);
 }
 
-void bannEnergyInterface::status_changed(const StatusList &status_list)
+void BannEnergyInterface::status_changed(const StatusList &status_list)
 {
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
@@ -60,15 +66,13 @@ void bannEnergyInterface::status_changed(const StatusList &status_list)
 		{
 			device_value = it.value().value<EnergyValue>().second;
 			updateText();
-			// TODO: is this necessary?
-			Draw();
 			break;
 		}
 		++it;
 	}
 }
 
-void bannEnergyInterface::rateChanged(int rate_id)
+void BannEnergyInterface::rateChanged(int rate_id)
 {
 	if (rate.id != rate_id)
 		return;
@@ -81,11 +85,13 @@ void bannEnergyInterface::rateChanged(int rate_id)
 // BannCurrentEnergy implementation
 
 BannCurrentEnergy::BannCurrentEnergy(const QString &text, EnergyDevice *_dev) :
-	bannTextOnImage(0, "---", "bg_banner", "graph")
+	Bann2Buttons(0)
 {
+	initBanner(QString(), bt_global::skin->getImage("bg_banner"), QString(), text);
+	// TODO hack to make the banner align correctly
+	static_cast<QGridLayout *>(layout())->setColumnStretch(0, 0);
+	setCentralText("---");
 	dev = _dev;
-	setText(text);
-	Draw();
 }
 
 void BannCurrentEnergy::showEvent(QShowEvent *e)

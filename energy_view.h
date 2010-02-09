@@ -12,7 +12,7 @@
 #include <QCache>
 
 class BtButton;
-class bannTextOnImage;
+class Bann2Buttons;
 class EnergyDevice;
 class EnergyTable;
 class QLabel;
@@ -110,8 +110,8 @@ private:
 	};
 
 	bannFrecce *bannNavigazione;
-	bannTextOnImage *current_banner, *daily_av_banner;
-	bannTextOnImage *cumulative_day_banner, *cumulative_month_banner, *cumulative_year_banner;
+	Bann2Buttons *current_banner, *daily_av_banner;
+	Bann2Buttons *cumulative_day_banner, *cumulative_month_banner, *cumulative_year_banner;
 	int current_value, daily_av_value;
 	int cumulative_day_value, cumulative_month_value, cumulative_year_value;
 	TimePeriodSelection *time_period;

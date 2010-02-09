@@ -9,10 +9,10 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // bt_global::skin
 #include "transitionwidget.h"
-#include "bann1_button.h" // bannTextOnImage
 #include "energy_data.h" // EnergyInterface
 #include "energy_rates.h"
 #include "bann_energy.h"
+#include "bann2_buttons.h" // Bann2Buttons
 
 #include <QDebug>
 #include <QLabel>
@@ -232,12 +232,14 @@ QString TimePeriodSelection::dateDisplayed()
 }
 
 
-bannTextOnImage *getBanner(QWidget *parent, QString primary_text)
+Bann2Buttons *getBanner(QWidget *parent, QString primary_text)
 {
 	Q_ASSERT_X(bt_global::skin->hasContext(), "getBanner", "Skin context not set!");
-	bannTextOnImage *bann = new bannTextOnImage(parent, "---", "bg_banner", "graph");
-	bann->setText(primary_text);
-	bann->Draw();
+	Bann2Buttons *bann = new Bann2Buttons(parent);
+	bann->initBanner(QString(), bt_global::skin->getImage("bg_banner"), bt_global::skin->getImage("graph"),
+			 primary_text);
+	bann->setCentralText("---");
+
 	return bann;
 }
 
@@ -642,11 +644,10 @@ QWidget *EnergyView::buildBannerWidget()
 
 	// Daily page
 	cumulative_day_banner = getBanner(this, cumulative_text);
-	connect(cumulative_day_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
+	connect(cumulative_day_banner, SIGNAL(rightClicked()), mapper, SLOT(map()));
 	mapper->setMapping(cumulative_day_banner, EnergyDevice::CUMULATIVE_DAY);
 
 	current_banner = new BannCurrentEnergy(tr("Current"), dev);
-	current_banner->nascondi(banner::BUT1);
 
 	QWidget *daily_widget = createWidgetWithVBoxLayout();
 	daily_widget->layout()->addWidget(cumulative_day_banner);
@@ -654,11 +655,11 @@ QWidget *EnergyView::buildBannerWidget()
 
 	// Monthly page
 	cumulative_month_banner = getBanner(this, cumulative_text);
-	connect(cumulative_month_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
+	connect(cumulative_month_banner, SIGNAL(rightClicked()), mapper, SLOT(map()));
 	mapper->setMapping(cumulative_month_banner, EnergyDevice::CUMULATIVE_MONTH);
 
 	daily_av_banner = getBanner(this, tr("Daily Average"));
-	connect(daily_av_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
+	connect(daily_av_banner, SIGNAL(rightClicked()), mapper, SLOT(map()));
 	mapper->setMapping(daily_av_banner, EnergyDevice::DAILY_AVERAGE);
 
 	QWidget *monthly_widget = createWidgetWithVBoxLayout();
@@ -667,7 +668,7 @@ QWidget *EnergyView::buildBannerWidget()
 
 	// Yearly page
 	cumulative_year_banner = getBanner(this, cumulative_text);
-	connect(cumulative_year_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
+	connect(cumulative_year_banner, SIGNAL(rightClicked()), mapper, SLOT(map()));
 	mapper->setMapping(cumulative_year_banner, EnergyDevice::CUMULATIVE_YEAR);
 
 	QWidget *yearly_widget = createWidgetWithVBoxLayout();
@@ -778,19 +779,19 @@ void EnergyView::updateBanners()
 		dec = 3;
 	}
 
-	cumulative_day_banner->setInternalText(QString("%1 %2")
+	cumulative_day_banner->setCentralText(QString("%1 %2")
 		.arg(loc.toString(day, 'f', dec)).arg(str));
 
-	cumulative_month_banner->setInternalText(QString("%1 %2")
+	cumulative_month_banner->setCentralText(QString("%1 %2")
 		.arg(loc.toString(month, 'f', dec)).arg(str));
 
-	cumulative_year_banner->setInternalText(QString("%1 %2")
+	cumulative_year_banner->setCentralText(QString("%1 %2")
 		.arg(loc.toString(year, 'f', dec)).arg(str));
 
-	daily_av_banner->setInternalText(QString("%1 %2")
+	daily_av_banner->setCentralText(QString("%1 %2")
 		.arg(loc.toString(average, 'f', dec)).arg(str));
 
-	current_banner->setInternalText(QString("%1 %2")
+	current_banner->setCentralText(QString("%1 %2")
 		.arg(loc.toString(current, 'f', dec)).arg(str_med_inst));
 }
 
