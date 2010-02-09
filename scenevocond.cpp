@@ -129,8 +129,7 @@ void ScenEvoTimeCondition::OK()
 
 void ScenEvoTimeCondition::scaduta()
 {
-	qDebug("ScenEvoTimeCondition::scaduta()");
-	emit verificata();
+	emit condSatisfied();
 	setupTimer();
 }
 

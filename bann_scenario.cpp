@@ -168,7 +168,7 @@ ScenarioEvolved::ScenarioEvolved(int _item_id, QString descr, QString _action, b
 		ScenEvoCondition *co = condList.at(i);
 		qDebug() << "connecting condition: " << co->getDescription();
 		co->set_serial_number(serial_number);
-		connect(co, SIGNAL(verificata()), this, SLOT(trig()));
+		connect(co, SIGNAL(condSatisfied()), this, SLOT(trig()));
 		connect(co, SIGNAL(condSatisfied()), this, SLOT(trigOnStatusChanged()));
 		connect(co, SIGNAL(okAll()), this, SLOT(saveAndApplyAll()));
 		connect(co, SIGNAL(resetAll()), this, SLOT(resetAll()));

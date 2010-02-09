@@ -43,8 +43,6 @@ signals:
 	void SwitchToPrev();
 	//! Emitted when user ckicks Prev icon
 	void SwitchToFirst();
-	//! Emitted when condition is true
-	void verificata();
 	//! Emitted when all conditions in list must be reset
 	void resetAll();
 	//! Emitted when all conditions in list are OK (must be saved and applied)
