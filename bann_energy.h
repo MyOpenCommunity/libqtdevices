@@ -75,6 +75,23 @@ private:
 };
 
 
+class BannLoadDiagnostic : public Bann2Buttons
+{
+Q_OBJECT
+public:
+	BannLoadDiagnostic(device *dev, const QString &description);
+
+private:
+	void setState(int state);
+
+private slots:
+	void status_changed(const StatusList &sl);
+
+private:
+	QString state_icon;
+};
+
+
 class BannLoadNoCU : public Bann3ButtonsLabel
 {
 Q_OBJECT
