@@ -69,7 +69,7 @@ Bann2Buttons::Bann2Buttons(QWidget *parent) :
 	l->setSpacing(0);
 	l->addWidget(left_button, 0, 0);
 	l->setColumnStretch(0, 1);
-	l->addWidget(center_icon, 0, 1, Qt::AlignHCenter);
+	l->addWidget(center_icon, 0, 1);
 	l->setColumnStretch(1, 2);
 	l->addWidget(right_button, 0, 2);
 	l->setColumnStretch(2, 1);
@@ -84,7 +84,7 @@ void Bann2Buttons::initBanner(const QString &left, const QString &right, const Q
 {
 	initButton(left_button, left);
 	initButton(right_button, right);
-	center_icon->setText(banner_text);
+	center_icon->setInternalText(banner_text);
 	QFont central_font = bt_global::font->get(text_font);
 
 	center_icon->setFont(central_font);
