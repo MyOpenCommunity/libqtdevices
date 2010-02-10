@@ -67,33 +67,28 @@ class ScenarioEvolved : public Bann3Buttons
 Q_OBJECT
 public:
 	ScenarioEvolved(int _item_id, QString descr, QString _action, bool _enabled,
-		ScenEvoTimeCondition *time_cond, ScenEvoDeviceCondition *device_cond);
-
-	~ScenarioEvolved();
+		ScenEvoTimeCondition *tcond, ScenEvoDeviceCondition *dcond);
 
 public slots:
 	void inizializza(bool forza = false);
 
 private slots:
-	void toggleAttivaScev();
-	void configScev();
-	void forzaScev();
-	void nextCond();
-	void prevCond();
-	void firstCond();
+	void toggleActivation();
+	void forceTrig();
 	void trig(bool forced = false);
-	void saveAndApplyAll();
-	void resetAll();
 	void trigOnStatusChanged();
 
+	void reset();
+	void save();
+
 private:
-	QList<ScenEvoCondition*> condList;
-	unsigned current_condition;
 	QString action, enable_icon, disable_icon;
 	int serial_number;
 	static int next_serial_number;
 	bool enabled;
 	int item_id;
+	ScenEvoTimeCondition *time_cond;
+	ScenEvoDeviceCondition *device_cond;
 };
 
 

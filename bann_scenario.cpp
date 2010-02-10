@@ -149,44 +149,65 @@ void ScenarioModule::status_changed(const StatusList &sl)
 int ScenarioEvolved::next_serial_number = 1;
 
 ScenarioEvolved::ScenarioEvolved(int _item_id, QString descr, QString _action, bool _enabled,
-	ScenEvoTimeCondition *time_cond,  ScenEvoDeviceCondition *device_cond) : Bann3Buttons(0)
+	ScenEvoTimeCondition *tcond,  ScenEvoDeviceCondition *dcond) : Bann3Buttons(0)
 {
+	time_cond = tcond;
+	device_cond = dcond;
 	item_id = _item_id;
 	action = _action;
 	enabled = _enabled;
-
+	serial_number = next_serial_number++;
 	if (time_cond)
-		condList.append(time_cond);
+	{
+		time_cond->set_serial_number(serial_number);
+		connect(time_cond, SIGNAL(condSatisfied()), SLOT(trig()));
+	}
 
 	if (device_cond)
-		condList.append(device_cond);
-
-	current_condition = 0;
-	serial_number = next_serial_number++;
-	for (int i = 0; i < condList.size(); ++i)
 	{
-		ScenEvoCondition *co = condList.at(i);
-		qDebug() << "connecting condition: " << co->getDescription();
-		co->set_serial_number(serial_number);
-		connect(co, SIGNAL(condSatisfied()), this, SLOT(trig()));
-		connect(co, SIGNAL(condSatisfied()), this, SLOT(trigOnStatusChanged()));
-		connect(co, SIGNAL(okAll()), this, SLOT(saveAndApplyAll()));
-		connect(co, SIGNAL(resetAll()), this, SLOT(resetAll()));
+		device_cond->set_serial_number(serial_number);
+		connect(device_cond, SIGNAL(condSatisfied()), SLOT(trigOnStatusChanged()));
 	}
+
+	ScenEvoManager *p = new ScenEvoManager(time_cond, device_cond);
+	connectButtonToPage(right_button, p);
+	connect(p, SIGNAL(reset()), SLOT(reset()));
+	connect(p, SIGNAL(save()), SLOT(save()));
 
 	enable_icon = bt_global::skin->getImage("enable_scen");
 	disable_icon = bt_global::skin->getImage("disable_scen");
 	initBanner(enabled ? enable_icon : disable_icon, bt_global::skin->getImage("start"),
 		bt_global::skin->getImage("program"), descr);
 
-	connect(left_button, SIGNAL(clicked()), SLOT(toggleAttivaScev()));
-	connect(right_button, SIGNAL(clicked()), SLOT(configScev()));
-	connect(center_button, SIGNAL(clicked()), SLOT(forzaScev()));
+	connect(left_button, SIGNAL(clicked()), SLOT(toggleActivation()));
+	connect(center_button, SIGNAL(clicked()), SLOT(forceTrig()));
 }
 
-void ScenarioEvolved::toggleAttivaScev()
+void ScenarioEvolved::reset()
 {
-	qDebug("ScenarioEvolved::toggleAttivaScev");
+	if (device_cond)
+		device_cond->reset();
+	if (time_cond)
+		time_cond->reset();
+}
+
+void ScenarioEvolved::save()
+{
+	if (device_cond)
+	{
+		device_cond->Apply();
+		device_cond->save();
+	}
+
+	if (time_cond)
+	{
+		time_cond->Apply();
+		time_cond->save();
+	}
+}
+
+void ScenarioEvolved::toggleActivation()
+{
 	enabled = !enabled;
 	left_button->setImage(enabled ? enable_icon : disable_icon);
 #ifdef CONFIG_BTOUCH
@@ -196,108 +217,16 @@ void ScenarioEvolved::toggleAttivaScev()
 #endif
 }
 
-void ScenarioEvolved::configScev()
+void ScenarioEvolved::forceTrig()
 {
-	qDebug("ScenarioEvolved::configScev");
-	ScenEvoCondition *co = condList.at(current_condition);
-	connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
-	connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
-	connect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-	co->showPage();
-}
-
-void ScenarioEvolved::forzaScev()
-{
-	// Forced trigger
 	trig(true);
-}
-
-void ScenarioEvolved::nextCond()
-{
-	qDebug("ScenarioEvolved::nextCond()");
-	ScenEvoCondition *old_cond = condList.at(current_condition);
-	disconnect(old_cond, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
-	disconnect(old_cond, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
-	disconnect(old_cond, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-
-	if (current_condition + 1 < static_cast<unsigned>(condList.size()))
-	{
-		++current_condition;
-		ScenEvoCondition *cond = condList.at(current_condition);
-		qDebug("cond = %p", cond);
-		if (cond)
-		{
-			connect(cond, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
-			connect(cond, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
-			connect(cond, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-			cond->inizializza();
-			cond->showPage();
-		}
-	}
-	else
-		current_condition = 0;
-}
-
-void ScenarioEvolved::prevCond()
-{
-	qDebug("ScenarioEvolved::prevCond()");
-	ScenEvoCondition *old_cond = condList.at(current_condition);
-	disconnect(old_cond, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
-	disconnect(old_cond, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
-	disconnect(old_cond, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-
-	if (current_condition > 0)
-	{
-		--current_condition;
-		ScenEvoCondition *cond = condList.at(current_condition);
-		qDebug("cond = %p", cond);
-		if (cond)
-		{
-			connect(cond, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
-			connect(cond, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
-			connect(cond, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-			cond->showPage();
-		}
-	}
-}
-
-void ScenarioEvolved::firstCond()
-{
-	qDebug("ScenarioEvolved::firstCond()");
-	ScenEvoCondition *co = condList.at(current_condition);
-	disconnect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-	current_condition = 0;
-	emit pageClosed();
-}
-
-void ScenarioEvolved::saveAndApplyAll()
-{
-	qDebug("ScenarioEvolved::saveAndApplyAll()");
-	for (int i = 0; i < condList.size(); ++i)
-	{
-		ScenEvoCondition *co = condList.at(i);
-		co->Apply();
-		co->save();
-	}
-}
-
-void ScenarioEvolved::resetAll()
-{
-	qDebug("ScenarioEvolved::resetAll()");
-	for (int i = 0; i < condList.size(); ++i)
-	{
-		ScenEvoCondition *co = condList.at(i);
-		co->reset();
-	}
-	emit pageClosed();
 }
 
 void ScenarioEvolved::trigOnStatusChanged()
 {
-	qDebug("ScenarioEvolved::trigOnStatusChanged()");
-	for (int i = 0; i < condList.size(); ++i)
-		if (qobject_cast<ScenEvoTimeCondition*>(condList.at(i)))
-			return;
+	if (time_cond)
+		return;
+
 	trig();
 }
 
@@ -305,7 +234,7 @@ void ScenarioEvolved::trig(bool forced)
 {
 	if (action.isEmpty())
 	{
-		qDebug("ScenarioEvolved::trig(), act = NULL, non faccio niente");
+		qDebug("ScenarioEvolved::trig(), act = NULL, skip");
 		return;
 	}
 
@@ -313,18 +242,14 @@ void ScenarioEvolved::trig(bool forced)
 	{
 		if (!enabled)
 		{
-			qDebug("ScenarioEvolved::trig(), non abilitato, non faccio niente");
+			qDebug("ScenarioEvolved::trig() not enabled");
 			return;
 		}
-		for (int i = 0; i < condList.size(); ++i)
+
+		if (device_cond && !device_cond->isTrue())
 		{
-			ScenEvoCondition *co = condList.at(i);
-			if (!co->isTrue())
-			{
-				qDebug("Condizione %p (%s), non verificata, non faccio niente",
-						co, co->getDescription());
-				return;
-			}
+			qDebug("Device Condition not verified");
+			return;
 		}
 	}
 
@@ -334,19 +259,9 @@ void ScenarioEvolved::trig(bool forced)
 
 void ScenarioEvolved::inizializza(bool forza)
 {
-	qDebug("ScenarioEvolved::inizializza()");
-	for (int i = 0; i < condList.size(); ++i)
-	{
-		ScenEvoCondition *co = condList.at(i);
-		qDebug() << "Ciclo n. " << i << co->getDescription();
-		co->inizializza();
-	}
-}
-
-ScenarioEvolved::~ScenarioEvolved()
-{
-	while (!condList.isEmpty())
-		delete condList.takeFirst();
+	Q_UNUSED(forza)
+	if (device_cond)
+		device_cond->inizializza();
 }
 
 

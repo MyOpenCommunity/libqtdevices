@@ -6,25 +6,9 @@
 #include "scenevodevicescond.h"
 
 #include <QLabel>
+#include <QStackedLayout>
+#include <QDebug>
 
-
-void ScenEvoCondition::Next()
-{
-	emit SwitchToNext();
-}
-
-void ScenEvoCondition::Prev()
-{
-	reset();
-	emit resetAll();
-	emit SwitchToFirst();
-}
-
-void ScenEvoCondition::OK()
-{
-	save();
-	emit SwitchToFirst();
-}
 
 int ScenEvoCondition::get_serial_number()
 {
@@ -37,7 +21,7 @@ void ScenEvoCondition::set_serial_number(int n)
 }
 
 
-ScenEvoTimeCondition::ScenEvoTimeCondition(int _item_id, const QDomNode &config_node, bool has_next) :
+ScenEvoTimeCondition::ScenEvoTimeCondition(int _item_id, const QDomNode &config_node) :
 	time_edit(this)
 {
 	item_id = _item_id;
@@ -62,39 +46,8 @@ ScenEvoTimeCondition::ScenEvoTimeCondition(int _item_id, const QDomNode &config_
 
 	main_layout->addWidget(&time_edit, 0, Qt::AlignHCenter);
 
-	QHBoxLayout *bottom_layout = new QHBoxLayout;
-	bottom_layout->setContentsMargins(0, 0, 0, 0);
-	bottom_layout->setSpacing(0);
-
-	BtButton *prev = new BtButton;
-	prev->setImage(bt_global::skin->getImage("back"));
-	connect(prev, SIGNAL(clicked()), SLOT(Prev()));
-	bottom_layout->addWidget(prev);
-	bottom_layout->addStretch(1);
-
-	if (has_next)
-	{
-		BtButton *next = new BtButton;
-		next->setImage(bt_global::skin->getImage("forward"));
-		connect(next, SIGNAL(clicked()), SLOT(Next()));
-		bottom_layout->addWidget(next);
-		bottom_layout->addStretch(1);
-	}
-
-	BtButton *ok = new BtButton;
-	ok->setImage(bt_global::skin->getImage("ok"));
-	connect(ok, SIGNAL(clicked()), SLOT(OK()));
-	bottom_layout->addWidget(ok);
-
-	main_layout->addLayout(bottom_layout);
-
 	cond_time.setHMS(h.toInt(), m.toInt(), 0);
 	setupTimer();
-}
-
-const char *ScenEvoTimeCondition::getDescription()
-{
-	return "scenEvo hour condition";
 }
 
 void ScenEvoTimeCondition::setupTimer()
@@ -118,13 +71,6 @@ void ScenEvoTimeCondition::Apply()
 	BtTime tmp = time_edit.time();
 	cond_time.setHMS(tmp.hour(), tmp.minute(), 0);
 	setupTimer();
-}
-
-void ScenEvoTimeCondition::OK()
-{
-	qDebug("ScenEvoTimeCondition::OK()");
-	Apply();
-	ScenEvoCondition::OK();
 }
 
 void ScenEvoTimeCondition::scaduta()
@@ -154,12 +100,6 @@ void ScenEvoTimeCondition::reset()
 	time_edit.setTime(cond_time);
 }
 
-bool ScenEvoTimeCondition::isTrue()
-{
-	QTime cur = QDateTime::currentDateTime().time();
-	return ((cond_time.hour() == cur.hour()) &&
-			(cond_time.minute() == cur.minute()));
-}
 
 
 ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &config_node)
@@ -167,7 +107,7 @@ ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &con
 	item_id = _item_id;
 
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
-	main_layout->setContentsMargins(0, 5, 0, 10);
+	main_layout->setContentsMargins(0, 0, 0, 0);
 	main_layout->setSpacing(0);
 
 	QString trigger = getTextChild(config_node, "trigger");
@@ -222,21 +162,6 @@ ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &con
 	connect(device_cond, SIGNAL(condSatisfied()), SIGNAL(condSatisfied()));
 
 	main_layout->addWidget(condition_display);
-
-	QHBoxLayout *bottom_layout = new QHBoxLayout;
-
-	BtButton *back = new BtButton;
-	back->setImage(bt_global::skin->getImage("back"));
-	connect(back, SIGNAL(clicked()), SLOT(Prev()));
-	bottom_layout->addWidget(back);
-	bottom_layout->addStretch(1);
-
-	BtButton *ok = new BtButton;
-	ok->setImage(bt_global::skin->getImage("ok"));
-	bottom_layout->addWidget(ok);
-	connect(ok, SIGNAL(clicked()), SLOT(OK()));
-
-	main_layout->addLayout(bottom_layout);
 }
 
 ScenEvoDeviceCondition::~ScenEvoDeviceCondition()
@@ -244,22 +169,9 @@ ScenEvoDeviceCondition::~ScenEvoDeviceCondition()
 	delete device_cond;
 }
 
-const char *ScenEvoDeviceCondition::getDescription()
-{
-	return "scenEvo device condition";
-}
-
 void ScenEvoDeviceCondition::Apply()
 {
 	device_cond->OK();
-}
-
-void ScenEvoDeviceCondition::OK()
-{
-	qDebug("ScenEvoDeviceCondition::OK()");
-	// Save ALL conditions here (not just this one)
-	emit okAll();
-	emit SwitchToFirst();
 }
 
 void ScenEvoDeviceCondition::save()
@@ -272,7 +184,7 @@ void ScenEvoDeviceCondition::save()
 #else
 	setCfgValue("scen/device/trigger", s, item_id);
 #endif
-	reset();
+	device_cond->reset();
 	inizializza();
 }
 
@@ -291,5 +203,82 @@ void ScenEvoDeviceCondition::inizializza()
 bool ScenEvoDeviceCondition::isTrue()
 {
 	return device_cond ? device_cond->isTrue() : false;
+}
+
+
+
+ScenEvoManager::ScenEvoManager(ScenEvoTimeCondition *time_cond, ScenEvoDeviceCondition *device_cond)
+{
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(0, 5, 0, 10);
+	main_layout->setSpacing(0);
+
+	conditions_stack = new QStackedLayout;
+	conditions_stack->setContentsMargins(0, 0, 0, 0);
+	conditions_stack->setSpacing(0);
+
+	if (time_cond)
+		conditions_stack->addWidget(time_cond);
+
+	if (device_cond)
+		conditions_stack->addWidget(device_cond);
+
+	main_layout->addLayout(conditions_stack);
+
+	QHBoxLayout *bottom_layout = new QHBoxLayout;
+	bottom_layout->setContentsMargins(0, 0, 0, 0);
+	bottom_layout->setSpacing(0);
+
+	BtButton *prev_button = new BtButton;
+	prev_button->setImage(bt_global::skin->getImage("back"));
+	connect(prev_button, SIGNAL(clicked()), SLOT(prev()));
+	bottom_layout->addWidget(prev_button);
+	bottom_layout->addStretch(1);
+
+	next_button = new BtButton;
+	next_button->setImage(bt_global::skin->getImage("forward"));
+	connect(next_button, SIGNAL(clicked()), SLOT(next()));
+	bottom_layout->addWidget(next_button);
+	bottom_layout->addStretch(1);
+
+	BtButton *ok = new BtButton;
+	ok->setImage(bt_global::skin->getImage("ok"));
+	connect(ok, SIGNAL(clicked()), SLOT(ok()));
+	bottom_layout->addWidget(ok);
+
+	main_layout->addLayout(bottom_layout);
+	manageNextButton();
+}
+
+void ScenEvoManager::manageNextButton()
+{
+	if (conditions_stack->currentIndex() == conditions_stack->count() - 1)
+		next_button->hide();
+	else
+		next_button->show();
+}
+
+void ScenEvoManager::prev()
+{
+	emit Closed();
+	conditions_stack->setCurrentIndex(0);
+	manageNextButton();
+	emit reset();
+}
+
+void ScenEvoManager::next()
+{
+	if (conditions_stack->currentIndex() < conditions_stack->count() - 1)
+		conditions_stack->setCurrentIndex(conditions_stack->currentIndex() + 1);
+
+	manageNextButton();
+}
+
+void ScenEvoManager::ok()
+{
+	emit Closed();
+	conditions_stack->setCurrentIndex(0);
+	manageNextButton();
+	emit save();
 }
 

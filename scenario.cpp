@@ -53,12 +53,11 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		bool enabled;
 
 #ifdef CONFIG_BTOUCH
-		bool has_next = getElement(item_node, "condDevice/value").text().toInt();
 		int item_id = 0;
 		QDomNode time_node = getChildWithName(item_node, "condH");
 
 		if (!time_node.isNull() && getTextChild(time_node, "value").toInt())
-			time_cond = new ScenEvoTimeCondition(item_id, time_node, has_next);
+			time_cond = new ScenEvoTimeCondition(item_id, time_node);
 
 		QDomNode device_node = getChildWithName(item_node, "condDevice");
 		if (!device_node.isNull() && getTextChild(device_node, "value").toInt())
@@ -67,11 +66,10 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		action = getElement(item_node, "action/open").text();
 		enabled = getTextChild(item_node, "enable").toInt();
 #else
-		bool has_next = getElement(item_node, "scen/device/status").text().toInt();
 		int item_id = getTextChild(item_node, "itemID").toInt();
 		QDomNode time_node = getChildWithName(item_node, "scen/time");
 		if (!time_node.isNull() && getTextChild(time_node, "status").toInt())
-			time_cond = new ScenEvoTimeCondition(item_id, time_node, has_next);
+			time_cond = new ScenEvoTimeCondition(item_id, time_node);
 
 		QDomNode device_node = getChildWithName(item_node, "scen/device");
 		if (!device_node.isNull() && getTextChild(device_node, "objectID").toInt())
