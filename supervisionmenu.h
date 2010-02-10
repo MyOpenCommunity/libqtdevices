@@ -33,11 +33,9 @@ class SupervisionMenu : public BannerPage
 Q_OBJECT
 public:
 	SupervisionMenu(const QDomNode &config_node);
-	~SupervisionMenu();
 
 private:
 	BannerPage *stopngoSubmenu;
-	QList<StopngoItem*> stopngoList;
 	QList<Page*> stopngoPages;
 	int classesCount;
 

@@ -41,18 +41,6 @@ SupervisionMenu::SupervisionMenu(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
-SupervisionMenu::~SupervisionMenu()
-{
-	while (!stopngoList.isEmpty())
-		delete stopngoList.takeFirst();
-
-	while (!stopngoPages.isEmpty())
-		delete stopngoPages.takeFirst();
-
-	if (this != stopngoSubmenu)
-		delete stopngoSubmenu;
-}
-
 void SupervisionMenu::loadItems(const QDomNode &config_node)
 {
 	classesCount = 0;
@@ -107,6 +95,8 @@ void SupervisionMenu::loadItems(const QDomNode &config_node)
 
 void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
 {
+	QList<StopngoItem*> stopngoList;
+
 	foreach (const QDomNode &item, getChildren(node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
