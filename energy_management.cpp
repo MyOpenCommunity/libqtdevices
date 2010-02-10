@@ -3,6 +3,7 @@
 #include "energy_data.h" // EnergyCost
 #include "skinmanager.h"
 #include "xml_functions.h"
+#include "main.h" // SUPERVISIONE, LOAD_MANAGEMENT
 
 
 bool EnergyManagement::rate_edit_displayed = false;
@@ -16,10 +17,13 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 	foreach (const QDomNode &item, getChildren(conf_node, "item"))
 		ids.append(getTextChild(item, "id").toInt());
 
-	// TODO energy if the energy management page only contains
-	//      load management and diagnostic, display the rate edit icon
-	//      inside load management
+	// if the energy management page only contains
+	// load management and diagnostic, display the rate edit icon
+	// inside load management
 	rate_edit_displayed = true;
+
+	if (ids.count() == 2 && ids.contains(SUPERVISIONE) && ids.contains(LOAD_MANAGEMENT))
+		rate_edit_displayed = false;
 
 	if (rate_edit_displayed)
 	{
