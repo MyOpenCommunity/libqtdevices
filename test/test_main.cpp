@@ -13,6 +13,7 @@
 #include "test_probe_device.h"
 #include "test_air_conditioning_device.h"
 #include "test_loads_device.h"
+#include "test_bttime.h"
 
 int main(int argc, char *argv[])
 {
@@ -64,6 +65,9 @@ int main(int argc, char *argv[])
 
 	TestLoadsDevice test_loads_device;
 	test_list << &test_loads_device;
+
+	TestBtTime test_bttime;
+	test_list << &test_bttime;
 
 	QStringList arglist = app.arguments();
 	QString testingClass;
