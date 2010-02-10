@@ -415,6 +415,7 @@ enum  bannerType
 	AIR_GENERAL_ADV=78,                           /*!< AIR conditioning general split (advanced) */
 	LOAD_WITH_CU=80,                              /*!< Load with central unit */
 	LOAD_WITHOUT_CU=81,                           /*!< Load without central unit */
+	LOAD_DIAGNOSTIC=82,                           /*!< Load diagnostics */
 
 	// keep 69-71 free for energy management devices
 	LANSETTINGS=72,                               /*!< LAN settings and information */
