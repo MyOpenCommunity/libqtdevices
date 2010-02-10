@@ -30,14 +30,12 @@
 class FrameReceiver;
 
 
-/*!
-  \class Client
-  \brief This class manages the socket communication throught the application and the \a openserver.
-
-  \author Davide
-  \date lug 2005
-*/
-
+/**
+ * This class manages the socket communication throught the application and the openserver.
+ *
+ * Clients of type MONITOR can be used to receive frames from openserver while clients
+ * of types COMMANDI or RICHIESTE can be used to send frames to the openserver.
+ */
 class Client : public QObject
 {
 friend class OpenServerMock;
@@ -54,12 +52,12 @@ public:
 
 	Client(Type t, const QString &_host=OPENSERVER_ADDR, unsigned _port=OPENSERVER_PORT);
 	void ApriInviaFrameChiudi(const char *);
-	void installFrameCompressor(int timeout, const QString &regex);
-	void flush() { socket->flush(); }
+
 	void subscribe(FrameReceiver *obj, int who);
 	void unsubscribe(FrameReceiver *obj);
 	~Client();
 #if DEBUG
+	void flush() { socket->flush(); }
 	void forwardFrame(Client *c);
 #endif
 
