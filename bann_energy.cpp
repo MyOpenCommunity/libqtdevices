@@ -3,8 +3,12 @@
 #include "energy_data.h" // EnergyInterface
 #include "btbutton.h"
 #include "energy_device.h"
+#include "skinmanager.h" // skin
+#include "energy_device.h"
 
 #include <QLocale>
+#include <QDebug>
+#include <QGridLayout>
 
 #include <math.h> // pow
 
@@ -12,11 +16,15 @@
 static QLocale loc(QLocale::Italian);
 
 
-// bannEnergyInterface implementation
+// BannEnergyInterface implementation
 
-bannEnergyInterface::bannEnergyInterface(QWidget *parent, int rate_id, bool is_ele) :
-	bannTextOnImage(parent)
+BannEnergyInterface::BannEnergyInterface(int rate_id, bool is_ele, const QString &description) :
+	Bann2Buttons(0)
 {
+	initBanner(QString(), bt_global::skin->getImage("empty"), bt_global::skin->getImage("select"),
+		   description);
+	setCentralText("---");
+
 	rate = EnergyRates::energy_rates.getRate(rate_id);
 	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
 
@@ -24,12 +32,12 @@ bannEnergyInterface::bannEnergyInterface(QWidget *parent, int rate_id, bool is_e
 	device_value = 0;
 }
 
-void bannEnergyInterface::setUnitMeasure(const QString &m)
+void BannEnergyInterface::setUnitMeasure(const QString &m)
 {
 	measure = m;
 }
 
-void bannEnergyInterface::updateText()
+void BannEnergyInterface::updateText()
 {
 	QString text("---");
 
@@ -47,10 +55,10 @@ void bannEnergyInterface::updateText()
 			text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(measure);
 	}
 
-	setInternalText(text);
+	setCentralText(text);
 }
 
-void bannEnergyInterface::status_changed(const StatusList &status_list)
+void BannEnergyInterface::status_changed(const StatusList &status_list)
 {
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
@@ -59,21 +67,42 @@ void bannEnergyInterface::status_changed(const StatusList &status_list)
 		{
 			device_value = it.value().value<EnergyValue>().second;
 			updateText();
-			// TODO: is this necessary?
-			Draw();
 			break;
 		}
 		++it;
 	}
 }
 
-void bannEnergyInterface::rateChanged(int rate_id)
+void BannEnergyInterface::rateChanged(int rate_id)
 {
 	if (rate.id != rate_id)
 		return;
 
 	rate = EnergyRates::energy_rates.getRate(rate_id);
 	updateText();
+}
+
+
+// BannCurrentEnergy implementation
+
+BannCurrentEnergy::BannCurrentEnergy(const QString &text, EnergyDevice *_dev) :
+	Bann2Buttons(0)
+{
+	initBanner(QString(), bt_global::skin->getImage("bg_banner"), QString(), text);
+	// TODO hack to make the banner align correctly
+	static_cast<QGridLayout *>(layout())->setColumnStretch(0, 0);
+	setCentralText("---");
+	dev = _dev;
+}
+
+void BannCurrentEnergy::showEvent(QShowEvent *e)
+{
+	dev->requestCurrentUpdateStart();
+}
+
+void BannCurrentEnergy::hideEvent(QHideEvent *e)
+{
+	dev->requestCurrentUpdateStop();
 }
 
 
@@ -136,3 +165,72 @@ void BannEnergyCost::resetRate()
 	current_value = rate.rate;
 	updateLabel();
 }
+
+
+
+BannLoadNoCU::BannLoadNoCU(const QString &descr) : Bann3ButtonsLabel(0)
+{
+	initBanner(QString(), QString(), QString(), bt_global::skin->getImage("load"), bt_global::skin->getImage("info"),
+		ENABLED, NOT_FORCED, descr);
+}
+
+void BannLoadNoCU::connectRightButton(Page *p)
+{
+	connectButtonToPage(right_button, p);
+}
+
+
+
+BannLoadWithCU::BannLoadWithCU(const QString &descr, Type t) : Bann3ButtonsLabel(0)
+{
+	QString right = t == ADVANCED_MODE ? bt_global::skin->getImage("info") : QString();
+	initBanner(bt_global::skin->getImage("forced"), bt_global::skin->getImage("not_forced"), bt_global::skin->getImage("on"),
+		bt_global::skin->getImage("load"), right, ENABLED, NOT_FORCED, descr);
+	// TODO: this should be changed on mode change too
+	connect(left_button, SIGNAL(clicked()), SIGNAL(deactivateDevice()));
+}
+
+void BannLoadWithCU::connectRightButton(Page *p)
+{
+	connectButtonToPage(right_button, p);
+}
+
+
+DeactivationTime::DeactivationTime(const BtTime &start_time) :
+	current_time(start_time)
+{
+	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), formatTime(current_time), FontManager::SUBTITLE);
+	right_button->setAutoRepeat(true);
+	left_button->setAutoRepeat(true);
+	connect(right_button, SIGNAL(clicked()), SLOT(plusClicked()));
+	connect(left_button, SIGNAL(clicked()), SLOT(minusClicked()));
+}
+
+BtTime DeactivationTime::currentTime() const
+{
+	return current_time;
+}
+
+void DeactivationTime::setCurrentTime(const BtTime &t)
+{
+	current_time = t;
+}
+
+void DeactivationTime::plusClicked()
+{
+	current_time = current_time.addMinute(1);
+	updateDisplay();
+}
+
+void DeactivationTime::minusClicked()
+{
+	current_time = current_time.addMinute(-1);
+	updateDisplay();
+}
+
+void DeactivationTime::updateDisplay()
+{
+	setCentralText(formatTime(current_time));
+}
+
+

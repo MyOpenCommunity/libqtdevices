@@ -20,6 +20,7 @@
 #include "energy_data.h"
 #include "iconpage.h"
 #include "energy_management.h"
+#include "load_management.h"
 
 #include <QObject>
 
@@ -122,6 +123,9 @@ Page *getPage(int page_id)
 		page = new MultimediaSectionPage(page_node);
 		break;
 #endif
+	case LOAD_MANAGEMENT:
+		page = new LoadManagement(page_node);
+		break;
 	default:
 		qFatal("Page %d not found on xml config file!", id);
 	}

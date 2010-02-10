@@ -15,6 +15,7 @@
 #include "test_entryphone_device.h"
 #include "test_probe_device.h"
 #include "test_air_conditioning_device.h"
+#include "test_loads_device.h"
 #include "main.h" // bt_global::config
 
 // This empty function is required because frame_interpreter use a rearmWDT
@@ -24,7 +25,6 @@ void rearmWDT() {}
 
 // move this somewhere else (generic_functions.cpp?): we can't link main.cpp
 QHash<GlobalFields, QString> bt_global::config;
-
 
 int main(int argc, char *argv[])
 {
@@ -91,6 +91,9 @@ int main(int argc, char *argv[])
 
 	TestAdvancedAirConditioningDevice test_advanced_air_conditioning_device;
 	test_list << &test_advanced_air_conditioning_device;
+
+	TestLoadsDevice test_loads_device;
+	test_list << &test_loads_device;
 
 	QStringList arglist = app.arguments();
 	QString testingClass;

@@ -117,7 +117,7 @@ void PowerAmplifier::loadBanners(PowerAmplifierDevice *dev, const QDomNode &conf
 
 
 PowerAmplifierPreset::PowerAmplifierPreset(PowerAmplifierDevice *d, QWidget *parent, const QMap<int, QString>& preset_list)
-	: BannOnOffNew(parent)
+	: Bann2Buttons(parent)
 {
 	dev = d;
 
@@ -172,7 +172,7 @@ void PowerAmplifierPreset::status_changed(const StatusList &status_list)
 		{
 			int preset = it.value().toInt();
 			if (preset >= 0 && preset < num_preset)
-				setBannerText(preset_desc[preset]);
+				setDescriptionText(preset_desc[preset]);
 			else
 				qWarning("Preset value (%d) is out of admitted range! [0 - %d]", preset, num_preset);
 		}

@@ -14,7 +14,7 @@ class QDomNode;
 class SectionPage : public IconPage
 {
 Q_OBJECT
-public:
+protected:
 	SectionPage(const QDomNode &config_node);
 
 private:

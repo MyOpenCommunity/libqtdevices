@@ -1,15 +1,18 @@
 #ifndef BANN_ENERGY_H
 #define BANN_ENERGY_H
 
-#include "bann1_button.h"  // bannTextOnImage
 #include "bann2_buttons.h" // Bann2Buttons
+#include "bann3_buttons.h" // Bann3ButtonsLabel
 #include "energy_rates.h"  // EnergyRate
+#include "device.h"        // StatusList
+#include "bttime.h" // BtTime
 #include "device.h"        // StatusList
 
 struct EnergyRate;
+class EnergyDevice;
 
 
-class bannEnergyInterface : public bannTextOnImage
+class BannEnergyInterface : public Bann2Buttons
 {
 Q_OBJECT
 public:
@@ -18,7 +21,7 @@ public:
 	 * \param n_dec the number of decimals to show in the labels
 	 * \param is_electricity true if we are measuring electricity
 	 */
-	bannEnergyInterface(QWidget *parent, int rate_id, bool is_ele);
+	BannEnergyInterface(int rate_id, bool is_ele, const QString &description);
 	void setUnitMeasure(const QString &m);
 	void updateText();
 
@@ -33,6 +36,20 @@ private:
 	QString measure;
 	bool is_electricity;
 	EnergyRate rate;
+};
+
+
+class BannCurrentEnergy : public Bann2Buttons
+{
+public:
+	BannCurrentEnergy(const QString &text, EnergyDevice *dev);
+
+protected:
+	virtual void showEvent(QShowEvent *e);
+	virtual void hideEvent(QHideEvent *e);
+
+private:
+	EnergyDevice *dev;
 };
 
 
@@ -56,6 +73,54 @@ private slots:
 private:
 	EnergyRate rate;
 	float current_value;
+};
+
+
+class BannLoadNoCU : public Bann3ButtonsLabel
+{
+Q_OBJECT
+public:
+	// TODO: Add device
+	BannLoadNoCU(const QString &descr);
+	void connectRightButton(Page *p);
+};
+
+
+class BannLoadWithCU : public Bann3ButtonsLabel
+{
+Q_OBJECT
+public:
+	enum Type
+	{
+		BASE_MODE,
+		ADVANCED_MODE,
+	};
+	BannLoadWithCU(const QString &descr, Type t);
+	void connectRightButton(Page *p);
+
+signals:
+	// this should be emitted only if the device is active
+	void deactivateDevice();
+};
+
+
+
+class DeactivationTime : public Bann2Buttons
+{
+Q_OBJECT
+public:
+	DeactivationTime(const BtTime &start_time);
+	// TODO: this interface supports user cancel. If it's not needed, just use a timeChanged() signal
+	BtTime currentTime() const;
+	void setCurrentTime(const BtTime &t);
+
+private:
+	void updateDisplay();
+	BtTime current_time;
+
+private slots:
+	void plusClicked();
+	void minusClicked();
 };
 
 #endif // BANN_ENERGY_H

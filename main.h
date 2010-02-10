@@ -156,6 +156,7 @@ enum Section
 	TERMOREG_MULTI_PLANT=15,                      /*!< Thermoregulation system with one or more 4-zones plants */
 	ENERGY_MANAGEMENT=16,                         /*!< Energy management system */
 	ENERGY_DATA=17,                               /*!< Energy data system */
+	LOAD_MANAGEMENT=18,                           /*!< Load management system */
 	FEED_READER=99,                               /*!< Feed reader page */
 	/* Added to avoid compile problems... */
 	MULTIMEDIA=26,
@@ -182,6 +183,7 @@ enum Section
 	TERMOREG_MULTI_PLANT=-3,                      /*!< Thermoregulation system with one or more 4-zones plants */
 	ENERGY_MANAGEMENT=-4,                         /*!< Energy management system */
 	ENERGY_DATA=-5,                               /*!< Energy data system */
+	LOAD_MANAGEMENT=18,                           /*!< Load management system */
 	FEED_READER=-6,                               /*!< Feed reader page */
 };
 #endif
@@ -423,6 +425,8 @@ enum  bannerType
 	AIR_GENERAL_ADV=78,                           /*!< AIR conditioning general split (advanced) */
 	BEEP_ICON=2901,                               /*!< Beep icon in touch 10 settings */
 	RINGTONE=2060,                                /*!< Ringtone selection banner in touch 10 settings */
+	LOAD_WITH_CU=80,                              /*!< Load with central unit */
+	LOAD_WITHOUT_CU=81,                           /*!< Load without central unit */
 };
 
 #endif //MAIN_H

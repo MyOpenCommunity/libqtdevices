@@ -27,12 +27,12 @@ BannSinglePuls::BannSinglePuls(QWidget *parent) :
 	right_button = new BtButton;
 	connect(right_button, SIGNAL(clicked()), SIGNAL(rightClick()));
 	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
-	center_icon = new QLabel;
+	center = new TextOnImageLabel;
 
 	QHBoxLayout *hbox = new QHBoxLayout;
 	hbox->setContentsMargins(0, 0, 0, 0);
 	hbox->setSpacing(0);
-	hbox->addWidget(center_icon, 1, Qt::AlignRight);
+	hbox->addWidget(center, 1, Qt::AlignRight);
 	hbox->addWidget(right_button, 0, Qt::AlignRight);
 
 	QVBoxLayout *l = new QVBoxLayout(this);
@@ -42,19 +42,19 @@ BannSinglePuls::BannSinglePuls(QWidget *parent) :
 	l->addWidget(text);
 }
 
-void BannSinglePuls::initBanner(const QString &right, const QString &center, const QString &banner_text)
+void BannSinglePuls::initBanner(const QString &right, const QString &_center, const QString &banner_text)
 {
-	loadIcons(right, center);
+	right_button->setImage(right);
+	center->setBackgroundImage(_center);
 	text->setText(banner_text);
 	// always set a text on the label, otherwise the sizeHint() height changes
 	if (banner_text.isEmpty())
 		text->setText(" ");
 }
 
-void BannSinglePuls::loadIcons(const QString &right, const QString &center)
+void BannSinglePuls::setCentralText(const QString &t)
 {
-	right_button->setImage(right);
-	center_icon->setPixmap(*bt_global::icons_cache.getIcon(center));
+	center->setInternalText(t);
 }
 
 void BannSinglePuls::connectRightButton(Page *p)
@@ -214,26 +214,6 @@ bannBut2Icon::bannBut2Icon(QWidget *parent) : BannerOld(parent)
 	addItem(ICON2, BUT_DIM + BANNBUT2ICON_ICON_DIM_X, 0, BANNBUT2ICON_ICON_DIM_X, BANNBUT2ICON_ICON_DIM_Y);
 	addItem(TEXT, 0, BUT_DIM, banner_width, banner_height - BUT_DIM);
 }
-
-
-bannTextOnImage::bannTextOnImage(QWidget *parent, const QString &text, QString bg_image, QString fwd_image) : BannerOld(parent)
-{
-	label = new TextOnImageLabel(this, text);
-	QString img = bt_global::skin->getImage(bg_image);
-	QPixmap *p = bt_global::icons_cache.getIcon(img);
-	label->setBackgroundImage(img);
-	int left = banner_width - BUT_DIM - p->width();
-	label->setGeometry(left, 0,  p->width() ,BANPULS_ICON_DIM_Y);
-	addItem(BUT1, banner_width-BUT_DIM, 0, BUT_DIM, BUT_DIM);
-	addItem(TEXT, left, BUT_DIM, p->width() , banner_height - BUT_DIM);
-	SetIcons(bt_global::skin->getImage(fwd_image), 1);
-}
-
-void bannTextOnImage::setInternalText(const QString &text)
-{
-	label->setInternalText(text);
-}
-
 
 
 BannStates::BannStates(QWidget *parent) : BannerNew(parent)

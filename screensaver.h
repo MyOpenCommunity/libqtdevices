@@ -55,7 +55,6 @@ public:
 	static void initData(const QDomNode &config_node);
 
 protected:
-	Page *page;
 	Window *window;
 	static QString text;
 	ScreenSaver(int refresh_time);

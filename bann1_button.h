@@ -34,8 +34,9 @@ class BannSinglePuls : public BannerNew
 Q_OBJECT
 public:
 	BannSinglePuls(QWidget *parent);
-	void initBanner(const QString &right, const QString &center, const QString &banner_text);
+	void initBanner(const QString &right, const QString &_center, const QString &banner_text);
 	void connectRightButton(Page *p);
+	void setCentralText(const QString &t);
 
 signals:
 	void rightClick();
@@ -44,8 +45,8 @@ protected:
 	BtButton *right_button;
 
 private:
-	void loadIcons(const QString &right, const QString &center);
-	QLabel *center_icon, *text;
+	QLabel *text;
+	TextOnImageLabel *center;
 };
 
 
@@ -172,18 +173,6 @@ class bannBut2Icon : public BannerOld
 Q_OBJECT
 public:
 	bannBut2Icon(QWidget *);
-};
-
-
-class bannTextOnImage : public BannerOld
-{
-Q_OBJECT
-public:
-	bannTextOnImage(QWidget *parent, const QString &text = QString(), QString bg_image = "empty_icon", QString fwd_image = "forward");
-	void setInternalText(const QString &text);
-
-private:
-	TextOnImageLabel *label;
 };
 
 
