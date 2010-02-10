@@ -43,7 +43,12 @@ class LoadDataContent : public QWidget
 {
 Q_OBJECT
 public:
-	LoadDataContent(int rate_id = -1);
+	/**
+	 * \param dec Number of decimals to display when in energy view
+	 * \param _rate_id Rate id to be used for economic data conversions
+	 */
+	LoadDataContent(int dec, int _rate_id = -1);
+
 	/**
 	 * Set text on consumption label
 	 */
@@ -63,14 +68,18 @@ public:
 	 */
 	void updatePeriodValue(int period, int new_value);
 
+public slots:
+	void toggleCurrencyView();
+
 private:
 	void updateValues();
 	QLabel *current_consumption;
 	QSignalMapper mapper;
 	Bann2Buttons *first_period, *second_period;
 	int first_period_value, second_period_value, current_value;
-	int rate_id;
+	int rate_id, decimals;
 	EnergyRate rate;
+	bool is_currency;
 
 private slots:
 	void rateChanged(int id);

@@ -7,6 +7,7 @@
 #include "fontmanager.h" // FontManager
 #include "navigation_bar.h" //NavigationBar
 #include "bann2_buttons.h" // Bann2Buttons
+#include "energy_device.h" // EnergyConversions
 
 #include <QLabel>
 #include <QDebug>
@@ -15,6 +16,7 @@
 
 namespace
 {
+
 	QString getDescriptionWithPriority(const QDomNode &n)
 	{
 		QString where = getTextChild(n, "where");
@@ -28,19 +30,47 @@ namespace
 		return priority + ". " + descr;
 	}
 
+	bool tryConvert(const QDomNode &n, const QString &node_path, int *value)
+	{
+		Q_ASSERT_X(value, "tryConvert", "value must be a valid pointer!");
+		QDomElement e = getElement(n, node_path);
+		bool ok;
+		*value = e.text().toInt(&ok);
+		if (!ok)
+			qDebug() << "tryConvert failed converting node: " << node_path << "Text was: " << e.text();
+		return ok;
+	}
+
 	bool isRateEnabled(const QDomNode &n)
 	{
-		QDomElement e = getElement(n, "rate/ab");
-		bool ok;
-		int tmp = e.text().toInt(&ok);
-		if (ok)
+		int tmp;
+		if (tryConvert(n, "rate/ab", &tmp))
 			return (tmp == 1);
 		else
-		{
-			qDebug() << "isRateEnabled() failed, text was: " << e.text();
 			return false;
-		}
 	}
+
+	// Extract rate/rate_id from given node; return INVALID_RATE on errors
+	int getRateId(const QDomNode &n)
+	{
+		int tmp;
+		if (tryConvert(n, "rate/rate_id", &tmp))
+			return tmp;
+		else
+			return EnergyRates::INVALID_RATE;
+	}
+
+	int getDecimals(const QDomNode &n)
+	{
+		int tmp;
+		if (tryConvert(n, "rate/n_decimal_view", &tmp))
+			return tmp;
+		else
+			return 0;
+	}
+
+	// The language used for the floating point number
+	QLocale loc(QLocale::Italian);
 }
 LoadManagement::LoadManagement(const QDomNode &config_node) :
 	BannerPage(0)
@@ -126,7 +156,7 @@ ConfirmationPage::ConfirmationPage(const QString &text)
 }
 
 
-LoadDataContent::LoadDataContent(int _rate_id)
+LoadDataContent::LoadDataContent(int dec, int _rate_id)
 {
 	const int FIRST_RESET = 1;
 	const int SECOND_RESET = 2;
@@ -134,16 +164,19 @@ LoadDataContent::LoadDataContent(int _rate_id)
 	current_consumption = new QLabel;
 	current_consumption->setText("Current consumption");
 	current_consumption->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	current_value = 0;
 
 	first_period = new Bann2Buttons;
 	first_period->initBanner(QString(), bt_global::skin->getImage("empty_background"), bt_global::skin->getImage("ok"), "data/ora del reset");
 	first_period->setCentralText("Total consumption 1");
+	first_period_value = 0;
 	connect(first_period, SIGNAL(rightClicked()), &mapper, SLOT(map()));
 	mapper.setMapping(first_period, FIRST_RESET);
 
 	second_period = new Bann2Buttons;
 	second_period->initBanner(QString(), bt_global::skin->getImage("empty_background"), bt_global::skin->getImage("ok"), "data/ora del reset");
 	second_period->setCentralText("Total consumption 2");
+	second_period_value = 0;
 	connect(second_period, SIGNAL(rightClicked()), &mapper, SLOT(map()));
 	mapper.setMapping(second_period, SECOND_RESET);
 
@@ -159,11 +192,14 @@ LoadDataContent::LoadDataContent(int _rate_id)
 	rate_id = _rate_id;
 	rate = EnergyRates::energy_rates.getRate(rate_id);
 	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
+	is_currency = false;
+	decimals = dec;
 }
 
 void LoadDataContent::updatePeriodDate(int period, QDate date, BtTime time)
 {
-	QString text = date.toString() + " " + time.toString();
+	QString time_str = QString("%1:%2").arg(time.hour()).arg(time.minute(), 2, 10, QChar('0'));
+	QString text = date.toString() + " " + time_str;
 	if (period == 1)
 	{
 		first_period->setDescriptionText(text);
@@ -197,6 +233,12 @@ void LoadDataContent::setConsumptionValue(int new_value)
 	updateValues();
 }
 
+void LoadDataContent::toggleCurrencyView()
+{
+	is_currency = !is_currency;
+	updateValues();
+}
+
 void LoadDataContent::rateChanged(int id)
 {
 	if (id == rate_id)
@@ -208,19 +250,43 @@ void LoadDataContent::rateChanged(int id)
 
 void LoadDataContent::updateValues()
 {
-	// TODO: update all values
-	// TODO: do conversions
-}
+	float current = EnergyConversions::convertToRawData(current_value, EnergyConversions::ELECTRICITY_CURRENT);
+	float period1 = EnergyConversions::convertToRawData(first_period_value, EnergyConversions::ELECTRICITY_CURRENT);
+	float period2 = EnergyConversions::convertToRawData(second_period_value, EnergyConversions::ELECTRICITY_CURRENT);
+	int dec = decimals;
+	QString unit_current = "kW";
+	QString unit_period = "kWh";
+	if (is_currency)
+	{
+		current = EnergyConversions::convertToMoney(current, rate.rate);
+		period1 = EnergyConversions::convertToMoney(period1, rate.rate);
+		period2 = EnergyConversions::convertToMoney(period2, rate.rate);
+		dec = rate.display_decimals;
+		unit_current = unit_period = rate.currency_symbol;
+	}
 
-// TODO: update banner values. These are the steps
-// - current and total consumption: convert using convertToRawData(), with ELECTRICITY_CURRENT as parameter
-// - create the text for the label, use the precision specified in conf file
+	current_consumption->setText(QString("%1 %2").arg(loc.toString(current, 'f', dec)).arg(unit_current));
+	first_period->setCentralText(QString("%1 %2").arg(loc.toString(period1, 'f', dec)).arg(unit_period));
+	second_period->setCentralText(QString("%1 %2").arg(loc.toString(period2, 'f', dec)).arg(unit_period));
+}
 
 
 LoadDataPage::LoadDataPage(const QDomNode &config_node)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	content = new LoadDataContent;
+	// measure unit here will always be kWh
+	QString forward_button;
+	int rate_id = -1;
+	if (isRateEnabled(config_node))
+	{
+		forward_button = bt_global::skin->getImage("currency_exchange");
+		rate_id = getRateId(config_node);
+	}
+	int decimals = getDecimals(config_node);
+	content = new LoadDataContent(decimals, rate_id);
+
+	NavigationBar *nav_bar = new NavigationBar(forward_button);
+	connect(nav_bar, SIGNAL(forwardClick()), content, SLOT(toggleCurrencyView()));
 
 	QLabel *page_title = new QLabel(getDescriptionWithPriority(config_node));
 	page_title->setFont(bt_global::font->get(FontManager::TEXT));
@@ -234,13 +300,6 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node)
 	connect(confirm, SIGNAL(accept()), SLOT(reset()));
 	reset_number = 0;
 
-	// read the correct measure unit
-	QString forward_button;
-	if (isRateEnabled(config_node))
-		forward_button = bt_global::skin->getImage("currency_exchange");
-	// measure unit here will always be kWh
-
-	NavigationBar *nav_bar = new NavigationBar(forward_button);
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	QVBoxLayout *main = new QVBoxLayout(this);
