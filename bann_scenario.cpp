@@ -8,6 +8,7 @@
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "scenario_device.h"
 #include "xml_functions.h" // getTextChild
+#include "scenevomanager.h"
 
 #include <QDebug>
 #include <QLabel>

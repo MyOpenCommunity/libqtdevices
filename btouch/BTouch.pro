@@ -35,5 +35,8 @@ include(../devices.pri)
 
 # Add SOURCES and HEADERS with BTouch-specific source files
 
-HEADERS += settings.h
-SOURCES += settings.cpp
+HEADERS += scenevomanager.h \
+           settings.h
+
+SOURCES += scenevomanager.cpp \
+           settings.cpp

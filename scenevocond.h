@@ -1,7 +1,6 @@
 #ifndef _SCENEVOCOND_H_
 #define _SCENEVOCOND_H_
 
-#include "page.h"
 #include "main.h"
 #include "datetime.h" //BtTimeEdit
 
@@ -10,7 +9,6 @@
 
 class BtButton;
 class DeviceCondition;
-class QStackedLayout;
 
 /**
  * This class is an abstract page that represent an evolved scenario condition.
@@ -93,29 +91,5 @@ private:
 	DeviceCondition *device_cond;
 };
 
-
-/**
- * The graphical manager for the evolved scenarios page.
- */
-class ScenEvoManager : public Page
-{
-Q_OBJECT
-public:
-	ScenEvoManager(ScenEvoTimeCondition *time_cond, ScenEvoDeviceCondition *device_cond);
-
-signals:
-	void reset();
-	void save();
-
-private slots:
-	void prev();
-	void next();
-	void ok();
-
-private:
-	BtButton *next_button;
-	QStackedLayout *conditions_stack;
-	void manageNextButton();
-};
 
 #endif // _SCENEVOCOND_H_
