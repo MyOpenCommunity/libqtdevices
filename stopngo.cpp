@@ -87,58 +87,6 @@
 
 
 /*==================================================================================================
-	StopngoItem class definition
-==================================================================================================*/
-
-StopngoItem::StopngoItem(int _id, int _cid, QString _descr, QString _where)
-{
-	id = _id;
-	cid = _cid;
-	descr = _descr;
-	where = _where;
-}
-
-void StopngoItem::SetId(int _id)
-{
-	id = id;
-}
-
-void StopngoItem::SetCid(int _cid)
-{
-	cid = _cid;
-}
-
-void StopngoItem::SetDescr(QString _descr)
-{
-	descr = descr;
-}
-
-void StopngoItem::SetWhere(QString _where)
-{
-	where = where;
-}
-
-int StopngoItem::GetId()
-{
-	return id;
-}
-
-int StopngoItem::GetCid()
-{
-	return cid;
-}
-
-QString StopngoItem::GetDescr()
-{
-	return descr;
-}
-
-QString StopngoItem::GetWhere()
-{
-	return where;
-}
-
-/*==================================================================================================
 	BannPulsDynIcon class definition
 ==================================================================================================*/
 

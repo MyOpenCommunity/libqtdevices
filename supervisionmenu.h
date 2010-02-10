@@ -33,23 +33,15 @@ class SupervisionMenu : public BannerPage
 Q_OBJECT
 public:
 	SupervisionMenu(const QDomNode &config_node);
-	~SupervisionMenu();
-
-private:
-	BannerPage *stopngoSubmenu;
-	QList<StopngoItem*> stopngoList;
-	QList<Page*> stopngoPages;
-	int classesCount;
-
-	void Create2ButBanner(QDomElement, QString, QString);
-	void CreateStopnGoMenu(QDomNode, bannPuls*);
-	void loadItems(const QDomNode &config_node);
 
 public slots:
 	virtual void showPage();
 
-signals:
-	void quickOpen();
+private:
+	void loadItems(const QDomNode &config_node);
+
+private:
+	Page *next_page;
 };
 
 
@@ -57,7 +49,20 @@ class StopNGoMenu : public BannerPage
 {
 Q_OBJECT
 public:
-	StopNGoMenu(QList<StopngoItem*> stopngoList);
+	StopNGoMenu(const QDomNode &conf_node);
+
+	virtual void showPage();
+
+private:
+	Page *next_page;
+};
+
+
+class LoadDiagnosticPage : public BannerPage
+{
+Q_OBJECT
+public:
+	LoadDiagnosticPage(const QDomNode &config_node);
 };
 
 #endif
