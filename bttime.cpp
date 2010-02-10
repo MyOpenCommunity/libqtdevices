@@ -105,6 +105,9 @@ BtTime BtTime::addSecond(int s) const
 
 BtTime BtTime::addMinute(int m) const
 {
+	if (-m > max_minutes)
+		qFatal("You can't subtract more than max_minutes.");
+
 	BtTime t = *this;
 	if (m == 1)
 	{
@@ -127,7 +130,18 @@ BtTime BtTime::addMinute(int m) const
 			--t._minute;
 	}
 	else
-		qFatal("BtTime::addHour(): _minute != +-1");
+	{
+		int tmp = t._minute + m;
+		t._minute = (tmp + max_minutes) % max_minutes;
+		int div = 0;
+		if (m < 0 && tmp < 0)
+		{
+			div = -((max_minutes - m) / max_minutes);
+		}
+		else
+			div = tmp / max_minutes;
+		t = t.addHour(div);
+	}
 	return t;
 }
 
@@ -153,7 +167,7 @@ BtTime BtTime::addHour(int h) const
 			--t._hour;
 	}
 	else
-		qFatal("BtTime::addHour(): _hour != +-1");
+		t._hour = (t._hour + h + max_hours) % max_hours;
 	return t;
 }
 
@@ -175,7 +189,7 @@ int BtTime::second() const
 QString BtTime::toString() const
 {
 	QString str;
-	str.sprintf("%u:%02u:%02u", _hour, _minute, _second);
+	str.sprintf("%d:%02d:%02d", _hour, _minute, _second);
 	return str;
 }
 

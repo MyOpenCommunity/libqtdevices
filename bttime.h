@@ -19,6 +19,7 @@ class QTime;
 
 class BtTime
 {
+friend class TestBtTime;
 public:
 	/**
 	 * Constructs a BtTime with given hour, minute and second. The default value for
