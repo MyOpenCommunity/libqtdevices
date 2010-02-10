@@ -155,9 +155,8 @@ LoadDiagnosticPage::LoadDiagnosticPage(const QDomNode &config_node)
 	{
 		SkinContext cxt(getTextChild(item, "cid").toInt());
 
-		// TODO energy: use devices cache
-		banner *b = new BannLoadDiagnostic(new LoadsDevice(getTextChild(item, "where")),
-						   getTextChild(item, "descr"));
+		device *dev = bt_global::add_device_to_cache(new LoadsDevice(getTextChild(item, "where")));
+		banner *b = new BannLoadDiagnostic(dev, getTextChild(item, "descr"));
 		page_content->appendBanner(b);
 	}
 }
