@@ -38,6 +38,8 @@ private:
 };
 
 
+// displays the current consumption value for the device; when shown,
+// calls requestCurrentUpdateStart(), requestCurrentUpdateStop() when hidden
 class BannCurrentEnergy : public Bann2Buttons
 {
 public:
@@ -52,6 +54,7 @@ private:
 };
 
 
+// allows modifying the tariff for the given rate_id
 class BannEnergyCost : public Bann2Buttons
 {
 Q_OBJECT
@@ -75,6 +78,8 @@ private:
 };
 
 
+// displays the current load for an actuator (normal, close to limit,
+// above limit) using three icons
 class BannLoadDiagnostic : public Bann2Buttons
 {
 Q_OBJECT

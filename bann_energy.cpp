@@ -168,12 +168,15 @@ void BannEnergyCost::resetRate()
 }
 
 
+// BannLoadDiagnostic implementation
+
 BannLoadDiagnostic::BannLoadDiagnostic(device *dev, const QString &description) :
 	Bann2Buttons(0)
 {
 	state_icon = bt_global::skin->getImage("state_icon");
 
 	initBanner(state_icon, QString(), description, FontManager::TEXT);
+	// the left button is used like a label, to avoid creating yet another banner
 	left_button->disable();
 
 	setState(LoadsDevice::LOAD_OK);
@@ -195,6 +198,8 @@ void BannLoadDiagnostic::setState(int state)
 }
 
 
+// BannLoadNoCU implementation
+
 BannLoadNoCU::BannLoadNoCU(const QString &descr) : Bann3ButtonsLabel(0)
 {
 	initBanner(QString(), QString(), QString(), bt_global::skin->getImage("load"), bt_global::skin->getImage("info"),
@@ -207,6 +212,7 @@ void BannLoadNoCU::connectRightButton(Page *p)
 }
 
 
+// BannLoadWithCU implementation
 
 BannLoadWithCU::BannLoadWithCU(const QString &descr, Type t) : Bann3ButtonsLabel(0)
 {
