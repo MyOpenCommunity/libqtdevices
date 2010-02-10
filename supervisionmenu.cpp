@@ -17,6 +17,11 @@
 #include "main.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bannercontent.h"
+#include "skinmanager.h"
+#include "bann2_buttons.h"
+#include "bann_energy.h" // BannLoadDiagnostic
+#include "devices_cache.h"
+#include "loads_device.h"
 
 #include <QDebug>
 
@@ -24,26 +29,19 @@
 
 #define STOPNGO_BANN_IMAGE ICON_STOPNGO_CHIUSO
 
-static Page *getStopNgoPage(Page *back, bannPuls* bnr, StopngoItem* itm)
-{
-	StopngoPage* pg = new StopngoPage(itm->GetWhere(), itm->GetId(), itm->GetDescr());
-
-	QObject::connect(bnr, SIGNAL(sxClick()), pg, SLOT(showPage()));
-	QObject::connect(pg, SIGNAL(Closed()), back, SLOT(showPage()));
-
-	return pg;
-}
 
 SupervisionMenu::SupervisionMenu(const QDomNode &config_node)
 {
-	stopngoSubmenu = NULL;
+	next_page = NULL;
 	buildPage();
 	loadItems(config_node);
 }
 
 void SupervisionMenu::loadItems(const QDomNode &config_node)
 {
-	classesCount = 0;
+	// TODO energy: check if there can only be one class
+	int classesCount = 0;
+	BannerPage *stopngo_page = NULL, *loads_page = NULL;
 
 	foreach (const QDomNode &node, getChildren(config_node, "class"))
 	{
@@ -59,7 +57,12 @@ void SupervisionMenu::loadItems(const QDomNode &config_node)
 			b->setId(id);
 			b->Draw();
 			page_content->appendBanner(b);
-			CreateStopnGoMenu(node, b);
+
+			stopngo_page = new StopNGoMenu(node);
+
+			b->connectDxButton(stopngo_page);
+			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+
 			++classesCount;
 			break;
 		}
@@ -68,84 +71,93 @@ void SupervisionMenu::loadItems(const QDomNode &config_node)
 		}
 	}
 
-	if (classesCount == 1)  // Only one class has been defined in the supervision section of conf.xml
+	QDomElement loads = getElement(config_node, "load");
+	if (!loads.isNull())
 	{
-		bannPuls* bann = static_cast<bannPuls*>(page_content->getBanner(page_content->bannerCount() - 1));
-		connect(this, SIGNAL(quickOpen()), bann, SIGNAL(sxClick()));
+		SkinContext cxt(getTextChild(loads, "cid").toInt());
 
-		if (stopngoSubmenu)  // Check is the only submenu is a stopngo menu
-		{
-			if (this == stopngoSubmenu)  // Only one Stop&Go device is mapped
-			{
-				Page* pg = stopngoPages.first();
-				if (pg)
-				{
-					disconnect(pg, SIGNAL(Closed()), this, SLOT(showFullScreen()));
-					connect(pg, SIGNAL(Closed()), this, SIGNAL(Closed()));
-				}
-			}
-			else  // A Stop&Go submenu instance has been created
-			{
-				disconnect(stopngoSubmenu, SIGNAL(Closed()), this, SLOT(showPage()));
-				connect(stopngoSubmenu, SIGNAL(Closed()), this, SIGNAL(Closed()));
-			}
-		}
-	}
-}
+		BannSinglePuls *b = new BannSinglePuls(0);
+		b->initBanner(bt_global::skin->getImage("forward"),
+			      bt_global::skin->getImage("center_icon"),
+			      getTextChild(loads, "descr"));
 
-void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
-{
-	QList<StopngoItem*> stopngoList;
+		page_content->appendBanner(b);
 
-	foreach (const QDomNode &item, getChildren(node, "item"))
-	{
-		int id = getTextChild(item, "id").toInt();
-		int cid = getTextChild(item, "cid").toInt();
-		QString descr = getTextChild(item, "descr");
-		QString where = getTextChild(item, "where");
-		stopngoList.append(new StopngoItem(id, cid, descr, where));
+		loads_page = new LoadDiagnosticPage(loads);
+		b->connectRightButton(loads_page);
+		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 
-	if (stopngoList.size() > 1)  // more than one device
+	// skip page if only one item
+	if ((loads_page && classesCount == 0) || (!loads_page && classesCount == 1))
 	{
-		// Show a submenu listing the devices to control
-		stopngoSubmenu = new StopNGoMenu(stopngoList);
-		connect(bann, SIGNAL(sxClick()), stopngoSubmenu, SLOT(showPage()));  // Connect submenu
-		connect(stopngoSubmenu, SIGNAL(Closed()), this, SLOT(showPage()));
-	}
-	else if (stopngoList.size() == 1)  // one device
-	{
-		// directly open the only available device page
-		stopngoSubmenu = this;
-		Page *pg = getStopNgoPage(this, bann, stopngoList.at(0));
-		stopngoPages.append(pg);
+		next_page = loads_page ? loads_page : stopngo_page;
+
+		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 	}
 }
 
 void SupervisionMenu::showPage()
 {
-	qDebug("SupervisionMenu::showPage()");
-	if (classesCount == 1)
-		emit quickOpen();
+	if (next_page)
+		next_page->showPage();
 	else
 		BannerPage::showPage();
 }
 
-StopNGoMenu::StopNGoMenu(QList<StopngoItem*> stopngoList)
+
+StopNGoMenu::StopNGoMenu(const QDomNode &conf_node)
 {
 	buildPage();
 
-	for (int i = 0; i < stopngoList.size(); ++i)
+	QList<QDomNode> items = getChildren(conf_node, "item");
+	foreach (const QDomNode &item, items)
 	{
-		StopngoItem *itm = stopngoList.at(i);
-		BannPulsDynIcon *bp = new BannPulsDynIcon(this, itm->GetWhere());  // Create a new banner
+		int id = getTextChild(item, "id").toInt();
+		QString descr = getTextChild(item, "descr");
+		QString where = getTextChild(item, "where");
+
+		BannPulsDynIcon *bp = new BannPulsDynIcon(this, where);  // Create a new banner
 		bp->SetIcons(ICON_FRECCIA_DX, 0, ICON_STOPNGO_CHIUSO);
-		bp->setText(itm->GetDescr());
+		bp->setText(descr);
 		bp->setAnimationParams(0, 0);
-		bp->setId(itm->GetId());
+		bp->setId(id);
 		bp->Draw();
 
-		page_content->appendBanner(bp);  // Add the new banner to the submenu
-		getStopNgoPage(this, bp, itm);  // Connect the new banner to the page
+		page_content->appendBanner(bp);
+
+		next_page = new StopngoPage(where, id, descr);
+		bp->connectDxButton(next_page);
+		connect(bp, SIGNAL(pageClosed()), SLOT(showPage()));
+	}
+
+	// skip list if there's only one item
+	if (items.size() > 1)
+		next_page = NULL;
+	else
+		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
+}
+
+void StopNGoMenu::showPage()
+{
+	if (next_page)
+		next_page->showPage();
+	else
+		BannerPage::showPage();
+}
+
+
+LoadDiagnosticPage::LoadDiagnosticPage(const QDomNode &config_node)
+{
+	buildPage();
+
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		SkinContext cxt(getTextChild(item, "cid").toInt());
+
+		// TODO energy: use devices cache
+		banner *b = new BannLoadDiagnostic(new LoadsDevice(getTextChild(item, "where")),
+						   getTextChild(item, "descr"));
+		page_content->appendBanner(b);
 	}
 }
