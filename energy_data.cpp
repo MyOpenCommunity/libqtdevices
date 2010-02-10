@@ -271,7 +271,7 @@ void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_
 		QString measure = getTextChild(item, "measure");
 
 		bool is_currency_enabled = getElement(item, "rate/ab").text().toInt();
-		int rate_id = is_currency_enabled ? getElement(item, "rate/rate_id").text().toInt() : -1;
+		int rate_id = is_currency_enabled ? getElement(item, "rate/rate_id").text().toInt() : EnergyRates::INVALID_RATE;
 
 		// check if any of the interfaces have currency enabled
 		show_currency_button |= is_currency_enabled;
