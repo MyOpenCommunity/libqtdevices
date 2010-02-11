@@ -157,8 +157,6 @@ BtMain::BtMain()
 	rearmWDT();
 
 	calibrating = false;
-	event_unfreeze = false;
-	firstTime = true;
 	pagDefault = NULL;
 	Home = NULL;
 	screen = NULL;
@@ -166,6 +164,7 @@ BtMain::BtMain()
 	alreadyCalibrated = false;
 	svegliaIsOn = false;
 	tempo_last_ev = 0;
+	bloccato = false;
 
 	tasti = NULL;
 	pwdOn = false;
@@ -547,7 +546,7 @@ void BtMain::makeActiveAndFreeze()
 	{
 		screensaver->stop();
 		bt_global::display.setState(DISPLAY_FREEZED);
-		event_unfreeze = true; // gesScrSav must die
+		tempo_last_ev = now();
 
 		if (pwdOn)
 			freeze(true);
@@ -566,112 +565,80 @@ void BtMain::gesScrSav()
 
 	if (bt_global::display.isForcedOperativeMode())
 		return;
+	if (svegliaIsOn || calibrating)
+		return;
 
 	int tempo_press = getTimePress();
-	if (event_unfreeze)
-	{
-		tempo_last_ev = now();
-		event_unfreeze = false;
-	}
 	int tempo = qMin(tempo_press, int(now() - tempo_last_ev));
 
-	if (!firstTime)
+	if (tempo < 5 && bloccato)
 	{
-		if  (tempo >= freeze_time && getBacklight())
+		// this is needed to unfreeze the screen when the user clicks;
+		// when switching to the event filter for arm, this unfreeze call
+		// can be moved to the event filter
+		freeze(false);
+	}
+	else if (screenoff_time != 0 && tempo >= screenoff_time &&
+		 bt_global::display.currentState() == DISPLAY_SCREENSAVER)
+	{
+		qDebug() << "Turning screen off";
+		bt_global::display.setState(DISPLAY_OFF);
+	}
+	else if (tempo >= freeze_time && getBacklight() && !bloccato)
+	{
+		freeze(true);
+	}
+	else if (tempo >= screensaver_time)
+	{
+		if (bt_global::display.currentState() == DISPLAY_OPERATIVE &&
+		    pagDefault && page_container->currentPage() != pagDefault)
 		{
-			if (!svegliaIsOn)
+			pagDefault->showPage();
+		}
+
+		// TODO discover if the "+ 5" is a fudge-factor
+		if (tempo >= screensaver_time + 5 && bt_global::display.currentState() == DISPLAY_FREEZED)
+		{
+			ScreenSaver::Type target_screensaver = bt_global::display.currentScreenSaver();
+			// When the brightness is set to off in the old hardware the display
+			// is not really off, so it is required to use a screensaver to protect
+			// the display, even if the screensaver is not visible.
+			if (bt_global::display.currentBrightness() == BRIGHTNESS_OFF)
+				target_screensaver = ScreenSaver::LINES;
+
+			if (screensaver && screensaver->type() != target_screensaver)
 			{
-				if (!bloccato)
-					freeze(true);
-				screensaver_timer->start(SCREENSAVER_CHECK_FAST);
+				delete screensaver;
+				screensaver = 0;
 			}
-		}
-		else if (tempo <= 5 && bloccato)
-		{
-			// TODO this should never happen: if last touch is < 5 seconds ago,
-			//      the screen can't be frozen
-			screensaver_timer->start(SCREENSAVER_CHECK_SLOW);
-		}
-		if  (tempo >= screensaver_time && !svegliaIsOn && !calibrating)
-		{
-			if (bt_global::display.currentState() == DISPLAY_OPERATIVE &&
-			    pagDefault && page_container->currentPage() != pagDefault)
+
+			if (!screensaver)
+				screensaver = getScreenSaver(target_screensaver);
+
+			// TODO move the code until the end of the block to PageStack and/or ScreenSaver
+			Page *prev_page = page_container->currentPage();
+
+			page_container->blockTransitions(true);
+			if (pagDefault)
 			{
+				unrollPages();
 				pagDefault->showPage();
 			}
-
-			if (screenoff_time != 0 && tempo >= screenoff_time &&
-			    bt_global::display.currentState() == DISPLAY_SCREENSAVER)
+			else
 			{
-				qDebug() << "Shutting screen off";
-				bt_global::display.setState(DISPLAY_OFF);
+				Home->showPage();
+				// this makes the screen saver go back to prev_page
+				// when exited
+				bt_global::page_stack.currentPageChanged(prev_page);
 			}
-			// TODO discover if the "+ 5" is a fudge-factor
-			else if (tempo >= screensaver_time + 5 && bt_global::display.currentState() == DISPLAY_FREEZED)
-			{
-				ScreenSaver::Type target_screensaver = bt_global::display.currentScreenSaver();
-				// When the brightness is set to off in the old hardware the display
-				// is not really off, so it is required to use a screensaver to protect
-				// the display, even if the screensaver is not visible.
-				if (bt_global::display.currentBrightness() == BRIGHTNESS_OFF)
-					target_screensaver = ScreenSaver::LINES;
 
-				if (screensaver && screensaver->type() != target_screensaver)
-				{
-					delete screensaver;
-					screensaver = 0;
-				}
-
-				if (!screensaver)
-					screensaver = getScreenSaver(target_screensaver);
-
-				// TODO move the code until the end of the block to PageStack and/or ScreenSaver
-				Page *prev_page = page_container->currentPage();
-
-				page_container->blockTransitions(true);
-				if (pagDefault)
-				{
-					unrollPages();
-					pagDefault->showPage();
-				}
-				else
-				{
-					Home->showPage();
-					// this makes the screen saver go back to prev_page
-					// when exited
-					bt_global::page_stack.currentPageChanged(prev_page);
-				}
-
-				window_container->homeWindow()->showWindow();
-				page_container->blockTransitions(false);
-				qDebug() << "start screensaver:" << target_screensaver << "on:" << page_container->currentPage();
-				screensaver->start(window_container->homeWindow());
-				emit startscreensaver(prev_page);
-				bt_global::display.setState(DISPLAY_SCREENSAVER);
-			}
+			window_container->homeWindow()->showWindow();
+			page_container->blockTransitions(false);
+			qDebug() << "start screensaver:" << target_screensaver << "on:" << page_container->currentPage();
+			screensaver->start(window_container->homeWindow());
+			emit startscreensaver(prev_page);
+			bt_global::display.setState(DISPLAY_SCREENSAVER);
 		}
-		else if (screensaver && screensaver->isRunning())
-		{
-			screensaver->stop();
-		}
-	}
-	else if (tempo >= startup_on_time)
-	{
-		// TODO if the block below is removed, this can be handled with
-		//      an one-shot timer, and firstTime can be removed
-		freeze(true);
-		screensaver_timer->start(SCREENSAVER_CHECK_FAST);
-		firstTime = false;
-	}
-	else if (tempo <= 5)
-	{
-		// TODO can probably be removed: when firstTime is true, the only
-		//      things that can cause the screen to freeze are:
-		// - the block above, but it can't be triggered, since tempo <= 5
-		// - the alarm clock, but it handles freezing/unfreezing itself
-		firstTime = false;
-		screensaver_timer->start(SCREENSAVER_CHECK_SLOW);
-		bloccato = false;
 	}
 }
 
@@ -706,12 +673,13 @@ void BtMain::freeze(bool b)
 
 	if (!bloccato)
 	{
-		event_unfreeze = true;
+		tempo_last_ev = now();
 		bt_global::display.setState(DISPLAY_OPERATIVE);
 		if (screensaver && screensaver->isRunning())
 		{
 			screensaver->stop();
 		}
+
 		if (pwdOn)
 		{
 			if (!tasti)
