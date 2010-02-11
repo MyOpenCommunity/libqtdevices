@@ -27,6 +27,7 @@ HEADERS += favoriteswidget.h \
            multimedia.h \
            multimedia_buttons.h \
            multimedia_filelist.h \
+           scenevomanager.h \
            slideshow.h \
            vctcall.h \
            videoplayer.h \
@@ -38,6 +39,7 @@ SOURCES += favoriteswidget.cpp \
            multimedia.cpp \
            multimedia_buttons.cpp \
            multimedia_filelist.cpp \
+           scenevomanager.cpp \           
            slideshow.cpp \
            vctcall.cpp \
            videoplayer.cpp \

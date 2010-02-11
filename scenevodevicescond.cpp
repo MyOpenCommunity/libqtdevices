@@ -23,6 +23,23 @@ static QLocale loc(QLocale::Italian);
 
 DeviceConditionDisplay::DeviceConditionDisplay(QWidget *parent, QString descr, QString top_icon) : QWidget(parent)
 {
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
+
+	up_button = new BtButton;
+	up_button->setImage(bt_global::skin->getImage("plus"));
+	connect(up_button, SIGNAL(clicked()), this, SIGNAL(upClicked()));
+
+	condition = new QLabel;
+	condition->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	condition->setFont(bt_global::font->get(FontManager::TEXT));
+
+	down_button = new BtButton;
+	down_button->setImage(bt_global::skin->getImage("minus"));
+	connect(down_button, SIGNAL(clicked()), this, SIGNAL(downClicked()));
+
+#ifdef LAYOUT_BTOUCH
 	QHBoxLayout *top_layout = new QHBoxLayout;
 	top_layout->setContentsMargins(0, 0, 0, 0);
 	top_layout->setSpacing(0);
@@ -36,31 +53,26 @@ DeviceConditionDisplay::DeviceConditionDisplay(QWidget *parent, QString descr, Q
 	description->setText(descr);
 	top_layout->addWidget(description, 1, Qt::AlignHCenter);
 
-	QVBoxLayout *main_layout = new QVBoxLayout(this);
-	main_layout->setContentsMargins(0, 0, 0, 0);
-	main_layout->setSpacing(0);
-
 	main_layout->addLayout(top_layout);
 	main_layout->addStretch(1);
 
 	QBoxLayout *central_layout = new QVBoxLayout;
+	central_layout->addWidget(up_button);
+	central_layout->addWidget(condition);
+	central_layout->addWidget(down_button);
 	central_layout->setContentsMargins(0, 0, 0, 0);
 	central_layout->setSpacing(12);
-
-	up_button = new BtButton;
-	up_button->setImage(bt_global::skin->getImage("plus"));
-	connect(up_button, SIGNAL(clicked()), this, SIGNAL(upClicked()));
-	central_layout->addWidget(up_button);
-
-	condition = new QLabel;
-	condition->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	condition->setFont(bt_global::font->get(FontManager::TEXT));
-	central_layout->addWidget(condition);
-
-	down_button = new BtButton;
-	down_button->setImage(bt_global::skin->getImage("minus"));
-	connect(down_button, SIGNAL(clicked()), this, SIGNAL(downClicked()));
-	central_layout->addWidget(down_button);
+#else
+	Q_UNUSED(descr)
+	Q_UNUSED(top_icon)
+	QGridLayout *central_layout = new QGridLayout;
+	central_layout->addWidget(down_button, 0, 0);
+	central_layout->addWidget(condition, 0, 1);
+	central_layout->addWidget(up_button, 0, 2);
+	central_layout->setColumnMinimumWidth(1, 80);
+	central_layout->setContentsMargins(0, 0, 0, 0);
+	central_layout->setSpacing(10);
+#endif
 
 	main_layout->addLayout(central_layout);
 }

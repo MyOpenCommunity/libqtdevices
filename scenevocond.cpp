@@ -39,10 +39,11 @@ ScenEvoTimeCondition::ScenEvoTimeCondition(int _item_id, const QDomNode &config_
 	main_layout->setContentsMargins(0, 5, 0, 10);
 	main_layout->setSpacing(0);
 
+#ifdef LAYOUT_BTOUCH
 	QLabel *top_image = new QLabel;
 	top_image->setPixmap(bt_global::skin->getImage("watch"));
 	main_layout->addWidget(top_image, 0, Qt::AlignHCenter);
-
+#endif
 	main_layout->addWidget(&time_edit, 0, Qt::AlignHCenter);
 
 	cond_time.setHMS(h.toInt(), m.toInt(), 0);
