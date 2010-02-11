@@ -52,6 +52,9 @@
 // The file name to watch to generate the \a configuration page
 #define FILE_AGGIORNAMENTO	   "MODALITA_AGGIORNAMENTO"
 
+// delay between two consecutive screensaver checks
+#define SCREENSAVER_CHECK_FAST    500
+#define SCREENSAVER_CHECK_SLOW   2000
 
 namespace
 {
@@ -168,6 +171,12 @@ BtMain::BtMain()
 	pwdOn = false;
 
 	Window *loading = NULL;
+
+	// TODO these must be read from configuration
+	startup_on_time = 120;
+	freeze_time = 30;
+	screensaver_time = 60;
+	screenoff_time = 120;
 
 #ifdef LAYOUT_BTOUCH
 	version = new Version;
@@ -413,7 +422,7 @@ void BtMain::myMain()
 	bt_global::devices_cache.init_devices();
 
 	screensaver_timer = new QTimer(this);
-	screensaver_timer->start(2000);
+	screensaver_timer->start(SCREENSAVER_CHECK_SLOW);
 	connect(screensaver_timer,SIGNAL(timeout()),this,SLOT(gesScrSav()));
 
 	testfiles_timer = new QTimer(this);
@@ -503,7 +512,7 @@ void BtMain::testFiles()
 			delete screen;
 			screen = NULL;
 			tiposcreen = genPage::NONE;
-			screensaver_timer->start(2000);
+			screensaver_timer->start(SCREENSAVER_CHECK_SLOW);
 		}
 	}
 }
@@ -558,30 +567,32 @@ void BtMain::gesScrSav()
 	if (bt_global::display.isForcedOperativeMode())
 		return;
 
-	unsigned long tempo_press = getTimePress();
+	int tempo_press = getTimePress();
 	if (event_unfreeze)
 	{
 		tempo_last_ev = now();
 		event_unfreeze = false;
 	}
-	unsigned long tempo = qMin(tempo_press, (now() - tempo_last_ev));
+	int tempo = qMin(tempo_press, int(now() - tempo_last_ev));
 
 	if (!firstTime)
 	{
-		if  (tempo >= 30 && getBacklight())
+		if  (tempo >= freeze_time && getBacklight())
 		{
 			if (!svegliaIsOn)
 			{
 				if (!bloccato)
 					freeze(true);
-				screensaver_timer->start(500);
+				screensaver_timer->start(SCREENSAVER_CHECK_FAST);
 			}
 		}
 		else if (tempo <= 5 && bloccato)
 		{
-			screensaver_timer->start(2000);
+			// TODO this should never happen: if last touch is < 5 seconds ago,
+			//      the screen can't be frozen
+			screensaver_timer->start(SCREENSAVER_CHECK_SLOW);
 		}
-		if  (tempo >= 60 && !svegliaIsOn && !calibrating)
+		if  (tempo >= screensaver_time && !svegliaIsOn && !calibrating)
 		{
 			if (bt_global::display.currentState() == DISPLAY_OPERATIVE &&
 			    pagDefault && page_container->currentPage() != pagDefault)
@@ -589,12 +600,14 @@ void BtMain::gesScrSav()
 				pagDefault->showPage();
 			}
 
-			if (tempo >= 120 && bt_global::display.currentState() == DISPLAY_SCREENSAVER)
+			if (screenoff_time != 0 && tempo >= screenoff_time &&
+			    bt_global::display.currentState() == DISPLAY_SCREENSAVER)
 			{
 				qDebug() << "Shutting screen off";
 				bt_global::display.setState(DISPLAY_OFF);
 			}
-			else if (tempo >= 65 && bt_global::display.currentState() == DISPLAY_FREEZED)
+			// TODO discover if the "+ 5" is a fudge-factor
+			else if (tempo >= screensaver_time + 5 && bt_global::display.currentState() == DISPLAY_FREEZED)
 			{
 				ScreenSaver::Type target_screensaver = bt_global::display.currentScreenSaver();
 				// When the brightness is set to off in the old hardware the display
@@ -642,12 +655,12 @@ void BtMain::gesScrSav()
 			screensaver->stop();
 		}
 	}
-	else if (tempo >= 120)
+	else if (tempo >= startup_on_time)
 	{
 		// TODO if the block below is removed, this can be handled with
 		//      an one-shot timer, and firstTime can be removed
 		freeze(true);
-		screensaver_timer->start(500);
+		screensaver_timer->start(SCREENSAVER_CHECK_FAST);
 		firstTime = false;
 	}
 	else if (tempo <= 5)
@@ -657,7 +670,7 @@ void BtMain::gesScrSav()
 		// - the block above, but it can't be triggered, since tempo <= 5
 		// - the alarm clock, but it handles freezing/unfreezing itself
 		firstTime = false;
-		screensaver_timer->start(2000);
+		screensaver_timer->start(SCREENSAVER_CHECK_SLOW);
 		bloccato = false;
 	}
 }
