@@ -223,6 +223,34 @@ banner *IconSettings::getBanner(const QDomNode &item_node)
 	QString descr = getTextChild(item_node, "descr");
 	switch (id)
 	{
+	case SET_SVEGLIA_SINGLEPAGE:
+	{
+		int item_id = getTextChild(item_node, "itemID").toInt();
+		int type = getTextChild(item_node, "type").toInt();
+		int enabled = getTextChild(item_node, "enabled").toInt();
+		int hour = getTextChild(item_node, "hour").toInt();
+		int minute = getTextChild(item_node, "minute").toInt();
+		QString days = getTextChild(item_node, "days");
+
+		QList<bool> alarms;
+		for (int i = 0; i < 7; ++i)
+			alarms.append(false);
+		for (int i = 0; i < days.length(); ++i)
+		{
+			int day = days.mid(i, 1).toInt() - 1;
+			alarms[day] = true;
+		}
+
+		b = new bannAlarmClockIcon(item_id, hour, minute,
+					   bt_global::skin->getImage("on"),
+					   bt_global::skin->getImage("off"),
+					   bt_global::skin->getImage("state_icon"),
+					   bt_global::skin->getImage("edit"),
+					   getTextChild(item_node, "descr"),
+					   enabled, type, alarms);
+
+		break;
+	}
 	case RINGTONE:
 		// TODO: type should be read from config file
 		b = new BannRingtone(descr, RINGTONE_PE1);
