@@ -162,11 +162,11 @@ BtMain::BtMain()
 	screen = NULL;
 	version = NULL;
 	alreadyCalibrated = false;
-	svegliaIsOn = false;
-	tempo_last_ev = 0;
-	bloccato = false;
+	alarmClockIsOn = false;
+	last_event_time = 0;
+	frozen = false;
 
-	tasti = NULL;
+	passwordKeypad = NULL;
 	pwdOn = false;
 
 	Window *loading = NULL;
@@ -438,14 +438,14 @@ void BtMain::testFiles()
 {
 	if (QFile::exists(FILE_TEST1))
 	{
-		if ((screen) && (tiposcreen != genPage::RED))
+		if ((screen) && (screen_type != genPage::RED))
 		{
 			delete screen;
 			screen = NULL;
 		}
 		else if (!screen)
 		{
-			tiposcreen = genPage::RED;
+			screen_type = genPage::RED;
 			screen = new genPage(NULL,genPage::RED);
 			screen->show();
 			qDebug("TEST1");
@@ -455,14 +455,14 @@ void BtMain::testFiles()
 	}
 	else if (QFile::exists(FILE_TEST2))
 	{
-		if ((screen) && (tiposcreen != genPage::GREEN))
+		if ((screen) && (screen_type != genPage::GREEN))
 		{
 			delete screen;
 			screen = NULL;
 		}
 		else if (!screen)
 		{
-			tiposcreen=genPage::GREEN;
+			screen_type=genPage::GREEN;
 			screen = new genPage(NULL,genPage::GREEN);
 			screen->show();
 			qDebug("TEST2");
@@ -472,14 +472,14 @@ void BtMain::testFiles()
 	}
 	else if (QFile::exists(FILE_TEST3))
 	{
-		if ((screen) && (tiposcreen != genPage::BLUE))
+		if ((screen) && (screen_type != genPage::BLUE))
 		{
 			delete screen;
 			screen = NULL;
 		}
 		else if (!screen)
 		{
-			tiposcreen = genPage::BLUE;
+			screen_type = genPage::BLUE;
 			screen = new genPage(NULL,genPage::BLUE);
 			screen->show();
 			qDebug("TEST3");
@@ -489,7 +489,7 @@ void BtMain::testFiles()
 	}
 	else if (QFile::exists(FILE_AGGIORNAMENTO))
 	{
-		if ((screen) && (tiposcreen != genPage::IMAGE))
+		if ((screen) && (screen_type != genPage::IMAGE))
 		{
 			delete screen;
 			screen = NULL;
@@ -497,7 +497,7 @@ void BtMain::testFiles()
 		else if (!screen)
 		{
 			screen = new genPage(NULL,genPage::IMAGE, IMG_PATH "dwnpage.png");
-			tiposcreen = genPage::IMAGE;
+			screen_type = genPage::IMAGE;
 			screen->show();
 			qDebug("AGGIORNAMENTO");
 			bt_global::display.setState(DISPLAY_OPERATIVE);
@@ -510,7 +510,7 @@ void BtMain::testFiles()
 		{
 			delete screen;
 			screen = NULL;
-			tiposcreen = genPage::NONE;
+			screen_type = genPage::NONE;
 			screensaver_timer->start(SCREENSAVER_CHECK_SLOW);
 		}
 	}
@@ -546,15 +546,15 @@ void BtMain::makeActiveAndFreeze()
 	{
 		screensaver->stop();
 		bt_global::display.setState(DISPLAY_FREEZED);
-		tempo_last_ev = now();
+		last_event_time = now();
 
 		if (pwdOn)
 			freeze(true);
 	}
 
-	if (tasti)
+	if (passwordKeypad)
 	{
-		bt_global::page_stack.closeWindow(tasti);
+		bt_global::page_stack.closeWindow(passwordKeypad);
 		freeze(true);
 	}
 }
@@ -565,30 +565,30 @@ void BtMain::gesScrSav()
 
 	if (bt_global::display.isForcedOperativeMode())
 		return;
-	if (svegliaIsOn || calibrating)
+	if (alarmClockIsOn || calibrating)
 		return;
 
-	int tempo_press = getTimePress();
-	int tempo = qMin(tempo_press, int(now() - tempo_last_ev));
+	int time_press = getTimePress();
+	int time = qMin(time_press, int(now() - last_event_time));
 
-	if (tempo < 5 && bloccato)
+	if (time < 5 && frozen)
 	{
 		// this is needed to unfreeze the screen when the user clicks;
 		// when switching to the event filter for arm, this unfreeze call
 		// can be moved to the event filter
 		freeze(false);
 	}
-	else if (screenoff_time != 0 && tempo >= screenoff_time &&
+	else if (screenoff_time != 0 && time >= screenoff_time &&
 		 bt_global::display.currentState() == DISPLAY_SCREENSAVER)
 	{
 		qDebug() << "Turning screen off";
 		bt_global::display.setState(DISPLAY_OFF);
 	}
-	else if (tempo >= freeze_time && getBacklight() && !bloccato)
+	else if (time >= freeze_time && getBacklight() && !frozen)
 	{
 		freeze(true);
 	}
-	else if (tempo >= screensaver_time)
+	else if (time >= screensaver_time)
 	{
 		if (bt_global::display.currentState() == DISPLAY_OPERATIVE &&
 		    pagDefault && page_container->currentPage() != pagDefault)
@@ -597,7 +597,7 @@ void BtMain::gesScrSav()
 		}
 
 		// TODO discover if the "+ 5" is a fudge-factor
-		if (tempo >= screensaver_time + 5 && bt_global::display.currentState() == DISPLAY_FREEZED)
+		if (time >= screensaver_time + 5 && bt_global::display.currentState() == DISPLAY_FREEZED)
 		{
 			ScreenSaver::Type target_screensaver = bt_global::display.currentScreenSaver();
 			// When the brightness is set to off in the old hardware the display
@@ -668,12 +668,12 @@ bool BtMain::eventFilter(QObject *obj, QEvent *ev)
 void BtMain::freeze(bool b)
 {
 	qDebug("BtMain::freeze(%d)", b);
-	bloccato = b;
-	emit freezed(bloccato);
+	frozen = b;
+	emit freezed(frozen);
 
-	if (!bloccato)
+	if (!frozen)
 	{
-		tempo_last_ev = now();
+		last_event_time = now();
 		bt_global::display.setState(DISPLAY_OPERATIVE);
 		if (screensaver && screensaver->isRunning())
 		{
@@ -682,13 +682,13 @@ void BtMain::freeze(bool b)
 
 		if (pwdOn)
 		{
-			if (!tasti)
+			if (!passwordKeypad)
 			{
-				tasti = new KeypadWindow(Keypad::HIDDEN);
-				connect(tasti, SIGNAL(Closed()), SLOT(testPwd()));
+				passwordKeypad = new KeypadWindow(Keypad::HIDDEN);
+				connect(passwordKeypad, SIGNAL(Closed()), SLOT(testPwd()));
 			}
-			bt_global::page_stack.showKeypad(tasti);
-			tasti->showWindow();
+			bt_global::page_stack.showKeypad(passwordKeypad);
+			passwordKeypad->showWindow();
 		}
 		qApp->removeEventFilter(this);
 	}
@@ -708,21 +708,21 @@ void BtMain::setPwd(bool b, QString p)
 
 void BtMain::testPwd()
 {
-	QString p = tasti->getText();
+	QString p = passwordKeypad->getText();
 	qDebug() << "testing password, input text is: " << p;
 	if (!p.isEmpty())
 	{
 		if (p != pwd)
 		{
-			tasti->resetText();
+			passwordKeypad->resetText();
 			qDebug() << "pwd ko" << p << "doveva essere " << pwd;
 		}
 		else
 		{
 			qDebug() << "pwd ok!";
-			Window *t = tasti;
+			Window *t = passwordKeypad;
 			// set to NULL to avoid freezing again in makeActiveAndFreeze
-			tasti = NULL;
+			passwordKeypad = NULL;
 			bt_global::page_stack.closeWindow(t);
 			t->disconnect();
 			t->deleteLater();
@@ -733,7 +733,7 @@ void BtMain::testPwd()
 void BtMain::svegl(bool b)
 {
 	qDebug("BtMain::svegl->%d",b);
-	svegliaIsOn = b;
+	alarmClockIsOn = b;
 }
 
 void BtMain::startCalib()

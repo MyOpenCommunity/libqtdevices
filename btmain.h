@@ -110,13 +110,12 @@ private:
 	QTimer *screensaver_timer;
 	QTimer *testfiles_timer;
 	QString pwd;
-	bool pwdOn,svegliaIsOn,alreadyCalibrated;
-	KeypadWindow *tasti;
-	bool event_unfreeze;
-	bool firstTime, bloccato;
+	bool pwdOn, alarmClockIsOn, alreadyCalibrated;
+	KeypadWindow *passwordKeypad;
+	bool frozen;
 	genPage *screen;
-	unsigned char tiposcreen;
-	int tempo_last_ev;
+	unsigned char screen_type;
+	int last_event_time;
 
 	// the four values below are in seconds; screenoff_time and startup_on_time can be 0
 	// it must always be freeze_time < screensaver_time < screenoff_time
