@@ -589,7 +589,12 @@ void BtMain::gesScrSav()
 				pagDefault->showPage();
 			}
 
-			if  (tempo >= 65 && bt_global::display.currentState() == DISPLAY_FREEZED)
+			if (tempo >= 120 && bt_global::display.currentState() == DISPLAY_SCREENSAVER)
+			{
+				qDebug() << "Shutting screen off";
+				bt_global::display.setState(DISPLAY_OFF);
+			}
+			else if (tempo >= 65 && bt_global::display.currentState() == DISPLAY_FREEZED)
 			{
 				ScreenSaver::Type target_screensaver = bt_global::display.currentScreenSaver();
 				// When the brightness is set to off in the old hardware the display
