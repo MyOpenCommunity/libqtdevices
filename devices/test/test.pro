@@ -2,7 +2,7 @@ QT += network xml testlib
 OBJECTS_DIR = obj
 MOC_DIR = moc
 
-DEFINES += QT_QWS_EBX BT_EMBEDDED BTWEB QT_NO_DEBUG_OUTPUT
+DEFINES += QT_QWS_EBX BT_EMBEDDED BTWEB QT_NO_DEBUG_OUTPUT DEBUG
 
 INCLUDEPATH+= . .. ../.. ../../../stackopen/common_files ../../../stackopen
 INCLUDEPATH+= ../../../stackopen/common_develer/lib
