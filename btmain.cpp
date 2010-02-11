@@ -412,13 +412,13 @@ void BtMain::myMain()
 	window_container->homeWindow()->showWindow();
 	bt_global::devices_cache.init_devices();
 
-	tempo1 = new QTimer(this);
-	tempo1->start(2000);
-	connect(tempo1,SIGNAL(timeout()),this,SLOT(gesScrSav()));
+	screensaver_timer = new QTimer(this);
+	screensaver_timer->start(2000);
+	connect(screensaver_timer,SIGNAL(timeout()),this,SLOT(gesScrSav()));
 
-	tempo2 = new QTimer(this);
-	tempo2->start(3000);
-	connect(tempo2,SIGNAL(timeout()),this,SLOT(testFiles()));
+	testfiles_timer = new QTimer(this);
+	testfiles_timer->start(3000);
+	connect(testfiles_timer,SIGNAL(timeout()),this,SLOT(testFiles()));
 }
 
 void BtMain::showHomePage()
@@ -442,7 +442,7 @@ void BtMain::testFiles()
 			screen->show();
 			qDebug("TEST1");
 			bt_global::display.setState(DISPLAY_OPERATIVE);
-			tempo1->stop();
+			screensaver_timer->stop();
 		}
 	}
 	else if (QFile::exists(FILE_TEST2))
@@ -459,7 +459,7 @@ void BtMain::testFiles()
 			screen->show();
 			qDebug("TEST2");
 			bt_global::display.setState(DISPLAY_OPERATIVE);
-			tempo1->stop();
+			screensaver_timer->stop();
 		}
 	}
 	else if (QFile::exists(FILE_TEST3))
@@ -476,7 +476,7 @@ void BtMain::testFiles()
 			screen->show();
 			qDebug("TEST3");
 			bt_global::display.setState(DISPLAY_OPERATIVE);
-			tempo1->stop();
+			screensaver_timer->stop();
 		}
 	}
 	else if (QFile::exists(FILE_AGGIORNAMENTO))
@@ -493,7 +493,7 @@ void BtMain::testFiles()
 			screen->show();
 			qDebug("AGGIORNAMENTO");
 			bt_global::display.setState(DISPLAY_OPERATIVE);
-			tempo1->stop();
+			screensaver_timer->stop();
 		}
 	}
 	else
@@ -503,7 +503,7 @@ void BtMain::testFiles()
 			delete screen;
 			screen = NULL;
 			tiposcreen = genPage::NONE;
-			tempo1->start(2000);
+			screensaver_timer->start(2000);
 		}
 	}
 }
@@ -574,12 +574,12 @@ void BtMain::gesScrSav()
 			{
 				if (!bloccato)
 					freeze(true);
-				tempo1->start(500);
+				screensaver_timer->start(500);
 			}
 		}
 		else if (tempo <= 5 && bloccato)
 		{
-			tempo1->start(2000);
+			screensaver_timer->start(2000);
 		}
 		if  (tempo >= 60 && !svegliaIsOn && !calibrating)
 		{
@@ -644,14 +644,20 @@ void BtMain::gesScrSav()
 	}
 	else if (tempo >= 120)
 	{
+		// TODO if the block below is removed, this can be handled with
+		//      an one-shot timer, and firstTime can be removed
 		freeze(true);
-		tempo1->start(500);
+		screensaver_timer->start(500);
 		firstTime = false;
 	}
 	else if (tempo <= 5)
 	{
+		// TODO can probably be removed: when firstTime is true, the only
+		//      things that can cause the screen to freeze are:
+		// - the block above, but it can't be triggered, since tempo <= 5
+		// - the alarm clock, but it handles freezing/unfreezing itself
 		firstTime = false;
-		tempo1->start(2000);
+		screensaver_timer->start(2000);
 		bloccato = false;
 	}
 }

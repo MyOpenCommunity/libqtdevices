@@ -107,8 +107,8 @@ private:
 	HomePage *Home;
 	Page *pagDefault;
 
-	QTimer *tempo1;
-	QTimer *tempo2;
+	QTimer *screensaver_timer;
+	QTimer *testfiles_timer;
 	QString pwd;
 	bool pwdOn,svegliaIsOn,alreadyCalibrated;
 	KeypadWindow *tasti;
