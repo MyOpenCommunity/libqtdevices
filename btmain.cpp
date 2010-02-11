@@ -163,7 +163,6 @@ BtMain::BtMain()
 	alreadyCalibrated = false;
 	svegliaIsOn = false;
 	tempo_last_ev = 0;
-	pd_shown = false;
 
 	tasti = NULL;
 	pwdOn = false;
@@ -581,20 +580,13 @@ void BtMain::gesScrSav()
 		else if (tempo <= 5 && bloccato)
 		{
 			tempo1->start(2000);
-			pd_shown = false;
 		}
 		if  (tempo >= 60 && !svegliaIsOn && !calibrating)
 		{
-			if (pagDefault)
+			if (bt_global::display.currentState() == DISPLAY_OPERATIVE &&
+			    pagDefault && page_container->currentPage() != pagDefault)
 			{
-				if (!pd_shown && bt_global::display.currentState() == DISPLAY_OPERATIVE)
-				{
-					pd_shown = true;
-					if (pagDefault)
-					{
-						pagDefault->showPage();
-					}
-				}
+				pagDefault->showPage();
 			}
 
 			if  (tempo >= 65 && bt_global::display.currentState() == DISPLAY_FREEZED)

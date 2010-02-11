@@ -114,7 +114,6 @@ private:
 	KeypadWindow *tasti;
 	bool event_unfreeze;
 	bool firstTime, bloccato;
-	bool pd_shown;
 	genPage *screen;
 	unsigned char tiposcreen;
 	unsigned long tempo_last_ev;
