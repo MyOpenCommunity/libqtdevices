@@ -162,7 +162,7 @@ BtMain::BtMain()
 	version = NULL;
 	alreadyCalibrated = false;
 	svegliaIsOn = false;
-	tiempo_last_ev = 0;
+	tempo_last_ev = 0;
 	pd_shown = false;
 
 	tasti = NULL;
@@ -554,23 +554,22 @@ void BtMain::makeActiveAndFreeze()
 
 void BtMain::gesScrSav()
 {
-	unsigned long tiempo, tiempo_press;
 	rearmWDT();
 
 	if (bt_global::display.isForcedOperativeMode())
 		return;
 
-	tiempo_press = getTimePress();
+	unsigned long tempo_press = getTimePress();
 	if (event_unfreeze)
 	{
-		tiempo_last_ev = now();
+		tempo_last_ev = now();
 		event_unfreeze = false;
 	}
-	tiempo = qMin(tiempo_press, (now() - tiempo_last_ev));
+	unsigned long tempo = qMin(tempo_press, (now() - tempo_last_ev));
 
 	if (!firstTime)
 	{
-		if  (tiempo >= 30 && getBacklight())
+		if  (tempo >= 30 && getBacklight())
 		{
 			if (!svegliaIsOn)
 			{
@@ -579,12 +578,12 @@ void BtMain::gesScrSav()
 				tempo1->start(500);
 			}
 		}
-		else if (tiempo <= 5 && bloccato)
+		else if (tempo <= 5 && bloccato)
 		{
 			tempo1->start(2000);
 			pd_shown = false;
 		}
-		if  (tiempo >= 60 && !svegliaIsOn && !calibrating)
+		if  (tempo >= 60 && !svegliaIsOn && !calibrating)
 		{
 			if (pagDefault)
 			{
@@ -598,7 +597,7 @@ void BtMain::gesScrSav()
 				}
 			}
 
-			if  (tiempo >= 65 && bt_global::display.currentState() == DISPLAY_FREEZED)
+			if  (tempo >= 65 && bt_global::display.currentState() == DISPLAY_FREEZED)
 			{
 				ScreenSaver::Type target_screensaver = bt_global::display.currentScreenSaver();
 				// When the brightness is set to off in the old hardware the display
@@ -646,13 +645,13 @@ void BtMain::gesScrSav()
 			screensaver->stop();
 		}
 	}
-	else if (tiempo >= 120)
+	else if (tempo >= 120)
 	{
 		freeze(true);
 		tempo1->start(500);
 		firstTime = false;
 	}
-	else if (tiempo <= 5)
+	else if (tempo <= 5)
 	{
 		firstTime = false;
 		tempo1->start(2000);

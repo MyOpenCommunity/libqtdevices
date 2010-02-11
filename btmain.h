@@ -117,8 +117,7 @@ private:
 	bool pd_shown;
 	genPage *screen;
 	unsigned char tiposcreen;
-	unsigned long tiempo_ev;
-	unsigned long tiempo_last_ev;
+	unsigned long tempo_last_ev;
 	bool calibrating;
 	Calibrate *calib;
 	ScreenSaver *screensaver;
