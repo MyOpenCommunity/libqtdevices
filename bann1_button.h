@@ -29,6 +29,7 @@ class QLabel;
 
 
 // substitute for bannPuls
+// Don't use this class for new developments, use Bann2Buttons
 class BannSinglePuls : public BannerNew
 {
 Q_OBJECT

@@ -62,6 +62,7 @@ protected:
  * Two buttons on the sides + description in the center.
  * Either button can be removed by giving an empty string as the icon parameter to initBanner()
  * Nicer replacement for bann2but, will replace also bannOnDx, bannOnSx
+ * Now it can replace BannSinglePuls also.
  */
 class Bann2Buttons : public Bann2LinkedPages
 {
@@ -93,8 +94,8 @@ public:
 	void setBackgroundImage(const QString &i);
 
 signals:
-	// this is here for energy_view.cpp _ONLY_, do not use in new code
 	void rightClicked();
+	void leftClicked();
 
 private:
 	TextOnImageLabel *center_icon;

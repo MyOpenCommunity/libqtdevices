@@ -25,9 +25,6 @@
 
 #include <QDebug>
 
-#define STOPNGO_BANN_IMAGE ICON_STOPNGO_CHIUSO
-
-
 SupervisionMenu::SupervisionMenu(const QDomNode &config_node)
 {
 	next_page = NULL;
@@ -37,62 +34,43 @@ SupervisionMenu::SupervisionMenu(const QDomNode &config_node)
 
 void SupervisionMenu::loadItems(const QDomNode &config_node)
 {
-	// TODO energy: check if there can only be one class
-	int classesCount = 0;
-	BannerPage *stopngo_page = NULL, *loads_page = NULL;
-
-	foreach (const QDomNode &node, getChildren(config_node, "class"))
+	foreach (const QDomNode &node, getChildren(config_node, ""))
 	{
+		if (!node.nodeName().startsWith("class") && node.nodeName() != "load")
+			continue;
+
+		SkinContext cxt(getTextChild(node, "cid").toInt());
 		int id = getTextChild(node, "id").toInt();
-		switch (id)
-		{
-		case CLASS_STOPNGO:
-		{
-			bannPuls *b = new bannPuls(this);
-			b->SetIcons(ICON_FRECCIA_DX, QString(), STOPNGO_BANN_IMAGE);
-			b->setAddress(getTextChild(node, "where"));
-			b->setText(getTextChild(node, "descr"));
-			b->setId(id);
-			b->Draw();
-			page_content->appendBanner(b);
-
-			stopngo_page = new StopNGoMenu(node);
-
-			b->connectDxButton(stopngo_page);
-			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-
-			++classesCount;
-			break;
-		}
-		default:
-			qFatal("Type of class not handled on supervision page!");
-		}
-	}
-
-	QDomElement loads = getElement(config_node, "load");
-	if (!loads.isNull())
-	{
-		SkinContext cxt(getTextChild(loads, "cid").toInt());
 
 		BannSinglePuls *b = new BannSinglePuls(0);
 		b->initBanner(bt_global::skin->getImage("forward"),
 			      bt_global::skin->getImage("center_icon"),
-			      getTextChild(loads, "descr"));
+			      getTextChild(node, "descr"));
 
 		page_content->appendBanner(b);
 
-		loads_page = new LoadDiagnosticPage(loads);
-		b->connectRightButton(loads_page);
+		switch (id)
+		{
+		case CLASS_STOPNGO:
+			next_page = new StopNGoMenu(node);
+			break;
+		case LOAD_DIAGNOSTIC:
+			next_page = new LoadDiagnosticPage(node);
+			break;
+		default:
+			qFatal("Unsupported node type in supervision menu");
+		};
+
+		b->connectRightButton(next_page);
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+
 	}
 
 	// skip page if only one item
-	if ((loads_page && classesCount == 0) || (!loads_page && classesCount == 1))
-	{
-		next_page = loads_page ? loads_page : stopngo_page;
-
+	if (page_content->bannerCount() > 1)
+		next_page = NULL;
+	else
 		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
-	}
 }
 
 void SupervisionMenu::showPage()

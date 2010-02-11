@@ -75,6 +75,7 @@ Bann2Buttons::Bann2Buttons(QWidget *parent) :
 	l->addWidget(description, 1, 1);
 
 	connect(right_button, SIGNAL(clicked()), SIGNAL(rightClicked()));
+	connect(left_button, SIGNAL(clicked()), SIGNAL(leftClicked()));
 }
 
 void Bann2Buttons::initBanner(const QString &left, const QString &right, const QString &banner_text,
@@ -82,7 +83,7 @@ void Bann2Buttons::initBanner(const QString &left, const QString &right, const Q
 {
 	initButton(left_button, left);
 	initButton(right_button, right);
-	center_icon->setText(banner_text);
+	center_icon->setInternalText(banner_text);
 	QFont central_font = bt_global::font->get(text_font);
 
 	center_icon->setFont(central_font);
