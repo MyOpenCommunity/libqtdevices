@@ -5,6 +5,8 @@
 #include "energy_device.h"
 #include "skinmanager.h" // skin
 #include "energy_device.h"
+#include "loads_device.h"
+#include "generic_functions.h" // getBostikName
 
 #include <QLocale>
 #include <QDebug>
@@ -167,6 +169,37 @@ void BannEnergyCost::resetRate()
 }
 
 
+// BannLoadDiagnostic implementation
+
+BannLoadDiagnostic::BannLoadDiagnostic(device *dev, const QString &description) :
+	Bann2Buttons(0)
+{
+	state_icon = bt_global::skin->getImage("state_icon");
+
+	initBanner(state_icon, QString(), description, FontManager::TEXT);
+	// the left button is used like a label, to avoid creating yet another banner
+	left_button->disable();
+
+	setState(LoadsDevice::LOAD_OK);
+
+	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+}
+
+void BannLoadDiagnostic::status_changed(const StatusList &sl)
+{
+	if (!sl.contains(LoadsDevice::DIM_LOAD))
+		return;
+
+	setState(sl[LoadsDevice::DIM_LOAD].toInt());
+}
+
+void BannLoadDiagnostic::setState(int state)
+{
+	left_button->setImage(getBostikName(state_icon, QString::number(state)));
+}
+
+
+// BannLoadNoCU implementation
 
 BannLoadNoCU::BannLoadNoCU(const QString &descr) : Bann3ButtonsLabel(0)
 {
@@ -180,6 +213,7 @@ void BannLoadNoCU::connectRightButton(Page *p)
 }
 
 
+// BannLoadWithCU implementation
 
 BannLoadWithCU::BannLoadWithCU(const QString &descr, Type t) : Bann3ButtonsLabel(0)
 {

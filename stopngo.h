@@ -31,36 +31,6 @@ class QLabel;
 
 
 /*!
-  \class StopngoItem
-  \brief Class defining one item of device Stop&Go.
-
-  \author Lucio Macellari - Mac S.r.l.
-  \date May 2008
-  */
-class StopngoItem
-{
-public:
-	StopngoItem(int _id=0, int _cid=0, QString _descr="", QString _where="0");
-
-	void SetId(int id);
-	void SetCid(int cid);
-	void SetDescr(QString descr);
-	void SetWhere(QString where);
-
-	int GetId();
-	int GetCid();
-	QString GetDescr();
-	QString GetWhere();
-
-private:
-	int id;
-	int cid;
-	QString descr;
-	QString where;
-};
-
-
-/*!
   \class BannPulsDynIcon
   \brief Class derived from bannPuls with status changed event handling.
 
