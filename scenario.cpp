@@ -67,12 +67,12 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		enabled = getTextChild(item_node, "enable").toInt();
 #else
 		int item_id = getTextChild(item_node, "itemID").toInt();
-		QDomNode time_node = getChildWithName(item_node, "scen/time");
+		QDomNode time_node = getElement(item_node, "scen/time");
 		if (!time_node.isNull() && getTextChild(time_node, "status").toInt())
 			time_cond = new ScenEvoTimeCondition(item_id, time_node);
 
-		QDomNode device_node = getChildWithName(item_node, "scen/device");
-		if (!device_node.isNull() && getTextChild(device_node, "objectID").toInt())
+		QDomNode device_node = getElement(item_node, "scen/device");
+		if (!device_node.isNull() && getTextChild(device_node, "status").toInt())
 			device_cond = new ScenEvoDeviceCondition(item_id, device_node);
 
 		action = getElement(item_node, "scen/action/open").text();
