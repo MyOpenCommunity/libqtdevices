@@ -27,9 +27,14 @@ private:
 	DeviceConditionDisplayMock *mock_display;
 	void checkCondition(QSignalSpy &spy, QString frame, bool satisfied);
 
-private slots: 	//  tests below
+private slots:
+	void init();
+
+	// tests below
 	void testLightOn();
 	void testLightOff();
+	void testDimming();
+
 };
 
 #endif // TEST_SCENEVODEVICESCOND_H

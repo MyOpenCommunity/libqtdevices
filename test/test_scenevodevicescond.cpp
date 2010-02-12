@@ -2,12 +2,14 @@
 #include "scenevodevicescond.h"
 #include "openserver_mock.h"
 #include "openclient.h"
+#include "devices_cache.h" // bt_global::devices_cache
 
 #include <QtTest/QtTest>
 #include <QSignalSpy>
 #include <QHash>
 #include <QPair>
 #include <QString>
+#include <QDebug>
 
 
 /**
@@ -42,6 +44,13 @@ TestScenEvoDevicesCond::TestScenEvoDevicesCond()
 	mock_display = new DeviceConditionDisplayMock;
 }
 
+void TestScenEvoDevicesCond::init()
+{
+	bt_global::devices_cache.clear();
+	char str[] = "";
+	client_monitor->last_msg_open_read.CreateMsgOpen(str, 0);
+}
+
 TestScenEvoDevicesCond::~TestScenEvoDevicesCond()
 {
 	delete server;
@@ -52,9 +61,9 @@ void TestScenEvoDevicesCond::checkCondition(QSignalSpy &spy, QString frame, bool
 	client_monitor->manageFrame(frame.toAscii());
 	QCOMPARE(spy.count(), satisfied ? 1 : 0);
 	spy.clear();
+	char str[] = "";
+	client_monitor->last_msg_open_read.CreateMsgOpen(str, 0);
 }
-
-
 
 void TestScenEvoDevicesCond::testLightOn()
 {
@@ -80,3 +89,14 @@ void TestScenEvoDevicesCond::testLightOff()
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
 }
 
+void TestScenEvoDevicesCond::testDimming()
+{
+	QString dev_where = "10";
+
+	DeviceConditionDimming *cond = new DeviceConditionDimming(mock_display, "0", dev_where);
+	QSignalSpy spy(cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
+}
