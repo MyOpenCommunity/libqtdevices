@@ -4,6 +4,7 @@
 *.x86
 BTouch_qws
 devices/test/test
+test/test
 moc
 obj
 cfg

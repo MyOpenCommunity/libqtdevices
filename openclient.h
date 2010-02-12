@@ -39,6 +39,7 @@ class FrameReceiver;
 class Client : public QObject
 {
 friend class OpenServerMock;
+friend class TestScenEvoDevicesCond;
 Q_OBJECT
 public:
 
