@@ -1,7 +1,10 @@
 #include "hardware_functions.h"
 #include "main.h"
 
+#ifdef Q_WS_QWS
 #include <QScreen>
+#endif
+
 #include <QApplication>
 #include <QProcess>
 #include <QDateTime>
@@ -14,20 +17,23 @@ static bool backlight = false;
 static unsigned char contrast = 0;
 static QDateTime lastPress = QDateTime::currentDateTime();
 
-
 int maxWidth()
 {
 	static int width = 0;
+#ifdef Q_WS_QWS
 	if (!width)
 		width = QScreen::instance()->width();
+#endif
 	return width;
 }
 
 int maxHeight()
 {
 	static int height = 0;
+#ifdef Q_WS_QWS
 	if (!height)
 		height = QScreen::instance()->height();
+#endif
 	return height;
 }
 
