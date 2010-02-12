@@ -135,7 +135,7 @@ void DeviceConditionDisplayTemperature::updateText(int min_condition_value, int 
 }
 
 
-DeviceCondition::DeviceCondition(DeviceConditionDisplay *cond_display)
+DeviceCondition::DeviceCondition(DeviceConditionDisplayInterface *cond_display)
 {
 	condition_display = cond_display;
 	satisfied = false;
@@ -240,7 +240,7 @@ bool DeviceCondition::isTrue()
 }
 
 
-DeviceConditionLight::DeviceConditionLight(DeviceConditionDisplay* cond_display, QString trigger, QString where)
+DeviceConditionLight::DeviceConditionLight(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where)
 	: DeviceCondition(cond_display)
 {
 	set_condition_value(trigger);
@@ -308,7 +308,7 @@ void DeviceConditionLight::get_condition_value(QString& out)
 
 
 
-DeviceConditionDimming::DeviceConditionDimming(DeviceConditionDisplay* cond_display, QString trigger, QString where)
+DeviceConditionDimming::DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where)
 	: DeviceCondition(cond_display)
 {
 	if (trigger == "0")
@@ -512,7 +512,7 @@ void DeviceConditionDimming::status_changed(const StatusList &sl)
 }
 
 
-DeviceConditionDimming100::DeviceConditionDimming100(DeviceConditionDisplay* cond_display, QString trigger, QString where)
+DeviceConditionDimming100::DeviceConditionDimming100(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where)
 	: DeviceCondition(cond_display)
 {
 	if (trigger == "0")
@@ -721,7 +721,7 @@ void DeviceConditionDimming100::status_changed(const StatusList &sl)
 }
 
 
-DeviceConditionVolume::DeviceConditionVolume(DeviceConditionDisplay* cond_display, QString trigger, QString where)
+DeviceConditionVolume::DeviceConditionVolume(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where)
 	: DeviceCondition(cond_display)
 {
 	if (trigger == "-1")
@@ -959,8 +959,8 @@ void DeviceConditionVolume::reset()
 }
 
 
-DeviceConditionTemperature::DeviceConditionTemperature(DeviceConditionDisplay *cond_display, QString trigger, QString where, bool external)
-	: DeviceCondition(cond_display)
+DeviceConditionTemperature::DeviceConditionTemperature(DeviceConditionDisplayInterface *cond_display, QString trigger,
+	QString where, bool external) : DeviceCondition(cond_display)
 {
 	// Temp condition is expressed in bticino format
 	int temp_condition = trigger.toInt();
@@ -1083,7 +1083,7 @@ void DeviceConditionTemperature::status_changed(const StatusList &sl)
 }
 
 
-DeviceConditionAux::DeviceConditionAux(DeviceConditionDisplay* cond_display, QString trigger, QString where) :
+DeviceConditionAux::DeviceConditionAux(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where) :
 	DeviceCondition(cond_display), device_initialized(false), device_value(-1)
 {
 	set_condition_value(trigger);

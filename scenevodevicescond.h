@@ -19,20 +19,29 @@ class QString;
 class QLabel;
 class BtButton;
 
+/**
+ * This abstract class is an object that can be used to represent a device
+ * condition. Inherit and reimplement the updateText method to format properly
+ * the condition when its value changes.
+ */
+class DeviceConditionDisplayInterface
+{
+public:
+	virtual void updateText(int min_condition_value, int max_condition_value) = 0;
+};
+
+
 
 /**
- * This abstract class is a widget that can be used to represent a device
- * condition. Reimplement the updateText method to format properly the condition
- * when its value changes.
+ * This widget is an abstract class that can be used to display a device condition
+ * in a standard way (different depending on the underlying hardware). Reimplement
+ * the updateText method to format properly the condition when its value changes.
  */
-class DeviceConditionDisplay : public QWidget
+class DeviceConditionDisplay : public QWidget, public DeviceConditionDisplayInterface
 {
 Q_OBJECT
 public:
 	DeviceConditionDisplay(QWidget *parent, QString descr, QString top_icon);
-
-public slots:
-	virtual void updateText(int min_condition_value, int max_condition_value) = 0;
 
 signals:
 	void upClicked();
@@ -133,7 +142,7 @@ signals:
 	void condSatisfied();
 
 protected:
-	DeviceCondition(DeviceConditionDisplay *cond_display);
+	DeviceCondition(DeviceConditionDisplayInterface *cond_display);
 
 	// The method to update the descriptive text of the condition using the
 	// the DeviceConditionDisplay widget.
@@ -167,7 +176,7 @@ private:
 	int cond_value;
 	//! Current value (displayed, not confirmed)
 	int current_value;
-	DeviceConditionDisplay *condition_display;
+	DeviceConditionDisplayInterface *condition_display;
 };
 
 
@@ -176,7 +185,7 @@ class DeviceConditionLight : public DeviceCondition
 Q_OBJECT
 public:
 	//! Constructor
-	DeviceConditionLight(DeviceConditionDisplay* condition_display, QString trigger, QString where);
+	DeviceConditionLight(DeviceConditionDisplayInterface* condition_display, QString trigger, QString where);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 	virtual void inizializza();
@@ -199,7 +208,7 @@ class DeviceConditionDimming : public DeviceCondition
 {
 Q_OBJECT
 public:
-	DeviceConditionDimming(DeviceConditionDisplay* cond_display, QString trigger, QString where);
+	DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 	virtual void inizializza();
@@ -246,7 +255,7 @@ class DeviceConditionDimming100 : public DeviceCondition
 Q_OBJECT
 public:
 	//! Constructor
-	DeviceConditionDimming100(DeviceConditionDisplay* cond_display, QString trigger, QString where);
+	DeviceConditionDimming100(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 	virtual void inizializza();
@@ -295,7 +304,7 @@ class DeviceConditionVolume : public DeviceCondition
 Q_OBJECT
 public:
 	//! Constructor
-	DeviceConditionVolume(DeviceConditionDisplay* cond_display, QString trigger, QString where);
+	DeviceConditionVolume(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where);
 	void get_condition_value(QString& out);
 	virtual void inizializza();
 
@@ -338,7 +347,7 @@ class DeviceConditionTemperature : public DeviceCondition
 {
 Q_OBJECT
 public:
-	DeviceConditionTemperature(DeviceConditionDisplay* cond_display, QString trigger, QString where, bool external = false);
+	DeviceConditionTemperature(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, bool external = false);
 	virtual void get_condition_value(QString&);
 	virtual void inizializza();
 
@@ -367,7 +376,7 @@ class DeviceConditionAux : public DeviceCondition
 {
 Q_OBJECT
 public:
-	DeviceConditionAux(DeviceConditionDisplay* cond_display, QString trigger, QString where);
+	DeviceConditionAux(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where);
 	virtual void inizializza();
 
 public slots:
