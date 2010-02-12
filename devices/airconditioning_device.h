@@ -85,10 +85,6 @@ public:
 	virtual void activateScenario(const QString &what) const;
 	template<class T> QString commandToString(const T &info) { return statusToString(info); };
 
-public slots:
-	//! receive a frame
-	void frame_rx_handler(char *frame);
-
 private:
 	QString statusToString(const AirConditionerStatus &st) const;
 };
