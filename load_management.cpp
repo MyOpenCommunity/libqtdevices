@@ -321,8 +321,7 @@ void LoadDataPage::resetRequested(int which)
 
 void LoadDataPage::reset()
 {
-	// TODO: send reset frame with correct reset_number
-	qDebug() << "Sending reset number: " << reset_number;
+	dev->resetTotal(reset_number);
 }
 
 void LoadDataPage::status_changed(const StatusList &sl)
