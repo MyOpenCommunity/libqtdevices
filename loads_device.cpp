@@ -19,7 +19,8 @@ void LoadsDevice::init() const
 	requestCurrent();
 	requestLevel();
 	requestStatus();
-	requestTotal();
+	requestTotal(0);
+	requestTotal(1);
 }
 
 void LoadsDevice::enable() const
