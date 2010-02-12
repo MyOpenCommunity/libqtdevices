@@ -94,7 +94,7 @@ class LoadDataPage : public Page
 Q_OBJECT
 public:
 	// TODO: add LoadManagement device
-	LoadDataPage(const QDomNode &config_node);
+	LoadDataPage(const QDomNode &config_node, LoadsDevice *d);
 
 private:
 	LoadDataContent *content;

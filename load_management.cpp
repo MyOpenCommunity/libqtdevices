@@ -99,6 +99,7 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 {
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
+	LoadsDevice *dev = bt_global::add_device_to_cache(new LoadsDevice(getTextChild(item_node, "where")));
 	banner *b = 0;
 	switch (id)
 	{
@@ -109,7 +110,7 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 			advanced ? BannLoadWithCU::ADVANCED_MODE : BannLoadWithCU::BASE_MODE);
 		if (advanced)
 		{
-			Page *p = new LoadDataPage(item_node);
+			Page *p = new LoadDataPage(item_node, dev);
 			bann->connectRightButton(p);
 			connect(p, SIGNAL(Closed()), bann, SIGNAL(pageClosed()));
 		}
@@ -123,7 +124,7 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 	case LOAD_WITHOUT_CU:
 	{
 		BannLoadNoCU *bann = new BannLoadNoCU(getTextChild(item_node, "descr"));
-		Page *p = new LoadDataPage(item_node);
+		Page *p = new LoadDataPage(item_node, dev);
 		bann->connectRightButton(p);
 		connect(p, SIGNAL(Closed()), bann, SIGNAL(pageClosed()));
 		b = bann;
@@ -272,7 +273,7 @@ void LoadDataContent::updateValues()
 }
 
 
-LoadDataPage::LoadDataPage(const QDomNode &config_node)
+LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	// measure unit here will always be kWh
@@ -301,7 +302,7 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node)
 	connect(confirm, SIGNAL(accept()), SLOT(reset()));
 	reset_number = 0;
 
-	dev = bt_global::add_device_to_cache(new LoadsDevice(getTextChild(config_node, "where")));
+	dev = d;
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 
 	nav_bar->displayScrollButtons(false);
