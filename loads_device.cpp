@@ -14,6 +14,14 @@ LoadsDevice::LoadsDevice(const QString &where) :
 {
 }
 
+void LoadsDevice::init() const
+{
+	requestCurrent();
+	requestLevel();
+	requestStatus();
+	requestTotal();
+}
+
 void LoadsDevice::enable() const
 {
 	sendCommand("71");

@@ -53,6 +53,8 @@ public:
 
 	LoadsDevice(const QString &where);
 
+	virtual void init() const;
+
 	// force the device to off for the given time, expressed in minutes
 	void forceOff(int time) const;
 
