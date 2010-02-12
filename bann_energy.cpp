@@ -17,6 +17,14 @@
 // The language used for the floating point number
 static QLocale loc(QLocale::Italian);
 
+namespace
+{
+	QString formatNoSeconds(const BtTime &time)
+	{
+		QString str = QString("%1:%2").arg(time.hour()).arg(time.minute(), 2, 10, QChar('0'));
+		return str;
+	}
+}
 
 // BannEnergyInterface implementation
 
@@ -263,17 +271,23 @@ void BannLoadWithCU::changeLeftFunction(bool is_forced)
 }
 
 
+// It's important that MAX_HOURS is more than max_time below
+#define MAX_HOURS 43
+// this is 255 values * 10 min = 42h 30min
+// This is limit in the protocol; it supports 254 values, each meaning 10' activation time.
+static BtTime max_time(42, 20, 0);
+
 DeactivationTime::DeactivationTime(const BtTime &start_time) :
 	current_time(start_time)
 {
-	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), current_time.toString(), FontManager::SUBTITLE);
+	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), formatNoSeconds(current_time), FontManager::SUBTITLE);
 	right_button->setAutoRepeat(true);
 	left_button->setAutoRepeat(true);
 	connect(right_button, SIGNAL(clicked()), SLOT(plusClicked()));
 	connect(left_button, SIGNAL(clicked()), SLOT(minusClicked()));
-	// This is limit in the protocol; it supports 255 values, each meaning 10' activation time.
-	// 255 * 10' = 42.5h; BtTime can't impose a limit like this, so just impose an upper limit less than 42.5 hours
-	current_time.setMaxHours(42);
+
+	max_time.setMaxHours(MAX_HOURS);
+	current_time.setMaxHours(MAX_HOURS);
 }
 
 BtTime DeactivationTime::currentTime() const
@@ -288,24 +302,30 @@ void DeactivationTime::setCurrentTime(const BtTime &t)
 
 void DeactivationTime::plusClicked()
 {
-	// TODO: wrap or not?
-	current_time = current_time.addMinute(10);
+	// wrap to 10 minutes when at max_time
+	if (current_time == max_time)
+	{
+		current_time = BtTime(0, 10, 0);
+		current_time.setMaxHours(MAX_HOURS);
+	}
+	else
+		current_time = current_time.addMinute(10);
 	updateDisplay();
 }
 
 void DeactivationTime::minusClicked()
 {
-	// don't go below 10 minutes
+	// wrap below 10 minutes
 	if (current_time.hour() == 0 && current_time.minute() == 10)
-		return;
-
-	current_time = current_time.addMinute(-10);
+		current_time = max_time;
+	else
+		current_time = current_time.addMinute(-10);
 	updateDisplay();
 }
 
 void DeactivationTime::updateDisplay()
 {
-	setCentralText(current_time.toString());
+	setCentralText(formatNoSeconds(current_time));
 }
 
 
