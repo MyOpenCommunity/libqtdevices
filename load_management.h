@@ -113,13 +113,14 @@ class DeactivationTimePage : public Page
 {
 Q_OBJECT
 public:
-	DeactivationTimePage(const QDomNode &config_node);
+	DeactivationTimePage(const QDomNode &config_node, LoadsDevice *d);
 
 private slots:
 	void sendDeactivateDevice();
 
 private:
 	DeactivationTime *content;
+	LoadsDevice *dev;
 };
 
 #endif // LOAD_MANAGEMENT_H

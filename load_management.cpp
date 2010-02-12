@@ -114,7 +114,7 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 			bann->connectRightButton(p);
 			connect(p, SIGNAL(Closed()), bann, SIGNAL(pageClosed()));
 		}
-		Page *d = new DeactivationTimePage(item_node);
+		Page *d = new DeactivationTimePage(item_node, dev);
 		connect(bann, SIGNAL(deactivateDevice()), d, SLOT(showPage()));
 		connect(d, SIGNAL(Closed()), bann, SIGNAL(pageClosed()));
 
@@ -356,7 +356,7 @@ void LoadDataPage::status_changed(const StatusList &sl)
 
 
 
-DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node)
+DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node, LoadsDevice *d)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
@@ -370,6 +370,8 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node)
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(sendDeactivateDevice()));
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
 
+	dev = d;
+
 	content = new DeactivationTime(BtTime(2, 30, 0));
 	QVBoxLayout *main = new QVBoxLayout(this);
 	main->setContentsMargins(0, 5, 0, 10);
@@ -381,6 +383,7 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node)
 
 void DeactivationTimePage::sendDeactivateDevice()
 {
-	// TODO: send a deactivation frame
-	qDebug() << "Deactivating device for time: " << content->currentTime().toString();
+	BtTime t = content->currentTime();
+	int off_time = t.hour() * 60 + t.minute();
+	dev->forceOff(off_time);
 }
