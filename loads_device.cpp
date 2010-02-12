@@ -14,7 +14,7 @@ LoadsDevice::LoadsDevice(const QString &where) :
 {
 }
 
-void LoadsDevice::init() const
+void LoadsDevice::init(bool forza)
 {
 	requestCurrent();
 	requestLevel();

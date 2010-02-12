@@ -102,7 +102,6 @@ class BannLoadNoCU : public Bann3ButtonsLabel
 {
 Q_OBJECT
 public:
-	// TODO: Add device
 	BannLoadNoCU(const QString &descr);
 	void connectRightButton(Page *p);
 };
