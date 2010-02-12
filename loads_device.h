@@ -53,12 +53,6 @@ public:
 
 	LoadsDevice(const QString &where);
 
-	// enable actuator
-	void enable() const;
-
-	// force the device to on
-	void forceOn() const;
-
 	// force the device to off for the given time, expressed in minutes
 	void forceOff(int time) const;
 
@@ -79,6 +73,12 @@ public:
 	void requestLevel() const;
 
 public slots:
+	// enable actuator
+	void enable() const;
+
+	// force the device to on
+	void forceOn() const;
+
 	void frame_rx_handler(char *frame);
 };
 
