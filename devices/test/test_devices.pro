@@ -39,10 +39,8 @@ HEADERS += device_tester.h \
             test_poweramplifier_device.h \
             test_pull_manager.h \
             test_probe_device.h \
-            test_bttime.h \
             openserver_mock.h \
             ../../openclient.h \
-            ../../bttime.h \
             ../../generic_functions.h \
             ../../xml_functions.h \
             ../../main.h
@@ -64,10 +62,8 @@ SOURCES += test_main.cpp \
             test_poweramplifier_device.cpp \
             test_pull_manager.cpp \
             test_probe_device.cpp \
-            test_bttime.cpp \
             openserver_mock.cpp \
             ../../openclient.cpp \
-            ../../bttime.cpp \
             ../../generic_functions.cpp \
             ../../xml_functions.cpp \
             ../../definitions.cpp

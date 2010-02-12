@@ -3,6 +3,7 @@
 #include <QRegExp>
 
 #include "test_scenevodevicescond.h"
+#include "test_bttime.h"
 #include "main.h"
 
 // move this somewhere else (generic_functions.cpp?): we can't link main.cpp
@@ -15,6 +16,9 @@ int main(int argc, char *argv[])
 
 	TestScenEvoDevicesCond test_scenevo_devices_cond;
 	test_list << &test_scenevo_devices_cond;
+
+	TestBtTime test_bttime;
+	test_list << &test_bttime;
 
 	QStringList arglist = app.arguments();
 	QString testingClass;

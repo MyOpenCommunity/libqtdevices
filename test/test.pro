@@ -24,7 +24,8 @@ LIBS+= -L ../../common_files/lib/x86 -lcommon -lssl
 
 VPATH = ../devices/test ../devices ..
 
-HEADERS += test_scenevodevicescond.h \
+HEADERS += test_bttime.h \
+           test_scenevodevicescond.h \
            ../devices/test/openserver_mock.h \
            ../btbutton.h \
            ../bttime.h \
@@ -41,8 +42,9 @@ HEADERS += test_scenevodevicescond.h \
            ../xml_functions.h
 
 SOURCES += test_main.cpp \
+           test_bttime.cpp \
            test_scenevodevicescond.cpp \
-           ../devices/test/openserver_mock.cpp \           
+           ../devices/test/openserver_mock.cpp \
            ../btbutton.cpp \
            ../bttime.cpp \
            ../devices_cache.cpp \

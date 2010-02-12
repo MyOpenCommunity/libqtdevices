@@ -11,7 +11,7 @@ namespace QTest {
 	template<> char *toString(const BtTime &t);
 }
 
-class TestBtTime : public TestDevice
+class TestBtTime : public QObject
 {
 Q_OBJECT
 private slots:
