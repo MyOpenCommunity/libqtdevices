@@ -487,26 +487,32 @@ void DeviceConditionDimming::status_changed(const StatusList &sl)
 
 	while (it != sl.constEnd())
 	{
-		switch (it.key())
+		int level = 0;
+		if (it.key() == LightingDevice::DIM_DEVICE_ON)
 		{
-		// TODO: what about on level? is this code ok?
-		case LightingDevice::DIM_DEVICE_ON:
-		case LightingDevice::DIM_DIMMER_LEVEL:
+			// We manage the DIM_DEVICE_ON as a special case because the value
+			// for that key can be 0 or 1. In the latter case we can't divide as
+			// integer, otherwise the level resulting is always 0.
+			level = it.value().toInt();
+		}
+		else if (it.key() == LightingDevice::DIM_DIMMER_LEVEL)
+			level = it.value().toInt() / 10;
+		else
 		{
-			int level = it.value().toInt() / 10;
-			if (level >= trig_min && level <= trig_max)
+			++it;
+			continue;
+		}
+
+		if (level >= trig_min && level <= trig_max)
+		{
+			if (!satisfied)
 			{
-				if (!satisfied)
-				{
-					satisfied = true;
-					emit condSatisfied();
-				}
+				satisfied = true;
+				emit condSatisfied();
 			}
-			else
-				satisfied = false;
 		}
-			break;
-		}
+		else
+			satisfied = false;
 		++it;
 	}
 }
