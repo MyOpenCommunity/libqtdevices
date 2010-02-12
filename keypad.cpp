@@ -16,14 +16,21 @@
 
 // Keypad implementation
 
-Keypad::Keypad()
+Keypad::Keypad(bool back_button)
 {
+	// TODO extract the keypad to a widget and use it in both page and window
 #ifdef LAYOUT_TOUCHX
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 	buildPage(new QWidget, nav_bar);
 	QWidget *top_widget = page_content;
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+
+	if (!back_button)
+	{
+		nav_bar->hide();
+		nav_bar->deleteLater();
+	}
 #else
 	QWidget *top_widget = this;
 #endif
@@ -220,7 +227,7 @@ KeypadWithState::KeypadWithState(int s[8])
 
 KeypadWindow::KeypadWindow(Keypad::Type type)
 {
-	keypad = new Keypad;
+	keypad = new Keypad(false);
 	keypad->setMode(type);
 
 	connect(keypad, SIGNAL(Closed()), SIGNAL(Closed()));
