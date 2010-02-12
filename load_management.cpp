@@ -8,6 +8,8 @@
 #include "navigation_bar.h" //NavigationBar
 #include "bann2_buttons.h" // Bann2Buttons
 #include "energy_device.h" // EnergyConversions
+#include "loads_device.h" // LoadsDevice
+#include "devices_cache.h" // add_device_to_cache
 
 #include <QLabel>
 #include <QDebug>
@@ -299,6 +301,9 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node)
 	connect(confirm, SIGNAL(accept()), SLOT(reset()));
 	reset_number = 0;
 
+	dev = bt_global::add_device_to_cache(new LoadsDevice(getTextChild(config_node, "where")));
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	QVBoxLayout *main = new QVBoxLayout(this);
@@ -318,6 +323,35 @@ void LoadDataPage::reset()
 {
 	// TODO: send reset frame with correct reset_number
 	qDebug() << "Sending reset number: " << reset_number;
+}
+
+void LoadDataPage::status_changed(const StatusList &sl)
+{
+	StatusList::const_iterator it = sl.constBegin();
+	// first, get the period, if any. We need it when we see date and consumption data
+	int period = -1;
+	if (sl.contains(LoadsDevice::DIM_PERIOD))
+		period = sl[LoadsDevice::DIM_PERIOD].toInt();
+
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		case LoadsDevice::DIM_TOTAL:
+			content->updatePeriodValue(period, it.value().toInt());
+			break;
+		case LoadsDevice::DIM_RESET_DATE:
+		{
+			QDateTime t = it.value().value<QDateTime>();
+			content->updatePeriodDate(period, t.date(), t.time());
+		}
+			break;
+		case LoadsDevice::DIM_CURRENT:
+			content->setConsumptionValue(it.value().toInt());
+			break;
+		}
+		++it;
+	}
 }
 
 

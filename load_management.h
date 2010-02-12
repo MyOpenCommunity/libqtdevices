@@ -13,6 +13,7 @@ class banner;
 class QLabel;
 class DeactivationTime;
 class Bann2Buttons;
+class LoadsDevice;
 
 class LoadManagement : public BannerPage
 {
@@ -98,8 +99,10 @@ public:
 private:
 	LoadDataContent *content;
 	int reset_number;
+	LoadsDevice *dev;
 
 private slots:
+	void status_changed(const StatusList &sl);
 	void resetRequested(int which);
 	void reset();
 };
