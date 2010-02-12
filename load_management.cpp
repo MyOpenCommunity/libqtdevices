@@ -34,12 +34,10 @@ namespace
 
 	QWidget *buildTitle(const QString &title)
 	{
-		QWidget *top = new QWidget;
 		QLabel *page_title = new QLabel(title);
+		page_title->setAlignment(Qt::AlignCenter);
 		page_title->setFont(bt_global::font->get(FontManager::TEXT));
-		QHBoxLayout *top_l = new QHBoxLayout(top);
-		top_l->addWidget(page_title, 1, Qt::AlignCenter);
-		return top;
+		return page_title;
 	}
 
 	bool tryConvert(const QDomNode &n, const QString &node_path, int *value)
