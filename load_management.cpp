@@ -155,12 +155,11 @@ ConfirmationPage::ConfirmationPage(const QString &text)
 	main->addWidget(nav_bar);
 }
 
+#define FIRST_PERIOD 0
+#define SECOND_PERIOD 1
 
 LoadDataContent::LoadDataContent(int dec, int _rate_id)
 {
-	const int FIRST_RESET = 1;
-	const int SECOND_RESET = 2;
-
 	current_consumption = new QLabel;
 	current_consumption->setText("Current consumption");
 	current_consumption->setFont(bt_global::font->get(FontManager::SUBTITLE));
@@ -171,14 +170,14 @@ LoadDataContent::LoadDataContent(int dec, int _rate_id)
 	first_period->setCentralText("Total consumption 1");
 	first_period_value = 0;
 	connect(first_period, SIGNAL(rightClicked()), &mapper, SLOT(map()));
-	mapper.setMapping(first_period, FIRST_RESET);
+	mapper.setMapping(first_period, FIRST_PERIOD);
 
 	second_period = new Bann2Buttons;
 	second_period->initBanner(QString(), bt_global::skin->getImage("empty_background"), bt_global::skin->getImage("ok"), "data/ora del reset");
 	second_period->setCentralText("Total consumption 2");
 	second_period_value = 0;
 	connect(second_period, SIGNAL(rightClicked()), &mapper, SLOT(map()));
-	mapper.setMapping(second_period, SECOND_RESET);
+	mapper.setMapping(second_period, SECOND_PERIOD);
 
 	connect(&mapper, SIGNAL(mapped(int)), SIGNAL(resetActuator(int)));
 
@@ -200,11 +199,11 @@ void LoadDataContent::updatePeriodDate(int period, QDate date, BtTime time)
 {
 	QString time_str = QString("%1:%2").arg(time.hour()).arg(time.minute(), 2, 10, QChar('0'));
 	QString text = date.toString() + " " + time_str;
-	if (period == 1)
+	if (period == FIRST_PERIOD)
 	{
 		first_period->setDescriptionText(text);
 	}
-	else if (period == 2)
+	else if (period == SECOND_PERIOD)
 	{
 		second_period->setDescriptionText(text);
 	}
@@ -214,11 +213,11 @@ void LoadDataContent::updatePeriodDate(int period, QDate date, BtTime time)
 
 void LoadDataContent::updatePeriodValue(int period, int new_value)
 {
-	if (period == 1)
+	if (period == FIRST_PERIOD)
 	{
 		first_period_value = new_value;
 	}
-	else if (period == 2)
+	else if (period == SECOND_PERIOD)
 	{
 		second_period_value = new_value;
 	}
