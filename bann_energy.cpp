@@ -232,7 +232,7 @@ void BannLoadWithCU::connectRightButton(Page *p)
 DeactivationTime::DeactivationTime(const BtTime &start_time) :
 	current_time(start_time)
 {
-	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), formatTime(current_time), FontManager::SUBTITLE);
+	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), current_time.toString(), FontManager::SUBTITLE);
 	right_button->setAutoRepeat(true);
 	left_button->setAutoRepeat(true);
 	connect(right_button, SIGNAL(clicked()), SLOT(plusClicked()));
@@ -254,12 +254,17 @@ void DeactivationTime::setCurrentTime(const BtTime &t)
 
 void DeactivationTime::plusClicked()
 {
+	// TODO: wrap or not?
 	current_time = current_time.addMinute(10);
 	updateDisplay();
 }
 
 void DeactivationTime::minusClicked()
 {
+	// don't go below 10 minutes
+	if (current_time.hour() == 0 && current_time.minute() == 10)
+		return;
+
 	current_time = current_time.addMinute(-10);
 	updateDisplay();
 }
