@@ -40,6 +40,7 @@ HEADERS += device_tester.h \
             test_pull_manager.h \
             test_probe_device.h \
             openserver_mock.h \
+            ../../bttime.h \
             ../../openclient.h \
             ../../generic_functions.h \
             ../../xml_functions.h \
@@ -63,6 +64,7 @@ SOURCES += test_main.cpp \
             test_pull_manager.cpp \
             test_probe_device.cpp \
             openserver_mock.cpp \
+            ../../bttime.cpp \
             ../../openclient.cpp \
             ../../generic_functions.cpp \
             ../../xml_functions.cpp \

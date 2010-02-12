@@ -22,7 +22,7 @@ TEMPLATE = app
 
 LIBS+= -L ../../common_files/lib/x86 -lcommon -lssl
 
-VPATH = ../devices/test ../devices ..
+VPATH = ..
 
 HEADERS += test_bttime.h \
            test_scenevodevicescond.h \
