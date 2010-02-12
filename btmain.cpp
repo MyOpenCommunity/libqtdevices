@@ -570,14 +570,7 @@ void BtMain::gesScrSav()
 	int time_press = getTimePress();
 	int time = qMin(time_press, int(now() - last_event_time));
 
-	if (time < 5 && frozen)
-	{
-		// this is needed to unfreeze the screen when the user clicks;
-		// when switching to the event filter for arm, this unfreeze call
-		// can be moved to the event filter
-		freeze(false);
-	}
-	else if (screenoff_time != 0 && time >= screenoff_time &&
+	if (screenoff_time != 0 && time >= screenoff_time &&
 		 bt_global::display.currentState() == DISPLAY_SCREENSAVER)
 	{
 		qDebug() << "Turning screen off";
