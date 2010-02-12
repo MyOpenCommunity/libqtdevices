@@ -8,6 +8,8 @@
 #include "navigation_bar.h" //NavigationBar
 #include "bann2_buttons.h" // Bann2Buttons
 #include "energy_device.h" // EnergyConversions
+#include "loads_device.h" // LoadsDevice
+#include "devices_cache.h" // add_device_to_cache
 
 #include <QLabel>
 #include <QDebug>
@@ -107,21 +109,22 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 {
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
+	LoadsDevice *dev = bt_global::add_device_to_cache(new LoadsDevice(getTextChild(item_node, "where")));
 	banner *b = 0;
 	switch (id)
 	{
 	case LOAD_WITH_CU:
 	{
 		bool advanced = getTextChild(item_node, "advanced").toInt();
-		BannLoadWithCU *bann = new BannLoadWithCU(getDescriptionWithPriority(item_node),
+		BannLoadWithCU *bann = new BannLoadWithCU(getDescriptionWithPriority(item_node), dev,
 			advanced ? BannLoadWithCU::ADVANCED_MODE : BannLoadWithCU::BASE_MODE);
 		if (advanced)
 		{
-			Page *p = new LoadDataPage(item_node);
+			Page *p = new LoadDataPage(item_node, dev);
 			bann->connectRightButton(p);
 			connect(p, SIGNAL(Closed()), bann, SIGNAL(pageClosed()));
 		}
-		Page *d = new DeactivationTimePage(item_node);
+		Page *d = new DeactivationTimePage(item_node, dev);
 		connect(bann, SIGNAL(deactivateDevice()), d, SLOT(showPage()));
 		connect(d, SIGNAL(Closed()), bann, SIGNAL(pageClosed()));
 
@@ -131,7 +134,7 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 	case LOAD_WITHOUT_CU:
 	{
 		BannLoadNoCU *bann = new BannLoadNoCU(getTextChild(item_node, "descr"));
-		Page *p = new LoadDataPage(item_node);
+		Page *p = new LoadDataPage(item_node, dev);
 		bann->connectRightButton(p);
 		connect(p, SIGNAL(Closed()), bann, SIGNAL(pageClosed()));
 		b = bann;
@@ -165,12 +168,11 @@ ConfirmationPage::ConfirmationPage(const QString &text)
 	main->addWidget(nav_bar);
 }
 
+#define FIRST_PERIOD 0
+#define SECOND_PERIOD 1
 
 LoadDataContent::LoadDataContent(int dec, int _rate_id)
 {
-	const int FIRST_RESET = 1;
-	const int SECOND_RESET = 2;
-
 	current_consumption = new QLabel;
 	current_consumption->setText("Current consumption");
 	current_consumption->setFont(bt_global::font->get(FontManager::SUBTITLE));
@@ -181,14 +183,14 @@ LoadDataContent::LoadDataContent(int dec, int _rate_id)
 	first_period->setCentralText("Total consumption 1");
 	first_period_value = 0;
 	connect(first_period, SIGNAL(rightClicked()), &mapper, SLOT(map()));
-	mapper.setMapping(first_period, FIRST_RESET);
+	mapper.setMapping(first_period, FIRST_PERIOD);
 
 	second_period = new Bann2Buttons;
 	second_period->initBanner(QString(), bt_global::skin->getImage("empty_background"), bt_global::skin->getImage("ok"), "data/ora del reset");
 	second_period->setCentralText("Total consumption 2");
 	second_period_value = 0;
 	connect(second_period, SIGNAL(rightClicked()), &mapper, SLOT(map()));
-	mapper.setMapping(second_period, SECOND_RESET);
+	mapper.setMapping(second_period, SECOND_PERIOD);
 
 	connect(&mapper, SIGNAL(mapped(int)), SIGNAL(resetActuator(int)));
 
@@ -210,11 +212,11 @@ void LoadDataContent::updatePeriodDate(int period, QDate date, BtTime time)
 {
 	QString time_str = QString("%1:%2").arg(time.hour()).arg(time.minute(), 2, 10, QChar('0'));
 	QString text = date.toString() + " " + time_str;
-	if (period == 1)
+	if (period == FIRST_PERIOD)
 	{
 		first_period->setDescriptionText(text);
 	}
-	else if (period == 2)
+	else if (period == SECOND_PERIOD)
 	{
 		second_period->setDescriptionText(text);
 	}
@@ -224,11 +226,11 @@ void LoadDataContent::updatePeriodDate(int period, QDate date, BtTime time)
 
 void LoadDataContent::updatePeriodValue(int period, int new_value)
 {
-	if (period == 1)
+	if (period == FIRST_PERIOD)
 	{
 		first_period_value = new_value;
 	}
-	else if (period == 2)
+	else if (period == SECOND_PERIOD)
 	{
 		second_period_value = new_value;
 	}
@@ -281,7 +283,7 @@ void LoadDataContent::updateValues()
 }
 
 
-LoadDataPage::LoadDataPage(const QDomNode &config_node)
+LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	QWidget *top = buildTitle(getDescriptionWithPriority(config_node));
@@ -312,6 +314,9 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node)
 	connect(confirm, SIGNAL(accept()), SLOT(reset()));
 	reset_number = 0;
 
+	dev = d;
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	buildPage(content, nav_bar, "", 0, top);
@@ -324,13 +329,41 @@ void LoadDataPage::resetRequested(int which)
 
 void LoadDataPage::reset()
 {
-	// TODO: send reset frame with correct reset_number
-	qDebug() << "Sending reset number: " << reset_number;
+	dev->resetTotal(reset_number);
+}
+
+void LoadDataPage::status_changed(const StatusList &sl)
+{
+	StatusList::const_iterator it = sl.constBegin();
+	// first, get the period, if any. We need it when we see date and consumption data
+	int period = -1;
+	if (sl.contains(LoadsDevice::DIM_PERIOD))
+		period = sl[LoadsDevice::DIM_PERIOD].toInt();
+
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		case LoadsDevice::DIM_TOTAL:
+			content->updatePeriodValue(period, it.value().toInt());
+			break;
+		case LoadsDevice::DIM_RESET_DATE:
+		{
+			QDateTime t = it.value().value<QDateTime>();
+			content->updatePeriodDate(period, t.date(), t.time());
+		}
+			break;
+		case LoadsDevice::DIM_CURRENT:
+			content->setConsumptionValue(it.value().toInt());
+			break;
+		}
+		++it;
+	}
 }
 
 
 
-DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node)
+DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node, LoadsDevice *d)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
@@ -344,10 +377,12 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node)
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
 
 	buildPage(new DeactivationTime(BtTime(2, 30, 0)), nav_bar, "", 0, top);
+	dev = d;
 }
 
 void DeactivationTimePage::sendDeactivateDevice()
 {
-	// TODO: send a deactivation frame
-	qDebug() << "Deactivating device for time: " << content->currentTime().toString();
+	BtTime t = content->currentTime();
+	int off_time = t.hour() * 60 + t.minute();
+	dev->forceOff(off_time);
 }

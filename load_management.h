@@ -13,6 +13,7 @@ class banner;
 class QLabel;
 class DeactivationTime;
 class Bann2Buttons;
+class LoadsDevice;
 
 class LoadManagement : public BannerPage
 {
@@ -94,13 +95,15 @@ Q_OBJECT
 public:
 	typedef LoadDataContent ContentType;
 	// TODO: add LoadManagement device
-	LoadDataPage(const QDomNode &config_node);
+	LoadDataPage(const QDomNode &config_node, LoadsDevice *d);
 
 private:
 	LoadDataContent *content;
 	int reset_number;
+	LoadsDevice *dev;
 
 private slots:
+	void status_changed(const StatusList &sl);
 	void resetRequested(int which);
 	void reset();
 };
@@ -112,13 +115,14 @@ class DeactivationTimePage : public Page
 Q_OBJECT
 public:
 	typedef DeactivationTime ContentType;
-	DeactivationTimePage(const QDomNode &config_node);
+	DeactivationTimePage(const QDomNode &config_node, LoadsDevice *d);
 
 private slots:
 	void sendDeactivateDevice();
 
 private:
 	DeactivationTime *content;
+	LoadsDevice *dev;
 };
 
 #endif // LOAD_MANAGEMENT_H

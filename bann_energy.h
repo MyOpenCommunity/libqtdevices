@@ -10,6 +10,7 @@
 
 struct EnergyRate;
 class EnergyDevice;
+class LoadsDevice;
 
 
 class BannEnergyInterface : public Bann2Buttons
@@ -102,7 +103,6 @@ class BannLoadNoCU : public Bann3ButtonsLabel
 {
 Q_OBJECT
 public:
-	// TODO: Add device
 	BannLoadNoCU(const QString &descr);
 	void connectRightButton(Page *p);
 };
@@ -117,8 +117,15 @@ public:
 		BASE_MODE,
 		ADVANCED_MODE,
 	};
-	BannLoadWithCU(const QString &descr, Type t);
+	BannLoadWithCU(const QString &descr, LoadsDevice *d, Type t);
 	void connectRightButton(Page *p);
+
+private:
+	void changeLeftFunction(bool is_forced);
+	LoadsDevice *dev;
+
+private slots:
+	void status_changed(const StatusList &sl);
 
 signals:
 	// this should be emitted only if the device is active
