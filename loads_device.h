@@ -72,6 +72,7 @@ public:
 	void requestTotal(int period) const;
 
 	// reset total absorption
+	// can be 0 for first period, 1 for second period
 	void resetTotal(int period) const;
 
 	// request the differential level
