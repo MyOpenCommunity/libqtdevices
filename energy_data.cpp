@@ -1,12 +1,8 @@
 #include "energy_data.h"
-#include "main.h" // IMG_PATH
 #include "xml_functions.h" // getChildren, getTextChild
-#include "bann2_buttons.h" // bann2But, bannOnOff
 #include "energy_view.h" // EnergyView
 #include "skinmanager.h" // bt_global::skin, SkinContext
-#include "generic_functions.h" // setCfgValue
 #include "devices_cache.h" // bt_global::devices_cache
-#include "energy_device.h" // EnergyDevice
 #include "btmain.h" // bt_global::btmain
 #include "energy_rates.h"
 #include "bann_energy.h" // BannEnergyInterface
@@ -17,7 +13,6 @@
 #include "btbutton.h"
 #include "energy_management.h"
 
-#include <QVBoxLayout>
 #include <QDomNode>
 #include <QLocale>
 #include <QDebug>
