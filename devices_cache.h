@@ -17,19 +17,22 @@ namespace bt_global
  * This class describes a cache that must be used for all the devices of the
  * application, to avoid wasting memory and ensure the proper initialization.
  */
-class DevicesCache : protected QHash<QString, device*>
+class DevicesCache
 {
 template <class T> friend T* bt_global::add_device_to_cache(T *device);
 friend class TestScenEvoDevicesCond;
 public:
-	using QHash<QString, device*>::contains;
 	~DevicesCache();
 
 	//! Inits all devices
 	void init_devices();
 
 private:
+	QHash<QString, device*> cache;
 	void clear();
+	bool contains(QString key) const;
+	device *get(QString key) const;
+	void insert(QString key, device* d);
 };
 
 
@@ -49,10 +52,10 @@ namespace bt_global
 		if (bt_global::devices_cache.contains(key))
 		{
 			delete device;
-			device = static_cast<T*>(bt_global::devices_cache[key]);
+			device = static_cast<T*>(bt_global::devices_cache.get(key));
 		}
 		else
-			bt_global::devices_cache[key] = device;
+			bt_global::devices_cache.insert(key, device);
 
 		QString current_class_name = device->metaObject()->className();
 		Q_ASSERT_X(orig_class_name == current_class_name, "bt_global::add_device_to_cache",
