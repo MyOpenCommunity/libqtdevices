@@ -421,11 +421,11 @@ void BtMain::myMain()
 
 	screensaver_timer = new QTimer(this);
 	screensaver_timer->start(SCREENSAVER_CHECK_SLOW);
-	connect(screensaver_timer,SIGNAL(timeout()),this,SLOT(gesScrSav()));
+	connect(screensaver_timer, SIGNAL(timeout()), SLOT(checkScreensaver()));
 
 	testfiles_timer = new QTimer(this);
 	testfiles_timer->start(3000);
-	connect(testfiles_timer,SIGNAL(timeout()),this,SLOT(testFiles()));
+	connect(testfiles_timer, SIGNAL(timeout()), SLOT(testFiles()));
 }
 
 void BtMain::showHomePage()
@@ -558,7 +558,7 @@ void BtMain::makeActiveAndFreeze()
 	}
 }
 
-void BtMain::gesScrSav()
+void BtMain::checkScreensaver()
 {
 	rearmWDT();
 

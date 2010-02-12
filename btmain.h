@@ -89,7 +89,7 @@ protected:
 
 private slots:
 	void init();
-	void gesScrSav();
+	void checkScreensaver();
 	void testPwd();
 	void testFiles();
 	void waitBeforeInit();
