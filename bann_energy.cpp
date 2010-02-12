@@ -215,13 +215,17 @@ void BannLoadNoCU::connectRightButton(Page *p)
 
 // BannLoadWithCU implementation
 
-BannLoadWithCU::BannLoadWithCU(const QString &descr, Type t) : Bann3ButtonsLabel(0)
+BannLoadWithCU::BannLoadWithCU(const QString &descr, LoadsDevice *d, Type t) : Bann3ButtonsLabel(0)
 {
 	QString right = t == ADVANCED_MODE ? bt_global::skin->getImage("info") : QString();
 	initBanner(bt_global::skin->getImage("forced"), bt_global::skin->getImage("not_forced"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("load"), right, ENABLED, NOT_FORCED, descr);
-	// TODO: this should be changed on mode change too
 	connect(left_button, SIGNAL(clicked()), SIGNAL(deactivateDevice()));
+
+	dev = d;
+	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+
+	connect(center_button, SIGNAL(clicked()), dev, SLOT(forceOn()));
 }
 
 void BannLoadWithCU::connectRightButton(Page *p)
@@ -229,11 +233,40 @@ void BannLoadWithCU::connectRightButton(Page *p)
 	connectButtonToPage(right_button, p);
 }
 
+void BannLoadWithCU::status_changed(const StatusList &sl)
+{
+	StatusList::const_iterator it = sl.constBegin();
+	while (it != sl.constEnd())
+	{
+		switch (it.key())
+		{
+		case LoadsDevice::DIM_FORCED:
+		{
+			bool is_forced = it.value().toBool();
+			setForced(is_forced ? FORCED : NOT_FORCED);
+			changeLeftFunction(is_forced);
+		}
+			break;
+		case LoadsDevice::DIM_ENABLED:
+			setState(it.value().toBool() ? ENABLED : DISABLED);
+			break;
+		}
+		++it;
+	}
+}
+
+void BannLoadWithCU::changeLeftFunction(bool is_forced)
+{
+	left_button->disconnect();
+	is_forced ? connect(left_button, SIGNAL(clicked()), dev, SLOT(enable())) :
+		connect(left_button, SIGNAL(clicked()), SIGNAL(deactivateDevice()));
+}
+
 
 DeactivationTime::DeactivationTime(const BtTime &start_time) :
 	current_time(start_time)
 {
-	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), formatTime(current_time), FontManager::SUBTITLE);
+	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), current_time.toString(), FontManager::SUBTITLE);
 	right_button->setAutoRepeat(true);
 	left_button->setAutoRepeat(true);
 	connect(right_button, SIGNAL(clicked()), SLOT(plusClicked()));
@@ -255,12 +288,17 @@ void DeactivationTime::setCurrentTime(const BtTime &t)
 
 void DeactivationTime::plusClicked()
 {
+	// TODO: wrap or not?
 	current_time = current_time.addMinute(10);
 	updateDisplay();
 }
 
 void DeactivationTime::minusClicked()
 {
+	// don't go below 10 minutes
+	if (current_time.hour() == 0 && current_time.minute() == 10)
+		return;
+
 	current_time = current_time.addMinute(-10);
 	updateDisplay();
 }

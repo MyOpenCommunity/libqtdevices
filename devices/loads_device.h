@@ -53,11 +53,7 @@ public:
 
 	LoadsDevice(const QString &where);
 
-	// enable actuator
-	void enable() const;
-
-	// force the device to on
-	void forceOn() const;
+	virtual void init();
 
 	// force the device to off for the given time, expressed in minutes
 	void forceOff(int time) const;
@@ -72,10 +68,18 @@ public:
 	void requestTotal(int period) const;
 
 	// reset total absorption
+	// can be 0 for first period, 1 for second period
 	void resetTotal(int period) const;
 
 	// request the differential level
 	void requestLevel() const;
+
+public slots:
+	// enable actuator
+	void enable() const;
+
+	// force the device to on
+	void forceOn() const;
 
 protected:
 	virtual void manageFrame(OpenMsg &msg);

@@ -12,7 +12,7 @@ fi
 
 MACHINE=$1
 
-if [ "$MACHINE" = "H4684" ] || [ "$MACHINE" = "LGRH4684" ] || [ "$MACHINE" = "H4684_IP" ] || [ "$MACHINE" = "L4684SDK" ] || [ "$MACHINE" = "LGRH4684_IP" ]
+if [ "$MACHINE" = "TS35" ]
 then
   export QTDIR=$QTDIR
   export QMAKESPEC=$QMAKESPEC
@@ -33,3 +33,4 @@ then
   cp BTouch_qws $BTWEB_APP_BIN_NO_STACKOPEN
   exit 0
 fi
+exit 1

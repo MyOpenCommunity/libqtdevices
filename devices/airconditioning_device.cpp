@@ -83,15 +83,6 @@ void AdvancedAirConditioningDevice::setStatus(AirConditionerStatus st) const
 	sendFrame(createWriteRequestOpen(who, what, where));
 }
 
-void AdvancedAirConditioningDevice::frame_rx_handler(char *frame)
-{
-	OpenMsg msg;
-	msg.CreateMsgOpen(frame, strlen(frame));
-
-	if (who.toInt() != msg.who() || msg.where() != where.toInt())
-		return;
-}
-
 void AdvancedAirConditioningDevice::turnOff() const
 {
 	setStatus(MODE_OFF, 0, VEL_AUTO, SWING_OFF);
