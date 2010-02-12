@@ -172,7 +172,6 @@ BtMain::BtMain()
 	Window *loading = NULL;
 
 	// TODO these must be read from configuration
-	startup_on_time = 120;
 	freeze_time = 30;
 	screensaver_time = 60;
 	screenoff_time = 120;

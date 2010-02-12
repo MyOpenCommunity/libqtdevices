@@ -117,11 +117,9 @@ private:
 	unsigned char screen_type;
 	int last_event_time;
 
-	// the four values below are in seconds; screenoff_time and startup_on_time can be 0
+	// the four values below are in seconds; screenoff_time can be 0
 	// it must always be freeze_time < screensaver_time < screenoff_time
 
-	// after startup, let this amount of time elapse before freezing/starting the screensaver
-	int startup_on_time;
 	// if the user is idle for this number of seconds, freeze the screen
 	int freeze_time;
 	// if the user is idle for this number of seconds, start the screen saver
