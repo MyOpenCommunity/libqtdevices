@@ -16,6 +16,14 @@
 // The language used for the floating point number
 static QLocale loc(QLocale::Italian);
 
+namespace
+{
+	QString formatNoSeconds(const BtTime &time)
+	{
+		QString str = QString("%1:%2").arg(time.hour()).arg(time.minute(), 2, 10, QChar('0'));
+		return str;
+	}
+}
 
 // BannEnergyInterface implementation
 
@@ -265,7 +273,7 @@ void BannLoadWithCU::changeLeftFunction(bool is_forced)
 DeactivationTime::DeactivationTime(const BtTime &start_time) :
 	current_time(start_time)
 {
-	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), current_time.toString(), FontManager::SUBTITLE);
+	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), formatNoSeconds(current_time), FontManager::SUBTITLE);
 	right_button->setAutoRepeat(true);
 	left_button->setAutoRepeat(true);
 	connect(right_button, SIGNAL(clicked()), SLOT(plusClicked()));
@@ -304,7 +312,7 @@ void DeactivationTime::minusClicked()
 
 void DeactivationTime::updateDisplay()
 {
-	setCentralText(current_time.toString());
+	setCentralText(formatNoSeconds(current_time));
 }
 
 
