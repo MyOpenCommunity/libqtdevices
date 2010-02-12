@@ -106,7 +106,7 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 	case LOAD_WITH_CU:
 	{
 		bool advanced = getTextChild(item_node, "advanced").toInt();
-		BannLoadWithCU *bann = new BannLoadWithCU(getDescriptionWithPriority(item_node),
+		BannLoadWithCU *bann = new BannLoadWithCU(getDescriptionWithPriority(item_node), dev,
 			advanced ? BannLoadWithCU::ADVANCED_MODE : BannLoadWithCU::BASE_MODE);
 		if (advanced)
 		{
