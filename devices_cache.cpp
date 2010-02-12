@@ -1,14 +1,5 @@
 #include "devices_cache.h"
 
-#include <QDebug>
-
-
-
-// Constructor
-DevicesCache::DevicesCache() : QMap<QString, device*>()
-{
-	clear();
-}
 
 void DevicesCache::init_devices()
 {
@@ -17,10 +8,15 @@ void DevicesCache::init_devices()
 		it.value()->init();
 }
 
-// Destructor
+
 DevicesCache::~DevicesCache()
 {
-	for (QMap<QString, device *>::Iterator it = begin(); it != end(); ++it)
+	clear();
+}
+
+void DevicesCache::clear()
+{
+	for (QHash<QString, device *>::Iterator it = begin(); it != end(); ++it)
 	{
 		erase(it);
 		delete *it;
