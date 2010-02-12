@@ -37,13 +37,18 @@ class EnergyRates : public QObject
 {
 Q_OBJECT
 public:
+	enum
+	{
+		INVALID_RATE = -1,
+	};
+
 	EnergyRates();
 
 	// can be called multiple times, will load the rates only
 	// the first time
 	void loadRates();
 
-	// returns the rate, fails if the rate is not present; if the id is -1,
+	// returns the rate, fails if the rate is not present; if the id is INVALID_RATE,
 	// returns an invalid rate
 	EnergyRate getRate(int rate_id) const;
 

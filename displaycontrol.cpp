@@ -54,7 +54,11 @@ void DisplayControl::setBrightness(BrightnessLevel level)
 		qFatal("Unknown level for brightness");
 	}
 
-	// Operative status has the same values for all levels
+	// Off and operative status have the same values for all levels
+	data[DISPLAY_OFF].brightness = 10;
+	data[DISPLAY_OFF].backlight = false;
+	data[DISPLAY_OFF].screensaver = false;
+
 	data[DISPLAY_OPERATIVE].brightness = 10;
 	data[DISPLAY_OPERATIVE].backlight = true;
 	data[DISPLAY_OPERATIVE].screensaver = false;

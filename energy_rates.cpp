@@ -62,7 +62,7 @@ void EnergyRates::loadRates()
 
 EnergyRate EnergyRates::getRate(int rate_id) const
 {
-	if (rate_id == -1)
+	if (rate_id == INVALID_RATE)
 		return invalid_rate;
 
 	Q_ASSERT_X(rates.contains(rate_id), "EnergyRates::rate", "missing rate");

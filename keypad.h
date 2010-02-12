@@ -28,7 +28,7 @@ class Keypad : public Page
 {
 Q_OBJECT
 public:
-	Keypad();
+	Keypad(bool back_button = true);
 
 /*! \enum Type
   differentiate between encripted and clean mode

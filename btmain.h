@@ -89,7 +89,7 @@ protected:
 
 private slots:
 	void init();
-	void gesScrSav();
+	void checkScreensaver();
 	void testPwd();
 	void testFiles();
 	void waitBeforeInit();
@@ -107,18 +107,26 @@ private:
 	HomePage *Home;
 	Page *pagDefault;
 
-	QTimer *tempo1;
-	QTimer *tempo2;
+	QTimer *screensaver_timer;
+	QTimer *testfiles_timer;
 	QString pwd;
-	bool pwdOn,svegliaIsOn,alreadyCalibrated;
-	KeypadWindow *tasti;
-	bool event_unfreeze;
-	bool firstTime, bloccato;
-	bool pd_shown;
+	bool pwdOn, alarmClockIsOn, alreadyCalibrated;
+	KeypadWindow *passwordKeypad;
+	bool frozen;
 	genPage *screen;
-	unsigned char tiposcreen;
-	unsigned long tiempo_ev;
-	unsigned long tiempo_last_ev;
+	unsigned char screen_type;
+	int last_event_time;
+
+	// the four values below are in seconds; screenoff_time can be 0
+	// it must always be freeze_time < screensaver_time < screenoff_time
+
+	// if the user is idle for this number of seconds, freeze the screen
+	int freeze_time;
+	// if the user is idle for this number of seconds, start the screen saver
+	int screensaver_time;
+	// if the user is idle for this number of seconds, turn off the screen
+	int screenoff_time;
+
 	bool calibrating;
 	Calibrate *calib;
 	ScreenSaver *screensaver;

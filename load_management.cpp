@@ -6,7 +6,8 @@
 #include "skinmanager.h" // SkinContext
 #include "fontmanager.h" // FontManager
 #include "navigation_bar.h" //NavigationBar
-#include "bann1_button.h" // BannSinglePuls
+#include "bann2_buttons.h" // Bann2Buttons
+#include "energy_device.h" // EnergyConversions
 
 #include <QLabel>
 #include <QDebug>
@@ -15,6 +16,7 @@
 
 namespace
 {
+
 	QString getDescriptionWithPriority(const QDomNode &n)
 	{
 		QString where = getTextChild(n, "where");
@@ -37,6 +39,48 @@ namespace
 		top_l->addWidget(page_title, 1, Qt::AlignCenter);
 		return top;
 	}
+
+	bool tryConvert(const QDomNode &n, const QString &node_path, int *value)
+	{
+		Q_ASSERT_X(value, "tryConvert", "value must be a valid pointer!");
+		QDomElement e = getElement(n, node_path);
+		bool ok;
+		*value = e.text().toInt(&ok);
+		if (!ok)
+			qDebug() << "tryConvert failed converting node: " << node_path << "Text was: " << e.text();
+		return ok;
+	}
+
+	bool isRateEnabled(const QDomNode &n)
+	{
+		int tmp;
+		if (tryConvert(n, "rate/ab", &tmp))
+			return (tmp == 1);
+		else
+			return false;
+	}
+
+	// Extract rate/rate_id from given node; return INVALID_RATE on errors
+	int getRateId(const QDomNode &n)
+	{
+		int tmp;
+		if (tryConvert(n, "rate/rate_id", &tmp))
+			return tmp;
+		else
+			return EnergyRates::INVALID_RATE;
+	}
+
+	int getDecimals(const QDomNode &n)
+	{
+		int tmp;
+		if (tryConvert(n, "rate/n_decimal_view", &tmp))
+			return tmp;
+		else
+			return 0;
+	}
+
+	// The language used for the floating point number
+	QLocale loc(QLocale::Italian);
 }
 LoadManagement::LoadManagement(const QDomNode &config_node) :
 	BannerPage(0)
@@ -101,32 +145,139 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 }
 
 
-
-LoadDataContent::LoadDataContent()
+ConfirmationPage::ConfirmationPage(const QString &text)
 {
+	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(cancel()));
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(accept()));
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
+	nav_bar->displayScrollButtons(false);
+
+	QLabel *content = new QLabel(text);
+	content->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	content->setWordWrap(true);
+
+	QVBoxLayout *main = new QVBoxLayout(this);
+	main->setContentsMargins(0, 5, 0, 10);
+	main->setSpacing(0);
+	main->addWidget(content, 1);
+	main->addWidget(nav_bar);
+}
+
+
+LoadDataContent::LoadDataContent(int dec, int _rate_id)
+{
+	const int FIRST_RESET = 1;
+	const int SECOND_RESET = 2;
+
 	current_consumption = new QLabel;
 	current_consumption->setText("Current consumption");
 	current_consumption->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	current_value = 0;
 
-	BannSinglePuls *first_period = new BannSinglePuls(0);
-	first_period->initBanner(bt_global::skin->getImage("ok"), bt_global::skin->getImage("empty_background"), "data/ora del reset");
+	first_period = new Bann2Buttons;
+	first_period->initBanner(QString(), bt_global::skin->getImage("empty_background"), bt_global::skin->getImage("ok"), "data/ora del reset");
 	first_period->setCentralText("Total consumption 1");
-	connect(first_period, SIGNAL(rightClick()), SIGNAL(firstReset()));
-	BannSinglePuls *second_period = new BannSinglePuls(0);
-	second_period->initBanner(bt_global::skin->getImage("ok"), bt_global::skin->getImage("empty_background"), "data/ora del reset");
+	first_period_value = 0;
+	connect(first_period, SIGNAL(rightClicked()), &mapper, SLOT(map()));
+	mapper.setMapping(first_period, FIRST_RESET);
+
+	second_period = new Bann2Buttons;
+	second_period->initBanner(QString(), bt_global::skin->getImage("empty_background"), bt_global::skin->getImage("ok"), "data/ora del reset");
 	second_period->setCentralText("Total consumption 2");
-	connect(second_period, SIGNAL(rightClick()), SIGNAL(secondReset()));
+	second_period_value = 0;
+	connect(second_period, SIGNAL(rightClicked()), &mapper, SLOT(map()));
+	mapper.setMapping(second_period, SECOND_RESET);
+
+	connect(&mapper, SIGNAL(mapped(int)), SIGNAL(resetActuator(int)));
+
 	QVBoxLayout *main = new QVBoxLayout(this);
 	main->setContentsMargins(0, 0, 0, 0);
 	main->setSpacing(0);
 	main->addWidget(current_consumption, 0, Qt::AlignHCenter);
 	main->addWidget(first_period);
 	main->addWidget(second_period);
+
+	rate_id = _rate_id;
+	rate = EnergyRates::energy_rates.getRate(rate_id);
+	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
+	is_currency = false;
+	decimals = dec;
 }
 
-void LoadDataContent::currentConsumptionChanged(int new_value)
+void LoadDataContent::updatePeriodDate(int period, QDate date, BtTime time)
 {
-	// TODO: to be implemented
+	QString time_str = QString("%1:%2").arg(time.hour()).arg(time.minute(), 2, 10, QChar('0'));
+	QString text = date.toString() + " " + time_str;
+	if (period == 1)
+	{
+		first_period->setDescriptionText(text);
+	}
+	else if (period == 2)
+	{
+		second_period->setDescriptionText(text);
+	}
+	else
+		qDebug() << "LoadDataContent::updatePeriodDate: Invalid period";
+}
+
+void LoadDataContent::updatePeriodValue(int period, int new_value)
+{
+	if (period == 1)
+	{
+		first_period_value = new_value;
+	}
+	else if (period == 2)
+	{
+		second_period_value = new_value;
+	}
+	else
+		qDebug() << "LoadDataContent::updatePeriodValue: Invalid period";
+	updateValues();
+}
+
+void LoadDataContent::setConsumptionValue(int new_value)
+{
+	current_value = new_value;
+	updateValues();
+}
+
+void LoadDataContent::toggleCurrencyView()
+{
+	is_currency = !is_currency;
+	updateValues();
+}
+
+void LoadDataContent::rateChanged(int id)
+{
+	if (id == rate_id)
+	{
+		rate = EnergyRates::energy_rates.getRate(id);
+		updateValues();
+	}
+}
+
+void LoadDataContent::updateValues()
+{
+	float current = EnergyConversions::convertToRawData(current_value, EnergyConversions::ELECTRICITY_CURRENT);
+	float period1 = EnergyConversions::convertToRawData(first_period_value, EnergyConversions::ELECTRICITY_CURRENT);
+	float period2 = EnergyConversions::convertToRawData(second_period_value, EnergyConversions::ELECTRICITY_CURRENT);
+	int dec = decimals;
+	QString unit_current = "kW";
+	QString unit_period = "kWh";
+	if (is_currency)
+	{
+		current = EnergyConversions::convertToMoney(current, rate.rate);
+		period1 = EnergyConversions::convertToMoney(period1, rate.rate);
+		period2 = EnergyConversions::convertToMoney(period2, rate.rate);
+		dec = rate.display_decimals;
+		unit_current = unit_period = rate.currency_symbol;
+	}
+
+	current_consumption->setText(QString("%1 %2").arg(loc.toString(current, 'f', dec)).arg(unit_current));
+	first_period->setCentralText(QString("%1 %2").arg(loc.toString(period1, 'f', dec)).arg(unit_period));
+	second_period->setCentralText(QString("%1 %2").arg(loc.toString(period2, 'f', dec)).arg(unit_period));
 }
 
 
@@ -134,21 +285,47 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	QWidget *top = buildTitle(getDescriptionWithPriority(config_node));
-	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
+
+	// measure unit here will always be kWh
+	QString forward_button;
+	int rate_id = -1;
+	if (isRateEnabled(config_node))
+	{
+		forward_button = bt_global::skin->getImage("currency_exchange");
+		rate_id = getRateId(config_node);
+	}
+	int decimals = getDecimals(config_node);
+	content = new LoadDataContent(decimals, rate_id);
+
+	NavigationBar *nav_bar = new NavigationBar(forward_button);
+	connect(nav_bar, SIGNAL(forwardClick()), content, SLOT(toggleCurrencyView()));
+
+	QLabel *page_title = new QLabel(getDescriptionWithPriority(config_node));
+	page_title->setFont(bt_global::font->get(FontManager::TEXT));
+
+	ConfirmationPage *confirm = new ConfirmationPage(tr("Are you sure to delete all consumption data?"));
+	// show pages correctly
+	connect(content, SIGNAL(resetActuator(int)), confirm, SLOT(showPage()));
+	connect(confirm, SIGNAL(Closed()), SLOT(showPage()));
+	// these connects handle the logic
+	connect(content, SIGNAL(resetActuator(int)), SLOT(resetRequested(int)));
+	connect(confirm, SIGNAL(accept()), SLOT(reset()));
+	reset_number = 0;
+
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
-	buildPage(new LoadDataContent, nav_bar, "", 0, top);
+	buildPage(content, nav_bar, "", 0, top);
 }
 
-
-
-DeactivationTimeContent::DeactivationTimeContent()
+void LoadDataPage::resetRequested(int which)
 {
-	DeactivationTime *t = new DeactivationTime(BtTime(2, 30, 0));
-	QVBoxLayout *main = new QVBoxLayout(this);
-	main->setContentsMargins(0, 0, 0, 0);
-	main->setSpacing(0);
-	main->addWidget(t);
+	reset_number = which;
+}
+
+void LoadDataPage::reset()
+{
+	// TODO: send reset frame with correct reset_number
+	qDebug() << "Sending reset number: " << reset_number;
 }
 
 
@@ -166,10 +343,11 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node)
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(sendDeactivateDevice()));
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
 
-	buildPage(new DeactivationTimeContent, nav_bar, "", 0, top);
+	buildPage(new DeactivationTime(BtTime(2, 30, 0)), nav_bar, "", 0, top);
 }
 
 void DeactivationTimePage::sendDeactivateDevice()
 {
-	qDebug() << "Deactivating device for time: xxx";
+	// TODO: send a deactivation frame
+	qDebug() << "Deactivating device for time: " << content->currentTime().toString();
 }

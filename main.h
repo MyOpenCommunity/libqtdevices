@@ -427,6 +427,7 @@ enum  bannerType
 	RINGTONE=2060,                                /*!< Ringtone selection banner in touch 10 settings */
 	LOAD_WITH_CU=80,                              /*!< Load with central unit */
 	LOAD_WITHOUT_CU=81,                           /*!< Load without central unit */
+	LOAD_DIAGNOSTIC=82,                           /*!< Load diagnostics */
 };
 
 #endif //MAIN_H

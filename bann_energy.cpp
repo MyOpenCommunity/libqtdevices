@@ -238,6 +238,9 @@ DeactivationTime::DeactivationTime(const BtTime &start_time) :
 	left_button->setAutoRepeat(true);
 	connect(right_button, SIGNAL(clicked()), SLOT(plusClicked()));
 	connect(left_button, SIGNAL(clicked()), SLOT(minusClicked()));
+	// This is limit in the protocol; it supports 255 values, each meaning 10' activation time.
+	// 255 * 10' = 42.5h; BtTime can't impose a limit like this, so just impose an upper limit less than 42.5 hours
+	current_time.setMaxHours(42);
 }
 
 BtTime DeactivationTime::currentTime() const
@@ -252,19 +255,19 @@ void DeactivationTime::setCurrentTime(const BtTime &t)
 
 void DeactivationTime::plusClicked()
 {
-	current_time = current_time.addMinute(1);
+	current_time = current_time.addMinute(10);
 	updateDisplay();
 }
 
 void DeactivationTime::minusClicked()
 {
-	current_time = current_time.addMinute(-1);
+	current_time = current_time.addMinute(-10);
 	updateDisplay();
 }
 
 void DeactivationTime::updateDisplay()
 {
-	setCentralText(formatTime(current_time));
+	setCentralText(current_time.toString());
 }
 
 
