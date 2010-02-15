@@ -61,6 +61,7 @@ void TransitionWidget::startTransition(Page *next)
 
 	timeline.start();
 	local_loop.exec();
+	prev_image = next_image = QPixmap();
 }
 
 BlendingTransition::BlendingTransition(QStackedWidget *win) : TransitionWidget(win, 400)
