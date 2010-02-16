@@ -119,6 +119,7 @@ public:
 	HeaderNavigationWidget();
 
 	void addButton(int section_id, int page_id, const QString &icon);
+	void addButton(Page *page, const QString &icon);
 	void setCurrentSection(int section_id);
 
 public slots:
@@ -133,6 +134,7 @@ protected:
 
 private:
 	void drawContent();
+	BtButton *createButton(int section_id, const QString &icon);
 
 private:
 	int current_index, selected_section_id, visible_buttons;

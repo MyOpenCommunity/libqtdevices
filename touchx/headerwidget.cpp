@@ -457,14 +457,11 @@ void HeaderNavigationWidget::showEvent(QShowEvent *e)
 	QWidget::showEvent(e);
 }
 
-void HeaderNavigationWidget::addButton(int section_id, int page_id, const QString &icon)
+BtButton *HeaderNavigationWidget::createButton(int section_id, const QString &icon)
 {
 	BtButton *link = new BtButton;
 	link->setImage(icon);
 	buttons.append(link);
-
-	mapper->setMapping(link, page_id);
-	connect(link, SIGNAL(clicked()), mapper, SLOT(map()));
 
 	QLabel *active = new QLabel;
 	active->setAlignment(Qt::AlignHCenter);
@@ -472,8 +469,24 @@ void HeaderNavigationWidget::addButton(int section_id, int page_id, const QStrin
 	selected.append(active);
 
 	section_ids.append(section_id);
-
 	need_update = true;
+
+	return link;
+}
+
+void HeaderNavigationWidget::addButton(int section_id, int page_id, const QString &icon)
+{
+	BtButton *link = createButton(section_id, icon);
+
+	mapper->setMapping(link, page_id);
+	connect(link, SIGNAL(clicked()), mapper, SLOT(map()));
+}
+
+void HeaderNavigationWidget::addButton(Page *page, const QString &icon)
+{
+	BtButton *link = createButton(page->sectionId(), icon);
+
+	connect(link, SIGNAL(clicked()), page, SLOT(showPage()));
 }
 
 void HeaderNavigationWidget::drawContent()
