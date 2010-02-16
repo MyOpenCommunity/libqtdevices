@@ -467,6 +467,7 @@ void HeaderNavigationWidget::addButton(int section_id, int page_id, const QStrin
 	connect(link, SIGNAL(clicked()), mapper, SLOT(map()));
 
 	QLabel *active = new QLabel;
+	active->setAlignment(Qt::AlignHCenter);
 	active->setPixmap(getBostikName(icon, "s"));
 	selected.append(active);
 
@@ -485,8 +486,6 @@ void HeaderNavigationWidget::drawContent()
 	while (QLayoutItem *child = button_layout->takeAt(0))
 		if (QWidget *w = child->widget())
 			w->hide();
-
-	button_layout->addStretch(1);
 
 	// first time, compute if there is need for scroll arrows
 	if (visible_buttons == 0)
@@ -518,12 +517,10 @@ void HeaderNavigationWidget::drawContent()
 		if (section_ids[index] == selected_section_id)
 			item = selected[index];
 		else
-			 item = buttons[index];
+			item = buttons[index];
 		item->show();
-		button_layout->addWidget(item);
+		button_layout->addWidget(item, 1);
 	}
-
-	button_layout->addStretch(1);
 }
 
 void HeaderNavigationWidget::scrollRight()
