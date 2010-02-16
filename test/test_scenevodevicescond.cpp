@@ -88,7 +88,7 @@ void TestScenEvoDevicesCond::testLightOff()
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
 }
 
-void TestScenEvoDevicesCond::testDimming()
+void TestScenEvoDevicesCond::testDimmingOff()
 {
 	QString dev_where = "10";
 
@@ -98,4 +98,44 @@ void TestScenEvoDevicesCond::testDimming()
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
+}
+
+void TestScenEvoDevicesCond::testDimmingRange1()
+{
+	QString dev_where = "10";
+
+	DeviceConditionDimming cond(mock_display, "2-4", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*2*%1##").arg(dev_where), true);
+	checkCondition(spy, QString("*1*5*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*4*%1##").arg(dev_where), true);
+	checkCondition(spy, QString("*1*3*%1##").arg(dev_where), false);
+}
+
+void TestScenEvoDevicesCond::testDimmingRange2()
+{
+	QString dev_where = "10";
+
+	DeviceConditionDimming cond(mock_display, "5-7", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*6*%1##").arg(dev_where), true);
+	checkCondition(spy, QString("*1*7*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*8*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*5*%1##").arg(dev_where), true);
+}
+
+void TestScenEvoDevicesCond::testDimmingRange3()
+{
+	QString dev_where = "10";
+
+	DeviceConditionDimming cond(mock_display, "8-10", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*10*%1##").arg(dev_where), true);
+	checkCondition(spy, QString("*1*7*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*8*%1##").arg(dev_where), true);
+	checkCondition(spy, QString("*1*9*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*5*%1##").arg(dev_where), false);
 }

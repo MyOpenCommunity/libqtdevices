@@ -33,7 +33,10 @@ private slots:
 	// tests below
 	void testLightOn();
 	void testLightOff();
-	void testDimming();
+	void testDimmingOff();
+	void testDimmingRange1();
+	void testDimmingRange2();
+	void testDimmingRange3();
 
 };
 
