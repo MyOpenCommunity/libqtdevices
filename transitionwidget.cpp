@@ -30,6 +30,7 @@ void TransitionWidget::startTransition()
 
 	timeline.start();
 	local_loop.exec();
+	prev_image = dest_image = QPixmap();
 }
 
 void TransitionWidget::setContainer(WindowContainer *c)
