@@ -44,7 +44,10 @@ private slots:
 	void testInternalTemperature2();
 	void testInternalTemperature3();
 	void testInternalTemperatureMinMax();
-
+	void testExternalTemperature1();
+	void testExternalTemperature2();
+	void testExternalTemperature3();
+	void testExternalTemperatureMinMax();
 };
 
 #endif // TEST_SCENEVODEVICESCOND_H
