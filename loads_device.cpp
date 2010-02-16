@@ -30,7 +30,6 @@ void LoadsDevice::enable() const
 
 void LoadsDevice::forceOn() const
 {
-	// TODO to be confirmed
 	sendCommand("74");
 }
 
