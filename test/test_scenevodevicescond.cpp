@@ -45,7 +45,7 @@ TestScenEvoDevicesCond::TestScenEvoDevicesCond()
 
 void TestScenEvoDevicesCond::init()
 {
-	// We need to clear the device cache because we need to insert in the cache
+	// We need to clear the device cache because we have to insert in the cache
 	// different devices with the same key.
 	bt_global::devices_cache.clear();
 }
