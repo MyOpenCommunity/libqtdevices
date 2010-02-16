@@ -102,7 +102,7 @@ Q_OBJECT
 public:
 	HeaderInfo();
 
-	void loadItems(const QDomNode &config_node);
+	void loadItems(const QDomNode &config_node, Page *settings);
 	void createSettingsPage();
 
 signals:
@@ -155,7 +155,7 @@ Q_OBJECT
 public:
 	HeaderNavigationBar();
 
-	void loadItems(const QDomNode &config_node);
+	void loadItems(const QDomNode &config_node, Page *settings);
 	void setCurrentSection(int section_id);
 
 signals:
