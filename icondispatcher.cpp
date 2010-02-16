@@ -65,7 +65,7 @@ QPixmap* IconDispatcher::getIcon(QString name, const char * format, Qt::ImageCon
 		{
 			qDebug() << "Error loading icon" << name << ", using empty icon";
 			if (!image_pointer->load(ICON_VUOTO))
-				qWarning("*** FATAL ***: empty icon not found!");
+				qWarning("empty icon not found!");
 		}
 	return image_pointer;
 }
