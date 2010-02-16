@@ -108,7 +108,6 @@ Page *getPage(int page_id)
 	case SUPERVISIONE:
 	{
 		SupervisionMenu *p = new SupervisionMenu(page_node);
-		p->forceDraw();
 		page = p;
 		break;
 	}

@@ -233,7 +233,7 @@ BannLoadWithCU::BannLoadWithCU(const QString &descr, LoadsDevice *d, Type t) : B
 	dev = d;
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 
-	connect(center_button, SIGNAL(clicked()), dev, SLOT(forceOn()));
+	connect(center_button, SIGNAL(clicked()), dev, SLOT(enable()));
 }
 
 void BannLoadWithCU::connectRightButton(Page *p)
@@ -266,7 +266,7 @@ void BannLoadWithCU::status_changed(const StatusList &sl)
 void BannLoadWithCU::changeLeftFunction(bool is_forced)
 {
 	left_button->disconnect();
-	is_forced ? connect(left_button, SIGNAL(clicked()), dev, SLOT(enable())) :
+	is_forced ? connect(left_button, SIGNAL(clicked()), dev, SLOT(forceOn())) :
 		connect(left_button, SIGNAL(clicked()), SIGNAL(deactivateDevice()));
 }
 
