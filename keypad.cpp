@@ -70,6 +70,7 @@ Keypad::Keypad(bool back_button)
 	// digits, ok, cancel buttons
 	QGridLayout *k = new QGridLayout;
 #ifdef LAYOUT_TOUCHX
+	k->setAlignment(Qt::AlignHCenter);
 	k->setSpacing(20);
 #endif
 	k->setContentsMargins(0, 0, 0, 0);
@@ -84,10 +85,10 @@ Keypad::Keypad(bool back_button)
 	// bottom labels
 	QHBoxLayout *p = new QHBoxLayout;
 	p->setContentsMargins(0, 0, 0, 0);
-	p->setSpacing(0);
+	p->setSpacing(10);
 
-	p->addWidget(pwdLabel, 1);
-	p->addWidget(digitLabel, 1);
+	p->addWidget(pwdLabel, 1, Qt::AlignRight);
+	p->addWidget(digitLabel, 1, Qt::AlignLeft);
 
 	// top layout
 	topLayout = new QVBoxLayout(top_widget);
