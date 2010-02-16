@@ -148,3 +148,57 @@ void TestScenEvoDevicesCond::testDimming100Range1()
 	// TODO: Complete the tests of the DeviceConditionDimming100 asap!
 }
 
+void TestScenEvoDevicesCond::testInternalTemperature1()
+{
+	DeviceConditionTemperature cond(mock_display, "0000", dev_where, false);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+
+	checkCondition(spy, QString("*#4*%1*0*0000##").arg(dev_where), true);
+	checkCondition(spy, QString("*#4*%1*0*0100##").arg(dev_where), false);
+	checkCondition(spy, QString("*#4*%1*0*0010##").arg(dev_where), true);
+}
+
+void TestScenEvoDevicesCond::testInternalTemperature2()
+{
+	DeviceConditionTemperature cond(mock_display, "0235", dev_where, false);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+
+	checkCondition(spy, QString("*#4*%1*0*0000##").arg(dev_where), false);
+	checkCondition(spy, QString("*#4*%1*0*0225##").arg(dev_where), true);
+	checkCondition(spy, QString("*#4*%1*0*0224##").arg(dev_where), false);
+	checkCondition(spy, QString("*#4*%1*0*0245##").arg(dev_where), true);
+	checkCondition(spy, QString("*#4*%1*0*0246##").arg(dev_where), false);
+}
+
+void TestScenEvoDevicesCond::testInternalTemperature3()
+{
+	DeviceConditionTemperature cond(mock_display, "1010", dev_where, false);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+
+	checkCondition(spy, QString("*#4*%1*0*0400##").arg(dev_where), false);
+	checkCondition(spy, QString("*#4*%1*0*1010##").arg(dev_where), true);
+	checkCondition(spy, QString("*#4*%1*0*0001##").arg(dev_where), false);
+	checkCondition(spy, QString("*#4*%1*0*0000##").arg(dev_where), true);
+}
+
+void TestScenEvoDevicesCond::testInternalTemperatureMinMax()
+{
+	// A temperature condition should be in the range [-0.5, + 50] Celsius.
+
+	// Check the min condition temperature
+	DeviceConditionTemperature cond_out_min(mock_display, "1100", dev_where, false);
+	QSignalSpy spy_min(&cond_out_min, SIGNAL(condSatisfied()));
+
+	checkCondition(spy_min, QString("*#4*%1*0*1050##").arg(dev_where), true);
+	checkCondition(spy_min, QString("*#4*%1*0*1039##").arg(dev_where), false);
+	checkCondition(spy_min, QString("*#4*%1*0*1040##").arg(dev_where), true);
+
+	// Check the max condition temperature
+	DeviceConditionTemperature cond_out_max(mock_display, "0700", dev_where);
+	QSignalSpy spy_max(&cond_out_max, SIGNAL(condSatisfied()));
+
+	checkCondition(spy_max, QString("*#4*%1*0*0499##").arg(dev_where), true);
+	checkCondition(spy_max, QString("*#4*%1*0*0489##").arg(dev_where), false);
+	checkCondition(spy_max, QString("*#4*%1*0*0500##").arg(dev_where), true);
+}
+
