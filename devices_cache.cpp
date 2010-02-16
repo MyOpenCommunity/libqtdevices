@@ -20,8 +20,7 @@ void DevicesCache::clear()
 	{
 		it.next();
 		it.value()->disconnect();
-		it.value()->deleteLater();
-
+		delete it.value();
 	}
 	cache.clear();
 }
