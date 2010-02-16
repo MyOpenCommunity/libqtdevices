@@ -255,3 +255,19 @@ void TestScenEvoDevicesCond::testExternalTemperatureMinMax()
 	checkCondition(spy_max, QString("*#4*%1*15*1*0489*1111##").arg(dev_where), false);
 	checkCondition(spy_max, QString("*#4*%1*15*1*0500*1111##").arg(dev_where), true);
 }
+
+void TestScenEvoDevicesCond::testAux()
+{
+	// TODO: verificare quale deve essere il comportamento desiderato! Per come
+	// e' implementato il device la prima frame viene scartata.. e il condSatisfied
+	// sulla seconda frame viene emesso solo se la prima frame non rispetta la
+	// condizione. Questo sembra contrario alla logica delle altre condizioni
+	// su device (per le quali il condSatisfied viene emesso subito), ma sembra
+	// anche fatto di proposito (vedi ticket #77 trac develer),
+	DeviceConditionAux cond(mock_display, "0", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*9*1*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*9*0*%1##").arg(dev_where), true);
+	checkCondition(spy, QString("*9*1*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*9*0*%1##").arg(dev_where), true);
+}
