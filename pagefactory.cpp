@@ -106,12 +106,8 @@ Page *getPage(int page_id)
 		page = new VideoEntryPhone(page_node);
 		break;
 	case SUPERVISIONE:
-	{
-		SupervisionMenu *p = new SupervisionMenu(page_node);
-		p->forceDraw();
-		page = p;
+		page = new SupervisionMenu(page_node);
 		break;
-	}
 	case SPECIAL:
 		page = new SpecialPage(page_node);
 		break;

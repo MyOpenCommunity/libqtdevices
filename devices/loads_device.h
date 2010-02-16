@@ -75,7 +75,7 @@ public:
 	void requestLevel() const;
 
 public slots:
-	// enable actuator
+	// enable an actuator disabled by the central unit
 	void enable() const;
 
 	// force the device to on
