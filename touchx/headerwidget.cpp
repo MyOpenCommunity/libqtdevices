@@ -236,6 +236,12 @@ HomepageFeedLink::HomepageFeedLink(const QString &description, const QString &fe
 	connect(feed_items, SIGNAL(Closed()), SIGNAL(pageClosed()));
 }
 
+void HomepageFeedLink::hideEvent(QHideEvent *e)
+{
+	// do not display the feed if the user moves away from the home page
+	parser->abort();
+}
+
 void HomepageFeedLink::displayFeed()
 {
 	parser->parse(url);

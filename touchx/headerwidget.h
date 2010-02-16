@@ -65,6 +65,9 @@ public:
 signals:
 	void pageClosed();
 
+protected:
+	void hideEvent(QHideEvent *e);
+
 private slots:
 	void displayFeed();
 	void feedReady();
