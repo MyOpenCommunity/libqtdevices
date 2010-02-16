@@ -127,3 +127,24 @@ void TestScenEvoDevicesCond::testDimmingRange3()
 	checkCondition(spy, QString("*1*9*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*5*%1##").arg(dev_where), false);
 }
+
+void TestScenEvoDevicesCond::testDimming100Off()
+{
+	DeviceConditionDimming100 cond(mock_display, "0", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
+	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*#1*%1*1*100*0##").arg(dev_where), true);
+	checkCondition(spy, QString("*#1*%1*1*101*0##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
+}
+
+void TestScenEvoDevicesCond::testDimming100Range1()
+{
+	DeviceConditionDimming100 cond(mock_display, "1-20", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+//	checkCondition(spy, QString("*1*2*%1##").arg(dev_where), true);
+	// TODO: Complete the tests of the DeviceConditionDimming100 asap!
+}
+

@@ -38,6 +38,8 @@ private slots:
 	void testDimmingRange1();
 	void testDimmingRange2();
 	void testDimmingRange3();
+	void testDimming100Off();
+	void testDimming100Range1();
 
 };
 

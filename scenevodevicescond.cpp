@@ -705,7 +705,7 @@ void DeviceConditionDimming100::status_changed(const StatusList &sl)
 	{
 		switch (it.key())
 		{
-		// TODO: previous code ignored dim_dimmer_level. What should I do?
+		case LightingDevice::DIM_DEVICE_ON:
 		case LightingDevice::DIM_DIMMER100_LEVEL:
 		{
 			int level = it.value().toInt();
