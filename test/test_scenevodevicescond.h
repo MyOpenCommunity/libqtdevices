@@ -2,12 +2,12 @@
 #define TEST_SCENEVODEVICESCOND_H
 
 #include <QObject>
+#include <QString>
 
 class DeviceConditionDisplayMock;
 class OpenServerMock;
 class Client;
 class QSignalSpy;
-class QString;
 
 
 /**
@@ -23,6 +23,7 @@ public:
 private:
 	OpenServerMock *server;
 	Client *client_monitor;
+	QString dev_where;
 
 	DeviceConditionDisplayMock *mock_display;
 	void checkCondition(QSignalSpy &spy, QString frame, bool satisfied);

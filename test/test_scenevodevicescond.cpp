@@ -8,7 +8,6 @@
 #include <QSignalSpy>
 #include <QHash>
 #include <QPair>
-#include <QString>
 
 
 /**
@@ -41,6 +40,7 @@ TestScenEvoDevicesCond::TestScenEvoDevicesCond()
 	device::setClients(clients);
 
 	mock_display = new DeviceConditionDisplayMock;
+	dev_where = "10";
 }
 
 void TestScenEvoDevicesCond::init()
@@ -66,8 +66,6 @@ void TestScenEvoDevicesCond::checkCondition(QSignalSpy &spy, QString frame, bool
 
 void TestScenEvoDevicesCond::testLightOn()
 {
-	QString dev_where = "10";
-
 	DeviceConditionLight cond(mock_display, "1", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
 	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), true);
@@ -78,8 +76,6 @@ void TestScenEvoDevicesCond::testLightOn()
 
 void TestScenEvoDevicesCond::testLightOff()
 {
-	QString dev_where = "10";
-
 	DeviceConditionLight cond(mock_display, "0", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
@@ -90,8 +86,6 @@ void TestScenEvoDevicesCond::testLightOff()
 
 void TestScenEvoDevicesCond::testDimmingOff()
 {
-	QString dev_where = "10";
-
 	DeviceConditionDimming cond(mock_display, "0", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
@@ -102,8 +96,6 @@ void TestScenEvoDevicesCond::testDimmingOff()
 
 void TestScenEvoDevicesCond::testDimmingRange1()
 {
-	QString dev_where = "10";
-
 	DeviceConditionDimming cond(mock_display, "2-4", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
 	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
@@ -115,8 +107,6 @@ void TestScenEvoDevicesCond::testDimmingRange1()
 
 void TestScenEvoDevicesCond::testDimmingRange2()
 {
-	QString dev_where = "10";
-
 	DeviceConditionDimming cond(mock_display, "5-7", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
 	checkCondition(spy, QString("*1*6*%1##").arg(dev_where), true);
@@ -128,8 +118,6 @@ void TestScenEvoDevicesCond::testDimmingRange2()
 
 void TestScenEvoDevicesCond::testDimmingRange3()
 {
-	QString dev_where = "10";
-
 	DeviceConditionDimming cond(mock_display, "8-10", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
 	checkCondition(spy, QString("*1*10*%1##").arg(dev_where), true);
