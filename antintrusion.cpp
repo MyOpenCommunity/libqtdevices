@@ -67,6 +67,8 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)),
 			SLOT(requestStatusIfCurrentWidget(Page*)));
 	subscribe_monitor(5);
+
+	ctrlAllarm();
 }
 
 int Antintrusion::sectionId()
@@ -218,7 +220,7 @@ void Antintrusion::delayCtrlAlarm()
 	QTimer::singleShot(150, this, SLOT(ctrlAllarm()));
 }
 
-void Antintrusion:: ctrlAllarm()
+void Antintrusion::ctrlAllarm()
 {
 	qDebug("ctrlAllarm %d %d", allarmi.size(), alarms->alarmCount());
 	// the first condition is for BTouch, the second for TouchX
