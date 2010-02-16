@@ -9,7 +9,6 @@
 #include <QHash>
 #include <QPair>
 #include <QString>
-#include <QDebug>
 
 
 /**
@@ -46,9 +45,9 @@ TestScenEvoDevicesCond::TestScenEvoDevicesCond()
 
 void TestScenEvoDevicesCond::init()
 {
+	// We need to clear the device cache because we need to insert in the cache
+	// different devices with the same key.
 	bt_global::devices_cache.clear();
-	char str[] = "";
-	client_monitor->last_msg_open_read.CreateMsgOpen(str, 0);
 }
 
 TestScenEvoDevicesCond::~TestScenEvoDevicesCond()
@@ -69,8 +68,8 @@ void TestScenEvoDevicesCond::testLightOn()
 {
 	QString dev_where = "10";
 
-	DeviceConditionLight *cond = new DeviceConditionLight(mock_display, "1", dev_where);
-	QSignalSpy spy(cond, SIGNAL(condSatisfied()));
+	DeviceConditionLight cond(mock_display, "1", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
 	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), true);
 	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
@@ -81,8 +80,8 @@ void TestScenEvoDevicesCond::testLightOff()
 {
 	QString dev_where = "10";
 
-	DeviceConditionLight *cond = new DeviceConditionLight(mock_display, "0", dev_where);
-	QSignalSpy spy(cond, SIGNAL(condSatisfied()));
+	DeviceConditionLight cond(mock_display, "0", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
@@ -93,8 +92,8 @@ void TestScenEvoDevicesCond::testDimming()
 {
 	QString dev_where = "10";
 
-	DeviceConditionDimming *cond = new DeviceConditionDimming(mock_display, "0", dev_where);
-	QSignalSpy spy(cond, SIGNAL(condSatisfied()));
+	DeviceConditionDimming cond(mock_display, "0", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
