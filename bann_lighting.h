@@ -66,11 +66,11 @@ private:
 };
 
 // TODO: to be renamed when dimmer is gone
-class DimmerNew : public AdjustDimmer
+class Dimmer : public AdjustDimmer
 {
 Q_OBJECT
 public:
-	DimmerNew(QWidget *parent, const QDomNode &config_node, QString where);
+	Dimmer(QWidget *parent, const QDomNode &config_node, QString where);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -102,11 +102,11 @@ private:
 };
 
 // TODO: to be renamed when dimmer100 is gone
-class Dimmer100New : public AdjustDimmer
+class Dimmer100 : public AdjustDimmer
 {
 Q_OBJECT
 public:
-	Dimmer100New(QWidget *parent, const QDomNode &config_node);
+	Dimmer100(QWidget *parent, const QDomNode &config_node);
 	virtual void inizializza(bool forza = false);
 
 private slots:

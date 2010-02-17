@@ -100,7 +100,7 @@ void AdjustDimmer::setLevel(int level)
 
 
 
-DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where) :
+Dimmer::Dimmer(QWidget *parent, const QDomNode &config_node, QString where) :
 	AdjustDimmer(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
@@ -117,32 +117,32 @@ DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
-void DimmerNew::lightOn()
+void Dimmer::lightOn()
 {
 	dev->turnOn();
 }
 
-void DimmerNew::lightOff()
+void Dimmer::lightOff()
 {
 	dev->turnOff();
 }
 
-void DimmerNew::increaseLevel()
+void Dimmer::increaseLevel()
 {
 	dev->increaseLevel();
 }
 
-void DimmerNew::decreaseLevel()
+void Dimmer::decreaseLevel()
 {
 	dev->decreaseLevel();
 }
 
-void DimmerNew::inizializza(bool forza)
+void Dimmer::inizializza(bool forza)
 {
 	dev->requestStatus();
 }
 
-void DimmerNew::status_changed(const StatusList &sl)
+void Dimmer::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
@@ -216,7 +216,7 @@ enum
 	DIMMER100_SPEED = 255,
 };
 
-Dimmer100New::Dimmer100New(QWidget *parent, const QDomNode &config_node) :
+Dimmer100::Dimmer100(QWidget *parent, const QDomNode &config_node) :
 	AdjustDimmer(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
@@ -239,32 +239,32 @@ Dimmer100New::Dimmer100New(QWidget *parent, const QDomNode &config_node) :
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
-void Dimmer100New::lightOn()
+void Dimmer100::lightOn()
 {
 	dev->turnOn(start_speed);
 }
 
-void Dimmer100New::lightOff()
+void Dimmer100::lightOff()
 {
 	dev->turnOff(stop_speed);
 }
 
-void Dimmer100New::increaseLevel()
+void Dimmer100::increaseLevel()
 {
 	dev->increaseLevel100(DIMMER100_STEP, DIMMER100_SPEED);
 }
 
-void Dimmer100New::decreaseLevel()
+void Dimmer100::decreaseLevel()
 {
 	dev->decreaseLevel100(DIMMER100_STEP, DIMMER100_SPEED);
 }
 
-void Dimmer100New::inizializza(bool forza)
+void Dimmer100::inizializza(bool forza)
 {
 	dev->requestDimmer100Status();
 }
 
-void Dimmer100New::status_changed(const StatusList &sl)
+void Dimmer100::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
@@ -300,7 +300,7 @@ void Dimmer100New::status_changed(const StatusList &sl)
 }
 
 // Round a value to the nearest greater multiple of 5, eg. numbers 1-5 map to 5, 6-10 to 10 and so on.
-int Dimmer100New::roundTo5(int value)
+int Dimmer100::roundTo5(int value)
 {
 	// I really hope the compiler optimizes this case!
 	int div = value / 5;
