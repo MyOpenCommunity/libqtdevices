@@ -43,7 +43,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 	switch (id)
 	{
 	case DIMMER:
-		b = new Dimmer(0, item_node, where);
+		b = new Dimmer(descr, where);
 		break;
 	case ATTUAT_AUTOM:
 		b = new SingleActuator(0, item_node, where);
@@ -61,7 +61,11 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		b = new ButtonActuator(0, item_node, VCT_LS);
 		break;
 	case DIMMER_100:
-		b = new Dimmer100(0, item_node);
+	{
+		int start = getTextChild(item_node, "softstart").toInt();
+		int stop = getTextChild(item_node, "softstop").toInt();
+		b = new Dimmer100(descr, where, start, stop);
+	}
 		break;
 	case ATTUAT_AUTOM_TEMP_NUOVO_N:
 		b = new TempLightVariable(0, item_node);

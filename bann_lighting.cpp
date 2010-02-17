@@ -100,14 +100,13 @@ void AdjustDimmer::setLevel(int level)
 
 
 
-Dimmer::Dimmer(QWidget *parent, const QDomNode &config_node, QString where) :
-	AdjustDimmer(parent)
+Dimmer::Dimmer(const QString &descr, const QString &where) :
+	AdjustDimmer(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
 	light_value = 20;
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
-		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, descr);
 
 	dev = bt_global::add_device_to_cache(new DimmerDevice(where));
 	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
@@ -216,21 +215,18 @@ enum
 	DIMMER100_SPEED = 255,
 };
 
-Dimmer100::Dimmer100(QWidget *parent, const QDomNode &config_node) :
-	AdjustDimmer(parent)
+Dimmer100::Dimmer100(const QString &descr, const QString &where, int _start_speed, int _stop_speed) :
+	AdjustDimmer(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
 	light_value = 5;
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
-		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, descr);
 
-	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new Dimmer100Device(where));
 
-	start_speed = getTextChild(config_node, "softstart").toInt();
-	stop_speed = getTextChild(config_node, "softstop").toInt();
+	start_speed = _start_speed;
+	stop_speed = _stop_speed;
 
 	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
 	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
