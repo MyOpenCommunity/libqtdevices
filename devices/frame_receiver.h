@@ -15,8 +15,10 @@ class OpenMsg;
 class FrameReceiver
 {
 public:
+	// NOTE: the default openserver id should be keep in sync with the define MAIN_OPENSERVER
 	FrameReceiver(int oid=0);
 	virtual ~FrameReceiver();
+
 	static void setClientsMonitor(const QHash<int, Client*> &monitors);
 
 	// The method called every time that a frame with the 'who' subscribed arrive

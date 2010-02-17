@@ -24,8 +24,8 @@
 
 #define OPENSERVER_PORT 20000
 
-// The id for the local openserver
-#define LOCAL_OPENSERVER 0
+// The id for the main openserver
+#define MAIN_OPENSERVER 0
 
 class FrameReceiver;
 
@@ -61,6 +61,13 @@ public:
 	void flush() { socket->flush(); }
 	void forwardFrame(Client *c);
 #endif
+
+signals:
+	void monitorSu();
+	//! Openwebnet ack received
+	void openAckRx();
+	//! Openwebnet nak received
+	void openNakRx();
 
 private slots:
 	void connetti();
@@ -100,14 +107,6 @@ private:
 	//! Wait for ack (returns 0 on ack, -1 on nak or when socket is a monitor socket)
 	int socketWaitForAck();
 	void dispatchFrame(QString frame);
-
-signals:
-	void monitorSu();
-
-	//! Openwebnet ack received
-	void openAckRx();
-	//! Openwebnet nak received
-	void openNakRx();
 };
 
 #endif

@@ -55,6 +55,7 @@ public slots:
 
 protected:
 	// The costructor is protected only to make device abstract.
+	// NOTE: the default openserver id should be keep in sync with the define MAIN_OPENSERVER
 	device(QString who, QString where, int oid=0);
 
 	//! The system of the device

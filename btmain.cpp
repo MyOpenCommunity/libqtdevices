@@ -97,18 +97,18 @@ bool LastClickTime::eventFilter(QObject *obj, QEvent *ev)
 
 BtMain::BtMain()
 {
-	boot_time = new QTime();
+	boot_time = new QTime;
 	boot_time->start();
 	difSon = 0;
 	dm = 0;
 	screensaver = 0;
 	loadGlobalConfig();
-	qDebug("parte BtMain");
+	qDebug("BtMain::BtMain");
 
 	QString font_file = QString(MY_FILE_CFG_FONT).arg(bt_global::config[LANGUAGE]);
 	bt_global::font = new FontManager(font_file);
 	bt_global::skin = new SkinManager(SKIN_FILE);
-	bt_global::ringtones = new RingtonesManager();
+	bt_global::ringtones = new RingtonesManager;
 
 #ifdef BT_HARDWARE_X11
 	// save last click time for the screen saver
@@ -117,9 +117,9 @@ BtMain::BtMain()
 
 	QHash<int, QPair<Client*, Client*> > clients;
 	QHash<int, Client*> monitors;
-	monitors[LOCAL_OPENSERVER] = new Client(Client::MONITOR);
-	clients[LOCAL_OPENSERVER].first = new Client(Client::COMANDI);
-	clients[LOCAL_OPENSERVER].second = new Client(Client::RICHIESTE);
+	monitors[MAIN_OPENSERVER] = new Client(Client::MONITOR);
+	clients[MAIN_OPENSERVER].first = new Client(Client::COMANDI);
+	clients[MAIN_OPENSERVER].second = new Client(Client::RICHIESTE);
 
 #if DEBUG
 	client_supervisor = new Client(Client::SUPERVISOR);
@@ -139,11 +139,11 @@ BtMain::BtMain()
 			clients[id].second = new Client(Client::RICHIESTE, host);
 		}
 
-	banner::setClients(clients[LOCAL_OPENSERVER].first, clients[LOCAL_OPENSERVER].second);
-	Page::setClients(clients[LOCAL_OPENSERVER].first, clients[LOCAL_OPENSERVER].second);
+	banner::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
+	Page::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
 	FrameReceiver::setClientsMonitor(monitors);
 	device::setClients(clients);
-	connect(monitors[LOCAL_OPENSERVER], SIGNAL(monitorSu()), SLOT(monitorReady()));
+	connect(monitors[MAIN_OPENSERVER], SIGNAL(monitorSu()), SLOT(monitorReady()));
 
 	window_container = new WindowContainer(maxWidth(), maxHeight());
 	page_container = window_container->centralLayout();
