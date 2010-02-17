@@ -439,32 +439,14 @@ enum {
 	TLF_TIME_STATES = 8,
 };
 
-TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
-	BannOn2Labels(parent)
+TempLightFixed::TempLightFixed(int time, const QString &descr, const QString &where) :
+	BannOn2Labels(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-#ifdef CONFIG_BTOUCH
-	// I think conf.xml will have only one node for time in this banner, however
-	// such node is indicated as "timeX", so I'm using the following overkill code
-	// to be safe
-	QList<QDomNode> children = getChildren(config_node, "time");
-	QStringList sl;
-	foreach (const QDomNode &tmp, children)
-		sl << tmp.toElement().text().split("*");
-
-	Q_ASSERT_X(sl.size() == 3, "TempLightFixed::TempLightFixed", "Time must have 3 fields");
-	lighting_time = BtTime(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
-	total_time = lighting_time.hour() * 3600 + lighting_time.minute() * 60 + lighting_time.second();
-#else
-	total_time = getTextChild(config_node, "time").toInt();
+	total_time = time;
 	lighting_time = BtTime(total_time / 3600, (total_time / 60) % 60, total_time % 60);
-#endif
 
-	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new LightingDevice(where));
 
-	QString descr = getTextChild(config_node, "descr");
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("lamp_status"),
 		bt_global::skin->getImage("lamp_time"), descr, formatTime(lighting_time));
 

@@ -179,7 +179,7 @@ class TempLightFixed : public BannOn2Labels
 {
 Q_OBJECT
 public:
-	TempLightFixed(QWidget *parent, const QDomNode &config_node);
+	TempLightFixed(int time, const QString &descr, const QString &where);
 	virtual void inizializza(bool forza);
 
 private slots:

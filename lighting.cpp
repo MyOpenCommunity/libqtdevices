@@ -35,7 +35,7 @@ namespace
 		{
 			QString s = time.toElement().text();
 			QStringList sl = s.split("*");
-			Q_ASSERT_X(sl.size() == 3, "getTimes()", "A time has number of fields != 3");
+			Q_ASSERT_X(sl.size() == 3, "getTimes()", "Time values must have exactly 3 fields");
 			times << BtTime(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
 		}
 		return times;
@@ -100,7 +100,24 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 	}
 		break;
 	case ATTUAT_AUTOM_TEMP_NUOVO_F:
-		b = new TempLightFixed(0, item_node);
+	{
+		int t;
+	#ifdef CONFIG_BTOUCH
+		// I think conf.xml will have only one node for time in this banner, however
+		// such node is indicated as "timeX", so I'm using the following overkill code
+		// to be safe
+		QList<QDomNode> children = getChildren(item_node, "time");
+		QStringList sl;
+		foreach (const QDomNode &tmp, children)
+			sl << tmp.toElement().text().split("*");
+
+		Q_ASSERT_X(sl.size() == 3, "Lighting::getBanner", "Fixed time must have exactly 3 fields");
+		t = sl[0].toInt() * 3600 + sl[1].toInt() * 60 + sl[2].toInt();
+	#else
+		t = getTextChild(item_node, "time").toInt();
+	#endif
+		b = new TempLightFixed(t, descr, where);
+		}
 		break;
 	}
 
