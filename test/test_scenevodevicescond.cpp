@@ -60,8 +60,6 @@ void TestScenEvoDevicesCond::checkCondition(QSignalSpy &spy, QString frame, bool
 	client_monitor->manageFrame(frame.toAscii());
 	QCOMPARE(spy.count(), satisfied ? 1 : 0);
 	spy.clear();
-	char str[] = "";
-	client_monitor->last_msg_open_read.CreateMsgOpen(str, 0);
 }
 
 void TestScenEvoDevicesCond::testLightOn()

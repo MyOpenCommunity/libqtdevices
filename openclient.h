@@ -3,7 +3,6 @@
 
 #include <openwebnet.h>
 
-#include <QTimer>
 #include <QTcpSocket>
 #include <QByteArray>
 #include <QHash>
@@ -71,16 +70,12 @@ private slots:
 	void ackReceived();
 
 
-	void clear_last_msg_open_read();
-
 private:
 	QTcpSocket *socket;
 	Type type;
 	QString host;
 	unsigned port;
 	QByteArray data_read;
-	QTimer Open_read;
-	openwebnet last_msg_open_read;
 	bool ackRx;
 	QHash<int, QList<FrameReceiver*> > subscribe_list;
 

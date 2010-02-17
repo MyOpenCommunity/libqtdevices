@@ -4,6 +4,7 @@
 
 #include <openmsg.h>
 
+#include <QTimer>
 #include <QDebug>
 
 #define SOCKET_MONITOR "*99*1##"
@@ -30,10 +31,6 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 
 	// connect to the server
 	connectToHost();
-
-	// clear last_msg_open_read
-	last_msg_open_read.CreateNullMsgOpen();
-	connect(&Open_read, SIGNAL(timeout()), this, SLOT(clear_last_msg_open_read()));
 }
 
 void Client::socketConnected()
@@ -105,21 +102,17 @@ void Client::manageFrame(QByteArray frame)
 {
 	if (type == MONITOR || type == SUPERVISOR)
 	{
-		qDebug() << "frame read: " << frame;
+		if (host != OPENSERVER_ADDR)
+			qDebug() << qPrintable(QString("Client::manageFrame()[%1:%2]").arg(host).arg(port)) << "read:" << frame;
+		else
+			qDebug() << "Client::manageFrame() read:" << frame;
+
 		if (frame == "*#*1##")
 			qWarning("ERROR - ack received");
 		else if (frame == "*#*0##")
 			qWarning("ERROR - nak received");
-		else if (frame != last_msg_open_read.frame_open)
-		{
-			Open_read.stop();
-			last_msg_open_read.CreateMsgOpen(frame.data(),frame.size());
-			Open_read.setSingleShot(true);
-			Open_read.start(1000);
-			dispatchFrame(frame);
-		}
 		else
-			qDebug("Frame Open duplicated");
+			dispatchFrame(frame);
 	}
 	else
 	{
@@ -204,12 +197,6 @@ int Client::socketFrameRead()
 		manageFrame(frame);
 	}
 	return 0;
-}
-
-void Client::clear_last_msg_open_read()
-{
-	qDebug("Delete last Frame Open read");
-	last_msg_open_read.CreateNullMsgOpen();
 }
 
 // Aspetta ack

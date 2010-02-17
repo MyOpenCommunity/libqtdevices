@@ -39,11 +39,11 @@ TestDevice::~TestDevice()
 
 void TestDevice::cleanBuffers()
 {
+
 	client_command->flush();
 	client_request->flush();
 	client_monitor->flush();
 	server->frameCommand(1);
 	server->frameRequest(1);
-	server->cleanClients(client_command, client_request, client_monitor);
 }
 
