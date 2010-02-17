@@ -53,7 +53,11 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	case AIR_SPLIT:
 	{
 		QString where = getTextChild(item_node, "where");
+#ifdef CONFIG_BTOUCH
 		QString off_cmd = getElement(item_node, "off/command").text();
+#else
+		QString off_cmd = getTextChild(item_node, "off_command");
+#endif
 		AirConditioningDevice *dev = bt_global::add_device_to_cache(new AirConditioningDevice(where));
 		dev->setOffCommand(off_cmd);
 
@@ -131,7 +135,12 @@ SplitPage::SplitPage(const QDomNode &config_node, AirConditioningDevice *d)
 {
 	dev = d;
 	NavigationBar *nav_bar;
-	if (getElement(config_node, "off/list").text().toInt() == 1) // show the off button
+#ifdef CONFIG_BTOUCH
+	int off_list = getElement(config_node, "off/list").text().toInt();
+#else
+	int off_list = getTextChild(config_node, "off_list").toInt();
+#endif
+	if (off_list == 1) // show the off button
 	{
 		nav_bar = new NavigationBar(bt_global::skin->getImage("off"));
 		connect(this, SIGNAL(forwardClick()), SLOT(setDeviceOff()));
@@ -163,7 +172,12 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 {
 	single_page = 0;
 	NavigationBar *nav_bar;
-	if (getElement(config_node, "off/list").text().toInt() == 1) // show the off button
+#ifdef CONFIG_BTOUCH
+	int off_list = getElement(config_node, "off/list").text().toInt();
+#else
+	int off_list = getTextChild(config_node, "off_list").toInt();
+#endif
+	if (off_list == 1) // show the off button
 	{
 		nav_bar = new NavigationBar(bt_global::skin->getImage("off"));
 		connect(nav_bar, SIGNAL(forwardClick()), SLOT(setDeviceOff()));
@@ -180,7 +194,12 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirCo
 {
 	int id = getTextChild(config_node, "id").toInt();
 	CustomScenario *bann = new CustomScenario(d);
-	SplitSettings *split = new SplitSettings(QDomNode(), getChildWithName(config_node, "par"));
+#ifdef CONFIG_BTOUCH
+	QDomNode params = getChildWithName(config_node, "par");
+#else
+	QDomNode params = config_node;
+#endif
+	SplitSettings *split = new SplitSettings(QDomNode(), params);
 	connect(split, SIGNAL(splitSettingsChanged(const AirConditionerStatus &)), bann,
 		SLOT(splitValuesChanged(const AirConditionerStatus &)));
 	page_content->appendBanner(bann);
@@ -189,7 +208,7 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirCo
 	{
 		int item_id = getTextChild(scenario, "itemID").toInt();
 		AdvancedSplitScenario *b = new AdvancedSplitScenario(getTextChild(scenario, "descr"), item_id, scenario.nodeName(), d);
-		SplitSettings *sp = new SplitSettings(scenario, getChildWithName(config_node, "par"));
+		SplitSettings *sp = new SplitSettings(scenario, params);
 		b->setCurrentValues(sp->getCurrentStatus());
 		b->connectRightButton(sp);
 		b->setId(id);
@@ -305,7 +324,11 @@ void SplitSettings::readTempConfig(const QDomNode &temp_node, int init_temp)
 
 void SplitSettings::readSpeedConfig(const QDomNode &speed_node, const QDomNode &values)
 {
+#ifdef CONFIG_BTOUCH
 	if (getTextChild(speed_node, "val1").toInt() != -1)
+#else
+	if (getTextChild(speed_node, "val").toInt() != -1)
+#endif
 	{
 		QList <int> speeds;
 		foreach (const QDomNode &val, getChildren(speed_node, "val"))
@@ -323,7 +346,11 @@ void SplitSettings::readSpeedConfig(const QDomNode &speed_node, const QDomNode &
 
 void SplitSettings::readSwingConfig(const QDomNode &swing_node, const QDomNode &values)
 {
+#ifdef CONFIG_BTOUCH
 	if (getTextChild(swing_node, "val1").toInt() != -1)
+#else
+	if (getTextChild(swing_node, "val").toInt() != -1)
+#endif
 	{
 		bool swing_on = false;
 		// read values from conf if present

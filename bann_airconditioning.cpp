@@ -90,6 +90,7 @@ AdvancedSplitScenario::AdvancedSplitScenario(QString descr, int _item_id, const 
 	initBanner(icon_cmd, icon_settings, descr);
 	item_id = _item_id;
 	dev = d;
+	// CONFIG_BTOUCH, on touchx the node is always cfg, need to save the node index
 	conf_name = conf_node;
 
 	connect(left_button, SIGNAL(clicked()), SLOT(onButtonClicked()));

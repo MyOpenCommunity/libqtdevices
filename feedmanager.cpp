@@ -74,6 +74,12 @@ void FeedManager::itemIsClicked(int item)
 	parser.parse(feed_list[item].path);
 }
 
+void FeedManager::hideEvent(QHideEvent *e)
+{
+	// do not display the feed if the user moves away from the home page
+	parser.abort();
+}
+
 void FeedManager::feedReady()
 {
 	feed_items->setFeedInfo(feed_list[current_feed].current_page, parser.getFeedData());

@@ -69,6 +69,14 @@ void FeedParser::parse(QString url)
 	appendRequest(url);
 }
 
+void FeedParser::abort()
+{
+	if (!busy)
+		return;
+
+	connection.abort();
+}
+
 void FeedParser::downloadFinished(bool error)
 {
 	// check if we were redirected

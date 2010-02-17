@@ -58,6 +58,9 @@ public:
 	 */
 	void parse(QString url);
 
+	// aborts the current request
+	void abort();
+
 	/**
 	 * Get parsed data.
 	 * \return The parsed data.

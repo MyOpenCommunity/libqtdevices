@@ -236,6 +236,12 @@ HomepageFeedLink::HomepageFeedLink(const QString &description, const QString &fe
 	connect(feed_items, SIGNAL(Closed()), SIGNAL(pageClosed()));
 }
 
+void HomepageFeedLink::hideEvent(QHideEvent *e)
+{
+	// do not display the feed if the user moves away from the home page
+	parser->abort();
+}
+
 void HomepageFeedLink::displayFeed()
 {
 	parser->parse(url);
@@ -299,7 +305,7 @@ HeaderInfo::HeaderInfo()
 	setFixedSize(800, 105);
 }
 
-void HeaderInfo::loadItems(const QDomNode &config_node)
+void HeaderInfo::loadItems(const QDomNode &config_node, Page *settings)
 {
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	main_layout->setContentsMargins(50, 0, 63, 0);
@@ -341,9 +347,7 @@ void HeaderInfo::loadItems(const QDomNode &config_node)
 			home_layout->addStretch(1);
 			home_layout->addWidget(button);
 
-			Page *settings = new IconSettings(getPageNodeFromChildNode(item, "lnk_pageID"));
 			connect(button, SIGNAL(clicked()), settings, SLOT(showPage()));
-			connect(settings, SIGNAL(Closed()), SIGNAL(showHomePage()));
 
 			break;
 		}
@@ -386,7 +390,7 @@ HeaderNavigationBar::HeaderNavigationBar()
 	setFixedSize(800, 85);
 }
 
-void HeaderNavigationBar::loadItems(const QDomNode &config_node)
+void HeaderNavigationBar::loadItems(const QDomNode &config_node, Page *settings)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 
@@ -412,6 +416,9 @@ void HeaderNavigationBar::loadItems(const QDomNode &config_node)
 
 		navigation->addButton(id, page_id, bt_global::skin->getImage("top_navigation_button"));
 	}
+
+	// add link to settings
+	navigation->addButton(settings, bt_global::skin->getImage("settings_icon"));
 }
 
 void HeaderNavigationBar::setCurrentSection(int section_id)
@@ -457,22 +464,36 @@ void HeaderNavigationWidget::showEvent(QShowEvent *e)
 	QWidget::showEvent(e);
 }
 
-void HeaderNavigationWidget::addButton(int section_id, int page_id, const QString &icon)
+BtButton *HeaderNavigationWidget::createButton(int section_id, const QString &icon)
 {
 	BtButton *link = new BtButton;
 	link->setImage(icon);
 	buttons.append(link);
 
-	mapper->setMapping(link, page_id);
-	connect(link, SIGNAL(clicked()), mapper, SLOT(map()));
-
 	QLabel *active = new QLabel;
+	active->setAlignment(Qt::AlignHCenter);
 	active->setPixmap(getBostikName(icon, "s"));
 	selected.append(active);
 
 	section_ids.append(section_id);
-
 	need_update = true;
+
+	return link;
+}
+
+void HeaderNavigationWidget::addButton(int section_id, int page_id, const QString &icon)
+{
+	BtButton *link = createButton(section_id, icon);
+
+	mapper->setMapping(link, page_id);
+	connect(link, SIGNAL(clicked()), mapper, SLOT(map()));
+}
+
+void HeaderNavigationWidget::addButton(Page *page, const QString &icon)
+{
+	BtButton *link = createButton(page->sectionId(), icon);
+
+	connect(link, SIGNAL(clicked()), page, SLOT(showPage()));
 }
 
 void HeaderNavigationWidget::drawContent()
@@ -485,8 +506,6 @@ void HeaderNavigationWidget::drawContent()
 	while (QLayoutItem *child = button_layout->takeAt(0))
 		if (QWidget *w = child->widget())
 			w->hide();
-
-	button_layout->addStretch(1);
 
 	// first time, compute if there is need for scroll arrows
 	if (visible_buttons == 0)
@@ -518,12 +537,10 @@ void HeaderNavigationWidget::drawContent()
 		if (section_ids[index] == selected_section_id)
 			item = selected[index];
 		else
-			 item = buttons[index];
+			item = buttons[index];
 		item->show();
-		button_layout->addWidget(item);
+		button_layout->addWidget(item, 1);
 	}
-
-	button_layout->addStretch(1);
 }
 
 void HeaderNavigationWidget::scrollRight()
@@ -575,9 +592,24 @@ HeaderWidget::HeaderWidget(TrayBar *tray_bar)
 
 void HeaderWidget::loadConfiguration(const QDomNode &homepage_node, const QDomNode &infobar_node)
 {
+	Page *settings = NULL;
+
+	foreach (const QDomNode &item, getChildren(infobar_node, "item"))
+	{
+		int id = getTextChild(item, "id").toInt();
+
+		if (id == ITEM_SETTINGS_LINK)
+		{
+			settings = new IconSettings(getPageNodeFromChildNode(item, "lnk_pageID"));
+			connect(settings, SIGNAL(Closed()), SIGNAL(showHomePage()));
+
+			break;
+		}
+	}
+
 	header_logo->loadItems(infobar_node);
-	top_nav_bar->loadItems(homepage_node);
-	header_info->loadItems(infobar_node);
+	top_nav_bar->loadItems(homepage_node, settings);
+	header_info->loadItems(infobar_node, settings);
 }
 
 void HeaderWidget::centralPageChanged(int section_id, Page::PageType type)

@@ -51,6 +51,9 @@ public:
 
 	FeedManager(const QDomNode &conf_node);
 
+protected:
+	void hideEvent(QHideEvent *e);
+
 private:
 	/// Load the feed list from the configuration file.
 	void loadFeedList(const QDomNode &conf_node);
