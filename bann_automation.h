@@ -5,6 +5,7 @@
 #include "bann3_buttons.h" // Bann3Buttons
 #include "bann2_buttons.h" // BannOpenClose
 #include "device.h" // StatusList
+#include "bttime.h" // BtTime
 
 /// Forward Declarations
 class device;
@@ -67,7 +68,7 @@ class GateEntryphoneActuator : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	GateEntryphoneActuator(QWidget *parent, const QDomNode &config_node);
+	GateEntryphoneActuator(const QString &descr, const QString &where);
 
 private slots:
 	void activate();
@@ -81,13 +82,13 @@ class GateLightingActuator : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	GateLightingActuator(QWidget *parent, const QDomNode &config_node);
+	GateLightingActuator(const BtTime &t, const QString &descr, const QString &where);
 
 private slots:
 	void activate();
 
 private:
-	int time_h, time_m, time_s;
+	BtTime time;
 	LightingDevice *dev;
 };
 

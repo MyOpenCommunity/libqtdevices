@@ -48,10 +48,15 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		b = new InterblockedActuatorGroup(0, item_node);
 		break;
 	case AUTOM_CANC_ATTUAT_ILL:
-		b = new GateLightingActuator(0, item_node);
+	{
+		QStringList sl = getTextChild(item_node, "time").split("*");
+		Q_ASSERT_X(sl.size() == 3, "Automation::getBanner", "time leaf must have 3 fields");
+		BtTime t(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+		b = new GateLightingActuator(t, descr, where);
+	}
 		break;
 	case AUTOM_CANC_ATTUAT_VC:
-		b = new GateEntryphoneActuator(0, item_node);
+		b = new GateEntryphoneActuator(descr, where);
 		break;
 	case ATTUAT_AUTOM_PULS:
 		b = new ButtonActuator(descr, where, AUTOMAZ);

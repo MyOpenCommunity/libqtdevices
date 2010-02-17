@@ -193,19 +193,13 @@ void SecureInterblockedActuator::changeButtonStatus(BtButton *btn)
 }
 
 
-GateEntryphoneActuator::GateEntryphoneActuator(QWidget *parent, const QDomNode &config_node) :
-	BannSinglePuls(parent)
+GateEntryphoneActuator::GateEntryphoneActuator(const QString &descr, const QString &where) :
+	BannSinglePuls(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-	where = getTextChild(config_node, "where");
 	// TODO: we still miss entryphone devices, so I'm creating a generic device and send
 	// frames directly. Change as soon as entryphone devices are available!
 	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
-
-	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"),
-		getTextChild(config_node, "descr"));
-
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"), descr);
 	connect(right_button, SIGNAL(pressed()), SLOT(activate()));
 }
 
@@ -216,30 +210,18 @@ void GateEntryphoneActuator::activate()
 }
 
 
-GateLightingActuator::GateLightingActuator(QWidget *parent, const QDomNode &config_node) :
-	BannSinglePuls(parent)
+GateLightingActuator::GateLightingActuator(const BtTime &t, const QString &descr, const QString &where) :
+	BannSinglePuls(0),
+	time(t)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new LightingDevice(where));
-
-	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"),
-		getTextChild(config_node, "descr"));
-
-	QStringList sl = getTextChild(config_node, "time").split("*");
-	Q_ASSERT_X(sl.size() == 3, "GateLightingActuator::GateLightingActuator",
-		"time leaf must have 3 fields");
-	time_h = sl[0].toInt();
-	time_m = sl[1].toInt();
-	time_s = sl[2].toInt();
-
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"), descr);
 	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
 }
 
 void GateLightingActuator::activate()
 {
-	dev->variableTiming(time_h, time_m, time_s);
+	dev->variableTiming(time.hour(), time.minute(), time.second());
 }
 
 
