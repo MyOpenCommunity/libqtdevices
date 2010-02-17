@@ -96,7 +96,11 @@ private slots:
 /**
  * The page of the settings (also known as custom page) for an advanced scenario.
  */
+#ifdef LAYOUT_BTOUCH
 class SplitSettings : public BannerPage
+#else
+class SplitSettings : public Page
+#endif
 {
 Q_OBJECT
 public:

@@ -304,12 +304,20 @@ void AdvancedSplitPage::showPage()
 
 SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config_node)
 {
+#ifdef LAYOUT_BTOUCH
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
 	nav_bar->displayScrollButtons(false);
 	buildPage(new BannerContent, nav_bar, getTextChild(config_node, "descr"));
+
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(acceptChanges()));
-	connect(nav_bar, SIGNAL(backClick()), SLOT(resetChanges()));
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
+#else
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	buildPage(new QWidget, nav_bar, getTextChild(config_node, "descr"), 35);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+#endif
+	connect(nav_bar, SIGNAL(backClick()), SLOT(resetChanges()));
 
 	// init values, temperature is always present so it will be initialized always
 	if (!values_node.isNull())
@@ -336,6 +344,38 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 
 	QDomNode swing_node = getChildWithName(config_node, "fan_swing");
 	readSwingConfig(swing_node, values_node);
+
+#ifdef LAYOUT_BTOUCH
+	page_content->appendBanner(mode);
+	page_content->appendBanner(temperature);
+	if (speed)
+		page_content->appendBanner(speed);
+	if (swing)
+		page_content->appendBanner(swing);
+#else
+	BtButton *ok = new BtButton;
+	ok->setImage(bt_global::skin->getImage("ok"));
+
+	connect(ok, SIGNAL(clicked()), SLOT(acceptChanges()));
+	connect(ok, SIGNAL(clicked()), SLOT(Closed()));
+
+	QGridLayout *l = new QGridLayout(page_content);
+	l->setContentsMargins(0, 0, 25, 35);
+	l->setSpacing(10);
+
+	l->setColumnStretch(0, 1);
+	l->setColumnStretch(1, 2);
+	l->setColumnStretch(2, 1);
+	l->setRowStretch(4, 1);
+
+	l->addWidget(temperature, 0, 1);
+	l->addWidget(mode, 1, 1);
+	if (speed)
+		l->addWidget(speed, 2, 1);
+	if (swing)
+		l->addWidget(swing, 3, 1, 2, 1, Qt::AlignTop);
+	l->addWidget(ok, 4, 2, 2, 1, Qt::AlignRight|Qt::AlignBottom);
+#endif
 }
 
 /*
@@ -357,7 +397,6 @@ void SplitSettings::readModeConfig(const QDomNode &mode_node, int init_mode)
 		modes.append(val.toElement().text().toInt());
 
 	mode = new SplitMode(modes, init_mode);
-	page_content->appendBanner(mode);
 }
 
 void SplitSettings::readTempConfig(const QDomNode &temp_node, int init_temp)
@@ -367,7 +406,6 @@ void SplitSettings::readTempConfig(const QDomNode &temp_node, int init_temp)
 	int step = getTextChild(temp_node, "step").toInt();
 
 	temperature = new SplitTemperature(init_temp, max, min, step, current_mode);
-	page_content->appendBanner(temperature);
 }
 
 void SplitSettings::readSpeedConfig(const QDomNode &speed_node, const QDomNode &values)
@@ -386,7 +424,6 @@ void SplitSettings::readSpeedConfig(const QDomNode &speed_node, const QDomNode &
 		if (!values.isNull())
 			current_speed = getTextChild(values, "speed").toInt();
 		speed = new SplitSpeed(speeds, current_speed);
-		page_content->appendBanner(speed);
 	}
 	else
 		speed = 0;
@@ -405,7 +442,6 @@ void SplitSettings::readSwingConfig(const QDomNode &swing_node, const QDomNode &
 		if (!values.isNull())
 			swing_on = getTextChild(values, "fan_swing").toInt();
 		swing = new SplitSwing(tr("SWING"), swing_on);
-		page_content->appendBanner(swing);
 	}
 	else
 		swing = 0;
