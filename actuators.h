@@ -33,7 +33,7 @@ class SingleActuator : public BannOnOffState
 {
 Q_OBJECT
 public:
-	SingleActuator(QWidget *parent, const QDomNode &config_node, QString address);
+	SingleActuator(const QString &descr, const QString &where);
 	virtual void inizializza(bool forza = false);
 
 private slots:

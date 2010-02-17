@@ -68,7 +68,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		b = new Dimmer(descr, where);
 		break;
 	case ATTUAT_AUTOM:
-		b = new SingleActuator(0, item_node, where);
+		b = new SingleActuator(descr, where);
 		break;
 	case GR_DIMMER:
 		b = new DimmerGroup(getAddresses(item_node), descr);

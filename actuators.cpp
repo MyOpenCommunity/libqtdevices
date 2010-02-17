@@ -20,15 +20,14 @@
 #include <QDebug>
 
 
-SingleActuator::SingleActuator(QWidget *parent, const QDomNode &config_node, QString address)
-	: BannOnOffState(parent)
+SingleActuator::SingleActuator(const QString &descr, const QString &where)
+	: BannOnOffState(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("actuator_state"),
-		bt_global::skin->getImage("on"), OFF, getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("on"), OFF, descr);
 
 	// TODO: read pull mode from config
-	dev = bt_global::add_device_to_cache(new LightingDevice(address));
+	dev = bt_global::add_device_to_cache(new LightingDevice(where));
 
 	connect(left_button, SIGNAL(clicked()), SLOT(deactivate()));
 	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
