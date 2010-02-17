@@ -45,7 +45,7 @@ void GridContent::prepareLayout(QList<QWidget *> items, int columns)
 	{
 		// compute the height the columns would have if adding the next items
 		for (int j = 0; j < columns && i + j < items.size(); ++j)
-			total_height[j] += items.at(i + j)->sizeHint().height() + l->spacing();
+			total_height[j] += items.at(i + j)->sizeHint().height() + l->verticalSpacing();
 
 		// if the height of one of the two columns exceeds the page height,
 		// start a new page, otherwise add the widgets to the layout
