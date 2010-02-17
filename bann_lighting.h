@@ -24,7 +24,7 @@ class LightGroup : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	LightGroup(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses);
+	LightGroup(const QList<QString> &addresses, const QString &descr);
 	// TODO: do we need a inizializza() method? The original class didn't have it...
 
 private slots:
@@ -89,7 +89,7 @@ class DimmerGroup : public BannLevel
 {
 Q_OBJECT
 public:
-	DimmerGroup(QWidget *parent, const QDomNode &config_node, QList<QString> addresses);
+	DimmerGroup(const QList<QString> &addresses, const QString &descr);
 
 private slots:
 	void lightOn();

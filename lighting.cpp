@@ -4,6 +4,7 @@
 #include "actuators.h"
 #include "bannercontent.h"
 #include "main.h"
+#include "skinmanager.h" // SkinContext
 
 #include <QDomNode>
 #include <QString>
@@ -33,8 +34,10 @@ int Lighting::sectionId()
 
 banner *Lighting::getBanner(const QDomNode &item_node)
 {
+	SkinContext ctx(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
 	QString where = getTextChild(item_node, "where");
+	QString descr = getTextChild(item_node, "descr");
 
 	banner *b = 0;
 	switch (id)
@@ -46,10 +49,10 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		b = new SingleActuator(0, item_node, where);
 		break;
 	case GR_DIMMER:
-		b = new DimmerGroup(0, item_node, getAddresses(item_node));
+		b = new DimmerGroup(getAddresses(item_node), descr);
 		break;
 	case GR_ATTUAT_AUTOM:
-		b = new LightGroup(0, item_node, getAddresses(item_node));
+		b = new LightGroup(getAddresses(item_node), descr);
 		break;
 	case ATTUAT_AUTOM_TEMP:
 		b = new TempLight(0, item_node);

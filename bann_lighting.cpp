@@ -15,13 +15,11 @@
 #include <QDomNode>
 
 
-LightGroup::LightGroup(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses)
-	: Bann2Buttons(parent)
+LightGroup::LightGroup(const QList<QString> &addresses, const QString &descr)
+	: Bann2Buttons(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("lamp_group_on"),
-		bt_global::skin->getImage("on"), getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("on"), descr);
 
 	foreach (const QString &address, addresses)
 		// since we don't care about status changes, use PULL mode to analyze fewer frames
@@ -171,14 +169,11 @@ void DimmerNew::status_changed(const StatusList &sl)
 
 
 
-DimmerGroup::DimmerGroup(QWidget *parent, const QDomNode &config_node, QList<QString> addresses) :
-	BannLevel(parent)
+DimmerGroup::DimmerGroup(const QList<QString> &addresses, const QString &descr) :
+	BannLevel(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer_grp_sx"),
-		bt_global::skin->getImage("dimmer_grp_dx"),bt_global::skin->getImage("on"),
-		getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("dimmer_grp_dx"),bt_global::skin->getImage("on"), descr);
 
 	foreach (const QString &address, addresses)
 		// since we don't care about status changes, use PULL mode to analyze fewer frames
