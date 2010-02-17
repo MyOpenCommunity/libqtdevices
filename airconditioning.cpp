@@ -11,6 +11,7 @@
 #include <QDomNode>
 #include <QString>
 #include <QDebug>
+#include <QGridLayout>
 
 typedef AdvancedAirConditioningDevice::Mode Mode;
 typedef AdvancedAirConditioningDevice::Swing Swing;
@@ -186,7 +187,11 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 		nav_bar = new NavigationBar;
 	dev = d;
 
-	buildPage(new BannerContent, nav_bar, getTextChild(config_node, "descr"));
+	BannerContent *c = new BannerContent;
+#ifdef LAYOUT_TOUCHX
+	static_cast<QGridLayout *>(c->layout())->setVerticalSpacing(20);
+#endif
+	buildPage(c, nav_bar, getTextChild(config_node, "descr"));
 	loadScenarios(config_node, d);
 }
 
