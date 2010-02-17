@@ -211,13 +211,30 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 	}
 	else
 		nav_bar = new NavigationBar;
-	dev = d;
 
-	BannerContent *c = new BannerContent;
-#ifdef LAYOUT_TOUCHX
-	static_cast<QGridLayout *>(c->layout())->setVerticalSpacing(20);
+	buildPage(new BannerContent, nav_bar, getTextChild(config_node, "descr"));
+#else
+	BannerContent *banners = new BannerContent;
+	static_cast<QGridLayout *>(banners->layout())->setVerticalSpacing(20);
+
+	if (off_list == 1) // show the off button
+	{
+		QWidget *cnt = new QWidget;
+		QVBoxLayout *l = new QVBoxLayout(cnt);
+		l->setContentsMargins(0, 0, 25, 35);
+		BtButton *off = new BtButton;
+		off->setImage(bt_global::skin->getImage("off"));
+
+		l->addWidget(banners, 1);
+		l->addWidget(off, 0, Qt::AlignRight);
+
+		buildPage(cnt, banners, new NavigationBar, getTextChild(config_node, "descr"));
+	}
+	else
+		buildPage(banners, new NavigationBar, getTextChild(config_node, "descr"));
 #endif
-	buildPage(c, nav_bar, getTextChild(config_node, "descr"));
+
+	dev = d;
 	loadScenarios(config_node, d);
 }
 
