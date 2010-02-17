@@ -145,11 +145,10 @@ class TempLight : public BannOnOff2Labels
 {
 Q_OBJECT
 public:
-	TempLight(QWidget *parent, const QDomNode &config_node);
+	TempLight(const QString &descr, const QString &where);
 	virtual void inizializza(bool forza);
 
 protected:
-	virtual void readTimes(const QDomNode &node);
 	void updateTimeLabel();
 
 	QList<BtTime> times;
@@ -168,11 +167,8 @@ class TempLightVariable : public TempLight
 {
 Q_OBJECT
 public:
-	TempLightVariable(QWidget *parent, const QDomNode &config_node);
+	TempLightVariable(const QList<BtTime> &time_values, const QString &descr, const QString &where);
 	virtual void inizializza(bool forza);
-
-protected:
-	virtual void readTimes(const QDomNode &node);
 
 protected slots:
 	virtual void activate();

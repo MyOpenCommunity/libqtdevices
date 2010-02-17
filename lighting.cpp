@@ -26,6 +26,19 @@ static QList<QString> getAddresses(QDomNode item, QList<int> *start_values = 0, 
 	return l;
 }
 
+QList<BtTime> getTimes(const QDomNode &item)
+{
+	QList<BtTime> times;
+	foreach (const QDomNode &time, getChildren(item, "time"))
+	{
+		QString s = time.toElement().text();
+		QStringList sl = s.split("*");
+		Q_ASSERT_X(sl.size() == 3, "getTimes()", "A time has number of fields != 3");
+		times << BtTime(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+	}
+	return times;
+}
+
 
 Lighting::Lighting(const QDomNode &config_node)
 {
@@ -61,7 +74,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		b = new LightGroup(getAddresses(item_node), descr);
 		break;
 	case ATTUAT_AUTOM_TEMP:
-		b = new TempLight(0, item_node);
+		b = new TempLight(descr, where);
 		break;
 	case ATTUAT_VCT_LS:
 		b = new ButtonActuator(0, item_node, VCT_LS);
@@ -74,7 +87,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 	}
 		break;
 	case ATTUAT_AUTOM_TEMP_NUOVO_N:
-		b = new TempLightVariable(0, item_node);
+		b = new TempLightVariable(getTimes(item_node), descr, where);
 		break;
 	case GR_DIMMER100:
 	{

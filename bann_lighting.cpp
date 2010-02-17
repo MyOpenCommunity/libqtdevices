@@ -354,20 +354,23 @@ void Dimmer100Group::decreaseLevel()
 }
 
 
-TempLight::TempLight(QWidget *parent, const QDomNode &config_node) :
-	BannOnOff2Labels(parent)
+TempLight::TempLight(const QString &descr, const QString &where) :
+	BannOnOff2Labels(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-	QString descr = getTextChild(config_node, "descr");
 	initBanner(bt_global::skin->getImage("lamp_cycle"), bt_global::skin->getImage("lamp_time_on"),
 		bt_global::skin->getImage("on"), OFF, descr, QString());
 
-	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new LightingDevice(where));
 
 	time_index = 0;
-	readTimes(config_node);
+	// Time values are fixed for TempLight
+	times << BtTime(0, 1, 0); // 1 min
+	times << BtTime(0, 2, 0);
+	times << BtTime(0, 3, 0);
+	times << BtTime(0, 4, 0);
+	times << BtTime(0, 5, 0);
+	times << BtTime(0, 15, 0);
+	times << BtTime(0, 0, 30);
 	updateTimeLabel();
 	connect(left_button, SIGNAL(clicked()), SLOT(cycleTime()));
 	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
@@ -377,20 +380,6 @@ TempLight::TempLight(QWidget *parent, const QDomNode &config_node) :
 void TempLight::inizializza(bool forza)
 {
 	dev->requestStatus();
-}
-
-void TempLight::readTimes(const QDomNode &node)
-{
-	Q_UNUSED(node);
-	times << BtTime(0, 1, 0); // 1 min
-	times << BtTime(0, 2, 0);
-	times << BtTime(0, 3, 0);
-	times << BtTime(0, 4, 0);
-	times << BtTime(0, 5, 0);
-	times << BtTime(0, 15, 0);
-	times << BtTime(0, 0, 30);
-	Q_ASSERT_X(times.size() <= 7, "TempLight::readTimes",
-		"times length must be <= 7, otherwise activation will fail");
 }
 
 void TempLight::cycleTime()
@@ -426,23 +415,11 @@ void TempLight::status_changed(const StatusList &sl)
 }
 
 
-TempLightVariable::TempLightVariable(QWidget *parent, const QDomNode &config_node) :
-	TempLight(parent, config_node)
+TempLightVariable::TempLightVariable(const QList<BtTime> &time_values, const QString &descr, const QString &where) :
+	TempLight(descr, where)
 {
-	readTimes(config_node);
+	times = time_values;
 	updateTimeLabel();
-}
-
-void TempLightVariable::readTimes(const QDomNode &node)
-{
-	// here, times has still the times of the base class. Remove them
-	times.clear();
-	foreach (const QDomNode &time, getChildren(node, "time"))
-	{
-		QString s = time.toElement().text();
-		QStringList sl = s.split("*");
-		times << BtTime(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
-	}
 }
 
 void TempLightVariable::inizializza(bool forza)
