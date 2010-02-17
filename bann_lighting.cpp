@@ -1,18 +1,14 @@
 #include "bann_lighting.h"
 #include "btbutton.h"
-#include "fontmanager.h" // bt_global::font
 #include "devices_cache.h" // bt_global::devices_cache
 #include "generic_functions.h" //getBostikName
-#include "icondispatcher.h" //bt_global::icons_cache
-#include "skinmanager.h" // skincontext
-#include "xml_functions.h" // getTextChild
+#include "skinmanager.h" // skin
 #include "lighting_device.h"
 
 
 #include <QLabel>
 #include <QTimer>
 #include <QDebug>
-#include <QDomNode>
 
 
 LightGroup::LightGroup(const QList<QString> &addresses, const QString &descr)

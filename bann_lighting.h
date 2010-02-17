@@ -15,7 +15,6 @@ class device;
 class device_status;
 class openwebnet;
 class LightingDevice;
-class QDomNode;
 class DimmerDevice;
 class Dimmer100Device;
 
