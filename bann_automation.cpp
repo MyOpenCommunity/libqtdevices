@@ -263,7 +263,7 @@ void InterblockedActuatorGroup::sendStop()
 }
 
 
-PPTStat::PPTStat(QWidget *parent, QString where, int cid) : BannerOld(parent)
+PPTStat::PPTStat(QWidget *parent, QString where) : BannerOld(parent)
 {
 	dev = bt_global::add_device_to_cache(new PPTStatDevice(where));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
@@ -272,7 +272,6 @@ PPTStat::PPTStat(QWidget *parent, QString where, int cid) : BannerOld(parent)
 	addItem(ICON, (banner_width - BUT_DIM * 2) / 2, 0, BUT_DIM*2 ,BUT_DIM);
 	addItem(TEXT, 0, BUT_DIM, banner_width, banner_height - BUT_DIM);
 
-	SkinContext context(cid);
 	img_open = bt_global::skin->getImage("pptstat_open");
 	img_close = bt_global::skin->getImage("pptstat_close");
 

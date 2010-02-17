@@ -4,6 +4,7 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bannercontent.h"
 #include "main.h"
+#include "skinmanager.h" // SkinContext
 
 #include <QDomNode>
 #include <QString>
@@ -25,7 +26,7 @@ int Automation::sectionId()
 banner *Automation::getBanner(const QDomNode &item_node)
 {
 	int id = getTextChild(item_node, "id").toInt();
-	int cid = getTextChild(item_node, "cid").toInt();
+	SkinContext ctx(getTextChild(item_node, "cid").toInt());
 	QString where = getTextChild(item_node, "where");
 	QString descr = getTextChild(item_node, "descr");
 
@@ -62,7 +63,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		b = new ButtonActuator(descr, where, AUTOMAZ);
 		break;
 	case PPT_STAT:
-		b = new PPTStat(0, where, cid);
+		b = new PPTStat(0, where);
 		break;
 	}
 
