@@ -97,7 +97,7 @@ class InterblockedActuatorGroup : public Bann3Buttons
 {
 Q_OBJECT
 public:
-	InterblockedActuatorGroup(QWidget *parent, const QDomNode &config_node);
+	InterblockedActuatorGroup(const QStringList &addresses, const QString &descr);
 
 private slots:
 	void sendOpen();

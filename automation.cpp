@@ -46,7 +46,12 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		b = new ButtonActuator(descr, where, VCT_SERR);
 		break;
 	case GR_ATTUAT_INT:
-		b = new InterblockedActuatorGroup(0, item_node);
+	{
+		QStringList addresses;
+		foreach (const QDomNode &el, getChildren(item_node, "element"))
+			addresses << getTextChild(el, "where");
+		b = new InterblockedActuatorGroup(addresses, descr);
+	}
 		break;
 	case AUTOM_CANC_ATTUAT_ILL:
 	{

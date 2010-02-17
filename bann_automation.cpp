@@ -215,19 +215,14 @@ void GateLightingActuator::activate()
 }
 
 
-InterblockedActuatorGroup::InterblockedActuatorGroup(QWidget *parent, const QDomNode &config_node) :
-	Bann3Buttons(parent)
+InterblockedActuatorGroup::InterblockedActuatorGroup(const QStringList &addresses, const QString &descr) :
+	Bann3Buttons(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-	foreach (const QDomNode &el, getChildren(config_node, "element"))
-	{
-		QString where = getTextChild(el, "where");
+	foreach (const QString &where, addresses)
 		actuators.append(bt_global::add_device_to_cache(new AutomationDevice(where, PULL)));
-	}
 
 	initBanner(bt_global::skin->getImage("scroll_down"), bt_global::skin->getImage("stop"),
-		bt_global::skin->getImage("scroll_up"), getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("scroll_up"), descr);
 
 	connect(right_button, SIGNAL(clicked()), SLOT(sendOpen()));
 	connect(center_button, SIGNAL(clicked()), SLOT(sendStop()));
