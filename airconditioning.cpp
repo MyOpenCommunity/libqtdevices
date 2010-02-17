@@ -240,6 +240,7 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 
 void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d)
 {
+	int item_id = getTextChild(config_node, "itemID").toInt();
 	int id = getTextChild(config_node, "id").toInt();
 	CustomScenario *bann = new CustomScenario(d);
 #ifdef CONFIG_BTOUCH
@@ -254,7 +255,8 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirCo
 
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 	{
-		int item_id = getTextChild(scenario, "itemID").toInt();
+		// CONFIG_BTOUCH on TouchX the cmd nodes have the same name; either expand setCfgValue
+		//               to accept an XPath-like syntax (cfg[2]/mode) or find another solution
 		AdvancedSplitScenario *b = new AdvancedSplitScenario(getTextChild(scenario, "descr"), item_id, scenario.nodeName(), d);
 		SplitSettings *sp = new SplitSettings(scenario, params);
 		b->setCurrentValues(sp->getCurrentStatus());
