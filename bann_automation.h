@@ -113,7 +113,7 @@ class PPTStat : public BannerOld
 {
 Q_OBJECT
 public:
-	PPTStat(QWidget *parent, QString where);
+	PPTStat(QString where);
 	virtual void inizializza(bool forza=false);
 
 private:

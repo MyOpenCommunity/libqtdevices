@@ -68,7 +68,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		b = new ButtonActuator(descr, where, AUTOMAZ);
 		break;
 	case PPT_STAT:
-		b = new PPTStat(0, where);
+		b = new PPTStat(where);
 		break;
 	}
 
