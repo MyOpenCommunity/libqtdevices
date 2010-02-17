@@ -34,10 +34,10 @@ banner *Automation::getBanner(const QDomNode &item_node)
 	switch (id)
 	{
 	case ATTUAT_AUTOM_INT_SIC:
-		b = new SecureInterblockedActuator(0, item_node);
+		b = new SecureInterblockedActuator(descr, where);
 		break;
 	case ATTUAT_AUTOM_INT:
-		b = new InterblockedActuator(0, item_node);
+		b = new InterblockedActuator(descr, where);
 		break;
 	case ATTUAT_AUTOM:
 		b = new SingleActuator(descr, where);

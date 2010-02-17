@@ -20,7 +20,7 @@ class InterblockedActuator : public BannOpenClose
 {
 Q_OBJECT
 public:
-	InterblockedActuator(QWidget *parent, const QDomNode &config_node);
+	InterblockedActuator(const QString &descr, const QString &where);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -47,7 +47,7 @@ class SecureInterblockedActuator : public BannOpenClose
 {
 Q_OBJECT
 public:
-	SecureInterblockedActuator(QWidget *parent, const QDomNode &config_node);
+	SecureInterblockedActuator(const QString &descr, const QString &where);
 	virtual void inizializza(bool forza = false);
 
 private slots:

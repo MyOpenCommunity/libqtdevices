@@ -14,17 +14,12 @@
 #define BUT_DIM     60
 
 
-InterblockedActuator::InterblockedActuator(QWidget *parent, const QDomNode &config_node)
-	: BannOpenClose(parent)
+InterblockedActuator::InterblockedActuator(const QString &descr, const QString &where)
+	: BannOpenClose(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
-
 	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
-		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP,
-		getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP, descr);
 
 	connect(right_button, SIGNAL(clicked()), SLOT(sendGoUp()));
 	connect(left_button, SIGNAL(clicked()), SLOT(sendGoDown()));
@@ -88,20 +83,15 @@ void InterblockedActuator::status_changed(const StatusList &sl)
 	}
 }
 
-SecureInterblockedActuator::SecureInterblockedActuator(QWidget *parent, const QDomNode &config_node) :
-	BannOpenClose(parent)
+SecureInterblockedActuator::SecureInterblockedActuator(const QString &descr, const QString &where) :
+	BannOpenClose(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
 
 	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
-		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP,
-		getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP, descr);
 
 	is_any_button_pressed = false;
-
 	connectButtons();
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
