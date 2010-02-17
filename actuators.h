@@ -11,14 +11,11 @@
 #ifndef ACTUATORS_H
 #define ACTUATORS_H
 
-#include "bann2_buttons.h" // bannOnOff
-#include "bann1_button.h" // bannPuls
+#include "bann2_buttons.h" // BannOnOffState
+#include "bann1_button.h" // BannSinglePuls
 #include "device.h" //StatusList
 
-class device;
-class device_status;
 class LightingDevice;
-class QDomNode;
 
 
 enum ActuatorType
@@ -33,7 +30,7 @@ class SingleActuator : public BannOnOffState
 {
 Q_OBJECT
 public:
-	SingleActuator(QWidget *parent, const QDomNode &config_node, QString address);
+	SingleActuator(const QString &descr, const QString &where);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -50,7 +47,7 @@ class ButtonActuator : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	ButtonActuator(QWidget *parent, const QDomNode &config_node, int type);
+	ButtonActuator(const QString &descr, const QString &_where, int t);
 
 private slots:
 	void activate();

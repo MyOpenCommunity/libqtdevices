@@ -1,27 +1,21 @@
 #include "bann_lighting.h"
 #include "btbutton.h"
-#include "fontmanager.h" // bt_global::font
 #include "devices_cache.h" // bt_global::devices_cache
 #include "generic_functions.h" //getBostikName
-#include "icondispatcher.h" //bt_global::icons_cache
-#include "skinmanager.h" // skincontext
-#include "xml_functions.h" // getTextChild
+#include "skinmanager.h" // skin
 #include "lighting_device.h"
 
 
 #include <QLabel>
 #include <QTimer>
 #include <QDebug>
-#include <QDomNode>
 
 
-LightGroup::LightGroup(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses)
-	: Bann2Buttons(parent)
+LightGroup::LightGroup(const QList<QString> &addresses, const QString &descr)
+	: Bann2Buttons(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("lamp_group_on"),
-		bt_global::skin->getImage("on"), getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("on"), descr);
 
 	foreach (const QString &address, addresses)
 		// since we don't care about status changes, use PULL mode to analyze fewer frames
@@ -102,14 +96,13 @@ void AdjustDimmer::setLevel(int level)
 
 
 
-DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where) :
-	AdjustDimmer(parent)
+Dimmer::Dimmer(const QString &descr, const QString &where) :
+	AdjustDimmer(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
 	light_value = 20;
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
-		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, descr);
 
 	dev = bt_global::add_device_to_cache(new DimmerDevice(where));
 	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
@@ -119,32 +112,32 @@ DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
-void DimmerNew::lightOn()
+void Dimmer::lightOn()
 {
 	dev->turnOn();
 }
 
-void DimmerNew::lightOff()
+void Dimmer::lightOff()
 {
 	dev->turnOff();
 }
 
-void DimmerNew::increaseLevel()
+void Dimmer::increaseLevel()
 {
 	dev->increaseLevel();
 }
 
-void DimmerNew::decreaseLevel()
+void Dimmer::decreaseLevel()
 {
 	dev->decreaseLevel();
 }
 
-void DimmerNew::inizializza(bool forza)
+void Dimmer::inizializza(bool forza)
 {
 	dev->requestStatus();
 }
 
-void DimmerNew::status_changed(const StatusList &sl)
+void Dimmer::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
@@ -171,14 +164,11 @@ void DimmerNew::status_changed(const StatusList &sl)
 
 
 
-DimmerGroup::DimmerGroup(QWidget *parent, const QDomNode &config_node, QList<QString> addresses) :
-	BannLevel(parent)
+DimmerGroup::DimmerGroup(const QList<QString> &addresses, const QString &descr) :
+	BannLevel(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer_grp_sx"),
-		bt_global::skin->getImage("dimmer_grp_dx"),bt_global::skin->getImage("on"),
-		getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("dimmer_grp_dx"),bt_global::skin->getImage("on"), descr);
 
 	foreach (const QString &address, addresses)
 		// since we don't care about status changes, use PULL mode to analyze fewer frames
@@ -221,21 +211,18 @@ enum
 	DIMMER100_SPEED = 255,
 };
 
-Dimmer100New::Dimmer100New(QWidget *parent, const QDomNode &config_node) :
-	AdjustDimmer(parent)
+Dimmer100::Dimmer100(const QString &descr, const QString &where, int _start_speed, int _stop_speed) :
+	AdjustDimmer(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
 	light_value = 5;
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
-		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, descr);
 
-	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new Dimmer100Device(where));
 
-	start_speed = getTextChild(config_node, "softstart").toInt();
-	stop_speed = getTextChild(config_node, "softstop").toInt();
+	start_speed = _start_speed;
+	stop_speed = _stop_speed;
 
 	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
 	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
@@ -244,32 +231,32 @@ Dimmer100New::Dimmer100New(QWidget *parent, const QDomNode &config_node) :
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
-void Dimmer100New::lightOn()
+void Dimmer100::lightOn()
 {
 	dev->turnOn(start_speed);
 }
 
-void Dimmer100New::lightOff()
+void Dimmer100::lightOff()
 {
 	dev->turnOff(stop_speed);
 }
 
-void Dimmer100New::increaseLevel()
+void Dimmer100::increaseLevel()
 {
 	dev->increaseLevel100(DIMMER100_STEP, DIMMER100_SPEED);
 }
 
-void Dimmer100New::decreaseLevel()
+void Dimmer100::decreaseLevel()
 {
 	dev->decreaseLevel100(DIMMER100_STEP, DIMMER100_SPEED);
 }
 
-void Dimmer100New::inizializza(bool forza)
+void Dimmer100::inizializza(bool forza)
 {
 	dev->requestDimmer100Status();
 }
 
-void Dimmer100New::status_changed(const StatusList &sl)
+void Dimmer100::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
@@ -305,7 +292,7 @@ void Dimmer100New::status_changed(const StatusList &sl)
 }
 
 // Round a value to the nearest greater multiple of 5, eg. numbers 1-5 map to 5, 6-10 to 10 and so on.
-int Dimmer100New::roundTo5(int value)
+int Dimmer100::roundTo5(int value)
 {
 	// I really hope the compiler optimizes this case!
 	int div = value / 5;
@@ -317,23 +304,16 @@ int Dimmer100New::roundTo5(int value)
 }
 
 
-Dimmer100Group::Dimmer100Group(QWidget *parent, const QDomNode &config_node) :
-	BannLevel(parent)
+Dimmer100Group::Dimmer100Group(const QList<QString> &addresses, const QList<int> start_values, const QList<int> stop_values, const QString &descr) :
+	BannLevel(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer_grp_sx"),
-		bt_global::skin->getImage("dimmer_grp_dx"),bt_global::skin->getImage("on"),
-		getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("dimmer_grp_dx"),bt_global::skin->getImage("on"), descr);
 
-	// load all devices with relative start and stop speed
-	QList<QDomNode> elements = getChildren(config_node, "element");
-	foreach (const QDomNode &el, elements)
-	{
-		devices << bt_global::add_device_to_cache(new Dimmer100Device(getTextChild(el, "where"), PULL));
-		start_speed << getTextChild(el, "softstart").toInt();
-		stop_speed << getTextChild(el, "softstop").toInt();
-	}
+	foreach (const QString &where, addresses)
+		devices << bt_global::add_device_to_cache(new Dimmer100Device(where, PULL));
+	start_speed = start_values;
+	stop_speed = stop_values;
 	Q_ASSERT_X(devices.size() == start_speed.size(), "Dimmer100Group::Dimmer100Group",
 		"Device number and softstart number are different");
 	Q_ASSERT_X(devices.size() == stop_speed.size(), "Dimmer100Group::Dimmer100Group",
@@ -370,20 +350,23 @@ void Dimmer100Group::decreaseLevel()
 }
 
 
-TempLight::TempLight(QWidget *parent, const QDomNode &config_node) :
-	BannOnOff2Labels(parent)
+TempLight::TempLight(const QString &descr, const QString &where) :
+	BannOnOff2Labels(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-	QString descr = getTextChild(config_node, "descr");
 	initBanner(bt_global::skin->getImage("lamp_cycle"), bt_global::skin->getImage("lamp_time_on"),
 		bt_global::skin->getImage("on"), OFF, descr, QString());
 
-	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new LightingDevice(where));
 
 	time_index = 0;
-	readTimes(config_node);
+	// Time values are fixed for TempLight
+	times << BtTime(0, 1, 0); // 1 min
+	times << BtTime(0, 2, 0);
+	times << BtTime(0, 3, 0);
+	times << BtTime(0, 4, 0);
+	times << BtTime(0, 5, 0);
+	times << BtTime(0, 15, 0);
+	times << BtTime(0, 0, 30);
 	updateTimeLabel();
 	connect(left_button, SIGNAL(clicked()), SLOT(cycleTime()));
 	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
@@ -393,20 +376,6 @@ TempLight::TempLight(QWidget *parent, const QDomNode &config_node) :
 void TempLight::inizializza(bool forza)
 {
 	dev->requestStatus();
-}
-
-void TempLight::readTimes(const QDomNode &node)
-{
-	Q_UNUSED(node);
-	times << BtTime(0, 1, 0); // 1 min
-	times << BtTime(0, 2, 0);
-	times << BtTime(0, 3, 0);
-	times << BtTime(0, 4, 0);
-	times << BtTime(0, 5, 0);
-	times << BtTime(0, 15, 0);
-	times << BtTime(0, 0, 30);
-	Q_ASSERT_X(times.size() <= 7, "TempLight::readTimes",
-		"times length must be <= 7, otherwise activation will fail");
 }
 
 void TempLight::cycleTime()
@@ -442,23 +411,11 @@ void TempLight::status_changed(const StatusList &sl)
 }
 
 
-TempLightVariable::TempLightVariable(QWidget *parent, const QDomNode &config_node) :
-	TempLight(parent, config_node)
+TempLightVariable::TempLightVariable(const QList<BtTime> &time_values, const QString &descr, const QString &where) :
+	TempLight(descr, where)
 {
-	readTimes(config_node);
+	times = time_values;
 	updateTimeLabel();
-}
-
-void TempLightVariable::readTimes(const QDomNode &node)
-{
-	// here, times has still the times of the base class. Remove them
-	times.clear();
-	foreach (const QDomNode &time, getChildren(node, "time"))
-	{
-		QString s = time.toElement().text();
-		QStringList sl = s.split("*");
-		times << BtTime(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
-	}
 }
 
 void TempLightVariable::inizializza(bool forza)
@@ -478,32 +435,14 @@ enum {
 	TLF_TIME_STATES = 8,
 };
 
-TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
-	BannOn2Labels(parent)
+TempLightFixed::TempLightFixed(int time, const QString &descr, const QString &where) :
+	BannOn2Labels(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-#ifdef CONFIG_BTOUCH
-	// I think conf.xml will have only one node for time in this banner, however
-	// such node is indicated as "timeX", so I'm using the following overkill code
-	// to be safe
-	QList<QDomNode> children = getChildren(config_node, "time");
-	QStringList sl;
-	foreach (const QDomNode &tmp, children)
-		sl << tmp.toElement().text().split("*");
-
-	Q_ASSERT_X(sl.size() == 3, "TempLightFixed::TempLightFixed", "Time must have 3 fields");
-	lighting_time = BtTime(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
-	total_time = lighting_time.hour() * 3600 + lighting_time.minute() * 60 + lighting_time.second();
-#else
-	total_time = getTextChild(config_node, "time").toInt();
+	total_time = time;
 	lighting_time = BtTime(total_time / 3600, (total_time / 60) % 60, total_time % 60);
-#endif
 
-	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new LightingDevice(where));
 
-	QString descr = getTextChild(config_node, "descr");
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("lamp_status"),
 		bt_global::skin->getImage("lamp_time"), descr, formatTime(lighting_time));
 

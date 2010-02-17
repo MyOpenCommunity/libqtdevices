@@ -4,6 +4,7 @@
 #include "actuators.h"
 #include "bannercontent.h"
 #include "main.h"
+#include "skinmanager.h" // SkinContext
 
 #include <QDomNode>
 #include <QString>
@@ -11,12 +12,34 @@
 #include <QList>
 
 
-static QList<QString> getAddresses(QDomNode item)
+namespace
 {
-	QList<QString> l;
-	foreach (const QDomNode &el, getChildren(item, "element"))
-		l.append(getTextChild(el, "where"));
-	return l;
+	QList<QString> getAddresses(QDomNode item, QList<int> *start_values = 0, QList<int> *stop_values = 0)
+	{
+		QList<QString> l;
+		foreach (const QDomNode &el, getChildren(item, "element"))
+		{
+			l.append(getTextChild(el, "where"));
+			if (start_values)
+				start_values->append(getTextChild(el, "softstart").toInt());
+			if (stop_values)
+				stop_values->append(getTextChild(el, "softstop").toInt());
+		}
+		return l;
+	}
+
+	QList<BtTime> getTimes(const QDomNode &item)
+	{
+		QList<BtTime> times;
+		foreach (const QDomNode &time, getChildren(item, "time"))
+		{
+			QString s = time.toElement().text();
+			QStringList sl = s.split("*");
+			Q_ASSERT_X(sl.size() == 3, "getTimes()", "Time values must have exactly 3 fields");
+			times << BtTime(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+		}
+		return times;
+	}
 }
 
 
@@ -33,41 +56,68 @@ int Lighting::sectionId()
 
 banner *Lighting::getBanner(const QDomNode &item_node)
 {
+	SkinContext ctx(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
 	QString where = getTextChild(item_node, "where");
+	QString descr = getTextChild(item_node, "descr");
 
 	banner *b = 0;
 	switch (id)
 	{
 	case DIMMER:
-		b = new DimmerNew(0, item_node, where);
+		b = new Dimmer(descr, where);
 		break;
 	case ATTUAT_AUTOM:
-		b = new SingleActuator(0, item_node, where);
+		b = new SingleActuator(descr, where);
 		break;
 	case GR_DIMMER:
-		b = new DimmerGroup(0, item_node, getAddresses(item_node));
+		b = new DimmerGroup(getAddresses(item_node), descr);
 		break;
 	case GR_ATTUAT_AUTOM:
-		b = new LightGroup(0, item_node, getAddresses(item_node));
+		b = new LightGroup(getAddresses(item_node), descr);
 		break;
 	case ATTUAT_AUTOM_TEMP:
-		b = new TempLight(0, item_node);
+		b = new TempLight(descr, where);
 		break;
 	case ATTUAT_VCT_LS:
-		b = new ButtonActuator(0, item_node, VCT_LS);
+		b = new ButtonActuator(descr, where, VCT_LS);
 		break;
 	case DIMMER_100:
-		b = new Dimmer100New(0, item_node);
+	{
+		int start = getTextChild(item_node, "softstart").toInt();
+		int stop = getTextChild(item_node, "softstop").toInt();
+		b = new Dimmer100(descr, where, start, stop);
+	}
 		break;
 	case ATTUAT_AUTOM_TEMP_NUOVO_N:
-		b = new TempLightVariable(0, item_node);
+		b = new TempLightVariable(getTimes(item_node), descr, where);
 		break;
 	case GR_DIMMER100:
-		b = new Dimmer100Group(0, item_node);
+	{
+		QList<int> start, stop;
+		QList<QString> addresses = getAddresses(item_node, &start, &stop);
+		b = new Dimmer100Group(addresses, start, stop, descr);
+	}
 		break;
 	case ATTUAT_AUTOM_TEMP_NUOVO_F:
-		b = new TempLightFixed(0, item_node);
+	{
+		int t;
+	#ifdef CONFIG_BTOUCH
+		// I think conf.xml will have only one node for time in this banner, however
+		// such node is indicated as "timeX", so I'm using the following overkill code
+		// to be safe
+		QList<QDomNode> children = getChildren(item_node, "time");
+		QStringList sl;
+		foreach (const QDomNode &tmp, children)
+			sl << tmp.toElement().text().split("*");
+
+		Q_ASSERT_X(sl.size() == 3, "Lighting::getBanner", "Fixed time must have exactly 3 fields");
+		t = sl[0].toInt() * 3600 + sl[1].toInt() * 60 + sl[2].toInt();
+	#else
+		t = getTextChild(item_node, "time").toInt();
+	#endif
+		b = new TempLightFixed(t, descr, where);
+		}
 		break;
 	}
 

@@ -15,7 +15,6 @@ class device;
 class device_status;
 class openwebnet;
 class LightingDevice;
-class QDomNode;
 class DimmerDevice;
 class Dimmer100Device;
 
@@ -24,7 +23,7 @@ class LightGroup : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	LightGroup(QWidget *parent, const QDomNode &config_node, const QList<QString> &addresses);
+	LightGroup(const QList<QString> &addresses, const QString &descr);
 	// TODO: do we need a inizializza() method? The original class didn't have it...
 
 private slots:
@@ -66,11 +65,11 @@ private:
 };
 
 // TODO: to be renamed when dimmer is gone
-class DimmerNew : public AdjustDimmer
+class Dimmer : public AdjustDimmer
 {
 Q_OBJECT
 public:
-	DimmerNew(QWidget *parent, const QDomNode &config_node, QString where);
+	Dimmer(const QString &descr, const QString &where);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -89,7 +88,7 @@ class DimmerGroup : public BannLevel
 {
 Q_OBJECT
 public:
-	DimmerGroup(QWidget *parent, const QDomNode &config_node, QList<QString> addresses);
+	DimmerGroup(const QList<QString> &addresses, const QString &descr);
 
 private slots:
 	void lightOn();
@@ -102,11 +101,11 @@ private:
 };
 
 // TODO: to be renamed when dimmer100 is gone
-class Dimmer100New : public AdjustDimmer
+class Dimmer100 : public AdjustDimmer
 {
 Q_OBJECT
 public:
-	Dimmer100New(QWidget *parent, const QDomNode &config_node);
+	Dimmer100(const QString &descr, const QString &where, int _start_speed, int _stop_speed);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -127,7 +126,7 @@ class Dimmer100Group : public BannLevel
 {
 Q_OBJECT
 public:
-	Dimmer100Group(QWidget *parent, const QDomNode &config_node);
+	Dimmer100Group(const QList<QString> &addresses, const QList<int> start_values, const QList<int> stop_values, const QString &descr);
 
 private slots:
 	void lightOn();
@@ -145,11 +144,10 @@ class TempLight : public BannOnOff2Labels
 {
 Q_OBJECT
 public:
-	TempLight(QWidget *parent, const QDomNode &config_node);
+	TempLight(const QString &descr, const QString &where);
 	virtual void inizializza(bool forza);
 
 protected:
-	virtual void readTimes(const QDomNode &node);
 	void updateTimeLabel();
 
 	QList<BtTime> times;
@@ -168,11 +166,8 @@ class TempLightVariable : public TempLight
 {
 Q_OBJECT
 public:
-	TempLightVariable(QWidget *parent, const QDomNode &config_node);
+	TempLightVariable(const QList<BtTime> &time_values, const QString &descr, const QString &where);
 	virtual void inizializza(bool forza);
-
-protected:
-	virtual void readTimes(const QDomNode &node);
 
 protected slots:
 	virtual void activate();
@@ -183,7 +178,7 @@ class TempLightFixed : public BannOn2Labels
 {
 Q_OBJECT
 public:
-	TempLightFixed(QWidget *parent, const QDomNode &config_node);
+	TempLightFixed(int time, const QString &descr, const QString &where);
 	virtual void inizializza(bool forza);
 
 private slots:

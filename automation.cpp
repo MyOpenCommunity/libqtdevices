@@ -27,6 +27,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 	int id = getTextChild(item_node, "id").toInt();
 	int cid = getTextChild(item_node, "cid").toInt();
 	QString where = getTextChild(item_node, "where");
+	QString descr = getTextChild(item_node, "descr");
 
 	banner *b = 0;
 	switch (id)
@@ -38,10 +39,10 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		b = new InterblockedActuator(0, item_node);
 		break;
 	case ATTUAT_AUTOM:
-		b = new SingleActuator(0, item_node, where);
+		b = new SingleActuator(descr, where);
 		break;
 	case ATTUAT_VCT_SERR:
-		b = new ButtonActuator(0, item_node, VCT_SERR);
+		b = new ButtonActuator(descr, where, VCT_SERR);
 		break;
 	case GR_ATTUAT_INT:
 		b = new InterblockedActuatorGroup(0, item_node);
@@ -53,7 +54,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		b = new GateEntryphoneActuator(0, item_node);
 		break;
 	case ATTUAT_AUTOM_PULS:
-		b = new ButtonActuator(0, item_node, AUTOMAZ);
+		b = new ButtonActuator(descr, where, AUTOMAZ);
 		break;
 	case PPT_STAT:
 		b = new PPTStat(0, where, cid);
