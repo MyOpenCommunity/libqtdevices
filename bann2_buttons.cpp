@@ -66,11 +66,11 @@ Bann2Buttons::Bann2Buttons(QWidget *parent) :
 	QGridLayout *l = new QGridLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
-	l->addWidget(left_button, 0, 0);
+	l->addWidget(left_button, 0, 0, Qt::AlignLeft);
 	l->setColumnStretch(0, 1);
 	l->addWidget(center_icon, 0, 1);
 	l->setColumnStretch(1, 2);
-	l->addWidget(right_button, 0, 2);
+	l->addWidget(right_button, 0, 2, Qt::AlignRight);
 	l->setColumnStretch(2, 1);
 	l->addWidget(description, 1, 1);
 
