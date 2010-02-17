@@ -148,7 +148,7 @@ SplitPage::SplitPage(const QDomNode &config_node, AirConditioningDevice *d)
 	else
 		nav_bar = new NavigationBar;
 
-	buildPage(new BannerContent, nav_bar);
+	buildPage(new BannerContent, nav_bar, getTextChild(config_node, "descr"));
 	loadScenarios(config_node);
 }
 
@@ -186,7 +186,7 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 		nav_bar = new NavigationBar;
 	dev = d;
 
-	buildPage(new BannerContent, nav_bar);
+	buildPage(new BannerContent, nav_bar, getTextChild(config_node, "descr"));
 	loadScenarios(config_node, d);
 }
 
@@ -258,7 +258,7 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 {
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
 	nav_bar->displayScrollButtons(false);
-	buildPage(new BannerContent, nav_bar);
+	buildPage(new BannerContent, nav_bar, getTextChild(config_node, "descr"));
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(acceptChanges()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(resetChanges()));
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
@@ -414,7 +414,7 @@ void SplitSettings::resetChanges()
 
 GeneralSplitPage::GeneralSplitPage(const QDomNode &config_node)
 {
-	buildPage();
+	buildPage(getTextChild(config_node, "descr"));
 	loadScenarios(config_node);
 }
 
@@ -436,7 +436,7 @@ void GeneralSplitPage::loadScenarios(const QDomNode &config_node)
 
 AdvancedGeneralSplitPage::AdvancedGeneralSplitPage(const QDomNode &config_node)
 {
-	buildPage();
+	buildPage(getTextChild(config_node, "descr"));
 	loadScenarios(config_node);
 }
 
