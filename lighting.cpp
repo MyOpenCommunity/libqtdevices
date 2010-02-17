@@ -12,11 +12,17 @@
 #include <QList>
 
 
-static QList<QString> getAddresses(QDomNode item)
+static QList<QString> getAddresses(QDomNode item, QList<int> *start_values = 0, QList<int> *stop_values = 0)
 {
 	QList<QString> l;
 	foreach (const QDomNode &el, getChildren(item, "element"))
+	{
 		l.append(getTextChild(el, "where"));
+		if (start_values)
+			start_values->append(getTextChild(el, "softstart").toInt());
+		if (stop_values)
+			stop_values->append(getTextChild(el, "softstop").toInt());
+	}
 	return l;
 }
 
@@ -71,7 +77,11 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		b = new TempLightVariable(0, item_node);
 		break;
 	case GR_DIMMER100:
-		b = new Dimmer100Group(0, item_node);
+	{
+		QList<int> start, stop;
+		QList<QString> addresses = getAddresses(item_node, &start, &stop);
+		b = new Dimmer100Group(addresses, start, stop, descr);
+	}
 		break;
 	case ATTUAT_AUTOM_TEMP_NUOVO_F:
 		b = new TempLightFixed(0, item_node);

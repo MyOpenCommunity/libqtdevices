@@ -308,23 +308,16 @@ int Dimmer100::roundTo5(int value)
 }
 
 
-Dimmer100Group::Dimmer100Group(QWidget *parent, const QDomNode &config_node) :
-	BannLevel(parent)
+Dimmer100Group::Dimmer100Group(const QList<QString> &addresses, const QList<int> start_values, const QList<int> stop_values, const QString &descr) :
+	BannLevel(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer_grp_sx"),
-		bt_global::skin->getImage("dimmer_grp_dx"),bt_global::skin->getImage("on"),
-		getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("dimmer_grp_dx"),bt_global::skin->getImage("on"), descr);
 
-	// load all devices with relative start and stop speed
-	QList<QDomNode> elements = getChildren(config_node, "element");
-	foreach (const QDomNode &el, elements)
-	{
-		devices << bt_global::add_device_to_cache(new Dimmer100Device(getTextChild(el, "where"), PULL));
-		start_speed << getTextChild(el, "softstart").toInt();
-		stop_speed << getTextChild(el, "softstop").toInt();
-	}
+	foreach (const QString &where, addresses)
+		devices << bt_global::add_device_to_cache(new Dimmer100Device(where, PULL));
+	start_speed = start_values;
+	stop_speed = stop_values;
 	Q_ASSERT_X(devices.size() == start_speed.size(), "Dimmer100Group::Dimmer100Group",
 		"Device number and softstart number are different");
 	Q_ASSERT_X(devices.size() == stop_speed.size(), "Dimmer100Group::Dimmer100Group",

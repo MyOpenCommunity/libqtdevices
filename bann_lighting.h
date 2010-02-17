@@ -127,7 +127,7 @@ class Dimmer100Group : public BannLevel
 {
 Q_OBJECT
 public:
-	Dimmer100Group(QWidget *parent, const QDomNode &config_node);
+	Dimmer100Group(const QList<QString> &addresses, const QList<int> start_values, const QList<int> stop_values, const QString &descr);
 
 private slots:
 	void lightOn();
