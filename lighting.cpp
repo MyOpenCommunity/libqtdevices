@@ -12,31 +12,34 @@
 #include <QList>
 
 
-static QList<QString> getAddresses(QDomNode item, QList<int> *start_values = 0, QList<int> *stop_values = 0)
+namespace
 {
-	QList<QString> l;
-	foreach (const QDomNode &el, getChildren(item, "element"))
+	QList<QString> getAddresses(QDomNode item, QList<int> *start_values = 0, QList<int> *stop_values = 0)
 	{
-		l.append(getTextChild(el, "where"));
-		if (start_values)
-			start_values->append(getTextChild(el, "softstart").toInt());
-		if (stop_values)
-			stop_values->append(getTextChild(el, "softstop").toInt());
+		QList<QString> l;
+		foreach (const QDomNode &el, getChildren(item, "element"))
+		{
+			l.append(getTextChild(el, "where"));
+			if (start_values)
+				start_values->append(getTextChild(el, "softstart").toInt());
+			if (stop_values)
+				stop_values->append(getTextChild(el, "softstop").toInt());
+		}
+		return l;
 	}
-	return l;
-}
 
-QList<BtTime> getTimes(const QDomNode &item)
-{
-	QList<BtTime> times;
-	foreach (const QDomNode &time, getChildren(item, "time"))
+	QList<BtTime> getTimes(const QDomNode &item)
 	{
-		QString s = time.toElement().text();
-		QStringList sl = s.split("*");
-		Q_ASSERT_X(sl.size() == 3, "getTimes()", "A time has number of fields != 3");
-		times << BtTime(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+		QList<BtTime> times;
+		foreach (const QDomNode &time, getChildren(item, "time"))
+		{
+			QString s = time.toElement().text();
+			QStringList sl = s.split("*");
+			Q_ASSERT_X(sl.size() == 3, "getTimes()", "A time has number of fields != 3");
+			times << BtTime(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+		}
+		return times;
 	}
-	return times;
 }
 
 
