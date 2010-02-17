@@ -7,6 +7,7 @@
 #include "navigation_bar.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "probe_device.h" // NonControlledProbeDevice
+#include "btbutton.h"
 
 #include <QDomNode>
 #include <QString>
@@ -135,12 +136,15 @@ void AirConditioning::loadItems(const QDomNode &config_node)
 SplitPage::SplitPage(const QDomNode &config_node, AirConditioningDevice *d)
 {
 	dev = d;
-	NavigationBar *nav_bar;
 #ifdef CONFIG_BTOUCH
 	int off_list = getElement(config_node, "off/list").text().toInt();
 #else
 	int off_list = getTextChild(config_node, "off_list").toInt();
 #endif
+
+#ifdef LAYOUT_BTOUCH
+	NavigationBar *nav_bar;
+
 	if (off_list == 1) // show the off button
 	{
 		nav_bar = new NavigationBar(bt_global::skin->getImage("off"));
@@ -150,6 +154,25 @@ SplitPage::SplitPage(const QDomNode &config_node, AirConditioningDevice *d)
 		nav_bar = new NavigationBar;
 
 	buildPage(new BannerContent, nav_bar, getTextChild(config_node, "descr"));
+#else
+	if (off_list == 1) // show the off button
+	{
+		BannerContent *banners = new BannerContent;
+		QWidget *cnt = new QWidget;
+		QVBoxLayout *l = new QVBoxLayout(cnt);
+		l->setContentsMargins(0, 0, 25, 35);
+		BtButton *off = new BtButton;
+		off->setImage(bt_global::skin->getImage("off"));
+
+		l->addWidget(banners, 1);
+		l->addWidget(off, 0, Qt::AlignRight);
+
+		buildPage(cnt, banners, new NavigationBar, getTextChild(config_node, "descr"));
+	}
+	else
+		buildPage(getTextChild(config_node, "descr"));
+#endif
+
 	loadScenarios(config_node);
 }
 
