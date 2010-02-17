@@ -72,7 +72,7 @@ Bann2Buttons::Bann2Buttons(QWidget *parent) :
 	l->setColumnStretch(1, 2);
 	l->addWidget(right_button, 0, 2, Qt::AlignRight);
 	l->setColumnStretch(2, 1);
-	l->addWidget(description, 1, 1);
+	l->addWidget(description, 1, 0, 1, 3);
 
 	connect(right_button, SIGNAL(clicked()), SIGNAL(rightClicked()));
 	connect(left_button, SIGNAL(clicked()), SIGNAL(leftClicked()));
