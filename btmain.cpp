@@ -53,8 +53,7 @@
 #define FILE_AGGIORNAMENTO	   "MODALITA_AGGIORNAMENTO"
 
 // delay between two consecutive screensaver checks
-#define SCREENSAVER_CHECK_FAST    500
-#define SCREENSAVER_CHECK_SLOW   2000
+#define SCREENSAVER_CHECK 2000
 
 namespace
 {
@@ -420,7 +419,7 @@ void BtMain::myMain()
 	bt_global::devices_cache.init_devices();
 
 	screensaver_timer = new QTimer(this);
-	screensaver_timer->start(SCREENSAVER_CHECK_SLOW);
+	screensaver_timer->start(SCREENSAVER_CHECK);
 	connect(screensaver_timer, SIGNAL(timeout()), SLOT(checkScreensaver()));
 
 	testfiles_timer = new QTimer(this);
@@ -510,7 +509,7 @@ void BtMain::testFiles()
 			delete screen;
 			screen = NULL;
 			screen_type = genPage::NONE;
-			screensaver_timer->start(SCREENSAVER_CHECK_SLOW);
+			screensaver_timer->start(SCREENSAVER_CHECK);
 		}
 	}
 }
