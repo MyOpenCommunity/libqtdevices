@@ -117,14 +117,6 @@ BtMain::BtMain()
 
 	QHash<int, QPair<Client*, Client*> > clients;
 	QHash<int, Client*> monitors;
-	monitors[MAIN_OPENSERVER] = new Client(Client::MONITOR);
-	clients[MAIN_OPENSERVER].first = new Client(Client::COMANDI);
-	clients[MAIN_OPENSERVER].second = new Client(Client::RICHIESTE);
-
-#if DEBUG
-	client_supervisor = new Client(Client::SUPERVISOR);
-	client_supervisor->forwardFrame(monitors[0]);
-#endif
 
 	// The configuration is usually loaded in the "init()" method, but in this
 	// case (that should be an exception) we need to know the list of openserver.
@@ -134,10 +126,24 @@ BtMain::BtMain()
 		{
 			int id = getTextChild(item, "id").toInt();
 			QString host = getTextChild(item, "address");
-			monitors[id] = new Client(Client::MONITOR, host);
-			clients[id].first = new Client(Client::COMANDI, host);
-			clients[id].second = new Client(Client::RICHIESTE, host);
+			int port = getTextChild(item, "port").toInt();
+			monitors[id] = new Client(Client::MONITOR, host, port);
+			clients[id].first = new Client(Client::COMANDI, host, port);
+			clients[id].second = new Client(Client::RICHIESTE, host, port);
 		}
+
+	// If it is not defined a main openserver, the main openserver is the local openserver
+	if (!clients.contains(MAIN_OPENSERVER))
+	{
+		monitors[MAIN_OPENSERVER] = new Client(Client::MONITOR);
+		clients[MAIN_OPENSERVER].first = new Client(Client::COMANDI);
+		clients[MAIN_OPENSERVER].second = new Client(Client::RICHIESTE);
+	}
+
+#if DEBUG
+	client_supervisor = new Client(Client::SUPERVISOR);
+	client_supervisor->forwardFrame(monitors[MAIN_OPENSERVER]);
+#endif
 
 	banner::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
 	Page::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);

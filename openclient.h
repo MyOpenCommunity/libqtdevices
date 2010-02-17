@@ -51,7 +51,7 @@ public:
 		COMANDI
 	};
 
-	Client(Type t, const QString &_host=OPENSERVER_ADDR, unsigned _port=OPENSERVER_PORT);
+	Client(Type t, const QString &_host=OPENSERVER_ADDR, unsigned _port=0);
 	void ApriInviaFrameChiudi(const char *);
 
 	void subscribe(FrameReceiver *obj, int who);

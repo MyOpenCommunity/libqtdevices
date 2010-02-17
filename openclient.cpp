@@ -22,9 +22,11 @@
 #define SOCKET_RICHIESTE "*99*0##"
 
 
-Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host), port(_port)
+Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host)
 {
 	qDebug("Client::Client()");
+	port = !_port ? OPENSERVER_PORT : _port;
+
 #if DEBUG
 	to_forward = 0;
 #endif
