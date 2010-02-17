@@ -42,7 +42,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		b = new SingleActuator(descr, where);
 		break;
 	case ATTUAT_VCT_SERR:
-		b = new ButtonActuator(0, item_node, VCT_SERR);
+		b = new ButtonActuator(descr, where, VCT_SERR);
 		break;
 	case GR_ATTUAT_INT:
 		b = new InterblockedActuatorGroup(0, item_node);
@@ -54,7 +54,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		b = new GateEntryphoneActuator(0, item_node);
 		break;
 	case ATTUAT_AUTOM_PULS:
-		b = new ButtonActuator(0, item_node, AUTOMAZ);
+		b = new ButtonActuator(descr, where, AUTOMAZ);
 		break;
 	case PPT_STAT:
 		b = new PPTStat(0, where, cid);

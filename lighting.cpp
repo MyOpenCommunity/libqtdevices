@@ -80,7 +80,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		b = new TempLight(descr, where);
 		break;
 	case ATTUAT_VCT_LS:
-		b = new ButtonActuator(0, item_node, VCT_LS);
+		b = new ButtonActuator(descr, where, VCT_LS);
 		break;
 	case DIMMER_100:
 	{
