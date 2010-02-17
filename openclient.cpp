@@ -1,13 +1,3 @@
-/****************************************************************
-***
-* BTicino Touch scren Colori art. H4686
-**
-** openClient.cpp
-**
-** Finestra principale
-**
-****************************************************************/
-
 #include "openclient.h"
 #include "hardware_functions.h" // rearmWDT
 #include "frame_receiver.h"

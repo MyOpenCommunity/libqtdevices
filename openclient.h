@@ -1,14 +1,4 @@
-/****************************************************************
-***
-* BTicino Touch scren Colori art. H4686
-**
-** openclient.h
-**
-** Finestra principale
-**
-****************************************************************/
-
-#ifndef  OPENCLIENT_H
+#ifndef OPENCLIENT_H
 #define OPENCLIENT_H
 
 #include <openwebnet.h>
