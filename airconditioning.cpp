@@ -195,12 +195,15 @@ void SplitPage::setDeviceOff()
 AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirConditioningDevice *d)
 {
 	single_page = 0;
-	NavigationBar *nav_bar;
 #ifdef CONFIG_BTOUCH
 	int off_list = getElement(config_node, "off/list").text().toInt();
 #else
 	int off_list = getTextChild(config_node, "off_list").toInt();
 #endif
+
+#ifdef LAYOUT_BTOUCH
+	NavigationBar *nav_bar;
+
 	if (off_list == 1) // show the off button
 	{
 		nav_bar = new NavigationBar(bt_global::skin->getImage("off"));
