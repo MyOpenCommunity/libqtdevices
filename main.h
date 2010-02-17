@@ -10,10 +10,15 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <QDomNode>
 #include <QHash>
-#include <QString>
 
+class QDomNode;
+class QDomElement;
+class QString;
+
+/**
+ * The following enum defines the keys of the global configuration.
+ */
 enum GlobalFields
 {
 	LANGUAGE,
@@ -231,12 +236,6 @@ enum Section
 /*!  \def ICON_DIFFSON
   The file name for \a diffson icon*/
 #define ICON_DIFFSON  (IMG_PATH "appdiffsmall.png")
-/*!  \def ICON_OROLOGIO
-  The file name for \a clock icon*/
-#define ICON_OROLOGIO  (IMG_PATH "orologio.png")
-/*!  \def ICON_CALENDARIO
-  The file name for \a calendar icon*/
-#define ICON_CALENDARIO  (IMG_PATH "calendario.png")
 /*!  \def ICON_SVEGLIA_ON
   The file name for \a alarm \a clock icon*/
 #define ICON_SVEGLIA_ON  (IMG_PATH "svegliaon.png")
@@ -300,9 +299,6 @@ enum Section
 /*!  \def ICON_DEL
   The file name for \a delete icon*/
 #define ICON_DEL  (IMG_PATH "btndel.png")
-/*!  \def ICON_SUPERVISIONE
-  The file name for \a plant supervision icon*/
-#define ICON_SUPERVISIONE (IMG_PATH "supervisione_impianto.png")
 /*!  \def ICON_STOPNGO_APERTO
   The file name for \a open stopngo icon*/
 #define ICON_STOPNGO_APERTO (IMG_PATH "S&G_Aperto.png")
@@ -341,14 +337,10 @@ enum Section
 #define ICON_STOPNGO_D_AUTOTEST (IMG_PATH "d_autotest.png")
 
 
-
-/****************************************************************
- **  definizione dei vari item
- ****************************************************************/
-/*! \enum bannerType
- *  This enum describes the various banner type implemented
+/*! \enum ItemType
+ *  This enum describes the various items implemented
  */
-enum  bannerType
+enum ItemType
 {
 	ATTUAT_AUTOM=0,                               /*!<  Automation actuator */
 	DIMMER=1,                                     /*!<  Dimmer */
@@ -417,7 +409,7 @@ enum  bannerType
 	TERMO_99Z=66,                                 /*!< 99 zones thermal regulator */
 	TERMO_4Z=68,                                  /*!< 4 zones thermal regulator */
 	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
-	ENERGY_TYPE=70,
+	ENERGY_TYPE=70,                               /*!< The type/interface of energy management */
 	LANSETTINGS=72,                               /*!< LAN settings and information */
 	AIR_SPLIT=74,                                 /*!< AIR conditioning single split (basic) */
 	AIR_GENERAL=75,                               /*!< AIR conditioning general split (basic) */

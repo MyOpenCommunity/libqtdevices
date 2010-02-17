@@ -19,9 +19,10 @@
 #include <QWSServer>
 #include <QVector>
 #include <QDebug>
-#include <QHash>
 #include <QFile>
 #include <QTextCodec>
+#include <QDomNode>
+#include <QString>
 
 #define TIMESTAMP
 #ifdef TIMESTAMP
