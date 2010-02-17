@@ -52,11 +52,11 @@ public:
 	};
 
 	Client(Type t, const QString &_host=OPENSERVER_ADDR, unsigned _port=0);
-	void ApriInviaFrameChiudi(const char *);
+	void sendFrameOpen(const QString &frame_open);
 
 	void subscribe(FrameReceiver *obj, int who);
 	void unsubscribe(FrameReceiver *obj);
-	~Client();
+
 #if DEBUG
 	void flush() { socket->flush(); }
 	void forwardFrame(Client *c);
@@ -70,7 +70,7 @@ signals:
 	void openNakRx();
 
 private slots:
-	void connetti();
+	void connectToHost();
 	/// Reads messages from the socket
 	int socketFrameRead();
 
@@ -78,10 +78,8 @@ private slots:
 	void socketConnectionClosed();
 	void socketError(QAbstractSocket::SocketError e);
 
-	/// Send an \a Open \aFrame through the socket and wait for ack
-	void ApriInviaFrameChiudiw(char*);
 	void ackReceived();
-	void sendFrameOpen(const QString &frame_open);
+
 
 	void clear_last_msg_open_read();
 
@@ -100,7 +98,6 @@ private:
 	Client *to_forward;
 #endif
 
-	void socketStateRead(char*);
 	void manageFrame(QByteArray frame);
 	QByteArray readFromServer();
 

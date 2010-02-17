@@ -39,16 +39,11 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 	connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(socketError(QAbstractSocket::SocketError)));
 
 	// connect to the server
-	connetti();
+	connectToHost();
 
-	// azzero la variabile last_msg_open_read
+	// clear last_msg_open_read
 	last_msg_open_read.CreateNullMsgOpen();
-
 	connect(&Open_read, SIGNAL(timeout()), this, SLOT(clear_last_msg_open_read()));
-}
-
-Client::~Client()
-{
 }
 
 void Client::socketConnected()
@@ -77,43 +72,28 @@ void Client::socketConnected()
 	}
 }
 
-void Client::ApriInviaFrameChiudi(const char* frame)
-{
-	sendFrameOpen(frame);
-
-	// TODO: questa funzione dovra' gestire anche i Nak e ack (e la sua versione "w"
-	// dovra' sparire), attendendo che arrivi o un ack o un nack con un ciclo tipo:
-	// while (socketWaitForAck() < 0 || socketWaitForNak() < 0);
-	// restituendo quindi un booleano che vale true se e' un ack, false altrimenti.
-}
-
 void Client::sendFrameOpen(const QString &frame_open)
 {
 	QByteArray frame = frame_open.toLatin1();
 	if (socket->state() == QAbstractSocket::UnconnectedState || socket->state() == QAbstractSocket::ClosingState)
 	{
-		connetti();
+		connectToHost();
 		if (type == RICHIESTE)
 			socket->write(SOCKET_RICHIESTE);
 		else
 			socket->write(SOCKET_COMANDI); //lo metto qui else mando prima frame di questo!
 	}
 	socket->write(frame);
-	qDebug("Client::ApriInviaFrameChiudi() invio: %s",frame.data());
+
+	if (host != OPENSERVER_ADDR)
+		qDebug() << qPrintable(QString("Client::sendFrameOpen()[%1:%2]").arg(host).arg(port)) << "sent:" << frame;
+	else
+		qDebug() << "Client::sendFrameOpen() sent:" << frame;
 }
 
-void Client::ApriInviaFrameChiudiw(char *frame)
+void Client::connectToHost()
 {
-	qDebug("Client::ApriInviaFrameChiudiw()");
-	ApriInviaFrameChiudi(frame);
-	qDebug("Frame sent waiting for ack");
-	while (socketWaitForAck() < 0) {}
-	qDebug("Ack received");
-}
-
-void Client::connetti()
-{
-	qDebug("Client::connetti()");
+	qDebug("Client::connectToHost()");
 	socket->connectToHost(host, port);
 }
 
@@ -267,7 +247,7 @@ void Client::socketConnectionClosed()
 {
 	qDebug("Client::socketConnectionClosed()");
 	if (type == MONITOR || type == SUPERVISOR)
-		connetti();
+		connectToHost();
 }
 
 void Client::socketError(QAbstractSocket::SocketError e)
@@ -277,5 +257,5 @@ void Client::socketError(QAbstractSocket::SocketError e)
 			<< "on client" << type;
 
 	if (type == MONITOR || type == SUPERVISOR)
-		QTimer::singleShot(500, this, SLOT(connetti()));
+		QTimer::singleShot(500, this, SLOT(connectToHost()));
 }

@@ -188,15 +188,13 @@ void Page::showPage()
 void Page::sendFrame(QString frame) const
 {
 	Q_ASSERT_X(client_comandi, "Page::sendFrame", "Client comandi not set!");
-	QByteArray buf = frame.toAscii();
-	client_comandi->ApriInviaFrameChiudi(buf.constData());
+	client_comandi->sendFrameOpen(frame);
 }
 
 void Page::sendInit(QString frame) const
 {
 	Q_ASSERT_X(client_richieste, "Page::sendInit", "Client richieste not set!");
-	QByteArray buf = frame.toAscii();
-	client_richieste->ApriInviaFrameChiudi(buf.constData());
+	client_richieste->sendFrameOpen(frame);
 }
 
 void Page::setClients(Client *command, Client *request)

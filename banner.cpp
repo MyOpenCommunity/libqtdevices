@@ -49,15 +49,13 @@ QSize banner::sizeHint() const
 void banner::sendFrame(QString frame) const
 {
 	Q_ASSERT_X(client_comandi, "banner::sendFrame", "Client comandi not set!");
-	QByteArray buf = frame.toAscii();
-	client_comandi->ApriInviaFrameChiudi(buf.constData());
+	client_comandi->sendFrameOpen(frame);
 }
 
 void banner::sendInit(QString frame) const
 {
 	Q_ASSERT_X(client_richieste, "banner::sendInit", "Client richieste not set!");
-	QByteArray buf = frame.toAscii();
-	client_richieste->ApriInviaFrameChiudi(buf.constData());
+	client_richieste->sendFrameOpen(frame);
 }
 
 void banner::setClients(Client *command, Client *request)
