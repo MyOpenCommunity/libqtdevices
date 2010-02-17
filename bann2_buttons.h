@@ -77,7 +77,7 @@ public:
 	 * \param banner_description text of the label below the banner; if empty, the label is deleted
 	 */
 	void initBanner(const QString &left, const QString &right, const QString &banner_text,
-		FontManager::Type text_font = FontManager::BANNERTEXT, const QString &banner_description = QString(),
+		FontManager::Type text_font = FontManager::TEXT, const QString &banner_description = QString(),
 		FontManager::Type description_font = FontManager::BANNERDESCRIPTION);
 
 	/**
@@ -87,7 +87,7 @@ public:
 	 * \param description text of the label below the banner; if empty, the label is deleted
 	 */
 	void initBanner(const QString &left, const QString &center, const QString &right, const QString &description,
-			FontManager::Type description_font = FontManager::TEXT);
+			FontManager::Type description_font = FontManager::BANNERDESCRIPTION);
 
 	void setCentralText(const QString &t);
 	void setDescriptionText(const QString &t);
