@@ -39,7 +39,7 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		b = new BannSimpleScenario(getTextChild(item_node, "what").toInt(), descr, where);
 		break;
 	case MOD_SCENARI:
-		b = new ScenarioModule(0, item_node);
+		b = new ScenarioModule(getTextChild(item_node, "what").toInt(), descr, where);
 		break;
 	case SCENARIO_EVOLUTO:
 	{
@@ -82,7 +82,6 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		break;
 	case SCENARIO_SCHEDULATO:
 	{
-		SkinContext context(getTextChild(item_node, "cid").toInt());
 		b = new ScheduledScenario(0, item_node);
 		break;
 	}

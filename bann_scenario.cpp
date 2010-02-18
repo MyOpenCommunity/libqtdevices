@@ -33,20 +33,17 @@ void BannSimpleScenario::activate()
 }
 
 
-ScenarioModule::ScenarioModule(QWidget *parent, const QDomNode &config_node) :
-	Bann4ButtonsIcon(parent)
+ScenarioModule::ScenarioModule(int scenario, const QString &descr, const QString &where) :
+	Bann4ButtonsIcon(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
 	initBanner(bt_global::skin->getImage("edit"), bt_global::skin->getImage("forward"),
 		bt_global::skin->getImage("label"), bt_global::skin->getImage("start_prog"),
 		bt_global::skin->getImage("del_scen"), bt_global::skin->getImage("on"),
-		bt_global::skin->getImage("stop"), LOCKED, getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("stop"), LOCKED, descr);
 
-	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new ScenarioDevice(where));
 
-	scenario_number = getTextChild(config_node, "what").toInt();
+	scenario_number = scenario;
 	is_editing = false;
 	connect(left_button, SIGNAL(clicked()), SLOT(activate()));
 	connect(right_button, SIGNAL(clicked()), SLOT(editScenario()));

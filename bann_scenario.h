@@ -39,7 +39,7 @@ class ScenarioModule : public Bann4ButtonsIcon
 {
 Q_OBJECT
 public:
-	ScenarioModule(QWidget *parent, const QDomNode &config_node);
+	ScenarioModule(int scenario, const QString &descr, const QString &where);
 	virtual void inizializza(bool forza = false);
 
 private slots:
