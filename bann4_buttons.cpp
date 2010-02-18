@@ -134,14 +134,6 @@ void Bann4Buttons::initBanner(const QString &right, const QString &center_right,
 	initLabel(text, banner_text, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 }
 
-void Bann4Buttons::deleteButton(BtButton *btn)
-{
-	Q_ASSERT_X(btn == right_button || btn == center_right_button || btn == center_left_button || btn == left_button,
-		"Bann4Buttons::deleteButton", "Button parameter is not a member of Bann4Buttons");
-	btn->hide();
-	btn->disconnect();
-	btn->deleteLater();
-}
 
 
 bann4But::bann4But(QWidget *parent) : BannerOld(parent)
