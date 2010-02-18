@@ -58,7 +58,6 @@ Q_OBJECT
 protected:
 	void initDimmer(DimmerDevice *d = 0);
 	void cleanupDimmer();
-	virtual void checkLevel();
 
 private slots:
 	void initTestCase();
@@ -68,6 +67,7 @@ private slots:
 	void sendDimmerDecreaseLevel();
 
 	void receiveDimmerLevel();
+	void receiveDimmerLevel2();
 	void receiveDimmerProblem();
 
 private:
@@ -79,7 +79,6 @@ class TestDimmer100 : public TestDimmer
 {
 Q_OBJECT
 protected:
-	virtual void checkLevel();
 	virtual QString getRequestStatusFrame();
 
 private slots:
