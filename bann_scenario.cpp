@@ -18,17 +18,12 @@
 #define PPTSCE_INTERVAL 1000
 
 
-BannSimpleScenario::BannSimpleScenario(QWidget *parent, const QDomNode &config_node) :
-	Bann2Buttons(parent)
+BannSimpleScenario::BannSimpleScenario(int scenario, const QString &descr, const QString &where) :
+	Bann2Buttons(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-	initBanner(bt_global::skin->getImage("on"), QString(), getTextChild(config_node, "descr"));
-
-	QString where = getTextChild(config_node, "where");
+	initBanner(bt_global::skin->getImage("on"), QString(), descr);
 	dev = bt_global::add_device_to_cache(new ScenarioDevice(where));
-
-	scenario_number = getTextChild(config_node, "what").toInt();
-
+	scenario_number = scenario;
 	connect(left_button, SIGNAL(clicked()), SLOT(activate()));
 }
 

@@ -24,7 +24,7 @@ class BannSimpleScenario : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	BannSimpleScenario(QWidget *parent, const QDomNode &config_node);
+	BannSimpleScenario(int scenario, const QString &descr, const QString &where);
 
 private slots:
 	void activate();

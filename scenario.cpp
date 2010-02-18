@@ -27,24 +27,24 @@ int Scenario::sectionId()
 
 banner *Scenario::getBanner(const QDomNode &item_node)
 {
+	SkinContext context(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
+	QString descr = getTextChild(item_node, "descr");
 	QString where = getTextChild(item_node, "where");
 
 	banner *b = 0;
 	switch (id)
 	{
 	case SCENARIO:
-		b = new BannSimpleScenario(0, item_node);
+		b = new BannSimpleScenario(getTextChild(item_node, "what").toInt(), descr, where);
 		break;
 	case MOD_SCENARI:
 		b = new ScenarioModule(0, item_node);
 		break;
 	case SCENARIO_EVOLUTO:
 	{
-		SkinContext context(getTextChild(item_node, "cid").toInt());
 		ScenEvoTimeCondition *time_cond = 0;
 		ScenEvoDeviceCondition *device_cond = 0;
-		QString descr = getTextChild(item_node, "descr");
 		QString action;
 		bool enabled;
 
