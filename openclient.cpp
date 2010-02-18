@@ -40,7 +40,7 @@ void Client::socketConnected()
 	{
 		qDebug("TRY TO START monitor session");
 		socket->write(SOCKET_MONITOR);
-		emit monitorSu();
+		emit connected();
 	}
 	else if (type == RICHIESTE)
 	{
@@ -65,10 +65,19 @@ void Client::sendFrameOpen(const QString &frame_open)
 	if (socket->state() == QAbstractSocket::UnconnectedState || socket->state() == QAbstractSocket::ClosingState)
 	{
 		connectToHost();
+		if (!socket->waitForConnected(100))
+		{
+			// For now, discard silently the frame to send.
+			return;
+		}
+
+		/* E' davvero necessario? Credo che con la waitForConnected venga poi
+		   chiamata la socketConnected, che fa anche questa parte.. verificare!!
 		if (type == RICHIESTE)
 			socket->write(SOCKET_RICHIESTE);
 		else
 			socket->write(SOCKET_COMANDI); //lo metto qui else mando prima frame di questo!
+		*/
 	}
 	socket->write(frame);
 
@@ -181,7 +190,6 @@ void Client::unsubscribe(FrameReceiver *obj)
 int Client::socketFrameRead()
 {
 	qDebug("Client::socketFrameRead()");
-	//riarmo il WD
 	rearmWDT();
 
 	while (true)
@@ -224,7 +232,10 @@ void Client::socketConnectionClosed()
 {
 	qDebug("Client::socketConnectionClosed()");
 	if (type == MONITOR || type == SUPERVISOR)
+	{
+		emit disconnect();
 		connectToHost();
+	}
 }
 
 void Client::socketError(QAbstractSocket::SocketError e)
@@ -234,5 +245,8 @@ void Client::socketError(QAbstractSocket::SocketError e)
 			<< "on client" << type;
 
 	if (type == MONITOR || type == SUPERVISOR)
+	{
+		emit disconnect();
 		QTimer::singleShot(500, this, SLOT(connectToHost()));
+	}
 }

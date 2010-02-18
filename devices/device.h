@@ -49,6 +49,9 @@ signals:
 	/// and concrete device class.
 	void status_changed(const StatusList &status_list);
 
+	void monitorUp();
+	void monitorDown();
+
 public slots:
 	void sendFrame(QString frame) const;
 	void sendInit(QString frame) const;
@@ -64,6 +67,8 @@ protected:
 	QString where;
 
 	int openserver_id;
+
+	virtual void subscribe_monitor(int who);
 
 	void sendCommand(QString what, QString _where) const;
 	void sendCommand(QString what) const;

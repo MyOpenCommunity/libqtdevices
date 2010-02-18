@@ -22,6 +22,13 @@ device::device(QString _who, QString _where, int oid) : FrameReceiver(oid)
 	subscribe_monitor(who.toInt());
 }
 
+void device::subscribe_monitor(int who)
+{
+	FrameReceiver::subscribe_monitor(who);
+	connect(clients_monitor[openserver_id], SIGNAL(connected()), SIGNAL(monitorUp()));
+	connect(clients_monitor[openserver_id], SIGNAL(diconnected()), SIGNAL(monitorDown()));
+}
+
 void device::sendFrame(QString frame) const
 {
 	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].first, "device::sendFrame",

@@ -1,6 +1,7 @@
 #ifndef FRAME_RECEIVER_H
 #define FRAME_RECEIVER_H
 
+#include <QObject>
 #include <QHash>
 
 class Client;
@@ -28,10 +29,11 @@ public:
 protected:
 	// Every child that would receive a frame for a 'who' must subscribe itself
 	// calling this method (unregistration is not needed).
-	void subscribe_monitor(int who);
+	virtual void subscribe_monitor(int who);
+
+	static QHash<int, Client*> clients_monitor;
 
 private:
-	static QHash<int, Client*> clients_monitor;
 	bool subscribed;
 	int openserver_id;
 };

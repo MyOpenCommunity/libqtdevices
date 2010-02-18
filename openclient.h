@@ -52,7 +52,11 @@ public:
 #endif
 
 signals:
-	void monitorSu();
+	// The signals connected/disconnected are emitted only for clients of the
+	// monitor type.
+	void connected();
+	void disconnected();
+
 	//! Openwebnet ack received
 	void openAckRx();
 	//! Openwebnet nak received

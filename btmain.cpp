@@ -149,7 +149,7 @@ BtMain::BtMain()
 	Page::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
 	FrameReceiver::setClientsMonitor(monitors);
 	device::setClients(clients);
-	connect(monitors[MAIN_OPENSERVER], SIGNAL(monitorSu()), SLOT(monitorReady()));
+	connect(monitors[MAIN_OPENSERVER], SIGNAL(connected()), SLOT(monitorReady()));
 
 	window_container = new WindowContainer(maxWidth(), maxHeight());
 	page_container = window_container->centralLayout();
