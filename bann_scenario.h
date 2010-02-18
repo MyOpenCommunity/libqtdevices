@@ -24,7 +24,7 @@ class BannSimpleScenario : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	BannSimpleScenario(QWidget *parent, const QDomNode &config_node);
+	BannSimpleScenario(int scenario, const QString &descr, const QString &where);
 
 private slots:
 	void activate();
@@ -39,7 +39,7 @@ class ScenarioModule : public Bann4ButtonsIcon
 {
 Q_OBJECT
 public:
-	ScenarioModule(QWidget *parent, const QDomNode &config_node);
+	ScenarioModule(int scenario, const QString &descr, const QString &where);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -96,7 +96,7 @@ class ScheduledScenario : public Bann4Buttons
 {
 Q_OBJECT
 public:
-	ScheduledScenario(QWidget *parent, const QDomNode &config_node);
+	ScheduledScenario(const QString &enable, const QString &start, const QString &stop, const QString &disable, const QString &descr);
 
 private slots:
 	void enable();
@@ -113,7 +113,7 @@ class PPTSce : public bann4But
 {
 Q_OBJECT
 public:
-	PPTSce(QWidget *parent, QString where, int cid);
+	PPTSce(const QString &where);
 
 protected:
 	virtual void timerEvent(QTimerEvent *e);

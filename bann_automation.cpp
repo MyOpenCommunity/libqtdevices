@@ -14,17 +14,12 @@
 #define BUT_DIM     60
 
 
-InterblockedActuator::InterblockedActuator(QWidget *parent, const QDomNode &config_node)
-	: BannOpenClose(parent)
+InterblockedActuator::InterblockedActuator(const QString &descr, const QString &where)
+	: BannOpenClose(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
-
 	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
-		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP,
-		getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP, descr);
 
 	connect(right_button, SIGNAL(clicked()), SLOT(sendGoUp()));
 	connect(left_button, SIGNAL(clicked()), SLOT(sendGoDown()));
@@ -88,20 +83,15 @@ void InterblockedActuator::status_changed(const StatusList &sl)
 	}
 }
 
-SecureInterblockedActuator::SecureInterblockedActuator(QWidget *parent, const QDomNode &config_node) :
-	BannOpenClose(parent)
+SecureInterblockedActuator::SecureInterblockedActuator(const QString &descr, const QString &where) :
+	BannOpenClose(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
 
 	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
-		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP,
-		getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP, descr);
 
 	is_any_button_pressed = false;
-
 	connectButtons();
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
@@ -193,19 +183,13 @@ void SecureInterblockedActuator::changeButtonStatus(BtButton *btn)
 }
 
 
-GateEntryphoneActuator::GateEntryphoneActuator(QWidget *parent, const QDomNode &config_node) :
-	BannSinglePuls(parent)
+GateEntryphoneActuator::GateEntryphoneActuator(const QString &descr, const QString &where) :
+	BannSinglePuls(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-	where = getTextChild(config_node, "where");
 	// TODO: we still miss entryphone devices, so I'm creating a generic device and send
 	// frames directly. Change as soon as entryphone devices are available!
 	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
-
-	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"),
-		getTextChild(config_node, "descr"));
-
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"), descr);
 	connect(right_button, SIGNAL(pressed()), SLOT(activate()));
 }
 
@@ -216,46 +200,29 @@ void GateEntryphoneActuator::activate()
 }
 
 
-GateLightingActuator::GateLightingActuator(QWidget *parent, const QDomNode &config_node) :
-	BannSinglePuls(parent)
+GateLightingActuator::GateLightingActuator(const BtTime &t, const QString &descr, const QString &where) :
+	BannSinglePuls(0),
+	time(t)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new LightingDevice(where));
-
-	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"),
-		getTextChild(config_node, "descr"));
-
-	QStringList sl = getTextChild(config_node, "time").split("*");
-	Q_ASSERT_X(sl.size() == 3, "GateLightingActuator::GateLightingActuator",
-		"time leaf must have 3 fields");
-	time_h = sl[0].toInt();
-	time_m = sl[1].toInt();
-	time_s = sl[2].toInt();
-
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"), descr);
 	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
 }
 
 void GateLightingActuator::activate()
 {
-	dev->variableTiming(time_h, time_m, time_s);
+	dev->variableTiming(time.hour(), time.minute(), time.second());
 }
 
 
-InterblockedActuatorGroup::InterblockedActuatorGroup(QWidget *parent, const QDomNode &config_node) :
-	Bann3Buttons(parent)
+InterblockedActuatorGroup::InterblockedActuatorGroup(const QStringList &addresses, const QString &descr) :
+	Bann3Buttons(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-	foreach (const QDomNode &el, getChildren(config_node, "element"))
-	{
-		QString where = getTextChild(el, "where");
+	foreach (const QString &where, addresses)
 		actuators.append(bt_global::add_device_to_cache(new AutomationDevice(where, PULL)));
-	}
 
 	initBanner(bt_global::skin->getImage("scroll_down"), bt_global::skin->getImage("stop"),
-		bt_global::skin->getImage("scroll_up"), getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("scroll_up"), descr);
 
 	connect(right_button, SIGNAL(clicked()), SLOT(sendOpen()));
 	connect(center_button, SIGNAL(clicked()), SLOT(sendStop()));
@@ -281,7 +248,7 @@ void InterblockedActuatorGroup::sendStop()
 }
 
 
-PPTStat::PPTStat(QWidget *parent, QString where, int cid) : BannerOld(parent)
+PPTStat::PPTStat(QString where) : BannerOld(0)
 {
 	dev = bt_global::add_device_to_cache(new PPTStatDevice(where));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
@@ -290,7 +257,6 @@ PPTStat::PPTStat(QWidget *parent, QString where, int cid) : BannerOld(parent)
 	addItem(ICON, (banner_width - BUT_DIM * 2) / 2, 0, BUT_DIM*2 ,BUT_DIM);
 	addItem(TEXT, 0, BUT_DIM, banner_width, banner_height - BUT_DIM);
 
-	SkinContext context(cid);
 	img_open = bt_global::skin->getImage("pptstat_open");
 	img_close = bt_global::skin->getImage("pptstat_close");
 

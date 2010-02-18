@@ -5,6 +5,7 @@
 #include "bann3_buttons.h" // Bann3Buttons
 #include "bann2_buttons.h" // BannOpenClose
 #include "device.h" // StatusList
+#include "bttime.h" // BtTime
 
 /// Forward Declarations
 class device;
@@ -19,7 +20,7 @@ class InterblockedActuator : public BannOpenClose
 {
 Q_OBJECT
 public:
-	InterblockedActuator(QWidget *parent, const QDomNode &config_node);
+	InterblockedActuator(const QString &descr, const QString &where);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -46,7 +47,7 @@ class SecureInterblockedActuator : public BannOpenClose
 {
 Q_OBJECT
 public:
-	SecureInterblockedActuator(QWidget *parent, const QDomNode &config_node);
+	SecureInterblockedActuator(const QString &descr, const QString &where);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -67,7 +68,7 @@ class GateEntryphoneActuator : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	GateEntryphoneActuator(QWidget *parent, const QDomNode &config_node);
+	GateEntryphoneActuator(const QString &descr, const QString &where);
 
 private slots:
 	void activate();
@@ -81,13 +82,13 @@ class GateLightingActuator : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	GateLightingActuator(QWidget *parent, const QDomNode &config_node);
+	GateLightingActuator(const BtTime &t, const QString &descr, const QString &where);
 
 private slots:
 	void activate();
 
 private:
-	int time_h, time_m, time_s;
+	BtTime time;
 	LightingDevice *dev;
 };
 
@@ -96,7 +97,7 @@ class InterblockedActuatorGroup : public Bann3Buttons
 {
 Q_OBJECT
 public:
-	InterblockedActuatorGroup(QWidget *parent, const QDomNode &config_node);
+	InterblockedActuatorGroup(const QStringList &addresses, const QString &descr);
 
 private slots:
 	void sendOpen();
@@ -112,7 +113,7 @@ class PPTStat : public BannerOld
 {
 Q_OBJECT
 public:
-	PPTStat(QWidget *parent, QString where, int cid);
+	PPTStat(QString where);
 	virtual void inizializza(bool forza=false);
 
 private:

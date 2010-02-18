@@ -4,6 +4,7 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bannercontent.h"
 #include "main.h"
+#include "skinmanager.h" // SkinContext
 
 #include <QDomNode>
 #include <QString>
@@ -25,7 +26,7 @@ int Automation::sectionId()
 banner *Automation::getBanner(const QDomNode &item_node)
 {
 	int id = getTextChild(item_node, "id").toInt();
-	int cid = getTextChild(item_node, "cid").toInt();
+	SkinContext ctx(getTextChild(item_node, "cid").toInt());
 	QString where = getTextChild(item_node, "where");
 	QString descr = getTextChild(item_node, "descr");
 
@@ -33,10 +34,10 @@ banner *Automation::getBanner(const QDomNode &item_node)
 	switch (id)
 	{
 	case ATTUAT_AUTOM_INT_SIC:
-		b = new SecureInterblockedActuator(0, item_node);
+		b = new SecureInterblockedActuator(descr, where);
 		break;
 	case ATTUAT_AUTOM_INT:
-		b = new InterblockedActuator(0, item_node);
+		b = new InterblockedActuator(descr, where);
 		break;
 	case ATTUAT_AUTOM:
 		b = new SingleActuator(descr, where);
@@ -45,19 +46,29 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		b = new ButtonActuator(descr, where, VCT_SERR);
 		break;
 	case GR_ATTUAT_INT:
-		b = new InterblockedActuatorGroup(0, item_node);
+	{
+		QStringList addresses;
+		foreach (const QDomNode &el, getChildren(item_node, "element"))
+			addresses << getTextChild(el, "where");
+		b = new InterblockedActuatorGroup(addresses, descr);
+	}
 		break;
 	case AUTOM_CANC_ATTUAT_ILL:
-		b = new GateLightingActuator(0, item_node);
+	{
+		QStringList sl = getTextChild(item_node, "time").split("*");
+		Q_ASSERT_X(sl.size() == 3, "Automation::getBanner", "time leaf must have 3 fields");
+		BtTime t(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+		b = new GateLightingActuator(t, descr, where);
+	}
 		break;
 	case AUTOM_CANC_ATTUAT_VC:
-		b = new GateEntryphoneActuator(0, item_node);
+		b = new GateEntryphoneActuator(descr, where);
 		break;
 	case ATTUAT_AUTOM_PULS:
 		b = new ButtonActuator(descr, where, AUTOMAZ);
 		break;
 	case PPT_STAT:
-		b = new PPTStat(0, where, cid);
+		b = new PPTStat(where);
 		break;
 	}
 

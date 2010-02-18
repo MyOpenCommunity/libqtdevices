@@ -18,17 +18,12 @@
 #define PPTSCE_INTERVAL 1000
 
 
-BannSimpleScenario::BannSimpleScenario(QWidget *parent, const QDomNode &config_node) :
-	Bann2Buttons(parent)
+BannSimpleScenario::BannSimpleScenario(int scenario, const QString &descr, const QString &where) :
+	Bann2Buttons(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-	initBanner(bt_global::skin->getImage("on"), QString(), getTextChild(config_node, "descr"));
-
-	QString where = getTextChild(config_node, "where");
+	initBanner(bt_global::skin->getImage("on"), QString(), descr);
 	dev = bt_global::add_device_to_cache(new ScenarioDevice(where));
-
-	scenario_number = getTextChild(config_node, "what").toInt();
-
+	scenario_number = scenario;
 	connect(left_button, SIGNAL(clicked()), SLOT(activate()));
 }
 
@@ -38,20 +33,17 @@ void BannSimpleScenario::activate()
 }
 
 
-ScenarioModule::ScenarioModule(QWidget *parent, const QDomNode &config_node) :
-	Bann4ButtonsIcon(parent)
+ScenarioModule::ScenarioModule(int scenario, const QString &descr, const QString &where) :
+	Bann4ButtonsIcon(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
 	initBanner(bt_global::skin->getImage("edit"), bt_global::skin->getImage("forward"),
 		bt_global::skin->getImage("label"), bt_global::skin->getImage("start_prog"),
 		bt_global::skin->getImage("del_scen"), bt_global::skin->getImage("on"),
-		bt_global::skin->getImage("stop"), LOCKED, getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("stop"), LOCKED, descr);
 
-	QString where = getTextChild(config_node, "where");
 	dev = bt_global::add_device_to_cache(new ScenarioDevice(where));
 
-	scenario_number = getTextChild(config_node, "what").toInt();
+	scenario_number = scenario;
 	is_editing = false;
 	connect(left_button, SIGNAL(clicked()), SLOT(activate()));
 	connect(right_button, SIGNAL(clicked()), SLOT(editScenario()));
@@ -266,52 +258,39 @@ void ScenarioEvolved::inizializza(bool forza)
 }
 
 
-ScheduledScenario::ScheduledScenario(QWidget *parent, const QDomNode &config_node) :
-	Bann4Buttons(parent)
+ScheduledScenario::ScheduledScenario(const QString &enable, const QString &start, const QString &stop, const QString &disable, const QString &descr) :
+	Bann4Buttons(0),
+	action_enable(enable),
+	action_disable(disable),
+	action_start(start),
+	action_stop(stop)
 {
-	initBanner(bt_global::skin->getImage("disable_scen"), bt_global::skin->getImage("stop"),
-		bt_global::skin->getImage("start"), bt_global::skin->getImage("enable_scen"),
-		getTextChild(config_node, "descr"));
-	connect(left_button, SIGNAL(clicked()), SLOT(enable()));
-	connect(center_left_button, SIGNAL(clicked()), SLOT(start()));
-	connect(center_right_button, SIGNAL(clicked()), SLOT(stop()));
-	connect(right_button, SIGNAL(clicked()), SLOT(disable()));
-
-	QList<QString *> actions;
-	actions << &action_enable << &action_start << &action_stop << &action_disable;
-	// these must be in the same position as the list above!
-	QList<BtButton *> buttons;
-	buttons << left_button << center_left_button << center_right_button << right_button;
-
-#ifdef CONFIG_BTOUCH
-	QList<QString> nodes;
-	// these must be in the order: unable, start, stop, disable (the same given by actions above)
-	nodes << "unable" << "start" << "stop" << "disable";
-	for (int i = 0; i < nodes.size(); ++i)
+	QString en_icon;
+	if (!action_enable.isEmpty())
 	{
-		QDomNode node = getChildWithName(config_node, nodes[i]);
-		if (!node.isNull() && getTextChild(node, "value").toInt())
-			*actions[i] = getTextChild(node, "open");
-		else
-			deleteButton(buttons[i]);
+		en_icon = bt_global::skin->getImage("enable_scen");
+		connect(left_button, SIGNAL(clicked()), SLOT(enable()));
 	}
-#else
-	QList<QString> names;
-	// these must be in the order: attiva, start, stop, disattiva (the same given by actions above)
-	names << "attiva" << "start" << "stop" << "disattiva";
-	for (int i = 0; i < names.size(); ++i)
+	QString dis_icon;
+	if (!action_disable.isEmpty())
 	{
-		// look for a node called where{attiva,disattiva,start,stop} to decide if the action is enabled
-		QDomElement where = getElement(config_node, QString("schedscen/where") + names[i]);
-		if (!where.isNull())
-		{
-			QDomElement what = getElement(config_node, QString("schedscen/what") + names[i]);
-			*actions[i] = QString("*15*%1*%2##").arg(what.text()).arg(where.text());
-		}
-		else
-			deleteButton(buttons[i]);
+		dis_icon = bt_global::skin->getImage("disable_scen");
+		connect(right_button, SIGNAL(clicked()), SLOT(disable()));
 	}
-#endif
+	QString start_icon;
+	if (!action_start.isEmpty())
+	{
+		start_icon = bt_global::skin->getImage("start");
+		connect(center_left_button, SIGNAL(clicked()), SLOT(start()));
+	}
+	QString stop_icon;
+	if (!action_stop.isEmpty())
+	{
+		stop_icon =bt_global::skin->getImage("stop");
+		connect(center_right_button, SIGNAL(clicked()), SLOT(stop()));
+	}
+
+	initBanner(dis_icon, stop_icon, start_icon, en_icon, descr);
 }
 
 void ScheduledScenario::enable()
@@ -335,7 +314,7 @@ void ScheduledScenario::disable()
 }
 
 
-PPTSce::PPTSce(QWidget *parent, QString where, int cid) : bann4But(parent)
+PPTSce::PPTSce(const QString &where) : bann4But(0)
 {
 	dev = bt_global::add_device_to_cache(new PPTSceDevice(where));
 	connect(this, SIGNAL(sxClick()), dev, SLOT(turnOff()));
@@ -350,7 +329,6 @@ PPTSce::PPTSce(QWidget *parent, QString where, int cid) : bann4But(parent)
 	connect(this, SIGNAL(csxReleased()), SLOT(stop()));
 	connect(this, SIGNAL(cdxReleased()), SLOT(stop()));
 
-	SkinContext context(cid);
 	QString img_on = bt_global::skin->getImage("pptsce_on");
 	QString img_off = bt_global::skin->getImage("pptsce_off");
 	QString img_inc = bt_global::skin->getImage("pptsce_increase");
