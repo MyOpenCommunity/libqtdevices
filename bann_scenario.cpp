@@ -314,7 +314,7 @@ void ScheduledScenario::disable()
 }
 
 
-PPTSce::PPTSce(QWidget *parent, QString where, int cid) : bann4But(parent)
+PPTSce::PPTSce(const QString &where) : bann4But(0)
 {
 	dev = bt_global::add_device_to_cache(new PPTSceDevice(where));
 	connect(this, SIGNAL(sxClick()), dev, SLOT(turnOff()));
@@ -329,7 +329,6 @@ PPTSce::PPTSce(QWidget *parent, QString where, int cid) : bann4But(parent)
 	connect(this, SIGNAL(csxReleased()), SLOT(stop()));
 	connect(this, SIGNAL(cdxReleased()), SLOT(stop()));
 
-	SkinContext context(cid);
 	QString img_on = bt_global::skin->getImage("pptsce_on");
 	QString img_off = bt_global::skin->getImage("pptsce_off");
 	QString img_inc = bt_global::skin->getImage("pptsce_increase");

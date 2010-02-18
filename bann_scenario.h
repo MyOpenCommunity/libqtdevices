@@ -113,7 +113,7 @@ class PPTSce : public bann4But
 {
 Q_OBJECT
 public:
-	PPTSce(QWidget *parent, QString where, int cid);
+	PPTSce(const QString &where);
 
 protected:
 	virtual void timerEvent(QTimerEvent *e);
