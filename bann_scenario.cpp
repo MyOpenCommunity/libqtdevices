@@ -261,19 +261,8 @@ void ScenarioEvolved::inizializza(bool forza)
 ScheduledScenario::ScheduledScenario(QWidget *parent, const QDomNode &config_node) :
 	Bann4Buttons(parent)
 {
-	initBanner(bt_global::skin->getImage("disable_scen"), bt_global::skin->getImage("stop"),
-		bt_global::skin->getImage("start"), bt_global::skin->getImage("enable_scen"),
-		getTextChild(config_node, "descr"));
-	connect(left_button, SIGNAL(clicked()), SLOT(enable()));
-	connect(center_left_button, SIGNAL(clicked()), SLOT(start()));
-	connect(center_right_button, SIGNAL(clicked()), SLOT(stop()));
-	connect(right_button, SIGNAL(clicked()), SLOT(disable()));
-
 	QList<QString *> actions;
 	actions << &action_enable << &action_start << &action_stop << &action_disable;
-	// these must be in the same position as the list above!
-	QList<BtButton *> buttons;
-	buttons << left_button << center_left_button << center_right_button << right_button;
 
 #ifdef CONFIG_BTOUCH
 	QList<QString> nodes;
@@ -284,8 +273,6 @@ ScheduledScenario::ScheduledScenario(QWidget *parent, const QDomNode &config_nod
 		QDomNode node = getChildWithName(config_node, nodes[i]);
 		if (!node.isNull() && getTextChild(node, "value").toInt())
 			*actions[i] = getTextChild(node, "open");
-		else
-			deleteButton(buttons[i]);
 	}
 #else
 	QList<QString> names;
@@ -300,10 +287,34 @@ ScheduledScenario::ScheduledScenario(QWidget *parent, const QDomNode &config_nod
 			QDomElement what = getElement(config_node, QString("schedscen/what") + names[i]);
 			*actions[i] = QString("*15*%1*%2##").arg(what.text()).arg(where.text());
 		}
-		else
-			deleteButton(buttons[i]);
 	}
 #endif
+	QString en_icon;
+	if (!action_enable.isEmpty())
+	{
+		en_icon = bt_global::skin->getImage("enable_scen");
+		connect(left_button, SIGNAL(clicked()), SLOT(enable()));
+	}
+	QString dis_icon;
+	if (!action_disable.isEmpty())
+	{
+		dis_icon = bt_global::skin->getImage("disable_scen");
+		connect(right_button, SIGNAL(clicked()), SLOT(disable()));
+	}
+	QString start_icon;
+	if (!action_start.isEmpty())
+	{
+		start_icon = bt_global::skin->getImage("start");
+		connect(center_left_button, SIGNAL(clicked()), SLOT(start()));
+	}
+	QString stop_icon;
+	if (!action_stop.isEmpty())
+	{
+		stop_icon =bt_global::skin->getImage("stop");
+		connect(center_right_button, SIGNAL(clicked()), SLOT(stop()));
+	}
+
+	initBanner(dis_icon, stop_icon, start_icon, en_icon, getTextChild(config_node, "descr"));
 }
 
 void ScheduledScenario::enable()
