@@ -48,10 +48,6 @@ void SingleSplit::status_changed(const StatusList &status_list)
 	setCentralText(text);
 }
 
-void SingleSplit::inizializza(bool)
-{
-}
-
 void SingleSplit::setDeviceOff()
 {
 	dev->turnOff();

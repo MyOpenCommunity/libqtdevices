@@ -25,7 +25,6 @@ class SingleSplit : public Bann2Buttons
 Q_OBJECT
 public:
 	SingleSplit(QString descr, bool show_right_button, AirConditioningInterface *d, NonControlledProbeDevice *d_probe=0);
-	virtual void inizializza(bool forza=false);
 
 private:
 	AirConditioningInterface *dev;
