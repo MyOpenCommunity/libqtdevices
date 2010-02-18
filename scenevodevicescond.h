@@ -6,6 +6,7 @@
 
 #include "main.h" // TemperatureScale
 #include "device.h" // StatusList
+#include "deviceold.h"
 
 class NonControlledProbeDevice;
 class aux_device;

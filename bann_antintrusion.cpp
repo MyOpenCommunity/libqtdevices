@@ -5,7 +5,7 @@
 #include "skinmanager.h" // bt_global::skin
 #include "devices_cache.h" // bt_global::devices_cache
 #include "icondispatcher.h" //bt_global::icons_cache
-#include "device.h"
+#include "deviceold.h"
 #include "keypad.h"
 #include "xml_functions.h"
 #include "openclient.h"

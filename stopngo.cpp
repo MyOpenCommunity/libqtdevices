@@ -18,7 +18,7 @@
 #include "device.h"
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "main.h" // ICON...
-#include "device.h"
+#include "deviceold.h"
 #include "devices_cache.h" // bt_global::devices_cache
 
 #include <QWidget>

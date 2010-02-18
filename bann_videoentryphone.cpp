@@ -1,6 +1,6 @@
 #include "bann_videoentryphone.h"
 #include "device_status.h"
-#include "device.h"
+#include "deviceold.h"
 #include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH
 #include "btmain.h" // bt_global::btmain
 #include "devices_cache.h" // bt_global::devices_cache

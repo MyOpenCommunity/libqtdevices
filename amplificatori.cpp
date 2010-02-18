@@ -11,7 +11,7 @@
 #include "amplificatori.h"
 #include "generic_functions.h" // createMsgOpen, trasformaVol
 #include "device_status.h"
-#include "device.h"
+#include "deviceold.h"
 #include "devices_cache.h" // bt_global::devices_cache
 
 

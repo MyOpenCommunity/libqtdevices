@@ -8,6 +8,7 @@ HEADERS += airconditioning_device.h \
            alarmsounddiff_device.h \
            automation_device.h \
            device.h \
+           deviceold.h \
            device_status.h \
            energy_device.h \
            entryphone_device.h \
@@ -26,6 +27,7 @@ SOURCES += airconditioning_device.cpp \
            alarmsounddiff_device.cpp \
            automation_device.cpp \
            device.cpp \
+           deviceold.cpp \
            device_status.cpp \
            energy_device.cpp \
            entryphone_device.cpp \

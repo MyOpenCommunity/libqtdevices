@@ -10,7 +10,7 @@
 
 #include "multisounddiff.h"
 #include "ambdiffson.h"
-#include "device.h"
+#include "deviceold.h"
 #include "device_status.h"
 #include "sounddiffusion.h"
 #include "scenevocond.h"
