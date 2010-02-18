@@ -365,18 +365,17 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	l->setContentsMargins(0, 0, 25, 35);
 	l->setSpacing(10);
 
-	l->setColumnStretch(0, 1);
-	l->setColumnStretch(1, 2);
-	l->setColumnStretch(2, 1);
+	for (int i = 0; i < 8; ++i)
+		l->setColumnStretch(i, 1);
 	l->setRowStretch(4, 1);
 
-	l->addWidget(temperature, 0, 1);
-	l->addWidget(mode, 1, 1);
+	l->addWidget(temperature, 0, 2, 1, 4);
+	l->addWidget(mode, 1, 1, 1, 4);
 	if (speed)
-		l->addWidget(speed, 2, 1);
+		l->addWidget(speed, 2, 1, 1, 4);
 	if (swing)
-		l->addWidget(swing, 3, 1, 2, 1, Qt::AlignTop);
-	l->addWidget(ok, 4, 2, 2, 1, Qt::AlignRight|Qt::AlignBottom);
+		l->addWidget(swing, 3, 1, 2, 4, Qt::AlignTop);
+	l->addWidget(ok, 4, 7, 2, 1, Qt::AlignRight|Qt::AlignBottom);
 #endif
 }
 
