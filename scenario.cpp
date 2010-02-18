@@ -30,10 +30,6 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 	int id = getTextChild(item_node, "id").toInt();
 	QString where = getTextChild(item_node, "where");
 
-	QString what = getTextChild(item_node, "what");
-	if (!what.isEmpty())
-		where = what + "*" + where;
-
 	banner *b = 0;
 	switch (id)
 	{
@@ -92,9 +88,14 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 	}
 #ifdef CONFIG_BTOUCH
 	case PPT_SCE:
+	{
+		QString what = getTextChild(item_node, "what");
+		if (!what.isEmpty())
+			where = what + "*" + where;
 		PPTSce *bann = new PPTSce(0, where, getTextChild(item_node, "cid").toInt());
 		bann->setText(getTextChild(item_node, "descr"));
 		b = bann;
+	}
 		break;
 #endif
 	}
