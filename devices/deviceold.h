@@ -2,7 +2,7 @@
 #define DEVICEOLD_H
 
 #include "device.h"
-
+#include "device_status.h"
 
 class DeviceOld : public device
 {

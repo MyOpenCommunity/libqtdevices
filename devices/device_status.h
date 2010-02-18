@@ -3,16 +3,6 @@
 
 #include <QList>
 
-/*
- * Not ideal here, thermo specific stuff, but
- * that would imply major code shuffling or strange
- * forward declarations.
- */
-enum thermo_type_t
-{
-	THERMO_Z99,  // 99 zones thermal regulator
-	THERMO_Z4,   // 4 zones thermal regulator
-};
 
 //! State variable
 class stat_var

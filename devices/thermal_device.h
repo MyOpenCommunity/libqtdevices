@@ -6,6 +6,13 @@
 class BtTime;
 
 
+enum thermo_type_t
+{
+	THERMO_Z99,  // 99 zones thermal regulator
+	THERMO_Z4,   // 4 zones thermal regulator
+};
+
+
 class ThermalDevice : public device
 {
 friend class TestThermalDevice;

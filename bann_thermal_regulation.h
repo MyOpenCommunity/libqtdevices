@@ -17,7 +17,7 @@
 #include "bttime.h"
 #include "main.h"
 #include "page.h"
-#include "device.h" // thermo_type_t, StatusList
+#include "thermal_device.h" // thermo_type_t, ThermalDevice*
 
 #include <QLayout>
 #include <QButtonGroup>
@@ -27,9 +27,6 @@
 #include <QDate>
 
 class device;
-class ThermalDevice;
-class ThermalDevice4Zones;
-class ThermalDevice99Zones;
 class ControlledProbeDevice;
 class TimeEditMenu;
 class DateEditMenu;

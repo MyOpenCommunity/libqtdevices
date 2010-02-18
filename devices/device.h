@@ -1,7 +1,6 @@
 #ifndef __DEVICE_H__
 #define __DEVICE_H__
 
-#include "device_status.h"
 #include "frame_receiver.h"
 
 #include <QVariant>
@@ -9,6 +8,7 @@
 #include <QList>
 #include <QTimer>
 
+class device_status;
 class frame_interpreter;
 class Client;
 class OpenMsg;
