@@ -155,22 +155,16 @@ SplitPage::SplitPage(const QDomNode &config_node, AirConditioningDevice *d)
 
 	buildPage(new BannerContent, nav_bar, getTextChild(config_node, "descr"));
 #else
+	buildPage(getTextChild(config_node, "descr"));
+
 	if (off_list == 1) // show the off button
 	{
-		BannerContent *banners = new BannerContent;
-		QWidget *cnt = new QWidget;
-		QVBoxLayout *l = new QVBoxLayout(cnt);
-		l->setContentsMargins(0, 0, 25, 35);
-		BtButton *off = new BtButton;
-		off->setImage(bt_global::skin->getImage("off"));
+		Bann2Buttons *b = new Bann2Buttons;
+		b->initBanner(bt_global::skin->getImage("off"), QString(), tr("Off"));
+		page_content->appendBanner(b);
 
-		l->addWidget(banners, 1);
-		l->addWidget(off, 0, Qt::AlignRight);
-
-		buildPage(cnt, banners, new NavigationBar, getTextChild(config_node, "descr"));
+		connect(b, SIGNAL(leftClicked()), SLOT(setDeviceOff()));		
 	}
-	else
-		buildPage(getTextChild(config_node, "descr"));
 #endif
 
 	loadScenarios(config_node);
@@ -216,22 +210,16 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 #else
 	BannerContent *banners = new BannerContent;
 	static_cast<QGridLayout *>(banners->layout())->setVerticalSpacing(20);
+	buildPage(banners, new NavigationBar, getTextChild(config_node, "descr"));
 
 	if (off_list == 1) // show the off button
 	{
-		QWidget *cnt = new QWidget;
-		QVBoxLayout *l = new QVBoxLayout(cnt);
-		l->setContentsMargins(0, 0, 25, 35);
-		BtButton *off = new BtButton;
-		off->setImage(bt_global::skin->getImage("off"));
+		Bann2Buttons *b = new Bann2Buttons;
+		b->initBanner(bt_global::skin->getImage("off"), QString(), tr("Off"));
+		page_content->appendBanner(b);
 
-		l->addWidget(banners, 1);
-		l->addWidget(off, 0, Qt::AlignRight);
-
-		buildPage(cnt, banners, new NavigationBar, getTextChild(config_node, "descr"));
+		connect(b, SIGNAL(leftClicked()), SLOT(setDeviceOff()));
 	}
-	else
-		buildPage(banners, new NavigationBar, getTextChild(config_node, "descr"));
 #endif
 
 	dev = d;
