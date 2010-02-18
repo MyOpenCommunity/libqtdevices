@@ -258,37 +258,13 @@ void ScenarioEvolved::inizializza(bool forza)
 }
 
 
-ScheduledScenario::ScheduledScenario(QWidget *parent, const QDomNode &config_node) :
-	Bann4Buttons(parent)
+ScheduledScenario::ScheduledScenario(const QString &enable, const QString &start, const QString &stop, const QString &disable, const QString &descr) :
+	Bann4Buttons(0),
+	action_enable(enable),
+	action_disable(disable),
+	action_start(start),
+	action_stop(stop)
 {
-	QList<QString *> actions;
-	actions << &action_enable << &action_start << &action_stop << &action_disable;
-
-#ifdef CONFIG_BTOUCH
-	QList<QString> nodes;
-	// these must be in the order: unable, start, stop, disable (the same given by actions above)
-	nodes << "unable" << "start" << "stop" << "disable";
-	for (int i = 0; i < nodes.size(); ++i)
-	{
-		QDomNode node = getChildWithName(config_node, nodes[i]);
-		if (!node.isNull() && getTextChild(node, "value").toInt())
-			*actions[i] = getTextChild(node, "open");
-	}
-#else
-	QList<QString> names;
-	// these must be in the order: attiva, start, stop, disattiva (the same given by actions above)
-	names << "attiva" << "start" << "stop" << "disattiva";
-	for (int i = 0; i < names.size(); ++i)
-	{
-		// look for a node called where{attiva,disattiva,start,stop} to decide if the action is enabled
-		QDomElement where = getElement(config_node, QString("schedscen/where") + names[i]);
-		if (!where.isNull())
-		{
-			QDomElement what = getElement(config_node, QString("schedscen/what") + names[i]);
-			*actions[i] = QString("*15*%1*%2##").arg(what.text()).arg(where.text());
-		}
-	}
-#endif
 	QString en_icon;
 	if (!action_enable.isEmpty())
 	{
@@ -314,7 +290,7 @@ ScheduledScenario::ScheduledScenario(QWidget *parent, const QDomNode &config_nod
 		connect(center_right_button, SIGNAL(clicked()), SLOT(stop()));
 	}
 
-	initBanner(dis_icon, stop_icon, start_icon, en_icon, getTextChild(config_node, "descr"));
+	initBanner(dis_icon, stop_icon, start_icon, en_icon, descr);
 }
 
 void ScheduledScenario::enable()

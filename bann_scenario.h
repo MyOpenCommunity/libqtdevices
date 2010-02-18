@@ -96,7 +96,7 @@ class ScheduledScenario : public Bann4Buttons
 {
 Q_OBJECT
 public:
-	ScheduledScenario(QWidget *parent, const QDomNode &config_node);
+	ScheduledScenario(const QString &enable, const QString &start, const QString &stop, const QString &disable, const QString &descr);
 
 private slots:
 	void enable();
