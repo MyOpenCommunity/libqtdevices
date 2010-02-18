@@ -35,14 +35,30 @@ QLocale loc(QLocale::Italian);
 
 namespace
 {
+	QHash<QString, QPixmap> cache;
+
 	BtButton *getTrimmedButton(QWidget *parent, QString icon)
 	{
 	#define SM_BTN_WIDTH 60
 	#define SM_BTN_HEIGHT 40
 		BtButton *btn = new BtButton(parent);
-		QPixmap tmp = (*bt_global::icons_cache.getIcon(icon)).copy(0, 10, SM_BTN_WIDTH, SM_BTN_HEIGHT);
+		QPixmap tmp;
+		if (cache.contains(icon))
+			tmp = cache[icon];
+		else
+		{
+			tmp = (*bt_global::icons_cache.getIcon(icon)).copy(0, 10, SM_BTN_WIDTH, SM_BTN_HEIGHT);
+			cache[icon] = tmp;
+		}
 		btn->setPixmap(tmp);
-		tmp = (*bt_global::icons_cache.getIcon(getPressName(icon))).copy(0, 10, SM_BTN_WIDTH, SM_BTN_HEIGHT);
+		QString picon = getPressName(icon);
+		if (cache.contains(picon))
+			tmp = cache[picon];
+		else
+		{
+			tmp = (*bt_global::icons_cache.getIcon(picon)).copy(0, 10, SM_BTN_WIDTH, SM_BTN_HEIGHT);
+			cache[picon] = tmp;
+		}
 		btn->setPressedPixmap(tmp);
 		return btn;
 	}
