@@ -104,7 +104,8 @@ Bann4Buttons::Bann4Buttons(QWidget *parent) :
 	center_right_button = new BtButton;
 	center_left_button = new BtButton;
 	left_button = new BtButton;
-	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
+	text = new QLabel;
+	text->setAlignment(Qt::AlignHCenter);
 
 	QGridLayout *grid = new QGridLayout;
 	grid->setContentsMargins(0, 0, 0, 0);
@@ -126,11 +127,11 @@ Bann4Buttons::Bann4Buttons(QWidget *parent) :
 void Bann4Buttons::initBanner(const QString &right, const QString &center_right,
 	const QString &center_left, const QString &left, const QString &banner_text)
 {
-	right_button->setImage(right);
-	center_right_button->setImage(center_right);
-	center_left_button->setImage(center_left);
-	left_button->setImage(left);
-	text->setText(banner_text);
+	initButton(right_button, right);
+	initButton(center_right_button, center_right);
+	initButton(center_left_button, center_left);
+	initButton(left_button, left);
+	initLabel(text, banner_text, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 }
 
 void Bann4Buttons::deleteButton(BtButton *btn)
