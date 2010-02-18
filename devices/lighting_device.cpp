@@ -157,7 +157,7 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 
 		if (what >= DIMMER10_LEVEL_MIN && what <= DIMMER10_LEVEL_MAX)
 		{
-			v.setValue(getDimmerLevel(what));
+			v.setValue(what);
 			status_index = DIM_DIMMER_LEVEL;
 		}
 		else if (what == DIM_DIMMER_PROBLEM)
