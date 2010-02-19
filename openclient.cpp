@@ -15,7 +15,6 @@
 
 Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host)
 {
-	qDebug("Client::Client()");
 	port = !_port ? OPENSERVER_PORT : _port;
 
 #if DEBUG
@@ -31,6 +30,12 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 
 	// connect to the server
 	connectToHost();
+	is_connected = false;
+}
+
+bool Client::isConnected()
+{
+	return is_connected;
 }
 
 void Client::socketConnected()
@@ -40,7 +45,8 @@ void Client::socketConnected()
 	{
 		qDebug("TRY TO START monitor session");
 		socket->write(SOCKET_MONITOR);
-		emit connected();
+		is_connected = true;
+		emit connectionUp();
 	}
 	else if (type == RICHIESTE)
 	{
@@ -63,22 +69,22 @@ void Client::sendFrameOpen(const QString &frame_open)
 {
 	QByteArray frame = frame_open.toLatin1();
 	if (socket->state() == QAbstractSocket::UnconnectedState || socket->state() == QAbstractSocket::ClosingState)
-	{
 		connectToHost();
-		if (!socket->waitForConnected(100))
-		{
-			// For now, discard silently the frame to send.
-			return;
-		}
 
-		/* E' davvero necessario? Credo che con la waitForConnected venga poi
-		   chiamata la socketConnected, che fa anche questa parte.. verificare!!
-		if (type == RICHIESTE)
-			socket->write(SOCKET_RICHIESTE);
-		else
-			socket->write(SOCKET_COMANDI); //lo metto qui else mando prima frame di questo!
-		*/
+	if (!socket->waitForConnected(100))
+	{
+		// For now, discard silently the frame to send.
+		return;
 	}
+
+	/* E' davvero necessario? Credo che con la waitForConnected venga poi
+	   chiamata la socketConnected, che fa anche questa parte.. verificare!!
+	if (type == RICHIESTE)
+		socket->write(SOCKET_RICHIESTE);
+	else
+		socket->write(SOCKET_COMANDI); //lo metto qui else mando prima frame di questo!
+	*/
+
 	socket->write(frame);
 
 	if (host != OPENSERVER_ADDR)
@@ -186,7 +192,6 @@ void Client::unsubscribe(FrameReceiver *obj)
 	}
 }
 
-
 int Client::socketFrameRead()
 {
 	qDebug("Client::socketFrameRead()");
@@ -233,20 +238,30 @@ void Client::socketConnectionClosed()
 	qDebug("Client::socketConnectionClosed()");
 	if (type == MONITOR || type == SUPERVISOR)
 	{
-		emit disconnect();
+		if (is_connected)
+		{
+			is_connected = false;
+			emit connectionDown();
+		}
 		connectToHost();
 	}
 }
 
 void Client::socketError(QAbstractSocket::SocketError e)
 {
-	if (e != QAbstractSocket::RemoteHostClosedError || type == MONITOR || type == SUPERVISOR)
-		qWarning() << "OpenClient: error " << e << "occurred " << socket->errorString()
-			<< "on client" << type;
-
 	if (type == MONITOR || type == SUPERVISOR)
 	{
-		emit disconnect();
+		qWarning() << qPrintable(QString("OpenClient [%1:%2]: error").arg(host).arg(port))
+				<< socket->errorString() << "occurred on client" << type;
+
+		if (is_connected)
+		{
+			is_connected = false;
+			emit connectionDown();
+		}
 		QTimer::singleShot(500, this, SLOT(connectToHost()));
 	}
+	else if (e != QAbstractSocket::RemoteHostClosedError)
+		qWarning() << qPrintable(QString("OpenClient [%1:%2]: error").arg(host).arg(port))
+			<< socket->errorString() << "occurred on client" << type;
 }

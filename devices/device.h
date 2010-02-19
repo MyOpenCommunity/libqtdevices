@@ -36,6 +36,8 @@ public:
 
 	virtual void manageFrame(OpenMsg &msg) {}
 
+	bool isConnected();
+
 signals:
 	// TODO: Old Status changed, to be removed asap.
 	void status_changed(QList<device_status*>);

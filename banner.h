@@ -15,6 +15,8 @@
 #define MAX_NUM_ICON    46
 #define MAX_PRESS_ICON  5
 
+#include "device.h"
+
 #include <QWidget>
 
 
@@ -87,6 +89,9 @@ signals:
 	/// Emitted when any of the linked pages is closed
 	void pageClosed();
 
+protected slots:
+	virtual void status_changed(const StatusList &status_list) {}
+
 protected:
 	// Width and height of the banner. Used for the sizeHint method!
 	int banner_width;
@@ -104,6 +109,12 @@ protected:
 	// devices specific methods, unless you have to send frames without reading responses.
 	void sendFrame(QString frame) const;
 	void sendInit(QString frame) const;
+
+	void connectDevice(device *dev);
+
+private slots:
+	void monitorUp();
+	void monitorDown();
 
 private:
 	int id;

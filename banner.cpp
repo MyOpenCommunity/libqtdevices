@@ -84,6 +84,28 @@ int banner::getId()
 	return id;
 }
 
+void banner::connectDevice(device *dev)
+{
+	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+	connect(dev, SIGNAL(monitorUp()), SLOT(monitorUp()));
+	connect(dev, SIGNAL(monitorDown()), SLOT(monitorDown()));
+	if (dev->isConnected())
+		monitorUp();
+	else
+		monitorDown();
+}
+
+void banner::monitorUp()
+{
+	setEnabled(true);
+}
+
+void banner::monitorDown()
+{
+	setEnabled(false);
+}
+
+
 BannerOld::BannerOld(QWidget *parent) : banner(parent)
 {
 	linked_sx_page = 0;

@@ -12,6 +12,7 @@
 #include <QDebug>
 #include <cmath> // round
 
+
 SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningInterface *d, NonControlledProbeDevice *d_probe) :
 	Bann2Buttons(0)
 {
@@ -27,8 +28,7 @@ SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningI
 		setCentralText("---");
 		air_single = "air_single_temp";
 
-		connect(dev_probe, SIGNAL(status_changed(const StatusList &)),
-				SLOT(status_changed(const StatusList &)));
+		connectDevice(dev_probe);
 	}
 
 	initBanner(img_off, bt_global::skin->getImage(air_single), show_right_button ? img_forward : QString(), descr);

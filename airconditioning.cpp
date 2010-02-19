@@ -98,11 +98,15 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 
 NonControlledProbeDevice *AirConditioning::createProbeDevice(const QDomNode &item_node)
 {
-	NonControlledProbeDevice *d = 0;
+	NonControlledProbeDevice *dev = 0;
 	QString where_probe = getTextChild(item_node, "where_probe");
 	if (where_probe != "000")
-		d = bt_global::add_device_to_cache(new NonControlledProbeDevice(where_probe, NonControlledProbeDevice::INTERNAL));
-	return d;
+	{
+		dev = new NonControlledProbeDevice(where_probe, NonControlledProbeDevice::INTERNAL,
+			getTextChild(item_node, "openserver_id_probe").toInt());
+		dev = bt_global::add_device_to_cache(dev);
+	}
+	return dev;
 }
 
 GeneralSplit *AirConditioning::createGeneralBanner(Page *gen_split_page, const QString &descr)

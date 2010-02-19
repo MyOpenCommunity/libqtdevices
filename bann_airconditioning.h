@@ -27,13 +27,15 @@ public:
 	SingleSplit(QString descr, bool show_right_button, AirConditioningInterface *d, NonControlledProbeDevice *d_probe=0);
 	virtual void inizializza(bool forza=false);
 
+protected slots:
+	virtual void status_changed(const StatusList &status_list);
+
 private:
 	AirConditioningInterface *dev;
 	NonControlledProbeDevice *dev_probe;
 
 private slots:
 	void setDeviceOff();
-	void status_changed(const StatusList &status_list);
 };
 
 /**

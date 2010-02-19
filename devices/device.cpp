@@ -24,8 +24,13 @@ device::device(QString _who, QString _where, int oid) : FrameReceiver(oid)
 void device::subscribe_monitor(int who)
 {
 	FrameReceiver::subscribe_monitor(who);
-	connect(clients_monitor[openserver_id], SIGNAL(connected()), SIGNAL(monitorUp()));
-	connect(clients_monitor[openserver_id], SIGNAL(disconnected()), SIGNAL(monitorDown()));
+	connect(clients_monitor[openserver_id], SIGNAL(connectionUp()), SIGNAL(monitorUp()));
+	connect(clients_monitor[openserver_id], SIGNAL(connectionDown()), SIGNAL(monitorDown()));
+}
+
+bool device::isConnected()
+{
+	return clients_monitor[openserver_id]->isConnected();
 }
 
 void device::sendFrame(QString frame) const

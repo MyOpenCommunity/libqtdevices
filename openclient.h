@@ -46,16 +46,18 @@ public:
 	void subscribe(FrameReceiver *obj, int who);
 	void unsubscribe(FrameReceiver *obj);
 
+	bool isConnected();
+
 #if DEBUG
 	void flush() { socket->flush(); }
 	void forwardFrame(Client *c);
 #endif
 
 signals:
-	// The signals connected/disconnected are emitted only for clients of the
-	// monitor type.
-	void connected();
-	void disconnected();
+	// The signals connectionUp/connectionDown are emitted only for clients
+	// of the monitor type.
+	void connectionUp();
+	void connectionDown();
 
 	//! Openwebnet ack received
 	void openAckRx();
@@ -73,15 +75,26 @@ private slots:
 
 	void ackReceived();
 
-
 private:
 	QTcpSocket *socket;
 	Type type;
+	// The address of the openserver
 	QString host;
+	// The port of the openserver
 	unsigned port;
+
+	// The buffer that store the data read from the server
 	QByteArray data_read;
+
 	bool ackRx;
+
+	// The list of the FrameReceivers that will receive the incoming frames.
 	QHash<int, QList<FrameReceiver*> > subscribe_list;
+
+	// We use this flag instead of the state() method of the QTcpSocket in order
+	// to avoid the emission of the signal disconnected() when the socket is
+	// already disconnected.
+	bool is_connected;
 
 #if DEBUG
 	Client *to_forward;
