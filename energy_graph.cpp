@@ -301,6 +301,56 @@ void EnergyTableContent::pageDown()
 	update();
 }
 
+void EnergyTableContent::setBorderColor(const QString &color)
+{
+	border_color = color;
+}
+
+void EnergyTableContent::setHeadingColor(const QString &color)
+{
+	heading_color = color;
+}
+
+void EnergyTableContent::setOddRowColor(const QString &color)
+{
+	odd_row_color = color;
+}
+
+void EnergyTableContent::setEvenRowColor(const QString &color)
+{
+	even_row_color = color;
+}
+
+void EnergyTableContent::setTextColor(const QString &color)
+{
+	text_color = color;
+}
+
+QString EnergyTableContent::borderColor() const
+{
+	return border_color;
+}
+
+QString EnergyTableContent::headingColor() const
+{
+	return heading_color;
+}
+
+QString EnergyTableContent::oddRowColor() const
+{
+	return odd_row_color;
+}
+
+QString EnergyTableContent::evenRowColor() const
+{
+	return even_row_color;
+}
+
+QString EnergyTableContent::textColor() const
+{
+	return text_color;
+}
+
 void EnergyTableContent::paintEvent(QPaintEvent *e)
 {
 	int mtop, mbottom, mleft, mright;
@@ -312,15 +362,14 @@ void EnergyTableContent::paintEvent(QPaintEvent *e)
 	int cell_width = row_width / 2;
 	int left = mleft + 1, top = mtop + 1, right_cell_x = left + cell_width + 1;
 
-	// TODO use values from stylesheet
-	QPen pen_border(QColor(0x41, 0x47, 0x4d));
-	QPen pen_head(QColor(0x35, 0x87, 0xff));
-	QPen pen_odd(QColor(0x41, 0x47, 0x4d));
-	QPen pen_even(QColor(0x2e, 0x32, 0x36));
-	QPen pen_text(QColor(0xff, 0xff, 0xff));
-	QBrush brush_head(QColor(0x35, 0x87, 0xff));
-	QBrush brush_odd(QColor(0x41, 0x47, 0x4d));
-	QBrush brush_even(QColor(0x2e, 0x32, 0x36));
+	QPen pen_border = QPen(QColor(borderColor()));
+	QPen pen_head = QPen(QColor(headingColor()));
+	QPen pen_odd = QPen(QColor(oddRowColor()));
+	QPen pen_even = QPen(QColor(evenRowColor()));
+	QPen pen_text = QPen(QColor(textColor()));
+	QBrush brush_head = QBrush(QColor(headingColor()));
+	QBrush brush_odd = QBrush(QColor(oddRowColor()));
+	QBrush brush_even = QBrush(QColor(evenRowColor()));
 
 	// external border
 	p.setPen(pen_border);

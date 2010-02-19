@@ -55,6 +55,11 @@ public:
 
 class EnergyTableContent : public QFrame
 {
+Q_PROPERTY(QString border_color   READ borderColor WRITE setBorderColor)
+Q_PROPERTY(QString heading_color  READ headingColor WRITE setHeadingColor)
+Q_PROPERTY(QString odd_row_color  READ oddRowColor WRITE setOddRowColor)
+Q_PROPERTY(QString even_row_color READ evenRowColor WRITE setEvenRowColor)
+Q_PROPERTY(QString text_color READ textColor WRITE setTextColor)
 Q_OBJECT
 public:
 	EnergyTableContent(int n_dec);
@@ -70,6 +75,20 @@ protected:
 	void paintEvent(QPaintEvent *e);
 
 private:
+	void setBorderColor(const QString &color);
+	void setHeadingColor(const QString &color);
+	void setOddRowColor(const QString &color);
+	void setEvenRowColor(const QString &color);
+	void setTextColor(const QString &color);
+
+	QString borderColor() const;
+	QString headingColor() const;
+	QString oddRowColor() const;
+	QString evenRowColor() const;
+	QString textColor() const;
+
+private:
+	QString border_color, heading_color, odd_row_color, even_row_color, text_color;
 	QMap<int, float> table_data;
 	QString left_text, right_text;
 	int num_values;
