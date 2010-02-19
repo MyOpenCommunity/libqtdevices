@@ -9,7 +9,6 @@
 
 BtButton::BtButton(QWidget *parent) : QPushButton(parent)
 {
-	setStyleSheet("border:0px;");
 	setFocusPolicy(Qt::NoFocus);
 	is_on_off = false;
 	is_enabled = true;
