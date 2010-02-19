@@ -351,12 +351,12 @@ int DeviceConditionDimming::get_min()
 
 int DeviceConditionDimming::get_max()
 {
-	return 100;
+	return 10;
 }
 
 int DeviceConditionDimming::get_step()
 {
-	return 10;
+	return 1;
 }
 
 void DeviceConditionDimming::Up()
@@ -488,15 +488,8 @@ void DeviceConditionDimming::status_changed(const StatusList &sl)
 	while (it != sl.constEnd())
 	{
 		int level = 0;
-		if (it.key() == LightingDevice::DIM_DEVICE_ON)
-		{
-			// We manage the DIM_DEVICE_ON as a special case because the value
-			// for that key can be 0 or 1. In the latter case we can't divide as
-			// integer, otherwise the level resulting is always 0.
+		if ((it.key() == LightingDevice::DIM_DEVICE_ON) || (it.key() == LightingDevice::DIM_DIMMER_LEVEL))
 			level = it.value().toInt();
-		}
-		else if (it.key() == LightingDevice::DIM_DIMMER_LEVEL)
-			level = it.value().toInt() / 10;
 		else
 		{
 			++it;
