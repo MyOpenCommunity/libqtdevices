@@ -171,12 +171,6 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 	}
 }
 
-int DimmerDevice::getDimmerLevel(int what)
-{
-	Q_ASSERT_X(what >= 2 && what <= 10, "DimmerDevice::getDimmerLevel",
-		"DimmerDevice level must be between 2 and 10");
-	return what * 10;
-}
 
 
 Dimmer100Device::Dimmer100Device(QString where, PullMode pull) :
@@ -233,22 +227,5 @@ void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
 			v.setValue(msg.whatArgN(1));
 			(*sl)[DIM_DIMMER100_SPEED] = v;
 		}
-	}
-}
-
-int Dimmer100Device::getDimmerLevel(int what)
-{
-	switch (what)
-	{
-	case 2:
-		return 1;
-	case 9:
-		return 75;
-	case 10:
-		return 100;
-	default:
-		Q_ASSERT_X((what >= 3 && what <= 8), "Dimmer100Device::getDimmerLevel",
-			"Dimmer level must be between 2 and 10");
-		return (what - 2) * 10;
 	}
 }
