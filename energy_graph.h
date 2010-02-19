@@ -7,9 +7,9 @@
 #include <QString>
 #include <QColor>
 #include <QMap>
+#include <QFrame>
 
 class QLabel;
-class QFrame;
 
 
 class EnergyGraph : public QWidget
@@ -53,6 +53,33 @@ public:
 };
 
 
+class EnergyTableContent : public QFrame
+{
+Q_OBJECT
+public:
+	EnergyTableContent(int n_dec);
+	void init(int num_val, QString left_text, QString right_text, int shift_val=-1);
+	void setData(const QMap<int, float> &data);
+	void setNumDecimal(int d);
+
+public slots:
+	void pageUp();
+	void pageDown();
+
+protected:
+	void paintEvent(QPaintEvent *e);
+
+private:
+	QMap<int, float> table_data;
+	QString left_text, right_text;
+	int num_values;
+	int shift_value;
+	int rows_per_page;
+	int current_page;
+	int n_decimal;
+};
+
+
 class EnergyTable : public PageLayout
 {
 Q_OBJECT
@@ -62,21 +89,9 @@ public:
 	void setData(const QMap<int, float> &data);
 	void setNumDecimal(int d);
 
-private slots:
-	void pageUp();
-	void pageDown();
-
 private:
-	QLabel *date_label, *heading_left, *heading_right;
-	int num_values;
-	int shift_value;
-	QMap<int, float> table_data;
-	QFrame *table;
-	int rows_per_page;
-	int current_page;
-	int n_decimal;
-	void createTable();
-	void showData();
+	QLabel *date_label;
+	EnergyTableContent *table;
 };
 
 
