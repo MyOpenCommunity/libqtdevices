@@ -90,7 +90,7 @@ void DeviceConditionDisplayDimming::updateText(int min_condition_value, int max_
 	if (min_condition_value == 0)
 		condition->setText(tr("OFF"));
 	else
-		condition->setText(QString("%1% - %3%").arg(min_condition_value).arg(max_condition_value));
+		condition->setText(QString("%1% - %2%").arg(min_condition_value).arg(max_condition_value));
 }
 
 
@@ -106,7 +106,7 @@ void DeviceConditionDisplayVolume::updateText(int min_condition_value, int max_c
 		int val_max = max_condition_value;
 		int vmin = (val_min == 0 ? 0 : (10 * (val_min <= 15 ? val_min/3 : (val_min-1)/3) + 1));
 		int vmax = 10 * (val_max <= 15 ? val_max/3 : (val_max-1)/3);
-		condition->setText(QString("%1% - %3%").arg(vmin).arg(vmax));
+		condition->setText(QString("%1% - %2%").arg(vmin).arg(vmax));
 	}
 }
 
@@ -351,12 +351,12 @@ int DeviceConditionDimming::get_min()
 
 int DeviceConditionDimming::get_max()
 {
-	return 100;
+	return 10;
 }
 
 int DeviceConditionDimming::get_step()
 {
-	return 10;
+	return 1;
 }
 
 void DeviceConditionDimming::Up()
@@ -488,15 +488,8 @@ void DeviceConditionDimming::status_changed(const StatusList &sl)
 	while (it != sl.constEnd())
 	{
 		int level = 0;
-		if (it.key() == LightingDevice::DIM_DEVICE_ON)
-		{
-			// We manage the DIM_DEVICE_ON as a special case because the value
-			// for that key can be 0 or 1. In the latter case we can't divide as
-			// integer, otherwise the level resulting is always 0.
+		if ((it.key() == LightingDevice::DIM_DEVICE_ON) || (it.key() == LightingDevice::DIM_DIMMER_LEVEL))
 			level = it.value().toInt();
-		}
-		else if (it.key() == LightingDevice::DIM_DIMMER_LEVEL)
-			level = it.value().toInt() / 10;
 		else
 		{
 			++it;

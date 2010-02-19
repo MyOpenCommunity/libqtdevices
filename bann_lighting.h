@@ -116,6 +116,7 @@ private slots:
 	void status_changed(const StatusList &sl);
 
 private:
+	int getDimmerLevel(int level);
 	int roundTo5(int value);
 	Dimmer100Device *dev;
 	int start_speed, stop_speed;
