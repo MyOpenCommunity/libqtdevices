@@ -6,16 +6,11 @@
 #include "bann4_buttons.h" // Bann4ButtonsIcon, bann4But
 #include "device.h" // StatusList
 
-#include <QList>
-
 class PPTSceDevice;
 class ScenEvoCondition;
 class ScenEvoTimeCondition;
 class ScenEvoDeviceCondition;
-class device;
 class QTimerEvent;
-class QWidget;
-class QDomNode;
 class ScenarioDevice;
 
 

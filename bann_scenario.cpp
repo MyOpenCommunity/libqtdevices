@@ -2,18 +2,14 @@
 #include "scenevocond.h"
 #include "btbutton.h"
 #include "generic_functions.h" // setCfgValue
-#include "fontmanager.h" // bt_global::font
 #include "devices_cache.h" // bt_global::add_device_to_cache
 #include "automation_device.h"
-#include "skinmanager.h" // SkinContext, bt_global::skin
+#include "skinmanager.h" // bt_global::skin
 #include "scenario_device.h"
-#include "xml_functions.h" // getTextChild
 #include "scenevomanager.h"
 
 #include <QDebug>
-#include <QLabel>
 #include <QTimerEvent>
-#include <QDomNode>
 
 #define PPTSCE_INTERVAL 1000
 
