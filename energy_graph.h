@@ -7,9 +7,9 @@
 #include <QString>
 #include <QColor>
 #include <QMap>
+#include <QFrame>
 
 class QLabel;
-class QFrame;
 
 
 class EnergyGraph : public QWidget
@@ -53,6 +53,52 @@ public:
 };
 
 
+class EnergyTableContent : public QFrame
+{
+Q_PROPERTY(QString border_color   READ borderColor WRITE setBorderColor)
+Q_PROPERTY(QString heading_color  READ headingColor WRITE setHeadingColor)
+Q_PROPERTY(QString odd_row_color  READ oddRowColor WRITE setOddRowColor)
+Q_PROPERTY(QString even_row_color READ evenRowColor WRITE setEvenRowColor)
+Q_PROPERTY(QString text_color READ textColor WRITE setTextColor)
+Q_OBJECT
+public:
+	EnergyTableContent(int n_dec);
+	void init(int num_val, QString left_text, QString right_text, int shift_val=-1);
+	void setData(const QMap<int, float> &data);
+	void setNumDecimal(int d);
+
+public slots:
+	void pageUp();
+	void pageDown();
+
+protected:
+	void paintEvent(QPaintEvent *e);
+
+private:
+	void setBorderColor(const QString &color);
+	void setHeadingColor(const QString &color);
+	void setOddRowColor(const QString &color);
+	void setEvenRowColor(const QString &color);
+	void setTextColor(const QString &color);
+
+	QString borderColor() const;
+	QString headingColor() const;
+	QString oddRowColor() const;
+	QString evenRowColor() const;
+	QString textColor() const;
+
+private:
+	QString border_color, heading_color, odd_row_color, even_row_color, text_color;
+	QMap<int, float> table_data;
+	QString left_text, right_text;
+	int num_values;
+	int shift_value;
+	int rows_per_page;
+	int current_page;
+	int n_decimal;
+};
+
+
 class EnergyTable : public Page
 {
 Q_OBJECT
@@ -62,21 +108,9 @@ public:
 	void setData(const QMap<int, float> &data);
 	void setNumDecimal(int d);
 
-private slots:
-	void pageUp();
-	void pageDown();
-
 private:
-	QLabel *date_label, *heading_left, *heading_right;
-	int num_values;
-	int shift_value;
-	QMap<int, float> table_data;
-	QFrame *table;
-	int rows_per_page;
-	int current_page;
-	int n_decimal;
-	void createTable();
-	void showData();
+	QLabel *date_label;
+	EnergyTableContent *table;
 };
 
 

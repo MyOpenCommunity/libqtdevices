@@ -376,7 +376,12 @@ void BtMain::init()
 	if (style.isNull())
 		qWarning("Unable to load skin file!");
 	else
+	{
+		// setStyleSheet may be slow, try to avoid the watchdog timeout
+		rearmWDT();
 		qApp->setStyleSheet(style);
+		rearmWDT();
+	}
 
 	config_loaded = true;
 	qDebug("Initialization complete, from now on will write to configuration");

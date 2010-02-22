@@ -215,10 +215,6 @@ void EnergyGraph::setBorderColor(QString color)
 
 EnergyTable::EnergyTable(int n_dec)
 {
-	rows_per_page = 8;
-	current_page = 0;
-	n_decimal = n_dec;
-
 	date_label = new QLabel;
 	date_label->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 
@@ -229,14 +225,9 @@ EnergyTable::EnergyTable(int n_dec)
 
 	main_layout->addWidget(date_label, 0, Qt::AlignCenter);
 
-	createTable();
-	QWidget *central_widget = new QWidget;
-	QHBoxLayout *l = new QHBoxLayout(central_widget);
-	l->setContentsMargins(10, 5, 10, 0);
-	l->setSpacing(0);
-	l->addWidget(table);
+	table = new EnergyTableContent(n_dec);
 
-	main_layout->addWidget(central_widget, 1);
+	main_layout->addWidget(table, 1);
 
 	NavigationBar *nav_bar = new NavigationBar;
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
@@ -246,109 +237,42 @@ EnergyTable::EnergyTable(int n_dec)
 	buildPage(content, nav_bar);
 }
 
+void EnergyTable::init(int num_val, QString left_text, QString right_text,
+		       QString date, int shift_val)
+{
+	date_label->setText(date);
+	table->init(num_val, left_text, right_text, shift_val);
+}
+
 void EnergyTable::setNumDecimal(int n_dec)
 {
-	n_decimal = n_dec;
-}
-
-void EnergyTable::pageUp()
-{
-	if (current_page > 0)
-		--current_page;
-	showData();
-}
-
-void EnergyTable::pageDown()
-{
-	if (static_cast<int>((current_page + 1) * rows_per_page) < table_data.count())
-		++current_page;
-	showData();
-}
-
-void EnergyTable::showData()
-{
-	int start = current_page * rows_per_page;
-
-	QGridLayout *table_layout = static_cast<QGridLayout*>(table->layout());
-	QList<int> data_keys = table_data.keys();
-	for (int i = 0; i < rows_per_page; ++i)
-	{
-		QLabel *left = static_cast<QLabel*>(table_layout->itemAtPosition(i + 1, 0)->widget());
-		QLabel *right = static_cast<QLabel*>(table_layout->itemAtPosition(i + 1, 1)->widget());
-		if (i + start < data_keys.count())
-		{
-			int key = data_keys.at(i + start);
-			int left_value = key;
-			if (shift_value != -1)
-			{
-				left_value = (shift_value + key) % num_values;
-				if (left_value == 0)
-					left_value = num_values;
-			}
-
-			left->setText(QString::number(left_value));
-			right->setText(loc.toString(table_data[key], 'f', n_decimal));
-		}
-		else
-		{
-			left->setText("");
-			right->setText("");
-		}
-	}
-	update();
-}
-
-void EnergyTable::createTable()
-{
-	table = new QFrame;
-	QGridLayout *table_layout = new QGridLayout(table);
-	table_layout->setContentsMargins(0, 0, 0, 0);
-	table_layout->setSpacing(0);
-	heading_left = new QLabel;
-	heading_left->setAlignment(Qt::AlignCenter);
-	heading_left->setFont(bt_global::font->get(FontManager::SMALLTEXT));
-	heading_left->setProperty("left", true);
-	heading_left->setProperty("heading", true);
-	table_layout->addWidget(heading_left, 0, 0);
-
-	heading_right = new QLabel;
-	heading_right->setFont(bt_global::font->get(FontManager::SMALLTEXT));
-	heading_right->setAlignment(Qt::AlignCenter);
-	heading_right->setProperty("right", true);
-	heading_right->setProperty("heading", true);
-	table_layout->addWidget(heading_right, 0, 1);
-
-
-	for (int i = 0; i < rows_per_page; ++i)
-	{
-		QLabel *left = new QLabel;
-		left->setFont(bt_global::font->get(FontManager::SMALLTEXT));
-		left->setAlignment(Qt::AlignCenter);
-		left->setProperty("left", true);
-		left->setProperty(i % 2 ? "even" : "odd", true);
-		QLabel *right = new QLabel;
-		right->setFont(bt_global::font->get(FontManager::SMALLTEXT));
-		right->setAlignment(Qt::AlignCenter);
-		right->setProperty("right", true);
-		right->setProperty(i % 2 ? "even" : "odd", true);
-
-		int row = table_layout->rowCount();
-		table_layout->addWidget(left, row, 0);
-		table_layout->addWidget(right, row, 1);
-
-	}
-}
-
-void EnergyTable::init(int num_val, QString left_text, QString right_text, QString date, int shift_val)
-{
-	num_values = num_val;
-	shift_value = shift_val;
-	heading_left->setText(left_text);
-	heading_right->setText(right_text);
-	date_label->setText(date);
+	table->setNumDecimal(n_dec);
 }
 
 void EnergyTable::setData(const QMap<int, float> &data)
+{
+	table->setData(data);
+}
+
+
+EnergyTableContent::EnergyTableContent(int n_dec)
+{
+	setContentsMargins(10, 5, 10, 0);
+
+	rows_per_page = 8;
+	current_page = 0;
+	n_decimal = n_dec;
+}
+
+void EnergyTableContent::init(int num_val, QString _left_text, QString _right_text, int shift_val)
+{
+	num_values = num_val;
+	shift_value = shift_val;
+	left_text = _left_text;
+	right_text = _right_text;
+}
+
+void EnergyTableContent::setData(const QMap<int, float> &data)
 {
 	table_data.clear();
 	int i = 0;
@@ -360,5 +284,144 @@ void EnergyTable::setData(const QMap<int, float> &data)
 		++i;
 	}
 	current_page = 0;
-	showData();
+	update();
+}
+
+void EnergyTableContent::setNumDecimal(int n_dec)
+{
+	n_decimal = n_dec;
+}
+
+void EnergyTableContent::pageUp()
+{
+	if (current_page > 0)
+		--current_page;
+	update();
+}
+
+void EnergyTableContent::pageDown()
+{
+	if (static_cast<int>((current_page + 1) * rows_per_page) < table_data.count())
+		++current_page;
+	update();
+}
+
+void EnergyTableContent::setBorderColor(const QString &color)
+{
+	border_color = color;
+}
+
+void EnergyTableContent::setHeadingColor(const QString &color)
+{
+	heading_color = color;
+}
+
+void EnergyTableContent::setOddRowColor(const QString &color)
+{
+	odd_row_color = color;
+}
+
+void EnergyTableContent::setEvenRowColor(const QString &color)
+{
+	even_row_color = color;
+}
+
+void EnergyTableContent::setTextColor(const QString &color)
+{
+	text_color = color;
+}
+
+QString EnergyTableContent::borderColor() const
+{
+	return border_color;
+}
+
+QString EnergyTableContent::headingColor() const
+{
+	return heading_color;
+}
+
+QString EnergyTableContent::oddRowColor() const
+{
+	return odd_row_color;
+}
+
+QString EnergyTableContent::evenRowColor() const
+{
+	return even_row_color;
+}
+
+QString EnergyTableContent::textColor() const
+{
+	return text_color;
+}
+
+void EnergyTableContent::paintEvent(QPaintEvent *e)
+{
+	int mtop, mbottom, mleft, mright;
+	getContentsMargins(&mleft, &mtop, &mright, &mbottom);
+
+	QPainter p(this);
+	float row_height = float(height() - mtop - mbottom - 2) / float(rows_per_page + 1);
+	int row_width = width() - mleft - mright - 3;
+	int cell_width = row_width / 2;
+	int left = mleft + 1, top = mtop + 1, right_cell_x = left + cell_width + 1;
+
+	QPen pen_border = QPen(QColor(borderColor()));
+	QPen pen_head = QPen(QColor(headingColor()));
+	QPen pen_odd = QPen(QColor(oddRowColor()));
+	QPen pen_even = QPen(QColor(evenRowColor()));
+	QPen pen_text = QPen(QColor(textColor()));
+	QBrush brush_head = QBrush(QColor(headingColor()));
+	QBrush brush_odd = QBrush(QColor(oddRowColor()));
+	QBrush brush_even = QBrush(QColor(evenRowColor()));
+
+	// external border
+	p.setPen(pen_border);
+	p.setBrush(QBrush());
+	p.drawRect(mleft, mtop, row_width + 2, height() - mtop - mbottom - 1);
+
+	// header
+	p.setPen(pen_head);
+	p.setBrush(brush_head);
+	p.drawRect(left, top, row_width, row_height);
+	p.setPen(pen_text);
+	p.drawText(QRectF(left, top, cell_width, row_height),
+		   Qt::AlignCenter, left_text);
+	p.drawText(QRectF(right_cell_x, top, cell_width, row_height),
+		   Qt::AlignCenter, right_text);
+
+	// cells
+	QList<int> data_keys = table_data.keys();
+	int start = current_page * rows_per_page;
+	for (int i = 0; i < rows_per_page; ++i)
+	{
+		int row_y = top + row_height + i * row_height;
+
+		p.setPen(i & 1 ? pen_even : pen_odd);
+		p.setBrush(i & 1 ? brush_even : brush_odd);
+		p.drawRect(left, row_y, row_width, row_height);
+
+		if (i + start < data_keys.count())
+		{
+			int key = data_keys.at(i + start);
+			int left_value = key;
+			if (shift_value != -1)
+			{
+				left_value = (shift_value + key) % num_values;
+				if (left_value == 0)
+					left_value = num_values;
+			}
+
+			p.setPen(pen_text);
+			p.drawText(QRectF(left, row_y, cell_width, row_height),
+				   Qt::AlignCenter, QString::number(left_value));
+			p.drawText(QRectF(right_cell_x, row_y, cell_width, row_height),
+				   Qt::AlignCenter, loc.toString(table_data[key], 'f', n_decimal));
+		}
+	}
+
+	// central separator line
+	p.setPen(pen_border);
+	p.drawLine(right_cell_x - 1, mtop, right_cell_x - 1, height() - mbottom - mtop);
 }
