@@ -24,6 +24,24 @@ enum
 	DIM_DEVICE_OFF = 0,
 };
 
+
+int dimmerLevelTo100(int level)
+{
+	switch (level)
+	{
+	case 2:
+		return 1;
+	case 9:
+		return 75;
+	case 10:
+		return 100;
+	default:
+		return (level - 2) * 10;
+	}
+}
+
+
+
 LightingDevice::LightingDevice(QString where, PullMode pull) :
 	PullDevice(QString("1"), where, pull)
 {

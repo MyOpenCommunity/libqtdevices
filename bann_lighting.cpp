@@ -269,7 +269,10 @@ void Dimmer100::status_changed(const StatusList &sl)
 			break;
 		case LightingDevice::DIM_DIMMER_LEVEL:
 			setState(ON);
-			light_value = getDimmerLevel(it.value().toInt());
+			light_value = dimmerLevelTo100(it.value().toInt());
+			if (light_value == 1) // we need this special case to find the proper image
+				light_value = 5;
+
 			setLevel(light_value);
 			break;
 		case LightingDevice::DIM_DIMMER_PROBLEM:
@@ -298,23 +301,6 @@ int Dimmer100::roundTo5(int value)
 		return value;
 	else
 		return (div + 1) * 5;
-}
-
-// Convert a dimmer10 level into range 0-100 with the formula given on the specs
-int Dimmer100::getDimmerLevel(int level)
-{
-	switch (level)
-	{
-	case 2:
-		// the specs say '1', but we don't have this granularity so just return the minimum available
-		return 5;
-	case 9:
-		return 75;
-	case 10:
-		return 100;
-	default:
-		return (level - 2) * 10;
-	}
 }
 
 

@@ -696,25 +696,27 @@ void DeviceConditionDimming100::status_changed(const StatusList &sl)
 
 	while (it != sl.constEnd())
 	{
-		switch (it.key())
+		int level;
+		if (it.key() == LightingDevice::DIM_DEVICE_ON || it.key() == LightingDevice::DIM_DIMMER100_LEVEL)
+			level = it.value().toInt();
+		else if (it.key() == LightingDevice::DIM_DIMMER_LEVEL)
+			level = dimmerLevelTo100(it.value().toInt());
+		else
 		{
-		case LightingDevice::DIM_DEVICE_ON:
-		case LightingDevice::DIM_DIMMER100_LEVEL:
+			++it;
+			continue;
+		}
+
+		if (level >= trig_min && level <= trig_max)
 		{
-			int level = it.value().toInt();
-			if (level >= trig_min && level <= trig_max)
+			if (!satisfied)
 			{
-				if (!satisfied)
-				{
-					satisfied = true;
-					emit condSatisfied();
-				}
+				satisfied = true;
+				emit condSatisfied();
 			}
-			else
-				satisfied = false;
 		}
-			break;
-		}
+		else
+			satisfied = false;
 		++it;
 	}
 }

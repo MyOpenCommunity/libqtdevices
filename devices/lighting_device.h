@@ -3,6 +3,8 @@
 
 #include "pulldevice.h"
 
+// Convert a dimmer10 level into range 0-100 with the formula given on the specs
+int dimmerLevelTo100(int level);
 
 class LightingDevice : public PullDevice
 {
