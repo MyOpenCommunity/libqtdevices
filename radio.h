@@ -149,6 +149,12 @@ public slots:
 	void verTas();
 
 private:
+	enum VisualState
+	{
+		STATION_SELECTION,   // tune the frequency, select manual/automatic
+		MEMORY               // select memory number
+	};
+	VisualState state;
 	QWidget *createContent(const QString &amb);
 	float frequenza;
 	uchar stazione;
@@ -173,6 +179,8 @@ private:
 	 */
 	QString * getRDS();
 
+private slots:
+	void handleClose();
 };
 
 

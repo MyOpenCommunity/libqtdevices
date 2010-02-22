@@ -35,7 +35,8 @@ radio::radio(const QString &amb)
 {
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(backClick()), SLOT(handleClose()));
+	state = STATION_SELECTION;
 
 	buildPage(createContent(amb), nav_bar);
 }
@@ -270,10 +271,7 @@ void radio::cambiaContesto()
 	autoBut->hide();
 	manBut->hide();
 	cicBut->hide();
-	/*
-	disconnect(bannNavigazione  ,SIGNAL(backClick()),this,SIGNAL(Closed()));
-	connect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(ripristinaContesto()));
-	*/
+	state = MEMORY;
 }
 
 void radio::ripristinaContesto()
@@ -290,10 +288,15 @@ void radio::ripristinaContesto()
 	autoBut->show();
 	manBut->show();
 	cicBut->show();
-	/*
-	connect(bannNavigazione  ,SIGNAL(backClick()),this,SIGNAL(Closed()));
-	disconnect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(ripristinaContesto()));
-	*/
+	state = STATION_SELECTION;
+}
+
+void radio::handleClose()
+{
+	if (state == MEMORY)
+		ripristinaContesto();
+	else
+		emit Closed();
 }
 
 void radio::verTas()
