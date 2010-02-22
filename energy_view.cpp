@@ -267,7 +267,8 @@ Bann2Buttons *getBanner(QWidget *parent, QString primary_text)
 }
 
 
-EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id)
+EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id, EnergyTable *_table,
+		       EnergyGraph *_graph)
 {
 	rate = EnergyRates::energy_rates.getRate(rate_id);
 	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
@@ -300,10 +301,10 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	widget_container = new QStackedWidget;
 	widget_container->addWidget(buildBannerWidget());
-	widget_container->addWidget(new EnergyGraph);
 
 	main_layout->addWidget(widget_container, 1);
-	table = new EnergyTable(3);
+	table = _table;
+	graph = _graph;
 
 	if (rate.isValid())
 	{
@@ -459,7 +460,6 @@ QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 void EnergyView::status_changed(const StatusList &status_list)
 {
 	current_date = time_period->date();
-	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
 	StatusList::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
@@ -567,7 +567,6 @@ void EnergyView::backClick()
 
 void EnergyView::updateCurrentGraph()
 {
-	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
 	current_date = time_period->date();
 	QString label = EnergyInterface::isCurrencyView() ? rate.currency_symbol : unit_measure;
 	QMap<int, QString> graph_x_axis;
@@ -640,6 +639,11 @@ void EnergyView::showGraph(int graph_type, bool request_update)
 
 	current_widget = GRAPH_WIDGET;
 	current_graph = static_cast<EnergyDevice::GraphType>(graph_type);
+	if (graph->parent() != widget_container)
+	{
+		qDebug() << "Reparenting the graph";
+		widget_container->addWidget(graph);
+	}
 
 	updateCurrentGraph();
 

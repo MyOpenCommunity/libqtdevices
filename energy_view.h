@@ -15,6 +15,7 @@ class BtButton;
 class Bann2Buttons;
 class EnergyDevice;
 class EnergyTable;
+class EnergyGraph;
 class QLabel;
 class QStackedWidget;
 class QSignalMapper;
@@ -82,7 +83,8 @@ public:
 	 * \param n_dec the number of decimals to show in the labels
 	 * \param is_production True if the data must be interpreted as production, false for consumption
 	 */
-	EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id);
+	EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id,
+		   EnergyTable *_table, EnergyGraph *_graph);
 	~EnergyView();
 	virtual void inizializza();
 	void systemTimeChanged();
@@ -117,6 +119,7 @@ private:
 	TimePeriodSelection *time_period;
 	QStackedWidget *widget_container;
 	EnergyTable *table;
+	EnergyGraph *graph;
 	Widget current_widget;
 	EnergyDevice *dev;
 	QString unit_measure;

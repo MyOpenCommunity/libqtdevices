@@ -12,6 +12,7 @@
 #include "bann1_button.h" // BannSinglePuls
 #include "btbutton.h"
 #include "energy_management.h"
+#include "energy_graph.h"
 
 #include <QDomNode>
 #include <QLocale>
@@ -259,6 +260,8 @@ void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_
 	assert(bt_global::skin->hasContext() && "Skin context not set!");
 	QString energy_type = getTextChild(config_node, "descr");
 	bool show_currency_button = false;
+	EnergyTable *table = new EnergyTable(3);
+	EnergyGraph *graph = new EnergyGraph;
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
@@ -272,7 +275,7 @@ void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_
 		show_currency_button |= is_currency_enabled;
 
 		QString addr = getTextChild(item, "address");
-		next_page = new EnergyView(measure, energy_type, addr, mode, rate_id);
+		next_page = new EnergyView(measure, energy_type, addr, mode, rate_id, table, graph);
 
 		BannEnergyInterface *b = new BannEnergyInterface(rate_id, mode == 1, getTextChild(item, "descr"));
 		b->connectRightButton(next_page);
