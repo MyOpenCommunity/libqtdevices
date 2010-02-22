@@ -97,8 +97,11 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 	{
 	case DIM_DEVICE_ON:
 	case DIM_DEVICE_OFF:
-		v.setValue(what == DIM_DEVICE_ON);
-		status_index = DIM_DEVICE_ON;
+		if (msg.IsNormalFrame())
+		{
+			v.setValue(what == DIM_DEVICE_ON);
+			status_index = DIM_DEVICE_ON;
+		}
 		break;
 	case DIM_VARIABLE_TIMING:
 		if (msg.IsMeasureFrame())
@@ -207,7 +210,6 @@ void Dimmer100Device::requestPullStatus()
 void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
 {
 	DimmerDevice::parseFrame(msg, sl);
-
 	int what = msg.what();
 
 	if (what == DIMMER100_STATUS && msg.IsMeasureFrame())
