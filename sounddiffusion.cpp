@@ -17,6 +17,7 @@
 #include "sorgentiradio.h"
 #include "poweramplifier.h"
 #include "icondispatcher.h" //bt_global::icons_cache
+#include "skinmanager.h" // SkinContext
 
 #include <openmsg.h>
 
@@ -42,6 +43,7 @@ void AudioSources::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
+		SkinContext context(getTextChild(item, "cid").toInt());
 		int id = getTextChild(item, "id").toInt();
 		QString descr = getTextChild(item, "descr");
 		QString where = getTextChild(item, "where");
