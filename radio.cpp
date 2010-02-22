@@ -61,6 +61,9 @@ QWidget *radio::createContent(const QString &amb)
 	rdsLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	rdsLabel->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	radioName = new QLabel(content);
+	radioName->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
+	radioName->setFont(bt_global::font->get(FontManager::SMALLTEXT));
+
 	ambDescr = new QLabel(content);
 	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
 	ambDescr->setFont(bt_global::font->get(FontManager::SMALLTEXT));
@@ -68,6 +71,9 @@ QWidget *radio::createContent(const QString &amb)
 
 	freq = new QLCDNumber(content);
 	progrText = new QLabel(content);
+	progrText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	progrText->setFont(bt_global::font->get(FontManager::TEXT));
+
 	freq->setSegmentStyle(QLCDNumber::Flat);
 	freq->setSmallDecimalPoint(TRUE);
 	freq->setNumDigits(6);
@@ -146,6 +152,9 @@ void radio::showPage()
 void radio::setFreq(float f)
 {
 	frequenza = f;
+	QString fr;
+	fr.sprintf("%.2f",frequenza);
+	freq->display(fr);
 }
 
 float radio::getFreq()
@@ -162,7 +171,10 @@ void radio::setRDS(const QString & s)
 
 void radio::setStaz(uchar st)
 {
-	stazione = st;
+	if (st)
+		progrText->setText(QString::number((int)st)+":");
+	else
+		progrText->setText("--:");
 }
 
 uchar radio::getStaz()
@@ -182,13 +194,6 @@ void radio::setAmbDescr(const QString & d)
 
 void radio::draw()
 {
-	radioName->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
-	radioName->setFont(bt_global::font->get(FontManager::SMALLTEXT));
-	radioName->setText(qnome);
-	QString fr;
-	fr.sprintf("%.2f",frequenza);
-	freq->display(fr);
-
 	if (manual!=wasManual)
 	{
 		if (manual)
@@ -203,18 +208,11 @@ void radio::draw()
 		}
 	}
 	wasManual=manual;
-
-	progrText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	progrText->setFont(bt_global::font->get(FontManager::TEXT));
-	if (stazione)
-		progrText->setText(QString::number((int)stazione)+":");
-	else
-		progrText->setText("--:");
 }
 
 void radio::setName(const QString & s)
 {
-	qnome = s;
+	radioName->setText(s);
 }
 
 void radio::setAuto()
