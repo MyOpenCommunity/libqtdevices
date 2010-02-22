@@ -398,7 +398,12 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 	Q_ASSERT_X(v.canConvert<GraphData>(), "EnergyView::saveGraphInCache", "Cannot convert graph data");
 	GraphData *d = new GraphData(v.value<GraphData>());
 	if (!graph_data_cache.contains(t))
+	{
 		graph_data_cache[t] = new GraphCache;
+		// keep at most a full month in cache, to avoid
+		// excessive memory consumption
+		graph_data_cache[t]->setMaxCost(31);
+	}
 
 	GraphCache *cache = graph_data_cache[t];
 	QString key = dateToKey(d->date, t);
