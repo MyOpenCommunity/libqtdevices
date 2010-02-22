@@ -40,6 +40,9 @@ private slots:
 	void testDimmingRange3();
 	void testDimming100Off();
 	void testDimming100Range1();
+	void testDimming100Range2();
+	void testDimming100Range3();
+	void testDimming100Range4();
 	void testInternalTemperature1();
 	void testInternalTemperature2();
 	void testInternalTemperature3();
