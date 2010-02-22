@@ -37,7 +37,7 @@ radio::radio(const QString &amb)
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
-	buildPage(createContent(amb), new NavigationBar);
+	buildPage(createContent(amb), nav_bar);
 }
 
 QWidget *radio::createContent(const QString &amb)
@@ -113,6 +113,13 @@ QWidget *radio::createContent(const QString &amb)
 	cinBut->setImage(bt_global::skin->getImage("num_5"));
 	cancBut->setImage(bt_global::skin->getImage("cancel"));
 
+	button_group.addButton(unoBut, 1);
+	button_group.addButton(dueBut, 2);
+	button_group.addButton(treBut, 3);
+	button_group.addButton(quatBut, 4);
+	button_group.addButton(cinBut, 5);
+	connect(&button_group, SIGNAL(buttonClicked(int)), SLOT(memo(int)));
+
 	manual=FALSE;
 	wasManual=TRUE;
 
@@ -124,11 +131,6 @@ QWidget *radio::createContent(const QString &amb)
 	connect(manBut,SIGNAL(clicked()),this,SLOT(setMan()));
 	connect(memoBut,SIGNAL(clicked()),this,SLOT(cambiaContesto()));
 	connect(cancBut,SIGNAL(clicked()),this,SLOT(ripristinaContesto()));
-	connect(unoBut,SIGNAL(clicked()),this,SLOT(memo1()));
-	connect(dueBut,SIGNAL(clicked()),this,SLOT(memo2()));
-	connect(treBut,SIGNAL(clicked()),this,SLOT(memo3()));
-	connect(quatBut,SIGNAL(clicked()),this,SLOT(memo4()));
-	connect(cinBut,SIGNAL(clicked()),this,SLOT(memo5()));
 	return content;
 }
 
@@ -248,33 +250,9 @@ void radio::setMan()
 	draw();
 }
 
-void radio::memo1()
+void radio::memo(int memory)
 {
-	emit(memoFreq(uchar(1)));
-	ripristinaContesto();
-}
-
-void radio::memo2()
-{
-	emit(memoFreq(uchar(2)));
-	ripristinaContesto();
-}
-
-void radio::memo3()
-{
-	emit(memoFreq(uchar(3)));
-	ripristinaContesto();
-}
-
-void radio::memo4()
-{
-	emit(memoFreq(uchar(4)));
-	ripristinaContesto();
-}
-
-void radio::memo5()
-{
-	emit(memoFreq(uchar(5)));
+	emit(memoFreq(uchar(memory)));
 	ripristinaContesto();
 }
 

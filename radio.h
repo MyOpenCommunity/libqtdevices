@@ -24,6 +24,8 @@
 
 #include "page.h"
 
+#include <QButtonGroup>
+
 class BtButton;
 class bannFrecce;
 class QLCDNumber;
@@ -129,25 +131,10 @@ public slots:
 	 */
 	void setMan();
 	/*!
-	 * \brief saves the station actually tued to station number one
+	 * \brief Save currently tuned station to memory location given by parameter
 	 */
-	void memo1();
-	/*!
-	 * \brief saves the station actually tued to station number two
-	 */
-	void memo2();
-	/*!
-	 * \brief saves the station actually tued to station number three
-	 */
-	void memo3();
-	/*!
-	 * \brief saves the station actually tued to station number for
-	 */
-	void memo4();
-	/*!
-	 * \brief saves the station actually tued to station number five
-	 */
-	void memo5();
+	void memo(int memory);
+
 	/*!
 	 * \brief Shows the memorization page
 	 */
@@ -172,6 +159,7 @@ private:
 	bannFrecce *bannNavigazione;
 	BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
 	BtButton *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*cancBut;
+	QButtonGroup button_group;
 	QLabel *rdsLabel, *radioName, *progrText, *ambDescr;
 	QLCDNumber *freq;
 	QString manual_off, manual_on, auto_off, auto_on;
