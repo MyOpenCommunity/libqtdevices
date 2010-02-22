@@ -75,7 +75,7 @@ QWidget *radio::createContent(const QString &amb)
 	progrText->setFont(bt_global::font->get(FontManager::TEXT));
 
 	freq->setSegmentStyle(QLCDNumber::Flat);
-	freq->setSmallDecimalPoint(TRUE);
+	freq->setSmallDecimalPoint(true);
 	freq->setNumDigits(6);
 	freq->setGeometry(60,40,180,60);
 	freq->setLineWidth(0);
@@ -129,8 +129,8 @@ QWidget *radio::createContent(const QString &amb)
 	button_group.addButton(cinBut, 5);
 	connect(&button_group, SIGNAL(buttonClicked(int)), SLOT(memo(int)));
 
-	manual=FALSE;
-	wasManual=TRUE;
+	manual=false;
+	wasManual=true;
 
 	connect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
 	connect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
@@ -213,9 +213,9 @@ void radio::setAuto()
 	disconnect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqMan()));
 	disconnect(aumBut,SIGNAL(clicked()),this,SLOT(verTas()));
 	disconnect(decBut,SIGNAL(clicked()),this,SLOT(verTas()));
-	aumBut->setAutoRepeat (FALSE);
-	decBut->setAutoRepeat (FALSE);
-	manual=FALSE;
+	aumBut->setAutoRepeat (false);
+	decBut->setAutoRepeat (false);
+	manual=false;
 	draw();
 }
 
@@ -225,11 +225,11 @@ void radio::setMan()
 	disconnect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
 	connect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqMan()));
 	connect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqMan()));
-	aumBut->setAutoRepeat (TRUE);
-	decBut->setAutoRepeat (TRUE);
+	aumBut->setAutoRepeat (true);
+	decBut->setAutoRepeat (true);
 	connect(aumBut,SIGNAL(clicked()),this,SLOT(verTas()));
 	connect(decBut,SIGNAL(clicked()),this,SLOT(verTas()));
-	manual=TRUE;
+	manual=true;
 	draw();
 }
 
