@@ -177,11 +177,6 @@ void radio::setStaz(uchar st)
 		progrText->setText("--:");
 }
 
-bool radio::isManual()
-{
-	return manual;
-}
-
 void radio::setAmbDescr(const QString & d)
 {
 	ambDescr->setText(d);

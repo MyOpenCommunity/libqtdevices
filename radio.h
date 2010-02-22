@@ -121,20 +121,13 @@ private:
 	VisualState state;
 	QWidget *createContent(const QString &amb);
 	float frequenza;
-	QString qnome;
 	bool manual, wasManual;
-	bannFrecce *bannNavigazione;
 	BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
 	BtButton *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*cancBut;
 	QButtonGroup button_group;
 	QLabel *rdsLabel, *radioName, *progrText, *ambDescr;
 	QLCDNumber *freq;
 	QString manual_off, manual_on, auto_off, auto_on;
-
-	/*!
-	 * \brief Retrieves if the selected search method is automatic or manual
-	 */
-	bool isManual();
 
 private slots:
 	void handleClose();
