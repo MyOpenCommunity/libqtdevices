@@ -73,10 +73,6 @@ public:
 
 signals:
 	/*!
-	 * \brief Emitted when the page is going to be closed
-	 */
-	void Closed();
-	/*!
 	 * \brief Emitted when there's a request of an automatic search towards greater frequencies
 	 */
 	void aumFreqAuto();
@@ -104,45 +100,17 @@ signals:
 	 *\brief Emitted to ask the frequency actually tuned
 	 */
 	void richFreq();
-	/*!
-	 * \brief Emitted to enter the  tuner details page
-	 */
-	void entroParam();
-	/*!
-	 * \brief Emitted to exit the tuner details page
-	 */
-	void escoParam();
 
 public slots:
 	/*!
 	 * \brief Shows the tuner details page 
 	 */
 	virtual void showPage();
-	/*!
-	 * \brief Changes the state to automatic search
-	 */
-	void setAuto();
-	/*!
-	 * \brief Changes the state to manual search
-	 */
-	void setMan();
+
 	/*!
 	 * \brief Save currently tuned station to memory location given by parameter
 	 */
 	void memo(int memory);
-
-	/*!
-	 * \brief Shows the memorization page
-	 */
-	void cambiaContesto();
-	/*!
-	 * \brief Hides -memorization page ans show back tuner details page
-	 */
-	void ripristinaContesto();
-	/*!
-	 * \brief At the end of a manual search ask the frequency tuned to the tuner to align to the visualized frequency
-	 */
-	void verTas();
 
 private:
 	enum VisualState
@@ -170,6 +138,31 @@ private:
 
 private slots:
 	void handleClose();
+
+	/*!
+	 * \brief Changes the state to automatic search
+	 */
+	void setAuto();
+
+	/*!
+	 * \brief Changes the state to manual search
+	 */
+	void setMan();
+
+	/*!
+	 * \brief Shows the memorization page
+	 */
+	void cambiaContesto();
+
+	/*!
+	 * \brief Hides -memorization page ans show back tuner details page
+	 */
+	void ripristinaContesto();
+
+	/*!
+	 * \brief At the end of a manual search ask the frequency tuned to the tuner to align to the visualized frequency
+	 */
+	void verTas();
 };
 
 
