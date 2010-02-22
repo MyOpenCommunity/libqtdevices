@@ -177,11 +177,6 @@ void radio::setStaz(uchar st)
 		progrText->setText("--:");
 }
 
-uchar radio::getStaz()
-{
-	return stazione;
-}
-
 bool radio::isManual()
 {
 	return manual;

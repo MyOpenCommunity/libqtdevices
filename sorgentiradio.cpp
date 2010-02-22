@@ -118,7 +118,6 @@ void banradio::status_changed(QList<device_status*> sl)
 			myRadio->setFreq(freq);
 			qDebug() << "*** setting freq to " << freq;
 			myRadio->setStaz((uchar)curr_staz.get_val());
-			qDebug() << "*** setting staz to " << myRadio->getStaz();
 
 			QString qrds;
 			qrds += QChar(curr_rds0.get_val());

@@ -70,10 +70,6 @@ public:
 	 * \brief Sets amb. description
 	 */
 	void setAmbDescr(const QString &);
-	/*!
-	 * \brief Gets the station number of the syntonized station
-	 */
-	uchar getStaz();
 
 signals:
 	/*!
@@ -157,8 +153,6 @@ private:
 	VisualState state;
 	QWidget *createContent(const QString &amb);
 	float frequenza;
-	uchar stazione;
-	QString qrds;
 	QString qnome;
 	bool manual, wasManual;
 	bannFrecce *bannNavigazione;
