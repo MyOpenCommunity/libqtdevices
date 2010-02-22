@@ -24,37 +24,47 @@
 #include "btbutton.h"
 #include "fontmanager.h" // bt_global::font
 #include "skinmanager.h" // bt_global::skin
+#include "navigation_bar.h" // NavigationBar
 
 #include <QLabel>
 #include <QLCDNumber>
+#include <QDebug>
 
 
 radio::radio(const QString &amb)
 {
-	bannNavigazione = new bannFrecce(this,1);
-	bannNavigazione->setGeometry(0, height() - height()/NUM_RIGHE, width(), height()/NUM_RIGHE);
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
-	memoBut = new BtButton(this);
-	decBut = new BtButton(this);
-	aumBut = new BtButton(this);
-	autoBut = new BtButton(this);
-	manBut = new BtButton(this);
-	cicBut = new BtButton(this);
-	unoBut = new BtButton(this);
-	dueBut = new BtButton(this);
-	treBut = new BtButton(this);
-	quatBut = new BtButton(this);
-	cinBut = new BtButton(this);
-	cancBut = new BtButton(this);
+	buildPage(createContent(amb), new NavigationBar);
+}
 
-	rdsLabel = new QLabel(this);
-	radioName = new QLabel(this);
-	ambDescr = new QLabel(this);
+QWidget *radio::createContent(const QString &amb)
+{
+	QWidget *content = new QWidget;
+	memoBut = new BtButton(content);
+	decBut = new BtButton(content);
+	aumBut = new BtButton(content);
+	autoBut = new BtButton(content);
+	manBut = new BtButton(content);
+	cicBut = new BtButton(content);
+	unoBut = new BtButton(content);
+	dueBut = new BtButton(content);
+	treBut = new BtButton(content);
+	quatBut = new BtButton(content);
+	cinBut = new BtButton(content);
+	cancBut = new BtButton(content);
+
+	rdsLabel = new QLabel(content);
+	radioName = new QLabel(content);
+	ambDescr = new QLabel(content);
 	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
 	ambDescr->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 	ambDescr->setText(amb);
-	freq = new QLCDNumber(this);
-	progrText = new QLabel(this);
+
+	freq = new QLCDNumber(content);
+	progrText = new QLabel(content);
 	freq->setSegmentStyle(QLCDNumber::Flat);
 	freq->setSmallDecimalPoint(TRUE);
 	freq->setNumDigits(6);
@@ -106,13 +116,12 @@ radio::radio(const QString &amb)
 	manual=FALSE;
 	wasManual=TRUE;
 
-	connect(bannNavigazione  ,SIGNAL(backClick()),this,SIGNAL(Closed()));
 	connect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
 	connect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
 	connect(cicBut,SIGNAL(clicked()),this,SIGNAL(changeStaz()));
 
 	connect(autoBut,SIGNAL(clicked()),this,SLOT(setAuto()));
-	connect(manBut,SIGNAL(clicked()),this,SLOT(setMan()));	
+	connect(manBut,SIGNAL(clicked()),this,SLOT(setMan()));
 	connect(memoBut,SIGNAL(clicked()),this,SLOT(cambiaContesto()));
 	connect(cancBut,SIGNAL(clicked()),this,SLOT(ripristinaContesto()));
 	connect(unoBut,SIGNAL(clicked()),this,SLOT(memo1()));
@@ -120,6 +129,7 @@ radio::radio(const QString &amb)
 	connect(treBut,SIGNAL(clicked()),this,SLOT(memo3()));
 	connect(quatBut,SIGNAL(clicked()),this,SLOT(memo4()));
 	connect(cinBut,SIGNAL(clicked()),this,SLOT(memo5()));
+	return content;
 }
 
 void radio::showPage()
@@ -282,8 +292,10 @@ void radio::cambiaContesto()
 	autoBut->hide();
 	manBut->hide();
 	cicBut->hide();
+	/*
 	disconnect(bannNavigazione  ,SIGNAL(backClick()),this,SIGNAL(Closed()));
 	connect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(ripristinaContesto()));
+	*/
 }
 
 void radio::ripristinaContesto()
@@ -300,8 +312,10 @@ void radio::ripristinaContesto()
 	autoBut->show();
 	manBut->show();
 	cicBut->show();
+	/*
 	connect(bannNavigazione  ,SIGNAL(backClick()),this,SIGNAL(Closed()));
 	disconnect(bannNavigazione  ,SIGNAL(backClick()),this,SLOT(ripristinaContesto()));
+	*/
 }
 
 void radio::verTas()

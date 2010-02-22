@@ -162,6 +162,7 @@ public slots:
 	void verTas();
 
 private:
+	QWidget *createContent(const QString &amb);
 	float frequenza;
 	uchar stazione;
 	QString qrds;
