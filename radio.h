@@ -159,7 +159,6 @@ private:
 	float frequenza;
 	uchar stazione;
 	QString qrds;
-	char amb[80];
 	QString qnome;
 	bool manual, wasManual;
 	bannFrecce *bannNavigazione;
@@ -174,10 +173,6 @@ private:
 	 * \brief Retrieves if the selected search method is automatic or manual
 	 */
 	bool isManual();
-	/*!
-	 * \brief Gets the RDS message of the syntonized station
-	 */
-	QString * getRDS();
 
 private slots:
 	void handleClose();

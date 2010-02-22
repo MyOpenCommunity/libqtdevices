@@ -58,6 +58,8 @@ QWidget *radio::createContent(const QString &amb)
 	cancBut = new BtButton(content);
 
 	rdsLabel = new QLabel(content);
+	rdsLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	rdsLabel->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	radioName = new QLabel(content);
 	ambDescr = new QLabel(content);
 	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
@@ -153,13 +155,9 @@ float radio::getFreq()
 
 void radio::setRDS(const QString & s)
 {
-	qrds = s;
-	qrds.truncate(8);
-}
-
-QString *radio::getRDS()
-{
-	return &qrds;
+	QString rds = s;
+	rds.truncate(8);
+	rdsLabel->setText(rds);
 }
 
 void radio::setStaz(uchar st)
@@ -184,13 +182,9 @@ void radio::setAmbDescr(const QString & d)
 
 void radio::draw()
 {
-	rdsLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	rdsLabel->setFont(bt_global::font->get(FontManager::SUBTITLE));
-
 	radioName->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
 	radioName->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 	radioName->setText(qnome);
-	rdsLabel->setText(qrds);
 	QString fr;
 	fr.sprintf("%.2f",frequenza);
 	freq->display(fr);
