@@ -50,10 +50,7 @@ public:
 	 * \brief Sets the station number of the syntonized station
 	 */
 	void setStaz(uchar);
-	/*!
-	 * \brief Draws the page
-	 */
-	void draw();
+
 	/*!
 	 * \brief Sets the frequency of the syntonized station
 	 */
@@ -102,11 +99,6 @@ signals:
 	void richFreq();
 
 public slots:
-	/*!
-	 * \brief Shows the tuner details page 
-	 */
-	virtual void showPage();
-
 	/*!
 	 * \brief Save currently tuned station to memory location given by parameter
 	 */

@@ -143,12 +143,6 @@ QWidget *radio::createContent(const QString &amb)
 	return content;
 }
 
-void radio::showPage()
-{
-	draw();
-	Page::showPage();
-}
-
 void radio::setFreq(float f)
 {
 	frequenza = f;
@@ -182,24 +176,6 @@ void radio::setAmbDescr(const QString & d)
 	ambDescr->setText(d);
 }
 
-void radio::draw()
-{
-	if (manual!=wasManual)
-	{
-		if (manual)
-		{
-			manBut->setImage(manual_on, BtButton::NO_FLAG);
-			autoBut->setImage(auto_off, BtButton::NO_FLAG);
-		}
-		else
-		{
-			manBut->setImage(manual_off, BtButton::NO_FLAG);
-			autoBut->setImage(auto_on, BtButton::NO_FLAG);
-		}
-	}
-	wasManual=manual;
-}
-
 void radio::setName(const QString & s)
 {
 	radioName->setText(s);
@@ -215,8 +191,12 @@ void radio::setAuto()
 	disconnect(decBut,SIGNAL(clicked()),this,SLOT(verTas()));
 	aumBut->setAutoRepeat (false);
 	decBut->setAutoRepeat (false);
-	manual=false;
-	draw();
+	if (manual)
+	{
+		manual = false;
+		manBut->setImage(manual_off, BtButton::NO_FLAG);
+		autoBut->setImage(auto_on, BtButton::NO_FLAG);
+	}
 }
 
 void radio::setMan()
@@ -229,8 +209,12 @@ void radio::setMan()
 	decBut->setAutoRepeat (true);
 	connect(aumBut,SIGNAL(clicked()),this,SLOT(verTas()));
 	connect(decBut,SIGNAL(clicked()),this,SLOT(verTas()));
-	manual=true;
-	draw();
+	if (!manual)
+	{
+		manual = true;
+		manBut->setImage(manual_on, BtButton::NO_FLAG);
+		autoBut->setImage(auto_off, BtButton::NO_FLAG);
+	}
 }
 
 void radio::memo(int memory)

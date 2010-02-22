@@ -92,7 +92,6 @@ void banradio::status_changed(QList<device_status*> sl)
 	stat_var curr_rds5(stat_var::RDS5);
 	stat_var curr_rds6(stat_var::RDS6);
 	stat_var curr_rds7(stat_var::RDS7);
-	bool aggiorna = false;
 	qDebug("bannradio::status_changed()");
 	float freq;
 
@@ -130,7 +129,6 @@ void banradio::status_changed(QList<device_status*> sl)
 			qrds += QChar(curr_rds7.get_val());
 			qDebug() << "*** setting rds to " << qrds;
 			myRadio->setRDS(qrds);
-			aggiorna = 1;
 			break;
 		}
 		default:
@@ -138,9 +136,6 @@ void banradio::status_changed(QList<device_status*> sl)
 			break;
 		}
 	}
-
-	if (aggiorna)
-		myRadio->draw();
 }
 
 void banradio::pre_show()
@@ -189,7 +184,6 @@ void banradio::aumFreqAuto()
 {
 	myRadio->setFreq(0.00);
 	myRadio->setRDS("- - - - ");
-	myRadio->draw();
 	dev->sendFrame(createMsgOpen("16", "5000", getAddress()));
 }
 
@@ -197,7 +191,6 @@ void banradio::decFreqAuto()
 {
 	myRadio->setFreq(0.00);
 	myRadio->setRDS("- - - - ");
-	myRadio->draw();
 	dev->sendFrame(createMsgOpen("16", "5100", getAddress()));
 }
 
@@ -211,7 +204,6 @@ void banradio::aumFreqMan()
 	else
 		f = 87.50;
 	myRadio->setFreq(f);
-	myRadio->draw();
 	dev->sendFrame(createMsgOpen("16", "5001", getAddress()));
 }
 
@@ -225,7 +217,6 @@ void banradio::decFreqMan()
 	else
 		f = 108.00;
 	myRadio->setFreq(f);
-	myRadio->draw();
 	dev->sendFrame(createMsgOpen("16", "5101", getAddress()));
 }
 
