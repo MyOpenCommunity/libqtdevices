@@ -113,8 +113,8 @@ protected:
 	void connectDevice(device *dev);
 
 private slots:
-	void monitorUp();
-	void monitorDown();
+	void connectionUp();
+	void connectionDown();
 
 private:
 	int id;

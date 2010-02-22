@@ -51,8 +51,8 @@ signals:
 	/// and concrete device class.
 	void status_changed(const StatusList &status_list);
 
-	void monitorUp();
-	void monitorDown();
+	void connectionUp();
+	void connectionDown();
 
 public slots:
 	void sendFrame(QString frame) const;

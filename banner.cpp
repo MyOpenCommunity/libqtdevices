@@ -87,20 +87,20 @@ int banner::getId()
 void banner::connectDevice(device *dev)
 {
 	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
-	connect(dev, SIGNAL(monitorUp()), SLOT(monitorUp()));
-	connect(dev, SIGNAL(monitorDown()), SLOT(monitorDown()));
+	connect(dev, SIGNAL(connectionUp()), SLOT(connectionUp()));
+	connect(dev, SIGNAL(connectionDown()), SLOT(connectionDown()));
 	if (dev->isConnected())
-		monitorUp();
+		connectionUp();
 	else
-		monitorDown();
+		connectionDown();
 }
 
-void banner::monitorUp()
+void banner::connectionUp()
 {
 	setEnabled(true);
 }
 
-void banner::monitorDown()
+void banner::connectionDown()
 {
 	setEnabled(false);
 }
