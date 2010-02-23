@@ -29,6 +29,7 @@
 #include <QLabel>
 #include <QLCDNumber>
 #include <QDebug>
+#include <QVBoxLayout>
 
 
 radio::radio(const QString &amb)
@@ -44,12 +45,12 @@ radio::radio(const QString &amb)
 QWidget *radio::createContent(const QString &amb)
 {
 	QWidget *content = new QWidget;
+
 	memoBut = new BtButton(content);
 	decBut = new BtButton(content);
 	aumBut = new BtButton(content);
 	autoBut = new BtButton(content);
 	manBut = new BtButton(content);
-	cicBut = new BtButton(content);
 	unoBut = new BtButton(content);
 	dueBut = new BtButton(content);
 	treBut = new BtButton(content);
@@ -57,44 +58,56 @@ QWidget *radio::createContent(const QString &amb)
 	cinBut = new BtButton(content);
 	cancBut = new BtButton(content);
 
-	rdsLabel = new QLabel(content);
-	rdsLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	rdsLabel->setFont(bt_global::font->get(FontManager::SUBTITLE));
-	radioName = new QLabel(content);
+	// top of all, radio description
+	radioName = new QLabel;
 	radioName->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
 	radioName->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 
+	// below radio name, environment description
 	ambDescr = new QLabel(content);
 	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
 	ambDescr->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 	ambDescr->setText(amb);
 
-	freq = new QLCDNumber(content);
+	// below description, frequency + cycle button
+	QGridLayout *freq_layout = new QGridLayout;
+	freq_layout->setContentsMargins(0, 0, 0, 0);
+	freq_layout->setSpacing(0);
+	cicBut = new BtButton(content);
+	cicBut->setImage(bt_global::skin->getImage("cycle"));
+	connect(cicBut,SIGNAL(clicked()),this,SIGNAL(changeStaz()));
+	freq_layout->addWidget(cicBut, 0, 0);
+	freq_layout->setColumnStretch(0, 1);
+
 	progrText = new QLabel(content);
 	progrText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	progrText->setFont(bt_global::font->get(FontManager::TEXT));
+	freq_layout->addWidget(progrText, 0, 1);
 
+	freq = new QLCDNumber(content);
 	freq->setSegmentStyle(QLCDNumber::Flat);
 	freq->setSmallDecimalPoint(true);
 	freq->setNumDigits(6);
-	freq->setGeometry(60,40,180,60);
 	freq->setLineWidth(0);
+	freq_layout->addWidget(freq, 0, 2);
+	freq_layout->setColumnStretch(2, 3);
+
+	// below frequency, RDS indication
+	rdsLabel = new QLabel;
+	rdsLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	rdsLabel->setFont(bt_global::font->get(FontManager::SUBTITLE));
+
 	memoBut->setGeometry(60,190,120,60);
 	decBut->setGeometry(0,130,60,60);
 	aumBut->setGeometry(180,130,60,60);
 	autoBut->setGeometry(60,130,60,60);
 	manBut->setGeometry(120,130,60,60);
-	cicBut->setGeometry(0,40,60,60);
-	rdsLabel->setGeometry(0,100,240,30);
 	unoBut->setGeometry(15,130,60,60);
 	dueBut->setGeometry(90,130,60,60);
 	treBut->setGeometry(165,130,60,60);
 	quatBut->setGeometry(15,190,60,60);
 	cinBut->setGeometry(90,190,60,60);
 	cancBut->setGeometry(165,190,60,60);
-	radioName->setGeometry(0,0,240,20);
-	ambDescr->setGeometry(0,20,240,20);
-	progrText->setGeometry(65,55,35,30);
 
 	unoBut->hide();
 	dueBut->hide();
@@ -103,7 +116,6 @@ QWidget *radio::createContent(const QString &amb)
 	cinBut->hide();
 	cancBut->hide();
 
-	cicBut->setImage(bt_global::skin->getImage("cycle"));
 	aumBut->setImage(bt_global::skin->getImage("plus"));
 	decBut->setImage(bt_global::skin->getImage("minus"));
 
@@ -134,12 +146,20 @@ QWidget *radio::createContent(const QString &amb)
 
 	connect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
 	connect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
-	connect(cicBut,SIGNAL(clicked()),this,SIGNAL(changeStaz()));
+
 
 	connect(autoBut,SIGNAL(clicked()),this,SLOT(setAuto()));
 	connect(manBut,SIGNAL(clicked()),this,SLOT(setMan()));
 	connect(memoBut,SIGNAL(clicked()),this,SLOT(cambiaContesto()));
 	connect(cancBut,SIGNAL(clicked()),this,SLOT(ripristinaContesto()));
+
+	QVBoxLayout *vbox = new QVBoxLayout(content);
+	vbox->setContentsMargins(0, 0, 0, 0);
+	vbox->setSpacing(0);
+	vbox->addWidget(radioName, 0, Qt::AlignHCenter);
+	vbox->addWidget(ambDescr, 0, Qt::AlignHCenter);
+	vbox->addLayout(freq_layout);
+	vbox->addWidget(rdsLabel);
 	return content;
 }
 
