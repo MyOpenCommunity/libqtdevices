@@ -52,7 +52,7 @@ QWidget *radio::createContent(const QString &amb)
 	radioName->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 
 	// below radio name, environment description
-	ambDescr = new QLabel(content);
+	ambDescr = new QLabel;
 	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
 	ambDescr->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 	ambDescr->setText(amb);
@@ -61,18 +61,18 @@ QWidget *radio::createContent(const QString &amb)
 	QGridLayout *freq_layout = new QGridLayout;
 	freq_layout->setContentsMargins(0, 0, 0, 0);
 	freq_layout->setSpacing(0);
-	cicBut = new BtButton(content);
+	cicBut = new BtButton;
 	cicBut->setImage(bt_global::skin->getImage("cycle"));
 	connect(cicBut,SIGNAL(clicked()),this,SIGNAL(changeStaz()));
 	freq_layout->addWidget(cicBut, 0, 0);
 	freq_layout->setColumnStretch(0, 1);
 
-	progrText = new QLabel(content);
+	progrText = new QLabel;
 	progrText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	progrText->setFont(bt_global::font->get(FontManager::TEXT));
 	freq_layout->addWidget(progrText, 0, 1);
 
-	freq = new QLCDNumber(content);
+	freq = new QLCDNumber;
 	freq->setSegmentStyle(QLCDNumber::Flat);
 	freq->setSmallDecimalPoint(true);
 	freq->setNumDigits(6);
