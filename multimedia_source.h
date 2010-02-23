@@ -22,6 +22,23 @@
 #ifndef MULTIMEDIA_SOURCE_H
 #define MULTIMEDIA_SOURCE_H
 
+/*
+ * This class is the manager of the multimedia part, that is used to choose and
+ * play music (internet radio or song through upnp server). The classes involved
+ * are:
+ * - SourceChoice, that shows a menu to choose between radio or media server
+ *   sources.
+ *
+ * - the interface Selector, implemented by RadioSelector and FileSelector, to
+ *   choose the radio/file to play.
+ *
+ * - the abstract class PlayWindow, implemented by RadioPlayWindow and
+ *   MediaPlayWindow, to play music using the MediaPlayer class.
+ *
+ * - the MediaPlayer, a wrapper around mplayer.
+ */
+
+
 #include "page.h"
 
 #include <QDir>
