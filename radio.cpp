@@ -46,14 +46,6 @@ QWidget *radio::createContent(const QString &amb)
 {
 	QWidget *content = new QWidget;
 
-
-	unoBut = new BtButton(content);
-	dueBut = new BtButton(content);
-	treBut = new BtButton(content);
-	quatBut = new BtButton(content);
-	cinBut = new BtButton(content);
-	cancBut = new BtButton(content);
-
 	// top of all, radio description
 	radioName = new QLabel;
 	radioName->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
@@ -93,50 +85,22 @@ QWidget *radio::createContent(const QString &amb)
 	rdsLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	rdsLabel->setFont(bt_global::font->get(FontManager::SUBTITLE));
 
-	QStackedWidget *stack = new QStackedWidget;
-	stack->insertWidget(STATION_SELECTION, getStationSelectionWidget());
-
-	unoBut->setGeometry(15,130,60,60);
-	dueBut->setGeometry(90,130,60,60);
-	treBut->setGeometry(165,130,60,60);
-	quatBut->setGeometry(15,190,60,60);
-	cinBut->setGeometry(90,190,60,60);
-	cancBut->setGeometry(165,190,60,60);
-
-	unoBut->hide();
-	dueBut->hide();
-	treBut->hide();
-	quatBut->hide();
-	cinBut->hide();
-	cancBut->hide();
-
-	unoBut->setImage(bt_global::skin->getImage("num_1"));
-	dueBut->setImage(bt_global::skin->getImage("num_2"));
-	treBut->setImage(bt_global::skin->getImage("num_3"));
-	quatBut->setImage(bt_global::skin->getImage("num_4"));
-	cinBut->setImage(bt_global::skin->getImage("num_5"));
-	cancBut->setImage(bt_global::skin->getImage("cancel"));
-
-	button_group.addButton(unoBut, 1);
-	button_group.addButton(dueBut, 2);
-	button_group.addButton(treBut, 3);
-	button_group.addButton(quatBut, 4);
-	button_group.addButton(cinBut, 5);
-	connect(&button_group, SIGNAL(buttonClicked(int)), SLOT(memo(int)));
+	// tuning control and station memories
+	tuning_widget = new QStackedWidget;
+	tuning_widget->insertWidget(STATION_SELECTION, getStationSelectionWidget());
+	tuning_widget->insertWidget(MEMORY, getMemoryWidget());
 
 	manual=false;
 	wasManual=true;
-
-	connect(cancBut,SIGNAL(clicked()),this,SLOT(ripristinaContesto()));
 
 	QVBoxLayout *vbox = new QVBoxLayout(content);
 	vbox->setContentsMargins(0, 0, 0, 0);
 	vbox->setSpacing(0);
 	vbox->addWidget(radioName, 0, Qt::AlignHCenter);
 	vbox->addWidget(ambDescr, 0, Qt::AlignHCenter);
-	vbox->addLayout(freq_layout);
-	vbox->addWidget(rdsLabel);
-	vbox->addWidget(stack, 0 , Qt::AlignBottom);
+	vbox->addLayout(freq_layout, 1);
+	vbox->addWidget(rdsLabel, 1);
+	vbox->addWidget(tuning_widget, 1 , Qt::AlignBottom);
 	return content;
 }
 
@@ -173,6 +137,38 @@ QWidget *radio::getStationSelectionWidget()
 	connect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
 	connect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
 
+	return w;
+}
+
+QWidget *radio::getMemoryWidget()
+{
+	QList<BtButton *> buttons;
+	// memory numbers buttons
+	for (int i = 0; i < 5; ++i)
+	{
+		BtButton *b = new BtButton;
+		QString str = QString("num_%1").arg(i + 1);
+		b->setImage(bt_global::skin->getImage(str));
+		buttons << b;
+		// Each button must be associated with the memory location, which go 1-5 instead of 0-4
+		button_group.addButton(b, i + 1);
+	}
+	// cancel button
+	BtButton *b = new BtButton;
+	b->setImage(bt_global::skin->getImage("cancel"));
+	buttons << b;
+	connect(b, SIGNAL(clicked()), SLOT(ripristinaContesto()));
+	connect(&button_group, SIGNAL(buttonClicked(int)), SLOT(memo(int)));
+
+	// create widget and insert buttons into the grid
+	QWidget *w = new QWidget;
+	QGridLayout *grid = new QGridLayout(w);
+	grid->setContentsMargins(0, 0, 0, 0);
+	grid->setSpacing(0);
+	int index = 0;
+	for (int r = 0; r < 2; ++r)
+		for (int c = 0; c < 3; ++c)
+			grid->addWidget(buttons[index++], r, c);
 	return w;
 }
 
@@ -258,36 +254,16 @@ void radio::memo(int memory)
 
 void radio::cambiaContesto()
 {
-	unoBut->show();
-	dueBut->show();
-	treBut->show();
-	quatBut->show();
-	cinBut->show();
-	cancBut->show();
-	memoBut->hide();
-	decBut->hide();
-	aumBut->hide();
-	autoBut->hide();
-	manBut->hide();
-	cicBut->hide();
 	state = MEMORY;
+	cicBut->hide();
+	tuning_widget->setCurrentIndex(state);
 }
 
 void radio::ripristinaContesto()
 {
-	unoBut->hide();
-	dueBut->hide();
-	treBut->hide();
-	quatBut->hide();
-	cinBut->hide();
-	cancBut->hide();
-	memoBut->show();
-	decBut->show();
-	aumBut->show();
-	autoBut->show();
-	manBut->show();
-	cicBut->show();
 	state = STATION_SELECTION;
+	cicBut->show();
+	tuning_widget->setCurrentIndex(state);
 }
 
 void radio::handleClose()

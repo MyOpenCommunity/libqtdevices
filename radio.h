@@ -27,9 +27,9 @@
 #include <QButtonGroup>
 
 class BtButton;
-class bannFrecce;
 class QLCDNumber;
 class QLabel;
+class QStackedWidget;
 
 
 /*!
@@ -113,11 +113,12 @@ private:
 	VisualState state;
 	QWidget *createContent(const QString &amb);
 	QWidget *getStationSelectionWidget();
+	QWidget *getMemoryWidget();
 	float frequenza;
 	bool manual, wasManual;
 	BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
-	BtButton *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*cancBut;
 	QButtonGroup button_group;
+	QStackedWidget *tuning_widget;
 	QLabel *rdsLabel, *radioName, *progrText, *ambDescr;
 	QLCDNumber *freq;
 	QString manual_off, manual_on, auto_off, auto_on;
