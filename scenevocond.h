@@ -39,7 +39,6 @@ class device_condition;
 /*!
   \class scenEvo_cond
   \brief This class represents a generic advanced scenario condition
-  \author Ciminaghi
   \date April 2006
 */
 class scenEvo_cond : public Page
@@ -105,7 +104,6 @@ signals:
 /*!
   \class scenEvo_cond_h
   \brief This class represent a time based advanced scenario condition
-  \author Ciminaghi
   \date April 2006
 */
 class scenEvo_cond_h : public scenEvo_cond
@@ -152,7 +150,6 @@ private:
 /*!
 \class scenEvo_cond_d
 \brief This class represent a device based advanced scenario condition
-\author Ciminaghi
 \date April 2006
 */
 class scenEvo_cond_d : public scenEvo_cond
@@ -196,7 +193,6 @@ private:
 /*! 
   \class device_condition
   \brief This class represent a device based condition
-  \author Ciminaghi
   \date May 2006
 */
 class device_condition : public QObject
@@ -279,7 +275,6 @@ signals:
 /*!
 \class device_condition_light_status
 \brief This class represents a light status based condition
-\author Ciminaghi
 \date May 2006
 */
 class device_condition_light_status : public device_condition
@@ -311,7 +306,6 @@ private:
 /*!
 \class device_condition_dimming
 \brief This class represents a dimming value based condition
-\author Ciminaghi
 \date May 2006
 */
 class device_condition_dimming : public device_condition
@@ -372,7 +366,6 @@ private:
 /*!
 \class device_condition_dimming_100
 \brief This class represents a dimming 100 value based condition
-\author Ciminaghi/Agresta
 \date May 2006
 */
 class device_condition_dimming_100 : public device_condition
@@ -431,7 +424,6 @@ private:
 /*!
 \class device_condition_volume
 \brief This class represents a volume based condition
-\author Ciminaghi
 \date May 2006
 */
 class device_condition_volume : public device_condition
@@ -482,7 +474,6 @@ private:
 /*!
 \class device_condition_temp
 \brief This class represents a temperature based condition
-\author Ciminaghi
 \date May 2006
 */
 #define CONDITION_MIN_TEMP 1050
@@ -526,7 +517,6 @@ private:
 /*!
 \class device_condition_aux
 \brief This class represent a condition on a aux device
-\author Gianni Valdambrini <aleister@develer.com>
 */
 class device_condition_aux : public device_condition
 {

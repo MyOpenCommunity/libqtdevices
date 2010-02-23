@@ -42,7 +42,6 @@ class QWidget;
   \brief This is a class that contains the alarm-plant, the zone's list and the alarm queue  
 
   each of that are \a sottomenu type. The plant is always kept on the top, the zones in the remaining lines. Alarm queue is active only when there's some alarm pending (and it's possible from \a antintrusione object to access to \a alarm \a queue one though a button). When there's an alarm the alarm queue becomes automatically visible 
-  \author Davide
   \date lug 2005
 */
 class Antintrusion : public Page

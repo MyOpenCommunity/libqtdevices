@@ -44,7 +44,6 @@ class QTimer;
   \class AlarmClock
   \brief This class is the implementation af the alarm set.
 
-  \author Davide
   \date lug 2005
 */
 class AlarmClock : public Page

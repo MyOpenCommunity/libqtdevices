@@ -33,7 +33,6 @@ class QLabel;
   \class impostaTime
   \brief This is the class used to set time and date.
 
-  \author Davide
   \date lug 2005
 */
 

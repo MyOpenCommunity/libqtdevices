@@ -37,7 +37,6 @@ class scenEvo_cond;
   \brief This class is the general list of the subtree describing the various system functions.
 
   Many functions are directily a \a sottoMenu type while other are new class inheriting this one. This class core is made of a dinamical list representing all the devices included in the menu.
-  \author Davide
   \date lug 2005
   */
 class sottoMenu : public Page

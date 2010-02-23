@@ -33,7 +33,6 @@ class bannFrecce;
   \class aux
   \brief This class implements the management of the aux source page
 
-  \author Ciminaghi
   \date lug 2006
   */
 class  aux : public QWidget

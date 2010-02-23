@@ -32,7 +32,6 @@
   \brief This is a class that describes the navigation bar which can have up to 4 buttons.
 
   There can be 9 different kind of banner combinig the necessities of the various pages.
-  \author Davide
   \date lug 2005
 */
 

@@ -35,7 +35,6 @@ class QButtonGroup;
   \class Keypad
   \brief This class is the implementation of a keypad intended for password inserting.
 
-  \author Davide
   \date lug 2005
 */
 class Keypad : public Page

@@ -40,7 +40,6 @@ class QLabel;
   \class BannPulsDynIcon
   \brief Class derived from bannPuls with status changed event handling.
 
-  \author Lucio Macellari - Mac S.r.l.
   \date May 2008
 */
 class BannPulsDynIcon : public bannPuls
@@ -60,7 +59,6 @@ public slots:
   \class StopngoPage
   \brief Stop & go devices GUI page.
   
-  \author Lucio Macellari - Mac S.r.l.
   \date jul 2008
 */
 class StopngoPage : public Page

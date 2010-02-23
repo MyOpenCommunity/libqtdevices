@@ -37,7 +37,6 @@ class QDomNode;
   \brief This is the class used to implement the main page from which access to all the subtree (sottoMenu) of the various bticino functions. This class is also used for the special page.
 
   It can be composed of a date field, a time field, up to three temperatures, a number of BtButton and a special command. 
-  \author Davide
   \date lug 2005
 */
 

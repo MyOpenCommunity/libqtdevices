@@ -231,7 +231,6 @@ private:
 /*!
  * \class dimmer
  * \brief This is the dimmer-banner class.
- * \author Davide
  * \date lug 2005
  */
 class dimmer : public bannRegolaz
@@ -260,7 +259,6 @@ signals:
 /*!
  * \class dimmer 100 livelli
  * \brief This is the 100 lev dimmer-banner class.
- * \author Ciminaghi
  * \date Mar 2006
  */
 class dimmer100 : public dimmer
@@ -295,7 +293,6 @@ private slots:
  *
  * It behaves essentially like \a dimmer even if it doesn't represent the dimmer's state 
  * since different dimmers can have different states.
- * \author Davide
  * \date lug 2005
  */
 class grDimmer : public bannRegolaz
@@ -320,7 +317,6 @@ private slots:
  * \brief This class is made to control a number of 100 levels dimmers
  *
  * It behaves essentially like \a dimmer group
- * \author Davide
  * \date Jun 2006
  */
 class grDimmer100 : public grDimmer
@@ -348,7 +344,6 @@ private slots:
  * With this object is possible to have the actuator active for a certain time. After that time the actuator releases by itself.
  * Clicking on the left button it is possible to select the time the actuator has to remain active; clicking on the right button
  * the actuation effectively starts.
- * \author Davide
  * \date lug 2005
  */
 class attuatAutomTemp : public bannOnOff2scr
@@ -383,7 +378,6 @@ private slots:
  * With this object is possible to have the actuator active for a certain time. After that time the actuator releases by itself.
  * Clicking on the left button it is possible to select the time the actuator has to remain active; clicking on the right
  * button the actuation effectively starts.
- * \author Ciminaghi
  * \date Apr 2006
  */
 class attuatAutomTempNuovoN : public attuatAutomTemp
@@ -408,7 +402,6 @@ protected slots:
  * \brief This class is made to manage a timed control.
  *
  * This object implements the new timed actuator with fixed time setting
- * \author Ciminaghi
  * \date Apr 2006
  */
 class attuatAutomTempNuovoF : public bannOn2scr

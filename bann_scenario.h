@@ -87,7 +87,6 @@ private:
  * \class bannScenario
  * \brief This class is made to control a scenario of a \a scenario \a unit.
  *
- * \author Davide
  * \date lug 2005
  */
 class bannScenario : public bannOnSx
@@ -104,7 +103,6 @@ private slots:
  * \brief This class is made to control a scenario of a \a din \a scenario \a module.
  *
  * From this banner is possible to actuate, clean and program the scenario controlled.
- * \author Davide
  * \date lug 2005
  */
 class gesModScen : public bann4tasLab
@@ -136,7 +134,6 @@ private slots:
 /*!
  * \class scenEvo
  * \brief This class represents an advanced scenario management object
- * \author Ciminaghi
  * \date apr 2006
  */
 class scenEvo : public Bann3Buttons
@@ -193,7 +190,6 @@ private:
 /*!
  * \class scenSched
  * \brief This class represents a scheduled scenario management object
- * \author Ciminaghi
  * \date apr 2006
  */
 class scenSched : public bann4But

@@ -40,7 +40,6 @@
   \class Client
   \brief This class manages the socket communication throught the application and the \a openserver.
 
-  \author Davide
   \date lug 2005
 */
 

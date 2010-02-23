@@ -28,7 +28,6 @@
   \class genPage
   \brief This class genertes a page as described in \a pageType. 
 
-  \author Davide
   \date lug 2005
 */
 
