@@ -165,6 +165,7 @@ private:
 	BtButton *unoBut,*dueBut,*treBut,*quatBut,*cinBut,*cancBut;
 	QLabel *rdsLabel, *radioName, *progrText, *ambDescr;
 	QLCDNumber *freq;
+	QString manual_off, manual_on, auto_off, auto_on;
 
 	/*!
 	 * \brief Retrieves if the selected search method is automatic or manual

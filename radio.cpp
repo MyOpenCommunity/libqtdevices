@@ -13,6 +13,7 @@
 #include "bannfrecce.h"
 #include "btbutton.h"
 #include "fontmanager.h" // bt_global::font
+#include "skinmanager.h" // bt_global::skin
 
 #include <QLabel>
 #include <QLCDNumber>
@@ -73,29 +74,24 @@ radio::radio(const QString &amb)
 	cinBut->hide();
 	cancBut->hide();
 
-	cicBut->setImage(ICON_CICLA);
+	cicBut->setImage(bt_global::skin->getImage("cycle"));
+	aumBut->setImage(bt_global::skin->getImage("plus"));
+	decBut->setImage(bt_global::skin->getImage("minus"));
 
-	aumBut->setImage(ICON_PIU);
+	memoBut->setImage(bt_global::skin->getImage("memory"));
+	manual_off = bt_global::skin->getImage("man_off");
+	manual_on = bt_global::skin->getImage("man_on");
+	auto_off = bt_global::skin->getImage("auto_off");
+	auto_on = bt_global::skin->getImage("auto_on");
+	manBut->setImage(manual_off);
+	autoBut->setImage(auto_on);
 
-	decBut->setImage(ICON_MENO);
-
-	memoBut->setImage(ICON_MEM);
-
-	manBut->setImage(ICON_MANUAL_ON);
-
-	autoBut->setImage(ICON_AUTO_ON);
-
-	unoBut->setImage(ICON_UNO);
-
-	dueBut->setImage(ICON_DUE);
-
-	treBut->setImage(ICON_TRE);
-
-	quatBut->setImage(ICON_QUATTRO);
-
-	cinBut->setImage(ICON_CINQUE);
-
-	cancBut->setImage(ICON_CANC);
+	unoBut->setImage(bt_global::skin->getImage("num_1"));
+	dueBut->setImage(bt_global::skin->getImage("num_2"));
+	treBut->setImage(bt_global::skin->getImage("num_3"));
+	quatBut->setImage(bt_global::skin->getImage("num_4"));
+	cinBut->setImage(bt_global::skin->getImage("num_5"));
+	cancBut->setImage(bt_global::skin->getImage("cancel"));
 
 	manual=FALSE;
 	wasManual=TRUE;
@@ -180,13 +176,13 @@ void radio::draw()
 	{
 		if (manual)
 		{
-			manBut->setImage(ICON_MANUAL_ON, BtButton::NO_FLAG);
-			autoBut->setImage(ICON_AUTO_OFF, BtButton::NO_FLAG);
+			manBut->setImage(manual_on, BtButton::NO_FLAG);
+			autoBut->setImage(auto_off, BtButton::NO_FLAG);
 		}
 		else
 		{
-			manBut->setImage(ICON_MANUAL_OFF, BtButton::NO_FLAG);
-			autoBut->setImage(ICON_AUTO_ON, BtButton::NO_FLAG);
+			manBut->setImage(manual_off, BtButton::NO_FLAG);
+			autoBut->setImage(auto_on, BtButton::NO_FLAG);
 		}
 	}
 	wasManual=manual;
