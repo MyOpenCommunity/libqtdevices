@@ -35,7 +35,6 @@
  *
  * \brief This file contains a collection of function designed to extract values from an xml file.
  *
- * \author Gianni Valdambrini <aleister@develer.com>
  * \date November 2008
  */
 

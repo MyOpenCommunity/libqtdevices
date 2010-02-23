@@ -77,7 +77,6 @@ private:
 /*!
   \class bann4But
   \brief This is a class that describes a banner with 4 buttons
-  \author Ciminaghi
   \date June 2006
 */
 class bann4But : public banner
@@ -92,7 +91,6 @@ public:
 \class bann4tasLab
 \brief This is a class that describes a banner with 4 buttons a label and a text under them.
 In this banner it is possible to have 4 buttons visible and the label hidden or two external buttons visible with the label and the central two buttons hidden
-\author Davide
 \date lug 2005
 */
 class bann4tasLab : public banner

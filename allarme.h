@@ -30,7 +30,6 @@ class QLabel;
 /*!
   \class allarme
   \brief This class represents an alarm condition
-  \author Ciminaghi
   \date April 2006
 */
 class allarme : public Page

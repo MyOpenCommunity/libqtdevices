@@ -39,7 +39,6 @@ class AudioSources;
 /*!
  * \class ambDiffSon
  * \brief This class represents an env. in the multi-channel audio diff. sys.
- * \author Ciminaghi
  * \date jul 2006
  */
 class ambDiffSon : public bannBut2Icon
@@ -74,7 +73,6 @@ signals:
 /*!
  * \class insAmbDiffSon
  * \brief This class represents an env. in the multi-channel audio diff. sys.
- * \author Ciminaghi
  * \date jul 2006
  */
 class insAmbDiffSon : public bannPuls

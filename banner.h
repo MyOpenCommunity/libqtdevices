@@ -47,7 +47,6 @@ class QLabel;
  * set/get the activation state, open address, background and foreground colors, and so on.
  * This class gives also the base pattern for interaction giving the basig signals/slots related to the buttons, openframe gestion etc.
  *
- * \author Davide
  * \date lug 2005
  */
 

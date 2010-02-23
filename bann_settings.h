@@ -41,7 +41,6 @@ class contdiff;
   \class bannAlarmClock
   \brief This class is made to make alarm clock settings.
 
-  \author Davide
   \date lug 2005
 */
 class bannAlarmClock : public bann2But
@@ -90,7 +89,6 @@ signals:
   \class calibration
   \brief Calibrate the device
 
-  \author Davide
   \date lug 2005
 */
 // TODO: rimuovere questa classe, e usare direttamente bannOnDx! E' necessario intervenire su Calibrate
@@ -116,7 +114,6 @@ signals:
   \class setDataOra
   \brief Beep (dis)abilitation
 
-  \author Davide
   \date lug 2005
 */
 class impBeep : public bannOnSx
@@ -157,7 +154,6 @@ private:
   \brief Manages the password.
 
   It's possible (dis)abilitate the password and to change the actual password.
-  \author Davide
   \date lug 2005
 */
 class impPassword : public bann2But

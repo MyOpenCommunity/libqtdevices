@@ -39,7 +39,6 @@ class device;
 /*!
  * \class postoExt
  * \brief This class represents an outdoor station
- * \author Ciminaghi
  * \date apr 2006
  */
 class postoExt : public bann4tasLab

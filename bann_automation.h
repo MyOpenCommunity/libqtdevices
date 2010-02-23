@@ -134,7 +134,6 @@ private:
 /*!
  * \class
  * \brief This class represents an automated video-doorphone actuator
- * \author Ciminaghi
  * \date June 2006
  */
 class automCancAttuatVC : public bannPuls
@@ -152,7 +151,6 @@ private slots:
 /*!
  * \class
  * \brief This class represents an automated light actuator
- * \author Ciminaghi
  * \date June 2006
  */
 class automCancAttuatIll : public bannPuls
@@ -175,7 +173,6 @@ private slots:
  * This kind of actuators controls gates, stretches and so on. Pushing on the right button the object closes while releasing
  * the same button the automation stops. On the left-button there's the same behavior with the difference that the object
  * is opened.
- * \author Davide
  * \date lug 2005
  */
 class attuatAutomIntSic : public bannOnOff
@@ -206,7 +203,6 @@ private slots:
  * This kind of actuators controls gates, stretches and so on. Clicking the right button the object closes, and on the button
  * appears a stop image. A new pressure cause the stop af the automation. On the left-button there's the same behavior with
  * the difference that the object is opened.
- * \author Davide
  * \date lug 2005
  */
 class attuatAutomInt : public bannOnOff
@@ -233,7 +229,6 @@ private:
  *
  * Clicking the right button the objects close,  clicking the left-button the objects open while clicking the middle 
  * button the objects stop.
- * \author Davide
  * \date lug 2005
  */
 class grAttuatInt : public bann3But

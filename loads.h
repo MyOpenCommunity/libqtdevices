@@ -30,7 +30,6 @@
  * \class bannLoads
  * \brief This class is made to force an appliance.
  *
- * \author Davide
  * \date lug 2005
  */
 class bannLoads : public bannOnSx

@@ -67,7 +67,6 @@ private:
  * \class attuatAutom
  * \brief This is the \a automation \a actuator-banner class.
  * This class is used to represent both lightings and various kind of automation such as fan and irrigation.
- * \author Davide
  * \date lug 2005
  */
 class attuatAutom : public bannOnOff
@@ -95,7 +94,6 @@ private slots:
  *
  * This object is useful when there's the need to activate something only during the pressure time 
  * (for instance when dealing with a lock).
- * \author Davide
  * \date lug 2005
  */
 class attuatPuls : public bannPuls

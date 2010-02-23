@@ -184,7 +184,6 @@ protected:
 /*!
   \class bann2But
   \brief This is a class that describes a banner with a text between 2 buttons 
-  \author Davide
   \date lug 2005
 */
 class bann2But : public banner
@@ -198,7 +197,6 @@ public:
 /*!
   \class bann2ButLa
   \brief This is a class that describes a banner with a text between 2 buttons and a text on the bottom
-  \author Davide
   \date lug 2005
 */
 class bann2ButLab : public banner
@@ -215,7 +213,6 @@ protected:
 /*!
   \class bannOnOff
   \brief This is a class that describes a banner with a button on the right and on the left, an icon on the center and a text on the bottom
-  \author Davide
   \date lug 2005
 */
 class bannOnOff : public banner
@@ -229,7 +226,6 @@ public:
 /*!
   \class bannOnOff2scr
   \brief This is a class that describes a banner with a button on the right and on the left and a text on the bottom area and an other the center-left
-  \author Davide
   \date lug 2005
 */
 class bannOnOff2scr : public banner

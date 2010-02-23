@@ -39,7 +39,6 @@ class device;
  * \brief This class is made to manage an anti-intrusion zone.
  *
  * By this banner is possible to see if the zone is active or not in a certain moment.
- * \author Davide
  * \date lug 2005
  */
 class zonaAnti : public bannOnIcons
@@ -74,7 +73,6 @@ signals:
  *
  * By this banner is possible to change the (dis)activation state of the system from the visualized one.
  * If there is an alarm queue it also possible to acces a page describing the it.
- * \author Davide
  * \date lug 2005
  */
 class impAnti : public bann3ButLab

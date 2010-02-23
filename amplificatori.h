@@ -37,7 +37,6 @@ class device;
  * \brief This class is made to manage an audio amplifier.
  *
  * This class is quite similar to \a dimmer's one; it only has to deal with different \a Open \a messages.
- * \author Davide
  * \date lug 2005
  */
 class amplificatore : public bannRegolaz
@@ -65,7 +64,6 @@ private:
  *
  * It behaves essentially like \a amplificatore even if it doesn't represent the amplifiter's state since different
  * amplifiers can have different states.
- * \author Davide
  * \date lug 2005
  */
 class grAmplificatori : public bannRegolaz
