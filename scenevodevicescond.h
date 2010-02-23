@@ -296,7 +296,7 @@ private:
 	int max_val;
 	int current_value_min;
 	int current_value_max;
-	Dimmer100Device *dev;;
+	Dimmer100Device *dev;
 };
 
 
