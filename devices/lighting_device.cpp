@@ -42,8 +42,8 @@ int dimmerLevelTo100(int level)
 
 
 
-LightingDevice::LightingDevice(QString where, PullMode pull) :
-	PullDevice(QString("1"), where, pull)
+LightingDevice::LightingDevice(QString where, PullMode pull, int openserver_id) :
+	PullDevice(QString("1"), where, pull, openserver_id)
 {
 }
 
@@ -151,8 +151,8 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 }
 
 
-DimmerDevice::DimmerDevice(QString where, PullMode pull) :
-	LightingDevice(where, pull)
+DimmerDevice::DimmerDevice(QString where, PullMode pull, int openserver_id) :
+	LightingDevice(where, pull, openserver_id)
 {
 }
 
@@ -194,8 +194,8 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 
 
 
-Dimmer100Device::Dimmer100Device(QString where, PullMode pull) :
-	DimmerDevice(where, pull)
+Dimmer100Device::Dimmer100Device(QString where, PullMode pull, int openserver_id) :
+	DimmerDevice(where, pull, openserver_id)
 {
 }
 

@@ -55,12 +55,13 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	case AIR_SPLIT:
 	{
 		QString where = getTextChild(item_node, "where");
+		int oid = getTextChild(item_node, "openserver_id").toInt();
 #ifdef CONFIG_BTOUCH
 		QString off_cmd = getElement(item_node, "off/command").text();
 #else
 		QString off_cmd = getTextChild(item_node, "off_command");
 #endif
-		AirConditioningDevice *dev = bt_global::add_device_to_cache(new AirConditioningDevice(where));
+		AirConditioningDevice *dev = bt_global::add_device_to_cache(new AirConditioningDevice(where, oid));
 		dev->setOffCommand(off_cmd);
 
 		SingleSplit *bann = new SingleSplit(descr, !commands.isEmpty(), dev, createProbeDevice(item_node));
@@ -73,7 +74,8 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	case AIR_SPLIT_ADV:
 	{
 		QString where = getTextChild(item_node, "where");
-		AdvancedAirConditioningDevice *dev = bt_global::add_device_to_cache(new AdvancedAirConditioningDevice(where));
+		int oid = getTextChild(item_node, "openserver_id").toInt();
+		AdvancedAirConditioningDevice *dev = bt_global::add_device_to_cache(new AdvancedAirConditioningDevice(where, oid));
 
 		AdvancedSplitPage *p = new AdvancedSplitPage(item_node, dev);
 		SingleSplit *bann = new AdvancedSingleSplit(descr, p, dev, createProbeDevice(item_node));
@@ -167,7 +169,7 @@ SplitPage::SplitPage(const QDomNode &config_node, AirConditioningDevice *d)
 		b->initBanner(bt_global::skin->getImage("off"), QString(), tr("Off"));
 		page_content->appendBanner(b);
 
-		connect(b, SIGNAL(leftClicked()), SLOT(setDeviceOff()));		
+		connect(b, SIGNAL(leftClicked()), SLOT(setDeviceOff()));
 	}
 #endif
 
@@ -502,7 +504,8 @@ void GeneralSplitPage::loadScenarios(const QDomNode &config_node)
 		GeneralSplitScenario *b = new GeneralSplitScenario(getTextChild(scenario, "descr"));
 		foreach (const QDomNode &split, getChildren(scenario, "split"))
 		{
-			AirConditioningDevice *dev = new AirConditioningDevice(getTextChild(split, "where"));
+			int oid = getTextChild(split, "openserver_id").toInt();
+			AirConditioningDevice *dev = new AirConditioningDevice(getTextChild(split, "where"), oid);
 			b->appendDevice(getTextChild(split, "command"), bt_global::add_device_to_cache(dev));
 		}
 
@@ -524,7 +527,8 @@ void AdvancedGeneralSplitPage::loadScenarios(const QDomNode &config_node)
 		GeneralSplitScenario *b = new GeneralSplitScenario(getTextChild(scenario, "descr"));
 		foreach (const QDomNode &split, getChildren(scenario, "split"))
 		{
-			AdvancedAirConditioningDevice *dev = new AdvancedAirConditioningDevice(getTextChild(split, "where"));
+			int oid = getTextChild(split, "openserver_id").toInt();
+			AdvancedAirConditioningDevice *dev = new AdvancedAirConditioningDevice(getTextChild(split, "where"), oid);
 			Mode m = static_cast<Mode>(getTextChild(split, "mode").toInt());
 			int t = getTextChild(split, "setpoint").toInt();
 			Velocity v = static_cast<Velocity>(getTextChild(split, "speed").toInt());

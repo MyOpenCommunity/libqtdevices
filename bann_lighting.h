@@ -64,12 +64,12 @@ private:
 	QString center_left, center_right, broken;
 };
 
-// TODO: to be renamed when dimmer is gone
+
 class Dimmer : public AdjustDimmer
 {
 Q_OBJECT
 public:
-	Dimmer(const QString &descr, const QString &where);
+	Dimmer(const QString &descr, const QString &where, int openserver_id);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -83,6 +83,7 @@ private:
 	DimmerDevice *dev;
 	int light_value;
 };
+
 
 class DimmerGroup : public BannLevel
 {
@@ -100,12 +101,12 @@ private:
 	QList<DimmerDevice *> devices;
 };
 
-// TODO: to be renamed when dimmer100 is gone
+
 class Dimmer100 : public AdjustDimmer
 {
 Q_OBJECT
 public:
-	Dimmer100(const QString &descr, const QString &where, int _start_speed, int _stop_speed);
+	Dimmer100(const QString &descr, const QString &where, int openserver_id, int _start_speed, int _stop_speed);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -121,6 +122,7 @@ private:
 	int start_speed, stop_speed;
 	int light_value;
 };
+
 
 class Dimmer100Group : public BannLevel
 {
@@ -144,7 +146,7 @@ class TempLight : public BannOnOff2Labels
 {
 Q_OBJECT
 public:
-	TempLight(const QString &descr, const QString &where);
+	TempLight(const QString &descr, const QString &where, int openserver_id);
 	virtual void inizializza(bool forza);
 
 protected:
@@ -162,11 +164,12 @@ private slots:
 	void cycleTime();
 };
 
+
 class TempLightVariable : public TempLight
 {
 Q_OBJECT
 public:
-	TempLightVariable(const QList<BtTime> &time_values, const QString &descr, const QString &where);
+	TempLightVariable(const QList<BtTime> &time_values, const QString &descr, const QString &where, int openserver_id);
 	virtual void inizializza(bool forza);
 
 protected slots:
@@ -178,7 +181,7 @@ class TempLightFixed : public BannOn2Labels
 {
 Q_OBJECT
 public:
-	TempLightFixed(int time, const QString &descr, const QString &where);
+	TempLightFixed(int time, const QString &descr, const QString &where, int openserver_id);
 	virtual void inizializza(bool forza);
 
 private slots:

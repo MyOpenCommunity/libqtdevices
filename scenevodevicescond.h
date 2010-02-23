@@ -186,7 +186,7 @@ class DeviceConditionLight : public DeviceCondition
 Q_OBJECT
 public:
 	//! Constructor
-	DeviceConditionLight(DeviceConditionDisplayInterface* condition_display, QString trigger, QString where);
+	DeviceConditionLight(DeviceConditionDisplayInterface* condition_display, QString trigger, QString where, int openserver_id = 0);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 	virtual void inizializza();
@@ -209,7 +209,7 @@ class DeviceConditionDimming : public DeviceCondition
 {
 Q_OBJECT
 public:
-	DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where);
+	DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id = 0);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 	virtual void inizializza();
@@ -256,7 +256,7 @@ class DeviceConditionDimming100 : public DeviceCondition
 Q_OBJECT
 public:
 	//! Constructor
-	DeviceConditionDimming100(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where);
+	DeviceConditionDimming100(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id = 0);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 	virtual void inizializza();
@@ -348,7 +348,7 @@ class DeviceConditionTemperature : public DeviceCondition
 {
 Q_OBJECT
 public:
-	DeviceConditionTemperature(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, bool external = false);
+	DeviceConditionTemperature(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id = 0, bool external = false);
 	virtual void get_condition_value(QString&);
 	virtual void inizializza();
 

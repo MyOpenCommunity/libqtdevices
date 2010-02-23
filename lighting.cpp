@@ -60,40 +60,44 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 	int id = getTextChild(item_node, "id").toInt();
 	QString where = getTextChild(item_node, "where");
 	QString descr = getTextChild(item_node, "descr");
+	int oid = getTextChild(item_node, "openserver_id").toInt();
 
 	banner *b = 0;
 	switch (id)
 	{
 	case DIMMER:
-		b = new Dimmer(descr, where);
+		b = new Dimmer(descr, where, oid);
 		break;
 	case ATTUAT_AUTOM:
-		b = new SingleActuator(descr, where);
+		b = new SingleActuator(descr, where, oid);
 		break;
 	case GR_DIMMER:
+		// TODO: touch10??
 		b = new DimmerGroup(getAddresses(item_node), descr);
 		break;
 	case GR_ATTUAT_AUTOM:
 		b = new LightGroup(getAddresses(item_node), descr);
 		break;
 	case ATTUAT_AUTOM_TEMP:
-		b = new TempLight(descr, where);
+		b = new TempLight(descr, where, oid);
 		break;
 	case ATTUAT_VCT_LS:
 		b = new ButtonActuator(descr, where, VCT_LS);
 		break;
 	case DIMMER_100:
 	{
+		// TODO: touch10??
 		int start = getTextChild(item_node, "softstart").toInt();
 		int stop = getTextChild(item_node, "softstop").toInt();
-		b = new Dimmer100(descr, where, start, stop);
+		b = new Dimmer100(descr, where, oid, start, stop);
 	}
 		break;
 	case ATTUAT_AUTOM_TEMP_NUOVO_N:
-		b = new TempLightVariable(getTimes(item_node), descr, where);
+		b = new TempLightVariable(getTimes(item_node), descr, where, oid);
 		break;
 	case GR_DIMMER100:
 	{
+		// TODO: touch10??
 		QList<int> start, stop;
 		QList<QString> addresses = getAddresses(item_node, &start, &stop);
 		b = new Dimmer100Group(addresses, start, stop, descr);
@@ -116,7 +120,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 	#else
 		t = getTextChild(item_node, "time").toInt();
 	#endif
-		b = new TempLightFixed(t, descr, where);
+		b = new TempLightFixed(t, descr, where, oid);
 		}
 		break;
 	}

@@ -13,8 +13,8 @@ enum RequestDimension
 };
 
 
-AutomationDevice::AutomationDevice(QString where, PullMode m) :
-	PullDevice(QString("2"), where, m)
+AutomationDevice::AutomationDevice(QString where, PullMode m, int openserver_id) :
+	PullDevice(QString("2"), where, m, openserver_id)
 {
 }
 
@@ -63,7 +63,8 @@ void AutomationDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 }
 
 
-PPTStatDevice::PPTStatDevice(QString address) : device(QString("25"), address)
+PPTStatDevice::PPTStatDevice(QString address, int openserver_id) :
+	device(QString("25"), address, openserver_id)
 {
 }
 

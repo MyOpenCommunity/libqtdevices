@@ -19,7 +19,7 @@ public:
 		DIM_TEMPERATURE = 1,
 	};
 
-	NonControlledProbeDevice(QString where, ProbeType type, int openserver_id=0);
+	NonControlledProbeDevice(QString where, ProbeType type, int openserver_id = 0);
 
 	void requestStatus();
 	virtual void init() { requestStatus(); }
@@ -68,7 +68,7 @@ public:
 		ST_PROTECTION = 4,
 	};
 
-	ControlledProbeDevice(QString where, QString central, QString simple_where, CentralType central_type, ProbeType type);
+	ControlledProbeDevice(QString where, QString central, QString simple_where, CentralType central_type, ProbeType type, int openserver_id = 0);
 
 	void setManual(unsigned setpoint);
 	void setAutomatic();

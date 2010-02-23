@@ -19,7 +19,7 @@ class BannSimpleScenario : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	BannSimpleScenario(int scenario, const QString &descr, const QString &where);
+	BannSimpleScenario(int scenario, const QString &descr, const QString &where, int openserver_id);
 
 private slots:
 	void activate();
@@ -34,7 +34,7 @@ class ScenarioModule : public Bann4ButtonsIcon
 {
 Q_OBJECT
 public:
-	ScenarioModule(int scenario, const QString &descr, const QString &where);
+	ScenarioModule(int scenario, const QString &descr, const QString &where, int openserver_id);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -108,7 +108,7 @@ class PPTSce : public bann4But
 {
 Q_OBJECT
 public:
-	PPTSce(const QString &where);
+	PPTSce(const QString &where, int openserver_id);
 
 protected:
 	virtual void timerEvent(QTimerEvent *e);

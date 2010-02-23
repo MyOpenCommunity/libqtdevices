@@ -18,14 +18,14 @@
 #include <QDebug>
 
 
-SingleActuator::SingleActuator(const QString &descr, const QString &where)
+SingleActuator::SingleActuator(const QString &descr, const QString &where, int openserver_id)
 	: BannOnOffState(0)
 {
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("actuator_state"),
 		bt_global::skin->getImage("on"), OFF, descr);
 
 	// TODO: read pull mode from config
-	dev = bt_global::add_device_to_cache(new LightingDevice(where));
+	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL_UNKNOWN, openserver_id));
 
 	connect(left_button, SIGNAL(clicked()), SLOT(deactivate()));
 	connect(right_button, SIGNAL(clicked()), SLOT(activate()));

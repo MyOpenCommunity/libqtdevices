@@ -127,7 +127,7 @@ class ThermalDevice4Zones : public ThermalDevice
 {
 Q_OBJECT
 public:
-	ThermalDevice4Zones(QString where, int openserver_id=0);
+	ThermalDevice4Zones(QString where, int openserver_id = 0);
 
 	/**
 	 * Sets the temperature for a limited time.
@@ -145,7 +145,7 @@ class ThermalDevice99Zones : public ThermalDevice
 {
 Q_OBJECT
 public:
-	ThermalDevice99Zones(QString where, int openserver_id=0);
+	ThermalDevice99Zones(QString where, int openserver_id = 0);
 
 	/**
 	 * Sets the scenario on the thermal regulator.

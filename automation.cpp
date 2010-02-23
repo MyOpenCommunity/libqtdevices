@@ -29,18 +29,19 @@ banner *Automation::getBanner(const QDomNode &item_node)
 	SkinContext ctx(getTextChild(item_node, "cid").toInt());
 	QString where = getTextChild(item_node, "where");
 	QString descr = getTextChild(item_node, "descr");
+	int oid = getTextChild(item_node, "openserver_id").toInt();
 
 	banner *b = 0;
 	switch (id)
 	{
 	case ATTUAT_AUTOM_INT_SIC:
-		b = new SecureInterblockedActuator(descr, where);
+		b = new SecureInterblockedActuator(descr, where, oid);
 		break;
 	case ATTUAT_AUTOM_INT:
-		b = new InterblockedActuator(descr, where);
+		b = new InterblockedActuator(descr, where, oid);
 		break;
 	case ATTUAT_AUTOM:
-		b = new SingleActuator(descr, where);
+		b = new SingleActuator(descr, where, oid);
 		break;
 	case ATTUAT_VCT_SERR:
 		b = new ButtonActuator(descr, where, VCT_SERR);
@@ -50,7 +51,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		QStringList addresses;
 		foreach (const QDomNode &el, getChildren(item_node, "element"))
 			addresses << getTextChild(el, "where");
-		b = new InterblockedActuatorGroup(addresses, descr);
+		b = new InterblockedActuatorGroup(addresses, descr, oid);
 	}
 		break;
 	case AUTOM_CANC_ATTUAT_ILL:
@@ -58,17 +59,17 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		QStringList sl = getTextChild(item_node, "time").split("*");
 		Q_ASSERT_X(sl.size() == 3, "Automation::getBanner", "time leaf must have 3 fields");
 		BtTime t(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
-		b = new GateLightingActuator(t, descr, where);
+		b = new GateLightingActuator(t, descr, where, oid);
 	}
 		break;
 	case AUTOM_CANC_ATTUAT_VC:
-		b = new GateEntryphoneActuator(descr, where);
+		b = new GateEntryphoneActuator(descr, where, oid);
 		break;
 	case ATTUAT_AUTOM_PULS:
 		b = new ButtonActuator(descr, where, AUTOMAZ);
 		break;
 	case PPT_STAT:
-		b = new PPTStat(where);
+		b = new PPTStat(where, oid);
 		break;
 	}
 

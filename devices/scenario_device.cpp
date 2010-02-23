@@ -20,8 +20,8 @@ enum
 #define CMD_PPT_SCE_STOP "15"
 
 
-ScenarioDevice::ScenarioDevice(QString where) :
-	device(QString("0"), where)
+ScenarioDevice::ScenarioDevice(QString where, int openserver_id) :
+	device(QString("0"), where, openserver_id)
 {
 	is_unlocked = false;
 }
@@ -128,7 +128,7 @@ void ScenarioDevice::manageFrame(OpenMsg &msg)
 }
 
 
-PPTSceDevice::PPTSceDevice(QString address) : device(QString("25"), address)
+PPTSceDevice::PPTSceDevice(QString address, int openserver_id) : device(QString("25"), address, openserver_id)
 {
 }
 

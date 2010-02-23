@@ -14,11 +14,11 @@
 #define PPTSCE_INTERVAL 1000
 
 
-BannSimpleScenario::BannSimpleScenario(int scenario, const QString &descr, const QString &where) :
+BannSimpleScenario::BannSimpleScenario(int scenario, const QString &descr, const QString &where, int openserver_id) :
 	Bann2Buttons(0)
 {
 	initBanner(bt_global::skin->getImage("on"), QString(), descr);
-	dev = bt_global::add_device_to_cache(new ScenarioDevice(where));
+	dev = bt_global::add_device_to_cache(new ScenarioDevice(where, openserver_id));
 	scenario_number = scenario;
 	connect(left_button, SIGNAL(clicked()), SLOT(activate()));
 }
@@ -29,7 +29,7 @@ void BannSimpleScenario::activate()
 }
 
 
-ScenarioModule::ScenarioModule(int scenario, const QString &descr, const QString &where) :
+ScenarioModule::ScenarioModule(int scenario, const QString &descr, const QString &where, int openserver_id) :
 	Bann4ButtonsIcon(0)
 {
 	initBanner(bt_global::skin->getImage("edit"), bt_global::skin->getImage("forward"),
@@ -37,7 +37,7 @@ ScenarioModule::ScenarioModule(int scenario, const QString &descr, const QString
 		bt_global::skin->getImage("del_scen"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("stop"), LOCKED, descr);
 
-	dev = bt_global::add_device_to_cache(new ScenarioDevice(where));
+	dev = bt_global::add_device_to_cache(new ScenarioDevice(where, openserver_id));
 
 	scenario_number = scenario;
 	is_editing = false;
@@ -310,9 +310,9 @@ void ScheduledScenario::disable()
 }
 
 
-PPTSce::PPTSce(const QString &where) : bann4But(0)
+PPTSce::PPTSce(const QString &where, int openserver_id) : bann4But(0)
 {
-	dev = bt_global::add_device_to_cache(new PPTSceDevice(where));
+	dev = bt_global::add_device_to_cache(new PPTSceDevice(where, openserver_id));
 	connect(this, SIGNAL(sxClick()), dev, SLOT(turnOff()));
 	connect(this, SIGNAL(dxClick()), dev, SLOT(turnOn()));
 

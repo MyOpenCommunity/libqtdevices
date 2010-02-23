@@ -17,7 +17,7 @@ class FrameReceiver
 {
 public:
 	// NOTE: the default openserver id should be keep in sync with the define MAIN_OPENSERVER
-	FrameReceiver(int oid=0);
+	FrameReceiver(int openserver_id = 0);
 	virtual ~FrameReceiver();
 
 	static void setClientsMonitor(const QHash<int, Client*> &monitors);

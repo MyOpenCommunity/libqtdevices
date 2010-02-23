@@ -21,7 +21,7 @@ public:
 		DIM_DIMMER100_SPEED,
 	};
 
-	LightingDevice(QString where, PullMode pull = PULL_UNKNOWN);
+	LightingDevice(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0);
 
 	void turnOn();
 	void turnOn(int speed);
@@ -44,7 +44,7 @@ class DimmerDevice : public LightingDevice
 friend class TestDimmer;
 Q_OBJECT
 public:
-	DimmerDevice(QString where, PullMode pull = PULL_UNKNOWN);
+	DimmerDevice(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0);
 
 	void increaseLevel();
 	void decreaseLevel();
@@ -59,7 +59,7 @@ class Dimmer100Device : public DimmerDevice
 friend class TestDimmer100;
 Q_OBJECT
 public:
-	Dimmer100Device(QString where, PullMode pull = PULL_UNKNOWN);
+	Dimmer100Device(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0);
 
 	void increaseLevel100(int delta, int speed);
 	void decreaseLevel100(int delta, int speed);

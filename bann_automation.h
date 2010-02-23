@@ -20,7 +20,7 @@ class InterblockedActuator : public BannOpenClose
 {
 Q_OBJECT
 public:
-	InterblockedActuator(const QString &descr, const QString &where);
+	InterblockedActuator(const QString &descr, const QString &where, int openserver_id);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -47,7 +47,7 @@ class SecureInterblockedActuator : public BannOpenClose
 {
 Q_OBJECT
 public:
-	SecureInterblockedActuator(const QString &descr, const QString &where);
+	SecureInterblockedActuator(const QString &descr, const QString &where, int openserver_id);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -68,7 +68,7 @@ class GateEntryphoneActuator : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	GateEntryphoneActuator(const QString &descr, const QString &where);
+	GateEntryphoneActuator(const QString &descr, const QString &where, int openserver_id);
 
 private slots:
 	void activate();
@@ -82,7 +82,7 @@ class GateLightingActuator : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	GateLightingActuator(const BtTime &t, const QString &descr, const QString &where);
+	GateLightingActuator(const BtTime &t, const QString &descr, const QString &where, int openserver_id);
 
 private slots:
 	void activate();
@@ -97,7 +97,7 @@ class InterblockedActuatorGroup : public Bann3Buttons
 {
 Q_OBJECT
 public:
-	InterblockedActuatorGroup(const QStringList &addresses, const QString &descr);
+	InterblockedActuatorGroup(const QStringList &addresses, const QString &descr, int openserver_id);
 
 private slots:
 	void sendOpen();
@@ -113,7 +113,7 @@ class PPTStat : public BannerOld
 {
 Q_OBJECT
 public:
-	PPTStat(QString where);
+	PPTStat(QString where, int openserver_id);
 	virtual void inizializza(bool forza=false);
 
 private:

@@ -21,7 +21,7 @@ TemperatureViewer::TemperatureViewer(Page *page) : linked_page(page)
 	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
 }
 
-void TemperatureViewer::add(QString where, int x, int y, int width, int height, QString descr, QString ext)
+void TemperatureViewer::add(QString where, int openserver_id, int x, int y, int width, int height, QString descr, QString ext)
 {
 	TemperatureData temp;
 	QLCDNumber *l = new QLCDNumber(linked_page);
@@ -44,7 +44,7 @@ void TemperatureViewer::add(QString where, int x, int y, int width, int height, 
 	}
 
 	temp.device = bt_global::add_device_to_cache(new NonControlledProbeDevice(where, ext == "1" ?
-		NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL));
+		NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL, openserver_id));
 	connect(temp.device, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
 
 	unsigned default_bt_temp = 1235;

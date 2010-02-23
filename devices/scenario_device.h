@@ -8,6 +8,7 @@ class OpenMsg;
 typedef QPair<bool, int> ScenarioProgrammingStatus;
 Q_DECLARE_METATYPE(ScenarioProgrammingStatus);
 
+
 class ScenarioDevice : public device
 {
 friend class TestScenarioDevice;
@@ -24,7 +25,7 @@ public:
 		ALL_SCENARIOS = -1,     // all scenarios (dummy value, must be different from legal values)
 	};
 
-	ScenarioDevice(QString where);
+	ScenarioDevice(QString where, int openserver_id = 0);
 
 	void activateScenario(int scen);
 	void startProgramming(int scen);
@@ -45,7 +46,7 @@ class PPTSceDevice : public device
 {
 Q_OBJECT
 public:
-	PPTSceDevice(QString address);
+	PPTSceDevice(QString address, int openserver_id = 0);
 	void increase() const;
 	void decrease() const;
 	void stop() const;

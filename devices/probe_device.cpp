@@ -76,8 +76,8 @@ void NonControlledProbeDevice::manageFrame(OpenMsg &msg)
 // ControlledProbeDevice implementation
 
 ControlledProbeDevice::ControlledProbeDevice(QString where, QString central, QString _simple_where,
-					     CentralType _central_type, ProbeType _type)
-	: device(QString("4"), QString("#") + where)
+						 CentralType _central_type, ProbeType _type, int openserver_id)
+	: device(QString("4"), QString("#") + where, openserver_id)
 {
 	simple_where = _simple_where;
 	type = _type;

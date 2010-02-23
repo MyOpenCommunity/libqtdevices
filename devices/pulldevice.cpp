@@ -149,8 +149,8 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 	return false;
 }
 
-PullDevice::PullDevice(QString who, QString where, PullMode m) :
-	device(who, where),
+PullDevice::PullDevice(QString who, QString where, PullMode m, int openserver_id) :
+	device(who, where, openserver_id),
 	state(m)
 {
 }

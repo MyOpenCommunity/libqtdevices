@@ -30,7 +30,7 @@ class SingleActuator : public BannOnOffState
 {
 Q_OBJECT
 public:
-	SingleActuator(const QString &descr, const QString &where);
+	SingleActuator(const QString &descr, const QString &where, int openserver_id);
 	virtual void inizializza(bool forza = false);
 
 private slots:

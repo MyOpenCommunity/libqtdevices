@@ -57,8 +57,8 @@ void SpecialPage::loadItems(const QDomNode &config_node)
 		case TERMO_HOME_NC_EXTPROBE:
 		{
 			QString ext = (id == TERMO_HOME_NC_EXTPROBE) ? "1" : "0";
-			temp_viewer->add(getTextChild(item, "where"), BORDER_SIZE, getPosition(itemNum),
-				width() - BORDER_SIZE, ITEM_HEIGHT, getTextChild(item, "descr"), ext);
+			temp_viewer->add(getTextChild(item, "where"), getTextChild(item, "openserver_id").toInt(),
+				BORDER_SIZE, getPosition(itemNum), width() - BORDER_SIZE, ITEM_HEIGHT, getTextChild(item, "descr"), ext);
 			break;
 		}
 		default:

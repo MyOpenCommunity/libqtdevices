@@ -34,7 +34,7 @@ class TemperatureViewer : public QObject
 Q_OBJECT
 public:
 	TemperatureViewer(Page *page);
-	void add(QString where, int x, int y, int width, int height, QString descr, QString ext);
+	void add(QString where, int openserver_id, int x, int y, int width, int height, QString descr, QString ext);
 	void inizializza();
 
 private slots:

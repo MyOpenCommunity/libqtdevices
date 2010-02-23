@@ -14,10 +14,10 @@
 #define BUT_DIM     60
 
 
-InterblockedActuator::InterblockedActuator(const QString &descr, const QString &where)
+InterblockedActuator::InterblockedActuator(const QString &descr, const QString &where, int openserver_id)
 	: BannOpenClose(0)
 {
-	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL_UNKNOWN, openserver_id));
 	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
 		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP, descr);
 
@@ -83,10 +83,10 @@ void InterblockedActuator::status_changed(const StatusList &sl)
 	}
 }
 
-SecureInterblockedActuator::SecureInterblockedActuator(const QString &descr, const QString &where) :
+SecureInterblockedActuator::SecureInterblockedActuator(const QString &descr, const QString &where, int openserver_id) :
 	BannOpenClose(0)
 {
-	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL_UNKNOWN, openserver_id));
 
 	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
 		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP, descr);
@@ -183,12 +183,12 @@ void SecureInterblockedActuator::changeButtonStatus(BtButton *btn)
 }
 
 
-GateEntryphoneActuator::GateEntryphoneActuator(const QString &descr, const QString &where) :
+GateEntryphoneActuator::GateEntryphoneActuator(const QString &descr, const QString &where, int openserver_id) :
 	BannSinglePuls(0)
 {
 	// TODO: we still miss entryphone devices, so I'm creating a generic device and send
 	// frames directly. Change as soon as entryphone devices are available!
-	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL_UNKNOWN, openserver_id));
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"), descr);
 	connect(right_button, SIGNAL(pressed()), SLOT(activate()));
 }
@@ -200,11 +200,11 @@ void GateEntryphoneActuator::activate()
 }
 
 
-GateLightingActuator::GateLightingActuator(const BtTime &t, const QString &descr, const QString &where) :
+GateLightingActuator::GateLightingActuator(const BtTime &t, const QString &descr, const QString &where, int openserver_id) :
 	BannSinglePuls(0),
 	time(t)
 {
-	dev = bt_global::add_device_to_cache(new LightingDevice(where));
+	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL_UNKNOWN, openserver_id));
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"), descr);
 	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
 }
@@ -215,11 +215,11 @@ void GateLightingActuator::activate()
 }
 
 
-InterblockedActuatorGroup::InterblockedActuatorGroup(const QStringList &addresses, const QString &descr) :
+InterblockedActuatorGroup::InterblockedActuatorGroup(const QStringList &addresses, const QString &descr, int openserver_id) :
 	Bann3Buttons(0)
 {
 	foreach (const QString &where, addresses)
-		actuators.append(bt_global::add_device_to_cache(new AutomationDevice(where, PULL)));
+		actuators.append(bt_global::add_device_to_cache(new AutomationDevice(where, PULL, openserver_id)));
 
 	initBanner(bt_global::skin->getImage("scroll_down"), bt_global::skin->getImage("stop"),
 		bt_global::skin->getImage("scroll_up"), descr);
@@ -248,9 +248,9 @@ void InterblockedActuatorGroup::sendStop()
 }
 
 
-PPTStat::PPTStat(QString where) : BannerOld(0)
+PPTStat::PPTStat(QString where, int openserver_id) : BannerOld(0)
 {
-	dev = bt_global::add_device_to_cache(new PPTStatDevice(where));
+	dev = bt_global::add_device_to_cache(new PPTStatDevice(where, openserver_id));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 
 	// This banner shows only an icon in central position and a text below.

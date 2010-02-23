@@ -31,15 +31,16 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 	int id = getTextChild(item_node, "id").toInt();
 	QString descr = getTextChild(item_node, "descr");
 	QString where = getTextChild(item_node, "where");
+	int oid = getTextChild(item_node, "openserver_id").toInt();
 
 	banner *b = 0;
 	switch (id)
 	{
 	case SCENARIO:
-		b = new BannSimpleScenario(getTextChild(item_node, "what").toInt(), descr, where);
+		b = new BannSimpleScenario(getTextChild(item_node, "what").toInt(), descr, where, oid);
 		break;
 	case MOD_SCENARI:
-		b = new ScenarioModule(getTextChild(item_node, "what").toInt(), descr, where);
+		b = new ScenarioModule(getTextChild(item_node, "what").toInt(), descr, where, oid);
 		break;
 	case SCENARIO_EVOLUTO:
 	{
@@ -121,7 +122,7 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		QString what = getTextChild(item_node, "what");
 		if (!what.isEmpty())
 			where = what + "*" + where;
-		PPTSce *bann = new PPTSce(where);
+		PPTSce *bann = new PPTSce(where, oid);
 		bann->setText(descr);
 		b = bann;
 	}

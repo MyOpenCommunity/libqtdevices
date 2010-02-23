@@ -120,6 +120,7 @@ ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &con
 
 	QString descr = getTextChild(config_node, "descr");
 	QString w = getTextChild(config_node, "where");
+	int oid = getTextChild(config_node, "openserver_id").toInt();
 	bool external = false;
 	DeviceConditionDisplay *condition_display;
 
@@ -127,11 +128,11 @@ ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &con
 	{
 	case 1:
 		condition_display = new DeviceConditionDisplayOnOff(this, descr, bt_global::skin->getImage("light"));
-		device_cond = new DeviceConditionLight(condition_display, trigger, w);
+		device_cond = new DeviceConditionLight(condition_display, trigger, w, oid);
 		break;
 	case 2:
 		condition_display = new DeviceConditionDisplayDimming(this, descr, bt_global::skin->getImage("dimmer"));
-		device_cond = new DeviceConditionDimming(condition_display, trigger, w);
+		device_cond = new DeviceConditionDimming(condition_display, trigger, w, oid);
 		break;
 	case 7:
 		external = true;
@@ -139,7 +140,7 @@ ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &con
 	case 3:
 	case 8:
 		condition_display = new DeviceConditionDisplayTemperature(this, descr, bt_global::skin->getImage("probe"));
-		device_cond = new DeviceConditionTemperature(condition_display, trigger, w, external);
+		device_cond = new DeviceConditionTemperature(condition_display, trigger, w, oid, external);
 		break;
 	case 9:
 		condition_display = new DeviceConditionDisplayOnOff(this, descr, bt_global::skin->getImage("aux"));
@@ -151,7 +152,7 @@ ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &con
 		break;
 	case 6:
 		condition_display = new DeviceConditionDisplayDimming(this, descr, bt_global::skin->getImage("dimmer"));
-		device_cond = new DeviceConditionDimming100(condition_display, trigger, w);
+		device_cond = new DeviceConditionDimming100(condition_display, trigger, w, oid);
 		break;
 	default:
 		qFatal("Unknown device condition: %d", condition_type);
