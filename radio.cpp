@@ -30,7 +30,7 @@
 #include <QLCDNumber>
 #include <QDebug>
 #include <QVBoxLayout>
-
+#include <QStackedWidget>
 
 radio::radio(const QString &amb)
 {
@@ -46,11 +46,7 @@ QWidget *radio::createContent(const QString &amb)
 {
 	QWidget *content = new QWidget;
 
-	memoBut = new BtButton(content);
-	decBut = new BtButton(content);
-	aumBut = new BtButton(content);
-	autoBut = new BtButton(content);
-	manBut = new BtButton(content);
+
 	unoBut = new BtButton(content);
 	dueBut = new BtButton(content);
 	treBut = new BtButton(content);
@@ -97,11 +93,9 @@ QWidget *radio::createContent(const QString &amb)
 	rdsLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	rdsLabel->setFont(bt_global::font->get(FontManager::SUBTITLE));
 
-	memoBut->setGeometry(60,190,120,60);
-	decBut->setGeometry(0,130,60,60);
-	aumBut->setGeometry(180,130,60,60);
-	autoBut->setGeometry(60,130,60,60);
-	manBut->setGeometry(120,130,60,60);
+	QStackedWidget *stack = new QStackedWidget;
+	stack->insertWidget(STATION_SELECTION, getStationSelectionWidget());
+
 	unoBut->setGeometry(15,130,60,60);
 	dueBut->setGeometry(90,130,60,60);
 	treBut->setGeometry(165,130,60,60);
@@ -115,17 +109,6 @@ QWidget *radio::createContent(const QString &amb)
 	quatBut->hide();
 	cinBut->hide();
 	cancBut->hide();
-
-	aumBut->setImage(bt_global::skin->getImage("plus"));
-	decBut->setImage(bt_global::skin->getImage("minus"));
-
-	memoBut->setImage(bt_global::skin->getImage("memory"));
-	manual_off = bt_global::skin->getImage("man_off");
-	manual_on = bt_global::skin->getImage("man_on");
-	auto_off = bt_global::skin->getImage("auto_off");
-	auto_on = bt_global::skin->getImage("auto_on");
-	manBut->setImage(manual_off);
-	autoBut->setImage(auto_on);
 
 	unoBut->setImage(bt_global::skin->getImage("num_1"));
 	dueBut->setImage(bt_global::skin->getImage("num_2"));
@@ -144,13 +127,6 @@ QWidget *radio::createContent(const QString &amb)
 	manual=false;
 	wasManual=true;
 
-	connect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
-	connect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
-
-
-	connect(autoBut,SIGNAL(clicked()),this,SLOT(setAuto()));
-	connect(manBut,SIGNAL(clicked()),this,SLOT(setMan()));
-	connect(memoBut,SIGNAL(clicked()),this,SLOT(cambiaContesto()));
 	connect(cancBut,SIGNAL(clicked()),this,SLOT(ripristinaContesto()));
 
 	QVBoxLayout *vbox = new QVBoxLayout(content);
@@ -160,7 +136,44 @@ QWidget *radio::createContent(const QString &amb)
 	vbox->addWidget(ambDescr, 0, Qt::AlignHCenter);
 	vbox->addLayout(freq_layout);
 	vbox->addWidget(rdsLabel);
+	vbox->addWidget(stack, 0 , Qt::AlignBottom);
 	return content;
+}
+
+QWidget *radio::getStationSelectionWidget()
+{
+	QWidget *w = new QWidget;
+	QGridLayout *grid = new QGridLayout(w);
+	grid->setContentsMargins(0, 0, 0, 0);
+	grid->setSpacing(0);
+	memoBut = new BtButton;
+	decBut = new BtButton;
+	aumBut = new BtButton;
+	autoBut = new BtButton;
+	manBut = new BtButton;
+	grid->addWidget(decBut, 0, 0);
+	grid->addWidget(autoBut, 0, 1);
+	grid->addWidget(manBut, 0, 2);
+	grid->addWidget(aumBut, 0, 3);
+	grid->addWidget(memoBut, 1, 1, 1, 2);
+
+	aumBut->setImage(bt_global::skin->getImage("plus"));
+	decBut->setImage(bt_global::skin->getImage("minus"));
+	memoBut->setImage(bt_global::skin->getImage("memory"));
+	manual_off = bt_global::skin->getImage("man_off");
+	manual_on = bt_global::skin->getImage("man_on");
+	auto_off = bt_global::skin->getImage("auto_off");
+	auto_on = bt_global::skin->getImage("auto_on");
+	manBut->setImage(manual_off);
+	autoBut->setImage(auto_on);
+
+	connect(autoBut,SIGNAL(clicked()),this,SLOT(setAuto()));
+	connect(manBut,SIGNAL(clicked()),this,SLOT(setMan()));
+	connect(memoBut,SIGNAL(clicked()),this,SLOT(cambiaContesto()));
+	connect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
+	connect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
+
+	return w;
 }
 
 void radio::setFreq(float f)

@@ -112,6 +112,7 @@ private:
 	};
 	VisualState state;
 	QWidget *createContent(const QString &amb);
+	QWidget *getStationSelectionWidget();
 	float frequenza;
 	bool manual, wasManual;
 	BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
