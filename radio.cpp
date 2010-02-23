@@ -91,7 +91,6 @@ QWidget *radio::createContent(const QString &amb)
 	tuning_widget->insertWidget(MEMORY, getMemoryWidget());
 
 	manual=false;
-	wasManual=true;
 
 	QVBoxLayout *vbox = new QVBoxLayout(content);
 	vbox->setContentsMargins(0, 0, 0, 0);

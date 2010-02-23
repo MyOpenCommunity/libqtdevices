@@ -115,7 +115,7 @@ private:
 	QWidget *getStationSelectionWidget();
 	QWidget *getMemoryWidget();
 	float frequenza;
-	bool manual, wasManual;
+	bool manual;
 	BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
 	QButtonGroup button_group;
 	QStackedWidget *tuning_widget;
