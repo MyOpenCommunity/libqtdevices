@@ -107,7 +107,7 @@ void PlantMenu::loadItems(const QDomNode &config_node)
 		if (id == TERMO_4Z)
 		{
 			ind_centrale = getTextChild(item, "where");
-			openserver_id = getTextChild(item, "where").toInt();
+			openserver_id = getTextChild(item, "openserver_id").toInt();
 			break;
 		}
 		else if (id == TERMO_99Z)
