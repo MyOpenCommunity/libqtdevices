@@ -136,6 +136,9 @@ BtMain::BtMain(int openserver_reconnection_time)
 	qApp->installEventFilter(new LastClickTime);
 #endif
 
+	monitor_ready = false;
+	config_loaded = false;
+
 	QHash<int, QPair<Client*, Client*> > clients;
 	QHash<int, Client*> monitors;
 
@@ -184,8 +187,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	page_container->blockTransitions(true); // no transitions until homepage is showed
 	connect(page_container, SIGNAL(currentPageChanged(Page*)), &bt_global::page_stack, SLOT(currentPageChanged(Page *)));
 
-	monitor_ready = false;
-	config_loaded = false;
+
 
 	rearmWDT();
 
@@ -424,8 +426,8 @@ void BtMain::monitorReady()
 
 void BtMain::myMain()
 {
-	// Called when both monitor is up and config is loaded.
-	qDebug("entro MyMain");
+	// Called when both the connection is up and config is loaded.
+	qDebug("BtMain::MyMain");
 
 	Home->inizializza();
 	if (version)
