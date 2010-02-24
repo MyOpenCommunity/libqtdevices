@@ -76,7 +76,6 @@ private:
   \class bann3ButLab
   \brief This is a class that describes a banner with a label between 2 buttons and a text under them
   There are 2 alternative buttons on the left and only one is visible at a time.
-  \date lug 2005
 */
 class bann3ButLab : public BannerOld
 {

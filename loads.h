@@ -31,7 +31,6 @@ class QDomNode;
  * \class bannLoads
  * \brief This class is made to force an appliance.
  *
- * \date lug 2005
  */
 class bannLoads : public bannOnSx
 {

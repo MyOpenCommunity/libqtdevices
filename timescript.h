@@ -30,7 +30,6 @@
   \brief This class shows a time and eventually a date with the possibility to modify them using a set of appropriate slots.
 
   The argument are the pointer to the parent Widget, the pointer to the name, the type (0=shows the local time with hh:mm:ss, 1=, 2=shows a stopped time with hh:mm, 25= shows the date), 
-  \date lug 2005
 */
 class timeScript : public QLCDNumber
 {

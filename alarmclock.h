@@ -46,7 +46,6 @@ class SingleChoiceContent;
   \class AlarmClock
   \brief This class is the implementation af the alarm set.
 
-  \date lug 2005
 */
 class AlarmClock : public Page
 {
@@ -189,7 +188,6 @@ signals:
   \class AlarmClockTime
   \brief Used to set the alarm time.
 
-  \date lug 2005
 */
 class AlarmClockTime : public Page
 {
@@ -209,7 +207,6 @@ private:
   \class AlarmClockFreq
   \brief Used to set the alarm frequency.
 
-  \date lug 2005
 */
 class AlarmClockFreq : public Page
 {
@@ -274,7 +271,6 @@ private:
   \class AlarmNavigation
   \brief helper class for the bottom navigation bar.
 
-  \date lug 2005
 */
 class AlarmNavigation : public QWidget
 {

@@ -34,7 +34,6 @@ class PlatformDevice;
   \class ChangeTime
   \brief This is the class used to set time.
 
-  \date lug 2005
 */
 class  ChangeTime : public Page
 {
@@ -68,7 +67,6 @@ private:
   \class ChangeDate
   \brief This is the class used to set time.
 
-  \date lug 2005
 */
 class  ChangeDate : public Page
 {

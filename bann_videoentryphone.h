@@ -41,7 +41,6 @@ class doorphone_device;
 /*!
  * \class postoExt
  * \brief This class represents an outdoor station
- * \date apr 2006
  */
 class postoExt : public bann4tasLab
 {

@@ -40,7 +40,6 @@ class QLabel;
   \class BannPulsDynIcon
   \brief Class derived from bannPuls with status changed event handling.
 
-  \date May 2008
 */
 class BannPulsDynIcon : public bannPuls
 {
@@ -59,7 +58,6 @@ public slots:
   \class StopngoPage
   \brief Stop & go devices GUI page.
   
-  \date jul 2008
 */
 class StopngoPage : public Page
 {

@@ -32,7 +32,6 @@
   \class SupervisionMenu
   \brief Class defining a list of devices groups part of the supervision family.
 
-  \date May 2008
 */
 class SupervisionMenu : public BannerPage
 {

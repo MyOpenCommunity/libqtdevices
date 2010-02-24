@@ -31,7 +31,6 @@ class QLabel;
   \class Aux
   \brief This class implements the management of the aux source page
 
-  \date lug 2006
   */
 class Aux : public Page
 {
