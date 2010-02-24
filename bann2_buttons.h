@@ -1,12 +1,23 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-** bann2_buttons.h
-**
-** In this file there are contained all generic banners with 2 buttons.
-**
-****************************************************************/
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 
 #ifndef BANN2_BUTTONS_H
 #define BANN2_BUTTONS_H
@@ -195,7 +206,6 @@ private:
 /*!
   \class bann2But
   \brief This is a class that describes a banner with a text between 2 buttons 
-  \author Davide
   \date lug 2005
 */
 class bann2But : public BannerOld
@@ -209,7 +219,6 @@ public:
 /*!
   \class bannOnOff
   \brief This is a class that describes a banner with a button on the right and on the left, an icon on the center and a text on the bottom
-  \author Davide
   \date lug 2005
 */
 class bannOnOff : public BannerOld
@@ -223,7 +232,6 @@ public:
 /*!
   \class bannOnOff2scr
   \brief This is a class that describes a banner with a button on the right and on the left and a text on the bottom area and an other the center-left
-  \author Davide
   \date lug 2005
 */
 class bannOnOff2scr : public BannerOld

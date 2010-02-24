@@ -1,12 +1,23 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** ambdiffson.h
- **
- **definizione degli ambienti di diffusione sonora implementati
- **
- ****************************************************************/
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 
 #ifndef AMBDIFFSON_H
 #define AMBDIFFSON_H
@@ -28,7 +39,6 @@ class AudioSources;
 /*!
  * \class ambDiffSon
  * \brief This class represents an env. in the multi-channel audio diff. sys.
- * \author Ciminaghi
  * \date jul 2006
  */
 class ambDiffSon : public bannBut2Icon
@@ -63,7 +73,6 @@ signals:
 /*!
  * \class insAmbDiffSon
  * \brief This class represents an env. in the multi-channel audio diff. sys.
- * \author Ciminaghi
  * \date jul 2006
  */
 class insAmbDiffSon : public bannPuls

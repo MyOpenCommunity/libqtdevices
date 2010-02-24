@@ -1,12 +1,23 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** sorgentiradio.h
- **
- **definizioni delle sorgenti radio implementate
- **
- ****************************************************************/
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 
 #ifndef SORGENTI_RADIO_H
 #define SORGENTI_RADIO_H
@@ -32,7 +43,6 @@ class device;
  * This particoular banner is composed by 4 buttons from which is possible: change the sound source, open an toher page
  * where to watch the detailed information about the tuner (frequency, RDS message, ...), go to the next/previous
  * memorized frequency.
- * \author Davide
  * \date lug 2005
  */
 class banradio : public bannCiclaz
@@ -75,7 +85,6 @@ public slots:
 /*!
  * \class sorgenteMultiRadio
  * \brief This class represents a radio source in the multi-channel audio diff. sys.
- * \author Ciminaghi
  * \date jul 2006
  */
 class sorgenteMultiRadio : public banradio

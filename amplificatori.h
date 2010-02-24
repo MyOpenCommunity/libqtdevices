@@ -1,12 +1,23 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** amplificatori.h
- **
- **definizioni dei vari amplificatori implementati
- **
- ****************************************************************/
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 
 #ifndef AMPLIFICATORI_H
 #define AMPLIFICATORI_H
@@ -26,7 +37,6 @@ class device;
  * \brief This class is made to manage an audio amplifier.
  *
  * This class is quite similar to \a dimmer's one; it only has to deal with different \a Open \a messages.
- * \author Davide
  * \date lug 2005
  */
 class amplificatore : public bannRegolaz
@@ -54,7 +64,6 @@ private:
  *
  * It behaves essentially like \a amplificatore even if it doesn't represent the amplifiter's state since different
  * amplifiers can have different states.
- * \author Davide
  * \date lug 2005
  */
 class grAmplificatori : public bannRegolaz

@@ -55,8 +55,6 @@
 #include <errno.h>
 #include <termios.h>
 
-#include <include/linux/input.h>
-
 typedef struct {
     long sec_dummy;
     long usec_dummy;
@@ -72,6 +70,15 @@ typedef struct {
 #define QT_QWS_EV_MOVE_LIMIT 100
 #define QT_QWS_EV_JITTER_LIMIT 2
 #define QT_QWS_EV_DEVICE "/dev/ts"
+
+#define BTN_TOUCH 0x14a
+
+#define EV_SYN 0x00
+#define EV_KEY 0x01
+#define EV_ABS 0x03
+
+#define ABS_X 0x00
+#define ABS_Y 0x01
 
 class QWSLinuxTPMouseHandlerPrivate : public QObject
 {

@@ -1,3 +1,24 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #ifndef BANN_SCENARIO_H
 #define BANN_SCENARIO_H
 
@@ -17,39 +38,39 @@ class ScenarioDevice;
 
 class BannSimpleScenario : public Bann2Buttons
 {
-Q_OBJECT
-public:
-	BannSimpleScenario(int scenario, const QString &descr, const QString &where);
+	Q_OBJECT
+	public:
+		BannSimpleScenario(int scenario, const QString &descr, const QString &where);
 
-private slots:
-	void activate();
+		private slots:
+			void activate();
 
-private:
-	ScenarioDevice *dev;
-	int scenario_number;
+	private:
+		ScenarioDevice *dev;
+		int scenario_number;
 };
 
 
 class ScenarioModule : public Bann4ButtonsIcon
 {
-Q_OBJECT
-public:
-	ScenarioModule(int scenario, const QString &descr, const QString &where);
-	virtual void inizializza(bool forza = false);
+	Q_OBJECT
+	public:
+		ScenarioModule(int scenario, const QString &descr, const QString &where);
+		virtual void inizializza(bool forza = false);
 
-private slots:
-	void status_changed(const StatusList &sl);
-	void activate();
-	void editScenario();
-	void startEditing();
-	void deleteScenario();
-	void stopEditing();
+		private slots:
+			void status_changed(const StatusList &sl);
+		void activate();
+		void editScenario();
+		void startEditing();
+		void deleteScenario();
+		void stopEditing();
 
-private:
-	void changeLeftFunction(const char *slot);
-	ScenarioDevice *dev;
-	int scenario_number;
-	bool is_editing;
+	private:
+		void changeLeftFunction(const char *slot);
+		ScenarioDevice *dev;
+		int scenario_number;
+		bool is_editing;
 };
 
 
