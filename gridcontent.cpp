@@ -26,7 +26,7 @@
 
 GridContent::GridContent(QWidget *parent) : QWidget(parent)
 {
-	QGridLayout *l = new QGridLayout(this);
+	(void) new QGridLayout(this);
 
 	current_page = 0;
 	need_update = true;
