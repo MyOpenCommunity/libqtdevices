@@ -26,8 +26,8 @@ enum RequestDimension
 };
 
 
-PowerAmplifierDevice::PowerAmplifierDevice(QString address) :
-	device(QString("22"), "3#" + address[0] + "#" + address[1])
+PowerAmplifierDevice::PowerAmplifierDevice(QString address, int openserver_id) :
+	device(QString("22"), "3#" + address[0] + "#" + address[1], openserver_id)
 {
 	location = QString(address[0]).toInt();
 }

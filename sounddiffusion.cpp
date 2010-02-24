@@ -148,6 +148,7 @@ void AmpliContainer::loadAmplifiers(const QDomNode &config_node)
 		int id = getTextChild(node, "id").toInt();
 		QString descr = getTextChild(node, "descr");
 		QString where = getTextChild(node, "where");
+		int oid = getTextChild(node, "openserver_id").toInt();
 		QString img1 = IMG_PATH + getTextChild(node, "cimg1");
 		QString img2 = IMG_PATH + getTextChild(node, "cimg2");
 		QString img3 = IMG_PATH + getTextChild(node, "cimg3");
@@ -161,7 +162,7 @@ void AmpliContainer::loadAmplifiers(const QDomNode &config_node)
 			b = new amplificatore(this, where, img1, img2, img3, img4);
 			break;
 		case POWER_AMPLIFIER:
-			b = new BannPowerAmplifier(this, node, where);
+			b = new BannPowerAmplifier(this, node, where, oid);
 			connect(b, SIGNAL(pageClosed()), SLOT(showSoundDiff()));
 			break;
 		case GR_AMPLIFICATORI:

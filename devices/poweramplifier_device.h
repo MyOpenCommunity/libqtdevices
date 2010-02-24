@@ -30,7 +30,7 @@ class PowerAmplifierDevice : public device
 {
 Q_OBJECT
 public:
-	PowerAmplifierDevice(QString address);
+	PowerAmplifierDevice(QString address, int openserver_id = 0);
 
 	// The request methods, used to request an information
 	void requestStatus() const;

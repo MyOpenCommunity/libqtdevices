@@ -12,7 +12,7 @@
 #include <QLabel>
 
 
-BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString address)
+BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString address, int openserver_id)
 	: bannRegolaz(parent)
 {
 	setRange(1, 9);
@@ -21,7 +21,7 @@ BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_n
 	SetIcons(bt_global::skin->getImage("settings"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("volume_active"), bt_global::skin->getImage("volume_inactive"), true);
 	setAddress(address);
-	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address));
+	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address, openserver_id));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
 
 	connect(this, SIGNAL(dxClick()), SLOT(toggleStatus()));
