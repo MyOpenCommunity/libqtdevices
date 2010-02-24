@@ -145,11 +145,18 @@ BtMain::BtMain()
 	client_supervisor->forwardFrame(monitors[MAIN_OPENSERVER]);
 #endif
 
+	// When only the main openserver is defined the homepage is showed only when
+	// the monitor of the openserver is up. Otherwise the homepage is showed as
+	// soon as the configuration is loaded.
+	if (clients.count() > 1)
+		monitor_ready = true;
+	else
+		connect(monitors[MAIN_OPENSERVER], SIGNAL(connectionUp()), SLOT(monitorReady()));
+
 	banner::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
 	Page::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
 	FrameReceiver::setClientsMonitor(monitors);
 	device::setClients(clients);
-	connect(monitors[MAIN_OPENSERVER], SIGNAL(connectionUp()), SLOT(monitorReady()));
 
 	window_container = new WindowContainer(maxWidth(), maxHeight());
 	page_container = window_container->centralLayout();
@@ -191,8 +198,21 @@ BtMain::BtMain()
 
 	initMultimedia();
 
-#if BT_EMBEDDED
+#if !defined(BT_HARDWARE_X11)
 	if (QFile::exists("/etc/pointercal"))
+		alreadyCalibrated = true;
+#else
+	alreadyCalibrated = true;
+#endif
+
+	if (!alreadyCalibrated)
+	{
+		calib = new Calibrate(NULL, 1);
+		calib->showFullScreen();
+		connect(calib, SIGNAL(fineCalib()), SLOT(waitBeforeInit()));
+		connect(calib, SIGNAL(fineCalib()), version, SLOT(showPage()));
+	}
+	else
 	{
 		if (version)
 			version->showPage();
@@ -200,23 +220,6 @@ BtMain::BtMain()
 			loading->showWindow();
 		waitBeforeInit();
 	}
-	else
-	{
-#if !defined(BT_HARDWARE_X11)
-		calib = new Calibrate(NULL, 1);
-		calib->showFullScreen();
-		connect(calib, SIGNAL(fineCalib()), this, SLOT(waitBeforeInit()));
-		connect(calib, SIGNAL(fineCalib()), version, SLOT(showPage()));
-#endif
-		alreadyCalibrated = true;
-	}
-#else
-	if (version)
-		version->showPage();
-	if (loading)
-		loading->showWindow();
-	waitBeforeInit();
-#endif
 }
 
 BtMain::~BtMain()
