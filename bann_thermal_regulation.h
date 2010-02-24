@@ -62,7 +62,7 @@ enum BannID
 };
 
 /// Factory function to get banners
-NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, TemperatureScale scale = CELSIUS);
+NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, int openserver_id, TemperatureScale scale = CELSIUS);
 
 
 /**

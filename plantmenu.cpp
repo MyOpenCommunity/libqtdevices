@@ -22,6 +22,7 @@
 PlantMenu::PlantMenu(const QDomNode &conf) : BannerPage(0)
 {
 	buildPage(getTextChild(conf, "descr"));
+	openserver_id = 0;
 	loadItems(conf);
 }
 
@@ -95,14 +96,17 @@ void PlantMenu::loadItems(const QDomNode &config_node)
 		if (id == TERMO_4Z)
 		{
 			ind_centrale = getTextChild(item, "where");
+			openserver_id = getTextChild(item, "where").toInt();
 			break;
 		}
 		else if (id == TERMO_99Z)
 		{
 			ind_centrale = "0";
+			openserver_id = getTextChild(item, "where").toInt();
 			break;
 		}
 	}
+
 
 	NavigationPage *first = 0, *prev = 0;
 	foreach (const QDomNode& item, getChildren(config_node, "item"))
@@ -171,7 +175,7 @@ NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, BannID 
 	 * Create page in detail menu.
 	 */
 	TemperatureScale scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
-	NavigationPage *p = getPage(type, n, ind_centrale, scale);
+	NavigationPage *p = getPage(type, n, ind_centrale, openserver_id, scale);
 	bp->connectRightButton(p);
 	connect(bp, SIGNAL(pageClosed()), SLOT(showPage()));
 

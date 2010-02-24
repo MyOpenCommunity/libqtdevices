@@ -43,6 +43,8 @@ private:
 	/// Address of the thermal regulation device
 	/// empty in case of 99z device
 	QString ind_centrale;
+	// The openserver id for the thermal regulation device
+	int openserver_id;
 };
 
 #endif // PLANTMENU_H
