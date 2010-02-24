@@ -35,8 +35,9 @@
 /// The struct that contain the general configuration values
 struct GeneralConfig
 {
-	int verbosity_level;
-	QString log_file;
+	int verbosity_level; // the verbosity used to print in the log file
+	QString log_file; // the log filename
+	int openserver_reconnection_time; // the timeout after that if the connection is down the UI try to establish again a connection
 };
 
 QHash<GlobalFields, QString> bt_global::config;
@@ -123,6 +124,7 @@ static void loadGeneralConfig(QString xml_file, GeneralConfig &general_config)
 {
 	general_config.verbosity_level = VERBOSITY_LEVEL_DEFAULT;
 	general_config.log_file = MY_FILE_LOG_DEFAULT;
+	general_config.openserver_reconnection_time = 30;
 
 	if (QFile::exists(xml_file))
 	{
@@ -136,6 +138,10 @@ static void loadGeneralConfig(QString xml_file, GeneralConfig &general_config)
 				QDomElement v = getElement(el, "BTouch/logverbosity");
 				if (!v.isNull())
 					general_config.verbosity_level = v.text().toInt();
+
+				QDomElement r = getElement(el, "BTouch/reconnectiontime");
+				if (!r.isNull())
+					general_config.openserver_reconnection_time = r.text().toInt();
 
 				QDomNode l = getChildWithName(el, "logfile");
 				if (!l.isNull())
@@ -209,7 +215,7 @@ int main(int argc, char **argv)
 	signal(SIGUSR2, resetTimer);
 
 	qDebug("Start BtMain");
-	bt_global::btmain = new BtMain;
+	bt_global::btmain = new BtMain(general_config.openserver_reconnection_time);
 	installTranslator(a, bt_global::config[LANGUAGE]);
 	int res = a.exec();
 	delete bt_global::btmain;

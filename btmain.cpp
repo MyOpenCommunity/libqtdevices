@@ -95,7 +95,7 @@ bool LastClickTime::eventFilter(QObject *obj, QEvent *ev)
 #endif
 
 
-BtMain::BtMain()
+BtMain::BtMain(int openserver_reconnection_time)
 {
 	boot_time = new QTime;
 	boot_time->start();

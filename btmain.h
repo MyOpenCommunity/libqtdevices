@@ -52,7 +52,7 @@ friend Page *getPage(int id);
 friend class HomePage;
 
 public:
-	BtMain();
+	BtMain(int openserver_reconnection_time);
 	~BtMain();
 	SoundDiffusion *difSon;
 	MultiSoundDiffAlarm *dm;
