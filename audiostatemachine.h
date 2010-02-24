@@ -34,6 +34,7 @@ class StateMachine;
 class TransitionConstraint
 {
 public:
+	virtual ~TransitionConstraint() {}
 	// called by isTransitiionAllowed(); return true to allow the transition
 	// to be performed
 	virtual bool isAllowed(const StateMachine *machine,
