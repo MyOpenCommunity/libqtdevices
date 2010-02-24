@@ -1,3 +1,24 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #ifndef BANN_ANTINTRUSION_H
 #define BANN_ANTINTRUSION_H
 
@@ -71,7 +92,6 @@ typedef class zonaAnti AntintrusionZone;
  * \brief This class is made to manage an anti-intrusion zone.
  *
  * By this banner is possible to see if the zone is active or not in a certain moment.
- * \author Davide
  * \date lug 2005
  */
 class zonaAnti : public bannOnIcons
@@ -107,7 +127,6 @@ signals:
  *
  * By this banner is possible to change the (dis)activation state of the system from the visualized one.
  * If there is an alarm queue it also possible to acces a page describing the it.
- * \author Davide
  * \date lug 2005
  */
 class impAnti : public bann3ButLab
