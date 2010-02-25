@@ -38,7 +38,6 @@ isEmpty(TEST_ARCH) {
 	OBJECTS_DIR = obj/x86
 	MOC_DIR = moc/x86
 	HARDWARE = x11
-	DEFINES += BT_HARDWARE_X11
 	TRGT_SUFFIX = $${TRGT_SUFFIX}.x86
 } else {
 	message(ARM architecture detected.)
@@ -48,7 +47,6 @@ isEmpty(TEST_ARCH) {
 	DEFINES += BT_EMBEDDED
 
 	HARDWARE = btouch
-	DEFINES += BT_HARDWARE_BTOUCH
 	TRGT_SUFFIX = $${TRGT_SUFFIX}.arm
 }
 

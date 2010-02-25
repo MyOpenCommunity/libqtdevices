@@ -12,14 +12,25 @@ CONF_FILE = btouch
 # In this case we are searching for the substring 'arm'
 TEST_ARCH = $$find(QMAKE_CXX,arm)
 
+
+isEmpty(TEST_ARCH) {
+	# x86
+	DEFINES += OPENSERVER_ADDR=\\\"touchx\\\"
+	DEFINES += BT_HARDWARE_X11
+}
+else {
+	DEFINES += BT_HARDWARE_TOUCHX
+}
+
 isEmpty(TEST_ARCH) {
 	# x86
 	DEFINES += OPENSERVER_ADDR=\\\"btouch\\\"
+	DEFINES += BT_HARDWARE_X11
 }
+
 else {
-	# You must define the environment variable ARMLINUX before executing the
-	# make step.
-	INCLUDEPATH += QWSMOUSE $(ARMLINUX)
+	DEFINES += BT_HARDWARE_BTOUCH
+	INCLUDEPATH += QWSMOUSE
 	HEADERS += QWSMOUSE/qmouse_qws.h \
 		QWSMOUSE/qmouselinuxevent-2-6_qws.h
 

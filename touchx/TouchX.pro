@@ -15,6 +15,10 @@ TEST_ARCH = $$find(QMAKE_CXX,arm)
 isEmpty(TEST_ARCH) {
 	# x86
 	DEFINES += OPENSERVER_ADDR=\\\"touchx\\\"
+	DEFINES += BT_HARDWARE_X11
+}
+else {
+	DEFINES += BT_HARDWARE_TOUCHX
 }
 
 VPATH = ../devices ..
