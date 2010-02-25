@@ -405,7 +405,7 @@ void EnergyTableContent::paintEvent(QPaintEvent *e)
 	// header
 	p.setPen(pen_head);
 	p.setBrush(brush_head);
-	p.drawRect(left, top, row_width, row_height);
+	p.drawRect(left, top, row_width, static_cast<int>(row_height));
 	p.setPen(pen_text);
 	p.drawText(QRectF(left, top, cell_width, row_height),
 		   Qt::AlignCenter, left_text);
@@ -417,11 +417,11 @@ void EnergyTableContent::paintEvent(QPaintEvent *e)
 	int start = current_page * rows_per_page;
 	for (int i = 0; i < rows_per_page; ++i)
 	{
-		int row_y = top + row_height + i * row_height;
+		int row_y = static_cast<int>(top + row_height + i * row_height);
 
 		p.setPen(i & 1 ? pen_even : pen_odd);
 		p.setBrush(i & 1 ? brush_even : brush_odd);
-		p.drawRect(left, row_y, row_width, row_height);
+		p.drawRect(left, row_y, row_width, static_cast<int>(row_height));
 
 		if (i + start < data_keys.count())
 		{
