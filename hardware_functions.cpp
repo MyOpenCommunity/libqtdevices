@@ -226,6 +226,7 @@ void setOrientation(QString orientation)
 
 void beep(int t)
 {
+#ifdef BT_HARDWARE_BTOUCH
 	if (QFile::exists("/proc/sys/dev/btweb/buzzer"))
 	{
 		int fd = open("/proc/sys/dev/btweb/buzzer", O_WRONLY);
@@ -237,11 +238,10 @@ void beep(int t)
 			close(fd);
 		}
 	}
-	else if (QFile::exists(SOUND_PATH "beep.wav"))
-	{
-		// needs BT_HARDWARE_TOUCHX
+#else // BT_HARDWARE_TOUCHX
+	if (QFile::exists(SOUND_PATH "beep.wav"))
 		playSound(SOUND_PATH "beep.wav");
-	}
+#endif
 }
 
 void beep()
@@ -355,10 +355,13 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 // local variable to control an external process
 // TODO: sound playing really should be centralized, since only one process at the time can access /dev/dsp
 // For example, alarm or doorbell sound fails if an mp3 is playing.
+#ifdef BT_HARDWARE_TOUCHX
 static QProcess play_sound_process;
+#endif
+
 void playSound(const QString &wavFile)
 {
-	// needs BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TOUCHX
 	if (play_sound_process.state() != QProcess::NotRunning)
 	{
 		play_sound_process.terminate();
@@ -369,26 +372,31 @@ void playSound(const QString &wavFile)
 				QStringList() << "-t" << "wav" << "-s" << "w"
 				<< "-c" << "2" << "-f" << "s" << "-r" << "48000"
 				<< "-d" << "/dev/dsp1" << wavFile);
+#endif
 }
 
 void stopSound()
 {
+#ifdef BT_HARDWARE_TOUCHX
 	play_sound_process.terminate();
+#endif
 }
 
 void setVctVideoValue(const QString &command, const QString &value)
 {
-	// needs BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TOUCHX
 	QProcess::startDetached("/home/bticino/bin/set_videocom",
 		QStringList() << command << value);
+#endif
 }
 
 void initMultimedia()
 {
-	// needs BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TOUCHX
 	QProcess::execute("/bin/init_audio_system");
 	QProcess::execute("/bin/init_video_system");
 	QProcess::execute("/bin/rca2_on");
+#endif
 }
 
 void setVolume(VolumeType type, int value)
