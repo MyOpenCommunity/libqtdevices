@@ -174,7 +174,7 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, int openser
 		p = new PageTermoReg99z(page_node, bt_global::add_device_to_cache(new ThermalDevice99Zones(ind_centrale, openserver_id)));
 		break;
 	default:
-		qFatal("Unknown banner type %d on bannfullscreen", id);
+		qFatal("Unknown banner type %d on getPage", id);
 	}
 
 	return p;
