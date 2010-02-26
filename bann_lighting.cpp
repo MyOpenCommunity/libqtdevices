@@ -436,6 +436,7 @@ TempLightVariable::TempLightVariable(const QList<BtTime> &time_values, const QSt
 	TempLight(descr, where, openserver_id)
 {
 	times = time_values;
+	dev->setTimingBehaviour(LightingDevice::TIMED_LIGHT);
 	updateTimeLabel();
 }
 
@@ -463,6 +464,7 @@ TempLightFixed::TempLightFixed(int time, const QString &descr, const QString &wh
 	lighting_time = BtTime(total_time / 3600, (total_time / 60) % 60, total_time % 60);
 
 	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL_UNKNOWN, openserver_id));
+	dev->setTimingBehaviour(LightingDevice::TIMED_LIGHT);
 
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("lamp_status"),
 		bt_global::skin->getImage("lamp_time"), descr, formatTime(lighting_time));

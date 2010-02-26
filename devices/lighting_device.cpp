@@ -66,6 +66,7 @@ int dimmerLevelTo100(int level)
 LightingDevice::LightingDevice(QString where, PullMode pull, int openserver_id) :
 	PullDevice(QString("1"), where, pull, openserver_id)
 {
+	timed_light = NOT_TIMED_LIGHT;
 }
 
 void LightingDevice::turnOn()
@@ -122,7 +123,10 @@ void LightingDevice::requestPullStatus()
 	requestStatus();
 }
 
-
+void LightingDevice::setTimingBehaviour(Timed t)
+{
+	timed_light = t;
+}
 
 void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 {

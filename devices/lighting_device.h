@@ -42,6 +42,12 @@ public:
 		DIM_DIMMER100_SPEED,
 	};
 
+	enum Timed
+	{
+		NOT_TIMED_LIGHT,
+		TIMED_LIGHT,
+	};
+
 	LightingDevice(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0);
 
 	void turnOn();
@@ -54,9 +60,14 @@ public:
 	void requestStatus();
 	void requestVariableTiming();
 
+	void setTimingBehaviour(Timed t);
+
 protected:
 	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
 	virtual void requestPullStatus();
+
+private:
+	Timed timed_light;
 };
 
 
