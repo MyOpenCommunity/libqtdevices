@@ -95,6 +95,10 @@ public:
 	virtual void setText(const QString &) {}
 	virtual BtButton *customButton() { return 0; }
 
+public slots:
+	void connectionUp();
+	void connectionDown();
+
 signals:
 	/// Emitted when any of the linked pages is closed
 	void pageClosed();
@@ -121,10 +125,6 @@ protected:
 	void sendInit(QString frame) const;
 
 	void connectDevice(device *dev);
-
-private slots:
-	void connectionUp();
-	void connectionDown();
 
 private:
 	int id;

@@ -71,8 +71,8 @@ enum BannID
 	fs_99z_fancoil,                       // 99 zones controlled probe with fancoil
 };
 
-/// Factory function to get banners
-NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, int openserver_id, TemperatureScale scale = CELSIUS);
+/// Factory function to get pages
+NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, int openserver_id, TemperatureScale scale, banner* bann);
 
 
 /**

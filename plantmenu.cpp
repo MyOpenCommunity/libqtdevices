@@ -186,7 +186,7 @@ NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, BannID 
 	 * Create page in detail menu.
 	 */
 	TemperatureScale scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
-	NavigationPage *p = getPage(type, n, ind_centrale, openserver_id, scale);
+	NavigationPage *p = getPage(type, n, ind_centrale, openserver_id, scale, bp);
 	bp->connectRightButton(p);
 	connect(bp, SIGNAL(pageClosed()), SLOT(showPage()));
 

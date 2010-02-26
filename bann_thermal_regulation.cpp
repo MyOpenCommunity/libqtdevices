@@ -105,7 +105,7 @@ ThermalNavigation::ThermalNavigation(QWidget *parent)
 }
 
 
-NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, int openserver_id, TemperatureScale scale)
+NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, int openserver_id, TemperatureScale scale, banner *bann)
 {
 	NavigationPage *p = 0;
 	QString simple_address = getTextChild(n, "where");
@@ -118,6 +118,7 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, int openser
 	QDomNode page_node = getPageNodeFromChildNode(n, "lnk_pageID");
 #endif
 
+	ThermalDevice *thermal_device;
 	switch (id)
 	{
 	case fs_nc_probe:
@@ -129,9 +130,9 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, int openser
 			ind_centrale, simple_address, ControlledProbeDevice::CENTRAL_4ZONES, ControlledProbeDevice::NORMAL, openserver_id));
 
 		QString thermr_where = QString("0#") + ind_centrale;
-		ThermalDevice *thermo_reg = bt_global::add_device_to_cache(new ThermalDevice4Zones(thermr_where, openserver_id));
 
-		p = new PageProbe(n, dev, thermo_reg, scale);
+		thermal_device = bt_global::add_device_to_cache(new ThermalDevice4Zones(thermr_where, openserver_id));
+		p = new PageProbe(n, dev, thermal_device, scale);
 	}
 		break;
 	case fs_99z_probe:
@@ -140,8 +141,8 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, int openser
 			ind_centrale, simple_address, ControlledProbeDevice::CENTRAL_99ZONES, ControlledProbeDevice::NORMAL, openserver_id));
 
 		QString thermr_where = ind_centrale;
-		ThermalDevice *thermo_reg = bt_global::add_device_to_cache(new ThermalDevice99Zones(thermr_where, openserver_id));
-		p = new PageProbe(n, dev, thermo_reg, scale);
+		thermal_device = bt_global::add_device_to_cache(new ThermalDevice99Zones(thermr_where, openserver_id));
+		p = new PageProbe(n, dev, thermal_device, scale);
 	}
 		break;
 	case fs_4z_fancoil:
@@ -150,8 +151,8 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, int openser
 			ind_centrale, simple_address, ControlledProbeDevice::CENTRAL_4ZONES, ControlledProbeDevice::FANCOIL, openserver_id));
 
 		QString thermr_where = QString("0#") + ind_centrale;
-		ThermalDevice *thermo_reg = bt_global::add_device_to_cache(new ThermalDevice4Zones(thermr_where, openserver_id));
-		p = new PageFancoil(n, dev, thermo_reg, scale);
+		thermal_device = bt_global::add_device_to_cache(new ThermalDevice4Zones(thermr_where, openserver_id));
+		p = new PageFancoil(n, dev, thermal_device, scale);
 	}
 		break;
 	case fs_99z_fancoil:
@@ -160,23 +161,29 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, int openser
 			ind_centrale, simple_address, ControlledProbeDevice::CENTRAL_99ZONES, ControlledProbeDevice::FANCOIL, openserver_id));
 
 		QString thermr_where = ind_centrale;
-		ThermalDevice *thermo_reg = bt_global::add_device_to_cache(new ThermalDevice99Zones(thermr_where, openserver_id));
-		p = new PageFancoil(n, dev, thermo_reg, scale);
+		thermal_device = bt_global::add_device_to_cache(new ThermalDevice99Zones(thermr_where, openserver_id));
+		p = new PageFancoil(n, dev, thermal_device, scale);
 	}
 		break;
 	case fs_4z_thermal_regulator:
-	{
-		ThermalDevice4Zones *dev = bt_global::add_device_to_cache(new ThermalDevice4Zones(QString("0#") + ind_centrale, openserver_id));
-		p = new PageTermoReg4z(page_node, dev);
-	}
+		thermal_device = bt_global::add_device_to_cache(new ThermalDevice4Zones(QString("0#") + ind_centrale, openserver_id));
+		p = new PageTermoReg4z(page_node, static_cast<ThermalDevice4Zones*>(thermal_device));
 		break;
 	case fs_99z_thermal_regulator:
-		p = new PageTermoReg99z(page_node, bt_global::add_device_to_cache(new ThermalDevice99Zones(ind_centrale, openserver_id)));
+		thermal_device = bt_global::add_device_to_cache(new ThermalDevice99Zones(ind_centrale, openserver_id));
+		p = new PageTermoReg99z(page_node, static_cast<ThermalDevice99Zones*>(thermal_device));
 		break;
 	default:
 		qFatal("Unknown banner type %d on getPage", id);
 	}
 
+	if (thermal_device->isConnected())
+		bann->connectionUp();
+	else
+		bann->connectionDown();
+
+	QObject::connect(thermal_device, SIGNAL(connectionDown()), bann, SLOT(connectionDown()));
+	QObject::connect(thermal_device, SIGNAL(connectionUp()), bann, SLOT(connectionUp()));
 	return p;
 }
 
