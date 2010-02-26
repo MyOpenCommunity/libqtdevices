@@ -69,6 +69,13 @@ LightingDevice::LightingDevice(QString where, PullMode pull, int openserver_id) 
 	timed_light = NOT_TIMED_LIGHT;
 }
 
+void LightingDevice::init()
+{
+	requestStatus();
+	if (timed_light == TIMED_LIGHT)
+		requestVariableTiming();
+}
+
 void LightingDevice::turnOn()
 {
 	sendCommand(QString::number(LIGHT_ON));
@@ -222,6 +229,12 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 Dimmer100Device::Dimmer100Device(QString where, PullMode pull, int openserver_id) :
 	DimmerDevice(where, pull, openserver_id)
 {
+}
+
+void Dimmer100Device::init()
+{
+	DimmerDevice::init();
+	requestDimmer100Status();
 }
 
 void Dimmer100Device::increaseLevel100(int delta, int speed)

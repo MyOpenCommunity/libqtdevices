@@ -50,6 +50,7 @@ public:
 
 	LightingDevice(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0);
 
+	virtual void init();
 	void turnOn();
 	void turnOn(int speed);
 	void turnOff();
@@ -93,6 +94,7 @@ Q_OBJECT
 public:
 	Dimmer100Device(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0);
 
+	virtual void init();
 	void increaseLevel100(int delta, int speed);
 	void decreaseLevel100(int delta, int speed);
 
