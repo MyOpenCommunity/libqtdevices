@@ -139,6 +139,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	monitor_ready = false;
 	config_loaded = false;
 
+	OpenServerManager::reconnection_time = openserver_reconnection_time;
 	QHash<int, QPair<Client*, Client*> > clients;
 	QHash<int, Client*> monitors;
 
@@ -152,16 +153,16 @@ BtMain::BtMain(int openserver_reconnection_time)
 			QString host = getTextChild(item, "address");
 			int port = getTextChild(item, "port").toInt();
 			monitors[id] = new Client(Client::MONITOR, host, port);
-			clients[id].first = new Client(Client::COMANDI, host, port);
-			clients[id].second = new Client(Client::RICHIESTE, host, port);
+			clients[id].first = new Client(Client::COMMAND, host, port);
+			clients[id].second = new Client(Client::REQUEST, host, port);
 		}
 
 	// If it is not defined a main openserver, the main openserver is the local openserver
 	if (!clients.contains(MAIN_OPENSERVER))
 	{
 		monitors[MAIN_OPENSERVER] = new Client(Client::MONITOR);
-		clients[MAIN_OPENSERVER].first = new Client(Client::COMANDI);
-		clients[MAIN_OPENSERVER].second = new Client(Client::RICHIESTE);
+		clients[MAIN_OPENSERVER].first = new Client(Client::COMMAND);
+		clients[MAIN_OPENSERVER].second = new Client(Client::REQUEST);
 	}
 
 #if DEBUG

@@ -50,7 +50,7 @@ public:
 protected:
 	// Every child that would receive a frame for a 'who' must subscribe itself
 	// calling this method (unregistration is not needed).
-	virtual void subscribe_monitor(int who);
+	void subscribe_monitor(int who);
 
 	static QHash<int, Client*> clients_monitor;
 

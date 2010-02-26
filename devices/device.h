@@ -37,6 +37,44 @@ class OpenMsg;
 typedef QHash<int, QVariant> StatusList;
 
 
+/**
+ * This class manage the logic of disconnection/reconnection with the openserver.
+ * Basically, with an openserver you have 3 socket connections open: the monitor,
+ * the command and the request. When one of these fall down all the objects
+ * connected with that openserver must to be notify with the signal connectionDown.
+ * In this case we have to retry the connection after "reconnection_time" seconds.
+ * Also in the case of a successfully reconnection the application must to be
+ * notified about the event.
+ */
+class OpenServerManager : public QObject
+{
+Q_OBJECT
+public:
+	OpenServerManager(int oid, Client *monitor, Client *command, Client *request);
+	bool isConnected();
+
+	// The interval (in seconds) to retry the connection with the openserver.
+	static int reconnection_time;
+
+signals:
+	void connectionUp();
+	void connectionDown();
+
+protected:
+	void timerEvent(QTimerEvent*);
+
+private slots:
+	void handleConnectionUp();
+	void handleConnectionDown();
+
+private:
+	Client *monitor, *command, *request;
+	int openserver_id;
+	bool is_connected;
+	int reconnection_timer_id;
+};
+
+
 //! Generic device
 class device : public QObject, FrameReceiver
 {
@@ -91,14 +129,16 @@ protected:
 
 	int openserver_id;
 
-	virtual void subscribe_monitor(int who);
-
 	void sendCommand(QString what, QString _where) const;
 	void sendCommand(QString what) const;
 	void sendRequest(QString what) const;
 
+private slots:
+	void handleConnectionUp();
+
 private:
 	static QHash<int, QPair<Client*, Client*> > clients;
+	static QHash<int, OpenServerManager*> openservers;
 };
 
 #endif //__DEVICE_H__

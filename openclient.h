@@ -43,21 +43,22 @@ class FrameReceiver;
  * This class manages the socket communication throught the application and the openserver.
  *
  * Clients of type MONITOR can be used to receive frames from openserver while clients
- * of types COMMANDI or RICHIESTE can be used to send frames to the openserver.
+ * of types COMMAND or REQUEST can be used to send frames to the openserver.
  */
 class Client : public QObject
 {
 friend class OpenServerMock;
 friend class TestScenEvoDevicesCond;
 Q_OBJECT
-public:
+Q_ENUMS(Type) // the enum Type should be the first (or you have to modify the use of QMetaEnum)
 
+public:
 	enum Type
 	{
 		MONITOR = 0,
 		SUPERVISOR,
-		RICHIESTE,
-		COMANDI
+		REQUEST,
+		COMMAND
 	};
 
 	Client(Type t, const QString &_host=OPENSERVER_ADDR, unsigned _port=0);
@@ -73,9 +74,11 @@ public:
 	void forwardFrame(Client *c);
 #endif
 
+public slots:
+	void connectToHost();
+	void disconnectFromHost();
+
 signals:
-	// The signals connectionUp/connectionDown are emitted only for clients
-	// of the monitor type.
 	void connectionUp();
 	void connectionDown();
 
@@ -85,12 +88,10 @@ signals:
 	void openNakRx();
 
 private slots:
-	void connectToHost();
-	/// Reads messages from the socket
+	// Reads messages from the socket
 	int socketFrameRead();
 
 	void socketConnected();
-	void socketConnectionClosed();
 	void socketError(QAbstractSocket::SocketError e);
 
 	void ackReceived();
@@ -111,9 +112,7 @@ private:
 	// The list of the FrameReceivers that will receive the incoming frames.
 	QHash<int, QList<FrameReceiver*> > subscribe_list;
 
-	// We use this flag instead of the state() method of the QTcpSocket in order
-	// to avoid the emission of the signal disconnected() when the socket is
-	// already disconnected.
+	// This flag marks if the client is logically connected or not.
 	bool is_connected;
 
 #if DEBUG

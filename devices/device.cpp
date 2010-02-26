@@ -31,6 +31,76 @@
 
 // Inizialization of static member
 QHash<int, QPair<Client*, Client*> > device::clients;
+QHash<int, OpenServerManager*> device::openservers;
+
+
+int OpenServerManager::reconnection_time = 30;
+
+
+OpenServerManager::OpenServerManager(int oid, Client *m, Client *c, Client *r)
+{
+	reconnection_timer_id = 0;
+	openserver_id = oid;
+	monitor = m;
+	command = c;
+	request = r;
+	is_connected = monitor->isConnected() && command->isConnected() && request->isConnected();
+	connect(monitor, SIGNAL(connectionUp()), SLOT(handleConnectionUp()));
+	connect(command, SIGNAL(connectionUp()), SLOT(handleConnectionUp()));
+	connect(request, SIGNAL(connectionUp()), SLOT(handleConnectionUp()));
+	connect(monitor, SIGNAL(connectionDown()), SLOT(handleConnectionDown()));
+	connect(command, SIGNAL(connectionDown()), SLOT(handleConnectionDown()));
+	connect(request, SIGNAL(connectionDown()), SLOT(handleConnectionDown()));
+}
+
+void OpenServerManager::handleConnectionDown()
+{
+	if (is_connected)
+	{
+		qDebug("OpenServerManager::handleConnectionDown()[%d]", openserver_id);
+		if (monitor->isConnected())
+			monitor->disconnectFromHost();
+		if (command->isConnected())
+			command->disconnectFromHost();
+		if (request->isConnected())
+			request->disconnectFromHost();
+
+		is_connected = false;
+		emit connectionDown();
+		reconnection_timer_id = startTimer(reconnection_time * 1000);
+	}
+}
+
+void OpenServerManager::timerEvent(QTimerEvent*)
+{
+	monitor->connectToHost();
+	command->connectToHost();
+	request->connectToHost();
+}
+
+void OpenServerManager::handleConnectionUp()
+{
+	if (reconnection_timer_id)
+	{
+		killTimer(reconnection_timer_id);
+		reconnection_timer_id = 0;
+	}
+
+	if (!is_connected)
+	{
+		is_connected = monitor->isConnected() && command->isConnected() && request->isConnected();
+		if (is_connected)
+		{
+			qDebug("OpenServerManager::handleConnectionUp()[%d]", openserver_id);
+			emit connectionUp();
+		}
+	}
+}
+
+bool OpenServerManager::isConnected()
+{
+	return is_connected;
+}
 
 
 // Device implementation
@@ -40,18 +110,26 @@ device::device(QString _who, QString _where, int oid) : FrameReceiver(oid)
 	where = _where;
 	openserver_id = oid;
 	subscribe_monitor(who.toInt());
-}
 
-void device::subscribe_monitor(int who)
-{
-	FrameReceiver::subscribe_monitor(who);
-	connect(clients_monitor[openserver_id], SIGNAL(connectionUp()), SIGNAL(connectionUp()));
-	connect(clients_monitor[openserver_id], SIGNAL(connectionDown()), SIGNAL(connectionDown()));
+	if (!openservers.contains(openserver_id))
+	{
+		openservers[openserver_id] = new OpenServerManager(openserver_id, clients_monitor[openserver_id],
+			clients[openserver_id].first, clients[openserver_id].second);
+	}
+
+	connect(openservers[openserver_id], SIGNAL(connectionUp()), SLOT(handleConnectionUp()));
+	connect(openservers[openserver_id], SIGNAL(connectionDown()), SIGNAL(connectionDown()));
 }
 
 bool device::isConnected()
 {
-	return clients_monitor[openserver_id]->isConnected();
+	return openservers[openserver_id]->isConnected();
+}
+
+void device::handleConnectionUp()
+{
+	init();
+	emit connectionUp();
 }
 
 void device::sendFrame(QString frame) const
