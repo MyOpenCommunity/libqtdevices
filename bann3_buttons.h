@@ -26,11 +26,20 @@
 
 class QWidget;
 
+/**
+ * Banner with 3 buttons left, center and right + description below
+ */
 class Bann3Buttons : public BannerNew
 {
 Q_OBJECT
 protected:
 	Bann3Buttons(QWidget *parent);
+
+	/**
+	 * \param left Left button icon
+	 * \param center Center button icon
+	 * \param right Right button icon
+	 */
 	void initBanner(const QString &left, const QString &center, const QString &right,
 		const QString &banner_text);
 	BtButton *right_button, *center_button, *left_button;

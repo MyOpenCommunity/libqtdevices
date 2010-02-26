@@ -102,8 +102,8 @@ signals:
 	void status_changed(QList<device_status*>);
 
 	/// The status changed signal, used to inform that a dimension of device
-	/// has changed. For some devices, more than one dimension can be changes
-	/// at same time, so the int is used as an enum to recognize the dimensions.
+	/// has changed. For some devices, more than one dimension can change
+	/// at the same time, so the int is used as an enum to recognize the dimensions.
 	/// Note that using an int is a design choice. In this way the signal is
 	/// generic (so the connections can be made in a generic way) and the enum
 	/// can be specific for a device, avoiding the coupling between abstract
