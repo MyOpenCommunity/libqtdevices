@@ -454,7 +454,7 @@ void BtMain::myMain()
 	// between windows are implemented
 	page_container->blockTransitions(false);
 	window_container->homeWindow()->showWindow();
-	bt_global::devices_cache.init_devices();
+	device::initDevices();
 
 	screensaver_timer = new QTimer(this);
 	screensaver_timer->start(SCREENSAVER_CHECK);

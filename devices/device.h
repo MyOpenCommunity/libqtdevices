@@ -97,6 +97,7 @@ public:
 
 	bool isConnected();
 	int openserverId();
+	static void initDevices();
 
 signals:
 	// TODO: Old Status changed, to be removed asap.

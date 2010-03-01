@@ -22,13 +22,6 @@
 #include "devices_cache.h"
 
 
-void DevicesCache::init_devices()
-{
-	qDebug("initializing devices");
-	for (QHash<QString, device*>::Iterator it = cache.begin(); it != cache.end(); ++it)
-		it.value()->init();
-}
-
 void DevicesCache::initOpenserverDevices(int openserver_id)
 {
 	qDebug("DevicesCache::initOpenserverDevices(), openserver_id = %d", openserver_id);
