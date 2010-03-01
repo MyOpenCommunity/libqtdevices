@@ -381,10 +381,10 @@ void BtMain::loadConfiguration()
 		pagDefault = !id_default ? Home : getPage(id_default);
 	}
 
-	// TODO: read the transition effect from configuration
-	TransitionWidget *tr = new BlendingTransition;
-	window_container->installTransitionWidget(tr);
-	page_container->installTransitionWidget(tr);
+	// Transition effects are for now disabled!
+//	TransitionWidget *tr = new BlendingTransition;
+//	window_container->installTransitionWidget(tr);
+//	page_container->installTransitionWidget(tr);
 }
 
 void BtMain::init()
