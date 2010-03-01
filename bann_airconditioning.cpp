@@ -166,7 +166,7 @@ SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, 
 	icon_minus = bt_global::skin->getImage("minus");
 	icon_plus_disabled = bt_global::skin->getImage("plus_disabled");
 	icon_minus_disabled = bt_global::skin->getImage("minus_disabled");
-	initBanner(icon_minus, icon_plus, "---", FontManager::SUBTITLE);
+	initBanner(icon_minus, icon_plus, "---", FontManager::AIRCONDITIONING_TEMPERATURE);
 
 	scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
 	Q_ASSERT_X(init_temp >= level_min && init_temp <= level_max, "SplitTemperature::SplitTemperature",

@@ -34,7 +34,6 @@ class QLabel;
  * \class radio
  * \brief This class implements the management of the FM tuner specific page.
  *
- * \date lug 2005
  */
 class  radio : public Page
 {

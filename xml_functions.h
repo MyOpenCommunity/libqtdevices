@@ -35,7 +35,6 @@
  *
  * \brief This file contains a collection of function designed to extract values from an xml file.
  *
- * \date November 2008
  */
 
 /// Return the node child of 'parent' with name 'name'.

@@ -12,22 +12,11 @@ CONF_FILE = btouch
 # In this case we are searching for the substring 'arm'
 TEST_ARCH = $$find(QMAKE_CXX,arm)
 
-
-isEmpty(TEST_ARCH) {
-	# x86
-	DEFINES += OPENSERVER_ADDR=\\\"touchx\\\"
-	DEFINES += BT_HARDWARE_X11
-}
-else {
-	DEFINES += BT_HARDWARE_TOUCHX
-}
-
 isEmpty(TEST_ARCH) {
 	# x86
 	DEFINES += OPENSERVER_ADDR=\\\"btouch\\\"
 	DEFINES += BT_HARDWARE_X11
 }
-
 else {
 	DEFINES += BT_HARDWARE_BTOUCH
 	INCLUDEPATH += QWSMOUSE
@@ -36,7 +25,6 @@ else {
 
 	SOURCES += QWSMOUSE/qmouse_qws.cpp \
 		QWSMOUSE/qmouselinuxevent-2-6_qws.cpp
-
 }
 
 VPATH = ../devices ..

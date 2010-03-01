@@ -263,7 +263,7 @@ void AlarmClock::verificaSveglia()
 		{
 			if (type == BUZZER)
 			{
-#ifdef LAYOUT_TOUCHX // need BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TOUCHX
 				aumVolTimer = new QTimer(this);
 				aumVolTimer->start(5000);
 				connect(aumVolTimer, SIGNAL(timeout()), SLOT(wavAlarm()));

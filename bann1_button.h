@@ -114,7 +114,6 @@ signals:
 /*!
   \class bannPuls
   \brief This is a class that describes a banner with a button on the right, an icon in the center and a text on the bottom
-  \date lug 2005
 */
 class bannPuls : public BannerOld
 {
@@ -132,7 +131,6 @@ signals:
 /*!
   \class bannOnDx
   \brief This is a class that describes a banner with a button on the right and a text on the remaining area
-  \date lug 2005
 */
 class bannOnDx : public BannerOld
 {
@@ -148,7 +146,6 @@ signals:
 /*!
   \class bannOnSx
   \brief This is a class that describes a banner with a button on the left and a text on the remaining area
-  \date lug 2005
 */
 class bannOnSx : public BannerOld
 {
@@ -174,7 +171,6 @@ public:
   \class bannBut2Icon
   \brief This is a class that describes a banner with a button on the right,
   two icons in the middle and some text below
-  \date jun 2006
 */
 class bannBut2Icon : public BannerOld
 {

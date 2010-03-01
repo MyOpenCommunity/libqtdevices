@@ -38,7 +38,6 @@ class QDomNode;
   the subtree of the various bticino functions.
 
   It can be composed of a date field, a time field, up to three temperatures, a number of BtButton and a special command. 
-  \date lug 2005
 */
 
 class HomePage : public SectionPage

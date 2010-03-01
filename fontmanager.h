@@ -38,10 +38,23 @@ class FontManager
 public:
 	FontManager(QString font_file);
 
+	// TODO: need to split SUBTITLE and SMALLTEXT
+	//
+	// TITLE: title of the page (used for all TouchX pages, and for a couple of BTouch pages)
+	// SUBTITLE: AUX source, load deactivation time, external/non-controlled probe
+	//           RDS radio, version page, load management current consumption,
+	//           load management "force on" confirmation page
 	// TEXT: default text size
 	// BANNERTEXT: label text for banner labels aligned horizontally with the icons
 	// BANNERDESCRIPTION: descriptive text displayed under a banner
+	// SMALLTEXT: energy graph, energy table date, energy view date, lan settings text,
+	//            version page, RDS radio
 	// HOMEPAGEWIDGET: date/time/temperature display in home page
+	// PROBE_TEMPERATURE: current temperature of a thermal probe
+	// PROBE_SETPOINT: set point temperature of a thermal probe
+	// REGULATOR_TEMPERATURE: current temperature of a thermal regulator
+	// REGULATOR_DESCRIPTION: description of a thermal regulator
+	// AIRCONDITIONING_TEMPERATURE: temperature measured by a split
 #ifdef LAYOUT_BTOUCH
 	enum Type
 	{
@@ -57,6 +70,7 @@ public:
 		PROBE_SETPOINT = 1,
 		REGULATOR_TEMPERATURE = 1,
 		REGULATOR_DESCRIPTION = 1,
+		AIRCONDITIONING_TEMPERATURE = 1,
 	};
 #else
 	enum Type
@@ -73,6 +87,7 @@ public:
 		PROBE_SETPOINT = 8,
 		REGULATOR_TEMPERATURE = 8,
 		REGULATOR_DESCRIPTION = 8,
+		AIRCONDITIONING_TEMPERATURE = 0,
 		// date/time edit
 		DATE_TIME = 0,
 	};

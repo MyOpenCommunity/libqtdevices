@@ -38,7 +38,6 @@ class Aux;
  * \brief This class is made to manage an auxiliary sound source.
  *
  * This particoular banner is composed by 2 buttons from which is possible: change the sound source,  go to the next track.
- * \date lug 2005
  */
 class sorgente_aux : public bannCiclaz
 {
@@ -59,7 +58,6 @@ private slots:
 /*!
  * \class sorgenteMultiAux
  * \brief This class represents an aux source in the multi-channel audio diff. sys.
- * \date jul 2006
  */
 class sorgenteMultiAux : public sorgente_aux
 {

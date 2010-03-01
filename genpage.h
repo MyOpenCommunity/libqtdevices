@@ -28,7 +28,6 @@
   \class genPage
   \brief This class genertes a page as described in \a pageType. 
 
-  \date lug 2005
 */
 
 class genPage : public QLabel

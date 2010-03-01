@@ -82,7 +82,7 @@ Bann2Buttons::Bann2Buttons(QWidget *parent) :
 	left_button = new BtButton;
 	right_button = new BtButton;
 	center_icon = new TextOnImageLabel;
-	description = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::SMALLTEXT));
+	description = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
 	QGridLayout *l = new QGridLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);

@@ -32,7 +32,6 @@ class QVBoxLayout;
   \class Keypad
   \brief This class is the implementation of a keypad intended for password inserting.
 
-  \date lug 2005
 */
 class Keypad : public Page
 {

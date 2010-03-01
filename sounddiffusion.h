@@ -84,7 +84,6 @@ private:
  * It is composed of two subtree (sottoMenu): amplifiers and sources. 
  * In the first row of the page is shown the source active at a certain 
  * time while in the remaining rows there are all the amplifiers one ca control.
- * \date lug 2005
  */
 class SoundDiffusion : public Page, FrameReceiver
 {

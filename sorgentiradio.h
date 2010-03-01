@@ -43,7 +43,6 @@ class device;
  * This particoular banner is composed by 4 buttons from which is possible: change the sound source, open an toher page
  * where to watch the detailed information about the tuner (frequency, RDS message, ...), go to the next/previous
  * memorized frequency.
- * \date lug 2005
  */
 class banradio : public bannCiclaz
 {
@@ -85,7 +84,6 @@ public slots:
 /*!
  * \class sorgenteMultiRadio
  * \brief This class represents a radio source in the multi-channel audio diff. sys.
- * \date jul 2006
  */
 class sorgenteMultiRadio : public banradio
 {

@@ -137,6 +137,11 @@ private:
 };
 
 
+/**
+ * Banner with 2 buttons (left + right), a text on center-left, an icon on center-right and a text below.
+ *
+ * Has two states: ON and OFF
+ */
 class BannOnOff2Labels : public BannerNew
 {
 Q_OBJECT
@@ -147,10 +152,37 @@ protected:
 		OFF,
 	};
 	BannOnOff2Labels(QWidget *parent);
+
+	/**
+	 * \param left Left button icon path
+	 * \param _center Center icon path. Given path will be shown during ON state.
+	 * \param right Right button icon path
+	 * \param init_state Banner initial state
+	 * \param banner_text Text below the banner
+	 * \param second_text Initial center text
+	 */
 	void initBanner(const QString &left, const QString &_center, const QString &right,
 		States init_state, const QString &banner_text, const QString &second_text);
+	/**
+	 * Set the text between left button and center right icon
+	 */
 	void setCentralText(const QString &str);
+
+	/**
+	 * Choose if secondary text should be shown in secondary color
+	 *
+	 * Set "SecondFgColor" property to bool value given as parameter. Actual text color will be set using
+	 * stylesheets.
+	 * \param secondary True if text should be shown in secondary color, false otherwise.
+	 */
 	void setCentralTextSecondaryColor(bool secondary);
+
+	/**
+	 * Change banner state; this will change center right icon only.
+	 *
+	 * Icon for the OFF state will be deduced from the ON state icon, "off" will be appended to such path.
+	 * Eg. if ON state icon path is "icon.png", for off state an icon called "iconoff.png" will be searched.
+	 */
 	void setState(States new_state);
 
 	BtButton *right_button, *left_button;
@@ -159,6 +191,16 @@ private:
 	QString center;
 };
 
+/**
+ * Banner with 2 buttons on both sides, an icon on the center, a description below and three states.
+ *
+ * Banner behaviour on state changes:
+ * \li STOP: 'normal' icon on buttons, 'base' icon on the center
+ * \li CLOSING: 'normal' icon on right button, 'alternate' icon on left button, 'closing' icon on center
+ * \li OPENING: 'normal' icon on left, 'alternate' icon on right, 'opening' icon on center
+ *
+ * See functions below for a description of 'normal', 'base', 'alternate' etc. terms.
+ */
 class BannOpenClose : public BannerNew
 {
 Q_OBJECT
@@ -175,8 +217,24 @@ protected:
 	 * The 'real' banner constructor. Sets icons, initial state and banner text.
 	 * Since text is fixed, no interface function to manipulate it is given.
 	 */
+	/**
+	 * \param left 'Normal' icon for left button
+	 * \param center 'Base' icon for center icon
+	 * \param right 'Normal' icon for right button
+	 * \param lr_alternate 'Alternate' icon for both left and right buttons
+	 * \param starting_state Initial state of the banner
+	 * \param banner_text Banner description below
+	 */
 	void initBanner(QString left, QString center, QString right, QString lr_alternate,
 		States starting_state, QString banner_text);
+	/**
+	 * Change banner state.
+	 *
+	 * Central icon is set to 'base' icon on STOP, 'base'+"c" on CLOSING, 'base'+"o" on OPENING. Eg.
+	 * if 'base' icon path is "center.png", icon path "centerc.png" will be used on CLOSING. The same applies
+	 * for OPENING.
+	 * Alternate icon is set on left (respectively, right) button on CLOSING (OPENING)
+	 */
 	void setState(States new_state);
 
 	BtButton *left_button, *right_button;
@@ -206,7 +264,6 @@ private:
 /*!
   \class bann2But
   \brief This is a class that describes a banner with a text between 2 buttons 
-  \date lug 2005
 */
 class bann2But : public BannerOld
 {
@@ -219,7 +276,6 @@ public:
 /*!
   \class bannOnOff
   \brief This is a class that describes a banner with a button on the right and on the left, an icon on the center and a text on the bottom
-  \date lug 2005
 */
 class bannOnOff : public BannerOld
 {
@@ -232,7 +288,6 @@ public:
 /*!
   \class bannOnOff2scr
   \brief This is a class that describes a banner with a button on the right and on the left and a text on the bottom area and an other the center-left
-  \date lug 2005
 */
 class bannOnOff2scr : public BannerOld
 {

@@ -37,7 +37,6 @@ class QTimer;
   \brief This is a class that does the calibration of the device.
 
   According to the forth argument it is possible to choose if the calibration process must have for or five pressions.  
-  \date lug 2005
 */
 
 class Calibrate : public QWidget
