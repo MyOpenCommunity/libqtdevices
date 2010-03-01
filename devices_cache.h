@@ -27,12 +27,19 @@
 
 #include "device.h"
 
+class DevicesCache;
 
-namespace bt_global
+namespace DevicesCachePrivate
 {
-	template<class T> T* add_device_to_cache(T *device);
+	template<class T> T* add_device_to_cache(T *device, DevicesCache &cache);
 }
 
+
+enum DevicesCacheInitType
+{
+	INIT,
+	NO_INIT
+};
 
 /**
  * This class describes a cache that must be used for all the devices of the
@@ -40,7 +47,8 @@ namespace bt_global
  */
 class DevicesCache
 {
-template <class T> friend T* bt_global::add_device_to_cache(T *device);
+template<class T> friend T* DevicesCachePrivate::add_device_to_cache(T *device, DevicesCache &cache);
+
 friend class TestScenEvoDevicesCond;
 public:
 	~DevicesCache();
@@ -57,6 +65,30 @@ private:
 };
 
 
+namespace DevicesCachePrivate
+{
+	template<class T> T* add_device_to_cache(T *device, DevicesCache &cache)
+	{
+		QString orig_class_name = device->metaObject()->className();
+		QString key = device->get_key();
+		if (cache.contains(key))
+		{
+			delete device;
+			device = static_cast<T*>(cache.get(key));
+		}
+		else
+			cache.insert(key, device);
+
+		QString current_class_name = device->metaObject()->className();
+		Q_ASSERT_X(orig_class_name == current_class_name, "bt_global::add_device_to_cache",
+				   "Device returned is different from the given one. Maybe two devices have the same address?");
+		return device;
+	}
+
+	extern DevicesCache devices_cache_no_init;
+}
+
+
 namespace bt_global
 {
 	// The global declaration of devices_cache instance
@@ -66,22 +98,14 @@ namespace bt_global
 	// get_key of the device, and usually is composed by who + '*' + where.
 	// NOTE: be aware that the device argument can be destroyed if the device for
 	// the key already exists.
-	template<class T> T* add_device_to_cache(T *device)
+	template<class T> T* add_device_to_cache(T *device, DevicesCacheInitType init = INIT)
 	{
-		QString orig_class_name = device->metaObject()->className();
-		QString key = device->get_key();
-		if (bt_global::devices_cache.contains(key))
-		{
-			delete device;
-			device = static_cast<T*>(bt_global::devices_cache.get(key));
-		}
+		using DevicesCachePrivate::add_device_to_cache;
+		if (init == INIT)
+			return add_device_to_cache(device, devices_cache);
 		else
-			bt_global::devices_cache.insert(key, device);
+			return add_device_to_cache(device, DevicesCachePrivate::devices_cache_no_init);
 
-		QString current_class_name = device->metaObject()->className();
-		Q_ASSERT_X(orig_class_name == current_class_name, "bt_global::add_device_to_cache",
-				   "Device returned is different from the given one. Maybe two devices have the same address?");
-		return device;
 	}
 }
 

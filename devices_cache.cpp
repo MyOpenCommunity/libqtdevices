@@ -66,3 +66,8 @@ bool DevicesCache::contains(QString key) const
 // The global definition of devices_cache
 DevicesCache bt_global::devices_cache;
 
+// This object is a cache of devices, just like the bt_global::devices_cache.
+// The difference is that the init methods of these devices is not call in this
+// case.
+DevicesCache DevicesCachePrivate::devices_cache_no_init;
+
