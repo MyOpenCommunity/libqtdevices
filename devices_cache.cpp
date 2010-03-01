@@ -29,6 +29,17 @@ void DevicesCache::init_devices()
 		it.value()->init();
 }
 
+void DevicesCache::initOpenserverDevices(int openserver_id)
+{
+	qDebug("DevicesCache::initOpenserverDevices(), openserver_id = %d", openserver_id);
+	for (QHash<QString, device*>::Iterator it = cache.begin(); it != cache.end(); ++it)
+	{
+		device *dev = it.value();
+		if (dev->openserverId() == openserver_id)
+			dev->init();
+	}
+}
+
 DevicesCache::~DevicesCache()
 {
 	clear();

@@ -55,6 +55,7 @@ public:
 
 	//! Inits all devices
 	void init_devices();
+	void initOpenserverDevices(int openserver_id);
 
 private:
 	QHash<QString, device*> cache;
