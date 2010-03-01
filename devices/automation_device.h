@@ -39,6 +39,7 @@ public:
 	};
 
 	AutomationDevice(QString where, PullMode mode = PULL_UNKNOWN, int openserver_id = 0);
+	virtual void init();
 	void goUp();
 	void goDown();
 	void stop();
@@ -59,6 +60,7 @@ class PPTStatDevice : public device
 Q_OBJECT
 public:
 	PPTStatDevice(QString address, int openserver_id = 0);
+	virtual void init();
 	void requestStatus() const;
 
 	// This enum is required to pass the information about the status with the status_changed signal

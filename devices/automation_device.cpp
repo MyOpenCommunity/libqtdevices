@@ -39,6 +39,11 @@ AutomationDevice::AutomationDevice(QString where, PullMode m, int openserver_id)
 {
 }
 
+void AutomationDevice::init()
+{
+	requestStatus();
+}
+
 void AutomationDevice::goUp()
 {
 	sendCommand(QString::number(DIM_UP));
@@ -87,6 +92,11 @@ void AutomationDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 PPTStatDevice::PPTStatDevice(QString address, int openserver_id) :
 	device(QString("25"), address, openserver_id)
 {
+}
+
+void PPTStatDevice::init()
+{
+	requestStatus();
 }
 
 void PPTStatDevice::requestStatus() const
