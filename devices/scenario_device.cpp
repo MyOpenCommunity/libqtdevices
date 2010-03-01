@@ -47,6 +47,11 @@ ScenarioDevice::ScenarioDevice(QString where, int openserver_id) :
 	is_unlocked = false;
 }
 
+void ScenarioDevice::init()
+{
+	requestStatus();
+}
+
 void ScenarioDevice::activateScenario(int scen)
 {
 	Q_ASSERT_X(scen >= 1 && scen <= 31, "ScenarioDevice::activateScenario",
