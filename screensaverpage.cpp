@@ -22,7 +22,6 @@
 #include "screensaverpage.h"
 #include "screensaver.h"
 #include "displaycontrol.h" // bt_global::display
-#include "hardware_functions.h"
 #include "singlechoicecontent.h"
 #include "navigation_bar.h" // NavigationBar
 #include "skinmanager.h" // bt_global::skin
@@ -62,15 +61,14 @@ ScreenSaverPage::ScreenSaverPage()
 	//addBanner(tr("Deform"), ScreenSaver::DEFORM); // the deform is for now unavailable!
 
 	// TODO maybe we want an OK button for touch 10 as well
-	if (hardwareType() == TOUCH_X)
-	{
-		CheckableBanner *b = SingleChoice::createBanner(tr("Slideshow"), bt_global::skin->getImage("change_settings"));
-		addBanner(b, ScreenSaver::SLIDESHOW);
-		Page *p = new ImageRemovalPage;
-		b->connectRightButton(p);
-		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-		connect(page_content, SIGNAL(bannerSelected(int)), SLOT(confirmSelection()));
-	}
+#ifdef LAYOUT_TOUCHX
+	CheckableBanner *b = SingleChoice::createBanner(tr("Slideshow"), bt_global::skin->getImage("change_settings"));
+	addBanner(b, ScreenSaver::SLIDESHOW);
+	Page *p = new ImageRemovalPage;
+	b->connectRightButton(p);
+	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+	connect(page_content, SIGNAL(bannerSelected(int)), SLOT(confirmSelection()));
+#endif
 }
 
 void ScreenSaverPage::showPage()

@@ -22,7 +22,6 @@
 #include "navigation_bar.h"
 #include "btbutton.h"
 #include "skinmanager.h" // bt_global::skin
-#include "hardware_functions.h"
 
 #include <QFileInfo>
 
@@ -80,10 +79,11 @@ BtButton *NavigationBar::createButton(QString icon, const char *signal, int pos)
 
 QSize NavigationBar::sizeHint() const
 {
-	if (hardwareType() == TOUCH_X)
-		return QSize(75, 355);
-	else
-		return QSize(buttons_dim * 4, buttons_dim);
+#ifdef LAYOUT_TOUCHX
+	return QSize(75, 355);
+#else
+	return QSize(buttons_dim * 4, buttons_dim);
+#endif
 }
 
 void NavigationBar::displayScrollButtons(bool display)

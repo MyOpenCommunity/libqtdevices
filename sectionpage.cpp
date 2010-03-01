@@ -20,7 +20,7 @@
 
 
 #include "sectionpage.h"
-#include "hardware_functions.h" // rearmWDT, hardwareType, TOUCH_X
+#include "hardware_functions.h" // rearmWDT
 #include "xml_functions.h" // getTextChild, getChildren
 #include "navigation_bar.h"
 #include "main.h" // IMG_PATH

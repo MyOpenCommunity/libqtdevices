@@ -27,7 +27,6 @@
 #include "pagecontainer.h"
 #include "navigation_bar.h"
 #include "bannercontent.h"
-#include "hardware_functions.h" // hardwareType()
 #include "fontmanager.h"
 
 #include <QVBoxLayout>
@@ -104,14 +103,13 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, const QString& label, i
 {
 	QLabel *page_title = 0;
 
-	if (hardwareType() == TOUCH_X)
-	{
-		page_title = new QLabel(label);
-		page_title->setFont(bt_global::font->get(FontManager::TITLE));
-		page_title->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
-		// the 10 here must match the margins in the PageTitleWidget above
-		page_title->setFixedHeight(label_height + 10);
-	}
+#ifdef LAYOUT_TOUCHX
+	page_title = new QLabel(label);
+	page_title->setFont(bt_global::font->get(FontManager::TITLE));
+	page_title->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
+	// the 10 here must match the margins in the PageTitleWidget above
+	page_title->setFixedHeight(label_height + 10);
+#endif
 
 	buildPage(content, nav_bar, top_widget, page_title);
 }
@@ -119,42 +117,40 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, const QString& label, i
 void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget, QWidget *title_widget)
 {
 	QBoxLayout *l;
-	if (hardwareType() == TOUCH_X)
-		l = new QHBoxLayout(this);
-	else
-		l = new QVBoxLayout(this);
+#ifdef LAYOUT_TOUCHX
+	l = new QHBoxLayout(this);
+#else
+	l = new QVBoxLayout(this);
+#endif
 
 	// the top_widget (if present) is a widget that must be at the top of the page,
 	// limiting the height (so even the navigation) of the content; for TouchX
 	// it must be between the title and the content
 
-	if (hardwareType() == TOUCH_X)
-	{
-		// TODO add an API to set the page title and to set the page count
-		//      and current page number
-		l->addWidget(nav_bar, 0);
+#ifdef LAYOUT_TOUCHX
+	// TODO add an API to set the page title and to set the page count
+	//      and current page number
+	l->addWidget(nav_bar, 0);
 
-		QVBoxLayout *pl = new QVBoxLayout;
-		pl->setContentsMargins(0, 0, 0, 0);
-		pl->setSpacing(0);
-		if (title_widget)
-			pl->addWidget(title_widget);
-		if (top_widget)
-			pl->addWidget(top_widget);
-		pl->addWidget(content, 1);
+	QVBoxLayout *pl = new QVBoxLayout;
+	pl->setContentsMargins(0, 0, 0, 0);
+	pl->setSpacing(0);
+	if (title_widget)
+		pl->addWidget(title_widget);
+	if (top_widget)
+		pl->addWidget(top_widget);
+	pl->addWidget(content, 1);
 
-		l->addLayout(pl, 1);
-	}
-	else
-	{
-		if (top_widget)
-			l->addWidget(top_widget);
+	l->addLayout(pl, 1);
 
-		Q_ASSERT_X(title_widget == NULL, "Page::buildPage",
-			   "BTouch pages can't have a title");
-		l->addWidget(content, 1);
-		l->addWidget(nav_bar);
-	}
+#else
+	if (top_widget)
+		l->addWidget(top_widget);
+
+	Q_ASSERT_X(title_widget == NULL, "Page::buildPage", "BTouch pages can't have a title");
+	l->addWidget(content, 1);
+	l->addWidget(nav_bar);
+#endif
 	l->setContentsMargins(0, 5, 0, 10);
 	l->setSpacing(0);
 
@@ -279,18 +275,17 @@ void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, const
 }
 
 void BannerPage::buildPage(QWidget *parent, BannerContent *content, NavigationBar *nav_bar,
-			   const QString &title, int title_height, QWidget *top_widget)
+	const QString &title, int title_height, QWidget *top_widget)
 {
-	if (hardwareType() == TOUCH_X)
-	{
-		PageTitleWidget *title_widget = new PageTitleWidget(title, title_height);
-		Page::buildPage(parent, nav_bar, top_widget, title_widget);
+#ifdef LAYOUT_TOUCHX
+	PageTitleWidget *title_widget = new PageTitleWidget(title, title_height);
+	Page::buildPage(parent, nav_bar, top_widget, title_widget);
 
-		connect(content, SIGNAL(contentScrolled(int, int)),
-			title_widget, SLOT(setCurrentPage(int, int)));
-	}
-	else
-		Page::buildPage(parent, nav_bar, top_widget);
+	connect(content, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
+#else
+	Page::buildPage(parent, nav_bar, top_widget);
+#endif
+
 	__content = content;
 
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));

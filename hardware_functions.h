@@ -32,11 +32,6 @@
 
 class QString;
 
-enum HardwareType
-{
-	TOUCH_X,
-	BTOUCH
-};
 
 // for setVolume
 enum VolumeType
@@ -52,9 +47,6 @@ enum VolumeType
     VOLUME_MMDIFFUSIONSOURCE,
     VOLUME_MMDIFFUSIONAMPLIFIER
 };
-
-// Return the hardware type
-HardwareType hardwareType();
 
 // Return the maximum width of the gui
 int maxWidth();

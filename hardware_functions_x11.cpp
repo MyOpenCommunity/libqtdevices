@@ -58,14 +58,6 @@ int maxHeight()
 	return height;
 }
 
-HardwareType hardwareType()
-{
-	if (maxWidth() == 800)
-		return TOUCH_X;
-
-	return BTOUCH;
-}
-
 void setContrast(unsigned char c)
 {
 	contrast = c;
