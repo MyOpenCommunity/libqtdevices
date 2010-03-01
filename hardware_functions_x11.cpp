@@ -175,3 +175,7 @@ void initMultimedia()
 void setVolume(VolumeType type, int value)
 {
 }
+
+void initScreen()
+{
+}

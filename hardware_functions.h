@@ -161,4 +161,7 @@ void initMultimedia();
 // set the volume
 void setVolume(VolumeType type, int value);
 
+void initScreen();
+
+
 #endif // HARDWARE_FUNCTIONS_H

@@ -22,7 +22,7 @@
 #include "btmain.h"
 #include "main.h" // bt_global::config
 #include "homepage.h"
-#include "hardware_functions.h" // rearmWDT, getTimePress, setOrientation, getBacklight
+#include "hardware_functions.h" // rearmWDT, getTimePress, setOrientation, getBacklight, initScreen
 #include "xml_functions.h" // getPageNode, getElement, getChildWithId, getTextChild
 #include "calibrate.h"
 #include "genpage.h"
@@ -136,6 +136,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	qApp->installEventFilter(new LastClickTime);
 #endif
 
+	initScreen();
 	monitor_ready = false;
 	config_loaded = false;
 
@@ -187,8 +188,6 @@ BtMain::BtMain(int openserver_reconnection_time)
 	page_container = window_container->centralLayout();
 	page_container->blockTransitions(true); // no transitions until homepage is showed
 	connect(page_container, SIGNAL(currentPageChanged(Page*)), &bt_global::page_stack, SLOT(currentPageChanged(Page *)));
-
-
 
 	rearmWDT();
 

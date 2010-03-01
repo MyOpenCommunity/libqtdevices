@@ -115,6 +115,10 @@ void DisplayControl::setState(DisplayStatus status)
 		setBacklightOn(data[status].backlight);
 		setBrightnessLevel(data[status].brightness);
 	}
+
+	// We have to re-initialize the screen when the GUI exit from the state DISPLAY_OFF
+	if (current_state == DISPLAY_OFF && status != DISPLAY_OFF)
+		initScreen();
 	current_state = status;
 }
 
