@@ -47,11 +47,6 @@ InterblockedActuator::InterblockedActuator(const QString &descr, const QString &
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
-void InterblockedActuator::inizializza(bool forza)
-{
-	dev->requestStatus();
-}
-
 void InterblockedActuator::sendGoUp()
 {
 	dev->goUp();
@@ -115,11 +110,6 @@ SecureInterblockedActuator::SecureInterblockedActuator(const QString &descr, con
 	is_any_button_pressed = false;
 	connectButtons();
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
-}
-
-void SecureInterblockedActuator::inizializza(bool forza)
-{
-	dev->requestStatus();
 }
 
 void SecureInterblockedActuator::sendOpen()
@@ -292,10 +282,5 @@ void PPTStat::status_changed(const StatusList &status_list)
 	bool st = status_list[PPTStatDevice::DIM_STATUS].toBool();
 	SetIcons(2, st ? img_close : img_open);
 	Draw();
-}
-
-void PPTStat::inizializza(bool forza)
-{
-	dev->requestStatus();
 }
 
