@@ -201,7 +201,7 @@ LoadDataContent::LoadDataContent(int dec, int _rate_id)
 void LoadDataContent::updatePeriodDate(int period, QDate date, BtTime time)
 {
 	QString time_str = QString("%1:%2").arg(time.hour()).arg(time.minute(), 2, 10, QChar('0'));
-	QString text = date.toString() + " " + time_str;
+	QString text = DateConversions::formatDateConfig(date) + " " + time_str;
 	if (period == FIRST_PERIOD)
 	{
 		first_period->setDescriptionText(text);
