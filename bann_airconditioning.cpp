@@ -275,10 +275,11 @@ int SplitTemperature::temperature()
 {
 	switch (scale)
 	{
-	case CELSIUS:
-		return current_temp;
 	case FAHRENHEIT:
 		return static_cast<int>(round(toCelsius(current_temp)));
+	case CELSIUS:
+	default:
+		return current_temp;
 	}
 }
 

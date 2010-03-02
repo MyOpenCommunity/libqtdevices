@@ -493,7 +493,7 @@ QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 	// convert to raw data
 	QList<int> keys = data.keys();
 	for (int i = 0; i < keys.size(); ++i)
-		data[keys[i]] = EnergyConversions::convertToRawData(data[keys[i]],
+		data[keys[i]] = EnergyConversions::convertToRawData(static_cast<int>(data[keys[i]]),
 			is_electricity_view ? EnergyConversions::DEFAULT_ENERGY : EnergyConversions::OTHER_ENERGY);
 
 	if (gd->type == EnergyDevice::DAILY_AVERAGE)
