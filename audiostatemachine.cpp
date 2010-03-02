@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -147,30 +147,193 @@ bool StateMachine::toState(int state)
 
 AudioStateMachine::AudioStateMachine()
 {
-	addState(ALARM_CLOCK,
-		 SLOT(stateAlarmClockEntered()),
-		 SLOT(stateAlarmClockExited()));
-	addState(VIDEO_CALL,
-		 SLOT(stateVideoCallEntered()));
+	addState(IDLE,
+		 SLOT(stateIdleEntered()),
+		 SLOT(stateIdleExited()));
+	addState(BEEP_ON,
+		 SLOT(stateBeepOnEntered()),
+		 SLOT(stateBeepOnExited()));
+	addState(BEEP_OFF,
+		 SLOT(stateBeepOffEntered()),
+		 SLOT(stateBeepOffExited()));
+	addState(PLAY_MEDIA_TO_SPEAKER,
+		 SLOT(statePlayMediaToSpeakerEntered()),
+		 SLOT(statePlayMediaToSpeakerExited()));
+	addState(PLAY_FROM_DIFSON_TO_SPEAKER,
+		 SLOT(statePlayFromDifsonToSpeakerEntered()),
+		 SLOT(statePlayFromDifsonToSpeakerExited()));
+	addState(PLAY_MEDIA_TO_DIFSON,
+		 SLOT(statePlayMediaToDifsonEntered()),
+		 SLOT(statePlayMediaToDifsonExited()));
+	addState(PLAY_RINGTONE,
+		 SLOT(statePlayRingtoneEntered()),
+		 SLOT(statePlayRingtoneExited()));
+	addState(SCS_VIDEO_CALL,
+		 SLOT(stateScsVideoCallEntered()),
+		 SLOT(stateScsVideoCallExited()));
+	addState(SCS_INTERCOM_CALL,
+		 SLOT(stateScsIntercomCallEntered()),
+		 SLOT(stateScsIntercomCallExited()));
+	addState(IP_VIDEO_CALL,
+		 SLOT(stateIpVideoCallEntered()),
+		 SLOT(stateIpVideoCallExited()));
+	addState(IP_INTERCOM_CALL,
+		 SLOT(stateIpIntercomCallEntered()),
+		 SLOT(stateIpIntercomCallExited()));
+	addState(ALARM_TO_SPEAKER,
+		 SLOT(stateAlarmToSpeakerEntered()),
+		 SLOT(stateAlarmToSpeakerExited()));
+	addState(ALARM_TO_DIFSON,
+		 SLOT(stateAlarmToDifsonEntered()),
+		 SLOT(stateAlarmToDifsonExited()));
+	addState(SCREENSAVER_WITH_PLAY,
+		 SLOT(stateScreensaverWithPlayEntered()),
+		 SLOT(stateScreensaverWithPlayExited()));
 
 	// by default, all state transitions are possible, if this is not
 	// correct, use removeTransitions() to make some transitions impossible
 
-	// go to the start state
-	start(ALARM_CLOCK);
+	// go to the start state: on startup IDLE is a transitional state, after a while it moves to BEEP_ON or BEEP_OFF
+	start(IDLE);
 }
 
-void AudioStateMachine::stateAlarmClockEntered(int state, int old_state)
+void AudioStateMachine::stateIdleEntered()
 {
-	// do something when entering the alarm clock state
+	// do something when entering the idle state
 }
 
-void AudioStateMachine::stateAlarmClockExited(int state, int old_state)
+void AudioStateMachine::stateIdleExited()
 {
-	// do something when leaving the alarm clock state
+	// do something when leaving the idle state
 }
 
-void AudioStateMachine::stateVideoCallEntered()
+void AudioStateMachine::stateBeepOnEntered()
 {
-	// do something when entering the video call state
+
 }
+
+void AudioStateMachine::stateBeepOnExited()
+{
+
+}
+
+void AudioStateMachine::stateBeepOffEntered()
+{
+
+}
+
+void AudioStateMachine::stateBeepOffExited()
+{
+
+}
+
+void AudioStateMachine::statePlayMediaToSpeakerEntered()
+{
+
+}
+
+void AudioStateMachine::statePlayMediaToSpeakerExited()
+{
+
+}
+
+void AudioStateMachine::statePlayFromDifsonToSpeakerEntered()
+{
+
+}
+
+void AudioStateMachine::statePlayFromDifsonToSpeakerExited()
+{
+
+}
+
+void AudioStateMachine::statePlayMediaToDifsonEntered()
+{
+
+}
+
+void AudioStateMachine::statePlayMediaToDifsonExited()
+{
+
+}
+
+void AudioStateMachine::statePlayRingtoneEntered()
+{
+
+}
+
+void AudioStateMachine::statePlayRingtoneExited()
+{
+
+}
+
+void AudioStateMachine::stateScsVideoCallEntered()
+{
+
+}
+
+void AudioStateMachine::stateScsVideoCallExited()
+{
+
+}
+
+void AudioStateMachine::stateScsIntercomCallEntered()
+{
+
+}
+
+void AudioStateMachine::stateScsIntercomCallExited()
+{
+
+}
+
+void AudioStateMachine::stateIpVideoCallEntered()
+{
+
+}
+
+void AudioStateMachine::stateIpVideoCallExited()
+{
+
+}
+
+void AudioStateMachine::stateIpIntercomCallEntered()
+{
+
+}
+
+void AudioStateMachine::stateIpIntercomCallExited()
+{
+
+}
+
+void AudioStateMachine::stateAlarmToSpeakerEntered()
+{
+
+}
+
+void AudioStateMachine::stateAlarmToSpeakerExited()
+{
+
+}
+
+void AudioStateMachine::stateAlarmToDifsonEntered()
+{
+
+}
+
+void AudioStateMachine::stateAlarmToDifsonExited()
+{
+
+}
+
+void AudioStateMachine::stateScreensaverWithPlayEntered()
+{
+
+}
+
+void AudioStateMachine::stateScreensaverWithPlayExited()
+{
+
+}
+

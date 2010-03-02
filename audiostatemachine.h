@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -34,7 +34,6 @@ class StateMachine;
 class TransitionConstraint
 {
 public:
-	virtual ~TransitionConstraint() {}
 	// called by isTransitiionAllowed(); return true to allow the transition
 	// to be performed
 	virtual bool isAllowed(const StateMachine *machine,
@@ -117,17 +116,70 @@ Q_OBJECT
 public:
 	enum
 	{
-		ALARM_CLOCK,
-		VIDEO_CALL,
+		IDLE,
+		BEEP_ON,
+		BEEP_OFF,
+		PLAY_MEDIA_TO_SPEAKER,
+		PLAY_FROM_DIFSON_TO_SPEAKER,
+		PLAY_MEDIA_TO_DIFSON,
+		PLAY_RINGTONE,
+		SCS_VIDEO_CALL,
+		SCS_INTERCOM_CALL,
+		IP_VIDEO_CALL,
+		IP_INTERCOM_CALL,
+		ALARM_TO_SPEAKER,
+		ALARM_TO_DIFSON,
+		SCREENSAVER_WITH_PLAY,
+		//SCREENSAVER_WITHOUT_PLAY --> IDLE
 	};
 
 	AudioStateMachine();
 
 private slots:
 	// declare state handlers here
-	void stateAlarmClockEntered(int state, int old_state);
-	void stateAlarmClockExited(int state, int old_state);
-	void stateVideoCallEntered();
+	//Events: Startup, Screensaver without password, Screen OFF
+	void stateIdleEntered();
+	void stateIdleExited();
+	//Events: Beep enabled
+	void stateBeepOnEntered();
+	void stateBeepOnExited();
+	//Events: Beep disabled
+	void stateBeepOffEntered();
+	void stateBeepOffExited();
+	//Events: Play media (mp3, wave. radio IP...) on local speaker
+	void statePlayMediaToSpeakerEntered();
+	void statePlayMediaToSpeakerExited();
+	//Events: Play Diffusion Sound system on local speaker
+	void statePlayFromDifsonToSpeakerEntered();
+	void statePlayFromDifsonToSpeakerExited();
+	//Events: Play media (mp3, wave. radio IP...) on diffusione sound system - set Touch as multimedia source
+	void statePlayMediaToDifsonEntered();
+	void statePlayMediaToDifsonExited();
+	//Events: Play ringtone on local speaker, incoming video call or intercom
+	void statePlayRingtoneEntered();
+	void statePlayRingtoneExited();
+	//Events: Answer on an incoming scs video call
+	void stateScsVideoCallEntered();
+	void stateScsVideoCallExited();
+	//Events: Answer on an incoming scs intercom call
+	void stateScsIntercomCallEntered();
+	void stateScsIntercomCallExited();
+	//Events: Answer on an incoming IP video call
+	void stateIpVideoCallEntered();
+	void stateIpVideoCallExited();
+	//Events: Answer on an incoming IP intercom call
+	void stateIpIntercomCallEntered();
+	void stateIpIntercomCallExited();
+	//Events: Play Alarm on local speaker
+	void stateAlarmToSpeakerEntered();
+	void stateAlarmToSpeakerExited();
+	//Events: Play Alarm on sound diffusion system
+	//Maybe obsolete, can be used one of: statePlayMediaToSpeakerEntered, statePlayFromDifsonToSpeakerEntered, statePlayMediaToDifsonEntered
+	void stateAlarmToDifsonEntered();
+	void stateAlarmToDifsonExited();
+	//Events: Activate Screensaver during an interaction with diffusion sound system
+	void stateScreensaverWithPlayEntered();
+	void stateScreensaverWithPlayExited();
 };
 
 #endif // AUDIOSTATEMACHINE_H
