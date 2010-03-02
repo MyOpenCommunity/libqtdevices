@@ -10,10 +10,13 @@
 #include "energy_device.h" // EnergyConversions
 #include "loads_device.h" // LoadsDevice
 #include "devices_cache.h" // add_device_to_cache
+#include "bttime.h" // BtTime
+
 
 #include <QLabel>
 #include <QDebug>
 #include <QVBoxLayout>
+#include <QDate>
 
 
 namespace
@@ -198,7 +201,7 @@ LoadDataContent::LoadDataContent(int dec, int _rate_id)
 	decimals = dec;
 }
 
-void LoadDataContent::updatePeriodDate(int period, QDate date, BtTime time)
+void LoadDataContent::updatePeriodDate(int period, const QDate &date, const BtTime &time)
 {
 	QString time_str = QString("%1:%2").arg(time.hour()).arg(time.minute(), 2, 10, QChar('0'));
 	QString text = DateConversions::formatDateConfig(date) + " " + time_str;

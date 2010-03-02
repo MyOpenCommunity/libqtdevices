@@ -2,11 +2,9 @@
 #define LOAD_MANAGEMENT_H
 
 #include "page.h"
-#include "bttime.h"
 #include "energy_rates.h" // EnergyRate
 
 #include <QSignalMapper>
-#include <QDate>
 
 class QDomNode;
 class banner;
@@ -14,6 +12,8 @@ class QLabel;
 class DeactivationTime;
 class Bann2Buttons;
 class LoadsDevice;
+class BtTime;
+class QDate;
 
 class LoadManagement : public BannerPage
 {
@@ -60,7 +60,7 @@ public:
 	 *
 	 * \param period Extracted from frame
 	 */
-	void updatePeriodDate(int period, QDate date, BtTime time);
+	void updatePeriodDate(int period, const QDate &date, const BtTime &time);
 
 	/**
 	 * Update consuption value for the given period.
