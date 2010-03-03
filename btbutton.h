@@ -34,7 +34,8 @@ public:
 		NO_FLAG,                    // empty flag
 		LOAD_PRESSED_ICON,          // load pressed icon in setIcon
 	};
-	BtButton(QWidget *parent=0);
+	BtButton(QWidget *parent = 0);
+	BtButton(QString icon_path, QWidget *parent = 0);
 
 	/**
 	 * Loads an icon into the button.
@@ -83,6 +84,8 @@ private:
 	bool current_status; // the current status of a on off button.
 
 	bool isToggle();
+
+	void initButton();
 };
 
 #endif // BTBUTTON_H

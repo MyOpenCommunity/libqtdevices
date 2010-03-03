@@ -31,6 +31,17 @@
 
 BtButton::BtButton(QWidget *parent) : QPushButton(parent)
 {
+	initButton();
+}
+
+BtButton::BtButton(QString icon_path, QWidget *parent) : QPushButton(parent)
+{
+	initButton();
+	setImage(icon_path);
+}
+
+void BtButton::initButton()
+{
 	setFocusPolicy(Qt::NoFocus);
 	is_on_off = false;
 	is_enabled = true;
@@ -87,6 +98,7 @@ void BtButton::setPixmap(const QPixmap &p)
 	{
 		setIcon(pixmap);
 		setIconSize(pixmap.size());
+		resize(pixmap.size());
 	}
 }
 
