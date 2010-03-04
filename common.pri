@@ -46,7 +46,7 @@ isEmpty(TEST_ARCH) {
 	MOC_DIR = moc/arm
 	DEFINES += BT_EMBEDDED
 
-	HARDWARE = btouch
+	HARDWARE = embedded
 	TRGT_SUFFIX = $${TRGT_SUFFIX}.arm
 }
 
@@ -82,8 +82,10 @@ QMAKE_CXXFLAGS_RELEASE += -O3
 contains(HARDWARE, x11) {
 	SOURCES += hardware_functions_x11.cpp
 }
-contains(HARDWARE, btouch) {
+contains(HARDWARE, embedded) {
 	SOURCES += hardware_functions.cpp
+	HEADERS += calibration.h
+	SOURCES += calibration.cpp
 }
 
 TRANSLATIONS += ../linguist-ts/btouch_ar.ts \
@@ -143,7 +145,6 @@ HEADERS += actuators.h \
            btmain.h \
            bttime.h \
            buttons_bar.h \
-           calibrate.h \
            changedatetime.h \
            cleanscreen.h \
            contrast.h \
@@ -261,7 +262,6 @@ SOURCES += actuators.cpp \
            brightnesspage.cpp \
            bttime.cpp \
            buttons_bar.cpp \
-           calibrate.cpp \
            changedatetime.cpp \
            cleanscreen.cpp \
            contrast.cpp \

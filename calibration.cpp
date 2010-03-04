@@ -19,7 +19,7 @@
  */
 
 
-#include "calibrate.h"
+#include "calibration.h"
 #include "fontmanager.h" // bt_global::font
 #include "skinmanager.h" // bt_global::skin
 #include "btbutton.h"

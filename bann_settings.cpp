@@ -24,7 +24,6 @@
 #include "alarmclock.h"
 #include "keypad.h"
 #include "multisounddiff.h" // contdiff
-#include "calibrate.h"
 #include "contrast.h"
 #include "generic_functions.h" // setCfgValue
 #include "hardware_functions.h" // setBeep, getBeep, beep, setContrast, getContrast
@@ -32,6 +31,9 @@
 #include "btbutton.h"
 #include "fontmanager.h"
 #include "skinmanager.h" // bt_global::skin
+#if !defined(BT_HARDWARE_X11)
+#include "calibration.h"
+#endif
 
 #include <QTimer>
 #include <QDebug>
@@ -168,10 +170,12 @@ void bannAlarmClockIcon::inizializza(bool forza)
 calibration::calibration(QWidget *parent, QString icon) : bannOnDx(parent)
 {
 	SetIcons(icon, 1);
+#if !defined(BT_HARDWARE_X11)
 	Calibration *cal = new Calibration;
 	connect(cal, SIGNAL(Closed()), this, SIGNAL(endCalibration()));
 	connect(this, SIGNAL(click()), this, SIGNAL(startCalibration()));
 	connect(this, SIGNAL(click()), cal, SLOT(showWindow()));
+#endif
 }
 
 

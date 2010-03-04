@@ -24,7 +24,6 @@
 #include "homepage.h"
 #include "hardware_functions.h" // rearmWDT, getTimePress, setOrientation, getBacklight, initScreen
 #include "xml_functions.h" // getPageNode, getElement, getChildWithId, getTextChild
-#include "calibrate.h"
 #include "genpage.h"
 #include "openclient.h"
 #include "version.h"
@@ -47,6 +46,9 @@
 #include "ringtonesmanager.h"
 #include "pagestack.h"
 #include "videoentryphone.h"
+#if !defined(BT_HARDWARE_X11)
+#include "calibration.h"
+#endif
 
 #include <QMutableHashIterator>
 #include <QXmlSimpleReader>
