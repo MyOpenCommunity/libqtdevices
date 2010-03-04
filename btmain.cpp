@@ -504,7 +504,10 @@ void BtMain::gesScrSav()
 
 				Page::blockTransitions(true);
 				if (target == pagDefault)
+				{
 					unrollPages();
+					prev_page = target;
+				}
 
 				target->showPage();
 				Page::blockTransitions(false);
