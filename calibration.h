@@ -43,6 +43,9 @@ Q_OBJECT
 public:
 	Calibration(bool minimal = false);
 
+	// Return true if the calibration file exists.
+	static bool exists();
+
 protected:
 	virtual void paintEvent(QPaintEvent*);
 	virtual void mouseReleaseEvent(QMouseEvent*);

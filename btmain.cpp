@@ -224,7 +224,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	initMultimedia();
 
 #if !defined(BT_HARDWARE_X11)
-	if (!QFile::exists("/etc/pointercal"))
+	if (!Calibration::exists())
 	{
 		alreadyCalibrated = true;
 #ifdef LAYOUT_BTOUCH

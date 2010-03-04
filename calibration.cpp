@@ -43,6 +43,14 @@ namespace
 	{
 		return qt_screen->mapFromDevice(p, QSize(qt_screen->deviceWidth(), qt_screen->deviceHeight()));
 	}
+
+	QString pointercalFile()
+	{
+		QString pointercal_file = "/etc/pointercal";
+		if (char *pointercal_file_env = getenv("POINTERCAL_FILE"))
+			pointercal_file = QString(pointercal_file_env);
+		return pointercal_file;
+	}
 }
 
 
@@ -51,9 +59,7 @@ Calibration::Calibration(bool minimal)
 	int width = qt_screen->deviceWidth();
 	int height = qt_screen->deviceHeight();
 
-	pointercal_file = "/etc/pointercal";
-	if (char *pointercal_file_env = getenv("POINTERCAL_FILE"))
-		pointercal_file = QString(pointercal_file_env);
+	pointercal_file = pointercalFile();
 
 	int cross_margin = 30;
 
@@ -99,6 +105,11 @@ Calibration::Calibration(bool minimal)
 	connect(crosshair_timer, SIGNAL(timeout()), SLOT(drawCrosshair()));
 
 	minimal_version = minimal;
+}
+
+bool Calibration::exists()
+{
+	return QFile::exists(pointercalFile());
 }
 
 void Calibration::startCalibration()
