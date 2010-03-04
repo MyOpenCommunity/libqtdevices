@@ -50,7 +50,7 @@ SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningI
 		air_single = "air_single_temp";
 
 		connect(dev_probe, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
-		connectDevice(dev_probe);
+		setOpenserverConnection(dev_probe);
 	}
 
 	initBanner(img_off, bt_global::skin->getImage(air_single), show_right_button ? img_forward : QString(), descr);
