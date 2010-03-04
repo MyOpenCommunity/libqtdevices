@@ -13,6 +13,14 @@ QWidget[SecondFgColor="true"] QWidget {color:#6FB2FF;}
 QWidget[ReversedColor="true"] {color:#1E1E1E;background-color:#D8D8D8;}
 TextOnImageLabel { qproperty-text_color:#D8D8D8; }
 EnergyGraph { qproperty-primary_color:#1449C8; qproperty-secondary_color:#3587FF; qproperty-border_color: blue;}
+EnergyTableContent {
+    qproperty-border_color: #41474d;
+    qproperty-heading_color: #3587ff;
+    qproperty-odd_row_color: #41474d;
+    qproperty-even_row_color: #2e3236;
+    qproperty-text_color: #d8d8d8;
+}
+<!-- For compatibility with software version 6, to be removed -->
 EnergyTable .QFrame { border: 1px solid #41474d; }
 EnergyTable QLabel { border-color:#41474d; border-style:solid; }
 EnergyTable QLabel[left="true"] {border-right-width: 1px; }
@@ -156,7 +164,7 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	</item>
 	<item>
 		<cid>203</cid>
-		<img_lamp_group_on>lampgrpondimo.png</img_lamp_group_on>
+		<img_lamp_group_on>lampgrpon.png</img_lamp_group_on>
 	</item>
 	<item>
 		<cid>205</cid>
@@ -279,6 +287,16 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_date_icon>calendario.png</img_date_icon>
 		<img_time_icon>orologio.png</img_time_icon>
 	</item>
+	<!-- RDS radio -->
+	<item>
+		<cid>600</cid>
+		<img_cycle>btncycle.png</img_cycle>
+		<img_auto_on>btnauto.png</img_auto_on>
+		<img_auto_off>btnautooff.png</img_auto_off>
+		<img_man_on>btnman.png</img_man_on>
+		<img_man_off>btnmanoff.png</img_man_off>
+		<img_memory>btnmem.png</img_memory>
+	</item>
 	<item>
 		<cid>701</cid>
 		<img_edit>setscen.png</img_edit>
@@ -363,11 +381,11 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	</item>
 	<item>
 		<cid>1403</cid>
-		<img_energy_type>dwh.png</img_energy_type>
+		<img_energy_type>dhw.png</img_energy_type>
 	</item>
 	<item>
 		<cid>1404</cid>
-		<img_energy_type>liq_gas.png</img_energy_type>
+		<img_energy_type>heating_cooling.png</img_energy_type>
 	</item>
 	<!-- supervision menu/stop'n'go -->
 	<item>
@@ -461,24 +479,24 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	</item>
 	<item>
 		<cid>513</cid>
-		<img_air_single>AirConditioning_Unit.png</img_air_single>
+		<img_air_single>UnitAirConditioning.png</img_air_single>
 		<img_air_single_temp>empty.png</img_air_single_temp>
-		<img_air_general>AirConditioning_General.png</img_air_general>
+		<img_air_general>GroupAirConditioning.png</img_air_general>
 		<img_split_cmd>btnon.png</img_split_cmd>
 		<img_split_settings>set.png</img_split_settings>    
 	</item>
 	<item>
 		<cid>516</cid>
-		<img_air_single>AirConditioning_Unit.png</img_air_single>
+		<img_air_single>UnitAirConditioning.png</img_air_single>
 		<img_air_single_temp>empty.png</img_air_single_temp>
-		<img_air_general>AirConditioning_General.png</img_air_general>
+		<img_air_general>GroupAirConditioning.png</img_air_general>
 		<img_split_cmd>btnon.png</img_split_cmd>
 		<img_split_settings>set.png</img_split_settings>
 		<img_swing_on>btnon.png</img_swing_on>
 		<img_swing_off>btnoff.png</img_swing_off>
-		<img_custom_button>AirConditioning_Custom.png</img_custom_button>
-		<img_plus_disabled>btnPiuDis.png</img_plus_disabled>
-		<img_minus_disabled>btnMenoDis.png</img_minus_disabled>
+		<img_custom_button>CustomAirConditioning.png</img_custom_button>
+		<img_plus_disabled>btnPiu.png</img_plus_disabled>
+		<img_minus_disabled>btnMeno.png</img_minus_disabled>
 		<img_cycle_speed>btnCiclaFancoil.png</img_cycle_speed>
 		<img_cycle_mode>btnCiclaMod.png</img_cycle_mode>
 	</item>
