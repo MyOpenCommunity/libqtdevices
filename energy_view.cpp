@@ -152,12 +152,7 @@ QString TimePeriodSelection::formatDate(const QDate &date, TimePeriod period)
 	switch (period)
 	{
 	case DAY:
-	{
-		QString format("dd.MM.yy");
-		if (bt_global::config[DATE_FORMAT].toInt() == USA_DATE)
-			format = "MM.dd.yy";
-		return date.toString(format);
-	}
+		return DateConversions::formatDateConfig(date);
 	case MONTH:
 		// no need to modify the format to american
 		return date.toString("MM.yy");
