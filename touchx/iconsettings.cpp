@@ -39,6 +39,9 @@
 #include "devices_cache.h" // bt_global::add_device_to_cache
 #include "platform_device.h" // PlatformDevice
 #include "generic_functions.h" // setCfgValue
+#if !defined(BT_HARDWARE_X11)
+#include "calibration.h"
+#endif
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -316,6 +319,12 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			// TODO config file does not contain the clean screen value
 			w = new CleanScreen(bt_global::skin->getImage("cleanscreen"), 10);
 			break;
+#if !defined(BT_HARDWARE_X11)
+		case PAGE_CALIBRATION:
+			w = new Calibration;
+			connect(w, SIGNAL(Closed()), SLOT(showPage()));
+			break;
+#endif
 		case PAGE_LANSETTINGS:
 			p = new LanSettings(item);
 			break;
