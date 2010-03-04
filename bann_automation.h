@@ -42,7 +42,6 @@ class InterblockedActuator : public BannOpenClose
 Q_OBJECT
 public:
 	InterblockedActuator(const QString &descr, const QString &where, int openserver_id);
-	virtual void inizializza(bool forza = false);
 
 private slots:
 	void sendGoUp();
@@ -69,7 +68,6 @@ class SecureInterblockedActuator : public BannOpenClose
 Q_OBJECT
 public:
 	SecureInterblockedActuator(const QString &descr, const QString &where, int openserver_id);
-	virtual void inizializza(bool forza = false);
 
 private slots:
 	void sendOpen();
@@ -135,7 +133,6 @@ class PPTStat : public BannerOld
 Q_OBJECT
 public:
 	PPTStat(QString where, int openserver_id);
-	virtual void inizializza(bool forza=false);
 
 private:
 	PPTStatDevice *dev;

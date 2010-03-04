@@ -40,7 +40,7 @@ LightGroup::LightGroup(const QList<QString> &addresses, const QString &descr)
 
 	foreach (const QString &address, addresses)
 		// since we don't care about status changes, use PULL mode to analyze fewer frames
-		devices << bt_global::add_device_to_cache(new LightingDevice(address, PULL));
+		devices << bt_global::add_device_to_cache(new LightingDevice(address, PULL), NO_INIT);
 
 	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
 	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
@@ -153,11 +153,6 @@ void Dimmer::decreaseLevel()
 	dev->decreaseLevel();
 }
 
-void Dimmer::inizializza(bool forza)
-{
-	dev->requestStatus();
-}
-
 void Dimmer::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
@@ -193,7 +188,7 @@ DimmerGroup::DimmerGroup(const QList<QString> &addresses, const QString &descr) 
 
 	foreach (const QString &address, addresses)
 		// since we don't care about status changes, use PULL mode to analyze fewer frames
-		devices << bt_global::add_device_to_cache(new DimmerDevice(address, PULL));
+		devices << bt_global::add_device_to_cache(new DimmerDevice(address, PULL), NO_INIT);
 
 	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
 	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
@@ -272,11 +267,6 @@ void Dimmer100::decreaseLevel()
 	dev->decreaseLevel100(DIMMER100_STEP, DIMMER100_SPEED);
 }
 
-void Dimmer100::inizializza(bool forza)
-{
-	dev->requestDimmer100Status();
-}
-
 void Dimmer100::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
@@ -332,7 +322,7 @@ Dimmer100Group::Dimmer100Group(const QList<QString> &addresses, const QList<int>
 		bt_global::skin->getImage("dimmer_grp_dx"),bt_global::skin->getImage("on"), descr);
 
 	foreach (const QString &where, addresses)
-		devices << bt_global::add_device_to_cache(new Dimmer100Device(where, PULL));
+		devices << bt_global::add_device_to_cache(new Dimmer100Device(where, PULL), NO_INIT);
 	start_speed = start_values;
 	stop_speed = stop_values;
 	Q_ASSERT_X(devices.size() == start_speed.size(), "Dimmer100Group::Dimmer100Group",
@@ -394,11 +384,6 @@ TempLight::TempLight(const QString &descr, const QString &where, int openserver_
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
-void TempLight::inizializza(bool forza)
-{
-	dev->requestStatus();
-}
-
 void TempLight::cycleTime()
 {
 	time_index = (time_index + 1) % times.size();
@@ -440,11 +425,6 @@ TempLightVariable::TempLightVariable(const QList<BtTime> &time_values, const QSt
 	updateTimeLabel();
 }
 
-void TempLightVariable::inizializza(bool forza)
-{
-	dev->requestVariableTiming();
-}
-
 void TempLightVariable::activate()
 {
 	BtTime t = times[time_index];
@@ -474,12 +454,6 @@ TempLightFixed::TempLightFixed(int time, const QString &descr, const QString &wh
 
 	connect(right_button, SIGNAL(clicked()), SLOT(setOn()));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
-}
-
-void TempLightFixed::inizializza(bool forza)
-{
-	dev->requestStatus();
-	dev->requestVariableTiming();
 }
 
 void TempLightFixed::setOn()

@@ -23,6 +23,7 @@
 #include "openclient.h"
 #include "bttime.h"
 #include "generic_functions.h" // createRequestOpen, createMsgOpen
+#include "devices_cache.h" // bt_global::devices_cache
 
 #include <openmsg.h>
 
@@ -92,6 +93,7 @@ void OpenServerManager::handleConnectionUp()
 		if (is_connected)
 		{
 			qDebug("OpenServerManager::handleConnectionUp()[%d]", openserver_id);
+			bt_global::devices_cache.initOpenserverDevices(openserver_id);
 			emit connectionUp();
 		}
 	}
@@ -117,7 +119,7 @@ device::device(QString _who, QString _where, int oid) : FrameReceiver(oid)
 			clients[openserver_id].first, clients[openserver_id].second);
 	}
 
-	connect(openservers[openserver_id], SIGNAL(connectionUp()), SLOT(handleConnectionUp()));
+	connect(openservers[openserver_id], SIGNAL(connectionUp()), SIGNAL(connectionUp()));
 	connect(openservers[openserver_id], SIGNAL(connectionDown()), SIGNAL(connectionDown()));
 }
 
@@ -126,10 +128,16 @@ bool device::isConnected()
 	return openservers[openserver_id]->isConnected();
 }
 
-void device::handleConnectionUp()
+void device::initDevices()
 {
-	init();
-	emit connectionUp();
+	foreach (int id, openservers.keys())
+		if (openservers[id]->isConnected())
+			bt_global::devices_cache.initOpenserverDevices(id);
+}
+
+int device::openserverId()
+{
+	return openserver_id;
 }
 
 void device::sendFrame(QString frame) const

@@ -56,7 +56,6 @@ class ScenarioModule : public Bann4ButtonsIcon
 Q_OBJECT
 public:
 	ScenarioModule(int scenario, const QString &descr, const QString &where, int openserver_id);
-	virtual void inizializza(bool forza = false);
 
 private slots:
 	void status_changed(const StatusList &sl);

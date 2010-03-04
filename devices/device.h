@@ -96,6 +96,8 @@ public:
 	virtual void manageFrame(OpenMsg &msg) {}
 
 	bool isConnected();
+	int openserverId();
+	static void initDevices();
 
 signals:
 	// TODO: Old Status changed, to be removed asap.
@@ -132,9 +134,6 @@ protected:
 	void sendCommand(QString what, QString _where) const;
 	void sendCommand(QString what) const;
 	void sendRequest(QString what) const;
-
-private slots:
-	void handleConnectionUp();
 
 private:
 	static QHash<int, QPair<Client*, Client*> > clients;

@@ -47,11 +47,6 @@ InterblockedActuator::InterblockedActuator(const QString &descr, const QString &
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
 }
 
-void InterblockedActuator::inizializza(bool forza)
-{
-	dev->requestStatus();
-}
-
 void InterblockedActuator::sendGoUp()
 {
 	dev->goUp();
@@ -115,11 +110,6 @@ SecureInterblockedActuator::SecureInterblockedActuator(const QString &descr, con
 	is_any_button_pressed = false;
 	connectButtons();
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
-}
-
-void SecureInterblockedActuator::inizializza(bool forza)
-{
-	dev->requestStatus();
 }
 
 void SecureInterblockedActuator::sendOpen()
@@ -209,7 +199,7 @@ GateEntryphoneActuator::GateEntryphoneActuator(const QString &descr, const QStri
 {
 	// TODO: we still miss entryphone devices, so I'm creating a generic device and send
 	// frames directly. Change as soon as entryphone devices are available!
-	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL_UNKNOWN, openserver_id));
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL_UNKNOWN, openserver_id), NO_INIT);
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"), descr);
 	connect(right_button, SIGNAL(pressed()), SLOT(activate()));
 }
@@ -225,7 +215,8 @@ GateLightingActuator::GateLightingActuator(const BtTime &t, const QString &descr
 	BannSinglePuls(0),
 	time(t)
 {
-	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL_UNKNOWN, openserver_id));
+	// we don't need to init the device, as we don't care about its status
+	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL_UNKNOWN, openserver_id), NO_INIT);
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"), descr);
 	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
 }
@@ -240,7 +231,7 @@ InterblockedActuatorGroup::InterblockedActuatorGroup(const QStringList &addresse
 	Bann3Buttons(0)
 {
 	foreach (const QString &where, addresses)
-		actuators.append(bt_global::add_device_to_cache(new AutomationDevice(where, PULL, openserver_id)));
+		actuators.append(bt_global::add_device_to_cache(new AutomationDevice(where, PULL, openserver_id), NO_INIT));
 
 	initBanner(bt_global::skin->getImage("scroll_down"), bt_global::skin->getImage("stop"),
 		bt_global::skin->getImage("scroll_up"), descr);
@@ -291,10 +282,5 @@ void PPTStat::status_changed(const StatusList &status_list)
 	bool st = status_list[PPTStatDevice::DIM_STATUS].toBool();
 	SetIcons(2, st ? img_close : img_open);
 	Draw();
-}
-
-void PPTStat::inizializza(bool forza)
-{
-	dev->requestStatus();
 }
 

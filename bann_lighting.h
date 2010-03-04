@@ -45,7 +45,6 @@ class LightGroup : public Bann2Buttons
 Q_OBJECT
 public:
 	LightGroup(const QList<QString> &addresses, const QString &descr);
-	// TODO: do we need a inizializza() method? The original class didn't have it...
 
 private slots:
 	void lightOn();
@@ -91,7 +90,6 @@ class Dimmer : public AdjustDimmer
 Q_OBJECT
 public:
 	Dimmer(const QString &descr, const QString &where, int openserver_id);
-	virtual void inizializza(bool forza = false);
 
 private slots:
 	void lightOn();
@@ -128,7 +126,6 @@ class Dimmer100 : public AdjustDimmer
 Q_OBJECT
 public:
 	Dimmer100(const QString &descr, const QString &where, int openserver_id, int _start_speed, int _stop_speed);
-	virtual void inizializza(bool forza = false);
 
 private slots:
 	void lightOn();
@@ -168,7 +165,6 @@ class TempLight : public BannOnOff2Labels
 Q_OBJECT
 public:
 	TempLight(const QString &descr, const QString &where, int openserver_id);
-	virtual void inizializza(bool forza);
 
 protected:
 	void updateTimeLabel();
@@ -191,7 +187,6 @@ class TempLightVariable : public TempLight
 Q_OBJECT
 public:
 	TempLightVariable(const QList<BtTime> &time_values, const QString &descr, const QString &where, int openserver_id);
-	virtual void inizializza(bool forza);
 
 protected slots:
 	virtual void activate();
@@ -203,7 +198,6 @@ class TempLightFixed : public BannOn2Labels
 Q_OBJECT
 public:
 	TempLightFixed(int time, const QString &descr, const QString &where, int openserver_id);
-	virtual void inizializza(bool forza);
 
 private slots:
 	void status_changed(const StatusList &sl);

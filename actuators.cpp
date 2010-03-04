@@ -53,11 +53,6 @@ void SingleActuator::deactivate()
 	dev->turnOff();
 }
 
-void SingleActuator::inizializza(bool forza)
-{
-	dev->requestStatus();
-}
-
 void SingleActuator::status_changed(const StatusList &status_list)
 {
 	StatusList::const_iterator it = status_list.constBegin();

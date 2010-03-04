@@ -442,7 +442,7 @@ void BtMain::myMain()
 	foreach (Page *p, page_list)
 		p->inizializza();
 
-	bt_global::devices_cache.init_devices();
+	device::initDevices();
 
 #if !defined(BT_HARDWARE_X11)
 	if (static_cast<int>(getTimePress()) * 1000 <= boot_time->elapsed() && !alreadyCalibrated)

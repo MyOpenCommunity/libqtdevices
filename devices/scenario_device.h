@@ -47,6 +47,7 @@ public:
 	};
 
 	ScenarioDevice(QString where, int openserver_id = 0);
+	virtual void init();
 
 	void activateScenario(int scen);
 	void startProgramming(int scen);

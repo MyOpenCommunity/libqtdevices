@@ -39,7 +39,7 @@ BannSimpleScenario::BannSimpleScenario(int scenario, const QString &descr, const
 	Bann2Buttons(0)
 {
 	initBanner(bt_global::skin->getImage("on"), QString(), descr);
-	dev = bt_global::add_device_to_cache(new ScenarioDevice(where, openserver_id));
+	dev = bt_global::add_device_to_cache(new ScenarioDevice(where, openserver_id), NO_INIT);
 	scenario_number = scenario;
 	connect(left_button, SIGNAL(clicked()), SLOT(activate()));
 }
@@ -67,11 +67,6 @@ ScenarioModule::ScenarioModule(int scenario, const QString &descr, const QString
 	connect(center_left_button, SIGNAL(clicked()), SLOT(startEditing()));
 	connect(center_right_button, SIGNAL(clicked()), SLOT(deleteScenario()));
 	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(const StatusList &)));
-}
-
-void ScenarioModule::inizializza(bool forza)
-{
-	dev->requestStatus();
 }
 
 void ScenarioModule::activate()
