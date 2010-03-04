@@ -402,10 +402,10 @@ void initScreen()
 #ifdef BT_HARDWARE_TOUCHX
 	QStringList args_brightness;
 	args_brightness << "1" << "13";
-	QProcess::execute("/bin/settrimmer", args_brightness);
+	QProcess::startDetached("/bin/settrimmer", args_brightness);
 
 	QStringList args_contrast;
 	args_contrast << "2" << "7";
-	QProcess::execute("/bin/settrimmer", args_contrast);
+	QProcess::startDetached("/bin/settrimmer", args_contrast);
 #endif
 }
