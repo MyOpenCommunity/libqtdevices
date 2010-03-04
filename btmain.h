@@ -95,7 +95,6 @@ signals:
 protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
 
-
 private slots:
 	void init();
 	void checkScreensaver();
@@ -103,6 +102,7 @@ private slots:
 	void testFiles();
 	void waitBeforeInit();
 	void monitorReady();
+	void startGui();
 
 private:
 	QHash<int, QPair<Client*, Client*> > clients;

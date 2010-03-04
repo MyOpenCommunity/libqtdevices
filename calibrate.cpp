@@ -20,346 +20,308 @@
 
 
 #include "calibrate.h"
-#include "main.h"
 #include "fontmanager.h" // bt_global::font
+#include "skinmanager.h" // bt_global::skin
 #include "btbutton.h"
 
-#include <QDesktopWidget>
 #include <QGlobalStatic> // qAbs
-#include <QApplication>
-#include <QMouseEvent>
-#include <QWSServer>
 #include <QVariant> // setProperty
-#include <QPainter>
-#include <QScreen>
-#include <QTimer>
-#include <QLabel>
+#include <QMouseEvent>
 #include <QFile>
+#include <QPainter>
+#include <QTimer>
+#include <QScreen>
+#include <QWSServer>
 #include <QDebug>
 
 #define BUTTON_SEC_TIMEOUT 10
 
-#define IMG_OK IMG_PATH "btnok.png"
 
-
-Calibrate::Calibrate(QWidget* parent, unsigned char m) :
-	QWidget(parent, Qt::Tool | Qt::FramelessWindowHint | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint), button_test(false)
+namespace
 {
-	setProperty("noStyle", true);
-	setAttribute(Qt::WA_DeleteOnClose);
-	const int offset = 30;
-	QRect desk = qApp->desktop()->geometry();
-	setGeometry(0, 0, desk.width(), desk.height());
-	logo.load(IMG_PATH "my_home.png");
-
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	if (!strcmp(getenv("QWS_DISPLAY"), "Transformed:Rot180"))
+	QPoint fromDevice(const QPoint &p)
 	{
-		cd.screenPoints[QWSPointerCalibrationData::BottomRight] = QPoint(offset, offset);
-		cd.screenPoints[QWSPointerCalibrationData::TopRight] = QPoint(offset, qt_screen->deviceHeight() - offset);
-		cd.screenPoints[QWSPointerCalibrationData::TopLeft] = QPoint(qt_screen->deviceWidth() - offset, qt_screen->deviceHeight() - offset);
-		cd.screenPoints[QWSPointerCalibrationData::BottomLeft] = QPoint(qt_screen->deviceWidth() - offset, offset);
-		cd.screenPoints[QWSPointerCalibrationData::Center] = QPoint(qt_screen->deviceWidth()/2, qt_screen->deviceHeight()/2);
+		return qt_screen->mapFromDevice(p, QSize(qt_screen->deviceWidth(), qt_screen->deviceHeight()));
 	}
-	else
-	{
-		cd.screenPoints[QWSPointerCalibrationData::TopLeft] = QPoint(offset, offset);
-		cd.screenPoints[QWSPointerCalibrationData::BottomLeft] = QPoint(offset, qt_screen->deviceHeight() - offset);
-		cd.screenPoints[QWSPointerCalibrationData::BottomRight] = QPoint(qt_screen->deviceWidth() - offset, qt_screen->deviceHeight() - offset);
-		cd.screenPoints[QWSPointerCalibrationData::TopRight] = QPoint(qt_screen->deviceWidth() - offset, offset);
-		cd.screenPoints[QWSPointerCalibrationData::Center] = QPoint(qt_screen->deviceWidth()/2, qt_screen->deviceHeight()/2);
-	}
-	crossPos = fromDevice(cd.screenPoints[QWSPointerCalibrationData::TopLeft]);
-	newPos = crossPos;
-#endif
-	timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(timeout()));
-	button_timer = new QTimer(this);
-	b1 = createButton(IMG_OK, 5, 5);
-	b2 = createButton(IMG_OK, 175, 255);
-	box_text = new QLabel(this);
-	box_text->setFont(bt_global::font->get(FontManager::TEXT));
-	box_text->setAlignment(Qt::AlignHCenter);
-	box_text->setGeometry(0, 205, desk.width(), 50);
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	if (QFile::exists("/etc/pointercal"))
-		system("cp /etc/pointercal /etc/pointercal.calibrated");
-#endif
-	manut = m;
-	startCalibration();
-	connect(button_timer, SIGNAL(timeout()), SLOT(rollbackCalibration()));
-	connect(b1, SIGNAL(clicked()), b2, SLOT(show()));
-	connect(b1, SIGNAL(clicked()), b1, SLOT(hide()));
-	connect(b2, SIGNAL(clicked()), SLOT(endCalibration()));
-	connect(b2, SIGNAL(clicked()), b2, SLOT(hide()));
 }
 
-Calibrate::~Calibrate()
+
+Calibration::Calibration(bool minimal)
 {
+	int width = qt_screen->deviceWidth();
+	int height = qt_screen->deviceHeight();
+
+	pointercal_file = "/etc/pointercal";
+	if (char *pointercal_file_env = getenv("POINTERCAL_FILE"))
+		pointercal_file = QString(pointercal_file_env);
+
+	int cross_margin = 30;
+
+	QPoint *points = calibration_data.screenPoints;
+
+#ifdef BT_HARDWARE_TOUCHX
+	points[QWSPointerCalibrationData::TopLeft] = QPoint(cross_margin, cross_margin);
+	points[QWSPointerCalibrationData::BottomLeft] = QPoint(cross_margin, height - cross_margin);
+	points[QWSPointerCalibrationData::BottomRight] = QPoint(width - cross_margin, height - cross_margin);
+	points[QWSPointerCalibrationData::TopRight] = QPoint(width - cross_margin, cross_margin);
+	points[QWSPointerCalibrationData::Center] = QPoint(width / 2, height / 2);
+#else
+	points[QWSPointerCalibrationData::TopLeft] = QPoint(width - cross_margin, height - cross_margin);
+	points[QWSPointerCalibrationData::BottomLeft] = QPoint(width - cross_margin, cross_margin);
+	points[QWSPointerCalibrationData::BottomRight] = QPoint(cross_margin, cross_margin);
+	points[QWSPointerCalibrationData::TopRight] = QPoint(cross_margin, height - cross_margin);
+	points[QWSPointerCalibrationData::Center] = QPoint(width / 2, height / 2);
+#endif
+
+	int buttons_margin = 10;
+	topleft_button = new BtButton(this);
+	topleft_button->setImage(bt_global::skin->getImage("ok"));
+	topleft_button->move(buttons_margin, buttons_margin);
+
+	bottomright_button = new BtButton(this);
+	bottomright_button->setImage(bt_global::skin->getImage("ok"));
+	bottomright_button->move(width - buttons_margin - bottomright_button->width(),
+		height - buttons_margin - bottomright_button->height());
+
+	connect(topleft_button, SIGNAL(clicked()), topleft_button, SLOT(hide()));
+	connect(topleft_button, SIGNAL(clicked()), bottomright_button, SLOT(show()));
+	connect(bottomright_button, SIGNAL(clicked()), bottomright_button, SLOT(hide()));
+	connect(bottomright_button, SIGNAL(clicked()), SLOT(endCalibration()));
+
+#ifdef LAYOUT_BTOUCH
+	logo.load(bt_global::skin->getImage("logo"));
+#endif
+
+	buttons_timer = new QTimer(this);
+	connect(buttons_timer, SIGNAL(timeout()), SLOT(rollbackCalibration()));
+
+	crosshair_timer = new QTimer(this);
+	connect(crosshair_timer, SIGNAL(timeout()), SLOT(drawCrosshair()));
+
+	minimal_version = minimal;
+}
+
+void Calibration::startCalibration()
+{
+	text = tr("Click the crosshair");
+	topleft_button->hide();
+	bottomright_button->hide();
+	current_location = 0;
+	current_position = fromDevice(calibration_data.screenPoints[current_location]);
+	test_buttons = false;
+
+	// Backup the old calibration file
+	if (QFile::exists(pointercal_file))
+		system(qPrintable(QString("cp %1 %1.calibrated").arg(pointercal_file)));
+
+	QWSServer::mouseHandler()->clearCalibration();
+	grabMouse();
+}
+
+void Calibration::showEvent(QShowEvent*)
+{
+	startCalibration();
+}
+
+void Calibration::hideEvent(QHideEvent*)
+{
+	// To ensure that the mouse is always released (what happen with an entry videocall?)
 	releaseMouse();
 }
 
-BtButton *Calibrate::createButton(const char* icon_name, int x, int y)
+void Calibration::rollbackCalibration()
 {
-	BtButton *b = new BtButton(this);
-	b->setImage(icon_name);
-	b->move(x, y);
-	return b;
-}
-
-void Calibrate::startCalibration()
-{
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	QWSServer::mouseHandler()->clearCalibration();
-	location = QWSPointerCalibrationData::TopLeft;
-#endif
-	button_test = false;
-	grabMouse();
-	b1->hide();
-	b2->hide();
-	box_text->setText(tr("Click the crosshair"));
-	qCritical("Start Calibration");
-}
-
-QPoint Calibrate::fromDevice(const QPoint &p)
-{
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	qDebug("inside Calibrate::fromDevice");
-	return qt_screen->mapFromDevice(p,QSize(qt_screen->deviceWidth(), qt_screen->deviceHeight()));
-#endif
-}
-
-bool Calibrate::sanityCheck()
-{
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-
-	QPoint tl = cd.devPoints[QWSPointerCalibrationData::TopLeft];
-	QPoint tr = cd.devPoints[QWSPointerCalibrationData::TopRight];
-	QPoint bl = cd.devPoints[QWSPointerCalibrationData::BottomLeft];
-	QPoint br = cd.devPoints[QWSPointerCalibrationData::BottomRight];
-
-	int vl = qAbs(tl.x() - bl.x());
-	int vr = qAbs(tr.x() - br.x());
-
-	int diff = qAbs(vl - vr);
-
-	int avg1 = (tl.x() + bl.x()) / 2;
-	int avg2 = (tr.x() + br.x()) / 2;
-	if (avg1 > avg2)
-		avg2=avg1;
-
-    if ((vl > avg2/10)||(vr > avg2/10))
-	{
-		qWarning("err>10 per cento ->  left: %d right: %d\n",vl/avg2*100 ,vr/avg2*100);
-		return false;
-	}
-	int ht = qAbs(tl.y() - tr.y());
-	int hb = qAbs(br.y() - bl.y());
-	diff = qAbs(ht - hb);
-	avg1 = (tl.y() + tr.y()) / 2;
-	avg2 = (br.y() + bl.y()) / 2;
-	if (avg1 > avg2)
-		avg2=avg1;
-	if ((ht > avg2/10)||(hb > avg2/10))
-	{
-		qWarning("err>10 per cento top: %d bottom: %d\n",ht/avg2*100 ,hb/avg2*100);
-		return false;
-	}
-
-	if(tl.x() < tr.x())
-	{
-		qWarning("err tl.x > tr.x\n");
-		return false;
-	}
-
-	if(bl.x() < br.x())
-	{
-		qWarning("err bl.x > br.x\n");
-		return false;
-	}
-
-	if(tl.y() > bl.y())
-	{
-		qWarning("err tl.y < bl.y\n");
-		return false;
-	}
-
-	if(tr.y() > br.y())
-	{
-		qWarning("err tr.y > br.y\n");
-		return false;
-	}
-#endif
-	qDebug("return TRUE Calibrate::sanityCheck");
-	return true;
-}
-
-void Calibrate::paintEvent(QPaintEvent *)
-{
-	QPainter p(this);
-	int y;
-
-	if (!logo.isNull())
-	{
-		y = height() / 2 - logo.height() + 55;
-		p.drawPixmap((width() - logo.width())/2, y, logo);
-	}
-	else
-		qDebug("logo is Null");
-
-	y = height() / 2 + 15;
-
-	if (!button_test)
-	{
-		p.drawRect(newPos.x()-1, newPos.y()-8, 2, 7);
-		p.drawRect(newPos.x()-1, newPos.y()+1, 2, 7);
-		p.drawRect(newPos.x()-8, newPos.y()-1, 7, 2);
-		p.drawRect(newPos.x()+1, newPos.y()-1, 7, 2);
-	}
-	crossPos = newPos;
-}
-
-void Calibrate::buttonsTest()
-{
-	qDebug("Calibrate::buttonsTest");
-	button_timer->setSingleShot(true);
-	button_timer->start(BUTTON_SEC_TIMEOUT * 1000);
-	box_text->setText(tr("Click the OK button"));
-	button_test = true;
-	b1->show();
-	update();
-}
-
-void Calibrate::rollbackCalibration()
-{
-	qDebug("Calibrate::rollbackCalibration");
-	if (QFile::exists("/etc/pointercal.calibrated"))
-		system("cp /etc/pointercal.calibrated /etc/pointercal");
-	else
-		qWarning("Cannot found backup calibration!");
+	if (QFile::exists(QString("%1.calibrated").arg(pointercal_file)))
+		system(qPrintable(QString("mv %1.calibrated %1").arg(pointercal_file)));
 
 	startCalibration();
-	trackCrosshair();
 	update();
 }
 
-void Calibrate::endCalibration()
+void Calibration::paintEvent(QPaintEvent*)
 {
-	qDebug("Calibrate::endCalibration");
-	if (QFile::exists("/etc/pointercal.calibrated"))
-		system("rm /etc/pointercal.calibrated");
+	QPainter p(this);
+	p.fillRect(rect(), Qt::white);
 
-	hide();
-	close();
+	int text_height = 30;
+	int text_width = 150;
 
-	emit fineCalib();
-	if (manut == 1)
-		delete(this);
-	qCritical("Calibration OK");
-}
+#ifdef LAYOUT_BTOUCH
+	int total_height = logo.height() + text_height;
+	p.drawPixmap((width() - logo.width()) / 2, (height() - total_height) / 2, logo);
 
-void Calibrate::trackCrosshair()
-{
-	QPoint target = fromDevice(cd.screenPoints[location]);
-	dx = (target.x() - crossPos.x())/10;
-	dy = (target.y() - crossPos.y())/10;
-	timer->start(30);
-}
-
-void Calibrate::mousePressEvent(QMouseEvent *e)
-{
-	if (button_test)
-		return;
-	// map to device coordinates
-	qDebug("Calibrate::mousePressEvent");
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	QPoint devPos = qt_screen->mapToDevice(e->pos(),
-	QSize(qt_screen->width(), qt_screen->height()));
-
-	if (penPos.isNull())
-		penPos = devPos;
-	else
-		penPos = QPoint((penPos.x() + devPos.x())/2, (penPos.y() + devPos.y())/2);
+	QRect rect((width() - text_width) / 2, (height() - total_height) / 2 + logo.height(),
+		text_width, text_height);
+	p.setFont(bt_global::font->get(FontManager::TEXT));
+	p.drawText(rect, Qt::AlignHCenter, text);
+#else
+	QRect rect((width() - text_width) / 2, height() / 4, text_width, text_height);
+	p.setFont(bt_global::font->get(FontManager::TEXT));
+	p.drawText(rect, Qt::AlignHCenter, text);
 #endif
+
+	if (!test_buttons)
+	{
+		p.drawRect(current_position.x() - 1, current_position.y() - 8, 2, 7);
+		p.drawRect(current_position.x() - 1, current_position.y() + 1, 2, 7);
+		p.drawRect(current_position.x() - 8, current_position.y() - 1, 7, 2);
+		p.drawRect(current_position.x() + 1, current_position.y() - 1, 7, 2);
+	}
 }
 
-void Calibrate::mouseReleaseEvent(QMouseEvent *)
+void Calibration::startTestButtons()
 {
-	qDebug("Calibrate::mouseReleaseEvent");
-	if (timer->isActive() || button_test)
+	text = tr("Click the OK button");
+	test_buttons = true;
+	topleft_button->show();
+	buttons_timer->setSingleShot(true);
+	buttons_timer->start(BUTTON_SEC_TIMEOUT * 1000);
+	update();
+}
+
+void Calibration::mouseReleaseEvent(QMouseEvent *event)
+{
+	if (crosshair_timer->isActive() || test_buttons)
 		return;
 
-	bool doMove = true;
+	// Map from device coordinates in case the screen is transformed
+	QSize screenSize(qt_screen->width(), qt_screen->height());
+	QPoint p = qt_screen->mapToDevice(event->pos(), screenSize);
 
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
+	calibration_data.devPoints[current_location] = p;
 
-	cd.devPoints[location] = penPos;
+	int num_checks = minimal_version ? 4 : 5;
 
-	unsigned char lastLoc;
-	if (manut == 0)
-		lastLoc = QWSPointerCalibrationData::LastLocation;
-	else
-		lastLoc = QWSPointerCalibrationData::LastLocation - 1;
-	qDebug("il mio stato di manutenzione è: %d - e lastLoc= %d", manut, lastLoc);
-	if (location < lastLoc)
-	{
-		qDebug("location < lastLoc ovvero %d<%d",location,lastLoc);
-		location = (QWSPointerCalibrationData::Location)((int)location + 1);
-		qDebug("new location: %d", location);
-		qCritical("Step %d OK", location);
-	}
+	if (++current_location < num_checks)
+		trackCrosshair();
 	else
 	{
 		if (sanityCheck())
 		{
 			releaseMouse();
-			QWSServer::mouseHandler()->calibrate(&cd);
-			doMove = false;
-			if (!manut)
-				buttonsTest();
-			else
+			QWSServer::mouseHandler()->calibrate(&calibration_data);
+			if (minimal_version)
 				endCalibration();
+			else
+				startTestButtons();
 		}
 		else
 		{
-			qCritical("Calibration KO");
-			qCritical("Start Calibration");
-			location = QWSPointerCalibrationData::TopLeft;
+			current_location = 0;
+			trackCrosshair();
 		}
-    }
-
-	if (doMove)
-		trackCrosshair();
-#endif
+	}
 }
 
-void Calibrate::timeout()
+void Calibration::trackCrosshair()
 {
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	QPoint target = fromDevice(cd.screenPoints[location]);
+	QPoint target_cross = fromDevice(calibration_data.screenPoints[current_location]);
+	delta_x = (target_cross.x() - current_position.x()) / 10;
+	delta_y = (target_cross.y() - current_position.y()) / 10;
+	crosshair_timer->start(30);
+}
 
-	bool doneX = false;
-	bool doneY = false;
-	newPos = QPoint(crossPos.x() + dx, crossPos.y() + dy);
+void Calibration::drawCrosshair()
+{
+	QPoint target_cross = fromDevice(calibration_data.screenPoints[current_location]);
 
-	if (qAbs(crossPos.x() - target.x()) <= qAbs(dx))
+	bool done_x = false;
+	bool done_y = false;
+
+	QPoint new_position = QPoint(current_position.x() + delta_x, current_position.y() + delta_y);
+
+	if (qAbs(current_position.x() - target_cross.x()) <= qAbs(delta_x))
 	{
-		newPos.setX(target.x());
-		doneX = true;
+		new_position.setX(target_cross.x());
+		done_x = true;
 	}
 
-	if (qAbs(crossPos.y() - target.y()) <= qAbs(dy))
+	if (qAbs(current_position.y() - target_cross.y()) <= qAbs(delta_y))
 	{
-		newPos.setY(target.y());
-		doneY = true;
+		new_position.setY(target_cross.y());
+		done_y = true;
 	}
 
-	if (doneX && doneY)
-	{
-		penPos = QPoint();
-		timer->stop();
-	}
+	if (done_x && done_y)
+		crosshair_timer->stop();
+
+	current_position = new_position;
 	update();
+}
+
+void Calibration::endCalibration()
+{
+	// The calibration was done right so we can remove the old calibration file
+	if (QFile::exists(QString("%1.calibrated").arg(pointercal_file)))
+		system(qPrintable(QString("rm %1.calibrated").arg(pointercal_file)));
+
+	buttons_timer->stop();
+	emit Closed();
+}
+
+bool Calibration::sanityCheck()
+{
+	QPoint *points = calibration_data.devPoints;
+
+	QPoint tl = points[QWSPointerCalibrationData::TopLeft];
+	QPoint tr = points[QWSPointerCalibrationData::TopRight];
+	QPoint bl = points[QWSPointerCalibrationData::BottomLeft];
+	QPoint br = points[QWSPointerCalibrationData::BottomRight];
+
+//	qDebug() << "TOP LEFT:" << tl.x() << tl.y();
+//	qDebug() << "TOP RIGHT:" << tr.x() << tr.y();
+//	qDebug() << "BOTTOM LEFT:" << bl.x() << bl.y();
+//	qDebug() << "BOTTOM RIGHT:" << br.x() << br.y();
+
+	// Calculate the error on the x axis
+	int left_error = qAbs(tl.x() - bl.x());
+	int right_error = qAbs(tr.x() - br.x());
+
+	// We use the average point on the x axis as an approximation of the screen size
+	// (we haven't the screen size in raw device coordinates)
+	int avg = qMax((tl.x() + bl.x()) / 2, (tr.x() + br.x()) / 2);
+
+	if (qMax(left_error, right_error) > avg / 10)
+	{
+		qDebug() << "Calibration: the error on the x axis is greater than 10%";
+		return false;
+	}
+
+	// Calculate the error on the y axis
+	left_error = qAbs(tl.y() - tr.y());
+	right_error = qAbs(br.y() - bl.y());
+
+	// See the comment above for the meaning of avg
+	avg = qMax((tl.y() + tr.y()) / 2, (br.y() + bl.y()) / 2);
+
+	if (qMax(left_error, right_error) > avg / 10)
+	{
+		qDebug() << "Calibration: the error on the y axis is greater than 10%";
+		return false;
+	}
+
+	// The x on the left (in raw device coordinates) must be greater than
+	// the x on the right
+	if (tl.x() < tr.x() || bl.x() < br.x())
+	{
+		qDebug() << "Calibration: left and right inverted";
+		return false;
+	}
+
+#ifdef BT_HARDWARE_TOUCHX
+	// The y on the top (in raw device coordinates) must be greater than
+	// the y on the bottom
+	if (tl.y() < bl.y() || tr.y() < br.y())
+#else
+	// The y on the top (in raw device coordinates) must be smaller than
+	// the y on the bottom
+	if (tl.y() > bl.y() || tr.y() > br.y())
 #endif
+	{
+		qDebug() << "Calibration: top and bottom inverted";
+		return false;
+	}
+
+	return true;
 }
 

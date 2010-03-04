@@ -222,27 +222,31 @@ BtMain::BtMain(int openserver_reconnection_time)
 	initMultimedia();
 
 #if !defined(BT_HARDWARE_X11)
-	if (QFile::exists("/etc/pointercal"))
+	if (!QFile::exists("/etc/pointercal"))
+	{
 		alreadyCalibrated = true;
+#ifdef LAYOUT_BTOUCH
+		Calibration *cal = new Calibration(true);
 #else
-	alreadyCalibrated = true;
+		Calibration *cal = new Calibration;
+#endif
+		cal->showWindow();
+		connect(cal, SIGNAL(Closed()), SLOT(waitBeforeInit()));
+
+#ifdef LAYOUT_BTOUCH
+		connect(cal, SIGNAL(Closed()), version, SLOT(showPage()));
+#else
+		connect(cal, SIGNAL(Closed()), loading, SLOT(showWindow()));
+#endif
+		return;
+	}
 #endif
 
-	if (!alreadyCalibrated)
-	{
-		calib = new Calibrate(NULL, 1);
-		calib->showFullScreen();
-		connect(calib, SIGNAL(fineCalib()), SLOT(waitBeforeInit()));
-		connect(calib, SIGNAL(fineCalib()), version, SLOT(showPage()));
-	}
-	else
-	{
-		if (version)
-			version->showPage();
-		if (loading)
-			loading->showWindow();
-		waitBeforeInit();
-	}
+	if (version)
+		version->showPage();
+	if (loading)
+		loading->showWindow();
+	waitBeforeInit();
 }
 
 BtMain::~BtMain()
@@ -436,24 +440,32 @@ void BtMain::myMain()
 	foreach (Page *p, page_list)
 		p->inizializza();
 
-#if BT_EMBEDDED
+	bt_global::devices_cache.init_devices();
+
+#if !defined(BT_HARDWARE_X11)
 	if (static_cast<int>(getTimePress()) * 1000 <= boot_time->elapsed() && !alreadyCalibrated)
 	{
-#if !defined(BT_HARDWARE_X11)
-		calib = new Calibrate(NULL, 1);
-		calib->showFullScreen();
-		connect(calib, SIGNAL(fineCalib()),Home,SLOT(showPage()));
-#endif
 		alreadyCalibrated = true;
+#ifdef LAYOUT_BTOUCH
+		Calibration *cal = new Calibration(true);
+#else
+		Calibration *cal = new Calibration;
+#endif
+		cal->showWindow();
+		connect(cal, SIGNAL(Closed()), SLOT(startGui()));
+		return;
 	}
 #endif
+	startGui();
+}
 
+void BtMain::startGui()
+{
 	Home->showPage();
 	// this needs to be after the showPage, and will be a no-op until transitions
 	// between windows are implemented
 	page_container->blockTransitions(false);
 	window_container->homeWindow()->showWindow();
-	bt_global::devices_cache.init_devices();
 
 	screensaver_timer = new QTimer(this);
 	screensaver_timer->start(SCREENSAVER_CHECK);

@@ -120,14 +120,9 @@ Q_OBJECT
 public:
 	calibration(QWidget *parent, QString icon);
 
-private slots:
-	void doCalib();
-	void fineCalib();
-private:
-	Calibrate* calib;
 signals:
-	void startCalib();
-	void endCalib();
+	void startCalibration();
+	void endCalibration();
 };
 
 

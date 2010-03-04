@@ -22,71 +22,89 @@
 #ifndef	CALIBRATE_H
 #define	CALIBRATE_H
 
+#include "window.h"
+
 #include <QWSPointerCalibrationData>
-#include <QWidget>
 #include <QPixmap>
 
-
 class BtButton;
-class QLabel;
 class QTimer;
 
 
-/*!
-  \class calibrate
-  \brief This is a class that does the calibration of the device.
-
-  According to the forth argument it is possible to choose if the calibration process must have for or five pressions.  
-*/
-
-class Calibrate : public QWidget
+/**
+ * The window to calibrate the touchscreen. The procedure is composed by two
+ * part: the actual calibration and a simple test with two buttons.
+ * The new calibration is saved (into the calibration file) only if both the
+ * part ends with success.
+ */
+class Calibration : public Window
 {
-	Q_OBJECT
+Q_OBJECT
 public:
-	Calibrate(QWidget* parent=0, unsigned char manut=0);
-	~Calibrate();
+	Calibration(bool minimal = false);
 
-private:
-	QPoint fromDevice(const QPoint &p);
-	/// Check if the calibration is ok
-	bool sanityCheck();
-	void paintEvent(QPaintEvent *);
-	void mousePressEvent(QMouseEvent *);
-	void mouseReleaseEvent(QMouseEvent *);
-	/// Start the buttons test
-	void buttonsTest();
-	void trackCrosshair();
-	void startCalibration();
-	BtButton *createButton(const char* icon_name, int x, int y);
+protected:
+	virtual void paintEvent(QPaintEvent*);
+	virtual void mouseReleaseEvent(QMouseEvent*);
+	virtual void showEvent(QShowEvent*);
+	virtual void hideEvent(QHideEvent*);
 
 private slots:
-	void timeout();
+	// The method used to draw the crosshair during the movement between positions
+	void drawCrosshair();
+	// End the calibration (with success)
 	void endCalibration();
+	// Abort the changes with the wrong calibration and re-start another calibration.
 	void rollbackCalibration();
 
-signals:
-	void inizioCalib();
-	void fineCalib();
-
 private:
-	QPixmap logo;
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-	QWSPointerCalibrationData cd;
-	QWSPointerCalibrationData::Location location;
-#endif
-	QPoint crossPos;
-	// the new position of the crosshair
-	QPoint newPos;
-	QPoint penPos;
-	QTimer *timer, *button_timer;
-	QLabel *box_text;
-	BtButton *b1, *b2;
-	unsigned char manut;
-	int dx;
-	int dy;
-	bool button_test;
-};
+	// The positions of the crosshair are:
+	// top-left, bottom-left, bottom-right, top-right, center
+	// The last one is skip with minimal_version == true
 
+	QTimer *crosshair_timer; // the timer used to move the crosshair between positions
+	int delta_x, delta_y; // the deltas used to move the crosshair between positions
+
+	// the current position of the crosshair. It can be different from the standard 5 positions
+	// due to the animation after the "click".
+	QPoint current_position;
+
+	QWSPointerCalibrationData calibration_data;
+
+	int current_location; // the index of the current crosshair position (yet to press)
+
+	// A flag that marks if the calibration is in the normal form or minimal
+	// (with only 4 checks and no buttons)
+	bool minimal_version;
+
+	// The file where Qt store the calibration data
+	QString pointercal_file;
+
+	// A flag that mark if we are in the actual calibration or in the test with buttons.
+	bool test_buttons;
+
+	// The two buttons used to check the calibration.
+	BtButton *topleft_button, *bottomright_button;
+
+	QTimer *buttons_timer; // the timer used to set a timeout for the test with buttons.
+
+	QString text; // the text that contains the instructions for the user
+
+#ifdef LAYOUT_BTOUCH
+	QPixmap logo;
+#endif
+	// Start to track the crosshair movement
+	void trackCrosshair();
+
+	// Check if the calibration was doing right
+	bool sanityCheck();
+
+	// Start or restart the calibration
+	void startCalibration();
+
+	// Start the test with buttons
+	void startTestButtons();
+};
 
 #endif //CALIBRATE_H
 

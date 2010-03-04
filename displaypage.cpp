@@ -57,8 +57,8 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	page_content->appendBanner(b);
 #ifndef BT_HARDWARE_X11
 	b = new calibration(this, img_items);
-	connect(b, SIGNAL(startCalib()), SLOT(startCalibration()));
-	connect(b, SIGNAL(endCalib()), SLOT(endCalibration()));
+	connect(b, SIGNAL(startCalibration()), SLOT(startCalibration()));
+	connect(b, SIGNAL(endCalibration()), SLOT(endCalibration()));
 	b->setText(tr("Calibration"));
 	b->Draw();
 	page_content->appendBanner(b);
@@ -84,5 +84,6 @@ void DisplayPage::startCalibration()
 void DisplayPage::endCalibration()
 {
 	bt_global::btmain->endCalib();
+	showPage();
 }
 

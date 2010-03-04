@@ -168,23 +168,10 @@ void bannAlarmClockIcon::inizializza(bool forza)
 calibration::calibration(QWidget *parent, QString icon) : bannOnDx(parent)
 {
 	SetIcons(icon, 1);
-	connect(this,SIGNAL(click()),this,SLOT(doCalib()));
-}
-
-void calibration::doCalib()
-{
-	calib = new Calibrate();
-	calib->show();
-	hide();
-	connect(calib,SIGNAL(fineCalib()), this, SLOT(fineCalib()));
-	emit startCalib();
-}
-
-void calibration::fineCalib()
-{
-	show();
-	delete calib;
-	emit endCalib();
+	Calibration *cal = new Calibration;
+	connect(cal, SIGNAL(Closed()), this, SIGNAL(endCalibration()));
+	connect(this, SIGNAL(click()), this, SIGNAL(startCalibration()));
+	connect(this, SIGNAL(click()), cal, SLOT(showWindow()));
 }
 
 
