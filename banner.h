@@ -123,7 +123,7 @@ protected:
 	void sendFrame(QString frame) const;
 	void sendInit(QString frame) const;
 
-	void connectDevice(device *dev);
+	void setOpenserverConnection(device *dev);
 
 private:
 	int id;

@@ -95,9 +95,8 @@ int banner::getId()
 	return id;
 }
 
-void banner::connectDevice(device *dev)
+void banner::setOpenserverConnection(device *dev)
 {
-	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
 	connect(dev, SIGNAL(connectionUp()), SLOT(connectionUp()));
 	connect(dev, SIGNAL(connectionDown()), SLOT(connectionDown()));
 	if (dev->isConnected())
