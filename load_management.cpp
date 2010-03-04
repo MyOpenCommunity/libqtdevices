@@ -172,14 +172,14 @@ LoadDataContent::LoadDataContent(int dec, int _rate_id)
 	current_value = 0;
 
 	first_period = new Bann2Buttons;
-	first_period->initBanner(QString(), bt_global::skin->getImage("empty_background"), bt_global::skin->getImage("ok"), tr("date/time"));
+	first_period->initBanner(QString(), bt_global::skin->getImage("empty_background"), bt_global::skin->getImage("reset"), tr("date/time"));
 	first_period->setCentralText("---");
 	first_period_value = 0;
 	connect(first_period, SIGNAL(rightClicked()), &mapper, SLOT(map()));
 	mapper.setMapping(first_period, FIRST_PERIOD);
 
 	second_period = new Bann2Buttons;
-	second_period->initBanner(QString(), bt_global::skin->getImage("empty_background"), bt_global::skin->getImage("ok"), tr("date/time"));
+	second_period->initBanner(QString(), bt_global::skin->getImage("empty_background"), bt_global::skin->getImage("reset"), tr("date/time"));
 	second_period->setCentralText("---");
 	second_period_value = 0;
 	connect(second_period, SIGNAL(rightClicked()), &mapper, SLOT(map()));
