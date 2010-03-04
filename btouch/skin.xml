@@ -62,6 +62,7 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_num_9>num9.png</img_num_9>
 		<img_unchecked>btnempty.png</img_unchecked>
 		<img_checked>btnemptyp.png</img_checked>
+        <img_logo>my_home.png</img_logo>
 	</common>
 	<!-- antiintrusion -->
 	<item>
