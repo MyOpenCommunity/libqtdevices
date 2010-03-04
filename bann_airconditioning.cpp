@@ -49,6 +49,7 @@ SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningI
 		setCentralText("---");
 		air_single = "air_single_temp";
 
+		connect(dev_probe, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
 		connectDevice(dev_probe);
 	}
 

@@ -44,7 +44,8 @@ InterblockedActuator::InterblockedActuator(const QString &descr, const QString &
 
 	connect(right_button, SIGNAL(clicked()), SLOT(sendGoUp()));
 	connect(left_button, SIGNAL(clicked()), SLOT(sendGoDown()));
-	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+	connectDevice(dev);
 }
 
 void InterblockedActuator::sendGoUp()
@@ -109,7 +110,8 @@ SecureInterblockedActuator::SecureInterblockedActuator(const QString &descr, con
 
 	is_any_button_pressed = false;
 	connectButtons();
-	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+	connectDevice(dev);
 }
 
 void SecureInterblockedActuator::sendOpen()
@@ -200,6 +202,7 @@ GateEntryphoneActuator::GateEntryphoneActuator(const QString &descr, const QStri
 	// TODO: we still miss entryphone devices, so I'm creating a generic device and send
 	// frames directly. Change as soon as entryphone devices are available!
 	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL_UNKNOWN, openserver_id), NO_INIT);
+	connectDevice(dev);
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"), descr);
 	connect(right_button, SIGNAL(pressed()), SLOT(activate()));
 }
@@ -217,6 +220,7 @@ GateLightingActuator::GateLightingActuator(const BtTime &t, const QString &descr
 {
 	// we don't need to init the device, as we don't care about its status
 	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL_UNKNOWN, openserver_id), NO_INIT);
+	connectDevice(dev);
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"), descr);
 	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
 }
@@ -232,6 +236,10 @@ InterblockedActuatorGroup::InterblockedActuatorGroup(const QStringList &addresse
 {
 	foreach (const QString &where, addresses)
 		actuators.append(bt_global::add_device_to_cache(new AutomationDevice(where, PULL, openserver_id), NO_INIT));
+	// since we have just one openserver_id, we just need to connect to one device
+	Q_ASSERT_X(!actuators.isEmpty(), "InterblockedActuatorGroup::InterblockedActuatorGroup", "No device found!");
+	connectDevice(actuators[0]);
+
 
 	initBanner(bt_global::skin->getImage("scroll_down"), bt_global::skin->getImage("stop"),
 		bt_global::skin->getImage("scroll_up"), descr);
@@ -263,7 +271,8 @@ void InterblockedActuatorGroup::sendStop()
 PPTStat::PPTStat(QString where, int openserver_id) : BannerOld(0)
 {
 	dev = bt_global::add_device_to_cache(new PPTStatDevice(where, openserver_id));
-	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+	connectDevice(dev);
 
 	// This banner shows only an icon in central position and a text below.
 	addItem(ICON, (banner_width - BUT_DIM * 2) / 2, 0, BUT_DIM*2 ,BUT_DIM);
