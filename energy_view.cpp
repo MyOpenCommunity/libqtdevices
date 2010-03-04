@@ -108,7 +108,7 @@ namespace
 	{
 		QVBoxLayout *l = static_cast<QVBoxLayout *>(parent->layout());
 
-		l->addWidget(child, 1);
+		l->addWidget(child, 1, Qt::AlignTop);
 	}
 
 	enum EnergyViewPage
@@ -721,7 +721,6 @@ QWidget *EnergyView::buildBannerWidget()
 
 	QWidget *yearly_widget = createWidgetWithVBoxLayout();
 	addWidgetToLayout(yearly_widget, cumulative_year_banner);
-	static_cast<QVBoxLayout *>(yearly_widget->layout())->addStretch(1);
 
 	QStackedWidget *w = new QStackedWidget;
 	w->insertWidget(DAILY_PAGE, daily_widget);
