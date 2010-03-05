@@ -52,8 +52,9 @@ enum TemperatureScale
 
 enum DateFormat
 {
-	EUROPEAN_DATE = 0,
-	USA_DATE
+	EUROPEAN_DATE = 0,   // dd.mm.yy
+	USA_DATE = 1,        // mm.dd.yy
+	YEAR_FIRST = 2,      // yy.mm.dd
 };
 
 QDomNode getPageNode(int id);
