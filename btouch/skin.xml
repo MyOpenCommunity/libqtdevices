@@ -393,17 +393,19 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	<!-- Load management with central unit -->
 	<item>
 		<cid>1500</cid>
-		<img_load>electricity.png</img_load>
+		<img_load>LoadManagement.png</img_load>
 		<img_empty_background>empty_180.png</img_empty_background>
 		<img_on>antigelo.png</img_on>
 		<img_forced>btnscevab.png</img_forced>
 		<img_not_forced>btnscevdis.png</img_not_forced>
+		<img_reset>btnReset.png</img_reset>
 	</item>
 	<!-- Load management, no central unit -->
 	<item>
 		<cid>1501</cid>
-		<img_load>electricity.png</img_load>
+		<img_load>LoadManagement.png</img_load>
 		<img_empty_background>empty_180.png</img_empty_background>
+		<img_reset>btnReset.png</img_reset>
 	</item>
 	<item>
 		<cid>603</cid>
