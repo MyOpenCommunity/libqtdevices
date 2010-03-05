@@ -13,12 +13,6 @@ QWidget[SecondFgColor="true"] QWidget {color:#6FB2FF;}
 QWidget[ReversedColor="true"] {color:#1E1E1E;background-color:#D8D8D8;}
 TextOnImageLabel { qproperty-text_color:#D8D8D8; }
 EnergyGraph { qproperty-primary_color:#1449C8; qproperty-secondary_color:#3587FF; qproperty-border_color: blue;}
-EnergyTable .QFrame { border: 1px solid #41474d; }
-EnergyTable QLabel { border-color:#41474d; border-style:solid; }
-EnergyTable QLabel[left="true"] {border-right-width: 1px; }
-EnergyTable QLabel[heading="true"] { border-bottom-width:1px; background-color:#3587ff; }
-EnergyTable QLabel[odd="true"] { background-color: #41474d; }
-EnergyTable QLabel[even="true"] { background-color: #2e3236; }
 KeypadWithState QLabel[ActiveState="true"] { background-color:white; color:black; }
 HeaderInfo { background-image: url(cfg/extra/1/skin/topinfobar.png); }
 HeaderNavigationBar { background-image: url(cfg/extra/1/skin/topnavigationbar.png); }
