@@ -379,6 +379,10 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<cid>1404</cid>
 		<img_energy_type>heating_cooling.png</img_energy_type>
 	</item>
+	<item>
+		<cid>1406</cid>
+		<img_energy_type>EnergyData_custom.png</img_energy_type>
+	</item>
 	<!-- supervision menu/stop'n'go -->
 	<item>
 		<cid>1300</cid>
@@ -387,15 +391,15 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	<!-- Load diagnostic -->
 	<item>
 		<cid>1304</cid>
-		<img_center_icon>electricity.png</img_center_icon>
-		<img_state_icon>num.png</img_state_icon>
+		<img_center_icon>LoadManagement.png</img_center_icon>
+		<img_state_icon>Load.png</img_state_icon>
 	</item>
 	<!-- Load management with central unit -->
 	<item>
 		<cid>1500</cid>
 		<img_load>LoadManagement.png</img_load>
 		<img_empty_background>empty_180.png</img_empty_background>
-		<img_on>antigelo.png</img_on>
+		<img_on>btnOnret.png</img_on>
 		<img_forced>btnscevab.png</img_forced>
 		<img_not_forced>btnscevdis.png</img_not_forced>
 		<img_reset>btnReset.png</img_reset>
