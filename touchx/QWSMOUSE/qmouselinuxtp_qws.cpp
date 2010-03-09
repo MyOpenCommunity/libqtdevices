@@ -47,6 +47,7 @@
 #include "qtimer.h"
 #include "qapplication.h"
 #include "qscreen_qws.h"
+#include "qdebug.h"
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -102,11 +103,11 @@ QT_BEGIN_NAMESPACE
 #endif
 
 #ifndef QT_QWS_TP_SAMPLE_SIZE
-#define QT_QWS_TP_SAMPLE_SIZE 3
+#define QT_QWS_TP_SAMPLE_SIZE 3 // MODIFIED
 #endif
 
 #ifndef QT_QWS_TP_MINIMUM_SAMPLES
-#define QT_QWS_TP_MINIMUM_SAMPLES 3
+#define QT_QWS_TP_MINIMUM_SAMPLES 3 // MODIFIED
 #endif
 
 #ifndef QT_QWS_TP_PRESSURE_THRESHOLD
@@ -261,11 +262,25 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
                 // average the rest
                 QPoint mousePos = QPoint(0, 0);
                 QPoint totalMousePos = oldTotalMousePos;
-                totalMousePos += samples[currSample];
+
+#if 1 // MODIFIED
+				if (currSample)
+				   totalMousePos += samples[currSample];
+#else
+				totalMousePos += samples[currSample];
+#endif
                 if(numSamples >= samples.count())
                     totalMousePos -= samples[lastSample];
 
+#if 1 // MODIFIED
+	if (currSample > 0)
+		mousePos = samples[currSample-1];
+	else
+		mousePos = samples[1];
+#else
                 mousePos = totalMousePos / (sampleCount - 1);
+#endif
+
 #if defined(QT_QWS_SCREEN_COORDINATES)
                 mousePos = handler->transform(mousePos);
 #endif
@@ -276,7 +291,8 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
                 int dySqr = dp.y() * dp.y();
                 if (dxSqr + dySqr < (QT_QWS_TP_MOVE_LIMIT * QT_QWS_TP_MOVE_LIMIT)) {
                     if (waspressed) {
-                        if ((dxSqr + dySqr > (QT_QWS_TP_JITTER_LIMIT * QT_QWS_TP_JITTER_LIMIT)) || skipCount > 2) {
+						if ((dxSqr + dySqr > (QT_QWS_TP_JITTER_LIMIT * QT_QWS_TP_JITTER_LIMIT)) || skipCount > 3) { // MODIFIED
+//							qDebug() << "MOUSE CHANGED MOVE DISTANCE:" << dxSqr + dySqr;
                             handler->mouseChanged(mousePos,Qt::LeftButton);
                             oldmouse = mousePos;
                             skipCount = 0;
@@ -284,6 +300,7 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
                             skipCount++;
                         }
                     } else {
+//						qDebug() << "MOUSE CHANGED PRESS";
                         handler->mouseChanged(mousePos,Qt::LeftButton);
                         oldmouse=mousePos;
                         waspressed=true;
@@ -313,6 +330,7 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
             skipCount = 0;
             oldTotalMousePos = QPoint(0,0);
             if (waspressed) {
+//				qDebug() << "MOUSE CHANGED RELEASE";
                 handler->mouseChanged(oldmouse,0);
                 oldmouse = QPoint(-100, -100);
                 waspressed=false;
