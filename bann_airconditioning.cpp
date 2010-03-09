@@ -108,7 +108,6 @@ AdvancedSplitScenario::AdvancedSplitScenario(QString descr, int _item_id, const 
 	initBanner(icon_cmd, icon_settings, descr);
 	item_id = _item_id;
 	dev = d;
-	// CONFIG_BTOUCH, on touchx the node is always cfg, need to save the node index
 	conf_name = conf_node;
 
 	connect(left_button, SIGNAL(clicked()), SLOT(onButtonClicked()));
@@ -118,14 +117,20 @@ void AdvancedSplitScenario::splitValuesChanged(const AirConditionerStatus &st)
 {
 	setCurrentValues(st);
 	QMap<QString, QString> m;
+#ifdef CONFIG_BTOUCH
 	m[conf_name + "/mode"] = QString::number(st.mode);
 	m[conf_name + "/setpoint"] = QString::number(st.temp);
 	m[conf_name + "/speed"] = QString::number(st.vel);
 	m[conf_name + "/fan_swing"] = QString::number(st.swing);
-#ifdef CONFIG_BTOUCH
+
 	if (!setCfgValue(m, getId(), getSerNum()))
 		qWarning() << "AdvancedSplitScenario::splitValuesChanged setCfgValue failed!";
 #else
+	m["mode"] = QString::number(st.mode);
+	m["setpoint"] = QString::number(st.temp);
+	m["speed"] = QString::number(st.vel);
+	m["fan_swing"] = QString::number(st.swing);
+
 	if (!setCfgValue(m, item_id))
 		qWarning() << "AdvancedSplitScenario::splitValuesChanged setCfgValue failed!";
 #endif

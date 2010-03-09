@@ -585,7 +585,7 @@ FeedItemWidget > QTextEdit { background-color: #c0c0c0; color: #000000; }
 	</item>
 	<!-- air conditioning (cid may change) -->
 	<item>
-		<cid>513</cid>
+		<cid>4</cid>
 		<img_central_icon>termoregolazione/aircond.png</img_central_icon>
 		<img_ok>termoregolazione/ok.png</img_ok>
 		<img_off>termoregolazione/off.png</img_off>

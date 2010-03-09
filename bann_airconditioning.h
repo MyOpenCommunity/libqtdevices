@@ -112,7 +112,7 @@ public slots:
 private:
 	AirConditionerStatus status;
 	AdvancedAirConditioningDevice *dev;
-	QString conf_name;
+	QString conf_name; // CONFIG_BTOUCH remove
 	int item_id;
 
 private slots:
