@@ -193,7 +193,6 @@ HEADERS += actuators.h \
            plantmenu.h \
            playwindow.h \
            poweramplifier.h \
-           radio.h \
            ringtonesmanager.h \
            scaleconversion.h \
            scenario.h \
@@ -309,7 +308,6 @@ SOURCES += actuators.cpp \
            plantmenu.cpp \
            playwindow.cpp \
            poweramplifier.cpp \
-           radio.cpp \
            ringtonesmanager.cpp \
            scaleconversion.cpp \
            scenario.cpp \

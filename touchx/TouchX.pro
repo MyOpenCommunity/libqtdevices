@@ -34,6 +34,7 @@ HEADERS += favoriteswidget.h \
            multimedia.h \
            multimedia_buttons.h \
            multimedia_filelist.h \
+           radio.h \
            scenevomanager.h \
            slideshow.h \
            vctcall.h \
@@ -46,7 +47,8 @@ SOURCES += favoriteswidget.cpp \
            multimedia.cpp \
            multimedia_buttons.cpp \
            multimedia_filelist.cpp \
-           scenevomanager.cpp \           
+           radio.cpp \
+           scenevomanager.cpp \
            slideshow.cpp \
            vctcall.cpp \
            videoplayer.cpp \
