@@ -66,6 +66,8 @@ QWidget *radio::createContent(const QString &amb)
 	connect(cicBut,SIGNAL(clicked()),this,SIGNAL(changeStaz()));
 	freq_layout->addWidget(cicBut, 0, 0);
 	freq_layout->setColumnStretch(0, 1);
+	freq_layout->setColumnMinimumWidth(0, cicBut->minimumSizeHint().width());
+	freq_layout->setRowMinimumHeight(0, cicBut->minimumSizeHint().height());
 
 	progrText = new QLabel;
 	progrText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
@@ -81,7 +83,7 @@ QWidget *radio::createContent(const QString &amb)
 	freq_layout->setColumnStretch(2, 3);
 
 	// below frequency, RDS indication
-	rdsLabel = new QLabel;
+	rdsLabel = new QLabel(" ");
 	rdsLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	rdsLabel->setFont(bt_global::font->get(FontManager::SUBTITLE));
 
