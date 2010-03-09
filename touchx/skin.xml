@@ -227,6 +227,12 @@ FeedItemWidget > QTextEdit { background-color: #c0c0c0; color: #000000; }
 		<img_arrow_down>termoregolazione/meno.png</img_arrow_down>
 	</item>
 	<item>
+		<!-- Multimedia sound diffusion -->
+		<cid>117</cid>
+		<img_link_icon>home/diffusionemultimediale.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/diffusionemultimediale.png</img_top_navigation_button>
+	</item>
+	<item>
 		<cid>119</cid>
 		<img_link_icon>home/scenari.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/scenari.png</img_top_navigation_button>
