@@ -118,7 +118,7 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, int openser
 	QDomNode page_node = getPageNodeFromChildNode(n, "lnk_pageID");
 #endif
 
-	ThermalDevice *thermal_device;
+	ThermalDevice *thermal_device = 0;
 	switch (id)
 	{
 	case fs_nc_probe:

@@ -108,7 +108,7 @@ void EnergyDevice::requestCumulativeDay(QDate date) const
 
 void EnergyDevice::requestCurrent() const
 {
-	int what;
+	int what = 0;
 	switch (mode)
 	{
 	case 1:
@@ -742,7 +742,7 @@ QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)
 
 float EnergyConversions::convertToRawData(int bt_bus_data, EnergyConversions::EnergyTypology type)
 {
-	float factor;
+	float factor = 0.;
 	switch (type)
 	{
 	case DEFAULT_ENERGY:

@@ -769,7 +769,7 @@ QWidget *EnergyView::buildBannerWidget()
 
 void EnergyView::changeTimePeriod(int status, QDate selection_date)
 {
-	int graph_type;
+	int graph_type = EnergyDevice::CUMULATIVE_DAY;
 
 	switch (status)
 	{

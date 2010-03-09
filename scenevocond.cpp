@@ -143,7 +143,7 @@ ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &con
 	QString w = getTextChild(config_node, "where");
 	int oid = getTextChild(config_node, "openserver_id").toInt();
 	bool external = false;
-	DeviceConditionDisplay *condition_display;
+	DeviceConditionDisplay *condition_display = 0;
 
 	switch (condition_type)
 	{
