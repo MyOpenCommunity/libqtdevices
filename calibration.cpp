@@ -36,6 +36,9 @@
 
 #define BUTTON_SEC_TIMEOUT 10
 
+#define MINUMUM_RAW_X_SIZE 2200
+#define MINUMUM_RAW_Y_SIZE 2200
+
 
 namespace
 {
@@ -332,6 +335,20 @@ bool Calibration::sanityCheck()
 		qDebug() << "Calibration: top and bottom inverted";
 		return false;
 	}
+
+#ifdef BT_HARDWARE_TOUCHX
+	if (qMin(qAbs(tl.x() - tr.x()), qAbs(bl.x() - br.x())) < MINUMUM_RAW_X_SIZE)
+	{
+		qDebug() << "Calibration: the points on the left are too close to the points on the right.";
+		return false;
+	}
+
+	if (qMin(qAbs(tl.y() - bl.y()), qAbs(tr.y() - br.y())) < MINUMUM_RAW_Y_SIZE)
+	{
+		qDebug() << "Calibration: the points on the top are too close to the points on the bottom.";
+		return false;
+	}
+#endif
 
 	return true;
 }
