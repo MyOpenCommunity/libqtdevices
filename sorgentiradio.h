@@ -48,7 +48,7 @@ class banradio : public bannCiclaz
 {
 Q_OBJECT
 public:
-	banradio(QWidget *parent, QString indirizzo, int nbut=4, const QString &ambdescr="");
+	banradio(QWidget *parent, QString indirizzo, int nbut=4, const QString &ambdescr=tr("Default environment"));
 	void inizializza(bool forza = false);
 
 protected:

@@ -41,7 +41,7 @@ class  radio : public Page
 {
 Q_OBJECT
 public:
-	radio(const QString &amb="");
+	radio(const QString &amb=tr("Default environment"));
 	/*!
 	 * \brief Sets the name of the tuner found in user configuration file
 	 */
