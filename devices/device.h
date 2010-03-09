@@ -71,7 +71,7 @@ private:
 	Client *monitor, *command, *request;
 	int openserver_id;
 	bool is_connected;
-	int reconnection_timer_id;
+	QBasicTimer connection_timer;
 };
 
 

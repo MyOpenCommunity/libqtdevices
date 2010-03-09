@@ -265,7 +265,7 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 
 	if (what == 12 || what == 15 || what == 16 || what == 17)
 	{
-		AlarmPage::altype t;
+		AlarmPage::altype t = AlarmPage::TECNICO;
 
 		if (what == 12)
 			t = AlarmPage::TECNICO;

@@ -25,7 +25,6 @@
 
 #include <openmsg.h>
 
-#include <QTimer>
 #include <QDebug>
 #include <QMetaEnum>
 #include <QMetaObject>
@@ -145,7 +144,7 @@ void Client::disconnectFromHost()
 
 void Client::connectToHost()
 {
-	qDebug() << "Client::connectToHost()";
+	qDebug() << "Client::connectToHost(), host: " << host << ", port: " << port;
 	socket->connectToHost(host, port);
 	if (socket->socketDescriptor() != -1)
 		setTcpKeepaliveParams(socket->socketDescriptor());

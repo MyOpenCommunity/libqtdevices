@@ -3,8 +3,6 @@
 	<ver_xml>1.0</ver_xml>
 	<css>
 PageContainer, QLabel, QLCDNumber { background-color:#1E1E1E; color:#D8D8D8; }
-<!-- For compatibility with software version 6, to be removed -->
-QStackedWidget { background-color:#1E1E1E; color:#D8D8D8; }
 BtButton { border: 0px; }
 QWidget[noStyle="true"] {background-color:#FFFFFF;color:#000000;}
 QWidget[noStyle="true"] QWidget {background-color:#FFFFFF;color:#000000;}
@@ -20,13 +18,6 @@ EnergyTableContent {
     qproperty-even_row_color: #2e3236;
     qproperty-text_color: #d8d8d8;
 }
-<!-- For compatibility with software version 6, to be removed -->
-EnergyTable .QFrame { border: 1px solid #41474d; }
-EnergyTable QLabel { border-color:#41474d; border-style:solid; }
-EnergyTable QLabel[left="true"] {border-right-width: 1px; }
-EnergyTable QLabel[heading="true"] { border-bottom-width:1px; background-color:#3587ff; }
-EnergyTable QLabel[odd="true"] { background-color: #41474d; }
-EnergyTable QLabel[even="true"] { background-color: #2e3236; }
 KeypadWithState QLabel[ActiveState="true"] { background-color:white; color:black; }
 FileSelector > QLabel[Loading="true"] { background-color: #000000; background-image: url(cfg/extra/1/skin/loading.png); background-position: center center; background-repeat: no-repeat; }
 	</css>
@@ -402,17 +393,19 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	<!-- Load management with central unit -->
 	<item>
 		<cid>1500</cid>
-		<img_load>electricity.png</img_load>
+		<img_load>LoadManagement.png</img_load>
 		<img_empty_background>empty_180.png</img_empty_background>
 		<img_on>antigelo.png</img_on>
 		<img_forced>btnscevab.png</img_forced>
 		<img_not_forced>btnscevdis.png</img_not_forced>
+		<img_reset>btnReset.png</img_reset>
 	</item>
 	<!-- Load management, no central unit -->
 	<item>
 		<cid>1501</cid>
-		<img_load>electricity.png</img_load>
+		<img_load>LoadManagement.png</img_load>
 		<img_empty_background>empty_180.png</img_empty_background>
+		<img_reset>btnReset.png</img_reset>
 	</item>
 	<item>
 		<cid>603</cid>

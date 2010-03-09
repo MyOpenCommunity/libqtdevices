@@ -252,8 +252,8 @@ EnergyTable::EnergyTable(int n_dec)
 
 	NavigationBar *nav_bar = new NavigationBar;
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
-	connect(nav_bar, SIGNAL(downClick()), SLOT(pageUp()));
-	connect(nav_bar, SIGNAL(upClick()), SLOT(pageDown()));
+	connect(nav_bar, SIGNAL(downClick()), table, SLOT(pageUp()));
+	connect(nav_bar, SIGNAL(upClick()), table, SLOT(pageDown()));
 
 	buildPage(content, nav_bar);
 }

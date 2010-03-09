@@ -143,8 +143,6 @@ BtMain::BtMain(int openserver_reconnection_time)
 	config_loaded = false;
 
 	OpenServerManager::reconnection_time = openserver_reconnection_time;
-	QHash<int, QPair<Client*, Client*> > clients;
-	QHash<int, Client*> monitors;
 
 	// The configuration is usually loaded in the "init()" method, but in this
 	// case (that should be an exception) we need to know the list of openserver.

@@ -106,7 +106,7 @@ namespace
 	{
 		QVBoxLayout *l = static_cast<QVBoxLayout *>(parent->layout());
 
-		l->addWidget(child, 1);
+		l->addWidget(child, 1, Qt::AlignTop);
 	}
 
 	enum EnergyViewPage
@@ -187,12 +187,7 @@ QString TimePeriodSelection::formatDate(const QDate &date, TimePeriod period)
 	switch (period)
 	{
 	case DAY:
-	{
-		QString format("dd.MM.yy");
-		if (bt_global::config[DATE_FORMAT].toInt() == USA_DATE)
-			format = "MM.dd.yy";
-		return date.toString(format);
-	}
+		return DateConversions::formatDateConfig(date);
 	case MONTH:
 		// no need to modify the format to american
 		return date.toString("MM.yy");
@@ -761,7 +756,6 @@ QWidget *EnergyView::buildBannerWidget()
 
 	QWidget *yearly_widget = createWidgetWithVBoxLayout();
 	addWidgetToLayout(yearly_widget, cumulative_year_banner);
-	static_cast<QVBoxLayout *>(yearly_widget->layout())->addStretch(1);
 
 	QStackedWidget *w = new QStackedWidget;
 	w->insertWidget(DAILY_PAGE, daily_widget);
@@ -775,7 +769,7 @@ QWidget *EnergyView::buildBannerWidget()
 
 void EnergyView::changeTimePeriod(int status, QDate selection_date)
 {
-	int graph_type;
+	int graph_type = EnergyDevice::CUMULATIVE_DAY;
 
 	switch (status)
 	{
