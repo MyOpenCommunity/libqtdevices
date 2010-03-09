@@ -41,9 +41,9 @@
 
 #define BOTTOM_SPACING 15
 
-const QString video_grabber_path = "/home/bticino/bin/rsize";
-const QString video_grabber_normal = "0";
-const QString video_grabber_fullscreen = "1";
+const QString video_grabber_path = "/home/bticino/bin/bt_rsize";
+const QString video_grabber_normal_args = "20 160 0";
+const QString video_grabber_fullscreen_args = "5 12 1";
 
 
 namespace VCTCallPrivate
@@ -277,10 +277,12 @@ void VCTCall::startVideo()
 {
 	if (video_grabber.state() == QProcess::NotRunning)
 	{
-		QStringList args;
-		QPoint top_left = video_box->mapToGlobal(QPoint(0, 0));
-		args << QString::number(top_left.x()) << QString::number(top_left.y()) << QString::number(format);
-		video_grabber.start(video_grabber_path, args);
+		QString args;
+		if (format == NORMAL_VIDEO)
+			args = video_grabber_normal_args;
+		else // fullscreeen
+			args = video_grabber_fullscreen_args;
+		video_grabber.start(video_grabber_path + " " + args);
 	}
 }
 
