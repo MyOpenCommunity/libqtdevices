@@ -40,7 +40,6 @@ int OpenServerManager::reconnection_time = 30;
 
 OpenServerManager::OpenServerManager(int oid, Client *m, Client *c, Client *r)
 {
-	reconnection_timer_id = 0;
 	openserver_id = oid;
 	monitor = m;
 	command = c;
@@ -52,6 +51,8 @@ OpenServerManager::OpenServerManager(int oid, Client *m, Client *c, Client *r)
 	connect(monitor, SIGNAL(connectionDown()), SLOT(handleConnectionDown()));
 	connect(command, SIGNAL(connectionDown()), SLOT(handleConnectionDown()));
 	connect(request, SIGNAL(connectionDown()), SLOT(handleConnectionDown()));
+	if (!is_connected)
+		connection_timer.start(reconnection_time * 1000, this);
 }
 
 void OpenServerManager::handleConnectionDown()
@@ -68,7 +69,7 @@ void OpenServerManager::handleConnectionDown()
 
 		is_connected = false;
 		emit connectionDown();
-		reconnection_timer_id = startTimer(reconnection_time * 1000);
+		connection_timer.start(reconnection_time * 1000, this);
 	}
 }
 
@@ -77,15 +78,13 @@ void OpenServerManager::timerEvent(QTimerEvent*)
 	monitor->connectToHost();
 	command->connectToHost();
 	request->connectToHost();
+	connection_timer.start(reconnection_time * 1000, this);
 }
 
 void OpenServerManager::handleConnectionUp()
 {
-	if (reconnection_timer_id)
-	{
-		killTimer(reconnection_timer_id);
-		reconnection_timer_id = 0;
-	}
+	qDebug("OpenServerManager::handleConnectionUp");
+	connection_timer.stop();
 
 	if (!is_connected)
 	{
