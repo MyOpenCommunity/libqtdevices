@@ -44,7 +44,8 @@ HEADERS += device_tester.h \
             ../../openclient.h \
             ../../generic_functions.h \
             ../../xml_functions.h \
-            ../../main.h
+            ../../main.h \
+            ../../devices_cache.h
 
 SOURCES += test_main.cpp \
             device_tester.cpp \
@@ -68,6 +69,7 @@ SOURCES += test_main.cpp \
             ../../openclient.cpp \
             ../../generic_functions.cpp \
             ../../xml_functions.cpp \
-            ../../definitions.cpp
+            ../../definitions.cpp \
+            ../../devices_cache.cpp
 
 include(../../devices.pri)

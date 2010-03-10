@@ -42,8 +42,7 @@ enum
 	PAGE_PLANT_MENU_99ZONES = 500,
 	PAGE_EXTERNAL_PROBES = 530,
 	PAGE_INTERNAL_PROBES = 540,
-	PAGE_AIRCONDITIONING_BASE = 73,
-	PAGE_AIRCONDITIONING_ADVANCED = 76,
+	PAGE_AIRCONDITIONING = 4000,
 };
 
 ThermalMenu::ThermalMenu(const QDomNode &config_node)
@@ -127,8 +126,7 @@ void ThermalMenu::loadBanners(const QDomNode &config_node)
 		case PAGE_INTERNAL_PROBES:
 			p = new ProbesPage(page_node, false);
 			break;
-		case PAGE_AIRCONDITIONING_BASE:
-		case PAGE_AIRCONDITIONING_ADVANCED:
+		case PAGE_AIRCONDITIONING:
 			p = new AirConditioning(page_node);
 			break;
 		default:

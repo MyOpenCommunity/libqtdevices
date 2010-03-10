@@ -424,10 +424,17 @@ enum ItemType
 	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
 	ENERGY_TYPE=70,                               /*!< The type/interface of energy management */
 	LANSETTINGS=72,                               /*!< LAN settings and information */
+#ifdef CONFIG_BTOUCH
 	AIR_SPLIT=74,                                 /*!< AIR conditioning single split (basic) */
 	AIR_GENERAL=75,                               /*!< AIR conditioning general split (basic) */
 	AIR_SPLIT_ADV=77,                             /*!< AIR conditioning single split (advanced) */
 	AIR_GENERAL_ADV=78,                           /*!< AIR conditioning general split (advanced) */
+#else
+	AIR_SPLIT=4001,                               /*!< AIR conditioning single split (basic) */
+	AIR_GENERAL=4002,                             /*!< AIR conditioning general split (basic) */
+	AIR_SPLIT_ADV=4003,                           /*!< AIR conditioning single split (advanced) */
+	AIR_GENERAL_ADV=4004,                         /*!< AIR conditioning general split (advanced) */
+#endif
 	BEEP_ICON=2901,                               /*!< Beep icon in touch 10 settings */
 	RINGTONE=2060,                                /*!< Ringtone selection banner in touch 10 settings */
 	LOAD_WITH_CU=80,                              /*!< Load with central unit */
