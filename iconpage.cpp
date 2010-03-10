@@ -23,7 +23,7 @@
 #include "btbutton.h"
 #include "navigation_bar.h"
 #include "skinmanager.h"
-#include "main.h" // IMG_PATH
+#include "fontmanager.h" // bt_global::font
 
 #include <QDomNode>
 #include <QDebug>
@@ -35,7 +35,6 @@
 #define BACK_BUTTON_X    0
 #define BACK_BUTTON_Y  250
 #define BACK_BUTTON_DIM 60
-#define IMG_BACK_BUTTON IMG_PATH "arrlf.png"
 
 
 void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QString &title)
@@ -92,7 +91,7 @@ void IconPage::addBackButton()
 {
 	BtButton *b = new BtButton(this);
 	b->setGeometry(BACK_BUTTON_X, BACK_BUTTON_Y, BACK_BUTTON_DIM, BACK_BUTTON_DIM);
-	b->setImage(IMG_BACK_BUTTON);
+	b->setImage(bt_global::skin->getImage("back"));
 	connect(b, SIGNAL(clicked()), SIGNAL(Closed()));
 }
 
@@ -116,7 +115,7 @@ void IconContent::addButton(QWidget *button, const QString &label)
 		QLabel *lbl = new QLabel(label);
 
 		lbl->setAlignment(Qt::AlignHCenter);
-
+		lbl->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
 		l->addWidget(button);
 		l->addWidget(lbl);
 	}

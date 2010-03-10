@@ -46,7 +46,7 @@ public:
 	//           load management "force on" confirmation page
 	// TEXT: default text size
 	// BANNERTEXT: label text for banner labels aligned horizontally with the icons
-	// BANNERDESCRIPTION: descriptive text displayed under a banner
+	// BANNERDESCRIPTION: descriptive text displayed under a banner (or an icon)
 	// SMALLTEXT: energy graph, energy table date, energy view date, lan settings text,
 	//            version page, RDS radio
 	// HOMEPAGEWIDGET: date/time/temperature display in home page

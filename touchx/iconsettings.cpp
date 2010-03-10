@@ -71,6 +71,7 @@ ToggleBeep::ToggleBeep(int _item_id, bool status, QString label, QString icon_on
 	QLabel *lbl = new QLabel(label);
 	lbl->setText(label);
 	lbl->setAlignment(Qt::AlignHCenter);
+	lbl->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
 	button = new BtButton;
 	button->setCheckable(true);
