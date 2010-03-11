@@ -104,31 +104,31 @@ QWidget *radio::createContent()
 	RadioInfo *name_box = new RadioInfo;
 
 	// tuning control, manual/auto buttons
-	decBut = new BtButton;
-	aumBut = new BtButton;
-	autoBut = new BtButton;
-	manBut = new BtButton;
+	minus_button = new BtButton;
+	plus_button = new BtButton;
+	auto_button = new BtButton;
+	manual_button = new BtButton;
 
-	aumBut->setImage(bt_global::skin->getImage("plus"));
-	decBut->setImage(bt_global::skin->getImage("minus"));
+	plus_button->setImage(bt_global::skin->getImage("plus"));
+	minus_button->setImage(bt_global::skin->getImage("minus"));
 	manual_off = bt_global::skin->getImage("man_off");
 	manual_on = bt_global::skin->getImage("man_on");
 	auto_off = bt_global::skin->getImage("auto_off");
 	auto_on = bt_global::skin->getImage("auto_on");
-	manBut->setImage(manual_off);
-	autoBut->setImage(auto_on);
+	manual_button->setImage(manual_off);
+	auto_button->setImage(auto_on);
 
-	connect(autoBut,SIGNAL(clicked()),this,SLOT(setAuto()));
-	connect(manBut,SIGNAL(clicked()),this,SLOT(setMan()));
-	connect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
-	connect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
+	connect(auto_button,SIGNAL(clicked()),this,SLOT(setAuto()));
+	connect(manual_button,SIGNAL(clicked()),this,SLOT(setMan()));
+	connect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
+	connect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
 
 	QGridLayout *tuning = new QGridLayout;
 	tuning->setContentsMargins(0, 0, 0, 0);
 	tuning->setSpacing(0);
-	tuning->addWidget(composeButtons(decBut, aumBut), 0, 0);
+	tuning->addWidget(composeButtons(minus_button, plus_button), 0, 0);
 	tuning->setColumnStretch(1, 1);
-	tuning->addWidget(composeButtons(autoBut, manBut), 0, 2);
+	tuning->addWidget(composeButtons(auto_button, manual_button), 0, 2);
 
 	// memory numbers buttons
 	QList<BtButton *> buttons;
@@ -231,37 +231,37 @@ void radio::storeMemoryStation()
 
 void radio::setAuto()
 {
-	connect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
-	connect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
-	disconnect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqMan()));
-	disconnect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqMan()));
-	disconnect(aumBut,SIGNAL(clicked()),this,SLOT(verTas()));
-	disconnect(decBut,SIGNAL(clicked()),this,SLOT(verTas()));
-	aumBut->setAutoRepeat (false);
-	decBut->setAutoRepeat (false);
+	connect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
+	connect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
+	disconnect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqMan()));
+	disconnect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqMan()));
+	disconnect(plus_button,SIGNAL(clicked()),this,SLOT(verTas()));
+	disconnect(minus_button,SIGNAL(clicked()),this,SLOT(verTas()));
+	plus_button->setAutoRepeat (false);
+	minus_button->setAutoRepeat (false);
 	if (manual)
 	{
 		manual = false;
-		manBut->setImage(manual_off, BtButton::NO_FLAG);
-		autoBut->setImage(auto_on, BtButton::NO_FLAG);
+		manual_button->setImage(manual_off, BtButton::NO_FLAG);
+		auto_button->setImage(auto_on, BtButton::NO_FLAG);
 	}
 }
 
 void radio::setMan()
 {
-	disconnect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
-	disconnect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
-	connect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqMan()));
-	connect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqMan()));
-	aumBut->setAutoRepeat (true);
-	decBut->setAutoRepeat (true);
-	connect(aumBut,SIGNAL(clicked()),this,SLOT(verTas()));
-	connect(decBut,SIGNAL(clicked()),this,SLOT(verTas()));
+	disconnect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
+	disconnect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
+	connect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqMan()));
+	connect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqMan()));
+	plus_button->setAutoRepeat (true);
+	minus_button->setAutoRepeat (true);
+	connect(plus_button,SIGNAL(clicked()),this,SLOT(verTas()));
+	connect(minus_button,SIGNAL(clicked()),this,SLOT(verTas()));
 	if (!manual)
 	{
 		manual = true;
-		manBut->setImage(manual_on, BtButton::NO_FLAG);
-		autoBut->setImage(auto_off, BtButton::NO_FLAG);
+		manual_button->setImage(manual_on, BtButton::NO_FLAG);
+		auto_button->setImage(auto_off, BtButton::NO_FLAG);
 	}
 }
 
@@ -272,6 +272,6 @@ void radio::memo(int memory)
 
 void radio::verTas()
 {
-	if ((!aumBut->isDown()) && (!decBut->isDown()))
+	if ((!plus_button->isDown()) && (!minus_button->isDown()))
 		emit (richFreq());
 }

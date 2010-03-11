@@ -127,7 +127,7 @@ private:
 	bool manual;
 	QTimer memory_timer;
 	int memory_number;
-	BtButton *decBut, *aumBut, *autoBut, *manBut;
+	BtButton *minus_button, *plus_button, *auto_button, *manual_button;
 	QButtonGroup button_group;
 	QLabel *rdsLabel, *radioName, *progrText, *ambDescr;
 	QLabel *freq;
