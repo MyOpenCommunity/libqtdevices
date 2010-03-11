@@ -25,6 +25,7 @@
 #include "page.h"
 
 #include <QButtonGroup>
+#include <QTimer>
 
 class BtButton;
 class QLCDNumber;
@@ -131,6 +132,8 @@ private:
 	QWidget *createContent();
 	float frequenza;
 	bool manual;
+	QTimer memory_timer;
+	int memory_number;
 	BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
 	QButtonGroup button_group;
 	QStackedWidget *tuning_widget;
@@ -140,6 +143,11 @@ private:
 
 private slots:
 	void handleClose();
+
+	void changeStation(int station_num);
+	void memoryButtonPressed(int but_num);
+	void memoryButtonReleased(int but_num);
+	void storeMemoryStation();
 
 	/*!
 	 * \brief Changes the state to automatic search

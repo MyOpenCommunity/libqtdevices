@@ -24,6 +24,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "skinmanager.h" // bt_global::skin
 #include "navigation_bar.h" // NavigationBar
+#include "hardware_functions.h" // beep()
 
 #include <QLabel>
 #include <QDebug>
@@ -82,7 +83,7 @@ void RadioInfo::paintEvent(QPaintEvent *)
 	style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
-
+#define MEMORY_PRESS_TIME 3000
 
 radio::radio(const QString &amb)
 {
@@ -92,6 +93,10 @@ radio::radio(const QString &amb)
 	state = STATION_SELECTION;
 
 	buildPage(createContent(), nav_bar, amb);
+	memory_number = 0;
+	memory_timer.setInterval(MEMORY_PRESS_TIME);
+	memory_timer.setSingleShot(true);
+	connect(&memory_timer, SIGNAL(timeout()), SLOT(storeMemoryStation()));
 }
 
 QWidget *radio::createContent()
@@ -146,7 +151,9 @@ QWidget *radio::createContent()
 	}
 	// below it's not right. If the user presses the button for a long time, the station is saved.
 	// On click, change memory station
-	//connect(&button_group, SIGNAL(buttonClicked(int)), SLOT(memo(int)));
+	connect(&button_group, SIGNAL(buttonClicked(int)), SLOT(changeStation(int)));
+	connect(&button_group, SIGNAL(buttonPressed(int)), SLOT(memoryButtonPressed(int)));
+	connect(&button_group, SIGNAL(buttonReleased(int)), SLOT(memoryButtonReleased(int)));
 	memory->addStretch(1);
 
 	// add everything to layout
@@ -198,6 +205,31 @@ void radio::setAmbDescr(const QString & d)
 void radio::setName(const QString & s)
 {
 	radioName->setText(s);
+}
+
+void radio::changeStation(int station_num)
+{
+	beep();
+	qDebug("Changing to station number: %d", station_num);
+}
+
+void radio::memoryButtonPressed(int but_num)
+{
+	memory_timer.start();
+	memory_number = but_num;
+	qDebug("Memory button pressed: %d", but_num);
+}
+
+void radio::memoryButtonReleased(int but_num)
+{
+	memory_timer.stop();
+	qDebug("Memory button released: %d", but_num);
+}
+
+void radio::storeMemoryStation()
+{
+	emit memoFreq((uchar) memory_number);
+	qDebug("Storing frequency to memory station %d", memory_number);
 }
 
 void radio::setAuto()
