@@ -315,12 +315,18 @@ FeedItemWidget > QTextEdit { background-color: #c0c0c0; color: #000000; }
 	<!-- rds radio -->
 	<item>
 		<cid>6002</cid>
+		<!--
+		RDS Radio control page
+		Images: img_plus, img_minus, img_num_1, img_num_2, img_num_3, img_num_4, img_num_5
+		-->
 		<img_cycle>diffusione/cycle.png</img_cycle>
 		<img_auto_on>diffusione/autoon.png</img_auto_on>
 		<img_auto_off>diffusione/autooff.png</img_auto_off>
 		<img_man_on>diffusione/manualeon.png</img_man_on>
 		<img_man_off>diffusione/manualeoff.png</img_man_off>
 		<img_memory>diffusione/mem.png</img_memory>
+		<img_next>diffusione/successivo.png</img_next>
+		<img_previous>diffusione/precedente.png</img_previous>
 	</item>
 
 
