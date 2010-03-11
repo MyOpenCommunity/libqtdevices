@@ -90,6 +90,11 @@ public:
 		AIRCONDITIONING_TEMPERATURE = 0,
 		// date/time edit
 		DATE_TIME = 0,
+		// rds radio
+		RADIO_NAME = TITLE,
+		RADIO_MEMORY_NUMBER = SMALLTEXT,
+		RADIO_STATION = SMALLTEXT,
+		RADIO_ENVIRONMENT = TITLE,
 	};
 #endif
 
