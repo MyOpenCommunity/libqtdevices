@@ -47,6 +47,7 @@ enum
 
 ThermalMenu::ThermalMenu(const QDomNode &config_node)
 {
+	SkinContext context(getTextChild(config_node, "cid").toInt());
 	bann_number = 0;
 	buildPage(getTextChild(config_node, "descr"));
 	loadBanners(config_node);
@@ -73,7 +74,6 @@ void ThermalMenu::createPlantMenu(QDomNode config, BannSinglePuls *bann)
 
 void ThermalMenu::loadBanners(const QDomNode &config_node)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
 	BannSinglePuls *b = NULL;
 	foreach (const QDomNode &node, getChildren(config_node, "plant"))
 	{
