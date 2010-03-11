@@ -32,7 +32,6 @@ class MultiSoundDiffAlarm;
 class Version;
 class HomePage;
 class Calibrate;
-class genPage;
 class Client;
 class KeypadWindow;
 class ScreenSaver;
@@ -99,7 +98,6 @@ private slots:
 	void init();
 	void checkScreensaver();
 	void testPwd();
-	void testFiles();
 	void waitBeforeInit();
 	void monitorReady();
 	void startGui();
@@ -117,12 +115,10 @@ private:
 	Page *pagDefault;
 
 	QTimer *screensaver_timer;
-	QTimer *testfiles_timer;
 	QString pwd;
 	bool pwdOn, alarmClockIsOn, alreadyCalibrated;
 	KeypadWindow *passwordKeypad;
 	bool frozen;
-	genPage *screen;
 	unsigned char screen_type;
 	int last_event_time;
 

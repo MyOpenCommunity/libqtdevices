@@ -24,7 +24,6 @@
 #include "homepage.h"
 #include "hardware_functions.h" // rearmWDT, getTimePress, setOrientation, getBacklight, initScreen
 #include "xml_functions.h" // getPageNode, getElement, getChildWithId, getTextChild
-#include "genpage.h"
 #include "openclient.h"
 #include "version.h"
 #include "keypad.h"
@@ -62,18 +61,6 @@
 #include <QFile>
 #include <QTime>
 
-
-// The file name to watch to generate a RED page
-#define FILE_TEST1                 "MODALITA_TEST1"
-
-// The file name to watch to generate a GREEN page
-#define FILE_TEST2                 "MODALITA_TEST2"
-
-// The file name to watch to generate a BLUE page
-#define FILE_TEST3                 "MODALITA_TEST3"
-
-// The file name to watch to generate the \a configuration page
-#define FILE_AGGIORNAMENTO	   "MODALITA_AGGIORNAMENTO"
 
 // delay between two consecutive screensaver checks
 #define SCREENSAVER_CHECK 2000
@@ -194,7 +181,6 @@ BtMain::BtMain(int openserver_reconnection_time)
 	calibrating = false;
 	pagDefault = NULL;
 	Home = NULL;
-	screen = NULL;
 	version = NULL;
 	alreadyCalibrated = false;
 	alarmClockIsOn = false;
@@ -470,97 +456,11 @@ void BtMain::startGui()
 	screensaver_timer = new QTimer(this);
 	screensaver_timer->start(SCREENSAVER_CHECK);
 	connect(screensaver_timer, SIGNAL(timeout()), SLOT(checkScreensaver()));
-
-	testfiles_timer = new QTimer(this);
-	testfiles_timer->start(3000);
-	connect(testfiles_timer, SIGNAL(timeout()), SLOT(testFiles()));
 }
 
 void BtMain::showHomePage()
 {
 	Home->showPage();
-}
-
-void BtMain::testFiles()
-{
-	if (QFile::exists(FILE_TEST1))
-	{
-		if ((screen) && (screen_type != genPage::RED))
-		{
-			delete screen;
-			screen = NULL;
-		}
-		else if (!screen)
-		{
-			screen_type = genPage::RED;
-			screen = new genPage(NULL,genPage::RED);
-			screen->show();
-			qDebug("TEST1");
-			bt_global::display.setState(DISPLAY_OPERATIVE);
-			screensaver_timer->stop();
-		}
-	}
-	else if (QFile::exists(FILE_TEST2))
-	{
-		if ((screen) && (screen_type != genPage::GREEN))
-		{
-			delete screen;
-			screen = NULL;
-		}
-		else if (!screen)
-		{
-			screen_type=genPage::GREEN;
-			screen = new genPage(NULL,genPage::GREEN);
-			screen->show();
-			qDebug("TEST2");
-			bt_global::display.setState(DISPLAY_OPERATIVE);
-			screensaver_timer->stop();
-		}
-	}
-	else if (QFile::exists(FILE_TEST3))
-	{
-		if ((screen) && (screen_type != genPage::BLUE))
-		{
-			delete screen;
-			screen = NULL;
-		}
-		else if (!screen)
-		{
-			screen_type = genPage::BLUE;
-			screen = new genPage(NULL,genPage::BLUE);
-			screen->show();
-			qDebug("TEST3");
-			bt_global::display.setState(DISPLAY_OPERATIVE);
-			screensaver_timer->stop();
-		}
-	}
-	else if (QFile::exists(FILE_AGGIORNAMENTO))
-	{
-		if ((screen) && (screen_type != genPage::IMAGE))
-		{
-			delete screen;
-			screen = NULL;
-		}
-		else if (!screen)
-		{
-			screen = new genPage(NULL,genPage::IMAGE, IMG_PATH "dwnpage.png");
-			screen_type = genPage::IMAGE;
-			screen->show();
-			qDebug("AGGIORNAMENTO");
-			bt_global::display.setState(DISPLAY_OPERATIVE);
-			screensaver_timer->stop();
-		}
-	}
-	else
-	{
-		if (screen)
-		{
-			delete screen;
-			screen = NULL;
-			screen_type = genPage::NONE;
-			screensaver_timer->start(SCREENSAVER_CHECK);
-		}
-	}
 }
 
 static unsigned long now()

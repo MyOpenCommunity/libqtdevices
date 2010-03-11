@@ -163,7 +163,6 @@ HEADERS += actuators.h \
            fileselector.h \
            fontmanager.h \
            generic_functions.h \
-           genpage.h \
            gridcontent.h \
            hardware_functions.h \
            homepage.h \
@@ -279,7 +278,6 @@ SOURCES += actuators.cpp \
            fileselector.cpp \
            fontmanager.cpp \
            generic_functions.cpp \
-           genpage.cpp \
            gridcontent.cpp \
            homepage.cpp \
            homewindow.cpp \
