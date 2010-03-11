@@ -24,14 +24,13 @@
 #include "fontmanager.h" // bt_global::font
 #include "skinmanager.h" // bt_global::skin
 #include "navigation_bar.h" // NavigationBar
+#include "hardware_functions.h" // beep()
 
 #include <QLabel>
 #include <QDebug>
 #include <QVBoxLayout>
 #include <QStyleOption>
 #include <QPainter>
-
-#include <QStackedWidget>
 
 namespace
 {
@@ -82,16 +81,19 @@ void RadioInfo::paintEvent(QPaintEvent *)
 	style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
-
+#define MEMORY_PRESS_TIME 3000
 
 radio::radio(const QString &amb)
 {
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
-	connect(nav_bar, SIGNAL(backClick()), SLOT(handleClose()));
-	state = STATION_SELECTION;
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
 	buildPage(createContent(), nav_bar, amb);
+	memory_number = 0;
+	memory_timer.setInterval(MEMORY_PRESS_TIME);
+	memory_timer.setSingleShot(true);
+	connect(&memory_timer, SIGNAL(timeout()), SLOT(storeMemoryStation()));
 }
 
 QWidget *radio::createContent()
@@ -102,31 +104,40 @@ QWidget *radio::createContent()
 	RadioInfo *name_box = new RadioInfo;
 
 	// tuning control, manual/auto buttons
-	decBut = new BtButton;
-	aumBut = new BtButton;
-	autoBut = new BtButton;
-	manBut = new BtButton;
+	minus_button = new BtButton;
+	plus_button = new BtButton;
+	auto_button = new BtButton;
+	manual_button = new BtButton;
 
-	aumBut->setImage(bt_global::skin->getImage("plus"));
-	decBut->setImage(bt_global::skin->getImage("minus"));
+	plus_button->setImage(bt_global::skin->getImage("plus"));
+	minus_button->setImage(bt_global::skin->getImage("minus"));
 	manual_off = bt_global::skin->getImage("man_off");
 	manual_on = bt_global::skin->getImage("man_on");
 	auto_off = bt_global::skin->getImage("auto_off");
 	auto_on = bt_global::skin->getImage("auto_on");
-	manBut->setImage(manual_off);
-	autoBut->setImage(auto_on);
+	manual_button->setImage(manual_off);
+	auto_button->setImage(auto_on);
 
-	connect(autoBut,SIGNAL(clicked()),this,SLOT(setAuto()));
-	connect(manBut,SIGNAL(clicked()),this,SLOT(setMan()));
-	connect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
-	connect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
+	connect(auto_button,SIGNAL(clicked()),this,SLOT(setAuto()));
+	connect(manual_button,SIGNAL(clicked()),this,SLOT(setMan()));
+	connect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
+	connect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
+
+	BtButton *next_station = new BtButton;
+	BtButton *prev_station = new BtButton;
+	next_station->setImage(bt_global::skin->getImage("next"));
+	prev_station->setImage(bt_global::skin->getImage("previous"));
+	connect(next_station, SIGNAL(clicked()), SLOT(nextStation()));
+	connect(prev_station, SIGNAL(clicked()), SLOT(previousStation()));
 
 	QGridLayout *tuning = new QGridLayout;
 	tuning->setContentsMargins(0, 0, 0, 0);
 	tuning->setSpacing(0);
-	tuning->addWidget(composeButtons(decBut, aumBut), 0, 0);
+	tuning->addWidget(composeButtons(minus_button, plus_button), 0, 0);
 	tuning->setColumnStretch(1, 1);
-	tuning->addWidget(composeButtons(autoBut, manBut), 0, 2);
+	tuning->addWidget(composeButtons(prev_station, next_station), 0, 2);
+	tuning->setColumnStretch(3, 1);
+	tuning->addWidget(composeButtons(auto_button, manual_button), 0, 4);
 
 	// memory numbers buttons
 	QList<BtButton *> buttons;
@@ -146,7 +157,9 @@ QWidget *radio::createContent()
 	}
 	// below it's not right. If the user presses the button for a long time, the station is saved.
 	// On click, change memory station
-	//connect(&button_group, SIGNAL(buttonClicked(int)), SLOT(memo(int)));
+	connect(&button_group, SIGNAL(buttonClicked(int)), SLOT(changeStation(int)));
+	connect(&button_group, SIGNAL(buttonPressed(int)), SLOT(memoryButtonPressed(int)));
+	connect(&button_group, SIGNAL(buttonReleased(int)), SLOT(memoryButtonReleased(int)));
 	memory->addStretch(1);
 
 	// add everything to layout
@@ -200,72 +213,84 @@ void radio::setName(const QString & s)
 	radioName->setText(s);
 }
 
+void radio::changeStation(int station_num)
+{
+	beep();
+	qDebug("Changing to station number: %d", station_num);
+}
+
+void radio::memoryButtonPressed(int but_num)
+{
+	memory_timer.start();
+	memory_number = but_num;
+	qDebug("Memory button pressed: %d", but_num);
+}
+
+void radio::memoryButtonReleased(int but_num)
+{
+	memory_timer.stop();
+	qDebug("Memory button released: %d", but_num);
+}
+
+void radio::storeMemoryStation()
+{
+	emit memoFreq((uchar) memory_number);
+	qDebug("Storing frequency to memory station %d", memory_number);
+}
+
 void radio::setAuto()
 {
-	connect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
-	connect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
-	disconnect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqMan()));
-	disconnect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqMan()));
-	disconnect(aumBut,SIGNAL(clicked()),this,SLOT(verTas()));
-	disconnect(decBut,SIGNAL(clicked()),this,SLOT(verTas()));
-	aumBut->setAutoRepeat (false);
-	decBut->setAutoRepeat (false);
+	connect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
+	connect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
+	disconnect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqMan()));
+	disconnect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqMan()));
+	disconnect(plus_button,SIGNAL(clicked()),this,SLOT(verTas()));
+	disconnect(minus_button,SIGNAL(clicked()),this,SLOT(verTas()));
+	plus_button->setAutoRepeat (false);
+	minus_button->setAutoRepeat (false);
 	if (manual)
 	{
 		manual = false;
-		manBut->setImage(manual_off, BtButton::NO_FLAG);
-		autoBut->setImage(auto_on, BtButton::NO_FLAG);
+		manual_button->setImage(manual_off);
+		auto_button->setImage(auto_on);
 	}
 }
 
 void radio::setMan()
 {
-	disconnect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
-	disconnect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
-	connect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqMan()));
-	connect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqMan()));
-	aumBut->setAutoRepeat (true);
-	decBut->setAutoRepeat (true);
-	connect(aumBut,SIGNAL(clicked()),this,SLOT(verTas()));
-	connect(decBut,SIGNAL(clicked()),this,SLOT(verTas()));
+	disconnect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
+	disconnect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
+	connect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqMan()));
+	connect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqMan()));
+	plus_button->setAutoRepeat (true);
+	minus_button->setAutoRepeat (true);
+	connect(plus_button,SIGNAL(clicked()),this,SLOT(verTas()));
+	connect(minus_button,SIGNAL(clicked()),this,SLOT(verTas()));
 	if (!manual)
 	{
 		manual = true;
-		manBut->setImage(manual_on, BtButton::NO_FLAG);
-		autoBut->setImage(auto_off, BtButton::NO_FLAG);
+		manual_button->setImage(manual_on);
+		auto_button->setImage(auto_off);
 	}
+}
+
+void radio::nextStation()
+{
+	qDebug("Selecting next station");
+}
+
+void radio::previousStation()
+{
+	qDebug("Selecting previous station");
 }
 
 void radio::memo(int memory)
 {
 	emit(memoFreq(uchar(memory)));
-	ripristinaContesto();
-}
-
-void radio::cambiaContesto()
-{
-	state = MEMORY;
-	cicBut->hide();
-	tuning_widget->setCurrentIndex(state);
-}
-
-void radio::ripristinaContesto()
-{
-	state = STATION_SELECTION;
-	cicBut->show();
-	tuning_widget->setCurrentIndex(state);
-}
-
-void radio::handleClose()
-{
-	if (state == MEMORY)
-		ripristinaContesto();
-	else
-		emit Closed();
 }
 
 void radio::verTas()
 {
-	if ((!aumBut->isDown()) && (!decBut->isDown()))
+	if ((!plus_button->isDown()) && (!minus_button->isDown()))
 		emit (richFreq());
 }

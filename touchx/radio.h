@@ -25,11 +25,11 @@
 #include "page.h"
 
 #include <QButtonGroup>
+#include <QTimer>
 
 class BtButton;
 class QLCDNumber;
 class QLabel;
-class QStackedWidget;
 
 
 class RadioInfo : public QWidget
@@ -122,24 +122,25 @@ public slots:
 	void memo(int memory);
 
 private:
-	enum VisualState
-	{
-		STATION_SELECTION,   // tune the frequency, select manual/automatic
-		MEMORY               // select memory number
-	};
-	VisualState state;
 	QWidget *createContent();
 	float frequenza;
 	bool manual;
-	BtButton *memoBut,*decBut,*aumBut,*autoBut,*manBut,*cicBut;
+	QTimer memory_timer;
+	int memory_number;
+	BtButton *minus_button, *plus_button, *auto_button, *manual_button;
 	QButtonGroup button_group;
-	QStackedWidget *tuning_widget;
 	QLabel *rdsLabel, *radioName, *progrText, *ambDescr;
 	QLabel *freq;
 	QString manual_off, manual_on, auto_off, auto_on;
 
 private slots:
-	void handleClose();
+	void changeStation(int station_num);
+	void memoryButtonPressed(int but_num);
+	void memoryButtonReleased(int but_num);
+	void storeMemoryStation();
+
+	void previousStation();
+	void nextStation();
 
 	/*!
 	 * \brief Changes the state to automatic search
@@ -150,16 +151,6 @@ private slots:
 	 * \brief Changes the state to manual search
 	 */
 	void setMan();
-
-	/*!
-	 * \brief Shows the memorization page
-	 */
-	void cambiaContesto();
-
-	/*!
-	 * \brief Hides -memorization page ans show back tuner details page
-	 */
-	void ripristinaContesto();
 
 	/*!
 	 * \brief At the end of a manual search ask the frequency tuned to the tuner to align to the visualized frequency
