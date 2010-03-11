@@ -242,8 +242,8 @@ void radio::setAuto()
 	if (manual)
 	{
 		manual = false;
-		manual_button->setImage(manual_off, BtButton::NO_FLAG);
-		auto_button->setImage(auto_on, BtButton::NO_FLAG);
+		manual_button->setImage(manual_off);
+		auto_button->setImage(auto_on);
 	}
 }
 
@@ -260,8 +260,8 @@ void radio::setMan()
 	if (!manual)
 	{
 		manual = true;
-		manual_button->setImage(manual_on, BtButton::NO_FLAG);
-		auto_button->setImage(auto_off, BtButton::NO_FLAG);
+		manual_button->setImage(manual_on);
+		auto_button->setImage(auto_off);
 	}
 }
 
