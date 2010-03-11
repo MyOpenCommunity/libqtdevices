@@ -21,6 +21,7 @@ QWidget[Favorites="true"] { background-image: url(cfg/extra/1/skin/preferiti.png
 HeaderLogo { background-image: url(cfg/extra/1/skin/topstatusbar_3.png); }
 QWidget[VerticalSeparator="true"] { background-image: url(cfg/extra/1/skin/sepvert.png); background-position: top center; background-repeat: no-repeat; }
 ItemList > QWidget { background-image: url(cfg/extra/1/skin/multimediale/backfileaudio.png); }
+RadioInfo { background-image: url(cfg/extra/1/skin/diffusione/displaybig.png); }
 FileSelector > QLabel[Loading="true"] { background-color: #000000; background-image: url(cfg/extra/1/skin/clessidra.png); background-position: center center; background-repeat: no-repeat; }
 FeedItemWidget > QTextEdit { background-color: #c0c0c0; color: #000000; }
 	</css>
@@ -310,6 +311,19 @@ FeedItemWidget > QTextEdit { background-color: #c0c0c0; color: #000000; }
 		<img_previous>multimediale/precedente.png</img_previous>
 		<img_next>multimediale/successivo.png</img_next>
 	</item>
+	<!-- sound diffusion system -->
+	<!-- rds radio -->
+	<item>
+		<cid>6002</cid>
+		<img_cycle>diffusione/cycle.png</img_cycle>
+		<img_auto_on>diffusione/autoon.png</img_auto_on>
+		<img_auto_off>diffusione/autooff.png</img_auto_off>
+		<img_man_on>diffusione/manualeon.png</img_man_on>
+		<img_man_off>diffusione/manualeoff.png</img_man_off>
+		<img_memory>diffusione/mem.png</img_memory>
+	</item>
+
+
 	<!-- automation banners -->
 	<item>
 		<cid>1000</cid>
