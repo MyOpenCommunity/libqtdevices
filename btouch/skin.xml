@@ -81,7 +81,6 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		Other tags used: img_scroll_up, img_scroll_down, img_back
 		-->
 		<cid>5</cid>
-		<img_back>btnok.png</img_back>
 		<img_plant>impianto.png</img_plant>
 		<img_probe>zona.png</img_probe>
 		<img_extprobe>sonda_esterna.png</img_extprobe>
