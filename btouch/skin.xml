@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <style>
+	<!-- Touch 3.5'' skin file-->
 	<ver_xml>1.0</ver_xml>
 	<css>
 PageContainer, QLabel, QLCDNumber { background-color:#1E1E1E; color:#D8D8D8; }
@@ -53,10 +54,13 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_num_9>num9.png</img_num_9>
 		<img_unchecked>btnempty.png</img_unchecked>
 		<img_checked>btnemptyp.png</img_checked>
-        <img_logo>my_home.png</img_logo>
+		<img_logo>my_home.png</img_logo>
 	</common>
-	<!-- antiintrusion -->
 	<item>
+		<!--
+		Antintrusion section
+		Other tags used: img_scroll_up, img_scroll_down, img_back, img_on, img_off, img_info
+		-->
 		<cid>3</cid>
 		<img_partial>btnparzializzazione.png</img_partial>
 		<img_partial_on>btnparzializza.png</img_partial_on>
@@ -72,7 +76,23 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_panic_alarm_page>imgallintr.png</img_panic_alarm_page>
 	</item>
 	<item>
+		<!--
+		Thermal Regulation section
+		Other tags used: img_scroll_up, img_scroll_down, img_back
+		-->
 		<cid>5</cid>
+		<img_back>btnok.png</img_back>
+		<img_plant>impianto.png</img_plant>
+		<img_probe>zona.png</img_probe>
+		<img_extprobe>sonda_esterna.png</img_extprobe>
+		<img_air_conditioning>AirConditioning.png</img_air_conditioning>
+	</item>
+	<item>
+		<!--
+		Thermal Regulation section
+		Other tags used: img_scroll_up, img_scroll_down, img_back
+		-->
+		<cid>15</cid>
 		<img_plant>impianto.png</img_plant>
 		<img_probe>zona.png</img_probe>
 		<img_extprobe>sonda_esterna.png</img_extprobe>
@@ -81,13 +101,6 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	<item>
 		<cid>10</cid>
 		<img_command>btnspecial.png</img_command>
-	</item>
-	<item>
-		<cid>15</cid>
-		<img_plant>impianto.png</img_plant>
-		<img_probe>zona.png</img_probe>
-		<img_extprobe>sonda_esterna.png</img_extprobe>
-		<img_air_conditioning>AirConditioning.png</img_air_conditioning>
 	</item>
 	<item>
 		<cid>101</cid>
@@ -424,52 +437,52 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_volume_active>onampl.png</img_volume_active>
 		<img_volume_inactive>offampl.png</img_volume_inactive>
 	</item>
-    <item>
+	<item>
 	<cid>119</cid>
-	<img_pptstat_open>pptstatoff.png</img_pptstat_open>
-	<img_pptstat_close>pptstaton.png</img_pptstat_close>
-    </item>
-    <item>
+		<img_pptstat_open>pptstatoff.png</img_pptstat_open>
+		<img_pptstat_close>pptstaton.png</img_pptstat_close>
+	</item>
+	<item>
 	<cid>702</cid>
-	<img_pptsce_on>btnon.png</img_pptsce_on>
-	<img_pptsce_off>btnoff.png</img_pptsce_off>
-	<img_pptsce_increase>pptscedx.png</img_pptsce_increase>
-	<img_pptsce_decrease>pptscesx.png</img_pptsce_decrease>
-    </item>
-    <item>
+		<img_pptsce_on>btnon.png</img_pptsce_on>
+		<img_pptsce_off>btnoff.png</img_pptsce_off>
+		<img_pptsce_increase>pptscedx.png</img_pptsce_increase>
+		<img_pptsce_decrease>pptscesx.png</img_pptsce_decrease>
+	</item>
+	<item>
 	<cid>800</cid>
-	<img_state_on>beepon.png</img_state_on>
-	<img_state_off>beepoff.png</img_state_off>
-	<img_edit>btninfo.png</img_edit>
-    </item>
-    <item>
+		<img_state_on>beepon.png</img_state_on>
+		<img_state_off>beepoff.png</img_state_off>
+		<img_edit>btninfo.png</img_edit>
+	</item>
+	<item>
 	<cid>801</cid>
-	<img_alarm_icon>svegliaon.png</img_alarm_icon>
-	<img_state_on>svegliaon.png</img_state_on>
-	<img_state_off>svegliaoff.png</img_state_off>
-	<img_edit>btninfo.png</img_edit>
-    </item>
-    <item>
+		<img_alarm_icon>svegliaon.png</img_alarm_icon>
+		<img_state_on>svegliaon.png</img_state_on>
+		<img_state_off>svegliaoff.png</img_state_off>
+		<img_edit>btninfo.png</img_edit>
+	</item>
+	<item>
 	<cid>802</cid>
-	<img_date_icon>calendario.png</img_date_icon>
-	<img_time_icon>orologio.png</img_time_icon>
+		<img_date_icon>calendario.png</img_date_icon>
+		<img_time_icon>orologio.png</img_time_icon>
 	</item>
 	<item>
 	<cid>803</cid>
-	<img_edit>btninfo.png</img_edit>
-	<img_logo>my_home.png</img_logo>
-	<img_colorbar>colorbar.png</img_colorbar>
+		<img_edit>btninfo.png</img_edit>
+		<img_logo>my_home.png</img_logo>
+		<img_colorbar>colorbar.png</img_colorbar>
 	</item>
 	<item>
 	<cid>805</cid>
-	<img_state_on>pswon.png</img_state_on>
-	<img_state_off>pswoff.png</img_state_off>
-	<img_edit>btnpswchg.png</img_edit>
+		<img_state_on>pswon.png</img_state_on>
+		<img_state_off>pswoff.png</img_state_off>
+		<img_edit>btnpswchg.png</img_edit>
 	</item>
 	<item>
 	<cid>806</cid>
-	<img_logo>my_home.png</img_logo>
-	<img_bticino>bticino.png</img_bticino>
+		<img_logo>my_home.png</img_logo>
+		<img_bticino>bticino.png</img_bticino>
 	</item>
 	<item>
 		<cid>513</cid>
