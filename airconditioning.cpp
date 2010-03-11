@@ -58,6 +58,7 @@ AirConditioningPrivate::DeviceContainer device_container;
 
 AirConditioning::AirConditioning(const QDomNode &config_node)
 {
+	SkinContext context(getTextChild(config_node, "cid").toInt());
 	buildPage(getTextChild(config_node, "descr"));
 	loadItems(config_node);
 }
@@ -144,7 +145,6 @@ GeneralSplit *AirConditioning::createGeneralBanner(Page *gen_split_page, const Q
 
 void AirConditioning::loadItems(const QDomNode &config_node)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		if (banner *b = getBanner(item))
@@ -411,13 +411,13 @@ AirConditionerStatus SplitSettings::getCurrentStatus()
 
 void SplitSettings::readModeConfig(const QDomNode &mode_node, int init_mode)
 {
-	static const char *tags[] = { "off", "heating", "cooling", "fan", "dry", "automatic" };
-
 	QList <int> modes;
 #ifdef CONFIG_BTOUCH
 	foreach (const QDomNode &val, getChildren(mode_node, "val"))
 		modes.append(val.toElement().text().toInt());
 #else
+	static const char *tags[] = { "off", "heating", "cooling", "fan", "dry", "automatic" };
+
 	for (int i = 0; i < 6; ++i)
 		modes.append(getTextChild(mode_node, tags[i]).toInt());
 #endif
@@ -436,7 +436,6 @@ void SplitSettings::readTempConfig(const QDomNode &temp_node, int init_temp)
 
 void SplitSettings::readSpeedConfig(const QDomNode &speed_node, const QDomNode &values)
 {
-	static const char *tags[] = { "automatic", "low", "medium", "high", "silent" };
 
 #ifdef CONFIG_BTOUCH
 	if (getTextChild(speed_node, "val1").toInt() != -1)
@@ -449,6 +448,8 @@ void SplitSettings::readSpeedConfig(const QDomNode &speed_node, const QDomNode &
 		foreach (const QDomNode &val, getChildren(speed_node, "val"))
 			speeds.append(val.toElement().text().toInt());
 #else
+		static const char *tags[] = { "automatic", "low", "medium", "high", "silent" };
+
 		for (int i = 0; i < 5; ++i)
 			speeds.append(getTextChild(speed_node, tags[i]).toInt());
 #endif
