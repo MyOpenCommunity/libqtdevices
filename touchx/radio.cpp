@@ -32,8 +32,6 @@
 #include <QStyleOption>
 #include <QPainter>
 
-#include <QStackedWidget>
-
 namespace
 {
 
@@ -89,8 +87,7 @@ radio::radio(const QString &amb)
 {
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
-	connect(nav_bar, SIGNAL(backClick()), SLOT(handleClose()));
-	state = STATION_SELECTION;
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
 	buildPage(createContent(), nav_bar, amb);
 	memory_number = 0;
@@ -271,29 +268,6 @@ void radio::setMan()
 void radio::memo(int memory)
 {
 	emit(memoFreq(uchar(memory)));
-	ripristinaContesto();
-}
-
-void radio::cambiaContesto()
-{
-	state = MEMORY;
-	cicBut->hide();
-	tuning_widget->setCurrentIndex(state);
-}
-
-void radio::ripristinaContesto()
-{
-	state = STATION_SELECTION;
-	cicBut->show();
-	tuning_widget->setCurrentIndex(state);
-}
-
-void radio::handleClose()
-{
-	if (state == MEMORY)
-		ripristinaContesto();
-	else
-		emit Closed();
 }
 
 void radio::verTas()
