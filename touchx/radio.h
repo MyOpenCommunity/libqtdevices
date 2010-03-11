@@ -32,6 +32,23 @@ class QLabel;
 class QStackedWidget;
 
 
+class RadioInfo : public QWidget
+{
+Q_OBJECT
+public:
+	RadioInfo();
+	void setFrequency(const QString &f){};
+	void setChannel(int memory_channel) {};
+	void setRadioName(const QString &rds){};
+
+protected:
+	void paintEvent(QPaintEvent *);
+
+private:
+	QLabel *radio_name, *frequency, *channel;
+};
+
+
 /*!
  * \class radio
  * \brief This class implements the management of the FM tuner specific page.
@@ -111,7 +128,7 @@ private:
 		MEMORY               // select memory number
 	};
 	VisualState state;
-	QWidget *createContent(const QString &amb);
+	QWidget *createContent();
 	QWidget *getStationSelectionWidget();
 	QWidget *getMemoryWidget();
 	float frequenza;
@@ -120,7 +137,7 @@ private:
 	QButtonGroup button_group;
 	QStackedWidget *tuning_widget;
 	QLabel *rdsLabel, *radioName, *progrText, *ambDescr;
-	QLCDNumber *freq;
+	QLabel *freq;
 	QString manual_off, manual_on, auto_off, auto_on;
 
 private slots:

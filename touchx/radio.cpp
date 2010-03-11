@@ -20,17 +20,69 @@
 
 
 #include "radio.h"
-#include "bannfrecce.h"
 #include "btbutton.h"
 #include "fontmanager.h" // bt_global::font
 #include "skinmanager.h" // bt_global::skin
 #include "navigation_bar.h" // NavigationBar
 
 #include <QLabel>
-#include <QLCDNumber>
 #include <QDebug>
 #include <QVBoxLayout>
+#include <QStyleOption>
+#include <QPainter>
+
 #include <QStackedWidget>
+
+namespace
+{
+
+	QWidget *composeButtons(BtButton *left, BtButton *right)
+	{
+		QWidget *w = new QWidget;
+		QHBoxLayout *hbox = new QHBoxLayout(w);
+		hbox->setContentsMargins(0, 0, 0, 0);
+		hbox->setSpacing(10);
+		hbox->addWidget(left);
+		hbox->addWidget(right);
+		return w;
+	}
+}
+
+RadioInfo::RadioInfo() : QWidget(0)
+{
+	// background image will be set using stylesheets
+	setFixedHeight(50);
+	setFixedWidth(452);
+
+	QGridLayout *grid = new QGridLayout(this);
+	grid->setContentsMargins(10, 0, 5, 0);
+	grid->setSpacing(0);
+
+	radio_name = new QLabel;
+	radio_name->setText("Virgin radio");
+	radio_name->setFont(bt_global::font->get(FontManager::RADIO_NAME));
+	grid->addWidget(radio_name, 0, 0, 1, 1, Qt::AlignCenter);
+
+	channel = new QLabel;
+	channel->setText(tr("Channel. -"));
+	channel->setFont(bt_global::font->get(FontManager::RADIO_MEMORY_NUMBER));
+	grid->addWidget(channel, 1, 0, 1, 1, Qt::AlignRight);
+
+	frequency = new QLabel;
+	frequency->setText("FM 123.75");
+	frequency->setFont(bt_global::font->get(FontManager::RADIO_STATION));
+	grid->addWidget(frequency, 1, 0, 1, 1, Qt::AlignLeft);
+}
+
+void RadioInfo::paintEvent(QPaintEvent *)
+{
+	QStyleOption opt;
+	opt.init(this);
+	QPainter p(this);
+	style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+
 
 radio::radio(const QString &amb)
 {
@@ -39,69 +91,74 @@ radio::radio(const QString &amb)
 	connect(nav_bar, SIGNAL(backClick()), SLOT(handleClose()));
 	state = STATION_SELECTION;
 
-	buildPage(createContent(amb), nav_bar);
+	buildPage(createContent(), nav_bar, amb);
 }
 
-QWidget *radio::createContent(const QString &amb)
+QWidget *radio::createContent()
 {
 	QWidget *content = new QWidget;
 
-	// top of all, radio description
-	radioName = new QLabel;
-	radioName->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
-	radioName->setFont(bt_global::font->get(FontManager::SMALLTEXT));
+	// radio description, with frequency and memory station
+	RadioInfo *name_box = new RadioInfo;
 
-	// below radio name, environment description
-	ambDescr = new QLabel;
-	ambDescr->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
-	ambDescr->setFont(bt_global::font->get(FontManager::SMALLTEXT));
-	ambDescr->setText(amb);
+	// tuning control, manual/auto buttons
+	decBut = new BtButton;
+	aumBut = new BtButton;
+	autoBut = new BtButton;
+	manBut = new BtButton;
 
-	// below description, frequency + cycle button
-	QGridLayout *freq_layout = new QGridLayout;
-	freq_layout->setContentsMargins(0, 0, 0, 0);
-	freq_layout->setSpacing(0);
-	cicBut = new BtButton;
-	cicBut->setImage(bt_global::skin->getImage("cycle"));
-	connect(cicBut,SIGNAL(clicked()),this,SIGNAL(changeStaz()));
-	freq_layout->addWidget(cicBut, 0, 0);
-	freq_layout->setColumnStretch(0, 1);
-	freq_layout->setColumnMinimumWidth(0, cicBut->minimumSizeHint().width());
-	freq_layout->setRowMinimumHeight(0, cicBut->minimumSizeHint().height());
+	aumBut->setImage(bt_global::skin->getImage("plus"));
+	decBut->setImage(bt_global::skin->getImage("minus"));
+	manual_off = bt_global::skin->getImage("man_off");
+	manual_on = bt_global::skin->getImage("man_on");
+	auto_off = bt_global::skin->getImage("auto_off");
+	auto_on = bt_global::skin->getImage("auto_on");
+	manBut->setImage(manual_off);
+	autoBut->setImage(auto_on);
 
-	progrText = new QLabel;
-	progrText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	progrText->setFont(bt_global::font->get(FontManager::TEXT));
-	freq_layout->addWidget(progrText, 0, 1);
+	connect(autoBut,SIGNAL(clicked()),this,SLOT(setAuto()));
+	connect(manBut,SIGNAL(clicked()),this,SLOT(setMan()));
+	connect(decBut,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
+	connect(aumBut,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
 
-	freq = new QLCDNumber;
-	freq->setSegmentStyle(QLCDNumber::Flat);
-	freq->setSmallDecimalPoint(true);
-	freq->setNumDigits(6);
-	freq->setLineWidth(0);
-	freq_layout->addWidget(freq, 0, 2);
-	freq_layout->setColumnStretch(2, 3);
+	QGridLayout *tuning = new QGridLayout;
+	tuning->setContentsMargins(0, 0, 0, 0);
+	tuning->setSpacing(0);
+	tuning->addWidget(composeButtons(decBut, aumBut), 0, 0);
+	tuning->setColumnStretch(1, 1);
+	tuning->addWidget(composeButtons(autoBut, manBut), 0, 2);
 
-	// below frequency, RDS indication
-	rdsLabel = new QLabel(" ");
-	rdsLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	rdsLabel->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	// memory numbers buttons
+	QList<BtButton *> buttons;
+	QHBoxLayout *memory = new QHBoxLayout;
+	memory->setContentsMargins(0, 0, 0, 0);
+	memory->setSpacing(10);
+	memory->addStretch(1);
+	for (int i = 0; i < 5; ++i)
+	{
+		BtButton *b = new BtButton;
+		QString str = QString("num_%1").arg(i + 1);
+		b->setImage(bt_global::skin->getImage(str));
+		buttons << b;
+		// Each button must be associated with the memory location, which go 1-5 instead of 0-4
+		button_group.addButton(b, i + 1);
+		memory->addWidget(b);
+	}
+	// below it's not right. If the user presses the button for a long time, the station is saved.
+	// On click, change memory station
+	//connect(&button_group, SIGNAL(buttonClicked(int)), SLOT(memo(int)));
+	memory->addStretch(1);
 
-	// tuning control and station memories
-	tuning_widget = new QStackedWidget;
-	tuning_widget->insertWidget(STATION_SELECTION, getStationSelectionWidget());
-	tuning_widget->insertWidget(MEMORY, getMemoryWidget());
+	// add everything to layout
+	QVBoxLayout *main = new QVBoxLayout(content);
+	main->setContentsMargins(10, 0, 10, 45);
+	main->setSpacing(0);
+	main->addWidget(name_box);
+	main->addLayout(tuning);
+	main->addLayout(memory);
 
 	manual=false;
 
-	QVBoxLayout *vbox = new QVBoxLayout(content);
-	vbox->setContentsMargins(0, 0, 0, 0);
-	vbox->setSpacing(0);
-	vbox->addWidget(radioName, 0, Qt::AlignHCenter);
-	vbox->addWidget(ambDescr, 0, Qt::AlignHCenter);
-	vbox->addLayout(freq_layout, 1);
-	vbox->addWidget(rdsLabel, 1);
-	vbox->addWidget(tuning_widget, 1 , Qt::AlignBottom);
 	return content;
 }
 
@@ -178,7 +235,7 @@ void radio::setFreq(float f)
 	frequenza = f;
 	QString fr;
 	fr.sprintf("%.2f",frequenza);
-	freq->display(fr);
+	freq->setText(fr);
 }
 
 float radio::getFreq()
