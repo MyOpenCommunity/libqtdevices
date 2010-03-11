@@ -123,12 +123,21 @@ QWidget *radio::createContent()
 	connect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
 	connect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
 
+	BtButton *next_station = new BtButton;
+	BtButton *prev_station = new BtButton;
+	next_station->setImage(bt_global::skin->getImage("next"));
+	prev_station->setImage(bt_global::skin->getImage("previous"));
+	connect(next_station, SIGNAL(clicked()), SLOT(nextStation()));
+	connect(prev_station, SIGNAL(clicked()), SLOT(previousStation()));
+
 	QGridLayout *tuning = new QGridLayout;
 	tuning->setContentsMargins(0, 0, 0, 0);
 	tuning->setSpacing(0);
 	tuning->addWidget(composeButtons(minus_button, plus_button), 0, 0);
 	tuning->setColumnStretch(1, 1);
-	tuning->addWidget(composeButtons(auto_button, manual_button), 0, 2);
+	tuning->addWidget(composeButtons(prev_station, next_station), 0, 2);
+	tuning->setColumnStretch(3, 1);
+	tuning->addWidget(composeButtons(auto_button, manual_button), 0, 4);
 
 	// memory numbers buttons
 	QList<BtButton *> buttons;
@@ -263,6 +272,16 @@ void radio::setMan()
 		manual_button->setImage(manual_on);
 		auto_button->setImage(auto_off);
 	}
+}
+
+void radio::nextStation()
+{
+	qDebug("Selecting next station");
+}
+
+void radio::previousStation()
+{
+	qDebug("Selecting previous station");
 }
 
 void radio::memo(int memory)

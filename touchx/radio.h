@@ -139,6 +139,9 @@ private slots:
 	void memoryButtonReleased(int but_num);
 	void storeMemoryStation();
 
+	void previousStation();
+	void nextStation();
+
 	/*!
 	 * \brief Changes the state to automatic search
 	 */
