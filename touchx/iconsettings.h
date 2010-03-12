@@ -133,4 +133,16 @@ public:
 	PasswordPage(const QDomNode &config_node);
 };
 
+
+class BrightnessPage : public Page
+{
+Q_OBJECT
+public:
+	BrightnessPage();
+
+private slots:
+	void incBrightness();
+	void decBrightness();
+};
+
 #endif // ICON_SETTINGS_H
