@@ -141,12 +141,18 @@ void RingtonesPage::stopRingtones()
 
 VolumePage::VolumePage(const QDomNode &config_node)
 {
+	QWidget *content = new QWidget;
+	QHBoxLayout *layout = new QHBoxLayout(content);
+	layout->setContentsMargins(0, 0, 0, TITLE_HEIGHT);
+
 	// TODO: is this text ok for the banner? Should it be read from conf?
 	ItemTuning *volume = new ItemTuning(tr("Volume"), bt_global::skin->getImage("volume"));
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
-	buildPage(volume, nav_bar, getTextChild(config_node, "descr"));
+
+	layout->addWidget(volume, 0, Qt::AlignCenter);
+	buildPage(content, nav_bar, getTextChild(config_node, "descr"));
 }
 
 void VolumePage::changeVolume(int new_vol)
