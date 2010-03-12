@@ -38,6 +38,7 @@
 
 
 static const char *MPLAYER_FILENAME = "/usr/bin/mplayer";
+static const char *MPLAYER_FIFO = "/tmp/mplayer_fifo";
 
 // Dirty kludge to allow mplayerExited access to class instance.
 static MediaPlayer *_globalMediaPlayer;
@@ -53,6 +54,8 @@ static void mplayerExited(int signo, siginfo_t *info, void *)
 
 MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 {
+	if (!QFile::exists(MPLAYER_FIFO))
+		system(QByteArray("mkfifo ") + MPLAYER_FIFO);
 	struct sigaction sa;
 
 	memset( &sa, 0, sizeof(sa));
@@ -124,16 +127,21 @@ bool MediaPlayer::playVideoFullScreen(QString track, int start_time, bool write_
 
 bool MediaPlayer::play(QString track, bool write_output)
 {
-	const char *mplayer_args[] = {MPLAYER_FILENAME, NULL, NULL, NULL, NULL, NULL};
+	QList<QString> mplayer_args;
+	mplayer_args << MPLAYER_FILENAME
+		     << "-nolirc"
+		     << "-slave"
+		     << "-input"
+		     << QString("file=") + MPLAYER_FIFO;
 
 	QByteArray t = track.toLocal8Bit();
 	if ((track.endsWith(".m3u", Qt::CaseInsensitive)) || (track.endsWith(".asx", Qt::CaseInsensitive)))
 	{
-		mplayer_args[1] = "-playlist";
-		mplayer_args[2] = t.constData();
+		mplayer_args << "-playlist";
+		mplayer_args << t.constData();
 	}
 	else
-		mplayer_args[1] = t.constData();
+		mplayer_args << t.constData();
 
 	return runMPlayer(mplayer_args, write_output);
 }
