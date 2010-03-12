@@ -224,7 +224,7 @@ void MediaPlayer::pause()
 {
 	if (!paused)
 	{
-		execCmd("pause\n");
+		execCmd("pause");
 		paused = true;
 	}
 }
@@ -233,7 +233,7 @@ void MediaPlayer::resume()
 {
 	if (paused)
 	{
-		execCmd("pause\n");
+		execCmd("pause");
 		paused = false;
 	}
 }
@@ -258,13 +258,13 @@ void MediaPlayer::setFullscreen(bool fs)
 	fullscreen = fs;
 }
 
-void MediaPlayer::execCmd(QByteArray command)
+void MediaPlayer::execCmd(const QByteArray &command) const
 {
 	if (QFile::exists(MPLAYER_FIFO))
 	{
 		QFile f(MPLAYER_FIFO);
 		f.open(QFile::WriteOnly);
-		f.write(command);
+		f.write(command + "\n");
 	}
 	else
 		qDebug("[AUDIO] MediaPlayer::execCmd(): error, no control fifo found");
