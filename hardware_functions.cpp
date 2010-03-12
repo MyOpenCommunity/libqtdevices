@@ -129,6 +129,15 @@ void setBacklightOn(bool b)
 			close(fd);
 		}
 	}
+
+#ifdef BT_HARDWARE_TOUCHX
+	if (b)
+	{
+		QStringList args_contrast;
+		args_contrast << TFT_CONTRAST << "7";
+		QProcess::startDetached("/bin/settrimmer", args_contrast);
+	}
+#endif
 }
 
 void setBacklight(bool b)
