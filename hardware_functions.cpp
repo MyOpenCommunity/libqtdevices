@@ -100,6 +100,7 @@ static void writeValueToFd(int fd, int value)
 
 void setBrightnessLevel(int level)
 {
+#ifdef BT_HARDWARE_BTOUCH
 	if (QFile::exists("/proc/sys/dev/btweb/brightness"))
 	{
 		int fd = open("/proc/sys/dev/btweb/brightness", O_WRONLY);
@@ -109,6 +110,12 @@ void setBrightnessLevel(int level)
 			close(fd);
 		}
 	}
+#else
+	int value = (level - 10) * 13 / 240;
+
+	QProcess::startDetached("/bin/settrimmer",
+				QStringList() << TFT_BRIGHTNESS << QString::number(value));
+#endif
 }
 
 void setBacklightOn(bool b)
