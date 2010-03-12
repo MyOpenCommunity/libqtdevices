@@ -140,7 +140,6 @@ HEADERS += actuators.h \
            bannonoffcombo.h \
            bannregolaz.h \
            banntemperature.h \
-           brightnesspage.h \
            btbutton.h \
            btmain.h \
            bttime.h \
@@ -256,7 +255,6 @@ SOURCES += actuators.cpp \
            banntemperature.cpp \
            btbutton.cpp \
            btmain.cpp \
-           brightnesspage.cpp \
            bttime.cpp \
            buttons_bar.cpp \
            changedatetime.cpp \
