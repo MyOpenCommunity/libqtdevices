@@ -43,7 +43,7 @@ FeedManager::FeedManager(const QDomNode &conf_node)
 	ItemList *feeds = new ItemList(this, ROWS_PER_PAGE);
 	NavigationBar *nav_bar = new NavigationBar;
 
-	buildPage(feeds, nav_bar, getTextChild(conf_node, "descr"), 35);
+	buildPage(feeds, nav_bar, getTextChild(conf_node, "descr"), SMALL_TITLE_HEIGHT);
 	layout()->setContentsMargins(0, 5, 25, 10);
 
 	feed_items = new FeedItemList;
@@ -122,7 +122,7 @@ FeedItemList::FeedItemList()
 	feed_icon = bt_global::skin->getImage("feed_icon");
 
 	ItemList *feed_items = new ItemList(this, ROWS_PER_PAGE);
-	title_widget = new PageTitleWidget("", 35);
+	title_widget = new PageTitleWidget("", SMALL_TITLE_HEIGHT);
 	NavigationBar *nav_bar = new NavigationBar;
 
 	buildPage(feed_items, nav_bar, 0, title_widget);
@@ -176,7 +176,7 @@ int FeedItemList::currentPage()
 FeedItem::FeedItem()
 {
 	item_widget = new FeedItemWidget;
-	title_widget = new PageTitleWidget("", 35);
+	title_widget = new PageTitleWidget("", SMALL_TITLE_HEIGHT);
 	NavigationBar *nav_bar = new NavigationBar;
 
 	buildPage(item_widget, nav_bar, 0, title_widget);

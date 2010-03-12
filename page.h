@@ -87,6 +87,8 @@ Q_OBJECT
 public:
 	/// Default title height
 	static const int TITLE_HEIGHT = 70;
+	static const int SMALL_TITLE_HEIGHT = 35;
+	static const int TINY_TITLE_HEIGHT = 20;
 
 	// Indicates subsystem pagetype. For now it is used in touchx top_nav_bar
 	// TODO: is this the same as pagSecLiv in main.h?

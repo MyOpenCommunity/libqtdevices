@@ -57,7 +57,7 @@ MultimediaFileListPage::MultimediaFileListPage()
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 	connect(this, SIGNAL(fileClicked(int)), SLOT(startPlayback(int)));
 
-	PageTitleWidget *title_widget = new PageTitleWidget(tr("Folder"), 35);
+	PageTitleWidget *title_widget = new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT);
 	connect(item_list, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
 
 	NavigationBar *nav_bar = new NavigationBar("eject");

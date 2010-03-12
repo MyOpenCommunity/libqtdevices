@@ -578,7 +578,7 @@ ImageRemovalPage::ImageRemovalPage() :
 	Page(0)
 {
 	SlideshowImageContent *content = new SlideshowImageContent;
-	PageTitleWidget *title_widget = new PageTitleWidget("Select photos", 20);
+	PageTitleWidget *title_widget = new PageTitleWidget("Select photos", TINY_TITLE_HEIGHT);
 	connect(content, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int,int)));
 
 	NavigationBar *nav_bar = new NavigationBar;
