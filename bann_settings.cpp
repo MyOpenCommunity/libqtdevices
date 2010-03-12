@@ -356,9 +356,9 @@ void impPassword::restoreBeepState()
 
 
 BannRingtone::BannRingtone(const QString &descr, RingtoneType type) :
-	Bann2CentralButtons(0)
+	Bann2CentralButtons(false)
 {
-	// TODO: buttons on the banner will be separated because of a setSpacing(5) in Bann2CentralButtons,
+	// TODO: this is necessary because of a setSpacing(5) in Bann2CentralButtons,
 	// that will be removed when all borders are removed from images.
 	initBanner(bt_global::skin->getImage("prev_ring"), bt_global::skin->getImage("next_ring"), descr);
 	connect(center_left, SIGNAL(clicked()), SLOT(minusClicked()));

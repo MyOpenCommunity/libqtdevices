@@ -249,12 +249,26 @@ private:
 	QLabel *text, *center_icon;
 };
 
+/**
+ * Banner with two central buttons.
+ *
+ * By default the two buttons are separated by a space, but they can be stuck
+ * together and operate as the two halves of a larger button.
+ */
 class Bann2CentralButtons : public BannerNew
 {
 Q_OBJECT
 protected:
-	Bann2CentralButtons(QWidget *parent);
+	/**
+	 * \param spaced_buttons add spacing between the two buttons
+	 */
+	Bann2CentralButtons(bool spaced_buttons = true);
+
+	/**
+	 * \param banner_text description text under the banner; if empty the label is deleted
+	 */
 	void initBanner(const QString &left, const QString &right, const QString &banner_text);
+
 	BtButton *center_left, *center_right;
 private:
 	QLabel *text;

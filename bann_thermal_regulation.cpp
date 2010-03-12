@@ -1647,7 +1647,6 @@ void BannAntifreeze::performAction()
 
 
 BannOffAntifreeze::BannOffAntifreeze(QWidget *parent, ThermalDevice *_dev)
-	: Bann2CentralButtons(parent)
 {
 	initBanner(bt_global::skin->getImage("off_button"), bt_global::skin->getImage("regulator_antifreeze"), "");
 	dev = _dev;
@@ -1669,7 +1668,7 @@ void BannOffAntifreeze::setAntifreeze()
 }
 
 
-BannSummerWinter::BannSummerWinter(QWidget *parent, ThermalDevice *_dev) : Bann2CentralButtons(parent)
+BannSummerWinter::BannSummerWinter(QWidget *parent, ThermalDevice *_dev)
 {
 	initBanner(bt_global::skin->getImage("winter"), bt_global::skin->getImage("summer"), "");
 	dev = _dev;

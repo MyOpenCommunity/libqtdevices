@@ -259,7 +259,7 @@ void BannOnOff2Labels::setState(States new_state)
 }
 
 
-Bann2CentralButtons::Bann2CentralButtons(QWidget *parent) : BannerNew(parent)
+Bann2CentralButtons::Bann2CentralButtons(bool spaced_buttons) : BannerNew(0)
 {
 	center_left = new BtButton;
 	center_right = new BtButton;
@@ -268,7 +268,7 @@ Bann2CentralButtons::Bann2CentralButtons(QWidget *parent) : BannerNew(parent)
 	QGridLayout *l = new QGridLayout;
 	l->setContentsMargins(0, 0, 0, 0);
 #ifdef LAYOUT_TOUCHX
-	l->setSpacing(5);
+	l->setSpacing(spaced_buttons ? 5 : 0);
 #else
 	l->setSpacing(0);
 #endif
