@@ -182,7 +182,7 @@ VersionPage::VersionPage(const QDomNode &config_node)
 	text_area->addRow(tr("IP address"), "");
 	text_area->addRow(tr("Netmask"), "");
 
-	buildPage(text_area, nav_bar, getTextChild(config_node, "descr"));
+	buildPage(text_area, nav_bar, getTextChild(config_node, "descr"), TINY_TITLE_HEIGHT);
 }
 
 void VersionPage::status_changed(const StatusList &sl)
