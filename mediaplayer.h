@@ -91,7 +91,7 @@ private:
 	FILE *outf;
 
 	/// Send a string to the mplayer process to execute.
-	void execCmd(QString command);
+	void execCmd(QByteArray command);
 	/// Read output from mplayer process.
 	QString readOutput();
 

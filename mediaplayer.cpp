@@ -224,7 +224,7 @@ void MediaPlayer::pause()
 {
 	if (!paused)
 	{
-		execCmd(" ");
+		execCmd("pause\n");
 		paused = true;
 	}
 }
@@ -233,7 +233,7 @@ void MediaPlayer::resume()
 {
 	if (paused)
 	{
-		execCmd(" ");
+		execCmd("pause\n");
 		paused = false;
 	}
 }
@@ -258,16 +258,16 @@ void MediaPlayer::setFullscreen(bool fs)
 	fullscreen = fs;
 }
 
-void MediaPlayer::execCmd(QString command)
+void MediaPlayer::execCmd(QByteArray command)
 {
-	if (ctrlf)
+	if (QFile::exists(MPLAYER_FIFO))
 	{
-		QByteArray c = command.toLatin1();
-		fprintf(ctrlf, c.constData());
-		fflush(ctrlf);
+		QFile f(MPLAYER_FIFO);
+		f.open(QFile::WriteOnly);
+		f.write(command);
 	}
 	else
-		qDebug("[AUDIO] MediaPlayer::execCmd(): mplayer not running");
+		qDebug("[AUDIO] MediaPlayer::execCmd(): error, no control fifo found");
 }
 
 QString MediaPlayer::readOutput()
