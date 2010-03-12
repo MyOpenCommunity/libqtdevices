@@ -55,6 +55,10 @@ public:
 	void setState(DisplayStatus status);
 	DisplayStatus currentState();
 
+	// set the brightness to be used in operative mode
+	void setOperativeBrightness(int brightness);
+	int operativeBrightness();
+
 	// Brightness methods
 	BrightnessLevel currentBrightness();
 	void setBrightness(BrightnessLevel level);
@@ -80,6 +84,7 @@ private:
 	ScreenSaver::Type current_screensaver;
 	DisplayStatus current_state;
 	bool forced_operative_mode;
+	int operative_brightness;
 };
 
 namespace bt_global { extern DisplayControl display; }
