@@ -120,10 +120,8 @@ bool MediaPlayer::play(QString track, bool write_output)
 
 bool MediaPlayer::runMPlayer(const QList<QString> &args, bool write_output)
 {
-	/*
 	if (!write_output)
 		mplayer_proc.setStandardOutputFile("/dev/null");
-	*/
 
 	mplayer_proc.start(MPLAYER_FILENAME, args);
 	paused = false;
