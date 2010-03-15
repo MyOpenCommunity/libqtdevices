@@ -213,19 +213,19 @@ QMap<QString, QString> MediaPlayer::getPlayingInfo()
 
 QMap<QString, QString> MediaPlayer::getMediaInfo(const QMap<QString, QString> &data_search)
 {
-	/// READ ROW output from MPlayer
-	QString row_data = mplayer_proc.readAll();
+	/// READ RAW output from MPlayer
+	QString raw_data = mplayer_proc.readAll();
 
 	/// Create output Map
 	QMap<QString, QString> info_data;
 
-	/// Parse ROW data to get info
+	/// Parse RAW data to get info
 	QMap<QString, QString>::ConstIterator it;
 	for (it = data_search.begin(); it != data_search.end(); ++it)
 	{
 		QRegExp rx(it.value());
 
-		if (rx.indexIn(row_data) > -1)
+		if (rx.indexIn(raw_data) > -1)
 			info_data[it.key()] = rx.cap(1);
 	}
 
