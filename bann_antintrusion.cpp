@@ -58,10 +58,10 @@ void BannSingleLeft::setState(States new_state)
 	switch (new_state)
 	{
 	case PARTIAL_OFF:
-		left_button->setImage(left_on);
+		left_button->setImage(left_off);
 		break;
 	case PARTIAL_ON:
-		left_button->setImage(left_off);
+		left_button->setImage(left_on);
 		break;
 	}
 }
