@@ -27,11 +27,25 @@
 #include <QLabel>
 #include <QHBoxLayout>
 
+#ifdef LAYOUT_TOUCHX
+
+#define BAN3BUT_SPACING 5
+#define BAN3BUT_BUT_DIM 50
+#define BAN3BUT_BUTCEN_DIM 110
+#define BUT3BL_ICON_DIM_X 110
+#define BUT3BL_ICON_DIM_Y 50
+#define BAN3BL_BUT_DIM 50
+
+#else
+
+#define BAN3BUT_SPACING 0
 #define BAN3BUT_BUT_DIM 60
 #define BAN3BUT_BUTCEN_DIM 120
 #define BUT3BL_ICON_DIM_X 120
 #define BUT3BL_ICON_DIM_Y 60
 #define BAN3BL_BUT_DIM 60
+
+#endif
 
 Bann3Buttons::Bann3Buttons(QWidget *parent) :
 	BannerNew(parent)
@@ -142,6 +156,6 @@ bann3ButLab::bann3ButLab(QWidget *parent) : BannerOld(parent)
 	addItem(BUT2, 0, 0, BAN3BL_BUT_DIM, BAN3BL_BUT_DIM);
 	addItem(BUT4, 0, 0, BAN3BL_BUT_DIM, BAN3BL_BUT_DIM);
 	addItem(TEXT, 0, BAN3BL_BUT_DIM, banner_width, banner_height - BAN3BL_BUT_DIM);
-	addItem(ICON, BAN3BL_BUT_DIM, 0, BUT3BL_ICON_DIM_X, BUT3BL_ICON_DIM_Y);
+	addItem(ICON, BAN3BL_BUT_DIM + BAN3BUT_SPACING, 0, BUT3BL_ICON_DIM_X, BUT3BL_ICON_DIM_Y);
 }
 
