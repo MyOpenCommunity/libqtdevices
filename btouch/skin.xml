@@ -65,6 +65,8 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_partial>btnparzializzazione.png</img_partial>
 		<img_partial_on>btnparzializza.png</img_partial_on>
 		<img_partial_off>btnsparzializza.png</img_partial_off>
+		<img_alarm_partial_on>btnparzializzap.png</img_alarm_partial_on>
+		<img_alarm_partial_off>btnsparzializzap.png</img_alarm_partial_off>
 		<img_alarm_state>antifurto.png</img_alarm_state>
 		<img_zone>imgzona.png</img_zone>
 		<img_alarm_on>imgantintrusione.png</img_alarm_on>
