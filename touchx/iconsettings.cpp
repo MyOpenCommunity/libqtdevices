@@ -413,6 +413,8 @@ BrightnessPage::BrightnessPage()
 	connect(decBut, SIGNAL(clicked()), SLOT(decBrightness()));
 	connect(incBut, SIGNAL(clicked()), SLOT(incBrightness()));
 
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+
 	// create logo
 	QLabel *logo = new QLabel;
 	logo->setPixmap(QPixmap(bt_global::skin->getImage("logo_brightness")));
