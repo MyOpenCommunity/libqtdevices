@@ -46,6 +46,9 @@ namespace
 			if (stop_values)
 				stop_values->append(getTextChild(el, "softstop").toInt());
 		}
+
+		Q_ASSERT_X(!l.isEmpty(), "getAddresses", "No device found!");
+
 		return l;
 	}
 
