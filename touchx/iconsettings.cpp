@@ -28,7 +28,6 @@
 #include "screensaverpage.h"
 #include "cleanscreen.h"
 #include "btbutton.h"
-#include "main.h" // pagSecLiv
 #include "hardware_functions.h" // setBeep/getBeep/beep
 #include "bannerfactory.h"
 #include "bannercontent.h"
@@ -193,11 +192,9 @@ void VersionPage::status_changed(const StatusList &sl)
 		{
 		case PlatformDevice::DIM_KERN_VERS:
 			text_area->setText(KERN_ROW, it.value().toString());
-			qDebug() << "LUCA Kernel version: " << it.value().toString();
 			break;
 		case PlatformDevice::DIM_FW_VERS:
 			text_area->setText(FW_ROW, it.value().toString());
-			qDebug() << "LUCA Firmware version: " << it.value().toString();
 			break;
 		case PlatformDevice::DIM_IP:
 			text_area->setText(IP_ROW, it.value().toString());
