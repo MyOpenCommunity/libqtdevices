@@ -38,9 +38,15 @@ namespace
 	QList<QString> getAddresses(QDomNode item, QList<int> *start_values = 0, QList<int> *stop_values = 0)
 	{
 		QList<QString> l;
+#ifdef CONFIG_BTOUCH
 		foreach (const QDomNode &el, getChildren(item, "element"))
 		{
 			l.append(getTextChild(el, "where"));
+#else
+		foreach (const QDomNode &el, getChildren(getElement(item, "addresses"), "where"))
+		{
+			l.append(el.toElement().text());
+#endif
 			if (start_values)
 				start_values->append(getTextChild(el, "softstart").toInt());
 			if (stop_values)
