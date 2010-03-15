@@ -24,18 +24,17 @@
 
 #include <QMap>
 #include <QObject>
+#include <QProcess>
 
 #include <stdio.h>
 
 class QRect;
-
 
 class MediaPlayer : public QObject
 {
 Q_OBJECT
 public:
 	MediaPlayer(QObject *parent = 0);
-	~MediaPlayer();
 
 	/// Starts MPlayer playing a single track
 	bool play(QString track, bool write_output = true);
@@ -79,29 +78,22 @@ public:
 	bool isFullscreen() { return fullscreen; }
 
 private:
-	/// mplayer PID
-	int mplayer_pid;
-
-	/// File Descriptors
-	int control_fd;
-	int output_fd;
-
-	/// File Handlers
-	FILE *ctrlf;
-	FILE *outf;
+	QProcess mplayer_proc;
 
 	/// Send a string to the mplayer process to execute.
 	void execCmd(const QByteArray &command) const;
 	/// Read output from mplayer process.
 	QString readOutput();
 
-	bool runMPlayer(const char * const mplayer_args[], bool write_output);
 	bool runMPlayer(const QList<QString> &args, bool write_output);
 
 	QMap<QString, QString> getMediaInfo(const QMap<QString, QString> &data_search);
 
-	bool _isPlaying;
 	bool paused, fullscreen;
+
+private slots:
+	void mplayerFinished(int exit_code, QProcess::ExitStatus exit_status);
+	void mplayerError(QProcess::ProcessError error);
 
 signals:
 	/// mplayer child process quit gracefully and done it's work.

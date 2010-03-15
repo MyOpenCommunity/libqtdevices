@@ -28,8 +28,6 @@
 
 #include <QLayout>
 
-#include <unistd.h> // usleep
-
 /*
  * Interface icon paths.
  */
@@ -174,17 +172,7 @@ void PlayWindow::stopPlayer()
 {
 	// quit mplayer if it is already playing
 	if (media_player->isInstanceRunning())
-	{
-		/*
-		 * After stop() and before starting a new istance,  we should wait
-		 * for the SIGCHLD signal emitted after quits.
-		 * usleep() exits immediately with EINTR error in case of signal.
-		 */
 		media_player->quit();
-		qDebug("[AUDIO] PlayWindow: waiting for mplayer to exit...");
-		usleep(1000000);
-		qDebug("[AUDIO] Ok");
-	}
 }
 
 QString PlayWindow::getCurrentDescription()
