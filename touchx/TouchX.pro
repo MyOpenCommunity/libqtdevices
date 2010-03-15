@@ -31,6 +31,7 @@ include(../devices.pri)
 HEADERS += favoriteswidget.h \
            headerwidget.h \
            iconsettings.h \
+           messages.h \
            multimedia.h \
            multimedia_buttons.h \
            multimedia_filelist.h \
@@ -41,9 +42,11 @@ HEADERS += favoriteswidget.h \
            videoplayer.h \
            webcam.h
 
+
 SOURCES += favoriteswidget.cpp \
            headerwidget.cpp \
            iconsettings.cpp \
+           messages.cpp \
            multimedia.cpp \
            multimedia_buttons.cpp \
            multimedia_filelist.cpp \

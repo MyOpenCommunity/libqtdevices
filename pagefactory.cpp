@@ -27,6 +27,7 @@
 #include "videoentryphone.h"
 #ifdef LAYOUT_TOUCHX
 #include "multimedia.h"
+#include "messages.h"
 #else
 #include "settings.h"
 #endif
@@ -138,6 +139,9 @@ Page *getPage(int page_id)
 #ifdef LAYOUT_TOUCHX
 	case MULTIMEDIA:
 		page = new MultimediaSectionPage(page_node);
+		break;
+	case MESSAGES:
+		page = new MessagesListPage;
 		break;
 #endif
 	case LOAD_MANAGEMENT:

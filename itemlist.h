@@ -71,13 +71,10 @@ public slots:
 	void nextItem();
 	void prevItem();
 
-private:
-	int pageCount();
-
-private slots:
+protected slots:
 	void clicked(int item);
 
-private:
+protected:
 	/// For pagination
 	int rows_per_page;
 	int current_page;
@@ -88,7 +85,9 @@ private:
 	/// The list of items displayed
 	QList<ItemInfo> item_list;
 
-	void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
+	int pageCount();
+
+	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
 };
 
 #endif

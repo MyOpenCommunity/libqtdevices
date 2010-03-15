@@ -24,6 +24,8 @@ ItemList > QWidget { background-image: url(cfg/extra/1/skin/multimediale/backfil
 RadioInfo { background-image: url(cfg/extra/1/skin/diffusione/displaybig.png); }
 FileSelector > QLabel[Loading="true"] { background-color: #000000; background-image: url(cfg/extra/1/skin/clessidra.png); background-position: center center; background-repeat: no-repeat; }
 FeedItemWidget > QTextEdit { background-color: #c0c0c0; color: #000000; }
+MessagesListPage QLabel[UnreadMessage="true"] { color:#FF0000; }
+MessagesListPage QLabel[UnreadMessage="false"] { color:#6FB2FF; }
 	</css>
 	<common>
 		<img_back>navigazione/back.png</img_back>
@@ -786,4 +788,11 @@ FeedItemWidget > QTextEdit { background-color: #c0c0c0; color: #000000; }
 		<cid>24001</cid>
 		<img_link_icon>videocitofonia/piintercompiano.png</img_link_icon>
 	</item>
+    <!-- SCS Messages -->
+    <item>
+        <cid>17000</cid>
+        <img_link_icon>home/messaggion.png</img_link_icon>
+        <img_top_navigation_button>barranavigazione/messaggioff.png</img_top_navigation_button>
+        <img_delete_all>navigazione/eliminatutti.png</img_delete_all>
+    </item>
 </style>
