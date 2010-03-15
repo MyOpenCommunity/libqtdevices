@@ -400,24 +400,24 @@ void call_notifier_manager::frame_captured_handler(call_notifier *cn)
 }
 
 
-CallExclusion::CallExclusion() : BannOnOffState(0)
+RingExclusion::RingExclusion() : BannOnOffState(0)
 {
 	curr_status = OFF;
-	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("call_exclusion"),
-		bt_global::skin->getImage("on"), curr_status, tr("Call exclusion"));
+	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("ring_exclusion"),
+		bt_global::skin->getImage("on"), curr_status, tr("Ring exclusion"));
 
-	connect(left_button, SIGNAL(clicked()), SLOT(excludeCallOff()));
-	connect(right_button, SIGNAL(clicked()), SLOT(excludeCallOn()));
+	connect(left_button, SIGNAL(clicked()), SLOT(excludeRingOff()));
+	connect(right_button, SIGNAL(clicked()), SLOT(excludeRingOn()));
 }
 
-void CallExclusion::excludeCallOff()
+void RingExclusion::excludeRingOff()
 {
 	curr_status = OFF;
 	setState(curr_status);
 	emit statusChanged(false);
 }
 
-void CallExclusion::excludeCallOn()
+void RingExclusion::excludeRingOn()
 {
 	curr_status = ON;
 	setState(curr_status);

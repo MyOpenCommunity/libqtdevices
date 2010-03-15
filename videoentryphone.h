@@ -31,8 +31,8 @@ class VCTCallPage;
 class EntryphoneDevice;
 class EnablingButton;
 class ItemTuning;
-class CallExclusion;
-class CallExclusionPage;
+class RingExclusion;
+class RingExclusionPage;
 class QDomNode;
 class QSignalMapper;
 
@@ -62,31 +62,31 @@ public:
 
 private slots:
 	void status_changed(const StatusList &sl);
-	void toggleCallExclusion();
+	void toggleRingExclusion();
 
 private:
-	BtButton *call_exclusion;
+	BtButton *ring_exclusion;
 	EntryphoneDevice *dev;
-	CallExclusionPage *call_ex_page;
+	RingExclusionPage *ring_ex_page;
 	void loadItems(const QDomNode &config_node);
 };
 
 
 /**
- * The page that contains the banner of call exclusion.
+ * The page that contains the banner of ring exclusion.
  */
-class CallExclusionPage : public BannerPage
+class RingExclusionPage : public BannerPage
 {
 Q_OBJECT
 public:
-	CallExclusionPage(const QDomNode &config_node);
+	RingExclusionPage(const QDomNode &config_node);
 	void setStatus(bool st);
 
 signals:
 	void statusChanged(bool on);
 
 private:
-	CallExclusion *b;
+	RingExclusion *b;
 };
 
 

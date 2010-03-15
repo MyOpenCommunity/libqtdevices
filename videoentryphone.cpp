@@ -52,7 +52,7 @@ enum Pages
 {
 	VIDEO_CONTROL=2200,  /*!< Video control menu */
 	INTERCOM=2201,       /*!< Intercom menu */
-	CALL_EXCLUSION=2203, /*!< Call exclusion */
+	RING_EXCLUSION=2203, /*!< Ring exclusion */
 };
 
 
@@ -106,25 +106,25 @@ VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 
-	call_ex_page = 0;
-	call_exclusion = new BtButton;
-	call_exclusion->setOnOff();
-	call_exclusion->setImage(bt_global::skin->getImage("tray_call_ex_off"));
-	call_exclusion->setPressedImage(bt_global::skin->getImage("tray_call_ex_on"));
-	connect(call_exclusion, SIGNAL(clicked()), SLOT(toggleCallExclusion()));
-	bt_global::btmain->trayBar()->addButton(call_exclusion);
+	ring_ex_page = 0;
+	ring_exclusion = new BtButton;
+	ring_exclusion->setOnOff();
+	ring_exclusion->setImage(bt_global::skin->getImage("tray_ring_ex_off"));
+	ring_exclusion->setPressedImage(bt_global::skin->getImage("tray_ring_ex_on"));
+	connect(ring_exclusion, SIGNAL(clicked()), SLOT(toggleRingExclusion()));
+	bt_global::btmain->trayBar()->addButton(ring_exclusion);
 
 	loadItems(config_node);
 	dev = bt_global::add_device_to_cache(new EntryphoneDevice(bt_global::config[PI_ADDRESS]));
 	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
 }
 
-void VideoEntryPhone::toggleCallExclusion()
+void VideoEntryPhone::toggleRingExclusion()
 {
-	bool new_status = !call_exclusion->getStatus();
-	call_exclusion->setStatus(new_status);
-	if (call_ex_page)
-		call_ex_page->setStatus(new_status);
+	bool new_status = !ring_exclusion->getStatus();
+	ring_exclusion->setStatus(new_status);
+	if (ring_ex_page)
+		ring_ex_page->setStatus(new_status);
 }
 
 void VideoEntryPhone::status_changed(const StatusList &sl)
@@ -136,7 +136,7 @@ void VideoEntryPhone::status_changed(const StatusList &sl)
 		{
 		case EntryphoneDevice::RINGTONE:
 			RingtoneType ringtone = static_cast<RingtoneType>(it.value().toInt());
-			if (!call_exclusion->getStatus())
+			if (!ring_exclusion->getStatus())
 				bt_global::ringtones->playRingtone(ringtone);
 
 			break;
@@ -167,10 +167,10 @@ void VideoEntryPhone::loadItems(const QDomNode &config_node)
 		case VIDEO_CONTROL:
 			p = new VideoControl(page_node);
 			break;
-		case CALL_EXCLUSION:
-			call_ex_page = new CallExclusionPage(page_node);
-			connect(call_ex_page, SIGNAL(statusChanged(bool)), call_exclusion, SLOT(setStatus(bool)));
-			p = call_ex_page;
+		case RING_EXCLUSION:
+			ring_ex_page = new RingExclusionPage(page_node);
+			connect(ring_ex_page, SIGNAL(statusChanged(bool)), ring_exclusion, SLOT(setStatus(bool)));
+			p = ring_ex_page;
 			break;
 		default:
 			qFatal("Unhandled page id in VideoEntryPhone::loadItems");
@@ -187,21 +187,21 @@ void VideoEntryPhone::loadItems(const QDomNode &config_node)
 }
 
 
-CallExclusionPage::CallExclusionPage(const QDomNode &config_node)
+RingExclusionPage::RingExclusionPage(const QDomNode &config_node)
 {
 	buildPage(getTextChild(config_node, "descr"));
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	b = new CallExclusion;
+	b = new RingExclusion;
 	connect(b, SIGNAL(statusChanged(bool)), this, SIGNAL(statusChanged(bool)));
 	page_content->appendBanner(b);
 }
 
-void CallExclusionPage::setStatus(bool st)
+void RingExclusionPage::setStatus(bool st)
 {
 	if (st)
-		b->excludeCallOn();
+		b->excludeRingOn();
 	else
-		b->excludeCallOff();
+		b->excludeRingOff();
 }
 
 

@@ -184,18 +184,18 @@ private:
 
 
 /**
- * The banner for the call exclusion, used to silence the ringtone for an
+ * The banner for the ring exclusion, used to silence the ringtone for an
  * incoming call (videocall or intercom)
  */
-class CallExclusion : public BannOnOffState
+class RingExclusion : public BannOnOffState
 {
 Q_OBJECT
 public:
-	CallExclusion();
+	RingExclusion();
 
 public slots:
-	void excludeCallOff();
-	void excludeCallOn();
+	void excludeRingOff();
+	void excludeRingOn();
 
 signals:
 	void statusChanged(bool on);

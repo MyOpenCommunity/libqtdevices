@@ -79,13 +79,13 @@ FeedItemWidget > QTextEdit { background-color: #c0c0c0; color: #000000; }
     <!-- Videoentryphone section-->
     <item>
         <cid>22</cid>
-        <img_tray_call_ex_on>home/esclusionechiamataon.png</img_tray_call_ex_on>
-        <img_tray_call_ex_off>home/esclusionechiamataoff.png</img_tray_call_ex_off>
+        <img_tray_ring_ex_on>home/esclusionechiamataon.png</img_tray_ring_ex_on>
+        <img_tray_ring_ex_off>home/esclusionechiamataoff.png</img_tray_ring_ex_off>
     </item>
-	<!-- Call exclusion page -->
+	<!-- Ring exclusion page -->
 	<item>
 		<cid>35</cid>
-		<img_call_exclusion>videocitofonia/imgesclusionechiamata.png</img_call_exclusion>
+		<img_ring_exclusion>videocitofonia/imgesclusionechiamata.png</img_ring_exclusion>
 	</item>
 	<!-- Home and info bar -->
 	<item>
