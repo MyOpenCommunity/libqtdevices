@@ -96,7 +96,6 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		b = new SingleActuator(descr, where, oid);
 		break;
 	case GR_DIMMER:
-		// TODO: touch10??
 		b = new DimmerGroup(getAddresses(item_node), descr);
 		break;
 	case GR_ATTUAT_AUTOM:
@@ -110,7 +109,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		break;
 	case DIMMER_100:
 	{
-		// TODO: touch10??
+		// TODO: CONFIG_BTOUCH touch10??
 		int start = getTextChild(item_node, "softstart").toInt();
 		int stop = getTextChild(item_node, "softstop").toInt();
 		b = new Dimmer100(descr, where, oid, start, stop);
@@ -121,7 +120,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		break;
 	case GR_DIMMER100:
 	{
-		// TODO: touch10??
+		// TODO: CONFIG_BTOUCH touch10??
 		QList<int> start, stop;
 		QList<QString> addresses = getAddresses(item_node, &start, &stop);
 		b = new Dimmer100Group(addresses, start, stop, descr);
