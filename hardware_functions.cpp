@@ -159,6 +159,22 @@ void setBacklight(bool b)
 		setBacklightOn(b);
 }
 
+#ifdef BT_HARDWARE_TOUCHX
+
+bool buzzer_enabled = false;
+
+void setBeep(bool buzzer_enable)
+{
+	buzzer_enabled = buzzer_enable;
+}
+
+bool getBeep()
+{
+	return buzzer_enabled;
+}
+
+#else
+
 void setBeep(bool buzzer_enable)
 {
 	const char *p = buzzer_enable ? "1" : "0";
@@ -188,6 +204,8 @@ bool getBeep()
 	}
 	return false;
 }
+
+#endif
 
 bool getBacklight()
 {
