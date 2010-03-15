@@ -68,7 +68,6 @@ HomeWindow::HomeWindow()
 	QGridLayout *main_layout = new QGridLayout(this);
 	main_layout->setSpacing(0);
 	main_layout->setContentsMargins(0, 0, 0, 0);
-	qDebug() << "adding top and right widgets";
 
 	central_widget = new PageContainer(this);
 	main_layout->addWidget(central_widget, 1, 0, 1, 1);
