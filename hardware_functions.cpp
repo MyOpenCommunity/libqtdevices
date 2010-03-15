@@ -274,7 +274,7 @@ void beep(int t)
 		}
 	}
 #else // BT_HARDWARE_TOUCHX
-	if (QFile::exists(SOUND_PATH "beep.wav"))
+	if (buzzer_enabled && QFile::exists(SOUND_PATH "beep.wav"))
 		playSound(SOUND_PATH "beep.wav");
 #endif
 }
