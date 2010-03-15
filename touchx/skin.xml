@@ -137,6 +137,13 @@ FeedItemWidget > QTextEdit { background-color: #c0c0c0; color: #000000; }
 		<img_state_on>setup/beepon.png</img_state_on>
 		<img_state_off>setup/beepoff.png</img_state_off>
 	</item>
+	<!-- Brightness -->
+	<item>
+		<!-- uses: minus, plus -->
+		<cid>803</cid>
+		<img_link_icon>setup/luminosita.png</img_link_icon>
+		<img_logo_brightness>setup/contrastoimage.png</img_logo_brightness>
+	</item>
 	<!-- Volume -->
 	<item>
 		<cid>808</cid>

@@ -73,7 +73,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	buildPage(new BannerContent, nav_bar, QString(), top_widget);
 	forward_button = nav_bar->forward_button;
 #else
-	buildPage(getTextChild(config_node, "descr"), 35, top_widget);
+	buildPage(getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT, top_widget);
 
 	page_content->layout()->setSpacing(5);
 #endif
@@ -555,7 +555,7 @@ AlarmList::AlarmList()
 
 	PageTitleWidget *title_widget = 0;
 #ifdef LAYOUT_TOUCHX
-	title_widget = new PageTitleWidget(tr("Alarms"), 35);
+	title_widget = new PageTitleWidget(tr("Alarms"), SMALL_TITLE_HEIGHT);
 
 	connect(alarms, SIGNAL(contentScrolled(int, int)),
 		title_widget, SLOT(setCurrentPage(int, int)));

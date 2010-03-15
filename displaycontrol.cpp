@@ -27,6 +27,7 @@
 DisplayControl::DisplayControl()
 {
 	forced_operative_mode = false;
+	operative_brightness = 10;
 	setBrightness(BRIGHTNESS_NORMAL);
 	setState(DISPLAY_OPERATIVE);
 }
@@ -80,7 +81,7 @@ void DisplayControl::setBrightness(BrightnessLevel level)
 	data[DISPLAY_OFF].backlight = false;
 	data[DISPLAY_OFF].screensaver = false;
 
-	data[DISPLAY_OPERATIVE].brightness = 10;
+	data[DISPLAY_OPERATIVE].brightness = operative_brightness;
 	data[DISPLAY_OPERATIVE].backlight = true;
 	data[DISPLAY_OPERATIVE].screensaver = false;
 
@@ -89,6 +90,19 @@ void DisplayControl::setBrightness(BrightnessLevel level)
 	setCfgValue("brightness/level", level, DISPLAY);
 #endif
 	current_brightness = level;
+}
+
+void DisplayControl::setOperativeBrightness(int brightness)
+{
+	data[DISPLAY_OPERATIVE].brightness = operative_brightness = brightness;
+
+	if (current_state == DISPLAY_OPERATIVE)
+		setBrightnessLevel(operative_brightness);
+}
+
+int DisplayControl::operativeBrightness()
+{
+	return operative_brightness;
 }
 
 BrightnessLevel DisplayControl::currentBrightness()

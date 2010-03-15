@@ -33,6 +33,15 @@
 #include <stdio.h> // sprintf
 
 
+// values for /bin/settrimmer
+#define TFT_BRIGHTNESS    "1"
+#define TFT_CONTRAST      "2"
+#define TFT_COLOR         "3"
+#define TFT_CONTRAST_VCT  "4"
+#define TFT_COLOR_VCT     "5"
+#define TFT_BRIGTH_VCT    "6"
+
+
 int maxWidth()
 {
 	static int width = 0;
@@ -91,6 +100,7 @@ static void writeValueToFd(int fd, int value)
 
 void setBrightnessLevel(int level)
 {
+#ifdef BT_HARDWARE_BTOUCH
 	if (QFile::exists("/proc/sys/dev/btweb/brightness"))
 	{
 		int fd = open("/proc/sys/dev/btweb/brightness", O_WRONLY);
@@ -100,6 +110,12 @@ void setBrightnessLevel(int level)
 			close(fd);
 		}
 	}
+#else
+	int value = (level - 10) * 13 / 240;
+
+	QProcess::startDetached("/bin/settrimmer",
+				QStringList() << TFT_BRIGHTNESS << QString::number(value));
+#endif
 }
 
 void setBacklightOn(bool b)
@@ -113,6 +129,15 @@ void setBacklightOn(bool b)
 			close(fd);
 		}
 	}
+
+#ifdef BT_HARDWARE_TOUCHX
+	if (b)
+	{
+		QStringList args_contrast;
+		args_contrast << TFT_CONTRAST << "7";
+		QProcess::startDetached("/bin/settrimmer", args_contrast);
+	}
+#endif
 }
 
 void setBacklight(bool b)
@@ -401,11 +426,11 @@ void initScreen()
 {
 #ifdef BT_HARDWARE_TOUCHX
 	QStringList args_brightness;
-	args_brightness << "1" << "13";
+	args_brightness << TFT_BRIGHTNESS << "13";
 	QProcess::startDetached("/bin/settrimmer", args_brightness);
 
 	QStringList args_contrast;
-	args_contrast << "2" << "7";
+	args_contrast << TFT_CONTRAST << "7";
 	QProcess::startDetached("/bin/settrimmer", args_contrast);
 #endif
 }

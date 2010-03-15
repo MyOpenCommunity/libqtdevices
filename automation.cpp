@@ -70,8 +70,13 @@ banner *Automation::getBanner(const QDomNode &item_node)
 	case GR_ATTUAT_INT:
 	{
 		QStringList addresses;
+#ifdef CONFIG_BTOUCH
 		foreach (const QDomNode &el, getChildren(item_node, "element"))
 			addresses << getTextChild(el, "where");
+#else
+		foreach (const QDomNode &el, getChildren(getElement(item_node, "addresses"), "where"))
+			addresses << el.toElement().text();
+#endif
 		b = new InterblockedActuatorGroup(addresses, descr, oid);
 	}
 		break;

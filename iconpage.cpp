@@ -42,7 +42,7 @@ void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QSt
 	PageTitleWidget *title_widget = 0;
 	if (!title.isNull())
 	{
-		title_widget = new PageTitleWidget(title, 35);
+		title_widget = new PageTitleWidget(title, SMALL_TITLE_HEIGHT);
 		connect(content, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
 	}
 	Page::buildPage(content, nav_bar, 0, title_widget);

@@ -38,6 +38,7 @@
 #include "devices_cache.h" // bt_global::add_device_to_cache
 #include "platform_device.h" // PlatformDevice
 #include "generic_functions.h" // setCfgValue
+#include "displaycontrol.h"
 #if !defined(BT_HARDWARE_X11)
 #include "calibration.h"
 #endif
@@ -140,12 +141,18 @@ void RingtonesPage::stopRingtones()
 
 VolumePage::VolumePage(const QDomNode &config_node)
 {
+	QWidget *content = new QWidget;
+	QHBoxLayout *layout = new QHBoxLayout(content);
+	layout->setContentsMargins(0, 0, 0, TITLE_HEIGHT);
+
 	// TODO: is this text ok for the banner? Should it be read from conf?
 	ItemTuning *volume = new ItemTuning(tr("Volume"), bt_global::skin->getImage("volume"));
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
-	buildPage(volume, nav_bar, getTextChild(config_node, "descr"));
+
+	layout->addWidget(volume, 0, Qt::AlignCenter);
+	buildPage(content, nav_bar, getTextChild(config_node, "descr"));
 }
 
 void VolumePage::changeVolume(int new_vol)
@@ -175,7 +182,7 @@ VersionPage::VersionPage(const QDomNode &config_node)
 	text_area->addRow(tr("IP address"), "");
 	text_area->addRow(tr("Netmask"), "");
 
-	buildPage(text_area, nav_bar, getTextChild(config_node, "descr"));
+	buildPage(text_area, nav_bar, getTextChild(config_node, "descr"), TINY_TITLE_HEIGHT);
 }
 
 void VersionPage::status_changed(const StatusList &sl)
@@ -347,6 +354,9 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		case PAGE_VERSION:
 			p = new VersionPage(item);
 			break;
+		case PAGE_BRIGHTNESS:
+			p = new BrightnessPage;
+			break;
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");
 		};
@@ -382,4 +392,57 @@ PasswordPage::PasswordPage(const QDomNode &config_node)
 		getTextChild(config_node, "password"), getTextChild(config_node, "actived").toInt());
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	page_content->appendBanner(b);
+}
+
+
+BrightnessPage::BrightnessPage()
+{
+	QWidget *content = new QWidget;
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+
+	buildPage(content, nav_bar, tr("Brightness"), SMALL_TITLE_HEIGHT);
+
+	// create buttons
+	BtButton *decBut = new BtButton(bt_global::skin->getImage("minus"));
+	BtButton *incBut = new BtButton(bt_global::skin->getImage("plus"));
+
+	incBut->setAutoRepeat(true);
+	decBut->setAutoRepeat(true);
+
+	connect(decBut, SIGNAL(clicked()), SLOT(decBrightness()));
+	connect(incBut, SIGNAL(clicked()), SLOT(incBrightness()));
+
+	// create logo
+	QLabel *logo = new QLabel;
+	logo->setPixmap(QPixmap(bt_global::skin->getImage("logo_brightness")));
+
+	// layout
+	QHBoxLayout *b = new QHBoxLayout;
+	b->setContentsMargins(0, 0, 0, 0);
+	b->setSpacing(20);
+
+	b->addWidget(decBut, 0, Qt::AlignRight);
+	b->addWidget(incBut, 0 , Qt::AlignLeft);
+
+	QVBoxLayout *l = new QVBoxLayout(content);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(10);
+
+	l->addWidget(logo, 0, Qt::AlignCenter);
+	l->addLayout(b, Qt::AlignCenter);
+}
+
+void BrightnessPage::incBrightness()
+{
+	int b = bt_global::display.operativeBrightness();
+	if (b > 10)
+		bt_global::display.setOperativeBrightness(b - 10);
+}
+
+void BrightnessPage::decBrightness()
+{
+	int b = bt_global::display.operativeBrightness();
+	if (b < 250)
+		bt_global::display.setOperativeBrightness(b + 10);
 }

@@ -334,7 +334,7 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 #else
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
-	buildPage(new QWidget, nav_bar, getTextChild(config_node, "descr"), 35);
+	buildPage(new QWidget, nav_bar, getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 #endif
 	connect(nav_bar, SIGNAL(backClick()), SLOT(resetChanges()));

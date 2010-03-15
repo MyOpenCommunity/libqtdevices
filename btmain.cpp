@@ -312,7 +312,12 @@ void BtMain::loadConfiguration()
 
 	QDomNode display_node = getChildWithId(getPageNode(IMPOSTAZIONI), QRegExp("item\\d{1,2}"), DISPLAY);
 
+#ifdef BT_HARDWARE_TOUCHX
+	// on TouchX there is no way to control the screensaver brightness
+	BrightnessLevel level = BRIGHTNESS_HIGH;
+#else
 	BrightnessLevel level = BRIGHTNESS_NORMAL; // default brightness
+#endif
 	if (!display_node.isNull())
 	{
 		QDomElement n = getElement(display_node, "brightness/level");
@@ -445,8 +450,16 @@ void BtMain::myMain()
 	startGui();
 }
 
+static unsigned long now()
+{
+	return time(NULL);
+}
+
 void BtMain::startGui()
 {
+	// start the screensaver countdown when the home page is shown
+	last_event_time = now();
+
 	Home->showPage();
 	// this needs to be after the showPage, and will be a no-op until transitions
 	// between windows are implemented
@@ -461,11 +474,6 @@ void BtMain::startGui()
 void BtMain::showHomePage()
 {
 	Home->showPage();
-}
-
-static unsigned long now()
-{
-	return time(NULL);
 }
 
 void BtMain::unrollPages()

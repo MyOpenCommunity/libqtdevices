@@ -1,5 +1,6 @@
 */BTOUCH_CHANGE_CONF
 *.pro.user
+*.pro.user.*
 *.arm
 *.x86
 BTouch_qws
