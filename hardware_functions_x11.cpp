@@ -36,7 +36,7 @@
 static bool buzzer_enabled = false;
 static bool backlight = false;
 static unsigned char contrast = 0;
-static QDateTime lastPress = QDateTime::currentDateTime();
+static QDateTime lastPress = QDateTime::currentDateTime().addSecs(3600);
 
 int maxWidth()
 {

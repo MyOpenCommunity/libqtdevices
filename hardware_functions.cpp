@@ -26,6 +26,7 @@
 #include <QScreen>
 #include <QtDebug>
 #include <QProcess>
+#include <QDateTime>
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -284,6 +285,8 @@ void beep()
 	beep(50);
 }
 
+#ifdef BT_HARDWARE_BTOUCH
+
 unsigned long getTimePress()
 {
 	unsigned long t = 0;
@@ -300,6 +303,22 @@ unsigned long getTimePress()
 	}
 	return t;
 }
+
+#else
+
+static QDateTime lastPress = QDateTime::currentDateTime();
+
+void setTimePress(const QDateTime &press)
+{
+	lastPress = press;
+}
+
+unsigned long getTimePress()
+{
+	return lastPress.secsTo(QDateTime::currentDateTime());
+}
+
+#endif
 
 void rearmWDT()
 {
