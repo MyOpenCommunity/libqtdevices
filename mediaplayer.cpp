@@ -48,6 +48,8 @@ MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 
 	paused = false;
 	fullscreen = false;
+	connect(&mplayer_proc, SIGNAL(finished(int, QProcess::ExitStatus)), SLOT(mplayerFinished(int, QProcess::ExitStatus)));
+	connect(&mplayer_proc, SIGNAL(error(QProcess::ProcessError)), SLOT(mplayerError(QProcess::ProcessError)));
 }
 
 bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool write_output)
@@ -177,18 +179,10 @@ void MediaPlayer::execCmd(const QByteArray &command) const
 		qDebug("[AUDIO] MediaPlayer::execCmd(): error, no control fifo found");
 }
 
-QString MediaPlayer::readOutput()
-{
-	// TODO: reimplement
-	return QString();
-}
-
-
 bool MediaPlayer::isInstanceRunning()
 {
 	return (mplayer_proc.state() == QProcess::Running);
 }
-
 
 QMap<QString, QString> MediaPlayer::getVideoInfo()
 {
@@ -203,33 +197,24 @@ QMap<QString, QString> MediaPlayer::getVideoInfo()
 	return QMap<QString, QString>();
 }
 
-
 QMap<QString, QString> MediaPlayer::getPlayingInfo()
 {
-	/*
 	/// Define Search Data Map
 	QMap<QString, QString> data_search;
 	data_search["file_name"]    = "Playing [^\\n]*([^/\\n]+)\\.\\n";
 	data_search["meta_title"]   = "Title: ([^\\n]*)\\n";
 	data_search["meta_artist"]  = "Artist: ([^\\n]*)\\n";
 	data_search["meta_album"]   = "Album: ([^\\n]*)\\n";
-	data_search["meta_year"]    = "Year: ([^\\n]*)\\n";
-	data_search["meta_comment"] = "Comment: ([^\\n]*)\\n";
-	data_search["meta_genre"]   = "Genre: ([^\\n]*)\\n";
-	data_search["total_time"]   = "[(](\\d+:\\d+\\.\\d+)[)] \\d+\\.\\d+";
+	data_search["total_time"]   = "[(](\\d+:\\d+\\.\\d+)[)]";
 	data_search["current_time"] = "A:\\s+\\d+\\.\\d+\\s+[(](\\d*:*\\d+\\.\\d+)[)]";
 
 	return getMediaInfo(data_search);
-	*/
-	// TODO: reimplement
-	return QMap<QString, QString>();
 }
 
 QMap<QString, QString> MediaPlayer::getMediaInfo(const QMap<QString, QString> &data_search)
 {
-	/*
 	/// READ ROW output from MPlayer
-	QString row_data = readOutput();
+	QString row_data = mplayer_proc.readAll();
 
 	/// Create output Map
 	QMap<QString, QString> info_data;
@@ -245,11 +230,7 @@ QMap<QString, QString> MediaPlayer::getMediaInfo(const QMap<QString, QString> &d
 	}
 
 	return info_data;
-	*/
-	// TODO: reimplement
-	return QMap<QString, QString>();
 }
-
 
 void MediaPlayer::quit()
 {
