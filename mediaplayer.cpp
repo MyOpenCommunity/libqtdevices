@@ -126,6 +126,7 @@ bool MediaPlayer::runMPlayer(const QList<QString> &args, bool write_output)
 	*/
 
 	mplayer_proc.start(MPLAYER_FILENAME, args);
+	paused = false;
 	return mplayer_proc.waitForStarted(300);
 }
 
