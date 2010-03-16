@@ -151,8 +151,6 @@ void Calibration::hideEvent(QHideEvent*)
 {
 	// To ensure that the mouse is always released (what happen with an entry videocall?)
 	releaseMouse();
-
-	bt_global::btmain->calibrationEnded();
 }
 
 void Calibration::rollbackCalibration()
@@ -277,6 +275,8 @@ void Calibration::drawCrosshair()
 
 void Calibration::endCalibration()
 {
+	bt_global::btmain->calibrationEnded();
+
 	// The calibration was done right so we can remove the old calibration file
 	if (QFile::exists(QString("%1.calibrated").arg(pointercal_file)))
 		system(qPrintable(QString("rm %1.calibrated").arg(pointercal_file)));
