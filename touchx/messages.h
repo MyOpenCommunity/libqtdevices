@@ -58,10 +58,13 @@ public:
 	typedef ItemList ContentType;
 	virtual int sectionId();
 
+public slots:
+	virtual void showPage();
+
 private:
 	MessagePage *message_page;
-	QList<ItemList::ItemInfo> message_list;
 	int current_index;
+	bool need_update;
 	void loadMessages(const QString &filename);
 
 private slots:

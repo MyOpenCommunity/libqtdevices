@@ -79,6 +79,7 @@ MessagePage::MessagePage()
 {
 
 	QWidget *box_message = new QWidget;
+	box_message->setContentsMargins(10, 0, 10, 10);
 
 	PageTitleWidget *title_widget = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
 	NavigationBar *nav_bar = new NavigationBar;
@@ -140,6 +141,15 @@ MessagesListPage::MessagesListPage()
 	connect(message_page, SIGNAL(nextMessage()), SLOT(showNextMessage()));
 	connect(message_page, SIGNAL(prevMessage()), SLOT(showPrevMessage()));
 	current_index = -1;
+	need_update = false;
+}
+
+void MessagesListPage::showPage()
+{
+	if (need_update)
+		page_content->showList();
+	need_update = false;
+	Page::showPage();
 }
 
 void MessagesListPage::loadMessages(const QString &filename)
@@ -158,6 +168,7 @@ void MessagesListPage::loadMessages(const QString &filename)
 		return;
 	}
 
+	QList<ItemList::ItemInfo> message_list;
 	QDomNode root = qdom_messages.documentElement();
 	foreach (const QDomNode &item, getChildren(root, "item"))
 	{
@@ -180,28 +191,34 @@ int MessagesListPage::sectionId()
 void MessagesListPage::showMessage(int index)
 {
 	current_index = index;
-	ItemList::ItemInfo item = message_list.at(index);
+	ItemList::ItemInfo &item = page_content->item(index);
 	message_page->setData(item.name, item.description, item.data.toBool());
+	item.data = true;
+	need_update = true;
 	message_page->showPage();
 }
 
 void MessagesListPage::showPrevMessage()
 {
-	if (current_index > 0 && message_list.count())
+	if (current_index > 0 && page_content->itemCount())
 	{
 		--current_index;
-		ItemList::ItemInfo item = message_list.at(current_index);
+		ItemList::ItemInfo &item = page_content->item(current_index);
 		message_page->setData(item.name, item.description, item.data.toBool());
+		item.data = true;
+		need_update = true;
 	}
 }
 
 void MessagesListPage::showNextMessage()
 {
-	if (current_index >= 0 && current_index < message_list.count() - 1)
+	if (current_index >= 0 && current_index < page_content->itemCount() - 1)
 	{
 		++current_index;
-		ItemList::ItemInfo item = message_list.at(current_index);
+		ItemList::ItemInfo &item = page_content->item(current_index);
 		message_page->setData(item.name, item.description, item.data.toBool());
+		item.data = true;
+		need_update = true;
 	}
 }
 
