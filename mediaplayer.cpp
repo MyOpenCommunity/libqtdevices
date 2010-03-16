@@ -50,13 +50,6 @@ MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 
 bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool write_output)
 {
-	/*
-	QFile sk("/tmp/start_seek");
-
-	sk.open(QFile::WriteOnly);
-	sk.write(QString("seek %1 2\n").arg(start_time).toAscii());
-	sk.close();
-	*/
 	QList<QString> mplayer_args = getStandardArgs();
 
 	mplayer_args << "-vf" << QString("scale=%1:%2").arg(geometry.width()).arg(geometry.height())
@@ -64,7 +57,7 @@ bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool 
 		     << "-screenw" << QString::number(maxWidth())
 		     << "-screenh" << QString::number(maxHeight())
 		     << "-ac" << "mad," << "-af" << "channels=2,resample=48000"
-		     //<< "-ao" << "oss:/dev/dsp1"
+		     << "-ao" << "oss:/dev/dsp1"
 		     << track;
 
 	return runMPlayer(mplayer_args, write_output);
@@ -72,20 +65,12 @@ bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool 
 
 bool MediaPlayer::playVideoFullScreen(QString track, int start_time, bool write_output)
 {
-	QFile sk("/tmp/start_seek");
+	QList<QString> mplayer_args = getStandardArgs();
 
-	sk.open(QFile::WriteOnly);
-	sk.write(QString("seek %1 2\n").arg(start_time).toAscii());
-	sk.close();
-
-	QList<QString> mplayer_args;
-
-	mplayer_args << MPLAYER_FILENAME
-		     << "-screenw" << QString::number(maxWidth())
+	mplayer_args << "-screenw" << QString::number(maxWidth())
 		     << "-screenh" << QString::number(maxHeight())
 		     << "-ac" << "mad," << "-af" << "channels=2,resample=48000"
 		     << "-ao" << "oss:/dev/dsp1"
-		     << "-input" << "file=/tmp/start_seek"
 		     << "-fs"
 		     << track;
 
@@ -94,14 +79,12 @@ bool MediaPlayer::playVideoFullScreen(QString track, int start_time, bool write_
 
 QList<QString> MediaPlayer::getStandardArgs()
 {
-	return QList<QString>() << MPLAYER_FILENAME
-		<< "-nolirc"
-		<< "-slave";
+	return QList<QString>() << "-nolirc" << "-slave";
 }
 
 bool MediaPlayer::play(QString track, bool write_output)
 {
-	QList<QString> mplayer_args;
+	QList<QString> mplayer_args = getStandardArgs();
 
 
 	QByteArray t = track.toLocal8Bit();
