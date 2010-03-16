@@ -50,14 +50,10 @@ MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool write_output)
 {
 	QList<QString> mplayer_args = getStandardArgs();
+	mplayer_args.append(getVideoArgs(start_time));
 
 	mplayer_args << "-vf" << QString("scale=%1:%2").arg(geometry.width()).arg(geometry.height())
-		     <<	"-geometry" << QString("%1:%2").arg(geometry.left()).arg(geometry.top())
-		     << "-screenw" << QString::number(maxWidth())
-		     << "-screenh" << QString::number(maxHeight())
-		     << "-ac" << "mad," << "-af" << "channels=2,resample=48000"
-		     << "-ao" << "oss:/dev/dsp1"
-		     << "-ss" << QString::number(start_time)
+		     << "-geometry" << QString("%1:%2").arg(geometry.left()).arg(geometry.top())
 		     << track;
 
 	return runMPlayer(mplayer_args, write_output);
@@ -66,13 +62,9 @@ bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool 
 bool MediaPlayer::playVideoFullScreen(QString track, int start_time, bool write_output)
 {
 	QList<QString> mplayer_args = getStandardArgs();
+	mplayer_args.append(getVideoArgs(start_time));
 
-	mplayer_args << "-screenw" << QString::number(maxWidth())
-		     << "-screenh" << QString::number(maxHeight())
-		     << "-ac" << "mad," << "-af" << "channels=2,resample=48000"
-		     << "-ao" << "oss:/dev/dsp1"
-		     << "-ss" << QString::number(start_time)
-		     << "-fs"
+	mplayer_args << "-fs"
 		     << track;
 
 	return runMPlayer(mplayer_args, write_output);
@@ -81,6 +73,15 @@ bool MediaPlayer::playVideoFullScreen(QString track, int start_time, bool write_
 QList<QString> MediaPlayer::getStandardArgs()
 {
 	return QList<QString>() << "-nolirc" << "-slave";
+}
+
+QList<QString> MediaPlayer::getVideoArgs(int seek_time)
+{
+	return QList<QString>() << "-screenw" << QString::number(maxWidth())
+			<< "-screenh" << QString::number(maxHeight())
+			<< "-ac" << "mad," << "-af" << "channels=2,resample=48000"
+			<< "-ao" << "oss:/dev/dsp1"
+			<< "-ss" << QString::number(seek_time);
 }
 
 bool MediaPlayer::play(QString track, bool write_output)

@@ -80,6 +80,7 @@ private:
 
 	bool runMPlayer(const QList<QString> &args, bool write_output);
 	QList<QString> getStandardArgs();
+	QList<QString> getVideoArgs(int seek_time);
 
 	QMap<QString, QString> getMediaInfo(const QMap<QString, QString> &data_search);
 
