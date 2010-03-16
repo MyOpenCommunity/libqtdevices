@@ -31,6 +31,7 @@
 #include "bann2_buttons.h"
 #include "items.h" // ItemTuning
 #include "pagestack.h" // bt_global::page_stack
+#include "btmain.h" // isCalibrating
 
 #include <QDomNode>
 #include <QHBoxLayout>
@@ -300,7 +301,6 @@ void VCTCall::status_changed(const StatusList &sl)
 		switch (it.key())
 		{
 		case EntryphoneDevice::VCT_CALL:
-			startVideo();
 			emit incomingCall();
 			break;
 		case EntryphoneDevice::END_OF_CALL:
@@ -419,8 +419,14 @@ void VCTCallPage::showPage()
 	bt_global::page_stack.showVCTPage(this);
 	call_status->init();
 	vct_call->refreshStatus();
-	if (bt_global::display.currentState() != DISPLAY_FREEZED)
-		bt_global::display.forceOperativeMode(true);
+
+	if (!bt_global::btmain->isCalibrating())
+	{
+		vct_call->startVideo();
+		if (bt_global::display.currentState() != DISPLAY_FREEZED)
+			bt_global::display.forceOperativeMode(true);
+	}
+
 	Page::showPage();
 }
 
