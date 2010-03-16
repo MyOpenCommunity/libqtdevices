@@ -687,15 +687,15 @@ void BtMain::svegl(bool b)
 	alarmClockIsOn = b;
 }
 
-void BtMain::startCalib()
+void BtMain::calibrationStarted()
 {
-	qDebug("BtMain::startCalib()");
+	qDebug("BtMain::calibrationStarted()");
 	calibrating = true;
 }
 
-void BtMain::endCalib()
+void BtMain::calibrationEnded()
 {
-	qDebug("BtMain::endCalib()");
+	qDebug("BtMain::calibrationEnded()");
 	calibrating = false;
 }
 

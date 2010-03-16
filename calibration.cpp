@@ -118,7 +118,7 @@ bool Calibration::exists()
 
 void Calibration::startCalibration()
 {
-	bt_global::btmain->startCalib();
+	bt_global::btmain->calibrationStarted();
 
 	text = tr("Click the crosshair");
 	topleft_button->hide();
@@ -145,7 +145,7 @@ void Calibration::hideEvent(QHideEvent*)
 	// To ensure that the mouse is always released (what happen with an entry videocall?)
 	releaseMouse();
 
-	bt_global::btmain->endCalib();
+	bt_global::btmain->calibrationEnded();
 }
 
 void Calibration::rollbackCalibration()

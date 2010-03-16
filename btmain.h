@@ -83,8 +83,8 @@ public:
 	void makeActiveAndFreeze();
 
 public slots:
-	void startCalib();
-	void endCalib();
+	void calibrationStarted();
+	void calibrationEnded();
 
 signals:
 	void resettimer();
