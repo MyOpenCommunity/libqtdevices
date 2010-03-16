@@ -30,6 +30,22 @@ class QString;
 class QLabel;
 
 
+/**
+ * The page used to ask if delete all the messages or not.
+ */
+class DeleteMessagesPage : public Page
+{
+Q_OBJECT
+public:
+	DeleteMessagesPage();
+signals:
+	void deleteAll();
+};
+
+
+/**
+ * The page used to show a message.
+ */
 class MessagePage : public Page
 {
 Q_OBJECT
@@ -63,6 +79,8 @@ public slots:
 
 private:
 	MessagePage *message_page;
+	DeleteMessagesPage *delete_page;
+	PageTitleWidget *title;
 	int current_index;
 	bool need_update;
 	void loadMessages(const QString &filename);
@@ -72,6 +90,7 @@ private slots:
 	void deleteAll();
 	void showPrevMessage();
 	void showNextMessage();
+	void showDeletePage();
 };
 
 

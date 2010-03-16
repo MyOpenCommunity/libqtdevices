@@ -75,20 +75,47 @@ namespace
 }
 
 
+DeleteMessagesPage::DeleteMessagesPage()
+{
+	QWidget *content = new QWidget;
+	content->setFont(bt_global::font->get(FontManager::TEXT));
+	content->setContentsMargins(10, 10, 30, 35);
+	PageTitleWidget *title_widget = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
+	NavigationBar *nav_bar = new NavigationBar;
+
+	nav_bar->displayScrollButtons(false);
+	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
+
+	buildPage(content, nav_bar, 0, title_widget);
+
+	QVBoxLayout *layout = new QVBoxLayout(content);
+	QLabel *box_text = new QLabel;
+	box_text->setMargin(10);
+	box_text->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+	box_text->setWordWrap(true);
+	box_text->setText(tr("Are you sure to delete all messages?"));
+	layout->addWidget(box_text);
+
+	BtButton *ok_button = new BtButton(bt_global::skin->getImage("ok"));
+	connect(ok_button, SIGNAL(clicked()), this, SIGNAL(deleteAll()));
+	connect(ok_button, SIGNAL(clicked()), this, SIGNAL(Closed()));
+	layout->addWidget(ok_button, 0, Qt::AlignRight);
+}
+
 MessagePage::MessagePage()
 {
-
-	QWidget *box_message = new QWidget;
-	box_message->setContentsMargins(10, 0, 10, 10);
+	QWidget *content = new QWidget;
+	content->setContentsMargins(10, 0, 10, 10);
+	content->setFont(bt_global::font->get(FontManager::TEXT));
 
 	PageTitleWidget *title_widget = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
 	NavigationBar *nav_bar = new NavigationBar;
 	connect(nav_bar, SIGNAL(upClick()), this, SIGNAL(prevMessage()));
 	connect(nav_bar, SIGNAL(downClick()), this, SIGNAL(nextMessage()));
 	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
-	buildPage(box_message, nav_bar, 0, title_widget);
+	buildPage(content, nav_bar, 0, title_widget);
 
-	QVBoxLayout *box_layout = new QVBoxLayout(box_message);
+	QVBoxLayout *box_layout = new QVBoxLayout(content);
 	box_layout->setSpacing(0);
 
 	new_message_label = new QLabel;
@@ -122,24 +149,30 @@ MessagesListPage::MessagesListPage()
 {
 	ItemList *item_list = new MessageList(0, 4);
 
-	PageTitleWidget *title_widget = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
+	title = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("delete_all"));
 	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
 	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(nextItem()));
-	connect(nav_bar, SIGNAL(forwardClick()), SLOT(deleteAll()));
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showDeletePage()));
 
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(showMessage(int)));
-	connect(item_list, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
+	connect(item_list, SIGNAL(contentScrolled(int, int)), title, SLOT(setCurrentPage(int, int)));
 	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 
-	buildPage(item_list, nav_bar, 0, title_widget);
+	buildPage(item_list, nav_bar, 0, title);
 	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
 	layout()->setContentsMargins(0, 5, 25, 10);
 	loadMessages(MESSAGES_FILENAME);
+
 	message_page = new MessagePage;
 	connect(message_page, SIGNAL(Closed()), SLOT(showPage()));
 	connect(message_page, SIGNAL(nextMessage()), SLOT(showNextMessage()));
 	connect(message_page, SIGNAL(prevMessage()), SLOT(showPrevMessage()));
+
+	delete_page = new DeleteMessagesPage;
+	connect(delete_page, SIGNAL(Closed()), SLOT(showPage()));
+	connect(delete_page, SIGNAL(deleteAll()), SLOT(deleteAll()));
+
 	current_index = -1;
 	need_update = false;
 }
@@ -224,6 +257,14 @@ void MessagesListPage::showNextMessage()
 
 void MessagesListPage::deleteAll()
 {
-	qDebug() << "delete all";
+	QList<ItemList::ItemInfo> empty_list;
+	page_content->setList(empty_list);
+	page_content->showList();
+	title->setCurrentPage(1, 1);
+}
+
+void MessagesListPage::showDeletePage()
+{
+	delete_page->showPage();
 }
 
