@@ -123,6 +123,8 @@ BtMain::BtMain(int openserver_reconnection_time)
 #if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
 	// save last click time for the screen saver
 	qApp->installEventFilter(new LastClickTime);
+	// avoid calibration starting at every boot
+	setTimePress(QDateTime::currentDateTime().addSecs(-60));
 #endif
 
 	initScreen();
