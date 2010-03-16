@@ -81,7 +81,7 @@ private:
 	QProcess mplayer_proc;
 
 	/// Send a string to the mplayer process to execute.
-	void execCmd(const QByteArray &command) const;
+	void execCmd(const QByteArray &command);
 
 	bool runMPlayer(const QList<QString> &args, bool write_output);
 

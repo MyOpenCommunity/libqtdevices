@@ -39,13 +39,9 @@
 
 
 static const char *MPLAYER_FILENAME = "/usr/bin/mplayer";
-static const char *MPLAYER_FIFO = "/tmp/mplayer_fifo";
 
 MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 {
-	if (!QFile::exists(MPLAYER_FIFO))
-		system(QByteArray("mkfifo ") + MPLAYER_FIFO);
-
 	paused = false;
 	fullscreen = false;
 	connect(&mplayer_proc, SIGNAL(finished(int, QProcess::ExitStatus)), SLOT(mplayerFinished(int, QProcess::ExitStatus)));
@@ -102,9 +98,7 @@ bool MediaPlayer::play(QString track, bool write_output)
 	QList<QString> mplayer_args;
 	mplayer_args << MPLAYER_FILENAME
 		     << "-nolirc"
-		     << "-slave"
-		     << "-input"
-		     << QString("file=") + MPLAYER_FIFO;
+		     << "-slave";
 
 	QByteArray t = track.toLocal8Bit();
 	if ((track.endsWith(".m3u", Qt::CaseInsensitive)) || (track.endsWith(".asx", Qt::CaseInsensitive)))
@@ -166,16 +160,10 @@ void MediaPlayer::setFullscreen(bool fs)
 	fullscreen = fs;
 }
 
-void MediaPlayer::execCmd(const QByteArray &command) const
+void MediaPlayer::execCmd(const QByteArray &command)
 {
-	if (QFile::exists(MPLAYER_FIFO))
-	{
-		QFile f(MPLAYER_FIFO);
-		f.open(QFile::WriteOnly);
-		f.write(command + "\n");
-	}
-	else
-		qDebug("[AUDIO] MediaPlayer::execCmd(): error, no control fifo found");
+	if (mplayer_proc.write(command + "\n") < -1)
+		qDebug() << "Error MediaPlayer::execCmd():" << mplayer_proc.errorString();
 }
 
 bool MediaPlayer::isInstanceRunning()
