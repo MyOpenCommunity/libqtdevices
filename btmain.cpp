@@ -699,6 +699,11 @@ void BtMain::calibrationEnded()
 	calibrating = false;
 }
 
+bool BtMain::isCalibrating()
+{
+	return calibrating;
+}
+
 void BtMain::resetTimer()
 {
 	qDebug("BtMain::ResetTimer()");
