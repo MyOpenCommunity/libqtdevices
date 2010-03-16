@@ -375,7 +375,7 @@ void BtDateEdit::decYear()
 
 
 
-PageSetDateTime::PageSetDateTime(const QString &extra_button_icon)
+PageSetDateTime::PageSetDateTime(const QString &extra_button_icon, bool allow_past_dates)
 	: title_widget("Change title dynamically", TITLE_HEIGHT)
 {
 	content.setLayout(&main_layout);
@@ -384,6 +384,7 @@ PageSetDateTime::PageSetDateTime(const QString &extra_button_icon)
 	program->setImage(extra_button_icon);
 
 	date_edit = new BtDateEdit(this);
+	date_edit->setAllowPastDates(allow_past_dates);
 	time_edit = new BtTimeEdit(this);
 
 	top_layout.addWidget(date_edit);

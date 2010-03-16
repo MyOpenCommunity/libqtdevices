@@ -217,7 +217,7 @@ void VersionPage::status_changed(const StatusList &sl)
 
 
 ChangeDateTime::ChangeDateTime(const QString &ok_button_icon) :
-	PageSetDateTime(ok_button_icon)
+	PageSetDateTime(ok_button_icon, true)
 {
 	connect(this, SIGNAL(dateTimeSelected(QDate,BtTime)), SLOT(dateTimeChanged(QDate, BtTime)));
 	connect(this, SIGNAL(dateTimeSelected(QDate,BtTime)), SIGNAL(Closed()));
