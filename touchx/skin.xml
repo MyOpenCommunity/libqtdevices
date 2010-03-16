@@ -78,6 +78,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_right>barranavigazione/destra.png</img_right>
 		<img_settings_icon>barranavigazione/setup.png</img_settings_icon>
 		<img_clock_background>home/backtime.png</img_clock_background>
+		<img_date_background>home/backdate.png</img_date_background>
 		<img_temperature_background>home/backtemp.png</img_temperature_background>
 	</item>
     <!-- Videoentryphone section-->

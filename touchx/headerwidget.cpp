@@ -115,6 +115,29 @@ void TimeDisplay::paintLabel(QPainter &painter)
 }
 
 
+// helper widget, display date for internal pages
+class DateDisplay : public PollingDisplayWidget
+{
+public:
+	DateDisplay();
+
+protected:
+	virtual void paintLabel(QPainter &painter);
+};
+
+DateDisplay::DateDisplay()
+{
+	setFont(bt_global::font->get(FontManager::TEXT));
+	setPixmap(bt_global::skin->getImage("date_background"));
+}
+
+void DateDisplay::paintLabel(QPainter &painter)
+{
+	painter.drawText(rect(), Qt::AlignCenter,
+			 DateConversions::formatDateConfig(QDate::currentDate()));
+}
+
+
 // helper widget, displays time in the homepage
 class HomepageTimeDisplay : public PollingDisplayWidget
 {
@@ -283,6 +306,7 @@ HeaderLogo::HeaderLogo(TrayBar *tray)
 
 void HeaderLogo::loadItems(const QDomNode &config_node)
 {
+	date_display = new DateDisplay;
 	time_display = new TimeDisplay;
 	temperature_display = 0;
 
@@ -293,6 +317,7 @@ void HeaderLogo::loadItems(const QDomNode &config_node)
 	l->addWidget(tray_bar);
 
 	l->addStretch(1);
+	l->addWidget(date_display);
 	l->addWidget(time_display);
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
@@ -315,6 +340,7 @@ void HeaderLogo::loadItems(const QDomNode &config_node)
 
 void HeaderLogo::setControlsVisible(bool visible)
 {
+	date_display->setVisible(visible);
 	time_display->setVisible(visible);
 	if (temperature_display)
 		temperature_display->setVisible(visible);
