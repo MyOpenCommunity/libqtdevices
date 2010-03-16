@@ -126,7 +126,7 @@ WebcamListPage::WebcamListPage(const QDomNode &config_node)
 
 void WebcamListPage::loadWebcams(const QDomNode &config_node)
 {
-
+	QList<ItemList::ItemInfo> webcam_list;
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		ItemList::ItemInfo info(getTextChild(item, "descr"), QString(),
@@ -143,8 +143,8 @@ void WebcamListPage::loadWebcams(const QDomNode &config_node)
 void WebcamListPage::itemSelected(int index)
 {
 	current_image = index;
-	QString url = webcam_list.at(index).data.toString();
-	webcam_page->setImage(QUrl(url), webcam_list.at(index).name);
+	QString url = page_content->item(index).data.toString();
+	webcam_page->setImage(QUrl(url), page_content->item(index).name);
 	webcam_page->showPage();
 }
 
@@ -158,12 +158,12 @@ void WebcamListPage::prevImage()
 	if (current_image - 1 >= 0)
 		itemSelected(current_image - 1);
 	else
-		itemSelected(webcam_list.size() - 1);
+		itemSelected(page_content->itemCount() - 1);
 }
 
 void WebcamListPage::nextImage()
 {
-	if (current_image < webcam_list.size() - 1)
+	if (current_image < page_content->itemCount() - 1)
 		itemSelected(current_image + 1);
 	else
 		itemSelected(0);

@@ -76,7 +76,6 @@ private slots:
 	void prevImage();
 
 private:
-	QList<ItemList::ItemInfo> webcam_list;
 	int current_image; // the index of the current webcam image
 	WebcamPage *webcam_page;
 
