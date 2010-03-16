@@ -393,7 +393,6 @@ void Antintrusion::clearAlarms()
 	while (!allarmi.isEmpty())
 	{
 		AlarmPage *a = allarmi.takeFirst();
-		a->disconnect();
 		a->deleteLater();
 	}
 }
