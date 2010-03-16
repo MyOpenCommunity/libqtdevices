@@ -55,7 +55,7 @@ MultimediaPlayerButtons::MultimediaPlayerButtons(Type type)
 	play_button->setOnImage(pause_icon);
 	play_button->setCheckable(true);
 	play_button->setOnOff();
-	connect(play_button, SIGNAL(toggled(bool)), SLOT(playToggled(bool)));
+	connect(play_button, SIGNAL(clicked(bool)), SLOT(playToggled(bool)));
 
 	l->addWidget(prev);
 	if (rewind)

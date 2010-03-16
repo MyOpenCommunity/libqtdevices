@@ -152,7 +152,6 @@ void VideoPlayerPage::playbackTerminated()
 	emit stopped();
 	refresh_data.stop();
 	video->update();
-	bt_global::display.forceOperativeMode(false);
 }
 
 void VideoPlayerPage::playbackStarted()
@@ -170,16 +169,12 @@ void VideoPlayerPage::hideEvent(QHideEvent *event)
 	if (fullscreen)
 		return;
 
-	player->pause();
-	refresh_data.stop();
 	emit stopped();
 }
 
 void VideoPlayerPage::handleClose()
 {
 	player->quit();
-	refresh_data.stop();
-	emit stopped();
 	emit Closed();
 }
 

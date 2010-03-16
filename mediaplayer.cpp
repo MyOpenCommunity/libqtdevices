@@ -50,22 +50,21 @@ MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 
 bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool write_output)
 {
+	/*
 	QFile sk("/tmp/start_seek");
 
 	sk.open(QFile::WriteOnly);
 	sk.write(QString("seek %1 2\n").arg(start_time).toAscii());
 	sk.close();
+	*/
+	QList<QString> mplayer_args = getStandardArgs();
 
-	QList<QString> mplayer_args;
-
-	mplayer_args << MPLAYER_FILENAME
-		     << "-vf" << QString("scale=%1:%2").arg(geometry.width()).arg(geometry.height())
+	mplayer_args << "-vf" << QString("scale=%1:%2").arg(geometry.width()).arg(geometry.height())
 		     <<	"-geometry" << QString("%1:%2").arg(geometry.left()).arg(geometry.top())
 		     << "-screenw" << QString::number(maxWidth())
 		     << "-screenh" << QString::number(maxHeight())
 		     << "-ac" << "mad," << "-af" << "channels=2,resample=48000"
-		     << "-ao" << "oss:/dev/dsp1"
-		     << "-input" << "file=/tmp/start_seek"
+		     //<< "-ao" << "oss:/dev/dsp1"
 		     << track;
 
 	return runMPlayer(mplayer_args, write_output);
@@ -93,12 +92,17 @@ bool MediaPlayer::playVideoFullScreen(QString track, int start_time, bool write_
 	return runMPlayer(mplayer_args, write_output);
 }
 
+QList<QString> MediaPlayer::getStandardArgs()
+{
+	return QList<QString>() << MPLAYER_FILENAME
+		<< "-nolirc"
+		<< "-slave";
+}
+
 bool MediaPlayer::play(QString track, bool write_output)
 {
 	QList<QString> mplayer_args;
-	mplayer_args << MPLAYER_FILENAME
-		     << "-nolirc"
-		     << "-slave";
+
 
 	QByteArray t = track.toLocal8Bit();
 	if ((track.endsWith(".m3u", Qt::CaseInsensitive)) || (track.endsWith(".asx", Qt::CaseInsensitive)))
