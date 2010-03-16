@@ -100,7 +100,6 @@ void DeviceOld::manageFrame(OpenMsg &msg)
 
 void DeviceOld::frame_rx_handler(char *s)
 {
-	qDebug("device::frame_rx_handler");
 	emit handle_frame(s, stat);
 }
 
