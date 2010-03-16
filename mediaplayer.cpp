@@ -43,7 +43,6 @@ static const char *MPLAYER_FILENAME = "/usr/bin/mplayer";
 MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 {
 	paused = false;
-	fullscreen = false;
 	connect(&mplayer_proc, SIGNAL(finished(int, QProcess::ExitStatus)), SLOT(mplayerFinished(int, QProcess::ExitStatus)));
 	connect(&mplayer_proc, SIGNAL(error(QProcess::ProcessError)), SLOT(mplayerError(QProcess::ProcessError)));
 }
@@ -58,6 +57,7 @@ bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool 
 		     << "-screenh" << QString::number(maxHeight())
 		     << "-ac" << "mad," << "-af" << "channels=2,resample=48000"
 		     << "-ao" << "oss:/dev/dsp1"
+		     << "-ss" << QString::number(start_time)
 		     << track;
 
 	return runMPlayer(mplayer_args, write_output);
@@ -71,6 +71,7 @@ bool MediaPlayer::playVideoFullScreen(QString track, int start_time, bool write_
 		     << "-screenh" << QString::number(maxHeight())
 		     << "-ac" << "mad," << "-af" << "channels=2,resample=48000"
 		     << "-ao" << "oss:/dev/dsp1"
+		     << "-ss" << QString::number(start_time)
 		     << "-fs"
 		     << track;
 
@@ -129,22 +130,9 @@ void MediaPlayer::resume()
 
 void MediaPlayer::seek(int seconds)
 {
-	// at some point we should probably switch to slave MPlayer
-	Q_ASSERT_X(seconds == 10 || seconds == -10, "MediaPlayer::seek", "Can only seek 10 seconds");
-
-	// the keybindings can be remapped in /.mplayer/input.conf
-	if (seconds < 0)
-		execCmd("\x1b[D"); // left arrow
-	else
-		execCmd("\x1b[C"); // right arrow
-}
-
-void MediaPlayer::setFullscreen(bool fs)
-{
-	if (fs == fullscreen)
-		return;
-	execCmd("f");
-	fullscreen = fs;
+	QByteArray cmd("seek ");
+	cmd += QByteArray::number(seconds);
+	execCmd(cmd);
 }
 
 void MediaPlayer::execCmd(const QByteArray &command)
@@ -160,15 +148,11 @@ bool MediaPlayer::isInstanceRunning()
 
 QMap<QString, QString> MediaPlayer::getVideoInfo()
 {
-	/*
 	/// Define Search Data Map
 	QMap<QString, QString> data_search;
 	data_search["current_time"] = "A:\\s+(\\d+\\.\\d+)\\s+";
 
 	return getMediaInfo(data_search);
-	*/
-	// TODO: reimplement
-	return QMap<QString, QString>();
 }
 
 QMap<QString, QString> MediaPlayer::getPlayingInfo()

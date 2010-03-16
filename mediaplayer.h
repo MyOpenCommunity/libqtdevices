@@ -72,11 +72,6 @@ public:
 	/// moves the playback backward/forward by the given offset
 	void seek(int seconds);
 
-	/// set full screen mode
-	void setFullscreen(bool fullscreen);
-
-	bool isFullscreen() { return fullscreen; }
-
 private:
 	QProcess mplayer_proc;
 
@@ -88,7 +83,7 @@ private:
 
 	QMap<QString, QString> getMediaInfo(const QMap<QString, QString> &data_search);
 
-	bool paused, fullscreen;
+	bool paused;
 
 private slots:
 	void mplayerFinished(int exit_code, QProcess::ExitStatus exit_status);
