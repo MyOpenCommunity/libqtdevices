@@ -393,7 +393,6 @@ void Antintrusion::clearAlarms()
 	while (!allarmi.isEmpty())
 	{
 		AlarmPage *a = allarmi.takeFirst();
-		a->disconnect();
 		a->deleteLater();
 	}
 }
@@ -466,8 +465,12 @@ void AlarmItems::addAlarm(int type, const QString &description, const QString &z
 	mapper.setMapping(trash, alarm);
 	connect(trash, SIGNAL(clicked()), &mapper, SLOT(map()));
 
-	prepareLayout();
-	updateLayout(alarms);
+	need_update = true;
+	if (isVisible())
+	{
+		prepareLayout();
+		updateLayout(alarms);
+	}
 }
 
 void AlarmItems::removeAlarm(QWidget *item)
@@ -494,11 +497,14 @@ void AlarmItems::removeAlarm(int index)
 	alarms[index]->deleteLater();
 	alarms.removeAt(index);
 
-	prepareLayout();
+	need_update = true;
+	if (isVisible())
+		prepareLayout();
 	if (current_page >= pageCount())
 		current_page = pageCount() - 1;
 
-	updateLayout(alarms);
+	if (isVisible())
+		updateLayout(alarms);
 }
 
 void AlarmItems::prepareLayout()
@@ -526,6 +532,8 @@ void AlarmItems::prepareLayout()
 
 void AlarmItems::drawContent()
 {
+	if (need_update)
+		prepareLayout();
 	updateLayout(alarms);
 }
 

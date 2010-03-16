@@ -112,7 +112,7 @@ public:
 	void setControlsVisible(bool visible);
 
 private:
-	QWidget *time_display, *temperature_display;
+	QWidget *time_display, *temperature_display, *date_display;
 	TrayBar *tray_bar;
 };
 

@@ -38,29 +38,29 @@ PlatformDevice::PlatformDevice() : device(QString("13"), QString(""))
 
 void PlatformDevice::setTime(const BtTime &t)
 {
-//	QString f;
-//	f.sprintf("*#13**#0*%02u*%02u*%02u**##", t.hour(), t.minute(), t.second());
-//	sendFrame(f);
+	QString f;
+	f.sprintf("*#13**#0*%02u*%02u*%02u**##", t.hour(), t.minute(), t.second());
+	sendFrame(f);
 }
 
 void PlatformDevice::setDate(const QDate &d)
 {
-//	QString f;
-//	f.sprintf("*#13**#1*00*%02d*%02d*%04d##", d.day(), d.month(), d.year());
-//	sendFrame(f);
+	QString f;
+	f.sprintf("*#13**#1*00*%02d*%02d*%04d##", d.day(), d.month(), d.year());
+	sendFrame(f);
 }
 
 void PlatformDevice::enableLan(bool enable)
 {
-//	int val = enable ? 1 : 0;
-//	int what = DIM_STATUS;
-//	sendFrame(QString("*#%1**#%2*%3##").arg(who).arg(what).arg(val));
-//	// We need to perform a status request after the command to toggle the status,
-//	// but if we put the requestStatus call immediately after the command frame
-//	// the result is that the status request is received by the openserver before
-//	// the command. To preserve the order, we have to use a singleshot timer with
-//	// some delay.
-//	QTimer::singleShot(STATUS_REQUEST_DELAY, this, SLOT(requestStatus()));
+	int val = enable ? 1 : 0;
+	int what = DIM_STATUS;
+	sendFrame(QString("*#%1**#%2*%3##").arg(who).arg(what).arg(val));
+	// We need to perform a status request after the command to toggle the status,
+	// but if we put the requestStatus call immediately after the command frame
+	// the result is that the status request is received by the openserver before
+	// the command. To preserve the order, we have to use a singleshot timer with
+	// some delay.
+	QTimer::singleShot(STATUS_REQUEST_DELAY, this, SLOT(requestStatus()));
 }
 
 void PlatformDevice::requestStatus() const

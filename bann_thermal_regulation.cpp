@@ -1487,7 +1487,7 @@ PageSetDate *PageTermoReg::createDateEdit(SettingsPage *settings)
 
 PageSetDateTime *PageTermoReg::createDateTimeEdit(SettingsPage *settings)
 {
-	PageSetDateTime *date_time_edit = new PageSetDateTime(bt_global::skin->getImage("settings"));
+	PageSetDateTime *date_time_edit = new PageSetDateTime(bt_global::skin->getImage("settings"), false);
 	connect(date_time_edit, SIGNAL(Closed()), settings, SLOT(showPage()));
 	connect(date_time_edit, SIGNAL(dateTimeSelected(QDate, BtTime)), SLOT(dateTimeSelected(QDate, BtTime)));
 	return date_time_edit;
