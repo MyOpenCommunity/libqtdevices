@@ -79,6 +79,7 @@ AntintrusionZone::AntintrusionZone(const QString &name, const QString &_where) :
 	left_disabled_on = bt_global::skin->getImage("alarm_partial_on");
 	left_disabled_off = bt_global::skin->getImage("alarm_partial_off");
 	is_on = false;
+	is_partial = true;
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleParzializza()));
 	already_changed = false;
 
@@ -133,26 +134,32 @@ void AntintrusionZone::status_changed(QList<device_status *> sl)
 	}
 }
 
-void AntintrusionZone::setParzializzaOn(bool parz)
+void AntintrusionZone::updateButtonState()
 {
-	is_on = parz;
-	setState(parz ? PARTIAL_ON : PARTIAL_OFF);
-}
-
-void AntintrusionZone::abilitaParz(bool ab)
-{
-	qDebug("AntintusionZone::abilitaParz(%d)", ab);
 	// TODO maybe move this code in BannSingleLeft and create two more states
-	if (ab)
+	if (is_partial)
 	{
 		left_button->enable();
-		setParzializzaOn(is_on);
+		setState(is_on ? PARTIAL_ON : PARTIAL_OFF);
 	}
 	else
 	{
 		left_button->disable();
 		left_button->setImage(is_on ? left_disabled_on : left_disabled_off);
 	}
+}
+
+void AntintrusionZone::setParzializzaOn(bool parz)
+{
+	is_on = parz;
+	updateButtonState();
+}
+
+void AntintrusionZone::abilitaParz(bool ab)
+{
+	qDebug("AntintusionZone::abilitaParz(%d)", ab);
+	is_partial = ab;
+	updateButtonState();
 }
 
 void AntintrusionZone::toggleParzializza()

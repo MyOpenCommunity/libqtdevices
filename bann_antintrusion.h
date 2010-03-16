@@ -74,8 +74,10 @@ public slots:
 
 private:
 	void setParzializzaOn(bool parz);
+	void updateButtonState();
+
 	bool already_changed;
-	bool is_on;
+	bool is_on, is_partial;
 	device *dev;
 	QString where;
 	QString left_disabled_on, left_disabled_off;
