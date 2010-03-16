@@ -38,14 +38,23 @@ namespace
 	QList<QString> getAddresses(QDomNode item, QList<int> *start_values = 0, QList<int> *stop_values = 0)
 	{
 		QList<QString> l;
+#ifdef CONFIG_BTOUCH
 		foreach (const QDomNode &el, getChildren(item, "element"))
 		{
 			l.append(getTextChild(el, "where"));
+#else
+		foreach (const QDomNode &el, getChildren(getElement(item, "addresses"), "where"))
+		{
+			l.append(el.toElement().text());
+#endif
 			if (start_values)
 				start_values->append(getTextChild(el, "softstart").toInt());
 			if (stop_values)
 				stop_values->append(getTextChild(el, "softstop").toInt());
 		}
+
+		Q_ASSERT_X(!l.isEmpty(), "getAddresses", "No device found!");
+
 		return l;
 	}
 
@@ -93,7 +102,6 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		b = new SingleActuator(descr, where, oid);
 		break;
 	case GR_DIMMER:
-		// TODO: touch10??
 		b = new DimmerGroup(getAddresses(item_node), descr);
 		break;
 	case GR_ATTUAT_AUTOM:
@@ -107,7 +115,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		break;
 	case DIMMER_100:
 	{
-		// TODO: touch10??
+		// TODO: CONFIG_BTOUCH touch10??
 		int start = getTextChild(item_node, "softstart").toInt();
 		int stop = getTextChild(item_node, "softstop").toInt();
 		b = new Dimmer100(descr, where, oid, start, stop);
@@ -118,7 +126,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		break;
 	case GR_DIMMER100:
 	{
-		// TODO: touch10??
+		// TODO: CONFIG_BTOUCH touch10??
 		QList<int> start, stop;
 		QList<QString> addresses = getAddresses(item_node, &start, &stop);
 		b = new Dimmer100Group(addresses, start, stop, descr);

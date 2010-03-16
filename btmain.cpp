@@ -76,7 +76,7 @@ namespace
 }
 
 
-#ifdef BT_HARDWARE_X11
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
 
 // used to store the time of the last click; used by the screen saver code
 // on x86
@@ -120,7 +120,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	bt_global::skin = new SkinManager(SKIN_FILE);
 	bt_global::ringtones = new RingtonesManager;
 
-#ifdef BT_HARDWARE_X11
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
 	// save last click time for the screen saver
 	qApp->installEventFilter(new LastClickTime);
 #endif

@@ -72,6 +72,9 @@ public:
 	bool isForcedOperativeMode();
 
 private:
+	void updateBrightnessData();
+
+private:
 	struct DisplayData
 	{
 		int brightness;

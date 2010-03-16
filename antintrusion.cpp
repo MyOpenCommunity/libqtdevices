@@ -129,7 +129,8 @@ void Antintrusion::createImpianto(const QString &descr)
 #ifdef LAYOUT_TOUCHX
 	forward_button = new BtButton;
 	forward_button->setImage(bt_global::skin->getImage("partial"));
-	l->addWidget(forward_button);
+	// remove the alignment after rewriting impAnti as a new style banner
+	l->addWidget(forward_button, 0, Qt::AlignTop);
 	connect(forward_button, SIGNAL(clicked()), SIGNAL(forwardClick()));
 #endif
 }

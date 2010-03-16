@@ -32,42 +32,53 @@ DisplayControl::DisplayControl()
 	setState(DISPLAY_OPERATIVE);
 }
 
-void DisplayControl::setBrightness(BrightnessLevel level)
+static inline int min_brightness(int a, int b)
 {
-	switch (level)
+	return qMin(qMax(a, b), 255);
+}
+
+void DisplayControl::updateBrightnessData()
+{
+	// always use low/medium brightness values that are below current brightness level
+	int brightness_max = operative_brightness;
+	int brightness_min = 255;
+	int brightness_low = min_brightness(210, brightness_max + 200);
+	int brightness_medium = min_brightness(50, brightness_max + 40);
+
+	switch (current_brightness)
 	{
 	case BRIGHTNESS_OFF:
-		data[DISPLAY_FREEZED].brightness = 10;
+		data[DISPLAY_FREEZED].brightness = brightness_max;
 		data[DISPLAY_FREEZED].backlight = false;
 		data[DISPLAY_FREEZED].screensaver = false;
-		data[DISPLAY_SCREENSAVER].brightness = 10;
+		data[DISPLAY_SCREENSAVER].brightness = brightness_max;
 		data[DISPLAY_SCREENSAVER].backlight = false;
 		data[DISPLAY_SCREENSAVER].screensaver = false;
 		break;
 
 	case BRIGHTNESS_LOW:
-		data[DISPLAY_FREEZED].brightness = 255;
+		data[DISPLAY_FREEZED].brightness = brightness_min;
 		data[DISPLAY_FREEZED].backlight = true;
 		data[DISPLAY_FREEZED].screensaver = false;
-		data[DISPLAY_SCREENSAVER].brightness = 255;
+		data[DISPLAY_SCREENSAVER].brightness = brightness_min;
 		data[DISPLAY_SCREENSAVER].backlight = true;
 		data[DISPLAY_SCREENSAVER].screensaver = true;
 		break;
 
 	case BRIGHTNESS_NORMAL:
-		data[DISPLAY_FREEZED].brightness = 210;
+		data[DISPLAY_FREEZED].brightness = brightness_low;
 		data[DISPLAY_FREEZED].backlight = true;
 		data[DISPLAY_FREEZED].screensaver = false;
-		data[DISPLAY_SCREENSAVER].brightness = 210;
+		data[DISPLAY_SCREENSAVER].brightness = brightness_low;
 		data[DISPLAY_SCREENSAVER].backlight = true;
 		data[DISPLAY_SCREENSAVER].screensaver = true;
 		break;
 
 	case BRIGHTNESS_HIGH:
-		data[DISPLAY_FREEZED].brightness = 50;
+		data[DISPLAY_FREEZED].brightness = brightness_medium;
 		data[DISPLAY_FREEZED].backlight = true;
 		data[DISPLAY_FREEZED].screensaver = false;
-		data[DISPLAY_SCREENSAVER].brightness = 50;
+		data[DISPLAY_SCREENSAVER].brightness = brightness_medium;
 		data[DISPLAY_SCREENSAVER].backlight = true;
 		data[DISPLAY_SCREENSAVER].screensaver = true;
 		break;
@@ -77,7 +88,7 @@ void DisplayControl::setBrightness(BrightnessLevel level)
 	}
 
 	// Off and operative status have the same values for all levels
-	data[DISPLAY_OFF].brightness = 10;
+	data[DISPLAY_OFF].brightness = brightness_max;
 	data[DISPLAY_OFF].backlight = false;
 	data[DISPLAY_OFF].screensaver = false;
 
@@ -85,19 +96,25 @@ void DisplayControl::setBrightness(BrightnessLevel level)
 	data[DISPLAY_OPERATIVE].backlight = true;
 	data[DISPLAY_OPERATIVE].screensaver = false;
 
+	if (data[current_state].backlight)
+		setBrightnessLevel(data[current_state].brightness);
+}
+
+void DisplayControl::setBrightness(BrightnessLevel level)
+{
+	current_brightness = level;
+	updateBrightnessData();
+
 #ifdef CONFIG_BTOUCH
 	// TODO: to be changed on TouchX
 	setCfgValue("brightness/level", level, DISPLAY);
 #endif
-	current_brightness = level;
 }
 
 void DisplayControl::setOperativeBrightness(int brightness)
 {
-	data[DISPLAY_OPERATIVE].brightness = operative_brightness = brightness;
-
-	if (current_state == DISPLAY_OPERATIVE)
-		setBrightnessLevel(operative_brightness);
+	operative_brightness = brightness;
+	updateBrightnessData();
 }
 
 int DisplayControl::operativeBrightness()

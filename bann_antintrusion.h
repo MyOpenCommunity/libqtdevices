@@ -78,6 +78,7 @@ private:
 	bool is_on;
 	device *dev;
 	QString where;
+	QString left_disabled_on, left_disabled_off;
 
 signals:
 	void partChanged(AntintrusionZone *);

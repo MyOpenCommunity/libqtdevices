@@ -26,6 +26,7 @@
 #include <QScreen>
 #include <QtDebug>
 #include <QProcess>
+#include <QDateTime>
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -159,6 +160,22 @@ void setBacklight(bool b)
 		setBacklightOn(b);
 }
 
+#ifdef BT_HARDWARE_TOUCHX
+
+bool buzzer_enabled = false;
+
+void setBeep(bool buzzer_enable)
+{
+	buzzer_enabled = buzzer_enable;
+}
+
+bool getBeep()
+{
+	return buzzer_enabled;
+}
+
+#else
+
 void setBeep(bool buzzer_enable)
 {
 	const char *p = buzzer_enable ? "1" : "0";
@@ -188,6 +205,8 @@ bool getBeep()
 	}
 	return false;
 }
+
+#endif
 
 bool getBacklight()
 {
@@ -256,7 +275,7 @@ void beep(int t)
 		}
 	}
 #else // BT_HARDWARE_TOUCHX
-	if (QFile::exists(SOUND_PATH "beep.wav"))
+	if (buzzer_enabled && QFile::exists(SOUND_PATH "beep.wav"))
 		playSound(SOUND_PATH "beep.wav");
 #endif
 }
@@ -265,6 +284,8 @@ void beep()
 {
 	beep(50);
 }
+
+#ifdef BT_HARDWARE_BTOUCH
 
 unsigned long getTimePress()
 {
@@ -282,6 +303,22 @@ unsigned long getTimePress()
 	}
 	return t;
 }
+
+#else
+
+static QDateTime lastPress = QDateTime::currentDateTime();
+
+void setTimePress(const QDateTime &press)
+{
+	lastPress = press;
+}
+
+unsigned long getTimePress()
+{
+	return lastPress.secsTo(QDateTime::currentDateTime());
+}
+
+#endif
 
 void rearmWDT()
 {

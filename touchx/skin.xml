@@ -459,6 +459,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_partial>antintrusione/parzializzazioneon.png</img_partial>
 		<img_partial_on>antintrusione/parzializzaon.png</img_partial_on>
 		<img_partial_off>antintrusione/parzializzaoff.png</img_partial_off>
+		<img_alarm_partial_on>antintrusione/parzializzaonp.png</img_alarm_partial_on>
+		<img_alarm_partial_off>antintrusione/parzializzaoffp.png</img_alarm_partial_off>
 		<img_alarm_state>antintrusione/imgantifurto.png</img_alarm_state>
 		<img_zone>antintrusione/imgamb.png</img_zone>
 		<img_alarm_on>antintrusione/imgantintrusioneon.png</img_alarm_on>
