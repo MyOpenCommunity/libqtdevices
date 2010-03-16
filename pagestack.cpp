@@ -90,7 +90,14 @@ void PageStack::showUserWindow(Window *window)
 void PageStack::addState(const State &state)
 {
 	removeFromStack(state.object());
-	states.append(state);
+	// most of the time, the correct thing is to put the new page/window at
+	// the top of the stack
+	//
+	// during calibration, insert new states just below the calibration page
+	if (!bt_global::btmain->isCalibrating())
+		states.append(state);
+	else
+		states.insert(states.size() - 1, state);
 
 	connect(state.object(), SIGNAL(destroyed(QObject*)), SLOT(removeObject(QObject*)));
 }
