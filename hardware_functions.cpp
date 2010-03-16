@@ -462,10 +462,6 @@ void setVolume(VolumeType type, int value)
 void initScreen()
 {
 #ifdef BT_HARDWARE_TOUCHX
-	QStringList args_brightness;
-	args_brightness << TFT_BRIGHTNESS << "13";
-	QProcess::startDetached("/bin/settrimmer", args_brightness);
-
 	QStringList args_contrast;
 	args_contrast << TFT_CONTRAST << "7";
 	QProcess::startDetached("/bin/settrimmer", args_contrast);
