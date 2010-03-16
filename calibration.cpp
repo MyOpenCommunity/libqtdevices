@@ -23,6 +23,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "skinmanager.h" // bt_global::skin
 #include "btbutton.h"
+#include "btmain.h" // startCalib/endCalib
 
 #include <QGlobalStatic> // qAbs
 #include <QVariant> // setProperty
@@ -117,6 +118,8 @@ bool Calibration::exists()
 
 void Calibration::startCalibration()
 {
+	bt_global::btmain->startCalib();
+
 	text = tr("Click the crosshair");
 	topleft_button->hide();
 	bottomright_button->hide();
@@ -141,6 +144,8 @@ void Calibration::hideEvent(QHideEvent*)
 {
 	// To ensure that the mouse is always released (what happen with an entry videocall?)
 	releaseMouse();
+
+	bt_global::btmain->endCalib();
 }
 
 void Calibration::rollbackCalibration()
