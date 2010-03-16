@@ -27,6 +27,24 @@
 #include <QList>
 
 class QString;
+class QLabel;
+
+
+class MessagePage : public Page
+{
+Q_OBJECT
+public:
+	MessagePage();
+	void setData(const QString &date, const QString &text, bool read);
+
+signals:
+	void nextMessage();
+	void prevMessage();
+
+private:
+	QLabel *date_label, *message_label, *new_message_label;
+	bool already_read;
+};
 
 
 /**
@@ -41,9 +59,16 @@ public:
 	virtual int sectionId();
 
 private:
+	MessagePage *message_page;
 	QList<ItemList::ItemInfo> message_list;
+	int current_index;
 	void loadMessages(const QString &filename);
-	void readMessage(int index);
+
+private slots:
+	void showMessage(int index);
+	void deleteAll();
+	void showPrevMessage();
+	void showNextMessage();
 };
 
 

@@ -26,6 +26,8 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 FeedItemWidget > QTextEdit { background-color: #c0c0c0; color: #000000; }
 MessagesListPage QLabel[UnreadMessage="true"] { color:#FF0000; }
 MessagesListPage QLabel[UnreadMessage="false"] { color:#6FB2FF; }
+MessagePage QLabel#Date {  background-color: gray; }
+MessagePage QLabel#Text { background-color: #000000; }
 	</css>
 	<common>
 		<img_back>navigazione/back.png</img_back>
