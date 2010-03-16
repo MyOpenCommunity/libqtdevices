@@ -59,6 +59,8 @@ public:
 
 	void setList(QList<ItemInfo> items, int page = 0);
 	void showList();
+	ItemInfo &item(int index);
+	int itemCount();
 
 	unsigned getCurrentPage();
 

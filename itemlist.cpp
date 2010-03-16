@@ -122,6 +122,17 @@ void ItemList::setList(QList<ItemInfo> items, int page)
 	current_page = page;
 }
 
+ItemList::ItemInfo &ItemList::item(int index)
+{
+	Q_ASSERT_X(index >= 0 && index < item_list.size(), "ItemList::item", "index out of range");
+	return item_list[index];
+}
+
+int ItemList::itemCount()
+{
+	return item_list.size();
+}
+
 unsigned ItemList::getCurrentPage()
 {
 	return current_page;
