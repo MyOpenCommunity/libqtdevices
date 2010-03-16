@@ -24,6 +24,7 @@
 #include "skinmanager.h" // bt_global::skin
 #include "btbutton.h"
 #include "btmain.h" // startCalib/endCalib
+#include "pagestack.h"
 
 #include <QGlobalStatic> // qAbs
 #include <QVariant> // setProperty
@@ -133,6 +134,12 @@ void Calibration::startCalibration()
 
 	QWSServer::mouseHandler()->clearCalibration();
 	grabMouse();
+}
+
+void Calibration::showWindow()
+{
+	bt_global::page_stack.showUserWindow(this);
+	Window::showWindow();
 }
 
 void Calibration::showEvent(QShowEvent*)
