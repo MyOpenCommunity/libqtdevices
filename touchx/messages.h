@@ -84,6 +84,7 @@ private:
 	int current_index;
 	bool need_update;
 	void loadMessages(const QString &filename);
+	void saveMessages();
 
 private slots:
 	void showMessage(int index);

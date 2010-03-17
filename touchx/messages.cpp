@@ -3,7 +3,7 @@
 #include "skinmanager.h"
 #include "navigation_bar.h"
 #include "main.h"
-#include "bttime.h"
+#include "generic_functions.h" // DateConvesion::formatDateTimeConfig, getDateTimeConfig
 #include "xml_functions.h" // getChildren
 #include "fontmanager.h"
 #include "btbutton.h"
@@ -18,6 +18,8 @@
 #include <QDateTime>
 #include <QFont>
 #include <QButtonGroup>
+#include <QXmlStreamWriter>
+
 
 #define MESSAGES_FILENAME "cfg/extra/4/messages.xml"
 #define DATE_FORMAT_AS_STRING "yyyy/MM/dd HH:mm"
@@ -66,12 +68,6 @@ namespace
 			layout->addWidget(boxWidget);
 		}
 	};
-
-
-	QString formatDateTime(const QDateTime &datetime)
-	{
-		return DateConversions::formatDateConfig(datetime.date()) + datetime.time().toString(" HH:mm");
-	}
 }
 
 
@@ -208,7 +204,7 @@ void MessagesListPage::loadMessages(const QString &filename)
 		QDateTime date = QDateTime::fromString(getTextChild(item, "date"), DATE_FORMAT_AS_STRING);
 		QString text = getTextChild(item, "text");
 		bool read = getTextChild(item, "read").toInt();
-		ItemList::ItemInfo info(formatDateTime(date), text, "", bt_global::skin->getImage("forward"), read);
+		ItemList::ItemInfo info(DateConversions::formatDateTimeConfig(date), text, "", bt_global::skin->getImage("forward"), read);
 		message_list.append(info);
 	}
 
@@ -228,6 +224,7 @@ void MessagesListPage::showMessage(int index)
 	message_page->setData(item.name, item.description, item.data.toBool());
 	item.data = true;
 	need_update = true;
+	saveMessages();
 	message_page->showPage();
 }
 
@@ -240,6 +237,7 @@ void MessagesListPage::showPrevMessage()
 		message_page->setData(item.name, item.description, item.data.toBool());
 		item.data = true;
 		need_update = true;
+		saveMessages();
 	}
 }
 
@@ -252,6 +250,7 @@ void MessagesListPage::showNextMessage()
 		message_page->setData(item.name, item.description, item.data.toBool());
 		item.data = true;
 		need_update = true;
+		saveMessages();
 	}
 }
 
@@ -260,6 +259,7 @@ void MessagesListPage::deleteAll()
 	QList<ItemList::ItemInfo> empty_list;
 	page_content->setList(empty_list);
 	page_content->showList();
+	saveMessages();
 	title->setCurrentPage(1, 1);
 }
 
@@ -268,3 +268,33 @@ void MessagesListPage::showDeletePage()
 	delete_page->showPage();
 }
 
+void MessagesListPage::saveMessages()
+{
+	QString tmp_filename = QString(MESSAGES_FILENAME) + ".new";
+	QFile f(tmp_filename);
+	if (!f.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		qWarning() << "Unable to save scs messages (open failed)";
+		return;
+	}
+	QXmlStreamWriter writer(&f);
+	writer.setAutoFormatting(true);
+	writer.writeStartDocument();
+	writer.writeStartElement("message");
+
+	for (int i = 0; i < page_content->itemCount(); ++i)
+	{
+		const ItemList::ItemInfo &item = page_content->item(i);
+		QDateTime d = DateConversions::getDateTimeConfig(item.name);
+		writer.writeStartElement("item");
+		writer.writeTextElement("date", d.toString(DATE_FORMAT_AS_STRING));
+		writer.writeTextElement("text", item.description);
+		writer.writeTextElement("read", QString::number(item.data.toInt()));
+		writer.writeEndElement();
+	}
+	writer.writeEndElement();
+	writer.writeEndDocument();
+
+	if (!::rename(qPrintable(tmp_filename), MESSAGES_FILENAME))
+		qWarning() << "Unable to save scs messages (rename failed)";
+}
