@@ -32,6 +32,7 @@
 #include "loads_device.h" // LoadsDevice
 #include "devices_cache.h" // add_device_to_cache
 #include "bttime.h" // BtTime
+#include "generic_functions.h" // DateConversion::formatDateConfig
 
 
 #include <QLabel>

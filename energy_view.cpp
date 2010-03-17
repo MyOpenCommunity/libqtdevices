@@ -24,7 +24,7 @@
 #include "banner.h"
 #include "btbutton.h"
 #include "icondispatcher.h" // icons_cache
-#include "generic_functions.h" // getPressName
+#include "generic_functions.h" // getPressName, DateConversion::formatDateConfig
 #include "fontmanager.h" // bt_global::font
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // bt_global::skin

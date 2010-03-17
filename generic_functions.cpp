@@ -31,8 +31,37 @@
 #include <QRegExp>
 #include <QDebug>
 #include <QDir>
+#include <QDate>
+#include <QDateTime>
 
 #include <fcntl.h>
+#include <stdio.h> // rename
+
+namespace
+{
+	QString getDateFormat()
+	{
+		QString format;
+		bool ok;
+		int date_format = bt_global::config[DATE_FORMAT].toInt(&ok);
+		if (ok)
+		{
+			switch (date_format)
+			{
+			case EUROPEAN_DATE:
+				format = "dd.MM.yy";
+				break;
+			case USA_DATE:
+				format = "MM.dd.yy";
+				break;
+			case YEAR_FIRST:
+				format = "yy.MM.dd";
+				break;
+			}
+		}
+		return format;
+	}
+}
 
 
 QString createMsgOpen(QString who, QString what, QString where)
@@ -279,4 +308,42 @@ int trasformaVol(int vol)
 	if (vol <= 31)
 		return 9;
 	return -1;
+}
+
+
+QString DateConversions::formatDateConfig(const QDate &date)
+{
+	QString format = getDateFormat();
+	if (format.isNull())
+		qWarning("DateConversions::formatDateConfig(), DATE_FORMAT conversion failed.");
+
+	return date.toString(format);
+}
+
+QString DateConversions::formatDateTimeConfig(const QDateTime &datetime)
+{
+	return DateConversions::formatDateConfig(datetime.date()) + datetime.time().toString(" HH:mm");
+}
+
+QDate DateConversions::getDateConfig(const QString &date)
+{
+	QString format = getDateFormat();
+	if (format.isNull())
+		qWarning("DateConversions::getDateConfig(), DATE_FORMAT conversion failed.");
+
+	// The format string has a two digit for the year so we lose 100 years in the
+	// conversion. We re-add them now.
+	return QDate::fromString(date, format).addYears(100);
+}
+
+QDateTime DateConversions::getDateTimeConfig(const QString &datetime)
+{
+	QString format = getDateFormat();
+	if (format.isNull())
+		qWarning("DateConversions::getDateTimeConfig(), DATE_FORMAT conversion failed.");
+	format += " HH:mm";
+
+	// The format string has a two digit for the year so we lose 100 years in the
+	// conversion. We re-add them now.
+	return QDateTime::fromString(datetime, format).addYears(100);
 }

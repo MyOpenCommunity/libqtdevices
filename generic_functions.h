@@ -22,10 +22,14 @@
 #ifndef GENERIC_FUNCTIONS_H
 #define GENERIC_FUNCTIONS_H
 
+#include "main.h" // MY_FILE_USER_CFG_DEFAULT, bt_global::config
+
 #include <QString>
 #include <QMap>
 
-#include "main.h" // MY_FILE_USER_CFG_DEFAULT, bt_global::config
+class QDate;
+class QDateTime;
+
 
 /// Create a 'command' frame
 /// This function is similar to openwebnet::CreateMsgOpen but unlike that the result
@@ -98,5 +102,18 @@ bool setCfgValue(QString field, int value, int item_id, const QString &filename=
 void getName(char *name);
 
 int trasformaVol(int vol);
+
+
+/**
+ * This namespace contains the functions to convert a QDate/QDateTime in a string
+ * (and viceversa) formatted as specified in the configuration file.
+ */
+namespace DateConversions
+{
+	QString formatDateConfig(const QDate &date);
+	QString formatDateTimeConfig(const QDateTime &datetime);
+	QDate getDateConfig(const QString &date);
+	QDateTime getDateTimeConfig(const QString &datetime);
+}
 
 #endif // GENERIC_FUNCTIONS_H

@@ -20,7 +20,7 @@
 
 
 #include "bttime.h"
-#include "main.h"
+//#include "main.h"
 
 #include <QDateTime>
 
@@ -40,31 +40,6 @@ QString formatTime(const BtTime &t)
 		str = QString("%1h").arg(h);
 	return str;
 }
-
-
-QString DateConversions::formatDateConfig(const QDate &date)
-{
-	QString format;
-	bool ok;
-	int date_format = bt_global::config[DATE_FORMAT].toInt(&ok);
-	if (!ok)
-		qWarning("DateConversions::formatDateConfig(), DATE_FORMAT conversion to int failed.");
-	switch (date_format)
-	{
-	case EUROPEAN_DATE:
-		format = "dd.MM.yy";
-		break;
-	case USA_DATE:
-		format = "MM.dd.yy";
-		break;
-	case YEAR_FIRST:
-		format = "yy.MM.dd";
-		break;
-
-	}
-	return date.toString(format);
-}
-
 
 
 // BtTime implementation

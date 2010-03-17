@@ -27,10 +27,6 @@
 
 class QTime;
 
-namespace DateConversions
-{
-	QString formatDateConfig(const QDate &date);
-}
 
 class BtTime
 {
