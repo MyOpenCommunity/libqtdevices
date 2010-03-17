@@ -54,8 +54,12 @@ public:
 	void setData(const QString &date, const QString &text, bool read);
 
 signals:
+	// Request to show the next message
 	void nextMessage();
+	// Request to show the previous message
 	void prevMessage();
+	// Request to delete the current message
+	void deleteMessage();
 
 private:
 	QLabel *date_label, *message_label, *new_message_label;
@@ -88,7 +92,10 @@ private:
 
 private slots:
 	void showMessage(int index);
+	// Delete all the messages
 	void deleteAll();
+	// Delete a single message
+	void deleteMessage();
 	void showPrevMessage();
 	void showNextMessage();
 	void showDeletePage();

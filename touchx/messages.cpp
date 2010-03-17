@@ -117,6 +117,7 @@ MessagePage::MessagePage()
 	new_message_label = new QLabel;
 	new_message_label->setFixedHeight(30);
 	box_layout->addWidget(new_message_label, 0, Qt::AlignHCenter);
+	box_layout->addSpacing(5);
 
 	date_label = new QLabel;
 	date_label->setObjectName("Date");
@@ -131,6 +132,11 @@ MessagePage::MessagePage()
 	message_label->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 	message_label->setWordWrap(true);
 	box_layout->addWidget(message_label);
+
+	box_layout->addSpacing(5);
+	BtButton *delete_button = new BtButton(bt_global::skin->getImage("delete"));
+	connect(delete_button, SIGNAL(clicked()), this, SIGNAL(deleteMessage()));
+	box_layout->addWidget(delete_button);
 }
 
 void MessagePage::setData(const QString &date, const QString &text, bool already_read)
@@ -164,6 +170,7 @@ MessagesListPage::MessagesListPage()
 	connect(message_page, SIGNAL(Closed()), SLOT(showPage()));
 	connect(message_page, SIGNAL(nextMessage()), SLOT(showNextMessage()));
 	connect(message_page, SIGNAL(prevMessage()), SLOT(showPrevMessage()));
+	connect(message_page, SIGNAL(deleteMessage()), SLOT(deleteMessage()));
 
 	delete_page = new DeleteMessagesPage;
 	connect(delete_page, SIGNAL(Closed()), SLOT(showPage()));
@@ -222,9 +229,12 @@ void MessagesListPage::showMessage(int index)
 	current_index = index;
 	ItemList::ItemInfo &item = page_content->item(index);
 	message_page->setData(item.name, item.description, item.data.toBool());
-	item.data = true;
-	need_update = true;
-	saveMessages();
+	if (!item.data.toBool())
+	{
+		item.data = true;
+		need_update = true;
+		saveMessages();
+	}
 	message_page->showPage();
 }
 
@@ -235,9 +245,12 @@ void MessagesListPage::showPrevMessage()
 		--current_index;
 		ItemList::ItemInfo &item = page_content->item(current_index);
 		message_page->setData(item.name, item.description, item.data.toBool());
-		item.data = true;
-		need_update = true;
-		saveMessages();
+		if (!item.data.toBool())
+		{
+			item.data = true;
+			need_update = true;
+			saveMessages();
+		}
 	}
 }
 
@@ -248,9 +261,12 @@ void MessagesListPage::showNextMessage()
 		++current_index;
 		ItemList::ItemInfo &item = page_content->item(current_index);
 		message_page->setData(item.name, item.description, item.data.toBool());
-		item.data = true;
-		need_update = true;
-		saveMessages();
+		if (!item.data.toBool())
+		{
+			item.data = true;
+			need_update = true;
+			saveMessages();
+		}
 	}
 }
 
@@ -261,6 +277,18 @@ void MessagesListPage::deleteAll()
 	page_content->showList();
 	saveMessages();
 	title->setCurrentPage(1, 1);
+}
+
+void MessagesListPage::deleteMessage()
+{
+	page_content->removeItem(current_index);
+	page_content->showList();
+	saveMessages();
+
+	if (current_index < page_content->itemCount())
+		showMessage(current_index);
+	else
+		showPage();
 }
 
 void MessagesListPage::showDeletePage()
@@ -295,6 +323,6 @@ void MessagesListPage::saveMessages()
 	writer.writeEndElement();
 	writer.writeEndDocument();
 
-	if (!::rename(qPrintable(tmp_filename), MESSAGES_FILENAME))
+	if (::rename(qPrintable(tmp_filename), MESSAGES_FILENAME))
 		qWarning() << "Unable to save scs messages (rename failed)";
 }

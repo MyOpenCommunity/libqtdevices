@@ -793,11 +793,15 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>24001</cid>
 		<img_link_icon>videocitofonia/piintercompiano.png</img_link_icon>
 	</item>
-    <!-- SCS Messages -->
     <item>
+        <!--
+        SCS Messages
+        Other tags used: img_scroll_up, img_scroll_down, img_back, img_ok
+        -->
         <cid>17000</cid>
         <img_link_icon>home/messaggion.png</img_link_icon>
         <img_top_navigation_button>barranavigazione/messaggioff.png</img_top_navigation_button>
         <img_delete_all>navigazione/eliminatutti.png</img_delete_all>
+        <img_delete>antintrusione/elimina.png</img_delete>
     </item>
 </style>
