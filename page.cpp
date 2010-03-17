@@ -81,7 +81,7 @@ void PageTitleWidget::setCurrentPage(int current, int total)
 {
 	QLabel *label = static_cast<QLabel*>(layout()->itemAt(2)->widget());
 
-	if (total == 1)
+	if (total <= 1)
 		label->setText(QString());
 	else
 		label->setText(QString("%1/%2").arg(current + 1).arg(total));
