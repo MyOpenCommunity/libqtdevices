@@ -43,6 +43,8 @@ Q_OBJECT
 public:
 	Calibration(bool minimal = false);
 
+	virtual void showWindow();
+
 	// Return true if the calibration file exists.
 	static bool exists();
 

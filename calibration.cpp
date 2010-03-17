@@ -23,6 +23,8 @@
 #include "fontmanager.h" // bt_global::font
 #include "skinmanager.h" // bt_global::skin
 #include "btbutton.h"
+#include "btmain.h" // startCalib/endCalib
+#include "pagestack.h"
 
 #include <QGlobalStatic> // qAbs
 #include <QVariant> // setProperty
@@ -117,6 +119,8 @@ bool Calibration::exists()
 
 void Calibration::startCalibration()
 {
+	bt_global::btmain->calibrationStarted();
+
 	text = tr("Click the crosshair");
 	topleft_button->hide();
 	bottomright_button->hide();
@@ -130,6 +134,12 @@ void Calibration::startCalibration()
 
 	QWSServer::mouseHandler()->clearCalibration();
 	grabMouse();
+}
+
+void Calibration::showWindow()
+{
+	bt_global::page_stack.showUserWindow(this);
+	Window::showWindow();
 }
 
 void Calibration::showEvent(QShowEvent*)
@@ -265,6 +275,8 @@ void Calibration::drawCrosshair()
 
 void Calibration::endCalibration()
 {
+	bt_global::btmain->calibrationEnded();
+
 	// The calibration was done right so we can remove the old calibration file
 	if (QFile::exists(QString("%1.calibrated").arg(pointercal_file)))
 		system(qPrintable(QString("rm %1.calibrated").arg(pointercal_file)));

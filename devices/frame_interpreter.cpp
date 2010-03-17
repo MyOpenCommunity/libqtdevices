@@ -333,9 +333,9 @@ bool frame_interpreter::belongs_to_group(int g)
 
 bool frame_interpreter::is_frame_ours(openwebnet_ext m, bool& request_status)
 {
-	qDebug("frame_interpreter::is_frame_ours");
-	qDebug() << "who = " << who << ", where = " << where;
-	qDebug() << "msg who = " << m.Extract_chi() << ", msg where = " << m.get_where();
+//	qDebug() << "frame_interpreter::is_frame_ours"
+//	         << "who = " << who << ", where = " << where
+//	         << "msg who = " << m.Extract_chi() << ", msg where = " << m.get_where();
 	bool out = m.is_target(this, request_status);
 	if (out)
 	{
@@ -574,8 +574,6 @@ void frame_interpreter_sound_device::handle_frame_handler(char *frame, QList<dev
 	bool request_status = false;
 	openwebnet_ext msg_open;
 	rearmWDT();
-	qDebug("frame_interpreter_sound_device::handle_frame_handler");
-	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 	if (!is_frame_ours(msg_open, request_status)) // Discard frame if not ours
 		return;
@@ -622,8 +620,6 @@ void frame_interpreter_sound_matr_device::handle_frame_handler(char *frame, QLis
 	bool request_status = false;
 	openwebnet_ext msg_open;
 	rearmWDT();
-	qDebug("frame_interpreter_sound_matr_device::handle_frame_handler");
-	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 	if ((atoi(msg_open.Extract_chi()) != 16) && (atoi(msg_open.Extract_chi()) != 22))
 		return;
@@ -738,9 +734,9 @@ void frame_interpreter_radio_device::get_init_message(device_status *s, QString&
 
 bool frame_interpreter_radio_device::is_frame_ours(openwebnet_ext m, bool& request_status)
 {
-	qDebug("frame_interpreter_radio_device::is_frame_ours");
-	qDebug() << "who = " << who << " , where = " << where;
-	qDebug() << "msg who = " << m.Extract_chi() << ", msg where = " << m.get_where();
+//	qDebug() << "frame_interpreter_radio_device::is_frame_ours"
+//		 << "who = " << who << " , where = " << where
+//		 << "msg who = " << m.Extract_chi() << ", msg where = " << m.get_where();
 	if (who != m.Extract_chi())
 		return false;
 	QString w = m.get_where();
@@ -862,8 +858,6 @@ void frame_interpreter_radio_device::handle_frame_handler(char *frame, QList<dev
 	bool request_status = false;
 	openwebnet_ext msg_open;
 	rearmWDT();
-	qDebug("frame_interpreter_radio_device::handle_frame_handler");
-	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 	if (!is_frame_ours(msg_open, request_status)) // Discard frame if not ours
 		return;
@@ -916,10 +910,10 @@ bool frame_interpreter_doorphone_device::is_frame_ours(openwebnet_ext m, bool& r
 	char tmp[20];
 	request_status = false;
 
-	qDebug("frame_interpreter_doorphone_device::is_frame_ours");
-	qDebug() << "who = " << who << " , where = " << where;
 	char *c = m.Extract_chi();
-	qDebug() << "msg who = " << c << ", msg where = " << m.Extract_dove();
+//	qDebug() << "frame_interpreter_doorphone_device::is_frame_ours"
+//		 << "who = " << who << " , where = " << where
+//		 << "msg who = " << c << ", msg where = " << m.Extract_dove();
 	QString cosa = m.Extract_cosa();
 	qDebug() << "cosa = " << cosa;
 	if (!cosa.startsWith("9")) return false;
@@ -962,8 +956,6 @@ void frame_interpreter_doorphone_device::handle_frame_handler(char *frame, QList
 	bool request_status = false;
 	openwebnet_ext msg_open;
 	rearmWDT();
-	qDebug("frame_interpreter_doorphone_device::handle_frame_handler");
-	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 	if (!is_frame_ours(msg_open, request_status))
 	{
@@ -1017,10 +1009,10 @@ bool frame_interpreter_impanti_device::is_frame_ours(openwebnet_ext m, bool& req
 {
 	// FIXME: IS THIS OK ?
 	request_status = false;
-	qDebug("frame_interpreter_impanti_device::is_frame_ours");
-	qDebug() << "who = " << who << " , where = " << where;
 	char *c = m.Extract_chi();
-	qDebug() << "msg who = " << c << ", msg where = " << m.Extract_dove();
+//	qDebug() << "frame_interpreter_impanti_device::is_frame_ours"
+//		 << "who = " << who << " , where = " << where
+//		 << "msg who = " << c << ", msg where = " << m.Extract_dove();
 	int l, i;
 	if (QString(c) != who)
 		return false;
@@ -1064,8 +1056,6 @@ void frame_interpreter_impanti_device::handle_frame_handler(char *frame, QList<d
 	bool request_status;
 	openwebnet_ext msg_open;
 	rearmWDT();
-	qDebug("frame_interpreter_impanti_device::handle_frame_handler");
-	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 	if (!is_frame_ours(msg_open, request_status)) // Discard frame if not ours
 		return;
@@ -1118,11 +1108,11 @@ bool frame_interpreter_zonanti_device::is_frame_ours(openwebnet_ext m, bool& req
 {
 	// FIXME: IS THIS OK ?
 	request_status = false;
-	qDebug("frame_interpreter_impanti_device::is_frame_ours");
-	qDebug() << "who = " << who << " , where = " << where;
 	char *c = m.Extract_chi();
 	char *d = m.Extract_dove();
-	qDebug() << "msg who = " << c << ", msg where = " << d;
+//	qDebug() << "frame_interpreter_impanti_device::is_frame_ours"
+//		 << "who = " << who << " , where = " << where
+//		 << "msg who = " << c << ", msg where = " << d;
 	return ((QString(c) == who) && (QString(d) == where));
 }
 
@@ -1162,8 +1152,6 @@ void frame_interpreter_zonanti_device::handle_frame_handler(char *frame, QList<d
 	bool request_status = false;
 	openwebnet_ext msg_open;
 	rearmWDT();
-	qDebug("frame_interpreter_zonanti_device::handle_frame_handler");
-	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 	if (!is_frame_ours(msg_open, request_status))
 		return;
@@ -1226,8 +1214,6 @@ void frame_interpreter_mci::handle_frame_handler(char *frame, QList<device_statu
 	bool request_status;
 	openwebnet_ext msg_open;
 	rearmWDT();
-	qDebug("frame_interpreter_mci::handle_frame_handler");
-	qDebug("#### frame is %s ####", frame);
 
 	msg_open.CreateMsgOpen(frame, strstr(frame, "##")-frame+2);
 	if (!is_frame_ours(msg_open, request_status)) // Discard frame if not ours

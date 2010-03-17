@@ -82,9 +82,11 @@ public:
 	// screen frozen if password protection is active
 	void makeActiveAndFreeze();
 
+	bool isCalibrating();
+
 public slots:
-	void startCalib();
-	void endCalib();
+	void calibrationStarted();
+	void calibrationEnded();
 
 signals:
 	void resettimer();

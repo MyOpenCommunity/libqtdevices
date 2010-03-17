@@ -327,7 +327,6 @@ void IconSettings::loadItems(const QDomNode &config_node)
 #if !defined(BT_HARDWARE_X11)
 		case PAGE_CALIBRATION:
 			w = new Calibration;
-			connect(w, SIGNAL(Closed()), SLOT(showPage()));
 			break;
 #endif
 		case PAGE_LANSETTINGS:

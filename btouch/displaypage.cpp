@@ -28,7 +28,6 @@
 #include "screensaverpage.h"
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "bannercontent.h"
-#include "btmain.h" // bt_global::btmain
 
 
 DisplayPage::DisplayPage(const QDomNode &config_node)
@@ -57,8 +56,6 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	page_content->appendBanner(b);
 #ifndef BT_HARDWARE_X11
 	b = new calibration(this, img_items);
-	connect(b, SIGNAL(startCalibration()), SLOT(startCalibration()));
-	connect(b, SIGNAL(endCalibration()), SLOT(endCalibration()));
 	b->setText(tr("Calibration"));
 	b->Draw();
 	page_content->appendBanner(b);
@@ -75,15 +72,3 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	bann->Draw();
 	page_content->appendBanner(bann);
 }
-
-void DisplayPage::startCalibration()
-{
-	bt_global::btmain->startCalib();
-}
-
-void DisplayPage::endCalibration()
-{
-	bt_global::btmain->endCalib();
-	showPage();
-}
-

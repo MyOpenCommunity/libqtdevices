@@ -295,10 +295,15 @@ void IntercomCallPage::showPage()
 void IntercomCallPage::showPageIncomingCall()
 {
 	bt_global::page_stack.showVCTPage(this);
-	if (bt_global::display.currentState() != DISPLAY_FREEZED)
-		bt_global::display.forceOperativeMode(true);
-	call_accept->setStatus(false);
-	mute_button->setStatus(EnablingButton::OFF);
+
+	if (!bt_global::btmain->isCalibrating())
+	{
+		if (bt_global::display.currentState() != DISPLAY_FREEZED)
+			bt_global::display.forceOperativeMode(true);
+		call_accept->setStatus(false);
+		mute_button->setStatus(EnablingButton::OFF);
+	}
+
 	Page::showPage();
 }
 

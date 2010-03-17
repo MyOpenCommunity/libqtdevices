@@ -35,10 +35,6 @@ public:
 
 private:
 	void loadItems(const QDomNode &config_node);
-
-private slots:
-	void startCalibration();
-	void endCalibration();
 };
 
 
