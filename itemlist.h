@@ -61,6 +61,7 @@ public:
 	void showList();
 	ItemInfo &item(int index);
 	int itemCount();
+	void removeItem(int index);
 
 	unsigned getCurrentPage();
 

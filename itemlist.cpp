@@ -133,6 +133,18 @@ int ItemList::itemCount()
 	return item_list.size();
 }
 
+void ItemList::removeItem(int index)
+{
+	Q_ASSERT_X(index >= 0 && index < item_list.size(), "ItemList::item", "index out of range");
+	item_list.removeAt(index);
+	int start = current_page * rows_per_page;
+	if (start >= item_list.size())
+		--current_page;
+
+	if (current_page < 0)
+		current_page = 0;
+}
+
 unsigned ItemList::getCurrentPage()
 {
 	return current_page;
