@@ -35,7 +35,7 @@
 #include <QGridLayout>
 #include <QLabel>
 
-SoundAmbient::SoundAmbient() :
+SoundAmbient::SoundAmbient(const QString &descr, const QString &ambient) :
 	BannerNew(0)
 {
 	right_button = new BtButton;
@@ -60,6 +60,10 @@ SoundAmbient::SoundAmbient() :
 	l->setSpacing(0);
 	l->addLayout(grid);
 	l->addWidget(text);
+
+	QString amb_icon = bt_global::skin->getImage("ambient");
+	amb_icon = getBostikName(amb_icon, ambient);
+	initBanner(amb_icon, bt_global::skin->getImage("amplifier"), bt_global::skin->getImage("forward"), descr);
 }
 
 void SoundAmbient::initBanner(const QString &_ambient_icon, const QString &_center_icon,
@@ -107,6 +111,8 @@ void SoundDiffusionPage::loadItems(const QDomNode &config_node)
 			page_content->appendBanner(b);
 			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		}
+		else
+			qFatal("ID %s not handled in SoundDiffusionPage", qPrintable(getTextChild(item, "id")));
 	}
 }
 
@@ -119,11 +125,7 @@ banner *SoundDiffusionPage::getBanner(const QDomNode &item_node)
 	{
 	case ITEM_AMBIENT:
 	{
-		SoundAmbient *bann = new SoundAmbient;
-		QString amb_icon = bt_global::skin->getImage("ambient");
-		amb_icon = getBostikName(amb_icon, getTextChild(item_node, "env"));
-		bann->initBanner(amb_icon, bt_global::skin->getImage("amplifier"), bt_global::skin->getImage("forward"),
-			getTextChild(item_node, "descr"));
+		SoundAmbient *bann = new SoundAmbient(getTextChild(item_node, "descr"), getTextChild(item_node, "env"));
 		b = bann;
 	}
 		break;

@@ -35,7 +35,7 @@ class SoundAmbient : public BannerNew
 {
 Q_OBJECT
 public:
-	SoundAmbient();
+	SoundAmbient(const QString &descr, const QString &ambient);
 	void initBanner(const QString &_ambient_icon, const QString &_center_icon,
 		const QString &right, const QString &banner_text);
 	void connectRightButton(Page *p);
