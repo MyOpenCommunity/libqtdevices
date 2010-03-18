@@ -23,6 +23,8 @@
 #include "state_button.h"
 #include "skinmanager.h"
 
+#include <QLayout>
+
 
 CheckableBanner *SingleChoice::createBanner(const QString &text, const QString &right_icon)
 {
@@ -33,6 +35,9 @@ CheckableBanner::CheckableBanner(const QString &text, const QString &right_icon)
 	: Bann2StateButtons(0)
 {
 	initBanner(bt_global::skin->getImage("unchecked"), right_icon, text);
+#ifdef LAYOUT_TOUCHX
+	layout()->setContentsMargins(0, 0, 0, 10);
+#endif
 	left_button->setOnOff();
 	left_button->setCheckable(true);
 	left_button->setOffImage(bt_global::skin->getImage("unchecked"));
