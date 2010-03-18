@@ -150,7 +150,6 @@ HEADERS += actuators.h \
            datetime.h \
            devices_cache.h \
            displaycontrol.h \
-           enabling_button.h \
            energy_data.h \
            energy_graph.h \
            energy_management.h \
@@ -208,6 +207,7 @@ HEADERS += actuators.h \
            sottomenu.h \
            sounddiffusion.h \
            specialpage.h \
+           state_button.h \
            stopngo.h \
            styledwidget.h \
            supervisionmenu.h \
@@ -264,7 +264,6 @@ SOURCES += actuators.cpp \
            definitions.cpp \
            devices_cache.cpp \
            displaycontrol.cpp \
-           enabling_button.cpp \
            energy_data.cpp \
            energy_graph.cpp \
            energy_management.cpp \
@@ -321,6 +320,7 @@ SOURCES += actuators.cpp \
            sottomenu.cpp \
            sounddiffusion.cpp \
            specialpage.cpp \
+           state_button.cpp \
            stopngo.cpp \
            styledwidget.cpp \
            supervisionmenu.cpp \

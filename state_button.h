@@ -19,8 +19,8 @@
  */
 
 
-#ifndef ENABLING_BUTTON_H
-#define ENABLING_BUTTON_H
+#ifndef STATE_BUTTON_H
+#define STATE_BUTTON_H
 
 #include "btbutton.h"
 
@@ -29,8 +29,11 @@
 class QString;
 
 
-
-class EnablingButton : public BtButton
+/**
+ * A tri-state button that can be on, off, disabled and where each state
+ * uses a different icon.
+ */
+class StateButton : public BtButton
 {
 Q_OBJECT
 public:
@@ -44,7 +47,7 @@ using BtButton::setPressedImage;
 		DISABLED
 	};
 
-	EnablingButton(QWidget *parent = 0);
+	StateButton(QWidget *parent = 0);
 	void setDisabledImage(const QString &path);
 	void setStatus(Status st);
 	Status getStatus() { return status; }
@@ -55,4 +58,4 @@ private:
 };
 
 
-#endif // ENABLING_BUTTON_H
+#endif // STATE_BUTTON_H

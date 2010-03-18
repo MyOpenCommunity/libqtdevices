@@ -53,7 +53,7 @@ namespace VCTCallPrivate
 	struct VCTCallStatus
 	{
 		bool connected;
-		EnablingButton::Status mute;
+		StateButton::Status mute;
 		ItemTuningStatus volume_status;
 
 		VCTCallStatus();
@@ -69,9 +69,9 @@ namespace VCTCallPrivate
 using namespace VCTCallPrivate;
 
 
-EnablingButton *getButton(const QString &image_path)
+StateButton *getButton(const QString &image_path)
 {
-	EnablingButton *btn = new EnablingButton;
+	StateButton *btn = new StateButton;
 	btn->setImage(image_path);
 	btn->setDisabledImage(getBostikName(image_path, "dis"));
 	return btn;
@@ -111,15 +111,15 @@ CameraMove::CameraMove(EntryphoneDevice *dev)
 
 void CameraMove::setFullscreenEnabled(bool fs)
 {
-	fullscreen->setStatus(fs ? EnablingButton::OFF : EnablingButton::DISABLED);
+	fullscreen->setStatus(fs ? StateButton::OFF : StateButton::DISABLED);
 }
 
 void CameraMove::setMoveEnabled(bool move)
 {
-	up->setStatus(move ? EnablingButton::OFF : EnablingButton::DISABLED);
-	down->setStatus(move ? EnablingButton::OFF : EnablingButton::DISABLED);
-	left->setStatus(move ? EnablingButton::OFF : EnablingButton::DISABLED);
-	right->setStatus(move ? EnablingButton::OFF : EnablingButton::DISABLED);
+	up->setStatus(move ? StateButton::OFF : StateButton::DISABLED);
+	down->setStatus(move ? StateButton::OFF : StateButton::DISABLED);
+	left->setStatus(move ? StateButton::OFF : StateButton::DISABLED);
+	right->setStatus(move ? StateButton::OFF : StateButton::DISABLED);
 }
 
 
@@ -171,7 +171,7 @@ VCTCallStatus::VCTCallStatus()
 void VCTCallStatus::init()
 {
 	connected = false;
-	mute = EnablingButton::DISABLED;
+	mute = StateButton::DISABLED;
 }
 
 
@@ -212,7 +212,7 @@ VCTCall::VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f)
 	mute_icon = bt_global::skin->getImage("mute");
 	mute_button = getButton(getBostikName(mute_icon, "off"));
 	mute_button->setPressedImage(getBostikName(mute_icon, "on"));
-	mute_button->setStatus(EnablingButton::DISABLED);
+	mute_button->setStatus(StateButton::DISABLED);
 	connect(mute_button, SIGNAL(clicked()), SLOT(toggleMute()));
 
 	stairlight = getButton(bt_global::skin->getImage("stairlight"));
@@ -243,18 +243,18 @@ void VCTCall::refreshStatus()
 
 void VCTCall::toggleMute()
 {
-	EnablingButton::Status st = mute_button->getStatus();
-	setVolume(VOLUME_MIC, st == EnablingButton::ON ? 0 : 1);
+	StateButton::Status st = mute_button->getStatus();
+	setVolume(VOLUME_MIC, st == StateButton::ON ? 0 : 1);
 
-	if (st == EnablingButton::ON)
+	if (st == StateButton::ON)
 	{
-		mute_button->setStatus(EnablingButton::OFF);
-		call_status->mute = EnablingButton::OFF;
+		mute_button->setStatus(StateButton::OFF);
+		call_status->mute = StateButton::OFF;
 	}
 	else
 	{
-		mute_button->setStatus(EnablingButton::ON);
-		call_status->mute = EnablingButton::ON;
+		mute_button->setStatus(StateButton::ON);
+		call_status->mute = StateButton::ON;
 	}
 }
 
@@ -262,9 +262,9 @@ void VCTCall::toggleCall()
 {
 	call_status->connected = !call_status->connected;
 	if (call_status->connected)
-		mute_button->setStatus(EnablingButton::OFF);
+		mute_button->setStatus(StateButton::OFF);
 	else
-		mute_button->setStatus(EnablingButton::DISABLED);
+		mute_button->setStatus(StateButton::DISABLED);
 	call_status->mute = mute_button->getStatus();
 
 	refreshStatus();

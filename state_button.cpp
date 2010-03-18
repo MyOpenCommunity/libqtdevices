@@ -19,22 +19,22 @@
  */
 
 
-#include "enabling_button.h"
+#include "state_button.h"
 #include "generic_functions.h" //getBostikName
 #include "icondispatcher.h" // icons_cache
 
 
-EnablingButton::EnablingButton(QWidget *parent) : BtButton(parent)
+StateButton::StateButton(QWidget *parent) : BtButton(parent)
 {
 	setStatus(OFF);
 }
 
-void EnablingButton::setDisabledImage(const QString &path)
+void StateButton::setDisabledImage(const QString &path)
 {
 	disabled_pixmap = *bt_global::icons_cache.getIcon(path);
 }
 
-void EnablingButton::setStatus(EnablingButton::Status st)
+void StateButton::setStatus(StateButton::Status st)
 {
 	status = st;
 	switch (status)

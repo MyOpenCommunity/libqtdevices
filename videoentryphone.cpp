@@ -268,11 +268,11 @@ IntercomCallPage::IntercomCallPage(EntryphoneDevice *d)
 	buttons_layout->addWidget(call_accept, 2, 0);
 
 	QString mute_icon = bt_global::skin->getImage("mute");
-	mute_button = new EnablingButton;
+	mute_button = new StateButton;
 	mute_button->setImage(getBostikName(mute_icon, "off"));
 	mute_button->setDisabledImage(getBostikName(getBostikName(mute_icon, "off"), "dis"));
 	mute_button->setPressedImage(getBostikName(mute_icon, "on"));
-	mute_button->setStatus(EnablingButton::DISABLED);
+	mute_button->setStatus(StateButton::DISABLED);
 	connect(mute_button, SIGNAL(clicked()), SLOT(toggleMute()));
 	buttons_layout->addWidget(mute_button, 2, 1);
 
@@ -288,7 +288,7 @@ void IntercomCallPage::showPage()
 	bt_global::page_stack.showVCTPage(this);
 	bt_global::display.forceOperativeMode(true);
 	call_accept->setStatus(true);
-	mute_button->setStatus(EnablingButton::DISABLED);
+	mute_button->setStatus(StateButton::DISABLED);
 	Page::showPage();
 }
 
@@ -301,7 +301,7 @@ void IntercomCallPage::showPageIncomingCall()
 		if (bt_global::display.currentState() != DISPLAY_FREEZED)
 			bt_global::display.forceOperativeMode(true);
 		call_accept->setStatus(false);
-		mute_button->setStatus(EnablingButton::OFF);
+		mute_button->setStatus(StateButton::OFF);
 	}
 
 	Page::showPage();
@@ -320,26 +320,26 @@ void IntercomCallPage::toggleCall()
 
 	if (connected)
 	{
-		mute_button->setStatus(EnablingButton::DISABLED);
+		mute_button->setStatus(StateButton::DISABLED);
 		dev->endCall();
 		handleClose();
 	}
 	else
 	{
 		dev->answerCall();
-		mute_button->setStatus(EnablingButton::OFF);
+		mute_button->setStatus(StateButton::OFF);
 	}
 }
 
 void IntercomCallPage::toggleMute()
 {
-	EnablingButton::Status st = mute_button->getStatus();
-	setVolume(VOLUME_MIC, st == EnablingButton::ON ? 0 : 1);
+	StateButton::Status st = mute_button->getStatus();
+	setVolume(VOLUME_MIC, st == StateButton::ON ? 0 : 1);
 
-	if (st == EnablingButton::ON)
-		mute_button->setStatus(EnablingButton::OFF);
+	if (st == StateButton::ON)
+		mute_button->setStatus(StateButton::OFF);
 	else
-		mute_button->setStatus(EnablingButton::ON);
+		mute_button->setStatus(StateButton::ON);
 }
 
 void IntercomCallPage::changeVolume(int value)

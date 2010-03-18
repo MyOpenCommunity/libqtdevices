@@ -29,7 +29,7 @@
 
 class VCTCallPage;
 class EntryphoneDevice;
-class EnablingButton;
+class StateButton;
 class ItemTuning;
 class RingExclusion;
 class RingExclusionPage;
@@ -128,7 +128,7 @@ private slots:
 private:
 	EntryphoneDevice *dev;
 	BtButton *call_accept;
-	EnablingButton *mute_button;
+	StateButton *mute_button;
 	ItemTuning *volume;
 };
 

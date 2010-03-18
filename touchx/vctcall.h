@@ -24,7 +24,7 @@
 
 #include "page.h"
 #include "window.h"
-#include "enabling_button.h"
+#include "state_button.h"
 
 #include <QString>
 #include <QStringList>
@@ -60,7 +60,7 @@ namespace VCTCallPrivate
 		void toggleFullScreen();
 
 	private:
-		EnablingButton *up, *left, *fullscreen, *right, *down;
+		StateButton *up, *left, *fullscreen, *right, *down;
 	};
 
 
@@ -110,7 +110,7 @@ namespace VCTCallPrivate
 		QLabel *video_box;
 		QString setup_vct_icon;
 
-		EnablingButton *mute_button, *stairlight, *unlock_door;
+		StateButton *mute_button, *stairlight, *unlock_door;
 		BtButton *cycle, *call_accept;
 		QString mute_icon;
 		ItemTuning *volume;
