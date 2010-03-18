@@ -114,7 +114,7 @@ HEADERS += actuators.h \
            alarmclock.h \
            alarmpage.h \
            ambdiffson.h \
-           amplificatori.h \
+           bann_amplifiers.h \
            antintrusion.h \
            audiostatemachine.h \
            automation.h \
@@ -227,7 +227,7 @@ SOURCES += actuators.cpp \
            alarmclock.cpp \
            alarmpage.cpp \
            ambdiffson.cpp \
-           amplificatori.cpp \
+           bann_amplifiers.cpp \
            antintrusion.cpp \
            audiostatemachine.cpp \
            automation.cpp \

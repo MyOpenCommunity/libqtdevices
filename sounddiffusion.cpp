@@ -21,7 +21,7 @@
 
 #include "sounddiffusion.h"
 #include "sottomenu.h"
-#include "amplificatori.h" // grAmplificatori
+#include "bann_amplifiers.h" // grAmplificatori
 #include "xml_functions.h" // getChildren, getTextChild
 #include "sorgentiaux.h"
 #include "sorgentimedia.h"

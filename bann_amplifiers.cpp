@@ -19,7 +19,7 @@
  */
 
 
-#include "amplificatori.h"
+#include "bann_amplifiers.h"
 #include "generic_functions.h" // createMsgOpen, trasformaVol
 #include "device_status.h"
 #include "deviceold.h"
