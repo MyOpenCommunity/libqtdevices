@@ -312,40 +312,4 @@ private:
 	QLabel *text;
 };
 
-
-/*!
-  \class bann2But
-  \brief This is a class that describes a banner with a text between 2 buttons 
-*/
-class bann2But : public BannerOld
-{
-Q_OBJECT
-public:
-	bann2But(QWidget *parent);
-};
-
-
-/*!
-  \class bannOnOff
-  \brief This is a class that describes a banner with a button on the right and on the left, an icon on the center and a text on the bottom
-*/
-class bannOnOff : public BannerOld
-{
-Q_OBJECT
-public:
-	bannOnOff(QWidget *w=0);
-};
-
-
-/*!
-  \class bannOnOff2scr
-  \brief This is a class that describes a banner with a button on the right and on the left and a text on the bottom area and an other the center-left
-*/
-class bannOnOff2scr : public BannerOld
-{
-Q_OBJECT
-public:
-	bannOnOff2scr(QWidget *w=0);
-};
-
 #endif // BANN2_BUTTONS_H

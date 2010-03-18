@@ -24,7 +24,7 @@
 
 #include "banner.h"
 #include "bann1_button.h" // bannOnDx, bannOnSx
-#include "bann2_buttons.h" // bann2But
+#include "bann2_buttons.h"
 #include "ringtonesmanager.h" // RingtoneType
 
 #include <QWidget>

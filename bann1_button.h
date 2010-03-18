@@ -158,6 +158,7 @@ signals:
 };
 
 
+#if 0
 
 class bannOnIcons : public BannerOld
 {
@@ -165,6 +166,8 @@ Q_OBJECT
 public:
 	bannOnIcons(QWidget *parent);
 };
+
+#endif
 
 
 /*!

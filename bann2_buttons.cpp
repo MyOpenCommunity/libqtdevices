@@ -31,16 +31,6 @@
 #include <QBoxLayout>
 
 
-#define BAN2BUT_BUT_DIM 60
-#define BUTONOFF_ICON_DIM_X 120
-#define BUTONOFF_ICON_DIM_Y 60
-#define BANONOFF_BUT_DIM 60
-#define BUTONOFF2SCR_ICON_DIM_X 80
-#define BUTONOFF2SCR_ICON_DIM_Y 60
-#define BANONOFF2SCR_BUT_DIM 60
-
-
-
 Bann2LinkedPages::Bann2LinkedPages(QWidget *parent) :
 	BannerNew(parent)
 {
@@ -311,32 +301,3 @@ void Bann2CentralButtons::initBanner(const QString &left, const QString &right, 
 	else
 		text->setText(banner_text);
 }
-
-
-bann2But::bann2But(QWidget *parent) : BannerOld(parent)
-{
-	banner_height = BAN2BUT_BUT_DIM;
-	addItem(BUT1, 0,(banner_height - BAN2BUT_BUT_DIM)/2 , BAN2BUT_BUT_DIM , BAN2BUT_BUT_DIM);
-	addItem(BUT2, banner_width - BAN2BUT_BUT_DIM ,(banner_height - BAN2BUT_BUT_DIM)/2 , BAN2BUT_BUT_DIM , BAN2BUT_BUT_DIM);
-	addItem(TEXT, BAN2BUT_BUT_DIM, 0, banner_width - 2 * BAN2BUT_BUT_DIM, banner_height);
-}
-
-
-bannOnOff::bannOnOff(QWidget *parent) : BannerOld(parent)
-{
-	addItem(BUT1, banner_width-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
-	addItem(BUT2, 0, 0, BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
-	addItem(TEXT, 0, BANONOFF_BUT_DIM, banner_width , banner_height-BANONOFF_BUT_DIM);
-	addItem(ICON, BANONOFF_BUT_DIM, 0, BUTONOFF_ICON_DIM_X , BUTONOFF_ICON_DIM_Y);
-}
-
-
-bannOnOff2scr::bannOnOff2scr(QWidget *parent) : BannerOld(parent)
-{
-	addItem(BUT1, 0, 0, BANONOFF2SCR_BUT_DIM , BANONOFF2SCR_BUT_DIM);
-	addItem(BUT2, banner_width-BANONOFF2SCR_BUT_DIM, 0, BANONOFF2SCR_BUT_DIM, BANONOFF2SCR_BUT_DIM);
-	addItem(TEXT, 0, BANONOFF2SCR_BUT_DIM, banner_width, banner_height-BANONOFF2SCR_BUT_DIM);
-	addItem(ICON, banner_width-BANONOFF2SCR_BUT_DIM-BUTONOFF2SCR_ICON_DIM_X, 0, BUTONOFF2SCR_ICON_DIM_X, BUTONOFF2SCR_ICON_DIM_Y);
-	addItem(TEXT2, BANONOFF2SCR_BUT_DIM, 0, banner_width-2*BANONOFF2SCR_BUT_DIM-BUTONOFF2SCR_ICON_DIM_X, BUTONOFF2SCR_ICON_DIM_Y);
-}
-

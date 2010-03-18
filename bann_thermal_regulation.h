@@ -22,8 +22,8 @@
 #ifndef BANN_THERMAL_REGULATION_H
 #define BANN_THERMAL_REGULATION_H
 
-#include "bann1_button.h" // bannPuls
-#include "bann2_buttons.h" // bann2CentralButtons
+#include "bann1_button.h" // BannSinglePuls
+#include "bann2_buttons.h" // Bann2CentralButtons
 #include "bttime.h"
 #include "main.h"
 #include "page.h"

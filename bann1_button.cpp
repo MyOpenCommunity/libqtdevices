@@ -219,6 +219,8 @@ BtButton *bannOnSx::getButton()
 }
 
 
+#if 0
+
 bannOnIcons::bannOnIcons(QWidget *parent) : BannerOld(parent)
 {
 	addItem(BUT1, 0, 0, BUT_DIM, BUT_DIM);
@@ -226,6 +228,8 @@ bannOnIcons::bannOnIcons(QWidget *parent) : BannerOld(parent)
 	addItem(ICON, BUT_DIM, 0, BUT_DIM, BUT_DIM);
 	addItem(ICON2, 2*BUT_DIM, 0, BUT_DIM, BUT_DIM);
 }
+
+#endif
 
 
 bannBut2Icon::bannBut2Icon(QWidget *parent) : BannerOld(parent)
