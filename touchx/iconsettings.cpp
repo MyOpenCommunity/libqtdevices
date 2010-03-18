@@ -73,10 +73,10 @@ ToggleBeep::ToggleBeep(int _item_id, bool status, QString label, QString icon_on
 	lbl->setAlignment(Qt::AlignHCenter);
 	lbl->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
-	button = new BtButton;
+	button = new StateButton;
 	button->setCheckable(true);
-	button->setImage(icon_off);
-	button->setPressedImage(icon_on);
+	button->setOffImage(icon_off);
+	button->setOnImage(icon_on);
 	button->setStatus(status);
 
 	QVBoxLayout *l = new QVBoxLayout(this);

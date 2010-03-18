@@ -29,6 +29,7 @@ class QWidget;
 class QLabel;
 class BtButton;
 class TextOnImageLabel;
+class StateButton;
 
 
 /*
@@ -108,9 +109,37 @@ signals:
 	void rightClicked();
 	void leftClicked();
 
+protected:
+	// an overloaded constructor to change the class of left/right buttons
+	template<class ButtonType>
+	Bann2Buttons(QWidget *parent, ButtonType *dummy) :
+		Bann2LinkedPages(parent)
+	{
+		left_button = new ButtonType;
+		right_button = new ButtonType;
+
+		createBanner();
+	}
+
+private:
+	void createBanner();
+
 private:
 	TextOnImageLabel *center_icon;
 	QLabel *description;
+};
+
+
+/**
+ * A Bann2Buttons where the two buttons are StateButtons
+ */
+class Bann2StateButtons : public Bann2Buttons
+{
+public:
+	Bann2StateButtons(QWidget *parent = 0);
+
+protected:
+	StateButton *left_button, *right_button;
 };
 
 
@@ -128,9 +157,18 @@ public:
 	};
 
 	BannOnOffState(QWidget *parent);
+
 	void initBanner(const QString &left, const QString &center, const QString &right,
 		States init_state, const QString &banner_text);
 	void setState(States new_state);
+
+protected:
+	// an overloaded constructor to change the class of left/right buttons
+	template<class ButtonType>
+	BannOnOffState(QWidget *parent, ButtonType *dummy) :
+		Bann2Buttons(parent, dummy)
+	{
+	}
 
 private:
 	QString center;

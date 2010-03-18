@@ -20,7 +20,7 @@
 
 
 #include "bann2_buttons.h"
-#include "btbutton.h"
+#include "state_button.h"
 #include "icondispatcher.h" // icons_cache
 #include "generic_functions.h" // getBostikName
 #include "titlelabel.h"
@@ -81,6 +81,12 @@ Bann2Buttons::Bann2Buttons(QWidget *parent) :
 {
 	left_button = new BtButton;
 	right_button = new BtButton;
+
+	createBanner();
+}
+
+void Bann2Buttons::createBanner()
+{
 	center_icon = new TextOnImageLabel;
 	description = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
@@ -135,6 +141,14 @@ void Bann2Buttons::setDescriptionText(const QString &t)
 void Bann2Buttons::setBackgroundImage(const QString &path)
 {
 	center_icon->setBackgroundImage(path);
+}
+
+
+Bann2StateButtons::Bann2StateButtons(QWidget *parent) :
+	Bann2Buttons(parent, static_cast<StateButton *>(0))
+{
+	left_button = static_cast<StateButton *>(Bann2Buttons::left_button);
+	right_button = static_cast<StateButton *>(Bann2Buttons::right_button);
 }
 
 

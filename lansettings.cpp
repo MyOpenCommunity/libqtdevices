@@ -20,7 +20,7 @@
 
 
 #include "lansettings.h"
-#include "btbutton.h"
+#include "state_button.h"
 #include "main.h" // bt_global::config
 #include "platform_device.h"
 #include "devices_cache.h" // bt_global::devices_cache
@@ -105,10 +105,10 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	label_layout->addWidget(box_text);
 	main_layout->addLayout(label_layout);
 
-	toggle_btn = new BtButton;
+	toggle_btn = new StateButton;
 	toggle_btn->setOnOff();
-	toggle_btn->setImage(bt_global::skin->getImage("network_disable"), BtButton::NO_FLAG);
-	toggle_btn->setPressedImage(bt_global::skin->getImage("network_enable"));
+	toggle_btn->setOffImage(bt_global::skin->getImage("network_disable"));
+	toggle_btn->setOnImage(bt_global::skin->getImage("network_enable"));
 	lan_status = false; // This value must be keep in sync with the icon of toggle_btn.
 	connect(toggle_btn, SIGNAL(clicked()), SLOT(toggleLan()));
 	main_layout->addWidget(toggle_btn, 0, Qt::AlignHCenter);

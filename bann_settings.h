@@ -35,6 +35,7 @@ class Keypad;
 class Calibrate;
 class Contrast;
 class contdiff;
+class StateButton;
 
 
 /*!
@@ -42,12 +43,12 @@ class contdiff;
   \brief This class is made to make alarm clock settings.
 
 */
-class bannAlarmClock : public bann2But
+class bannAlarmClock : public Bann2StateButtons
 {
 Q_OBJECT
 public:
 	bannAlarmClock(int item_id, int hour, int minute, QString icon_on,
-		QString icon_off, QString icon_label, int enabled, int freq, int tipo);
+		QString icon_off, QString icon_label, QString text, int enabled, int freq, int tipo);
 	/*!
 	\brief changes the abilitation af the alarm set
 	*/
@@ -99,6 +100,9 @@ public slots:
 	void toggleAbil();
 	void setButtonIcon();
 
+protected:
+	StateButton *left_button;
+
 private:
 	AlarmClock *alarm_clock;
 
@@ -131,11 +135,11 @@ signals:
   \brief Beep (dis)abilitation
 
 */
-class impBeep : public bannOnSx
+class impBeep : public Bann2StateButtons
 {
 Q_OBJECT
 public:
-	impBeep(int item_id, bool enabled, QString icon_on, QString icon_off);
+	impBeep(int item_id, bool enabled, QString icon_on, QString icon_off, QString text);
 
 public slots:
 	void toggleBeep();
@@ -177,7 +181,7 @@ private:
 
   It's possible (dis)abilitate the password and to change the actual password.
 */
-class impPassword : public Bann2Buttons
+class impPassword : public Bann2StateButtons
 {
 Q_OBJECT
 public:

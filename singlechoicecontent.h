@@ -23,12 +23,12 @@
 #define SINGLECHOICECONTENT_H
 
 #include "bannercontent.h"
-#include "bann2_buttons.h" // Bann2Buttons
+#include "bann2_buttons.h" // Bann2StateButtons
 
 #include <QButtonGroup>
 
 
-class CheckableBanner : public Bann2Buttons
+class CheckableBanner : public Bann2StateButtons
 {
 public:
 	CheckableBanner(const QString &text, const QString &right_icon = QString());

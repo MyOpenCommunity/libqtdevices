@@ -28,7 +28,7 @@
 #include "generic_functions.h" // setCfgValue
 #include "hardware_functions.h" // setBeep, getBeep, beep, setContrast, getContrast
 #include "btmain.h" // bt_global::btmain
-#include "btbutton.h"
+#include "state_button.h"
 #include "fontmanager.h"
 #include "skinmanager.h" // bt_global::skin
 #if !defined(BT_HARDWARE_X11)
@@ -40,16 +40,17 @@
 #include <QLabel>
 
 
-bannAlarmClock::bannAlarmClock(int item_id, int hour, int minute, QString icon_on,
-	QString icon_off, QString icon_label, int enabled, int tipo, int freq)
-	: bann2But(0)
-{
-	sxButton->setOnOff();
-	sxButton->setStatus(enabled == 1);
 
-	SetIcons(0, icon_off, icon_on);
-	SetIcons(1, icon_label);
-	Draw(); // Draw must be called before setAbil.. see impBeep
+bannAlarmClock::bannAlarmClock(int item_id, int hour, int minute, QString icon_on,
+			       QString icon_off, QString icon_label, QString text, int enabled, int tipo, int freq) :
+	Bann2StateButtons(0)
+{
+	initBanner(icon_on, icon_label, text);
+
+	left_button->setOnOff();
+	left_button->setOnImage(icon_on);
+	left_button->setOffImage(icon_off);
+	left_button->setStatus(enabled == 1);
 
 	alarm_clock = new AlarmClock(SET_SVEGLIA, item_id,
 				     static_cast<AlarmClock::Type>(tipo),
@@ -59,8 +60,8 @@ bannAlarmClock::bannAlarmClock(int item_id, int hour, int minute, QString icon_o
 	alarm_clock->hide();
 
 	alarm_clock->setActive(enabled == 1);
-	connect(this, SIGNAL(dxClick()), alarm_clock, SLOT(showPage()));
-	connect(this, SIGNAL(sxClick()), this, SLOT(toggleAbil()));
+	connect(this, SIGNAL(rightClicked()), alarm_clock, SLOT(showPage()));
+	connect(this, SIGNAL(leftClicked()), SLOT(toggleAbil()));
 
 	connect(alarm_clock, SIGNAL(Closed()), SLOT(handleClose()));
 	connect(alarm_clock, SIGNAL(alarmClockFired()), SLOT(setButtonIcon()));
@@ -75,19 +76,19 @@ void bannAlarmClock::setSerNum(int num)
 void bannAlarmClock::handleClose()
 {
 	// When the page of the alarmclock is closed, the alarm is always set as 'on'.
-	sxButton->setStatus(true);
+	left_button->setStatus(true);
 	emit pageClosed();
 }
 
 void bannAlarmClock::setButtonIcon()
 {
 	if (!alarm_clock->isActive())
-		sxButton->setStatus(false);
+		left_button->setStatus(false);
 }
 
 void bannAlarmClock::setAbil(bool b)
 {
-	sxButton->setStatus(b);
+	left_button->setStatus(b);
 	alarm_clock->setActive(b);
 }
 
@@ -98,19 +99,21 @@ void bannAlarmClock::toggleAbil()
 
 void bannAlarmClock::inizializza(bool forza)
 {
-	bann2But::inizializza(forza);
+	Bann2Buttons::inizializza(forza);
 	alarm_clock->inizializza();
 }
 
 
 bannAlarmClockIcon::bannAlarmClockIcon(int item_id, int hour, int minute, QString icon_on,
-	QString icon_off, QString icon_state, QString icon_edit, QString text, int enabled, int tipo, QList<bool> days)
-	: BannOnOffState(0)
+				       QString icon_off, QString icon_state, QString icon_edit, QString text, int enabled, int tipo, QList<bool> days) :
+	BannOnOffState(0, static_cast<StateButton*>(0))
 {
 	initBanner(icon_on, icon_state, icon_edit, enabled ? ON : OFF, text);
 
+	left_button = static_cast<StateButton *>(Bann2Buttons::left_button);
 	left_button->setOnOff();
-	left_button->setPressedImage(icon_off);
+	left_button->setOnImage(icon_off);
+	left_button->setOffImage(icon_on);
 	left_button->setStatus(enabled == 1);
 
 	alarm_clock = new AlarmClock(SET_SVEGLIA_SINGLEPAGE, item_id,
@@ -167,6 +170,7 @@ void bannAlarmClockIcon::inizializza(bool forza)
 }
 
 
+
 calibration::calibration(QWidget *parent, QString icon) : bannOnDx(parent)
 {
 	SetIcons(icon, 1);
@@ -179,19 +183,21 @@ calibration::calibration(QWidget *parent, QString icon) : bannOnDx(parent)
 }
 
 
-impBeep::impBeep(int _item_id, bool enabled, QString icon_on, QString icon_off)
-	: bannOnSx(0)
+impBeep::impBeep(int _item_id, bool enabled, QString icon_on, QString icon_off, QString text) :
+	Bann2StateButtons(0)
 {
+	initBanner(icon_on, QString(), text);
+
+	left_button->setOnOff();
+	left_button->setOffImage(icon_off);
+	left_button->setOnImage(icon_on);
+	left_button->setStatus(enabled);
+
 	item_id = _item_id;
 
-	connect(this, SIGNAL(click()), this, SLOT(toggleBeep()));
+	connect(left_button, SIGNAL(clicked()), SLOT(toggleBeep()));
 
-	sxButton->setOnOff();
 	setBeep(enabled);
-
-	SetIcons(0, icon_off, icon_on);
-	Draw(); // Draw must be called before setStatus (because it calls the setPixmap function)
-	sxButton->setStatus(enabled);
 }
 
 void impBeep::toggleBeep()
@@ -199,7 +205,7 @@ void impBeep::toggleBeep()
 	bool beep_on = !getBeep();
 
 	setBeep(beep_on);
-	sxButton->setStatus(beep_on);
+	left_button->setStatus(beep_on);
 
 #ifdef CONFIG_BTOUCH
 	setCfgValue("value", beep_on, SUONO);
@@ -244,8 +250,8 @@ void bannVersion::showVers()
 
 
 impPassword::impPassword(QString icon_on, QString icon_off, QString icon_label, QString descr,
-			 int _item_id, QString pwd, int attiva)
-	: Bann2Buttons(0)
+			 int _item_id, QString pwd, int attiva) :
+	Bann2StateButtons(0)
 {
 	item_id = _item_id;
 	password = pwd;
@@ -270,7 +276,8 @@ impPassword::impPassword(QString icon_on, QString icon_off, QString icon_label, 
 	bt_global::btmain->setPwd(active, password);
 
 	left_button->setOnOff();
-	left_button->setPressedImage(icon_on);
+	left_button->setOffImage(icon_off);
+	left_button->setOnImage(icon_on);
 	left_button->setStatus(active);
 }
 
@@ -288,7 +295,6 @@ void impPassword::toggleActivation()
 
 void impPassword::showEvent(QShowEvent *event)
 {
-	Draw();
 	qDebug() << "password = " << password;
 	if (password.isEmpty())
 	{

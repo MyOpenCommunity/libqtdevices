@@ -110,8 +110,8 @@ namespace VCTCallPrivate
 		QLabel *video_box;
 		QString setup_vct_icon;
 
-		StateButton *mute_button, *stairlight, *unlock_door;
-		BtButton *cycle, *call_accept;
+		StateButton *mute_button, *stairlight, *unlock_door, *call_accept;
+		BtButton *cycle;
 		QString mute_icon;
 		ItemTuning *volume;
 

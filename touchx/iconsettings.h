@@ -24,6 +24,7 @@
 
 #include "iconpage.h"
 #include "datetime.h" // PageSetDateTime
+#include "state_button.h"
 
 #include <QWidget>
 
@@ -121,7 +122,7 @@ private slots:
 	void toggleBeep();
 
 private:
-	BtButton *button;
+	StateButton *button;
 	int item_id;
 };
 

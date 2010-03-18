@@ -23,7 +23,7 @@
 #include "generic_functions.h" // setCfgValue
 #include "hardware_functions.h" // getBeep, setBeep, beep
 #include "multisounddiff.h" // contdiff
-#include "btbutton.h"
+#include "state_button.h"
 #include "openclient.h"
 #include "datetime.h"
 #include "fontmanager.h" // bt_global::font
@@ -599,11 +599,11 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 
 	for (int i = 0; i < 7; ++i)
 	{
-		BtButton *toggle = new BtButton;
+		StateButton *toggle = new StateButton;
 		toggle->setCheckable(true);
 		toggle->setOnOff();
-		toggle->setImage(bt_global::skin->getImage("day_off"));
-		toggle->setPressedImage(bt_global::skin->getImage("day_on"));
+		toggle->setOffImage(bt_global::skin->getImage("day_off"));
+		toggle->setOnImage(bt_global::skin->getImage("day_on"));
 		toggle->setStatus(active[i]);
 		toggle->setChecked(active[i]);
 

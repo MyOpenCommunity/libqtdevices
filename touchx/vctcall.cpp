@@ -72,7 +72,7 @@ using namespace VCTCallPrivate;
 StateButton *getButton(const QString &image_path)
 {
 	StateButton *btn = new StateButton;
-	btn->setImage(image_path);
+	btn->setOffImage(image_path);
 	btn->setDisabledImage(getBostikName(image_path, "dis"));
 	return btn;
 }
@@ -200,10 +200,10 @@ VCTCall::VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f)
 	video_box->setStyleSheet("background-color: black");
 
 	QString call_icon = bt_global::skin->getImage("call");
-	call_accept = new BtButton;
+	call_accept = new StateButton;
 	call_accept->setOnOff();
-	call_accept->setImage(getBostikName(call_icon, "off"));
-	call_accept->setPressedImage(getBostikName(call_icon, "on"));
+	call_accept->setOffImage(getBostikName(call_icon, "off"));
+	call_accept->setOnImage(getBostikName(call_icon, "on"));
 	connect(call_accept, SIGNAL(clicked()), SLOT(toggleCall()));
 
 	volume = new ItemTuning("", bt_global::skin->getImage("volume"));
@@ -211,7 +211,7 @@ VCTCall::VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f)
 
 	mute_icon = bt_global::skin->getImage("mute");
 	mute_button = getButton(getBostikName(mute_icon, "off"));
-	mute_button->setPressedImage(getBostikName(mute_icon, "on"));
+	mute_button->setOnImage(getBostikName(mute_icon, "on"));
 	mute_button->setStatus(StateButton::DISABLED);
 	connect(mute_button, SIGNAL(clicked()), SLOT(toggleMute()));
 

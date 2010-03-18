@@ -48,20 +48,9 @@ public:
 
 	void setPressedPixmap(const QPixmap &p);
 	void setPixmap(const QPixmap &p);
-	// Set the button as a 'on-off button'. This means that the button is almost
-	// a toggle button, but instead of changes status when the button is pressed
-	// down, changes its status manually, calling the 'setStatus' method.
-	// In this case, you can retrieve the current status using the 'getStatus'
-	// method.
-	void setOnOff();
 
 	virtual void enable();
 	virtual void disable();
-
-	bool getStatus();
-
-public slots:
-	void setStatus(bool st);
 
 protected:
 	virtual void mousePressEvent(QMouseEvent *event);
@@ -71,19 +60,18 @@ protected:
 	// The sizeHint method is required to obtain a layout management that work fine.
 	virtual QSize sizeHint() const;
 
+	// Helper function to load the pressed image for an icon; if not present,
+	// returns a null QPixmap
+	QPixmap loadPressedImage(const QString &icon_path);
+
 	/// The pixmap to show when the button is in normal state
 	QPixmap pixmap;
 
-	/// The pixmap to show when the button is down, cheched or on.
+	/// The pixmap to show when the button is down
 	QPixmap pressed_pixmap;
 
 private:
 	bool is_enabled;
-
-	bool is_on_off; // a flag that mark if the button is a on-off button
-	bool current_status; // the current status of a on off button.
-
-	bool isToggle();
 
 	void initButton();
 };

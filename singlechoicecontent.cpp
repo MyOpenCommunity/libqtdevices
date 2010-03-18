@@ -20,7 +20,7 @@
 
 
 #include "singlechoicecontent.h"
-#include "btbutton.h"
+#include "state_button.h"
 #include "skinmanager.h"
 
 
@@ -30,13 +30,13 @@ CheckableBanner *SingleChoice::createBanner(const QString &text, const QString &
 }
 
 CheckableBanner::CheckableBanner(const QString &text, const QString &right_icon)
-	: Bann2Buttons(0)
+	: Bann2StateButtons(0)
 {
 	initBanner(bt_global::skin->getImage("unchecked"), right_icon, text);
+	left_button->setOnOff();
 	left_button->setCheckable(true);
-	// TODO touch 10 uses 4 icons for togglable BtButton: normal,
-	//      pressed normal, toggled, pressed toggled
-	left_button->setPressedImage(bt_global::skin->getImage("checked"));
+	left_button->setOffImage(bt_global::skin->getImage("unchecked"));
+	left_button->setOnImage(bt_global::skin->getImage("checked"));
 }
 
 BtButton *CheckableBanner::getButton()

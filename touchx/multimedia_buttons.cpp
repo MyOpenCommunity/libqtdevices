@@ -20,7 +20,7 @@
 
 
 #include "multimedia_buttons.h"
-#include "btbutton.h"
+#include "state_button.h"
 #include "skinmanager.h"
 
 #include <QHBoxLayout>
@@ -50,9 +50,9 @@ MultimediaPlayerButtons::MultimediaPlayerButtons(Type type)
 		rewind = getButton("skip_back", SIGNAL(skipBack()));
 	}
 
-	play_button = new BtButton;
-	play_button->setImage(play_icon);
-	play_button->setPressedImage(pause_icon);
+	play_button = new StateButton;
+	play_button->setOffImage(play_icon);
+	play_button->setOnImage(pause_icon);
 	play_button->setCheckable(true);
 	play_button->setOnOff();
 	connect(play_button, SIGNAL(toggled(bool)), SLOT(playToggled(bool)));

@@ -29,7 +29,7 @@
 #include <QHash>
 
 class PlatformDevice;
-class BtButton;
+class StateButton;
 class QGridLayout;
 class QDomNode;
 
@@ -70,7 +70,7 @@ public slots:
 	virtual void showPage();
 
 private:
-	BtButton *toggle_btn;
+	StateButton *toggle_btn;
 	Text2Column *box_text;
 	PlatformDevice *dev;
 	// The real status of the lan

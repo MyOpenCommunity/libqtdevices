@@ -65,7 +65,7 @@ private slots:
 	void toggleRingExclusion();
 
 private:
-	BtButton *ring_exclusion;
+	StateButton *ring_exclusion;
 	EntryphoneDevice *dev;
 	RingExclusionPage *ring_ex_page;
 	void loadItems(const QDomNode &config_node);
@@ -127,7 +127,7 @@ private slots:
 
 private:
 	EntryphoneDevice *dev;
-	BtButton *call_accept;
+	StateButton *call_accept;
 	StateButton *mute_button;
 	ItemTuning *volume;
 };

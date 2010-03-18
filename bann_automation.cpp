@@ -21,7 +21,7 @@
 
 #include "bann_automation.h"
 #include "generic_functions.h" // createMsgOpen
-#include "btbutton.h"
+#include "state_button.h"
 #include "devices_cache.h" // bt_global::add_device_to_cache
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "automation_device.h" // PPTStatDevice
@@ -182,13 +182,7 @@ void SecureInterblockedActuator::connectButtons()
 
 void SecureInterblockedActuator::changeButtonStatus(BtButton *btn)
 {
-	if (is_any_button_pressed)
-	{
-		// Icons are changed above, but no mousePressEvent is issued because the button is
-		// already down, so we need to change the icon manually
-		btn->setStatus(true);
-	}
-	else
+	if (!is_any_button_pressed)
 	{
 		btn->disconnect();
 		connect(btn, SIGNAL(clicked()), SLOT(sendStop()));

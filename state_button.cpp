@@ -27,11 +27,29 @@
 StateButton::StateButton(QWidget *parent) : BtButton(parent)
 {
 	setStatus(OFF);
+	connect(this, SIGNAL(toggled(bool)), SLOT(setStatus(bool)));
+	is_on_off = false;
 }
 
 void StateButton::setDisabledImage(const QString &path)
 {
 	disabled_pixmap = *bt_global::icons_cache.getIcon(path);
+}
+
+void StateButton::setOnImage(const QString &path)
+{
+	on_pixmap = *bt_global::icons_cache.getIcon(path);
+	QPixmap p = loadPressedImage(path);
+	if (!p.isNull())
+		pressed_on_pixmap = p;
+}
+
+void StateButton::setOffImage(const QString &path)
+{
+	off_pixmap = *bt_global::icons_cache.getIcon(path);
+	QPixmap p = loadPressedImage(path);
+	if (!p.isNull())
+		pressed_off_pixmap = p;
 }
 
 void StateButton::setStatus(StateButton::Status st)
@@ -44,15 +62,21 @@ void StateButton::setStatus(StateButton::Status st)
 		disable();
 		break;
 	case ON:
-		setIcon(pressed_pixmap);
+		BtButton::setPixmap(on_pixmap);
+		BtButton::setPressedPixmap(pressed_on_pixmap);
 		enable();
 		break;
 	case OFF:
 	default:
-		setIcon(pixmap);
+		BtButton::setPixmap(off_pixmap);
+		BtButton::setPressedPixmap(pressed_off_pixmap);
 		enable();
 		break;
 	}
 }
 
+void StateButton::setOnOff()
+{
+	is_on_off = true;
+}
 

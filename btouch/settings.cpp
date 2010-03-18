@@ -54,7 +54,8 @@ banner *Settings::getBanner(const QDomNode &item_node)
 		b = new impBeep(getTextChild(item_node, "itemID").toInt(),
 				getTextChild(item_node, "value").toInt(),
 				bt_global::skin->getImage("state_on"),
-				bt_global::skin->getImage("state_off"));
+				bt_global::skin->getImage("state_off"),
+				getTextChild(item_node, "descr"));
 		break;
 	case SET_SVEGLIA:
 	{
@@ -69,6 +70,7 @@ banner *Settings::getBanner(const QDomNode &item_node)
 				       bt_global::skin->getImage("state_on"),
 				       bt_global::skin->getImage("state_off"),
 				       bt_global::skin->getImage("edit"),
+				       getTextChild(item_node, "descr"),
 				       enabled, type, alarmset);
 
 		break;
@@ -105,6 +107,7 @@ banner *Settings::getBanner(const QDomNode &item_node)
 		b->setId(id);
 		b->Draw();
 	}
+
 	return b;
 }
 

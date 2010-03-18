@@ -25,6 +25,8 @@
 #include <QWidget>
 
 class BtButton;
+class StateButton;
+
 
 // contains previous/next, play/pause/stop and fullscreen buttons
 class MultimediaPlayerButtons : public QWidget
@@ -64,7 +66,7 @@ private:
 	BtButton *getButton(const QString &icon, const char *destination);
 
 private:
-	BtButton *play_button;
+	StateButton *play_button;
 	QString play_icon, pause_icon;
 };
 

@@ -107,10 +107,10 @@ VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 
 	ring_ex_page = 0;
-	ring_exclusion = new BtButton;
+	ring_exclusion = new StateButton;
 	ring_exclusion->setOnOff();
-	ring_exclusion->setImage(bt_global::skin->getImage("tray_ring_ex_off"));
-	ring_exclusion->setPressedImage(bt_global::skin->getImage("tray_ring_ex_on"));
+	ring_exclusion->setOffImage(bt_global::skin->getImage("tray_ring_ex_off"));
+	ring_exclusion->setOnImage(bt_global::skin->getImage("tray_ring_ex_on"));
 	connect(ring_exclusion, SIGNAL(clicked()), SLOT(toggleRingExclusion()));
 	bt_global::btmain->trayBar()->addButton(ring_exclusion);
 
@@ -260,18 +260,18 @@ IntercomCallPage::IntercomCallPage(EntryphoneDevice *d)
 	buttons_layout->addWidget(call_image, 1, 0, 1, 2);
 
 	QString call_icon = bt_global::skin->getImage("call");
-	call_accept = new BtButton;
+	call_accept = new StateButton;
 	call_accept->setOnOff();
-	call_accept->setImage(getBostikName(call_icon, "off"));
-	call_accept->setPressedImage(getBostikName(call_icon, "on"));
+	call_accept->setOffImage(getBostikName(call_icon, "off"));
+	call_accept->setOnImage(getBostikName(call_icon, "on"));
 	connect(call_accept, SIGNAL(clicked()), SLOT(toggleCall()));
 	buttons_layout->addWidget(call_accept, 2, 0);
 
 	QString mute_icon = bt_global::skin->getImage("mute");
 	mute_button = new StateButton;
-	mute_button->setImage(getBostikName(mute_icon, "off"));
+	mute_button->setOffImage(getBostikName(mute_icon, "off"));
 	mute_button->setDisabledImage(getBostikName(getBostikName(mute_icon, "off"), "dis"));
-	mute_button->setPressedImage(getBostikName(mute_icon, "on"));
+	mute_button->setOnImage(getBostikName(mute_icon, "on"));
 	mute_button->setStatus(StateButton::DISABLED);
 	connect(mute_button, SIGNAL(clicked()), SLOT(toggleMute()));
 	buttons_layout->addWidget(mute_button, 2, 1);
