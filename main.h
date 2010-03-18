@@ -197,7 +197,7 @@ enum Section
 	VIDEOCITOFONIA=22,
 	MULTIMEDIA=26,
 	SCENARI_EVOLUTI=20,                           /*!< Advanced scenarios management */
-	DIFSON_MULTI=-7,                              /*!< Multichannel sound diffusion system */
+	DIFSON_MULTI=99,                              /*!< Multichannel sound diffusion system */
 	SUPERVISIONE=-2,                              /*!< Supervision system */
 	TERMOREG_MULTI_PLANT=-3,                      /*!< Thermoregulation system with one or more 4-zones plants */
 	ENERGY_MANAGEMENT=-4,                         /*!< Energy management system */

@@ -28,6 +28,7 @@
 #ifdef LAYOUT_TOUCHX
 #include "multimedia.h"
 #include "messages.h"
+#include "sounddiffusionpage.h"
 #else
 #include "settings.h"
 #endif
@@ -43,6 +44,7 @@
 #include "iconpage.h"
 #include "energy_management.h"
 #include "load_management.h"
+
 
 #include <QObject>
 
@@ -81,34 +83,6 @@ Page *getPage(int page_id)
 	case TERMOREG_MULTI_PLANT:
 		page = new ThermalMenu(page_node);
 		break;
-	case DIFSON:
-	{
-		SoundDiffusion *p = new SoundDiffusion(page_node);
-		p->draw();
-		page = p;
-
-		if (!bt_global::btmain->difSon)
-		{
-			SoundDiffusionAlarm *sd = new SoundDiffusionAlarm(p->getAudioSources(), page_node);
-			sd->forceDraw();
-			bt_global::btmain->difSon = sd;
-		}
-		break;
-	}
-	case DIFSON_MULTI:
-	{
-		MultiSoundDiff *p = new MultiSoundDiff(page_node);
-		p->forceDraw();
-		page = p;
-
-		if (!bt_global::btmain->dm)
-		{
-			MultiSoundDiffAlarm *tmp = new MultiSoundDiffAlarm(page_node);
-			tmp->forceDraw();
-			bt_global::btmain->dm = tmp;
-		}
-		break;
-	}
 	case ENERGY_MANAGEMENT:
 	{
 		EnergyManagement *p = new EnergyManagement(page_node);
@@ -143,7 +117,43 @@ Page *getPage(int page_id)
 	case MESSAGES:
 		page = new MessagesListPage;
 		break;
+	case DIFSON:
+		// TODO: is it ok to fall to the next case?
+	case DIFSON_MULTI:
+		page = new SoundDiffusionPage(page_node);
+		break;
+#else
+	// TODO: this must be changed for btouch when page changes are clearer
+	case DIFSON:
+	{
+		SoundDiffusion *p = new SoundDiffusion(page_node);
+		p->draw();
+		page = p;
+
+		if (!bt_global::btmain->difSon)
+		{
+		SoundDiffusionAlarm *sd = new SoundDiffusionAlarm(p->getAudioSources(), page_node);
+		sd->forceDraw();
+		bt_global::btmain->difSon = sd;
+	}
+		break;
+	}
+	case DIFSON_MULTI:
+	{
+		MultiSoundDiff *p = new MultiSoundDiff(page_node);
+		p->forceDraw();
+		page = p;
+
+		if (!bt_global::btmain->dm)
+		{
+		MultiSoundDiffAlarm *tmp = new MultiSoundDiffAlarm(page_node);
+		tmp->forceDraw();
+		bt_global::btmain->dm = tmp;
+	}
+		break;
+	}
 #endif
+
 	case LOAD_MANAGEMENT:
 		page = new LoadManagement(page_node);
 		break;
