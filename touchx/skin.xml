@@ -340,6 +340,25 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_next>diffusione/successivo.png</img_next>
 		<img_previous>diffusione/precedente.png</img_previous>
 	</item>
+	<!-- special ambient -->
+	<item>
+		<cid>17000</cid>
+		<!--
+		Other images: forward
+		-->
+		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
+	</item>
+	<!-- normal ambient -->
+	<item>
+		<cid>17001</cid>
+		<!--
+		Other images: forward
+		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
+		-->
+		<img_ambient>diffusione/imgamb.png</img_ambient>
+		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+	</item>
+
 
 
 	<!-- automation banners -->

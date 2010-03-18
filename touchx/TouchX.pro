@@ -38,6 +38,7 @@ HEADERS += favoriteswidget.h \
            radio.h \
            scenevomanager.h \
            slideshow.h \
+           sounddiffusionpage.h \
            vctcall.h \
            videoplayer.h \
            webcam.h
@@ -53,6 +54,7 @@ SOURCES += favoriteswidget.cpp \
            radio.cpp \
            scenevomanager.cpp \
            slideshow.cpp \
+           sounddiffusionpage.cpp \
            vctcall.cpp \
            videoplayer.cpp \
            webcam.cpp
