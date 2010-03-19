@@ -126,7 +126,7 @@ void MountWatcher::mount(const QString &device, const QString &dir)
 	QProcess::startDetached("/bin/mount", QStringList() << "-r" << device << dir);
 }
 
-QStringList MountWatcher::parseMtab() const
+QStringList MountWatcher::parseMounts() const
 {
 	QStringList dirs;
 
@@ -181,7 +181,7 @@ MountType MountWatcher::mountType(const QString &dir) const
 
 void MountWatcher::startWatching()
 {
-	mount_points = parseMtab();
+	mount_points = parseMounts();
 
 	foreach (const QString &dir, mount_points)
 	{
@@ -244,7 +244,7 @@ void MountWatcher::mtabChanged()
 	if (watcher->files().isEmpty())
 		watcher->addPath(MTAB);
 
-	QStringList dirs = parseMtab();
+	QStringList dirs = parseMounts();
 
 	// compute the mounted/unmounted directories as the difference between the
 	// old and new directory list

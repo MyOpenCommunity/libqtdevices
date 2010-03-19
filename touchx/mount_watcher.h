@@ -63,7 +63,7 @@ signals:
 private:
 	MountWatcher();
 
-	QStringList parseMtab() const;
+	QStringList parseMounts() const;
 	QStringList parseUsbRemoved() const;
 
 	void mtabChanged();
