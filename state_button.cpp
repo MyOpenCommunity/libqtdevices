@@ -58,7 +58,7 @@ void StateButton::setStatus(StateButton::Status st)
 	switch (status)
 	{
 	case DISABLED:
-		setIcon(disabled_pixmap);
+		BtButton::setPixmap(disabled_pixmap);
 		disable();
 		break;
 	case ON:
