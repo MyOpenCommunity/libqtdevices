@@ -64,24 +64,15 @@ enum
 };
 
 
-ToggleBeep::ToggleBeep(int _item_id, bool status, QString label, QString icon_on, QString icon_off)
+ToggleBeep::ToggleBeep(int _item_id, bool status, QString label, QString icon_on, QString icon_off) :
+	IconPageButton(label)
 {
 	item_id = _item_id;
 
-	QLabel *lbl = new QLabel(label);
-	lbl->setText(label);
-	lbl->setAlignment(Qt::AlignHCenter);
-	lbl->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
-
-	button = new StateButton;
 	button->setCheckable(true);
 	button->setOffImage(icon_off);
 	button->setOnImage(icon_on);
 	button->setStatus(status);
-
-	QVBoxLayout *l = new QVBoxLayout(this);
-	l->addWidget(button);
-	l->addWidget(lbl);
 
 	setBeep(status);
 	connect(button, SIGNAL(clicked()), SLOT(toggleBeep()));

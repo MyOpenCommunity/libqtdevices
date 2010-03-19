@@ -112,7 +112,7 @@ private slots:
 
 
 // button to toggle on/off the beep sound
-class ToggleBeep : public QWidget
+class ToggleBeep : public IconPageButton
 {
 Q_OBJECT
 public:
@@ -122,7 +122,6 @@ private slots:
 	void toggleBeep();
 
 private:
-	StateButton *button;
 	int item_id;
 };
 
