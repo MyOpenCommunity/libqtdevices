@@ -25,6 +25,48 @@
 #include "iconpage.h"
 
 class QDomNode;
+class StateButton;
+class QFileSystemWatcher;
+
+
+/**
+ * Handles mounting/unmounting of USB/SD devices
+ */
+class WatchMounts : public QObject
+{
+Q_OBJECT
+public:
+	// returns the global mount watcher object
+	static WatchMounts &getWatcher();
+
+	// returns the list of currently-mounted directories
+	QStringList mountState() const;
+
+	// starts watching for mount/umount events, emits a directoryMounted() signal
+	// for every mounted filesystem
+	void startWatching();
+
+signals:
+	void directoryMounted(const QString &dir);
+	void directoryUnmounted(const QString &dir);
+
+private:
+	WatchMounts();
+
+	QStringList parseMtab() const;
+	QStringList parseUsbRemoved() const;
+
+	void mtabChanged();
+	void usbRemoved();
+
+private slots:
+	void fileChanged(const QString &file);
+	void directoryChanged(const QString &directory);
+
+private:
+	QStringList mount_points;
+	QFileSystemWatcher *watcher;
+};
 
 
 class MultimediaSectionPage : public IconPage
