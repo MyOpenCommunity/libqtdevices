@@ -66,6 +66,8 @@ MultimediaFileListPage::MultimediaFileListPage()
 	buildPage(item_list, nav_bar, 0, title_widget);
 	layout()->setContentsMargins(0, 5, 25, 10);
 
+	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
+		SLOT(unmounted(const QString &)));
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(unmount()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
 	connect(this, SIGNAL(notifyExit()), SIGNAL(Closed()));
@@ -218,6 +220,12 @@ void MultimediaFileListPage::nextItem()
 void MultimediaFileListPage::prevItem()
 {
 	page_content->prevItem();
+}
+
+void MultimediaFileListPage::unmounted(const QString &dir)
+{
+	if (dir == root_path && isVisible())
+		emit Closed();
 }
 
 void MultimediaFileListPage::unmount()
