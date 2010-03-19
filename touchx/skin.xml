@@ -282,7 +282,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<!-- USB -->
 	<item>
 		<cid>26000</cid>
-		<img_link_icon>multimediale/usbon.png</img_link_icon>
+		<img_mounted>multimediale/usbon.png</img_mounted>
+		<img_unmounted>multimediale/usboff.png</img_unmounted>
 		<!-- Multimedia list icons -->
 		<img_eject>multimediale/umount.png</img_eject>
 		<img_image_icon>multimediale/fotomini.png</img_image_icon>

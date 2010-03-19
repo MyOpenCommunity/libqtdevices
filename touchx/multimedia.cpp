@@ -281,8 +281,18 @@ int MultimediaSectionPage::sectionId()
 	return MULTIMEDIA;
 }
 
+MultimediaFileListPage *MultimediaSectionPage::createBrowser()
+{
+	MultimediaFileListPage *browser = new MultimediaFileListPage;
+	connect(browser, SIGNAL(Closed()), SLOT(showPage()));
+
+	return browser;
+}
+
 void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 {
+	MultimediaFileListPage *browser = NULL;
+
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		SkinContext cxt(getTextChild(item, "cid").toInt());
@@ -300,8 +310,16 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		switch (item_id)
 		{
 		case PAGE_USB:
-			p = new MultimediaFileListPage;
+		{
+			if (!browser)
+				browser = createBrowser();
+
+			QWidget *t = new FileSystemBrowseButton(WatchMounts::getWatcher(), browser, descr,
+								bt_global::skin->getImage("mounted"),
+								bt_global::skin->getImage("unmounted"));
+			page_content->addWidget(t);
 			break;
+		}
 		case PAGE_WEB_CAM:
 			p = new WebcamListPage(page_node);
 			break;
@@ -318,4 +336,6 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 			addPage(p, descr, icon);
 		}
 	}
+
+	WatchMounts::getWatcher().startWatching();
 }

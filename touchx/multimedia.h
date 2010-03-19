@@ -98,6 +98,7 @@ public:
 
 private:
 	void loadItems(const QDomNode &config_node);
+	MultimediaFileListPage *createBrowser();
 };
 
 #endif // MULTIMEDIA_H
