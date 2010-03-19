@@ -27,6 +27,7 @@
 class QDomNode;
 class StateButton;
 class QFileSystemWatcher;
+class MultimediaFileListPage;
 
 
 /**
@@ -66,6 +67,24 @@ private slots:
 private:
 	QStringList mount_points;
 	QFileSystemWatcher *watcher;
+};
+
+
+class FileSystemBrowseButton : public IconPageButton
+{
+Q_OBJECT
+public:
+	FileSystemBrowseButton(WatchMounts &watch, MultimediaFileListPage *browser, const QString &label,
+			       const QString &icon_mounted, const QString &icon_unmounted);
+
+private slots:
+	void mounted(const QString &path);
+	void unmounted(const QString &path);
+	void browse();
+
+private:
+	MultimediaFileListPage *browser;
+	QString directory;
 };
 
 

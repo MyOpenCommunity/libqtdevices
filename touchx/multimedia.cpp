@@ -27,6 +27,7 @@
 #include "skinmanager.h"
 #include "webcam.h"
 #include "feedmanager.h"
+#include "state_button.h"
 
 #include <QFileSystemWatcher>
 #include <QSet>
@@ -225,6 +226,47 @@ void WatchMounts::mtabChanged()
 		emit directoryUnmounted(dir);
 
 	mount_points = dirs;
+}
+
+
+FileSystemBrowseButton::FileSystemBrowseButton(WatchMounts &watch, MultimediaFileListPage *_browser, const QString &label,
+					       const QString &icon_mounted, const QString &icon_unmounted) :
+	IconPageButton(label)
+{
+	browser = _browser;
+
+	button->setOnImage(icon_mounted);
+	button->setDisabledImage(icon_unmounted);
+
+	connect(button, SIGNAL(clicked()), SLOT(browse()));
+
+	connect(&watch, SIGNAL(directoryMounted(const QString &)), SLOT(mounted(const QString &)));
+	connect(&watch, SIGNAL(directoryUnmounted(const QString &)), SLOT(unmounted(const QString &)));
+
+	button->setStatus(StateButton::DISABLED);
+	foreach (const QString &dir, watch.mountState())
+		mounted(dir);
+}
+
+// TODO handle multiple mount points
+void FileSystemBrowseButton::mounted(const QString &path)
+{
+	qDebug() << "Mounted" << path;
+
+	button->setStatus(StateButton::ON);
+	directory = path;
+}
+
+void FileSystemBrowseButton::unmounted(const QString &path)
+{
+	qDebug() << "Unmounted" << path;
+
+	button->setStatus(StateButton::DISABLED);
+}
+
+void FileSystemBrowseButton::browse()
+{
+	browser->browse(directory);
 }
 
 
