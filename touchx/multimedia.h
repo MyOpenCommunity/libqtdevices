@@ -75,9 +75,16 @@ private:
 private slots:
 	void fileChanged(const QString &file);
 	void directoryChanged(const QString &directory);
+	void checkSD();
 
 private:
+	// the SD has already been mounted; this is unset only after the
+	// SD card has been removed, not when it is unmounted
+	bool sd_mounted;
+
+	// list of currently-mounted filesystems
 	QStringList mount_points;
+
 	QFileSystemWatcher *watcher;
 };
 

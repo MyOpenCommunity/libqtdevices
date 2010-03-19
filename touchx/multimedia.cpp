@@ -33,6 +33,7 @@
 #include <QSet>
 #include <QTextStream>
 #include <QProcess>
+#include <QTimer>
 #include <QtDebug>
 
 
@@ -40,7 +41,9 @@
 #define MOUNTS       "/proc/mounts"
 #define USB_REMOVED  "/tmp/usb_removed.txt"
 #define MOUNT_LIST   "/tmp/mount_list.txt"
+#define SD_STATE     "/proc/sys/dev/btweb/mmc_cd"
 #define SD_PATH      "/mnt/mmc1"
+#define SD_POLL_INTERVAL 2000
 
 #ifdef BT_HARDWARE_X11
     #define MOUNT_PATH "/media"
@@ -62,6 +65,8 @@ enum
 /*
  * Mounting and unmounting explained
  *
+ * == USB ==
+ *
  * when a new USB device is inserted, it is automatically mounted, and the path
  * is written in /tmp/mount_list.txt
  *
@@ -75,15 +80,20 @@ enum
  * the automatic mount will not try to remount a device that is already listed as mounted,
  * and removing the device will not help because the usb_removed.txt file is not written if
  * the device ID does not match the one in mount_list.txt
+ *
+ * == SD ==
+ *
+ * There is no automatic mounting/unmounting; reading from /proc/sys/dev/btweb/mmc_cd
+ * returns "0" when there is an SD card in the slot, 1 otherwise
  */
 
 /*
- * How WatchMount works
+ * How WatchMounts works
  *
- * USB mount/umount notifications:
+ * USB/SD mount/umount notifications:
  *
  * watches /etc/mtab, when it changes, computes the difference between old and new
- * state and sends mount/umount notifications
+ * state and sends mount/umount notifications; reads the mount state from /proc/mounts
  *
  * USB mounting:
  *
@@ -92,6 +102,10 @@ enum
  * USB unmounting:
  *
  * usb_removed.txt is parsed and the mount points unmounted using "umount -l"
+ *
+ * SD mounting/unmounting
+ *
+ * polls /proc/sys/dev/btweb/mmc_cd every second and calls mount/umount manually
  */
 
 // can't create it as a global object: needs to be created after app startup
@@ -104,10 +118,14 @@ WatchMounts &WatchMounts::getWatcher()
 
 WatchMounts::WatchMounts()
 {
-	watcher = new QFileSystemWatcher(this);
+	sd_mounted = false;
 
-	connect(watcher, SIGNAL(fileChanged(const QString &)), SLOT(fileChanged(const QString &)));
+	// USB mount/umount
+	watcher = new QFileSystemWatcher(this);
 	connect(watcher, SIGNAL(directoryChanged(const QString &)), SLOT(directoryChanged(const QString &)));
+
+	// mount/umount notifications
+	connect(watcher, SIGNAL(fileChanged(const QString &)), SLOT(fileChanged(const QString &)));
 }
 
 QStringList WatchMounts::mountState() const
@@ -194,6 +212,12 @@ void WatchMounts::startWatching()
 	watcher->addPath(MTAB);
 	watcher->addPath("/tmp");
 
+	// SD mount/umount
+	QTimer *poll = new QTimer(this);
+
+	poll->start(SD_POLL_INTERVAL);
+	connect(poll, SIGNAL(timeout()), SLOT(checkSD()));
+
 	// cleanup
 	if (QFile::exists(USB_REMOVED))
 		usbRemoved();
@@ -252,6 +276,40 @@ void WatchMounts::mtabChanged()
 		emit directoryUnmounted(dir, mountType(dir));
 
 	mount_points = dirs;
+}
+
+void WatchMounts::checkSD()
+{
+	QFile sd_present(SD_STATE);
+	if (!sd_present.open(QFile::ReadOnly))
+		return;
+	QByteArray st = sd_present.readAll();
+	bool present = st.size() > 0 && st[0] == '0';
+
+	// note: if the SD card is unmounted via /bin/unmount but is still in the
+	// slot, sd_mounted is still true, so the card is not remounted until it is
+	// removed and reinserted in the slot
+	if (present && !sd_mounted)
+	{
+		qDebug() << "Mounting SD card";
+
+		if (!QFile::exists(SD_PATH))
+			QDir(MOUNT_PATH).mkdir("mmc1");
+
+		// avoid getting stuck in a loop calling mount
+		sd_mounted = true;
+		mount("/dev/mmc1", SD_PATH);
+	}
+	else if (!present && sd_mounted)
+	{
+		qDebug() << "Unmounting SD card";
+
+		sd_mounted = false;
+		// only try to unmount if it isn't already mounted
+		foreach (const QString &dir, mount_points)
+			if (dir == SD_PATH)
+				unmount(SD_PATH);
+	}
 }
 
 
