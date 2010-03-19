@@ -118,7 +118,10 @@ QStringList MountWatcher::mountState() const
 
 void MountWatcher::unmount(const QString &dir)
 {
-	QProcess::startDetached("/bin/umount", QStringList() << "-l" << dir);
+	// only try to unmount if it is mounted
+	foreach (const QString &mp, parseMounts())
+		if (mp == dir)
+			QProcess::startDetached("/bin/umount", QStringList() << "-l" << dir);
 }
 
 void MountWatcher::mount(const QString &device, const QString &dir)
@@ -288,9 +291,6 @@ void MountWatcher::checkSD()
 		qDebug() << "Unmounting SD card";
 
 		sd_mounted = false;
-		// only try to unmount if it isn't already mounted
-		foreach (const QString &dir, mount_points)
-			if (dir == SD_PATH)
-				unmount(SD_PATH);
+		unmount(SD_PATH);
 	}
 }
