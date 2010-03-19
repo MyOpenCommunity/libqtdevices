@@ -55,6 +55,7 @@ public:
 protected:
 	virtual void mousePressEvent(QMouseEvent *event);
 	virtual void mouseReleaseEvent(QMouseEvent *event);
+	virtual void paintEvent(QPaintEvent *e);
 	virtual bool event(QEvent *e);
 
 	// The sizeHint method is required to obtain a layout management that work fine.

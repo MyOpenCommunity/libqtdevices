@@ -27,6 +27,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QEvent>
+#include <QPainter>
 
 
 BtButton::BtButton(QWidget *parent) : QPushButton(parent)
@@ -146,6 +147,21 @@ void BtButton::mouseReleaseEvent(QMouseEvent *event)
 		setIcon(pixmap);
 
 	QPushButton::mouseReleaseEvent(event);
+}
+
+void BtButton::paintEvent(QPaintEvent *e)
+{
+#ifdef LAYOUT_BTOUCH
+	// TODO keep default behaviour for BTouch
+	QPushButton::paintEvent(e);
+#else
+	// the default QStyle implementation shifts the pushed button
+	// some pixel to the right/bottom, and for the TouchX we do not want
+	// that
+	QPainter p(this);
+
+	icon().paint(&p, 0, 0, width(), height());
+#endif
 }
 
 void BtButton::enable()
