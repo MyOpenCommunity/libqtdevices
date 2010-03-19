@@ -32,6 +32,7 @@ HEADERS += favoriteswidget.h \
            headerwidget.h \
            iconsettings.h \
            messages.h \
+           mount_watcher.h \
            multimedia.h \
            multimedia_buttons.h \
            multimedia_filelist.h \
@@ -48,6 +49,7 @@ SOURCES += favoriteswidget.cpp \
            headerwidget.cpp \
            iconsettings.cpp \
            messages.cpp \
+           mount_watcher.cpp \
            multimedia.cpp \
            multimedia_buttons.cpp \
            multimedia_filelist.cpp \

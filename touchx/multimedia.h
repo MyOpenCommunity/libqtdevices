@@ -23,77 +23,18 @@
 #define MULTIMEDIA_H
 
 #include "iconpage.h"
+#include "mount_watcher.h"
 
 class QDomNode;
 class StateButton;
-class QFileSystemWatcher;
 class MultimediaFileListPage;
-
-
-enum MountType
-{
-	MOUNT_USB,
-	MOUNT_SD,
-};
-
-/**
- * Handles mounting/unmounting of USB/SD devices
- */
-class WatchMounts : public QObject
-{
-Q_OBJECT
-public:
-	// returns the global mount watcher object
-	static WatchMounts &getWatcher();
-
-	// returns the list of currently-mounted directories
-	QStringList mountState() const;
-
-	// mount/unmount the path
-	void mount(const QString &device, const QString &dir);
-	void unmount(const QString &dir);
-
-	// starts watching for mount/umount events, emits a directoryMounted() signal
-	// for every mounted filesystem
-	void startWatching();
-
-signals:
-	void directoryMounted(const QString &dir, MountType type);
-	void directoryUnmounted(const QString &dir, MountType type);
-
-private:
-	WatchMounts();
-
-	QStringList parseMtab() const;
-	QStringList parseUsbRemoved() const;
-
-	void mtabChanged();
-	void usbRemoved();
-
-	MountType mountType(const QString &dir) const;
-
-private slots:
-	void fileChanged(const QString &file);
-	void directoryChanged(const QString &directory);
-	void checkSD();
-
-private:
-	// the SD has already been mounted; this is unset only after the
-	// SD card has been removed, not when it is unmounted
-	bool sd_mounted;
-
-	// list of currently-mounted filesystems
-	QStringList mount_points;
-
-	QFileSystemWatcher *watcher;
-};
 
 
 class FileSystemBrowseButton : public IconPageButton
 {
 Q_OBJECT
 public:
-	FileSystemBrowseButton(WatchMounts &watch, MultimediaFileListPage *browser,
+	FileSystemBrowseButton(MountWatcher &watch, MultimediaFileListPage *browser,
 			       MountType type, const QString &label,
 			       const QString &icon_mounted, const QString &icon_unmounted);
 
