@@ -47,6 +47,8 @@ public:
 
 	MultimediaFileListPage();
 
+	void browse(const QString &dir);
+
 public slots:
 	virtual void nextItem();
 	virtual void prevItem();

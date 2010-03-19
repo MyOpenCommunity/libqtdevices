@@ -51,7 +51,7 @@ void addFilters(QStringList &filters, const char **extensions, int size)
 }
 
 MultimediaFileListPage::MultimediaFileListPage()
-	: FileSelector(4, "/video")
+	: FileSelector(4, "/")
 {
 	ItemList *item_list = new ItemList(0, 4);
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
@@ -89,6 +89,12 @@ MultimediaFileListPage::MultimediaFileListPage()
 	connect(this, SIGNAL(displayVideos(QList<QString>, unsigned)),
 		videoplayer, SLOT(displayVideos(QList<QString>, unsigned)));
 	connect(videoplayer, SIGNAL(Closed()), SLOT(showPageNoReload()));
+}
+
+void MultimediaFileListPage::browse(const QString &dir)
+{
+	browseDirectory(dir);
+	showPage();
 }
 
 bool MultimediaFileListPage::browseFiles(const QDir &directory, QList<QFileInfo> &files)
