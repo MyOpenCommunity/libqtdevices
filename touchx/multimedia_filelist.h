@@ -71,6 +71,7 @@ private:
 
 private slots:
 	void startPlayback(int item);
+	void unmount();
 
 private:
 	// icons for different file type
@@ -79,11 +80,12 @@ private:
 	// button icons for files/directories
 	QString play_file, browse_directory;
 
+	// root path, used to unmount the device
+	QString root_path;
+
 	// pages to display video/images
 	SlideshowPage *slideshow;
 	VideoPlayerPage *videoplayer;
 };
 
 #endif // MULTIMEDIA_FILELIST_H
-
-

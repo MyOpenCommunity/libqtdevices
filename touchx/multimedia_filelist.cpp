@@ -25,6 +25,7 @@
 #include "itemlist.h"
 #include "slideshow.h"
 #include "videoplayer.h"
+#include "mount_watcher.h"
 
 #include <QLayout>
 #include <QDebug>
@@ -65,6 +66,7 @@ MultimediaFileListPage::MultimediaFileListPage()
 	buildPage(item_list, nav_bar, 0, title_widget);
 	layout()->setContentsMargins(0, 5, 25, 10);
 
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(unmount()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
 	connect(this, SIGNAL(notifyExit()), SIGNAL(Closed()));
 	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
@@ -93,6 +95,8 @@ MultimediaFileListPage::MultimediaFileListPage()
 
 void MultimediaFileListPage::browse(const QString &dir)
 {
+	root_path = dir;
+
 	setRootPath(dir);
 	showPage();
 }
@@ -216,3 +220,7 @@ void MultimediaFileListPage::prevItem()
 	page_content->prevItem();
 }
 
+void MultimediaFileListPage::unmount()
+{
+	MountWatcher::getWatcher().unmount(root_path);
+}
