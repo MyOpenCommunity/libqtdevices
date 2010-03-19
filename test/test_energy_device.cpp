@@ -724,7 +724,7 @@ void TestEnergyDevice::sendUpdateStart()
 	dev->sendUpdateStart();
 	client_command->flush();
 
-	QString req(QString("*#18*%1*#1200#%2*1##").arg(where).arg(dev->mode));
+	QString req(QString("*#18*%1*#1200#%2*255##").arg(where).arg(dev->mode));
 	QCOMPARE(server->frameCommand(), req);
 }
 
@@ -762,7 +762,7 @@ void TestEnergyDevice::testUpdateStartPolling()
 	client_request->flush();
 
 	QString reqr = QString("*#18*%1*113##").arg(where);
-	QString reqc = QString("*#18*%1*#1200#%2*1##").arg(where).arg(dev->mode);
+	QString reqc = QString("*#18*%1*#1200#%2*255##").arg(where).arg(dev->mode);
 	QCOMPARE(server->frameCommand(), reqc);
 	QCOMPARE(server->frameRequest(), reqr);
 	QCOMPARE(dev->update_timer->isActive(), true);
@@ -779,7 +779,7 @@ void TestEnergyDevice::testUpdateStartAutomatic()
 	dev->requestCurrentUpdateStart();
 	client_command->flush();
 
-	QString req = QString("*#18*%1*#1200#%2*1##").arg(where).arg(dev->mode);
+	QString req = QString("*#18*%1*#1200#%2*255##").arg(where).arg(dev->mode);
 	QCOMPARE(server->frameCommand(), req);
 	QCOMPARE(dev->update_count, 1);
 	QCOMPARE(dev->update_state, EnergyDevice::UPDATE_AUTO);
