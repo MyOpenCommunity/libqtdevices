@@ -36,3 +36,6 @@ int use_ssl = false;
 char *ssl_cert_key_path = NULL;
 char *ssl_certificate_path = NULL;
 
+// Moved here from main.cpp because bttime.cpp uses it and tests don't link
+QHash<GlobalFields, QString> bt_global::config;
+

@@ -49,8 +49,6 @@ struct GeneralConfig
 	QString log_file;
 };
 
-QHash<GlobalFields, QString> bt_global::config;
-
 // Instance DOM global object to handle configuration.
 // TODO this can be freed after configuration loading completes
 QDomDocument qdom_appconfig;
