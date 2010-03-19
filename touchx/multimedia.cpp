@@ -37,6 +37,7 @@
 
 
 #define MTAB         "/etc/mtab"
+#define MOUNTS       "/proc/mounts"
 #define USB_REMOVED  "/tmp/usb_removed.txt"
 #define MOUNT_LIST   "/tmp/mount_list.txt"
 
@@ -117,8 +118,10 @@ QStringList WatchMounts::parseMtab() const
 {
 	QStringList dirs;
 
-	// parse currently-mounted directories from mtab
-	QFile mtab(MTAB);
+	// parse currently-mounted directories from /proc/mounts; er do not use mtab
+	// because we may get the file updated event when the mtab is only partially
+	// written to disk
+	QFile mtab(MOUNTS);
 	if (!mtab.open(QFile::ReadOnly))
 		return dirs;
 	QTextStream mtab_in(&mtab);
