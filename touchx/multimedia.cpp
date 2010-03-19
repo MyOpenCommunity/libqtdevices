@@ -40,6 +40,7 @@
 #define MOUNTS       "/proc/mounts"
 #define USB_REMOVED  "/tmp/usb_removed.txt"
 #define MOUNT_LIST   "/tmp/mount_list.txt"
+#define SD_PATH      "/mnt/mmc1"
 
 #ifdef BT_HARDWARE_X11
     #define MOUNT_PATH "/media"
@@ -162,16 +163,28 @@ QStringList WatchMounts::parseUsbRemoved() const
 	return devices;
 }
 
+MountType WatchMounts::mountType(const QString &dir) const
+{
+	return dir == SD_PATH ? MOUNT_SD : MOUNT_USB;
+}
+
 void WatchMounts::startWatching()
 {
 	mount_points = parseMtab();
 
 	foreach (const QString &dir, mount_points)
-		emit directoryMounted(dir);
+	{
+		MountType type = mountType(dir);
+		if (type == MOUNT_SD)
+			sd_mounted = true;
+		emit directoryMounted(dir, type);
+	}
 
+	// USB mount/umount
 	watcher->addPath(MTAB);
 	watcher->addPath("/tmp");
 
+	// cleanup
 	if (QFile::exists(USB_REMOVED))
 		usbRemoved();
 }
@@ -223,19 +236,21 @@ void WatchMounts::mtabChanged()
 	QSet<QString> unmounted = QSet<QString>(old_dirs).subtract(new_dirs);
 
 	foreach (const QString &dir, mounted)
-		emit directoryMounted(dir);
+		emit directoryMounted(dir, mountType(dir));
 
 	foreach (const QString &dir, unmounted)
-		emit directoryUnmounted(dir);
+		emit directoryUnmounted(dir, mountType(dir));
 
 	mount_points = dirs;
 }
 
 
-FileSystemBrowseButton::FileSystemBrowseButton(WatchMounts &watch, MultimediaFileListPage *_browser, const QString &label,
+FileSystemBrowseButton::FileSystemBrowseButton(WatchMounts &watch, MultimediaFileListPage *_browser,
+					       MountType _type, const QString &label,
 					       const QString &icon_mounted, const QString &icon_unmounted) :
 	IconPageButton(label)
 {
+	type = _type;
 	browser = _browser;
 
 	button->setOnImage(icon_mounted);
@@ -243,26 +258,28 @@ FileSystemBrowseButton::FileSystemBrowseButton(WatchMounts &watch, MultimediaFil
 
 	connect(button, SIGNAL(clicked()), SLOT(browse()));
 
-	connect(&watch, SIGNAL(directoryMounted(const QString &)), SLOT(mounted(const QString &)));
-	connect(&watch, SIGNAL(directoryUnmounted(const QString &)), SLOT(unmounted(const QString &)));
+	connect(&watch, SIGNAL(directoryMounted(const QString &, MountType)), SLOT(mounted(const QString &,MountType)));
+	connect(&watch, SIGNAL(directoryUnmounted(const QString &, MountType)), SLOT(unmounted(const QString &, MountType)));
 
 	button->setStatus(StateButton::DISABLED);
-	foreach (const QString &dir, watch.mountState())
-		mounted(dir);
 }
 
 // TODO handle multiple mount points
-void FileSystemBrowseButton::mounted(const QString &path)
+void FileSystemBrowseButton::mounted(const QString &path, MountType t)
 {
-	qDebug() << "Mounted" << path;
+	if (t != type)
+		return;
+	qDebug() << "Mounted" << path << type;
 
 	button->setStatus(StateButton::ON);
 	directory = path;
 }
 
-void FileSystemBrowseButton::unmounted(const QString &path)
+void FileSystemBrowseButton::unmounted(const QString &path, MountType t)
 {
-	qDebug() << "Unmounted" << path;
+	if (t != type)
+		return;
+	qDebug() << "Unmounted" << path << type;
 
 	button->setStatus(StateButton::DISABLED);
 }
@@ -313,11 +330,13 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		switch (item_id)
 		{
 		case PAGE_USB:
+		case PAGE_SD:
 		{
 			if (!browser)
 				browser = createBrowser();
 
-			QWidget *t = new FileSystemBrowseButton(WatchMounts::getWatcher(), browser, descr,
+			QWidget *t = new FileSystemBrowseButton(WatchMounts::getWatcher(), browser,
+								item_id == PAGE_USB ? MOUNT_USB : MOUNT_SD, descr,
 								bt_global::skin->getImage("mounted"),
 								bt_global::skin->getImage("unmounted"));
 			page_content->addWidget(t);

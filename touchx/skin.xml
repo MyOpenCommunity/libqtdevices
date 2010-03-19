@@ -303,6 +303,12 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_nofullscreen>multimediale/screen.png</img_nofullscreen>
 		<img_volume>diffusione/onvolamp.png</img_volume>
 	</item>
+	<!-- SD -->
+	<item>
+		<cid>26009</cid>
+		<img_mounted>multimediale/sdon.png</img_mounted>
+		<img_unmounted>multimediale/sdoff.png</img_unmounted>
+	</item>
 	<!-- RSS -->
 	<item>
 		<cid>137</cid>

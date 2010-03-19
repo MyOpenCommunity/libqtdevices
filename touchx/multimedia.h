@@ -30,6 +30,12 @@ class QFileSystemWatcher;
 class MultimediaFileListPage;
 
 
+enum MountType
+{
+	MOUNT_USB,
+	MOUNT_SD,
+};
+
 /**
  * Handles mounting/unmounting of USB/SD devices
  */
@@ -48,8 +54,8 @@ public:
 	void startWatching();
 
 signals:
-	void directoryMounted(const QString &dir);
-	void directoryUnmounted(const QString &dir);
+	void directoryMounted(const QString &dir, MountType type);
+	void directoryUnmounted(const QString &dir, MountType type);
 
 private:
 	WatchMounts();
@@ -59,6 +65,8 @@ private:
 
 	void mtabChanged();
 	void usbRemoved();
+
+	MountType mountType(const QString &dir) const;
 
 private slots:
 	void fileChanged(const QString &file);
@@ -74,17 +82,19 @@ class FileSystemBrowseButton : public IconPageButton
 {
 Q_OBJECT
 public:
-	FileSystemBrowseButton(WatchMounts &watch, MultimediaFileListPage *browser, const QString &label,
+	FileSystemBrowseButton(WatchMounts &watch, MultimediaFileListPage *browser,
+			       MountType type, const QString &label,
 			       const QString &icon_mounted, const QString &icon_unmounted);
 
 private slots:
-	void mounted(const QString &path);
-	void unmounted(const QString &path);
+	void mounted(const QString &path, MountType type);
+	void unmounted(const QString &path, MountType type);
 	void browse();
 
 private:
 	MultimediaFileListPage *browser;
 	QString directory;
+	MountType type;
 };
 
 
