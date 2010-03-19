@@ -31,6 +31,8 @@
 
 class IconContent;
 class BtButton;
+class StateButton;
+
 
 /**
  * \class IconPage
@@ -75,6 +77,21 @@ protected:
 
 private:
 	QList<QWidget*> items;
+};
+
+
+/**
+ * Base class for IconPage buttons that aren't just links to pages but have some
+ * special behaviour.  Provides an uniform layout.
+ */
+class IconPageButton : public QWidget
+{
+Q_OBJECT
+public:
+	IconPageButton(const QString &label);
+
+protected:
+	StateButton *button;
 };
 
 #endif // ICONPAGE_H

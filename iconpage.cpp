@@ -20,7 +20,7 @@
 
 
 #include "iconpage.h"
-#include "btbutton.h"
+#include "state_button.h"
 #include "navigation_bar.h"
 #include "skinmanager.h"
 #include "fontmanager.h" // bt_global::font
@@ -151,4 +151,19 @@ void IconContent::drawContent()
 	}
 
 	updateLayout(items);
+}
+
+
+IconPageButton::IconPageButton(const QString &label)
+{
+	QLabel *lbl = new QLabel(label);
+	lbl->setText(label);
+	lbl->setAlignment(Qt::AlignHCenter);
+	lbl->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
+
+	button = new StateButton;
+
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->addWidget(button);
+	l->addWidget(lbl);
 }
