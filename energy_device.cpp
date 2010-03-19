@@ -30,7 +30,7 @@
 
 const int MAX_VALUE = 255;
 const int POLLING_INTERVAL = 10;
-const int UPDATE_INTERVAL = 1;
+const int UPDATE_INTERVAL = 255;
 const int STOPPING_TIMEOUT = 5;
 
 
@@ -137,12 +137,12 @@ void EnergyDevice::requestCurrent() const
 
 void EnergyDevice::sendUpdateStart()
 {
-	sendFrame(createRequestOpen(who, QString("#1200#%1*%2").arg(mode).arg(UPDATE_INTERVAL), where));
+	sendFrame(createRequestOpen(who, QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL).arg(mode).arg(UPDATE_INTERVAL), where));
 }
 
 void EnergyDevice::sendUpdateStop()
 {
-	sendFrame(createRequestOpen(who, QString("#1200#%1*%2").arg(mode).arg(0), where));
+	sendFrame(createRequestOpen(who, QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL).arg(mode).arg(0), where));
 }
 
 void EnergyDevice::requestCurrentUpdateStart()
