@@ -141,6 +141,11 @@ void FileSelector::browseUp()
 		emit notifyExit();
 }
 
+void FileSelector::setRootPath(const QString &start_path)
+{
+	current_dir.setPath(start_path);
+}
+
 bool FileSelector::browseDirectory(QString new_path)
 {
 	QString old_path = current_dir.absolutePath();

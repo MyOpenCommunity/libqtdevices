@@ -93,7 +93,7 @@ MultimediaFileListPage::MultimediaFileListPage()
 
 void MultimediaFileListPage::browse(const QString &dir)
 {
-	browseDirectory(dir);
+	setRootPath(dir);
 	showPage();
 }
 

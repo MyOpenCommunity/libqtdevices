@@ -84,6 +84,9 @@ protected:
 	virtual bool browseFiles(const QDir &directory, QList<QFileInfo> &files) = 0;
 	virtual int currentPage() = 0;
 
+	/// Use the given path as root path
+	void setRootPath(const QString &start_path);
+
 	/// Browse given path, return false in case of error.
 	bool browseDirectory(QString new_path);
 
