@@ -115,6 +115,16 @@ QStringList WatchMounts::mountState() const
 	return mount_points;
 }
 
+void WatchMounts::unmount(const QString &dir)
+{
+	QProcess::startDetached("/bin/umount", QStringList() << "-l" << dir);
+}
+
+void WatchMounts::mount(const QString &device, const QString &dir)
+{
+	QProcess::startDetached("/bin/mount", QStringList() << "-r" << device << dir);
+}
+
 QStringList WatchMounts::parseMtab() const
 {
 	QStringList dirs;
@@ -211,7 +221,7 @@ void WatchMounts::usbRemoved()
 	foreach (const QString &dir, paths)
 	{
 		qDebug() << "Unmounting" << dir;
-		QProcess::startDetached("/bin/umount", QStringList() << "-l" << dir);
+		unmount(dir);
 	}
 
 	QFile::remove(USB_REMOVED);

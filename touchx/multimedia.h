@@ -49,6 +49,10 @@ public:
 	// returns the list of currently-mounted directories
 	QStringList mountState() const;
 
+	// mount/unmount the path
+	void mount(const QString &device, const QString &dir);
+	void unmount(const QString &dir);
+
 	// starts watching for mount/umount events, emits a directoryMounted() signal
 	// for every mounted filesystem
 	void startWatching();
