@@ -121,6 +121,8 @@ BtMain::BtMain(int openserver_reconnection_time)
 	QString font_file = QString(MY_FILE_CFG_FONT).arg((*bt_global::config)[LANGUAGE]);
 	bt_global::font = new FontManager(font_file);
 	bt_global::display = new DisplayControl;
+	bt_global::skin = new SkinManager(SKIN_FILE);
+	bt_global::ringtones = new RingtonesManager;
 
 #if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
 	// save last click time for the screen saver
