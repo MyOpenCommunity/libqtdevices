@@ -21,7 +21,7 @@
 
 #include "datetime.h"
 #include "btbutton.h"
-#include "main.h" // bt_global::config
+#include "main.h" // (*bt_global::config)
 #include "skinmanager.h"
 
 #include <QLayout>
@@ -214,7 +214,7 @@ BtDateEdit::BtDateEdit(QWidget *parent)
 	h_down_box->addWidget(btn_bottom_right);
 	main_layout->addLayout(h_down_box);
 
-	DateFormat fmt = static_cast<DateFormat>(bt_global::config[DATE_FORMAT].toInt());
+	DateFormat fmt = static_cast<DateFormat>((*bt_global::config)[DATE_FORMAT].toInt());
 
 	switch (fmt)
 	{

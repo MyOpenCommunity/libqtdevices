@@ -22,7 +22,7 @@
 #include "plantmenu.h"
 #include "device.h"
 #include "xml_functions.h"
-#include "main.h" //bt_global::config
+#include "main.h" //(*bt_global::config)
 
 #include <QVariant>
 #include <QRegExp>
@@ -106,7 +106,7 @@ bannPuls *PlantMenu::addMenuItem(QDomNode n, QString central_icon, QString descr
 	/*
 	 * Create full screen banner in detail menu.
 	 */
-	TemperatureScale scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+	TemperatureScale scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 	BannFullScreen *fsb = getBanner(type, &items_submenu, n, ind_centrale, scale);
 	fsb->setText(getTextChild(n, "descr"));
 	items_submenu.appendBanner(fsb);

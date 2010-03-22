@@ -24,7 +24,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "btbutton.h"
 #include "probe_device.h"
-#include "main.h" // bt_global::config
+#include "main.h" // (*bt_global::config)
 #include "scaleconversion.h" // celsiusString, fahrenheitString, toCelsius, toFahrenheit
 #include "generic_functions.h" // setCfgValue()
 #include "airconditioning.h" // AdvancedSplitPage
@@ -59,7 +59,7 @@ SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningI
 void SingleSplit::status_changed(const StatusList &status_list)
 {
 	int temp = status_list[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
-	TemperatureScale scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+	TemperatureScale scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 
 	QString text;
 	if (scale == FAHRENHEIT)
@@ -167,7 +167,7 @@ SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, 
 	icon_minus_disabled = bt_global::skin->getImage("minus_disabled");
 	initBanner(icon_minus, icon_plus, "---", FontManager::SUBTITLE);
 
-	scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+	scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 	Q_ASSERT_X(init_temp >= level_min && init_temp <= level_max, "SplitTemperature::SplitTemperature",
 		"Initial temperature is outside the given range.");
 	current_temp = init_temp;

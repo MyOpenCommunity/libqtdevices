@@ -23,7 +23,7 @@
 #include "timescript.h"
 #include "btbutton.h"
 #include "icondispatcher.h" // bt_global::icons_cache
-#include "main.h" // getConfElement, bt_global::config
+#include "main.h" // getConfElement, (*bt_global::config)
 
 #include <QPixmap>
 #include <QDateTime>
@@ -89,7 +89,7 @@ void impostaTime::setDatePage()
 	for (int i = 0; i <= 6; ++i)
 		but[i]->disconnect();
 
-	if (bt_global::config[DATE_FORMAT].toInt() == USA_DATE)
+	if ((*bt_global::config)[DATE_FORMAT].toInt() == USA_DATE)
 	{
 		connect(but[1], SIGNAL(clicked()),dataOra,SLOT(aumDay()));
 		connect(but[0], SIGNAL(clicked()),dataOra,SLOT(aumMonth()));

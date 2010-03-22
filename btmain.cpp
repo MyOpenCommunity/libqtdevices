@@ -20,7 +20,7 @@
 
 
 #include "btmain.h"
-#include "main.h" // bt_global::config
+#include "main.h" // (*bt_global::config)
 #include "homepage.h"
 #include "generic_functions.h" // rearmWDT, getTimePress, setOrientation, getBacklight
 #include "xml_functions.h" // getPageNode, getElement, getChildWithId, getTextChild
@@ -72,10 +72,13 @@ BtMain::BtMain()
 	difSon = 0;
 	dm = 0;
 	screensaver = 0;
+	// construct global objects
+	bt_global::config = new QHash<GlobalFields, QString>();
+
 	loadGlobalConfig();
 	qDebug("parte BtMain");
 
-	QString font_file = QString(MY_FILE_CFG_FONT).arg(bt_global::config[LANGUAGE]);
+	QString font_file = QString(MY_FILE_CFG_FONT).arg((*bt_global::config)[LANGUAGE]);
 	bt_global::font = new FontManager(font_file);
 
 	client_monitor = new Client(Client::MONITOR);
@@ -113,7 +116,7 @@ BtMain::BtMain()
 	tasti = NULL;
 	pwdOn = false;
 	version = new Version;
-	version->setModel(bt_global::config[MODEL]);
+	version->setModel((*bt_global::config)[MODEL]);
 
 #if BT_EMBEDDED
 	if (QFile::exists("/etc/pointercal"))
@@ -150,21 +153,21 @@ void BtMain::loadGlobalConfig()
 	using bt_global::config;
 
 	// Load the default values
-	config[TEMPERATURE_SCALE] = QString::number(CELSIUS);
-	config[LANGUAGE] = DEFAULT_LANGUAGE;
-	config[DATE_FORMAT] = QString::number(EUROPEAN_DATE);
+	(*config)[TEMPERATURE_SCALE] = QString::number(CELSIUS);
+	(*config)[LANGUAGE] = DEFAULT_LANGUAGE;
+	(*config)[DATE_FORMAT] = QString::number(EUROPEAN_DATE);
 
 	QDomNode n = getConfElement("setup/generale");
 
 	// Load the current values
-	setConfigValue(n, "temperature/format", config[TEMPERATURE_SCALE]);
-	Q_ASSERT_X((config[TEMPERATURE_SCALE] == QString::number(CELSIUS)) ||
-		(config[TEMPERATURE_SCALE] == QString::number(FAHRENHEIT)), "BtMain::loadGlobalConfig",
+	setConfigValue(n, "temperature/format", (*config)[TEMPERATURE_SCALE]);
+	Q_ASSERT_X(((*config)[TEMPERATURE_SCALE] == QString::number(CELSIUS)) ||
+		((*config)[TEMPERATURE_SCALE] == QString::number(FAHRENHEIT)), "BtMain::loadGlobalConfig",
 		"Temperature scale is invalid.");
-	setConfigValue(n, "language", config[LANGUAGE]);
-	setConfigValue(n, "clock/dateformat", config[DATE_FORMAT]);
-	setConfigValue(n, "modello", config[MODEL]);
-	setConfigValue(n, "nome", config[NAME]);
+	setConfigValue(n, "language", (*config)[LANGUAGE]);
+	setConfigValue(n, "clock/dateformat", (*config)[DATE_FORMAT]);
+	setConfigValue(n, "modello", (*config)[MODEL]);
+	setConfigValue(n, "nome", (*config)[NAME]);
 }
 
 void BtMain::waitBeforeInit()

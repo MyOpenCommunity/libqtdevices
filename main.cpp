@@ -186,7 +186,7 @@ int main(int argc, char **argv)
 
 	qDebug("Start BtMain");
 	bt_global::btmain = new BtMain;
-	installTranslator(a, bt_global::config[LANGUAGE]);
+	installTranslator(a, (*bt_global::config)[LANGUAGE]);
 	int res = a.exec();
 	delete bt_global::btmain;
 	return res;

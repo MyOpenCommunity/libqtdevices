@@ -46,7 +46,7 @@ QString DateConversions::formatDateConfig(const QDate &date)
 {
 	QString format;
 	bool ok;
-	int date_format = bt_global::config[DATE_FORMAT].toInt(&ok);
+	int date_format = (*bt_global::config)[DATE_FORMAT].toInt(&ok);
 	if (!ok)
 		qWarning("DateConversions::formatDateConfig(), DATE_FORMAT conversion to int failed.");
 	switch (date_format)

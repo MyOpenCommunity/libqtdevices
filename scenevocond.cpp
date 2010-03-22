@@ -26,7 +26,7 @@
 #include "btbutton.h"
 #include "fontmanager.h" // bt_global::font
 #include "scaleconversion.h"
-#include "main.h" // bt_global::config
+#include "main.h" // (*bt_global::config)
 #include "skinmanager.h"
 #include "icondispatcher.h" // icons_cache
 #include "xml_functions.h" //getTextChild
@@ -1591,7 +1591,7 @@ device_condition_temp::device_condition_temp(QWidget *parent, QString *c, bool e
 	l->setFont(bt_global::font->get(FontManager::TEXT));
 	frame = l;
 
-	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 	switch (temp_scale)
 	{
 	case CELSIUS:

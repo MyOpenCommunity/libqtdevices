@@ -30,7 +30,7 @@
 #include "datetime.h"
 #include "xml_functions.h"
 #include "thermalmenu.h"
-#include "main.h" // bt_global::config
+#include "main.h" // (*bt_global::config)
 
 #include <QVariant>
 #include <QLabel>
@@ -861,7 +861,7 @@ FSBannTermoReg::FSBannTermoReg(QDomNode n, QWidget *parent) : BannFullScreen(par
 	date_edit = 0;
 	time_edit = 0;
 	program_choice = 0;
-	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 }
 
 BtButton *FSBannTermoReg::customButton()
