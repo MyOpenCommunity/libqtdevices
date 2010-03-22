@@ -22,7 +22,7 @@
 #include "cleanscreen.h"
 #include "fontmanager.h" // bt_global::font
 #include "icondispatcher.h" // bt_global::icons_cache
-#include "displaycontrol.h" // bt_global::display
+#include "displaycontrol.h" // (*bt_global::display)
 #include "pagestack.h"
 
 #include <QLabel>
@@ -68,7 +68,7 @@ void CleanScreen::showWindow()
 		secs_timer.start(1 * 1000);
 		timer.start(wait_time_sec * 1000);
 		secs_counter = 0;
-		bt_global::display.forceOperativeMode(true);
+		(*bt_global::display).forceOperativeMode(true);
 	}
 	bt_global::page_stack.showUserWindow(this);
 	Window::showWindow();
@@ -76,7 +76,7 @@ void CleanScreen::showWindow()
 
 void CleanScreen::handleClose()
 {
-	bt_global::display.forceOperativeMode(false);
+	(*bt_global::display).forceOperativeMode(false);
 	secs_timer.stop();
 	emit Closed();
 }

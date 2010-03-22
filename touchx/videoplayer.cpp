@@ -156,12 +156,12 @@ void VideoPlayerPage::playbackTerminated()
 
 void VideoPlayerPage::playbackStarted()
 {
-	bt_global::display.forceOperativeMode(true);
+	(*bt_global::display).forceOperativeMode(true);
 }
 
 void VideoPlayerPage::playbackStopped()
 {
-	bt_global::display.forceOperativeMode(false);
+	(*bt_global::display).forceOperativeMode(false);
 }
 
 void VideoPlayerPage::hideEvent(QHideEvent *event)

@@ -336,8 +336,8 @@ PPTSce::PPTSce(const QString &where, int openserver_id) : bann4But(0)
 	// button is down and send another frame when the button is raised.
 	increase_timer = 0;
 	decrease_timer = 0;
-	connect(this, SIGNAL(csxPressed()), SLOT(startIncrease()));
-	connect(this, SIGNAL(cdxPressed()), SLOT(startDecrease()));
+	connect(this, SIGNAL(csxPressed()), SLOT(startDecrease()));
+	connect(this, SIGNAL(cdxPressed()), SLOT(startIncrease()));
 	connect(this, SIGNAL(csxReleased()), SLOT(stop()));
 	connect(this, SIGNAL(cdxReleased()), SLOT(stop()));
 

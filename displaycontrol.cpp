@@ -174,4 +174,4 @@ ScreenSaver::Type DisplayControl::currentScreenSaver()
 
 
 // The global definition of display
-DisplayControl bt_global::display;
+DisplayControl *bt_global::display = 0;

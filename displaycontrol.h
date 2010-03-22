@@ -90,6 +90,6 @@ private:
 	int operative_brightness;
 };
 
-namespace bt_global { extern DisplayControl display; }
+namespace bt_global { extern DisplayControl *display; }
 
 #endif //DISPLAYCONTROL_H
