@@ -23,7 +23,7 @@
 #include "xml_functions.h" // getChildWithId
 #include "fontmanager.h" // bt_global::font
 #include "icondispatcher.h" // bt_global::icons_cache
-#include "displaycontrol.h" // bt_global::display
+#include "displaycontrol.h" // (*bt_global::display)
 #include "main.h" // IMG_PATH
 #include "btmain.h" //bt_global::btmain
 
@@ -66,14 +66,14 @@ void CleanScreen::showPage()
 		secs_timer.start(1 * 1000);
 		timer.start(wait_time_sec * 1000);
 		secs_counter = 0;
-		bt_global::display.forceOperativeMode(true);
+		(*bt_global::display).forceOperativeMode(true);
 	}
 	Page::showPage();
 }
 
 void CleanScreen::handleClose()
 {
-	bt_global::display.forceOperativeMode(false);
+	(*bt_global::display).forceOperativeMode(false);
 	secs_timer.stop();
 	emit Closed();
 }

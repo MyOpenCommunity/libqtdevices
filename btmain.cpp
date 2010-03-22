@@ -30,7 +30,7 @@
 #include "version.h"
 #include "keypad.h"
 #include "screensaver.h"
-#include "displaycontrol.h" // bt_global::display
+#include "displaycontrol.h" // (*bt_global::display)
 #include "page.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "device.h"
@@ -80,6 +80,7 @@ BtMain::BtMain()
 
 	QString font_file = QString(MY_FILE_CFG_FONT).arg((*bt_global::config)[LANGUAGE]);
 	bt_global::font = new FontManager(font_file);
+	bt_global::display = new DisplayControl;
 
 	client_monitor = new Client(Client::MONITOR);
 	client_comandi = new Client(Client::COMANDI);
@@ -199,7 +200,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			if (!n.isNull())
 				level = static_cast<BrightnessLevel>(n.text().toInt());
 		}
-		bt_global::display._setBrightness(level);
+		(*bt_global::display)._setBrightness(level);
 
 		ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
 		if (!display_node.isNull())
@@ -212,7 +213,7 @@ bool BtMain::loadConfiguration(QString cfg_file)
 			if (type == ScreenSaver::DEFORM) // deform is for now disabled!
 				type = ScreenSaver::LINES;
 		}
-		bt_global::display.current_screensaver = type;
+		(*bt_global::display).current_screensaver = type;
 
 		QDomNode displaypages = getConfElement("displaypages");
 		if (!displaypages.isNull())
@@ -338,7 +339,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,genPage::RED);
 			screen->show();
 			qDebug("TEST1");
-			bt_global::display.setState(DISPLAY_OPERATIVE);
+			(*bt_global::display).setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -355,7 +356,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,genPage::GREEN);
 			screen->show();
 			qDebug("TEST2");
-			bt_global::display.setState(DISPLAY_OPERATIVE);
+			(*bt_global::display).setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -372,7 +373,7 @@ void BtMain::testFiles()
 			screen = new genPage(NULL,genPage::BLUE);
 			screen->show();
 			qDebug("TEST3");
-			bt_global::display.setState(DISPLAY_OPERATIVE);
+			(*bt_global::display).setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -389,7 +390,7 @@ void BtMain::testFiles()
 			tiposcreen = genPage::IMAGE;
 			screen->show();
 			qDebug("AGGIORNAMENTO");
-			bt_global::display.setState(DISPLAY_OPERATIVE);
+			(*bt_global::display).setState(DISPLAY_OPERATIVE);
 			tempo1->stop();
 		}
 	}
@@ -445,7 +446,7 @@ void BtMain::gesScrSav()
 	unsigned long tiempo, tiempo_press;
 	rearmWDT();
 
-	if (bt_global::display.isForcedOperativeMode())
+	if ((*bt_global::display).isForcedOperativeMode())
 		return;
 
 	tiempo_press = getTimePress();
@@ -476,7 +477,7 @@ void BtMain::gesScrSav()
 		{
 			if (pagDefault)
 			{
-				if (!pd_shown && bt_global::display.currentState() == DISPLAY_OPERATIVE)
+				if (!pd_shown && (*bt_global::display).currentState() == DISPLAY_OPERATIVE)
 				{
 					pd_shown = true;
 					if (pagDefault)
@@ -484,13 +485,13 @@ void BtMain::gesScrSav()
 				}
 			}
 
-			if  (tiempo >= 65 && bt_global::display.currentState() == DISPLAY_FREEZED)
+			if  (tiempo >= 65 && (*bt_global::display).currentState() == DISPLAY_FREEZED)
 			{
-				ScreenSaver::Type target_screensaver = bt_global::display.currentScreenSaver();
+				ScreenSaver::Type target_screensaver = (*bt_global::display).currentScreenSaver();
 				// When the brightness is set to off in the old hardware the display
 				// is not really off, so it is required to use a screensaver to protect
 				// the display, even if the screensaver is not visible.
-				if (bt_global::display.currentBrightness() == BRIGHTNESS_OFF)
+				if ((*bt_global::display).currentBrightness() == BRIGHTNESS_OFF)
 					target_screensaver = ScreenSaver::LINES;
 
 				if (screensaver && screensaver->type() != target_screensaver)
@@ -517,7 +518,7 @@ void BtMain::gesScrSav()
 				qDebug() << "start screensaver:" << target_screensaver << "on:" << main_window.currentWidget();
 				screensaver->start(target);
 				emit startscreensaver(prev_page);
-				bt_global::display.setState(DISPLAY_SCREENSAVER);
+				(*bt_global::display).setState(DISPLAY_SCREENSAVER);
 			}
 		}
 		else if (screensaver && screensaver->isRunning())
@@ -575,7 +576,7 @@ void BtMain::freeze(bool b)
 	if (!bloccato)
 	{
 		event_unfreeze = true;
-		bt_global::display.setState(DISPLAY_OPERATIVE);
+		(*bt_global::display).setState(DISPLAY_OPERATIVE);
 		if (screensaver && screensaver->isRunning())
 		{
 			Page *target = screensaver->target();
@@ -599,7 +600,7 @@ void BtMain::freeze(bool b)
 	}
 	else
 	{
-		bt_global::display.setState(DISPLAY_FREEZED);
+		(*bt_global::display).setState(DISPLAY_FREEZED);
 		qApp->installEventFilter(this);
 	}
 }

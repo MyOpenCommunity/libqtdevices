@@ -21,7 +21,7 @@
 
 #include "screensaverpage.h"
 #include "screensaver.h"
-#include "displaycontrol.h" // bt_global::display
+#include "displaycontrol.h" // (*bt_global::display)
 
 #include <QAbstractButton>
 
@@ -45,12 +45,12 @@ void ScreenSaverPage::showPage()
 
 int ScreenSaverPage::getCurrentId()
 {
-	return bt_global::display.currentScreenSaver();
+	return (*bt_global::display).currentScreenSaver();
 }
 
 void ScreenSaverPage::bannerSelected(int id)
 {
-	bt_global::display.setScreenSaver(static_cast<ScreenSaver::Type>(id));
+	(*bt_global::display).setScreenSaver(static_cast<ScreenSaver::Type>(id));
 	if (id == ScreenSaver::NONE)
-		bt_global::display.setBrightness(BRIGHTNESS_OFF);
+		(*bt_global::display).setBrightness(BRIGHTNESS_OFF);
 }

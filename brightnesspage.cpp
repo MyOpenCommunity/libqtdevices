@@ -20,7 +20,7 @@
 
 
 #include "brightnesspage.h"
-#include "displaycontrol.h" // bt_global::display
+#include "displaycontrol.h" // (*bt_global::display)
 #include "bann1_button.h" // bannOnSx
 #include "banner.h"
 #include "btbutton.h"
@@ -39,18 +39,18 @@ BrightnessPage::BrightnessPage() : SingleChoicePage(true)
 
 int BrightnessPage::getCurrentId()
 {
-	return bt_global::display.currentBrightness();
+	return (*bt_global::display).currentBrightness();
 }
 
 void BrightnessPage::bannerSelected(int id)
 {
-	bt_global::display.setBrightness(static_cast<BrightnessLevel>(id));
+	(*bt_global::display).setBrightness(static_cast<BrightnessLevel>(id));
 }
 
 void BrightnessPage::showEvent(QShowEvent *e)
 {
-	bool banners_active = (bt_global::display.currentBrightness() != BRIGHTNESS_OFF ||
-		bt_global::display.currentScreenSaver() != ScreenSaver::NONE);
+	bool banners_active = ((*bt_global::display).currentBrightness() != BRIGHTNESS_OFF ||
+		(*bt_global::display).currentScreenSaver() != ScreenSaver::NONE);
 
 	for (int i = 0; i < elencoBanner.size(); ++i)
 	{

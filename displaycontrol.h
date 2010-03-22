@@ -86,6 +86,6 @@ private:
 	void _setBrightness(BrightnessLevel level);
 };
 
-namespace bt_global { extern DisplayControl display; }
+namespace bt_global { extern DisplayControl *display; }
 
 #endif //DISPLAYCONTROL_H
