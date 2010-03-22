@@ -139,8 +139,18 @@ LoadDiagnosticPage::LoadDiagnosticPage(const QDomNode &config_node)
 	{
 		SkinContext cxt(getTextChild(item, "cid").toInt());
 
-		device *dev = bt_global::add_device_to_cache(new LoadsDevice(getTextChild(item, "where")));
+		LoadsDevice *dev = bt_global::add_device_to_cache(new LoadsDevice(getTextChild(item, "where")));
+		devices.append(dev);
 		banner *b = new BannLoadDiagnostic(dev, getTextChild(item, "descr"));
 		page_content->appendBanner(b);
 	}
+
+	// we don't need extra memory, all the devices are built above
+	devices.squeeze();
+}
+
+void LoadDiagnosticPage::showEvent(QShowEvent *)
+{
+	foreach (const LoadsDevice *d, devices)
+		d->requestStatus();
 }

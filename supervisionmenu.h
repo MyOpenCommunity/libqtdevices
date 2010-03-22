@@ -26,7 +26,9 @@
 #include "stopngo.h"
 
 #include <QDomNode>
-#include <QList>
+#include <QVector>
+
+class LoadsDevice;
 
 /*!
   \class SupervisionMenu
@@ -69,6 +71,12 @@ class LoadDiagnosticPage : public BannerPage
 Q_OBJECT
 public:
 	LoadDiagnosticPage(const QDomNode &config_node);
+
+protected:
+	void showEvent(QShowEvent *);
+
+private:
+	QVector<LoadsDevice *> devices;
 };
 
 #endif
