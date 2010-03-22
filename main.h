@@ -42,7 +42,7 @@ enum GlobalFields
 	INIT_COMPLETE
 };
 
-namespace bt_global { extern QHash<GlobalFields, QString> config; }
+namespace bt_global { extern QHash<GlobalFields, QString> *config; }
 
 enum TemperatureScale
 {

@@ -20,7 +20,7 @@
 
 
 #include "btmain.h"
-#include "main.h" // bt_global::config
+#include "main.h" // (*bt_global::config)
 #include "homepage.h"
 #include "hardware_functions.h" // rearmWDT, getTimePress, setOrientation, getBacklight, initScreen
 #include "xml_functions.h" // getPageNode, getElement, getChildWithId, getTextChild
@@ -112,10 +112,13 @@ BtMain::BtMain(int openserver_reconnection_time)
 	difSon = 0;
 	dm = 0;
 	screensaver = 0;
+	// construct global objects
+	bt_global::config = new QHash<GlobalFields, QString>();
+
 	loadGlobalConfig();
 	qDebug("BtMain::BtMain");
 
-	QString font_file = QString(MY_FILE_CFG_FONT).arg(bt_global::config[LANGUAGE]);
+	QString font_file = QString(MY_FILE_CFG_FONT).arg((*bt_global::config)[LANGUAGE]);
 	bt_global::font = new FontManager(font_file);
 	bt_global::skin = new SkinManager(SKIN_FILE);
 	bt_global::ringtones = new RingtonesManager;
@@ -201,7 +204,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 
 #ifdef LAYOUT_BTOUCH
 	version = new Version;
-	version->setModel(bt_global::config[MODEL]);
+	version->setModel((*bt_global::config)[MODEL]);
 #else
 	// the stylesheet on QApplication must be set later (see comment in init())
 	loading = new IconWindow("splash_image", bt_global::skin->getStyle());
@@ -267,28 +270,28 @@ void BtMain::loadGlobalConfig()
 	using bt_global::config;
 
 	// Load the default values
-	config[TEMPERATURE_SCALE] = QString::number(CELSIUS);
-	config[LANGUAGE] = DEFAULT_LANGUAGE;
-	config[DATE_FORMAT] = QString::number(EUROPEAN_DATE);
+	(*config)[TEMPERATURE_SCALE] = QString::number(CELSIUS);
+	(*config)[LANGUAGE] = DEFAULT_LANGUAGE;
+	(*config)[DATE_FORMAT] = QString::number(EUROPEAN_DATE);
 
 	QDomNode n = getConfElement("setup/generale");
 
 	// Load the current values
-	setConfigValue(n, "temperature/format", config[TEMPERATURE_SCALE]);
-	Q_ASSERT_X((config[TEMPERATURE_SCALE] == QString::number(CELSIUS)) ||
-		(config[TEMPERATURE_SCALE] == QString::number(FAHRENHEIT)), "BtMain::loadGlobalConfig",
+	setConfigValue(n, "temperature/format", (*config)[TEMPERATURE_SCALE]);
+	Q_ASSERT_X(((*config)[TEMPERATURE_SCALE] == QString::number(CELSIUS)) ||
+		((*config)[TEMPERATURE_SCALE] == QString::number(FAHRENHEIT)), "BtMain::loadGlobalConfig",
 		"Temperature scale is invalid.");
-	setConfigValue(n, "language", config[LANGUAGE]);
-	setConfigValue(n, "clock/dateformat", config[DATE_FORMAT]);
-	setConfigValue(n, "modello", config[MODEL]);
-	setConfigValue(n, "nome", config[NAME]);
+	setConfigValue(n, "language", (*config)[LANGUAGE]);
+	setConfigValue(n, "clock/dateformat", (*config)[DATE_FORMAT]);
+	setConfigValue(n, "modello", (*config)[MODEL]);
+	setConfigValue(n, "nome", (*config)[NAME]);
 
 	QDomNode scs_node = getConfElement("setup/scs");
 
-	setConfigValue(scs_node, "coordinate_scs/my_piaddress", config[PI_ADDRESS]);
+	setConfigValue(scs_node, "coordinate_scs/my_piaddress", (*config)[PI_ADDRESS]);
 	// transform address into internal address
-	if (!config[PI_ADDRESS].isNull())
-		config[PI_ADDRESS].prepend("1");
+	if (!(*config)[PI_ADDRESS].isNull())
+		(*config)[PI_ADDRESS].prepend("1");
 }
 
 void BtMain::waitBeforeInit()
@@ -408,7 +411,7 @@ void BtMain::init()
 
 	config_loaded = true;
 	qDebug("Initialization complete, from now on will write to configuration");
-	bt_global::config[INIT_COMPLETE] = "1"; // maybe change config to contain QVariant?
+	(*bt_global::config)[INIT_COMPLETE] = "1"; // maybe change config to contain QVariant?
 
 	if (monitor_ready)
 		myMain();

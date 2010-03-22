@@ -21,7 +21,7 @@
 
 #include "plantmenu.h"
 #include "xml_functions.h"
-#include "main.h" //bt_global::config
+#include "main.h" //(*bt_global::config)
 #include "bann1_button.h"
 #include "bannercontent.h"
 #include "skinmanager.h"
@@ -185,7 +185,7 @@ NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, BannID 
 	/*
 	 * Create page in detail menu.
 	 */
-	TemperatureScale scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+	TemperatureScale scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 	NavigationPage *p = getPage(type, n, ind_centrale, openserver_id, scale, bp);
 	bp->connectRightButton(p);
 	connect(bp, SIGNAL(pageClosed()), SLOT(showPage()));

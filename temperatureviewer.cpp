@@ -23,7 +23,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "scaleconversion.h"
 #include "page.h"
-#include "main.h" // bt_global::config
+#include "main.h" // (*bt_global::config)
 #include "probe_device.h"
 #include "devices_cache.h"
 
@@ -39,7 +39,7 @@
 
 TemperatureViewer::TemperatureViewer(Page *page) : linked_page(page)
 {
-	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 }
 
 void TemperatureViewer::add(QString where, int openserver_id, int x, int y, int width, int height, QString descr, QString ext)

@@ -22,7 +22,7 @@
 #include "banntemperature.h"
 #include "fontmanager.h" // bt_global::font
 #include "probe_device.h"
-#include "main.h" // bt_global::config
+#include "main.h" // (*bt_global::config)
 #include "scaleconversion.h"
 #include "icondispatcher.h"
 #include "skinmanager.h"
@@ -36,7 +36,7 @@ BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, 
 	dev(_dev)
 {
 	temperature = -235;
-	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 
 	QLabel *descr_label = new QLabel;
 	descr_label->setFont(bt_global::font->get(FontManager::SUBTITLE));

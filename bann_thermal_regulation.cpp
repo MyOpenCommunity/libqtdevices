@@ -30,7 +30,7 @@
 #include "datetime.h"
 #include "xml_functions.h"
 #include "thermalmenu.h"
-#include "main.h" // bt_global::config
+#include "main.h" // (*bt_global::config)
 #include "navigation_bar.h"
 #include "bannercontent.h"
 #include "skinmanager.h"
@@ -1033,7 +1033,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	time_edit = 0;
 	date_time_edit = 0;
 	program_choice = 0;
-	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 
 	createNavigationBar(bt_global::skin->getImage("settings"));
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));

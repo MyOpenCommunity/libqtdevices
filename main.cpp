@@ -51,8 +51,6 @@ struct GeneralConfig
 	int openserver_reconnection_time; // the timeout after that if the connection is down the UI try to establish again a connection
 };
 
-QHash<GlobalFields, QString> bt_global::config;
-
 // Instance DOM global object to handle configuration.
 // TODO this can be freed after configuration loading completes
 QDomDocument qdom_appconfig;
@@ -227,7 +225,7 @@ int main(int argc, char **argv)
 
 	qDebug("Start BtMain");
 	bt_global::btmain = new BtMain(general_config.openserver_reconnection_time);
-	installTranslator(a, bt_global::config[LANGUAGE]);
+	installTranslator(a, (*bt_global::config)[LANGUAGE]);
 	int res = a.exec();
 	delete bt_global::btmain;
 	return res;

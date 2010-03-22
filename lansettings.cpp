@@ -21,7 +21,7 @@
 
 #include "lansettings.h"
 #include "state_button.h"
-#include "main.h" // bt_global::config
+#include "main.h" // (*bt_global::config)
 #include "platform_device.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "fontmanager.h" // bt_global::font
@@ -85,9 +85,9 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	box_text->setLineWidth(3);
 	box_text->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 
-	box_text->addRow(bt_global::config[MODEL]);
+	box_text->addRow((*bt_global::config)[MODEL]);
 	box_text->addRow("");
-	box_text->addRow(bt_global::config[NAME]);
+	box_text->addRow((*bt_global::config)[NAME]);
 	box_text->addRow(tr("Mac"), "");
 	box_text->addRow(tr("IP"), "");
 	box_text->addRow(tr("Subnet mask"), "");

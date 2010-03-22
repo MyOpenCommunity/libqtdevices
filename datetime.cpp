@@ -21,7 +21,7 @@
 
 #include "datetime.h"
 #include "btbutton.h"
-#include "main.h" // bt_global::config
+#include "main.h" // (*bt_global::config)
 #include "fontmanager.h"
 #include "skinmanager.h"
 #include "navigation_bar.h" // NavigationBar
@@ -225,7 +225,7 @@ BtDateEdit::BtDateEdit(QWidget *parent)
 		_date(QDate::currentDate()),
 		_allow_past_dates(false)
 {
-	DateFormat fmt = static_cast<DateFormat>(bt_global::config[DATE_FORMAT].toInt());
+	DateFormat fmt = static_cast<DateFormat>((*bt_global::config)[DATE_FORMAT].toInt());
 
 	_date = _date.addDays(1);
 

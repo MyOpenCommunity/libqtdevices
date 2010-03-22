@@ -93,7 +93,7 @@ void VideoEntryPhone::loadDevices(const QDomNode &config_node)
 
 void VideoEntryPhone::loadHiddenPages()
 {
-	EntryphoneDevice *dev = bt_global::add_device_to_cache(new EntryphoneDevice(bt_global::config[PI_ADDRESS]));
+	EntryphoneDevice *dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS]));
 
 	// This pages are showed only after the receiving of a call frame, so we
 	// don't store any pointer to these. The destruction is provided by the PageContainer.
@@ -115,7 +115,7 @@ VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 	bt_global::btmain->trayBar()->addButton(ring_exclusion);
 
 	loadItems(config_node);
-	dev = bt_global::add_device_to_cache(new EntryphoneDevice(bt_global::config[PI_ADDRESS]));
+	dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS]));
 	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
 }
 
@@ -208,7 +208,7 @@ void RingExclusionPage::setStatus(bool st)
 VideoControl::VideoControl(const QDomNode &config_node)
 {
 	// we must have only one entryphone device since we need to remember some state
-	dev = bt_global::add_device_to_cache(new EntryphoneDevice(bt_global::config[PI_ADDRESS]));
+	dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS]));
 
 	mapper = new QSignalMapper(this);
 	connect(mapper, SIGNAL(mapped(QString)), SLOT(cameraOn(QString)));
@@ -368,7 +368,7 @@ void IntercomCallPage::status_changed(const StatusList &sl)
 
 Intercom::Intercom(const QDomNode &config_node)
 {
-	EntryphoneDevice *dev = bt_global::add_device_to_cache(new EntryphoneDevice(bt_global::config[PI_ADDRESS]));
+	EntryphoneDevice *dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS]));
 
 	mapper_int_intercom = new QSignalMapper(this);
 	mapper_ext_intercom = new QSignalMapper(this);

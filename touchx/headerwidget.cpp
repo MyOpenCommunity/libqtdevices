@@ -180,7 +180,7 @@ HomepageDateDisplay::HomepageDateDisplay()
 void HomepageDateDisplay::paintLabel(QPainter &painter)
 {
 	QString format;
-	if (bt_global::config[DATE_FORMAT].toInt() == USA_DATE)
+	if ((*bt_global::config)[DATE_FORMAT].toInt() == USA_DATE)
 		format = "MM/dd/yy";
 	else
 		format = "dd/MM/yy";
@@ -192,7 +192,7 @@ void HomepageDateDisplay::paintLabel(QPainter &painter)
 
 TemperatureDisplay::TemperatureDisplay(device *probe)
 {
-	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 	label = "-";
 
 	connect(probe, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));

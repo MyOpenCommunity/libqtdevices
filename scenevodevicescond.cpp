@@ -138,7 +138,7 @@ void DeviceConditionDisplayTemperature::updateText(int min_condition_value, int 
 	down_button->setAutoRepeat(true);
 	Q_UNUSED(max_condition_value)
 	QString tmp = loc.toString(min_condition_value / 10.0, 'f', 1);
-	TemperatureScale temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+	TemperatureScale temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 
 	switch (temp_scale)
 	{
@@ -987,7 +987,7 @@ DeviceConditionTemperature::DeviceConditionTemperature(DeviceConditionDisplayInt
 	// Temp condition is expressed in bticino format
 	int temp_condition = trigger.toInt();
 
-	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
+	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 	switch (temp_scale)
 	{
 	case CELSIUS:

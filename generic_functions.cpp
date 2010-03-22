@@ -43,7 +43,7 @@ namespace
 	{
 		QString format;
 		bool ok;
-		int date_format = bt_global::config[DATE_FORMAT].toInt(&ok);
+		int date_format = (*bt_global::config)[DATE_FORMAT].toInt(&ok);
 		if (ok)
 		{
 			switch (date_format)
@@ -175,7 +175,7 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, co
 bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filename)
 #endif
 {
-	if (!bt_global::config.contains(INIT_COMPLETE))
+	if (!(*bt_global::config).contains(INIT_COMPLETE))
 	{
 		qDebug() << "Not writing to configuration during init";
 
@@ -220,7 +220,7 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filena
 // TODO rewrite setCfgValue using setGlobalCfgValue when removing CONFIG_BTOUCH
 bool setGlobalCfgValue(QMap<QString, QString> data, const QString &id_name, int id_value, const QString &filename)
 {
-	if (!bt_global::config.contains(INIT_COMPLETE))
+	if (!(*bt_global::config).contains(INIT_COMPLETE))
 	{
 		qDebug() << "Not writing to configuration during init";
 

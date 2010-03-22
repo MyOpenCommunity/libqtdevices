@@ -167,7 +167,7 @@ VersionPage::VersionPage(const QDomNode &config_node)
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
 	text_area = new Text2Column;
-	text_area->addRow(tr("Model"), bt_global::config[MODEL]);
+	text_area->addRow(tr("Model"), (*bt_global::config)[MODEL]);
 	text_area->addRow(tr("Firmware version"), "");
 	text_area->addRow(tr("Kernel version"), "");
 	text_area->addRow(tr("IP address"), "");
