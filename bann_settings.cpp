@@ -39,11 +39,12 @@ bannAlarmClock::bannAlarmClock(QWidget *parent, int hour, int minute, QString ic
 	: bann2But(parent)
 {
 	sxButton->setOnOff();
-	sxButton->setStatus(enabled == 1);
 
 	SetIcons(0, icon2, icon1);
 	SetIcons(1, icon3);
 	Draw(); // Draw must be called before setAbil.. see impBeep
+	// Draw must be called before sxButton->setStatus() because it overwrites the pixmap
+	sxButton->setStatus(enabled == 1);
 
 	alarm_clock = new AlarmClock(static_cast<AlarmClock::Type>(tipo), static_cast<AlarmClock::Freq>(freq), hour, minute);
 	alarm_clock->setSerNum(getSerNum());
