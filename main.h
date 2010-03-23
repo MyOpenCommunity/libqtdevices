@@ -189,22 +189,22 @@ enum Section
 	ANTIINTRUSIONE=3,                             /*!< Anti-intrusion system */
 	CARICHI=4,                                    /*!< Appliances managing system */
 	TERMOREGOLAZIONE=5,                           /*!< Thermoregulation system */
-	DIFSON=16,                                    /*!< Sound diffusion system */
-	SCENARI=19,                                   /*!< Scenarios managing */
-	IMPOSTAZIONI=29,                              /*!< Settings */
 	BACK=9,                                       /*!< Back button - placed here for convenience */
 	SPECIAL=10,                                   /*!< Special button - placed here for convenience */
-	VIDEOCITOFONIA=22,
-	MULTIMEDIA=26,
+	DIFSON=16,                                    /*!< Sound diffusion system */
+	MESSAGES=17,                                  /*!< Textual Messages from scs */
+	LOAD_MANAGEMENT=18,                           /*!< Load management system */
+	SCENARI=19,                                   /*!< Scenarios managing */
 	SCENARI_EVOLUTI=20,                           /*!< Advanced scenarios management */
+	VIDEOCITOFONIA=22,
+	IMPOSTAZIONI=29,                              /*!< Settings */
+	MULTIMEDIA=26,
 	DIFSON_MULTI=99,                              /*!< Multichannel sound diffusion system */
 	SUPERVISIONE=-2,                              /*!< Supervision system */
 	TERMOREG_MULTI_PLANT=-3,                      /*!< Thermoregulation system with one or more 4-zones plants */
 	ENERGY_MANAGEMENT=-4,                         /*!< Energy management system */
 	ENERGY_DATA=-5,                               /*!< Energy data system */
-	LOAD_MANAGEMENT=18,                           /*!< Load management system */
 	FEED_READER=-6,                               /*!< Feed reader page */
-	MESSAGES=17,                                  /*!< Textual Messages from scs */
 };
 #endif
 
