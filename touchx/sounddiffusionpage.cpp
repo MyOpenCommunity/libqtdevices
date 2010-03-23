@@ -85,8 +85,8 @@ void SoundAmbient::connectRightButton(Page *p)
 
 enum Items
 {
-	ITEM_SPECIAL_AMBIENT = 1700,              // special ambient
-	ITEM_AMBIENT = 1701,                      // normal ambient (with a zone)
+	ITEM_SPECIAL_AMBIENT = 12020,              // special ambient
+	ITEM_AMBIENT = 12021,                      // normal ambient (with a zone)
 };
 
 SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
@@ -103,6 +103,7 @@ int SoundDiffusionPage::sectionId()
 void SoundDiffusionPage::loadItems(const QDomNode &config_node)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
+	// TODO: parse audio sources from conf.xml
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		banner *b = getBanner(item);

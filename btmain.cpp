@@ -367,7 +367,7 @@ void BtMain::loadConfiguration()
 	QDomNode video_node = getPageNode(VIDEOCITOFONIA);
 	// Touch X can receive calls even if the videoentryphone section is not
 	// configured (but the configuration specifies it as an internal place).
-	if (video_node.isNull() && !bt_global::config[PI_ADDRESS].isEmpty())
+	if (video_node.isNull() && !(*bt_global::config)[PI_ADDRESS].isEmpty())
 		VideoEntryPhone::loadHiddenPages();
 
 #endif
