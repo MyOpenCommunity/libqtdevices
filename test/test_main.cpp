@@ -27,8 +27,6 @@
 #include "test_bttime.h"
 #include "main.h"
 
-// move this somewhere else (generic_functions.cpp?): we can't link main.cpp
-QHash<GlobalFields, QString> bt_global::config;
 
 int main(int argc, char *argv[])
 {

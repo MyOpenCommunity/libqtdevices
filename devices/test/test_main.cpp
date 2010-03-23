@@ -44,9 +44,6 @@
 // in order to compile and execute all tests with the standard version of Qt.
 void rearmWDT() {}
 
-// move this somewhere else (generic_functions.cpp?): we can't link main.cpp
-QHash<GlobalFields, QString> bt_global::config;
-
 int main(int argc, char *argv[])
 {
 	QCoreApplication app(argc, argv);
