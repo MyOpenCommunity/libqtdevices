@@ -196,9 +196,9 @@ enum Section
 	LOAD_MANAGEMENT=18,                           /*!< Load management system */
 	SCENARI=19,                                   /*!< Scenarios managing */
 	SCENARI_EVOLUTI=20,                           /*!< Advanced scenarios management */
-	VIDEOCITOFONIA=22,
+	VIDEOCITOFONIA=22,                            /*!< Videoentryphone control system */
 	IMPOSTAZIONI=29,                              /*!< Settings */
-	MULTIMEDIA=26,
+	MULTIMEDIA=26,                                /*!< Multimedia system */
 	DIFSON_MULTI=99,                              /*!< Multichannel sound diffusion system */
 	SUPERVISIONE=-2,                              /*!< Supervision system */
 	TERMOREG_MULTI_PLANT=-3,                      /*!< Thermoregulation system with one or more 4-zones plants */
