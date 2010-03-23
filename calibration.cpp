@@ -119,7 +119,7 @@ bool Calibration::exists()
 
 void Calibration::startCalibration()
 {
-	bt_global::btmain->calibrationStarted();
+	BtMain::calibrationStarted();
 
 	text = tr("Click the crosshair");
 	topleft_button->hide();
@@ -275,7 +275,7 @@ void Calibration::drawCrosshair()
 
 void Calibration::endCalibration()
 {
-	bt_global::btmain->calibrationEnded();
+	BtMain::calibrationEnded();
 
 	// The calibration was done right so we can remove the old calibration file
 	if (QFile::exists(QString("%1.calibrated").arg(pointercal_file)))

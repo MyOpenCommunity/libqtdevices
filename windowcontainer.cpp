@@ -57,7 +57,7 @@ void WindowContainer::showWindow(Window *w)
 {
 	// during calibration, do not display new window/pages; the page stack
 	// will ensure that we return to the correct page after calibration
-	if (!(bt_global::btmain && bt_global::btmain->isCalibrating()))
+	if (!BtMain::isCalibrating())
 		setCurrentWidget(w);
 }
 

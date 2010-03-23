@@ -82,11 +82,9 @@ public:
 	// screen frozen if password protection is active
 	void makeActiveAndFreeze();
 
-	bool isCalibrating();
-
-public slots:
-	void calibrationStarted();
-	void calibrationEnded();
+	static bool isCalibrating();
+	static void calibrationStarted();
+	static void calibrationEnded();
 
 signals:
 	void resettimer();
@@ -134,7 +132,7 @@ private:
 	// if the user is idle for this number of seconds, turn off the screen
 	int screenoff_time;
 
-	bool calibrating;
+	static bool calibrating;
 	Calibrate *calib;
 	ScreenSaver *screensaver;
 	PageContainer *page_container;

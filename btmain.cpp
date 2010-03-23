@@ -691,6 +691,8 @@ void BtMain::svegl(bool b)
 	alarmClockIsOn = b;
 }
 
+bool BtMain::calibrating = false;
+
 void BtMain::calibrationStarted()
 {
 	qDebug("BtMain::calibrationStarted()");

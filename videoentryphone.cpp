@@ -296,7 +296,7 @@ void IntercomCallPage::showPageIncomingCall()
 {
 	bt_global::page_stack.showVCTPage(this);
 
-	if (!bt_global::btmain->isCalibrating())
+	if (!BtMain::isCalibrating())
 	{
 		if ((*bt_global::display).currentState() != DISPLAY_FREEZED)
 			(*bt_global::display).forceOperativeMode(true);

@@ -94,7 +94,7 @@ void PageStack::addState(const State &state)
 	// the top of the stack
 	//
 	// during calibration, insert new states just below the calibration page
-	if (!bt_global::btmain->isCalibrating())
+	if (!BtMain::isCalibrating())
 		states.append(state);
 	else
 		states.insert(states.size() - 1, state);

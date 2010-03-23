@@ -420,7 +420,7 @@ void VCTCallPage::showPage()
 	call_status->init();
 	vct_call->refreshStatus();
 
-	if (!bt_global::btmain->isCalibrating())
+	if (!BtMain::isCalibrating())
 	{
 		vct_call->startVideo();
 		if ((*bt_global::display).currentState() != DISPLAY_FREEZED)
