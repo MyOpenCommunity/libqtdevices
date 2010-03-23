@@ -157,10 +157,18 @@ void BtButton::paintEvent(QPaintEvent *e)
 #else
 	// the default QStyle implementation shifts the pushed button
 	// some pixel to the right/bottom, and for the TouchX we do not want
-	// that
-	QPainter p(this);
+	// that for buttons that have a separate "pressed" icon, BUT if there
+	// isn't a separate pressed image set, we want the default behaviour
+	if (isDown() && pressed_pixmap.isNull())
+	{
+		QPushButton::paintEvent(e);
+	}
+	else
+	{
+		QPainter p(this);
 
-	icon().paint(&p, 0, 0, width(), height());
+		icon().paint(&p, 0, 0, width(), height());
+	}
 #endif
 }
 
