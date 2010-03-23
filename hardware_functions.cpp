@@ -422,10 +422,10 @@ void playSound(const QString &wavFile)
 		play_sound_process.waitForFinished();
 	}
 
-	play_sound_process.start("/bin/play",
-				QStringList() << "-t" << "wav" << "-s" << "w"
-				<< "-c" << "2" << "-f" << "s"
-				<< "-d" << "/dev/dsp1" << wavFile);
+	play_sound_process.start("/bin/sox",
+				 QStringList() << "-w" << "-c" << "2"
+				 << "-s" << "-t" << "wav" << wavFile
+				 << "-t" << "ossdsp" << "/dev/dsp1");
 #endif
 }
 
