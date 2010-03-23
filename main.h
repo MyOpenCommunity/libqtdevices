@@ -191,7 +191,6 @@ enum Section
 	TERMOREGOLAZIONE=5,                           /*!< Thermoregulation system */
 	BACK=9,                                       /*!< Back button - placed here for convenience */
 	SPECIAL=10,                                   /*!< Special button - placed here for convenience */
-	DIFSON=16,                                    /*!< Sound diffusion system */
 	MESSAGES=17,                                  /*!< Textual Messages from scs */
 	LOAD_MANAGEMENT=18,                           /*!< Load management system */
 	SCENARI=19,                                   /*!< Scenarios managing */
@@ -199,7 +198,7 @@ enum Section
 	VIDEOCITOFONIA=22,                            /*!< Videoentryphone control system */
 	IMPOSTAZIONI=29,                              /*!< Settings */
 	MULTIMEDIA=26,                                /*!< Multimedia system */
-	DIFSON_MULTI=99,                              /*!< Multichannel sound diffusion system */
+	DIFSON_MULTI=12000,                           /*!< Sound diffusion system (mono and multichannel) */
 	SUPERVISIONE=-2,                              /*!< Supervision system */
 	TERMOREG_MULTI_PLANT=-3,                      /*!< Thermoregulation system with one or more 4-zones plants */
 	ENERGY_MANAGEMENT=-4,                         /*!< Energy management system */

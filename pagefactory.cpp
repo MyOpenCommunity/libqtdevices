@@ -117,8 +117,6 @@ Page *getPage(int page_id)
 	case MESSAGES:
 		page = new MessagesListPage;
 		break;
-	case DIFSON:
-		// TODO: is it ok to fall to the next case?
 	case DIFSON_MULTI:
 		page = new SoundDiffusionPage(page_node);
 		break;
