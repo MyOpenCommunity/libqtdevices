@@ -232,6 +232,21 @@ BtMain::BtMain(int openserver_reconnection_time)
 #endif
 		return;
 	}
+
+	if (qApp->arguments().contains("-testcalib"))
+	{
+		CalibrationTest *cal = new CalibrationTest;
+
+		cal->showWindow();
+		connect(cal, SIGNAL(Closed()), SLOT(waitBeforeInit()));
+
+#ifdef LAYOUT_BTOUCH
+		connect(cal, SIGNAL(Closed()), version, SLOT(showPage()));
+#else
+		connect(cal, SIGNAL(Closed()), loading, SLOT(showWindow()));
+#endif
+		return;
+	}
 #endif
 
 	if (version)
