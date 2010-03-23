@@ -424,7 +424,7 @@ void playSound(const QString &wavFile)
 
 	play_sound_process.start("/bin/play",
 				QStringList() << "-t" << "wav" << "-s" << "w"
-				<< "-c" << "2" << "-f" << "s" << "-r" << "48000"
+				<< "-c" << "2" << "-f" << "s"
 				<< "-d" << "/dev/dsp1" << wavFile);
 #endif
 }
