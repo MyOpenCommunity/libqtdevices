@@ -365,3 +365,65 @@ bool Calibration::sanityCheck()
 	return true;
 }
 
+
+#define GRID_X 10
+#define GRID_Y 10
+
+CalibrationTest::CalibrationTest()
+{
+	first_time = false;
+	setAttribute(Qt::WA_OpaquePaintEvent);
+}
+
+void CalibrationTest::showWindow()
+{
+	first_time = true;
+	points.clear();
+	bt_global::page_stack.showUserWindow(this);
+	Window::showWindow();
+}
+
+void CalibrationTest::paintEvent(QPaintEvent *e)
+{
+	QPainter p(this);
+
+	if (first_time)
+	{
+		QRect win = rect().adjusted(0, 0, -1, -1);
+
+		p.setBrush(QBrush(QColor(0x00, 0x00, 0x00)));
+		p.drawRect(win);
+
+		p.setPen(QPen(QColor(0xff, 0xff, 0xff)));
+
+		int w = win.width() - 1, h = win.height() - 1;
+		for (int i = 0; i <= GRID_X; ++i)
+			p.drawLine(w * i / GRID_X, 0, w * i / GRID_X, h);
+		for (int i = 0; i <= GRID_Y; ++i)
+			p.drawLine(0, h * i / GRID_Y, w, h * i / GRID_Y);
+
+		first_time = false;
+	}
+
+	p.setPen(QPen(QColor(0xff, 0x00, 0x00)));
+	foreach (const QPoint &pt, points)
+		p.drawPoint(pt);
+
+}
+
+void CalibrationTest::mousePressEvent(QMouseEvent *e)
+{
+	points.append(e->pos());
+	update();
+}
+
+void CalibrationTest::mouseMoveEvent(QMouseEvent *e)
+{
+	points.append(e->pos());
+	update();
+}
+
+void CalibrationTest::mouseDoubleClickEvent(QMouseEvent *e)
+{
+	emit Closed();
+}

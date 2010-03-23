@@ -56,6 +56,7 @@ enum
 	PAGE_VOLUME = 2908,
 	PAGE_RINGTONES = 2909,
 	PAGE_CALIBRATION = 2910,
+	PAGE_CALIBRATION_TEST = 2997,
 	PAGE_VERSION = 2911,
 	PAGE_SCREENSAVER = 2912,
 	PAGE_CLEANSCREEN = 2913,
@@ -318,6 +319,9 @@ void IconSettings::loadItems(const QDomNode &config_node)
 #if !defined(BT_HARDWARE_X11)
 		case PAGE_CALIBRATION:
 			w = new Calibration;
+			break;
+		case PAGE_CALIBRATION_TEST:
+			w = new CalibrationTest;
 			break;
 #endif
 		case PAGE_LANSETTINGS:

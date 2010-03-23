@@ -111,6 +111,29 @@ private:
 	void startTestButtons();
 };
 
+
+/**
+ * Simple page to test calibration results: draws a red dot for every mouse event
+ */
+class CalibrationTest : public Window
+{
+Q_OBJECT
+public:
+	CalibrationTest();
+
+	virtual void showWindow();
+
+protected:
+	virtual void paintEvent(QPaintEvent *e);
+	virtual void mousePressEvent(QMouseEvent *e);
+	virtual void mouseMoveEvent(QMouseEvent *e);
+	virtual void mouseDoubleClickEvent(QMouseEvent *e);
+
+private:
+	bool first_time;
+	QList<QPoint> points;
+};
+
 #endif //CALIBRATE_H
 
 

@@ -159,9 +159,20 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>809</cid>
 		<img_link_icon>setup/suonerie.png</img_link_icon>
 	</item>
+	<!-- Version -->
 	<item>
 		<cid>811</cid>
 		<img_link_icon>setup/myhome.png</img_link_icon>
+	</item>
+	<!-- Calibration -->
+	<item>
+		<cid>810</cid>
+		<img_link_icon>setup/taratura.png</img_link_icon>
+	</item>
+	<!-- Calibration test -->
+	<item>
+		<cid>851</cid>
+		<img_link_icon>setup/taratura.png</img_link_icon>
 	</item>
 	<!-- Change date/time button -->
 	<item>
