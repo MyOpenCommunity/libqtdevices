@@ -550,10 +550,6 @@ void HeaderNavigationWidget::drawContent()
 
 	need_update = false;
 
-	while (QLayoutItem *child = button_layout->takeAt(0))
-		if (QWidget *w = child->widget())
-			w->hide();
-
 	// first time, compute if there is need for scroll arrows
 	if (visible_buttons == 0)
 	{
@@ -580,13 +576,26 @@ void HeaderNavigationWidget::drawContent()
 	for (int i = 0; i < visible_buttons; ++i)
 	{
 		int index = (current_index + i) % buttons.size();
-		QWidget *item;
+		QWidget *item, *hitem;
 		if (section_ids[index] == selected_section_id)
+		{
 			item = selected[index];
+			hitem = buttons[index];
+		}
 		else
+		{
 			item = buttons[index];
+			hitem = selected[index];
+		}
+
+		// it might be more natural to first remove all items from the
+		// layout and then add the correct ones; unfortunately this
+		// sometimes causes some flicker
+		button_layout->takeAt(i);
+
+		button_layout->insertWidget(i, item, 1);
 		item->show();
-		button_layout->addWidget(item, 1);
+		hitem->hide();
 	}
 }
 
