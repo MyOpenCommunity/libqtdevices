@@ -222,7 +222,9 @@ VideoControl::VideoControl(const QDomNode &config_node)
 		BtButton *btn = addButton(getTextChild(item, "descr"), bt_global::skin->getImage("link_icon"), 0, 0);
 		connect(btn, SIGNAL(clicked()), mapper, SLOT(map()));
 
-		QString where = getTextChild(item, "dev") + getTextChild(item, "where");
+		QDomNode addresses = getElement(item, "addresses");
+		QString where = getTextChild(addresses, "dev") + getTextChild(addresses, "where");
+		Q_ASSERT_X(!where.isEmpty(), "VideoControl::VideoControl", "empty where in configuration");
 		mapper->setMapping(btn, where);
 	}
 }
