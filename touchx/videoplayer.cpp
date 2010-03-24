@@ -104,9 +104,6 @@ VideoPlayerPage::VideoPlayerPage()
 	connect(player, SIGNAL(mplayerDone()), SLOT(next()));
 	connect(player, SIGNAL(mplayerAborted()), SLOT(playbackTerminated()));
 	connect(player, SIGNAL(mplayerKilled()), SLOT(playbackTerminated()));
-
-	// TODO for now use a fixed value
-	setVolume(VOLUME_MMDIFFUSION, 3);
 }
 
 VideoPlayerPage::~VideoPlayerPage()
