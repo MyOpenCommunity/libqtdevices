@@ -259,51 +259,7 @@ enum Section
 /*!  \def ICON_MENO
   The file name for \a minus icon*/
 #define ICON_MENO  (IMG_PATH "btnmin.png")
-/*!  \def ICON_MANUAL_ON
-  The file name for \a manual \a selected icon*/
-#define ICON_MANUAL_ON  (IMG_PATH "btnman.png")
-/*!  \def ICON_MANUAL_OFF
-  The file name for \a manual \a unselected icon*/
-#define ICON_MANUAL_OFF  (IMG_PATH "btnmanoff.png")
-/*!  \def ICON_AUTO
-  The file name for \a automatic \a selected icon*/
-#define ICON_AUTO_ON  (IMG_PATH "btnauto.png")
-/*!  \def ICON_AUTO_OFF
-  The file name for \a automatic \a unselected icon*/
-#define ICON_AUTO_OFF  (IMG_PATH "btnautooff.png")
-/*!  \def ICON_MEM
-  The file name for \a memorization icon*/
-#define ICON_MEM  (IMG_PATH "btnmem.png")
-/*!  \def ICON_ZERO
-  The file name for \a zero icon*/
-#define ICON_ZERO  (IMG_PATH "num0.png")
-/*!  \def ICON_UNO
-  The file name for \a one icon*/
-#define ICON_UNO  (IMG_PATH "num1.png")
-/*!  \def ICON_DUE
-  The file name for \a two icon*/
-#define ICON_DUE  (IMG_PATH "num2.png")
-/*!  \def ICON_TRE
-  The file name for \a three icon*/
-#define ICON_TRE  (IMG_PATH "num3.png")
-/*!  \def ICON_QUATTRO
-  The file name for \a for icon*/
-#define ICON_QUATTRO  (IMG_PATH "num4.png")
-/*!  \def ICON_CINQUE
-  The file name for \a five icon*/
-#define ICON_CINQUE  (IMG_PATH "num5.png")
-/*!  \def ICON_SEI
-  The file name for \a six icon*/
-#define ICON_SEI  (IMG_PATH "num6.png")
-/*!  \def ICON_SETTE
-  The file name for \a seven icon*/
-#define ICON_SETTE  (IMG_PATH "num7.png")
-/*!  \def ICON_OTTO
-  The file name for \a eight icon*/
-#define ICON_OTTO  (IMG_PATH "num8.png")
-/*!  \def ICON_NOVE
-  The file name for \a nine icon*/
-#define ICON_NOVE  (IMG_PATH "num9.png")
+
 /*!  \def ICON_CANC
   The file name for \a cancellation icon*/
 #define ICON_CANC  (IMG_PATH "btncanc.png")
