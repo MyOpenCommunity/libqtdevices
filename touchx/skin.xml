@@ -103,12 +103,12 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- Home page time display -->
 	<item>
-		<cid>987</cid>
+		<cid>205</cid>
 		<img_background>home/displayora.png</img_background>
 	</item>
 	<!-- Home page date display -->
 	<item>
-		<cid>988</cid>
+		<cid>206</cid>
 		<img_background>home/displaydata.png</img_background>
 	</item>
 	<!-- Home page temperature display -->
