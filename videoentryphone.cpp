@@ -50,9 +50,9 @@
 
 enum Pages
 {
-	VIDEO_CONTROL=2200,  /*!< Video control menu */
-	INTERCOM=2201,       /*!< Intercom menu */
-	RING_EXCLUSION=2203, /*!< Ring exclusion */
+	VIDEO_CONTROL = 10050,  /*!< Video control menu */
+	INTERCOM = 10100,       /*!< Intercom menu */
+	RING_EXCLUSION = 19999, /*!< Ring exclusion */
 };
 
 

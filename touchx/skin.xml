@@ -81,15 +81,15 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_date_background>home/backdate.png</img_date_background>
 		<img_temperature_background>home/backtemp.png</img_temperature_background>
 	</item>
-    <!-- Videoentryphone section-->
-    <item>
-        <cid>22</cid>
-        <img_tray_ring_ex_on>home/esclusionechiamataon.png</img_tray_ring_ex_on>
-        <img_tray_ring_ex_off>home/esclusionechiamataoff.png</img_tray_ring_ex_off>
-    </item>
+	<!-- Videoentryphone section-->
+	<item>
+		<cid>10000</cid>
+		<img_tray_ring_ex_on>home/esclusionechiamataon.png</img_tray_ring_ex_on>
+		<img_tray_ring_ex_off>home/esclusionechiamataoff.png</img_tray_ring_ex_off>
+	</item>
 	<!-- Ring exclusion page -->
 	<item>
-		<cid>35</cid>
+		<cid>19999</cid>
 		<img_ring_exclusion>videocitofonia/imgesclusionechiamata.png</img_ring_exclusion>
 	</item>
 	<!-- Home and info bar -->
@@ -269,7 +269,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/scenarievoluti.png</img_top_navigation_button>
 	</item>
 	<item>
-		<cid>122</cid>
+		<cid>10</cid>
 		<img_link_icon>home/videocitofonia.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/videocitofonia.png</img_top_navigation_button>
 	</item>
@@ -279,16 +279,19 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/contenutimultimediali.png</img_top_navigation_button>
 	</item>
 	<!-- Videoentryphone icon page -->
+	<!-- videocontrol link -->
 	<item>
-		<cid>123</cid>
+		<cid>10001</cid>
 		<img_link_icon>videocitofonia/videocontrollo.png</img_link_icon>
 	</item>
+	<!-- intercom link -->
 	<item>
-		<cid>124</cid>
+		<cid>10002</cid>
 		<img_link_icon>videocitofonia/postiinterni.png</img_link_icon>
 	</item>
+        <!-- ring exclusion link -->
 	<item>
-		<cid>135</cid>
+		<cid>10003</cid>
 		<img_link_icon>videocitofonia/esclusionechiamata.png</img_link_icon>
 	</item>
 	<!-- Multimedia page links -->
@@ -659,7 +662,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- thermal regulator settings page 99 zones -->
 	<item>
-		<cid>10</cid>
+		<cid>10999999</cid> <!-- TODO fix -->
 		<img_regulator_manual>termoregolazione/imgmanuale.png</img_regulator_manual>
 		<img_regulator_manual_timed>termoregolazione/imgmanualetemporizzato.png</img_regulator_manual_timed>
 		<img_regulator_weekend>termoregolazione/imgfestivo.png</img_regulator_weekend>
@@ -810,21 +813,23 @@ MessagePage QLabel#Text { background-color: #000000; }
         <img_connection>videocitofonia/inconnessione.png</img_connection>
 	</item>
 	<!-- Video control items -->
+	<!-- panel -->
 	<item>
-		<cid>23000</cid>
+		<cid>10051</cid>
 		<img_link_icon>videocitofonia/pes0.png</img_link_icon>
 	</item>
+	<!-- camera -->
 	<item>
-		<cid>23001</cid>
+		<cid>10052</cid>
 		<img_link_icon>videocitofonia/telecamera.png</img_link_icon>
 	</item>
 	<!-- Intercom items -->
 	<item>
-		<cid>24000</cid>
+		<cid>10101</cid>
 		<img_link_icon>videocitofonia/piintercom.png</img_link_icon>
 	</item>
 	<item>
-		<cid>24001</cid>
+		<cid>10102</cid>
 		<img_link_icon>videocitofonia/piintercompiano.png</img_link_icon>
 	</item>
     <item>
