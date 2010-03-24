@@ -93,7 +93,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 			SLOT(requestStatusIfCurrentWidget(Page*)));
 	subscribe_monitor(5);
 
-	ctrlAllarm();
+	checkAlarmCount();
 }
 
 int Antintrusion::sectionId()
@@ -192,7 +192,7 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 
 void Antintrusion::showPage()
 {
-	ctrlAllarm();
+	checkAlarmCount();
 	Page::showPage();
 }
 
@@ -250,14 +250,9 @@ void Antintrusion::Parz()
 	request_timer.start(5000);
 }
 
-void Antintrusion::delayCtrlAlarm()
+void Antintrusion::checkAlarmCount()
 {
-	QTimer::singleShot(150, this, SLOT(ctrlAllarm()));
-}
-
-void Antintrusion::ctrlAllarm()
-{
-	qDebug("ctrlAllarm %d %d", allarmi.size(), alarms->alarmCount());
+	qDebug("checkAlarmCount %d %d", allarmi.size(), alarms->alarmCount());
 	// the first condition is for BTouch, the second for TouchX
 	if (!allarmi.isEmpty() || alarms->alarmCount() != 0)
 		impianto->mostra(BannerOld::BUT1);
@@ -323,7 +318,7 @@ void Antintrusion::addAlarm(QString descr, int t, int zona)
 	alarms->addAlarm(t, alarm_description, zone_description, now);
 
 	curr->showPage();
-	ctrlAllarm();
+	checkAlarmCount();
 }
 
 void Antintrusion::showHomePage()
@@ -364,7 +359,8 @@ void Antintrusion::deleteAlarm()
 	if (allarmi.isEmpty())
 	{
 		curr_alarm = -1;
-		delayCtrlAlarm();
+		// TODO the delay is probably not needed anymore
+		QTimer::singleShot(150, this, SLOT(checkAlarmCount()));
 		return;
 	}
 	else if (curr_alarm >= allarmi.size())
