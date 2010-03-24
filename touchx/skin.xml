@@ -118,14 +118,14 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- Home page rss link -->
 	<item>
-		<cid>992</cid>
+		<cid>202</cid>
 		<img_link_icon>home/rss.png</img_link_icon>
 		<img_forward_icon>multimediale/avanti.png</img_forward_icon>
 		<img_feed_icon>multimediale/rssmini.png</img_feed_icon>
 	</item>
 	<!-- Home page meteo link -->
 	<item>
-		<cid>993</cid>
+		<cid>203</cid>
 		<img_link_icon>home/meteo.png</img_link_icon>
 		<img_forward_icon>multimediale/avanti.png</img_forward_icon>
 		<img_feed_icon>multimediale/rssmini.png</img_feed_icon>
@@ -274,7 +274,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/videocitofonia.png</img_top_navigation_button>
 	</item>
 	<item>
-		<cid>126</cid>
+		<cid>16</cid>
 		<img_link_icon>home/contenutimultimediali.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/contenutimultimediali.png</img_top_navigation_button>
 	</item>
@@ -292,11 +292,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_link_icon>videocitofonia/esclusionechiamata.png</img_link_icon>
 	</item>
 	<!-- Multimedia page links -->
-	<!-- USB -->
 	<item>
-		<cid>26000</cid>
-		<img_mounted>multimediale/usbon.png</img_mounted>
-		<img_unmounted>multimediale/usboff.png</img_unmounted>
+		<cid>16000</cid>
 		<!-- Multimedia list icons -->
 		<img_eject>multimediale/umount.png</img_eject>
 		<img_image_icon>multimediale/fotomini.png</img_image_icon>
@@ -316,27 +313,33 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_nofullscreen>multimediale/screen.png</img_nofullscreen>
 		<img_volume>diffusione/onvolamp.png</img_volume>
 	</item>
+	<!-- USB -->
+	<item>
+		<cid>16002</cid>
+		<img_mounted>multimediale/usbon.png</img_mounted>
+		<img_unmounted>multimediale/usboff.png</img_unmounted>
+	</item>
 	<!-- SD -->
 	<item>
-		<cid>26009</cid>
+		<cid>16005</cid>
 		<img_mounted>multimediale/sdon.png</img_mounted>
 		<img_unmounted>multimediale/sdoff.png</img_unmounted>
 	</item>
 	<!-- RSS -->
 	<item>
-		<cid>137</cid>
+		<cid>16003</cid>
 		<img_link_icon>multimediale/rss.png</img_link_icon>
 		<img_forward_icon>multimediale/avanti.png</img_forward_icon>
 		<img_feed_icon>multimediale/rssmini.png</img_feed_icon>
 	</item>
 	<!-- RSS meteo -->
 	<item>
-		<cid>26007</cid>
+		<cid>16152</cid>
 		<img_feed_icon>multimediale/meteomini.png</img_feed_icon>
 	</item>
 	<!-- Webcam -->
 	<item>
-		<cid>26005</cid>
+		<cid>16004</cid>
 		<img_link_icon>multimediale/webcam.png</img_link_icon>
 		<img_webcam_icon>multimediale/webcammini.png</img_webcam_icon>
 		<img_reload>multimediale/play.png</img_reload>

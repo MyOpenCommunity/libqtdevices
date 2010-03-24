@@ -197,7 +197,7 @@ enum Section
 	SCENARI_EVOLUTI=20,                           /*!< Advanced scenarios management */
 	VIDEOCITOFONIA=22,                            /*!< Videoentryphone control system */
 	IMPOSTAZIONI=29,                              /*!< Settings */
-	MULTIMEDIA=26,                                /*!< Multimedia system */
+	MULTIMEDIA=16000,                             /*!< Multimedia system */
 	DIFSON_MULTI=12000,                           /*!< Sound diffusion system (mono and multichannel) */
 	SUPERVISIONE=-2,                              /*!< Supervision system */
 	TERMOREG_MULTI_PLANT=-3,                      /*!< Thermoregulation system with one or more 4-zones plants */
