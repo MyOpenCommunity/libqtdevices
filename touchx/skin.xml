@@ -98,7 +98,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- Settings button -->
 	<item>
-		<cid>129</cid>
+		<cid>14</cid>
 		<img_link_icon>home/setup.png</img_link_icon>
 	</item>
 	<!-- Home page time display -->
@@ -138,7 +138,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- Beep -->
 	<item>
-		<cid>801</cid>
+		<cid>14001</cid>
 		<img_state_on>setup/beepon.png</img_state_on>
 		<img_state_off>setup/beepoff.png</img_state_off>
 	</item>
@@ -151,17 +151,18 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- Volume -->
 	<item>
-		<cid>808</cid>
+		<cid>14004</cid>
 		<img_link_icon>setup/volume.png</img_link_icon>
 		<img_volume>setup/volumi/onvolamp.png</img_volume>
 	</item>
+	<!-- Ringtones -->
 	<item>
-		<cid>809</cid>
+		<cid>14005</cid>
 		<img_link_icon>setup/suonerie.png</img_link_icon>
 	</item>
-	<!-- Version -->
+	<!-- Version page -->
 	<item>
-		<cid>811</cid>
+		<cid>14006</cid>
 		<img_link_icon>setup/myhome.png</img_link_icon>
 	</item>
 	<!-- Calibration -->
@@ -176,14 +177,14 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- Change date/time button -->
 	<item>
-		<cid>802</cid>
+		<cid>14002</cid>
 		<img_link_icon>setup/dataora.png</img_link_icon>
 		<img_arrow_up>setup/piu.png</img_arrow_up>
 		<img_arrow_down>setup/meno.png</img_arrow_down>
 	</item>
 	<!-- Password -->
 	<item>
-		<cid>807</cid>
+		<cid>14003</cid>
 		<img_link_icon>setup/password.png</img_link_icon>
 		<img_state_on>setup/pswlockon.png</img_state_on>
 		<img_state_off>setup/pswlockoff.png</img_state_off>
@@ -209,7 +210,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- display button -->
 	<item>
-		<cid>814</cid>
+		<cid>14007</cid>
 		<img_link_icon>setup/iconamonitor.png</img_link_icon>
 	</item>
 	<!-- lan settings button -->
@@ -252,7 +253,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<item>
 		<!-- Multimedia sound diffusion -->
-		<cid>117</cid>
+		<cid>12</cid>
 		<img_link_icon>home/diffusionemultimediale.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/diffusionemultimediale.png</img_top_navigation_button>
 	</item>
@@ -360,7 +361,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- special ambient -->
 	<item>
-		<cid>17000</cid>
+		<cid>12020</cid>
 		<!--
 		Other images: forward
 		-->
@@ -368,7 +369,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- normal ambient -->
 	<item>
-		<cid>17001</cid>
+		<cid>12021</cid>
 		<!--
 		Other images: forward
 		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
@@ -712,67 +713,67 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- settings banners -->
 	<item>
-		<!-- external place type 1 -->
-		<cid>2060</cid>
+		<!-- ringtone: external place type 1 -->
+		<cid>14101</cid>
 		<img_prev_ring>setup/onsuonpe0sx.png</img_prev_ring>
 		<img_next_ring>setup/onsuonpe0dx.png</img_next_ring>
 	</item>
 	<item>
-		<!-- external place type 2 -->
+		<!-- ringtone: external place type 2 -->
 		<cid>2061</cid>
 		<img_prev_ring>setup/onsuonpe1sx.png</img_prev_ring>
 		<img_next_ring>setup/onsuonpe1dx.png</img_next_ring>
 	</item>
 	<item>
-		<!-- external place type 3 -->
+		<!-- ringtone: external place type 3 -->
 		<cid>2062</cid>
 		<img_prev_ring>setup/onsuonpe2sx.png</img_prev_ring>
 		<img_next_ring>setup/onsuonpe2dx.png</img_next_ring>
 	</item>
 	<item>
-		<!-- external place type 4 -->
+		<!-- ringtone: external place type 4 -->
 		<cid>2063</cid>
 		<img_prev_ring>setup/onsuonpe3sx.png</img_prev_ring>
 		<img_next_ring>setup/onsuonpe3dx.png</img_next_ring>
 	</item>
 	<item>
-		<!-- intercom -->
+		<!-- ringtone: intercom -->
 		<cid>2064</cid>
 		<img_prev_ring>setup/onsuoninterinternosx.png</img_prev_ring>
 		<img_next_ring>setup/onsuoninterinternodx.png</img_next_ring>
 	</item>
 	<item>
-		<!-- interflat (?) -->
+		<!-- ringtone: interflat (?) -->
 		<cid>2065</cid>
 		<img_prev_ring>setup/onsuoninteresternosx.png</img_prev_ring>
 		<img_next_ring>setup/onsuoninteresternodx.png</img_next_ring>
 	</item>
 	<item>
-		<!-- door bell -->
+		<!-- ringtone: door bell -->
 		<cid>2066</cid>
 		<img_prev_ring>setup/onsuonchiamatapianosx.png</img_prev_ring>
 		<img_next_ring>setup/onsuonchiamatapianodx.png</img_next_ring>
 	</item>
 	<item>
-		<!-- telephone -->
+		<!-- ringtone: telephone -->
 		<cid>2067</cid>
 		<img_prev_ring>setup/onsuonchiamatatelefonosx.png</img_prev_ring>
 		<img_next_ring>setup/onsuonchiamatatelefonodx.png</img_next_ring>
 	</item>
 	<item>
-		<!-- messages -->
+		<!-- ringtone: messages -->
 		<cid>2068</cid>
 		<img_prev_ring>setup/onsuonmessaggisx.png</img_prev_ring>
 		<img_next_ring>setup/onsuonmessaggidx.png</img_next_ring>
 	</item>
 	<item>
-		<!-- alarms -->
+		<!-- ringtone: alarms -->
 		<cid>2069</cid>
 		<img_prev_ring>setup/onsuonallarmesx.png</img_prev_ring>
 		<img_next_ring>setup/onsuonallarmedx.png</img_next_ring>
 	</item>
 	<item>
-		<!-- switchboard -->
+		<!-- ringtone: switchboard -->
 		<cid>2070</cid>
 		<img_prev_ring>setup/onsuonchiamatacdpsx.png</img_prev_ring>
 		<img_next_ring>setup/onsuonchiamatacdpdx.png</img_next_ring>
