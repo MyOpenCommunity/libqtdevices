@@ -67,7 +67,6 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 
 	alarms = new AlarmList;
 	connect(alarms, SIGNAL(Closed()), SLOT(showPage()));
-	connect(alarms, SIGNAL(Closed()), SLOT(ctrlAllarm()));
 
 #ifdef LAYOUT_BTOUCH
 	// TODO: we introduce a double dependency to customize the image of the forward
@@ -189,6 +188,12 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 		else
 			Q_ASSERT_X(false, "Antintrusion::loadItems", qPrintable(QString("Type of item %1 not handled!").arg(id)));
 	}
+}
+
+void Antintrusion::showPage()
+{
+	ctrlAllarm();
+	Page::showPage();
 }
 
 void Antintrusion::plantInserted()

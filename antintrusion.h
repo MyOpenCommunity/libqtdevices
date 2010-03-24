@@ -61,6 +61,8 @@ public:
 
 	virtual int sectionId();
 
+	virtual void showPage();
+
 public slots:
 	void Parzializza();
 	void Parz();
