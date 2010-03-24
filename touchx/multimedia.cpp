@@ -91,6 +91,8 @@ void FileSystemBrowseButton::browse()
 
 MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node)
 {
+	SkinContext cxt(getTextChild(config_node, "cid").toInt());
+
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 	loadItems(config_node);
 }
