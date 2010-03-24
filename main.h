@@ -436,8 +436,6 @@ enum ItemType
 	AIR_SPLIT_ADV=4003,                           /*!< AIR conditioning single split (advanced) */
 	AIR_GENERAL_ADV=4004,                         /*!< AIR conditioning general split (advanced) */
 #endif
-	BEEP_ICON=2901,                               /*!< Beep icon in touch 10 settings */
-	RINGTONE=2060,                                /*!< Ringtone selection banner in touch 10 settings */
 	LOAD_WITH_CU=80,                              /*!< Load with central unit */
 	LOAD_WITHOUT_CU=81,                           /*!< Load without central unit */
 	LOAD_DIAGNOSTIC=82,                           /*!< Load diagnostics */

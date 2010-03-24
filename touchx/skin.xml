@@ -145,7 +145,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<!-- Brightness -->
 	<item>
 		<!-- uses: minus, plus -->
-		<cid>803</cid>
+		<cid>14151</cid>
 		<img_link_icon>setup/luminosita.png</img_link_icon>
 		<img_logo_brightness>setup/contrastoimage.png</img_logo_brightness>
 	</item>
@@ -167,7 +167,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- Calibration -->
 	<item>
-		<cid>810</cid>
+		<cid>14153</cid>
 		<img_link_icon>setup/taratura.png</img_link_icon>
 	</item>
 	<!-- Calibration test -->
@@ -192,7 +192,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- screen saver button -->
 	<item>
-		<cid>812</cid>
+		<cid>14154</cid>
 		<img_link_icon>setup/screensaver.png</img_link_icon>
 		<img_unchecked>setup/selectoff.png</img_unchecked>
 		<img_checked>setup/select.png</img_checked>
@@ -204,7 +204,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- clean screen button -->
 	<item>
-		<cid>813</cid>
+		<cid>14152</cid>
 		<img_link_icon>setup/cleanscreen.png</img_link_icon>
 		<img_cleanscreen>setup/cleanscreenp.png</img_cleanscreen>
 	</item>
@@ -570,7 +570,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- regulator page 4 zones -->
 	<item>
-		<cid>14</cid>
+		<cid>14000</cid> <!-- TODO fix -->
 		<img_summer_flat>termoregolazione/estateoff.png</img_summer_flat>
 		<img_winter_flat>termoregolazione/invernooff.png</img_winter_flat>
 		<img_regulator>termoregolazione/imgcentrale.png</img_regulator>
@@ -720,63 +720,45 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<item>
 		<!-- ringtone: external place type 2 -->
-		<cid>2061</cid>
+		<cid>14102</cid>
 		<img_prev_ring>setup/onsuonpe1sx.png</img_prev_ring>
 		<img_next_ring>setup/onsuonpe1dx.png</img_next_ring>
 	</item>
 	<item>
 		<!-- ringtone: external place type 3 -->
-		<cid>2062</cid>
+		<cid>14103</cid>
 		<img_prev_ring>setup/onsuonpe2sx.png</img_prev_ring>
 		<img_next_ring>setup/onsuonpe2dx.png</img_next_ring>
 	</item>
 	<item>
 		<!-- ringtone: external place type 4 -->
-		<cid>2063</cid>
+		<cid>14104</cid>
 		<img_prev_ring>setup/onsuonpe3sx.png</img_prev_ring>
 		<img_next_ring>setup/onsuonpe3dx.png</img_next_ring>
 	</item>
 	<item>
 		<!-- ringtone: intercom -->
-		<cid>2064</cid>
+		<cid>14105</cid>
 		<img_prev_ring>setup/onsuoninterinternosx.png</img_prev_ring>
 		<img_next_ring>setup/onsuoninterinternodx.png</img_next_ring>
 	</item>
 	<item>
 		<!-- ringtone: interflat (?) -->
-		<cid>2065</cid>
+		<cid>14106</cid>
 		<img_prev_ring>setup/onsuoninteresternosx.png</img_prev_ring>
 		<img_next_ring>setup/onsuoninteresternodx.png</img_next_ring>
 	</item>
 	<item>
 		<!-- ringtone: door bell -->
-		<cid>2066</cid>
+		<cid>14107</cid>
 		<img_prev_ring>setup/onsuonchiamatapianosx.png</img_prev_ring>
 		<img_next_ring>setup/onsuonchiamatapianodx.png</img_next_ring>
 	</item>
 	<item>
-		<!-- ringtone: telephone -->
-		<cid>2067</cid>
-		<img_prev_ring>setup/onsuonchiamatatelefonosx.png</img_prev_ring>
-		<img_next_ring>setup/onsuonchiamatatelefonodx.png</img_next_ring>
-	</item>
-	<item>
-		<!-- ringtone: messages -->
-		<cid>2068</cid>
-		<img_prev_ring>setup/onsuonmessaggisx.png</img_prev_ring>
-		<img_next_ring>setup/onsuonmessaggidx.png</img_next_ring>
-	</item>
-	<item>
-		<!-- ringtone: alarms -->
-		<cid>2069</cid>
+		<!-- ringtone: misc -->
+		<cid>14109</cid>
 		<img_prev_ring>setup/onsuonallarmesx.png</img_prev_ring>
 		<img_next_ring>setup/onsuonallarmedx.png</img_next_ring>
-	</item>
-	<item>
-		<!-- ringtone: switchboard -->
-		<cid>2070</cid>
-		<img_prev_ring>setup/onsuonchiamatacdpsx.png</img_prev_ring>
-		<img_next_ring>setup/onsuonchiamatacdpdx.png</img_next_ring>
 	</item>
 	<!-- alarm clock -->
 	<item>

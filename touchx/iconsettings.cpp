@@ -49,19 +49,32 @@
 
 enum
 {
-	PAGE_LANSETTINGS = 72,  // TODO: this is not unique in touchx configuration file
-	PAGE_DATE_TIME = 2902,
-	PAGE_BRIGHTNESS = 2903,
-	PAGE_PASSWORD = 2907,
-	PAGE_VOLUME = 2908,
-	PAGE_RINGTONES = 2909,
-	PAGE_CALIBRATION = 2910,
-	PAGE_CALIBRATION_TEST = 2997,
-	PAGE_VERSION = 2911,
-	PAGE_SCREENSAVER = 2912,
-	PAGE_CLEANSCREEN = 2913,
-	PAGE_DISPLAY = 2920,
-	PAGE_ALARMCLOCK = 2950
+	ICON_BEEP = 14001,
+	PAGE_DATE_TIME = 14002,
+	PAGE_BRIGHTNESS = 14151,
+	PAGE_PASSWORD = 14003,
+	PAGE_VOLUME = 14004,
+	PAGE_RINGTONES = 14005,
+	PAGE_CALIBRATION = 14153,
+	PAGE_VERSION = 14006,
+	PAGE_SCREENSAVER = 14154,
+	PAGE_CLEANSCREEN = 14152,
+	PAGE_DISPLAY = 14007,
+
+	// TODO should be the same ID
+	RINGTONE_0 = 14101,
+	RINGTONE_1 = 14102,
+	RINGTONE_2 = 14103,
+	RINGTONE_3 = 14104,
+	RINGTONE_INTERCOM = 14105,
+	RINGTONE_VCT = 14106,
+	RINGTONE_DOOR = 14107,
+	RINGTONE_ALARM = 14109,
+
+	// TODO ids?
+	PAGE_LANSETTINGS = 1700000,
+	PAGE_CALIBRATION_TEST = 1777777,
+	PAGE_ALARMCLOCK = 1111111111,
 };
 
 
@@ -272,7 +285,14 @@ banner *IconSettings::getBanner(const QDomNode &item_node)
 
 		break;
 	}
-	case RINGTONE:
+	case RINGTONE_0:
+	case RINGTONE_1:
+	case RINGTONE_2:
+	case RINGTONE_3:
+	case RINGTONE_INTERCOM:
+	case RINGTONE_VCT:
+	case RINGTONE_DOOR:
+	case RINGTONE_ALARM:
 		// TODO: type should be read from config file
 		b = new BannRingtone(descr, RINGTONE_PE1);
 		break;
@@ -327,7 +347,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		case PAGE_LANSETTINGS:
 			p = new LanSettings(item);
 			break;
-		case BEEP_ICON:
+		case ICON_BEEP:
 		{
 			QWidget *t = new ToggleBeep(getTextChild(item, "itemID").toInt(),
 						    getTextChild(item, "enabled").toInt(), descr,
