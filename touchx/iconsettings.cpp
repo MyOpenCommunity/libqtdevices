@@ -135,10 +135,9 @@ void ListPage::loadItems(const QDomNode &config_node)
 
 RingtonesPage::RingtonesPage(const QDomNode &config_node) : ListPage(config_node)
 {
-	QObject::connect(this, SIGNAL(Closed()), SLOT(stopRingtones()));
 }
 
-void RingtonesPage::stopRingtones()
+void RingtonesPage::hideEvent(QHideEvent *e)
 {
 	bt_global::ringtones->stopRingtone();
 }
