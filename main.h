@@ -185,8 +185,8 @@ enum Section
 {
 	NO_SECTION=0,
 	AUTOMAZIONE=1,                                /*!< Automation system */
-	ILLUMINAZIONE=2000,                              /*!< Lighting system */
-	ANTIINTRUSIONE=3,                             /*!< Anti-intrusion system */
+	ILLUMINAZIONE=2000,                           /*!< Lighting system */
+	ANTIINTRUSIONE=13000,                         /*!< Anti-intrusion system */
 	CARICHI=4,                                    /*!< Appliances managing system */
 	TERMOREGOLAZIONE=5,                           /*!< Thermoregulation system */
 	BACK=9,                                       /*!< Back button - placed here for convenience */
@@ -379,8 +379,10 @@ enum ItemType
 	SET_SVEGLIA=20,                               /*!<  AlarmClock setting */
 	SET_SVEGLIA_SINGLEPAGE=8800,                  /*!<  AlarmClock setting with state icon */
 	DISPLAY=21,                                   /*!<  Display */
+#ifdef CONFIG_BTOUCH
 	ZONANTINTRUS=23,                              /*!<  Anti-intrusion zone */
 	IMPIANTINTRUS=24,                             /*!<  Anti-intrusion system */
+#endif
 	SUONO=25,                                     /*!<  Beep */
 	PROTEZIONE=26,                                /*!<  Password's settings */
 	VERSIONE=27,                                  /*!<  Version */

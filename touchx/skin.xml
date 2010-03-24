@@ -233,7 +233,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/illuminazione.png</img_top_navigation_button>
 	</item>
 	<item>
-		<cid>103</cid>
+		<cid>13</cid>
 		<img_link_icon>home/antintrusione.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/antintrusione.png</img_top_navigation_button>
 	</item>
@@ -505,7 +505,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- antintrusion banners -->
 	<item>
-		<cid>3</cid>
+		<cid>13000</cid>
 		<img_partial>antintrusione/parzializzazioneon.png</img_partial>
 		<img_partial_on>antintrusione/parzializzaon.png</img_partial_on>
 		<img_partial_off>antintrusione/parzializzaoff.png</img_partial_off>

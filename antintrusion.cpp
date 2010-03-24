@@ -43,6 +43,11 @@
 #include <QSignalMapper>
 
 
+enum
+{
+	ITEM_ANTINTRUSION_ZONE = 13001,
+};
+
 Antintrusion::Antintrusion(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
@@ -115,7 +120,9 @@ void Antintrusion::createImpianto(const QString &descr)
 			       bt_global::skin->getImage("alarm_state"));
 	impianto->setText(descr);
 	impianto->Draw();
+#ifdef CONFIG_BTOUCH
 	impianto->setId(IMPIANTINTRUS); // can probably be removed
+#endif
 	l->addWidget(impianto);
 
 	connect(impianto, SIGNAL(impiantoInserito()), SLOT(plantInserted()));
@@ -153,8 +160,9 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 		if (id == IMPIANTINTRUS)
 			createImpianto(descr);
 		else
-#endif
 		if (id == ZONANTINTRUS)
+#endif
+		if (id == ITEM_ANTINTRUSION_ZONE)
 		{
 			zones[zone_count] = descr;
 			b = new AntintrusionZone(descr, getTextChild(item, "where"));
