@@ -32,6 +32,37 @@
 #include <QDebug>
 #include <QList>
 
+#ifdef CONFIG_BTOUCH
+// configuration values for old configuration files
+enum BannerType
+{
+	DIMMER10 = 1,
+	SINGLE_LIGHT = 0,
+	DIMMER_GROUP = 6,
+	LIGHT_GROUP = 5,
+	TEMP_LIGHT = 9,
+	STAIR_LIGHT = 12,
+	DIMMER100 = 35,
+	TEMP_LIGHT_VARIABLE = 36,
+	DIMMER100_GROUP = 44,
+	TEMP_LIGHT_FIXED = 37,
+};
+#else
+enum BannerType
+{
+	DIMMER10 = 2002,
+	SINGLE_LIGHT = 2003,
+	DIMMER_GROUP = 2006,
+	LIGHT_GROUP = 2004,
+	TEMP_LIGHT,
+	STAIR_LIGHT = 2011,
+	DIMMER100,
+	TEMP_LIGHT_VARIABLE = 2007,
+	DIMMER100_GROUP,
+	TEMP_LIGHT_FIXED = 2010,
+};
+#endif
+
 
 namespace
 {
@@ -68,6 +99,7 @@ namespace
 			Q_ASSERT_X(sl.size() == 3, "getTimes()", "Time values must have exactly 3 fields");
 			times << BtTime(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
 		}
+		Q_ASSERT_X(!times.isEmpty(), "getTimes()", "Time node missing");
 		return times;
 	}
 }
@@ -95,25 +127,25 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 	banner *b = 0;
 	switch (id)
 	{
-	case DIMMER:
+	case DIMMER10:
 		b = new Dimmer(descr, where, oid);
 		break;
-	case ATTUAT_AUTOM:
+	case SINGLE_LIGHT:
 		b = new SingleActuator(descr, where, oid);
 		break;
-	case GR_DIMMER:
+	case DIMMER_GROUP:
 		b = new DimmerGroup(getAddresses(item_node), descr);
 		break;
-	case GR_ATTUAT_AUTOM:
+	case LIGHT_GROUP:
 		b = new LightGroup(getAddresses(item_node), descr);
 		break;
-	case ATTUAT_AUTOM_TEMP:
+	case TEMP_LIGHT:
 		b = new TempLight(descr, where, oid);
 		break;
-	case ATTUAT_VCT_LS:
+	case STAIR_LIGHT:
 		b = new ButtonActuator(descr, where, VCT_LS);
 		break;
-	case DIMMER_100:
+	case DIMMER100:
 	{
 		// TODO: CONFIG_BTOUCH touch10??
 		int start = getTextChild(item_node, "softstart").toInt();
@@ -121,10 +153,10 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		b = new Dimmer100(descr, where, oid, start, stop);
 	}
 		break;
-	case ATTUAT_AUTOM_TEMP_NUOVO_N:
+	case TEMP_LIGHT_VARIABLE:
 		b = new TempLightVariable(getTimes(item_node), descr, where, oid);
 		break;
-	case GR_DIMMER100:
+	case DIMMER100_GROUP:
 	{
 		// TODO: CONFIG_BTOUCH touch10??
 		QList<int> start, stop;
@@ -132,7 +164,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		b = new Dimmer100Group(addresses, start, stop, descr);
 	}
 		break;
-	case ATTUAT_AUTOM_TEMP_NUOVO_F:
+	case TEMP_LIGHT_FIXED:
 	{
 		int t;
 	#ifdef CONFIG_BTOUCH
@@ -186,12 +218,12 @@ void Lighting::initDimmer()
 		banner *b = page_content->getBanner(i);
 		switch (b->getId())
 		{
-		case DIMMER:
-		case DIMMER_100:
-		case ATTUAT_AUTOM:
-		case ATTUAT_AUTOM_TEMP:
-		case ATTUAT_AUTOM_TEMP_NUOVO_N:
-		case ATTUAT_AUTOM_TEMP_NUOVO_F:
+		case DIMMER10:
+		case DIMMER100:
+		case SINGLE_LIGHT:
+		case TEMP_LIGHT:
+		case TEMP_LIGHT_VARIABLE:
+		case TEMP_LIGHT_FIXED:
 			b->inizializza(true);
 			break;
 		default:

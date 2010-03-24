@@ -227,7 +227,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/automazioni.png</img_top_navigation_button>
 	</item>
 	<item>
-		<cid>102</cid>
+		<!-- lighting -->
+		<cid>2</cid>
 		<img_link_icon>home/illuminazione.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/illuminazione.png</img_top_navigation_button>
 	</item>
@@ -446,39 +447,48 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<!-- TODO check -->
 		<img_action_icon>automazione/imgserraturaoff.png</img_action_icon>
 	</item>
-	<!-- lightning banners -->
+	<!-- lighting banners -->
 	<item>
-		<cid>2000</cid>
+		<!-- simple light -->
+		<cid>2003</cid>
 		<img_off>illuminazione/off.png</img_off>
 		<img_on>illuminazione/on.png</img_on>
 		<img_actuator_state>illuminazione/imglamp.png</img_actuator_state>
 	</item>
 	<item>
-		<cid>2001</cid>
+		<!-- light group -->
+		<cid>2004</cid>
 		<img_off>illuminazione/off.png</img_off>
 		<img_on>illuminazione/on.png</img_on>
 		<img_lamp_group_on>illuminazione/imglampgrpon.png</img_lamp_group_on>
 	</item>
 	<item>
-		<cid>2002</cid>
+		<!-- dimmer (10/100) -->
+		<!-- Notes: Divided in 2 parts, left and right. For tag 'img_dimmer', appends 'sxlN' for left image and 'dxlN' for right image, where N
+		     is dimmer level rounded to the nearest multiple of 5.
+		     For tag 'img_dimmer_broken', appends 'sx' for left image and 'dx' for right image -->
+		<cid>2001</cid>
 		<img_off>illuminazione/off.png</img_off>
 		<img_on>illuminazione/on.png</img_on>
 		<img_dimmer>illuminazione/ondimmer.png</img_dimmer>
 		<img_dimmer_broken>illuminazione/brokendimmer.png</img_dimmer_broken>
 	</item>
 	<item>
-		<cid>2003</cid>
+		<!-- Timed and variable timed light -->
+		<cid>2007</cid>
 		<img_on>illuminazione/on.png</img_on>
 		<img_lamp_time_on>illuminazione/imglamptime.png</img_lamp_time_on>
 		<img_lamp_cycle>illuminazione/cicla.png</img_lamp_cycle>
 	</item>
 	<item>
-		<cid>2004</cid>
+		<!-- Fixed timed light -->
+		<cid>2010</cid>
 		<img_on>illuminazione/on.png</img_on>
 		<img_lamp_status>illuminazione/imglampt.png</img_lamp_status>
 		<img_lamp_time>illuminazione/imgtime.png</img_lamp_time>
 	</item>
 	<item>
+		<!-- dimmer group -->
 		<cid>2005</cid>
 		<img_on>illuminazione/on.png</img_on>
 		<img_off>illuminazione/off.png</img_off>
@@ -487,7 +497,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_dimmer_grp_dx>illuminazione/ondimmerdxl0.png</img_dimmer_grp_dx>
 	</item>
 	<item>
-		<cid>22001</cid>
+		<!-- staircase light -->
+		<cid>2011</cid>
 		<img_on>illuminazione/on.png</img_on>
 		<!-- TODO touch 10 has 2 icons for on/off states -->
 		<img_action_icon>illuminazione/imglucescaleon.png</img_action_icon>
