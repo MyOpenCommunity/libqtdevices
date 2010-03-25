@@ -45,10 +45,6 @@ public slots:
 	// displays the page and stores the video list for playback
 	void displayVideos(QList<QString> videos, unsigned element);
 
-signals:
-	void started();
-	void stopped();
-
 protected:
 	// kills mplayer
 	void hideEvent(QHideEvent *event);
