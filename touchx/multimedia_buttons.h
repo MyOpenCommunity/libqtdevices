@@ -38,7 +38,8 @@ public:
 		IMAGE_PAGE = 1,
 		IMAGE_WINDOW = 2,
 		VIDEO_PAGE = 3,
-		VIDEO_WINDOW = 4
+		VIDEO_WINDOW = 4,
+		AUDIO_PAGE = 5,
 	};
 
 	MultimediaPlayerButtons(Type type);

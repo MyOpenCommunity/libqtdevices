@@ -40,11 +40,14 @@ MultimediaPlayerButtons::MultimediaPlayerButtons(Type type)
 	BtButton *prev = getButton("previous", SIGNAL(previous()));
 	BtButton *next = getButton("next", SIGNAL(next()));
 	BtButton *stop = getButton("stop", SIGNAL(stop()));
-	BtButton *screen = getButton(is_window ? "nofullscreen" : "fullscreen",
-				     is_window ? SIGNAL(noFullScreen()) : SIGNAL(fullScreen()));
+	BtButton *screen = NULL;
+
+	if (type != AUDIO_PAGE)
+		getButton(is_window ? "nofullscreen" : "fullscreen",
+			  is_window ? SIGNAL(noFullScreen()) : SIGNAL(fullScreen()));
 
 	BtButton *forward = NULL, *rewind = NULL;
-	if (type == VIDEO_PAGE || type == VIDEO_WINDOW)
+	if (type == VIDEO_PAGE || type == VIDEO_WINDOW || type == AUDIO_PAGE)
 	{
 		forward = getButton("skip_forward", SIGNAL(skipForward()));
 		rewind = getButton("skip_back", SIGNAL(skipBack()));
@@ -66,7 +69,8 @@ MultimediaPlayerButtons::MultimediaPlayerButtons(Type type)
 	if (forward)
 		l->addWidget(forward);
 	l->addWidget(next);
-	l->addWidget(screen);
+	if (screen)
+		l->addWidget(screen);
 }
 
 BtButton *MultimediaPlayerButtons::getButton(const QString &icon, const char *destination)
