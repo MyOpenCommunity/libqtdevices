@@ -216,6 +216,8 @@ BtMain::BtMain(int openserver_reconnection_time)
 #if !defined(BT_HARDWARE_X11)
 	if (!Calibration::exists())
 	{
+		qDebug() << "No pointer calibration file, calibrating";
+
 		alreadyCalibrated = true;
 #ifdef LAYOUT_BTOUCH
 		Calibration *cal = new Calibration(true);
@@ -457,6 +459,8 @@ void BtMain::myMain()
 #if !defined(BT_HARDWARE_X11)
 	if (static_cast<int>(getTimePress()) * 1000 <= boot_time->elapsed() && !alreadyCalibrated)
 	{
+		qDebug() << "Boot time" << boot_time->elapsed() << "last press" << static_cast<int>(getTimePress()) * 1000;
+
 		alreadyCalibrated = true;
 #ifdef LAYOUT_BTOUCH
 		Calibration *cal = new Calibration(true);

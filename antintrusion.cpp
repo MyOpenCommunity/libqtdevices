@@ -43,6 +43,11 @@
 #include <QSignalMapper>
 
 
+enum
+{
+	ITEM_ANTINTRUSION_ZONE = 13001,
+};
+
 Antintrusion::Antintrusion(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
@@ -62,7 +67,6 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 
 	alarms = new AlarmList;
 	connect(alarms, SIGNAL(Closed()), SLOT(showPage()));
-	connect(alarms, SIGNAL(Closed()), SLOT(ctrlAllarm()));
 
 #ifdef LAYOUT_BTOUCH
 	// TODO: we introduce a double dependency to customize the image of the forward
@@ -89,7 +93,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 			SLOT(requestStatusIfCurrentWidget(Page*)));
 	subscribe_monitor(5);
 
-	ctrlAllarm();
+	checkAlarmCount();
 }
 
 int Antintrusion::sectionId()
@@ -115,7 +119,9 @@ void Antintrusion::createImpianto(const QString &descr)
 			       bt_global::skin->getImage("alarm_state"));
 	impianto->setText(descr);
 	impianto->Draw();
+#ifdef CONFIG_BTOUCH
 	impianto->setId(IMPIANTINTRUS); // can probably be removed
+#endif
 	l->addWidget(impianto);
 
 	connect(impianto, SIGNAL(impiantoInserito()), SLOT(plantInserted()));
@@ -153,8 +159,9 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 		if (id == IMPIANTINTRUS)
 			createImpianto(descr);
 		else
-#endif
 		if (id == ZONANTINTRUS)
+#endif
+		if (id == ITEM_ANTINTRUSION_ZONE)
 		{
 			zones[zone_count] = descr;
 			b = new AntintrusionZone(descr, getTextChild(item, "where"));
@@ -181,6 +188,12 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 		else
 			Q_ASSERT_X(false, "Antintrusion::loadItems", qPrintable(QString("Type of item %1 not handled!").arg(id)));
 	}
+}
+
+void Antintrusion::showPage()
+{
+	checkAlarmCount();
+	Page::showPage();
 }
 
 void Antintrusion::plantInserted()
@@ -237,14 +250,9 @@ void Antintrusion::Parz()
 	request_timer.start(5000);
 }
 
-void Antintrusion::delayCtrlAlarm()
+void Antintrusion::checkAlarmCount()
 {
-	QTimer::singleShot(150, this, SLOT(ctrlAllarm()));
-}
-
-void Antintrusion::ctrlAllarm()
-{
-	qDebug("ctrlAllarm %d %d", allarmi.size(), alarms->alarmCount());
+	qDebug("checkAlarmCount %d %d", allarmi.size(), alarms->alarmCount());
 	// the first condition is for BTouch, the second for TouchX
 	if (!allarmi.isEmpty() || alarms->alarmCount() != 0)
 		impianto->mostra(BannerOld::BUT1);
@@ -310,7 +318,7 @@ void Antintrusion::addAlarm(QString descr, int t, int zona)
 	alarms->addAlarm(t, alarm_description, zone_description, now);
 
 	curr->showPage();
-	ctrlAllarm();
+	checkAlarmCount();
 }
 
 void Antintrusion::showHomePage()
@@ -351,7 +359,8 @@ void Antintrusion::deleteAlarm()
 	if (allarmi.isEmpty())
 	{
 		curr_alarm = -1;
-		delayCtrlAlarm();
+		// TODO the delay is probably not needed anymore
+		QTimer::singleShot(150, this, SLOT(checkAlarmCount()));
 		return;
 	}
 	else if (curr_alarm >= allarmi.size())

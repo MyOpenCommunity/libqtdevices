@@ -34,13 +34,11 @@
 
 enum
 {
-	PAGE_USB = 2600,
-	PAGE_LAN = 2601,
-	PAGE_WEB_RADIO = 2603,
-	PAGE_WEB_TV = 2604,
-	PAGE_WEB_CAM = 2605,
-	PAGE_RSS = 2606,
-	PAGE_SD = 2609,
+	PAGE_USB = 16002,
+	PAGE_WEB_RADIO = 16001,
+	PAGE_WEB_CAM = 16004,
+	PAGE_RSS = 16003,
+	PAGE_SD = 16005,
 };
 
 
@@ -91,6 +89,8 @@ void FileSystemBrowseButton::browse()
 
 MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node)
 {
+	SkinContext cxt(getTextChild(config_node, "cid").toInt());
+
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 	loadItems(config_node);
 }

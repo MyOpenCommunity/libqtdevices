@@ -65,8 +65,8 @@ Q_OBJECT
 public:
 	RingtonesPage(const QDomNode &config_node);
 
-private slots:
-	void stopRingtones();
+protected:
+	virtual void hideEvent(QHideEvent *e);
 };
 
 

@@ -61,6 +61,8 @@ public:
 
 	virtual int sectionId();
 
+	virtual void showPage();
+
 public slots:
 	void Parzializza();
 	void Parz();
@@ -69,11 +71,7 @@ public slots:
 /*!
   \brief if there are no allarms in the queue the button in the plant area which give the possibility to see the queue is hidden
 */
-	void ctrlAllarm();
-/*!
-  \brief arms a timer and calls ctrlAllarm after 150ms. This is necessary because some time is necessary to destroy the object from the queue
-*/
-	void delayCtrlAlarm();
+	void checkAlarmCount();
 /*!
   \brief Invoked when next alarm must be displayed
 */

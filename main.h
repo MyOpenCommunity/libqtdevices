@@ -186,7 +186,7 @@ enum Section
 	NO_SECTION=0,
 	AUTOMAZIONE=3000,                                /*!< Automation system */
 	ILLUMINAZIONE=2000,                              /*!< Lighting system */
-	ANTIINTRUSIONE=3,                             /*!< Anti-intrusion system */
+	ANTIINTRUSIONE=13000,                         /*!< Anti-intrusion system */
 	CARICHI=4,                                    /*!< Appliances managing system */
 	TERMOREGOLAZIONE=5,                           /*!< Thermoregulation system */
 	BACK=9,                                       /*!< Back button - placed here for convenience */
@@ -195,9 +195,9 @@ enum Section
 	LOAD_MANAGEMENT=18,                           /*!< Load management system */
 	SCENARI=19,                                   /*!< Scenarios managing */
 	SCENARI_EVOLUTI=20,                           /*!< Advanced scenarios management */
-	VIDEOCITOFONIA=22,                            /*!< Videoentryphone control system */
+	VIDEOCITOFONIA=10000,                         /*!< Videoentryphone control system */
 	IMPOSTAZIONI=29,                              /*!< Settings */
-	MULTIMEDIA=26,                                /*!< Multimedia system */
+	MULTIMEDIA=16000,                             /*!< Multimedia system */
 	DIFSON_MULTI=12000,                           /*!< Sound diffusion system (mono and multichannel) */
 	SUPERVISIONE=-2,                              /*!< Supervision system */
 	TERMOREG_MULTI_PLANT=-3,                      /*!< Thermoregulation system with one or more 4-zones plants */
@@ -335,8 +335,10 @@ enum ItemType
 	SET_SVEGLIA=20,                               /*!<  AlarmClock setting */
 	SET_SVEGLIA_SINGLEPAGE=8800,                  /*!<  AlarmClock setting with state icon */
 	DISPLAY=21,                                   /*!<  Display */
+#ifdef CONFIG_BTOUCH
 	ZONANTINTRUS=23,                              /*!<  Anti-intrusion zone */
 	IMPIANTINTRUS=24,                             /*!<  Anti-intrusion system */
+#endif
 	SUONO=25,                                     /*!<  Beep */
 	PROTEZIONE=26,                                /*!<  Password's settings */
 	VERSIONE=27,                                  /*!<  Version */
