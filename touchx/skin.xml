@@ -380,6 +380,18 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
 		<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
 	</item>
+	<!-- amplifier group special ambient (multi sound diffusion) -->
+	<item>
+		<cid>12102</cid>
+		<!--
+		Other images: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/offampgrpsxl.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/offampgrpdxl.png</img_volume_off_right>
+	</item>
 	<!-- amplifier normal ambient (multi sound diffusion) -->
 	<item>
 		<cid>12150</cid>
@@ -391,6 +403,18 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
 		<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
 		<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+	</item>
+	<!-- amplifier group normal ambient (multi sound diffusion) -->
+	<item>
+		<cid>12151</cid>
+		<!--
+		Other images: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/offampgrpsxl.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/offampgrpdxl.png</img_volume_off_right>
 	</item>
 	<!-- special ambient -->
 	<item>

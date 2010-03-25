@@ -37,6 +37,18 @@
 #include <QGridLayout>
 #include <QLabel>
 
+namespace
+{
+	QStringList getAddresses(const QDomNode &addresses_node)
+	{
+		QStringList l;
+		foreach (const QDomNode &where_node, getChildren(addresses_node, "where"))
+			l << where_node.toElement().text();
+		Q_ASSERT_X(!l.isEmpty(), "getAddresses", "Addresses node must have at least one 'where' tag.");
+		return l;
+	}
+}
+
 SoundAmbient::SoundAmbient(const QString &descr, const QString &ambient) :
 	BannerNew(0)
 {
@@ -132,7 +144,8 @@ banner *SoundAmbientPage::getBanner(const QDomNode &item_node)
 		break;
 	case AMPLIFIER_GROUP:
 	{
-			// TODO:
+		AmplifierGroup *bann = new AmplifierGroup(getAddresses(getChildWithName(item_node, "addresses")), descr);
+		b = bann;
 	}
 		break;
 	case BANN_POWER_AMPLIFIER:
