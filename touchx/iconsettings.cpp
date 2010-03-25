@@ -263,15 +263,13 @@ banner *IconSettings::getBanner(const QDomNode &item_node)
 		int enabled = getTextChild(item_node, "enabled").toInt();
 		int hour = getTextChild(item_node, "hour").toInt();
 		int minute = getTextChild(item_node, "minute").toInt();
-		QString days = getTextChild(item_node, "days");
+		int days = getTextChild(item_node, "days").toInt();
 
 		QList<bool> alarms;
 		for (int i = 0; i < 7; ++i)
-			alarms.append(false);
-		for (int i = 0; i < days.length(); ++i)
 		{
-			int day = days.mid(i, 1).toInt() - 1;
-			alarms[day] = true;
+			int mask = 1 << (6 - i);
+			alarms.append((days & mask) ? true : false);
 		}
 
 		b = new bannAlarmClockIcon(item_id, hour, minute,

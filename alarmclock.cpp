@@ -136,11 +136,11 @@ void AlarmClock::handleClose()
 	data["minute"] = alarmTime.toString("mm");
 	if (id == SET_SVEGLIA_SINGLEPAGE)
 	{
-		QString active;
+		int active = 0;
 		for (int i = 0; i < 7; ++i)
 			if (days[i])
-				active += QString::number(i + 1);
-		data["days"] = active;
+				active |= 1 << (6 - i);
+		data["days"] = QString::number(active);
 	}
 	else
 		data["alarmset"] = QString::number(freq);
