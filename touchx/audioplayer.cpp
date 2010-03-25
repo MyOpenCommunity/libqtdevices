@@ -31,6 +31,7 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QVariant> // for setProperty
+#include <QTime>
 
 
 AudioPlayerPage::AudioPlayerPage()
@@ -108,6 +109,24 @@ void AudioPlayerPage::playAudioFiles(QList<QString> files, unsigned element)
 	displayMedia(current_file);
 }
 
+// strips the decimal dot from the time returned by mplayer; if match_length is passed,
+// the result is left-padded with "00:" to match match_length length
+static QString formatTime(const QString &mp_time, const QString &match_length = QString())
+{
+	QString res = mp_time;
+	int dot = mp_time.indexOf('.');
+
+	// strip decimal point
+	if (dot > 0)
+		res = mp_time.left(dot);
+
+	// left-pad with "00:"
+	while (res.length() < match_length.length())
+		res = "00:" + res;
+
+	return res;
+}
+
 void AudioPlayerPage::refreshPlayInfo()
 {
 	QMap<QString, QString> attrs = player->getPlayingInfo();
@@ -123,5 +142,10 @@ void AudioPlayerPage::refreshPlayInfo()
 		description_bottom->setText(" ");
 
 	if (attrs.contains("total_time") && attrs.contains("current_time"))
-		elapsed->setText(attrs["current_time"] + " / " + attrs["total_time"]);
+	{
+		QString total = formatTime(attrs["total_time"]);
+		QString current = formatTime(attrs["current_time"], total);
+
+		elapsed->setText(current + " / " + total);
+	}
 }
