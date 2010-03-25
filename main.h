@@ -184,7 +184,7 @@ enum Section
 enum Section
 {
 	NO_SECTION=0,
-	AUTOMAZIONE=1,                                /*!< Automation system */
+	AUTOMAZIONE=3000,                                /*!< Automation system */
 	ILLUMINAZIONE=2000,                              /*!< Lighting system */
 	ANTIINTRUSIONE=3,                             /*!< Anti-intrusion system */
 	CARICHI=4,                                    /*!< Appliances managing system */

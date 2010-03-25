@@ -222,7 +222,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- Homepage links -->
 	<item>
-		<cid>101</cid>
+		<!-- automation (homepage) -->
+		<cid>3</cid>
 		<img_link_icon>home/automazioni.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/automazioni.png</img_top_navigation_button>
 	</item>
@@ -383,69 +384,101 @@ MessagePage QLabel#Text { background-color: #000000; }
 
 	<!-- automation banners -->
 	<item>
-		<cid>1000</cid>
+		<!-- curtains -->
+		<!--Notes:
+		    In STOP state, image in 'img_actuator_state' will be used.
+		    In OPENING state, an 'o' will be appended to the image in 'img_actuator_state'.
+		    In CLOSING state, a 'c' will be appended.
+		-->
+		<cid>3001</cid>
 		<img_close>automazione/close.png</img_close>
 		<img_open>automazione/open.png</img_open>
 		<img_stop>automazione/stop.png</img_stop>
 		<img_actuator_state>automazione/imgtenda.png</img_actuator_state>
 	</item>
 	<item>
-		<cid>1001</cid>
+		<!-- garage -->
+		<!-- See Notes section on previous cid -->
+		<cid>3002</cid>
 		<img_close>automazione/arrdw.png</img_close>
 		<img_open>automazione/arrup.png</img_open>
 		<img_stop>automazione/stop.png</img_stop>
 		<img_actuator_state>automazione/imggarage.png</img_actuator_state>
 	</item>
 	<item>
-		<cid>1002</cid>
+		<!-- shutter -->
+		<!-- See Notes section on previous cid -->
+		<cid>3003</cid>
 		<img_close>automazione/arrdw.png</img_close>
 		<img_open>automazione/arrup.png</img_open>
 		<img_stop>automazione/stop.png</img_stop>
 		<img_actuator_state>automazione/imgtappa.png</img_actuator_state>
 	</item>
 	<item>
-		<cid>1003</cid>
+		<!-- gate -->
+		<!-- See Notes section on previous cid -->
+		<cid>3004</cid>
 		<img_close>automazione/close.png</img_close>
 		<img_open>automazione/open.png</img_open>
 		<img_stop>automazione/stop.png</img_stop>
 		<img_actuator_state>automazione/imgcanc.png</img_actuator_state>
 	</item>
 	<item>
-		<cid>1004</cid>
+		<!-- ventilation -->
+		<!-- Notes:
+		     In ON state, 'on' will be appended to 'img_actuator_state' icon.
+		     In OFF state, 'off' will be appended.
+		-->
+		<cid>3007</cid>
 		<img_off>automazione/off.png</img_off>
 		<img_on>automazione/on.png</img_on>
 		<img_actuator_state>automazione/imgvent.png</img_actuator_state>
 	</item>
 	<item>
-		<cid>1005</cid>
+		<!-- irrigation -->
+		<!-- See Notes section on previous cid -->
+		<cid>3008</cid>
 		<img_off>automazione/off.png</img_off>
 		<img_on>automazione/on.png</img_on>
 		<img_actuator_state>automazione/imgidro.png</img_actuator_state>
 	</item>
 	<item>
-		<cid>1006</cid>
+		<!-- loads -->
+		<!-- See Notes section on previous cid -->
+		<cid>3009</cid>
 		<img_off>automazione/off.png</img_off>
 		<img_on>automazione/on.png</img_on>
 		<img_actuator_state>automazione/imgcarico.png</img_actuator_state>
 	</item>
 	<item>
-		<cid>1008</cid>
+		<!-- door lock -->
+		<cid>3010</cid>
 		<img_on>automazione/on.png</img_on>
 		<!-- TODO check -->
 		<img_action_icon>automazione/imgserraturaoff.png</img_action_icon>
 	</item>
 	<item>
-		<cid>1009</cid>
+		<!-- ppt stat -->
+		<cid>3012</cid>
+		<!-- TODO: change me! -->
+		<img_pptstat_open>automazione/imgillumgrpon.png</img_pptstat_open>
+		<img_pptstat_close>automazione/imgillumgrpoff.png</img_pptstat_close>
+	</item>
+	<item>
+		<!-- automation group -->
+		<cid>3013</cid>
 		<img_scroll_down>automazione/arrdw.png</img_scroll_down>
 		<img_scroll_up>automazione/arrup.png</img_scroll_up>
 		<!-- TODO check -->
-		<img_stop>automazione/imggrp.png</img_stop>
+		<img_stop>automazione/stopbig.png</img_stop>
 	</item>
 	<item>
-		<cid>22000</cid>
-		<img_on>automazione/on.png</img_on>
+		<!-- automation group -->
+		<cid>3014</cid>
+		<img_scroll_down>automazione/arrdw.png</img_scroll_down>
+		<img_scroll_up>automazione/arrup.png</img_scroll_up>
 		<!-- TODO check -->
-		<img_action_icon>automazione/imgserraturaoff.png</img_action_icon>
+		<img_stop>automazione/stopbig.png</img_stop>
 	</item>
 	<!-- lighting banners -->
 	<item>

@@ -32,6 +32,34 @@
 #include <QDebug>
 #include <QList>
 
+#ifdef CONFIG_BTOUCH
+enum BannerType
+{
+	SECURE_AUTOMATIC_ACTUATOR = 8,
+	INTERBLOCKED_ACTUATOR = 2,
+	SIMPLE_ACTUATOR = 0,
+	DOOR_LOCK = 13,
+	PPT_STAT_AUTO = 42,
+	ACTUATOR_GROUP = 10,
+};
+#else
+enum BannerType
+{
+	INTERBLOCKED_ACTUATOR = 3001,
+	SECURE_AUTOMATIC_ACTUATOR = 3002,
+	SIMPLE_ACTUATOR = 3007,
+	DOOR_LOCK = 3010,
+	PPT_STAT_AUTO = 3012,
+	ACTUATOR_GROUP = 3013,
+	/*
+	  TODO: What about these?
+	AUTOM_CANC_ATTUAT_ILL =234,
+	AUTOM_CANC_ATTUAT_VC = 234,
+	ATTUAT_AUTOM_PULS = 234,
+	*/
+};
+#endif
+
 
 Automation::Automation(const QDomNode &config_node)
 {
@@ -55,19 +83,19 @@ banner *Automation::getBanner(const QDomNode &item_node)
 	banner *b = 0;
 	switch (id)
 	{
-	case ATTUAT_AUTOM_INT_SIC:
+	case SECURE_AUTOMATIC_ACTUATOR:
 		b = new SecureInterblockedActuator(descr, where, oid);
 		break;
-	case ATTUAT_AUTOM_INT:
+	case INTERBLOCKED_ACTUATOR:
 		b = new InterblockedActuator(descr, where, oid);
 		break;
-	case ATTUAT_AUTOM:
+	case SIMPLE_ACTUATOR:
 		b = new SingleActuator(descr, where, oid);
 		break;
-	case ATTUAT_VCT_SERR:
+	case DOOR_LOCK:
 		b = new ButtonActuator(descr, where, VCT_SERR);
 		break;
-	case GR_ATTUAT_INT:
+	case ACTUATOR_GROUP:
 	{
 		QStringList addresses;
 #ifdef CONFIG_BTOUCH
@@ -94,7 +122,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 	case ATTUAT_AUTOM_PULS:
 		b = new ButtonActuator(descr, where, AUTOMAZ);
 		break;
-	case PPT_STAT:
+	case PPT_STAT_AUTO:
 		b = new PPTStat(where, oid);
 		break;
 	}
