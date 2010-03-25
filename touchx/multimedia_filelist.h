@@ -28,6 +28,7 @@ class QDomNode;
 class ItemList;
 class SlideshowPage;
 class VideoPlayerPage;
+class AudioPlayerPage;
 
 
 class MultimediaFileListPage : public FileSelector
@@ -56,6 +57,7 @@ public slots:
 signals:
 	void displayImages(QList<QString> images, unsigned element);
 	void displayVideos(QList<QString> images, unsigned element);
+	void playAudioFiles(QList<QString> images, unsigned element);
 
 protected:
 	virtual bool browseFiles(const QDir &directory, QList<QFileInfo> &files);
@@ -87,6 +89,7 @@ private:
 	// pages to display video/images
 	SlideshowPage *slideshow;
 	VideoPlayerPage *videoplayer;
+	AudioPlayerPage *audioplayer;
 };
 
 #endif // MULTIMEDIA_FILELIST_H

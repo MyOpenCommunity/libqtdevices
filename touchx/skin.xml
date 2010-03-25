@@ -11,6 +11,7 @@ QWidget[noStyle="true"] QWidget {background-color:#FFFFFF;color:#000000;}
 QWidget[SecondFgColor="true"] {color:#6FB2FF;}
 QWidget[SecondFgColor="true"] QWidget {color:#6FB2FF;}
 QWidget[ReversedColor="true"] {color:#1E1E1E;background-color:#D8D8D8;}
+QWidget[PlayerInfo="true"] { color: #b0b0f8; }
 TextOnImageLabel { qproperty-text_color:#D8D8D8; }
 EnergyGraph { qproperty-primary_color:#1449C8; qproperty-secondary_color:#3587FF; qproperty-border_color: blue;}
 KeypadWithState QLabel[ActiveState="true"] { background-color:white; color:black; }
@@ -317,6 +318,9 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_fullscreen>multimediale/screenfull.png</img_fullscreen>
 		<img_nofullscreen>multimediale/screen.png</img_nofullscreen>
 		<img_volume>diffusione/onvolamp.png</img_volume>
+
+		<img_audioplayer_background>multimediale/display.png</img_audioplayer_background>
+		<img_goto_sounddiffusion>multimediale/godiffusion.png</img_goto_sounddiffusion>
 	</item>
 	<!-- USB -->
 	<item>

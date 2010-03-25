@@ -25,6 +25,7 @@
 #include "itemlist.h"
 #include "slideshow.h"
 #include "videoplayer.h"
+#include "audioplayer.h"
 #include "mount_watcher.h"
 
 #include <QLayout>
@@ -93,6 +94,11 @@ MultimediaFileListPage::MultimediaFileListPage()
 	connect(this, SIGNAL(displayVideos(QList<QString>, unsigned)),
 		videoplayer, SLOT(displayVideos(QList<QString>, unsigned)));
 	connect(videoplayer, SIGNAL(Closed()), SLOT(showPageNoReload()));
+
+	audioplayer = new AudioPlayerPage;
+	connect(this, SIGNAL(playAudioFiles(QList<QString>, unsigned)),
+		audioplayer, SLOT(playAudioFiles(QList<QString>, unsigned)));
+	connect(audioplayer, SIGNAL(Closed()), SLOT(showPageNoReload()));
 }
 
 void MultimediaFileListPage::browse(const QString &dir)
@@ -205,6 +211,8 @@ void MultimediaFileListPage::startPlayback(int item)
 		emit displayImages(files, current);
 	else if (type == VIDEO)
 		emit displayVideos(files, current);
+	else if (type == AUDIO)
+		emit playAudioFiles(files, current);
 }
 
 int MultimediaFileListPage::currentPage()
