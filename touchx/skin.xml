@@ -368,6 +368,30 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_next>diffusione/successivo.png</img_next>
 		<img_previous>diffusione/precedente.png</img_previous>
 	</item>
+	<!-- amplifier special ambient (multi sound diffusion) -->
+	<item>
+		<cid>12101</cid>
+		<!--
+		Other images: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+	</item>
+	<!-- amplifier normal ambient (multi sound diffusion) -->
+	<item>
+		<cid>12150</cid>
+		<!--
+		Other images: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+	</item>
 	<!-- special ambient -->
 	<item>
 		<cid>12020</cid>
