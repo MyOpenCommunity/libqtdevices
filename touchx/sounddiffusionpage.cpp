@@ -29,7 +29,8 @@
 #include "generic_functions.h" // getBostikName
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "bannercontent.h"
-#include "bann_amplifiers.h" // amplificatore
+#include "bann_amplifiers.h" // Amplifier
+#include "poweramplifier.h" // BannPowerAmplifier
 
 
 #include <QDomNode>
@@ -118,6 +119,7 @@ banner *SoundAmbientPage::getBanner(const QDomNode &item_node)
 	int id = getTextChild(item_node, "id").toInt();
 	QString descr = getTextChild(item_node, "descr");
 	QString where = getTextChild(item_node, "where");
+	int oid = getTextChild(item_node, "openserver_id").toInt();
 
 	banner *b = 0;
 	switch (id)
@@ -132,10 +134,13 @@ banner *SoundAmbientPage::getBanner(const QDomNode &item_node)
 	{
 			// TODO:
 	}
-	case POWER_AMPLIFIER:
+		break;
+	case BANN_POWER_AMPLIFIER:
 	{
-			// TODO:
+		BannPowerAmplifier *bann = new BannPowerAmplifier(0, item_node, where, oid);
+		b = bann;
 	}
+		break;
 	}
 	return b;
 }
