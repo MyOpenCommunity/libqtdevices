@@ -29,6 +29,7 @@
 #include "generic_functions.h" // getBostikName
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "bannercontent.h"
+#include "bann_amplifiers.h" // amplificatore
 
 
 #include <QDomNode>
@@ -81,6 +82,66 @@ void SoundAmbient::connectRightButton(Page *p)
 }
 
 
+enum BannerType
+{
+	AMPLIFIER = 11020,
+	AMPLIFIER_GROUP = 11021,
+	BANN_POWER_AMPLIFIER = 11022,
+};
+
+SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QDomNode &sources)
+{
+	// TODO: build top widget
+	buildPage(getTextChild(conf_node, "descr"));
+	loadItems(conf_node);
+}
+
+void SoundAmbientPage::loadItems(const QDomNode &config_node)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		banner *b = getBanner(item);
+		if (b)
+		{
+			page_content->appendBanner(b);
+			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+		}
+		else
+			qFatal("ID %s not handled in SoundAmbientPage", qPrintable(getTextChild(item, "id")));
+	}
+}
+
+banner *SoundAmbientPage::getBanner(const QDomNode &item_node)
+{
+	SkinContext context(getTextChild(item_node, "cid").toInt());
+	int id = getTextChild(item_node, "id").toInt();
+	QString descr = getTextChild(item_node, "descr");
+	QString where = getTextChild(item_node, "where");
+
+	banner *b = 0;
+	switch (id)
+	{
+	case AMPLIFIER:
+	{
+		Amplifier *bann = new Amplifier(descr, where);
+		b = bann;
+	}
+		break;
+	case AMPLIFIER_GROUP:
+	{
+			// TODO:
+	}
+	case POWER_AMPLIFIER:
+	{
+			// TODO:
+	}
+	}
+	return b;
+}
+
+
+
 
 
 enum Items
@@ -104,6 +165,7 @@ void SoundDiffusionPage::loadItems(const QDomNode &config_node)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	// TODO: parse audio sources from conf.xml
+
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		banner *b = getBanner(item);
@@ -121,12 +183,16 @@ banner *SoundDiffusionPage::getBanner(const QDomNode &item_node)
 {
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
+	QDomNode page_node = getPageNodeFromChildNode(item_node, "lnk_pageID");
+	SoundAmbientPage *p = new SoundAmbientPage(page_node, QDomNode());
+
 	banner *b = 0;
 	switch (id)
 	{
 	case ITEM_AMBIENT:
 	{
 		SoundAmbient *bann = new SoundAmbient(getTextChild(item_node, "descr"), getTextChild(item_node, "env"));
+		bann->connectRightButton(p);
 		b = bann;
 	}
 		break;
@@ -135,6 +201,7 @@ banner *SoundDiffusionPage::getBanner(const QDomNode &item_node)
 		Bann2Buttons *bann = new Bann2Buttons;
 		bann->initBanner(QString(), bt_global::skin->getImage("amplifier"), bt_global::skin->getImage("forward"),
 			getTextChild(item_node, "descr"));
+		bann->connectRightButton(p);
 		b = bann;
 	}
 	}
