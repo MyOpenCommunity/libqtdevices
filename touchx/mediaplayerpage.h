@@ -30,6 +30,16 @@ class MediaPlayer;
 class MultimediaPlayerButtons;
 
 
+/*
+ * Base class for pages offering media player functionality.
+ *
+ * Defines standard handling for multimedia player buttons and manages a
+ * (circular) playlist.
+ *
+ * If a subclass starts/stops the media player without using the methods provided
+ * by MediaPlayerPage, it must take care of starting/stopping the refresh_data timer
+ * and emitting the started()/stopped() signals.
+ */
 class MediaPlayerPage : public Page
 {
 Q_OBJECT
@@ -39,17 +49,28 @@ public:
 	MediaPlayerPage();
 
 signals:
+	// emitted when reproduction starts/stops (also emitted for pause/resume)
 	void started();
 	void stopped();
 
 protected:
+	// adds default behaviour for multimedia buttons
 	void connectMultimediaButtons(MultimediaPlayerButtons *buttons);
 
+	// reproduce the i-th media object inside file_list
+	//
+	// must emit started() and start the refresh_data timer
 	virtual void displayMedia(int index) = 0;
 
+	// called for abnormal MPlayer termination
 	virtual void playbackTerminated();
 
 protected slots:
+	// standard player functionality
+	//
+	// note that previous()/next() wrap around at the start/end of the playlist
+	//
+	// as a convenience, stop() emits Closed()
 	virtual void stop();
 	virtual void resume();
 	virtual void pause();
@@ -59,9 +80,13 @@ protected slots:
 	virtual void seekBack();
 
 protected:
+	// media objects handled by the page
 	int current_file, total_files;
 	QList<QString> file_list;
+
 	MediaPlayer *player;
+
+	// can be conntec
 	QTimer refresh_data;
 };
 
