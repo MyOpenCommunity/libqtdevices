@@ -260,7 +260,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/diffusionemultimediale.png</img_top_navigation_button>
 	</item>
 	<item>
-		<cid>119</cid>
+		<!-- Scenarios section -->
+		<cid>1</cid>
 		<img_link_icon>home/scenari.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/scenari.png</img_top_navigation_button>
 	</item>
@@ -733,12 +734,24 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- scenario menu banners -->
 	<item>
-		<cid>19000</cid>
+		<!--
+		  Scenario Module
+		  Other tags used: forward, on
+		-->
+		<cid>1002</cid>
 		<img_edit>scenari/setscenariooff.png</img_edit>
 		<img_start_prog>scenari/recscenario.png</img_start_prog>
 		<img_del_scen>scenari/clearscenario.png</img_del_scen>
 		<img_label>scenari/scenario.png</img_label>
 		<img_stop>scenari/startscenariooff.png</img_stop>
+	</item>
+	<item>
+		<cid>1003</cid>
+		<img_pptsce_on>scenari/startscenarioon.png</img_pptsce_on>
+		<img_pptsce_off>scenari/off.png</img_pptsce_off>
+		<!-- TODO: fixme! -->
+		<img_pptsce_increase>scenari/recscenario.png</img_pptsce_increase>
+		<img_pptsce_decrease>scenari/setscenarioon.png</img_pptsce_decrease>
 	</item>
 	<!-- evolved scenario menu banners -->
 	<item>

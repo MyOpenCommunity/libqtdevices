@@ -193,7 +193,7 @@ enum Section
 	SPECIAL=10,                                   /*!< Special button - placed here for convenience */
 	MESSAGES=17,                                  /*!< Textual Messages from scs */
 	LOAD_MANAGEMENT=18,                           /*!< Load management system */
-	SCENARI=19,                                   /*!< Scenarios managing */
+	SCENARI=1000,                                   /*!< Scenarios managing */
 	SCENARI_EVOLUTI=20,                           /*!< Advanced scenarios management */
 	VIDEOCITOFONIA=10000,                         /*!< Videoentryphone control system */
 	IMPOSTAZIONI=29,                              /*!< Settings */

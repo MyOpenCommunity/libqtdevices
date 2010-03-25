@@ -33,6 +33,21 @@
 #include <QDebug>
 #include <QList>
 
+#ifdef CONFIG_BTOUCH
+enum BannerType
+{
+	BANN_SCENARIO = 4,
+	SCENARIO_MODULE = 29,
+	PPT_SCENARIO = 43,
+};
+#else
+enum BannerType
+{
+	BANN_SCENARIO = 1001,
+	SCENARIO_MODULE = 1002,
+	PPT_SCENARIO = 1003,
+};
+#endif
 
 Scenario::Scenario(const QDomNode &config_node)
 {
@@ -57,10 +72,10 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 	banner *b = 0;
 	switch (id)
 	{
-	case SCENARIO:
+	case BANN_SCENARIO:
 		b = new BannSimpleScenario(getTextChild(item_node, "what").toInt(), descr, where, oid);
 		break;
-	case MOD_SCENARI:
+	case SCENARIO_MODULE:
 		b = new ScenarioModule(getTextChild(item_node, "what").toInt(), descr, where, oid);
 		break;
 	case SCENARIO_EVOLUTO:
@@ -137,8 +152,7 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		b = new ScheduledScenario(actions[0], actions[1], actions[2], actions[3], descr);
 		break;
 	}
-#ifdef CONFIG_BTOUCH
-	case PPT_SCE:
+	case PPT_SCENARIO:
 	{
 		QString what = getTextChild(item_node, "what");
 		if (!what.isEmpty())
@@ -148,7 +162,6 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		b = bann;
 	}
 		break;
-#endif
 	}
 
 	if (b)
