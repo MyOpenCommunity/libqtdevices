@@ -100,6 +100,11 @@ void Bann2Buttons::initBanner(const QString &left, const QString &right, const Q
 {
 	initButton(left_button, left);
 	initButton(right_button, right);
+	if (right.isEmpty())
+	{
+		QGridLayout *l = static_cast<QGridLayout*>(layout());
+		l->setColumnStretch(2, 0);
+	}
 	center_icon->setInternalText(banner_text);
 	QFont central_font = bt_global::font->get(text_font);
 
