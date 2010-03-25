@@ -355,6 +355,12 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_previous>multimediale/precedente.png</img_previous>
 		<img_next>multimediale/successivo.png</img_next>
 	</item>
+	<!-- IP Radio -->
+	<item>
+		<cid>16001</cid>
+		<img_link_icon>multimediale/radiooverip.png</img_link_icon>
+		<img_ipradio_icon>multimediale/radiooveripmini.png</img_ipradio_icon>
+	</item>
 	<!-- sound diffusion system -->
 	<!-- rds radio -->
 	<item>

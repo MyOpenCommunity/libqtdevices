@@ -26,6 +26,7 @@
 #include "main.h" // MULTIMEDIA
 #include "skinmanager.h"
 #include "webcam.h"
+#include "ipradio.h"
 #include "feedmanager.h"
 #include "state_button.h"
 
@@ -143,6 +144,9 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		}
 		case PAGE_WEB_CAM:
 			p = new WebcamListPage(page_node);
+			break;
+		case PAGE_WEB_RADIO:
+			p = new IPRadioPage(page_node);
 			break;
 		case PAGE_RSS:
 			p = new FeedManager(page_node);
