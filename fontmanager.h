@@ -55,6 +55,9 @@ public:
 	// REGULATOR_TEMPERATURE: current temperature of a thermal regulator
 	// REGULATOR_DESCRIPTION: description of a thermal regulator
 	// AIRCONDITIONING_TEMPERATURE: temperature measured by a split
+	// PLAYER_TITLE: song title (first line)
+	// PLAYER_AUTHOR: song author/info (second line)
+	// PLAYER_INFO: current track and elapsed time
 #ifdef LAYOUT_BTOUCH
 	enum Type
 	{
@@ -95,6 +98,10 @@ public:
 		RADIO_MEMORY_NUMBER = SMALLTEXT,
 		RADIO_STATION = SMALLTEXT,
 		RADIO_ENVIRONMENT = TITLE,
+		// audio player
+		PLAYER_TITLE = HOMEPAGEWIDGET,
+		PLAYER_AUTHOR = TITLE,
+		PLAYER_INFO = BANNERDESCRIPTION,
 	};
 #endif
 
