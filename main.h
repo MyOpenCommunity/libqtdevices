@@ -333,7 +333,7 @@ enum ItemType
 	AMPLIFICATORE=18,                             /*!<  Amplifier */
 	GR_AMPLIFICATORI=19,                          /*!<  Amplifier's group */
 	SET_SVEGLIA=20,                               /*!<  AlarmClock setting */
-	SET_SVEGLIA_SINGLEPAGE=8800,                  /*!<  AlarmClock setting with state icon */
+	SET_SVEGLIA_SINGLEPAGE=14201,                 /*!<  AlarmClock setting with state icon */
 	DISPLAY=21,                                   /*!<  Display */
 #ifdef CONFIG_BTOUCH
 	ZONANTINTRUS=23,                              /*!<  Anti-intrusion zone */

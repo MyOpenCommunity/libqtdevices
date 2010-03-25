@@ -134,7 +134,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<!-- Settings links -->
 	<!-- Alarm -->
 	<item>
-		<cid>800</cid>
+		<cid>14009</cid>
 		<img_link_icon>setup/sveglia.png</img_link_icon>
 	</item>
 	<!-- Beep -->
@@ -829,7 +829,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- alarm clock -->
 	<item>
-		<cid>8800</cid>
+		<cid>14201</cid>
 		<img_off>setup/off.png</img_off>
 		<img_on>setup/on.png</img_on>
 		<img_on>setup/on.png</img_on>
