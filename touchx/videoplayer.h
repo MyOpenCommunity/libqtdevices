@@ -22,19 +22,17 @@
 #ifndef VIDEOPLAYER_H
 #define VIDEOPLAYER_H
 
-#include "page.h"
+#include "mediaplayerpage.h"
 #include "window.h"
 
 #include <QTimer>
 
 class QLabel;
-class MediaPlayer;
 class VideoPlayerWindow;
-class MultimediaPlayerButtons;
 
 
 // page for video playback
-class VideoPlayerPage : public Page
+class VideoPlayerPage : public MediaPlayerPage
 {
 Q_OBJECT
 public:
@@ -58,32 +56,22 @@ protected:
 private:
 	// the position/size where to play the video
 	QRect playbackGeometry();
-	void displayVideo(int index);
+	void displayMedia(int index);
 	void displayFullScreen(bool fullscreen);
 	void startMPlayer(int index, int time);
 
 private slots:
-	void handleClose();
-	void resume();
-	void pause();
-	void previous();
-	void next();
-	void skipForward();
-	void skipBack();
 	void refreshPlayInfo();
+
 	void displayFullScreen();
 	void displayNoFullScreen();
+	void playbackTerminated();
 	void playbackStarted();
 	void playbackStopped();
-	void playbackTerminated();
 
 private:
 	QLabel *title, *video;
-	int current_video, total_videos;
-	QList<QString> video_list;
-	MediaPlayer *player;
 	VideoPlayerWindow *window;
-	QTimer refresh_data;
 	int current_time;
 	bool fullscreen;
 };

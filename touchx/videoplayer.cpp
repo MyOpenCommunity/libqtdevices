@@ -32,19 +32,15 @@
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QFileInfo>
-#include <QTime>
-#include <QTimer>
 
 #include <QtDebug>
 
 #define BUTTONS_TIMEOUT 5000
-#define MPLAYER_POLLING 500
 
 
 // VideoPlayerPage implementation
 
 VideoPlayerPage::VideoPlayerPage()
-	: refresh_data(this)
 {
 	QWidget *content = new QWidget;
 	QVBoxLayout *l = new QVBoxLayout(content);
@@ -71,39 +67,22 @@ VideoPlayerPage::VideoPlayerPage()
 	NavigationBar *nav_bar = new NavigationBar(QString(), QString(), QString(), "back");
 	buildPage(content, nav_bar);
 
-	player = new MediaPlayer(this);
 	window = new VideoPlayerWindow(this, player);
 
 	// signals for navigation and to start/stop playback
-	connect(buttons, SIGNAL(previous()), SLOT(previous()));
-	connect(buttons, SIGNAL(next()), SLOT(next()));
-	connect(buttons, SIGNAL(stop()), SLOT(handleClose()));
-	connect(buttons, SIGNAL(play()), SLOT(resume()));
-	connect(buttons, SIGNAL(pause()), SLOT(pause()));
-	connect(buttons, SIGNAL(skipForward()), SLOT(skipForward()));
-	connect(buttons, SIGNAL(skipBack()), SLOT(skipBack()));
 	connect(buttons, SIGNAL(fullScreen()), SLOT(displayFullScreen()));
 
-	// update the icon of the play button
-	connect(this, SIGNAL(started()), buttons, SLOT(started()));
-	connect(this, SIGNAL(stopped()), buttons, SLOT(stopped()));
-
-	connect(nav_bar, SIGNAL(backClick()), SLOT(handleClose()));
+	connect(nav_bar, SIGNAL(backClick()), SLOT(stop()));
 
 	// close the page when the user clicks the stop button on the
 	// full screen playback window
-	connect(window, SIGNAL(Closed()), SLOT(handleClose()));
+	connect(window, SIGNAL(Closed()), SLOT(stop()));
 
 	// disable/reenable screen saver
 	connect(this, SIGNAL(started()), SLOT(playbackStarted()));
 	connect(this, SIGNAL(stopped()), SLOT(playbackStopped()));
 
 	connect(&refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
-
-	// handle mplayer termination
-	connect(player, SIGNAL(mplayerDone()), SLOT(next()));
-	connect(player, SIGNAL(mplayerAborted()), SLOT(playbackTerminated()));
-	connect(player, SIGNAL(mplayerKilled()), SLOT(playbackTerminated()));
 }
 
 VideoPlayerPage::~VideoPlayerPage()
@@ -121,33 +100,33 @@ void VideoPlayerPage::showPage()
 void VideoPlayerPage::startMPlayer(int index, int time)
 {
 	if (fullscreen)
-		player->playVideoFullScreen(video_list[index], time);
+		player->playVideoFullScreen(file_list[index], time);
 	else
-		player->playVideo(video_list[index], playbackGeometry(), time);
+		player->playVideo(file_list[index], playbackGeometry(), time);
 	refresh_data.start(MPLAYER_POLLING);
 }
 
-void VideoPlayerPage::displayVideo(int index)
+void VideoPlayerPage::displayMedia(int index)
 {
-	title->setText(QFileInfo(video_list[index]).fileName());
+	title->setText(QFileInfo(file_list[index]).fileName());
 	startMPlayer(index, 0);
 	emit started();
 }
 
 void VideoPlayerPage::displayVideos(QList<QString> videos, unsigned element)
 {
-	current_video = element;
-	total_videos = videos.size();
-	video_list = videos;
+	current_file = element;
+	total_files = videos.size();
+	file_list = videos;
 	showPage();
 
-	displayVideo(current_video);
+	displayMedia(current_file);
 }
 
 void VideoPlayerPage::playbackTerminated()
 {
-	emit stopped();
-	refresh_data.stop();
+	MediaPlayerPage::playbackTerminated();
+
 	video->update();
 }
 
@@ -167,62 +146,6 @@ void VideoPlayerPage::hideEvent(QHideEvent *event)
 		return;
 
 	emit stopped();
-}
-
-void VideoPlayerPage::handleClose()
-{
-	player->quit();
-	emit Closed();
-}
-
-void VideoPlayerPage::resume()
-{
-	if (player->isInstanceRunning())
-	{
-		player->resume();
-		refresh_data.start(MPLAYER_POLLING);
-	}
-	else
-		startMPlayer(current_video, 0);
-
-	emit started();
-}
-
-void VideoPlayerPage::pause()
-{
-	player->pause();
-	refresh_data.stop();
-	emit stopped();
-}
-
-void VideoPlayerPage::previous()
-{
-	player->quitAndWait();
-	current_video -= 1;
-	if (current_video < 0)
-		current_video = total_videos - 1;
-
-	displayVideo(current_video);
-}
-
-void VideoPlayerPage::next()
-{
-	player->quitAndWait();
-	current_video += 1;
-	if (current_video >= total_videos)
-		current_video = 0;
-
-	displayVideo(current_video);
-}
-
-void VideoPlayerPage::skipForward()
-{
-	player->seek(10);
-}
-
-void VideoPlayerPage::skipBack()
-{
-	player->seek(-10);
 }
 
 void VideoPlayerPage::displayFullScreen()
@@ -245,7 +168,7 @@ void VideoPlayerPage::displayFullScreen(bool fs)
 	else
 		showPage();
 
-	startMPlayer(current_video, current_time);
+	startMPlayer(current_file, current_time);
 	emit started();
 }
 

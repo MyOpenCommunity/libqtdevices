@@ -41,6 +41,7 @@ HEADERS += favoriteswidget.h \
            slideshow.h \
            sounddiffusionpage.h \
            vctcall.h \
+           mediaplayerpage.h \
            videoplayer.h \
            audioplayer.h \
            webcam.h
@@ -59,6 +60,7 @@ SOURCES += favoriteswidget.cpp \
            slideshow.cpp \
            sounddiffusionpage.cpp \
            vctcall.cpp \
+           mediaplayerpage.cpp \
            videoplayer.cpp \
            audioplayer.cpp \
            webcam.cpp
