@@ -55,6 +55,7 @@ MultimediaPlayerButtons::MultimediaPlayerButtons(Type type)
 	play_button->setOnImage(pause_icon);
 	play_button->setCheckable(true);
 	play_button->setOnOff();
+	play_button->setStatus(false);
 	connect(play_button, SIGNAL(clicked(bool)), SLOT(playToggled(bool)));
 
 	l->addWidget(prev);
