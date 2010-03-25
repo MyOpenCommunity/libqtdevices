@@ -170,6 +170,7 @@ HEADERS += actuators.h \
            iconwindow.h \
            imagelabel.h \
            itemlist.h \
+           itemlistpage.h \
            items.h \
            keypad.h \
            lansettings.h \
@@ -283,6 +284,7 @@ SOURCES += actuators.cpp \
            iconwindow.cpp \
            imagelabel.cpp \
            itemlist.cpp \
+           itemlistpage.cpp \
            items.cpp \
            keypad.cpp \
            lansettings.cpp \
