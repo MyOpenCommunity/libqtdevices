@@ -26,10 +26,11 @@
 #include "items.h" // ItemTuning
 #include "fontmanager.h"
 #include "btbutton.h"
+#include "mediaplayer.h"
 
 #include <QGridLayout>
 #include <QLabel>
-#include <QVariant>
+#include <QVariant> // for setProperty
 
 
 AudioPlayerPage::AudioPlayerPage()
@@ -66,7 +67,9 @@ AudioPlayerPage::AudioPlayerPage()
 
 	QHBoxLayout *l_btn = new QHBoxLayout;
 	BtButton *goto_sounddiff = new BtButton(bt_global::skin->getImage("goto_sounddiffusion"));
-	buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::AUDIO_PAGE);
+	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::AUDIO_PAGE);
+
+	connectMultimediaButtons(buttons);
 
 	l_btn->addWidget(buttons);
 	l_btn->addStretch(0);
@@ -78,9 +81,47 @@ AudioPlayerPage::AudioPlayerPage()
 	l->addWidget(bg, 1, Qt::AlignCenter);
 	l->addLayout(l_btn, 1);
 	l->addWidget(volume, 1, Qt::AlignCenter);
+
+	connect(&refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
 }
 
-void AudioPlayerPage::playAudioFiles(QList<QString> images, unsigned element)
+void AudioPlayerPage::startMPlayer(int index, int time)
 {
+	player->play(file_list[index]);
+	refresh_data.start(MPLAYER_POLLING);
+}
+
+void AudioPlayerPage::displayMedia(int index)
+{
+	track->setText(tr("Track: %1 / %2").arg(index + 1).arg(total_files));
+	startMPlayer(index, 0);
+	emit started();
+}
+
+void AudioPlayerPage::playAudioFiles(QList<QString> files, unsigned element)
+{
+	current_file = element;
+	total_files = files.size();
+	file_list = files;
 	showPage();
+
+	displayMedia(current_file);
+}
+
+void AudioPlayerPage::refreshPlayInfo()
+{
+	QMap<QString, QString> attrs = player->getPlayingInfo();
+
+	if (attrs.contains("meta_title"))
+		description_top->setText(attrs["meta_title"]);
+	else if (attrs.contains("file_name"))
+		description_top->setText(attrs["file_name"]);
+
+	if (attrs.contains("meta_album"))
+		description_bottom->setText(attrs["meta_album"]);
+	else
+		description_bottom->setText(" ");
+
+	if (attrs.contains("total_time") && attrs.contains("current_time"))
+		elapsed->setText(attrs["current_time"] + " / " + attrs["total_time"]);
 }

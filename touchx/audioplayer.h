@@ -22,13 +22,12 @@
 #ifndef AUDIOPLAYER_H
 #define AUDIOPLAYER_H
 
-#include "page.h"
+#include "mediaplayerpage.h"
 
-class MultimediaPlayerButtons;
 class QLabel;
 
 
-class AudioPlayerPage : public Page
+class AudioPlayerPage : public MediaPlayerPage
 {
 Q_OBJECT
 public:
@@ -38,8 +37,14 @@ public slots:
 	void playAudioFiles(QList<QString> images, unsigned element);
 
 private:
+	void startMPlayer(int index, int time);
+	void displayMedia(int index);
+
+private slots:
+	void refreshPlayInfo();
+
+private:
 	QLabel *description_top, *description_bottom, *track, *elapsed;
-	MultimediaPlayerButtons *buttons;
 };
 
 #endif
