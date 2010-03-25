@@ -23,6 +23,7 @@
 
 #include "btbutton.h"
 #include "generic_functions.h" // getBostikName
+#include "fontmanager.h"
 
 #include <QLabel>
 #include <QBoxLayout>
@@ -55,6 +56,7 @@ ItemTuning::ItemTuning(QString text, QString icon, QWidget *parent) : QWidget(pa
 	{
 		QLabel *label = new QLabel;
 		label->setText(text);
+		label->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
 		main_layout->addWidget(label, 1, Qt::AlignHCenter);
 	}
 
