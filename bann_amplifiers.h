@@ -32,6 +32,17 @@ class device_status;
 class device;
 
 
+class Amplifier : public BannLevel
+{
+Q_OBJECT
+public:
+	Amplifier(const QString &descr, const QString &where);
+
+private:
+	QString center_left_active, center_left_inactive, center_right_active, center_right_inactive;
+	int volume_value;
+};
+
 /*!
  * \class amplificatore
  * \brief This class is made to manage an audio amplifier.
