@@ -124,11 +124,11 @@ private:
 };
 
 
-class PPTSce : public bann4But
+class PPTSce : public Bann4Buttons
 {
 Q_OBJECT
 public:
-	PPTSce(const QString &where, int openserver_id);
+	PPTSce(const QString &descr, const QString &where, int openserver_id);
 
 protected:
 	virtual void timerEvent(QTimerEvent *e);

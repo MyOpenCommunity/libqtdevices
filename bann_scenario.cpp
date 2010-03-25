@@ -326,27 +326,24 @@ void ScheduledScenario::disable()
 }
 
 
-PPTSce::PPTSce(const QString &where, int openserver_id) : bann4But(0)
+PPTSce::PPTSce(const QString &descr, const QString &where, int openserver_id) : Bann4Buttons(0)
 {
+	initBanner(bt_global::skin->getImage("pptsce_on"), bt_global::skin->getImage("pptsce_increase"),
+		bt_global::skin->getImage("pptsce_decrease"), bt_global::skin->getImage("pptsce_off"),
+		descr);
+
 	dev = bt_global::add_device_to_cache(new PPTSceDevice(where, openserver_id));
-	connect(this, SIGNAL(sxClick()), dev, SLOT(turnOff()));
-	connect(this, SIGNAL(dxClick()), dev, SLOT(turnOn()));
+	connect(left_button, SIGNAL(clicked()), dev, SLOT(turnOff()));
+	connect(right_button, SIGNAL(clicked()), dev, SLOT(turnOn()));
 
 	// For csx e cdx buttons we have to send a frame every X mseconds when the
 	// button is down and send another frame when the button is raised.
 	increase_timer = 0;
 	decrease_timer = 0;
-	connect(this, SIGNAL(csxPressed()), SLOT(startDecrease()));
-	connect(this, SIGNAL(cdxPressed()), SLOT(startIncrease()));
-	connect(this, SIGNAL(csxReleased()), SLOT(stop()));
-	connect(this, SIGNAL(cdxReleased()), SLOT(stop()));
-
-	QString img_on = bt_global::skin->getImage("pptsce_on");
-	QString img_off = bt_global::skin->getImage("pptsce_off");
-	QString img_inc = bt_global::skin->getImage("pptsce_increase");
-	QString img_decr = bt_global::skin->getImage("pptsce_decrease");
-	SetIcons(img_off, img_on, img_inc, img_decr);
-	Draw();
+	connect(center_left_button, SIGNAL(pressed()), SLOT(startDecrease()));
+	connect(center_right_button, SIGNAL(pressed()), SLOT(startIncrease()));
+	connect(center_left_button, SIGNAL(released()), SLOT(stop()));
+	connect(center_right_button, SIGNAL(released()), SLOT(stop()));
 }
 
 void PPTSce::startIncrease()
