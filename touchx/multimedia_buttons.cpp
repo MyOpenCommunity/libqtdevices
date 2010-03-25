@@ -49,8 +49,8 @@ MultimediaPlayerButtons::MultimediaPlayerButtons(Type type)
 	BtButton *forward = NULL, *rewind = NULL;
 	if (type == VIDEO_PAGE || type == VIDEO_WINDOW || type == AUDIO_PAGE)
 	{
-		forward = getButton("skip_forward", SIGNAL(skipForward()));
-		rewind = getButton("skip_back", SIGNAL(skipBack()));
+		forward = getButton("skip_forward", SIGNAL(seekForward()));
+		rewind = getButton("skip_back", SIGNAL(seekBack()));
 	}
 
 	play_button = new StateButton;

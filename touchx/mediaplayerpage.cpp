@@ -39,8 +39,8 @@ void MediaPlayerPage::connectMultimediaButtons(MultimediaPlayerButtons *buttons)
 	connect(buttons, SIGNAL(stop()), SLOT(stop()));
 	connect(buttons, SIGNAL(play()), SLOT(resume()));
 	connect(buttons, SIGNAL(pause()), SLOT(pause()));
-	connect(buttons, SIGNAL(skipForward()), SLOT(skipForward()));
-	connect(buttons, SIGNAL(skipBack()), SLOT(skipBack()));
+	connect(buttons, SIGNAL(seekForward()), SLOT(seekForward()));
+	connect(buttons, SIGNAL(seekBack()), SLOT(seekBack()));
 
 	// update the icon of the play button
 	connect(this, SIGNAL(started()), buttons, SLOT(started()));
@@ -97,12 +97,12 @@ void MediaPlayerPage::next()
 	displayMedia(current_file);
 }
 
-void MediaPlayerPage::skipForward()
+void MediaPlayerPage::seekForward()
 {
 	player->seek(10);
 }
 
-void MediaPlayerPage::skipBack()
+void MediaPlayerPage::seekBack()
 {
 	player->seek(-10);
 }

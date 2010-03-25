@@ -55,8 +55,8 @@ protected slots:
 	virtual void pause();
 	virtual void previous();
 	virtual void next();
-	virtual void skipForward();
-	virtual void skipBack();
+	virtual void seekForward();
+	virtual void seekBack();
 
 protected:
 	int current_file, total_files;

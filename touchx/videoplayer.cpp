@@ -218,8 +218,8 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
 	connect(buttons, SIGNAL(stop()), SIGNAL(Closed()));
 	connect(buttons, SIGNAL(play()), page, SLOT(resume()));
 	connect(buttons, SIGNAL(pause()), page, SLOT(pause()));
-	connect(buttons, SIGNAL(skipForward()), page, SLOT(skipForward()));
-	connect(buttons, SIGNAL(skipBack()), page, SLOT(skipBack()));
+	connect(buttons, SIGNAL(seekForward()), page, SLOT(seekForward()));
+	connect(buttons, SIGNAL(seekBack()), page, SLOT(seekBack()));
 
 	// update the icon of the play button
 	connect(page, SIGNAL(started()), buttons, SLOT(started()));

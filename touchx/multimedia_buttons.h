@@ -55,8 +55,8 @@ signals:
 	void stop();
 	void previous();
 	void next();
-	void skipForward();
-	void skipBack();
+	void seekForward();
+	void seekBack();
 	void fullScreen();
 	void noFullScreen();
 
