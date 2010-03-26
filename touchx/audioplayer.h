@@ -31,7 +31,13 @@ class AudioPlayerPage : public MediaPlayerPage
 {
 Q_OBJECT
 public:
-	AudioPlayerPage();
+	enum MediaType
+	{
+		LOCAL_FILE,
+		IP_RADIO,
+	};
+
+	AudioPlayerPage(MediaType type);
 
 public slots:
 	void playAudioFiles(QList<QString> images, unsigned element);
@@ -44,6 +50,7 @@ private slots:
 	void refreshPlayInfo();
 
 private:
+	MediaType type;
 	QLabel *description_top, *description_bottom, *track, *elapsed;
 };
 

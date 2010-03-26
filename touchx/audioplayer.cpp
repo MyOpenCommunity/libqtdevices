@@ -31,11 +31,12 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QVariant> // for setProperty
-#include <QTime>
 
 
-AudioPlayerPage::AudioPlayerPage()
+AudioPlayerPage::AudioPlayerPage(MediaType t)
 {
+	type = t;
+
 	QWidget *content = new QWidget;
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
@@ -68,7 +69,7 @@ AudioPlayerPage::AudioPlayerPage()
 
 	QHBoxLayout *l_btn = new QHBoxLayout;
 	BtButton *goto_sounddiff = new BtButton(bt_global::skin->getImage("goto_sounddiffusion"));
-	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::AUDIO_PAGE);
+	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(type == IP_RADIO ? MultimediaPlayerButtons::IPRADIO_PAGE : MultimediaPlayerButtons::AUDIO_PAGE);
 
 	connectMultimediaButtons(buttons);
 
@@ -88,7 +89,18 @@ AudioPlayerPage::AudioPlayerPage()
 
 void AudioPlayerPage::startMPlayer(int index, int time)
 {
-	player->play(file_list[index]);
+	if (type == IP_RADIO)
+	{
+		description_top->setText(tr("Loading..."));
+		description_bottom->setText(tr("Loading..."));
+	}
+	else
+	{
+		description_top->setText(tr(" "));
+		description_bottom->setText(tr(" "));
+	}
+
+	player->play(file_list[index], true);
 	refresh_data.start(MPLAYER_POLLING);
 }
 
@@ -131,17 +143,34 @@ void AudioPlayerPage::refreshPlayInfo()
 {
 	QMap<QString, QString> attrs = player->getPlayingInfo();
 
-	if (attrs.contains("meta_title"))
-		description_top->setText(attrs["meta_title"]);
-	else if (attrs.contains("file_name"))
-		description_top->setText(attrs["file_name"]);
+	if (type == LOCAL_FILE)
+	{
+		if (attrs.contains("meta_title"))
+			description_top->setText(attrs["meta_title"]);
+		else if (attrs.contains("file_name"))
+			description_top->setText(attrs["file_name"]);
+
+		if (attrs.contains("meta_title"))
+			description_top->setText(attrs["meta_title"]);
+		else if (attrs.contains("file_name"))
+			description_top->setText(attrs["file_name"]);
+	}
+	else if (type == IP_RADIO)
+	{
+		 if (attrs.contains("stream_title"))
+			description_top->setText(attrs["stream_url"]);
+
+		 if (attrs.contains("stream_url"))
+			 description_top->setText(attrs["stream_url"]);
+
+	}
 
 	if (attrs.contains("meta_album"))
 		description_bottom->setText(attrs["meta_album"]);
-	else
-		description_bottom->setText(" ");
+	else if (attrs.contains("stream_title"))
+		description_bottom->setText(attrs["stream_title"]);
 
-	if (attrs.contains("total_time") && attrs.contains("current_time"))
+	if (type == LOCAL_FILE && attrs.contains("total_time") && attrs.contains("current_time"))
 	{
 		QString total = formatTime(attrs["total_time"]);
 		QString current = formatTime(attrs["current_time"], total);

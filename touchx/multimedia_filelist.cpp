@@ -95,7 +95,7 @@ MultimediaFileListPage::MultimediaFileListPage()
 		videoplayer, SLOT(displayVideos(QList<QString>, unsigned)));
 	connect(videoplayer, SIGNAL(Closed()), SLOT(showPageNoReload()));
 
-	audioplayer = new AudioPlayerPage;
+	audioplayer = new AudioPlayerPage(AudioPlayerPage::LOCAL_FILE);
 	connect(this, SIGNAL(playAudioFiles(QList<QString>, unsigned)),
 		audioplayer, SLOT(playAudioFiles(QList<QString>, unsigned)));
 	connect(audioplayer, SIGNAL(Closed()), SLOT(showPageNoReload()));
