@@ -36,6 +36,7 @@ class BtButton;
 class TrayBar;
 class FeedParser;
 class FeedItemList;
+class AudioPlayerPage;
 
 
 // helper widgets, to display the temperature
@@ -107,6 +108,23 @@ private slots:
 private:
 	FeedParser *parser;
 	FeedItemList *feed_items;
+	QString url;
+};
+
+
+// link to IP radio
+
+class HomepageIPRadioLink : public HomepageLink
+{
+Q_OBJECT
+public:
+	HomepageIPRadioLink(const QString &description, const QString &url);
+
+private slots:
+	void playRadio();
+
+private:
+	AudioPlayerPage *player;
 	QString url;
 };
 

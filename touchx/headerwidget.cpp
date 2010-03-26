@@ -32,6 +32,7 @@
 #include "devices_cache.h"
 #include "homewindow.h"
 #include "feedmanager.h"
+#include "audioplayer.h"
 
 #include <QSignalMapper>
 #include <QHBoxLayout>
@@ -306,6 +307,23 @@ void HomepageFeedLink::feedReady()
 }
 
 
+HomepageIPRadioLink::HomepageIPRadioLink(const QString &description, const QString &radio_url) :
+	HomepageLink(description, bt_global::skin->getImage("link_icon"))
+{
+	url = radio_url;
+	player = new AudioPlayerPage(AudioPlayerPage::IP_RADIO);
+
+	connect(this, SIGNAL(clicked()), SLOT(playRadio()));
+
+	connect(player, SIGNAL(Closed()), SIGNAL(pageClosed()));
+}
+
+void HomepageIPRadioLink::playRadio()
+{
+	player->playAudioFiles(QStringList() << url, 0);
+}
+
+
 HeaderLogo::HeaderLogo(TrayBar *tray)
 {
 	setFixedSize(800, 40);
@@ -420,6 +438,14 @@ void HeaderInfo::loadItems(const QDomNode &config_node, Page *settings)
 			HomepageFeedLink *feed_display = new HomepageFeedLink(getTextChild(item, "descr"), getTextChild(item, "url"));
 			info_layout->addWidget(feed_display);
 			connect(feed_display, SIGNAL(pageClosed()), SIGNAL(showHomePage()));
+
+			break;
+		}
+		case ITEM_WEB_RADIO_LINK:
+		{
+			HomepageIPRadioLink *radio_display = new HomepageIPRadioLink(getTextChild(item, "descr"), getTextChild(item, "url"));
+			info_layout->addWidget(radio_display);
+			connect(radio_display, SIGNAL(pageClosed()), SIGNAL(showHomePage()));
 
 			break;
 		}
