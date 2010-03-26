@@ -151,6 +151,8 @@ banner *SoundAmbientPage::getBanner(const QDomNode &item_node)
 	case BANN_POWER_AMPLIFIER:
 	{
 		BannPowerAmplifier *bann = new BannPowerAmplifier(0, item_node, where, oid);
+		bann->setText(descr);
+		bann->Draw();
 		b = bann;
 	}
 		break;
