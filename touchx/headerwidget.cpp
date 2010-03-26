@@ -256,14 +256,13 @@ void InnerPageTemperatureDisplay::paintEvent(QPaintEvent *e)
 }
 
 
-HomepageFeedLink::HomepageFeedLink(const QString &description, const QString &feed)
+HomepageLink::HomepageLink(const QString &description, const QString &icon)
 {
 	QBoxLayout *l = new QHBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(10);
 
-	BtButton *button = new BtButton;
-	button->setImage(bt_global::skin->getImage("link_icon"));
+	BtButton *button = new BtButton(icon);
 
 	QLabel *label = new QLabel(description);
 	label->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
@@ -272,11 +271,18 @@ HomepageFeedLink::HomepageFeedLink(const QString &description, const QString &fe
 	l->addWidget(button);
 	l->addWidget(label, 1);
 
+	connect(button, SIGNAL(clicked()), SIGNAL(clicked()));
+}
+
+
+HomepageFeedLink::HomepageFeedLink(const QString &description, const QString &feed) :
+	HomepageLink(description, bt_global::skin->getImage("link_icon"))
+{
 	url = feed;
 	feed_items = new FeedItemList;
 	parser = new FeedParser;
 
-	connect(button, SIGNAL(clicked()), SLOT(displayFeed()));
+	connect(this, SIGNAL(clicked()), SLOT(displayFeed()));
 	connect(parser, SIGNAL(feedReady()), SLOT(feedReady()));
 
 	connect(feed_items, SIGNAL(Closed()), SIGNAL(pageClosed()));

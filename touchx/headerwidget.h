@@ -75,16 +75,27 @@ protected:
 };
 
 
+// Homepage link
+
+class HomepageLink : public QWidget
+{
+Q_OBJECT
+public:
+	HomepageLink(const QString &description, const QString &icon);
+
+signals:
+	void pageClosed();
+	void clicked();
+};
+
+
 // link to RSS feed
 
-class HomepageFeedLink : public QWidget
+class HomepageFeedLink : public HomepageLink
 {
 Q_OBJECT
 public:
 	HomepageFeedLink(const QString &description, const QString &feed);
-
-signals:
-	void pageClosed();
 
 protected:
 	void hideEvent(QHideEvent *e);
