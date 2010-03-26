@@ -84,9 +84,17 @@ QList<QString> MediaPlayer::getVideoArgs(int seek_time)
 			<< "-ss" << QString::number(seek_time);
 }
 
+QList<QString> MediaPlayer::getAudioArgs(int seek_time)
+{
+	return QList<QString>() << "-ac" << "mad," << "-af" << "channels=2,resample=48000"
+			<< "-ao" << "oss:/dev/dsp1"
+			<< "-ss" << QString::number(seek_time);
+}
+
 bool MediaPlayer::play(QString track, bool write_output)
 {
 	QList<QString> mplayer_args = getStandardArgs();
+	mplayer_args.append(getAudioArgs(0));
 
 	QByteArray t = track.toLocal8Bit();
 	if ((track.endsWith(".m3u", Qt::CaseInsensitive)) || (track.endsWith(".asx", Qt::CaseInsensitive)))

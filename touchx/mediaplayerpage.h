@@ -62,9 +62,6 @@ protected:
 	// must emit started() and start the refresh_data timer
 	virtual void displayMedia(int index) = 0;
 
-	// called for abnormal MPlayer termination
-	virtual void playbackTerminated();
-
 protected slots:
 	// standard player functionality
 	//
@@ -78,6 +75,9 @@ protected slots:
 	virtual void next();
 	virtual void seekForward();
 	virtual void seekBack();
+
+	// called for abnormal MPlayer termination
+	virtual void playbackTerminated();
 
 protected:
 	// media objects handled by the page

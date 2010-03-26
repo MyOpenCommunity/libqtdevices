@@ -36,6 +36,8 @@ class BtButton;
 class TrayBar;
 class FeedParser;
 class FeedItemList;
+class AudioPlayerPage;
+class WebcamPage;
 
 
 // helper widgets, to display the temperature
@@ -75,16 +77,27 @@ protected:
 };
 
 
+// Homepage link
+
+class HomepageLink : public QWidget
+{
+Q_OBJECT
+public:
+	HomepageLink(const QString &description, const QString &icon);
+
+signals:
+	void pageClosed();
+	void clicked();
+};
+
+
 // link to RSS feed
 
-class HomepageFeedLink : public QWidget
+class HomepageFeedLink : public HomepageLink
 {
 Q_OBJECT
 public:
 	HomepageFeedLink(const QString &description, const QString &feed);
-
-signals:
-	void pageClosed();
 
 protected:
 	void hideEvent(QHideEvent *e);
@@ -97,6 +110,40 @@ private:
 	FeedParser *parser;
 	FeedItemList *feed_items;
 	QString url;
+};
+
+
+// link to IP radio
+
+class HomepageIPRadioLink : public HomepageLink
+{
+Q_OBJECT
+public:
+	HomepageIPRadioLink(const QString &description, const QString &url);
+
+private slots:
+	void playRadio();
+
+private:
+	AudioPlayerPage *player;
+	QString url;
+};
+
+
+// link to Webcam
+
+class HomepageWebcamLink : public HomepageLink
+{
+Q_OBJECT
+public:
+	HomepageWebcamLink(const QString &description, const QString &url);
+
+private slots:
+	void showWebcam();
+
+private:
+	WebcamPage *webcam;
+	QString url, title;
 };
 
 

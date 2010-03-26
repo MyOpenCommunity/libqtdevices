@@ -32,6 +32,8 @@
 #include "devices_cache.h"
 #include "homewindow.h"
 #include "feedmanager.h"
+#include "audioplayer.h"
+#include "webcam.h"
 
 #include <QSignalMapper>
 #include <QHBoxLayout>
@@ -39,6 +41,7 @@
 #include <QPainter>
 #include <QTime>
 #include <QtDebug>
+#include <QUrl> // for webcam
 
 
 enum
@@ -256,14 +259,13 @@ void InnerPageTemperatureDisplay::paintEvent(QPaintEvent *e)
 }
 
 
-HomepageFeedLink::HomepageFeedLink(const QString &description, const QString &feed)
+HomepageLink::HomepageLink(const QString &description, const QString &icon)
 {
 	QBoxLayout *l = new QHBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(10);
 
-	BtButton *button = new BtButton;
-	button->setImage(bt_global::skin->getImage("link_icon"));
+	BtButton *button = new BtButton(icon);
 
 	QLabel *label = new QLabel(description);
 	label->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
@@ -272,11 +274,18 @@ HomepageFeedLink::HomepageFeedLink(const QString &description, const QString &fe
 	l->addWidget(button);
 	l->addWidget(label, 1);
 
+	connect(button, SIGNAL(clicked()), SIGNAL(clicked()));
+}
+
+
+HomepageFeedLink::HomepageFeedLink(const QString &description, const QString &feed) :
+	HomepageLink(description, bt_global::skin->getImage("link_icon"))
+{
 	url = feed;
 	feed_items = new FeedItemList;
 	parser = new FeedParser;
 
-	connect(button, SIGNAL(clicked()), SLOT(displayFeed()));
+	connect(this, SIGNAL(clicked()), SLOT(displayFeed()));
 	connect(parser, SIGNAL(feedReady()), SLOT(feedReady()));
 
 	connect(feed_items, SIGNAL(Closed()), SIGNAL(pageClosed()));
@@ -297,6 +306,43 @@ void HomepageFeedLink::feedReady()
 {
 	feed_items->setFeedInfo(0, parser->getFeedData());
 	feed_items->showPage();
+}
+
+
+HomepageIPRadioLink::HomepageIPRadioLink(const QString &description, const QString &radio_url) :
+	HomepageLink(description, bt_global::skin->getImage("link_icon"))
+{
+	url = radio_url;
+	player = new AudioPlayerPage(AudioPlayerPage::IP_RADIO);
+
+	connect(this, SIGNAL(clicked()), SLOT(playRadio()));
+
+	connect(player, SIGNAL(Closed()), SIGNAL(pageClosed()));
+}
+
+void HomepageIPRadioLink::playRadio()
+{
+	player->playAudioFiles(QStringList() << url, 0);
+}
+
+
+HomepageWebcamLink::HomepageWebcamLink(const QString &description, const QString &webcam_url) :
+	HomepageLink(description, bt_global::skin->getImage("link_icon"))
+{
+	url = webcam_url;
+	title = description;
+
+	webcam = new WebcamPage;
+
+	connect(this, SIGNAL(clicked()), SLOT(showWebcam()));
+
+	connect(webcam, SIGNAL(Closed()), SIGNAL(pageClosed()));
+}
+
+void HomepageWebcamLink::showWebcam()
+{
+	webcam->setImage(QUrl(url), title);
+	webcam->showPage();
 }
 
 
@@ -414,6 +460,22 @@ void HeaderInfo::loadItems(const QDomNode &config_node, Page *settings)
 			HomepageFeedLink *feed_display = new HomepageFeedLink(getTextChild(item, "descr"), getTextChild(item, "url"));
 			info_layout->addWidget(feed_display);
 			connect(feed_display, SIGNAL(pageClosed()), SIGNAL(showHomePage()));
+
+			break;
+		}
+		case ITEM_WEB_RADIO_LINK:
+		{
+			HomepageIPRadioLink *radio_display = new HomepageIPRadioLink(getTextChild(item, "descr"), getTextChild(item, "url"));
+			info_layout->addWidget(radio_display);
+			connect(radio_display, SIGNAL(pageClosed()), SIGNAL(showHomePage()));
+
+			break;
+		}
+		case ITEM_WEB_CAM_LINK:
+		{
+			HomepageWebcamLink *webcam_display = new HomepageWebcamLink(getTextChild(item, "descr"), getTextChild(item, "url"));
+			info_layout->addWidget(webcam_display);
+			connect(webcam_display, SIGNAL(pageClosed()), SIGNAL(showHomePage()));
 
 			break;
 		}

@@ -27,6 +27,7 @@
 #include "fontmanager.h"
 #include "btbutton.h"
 #include "mediaplayer.h"
+#include "hardware_functions.h" // setVolum
 
 #include <QGridLayout>
 #include <QLabel>
@@ -78,6 +79,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	l_btn->addWidget(goto_sounddiff);
 
 	ItemTuning *volume = new ItemTuning(tr("Volume"), bt_global::skin->getImage("volume"));
+	connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
 
 	QVBoxLayout *l = new QVBoxLayout(content);
 	l->addWidget(bg, 1, Qt::AlignCenter);
@@ -150,10 +152,8 @@ void AudioPlayerPage::refreshPlayInfo()
 		else if (attrs.contains("file_name"))
 			description_top->setText(attrs["file_name"]);
 
-		if (attrs.contains("meta_title"))
-			description_top->setText(attrs["meta_title"]);
-		else if (attrs.contains("file_name"))
-			description_top->setText(attrs["file_name"]);
+		if (attrs.contains("meta_author"))
+			description_bottom->setText(attrs["meta_author"]);
 	}
 	else if (type == IP_RADIO)
 	{
@@ -162,7 +162,6 @@ void AudioPlayerPage::refreshPlayInfo()
 
 		 if (attrs.contains("stream_url"))
 			 description_top->setText(attrs["stream_url"]);
-
 	}
 
 	if (attrs.contains("meta_album"))
@@ -177,4 +176,9 @@ void AudioPlayerPage::refreshPlayInfo()
 
 		elapsed->setText(current + " / " + total);
 	}
+}
+
+void AudioPlayerPage::changeVolume(int volume)
+{
+	setVolume(VOLUME_MMDIFFUSION, volume);
 }

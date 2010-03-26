@@ -157,6 +157,8 @@ VolumePage::VolumePage(const QDomNode &config_node)
 
 	layout->addWidget(volume, 0, Qt::AlignCenter);
 	buildPage(content, nav_bar, getTextChild(config_node, "descr"));
+
+	connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
 }
 
 void VolumePage::changeVolume(int new_vol)
