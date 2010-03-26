@@ -49,13 +49,13 @@ AudioPlayerPage::AudioPlayerPage()
 
 	bg->setPixmap(bt_global::skin->getImage("audioplayer_background"));
 
-	description_top = new QLabel("Title");
-	description_bottom = new QLabel("Performers");
+	description_top = new QLabel;
+	description_bottom = new QLabel;
 	description_top->setFont(bt_global::font->get(FontManager::PLAYER_TITLE));
 	description_bottom->setFont(bt_global::font->get(FontManager::PLAYER_AUTHOR));
 
-	track = new QLabel("Track: 2/2");
-	elapsed = new QLabel("0:01 / 3:22");
+	track = new QLabel;
+	elapsed = new QLabel;
 	track->setFont(bt_global::font->get(FontManager::PLAYER_INFO));
 	elapsed->setFont(bt_global::font->get(FontManager::PLAYER_INFO));
 	track->setProperty("PlayerInfo", true);
