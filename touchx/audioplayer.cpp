@@ -27,6 +27,7 @@
 #include "fontmanager.h"
 #include "btbutton.h"
 #include "mediaplayer.h"
+#include "hardware_functions.h" // setVolum
 
 #include <QGridLayout>
 #include <QLabel>
@@ -78,6 +79,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	l_btn->addWidget(goto_sounddiff);
 
 	ItemTuning *volume = new ItemTuning(tr("Volume"), bt_global::skin->getImage("volume"));
+	connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
 
 	QVBoxLayout *l = new QVBoxLayout(content);
 	l->addWidget(bg, 1, Qt::AlignCenter);
@@ -174,4 +176,9 @@ void AudioPlayerPage::refreshPlayInfo()
 
 		elapsed->setText(current + " / " + total);
 	}
+}
+
+void AudioPlayerPage::changeVolume(int volume)
+{
+	setVolume(VOLUME_MMDIFFUSION, volume);
 }

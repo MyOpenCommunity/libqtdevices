@@ -48,6 +48,7 @@ private:
 
 private slots:
 	void refreshPlayInfo();
+	void changeVolume(int volume);
 
 private:
 	MediaType type;
