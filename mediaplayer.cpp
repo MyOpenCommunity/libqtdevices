@@ -88,7 +88,6 @@ bool MediaPlayer::play(QString track, bool write_output)
 {
 	QList<QString> mplayer_args = getStandardArgs();
 
-
 	QByteArray t = track.toLocal8Bit();
 	if ((track.endsWith(".m3u", Qt::CaseInsensitive)) || (track.endsWith(".asx", Qt::CaseInsensitive)))
 	{
@@ -166,6 +165,11 @@ QMap<QString, QString> MediaPlayer::getPlayingInfo()
 	data_search["meta_album"]   = "Album: ([^\\n]*)\\n";
 	data_search["total_time"]   = "of\\s+\\d+\\.\\d+\\s+[(](\\d+:\\d+\\.\\d+)[)]";
 	data_search["current_time"] = "A:\\s+\\d+\\.\\d+\\s+[(](\\d*:*\\d+\\.\\d+)[)]";
+	// shoutcast info
+	// MPlayer does not quote "'" inside titles, so parsing the shoutcast info
+	// with a regex is tricky; the regexes below can be improved
+	data_search["stream_title"] = "\\bStreamTitle='([^;]+)';";
+	data_search["stream_url"] = "\\bStreamUrl='([^;]+)';";
 
 	return getMediaInfo(data_search);
 }
