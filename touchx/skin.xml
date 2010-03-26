@@ -378,6 +378,108 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_next>diffusione/successivo.png</img_next>
 		<img_previous>diffusione/precedente.png</img_previous>
 	</item>
+	<!-- amplifier special ambient (multi sound diffusion) -->
+	<item>
+		<cid>12101</cid>
+		<!--
+		Other images: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+	</item>
+	<!-- amplifier group special ambient (multi sound diffusion) -->
+	<item>
+		<cid>12102</cid>
+		<!--
+		Other images: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/offampgrpsxl.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/offampgrpdxl.png</img_volume_off_right>
+	</item>
+	<!-- general, special ambient (multi sound diffusion) -->
+	<item>
+		<cid>12103</cid>
+		<!--
+		Other images: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/offampgrpsxl.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/offampgrpdxl.png</img_volume_off_right>
+	</item>
+	<!-- power amplifier (special ambient) -->
+	<item>
+		<cid>12104</cid>
+		<!--
+		other images: on, off, minus, plus
+		-->
+		<img_preset>diffusione/preset.png</img_preset>
+		<img_treble>diffusione/louds.png</img_treble>
+		<img_bass>diffusione/lows.png</img_bass>
+		<img_balance>diffusione/balance_0.png</img_balance>
+		<img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+		<img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+		<img_loud>diffusione/loud.png</img_loud>
+		<img_loud_on>diffusione/loud.png</img_loud_on>
+		<img_loud_off>diffusione/loud_off.png</img_loud_off>
+		<img_more>diffusione/more.png</img_more>
+		<img_less>diffusione/less.png</img_less>
+		<img_settings>diffusione/audiosetting.png</img_settings>
+		<img_volume_active>diffusione/onvolamp.png</img_volume_active>
+		<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+	</item>
+	<!-- amplifier normal ambient (multi sound diffusion) -->
+	<item>
+		<cid>12150</cid>
+		<!--
+		Other images: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+	</item>
+	<!-- amplifier group normal ambient (multi sound diffusion) -->
+	<item>
+		<cid>12151</cid>
+		<!--
+		Other images: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/offampgrpsxl.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/offampgrpdxl.png</img_volume_off_right>
+	</item>
+	<!-- power amplifier normal ambient -->
+	<item>
+		<cid>12152</cid>
+		<!--
+		other images: on, off, minus, plus
+		-->
+		<img_preset>diffusione/preset.png</img_preset>
+		<img_treble>diffusione/louds.png</img_treble>
+		<img_bass>diffusione/lows.png</img_bass>
+		<img_balance>diffusione/balance_0.png</img_balance>
+		<img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+		<img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+		<img_loud>diffusione/loud.png</img_loud>
+		<img_loud_on>diffusione/loud.png</img_loud_on>
+		<img_loud_off>diffusione/loud_off.png</img_loud_off>
+		<img_more>diffusione/more.png</img_more>
+		<img_less>diffusione/less.png</img_less>
+		<img_settings>diffusione/audiosetting.png</img_settings>
+		<img_volume_active>diffusione/onvolamp.png</img_volume_active>
+		<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+	</item>
 	<!-- special ambient -->
 	<item>
 		<cid>12020</cid>
@@ -396,7 +498,6 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_ambient>diffusione/imgamb.png</img_ambient>
 		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
 	</item>
-
 
 
 	<!-- automation banners -->

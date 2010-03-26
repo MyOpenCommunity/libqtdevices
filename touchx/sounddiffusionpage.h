@@ -47,15 +47,35 @@ private:
 
 
 
+
+/**
+ * Ambient page: has sources as top widget and amplifiers below
+ */
+class SoundAmbientPage : public BannerPage
+{
+Q_OBJECT
+public:
+	SoundAmbientPage(const QDomNode &conf_node, const QDomNode &sources);
+	static banner *getBanner(const QDomNode &item_node);
+
+private:
+	void loadItems(const QDomNode &config_node);
+};
+
+
+
+/**
+ * General sound diffusion page. Shown only in multi sound diffusion.
+ */
 class SoundDiffusionPage : public BannerPage
 {
 Q_OBJECT
 public:
 	SoundDiffusionPage(const QDomNode &config_node);
 	virtual int sectionId();
-	static banner *getBanner(const QDomNode &item_node);
 
 private:
+	banner *getBanner(const QDomNode &item_node);
 	void loadItems(const QDomNode &config_node);
 
 };

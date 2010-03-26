@@ -24,7 +24,33 @@
 #include "device_status.h"
 #include "deviceold.h"
 #include "devices_cache.h" // bt_global::devices_cache
+#include "skinmanager.h" // bt_global::skin
 
+
+Amplifier::Amplifier(const QString &descr, const QString &where) : BannLevel(0)
+{
+	volume_value = 0;
+	center_left_active = bt_global::skin->getImage("volume_on_left");
+	center_right_active = bt_global::skin->getImage("volume_on_right");
+	center_left_inactive = bt_global::skin->getImage("volume_off_left");
+	center_right_inactive = bt_global::skin->getImage("volume_off_right");
+	initBanner(bt_global::skin->getImage("off"), getBostikName(center_left_inactive, QString::number(volume_value)),
+		getBostikName(center_right_inactive, QString::number(volume_value)), bt_global::skin->getImage("on"), descr);
+
+	// TODO: create device
+	// TODO: connect buttons to device methods
+}
+
+AmplifierGroup::AmplifierGroup(QStringList addresses, const QString &descr) : BannLevel(0)
+{
+	center_left_active = bt_global::skin->getImage("volume_on_left");
+	center_right_active = bt_global::skin->getImage("volume_on_right");
+	center_left_inactive = bt_global::skin->getImage("volume_off_left");
+	center_right_inactive = bt_global::skin->getImage("volume_off_right");
+	initBanner(bt_global::skin->getImage("off"), getBostikName(center_left_inactive, "0"),
+		getBostikName(center_right_inactive, "0"), bt_global::skin->getImage("on"), descr);
+	// TODO: create devices
+}
 
 amplificatore::amplificatore(QWidget *parent, QString indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon)
 	: bannRegolaz(parent)
