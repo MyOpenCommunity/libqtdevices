@@ -40,6 +40,7 @@ public:
 		VIDEO_PAGE = 3,
 		VIDEO_WINDOW = 4,
 		AUDIO_PAGE = 5,
+		IPRADIO_PAGE = 6,
 	};
 
 	MultimediaPlayerButtons(Type type);
