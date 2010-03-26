@@ -37,6 +37,7 @@ class TrayBar;
 class FeedParser;
 class FeedItemList;
 class AudioPlayerPage;
+class WebcamPage;
 
 
 // helper widgets, to display the temperature
@@ -126,6 +127,23 @@ private slots:
 private:
 	AudioPlayerPage *player;
 	QString url;
+};
+
+
+// link to Webcam
+
+class HomepageWebcamLink : public HomepageLink
+{
+Q_OBJECT
+public:
+	HomepageWebcamLink(const QString &description, const QString &url);
+
+private slots:
+	void showWebcam();
+
+private:
+	WebcamPage *webcam;
+	QString url, title;
 };
 
 

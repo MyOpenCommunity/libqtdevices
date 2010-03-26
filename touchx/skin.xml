@@ -154,6 +154,15 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_audioplayer_background>multimediale/display.png</img_audioplayer_background>
 		<img_goto_sounddiffusion>multimediale/godiffusion.png</img_goto_sounddiffusion>
 	</item>
+	<!-- Home page webcam link -->
+	<item>
+		<cid>204</cid>
+		<img_link_icon>home/webcam.png</img_link_icon>
+
+		<img_reload>multimediale/play.png</img_reload>
+		<img_previous>multimediale/precedente.png</img_previous>
+		<img_next>multimediale/successivo.png</img_next>
+	</item>
 	<!-- Settings links -->
 	<!-- Alarm -->
 	<item>

@@ -33,6 +33,7 @@
 #include "homewindow.h"
 #include "feedmanager.h"
 #include "audioplayer.h"
+#include "webcam.h"
 
 #include <QSignalMapper>
 #include <QHBoxLayout>
@@ -40,6 +41,7 @@
 #include <QPainter>
 #include <QTime>
 #include <QtDebug>
+#include <QUrl> // for webcam
 
 
 enum
@@ -324,6 +326,26 @@ void HomepageIPRadioLink::playRadio()
 }
 
 
+HomepageWebcamLink::HomepageWebcamLink(const QString &description, const QString &webcam_url) :
+	HomepageLink(description, bt_global::skin->getImage("link_icon"))
+{
+	url = webcam_url;
+	title = description;
+
+	webcam = new WebcamPage;
+
+	connect(this, SIGNAL(clicked()), SLOT(showWebcam()));
+
+	connect(webcam, SIGNAL(Closed()), SIGNAL(pageClosed()));
+}
+
+void HomepageWebcamLink::showWebcam()
+{
+	webcam->setImage(QUrl(url), title);
+	webcam->showPage();
+}
+
+
 HeaderLogo::HeaderLogo(TrayBar *tray)
 {
 	setFixedSize(800, 40);
@@ -446,6 +468,14 @@ void HeaderInfo::loadItems(const QDomNode &config_node, Page *settings)
 			HomepageIPRadioLink *radio_display = new HomepageIPRadioLink(getTextChild(item, "descr"), getTextChild(item, "url"));
 			info_layout->addWidget(radio_display);
 			connect(radio_display, SIGNAL(pageClosed()), SIGNAL(showHomePage()));
+
+			break;
+		}
+		case ITEM_WEB_CAM_LINK:
+		{
+			HomepageWebcamLink *webcam_display = new HomepageWebcamLink(getTextChild(item, "descr"), getTextChild(item, "url"));
+			info_layout->addWidget(webcam_display);
+			connect(webcam_display, SIGNAL(pageClosed()), SIGNAL(showHomePage()));
 
 			break;
 		}
