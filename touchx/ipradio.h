@@ -25,7 +25,7 @@
 #include "itemlistpage.h"
 
 class QDomNode;
-
+class AudioPlayerPage;
 
 
 class IPRadioPage : public ItemListPage
@@ -36,6 +36,12 @@ public:
 
 private:
 	void loadItems(const QDomNode &config_node);
+
+private slots:
+	void itemIsClicked(int index);
+
+private:
+	AudioPlayerPage *player;
 };
 
 #endif // IPRADIO_H

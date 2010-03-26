@@ -22,6 +22,7 @@
 #include "ipradio.h"
 #include "skinmanager.h"
 #include "xml_functions.h" // getTextChild, getChildren
+#include "audioplayer.h"
 
 #include <QLayout>
 
@@ -30,8 +31,13 @@ IPRadioPage::IPRadioPage(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 
+	player = new AudioPlayerPage(AudioPlayerPage::IP_RADIO);
+
 	buildPage(4, getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT);
 	loadItems(config_node);
+
+	connect(page_content, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
+	connect(player, SIGNAL(Closed()), SLOT(showPage()));
 }
 
 void IPRadioPage::loadItems(const QDomNode &config_node)
@@ -50,4 +56,13 @@ void IPRadioPage::loadItems(const QDomNode &config_node)
 
 	page_content->setList(radio_list);
 	page_content->showList();
+}
+
+void IPRadioPage::itemIsClicked(int index)
+{
+	QList<QString> urls;
+	for (int i = 0; i < page_content->itemCount(); ++i)
+		urls.append(page_content->item(i).data.toString());
+
+	player->playAudioFiles(urls, index);
 }
