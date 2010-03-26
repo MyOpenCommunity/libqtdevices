@@ -59,6 +59,7 @@ VideoPlayerPage::VideoPlayerPage()
 	v->addStretch(1);
 
 	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::VIDEO_PAGE);
+	connectMultimediaButtons(buttons);
 
 	l->addWidget(title, 0, Qt::AlignHCenter);
 	l->addLayout(v, 1);
