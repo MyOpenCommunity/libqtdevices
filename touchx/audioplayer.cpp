@@ -150,10 +150,8 @@ void AudioPlayerPage::refreshPlayInfo()
 		else if (attrs.contains("file_name"))
 			description_top->setText(attrs["file_name"]);
 
-		if (attrs.contains("meta_title"))
-			description_top->setText(attrs["meta_title"]);
-		else if (attrs.contains("file_name"))
-			description_top->setText(attrs["file_name"]);
+		if (attrs.contains("meta_author"))
+			description_bottom->setText(attrs["meta_author"]);
 	}
 	else if (type == IP_RADIO)
 	{
@@ -162,7 +160,6 @@ void AudioPlayerPage::refreshPlayInfo()
 
 		 if (attrs.contains("stream_url"))
 			 description_top->setText(attrs["stream_url"]);
-
 	}
 
 	if (attrs.contains("meta_album"))
