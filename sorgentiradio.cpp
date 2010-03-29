@@ -25,10 +25,45 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "deviceold.h"
 #include "generic_functions.h" // createMsgOpen
+#include "btbutton.h" // BtButton
+#include "skinmanager.h" // bt_global::skin
+#include "icondispatcher.h" // bt_global::icons_cache
 
 #include <QWidget>
 #include <QDebug>
 #include <QChar>
+#include <QHBoxLayout>
+#include <QLabel>
+
+RadioSource::RadioSource() : BannerNew(0)
+{
+	left_button = new BtButton;
+	center_left_button = new BtButton;
+	center_right_button = new BtButton;
+	right_button = new BtButton;
+	dummy = new QLabel;
+	initBanner(bt_global::skin->getImage("cycle"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("radio_dummy"),
+		bt_global::skin->getImage("next"), bt_global::skin->getImage("details"));
+	QHBoxLayout *hbox = new QHBoxLayout(this);
+	// these margins are the same as BannerContent
+	hbox->setContentsMargins(18, 0, 17, 10);
+	hbox->setSpacing(0);
+	hbox->addWidget(left_button);
+	hbox->addWidget(center_left_button);
+	hbox->addWidget(dummy);
+	hbox->addWidget(center_right_button);
+	hbox->addWidget(right_button);
+}
+
+void RadioSource::initBanner(const QString &left, const QString &center_left, const QString &center,
+	const QString &center_right, const QString &right)
+{
+	initButton(left_button, left);
+	initButton(center_left_button, center_left);
+	initButton(center_right_button, center_right);
+	initButton(right_button, right);
+	dummy->setPixmap(*bt_global::icons_cache.getIcon(center));
+}
 
 
 /*****************************************************************

@@ -43,7 +43,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_minus>termoregolazione/meno.png</img_minus>
 		<img_fast_forward>btnforward.png</img_fast_forward>
 		<img_fast_backward>btnbackward.png</img_fast_backward>
-		<img_cycle>btnavanti.png</img_cycle>
+		<img_cycle>diffusione/cycle.png</img_cycle>
 		<img_on>setup/on.png</img_on>
 		<img_off>setup/off.png</img_off>
 		<img_stop>btnstop.png</img_stop>
@@ -532,6 +532,18 @@ MessagePage QLabel#Text { background-color: #000000; }
 		-->
 		<img_ambient>diffusione/imgamb.png</img_ambient>
 		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+	</item>
+	<!-- RDS radio source -->
+	<item>
+		<cid>12001</cid>
+		<!--
+		Other images: cycle
+		Notes: There's also an image set in the stylesheet above
+		-->
+		<img_previous>diffusione/precedente.png</img_previous>
+		<img_next>diffusione/successivo.png</img_next>
+		<img_radio_dummy>diffusione/display.png</img_radio_dummy>
+		<img_details>diffusione/audiosetting.png</img_details>
 	</item>
 
 

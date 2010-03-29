@@ -33,6 +33,27 @@
 class radio;
 class device;
 
+
+/**
+ * Banner for radio sources.
+ */
+class RadioSource : public BannerNew
+{
+Q_OBJECT
+public:
+	RadioSource();
+
+protected:
+	void initBanner(const QString &left, const QString &center_left, const QString &center, const QString &center_right,
+		const QString &right);
+
+
+private:
+	BtButton *left_button, *center_left_button, *center_right_button, *right_button;
+	// TODO: this must be changed with the proper widget
+	QLabel *dummy;
+};
+
 /*****************************************************************
  **Sorgente_Radio
  ****************************************************************/
