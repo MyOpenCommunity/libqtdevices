@@ -98,7 +98,7 @@ void BtButton::setPixmap(const QPixmap &p)
 		if (pressed_pixmap.isNull() || !isDown())
 			setIcon(pixmap);
 		setIconSize(pixmap.size());
-		resize(pixmap.size());
+		updateGeometry();
 	}
 }
 
