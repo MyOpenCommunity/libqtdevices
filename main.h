@@ -116,7 +116,6 @@ void resetTimer(int signo);
 #ifndef MEDIASERVER_PATH
 #define MEDIASERVER_PATH            "/home/bticino/mediaserver/"
 #endif
-
 /*! \def FILE_CHANGE_CONF
  *  The file to generate when changing the user-configurationFile to avoid beinf resetted from bt_processi
  */
