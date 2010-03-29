@@ -46,6 +46,15 @@ private:
 };
 
 
+struct SourceDescription
+{
+	QString descr;
+	QString where;
+	int id;
+	int cid;
+};
+Q_DECLARE_TYPEINFO(SourceDescription, Q_MOVABLE_TYPE);
+
 
 
 /**
@@ -55,14 +64,12 @@ class SoundAmbientPage : public BannerPage
 {
 Q_OBJECT
 public:
-	SoundAmbientPage(const QDomNode &conf_node, const QDomNode &sources);
+	SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources);
 	static banner *getBanner(const QDomNode &item_node);
 
 private:
 	void loadItems(const QDomNode &config_node);
 };
-
-
 
 /**
  * General sound diffusion page. Shown only in multi sound diffusion.
@@ -75,7 +82,7 @@ public:
 	virtual int sectionId();
 
 private:
-	banner *getBanner(const QDomNode &item_node);
+	banner *getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources);
 	void loadItems(const QDomNode &config_node);
 
 };

@@ -31,6 +31,7 @@
 #include "bannercontent.h"
 #include "bann_amplifiers.h" // Amplifier
 #include "poweramplifier.h" // BannPowerAmplifier
+#include "sorgentiradio.h" // RadioSource
 
 
 #include <QDomNode>
@@ -102,10 +103,13 @@ enum BannerType
 	BANN_POWER_AMPLIFIER = 11022,
 };
 
-SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QDomNode &sources)
+SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources)
 {
-	// TODO: build top widget
-	buildPage(getTextChild(conf_node, "descr"));
+	// TODO: top widget should be a stackedWidget
+	SkinContext ctx(sources.at(0).cid);
+
+	QWidget *top_widget = new RadioSource;
+	buildPage(getTextChild(conf_node, "descr"), Page::TITLE_HEIGHT, top_widget);
 	loadItems(conf_node);
 }
 
@@ -185,10 +189,22 @@ void SoundDiffusionPage::loadItems(const QDomNode &config_node)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	// TODO: parse audio sources from conf.xml
+	QDomNode sources_node = getChildWithName(config_node, "multimediasources");
+	QList<SourceDescription> sources_list;
+	foreach (const QDomNode &source, getChildren(sources_node, "item"))
+	{
+		SourceDescription d;
+		d.id = getTextChild(source, "id").toInt();
+		d.cid = getTextChild(source, "cid").toInt();
+		d.descr = getTextChild(source, "descr");
+		d.where = getTextChild(source, "where");
+		sources_list << d;
+	}
+	Q_ASSERT_X(!sources_list.isEmpty(), "SoundDiffusionPage::loadItems", "No sound diffusion sources defined.");
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		banner *b = getBanner(item);
+		banner *b = getAmbientBanner(item, sources_list);
 		if (b)
 		{
 			page_content->appendBanner(b);
@@ -199,12 +215,12 @@ void SoundDiffusionPage::loadItems(const QDomNode &config_node)
 	}
 }
 
-banner *SoundDiffusionPage::getBanner(const QDomNode &item_node)
+banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources)
 {
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
 	QDomNode page_node = getPageNodeFromChildNode(item_node, "lnk_pageID");
-	SoundAmbientPage *p = new SoundAmbientPage(page_node, QDomNode());
+	SoundAmbientPage *p = new SoundAmbientPage(page_node, sources);
 
 	banner *b = 0;
 	switch (id)
