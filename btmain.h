@@ -80,7 +80,6 @@ private slots:
 	void init();
 	void gesScrSav();
 	void testPwd();
-	void testFiles();
 	void waitBeforeInit();
 	void monitorReady();
 
