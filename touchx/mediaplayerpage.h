@@ -88,6 +88,9 @@ protected:
 
 	// can be conntec
 	QTimer refresh_data;
+
+private slots:
+	void unmounted(const QString &path);
 };
 
 #endif // MEDIAPLAYERPAGE_H

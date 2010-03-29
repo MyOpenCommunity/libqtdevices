@@ -22,6 +22,7 @@
 #include "mediaplayerpage.h"
 #include "mediaplayer.h"
 #include "multimedia_buttons.h"
+#include "mount_watcher.h"
 
 
 MediaPlayerPage::MediaPlayerPage() :
@@ -29,6 +30,9 @@ MediaPlayerPage::MediaPlayerPage() :
 {
 	player = new MediaPlayer(this);
 
+	// terminate player when unmounted
+	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
+		SLOT(unmounted(const QString &)));
 }
 
 void MediaPlayerPage::connectMultimediaButtons(MultimediaPlayerButtons *buttons)
@@ -111,4 +115,10 @@ void MediaPlayerPage::playbackTerminated()
 {
 	emit stopped();
 	refresh_data.stop();
+}
+
+void MediaPlayerPage::unmounted(const QString &dir)
+{
+	if (player->isInstanceRunning() && file_list[current_file].startsWith(dir))
+		stop();
 }
