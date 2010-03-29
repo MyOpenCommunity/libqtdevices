@@ -234,9 +234,27 @@ void MultimediaFileListPage::unmounted(const QString &dir)
 {
 	if (dir == root_path && isVisible())
 		emit Closed();
+	root_path = QString();
 }
 
 void MultimediaFileListPage::unmount()
 {
 	MountWatcher::getWatcher().unmount(root_path);
+}
+
+void MultimediaFileListPage::showPage()
+{
+	if (root_path.isEmpty())
+		emit Closed();
+	else
+		FileSelector::showPage();
+}
+
+// TODO remove showPageNoReload, and only try to reload the file list if it is empty
+void MultimediaFileListPage::showPageNoReload()
+{
+	if (root_path.isEmpty())
+		emit Closed();
+	else
+		Selector::showPage();
 }

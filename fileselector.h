@@ -71,7 +71,7 @@ public slots:
 	void itemIsClicked(int item);
 	void browseUp();
 	virtual void showPage();
-	void showPageNoReload();
+	virtual void showPageNoReload();
 
 signals:
 	void fileClicked(int item);

@@ -53,6 +53,8 @@ public:
 public slots:
 	virtual void nextItem();
 	virtual void prevItem();
+	virtual void showPage();
+	virtual void showPageNoReload();
 
 signals:
 	void displayImages(QList<QString> images, unsigned element);
