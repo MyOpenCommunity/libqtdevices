@@ -152,22 +152,19 @@ void AudioPlayerPage::refreshPlayInfo()
 		else if (attrs.contains("file_name"))
 			description_top->setText(attrs["file_name"]);
 
-		if (attrs.contains("meta_author"))
-			description_bottom->setText(attrs["meta_author"]);
+		if (attrs.contains("meta_artist"))
+			description_bottom->setText(attrs["meta_artist"]);
+		else if (attrs.contains("meta_album"))
+			description_bottom->setText(attrs["meta_album"]);
 	}
 	else if (type == IP_RADIO)
 	{
-		 if (attrs.contains("stream_title"))
-			description_top->setText(attrs["stream_url"]);
-
 		 if (attrs.contains("stream_url"))
 			 description_top->setText(attrs["stream_url"]);
-	}
 
-	if (attrs.contains("meta_album"))
-		description_bottom->setText(attrs["meta_album"]);
-	else if (attrs.contains("stream_title"))
-		description_bottom->setText(attrs["stream_title"]);
+		 if (attrs.contains("stream_title"))
+			 description_bottom->setText(attrs["stream_title"]);
+	}
 
 	if (type == LOCAL_FILE && attrs.contains("total_time") && attrs.contains("current_time"))
 	{
