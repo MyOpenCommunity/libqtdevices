@@ -2,7 +2,7 @@
 <style>
 	<ver_xml>1.0</ver_xml>
 	<css>
-QLabel, QLCDNumber { background-color:#1E1E1E; color:#D8D8D8; }
+QLabel, QLCDNumber, aux { background-color:#1E1E1E; color:#D8D8D8; }
 QStackedWidget { background-color:#1E1E1E; color:#D8D8D8; }
 BtButton { border: 0px; }
 QWidget[noStyle="true"] {background-color:#FFFFFF;color:#000000;}
