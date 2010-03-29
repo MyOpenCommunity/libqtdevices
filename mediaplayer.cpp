@@ -39,9 +39,12 @@
 
 
 static const char *MPLAYER_FILENAME = "/usr/bin/mplayer";
+QProcess MediaPlayer::mplayer_proc;
+
 
 MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 {
+	active = false;
 	paused = false;
 	connect(&mplayer_proc, SIGNAL(finished(int, QProcess::ExitStatus)), SLOT(mplayerFinished(int, QProcess::ExitStatus)));
 	connect(&mplayer_proc, SIGNAL(error(QProcess::ProcessError)), SLOT(mplayerError(QProcess::ProcessError)));
@@ -110,6 +113,14 @@ bool MediaPlayer::play(QString track, bool write_output)
 
 bool MediaPlayer::runMPlayer(const QList<QString> &args, bool write_output)
 {
+	if (!active && mplayer_proc.state() != QProcess::NotRunning)
+	{
+		mplayer_proc.terminate();
+		mplayer_proc.waitForFinished();
+	}
+
+	active = true;
+
 	if (!write_output)
 		mplayer_proc.setStandardOutputFile("/dev/null");
 
@@ -120,6 +131,9 @@ bool MediaPlayer::runMPlayer(const QList<QString> &args, bool write_output)
 
 void MediaPlayer::pause()
 {
+	if (!active)
+		return;
+
 	if (!paused)
 	{
 		execCmd("pause");
@@ -129,6 +143,9 @@ void MediaPlayer::pause()
 
 void MediaPlayer::resume()
 {
+	if (!active)
+		return;
+
 	if (paused)
 	{
 		execCmd("pause");
@@ -138,6 +155,9 @@ void MediaPlayer::resume()
 
 void MediaPlayer::seek(int seconds)
 {
+	if (!active)
+		return;
+
 	QByteArray cmd("seek ");
 	cmd += QByteArray::number(seconds);
 	execCmd(cmd);
@@ -151,7 +171,7 @@ void MediaPlayer::execCmd(const QByteArray &command)
 
 bool MediaPlayer::isInstanceRunning()
 {
-	return (mplayer_proc.state() == QProcess::Running);
+	return (active && mplayer_proc.state() == QProcess::Running);
 }
 
 QMap<QString, QString> MediaPlayer::getVideoInfo()
@@ -184,6 +204,9 @@ QMap<QString, QString> MediaPlayer::getPlayingInfo()
 
 QMap<QString, QString> MediaPlayer::getMediaInfo(const QMap<QString, QString> &data_search)
 {
+	if (!active)
+		return QMap<QString, QString>();
+
 	/// READ RAW output from MPlayer
 	QString raw_data = mplayer_proc.readAll();
 
@@ -205,6 +228,9 @@ QMap<QString, QString> MediaPlayer::getMediaInfo(const QMap<QString, QString> &d
 
 void MediaPlayer::quit()
 {
+	if (!active)
+		return;
+
 	if (mplayer_proc.state() == QProcess::Running)
 	{
 		mplayer_proc.terminate();
@@ -216,12 +242,19 @@ void MediaPlayer::quit()
 
 void MediaPlayer::quitAndWait()
 {
+	if (!active)
+		return;
+
 	quit();
 	mplayer_proc.waitForFinished();
 }
 
 void MediaPlayer::mplayerFinished(int exit_code, QProcess::ExitStatus exit_status)
 {
+	if (!active)
+		return;
+	active = false;
+
 	if (exit_status == QProcess::CrashExit)
 	{
 		emit mplayerAborted();
