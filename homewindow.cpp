@@ -71,7 +71,9 @@ HomeWindow::HomeWindow()
 
 	central_widget = new PageContainer(this);
 	main_layout->addWidget(central_widget, 1, 0, 1, 1);
-	connect(central_widget, SIGNAL(currentChanged(int)), SLOT(centralWidgetChanged(int)));
+	// using the currentChanging signal, we ensure that the page size is the correct one
+	// when showEvent is called
+	connect(central_widget, SIGNAL(currentChanging(int)), SLOT(centralWidgetChanged(int)));
 	Page::setPageContainer(central_widget);
 
 	tray_bar = new TrayBar;

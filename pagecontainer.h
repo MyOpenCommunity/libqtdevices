@@ -63,6 +63,12 @@ public:
 signals:
 	void currentPageChanged(Page *p);
 
+	// this signal is emitted when the current page is about to change; it can
+	// be used by code that needs to know the new page before it is actually set;
+	// to know that the current page has already changed, use the currentChanged()
+	// signal from QStackedWidget
+	void currentChanging(int index);
+
 private:
 	bool block_transitions;
 	TransitionWidget *transition_widget;
