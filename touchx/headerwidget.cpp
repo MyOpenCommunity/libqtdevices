@@ -588,6 +588,7 @@ BtButton *HeaderNavigationWidget::createButton(int section_id, const QString &ic
 	QLabel *active = new QLabel;
 	active->setAlignment(Qt::AlignHCenter);
 	active->setPixmap(getBostikName(icon, "s"));
+	active->setFixedSize(active->pixmap()->size());
 	selected.append(active);
 
 	section_ids.append(section_id);
@@ -661,7 +662,7 @@ void HeaderNavigationWidget::drawContent()
 		// sometimes causes some flicker
 		button_layout->takeAt(i);
 
-		button_layout->insertWidget(i, item, 1);
+		button_layout->insertWidget(i, item, 1, Qt::AlignCenter);
 		item->show();
 		hitem->hide();
 	}
