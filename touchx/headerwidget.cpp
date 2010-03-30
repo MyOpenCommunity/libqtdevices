@@ -348,8 +348,8 @@ HeaderLogo::HeaderLogo(TrayBar *tray)
 
 void HeaderLogo::loadItems(const QDomNode &config_node)
 {
-	date_display = new DateDisplay;
-	time_display = new TimeDisplay;
+	date_display = 0;
+	time_display = 0;
 	temperature_display = 0;
 
 	QHBoxLayout *l = new QHBoxLayout(this);
@@ -359,8 +359,6 @@ void HeaderLogo::loadItems(const QDomNode &config_node)
 	l->addWidget(tray_bar);
 
 	l->addStretch(1);
-	l->addWidget(date_display);
-	l->addWidget(time_display);
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
@@ -368,6 +366,16 @@ void HeaderLogo::loadItems(const QDomNode &config_node)
 
 		switch (id)
 		{
+		case ITEM_TIME:
+			date_display = new DateDisplay;
+
+			l->addWidget(date_display);
+			break;
+		case ITEM_DATE:
+			time_display = new TimeDisplay;
+
+			l->addWidget(time_display);
+			break;
 		case ITEM_TEMPERATURE:
 			// TODO add flag for the probe type in configuration
 			device *probe = bt_global::add_device_to_cache(new NonControlledProbeDevice(getTextChild(item, "where"),
@@ -382,8 +390,10 @@ void HeaderLogo::loadItems(const QDomNode &config_node)
 
 void HeaderLogo::setControlsVisible(bool visible)
 {
-	date_display->setVisible(visible);
-	time_display->setVisible(visible);
+	if (date_display)
+		date_display->setVisible(visible);
+	if (time_display)
+		time_display->setVisible(visible);
 	if (temperature_display)
 		temperature_display->setVisible(visible);
 }
