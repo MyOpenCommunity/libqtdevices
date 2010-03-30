@@ -419,6 +419,12 @@ void PageSetDateTime::setTitle(QString title)
 	title_widget.setTitle(title);
 }
 
+void PageSetDateTime::setDateTime(const QDateTime &dt)
+{
+	date_edit->setDate(dt.date());
+	time_edit->setTime(dt.time());
+}
+
 void PageSetDateTime::performAction()
 {
 	emit dateTimeSelected(date(), time());

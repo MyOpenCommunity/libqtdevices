@@ -134,6 +134,7 @@ public:
 	QDate date();
 	BtTime time();
 	void setTitle(QString title);
+	void setDateTime(const QDateTime &dt);
 
 signals:
 	void dateTimeSelected(QDate, BtTime);
