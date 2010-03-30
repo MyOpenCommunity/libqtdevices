@@ -67,26 +67,7 @@ private slots:
 private:
 	StateButton *ring_exclusion;
 	EntryphoneDevice *dev;
-	RingExclusionPage *ring_ex_page;
 	void loadItems(const QDomNode &config_node);
-};
-
-
-/**
- * The page that contains the banner of ring exclusion.
- */
-class RingExclusionPage : public BannerPage
-{
-Q_OBJECT
-public:
-	RingExclusionPage(const QDomNode &config_node);
-	void setStatus(bool st);
-
-signals:
-	void statusChanged(bool on);
-
-private:
-	RingExclusion *b;
 };
 
 

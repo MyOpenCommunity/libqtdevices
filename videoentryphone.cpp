@@ -52,7 +52,6 @@ enum Pages
 {
 	VIDEO_CONTROL = 10050,  /*!< Video control menu */
 	INTERCOM = 10100,       /*!< Intercom menu */
-	RING_EXCLUSION = 19999, /*!< Ring exclusion */
 };
 
 
@@ -106,7 +105,6 @@ VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 
-	ring_ex_page = 0;
 	ring_exclusion = new StateButton;
 	ring_exclusion->setOnOff();
 	ring_exclusion->setOffImage(bt_global::skin->getImage("tray_ring_ex_off"));
@@ -121,10 +119,7 @@ VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 
 void VideoEntryPhone::toggleRingExclusion()
 {
-	bool new_status = !ring_exclusion->getStatus();
-	ring_exclusion->setStatus(new_status);
-	if (ring_ex_page)
-		ring_ex_page->setStatus(new_status);
+	ring_exclusion->setStatus(!ring_exclusion->getStatus());
 }
 
 void VideoEntryPhone::status_changed(const StatusList &sl)
@@ -167,13 +162,8 @@ void VideoEntryPhone::loadItems(const QDomNode &config_node)
 		case VIDEO_CONTROL:
 			p = new VideoControl(page_node);
 			break;
-		case RING_EXCLUSION:
-			ring_ex_page = new RingExclusionPage(page_node);
-			connect(ring_ex_page, SIGNAL(statusChanged(bool)), ring_exclusion, SLOT(setStatus(bool)));
-			p = ring_ex_page;
-			break;
 		default:
-			qFatal("Unhandled page id in VideoEntryPhone::loadItems");
+			qFatal("Unhandled page id %d in VideoEntryPhone::loadItems", page_id);
 		};
 
 		if (p)
@@ -184,24 +174,6 @@ void VideoEntryPhone::loadItems(const QDomNode &config_node)
 		}
 
 	}
-}
-
-
-RingExclusionPage::RingExclusionPage(const QDomNode &config_node)
-{
-	buildPage(getTextChild(config_node, "descr"));
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-	b = new RingExclusion;
-	connect(b, SIGNAL(statusChanged(bool)), this, SIGNAL(statusChanged(bool)));
-	page_content->appendBanner(b);
-}
-
-void RingExclusionPage::setStatus(bool st)
-{
-	if (st)
-		b->excludeRingOn();
-	else
-		b->excludeRingOff();
 }
 
 
