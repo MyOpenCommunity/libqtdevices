@@ -24,7 +24,6 @@
 
 #include "page.h"
 #include "window.h"
-#include "state_button.h"
 
 #include <QString>
 #include <QStringList>
@@ -37,6 +36,8 @@ class QDomNode;
 class QHBoxLayout;
 class QLabel;
 class QShowEvent;
+class StateButton;
+class BtButton;
 
 
 namespace VCTCallPrivate

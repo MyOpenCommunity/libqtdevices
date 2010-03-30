@@ -32,6 +32,7 @@
 #include "items.h" // ItemTuning
 #include "pagestack.h" // bt_global::page_stack
 #include "btmain.h" // isCalibrating
+#include "state_button.h"
 
 #include <QDomNode>
 #include <QHBoxLayout>

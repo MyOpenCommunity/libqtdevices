@@ -41,6 +41,7 @@
 #include "btmain.h" // bt_global::btmain
 #include "homewindow.h"
 #include "pagestack.h" // bt_global::page_stack
+#include "state_button.h"
 
 #include <QGridLayout>
 #include <QSignalMapper>
