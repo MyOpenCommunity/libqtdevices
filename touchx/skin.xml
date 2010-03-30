@@ -82,16 +82,11 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_date_background>home/backdate.png</img_date_background>
 		<img_temperature_background>home/backtemp.png</img_temperature_background>
 	</item>
-	<!-- Videoentryphone section-->
+	<!-- Videodoorentry section-->
 	<item>
 		<cid>10000</cid>
 		<img_tray_ring_ex_on>home/esclusionechiamataon.png</img_tray_ring_ex_on>
 		<img_tray_ring_ex_off>home/esclusionechiamataoff.png</img_tray_ring_ex_off>
-	</item>
-	<!-- Ring exclusion page -->
-	<item>
-		<cid>19999</cid>
-		<img_ring_exclusion>videocitofonia/imgesclusionechiamata.png</img_ring_exclusion>
 	</item>
 	<!-- Home and info bar -->
 	<item>
@@ -313,7 +308,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_link_icon>home/contenutimultimediali.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/contenutimultimediali.png</img_top_navigation_button>
 	</item>
-	<!-- Videoentryphone icon page -->
+	<!-- Videodoorentry icon page -->
 	<!-- videocontrol link -->
 	<item>
 		<cid>10001</cid>

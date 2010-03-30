@@ -19,8 +19,8 @@
  */
 
 
-#ifndef BANN_VIDEOENTRYPHONE_H
-#define BANN_VIDEOENTRYPHONE_H
+#ifndef BANN_VIDEODOORENTRY_H
+#define BANN_VIDEODOORENTRY_H
 
 #include "bann4_buttons.h"
 #include "frame_receiver.h"

@@ -130,7 +130,7 @@ HEADERS += actuators.h \
            bann_lighting.h \
            bann_scenario.h \
            bann_settings.h \
-           bann_videoentryphone.h \
+           bann_videodoorentry.h \
            bannciclaz.h \
            banner.h \
            bannercontent.h \
@@ -218,7 +218,7 @@ HEADERS += actuators.h \
            titlelabel.h \
            transitionwidget.h \
            version.h \
-           videoentryphone.h \
+           videodoorentry.h \
            window.h \
            windowcontainer.h \
            xml_functions.h
@@ -244,7 +244,7 @@ SOURCES += actuators.cpp \
            bann_lighting.cpp \
            bann_scenario.cpp \
            bann_settings.cpp \
-           bann_videoentryphone.cpp \
+           bann_videodoorentry.cpp \
            bannciclaz.cpp \
            banner.cpp \
            bannercontent.cpp \
@@ -332,7 +332,7 @@ SOURCES += actuators.cpp \
            titlelabel.cpp \
            transitionwidget.cpp \
            version.cpp \
-           videoentryphone.cpp \
+           videodoorentry.cpp \
            window.cpp \
            windowcontainer.cpp \
            xml_functions.cpp

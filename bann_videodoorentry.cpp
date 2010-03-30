@@ -19,7 +19,7 @@
  */
 
 
-#include "bann_videoentryphone.h"
+#include "bann_videodoorentry.h"
 #include "device_status.h"
 #include "deviceold.h"
 #include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH

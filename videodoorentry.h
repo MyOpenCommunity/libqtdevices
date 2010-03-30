@@ -19,8 +19,8 @@
  */
 
 
-#ifndef VIDEOENTRYPHONE_H
-#define VIDEOENTRYPHONE_H
+#ifndef VIDEODOORENTRY_H
+#define VIDEODOORENTRY_H
 
 #include "page.h"
 #include "iconpage.h"
@@ -39,11 +39,11 @@ class QSignalMapper;
 
 #ifdef LAYOUT_BTOUCH
 
-class VideoEntryPhone : public BannerPage
+class VideoDoorEntry : public BannerPage
 {
 Q_OBJECT
 public:
-	VideoEntryPhone(const QDomNode &config_node);
+	VideoDoorEntry(const QDomNode &config_node);
 
 private:
 	void loadDevices(const QDomNode &config_node);
@@ -51,11 +51,11 @@ private:
 
 #else
 
-class VideoEntryPhone : public IconPage
+class VideoDoorEntry : public IconPage
 {
 Q_OBJECT
 public:
-	VideoEntryPhone(const QDomNode &config_node);
+	VideoDoorEntry(const QDomNode &config_node);
 	virtual int sectionId();
 
 	static void loadHiddenPages();

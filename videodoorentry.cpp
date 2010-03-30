@@ -19,8 +19,8 @@
  */
 
 
-#include "videoentryphone.h"
-#include "bann_videoentryphone.h"
+#include "videodoorentry.h"
+#include "bann_videodoorentry.h"
 #include "bann2_buttons.h"
 #include "xml_functions.h" // getTextChild, getChildren
 #include "bannercontent.h"
@@ -56,13 +56,13 @@ enum Pages
 
 
 #ifdef LAYOUT_BTOUCH
-VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
+VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
 {
 	buildPage();
 	loadDevices(config_node);
 }
 
-void VideoEntryPhone::loadDevices(const QDomNode &config_node)
+void VideoDoorEntry::loadDevices(const QDomNode &config_node)
 {
 	QString unknown = getTextChild(config_node, "unknown");
 
@@ -90,7 +90,7 @@ void VideoEntryPhone::loadDevices(const QDomNode &config_node)
 #else
 
 
-void VideoEntryPhone::loadHiddenPages()
+void VideoDoorEntry::loadHiddenPages()
 {
 	EntryphoneDevice *dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS]));
 
@@ -100,7 +100,7 @@ void VideoEntryPhone::loadHiddenPages()
 	(void) new VCTCallPage(dev);
 }
 
-VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
+VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
@@ -117,12 +117,12 @@ VideoEntryPhone::VideoEntryPhone(const QDomNode &config_node)
 	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
 }
 
-void VideoEntryPhone::toggleRingExclusion()
+void VideoDoorEntry::toggleRingExclusion()
 {
 	ring_exclusion->setStatus(!ring_exclusion->getStatus());
 }
 
-void VideoEntryPhone::status_changed(const StatusList &sl)
+void VideoDoorEntry::status_changed(const StatusList &sl)
 {
 	StatusList::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
@@ -140,12 +140,12 @@ void VideoEntryPhone::status_changed(const StatusList &sl)
 	}
 }
 
-int VideoEntryPhone::sectionId()
+int VideoDoorEntry::sectionId()
 {
 	return VIDEOCITOFONIA;
 }
 
-void VideoEntryPhone::loadItems(const QDomNode &config_node)
+void VideoDoorEntry::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
@@ -163,7 +163,7 @@ void VideoEntryPhone::loadItems(const QDomNode &config_node)
 			p = new VideoControl(page_node);
 			break;
 		default:
-			qFatal("Unhandled page id %d in VideoEntryPhone::loadItems", page_id);
+			qFatal("Unhandled page id %d in VideoDoorEntry::loadItems", page_id);
 		};
 
 		if (p)

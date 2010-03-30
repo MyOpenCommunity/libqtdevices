@@ -24,7 +24,7 @@
 #include "btmain.h" // bt_global::btmain
 #include "sounddiffusion.h"
 #include "multisounddiff.h"
-#include "videoentryphone.h"
+#include "videodoorentry.h"
 #ifdef LAYOUT_TOUCHX
 #include "multimedia.h"
 #include "messages.h"
@@ -99,7 +99,7 @@ Page *getPage(int page_id)
 		break;
 #endif
 	case VIDEOCITOFONIA:
-		page = new VideoEntryPhone(page_node);
+		page = new VideoDoorEntry(page_node);
 		break;
 	case SUPERVISIONE:
 		page = new SupervisionMenu(page_node);

@@ -44,7 +44,7 @@
 #include "windowcontainer.h"
 #include "ringtonesmanager.h"
 #include "pagestack.h"
-#include "videoentryphone.h"
+#include "videodoorentry.h"
 #if !defined(BT_HARDWARE_X11)
 #include "calibration.h"
 #endif
@@ -382,10 +382,10 @@ void BtMain::loadConfiguration()
 	Home = new HomePage(pagemenu_home);
 
 	QDomNode video_node = getPageNode(VIDEOCITOFONIA);
-	// Touch X can receive calls even if the videoentryphone section is not
+	// Touch X can receive calls even if the videodoorentry section is not
 	// configured (but the configuration specifies it as an internal place).
 	if (video_node.isNull() && !(*bt_global::config)[PI_ADDRESS].isEmpty())
-		VideoEntryPhone::loadHiddenPages();
+		VideoDoorEntry::loadHiddenPages();
 
 #endif
 	connect(window_container->homeWindow(), SIGNAL(showHomePage()), Home, SLOT(showPage()));

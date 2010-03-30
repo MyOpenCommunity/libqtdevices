@@ -194,7 +194,7 @@ enum Section
 	LOAD_MANAGEMENT=18,                           /*!< Load management system */
 	SCENARI=1000,                                   /*!< Scenarios managing */
 	SCENARI_EVOLUTI=20,                           /*!< Advanced scenarios management */
-	VIDEOCITOFONIA=10000,                         /*!< Videoentryphone control system */
+	VIDEOCITOFONIA=10000,                         /*!< VideoDoorEntry system */
 	IMPOSTAZIONI=29,                              /*!< Settings */
 	MULTIMEDIA=16000,                             /*!< Multimedia system */
 	DIFSON_MULTI=12000,                           /*!< Sound diffusion system (mono and multichannel) */
