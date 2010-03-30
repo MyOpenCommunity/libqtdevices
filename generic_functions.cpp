@@ -39,7 +39,7 @@
 
 namespace
 {
-	QString getDateFormat()
+	QString getDateFormat(char separator = '.')
 	{
 		QString format;
 		bool ok;
@@ -59,6 +59,10 @@ namespace
 				break;
 			}
 		}
+
+		if (separator != '.')
+			format.replace('.', separator);
+
 		return format;
 	}
 }
@@ -311,9 +315,9 @@ int trasformaVol(int vol)
 }
 
 
-QString DateConversions::formatDateConfig(const QDate &date)
+QString DateConversions::formatDateConfig(const QDate &date, char separator)
 {
-	QString format = getDateFormat();
+	QString format = getDateFormat(separator);
 	if (format.isNull())
 		qWarning("DateConversions::formatDateConfig(), DATE_FORMAT conversion failed.");
 
