@@ -338,10 +338,13 @@ void impPassword::checkPasswd()
 		if (password != c)
 		{
 			qDebug() << "password errata doveva essere " << password;
+			// only beep on error on BTouch
+#ifdef LAYOUT_BTOUCH
 			sb = getBeep();
 			setBeep(true);
 			beep(1000);
 			QTimer::singleShot(1100, this, SLOT(restoreBeepState()));
+#endif
 			emit pageClosed();
 		}
 		else //password is correct
