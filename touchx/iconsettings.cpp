@@ -161,6 +161,11 @@ VolumePage::VolumePage(const QDomNode &config_node)
 	connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
 }
 
+void VolumePage::hideEvent(QHideEvent *e)
+{
+	bt_global::ringtones->stopRingtone();
+}
+
 void VolumePage::changeVolume(int new_vol)
 {
 	setVolume(VOLUME_RING, new_vol);
