@@ -103,6 +103,8 @@ Q_OBJECT
 public:
 	ChangeDateTime(const QString &ok_button_icon);
 
+	virtual void showPage();
+
 private:
 	PlatformDevice *dev;
 

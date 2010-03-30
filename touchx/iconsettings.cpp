@@ -230,6 +230,12 @@ ChangeDateTime::ChangeDateTime(const QString &ok_button_icon) :
 	dev = bt_global::add_device_to_cache(new PlatformDevice);
 }
 
+void ChangeDateTime::showPage()
+{
+	setDateTime(QDateTime::currentDateTime());
+	PageSetDateTime::showPage();
+}
+
 void ChangeDateTime::dateTimeChanged(QDate date, BtTime time)
 {
 	dev->setTime(time);
