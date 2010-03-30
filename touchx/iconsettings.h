@@ -131,7 +131,7 @@ private:
 };
 
 
-class PasswordPage : public BannerPage
+class PasswordPage : public Page
 {
 Q_OBJECT
 public:
