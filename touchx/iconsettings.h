@@ -79,6 +79,9 @@ public:
 
 public slots:
 	void changeVolume(int new_vol);
+
+protected:
+	virtual void hideEvent(QHideEvent *e);
 };
 
 
