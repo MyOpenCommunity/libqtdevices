@@ -139,7 +139,7 @@ DateDisplay::DateDisplay()
 void DateDisplay::paintLabel(QPainter &painter)
 {
 	painter.drawText(rect().adjusted(0, 0, -3, 0), Qt::AlignRight|Qt::AlignVCenter,
-			 DateConversions::formatDateConfig(QDate::currentDate()));
+			 DateConversions::formatDateConfig(QDate::currentDate(), '/'));
 }
 
 
@@ -184,14 +184,8 @@ HomepageDateDisplay::HomepageDateDisplay()
 
 void HomepageDateDisplay::paintLabel(QPainter &painter)
 {
-	QString format;
-	if ((*bt_global::config)[DATE_FORMAT].toInt() == USA_DATE)
-		format = "MM/dd/yy";
-	else
-		format = "dd/MM/yy";
-
 	painter.drawText(rect().adjusted(35, 0, 0, 0), Qt::AlignCenter,
-			 QDate::currentDate().toString(format));
+			 DateConversions::formatDateConfig(QDate::currentDate(), '/'));
 }
 
 
