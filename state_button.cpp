@@ -42,6 +42,8 @@ void StateButton::setOnImage(const QString &path)
 	QPixmap p = loadPressedImage(path);
 	if (!p.isNull())
 		pressed_on_pixmap = p;
+
+	setStatus(getStatus());
 }
 
 void StateButton::setOffImage(const QString &path)
@@ -50,6 +52,8 @@ void StateButton::setOffImage(const QString &path)
 	QPixmap p = loadPressedImage(path);
 	if (!p.isNull())
 		pressed_off_pixmap = p;
+
+	setStatus(getStatus());
 }
 
 void StateButton::setStatus(StateButton::Status st)
