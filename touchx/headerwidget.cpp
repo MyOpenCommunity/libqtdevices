@@ -115,7 +115,7 @@ TimeDisplay::TimeDisplay()
 
 void TimeDisplay::paintLabel(QPainter &painter)
 {
-	painter.drawText(rect().adjusted(0, 0, -3, 0), Qt::AlignRight|Qt::AlignVCenter,
+	painter.drawText(rect().adjusted(0, 0, -3, -3), Qt::AlignRight|Qt::AlignVCenter,
 			 QTime::currentTime().toString("hh:mm"));
 }
 
@@ -138,7 +138,7 @@ DateDisplay::DateDisplay()
 
 void DateDisplay::paintLabel(QPainter &painter)
 {
-	painter.drawText(rect().adjusted(0, 0, -3, 0), Qt::AlignRight|Qt::AlignVCenter,
+	painter.drawText(rect().adjusted(0, 0, -3, -3), Qt::AlignRight|Qt::AlignVCenter,
 			 DateConversions::formatDateConfig(QDate::currentDate(), '/'));
 }
 
@@ -353,7 +353,7 @@ void HeaderLogo::loadItems(const QDomNode &config_node)
 	temperature_display = 0;
 
 	QHBoxLayout *l = new QHBoxLayout(this);
-	l->setContentsMargins(3, 0, 3, 0);
+	l->setContentsMargins(3, 0, 10, 0);
 	l->setSpacing(10);
 
 	l->addWidget(tray_bar);
