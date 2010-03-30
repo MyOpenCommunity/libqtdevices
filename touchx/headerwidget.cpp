@@ -366,12 +366,12 @@ void HeaderLogo::loadItems(const QDomNode &config_node)
 
 		switch (id)
 		{
-		case ITEM_TIME:
+		case ITEM_DATE:
 			date_display = new DateDisplay;
 
 			l->addWidget(date_display);
 			break;
-		case ITEM_DATE:
+		case ITEM_TIME:
 			time_display = new TimeDisplay;
 
 			l->addWidget(time_display);
