@@ -35,6 +35,32 @@
 class QDomNode;
 class QWidget;
 
+/**
+ * Handle graphical changes for amplifiers, On/Off states and volume changes.
+ */
+class AdjustVolume : public BannLevel
+{
+Q_OBJECT
+protected:
+	enum States
+	{
+		ON,
+		OFF,
+	};
+	AdjustVolume(QWidget *parent=0);
+	void initBanner(const QString &left, const QString &_center_on, const QString &_center_off,
+		const QString &right, States init_state, int init_level, const QString &banner_text);
+	void setLevel(int level);
+	void setState(States new_state);
+
+private:
+	void updateIcons();
+	void setOnIcons();
+	void setOffIcons();
+	int current_level;
+	States current_state;
+	QString center_on, center_off;
+};
 
 /**
  * \class BannPowerAmplifier
