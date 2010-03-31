@@ -36,20 +36,20 @@ BannLevel::BannLevel(QWidget *parent) :
 	center_right_button = new BtButton;
 	right_button = new BtButton;
 
-	QHBoxLayout *hbox = new QHBoxLayout;
-	hbox->setContentsMargins(0, 0, 0, 0);
-	hbox->setSpacing(0);
-	hbox->addWidget(left_button);
-	hbox->addWidget(center_left_button);
-	hbox->addWidget(center_right_button);
-	hbox->addWidget(right_button);
+	QGridLayout *grid = new QGridLayout;
+	grid->setContentsMargins(0, 0, 0, 0);
+	grid->setSpacing(0);
+	grid->addWidget(left_button, 0, 0);
+	grid->addWidget(center_left_button, 0, 1, Qt::AlignRight);
+	grid->addWidget(center_right_button, 0, 2, Qt::AlignLeft);
+	grid->addWidget(right_button, 0, 3);
 
 	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
 	QVBoxLayout *vbox = new QVBoxLayout(this);
 	vbox->setContentsMargins(0, 0, 0, 0);
 	vbox->setSpacing(0);
-	vbox->addLayout(hbox);
+	vbox->addLayout(grid);
 	vbox->addWidget(text);
 
 	timer.setInterval(TIME_RIP_REGOLAZ);
