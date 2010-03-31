@@ -34,6 +34,66 @@
 #include <QLabel>
 
 
+
+AdjustVolume::AdjustVolume(QWidget *parent) :
+	BannLevel(parent)
+{
+	current_level = 2;
+}
+
+void AdjustVolume::initBanner(const QString &left, const QString &_center_on, const QString &_center_off,
+	const QString &right, States init_state, int init_level, const QString &banner_text)
+{
+	BannLevel::initBanner(banner_text);
+
+	left_button->setImage(left);
+	right_button->setImage(right);
+
+	center_on = _center_on;
+	center_off = _center_off;
+
+	setLevel(init_level);
+	setState(init_state);
+}
+
+void AdjustVolume::updateIcons()
+{
+	QString icon;
+	switch (current_state)
+	{
+	case ON:
+		icon = center_on;
+		break;
+	case OFF:
+		icon = center_off;
+		break;
+	}
+	setCenterLeftIcon(getBostikName(icon, QString("sxl") + QString::number(current_level)));
+	setCenterRightIcon(getBostikName(icon, QString("dxl") + QString::number(current_level)));
+}
+
+void AdjustVolume::setState(States new_state)
+{
+	if (new_state != current_state)
+	{
+		current_state = new_state;
+		updateIcons();
+	}
+
+}
+
+void AdjustVolume::setLevel(int level)
+{
+	if (level != current_level)
+	{
+		current_level = level;
+		updateIcons();
+	}
+}
+
+
+
+
 BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString address, int openserver_id)
 	: bannRegolaz(parent)
 {
