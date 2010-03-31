@@ -64,7 +64,7 @@ class SoundAmbientPage : public BannerPage
 {
 Q_OBJECT
 public:
-	SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources);
+	SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources = QList<SourceDescription>());
 	static banner *getBanner(const QDomNode &item_node);
 
 private:
