@@ -43,8 +43,8 @@ MultimediaPlayerButtons::MultimediaPlayerButtons(Type type)
 	BtButton *screen = NULL;
 
 	if (type != AUDIO_PAGE && type != IPRADIO_PAGE)
-		getButton(is_window ? "nofullscreen" : "fullscreen",
-			  is_window ? SIGNAL(noFullScreen()) : SIGNAL(fullScreen()));
+		screen = getButton(is_window ? "nofullscreen" : "fullscreen",
+				   is_window ? SIGNAL(noFullScreen()) : SIGNAL(fullScreen()));
 
 	BtButton *forward = NULL, *rewind = NULL;
 	if (type == VIDEO_PAGE || type == VIDEO_WINDOW || type == AUDIO_PAGE)
