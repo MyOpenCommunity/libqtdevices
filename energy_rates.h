@@ -44,6 +44,9 @@ public:
 
 	EnergyRates();
 
+	// returns true if any rates are defined
+	bool hasRates();
+
 	// can be called multiple times, will load the rates only
 	// the first time
 	void loadRates();

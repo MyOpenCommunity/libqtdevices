@@ -94,7 +94,7 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 	QList<QDomNode> families = getChildren(config_node, "energy_type");
 
 	// display the button to edit rates if more than one family
-	if (edit_rates && families.count() > 1)
+	if (edit_rates && EnergyRates::energy_rates.hasRates() && families.count() > 1)
 	{
 		NavigationBar *nav = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 		buildPage(new BannerContent, nav);
@@ -256,7 +256,7 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node, bool edit_rates, b
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 	buildPage(new BannerContent, nav_bar);
 
-	if (edit_rates)
+	if (edit_rates && EnergyRates::energy_rates.hasRates())
 	{
 		Page *costs = new EnergyCost;
 

@@ -22,6 +22,11 @@ EnergyRates::EnergyRates()
 {
 }
 
+bool EnergyRates::hasRates()
+{
+	return !rates.isEmpty();
+}
+
 void EnergyRates::loadRates()
 {
 	if (!rates.isEmpty())
