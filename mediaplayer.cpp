@@ -38,7 +38,12 @@
 #include <sys/wait.h>
 
 
+#ifdef BT_HARDWARE_BTOUCH
 static const char *MPLAYER_FILENAME = "/usr/bin/mplayer";
+#else
+static const char *MPLAYER_FILENAME = "/home/bticino/cfg/extra/10/mplayer";
+#endif
+
 QProcess MediaPlayer::mplayer_proc;
 
 
