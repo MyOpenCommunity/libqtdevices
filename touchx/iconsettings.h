@@ -39,7 +39,8 @@ class IconSettings : public IconPage
 {
 Q_OBJECT
 public:
-	IconSettings(const QDomNode &config_node);
+	IconSettings(const QDomNode &config_node, bool load_vct_items = false);
+	void loadVctItems();
 
 	virtual int sectionId();
 	static banner *getBanner(const QDomNode &item_node);

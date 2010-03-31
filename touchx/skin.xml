@@ -261,7 +261,19 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_link_icon>home/illuminazione.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/illuminazione.png</img_top_navigation_button>
 	</item>
+    <item>
+        <!-- settings -->
+        <cid>14000</cid>
+        <img_videodoorentry>setup/videocitofonia.png</img_videodoorentry>
+        <img_handsfree_on>setup/beepon.png</img_handsfree_on>
+        <img_handsfree_off>setup/beepoff.png</img_handsfree_off>
+        <img_profstudio_on>setup/beepon.png</img_profstudio_on>
+        <img_profstudio_off>setup/beepoff.png</img_profstudio_off>
+        <img_tray_handsfree>home/statoportaoff.png</img_tray_handsfree>
+        <img_tray_profstudio>home/statoportaon.png</img_tray_profstudio>
+    </item>
 	<item>
+        <!-- antintrusion -->
 		<cid>13</cid>
 		<img_link_icon>home/antintrusione.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/antintrusione.png</img_top_navigation_button>
@@ -774,7 +786,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- regulator page 4 zones -->
 	<item>
-		<cid>14000</cid> <!-- TODO fix -->
+		<cid>200000</cid> <!-- TODO fix -->
 		<img_summer_flat>termoregolazione/estateoff.png</img_summer_flat>
 		<img_winter_flat>termoregolazione/invernooff.png</img_winter_flat>
 		<img_regulator>termoregolazione/imgcentrale.png</img_regulator>

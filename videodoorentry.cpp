@@ -95,7 +95,7 @@ void VideoDoorEntry::loadHiddenPages()
 {
 	EntryphoneDevice *dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS]));
 
-	// This pages are showed only after the receiving of a call frame, so we
+	// These pages are showed only after the receiving of a call frame, so we
 	// don't store any pointer to these. The destruction is provided by the PageContainer.
 	(void) new IntercomCallPage(dev);
 	(void) new VCTCallPage(dev);
@@ -374,6 +374,51 @@ Intercom::Intercom(const QDomNode &config_node)
 		}
 		connect(btn, SIGNAL(clicked()), call_page, SLOT(showPage()));
 	}
+}
+
+
+HandsFree::HandsFree() : IconPageButton(tr("Hands Free"))
+{
+	button->setOffImage(bt_global::skin->getImage("handsfree_off"));
+	button->setOnImage(bt_global::skin->getImage("handsfree_on"));
+	connect(button, SIGNAL(clicked()), SLOT(toggleActivation()));
+	tray_button = new BtButton(bt_global::skin->getImage("tray_handsfree"));
+	connect(tray_button, SIGNAL(clicked()), SLOT(turnOff()));
+	bt_global::btmain->trayBar()->addButton(tray_button);
+	updateStatus();
+}
+
+void HandsFree::toggleActivation()
+{
+	button->setStatus(!button->getStatus());
+	updateStatus();
+}
+
+void HandsFree::updateStatus()
+{
+	tray_button->setVisible(button->getStatus() == StateButton::ON);
+}
+
+void HandsFree::turnOff()
+{
+	button->setStatus(false);
+	updateStatus();
+}
+
+
+ProfessionalStudio::ProfessionalStudio() : IconPageButton(tr("Professional studio"))
+{
+	button->setOffImage(bt_global::skin->getImage("profstudio_off"));
+	button->setOnImage(bt_global::skin->getImage("profstudio_on"));
+}
+
+
+SettingsVideoDoorEntry::SettingsVideoDoorEntry()
+{
+	buildPage(new IconContent, new NavigationBar, "Video Door Entry");
+
+	page_content->addWidget(new HandsFree);
+	page_content->addWidget(new ProfessionalStudio);
 }
 
 #endif

@@ -725,7 +725,7 @@ void HeaderWidget::loadConfiguration(const QDomNode &homepage_node, const QDomNo
 
 		if (id == ITEM_SETTINGS_LINK)
 		{
-			settings = new IconSettings(getPageNodeFromChildNode(item, "lnk_pageID"));
+			settings = new IconSettings(getPageNodeFromChildNode(item, "lnk_pageID"), true);
 			connect(settings, SIGNAL(Closed()), SIGNAL(showHomePage()));
 
 			break;

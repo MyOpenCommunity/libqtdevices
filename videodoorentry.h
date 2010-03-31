@@ -129,6 +129,39 @@ private:
 	QSignalMapper *mapper_int_intercom;
 };
 
+
+class ProfessionalStudio : public IconPageButton
+{
+Q_OBJECT
+public:
+	ProfessionalStudio();
+private:
+	BtButton *tray_button;
+};
+
+
+class HandsFree : public IconPageButton
+{
+Q_OBJECT
+public:
+	HandsFree();
+private slots:
+	void toggleActivation();
+	void turnOff();
+private:
+	BtButton *tray_button;
+	void updateStatus();
+};
+
+
+class SettingsVideoDoorEntry : public IconPage
+{
+Q_OBJECT
+public:
+	SettingsVideoDoorEntry();
+};
+
+
 #endif // #ifdef LAYOUT_BTOUCH
 
 #endif

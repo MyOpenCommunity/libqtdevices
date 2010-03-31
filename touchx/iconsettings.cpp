@@ -39,6 +39,9 @@
 #include "platform_device.h" // PlatformDevice
 #include "generic_functions.h" // setCfgValue
 #include "displaycontrol.h"
+#include "videodoorentry.h"
+#include "main.h" // bt_global::config
+
 #if !defined(BT_HARDWARE_X11)
 #include "calibration.h"
 #endif
@@ -248,12 +251,16 @@ void ChangeDateTime::dateTimeChanged(QDate date, BtTime time)
 }
 
 
-
-
-IconSettings::IconSettings(const QDomNode &config_node)
+IconSettings::IconSettings(const QDomNode &config_node, bool load_vct_items)
 {
+	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 	loadItems(config_node);
+
+
+	if (load_vct_items && !(*bt_global::config)[PI_ADDRESS].isEmpty())
+		addPage(new SettingsVideoDoorEntry, tr("Video door entry"),
+			bt_global::skin->getImage("videodoorentry"));
 }
 
 int IconSettings::sectionId()
