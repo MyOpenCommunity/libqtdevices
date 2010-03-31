@@ -123,7 +123,11 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 
 		b->setText(getTextChild(type, "descr"));
 		b->setId(getTextChild(type, "id").toInt());
-		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+
+		if (families.count() > 1)
+			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+		else
+			connect(b, SIGNAL(pageClosed()), SIGNAL(Closed()));
 	}
 }
 
