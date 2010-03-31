@@ -64,10 +64,37 @@ private:
 
 
 /**
+ * \class BannPowerAmplifierNew
+ *
+ * The main banner of the power amplifier. It instantiate the device and manage
+ * the link with the page of settings.
+ */
+class BannPowerAmplifierNew : public AdjustVolume
+{
+Q_OBJECT
+public:
+	BannPowerAmplifierNew(const QString &descr, const QDomNode& config_node, QString address, int openserver_id);
+
+private slots:
+	void toggleStatus();
+	void volumeUp();
+	void volumeDown();
+	void status_changed(const StatusList &status_list);
+
+private:
+	QString off_icon, on_icon;
+	bool status;
+	PowerAmplifierDevice *dev;
+};
+
+
+
+/**
  * \class BannPowerAmplifier
  *
  * The main banner of the power amplifier. It instantiate the device and manage
  * the link with the page of settings.
+ * TODO: must be removed once the old sound diffusion is gone also on BTouch
  */
 class BannPowerAmplifier : public bannRegolaz
 {
