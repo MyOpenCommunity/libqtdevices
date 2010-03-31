@@ -92,6 +92,76 @@ void AdjustVolume::setLevel(int level)
 
 
 
+BannPowerAmplifierNew::BannPowerAmplifierNew(const QString &descr, const QDomNode& config_node, QString address, int openserver_id)
+	: AdjustVolume(0)
+{
+	status = false;
+
+	// TODO: remove config_node from params, and also SkinContext
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	on_icon = bt_global::skin->getImage("on");
+	off_icon = bt_global::skin->getImage("off");
+	initBanner(on_icon, bt_global::skin->getImage("volume_active"),
+		bt_global::skin->getImage("volume_inactive"), bt_global::skin->getImage("settings"), OFF, 1, descr);
+	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address, openserver_id));
+	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+
+	connect(right_button, SIGNAL(clicked()), SLOT(toggleStatus()));
+	connect(this, SIGNAL(center_right_clicked()), SLOT(volumeUp()));
+	connect(this, SIGNAL(center_left_clicked()), SLOT(volumeDown()));
+
+	connectButtonToPage(right_button, new PowerAmplifier(dev, config_node));
+}
+
+void BannPowerAmplifierNew::toggleStatus()
+{
+	if (status)
+		dev->turnOff();
+	else
+		dev->turnOn();
+}
+
+// TODO: PoweramplifierDevice currently lacks the new init() method
+
+void BannPowerAmplifierNew::status_changed(const StatusList &status_list)
+{
+	StatusList::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+	{
+		if (it.key() == PowerAmplifierDevice::DIM_STATUS)
+		{
+			status = it.value().toBool();
+			setState(status ? ON : OFF);
+			left_button->setImage(status ? off_icon : on_icon);
+		}
+		else if (it.key() == PowerAmplifierDevice::DIM_VOLUME)
+		{
+			int volume = it.value().toInt();
+			// We have to normalize the volume value (from 0 to 31) in a value
+			// that we can represent into the banner (that accept values from 1 to 9)
+			// so we use the following formula.
+			int level = trasformaVol(volume);
+			Q_ASSERT_X(level > 0, "BannPowerAmplifierNew::status_changed", "Received volume is not in range 0-31");
+			setLevel(level);
+		}
+		++it;
+	}
+}
+
+void BannPowerAmplifierNew::volumeUp()
+{
+	dev->volumeUp();
+}
+
+void BannPowerAmplifierNew::volumeDown()
+{
+	dev->volumeDown();
+}
+
+
+
+
+
 
 BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString address, int openserver_id)
 	: bannRegolaz(parent)
