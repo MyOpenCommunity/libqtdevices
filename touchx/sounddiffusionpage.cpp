@@ -146,22 +146,13 @@ banner *SoundAmbientPage::getBanner(const QDomNode &item_node)
 	switch (id)
 	{
 	case AMPLIFIER:
-	{
-		Amplifier *bann = new Amplifier(descr, where);
-		b = bann;
-	}
+		b = new Amplifier(descr, where);
 		break;
 	case AMPLIFIER_GROUP:
-	{
-		AmplifierGroup *bann = new AmplifierGroup(getAddresses(getChildWithName(item_node, "addresses")), descr);
-		b = bann;
-	}
+		b = new AmplifierGroup(getAddresses(getChildWithName(item_node, "addresses")), descr);
 		break;
 	case BANN_POWER_AMPLIFIER:
-	{
-		BannPowerAmplifierNew *bann = new BannPowerAmplifierNew(descr, item_node, where, oid);
-		b = bann;
-	}
+		b = new BannPowerAmplifierNew(descr, item_node, where, oid);
 		break;
 	}
 	return b;
