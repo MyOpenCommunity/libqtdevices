@@ -33,7 +33,7 @@
 
 
 const char *audio_files[] = {"m3u", "mp3", "wav", "ogg", "wma"};
-const char *video_files[] = {"mpg", "avi"};
+const char *video_files[] = {"mpg", "avi", "mp4"};
 const char *image_files[] = {"png", "gif", "jpg", "jpeg"};
 
 #define ARRAY_SIZE(x) int(sizeof(x) / sizeof((x)[0]))
