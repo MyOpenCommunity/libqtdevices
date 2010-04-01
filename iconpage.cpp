@@ -24,6 +24,8 @@
 #include "navigation_bar.h"
 #include "skinmanager.h"
 #include "fontmanager.h" // bt_global::font
+#include "btmain.h" // bt_global::btmain
+#include "homewindow.h" // TrayBar
 
 #include <QDomNode>
 #include <QDebug>
@@ -166,4 +168,34 @@ IconPageButton::IconPageButton(const QString &label)
 	QVBoxLayout *l = new QVBoxLayout(this);
 	l->addWidget(button);
 	l->addWidget(lbl);
+}
+
+
+IconButtonOnTray::IconButtonOnTray(const QString &label, const QString &icon_on, const QString &icon_off,
+	const QString &tray_icon) : IconPageButton(label)
+{
+	button->setOffImage(bt_global::skin->getImage(icon_off));
+	button->setOnImage(bt_global::skin->getImage(icon_on));
+	connect(button, SIGNAL(clicked()), SLOT(toggleActivation()));
+	tray_button = new BtButton(bt_global::skin->getImage(tray_icon));
+	connect(tray_button, SIGNAL(clicked()), SLOT(turnOff()));
+	bt_global::btmain->trayBar()->addButton(tray_button);
+	updateStatus();
+}
+
+void IconButtonOnTray::toggleActivation()
+{
+	button->setStatus(!button->getStatus());
+	updateStatus();
+}
+
+void IconButtonOnTray::updateStatus()
+{
+	tray_button->setVisible(button->getStatus() == StateButton::ON);
+}
+
+void IconButtonOnTray::turnOff()
+{
+	button->setStatus(false);
+	updateStatus();
 }

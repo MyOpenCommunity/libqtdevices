@@ -94,4 +94,27 @@ protected:
 	StateButton *button;
 };
 
+
+/**
+ * A base class for special state buttons that have a button "as shortcut" in the
+ * tray icon, but only if the status is on.
+ */
+class IconButtonOnTray : public IconPageButton
+{
+Q_OBJECT
+public:
+	IconButtonOnTray(const QString &label, const QString &icon_on, const QString &icon_off,
+		const QString &tray_icon);
+
+private slots:
+	void toggleActivation();
+	void turnOff();
+
+protected:
+	virtual void updateStatus();
+
+private:
+	BtButton *tray_button;
+};
+
 #endif // ICONPAGE_H

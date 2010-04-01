@@ -130,25 +130,10 @@ private:
 };
 
 
-class IconButtonOnTray : public IconPageButton
-{
-Q_OBJECT
-public:
-	IconButtonOnTray(const QString &label, const QString &icon_on, const QString &icon_off,
-		const QString & tray_icon);
-
-private slots:
-	void toggleActivation();
-	void turnOff();
-
-protected:
-	virtual void updateStatus();
-
-private:
-	BtButton *tray_button;
-};
-
-
+/**
+ * The button (actually, the couple of buttons) that represent the professional
+ * studio facility (automatically open the door on an incoming call)
+ */
 class ProfessionalStudio : public IconButtonOnTray
 {
 Q_OBJECT
@@ -160,6 +145,10 @@ protected:
 };
 
 
+/**
+ * The button (actually, the couple of buttons) that represent the hands
+ * free facility (automatically answer on an incoming call)
+ */
 class HandsFree : public IconButtonOnTray
 {
 Q_OBJECT
@@ -171,6 +160,9 @@ protected:
 };
 
 
+/**
+ * The page of the settings for the VideoDoorEntry section.
+ */
 class SettingsVideoDoorEntry : public IconPage
 {
 Q_OBJECT
