@@ -304,14 +304,14 @@ void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_
 		QString addr = getTextChild(item, "address");
 		next_page = new EnergyView(measure, energy_type, addr, mode, rate_id, table, graph);
 
-		BannEnergyInterface *b = new BannEnergyInterface(rate_id, mode == 1, getTextChild(item, "descr"));
+		EnergyDevice *dev = static_cast<EnergyDevice *>(bt_global::devices_cache[get_device_key("18", addr)]);
+
+		BannEnergyInterface *b = new BannEnergyInterface(rate_id, mode == 1, getTextChild(item, "descr"), dev);
 		b->connectRightButton(next_page);
 		b->setUnitMeasure(measure);
 
 		views.append(next_page);
 
-		device *dev = bt_global::devices_cache[get_device_key("18", addr)];
-		connect(dev, SIGNAL(status_changed(const StatusList &)), b, SLOT(status_changed(const StatusList &)));
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		page_content->appendBanner(b);
 	}
