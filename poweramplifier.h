@@ -191,8 +191,7 @@ class PowerAmplifierBalance : public BannOnOffCombo
 {
 Q_OBJECT
 public:
-	PowerAmplifierBalance(PowerAmplifierDevice *d, QWidget *parent=0);
-	virtual void inizializza(bool forza=false);
+	PowerAmplifierBalance(PowerAmplifierDevice *d, const QString &descr);
 
 private slots:
 	void dx();

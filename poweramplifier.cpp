@@ -248,7 +248,6 @@ void PowerAmplifier::loadBanners(PowerAmplifierDevice *dev, const QDomNode &conf
 		preset_list[preset_node.nodeName().mid(3).toInt()] = preset_node.toElement().text();
 
 	banner *b = new PowerAmplifierPreset(dev, this, preset_list);
-	b->Draw();
 	page_content->appendBanner(b);
 
 	b = new PowerAmplifierTreble(dev, tr("Treble"), this);
@@ -257,10 +256,8 @@ void PowerAmplifier::loadBanners(PowerAmplifierDevice *dev, const QDomNode &conf
 	b = new PowerAmplifierBass(dev, tr("Bass"), this);
 	page_content->appendBanner(b);
 
-	PowerAmplifierBalance *bann = new PowerAmplifierBalance(dev, this);
-	bann->setText(tr("Balance"));
-	bann->Draw();
-	page_content->appendBanner(bann);
+	b = new PowerAmplifierBalance(dev, tr("Balance"));
+	page_content->appendBanner(b);
 
 	b = new PowerAmplifierLoud(dev, tr("Loud"), this);
 	page_content->appendBanner(b);
@@ -440,23 +437,25 @@ void PowerAmplifierBass::showLevel(int level)
 }
 
 
-PowerAmplifierBalance::PowerAmplifierBalance(PowerAmplifierDevice *d, QWidget *parent) : BannOnOffCombo(parent)
+PowerAmplifierBalance::PowerAmplifierBalance(PowerAmplifierDevice *d, const QString &descr) :
+	BannOnOffCombo(0)
 {
 	dev = d;
-	SecondaryText->setProperty("SecondFgColor", true);
-	SetIcons(bt_global::skin->getImage("more"), bt_global::skin->getImage("less"), bt_global::skin->getImage("balance"),
-		bt_global::skin->getImage("balance_dx"), bt_global::skin->getImage("balance_sx"));
-	connect(this, SIGNAL(sxClick()), SLOT(dx()));
-	connect(this, SIGNAL(dxClick()), SLOT(sx()));
+	initBanner(bt_global::skin->getImage("less"), bt_global::skin->getImage("balance_sx"), bt_global::skin->getImage("balance"),
+		bt_global::skin->getImage("balance_dx"), bt_global::skin->getImage("more"), CENTER, descr);
+	connect(right_button, SIGNAL(clicked()), SLOT(dx()));
+	connect(left_button, SIGNAL(clicked()), SLOT(sx()));
 	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
-	showBalance(0);
 }
 
+// TODO: this must go into PoweramplifierDevice::init()
+/*
 void PowerAmplifierBalance::inizializza(bool forza)
 {
 	dev->requestBalance();
 	banner::inizializza(forza);
 }
+*/
 
 void PowerAmplifierBalance::status_changed(const StatusList &status_list)
 {
@@ -488,10 +487,7 @@ void PowerAmplifierBalance::showBalance(int balance)
 	else
 		changeStatus(SX);
 
-	QString desc;
-	desc.sprintf("%d", abs(balance));
-	setSecondaryText(desc);
-	Draw();
+	setInternalText(QString::number(balance));
 }
 
 
