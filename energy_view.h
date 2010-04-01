@@ -125,6 +125,8 @@ private:
 	QString dateToKey(const QDate &date, EnergyDevice::GraphType t);
 	void updateBanners();
 	void updateCurrentGraph();
+	// returns true if we own the graph/table instances
+	bool isGraphOurs();
 
 	enum Widget
 	{
