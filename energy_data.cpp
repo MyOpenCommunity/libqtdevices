@@ -285,6 +285,8 @@ void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_
 	assert(bt_global::skin->hasContext() && "Skin context not set!");
 	QString energy_type = getTextChild(config_node, "descr");
 	bool show_currency_button = false;
+	// IMPORTANT: the table instance is shared between all energy interfaces: any
+	// signals must be disconnected and reconnected when the interface page is shown
 	EnergyTable *table = new EnergyTable(3);
 	EnergyGraph *graph = new EnergyGraph;
 

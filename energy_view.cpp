@@ -286,6 +286,7 @@ Bann2Buttons *getBanner(QWidget *parent, QString primary_text)
 EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id, EnergyTable *_table,
 		       EnergyGraph *_graph)
 {
+	// see comment about _table in EnergyInterface::loadItems
 	rate = EnergyRates::energy_rates.getRate(rate_id);
 	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
 
@@ -333,7 +334,6 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	}
 
 	connect(bannNavigazione, SIGNAL(downClick()), table, SLOT(showPage()));
-	connect(table, SIGNAL(Closed()), SLOT(showPageFromTable()));
 	connect(bannNavigazione, SIGNAL(backClick()), SLOT(backClick()));
 	main_layout->addWidget(bannNavigazione);
 
@@ -429,6 +429,8 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 
 void EnergyView::showPage()
 {
+	disconnect(table, SIGNAL(Closed()), 0, SLOT(showPageFromTable()));
+	connect(table, SIGNAL(Closed()), SLOT(showPageFromTable()));
 	time_period->forceDate(QDate::currentDate());
 	showPageFromTable();
 }
