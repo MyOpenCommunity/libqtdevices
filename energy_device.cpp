@@ -480,7 +480,11 @@ void EnergyDevice::setHasNewFrames(bool restart_update_requests)
 		// to force resending the start frame if restarted
 		update_state = UPDATE_IDLE;
 
-	// resend the last graph request using 16/32 bit frames
+	// always resend the last graph request using 16/32 bit
+	// frames: the new hardware devices do not support the old
+	// graphics frames, so it is always correct to resend the
+	// request using the new graph frames if we know we're talking
+	// to the new hardware
 	switch (pending_graph_request)
 	{
 	case REQ_DAILY_AVERAGE_GRAPH:
