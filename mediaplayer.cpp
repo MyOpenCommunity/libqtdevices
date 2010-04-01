@@ -118,7 +118,7 @@ bool MediaPlayer::play(QString track, bool write_output)
 
 bool MediaPlayer::runMPlayer(const QList<QString> &args, bool write_output)
 {
-	if (!active && mplayer_proc.state() != QProcess::NotRunning)
+	if (mplayer_proc.state() != QProcess::NotRunning)
 	{
 		mplayer_proc.terminate();
 		mplayer_proc.waitForFinished();
