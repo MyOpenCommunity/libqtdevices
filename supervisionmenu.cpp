@@ -152,5 +152,5 @@ LoadDiagnosticPage::LoadDiagnosticPage(const QDomNode &config_node)
 void LoadDiagnosticPage::showEvent(QShowEvent *)
 {
 	foreach (const LoadsDevice *d, devices)
-		d->requestStatus();
+		d->requestLevel();
 }
