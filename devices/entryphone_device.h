@@ -48,6 +48,7 @@ public:
 	enum Type
 	{
 		VCT_CALL = 1,
+		AUTO_VCT_CALL = 2, // the value doesn't matter
 		INTERCOM_CALL = 100, // the value doesn't matter
 		END_OF_CALL = 3,
 		RINGTONE = 200, // the value doesn't matter

@@ -191,7 +191,7 @@ void EntryphoneDevice::moveRightRelease() const
 
 void EntryphoneDevice::manageFrame(OpenMsg &msg)
 {
-	if ((!is_calling) && (QString::fromStdString(msg.whereFull()) != where))
+	if (!is_calling && QString::fromStdString(msg.whereFull()) != where)
 		return;
 
 	int what = msg.what();
@@ -205,6 +205,7 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 		Q_ASSERT_X(msg.whatSubArgCnt() < 2, "EntryphoneDevice::manageFrame",
 			"Incomplete open frame received");
 		kind = msg.whatArgN(0);
+		mmtype = msg.whatArgN(1);
 
 		int kind_val = msg.whatArgN(0) % 100;
 		int ringtone = -1;
@@ -227,7 +228,7 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 			ringtone = RINGTONE_PE4;
 			break;
 		case 5:
-			what = VCT_CALL;
+			what = AUTO_VCT_CALL;
 			break;
 		case 6:
 			what = INTERCOM_CALL;

@@ -130,27 +130,44 @@ private:
 };
 
 
-class ProfessionalStudio : public IconPageButton
+class IconButtonOnTray : public IconPageButton
 {
 Q_OBJECT
 public:
-	ProfessionalStudio();
+	IconButtonOnTray(const QString &label, const QString &icon_on, const QString &icon_off,
+		const QString & tray_icon);
+
+private slots:
+	void toggleActivation();
+	void turnOff();
+
+protected:
+	virtual void updateStatus();
+
 private:
 	BtButton *tray_button;
 };
 
 
-class HandsFree : public IconPageButton
+class ProfessionalStudio : public IconButtonOnTray
+{
+Q_OBJECT
+public:
+	ProfessionalStudio();
+
+protected:
+	virtual void updateStatus();
+};
+
+
+class HandsFree : public IconButtonOnTray
 {
 Q_OBJECT
 public:
 	HandsFree();
-private slots:
-	void toggleActivation();
-	void turnOff();
-private:
-	BtButton *tray_button;
-	void updateStatus();
+
+protected:
+	virtual void updateStatus();
 };
 
 

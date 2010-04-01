@@ -377,39 +377,57 @@ Intercom::Intercom(const QDomNode &config_node)
 }
 
 
-HandsFree::HandsFree() : IconPageButton(tr("Hands Free"))
+IconButtonOnTray::IconButtonOnTray(const QString &label, const QString &icon_on, const QString &icon_off,
+	const QString &tray_icon) : IconPageButton(label)
 {
-	button->setOffImage(bt_global::skin->getImage("handsfree_off"));
-	button->setOnImage(bt_global::skin->getImage("handsfree_on"));
+	button->setOffImage(bt_global::skin->getImage(icon_off));
+	button->setOnImage(bt_global::skin->getImage(icon_on));
 	connect(button, SIGNAL(clicked()), SLOT(toggleActivation()));
-	tray_button = new BtButton(bt_global::skin->getImage("tray_handsfree"));
+	tray_button = new BtButton(bt_global::skin->getImage(tray_icon));
 	connect(tray_button, SIGNAL(clicked()), SLOT(turnOff()));
 	bt_global::btmain->trayBar()->addButton(tray_button);
 	updateStatus();
 }
 
-void HandsFree::toggleActivation()
+void IconButtonOnTray::toggleActivation()
 {
 	button->setStatus(!button->getStatus());
 	updateStatus();
 }
 
-void HandsFree::updateStatus()
+void IconButtonOnTray::updateStatus()
 {
 	tray_button->setVisible(button->getStatus() == StateButton::ON);
 }
 
-void HandsFree::turnOff()
+void IconButtonOnTray::turnOff()
 {
 	button->setStatus(false);
 	updateStatus();
 }
 
 
-ProfessionalStudio::ProfessionalStudio() : IconPageButton(tr("Professional studio"))
+HandsFree::HandsFree() : IconButtonOnTray(tr("Hands Free"),
+	"handsfree_on", "handsfree_off", "tray_handsfree")
 {
-	button->setOffImage(bt_global::skin->getImage("profstudio_off"));
-	button->setOnImage(bt_global::skin->getImage("profstudio_on"));
+}
+
+void HandsFree::updateStatus()
+{
+	IconButtonOnTray::updateStatus();
+	VCTCallPage::setHandsFree(button->getStatus() == StateButton::ON);
+}
+
+
+ProfessionalStudio::ProfessionalStudio() : IconButtonOnTray(tr("Professional studio"),
+	"profstudio_on", "profstudio_off", "tray_profstudio")
+{
+}
+
+void ProfessionalStudio::updateStatus()
+{
+	IconButtonOnTray::updateStatus();
+	VCTCallPage::setProfStudio(button->getStatus() == StateButton::ON);
 }
 
 

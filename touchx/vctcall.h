@@ -52,7 +52,6 @@ namespace VCTCallPrivate
 	{
 	Q_OBJECT
 	public:
-		// TODO: we need a EntryphoneDevice to control the camera
 		CameraMove(EntryphoneDevice *dev);
 		void setFullscreenEnabled(bool fs);
 		void setMoveEnabled(bool move);
@@ -99,7 +98,7 @@ namespace VCTCallPrivate
 			FULLSCREEN_VIDEO = 1,
 		};
 
-		VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f);
+		VCTCall(EntryphoneDevice *d, FormatVideo f);
 		void refreshStatus();
 		void startVideo();
 		void stopVideo();
@@ -115,19 +114,21 @@ namespace VCTCallPrivate
 		BtButton *cycle;
 		QString mute_icon;
 		ItemTuning *volume;
+		static VCTCallStatus *call_status;
 
 	public slots:
 		void endCall();
+		void toggleCall();
 
 	signals:
 		void callClosed();
 		void incomingCall();
+		void autoIncomingCall();
 
 	private slots:
 		void status_changed(const StatusList &sl);
 		void toggleCameraSettings();
 		void handleClose();
-		void toggleCall();
 		void toggleMute();
 		void changeVolume(int value);
 
@@ -136,7 +137,6 @@ namespace VCTCallPrivate
 		bool camera_settings_shown;
 		EntryphoneDevice *dev;
 		QProcess video_grabber;
-		VCTCallStatus *call_status;
 	};
 
 
@@ -147,7 +147,7 @@ namespace VCTCallPrivate
 	{
 	Q_OBJECT
 	public:
-		VCTCallWindow(EntryphoneDevice *d, VCTCallStatus *call_status);
+		VCTCallWindow(EntryphoneDevice *d);
 
 	public slots:
 		virtual void showWindow();
@@ -174,17 +174,20 @@ class VCTCallPage : public Page
 Q_OBJECT
 public:
 	VCTCallPage(EntryphoneDevice *d);
+	static void setHandsFree(bool on);
+	static void setProfStudio(bool on);
 
 private slots:
-	virtual void showPage();
+	void incomingCall();
+	void autoIncomingCall();
 	void handleClose();
 	void enterFullScreen();
 	void exitFullScreen();
 
 private:
 	VCTCallPrivate::VCTCallWindow *window;
-	VCTCallPrivate::VCTCallStatus *call_status;
 	VCTCallPrivate::VCTCall *vct_call;
+	EntryphoneDevice *dev;
 };
 
 #endif //VCTCALL_H

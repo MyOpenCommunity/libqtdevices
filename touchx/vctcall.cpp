@@ -56,6 +56,8 @@ namespace VCTCallPrivate
 		bool connected;
 		StateButton::Status mute;
 		ItemTuningStatus volume_status;
+		bool hands_free;
+		bool prof_studio;
 
 		VCTCallStatus();
 
@@ -65,9 +67,12 @@ namespace VCTCallPrivate
 		// preserved betweeen different calls).
 		void init();
 	};
+
+	VCTCallStatus *VCTCall::call_status = new VCTCallStatus;
 }
 
 using namespace VCTCallPrivate;
+
 
 
 StateButton *getButton(const QString &image_path)
@@ -177,9 +182,8 @@ void VCTCallStatus::init()
 
 
 
-VCTCall::VCTCall(EntryphoneDevice *d, VCTCallStatus *st, FormatVideo f)
+VCTCall::VCTCall(EntryphoneDevice *d, FormatVideo f)
 {
-	call_status = st;
 	format = f;
 	dev = d;
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
@@ -262,11 +266,7 @@ void VCTCall::toggleMute()
 void VCTCall::toggleCall()
 {
 	call_status->connected = !call_status->connected;
-	if (call_status->connected)
-		mute_button->setStatus(StateButton::OFF);
-	else
-		mute_button->setStatus(StateButton::DISABLED);
-	call_status->mute = mute_button->getStatus();
+	call_status->mute = call_status->connected ? StateButton::OFF : StateButton::DISABLED;
 
 	refreshStatus();
 	if (call_status->connected)
@@ -303,6 +303,9 @@ void VCTCall::status_changed(const StatusList &sl)
 		{
 		case EntryphoneDevice::VCT_CALL:
 			emit incomingCall();
+			break;
+		case EntryphoneDevice::AUTO_VCT_CALL:
+			emit autoIncomingCall();
 			break;
 		case EntryphoneDevice::END_OF_CALL:
 			stopVideo();
@@ -349,15 +352,15 @@ void VCTCall::handleClose()
 
 VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 {
-	call_status = new VCTCallStatus;
-
-	vct_call = new VCTCall(d, call_status, VCTCall::NORMAL_VIDEO);
-	call_status->volume_status = vct_call->volume->getStatus();
+	dev = d;
+	vct_call = new VCTCall(d, VCTCall::NORMAL_VIDEO);
+	VCTCall::call_status->volume_status = vct_call->volume->getStatus();
 
 	connect(vct_call, SIGNAL(callClosed()), SLOT(handleClose()));
-	connect(vct_call, SIGNAL(incomingCall()), SLOT(showPage()));
+	connect(vct_call, SIGNAL(incomingCall()), SLOT(incomingCall()));
+	connect(vct_call, SIGNAL(autoIncomingCall()), SLOT(autoIncomingCall()));
 
-	window = new VCTCallWindow(d, call_status);
+	window = new VCTCallWindow(d);
 	connect(window, SIGNAL(Closed()), SLOT(handleClose()));
 	connect(vct_call->camera, SIGNAL(toggleFullScreen()), SLOT(enterFullScreen()));
 	connect(window, SIGNAL(exitFullScreen()), SLOT(exitFullScreen()));
@@ -412,13 +415,38 @@ void VCTCallPage::exitFullScreen()
 	vct_call->startVideo();
 	vct_call->refreshStatus();
 	vct_call->blockSignals(false);
-	Page::showPage();
+	showPage();
 }
 
-void VCTCallPage::showPage()
+void VCTCallPage::setHandsFree(bool on)
+{
+	VCTCall::call_status->hands_free = on;
+}
+
+void VCTCallPage::setProfStudio(bool on)
+{
+	VCTCall::call_status->prof_studio = on;
+}
+
+void VCTCallPage::incomingCall()
+{
+	autoIncomingCall();
+	// We want to answer automatically if hands free is on.
+	if (VCTCall::call_status->hands_free)
+		vct_call->toggleCall();
+
+	if (VCTCall::call_status->prof_studio) // we want to open the door
+	{
+		// PROBLEMA: qua ancora non ho il caller address.. preso dalla frame apposita.. come fare??
+		dev->openLock();
+		dev->releaseLock();
+	}
+}
+
+void VCTCallPage::autoIncomingCall()
 {
 	bt_global::page_stack.showVCTPage(this);
-	call_status->init();
+	VCTCall::call_status->init();
 	vct_call->refreshStatus();
 
 	if (!BtMain::isCalibrating())
@@ -428,9 +456,8 @@ void VCTCallPage::showPage()
 			(*bt_global::display).forceOperativeMode(true);
 	}
 
-	Page::showPage();
+	showPage();
 }
-
 
 void VCTCallPage::handleClose()
 {
@@ -440,9 +467,9 @@ void VCTCallPage::handleClose()
 }
 
 
-VCTCallWindow::VCTCallWindow(EntryphoneDevice *d, VCTCallStatus *call_status)
+VCTCallWindow::VCTCallWindow(EntryphoneDevice *d)
 {
-	vct_call = new VCTCall(d, call_status, VCTCall::FULLSCREEN_VIDEO);
+	vct_call = new VCTCall(d, VCTCall::FULLSCREEN_VIDEO);
 	vct_call->blockSignals(true);
 
 	// Signals from vct_call must be managed only when the window is visible.
