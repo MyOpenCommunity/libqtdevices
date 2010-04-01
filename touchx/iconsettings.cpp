@@ -415,14 +415,28 @@ PasswordPage::PasswordPage(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	QString descr = getTextChild(config_node, "descr");
-	int item_id = getTextChild(config_node, "itemID").toInt();
-	buildPage(descr);
+	QWidget *content = new QWidget;
+	QGridLayout *layout = new QGridLayout(content);
+	layout->setContentsMargins(0, 0, 0, TITLE_HEIGHT);
 
+	int item_id = getTextChild(config_node, "itemID").toInt();
 	banner *b = new impPassword(bt_global::skin->getImage("state_on"),
 		bt_global::skin->getImage("state_off"), bt_global::skin->getImage("edit"), descr, item_id,
 		getTextChild(config_node, "password"), getTextChild(config_node, "actived").toInt());
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-	page_content->appendBanner(b);
+
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+
+	layout->addWidget(b, 1, 1);
+	layout->setRowStretch(0, 1);
+	layout->setRowStretch(2, 1);
+	layout->setColumnStretch(0, 1);
+	layout->setColumnStretch(1, 2);
+	layout->setColumnStretch(2, 1);
+
+	buildPage(content, nav_bar, descr);
 }
 
 
