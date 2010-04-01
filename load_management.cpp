@@ -318,6 +318,19 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 	main->addWidget(nav_bar);
 }
 
+void LoadDataPage::showEvent(QShowEvent *e)
+{
+	// TODO dev->requestCurrentUpdateStart();
+	dev->requestCurrent();
+	dev->requestTotal(0);
+	dev->requestTotal(1);
+}
+
+void LoadDataPage::hideEvent(QHideEvent *e)
+{
+	// TODO dev->requestCurrentUpdateStop();
+}
+
 void LoadDataPage::resetRequested(int which)
 {
 	reset_number = which;

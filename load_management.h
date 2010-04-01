@@ -96,6 +96,10 @@ public:
 	// TODO: add LoadManagement device
 	LoadDataPage(const QDomNode &config_node, LoadsDevice *d);
 
+protected:
+	void showEvent(QShowEvent *e);
+	void hideEvent(QHideEvent *e);
+
 private:
 	LoadDataContent *content;
 	int reset_number;
