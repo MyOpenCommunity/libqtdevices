@@ -124,6 +124,7 @@ namespace VCTCallPrivate
 		void callClosed();
 		void incomingCall();
 		void autoIncomingCall();
+		void callerAddress();
 
 	private slots:
 		void status_changed(const StatusList &sl);
@@ -183,6 +184,7 @@ private slots:
 	void handleClose();
 	void enterFullScreen();
 	void exitFullScreen();
+	void callerAddress();
 
 private:
 	VCTCallPrivate::VCTCallWindow *window;

@@ -307,6 +307,9 @@ void VCTCall::status_changed(const StatusList &sl)
 		case EntryphoneDevice::AUTO_VCT_CALL:
 			emit autoIncomingCall();
 			break;
+		case EntryphoneDevice::CALLER_ADDRESS:
+			emit callerAddress();
+			break;
 		case EntryphoneDevice::END_OF_CALL:
 			stopVideo();
 			emit callClosed();
@@ -359,6 +362,7 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 	connect(vct_call, SIGNAL(callClosed()), SLOT(handleClose()));
 	connect(vct_call, SIGNAL(incomingCall()), SLOT(incomingCall()));
 	connect(vct_call, SIGNAL(autoIncomingCall()), SLOT(autoIncomingCall()));
+	connect(vct_call, SIGNAL(callerAddress()), SLOT(callerAddress()));
 
 	window = new VCTCallWindow(d);
 	connect(window, SIGNAL(Closed()), SLOT(handleClose()));
@@ -434,10 +438,12 @@ void VCTCallPage::incomingCall()
 	// We want to answer automatically if hands free is on.
 	if (VCTCall::call_status->hands_free)
 		vct_call->toggleCall();
+}
 
+void VCTCallPage::callerAddress()
+{
 	if (VCTCall::call_status->prof_studio) // we want to open the door
 	{
-		// PROBLEMA: qua ancora non ho il caller address.. preso dalla frame apposita.. come fare??
 		dev->openLock();
 		dev->releaseLock();
 	}

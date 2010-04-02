@@ -36,7 +36,6 @@ enum
 	ANSWER = 2,
 	AUTOSWITCHING = 4,
 	CYCLE_EXT_UNIT = 6,
-	CALLER_ADDRESS = 9,
 	OPEN_LOCK = 19,
 	RELEASE_LOCK = 20,
 	STAIRCASE_ACTIVATE = 21,
@@ -252,7 +251,12 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 		break;
 	}
 	case CALLER_ADDRESS:
+	{
 		master_caller_address = QString::fromStdString(msg.whereFull());
+		int kind_val = msg.whatArgN(0) % 100;
+		if (kind_val != 5)
+			sl[CALLER_ADDRESS] = true; // the value in the StatusList doesn't matter.
+	}
 		// manage the other things like in the rearm session case
 	case REARM_SESSION:
 	{

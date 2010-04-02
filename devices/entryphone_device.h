@@ -53,6 +53,11 @@ public:
 		END_OF_CALL = 3,
 		RINGTONE = 200, // the value doesn't matter
 		MOVING_CAMERA = 201, // the value doesn't matter
+		// The caller address should be an implementation detail of the device.
+		// However, this dirty klugde is required because for the professional
+		// studio functionality we have to use the caller_address, obtained
+		// from the homonymous frame.
+		CALLER_ADDRESS = 9,
 	};
 
 	EntryphoneDevice(const QString &where);
