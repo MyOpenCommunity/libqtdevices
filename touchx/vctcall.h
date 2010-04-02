@@ -133,6 +133,10 @@ namespace VCTCallPrivate
 		void toggleMute();
 		void changeVolume(int value);
 
+		void error(QProcess::ProcessError e);
+		void started();
+		void finished(int exitcode, QProcess::ExitStatus exitstatus);
+
 	private:
 		FormatVideo format;
 		bool camera_settings_shown;

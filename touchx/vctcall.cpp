@@ -231,6 +231,24 @@ VCTCall::VCTCall(EntryphoneDevice *d, FormatVideo f)
 	cycle = new BtButton;
 	cycle->setImage(bt_global::skin->getImage("cycle"));
 	connect(cycle, SIGNAL(clicked()), dev, SLOT(cycleExternalUnits()));
+	connect(&video_grabber, SIGNAL(started()), SLOT(started()));
+	connect(&video_grabber, SIGNAL(error(QProcess::ProcessError)), SLOT(error(QProcess::ProcessError)));
+	connect(&video_grabber, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(finished(int,QProcess::ExitStatus)));
+}
+
+void VCTCall::finished(int exitcode, QProcess::ExitStatus exitstatus)
+{
+	qDebug() << "PROCESSO FINITO CODE:" << exitcode << "STATUS:" << exitstatus;
+}
+
+void VCTCall::started()
+{
+	qDebug() << "PROCESSO PARTITO!!" << video_grabber.state() << video_grabber.pid();
+}
+
+void VCTCall::error(QProcess::ProcessError e)
+{
+	qDebug() << "ERRORE NEL FAR PARTIRE IL PROCESSO: " << e;
 }
 
 void VCTCall::changeVolume(int value)
@@ -284,6 +302,7 @@ void VCTCall::startVideo()
 			args = video_grabber_normal_args;
 		else // fullscreeen
 			args = video_grabber_fullscreen_args;
+		qDebug() << "LANCIO " << video_grabber_path << args;
 		video_grabber.start(video_grabber_path + " " + args);
 	}
 }
