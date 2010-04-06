@@ -26,16 +26,6 @@
 #include <QRegExp>
 #include <QString>
 
-/**
- * \file
- * <!--
- * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
- * All rights reserved.
- * -->
- *
- * \brief This file contains a collection of function designed to extract values from an xml file.
- *
- */
 
 /// Return the node child of 'parent' with name 'name'.
 QDomNode getChildWithName(const QDomNode &parent, const QString &name);
