@@ -136,7 +136,7 @@ MessagePage::MessagePage()
 	box_layout->addSpacing(5);
 	BtButton *delete_button = new BtButton(bt_global::skin->getImage("delete"));
 	connect(delete_button, SIGNAL(clicked()), this, SIGNAL(deleteMessage()));
-	box_layout->addWidget(delete_button);
+	box_layout->addWidget(delete_button, 0, Qt::AlignHCenter);
 }
 
 void MessagePage::setData(const QString &date, const QString &text, bool already_read)
