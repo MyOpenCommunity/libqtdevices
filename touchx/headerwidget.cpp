@@ -732,6 +732,8 @@ void HeaderWidget::loadConfiguration(const QDomNode &homepage_node, const QDomNo
 		}
 	}
 
+	Q_ASSERT_X(settings, "HeaderWidget::loadConfiguration", "No settings item defined!");
+
 	header_logo->loadItems(infobar_node);
 	top_nav_bar->loadItems(homepage_node, settings);
 	header_info->loadItems(infobar_node, settings);
