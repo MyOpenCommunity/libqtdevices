@@ -114,4 +114,6 @@ private:
 	QString statusToString(const AirConditionerStatus &st) const;
 };
 
+Q_DECLARE_TYPEINFO(AdvancedAirConditioningDevice::AirConditionerStatus, Q_MOVABLE_TYPE);
+
 #endif // AIRCONDITIONING_DEVICE_H
