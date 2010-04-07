@@ -37,6 +37,7 @@
 #include "test_probe_device.h"
 #include "test_air_conditioning_device.h"
 #include "test_loads_device.h"
+#include "test_media_device.h"
 #include "main.h" // bt_global::config
 
 // This empty function is required because frame_interpreter use a rearmWDT
@@ -112,6 +113,12 @@ int main(int argc, char *argv[])
 
 	TestLoadsDevice test_loads_device;
 	test_list << &test_loads_device;
+
+	TestSourceDevice test_source_device;
+	test_list << &test_source_device;
+
+	TestRadioSourceDevice test_radio_source_device;
+	test_list << &test_radio_source_device;
 
 	QStringList arglist = app.arguments();
 	QString testingClass;

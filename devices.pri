@@ -16,6 +16,7 @@ HEADERS += airconditioning_device.h \
            frame_receiver.h \
            lighting_device.h \
            loads_device.h \
+           media_device.h \
            platform_device.h \
            poweramplifier_device.h \
            probe_device.h \
@@ -35,6 +36,7 @@ SOURCES += airconditioning_device.cpp \
            frame_receiver.cpp \
            lighting_device.cpp \
            loads_device.cpp \
+           media_device.cpp \
            platform_device.cpp \
            poweramplifier_device.cpp \
            probe_device.cpp \
