@@ -258,7 +258,7 @@ void LoadDataContent::updateValues()
 	float current = EnergyConversions::convertToRawData(current_value, EnergyConversions::ELECTRICITY_CURRENT);
 	float period1 = EnergyConversions::convertToRawData(first_period_value, EnergyConversions::ELECTRICITY_CURRENT);
 	float period2 = EnergyConversions::convertToRawData(second_period_value, EnergyConversions::ELECTRICITY_CURRENT);
-	int dec = decimals;
+	int dec = 3; // use always 3 decimals for the value
 	QString unit_current = "kW";
 	QString unit_period = "kWh";
 	if (is_currency)
