@@ -431,7 +431,8 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 
 void EnergyView::showPage()
 {
-	disconnect(table, SIGNAL(Closed()), 0, SLOT(showPageFromTable()));
+	// disconnect all slots: can't disconnect a single slot on multiple objects
+	disconnect(table, SIGNAL(Closed()), 0, 0);
 	connect(table, SIGNAL(Closed()), SLOT(showPageFromTable()));
 	time_period->forceDate(QDate::currentDate());
 	showPageFromTable();
