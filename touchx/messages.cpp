@@ -68,6 +68,37 @@ namespace
 			layout->addWidget(boxWidget);
 		}
 	};
+
+
+	QWidget *buildMessagePage(QVBoxLayout *box_layout, QLabel *new_message_label, QLabel *date_label, QLabel *message_label)
+	{
+		QWidget *content = new QWidget;
+		content->setContentsMargins(10, 0, 10, 10);
+		content->setFont(bt_global::font->get(FontManager::TEXT));
+		content->setLayout(box_layout);
+
+		box_layout->setSpacing(0);
+
+		new_message_label->setFixedHeight(30);
+		box_layout->addWidget(new_message_label, 0, Qt::AlignHCenter);
+		box_layout->addSpacing(5);
+
+		date_label->setObjectName("Date");
+		date_label->setMargin(5);
+		date_label->setFixedHeight(30);
+		date_label->setAlignment(Qt::AlignRight);
+		box_layout->addWidget(date_label);
+
+		message_label->setMargin(10);
+		message_label->setObjectName("Text");
+		message_label->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+		message_label->setWordWrap(true);
+		box_layout->addWidget(message_label);
+
+		box_layout->addSpacing(5);
+
+		return content;
+	}
 }
 
 
@@ -98,45 +129,25 @@ DeleteMessagesPage::DeleteMessagesPage()
 	layout->addWidget(ok_button, 0, Qt::AlignRight);
 }
 
-MessagePage::MessagePage()
+
+MessagePage::MessagePage() :
+		date_label(new QLabel), message_label(new QLabel), new_message_label(new QLabel)
 {
-	QWidget *content = new QWidget;
-	content->setContentsMargins(10, 0, 10, 10);
-	content->setFont(bt_global::font->get(FontManager::TEXT));
+	QVBoxLayout *box_layout = new QVBoxLayout;
+
+	QWidget *content = buildMessagePage(box_layout, new_message_label, date_label, message_label);
+
+	BtButton *delete_button = new BtButton(bt_global::skin->getImage("delete"));
+	connect(delete_button, SIGNAL(clicked()), this, SIGNAL(deleteMessage()));
+	box_layout->addWidget(delete_button, 0, Qt::AlignHCenter);
 
 	PageTitleWidget *title_widget = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
 	NavigationBar *nav_bar = new NavigationBar;
 	connect(nav_bar, SIGNAL(upClick()), this, SIGNAL(prevMessage()));
 	connect(nav_bar, SIGNAL(downClick()), this, SIGNAL(nextMessage()));
 	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
+
 	buildPage(content, nav_bar, 0, title_widget);
-
-	QVBoxLayout *box_layout = new QVBoxLayout(content);
-	box_layout->setSpacing(0);
-
-	new_message_label = new QLabel;
-	new_message_label->setFixedHeight(30);
-	box_layout->addWidget(new_message_label, 0, Qt::AlignHCenter);
-	box_layout->addSpacing(5);
-
-	date_label = new QLabel;
-	date_label->setObjectName("Date");
-	date_label->setMargin(5);
-	date_label->setFixedHeight(30);
-	date_label->setAlignment(Qt::AlignRight);
-	box_layout->addWidget(date_label);
-
-	message_label = new QLabel;
-	message_label->setMargin(10);
-	message_label->setObjectName("Text");
-	message_label->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-	message_label->setWordWrap(true);
-	box_layout->addWidget(message_label);
-
-	box_layout->addSpacing(5);
-	BtButton *delete_button = new BtButton(bt_global::skin->getImage("delete"));
-	connect(delete_button, SIGNAL(clicked()), this, SIGNAL(deleteMessage()));
-	box_layout->addWidget(delete_button, 0, Qt::AlignHCenter);
 }
 
 void MessagePage::setData(const QString &date, const QString &text, bool already_read)
@@ -144,6 +155,25 @@ void MessagePage::setData(const QString &date, const QString &text, bool already
 	date_label->setText(date);
 	new_message_label->setText(!already_read ? tr("New Message") : "");
 	message_label->setText(text);
+}
+
+
+AlarmMessagePage::AlarmMessagePage(const QString &date, const QString &text)
+{
+	QVBoxLayout *box_layout = new QVBoxLayout;
+	QLabel *new_message_label = new QLabel(tr("New Message"));
+	QLabel *date_label = new QLabel(date);
+	QLabel *message_label = new QLabel(text);
+
+	QWidget *content = buildMessagePage(box_layout, new_message_label, date_label, message_label);
+
+	BtButton *delete_button = new BtButton(bt_global::skin->getImage("delete"));
+	connect(delete_button, SIGNAL(clicked()), this, SIGNAL(deleteMessage()));
+	box_layout->addWidget(delete_button, 0, Qt::AlignHCenter);
+
+	PageTitleWidget *title_widget = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
+
+	buildPage(content, 0, 0, title_widget);
 }
 
 
