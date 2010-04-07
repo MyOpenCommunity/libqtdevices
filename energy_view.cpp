@@ -314,8 +314,6 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	connect(time_period, SIGNAL(timeChanged(int, QDate)), SLOT(changeTimePeriod(int, QDate)));
 	main_layout->addWidget(time_period);
 
-	connect(this, SIGNAL(Closed()), SLOT(handleClose()));
-
 	widget_container = new QStackedWidget;
 	widget_container->addWidget(buildBannerWidget());
 
@@ -583,11 +581,6 @@ void EnergyView::status_changed(const StatusList &status_list)
 		++it;
 	}
 	updateBanners();
-}
-
-void EnergyView::handleClose()
-{
-	time_period->forceDate(QDate::currentDate());
 }
 
 void EnergyView::backClick()
