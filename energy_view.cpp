@@ -342,7 +342,11 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	bannNavigazione->Draw();
 
 	// default period, sync with default period in TimePeriodSelection
-	changeTimePeriod(TimePeriodSelection::DAY, QDate::currentDate());
+	// this used to call changeTimePeriod(); doing the initialization here
+	// avoids useless status requests to the device
+	showGraph(EnergyDevice::CUMULATIVE_DAY, false);
+	setBannerPage(TimePeriodSelection::DAY, QDate::currentDate());
+
 	switch(mode)
 	{
 		case 1:
