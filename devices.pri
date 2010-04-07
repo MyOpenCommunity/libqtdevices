@@ -21,7 +21,8 @@ HEADERS += airconditioning_device.h \
            probe_device.h \
            pulldevice.h \
            scenario_device.h \
-           thermal_device.h
+           thermal_device.h \
+           message_device.h
 
 SOURCES += airconditioning_device.cpp \
            alarmsounddiff_device.cpp \
@@ -40,4 +41,5 @@ SOURCES += airconditioning_device.cpp \
            probe_device.cpp \
            pulldevice.cpp \
            scenario_device.cpp \
-           thermal_device.cpp
+           thermal_device.cpp \
+           message_device.cpp

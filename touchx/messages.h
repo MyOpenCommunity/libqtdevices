@@ -68,6 +68,17 @@ private:
 
 
 /**
+ * The page used to show an alarm message.
+ */
+class AlarmMessagePage : public Page
+{
+Q_OBJECT
+public:
+	AlarmMessagePage(const QString &date, const QString &text);
+};
+
+
+/**
  * This class show a list of scs messages, read from an xml file.
  */
 class MessagesListPage : public Page
