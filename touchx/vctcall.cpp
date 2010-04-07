@@ -24,7 +24,7 @@
 #include "skinmanager.h"
 #include "generic_functions.h" //getBostikName
 #include "hardware_functions.h" // setVctContrast, setVolume
-#include "displaycontrol.h" // (*bt_global::display)
+#include "displaycontrol.h" // bt_global::display
 #include "icondispatcher.h"
 #include "entryphone_device.h"
 #include "xml_functions.h"
@@ -486,8 +486,8 @@ void VCTCallPage::autoIncomingCall()
 	if (!BtMain::isCalibrating())
 	{
 		vct_call->startVideo();
-		if ((*bt_global::display).currentState() != DISPLAY_FREEZED)
-			(*bt_global::display).forceOperativeMode(true);
+		if (bt_global::display->currentState() != DISPLAY_FREEZED)
+			bt_global::display->forceOperativeMode(true);
 	}
 
 	showPage();
@@ -495,7 +495,7 @@ void VCTCallPage::autoIncomingCall()
 
 void VCTCallPage::handleClose()
 {
-	(*bt_global::display).forceOperativeMode(false);
+	bt_global::display->forceOperativeMode(false);
 	vct_call->blockSignals(false);
 	emit Closed();
 }
