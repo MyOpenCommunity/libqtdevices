@@ -39,6 +39,7 @@ private slots:
 
 	void sendNextTrack();
 	void sendPrevTrack();
+	void sendTurnOn();
 
 private:
 	SourceDevice *dev;

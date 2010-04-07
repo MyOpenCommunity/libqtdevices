@@ -32,14 +32,16 @@ class SourceDevice : public device
 {
 Q_OBJECT
 public:
-	SourceDevice(QString source_id, int openserver_id = 0);
+	SourceDevice(QString source, int openserver_id = 0);
 
 public slots:
 	void nextTrack();
 	void prevTrack();
+	void turnOn(QString area);
 
 protected:
 	int mmtype;
+	QString source_id;
 };
 
 

@@ -53,6 +53,14 @@ void TestSourceDevice::sendPrevTrack()
 	QCOMPARE(server->frameCommand(), QString("*22*10*2#%1##").arg(source_id));
 }
 
+void TestSourceDevice::sendTurnOn()
+{
+	QString area = "2";
+	dev->turnOn(area);
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*22*35#4#%2#%1*3#%2#0##").arg(source_id).arg(area));
+}
+
 
 void TestRadioSourceDevice::initTestCase()
 {

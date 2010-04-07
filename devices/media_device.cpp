@@ -26,13 +26,15 @@ enum RequestDimension
 	REQ_FREQUENCE_DOWN = 6,
 	REQ_NEXT_TRACK = 9,
 	REQ_PREV_TRACK = 10,
+	REQ_SOURCE_ON = 35,
 };
 
 
-SourceDevice::SourceDevice(QString source_id, int openserver_id) :
-	device(QString("22"), "2#" + source_id, openserver_id)
+SourceDevice::SourceDevice(QString source, int openserver_id) :
+	device(QString("22"), "2#" + source, openserver_id)
 {
 	mmtype = 4;
+	source_id = source;
 }
 
 void SourceDevice::nextTrack()
@@ -45,6 +47,12 @@ void SourceDevice::prevTrack()
 	sendCommand(QString::number(REQ_PREV_TRACK));
 }
 
+void SourceDevice::turnOn(QString area)
+{
+	QString what = QString("%1#%2#%3#%4").arg(REQ_SOURCE_ON).arg(mmtype).arg(area).arg(source_id);
+	QString where = QString("3#%1#0").arg(area);
+	sendCommand(what, where);
+}
 
 
 RadioSourceDevice::RadioSourceDevice(QString source_id, int openserver_id) :
