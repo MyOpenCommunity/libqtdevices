@@ -105,35 +105,15 @@ GeneralSplit::GeneralSplit(QString descr, bool show_right_button) : BannOnOffNew
 }
 
 
-AdvancedSplitScenario::AdvancedSplitScenario(QString descr, const QString &conf_node, AdvancedAirConditioningDevice *d, QWidget *parent) :
+AdvancedSplitScenario::AdvancedSplitScenario(const AirConditionerStatus &st, const QString &descr, AdvancedAirConditioningDevice *d, QWidget *parent) :
 	Bann2Buttons(parent)
 {
 	QString icon_cmd = bt_global::skin->getImage("split_cmd");
-	QString icon_settings = bt_global::skin->getImage("split_settings");
-	initBanner(icon_cmd, icon_settings, descr);
+	initBanner(icon_cmd, QString(), descr);
 	dev = d;
-	conf_name = conf_node;
+	status = st;
 
 	connect(left_button, SIGNAL(clicked()), SLOT(onButtonClicked()));
-}
-
-void AdvancedSplitScenario::splitValuesChanged(const AirConditionerStatus &st)
-{
-	setCurrentValues(st);
-	QMap<QString, QString> m;
-	m[conf_name + "/mode"] = QString::number(st.mode);
-	m[conf_name + "/setpoint"] = QString::number(st.temp);
-	m[conf_name + "/speed"] = QString::number(st.vel);
-	m[conf_name + "/fan_swing"] = QString::number(st.swing);
-	if (!setCfgValue(m, id, serNum))
-		qWarning() << "AdvancedSplitScenario::splitValuesChanged setCfgValue failed!";
-	// send frame to device
-	dev->setStatus(status);
-}
-
-void AdvancedSplitScenario::setCurrentValues(const AirConditionerStatus &st)
-{
-	status = st;
 }
 
 void AdvancedSplitScenario::onButtonClicked()
