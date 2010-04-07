@@ -24,7 +24,7 @@
 #include "skinmanager.h"
 #include "generic_functions.h" //getBostikName
 #include "hardware_functions.h" // setVctContrast, setVolume
-#include "displaycontrol.h" // (*bt_global::display)
+#include "displaycontrol.h" // bt_global::display
 #include "icondispatcher.h"
 #include "entryphone_device.h"
 #include "xml_functions.h"
@@ -239,6 +239,7 @@ VCTCall::VCTCall(EntryphoneDevice *d, FormatVideo f)
 void VCTCall::finished(int exitcode, QProcess::ExitStatus exitstatus)
 {
 	qDebug() << "PROCESSO FINITO CODE:" << exitcode << "STATUS:" << exitstatus;
+	emit videoFinished();
 }
 
 void VCTCall::started()
@@ -362,7 +363,7 @@ void VCTCall::toggleCameraSettings()
 void VCTCall::endCall()
 {
 	dev->endCall();
-	video_grabber.terminate();
+	stopVideo();
 }
 
 void VCTCall::handleClose()
@@ -427,8 +428,16 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 
 void VCTCallPage::enterFullScreen()
 {
-	// Signals from vct_call must be managed only when the window is not visible.
+	// We need this two-pass signal-slot because we have to wait until the
+	// terminating process exit.
 	vct_call->stopVideo();
+	connect(vct_call, SIGNAL(videoFinished()), this, SLOT(showVCTWindow()));
+}
+
+void VCTCallPage::showVCTWindow()
+{
+	disconnect(vct_call, SIGNAL(videoFinished()), this, SLOT(showVCTWindow()));
+	// Signals from vct_call must be managed only when the window is not visible.
 	vct_call->blockSignals(true);
 	window->showWindow();
 }
@@ -477,8 +486,8 @@ void VCTCallPage::autoIncomingCall()
 	if (!BtMain::isCalibrating())
 	{
 		vct_call->startVideo();
-		if ((*bt_global::display).currentState() != DISPLAY_FREEZED)
-			(*bt_global::display).forceOperativeMode(true);
+		if (bt_global::display->currentState() != DISPLAY_FREEZED)
+			bt_global::display->forceOperativeMode(true);
 	}
 
 	showPage();
@@ -486,7 +495,7 @@ void VCTCallPage::autoIncomingCall()
 
 void VCTCallPage::handleClose()
 {
-	(*bt_global::display).forceOperativeMode(false);
+	bt_global::display->forceOperativeMode(false);
 	vct_call->blockSignals(false);
 	emit Closed();
 }
@@ -541,6 +550,12 @@ void VCTCallWindow::showWindow()
 void VCTCallWindow::fullScreenExit()
 {
 	vct_call->stopVideo();
+	connect(vct_call, SIGNAL(videoFinished()), this, SLOT(showVCTPage()));
+}
+
+void VCTCallWindow::showVCTPage()
+{
+	disconnect(vct_call, SIGNAL(videoFinished()), this, SLOT(showVCTPage()));
 	vct_call->blockSignals(true);
 	emit exitFullScreen();
 }

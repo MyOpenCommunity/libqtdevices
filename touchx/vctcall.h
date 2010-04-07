@@ -125,6 +125,7 @@ namespace VCTCallPrivate
 		void incomingCall();
 		void autoIncomingCall();
 		void callerAddress();
+		void videoFinished();
 
 	private slots:
 		void status_changed(const StatusList &sl);
@@ -163,6 +164,7 @@ namespace VCTCallPrivate
 	private slots:
 		void handleClose();
 		void fullScreenExit();
+		void showVCTPage();
 
 	private:
 		VCTCall *vct_call;
@@ -189,6 +191,7 @@ private slots:
 	void enterFullScreen();
 	void exitFullScreen();
 	void callerAddress();
+	void showVCTWindow();
 
 private:
 	VCTCallPrivate::VCTCallWindow *window;
