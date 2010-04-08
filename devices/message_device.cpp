@@ -21,6 +21,7 @@
 
 #include "message_device.h"
 #include "openmsg.h"
+#include "generic_functions.h"
 
 
 enum
@@ -39,6 +40,32 @@ enum
 	COMMAND_TIMEOUT = 9016
 };
 
+int MessageDevicePrivate::checksum(const QString &string)
+{
+	QByteArray data;
+	foreach (const QChar &c, string)
+	{
+		ushort u = c.unicode();
+		data.append(u >> 8);
+		data.append((u & 0x00ff));
+	}
+
+	int data_size = data.size();
+
+	int chk2 = 1;
+	for (int i = 0; i < data_size; ++i)
+		chk2 += data[i];
+	chk2 = chk2 % 256;
+
+	int chk1 = data_size;
+	for (int i = data_size - 1; i > 0; --i)
+		chk1 += i * data[data_size - i];
+	chk1 = chk1 % 256;
+
+	return (chk1 << 8) | chk2;
+}
+
+using namespace MessageDevicePrivate;
 
 MessageDevice::MessageDevice(QString where, int openserver_id) :
 	device("8", where, openserver_id)
@@ -65,35 +92,48 @@ void MessageDevice::manageFrame(OpenMsg &msg)
 	switch (what)
 	{
 	case MESSAGE_BEGIN:
+	{
+		QString caller_where = QString::fromStdString(msg.whereArg(2));
 		if (cdp_where.isEmpty())
 		{
-			cdp_where = QString::fromStdString(msg.whereArg(2));
+			cdp_where = caller_where;
 			sendReady();
 			timer.start();
 		}
 		else
-			sendBusy(msg.where());
+			sendBusy(caller_where);
 		break;
+	}
 	case MESSAGE_PARAM_OR_END:
-		if (msg.IsMeasureFrame()) // message param
+		if (isWriteRequestFrame(msg)) // message param
 			resetTimer();
 		else // end message
 		{
-			StatusList statusList;
-			statusList[DIM_MESSAGE] = message;
-			emit status_changed(statusList);
+			StatusList sl;
+			sl[DIM_MESSAGE] = message;
+			emit status_changed(sl);
 			cleanup();
 		}
 		break;
 	case MESSAGE_CONTINUE:
 		for (unsigned int i = 0; i < msg.whatArgCnt(); ++i) {
-			char c = msg.whatArgN(i);
-			message.append(c);
+			msg.whatArgN(i);
+			message.append(QChar(msg.whatArgN(i)));
 		}
 		resetTimer();
 		break;
 	case MESSAGE_CHECKSUM:
-		// TODO; verify the checksum and send wrong checksum if wrong.
+		int check = checksum(message.toUtf8());
+		// The checksum to verify is made by the 5 rightmost chars of the id
+		int to_verify = QString::fromStdString(msg.whatArg(0)).right(5).toInt();
+
+		if (check != to_verify) // checksums not corresponding
+		{
+			sendWrongChecksum(QString::number(to_verify));
+			cleanup();
+		}
+		else
+			resetTimer();
 		break;
 	}
 }
@@ -106,15 +146,15 @@ void MessageDevice::timeout()
 
 void MessageDevice::sendReady()
 {
-	sendCommand(QString("%1").arg(COMMAND_READY), QString("%1#8#00#%2#8").arg(cdp_where).arg(where));
+	sendCommand(QString::number(COMMAND_READY), QString("%1#8#00#%2#8").arg(cdp_where).arg(where));
 }
 
-void MessageDevice::sendBusy(int caller_where)
+void MessageDevice::sendBusy(const QString &caller_where)
 {
-	sendCommand(QString("%1").arg(COMMAND_BUSY), QString("%1#8#00#%2#8").arg(caller_where).arg(where));
+	sendCommand(QString::number(COMMAND_BUSY), QString("%1#8#00#%2#8").arg(caller_where).arg(where));
 }
 
-void MessageDevice::sendWrongChecksum(QString message_id)
+void MessageDevice::sendWrongChecksum(const QString &message_id)
 {
 	sendCommand(QString("%1#%2").arg(COMMAND_WRONG_CHECKSUM).arg(message_id), QString("%1#8#00#%2#8").arg(cdp_where).arg(where));
 }

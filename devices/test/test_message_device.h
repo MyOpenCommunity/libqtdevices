@@ -35,13 +35,16 @@ private slots:
 	void init();
 	void cleanup();
 
+	void testChecksum();
+
 	void sendReady();
 	void sendBusy();
 	void sendWrongChecksum();
 	void sendTimeout();
 
+	void connectFailed();
 	void receiveCompleteMessage();
-
+	void recevieWrongChecksum();
 private:
 	MessageDevice *dev;
 };
