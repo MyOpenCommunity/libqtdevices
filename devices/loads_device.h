@@ -23,6 +23,7 @@
 #define LOADS_DEVICE_H
 
 #include "device.h"
+#include "energy_device.h" // for AutomaticUpdates
 
 
 class LoadsDevice : public device
@@ -82,6 +83,10 @@ public:
 	// request current absorption
 	void requestCurrent() const;
 
+	// start/stop automatic updates
+	void requestCurrentUpdateStart();
+	void requestCurrentUpdateStop();
+
 	// request the status for the actuator
 	void requestStatus() const;
 
@@ -104,6 +109,10 @@ public slots:
 
 protected:
 	virtual void manageFrame(OpenMsg &msg);
+
+private:
+	// handle automatic updates of current measure
+	AutomaticUpdates current_updates;
 };
 
 #endif // LOADS_DEVICE_H

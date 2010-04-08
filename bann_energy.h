@@ -43,12 +43,16 @@ public:
 	 * \param n_dec the number of decimals to show in the labels
 	 * \param is_electricity true if we are measuring electricity
 	 */
-	BannEnergyInterface(int rate_id, bool is_ele, const QString &description);
+	BannEnergyInterface(int rate_id, bool is_ele, const QString &description, EnergyDevice *d);
 	void setUnitMeasure(const QString &m);
 	void updateText();
 
 public slots:
 	void status_changed(const StatusList &status_list);
+
+protected:
+	virtual void showEvent(QShowEvent *e);
+	virtual void hideEvent(QHideEvent *e);
 
 private slots:
 	void rateChanged(int rate_id);
@@ -58,6 +62,7 @@ private:
 	QString measure;
 	bool is_electricity;
 	EnergyRate rate;
+	EnergyDevice *dev;
 };
 
 

@@ -52,8 +52,9 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 		pos -= QPoint(80, 80);
 
 		EnergyRates::energy_rates.loadRates();
-		addPage(new EnergyCost, getTextChild(conf_node, "descr"),
-			bt_global::skin->getImage("currency_exchange"), pos.x(), pos.y());
+		if (EnergyRates::energy_rates.hasRates())
+			addPage(new EnergyCost, getTextChild(conf_node, "descr"),
+				bt_global::skin->getImage("currency_exchange"), pos.x(), pos.y());
 	}
 
 	addBackButton();

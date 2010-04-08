@@ -99,14 +99,16 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		QPen pen_axis;
 		pen_axis.setStyle(Qt::SolidLine);
 		pen_axis.setWidth(AXIS_PEN_WIDTH);
-		pen_axis.setColor(QColor("white")); //axis color
+		pen_axis.setColor(_axis_color); // axis color
+
+		QPen pen_text;
+		pen_text.setColor(_text_color); // text color
 
 		// Calculate the heigth and width of the graph
 		int graph_height = axis_top - top - AXIS_PEN_WIDTH - fm.height() - SPACING;
 		int graph_width = width - (axis_left + AXIS_PEN_WIDTH - left);
 
 		// Draw axis
-		QPen old_pen = p.pen();
 		p.setPen(pen_axis);
 
 		// x axis
@@ -125,14 +127,15 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 			{
 				float value = i == 0 ? max_value : max_value / 2;
 				QString text = loc.toString(value + 0.00499, 'f', 2);
+				p.setPen(pen_text);
 				p.drawText(left, y_max_value + quarter*i + fm.ascent() / 2, text);
 			}
+			p.setPen(pen_axis);
 			p.drawLine(axis_left, y_max_value + quarter*i, axis_left - MARGIN, y_max_value + quarter*i);
 		}
 
-		p.setPen(old_pen);
-
 		// Descriptive text
+		p.setPen(pen_text);
 		p.drawText(left + width - fm.width(text), top + fm.height(), text);
 
 		// calculate the width of each bar
@@ -146,18 +149,19 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 			QMapIterator<int, QString> it(custom_x_axis);
 			while (it.hasNext())
 			{
+				p.setPen(pen_text);
+
 				it.next();
 				int current_left = axis_left + AXIS_PEN_WIDTH + bar_width * it.key();
 				p.drawText(current_left - bar_width + (bar_width - fm.width(it.value())) / 2, font_y_pos, it.value());
 
-				QPen old_pen = p.pen();
 				p.setPen(pen_axis);
 				p.drawLine(current_left, axis_top, current_left, axis_top + MARGIN);
-				p.setPen(old_pen);
 			}
 		}
 		else
 		{
+			p.setPen(pen_text);
 			p.drawText(axis_left, font_y_pos, "1");
 
 			QString center = QString::number(number_of_bars / 2);
@@ -174,7 +178,6 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 			lines.append(number_of_bars / 4 * 3);
 			lines.append(number_of_bars);
 
-			QPen old_pen = p.pen();
 			p.setPen(pen_axis);
 
 			foreach (int i, lines)
@@ -182,8 +185,6 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 				int current_left = left + i * bar_width - bar_width / 2;
 				p.drawLine(current_left, axis_top, current_left, axis_top + MARGIN);
 			}
-
-			p.setPen(old_pen);
 		}
 
 		// draw bars
@@ -231,6 +232,26 @@ QString EnergyGraph::borderColor()
 void EnergyGraph::setBorderColor(QString color)
 {
 	_border_color = color;
+}
+
+QString EnergyGraph::axisColor()
+{
+	return _axis_color;
+}
+
+void EnergyGraph::setAxisColor(QString color)
+{
+	_axis_color = color;
+}
+
+QString EnergyGraph::textColor()
+{
+	return _text_color;
+}
+
+void EnergyGraph::setTextColor(QString color)
+{
+	_text_color = color;
 }
 
 
@@ -397,6 +418,8 @@ void EnergyTableContent::paintEvent(QPaintEvent *e)
 	QBrush brush_odd = QBrush(QColor(oddRowColor()));
 	QBrush brush_even = QBrush(QColor(evenRowColor()));
 
+	p.setFont(bt_global::font->get(FontManager::SMALLTEXT));
+
 	// external border
 	p.setPen(pen_border);
 	p.setBrush(QBrush());
@@ -445,4 +468,7 @@ void EnergyTableContent::paintEvent(QPaintEvent *e)
 	// central separator line
 	p.setPen(pen_border);
 	p.drawLine(right_cell_x - 1, mtop, right_cell_x - 1, height() - mbottom - mtop);
+
+	// header bottom border
+	p.drawLine(left, top + row_height, left + row_width, top + row_height);
 }

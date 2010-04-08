@@ -92,7 +92,7 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 	QList<QDomNode> families = getChildren(config_node, "energy_type");
 
 	// display the button to edit rates if more than one family
-	if (edit_rates && families.count() > 1)
+	if (edit_rates && EnergyRates::energy_rates.hasRates() && families.count() > 1)
 	{
 		NavigationBar *nav = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 		buildPage(new BannerContent, nav);
@@ -121,7 +121,11 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 
 		b->setText(getTextChild(type, "descr"));
 		b->setId(getTextChild(type, "id").toInt());
-		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+
+		if (families.count() > 1)
+			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+		else
+			connect(b, SIGNAL(pageClosed()), SIGNAL(Closed()));
 	}
 }
 
@@ -254,7 +258,7 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node, bool edit_rates, b
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 	buildPage(new BannerContent, nav_bar);
 
-	if (edit_rates)
+	if (edit_rates && EnergyRates::energy_rates.hasRates())
 	{
 		Page *costs = new EnergyCost;
 
@@ -279,6 +283,8 @@ void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_
 	Q_ASSERT_X(bt_global::skin->hasContext() , "EnergyInterface::loadItems", "Skin context not set!");
 	QString energy_type = getTextChild(config_node, "descr");
 	bool show_currency_button = false;
+	// IMPORTANT: the table instance is shared between all energy interfaces: any
+	// signals must be disconnected and reconnected when the interface page is shown
 	EnergyTable *table = new EnergyTable(3);
 	EnergyGraph *graph = new EnergyGraph;
 
@@ -296,14 +302,14 @@ void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_
 		QString addr = getTextChild(item, "address");
 		next_page = new EnergyView(measure, energy_type, addr, mode, rate_id, table, graph);
 
-		BannEnergyInterface *b = new BannEnergyInterface(rate_id, mode == 1, getTextChild(item, "descr"));
+		EnergyDevice *dev = bt_global::add_device_to_cache(new EnergyDevice(addr, mode));
+
+		BannEnergyInterface *b = new BannEnergyInterface(rate_id, mode == 1, getTextChild(item, "descr"), dev);
 		b->connectRightButton(next_page);
 		b->setUnitMeasure(measure);
 
 		views.append(next_page);
 
-		device *dev = bt_global::add_device_to_cache(new EnergyDevice(addr, mode));
-		connect(dev, SIGNAL(status_changed(const StatusList &)), b, SLOT(status_changed(const StatusList &)));
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		page_content->appendBanner(b);
 	}

@@ -11,7 +11,13 @@ QWidget[SecondFgColor="true"] {color:#6FB2FF;}
 QWidget[SecondFgColor="true"] QWidget {color:#6FB2FF;}
 QWidget[ReversedColor="true"] {color:#1E1E1E;background-color:#D8D8D8;}
 TextOnImageLabel { qproperty-text_color:#D8D8D8; }
-EnergyGraph { qproperty-primary_color:#1449C8; qproperty-secondary_color:#3587FF; qproperty-border_color: blue;}
+EnergyGraph {
+    qproperty-primary_color: #1449C8;
+    qproperty-secondary_color: #3587FF;
+    qproperty-border_color: blue;
+    qproperty-axis_color: white;
+    qproperty-text_color: white;
+}
 EnergyTableContent {
     qproperty-border_color: #41474d;
     qproperty-heading_color: #3587ff;
@@ -414,8 +420,8 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_load>LoadManagement.png</img_load>
 		<img_empty_background>empty_180.png</img_empty_background>
 		<img_on>btnOnret.png</img_on>
-		<img_forced>btnscevab.png</img_forced>
-		<img_not_forced>btnscevdis.png</img_not_forced>
+		<img_forced>btnLoadManAb.png</img_forced>
+		<img_not_forced>btnLoadManDis.png</img_not_forced>
 		<img_reset>btnReset.png</img_reset>
 	</item>
 	<!-- Load management, no central unit -->

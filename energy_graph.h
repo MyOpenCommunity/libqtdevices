@@ -39,6 +39,8 @@ Q_OBJECT
 Q_PROPERTY(QString primary_color READ primaryColor WRITE setPrimaryColor)
 Q_PROPERTY(QString secondary_color READ secondaryColor WRITE setSecondaryColor)
 Q_PROPERTY(QString border_color READ borderColor WRITE setBorderColor)
+Q_PROPERTY(QString axis_color READ axisColor WRITE setAxisColor)
+Q_PROPERTY(QString text_color READ textColor WRITE setTextColor)
 public:
 	EnergyGraph();
 
@@ -59,13 +61,17 @@ private:
 	QMap<int, QString> custom_x_axis;
 
 	// The attributes to store information set from stylesheet (using the properties)
-	QString _primary_color, _secondary_color, _border_color;
+	QString _primary_color, _secondary_color, _border_color, _axis_color, _text_color;
 	QString primaryColor();
 	QString secondaryColor();
 	QString borderColor();
+	QString axisColor();
+	QString textColor();
 	void setSecondaryColor(QString color);
 	void setPrimaryColor(QString color);
 	void setBorderColor(QString color);
+	void setAxisColor(QString color);
+	void setTextColor(QString color);
 
 #ifdef TEST_ENERGY_GRAPH
 public:

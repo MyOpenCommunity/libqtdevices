@@ -49,9 +49,11 @@ namespace
 
 // BannEnergyInterface implementation
 
-BannEnergyInterface::BannEnergyInterface(int rate_id, bool is_ele, const QString &description) :
+BannEnergyInterface::BannEnergyInterface(int rate_id, bool is_ele, const QString &description, EnergyDevice *d) :
 	Bann2Buttons(0)
 {
+	dev = d;
+
 	initBanner(QString(), bt_global::skin->getImage("empty"), bt_global::skin->getImage("select"),
 		   description);
 	setCentralText("---");
@@ -61,6 +63,18 @@ BannEnergyInterface::BannEnergyInterface(int rate_id, bool is_ele, const QString
 
 	is_electricity = is_ele;
 	device_value = 0;
+
+	connect(dev, SIGNAL(status_changed(const StatusList &)), this, SLOT(status_changed(const StatusList &)));
+}
+
+void BannEnergyInterface::showEvent(QShowEvent *e)
+{
+	dev->requestCurrentUpdateStart();
+}
+
+void BannEnergyInterface::hideEvent(QHideEvent *e)
+{
+	dev->requestCurrentUpdateStop();
 }
 
 void BannEnergyInterface::setUnitMeasure(const QString &m)

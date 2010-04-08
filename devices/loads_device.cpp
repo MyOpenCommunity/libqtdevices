@@ -29,12 +29,16 @@ enum
 {
 	_DIM_STATUS = 71,
 	_DIM_TOTALS = 72,
+	_DIM_STATE_UPDATE_INTERVAL             = 1200,   // used to detect start/stop of automatic updates
 };
 
 
 LoadsDevice::LoadsDevice(const QString &where) :
-	device("18", where)
+	device("18", where),
+	current_updates(where, 1)
 {
+	// actuators always have the automatic updates
+	current_updates.setHasNewFrames();
 }
 
 void LoadsDevice::init()
@@ -64,7 +68,17 @@ void LoadsDevice::forceOff(int time) const
 
 void LoadsDevice::requestCurrent() const
 {
-	sendRequest("113");
+	current_updates.requestCurrent();
+}
+
+void LoadsDevice::requestCurrentUpdateStart()
+{
+	current_updates.requestCurrentUpdateStart();
+}
+
+void LoadsDevice::requestCurrentUpdateStop()
+{
+	current_updates.requestCurrentUpdateStop();
 }
 
 void LoadsDevice::requestStatus() const
@@ -119,6 +133,14 @@ void LoadsDevice::manageFrame(OpenMsg &msg)
 	else if (what == DIM_LOAD && msg.whatArgCnt() == 1)
 	{
 		status_list[DIM_LOAD] = msg.whatArgN(0);
+	}
+
+	if (what == _DIM_STATE_UPDATE_INTERVAL)
+	{
+		if (msg.whatArgCnt() != 1)
+			return;
+
+		current_updates.handleAutomaticUpdate(msg);
 	}
 
 	if (status_list.count() != 0)

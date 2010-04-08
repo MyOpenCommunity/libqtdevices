@@ -101,15 +101,17 @@ public:
 	void initBanner(const QString &left, const QString &center, const QString &right, const QString &description,
 			FontManager::Type description_font = FontManager::BANNERDESCRIPTION);
 
+	// can only be caller after initBanner()
 	void setCentralText(const QString &t);
 	void setDescriptionText(const QString &t);
-	void setBackgroundImage(const QString &i);
 
 signals:
 	void rightClicked();
 	void leftClicked();
 
 protected:
+	void setBackgroundImage(const QString &i);
+
 	// an overloaded constructor to change the class of left/right buttons
 	template<class ButtonType>
 	Bann2Buttons(QWidget *parent, ButtonType *dummy) :
@@ -125,7 +127,9 @@ private:
 	void createBanner();
 
 private:
+	// only one of center_icon/center_label is created, depending on which initBanner() is called
 	TextOnImageLabel *center_icon;
+	QLabel *center_label;
 	QLabel *description;
 };
 

@@ -45,6 +45,62 @@ namespace EnergyConversions
 }
 
 
+class AutomaticUpdates : public QObject
+{
+friend class TestEnergyDevice;
+Q_OBJECT
+public:
+	AutomaticUpdates(QString where, int _mode);
+
+	void requestCurrent() const;
+	void requestCurrentUpdateStart();
+	void requestCurrentUpdateStop();
+
+	// not part of the public interface, but used by the containing device
+	void setHasNewFrames();
+	void handleAutomaticUpdate(OpenMsg &msg);
+
+private:
+	void sendUpdateStart();
+	void sendUpdateStop();
+	void setHasNewFrames(bool restart_update_requests);
+
+private slots:
+	void pollingTimeout();
+	void stoppingTimeout();
+
+private:
+	enum UpdateState
+	{
+		// automatic updates are disabled
+		UPDATE_IDLE,
+		// automatic updates are enabled
+		UPDATE_AUTO,
+		// automatic updates will be stopped after a timeout expires
+		UPDATE_STOPPING,
+	};
+
+	// true if the device supports automatic updates without polling
+	// and the new 16/32 bit frames for graphs
+	bool has_new_frames;
+
+	// status of automatic updates
+	UpdateState update_state;
+
+	// number of pages/banners that have requested automatic updates
+	int update_count;
+
+	// timer used to request updates when automatic updates are active
+	// but the device does not support automatic update frames
+	QTimer *update_timer;
+
+	int mode;
+
+	QString where;
+	device *dev;
+};
+
+
 /**
  * This class parses the incoming frames for who = 18 (Energy Management) and sends
  * updates to widgets through status_changed() signal.
@@ -110,10 +166,8 @@ private:
 	void requestDailyAverageGraph8Bit(QDate date) const;
 	void requestDailyAverageGraph16Bit(QDate date) const;
 
-	// EnergyDevice doesn't use the sendRequest of the device (because it should use the compression
-	// of the frames) but instead it defines its own version.
 	void sendRequest(int what) const;
-	void sendRequest(QString what) const;
+	using device::sendRequest;
 	void parseCumulativeDayGraph8Bit(const QStringList &buffer_frame, QVariant &v);
 	void parseCumulativeDayGraph16Bit(const QStringList &buffer_frame, QVariant &v);
 	void parseCumulativeMonthGraph8Bit(const QStringList &buffer_frame, QVariant &v);
@@ -127,30 +181,14 @@ private:
 	void fillYearGraphData(StatusList &status_list, OpenMsg &msg);
 	void fillMonthlyAverage(StatusList &status_list, OpenMsg &msg);
 	void fillCumulativeDay(StatusList &status_list, QString frame9, QString frame10);
-	void handleAutomaticUpdate(StatusList &status_list, OpenMsg &msg);
 
-	// frames for automatic updates
-	void sendUpdateStart();
-	void sendUpdateStop();
-
-	void setHasNewFrames(bool restart_update_requests = false);
+	void setHasNewFrames();
 
 	QDate getDateFromFrame(OpenMsg &msg);
 
-private slots:
-	void pollingTimeout();
-	void stoppingTimeout();
-
 private:
-	enum UpdateState
-	{
-		// automatic updates are disabled
-		UPDATE_IDLE,
-		// automatic updates are enabled
-		UPDATE_AUTO,
-		// automatic updates will be stopped after a timeout expires
-		UPDATE_STOPPING,
-	};
+	// handle automatic updates of current measure
+	AutomaticUpdates current_updates;
 
 	// true if the device supports automatic updates without polling
 	// and the new 16/32 bit frames for graphs
@@ -160,18 +198,7 @@ private:
 	mutable int pending_graph_request;
 	mutable QDate pending_request_date;
 
-	// status of automatic updates
-	UpdateState update_state;
-
-	// number of pages/banners that have requested automatic updates
-	int update_count;
-
-	// timer used to request updates when automatic updates are active
-	// but the device does not support automatic update frames
-	QTimer *update_timer;
-
 	mutable QStringList buffer_frame;
-	int mode;
 
 	QMap<int, int> buffer_year_data; // a buffer used to store the graph data
 };

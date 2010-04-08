@@ -38,6 +38,12 @@ class GeneralSplit;
 
 typedef AdvancedAirConditioningDevice::AirConditionerStatus AirConditionerStatus;
 
+
+namespace AirConditioningAdvanced
+{
+	AirConditionerStatus parseSettings(const QDomNode &values_node);
+}
+
 namespace AirConditioningPrivate
 {
 	// A global object that contains the devices for single splits (required
@@ -139,8 +145,8 @@ private:
 	void readBannerValues();
 	void readModeConfig(const QDomNode &mode_node, int init_mode);
 	void readTempConfig(const QDomNode &temp_node, int init_temp);
-	void readSwingConfig(const QDomNode &swing_node, const QDomNode &values);
-	void readSpeedConfig(const QDomNode &speed_node, const QDomNode &values);
+	void readSwingConfig(const QDomNode &swing_node);
+	void readSpeedConfig(const QDomNode &speed_node);
 	void sendUpdatedValues();
 	SplitSwing *swing;
 	SplitTemperature *temperature;

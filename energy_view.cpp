@@ -322,6 +322,7 @@ Bann2Buttons *getBanner(QWidget *parent, QString primary_text)
 EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id, EnergyTable *_table,
 		       EnergyGraph *_graph)
 {
+	// see comment about _table in EnergyInterface::loadItems
 	rate = EnergyRates::energy_rates.getRate(rate_id);
 	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
 
@@ -351,8 +352,6 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	connect(time_period, SIGNAL(timeChanged(int, QDate)), SLOT(changeTimePeriod(int, QDate)));
 	main_layout->addWidget(time_period);
 
-	connect(this, SIGNAL(Closed()), SLOT(handleClose()));
-
 	widget_container = new QStackedWidget;
 	widget_container->addWidget(buildBannerWidget());
 
@@ -369,13 +368,15 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	connect(nav_bar, SIGNAL(toggleCurrency()), SLOT(toggleCurrency()));
 	connect(nav_bar, SIGNAL(showTable()), table, SLOT(showPage()));
-	connect(table, SIGNAL(Closed()), SLOT(showPage()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
 
 	buildPage(content, nav_bar);
 
 	// default period, sync with default period in TimePeriodSelection
-	changeTimePeriod(TimePeriodSelection::DAY, QDate::currentDate());
+	// this used to call changeTimePeriod(); doing the initialization here
+	// avoids useless status requests to the device
+	showGraph(EnergyDevice::CUMULATIVE_DAY, false);
+	setBannerPage(TimePeriodSelection::DAY, QDate::currentDate());
 
 	switch(mode)
 	{
@@ -463,6 +464,9 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 
 void EnergyView::showPage()
 {
+	// disconnect all slots: can't disconnect a single slot on multiple objects
+	disconnect(table, SIGNAL(Closed()), 0, 0);
+	connect(table, SIGNAL(Closed()), SLOT(showPageFromTable()));
 	time_period->forceDate(QDate::currentDate());
 	showPageFromTable();
 }
@@ -512,6 +516,11 @@ QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 	return data;
 }
 
+bool EnergyView::isGraphOurs()
+{
+	return graph->parent() == widget_container;
+}
+
 void EnergyView::status_changed(const StatusList &status_list)
 {
 	current_date = time_period->date();
@@ -558,7 +567,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			// even if the graph page is already open.
 			const QDate &date = d->date;
 			if (current_graph == EnergyDevice::DAILY_AVERAGE && date.year() == current_date.year() &&
-				date.month() == current_date.month())
+				date.month() == current_date.month() && isGraphOurs())
 			{
 				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
@@ -569,7 +578,8 @@ void EnergyView::status_changed(const StatusList &status_list)
 		case EnergyDevice::DIM_DAY_GRAPH:
 		{
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_DAY);
-			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date)
+			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date &&
+			    isGraphOurs())
 			{
 				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
@@ -581,7 +591,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 		{
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_MONTH);
 			if (current_graph == EnergyDevice::CUMULATIVE_MONTH && d->date.month() == current_date.month()
-				&& d->date.year() == current_date.year())
+				&& d->date.year() == current_date.year() && isGraphOurs())
 			{
 				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
@@ -593,7 +603,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 		{
 			// TODO: see how to save the year graph...
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_YEAR);
-			if (current_graph == EnergyDevice::CUMULATIVE_YEAR)
+			if (current_graph == EnergyDevice::CUMULATIVE_YEAR && isGraphOurs())
 			{
 				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
@@ -607,11 +617,6 @@ void EnergyView::status_changed(const StatusList &status_list)
 	updateBanners();
 }
 
-void EnergyView::handleClose()
-{
-	time_period->forceDate(QDate::currentDate());
-}
-
 void EnergyView::backClick()
 {
 	if (current_widget == BANNER_WIDGET)
@@ -622,6 +627,9 @@ void EnergyView::backClick()
 
 void EnergyView::updateCurrentGraph()
 {
+	if (!isGraphOurs())
+		return;
+
 	current_date = time_period->date();
 	QString label = EnergyInterface::isCurrencyView() ? rate.currency_symbol : unit_measure;
 	QMap<int, QString> graph_x_axis;
@@ -694,7 +702,7 @@ void EnergyView::showGraph(int graph_type, bool request_update)
 
 	current_widget = GRAPH_WIDGET;
 	current_graph = static_cast<EnergyDevice::GraphType>(graph_type);
-	if (graph->parent() != widget_container)
+	if (!isGraphOurs())
 	{
 		qDebug() << "Reparenting the graph";
 		widget_container->addWidget(graph);
