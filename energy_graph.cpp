@@ -233,6 +233,26 @@ void EnergyGraph::setBorderColor(QString color)
 	_border_color = color;
 }
 
+QString EnergyGraph::axisColor()
+{
+	return _axis_color;
+}
+
+void EnergyGraph::setAxisColor(QString color)
+{
+	_axis_color = color;
+}
+
+QString EnergyGraph::textColor()
+{
+	return _text_color;
+}
+
+void EnergyGraph::setTextColor(QString color)
+{
+	_text_color = color;
+}
+
 
 EnergyTable::EnergyTable(int n_dec)
 {
