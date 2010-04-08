@@ -27,6 +27,7 @@
 #include <QString>
 
 class EnergyDevice;
+class AutomaticUpdates;
 
 
 class TestEnergyDevice : public TestDevice
@@ -95,6 +96,7 @@ private slots:
 	void testUpdateStop();
 
 private:
+	AutomaticUpdates *upd;
 	EnergyDevice *dev;
 	QString where;
 };

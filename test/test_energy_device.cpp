@@ -62,12 +62,15 @@ namespace
 void TestEnergyDevice::init()
 {
 	where = "20";
+	upd = new AutomaticUpdates(where, 1);
 	dev = new EnergyDevice(where, 1);
 }
 
 void TestEnergyDevice::cleanup()
 {
 	delete dev;
+	delete upd;
+	upd = NULL;
 	dev = NULL;
 }
 
@@ -152,7 +155,7 @@ void TestEnergyDevice::sendRequestCurrent()
 
 void TestEnergyDevice::sendRequestCurrent2()
 {
-	dev->mode = 2;
+	dev->updates.mode = 2;
 	dev->requestCurrent();
 	client_request->flush();
 	QString req(QString("*#18*%1*1134##").arg(where));
@@ -161,7 +164,7 @@ void TestEnergyDevice::sendRequestCurrent2()
 
 void TestEnergyDevice::sendRequestCurrent3()
 {
-	dev->mode = 3;
+	dev->updates.mode = 3;
 	dev->requestCurrent();
 	client_request->flush();
 	QString req(QString("*#18*%1*1130##").arg(where));
@@ -170,7 +173,7 @@ void TestEnergyDevice::sendRequestCurrent3()
 
 void TestEnergyDevice::sendRequestCurrent4()
 {
-	dev->mode = 4;
+	dev->updates.mode = 4;
 	dev->requestCurrent();
 	client_request->flush();
 	QString req(QString("*#18*%1*1132##").arg(where));
@@ -721,19 +724,19 @@ void TestEnergyDevice::receiveInvalidFrameRequestCumulativeMonthGraph32Bit()
 
 void TestEnergyDevice::sendUpdateStart()
 {
-	dev->sendUpdateStart();
+	upd->sendUpdateStart();
 	client_command->flush();
 
-	QString req(QString("*#18*%1*#1200#%2*255##").arg(where).arg(dev->mode));
+	QString req(QString("*#18*%1*#1200#%2*255##").arg(where).arg(upd->mode));
 	QCOMPARE(server->frameCommand(), req);
 }
 
 void TestEnergyDevice::sendUpdateStop()
 {
-	dev->sendUpdateStop();
+	upd->sendUpdateStop();
 	client_command->flush();
 
-	QString req(QString("*#18*%1*#1200#%2*0##").arg(where).arg(dev->mode));
+	QString req(QString("*#18*%1*#1200#%2*0##").arg(where).arg(upd->mode));
 	QCOMPARE(server->frameCommand(), req);
 }
 
@@ -741,75 +744,75 @@ void TestEnergyDevice::receiveUpdateInterval()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR); // the dim doesn't matter
 
-	t.checkSignals(QString("*#18*%1*1200#%2*2##").arg(where).arg(dev->mode), 0);
-	QCOMPARE(dev->has_new_frames, true);
-	QCOMPARE(dev->update_timer, (QTimer *)NULL);
+	t.checkSignals(QString("*#18*%1*1200#%2*2##").arg(where).arg(upd->mode), 0);
+	QCOMPARE(upd->has_new_frames, true);
+	QCOMPARE(upd->update_timer, (QTimer *)NULL);
 }
 
 void TestEnergyDevice::receiveUpdateStop()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR); // the dim doesn't matter
 
-	t.checkSignals(QString("*#18*%1*1200#%2*0##").arg(where).arg(dev->mode), 0);
-	QCOMPARE(dev->has_new_frames, true);
-	QCOMPARE(dev->update_timer, (QTimer *)NULL);
+	t.checkSignals(QString("*#18*%1*1200#%2*0##").arg(where).arg(upd->mode), 0);
+	QCOMPARE(upd->has_new_frames, true);
+	QCOMPARE(upd->update_timer, (QTimer *)NULL);
 }
 
 void TestEnergyDevice::testUpdateStartPolling()
 {
-	dev->requestCurrentUpdateStart();
+	upd->requestCurrentUpdateStart();
 	client_command->flush();
 	client_request->flush();
 
 	QString reqr = QString("*#18*%1*113##").arg(where);
-	QString reqc = QString("*#18*%1*#1200#%2*255##").arg(where).arg(dev->mode);
+	QString reqc = QString("*#18*%1*#1200#%2*255##").arg(where).arg(upd->mode);
 	QCOMPARE(server->frameCommand(), reqc);
 	QCOMPARE(server->frameRequest(), reqr);
-	QCOMPARE(dev->update_timer->isActive(), true);
-	QCOMPARE(dev->update_count, 1);
-	QCOMPARE(dev->update_state, EnergyDevice::UPDATE_AUTO);
+	QCOMPARE(upd->update_timer->isActive(), true);
+	QCOMPARE(upd->update_count, 1);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_AUTO);
 
-	dev->requestCurrentUpdateStart();
-	QCOMPARE(dev->update_count, 2);
+	upd->requestCurrentUpdateStart();
+	QCOMPARE(upd->update_count, 2);
 }
 
 void TestEnergyDevice::testUpdateStartAutomatic()
 {
-	dev->setHasNewFrames();
-	dev->requestCurrentUpdateStart();
+	upd->setHasNewFrames();
+	upd->requestCurrentUpdateStart();
 	client_command->flush();
 
-	QString req = QString("*#18*%1*#1200#%2*255##").arg(where).arg(dev->mode);
+	QString req = QString("*#18*%1*#1200#%2*255##").arg(where).arg(upd->mode);
 	QCOMPARE(server->frameCommand(), req);
-	QCOMPARE(dev->update_count, 1);
-	QCOMPARE(dev->update_state, EnergyDevice::UPDATE_AUTO);
+	QCOMPARE(upd->update_count, 1);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_AUTO);
 
-	dev->requestCurrentUpdateStart();
-	QCOMPARE(dev->update_count, 2);
+	upd->requestCurrentUpdateStart();
+	QCOMPARE(upd->update_count, 2);
 }
 
 void TestEnergyDevice::testUpdateStop()
 {
-	dev->update_count = 1;
-	dev->update_state = EnergyDevice::UPDATE_AUTO;
-	dev->requestCurrentUpdateStop();
+	upd->update_count = 1;
+	upd->update_state = AutomaticUpdates::UPDATE_AUTO;
+	upd->requestCurrentUpdateStop();
 
-	QCOMPARE(dev->update_state, EnergyDevice::UPDATE_STOPPING);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_STOPPING);
 
 	// avoid waiting for the timer to expire
-	dev->stoppingTimeout();
-	dev->stoppingTimeout();
+	upd->stoppingTimeout();
+	upd->stoppingTimeout();
 
 	client_command->flush();
 
-	QString req = QString("*#18*%1*#1200#%2*0##").arg(where).arg(dev->mode);
+	QString req = QString("*#18*%1*#1200#%2*0##").arg(where).arg(upd->mode);
 	QCOMPARE(server->frameCommand(), req);
-	QCOMPARE(dev->update_count, 0);
-	QCOMPARE(dev->update_state, EnergyDevice::UPDATE_IDLE);
+	QCOMPARE(upd->update_count, 0);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_IDLE);
 
-	dev->requestCurrentUpdateStop();
-	dev->stoppingTimeout();
-	QCOMPARE(dev->update_count, 0);
+	upd->requestCurrentUpdateStop();
+	upd->stoppingTimeout();
+	QCOMPARE(upd->update_count, 0);
 }
 
 // TODO energy tests:

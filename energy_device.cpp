@@ -33,6 +33,15 @@ const int POLLING_INTERVAL = 10;
 const int UPDATE_INTERVAL = 255;
 const int STOPPING_TIMEOUT = 5;
 
+enum RequestCurrent
+{
+	REQ_CURRENT_MODE_1 = 113,
+	REQ_CURRENT_MODE_2 = 1134,
+	REQ_CURRENT_MODE_3 = 1130,
+	REQ_CURRENT_MODE_4 = 1132,
+	REQ_CURRENT_MODE_5 = 1132,
+};
+
 
 namespace
 {
@@ -63,89 +72,18 @@ enum RequestDimension
 };
 
 
-enum RequestCurrent
+AutomaticUpdates::AutomaticUpdates(QString _where, int _mode)
 {
-	REQ_CURRENT_MODE_1 = 113,
-	REQ_CURRENT_MODE_2 = 1134,
-	REQ_CURRENT_MODE_3 = 1130,
-	REQ_CURRENT_MODE_4 = 1132,
-	REQ_CURRENT_MODE_5 = 1132,
-};
-
-
-EnergyDevice::EnergyDevice(QString where, int _mode) : device(QString("18"), where)
-{
+	where = _where;
 	mode = _mode;
-	pending_graph_request = 0;
 	update_state = UPDATE_IDLE;
 	has_new_frames = false;
 	update_count = 0;
 	update_timer = new QTimer(this);
 	connect(update_timer, SIGNAL(timeout()), SLOT(pollingTimeout()));
-
-	for (int i = 1; i <= 12; ++i)
-		buffer_year_data[i] = 0;
 }
 
-void EnergyDevice::sendRequest(int what, bool use_compressed_init) const
-{
-	sendRequest(QString::number(what), use_compressed_init);
-}
-
-void EnergyDevice::sendRequest(QString what, bool use_compressed_init) const
-{
-	QString req = createRequestOpen(who, what, where);
-	if (use_compressed_init)
-		sendCompressedInit(req);
-	else
-		sendInit(req);
-}
-
-void EnergyDevice::requestCumulativeDay(QDate date) const
-{
-	if (date == QDate::currentDate())
-		sendRequest(DIM_CUMULATIVE_DAY);
-	else
-		requestCumulativeDayGraph(date);
-}
-
-void EnergyDevice::requestCurrent() const
-{
-	int what;
-	switch (mode)
-	{
-	case 1:
-		what = REQ_CURRENT_MODE_1;
-		break;
-	case 2:
-		what = REQ_CURRENT_MODE_2;
-		break;
-	case 3:
-		what = REQ_CURRENT_MODE_3;
-		break;
-	case 4:
-		what = REQ_CURRENT_MODE_4;
-		break;
-	case 5:
-		what = REQ_CURRENT_MODE_5;
-		break;
-	default:
-		Q_ASSERT(!"Unknown mode on the energy management!");
-	}
-	sendRequest(what);
-}
-
-void EnergyDevice::sendUpdateStart()
-{
-	sendFrame(createRequestOpen(who, QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL).arg(mode).arg(UPDATE_INTERVAL), where));
-}
-
-void EnergyDevice::sendUpdateStop()
-{
-	sendFrame(createRequestOpen(who, QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL).arg(mode).arg(0), where));
-}
-
-void EnergyDevice::requestCurrentUpdateStart()
+void AutomaticUpdates::requestCurrentUpdateStart()
 {
 	update_count += 1;
 
@@ -175,7 +113,7 @@ void EnergyDevice::requestCurrentUpdateStart()
 	}
 }
 
-void EnergyDevice::requestCurrentUpdateStop()
+void AutomaticUpdates::requestCurrentUpdateStop()
 {
 	if (update_count == 0)
 		return;
@@ -197,12 +135,12 @@ void EnergyDevice::requestCurrentUpdateStop()
 	}
 }
 
-void EnergyDevice::pollingTimeout()
+void AutomaticUpdates::pollingTimeout()
 {
 	requestCurrent();
 }
 
-void EnergyDevice::stoppingTimeout()
+void AutomaticUpdates::stoppingTimeout()
 {
 	if (update_state == UPDATE_STOPPING)
 	{
@@ -213,9 +151,153 @@ void EnergyDevice::stoppingTimeout()
 	}
 }
 
+void AutomaticUpdates::requestCurrent() const
+{
+	int what;
+	switch (mode)
+	{
+	case 1:
+		what = REQ_CURRENT_MODE_1;
+		break;
+	case 2:
+		what = REQ_CURRENT_MODE_2;
+		break;
+	case 3:
+		what = REQ_CURRENT_MODE_3;
+		break;
+	case 4:
+		what = REQ_CURRENT_MODE_4;
+		break;
+	case 5:
+		what = REQ_CURRENT_MODE_5;
+		break;
+	default:
+		Q_ASSERT(!"Unknown mode on the energy management!");
+	}
+	dev->sendInit(createRequestOpen("18", QString::number(what), where));
+}
+
+void AutomaticUpdates::sendUpdateStart()
+{
+	dev->sendFrame(createRequestOpen("18", QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL).arg(mode).arg(UPDATE_INTERVAL), where));
+}
+
+void AutomaticUpdates::sendUpdateStop()
+{
+	dev->sendFrame(createRequestOpen("18", QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL).arg(mode).arg(0), where));
+}
+
+void AutomaticUpdates::setHasNewFrames()
+{
+	setHasNewFrames(update_timer->isActive());
+}
+
+void AutomaticUpdates::setHasNewFrames(bool restart_update_requests)
+{
+	has_new_frames = true;
+
+	// delete the polling timer and send the frame to request
+	// automatic updates
+	update_timer->stop();
+	update_timer->deleteLater();
+	update_timer = NULL;
+
+	// this might send one unneeded frame, but removes the need for
+	// an additional state
+	if (restart_update_requests)
+		sendUpdateStart();
+	else if (update_state == UPDATE_STOPPING)
+		// to force resending the start frame if restarted
+		update_state = UPDATE_IDLE;
+}
+
+void AutomaticUpdates::handleAutomaticUpdate(OpenMsg &msg)
+{
+	int time = msg.whatArgN(0);
+
+	if (!has_new_frames)
+	{
+		qDebug("Switching from polling mode to auto-update mode");
+
+		setHasNewFrames(update_state == UPDATE_AUTO && time != 0);
+	}
+
+	// at this point need_polling is always false
+	if (time == 0)
+	{
+		qDebug("Received auto-update stop frame");
+
+		switch (update_state)
+		{
+		case UPDATE_AUTO:
+			// restart automatic updates since we need them
+			sendUpdateStart();
+
+			break;
+		case UPDATE_STOPPING:
+			// to force resending the start frame if restarted
+			update_state = UPDATE_IDLE;
+
+			break;
+		default:
+			// no handling needed for UPDATE_IDLE
+			break;
+		}
+	}
+}
+
+
+EnergyDevice::EnergyDevice(QString where, int _mode) :
+	device(QString("18"), where),
+	current_updates(where, _mode)
+{
+	pending_graph_request = 0;
+	has_new_frames = false;
+
+	for (int i = 1; i <= 12; ++i)
+		buffer_year_data[i] = 0;
+}
+
+void EnergyDevice::sendRequest(int what, bool use_compressed_init) const
+{
+	sendRequest(QString::number(what), use_compressed_init);
+}
+
+void EnergyDevice::sendRequest(QString what, bool use_compressed_init) const
+{
+	QString req = createRequestOpen(who, what, where);
+	if (use_compressed_init)
+		sendCompressedInit(req);
+	else
+		sendInit(req);
+}
+
+void EnergyDevice::requestCumulativeDay(QDate date) const
+{
+	if (date == QDate::currentDate())
+		sendRequest(DIM_CUMULATIVE_DAY);
+	else
+		requestCumulativeDayGraph(date);
+}
+
 void EnergyDevice::requestCumulativeYear() const
 {
 	sendRequest(DIM_CUMULATIVE_YEAR);
+}
+
+void EnergyDevice::requestCurrent() const
+{
+	current_updates.requestCurrent();
+}
+
+void EnergyDevice::requestCurrentUpdateStart()
+{
+	current_updates.requestCurrentUpdateStart();
+}
+
+void EnergyDevice::requestCurrentUpdateStop()
+{
+	current_updates.requestCurrentUpdateStop();
 }
 
 void EnergyDevice::requestDailyAverageGraph(QDate date) const
@@ -451,34 +533,22 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		if (msg.whatArgCnt() != 1)
 			return;
 
-		handleAutomaticUpdate(status_list, msg);
+		current_updates.handleAutomaticUpdate(msg);
 	}
 
 	if (what == _DIM_INVALID_FRAME)
 	{
 		// switch the flag for old/new frame support and resend
 		// the auto update request if needed
-		setHasNewFrames(update_timer->isActive());
+		setHasNewFrames();
 	}
 }
 
-void EnergyDevice::setHasNewFrames(bool restart_update_requests)
+void EnergyDevice::setHasNewFrames()
 {
+	current_updates.setHasNewFrames();
+
 	has_new_frames = true;
-
-	// delete the polling timer and send the frame to request
-	// automatic updates
-	update_timer->stop();
-	update_timer->deleteLater();
-	update_timer = NULL;
-
-	// this might send one unneeded frame, but removes the need for
-	// an additional state
-	if (restart_update_requests)
-		sendUpdateStart();
-	else if (update_state == UPDATE_STOPPING)
-		// to force resending the start frame if restarted
-		update_state = UPDATE_IDLE;
 
 	// always resend the last graph request using 16/32 bit
 	// frames: the new hardware devices do not support the old
@@ -499,41 +569,6 @@ void EnergyDevice::setHasNewFrames(bool restart_update_requests)
 	};
 
 	pending_graph_request = 0;
-}
-
-void EnergyDevice::handleAutomaticUpdate(StatusList &status_list, OpenMsg &msg)
-{
-	int time = msg.whatArgN(0);
-
-	if (!has_new_frames)
-	{
-		qDebug("Switching from polling mode to auto-update mode");
-
-		setHasNewFrames(update_state == UPDATE_AUTO && time != 0);
-	}
-
-	// at this point need_polling is always false
-	if (time == 0)
-	{
-		qDebug("Received auto-update stop frame");
-
-		switch (update_state)
-		{
-		case UPDATE_AUTO:
-			// restart automatic updates since we need them
-			sendUpdateStart();
-
-			break;
-		case UPDATE_STOPPING:
-			// to force resending the start frame if restarted
-			update_state = UPDATE_IDLE;
-
-			break;
-		default:
-			// no handling needed for UPDATE_IDLE
-			break;
-		}
-	}
 }
 
 void EnergyDevice::fillCumulativeDay(StatusList &status_list, QString frame9, QString frame10)
