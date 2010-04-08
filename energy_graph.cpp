@@ -463,4 +463,7 @@ void EnergyTableContent::paintEvent(QPaintEvent *e)
 	// central separator line
 	p.setPen(pen_border);
 	p.drawLine(right_cell_x - 1, mtop, right_cell_x - 1, height() - mbottom - mtop);
+
+	// header bottom border
+	p.drawLine(left, top + row_height, left + row_width, top + row_height);
 }
