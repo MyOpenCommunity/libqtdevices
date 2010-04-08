@@ -105,7 +105,7 @@ void MessageDevice::manageFrame(OpenMsg &msg)
 		break;
 	}
 	case MESSAGE_PARAM_OR_END:
-		if (isWriteRequestFrame(msg)) // message param
+		if (isWriteDimensionFrame(msg)) // message param
 			resetTimer();
 		else // end message
 		{

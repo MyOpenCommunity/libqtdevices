@@ -21,7 +21,7 @@
 
 #include "probe_device.h"
 #include "openmsg.h"
-#include "generic_functions.h" // createMsgOpen
+#include "generic_functions.h" // createCommandFrame
 
 #include <QVariant>
 #include <QtDebug>
@@ -123,7 +123,7 @@ void ControlledProbeDevice::setManual(unsigned setpoint)
 
 void ControlledProbeDevice::setAutomatic()
 {
-	sendFrame(createMsgOpen(who, "311", where));
+	sendFrame(createCommandFrame(who, "311", where));
 }
 
 void ControlledProbeDevice::setFancoilSpeed(int speed)

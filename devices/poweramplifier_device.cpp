@@ -20,7 +20,7 @@
 
 
 #include "poweramplifier_device.h"
-#include "generic_functions.h" // createWriteRequestOpen
+#include "generic_functions.h" // createWriteDimensionFrame
 
 #include <openmsg.h>
 
@@ -217,11 +217,11 @@ void PowerAmplifierDevice::prevPreset() const
 
 void PowerAmplifierDevice::loudOn() const
 {
-	sendFrame(createWriteRequestOpen(who, QString("%1*1").arg(REQ_LOUD), where));
+	sendFrame(createWriteDimensionFrame(who, QString("%1*1").arg(REQ_LOUD), where));
 }
 
 void PowerAmplifierDevice::loudOff() const
 {
-	sendFrame(createWriteRequestOpen(who, QString("%1*0").arg(REQ_LOUD), where));
+	sendFrame(createWriteDimensionFrame(who, QString("%1*0").arg(REQ_LOUD), where));
 }
 

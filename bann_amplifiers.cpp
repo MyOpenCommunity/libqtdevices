@@ -20,7 +20,7 @@
 
 
 #include "bann_amplifiers.h"
-#include "generic_functions.h" // createMsgOpen, trasformaVol
+#include "generic_functions.h" // createCommandFrame, trasformaVol
 #include "device_status.h"
 #include "deviceold.h"
 #include "devices_cache.h" // bt_global::devices_cache
@@ -128,13 +128,13 @@ void amplificatore::Spegni()
 void amplificatore::Aumenta()
 {
 	qDebug("amplificatore::Aumenta()");
-	dev->sendFrame(createMsgOpen("16", "1001", getAddress()));
+	dev->sendFrame(createCommandFrame("16", "1001", getAddress()));
 }
 
 void amplificatore::Diminuisci()
 {
 	qDebug("amplificatore::Diminuisci()");
-	dev->sendFrame(createMsgOpen("16", "1101",getAddress()));
+	dev->sendFrame(createCommandFrame("16", "1101",getAddress()));
 }
 
 void amplificatore::inizializza(bool forza)
@@ -184,12 +184,12 @@ void grAmplificatori::Disattiva()
 void grAmplificatori::Aumenta()
 {
 	for (int i = 0; i < elencoDisp.size(); ++i)
-		sendFrame(createMsgOpen("16", "1001", elencoDisp.at(i)));
+		sendFrame(createCommandFrame("16", "1001", elencoDisp.at(i)));
 }
 
 void grAmplificatori::Diminuisci()
 {
 	for (int i = 0; i < elencoDisp.size(); ++i)
-		sendFrame(createMsgOpen("16", "1101", elencoDisp.at(i)));
+		sendFrame(createCommandFrame("16", "1101", elencoDisp.at(i)));
 }
 

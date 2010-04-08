@@ -21,7 +21,7 @@
 
 #include "actuators.h"
 #include "btbutton.h"
-#include "generic_functions.h" // createMsgOpen
+#include "generic_functions.h" // createCommandFrame
 #include "devices_cache.h" // bt_global::devices_cache
 #include "lighting_device.h"
 #include "skinmanager.h" //skin
@@ -89,13 +89,13 @@ void ButtonActuator::activate()
 	switch (type)
 	{
 	case  AUTOMAZ:
-		sendFrame(createMsgOpen("1", "1", where));
+		sendFrame(createCommandFrame("1", "1", where));
 		break;
 	case  VCT_SERR:
-		sendFrame(createMsgOpen("6", "10", where));
+		sendFrame(createCommandFrame("6", "10", where));
 		break;
 	case  VCT_LS:
-		sendFrame(createMsgOpen("6", "12", where));
+		sendFrame(createCommandFrame("6", "12", where));
 		break;
 	}
 }
@@ -105,12 +105,12 @@ void ButtonActuator::deactivate()
 	switch (type)
 	{
 	case  AUTOMAZ:
-		sendFrame(createMsgOpen("1", "0", where));
+		sendFrame(createCommandFrame("1", "0", where));
 		break;
 	case  VCT_SERR:
 		break;
 	case  VCT_LS:
-		sendFrame(createMsgOpen("6", "11", where));
+		sendFrame(createCommandFrame("6", "11", where));
 		break;
 	}
 }

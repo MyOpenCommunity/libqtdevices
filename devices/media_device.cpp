@@ -65,7 +65,7 @@ void SourceDevice::manageFrame(OpenMsg &msg)
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
 		return;
 
-	if (!isRequestFrame(msg))
+	if (!isDimensionFrame(msg))
 		return;
 
 	StatusList status_list;

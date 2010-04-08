@@ -24,7 +24,7 @@
 #include "radio.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "deviceold.h"
-#include "generic_functions.h" // createMsgOpen
+#include "generic_functions.h" // createCommandFrame
 #include "btbutton.h" // BtButton
 #include "skinmanager.h" // bt_global::skin
 #include "icondispatcher.h" // bt_global::icons_cache
@@ -219,14 +219,14 @@ void banradio::aumFreqAuto()
 {
 	myRadio->setFreq(0.00);
 	myRadio->setRDS("- - - - ");
-	dev->sendFrame(createMsgOpen("16", "5000", getAddress()));
+	dev->sendFrame(createCommandFrame("16", "5000", getAddress()));
 }
 
 void banradio::decFreqAuto()
 {
 	myRadio->setFreq(0.00);
 	myRadio->setRDS("- - - - ");
-	dev->sendFrame(createMsgOpen("16", "5100", getAddress()));
+	dev->sendFrame(createCommandFrame("16", "5100", getAddress()));
 }
 
 void banradio::aumFreqMan()
@@ -239,7 +239,7 @@ void banradio::aumFreqMan()
 	else
 		f = 87.50;
 	myRadio->setFreq(f);
-	dev->sendFrame(createMsgOpen("16", "5001", getAddress()));
+	dev->sendFrame(createCommandFrame("16", "5001", getAddress()));
 }
 
 void banradio::decFreqMan()
@@ -252,7 +252,7 @@ void banradio::decFreqMan()
 	else
 		f = 108.00;
 	myRadio->setFreq(f);
-	dev->sendFrame(createMsgOpen("16", "5101", getAddress()));
+	dev->sendFrame(createCommandFrame("16", "5101", getAddress()));
 }
 
 void banradio::changeStaz()

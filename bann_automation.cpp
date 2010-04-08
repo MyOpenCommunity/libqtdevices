@@ -20,7 +20,7 @@
 
 
 #include "bann_automation.h"
-#include "generic_functions.h" // createMsgOpen
+#include "generic_functions.h" // createCommandFrame
 #include "state_button.h"
 #include "devices_cache.h" // bt_global::add_device_to_cache
 #include "skinmanager.h" // SkinContext, bt_global::skin
@@ -204,7 +204,7 @@ GateEntryphoneActuator::GateEntryphoneActuator(const QString &descr, const QStri
 void GateEntryphoneActuator::activate()
 {
 	// TODO: argh!! fix it ASAP!!!
-	dev->sendFrame(createMsgOpen("6", "10", where));
+	dev->sendFrame(createCommandFrame("6", "10", where));
 }
 
 

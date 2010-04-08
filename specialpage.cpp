@@ -24,7 +24,7 @@
 #include "btbutton.h"
 #include "main.h" // ICON_FRECCIA_SX
 #include "xml_functions.h" // getChildren, getTextChild, getChildWithName
-#include "generic_functions.h" // createMsgOpen
+#include "generic_functions.h" // createCommandFrame
 #include "fontmanager.h" // bt_global::font
 #include "temperatureviewer.h"
 #include "skinmanager.h" //skin
@@ -134,17 +134,17 @@ void SpecialPage::clickedButton()
 	if (type == CYCLIC)
 		what = what == "0" ? "1" : "0";
 
-	sendFrame(createMsgOpen(who, what, where));
+	sendFrame(createCommandFrame(who, what, where));
 }
 
 void SpecialPage::pressedButton()
 {
-	sendFrame(createMsgOpen(who, "1", where));
+	sendFrame(createCommandFrame(who, "1", where));
 }
 
 void SpecialPage::releasedButton()
 {
-	sendFrame(createMsgOpen(who, "0", where));
+	sendFrame(createCommandFrame(who, "0", where));
 }
 
 void SpecialPage::manageFrame(OpenMsg &msg)
