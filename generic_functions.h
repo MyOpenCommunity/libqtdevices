@@ -37,7 +37,7 @@ class OpenMsg;
  *  - a command frame, in the form *who*what*where##
  *  - a (read) dimension request frame, in the form *#who*where*dimension##
  *  - a status request frame, in the form *#who*where##
- *  - a write dimension request frame, in the form *#22*where*dimension*val1*..*valn##
+ *  - a write dimension request frame, in the form *#who*where*#dimension*val1*..*valn##
  */
 
 bool isCommandFrame(OpenMsg &msg);
