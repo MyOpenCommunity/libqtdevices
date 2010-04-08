@@ -36,6 +36,11 @@ private slots:
 	void cleanup();
 
 	void sendReady();
+	void sendBusy();
+	void sendWrongChecksum();
+	void sendTimeout();
+
+	void receiveCompleteMessage();
 
 private:
 	MessageDevice *dev;
