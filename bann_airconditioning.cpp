@@ -45,7 +45,6 @@ SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningI
 	QString air_single = "air_single";
 	if (dev_probe)
 	{
-		setCentralText("---");
 		air_single = "air_single_temp";
 
 		connect(dev_probe, SIGNAL(status_changed(const StatusList &)),
@@ -54,6 +53,9 @@ SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningI
 
 	initBanner(img_off, bt_global::skin->getImage(air_single), show_right_button ? img_forward : QString(), descr);
 	connect(left_button, SIGNAL(clicked()), SLOT(setDeviceOff()));
+
+	if (dev_probe)
+		setCentralText("---");
 }
 
 void SingleSplit::status_changed(const StatusList &status_list)
