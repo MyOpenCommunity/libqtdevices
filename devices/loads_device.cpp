@@ -35,7 +35,7 @@ enum
 
 LoadsDevice::LoadsDevice(const QString &where) :
 	device("18", where),
-	current_updates(where, 1)
+	current_updates(where, 1, this)
 {
 	// actuators always have the automatic updates
 	current_updates.setHasNewFrames();

@@ -61,14 +61,13 @@ namespace
 void TestEnergyDevice::init()
 {
 	where = "20";
-	upd = new AutomaticUpdates(where, 1);
 	dev = new EnergyDevice(where, 1);
+	upd = &dev->current_updates;
 }
 
 void TestEnergyDevice::cleanup()
 {
 	delete dev;
-	delete upd;
 	upd = NULL;
 	dev = NULL;
 }
