@@ -21,6 +21,7 @@
 
 #include "generic_functions.h"
 #include "xml_functions.h"
+#include "openmsg.h"
 
 #include <QMapIterator>
 #include <QTextStream>
@@ -68,9 +69,29 @@ namespace
 }
 
 
+bool isCommandFrame(OpenMsg &msg)
+{
+	return msg.IsNormalFrame();
+}
+
+bool isRequestFrame(OpenMsg &msg)
+{
+	return msg.IsMeasureFrame();
+}
+
+bool isStatusRequestFrame(OpenMsg &msg)
+{
+	return msg.IsStateFrame();
+}
+
+bool isWriteRequestFrame(OpenMsg &msg)
+{
+	return msg.IsWriteFrame();
+}
+
 QString createMsgOpen(QString who, QString what, QString where)
 {
-	return '*' + who + '*' + what + '*' + where + "##";
+	return QString("*%1*%2*%3##").arg(who).arg(what).arg(where);
 }
 
 QString createRequestOpen(QString who, QString what, QString where)

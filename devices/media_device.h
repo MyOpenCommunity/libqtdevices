@@ -40,6 +40,9 @@ public slots:
 	void turnOn(QString area);
 
 protected:
+	virtual void manageFrame(OpenMsg &msg);
+
+protected:
 	int mmtype;
 	QString source_id;
 };
@@ -58,6 +61,7 @@ public:
 public slots:
 	void frequenceUp(QString value = QString());
 	void frequenceDown(QString value = QString());
+	void saveStation(QString station);
 };
 
 

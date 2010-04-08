@@ -19,6 +19,10 @@
  */
 
 #include "media_device.h"
+#include "generic_functions.h"
+
+#include <openmsg.h>
+
 
 enum RequestDimension
 {
@@ -27,6 +31,7 @@ enum RequestDimension
 	REQ_NEXT_TRACK = 9,
 	REQ_PREV_TRACK = 10,
 	REQ_SOURCE_ON = 35,
+	REQ_SAVE_STATION = 33,
 };
 
 
@@ -54,6 +59,22 @@ void SourceDevice::turnOn(QString area)
 	sendCommand(what, where);
 }
 
+void SourceDevice::manageFrame(OpenMsg &msg)
+{
+	QString msg_where = QString::fromStdString(msg.whereFull());
+	if (msg_where != where && msg_where != QString("5#%1").arg(where))
+		return;
+
+	if (!isRequestFrame(msg))
+		return;
+
+	StatusList status_list;
+	QVariant v;
+
+	int what = msg.what();
+
+}
+
 
 RadioSourceDevice::RadioSourceDevice(QString source_id, int openserver_id) :
 	SourceDevice(source_id, openserver_id)
@@ -69,6 +90,11 @@ void RadioSourceDevice::frequenceUp(QString value)
 void RadioSourceDevice::frequenceDown(QString value)
 {
 	sendCommand(QString("%1#%2").arg(REQ_FREQUENCE_DOWN).arg(value));
+}
+
+void RadioSourceDevice::saveStation(QString station)
+{
+	sendCommand(QString("%1#%2").arg(REQ_SAVE_STATION).arg(station));
 }
 
 

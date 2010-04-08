@@ -87,3 +87,10 @@ void TestRadioSourceDevice::sendFrequenceDown()
 	QCOMPARE(server->frameCommand(), QString("*22*6#*2#%1##").arg(source_id));
 }
 
+void TestRadioSourceDevice::sendSaveStation()
+{
+	dev->saveStation("6");
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*22*33#6*2#%1##").arg(source_id));
+}
+

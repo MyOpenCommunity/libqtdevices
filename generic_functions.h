@@ -29,21 +29,27 @@
 
 class QDate;
 class QDateTime;
+class OpenMsg;
 
 
-/// Create a 'command' frame
-/// This function is similar to openwebnet::CreateMsgOpen but unlike that the result
-/// frame is not tested for correcteness.
-QString createMsgOpen(QString who, QString what, QString where);
+/** The following functions can be used to test the format of a frame or build it.
+ *  The frame format can be:
+ *  - a command frame, in the form *who*what*where##
+ *  - a (read) dimension request frame, in the form *#who*where*dimension##
+ *  - a status request frame, in the form *#who*where##
+ *  - a write dimension request frame, in the form *#22*where*dimension*val1*..*valn##
+ */
 
-// Create a 'dimension request' frame
+bool isCommandFrame(OpenMsg &msg);
+bool isRequestFrame(OpenMsg &msg);
+bool isStatusRequestFrame(OpenMsg &msg);
+bool isWriteRequestFrame(OpenMsg &msg);
+
+QString createMsgOpen(QString who, QString what, QString where); // a command frame
 QString createRequestOpen(QString who, QString what, QString where);
-
-// Create a 'write dimension request' frame
 QString createWriteRequestOpen(QString who, QString what, QString where);
-
-// Create a 'status request' frame
 QString createStatusRequestOpen(QString who, QString where);
+
 
 QString getBostikName(const QString &name, const QString &suffix);
 

@@ -56,6 +56,7 @@ private slots:
 
 	void sendFrequenceUp();
 	void sendFrequenceDown();
+	void sendSaveStation();
 
 private:
 	RadioSourceDevice *dev;
