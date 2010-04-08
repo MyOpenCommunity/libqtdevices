@@ -155,7 +155,7 @@ void TestEnergyDevice::sendRequestCurrent()
 
 void TestEnergyDevice::sendRequestCurrent2()
 {
-	dev->updates.mode = 2;
+	dev->current_updates.mode = 2;
 	dev->requestCurrent();
 	client_request->flush();
 	QString req(QString("*#18*%1*1134##").arg(where));
@@ -164,7 +164,7 @@ void TestEnergyDevice::sendRequestCurrent2()
 
 void TestEnergyDevice::sendRequestCurrent3()
 {
-	dev->updates.mode = 3;
+	dev->current_updates.mode = 3;
 	dev->requestCurrent();
 	client_request->flush();
 	QString req(QString("*#18*%1*1130##").arg(where));
@@ -173,7 +173,7 @@ void TestEnergyDevice::sendRequestCurrent3()
 
 void TestEnergyDevice::sendRequestCurrent4()
 {
-	dev->updates.mode = 4;
+	dev->current_updates.mode = 4;
 	dev->requestCurrent();
 	client_request->flush();
 	QString req(QString("*#18*%1*1132##").arg(where));
