@@ -258,9 +258,24 @@ void LoadDataContent::updateValues()
 	float current = EnergyConversions::convertToRawData(current_value, EnergyConversions::ELECTRICITY_CURRENT);
 	float period1 = EnergyConversions::convertToRawData(first_period_value, EnergyConversions::ELECTRICITY_CURRENT);
 	float period2 = EnergyConversions::convertToRawData(second_period_value, EnergyConversions::ELECTRICITY_CURRENT);
+	int dec_current;
+	QString unit_current;
 	int dec = 3; // use always 3 decimals for the value
-	QString unit_current = "kW";
 	QString unit_period = "kWh";
+
+	// display values > 1 kW as kilowatts, lower values as watts
+	if (current >= 1)
+	{
+		dec_current = 3;
+		unit_current = "kW";
+	}
+	else
+	{
+		current = current * 1000;
+		dec_current = 0;
+		unit_current = "W";
+	}
+
 	if (is_currency)
 	{
 		current = EnergyConversions::convertToMoney(current, rate.rate);
@@ -270,7 +285,7 @@ void LoadDataContent::updateValues()
 		unit_current = unit_period = rate.currency_symbol;
 	}
 
-	current_consumption->setText(QString("%1 %2").arg(loc.toString(current, 'f', dec)).arg(unit_current));
+	current_consumption->setText(QString("%1 %2").arg(loc.toString(current, 'f', dec_current)).arg(unit_current));
 	first_period->setCentralText(QString("%1 %2").arg(loc.toString(period1, 'f', dec)).arg(unit_period));
 	second_period->setCentralText(QString("%1 %2").arg(loc.toString(period2, 'f', dec)).arg(unit_period));
 }
