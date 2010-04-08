@@ -14,6 +14,8 @@ LoadsDevice::LoadsDevice(const QString &where) :
 	device("18", where),
 	current_updates(where, 1)
 {
+	// actuators always have the automatic updates
+	current_updates.setHasNewFrames();
 }
 
 void LoadsDevice::init(bool forza)
