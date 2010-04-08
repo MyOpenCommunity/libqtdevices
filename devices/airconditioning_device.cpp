@@ -20,7 +20,7 @@
 
 
 #include "airconditioning_device.h"
-#include "generic_functions.h" // createWriteRequestOpen
+#include "generic_functions.h" // createWriteDimensionFrame
 
 #include <openmsg.h>
 
@@ -101,7 +101,7 @@ void AdvancedAirConditioningDevice::setStatus(Mode mode, int temp, Velocity vel,
 void AdvancedAirConditioningDevice::setStatus(AirConditionerStatus st) const
 {
 	QString what = statusToString(st);
-	sendFrame(createWriteRequestOpen(who, what, where));
+	sendFrame(createWriteDimensionFrame(who, what, where));
 }
 
 void AdvancedAirConditioningDevice::turnOff() const
@@ -111,5 +111,5 @@ void AdvancedAirConditioningDevice::turnOff() const
 
 void AdvancedAirConditioningDevice::activateScenario(const QString &what) const
 {
-	sendFrame(createWriteRequestOpen(who, what, where));
+	sendFrame(createWriteDimensionFrame(who, what, where));
 }

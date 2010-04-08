@@ -123,7 +123,7 @@ void EntryphoneDevice::cycleExternalUnits() const
 void EntryphoneDevice::endCall()
 {
 	QString what = QString("%1#%2#%3").arg(END_OF_CALL).arg(kind).arg(mmtype);
-	sendFrame(createMsgOpen(who, what, QString(END_ALL_CALLS) + where));
+	sendFrame(createCommandFrame(who, what, QString(END_ALL_CALLS) + where));
 	resetCallState();
 }
 

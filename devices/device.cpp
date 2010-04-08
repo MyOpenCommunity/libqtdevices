@@ -22,7 +22,7 @@
 #include "device.h"
 #include "openclient.h"
 #include "bttime.h"
-#include "generic_functions.h" // createRequestOpen, createMsgOpen
+#include "generic_functions.h" // createDimensionFrame, createCommandFrame
 #include "devices_cache.h" // bt_global::devices_cache
 
 #include <openmsg.h>
@@ -155,7 +155,7 @@ void device::sendInit(QString frame) const
 
 void device::sendCommand(QString what, QString _where) const
 {
-	sendFrame(createMsgOpen(who, what, _where));
+	sendFrame(createCommandFrame(who, what, _where));
 }
 
 void device::sendCommand(QString what) const
@@ -166,9 +166,9 @@ void device::sendCommand(QString what) const
 void device::sendRequest(QString what) const
 {
 	if (what.isEmpty())
-		sendInit(createStatusRequestOpen(who, where));
+		sendInit(createStatusRequestFrame(who, where));
 	else
-		sendInit(createRequestOpen(who, what, where));
+		sendInit(createDimensionFrame(who, what, where));
 }
 
 void device::setClients(const QHash<int, QPair<Client*, Client*> > &c)

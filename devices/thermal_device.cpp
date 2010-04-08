@@ -22,7 +22,7 @@
 #include "thermal_device.h"
 #include "openmsg.h"
 #include "bttime.h"
-#include "generic_functions.h" // createWriteRequestOpen
+#include "generic_functions.h" // createWriteDimensionFrame
 
 #include <QDebug>
 #include <QDate>
@@ -85,7 +85,7 @@ ThermalDevice::ThermalDevice(QString where, int openserver_id) : device(QString(
 
 void ThermalDevice::sendWriteRequest(const QString &what)
 {
-	sendFrame(createWriteRequestOpen(who, what, where));
+	sendFrame(createWriteDimensionFrame(who, what, where));
 }
 
 void ThermalDevice::setOff()

@@ -110,7 +110,7 @@ void LightingDevice::fixedTiming(int value)
 void LightingDevice::variableTiming(int h, int m, int s)
 {
 	if ((h >= 0 && h <= 255) && (m >= 0 && m <= 59) && (s >= 0 && s <= 59))
-		sendFrame(createWriteRequestOpen(who, QString("%1*%2*%3*%4").arg(DIM_VARIABLE_TIMING)
+		sendFrame(createWriteDimensionFrame(who, QString("%1*%2*%3*%4").arg(DIM_VARIABLE_TIMING)
 			.arg(h).arg(m).arg(s), where));
 }
 

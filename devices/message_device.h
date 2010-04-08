@@ -26,6 +26,10 @@
 
 #include <QTimer>
 
+namespace MessageDevicePrivate
+{
+	int checksum(const QString &string);
+}
 
 class MessageDevice : public device
 {
@@ -49,8 +53,8 @@ private slots:
 
 private:
 	void sendReady();
-	void sendBusy(int caller_where);
-	void sendWrongChecksum(QString message_id);
+	void sendBusy(const QString &caller_where);
+	void sendWrongChecksum(const QString &message_id);
 	void sendTimeout();
 
 	void resetTimer();

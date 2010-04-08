@@ -20,7 +20,7 @@
 
 
 #include "loads.h"
-#include "generic_functions.h" // createMsgOpen
+#include "generic_functions.h" // createCommandFrame
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bannercontent.h"
 
@@ -34,7 +34,7 @@ bannLoads::bannLoads(Page *parent, QString indirizzo, QString IconaSx) : bannOnS
 
 void bannLoads::Attiva()
 {
-	sendFrame(createMsgOpen("3", "2", getAddress()));
+	sendFrame(createCommandFrame("3", "2", getAddress()));
 }
 
 

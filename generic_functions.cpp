@@ -74,9 +74,14 @@ bool isCommandFrame(OpenMsg &msg)
 	return msg.IsNormalFrame();
 }
 
-bool isRequestFrame(OpenMsg &msg)
+bool isDimensionFrame(OpenMsg &msg)
 {
 	return msg.IsMeasureFrame();
+}
+
+bool isWriteDimensionFrame(OpenMsg &msg)
+{
+	return msg.IsWriteFrame();
 }
 
 bool isStatusRequestFrame(OpenMsg &msg)
@@ -84,27 +89,22 @@ bool isStatusRequestFrame(OpenMsg &msg)
 	return msg.IsStateFrame();
 }
 
-bool isWriteRequestFrame(OpenMsg &msg)
-{
-	return msg.IsWriteFrame();
-}
-
-QString createMsgOpen(QString who, QString what, QString where)
+QString createCommandFrame(QString who, QString what, QString where)
 {
 	return QString("*%1*%2*%3##").arg(who).arg(what).arg(where);
 }
 
-QString createRequestOpen(QString who, QString what, QString where)
+QString createDimensionFrame(QString who, QString what, QString where)
 {
 	return QString("*#%1*%2*%3##").arg(who).arg(where).arg(what);
 }
 
-QString createWriteRequestOpen(QString who, QString what, QString where)
+QString createWriteDimensionFrame(QString who, QString what, QString where)
 {
 	return QString("*#%1*%2*#%3##").arg(who).arg(where).arg(what);
 }
 
-QString createStatusRequestOpen(QString who, QString where)
+QString createStatusRequestFrame(QString who, QString where)
 {
 	return QString("*#%1*%2##").arg(who).arg(where);
 }

@@ -35,20 +35,20 @@ class OpenMsg;
 /** The following functions can be used to test the format of a frame or build it.
  *  The frame format can be:
  *  - a command frame, in the form *who*what*where##
- *  - a (read) dimension request frame, in the form *#who*where*dimension##
+ *  - a read dimension frame, in the form *#who*where*dimension##
+ *  - a write dimension frame, in the form *#who*where*#dimension*val1*..*valn##
  *  - a status request frame, in the form *#who*where##
- *  - a write dimension request frame, in the form *#who*where*#dimension*val1*..*valn##
  */
 
 bool isCommandFrame(OpenMsg &msg);
-bool isRequestFrame(OpenMsg &msg);
+bool isDimensionFrame(OpenMsg &msg);
+bool isWriteDimensionFrame(OpenMsg &msg);
 bool isStatusRequestFrame(OpenMsg &msg);
-bool isWriteRequestFrame(OpenMsg &msg);
 
-QString createMsgOpen(QString who, QString what, QString where); // a command frame
-QString createRequestOpen(QString who, QString what, QString where);
-QString createWriteRequestOpen(QString who, QString what, QString where);
-QString createStatusRequestOpen(QString who, QString where);
+QString createCommandFrame(QString who, QString what, QString where);
+QString createDimensionFrame(QString who, QString dimension, QString where);
+QString createWriteDimensionFrame(QString who, QString dimension, QString where);
+QString createStatusRequestFrame(QString who, QString where);
 
 
 QString getBostikName(const QString &name, const QString &suffix);
