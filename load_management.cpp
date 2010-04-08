@@ -335,15 +335,14 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 
 void LoadDataPage::showEvent(QShowEvent *e)
 {
-	// TODO dev->requestCurrentUpdateStart();
-	dev->requestCurrent();
+	dev->requestCurrentUpdateStart();
 	dev->requestTotal(0);
 	dev->requestTotal(1);
 }
 
 void LoadDataPage::hideEvent(QHideEvent *e)
 {
-	// TODO dev->requestCurrentUpdateStop();
+	dev->requestCurrentUpdateStop();
 }
 
 void LoadDataPage::resetRequested(int which)
