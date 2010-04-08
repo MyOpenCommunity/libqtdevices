@@ -11,7 +11,13 @@ QWidget[SecondFgColor="true"] {color:#6FB2FF;}
 QWidget[SecondFgColor="true"] QWidget {color:#6FB2FF;}
 QWidget[ReversedColor="true"] {color:#1E1E1E;background-color:#D8D8D8;}
 TextOnImageLabel { qproperty-text_color:#D8D8D8; }
-EnergyGraph { qproperty-primary_color:#1449C8; qproperty-secondary_color:#3587FF; qproperty-border_color: blue;}
+EnergyGraph {
+    qproperty-primary_color: #1449C8;
+    qproperty-secondary_color: #3587FF;
+    qproperty-border_color: blue;
+    qproperty-axis_color: white;
+    qproperty-text_color: white;
+}
 EnergyTableContent {
     qproperty-border_color: #41474d;
     qproperty-heading_color: #3587ff;
