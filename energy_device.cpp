@@ -72,8 +72,9 @@ enum RequestDimension
 };
 
 
-AutomaticUpdates::AutomaticUpdates(QString _where, int _mode)
+AutomaticUpdates::AutomaticUpdates(QString _where, int _mode, device *_dev)
 {
+	dev = _dev;
 	where = _where;
 	mode = _mode;
 	update_state = UPDATE_IDLE;
@@ -249,7 +250,7 @@ void AutomaticUpdates::handleAutomaticUpdate(OpenMsg &msg)
 
 EnergyDevice::EnergyDevice(QString where, int _mode) :
 	device(QString("18"), where),
-	current_updates(where, _mode)
+	current_updates(where, _mode, this)
 {
 	pending_graph_request = 0;
 	has_new_frames = false;

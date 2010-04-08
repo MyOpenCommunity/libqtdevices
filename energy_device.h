@@ -50,7 +50,7 @@ class AutomaticUpdates : public QObject
 friend class TestEnergyDevice;
 Q_OBJECT
 public:
-	AutomaticUpdates(QString where, int _mode);
+	AutomaticUpdates(QString where, int _mode, device *_dev);
 
 	void requestCurrent() const;
 	void requestCurrentUpdateStart();
