@@ -392,6 +392,8 @@ void EnergyTableContent::paintEvent(QPaintEvent *e)
 	QBrush brush_odd = QBrush(QColor(oddRowColor()));
 	QBrush brush_even = QBrush(QColor(evenRowColor()));
 
+	p.setFont(bt_global::font->get(FontManager::SMALLTEXT));
+
 	// external border
 	p.setPen(pen_border);
 	p.setBrush(QBrush());
