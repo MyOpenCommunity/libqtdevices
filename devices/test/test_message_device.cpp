@@ -25,8 +25,10 @@
 #include "device_tester.h"
 #include "openclient.h"
 #include "message_device.h"
+#include "openmsg.h"
 
 #include <QtTest>
+
 
 void TestMessageDevice::init()
 {
@@ -44,4 +46,42 @@ void TestMessageDevice::sendReady()
 	dev->sendReady();
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*8*9013*350#8#00#165#8##"));
+}
+
+void TestMessageDevice::sendBusy()
+{
+	dev->sendBusy(350);
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*8*9014*350#8#00#165#8##"));
+}
+
+void TestMessageDevice::sendWrongChecksum()
+{
+	dev->cdp_where = "350";
+	dev->sendWrongChecksum("ID_MESSAGE");
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*8*9015#ID_MESSAGE*350#8#00#165#8##"));
+}
+
+void TestMessageDevice::sendTimeout()
+{
+	dev->cdp_where = "350";
+	dev->message = "test";
+	dev->sendTimeout();
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*8*9016#4*350#8#00#165#8##"));
+}
+
+void TestMessageDevice::receiveCompleteMessage()
+{
+	QVERIFY(dev->cdp_where.isEmpty());
+	QVERIFY(dev->message.isEmpty());
+	QVERIFY(!dev->timer.isActive());
+
+	OpenMsg begin_msg("*8*9012#1001*165#8#00#350#8##");
+	dev->manageFrame(begin_msg);
+	client_command->flush();
+
+	QCOMPARE(server->frameCommand(), QString("*8*9013*350#8#00#165#8##"));
+	QCOMPARE(dev->cdp_where, QString("350"));
 }

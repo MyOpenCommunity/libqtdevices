@@ -24,6 +24,9 @@
 
 #include "device.h"
 
+#include <QTimer>
+
+
 class MessageDevice : public device
 {
 friend class TestMessageDevice;
@@ -41,14 +44,21 @@ public:
 protected:
 	virtual void manageFrame(OpenMsg &msg);
 
+private slots:
+	void timeout();
+
 private:
 	void sendReady();
-	void sendBusy(QString caller_where);
+	void sendBusy(int caller_where);
 	void sendWrongChecksum(QString message_id);
 	void sendTimeout();
 
+	void resetTimer();
+	void cleanup();
+
 	QString cdp_where;
 	QString message;
+	QTimer timer;
 };
 
 #endif // MESSAGE_DEVICE_H
