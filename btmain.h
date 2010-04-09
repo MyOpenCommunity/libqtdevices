@@ -78,6 +78,9 @@ public:
 	TrayBar *trayBar();
 	void showHomePage();
 
+	// set the screensaver and balcnk screen timeouts in seconds
+	void setScreenSaverTimeouts(int screensaver_start, int blank_screen);
+
 	// stop the screen saver and hide the password keypad but keep the
 	// screen frozen if password protection is active
 	void makeActiveAndFreeze();

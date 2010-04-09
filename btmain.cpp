@@ -539,6 +539,17 @@ void BtMain::makeActiveAndFreeze()
 	}
 }
 
+void BtMain::setScreenSaverTimeouts(int screensaver_start, int blank_screen)
+{
+	qDebug() << "Screensaver time" << screensaver_start << "blank screen" << blank_screen;
+
+	screenoff_time = blank_screen;
+	screensaver_time = screensaver_start;
+
+	if (freeze_time > screensaver_time)
+		freeze_time = screensaver_time;
+}
+
 void BtMain::checkScreensaver()
 {
 	rearmWDT();
