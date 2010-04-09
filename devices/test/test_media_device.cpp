@@ -22,6 +22,7 @@
 #include "test_media_device.h"
 #include "openclient.h"
 #include "openserver_mock.h"
+#include "device_tester.h"
 
 #include <media_device.h>
 
@@ -61,6 +62,13 @@ void TestSourceDevice::sendTurnOn()
 	QCOMPARE(server->frameCommand(), QString("*22*35#4#%2#%1*3#%2#0##").arg(source_id).arg(area));
 }
 
+void TestSourceDevice::receiveStatus()
+{
+	DeviceTester t(dev, SourceDevice::DIM_STATUS);
+	t.check(QString("*#22*2#%1*12*1*4##").arg(source_id), true);
+	t.check(QString("*#22*2#%1*12*0*4##").arg(source_id), false);
+}
+
 
 void TestRadioSourceDevice::initTestCase()
 {
@@ -93,4 +101,12 @@ void TestRadioSourceDevice::sendSaveStation()
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*22*33#6*2#%1##").arg(source_id));
 }
+
+void TestRadioSourceDevice::receiveFrequency()
+{
+	DeviceTester t(dev, RadioSourceDevice::DIM_FREQUENCY);
+	t.check(QString("*#22*2#%1*5*1*100##").arg(source_id), 100);
+	t.check(QString("*#22*2#%1*5*1*30##").arg(source_id), 30);
+}
+
 

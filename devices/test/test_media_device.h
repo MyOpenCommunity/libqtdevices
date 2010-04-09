@@ -41,6 +41,8 @@ private slots:
 	void sendPrevTrack();
 	void sendTurnOn();
 
+	void receiveStatus();
+
 private:
 	SourceDevice *dev;
 	QString source_id;
@@ -57,6 +59,8 @@ private slots:
 	void sendFrequenceUp();
 	void sendFrequenceDown();
 	void sendSaveStation();
+
+	void receiveFrequency();
 
 private:
 	RadioSourceDevice *dev;

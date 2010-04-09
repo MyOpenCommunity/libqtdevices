@@ -59,20 +59,27 @@ void SourceDevice::turnOn(QString area)
 	sendCommand(what, where);
 }
 
-void SourceDevice::manageFrame(OpenMsg &msg)
+bool SourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 {
 	QString msg_where = QString::fromStdString(msg.whereFull());
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
-		return;
+		return false;
 
 	if (!isDimensionFrame(msg))
-		return;
+		return false;
 
-	StatusList status_list;
 	QVariant v;
 
 	int what = msg.what();
+	switch (what)
+	{
+	case DIM_STATUS:
+		v.setValue(msg.whatArgN(0) == 1);
+		break;
+	}
 
+	status_list[what] = v;
+	return !status_list.isEmpty();
 }
 
 
@@ -95,6 +102,31 @@ void RadioSourceDevice::frequenceDown(QString value)
 void RadioSourceDevice::saveStation(QString station)
 {
 	sendCommand(QString("%1#%2").arg(REQ_SAVE_STATION).arg(station));
+}
+
+bool RadioSourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
+{
+	QString msg_where = QString::fromStdString(msg.whereFull());
+	if (msg_where != where && msg_where != QString("5#%1").arg(where))
+		return false;
+
+	SourceDevice::parseFrame(msg, status_list);
+
+	if (!isDimensionFrame(msg))
+		return false;
+
+	QVariant v;
+
+	int what = msg.what();
+	switch (what)
+	{
+	case DIM_FREQUENCY:
+		v.setValue(msg.whatArgN(1));
+		break;
+	}
+
+	status_list[what] = v;
+	return !status_list.isEmpty();
 }
 
 

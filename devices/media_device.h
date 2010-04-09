@@ -32,6 +32,11 @@ class SourceDevice : public device
 {
 Q_OBJECT
 public:
+	enum
+	{
+		DIM_STATUS = 12,
+	};
+
 	SourceDevice(QString source, int openserver_id = 0);
 
 public slots:
@@ -40,7 +45,7 @@ public slots:
 	void turnOn(QString area);
 
 protected:
-	virtual void manageFrame(OpenMsg &msg);
+	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);
 
 protected:
 	int mmtype;
@@ -56,12 +61,20 @@ class RadioSourceDevice : public SourceDevice
 {
 Q_OBJECT
 public:
+	enum
+	{
+		DIM_FREQUENCY = 5,
+	};
+
 	RadioSourceDevice(QString source_id, int openserver_id = 0);
 
 public slots:
 	void frequenceUp(QString value = QString());
 	void frequenceDown(QString value = QString());
 	void saveStation(QString station);
+
+protected:
+	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);
 };
 
 
