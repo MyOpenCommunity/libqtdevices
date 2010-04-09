@@ -27,6 +27,7 @@
 
 #include <QList>
 #include <QTimer>
+#include <QFutureWatcher>
 
 class QLabel;
 class ImageLabel;
@@ -95,6 +96,7 @@ private slots:
 	void handleClose();
 	void showImage(int image);
 	void displayFullScreen();
+	void imageReady();
 
 private:
 	QLabel *title;
@@ -102,6 +104,7 @@ private:
 	QList<QString> image_list;
 	SlideshowController *controller;
 	SlideshowWindow *window;
+	QFutureWatcher<QImage> async_load;
 };
 
 
@@ -127,6 +130,7 @@ private slots:
 	void showImage(int image);
 	void displayNoFullScreen();
 	void showButtons();
+	void imageReady();
 
 private:
 	// used to automatically hide the buttons
@@ -136,6 +140,7 @@ private:
 	QList<QString> image_list;
 	SlideshowController *controller;
 	SlideshowPage *page;
+	QFutureWatcher<QImage> async_load;
 };
 
 #endif // SLIDESHOW_H

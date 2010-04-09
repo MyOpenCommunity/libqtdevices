@@ -30,9 +30,19 @@
 #include <QFileInfo>
 #include <QTimer>
 
+#include <QtConcurrentRun>
+
 #define SLIDESHOW_TIMEOUT 10000
 #define BUTTONS_TIMEOUT 5000
 
+
+namespace
+{
+	QImage loadImage(const QString &image)
+	{
+		return QImage(image);
+	}
+}
 
 // SlideshowController implementation
 
@@ -158,6 +168,9 @@ SlideshowPage::SlideshowPage()
 	// close the slideshow page when the user clicks the stop button on the
 	// full screen slide show
 	connect(window, SIGNAL(Closed()), SLOT(handleClose()));
+
+	// async image load
+	connect(&async_load, SIGNAL(finished()), SLOT(imageReady()));
 }
 
 void SlideshowPage::displayImages(QList<QString> images, unsigned element)
@@ -170,8 +183,17 @@ void SlideshowPage::displayImages(QList<QString> images, unsigned element)
 
 void SlideshowPage::showImage(int index)
 {
-	image->setPixmap(image_list[index]);
+	qDebug() << "Loading image" << image_list[index];
+
+	async_load.setFuture(QtConcurrent::run(&loadImage, image_list[index]));
 	title->setText(QFileInfo(image_list[index]).fileName());
+}
+
+void SlideshowPage::imageReady()
+{
+	qDebug() << "Image loading complete";
+
+	image->setPixmap(QPixmap::fromImage(async_load.result()));
 }
 
 void SlideshowPage::startSlideshow()
@@ -251,6 +273,9 @@ SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
 	connect(buttons, SIGNAL(next()), SLOT(showButtons()));
 	connect(buttons, SIGNAL(play()), SLOT(showButtons()));
 	connect(buttons, SIGNAL(pause()), SLOT(showButtons()));
+
+	// async image loading
+	connect(&async_load, SIGNAL(finished()), SLOT(imageReady()));
 }
 
 void SlideshowWindow::displayImages(QList<QString> images, unsigned element)
@@ -263,7 +288,16 @@ void SlideshowWindow::displayImages(QList<QString> images, unsigned element)
 
 void SlideshowWindow::showImage(int index)
 {
-	image->setPixmap(image_list[index]);
+	qDebug() << "Loading image" << image_list[index];
+
+	async_load.setFuture(QtConcurrent::run(&loadImage, image_list[index]));
+}
+
+void SlideshowWindow::imageReady()
+{
+	qDebug() << "Image loading complete";
+
+	image->setPixmap(QPixmap::fromImage(async_load.result()));
 }
 
 void SlideshowWindow::showButtons()
