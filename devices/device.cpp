@@ -122,6 +122,16 @@ device::device(QString _who, QString _where, int oid) : FrameReceiver(oid)
 	connect(openservers[openserver_id], SIGNAL(connectionDown()), SIGNAL(connectionDown()));
 }
 
+void device::manageFrame(OpenMsg &msg)
+{
+	StatusList status_list;
+	parseFrame(msg, status_list);
+
+	// status_list may be empty, avoid emitting a signal in such cases
+	if (!status_list.isEmpty())
+		emit status_changed(status_list);
+}
+
 bool device::isConnected()
 {
 	return openservers[openserver_id]->isConnected();

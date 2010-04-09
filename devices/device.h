@@ -93,7 +93,11 @@ public:
 
 	static void setClients(const QHash<int, QPair<Client*, Client*> > &c);
 
-	virtual void manageFrame(OpenMsg &msg) {}
+	// The following method can be reimplemented in order to parse the incoming
+	// frames (from the client monitor). However, if the specific device can be
+	// subclassed, reimplement the parseFrame method in order to avoid a double
+	// status_changed signal.
+	virtual void manageFrame(OpenMsg &msg);
 
 	bool isConnected();
 	int openserverId();
@@ -134,6 +138,11 @@ protected:
 	void sendCommand(QString what, QString _where) const;
 	void sendCommand(QString what) const;
 	void sendRequest(QString what) const;
+
+	// This should be the preferred way to parse the incoming frames (see the comment
+	// above regarding the manageFrame method). Return true if the argument frame
+	// was recognized and processed.
+	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list) { return false; }
 
 private:
 	static QHash<int, QPair<Client*, Client*> > clients;
