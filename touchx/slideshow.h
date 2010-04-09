@@ -92,9 +92,6 @@ protected:
 	// kills the slideshow timer
 	void hideEvent(QHideEvent *event);
 
-private:
-	static QImage loadImage(const QString &image);
-
 private slots:
 	void handleClose();
 	void showImage(int image);
@@ -133,6 +130,7 @@ private slots:
 	void showImage(int image);
 	void displayNoFullScreen();
 	void showButtons();
+	void imageReady();
 
 private:
 	// used to automatically hide the buttons
@@ -142,6 +140,7 @@ private:
 	QList<QString> image_list;
 	SlideshowController *controller;
 	SlideshowPage *page;
+	QFutureWatcher<QImage> async_load;
 };
 
 #endif // SLIDESHOW_H
