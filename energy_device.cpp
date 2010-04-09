@@ -585,18 +585,16 @@ void EnergyDevice::fillCumulativeDay(StatusList &status_list, QString frame9, QS
 
 void EnergyDevice::fillMonthlyAverage(StatusList &status_list, OpenMsg &msg)
 {
-	QDate current = QDate::currentDate();
 	int average;
 
 	int val = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
 	if (static_cast<int>(msg.what()) == _DIM_CUMULATIVE_MONTH)
 	{
-		int year = msg.whatSubArgN(1) < current.month() ? current.year() : current.year() - 1;
-		int total_days = QDate(year, msg.whatSubArgN(1), 1).daysInMonth();
-		average = qRound(1.0 * val / total_days);
+		QDate date = getDateFromFrame(msg);
+		average = qRound(1.0 * val / date.daysInMonth());
 	}
 	else
-		average = qRound(1.0 * val / current.day());
+		average = qRound(1.0 * val / QDate::currentDate().day());
 
 	QVariant v_average;
 	v_average.setValue(EnergyValue(getDateFromFrame(msg), average));
