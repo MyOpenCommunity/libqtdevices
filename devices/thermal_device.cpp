@@ -90,22 +90,22 @@ void ThermalDevice::sendWriteRequest(const QString &what)
 
 void ThermalDevice::setOff()
 {
-	sendCommand(QString::number(GENERIC_OFF));
+	sendCommand(GENERIC_OFF);
 }
 
 void ThermalDevice::setProtection()
 {
-	sendCommand(QString::number(GENERIC_PROTECTION));
+	sendCommand(GENERIC_PROTECTION);
 }
 
 void ThermalDevice::setSummer()
 {
-	sendCommand(QString::number(SUMMER));
+	sendCommand(SUMMER);
 }
 
 void ThermalDevice::setWinter()
 {
-	sendCommand(QString::number(WINTER));
+	sendCommand(WINTER);
 }
 
 void ThermalDevice::setManualTemp(unsigned temperature)
@@ -128,7 +128,7 @@ void ThermalDevice::setManualTemp(unsigned temperature)
 
 void ThermalDevice::setWeekProgram(int program)
 {
-	sendCommand(QString::number(WEEK_PROGRAM + program));
+	sendCommand(WEEK_PROGRAM + program);
 }
 
 void ThermalDevice::setWeekendDateTime(QDate date, BtTime time, int program)
@@ -362,7 +362,7 @@ ThermalDevice99Zones::ThermalDevice99Zones(QString where, int openserver_id)
 
 void ThermalDevice99Zones::setScenario(int scenario)
 {
-	sendCommand(QString::number(SCENARIO_PROGRAM + scenario));
+	sendCommand(SCENARIO_PROGRAM + scenario);
 }
 
 unsigned ThermalDevice99Zones::maximumTemp() const

@@ -46,17 +46,17 @@ void AutomationDevice::init()
 
 void AutomationDevice::goUp()
 {
-	sendCommand(QString::number(DIM_UP));
+	sendCommand(DIM_UP);
 }
 
 void AutomationDevice::goDown()
 {
-	sendCommand(QString::number(DIM_DOWN));
+	sendCommand(DIM_DOWN);
 }
 
 void AutomationDevice::stop()
 {
-	sendCommand(QString::number(DIM_STOP));
+	sendCommand(DIM_STOP);
 }
 
 void AutomationDevice::requestStatus()

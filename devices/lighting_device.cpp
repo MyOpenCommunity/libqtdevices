@@ -78,7 +78,7 @@ void LightingDevice::init()
 
 void LightingDevice::turnOn()
 {
-	sendCommand(QString::number(LIGHT_ON));
+	sendCommand(LIGHT_ON);
 }
 
 void LightingDevice::turnOn(int speed)
@@ -88,7 +88,7 @@ void LightingDevice::turnOn(int speed)
 
 void LightingDevice::turnOff()
 {
-	sendCommand(QString::number(LIGHT_OFF));
+	sendCommand(LIGHT_OFF);
 }
 
 void LightingDevice::turnOff(int speed)
@@ -100,7 +100,7 @@ void LightingDevice::fixedTiming(int value)
 {
 	int v = FIXED_TIMING_MIN + value;
 	if (v >= FIXED_TIMING_MIN && v <= FIXED_TIMING_MAX)
-		sendCommand(QString::number(v));
+		sendCommand(v);
 }
 
 // Limitations:
@@ -121,7 +121,7 @@ void LightingDevice::requestStatus()
 
 void LightingDevice::requestVariableTiming()
 {
-	sendRequest(QString::number(DIM_VARIABLE_TIMING));
+	sendRequest(DIM_VARIABLE_TIMING);
 }
 
 
@@ -180,12 +180,12 @@ DimmerDevice::DimmerDevice(QString where, PullMode pull, int openserver_id) :
 
 void DimmerDevice::increaseLevel()
 {
-	sendCommand(QString::number(DIMMER_INC));
+	sendCommand(DIMMER_INC);
 }
 
 void DimmerDevice::decreaseLevel()
 {
-	sendCommand(QString::number(DIMMER_DEC));
+	sendCommand(DIMMER_DEC);
 }
 
 bool DimmerDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
@@ -229,7 +229,7 @@ void Dimmer100Device::decreaseLevel100(int delta, int speed)
 
 void Dimmer100Device::requestDimmer100Status()
 {
-	sendRequest(QString::number(DIMMER100_STATUS));
+	sendRequest(DIMMER100_STATUS);
 }
 
 void Dimmer100Device::requestPullStatus()

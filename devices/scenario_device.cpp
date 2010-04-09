@@ -56,7 +56,7 @@ void ScenarioDevice::activateScenario(int scen)
 {
 	Q_ASSERT_X(scen >= 1 && scen <= 31, "ScenarioDevice::activateScenario",
 		"Valid scenarios are between 1 and 31");
-	sendCommand(QString::number(scen));
+	sendCommand(scen);
 }
 
 void ScenarioDevice::startProgramming(int scen)
@@ -75,7 +75,7 @@ void ScenarioDevice::stopProgramming(int scen)
 
 void ScenarioDevice::deleteAll()
 {
-	sendCommand(QString::number(DELETE));
+	sendCommand(DELETE);
 }
 
 void ScenarioDevice::deleteScenario(int scen)

@@ -65,47 +65,47 @@ void PlatformDevice::enableLan(bool enable)
 
 void PlatformDevice::requestStatus() const
 {
-//	sendRequest(QString::number(DIM_STATUS));
+//	sendRequest(DIM_STATUS);
 }
 
 void PlatformDevice::requestIp() const
 {
-//	sendRequest(QString::number(DIM_IP));
+//	sendRequest(DIM_IP);
 }
 
 void PlatformDevice::requestNetmask() const
 {
-//	sendRequest(QString::number(DIM_NETMASK));
+//	sendRequest(DIM_NETMASK);
 }
 
 void PlatformDevice::requestMacAddress() const
 {
-//	sendRequest(QString::number(DIM_MACADDR));
+//	sendRequest(DIM_MACADDR);
 }
 
 void PlatformDevice::requestGateway() const
 {
-//	sendRequest(QString::number(DIM_GATEWAY));
+//	sendRequest(DIM_GATEWAY);
 }
 
 void PlatformDevice::requestDNS1() const
 {
-//	sendRequest(QString::number(DIM_DNS1));
+//	sendRequest(DIM_DNS1);
 }
 
 void PlatformDevice::requestDNS2() const
 {
-//	sendRequest(QString::number(DIM_DNS2));
+//	sendRequest(DIM_DNS2);
 }
 
 void PlatformDevice::requestKernelVersion() const
 {
-//	sendRequest(QString::number(DIM_KERN_VERS));
+//	sendRequest(DIM_KERN_VERS);
 }
 
 void PlatformDevice::requestFirmwareVersion() const
 {
-//	sendRequest(QString::number(DIM_FW_VERS));
+//	sendRequest(DIM_FW_VERS);
 }
 
 void PlatformDevice::manageFrame(OpenMsg &msg)

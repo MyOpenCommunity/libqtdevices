@@ -94,12 +94,12 @@ void EntryphoneDevice::cameraOn(QString _where) const
 
 void EntryphoneDevice::stairLightActivate() const
 {
-	sendCommand(QString::number(STAIRCASE_ACTIVATE));
+	sendCommand(STAIRCASE_ACTIVATE);
 }
 
 void EntryphoneDevice::stairLightRelease() const
 {
-	sendCommand(QString::number(STAIRCASE_RELEASE));
+	sendCommand(STAIRCASE_RELEASE);
 }
 
 void EntryphoneDevice::openLock() const

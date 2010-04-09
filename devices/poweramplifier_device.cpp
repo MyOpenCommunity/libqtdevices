@@ -122,37 +122,37 @@ void PowerAmplifierDevice::manageFrame(OpenMsg &msg)
 
 void PowerAmplifierDevice::requestStatus() const
 {
-	sendRequest(QString::number(DIM_STATUS));
+	sendRequest(DIM_STATUS);
 }
 
 void PowerAmplifierDevice::requestVolume() const
 {
-	sendRequest(QString::number(DIM_VOLUME));
+	sendRequest(DIM_VOLUME);
 }
 
 void PowerAmplifierDevice::requestTreble() const
 {
-	sendRequest(QString::number(DIM_TREBLE));
+	sendRequest(DIM_TREBLE);
 }
 
 void PowerAmplifierDevice::requestBass() const
 {
-	sendRequest(QString::number(DIM_BASS));
+	sendRequest(DIM_BASS);
 }
 
 void PowerAmplifierDevice::requestBalance() const
 {
-	sendRequest(QString::number(DIM_BALANCE));
+	sendRequest(DIM_BALANCE);
 }
 
 void PowerAmplifierDevice::requestPreset() const
 {
-	sendRequest(QString::number(DIM_PRESET));
+	sendRequest(DIM_PRESET);
 }
 
 void PowerAmplifierDevice::requestLoud() const
 {
-	sendRequest(QString::number(DIM_LOUD));
+	sendRequest(DIM_LOUD);
 }
 
 void PowerAmplifierDevice::turnOn() const
@@ -207,12 +207,12 @@ void PowerAmplifierDevice::balanceDown() const
 
 void PowerAmplifierDevice::nextPreset() const
 {
-	sendCommand(QString::number(REQ_NEXT_PRESET));
+	sendCommand(REQ_NEXT_PRESET);
 }
 
 void PowerAmplifierDevice::prevPreset() const
 {
-	sendCommand(QString::number(REQ_PREV_PRESET));
+	sendCommand(REQ_PREV_PRESET);
 }
 
 void PowerAmplifierDevice::loudOn() const

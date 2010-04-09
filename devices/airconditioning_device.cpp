@@ -63,7 +63,7 @@ AdvancedAirConditioningDevice::AdvancedAirConditioningDevice(QString where, int 
 
 void AdvancedAirConditioningDevice::requestStatus() const
 {
-	sendRequest(QString::number(ADVANCED_SPLIT_DIM));
+	sendRequest(ADVANCED_SPLIT_DIM);
 }
 
 QString AdvancedAirConditioningDevice::statusToString(const AirConditionerStatus &st) const

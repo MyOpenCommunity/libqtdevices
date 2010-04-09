@@ -44,12 +44,12 @@ SourceDevice::SourceDevice(QString source, int openserver_id) :
 
 void SourceDevice::nextTrack() const
 {
-	sendCommand(QString::number(REQ_NEXT_TRACK));
+	sendCommand(REQ_NEXT_TRACK);
 }
 
 void SourceDevice::prevTrack() const
 {
-	sendCommand(QString::number(REQ_PREV_TRACK));
+	sendCommand(REQ_PREV_TRACK);
 }
 
 void SourceDevice::turnOn(QString area) const
