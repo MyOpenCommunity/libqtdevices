@@ -46,7 +46,7 @@ public:
 	void requestStatus();
 
 protected:
-	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
+	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);
 	virtual void requestPullStatus();
 };
 
@@ -69,7 +69,8 @@ public:
 		DIM_STATUS
 	};
 
-	virtual void manageFrame(OpenMsg &msg);
+protected:
+	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);
 };
 
 #endif // DEV_AUTOMATION_H

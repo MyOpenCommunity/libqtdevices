@@ -202,7 +202,7 @@ void PullDevice::manageFrame(OpenMsg &msg)
 	}
 
 	StatusList sl;
-	parseFrame(msg, &sl);
+	parseFrame(msg, sl);
 
 	// StatusList may be empty, avoid emitting a signal in such cases
 	if (sl.size() > 0)

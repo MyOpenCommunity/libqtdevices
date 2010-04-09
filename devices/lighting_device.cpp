@@ -135,26 +135,19 @@ void LightingDevice::setTimingBehaviour(Timed t)
 	timed_light = t;
 }
 
-void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
+bool LightingDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 {
-	QVariant v;
 	int what = msg.what();
-	// set the value only if status_index has been modified, to avoid overwriting
-	// previously set values which are not considered in this function
-	int status_index = -1;
 
 	switch (what)
 	{
 	case DIM_DEVICE_ON:
 	case DIM_DEVICE_OFF:
-		if (msg.IsNormalFrame())
-		{
-			v.setValue(what == DIM_DEVICE_ON);
-			status_index = DIM_DEVICE_ON;
-		}
+		if (isCommandFrame(msg))
+			status_list[DIM_DEVICE_ON] = what == DIM_DEVICE_ON;
 		break;
 	case DIM_VARIABLE_TIMING:
-		if (msg.IsMeasureFrame())
+		if (isDimensionFrame(msg))
 		{
 			Q_ASSERT_X(msg.whatArgCnt() == 3, "LightingDevice::parseFrame",
 				"Variable timing message has more than 3 what args");
@@ -162,10 +155,11 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 			int minute = msg.whatArgN(1);
 			int second = msg.whatArgN(2);
 			if (hour == 255 && minute == 255 && second == 255)
-				return;
+				return false;
 			BtTime t(hour, minute, second);
+			QVariant v;
 			v.setValue(t);
-			status_index = what;
+			status_list[what] = v;
 		}
 		break;
 	}
@@ -173,13 +167,9 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 	// for point-to-point frames we also get a ON/OFF status update directly from the device.
 	// It won't hurt handling twice the state (for point-to-point frames).
 	if (what >= FIXED_TIMING_MIN && what <= FIXED_TIMING_MAX)
-	{
-		v.setValue(true);
-		status_index = DIM_DEVICE_ON;
-	}
+		status_list[DIM_DEVICE_ON] = true;
 
-	if (status_index > 0)
-		(*sl)[status_index] = v;
+	return !status_list.isEmpty();
 }
 
 
@@ -198,30 +188,20 @@ void DimmerDevice::decreaseLevel()
 	sendCommand(QString::number(DIMMER_DEC));
 }
 
-void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
+bool DimmerDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 {
-	LightingDevice::parseFrame(msg, sl);
+	LightingDevice::parseFrame(msg, status_list);
 
-	if (msg.IsNormalFrame())
+	if (isCommandFrame(msg))
 	{
-		QVariant v;
 		int what = msg.what();
-		int status_index = -1;
 
 		if (what >= DIMMER10_LEVEL_MIN && what <= DIMMER10_LEVEL_MAX)
-		{
-			v.setValue(what);
-			status_index = DIM_DIMMER_LEVEL;
-		}
+			status_list[DIM_DIMMER_LEVEL] = what;
 		else if (what == DIM_DIMMER_PROBLEM)
-		{
-			v.setValue(true);
-			status_index = what;
-		}
-
-		if (status_index > 0)
-			(*sl)[status_index] = v;
+			status_list[what] = true;
 	}
+	return !status_list.isEmpty();
 }
 
 
@@ -257,15 +237,13 @@ void Dimmer100Device::requestPullStatus()
 	requestDimmer100Status();
 }
 
-void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
+bool Dimmer100Device::parseFrame(OpenMsg &msg, StatusList &status_list)
 {
-	DimmerDevice::parseFrame(msg, sl);
+	DimmerDevice::parseFrame(msg, status_list);
 	int what = msg.what();
 
-	if (what == DIMMER100_STATUS && msg.IsMeasureFrame())
+	if (what == DIMMER100_STATUS && isDimensionFrame(msg))
 	{
-		QVariant v;
-
 		Q_ASSERT_X(msg.whatArgCnt() == 2, "Dimmer100Device::parseFrame",
 			"Dimmer 100 status frame must have 2 what args");
 		// convert the value in 0-100 range
@@ -273,17 +251,12 @@ void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
 
 		// if level == 0 device is off
 		if (level == 0)
-		{
-			v.setValue(false);
-			(*sl)[DIM_DEVICE_ON] = v;
-		}
+			status_list[DIM_DEVICE_ON] = false;
 		else
 		{
-			v.setValue(level);
-			(*sl)[DIM_DIMMER100_LEVEL] = v;
-
-			v.setValue(msg.whatArgN(1));
-			(*sl)[DIM_DIMMER100_SPEED] = v;
+			status_list[DIM_DIMMER100_LEVEL] = level;
+			status_list[DIM_DIMMER100_SPEED] = msg.whatArgN(1);
 		}
 	}
+	return !status_list.isEmpty();
 }

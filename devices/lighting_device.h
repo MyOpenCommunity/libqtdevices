@@ -27,6 +27,7 @@
 // Convert a dimmer10 level into range 0-100 with the formula given on the specs
 int dimmerLevelTo100(int level);
 
+
 class LightingDevice : public PullDevice
 {
 friend class TestLightingDevice;
@@ -64,7 +65,7 @@ public:
 	void setTimingBehaviour(Timed t);
 
 protected:
-	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
+	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);
 	virtual void requestPullStatus();
 
 private:
@@ -83,7 +84,7 @@ public:
 	void decreaseLevel();
 
 protected:
-	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
+	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);
 };
 
 
@@ -101,7 +102,7 @@ public:
 	void requestDimmer100Status();
 
 protected:
-	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
+	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);
 	virtual void requestPullStatus();
 };
 #endif // LIGHTINGDEVICE_H

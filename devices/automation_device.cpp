@@ -69,23 +69,16 @@ void AutomationDevice::requestPullStatus()
 	requestStatus();
 }
 
-void AutomationDevice::parseFrame(OpenMsg &msg, StatusList *sl)
+bool AutomationDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 {
-	QVariant v;
 	int what = msg.what();
-	switch (what)
+
+	if (what == DIM_UP || what == DIM_DOWN || what == DIM_STOP)
 	{
-	case DIM_UP:
-		v.setValue(true);
-		break;
-	case DIM_DOWN:
-		v.setValue(true);
-		break;
-	case DIM_STOP:
-		v.setValue(true);
-		break;
+		status_list[what] = true;
+		return true;
 	}
-	(*sl)[msg.what()] = v;
+	return false;
 }
 
 
@@ -104,18 +97,19 @@ void PPTStatDevice::requestStatus() const
 	sendRequest(QString());
 }
 
-void PPTStatDevice::manageFrame(OpenMsg &msg)
+bool PPTStatDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 {
 	if (where.toInt() != msg.where())
-		return;
+		return false;
 
 	int what = msg.what();
 
 	if (what == REQ_STATUS_OPEN || what == REQ_STATUS_CLOSE)
 	{
-		StatusList status_list;
-		status_list[DIM_STATUS] = QVariant(what == REQ_STATUS_CLOSE);
-		emit status_changed(status_list);
+		status_list[DIM_STATUS] = what == REQ_STATUS_CLOSE;
+		return true;
 	}
+
+	return false;
 }
 
