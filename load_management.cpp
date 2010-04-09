@@ -255,9 +255,9 @@ void LoadDataContent::rateChanged(int id)
 
 void LoadDataContent::updateValues()
 {
-	float current = EnergyConversions::convertToRawData(current_value, EnergyConversions::ELECTRICITY_CURRENT);
-	float period1 = EnergyConversions::convertToRawData(first_period_value, EnergyConversions::ELECTRICITY_CURRENT);
-	float period2 = EnergyConversions::convertToRawData(second_period_value, EnergyConversions::ELECTRICITY_CURRENT);
+	float current = EnergyConversions::convertToRawData(current_value, EnergyConversions::ELECTRICITY);
+	float period1 = EnergyConversions::convertToRawData(first_period_value, EnergyConversions::ELECTRICITY);
+	float period2 = EnergyConversions::convertToRawData(second_period_value, EnergyConversions::ELECTRICITY);
 	int dec_current;
 	QString unit_current;
 	int dec = 3; // use always 3 decimals for the value

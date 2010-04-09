@@ -67,7 +67,7 @@ void BannEnergyInterface::updateText()
 	if (device_value)
 	{
 		float data = EnergyConversions::convertToRawData(device_value,
-			is_electricity ? EnergyConversions::ELECTRICITY_CURRENT : EnergyConversions::OTHER_ENERGY);
+			is_electricity ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
 
 		if (EnergyInterface::isCurrencyView() && rate.isValid())
 		{

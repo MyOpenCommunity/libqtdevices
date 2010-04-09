@@ -182,7 +182,7 @@ void TestEnergyDevice::sendRequestCurrent4()
 void TestEnergyDevice::receiveCumulativeDay()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_DAY);
-	t.check(QString("*#18*%1*54*150##").arg(where), EnergyValue(QDate::currentDate(), 150));
+	t.check(QString("*#18*%1*54*150##").arg(where), EnergyValue(QDate::currentDate(), 15000));
 }
 
 void TestEnergyDevice::receiveCumulativeDay2()
@@ -207,7 +207,7 @@ void TestEnergyDevice::receiveCumulativeDay2()
 	if (QDate::currentDate().month() < 8)
 		--year;
 
-	t.check(frames, EnergyValue(QDate(year, 8, 1), 525));
+	t.check(frames, EnergyValue(QDate(year, 8, 1), 52500));
 }
 
 void TestEnergyDevice::receiveCumulativeDay16Bit()
@@ -239,16 +239,15 @@ void TestEnergyDevice::receiveCurrent()
 void TestEnergyDevice::receiveCumulativeMonth()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_MONTH, DeviceTester::MULTIPLE_VALUES);
-	t.check(QString("*#18*%1*52#8#2*106##").arg(where), EnergyValue(QDate(2008, 2, 1), 106));
-	t.check(QString("*#18*%1*53*95##").arg(where), EnergyValue(QDate::currentDate(), 95));
+	t.check(QString("*#18*%1*52#8#2*106##").arg(where), EnergyValue(QDate(2008, 2, 1), 10600));
+	t.check(QString("*#18*%1*53*95##").arg(where), EnergyValue(QDate::currentDate(), 9500));
 	t.check(QString("*#18*%1*53*4294967295##").arg(where), EnergyValue(QDate::currentDate(), 0));
-	t.check(QString("*#18*%1*53*2147483647##").arg(where), EnergyValue(QDate::currentDate(), 2147483647));
 }
 
 void TestEnergyDevice::receiveCumulativeYear()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR);
-	t.check(QString("*#18*%1*51*33##").arg(where), EnergyValue(QDate::currentDate(), 33));
+	t.check(QString("*#18*%1*51*33##").arg(where), EnergyValue(QDate::currentDate(), 3300));
 }
 
 void TestEnergyDevice::receiveDailyAverageGraph()
@@ -260,7 +259,7 @@ void TestEnergyDevice::receiveDailyAverageGraph()
 	frames << "*#18*20*57#9*1*2*5##" << "*#18*20*57#9*2*0*9*3##";
 
 	GraphData data;
-	data.graph[1] = 9;
+	data.graph[1] = 900;
 	data.date = getDate(month, 1);
 	data.type = EnergyDevice::DAILY_AVERAGE;
 	t.check(frames, data);
@@ -283,30 +282,30 @@ void TestEnergyDevice::receiveDailyAverageGraph2()
 	frames << "*#18*20*57#9*19*0##";
 
 	GraphData data;
-	data.graph[1] = 265;
-	data.graph[2] = 834;
-	data.graph[3] = 266;
-	data.graph[4] = 1281;
-	data.graph[5] = 14;
-	data.graph[6] = 2;
-	data.graph[7] = 521;
-	data.graph[8] = 1030;
-	data.graph[9] = 768;
-	data.graph[10] = 1803;
-	data.graph[11] = 770;
-	data.graph[12] = 1281;
-	data.graph[13] = 120;
-	data.graph[14] = 344;
-	data.graph[15] = 256;
-	data.graph[16] = 543;
-	data.graph[17] = 544;
-	data.graph[18] = 65;
-	data.graph[19] = 436;
-	data.graph[20] = 7;
-	data.graph[21] = 771;
-	data.graph[22] = 258;
-	data.graph[23] = 1025;
-	data.graph[24] = 516;
+	data.graph[1] = 26500;
+	data.graph[2] = 83400;
+	data.graph[3] = 26600;
+	data.graph[4] = 128100;
+	data.graph[5] = 1400;
+	data.graph[6] = 200;
+	data.graph[7] = 52100;
+	data.graph[8] = 103000;
+	data.graph[9] = 76800;
+	data.graph[10] = 180300;
+	data.graph[11] = 77000;
+	data.graph[12] = 128100;
+	data.graph[13] = 12000;
+	data.graph[14] = 34400;
+	data.graph[15] = 25600;
+	data.graph[16] = 54300;
+	data.graph[17] = 54400;
+	data.graph[18] = 6500;
+	data.graph[19] = 43600;
+	data.graph[20] = 700;
+	data.graph[21] = 77100;
+	data.graph[22] = 25800;
+	data.graph[23] = 102500;
+	data.graph[24] = 51600;
 	data.date = getDate(9, 1);
 	data.type = EnergyDevice::DAILY_AVERAGE;
 
@@ -346,7 +345,7 @@ void TestEnergyDevice::receiveDayGraph()
 	frames << tmp;
 
 	GraphData data;
-	data.graph[1] = 210;
+	data.graph[1] = 21000;
 	data.date = getDate(month, day);
 	data.type = EnergyDevice::CUMULATIVE_DAY;
 
@@ -366,9 +365,9 @@ void TestEnergyDevice::receiveDayGraph2()
 		<< tmp + "*2*12*67*255##";
 
 	GraphData data;
-	data.graph[1] = 210;
-	data.graph[2] = 12;
-	data.graph[3] = 67;
+	data.graph[1] = 21000;
+	data.graph[2] = 1200;
+	data.graph[3] = 6700;
 	data.graph[4] = 0;
 	data.date = getDate(month, day);
 	data.type = EnergyDevice::CUMULATIVE_DAY;
@@ -399,28 +398,28 @@ void TestEnergyDevice::receiveDayGraph3()
 	GraphData data;
 	data.graph[1] = 0;
 	data.graph[2] = 0;
-	data.graph[3] = 1;
-	data.graph[4] = 12;
-	data.graph[5] = 200;
-	data.graph[6] = 150;
+	data.graph[3] = 100;
+	data.graph[4] = 1200;
+	data.graph[5] = 20000;
+	data.graph[6] = 15000;
 	data.graph[7] = 0;
-	data.graph[8] = 190;
-	data.graph[9] = 191;
-	data.graph[10] = 192;
-	data.graph[11] = 180;
-	data.graph[12] = 181;
-	data.graph[13] = 182;
-	data.graph[14] = 170;
-	data.graph[15] = 171;
-	data.graph[16] = 172;
-	data.graph[17] = 253;
-	data.graph[18] = 254;
+	data.graph[8] = 19000;
+	data.graph[9] = 19100;
+	data.graph[10] = 19200;
+	data.graph[11] = 18000;
+	data.graph[12] = 18100;
+	data.graph[13] = 18200;
+	data.graph[14] = 17000;
+	data.graph[15] = 17100;
+	data.graph[16] = 17200;
+	data.graph[17] = 25300;
+	data.graph[18] = 25400;
 	data.graph[19] = 0;
-	data.graph[20] = 222;
-	data.graph[21] = 223;
-	data.graph[22] = 224;
-	data.graph[23] = 253;
-	data.graph[24] = 254;
+	data.graph[20] = 22200;
+	data.graph[21] = 22300;
+	data.graph[22] = 22400;
+	data.graph[23] = 25300;
+	data.graph[24] = 25400;
 	data.date = getDate(month, day);
 	data.type = EnergyDevice::CUMULATIVE_DAY;
 
@@ -460,7 +459,7 @@ void TestEnergyDevice::receiveCumulativeMonthGraph()
 	frames << tmp + "*1*3*255##";
 
 	GraphData data;
-	data.graph[1] = (3 << 8) + 255;
+	data.graph[1] = 100 * ((3 << 8) + 255);
 	data.date = getDate(month, 1);
 	data.type = EnergyDevice::CUMULATIVE_MONTH;
 
@@ -483,11 +482,11 @@ void TestEnergyDevice::receiveCumulativeMonthGraph2()
 
 
 	GraphData data;
-	data.graph[1] = (3 << 8) + 255;
-	data.graph[2] = (20 << 8) + 90;
+	data.graph[1] = 100 * ((3 << 8) + 255);
+	data.graph[2] = 100 * ((20 << 8) + 90);
 	data.graph[3] = 0;
-	data.graph[4] = 45;
-	data.graph[5] = (45 << 8) + 150;
+	data.graph[4] = 4500;
+	data.graph[5] = 100 * ((45 << 8) + 150);
 	data.date = getDate(month, 1);
 	data.type = EnergyDevice::CUMULATIVE_MONTH;
 
@@ -594,8 +593,8 @@ void TestEnergyDevice::receiveCumulativeYearGraph()
 	int month_distance = month - QDate::currentDate().month();
 	int index = month_distance < 0 ? month_distance + 12 : month_distance;
 
-	data.graph[12] = 95;
-	data.graph[index] = 106;
+	data.graph[12] = 9500;
+	data.graph[index] = 10600;
 
 	// Check for the month that has an invalid value
 	int d = invalid_month - QDate::currentDate().month();
@@ -610,9 +609,9 @@ void TestEnergyDevice::receiveMonthlyAverage()
 	DeviceTester t(dev, EnergyDevice::DIM_MONTLY_AVERAGE, DeviceTester::MULTIPLE_VALUES);
 
 	t.check(QString("*#18*%1*52#8#2*106##").arg(where),
-			EnergyValue(QDate(2008, 2, 1), qRound(1.0 * 106 / QDate(2008, 2, 1).daysInMonth())));
+			EnergyValue(QDate(2008, 2, 1), qRound(1.0 * 10600 / QDate(2008, 2, 1).daysInMonth())));
 	t.check(QString("*#18*%1*53*95##").arg(where),
-			EnergyValue(QDate::currentDate(), qRound(1.0 * 95 / QDate::currentDate().day())));
+			EnergyValue(QDate::currentDate(), qRound(1.0 * 9500 / QDate::currentDate().day())));
 	t.check(QString("*#18*%1*53*4294967295##").arg(where),
 			EnergyValue(QDate::currentDate(), 0));
 }
