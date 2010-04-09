@@ -347,8 +347,13 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			p = new IconSettings(page_node);
 			break;
 		case PAGE_SCREENSAVER:
+		{
+			int timeout = getTextChild(item, "timeout").toInt() / 1000;
+			int blank = getTextChild(item, "blankscreen").toInt() / 1000;
+			bt_global::btmain->setScreenSaverTimeouts(timeout, timeout + blank);
 			p = new ScreenSaverPage;
 			break;
+		}
 		case PAGE_CLEANSCREEN:
 			// TODO config file does not contain the clean screen value
 			w = new CleanScreen(bt_global::skin->getImage("cleanscreen"), 10);
