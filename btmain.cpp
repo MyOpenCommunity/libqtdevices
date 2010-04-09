@@ -570,8 +570,7 @@ void BtMain::checkScreensaver()
 			pagDefault->showPage();
 		}
 
-		// TODO discover if the "+ 5" is a fudge-factor
-		if (time >= screensaver_time + 5 && (*bt_global::display).currentState() == DISPLAY_FREEZED)
+		if ((*bt_global::display).currentState() == DISPLAY_FREEZED)
 		{
 			ScreenSaver::Type target_screensaver = (*bt_global::display).currentScreenSaver();
 			// When the brightness is set to off in the old hardware the display
