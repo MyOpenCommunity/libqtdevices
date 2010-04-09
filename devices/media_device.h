@@ -35,14 +35,16 @@ public:
 	enum
 	{
 		DIM_STATUS = 12,
+		DIM_TRACK = 6,
 	};
 
 	SourceDevice(QString source, int openserver_id = 0);
 
 public slots:
-	void nextTrack();
-	void prevTrack();
-	void turnOn(QString area);
+	void nextTrack() const;
+	void prevTrack() const;
+	void turnOn(QString area) const;
+	void requestTrack() const;
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);
@@ -69,9 +71,12 @@ public:
 	RadioSourceDevice(QString source_id, int openserver_id = 0);
 
 public slots:
-	void frequenceUp(QString value = QString());
-	void frequenceDown(QString value = QString());
-	void saveStation(QString station);
+	void frequenceUp(QString value = QString()) const;
+	void frequenceDown(QString value = QString()) const;
+	void saveStation(QString station) const;
+
+	void requestFrequency() const;
+
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);

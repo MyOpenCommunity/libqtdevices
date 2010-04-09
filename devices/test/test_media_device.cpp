@@ -62,6 +62,13 @@ void TestSourceDevice::sendTurnOn()
 	QCOMPARE(server->frameCommand(), QString("*22*35#4#%2#%1*3#%2#0##").arg(source_id).arg(area));
 }
 
+void TestSourceDevice::sendRequestTrack()
+{
+	dev->requestTrack();
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), QString("*#22*2#%1*6##").arg(source_id));
+}
+
 void TestSourceDevice::receiveStatus()
 {
 	DeviceTester t(dev, SourceDevice::DIM_STATUS);
@@ -109,4 +116,10 @@ void TestRadioSourceDevice::receiveFrequency()
 	t.check(QString("*#22*2#%1*5*1*30##").arg(source_id), 30);
 }
 
+void TestRadioSourceDevice::sendRequestFrequency()
+{
+	dev->requestFrequency();
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), QString("*#22*2#%1*5##").arg(source_id));
+}
 

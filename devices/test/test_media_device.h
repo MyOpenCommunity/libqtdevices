@@ -40,6 +40,7 @@ private slots:
 	void sendNextTrack();
 	void sendPrevTrack();
 	void sendTurnOn();
+	void sendRequestTrack();
 
 	void receiveStatus();
 
@@ -59,6 +60,7 @@ private slots:
 	void sendFrequenceUp();
 	void sendFrequenceDown();
 	void sendSaveStation();
+	void sendRequestFrequency();
 
 	void receiveFrequency();
 

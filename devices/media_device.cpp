@@ -42,21 +42,26 @@ SourceDevice::SourceDevice(QString source, int openserver_id) :
 	source_id = source;
 }
 
-void SourceDevice::nextTrack()
+void SourceDevice::nextTrack() const
 {
 	sendCommand(QString::number(REQ_NEXT_TRACK));
 }
 
-void SourceDevice::prevTrack()
+void SourceDevice::prevTrack() const
 {
 	sendCommand(QString::number(REQ_PREV_TRACK));
 }
 
-void SourceDevice::turnOn(QString area)
+void SourceDevice::turnOn(QString area) const
 {
 	QString what = QString("%1#%2#%3#%4").arg(REQ_SOURCE_ON).arg(mmtype).arg(area).arg(source_id);
 	QString where = QString("3#%1#0").arg(area);
 	sendCommand(what, where);
+}
+
+void SourceDevice::requestTrack() const
+{
+	sendRequest(DIM_TRACK);
 }
 
 bool SourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
@@ -89,19 +94,24 @@ RadioSourceDevice::RadioSourceDevice(QString source_id, int openserver_id) :
 	mmtype = 4;
 }
 
-void RadioSourceDevice::frequenceUp(QString value)
+void RadioSourceDevice::frequenceUp(QString value) const
 {
 	sendCommand(QString("%1#%2").arg(REQ_FREQUENCE_UP).arg(value));
 }
 
-void RadioSourceDevice::frequenceDown(QString value)
+void RadioSourceDevice::frequenceDown(QString value) const
 {
 	sendCommand(QString("%1#%2").arg(REQ_FREQUENCE_DOWN).arg(value));
 }
 
-void RadioSourceDevice::saveStation(QString station)
+void RadioSourceDevice::saveStation(QString station) const
 {
 	sendCommand(QString("%1#%2").arg(REQ_SAVE_STATION).arg(station));
+}
+
+void RadioSourceDevice::requestFrequency() const
+{
+	sendRequest(DIM_FREQUENCY);
 }
 
 bool RadioSourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
