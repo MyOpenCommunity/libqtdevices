@@ -27,6 +27,7 @@
 
 #include <QList>
 #include <QTimer>
+#include <QFutureWatcher>
 
 class QLabel;
 class ImageLabel;
@@ -91,10 +92,14 @@ protected:
 	// kills the slideshow timer
 	void hideEvent(QHideEvent *event);
 
+private:
+	static QImage loadImage(const QString &image);
+
 private slots:
 	void handleClose();
 	void showImage(int image);
 	void displayFullScreen();
+	void imageReady();
 
 private:
 	QLabel *title;
@@ -102,6 +107,7 @@ private:
 	QList<QString> image_list;
 	SlideshowController *controller;
 	SlideshowWindow *window;
+	QFutureWatcher<QImage> async_load;
 };
 
 
