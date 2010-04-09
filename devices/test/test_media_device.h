@@ -63,6 +63,8 @@ private slots:
 	void sendRequestFrequency();
 
 	void receiveFrequency();
+	void receiveRDS();
+	void receiveStopRDS();
 
 private:
 	RadioSourceDevice *dev;

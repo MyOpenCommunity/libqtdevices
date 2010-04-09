@@ -32,6 +32,8 @@ enum RequestDimension
 	REQ_PREV_TRACK = 10,
 	REQ_SOURCE_ON = 35,
 	REQ_SAVE_STATION = 33,
+	START_RDS = 31,
+	STOP_RDS = 32,
 };
 
 
@@ -114,6 +116,11 @@ void RadioSourceDevice::requestFrequency() const
 	sendRequest(DIM_FREQUENCY);
 }
 
+void RadioSourceDevice::requestRDS() const
+{
+	sendCommand(START_RDS);
+}
+
 bool RadioSourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 {
 	QString msg_where = QString::fromStdString(msg.whereFull());
@@ -121,6 +128,12 @@ bool RadioSourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 		return false;
 
 	SourceDevice::parseFrame(msg, status_list);
+
+	if (isCommandFrame(msg) && static_cast<int>(msg.what()) == STOP_RDS)
+	{
+		requestRDS();
+		return true;
+	}
 
 	if (!isDimensionFrame(msg))
 		return false;
@@ -133,6 +146,14 @@ bool RadioSourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 	case DIM_FREQUENCY:
 		v.setValue(msg.whatArgN(1));
 		break;
+	case DIM_RDS:
+	{
+		QString rds_message;
+		for (unsigned int i = 0; i < msg.whatArgCnt(); ++i)
+			rds_message.append(QChar(msg.whatArgN(i)));
+		v.setValue(rds_message);
+		break;
+	}
 	}
 
 	status_list[what] = v;

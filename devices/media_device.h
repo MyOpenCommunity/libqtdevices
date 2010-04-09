@@ -66,6 +66,7 @@ public:
 	enum
 	{
 		DIM_FREQUENCY = 5,
+		DIM_RDS = 10,
 	};
 
 	RadioSourceDevice(QString source_id, int openserver_id = 0);
@@ -76,7 +77,7 @@ public slots:
 	void saveStation(QString station) const;
 
 	void requestFrequency() const;
-
+	void requestRDS() const;
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);

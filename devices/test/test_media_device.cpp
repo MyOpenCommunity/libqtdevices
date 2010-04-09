@@ -23,6 +23,7 @@
 #include "openclient.h"
 #include "openserver_mock.h"
 #include "device_tester.h"
+#include "openmsg.h"
 
 #include <media_device.h>
 
@@ -109,6 +110,13 @@ void TestRadioSourceDevice::sendSaveStation()
 	QCOMPARE(server->frameCommand(), QString("*22*33#6*2#%1##").arg(source_id));
 }
 
+void TestRadioSourceDevice::sendRequestFrequency()
+{
+	dev->requestFrequency();
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), QString("*#22*2#%1*5##").arg(source_id));
+}
+
 void TestRadioSourceDevice::receiveFrequency()
 {
 	DeviceTester t(dev, RadioSourceDevice::DIM_FREQUENCY);
@@ -116,10 +124,17 @@ void TestRadioSourceDevice::receiveFrequency()
 	t.check(QString("*#22*2#%1*5*1*30##").arg(source_id), 30);
 }
 
-void TestRadioSourceDevice::sendRequestFrequency()
+void TestRadioSourceDevice::receiveRDS()
 {
-	dev->requestFrequency();
-	client_request->flush();
-	QCOMPARE(server->frameRequest(), QString("*#22*2#%1*5##").arg(source_id));
+	DeviceTester t(dev, RadioSourceDevice::DIM_RDS);
+	t.check(QString("*#22*2#%1*10*104*101*108*108*111*33##").arg(source_id), "hello!");
+}
+
+void TestRadioSourceDevice::receiveStopRDS()
+{
+	OpenMsg frame(qPrintable(QString("*22*32*2#%1##").arg(source_id)));
+	dev->manageFrame(frame);
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*22*31*2#%1##").arg(source_id));
 }
 
