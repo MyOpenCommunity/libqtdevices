@@ -137,7 +137,9 @@ protected:
 
 	void sendCommand(QString what, QString _where) const;
 	void sendCommand(QString what) const;
+	void sendCommand(int what) const;
 	void sendRequest(QString what) const;
+	void sendRequest(int what) const;
 
 	// This should be the preferred way to parse the incoming frames (see the comment
 	// above regarding the manageFrame method). Return true if the argument frame

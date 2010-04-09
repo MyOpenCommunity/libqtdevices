@@ -173,12 +173,22 @@ void device::sendCommand(QString what) const
 	sendCommand(what, where);
 }
 
+void device::sendCommand(int what) const
+{
+	sendCommand(QString::number(what), where);
+}
+
 void device::sendRequest(QString what) const
 {
 	if (what.isEmpty())
 		sendInit(createStatusRequestFrame(who, where));
 	else
 		sendInit(createDimensionFrame(who, what, where));
+}
+
+void device::sendRequest(int what) const
+{
+	sendRequest(QString::number(what));
 }
 
 void device::setClients(const QHash<int, QPair<Client*, Client*> > &c)
