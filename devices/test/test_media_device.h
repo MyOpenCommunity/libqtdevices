@@ -43,6 +43,7 @@ private slots:
 	void sendRequestTrack();
 
 	void receiveStatus();
+	void receiveTrack();
 
 private:
 	SourceDevice *dev;

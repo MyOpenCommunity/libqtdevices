@@ -83,6 +83,8 @@ bool SourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 	case DIM_STATUS:
 		v.setValue(msg.whatArgN(0) == 1);
 		break;
+	case DIM_TRACK:
+		v.setValue(msg.whatArgN(0));
 	}
 
 	status_list[what] = v;
@@ -93,7 +95,6 @@ bool SourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 RadioSourceDevice::RadioSourceDevice(QString source_id, int openserver_id) :
 	SourceDevice(source_id, openserver_id)
 {
-	mmtype = 4;
 }
 
 void RadioSourceDevice::frequenceUp(QString value) const

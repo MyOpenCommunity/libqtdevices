@@ -77,6 +77,12 @@ void TestSourceDevice::receiveStatus()
 	t.check(QString("*#22*2#%1*12*0*4##").arg(source_id), false);
 }
 
+void TestSourceDevice::receiveTrack()
+{
+	DeviceTester t(dev, SourceDevice::DIM_TRACK);
+	t.check(QString("*#22*2#%1*6*3##").arg(source_id), 3);
+}
+
 
 void TestRadioSourceDevice::initTestCase()
 {
