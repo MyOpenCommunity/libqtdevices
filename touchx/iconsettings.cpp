@@ -355,9 +355,11 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			break;
 		}
 		case PAGE_CLEANSCREEN:
-			// TODO config file does not contain the clean screen value
-			w = new CleanScreen(bt_global::skin->getImage("cleanscreen"), 10);
+		{
+			int countdown = getTextChild(item, "countdown").toInt() / 1000;
+			w = new CleanScreen(bt_global::skin->getImage("cleanscreen"), countdown);
 			break;
+		}
 #if !defined(BT_HARDWARE_X11)
 		case PAGE_CALIBRATION:
 			w = new Calibration;
