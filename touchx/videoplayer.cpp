@@ -94,7 +94,7 @@ VideoPlayerPage::~VideoPlayerPage()
 
 void VideoPlayerPage::showPage()
 {
-	Page::showPage();
+	MediaPlayerPage::showPage();
 	fullscreen = false;
 }
 
