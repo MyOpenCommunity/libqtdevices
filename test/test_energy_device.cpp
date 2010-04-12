@@ -743,6 +743,7 @@ void TestEnergyDevice::receiveUpdateInterval()
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR); // the dim doesn't matter
 
 	t.checkSignals(QString("*#18*%1*1200#%2*2##").arg(where).arg(upd->mode), 0);
+	QCOMPARE(dev->has_new_frames, true);
 	QCOMPARE(upd->has_new_frames, true);
 	QCOMPARE(upd->update_timer, (QTimer *)NULL);
 }
@@ -752,6 +753,7 @@ void TestEnergyDevice::receiveUpdateStop()
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR); // the dim doesn't matter
 
 	t.checkSignals(QString("*#18*%1*1200#%2*0##").arg(where).arg(upd->mode), 0);
+	QCOMPARE(dev->has_new_frames, true);
 	QCOMPARE(upd->has_new_frames, true);
 	QCOMPARE(upd->update_timer, (QTimer *)NULL);
 }

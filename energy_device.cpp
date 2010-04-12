@@ -190,11 +190,15 @@ void AutomaticUpdates::sendUpdateStop()
 
 void AutomaticUpdates::setHasNewFrames()
 {
+	if (has_new_frames)
+		return;
 	setHasNewFrames(update_timer->isActive());
 }
 
 void AutomaticUpdates::setHasNewFrames(bool restart_update_requests)
 {
+	if (has_new_frames)
+		return;
 	has_new_frames = true;
 
 	// delete the polling timer and send the frame to request
@@ -541,6 +545,7 @@ void EnergyDevice::frame_rx_handler(char *frame)
 			return;
 
 		current_updates.handleAutomaticUpdate(msg);
+		setHasNewFrames();
 	}
 
 	if (what == _DIM_INVALID_FRAME)
@@ -553,6 +558,9 @@ void EnergyDevice::frame_rx_handler(char *frame)
 
 void EnergyDevice::setHasNewFrames()
 {
+	if (has_new_frames)
+		return;
+
 	current_updates.setHasNewFrames();
 
 	has_new_frames = true;
