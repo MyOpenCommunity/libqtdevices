@@ -67,9 +67,6 @@ public:
 	// for pages that do not need any special treatment
 	void showUserPage(Page *window);
 
-	// for screensaver windows
-	void showScreensaver(Window *screensaver);
-
 	// for the keypad
 	void showKeypad(Window *keypad);
 

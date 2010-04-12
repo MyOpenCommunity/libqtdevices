@@ -68,13 +68,6 @@ void PageStack::showVCTPage(Page *page)
 	bt_global::btmain->makeActiveAndFreeze();
 }
 
-void PageStack::showScreensaver(Window *window)
-{
-	addState(State(window));
-
-	connect(window, SIGNAL(Closed()), SLOT(closed()));
-}
-
 void PageStack::showKeypad(Window *window)
 {
 	addState(State(window));
