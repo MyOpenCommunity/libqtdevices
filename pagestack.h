@@ -55,6 +55,7 @@ public:
 	void showAlarm(Page *alarm_page);
 	void showVCTPage(Page *page); // used for VCTCallPage and IntercomPage
 	void showUserWindow(Window *window);
+	void showUserPage(Page *window);
 	void showScreensaver(Window *screensaver);
 	void showKeypad(Window *keypad);
 
