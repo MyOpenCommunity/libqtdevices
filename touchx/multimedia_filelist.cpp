@@ -93,12 +93,10 @@ MultimediaFileListPage::MultimediaFileListPage()
 	videoplayer = new VideoPlayerPage;
 	connect(this, SIGNAL(displayVideos(QList<QString>, unsigned)),
 		videoplayer, SLOT(displayVideos(QList<QString>, unsigned)));
-	connect(videoplayer, SIGNAL(Closed()), SLOT(showPageNoReload()));
 
 	audioplayer = new AudioPlayerPage(AudioPlayerPage::LOCAL_FILE);
 	connect(this, SIGNAL(playAudioFiles(QList<QString>, unsigned)),
 		audioplayer, SLOT(playAudioFiles(QList<QString>, unsigned)));
-	connect(audioplayer, SIGNAL(Closed()), SLOT(showPageNoReload()));
 }
 
 void MultimediaFileListPage::browse(const QString &dir)

@@ -23,6 +23,7 @@
 #include "mediaplayer.h"
 #include "multimedia_buttons.h"
 #include "mount_watcher.h"
+#include "pagestack.h"
 
 
 MediaPlayerPage::MediaPlayerPage() :
@@ -33,6 +34,13 @@ MediaPlayerPage::MediaPlayerPage() :
 	// terminate player when unmounted
 	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
 		SLOT(unmounted(const QString &)));
+}
+
+void MediaPlayerPage::showPage()
+{
+	bt_global::page_stack.showUserPage(this);
+
+	Page::showPage();
 }
 
 void MediaPlayerPage::connectMultimediaButtons(MultimediaPlayerButtons *buttons)
