@@ -85,6 +85,8 @@ bool SourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 		break;
 	case DIM_TRACK:
 		v.setValue(msg.whatArgN(0));
+	default:
+		return false;
 	}
 
 	status_list[what] = v;
@@ -128,7 +130,8 @@ bool RadioSourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
 		return false;
 
-	SourceDevice::parseFrame(msg, status_list);
+	if (SourceDevice::parseFrame(msg, status_list))
+		return true;
 
 	if (isCommandFrame(msg) && static_cast<int>(msg.what()) == STOP_RDS)
 	{
@@ -155,6 +158,8 @@ bool RadioSourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 		v.setValue(rds_message);
 		break;
 	}
+	default:
+		return false;
 	}
 
 	status_list[what] = v;
@@ -166,5 +171,51 @@ VirtualSourceDevice::VirtualSourceDevice(QString address, int openserver_id) :
 	SourceDevice(address, openserver_id)
 {
 
+}
+
+bool VirtualSourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
+{
+	QString msg_where = QString::fromStdString(msg.whereFull());
+	if (msg_where != where && msg_where != QString("5#%1").arg(where))
+		return false;
+
+	if (SourceDevice::parseFrame(msg, status_list))
+		return true;
+
+	// TODO: e' necessario implementare la parte "attiva" del device e in particolare
+	// i comandi on e off. Resta da capire se e' meglio implementarli sul comando
+	// vero e proprio o sulla frame di notifica che comunque arriva al device.
+
+	if (!isCommandFrame(msg))
+		return false;
+
+
+	// TODO: non sono per niente convinto di questa soluzione. Questo e' il primo
+	// caso di device che deve fare qualcosa quando riceve dei comandi.. e nello
+	// specifico quando arrivano le frame di comando dovranno essere poi lanciati
+	// degli script per accendere/spegnere la sorgente o andare alla traccia
+	// precedente/successiva. Resta da capire però quest'ultima parte dove ha senso
+	// che sia messa, se dentro al device (così pero' diventa dipendente
+	// dall'hardware, e non mi piace molto) oppure che lo comunichi all'esterno e
+	// che sia la parte grafica a chiamare le funzioni specifiche dell'hardware.
+	// In questo secondo caso però non e' particolarmente bello usare la status_changed
+	// come fatto per il momento, in quanto come il nome suggerisce dovrebbe segnalare
+	// un cambiamento stato relativo ad un device, e non un comando per il quale è
+	// necessario fare qualcosa. Altre alternative potrebbero essere:
+	// - avere un altro segnale per esprimere la richiesta di lanciare comandi
+	// - avere segnali custom
+	// boh??
+
+	int what = msg.what();
+	switch (what)
+	{
+	case REQ_FREQUENCE_UP:
+	case REQ_FREQUENCE_DOWN:
+		break;
+	default:
+		return false;
+	}
+	status_list[what] = true;
+	return true;
 }
 

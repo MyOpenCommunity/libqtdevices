@@ -93,6 +93,9 @@ class VirtualSourceDevice : public SourceDevice
 Q_OBJECT
 public:
 	VirtualSourceDevice(QString address, int openserver_id = 0);
+
+protected:
+	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);
 };
 
 
