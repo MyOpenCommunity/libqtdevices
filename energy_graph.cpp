@@ -77,7 +77,9 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 	QPainter p(this);
 	if (!graph_data.isEmpty())
 	{
-		float max_value = -1;
+		// do not use 0 for the max value, otherwise the graph scale becomes
+		// too small when the measures are all zero
+		float max_value = 0.02;
 		foreach (float val, graph_data)
 			max_value = qMax(max_value, val);
 
