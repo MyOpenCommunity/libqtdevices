@@ -148,6 +148,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 
 		<img_audioplayer_background>multimediale/display.png</img_audioplayer_background>
 		<img_goto_sounddiffusion>multimediale/godiffusion.png</img_goto_sounddiffusion>
+		<img_tray_player>home/backtemp.png</img_tray_player>
 	</item>
 	<!-- Home page webcam link -->
 	<item>
@@ -363,6 +364,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 
 		<img_audioplayer_background>multimediale/display.png</img_audioplayer_background>
 		<img_goto_sounddiffusion>multimediale/godiffusion.png</img_goto_sounddiffusion>
+		<img_tray_player>home/backtemp.png</img_tray_player>
 	</item>
 	<!-- USB -->
 	<item>
