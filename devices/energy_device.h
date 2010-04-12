@@ -36,11 +36,11 @@ namespace EnergyConversions
 	enum EnergyTypology
 	{
 		DEFAULT_ENERGY,            // default conversion, divide number by 10
-		ELECTRICITY_CURRENT,       // specific conversion for current electricity
+		ELECTRICITY,               // specific conversion for electricity, divide by 1000
 		OTHER_ENERGY,              // conversion for other current energy value
 	};
 
-	float convertToRawData(int bt_bus_data, EnergyTypology type = DEFAULT_ENERGY);
+	float convertToRawData(int bt_bus_data, EnergyTypology type);
 	float convertToMoney(float raw_data, float money_factor);
 }
 
@@ -110,6 +110,13 @@ private:
  *      (ie, there can't be 'holes' in the stream);
  *  - if a stream is interrupted and the last value of the last frame is the high byte
  *      (ie, we can't reconstruct the complete value), nothing must be visualized for that value.
+ *
+ * The measure unit for the various energy types is:
+ * electricity: watt
+ * water: m3 (1000 liters)
+ * gas: ?
+ * dhw: ?
+ * heating/cooling: ?
  */
 class EnergyDevice : public device
 {
@@ -187,6 +194,10 @@ private:
 	QDate getDateFromFrame(OpenMsg &msg);
 
 private:
+	// scaling factor to be applied to data from 8 bit graph frames so they
+	// have the same scale as current measure and 16/32 bit graph frames
+	int scaling_factor_old_frames;
+
 	// handle automatic updates of current measure
 	AutomaticUpdates current_updates;
 
