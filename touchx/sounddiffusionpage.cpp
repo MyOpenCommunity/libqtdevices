@@ -105,10 +105,15 @@ enum BannerType
 
 SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources)
 {
-	// TODO: top widget should be a stackedWidget
-	SkinContext ctx(sources.at(0).cid);
-
-	QWidget *top_widget = new RadioSource;
+	QWidget *top_widget = 0;
+	// this handles the case for special ambient, which must not show sources
+	if (!sources.isEmpty())
+	{
+		// TODO: top widget should be a stackedWidget
+		SkinContext ctx(sources.at(0).cid);
+		// TODO: correctly create the top widget
+		top_widget = new RadioSource;
+	}
 	buildPage(getTextChild(conf_node, "descr"), Page::TITLE_HEIGHT, top_widget);
 	loadItems(conf_node);
 }
@@ -141,24 +146,13 @@ banner *SoundAmbientPage::getBanner(const QDomNode &item_node)
 	switch (id)
 	{
 	case AMPLIFIER:
-	{
-		Amplifier *bann = new Amplifier(descr, where);
-		b = bann;
-	}
+		b = new Amplifier(descr, where);
 		break;
 	case AMPLIFIER_GROUP:
-	{
-		AmplifierGroup *bann = new AmplifierGroup(getAddresses(getChildWithName(item_node, "addresses")), descr);
-		b = bann;
-	}
+		b = new AmplifierGroup(getAddresses(getChildWithName(item_node, "addresses")), descr);
 		break;
 	case BANN_POWER_AMPLIFIER:
-	{
-		BannPowerAmplifier *bann = new BannPowerAmplifier(0, item_node, where, oid);
-		bann->setText(descr);
-		bann->Draw();
-		b = bann;
-	}
+		b = new BannPowerAmplifierNew(descr, item_node, where, oid);
 		break;
 	}
 	return b;
@@ -220,7 +214,6 @@ banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QL
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
 	QDomNode page_node = getPageNodeFromChildNode(item_node, "lnk_pageID");
-	SoundAmbientPage *p = new SoundAmbientPage(page_node, sources);
 
 	banner *b = 0;
 	switch (id)
@@ -228,6 +221,7 @@ banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QL
 	case ITEM_AMBIENT:
 	{
 		SoundAmbient *bann = new SoundAmbient(getTextChild(item_node, "descr"), getTextChild(item_node, "env"));
+		SoundAmbientPage *p = new SoundAmbientPage(page_node, sources);
 		bann->connectRightButton(p);
 		b = bann;
 	}
@@ -235,6 +229,7 @@ banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QL
 	case ITEM_SPECIAL_AMBIENT:
 	{
 		Bann2Buttons *bann = new Bann2Buttons;
+		SoundAmbientPage *p = new SoundAmbientPage(page_node);
 		bann->initBanner(QString(), bt_global::skin->getImage("amplifier"), bt_global::skin->getImage("forward"),
 			getTextChild(item_node, "descr"));
 		bann->connectRightButton(p);
