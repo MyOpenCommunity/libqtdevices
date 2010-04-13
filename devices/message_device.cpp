@@ -84,8 +84,8 @@ Message MessageDevicePrivate::parseMessage(const QString &raw_message)
 
 using namespace MessageDevicePrivate;
 
-MessageDevice::MessageDevice(QString where, int openserver_id) :
-	device("8", where, openserver_id)
+MessageDevice::MessageDevice(int openserver_id) :
+	device("8", "", openserver_id)
 {
 	timer.setInterval(TIMEOUT);
 	timer.setSingleShot(true);
@@ -94,8 +94,7 @@ MessageDevice::MessageDevice(QString where, int openserver_id) :
 
 bool MessageDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 {
-	if (where != QString::number(msg.where()))
-		return false;
+	where = QString::number(msg.where());
 
 	if (msg.whereArgCnt() != 4)
 	{

@@ -61,7 +61,7 @@ public:
 		DIM_MESSAGE = 1,
 	};
 
-	MessageDevice(QString where, int openserver_id = 0);
+	explicit MessageDevice(int openserver_id = 0);
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);

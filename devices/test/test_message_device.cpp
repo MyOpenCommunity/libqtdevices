@@ -46,7 +46,7 @@ namespace QTest
 
 void TestMessageDevice::init()
 {
-	dev = new MessageDevice("165");
+	dev = new MessageDevice;
 }
 
 void TestMessageDevice::cleanup()
@@ -73,6 +73,7 @@ void TestMessageDevice::testParseMessage()
 
 void TestMessageDevice::sendReady()
 {
+	dev->where = "165";
 	dev->cdp_where = "350";
 	dev->sendReady();
 	client_command->flush();
@@ -81,6 +82,7 @@ void TestMessageDevice::sendReady()
 
 void TestMessageDevice::sendBusy()
 {
+	dev->where = "165";
 	dev->sendBusy(QString::number(350));
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*8*9014*350#8#00#165#8##"));
@@ -88,6 +90,7 @@ void TestMessageDevice::sendBusy()
 
 void TestMessageDevice::sendWrongChecksum()
 {
+	dev->where = "165";
 	dev->cdp_where = "350";
 	dev->sendWrongChecksum("ID_MESSAGE");
 	client_command->flush();
@@ -96,6 +99,7 @@ void TestMessageDevice::sendWrongChecksum()
 
 void TestMessageDevice::sendTimeout()
 {
+	dev->where = "165";
 	dev->cdp_where = "350";
 	dev->message = "test";
 	dev->sendTimeout();
