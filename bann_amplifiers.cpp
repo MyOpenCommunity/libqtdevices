@@ -26,6 +26,8 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // bt_global::skin
 
+// TODO: in poweramplifier.h there's a base graphic banner to handle volume and state changes for amplifiers
+// use it also for Amplifier
 
 Amplifier::Amplifier(const QString &descr, const QString &where) : BannLevel(0)
 {

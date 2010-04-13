@@ -35,6 +35,58 @@ class PowerAmplifierDevice;
 class QDomNode;
 class QWidget;
 
+/**
+ * Handle graphical changes for amplifiers, On/Off states and volume changes.
+ */
+class AdjustVolume : public BannLevel
+{
+Q_OBJECT
+protected:
+	enum States
+	{
+		ON,
+		OFF,
+	};
+	AdjustVolume(QWidget *parent=0);
+	void initBanner(const QString &left, const QString &_center_on, const QString &_center_off,
+		const QString &right, States init_state, int init_level, const QString &banner_text);
+	void setLevel(int level);
+	void setState(States new_state);
+
+private:
+	void updateIcons();
+	void setOnIcons();
+	void setOffIcons();
+	int current_level;
+	States current_state;
+	QString center_on, center_off;
+};
+
+
+/**
+ * \class BannPowerAmplifierNew
+ *
+ * The main banner of the power amplifier. It instantiate the device and manage
+ * the link with the page of settings.
+ */
+class BannPowerAmplifierNew : public AdjustVolume
+{
+Q_OBJECT
+public:
+	BannPowerAmplifierNew(const QString &descr, const QDomNode& config_node, QString address, int openserver_id);
+
+private slots:
+	void toggleStatus();
+	void volumeUp();
+	void volumeDown();
+	void status_changed(const StatusList &status_list);
+
+private:
+	QString off_icon, on_icon;
+	bool status;
+	PowerAmplifierDevice *dev;
+};
+
 
 
 /**
@@ -42,6 +94,7 @@ class QWidget;
  *
  * The main banner of the power amplifier. It instantiate the device and manage
  * the link with the page of settings.
+ * TODO: must be removed once the old sound diffusion is gone also on BTouch
  */
 class BannPowerAmplifier : public bannRegolaz
 {

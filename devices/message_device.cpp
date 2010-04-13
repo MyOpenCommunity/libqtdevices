@@ -23,7 +23,8 @@
 #include "openmsg.h"
 #include "generic_functions.h"
 
-#define TIMEOUT 3000
+#include <QRegExp>
+#include <QDateTime>
 
 enum
 {
@@ -66,10 +67,25 @@ int MessageDevicePrivate::checksum(const QString &string)
 	return (chk1 << 8) | chk2;
 }
 
+Message MessageDevicePrivate::parseMessage(const QString &raw_message)
+{
+	Message message;
+	QRegExp regexp("^\016(\\d{2}/\\d{2}/\\d{2} \\d{2}:\\d{2})\017(.*)$");
+
+	regexp.indexIn(raw_message);
+	if (regexp.numCaptures() == 2)
+	{
+		message.datetime = DateConversions::getDateTimeConfig(regexp.cap(1), '/');
+		message.text = regexp.cap(2);
+	}
+
+	return message;
+}
+
 using namespace MessageDevicePrivate;
 
-MessageDevice::MessageDevice(QString where, int openserver_id) :
-	device("8", where, openserver_id)
+MessageDevice::MessageDevice(int openserver_id) :
+	device("8", "", openserver_id)
 {
 	timer.setInterval(TIMEOUT);
 	timer.setSingleShot(true);
@@ -78,8 +94,7 @@ MessageDevice::MessageDevice(QString where, int openserver_id) :
 
 bool MessageDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 {
-	if (where != QString::number(msg.where()))
-		return false;
+	where = QString::number(msg.where());
 
 	if (msg.whereArgCnt() != 4)
 	{
@@ -109,7 +124,9 @@ bool MessageDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 			resetTimer();
 		else // end message
 		{
-			status_list[DIM_MESSAGE] = message;
+			QVariant dim_message;
+			dim_message.setValue(parseMessage(message));
+			status_list[DIM_MESSAGE] = dim_message;
 			cleanup();
 		}
 		break;

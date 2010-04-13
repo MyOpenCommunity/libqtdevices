@@ -345,14 +345,14 @@ QString DateConversions::formatDateConfig(const QDate &date, char separator)
 	return date.toString(format);
 }
 
-QString DateConversions::formatDateTimeConfig(const QDateTime &datetime)
+QString DateConversions::formatDateTimeConfig(const QDateTime &datetime, char separator)
 {
-	return DateConversions::formatDateConfig(datetime.date()) + datetime.time().toString(" HH:mm");
+	return DateConversions::formatDateConfig(datetime.date(), separator) + datetime.time().toString(" HH:mm");
 }
 
-QDate DateConversions::getDateConfig(const QString &date)
+QDate DateConversions::getDateConfig(const QString &date, char separator)
 {
-	QString format = getDateFormat();
+	QString format = getDateFormat(separator);
 	if (format.isNull())
 		qWarning("DateConversions::getDateConfig(), DATE_FORMAT conversion failed.");
 
@@ -361,9 +361,9 @@ QDate DateConversions::getDateConfig(const QString &date)
 	return QDate::fromString(date, format).addYears(100);
 }
 
-QDateTime DateConversions::getDateTimeConfig(const QString &datetime)
+QDateTime DateConversions::getDateTimeConfig(const QString &datetime, char separator)
 {
-	QString format = getDateFormat();
+	QString format = getDateFormat(separator);
 	if (format.isNull())
 		qWarning("DateConversions::getDateTimeConfig(), DATE_FORMAT conversion failed.");
 	format += " HH:mm";

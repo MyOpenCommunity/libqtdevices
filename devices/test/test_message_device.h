@@ -36,6 +36,7 @@ private slots:
 	void cleanup();
 
 	void testChecksum();
+	void testParseMessage();
 
 	void sendReady();
 	void sendBusy();
@@ -45,6 +46,8 @@ private slots:
 	void connectFailed();
 	void receiveCompleteMessage();
 	void recevieWrongChecksum();
+	void receiveTimeout();
+
 private:
 	MessageDevice *dev;
 };
