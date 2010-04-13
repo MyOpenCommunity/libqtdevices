@@ -23,6 +23,8 @@
 #include "openmsg.h"
 #include "generic_functions.h"
 
+#include <QRegExp>
+#include <QDateTime>
 
 enum
 {
@@ -63,6 +65,21 @@ int MessageDevicePrivate::checksum(const QString &string)
 	chk1 = chk1 % 256;
 
 	return (chk1 << 8) | chk2;
+}
+
+Message MessageDevicePrivate::parseMessage(const QString &raw_message)
+{
+	Message message;
+	QRegExp regexp("^\016(\\d{2}/\\d{2}/\\d{2} \\d{2}:\\d{2})\017(.*)$");
+
+	regexp.indexIn(raw_message);
+	if (regexp.numCaptures() == 2)
+	{
+		message.datetime = QDateTime::fromString(regexp.cap(1), "dd/MM/yy hh:mm").addYears(100);
+		message.text = regexp.cap(2);
+	}
+
+	return message;
 }
 
 using namespace MessageDevicePrivate;
@@ -108,7 +125,9 @@ bool MessageDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 			resetTimer();
 		else // end message
 		{
-			status_list[DIM_MESSAGE] = message;
+			QVariant dim_message;
+			dim_message.setValue(parseMessage(message));
+			status_list[DIM_MESSAGE] = dim_message;
 			cleanup();
 		}
 		break;

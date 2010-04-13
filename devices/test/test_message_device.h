@@ -36,6 +36,7 @@ private slots:
 	void cleanup();
 
 	void testChecksum();
+	void testParseMessage();
 
 	void sendReady();
 	void sendBusy();

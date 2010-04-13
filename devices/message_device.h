@@ -25,12 +25,28 @@
 #include "device.h"
 
 #include <QTimer>
+#include <QDateTime>
+
+
+struct Message
+{
+	QDateTime datetime;
+	QString text;
+};
+Q_DECLARE_METATYPE(Message);
+
+inline bool operator==(const Message &m1, const Message &m2)
+{
+	return m1.datetime == m2.datetime && m2.text == m2.text;
+}
+
 
 namespace MessageDevicePrivate
 {
 	static const int TIMEOUT = 3000;
 
 	int checksum(const QString &string);
+	Message parseMessage(const QString &raw_message);
 }
 
 class MessageDevice : public device

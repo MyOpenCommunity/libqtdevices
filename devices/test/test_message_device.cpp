@@ -49,6 +49,17 @@ void TestMessageDevice::testChecksum()
 	QCOMPARE(check, 0xE49B);
 }
 
+void TestMessageDevice::testParseMessage()
+{
+	Message message;
+	message.datetime = QDateTime(QDate(2010, 3, 8), QTime(17, 32));
+	message.text = "qualsiasi cosa";
+
+	Message check = MessageDevicePrivate::parseMessage("\01608/03/10 17:32\017qualsiasi cosa");
+	QCOMPARE(check.datetime, message.datetime);
+	QCOMPARE(check.text, message.text);
+}
+
 void TestMessageDevice::sendReady()
 {
 	dev->cdp_where = "350";
@@ -139,9 +150,11 @@ void TestMessageDevice::receiveCompleteMessage()
 	QVERIFY(!dev->message.isEmpty());
 	QVERIFY(dev->timer.isActive());
 
-
+	Message message;
+	message.datetime = QDateTime(QDate(2010, 3, 8), QTime(17, 32));
+	message.text = "qualsiasi cosa";
 	DeviceTester tst(dev, MessageDevice::DIM_MESSAGE, DeviceTester::ONE_VALUE);
-	tst.check("*8*9001*165#8#00#350#8##", "\01608/03/10 17:32\017qualsiasi cosa");
+	tst.check("*8*9001*165#8#00#350#8##", message);
 }
 
 void TestMessageDevice::recevieWrongChecksum()
