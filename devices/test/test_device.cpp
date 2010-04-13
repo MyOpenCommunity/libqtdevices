@@ -28,7 +28,21 @@
 
 #include <QVariant>
 #include <QMetaType>
+#include <QEventLoop>
 
+
+void testSleep(int msec)
+{
+	QEventLoop event_loop;
+	QTimer timer;
+
+	timer.setSingleShot(true);
+	QObject::connect(&timer, SIGNAL(timeout()), &event_loop, SLOT(quit()));
+
+	// Wait for the timeout
+	timer.start(msec);
+	event_loop.exec();
+}
 
 TestDevice::TestDevice()
 {

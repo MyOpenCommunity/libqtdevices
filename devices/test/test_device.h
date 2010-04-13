@@ -27,6 +27,10 @@
 class OpenServerMock;
 class Client;
 
+/**
+ * Sleep function that runs an event loop.
+ */
+void testSleep(int msec);
 
 /**
  * The base class for all tests about device.
