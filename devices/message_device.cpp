@@ -42,6 +42,20 @@ enum
 	COMMAND_TIMEOUT = 9016
 };
 
+
+/**
+ * checksum
+ *
+ * Function to calculate the checksum of a message.
+ * The sum is performed on bytes, not characters.
+ *
+ * CHK2 = (1 + B1 + B2 + ... + Bn) mod 256
+ * CHK1 = [nxB1 + (n-1)xB2 + (n-2)xB3 + ... + Bn + n] mod 256
+ * CHK = (CHK1 CHK2)
+ *
+ * \param string: the string to calculate the checksum of
+ * \return the \a string checksum
+ */
 int MessageDevicePrivate::checksum(const QString &string)
 {
 	QByteArray data;
@@ -67,6 +81,15 @@ int MessageDevicePrivate::checksum(const QString &string)
 	return (chk1 << 8) | chk2;
 }
 
+/**
+ * parseMessage
+ *
+ * Function to create a message from a raw string.
+ *
+ * \param raw_message the raw string from which create the \a Message structure
+ * \return a valid \a Message structure if the parsing goes well, an invalid
+ *         \a Message structure (invalid datetime and empty text) otherwise
+ */
 Message MessageDevicePrivate::parseMessage(const QString &raw_message)
 {
 	Message message;
@@ -92,6 +115,24 @@ MessageDevice::MessageDevice(int openserver_id) :
 	connect(&timer, SIGNAL(timeout()), SLOT(timeout()));
 }
 
+/**
+ * parseFramne
+ *
+ * Message protocol description:
+ * * begin
+ * * param (ignored)
+ * * continue (could arrive many times)
+ * * checksum
+ * * end
+ *
+ * Note:
+ * * Only one message a time can be processed, if the device receives a begin
+ *   request while is processing one message, it responds with a busy response
+ *   to the caller.
+ * * If the device doesn't receive a request every 3 seconds after the begin,
+ *   it sends a timeout response to the caller containing the number of bytes
+ *   received.
+ */
 bool MessageDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 {
 	where = QString::number(msg.where());
