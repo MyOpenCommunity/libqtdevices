@@ -100,8 +100,48 @@ AmplifierGroup::AmplifierGroup(QStringList addresses, const QString &descr) : Ba
 	center_right_inactive = bt_global::skin->getImage("volume_off_right");
 	initBanner(bt_global::skin->getImage("off"), getBostikName(center_left_inactive, "0"),
 		getBostikName(center_right_inactive, "0"), bt_global::skin->getImage("on"), descr);
-	// TODO: create devices
+
+	foreach (const QString &where, addresses)
+		devices.append(bt_global::add_device_to_cache(new AmplifierDevice(where)));
+
+	connect(left_button, SIGNAL(clicked()), SLOT(turnOff()));
+	connect(right_button, SIGNAL(clicked()), SLOT(turnOn()));
+	connect(this, SIGNAL(center_left_clicked()), SLOT(volumeDown()));
+	connect(this, SIGNAL(center_right_clicked()), SLOT(volumeUp()));
 }
+
+void AmplifierGroup::volumeUp()
+{
+	foreach (AmplifierDevice *dev, devices)
+		dev->volumeUp();
+}
+
+void AmplifierGroup::volumeDown()
+{
+	foreach (AmplifierDevice *dev, devices)
+		dev->volumeDown();
+}
+
+void AmplifierGroup::turnOn()
+{
+	foreach (AmplifierDevice *dev, devices)
+		dev->turnOn();
+
+	// always use the 0-volume icons, since groups do not have a definite volume
+	setCenterLeftIcon(getBostikName(center_left_active, "0"));
+	setCenterRightIcon(getBostikName(center_right_active, "0"));
+}
+
+void AmplifierGroup::turnOff()
+{
+	foreach (AmplifierDevice *dev, devices)
+		dev->turnOff();
+
+	// always use the 0-volume icons, since groups do not have a definite volume
+	setCenterLeftIcon(getBostikName(center_left_inactive, "0"));
+	setCenterRightIcon(getBostikName(center_right_inactive, "0"));
+}
+
 
 amplificatore::amplificatore(QWidget *parent, QString indirizzo, QString IconaSx, QString IconaDx, QString icon, QString inactiveIcon)
 	: bannRegolaz(parent)

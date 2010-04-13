@@ -64,8 +64,15 @@ Q_OBJECT
 public:
 	AmplifierGroup(QStringList addresses, const QString &descr);
 
+private slots:
+	void volumeUp();
+	void volumeDown();
+	void turnOn();
+	void turnOff();
+
 private:
 	QString center_left_active, center_left_inactive, center_right_active, center_right_inactive;
+	QList<AmplifierDevice*> devices;
 };
 
 /*!
