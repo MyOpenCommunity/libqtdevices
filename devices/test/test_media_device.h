@@ -35,6 +35,13 @@ class PowerAmplifierDevice;
 class TestSourceDevice : public TestDevice
 {
 Q_OBJECT
+public:
+	TestSourceDevice();
+
+protected:
+	QString source_id;
+	void initSource(SourceDevice *dev = 0);
+
 private slots:
 	void initTestCase();
 	void cleanupTestCase();
@@ -49,13 +56,15 @@ private slots:
 
 private:
 	SourceDevice *dev;
-	QString source_id;
 };
 
 
-class TestRadioSourceDevice : public TestDevice
+class TestRadioSourceDevice : public TestSourceDevice
 {
 Q_OBJECT
+protected:
+	void initRadioSource(RadioSourceDevice *dev = 0);
+
 private slots:
 	void initTestCase();
 	void cleanupTestCase();
@@ -71,13 +80,15 @@ private slots:
 
 private:
 	RadioSourceDevice *dev;
-	QString source_id;
 };
 
 
 class TestAmplifierDevice : public TestDevice
 {
 Q_OBJECT
+public:
+	TestAmplifierDevice();
+
 private slots:
 	void initTestCase();
 	void cleanupTestCase();
@@ -104,6 +115,12 @@ private:
 class TestPowerAmplifierDevice : public TestAmplifierDevice
 {
 Q_OBJECT
+public:
+	TestPowerAmplifierDevice();
+
+protected:
+	void initPowerAmplifier(PowerAmplifierDevice *dev = 0);
+
 private slots:
 	void initTestCase();
 	void cleanupTestCase();
@@ -124,9 +141,6 @@ private slots:
 	void receiveTreble();
 	void receiveBass();
 	void receiveBalance();
-
-protected:
-	void initPowerAmplifier(PowerAmplifierDevice *dev = 0);
 
 private:
 	PowerAmplifierDevice *dev;

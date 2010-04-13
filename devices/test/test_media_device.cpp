@@ -29,16 +29,28 @@
 
 #include <QtTest>
 
+#define AMPLI_AREA "3"
+#define AMPLI_POINT "1"
+
+
+TestSourceDevice::TestSourceDevice()
+{
+	source_id = "1";
+}
 
 void TestSourceDevice::initTestCase()
 {
-	source_id = "1";
-	dev = new SourceDevice(source_id);
+	initSource();
 }
 
 void TestSourceDevice::cleanupTestCase()
 {
 	delete dev;
+}
+
+void TestSourceDevice::initSource(SourceDevice *d)
+{
+	dev = d ? d : new SourceDevice(source_id);
 }
 
 void TestSourceDevice::sendNextTrack()
@@ -86,8 +98,18 @@ void TestSourceDevice::receiveTrack()
 
 void TestRadioSourceDevice::initTestCase()
 {
-	source_id = "1";
-	dev = new RadioSourceDevice(source_id);
+	initRadioSource();
+}
+
+void TestRadioSourceDevice::initRadioSource(RadioSourceDevice *d)
+{
+	if (d)
+		dev = d;
+	else
+	{
+		dev = new RadioSourceDevice(source_id);
+		initSource(dev);
+	}
 }
 
 void TestRadioSourceDevice::cleanupTestCase()
@@ -145,6 +167,13 @@ void TestRadioSourceDevice::receiveStopRDS()
 }
 
 
+
+TestAmplifierDevice::TestAmplifierDevice()
+{
+	area = AMPLI_AREA;
+	point = AMPLI_POINT;
+}
+
 void TestAmplifierDevice::initTestCase()
 {
 	initAmplifier();
@@ -152,14 +181,7 @@ void TestAmplifierDevice::initTestCase()
 
 void TestAmplifierDevice::initAmplifier(AmplifierDevice *d)
 {
-	if (d)
-		dev = d;
-	else
-	{
-		area = "3";
-		point = "1";
-		dev = new AmplifierDevice(area, point);
-	}
+	dev = d ? d : new AmplifierDevice(area, point);
 }
 
 void TestAmplifierDevice::cleanupTestCase()
@@ -228,6 +250,10 @@ void TestAmplifierDevice::receiveStatusRequest()
 }
 
 
+TestPowerAmplifierDevice::TestPowerAmplifierDevice()
+{
+	where = QString(AMPLI_AREA) + QString(AMPLI_POINT);
+}
 
 void TestPowerAmplifierDevice::initTestCase()
 {
@@ -240,11 +266,8 @@ void TestPowerAmplifierDevice::initPowerAmplifier(PowerAmplifierDevice *d)
 		dev = d;
 	else
 	{
-		where = "35";
 		dev = new PowerAmplifierDevice(where);
-		initAmplifier(d);
-		// In questo modo qua ho il where corretto.. ma nei test dell'ampli normale
-		// ho area e point sbagliati!
+		initAmplifier(dev);
 	}
 }
 
