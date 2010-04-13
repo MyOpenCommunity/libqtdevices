@@ -185,6 +185,9 @@ void SlideshowPage::showImage(int index)
 {
 	qDebug() << "Loading image" << image_list[index];
 
+	// TODO should avoid enqueuing multiple image loading actions if the user
+	// clicks like one possessed by spirits, or if the image loading can't keep up
+	// with the slideshow
 	async_load.setFuture(QtConcurrent::run(&loadImage, image_list[index]));
 	title->setText(QFileInfo(image_list[index]).fileName());
 }
