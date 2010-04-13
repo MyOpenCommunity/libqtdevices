@@ -117,9 +117,9 @@ int trasformaVol(int vol);
 namespace DateConversions
 {
 	QString formatDateConfig(const QDate &date, char separator = '.');
-	QString formatDateTimeConfig(const QDateTime &datetime);
-	QDate getDateConfig(const QString &date);
-	QDateTime getDateTimeConfig(const QString &datetime);
+	QString formatDateTimeConfig(const QDateTime &datetime, char separator = '.');
+	QDate getDateConfig(const QString &date, char separator = '.');
+	QDateTime getDateTimeConfig(const QString &datetime, char separator = '.');
 }
 
 #endif // GENERIC_FUNCTIONS_H
