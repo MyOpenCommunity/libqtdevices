@@ -46,7 +46,7 @@ public:
 	MessageDevice(QString where, int openserver_id = 0);
 
 protected:
-	virtual void manageFrame(OpenMsg &msg);
+	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);
 
 private slots:
 	void timeout();

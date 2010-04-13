@@ -76,17 +76,15 @@ MessageDevice::MessageDevice(QString where, int openserver_id) :
 	connect(&timer, SIGNAL(timeout()), SLOT(timeout()));
 }
 
-void MessageDevice::manageFrame(OpenMsg &msg)
+bool MessageDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 {
-
-	QString dest_where = QString::number(msg.where());
-	if (dest_where != where)
-		return;
+	if (where != QString::number(msg.where()))
+		return false;
 
 	if (msg.whereArgCnt() != 4)
 	{
 		qWarning("Malformed message where.");
-		return;
+		return false;
 	}
 
 	int what = msg.what();
@@ -105,23 +103,25 @@ void MessageDevice::manageFrame(OpenMsg &msg)
 			sendBusy(caller_where);
 		break;
 	}
+
 	case MESSAGE_PARAM_OR_END:
 		if (isWriteDimensionFrame(msg)) // message param
 			resetTimer();
 		else // end message
 		{
-			StatusList sl;
-			sl[DIM_MESSAGE] = message;
-			emit status_changed(sl);
+			status_list[DIM_MESSAGE] = message;
 			cleanup();
 		}
 		break;
+
 	case MESSAGE_CONTINUE:
 		for (unsigned int i = 0; i < msg.whatArgCnt(); ++i)
 			message.append(QChar(msg.whatArgN(i)));
 		resetTimer();
 		break;
+
 	case MESSAGE_CHECKSUM:
+	{
 		int check = checksum(message);
 		// The checksum to verify is made by the 5 rightmost chars of the id
 		int to_verify = QString::fromStdString(msg.whatArg(0)).right(5).toInt();
@@ -135,6 +135,10 @@ void MessageDevice::manageFrame(OpenMsg &msg)
 			resetTimer();
 		break;
 	}
+	default:
+		return false;
+	}
+	return true;
 }
 
 void MessageDevice::timeout()
