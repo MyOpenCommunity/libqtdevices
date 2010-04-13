@@ -99,4 +99,76 @@ protected:
 };
 
 
+class AmplifierDevice : public device
+{
+Q_OBJECT
+public:
+	enum
+	{
+		DIM_STATUS = 12,
+		DIM_VOLUME = 1,
+	};
+
+	AmplifierDevice(QString area, QString point, int openserver_id = 0);
+	void requestStatus() const;
+	void requestVolume() const;
+	void turnOn() const;
+	void turnOff() const;
+	void volumeUp() const;
+	void volumeDown() const;
+
+protected:
+	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);
+
+private:
+	QString area;
+	QString point;
+};
+
+
+/**
+ * \class PowerAmplifierDevice
+ *
+ * This class represent a device for managing the power amplifier. It has methods
+ * to retrieve information about its settings (the request* methods) and methods to
+ * modify a setting. When a request of information is done (or when something change
+ * after a command), the response is sent through the signal status_changed.
+ */
+class PowerAmplifierDevice : public AmplifierDevice
+{
+Q_OBJECT
+public:
+	PowerAmplifierDevice(QString address, int openserver_id = 0);
+
+	// The request methods, used to request an information
+	void requestTreble() const;
+	void requestBass() const;
+	void requestBalance() const;
+	void requestPreset() const;
+	void requestLoud() const;
+
+	enum
+	{
+		DIM_TREBLE = 2,
+		DIM_BASS = 4,
+		DIM_BALANCE = 17,
+		DIM_PRESET = 19,
+		DIM_LOUD = 20
+	};
+
+	void trebleUp() const;
+	void trebleDown() const;
+	void bassUp() const;
+	void bassDown() const;
+	void balanceUp() const;
+	void balanceDown() const;
+	void nextPreset() const;
+	void prevPreset() const;
+	void loudOn() const;
+	void loudOff() const;
+
+protected:
+	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);
+};
+
 #endif // MEDIA_DEVICE_H

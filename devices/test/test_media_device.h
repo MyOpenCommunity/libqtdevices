@@ -28,6 +28,8 @@
 
 class SourceDevice;
 class RadioSourceDevice;
+class AmplifierDevice;
+class PowerAmplifierDevice;
 
 
 class TestSourceDevice : public TestDevice
@@ -71,6 +73,66 @@ private:
 	RadioSourceDevice *dev;
 	QString source_id;
 };
+
+
+class TestAmplifierDevice : public TestDevice
+{
+Q_OBJECT
+private slots:
+	void initTestCase();
+	void cleanupTestCase();
+	void sendRequestStatus();
+	void sendTurnOn();
+	void sendTurnOff();
+	void sendVolumeUp();
+	void sendVolumeDown();
+
+	void receiveStatus();
+	void receiveVolume();
+	void receiveStatusRequest();
+
+protected:
+	void initAmplifier(AmplifierDevice *dev = 0);
+
+private:
+	AmplifierDevice *dev;
+	QString area;
+	QString point;
+};
+
+
+class TestPowerAmplifierDevice : public TestAmplifierDevice
+{
+Q_OBJECT
+private slots:
+	void initTestCase();
+	void cleanupTestCase();
+
+	void sendTrebleUp();
+	void sendTrebleDown();
+	void sendBassUp();
+	void sendBassDown();
+	void sendBalanceUp();
+	void sendBalanceDown();
+	void sendNextPreset();
+	void sendPrevPreset();
+	void sendLoudOn();
+	void sendLoudOff();
+
+	void receiveLoud();
+	void receivePreset();
+	void receiveTreble();
+	void receiveBass();
+	void receiveBalance();
+
+protected:
+	void initPowerAmplifier(PowerAmplifierDevice *dev = 0);
+
+private:
+	PowerAmplifierDevice *dev;
+	QString where;
+};
+
 
 
 #endif // TEST_MEDIA_DEVICE_H

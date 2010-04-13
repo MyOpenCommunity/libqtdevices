@@ -26,6 +26,7 @@
 
 enum RequestDimension
 {
+	// Sources
 	REQ_FREQUENCE_UP = 5,
 	REQ_FREQUENCE_DOWN = 6,
 	REQ_NEXT_TRACK = 9,
@@ -34,6 +35,20 @@ enum RequestDimension
 	REQ_SAVE_STATION = 33,
 	START_RDS = 31,
 	STOP_RDS = 32,
+	// Amplifiers
+	AMPL_STATUS_ON_FOLLOW_ME = 34,
+	AMPL_STATUS_OFF = 0,
+	AMPL_VOLUME_UP = 3,
+	AMPL_VOLUME_DOWN = 4,
+	REQ_TREBLE_UP = 40,
+	REQ_TREBLE_DOWN = 41,
+	REQ_BASS_UP = 36,
+	REQ_BASS_DOWN = 37,
+	REQ_BALANCE_UP = 42,
+	REQ_BALANCE_DOWN = 43,
+	REQ_NEXT_PRESET = 55,
+	REQ_PREV_PRESET = 56,
+	REQ_LOUD = 20
 };
 
 
@@ -217,5 +232,211 @@ bool VirtualSourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 	}
 	status_list[what] = true;
 	return true;
+}
+
+
+
+AmplifierDevice::AmplifierDevice(QString _area, QString _point, int openserver_id) :
+	device(QString("22"), "3#" + _area + "#" + _point, openserver_id)
+{
+	area = _area;
+	point = _point;
+}
+
+void AmplifierDevice::requestStatus() const
+{
+	sendRequest(DIM_STATUS);
+}
+
+void AmplifierDevice::requestVolume() const
+{
+	sendRequest(DIM_VOLUME);
+}
+
+void AmplifierDevice::turnOn() const
+{
+	sendCommand(QString("%1#4#%2").arg(AMPL_STATUS_ON_FOLLOW_ME).arg(area));
+}
+
+void AmplifierDevice::turnOff() const
+{
+	sendCommand(QString("%1#4#%2").arg(AMPL_STATUS_OFF).arg(area));
+}
+
+void AmplifierDevice::volumeUp() const
+{
+	sendCommand(QString("%1#1").arg(AMPL_VOLUME_UP));
+}
+
+void AmplifierDevice::volumeDown() const
+{
+	sendCommand(QString("%1#1").arg(AMPL_VOLUME_DOWN));
+}
+
+bool AmplifierDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
+{
+	if (where != QString::fromStdString(msg.whereFull()))
+		return false;
+
+	if (!msg.whatArgCnt() || !isDimensionFrame(msg))
+		return false;
+
+	int what = msg.what();
+
+	switch (what)
+	{
+	case DIM_STATUS:
+		status_list[what] = msg.whatArgN(0) == 1;
+		break;
+	case DIM_VOLUME:
+		status_list[what] = msg.whatArgN(0);
+		break;
+	default:
+		return false;
+	}
+	return true;
+}
+
+
+PowerAmplifierDevice::PowerAmplifierDevice(QString address, int openserver_id) :
+	AmplifierDevice(address.at(0), address.at(1), openserver_id)
+{
+}
+
+bool PowerAmplifierDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
+{
+	if (where != QString::fromStdString(msg.whereFull()))
+		return false;
+
+	// In some cases (when more than a power amplifier is present in the system)
+	// a request frame can arrive from the monitor socket. We have to manage this
+	// situation.
+	if (!msg.whatArgCnt() || !isDimensionFrame(msg))
+		return false;
+
+	if (AmplifierDevice::parseFrame(msg, status_list))
+		return true;
+
+	int what = msg.what();
+
+	QVariant v;
+
+	switch (what)
+	{
+	case DIM_LOUD:
+		v.setValue(msg.whatArgN(0) == 1);
+		break;
+
+	case DIM_TREBLE:
+	case DIM_BASS:
+		v.setValue(msg.whatArgN(0) / 3 - 10);
+		break;
+	case DIM_BALANCE:
+	{
+		QString raw_value = QString::fromStdString(msg.whatArg(0));
+		if (raw_value.length() >= 2)
+		{
+			bool balance_left = raw_value[0] == '0';
+			int value = raw_value.mid(1).toInt() / 3;
+			v.setValue((balance_left ? -1 : 1) * value);
+		}
+		break;
+	}
+	case DIM_PRESET:
+	{
+		int value = -1;
+		int raw_value = msg.whatArgN(0);
+		if (raw_value >= 2 && raw_value <= 11) // fixed presets
+			value = raw_value -2;
+		else if (raw_value >= 16 && raw_value <= 25) // custom presets
+			value = raw_value -6;
+
+		if (value == -1)
+			return false;
+		else
+			v.setValue(value);
+		break;
+	}
+	default:
+		return false;
+	}
+
+	status_list[what] = v;
+	return true;
+}
+
+void PowerAmplifierDevice::requestTreble() const
+{
+	sendRequest(DIM_TREBLE);
+}
+
+void PowerAmplifierDevice::requestBass() const
+{
+	sendRequest(DIM_BASS);
+}
+
+void PowerAmplifierDevice::requestBalance() const
+{
+	sendRequest(DIM_BALANCE);
+}
+
+void PowerAmplifierDevice::requestPreset() const
+{
+	sendRequest(DIM_PRESET);
+}
+
+void PowerAmplifierDevice::requestLoud() const
+{
+	sendRequest(DIM_LOUD);
+}
+
+void PowerAmplifierDevice::trebleUp() const
+{
+	sendCommand(QString("%1#1").arg(REQ_TREBLE_UP));
+}
+
+void PowerAmplifierDevice::trebleDown() const
+{
+	sendCommand(QString("%1#1").arg(REQ_TREBLE_DOWN));
+}
+
+void PowerAmplifierDevice::bassUp() const
+{
+	sendCommand(QString("%1#1").arg(REQ_BASS_UP));
+}
+
+void PowerAmplifierDevice::bassDown() const
+{
+	sendCommand(QString("%1#1").arg(REQ_BASS_DOWN));
+}
+
+void PowerAmplifierDevice::balanceUp() const
+{
+	sendCommand(QString("%1#1").arg(REQ_BALANCE_UP));
+}
+
+void PowerAmplifierDevice::balanceDown() const
+{
+	sendCommand(QString("%1#1").arg(REQ_BALANCE_DOWN));
+}
+
+void PowerAmplifierDevice::nextPreset() const
+{
+	sendCommand(REQ_NEXT_PRESET);
+}
+
+void PowerAmplifierDevice::prevPreset() const
+{
+	sendCommand(REQ_PREV_PRESET);
+}
+
+void PowerAmplifierDevice::loudOn() const
+{
+	sendFrame(createWriteDimensionFrame(who, QString("%1*1").arg(REQ_LOUD), where));
+}
+
+void PowerAmplifierDevice::loudOff() const
+{
+	sendFrame(createWriteDimensionFrame(who, QString("%1*0").arg(REQ_LOUD), where));
 }
 

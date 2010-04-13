@@ -25,7 +25,6 @@
 
 #include "test_platform_device.h"
 #include "test_energy_device.h"
-#include "test_poweramplifier_device.h"
 #include "test_lighting_device.h"
 #include "test_automation_device.h"
 #include "test_checkaddress.h"
@@ -120,6 +119,9 @@ int main(int argc, char *argv[])
 
 	TestRadioSourceDevice test_radio_source_device;
 	test_list << &test_radio_source_device;
+
+	TestAmplifierDevice test_amplifier_device;
+	test_list << &test_amplifier_device;
 
 	TestMessageDevice test_message_device;
 	test_list << &test_message_device;

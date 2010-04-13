@@ -25,7 +25,7 @@
 #include "bannregolaz.h"
 #include "bann2_buttons.h" // BannOnOffState, BannOnOff2Labels
 #include "bannonoffcombo.h"
-#include "poweramplifier_device.h"
+#include "media_device.h"
 #include "page.h"
 
 #include <QVector>
