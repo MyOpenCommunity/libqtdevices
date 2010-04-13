@@ -251,6 +251,12 @@ AmplifierDevice::AmplifierDevice(QString _area, QString _point, int openserver_i
 	point = _point;
 }
 
+void AmplifierDevice::init()
+{
+	requestStatus();
+	requestVolume();
+}
+
 void AmplifierDevice::requestStatus() const
 {
 	sendRequest(DIM_STATUS);

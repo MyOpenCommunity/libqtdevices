@@ -116,6 +116,8 @@ public:
 	AmplifierDevice(QString where, int openserver_id = 0);
 	AmplifierDevice(QString area, QString point, int openserver_id = 0);
 
+	virtual void init();
+
 	void requestStatus() const;
 	void requestVolume() const;
 	void turnOn() const;
