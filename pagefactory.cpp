@@ -115,7 +115,7 @@ Page *getPage(int page_id)
 		page = new MultimediaSectionPage(page_node);
 		break;
 	case MESSAGES:
-		page = new MessagesListPage;
+		page = new MessagesListPage(page_node);
 		break;
 	case DIFSON_MULTI:
 		page = new SoundDiffusionPage(page_node);

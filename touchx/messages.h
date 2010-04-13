@@ -28,6 +28,7 @@
 
 class QString;
 class QLabel;
+class QDomNode;
 
 
 /**
@@ -85,7 +86,7 @@ class MessagesListPage : public Page
 {
 Q_OBJECT
 public:
-	MessagesListPage();
+	MessagesListPage(const QDomNode &config_node);
 	typedef ItemList ContentType;
 	virtual int sectionId();
 

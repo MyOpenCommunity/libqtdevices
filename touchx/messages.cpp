@@ -177,8 +177,9 @@ AlarmMessagePage::AlarmMessagePage(const QString &date, const QString &text)
 }
 
 
-MessagesListPage::MessagesListPage()
+MessagesListPage::MessagesListPage(const QDomNode &config_node)
 {
+	Q_UNUSED(config_node)
 	ItemList *item_list = new MessageList(0, 4);
 
 	title = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
