@@ -32,6 +32,18 @@
 #define TIMEOUT_DELAY 1000
 
 
+namespace QTest
+{
+	template<> char *toString(const Message &message)
+	{
+		QByteArray ba = "Message(";
+		ba += message.datetime.toString() + " - " + message.text;
+		ba += ")";
+		return qstrdup(ba.data());
+	}
+}
+
+
 void TestMessageDevice::init()
 {
 	dev = new MessageDevice("165");
@@ -56,8 +68,7 @@ void TestMessageDevice::testParseMessage()
 	message.text = "qualsiasi cosa";
 
 	Message check = MessageDevicePrivate::parseMessage("\01608/03/10 17:32\017qualsiasi cosa");
-	QCOMPARE(check.datetime, message.datetime);
-	QCOMPARE(check.text, message.text);
+	QCOMPARE(check, message);
 }
 
 void TestMessageDevice::sendReady()
