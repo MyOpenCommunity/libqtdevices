@@ -258,6 +258,11 @@ IntercomCallPage::IntercomCallPage(EntryphoneDevice *d)
 	layout->addLayout(buttons_layout, 0, 1, Qt::AlignHCenter);
 }
 
+int IntercomCallPage::sectionId()
+{
+	return VIDEOCITOFONIA;
+}
+
 void IntercomCallPage::showPage()
 {
 	bt_global::page_stack.showVCTPage(this);

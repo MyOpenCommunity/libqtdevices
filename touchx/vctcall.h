@@ -183,6 +183,7 @@ public:
 	VCTCallPage(EntryphoneDevice *d);
 	static void setHandsFree(bool on);
 	static void setProfStudio(bool on);
+	virtual int sectionId();
 
 private slots:
 	void incomingCall();

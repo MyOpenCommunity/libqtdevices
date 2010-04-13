@@ -426,6 +426,11 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 	layout->setSpacing(10);
 }
 
+int VCTCallPage::sectionId()
+{
+	return VIDEOCITOFONIA;
+}
+
 void VCTCallPage::enterFullScreen()
 {
 	// We need this two-pass signal-slot because we have to wait until the

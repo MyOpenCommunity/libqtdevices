@@ -97,6 +97,7 @@ Q_OBJECT
 public:
 	IntercomCallPage(EntryphoneDevice *d);
 	virtual void showPage();
+	virtual int sectionId();
 
 private slots:
 	void status_changed(const StatusList &sl);
