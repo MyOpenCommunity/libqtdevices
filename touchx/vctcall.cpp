@@ -534,13 +534,13 @@ VCTCallWindow::VCTCallWindow(EntryphoneDevice *d)
 	sidebar->addWidget(vct_call->image_control, 0, Qt::AlignCenter);
 	sidebar->addSpacing(20);
 	sidebar->addLayout(buttons_layout);
-	vct_call->video_box->setFixedSize(610, 460);
+	vct_call->video_box->setFixedSize(624, 455);
 
 	QGridLayout *layout = new QGridLayout(this);
 	layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Preferred, QSizePolicy::Expanding), 0, 0, 1, 1);
 	layout->addLayout(sidebar, 0, 1, 2, 1);
 	layout->addWidget(vct_call->video_box, 1, 0);
-	layout->setContentsMargins(10, 0, 0, 10);
+	layout->setContentsMargins(5, 0, 0, 12);
 	layout->setSpacing(10);
 }
 
