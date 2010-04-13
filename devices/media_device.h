@@ -113,7 +113,9 @@ public:
 		DIM_VOLUME = 1,
 	};
 
+	AmplifierDevice(QString where, int openserver_id = 0);
 	AmplifierDevice(QString area, QString point, int openserver_id = 0);
+
 	void requestStatus() const;
 	void requestVolume() const;
 	void turnOn() const;

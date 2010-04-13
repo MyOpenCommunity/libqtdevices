@@ -237,6 +237,13 @@ bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 
 
 
+AmplifierDevice::AmplifierDevice(QString where, int openserver_id) :
+	device(QString("22"), QString("3#") + where.at(0) + "#" + where.at(1), openserver_id)
+{
+	area = where.at(0);
+	point = where.at(1);
+}
+
 AmplifierDevice::AmplifierDevice(QString _area, QString _point, int openserver_id) :
 	device(QString("22"), "3#" + _area + "#" + _point, openserver_id)
 {
