@@ -26,6 +26,7 @@
 #include "generic_functions.h" // int trasformaVol(int vol)
 #include "bannercontent.h"
 #include "btbutton.h" // needed to directly connect button signals with slots
+#include "media_device.h"
 
 #include <QVariant> // setProperty
 #include <QDomNode>

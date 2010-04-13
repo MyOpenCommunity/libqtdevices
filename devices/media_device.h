@@ -26,7 +26,7 @@
 
 /**
  * This class implements a multimedia source device, that can be used to send
- * command to a device or notified status changed.
+ * command to the actual device or notified status changed.
  */
 class SourceDevice : public device
 {
@@ -86,7 +86,7 @@ protected:
 
 /**
  * This class implements a virtual multimedia source device, that can manage
- * command received like an actual source device
+ * command received like an actual source device.
  */
 class VirtualSourceDevice : public SourceDevice
 {
@@ -99,6 +99,10 @@ protected:
 };
 
 
+/**
+ * This class represents an amplifier device, that can be used to reproduce audio
+ * from various kind of sources inside an area.
+ */
 class AmplifierDevice : public device
 {
 Q_OBJECT
@@ -127,12 +131,8 @@ private:
 
 
 /**
- * \class PowerAmplifierDevice
- *
- * This class represent a device for managing the power amplifier. It has methods
- * to retrieve information about its settings (the request* methods) and methods to
- * modify a setting. When a request of information is done (or when something change
- * after a command), the response is sent through the signal status_changed.
+ * This class represent a device for managing the power amplifier, an evolved
+ * version of the amplifier.
  */
 class PowerAmplifierDevice : public AmplifierDevice
 {
@@ -140,7 +140,6 @@ Q_OBJECT
 public:
 	PowerAmplifierDevice(QString address, int openserver_id = 0);
 
-	// The request methods, used to request an information
 	void requestTreble() const;
 	void requestBass() const;
 	void requestBalance() const;

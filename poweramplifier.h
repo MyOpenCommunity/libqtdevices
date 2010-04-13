@@ -25,15 +25,16 @@
 #include "bannregolaz.h"
 #include "bann2_buttons.h" // BannOnOffState, BannOnOff2Labels
 #include "bannonoffcombo.h"
-#include "media_device.h"
 #include "page.h"
 
 #include <QVector>
 #include <QString>
 #include <QMap>
 
+class PowerAmplifierDevice;
 class QDomNode;
 class QWidget;
+
 
 
 /**
@@ -59,6 +60,7 @@ private:
 	bool status;
 	PowerAmplifierDevice *dev;
 };
+
 
 /**
  * \class PowerAmplifier
