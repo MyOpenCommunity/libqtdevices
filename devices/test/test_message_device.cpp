@@ -29,6 +29,8 @@
 
 #include <QtTest>
 
+#define TIMEOUT_DELAY 1000
+
 
 void TestMessageDevice::init()
 {
@@ -176,7 +178,32 @@ void TestMessageDevice::recevieWrongChecksum()
 
 	QCOMPARE(server->frameCommand(), QString("*8*9015#12345*350#8#00#165#8##"));
 
-	// Verify that the cleanup is not performed
+	// Verify that the cleanup is performed
+	QVERIFY(dev->cdp_where.isEmpty());
+	QVERIFY(dev->message.isEmpty());
+	QVERIFY(!dev->timer.isActive());
+}
+
+void TestMessageDevice::receiveTimeout()
+{
+	QVERIFY(dev->cdp_where.isEmpty());
+	QVERIFY(dev->message.isEmpty());
+	QVERIFY(!dev->timer.isActive());
+
+	OpenMsg begin_msg("*8*9012#1001*165#8#00#350#8##");
+	dev->manageFrame(begin_msg);
+	client_command->flush();
+
+	QCOMPARE(server->frameCommand(), QString("*8*9013*350#8#00#165#8##"));
+	QCOMPARE(dev->cdp_where, QString("350"));
+	QVERIFY(dev->message.isEmpty());
+	QVERIFY(dev->timer.isActive());
+
+	testSleep(MessageDevicePrivate::TIMEOUT + TIMEOUT_DELAY);
+
+	QCOMPARE(server->frameCommand(), QString("*8*9016#0*350#8#00#165#8##"));
+
+	// Verify that the cleanup is performed
 	QVERIFY(dev->cdp_where.isEmpty());
 	QVERIFY(dev->message.isEmpty());
 	QVERIFY(!dev->timer.isActive());

@@ -23,7 +23,6 @@
 #include "openmsg.h"
 #include "generic_functions.h"
 
-#define TIMEOUT 3000
 
 enum
 {

@@ -45,6 +45,8 @@ private slots:
 	void connectFailed();
 	void receiveCompleteMessage();
 	void recevieWrongChecksum();
+	void receiveTimeout();
+
 private:
 	MessageDevice *dev;
 };

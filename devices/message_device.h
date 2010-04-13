@@ -28,6 +28,8 @@
 
 namespace MessageDevicePrivate
 {
+	static const int TIMEOUT = 3000;
+
 	int checksum(const QString &string);
 }
 
