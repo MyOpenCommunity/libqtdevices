@@ -23,10 +23,38 @@
 #define AUDIOPLAYER_H
 
 #include "mediaplayerpage.h"
+#include "btbutton.h"
 
 class QLabel;
+class AudioPlayerPage;
 
 
+/*
+ * Tray icon displayed in the header when either an audio file or a web radio
+ * is playing.  Clicking the icon jumps to the player page.
+ */
+class AudioPlayerTray : public BtButton
+{
+Q_OBJECT
+public:
+	AudioPlayerTray(const QString &icon);
+
+public slots:
+	void stopped();
+	void started();
+
+private slots:
+	void gotoPlayer();
+
+private:
+	AudioPlayerPage *current_player;
+};
+
+
+/*
+ * Page that can be used to play both audio files (es. MP3) and ShoutCast
+ * streams (for IP radio).
+ */
 class AudioPlayerPage : public MediaPlayerPage
 {
 Q_OBJECT
@@ -53,6 +81,8 @@ private slots:
 private:
 	MediaType type;
 	QLabel *description_top, *description_bottom, *track, *elapsed;
+	// icon in tray bar
+	static AudioPlayerTray *tray_icon;
 };
 
 #endif

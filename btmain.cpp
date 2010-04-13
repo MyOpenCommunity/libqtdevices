@@ -539,6 +539,17 @@ void BtMain::makeActiveAndFreeze()
 	}
 }
 
+void BtMain::setScreenSaverTimeouts(int screensaver_start, int blank_screen)
+{
+	qDebug() << "Screensaver time" << screensaver_start << "blank screen" << blank_screen;
+
+	screenoff_time = blank_screen;
+	screensaver_time = screensaver_start;
+
+	if (freeze_time > screensaver_time)
+		freeze_time = screensaver_time;
+}
+
 void BtMain::checkScreensaver()
 {
 	rearmWDT();
@@ -570,8 +581,7 @@ void BtMain::checkScreensaver()
 			pagDefault->showPage();
 		}
 
-		// TODO discover if the "+ 5" is a fudge-factor
-		if (time >= screensaver_time + 5 && (*bt_global::display).currentState() == DISPLAY_FREEZED)
+		if ((*bt_global::display).currentState() == DISPLAY_FREEZED)
 		{
 			ScreenSaver::Type target_screensaver = (*bt_global::display).currentScreenSaver();
 			// When the brightness is set to off in the old hardware the display

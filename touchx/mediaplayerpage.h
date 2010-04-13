@@ -48,6 +48,8 @@ public:
 
 	MediaPlayerPage();
 
+	virtual void showPage();
+
 signals:
 	// emitted when reproduction starts/stops (also emitted for pause/resume)
 	void started();

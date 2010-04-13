@@ -23,6 +23,7 @@
 #include "openmsg.h"
 #include "generic_functions.h"
 
+#define TIMEOUT 3000
 
 enum
 {
@@ -70,7 +71,7 @@ using namespace MessageDevicePrivate;
 MessageDevice::MessageDevice(QString where, int openserver_id) :
 	device("8", where, openserver_id)
 {
-	timer.setInterval(3000);
+	timer.setInterval(TIMEOUT);
 	timer.setSingleShot(true);
 	connect(&timer, SIGNAL(timeout()), SLOT(timeout()));
 }
@@ -116,14 +117,12 @@ void MessageDevice::manageFrame(OpenMsg &msg)
 		}
 		break;
 	case MESSAGE_CONTINUE:
-		for (unsigned int i = 0; i < msg.whatArgCnt(); ++i) {
-			msg.whatArgN(i);
+		for (unsigned int i = 0; i < msg.whatArgCnt(); ++i)
 			message.append(QChar(msg.whatArgN(i)));
-		}
 		resetTimer();
 		break;
 	case MESSAGE_CHECKSUM:
-		int check = checksum(message.toUtf8());
+		int check = checksum(message);
 		// The checksum to verify is made by the 5 rightmost chars of the id
 		int to_verify = QString::fromStdString(msg.whatArg(0)).right(5).toInt();
 

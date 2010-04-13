@@ -52,10 +52,22 @@ public:
 
 	// register when different types of window/pages are shown; must be
 	// called before Page::showPage() and Window::showWindow()
+
+	// for alarm pages; stops the screen saver but keeps the screen frozen
+	// if it already is
 	void showAlarm(Page *alarm_page);
-	void showVCTPage(Page *page); // used for VCTCallPage and IntercomPage
+
+	// for VCTCallPage and IntercomPage; stops the screen saver but keeps the
+	// screen frozen if it already is
+	void showVCTPage(Page *page);
+
+	// for windows that do not need any special treatment
 	void showUserWindow(Window *window);
-	void showScreensaver(Window *screensaver);
+
+	// for pages that do not need any special treatment
+	void showUserPage(Page *window);
+
+	// for the keypad
 	void showKeypad(Window *keypad);
 
 	// removes the given object from the page stack and shows the

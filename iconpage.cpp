@@ -37,6 +37,7 @@
 #define BACK_BUTTON_X    0
 #define BACK_BUTTON_Y  250
 #define BACK_BUTTON_DIM 60
+#define CONTENT_MARGIN  25
 
 
 void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QString &title)
@@ -101,9 +102,9 @@ void IconPage::addBackButton()
 IconContent::IconContent(QWidget *parent) : GridContent(parent)
 {
 	QGridLayout *l = static_cast<QGridLayout *>(layout());
-	l->setContentsMargins(25, 0, 25, 0);
-	l->setSpacing(15);
-	l->setColumnStretch(5, 1);
+	l->setContentsMargins(CONTENT_MARGIN, 0, CONTENT_MARGIN, 0);
+	l->setSpacing(0);
+	l->setColumnStretch(4, 1);
 }
 
 void IconContent::addButton(QWidget *button, const QString &label)
@@ -118,12 +119,11 @@ void IconContent::addButton(QWidget *button, const QString &label)
 
 		lbl->setAlignment(Qt::AlignHCenter);
 		lbl->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
-		l->addWidget(button);
+		l->addWidget(button, 0, Qt::AlignHCenter);
 		l->addWidget(lbl);
 	}
 
-	items.append(w);
-	w->hide();
+	addWidget(w);
 }
 
 void IconContent::addWidget(QWidget *widget)
@@ -146,7 +146,10 @@ void IconContent::drawContent()
 		{
 			int base = pages[i];
 			for (int j = 0; base + j < pages[i + 1]; ++j)
+			{
+				items.at(base + j)->setFixedWidth((width() - 2 * CONTENT_MARGIN) / 4);
 				l->addWidget(items.at(base + j), j / 4, j % 4);
+			}
 		}
 
 		l->setRowStretch(l->rowCount(), 1);
@@ -166,7 +169,7 @@ IconPageButton::IconPageButton(const QString &label)
 	button = new StateButton;
 
 	QVBoxLayout *l = new QVBoxLayout(this);
-	l->addWidget(button);
+	l->addWidget(button, 0, Qt::AlignHCenter);
 	l->addWidget(lbl);
 }
 

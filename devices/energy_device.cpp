@@ -190,11 +190,15 @@ void AutomaticUpdates::sendUpdateStop()
 
 void AutomaticUpdates::setHasNewFrames()
 {
+	if (has_new_frames)
+		return;
 	setHasNewFrames(update_timer->isActive());
 }
 
 void AutomaticUpdates::setHasNewFrames(bool restart_update_requests)
 {
+	if (has_new_frames)
+		return;
 	has_new_frames = true;
 
 	// delete the polling timer and send the frame to request
@@ -252,6 +256,7 @@ EnergyDevice::EnergyDevice(QString where, int _mode) :
 	device(QString("18"), where),
 	current_updates(where, _mode, this)
 {
+	scaling_factor_old_frames = _mode == 1 ? 100 : 1;
 	pending_graph_request = 0;
 	has_new_frames = false;
 
@@ -456,6 +461,11 @@ void EnergyDevice::manageFrame(OpenMsg &msg)
 				buffer_frame.append(msg.frame_open);
 			parseCumulativeMonthGraph32Bit(buffer_frame, v, what == _DIM_CUMULATIVE_MONTH_GRAPH_PREV_32BIT);
 		}
+		else if (what == DIM_CUMULATIVE_DAY || what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR)
+		{
+			int val = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
+			v.setValue(EnergyValue(getDateFromFrame(msg), scaling_factor_old_frames * val));
+		}
 		else
 		{
 			int val = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
@@ -518,6 +528,7 @@ void EnergyDevice::manageFrame(OpenMsg &msg)
 			return;
 
 		current_updates.handleAutomaticUpdate(msg);
+		setHasNewFrames();
 	}
 
 	if (what == _DIM_INVALID_FRAME)
@@ -530,6 +541,9 @@ void EnergyDevice::manageFrame(OpenMsg &msg)
 
 void EnergyDevice::setHasNewFrames()
 {
+	if (has_new_frames)
+		return;
+
 	current_updates.setHasNewFrames();
 
 	has_new_frames = true;
@@ -562,24 +576,22 @@ void EnergyDevice::fillCumulativeDay(StatusList &status_list, QString frame9, QS
 	int low = OpenMsg(frame10.toStdString()).whatArgN(1);
 
 	QVariant v;
-	v.setValue(EnergyValue(getDateFromFrame(f9), getValue(high, low)));
+	v.setValue(EnergyValue(getDateFromFrame(f9), scaling_factor_old_frames * getValue(high, low)));
 	status_list[DIM_CUMULATIVE_DAY] = v;
 }
 
 void EnergyDevice::fillMonthlyAverage(StatusList &status_list, OpenMsg &msg)
 {
-	QDate current = QDate::currentDate();
 	int average;
 
 	int val = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
 	if (static_cast<int>(msg.what()) == _DIM_CUMULATIVE_MONTH)
 	{
-		int year = msg.whatSubArgN(1) < current.month() ? current.year() : current.year() - 1;
-		int total_days = QDate(year, msg.whatSubArgN(1), 1).daysInMonth();
-		average = qRound(1.0 * val / total_days);
+		QDate date = getDateFromFrame(msg);
+		average = qRound(1.0 * scaling_factor_old_frames * val / date.daysInMonth());
 	}
 	else
-		average = qRound(1.0 * val / current.day());
+		average = qRound(1.0 * scaling_factor_old_frames * val / QDate::currentDate().day());
 
 	QVariant v_average;
 	v_average.setValue(EnergyValue(getDateFromFrame(msg), average));
@@ -595,7 +607,7 @@ void EnergyDevice::fillYearGraphData(StatusList &status_list, OpenMsg &msg)
 		int month_distance = msg.whatSubArgN(1) - current.month();
 		index = month_distance < 0 ? month_distance + 12 : month_distance;
 	}
-	buffer_year_data[index] = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
+	buffer_year_data[index] = msg.whatArg(0) == "4294967295" ? 0 : scaling_factor_old_frames * msg.whatArgN(0);
 	GraphData data;
 	data.type = CUMULATIVE_YEAR;
 	data.graph = buffer_year_data;
@@ -672,7 +684,7 @@ void EnergyDevice::parseCumulativeDayGraph8Bit(const QStringList &buffer_frame, 
 	}
 
 	for (int i = 0; i < values.size(); ++i)
-		data.graph[i + 1] = values[i] == MAX_VALUE ? 0 : values[i];
+		data.graph[i + 1] = scaling_factor_old_frames * (values[i] == MAX_VALUE ? 0 : values[i]);
 
 	v.setValue(data);
 }
@@ -746,7 +758,7 @@ void EnergyDevice::computeMonthGraphData(int days_in_month, const QList<int> &va
 	{
 		if (i / 2 + 1 > days_in_month)
 			break;
-		graph[i / 2 + 1] = getValue(values[i], values[i + 1]);
+		graph[i / 2 + 1] = scaling_factor_old_frames * getValue(values[i], values[i + 1]);
 	}
 }
 
@@ -782,7 +794,7 @@ float EnergyConversions::convertToRawData(int bt_bus_data, EnergyConversions::En
 	case DEFAULT_ENERGY:
 		factor = 10.;
 		break;
-	case ELECTRICITY_CURRENT:
+	case ELECTRICITY:
 		factor = 1000.;
 		break;
 	case OTHER_ENERGY:

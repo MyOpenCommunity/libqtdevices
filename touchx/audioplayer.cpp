@@ -28,10 +28,48 @@
 #include "btbutton.h"
 #include "mediaplayer.h"
 #include "hardware_functions.h" // setVolum
+#include "btmain.h"
+#include "homewindow.h" // TrayBar
 
 #include <QGridLayout>
 #include <QLabel>
 #include <QVariant> // for setProperty
+
+
+AudioPlayerTray *AudioPlayerPage::tray_icon = NULL;
+
+
+AudioPlayerTray::AudioPlayerTray(const QString &icon) :
+	BtButton(icon)
+{
+	current_player = NULL;
+	hide();
+
+	connect(this, SIGNAL(clicked()), SLOT(gotoPlayer()));
+}
+
+void AudioPlayerTray::started()
+{
+	show();
+	current_player = static_cast<AudioPlayerPage*>(sender());
+}
+
+void AudioPlayerTray::stopped()
+{
+	AudioPlayerPage *player = static_cast<AudioPlayerPage*>(sender());
+
+	if (player != current_player)
+		return;
+
+	hide();
+	current_player = NULL;
+}
+
+void AudioPlayerTray::gotoPlayer()
+{
+	if (current_player)
+		current_player->showPage();
+}
 
 
 AudioPlayerPage::AudioPlayerPage(MediaType t)
@@ -87,6 +125,16 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	l->addWidget(volume, 1, Qt::AlignCenter);
 
 	connect(&refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
+
+	// create the tray icon and add it to tray
+	if (!tray_icon)
+	{
+		tray_icon = new AudioPlayerTray(bt_global::skin->getImage("tray_player"));
+		bt_global::btmain->trayBar()->addButton(tray_icon);
+	}
+
+	connect(this, SIGNAL(started()), tray_icon, SLOT(started()));
+	connect(this, SIGNAL(stopped()), tray_icon, SLOT(stopped()));
 }
 
 void AudioPlayerPage::startMPlayer(int index, int time)

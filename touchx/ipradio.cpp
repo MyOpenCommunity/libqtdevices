@@ -37,7 +37,6 @@ IPRadioPage::IPRadioPage(const QDomNode &config_node)
 	loadItems(config_node);
 
 	connect(page_content, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
-	connect(player, SIGNAL(Closed()), SLOT(showPage()));
 }
 
 void IPRadioPage::loadItems(const QDomNode &config_node)

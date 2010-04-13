@@ -91,7 +91,7 @@ ScreenSaver::ScreenSaver(int refresh_time)
 
 void ScreenSaver::start(Window *w)
 {
-	bt_global::page_stack.showScreensaver(this);
+	bt_global::page_stack.showUserWindow(this);
 
 	window = w;
 	timer->start();

@@ -310,8 +310,6 @@ HomepageIPRadioLink::HomepageIPRadioLink(const QString &description, const QStri
 	player = new AudioPlayerPage(AudioPlayerPage::IP_RADIO);
 
 	connect(this, SIGNAL(clicked()), SLOT(playRadio()));
-
-	connect(player, SIGNAL(Closed()), SIGNAL(pageClosed()));
 }
 
 void HomepageIPRadioLink::playRadio()
