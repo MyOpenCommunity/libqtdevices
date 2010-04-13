@@ -100,6 +100,7 @@ bool SourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
 		break;
 	case DIM_TRACK:
 		v.setValue(msg.whatArgN(0));
+		break;
 	default:
 		return false;
 	}
