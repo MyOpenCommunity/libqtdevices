@@ -75,7 +75,7 @@ Message MessageDevicePrivate::parseMessage(const QString &raw_message)
 	regexp.indexIn(raw_message);
 	if (regexp.numCaptures() == 2)
 	{
-		message.datetime = QDateTime::fromString(regexp.cap(1), "dd/MM/yy hh:mm").addYears(100);
+		message.datetime = DateConversions::getDateTimeConfig(regexp.cap(1), '/');
 		message.text = regexp.cap(2);
 	}
 
