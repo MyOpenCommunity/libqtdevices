@@ -385,7 +385,7 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 	sidebar->addStretch(1);
 	sidebar->addWidget(vct_call->camera, 0, Qt::AlignCenter);
 	sidebar->addWidget(vct_call->image_control, 0, Qt::AlignCenter);
-	sidebar->addWidget(vct_call->setup_vct);
+	sidebar->addWidget(vct_call->setup_vct, 0, Qt::AlignCenter);
 
 	vct_call->video_box->setFixedSize(352, 240);
 
