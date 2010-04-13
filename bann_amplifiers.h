@@ -30,6 +30,7 @@
 
 class device_status;
 class device;
+class AmplifierDevice;
 
 
 class Amplifier : public BannLevel
@@ -39,8 +40,21 @@ public:
 	Amplifier(const QString &descr, const QString &where);
 
 private:
+	void setIcons();
+
+private slots:
+	void volumeUp();
+	void volumeDown();
+	void turnOn();
+	void turnOff();
+
+	void status_changed(const DeviceValues &status_list);
+
+private:
 	QString center_left_active, center_left_inactive, center_right_active, center_right_inactive;
 	int volume_value;
+	bool active;
+	AmplifierDevice *dev;
 };
 
 

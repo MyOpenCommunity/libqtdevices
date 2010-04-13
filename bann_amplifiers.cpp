@@ -25,6 +25,8 @@
 #include "deviceold.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // bt_global::skin
+#include "media_device.h"
+#include "btbutton.h"
 
 // TODO: in poweramplifier.h there's a base graphic banner to handle volume and state changes for amplifiers
 // use it also for Amplifier
@@ -39,9 +41,56 @@ Amplifier::Amplifier(const QString &descr, const QString &where) : BannLevel(0)
 	initBanner(bt_global::skin->getImage("off"), getBostikName(center_left_inactive, QString::number(volume_value)),
 		getBostikName(center_right_inactive, QString::number(volume_value)), bt_global::skin->getImage("on"), descr);
 
-	// TODO: create device
-	// TODO: connect buttons to device methods
+	dev = bt_global::add_device_to_cache(new AmplifierDevice(where));
+
+	connect(left_button, SIGNAL(clicked()), SLOT(turnOff()));
+	connect(right_button, SIGNAL(clicked()), SLOT(turnOn()));
+	connect(this, SIGNAL(center_left_clicked()), SLOT(volumeDown()));
+	connect(this, SIGNAL(center_right_clicked()), SLOT(volumeUp()));
+
+	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
 }
+
+void Amplifier::volumeUp()
+{
+	dev->volumeUp();
+}
+
+void Amplifier::volumeDown()
+{
+	dev->volumeDown();
+}
+
+void Amplifier::turnOn()
+{
+	dev->turnOn();
+}
+
+void Amplifier::turnOff()
+{
+	dev->turnOff();
+}
+
+void Amplifier::setIcons()
+{
+	// TODO this uses a linear scale for the volume, but maybe it should special-case 0 and 31?
+	int index = volume_value * 8 / 31;
+
+	setCenterLeftIcon(getBostikName(active ? center_left_active : center_left_inactive, QString::number(index)));
+	setCenterRightIcon(getBostikName(active ? center_right_active : center_right_inactive, QString::number(index)));
+}
+
+void Amplifier::status_changed(const DeviceValues &status_list)
+{
+	if (status_list.contains(AmplifierDevice::DIM_VOLUME))
+		volume_value = status_list[AmplifierDevice::DIM_VOLUME].toInt();
+
+	if (status_list.contains(AmplifierDevice::DIM_STATUS))
+		active = status_list[AmplifierDevice::DIM_STATUS].toBool();
+
+	setIcons();
+}
+
 
 AmplifierGroup::AmplifierGroup(QStringList addresses, const QString &descr) : BannLevel(0)
 {
