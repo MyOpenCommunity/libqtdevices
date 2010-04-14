@@ -262,7 +262,7 @@ void impPassword::checkPasswd()
 			qDebug() << "password errata doveva essere " << password;
 			sb = getBeep();
 			setBeep(true,false);
-			beep(1000);
+			beep(200);
 			QTimer::singleShot(1100, this, SLOT(tiempout()));
 			emit pageClosed();
 		}
