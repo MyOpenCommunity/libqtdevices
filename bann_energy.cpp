@@ -294,6 +294,7 @@ DeactivationTime::DeactivationTime(const BtTime &start_time) :
 	current_time(start_time)
 {
 	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), formatNoSeconds(current_time), FontManager::SUBTITLE);
+	setTextAlignment(Qt::AlignCenter);
 	right_button->setAutoRepeat(true);
 	left_button->setAutoRepeat(true);
 	connect(right_button, SIGNAL(clicked()), SLOT(plusClicked()));
