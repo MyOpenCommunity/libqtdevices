@@ -7,6 +7,8 @@
 #include "xml_functions.h" // getChildren
 #include "fontmanager.h"
 #include "btbutton.h"
+#include "message_device.h"
+#include "devices_cache.h"
 
 #include <QLabel>
 #include <QLayout>
@@ -21,6 +23,7 @@
 #include <QXmlStreamWriter>
 
 
+#define MESSAGES_MAX 10
 #define MESSAGES_FILENAME "cfg/extra/4/messages.xml"
 #define DATE_FORMAT_AS_STRING "yyyy/MM/dd HH:mm"
 
@@ -32,6 +35,11 @@ namespace
 	{
 	public:
 		MessageList(QWidget *parent, int rows_per_page) : ItemList(parent, rows_per_page) {}
+
+		void addMessage(const ItemInfo &item)
+		{
+			item_list.prepend(item);
+		}
 
 	protected:
 		virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
@@ -207,6 +215,9 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 	connect(delete_page, SIGNAL(Closed()), SLOT(showPage()));
 	connect(delete_page, SIGNAL(deleteAll()), SLOT(deleteAll()));
 
+	MessageDevice *dev = bt_global::add_device_to_cache(new MessageDevice);
+	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(newMessage(StatusList)));
+
 	current_index = -1;
 	need_update = false;
 }
@@ -253,6 +264,21 @@ void MessagesListPage::loadMessages(const QString &filename)
 int MessagesListPage::sectionId()
 {
 		return MESSAGES;
+}
+
+void MessagesListPage::newMessage(const StatusList &status_list)
+{
+	Message message = status_list[MessageDevice::DIM_MESSAGE].value<Message>();
+
+	int count = page_content->itemCount();
+
+	// delete the last message if the number of messages is > MESSAGES_MAX
+	if (count > MESSAGES_MAX)
+		page_content->removeItem(count - 1);
+
+	ItemList::ItemInfo info(DateConversions::formatDateTimeConfig(message.datetime), message.text, "", bt_global::skin->getImage("forward"), false);
+	static_cast<MessageList *>(page_content)->addMessage(info);
+	saveMessages();
 }
 
 void MessagesListPage::showMessage(int index)
