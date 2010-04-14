@@ -95,6 +95,7 @@ public:
 			FontManager::Type description_font = FontManager::TEXT);
 
 	// can only be caller after initBanner()
+	void setTextAlignment(Qt::Alignment align);
 	void setCentralText(const QString &t);
 	void setDescriptionText(const QString &t);
 
