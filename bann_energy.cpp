@@ -270,6 +270,11 @@ void BannLoadWithCU::status_changed(const StatusList &sl)
 			break;
 		case LoadsDevice::DIM_ENABLED:
 			setState(it.value().toBool() ? ENABLED : DISABLED);
+			// left button is clickable only if the load is disabled
+			if (it.value().toBool())
+				left_button->enable();
+			else
+				left_button->disable();
 			break;
 		}
 		++it;
