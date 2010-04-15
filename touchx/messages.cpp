@@ -203,6 +203,7 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node) :
 		alarm_message_stack(new AlarmMessageStack)
 {
 	Q_UNUSED(config_node)
+	SkinContext context(getTextChild(config_node, "cid").toInt());
 	MessageList *item_list = new MessageList(0, 4);
 
 	title = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
