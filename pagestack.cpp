@@ -52,9 +52,9 @@ PageStack::PageStack()
 
 void PageStack::showAlert(Page *alert_page)
 {
-	addState(State(alarm_page));
+	addState(State(alert_page));
 
-	connect(alarm_page, SIGNAL(Delete()), SLOT(closed()));
+	connect(alert_page, SIGNAL(Delete()), SLOT(closed()));
 
 	bt_global::btmain->makeActiveAndFreeze();
 }
