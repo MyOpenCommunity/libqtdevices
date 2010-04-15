@@ -28,6 +28,7 @@
 #define DATE_FORMAT_AS_STRING "yyyy/MM/dd HH:mm"
 
 class QBoxLayout;
+class AlarmMessagePage;
 
 namespace
 {
@@ -61,6 +62,26 @@ namespace
 		return content;
 	}
 }
+
+
+class AlarmMessageStack
+{
+public:
+	void push(AlarmMessagePage *page)
+	{
+		pages.prepend(page);
+	}
+
+	AlarmMessagePage *pop()
+	{
+		AlarmMessagePage *page = pages.last();
+		pages.removeLast();
+		return page;
+	}
+
+private:
+	QList<AlarmMessagePage *>pages;
+};
 
 
 MessageList::MessageList(QWidget *parent, int rows_per_page) :
@@ -159,12 +180,12 @@ void MessagePage::setData(const QString &date, const QString &text, bool already
 }
 
 
-AlarmMessagePage::AlarmMessagePage(const QString &date, const QString &text)
+AlarmMessagePage::AlarmMessagePage(const ItemList::ItemInfo &info)
 {
 	QVBoxLayout *box_layout = new QVBoxLayout;
 	QLabel *new_message_label = new QLabel(tr("New Message"));
-	QLabel *date_label = new QLabel(date);
-	QLabel *message_label = new QLabel(text);
+	QLabel *date_label = new QLabel(info.name);
+	QLabel *message_label = new QLabel(info.description);
 
 	QWidget *content = buildMessagePage(box_layout, new_message_label, date_label, message_label);
 
@@ -178,7 +199,8 @@ AlarmMessagePage::AlarmMessagePage(const QString &date, const QString &text)
 }
 
 
-MessagesListPage::MessagesListPage(const QDomNode &config_node)
+MessagesListPage::MessagesListPage(const QDomNode &config_node) :
+		alarm_message_stack(new AlarmMessageStack)
 {
 	Q_UNUSED(config_node)
 	MessageList *item_list = new MessageList(0, 4);
@@ -213,6 +235,11 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 
 	current_index = -1;
 	need_update = false;
+}
+
+MessagesListPage::~MessagesListPage()
+{
+	delete alarm_message_stack;
 }
 
 void MessagesListPage::showPage()
@@ -268,10 +295,17 @@ void MessagesListPage::newMessage(const StatusList &status_list)
 
 	// delete the last message if the number of messages is > MESSAGES_MAX
 	if (count > MESSAGES_MAX)
+	{
 		page_content->removeItem(count - 1);
+		AlarmMessagePage *page = alarm_message_stack->pop();
+		page->hide();
+		page->deleteLater();
+	}
 
 	ItemList::ItemInfo info(DateConversions::formatDateTimeConfig(message.datetime), message.text, "", bt_global::skin->getImage("forward"), false);
 	page_content->insertItem(0, info);
+
+	alarm_message_stack->push(new AlarmMessagePage(info));
 	saveMessages();
 }
 

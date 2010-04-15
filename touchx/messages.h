@@ -29,7 +29,7 @@
 class QString;
 class QLabel;
 class QDomNode;
-
+class AlarmMessageStack;
 
 /**
  * The message list
@@ -87,7 +87,7 @@ class AlarmMessagePage : public Page
 {
 Q_OBJECT
 public:
-	AlarmMessagePage(const QString &date, const QString &text);
+	AlarmMessagePage(const ItemList::ItemInfo &info);
 };
 
 
@@ -99,6 +99,7 @@ class MessagesListPage : public Page
 Q_OBJECT
 public:
 	MessagesListPage(const QDomNode &config_node);
+	~MessagesListPage();
 	typedef MessageList ContentType;
 	virtual int sectionId();
 
@@ -109,6 +110,7 @@ private:
 	MessagePage *message_page;
 	DeleteMessagesPage *delete_page;
 	PageTitleWidget *title;
+	AlarmMessageStack *alarm_message_stack;
 	int current_index;
 	bool need_update;
 	void loadMessages(const QString &filename);
