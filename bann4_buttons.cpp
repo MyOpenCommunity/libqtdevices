@@ -48,7 +48,7 @@ Bann4ButtonsIcon::Bann4ButtonsIcon(QWidget *parent) :
 	l->setSpacing(0);
 	l->addWidget(left_button, 0, Qt::AlignLeft);
 	l->addWidget(center_left_button);
-	l->addWidget(center_icon, 1, Qt::AlignLeft);
+	l->addWidget(center_icon, 1, Qt::AlignHCenter);
 	l->addWidget(center_right_button);
 	l->addWidget(right_button, 0, Qt::AlignRight);
 
