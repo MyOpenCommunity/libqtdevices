@@ -183,8 +183,8 @@ enum Section
 enum Section
 {
 	NO_SECTION=0,
-	AUTOMAZIONE=3000,                                /*!< Automation system */
-	ILLUMINAZIONE=2000,                              /*!< Lighting system */
+	AUTOMAZIONE=3000,                             /*!< Automation system */
+	ILLUMINAZIONE=2000,                           /*!< Lighting system */
 	ANTIINTRUSIONE=13000,                         /*!< Anti-intrusion system */
 	CARICHI=4,                                    /*!< Appliances managing system */
 	TERMOREGOLAZIONE=5,                           /*!< Thermoregulation system */
@@ -192,7 +192,7 @@ enum Section
 	SPECIAL=10,                                   /*!< Special button - placed here for convenience */
 	MESSAGES=17,                                  /*!< Textual Messages from scs */
 	LOAD_MANAGEMENT=18,                           /*!< Load management system */
-	SCENARI=1000,                                   /*!< Scenarios managing */
+	SCENARI=1000,                                 /*!< Scenarios managing */
 	SCENARI_EVOLUTI=20,                           /*!< Advanced scenarios management */
 	VIDEOCITOFONIA=10000,                         /*!< VideoDoorEntry system */
 	IMPOSTAZIONI=29,                              /*!< Settings */
