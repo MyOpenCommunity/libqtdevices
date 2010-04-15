@@ -73,8 +73,7 @@ void Amplifier::turnOff()
 
 void Amplifier::setIcons()
 {
-	// TODO this uses a linear scale for the volume, but maybe it should special-case 0 and 31?
-	int index = volume_value * 8 / 31;
+	int index = trasformaVol(volume_value);
 
 	setCenterLeftIcon(getBostikName(active ? center_left_active : center_left_inactive, QString::number(index)));
 	setCenterRightIcon(getBostikName(active ? center_right_active : center_right_inactive, QString::number(index)));
