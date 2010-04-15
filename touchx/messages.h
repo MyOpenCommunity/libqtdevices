@@ -32,6 +32,18 @@ class QDomNode;
 
 
 /**
+ * The message list
+ */
+class MessageList : public ItemList
+{
+public:
+	MessageList(QWidget *parent, int rows_per_page);
+
+protected:
+	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
+};
+
+/**
  * The page used to ask if delete all the messages or not.
  */
 class DeleteMessagesPage : public Page
@@ -87,7 +99,7 @@ class MessagesListPage : public Page
 Q_OBJECT
 public:
 	MessagesListPage(const QDomNode &config_node);
-	typedef ItemList ContentType;
+	typedef MessageList ContentType;
 	virtual int sectionId();
 
 public slots:

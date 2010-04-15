@@ -31,48 +31,6 @@ class QBoxLayout;
 
 namespace
 {
-	class MessageList : public ItemList
-	{
-	public:
-		MessageList(QWidget *parent, int rows_per_page) : ItemList(parent, rows_per_page) {}
-
-	protected:
-		virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
-		{
-			QFont font = bt_global::font->get(FontManager::TEXT);
-
-			// top level widget (to set background using stylesheet)
-			QWidget *boxWidget = new QWidget;
-			boxWidget->setFixedHeight(68);
-
-			QHBoxLayout *box = new QHBoxLayout(boxWidget);
-			box->setContentsMargins(5, 5, 5, 5);
-
-			// centered file name and description
-			QVBoxLayout *labels = new QVBoxLayout;
-			QLabel *name = new QLabel(item.name);
-			name->setProperty("UnreadMessage", !item.data.toBool());
-
-			name->setFont(font);
-			labels->addWidget(name, 1);
-
-			QLabel *description = new QLabel(item.description);
-			description->setFont(font);
-			labels->addWidget(description, 1);
-
-			box->addLayout(labels, 1);
-
-			// button on the right
-			BtButton *btn = new BtButton;
-			btn->setImage(item.button_icon);
-			box->addWidget(btn, 0, Qt::AlignRight);
-
-			buttons_group->addButton(btn, id_btn);
-			layout->addWidget(boxWidget);
-		}
-	};
-
-
 	QWidget *buildMessagePage(QVBoxLayout *box_layout, QLabel *new_message_label, QLabel *date_label, QLabel *message_label)
 	{
 		QWidget *content = new QWidget;
@@ -102,6 +60,46 @@ namespace
 
 		return content;
 	}
+}
+
+
+MessageList::MessageList(QWidget *parent, int rows_per_page) :
+		ItemList(parent, rows_per_page)
+{
+}
+
+void MessageList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
+{
+	QFont font = bt_global::font->get(FontManager::TEXT);
+
+	// top level widget (to set background using stylesheet)
+	QWidget *boxWidget = new QWidget;
+	boxWidget->setFixedHeight(68);
+
+	QHBoxLayout *box = new QHBoxLayout(boxWidget);
+	box->setContentsMargins(5, 5, 5, 5);
+
+	// centered file name and description
+	QVBoxLayout *labels = new QVBoxLayout;
+	QLabel *name = new QLabel(item.name);
+	name->setProperty("UnreadMessage", !item.data.toBool());
+
+	name->setFont(font);
+	labels->addWidget(name, 1);
+
+	QLabel *description = new QLabel(item.description);
+	description->setFont(font);
+	labels->addWidget(description, 1);
+
+	box->addLayout(labels, 1);
+
+	// button on the right
+	BtButton *btn = new BtButton;
+	btn->setImage(item.button_icon);
+	box->addWidget(btn, 0, Qt::AlignRight);
+
+	buttons_group->addButton(btn, id_btn);
+	layout->addWidget(boxWidget);
 }
 
 
@@ -183,7 +181,7 @@ AlarmMessagePage::AlarmMessagePage(const QString &date, const QString &text)
 MessagesListPage::MessagesListPage(const QDomNode &config_node)
 {
 	Q_UNUSED(config_node)
-	ItemList *item_list = new MessageList(0, 4);
+	MessageList *item_list = new MessageList(0, 4);
 
 	title = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("delete_all"));
