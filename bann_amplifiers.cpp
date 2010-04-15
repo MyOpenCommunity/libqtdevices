@@ -48,7 +48,7 @@ Amplifier::Amplifier(const QString &descr, const QString &where) : BannLevel(0)
 	connect(this, SIGNAL(center_left_clicked()), SLOT(volumeDown()));
 	connect(this, SIGNAL(center_right_clicked()), SLOT(volumeUp()));
 
-	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 }
 
 void Amplifier::volumeUp()
