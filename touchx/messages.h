@@ -29,7 +29,19 @@
 class QString;
 class QLabel;
 class QDomNode;
+class AlarmMessageStack;
 
+/**
+ * The message list
+ */
+class MessageList : public ItemList
+{
+public:
+	MessageList(QWidget *parent, int rows_per_page);
+
+protected:
+	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
+};
 
 /**
  * The page used to ask if delete all the messages or not.
@@ -75,7 +87,7 @@ class AlarmMessagePage : public Page
 {
 Q_OBJECT
 public:
-	AlarmMessagePage(const QString &date, const QString &text);
+	AlarmMessagePage(const ItemList::ItemInfo &info);
 };
 
 
@@ -87,7 +99,8 @@ class MessagesListPage : public Page
 Q_OBJECT
 public:
 	MessagesListPage(const QDomNode &config_node);
-	typedef ItemList ContentType;
+	~MessagesListPage();
+	typedef MessageList ContentType;
 	virtual int sectionId();
 
 public slots:
@@ -97,6 +110,7 @@ private:
 	MessagePage *message_page;
 	DeleteMessagesPage *delete_page;
 	PageTitleWidget *title;
+	AlarmMessageStack *alarm_message_stack;
 	int current_index;
 	bool need_update;
 	void loadMessages(const QString &filename);

@@ -61,6 +61,14 @@ public:
 	void showList();
 	ItemInfo &item(int index);
 	int itemCount();
+
+	/**
+	 * Inserts \a item at index position \a index in the list moving
+	 * the successive items forward.
+	 * If \a index is 0, the \a item is prepended to the list.
+	 * If \a index is \a itemCount(), the value is appended to the list.
+	 */
+	void insertItem(int index, const ItemInfo &item);
 	void removeItem(int index);
 
 	unsigned getCurrentPage();

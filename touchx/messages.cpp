@@ -28,56 +28,10 @@
 #define DATE_FORMAT_AS_STRING "yyyy/MM/dd HH:mm"
 
 class QBoxLayout;
+class AlarmMessagePage;
 
 namespace
 {
-	class MessageList : public ItemList
-	{
-	public:
-		MessageList(QWidget *parent, int rows_per_page) : ItemList(parent, rows_per_page) {}
-
-		void addMessage(const ItemInfo &item)
-		{
-			item_list.prepend(item);
-		}
-
-	protected:
-		virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
-		{
-			QFont font = bt_global::font->get(FontManager::TEXT);
-
-			// top level widget (to set background using stylesheet)
-			QWidget *boxWidget = new QWidget;
-			boxWidget->setFixedHeight(68);
-
-			QHBoxLayout *box = new QHBoxLayout(boxWidget);
-			box->setContentsMargins(5, 5, 5, 5);
-
-			// centered file name and description
-			QVBoxLayout *labels = new QVBoxLayout;
-			QLabel *name = new QLabel(item.name);
-			name->setProperty("UnreadMessage", !item.data.toBool());
-
-			name->setFont(font);
-			labels->addWidget(name, 1);
-
-			QLabel *description = new QLabel(item.description);
-			description->setFont(font);
-			labels->addWidget(description, 1);
-
-			box->addLayout(labels, 1);
-
-			// button on the right
-			BtButton *btn = new BtButton;
-			btn->setImage(item.button_icon);
-			box->addWidget(btn, 0, Qt::AlignRight);
-
-			buttons_group->addButton(btn, id_btn);
-			layout->addWidget(boxWidget);
-		}
-	};
-
-
 	QWidget *buildMessagePage(QVBoxLayout *box_layout, QLabel *new_message_label, QLabel *date_label, QLabel *message_label)
 	{
 		QWidget *content = new QWidget;
@@ -107,6 +61,66 @@ namespace
 
 		return content;
 	}
+}
+
+
+class AlarmMessageStack
+{
+public:
+	void push(AlarmMessagePage *page)
+	{
+		pages.prepend(page);
+	}
+
+	AlarmMessagePage *pop()
+	{
+		AlarmMessagePage *page = pages.last();
+		pages.removeLast();
+		return page;
+	}
+
+private:
+	QList<AlarmMessagePage *>pages;
+};
+
+
+MessageList::MessageList(QWidget *parent, int rows_per_page) :
+		ItemList(parent, rows_per_page)
+{
+}
+
+void MessageList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
+{
+	QFont font = bt_global::font->get(FontManager::TEXT);
+
+	// top level widget (to set background using stylesheet)
+	QWidget *boxWidget = new QWidget;
+	boxWidget->setFixedHeight(68);
+
+	QHBoxLayout *box = new QHBoxLayout(boxWidget);
+	box->setContentsMargins(5, 5, 5, 5);
+
+	// centered file name and description
+	QVBoxLayout *labels = new QVBoxLayout;
+	QLabel *name = new QLabel(item.name);
+	name->setProperty("UnreadMessage", !item.data.toBool());
+
+	name->setFont(font);
+	labels->addWidget(name, 1);
+
+	QLabel *description = new QLabel(item.description);
+	description->setFont(font);
+	labels->addWidget(description, 1);
+
+	box->addLayout(labels, 1);
+
+	// button on the right
+	BtButton *btn = new BtButton;
+	btn->setImage(item.button_icon);
+	box->addWidget(btn, 0, Qt::AlignRight);
+
+	buttons_group->addButton(btn, id_btn);
+	layout->addWidget(boxWidget);
 }
 
 
@@ -166,12 +180,12 @@ void MessagePage::setData(const QString &date, const QString &text, bool already
 }
 
 
-AlarmMessagePage::AlarmMessagePage(const QString &date, const QString &text)
+AlarmMessagePage::AlarmMessagePage(const ItemList::ItemInfo &info)
 {
 	QVBoxLayout *box_layout = new QVBoxLayout;
 	QLabel *new_message_label = new QLabel(tr("New Message"));
-	QLabel *date_label = new QLabel(date);
-	QLabel *message_label = new QLabel(text);
+	QLabel *date_label = new QLabel(info.name);
+	QLabel *message_label = new QLabel(info.description);
 
 	QWidget *content = buildMessagePage(box_layout, new_message_label, date_label, message_label);
 
@@ -185,10 +199,11 @@ AlarmMessagePage::AlarmMessagePage(const QString &date, const QString &text)
 }
 
 
-MessagesListPage::MessagesListPage(const QDomNode &config_node)
+MessagesListPage::MessagesListPage(const QDomNode &config_node) :
+		alarm_message_stack(new AlarmMessageStack)
 {
 	Q_UNUSED(config_node)
-	ItemList *item_list = new MessageList(0, 4);
+	MessageList *item_list = new MessageList(0, 4);
 
 	title = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("delete_all"));
@@ -220,6 +235,11 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 
 	current_index = -1;
 	need_update = false;
+}
+
+MessagesListPage::~MessagesListPage()
+{
+	delete alarm_message_stack;
 }
 
 void MessagesListPage::showPage()
@@ -268,16 +288,24 @@ int MessagesListPage::sectionId()
 
 void MessagesListPage::newMessage(const DeviceValues &status_list)
 {
+	Q_ASSERT_X(status_list[MessageDevice::DIM_MESSAGE].canConvert<Message>(), "MessageListPage::newMessage", "conversion error");
 	Message message = status_list[MessageDevice::DIM_MESSAGE].value<Message>();
 
 	int count = page_content->itemCount();
 
 	// delete the last message if the number of messages is > MESSAGES_MAX
 	if (count > MESSAGES_MAX)
+	{
 		page_content->removeItem(count - 1);
+		AlarmMessagePage *page = alarm_message_stack->pop();
+		page->hide();
+		page->deleteLater();
+	}
 
 	ItemList::ItemInfo info(DateConversions::formatDateTimeConfig(message.datetime), message.text, "", bt_global::skin->getImage("forward"), false);
-	static_cast<MessageList *>(page_content)->addMessage(info);
+	page_content->insertItem(0, info);
+
+	alarm_message_stack->push(new AlarmMessagePage(info));
 	saveMessages();
 }
 
