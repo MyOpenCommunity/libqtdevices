@@ -48,7 +48,7 @@ Amplifier::Amplifier(const QString &descr, const QString &where) : BannLevel(0)
 	connect(this, SIGNAL(center_left_clicked()), SLOT(volumeDown()));
 	connect(this, SIGNAL(center_right_clicked()), SLOT(volumeUp()));
 
-	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 }
 
 void Amplifier::volumeUp()
@@ -73,8 +73,7 @@ void Amplifier::turnOff()
 
 void Amplifier::setIcons()
 {
-	// TODO this uses a linear scale for the volume, but maybe it should special-case 0 and 31?
-	int index = volume_value * 8 / 31;
+	int index = trasformaVol(volume_value);
 
 	setCenterLeftIcon(getBostikName(active ? center_left_active : center_left_inactive, QString::number(index)));
 	setCenterRightIcon(getBostikName(active ? center_right_active : center_right_inactive, QString::number(index)));
