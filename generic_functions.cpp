@@ -312,6 +312,13 @@ bool setCfgValue(QString field, int value, int item_id, const QString &filename)
 
 int trasformaVol(int vol)
 {
+	// TODO remove after aligning image names
+#ifdef LAYOUT_TOUCHX
+	if (vol < 0 || vol > 31)
+		return -1;
+
+	return vol * 8 / 31;
+#else
 	if (vol < 0)
 		return -1;
 	if (vol <= 3)
@@ -333,6 +340,7 @@ int trasformaVol(int vol)
 	if (vol <= 31)
 		return 9;
 	return -1;
+#endif
 }
 
 

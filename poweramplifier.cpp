@@ -139,10 +139,15 @@ void BannPowerAmplifierNew::status_changed(const DeviceValues &status_list)
 		{
 			int volume = it.value().toInt();
 			// We have to normalize the volume value (from 0 to 31) in a value
-			// that we can represent into the banner (that accept values from 1 to 9)
+			// that we can represent into the banner (that accept values from 0 to 8)
 			// so we use the following formula.
 			int level = trasformaVol(volume);
+			// TODO remove after aligning image names
+#ifdef LAYOUT_BTOUCH
 			Q_ASSERT_X(level > 0, "BannPowerAmplifierNew::status_changed", "Received volume is not in range 0-31");
+#else
+			Q_ASSERT_X(level >= 0, "BannPowerAmplifierNew::status_changed", "Received volume is not in range 0-31");
+#endif
 			setLevel(level);
 		}
 		++it;
