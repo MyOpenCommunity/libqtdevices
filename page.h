@@ -153,6 +153,11 @@ public slots:
 	// The the page as the current page on the main window
 	void setCurrentPage();
 
+signals:
+	/// Emitted when the page is closed.
+	void Closed();
+	void forwardClick();
+
 protected:
 	// used by page_content
 	// see the comment about page_content
@@ -195,11 +200,6 @@ private:
 	static Client *client_richieste;
 	static Client *client_comandi;
 	void forceClosed();
-
-signals:
-	/// Emitted when the page is closed.
-	void Closed();
-	void forwardClick();
 };
 
 
