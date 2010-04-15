@@ -128,7 +128,7 @@ private:
 	LoadsDevice *dev;
 
 private slots:
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 	void resetRequested(int which);
 	void reset();
 };

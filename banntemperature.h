@@ -27,7 +27,7 @@
 
 class NonControlledProbeDevice;
 class QLabel;
-typedef QHash<int, QVariant> StatusList;
+typedef QHash<int, QVariant> DeviceValues;
 
 
 class BannTemperature : public BannerOld
@@ -51,7 +51,7 @@ public slots:
 	/**
 	 * Manages a change in status, like temperature change.
 	 */
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 private:
 	void setTemperature();
 	/// Probed temperature (arrives from frame_interpreter directly in celsius, not in bt)

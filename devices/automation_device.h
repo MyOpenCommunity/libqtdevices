@@ -46,7 +46,7 @@ public:
 	void requestStatus();
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
 	virtual void requestPullStatus();
 };
 
@@ -70,7 +70,7 @@ public:
 	};
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, StatusList &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
 };
 
 #endif // DEV_AUTOMATION_H

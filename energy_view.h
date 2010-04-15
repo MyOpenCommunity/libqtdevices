@@ -182,7 +182,7 @@ private slots:
 	void showGraph(int graph_type, bool request_update=true);
 	void showBannerWidget();
 	void backClick();
-	void status_changed(const StatusList &status_list);
+	void status_changed(const DeviceValues &status_list);
 	void rateChanged(int rate_id);
 };
 

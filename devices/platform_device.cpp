@@ -114,7 +114,7 @@ void PlatformDevice::manageFrame(OpenMsg &msg)
 	int what = msg.what();
 	int what_args = msg.whatArgCnt();
 
-	StatusList status_list;
+	DeviceValues status_list;
 	QVariant v;
 
 	if (what == DIM_MACADDR || what == DIM_IP || what == DIM_NETMASK ||

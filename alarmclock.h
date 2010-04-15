@@ -113,7 +113,7 @@ public slots:
 */
 	void showSoundDiffPage();
 
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 
 protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);

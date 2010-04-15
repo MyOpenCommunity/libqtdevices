@@ -25,9 +25,9 @@
 #include "bann2_buttons.h" // Bann2Buttons
 #include "bann3_buttons.h" // Bann3ButtonsLabel
 #include "energy_rates.h"  // EnergyRate
-#include "device.h"        // StatusList
+#include "device.h"        // DeviceValues
 #include "bttime.h" // BtTime
-#include "device.h"        // StatusList
+#include "device.h"        // DeviceValues
 
 struct EnergyRate;
 class EnergyDevice;
@@ -48,7 +48,7 @@ public:
 	void updateText();
 
 public slots:
-	void status_changed(const StatusList &status_list);
+	void status_changed(const DeviceValues &status_list);
 
 protected:
 	virtual void showEvent(QShowEvent *e);
@@ -118,7 +118,7 @@ private:
 	void setState(int state);
 
 private slots:
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 
 private:
 	QString state_icon;
@@ -151,7 +151,7 @@ private:
 	LoadsDevice *dev;
 
 private slots:
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 
 signals:
 	// this should be emitted only if the device is active

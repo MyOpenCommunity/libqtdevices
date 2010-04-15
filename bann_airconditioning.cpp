@@ -48,7 +48,7 @@ SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningI
 	{
 		air_single = "air_single_temp";
 
-		connect(dev_probe, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+		connect(dev_probe, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 		setOpenserverConnection(dev_probe);
 	}
 
@@ -59,7 +59,7 @@ SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningI
 		setCentralText("---");
 }
 
-void SingleSplit::status_changed(const StatusList &status_list)
+void SingleSplit::status_changed(const DeviceValues &status_list)
 {
 	int temp = status_list[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
 	TemperatureScale scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());

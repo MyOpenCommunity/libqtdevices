@@ -179,7 +179,7 @@ void VolumePage::changeVolume(int new_vol)
 VersionPage::VersionPage(const QDomNode &config_node)
 {
 	dev = bt_global::add_device_to_cache(new PlatformDevice);
-	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 	dev->requestFirmwareVersion();
 	dev->requestKernelVersion();
 	dev->requestIp();
@@ -199,14 +199,14 @@ VersionPage::VersionPage(const QDomNode &config_node)
 	buildPage(text_area, nav_bar, getTextChild(config_node, "descr"), TINY_TITLE_HEIGHT);
 }
 
-void VersionPage::status_changed(const StatusList &sl)
+void VersionPage::status_changed(const DeviceValues &sl)
 {
 	const int FW_ROW = 2;
 	const int KERN_ROW = 3;
 	const int IP_ROW = 4;
 	const int NETMASK_ROW = 5;
 
-	StatusList::const_iterator it = sl.constBegin();
+	DeviceValues::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
 	{
 		switch (it.key())

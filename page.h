@@ -49,9 +49,9 @@ public slots:
 };
 
 
-// This typedef is needed by slots status_changed(StatusList). In order to avoid
+// This typedef is needed by slots status_changed(DeviceValues). In order to avoid
 // duplication the typedef is put here, so all pages can be use freely
-typedef QHash<int, QVariant> StatusList;
+typedef QHash<int, QVariant> DeviceValues;
 
 // Allows type-safe access to __content from page subclasses; by default
 // it returns a QWidget; to return a different QWidget subtype, add a

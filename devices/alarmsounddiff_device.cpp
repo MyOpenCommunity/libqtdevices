@@ -122,7 +122,7 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 	int where = msg.where();
 	int what = msg.what();
 
-	StatusList sl;
+	DeviceValues sl;
 
 	if (where == 5)
 	{

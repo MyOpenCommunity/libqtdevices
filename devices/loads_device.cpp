@@ -103,7 +103,7 @@ void LoadsDevice::manageFrame(OpenMsg &msg)
 		return;
 
 	int what = msg.what();
-	StatusList status_list;
+	DeviceValues status_list;
 
 	if (what == _DIM_STATUS && msg.whatArgCnt() == 5)
 	{

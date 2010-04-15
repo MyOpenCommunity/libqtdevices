@@ -105,7 +105,7 @@ BannPowerAmplifierNew::BannPowerAmplifierNew(const QString &descr, const QDomNod
 	initBanner(on_icon, bt_global::skin->getImage("volume_active"),
 		bt_global::skin->getImage("volume_inactive"), bt_global::skin->getImage("settings"), OFF, 1, descr);
 	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address, openserver_id));
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 
 	connect(right_button, SIGNAL(clicked()), SLOT(toggleStatus()));
 	connect(this, SIGNAL(center_right_clicked()), SLOT(volumeUp()));
@@ -124,9 +124,9 @@ void BannPowerAmplifierNew::toggleStatus()
 
 // TODO: PoweramplifierDevice currently lacks the new init() method
 
-void BannPowerAmplifierNew::status_changed(const StatusList &status_list)
+void BannPowerAmplifierNew::status_changed(const DeviceValues &status_list)
 {
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_STATUS)
@@ -174,7 +174,7 @@ BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_n
 		bt_global::skin->getImage("volume_active"), bt_global::skin->getImage("volume_inactive"), true);
 	setAddress(address);
 	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address, openserver_id));
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 
 	connect(this, SIGNAL(dxClick()), SLOT(toggleStatus()));
 	connect(this, SIGNAL(cdxClick()), SLOT(volumeUp()));
@@ -200,9 +200,9 @@ void BannPowerAmplifier::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void BannPowerAmplifier::status_changed(const StatusList &status_list)
+void BannPowerAmplifier::status_changed(const DeviceValues &status_list)
 {
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_STATUS)
@@ -277,7 +277,7 @@ PowerAmplifierPreset::PowerAmplifierPreset(PowerAmplifierDevice *d, QWidget *par
 	fillPresetDesc(preset_list);
 	connect(right_button, SIGNAL(clicked()), SLOT(next()));
 	connect(left_button, SIGNAL(clicked()), SLOT(prev()));
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 
 	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("preset"),
 		bt_global::skin->getImage("plus"), preset_desc[0]);
@@ -315,9 +315,9 @@ void PowerAmplifierPreset::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void PowerAmplifierPreset::status_changed(const StatusList &status_list)
+void PowerAmplifierPreset::status_changed(const DeviceValues &status_list)
 {
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_PRESET)
@@ -353,7 +353,7 @@ PowerAmplifierTreble::PowerAmplifierTreble(PowerAmplifierDevice *d, const QStrin
 
 	connect(left_button, SIGNAL(clicked()), SLOT(down()));
 	connect(right_button, SIGNAL(clicked()), SLOT(up()));
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 	showLevel(0);
 }
 
@@ -363,9 +363,9 @@ void PowerAmplifierTreble::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void PowerAmplifierTreble::status_changed(const StatusList &status_list)
+void PowerAmplifierTreble::status_changed(const DeviceValues &status_list)
 {
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_TREBLE)
@@ -402,7 +402,7 @@ PowerAmplifierBass::PowerAmplifierBass(PowerAmplifierDevice *d, const QString &b
 
 	connect(left_button, SIGNAL(clicked()), SLOT(down()));
 	connect(right_button, SIGNAL(clicked()), SLOT(up()));
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 	showLevel(0);
 }
 
@@ -412,9 +412,9 @@ void PowerAmplifierBass::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void PowerAmplifierBass::status_changed(const StatusList &status_list)
+void PowerAmplifierBass::status_changed(const DeviceValues &status_list)
 {
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_BASS)
@@ -449,7 +449,7 @@ PowerAmplifierBalance::PowerAmplifierBalance(PowerAmplifierDevice *d, QWidget *p
 		bt_global::skin->getImage("balance_dx"), bt_global::skin->getImage("balance_sx"));
 	connect(this, SIGNAL(sxClick()), SLOT(dx()));
 	connect(this, SIGNAL(dxClick()), SLOT(sx()));
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 	showBalance(0);
 }
 
@@ -459,9 +459,9 @@ void PowerAmplifierBalance::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void PowerAmplifierBalance::status_changed(const StatusList &status_list)
+void PowerAmplifierBalance::status_changed(const DeviceValues &status_list)
 {
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_BALANCE)
@@ -504,7 +504,7 @@ PowerAmplifierLoud::PowerAmplifierLoud(PowerAmplifierDevice *d, const QString &b
 		bt_global::skin->getImage("on"), OFF, banner_text);
 	connect(this, SIGNAL(sxClick()), SLOT(on()));
 	connect(this, SIGNAL(dxClick()), SLOT(off()));
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 }
 
 void PowerAmplifierLoud::inizializza(bool forza)
@@ -513,9 +513,9 @@ void PowerAmplifierLoud::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void PowerAmplifierLoud::status_changed(const StatusList &status_list)
+void PowerAmplifierLoud::status_changed(const DeviceValues &status_list)
 {
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_LOUD)

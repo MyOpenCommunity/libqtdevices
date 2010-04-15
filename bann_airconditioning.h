@@ -48,7 +48,7 @@ public:
 	SingleSplit(QString descr, bool show_right_button, AirConditioningInterface *d, NonControlledProbeDevice *d_probe=0);
 
 protected slots:
-	virtual void status_changed(const StatusList &status_list);
+	virtual void status_changed(const DeviceValues &status_list);
 
 private:
 	AirConditioningInterface *dev;

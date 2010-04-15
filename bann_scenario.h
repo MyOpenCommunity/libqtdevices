@@ -25,7 +25,7 @@
 #include "bann2_buttons.h" // Bann2Buttons
 #include "bann3_buttons.h" // Bann3Buttons
 #include "bann4_buttons.h" // Bann4ButtonsIcon, bann4But
-#include "device.h" // StatusList
+#include "device.h" // DeviceValues
 
 class PPTSceDevice;
 class ScenEvoCondition;
@@ -58,7 +58,7 @@ public:
 	ScenarioModule(int scenario, const QString &descr, const QString &where, int openserver_id);
 
 private slots:
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 	void activate();
 	void editScenario();
 	void startEditing();

@@ -66,7 +66,7 @@ ScenarioModule::ScenarioModule(int scenario, const QString &descr, const QString
 	connect(right_button, SIGNAL(clicked()), SLOT(editScenario()));
 	connect(center_left_button, SIGNAL(clicked()), SLOT(startEditing()));
 	connect(center_right_button, SIGNAL(clicked()), SLOT(deleteScenario()));
-	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(const StatusList &)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 }
 
 void ScenarioModule::activate()
@@ -101,9 +101,9 @@ void ScenarioModule::stopEditing()
 	dev->stopProgramming(scenario_number);
 }
 
-void ScenarioModule::status_changed(const StatusList &sl)
+void ScenarioModule::status_changed(const DeviceValues &sl)
 {
-	StatusList::const_iterator it = sl.constBegin();
+	DeviceValues::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
 	{
 		switch (it.key())

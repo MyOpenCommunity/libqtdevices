@@ -61,7 +61,7 @@ public:
 	static void loadHiddenPages();
 
 private slots:
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 	void toggleRingExclusion();
 
 private:
@@ -100,7 +100,7 @@ public:
 	virtual int sectionId();
 
 private slots:
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 	void toggleCall();
 	void handleClose();
 	void changeVolume(int value);

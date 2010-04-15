@@ -25,7 +25,7 @@
 #include "bann1_button.h" // BannSinglePuls
 #include "bann3_buttons.h" // Bann3Buttons
 #include "bann2_buttons.h" // BannOpenClose
-#include "device.h" // StatusList
+#include "device.h" // DeviceValues
 #include "bttime.h" // BtTime
 
 /// Forward Declarations
@@ -47,7 +47,7 @@ private slots:
 	void sendGoUp();
 	void sendGoDown();
 	void sendStop();
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 
 private:
 	void connectButton(BtButton *btn, const char *slot);
@@ -74,7 +74,7 @@ private slots:
 	void sendClose();
 	void buttonReleased();
 	void sendStop();
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 
 private:
 	void connectButtons();
@@ -138,7 +138,7 @@ private:
 	PPTStatDevice *dev;
 	QString img_open, img_close;
 private slots:
-	void status_changed(const StatusList &status_list);
+	void status_changed(const DeviceValues &status_list);
 };
 
 #endif

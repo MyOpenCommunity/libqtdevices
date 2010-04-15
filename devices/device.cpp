@@ -124,7 +124,7 @@ device::device(QString _who, QString _where, int oid) : FrameReceiver(oid)
 
 void device::manageFrame(OpenMsg &msg)
 {
-	StatusList status_list;
+	DeviceValues status_list;
 	parseFrame(msg, status_list);
 
 	// status_list may be empty, avoid emitting a signal in such cases

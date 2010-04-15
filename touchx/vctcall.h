@@ -128,7 +128,7 @@ namespace VCTCallPrivate
 		void videoFinished();
 
 	private slots:
-		void status_changed(const StatusList &sl);
+		void status_changed(const DeviceValues &sl);
 		void toggleCameraSettings();
 		void handleClose();
 		void toggleMute();

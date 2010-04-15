@@ -216,7 +216,7 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 	connect(delete_page, SIGNAL(deleteAll()), SLOT(deleteAll()));
 
 	MessageDevice *dev = bt_global::add_device_to_cache(new MessageDevice);
-	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(newMessage(StatusList)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(newMessage(DeviceValues)));
 
 	current_index = -1;
 	need_update = false;
@@ -266,7 +266,7 @@ int MessagesListPage::sectionId()
 		return MESSAGES;
 }
 
-void MessagesListPage::newMessage(const StatusList &status_list)
+void MessagesListPage::newMessage(const DeviceValues &status_list)
 {
 	Message message = status_list[MessageDevice::DIM_MESSAGE].value<Message>();
 

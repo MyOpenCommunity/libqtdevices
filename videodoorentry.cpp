@@ -115,7 +115,7 @@ VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
 
 	loadItems(config_node);
 	dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS]));
-	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 }
 
 void VideoDoorEntry::toggleRingExclusion()
@@ -123,9 +123,9 @@ void VideoDoorEntry::toggleRingExclusion()
 	ring_exclusion->setStatus(!ring_exclusion->getStatus());
 }
 
-void VideoDoorEntry::status_changed(const StatusList &sl)
+void VideoDoorEntry::status_changed(const DeviceValues &sl)
 {
-	StatusList::const_iterator it = sl.constBegin();
+	DeviceValues::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
 	{
 		switch (it.key())
@@ -211,7 +211,7 @@ void VideoControl::cameraOn(QString where)
 IntercomCallPage::IntercomCallPage(EntryphoneDevice *d)
 {
 	dev = d;
-	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 	SkinContext ctx(666);
 
 	QGridLayout *layout = new QGridLayout(this);
@@ -327,9 +327,9 @@ void IntercomCallPage::changeVolume(int value)
 	setVolume(VOLUME_VIDEOCONTROL, value);
 }
 
-void IntercomCallPage::status_changed(const StatusList &sl)
+void IntercomCallPage::status_changed(const DeviceValues &sl)
 {
-	StatusList::const_iterator it = sl.constBegin();
+	DeviceValues::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
 	{
 		switch (it.key())

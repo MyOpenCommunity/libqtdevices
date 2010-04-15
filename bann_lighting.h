@@ -26,7 +26,7 @@
 #include "bann2_buttons.h" // BannOnOffNew, BannOnOff2Labels
 #include "bann1_button.h" // BannOn2Labels
 #include "bttime.h" // BtTime
-#include "device.h" // StatusList
+#include "device.h" // DeviceValues
 
 #include <QList>
 #include <QTimer>
@@ -96,7 +96,7 @@ private slots:
 	void lightOff();
 	void increaseLevel();
 	void decreaseLevel();
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 
 private:
 	DimmerDevice *dev;
@@ -132,7 +132,7 @@ private slots:
 	void lightOff();
 	void increaseLevel();
 	void decreaseLevel();
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 
 private:
 	int roundTo5(int value);
@@ -177,7 +177,7 @@ protected slots:
 	virtual void activate();
 
 private slots:
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 	void cycleTime();
 };
 
@@ -200,7 +200,7 @@ public:
 	TempLightFixed(int time, const QString &descr, const QString &where, int openserver_id);
 
 private slots:
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 	void setOn();
 	void updateTimerLabel();
 

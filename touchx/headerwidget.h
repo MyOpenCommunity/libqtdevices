@@ -23,7 +23,7 @@
 #define HEADERWIDGET_H
 
 #include "page.h" // StyledWidget
-#include "device.h" // StatusList
+#include "device.h" // DeviceValues
 #include "main.h" // TemperatureScale
 
 #include <QLabel>
@@ -49,7 +49,7 @@ public:
 	TemperatureDisplay(device *probe);
 
 private slots:
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 
 protected:
 	QString label;

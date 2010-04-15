@@ -69,7 +69,7 @@ void AutomationDevice::requestPullStatus()
 	requestStatus();
 }
 
-bool AutomationDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
+bool AutomationDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 {
 	int what = msg.what();
 
@@ -97,7 +97,7 @@ void PPTStatDevice::requestStatus() const
 	sendRequest(QString());
 }
 
-bool PPTStatDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
+bool PPTStatDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 {
 	if (where.toInt() != msg.where())
 		return false;

@@ -194,10 +194,10 @@ TemperatureDisplay::TemperatureDisplay(device *probe)
 	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 	label = "-";
 
-	connect(probe, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+	connect(probe, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 }
 
-void TemperatureDisplay::status_changed(const StatusList &sl)
+void TemperatureDisplay::status_changed(const DeviceValues &sl)
 {
 	if (!sl.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
 		return;

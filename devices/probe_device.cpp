@@ -77,14 +77,14 @@ void NonControlledProbeDevice::manageFrame(OpenMsg &msg)
 
 	if (type == EXTERNAL && what_t(msg.what()) == EXTERNAL_TEMPERATURE)
 	{
-		StatusList sl;
+		DeviceValues sl;
 
 		sl[DIM_TEMPERATURE] = msg.whatArgN(1);
 		emit status_changed(sl);
 	}
 	else if (type == INTERNAL && what_t(msg.what()) == INTERNAL_TEMPERATURE)
 	{
-		StatusList sl;
+		DeviceValues sl;
 
 		sl[DIM_TEMPERATURE] = msg.whatArgN(0);
 		emit status_changed(sl);
@@ -173,7 +173,7 @@ void ControlledProbeDevice::manageFrame(OpenMsg &msg)
 		return;
 
 	int what = msg.what();
-	StatusList sl;
+	DeviceValues sl;
 
 	qDebug() << "Full where" << where_full << "what" << what;
 

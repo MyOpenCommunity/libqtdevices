@@ -259,7 +259,7 @@ void PageSimpleProbe::setTemperature(unsigned temp)
 	}
 }
 
-void PageSimpleProbe::status_changed(const StatusList &sl)
+void PageSimpleProbe::status_changed(const DeviceValues &sl)
 {
 	if (!sl.contains(ControlledProbeDevice::DIM_TEMPERATURE))
 		return;
@@ -282,7 +282,7 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	conf_root = n;
 	dev = _dev;
 
-	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(changeStatus()));
 	//install compressor
 
@@ -458,7 +458,7 @@ void PageProbe::updateControlState()
 	local_temp_label->setText(local_temp);
 }
 
-void PageProbe::status_changed(const StatusList &sl)
+void PageProbe::status_changed(const DeviceValues &sl)
 {
 	bool update = false;
 
@@ -571,7 +571,7 @@ PageFancoil::PageFancoil(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice 
 	TemperatureScale scale) : PageProbe(n, _dev, thermo_reg, scale), fancoil_buttons(this)
 {
 	dev = _dev;
-	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 
 	createFancoilButtons();
 	fancoil_buttons.setExclusive(true);
@@ -616,7 +616,7 @@ void PageFancoil::handleFancoilButtons(int pressedButton)
 	dev->requestFancoilStatus();
 }
 
-void PageFancoil::status_changed(const StatusList &sl)
+void PageFancoil::status_changed(const DeviceValues &sl)
 {
 	if (sl.contains(ControlledProbeDevice::DIM_FANCOIL_STATUS))
 	{
@@ -717,8 +717,8 @@ PageManual::PageManual(ThermalDevice *_dev, TemperatureScale scale)
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(performAction()));
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
-	connect(dev, SIGNAL(status_changed(const StatusList &)),
-		SLOT(status_changed(const StatusList &)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)),
+		SLOT(status_changed(DeviceValues)));
 
 	updateTemperature();
 }
@@ -776,7 +776,7 @@ void PageManual::updateTemperature()
 	}
 }
 
-void PageManual::status_changed(const StatusList &sl)
+void PageManual::status_changed(const DeviceValues &sl)
 {
 	// TODO check why only for 4-zone regulator
 	if (dev->type() != THERMO_Z4)
@@ -814,8 +814,8 @@ PageManualTimed::PageManualTimed(ThermalDevice4Zones *_dev, TemperatureScale sca
 	main_layout.insertWidget(2, time_edit);
 #endif
 
-	connect(dev, SIGNAL(status_changed(const StatusList &)),
-		SLOT(status_changed(const StatusList &)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)),
+		SLOT(status_changed(DeviceValues)));
 }
 
 void PageManualTimed::performAction()
@@ -1076,7 +1076,7 @@ void PageTermoReg::createSettingsItem(QDomNode item, SettingsPage *settings, The
 	}
 }
 
-void PageTermoReg::status_changed(const StatusList &sl)
+void PageTermoReg::status_changed(const DeviceValues &sl)
 {
 	ThermalDevice::Season season = ThermalDevice::SE_SUMMER;
 
@@ -1240,8 +1240,8 @@ PageTermoReg4z::PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device)
 	: PageTermoReg(n)
 {
 	_dev = device;
-	connect(_dev, SIGNAL(status_changed(const StatusList &)),
-		SLOT(status_changed(const StatusList &)));
+	connect(_dev, SIGNAL(status_changed(DeviceValues)),
+		SLOT(status_changed(DeviceValues)));
 	createSettingsMenu(n);
 }
 
@@ -1310,8 +1310,8 @@ PageTermoReg99z::PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device)
 	: PageTermoReg(n)
 {
 	_dev = device;
-	connect(_dev, SIGNAL(status_changed(const StatusList &)),
-		SLOT(status_changed(const StatusList &)));
+	connect(_dev, SIGNAL(status_changed(DeviceValues)),
+		SLOT(status_changed(DeviceValues)));
 	createSettingsMenu(n);
 }
 

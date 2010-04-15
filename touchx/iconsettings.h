@@ -97,7 +97,7 @@ private:
 	PlatformDevice *dev;
 
 private slots:
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 };
 
 

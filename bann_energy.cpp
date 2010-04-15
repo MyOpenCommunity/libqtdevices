@@ -64,7 +64,7 @@ BannEnergyInterface::BannEnergyInterface(int rate_id, bool is_ele, const QString
 	is_electricity = is_ele;
 	device_value = 0;
 
-	connect(dev, SIGNAL(status_changed(const StatusList &)), this, SLOT(status_changed(const StatusList &)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)), this, SLOT(status_changed(DeviceValues)));
 }
 
 void BannEnergyInterface::showEvent(QShowEvent *e)
@@ -103,9 +103,9 @@ void BannEnergyInterface::updateText()
 	setCentralText(text);
 }
 
-void BannEnergyInterface::status_changed(const StatusList &status_list)
+void BannEnergyInterface::status_changed(const DeviceValues &status_list)
 {
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (it.key() == EnergyDevice::DIM_CURRENT)
@@ -225,10 +225,10 @@ BannLoadDiagnostic::BannLoadDiagnostic(device *dev, const QString &description) 
 
 	setState(LoadsDevice::LOAD_OK);
 
-	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 }
 
-void BannLoadDiagnostic::status_changed(const StatusList &sl)
+void BannLoadDiagnostic::status_changed(const DeviceValues &sl)
 {
 	if (!sl.contains(LoadsDevice::DIM_LOAD))
 		return;
@@ -266,7 +266,7 @@ BannLoadWithCU::BannLoadWithCU(const QString &descr, LoadsDevice *d, Type t) : B
 	connect(left_button, SIGNAL(clicked()), SIGNAL(deactivateDevice()));
 
 	dev = d;
-	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 
 	connect(center_button, SIGNAL(clicked()), dev, SLOT(enable()));
 }
@@ -276,9 +276,9 @@ void BannLoadWithCU::connectRightButton(Page *p)
 	connectButtonToPage(right_button, p);
 }
 
-void BannLoadWithCU::status_changed(const StatusList &sl)
+void BannLoadWithCU::status_changed(const DeviceValues &sl)
 {
-	StatusList::const_iterator it = sl.constBegin();
+	DeviceValues::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
 	{
 		switch (it.key())

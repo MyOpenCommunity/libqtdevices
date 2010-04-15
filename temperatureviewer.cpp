@@ -66,7 +66,7 @@ void TemperatureViewer::add(QString where, int openserver_id, int x, int y, int 
 
 	temp.device = bt_global::add_device_to_cache(new NonControlledProbeDevice(where, ext == "1" ?
 		NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL, openserver_id));
-	connect(temp.device, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+	connect(temp.device, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 
 	unsigned default_bt_temp = 1235;
 	updateDisplay(default_bt_temp, &temp);
@@ -101,7 +101,7 @@ void TemperatureViewer::updateDisplay(unsigned new_bt_temperature, TemperatureDa
 	temp->lcd->display(displayed_temp);
 }
 
-void TemperatureViewer::status_changed(const StatusList &sl)
+void TemperatureViewer::status_changed(const DeviceValues &sl)
 {
 	if (!sl.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
 		return;

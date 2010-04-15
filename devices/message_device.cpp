@@ -133,7 +133,7 @@ MessageDevice::MessageDevice(int openserver_id) :
  *   it sends a timeout response to the caller containing the number of bytes
  *   received.
  */
-bool MessageDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
+bool MessageDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 {
 	where = QString::number(msg.where());
 

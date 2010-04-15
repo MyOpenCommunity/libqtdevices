@@ -32,11 +32,11 @@
 #include <assert.h>
 
 // To put/extract in QVariant
-Q_DECLARE_METATYPE(StatusList)
+Q_DECLARE_METATYPE(DeviceValues)
 
 
-DeviceTester::DeviceTester(device *d, int type, StatusListValues it) :
-	spy(d, SIGNAL(status_changed(const StatusList&)))
+DeviceTester::DeviceTester(device *d, int type, ValuesNumber it) :
+	spy(d, SIGNAL(status_changed(const DeviceValues&)))
 {
 	dim_type = type;
 	dev = d;
@@ -72,14 +72,14 @@ QVariant DeviceTester::getResult(const QStringList& frames)
 	Q_ASSERT_X(spy.count() > 0, "DeviceTester::getResult", "DeviceTester: No signal emitted!");
 	Q_ASSERT_X(spy.last().count() > 0, "DeviceTester::getResult", "DeviceTester: No arguments for the last signal emitted!");
 	QVariant signal_arg = spy.last().at(0); // get the first argument from last signal
-	if (signal_arg.canConvert<StatusList>())
+	if (signal_arg.canConvert<DeviceValues>())
 	{
-		StatusList sl = signal_arg.value<StatusList>();
+		DeviceValues sl = signal_arg.value<DeviceValues>();
 		if (sl.contains(dim_type))
 		{
 			if (item_number == ONE_VALUE)
 				Q_ASSERT_X(sl.size() == 1, "DeviceTester::getResult",
-					"StatusList must contain only one item");
+					"DeviceValues must contain only one item");
 			return sl[dim_type];
 		}
 	}

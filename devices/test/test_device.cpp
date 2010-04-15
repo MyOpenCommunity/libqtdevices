@@ -46,8 +46,8 @@ void testSleep(int msec)
 
 TestDevice::TestDevice()
 {
-	// To use StatusList in signal/slots and watch them through QSignalSpy
-	qRegisterMetaType<StatusList>("StatusList");
+	// To use DeviceValues in signal/slots and watch them through QSignalSpy
+	qRegisterMetaType<DeviceValues>("DeviceValues");
 	server = new OpenServerMock;
 }
 

@@ -65,15 +65,15 @@ BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, 
 
 	t->addLayout(l);
 
-	connect(dev, SIGNAL(status_changed(const StatusList &)),
-			SLOT(status_changed(const StatusList &)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)),
+			SLOT(status_changed(DeviceValues)));
 }
 
 void BannTemperature::inizializza(bool forza)
 {
 }
 
-void BannTemperature::status_changed(const StatusList &sl)
+void BannTemperature::status_changed(const DeviceValues &sl)
 {
 	if (!sl.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
 		return;

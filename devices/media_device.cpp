@@ -81,7 +81,7 @@ void SourceDevice::requestTrack() const
 	sendRequest(DIM_TRACK);
 }
 
-bool SourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
+bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 {
 	QString msg_where = QString::fromStdString(msg.whereFull());
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
@@ -140,7 +140,7 @@ void RadioSourceDevice::requestRDS() const
 	sendCommand(START_RDS);
 }
 
-bool RadioSourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
+bool RadioSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 {
 	QString msg_where = QString::fromStdString(msg.whereFull());
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
@@ -189,7 +189,7 @@ VirtualSourceDevice::VirtualSourceDevice(QString address, int openserver_id) :
 
 }
 
-bool VirtualSourceDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
+bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 {
 	QString msg_where = QString::fromStdString(msg.whereFull());
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
@@ -274,7 +274,7 @@ void AmplifierDevice::volumeDown() const
 	sendCommand(QString("%1#1").arg(AMPL_VOLUME_DOWN));
 }
 
-bool AmplifierDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
+bool AmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 {
 	if (where != QString::fromStdString(msg.whereFull()))
 		return false;
@@ -304,7 +304,7 @@ PowerAmplifierDevice::PowerAmplifierDevice(QString address, int openserver_id) :
 {
 }
 
-bool PowerAmplifierDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
+bool PowerAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 {
 	if (where != QString::fromStdString(msg.whereFull()))
 		return false;

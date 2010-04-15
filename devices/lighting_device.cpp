@@ -135,7 +135,7 @@ void LightingDevice::setTimingBehaviour(Timed t)
 	timed_light = t;
 }
 
-bool LightingDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
+bool LightingDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 {
 	int what = msg.what();
 
@@ -188,7 +188,7 @@ void DimmerDevice::decreaseLevel()
 	sendCommand(DIMMER_DEC);
 }
 
-bool DimmerDevice::parseFrame(OpenMsg &msg, StatusList &status_list)
+bool DimmerDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 {
 	LightingDevice::parseFrame(msg, status_list);
 
@@ -237,7 +237,7 @@ void Dimmer100Device::requestPullStatus()
 	requestDimmer100Status();
 }
 
-bool Dimmer100Device::parseFrame(OpenMsg &msg, StatusList &status_list)
+bool Dimmer100Device::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 {
 	DimmerDevice::parseFrame(msg, status_list);
 	int what = msg.what();

@@ -101,7 +101,7 @@ void ScenarioDevice::manageFrame(OpenMsg &msg)
 		return;
 
 	QVariant v;
-	StatusList sl;
+	DeviceValues sl;
 	int status_index = -1;
 	switch (what)
 	{

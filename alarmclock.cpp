@@ -108,8 +108,8 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, QList<bool> 
 	connect(bt_global::btmain, SIGNAL(freezed(bool)), SLOT(freezed(bool)));
 
 	dev = new AlarmSoundDiffDevice();
-	connect(dev, SIGNAL(status_changed(const StatusList &)),
-		SLOT(status_changed(const StatusList &)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)),
+		SLOT(status_changed(DeviceValues)));
 }
 
 void AlarmClock::showPage()
@@ -199,7 +199,7 @@ void AlarmClock::setActive(bool a)
 #endif
 }
 
-void AlarmClock::status_changed(const StatusList &sl)
+void AlarmClock::status_changed(const DeviceValues &sl)
 {
 	if (sl.contains(AlarmSoundDiffDevice::DIM_STATUS))
 	{

@@ -198,7 +198,7 @@ void ThermalDevice::manageFrame(OpenMsg &msg)
 	int what = msg.what();
 	int command = commandRange(what);
 	int program = what - command;
-	StatusList sl;
+	DeviceValues sl;
 
 	qDebug() << "ThermalDevice command" << command << "program" << program;
 

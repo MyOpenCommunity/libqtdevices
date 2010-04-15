@@ -401,7 +401,7 @@ void EnergyDevice::manageFrame(OpenMsg &msg)
 
 	int what = msg.what();
 
-	StatusList status_list;
+	DeviceValues status_list;
 	QVariant v;
 
 	if (what == DIM_CUMULATIVE_DAY || what == REQ_CURRENT_MODE_1 || what == REQ_CURRENT_MODE_2 ||
@@ -569,7 +569,7 @@ void EnergyDevice::setHasNewFrames()
 	pending_graph_request = 0;
 }
 
-void EnergyDevice::fillCumulativeDay(StatusList &status_list, QString frame9, QString frame10)
+void EnergyDevice::fillCumulativeDay(DeviceValues &status_list, QString frame9, QString frame10)
 {
 	OpenMsg f9(frame9.toStdString());
 	int high = f9.whatArgN(3);
@@ -580,7 +580,7 @@ void EnergyDevice::fillCumulativeDay(StatusList &status_list, QString frame9, QS
 	status_list[DIM_CUMULATIVE_DAY] = v;
 }
 
-void EnergyDevice::fillMonthlyAverage(StatusList &status_list, OpenMsg &msg)
+void EnergyDevice::fillMonthlyAverage(DeviceValues &status_list, OpenMsg &msg)
 {
 	int average;
 
@@ -598,7 +598,7 @@ void EnergyDevice::fillMonthlyAverage(StatusList &status_list, OpenMsg &msg)
 	status_list[DIM_MONTLY_AVERAGE] = v_average;
 }
 
-void EnergyDevice::fillYearGraphData(StatusList &status_list, OpenMsg &msg)
+void EnergyDevice::fillYearGraphData(DeviceValues &status_list, OpenMsg &msg)
 {
 	QDate current = QDate::currentDate();
 	int index = 12;

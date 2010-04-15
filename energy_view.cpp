@@ -333,7 +333,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	cumulative_day_value = cumulative_month_value = cumulative_year_value = 0;
 	daily_av_value = current_value = 0;
 
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 
 	mapper = new QSignalMapper(this);
 	connect(mapper, SIGNAL(mapped(int)), SLOT(showGraph(int)));
@@ -521,10 +521,10 @@ bool EnergyView::isGraphOurs()
 	return graph->parent() == widget_container;
 }
 
-void EnergyView::status_changed(const StatusList &status_list)
+void EnergyView::status_changed(const DeviceValues &status_list)
 {
 	current_date = time_period->date();
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		switch (it.key())

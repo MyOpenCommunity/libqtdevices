@@ -24,7 +24,7 @@
 
 #include "frame_receiver.h"
 #include "main.h" // TemperatureScale
-#include "device.h" // StatusList
+#include "device.h" // DeviceValues
 
 #include <QObject>
 #include <QList>
@@ -46,7 +46,7 @@ public:
 	void inizializza();
 
 private slots:
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 
 private:
 	Page *linked_page; /// the page in which the temperature objects are displayed.

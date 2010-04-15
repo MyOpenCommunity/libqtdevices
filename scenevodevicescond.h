@@ -26,7 +26,7 @@
 #include <QList>
 
 #include "main.h" // TemperatureScale
-#include "device.h" // StatusList
+#include "device.h" // DeviceValues
 #include "deviceold.h"
 
 class NonControlledProbeDevice;
@@ -219,7 +219,7 @@ protected:
 	virtual void set_condition_value(QString);
 
 private slots:
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 
 private:
 	LightingDevice *dev;
@@ -261,7 +261,7 @@ protected:
 	virtual void set_condition_value(QString);
 
 private slots:
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 
 private:
 	int min_val;
@@ -310,7 +310,7 @@ protected:
 	virtual void Draw();
 
 private slots:
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 
 private:
 	int min_val;
@@ -382,7 +382,7 @@ protected:
 
 private slots:
 	//! Invoked when status changes
-	void status_changed(const StatusList &);
+	void status_changed(const DeviceValues &);
 
 private:
 	/// Maximum and minimum values for temperature conditions

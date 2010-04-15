@@ -103,7 +103,7 @@ private:
 	void saveMessages();
 
 private slots:
-	void newMessage(const StatusList &status_list);
+	void newMessage(const DeviceValues &status_list);
 	void showMessage(int index);
 	// Delete all the messages
 	void deleteAll();

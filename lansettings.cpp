@@ -119,7 +119,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
 	dev = bt_global::add_device_to_cache(new PlatformDevice);
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 
 	// Set the network to the initial status
 	saved_status = getTextChild(config_node, "value").toInt();
@@ -143,7 +143,7 @@ void LanSettings::toggleLan()
 	dev->enableLan(!lan_status);
 }
 
-void LanSettings::status_changed(const StatusList &status_list)
+void LanSettings::status_changed(const DeviceValues &status_list)
 {
 	const int MACADDR_ROW = 4;
 	const int IP_ROW = 5;
@@ -160,7 +160,7 @@ void LanSettings::status_changed(const StatusList &status_list)
 	dim_to_row[PlatformDevice::DIM_DNS1] = DNS1_ROW;
 	dim_to_row[PlatformDevice::DIM_DNS2] = DNS2_ROW;
 
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (dim_to_row.contains(it.key()))

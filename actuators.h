@@ -24,7 +24,7 @@
 
 #include "bann2_buttons.h" // BannOnOffState
 #include "bann1_button.h" // BannSinglePuls
-#include "device.h" //StatusList
+#include "device.h" //DeviceValues
 
 class LightingDevice;
 
@@ -46,7 +46,7 @@ public:
 private slots:
 	void activate();
 	void deactivate();
-	void status_changed(const StatusList &status_list);
+	void status_changed(const DeviceValues &status_list);
 
 private:
 	LightingDevice *dev;
