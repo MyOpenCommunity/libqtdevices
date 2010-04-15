@@ -36,11 +36,6 @@ namespace
 	public:
 		MessageList(QWidget *parent, int rows_per_page) : ItemList(parent, rows_per_page) {}
 
-		void addMessage(const ItemInfo &item)
-		{
-			item_list.prepend(item);
-		}
-
 	protected:
 		virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
 		{
@@ -268,6 +263,7 @@ int MessagesListPage::sectionId()
 
 void MessagesListPage::newMessage(const StatusList &status_list)
 {
+	Q_ASSERT_X(status_list[MessageDevice::DIM_MESSAGE].canConvert<Message>(), "MessageListPage::newMessage", "conversion error");
 	Message message = status_list[MessageDevice::DIM_MESSAGE].value<Message>();
 
 	int count = page_content->itemCount();
@@ -277,7 +273,7 @@ void MessagesListPage::newMessage(const StatusList &status_list)
 		page_content->removeItem(count - 1);
 
 	ItemList::ItemInfo info(DateConversions::formatDateTimeConfig(message.datetime), message.text, "", bt_global::skin->getImage("forward"), false);
-	static_cast<MessageList *>(page_content)->addMessage(info);
+	page_content->insertItem(0, info);
 	saveMessages();
 }
 

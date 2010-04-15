@@ -133,6 +133,13 @@ int ItemList::itemCount()
 	return item_list.size();
 }
 
+void ItemList::insertItem(int index, const ItemInfo &item)
+{
+	Q_ASSERT_X(index >= 0 && index <= item_list.size(), "ItemList::insertItem", "index out of range");
+
+	item_list.insert(index, item);
+}
+
 void ItemList::removeItem(int index)
 {
 	Q_ASSERT_X(index >= 0 && index < item_list.size(), "ItemList::item", "index out of range");
