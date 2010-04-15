@@ -87,7 +87,7 @@ class AlertMessagePage : public Page
 {
 Q_OBJECT
 public:
-	AlertMessagePage(const ItemList::ItemInfo &info);
+	AlertMessagePage(const QString &date, const QString &text);
 };
 
 

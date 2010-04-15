@@ -180,12 +180,12 @@ void MessagePage::setData(const QString &date, const QString &text, bool already
 }
 
 
-AlertMessagePage::AlertMessagePage(const ItemList::ItemInfo &info)
+AlertMessagePage::AlertMessagePage(const QString &date, const QString &text)
 {
 	QVBoxLayout *box_layout = new QVBoxLayout;
 	QLabel *new_message_label = new QLabel(tr("New Message"));
-	QLabel *date_label = new QLabel(info.name);
-	QLabel *message_label = new QLabel(info.description);
+	QLabel *date_label = new QLabel(date);
+	QLabel *message_label = new QLabel(text);
 
 	QWidget *content = buildMessagePage(box_layout, new_message_label, date_label, message_label);
 
@@ -302,10 +302,11 @@ void MessagesListPage::newMessage(const DeviceValues &status_list)
 		page->deleteLater();
 	}
 
-	ItemList::ItemInfo info(DateConversions::formatDateTimeConfig(message.datetime), message.text, "", bt_global::skin->getImage("forward"), false);
+	QString date = DateConversions::formatDateTimeConfig(message.datetime);
+	ItemList::ItemInfo info(date, message.text, "", bt_global::skin->getImage("forward"), false);
 	page_content->insertItem(0, info);
 
-	alarm_message_stack->push(new AlertMessagePage(info));
+	alarm_message_stack->push(new AlertMessagePage(date, message.text));
 	saveMessages();
 }
 
