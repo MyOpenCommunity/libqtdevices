@@ -83,11 +83,11 @@ private:
 /**
  * The page used to show an alarm message.
  */
-class AlarmMessagePage : public Page
+class AlertMessagePage : public Page
 {
 Q_OBJECT
 public:
-	AlarmMessagePage(const ItemList::ItemInfo &info);
+	AlertMessagePage(const ItemList::ItemInfo &info);
 };
 
 

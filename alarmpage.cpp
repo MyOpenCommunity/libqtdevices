@@ -156,6 +156,6 @@ AlarmPage::AlarmPage(altype t, const QString &description, const QString &zone,
 
 void AlarmPage::showPage()
 {
-	bt_global::page_stack.showAlarm(this);
+	bt_global::page_stack.showAlert(this);
 	Page::showPage();
 }

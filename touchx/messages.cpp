@@ -28,7 +28,7 @@
 #define DATE_FORMAT_AS_STRING "yyyy/MM/dd HH:mm"
 
 class QBoxLayout;
-class AlarmMessagePage;
+class AlertMessagePage;
 
 namespace
 {
@@ -67,20 +67,20 @@ namespace
 class AlarmMessageStack
 {
 public:
-	void push(AlarmMessagePage *page)
+	void push(AlertMessagePage *page)
 	{
 		pages.prepend(page);
 	}
 
-	AlarmMessagePage *pop()
+	AlertMessagePage *pop()
 	{
-		AlarmMessagePage *page = pages.last();
+		AlertMessagePage *page = pages.last();
 		pages.removeLast();
 		return page;
 	}
 
 private:
-	QList<AlarmMessagePage *>pages;
+	QList<AlertMessagePage *>pages;
 };
 
 
@@ -180,7 +180,7 @@ void MessagePage::setData(const QString &date, const QString &text, bool already
 }
 
 
-AlarmMessagePage::AlarmMessagePage(const ItemList::ItemInfo &info)
+AlertMessagePage::AlertMessagePage(const ItemList::ItemInfo &info)
 {
 	QVBoxLayout *box_layout = new QVBoxLayout;
 	QLabel *new_message_label = new QLabel(tr("New Message"));
@@ -297,7 +297,7 @@ void MessagesListPage::newMessage(const DeviceValues &status_list)
 	if (count > MESSAGES_MAX)
 	{
 		page_content->removeItem(count - 1);
-		AlarmMessagePage *page = alarm_message_stack->pop();
+		AlertMessagePage *page = alarm_message_stack->pop();
 		page->hide();
 		page->deleteLater();
 	}
@@ -305,7 +305,7 @@ void MessagesListPage::newMessage(const DeviceValues &status_list)
 	ItemList::ItemInfo info(DateConversions::formatDateTimeConfig(message.datetime), message.text, "", bt_global::skin->getImage("forward"), false);
 	page_content->insertItem(0, info);
 
-	alarm_message_stack->push(new AlarmMessagePage(info));
+	alarm_message_stack->push(new AlertMessagePage(info));
 	saveMessages();
 }
 

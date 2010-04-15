@@ -50,7 +50,7 @@ PageStack::PageStack()
 	states.append(State(static_cast<Window*>(NULL)));
 }
 
-void PageStack::showAlarm(Page *alarm_page)
+void PageStack::showAlert(Page *alert_page)
 {
 	addState(State(alarm_page));
 
