@@ -32,6 +32,8 @@
 
 PlantMenu::PlantMenu(const QDomNode &conf) : BannerPage(0)
 {
+	SkinContext cxt(getTextChild(conf, "cid").toInt());
+
 	buildPage(getTextChild(conf, "descr"));
 	openserver_id = 0;
 	loadItems(conf);
@@ -128,6 +130,7 @@ void PlantMenu::loadItems(const QDomNode &config_node)
 		NavigationPage *pg = 0;
 
 		QString icon = bt_global::skin->getImage("central_icon");
+		bool fancoil = getTextChild(item, "fancoil").toInt();
 
 		switch (id)
 		{
@@ -137,6 +140,7 @@ void PlantMenu::loadItems(const QDomNode &config_node)
 		case TERMO_4Z:
 			pg = addMenuItem(item, icon, fs_4z_thermal_regulator);
 			break;
+#ifdef CONFIG_BTOUCH
 		case TERMO_99Z_PROBE:
 			pg = addMenuItem(item, icon, fs_99z_probe);
 			break;
@@ -149,6 +153,14 @@ void PlantMenu::loadItems(const QDomNode &config_node)
 		case TERMO_4Z_PROBE_FANCOIL:
 			pg = addMenuItem(item, icon, fs_4z_fancoil);
 			break;
+#else
+		case TERMO_99Z_PROBE:
+			pg = addMenuItem(item, icon, fancoil ? fs_99z_fancoil : fs_99z_probe);
+			break;
+		case TERMO_4Z_PROBE:
+			pg = addMenuItem(item, icon, fancoil ? fs_4z_fancoil : fs_4z_probe);
+			break;
+#endif
 		}
 
 		if (prev)

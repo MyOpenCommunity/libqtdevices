@@ -107,9 +107,14 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>206</cid>
 		<img_background>home/displaydata.png</img_background>
 	</item>
-	<!-- Home page temperature display -->
+	<!-- Home page temperature display, external -->
 	<item>
-		<cid>989</cid>
+		<cid>207</cid>
+		<img_background>home/displaytermo.png</img_background>
+	</item>
+	<!-- Home page temperature display, non controlled -->
+	<item>
+		<cid>208</cid>
 		<img_background>home/displaytermo.png</img_background>
 	</item>
 	<!-- Home page rss link -->
@@ -286,7 +291,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<item>
 		<!-- thermal regulation -->
-		<cid>105</cid>
+		<cid>8</cid>
 		<img_link_icon>home/termoregolazione.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/termoregolazione.png</img_top_navigation_button>
 
@@ -743,13 +748,13 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<!-- TODO unify 4 zones and 99 zones sections -->
 	<!-- external probes -->
 	<item>
-		<cid>106</cid>
+		<cid>8001</cid>
 		<img_central_icon>termoregolazione/imgsondaesterna.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 	</item>
 	<!-- non controlled probes -->
 	<item>
-		<cid>107</cid>
+		<cid>8002</cid>
 		<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 	</item>
@@ -803,8 +808,14 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- 99 zones central -->
 	<item>
-		<cid>108</cid>
+		<cid>8011</cid>
 		<img_central_icon>termoregolazione/imgimpianto.png</img_central_icon>
+		<img_forward>termoregolazione/vai.png</img_forward>
+	</item>
+	<!-- regulator page banner 99 zones -->
+	<item>
+		<cid>8003</cid>
+		<img_central_icon>termoregolazione/imgcentrale.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 	</item>
 	<!-- thermal regulator settings page 4 zones -->
@@ -827,7 +838,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- zones and zone page 99 zones -->
 	<item>
-		<cid>130</cid>
+		<cid>8010</cid>
 		<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 
@@ -848,7 +859,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- regulator page 99 zones -->
 	<item>
-		<cid>9</cid>
+		<cid>8051</cid>
 		<img_summer_flat>termoregolazione/estateoff.png</img_summer_flat>
 		<img_winter_flat>termoregolazione/invernooff.png</img_winter_flat>
 		<img_regulator>termoregolazione/imgcentrale.png</img_regulator>
@@ -863,7 +874,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- thermal regulator settings page 99 zones -->
 	<item>
-		<cid>10999999</cid> <!-- TODO fix -->
+		<cid>8100</cid>
 		<img_regulator_manual>termoregolazione/imgmanuale.png</img_regulator_manual>
 		<img_regulator_manual_timed>termoregolazione/imgmanualetemporizzato.png</img_regulator_manual_timed>
 		<img_regulator_weekend>termoregolazione/imgfestivo.png</img_regulator_weekend>

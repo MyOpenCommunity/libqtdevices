@@ -48,7 +48,6 @@ enum
 {
 	ITEM_TIME = 205,
 	ITEM_DATE = 206,
-	ITEM_TEMPERATURE = 989,
 	ITEM_SETTINGS_LINK = 14,
 	ITEM_RSS_LINK = 16151,
 	ITEM_WEB_CAM_LINK = 16201,
@@ -374,10 +373,12 @@ void HeaderLogo::loadItems(const QDomNode &config_node)
 
 			l->addWidget(time_display);
 			break;
-		case ITEM_TEMPERATURE:
-			// TODO add flag for the probe type in configuration
+		case TERMO_HOME_NC_PROBE:
+		case TERMO_HOME_NC_EXTPROBE:
+			NonControlledProbeDevice::ProbeType type = id == TERMO_HOME_NC_PROBE ? NonControlledProbeDevice::INTERNAL : NonControlledProbeDevice::EXTERNAL;
+
 			device *probe = bt_global::add_device_to_cache(new NonControlledProbeDevice(getTextChild(item, "where"),
-				NonControlledProbeDevice::INTERNAL, getTextChild(item, "openserver_id").toInt()));
+												    type, getTextChild(item, "openserver_id").toInt()));
 
 			temperature_display = new InnerPageTemperatureDisplay(probe);
 			l->addWidget(temperature_display);
@@ -448,11 +449,13 @@ void HeaderInfo::loadItems(const QDomNode &config_node, Page *settings)
 
 			break;
 		}
-		case ITEM_TEMPERATURE:
+		case TERMO_HOME_NC_PROBE:
+		case TERMO_HOME_NC_EXTPROBE:
 		{
-			// TODO add flag for the probe type in configuration
+			NonControlledProbeDevice::ProbeType type = id == TERMO_HOME_NC_PROBE ? NonControlledProbeDevice::INTERNAL : NonControlledProbeDevice::EXTERNAL;
+
 			device *probe = bt_global::add_device_to_cache(new NonControlledProbeDevice(getTextChild(item, "where"),
-				NonControlledProbeDevice::INTERNAL, getTextChild(item, "openserver_id").toInt()));
+												    type, getTextChild(item, "openserver_id").toInt()));
 			QWidget *item = new HomepageTemperatureDisplay(probe);
 			home_layout->addWidget(item);
 			break;

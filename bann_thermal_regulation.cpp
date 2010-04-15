@@ -41,12 +41,15 @@
 
 enum
 {
-	BANNER_PROGRAMS = 11,
-	BANNER_SCENARIOS = 12,
-	BANNER_MANUAL_TIMED_MODE = 15,
-	BANNER_MANUAL_MODE = 31,
-	BANNER_WEEKEND_MODE = 32,
-	BANNER_HOLIDAY_MODE = 33,
+	BANNER_PROGRAMS = 8101,
+	BANNER_SCENARIOS = 8102,
+	BANNER_MANUAL_TIMED_MODE = -15,
+	BANNER_MANUAL_MODE = 8103,
+	BANNER_WEEKEND_MODE = 8104,
+	BANNER_HOLIDAY_MODE = 8105,
+
+	WINTER_PROGRAM_CID = 8201,
+	WINTER_SCENARIO_CID = 8251,
 };
 
 QLabel *getLabelWithPixmap(const QString &img, QWidget *parent, int alignment)
@@ -945,7 +948,7 @@ void parseTouchXProgramList(QDomNode page, QMap<QString, QString> &entries)
 		QString text = getTextChild(node, "descr");
 
 		// TODO: must change config file to have different ID for winter/summer items
-		if (cid == 11000 || cid == 12000)
+		if (cid == WINTER_PROGRAM_CID || cid == WINTER_SCENARIO_CID)
 			entries["winter" + QString::number(++index_winter)] = text;
 		else
 			entries["summer" + QString::number(++index_summer)] = text;
