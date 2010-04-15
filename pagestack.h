@@ -65,7 +65,7 @@ public:
 	void showUserWindow(Window *window);
 
 	// for pages that do not need any special treatment
-	void showUserPage(Page *window);
+	void showUserPage(Page *page);
 
 	// for the keypad
 	void showKeypad(Window *keypad);
