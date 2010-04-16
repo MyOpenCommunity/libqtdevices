@@ -1059,12 +1059,13 @@ MessagePage QLabel#Text { background-color: #000000; }
     <item>
         <!--
         SCS Messages
-        Other tags used: img_scroll_up, img_scroll_down, img_back, img_ok
+        Other tags used: img_scroll_up, img_scroll_down, img_back, img_ok, img_go_home
         -->
         <cid>17000</cid>
         <img_link_icon>home/messaggion.png</img_link_icon>
         <img_top_navigation_button>barranavigazione/messaggioff.png</img_top_navigation_button>
         <img_delete_all>navigazione/eliminatutti.png</img_delete_all>
         <img_delete>antintrusione/elimina.png</img_delete>
+	<img_go_message_list>home/storicomessaggi.png</img_go_message_list>
     </item>
 </style>

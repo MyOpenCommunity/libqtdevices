@@ -9,6 +9,7 @@
 #include "btbutton.h"
 #include "message_device.h"
 #include "devices_cache.h"
+#include "btmain.h" // showHomePage
 
 #include <QLabel>
 #include <QLayout>
@@ -28,7 +29,7 @@
 #define DATE_FORMAT_AS_STRING "yyyy/MM/dd HH:mm"
 
 class QBoxLayout;
-class AlertMessagePage;
+
 
 namespace
 {
@@ -62,27 +63,6 @@ namespace
 		return content;
 	}
 }
-
-
-class AlarmMessageStack
-{
-public:
-	void push(AlertMessagePage *page)
-	{
-		pages.prepend(page);
-	}
-
-	AlertMessagePage *pop()
-	{
-		AlertMessagePage *page = pages.last();
-		pages.removeLast();
-		return page;
-	}
-
-private:
-	QList<AlertMessagePage *>pages;
-};
-
 
 MessageList::MessageList(QWidget *parent, int rows_per_page) :
 		ItemList(parent, rows_per_page)
@@ -189,6 +169,14 @@ AlertMessagePage::AlertMessagePage(const QString &date, const QString &text)
 
 	QWidget *content = buildMessagePage(box_layout, new_message_label, date_label, message_label);
 
+	BtButton *go_home_button = new BtButton(bt_global::skin->getImage("go_home"));
+	connect(go_home_button, SIGNAL(clicked()), this, SIGNAL(goHome()));
+	box_layout->addWidget(go_home_button, 0, Qt::AlignHCenter);
+
+	BtButton *go_message_list_button = new BtButton(bt_global::skin->getImage("go_message_list"));
+	connect(go_message_list_button, SIGNAL(clicked()), this, SIGNAL(goMessagesList()));
+	box_layout->addWidget(go_message_list_button, 0, Qt::AlignHCenter);
+
 	BtButton *delete_button = new BtButton(bt_global::skin->getImage("delete"));
 	connect(delete_button, SIGNAL(clicked()), this, SIGNAL(deleteMessage()));
 	box_layout->addWidget(delete_button, 0, Qt::AlignHCenter);
@@ -199,8 +187,7 @@ AlertMessagePage::AlertMessagePage(const QString &date, const QString &text)
 }
 
 
-MessagesListPage::MessagesListPage(const QDomNode &config_node) :
-		alarm_message_stack(new AlarmMessageStack)
+MessagesListPage::MessagesListPage(const QDomNode &config_node)
 {
 	Q_UNUSED(config_node)
 	SkinContext context(getTextChild(config_node, "cid").toInt());
@@ -236,11 +223,6 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node) :
 
 	current_index = -1;
 	need_update = false;
-}
-
-MessagesListPage::~MessagesListPage()
-{
-	delete alarm_message_stack;
 }
 
 void MessagesListPage::showPage()
@@ -298,17 +280,22 @@ void MessagesListPage::newMessage(const DeviceValues &values_list)
 	if (count > MESSAGES_MAX)
 	{
 		page_content->removeItem(count - 1);
-		AlertMessagePage *page = alarm_message_stack->pop();
-		page->hide();
-		page->deleteLater();
+		// TODO: Something to remove the page associated to the message.
 	}
 
 	QString date = DateConversions::formatDateTimeConfig(message.datetime);
 	ItemList::ItemInfo info(date, message.text, "", bt_global::skin->getImage("forward"), false);
 	page_content->insertItem(0, info);
 
-	alarm_message_stack->push(new AlertMessagePage(date, message.text));
+	// Reload the messages file
 	saveMessages();
+	loadMessages(MESSAGES_FILENAME);
+	current_index = 0;
+
+	AlertMessagePage *page = new AlertMessagePage(date, message.text);
+	connect(page, SIGNAL(goHome()), SLOT(goHome()));
+	connect(page, SIGNAL(goMessagesList()), SLOT(goMessagesList()));
+	connect(page, SIGNAL(deleteMessage()), SLOT(showDeletePage()));
 }
 
 void MessagesListPage::showMessage(int index)
@@ -412,4 +399,26 @@ void MessagesListPage::saveMessages()
 
 	if (::rename(qPrintable(tmp_filename), MESSAGES_FILENAME))
 		qWarning() << "Unable to save scs messages (rename failed)";
+}
+
+void MessagesListPage::setMessageAsRead(int index, bool read)
+{
+	page_content->item(index).data.setValue<bool>(read);
+	saveMessages();
+}
+
+void MessagesListPage::goHome()
+{
+	// Set the last message arrived (that should be the one visualized) as read
+	setMessageAsRead(current_index);
+
+	bt_global::btmain->showHomePage();
+}
+
+void MessagesListPage::goMessagesList()
+{
+	// Set the last message arrived (that should be the one visualized) as read
+	setMessageAsRead(current_index);
+
+	showPage();
 }

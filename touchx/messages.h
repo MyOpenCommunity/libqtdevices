@@ -88,6 +88,11 @@ class AlertMessagePage : public Page
 Q_OBJECT
 public:
 	AlertMessagePage(const QString &date, const QString &text);
+
+signals:
+	void goHome();
+	void goMessagesList();
+	void deleteMessage();
 };
 
 
@@ -99,7 +104,6 @@ class MessagesListPage : public Page
 Q_OBJECT
 public:
 	MessagesListPage(const QDomNode &config_node);
-	~MessagesListPage();
 	typedef MessageList ContentType;
 	virtual int sectionId();
 
@@ -110,11 +114,11 @@ private:
 	MessagePage *message_page;
 	DeleteMessagesPage *delete_page;
 	PageTitleWidget *title;
-	AlarmMessageStack *alarm_message_stack;
 	int current_index;
 	bool need_update;
 	void loadMessages(const QString &filename);
 	void saveMessages();
+	void setMessageAsRead(int index, bool read = true);
 
 private slots:
 	void newMessage(const DeviceValues &values_list);
@@ -126,6 +130,10 @@ private slots:
 	void showPrevMessage();
 	void showNextMessage();
 	void showDeletePage();
+
+	// Slots for the AlarmMessagePage
+	void goHome();
+	void goMessagesList();
 };
 
 

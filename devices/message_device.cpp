@@ -137,17 +137,17 @@ bool MessageDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	where = QString::number(msg.where());
 
-	if (msg.whereArgCnt() != 4)
-	{
-		qWarning("Malformed message where.");
-		return false;
-	}
-
 	int what = msg.what();
 	switch (what)
 	{
 	case MESSAGE_BEGIN:
 	{
+		if (msg.whereArgCnt() != 4)
+		{
+			qWarning("Malformed message where.");
+			return false;
+		}
+
 		QString caller_where = QString::fromStdString(msg.whereArg(2));
 		if (cdp_where.isEmpty())
 		{
