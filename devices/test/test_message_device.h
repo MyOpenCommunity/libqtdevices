@@ -45,7 +45,7 @@ private slots:
 
 	void connectFailed();
 	void receiveCompleteMessage();
-	void recevieWrongChecksum();
+	void receiveWrongChecksum();
 	void receiveTimeout();
 
 private:
