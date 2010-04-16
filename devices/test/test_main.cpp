@@ -131,6 +131,10 @@ int main(int argc, char *argv[])
 	QStringList arglist = app.arguments();
 	if (arglist.contains("--help"))
 	{
+		std::cout << "Options:" << std::endl;
+		std::cout << " --test-class [REGEXP]\trun only tests that matches REGEXP" << std::endl;
+		std::cout << " --help\t\t\tprint this help" << std::endl;
+		std::cout << std::endl;
 		std::cout << "Class List:" << std::endl;
 		foreach (TestDevice *dev, test_list)
 			std::cout << " " << dev->metaObject()->className() << std::endl;
