@@ -42,6 +42,23 @@ enum RequestCurrent
 	REQ_CURRENT_MODE_5 = 1132,
 };
 
+/*
+ * int the new frames the measure unit is:
+ * electricity: watt
+ * water: liters
+ * gas: dm3 (liters)
+ * dhw: cal
+ * heating/cooling: cal
+ *
+ * for the old frames the situation is more interesting
+ * the current measure (what 113X) and the cumulative measures (51, 52, 53, 54)
+ * are expressed in the same units as above
+ *
+ * the other frames are expressed in "dUnits" which are 100 * the units above; in the
+ * device we multiply these cumulative units by 100 in order to normalize the values
+ * emitted by the device
+ */
+
 
 namespace
 {
@@ -461,11 +478,6 @@ void EnergyDevice::manageFrame(OpenMsg &msg)
 				buffer_frame.append(msg.frame_open);
 			parseCumulativeMonthGraph32Bit(buffer_frame, v, what == _DIM_CUMULATIVE_MONTH_GRAPH_PREV_32BIT);
 		}
-		else if (what == DIM_CUMULATIVE_DAY || what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR)
-		{
-			int val = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
-			v.setValue(EnergyValue(getDateFromFrame(msg), scaling_factor_old_frames * val));
-		}
 		else
 		{
 			int val = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
@@ -588,10 +600,10 @@ void EnergyDevice::fillMonthlyAverage(DeviceValues &values_list, OpenMsg &msg)
 	if (static_cast<int>(msg.what()) == _DIM_CUMULATIVE_MONTH)
 	{
 		QDate date = getDateFromFrame(msg);
-		average = qRound(1.0 * scaling_factor_old_frames * val / date.daysInMonth());
+		average = qRound(1.0 * val / date.daysInMonth());
 	}
 	else
-		average = qRound(1.0 * scaling_factor_old_frames * val / QDate::currentDate().day());
+		average = qRound(1.0 * val / QDate::currentDate().day());
 
 	QVariant v_average;
 	v_average.setValue(EnergyValue(getDateFromFrame(msg), average));
@@ -636,6 +648,16 @@ void EnergyDevice::parseDailyAverageGraph8Bit(const QStringList &buffer_frame, Q
 	}
 
 	computeMonthGraphData(data.date.daysInMonth(), values_list, data.graph);
+
+	// compute the average here and not in the user interface, because
+	// nhe new frames already contain the average
+	QDate curr = QDate::currentDate();
+	int divisor = data.date.daysInMonth();
+	if (data.date.month() == curr.month())
+		divisor = curr.day() == 1 ? 1 : curr.day() - 1;
+
+	for (int i = 1; i <= data.graph.size(); ++i)
+		data.graph[i] /= divisor;
 
 	v.setValue(data);
 }

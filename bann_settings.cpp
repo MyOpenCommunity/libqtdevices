@@ -342,7 +342,7 @@ void impPassword::checkPasswd()
 #ifdef LAYOUT_BTOUCH
 			sb = getBeep();
 			setBeep(true);
-			beep(1000);
+			beep(200);
 			QTimer::singleShot(1100, this, SLOT(restoreBeepState()));
 #endif
 			emit pageClosed();

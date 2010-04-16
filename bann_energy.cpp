@@ -62,7 +62,7 @@ BannEnergyInterface::BannEnergyInterface(int rate_id, bool is_ele, const QString
 	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
 
 	is_electricity = is_ele;
-	device_value = 0;
+	device_value = -1;
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), this, SLOT(valueReceived(DeviceValues)));
 }
@@ -86,7 +86,7 @@ void BannEnergyInterface::updateText()
 {
 	QString text("---");
 
-	if (device_value)
+	if (device_value >= 0)
 	{
 		float data = EnergyConversions::convertToRawData(device_value,
 			is_electricity ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
@@ -95,6 +95,13 @@ void BannEnergyInterface::updateText()
 		{
 			data = EnergyConversions::convertToMoney(data, rate.rate);
 			text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(rate.currency_symbol);
+		}
+		else if (is_electricity)
+		{
+			if (data >= 1)
+				text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(measure);
+			else
+				text = QString("%1 %2").arg(loc.toString(data * 1000, 'f', 0)).arg("W");
 		}
 		else
 			text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(measure);
@@ -292,6 +299,11 @@ void BannLoadWithCU::valueReceived(const DeviceValues &values_list)
 			break;
 		case LoadsDevice::DIM_ENABLED:
 			setState(it.value().toBool() ? ENABLED : DISABLED);
+			// left button is clickable only if the load is disabled
+			if (it.value().toBool())
+				left_button->enable();
+			else
+				left_button->disable();
 			break;
 		}
 		++it;
@@ -316,6 +328,7 @@ DeactivationTime::DeactivationTime(const BtTime &start_time) :
 	current_time(start_time)
 {
 	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), formatNoSeconds(current_time), FontManager::SUBTITLE);
+	setTextAlignment(Qt::AlignCenter);
 	right_button->setAutoRepeat(true);
 	left_button->setAutoRepeat(true);
 	connect(right_button, SIGNAL(clicked()), SLOT(plusClicked()));
