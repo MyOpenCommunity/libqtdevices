@@ -42,6 +42,22 @@ namespace QTest
 		ba += ")";
 		return qstrdup(ba.data());
 	}
+
+        template<> char *toString(const GraphData &value)
+        {
+		QStringList gdata;
+		QList<int> keys = value.graph.keys();
+
+		qSort(keys);
+
+		foreach (int  key, keys)
+			gdata.append(QString("%1: %2").arg(key).arg(value.graph[key]));
+
+		QByteArray ba = "GraphData(";
+		ba += QString::number(value.type) + ", " + toString(value.date) + ", (" + gdata.join(", ") + ")";
+		ba += ")";
+		return qstrdup(ba.data());
+        }
 }
 
 namespace
