@@ -42,6 +42,23 @@ enum RequestCurrent
 	REQ_CURRENT_MODE_5 = 1132,
 };
 
+/*
+ * int the new frames the measure unit is:
+ * electricity: watt
+ * water: liters
+ * gas: dm3 (liters)
+ * dhw: cal
+ * heating/cooling: cal
+ *
+ * for the old frames the situation is more interesting
+ * the current measure (what 113X) and the cumulative measures (51, 52, 53, 54)
+ * are expressed in the same units as above
+ *
+ * the other frames are expressed in "dUnits" which are 100 * the units above; in the
+ * device we multiply these cumulative units by 100 in order to normalize the values
+ * emitted by the device
+ */
+
 
 namespace
 {
@@ -477,11 +494,6 @@ void EnergyDevice::frame_rx_handler(char *frame)
 			if (num_frame > 0 && num_frame < 32) // should not be necessary, but just in case
 				buffer_frame.append(frame);
 			parseCumulativeMonthGraph32Bit(buffer_frame, v, what == _DIM_CUMULATIVE_MONTH_GRAPH_PREV_32BIT);
-		}
-		else if (what == DIM_CUMULATIVE_DAY || what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR)
-		{
-			int val = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
-			v.setValue(EnergyValue(getDateFromFrame(msg), scaling_factor_old_frames * val));
 		}
 		else
 		{
