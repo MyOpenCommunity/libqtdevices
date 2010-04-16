@@ -23,6 +23,9 @@
 
 #include "device.h"
 
+#include <QSet>
+#include <QString>
+
 
 /**
  * This class implements a multimedia source device, that can be used to send
@@ -30,6 +33,7 @@
  */
 class SourceDevice : public device
 {
+friend class TestSourceDevice;
 Q_OBJECT
 public:
 	enum
@@ -48,12 +52,18 @@ public slots:
 	void turnOn(QString area) const;
 	void requestTrack() const;
 
-protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+public:
+	bool isActive(QString area) const;
 
 protected:
 	int mmtype;
 	QString source_id;
+	QSet<QString> active_areas;
+
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+
+private slots:
+	void requestActiveAreas() const;
 };
 
 

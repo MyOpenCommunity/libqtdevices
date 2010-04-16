@@ -48,6 +48,7 @@ enum RequestDimension
 	REQ_PREV_PRESET = 56,
 	REQ_LOUD = 20,
 	SOURCE_TURNED_ON = 2,
+	DIM_ACTIVE_AREAS = 13,
 };
 
 
@@ -68,6 +69,11 @@ void SourceDevice::prevTrack() const
 	sendCommand(REQ_PREV_TRACK);
 }
 
+bool SourceDevice::isActive(QString area) const
+{
+	return active_areas.contains(area);
+}
+
 void SourceDevice::turnOn(QString area) const
 {
 	QString what = QString("%1#%2#%3#%4").arg(REQ_SOURCE_ON).arg(mmtype).arg(area).arg(source_id);
@@ -80,32 +86,52 @@ void SourceDevice::requestTrack() const
 	sendRequest(DIM_TRACK);
 }
 
+void SourceDevice::requestActiveAreas() const
+{
+	sendRequest(DIM_ACTIVE_AREAS);
+}
+
 bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	QString msg_where = QString::fromStdString(msg.whereFull());
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
 		return false;
 
+	int what = msg.what();
+
+	if (what == SOURCE_TURNED_ON)
+	{
+		active_areas.insert(QString::fromStdString(msg.whatArg(1)));
+		return true; // the frame is managed even if we aren't interested at the values list.
+	}
+
 	if (!isDimensionFrame(msg))
 		return false;
 
 	QVariant v;
 
-	int what = msg.what();
 	switch (what)
 	{
 	case DIM_STATUS:
 		v.setValue(msg.whatArgN(0) == 1);
+		if (msg.whatArgN(0) == 0)
+			active_areas.clear();
 		break;
 	case DIM_TRACK:
 		v.setValue(msg.whatArgN(0));
 		break;
+	case DIM_ACTIVE_AREAS:
+		active_areas.clear();
+		for (unsigned int i = 0; i < msg.whatArgCnt(); ++i)
+			if (msg.whatArgN(i) == 1)
+				active_areas.insert(QString::number(i));
+		return true;
 	default:
 		return false;
 	}
 
 	values_list[what] = v;
-	return !values_list.isEmpty();
+	return true;
 }
 
 
@@ -178,7 +204,7 @@ bool RadioSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	}
 
 	values_list[what] = v;
-	return !values_list.isEmpty();
+	return true;
 }
 
 
@@ -196,7 +222,8 @@ bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	int what = msg.what();
 
-	if (SourceDevice::parseFrame(msg, values_list) && what != DIM_STATUS)
+
+	if (SourceDevice::parseFrame(msg, values_list) && what != DIM_STATUS && what != SOURCE_TURNED_ON)
 		return true;
 
 	if (isDimensionFrame(msg) && what == DIM_STATUS && msg.whatArgN(0) == 0)

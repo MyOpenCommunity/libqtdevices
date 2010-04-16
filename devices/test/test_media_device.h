@@ -51,9 +51,12 @@ private slots:
 	void sendPrevTrack();
 	void sendTurnOn();
 	void sendRequestTrack();
+	void sendRequestActiveAreas();
 
 	void receiveStatus();
 	void receiveTrack();
+
+	void testActiveAreas();
 
 private:
 	SourceDevice *dev;
