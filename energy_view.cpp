@@ -822,7 +822,25 @@ void EnergyView::updateBanners()
 	QString str_med_inst = unit_measure_med_inst;
 
 	// The number of decimals to show depends on the visualization mode
-	int dec = is_electricity_view ? 3 : 0;
+	int dec = 0, dec_current = 0;
+
+	// display values > 1 kW as kilowatts, lower values as watts
+	if (is_electricity_view)
+	{
+		dec = 3;
+
+		if (current >= 1)
+		{
+			dec_current = 3;
+			str_med_inst = "kW";
+		}
+		else
+		{
+			current = current * 1000;
+			dec_current = 0;
+			str_med_inst = "W";
+		}
+	}
 
 	if (EnergyInterface::isCurrencyView())
 	{
@@ -849,7 +867,7 @@ void EnergyView::updateBanners()
 		.arg(loc.toString(average, 'f', dec)).arg(str));
 
 	current_banner->setCentralText(QString("%1 %2")
-		.arg(loc.toString(current, 'f', dec)).arg(str_med_inst));
+		.arg(loc.toString(current, 'f', dec_current)).arg(str_med_inst));
 }
 
 void EnergyView::systemTimeChanged()

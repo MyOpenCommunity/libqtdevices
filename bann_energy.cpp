@@ -40,7 +40,7 @@ BannEnergyInterface::BannEnergyInterface(int rate_id, bool is_ele, const QString
 	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
 
 	is_electricity = is_ele;
-	device_value = 0;
+	device_value = -1;
 
 	connect(dev, SIGNAL(status_changed(const StatusList &)), this, SLOT(status_changed(const StatusList &)));
 }
@@ -64,7 +64,7 @@ void BannEnergyInterface::updateText()
 {
 	QString text("---");
 
-	if (device_value)
+	if (device_value >= 0)
 	{
 		float data = EnergyConversions::convertToRawData(device_value,
 			is_electricity ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
@@ -73,6 +73,13 @@ void BannEnergyInterface::updateText()
 		{
 			data = EnergyConversions::convertToMoney(data, rate.rate);
 			text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(rate.currency_symbol);
+		}
+		else if (is_electricity)
+		{
+			if (data >= 1)
+				text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(measure);
+			else
+				text = QString("%1 %2").arg(loc.toString(data * 1000, 'f', 0)).arg("W");
 		}
 		else
 			text = QString("%1 %2").arg(loc.toString(data, 'f', 3)).arg(measure);
