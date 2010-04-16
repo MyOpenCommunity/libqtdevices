@@ -617,10 +617,10 @@ void EnergyDevice::fillMonthlyAverage(StatusList &status_list, OpenMsg &msg)
 	if (static_cast<int>(msg.what()) == _DIM_CUMULATIVE_MONTH)
 	{
 		QDate date = getDateFromFrame(msg);
-		average = qRound(1.0 * scaling_factor_old_frames * val / date.daysInMonth());
+		average = qRound(1.0 * val / date.daysInMonth());
 	}
 	else
-		average = qRound(1.0 * scaling_factor_old_frames * val / QDate::currentDate().day());
+		average = qRound(1.0 * val / QDate::currentDate().day());
 
 	QVariant v_average;
 	v_average.setValue(EnergyValue(getDateFromFrame(msg), average));
