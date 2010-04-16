@@ -477,6 +477,9 @@ void VCTCallPage::autoIncomingCall()
 	VCTCall::call_status->init();
 	vct_call->refreshStatus();
 
+	showPage();
+	repaint();
+
 	if (!BtMain::isCalibrating())
 	{
 		vct_call->startVideo();
@@ -484,7 +487,6 @@ void VCTCallPage::autoIncomingCall()
 			bt_global::display->forceOperativeMode(true);
 	}
 
-	showPage();
 }
 
 void VCTCallPage::handleClose()
