@@ -36,6 +36,8 @@ public:
 	{
 		DIM_STATUS = 12,
 		DIM_TRACK = 6,
+		REQ_NEXT_TRACK = 9,
+		REQ_PREV_TRACK = 10,
 	};
 
 	SourceDevice(QString source, int openserver_id = 0);
@@ -92,6 +94,12 @@ class VirtualSourceDevice : public SourceDevice
 {
 Q_OBJECT
 public:
+	enum
+	{
+		REQ_SOURCE_ON,
+		REQ_SOURCE_OFF,
+	};
+
 	VirtualSourceDevice(QString address, int openserver_id = 0);
 
 protected:

@@ -120,6 +120,9 @@ int main(int argc, char *argv[])
 	TestRadioSourceDevice test_radio_source_device;
 	test_list << &test_radio_source_device;
 
+	TestVirtualSourceDevice test_virtual_source_device;
+	test_list << &test_virtual_source_device;
+
 	TestAmplifierDevice test_amplifier_device;
 	test_list << &test_amplifier_device;
 

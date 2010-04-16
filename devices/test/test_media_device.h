@@ -30,6 +30,7 @@ class SourceDevice;
 class RadioSourceDevice;
 class AmplifierDevice;
 class PowerAmplifierDevice;
+class VirtualSourceDevice;
 
 
 class TestSourceDevice : public TestDevice
@@ -80,6 +81,26 @@ private slots:
 
 private:
 	RadioSourceDevice *dev;
+};
+
+
+class TestVirtualSourceDevice : public TestSourceDevice
+{
+Q_OBJECT
+protected:
+	void initVirtualSource(VirtualSourceDevice *dev = 0);
+
+private slots:
+	void initTestCase();
+	void cleanupTestCase();
+
+	void receiveNextTrack();
+	void receivePrevTrack();
+	void receiveSourceOn();
+	void receiveSourceOff();
+
+private:
+	VirtualSourceDevice *dev;
 };
 
 

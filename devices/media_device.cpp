@@ -29,8 +29,6 @@ enum RequestDimension
 	// Sources
 	REQ_FREQUENCE_UP = 5,
 	REQ_FREQUENCE_DOWN = 6,
-	REQ_NEXT_TRACK = 9,
-	REQ_PREV_TRACK = 10,
 	REQ_SOURCE_ON = 35,
 	REQ_SAVE_STATION = 33,
 	START_RDS = 31,
@@ -48,7 +46,8 @@ enum RequestDimension
 	REQ_BALANCE_DOWN = 43,
 	REQ_NEXT_PRESET = 55,
 	REQ_PREV_PRESET = 56,
-	REQ_LOUD = 20
+	REQ_LOUD = 20,
+	SOURCE_TURNED_ON = 2,
 };
 
 
@@ -195,43 +194,33 @@ bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
 		return false;
 
-	if (SourceDevice::parseFrame(msg, values_list))
+	int what = msg.what();
+
+	if (SourceDevice::parseFrame(msg, values_list) && what != DIM_STATUS)
 		return true;
 
-	// TODO: e' necessario implementare la parte "attiva" del device e in particolare
-	// i comandi on e off. Resta da capire se e' meglio implementarli sul comando
-	// vero e proprio o sulla frame di notifica che comunque arriva al device.
+	if (isDimensionFrame(msg) && what == DIM_STATUS && msg.whatArgN(0) == 0)
+	{
+		values_list[REQ_SOURCE_OFF] = true;
+		return true;
+	}
 
 	if (!isCommandFrame(msg))
 		return false;
 
-
-	// TODO: non sono per niente convinto di questa soluzione. Questo e' il primo
-	// caso di device che deve fare qualcosa quando riceve dei comandi.. e nello
-	// specifico quando arrivano le frame di comando dovranno essere poi lanciati
-	// degli script per accendere/spegnere la sorgente o andare alla traccia
-	// precedente/successiva. Resta da capire però quest'ultima parte dove ha senso
-	// che sia messa, se dentro al device (così pero' diventa dipendente
-	// dall'hardware, e non mi piace molto) oppure che lo comunichi all'esterno e
-	// che sia la parte grafica a chiamare le funzioni specifiche dell'hardware.
-	// In questo secondo caso però non e' particolarmente bello usare la status_changed
-	// come fatto per il momento, in quanto come il nome suggerisce dovrebbe segnalare
-	// un cambiamento stato relativo ad un device, e non un comando per il quale è
-	// necessario fare qualcosa. Altre alternative potrebbero essere:
-	// - avere un altro segnale per esprimere la richiesta di lanciare comandi
-	// - avere segnali custom
-	// boh??
-
-	int what = msg.what();
 	switch (what)
 	{
-	case REQ_FREQUENCE_UP:
-	case REQ_FREQUENCE_DOWN:
+	case REQ_NEXT_TRACK:
+	case REQ_PREV_TRACK:
+		values_list[what] = true;
+		break;
+	case SOURCE_TURNED_ON:
+		values_list[REQ_SOURCE_ON] = QString::fromStdString(msg.whatArg(1));
 		break;
 	default:
 		return false;
 	}
-	values_list[what] = true;
+
 	return true;
 }
 
