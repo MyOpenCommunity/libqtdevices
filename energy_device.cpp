@@ -673,7 +673,7 @@ void EnergyDevice::parseDailyAverageGraph8Bit(const QStringList &buffer_frame, Q
 	if (data.date.month() == curr.month())
 		divisor = curr.day() == 1 ? 1 : curr.day() - 1;
 
-	for (int i = 0; i < data.graph.size(); ++i)
+	for (int i = 1; i <= data.graph.size(); ++i)
 		data.graph[i] /= divisor;
 
 	v.setValue(data);
