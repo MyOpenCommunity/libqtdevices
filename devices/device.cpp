@@ -124,12 +124,12 @@ device::device(QString _who, QString _where, int oid) : FrameReceiver(oid)
 
 void device::manageFrame(OpenMsg &msg)
 {
-	DeviceValues status_list;
-	parseFrame(msg, status_list);
+	DeviceValues values_list;
+	parseFrame(msg, values_list);
 
-	// status_list may be empty, avoid emitting a signal in such cases
-	if (!status_list.isEmpty())
-		emit status_changed(status_list);
+	// values_list may be empty, avoid emitting a signal in such cases
+	if (!values_list.isEmpty())
+		emit status_changed(values_list);
 }
 
 bool device::isConnected()

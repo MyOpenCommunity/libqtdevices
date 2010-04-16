@@ -53,10 +53,10 @@ void SingleActuator::deactivate()
 	dev->turnOff();
 }
 
-void SingleActuator::status_changed(const DeviceValues &status_list)
+void SingleActuator::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = status_list.constBegin();
-	while (it != status_list.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{

@@ -303,10 +303,10 @@ void VCTCall::stopVideo()
 		video_grabber.terminate();
 }
 
-void VCTCall::status_changed(const DeviceValues &sl)
+void VCTCall::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
-	while (it != sl.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{

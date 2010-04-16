@@ -48,7 +48,7 @@ private slots:
 	void turnOn();
 	void turnOff();
 
-	void status_changed(const DeviceValues &status_list);
+	void status_changed(const DeviceValues &values_list);
 
 private:
 	QString center_left_active, center_left_inactive, center_right_active, center_right_inactive;

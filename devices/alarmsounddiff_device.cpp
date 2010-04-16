@@ -122,7 +122,7 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 	int where = msg.where();
 	int what = msg.what();
 
-	DeviceValues sl;
+	DeviceValues values_list;
 
 	if (where == 5)
 	{
@@ -133,7 +133,7 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 
 		int source = l[2].toInt();
 
-		sl[DIM_SOURCE] = source;
+		values_list[DIM_SOURCE] = source;
 
 		// request the radio station to check if the source is a radio
 		QString f = QString("*#22*2#%1*11##").arg(source);
@@ -146,7 +146,7 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 			// got radio station
 			int station = msg.whatArgN(2);
 
-			sl[DIM_RADIO_STATION] = station;
+			values_list[DIM_RADIO_STATION] = station;
 		}
 	}
 	else if (where == 3)
@@ -165,8 +165,8 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 			// status_changed notification
 			if (state == 0)
 			{
-				sl[DIM_AMPLIFIER] = environment * 10 + amplifier;
-				sl[DIM_STATUS] = false;
+				values_list[DIM_AMPLIFIER] = environment * 10 + amplifier;
+				values_list[DIM_STATUS] = false;
 			}
 		}
 		else if (what == 1)
@@ -174,12 +174,12 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 			// got the volume
 			int volume = msg.whatArgN(0);
 
-			sl[DIM_AMPLIFIER] = environment * 10 + amplifier;
-			sl[DIM_STATUS] = true;
-			sl[DIM_VOLUME] = volume;
+			values_list[DIM_AMPLIFIER] = environment * 10 + amplifier;
+			values_list[DIM_STATUS] = true;
+			values_list[DIM_VOLUME] = volume;
 		}
 	}
 
-	if (sl.count() > 0)
-		emit status_changed(sl);
+	if (values_list.count() > 0)
+		emit status_changed(values_list);
 }

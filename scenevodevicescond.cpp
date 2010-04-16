@@ -281,10 +281,10 @@ void DeviceConditionLight::Draw()
 	updateText(get_current_value(), get_current_value());
 }
 
-void DeviceConditionLight::status_changed(const DeviceValues &sl)
+void DeviceConditionLight::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
-	while (it != sl.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{
@@ -500,13 +500,13 @@ void DeviceConditionDimming::get_condition_value(QString& out)
 }
 
 
-void DeviceConditionDimming::status_changed(const DeviceValues &sl)
+void DeviceConditionDimming::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
+	DeviceValues::const_iterator it = values_list.constBegin();
 	int trig_min = get_condition_value_min();
 	int trig_max = get_condition_value_max();
 
-	while (it != sl.constEnd())
+	while (it != values_list.constEnd())
 	{
 		int level = 0;
 		if ((it.key() == LightingDevice::DIM_DEVICE_ON) || (it.key() == LightingDevice::DIM_DIMMER_LEVEL))
@@ -709,13 +709,13 @@ void DeviceConditionDimming100::get_condition_value(QString& out)
 	out =  tmp;
 }
 
-void DeviceConditionDimming100::status_changed(const DeviceValues &sl)
+void DeviceConditionDimming100::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
+	DeviceValues::const_iterator it = values_list.constBegin();
 	int trig_min = get_condition_value_min();
 	int trig_max = get_condition_value_max();
 
-	while (it != sl.constEnd())
+	while (it != values_list.constEnd())
 	{
 		int level;
 		if (it.key() == LightingDevice::DIM_DEVICE_ON || it.key() == LightingDevice::DIM_DIMMER100_LEVEL)
@@ -1063,14 +1063,14 @@ void DeviceConditionTemperature::inizializza()
 	dev->requestStatus();
 }
 
-void DeviceConditionTemperature::status_changed(const DeviceValues &sl)
+void DeviceConditionTemperature::status_changed(const DeviceValues &values_list)
 {
-	if (!sl.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
+	if (!values_list.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
 		return;
 
 	// get_condition_value() returns an int, which is Celsius or Fahrenheit
 	int trig_v = DeviceCondition::get_condition_value();
-	int temp = sl[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
+	int temp = values_list[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
 
 	qDebug("Temperature changed");
 	qDebug("Current temperature %d", temp);

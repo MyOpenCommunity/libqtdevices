@@ -521,11 +521,11 @@ bool EnergyView::isGraphOurs()
 	return graph->parent() == widget_container;
 }
 
-void EnergyView::status_changed(const DeviceValues &status_list)
+void EnergyView::status_changed(const DeviceValues &values_list)
 {
 	current_date = time_period->date();
-	DeviceValues::const_iterator it = status_list.constBegin();
-	while (it != status_list.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{

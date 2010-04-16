@@ -101,14 +101,14 @@ void TemperatureViewer::updateDisplay(unsigned new_bt_temperature, TemperatureDa
 	temp->lcd->display(displayed_temp);
 }
 
-void TemperatureViewer::status_changed(const DeviceValues &sl)
+void TemperatureViewer::status_changed(const DeviceValues &values_list)
 {
-	if (!sl.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
+	if (!values_list.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
 		return;
 
 	device *dev = static_cast<device *>(sender());
 
 	foreach (TemperatureData temp, temp_list)
 		if (dev == temp.device)
-			updateDisplay(sl[NonControlledProbeDevice::DIM_TEMPERATURE].toInt(), &temp);
+			updateDisplay(values_list[NonControlledProbeDevice::DIM_TEMPERATURE].toInt(), &temp);
 }

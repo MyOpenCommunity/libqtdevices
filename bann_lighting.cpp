@@ -153,10 +153,10 @@ void Dimmer::decreaseLevel()
 	dev->decreaseLevel();
 }
 
-void Dimmer::status_changed(const DeviceValues &sl)
+void Dimmer::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
-	while (it != sl.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{
@@ -267,10 +267,10 @@ void Dimmer100::decreaseLevel()
 	dev->decreaseLevel100(DIMMER100_STEP, DIMMER100_SPEED);
 }
 
-void Dimmer100::status_changed(const DeviceValues &sl)
+void Dimmer100::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
-	while (it != sl.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{
@@ -401,10 +401,10 @@ void TempLight::activate()
 	dev->fixedTiming(time_index);
 }
 
-void TempLight::status_changed(const DeviceValues &sl)
+void TempLight::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
-	while (it != sl.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{
@@ -466,10 +466,10 @@ void TempLightFixed::setOn()
 	update_retries = 0;
 }
 
-void TempLightFixed::status_changed(const DeviceValues &sl)
+void TempLightFixed::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
-	while (it != sl.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{

@@ -199,15 +199,15 @@ VersionPage::VersionPage(const QDomNode &config_node)
 	buildPage(text_area, nav_bar, getTextChild(config_node, "descr"), TINY_TITLE_HEIGHT);
 }
 
-void VersionPage::status_changed(const DeviceValues &sl)
+void VersionPage::status_changed(const DeviceValues &values_list)
 {
 	const int FW_ROW = 2;
 	const int KERN_ROW = 3;
 	const int IP_ROW = 4;
 	const int NETMASK_ROW = 5;
 
-	DeviceValues::const_iterator it = sl.constBegin();
-	while (it != sl.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{

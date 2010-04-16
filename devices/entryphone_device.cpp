@@ -194,7 +194,7 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 		return;
 
 	int what = msg.what();
-	DeviceValues sl;
+	DeviceValues values_list;
 	QVariant v;
 
 	switch (what)
@@ -243,7 +243,7 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 		}
 
 		if (ringtone != -1)
-			sl[RINGTONE] = ringtone;
+			values_list[RINGTONE] = ringtone;
 
 		// we can safely ignore caller address, we will receive a frame later.
 		v.setValue(true);
@@ -255,7 +255,7 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 		master_caller_address = QString::fromStdString(msg.whereFull());
 		int kind_val = msg.whatArgN(0) % 100;
 		if (kind_val != 5)
-			sl[CALLER_ADDRESS] = true; // the value in the DeviceValues doesn't matter.
+			values_list[CALLER_ADDRESS] = true; // the value in the DeviceValues doesn't matter.
 	}
 		// manage the other things like in the rearm session case
 	case REARM_SESSION:
@@ -269,7 +269,7 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 		// The third digit means if the camera can receive movement instructions
 		// or not.
 		int kind_m = kind % 1000;
-		sl[MOVING_CAMERA] = (kind_m >= 101 && kind_m <= 105);
+		values_list[MOVING_CAMERA] = (kind_m >= 101 && kind_m <= 105);
 		break;
 	}
 
@@ -278,8 +278,8 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 		break;
 	}
 
-	sl[what] = v;
-	emit status_changed(sl);
+	values_list[what] = v;
+	emit status_changed(values_list);
 }
 
 void EntryphoneDevice::resetCallState()

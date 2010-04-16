@@ -69,10 +69,10 @@ void InterblockedActuator::connectButton(BtButton *btn, const char *slot)
 	connect(btn, SIGNAL(clicked()), slot);
 }
 
-void InterblockedActuator::status_changed(const DeviceValues &sl)
+void InterblockedActuator::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
-	while (it != sl.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{
@@ -137,10 +137,10 @@ void SecureInterblockedActuator::sendStop()
 	dev->stop();
 }
 
-void SecureInterblockedActuator::status_changed(const DeviceValues &sl)
+void SecureInterblockedActuator::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
-	while (it != sl.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{

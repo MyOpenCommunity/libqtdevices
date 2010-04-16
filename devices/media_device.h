@@ -47,7 +47,7 @@ public slots:
 	void requestTrack() const;
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 protected:
 	int mmtype;
@@ -80,7 +80,7 @@ public slots:
 	void requestRDS() const;
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 };
 
 
@@ -95,7 +95,7 @@ public:
 	VirtualSourceDevice(QString address, int openserver_id = 0);
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 };
 
 
@@ -127,7 +127,7 @@ public:
 	void volumeDown() const;
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 private:
 	QString area;
@@ -172,7 +172,7 @@ public:
 	void loudOff() const;
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 };
 
 #endif // MEDIA_DEVICE_H

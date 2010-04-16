@@ -73,12 +73,12 @@ void BannTemperature::inizializza(bool forza)
 {
 }
 
-void BannTemperature::status_changed(const DeviceValues &sl)
+void BannTemperature::status_changed(const DeviceValues &values_list)
 {
-	if (!sl.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
+	if (!values_list.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
 		return;
 
-	temperature = sl[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
+	temperature = values_list[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
 	setTemperature();
 }
 

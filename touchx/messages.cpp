@@ -287,10 +287,10 @@ int MessagesListPage::sectionId()
 		return MESSAGES;
 }
 
-void MessagesListPage::newMessage(const DeviceValues &status_list)
+void MessagesListPage::newMessage(const DeviceValues &values_list)
 {
-	Q_ASSERT_X(status_list[MessageDevice::DIM_MESSAGE].canConvert<Message>(), "MessageListPage::newMessage", "conversion error");
-	Message message = status_list[MessageDevice::DIM_MESSAGE].value<Message>();
+	Q_ASSERT_X(values_list[MessageDevice::DIM_MESSAGE].canConvert<Message>(), "MessageListPage::newMessage", "conversion error");
+	Message message = values_list[MessageDevice::DIM_MESSAGE].value<Message>();
 
 	int count = page_content->itemCount();
 

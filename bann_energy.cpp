@@ -103,10 +103,10 @@ void BannEnergyInterface::updateText()
 	setCentralText(text);
 }
 
-void BannEnergyInterface::status_changed(const DeviceValues &status_list)
+void BannEnergyInterface::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = status_list.constBegin();
-	while (it != status_list.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		if (it.key() == EnergyDevice::DIM_CURRENT)
 		{
@@ -228,12 +228,12 @@ BannLoadDiagnostic::BannLoadDiagnostic(device *dev, const QString &description) 
 	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 }
 
-void BannLoadDiagnostic::status_changed(const DeviceValues &sl)
+void BannLoadDiagnostic::status_changed(const DeviceValues &values_list)
 {
-	if (!sl.contains(LoadsDevice::DIM_LOAD))
+	if (!values_list.contains(LoadsDevice::DIM_LOAD))
 		return;
 
-	setState(sl[LoadsDevice::DIM_LOAD].toInt());
+	setState(values_list[LoadsDevice::DIM_LOAD].toInt());
 }
 
 void BannLoadDiagnostic::setState(int state)
@@ -276,10 +276,10 @@ void BannLoadWithCU::connectRightButton(Page *p)
 	connectButtonToPage(right_button, p);
 }
 
-void BannLoadWithCU::status_changed(const DeviceValues &sl)
+void BannLoadWithCU::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
-	while (it != sl.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{

@@ -262,12 +262,12 @@ void PageSimpleProbe::setTemperature(unsigned temp)
 	}
 }
 
-void PageSimpleProbe::status_changed(const DeviceValues &sl)
+void PageSimpleProbe::status_changed(const DeviceValues &values_list)
 {
-	if (!sl.contains(ControlledProbeDevice::DIM_TEMPERATURE))
+	if (!values_list.contains(ControlledProbeDevice::DIM_TEMPERATURE))
 		return;
 
-	setTemperature(sl[ControlledProbeDevice::DIM_TEMPERATURE].toInt());
+	setTemperature(values_list[ControlledProbeDevice::DIM_TEMPERATURE].toInt());
 }
 
 
@@ -461,13 +461,13 @@ void PageProbe::updateControlState()
 	local_temp_label->setText(local_temp);
 }
 
-void PageProbe::status_changed(const DeviceValues &sl)
+void PageProbe::status_changed(const DeviceValues &values_list)
 {
 	bool update = false;
 
-	if (sl.contains(ControlledProbeDevice::DIM_SETPOINT))
+	if (values_list.contains(ControlledProbeDevice::DIM_SETPOINT))
 	{
-		unsigned sp = sl[ControlledProbeDevice::DIM_SETPOINT].toInt();
+		unsigned sp = values_list[ControlledProbeDevice::DIM_SETPOINT].toInt();
 
 		if (delta_setpoint)
 		{
@@ -503,13 +503,13 @@ void PageProbe::status_changed(const DeviceValues &sl)
 		updatePointLabel();
 	}
 
-	if (sl.contains(ControlledProbeDevice::DIM_LOCAL_STATUS))
+	if (values_list.contains(ControlledProbeDevice::DIM_LOCAL_STATUS))
 	{
-		int stat = sl[ControlledProbeDevice::DIM_LOCAL_STATUS].toInt();
+		int stat = values_list[ControlledProbeDevice::DIM_LOCAL_STATUS].toInt();
 
 		if (stat == ControlledProbeDevice::ST_NORMAL)
 		{
-			int off = sl[ControlledProbeDevice::DIM_OFFSET].toInt();
+			int off = values_list[ControlledProbeDevice::DIM_OFFSET].toInt();
 
 			isOff = false;
 			isAntigelo = false;
@@ -534,9 +534,9 @@ void PageProbe::status_changed(const DeviceValues &sl)
 		update = true;
 	}
 
-	if (sl.contains(ControlledProbeDevice::DIM_STATUS))
+	if (values_list.contains(ControlledProbeDevice::DIM_STATUS))
 	{
-		switch (sl[ControlledProbeDevice::DIM_STATUS].toInt())
+		switch (values_list[ControlledProbeDevice::DIM_STATUS].toInt())
 		{
 		case ControlledProbeDevice::ST_MANUAL:
 			status = MANUAL;
@@ -567,7 +567,7 @@ void PageProbe::status_changed(const DeviceValues &sl)
 	if (update)
 		updateControlState();
 
-	PageSimpleProbe::status_changed(sl);
+	PageSimpleProbe::status_changed(values_list);
 }
 
 PageFancoil::PageFancoil(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
@@ -619,11 +619,11 @@ void PageFancoil::handleFancoilButtons(int pressedButton)
 	dev->requestFancoilStatus();
 }
 
-void PageFancoil::status_changed(const DeviceValues &sl)
+void PageFancoil::status_changed(const DeviceValues &values_list)
 {
-	if (sl.contains(ControlledProbeDevice::DIM_FANCOIL_STATUS))
+	if (values_list.contains(ControlledProbeDevice::DIM_FANCOIL_STATUS))
 	{
-		int spd = sl[ControlledProbeDevice::DIM_FANCOIL_STATUS].toInt();
+		int spd = values_list[ControlledProbeDevice::DIM_FANCOIL_STATUS].toInt();
 
 		// Set the fancoil Button in the buttons bar
 		if (speed_to_btn_tbl.contains(spd))
@@ -632,7 +632,7 @@ void PageFancoil::status_changed(const DeviceValues &sl)
 			qDebug("Fancoil speed val out of range (%d)", spd);
 	}
 
-	PageProbe::status_changed(sl);
+	PageProbe::status_changed(values_list);
 }
 
 PageManual::PageManual(ThermalDevice *_dev, TemperatureScale scale)
@@ -779,16 +779,16 @@ void PageManual::updateTemperature()
 	}
 }
 
-void PageManual::status_changed(const DeviceValues &sl)
+void PageManual::status_changed(const DeviceValues &values_list)
 {
 	// TODO check why only for 4-zone regulator
 	if (dev->type() != THERMO_Z4)
 		return;
 
-	if (!sl.contains(ThermalDevice::DIM_TEMPERATURE))
+	if (!values_list.contains(ThermalDevice::DIM_TEMPERATURE))
 		return;
 
-	unsigned temperature = sl[ThermalDevice::DIM_TEMPERATURE].toInt();
+	unsigned temperature = values_list[ThermalDevice::DIM_TEMPERATURE].toInt();
 
 	switch (temp_scale)
 	{
@@ -1079,16 +1079,16 @@ void PageTermoReg::createSettingsItem(QDomNode item, SettingsPage *settings, The
 	}
 }
 
-void PageTermoReg::status_changed(const DeviceValues &sl)
+void PageTermoReg::status_changed(const DeviceValues &values_list)
 {
 	ThermalDevice::Season season = ThermalDevice::SE_SUMMER;
 
-	if (sl.contains(ThermalDevice::DIM_SEASON))
-		season = static_cast<ThermalDevice::Season>(sl[ThermalDevice::DIM_SEASON].toInt());
+	if (values_list.contains(ThermalDevice::DIM_SEASON))
+		season = static_cast<ThermalDevice::Season>(values_list[ThermalDevice::DIM_SEASON].toInt());
 
 	setSeason(season);
 
-	int status = sl[ThermalDevice::DIM_STATUS].toInt();
+	int status = values_list[ThermalDevice::DIM_STATUS].toInt();
 	if (status < status_icons.count())
 		mode_icon->setPixmap(*bt_global::icons_cache.getIcon(status_icons[status]));
 
@@ -1107,7 +1107,7 @@ void PageTermoReg::status_changed(const DeviceValues &sl)
 	case ThermalDevice::ST_MANUAL:
 	case ThermalDevice::ST_MANUAL_TIMED:
 		{
-			unsigned temperature = sl[ThermalDevice::DIM_TEMPERATURE].toInt();
+			unsigned temperature = values_list[ThermalDevice::DIM_TEMPERATURE].toInt();
 			// remember: stat_var::get_val() returns an int
 			QString description;
 			switch (temp_scale)
@@ -1128,7 +1128,7 @@ void PageTermoReg::status_changed(const DeviceValues &sl)
 	case ThermalDevice::ST_PROGRAM:
 		{
 			// now search the description in the DOM
-			int program = sl[ThermalDevice::DIM_PROGRAM].toInt();
+			int program = values_list[ThermalDevice::DIM_PROGRAM].toInt();
 			QString description;
 			switch (season)
 			{
@@ -1144,7 +1144,7 @@ void PageTermoReg::status_changed(const DeviceValues &sl)
 		break;
 	case ThermalDevice::ST_SCENARIO:
 		{
-			int scenario = sl[ThermalDevice::DIM_SCENARIO].toInt();
+			int scenario = values_list[ThermalDevice::DIM_SCENARIO].toInt();
 			QString description;
 			switch (season)
 			{

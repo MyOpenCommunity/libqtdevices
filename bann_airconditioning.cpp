@@ -59,9 +59,9 @@ SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningI
 		setCentralText("---");
 }
 
-void SingleSplit::status_changed(const DeviceValues &status_list)
+void SingleSplit::status_changed(const DeviceValues &values_list)
 {
-	int temp = status_list[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
+	int temp = values_list[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
 	TemperatureScale scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 
 	QString text;

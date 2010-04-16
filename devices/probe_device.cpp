@@ -77,17 +77,17 @@ void NonControlledProbeDevice::manageFrame(OpenMsg &msg)
 
 	if (type == EXTERNAL && what_t(msg.what()) == EXTERNAL_TEMPERATURE)
 	{
-		DeviceValues sl;
+		DeviceValues values_list;
 
-		sl[DIM_TEMPERATURE] = msg.whatArgN(1);
-		emit status_changed(sl);
+		values_list[DIM_TEMPERATURE] = msg.whatArgN(1);
+		emit status_changed(values_list);
 	}
 	else if (type == INTERNAL && what_t(msg.what()) == INTERNAL_TEMPERATURE)
 	{
-		DeviceValues sl;
+		DeviceValues values_list;
 
-		sl[DIM_TEMPERATURE] = msg.whatArgN(0);
-		emit status_changed(sl);
+		values_list[DIM_TEMPERATURE] = msg.whatArgN(0);
+		emit status_changed(values_list);
 	}
 	else
 		qDebug() << "Unhandled frame" << msg.frame_open;
@@ -173,7 +173,7 @@ void ControlledProbeDevice::manageFrame(OpenMsg &msg)
 		return;
 
 	int what = msg.what();
-	DeviceValues sl;
+	DeviceValues values_list;
 
 	qDebug() << "Full where" << where_full << "what" << what;
 
@@ -183,7 +183,7 @@ void ControlledProbeDevice::manageFrame(OpenMsg &msg)
 	case SUM_MANUAL:
 	case GEN_MANUAL:
 		if (local_status != ST_OFF && local_status != ST_PROTECTION)
-			sl[DIM_STATUS] = status = ST_MANUAL;
+			values_list[DIM_STATUS] = status = ST_MANUAL;
 		if (new_request_allowed)
 		{
 			sendFrame("*#4*" + where_full.mid(1) + "##");
@@ -196,7 +196,7 @@ void ControlledProbeDevice::manageFrame(OpenMsg &msg)
 	case SUM_AUTOMATIC:
 	case GEN_AUTOMATIC:
 		if (local_status != ST_OFF && local_status != ST_PROTECTION)
-			sl[DIM_STATUS] = status = ST_AUTO;
+			values_list[DIM_STATUS] = status = ST_AUTO;
 		if (new_request_allowed)
 		{
 			sendFrame("*#4*" + where_full.mid(1) + "##");
@@ -209,19 +209,19 @@ void ControlledProbeDevice::manageFrame(OpenMsg &msg)
 		if (where_full[0] == '#')
 			break;
 		if (local_status != ST_OFF && local_status != ST_PROTECTION)
-			sl[DIM_STATUS] = status = ST_PROTECTION;
+			values_list[DIM_STATUS] = status = ST_PROTECTION;
 		break;
 	case PROT_THERMAL:
-		sl[DIM_STATUS] = status = ST_PROTECTION;
+		values_list[DIM_STATUS] = status = ST_PROTECTION;
 		break;
 	case PROT_GENERIC:
 		if (local_status != ST_OFF && local_status != ST_PROTECTION)
-			sl[DIM_STATUS] = status = ST_PROTECTION;
+			values_list[DIM_STATUS] = status = ST_PROTECTION;
 		break;
 	case WIN_OFF:
 	case SUM_OFF:
 	case GEN_OFF:
-		sl[DIM_STATUS] = status = ST_OFF;
+		values_list[DIM_STATUS] = status = ST_OFF;
 		break;
 	case CONDITIONING:
 	case HEATING:
@@ -229,7 +229,7 @@ void ControlledProbeDevice::manageFrame(OpenMsg &msg)
 			break;
 		if (status != ST_MANUAL && status != ST_AUTO)
 		{
-			sl[DIM_STATUS] = status = ST_AUTO;
+			values_list[DIM_STATUS] = status = ST_AUTO;
 			if (!has_central_info)
 			{
 				has_central_info = true;
@@ -238,13 +238,13 @@ void ControlledProbeDevice::manageFrame(OpenMsg &msg)
 		}
 	}
 
-	if (sl.count() > 0)
+	if (values_list.count() > 0)
 	{
-		sl[DIM_LOCAL_STATUS] = local_status;
-		sl[DIM_OFFSET] = local_offset;
-		sl[DIM_SETPOINT] = set_point;
+		values_list[DIM_LOCAL_STATUS] = local_status;
+		values_list[DIM_OFFSET] = local_offset;
+		values_list[DIM_SETPOINT] = set_point;
 
-		emit status_changed(sl);
+		emit status_changed(values_list);
 		return;
 	}
 
@@ -254,28 +254,28 @@ void ControlledProbeDevice::manageFrame(OpenMsg &msg)
 	switch (what)
 	{
 	case INTERNAL_TEMPERATURE:
-		sl[DIM_TEMPERATURE] = msg.whatArgN(0);
+		values_list[DIM_TEMPERATURE] = msg.whatArgN(0);
 		break;
 	case FANCOIL_STATUS:
-		sl[DIM_FANCOIL_STATUS] = msg.whatArgN(0);
+		values_list[DIM_FANCOIL_STATUS] = msg.whatArgN(0);
 		break;
 	case SETPOINT_TEMPERATURE:
-		sl[DIM_SETPOINT] = set_point = msg.whatArgN(0);
+		values_list[DIM_SETPOINT] = set_point = msg.whatArgN(0);
 		break;
 	case SETPOINT_ADJUSTED:
 		if (local_status == ST_NORMAL)
-			sl[DIM_SETPOINT] = set_point = msg.whatArgN(0) - local_offset * 10;
+			values_list[DIM_SETPOINT] = set_point = msg.whatArgN(0) - local_offset * 10;
 		break;
 	case LOCAL_OFFSET:
 		int st = msg.whatArgN(0);
 
 		if (st == 4)
 		{
-			sl[DIM_LOCAL_STATUS] = local_status = ST_OFF;
+			values_list[DIM_LOCAL_STATUS] = local_status = ST_OFF;
 		}
 		else if (st == 5)
 		{
-			sl[DIM_LOCAL_STATUS] = local_status = ST_PROTECTION;
+			values_list[DIM_LOCAL_STATUS] = local_status = ST_PROTECTION;
 		}
 		else
 		{
@@ -285,21 +285,21 @@ void ControlledProbeDevice::manageFrame(OpenMsg &msg)
 				local_offset = st;
 			else
 				local_offset = -st + 10;
-			sl[DIM_OFFSET] = local_offset;
-			sl[DIM_LOCAL_STATUS] = local_status = ST_NORMAL;
+			values_list[DIM_OFFSET] = local_offset;
+			values_list[DIM_LOCAL_STATUS] = local_status = ST_NORMAL;
 		}
 
 		break;
 	};
 
-	if (sl.count() > 0)
+	if (values_list.count() > 0)
 	{
-		sl[DIM_LOCAL_STATUS] = local_status;
-		sl[DIM_OFFSET] = local_offset;
-		sl[DIM_SETPOINT] = set_point;
-		sl[DIM_STATUS] = status;
+		values_list[DIM_LOCAL_STATUS] = local_status;
+		values_list[DIM_OFFSET] = local_offset;
+		values_list[DIM_SETPOINT] = set_point;
+		values_list[DIM_STATUS] = status;
 
-		emit status_changed(sl);
+		emit status_changed(values_list);
 	}
 }
 

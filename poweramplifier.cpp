@@ -124,10 +124,10 @@ void BannPowerAmplifierNew::toggleStatus()
 
 // TODO: PoweramplifierDevice currently lacks the new init() method
 
-void BannPowerAmplifierNew::status_changed(const DeviceValues &status_list)
+void BannPowerAmplifierNew::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = status_list.constBegin();
-	while (it != status_list.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_STATUS)
 		{
@@ -205,10 +205,10 @@ void BannPowerAmplifier::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void BannPowerAmplifier::status_changed(const DeviceValues &status_list)
+void BannPowerAmplifier::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = status_list.constBegin();
-	while (it != status_list.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_STATUS)
 		{
@@ -320,10 +320,10 @@ void PowerAmplifierPreset::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void PowerAmplifierPreset::status_changed(const DeviceValues &status_list)
+void PowerAmplifierPreset::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = status_list.constBegin();
-	while (it != status_list.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_PRESET)
 		{
@@ -368,10 +368,10 @@ void PowerAmplifierTreble::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void PowerAmplifierTreble::status_changed(const DeviceValues &status_list)
+void PowerAmplifierTreble::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = status_list.constBegin();
-	while (it != status_list.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_TREBLE)
 			showLevel(it.value().toInt());
@@ -417,10 +417,10 @@ void PowerAmplifierBass::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void PowerAmplifierBass::status_changed(const DeviceValues &status_list)
+void PowerAmplifierBass::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = status_list.constBegin();
-	while (it != status_list.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_BASS)
 			showLevel(it.value().toInt());
@@ -464,10 +464,10 @@ void PowerAmplifierBalance::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void PowerAmplifierBalance::status_changed(const DeviceValues &status_list)
+void PowerAmplifierBalance::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = status_list.constBegin();
-	while (it != status_list.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_BALANCE)
 			showBalance(it.value().toInt());
@@ -518,10 +518,10 @@ void PowerAmplifierLoud::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void PowerAmplifierLoud::status_changed(const DeviceValues &status_list)
+void PowerAmplifierLoud::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = status_list.constBegin();
-	while (it != status_list.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_LOUD)
 		{

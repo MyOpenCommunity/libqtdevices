@@ -103,32 +103,32 @@ void LoadsDevice::manageFrame(OpenMsg &msg)
 		return;
 
 	int what = msg.what();
-	DeviceValues status_list;
+	DeviceValues values_list;
 
 	if (what == _DIM_STATUS && msg.whatArgCnt() == 5)
 	{
-		status_list[DIM_ENABLED] = msg.whatArgN(0) == 0;
-		status_list[DIM_FORCED] = msg.whatArgN(1) == 1;
-		status_list[DIM_ABOVE_THRESHOLD] = msg.whatArgN(2) == 0;
-		status_list[DIM_PROTECTION] = msg.whatArgN(3) == 1;
+		values_list[DIM_ENABLED] = msg.whatArgN(0) == 0;
+		values_list[DIM_FORCED] = msg.whatArgN(1) == 1;
+		values_list[DIM_ABOVE_THRESHOLD] = msg.whatArgN(2) == 0;
+		values_list[DIM_PROTECTION] = msg.whatArgN(3) == 1;
 	}
 	else if (what == _DIM_TOTALS && msg.whatArgCnt() == 6 && msg.whatSubArgCnt() == 1)
 	{
-		status_list[DIM_PERIOD] = msg.whatSubArgN(0) - 1;
-		status_list[DIM_TOTAL] = msg.whatArgN(0);
+		values_list[DIM_PERIOD] = msg.whatSubArgN(0) - 1;
+		values_list[DIM_TOTAL] = msg.whatArgN(0);
 
 		QDate d(msg.whatArgN(3), msg.whatArgN(2), msg.whatArgN(1));
 		QTime t(msg.whatArgN(4), msg.whatArgN(5), 0);
 
-		status_list[DIM_RESET_DATE] = QDateTime(d, t);
+		values_list[DIM_RESET_DATE] = QDateTime(d, t);
 	}
 	else if (what == DIM_CURRENT && msg.whatArgCnt() == 1)
 	{
-		status_list[DIM_CURRENT] = msg.whatArgN(0);
+		values_list[DIM_CURRENT] = msg.whatArgN(0);
 	}
 	else if (what == DIM_LOAD && msg.whatArgCnt() == 1)
 	{
-		status_list[DIM_LOAD] = msg.whatArgN(0);
+		values_list[DIM_LOAD] = msg.whatArgN(0);
 	}
 
 	if (what == _DIM_STATE_UPDATE_INTERVAL)
@@ -139,6 +139,6 @@ void LoadsDevice::manageFrame(OpenMsg &msg)
 		current_updates.handleAutomaticUpdate(msg);
 	}
 
-	if (status_list.count() != 0)
-		emit status_changed(status_list);
+	if (values_list.count() != 0)
+		emit status_changed(values_list);
 }

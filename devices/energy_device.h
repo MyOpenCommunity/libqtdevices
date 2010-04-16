@@ -185,9 +185,9 @@ private:
 
 	// The following fill* methods are special methods that handle the case when a single
 	// value or a graph value needs to be calculated from other values.
-	void fillYearGraphData(DeviceValues &status_list, OpenMsg &msg);
-	void fillMonthlyAverage(DeviceValues &status_list, OpenMsg &msg);
-	void fillCumulativeDay(DeviceValues &status_list, QString frame9, QString frame10);
+	void fillYearGraphData(DeviceValues &values_list, OpenMsg &msg);
+	void fillMonthlyAverage(DeviceValues &values_list, OpenMsg &msg);
+	void fillCumulativeDay(DeviceValues &values_list, QString frame9, QString frame10);
 
 	void setHasNewFrames();
 

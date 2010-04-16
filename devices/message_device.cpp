@@ -133,7 +133,7 @@ MessageDevice::MessageDevice(int openserver_id) :
  *   it sends a timeout response to the caller containing the number of bytes
  *   received.
  */
-bool MessageDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
+bool MessageDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	where = QString::number(msg.where());
 
@@ -167,7 +167,7 @@ bool MessageDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 		{
 			QVariant dim_message;
 			dim_message.setValue(parseMessage(message));
-			status_list[DIM_MESSAGE] = dim_message;
+			values_list[DIM_MESSAGE] = dim_message;
 			cleanup();
 		}
 		break;

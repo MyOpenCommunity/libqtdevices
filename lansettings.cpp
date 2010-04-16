@@ -143,7 +143,7 @@ void LanSettings::toggleLan()
 	dev->enableLan(!lan_status);
 }
 
-void LanSettings::status_changed(const DeviceValues &status_list)
+void LanSettings::status_changed(const DeviceValues &values_list)
 {
 	const int MACADDR_ROW = 4;
 	const int IP_ROW = 5;
@@ -160,8 +160,8 @@ void LanSettings::status_changed(const DeviceValues &status_list)
 	dim_to_row[PlatformDevice::DIM_DNS1] = DNS1_ROW;
 	dim_to_row[PlatformDevice::DIM_DNS2] = DNS2_ROW;
 
-	DeviceValues::const_iterator it = status_list.constBegin();
-	while (it != status_list.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		if (dim_to_row.contains(it.key()))
 			box_text->setText(dim_to_row[it.key()], it.value().toString());

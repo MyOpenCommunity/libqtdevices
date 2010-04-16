@@ -49,7 +49,7 @@ public:
 	TemperatureDisplay(device *probe);
 
 private slots:
-	void status_changed(const DeviceValues &sl);
+	void status_changed(const DeviceValues &values_list);
 
 protected:
 	QString label;

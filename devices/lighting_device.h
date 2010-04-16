@@ -65,7 +65,7 @@ public:
 	void setTimingBehaviour(Timed t);
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 	virtual void requestPullStatus();
 
 private:
@@ -84,7 +84,7 @@ public:
 	void decreaseLevel();
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 };
 
 
@@ -102,7 +102,7 @@ public:
 	void requestDimmer100Status();
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 	virtual void requestPullStatus();
 };
 #endif // LIGHTINGDEVICE_H

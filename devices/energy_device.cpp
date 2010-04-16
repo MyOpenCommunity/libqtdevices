@@ -401,7 +401,7 @@ void EnergyDevice::manageFrame(OpenMsg &msg)
 
 	int what = msg.what();
 
-	DeviceValues status_list;
+	DeviceValues values_list;
 	QVariant v;
 
 	if (what == DIM_CUMULATIVE_DAY || what == REQ_CURRENT_MODE_1 || what == REQ_CURRENT_MODE_2 ||
@@ -473,20 +473,20 @@ void EnergyDevice::manageFrame(OpenMsg &msg)
 		}
 
 		if (what == _DIM_CUMULATIVE_MONTH)
-			status_list[DIM_CUMULATIVE_MONTH] = v;
+			values_list[DIM_CUMULATIVE_MONTH] = v;
 		else if (what == REQ_CURRENT_MODE_1 || what == REQ_CURRENT_MODE_2 || what == REQ_CURRENT_MODE_3 ||
 				 what == REQ_CURRENT_MODE_4 || what == REQ_CURRENT_MODE_5)
 		{
-			status_list[DIM_CURRENT] = v;
+			values_list[DIM_CURRENT] = v;
 		}
 		else if (what == _DIM_DAY_GRAPH_16BIT)
-			status_list[DIM_DAY_GRAPH] = v;
+			values_list[DIM_DAY_GRAPH] = v;
 		else if (what == _DIM_DAILY_AVERAGE_GRAPH_16BIT)
-			status_list[DIM_DAILY_AVERAGE_GRAPH] = v;
+			values_list[DIM_DAILY_AVERAGE_GRAPH] = v;
 		else if (what == _DIM_CUMULATIVE_MONTH_GRAPH_32BIT || what == _DIM_CUMULATIVE_MONTH_GRAPH_PREV_32BIT)
-			status_list[DIM_CUMULATIVE_MONTH_GRAPH] = v;
+			values_list[DIM_CUMULATIVE_MONTH_GRAPH] = v;
 		else
-			status_list[what] = v;
+			values_list[what] = v;
 
 		// Special cases
 		if (what == DIM_DAY_GRAPH && num_frame == 10)
@@ -494,7 +494,7 @@ void EnergyDevice::manageFrame(OpenMsg &msg)
 			// The cumulative day value must be extracted from graph frames
 			// only for previous days, not the current one (for that we have a specific frame)
 			if (QDate::currentDate() != getDateFromFrame(msg))
-				fillCumulativeDay(status_list, buffer_frame.at(8), msg.frame_open);
+				fillCumulativeDay(values_list, buffer_frame.at(8), msg.frame_open);
 		}
 		else if (what == _DIM_DAY_GRAPH_16BIT && num_frame == 25)
 		{
@@ -503,23 +503,23 @@ void EnergyDevice::manageFrame(OpenMsg &msg)
 			{
 				QVariant v;
 				v.setValue(EnergyValue(getDateFromFrame(msg), msg.whatArgN(1)));
-				status_list[DIM_CUMULATIVE_DAY] = v;
+				values_list[DIM_CUMULATIVE_DAY] = v;
 			}
 		}
 		else if (what == _DIM_DAILY_AVERAGE_GRAPH_16BIT && num_frame == 25)
 		{
 			QVariant v;
 			v.setValue(EnergyValue(getDateFromFrame(msg), msg.whatArgN(1)));
-			status_list[DIM_MONTLY_AVERAGE] = v;
+			values_list[DIM_MONTLY_AVERAGE] = v;
 		}
 
 		if (what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_MONTH)
 		{
-			fillYearGraphData(status_list, msg);
-			fillMonthlyAverage(status_list, msg);
+			fillYearGraphData(values_list, msg);
+			fillMonthlyAverage(values_list, msg);
 		}
 
-		emit status_changed(status_list);
+		emit status_changed(values_list);
 	}
 
 	if (what == _DIM_STATE_UPDATE_INTERVAL)
@@ -569,7 +569,7 @@ void EnergyDevice::setHasNewFrames()
 	pending_graph_request = 0;
 }
 
-void EnergyDevice::fillCumulativeDay(DeviceValues &status_list, QString frame9, QString frame10)
+void EnergyDevice::fillCumulativeDay(DeviceValues &values_list, QString frame9, QString frame10)
 {
 	OpenMsg f9(frame9.toStdString());
 	int high = f9.whatArgN(3);
@@ -577,10 +577,10 @@ void EnergyDevice::fillCumulativeDay(DeviceValues &status_list, QString frame9, 
 
 	QVariant v;
 	v.setValue(EnergyValue(getDateFromFrame(f9), scaling_factor_old_frames * getValue(high, low)));
-	status_list[DIM_CUMULATIVE_DAY] = v;
+	values_list[DIM_CUMULATIVE_DAY] = v;
 }
 
-void EnergyDevice::fillMonthlyAverage(DeviceValues &status_list, OpenMsg &msg)
+void EnergyDevice::fillMonthlyAverage(DeviceValues &values_list, OpenMsg &msg)
 {
 	int average;
 
@@ -595,10 +595,10 @@ void EnergyDevice::fillMonthlyAverage(DeviceValues &status_list, OpenMsg &msg)
 
 	QVariant v_average;
 	v_average.setValue(EnergyValue(getDateFromFrame(msg), average));
-	status_list[DIM_MONTLY_AVERAGE] = v_average;
+	values_list[DIM_MONTLY_AVERAGE] = v_average;
 }
 
-void EnergyDevice::fillYearGraphData(DeviceValues &status_list, OpenMsg &msg)
+void EnergyDevice::fillYearGraphData(DeviceValues &values_list, OpenMsg &msg)
 {
 	QDate current = QDate::currentDate();
 	int index = 12;
@@ -613,7 +613,7 @@ void EnergyDevice::fillYearGraphData(DeviceValues &status_list, OpenMsg &msg)
 	data.graph = buffer_year_data;
 	QVariant v_graph;
 	v_graph.setValue(data);
-	status_list[DIM_CUMULATIVE_YEAR_GRAPH] = v_graph;
+	values_list[DIM_CUMULATIVE_YEAR_GRAPH] = v_graph;
 }
 
 void EnergyDevice::parseDailyAverageGraph8Bit(const QStringList &buffer_frame, QVariant &v)

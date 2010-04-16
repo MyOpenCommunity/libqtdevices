@@ -79,13 +79,13 @@ void Amplifier::setIcons()
 	setCenterRightIcon(getBostikName(active ? center_right_active : center_right_inactive, QString::number(index)));
 }
 
-void Amplifier::status_changed(const DeviceValues &status_list)
+void Amplifier::status_changed(const DeviceValues &values_list)
 {
-	if (status_list.contains(AmplifierDevice::DIM_VOLUME))
-		volume_value = status_list[AmplifierDevice::DIM_VOLUME].toInt();
+	if (values_list.contains(AmplifierDevice::DIM_VOLUME))
+		volume_value = values_list[AmplifierDevice::DIM_VOLUME].toInt();
 
-	if (status_list.contains(AmplifierDevice::DIM_STATUS))
-		active = status_list[AmplifierDevice::DIM_STATUS].toBool();
+	if (values_list.contains(AmplifierDevice::DIM_STATUS))
+		active = values_list[AmplifierDevice::DIM_STATUS].toBool();
 
 	setIcons();
 }

@@ -81,7 +81,7 @@ void SourceDevice::requestTrack() const
 	sendRequest(DIM_TRACK);
 }
 
-bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
+bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	QString msg_where = QString::fromStdString(msg.whereFull());
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
@@ -105,8 +105,8 @@ bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 		return false;
 	}
 
-	status_list[what] = v;
-	return !status_list.isEmpty();
+	values_list[what] = v;
+	return !values_list.isEmpty();
 }
 
 
@@ -140,13 +140,13 @@ void RadioSourceDevice::requestRDS() const
 	sendCommand(START_RDS);
 }
 
-bool RadioSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
+bool RadioSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	QString msg_where = QString::fromStdString(msg.whereFull());
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
 		return false;
 
-	if (SourceDevice::parseFrame(msg, status_list))
+	if (SourceDevice::parseFrame(msg, values_list))
 		return true;
 
 	if (isCommandFrame(msg) && static_cast<int>(msg.what()) == STOP_RDS)
@@ -178,8 +178,8 @@ bool RadioSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 		return false;
 	}
 
-	status_list[what] = v;
-	return !status_list.isEmpty();
+	values_list[what] = v;
+	return !values_list.isEmpty();
 }
 
 
@@ -189,13 +189,13 @@ VirtualSourceDevice::VirtualSourceDevice(QString address, int openserver_id) :
 
 }
 
-bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
+bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	QString msg_where = QString::fromStdString(msg.whereFull());
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
 		return false;
 
-	if (SourceDevice::parseFrame(msg, status_list))
+	if (SourceDevice::parseFrame(msg, values_list))
 		return true;
 
 	// TODO: e' necessario implementare la parte "attiva" del device e in particolare
@@ -231,7 +231,7 @@ bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 	default:
 		return false;
 	}
-	status_list[what] = true;
+	values_list[what] = true;
 	return true;
 }
 
@@ -292,7 +292,7 @@ void AmplifierDevice::volumeDown() const
 	sendCommand(QString("%1#1").arg(AMPL_VOLUME_DOWN));
 }
 
-bool AmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
+bool AmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (where != QString::fromStdString(msg.whereFull()))
 		return false;
@@ -305,10 +305,10 @@ bool AmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 	switch (what)
 	{
 	case DIM_STATUS:
-		status_list[what] = msg.whatArgN(0) == 1;
+		values_list[what] = msg.whatArgN(0) == 1;
 		break;
 	case DIM_VOLUME:
-		status_list[what] = msg.whatArgN(0);
+		values_list[what] = msg.whatArgN(0);
 		break;
 	default:
 		return false;
@@ -322,7 +322,7 @@ PowerAmplifierDevice::PowerAmplifierDevice(QString address, int openserver_id) :
 {
 }
 
-bool PowerAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
+bool PowerAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (where != QString::fromStdString(msg.whereFull()))
 		return false;
@@ -333,7 +333,7 @@ bool PowerAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 	if (!msg.whatArgCnt() || !isDimensionFrame(msg))
 		return false;
 
-	if (AmplifierDevice::parseFrame(msg, status_list))
+	if (AmplifierDevice::parseFrame(msg, values_list))
 		return true;
 
 	int what = msg.what();
@@ -380,7 +380,7 @@ bool PowerAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 		return false;
 	}
 
-	status_list[what] = v;
+	values_list[what] = v;
 	return true;
 }
 

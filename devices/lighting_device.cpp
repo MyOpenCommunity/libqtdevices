@@ -135,7 +135,7 @@ void LightingDevice::setTimingBehaviour(Timed t)
 	timed_light = t;
 }
 
-bool LightingDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
+bool LightingDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	int what = msg.what();
 
@@ -144,7 +144,7 @@ bool LightingDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 	case DIM_DEVICE_ON:
 	case DIM_DEVICE_OFF:
 		if (isCommandFrame(msg))
-			status_list[DIM_DEVICE_ON] = what == DIM_DEVICE_ON;
+			values_list[DIM_DEVICE_ON] = what == DIM_DEVICE_ON;
 		break;
 	case DIM_VARIABLE_TIMING:
 		if (isDimensionFrame(msg))
@@ -159,7 +159,7 @@ bool LightingDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 			BtTime t(hour, minute, second);
 			QVariant v;
 			v.setValue(t);
-			status_list[what] = v;
+			values_list[what] = v;
 		}
 		break;
 	}
@@ -167,9 +167,9 @@ bool LightingDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 	// for point-to-point frames we also get a ON/OFF status update directly from the device.
 	// It won't hurt handling twice the state (for point-to-point frames).
 	if (what >= FIXED_TIMING_MIN && what <= FIXED_TIMING_MAX)
-		status_list[DIM_DEVICE_ON] = true;
+		values_list[DIM_DEVICE_ON] = true;
 
-	return !status_list.isEmpty();
+	return !values_list.isEmpty();
 }
 
 
@@ -188,20 +188,20 @@ void DimmerDevice::decreaseLevel()
 	sendCommand(DIMMER_DEC);
 }
 
-bool DimmerDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
+bool DimmerDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
-	LightingDevice::parseFrame(msg, status_list);
+	LightingDevice::parseFrame(msg, values_list);
 
 	if (isCommandFrame(msg))
 	{
 		int what = msg.what();
 
 		if (what >= DIMMER10_LEVEL_MIN && what <= DIMMER10_LEVEL_MAX)
-			status_list[DIM_DIMMER_LEVEL] = what;
+			values_list[DIM_DIMMER_LEVEL] = what;
 		else if (what == DIM_DIMMER_PROBLEM)
-			status_list[what] = true;
+			values_list[what] = true;
 	}
-	return !status_list.isEmpty();
+	return !values_list.isEmpty();
 }
 
 
@@ -237,9 +237,9 @@ void Dimmer100Device::requestPullStatus()
 	requestDimmer100Status();
 }
 
-bool Dimmer100Device::parseFrame(OpenMsg &msg, DeviceValues &status_list)
+bool Dimmer100Device::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
-	DimmerDevice::parseFrame(msg, status_list);
+	DimmerDevice::parseFrame(msg, values_list);
 	int what = msg.what();
 
 	if (what == DIMMER100_STATUS && isDimensionFrame(msg))
@@ -251,12 +251,12 @@ bool Dimmer100Device::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 
 		// if level == 0 device is off
 		if (level == 0)
-			status_list[DIM_DEVICE_ON] = false;
+			values_list[DIM_DEVICE_ON] = false;
 		else
 		{
-			status_list[DIM_DIMMER100_LEVEL] = level;
-			status_list[DIM_DIMMER100_SPEED] = msg.whatArgN(1);
+			values_list[DIM_DIMMER100_LEVEL] = level;
+			values_list[DIM_DIMMER100_SPEED] = msg.whatArgN(1);
 		}
 	}
-	return !status_list.isEmpty();
+	return !values_list.isEmpty();
 }

@@ -201,11 +201,11 @@ void PullDevice::manageFrame(OpenMsg &msg)
 		break;
 	}
 
-	DeviceValues sl;
-	parseFrame(msg, sl);
+	DeviceValues values_list;
+	parseFrame(msg, values_list);
 
 	// DeviceValues may be empty, avoid emitting a signal in such cases
-	if (sl.size() > 0)
-		emit status_changed(sl);
+	if (values_list.size() > 0)
+		emit status_changed(values_list);
 }
 

@@ -196,12 +196,12 @@ TemperatureDisplay::TemperatureDisplay(device *probe)
 	connect(probe, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 }
 
-void TemperatureDisplay::status_changed(const DeviceValues &sl)
+void TemperatureDisplay::status_changed(const DeviceValues &values_list)
 {
-	if (!sl.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
+	if (!values_list.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
 		return;
 
-	int temperature = sl[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
+	int temperature = values_list[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
 	switch (temp_scale)
 	{
 		case CELSIUS:

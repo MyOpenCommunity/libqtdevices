@@ -123,10 +123,10 @@ void VideoDoorEntry::toggleRingExclusion()
 	ring_exclusion->setStatus(!ring_exclusion->getStatus());
 }
 
-void VideoDoorEntry::status_changed(const DeviceValues &sl)
+void VideoDoorEntry::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
-	while (it != sl.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{
@@ -327,10 +327,10 @@ void IntercomCallPage::changeVolume(int value)
 	setVolume(VOLUME_VIDEOCONTROL, value);
 }
 
-void IntercomCallPage::status_changed(const DeviceValues &sl)
+void IntercomCallPage::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
-	while (it != sl.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{

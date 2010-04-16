@@ -382,15 +382,15 @@ void LoadDataPage::reset()
 	dev->resetTotal(reset_number);
 }
 
-void LoadDataPage::status_changed(const DeviceValues &sl)
+void LoadDataPage::status_changed(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
+	DeviceValues::const_iterator it = values_list.constBegin();
 	// first, get the period, if any. We need it when we see date and consumption data
 	int period = -1;
-	if (sl.contains(LoadsDevice::DIM_PERIOD))
-		period = sl[LoadsDevice::DIM_PERIOD].toInt();
+	if (values_list.contains(LoadsDevice::DIM_PERIOD))
+		period = values_list[LoadsDevice::DIM_PERIOD].toInt();
 
-	while (it != sl.constEnd())
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{

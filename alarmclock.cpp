@@ -199,16 +199,16 @@ void AlarmClock::setActive(bool a)
 #endif
 }
 
-void AlarmClock::status_changed(const DeviceValues &sl)
+void AlarmClock::status_changed(const DeviceValues &values_list)
 {
-	if (sl.contains(AlarmSoundDiffDevice::DIM_STATUS))
+	if (values_list.contains(AlarmSoundDiffDevice::DIM_STATUS))
 	{
-		bool status = sl[AlarmSoundDiffDevice::DIM_STATUS].toBool();
-		int amplifier = sl[AlarmSoundDiffDevice::DIM_AMPLIFIER].toInt();
+		bool status = values_list[AlarmSoundDiffDevice::DIM_STATUS].toBool();
+		int amplifier = values_list[AlarmSoundDiffDevice::DIM_AMPLIFIER].toInt();
 
 		if (status)
 		{
-			int volume = sl[AlarmSoundDiffDevice::DIM_VOLUME].toInt();
+			int volume = values_list[AlarmSoundDiffDevice::DIM_VOLUME].toInt();
 
 			volSveglia[amplifier] = volume;
 		}
@@ -216,10 +216,10 @@ void AlarmClock::status_changed(const DeviceValues &sl)
 			volSveglia[amplifier] = -1;
 	}
 
-	if (sl.contains(AlarmSoundDiffDevice::DIM_SOURCE))
-		sorgente = sl[AlarmSoundDiffDevice::DIM_SOURCE].toInt();
-	if (sl.contains(AlarmSoundDiffDevice::DIM_RADIO_STATION))
-		stazione = sl[AlarmSoundDiffDevice::DIM_RADIO_STATION].toInt();
+	if (values_list.contains(AlarmSoundDiffDevice::DIM_SOURCE))
+		sorgente = values_list[AlarmSoundDiffDevice::DIM_SOURCE].toInt();
+	if (values_list.contains(AlarmSoundDiffDevice::DIM_RADIO_STATION))
+		stazione = values_list[AlarmSoundDiffDevice::DIM_RADIO_STATION].toInt();
 }
 
 bool AlarmClock::eventFilter(QObject *obj, QEvent *ev)

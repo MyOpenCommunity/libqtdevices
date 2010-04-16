@@ -129,7 +129,7 @@ public:
 	PageSimpleProbe(QDomNode n, TemperatureScale scale = CELSIUS);
 
 public slots:
-	virtual void status_changed(const DeviceValues &sl);
+	virtual void status_changed(const DeviceValues &values_list);
 
 protected:
 	void setTemperature(unsigned temp);
@@ -159,7 +159,7 @@ public:
 	virtual void inizializza();
 
 public slots:
-	virtual void status_changed(const DeviceValues &sl);
+	virtual void status_changed(const DeviceValues &values_list);
 protected:
 	void updatePointLabel();
 	void updateControlState();
@@ -234,7 +234,7 @@ public:
 	virtual ThermalDevice *dev() = 0;
 
 public slots:
-	virtual void status_changed(const DeviceValues &sl);
+	virtual void status_changed(const DeviceValues &values_list);
 
 protected:
 	void showDescription(const QString &desc);
@@ -462,7 +462,7 @@ Q_OBJECT
 public:
 	PageFancoil(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
 		TemperatureScale scale = CELSIUS);
-	virtual void status_changed(const DeviceValues &sl);
+	virtual void status_changed(const DeviceValues &values_list);
 protected:
 	void setFancoilStatus(int status);
 private:
@@ -486,7 +486,7 @@ public:
 	PageManual(ThermalDevice *_dev, TemperatureScale scale = CELSIUS);
 
 public slots:
-	void status_changed(const DeviceValues &sl);
+	void status_changed(const DeviceValues &values_list);
 
 protected:
 	void updateTemperature();

@@ -114,7 +114,7 @@ signals:
 	/// generic (so the connections can be made in a generic way) and the enum
 	/// can be specific for a device, avoiding the coupling between abstract
 	/// and concrete device class.
-	void status_changed(const DeviceValues &status_list);
+	void status_changed(const DeviceValues &values_list);
 
 	void connectionUp();
 	void connectionDown();
@@ -144,7 +144,7 @@ protected:
 	// This should be the preferred way to parse the incoming frames (see the comment
 	// above regarding the manageFrame method). Return true if the argument frame
 	// was recognized and processed.
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list) { return false; }
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list) { return false; }
 
 private:
 	static QHash<int, QPair<Client*, Client*> > clients;
