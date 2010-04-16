@@ -274,8 +274,10 @@ void TestEnergyDevice::receiveDailyAverageGraph()
 	QStringList frames;
 	frames << "*#18*20*57#9*1*2*5##" << "*#18*20*57#9*2*0*9*3##";
 
+	int divisor = getDate(month, 1).daysInMonth();
+
 	GraphData data;
-	data.graph[1] = 900;
+	data.graph[1] = 900 / divisor;
 	data.date = getDate(month, 1);
 	data.type = EnergyDevice::DAILY_AVERAGE;
 	t.check(frames, data);
@@ -297,31 +299,33 @@ void TestEnergyDevice::receiveDailyAverageGraph2()
 	frames << "*#18*20*57#9*17*1*2*4##" << "*#18*20*57#9*18*0*0*0##";
 	frames << "*#18*20*57#9*19*0##";
 
+	int divisor = getDate(9, 1).daysInMonth();
+
 	GraphData data;
-	data.graph[1] = 26500;
-	data.graph[2] = 83400;
-	data.graph[3] = 26600;
-	data.graph[4] = 128100;
-	data.graph[5] = 1400;
-	data.graph[6] = 200;
-	data.graph[7] = 52100;
-	data.graph[8] = 103000;
-	data.graph[9] = 76800;
-	data.graph[10] = 180300;
-	data.graph[11] = 77000;
-	data.graph[12] = 128100;
-	data.graph[13] = 12000;
-	data.graph[14] = 34400;
-	data.graph[15] = 25600;
-	data.graph[16] = 54300;
-	data.graph[17] = 54400;
-	data.graph[18] = 6500;
-	data.graph[19] = 43600;
-	data.graph[20] = 700;
-	data.graph[21] = 77100;
-	data.graph[22] = 25800;
-	data.graph[23] = 102500;
-	data.graph[24] = 51600;
+	data.graph[1] = 26500 / divisor;
+	data.graph[2] = 83400 / divisor;
+	data.graph[3] = 26600 / divisor;
+	data.graph[4] = 128100 / divisor;
+	data.graph[5] = 1400 / divisor;
+	data.graph[6] = 200 / divisor;
+	data.graph[7] = 52100 / divisor;
+	data.graph[8] = 103000 / divisor;
+	data.graph[9] = 76800 / divisor;
+	data.graph[10] = 180300 / divisor;
+	data.graph[11] = 77000 / divisor;
+	data.graph[12] = 128100 / divisor;
+	data.graph[13] = 12000 / divisor;
+	data.graph[14] = 34400 / divisor;
+	data.graph[15] = 25600 / divisor;
+	data.graph[16] = 54300 / divisor;
+	data.graph[17] = 54400 / divisor;
+	data.graph[18] = 6500 / divisor;
+	data.graph[19] = 43600 / divisor;
+	data.graph[20] = 700 / divisor;
+	data.graph[21] = 77100 / divisor;
+	data.graph[22] = 25800 / divisor;
+	data.graph[23] = 102500 / divisor;
+	data.graph[24] = 51600 / divisor;
 	data.date = getDate(9, 1);
 	data.type = EnergyDevice::DAILY_AVERAGE;
 
