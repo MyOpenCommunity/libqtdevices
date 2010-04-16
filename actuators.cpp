@@ -40,7 +40,7 @@ SingleActuator::SingleActuator(const QString &descr, const QString &where, int o
 
 	connect(left_button, SIGNAL(clicked()), SLOT(deactivate()));
 	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
 void SingleActuator::activate()
@@ -53,7 +53,7 @@ void SingleActuator::deactivate()
 	dev->turnOff();
 }
 
-void SingleActuator::status_changed(const DeviceValues &values_list)
+void SingleActuator::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())

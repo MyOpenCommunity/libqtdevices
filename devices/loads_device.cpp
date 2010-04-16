@@ -140,5 +140,5 @@ void LoadsDevice::manageFrame(OpenMsg &msg)
 	}
 
 	if (values_list.count() != 0)
-		emit status_changed(values_list);
+		emit valueReceived(values_list);
 }

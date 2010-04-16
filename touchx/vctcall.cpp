@@ -186,7 +186,7 @@ VCTCall::VCTCall(EntryphoneDevice *d, FormatVideo f)
 {
 	format = f;
 	dev = d;
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 
 	SkinContext ctx(666);
 
@@ -303,7 +303,7 @@ void VCTCall::stopVideo()
 		video_grabber.terminate();
 }
 
-void VCTCall::status_changed(const DeviceValues &values_list)
+void VCTCall::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())

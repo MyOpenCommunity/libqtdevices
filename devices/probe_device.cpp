@@ -80,14 +80,14 @@ void NonControlledProbeDevice::manageFrame(OpenMsg &msg)
 		DeviceValues values_list;
 
 		values_list[DIM_TEMPERATURE] = msg.whatArgN(1);
-		emit status_changed(values_list);
+		emit valueReceived(values_list);
 	}
 	else if (type == INTERNAL && what_t(msg.what()) == INTERNAL_TEMPERATURE)
 	{
 		DeviceValues values_list;
 
 		values_list[DIM_TEMPERATURE] = msg.whatArgN(0);
-		emit status_changed(values_list);
+		emit valueReceived(values_list);
 	}
 	else
 		qDebug() << "Unhandled frame" << msg.frame_open;
@@ -244,7 +244,7 @@ void ControlledProbeDevice::manageFrame(OpenMsg &msg)
 		values_list[DIM_OFFSET] = local_offset;
 		values_list[DIM_SETPOINT] = set_point;
 
-		emit status_changed(values_list);
+		emit valueReceived(values_list);
 		return;
 	}
 
@@ -299,7 +299,7 @@ void ControlledProbeDevice::manageFrame(OpenMsg &msg)
 		values_list[DIM_SETPOINT] = set_point;
 		values_list[DIM_STATUS] = status;
 
-		emit status_changed(values_list);
+		emit valueReceived(values_list);
 	}
 }
 

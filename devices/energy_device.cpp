@@ -519,7 +519,7 @@ void EnergyDevice::manageFrame(OpenMsg &msg)
 			fillMonthlyAverage(values_list, msg);
 		}
 
-		emit status_changed(values_list);
+		emit valueReceived(values_list);
 	}
 
 	if (what == _DIM_STATE_UPDATE_INTERVAL)

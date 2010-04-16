@@ -149,7 +149,7 @@ void ScenarioDevice::manageFrame(OpenMsg &msg)
 	if (status_index > -1)
 	{
 		values_list[status_index] = v;
-		emit status_changed(values_list);
+		emit valueReceived(values_list);
 	}
 }
 

@@ -79,7 +79,7 @@ private slots:
 	void toggleStatus();
 	void volumeUp();
 	void volumeDown();
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	QString off_icon, on_icon;
@@ -107,7 +107,7 @@ private slots:
 	void toggleStatus();
 	void volumeUp();
 	void volumeDown();
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	bool status;
@@ -142,7 +142,7 @@ public:
 private slots:
 	void next();
 	void prev();
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	int num_preset;
@@ -162,7 +162,7 @@ public:
 private slots:
 	void up();
 	void down();
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	PowerAmplifierDevice *dev;
@@ -180,7 +180,7 @@ public:
 private slots:
 	void up();
 	void down();
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	PowerAmplifierDevice *dev;
@@ -198,7 +198,7 @@ public:
 private slots:
 	void dx();
 	void sx();
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	PowerAmplifierDevice *dev;
@@ -216,7 +216,7 @@ public:
 private slots:
 	void on();
 	void off();
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	PowerAmplifierDevice *dev;

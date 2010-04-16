@@ -103,7 +103,7 @@ signals:
 	void pageClosed();
 
 protected slots:
-	virtual void status_changed(const DeviceValues &values_list) {}
+	virtual void valueReceived(const DeviceValues &values_list) {}
 
 protected:
 	// Width and height of the banner. Used for the sizeHint method!

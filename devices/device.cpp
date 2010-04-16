@@ -129,7 +129,7 @@ void device::manageFrame(OpenMsg &msg)
 
 	// values_list may be empty, avoid emitting a signal in such cases
 	if (!values_list.isEmpty())
-		emit status_changed(values_list);
+		emit valueReceived(values_list);
 }
 
 bool device::isConnected()

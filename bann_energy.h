@@ -48,7 +48,7 @@ public:
 	void updateText();
 
 public slots:
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 protected:
 	virtual void showEvent(QShowEvent *e);
@@ -118,7 +118,7 @@ private:
 	void setState(int state);
 
 private slots:
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	QString state_icon;
@@ -151,7 +151,7 @@ private:
 	LoadsDevice *dev;
 
 private slots:
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 signals:
 	// this should be emitted only if the device is active

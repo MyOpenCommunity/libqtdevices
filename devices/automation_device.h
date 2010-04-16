@@ -63,7 +63,7 @@ public:
 	virtual void init();
 	void requestStatus() const;
 
-	// This enum is required to pass the information about the status with the status_changed signal
+	// This enum is required to pass the information about the status with the valueReceived signal
 	enum Type
 	{
 		DIM_STATUS

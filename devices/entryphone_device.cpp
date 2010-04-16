@@ -279,7 +279,7 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 	}
 
 	values_list[what] = v;
-	emit status_changed(values_list);
+	emit valueReceived(values_list);
 }
 
 void EntryphoneDevice::resetCallState()

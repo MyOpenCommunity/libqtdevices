@@ -36,7 +36,7 @@ Q_DECLARE_METATYPE(DeviceValues)
 
 
 DeviceTester::DeviceTester(device *d, int type, ValuesNumber it) :
-	spy(d, SIGNAL(status_changed(const DeviceValues&)))
+	spy(d, SIGNAL(valueReceived(const DeviceValues&)))
 {
 	dim_type = type;
 	dev = d;

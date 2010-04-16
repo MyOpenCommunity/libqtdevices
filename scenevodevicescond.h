@@ -219,7 +219,7 @@ protected:
 	virtual void set_condition_value(QString);
 
 private slots:
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	LightingDevice *dev;
@@ -261,7 +261,7 @@ protected:
 	virtual void set_condition_value(QString);
 
 private slots:
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	int min_val;
@@ -310,7 +310,7 @@ protected:
 	virtual void Draw();
 
 private slots:
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	int min_val;
@@ -382,7 +382,7 @@ protected:
 
 private slots:
 	//! Invoked when status changes
-	void status_changed(const DeviceValues &);
+	void valueReceived(const DeviceValues &);
 
 private:
 	/// Maximum and minimum values for temperature conditions

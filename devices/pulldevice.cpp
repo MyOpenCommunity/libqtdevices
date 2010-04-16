@@ -193,7 +193,7 @@ void PullDevice::manageFrame(OpenMsg &msg)
 		}
 		else if (state.getPullMode() == PULL)
 			return;
-		// when NOT_PULL we must parse the frame and emit status_changed() signal
+		// when NOT_PULL we must parse the frame and emit valueReceived() signal
 		break;
 	default:
 		if (state.getPullMode() == PULL_UNKNOWN)
@@ -206,6 +206,6 @@ void PullDevice::manageFrame(OpenMsg &msg)
 
 	// DeviceValues may be empty, avoid emitting a signal in such cases
 	if (values_list.size() > 0)
-		emit status_changed(values_list);
+		emit valueReceived(values_list);
 }
 

@@ -48,7 +48,7 @@ Amplifier::Amplifier(const QString &descr, const QString &where) : BannLevel(0)
 	connect(this, SIGNAL(center_left_clicked()), SLOT(volumeDown()));
 	connect(this, SIGNAL(center_right_clicked()), SLOT(volumeUp()));
 
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
 void Amplifier::volumeUp()
@@ -79,7 +79,7 @@ void Amplifier::setIcons()
 	setCenterRightIcon(getBostikName(active ? center_right_active : center_right_inactive, QString::number(index)));
 }
 
-void Amplifier::status_changed(const DeviceValues &values_list)
+void Amplifier::valueReceived(const DeviceValues &values_list)
 {
 	if (values_list.contains(AmplifierDevice::DIM_VOLUME))
 		volume_value = values_list[AmplifierDevice::DIM_VOLUME].toInt();

@@ -46,7 +46,7 @@ public:
 	void inizializza();
 
 private slots:
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	Page *linked_page; /// the page in which the temperature objects are displayed.

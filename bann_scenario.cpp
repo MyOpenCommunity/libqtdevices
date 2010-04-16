@@ -66,7 +66,7 @@ ScenarioModule::ScenarioModule(int scenario, const QString &descr, const QString
 	connect(right_button, SIGNAL(clicked()), SLOT(editScenario()));
 	connect(center_left_button, SIGNAL(clicked()), SLOT(startEditing()));
 	connect(center_right_button, SIGNAL(clicked()), SLOT(deleteScenario()));
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
 void ScenarioModule::activate()
@@ -101,7 +101,7 @@ void ScenarioModule::stopEditing()
 	dev->stopProgramming(scenario_number);
 }
 
-void ScenarioModule::status_changed(const DeviceValues &values_list)
+void ScenarioModule::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())
@@ -114,7 +114,7 @@ void ScenarioModule::status_changed(const DeviceValues &values_list)
 			break;
 		case ScenarioDevice::DIM_START:
 		{
-			Q_ASSERT_X(it.value().canConvert<ScenarioProgrammingStatus>(), "ScenarioModule::status_changed",
+			Q_ASSERT_X(it.value().canConvert<ScenarioProgrammingStatus>(), "ScenarioModule::valueReceived",
 				"Cannot convert values in DIM_START");
 			ScenarioProgrammingStatus val = it.value().value<ScenarioProgrammingStatus>();
 			if (val.first)

@@ -267,7 +267,7 @@ DeviceConditionLight::DeviceConditionLight(DeviceConditionDisplayInterface* cond
 	set_condition_value(trigger);
 	set_current_value(DeviceCondition::get_condition_value());
 	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL, openserver_id));
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	Draw();
 }
 
@@ -281,7 +281,7 @@ void DeviceConditionLight::Draw()
 	updateText(get_current_value(), get_current_value());
 }
 
-void DeviceConditionLight::status_changed(const DeviceValues &values_list)
+void DeviceConditionLight::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())
@@ -351,7 +351,7 @@ DeviceConditionDimming::DeviceConditionDimming(DeviceConditionDisplayInterface* 
 
 	// TODO: to PULL or not to PULL? That is the question...
 	dev = bt_global::add_device_to_cache(new DimmerDevice(where, PULL, openserver_id));
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	Draw();
 }
 
@@ -500,7 +500,7 @@ void DeviceConditionDimming::get_condition_value(QString& out)
 }
 
 
-void DeviceConditionDimming::status_changed(const DeviceValues &values_list)
+void DeviceConditionDimming::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	int trig_min = get_condition_value_min();
@@ -551,7 +551,7 @@ DeviceConditionDimming100::DeviceConditionDimming100(DeviceConditionDisplayInter
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
 	dev = bt_global::add_device_to_cache(new Dimmer100Device(where, PULL, openserver_id));
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	Draw();
 }
 
@@ -709,7 +709,7 @@ void DeviceConditionDimming100::get_condition_value(QString& out)
 	out =  tmp;
 }
 
-void DeviceConditionDimming100::status_changed(const DeviceValues &values_list)
+void DeviceConditionDimming100::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	int trig_min = get_condition_value_min();
@@ -1013,7 +1013,7 @@ DeviceConditionTemperature::DeviceConditionTemperature(DeviceConditionDisplayInt
 	set_current_value(DeviceCondition::get_condition_value());
 	dev = bt_global::add_device_to_cache(new NonControlledProbeDevice(where,
 		external ? NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL, openserver_id));
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	Draw();
 }
 
@@ -1063,7 +1063,7 @@ void DeviceConditionTemperature::inizializza()
 	dev->requestStatus();
 }
 
-void DeviceConditionTemperature::status_changed(const DeviceValues &values_list)
+void DeviceConditionTemperature::valueReceived(const DeviceValues &values_list)
 {
 	if (!values_list.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
 		return;

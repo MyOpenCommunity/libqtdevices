@@ -47,7 +47,7 @@ private slots:
 	void sendGoUp();
 	void sendGoDown();
 	void sendStop();
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	void connectButton(BtButton *btn, const char *slot);
@@ -74,7 +74,7 @@ private slots:
 	void sendClose();
 	void buttonReleased();
 	void sendStop();
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	void connectButtons();
@@ -138,7 +138,7 @@ private:
 	PPTStatDevice *dev;
 	QString img_open, img_close;
 private slots:
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 };
 
 #endif

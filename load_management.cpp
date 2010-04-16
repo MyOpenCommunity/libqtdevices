@@ -353,7 +353,7 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 	reset_number = 0;
 
 	dev = d;
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
@@ -382,7 +382,7 @@ void LoadDataPage::reset()
 	dev->resetTotal(reset_number);
 }
 
-void LoadDataPage::status_changed(const DeviceValues &values_list)
+void LoadDataPage::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	// first, get the period, if any. We need it when we see date and consumption data

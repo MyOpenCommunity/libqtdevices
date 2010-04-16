@@ -232,7 +232,7 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node) :
 	connect(delete_page, SIGNAL(deleteAll()), SLOT(deleteAll()));
 
 	MessageDevice *dev = bt_global::add_device_to_cache(new MessageDevice);
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(newMessage(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(newMessage(DeviceValues)));
 
 	current_index = -1;
 	need_update = false;

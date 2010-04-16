@@ -49,7 +49,7 @@ public slots:
 };
 
 
-// This typedef is needed by slots status_changed(DeviceValues). In order to avoid
+// This typedef is needed by slots valueReceived(DeviceValues). In order to avoid
 // duplication the typedef is put here, so all pages can be use freely
 typedef QHash<int, QVariant> DeviceValues;
 

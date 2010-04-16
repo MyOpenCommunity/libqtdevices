@@ -96,7 +96,7 @@ public:
 	// The following method can be reimplemented in order to parse the incoming
 	// frames (from the client monitor). However, if the specific device can be
 	// subclassed, reimplement the parseFrame method in order to avoid a double
-	// status_changed signal.
+	// valueReceived signal.
 	virtual void manageFrame(OpenMsg &msg);
 
 	bool isConnected();
@@ -107,14 +107,15 @@ signals:
 	// TODO: Old Status changed, to be removed asap.
 	void status_changed(QList<device_status*>);
 
-	/// The status changed signal, used to inform that a dimension of device
-	/// has changed. For some devices, more than one dimension can change
-	/// at the same time, so the int is used as an enum to recognize the dimensions.
+	/// The valueReceived signal, used to inform that a dimension of device
+	/// has changed or a new command has received. For some devices, more than
+	/// one dimension can change at the same time, so the int is used as an enum
+	/// to recognize the dimensions.
 	/// Note that using an int is a design choice. In this way the signal is
 	/// generic (so the connections can be made in a generic way) and the enum
 	/// can be specific for a device, avoiding the coupling between abstract
 	/// and concrete device class.
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 	void connectionUp();
 	void connectionDown();

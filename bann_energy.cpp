@@ -64,7 +64,7 @@ BannEnergyInterface::BannEnergyInterface(int rate_id, bool is_ele, const QString
 	is_electricity = is_ele;
 	device_value = 0;
 
-	connect(dev, SIGNAL(status_changed(DeviceValues)), this, SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), this, SLOT(valueReceived(DeviceValues)));
 }
 
 void BannEnergyInterface::showEvent(QShowEvent *e)
@@ -103,7 +103,7 @@ void BannEnergyInterface::updateText()
 	setCentralText(text);
 }
 
-void BannEnergyInterface::status_changed(const DeviceValues &values_list)
+void BannEnergyInterface::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())
@@ -225,10 +225,10 @@ BannLoadDiagnostic::BannLoadDiagnostic(device *dev, const QString &description) 
 
 	setState(LoadsDevice::LOAD_OK);
 
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
-void BannLoadDiagnostic::status_changed(const DeviceValues &values_list)
+void BannLoadDiagnostic::valueReceived(const DeviceValues &values_list)
 {
 	if (!values_list.contains(LoadsDevice::DIM_LOAD))
 		return;
@@ -266,7 +266,7 @@ BannLoadWithCU::BannLoadWithCU(const QString &descr, LoadsDevice *d, Type t) : B
 	connect(left_button, SIGNAL(clicked()), SIGNAL(deactivateDevice()));
 
 	dev = d;
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 
 	connect(center_button, SIGNAL(clicked()), dev, SLOT(enable()));
 }
@@ -276,7 +276,7 @@ void BannLoadWithCU::connectRightButton(Page *p)
 	connectButtonToPage(right_button, p);
 }
 
-void BannLoadWithCU::status_changed(const DeviceValues &values_list)
+void BannLoadWithCU::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())

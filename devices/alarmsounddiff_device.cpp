@@ -162,7 +162,7 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 			int state = msg.whatArgN(0);
 
 			// if we got an "on" state, wait for the volume to emit the
-			// status_changed notification
+			// valueReceived notification
 			if (state == 0)
 			{
 				values_list[DIM_AMPLIFIER] = environment * 10 + amplifier;
@@ -181,5 +181,5 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 	}
 
 	if (values_list.count() > 0)
-		emit status_changed(values_list);
+		emit valueReceived(values_list);
 }

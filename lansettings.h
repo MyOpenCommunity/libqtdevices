@@ -79,7 +79,7 @@ private:
 	bool saved_status;
 
 private slots:
-	void status_changed(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 	void toggleLan();
 };
 

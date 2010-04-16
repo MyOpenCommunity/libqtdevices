@@ -130,7 +130,7 @@ Dimmer::Dimmer(const QString &descr, const QString &where, int openserver_id) :
 	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
 	connect(this, SIGNAL(center_left_clicked()), SLOT(decreaseLevel()));
 	connect(this, SIGNAL(center_right_clicked()), SLOT(increaseLevel()));
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
 void Dimmer::lightOn()
@@ -153,7 +153,7 @@ void Dimmer::decreaseLevel()
 	dev->decreaseLevel();
 }
 
-void Dimmer::status_changed(const DeviceValues &values_list)
+void Dimmer::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())
@@ -244,7 +244,7 @@ Dimmer100::Dimmer100(const QString &descr, const QString &where, int openserver_
 	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
 	connect(this, SIGNAL(center_right_clicked()), SLOT(increaseLevel()));
 	connect(this, SIGNAL(center_left_clicked()), SLOT(decreaseLevel()));
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
 void Dimmer100::lightOn()
@@ -267,7 +267,7 @@ void Dimmer100::decreaseLevel()
 	dev->decreaseLevel100(DIMMER100_STEP, DIMMER100_SPEED);
 }
 
-void Dimmer100::status_changed(const DeviceValues &values_list)
+void Dimmer100::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())
@@ -381,7 +381,7 @@ TempLight::TempLight(const QString &descr, const QString &where, int openserver_
 	updateTimeLabel();
 	connect(left_button, SIGNAL(clicked()), SLOT(cycleTime()));
 	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
 void TempLight::cycleTime()
@@ -401,7 +401,7 @@ void TempLight::activate()
 	dev->fixedTiming(time_index);
 }
 
-void TempLight::status_changed(const DeviceValues &values_list)
+void TempLight::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())
@@ -453,7 +453,7 @@ TempLightFixed::TempLightFixed(int time, const QString &descr, const QString &wh
 	connect(&request_timer, SIGNAL(timeout()), SLOT(updateTimerLabel()));
 
 	connect(right_button, SIGNAL(clicked()), SLOT(setOn()));
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
 void TempLightFixed::setOn()
@@ -466,7 +466,7 @@ void TempLightFixed::setOn()
 	update_retries = 0;
 }
 
-void TempLightFixed::status_changed(const DeviceValues &values_list)
+void TempLightFixed::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())
