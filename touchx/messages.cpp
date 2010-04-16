@@ -286,10 +286,10 @@ void MessagesListPage::newMessage(const DeviceValues &values_list)
 	QString date = DateConversions::formatDateTimeConfig(message.datetime);
 	ItemList::ItemInfo info(date, message.text, "", bt_global::skin->getImage("forward"), false);
 	page_content->insertItem(0, info);
-
-	// Reload the messages file
+	need_update = true;
 	saveMessages();
-	loadMessages(MESSAGES_FILENAME);
+
+	// Set the current index to the newly inserted item.
 	current_index = 0;
 
 	AlertMessagePage *page = new AlertMessagePage(date, message.text);
