@@ -198,7 +198,7 @@ void TestEnergyDevice::sendRequestCurrent4()
 void TestEnergyDevice::receiveCumulativeDay()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_DAY);
-	t.check(QString("*#18*%1*54*150##").arg(where), EnergyValue(QDate::currentDate(), 15000));
+	t.check(QString("*#18*%1*54*150##").arg(where), EnergyValue(QDate::currentDate(), 150));
 }
 
 void TestEnergyDevice::receiveCumulativeDay2()
@@ -255,15 +255,15 @@ void TestEnergyDevice::receiveCurrent()
 void TestEnergyDevice::receiveCumulativeMonth()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_MONTH, DeviceTester::MULTIPLE_VALUES);
-	t.check(QString("*#18*%1*52#8#2*106##").arg(where), EnergyValue(QDate(2008, 2, 1), 10600));
-	t.check(QString("*#18*%1*53*95##").arg(where), EnergyValue(QDate::currentDate(), 9500));
+	t.check(QString("*#18*%1*52#8#2*106##").arg(where), EnergyValue(QDate(2008, 2, 1), 106));
+	t.check(QString("*#18*%1*53*95##").arg(where), EnergyValue(QDate::currentDate(), 95));
 	t.check(QString("*#18*%1*53*4294967295##").arg(where), EnergyValue(QDate::currentDate(), 0));
 }
 
 void TestEnergyDevice::receiveCumulativeYear()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR);
-	t.check(QString("*#18*%1*51*33##").arg(where), EnergyValue(QDate::currentDate(), 3300));
+	t.check(QString("*#18*%1*51*33##").arg(where), EnergyValue(QDate::currentDate(), 33));
 }
 
 void TestEnergyDevice::receiveDailyAverageGraph()
@@ -625,9 +625,9 @@ void TestEnergyDevice::receiveMonthlyAverage()
 	DeviceTester t(dev, EnergyDevice::DIM_MONTLY_AVERAGE, DeviceTester::MULTIPLE_VALUES);
 
 	t.check(QString("*#18*%1*52#8#2*106##").arg(where),
-			EnergyValue(QDate(2008, 2, 1), qRound(1.0 * 10600 / QDate(2008, 2, 1).daysInMonth())));
+			EnergyValue(QDate(2008, 2, 1), qRound(1.0 * 106 / QDate(2008, 2, 1).daysInMonth())));
 	t.check(QString("*#18*%1*53*95##").arg(where),
-			EnergyValue(QDate::currentDate(), qRound(1.0 * 9500 / QDate::currentDate().day())));
+			EnergyValue(QDate::currentDate(), qRound(1.0 * 95 / QDate::currentDate().day())));
 	t.check(QString("*#18*%1*53*4294967295##").arg(where),
 			EnergyValue(QDate::currentDate(), 0));
 }
