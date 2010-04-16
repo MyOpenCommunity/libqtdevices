@@ -462,17 +462,6 @@ QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 		data[keys[i]] = EnergyConversions::convertToRawData(data[keys[i]],
 			is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
 
-	if (gd->type == EnergyDevice::DAILY_AVERAGE)
-	{
-		QDate curr = QDate::currentDate();
-		int divisor = gd->date.daysInMonth();
-		if (gd->date.month() == curr.month())
-			divisor = curr.day() == 1 ? 1 : curr.day() - 1;
-
-		for (int i = 0; i < keys.size(); ++i)
-			data[keys[i]] /= divisor;
-	}
-
 	// convert to economic data
 	if (EnergyInterface::isCurrencyView())
 	{

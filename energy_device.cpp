@@ -654,6 +654,16 @@ void EnergyDevice::parseDailyAverageGraph8Bit(const QStringList &buffer_frame, Q
 
 	computeMonthGraphData(data.date.daysInMonth(), values_list, data.graph);
 
+	// compute the average here and not in the user interface, because
+	// nhe new frames already contain the average
+	QDate curr = QDate::currentDate();
+	int divisor = data.date.daysInMonth();
+	if (data.date.month() == curr.month())
+		divisor = curr.day() == 1 ? 1 : curr.day() - 1;
+
+	for (int i = 0; i < data.graph.size(); ++i)
+		data.graph[i] /= divisor;
+
 	v.setValue(data);
 }
 
