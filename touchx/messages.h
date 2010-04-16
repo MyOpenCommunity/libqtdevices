@@ -88,6 +88,11 @@ class AlertMessagePage : public Page
 Q_OBJECT
 public:
 	AlertMessagePage(const QString &date, const QString &text);
+
+signals:
+	void goHome();
+	void goMessageList();
+	void deleteMessage();
 };
 
 

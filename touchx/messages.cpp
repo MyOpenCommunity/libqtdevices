@@ -189,6 +189,14 @@ AlertMessagePage::AlertMessagePage(const QString &date, const QString &text)
 
 	QWidget *content = buildMessagePage(box_layout, new_message_label, date_label, message_label);
 
+	BtButton *go_home_button = new BtButton(bt_global::skin->getImage("go_home"));
+	connect(go_home_button, SIGNAL(clicked()), this, SIGNAL(goHome()));
+	box_layout->addWidget(go_home_button, 0, Qt::AlignHCenter);
+
+	BtButton *go_message_list_button = new BtButton(bt_global::skin->getImage("go_message_list"));
+	connect(go_message_list_button, SIGNAL(clicked()), this, SIGNAL(goMessageList()));
+	box_layout->addWidget(go_message_list_button, 0, Qt::AlignHCenter);
+
 	BtButton *delete_button = new BtButton(bt_global::skin->getImage("delete"));
 	connect(delete_button, SIGNAL(clicked()), this, SIGNAL(deleteMessage()));
 	box_layout->addWidget(delete_button, 0, Qt::AlignHCenter);
