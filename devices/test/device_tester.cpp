@@ -83,7 +83,8 @@ QVariant DeviceTester::getResult(const QStringList& frames)
 			return values_list[dim_type];
 		}
 	}
-	return QVariant();
+	Q_ASSERT_X(false, "DeviceTester::getResult", "DeviceTester: error on parsing the signal content.");
+	return QVariant(); // only to avoid warning
 }
 
 void DeviceTester::check(QString frame, const char *result)
