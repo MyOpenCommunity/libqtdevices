@@ -406,8 +406,8 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_load>LoadManagement.png</img_load>
 		<img_empty_background>empty_180.png</img_empty_background>
 		<img_on>btnOnret.png</img_on>
-		<img_forced>btnLoadManAb.png</img_forced>
-		<img_not_forced>btnLoadManDis.png</img_not_forced>
+		<img_not_forced>btnLoadManAb.png</img_not_forced>
+		<img_forced>btnLoadManDis.png</img_forced>
 		<img_reset>btnReset.png</img_reset>
 	</item>
 	<!-- Load management, no central unit -->
