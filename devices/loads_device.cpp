@@ -48,7 +48,7 @@ void LoadsDevice::init()
 
 void LoadsDevice::enable() const
 {
-	sendCommand("71");
+	sendCommand("73");
 }
 
 void LoadsDevice::forceOn() const

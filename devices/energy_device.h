@@ -111,12 +111,12 @@ private:
  *  - if a stream is interrupted and the last value of the last frame is the high byte
  *      (ie, we can't reconstruct the complete value), nothing must be visualized for that value.
  *
- * The measure unit for the various energy types is:
+ * The measure unit for the various energy types is always:
  * electricity: watt
- * water: m3 (1000 liters)
- * gas: ?
- * dhw: ?
- * heating/cooling: ?
+ * water: liters
+ * gas: dm3 (liters)
+ * dhw: cal
+ * heating/cooling: cal
  */
 class EnergyDevice : public device
 {

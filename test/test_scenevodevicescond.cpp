@@ -69,6 +69,10 @@ void TestScenEvoDevicesCond::init()
 	// We need to clear the device cache because we have to insert in the cache
 	// different devices with the same key.
 	bt_global::devices_cache.clear();
+
+	// Initialize the config object for tests.
+	bt_global::config = new QHash<GlobalFields, QString>();
+	(*bt_global::config)[TEMPERATURE_SCALE] = CELSIUS;
 }
 
 TestScenEvoDevicesCond::~TestScenEvoDevicesCond()
