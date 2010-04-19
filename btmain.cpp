@@ -599,11 +599,13 @@ void BtMain::checkScreensaver()
 		if ((*bt_global::display).currentState() == DISPLAY_FREEZED)
 		{
 			ScreenSaver::Type target_screensaver = (*bt_global::display).currentScreenSaver();
+#ifdef BT_HARDWARE_BTOUCH
 			// When the brightness is set to off in the old hardware the display
 			// is not really off, so it is required to use a screensaver to protect
 			// the display, even if the screensaver is not visible.
 			if ((*bt_global::display).currentBrightness() == BRIGHTNESS_OFF)
 				target_screensaver = ScreenSaver::LINES;
+#endif
 
 			if (screensaver && screensaver->type() != target_screensaver)
 			{
