@@ -573,11 +573,21 @@ void BtMain::checkScreensaver()
 	if (alarmClockIsOn || calibrating)
 		return;
 
+	ScreenSaver::Type target_screensaver = (*bt_global::display).currentScreenSaver();
+#ifdef BT_HARDWARE_BTOUCH
+	// When the brightness is set to off in the old hardware the display
+	// is not really off, so it is required to use a screensaver to protect
+	// the display, even if the screensaver is not visible.
+	if ((*bt_global::display).currentBrightness() == BRIGHTNESS_OFF)
+		target_screensaver = ScreenSaver::LINES;
+#endif
+
 	int time_press = getTimePress();
 	int time = qMin(time_press, int(now() - last_event_time));
 
 	if (screenoff_time != 0 && time >= screenoff_time &&
-		 (*bt_global::display).currentState() == DISPLAY_SCREENSAVER)
+		 ((*bt_global::display).currentState() == DISPLAY_SCREENSAVER ||
+		  (target_screensaver == ScreenSaver::NONE && (*bt_global::display).currentState() == DISPLAY_FREEZED)))
 	{
 		qDebug() << "Turning screen off";
 		if (screensaver)
@@ -588,7 +598,7 @@ void BtMain::checkScreensaver()
 	{
 		freeze(true);
 	}
-	else if (time >= screensaver_time)
+	else if (time >= screensaver_time && target_screensaver != ScreenSaver::NONE)
 	{
 		if ((*bt_global::display).currentState() == DISPLAY_OPERATIVE &&
 		    pagDefault && page_container->currentPage() != pagDefault)
@@ -598,15 +608,6 @@ void BtMain::checkScreensaver()
 
 		if ((*bt_global::display).currentState() == DISPLAY_FREEZED)
 		{
-			ScreenSaver::Type target_screensaver = (*bt_global::display).currentScreenSaver();
-#ifdef BT_HARDWARE_BTOUCH
-			// When the brightness is set to off in the old hardware the display
-			// is not really off, so it is required to use a screensaver to protect
-			// the display, even if the screensaver is not visible.
-			if ((*bt_global::display).currentBrightness() == BRIGHTNESS_OFF)
-				target_screensaver = ScreenSaver::LINES;
-#endif
-
 			if (screensaver && screensaver->type() != target_screensaver)
 			{
 				delete screensaver;
