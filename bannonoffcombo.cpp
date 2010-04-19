@@ -1,3 +1,24 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "bannonoffcombo.h"
 
 #include <QLabel>
@@ -9,7 +30,7 @@
 #define BUTONOFFCOMBO_ICON_DIM_MIN_X 80
 
 
-BannOnOffCombo::BannOnOffCombo(QWidget *parent) : banner(parent)
+BannOnOffCombo::BannOnOffCombo(QWidget *parent) : BannerOld(parent)
 {
 	addItem(BUT1, banner_width-BANONOFFCOMBO_BUT_DIM, 0, BANONOFFCOMBO_BUT_DIM, BANONOFFCOMBO_BUT_DIM);
 	addItem(BUT2, 0, 0, BANONOFFCOMBO_BUT_DIM, BANONOFFCOMBO_BUT_DIM);
@@ -21,7 +42,7 @@ BannOnOffCombo::BannOnOffCombo(QWidget *parent) : banner(parent)
 
 void BannOnOffCombo::changeStatus(ComboStatus st)
 {
-	banner::SetIcons(2, status_icon[st]);
+	BannerOld::SetIcons(2, status_icon[st]);
 
 	switch (st)
 	{
@@ -49,5 +70,5 @@ void BannOnOffCombo::SetIcons(QString sxIcon, QString dxIcon, QString centerIcon
 	status_icon[CENTER] = centerIcon;
 	status_icon[SX] = centerSxIcon;
 	status_icon[DX] = centerDxIcon;
-	banner::SetIcons(sxIcon, dxIcon, QString(), centerIcon);
+	BannerOld::SetIcons(sxIcon, dxIcon, QString(), centerIcon);
 }

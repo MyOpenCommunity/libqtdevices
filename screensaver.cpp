@@ -1,3 +1,24 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "screensaver.h"
 #include "page.h"
 #include "timescript.h"
@@ -5,6 +26,7 @@
 #include "xml_functions.h"
 #include "titlelabel.h"
 #include "homewindow.h"
+#include "pagestack.h"
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -15,6 +37,7 @@
 #include <QDebug>
 #include <QPaintEvent>
 #include <qmath.h>
+#include <QDir>
 
 #include <stdlib.h> // RAND_MAX
 #define BALL_NUM 5
@@ -42,6 +65,8 @@ ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 		return new ScreenSaverTime;
 	case ScreenSaver::TEXT:
 		return new ScreenSaverText;
+	case ScreenSaver::SLIDESHOW:
+		return new ScreenSaverSlideshow;
 	case ScreenSaver::DEFORM:
 		return new ScreenSaverDeform;
 	case ScreenSaver::NONE:
@@ -58,7 +83,7 @@ QString ScreenSaver::text;
 
 ScreenSaver::ScreenSaver(int refresh_time)
 {
-	page = 0;
+	window = 0;
 	timer = new QTimer(this);
 	timer->setInterval(refresh_time);
 	connect(timer, SIGNAL(timeout()), SLOT(refresh()));
@@ -66,23 +91,22 @@ ScreenSaver::ScreenSaver(int refresh_time)
 
 void ScreenSaver::start(Window *w)
 {
+	bt_global::page_stack.showUserWindow(this);
+
 	window = w;
-	// TODO maybe we can assume that the Window will always be an HomeWindow
-	//      and page will always be != 0 and remove the checks in btmain.cpp
-	if (HomeWindow *hw = qobject_cast<HomeWindow*>(w))
-		page = hw->currentPage();
 	timer->start();
 }
 
 void ScreenSaver::stop()
 {
-	page = 0;
+	window = 0;
 	timer->stop();
+	emit Closed(); // for PageStack to catch
 }
 
 bool ScreenSaver::isRunning()
 {
-	return page != 0;
+	return window != 0;
 }
 
 void ScreenSaver::initData(const QDomNode &config_node)
@@ -282,6 +306,71 @@ void ScreenSaverText::customizeLine()
 	line->setFont(bt_global::font->get(FontManager::TEXT));
 	line->setAlignment(Qt::AlignCenter);
 	line->setText(text);
+}
+
+
+ScreenSaverSlideshow::ScreenSaverSlideshow() : ScreenSaver(12000)
+{
+	QDir image_dir("cfg/slideshow");
+	QStringList name_filter;
+	name_filter << "*.[Jj][Pp][Gg]" << "*.[Pp][Nn][Gg]";
+
+	QFileInfoList fl = image_dir.entryInfoList(name_filter);
+	foreach (const QFileInfo &fi, fl)
+		images << fi.absoluteFilePath();
+
+	if (images.isEmpty())
+		qWarning() << "Slideshow directory empty or no usable file";
+	image_on_screen = new QLabel(this);
+	image_on_screen->setGeometry(0, 0, width(), height());
+	image_index = 0;
+	blending_timeline.setDuration(2000);
+	blending_timeline.setFrameRange(1, 30);
+	connect(&blending_timeline, SIGNAL(valueChanged(qreal)), SLOT(updateImage(qreal)));
+}
+
+void ScreenSaverSlideshow::start(Window *w)
+{
+	ScreenSaver::start(w);
+	showWindow();
+	next_image = QPixmap(width(), height());
+	// TODO: take background from skin
+	next_image.fill(QColor(Qt::black));
+	// this call will update both current_image and next_image
+	refresh();
+}
+
+void ScreenSaverSlideshow::stop()
+{
+	// TODO: add code here
+	ScreenSaver::stop();
+}
+
+void ScreenSaverSlideshow::refresh()
+{
+	if (!images.isEmpty())
+	{
+		current_image = next_image;
+		image_index = (image_index + 1) % images.size();
+		next_image.load(images[image_index]);
+		next_image = next_image.scaled(this->size(), Qt::KeepAspectRatio);
+		blending_timeline.start();
+	}
+	// else turn off screen
+}
+
+void ScreenSaverSlideshow::updateImage(qreal new_value)
+{
+	QPixmap pix(current_image);
+	QPainter p(&pix);
+	p.setRenderHint(QPainter::SmoothPixmapTransform, false);
+	// with 0.0 (ie. the first value), the destination image is painted. This is just a hack...
+	if (new_value > 0.01)
+	{
+		p.setOpacity(new_value);
+		p.drawPixmap(QPoint(0,0), next_image);
+	}
+	image_on_screen->setPixmap(pix);
 }
 
 

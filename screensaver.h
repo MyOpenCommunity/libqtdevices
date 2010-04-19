@@ -1,12 +1,23 @@
-/*!
- * \file
- * <!--
- * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
- * All rights reserved.
- * -->
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
  *
- * \author Gianni Valdambrini <aleister@develer.com>
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 
 #ifndef SCREENSAVER_H
 #define SCREENSAVER_H
@@ -22,6 +33,7 @@
 #include <QPointF>
 #include <QTime>
 #include <QVector>
+#include <QTimeLine>
 
 class Page;
 class QLabel;
@@ -44,18 +56,16 @@ public:
 		TIME,       // a single line with a clock inside
 		TEXT,       // a line with a text
 		DEFORM,     // the deformer
+		SLIDESHOW,  // image slideshow
 	};
 
 	virtual void start(Window *w);
 	virtual void stop();
 	bool isRunning();
 	virtual Type type() = 0;
-	Page *targetPage() { return page; }
-	Window *targetWindow() { return window; }
 	static void initData(const QDomNode &config_node);
 
 protected:
-	Page *page;
 	Window *window;
 	static QString text;
 	ScreenSaver(int refresh_time);
@@ -154,6 +164,33 @@ public:
 	virtual Type type() { return TEXT; }
 protected:
 	virtual void customizeLine();
+};
+
+
+class ScreenSaverSlideshow : public ScreenSaver
+{
+Q_OBJECT
+public:
+	ScreenSaverSlideshow();
+	virtual void start(Window *w);
+	virtual void stop();
+	virtual Type type() { return SLIDESHOW; }
+
+protected slots:
+	virtual void refresh();
+
+private:
+	// index for images list
+	int image_index;
+	// shows the image on the window
+	QLabel *image_on_screen;
+	QPixmap current_image, next_image;
+	// must contain file paths
+	QStringList images;
+	QTimeLine blending_timeline;
+
+private slots:
+	void updateImage(qreal new_value);
 };
 
 

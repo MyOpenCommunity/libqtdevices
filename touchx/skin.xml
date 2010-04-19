@@ -1,0 +1,1070 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<style>
+	<ver_xml>1.0</ver_xml>
+	<css>
+QLabel, QLCDNumber { color:#FFFFFF; }
+BtButton { border: 0px; }
+Window { background-color: #000000; }
+KeypadWindow, VCTCallPrivate--VCTCallWindow { background-image: url(cfg/extra/1/skin/layoutback.png); }
+QWidget[noStyle="true"] {background-color:#FFFFFF;color:#000000;}
+QWidget[noStyle="true"] QWidget {background-color:#FFFFFF;color:#000000;}
+QWidget[SecondFgColor="true"] {color:#6FB2FF;}
+QWidget[SecondFgColor="true"] QWidget {color:#6FB2FF;}
+QWidget[ReversedColor="true"] {color:#1E1E1E;background-color:#D8D8D8;}
+QWidget[PlayerInfo="true"] { color: #b0b0f8; }
+TextOnImageLabel { qproperty-text_color:#D8D8D8; }
+EnergyGraph { qproperty-primary_color:#1449C8; qproperty-secondary_color:#3587FF; qproperty-border_color: blue;}
+KeypadWithState QLabel[ActiveState="true"] { background-color:white; color:black; }
+HeaderInfo { background-image: url(cfg/extra/1/skin/topinfobar.png); }
+HeaderNavigationBar { background-image: url(cfg/extra/1/skin/topnavigationbar.png); }
+Page { background-image: url(cfg/extra/1/skin/layoutback.png); }
+QWidget[Favorites="true"] { background-image: url(cfg/extra/1/skin/preferiti.png); }
+HeaderLogo { background-image: url(cfg/extra/1/skin/topstatusbar_3.png); }
+QWidget[VerticalSeparator="true"] { background-image: url(cfg/extra/1/skin/sepvert.png); background-position: top center; background-repeat: no-repeat; }
+ItemList > QWidget { background-image: url(cfg/extra/1/skin/multimediale/backfileaudio.png); }
+RadioInfo { background-image: url(cfg/extra/1/skin/diffusione/displaybig.png); }
+FileSelector > QLabel[Loading="true"] { background-color: #000000; background-image: url(cfg/extra/1/skin/clessidra.png); background-position: center center; background-repeat: no-repeat; }
+FeedItemWidget > QTextEdit { background-color: #c0c0c0; color: #000000; }
+MessagesListPage QLabel[UnreadMessage="true"] { color:#FF0000; }
+MessagesListPage QLabel[UnreadMessage="false"] { color:#6FB2FF; }
+MessagePage QLabel#Date {  background-color: gray; }
+MessagePage QLabel#Text { background-color: #000000; }
+	</css>
+	<common>
+		<img_back>navigazione/back.png</img_back>
+		<img_forward>setup/arrdx.png</img_forward>
+		<img_ok>setup/ok.png</img_ok>
+		<img_choice>btnemty.png</img_choice>
+		<img_scroll_up>navigazione/up.png</img_scroll_up>
+		<img_scroll_down>navigazione/down.png</img_scroll_down>
+		<img_arrow_up>navigazione/up.png</img_arrow_up>
+		<img_arrow_down>navigazione/down.png</img_arrow_down>
+		<img_plus>termoregolazione/piu.png</img_plus>
+		<img_minus>termoregolazione/meno.png</img_minus>
+		<img_fast_forward>btnforward.png</img_fast_forward>
+		<img_fast_backward>btnbackward.png</img_fast_backward>
+		<img_cycle>diffusione/cycle.png</img_cycle>
+		<img_on>setup/on.png</img_on>
+		<img_off>setup/off.png</img_off>
+		<img_stop>btnstop.png</img_stop>
+		<img_empty_icon>empty.png</img_empty_icon>
+		<img_info>settup/info.png</img_info>
+		<img_cancel>setup/canc.png</img_cancel>
+		<img_num_0>setup/numzero.png</img_num_0>
+		<img_num_1>setup/numuno.png</img_num_1>
+		<img_num_2>setup/numdue.png</img_num_2>
+		<img_num_3>setup/numtre.png</img_num_3>
+		<img_num_4>setup/numquattro.png</img_num_4>
+		<img_num_5>setup/numcinque.png</img_num_5>
+		<img_num_6>setup/numsei.png</img_num_6>
+		<img_num_7>setup/numsette.png</img_num_7>
+		<img_num_8>setup/numotto.png</img_num_8>
+		<img_num_9>setup/numnove.png</img_num_9>
+		<img_small_1>antintrusione/uno.png</img_small_1>
+		<img_small_2>antintrusione/due.png</img_small_2>
+		<img_small_3>antintrusione/tre.png</img_small_3>
+		<img_small_4>antintrusione/quattro.png</img_small_4>
+		<img_small_5>antintrusione/cinque.png</img_small_5>
+		<img_small_6>antintrusione/sei.png</img_small_6>
+		<img_small_7>antintrusione/sette.png</img_small_7>
+		<img_small_8>antintrusione/otto.png</img_small_8>
+		<img_splash_image>loading.png</img_splash_image>
+		<img_horizontal_separator>sephoriz.png</img_horizontal_separator>
+	</common>
+	<!-- Home page -->
+	<item>
+		<cid>0</cid>
+		<img_go_home>home/home.png</img_go_home>
+		<img_left>barranavigazione/sinistra.png</img_left>
+		<img_right>barranavigazione/destra.png</img_right>
+		<img_settings_icon>barranavigazione/setup.png</img_settings_icon>
+		<img_clock_background>home/backtime.png</img_clock_background>
+		<img_date_background>home/backdate.png</img_date_background>
+		<img_temperature_background>home/backtemp.png</img_temperature_background>
+	</item>
+	<!-- Videodoorentry section-->
+	<item>
+		<cid>10000</cid>
+		<img_tray_ring_ex_on>home/esclusionechiamataon.png</img_tray_ring_ex_on>
+		<img_tray_ring_ex_off>home/esclusionechiamataoff.png</img_tray_ring_ex_off>
+	</item>
+	<!-- Home and info bar -->
+	<item>
+		<cid>99</cid>
+	</item>
+	<!-- Settings button -->
+	<item>
+		<cid>14</cid>
+		<img_link_icon>home/setup.png</img_link_icon>
+	</item>
+	<!-- Home page time display -->
+	<item>
+		<cid>205</cid>
+		<img_background>home/displayora.png</img_background>
+	</item>
+	<!-- Home page date display -->
+	<item>
+		<cid>206</cid>
+		<img_background>home/displaydata.png</img_background>
+	</item>
+	<!-- Home page temperature display, external -->
+	<item>
+		<cid>207</cid>
+		<img_background>home/displaytermo.png</img_background>
+	</item>
+	<!-- Home page temperature display, non controlled -->
+	<item>
+		<cid>208</cid>
+		<img_background>home/displaytermo.png</img_background>
+	</item>
+	<!-- Home page rss link -->
+	<item>
+		<cid>202</cid>
+		<img_link_icon>home/rss.png</img_link_icon>
+		<img_forward_icon>multimediale/avanti.png</img_forward_icon>
+		<img_feed_icon>multimediale/rssmini.png</img_feed_icon>
+	</item>
+	<!-- Home page meteo link -->
+	<item>
+		<cid>203</cid>
+		<img_link_icon>home/meteo.png</img_link_icon>
+		<img_forward_icon>multimediale/avanti.png</img_forward_icon>
+		<img_feed_icon>multimediale/rssmini.png</img_feed_icon>
+	</item>
+	<!-- Home page ip radio link -->
+	<item>
+		<cid>201</cid>
+		<img_link_icon>home/radio.png</img_link_icon>
+		<img_forward_icon>multimediale/avanti.png</img_forward_icon>
+		<img_ipradio_icon>multimediale/radiooveripmini.png</img_ipradio_icon>
+
+                <!-- TODO duplicated in the multimedia section, move to
+                     common section -->
+		<img_previous>multimediale/precedente.png</img_previous>
+		<img_next>multimediale/successivo.png</img_next>
+		<img_start>multimediale/play.png</img_start>
+		<img_pause>multimediale/pause.png</img_pause>
+		<img_stop>multimediale/stop.png</img_stop>
+		<img_skip_forward>multimediale/avanti.png</img_skip_forward>
+		<img_skip_back>multimediale/indietro.png</img_skip_back>
+		<img_fullscreen>multimediale/screenfull.png</img_fullscreen>
+		<img_nofullscreen>multimediale/screen.png</img_nofullscreen>
+		<img_volume>diffusione/onvolamp.png</img_volume>
+
+		<img_audioplayer_background>multimediale/display.png</img_audioplayer_background>
+		<img_goto_sounddiffusion>multimediale/godiffusion.png</img_goto_sounddiffusion>
+		<img_tray_player>home/backtemp.png</img_tray_player>
+	</item>
+	<!-- Home page webcam link -->
+	<item>
+		<cid>204</cid>
+		<img_link_icon>home/webcam.png</img_link_icon>
+
+		<img_reload>multimediale/play.png</img_reload>
+		<img_previous>multimediale/precedente.png</img_previous>
+		<img_next>multimediale/successivo.png</img_next>
+	</item>
+	<!-- Settings links -->
+	<!-- Alarm -->
+	<item>
+		<cid>14009</cid>
+		<img_link_icon>setup/sveglia.png</img_link_icon>
+	</item>
+	<!-- Beep -->
+	<item>
+		<cid>14001</cid>
+		<img_state_on>setup/beepon.png</img_state_on>
+		<img_state_off>setup/beepoff.png</img_state_off>
+	</item>
+	<!-- Brightness -->
+	<item>
+		<!-- uses: minus, plus -->
+		<cid>14151</cid>
+		<img_link_icon>setup/luminosita.png</img_link_icon>
+		<img_logo_brightness>setup/contrastoimage.png</img_logo_brightness>
+	</item>
+	<!-- Volume -->
+	<item>
+		<cid>14004</cid>
+		<img_link_icon>setup/volume.png</img_link_icon>
+		<img_volume>setup/volumi/onvolamp.png</img_volume>
+	</item>
+	<!-- Ringtones -->
+	<item>
+		<cid>14005</cid>
+		<img_link_icon>setup/suonerie.png</img_link_icon>
+	</item>
+	<!-- Version page -->
+	<item>
+		<cid>14006</cid>
+		<img_link_icon>setup/myhome.png</img_link_icon>
+	</item>
+	<!-- Calibration -->
+	<item>
+		<cid>14153</cid>
+		<img_link_icon>setup/taratura.png</img_link_icon>
+	</item>
+	<!-- Calibration test -->
+	<item>
+		<cid>851</cid>
+		<img_link_icon>setup/taratura.png</img_link_icon>
+	</item>
+	<!-- Change date/time button -->
+	<item>
+		<cid>14002</cid>
+		<img_link_icon>setup/dataora.png</img_link_icon>
+		<img_arrow_up>setup/piu.png</img_arrow_up>
+		<img_arrow_down>setup/meno.png</img_arrow_down>
+	</item>
+	<!-- Password -->
+	<item>
+		<cid>14003</cid>
+		<img_link_icon>setup/password.png</img_link_icon>
+		<img_state_on>setup/pswlockon.png</img_state_on>
+		<img_state_off>setup/pswlockoff.png</img_state_off>
+		<img_edit>setup/psw.png</img_edit>
+	</item>
+	<!-- screen saver button -->
+	<item>
+		<cid>14154</cid>
+		<img_link_icon>setup/screensaver.png</img_link_icon>
+		<img_unchecked>setup/selectoff.png</img_unchecked>
+		<img_checked>setup/select.png</img_checked>
+		<img_photo_album>multimediale/foto.png</img_photo_album>
+		<img_add_image>setup/aggiungiimg.png</img_add_image>
+		<img_trash>antintrusione/elimina.png</img_trash>
+		<img_remove_image>setup/eliminaimg.png</img_remove_image>
+		<img_change_settings>scenari/setscenariooff.png</img_change_settings>
+	</item>
+	<!-- clean screen button -->
+	<item>
+		<cid>14152</cid>
+		<img_link_icon>setup/cleanscreen.png</img_link_icon>
+		<img_cleanscreen>setup/cleanscreenp.png</img_cleanscreen>
+	</item>
+	<!-- display button -->
+	<item>
+		<cid>14007</cid>
+		<img_link_icon>setup/iconamonitor.png</img_link_icon>
+	</item>
+	<!-- lan settings button -->
+	<item>
+		<cid>872</cid>
+		<img_link_icon>setup/aggiungiimg.png</img_link_icon>
+		<img_network_enable>setup/buzzer.png</img_network_enable>
+		<img_network_disable>setup/canc.png</img_network_disable>
+	</item>
+	<!-- Homepage links -->
+	<item>
+		<!-- automation (homepage) -->
+		<cid>3</cid>
+		<img_link_icon>home/automazioni.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/automazioni.png</img_top_navigation_button>
+	</item>
+	<item>
+		<!-- lighting -->
+		<cid>2</cid>
+		<img_link_icon>home/illuminazione.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/illuminazione.png</img_top_navigation_button>
+	</item>
+    <item>
+        <!-- settings -->
+        <cid>14000</cid>
+        <img_videodoorentry>setup/videocitofonia.png</img_videodoorentry>
+        <img_handsfree_on>setup/beepon.png</img_handsfree_on>
+        <img_handsfree_off>setup/beepoff.png</img_handsfree_off>
+        <img_profstudio_on>setup/beepon.png</img_profstudio_on>
+        <img_profstudio_off>setup/beepoff.png</img_profstudio_off>
+        <img_tray_handsfree>home/statoportaoff.png</img_tray_handsfree>
+        <img_tray_profstudio>home/statoportaon.png</img_tray_profstudio>
+    </item>
+	<item>
+        <!-- antintrusion -->
+		<cid>13</cid>
+		<img_link_icon>home/antintrusione.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/antintrusione.png</img_top_navigation_button>
+	</item>
+	<item>
+		<cid>104</cid>
+		<img_link_icon>home/carichi.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/carichi.png</img_top_navigation_button>
+	</item>
+	<item>
+		<!-- thermal regulation -->
+		<cid>8</cid>
+		<img_link_icon>home/termoregolazione.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/termoregolazione.png</img_top_navigation_button>
+
+		<img_settings>termoregolazione/edit.png</img_settings>
+		<img_arrow_up>termoregolazione/piu.png</img_arrow_up>
+		<img_arrow_down>termoregolazione/meno.png</img_arrow_down>
+	</item>
+	<item>
+		<!-- Multimedia sound diffusion -->
+		<cid>12</cid>
+		<img_link_icon>home/diffusionemultimediale.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/diffusionemultimediale.png</img_top_navigation_button>
+	</item>
+	<item>
+		<!-- Scenarios section -->
+		<cid>1</cid>
+		<img_link_icon>home/scenari.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/scenari.png</img_top_navigation_button>
+	</item>
+	<item>
+		<cid>120</cid>
+		<img_link_icon>home/scenarievoluti.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/scenarievoluti.png</img_top_navigation_button>
+	</item>
+	<item>
+		<cid>10</cid>
+		<img_link_icon>home/videocitofonia.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/videocitofonia.png</img_top_navigation_button>
+	</item>
+	<item>
+		<cid>16</cid>
+		<img_link_icon>home/contenutimultimediali.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/contenutimultimediali.png</img_top_navigation_button>
+	</item>
+	<!-- Videodoorentry icon page -->
+	<!-- videocontrol link -->
+	<item>
+		<cid>10001</cid>
+		<img_link_icon>videocitofonia/videocontrollo.png</img_link_icon>
+	</item>
+	<!-- intercom link -->
+	<item>
+		<cid>10002</cid>
+		<img_link_icon>videocitofonia/postiinterni.png</img_link_icon>
+	</item>
+        <!-- ring exclusion link -->
+	<item>
+		<cid>10003</cid>
+		<img_link_icon>videocitofonia/esclusionechiamata.png</img_link_icon>
+	</item>
+	<!-- Multimedia page links -->
+	<item>
+		<cid>16000</cid>
+		<!-- Multimedia list icons -->
+		<img_eject>multimediale/umount.png</img_eject>
+		<img_image_icon>multimediale/fotomini.png</img_image_icon>
+		<img_audio_icon>multimediale/audiomini.png</img_audio_icon>
+		<img_video_icon>multimediale/videomini.png</img_video_icon>
+		<img_directory_icon>multimediale/cartellamini.png</img_directory_icon>
+		<img_play_file>multimediale/play.png</img_play_file>
+		<img_browse_directory>multimediale/vai.png</img_browse_directory>
+
+                <!-- TODO duplicated in the homepage link, move to
+                     common section -->
+		<img_previous>multimediale/precedente.png</img_previous>
+		<img_next>multimediale/successivo.png</img_next>
+		<img_start>multimediale/play.png</img_start>
+		<img_pause>multimediale/pause.png</img_pause>
+		<img_stop>multimediale/stop.png</img_stop>
+		<img_skip_forward>multimediale/avanti.png</img_skip_forward>
+		<img_skip_back>multimediale/indietro.png</img_skip_back>
+		<img_fullscreen>multimediale/screenfull.png</img_fullscreen>
+		<img_nofullscreen>multimediale/screen.png</img_nofullscreen>
+		<img_volume>diffusione/onvolamp.png</img_volume>
+
+		<img_audioplayer_background>multimediale/display.png</img_audioplayer_background>
+		<img_goto_sounddiffusion>multimediale/godiffusion.png</img_goto_sounddiffusion>
+		<img_tray_player>home/backtemp.png</img_tray_player>
+	</item>
+	<!-- USB -->
+	<item>
+		<cid>16002</cid>
+		<img_mounted>multimediale/usbon.png</img_mounted>
+		<img_unmounted>multimediale/usboff.png</img_unmounted>
+	</item>
+	<!-- SD -->
+	<item>
+		<cid>16005</cid>
+		<img_mounted>multimediale/sdon.png</img_mounted>
+		<img_unmounted>multimediale/sdoff.png</img_unmounted>
+	</item>
+	<!-- RSS -->
+	<item>
+		<cid>16003</cid>
+		<img_link_icon>multimediale/rss.png</img_link_icon>
+		<img_forward_icon>multimediale/avanti.png</img_forward_icon>
+		<img_feed_icon>multimediale/rssmini.png</img_feed_icon>
+	</item>
+	<!-- RSS meteo -->
+	<item>
+		<cid>16152</cid>
+		<img_feed_icon>multimediale/meteomini.png</img_feed_icon>
+	</item>
+	<!-- Webcam -->
+	<item>
+		<cid>16004</cid>
+		<img_link_icon>multimediale/webcam.png</img_link_icon>
+		<img_webcam_icon>multimediale/webcammini.png</img_webcam_icon>
+		<img_reload>multimediale/play.png</img_reload>
+		<img_previous>multimediale/precedente.png</img_previous>
+		<img_next>multimediale/successivo.png</img_next>
+	</item>
+	<!-- IP Radio -->
+	<item>
+		<cid>16001</cid>
+		<img_link_icon>multimediale/radiooverip.png</img_link_icon>
+		<img_ipradio_icon>multimediale/radiooveripmini.png</img_ipradio_icon>
+	</item>
+	<!-- sound diffusion system -->
+	<!-- rds radio -->
+	<item>
+		<cid>6002</cid>
+		<!--
+		RDS Radio control page
+		Images: img_plus, img_minus, img_num_1, img_num_2, img_num_3, img_num_4, img_num_5
+		-->
+		<img_cycle>diffusione/cycle.png</img_cycle>
+		<img_auto_on>diffusione/autoon.png</img_auto_on>
+		<img_auto_off>diffusione/autooff.png</img_auto_off>
+		<img_man_on>diffusione/manualeon.png</img_man_on>
+		<img_man_off>diffusione/manualeoff.png</img_man_off>
+		<img_memory>diffusione/mem.png</img_memory>
+		<img_next>diffusione/successivo.png</img_next>
+		<img_previous>diffusione/precedente.png</img_previous>
+	</item>
+	<!-- amplifier special ambient (multi sound diffusion) -->
+	<item>
+		<cid>12101</cid>
+		<!--
+		Other images: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+	</item>
+	<!-- amplifier group special ambient (multi sound diffusion) -->
+	<item>
+		<cid>12102</cid>
+		<!--
+		Other images: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/offampgrpsxl.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/offampgrpdxl.png</img_volume_off_right>
+	</item>
+	<!-- general, special ambient (multi sound diffusion) -->
+	<item>
+		<cid>12103</cid>
+		<!--
+		Other images: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/offampgrpsxl.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/offampgrpdxl.png</img_volume_off_right>
+	</item>
+	<!-- power amplifier (special ambient) -->
+	<item>
+		<cid>12104</cid>
+		<!--
+		other images: on, off, minus, plus
+		-->
+		<img_preset>diffusione/preset.png</img_preset>
+		<img_treble>diffusione/louds.png</img_treble>
+		<img_bass>diffusione/lows.png</img_bass>
+		<img_balance>diffusione/balance_0.png</img_balance>
+		<img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+		<img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+		<img_loud>diffusione/loud.png</img_loud>
+		<img_loud_on>diffusione/loud.png</img_loud_on>
+		<img_loud_off>diffusione/loud_off.png</img_loud_off>
+		<img_more>diffusione/more.png</img_more>
+		<img_less>diffusione/less.png</img_less>
+		<img_settings>diffusione/audiosetting.png</img_settings>
+		<img_volume_active>diffusione/onvolamp.png</img_volume_active>
+		<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+	</item>
+	<!-- amplifier normal ambient (multi sound diffusion) -->
+	<item>
+		<cid>12150</cid>
+		<!--
+		Other images: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+	</item>
+	<!-- amplifier group normal ambient (multi sound diffusion) -->
+	<item>
+		<cid>12151</cid>
+		<!--
+		Other images: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/offampgrpsxl.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/offampgrpdxl.png</img_volume_off_right>
+	</item>
+	<!-- power amplifier normal ambient -->
+	<item>
+		<cid>12152</cid>
+		<!--
+		other images: on, off, minus, plus
+		-->
+		<img_preset>diffusione/preset.png</img_preset>
+		<img_treble>diffusione/louds.png</img_treble>
+		<img_bass>diffusione/lows.png</img_bass>
+		<img_balance>diffusione/balance_0.png</img_balance>
+		<img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+		<img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+		<img_loud>diffusione/loud.png</img_loud>
+		<img_loud_on>diffusione/loud.png</img_loud_on>
+		<img_loud_off>diffusione/loud_off.png</img_loud_off>
+		<img_more>diffusione/more.png</img_more>
+		<img_less>diffusione/less.png</img_less>
+		<img_settings>diffusione/audiosetting.png</img_settings>
+		<img_volume_active>diffusione/onvolamp.png</img_volume_active>
+		<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+	</item>
+	<!-- special ambient -->
+	<item>
+		<cid>12020</cid>
+		<!--
+		Other images: forward
+		-->
+		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
+	</item>
+	<!-- normal ambient -->
+	<item>
+		<cid>12021</cid>
+		<!--
+		Other images: forward
+		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
+		-->
+		<img_ambient>diffusione/imgamb.png</img_ambient>
+		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+	</item>
+	<!-- RDS radio source -->
+	<item>
+		<cid>12001</cid>
+		<!--
+		Other images: cycle
+		Notes: There's also an image set in the stylesheet above
+		-->
+		<img_previous>diffusione/precedente.png</img_previous>
+		<img_next>diffusione/successivo.png</img_next>
+		<img_radio_dummy>diffusione/display.png</img_radio_dummy>
+		<img_details>diffusione/audiosetting.png</img_details>
+	</item>
+
+
+	<!-- automation banners -->
+	<item>
+		<!-- curtains -->
+		<!--Notes:
+		    In STOP state, image in 'img_actuator_state' will be used.
+		    In OPENING state, an 'o' will be appended to the image in 'img_actuator_state'.
+		    In CLOSING state, a 'c' will be appended.
+		-->
+		<cid>3001</cid>
+		<img_close>automazione/close.png</img_close>
+		<img_open>automazione/open.png</img_open>
+		<img_stop>automazione/stop.png</img_stop>
+		<img_actuator_state>automazione/imgtenda.png</img_actuator_state>
+	</item>
+	<item>
+		<!-- garage -->
+		<!-- See Notes section on previous cid -->
+		<cid>3002</cid>
+		<img_close>automazione/arrdw.png</img_close>
+		<img_open>automazione/arrup.png</img_open>
+		<img_stop>automazione/stop.png</img_stop>
+		<img_actuator_state>automazione/imggarage.png</img_actuator_state>
+	</item>
+	<item>
+		<!-- shutter -->
+		<!-- See Notes section on previous cid -->
+		<cid>3003</cid>
+		<img_close>automazione/arrdw.png</img_close>
+		<img_open>automazione/arrup.png</img_open>
+		<img_stop>automazione/stop.png</img_stop>
+		<img_actuator_state>automazione/imgtappa.png</img_actuator_state>
+	</item>
+	<item>
+		<!-- gate -->
+		<!-- See Notes section on previous cid -->
+		<cid>3004</cid>
+		<img_close>automazione/close.png</img_close>
+		<img_open>automazione/open.png</img_open>
+		<img_stop>automazione/stop.png</img_stop>
+		<img_actuator_state>automazione/imgcanc.png</img_actuator_state>
+	</item>
+	<item>
+		<!-- ventilation -->
+		<!-- Notes:
+		     In ON state, 'on' will be appended to 'img_actuator_state' icon.
+		     In OFF state, 'off' will be appended.
+		-->
+		<cid>3007</cid>
+		<img_off>automazione/off.png</img_off>
+		<img_on>automazione/on.png</img_on>
+		<img_actuator_state>automazione/imgvent.png</img_actuator_state>
+	</item>
+	<item>
+		<!-- irrigation -->
+		<!-- See Notes section on previous cid -->
+		<cid>3008</cid>
+		<img_off>automazione/off.png</img_off>
+		<img_on>automazione/on.png</img_on>
+		<img_actuator_state>automazione/imgidro.png</img_actuator_state>
+	</item>
+	<item>
+		<!-- loads -->
+		<!-- See Notes section on previous cid -->
+		<cid>3009</cid>
+		<img_off>automazione/off.png</img_off>
+		<img_on>automazione/on.png</img_on>
+		<img_actuator_state>automazione/imgcarico.png</img_actuator_state>
+	</item>
+	<item>
+		<!-- door lock -->
+		<cid>3010</cid>
+		<img_on>automazione/on.png</img_on>
+		<!-- TODO check -->
+		<img_action_icon>automazione/imgserraturaoff.png</img_action_icon>
+	</item>
+	<item>
+		<!-- ppt stat -->
+		<cid>3012</cid>
+		<!-- TODO: change me! -->
+		<img_pptstat_open>automazione/imgillumgrpon.png</img_pptstat_open>
+		<img_pptstat_close>automazione/imgillumgrpoff.png</img_pptstat_close>
+	</item>
+	<item>
+		<!-- automation group -->
+		<cid>3013</cid>
+		<img_scroll_down>automazione/arrdw.png</img_scroll_down>
+		<img_scroll_up>automazione/arrup.png</img_scroll_up>
+		<!-- TODO check -->
+		<img_stop>automazione/stopbig.png</img_stop>
+	</item>
+	<item>
+		<!-- automation group -->
+		<cid>3014</cid>
+		<img_scroll_down>automazione/arrdw.png</img_scroll_down>
+		<img_scroll_up>automazione/arrup.png</img_scroll_up>
+		<!-- TODO check -->
+		<img_stop>automazione/stopbig.png</img_stop>
+	</item>
+	<!-- lighting banners -->
+	<item>
+		<!-- simple light -->
+		<cid>2003</cid>
+		<img_off>illuminazione/off.png</img_off>
+		<img_on>illuminazione/on.png</img_on>
+		<img_actuator_state>illuminazione/imglamp.png</img_actuator_state>
+	</item>
+	<item>
+		<!-- light group -->
+		<cid>2004</cid>
+		<img_off>illuminazione/off.png</img_off>
+		<img_on>illuminazione/on.png</img_on>
+		<img_lamp_group_on>illuminazione/imglampgrpon.png</img_lamp_group_on>
+	</item>
+	<item>
+		<!-- dimmer (10/100) -->
+		<!-- Notes: Divided in 2 parts, left and right. For tag 'img_dimmer', appends 'sxlN' for left image and 'dxlN' for right image, where N
+		     is dimmer level rounded to the nearest multiple of 5.
+		     For tag 'img_dimmer_broken', appends 'sx' for left image and 'dx' for right image -->
+		<cid>2001</cid>
+		<img_off>illuminazione/off.png</img_off>
+		<img_on>illuminazione/on.png</img_on>
+		<img_dimmer>illuminazione/ondimmer.png</img_dimmer>
+		<img_dimmer_broken>illuminazione/brokendimmer.png</img_dimmer_broken>
+	</item>
+	<item>
+		<!-- Timed and variable timed light -->
+		<cid>2007</cid>
+		<img_on>illuminazione/on.png</img_on>
+		<img_lamp_time_on>illuminazione/imglamptime.png</img_lamp_time_on>
+		<img_lamp_cycle>illuminazione/cicla.png</img_lamp_cycle>
+	</item>
+	<item>
+		<!-- Fixed timed light -->
+		<cid>2010</cid>
+		<img_on>illuminazione/on.png</img_on>
+		<img_lamp_status>illuminazione/imglampt.png</img_lamp_status>
+		<img_lamp_time>illuminazione/imgtime.png</img_lamp_time>
+	</item>
+	<item>
+		<!-- dimmer group -->
+		<cid>2005</cid>
+		<img_on>illuminazione/on.png</img_on>
+		<img_off>illuminazione/off.png</img_off>
+		<!-- TODO wrong icons! Touch 10 has a single central icon -->
+		<img_dimmer_grp_sx>illuminazione/ondimmersxl0.png</img_dimmer_grp_sx>
+		<img_dimmer_grp_dx>illuminazione/ondimmerdxl0.png</img_dimmer_grp_dx>
+	</item>
+	<item>
+		<!-- staircase light -->
+		<cid>2011</cid>
+		<img_on>illuminazione/on.png</img_on>
+		<!-- TODO touch 10 has 2 icons for on/off states -->
+		<img_action_icon>illuminazione/imglucescaleon.png</img_action_icon>
+	</item>
+	<!-- antintrusion banners -->
+	<item>
+		<cid>13000</cid>
+		<img_partial>antintrusione/parzializzazioneon.png</img_partial>
+		<img_partial_on>antintrusione/parzializzaon.png</img_partial_on>
+		<img_partial_off>antintrusione/parzializzaoff.png</img_partial_off>
+		<img_alarm_partial_on>antintrusione/parzializzaonp.png</img_alarm_partial_on>
+		<img_alarm_partial_off>antintrusione/parzializzaoffp.png</img_alarm_partial_off>
+		<img_alarm_state>antintrusione/imgantifurto.png</img_alarm_state>
+		<img_zone>antintrusione/imgamb.png</img_zone>
+		<img_alarm_on>antintrusione/imgantintrusioneon.png</img_alarm_on>
+		<img_alarm_off>antintrusione/imgantintrusioneoff.png</img_alarm_off>
+		<img_alarm_del>antintrusione/elimina.png</img_alarm_del>
+		<img_info>antintrusione/storicoallarmi.png</img_info>
+
+		<img_technic_alarm>antintrusione/imgallarmetecnico.png</img_technic_alarm>
+		<img_intrusion_alarm>antintrusione/imgallarmeantintrusione.png</img_intrusion_alarm>
+		<img_tamper_alarm>antintrusione/imgallarmemanomissione.png</img_tamper_alarm>
+		<img_panic_alarm>antintrusione/imgallarmeantipanico.png</img_panic_alarm>
+
+		<!-- alarm page -->
+		<img_go_home>home/home.png</img_go_home>
+		<img_alarm_info>home/alarmpopupinfo.png</img_alarm_info>
+
+		<img_technic_alarm_page>home/imgallarmetecnico.png</img_technic_alarm_page>
+		<img_intrusion_alarm_page>home/imgallarmeantintrusione.png</img_intrusion_alarm_page>
+		<img_tamper_alarm_page>home/imgallarmemanomissione.png</img_tamper_alarm_page>
+		<img_panic_alarm_page>home/imgallarmeantipanico.png</img_panic_alarm_page>
+	</item>
+	<!-- thermal menu banners -->
+	<!-- TODO unify 4 zones and 99 zones sections -->
+	<!-- external probes -->
+	<item>
+		<cid>8001</cid>
+		<img_central_icon>termoregolazione/imgsondaesterna.png</img_central_icon>
+		<img_forward>termoregolazione/vai.png</img_forward>
+	</item>
+	<!-- non controlled probes -->
+	<item>
+		<cid>8002</cid>
+		<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
+		<img_forward>termoregolazione/vai.png</img_forward>
+	</item>
+	<!-- 4 zones central -->
+	<item>
+		<cid>113</cid>
+		<img_central_icon>termoregolazione/imgimpianto.png</img_central_icon>
+		<img_forward>termoregolazione/vai.png</img_forward>
+	</item>
+	<!-- regulator page banner 4 zones -->
+	<item>
+		<cid>114</cid>
+		<img_central_icon>termoregolazione/imgcentrale.png</img_central_icon>
+		<img_forward>termoregolazione/vai.png</img_forward>
+	</item>
+	<!-- zones and zone page 4 zones -->
+	<item>
+		<cid>138</cid>
+		<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
+		<img_forward>termoregolazione/vai.png</img_forward>
+
+		<img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
+		<img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
+		<img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
+		<img_probe_off>termoregolazione/imgoff.png</img_probe_off>
+		<img_minus>termoregolazione/meno.png</img_minus>
+		<img_plus>termoregolazione/piu.png</img_plus>
+		<img_fan_1_on>termoregolazione/fancoilminon.png</img_fan_1_on>
+		<img_fan_2_on>termoregolazione/fancoilmedon.png</img_fan_2_on>
+		<img_fan_3_on>termoregolazione/fancoilmaxon.png</img_fan_3_on>
+		<img_fan_4_on>termoregolazione/fancoilautoon.png</img_fan_4_on>
+		<img_fan_1_off>termoregolazione/fancoilminoff.png</img_fan_1_off>
+		<img_fan_2_off>termoregolazione/fancoilmedoff.png</img_fan_2_off>
+		<img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
+		<img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
+	</item>
+	<!-- regulator page 4 zones -->
+	<item>
+		<cid>200000</cid> <!-- TODO fix -->
+		<img_summer_flat>termoregolazione/estateoff.png</img_summer_flat>
+		<img_winter_flat>termoregolazione/invernooff.png</img_winter_flat>
+		<img_regulator>termoregolazione/imgcentrale.png</img_regulator>
+		<img_regulator_off>termoregolazione/imgoff.png</img_regulator_off>
+		<img_regulator_antifreeze>termoregolazione/imgantigelo.png</img_regulator_antifreeze>
+		<img_regulator_manual>termoregolazione/imgmanuale.png</img_regulator_manual>
+		<img_regulator_manual_timed>termoregolazione/imgmanualetemporizzato.png</img_regulator_manual_timed>
+		<img_regulator_weekend>termoregolazione/imgfestivo.png</img_regulator_weekend>
+		<img_regulator_program>termoregolazione/imgprogramma.png</img_regulator_program>
+		<img_regulator_scenario>termoregolazione/imgscenario.png</img_regulator_scenario>
+		<img_regulator_holiday>termoregolazione/imgferiale.png</img_regulator_holiday>
+	</item>
+	<!-- 99 zones central -->
+	<item>
+		<cid>8011</cid>
+		<img_central_icon>termoregolazione/imgimpianto.png</img_central_icon>
+		<img_forward>termoregolazione/vai.png</img_forward>
+	</item>
+	<!-- regulator page banner 99 zones -->
+	<item>
+		<cid>8003</cid>
+		<img_central_icon>termoregolazione/imgcentrale.png</img_central_icon>
+		<img_forward>termoregolazione/vai.png</img_forward>
+	</item>
+	<!-- thermal regulator settings page 4 zones -->
+	<item>
+		<cid>15</cid>
+		<img_regulator_manual>termoregolazione/imgmanuale.png</img_regulator_manual>
+		<img_regulator_manual_timed>termoregolazione/imgmanualetemporizzato.png</img_regulator_manual_timed>
+		<img_regulator_weekend>termoregolazione/imgfestivo.png</img_regulator_weekend>
+		<img_regulator_program>termoregolazione/imgprogramma.png</img_regulator_program>
+		<img_regulator_scenario>termoregolazione/imgscenario.png</img_regulator_scenario>
+		<img_regulator_holiday>termoregolazione/imgferiale.png</img_regulator_holiday>
+		<img_regulator_antifreeze>termoregolazione/antigelooff.png</img_regulator_antifreeze>
+		<img_off_button>termoregolazione/off.png</img_off_button>
+		<img_winter>termoregolazione/invernooff.png</img_winter>
+		<img_summer>termoregolazione/estateoff.png</img_summer>
+		<img_winter_scenario>termoregolazione/imgscenarioinvernooff.png</img_winter_scenario>
+		<img_summer_scenario>termoregolazione/imgscenarioestateoff.png</img_summer_scenario>
+		<img_winter_program>termoregolazione/imgprogrammainvernooff.png</img_winter_program>
+		<img_summer_program>termoregolazione/imgprogrammaestateoff.png</img_summer_program>
+	</item>
+	<!-- zones and zone page 99 zones -->
+	<item>
+		<cid>8010</cid>
+		<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
+		<img_forward>termoregolazione/vai.png</img_forward>
+
+		<img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
+		<img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
+		<img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
+		<img_probe_off>termoregolazione/imgoff.png</img_probe_off>
+		<img_minus>termoregolazione/meno.png</img_minus>
+		<img_plus>termoregolazione/piu.png</img_plus>
+		<img_fan_1_on>termoregolazione/fancoilminon.png</img_fan_1_on>
+		<img_fan_2_on>termoregolazione/fancoilmedon.png</img_fan_2_on>
+		<img_fan_3_on>termoregolazione/fancoilmaxon.png</img_fan_3_on>
+		<img_fan_4_on>termoregolazione/fancoilautoon.png</img_fan_4_on>
+		<img_fan_1_off>termoregolazione/fancoilminoff.png</img_fan_1_off>
+		<img_fan_2_off>termoregolazione/fancoilmedoff.png</img_fan_2_off>
+		<img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
+		<img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
+	</item>
+	<!-- regulator page 99 zones -->
+	<item>
+		<cid>8051</cid>
+		<img_summer_flat>termoregolazione/estateoff.png</img_summer_flat>
+		<img_winter_flat>termoregolazione/invernooff.png</img_winter_flat>
+		<img_regulator>termoregolazione/imgcentrale.png</img_regulator>
+		<img_regulator_off>termoregolazione/imgoff.png</img_regulator_off>
+		<img_regulator_antifreeze>termoregolazione/imgantigelo.png</img_regulator_antifreeze>
+		<img_regulator_manual>termoregolazione/imgmanuale.png</img_regulator_manual>
+		<img_regulator_manual_timed>termoregolazione/imgmanualetemporizzato.png</img_regulator_manual_timed>
+		<img_regulator_weekend>termoregolazione/imgfestivo.png</img_regulator_weekend>
+		<img_regulator_program>termoregolazione/imgprogramma.png</img_regulator_program>
+		<img_regulator_scenario>termoregolazione/imgscenario.png</img_regulator_scenario>
+		<img_regulator_holiday>termoregolazione/imgferiale.png</img_regulator_holiday>
+	</item>
+	<!-- thermal regulator settings page 99 zones -->
+	<item>
+		<cid>8100</cid>
+		<img_regulator_manual>termoregolazione/imgmanuale.png</img_regulator_manual>
+		<img_regulator_manual_timed>termoregolazione/imgmanualetemporizzato.png</img_regulator_manual_timed>
+		<img_regulator_weekend>termoregolazione/imgfestivo.png</img_regulator_weekend>
+		<img_regulator_program>termoregolazione/imgprogramma.png</img_regulator_program>
+		<img_regulator_scenario>termoregolazione/imgscenario.png</img_regulator_scenario>
+		<img_regulator_holiday>termoregolazione/imgferiale.png</img_regulator_holiday>
+		<img_regulator_antifreeze>termoregolazione/antigelooff.png</img_regulator_antifreeze>
+		<img_off_button>termoregolazione/off.png</img_off_button>
+		<img_winter>termoregolazione/invernooff.png</img_winter>
+		<img_summer>termoregolazione/estateoff.png</img_summer>
+		<img_winter_scenario>termoregolazione/imgscenarioinvernooff.png</img_winter_scenario>
+		<img_summer_scenario>termoregolazione/imgscenarioestateoff.png</img_summer_scenario>
+		<img_winter_program>termoregolazione/imgprogrammainvernooff.png</img_winter_program>
+		<img_summer_program>termoregolazione/imgprogrammaestateoff.png</img_summer_program>
+	</item>
+	<!-- air conditioning (cid may change) -->
+	<item>
+		<cid>4</cid>
+		<img_central_icon>termoregolazione/aircond.png</img_central_icon>
+		<img_ok>termoregolazione/ok.png</img_ok>
+		<img_off>termoregolazione/off.png</img_off>
+		<img_air_general>termoregolazione/aircondgen.png</img_air_general>
+		<img_air_single>termoregolazione/aircond.png</img_air_single>
+		<img_air_single_temp>termoregolazione/backtemperatura.png</img_air_single_temp>
+		<img_split_cmd>energia/edit.png</img_split_cmd>
+		<img_split_settings>energia/edit.png</img_split_settings>
+		<img_custom_button>termoregolazione/aircondcust.png</img_custom_button>
+		<img_cycle_mode>termoregolazione/ciclamod.png</img_cycle_mode>
+		<img_cycle_speed>termoregolazione/ciclafancoil.png</img_cycle_speed>
+		<img_swing_on>termoregolazione/on.png</img_swing_on>
+		<img_swing_off>termoregolazione/off.png</img_swing_off>
+		<img_split_cmd>termoregolazione/on.png</img_split_cmd>
+		<img_plus_disabled>termoregolazione/piudis.png</img_plus_disabled>
+		<img_minus_disabled>termoregolazione/menodis.png</img_minus_disabled>
+	</item>
+	<!-- scenario menu banners -->
+	<item>
+		<!--
+		  Scenario Module
+		  Other tags used: forward, on
+		-->
+		<cid>1002</cid>
+		<img_edit>scenari/setscenariooff.png</img_edit>
+		<img_start_prog>scenari/recscenario.png</img_start_prog>
+		<img_del_scen>scenari/clearscenario.png</img_del_scen>
+		<img_label>scenari/scenario.png</img_label>
+		<img_stop>scenari/startscenariooff.png</img_stop>
+	</item>
+	<item>
+		<cid>1003</cid>
+		<img_pptsce_on>scenari/startscenarioon.png</img_pptsce_on>
+		<img_pptsce_off>scenari/off.png</img_pptsce_off>
+		<!-- TODO: fixme! -->
+		<img_pptsce_increase>scenari/recscenario.png</img_pptsce_increase>
+		<img_pptsce_decrease>scenari/setscenarioon.png</img_pptsce_decrease>
+	</item>
+	<!-- evolved scenario menu banners -->
+	<item>
+		<cid>20000</cid>
+		<img_enable_scen>scenarievoluti/scenariabon.png</img_enable_scen>
+		<img_disable_scen>scenarievoluti/scenariaboff.png</img_disable_scen>
+		<img_start>scenarievoluti/start.png</img_start>
+		<img_stop>scenarievoluti/stop.png</img_stop>
+	</item>
+	<item>
+		<cid>20001</cid>
+		<img_enable_scen>scenarievoluti/scenariabon.png</img_enable_scen>
+		<img_disable_scen>scenarievoluti/scenariaboff.png</img_disable_scen>
+		<img_start>scenarievoluti/startbig.png</img_start>
+		<img_program>scenarievoluti/progscen.png</img_program>
+		<img_watch>scenarievoluti/imgora.png</img_watch>
+		<img_light>imgluce.png</img_light>
+		<img_dimmer>imgdimmer.png</img_dimmer>
+		<img_amplifier>imgdiffsonora.png</img_amplifier>
+		<img_aux>imgausiliario.png</img_aux>
+		<img_probe>imgtermo.png</img_probe>
+	</item>
+	<!-- settings banners -->
+	<item>
+		<!-- ringtone: external place type 1 -->
+		<cid>14101</cid>
+		<img_prev_ring>setup/onsuonpe0sx.png</img_prev_ring>
+		<img_next_ring>setup/onsuonpe0dx.png</img_next_ring>
+	</item>
+	<item>
+		<!-- ringtone: external place type 2 -->
+		<cid>14102</cid>
+		<img_prev_ring>setup/onsuonpe1sx.png</img_prev_ring>
+		<img_next_ring>setup/onsuonpe1dx.png</img_next_ring>
+	</item>
+	<item>
+		<!-- ringtone: external place type 3 -->
+		<cid>14103</cid>
+		<img_prev_ring>setup/onsuonpe2sx.png</img_prev_ring>
+		<img_next_ring>setup/onsuonpe2dx.png</img_next_ring>
+	</item>
+	<item>
+		<!-- ringtone: external place type 4 -->
+		<cid>14104</cid>
+		<img_prev_ring>setup/onsuonpe3sx.png</img_prev_ring>
+		<img_next_ring>setup/onsuonpe3dx.png</img_next_ring>
+	</item>
+	<item>
+		<!-- ringtone: intercom -->
+		<cid>14105</cid>
+		<img_prev_ring>setup/onsuoninterinternosx.png</img_prev_ring>
+		<img_next_ring>setup/onsuoninterinternodx.png</img_next_ring>
+	</item>
+	<item>
+		<!-- ringtone: interflat (?) -->
+		<cid>14106</cid>
+		<img_prev_ring>setup/onsuoninteresternosx.png</img_prev_ring>
+		<img_next_ring>setup/onsuoninteresternodx.png</img_next_ring>
+	</item>
+	<item>
+		<!-- ringtone: door bell -->
+		<cid>14107</cid>
+		<img_prev_ring>setup/onsuonchiamatapianosx.png</img_prev_ring>
+		<img_next_ring>setup/onsuonchiamatapianodx.png</img_next_ring>
+	</item>
+	<item>
+		<!-- ringtone: misc -->
+		<cid>14109</cid>
+		<img_prev_ring>setup/onsuonallarmesx.png</img_prev_ring>
+		<img_next_ring>setup/onsuonallarmedx.png</img_next_ring>
+	</item>
+	<!-- alarm clock -->
+	<item>
+		<cid>14201</cid>
+		<img_off>setup/off.png</img_off>
+		<img_on>setup/on.png</img_on>
+		<img_on>setup/on.png</img_on>
+		<img_state_icon>setup/imgsveglia.png</img_state_icon>
+		<img_edit>setup/info.png</img_edit>
+		<img_alarm_icon>setup/imgsvegliab.png</img_alarm_icon>
+		<img_arrow_up>setup/piu.png</img_arrow_up>
+		<img_arrow_down>setup/meno.png</img_arrow_down>
+		<img_day_on>setup/giornoon.png</img_day_on>
+		<img_day_off>setup/giornooff.png</img_day_off>
+	</item>
+	<!-- Entryphone call page -->
+	<item>
+		<cid>666</cid>
+		<img_fullscreen_on>videocitofonia/fullscreen.png</img_fullscreen_on>
+		<img_brightness>videocitofonia/luminosita.png</img_brightness>
+		<img_contrast>videocitofonia/contrasto.png</img_contrast>
+		<img_color>videocitofonia/colour.png</img_color>
+		<img_call>videocitofonia/connessione.png</img_call>
+		<img_setup_vct>videocitofonia/setupvct.png</img_setup_vct>
+		<img_mute>videocitofonia/mute.png</img_mute>
+		<img_stairlight>videocitofonia/lucescale.png</img_stairlight>
+		<img_unlock_door>videocitofonia/apri.png</img_unlock_door>
+		<img_cycle>videocitofonia/cicla.png</img_cycle>
+		<img_volume>videocitofonia/volfonicape.png</img_volume>
+		<img_arrow_up>videocitofonia/arrup.png</img_arrow_up>
+		<img_arrow_down>videocitofonia/arrdw.png</img_arrow_down>
+		<img_arrow_left>videocitofonia/arrsx.png</img_arrow_left>
+		<img_arrow_right>videocitofonia/arrdx.png</img_arrow_right>
+		<img_fullscreen>videocitofonia/screenfull.png</img_fullscreen>
+        <img_connection>videocitofonia/inconnessione.png</img_connection>
+	</item>
+	<!-- Video control items -->
+	<!-- panel -->
+	<item>
+		<cid>10051</cid>
+		<img_link_icon>videocitofonia/pes0.png</img_link_icon>
+	</item>
+	<!-- camera -->
+	<item>
+		<cid>10052</cid>
+		<img_link_icon>videocitofonia/telecamera.png</img_link_icon>
+	</item>
+	<!-- Intercom items -->
+	<item>
+		<cid>10101</cid>
+		<img_link_icon>videocitofonia/piintercom.png</img_link_icon>
+	</item>
+	<item>
+		<cid>10102</cid>
+		<img_link_icon>videocitofonia/piintercompiano.png</img_link_icon>
+	</item>
+    <item>
+        <!--
+        SCS Messages
+        Other tags used: img_scroll_up, img_scroll_down, img_back, img_ok
+        -->
+        <cid>17000</cid>
+        <img_link_icon>home/messaggion.png</img_link_icon>
+        <img_top_navigation_button>barranavigazione/messaggioff.png</img_top_navigation_button>
+        <img_delete_all>navigazione/eliminatutti.png</img_delete_all>
+        <img_delete>antintrusione/elimina.png</img_delete>
+    </item>
+</style>

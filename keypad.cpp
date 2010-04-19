@@ -1,7 +1,31 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "keypad.h"
 #include "fontmanager.h" // bt_global::font
 #include "skinmanager.h"
+#include "icondispatcher.h"
 #include "btbutton.h"
+#include "navigation_bar.h"
+#include "generic_functions.h" // getBostikName
 
 #include <QLabel>
 #include <QButtonGroup>
@@ -13,8 +37,25 @@
 
 // Keypad implementation
 
-Keypad::Keypad()
+Keypad::Keypad(bool back_button)
 {
+	// TODO extract the keypad to a widget and use it in both page and window
+#ifdef LAYOUT_TOUCHX
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	buildPage(new QWidget, nav_bar);
+	QWidget *top_widget = page_content;
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+
+	if (!back_button)
+	{
+		nav_bar->hide();
+		nav_bar->deleteLater();
+	}
+#else
+	QWidget *top_widget = this;
+#endif
+
 	BtButton *ok = new BtButton;
 	BtButton *canc = new BtButton;
 	BtButton *digits[10];
@@ -50,6 +91,7 @@ Keypad::Keypad()
 	// digits, ok, cancel buttons
 	QGridLayout *k = new QGridLayout;
 #ifdef LAYOUT_TOUCHX
+	k->setAlignment(Qt::AlignHCenter);
 	k->setSpacing(20);
 #endif
 	k->setContentsMargins(0, 0, 0, 0);
@@ -64,13 +106,13 @@ Keypad::Keypad()
 	// bottom labels
 	QHBoxLayout *p = new QHBoxLayout;
 	p->setContentsMargins(0, 0, 0, 0);
-	p->setSpacing(0);
+	p->setSpacing(10);
 
-	p->addWidget(pwdLabel, 1);
-	p->addWidget(digitLabel, 1);
+	p->addWidget(pwdLabel, 1, Qt::AlignRight);
+	p->addWidget(digitLabel, 1, Qt::AlignLeft);
 
 	// top layout
-	topLayout = new QVBoxLayout(this);
+	topLayout = new QVBoxLayout(top_widget);
 	topLayout->setContentsMargins(0, 0, 0, 10);
 #ifdef LAYOUT_BTOUCH
 	topLayout->setSpacing(0);
@@ -141,6 +183,8 @@ void Keypad::resetText()
 
 // KeypadWithState implementation
 
+#ifdef LAYOUT_BTOUCH
+
 KeypadWithState::KeypadWithState(int s[8])
 {
 	QHBoxLayout *l = new QHBoxLayout;
@@ -172,12 +216,40 @@ KeypadWithState::KeypadWithState(int s[8])
 	insertLayout(l);
 }
 
+#else
+
+KeypadWithState::KeypadWithState(int s[8])
+{
+	QHBoxLayout *l = new QHBoxLayout;
+	l->setContentsMargins(5, 5, 5, 5);
+	l->setSpacing(5);
+	l->setAlignment(Qt::AlignHCenter);
+
+	for (int i = 0; i < 8 && s[i] != -1; i++)
+	{
+		QLabel *state = new QLabel;
+		QString icon = bt_global::skin->getImage("small_" + QString::number(i + 1));
+
+		if (s[i])
+			icon = getBostikName(icon, "on");
+		else
+			icon = getBostikName(icon, "off");
+		state->setPixmap(*bt_global::icons_cache.getIcon(icon));
+
+		l->addWidget(state);
+	}
+
+	insertLayout(l);
+}
+
+#endif
+
 
 // KeypadWindow implementation
 
 KeypadWindow::KeypadWindow(Keypad::Type type)
 {
-	keypad = new Keypad;
+	keypad = new Keypad(false);
 	keypad->setMode(type);
 
 	connect(keypad, SIGNAL(Closed()), SIGNAL(Closed()));

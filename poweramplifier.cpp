@@ -1,3 +1,24 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "poweramplifier.h"
 #include "xml_functions.h" // getChildWithId, getChildren
 #include "devices_cache.h" // bt_global::devices_cache
@@ -5,6 +26,7 @@
 #include "generic_functions.h" // int trasformaVol(int vol)
 #include "bannercontent.h"
 #include "btbutton.h" // needed to directly connect button signals with slots
+#include "media_device.h"
 
 #include <QVariant> // setProperty
 #include <QDomNode>
@@ -12,7 +34,142 @@
 #include <QLabel>
 
 
-BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString address)
+
+AdjustVolume::AdjustVolume(QWidget *parent) :
+	BannLevel(parent)
+{
+	current_level = 2;
+}
+
+void AdjustVolume::initBanner(const QString &left, const QString &_center_on, const QString &_center_off,
+	const QString &right, States init_state, int init_level, const QString &banner_text)
+{
+	BannLevel::initBanner(banner_text);
+
+	left_button->setImage(left);
+	right_button->setImage(right);
+
+	center_on = _center_on;
+	center_off = _center_off;
+
+	setLevel(init_level);
+	setState(init_state);
+}
+
+void AdjustVolume::updateIcons()
+{
+	QString icon;
+	switch (current_state)
+	{
+	case ON:
+		icon = center_on;
+		break;
+	case OFF:
+		icon = center_off;
+		break;
+	}
+	setCenterLeftIcon(getBostikName(icon, QString("sxl") + QString::number(current_level)));
+	setCenterRightIcon(getBostikName(icon, QString("dxl") + QString::number(current_level)));
+}
+
+void AdjustVolume::setState(States new_state)
+{
+	if (new_state != current_state)
+	{
+		current_state = new_state;
+		updateIcons();
+	}
+
+}
+
+void AdjustVolume::setLevel(int level)
+{
+	if (level != current_level)
+	{
+		current_level = level;
+		updateIcons();
+	}
+}
+
+
+
+BannPowerAmplifierNew::BannPowerAmplifierNew(const QString &descr, const QDomNode& config_node, QString address, int openserver_id)
+	: AdjustVolume(0)
+{
+	status = false;
+
+	// TODO: remove config_node from params, and also SkinContext
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+	on_icon = bt_global::skin->getImage("on");
+	off_icon = bt_global::skin->getImage("off");
+	initBanner(on_icon, bt_global::skin->getImage("volume_active"),
+		bt_global::skin->getImage("volume_inactive"), bt_global::skin->getImage("settings"), OFF, 1, descr);
+	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address, openserver_id));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
+
+	connect(left_button, SIGNAL(clicked()), SLOT(toggleStatus()));
+	connect(this, SIGNAL(center_right_clicked()), SLOT(volumeUp()));
+	connect(this, SIGNAL(center_left_clicked()), SLOT(volumeDown()));
+
+	connectButtonToPage(right_button, new PowerAmplifier(dev, config_node));
+}
+
+void BannPowerAmplifierNew::toggleStatus()
+{
+	if (status)
+		dev->turnOff();
+	else
+		dev->turnOn();
+}
+
+// TODO: PoweramplifierDevice currently lacks the new init() method
+
+void BannPowerAmplifierNew::status_changed(const DeviceValues &status_list)
+{
+	DeviceValues::const_iterator it = status_list.constBegin();
+	while (it != status_list.constEnd())
+	{
+		if (it.key() == PowerAmplifierDevice::DIM_STATUS)
+		{
+			status = it.value().toBool();
+			setState(status ? ON : OFF);
+			left_button->setImage(status ? off_icon : on_icon);
+		}
+		else if (it.key() == PowerAmplifierDevice::DIM_VOLUME)
+		{
+			int volume = it.value().toInt();
+			// We have to normalize the volume value (from 0 to 31) in a value
+			// that we can represent into the banner (that accept values from 0 to 8)
+			// so we use the following formula.
+			int level = trasformaVol(volume);
+			// TODO remove after aligning image names
+#ifdef LAYOUT_BTOUCH
+			Q_ASSERT_X(level > 0, "BannPowerAmplifierNew::status_changed", "Received volume is not in range 0-31");
+#else
+			Q_ASSERT_X(level >= 0, "BannPowerAmplifierNew::status_changed", "Received volume is not in range 0-31");
+#endif
+			setLevel(level);
+		}
+		++it;
+	}
+}
+
+void BannPowerAmplifierNew::volumeUp()
+{
+	dev->volumeUp();
+}
+
+void BannPowerAmplifierNew::volumeDown()
+{
+	dev->volumeDown();
+}
+
+
+
+
+
+
+BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString address, int openserver_id)
 	: bannRegolaz(parent)
 {
 	setRange(1, 9);
@@ -21,8 +178,8 @@ BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_n
 	SetIcons(bt_global::skin->getImage("settings"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("volume_active"), bt_global::skin->getImage("volume_inactive"), true);
 	setAddress(address);
-	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address));
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address, openserver_id));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 
 	connect(this, SIGNAL(dxClick()), SLOT(toggleStatus()));
 	connect(this, SIGNAL(cdxClick()), SLOT(volumeUp()));
@@ -48,9 +205,9 @@ void BannPowerAmplifier::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void BannPowerAmplifier::status_changed(const StatusList &status_list)
+void BannPowerAmplifier::status_changed(const DeviceValues &status_list)
 {
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_STATUS)
@@ -106,10 +263,10 @@ void PowerAmplifier::loadBanners(PowerAmplifierDevice *dev, const QDomNode &conf
 	b = new PowerAmplifierBass(dev, tr("Bass"), this);
 	page_content->appendBanner(b);
 
-	b = new PowerAmplifierBalance(dev, this);
-	b->setText(tr("Balance"));
-	b->Draw();
-	page_content->appendBanner(b);
+	PowerAmplifierBalance *bann = new PowerAmplifierBalance(dev, this);
+	bann->setText(tr("Balance"));
+	bann->Draw();
+	page_content->appendBanner(bann);
 
 	b = new PowerAmplifierLoud(dev, tr("Loud"), this);
 	page_content->appendBanner(b);
@@ -117,7 +274,7 @@ void PowerAmplifier::loadBanners(PowerAmplifierDevice *dev, const QDomNode &conf
 
 
 PowerAmplifierPreset::PowerAmplifierPreset(PowerAmplifierDevice *d, QWidget *parent, const QMap<int, QString>& preset_list)
-	: BannOnOffNew(parent)
+	: Bann2Buttons(parent)
 {
 	dev = d;
 
@@ -125,7 +282,7 @@ PowerAmplifierPreset::PowerAmplifierPreset(PowerAmplifierDevice *d, QWidget *par
 	fillPresetDesc(preset_list);
 	connect(right_button, SIGNAL(clicked()), SLOT(next()));
 	connect(left_button, SIGNAL(clicked()), SLOT(prev()));
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 
 	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("preset"),
 		bt_global::skin->getImage("plus"), preset_desc[0]);
@@ -163,16 +320,16 @@ void PowerAmplifierPreset::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void PowerAmplifierPreset::status_changed(const StatusList &status_list)
+void PowerAmplifierPreset::status_changed(const DeviceValues &status_list)
 {
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_PRESET)
 		{
 			int preset = it.value().toInt();
 			if (preset >= 0 && preset < num_preset)
-				setBannerText(preset_desc[preset]);
+				setDescriptionText(preset_desc[preset]);
 			else
 				qWarning("Preset value (%d) is out of admitted range! [0 - %d]", preset, num_preset);
 		}
@@ -201,7 +358,7 @@ PowerAmplifierTreble::PowerAmplifierTreble(PowerAmplifierDevice *d, const QStrin
 
 	connect(left_button, SIGNAL(clicked()), SLOT(down()));
 	connect(right_button, SIGNAL(clicked()), SLOT(up()));
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 	showLevel(0);
 }
 
@@ -211,9 +368,9 @@ void PowerAmplifierTreble::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void PowerAmplifierTreble::status_changed(const StatusList &status_list)
+void PowerAmplifierTreble::status_changed(const DeviceValues &status_list)
 {
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_TREBLE)
@@ -250,7 +407,7 @@ PowerAmplifierBass::PowerAmplifierBass(PowerAmplifierDevice *d, const QString &b
 
 	connect(left_button, SIGNAL(clicked()), SLOT(down()));
 	connect(right_button, SIGNAL(clicked()), SLOT(up()));
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 	showLevel(0);
 }
 
@@ -260,9 +417,9 @@ void PowerAmplifierBass::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void PowerAmplifierBass::status_changed(const StatusList &status_list)
+void PowerAmplifierBass::status_changed(const DeviceValues &status_list)
 {
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_BASS)
@@ -297,7 +454,7 @@ PowerAmplifierBalance::PowerAmplifierBalance(PowerAmplifierDevice *d, QWidget *p
 		bt_global::skin->getImage("balance_dx"), bt_global::skin->getImage("balance_sx"));
 	connect(this, SIGNAL(sxClick()), SLOT(dx()));
 	connect(this, SIGNAL(dxClick()), SLOT(sx()));
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 	showBalance(0);
 }
 
@@ -307,9 +464,9 @@ void PowerAmplifierBalance::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void PowerAmplifierBalance::status_changed(const StatusList &status_list)
+void PowerAmplifierBalance::status_changed(const DeviceValues &status_list)
 {
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_BALANCE)
@@ -352,7 +509,7 @@ PowerAmplifierLoud::PowerAmplifierLoud(PowerAmplifierDevice *d, const QString &b
 		bt_global::skin->getImage("on"), OFF, banner_text);
 	connect(this, SIGNAL(sxClick()), SLOT(on()));
 	connect(this, SIGNAL(dxClick()), SLOT(off()));
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 }
 
 void PowerAmplifierLoud::inizializza(bool forza)
@@ -361,9 +518,9 @@ void PowerAmplifierLoud::inizializza(bool forza)
 	banner::inizializza(forza);
 }
 
-void PowerAmplifierLoud::status_changed(const StatusList &status_list)
+void PowerAmplifierLoud::status_changed(const DeviceValues &status_list)
 {
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (it.key() == PowerAmplifierDevice::DIM_LOUD)

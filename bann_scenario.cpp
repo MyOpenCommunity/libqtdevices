@@ -1,35 +1,46 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "bann_scenario.h"
-#include "device.h"
 #include "scenevocond.h"
 #include "btbutton.h"
 #include "generic_functions.h" // setCfgValue
-#include "fontmanager.h" // bt_global::font
-#include "devices_cache.h" // bt_global::devices_cache
+#include "devices_cache.h" // bt_global::add_device_to_cache
 #include "automation_device.h"
-#include "skinmanager.h" // SkinContext, bt_global::skin
+#include "skinmanager.h" // bt_global::skin
 #include "scenario_device.h"
-#include "xml_functions.h" // getTextChild
+#include "scenevomanager.h"
 
-#include <QDir>
 #include <QDebug>
-#include <QLabel>
 #include <QTimerEvent>
-#include <QDomNode>
 
 #define PPTSCE_INTERVAL 1000
 
 
-BannSimpleScenario::BannSimpleScenario(QWidget *parent, const QDomNode &config_node) :
-	BannLeft(parent)
+BannSimpleScenario::BannSimpleScenario(int scenario, const QString &descr, const QString &where, int openserver_id) :
+	Bann2Buttons(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-	initBanner(bt_global::skin->getImage("on"), getTextChild(config_node, "descr"));
-
-	QString where = getTextChild(config_node, "where");
-	dev = bt_global::add_device_to_cache(new ScenarioDevice(where));
-
-	scenario_number = getTextChild(config_node, "what").toInt();
-
+	initBanner(bt_global::skin->getImage("on"), QString(), descr);
+	dev = bt_global::add_device_to_cache(new ScenarioDevice(where, openserver_id), NO_INIT);
+	scenario_number = scenario;
 	connect(left_button, SIGNAL(clicked()), SLOT(activate()));
 }
 
@@ -39,86 +50,97 @@ void BannSimpleScenario::activate()
 }
 
 
-ModifyScenario::ModifyScenario(QWidget *parent, const QDomNode &config_node) :
-	Bann4ButtonsIcon(parent)
+ScenarioModule::ScenarioModule(int scenario, const QString &descr, const QString &where, int openserver_id) :
+	Bann4ButtonsIcon(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
 	initBanner(bt_global::skin->getImage("edit"), bt_global::skin->getImage("forward"),
 		bt_global::skin->getImage("label"), bt_global::skin->getImage("start_prog"),
 		bt_global::skin->getImage("del_scen"), bt_global::skin->getImage("on"),
-		bt_global::skin->getImage("stop"), LOCKED, getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("stop"), LOCKED, descr);
 
-	QString where = getTextChild(config_node, "where");
-	dev = bt_global::add_device_to_cache(new ScenarioDevice(where));
+	dev = bt_global::add_device_to_cache(new ScenarioDevice(where, openserver_id));
 
-	scenario_number = getTextChild(config_node, "what").toInt();
+	scenario_number = scenario;
 	is_editing = false;
 	connect(left_button, SIGNAL(clicked()), SLOT(activate()));
 	connect(right_button, SIGNAL(clicked()), SLOT(editScenario()));
 	connect(center_left_button, SIGNAL(clicked()), SLOT(startEditing()));
 	connect(center_right_button, SIGNAL(clicked()), SLOT(deleteScenario()));
-	connect(dev, SIGNAL(status_changed(StatusList)), SLOT(status_changed(const StatusList &)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 }
 
-void ModifyScenario::activate()
+void ScenarioModule::activate()
 {
 	dev->activateScenario(scenario_number);
 }
 
-void ModifyScenario::editScenario()
+void ScenarioModule::editScenario()
 {
 	is_editing = !is_editing;
 	setState(is_editing ? EDIT_VIEW : UNLOCKED);
 }
 
-void ModifyScenario::startEditing()
+void ScenarioModule::startEditing()
 {
 	dev->startProgramming(scenario_number);
 }
 
-void ModifyScenario::deleteScenario()
+void ScenarioModule::deleteScenario()
 {
 	dev->deleteScenario(scenario_number);
 }
 
-void ModifyScenario::changeLeftFunction(const char *slot)
+void ScenarioModule::changeLeftFunction(const char *slot)
 {
 	left_button->disconnect(SIGNAL(clicked()));
 	connect(left_button, SIGNAL(clicked()), slot);
 }
 
-void ModifyScenario::stopEditing()
+void ScenarioModule::stopEditing()
 {
 	dev->stopProgramming(scenario_number);
 }
 
-void ModifyScenario::status_changed(const StatusList &sl)
+void ScenarioModule::status_changed(const DeviceValues &sl)
 {
-	StatusList::const_iterator it = sl.constBegin();
+	DeviceValues::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
 	{
 		switch (it.key())
 		{
 		case ScenarioDevice::DIM_LOCK:
 			setState(it.value().toBool() ? LOCKED : UNLOCKED);
-			// TODO: it seems reasonable that when LOCKED the left function returns
-			// to activate(), since the device won't care about our frames.
-			// Ask Agresta.
-			// When UNLOCKED, however, the left function mustn't be touched
-			//changeLeftFunction(SLOT(activate()));
+			is_editing = false;
 			break;
 		case ScenarioDevice::DIM_START:
 		{
-			bool is_start_edit = it.value().toBool();
-			if (is_start_edit)
+			Q_ASSERT_X(it.value().canConvert<ScenarioProgrammingStatus>(), "ScenarioModule::status_changed",
+				"Cannot convert values in DIM_START");
+			ScenarioProgrammingStatus val = it.value().value<ScenarioProgrammingStatus>();
+			if (val.first)
 			{
-				setEditingState(EDIT_ACTIVE);
-				changeLeftFunction(SLOT(stopEditing()));
+				if (val.second == scenario_number)
+				{
+					setEditingState(EDIT_ACTIVE);
+					changeLeftFunction(SLOT(stopEditing()));
+				}
+				else
+				{
+					setState(LOCKED);
+					changeLeftFunction(SLOT(activate()));
+				}
 			}
 			else
 			{
-				setEditingState(EDIT_INACTIVE);
+				if (val.second == scenario_number)
+				{
+					setState(UNLOCKED);
+					setEditingState(EDIT_INACTIVE);
+					is_editing = false;
+				}
+				else
+					setState(UNLOCKED);
+
 				changeLeftFunction(SLOT(activate()));
 			}
 		}
@@ -129,360 +151,95 @@ void ModifyScenario::status_changed(const StatusList &sl)
 }
 
 
-#if 1
+int ScenarioEvolved::next_serial_number = 1;
 
-bannScenario::bannScenario(QWidget *parent, QString where, QString IconaSx) : bannOnSx(parent)
+ScenarioEvolved::ScenarioEvolved(int _item_id, QString descr, QString _action, bool _enabled,
+	ScenEvoTimeCondition *tcond,  ScenEvoDeviceCondition *dcond) : Bann3Buttons(0)
 {
-	SetIcons(IconaSx, 1);
-	setAddress(where);
-	connect(this,SIGNAL(click()),this,SLOT(Attiva()));
-}
-
-void bannScenario::Attiva()
-{
-	char cosa[15];
-	QByteArray buf_addr = getAddress().toAscii();
-	strncpy(cosa, buf_addr.constData(),sizeof(cosa));
-	if (strstr(cosa,"*"))
-	{
-		memset(index(cosa,'*'),'\000',sizeof(cosa)-(index(cosa,'*')-cosa));
-		sendFrame(createMsgOpen("0", cosa, strstr(buf_addr.constData(),"*")+1));
-	}
-}
-
-
-gesModScen::gesModScen(QWidget *parent, QString where, QString IcoSx, QString IcoDx, QString IcoCsx,
-	QString IcoCdx, QString IcoDes, QString IcoSx2, QString IcoDx2) :  bann4tasLab(parent)
-{
-	icon_on = IcoSx;
-	icon_stop = IcoSx2;
-	icon_info = IcoDx;
-	icon_no_info = IcoDx2;
-
-	SetIcons(IcoSx, IcoDx, IcoCsx, IcoCdx, IcoDes);
-	nascondi(BUT3);
-	nascondi(BUT4);
-
-	qDebug() << "gesModScen::gesModScen(): indirizzo =" << where;
-
-	int pos = where.indexOf('*');
-	if (pos != -1)
-	{
-		cosa = where.left(pos);
-		dove = where.mid(pos + 1);
-	}
-	sendInProgr = 0;
-	in_progr = 0;
-
-	setAddress(dove);
-	impostaAttivo(2);
-	connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
-	connect(this,SIGNAL(dxClick()),this,SLOT(enterInfo()));
-	connect(this,SIGNAL(csxClick()),this,SLOT(startProgScen()));
-	connect(this,SIGNAL(cdxClick()),this,SLOT(cancScen()));
-
-	// Crea o preleva il dispositivo dalla cache
-	dev = bt_global::devices_cache.get_modscen_device(getAddress());
-	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
-			this, SLOT(status_changed(QList<device_status*>)));
-}
-
-void gesModScen::attivaScenario()
-{
-	dev->sendFrame("*0*" + cosa + "*" + dove + "##");
-}
-
-void gesModScen::enterInfo()
-{
-	nascondi(ICON);
-	mostra(BUT4);
-	mostra(BUT3);
-	SetIcons(1, icon_no_info);
-	disconnect(this,SIGNAL(dxClick()),this,SLOT(enterInfo()));
-	connect(this,SIGNAL(dxClick()),this,SLOT(exitInfo()));
-	Draw();
-}
-
-void gesModScen::exitInfo()
-{
-	mostra(ICON);
-	nascondi(BUT4);
-	nascondi(BUT3);
-	SetIcons(1, icon_info);
-	connect(this,SIGNAL(dxClick()),this,SLOT(enterInfo()));
-	disconnect(this,SIGNAL(dxClick()),this,SLOT(exitInfo()));
-	Draw();
-}
-
-void gesModScen::startProgScen()
-{
-	dev->sendFrame("*0*40#" + cosa + "*" + dove + "##");
-	sendInProgr = 1;
-}
-
-void gesModScen::stopProgScen()
-{
-	dev->sendFrame("*0*41#" + cosa + "*" + dove + "##");
-	sendInProgr = 0;
-}
-
-void gesModScen::cancScen()
-{
-	dev->sendFrame("*0*42#" + cosa + "*" + dove + "##");
-}
-
-void gesModScen::status_changed(QList<device_status*> sl)
-{
-	stat_var curr_status(stat_var::STAT);
-	qDebug("gesModScen::status_changed");
-	bool aggiorna = false;
-
-	for (int i = 0; i < sl.size(); ++i)
-	{
-		device_status *ds = sl.at(i);
-		switch (ds->get_type())
-		{
-		case device_status::MODSCEN:
-			qDebug("Modscen status change");
-			ds->read((int)device_status_modscen::STAT_INDEX, curr_status);
-			switch(curr_status.get_val())
-			{
-			case device_status_modscen::PROGRAMMING_START:
-				qDebug("Programming start");
-				if (sendInProgr)
-				{
-					SetIcons(0, icon_stop);
-					disconnect(this,SIGNAL(sxClick()), this,SLOT(attivaScenario()));
-					connect(this,SIGNAL(sxClick()), this,SLOT(stopProgScen()));
-					in_progr = 0;
-				}
-				else
-				{
-					in_progr = 1;
-					exitInfo();
-				}
-				aggiorna = 1;
-				break;
-			case device_status_modscen::LOCKED:
-				qDebug("Locked");
-				bloccato = 1;
-				exitInfo();
-				aggiorna = 1;
-				break;
-			case device_status_modscen::BUSY:
-				qDebug("Busy");
-				in_progr = 1;
-				exitInfo();
-				aggiorna = 1;
-				break;
-			case device_status_modscen::PROGRAMMING_STOP:
-				qDebug("Programming stop");
-				SetIcons(0, icon_on);
-				disconnect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
-				connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
-				disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
-				aggiorna = 1;
-				in_progr = 0;
-				break;
-			case device_status_modscen::UNLOCKED:
-				qDebug("Unlocked");
-				SetIcons(0, icon_on);
-				disconnect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
-				connect(this,SIGNAL(sxClick()),this,SLOT(attivaScenario()));
-				disconnect(this,SIGNAL(sxClick()),this,SLOT(stopProgScen()));
-				aggiorna = 1;
-				bloccato = 0;
-				break;
-			default:
-				qDebug("Unknown status %d", curr_status.get_val());
-			}
-			break;
-		default:
-			qDebug("device status of unknown type (%d)", ds->get_type());
-			break;
-		}
-	}
-
-	if (aggiorna)
-	{
-		if (bloccato || in_progr)
-			nascondi(BUT2);
-		else
-			mostra(BUT2);
-		Draw();
-	}
-}
-
-void gesModScen::inizializza(bool forza)
-{
-	nascondi(BUT2);
-}
-
-#endif
-
-
-int scenEvo::next_serial_number = 1;
-
-scenEvo::scenEvo(QWidget *parent, const QDomNode &conf_node, QList<scenEvo_cond*> c) :
-	Bann3Buttons(parent), condList(c)
-{
-	current_condition = 0;
-
+	time_cond = tcond;
+	device_cond = dcond;
+	item_id = _item_id;
+	action = _action;
+	enabled = _enabled;
 	serial_number = next_serial_number++;
-	for (int i = 0; i < condList.size(); ++i)
+	if (time_cond)
 	{
-		scenEvo_cond *co = condList.at(i);
-		qDebug() << "connecting condition: " << co->getDescription();
-		co->set_serial_number(serial_number);
-		connect(co, SIGNAL(verificata()), this, SLOT(trig()));
-		connect(co, SIGNAL(condSatisfied()), this, SLOT(trigOnStatusChanged()));
-		connect(co, SIGNAL(okAll()), this, SLOT(saveAndApplyAll()));
-		connect(co, SIGNAL(resetAll()), this, SLOT(resetAll()));
+		time_cond->set_serial_number(serial_number);
+		connect(time_cond, SIGNAL(condSatisfied()), SLOT(trig()));
 	}
 
-#ifdef CONFIG_BTOUCH
-	action = getElement(conf_node, "action/open").text();
-	enabled = getTextChild(conf_node, "enable").toInt();
-#else
-	action = getElement(conf_node, "scen/action/open").text();
-	enabled = getTextChild(conf_node, "scen/status").toInt();
-#endif
+	if (device_cond)
+	{
+		device_cond->set_serial_number(serial_number);
+		connect(device_cond, SIGNAL(condSatisfied()), SLOT(trigOnStatusChanged()));
+	}
+
+	ScenEvoManager *p = new ScenEvoManager(time_cond, device_cond);
+	connectButtonToPage(right_button, p);
+	connect(p, SIGNAL(reset()), SLOT(reset()));
+	connect(p, SIGNAL(save()), SLOT(save()));
+
 	enable_icon = bt_global::skin->getImage("enable_scen");
 	disable_icon = bt_global::skin->getImage("disable_scen");
 	initBanner(enabled ? enable_icon : disable_icon, bt_global::skin->getImage("start"),
-		bt_global::skin->getImage("program"), getTextChild(conf_node, "descr"));
+		bt_global::skin->getImage("program"), descr);
 
-	connect(left_button, SIGNAL(clicked()), SLOT(toggleAttivaScev()));
-	connect(right_button, SIGNAL(clicked()), SLOT(configScev()));
-	connect(center_button, SIGNAL(clicked()), SLOT(forzaScev()));
+	connect(left_button, SIGNAL(clicked()), SLOT(toggleActivation()));
+	connect(center_button, SIGNAL(clicked()), SLOT(forceTrig()));
 }
 
-void scenEvo::toggleAttivaScev()
+void ScenarioEvolved::reset()
 {
-	qDebug("scenEvo::toggleAttivaScev");
+	if (device_cond)
+		device_cond->reset();
+	if (time_cond)
+		time_cond->reset();
+}
+
+void ScenarioEvolved::save()
+{
+	if (device_cond)
+	{
+		device_cond->Apply();
+		device_cond->save();
+	}
+
+	if (time_cond)
+	{
+		time_cond->Apply();
+		time_cond->save();
+	}
+}
+
+void ScenarioEvolved::toggleActivation()
+{
 	enabled = !enabled;
 	left_button->setImage(enabled ? enable_icon : disable_icon);
-	const char *s = enabled ? "1" : "0";
 #ifdef CONFIG_BTOUCH
-	// TODO: how to save into config file?
-	setCfgValue("enable", s, SCENARIO_EVOLUTO, serial_number);
+	setCfgValue("enable", enabled, SCENARIO_EVOLUTO, serial_number);
+#else
+	setCfgValue("scen/status", enabled, item_id);
 #endif
 }
 
-void scenEvo::configScev()
+void ScenarioEvolved::forceTrig()
 {
-	qDebug("scenEvo::configScev");
-	scenEvo_cond *co = condList.at(current_condition);
-	connect(co, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
-	connect(co, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
-	connect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-	co->showPage();
-}
-
-void scenEvo::forzaScev()
-{
-	// Forced trigger
 	trig(true);
 }
 
-void scenEvo::nextCond()
+void ScenarioEvolved::trigOnStatusChanged()
 {
-	qDebug("scenEvo::nextCond()");
-	scenEvo_cond *old_cond = condList.at(current_condition);
-	disconnect(old_cond, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
-	disconnect(old_cond, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
-	disconnect(old_cond, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
+	if (time_cond)
+		return;
 
-	if (current_condition + 1 < static_cast<unsigned>(condList.size()))
-	{
-		++current_condition;
-		scenEvo_cond *cond = condList.at(current_condition);
-		qDebug("cond = %p", cond);
-		if (cond)
-		{
-			connect(cond, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
-			connect(cond, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
-			connect(cond, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-			cond->inizializza();
-			cond->showPage();
-		}
-	}
-	else
-		current_condition = 0;
-}
-
-void scenEvo::prevCond()
-{
-	qDebug("scenEvo::prevCond()");
-	scenEvo_cond *old_cond = condList.at(current_condition);
-	disconnect(old_cond, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
-	disconnect(old_cond, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
-	disconnect(old_cond, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-
-	if (current_condition > 0)
-	{
-		--current_condition;
-		scenEvo_cond *cond = condList.at(current_condition);
-		qDebug("cond = %p", cond);
-		if (cond)
-		{
-			connect(cond, SIGNAL(SwitchToNext()), this, SLOT(nextCond()));
-			connect(cond, SIGNAL(SwitchToPrev()), this, SLOT(prevCond()));
-			connect(cond, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-			cond->showPage();
-		}
-	}
-}
-
-void scenEvo::firstCond()
-{
-	qDebug("scenEvo::firstCond()");
-	scenEvo_cond *co = condList.at(current_condition);
-	disconnect(co, SIGNAL(SwitchToFirst()), this, SLOT(firstCond()));
-	current_condition = 0;
-	emit pageClosed();
-}
-
-void scenEvo::saveAndApplyAll()
-{
-	qDebug("scenEvo::saveAndApplyAll()");
-	for (int i = 0; i < condList.size(); ++i)
-	{
-		scenEvo_cond *co = condList.at(i);
-		co->Apply();
-		co->save();
-	}
-}
-
-void scenEvo::resetAll()
-{
-	qDebug("scenEvo::resetAll()");
-	for (int i = 0; i < condList.size(); ++i)
-	{
-		scenEvo_cond *co = condList.at(i);
-		co->reset();
-	}
-	emit pageClosed();
-}
-
-void scenEvo::trigOnStatusChanged()
-{
-	qDebug("scenEvo::trigOnStatusChanged()");
-	for (int i = 0; i < condList.size(); ++i)
-	{
-		scenEvo_cond *co = condList.at(i);
-		if (co->hasTimeCondition)
-			return;
-	}
 	trig();
 }
 
-void scenEvo::trig(bool forced)
+void ScenarioEvolved::trig(bool forced)
 {
 	if (action.isEmpty())
 	{
-		qDebug("scenEvo::trig(), act = NULL, non faccio niente");
+		qDebug("ScenarioEvolved::trig(), act = NULL, skip");
 		return;
 	}
 
@@ -490,89 +247,62 @@ void scenEvo::trig(bool forced)
 	{
 		if (!enabled)
 		{
-			qDebug("scenEvo::trig(), non abilitato, non faccio niente");
+			qDebug("ScenarioEvolved::trig() not enabled");
 			return;
 		}
-		for (int i = 0; i < condList.size(); ++i)
+
+		if (device_cond && !device_cond->isTrue())
 		{
-			scenEvo_cond *co = condList.at(i);
-			if (!co->isTrue())
-			{
-				qDebug("Condizione %p (%s), non verificata, non faccio niente",
-						co, co->getDescription());
-				return;
-			}
+			qDebug("Device Condition not verified");
+			return;
 		}
 	}
 
-	qDebug() << "scenEvo::trig(), act = " << action;
+	qDebug() << "ScenarioEvolved::trig(), act = " << action;
 	sendFrame(action);
 }
 
-void scenEvo::inizializza(bool forza)
+void ScenarioEvolved::inizializza(bool forza)
 {
-	qDebug("scenEvo::inizializza()");
-	for (int i = 0; i < condList.size(); ++i)
-	{
-		scenEvo_cond *co = condList.at(i);
-		qDebug() << "Ciclo n. " << i << co->getDescription();
-		co->inizializza();
-	}
-}
-
-scenEvo::~scenEvo()
-{
-	while (!condList.isEmpty())
-		delete condList.takeFirst();
+	Q_UNUSED(forza)
+	if (device_cond)
+		device_cond->inizializza();
 }
 
 
-ScheduledScenario::ScheduledScenario(QWidget *parent, const QDomNode &config_node) :
-	Bann4Buttons(parent)
+ScheduledScenario::ScheduledScenario(const QString &enable, const QString &start, const QString &stop, const QString &disable, const QString &descr) :
+	Bann4Buttons(0),
+	action_enable(enable),
+	action_disable(disable),
+	action_start(start),
+	action_stop(stop)
 {
-	initBanner(bt_global::skin->getImage("disable_scen"), bt_global::skin->getImage("stop"),
-		bt_global::skin->getImage("start"), bt_global::skin->getImage("enable_scen"),
-		getTextChild(config_node, "descr"));
-	connect(left_button, SIGNAL(clicked()), SLOT(enable()));
-	connect(center_left_button, SIGNAL(clicked()), SLOT(start()));
-	connect(center_right_button, SIGNAL(clicked()), SLOT(stop()));
-	connect(right_button, SIGNAL(clicked()), SLOT(disable()));
-
-	QList<QString *> actions;
-	actions << &action_enable << &action_start << &action_stop << &action_disable;
-	// these must be in the same position as the list above!
-	QList<BtButton *> buttons;
-	buttons << left_button << center_left_button << center_right_button << right_button;
-
-#ifdef CONFIG_BTOUCH
-	QList<QString> nodes;
-	// these must be in the order: unable, start, stop, disable (the same given by actions above)
-	nodes << "unable" << "start" << "stop" << "disable";
-	for (int i = 0; i < nodes.size(); ++i)
+	QString en_icon;
+	if (!action_enable.isEmpty())
 	{
-		QDomNode node = getChildWithName(config_node, nodes[i]);
-		if (!node.isNull() && getTextChild(node, "value").toInt())
-			*actions[i] = getTextChild(node, "open");
-		else
-			deleteButton(buttons[i]);
+		en_icon = bt_global::skin->getImage("enable_scen");
+		connect(left_button, SIGNAL(clicked()), SLOT(enable()));
 	}
-#else
-	QList<QString> names;
-	// these must be in the order: attiva, start, stop, disattiva (the same given by actions above)
-	names << "attiva" << "start" << "stop" << "disattiva";
-	for (int i = 0; i < names.size(); ++i)
+	QString dis_icon;
+	if (!action_disable.isEmpty())
 	{
-		// look for a node called where{attiva,disattiva,start,stop} to decide if the action is enabled
-		QDomElement where = getElement(config_node, QString("schedscen/where") + names[i]);
-		if (!where.isNull())
-		{
-			QDomElement what = getElement(config_node, QString("schedscen/what") + names[i]);
-			*actions[i] = QString("*15*%1*%2##").arg(what.text()).arg(where.text());
-		}
-		else
-			deleteButton(buttons[i]);
+		dis_icon = bt_global::skin->getImage("disable_scen");
+		connect(right_button, SIGNAL(clicked()), SLOT(disable()));
 	}
-#endif
+	QString start_icon;
+	if (!action_start.isEmpty())
+	{
+		start_icon = bt_global::skin->getImage("start");
+		connect(center_left_button, SIGNAL(clicked()), SLOT(start()));
+	}
+	QString stop_icon;
+	if (!action_stop.isEmpty())
+	{
+		stop_icon =bt_global::skin->getImage("stop");
+		connect(center_right_button, SIGNAL(clicked()), SLOT(stop()));
+	}
+
+	initBanner(dis_icon, stop_icon, start_icon, en_icon, descr);
 }
 
 void ScheduledScenario::enable()
@@ -596,148 +326,24 @@ void ScheduledScenario::disable()
 }
 
 
-#if 0
-// DELETE
-scenSched::scenSched(QWidget *parent, QString Icona1, QString Icona2, QString Icona3, QString Icona4,
-	QString act_enable, QString act_disable, QString act_start, QString act_stop) : bann4But(parent)
+PPTSce::PPTSce(const QString &descr, const QString &where, int openserver_id) : Bann4Buttons(0)
 {
-	qDebug("scenSched::scenSched()");
-	action_enable = act_enable;
-	action_disable = act_disable;
-	action_start = act_start;
-	action_stop = act_stop;
+	initBanner(bt_global::skin->getImage("pptsce_on"), bt_global::skin->getImage("pptsce_increase"),
+		bt_global::skin->getImage("pptsce_decrease"), bt_global::skin->getImage("pptsce_off"),
+		descr);
 
-	SetIcons(Icona1, Icona3, Icona4, Icona2);
-	if (!act_enable.isNull())
-	{
-		// sx
-		qDebug("BUT1 attivo");
-		connect(this, SIGNAL(sxClick()), this, SLOT(enable()));
-	}
-	else
-		nascondi(BUT1);
-	if (!act_start.isNull())
-	{
-		// csx
-		qDebug("BUT3 attivo");
-		connect(this, SIGNAL(csxClick()), this, SLOT(start()));
-	}
-	else
-		nascondi(BUT3);
-	if (!act_stop.isNull())
-	{
-		// cdx
-		qDebug("BUT4 attivo");
-		connect(this, SIGNAL(cdxClick()), this, SLOT(stop()));
-	}
-	else
-		nascondi(BUT4);
-	if (!act_disable.isNull())
-	{
-		// dx
-		qDebug("BUT2 attivo");
-		connect(this, SIGNAL(dxClick()), this, SLOT(disable()));
-	}
-	else
-		nascondi(BUT2);
-	Draw();
-}
-
-void scenSched::enable()
-{
-	qDebug("scenSched::enable()");
-	sendFrame(action_enable);
-	Draw();
-}
-
-void scenSched::start()
-{
-	qDebug("scenSched::start()");
-	sendFrame(action_start);
-	Draw();
-}
-
-void scenSched::stop()
-{
-	qDebug("scenSched::stop()");
-	sendFrame(action_stop);
-	Draw();
-}
-
-void scenSched::disable()
-{
-	qDebug("scenSched::disable()");
-	sendFrame(action_disable);
-	Draw();
-}
-
-void scenSched::Draw()
-{
-	// Icon[0] => left button
-	// pressIcon[0] => pressed left button
-	// Icon[1] => center left button 
-	// pressIcon[1] => pressed center left button
-	// Icon[3] => center right button
-	// pressIcon[3] => pressed center right button
-	// Icon[2] => right button
-	// pressIcon[2] => pressed right button
-	qDebug("scenSched::Draw()");
-	if (sxButton && Icon[0])
-	{
-		sxButton->setPixmap(*Icon[0]);
-		if (pressIcon[0])
-			sxButton->setPressedPixmap(*pressIcon[0]);
-	}
-	if (csxButton && Icon[1])
-	{
-		csxButton->setPixmap(*Icon[1]);
-		if (pressIcon[1])
-			csxButton->setPressedPixmap(*pressIcon[1]);
-	}
-	if (cdxButton && Icon[3])
-	{
-		cdxButton->setPixmap(*Icon[3]);
-		if (pressIcon[3])
-			cdxButton->setPressedPixmap(*pressIcon[3]);
-	}
-	if (dxButton && Icon[2])
-	{
-		dxButton->setPixmap(*Icon[2]);
-		if (pressIcon[2])
-			dxButton->setPressedPixmap(*pressIcon[2]);
-	}
-	if (BannerText)
-	{
-		BannerText->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-		BannerText->setFont(bt_global::font->get(FontManager::BANNERTEXT));
-		BannerText->setText(qtesto);
-	}
-}
-#endif
-
-
-PPTSce::PPTSce(QWidget *parent, QString where, int cid) : bann4But(parent)
-{
-	dev = bt_global::add_device_to_cache(new PPTSceDevice(where));
-	connect(this, SIGNAL(sxClick()), dev, SLOT(turnOff()));
-	connect(this, SIGNAL(dxClick()), dev, SLOT(turnOn()));
+	dev = bt_global::add_device_to_cache(new PPTSceDevice(where, openserver_id));
+	connect(left_button, SIGNAL(clicked()), dev, SLOT(turnOff()));
+	connect(right_button, SIGNAL(clicked()), dev, SLOT(turnOn()));
 
 	// For csx e cdx buttons we have to send a frame every X mseconds when the
 	// button is down and send another frame when the button is raised.
 	increase_timer = 0;
 	decrease_timer = 0;
-	connect(this, SIGNAL(csxPressed()), SLOT(startIncrease()));
-	connect(this, SIGNAL(cdxPressed()), SLOT(startDecrease()));
-	connect(this, SIGNAL(csxReleased()), SLOT(stop()));
-	connect(this, SIGNAL(cdxReleased()), SLOT(stop()));
-
-	SkinContext context(cid);
-	QString img_on = bt_global::skin->getImage("pptsce_on");
-	QString img_off = bt_global::skin->getImage("pptsce_off");
-	QString img_inc = bt_global::skin->getImage("pptsce_increase");
-	QString img_decr = bt_global::skin->getImage("pptsce_decrease");
-	SetIcons(img_off, img_on, img_inc, img_decr);
-	Draw();
+	connect(center_left_button, SIGNAL(pressed()), SLOT(startDecrease()));
+	connect(center_right_button, SIGNAL(pressed()), SLOT(startIncrease()));
+	connect(center_left_button, SIGNAL(released()), SLOT(stop()));
+	connect(center_right_button, SIGNAL(released()), SLOT(stop()));
 }
 
 void PPTSce::startIncrease()

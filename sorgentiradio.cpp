@@ -1,23 +1,69 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** sorgentiradio.cpp
- **
- **definizioni delle sorgenti radio implementate
- **
- ****************************************************************/
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 
 #include "sorgentiradio.h"
 #include "main.h" // ICON_CICLA
 #include "radio.h"
 #include "devices_cache.h" // bt_global::devices_cache
-#include "device.h"
-#include "generic_functions.h" // createMsgOpen
+#include "deviceold.h"
+#include "generic_functions.h" // createCommandFrame
+#include "btbutton.h" // BtButton
+#include "skinmanager.h" // bt_global::skin
+#include "icondispatcher.h" // bt_global::icons_cache
 
 #include <QWidget>
 #include <QDebug>
 #include <QChar>
+#include <QHBoxLayout>
+#include <QLabel>
+
+RadioSource::RadioSource() : BannerNew(0)
+{
+	left_button = new BtButton;
+	center_left_button = new BtButton;
+	center_right_button = new BtButton;
+	right_button = new BtButton;
+	dummy = new QLabel;
+	initBanner(bt_global::skin->getImage("cycle"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("radio_dummy"),
+		bt_global::skin->getImage("next"), bt_global::skin->getImage("details"));
+	QHBoxLayout *hbox = new QHBoxLayout(this);
+	// these margins are the same as BannerContent
+	hbox->setContentsMargins(18, 0, 17, 10);
+	hbox->setSpacing(0);
+	hbox->addWidget(left_button);
+	hbox->addWidget(center_left_button);
+	hbox->addWidget(dummy);
+	hbox->addWidget(center_right_button);
+	hbox->addWidget(right_button);
+}
+
+void RadioSource::initBanner(const QString &left, const QString &center_left, const QString &center,
+	const QString &center_right, const QString &right)
+{
+	initButton(left_button, left);
+	initButton(center_left_button, center_left);
+	initButton(center_right_button, center_right);
+	initButton(right_button, right);
+	dummy->setPixmap(*bt_global::icons_cache.getIcon(center));
+}
 
 
 /*****************************************************************
@@ -62,8 +108,7 @@ banradio::banradio(QWidget *parent, QString indirizzo, int nbut, const QString &
 	connect(myRadio,SIGNAL(memoFreq(uchar)),this,SLOT(memoStaz(uchar)));
 	connect(myRadio,SIGNAL(richFreq()),this,SLOT(richFreq()));
 
-	// Crea o preleva il dispositivo dalla cache
-	dev = bt_global::devices_cache.get_radio_device(getAddress());
+	dev = bt_global::add_device_to_cache(new radio_device(getAddress()));
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), this, SLOT(status_changed(QList<device_status*>)));
 }
@@ -82,7 +127,6 @@ void banradio::status_changed(QList<device_status*> sl)
 	stat_var curr_rds5(stat_var::RDS5);
 	stat_var curr_rds6(stat_var::RDS6);
 	stat_var curr_rds7(stat_var::RDS7);
-	bool aggiorna = false;
 	qDebug("bannradio::status_changed()");
 	float freq;
 
@@ -108,7 +152,6 @@ void banradio::status_changed(QList<device_status*> sl)
 			myRadio->setFreq(freq);
 			qDebug() << "*** setting freq to " << freq;
 			myRadio->setStaz((uchar)curr_staz.get_val());
-			qDebug() << "*** setting staz to " << myRadio->getStaz();
 
 			QString qrds;
 			qrds += QChar(curr_rds0.get_val());
@@ -121,7 +164,6 @@ void banradio::status_changed(QList<device_status*> sl)
 			qrds += QChar(curr_rds7.get_val());
 			qDebug() << "*** setting rds to " << qrds;
 			myRadio->setRDS(qrds);
-			aggiorna = 1;
 			break;
 		}
 		default:
@@ -129,9 +171,6 @@ void banradio::status_changed(QList<device_status*> sl)
 			break;
 		}
 	}
-
-	if (aggiorna)
-		myRadio->draw();
 }
 
 void banradio::pre_show()
@@ -180,16 +219,14 @@ void banradio::aumFreqAuto()
 {
 	myRadio->setFreq(0.00);
 	myRadio->setRDS("- - - - ");
-	myRadio->draw();
-	dev->sendFrame(createMsgOpen("16", "5000", getAddress()));
+	dev->sendFrame(createCommandFrame("16", "5000", getAddress()));
 }
 
 void banradio::decFreqAuto()
 {
 	myRadio->setFreq(0.00);
 	myRadio->setRDS("- - - - ");
-	myRadio->draw();
-	dev->sendFrame(createMsgOpen("16", "5100", getAddress()));
+	dev->sendFrame(createCommandFrame("16", "5100", getAddress()));
 }
 
 void banradio::aumFreqMan()
@@ -202,8 +239,7 @@ void banradio::aumFreqMan()
 	else
 		f = 87.50;
 	myRadio->setFreq(f);
-	myRadio->draw();
-	dev->sendFrame(createMsgOpen("16", "5001", getAddress()));
+	dev->sendFrame(createCommandFrame("16", "5001", getAddress()));
 }
 
 void banradio::decFreqMan()
@@ -216,8 +252,7 @@ void banradio::decFreqMan()
 	else
 		f = 108.00;
 	myRadio->setFreq(f);
-	myRadio->draw();
-	dev->sendFrame(createMsgOpen("16", "5101", getAddress()));
+	dev->sendFrame(createCommandFrame("16", "5101", getAddress()));
 }
 
 void banradio::changeStaz()

@@ -1,32 +1,46 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-** antintrusion.h
-**
-**definizioni della pagina di antiintrusione
-**
-****************************************************************/
 
 #ifndef ANTINTRUSION_H
 #define ANTINTRUSION_H
 
 #include "frame_receiver.h"
 #include "page.h"
-
+#include "gridcontent.h"
+#include "skinmanager.h" // SkinManager::CidState
 
 #include <QString>
 #include <QTimer>
 #include <QList>
+#include <QSignalMapper>
 
 class impAnti;
-class zonaAnti;
+class AntintrusionZone;
 class BtButton;
 class Keypad;
 class AlarmPage;
 class QDomNode;
 class QWidget;
+class AlarmList;
+class QDateTime;
 
 
 /*!
@@ -35,8 +49,6 @@ class QWidget;
   The plant is always kept on the top, the zones in the remaining lines. Alarm queue is active
   only when there's some alarm pending (and it's possible from \a antintrusione object to access
 to \a alarm \a queue one though a button). When there's an alarm the alarm queue becomes automatically visible
-  \author Davide
-  \date lug 2005
 */
 class Antintrusion : public BannerPage, FrameReceiver
 {
@@ -45,8 +57,11 @@ public:
 	Antintrusion(const QDomNode &config_node);
 	~Antintrusion();
 	virtual void inizializza();
-	void draw();
 	virtual void manageFrame(OpenMsg &msg);
+
+	virtual int sectionId();
+
+	virtual void showPage();
 
 public slots:
 	void Parzializza();
@@ -56,11 +71,7 @@ public slots:
 /*!
   \brief if there are no allarms in the queue the button in the plant area which give the possibility to see the queue is hidden
 */
-	void ctrlAllarm();
-/*!
-  \brief arms a timer and calls ctrlAllarm after 150ms. This is necessary because some time is necessary to destroy the object from the queue
-*/
-	void testranpo();
+	void checkAlarmCount();
 /*!
   \brief Invoked when next alarm must be displayed
 */
@@ -84,9 +95,6 @@ public slots:
 	void request();
 
 signals:
-	void openAckRx();
-	void openNakRx();
-
 /*!
   \brief enable/disable area partialization enable events
 */
@@ -94,11 +102,14 @@ signals:
 /*!
   \brief part. changed events
 */
-	void partChanged(zonaAnti*);
+	void partChanged(AntintrusionZone *);
 /*!
   \brief clear changed flags
 */
 	void clearChanged();
+
+private:
+	void createImpianto(const QString &description);
 
 private:
 /*!
@@ -110,31 +121,71 @@ private:
   \param <allarmi> alarm's queue
 */
 	QList<AlarmPage*> allarmi;
+	AlarmList *alarms;
 	int curr_alarm;
 /*!
-  \param <testoManom> text for a manomission alarm
-  \param <testoTecnico> text for a tecnical alarm
-  \param <testoPanic> text for a panic alarm  
-  \param <testoIntrusione> text for a intrusion alarm  
+  \param <alarmTexts[altype]> text for a given alarm
 */
-	QString testoManom, testoTecnico, testoIntrusione, testoPanic;
+	QString alarmTexts[4];
+	QString zones[8];
 	Keypad *tasti;
 	static const int MAX_ZONE = 8;
 	QTimer request_timer;
-	QTimer *t;
 	BtButton *forward_button; // the forward button of the navigation bar
+	SkinManager::CidState skin_cid;
 
-	Page *previous_page;
 	void loadItems(const QDomNode &config_node);
 
 	void clearAlarms();
+	void addAlarm(QString descr, int t, int zona);
 
 private slots:
-	void closeAlarms();
+	void showHomePage();
 	void requestZoneStatus();
 	void requestStatusIfCurrentWidget(Page *curr);
 	void plantInserted();
 };
 
+
+class AlarmItems : public GridContent
+{
+Q_OBJECT
+public:
+	AlarmItems();
+
+	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date);
+	void removeAlarm(int index);
+	int alarmCount();
+
+	void drawContent();
+	void prepareLayout();
+
+private slots:
+	void removeAlarm(QWidget *);
+
+private:
+	QList<QWidget*> alarms;
+	QStringList icons;
+	QSignalMapper mapper;
+};
+
+
+class AlarmList : public Page
+{
+Q_OBJECT
+public:
+	typedef AlarmItems ContentType;
+
+	AlarmList();
+
+	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date);
+	int alarmCount();
+
+	virtual void activateLayout();
+	virtual int sectionId();
+
+private:
+	AlarmItems *alarms;
+};
 
 #endif // ANTINTRUSION_H

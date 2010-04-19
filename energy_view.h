@@ -1,8 +1,30 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #ifndef ENERGY_VIEW_H
 #define ENERGY_VIEW_H
 
 #include "page.h"
 #include "energy_device.h" // GraphData
+#include "energy_rates.h"  // EnergyRate
 
 #include <QColor>
 #include <QDate>
@@ -11,13 +33,15 @@
 #include <QCache>
 
 class BtButton;
-class bannTextOnImage;
+class Bann2Buttons;
 class EnergyDevice;
 class EnergyTable;
+class EnergyGraph;
 class QLabel;
 class QStackedWidget;
 class QSignalMapper;
 class EnergyViewNavigation;
+struct EnergyRate;
 
 typedef QCache<QString, GraphData> GraphCache;
 
@@ -100,12 +124,10 @@ public:
 	 * \param n_dec the number of decimals to show in the labels
 	 * \param is_production True if the data must be interpreted as production, false for consumption
 	 */
-	EnergyView(QString measure, QString energy_type, QString address, int mode, const QString &_currency_symbol,
-		int n_dec, bool is_prod);
+	EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id,
+		   EnergyTable *_table, EnergyGraph *_graph);
 	~EnergyView();
 	virtual void inizializza();
-	void setProdFactor(float p);
-	void setConsFactor(float c);
 	void systemTimeChanged();
 
 public slots:
@@ -123,6 +145,8 @@ private:
 	QString dateToKey(const QDate &date, EnergyDevice::GraphType t);
 	void updateBanners();
 	void updateCurrentGraph();
+	// returns true if we own the graph/table instances
+	bool isGraphOurs();
 
 	enum Widget
 	{
@@ -131,28 +155,26 @@ private:
 	};
 
 	EnergyViewNavigation *nav_bar;
-	bannTextOnImage *current_banner, *daily_av_banner;
-	bannTextOnImage *cumulative_day_banner, *cumulative_month_banner, *cumulative_year_banner;
+	Bann2Buttons *current_banner, *daily_av_banner;
+	Bann2Buttons *cumulative_day_banner, *cumulative_month_banner, *cumulative_year_banner;
 	int current_value, daily_av_value;
 	int cumulative_day_value, cumulative_month_value, cumulative_year_value;
 	TimePeriodSelection *time_period;
 	QStackedWidget *widget_container;
 	EnergyTable *table;
+	EnergyGraph *graph;
 	Widget current_widget;
 	EnergyDevice *dev;
 	QString unit_measure;
 	QString unit_measure_med_inst;
-	QString currency_symbol;
 	QSignalMapper *mapper;
 	EnergyDevice::GraphType current_graph;
 	QDate current_date;
 	QHash<EnergyDevice::GraphType, GraphCache*> graph_data_cache;
-	float cons_factor, prod_factor;
 	bool is_electricity_view;
-	bool is_production;
-	int n_decimal;
 	// the id of the timers used to poll data
-	int current_banner_timer_id, cumulative_day_banner_timer_id;
+	int cumulative_day_banner_timer_id;
+	EnergyRate rate;
 
 private slots:
 	void toggleCurrency();
@@ -160,8 +182,8 @@ private slots:
 	void showGraph(int graph_type, bool request_update=true);
 	void showBannerWidget();
 	void backClick();
-	void status_changed(const StatusList &status_list);
-	void handleClose();
+	void status_changed(const DeviceValues &status_list);
+	void rateChanged(int rate_id);
 };
 
 

@@ -1,8 +1,34 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 
 #include "mediaplayer.h"
+#include "hardware_functions.h" // maxWidth, maxHeight
 
 #include <QRegExp>
 #include <QDebug>
+#include <QRect>
+#include <QFile>
+#include <QVector>
+#include <QList>
+#include <QMetaEnum>
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -12,171 +38,155 @@
 #include <sys/wait.h>
 
 
+#ifdef BT_HARDWARE_BTOUCH
 static const char *MPLAYER_FILENAME = "/usr/bin/mplayer";
+#else
+static const char *MPLAYER_FILENAME = "/home/bticino/cfg/extra/10/mplayer";
+#endif
 
-// Dirty kludge to allow mplayerExited access to class instance.
-static MediaPlayer *_globalMediaPlayer;
+QProcess MediaPlayer::mplayer_proc;
 
-static void mplayerExited(int signo, siginfo_t *info, void *)
-{
-	int status;
-	waitpid(-1, &status, WNOHANG);
-
-	if (_globalMediaPlayer)
-		_globalMediaPlayer->sigChildReceived(info->si_pid, status);
-}
 
 MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 {
-	struct sigaction sa;
-
-	memset( &sa, 0, sizeof(sa));
-	sigemptyset(&sa.sa_mask);
-	sigaddset(&sa.sa_mask, SIGCHLD);
-	sa.sa_flags = SA_SIGINFO | SA_RESTART;
-	sa.sa_sigaction = ::mplayerExited;
-	sigaction(SIGCHLD, &sa, NULL);
-
-	mplayer_pid = 0;
+	active = false;
 	paused = false;
-	_isPlaying = false;
-	_globalMediaPlayer = this;
-
-	ctrlf = NULL;
-	outf = NULL;
+	connect(&mplayer_proc, SIGNAL(finished(int, QProcess::ExitStatus)), SLOT(mplayerFinished(int, QProcess::ExitStatus)));
+	connect(&mplayer_proc, SIGNAL(error(QProcess::ProcessError)), SLOT(mplayerError(QProcess::ProcessError)));
 }
 
-MediaPlayer::~MediaPlayer()
+bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool write_output)
 {
-	_globalMediaPlayer = NULL;
+	QList<QString> mplayer_args = getStandardArgs();
+	mplayer_args.append(getVideoArgs(start_time));
+
+	mplayer_args << "-vf" << QString("scale=%1:%2").arg(geometry.width()).arg(geometry.height())
+		     << "-geometry" << QString("%1:%2").arg(geometry.left()).arg(geometry.top())
+		     << track;
+
+	return runMPlayer(mplayer_args, write_output);
+}
+
+bool MediaPlayer::playVideoFullScreen(QString track, int start_time, bool write_output)
+{
+	QList<QString> mplayer_args = getStandardArgs();
+	mplayer_args.append(getVideoArgs(start_time));
+
+	mplayer_args << "-fs"
+		     << track;
+
+	return runMPlayer(mplayer_args, write_output);
+}
+
+QList<QString> MediaPlayer::getStandardArgs()
+{
+	return QList<QString>() << "-nolirc" << "-slave";
+}
+
+QList<QString> MediaPlayer::getVideoArgs(int seek_time)
+{
+	return QList<QString>() << "-screenw" << QString::number(maxWidth())
+			<< "-screenh" << QString::number(maxHeight())
+			<< "-ac" << "mad," << "-af" << "channels=2,resample=48000"
+			<< "-ao" << "oss:/dev/dsp1"
+			<< "-ss" << QString::number(seek_time);
+}
+
+QList<QString> MediaPlayer::getAudioArgs(int seek_time)
+{
+	return QList<QString>() << "-ac" << "mad," << "-af" << "channels=2,resample=48000"
+			<< "-ao" << "oss:/dev/dsp1"
+			<< "-ss" << QString::number(seek_time);
 }
 
 bool MediaPlayer::play(QString track, bool write_output)
 {
-	int control_pipe[2];
-	int output_pipe[2];
+	QList<QString> mplayer_args = getStandardArgs();
+	mplayer_args.append(getAudioArgs(0));
 
-	if (pipe(control_pipe) < 0)
-		return false;
-	if (pipe(output_pipe) < 0)
-		return false;
-
-	mplayer_pid = fork();
-	if (mplayer_pid == -1)
-		return false;
-
-	if (mplayer_pid == 0)
+	QByteArray t = track.toLocal8Bit();
+	if ((track.endsWith(".m3u", Qt::CaseInsensitive)) || (track.endsWith(".asx", Qt::CaseInsensitive)))
 	{
-		// CHILD
-		// Close unused write end
-		close(control_pipe[1]);
-		close(output_pipe[0]);
-
-		dup2(control_pipe[0], STDIN_FILENO);
-
-		if (write_output)
-			dup2(output_pipe[1], STDOUT_FILENO);
-		else
-		{
-			int nullfd = open("/dev/null", O_WRONLY);
-			if (nullfd != -1)
-				dup2(nullfd, STDOUT_FILENO);
-			else
-				qDebug("[AUDIO] unable to open /dev/null");
-		}
-
-		//char * const mplayer_args[] = { "mplayer", "-slave", "-idle", NULL };
-		//const char *mplayer_args[] = {MPLAYER_FILENAME, "-af", "pan=2:1:1", NULL, NULL, NULL};
-		const char *mplayer_args[] = {MPLAYER_FILENAME, NULL, NULL, NULL, NULL, NULL};
-
-		QByteArray t = track.toLocal8Bit();
-		if ((track.endsWith(".m3u", Qt::CaseInsensitive)) || (track.endsWith(".asx", Qt::CaseInsensitive)))
-		{
-			mplayer_args[1] = "-playlist";
-			mplayer_args[2] = t.constData();
-		}
-		else
-			mplayer_args[1] = t.constData();
-
-		execve(MPLAYER_FILENAME, const_cast<char * const *>(mplayer_args), environ);
+		mplayer_args << "-playlist";
+		mplayer_args << t.constData();
 	}
 	else
+		mplayer_args << t.constData();
+
+	return runMPlayer(mplayer_args, write_output);
+}
+
+bool MediaPlayer::runMPlayer(const QList<QString> &args, bool write_output)
+{
+	if (mplayer_proc.state() != QProcess::NotRunning)
 	{
-		// PARENT
-		_isPlaying = true;
-		paused = false;
-
-		close(control_pipe[0]);
-		close(output_pipe[1]);
-
-		control_fd = control_pipe[1];
-		output_fd  = output_pipe[0];
-
-		// Make file descriptors NON BLOCKING
-		fcntl(control_fd, F_SETFL, O_NONBLOCK);
-		fcntl(output_fd, F_SETFL, O_NONBLOCK);
-
-		ctrlf = fdopen(control_fd, "w");
-		outf  = fdopen(output_fd, "r");
-
-		qDebug() << "[AUDIO] playing track: "<< track;
+		mplayer_proc.terminate();
+		mplayer_proc.waitForFinished();
 	}
 
-	return true;
+	active = true;
+
+	if (!write_output)
+		mplayer_proc.setStandardOutputFile("/dev/null");
+
+	mplayer_proc.start(MPLAYER_FILENAME, args);
+	paused = false;
+	return mplayer_proc.waitForStarted(300);
 }
 
 void MediaPlayer::pause()
 {
+	if (!active)
+		return;
+
 	if (!paused)
 	{
-		execCmd(" ");
+		execCmd("pause");
 		paused = true;
 	}
 }
 
 void MediaPlayer::resume()
 {
+	if (!active)
+		return;
+
 	if (paused)
 	{
-		execCmd(" ");
+		execCmd("pause");
 		paused = false;
 	}
 }
 
-void MediaPlayer::execCmd(QString command)
+void MediaPlayer::seek(int seconds)
 {
-	if (ctrlf)
-	{
-		QByteArray c = command.toLatin1();
-		fprintf(ctrlf, c.constData());
-		fflush(ctrlf);
-	}
-	else
-		qDebug("[AUDIO] MediaPlayer::execCmd(): mplayer not running");
+	if (!active)
+		return;
+
+	QByteArray cmd("seek ");
+	cmd += QByteArray::number(seconds);
+	execCmd(cmd);
 }
 
-QString MediaPlayer::readOutput()
+void MediaPlayer::execCmd(const QByteArray &command)
 {
-	char line[1024];
-	QString result;
-
-	if (outf)
-	{
-		while (fgets(line, sizeof(line), outf))
-			result += line;
-	}
-	else
-		qDebug("[AUDIO] MediaPlayer::readOutput(): mplayer not running");
-
-	return result;
+	if (mplayer_proc.write(command + "\n") < -1)
+		qDebug() << "Error MediaPlayer::execCmd():" << mplayer_proc.errorString();
 }
-
 
 bool MediaPlayer::isInstanceRunning()
 {
-	return _isPlaying;
+	return (active && mplayer_proc.state() == QProcess::Running);
 }
 
+QMap<QString, QString> MediaPlayer::getVideoInfo()
+{
+	/// Define Search Data Map
+	QMap<QString, QString> data_search;
+	data_search["current_time"] = "A:\\s+(\\d+\\.\\d+)\\s+";
+
+	return getMediaInfo(data_search);
+}
 
 QMap<QString, QString> MediaPlayer::getPlayingInfo()
 {
@@ -186,76 +196,94 @@ QMap<QString, QString> MediaPlayer::getPlayingInfo()
 	data_search["meta_title"]   = "Title: ([^\\n]*)\\n";
 	data_search["meta_artist"]  = "Artist: ([^\\n]*)\\n";
 	data_search["meta_album"]   = "Album: ([^\\n]*)\\n";
-	data_search["meta_year"]    = "Year: ([^\\n]*)\\n";
-	data_search["meta_comment"] = "Comment: ([^\\n]*)\\n";
-	data_search["meta_genre"]   = "Genre: ([^\\n]*)\\n";
-	data_search["total_time"]   = "[(](\\d+:\\d+\\.\\d+)[)] \\d+\\.\\d+";
+	data_search["total_time"]   = "of\\s+\\d+\\.\\d+\\s+[(](\\d+:\\d+\\.\\d+)[)]";
 	data_search["current_time"] = "A:\\s+\\d+\\.\\d+\\s+[(](\\d*:*\\d+\\.\\d+)[)]";
+	// shoutcast info
+	// MPlayer does not quote "'" inside titles, so parsing the shoutcast info
+	// with a regex is tricky; the regexes below can be improved
+	data_search["stream_title"] = "\\bStreamTitle='([^;]+)';";
+	data_search["stream_url"] = "\\bStreamUrl='([^;]+)';";
 
-	/// READ ROW output from MPlayer
-	QString row_data = readOutput();
+	return getMediaInfo(data_search);
+}
+
+QMap<QString, QString> MediaPlayer::getMediaInfo(const QMap<QString, QString> &data_search)
+{
+	if (!active)
+		return QMap<QString, QString>();
+
+	/// READ RAW output from MPlayer
+	QString raw_data = mplayer_proc.readAll();
 
 	/// Create output Map
 	QMap<QString, QString> info_data;
 
-	/// Parse ROW data to get info
-	QMap<QString, QString>::Iterator it;
+	/// Parse RAW data to get info
+	QMap<QString, QString>::ConstIterator it;
 	for (it = data_search.begin(); it != data_search.end(); ++it)
 	{
 		QRegExp rx(it.value());
 
-		if (rx.indexIn(row_data) > -1)
+		if (rx.indexIn(raw_data) > -1)
 			info_data[it.key()] = rx.cap(1);
 	}
 
 	return info_data;
 }
 
-
 void MediaPlayer::quit()
 {
-	if (mplayer_pid)
-		kill(mplayer_pid, SIGINT);
+	if (!active)
+		return;
+
+	if (mplayer_proc.state() == QProcess::Running)
+	{
+		mplayer_proc.terminate();
+		qDebug("MediaPlayer::quit() waiting for mplayer to quit...");
+		if (!mplayer_proc.waitForFinished(300))
+			qWarning() << "Couldn't terminate mplayer";
+	}
 }
 
-void MediaPlayer::sigChildReceived(int dead_pid, int status)
+void MediaPlayer::quitAndWait()
 {
-	/// Check if the dead child is mplayer or not
-	if (dead_pid == mplayer_pid)
+	if (!active)
+		return;
+
+	quit();
+	mplayer_proc.waitForFinished();
+}
+
+void MediaPlayer::mplayerFinished(int exit_code, QProcess::ExitStatus exit_status)
+{
+	if (!active)
+		return;
+	active = false;
+
+	if (exit_status == QProcess::CrashExit)
 	{
-		mplayer_pid = 0;
-		_isPlaying = false;
-		ctrlf = NULL;
-		outf = NULL;
-
-		if (WIFEXITED(status))
-		{
-			int rc = WEXITSTATUS(status);
-			qDebug("[AUDIO] mplayer exited, with code %d", rc);
-			if (rc == 0) //end of song
-			{
-				emit mplayerDone();
-				return;
-				
-			}
-			else if(rc == 1) //signal received
-			{
-				emit mplayerKilled();
-				return;
-			}
-		}
-		else if (WIFSIGNALED(status))
-		{
-			qDebug("[AUDIO] mplayer terminated by signal %d", WTERMSIG(status));
-			if (WTERMSIG(status) == SIGINT)
-			{
-				emit mplayerKilled();
-				return;
-			}
-		}
-		else
-			qDebug("[AUDIO] mplayer aborted for unknown reason");
-
 		emit mplayerAborted();
+		return;
 	}
+	else
+	{
+		qDebug("[AUDIO] mplayer exited, with code %d", exit_code);
+		if (exit_code == 0) //end of song
+		{
+			emit mplayerDone();
+			return;
+		}
+		else if(exit_code == 1) //signal received
+		{
+			emit mplayerKilled();
+			return;
+		}
+	}
+}
+
+void MediaPlayer::mplayerError(QProcess::ProcessError error)
+{
+	int idx = mplayer_proc.metaObject()->indexOfEnumerator("ProcessError");
+	QMetaEnum e = mplayer_proc.metaObject()->enumerator(idx);
+	qDebug() << "[AUDIO] mplayer_proc raised an error: " << e.key(error);
 }

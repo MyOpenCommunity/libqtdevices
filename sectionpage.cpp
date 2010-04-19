@@ -1,5 +1,26 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "sectionpage.h"
-#include "hardware_functions.h" // rearmWDT, hardwareType, TOUCH_X
+#include "hardware_functions.h" // rearmWDT
 #include "xml_functions.h" // getTextChild, getChildren
 #include "navigation_bar.h"
 #include "main.h" // IMG_PATH
@@ -37,18 +58,17 @@ void SectionPage::loadItems(const QDomNode &config_node)
 
 		// Within the pagemenu element, it can exists items that are not a page.
 		if (Page *p = getPage(id))
-			addPage(p, id, QString(), img1, x, y);
+			addPage(p, QString(), img1, x, y);
 #else
 		SkinContext cxt(getTextChild(item, "cid").toInt());
 		QString icon = bt_global::skin->getImage("link_icon");
-		int link_id = getTextChild(item, "id").toInt();
 		// Home page buttons don't have description set
 		QString descr = getTextChild(item, "descr");
 
 		// TODO some ids are not links
 		int pageid = getTextChild(item, "lnk_pageID").toInt();
 		if (Page *p = getPage(pageid))
-			addPage(p, pageid, descr, icon, 0, 0);
+			addPage(p, descr, icon, 0, 0);
 #endif
 
 		if (wdtime.elapsed() > 1000)

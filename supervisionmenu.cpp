@@ -1,159 +1,155 @@
-/*!
- * \file
- * <!--
- * Copyright 2008 MAC S.r.l. (http://www.mac-italia.com/)
- * All rights reserved.
- * -->
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
  *
- * \brief  Supervision main menu handling class
+ * Copyright (C) 2010 BTicino S.p.A.
  *
- *  TODO: detailed description (optional) 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * \author Lucio Macellari
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 
 #include "supervisionmenu.h"
 #include "bann1_button.h"
 #include "main.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bannercontent.h"
+#include "skinmanager.h"
+#include "bann2_buttons.h"
+#include "bann_energy.h" // BannLoadDiagnostic
+#include "devices_cache.h"
+#include "loads_device.h"
 
 #include <QDebug>
 
-#define STOPNGO_BANN_IMAGE ICON_STOPNGO_CHIUSO
-
-static Page *getStopNgoPage(Page *back, bannPuls* bnr, StopngoItem* itm)
-{
-	StopngoPage* pg = new StopngoPage(itm->GetWhere(), itm->GetId(), itm->GetDescr());
-
-	QObject::connect(bnr, SIGNAL(sxClick()), pg, SLOT(showPage()));
-	QObject::connect(pg, SIGNAL(Closed()), back, SLOT(showPage()));
-
-	return pg;
-}
-
 SupervisionMenu::SupervisionMenu(const QDomNode &config_node)
 {
-	stopngoSubmenu = NULL;
+	next_page = NULL;
 	buildPage();
 	loadItems(config_node);
 }
 
-SupervisionMenu::~SupervisionMenu()
-{
-	while (!stopngoList.isEmpty())
-		delete stopngoList.takeFirst();
-
-	while (!stopngoPages.isEmpty())
-		delete stopngoPages.takeFirst();
-
-	if (this != stopngoSubmenu)
-		delete stopngoSubmenu;
-}
-
 void SupervisionMenu::loadItems(const QDomNode &config_node)
 {
-	classesCount = 0;
-
-	foreach (const QDomNode &node, getChildren(config_node, "class"))
+	foreach (const QDomNode &node, getChildren(config_node, ""))
 	{
+		if (!node.nodeName().startsWith("class") && node.nodeName() != "load")
+			continue;
+
+		SkinContext cxt(getTextChild(node, "cid").toInt());
 		int id = getTextChild(node, "id").toInt();
+
+		BannSinglePuls *b = new BannSinglePuls(0);
+		b->initBanner(bt_global::skin->getImage("forward"),
+			      bt_global::skin->getImage("center_icon"),
+			      getTextChild(node, "descr"));
+
+		page_content->appendBanner(b);
+
 		switch (id)
 		{
 		case CLASS_STOPNGO:
-		{
-			bannPuls *b = new bannPuls(this);
-			b->SetIcons(ICON_FRECCIA_DX, QString(), STOPNGO_BANN_IMAGE);
-			b->setAddress(getTextChild(node, "where"));
-			b->setText(getTextChild(node, "descr"));
-			b->setId(id);
-			b->Draw();
-			page_content->appendBanner(b);
-			CreateStopnGoMenu(node, b);
-			++classesCount;
+			next_page = new StopNGoMenu(node);
 			break;
-		}
+		case LOAD_DIAGNOSTIC:
+			next_page = new LoadDiagnosticPage(node);
+			break;
 		default:
-			qFatal("Type of class not handled on supervision page!");
-		}
+			qFatal("Unsupported node type in supervision menu");
+		};
+
+		b->connectRightButton(next_page);
+		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+
 	}
 
-	if (classesCount == 1)  // Only one class has been defined in the supervision section of conf.xml
-	{
-		bannPuls* bann = static_cast<bannPuls*>(page_content->getBanner(page_content->bannerCount() - 1));
-		connect(this, SIGNAL(quickOpen()), bann, SIGNAL(sxClick()));
-
-		if (stopngoSubmenu)  // Check is the only submenu is a stopngo menu
-		{
-			if (this == stopngoSubmenu)  // Only one Stop&Go device is mapped
-			{
-				Page* pg = stopngoPages.first();
-				if (pg)
-				{
-					disconnect(pg, SIGNAL(Closed()), this, SLOT(showFullScreen()));
-					connect(pg, SIGNAL(Closed()), this, SIGNAL(Closed()));
-				}
-			}
-			else  // A Stop&Go submenu instance has been created
-			{
-				disconnect(stopngoSubmenu, SIGNAL(Closed()), this, SLOT(showPage()));
-				connect(stopngoSubmenu, SIGNAL(Closed()), this, SIGNAL(Closed()));
-			}
-		}
-	}
-}
-
-void SupervisionMenu::CreateStopnGoMenu(QDomNode node, bannPuls *bann)
-{
-	foreach (const QDomNode &item, getChildren(node, "item"))
-	{
-		int id = getTextChild(item, "id").toInt();
-		int cid = getTextChild(item, "cid").toInt();
-		QString descr = getTextChild(item, "descr");
-		QString where = getTextChild(item, "where");
-		stopngoList.append(new StopngoItem(id, cid, descr, where));
-	}
-
-	if (stopngoList.size() > 1)  // more than one device
-	{
-		// Show a submenu listing the devices to control
-		stopngoSubmenu = new StopNGoMenu(stopngoList);
-		connect(bann, SIGNAL(sxClick()), stopngoSubmenu, SLOT(showPage()));  // Connect submenu
-		connect(stopngoSubmenu, SIGNAL(Closed()), this, SLOT(showPage()));
-	}
-	else if (stopngoList.size() == 1)  // one device
-	{
-		// directly open the only available device page
-		stopngoSubmenu = this;
-		Page *pg = getStopNgoPage(this, bann, stopngoList.at(0));
-		stopngoPages.append(pg);
-	}
+	// skip page if only one item
+	if (page_content->bannerCount() > 1)
+		next_page = NULL;
+	else
+		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
 void SupervisionMenu::showPage()
 {
-	qDebug("SupervisionMenu::showPage()");
-	if (classesCount == 1)
-		emit quickOpen();
+	if (next_page)
+		next_page->showPage();
 	else
 		BannerPage::showPage();
 }
 
-StopNGoMenu::StopNGoMenu(QList<StopngoItem*> stopngoList)
+
+StopNGoMenu::StopNGoMenu(const QDomNode &conf_node)
 {
 	buildPage();
 
-	for (int i = 0; i < stopngoList.size(); ++i)
+	QList<QDomNode> items = getChildren(conf_node, "item");
+	foreach (const QDomNode &item, items)
 	{
-		StopngoItem *itm = stopngoList.at(i);
-		BannPulsDynIcon *bp = new BannPulsDynIcon(this, itm->GetWhere());  // Create a new banner
+		int id = getTextChild(item, "id").toInt();
+		QString descr = getTextChild(item, "descr");
+		QString where = getTextChild(item, "where");
+
+		BannPulsDynIcon *bp = new BannPulsDynIcon(this, where);  // Create a new banner
 		bp->SetIcons(ICON_FRECCIA_DX, 0, ICON_STOPNGO_CHIUSO);
-		bp->setText(itm->GetDescr());
+		bp->setText(descr);
 		bp->setAnimationParams(0, 0);
-		bp->setId(itm->GetId());
+		bp->setId(id);
 		bp->Draw();
 
-		page_content->appendBanner(bp);  // Add the new banner to the submenu
-		getStopNgoPage(this, bp, itm);  // Connect the new banner to the page
+		page_content->appendBanner(bp);
+
+		next_page = new StopngoPage(where, id, descr);
+		bp->connectDxButton(next_page);
+		connect(bp, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
+
+	// skip list if there's only one item
+	if (items.size() > 1)
+		next_page = NULL;
+	else
+		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
+}
+
+void StopNGoMenu::showPage()
+{
+	if (next_page)
+		next_page->showPage();
+	else
+		BannerPage::showPage();
+}
+
+
+LoadDiagnosticPage::LoadDiagnosticPage(const QDomNode &config_node)
+{
+	buildPage();
+
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		SkinContext cxt(getTextChild(item, "cid").toInt());
+
+		LoadsDevice *dev = bt_global::add_device_to_cache(new LoadsDevice(getTextChild(item, "where")));
+		devices.append(dev);
+		banner *b = new BannLoadDiagnostic(dev, getTextChild(item, "descr"));
+		page_content->appendBanner(b);
+	}
+
+	// we don't need extra memory, all the devices are built above
+	devices.squeeze();
+}
+
+void LoadDiagnosticPage::showEvent(QShowEvent *)
+{
+	foreach (const LoadsDevice *d, devices)
+		d->requestLevel();
 }

@@ -1,14 +1,35 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "bann_antintrusion.h"
-#include "main.h" // MAX_PATH, IMG_PATH
-#include "generic_functions.h" // void getZoneName(...)
+#include "generic_functions.h" // void getZoneName(...), getBostikName
 #include "fontmanager.h" // bt_global::font
 #include "btbutton.h"
 #include "skinmanager.h" // bt_global::skin
 #include "devices_cache.h" // bt_global::devices_cache
 #include "icondispatcher.h" //bt_global::icons_cache
-#include "device.h"
+#include "deviceold.h"
 #include "keypad.h"
 #include "xml_functions.h"
+#include "openclient.h"
 
 #include <QDebug>
 #include <QTimer>
@@ -16,43 +37,19 @@
 #include <QHBoxLayout>
 
 
-BannSingleLeft::BannSingleLeft(QWidget *parent) :
-	BannerNew(parent)
+BannSingleLeft::BannSingleLeft() :
+	Bann2Buttons(0)
 {
-	left_button = new BtButton;
-	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
-	center_icon = new QLabel;
-	zone_icon = new QLabel;
-
-	QGridLayout *center = new QGridLayout;
-	center->addWidget(zone_icon, 0, 0);
-	center->addWidget(center_icon, 0, 1);
-
-	QGridLayout *grid = new QGridLayout;
-	grid->setContentsMargins(0, 0, 0, 0);
-	grid->setSpacing(0);
-	grid->setColumnStretch(0, 1);
-	grid->setColumnStretch(2, 1);
-	grid->addWidget(left_button, 0, 0);
-	grid->addLayout(center, 0, 1);
-
-	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	l->addLayout(grid);
-	l->addWidget(text);
 }
 
-void BannSingleLeft::initBanner(const QString &_left_on, const QString &_left_off, const QString &_center_on,
-		const QString &_center_off, const QString &zone, States init_state, const QString &banner_text)
+void BannSingleLeft::initBanner(const QString &_left_on, const QString &_left_off,
+				States init_state, const QString &banner_text)
 {
+	Bann2Buttons::initBanner(_left_off, QString(), banner_text);
+
 	left_on = _left_on;
 	left_off = _left_off;
-	center_on = _center_on;
-	center_off = _center_off;
 
-	zone_icon->setPixmap(*bt_global::icons_cache.getIcon(zone));
-	text->setText(banner_text);
 	setState(init_state);
 }
 
@@ -61,34 +58,32 @@ void BannSingleLeft::setState(States new_state)
 	switch (new_state)
 	{
 	case PARTIAL_OFF:
-		left_button->setImage(left_on);
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_off));
+		left_button->setImage(left_off);
 		break;
 	case PARTIAL_ON:
-		left_button->setImage(left_off);
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_on));
+		left_button->setImage(left_on);
 		break;
 	}
 }
 
 
 
-AntintrusionZone::AntintrusionZone(const QDomNode &config_node, QWidget *parent) :
-	BannSingleLeft(parent)
+AntintrusionZone::AntintrusionZone(const QString &name, const QString &_where) :
+	BannSingleLeft()
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-	QString where = getTextChild(config_node, "where");
-	setAddress(where);
+	where = _where;
 
 	QString zone = getZoneName(bt_global::skin->getImage("zone"), where);
-	initBanner(bt_global::skin->getImage("parz"), bt_global::skin->getImage("sparz"),
-		bt_global::skin->getImage("antintrusion_on"), bt_global::skin->getImage("antintrusion_off"),
-		zone, PARTIAL_OFF, getTextChild(config_node, "descr"));
+	initBanner(bt_global::skin->getImage("partial_on"), bt_global::skin->getImage("partial_off"),
+		   PARTIAL_OFF, name);
+	left_disabled_on = bt_global::skin->getImage("alarm_partial_on");
+	left_disabled_off = bt_global::skin->getImage("alarm_partial_off");
 	is_on = false;
+	is_partial = true;
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleParzializza()));
 	already_changed = false;
 
-	dev = bt_global::devices_cache.get_zonanti_device(where);
+	dev = bt_global::add_device_to_cache(new zonanti_device(where));
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)), SLOT(status_changed(QList<device_status*>)));
 
@@ -139,16 +134,32 @@ void AntintrusionZone::status_changed(QList<device_status *> sl)
 	}
 }
 
+void AntintrusionZone::updateButtonState()
+{
+	// TODO maybe move this code in BannSingleLeft and create two more states
+	if (is_partial)
+	{
+		left_button->enable();
+		setState(is_on ? PARTIAL_ON : PARTIAL_OFF);
+	}
+	else
+	{
+		left_button->disable();
+		left_button->setImage(is_on ? left_disabled_on : left_disabled_off);
+	}
+}
+
 void AntintrusionZone::setParzializzaOn(bool parz)
 {
 	is_on = parz;
-	setState(parz ? PARTIAL_ON : PARTIAL_OFF);
+	updateButtonState();
 }
 
 void AntintrusionZone::abilitaParz(bool ab)
 {
 	qDebug("AntintusionZone::abilitaParz(%d)", ab);
-	left_button->setVisible(ab);
+	is_partial = ab;
+	updateButtonState();
 }
 
 void AntintrusionZone::toggleParzializza()
@@ -169,14 +180,14 @@ void AntintrusionZone::clearChanged()
 
 int AntintrusionZone::getIndex()
 {
-	QString addr = getAddress();
+	QString addr = where;
 	addr.remove(0, 1);
 	return addr.toInt();
 }
 
 void AntintrusionZone::inizializza(bool forza)
 {
-	dev->sendInit("*#5*" + getAddress() + "##");
+	dev->sendInit("*#5*" + where + "##");
 }
 
 bool AntintrusionZone::isActive()
@@ -184,6 +195,7 @@ bool AntintrusionZone::isActive()
 	return is_on;
 }
 
+#if 0
 
 zonaAnti::zonaAnti(QWidget *parent, const QString &name, QString indirizzo, QString iconzona, QString IconDisactive,
 	QString IconActive) : bannOnIcons(parent)
@@ -191,8 +203,8 @@ zonaAnti::zonaAnti(QWidget *parent, const QString &name, QString indirizzo, QStr
 	setAddress(indirizzo);
 	qDebug("zonaAnti::zonaAnti()");
 	// Mail agresta 22/06
-	parzIName = IMG_PATH "btnparzializza.png";
-	sparzIName = IMG_PATH "btnsparzializza.png";
+	parzIName = bt_global::skin->getImage("partial_on");
+	sparzIName = bt_global::skin->getImage("partial_off");
 
 	SetIcons(1, sparzIName);
 	SetIcons(2, getZoneName(iconzona, indirizzo));
@@ -337,18 +349,16 @@ void zonaAnti::inizializza(bool forza)
 	dev->sendInit("*#5*" + getAddress() + "##");
 }
 
+#endif
 
-impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString IconActive)
+impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString Icon)
 	: bann3ButLab(parent)
 {
+	banner_height = 60;
+
 	tasti = NULL;
-	QString disactive_icon_path;
-	if (!IconActive.isNull())
-		disactive_icon_path = IconActive.left(IconActive.indexOf('.') - 3);
 
-	disactive_icon_path += "dis" + IconActive.mid(IconActive.indexOf('.'));
-
-	SetIcons(IconInfo, IconOff, disactive_icon_path, IconOn, IconActive);
+	SetIcons(IconInfo, IconOff, getBostikName(Icon, "dis"), IconOn, getBostikName(Icon, "ins"));
 	send_part_msg = false;
 	inserting = false;
 	memset(le_zone, 0, sizeof(le_zone));
@@ -359,11 +369,16 @@ impAnti::impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconI
 	connect(this,SIGNAL(dxClick()),this,SLOT(Disinserisci()));
 	connect(this,SIGNAL(cdxClick()),this,SLOT(Inserisci()));
 
-	// Crea o preleva il dispositivo dalla cache
-	dev = bt_global::devices_cache.get_impanti_device();
+	// probably needs to be set for all banners (or minimumSizeHint defined)
+	setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+
+	dev = bt_global::add_device_to_cache(new impanti_device(QString("0")));
 	// Get status changed events back
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 			this, SLOT(status_changed(QList<device_status*>)));
+
+	connect(client_comandi, SIGNAL(openAckRx()), SLOT(openAckRx()));
+	connect(client_comandi, SIGNAL(openNakRx()), SLOT(openNakRx()));
 }
 
 void impAnti::status_changed(QList<device_status*> sl)
@@ -543,14 +558,14 @@ void impAnti::openNakRx()
 	part_msg_sent = false;
 }
 
-void impAnti::setZona(zonaAnti *za)
+void impAnti::setZona(AntintrusionZone *za)
 {
 	int index = za->getIndex() - 1;
 	if ((index >= 0) && (index < MAX_ZONE))
 		le_zone[index] = za;
 }
 
-void impAnti::partChanged(zonaAnti *za)
+void impAnti::partChanged(AntintrusionZone *za)
 {
 	qDebug("impAnti::partChanged");
 	send_part_msg = true;

@@ -1,16 +1,27 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-** multisounddiff.cpp
-**
-** Pagina sottomenu diffusione multicanale
-**
-****************************************************************/
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 
 #include "multisounddiff.h"
 #include "ambdiffson.h"
-#include "device.h"
+#include "deviceold.h"
 #include "device_status.h"
 #include "sounddiffusion.h"
 #include "scenevocond.h"
@@ -50,7 +61,7 @@ void MultiSoundDiffInterface::loadAmbienti(const QDomNode &config_node)
 			dslist.append(ds);
 		}
 
-		banner *b = 0;
+		BannerOld *b = 0;
 		switch (id)
 		{
 		case INSIEME_AMBIENTI:
@@ -99,7 +110,7 @@ MultiSoundDiff::MultiSoundDiff(const QDomNode &config_node)
 	sorgenti->hide();
 	connect(sorgenti, SIGNAL(actSrcChanged(int, int)), this, SIGNAL(actSrcChanged(int, int)));
 
-	matr = bt_global::devices_cache.get_sound_matr_device();
+	matr = bt_global::add_device_to_cache(new sound_matr(QString("1000")));
 	// Get status changed events back
 	connect(matr, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));
@@ -170,7 +181,7 @@ MultiSoundDiffAlarm::MultiSoundDiffAlarm(const QDomNode &config_node)
 	// are already done.
 	connect(sorgenti, SIGNAL(actSrcChanged(int, int)), this, SIGNAL(actSrcChanged(int, int)));
 
-	device *matr = bt_global::devices_cache.get_sound_matr_device();
+	device *matr = bt_global::add_device_to_cache(new sound_matr(QString("1000")));
 	// Get status changed events back
 	connect(matr, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));

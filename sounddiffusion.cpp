@@ -1,22 +1,34 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** sounddiffusion.cpp
- **
- **Sottomenù diffusione sonora
- **
- ****************************************************************/
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 
 #include "sounddiffusion.h"
 #include "sottomenu.h"
-#include "amplificatori.h" // grAmplificatori
+#include "bann_amplifiers.h" // grAmplificatori
 #include "xml_functions.h" // getChildren, getTextChild
 #include "sorgentiaux.h"
 #include "sorgentimedia.h"
 #include "sorgentiradio.h"
 #include "poweramplifier.h"
 #include "icondispatcher.h" //bt_global::icons_cache
+#include "skinmanager.h" // SkinContext
 
 #include <openmsg.h>
 
@@ -33,20 +45,23 @@ AudioSources::AudioSources(QWidget *parent, const QDomNode &config_node) : sotto
 void AudioSources::addAmb(QString a)
 {
 	for (int idx = elencoBanner.count() - 1; idx >= 0; idx--)
-		elencoBanner.at(idx)->addAmb(a);
+	{
+		static_cast<BannerOld*>(elencoBanner.at(idx))->addAmb(a);
+	}
 }
 
 void AudioSources::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
+		SkinContext context(getTextChild(item, "cid").toInt());
 		int id = getTextChild(item, "id").toInt();
 		QString descr = getTextChild(item, "descr");
 		QString where = getTextChild(item, "where");
 		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
 		QString img2 = IMG_PATH + getTextChild(item, "cimg2");
 		QString img3 = IMG_PATH + getTextChild(item, "cimg3");
-		banner *b = 0;
+		BannerOld *b = 0;
 		bool multi_channel = false;
 
 		switch (id)
@@ -105,20 +120,21 @@ void AudioSources::setIndex(QString addr)
 {
 	for (int i = 0; i < elencoBanner.size(); ++i)
 	{
-		if (elencoBanner.at(i)->getAddress() == addr)
+		BannerOld *b = static_cast<BannerOld*>(elencoBanner.at(i));
+		if (b->getAddress() == addr)
 		{
-			elencoBanner.at(i)->mostra(banner::BUT2);
+			b->mostra(BannerOld::BUT2);
 			indice = i;
 		}
 		else
-			elencoBanner.at(i)->nascondi(banner::BUT2);
+			b->nascondi(BannerOld::BUT2);
 	}
 }
 
 void AudioSources::mostra_all(char but)
 {
 	for (int i = 0; i < elencoBanner.size(); ++i)
-		elencoBanner.at(i)->mostra(but);
+		static_cast<BannerOld*>(elencoBanner.at(i))->mostra(but);
 }
 
 
@@ -143,6 +159,7 @@ void AmpliContainer::loadAmplifiers(const QDomNode &config_node)
 		int id = getTextChild(node, "id").toInt();
 		QString descr = getTextChild(node, "descr");
 		QString where = getTextChild(node, "where");
+		int oid = getTextChild(node, "openserver_id").toInt();
 		QString img1 = IMG_PATH + getTextChild(node, "cimg1");
 		QString img2 = IMG_PATH + getTextChild(node, "cimg2");
 		QString img3 = IMG_PATH + getTextChild(node, "cimg3");
@@ -156,7 +173,7 @@ void AmpliContainer::loadAmplifiers(const QDomNode &config_node)
 			b = new amplificatore(this, where, img1, img2, img3, img4);
 			break;
 		case POWER_AMPLIFIER:
-			b = new BannPowerAmplifier(this, node, where);
+			b = new BannPowerAmplifier(this, node, where, oid);
 			connect(b, SIGNAL(pageClosed()), SLOT(showSoundDiff()));
 			break;
 		case GR_AMPLIFICATORI:

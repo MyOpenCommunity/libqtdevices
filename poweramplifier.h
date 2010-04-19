@@ -1,30 +1,92 @@
-/**
- * \file
- * <!--
- * Copyright 2009 Develer S.r.l. (http://www.develer.com/)
- * All rights reserved.
- * -->
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
  *
- * \brief This file contain the banners for the power amplifier.
+ * Copyright (C) 2010 BTicino S.p.A.
  *
- * \author Gianni Valdambrini <aleister@develer.com>
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 
 #ifndef POWER_AMPLIFIER_H
 #define POWER_AMPLIFIER_H
 
 #include "bannregolaz.h"
-#include "bann2_buttons.h" // bannOnOff, bannOnOff2scr
+#include "bann2_buttons.h" // BannOnOffState, BannOnOff2Labels
 #include "bannonoffcombo.h"
-#include "poweramplifier_device.h"
 #include "page.h"
 
 #include <QVector>
 #include <QString>
 #include <QMap>
 
+class PowerAmplifierDevice;
 class QDomNode;
 class QWidget;
+
+/**
+ * Handle graphical changes for amplifiers, On/Off states and volume changes.
+ */
+class AdjustVolume : public BannLevel
+{
+Q_OBJECT
+protected:
+	enum States
+	{
+		ON,
+		OFF,
+	};
+	AdjustVolume(QWidget *parent=0);
+	void initBanner(const QString &left, const QString &_center_on, const QString &_center_off,
+		const QString &right, States init_state, int init_level, const QString &banner_text);
+	void setLevel(int level);
+	void setState(States new_state);
+
+private:
+	void updateIcons();
+	void setOnIcons();
+	void setOffIcons();
+	int current_level;
+	States current_state;
+	QString center_on, center_off;
+};
+
+
+/**
+ * \class BannPowerAmplifierNew
+ *
+ * The main banner of the power amplifier. It instantiate the device and manage
+ * the link with the page of settings.
+ */
+class BannPowerAmplifierNew : public AdjustVolume
+{
+Q_OBJECT
+public:
+	BannPowerAmplifierNew(const QString &descr, const QDomNode& config_node, QString address, int openserver_id);
+
+private slots:
+	void toggleStatus();
+	void volumeUp();
+	void volumeDown();
+	void status_changed(const DeviceValues &status_list);
+
+private:
+	QString off_icon, on_icon;
+	bool status;
+	PowerAmplifierDevice *dev;
+};
+
 
 
 /**
@@ -32,24 +94,26 @@ class QWidget;
  *
  * The main banner of the power amplifier. It instantiate the device and manage
  * the link with the page of settings.
+ * TODO: must be removed once the old sound diffusion is gone also on BTouch
  */
 class BannPowerAmplifier : public bannRegolaz
 {
 Q_OBJECT
 public:
-	BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString indirizzo);
+	BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString address, int openserver_id);
 	virtual void inizializza(bool forza=false);
 
 private slots:
 	void toggleStatus();
 	void volumeUp();
 	void volumeDown();
-	void status_changed(const StatusList &status_list);
+	void status_changed(const DeviceValues &status_list);
 
 private:
 	bool status;
 	PowerAmplifierDevice *dev;
 };
+
 
 /**
  * \class PowerAmplifier
@@ -68,7 +132,7 @@ private:
 };
 
 
-class PowerAmplifierPreset : public BannOnOffNew
+class PowerAmplifierPreset : public Bann2Buttons
 {
 Q_OBJECT
 public:
@@ -78,7 +142,7 @@ public:
 private slots:
 	void next();
 	void prev();
-	void status_changed(const StatusList &status_list);
+	void status_changed(const DeviceValues &status_list);
 
 private:
 	int num_preset;
@@ -98,7 +162,7 @@ public:
 private slots:
 	void up();
 	void down();
-	void status_changed(const StatusList &status_list);
+	void status_changed(const DeviceValues &status_list);
 
 private:
 	PowerAmplifierDevice *dev;
@@ -116,7 +180,7 @@ public:
 private slots:
 	void up();
 	void down();
-	void status_changed(const StatusList &status_list);
+	void status_changed(const DeviceValues &status_list);
 
 private:
 	PowerAmplifierDevice *dev;
@@ -134,7 +198,7 @@ public:
 private slots:
 	void dx();
 	void sx();
-	void status_changed(const StatusList &status_list);
+	void status_changed(const DeviceValues &status_list);
 
 private:
 	PowerAmplifierDevice *dev;
@@ -152,7 +216,7 @@ public:
 private slots:
 	void on();
 	void off();
-	void status_changed(const StatusList &status_list);
+	void status_changed(const DeviceValues &status_list);
 
 private:
 	PowerAmplifierDevice *dev;

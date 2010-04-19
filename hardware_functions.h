@@ -1,3 +1,24 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #ifndef HARDWARE_FUNCTIONS_H
 #define HARDWARE_FUNCTIONS_H
 
@@ -11,14 +32,21 @@
 
 class QString;
 
-enum HardwareType
-{
-	TOUCH_X,
-	BTOUCH
-};
 
-// Return the hardware type
-HardwareType hardwareType();
+// for setVolume
+enum VolumeType
+{
+    VOLUME_VIDEOCONTROL = 1,
+    VOLUME_INTERCOM,
+    VOLUME_MMDIFFUSION,
+    VOLUME_BEEP,
+    VOLUME_RING, //Suonerie
+    VOLUME_FILE,
+    VOLUME_VCTIP,
+    VOLUME_MIC,
+    VOLUME_MMDIFFUSIONSOURCE,
+    VOLUME_MMDIFFUSIONAMPLIFIER
+};
 
 // Return the maximum width of the gui
 int maxWidth();
@@ -31,7 +59,7 @@ int maxHeight();
 
   The contrast is set to the value of the first argument. If the second argument is TRUE also the configuration file is updated otherwise it isn't.
 */
-void setContrast(unsigned char,bool);
+void setContrast(unsigned char value);
 
  /*!
   \brief Gets the contrast of the device.
@@ -68,7 +96,7 @@ bool getBacklight();
  * \param buzzer_enable Enables the beep for this execution of BTouch, without changing conf.xml.
  * \param write_to_conf Writes to config file the value passed in buzzer_enable.
  */
-void setBeep(bool buzzer_enable, bool write_to_conf);
+void setBeep(bool buzzer_enable);
 
  /*!
   \brief Sets the orientation of the device.
@@ -95,7 +123,7 @@ bool getBeep();
 */
 unsigned long getTimePress();
 
-#ifdef BT_HARDWARE_X11
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
 class QDateTime;
 
 // stores the time of the last click for getTimePress()
@@ -121,5 +149,19 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 
 // play a WAV file
 void playSound(const QString &wavFile);
+// stops a file previously played with playSound
+void stopSound();
+
+// set contrast value for entryphone
+void setVctVideoValue(const QString &command, const QString &value);
+
+// init multimedia playback
+void initMultimedia();
+
+// set the volume
+void setVolume(VolumeType type, int value);
+
+void initScreen();
+
 
 #endif // HARDWARE_FUNCTIONS_H

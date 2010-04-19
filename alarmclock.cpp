@@ -1,12 +1,33 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "alarmclock.h"
 #include "generic_functions.h" // setCfgValue
 #include "hardware_functions.h" // getBeep, setBeep, beep
 #include "multisounddiff.h" // contdiff
-#include "btbutton.h"
+#include "state_button.h"
 #include "openclient.h"
 #include "datetime.h"
 #include "fontmanager.h" // bt_global::font
-#include "displaycontrol.h" // bt_global::display
+#include "displaycontrol.h" // (*bt_global::display)
 #include "btmain.h" // bt_global::btmain
 #include "sounddiffusion.h" // declare SoundDiffusion*
 #include "singlechoicecontent.h"
@@ -58,9 +79,10 @@ AlarmNavigation::AlarmNavigation(bool forwardButton, QWidget *parent)
 
 // AlarmClock implementation
 
-AlarmClock::AlarmClock(int config_id, Type t, Freq f, QList<bool> active, int hour, int minute)
+AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, QList<bool> active, int hour, int minute)
 {
 	id = config_id;
+	item_id = _item_id;
 	aumVolTimer = NULL;
 	alarmTime = QTime(hour, minute);
 	minuTimer = NULL;
@@ -86,8 +108,8 @@ AlarmClock::AlarmClock(int config_id, Type t, Freq f, QList<bool> active, int ho
 	connect(bt_global::btmain, SIGNAL(freezed(bool)), SLOT(freezed(bool)));
 
 	dev = new AlarmSoundDiffDevice();
-	connect(dev, SIGNAL(status_changed(const StatusList &)),
-		SLOT(status_changed(const StatusList &)));
+	connect(dev, SIGNAL(status_changed(DeviceValues)),
+		SLOT(status_changed(DeviceValues)));
 }
 
 void AlarmClock::showPage()
@@ -114,16 +136,20 @@ void AlarmClock::handleClose()
 	data["minute"] = alarmTime.toString("mm");
 	if (id == SET_SVEGLIA_SINGLEPAGE)
 	{
-		QString active;
+		int active = 0;
 		for (int i = 0; i < 7; ++i)
 			if (days[i])
-				active += QString::number(i + 1);
-		data["days"] = active;
+				active |= 1 << (6 - i);
+		data["days"] = QString::number(active);
 	}
 	else
 		data["alarmset"] = QString::number(freq);
 
+#ifdef CONFIG_BTOUCH
 	setCfgValue(data, id, serNum);
+#else
+	setCfgValue(data, item_id);
+#endif
 
 	if (aggiornaDatiEEprom)
 		setAlarmVolumes(serNum-1, volSveglia, sorgente, stazione);
@@ -142,12 +168,6 @@ void AlarmClock::showSoundDiffPage()
 }
 
 void AlarmClock::setActive(bool a)
-{
-	_setActive(a);
-	setCfgValue("enabled", active ? "1" : "0", id, serNum);
-}
-
-void AlarmClock::_setActive(bool a)
 {
 	alarm_time->setActive(a);
 
@@ -171,9 +191,15 @@ void AlarmClock::_setActive(bool a)
 			minuTimer = NULL;
 		}
 	}
+
+#ifdef CONFIG_BTOUCH
+	setCfgValue("enabled", active, id, serNum);
+#else
+	setCfgValue("enabled", active, item_id);
+#endif
 }
 
-void AlarmClock::status_changed(const StatusList &sl)
+void AlarmClock::status_changed(const DeviceValues &sl)
 {
 	if (sl.contains(AlarmSoundDiffDevice::DIM_STATUS))
 	{
@@ -208,7 +234,7 @@ bool AlarmClock::eventFilter(QObject *obj, QEvent *ev)
 	// We stop the alarm and restore the normal behaviour
 	qApp->removeEventFilter(this);
 	spegniSveglia(false);
-	bt_global::display.forceOperativeMode(false);
+	(*bt_global::display).forceOperativeMode(false);
 	return true;
 }
 
@@ -237,7 +263,7 @@ void AlarmClock::verificaSveglia()
 		{
 			if (type == BUZZER)
 			{
-#ifdef LAYOUT_TOUCHX // need BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TOUCHX
 				aumVolTimer = new QTimer(this);
 				aumVolTimer->start(5000);
 				connect(aumVolTimer, SIGNAL(timeout()), SLOT(wavAlarm()));
@@ -261,7 +287,7 @@ void AlarmClock::verificaSveglia()
 				// operative mode) but with a screen "locked" (like in the freezed
 				// mode). We do that with an event filter.
 				bt_global::btmain->freeze(false); // To stop a screensaver, if running
-				bt_global::display.forceOperativeMode(true); // Prevent the screeensaver start
+				(*bt_global::display).forceOperativeMode(true); // Prevent the screeensaver start
 				qApp->installEventFilter(this);
 				bt_global::btmain->svegl(true);
 			}
@@ -311,7 +337,7 @@ void AlarmClock::aumVol()
 
 		bt_global::btmain->freeze(false);
 		bt_global::btmain->svegl(false);
-		bt_global::display.forceOperativeMode(false);
+		(*bt_global::display).forceOperativeMode(false);
 		emit alarmClockFired();
 	}
 }
@@ -321,7 +347,7 @@ void AlarmClock::buzzerAlarm()
 	if (contaBuzzer == 0)
 	{
 		buzAbilOld = getBeep();
-		setBeep(true,false);
+		setBeep(true);
 	}
 	if  (contaBuzzer % 2 == 0)
 	{
@@ -330,16 +356,16 @@ void AlarmClock::buzzerAlarm()
 	}
 
 	if (contaBuzzer % 8 == 0)
-		bt_global::display.setState(DISPLAY_OPERATIVE);
+		(*bt_global::display).setState(DISPLAY_OPERATIVE);
 	else
-		bt_global::display.setState(DISPLAY_FREEZED);
+		(*bt_global::display).setState(DISPLAY_FREEZED);
 
 	contaBuzzer++;
 	if (contaBuzzer >= 10*60*2)
 	{
 		qDebug("SPENGO LA SVEGLIA");
 		aumVolTimer->stop();
-		setBeep(buzAbilOld,false);
+		setBeep(buzAbilOld);
 		delete aumVolTimer;
 		aumVolTimer = NULL;
 		bt_global::btmain->freeze(false);
@@ -382,7 +408,7 @@ void AlarmClock::spegniSveglia(bool b)
 			qDebug("SPENGO LA SVEGLIA");
 			aumVolTimer->stop();
 			if (type == BUZZER)
-				setBeep(buzAbilOld,false);
+				setBeep(buzAbilOld);
 			else
 				dev->stopAlarm(sorgente, volSveglia);
 
@@ -458,11 +484,11 @@ AlarmClockFreq::AlarmClockFreq(AlarmClock *alarm_page)
 {
 	AlarmNavigation *navigation = new AlarmNavigation(alarm_page->type == AlarmClock::DI_SON);
 
-	content = new SingleChoiceContent(this);
-	content->addBanner(tr("once"), AlarmClock::ONCE);
-	content->addBanner(tr("always"), AlarmClock::SEMPRE);
-	content->addBanner(tr("mon-fri"), AlarmClock::FERIALI);
-	content->addBanner(tr("sat-sun"), AlarmClock::FESTIVI);
+	content = new SingleChoiceContent;
+	content->addBanner(SingleChoice::createBanner(tr("once")), AlarmClock::ONCE);
+	content->addBanner(SingleChoice::createBanner(tr("always")), AlarmClock::SEMPRE);
+	content->addBanner(SingleChoice::createBanner(tr("mon-fri")), AlarmClock::FERIALI);
+	content->addBanner(SingleChoice::createBanner(tr("sat-sun")), AlarmClock::FESTIVI);
 
 	connect(content, SIGNAL(bannerSelected(int)),
 		SLOT(setSelection(int)));
@@ -538,7 +564,7 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 
 	NavigationBar *nav = new NavigationBar;
 	nav->displayScrollButtons(false);
-	buildPage(content, nav, tr("Wake up"), 60);
+	buildPage(content, nav, tr("Wake up"), TITLE_HEIGHT);
 
 	//connect(nav, SIGNAL(backClick()), alarm_page, SIGNAL(Closed()));
 	connect(nav, SIGNAL(backClick()), alarm_page, SLOT(handleClose()));
@@ -557,14 +583,15 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 	QGridLayout *days = new QGridLayout;
 	QVBoxLayout *icon_label = new QVBoxLayout;
 
+	main->setContentsMargins(25, 0, 25, 25);
 	main->setSpacing(50);
 	top->setSpacing(20);
 	days->setSpacing(5);
 
 	icon_label->addWidget(alarm_label, 0, Qt::AlignTop|Qt::AlignHCenter);
-	icon_label->addWidget(descr);
+	icon_label->addWidget(descr, 0, Qt::AlignHCenter);
 
-	top->addLayout(icon_label);
+	top->addLayout(icon_label, 1);
 	top->addWidget(edit, 1);
 	top->addStretch(1);
 
@@ -572,11 +599,11 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 
 	for (int i = 0; i < 7; ++i)
 	{
-		BtButton *toggle = new BtButton;
+		StateButton *toggle = new StateButton;
 		toggle->setCheckable(true);
 		toggle->setOnOff();
-		toggle->setImage(bt_global::skin->getImage("day_off"));
-		toggle->setPressedImage(bt_global::skin->getImage("day_on"));
+		toggle->setOffImage(bt_global::skin->getImage("day_off"));
+		toggle->setOnImage(bt_global::skin->getImage("day_on"));
 		toggle->setStatus(active[i]);
 		toggle->setChecked(active[i]);
 

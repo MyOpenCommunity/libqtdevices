@@ -1,3 +1,24 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "xml_functions.h"
 
 #include <QStringList>
@@ -54,7 +75,7 @@ QDomNode getChildWithId(const QDomNode &parent, const QRegExp &node_regexp, cons
 	return QDomNode();
 }
 
-QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, int id, int& serial_number)
+QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, const QString &id_name, int id, int& serial_number)
 {
 	QDomNode n = root.firstChild();
 	while (!n.isNull())
@@ -62,7 +83,7 @@ QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, int id, i
 		if (n.isElement() && n.nodeName().contains(node_regexp))
 		{
 			QDomNode child = n.firstChild();
-			while (!child.isNull() && child.nodeName() != "id")
+			while (!child.isNull() && child.nodeName() != id_name)
 				child = child.nextSibling();
 
 			if (!child.isNull() && child.toElement().text().toInt() == id)
@@ -71,7 +92,7 @@ QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, int id, i
 		}
 		if (n.hasChildNodes())
 		{
-			QDomNode res = findXmlNode(n, node_regexp, id, serial_number);
+			QDomNode res = findXmlNode(n, node_regexp, id_name, id, serial_number);
 			if (!res.isNull())
 				return res;
 		}

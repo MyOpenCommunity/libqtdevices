@@ -1,3 +1,24 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "bann1_button.h"
 #include "titlelabel.h" // TextOnImageLabel
 #include "skinmanager.h" // bt_global::skin
@@ -27,12 +48,12 @@ BannSinglePuls::BannSinglePuls(QWidget *parent) :
 	right_button = new BtButton;
 	connect(right_button, SIGNAL(clicked()), SIGNAL(rightClick()));
 	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
-	center_icon = new QLabel;
+	center = new TextOnImageLabel;
 
 	QHBoxLayout *hbox = new QHBoxLayout;
 	hbox->setContentsMargins(0, 0, 0, 0);
 	hbox->setSpacing(0);
-	hbox->addWidget(center_icon, 1, Qt::AlignRight);
+	hbox->addWidget(center, 1, Qt::AlignRight);
 	hbox->addWidget(right_button, 0, Qt::AlignRight);
 
 	QVBoxLayout *l = new QVBoxLayout(this);
@@ -42,19 +63,19 @@ BannSinglePuls::BannSinglePuls(QWidget *parent) :
 	l->addWidget(text);
 }
 
-void BannSinglePuls::initBanner(const QString &right, const QString &center, const QString &banner_text)
+void BannSinglePuls::initBanner(const QString &right, const QString &_center, const QString &banner_text)
 {
-	loadIcons(right, center);
+	right_button->setImage(right);
+	center->setBackgroundImage(_center);
 	text->setText(banner_text);
 	// always set a text on the label, otherwise the sizeHint() height changes
 	if (banner_text.isEmpty())
 		text->setText(" ");
 }
 
-void BannSinglePuls::loadIcons(const QString &right, const QString &center)
+void BannSinglePuls::setCentralText(const QString &t)
 {
-	right_button->setImage(right);
-	center_icon->setPixmap(*bt_global::icons_cache.getIcon(center));
+	center->setInternalText(t);
 }
 
 void BannSinglePuls::connectRightButton(Page *p)
@@ -77,6 +98,11 @@ BannCenteredButton::BannCenteredButton(QWidget *parent) :
 void BannCenteredButton::initBanner(const QString &center)
 {
 	center_button->setImage(center);
+}
+
+void BannCenteredButton::connectButton(Page *linked_page)
+{
+	connectButtonToPage(center_button, linked_page);
 }
 
 
@@ -148,29 +174,7 @@ void BannOn2Labels::setElapsedTime(int time)
 }
 
 
-BannLeft::BannLeft(QWidget *parent) : BannerNew(parent)
-{
-	// Bannleft does not have the description label
-	banner_height = BUT_DIM;
-
-	left_button = new BtButton;
-	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
-
-	QHBoxLayout *l = new QHBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	l->addWidget(left_button, 0, Qt::AlignLeft);
-	l->addWidget(text, 1, Qt::AlignHCenter);
-}
-
-void BannLeft::initBanner(const QString &left, const QString &center)
-{
-	left_button->setImage(left);
-	text->setText(center);
-}
-
-
-bannPuls::bannPuls(QWidget *parent) : banner(parent)
+bannPuls::bannPuls(QWidget *parent) : BannerOld(parent)
 {
 	addItem(BUT1, banner_width - BANPULS_BUT_DIM, 0,  BANPULS_BUT_DIM ,BANPULS_BUT_DIM);
 	addItem(ICON,BANPULS_BUT_DIM, 0,  BANPULS_ICON_DIM_X ,BANPULS_ICON_DIM_Y);
@@ -182,26 +186,7 @@ bannPuls::bannPuls(QWidget *parent) : banner(parent)
 }
 
 
-#if 0
-
-bannSimple::bannSimple(QWidget *parent, QString icon, Page *page) : banner(parent)
-{
-	banner_height = BUT_DIM;
-	// This banner uses a dx button but shows it in central position.
-	addItem(BUT1, (banner_width - BANPULS_BUT_DIM) / 2, 0,  BANPULS_BUT_DIM, BANPULS_BUT_DIM);
-	connect(this, SIGNAL(sxClick()), this, SIGNAL(click()));
-
-	if (!icon.isEmpty())
-		SetIcons(icon, 1);
-
-	connectDxButton(page);
-	Draw();
-}
-
-#endif
-
-
-bannOnDx::bannOnDx(QWidget *parent, QString icon, Page *page) : banner(parent)
+bannOnDx::bannOnDx(QWidget *parent, QString icon, Page *page) : BannerOld(parent)
 {
 	banner_height = BUT_DIM;
 	addItem(BUT1, banner_width - BUT_DIM, (banner_height - BUT_DIM)/2, BUT_DIM, BUT_DIM);
@@ -216,7 +201,7 @@ bannOnDx::bannOnDx(QWidget *parent, QString icon, Page *page) : banner(parent)
 }
 
 
-bannOnSx::bannOnSx(QWidget *parent, QString icon) : banner(parent)
+bannOnSx::bannOnSx(QWidget *parent, QString icon) : BannerOld(parent)
 {
 	banner_height = BUT_DIM;
 	addItem(BUT1, 0, (banner_height - BUT_DIM)/2, BUT_DIM, BUT_DIM);
@@ -234,7 +219,9 @@ BtButton *bannOnSx::getButton()
 }
 
 
-bannOnIcons::bannOnIcons(QWidget *parent) : banner(parent)
+#if 0
+
+bannOnIcons::bannOnIcons(QWidget *parent) : BannerOld(parent)
 {
 	addItem(BUT1, 0, 0, BUT_DIM, BUT_DIM);
 	addItem(TEXT, 0, BUT_DIM, banner_width, banner_height-BUT_DIM);
@@ -242,50 +229,16 @@ bannOnIcons::bannOnIcons(QWidget *parent) : banner(parent)
 	addItem(ICON2, 2*BUT_DIM, 0, BUT_DIM, BUT_DIM);
 }
 
-
-bannOn2scr::bannOn2scr(QWidget *parent) : banner(parent)
-{
-	int x = 0, y = 0;
-	addItem(TEXT2, x, y, BANON2SCR_TEXT1_DIM_X, BANON2SCR_TEXT1_DIM_Y);
-	x = BANON2SCR_TEXT1_DIM_X;
-	addItem(ICON, x, y, BUTON2SCR_ICON_DIM_X, BUTON2SCR_ICON_DIM_Y);
-	x += BUTON2SCR_ICON_DIM_X;
-	addItem(ICON2, x, y, BUTON2SCR_ICON_DIM_X, BUTON2SCR_ICON_DIM_Y);
-	x += BUTON2SCR_ICON_DIM_X;
-	addItem(BUT2, x, y, BUT_DIM, BUT_DIM);
-	y = BUT_DIM;
-	x = 0;
-	addItem(TEXT, x, y, banner_width, banner_height - BUT_DIM);
-}
+#endif
 
 
-bannBut2Icon::bannBut2Icon(QWidget *parent) : banner(parent)
+bannBut2Icon::bannBut2Icon(QWidget *parent) : BannerOld(parent)
 {
 	addItem(BUT1, banner_width - BUT_DIM, 0, BUT_DIM, BUT_DIM);
 	addItem(ICON, BUT_DIM, 0, BANNBUT2ICON_ICON_DIM_X, BANNBUT2ICON_ICON_DIM_Y);
 	addItem(ICON2, BUT_DIM + BANNBUT2ICON_ICON_DIM_X, 0, BANNBUT2ICON_ICON_DIM_X, BANNBUT2ICON_ICON_DIM_Y);
 	addItem(TEXT, 0, BUT_DIM, banner_width, banner_height - BUT_DIM);
 }
-
-
-bannTextOnImage::bannTextOnImage(QWidget *parent, const QString &text, QString bg_image, QString fwd_image) : banner(parent)
-{
-	label = new TextOnImageLabel(this, text);
-	QString img = bt_global::skin->getImage(bg_image);
-	QPixmap *p = bt_global::icons_cache.getIcon(img);
-	label->setBackgroundImage(img);
-	int left = banner_width - BUT_DIM - p->width();
-	label->setGeometry(left, 0,  p->width() ,BANPULS_ICON_DIM_Y);
-	addItem(BUT1, banner_width-BUT_DIM, 0, BUT_DIM, BUT_DIM);
-	addItem(TEXT, left, BUT_DIM, p->width() , banner_height - BUT_DIM);
-	SetIcons(bt_global::skin->getImage(fwd_image), 1);
-}
-
-void bannTextOnImage::setInternalText(const QString &text)
-{
-	label->setInternalText(text);
-}
-
 
 
 BannStates::BannStates(QWidget *parent) : BannerNew(parent)
@@ -314,18 +267,35 @@ void BannStates::initBanner(const QString &left, int current_state)
 	Q_ASSERT_X(states_list.size() > 0, "BannStates::initBanner", "The list of states is empty!");
 	left_button->setImage(left);
 
-	for (int i = 0; i < states_list.size(); ++i)
-		if (states_list[i].first == current_state)
-			current_index = i;
+	setCurrentState(current_state);
+}
 
-	text->setText(states_list.at(current_index).second);
+// To maintain the same semantics of currentState(), we need to search
+// the new state in the whole array.
+void BannStates::setCurrentState(int new_state)
+{
+	for (int i = 0; i < states_list.size(); ++i)
+		if (states_list[i].first == new_state)
+		{
+			// we can't use new_state because it can be an invalid index
+			// for example if we set state 5 but we have defined only 3 states
+			current_index = i;
+			break;
+		}
+	updateText();
+	emit stateChanged(currentState());
 }
 
 void BannStates::changeState()
 {
 	current_index = ++current_index % states_list.size();
+	updateText();
+	emit stateChanged(currentState());
+}
+
+void BannStates::updateText()
+{
 	text->setText(states_list.at(current_index).second);
-	emit currentStateChanged(states_list.at(current_index).first);
 }
 
 int BannStates::currentState()

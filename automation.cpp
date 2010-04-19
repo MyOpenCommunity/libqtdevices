@@ -1,14 +1,64 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "automation.h"
 #include "bann_automation.h"
 #include "actuators.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bannercontent.h"
 #include "main.h"
+#include "skinmanager.h" // SkinContext
 
 #include <QDomNode>
 #include <QString>
 #include <QDebug>
 #include <QList>
+
+#ifdef CONFIG_BTOUCH
+enum BannerType
+{
+	SECURE_AUTOMATIC_ACTUATOR = 8,
+	INTERBLOCKED_ACTUATOR = 2,
+	SIMPLE_ACTUATOR = 0,
+	DOOR_LOCK = 13,
+	PPT_STAT_AUTO = 42,
+	ACTUATOR_GROUP = 10,
+};
+#else
+enum BannerType
+{
+	INTERBLOCKED_ACTUATOR = 3001,
+	SECURE_AUTOMATIC_ACTUATOR = 3002,
+	SIMPLE_ACTUATOR = 3007,
+	DOOR_LOCK = 3010,
+	PPT_STAT_AUTO = 3012,
+	ACTUATOR_GROUP = 3013,
+	/*
+	  TODO: What about these?
+	AUTOM_CANC_ATTUAT_ILL =234,
+	AUTOM_CANC_ATTUAT_VC = 234,
+	ATTUAT_AUTOM_PULS = 234,
+	*/
+};
+#endif
 
 
 Automation::Automation(const QDomNode &config_node)
@@ -25,70 +75,61 @@ int Automation::sectionId()
 banner *Automation::getBanner(const QDomNode &item_node)
 {
 	int id = getTextChild(item_node, "id").toInt();
-	int cid = getTextChild(item_node, "cid").toInt();
+	SkinContext ctx(getTextChild(item_node, "cid").toInt());
 	QString where = getTextChild(item_node, "where");
-	QString img1 = IMG_PATH + getTextChild(item_node, "cimg1");
-	QString img2 = IMG_PATH + getTextChild(item_node, "cimg2");
-	QString img3 = IMG_PATH + getTextChild(item_node, "cimg3");
-	QString img4 = IMG_PATH + getTextChild(item_node, "cimg4");
-	QString time = getTextChild(item_node, "time");
+	QString descr = getTextChild(item_node, "descr");
+	int oid = getTextChild(item_node, "openserver_id").toInt();
 
 	banner *b = 0;
 	switch (id)
 	{
-	case ATTUAT_AUTOM_INT_SIC:
-		//b = new attuatAutomIntSic(this, where, img1, img2, img3, img4);
-		b = new SecureInterblockedActuator(0, item_node);
+	case SECURE_AUTOMATIC_ACTUATOR:
+		b = new SecureInterblockedActuator(descr, where, oid);
 		break;
-	case ATTUAT_AUTOM_INT:
-		//b = new attuatAutomInt(this, where, img1, img2, img3, img4);
-		b = new InterblockedActuator(0, item_node);
+	case INTERBLOCKED_ACTUATOR:
+		b = new InterblockedActuator(descr, where, oid);
 		break;
-	case ATTUAT_AUTOM:
-		// DELETE
-		//b = new attuatAutom(this, where, img1, img2, img3, img4);
-		b = new SingleActuator(0, item_node, where);
+	case SIMPLE_ACTUATOR:
+		b = new SingleActuator(descr, where, oid);
 		break;
-	case ATTUAT_VCT_SERR:
-		//b = new attuatPuls(this, where, img1, img2, VCT_SERR);
-		b = new ButtonActuator(0, item_node, VCT_SERR);
+	case DOOR_LOCK:
+		b = new ButtonActuator(descr, where, VCT_SERR);
 		break;
-	case GR_ATTUAT_INT:
+	case ACTUATOR_GROUP:
 	{
-		/*
-		//DELETE
-		QList<QString> addresses;
-		foreach (const QDomNode &el, getChildren(item, "element"))
-			addresses.append(getTextChild(el, "where"));
-
-		b = new grAttuatInt(this, addresses, img1, img2, img3);
-		*/
-		b = new InterblockedActuatorGroup(0, item_node);
-		break;
+		QStringList addresses;
+#ifdef CONFIG_BTOUCH
+		foreach (const QDomNode &el, getChildren(item_node, "element"))
+			addresses << getTextChild(el, "where");
+#else
+		foreach (const QDomNode &el, getChildren(getElement(item_node, "addresses"), "where"))
+			addresses << el.toElement().text();
+#endif
+		b = new InterblockedActuatorGroup(addresses, descr, oid);
 	}
+		break;
 	case AUTOM_CANC_ATTUAT_ILL:
-		//b = new automCancAttuatIll(this, where, img1, img2, time);
-		b = new GateLightingActuator(0, item_node);
+	{
+		QStringList sl = getTextChild(item_node, "time").split("*");
+		Q_ASSERT_X(sl.size() == 3, "Automation::getBanner", "time leaf must have 3 fields");
+		BtTime t(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+		b = new GateLightingActuator(t, descr, where, oid);
+	}
 		break;
 	case AUTOM_CANC_ATTUAT_VC:
-		//b = new automCancAttuatVC(this, where, img1, img2);
-		b = new GateEntryphoneActuator(0, item_node);
+		b = new GateEntryphoneActuator(descr, where, oid);
 		break;
 	case ATTUAT_AUTOM_PULS:
-		//b = new attuatPuls(this, where, img1, img2, AUTOMAZ);
-		b = new ButtonActuator(0, item_node, AUTOMAZ);
+		b = new ButtonActuator(descr, where, AUTOMAZ);
 		break;
-	case PPT_STAT:
-		b = new PPTStat(0, where, cid);
+	case PPT_STAT_AUTO:
+		b = new PPTStat(where, oid);
 		break;
 	}
 
 	if (b)
-	{
-		//b->setText(getTextChild(item_node, "descr"));
 		b->setId(id);
-		//b->Draw();
-	}
+
 	return b;
 }
 

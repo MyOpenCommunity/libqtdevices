@@ -1,14 +1,24 @@
-/*!
- * \bttime.cpp
- * <!--
- * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
- * All rights reserved.
- * -->
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
  *
- * \brief A reimplementation of QTime class that accepts a custom number of hours and minutes.
+ * Copyright (C) 2010 BTicino S.p.A.
  *
- * \author Luca Ottaviano <lottaviano@develer.com>
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+
 #ifndef BTTIME_H
 #define BTTIME_H
 
@@ -17,8 +27,10 @@
 
 class QTime;
 
+
 class BtTime
 {
+friend class TestBtTime;
 public:
 	/**
 	 * Constructs a BtTime with given hour, minute and second. The default value for
@@ -101,6 +113,7 @@ public:
 	 * \return Current second.
 	 */
 	int second() const;
+
 private:
 	// used by constructors
 	void init(int h, int m, int s);
@@ -121,5 +134,8 @@ inline bool operator !=(const BtTime &f, const BtTime &s)
 {
 	return !(f == s);
 }
+
+QString formatTime(const BtTime &t);
+
 
 #endif //BTTIME_H

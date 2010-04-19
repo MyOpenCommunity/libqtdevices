@@ -1,59 +1,75 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** main.h
- **
- ** definizioni di carattere generale
- **
- ****************************************************************/
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <QDomNode>
 #include <QHash>
-#include <QString>
 
+class QDomNode;
+class QDomElement;
+class QString;
+
+/**
+ * The following enum defines the keys of the global configuration.
+ */
 enum GlobalFields
 {
 	LANGUAGE,
 	TEMPERATURE_SCALE,
 	DATE_FORMAT,
 	MODEL,
-	NAME
+	NAME,
+	PI_ADDRESS,
+	INIT_COMPLETE
 };
 
-namespace bt_global { extern QHash<GlobalFields, QString> config; }
+namespace bt_global { extern QHash<GlobalFields, QString> *config; }
 
 enum TemperatureScale
 {
 	CELSIUS = 0,
 	FAHRENHEIT,
-	NONE,
 };
 
 enum DateFormat
 {
-	EUROPEAN_DATE = 0,
-	USA_DATE
+	EUROPEAN_DATE = 0,   // dd.mm.yy
+	USA_DATE = 1,        // mm.dd.yy
+	YEAR_FIRST = 2,      // yy.mm.dd
 };
 
 QDomNode getPageNode(int id);
+
+#ifndef CONFIG_BTOUCH
 QDomNode getPageNodeFromPageId(int pageid);
+QDomNode getPageNodeFromChildNode(QDomNode node, QString child_name);
 QDomNode getHomepageNode();
+#endif
 
 // See getElement
 QDomElement getConfElement(QString path);
 
 void resetTimer(int signo);
 
-/****************************************************************
- ** Default configurazione applicativo
- ****************************************************************/
-/*! \def MYPROCESSNAME
- *  Name of the process
- */
-#define MYPROCESSNAME              "BTouch"
 /*! \def MY_FILE_CFG_DEFAULT
  *  The default configuration file
  */
@@ -100,31 +116,6 @@ void resetTimer(int signo);
 #ifndef MEDIASERVER_PATH
 #define MEDIASERVER_PATH            "/home/bticino/mediaserver/"
 #endif
-/*! \def XML_FILE_IN_DEFAULT
- */
-#define XML_FILE_IN_DEFAULT        ".bto-to-xml"
-/*! \def XML_FILE_OUT_DEFAULT
- */
-#define XML_FILE_OUT_DEFAULT       ".xml-to-bto"
-/*! \def PATH_VAR_DEFAULT
- */
-#define PATH_VAR_DEFAULT           "/var"
-/*!  \def FILE_TEST1
- * The file name to watch to generate a RED page
- */
-#define FILE_TEST1                 "MODALITA_TEST1"
-/*! \def FILE_TEST2
- *  The file name to watch to generate a GREEN page
- */
-#define FILE_TEST2                 "MODALITA_TEST2"
-/*! \def FILE_TEST3
- *  The file name to watch to generate a BLUE page
- */
-#define FILE_TEST3                 "MODALITA_TEST3"
-/*! \def FILE_AGGIORNAMENTO
- *  The file name to watch to generate the \a configuration page
- */
-#define FILE_AGGIORNAMENTO	   "MODALITA_AGGIORNAMENTO"
 /*! \def FILE_CHANGE_CONF
  *  The file to generate when changing the user-configurationFile to avoid beinf resetted from bt_processi
  */
@@ -143,9 +134,7 @@ void resetTimer(int signo);
  *  Default language used in BTouch
  */
 
-/****************************************************************
- **  definizione dimensioni schermo
- ****************************************************************/
+
 /*! \def MAX_WIDTH
  *  Maximum width of the screen
  */
@@ -159,13 +148,12 @@ void resetTimer(int signo);
  */
 #define NUM_RIGHE                  4
 
-/****************************************************************
- **  definizione dei sottomenù
- ****************************************************************/
-/*! \enum pagSecLiv
-  This enum describes the various kind of pages*/
+/// The simbol of temperature degrees
+#define TEMP_DEGREES "\272"
+
+
 #ifdef CONFIG_BTOUCH
-enum pagSecLiv
+enum Section
 {
 	NO_SECTION=0,
 	AUTOMAZIONE=1,                                /*!< Automation system */
@@ -185,37 +173,36 @@ enum pagSecLiv
 	TERMOREG_MULTI_PLANT=15,                      /*!< Thermoregulation system with one or more 4-zones plants */
 	ENERGY_MANAGEMENT=16,                         /*!< Energy management system */
 	ENERGY_DATA=17,                               /*!< Energy data system */
+	LOAD_MANAGEMENT=18,                           /*!< Load management system */
 	FEED_READER=99,                               /*!< Feed reader page */
 	/* Added to avoid compile problems... */
-	VIDEO_CONTROL=2000,                           /*!< Video control menu */
-	INTERCOM=2001,                                /*!< Intercom menu */
-	CALL_EXCLUSION=2003,                          /*!< Call exclusion */
+	MULTIMEDIA=26,
+	MESSAGES=27,
 };
 #else
-enum pagSecLiv
+enum Section
 {
 	NO_SECTION=0,
-	AUTOMAZIONE=1,                                /*!< Automation system */
-	ILLUMINAZIONE=2,                              /*!< Lighting system */
-	ANTIINTRUSIONE=3,                             /*!< Anti-intrusion system */
+	AUTOMAZIONE=3000,                             /*!< Automation system */
+	ILLUMINAZIONE=2000,                           /*!< Lighting system */
+	ANTIINTRUSIONE=13000,                         /*!< Anti-intrusion system */
 	CARICHI=4,                                    /*!< Appliances managing system */
-	TERMOREGOLAZIONE=5,                           /*!< Thermoregulation system */
-	DIFSON=16,                                    /*!< Sound diffusion system */
-	SCENARI=19,                                   /*!< Scenarios managing */
-	IMPOSTAZIONI=29,                              /*!< Settings */
+	TERMOREGOLAZIONE=8000,                        /*!< Thermoregulation system */
 	BACK=9,                                       /*!< Back button - placed here for convenience */
 	SPECIAL=10,                                   /*!< Special button - placed here for convenience */
-	VIDEOCITOFONIA=22,
+	MESSAGES=17,                                  /*!< Textual Messages from scs */
+	LOAD_MANAGEMENT=18,                           /*!< Load management system */
+	SCENARI=1000,                                 /*!< Scenarios managing */
 	SCENARI_EVOLUTI=20,                           /*!< Advanced scenarios management */
-	DIFSON_MULTI=17,                              /*!< Multichannel sound diffusion system */
+	VIDEOCITOFONIA=10000,                         /*!< VideoDoorEntry system */
+	IMPOSTAZIONI=29,                              /*!< Settings */
+	MULTIMEDIA=16000,                             /*!< Multimedia system */
+	DIFSON_MULTI=12000,                           /*!< Sound diffusion system (mono and multichannel) */
 	SUPERVISIONE=-2,                              /*!< Supervision system */
 	TERMOREG_MULTI_PLANT=-3,                      /*!< Thermoregulation system with one or more 4-zones plants */
 	ENERGY_MANAGEMENT=-4,                         /*!< Energy management system */
 	ENERGY_DATA=-5,                               /*!< Energy data system */
 	FEED_READER=-6,                               /*!< Feed reader page */
-	VIDEO_CONTROL=2200,                           /*!< Video control menu */
-	INTERCOM=2201,                                /*!< Intercom menu */
-	CALL_EXCLUSION=2203,                          /*!< Call exclusion */
 };
 #endif
 
@@ -262,12 +249,6 @@ enum pagSecLiv
 /*!  \def ICON_DIFFSON
   The file name for \a diffson icon*/
 #define ICON_DIFFSON  (IMG_PATH "appdiffsmall.png")
-/*!  \def ICON_OROLOGIO
-  The file name for \a clock icon*/
-#define ICON_OROLOGIO  (IMG_PATH "orologio.png")
-/*!  \def ICON_CALENDARIO
-  The file name for \a calendar icon*/
-#define ICON_CALENDARIO  (IMG_PATH "calendario.png")
 /*!  \def ICON_SVEGLIA_ON
   The file name for \a alarm \a clock icon*/
 #define ICON_SVEGLIA_ON  (IMG_PATH "svegliaon.png")
@@ -277,51 +258,7 @@ enum pagSecLiv
 /*!  \def ICON_MENO
   The file name for \a minus icon*/
 #define ICON_MENO  (IMG_PATH "btnmin.png")
-/*!  \def ICON_MANUAL_ON
-  The file name for \a manual \a selected icon*/
-#define ICON_MANUAL_ON  (IMG_PATH "btnman.png")
-/*!  \def ICON_MANUAL_OFF
-  The file name for \a manual \a unselected icon*/
-#define ICON_MANUAL_OFF  (IMG_PATH "btnmanoff.png")
-/*!  \def ICON_AUTO
-  The file name for \a automatic \a selected icon*/
-#define ICON_AUTO_ON  (IMG_PATH "btnauto.png")
-/*!  \def ICON_AUTO_OFF
-  The file name for \a automatic \a unselected icon*/
-#define ICON_AUTO_OFF  (IMG_PATH "btnautooff.png")
-/*!  \def ICON_MEM
-  The file name for \a memorization icon*/
-#define ICON_MEM  (IMG_PATH "btnmem.png")
-/*!  \def ICON_ZERO
-  The file name for \a zero icon*/
-#define ICON_ZERO  (IMG_PATH "num0.png")
-/*!  \def ICON_UNO
-  The file name for \a one icon*/
-#define ICON_UNO  (IMG_PATH "num1.png")
-/*!  \def ICON_DUE
-  The file name for \a two icon*/
-#define ICON_DUE  (IMG_PATH "num2.png")
-/*!  \def ICON_TRE
-  The file name for \a three icon*/
-#define ICON_TRE  (IMG_PATH "num3.png")
-/*!  \def ICON_QUATTRO
-  The file name for \a for icon*/
-#define ICON_QUATTRO  (IMG_PATH "num4.png")
-/*!  \def ICON_CINQUE
-  The file name for \a five icon*/
-#define ICON_CINQUE  (IMG_PATH "num5.png")
-/*!  \def ICON_SEI
-  The file name for \a six icon*/
-#define ICON_SEI  (IMG_PATH "num6.png")
-/*!  \def ICON_SETTE
-  The file name for \a seven icon*/
-#define ICON_SETTE  (IMG_PATH "num7.png")
-/*!  \def ICON_OTTO
-  The file name for \a eight icon*/
-#define ICON_OTTO  (IMG_PATH "num8.png")
-/*!  \def ICON_NOVE
-  The file name for \a nine icon*/
-#define ICON_NOVE  (IMG_PATH "num9.png")
+
 /*!  \def ICON_CANC
   The file name for \a cancellation icon*/
 #define ICON_CANC  (IMG_PATH "btncanc.png")
@@ -331,9 +268,6 @@ enum pagSecLiv
 /*!  \def ICON_DEL
   The file name for \a delete icon*/
 #define ICON_DEL  (IMG_PATH "btndel.png")
-/*!  \def ICON_SUPERVISIONE
-  The file name for \a plant supervision icon*/
-#define ICON_SUPERVISIONE (IMG_PATH "supervisione_impianto.png")
 /*!  \def ICON_STOPNGO_APERTO
   The file name for \a open stopngo icon*/
 #define ICON_STOPNGO_APERTO (IMG_PATH "S&G_Aperto.png")
@@ -372,14 +306,10 @@ enum pagSecLiv
 #define ICON_STOPNGO_D_AUTOTEST (IMG_PATH "d_autotest.png")
 
 
-
-/****************************************************************
- **  definizione dei vari item
- ****************************************************************/
-/*! \enum bannerType
- *  This enum describes the various banner type implemented
+/*! \enum ItemType
+ *  This enum describes the various items implemented
  */
-enum  bannerType
+enum ItemType
 {
 	ATTUAT_AUTOM=0,                               /*!<  Automation actuator */
 	DIMMER=1,                                     /*!<  Dimmer */
@@ -402,10 +332,12 @@ enum  bannerType
 	AMPLIFICATORE=18,                             /*!<  Amplifier */
 	GR_AMPLIFICATORI=19,                          /*!<  Amplifier's group */
 	SET_SVEGLIA=20,                               /*!<  AlarmClock setting */
-	SET_SVEGLIA_SINGLEPAGE=8800,                  /*!<  AlarmClock setting with state icon */
+	SET_SVEGLIA_SINGLEPAGE=14201,                 /*!<  AlarmClock setting with state icon */
 	DISPLAY=21,                                   /*!<  Display */
+#ifdef CONFIG_BTOUCH
 	ZONANTINTRUS=23,                              /*!<  Anti-intrusion zone */
 	IMPIANTINTRUS=24,                             /*!<  Anti-intrusion system */
+#endif
 	SUONO=25,                                     /*!<  Beep */
 	PROTEZIONE=26,                                /*!<  Password's settings */
 	VERSIONE=27,                                  /*!<  Version */
@@ -433,6 +365,7 @@ enum  bannerType
 	POSTO_ESTERNO=49,                             /*!< Posto esterno */
 	SORGENTE_MULTIM=50,                           /*!< Sorgente Multimediale per Diffusione Sonora */
 	SORGENTE_MULTIM_MC=51,                        /*!< Sorgente Multimediale per Diffusione Sonora Multicanale */
+#ifdef CONFIG_BTOUCH
 	TERMO_99Z_PROBE=22,                           /*!< Probe controlled by 99 zones thermal regulator */
 	TERMO_99Z_PROBE_FANCOIL=52,                   /*!< Probe controlled by 99 zones thermal regulator with fan-coil control */
 	TERMO_4Z_PROBE=53,                            /*!< Probe controlled by 4 zones thermal regulator */
@@ -441,43 +374,44 @@ enum  bannerType
 	TERMO_NC_PROBE=56,                            /*!< Not-controlled probe */
 	TERMO_HOME_NC_EXTPROBE=57,                    /*!< Home page external not-controlled probe */
 	TERMO_HOME_NC_PROBE=58,                       /*!< Home page not-controlled probe */
+#else
+	TERMO_99Z_PROBE=8012,                         /*!< Probe controlled by 99 zones thermal regulator */
+	TERMO_99Z_PROBE_FANCOIL=8012,                 /*!< Probe controlled by 99 zones thermal regulator with fan-coil control */
+	TERMO_4Z_PROBE=8042,                          /*!< Probe controlled by 4 zones thermal regulator */
+	TERMO_4Z_PROBE_FANCOIL=8042,                  /*!< Probe controlled by 4 zones thermal regulator with fan-coil control */
+	TERMO_NC_EXTPROBE=8021,                       /*!< External not-controlled probe */
+	TERMO_NC_PROBE=8031,                          /*!< Not-controlled probe */
+	TERMO_HOME_NC_EXTPROBE=207,                   /*!< Home page external not-controlled probe */
+	TERMO_HOME_NC_PROBE=208,                      /*!< Home page not-controlled probe */
+#endif
 	CLASS_STOPNGO=59,                             /*!< StopnGo devices class */
 	STOPNGO=60,                                   /*!< StopnGo device */
 	STOPNGO_PLUS=61,                              /*!< StopnGo Plus device */
 	STOPNGO_BTEST=62,                             /*!< StopnGo BTest device */
+#ifdef CONFIG_BTOUCH
 	TERMO_99Z=66,                                 /*!< 99 zones thermal regulator */
+#else
+	TERMO_99Z=8011,                               /*!< 99 zones thermal regulator */
+#endif
 	TERMO_4Z=68,                                  /*!< 4 zones thermal regulator */
 	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
-	ENERGY_TYPE=70,
+	ENERGY_TYPE=70,                               /*!< The type/interface of energy management */
 	LANSETTINGS=72,                               /*!< LAN settings and information */
+#ifdef CONFIG_BTOUCH
 	AIR_SPLIT=74,                                 /*!< AIR conditioning single split (basic) */
 	AIR_GENERAL=75,                               /*!< AIR conditioning general split (basic) */
 	AIR_SPLIT_ADV=77,                             /*!< AIR conditioning single split (advanced) */
 	AIR_GENERAL_ADV=78,                           /*!< AIR conditioning general split (advanced) */
-	BEEP_ICON=2901,                               /*!< Beep icon in touch 10 settings */
+#else
+	AIR_SPLIT=4001,                               /*!< AIR conditioning single split (basic) */
+	AIR_GENERAL=4002,                             /*!< AIR conditioning general split (basic) */
+	AIR_SPLIT_ADV=4003,                           /*!< AIR conditioning single split (advanced) */
+	AIR_GENERAL_ADV=4004,                         /*!< AIR conditioning general split (advanced) */
+#endif
+	LOAD_WITH_CU=80,                              /*!< Load with central unit */
+	LOAD_WITHOUT_CU=81,                           /*!< Load without central unit */
+	LOAD_DIAGNOSTIC=82,                           /*!< Load diagnostics */
 };
-
-/*! \enum pulsType
- * differentiate various type of pulse banner
- */
-enum pulsType
-{
-	AUTOMAZ,                   /*!< driving as a pulse an automation actuator */
-	VCT_SERR,                  /*!< driving as a pulse a video-doorentrysystem actuator configured as "lock" */
-	VCT_LS,                    /*!< driving as a pulse a video-doorentrysystem actuator configured as "stairlight" */
-};
-
-/***************************************************************
- **definizioni di carattere generale
- ***************************************************************/
-/*! \def MAX_PATH
- * maximum number of characters describing a file path
- */
-#define MAX_PATH 50
-
-/// The simbol of temperature degrees
-#define TEMP_DEGREES "\272"
-
 
 #endif //MAIN_H
 

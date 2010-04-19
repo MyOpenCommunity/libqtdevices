@@ -1,23 +1,36 @@
-/*!
- * \datetime.h
- * <!--
- * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
- * All rights reserved.
- * -->
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
  *
- * \brief Implementation of date / time widgets for BTouch
+ * Copyright (C) 2010 BTicino S.p.A.
  *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * \author Luca Ottaviano <lottaviano@develer.com>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+
 #ifndef DATETIME_H
 #define DATETIME_H
 
 #include "bttime.h"
+#include "page.h"
 
 #include <QWidget>
-#include <QLCDNumber>
 #include <QDateTime>
+#include <QHBoxLayout>
+
+class QLabel;
+class QLCDNumber;
 
 /**
  * A widget that emulates QTimeEdit
@@ -59,7 +72,11 @@ private:
 	void displayTime();
 private:
 	BtTime _time;
+#ifdef LAYOUT_TOUCHX
+	QLabel *hour, *minute, *second;
+#else
 	QLCDNumber *num;
+#endif
 	DisplayType _display_type;
 };
 
@@ -83,12 +100,21 @@ public:
 	QDate date();
 
 	void setAllowPastDates(bool v);
+
+private:
+	void displayDate();
+
 private:
 	/// display date set
+#ifdef LAYOUT_TOUCHX
+	QLabel *year, *month, *day;
+#else
 	QLCDNumber *date_display;
+#endif
 	QDate _date;
 	bool _allow_past_dates;
 	static QString FORMAT_STRING;
+
 private slots:
 	void incDay();
 	void incMonth();
@@ -96,6 +122,33 @@ private slots:
 	void decDay();
 	void decMonth();
 	void decYear();
+};
+
+
+class PageSetDateTime : public Page
+{
+Q_OBJECT
+public:
+	PageSetDateTime(const QString &extra_button_icon, bool allow_past_dates);
+
+	QDate date();
+	BtTime time();
+	void setTitle(QString title);
+	void setDateTime(const QDateTime &dt);
+
+signals:
+	void dateTimeSelected(QDate, BtTime);
+
+private slots:
+	void performAction();
+
+private:
+	PageTitleWidget title_widget;
+	QWidget content;
+	QVBoxLayout main_layout;
+	QHBoxLayout top_layout;
+	BtDateEdit *date_edit;
+	BtTimeEdit *time_edit;
 };
 #endif // DATETIME_H
 

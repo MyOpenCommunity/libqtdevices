@@ -1,15 +1,51 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "bann3_buttons.h"
 #include "fontmanager.h" // FontManager
 #include "btbutton.h"
+#include "icondispatcher.h" // icons_cache
 
 #include <QLabel>
 #include <QHBoxLayout>
 
+#ifdef LAYOUT_TOUCHX
+
+#define BAN3BUT_SPACING 5
+#define BAN3BUT_BUT_DIM 50
+#define BAN3BUT_BUTCEN_DIM 110
+#define BUT3BL_ICON_DIM_X 110
+#define BUT3BL_ICON_DIM_Y 50
+#define BAN3BL_BUT_DIM 50
+
+#else
+
+#define BAN3BUT_SPACING 0
 #define BAN3BUT_BUT_DIM 60
 #define BAN3BUT_BUTCEN_DIM 120
 #define BUT3BL_ICON_DIM_X 120
 #define BUT3BL_ICON_DIM_Y 60
 #define BAN3BL_BUT_DIM 60
+
+#endif
 
 Bann3Buttons::Bann3Buttons(QWidget *parent) :
 	BannerNew(parent)
@@ -42,22 +78,84 @@ void Bann3Buttons::initBanner(const QString &left, const QString &center, const 
 	text->setText(banner_text);
 }
 
-bann3But::bann3But(QWidget *parent) : banner(parent)
+Bann3ButtonsLabel::Bann3ButtonsLabel(QWidget *parent) :
+	BannerNew(parent)
 {
-	addItem(BUT1, 0, 0, BAN3BUT_BUT_DIM, BAN3BUT_BUT_DIM);
-	addItem(BUT2, banner_width - BAN3BUT_BUT_DIM, 0 , BAN3BUT_BUT_DIM , BAN3BUT_BUT_DIM);
-	addItem(TEXT, 0, BAN3BUT_BUT_DIM, banner_width, banner_height - BAN3BUT_BUT_DIM);
-	addItem(BUT3, banner_width/2 - BAN3BUT_BUTCEN_DIM/2, 0, BAN3BUT_BUTCEN_DIM, BAN3BUT_BUT_DIM);
-	connect(this,SIGNAL(csxClick()),this,SIGNAL(centerClick()));
+	right_button = new BtButton;
+	center_button = new BtButton;
+	left_button = new BtButton;
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::TEXT));
+	center_label = new QLabel;
+
+	QGridLayout *l = new QGridLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	l->addWidget(left_button, 0, 0);
+	l->addWidget(center_button, 0, 1);
+	l->addWidget(center_label, 0, 1);
+	l->addWidget(right_button, 0, 2);
+	l->addWidget(text, 1, 0, 1, 3);
+}
+
+void Bann3ButtonsLabel::initBanner(const QString &_left_forced, const QString &_left_not_forced, const QString &center_but, const QString &center_lab,
+	const QString &right, State init_state, Forced init_forced, const QString &banner_text)
+{
+	Q_ASSERT_X(_left_forced.isEmpty() == _left_not_forced.isEmpty(), "Bann3ButtonsLabel::initBanner",
+		"left and left_alt must be both full or empty");
+	left_forced = _left_forced;
+	left_not_forced= _left_not_forced;
+	initButton(left_button, left_forced);
+	initButton(center_button, center_but);
+	initButton(right_button, right);
+	initLabel(text, banner_text, bt_global::font->get(FontManager::TEXT));
+
+	center_label->setPixmap(*bt_global::icons_cache.getIcon(center_lab));
+	center_label->hide();
+
+	setState(init_state);
+	setForced(init_forced);
 }
 
 
-bann3ButLab::bann3ButLab(QWidget *parent) : banner(parent)
+void Bann3ButtonsLabel::setState(State new_state)
+{
+	switch (new_state)
+	{
+	case DISABLED:
+		if (center_button)
+			center_button->show();
+		center_label->hide();
+		break;
+	case ENABLED:
+		if (center_button)
+			center_button->hide();
+		center_label->show();
+		break;
+	}
+}
+
+void Bann3ButtonsLabel::setForced(Forced is_forced)
+{
+	switch (is_forced)
+	{
+	case FORCED:
+		if (left_button)
+			left_button->setImage(left_forced);
+		break;
+	case NOT_FORCED:
+		if (left_button)
+			left_button->setImage(left_not_forced);
+		break;
+	}
+}
+
+
+bann3ButLab::bann3ButLab(QWidget *parent) : BannerOld(parent)
 {
 	addItem(BUT1, banner_width - BAN3BL_BUT_DIM, 0, BAN3BL_BUT_DIM, BAN3BL_BUT_DIM);
 	addItem(BUT2, 0, 0, BAN3BL_BUT_DIM, BAN3BL_BUT_DIM);
 	addItem(BUT4, 0, 0, BAN3BL_BUT_DIM, BAN3BL_BUT_DIM);
 	addItem(TEXT, 0, BAN3BL_BUT_DIM, banner_width, banner_height - BAN3BL_BUT_DIM);
-	addItem(ICON, BAN3BL_BUT_DIM, 0, BUT3BL_ICON_DIM_X, BUT3BL_ICON_DIM_Y);
+	addItem(ICON, BAN3BL_BUT_DIM + BAN3BUT_SPACING, 0, BUT3BL_ICON_DIM_X, BUT3BL_ICON_DIM_Y);
 }
 

@@ -1,9 +1,30 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "specialpage.h"
 #include "timescript.h"
 #include "btbutton.h"
 #include "main.h" // ICON_FRECCIA_SX
 #include "xml_functions.h" // getChildren, getTextChild, getChildWithName
-#include "generic_functions.h" // createMsgOpen
+#include "generic_functions.h" // createCommandFrame
 #include "fontmanager.h" // bt_global::font
 #include "temperatureviewer.h"
 #include "skinmanager.h" //skin
@@ -57,8 +78,8 @@ void SpecialPage::loadItems(const QDomNode &config_node)
 		case TERMO_HOME_NC_EXTPROBE:
 		{
 			QString ext = (id == TERMO_HOME_NC_EXTPROBE) ? "1" : "0";
-			temp_viewer->add(getTextChild(item, "where"), BORDER_SIZE, getPosition(itemNum),
-				width() - BORDER_SIZE, ITEM_HEIGHT, getTextChild(item, "descr"), ext);
+			temp_viewer->add(getTextChild(item, "where"), getTextChild(item, "openserver_id").toInt(),
+				BORDER_SIZE, getPosition(itemNum), width() - BORDER_SIZE, ITEM_HEIGHT, getTextChild(item, "descr"), ext);
 			break;
 		}
 		default:
@@ -113,17 +134,17 @@ void SpecialPage::clickedButton()
 	if (type == CYCLIC)
 		what = what == "0" ? "1" : "0";
 
-	sendFrame(createMsgOpen(who, what, where));
+	sendFrame(createCommandFrame(who, what, where));
 }
 
 void SpecialPage::pressedButton()
 {
-	sendFrame(createMsgOpen(who, "1", where));
+	sendFrame(createCommandFrame(who, "1", where));
 }
 
 void SpecialPage::releasedButton()
 {
-	sendFrame(createMsgOpen(who, "0", where));
+	sendFrame(createCommandFrame(who, "0", where));
 }
 
 void SpecialPage::manageFrame(OpenMsg &msg)

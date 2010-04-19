@@ -1,20 +1,23 @@
-/*!
- * \file
- * <!--
- * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
- * All rights reserved.
- * -->
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
  *
- * \brief  A class to handle thermal regulation menu
+ * Copyright (C) 2010 BTicino S.p.A.
  *
- *  This class represents the first level menu in thermal regulation.
- *  It's instantiated in xmlconfhandler.cpp and it reads by itself the
- *  configuration.
- *  It also creates all the necessary objects and submenus to handle
- *  all the items present in a thermal regulation page.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * \author Luca Ottaviano <lottaviano@develer.com>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 
 #ifndef BTOUCH_THERMALMENU_H
 #define BTOUCH_THERMALMENU_H
@@ -66,7 +69,7 @@ private:
 
 	unsigned bann_number;
 	/// A reference to the only submenu below us
-	Page *single_submenu;
+	Page *single_page;
 };
 
 
@@ -75,6 +78,9 @@ class ProbesPage : public BannerPage
 Q_OBJECT
 public:
 	ProbesPage(const QDomNode &config_node, bool are_probes_external);
+
+private:
+	void loadItems(const QDomNode &config_node, bool are_probes_external);
 };
 
 
@@ -88,19 +94,19 @@ class ProgramMenu : public BannerPage
 {
 Q_OBJECT
 public:
-	ProgramMenu(QWidget *parent, QDomNode conf);
+	ProgramMenu(QWidget *parent, QMap<QString, QString> descriptions, QString title);
 	virtual void createSummerBanners() = 0;
 	virtual void createWinterBanners() = 0;
 	void setSeason(Season new_season);
 protected:
 	QString summer_icon, winter_icon;
 	int season;
-	QDomNode conf_root;
+	QMap<QString, QString> descriptions;
 	/**
 	 * \param season Either "summer" or "winter"
 	 * \param what Either "prog" or "scen"
 	 */
-	void createSeasonBanner(QString season, QString what, QString icon);
+	void createSeasonBanner(QString season, QString icon);
 signals:
 	void programClicked(int);
 };
@@ -113,7 +119,7 @@ class WeeklyMenu : public ProgramMenu
 {
 Q_OBJECT
 public:
-	WeeklyMenu(QWidget *parent, QDomNode conf);
+	WeeklyMenu(QWidget *parent, QMap<QString, QString> programs, QString title = "");
 	virtual void createSummerBanners();
 	virtual void createWinterBanners();
 };
@@ -126,7 +132,7 @@ class ScenarioMenu : public ProgramMenu
 {
 Q_OBJECT
 public:
-	ScenarioMenu(QWidget *parent, QDomNode conf);
+	ScenarioMenu(QWidget *parent, QMap<QString, QString> scenarios, QString title = "");
 	virtual void createSummerBanners();
 	virtual void createWinterBanners();
 };

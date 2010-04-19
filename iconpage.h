@@ -1,19 +1,29 @@
-/**
- * \file
- * <!--
- * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
- * All rights reserved.
- * -->
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
  *
+ * Copyright (C) 2010 BTicino S.p.A.
  *
- * \author Gianni Valdambrini <aleister@develer.com>
- * \date December 2008
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 
 #ifndef ICONPAGE_H
 #define ICONPAGE_H
 
 #include "page.h"
+#include "gridcontent.h"
 
 #include <QButtonGroup>
 #include <QHash>
@@ -21,6 +31,8 @@
 
 class IconContent;
 class BtButton;
+class StateButton;
+
 
 /**
  * \class IconPage
@@ -35,28 +47,20 @@ public:
 	// the type returned by page_content
 	typedef IconContent ContentType;
 
-	IconPage();
 	virtual void addBackButton();
 	virtual void activateLayout();
 
 protected:
 	void buildPage(IconContent *content, NavigationBar *nav_bar, const QString &label = QString());
-	void addPage(Page *page, int id, const QString &label, const QString &iconName, int x = 0, int y = 0);
+	void addPage(Page *page, const QString &label, const QString &iconName, int x = 0, int y = 0);
 	BtButton *addButton(const QString &label, const QString &iconName, int x = 0, int y = 0);
-
-private:
-	QButtonGroup buttons_group;
-	QHash<int, Page*> page_list;
-
-protected slots:
-	void clicked(int id);
 };
 
 
 /**
  * The IconContent class manages a grid of buttons.
  */
-class IconContent : public QWidget
+class IconContent : public GridContent
 {
 friend void IconPage::activateLayout();
 Q_OBJECT
@@ -65,32 +69,52 @@ public:
 	void addButton(QWidget *button, const QString &label = QString());
 	void addWidget(QWidget *widget);
 
-public slots:
-	void pgUp();
-	void pgDown();
-	void resetIndex();
-
-signals:
-	void displayScrollButtons(bool display);
-	void contentScrolled(int current, int total);
-
 protected:
-	void showEvent(QShowEvent *e);
-
-private:
 	// The drawContent is the place where this widget is actually drawed. In order
 	// to have a correct transition effect, this method is also called by the
 	// Page _before_ that the Page is showed.
-	void drawContent();
-
-	int pageCount() const;
+	virtual void drawContent();
 
 private:
-	bool need_update; // a flag to avoid useless call to drawContent
-
-	int current_page;
-	QList<int> pages;
 	QList<QWidget*> items;
+};
+
+
+/**
+ * Base class for IconPage buttons that aren't just links to pages but have some
+ * special behaviour.  Provides an uniform layout.
+ */
+class IconPageButton : public QWidget
+{
+Q_OBJECT
+public:
+	IconPageButton(const QString &label);
+
+protected:
+	StateButton *button;
+};
+
+
+/**
+ * A base class for special state buttons that have a button "as shortcut" in the
+ * tray icon, but only if the status is on.
+ */
+class IconButtonOnTray : public IconPageButton
+{
+Q_OBJECT
+public:
+	IconButtonOnTray(const QString &label, const QString &icon_on, const QString &icon_off,
+		const QString &tray_icon);
+
+private slots:
+	void toggleActivation();
+	void turnOff();
+
+protected:
+	virtual void updateStatus();
+
+private:
+	BtButton *tray_button;
 };
 
 #endif // ICONPAGE_H

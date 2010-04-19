@@ -1,12 +1,23 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-** alarmclock.h
-**
-** the page to set the alarm clock
-**
-****************************************************************/
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 
 #ifndef ALARMCLOCK_H
 #define ALARMCLOCK_H
@@ -35,8 +46,6 @@ class SingleChoiceContent;
   \class AlarmClock
   \brief This class is the implementation af the alarm set.
 
-  \author Davide
-  \date lug 2005
 */
 class AlarmClock : public Page
 {
@@ -69,7 +78,7 @@ public:
 		DI_SON = 1  /*!< The sound diffusion system is used*/
 	};
 
-	AlarmClock(int id, Type t, Freq f, QList<bool> days, int hour, int minute);
+	AlarmClock(int id, int item_id, Type t, Freq f, QList<bool> days, int hour, int minute);
 
 /*!
   \brief Reads from the eeprom the alarm set state.
@@ -85,11 +94,6 @@ public:
   \brief Sets the alarm set (dis)active.
 */
 	void setActive(bool);
-
-	/**
-	 * Sets the alarm state according to the parameter. It doesn't update the configuration file.
-	 */
-	void _setActive(bool a);
 
 	/**
 	 * Returns the active state of the alarm clock. When alarm clock type is ONCE, this method
@@ -109,7 +113,7 @@ public slots:
 */
 	void showSoundDiffPage();
 
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 
 protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
@@ -153,7 +157,7 @@ private slots:
 	void spegniSveglia(bool);
 
 private:
-	int id;
+	int id, item_id;
 	Type type;
 	Freq freq;
 	QList<bool> days;
@@ -184,8 +188,6 @@ signals:
   \class AlarmClockTime
   \brief Used to set the alarm time.
 
-  \author Davide
-  \date lug 2005
 */
 class AlarmClockTime : public Page
 {
@@ -205,8 +207,6 @@ private:
   \class AlarmClockFreq
   \brief Used to set the alarm frequency.
 
-  \author Davide
-  \date lug 2005
 */
 class AlarmClockFreq : public Page
 {
@@ -271,8 +271,6 @@ private:
   \class AlarmNavigation
   \brief helper class for the bottom navigation bar.
 
-  \author Davide
-  \date lug 2005
 */
 class AlarmNavigation : public QWidget
 {

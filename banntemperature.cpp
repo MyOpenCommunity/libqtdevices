@@ -1,61 +1,85 @@
-/*!
- * \banntemperature.cpp
- * <!--
- * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
- * All rights reserved.
- * -->
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
  *
- * \author Luca Ottaviano <lottaviano@develer.com>
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 
 #include "banntemperature.h"
 #include "fontmanager.h" // bt_global::font
-#include "device.h"
-#include "device_status.h"
-#include "main.h" // bt_global::config
+#include "probe_device.h"
+#include "main.h" // (*bt_global::config)
 #include "scaleconversion.h"
+#include "icondispatcher.h"
+#include "skinmanager.h"
 
 #include <QLabel>
 #include <QHBoxLayout>
 
 
-BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, device *dev) : banner(parent)
+BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, NonControlledProbeDevice *_dev)
+	: BannerOld(parent),
+	dev(_dev)
 {
 	temperature = -235;
-	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
-
+	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 
 	QLabel *descr_label = new QLabel;
 	descr_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	descr_label->setText(descr);
 
+	QVBoxLayout *t = new QVBoxLayout(this);
+
+#ifdef LAYOUT_TOUCHX
+	descr_label->setFixedHeight(40);
+
+	QLabel *sep = new QLabel;
+	sep->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("horizontal_separator")));
+
+	t->addWidget(sep);
+#endif
+
 	temp_label = new QLabel;
 	temp_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	setTemperature();
 
-	QHBoxLayout *l = new QHBoxLayout(this);
+	QHBoxLayout *l = new QHBoxLayout;
 	l->setContentsMargins(0, 0, 10, 0);
 	l->setSpacing(10);
 	l->addWidget(descr_label, 0, Qt::AlignLeft);
 	l->addWidget(temp_label, 0, Qt::AlignRight);
 
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
-			SLOT(status_changed(QList<device_status*>)));
+	t->addLayout(l);
+
+	connect(dev, SIGNAL(status_changed(DeviceValues)),
+			SLOT(status_changed(DeviceValues)));
 }
 
-void BannTemperature::status_changed(QList<device_status*> sl)
+void BannTemperature::inizializza(bool forza)
 {
-	for (int i = 0; i < sl.size(); ++i)
-	{
-		device_status *ds = sl.at(i);
-		if (ds->get_type() == device_status::TEMPERATURE_PROBE)
-		{
-			stat_var curr_temp(stat_var::TEMPERATURE);
-			ds->read(device_status_temperature_probe::TEMPERATURE_INDEX, curr_temp);
-			temperature = curr_temp.get_val();
-			setTemperature();
-		}
-	}
+}
+
+void BannTemperature::status_changed(const DeviceValues &sl)
+{
+	if (!sl.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
+		return;
+
+	temperature = sl[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
+	setTemperature();
 }
 
 void BannTemperature::setTemperature()

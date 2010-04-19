@@ -1,5 +1,27 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "generic_functions.h"
 #include "xml_functions.h"
+#include "openmsg.h"
 
 #include <QMapIterator>
 #include <QTextStream>
@@ -10,26 +32,79 @@
 #include <QRegExp>
 #include <QDebug>
 #include <QDir>
+#include <QDate>
+#include <QDateTime>
 
 #include <fcntl.h>
+#include <stdio.h> // rename
 
-
-QString createMsgOpen(QString who, QString what, QString where)
+namespace
 {
-	return '*' + who + '*' + what + '*' + where + "##";
+	QString getDateFormat(char separator = '.')
+	{
+		QString format;
+		bool ok;
+		int date_format = (*bt_global::config)[DATE_FORMAT].toInt(&ok);
+		if (ok)
+		{
+			switch (date_format)
+			{
+			case EUROPEAN_DATE:
+				format = "dd.MM.yy";
+				break;
+			case USA_DATE:
+				format = "MM.dd.yy";
+				break;
+			case YEAR_FIRST:
+				format = "yy.MM.dd";
+				break;
+			}
+		}
+
+		if (separator != '.')
+			format.replace('.', separator);
+
+		return format;
+	}
 }
 
-QString createRequestOpen(QString who, QString what, QString where)
+
+bool isCommandFrame(OpenMsg &msg)
+{
+	return msg.IsNormalFrame();
+}
+
+bool isDimensionFrame(OpenMsg &msg)
+{
+	return msg.IsMeasureFrame();
+}
+
+bool isWriteDimensionFrame(OpenMsg &msg)
+{
+	return msg.IsWriteFrame();
+}
+
+bool isStatusRequestFrame(OpenMsg &msg)
+{
+	return msg.IsStateFrame();
+}
+
+QString createCommandFrame(QString who, QString what, QString where)
+{
+	return QString("*%1*%2*%3##").arg(who).arg(what).arg(where);
+}
+
+QString createDimensionFrame(QString who, QString what, QString where)
 {
 	return QString("*#%1*%2*%3##").arg(who).arg(where).arg(what);
 }
 
-QString createWriteRequestOpen(QString who, QString what, QString where)
+QString createWriteDimensionFrame(QString who, QString what, QString where)
 {
 	return QString("*#%1*%2*#%3##").arg(who).arg(where).arg(what);
 }
 
-QString createStatusRequestOpen(QString who, QString where)
+QString createStatusRequestFrame(QString who, QString where)
 {
 	return QString("*#%1*%2##").arg(who).arg(where);
 }
@@ -63,21 +138,12 @@ QString getAmbName(QString name, QString amb)
  * Changes a value in conf.xml file atomically.
  * It works on a temporary file and then moves that file on conf.xml with a call to ::rename().
  */
-bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
+bool prepareWriteCfgFile(QDomDocument &doc, const QString &filename)
 {
 	QFile config_file(filename);
 	if (!config_file.open(QIODevice::ReadOnly))
 		return false;
 
-	const QString tmp_filename = "cfg/appoggio.xml";
-	if (QFile::exists(tmp_filename))
-		QFile::remove(tmp_filename);
-
-	QFile tmp_file(tmp_filename);
-	if (!tmp_file.open(QIODevice::WriteOnly))
-		return false;
-
-	QDomDocument doc("config_document");
 	if (!doc.setContent(&config_file))
 	{
 		config_file.close();
@@ -85,22 +151,18 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, co
 	}
 	config_file.close();
 
-	QDomNode n = findXmlNode(doc, QRegExp(".*"), item_id, serial_number);
-	Q_ASSERT_X(!n.isNull(), "setCfgValue", qPrintable(QString("No object found with id %1").arg(item_id)));
+	return true;
+}
 
-	QMapIterator<QString, QString> it(data);
-	while (it.hasNext())
-	{
-		it.next();
-		QDomElement el = getElement(n, it.key());
-		Q_ASSERT_X(!el.isNull(), "setCfgValue", qPrintable(QString("No element found: %1").arg(it.key())));
-		// To replace the text of the element
-		QDomText new_node = doc.createTextNode(it.value());
-		if (el.firstChild().isNull())
-			el.appendChild(new_node);
-		else
-			el.replaceChild(new_node, el.firstChild());
-	}
+bool writeCfgFile(const QDomDocument &doc, const QString &filename)
+{
+	const QString tmp_filename = "cfg/appoggio.xml";
+	if (QFile::exists(tmp_filename))
+		QFile::remove(tmp_filename);
+
+	QFile tmp_file(tmp_filename);
+	if (!tmp_file.open(QIODevice::WriteOnly))
+		return false;
 
 	// Use a text stream to handle unicode properly
 	QTextStream tmp_stream(&tmp_file);
@@ -115,7 +177,7 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, co
 	tmp_file.close();
 
 	// QDir::rename fails if destination file exists so we use rename system call
-	if (!::rename(qPrintable(tmp_filename), qPrintable(filename)))
+	if (!::rename(qPrintable(tmp_file.fileName()), qPrintable(filename)))
 	{
 		// Write an empty file to warn other process that the configuration file has changed.
 		int fd = open(FILE_CHANGE_CONF, O_CREAT, 0666);
@@ -128,6 +190,94 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, co
 	return false;
 }
 
+/**
+ * Changes a value in conf.xml file atomically.
+ * It works on a temporary file and then moves that file on conf.xml with a call to ::rename().
+ */
+#ifdef CONFIG_BTOUCH
+bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
+#else
+bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filename)
+#endif
+{
+	if (!(*bt_global::config).contains(INIT_COMPLETE))
+	{
+		qDebug() << "Not writing to configuration during init";
+
+		return true;
+	}
+
+	QDomDocument doc("config_document");
+	if (!prepareWriteCfgFile(doc, filename))
+		return false;
+
+#ifdef CONFIG_BTOUCH
+	QDomNode n = findXmlNode(doc, QRegExp(".*"), item_id, serial_number);
+#else
+	QDomElement gui = getElement(doc.documentElement(), "gui");
+	QDomNode n;
+
+	foreach (const QDomNode &page, getChildren(gui, "page"))
+	{
+		n = getChildWithId(page, QRegExp("item"), "itemID", item_id);
+		if (!n.isNull())
+			break;
+	}
+#endif
+	Q_ASSERT_X(!n.isNull(), "setCfgValue", qPrintable(QString("No object found with id %1").arg(item_id)));
+
+	// TODO maybe refactor & move to xml_functions.cpp/h
+	QMapIterator<QString, QString> it(data);
+	while (it.hasNext())
+	{
+		it.next();
+		QDomElement el = getElement(n, it.key());
+		Q_ASSERT_X(!el.isNull(), "setCfgValue", qPrintable(QString("No element found: %1").arg(it.key())));
+		// To replace the text of the element
+		el.replaceChild(doc.createTextNode(it.value()), el.firstChild());
+	}
+
+	return writeCfgFile(doc, filename);
+}
+
+#ifdef CONFIG_BTOUCH
+
+// TODO rewrite setCfgValue using setGlobalCfgValue when removing CONFIG_BTOUCH
+bool setGlobalCfgValue(QMap<QString, QString> data, const QString &id_name, int id_value, const QString &filename)
+{
+	if (!(*bt_global::config).contains(INIT_COMPLETE))
+	{
+		qDebug() << "Not writing to configuration during init";
+
+		return true;
+	}
+
+	QDomDocument doc("config_document");
+	if (!prepareWriteCfgFile(doc, filename))
+		return false;
+
+	int serial_number = 1; // dummy
+	QDomNode n = findXmlNode(doc, QRegExp(".*"), id_name, id_value, serial_number);
+	Q_ASSERT_X(!n.isNull(), "setCfgValue", qPrintable(QString("No object found with id %1").arg(id_value)));
+
+	// TODO maybe refactor & move to xml_functions.cpp/h
+	QMapIterator<QString, QString> it(data);
+	while (it.hasNext())
+	{
+		it.next();
+		QDomElement el = getElement(n, it.key());
+		Q_ASSERT_X(!el.isNull(), "setGlobalCfgValue", qPrintable(QString("No element found: %1").arg(it.key())));
+		// To replace the text of the element
+		el.replaceChild(doc.createTextNode(it.value()), el.firstChild());
+	}
+
+	return writeCfgFile(doc, filename);
+}
+
+#endif
+
+#ifdef CONFIG_BTOUCH
+
 bool setCfgValue(QString field, QString value, int item_id, int num_item, const QString &filename)
 {
 	QMap<QString, QString> m;
@@ -135,8 +285,40 @@ bool setCfgValue(QString field, QString value, int item_id, int num_item, const 
 	return setCfgValue(m, item_id, num_item, filename);
 }
 
+bool setCfgValue(QString field, int value, int item_id, int num_item, const QString &filename)
+{
+	QMap<QString, QString> m;
+	m[field] = QString::number(value);
+	return setCfgValue(m, item_id, num_item, filename);
+}
+
+#else
+
+bool setCfgValue(QString field, QString value, int item_id, const QString &filename)
+{
+	QMap<QString, QString> m;
+	m[field] = value;
+	return setCfgValue(m, item_id, filename);
+}
+
+bool setCfgValue(QString field, int value, int item_id, const QString &filename)
+{
+	QMap<QString, QString> m;
+	m[field] = QString::number(value);
+	return setCfgValue(m, item_id, filename);
+}
+
+#endif
+
 int trasformaVol(int vol)
 {
+	// TODO remove after aligning image names
+#ifdef LAYOUT_TOUCHX
+	if (vol < 0 || vol > 31)
+		return -1;
+
+	return vol * 8 / 31;
+#else
 	if (vol < 0)
 		return -1;
 	if (vol <= 3)
@@ -158,5 +340,43 @@ int trasformaVol(int vol)
 	if (vol <= 31)
 		return 9;
 	return -1;
+#endif
 }
 
+
+QString DateConversions::formatDateConfig(const QDate &date, char separator)
+{
+	QString format = getDateFormat(separator);
+	if (format.isNull())
+		qWarning("DateConversions::formatDateConfig(), DATE_FORMAT conversion failed.");
+
+	return date.toString(format);
+}
+
+QString DateConversions::formatDateTimeConfig(const QDateTime &datetime, char separator)
+{
+	return DateConversions::formatDateConfig(datetime.date(), separator) + datetime.time().toString(" HH:mm");
+}
+
+QDate DateConversions::getDateConfig(const QString &date, char separator)
+{
+	QString format = getDateFormat(separator);
+	if (format.isNull())
+		qWarning("DateConversions::getDateConfig(), DATE_FORMAT conversion failed.");
+
+	// The format string has a two digit for the year so we lose 100 years in the
+	// conversion. We re-add them now.
+	return QDate::fromString(date, format).addYears(100);
+}
+
+QDateTime DateConversions::getDateTimeConfig(const QString &datetime, char separator)
+{
+	QString format = getDateFormat(separator);
+	if (format.isNull())
+		qWarning("DateConversions::getDateTimeConfig(), DATE_FORMAT conversion failed.");
+	format += " HH:mm";
+
+	// The format string has a two digit for the year so we lose 100 years in the
+	// conversion. We re-add them now.
+	return QDateTime::fromString(datetime, format).addYears(100);
+}

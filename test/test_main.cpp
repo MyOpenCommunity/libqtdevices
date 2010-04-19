@@ -1,72 +1,43 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include <QtTest/QtTest>
 #include <QList>
+#include <QRegExp>
 
-#include "test_platform_device.h"
-#include "test_energy_device.h"
-#include "test_poweramplifier_device.h"
-#include "test_dev_automation.h"
-#include "test_lighting_device.h"
-#include "test_automation_device.h"
-#include "test_checkaddress.h"
-#include "test_scenario_device.h"
-#include "test_thermal_device.h"
-#include "test_pull_manager.h"
-#include "test_alarmsounddiff_device.h"
-
-
-// This empty function is required because frame_interpreter use a rearmWDT
-// function, so we have to define it. We don't want to include hardware_functions,
-// in order to compile and execute all tests with the standard version of Qt.
-void rearmWDT() {}
+#include "test_scenevodevicescond.h"
+#include "test_bttime.h"
+#include "main.h"
 
 
 int main(int argc, char *argv[])
 {
 	QCoreApplication app(argc, argv);
+	QList<QObject *> test_list;
 
-	QList<TestDevice *> test_list;
+	TestScenEvoDevicesCond test_scenevo_devices_cond;
+	test_list << &test_scenevo_devices_cond;
 
-	TestPlatformDevice test_platform_device;
-	test_list << &test_platform_device;
-
-	TestEnergyDevice test_energy_device;
-	test_list << &test_energy_device;
-
-	TestPowerAmplifierDevice test_poweramplifier_device;
-	test_list << &test_poweramplifier_device;
-
-	TestPPTStatDevice test_pptstat_device;
-	test_list << &test_pptstat_device;
-
-	TestCheckAddress test_checkaddress;
-	test_list << &test_checkaddress;
-
-	TestPullManager test_pull_manager;
-	test_list << &test_pull_manager;
-
-	TestLightingDevice test_lighting_device;
-	test_list << &test_lighting_device;
-
-	TestDimmer test_dimmer;
-	test_list << &test_dimmer;
-
-	TestDimmer100 test_dimmer100;
-	test_list << &test_dimmer100;
-
-	TestAutomationDevice test_automation_device;
-	test_list << &test_automation_device;
-
-	TestScenarioDevice test_scenario_device;
-	test_list << &test_scenario_device;
-
-	TestThermalDevice4Zones test_thermal_regulator_4zones_device;
-	test_list << &test_thermal_regulator_4zones_device;
-
-	TestThermalDevice99Zones test_thermal_regulator_99zones_device;
-	test_list << &test_thermal_regulator_99zones_device;
-
-	TestAlarmSoundDiffDevice test_alarm_sound_diff_device;
-	test_list << &test_alarm_sound_diff_device;
+	TestBtTime test_bttime;
+	test_list << &test_bttime;
 
 	QStringList arglist = app.arguments();
 	QString testingClass;
@@ -78,11 +49,13 @@ int main(int argc, char *argv[])
 		arglist.removeAt(custom_param_pos);
 	}
 
-	foreach (TestDevice *tester, test_list)
-		if (testingClass.isEmpty() || tester->metaObject()->className() == testingClass)
-		{
-			tester->initTestDevice();
+	// use regular expressions to avoid writing the full class name each time
+	QRegExp re(testingClass, Qt::CaseInsensitive);
+	foreach (QObject *tester, test_list)
+	{
+		QString class_name = tester->metaObject()->className();
+		if (testingClass.isEmpty() || class_name.contains(re))
 			QTest::qExec(tester, arglist);
-		}
+	}
 }
 

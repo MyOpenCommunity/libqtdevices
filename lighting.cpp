@@ -1,22 +1,107 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "lighting.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bann_lighting.h"
 #include "actuators.h"
 #include "bannercontent.h"
 #include "main.h"
+#include "skinmanager.h" // SkinContext
 
 #include <QDomNode>
 #include <QString>
 #include <QDebug>
 #include <QList>
 
-
-static QList<QString> getAddresses(QDomNode item)
+#ifdef CONFIG_BTOUCH
+// configuration values for old configuration files
+enum BannerType
 {
-	QList<QString> l;
-	foreach (const QDomNode &el, getChildren(item, "element"))
-		l.append(getTextChild(el, "where"));
-	return l;
+	DIMMER10 = 1,
+	SINGLE_LIGHT = 0,
+	DIMMER_GROUP = 6,
+	LIGHT_GROUP = 5,
+	TEMP_LIGHT = 9,
+	STAIR_LIGHT = 12,
+	DIMMER100 = 35,
+	TEMP_LIGHT_VARIABLE = 36,
+	DIMMER100_GROUP = 44,
+	TEMP_LIGHT_FIXED = 37,
+};
+#else
+enum BannerType
+{
+	DIMMER10 = 2002,
+	SINGLE_LIGHT = 2003,
+	DIMMER_GROUP = 2006,
+	LIGHT_GROUP = 2004,
+	TEMP_LIGHT,
+	STAIR_LIGHT = 2011,
+	DIMMER100,
+	TEMP_LIGHT_VARIABLE = 2007,
+	DIMMER100_GROUP,
+	TEMP_LIGHT_FIXED = 2010,
+};
+#endif
+
+
+namespace
+{
+	QList<QString> getAddresses(QDomNode item, QList<int> *start_values = 0, QList<int> *stop_values = 0)
+	{
+		QList<QString> l;
+#ifdef CONFIG_BTOUCH
+		foreach (const QDomNode &el, getChildren(item, "element"))
+		{
+			l.append(getTextChild(el, "where"));
+#else
+		foreach (const QDomNode &el, getChildren(getElement(item, "addresses"), "where"))
+		{
+			l.append(el.toElement().text());
+#endif
+			if (start_values)
+				start_values->append(getTextChild(el, "softstart").toInt());
+			if (stop_values)
+				stop_values->append(getTextChild(el, "softstop").toInt());
+		}
+
+		Q_ASSERT_X(!l.isEmpty(), "getAddresses", "No device found!");
+
+		return l;
+	}
+
+	QList<BtTime> getTimes(const QDomNode &item)
+	{
+		QList<BtTime> times;
+		foreach (const QDomNode &time, getChildren(item, "time"))
+		{
+			QString s = time.toElement().text();
+			QStringList sl = s.split("*");
+			Q_ASSERT_X(sl.size() == 3, "getTimes()", "Time values must have exactly 3 fields");
+			times << BtTime(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
+		}
+		Q_ASSERT_X(!times.isEmpty(), "getTimes()", "Time node missing");
+		return times;
+	}
 }
 
 
@@ -33,97 +118,76 @@ int Lighting::sectionId()
 
 banner *Lighting::getBanner(const QDomNode &item_node)
 {
+	SkinContext ctx(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
 	QString where = getTextChild(item_node, "where");
-	QString img1 = IMG_PATH + getTextChild(item_node, "cimg1");
-	QString img2 = IMG_PATH + getTextChild(item_node, "cimg2");
-	/*
-	DELETE:
-	QString img3 = IMG_PATH + getTextChild(item_node, "cimg3");
-	QString img4 = IMG_PATH + getTextChild(item_node, "cimg4");
-	QString img5 = IMG_PATH + getTextChild(item_node, "cimg5");
-
-	QList<QString> times;
-	foreach (const QDomNode &el, getChildren(item_node, "time"))
-		times.append(el.toElement().text());
-	*/
+	QString descr = getTextChild(item_node, "descr");
+	int oid = getTextChild(item_node, "openserver_id").toInt();
 
 	banner *b = 0;
 	switch (id)
 	{
-	case DIMMER:
-		// DELETE: remove these comments when the classes are gone
-		//b = new dimmer(this, where, img1, img2, img3, img4, img5);
-		b = new DimmerNew(0, item_node, where);
+	case DIMMER10:
+		b = new Dimmer(descr, where, oid);
 		break;
-	case ATTUAT_AUTOM:
-		b = new SingleActuator(0, item_node, where);
+	case SINGLE_LIGHT:
+		b = new SingleActuator(descr, where, oid);
 		break;
-	case GR_DIMMER:
-		// DELETE:
-		//b = new grDimmer(this, getAddresses(item_node), img1, img2, img3, img4);
-		b = new DimmerGroup(0, item_node, getAddresses(item_node));
+	case DIMMER_GROUP:
+		b = new DimmerGroup(getAddresses(item_node), descr);
 		break;
-	case GR_ATTUAT_AUTOM:
-		b = new LightGroup(0, item_node, getAddresses(item_node));
+	case LIGHT_GROUP:
+		b = new LightGroup(getAddresses(item_node), descr);
 		break;
-	case ATTUAT_AUTOM_TEMP:
-		//DELETE
-		//b = new attuatAutomTemp(this, where, img1, img2, img3, img4, times);
-		b = new TempLight(0, item_node);
+	case TEMP_LIGHT:
+		b = new TempLight(descr, where, oid);
 		break;
-	case ATTUAT_VCT_LS:
-		//DELETE
-		//b = new attuatPuls(this, where, img1, img2, VCT_LS);
-		b = new ButtonActuator(0, item_node, VCT_LS);
+	case STAIR_LIGHT:
+		b = new ButtonActuator(descr, where, VCT_LS);
 		break;
-	case DIMMER_100:
-		// DELETE
-		//b = new dimmer100(this, where, img1, img2 ,img3, img4, img5, getTextChild(item,"softstart").toInt(),
-		//		getTextChild(item_node,"softstop").toInt());
-		b = new Dimmer100New(0, item_node);
-		break;
-	case ATTUAT_AUTOM_TEMP_NUOVO_N:
-		// DELETE
-		//b = new attuatAutomTempNuovoN(this, where, img1, img2, img3, img4, times);
-		b = new TempLightVariable(0, item_node);
-		break;
-	case GR_DIMMER100:
+	case DIMMER100:
 	{
-		b = new Dimmer100Group(0, item_node);
-		// DELETE
-		/*
-		QList<int> sstart, sstop;
-		QList<QString> addresses;
-
-		foreach (const QDomNode &el, getChildren(item_node, "element"))
-		{
-			sstart.append(getTextChild(el, "softstart").toInt());
-			sstop.append(getTextChild(el, "softstop").toInt());
-			addresses.append(getTextChild(el, "where"));
-		}
-
-		b = new grDimmer100(this, addresses, img1, img2, img3, img4, sstart, sstop);
-		*/
-		break;
+		// TODO: CONFIG_BTOUCH touch10??
+		int start = getTextChild(item_node, "softstart").toInt();
+		int stop = getTextChild(item_node, "softstop").toInt();
+		b = new Dimmer100(descr, where, oid, start, stop);
 	}
-	case ATTUAT_AUTOM_TEMP_NUOVO_F:
-		/*
-		if (!times.count())
-			times.append("");
-		b = new attuatAutomTempNuovoF(this, where, img1, img2, img3, times.at(0));
-		*/
-		b = new TempLightFixed(0, item_node);
+		break;
+	case TEMP_LIGHT_VARIABLE:
+		b = new TempLightVariable(getTimes(item_node), descr, where, oid);
+		break;
+	case DIMMER100_GROUP:
+	{
+		// TODO: CONFIG_BTOUCH touch10??
+		QList<int> start, stop;
+		QList<QString> addresses = getAddresses(item_node, &start, &stop);
+		b = new Dimmer100Group(addresses, start, stop, descr);
+	}
+		break;
+	case TEMP_LIGHT_FIXED:
+	{
+		int t;
+	#ifdef CONFIG_BTOUCH
+		// I think conf.xml will have only one node for time in this banner, however
+		// such node is indicated as "timeX", so I'm using the following overkill code
+		// to be safe
+		QList<QDomNode> children = getChildren(item_node, "time");
+		QStringList sl;
+		foreach (const QDomNode &tmp, children)
+			sl << tmp.toElement().text().split("*");
+
+		Q_ASSERT_X(sl.size() == 3, "Lighting::getBanner", "Fixed time must have exactly 3 fields");
+		t = sl[0].toInt() * 3600 + sl[1].toInt() * 60 + sl[2].toInt();
+	#else
+		t = getTextChild(item_node, "time").toInt();
+	#endif
+		b = new TempLightFixed(t, descr, where, oid);
+		}
 		break;
 	}
 
 	if (b)
-	{
-		//DELETE
-		//b->setText(getTextChild(item, "descr"));
 		b->setId(id);
-		//b->Draw();
-	}
 	return b;
 }
 
@@ -141,6 +205,11 @@ void Lighting::loadItems(const QDomNode &config_node)
 	}
 }
 
+void Lighting::inizializza()
+{
+	initDimmer();
+}
+
 void Lighting::initDimmer()
 {
 	qDebug("Lighting::initDimmer()");
@@ -149,12 +218,12 @@ void Lighting::initDimmer()
 		banner *b = page_content->getBanner(i);
 		switch (b->getId())
 		{
-		case DIMMER:
-		case DIMMER_100:
-		case ATTUAT_AUTOM:
-		case ATTUAT_AUTOM_TEMP:
-		case ATTUAT_AUTOM_TEMP_NUOVO_N:
-		case ATTUAT_AUTOM_TEMP_NUOVO_F:
+		case DIMMER10:
+		case DIMMER100:
+		case SINGLE_LIGHT:
+		case TEMP_LIGHT:
+		case TEMP_LIGHT_VARIABLE:
+		case TEMP_LIGHT_FIXED:
 			b->inizializza(true);
 			break;
 		default:
@@ -163,10 +232,3 @@ void Lighting::initDimmer()
 	}
 }
 
-void Lighting::showEvent(QShowEvent *event)
-{
-	qDebug() << "Lighting::showEvent()";
-	initDimmer();
-
-	Page::showEvent(event);
-}

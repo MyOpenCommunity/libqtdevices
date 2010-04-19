@@ -1,6 +1,27 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "lansettings.h"
-#include "btbutton.h"
-#include "main.h" // bt_global::config
+#include "state_button.h"
+#include "main.h" // (*bt_global::config)
 #include "platform_device.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "fontmanager.h" // bt_global::font
@@ -64,9 +85,9 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	box_text->setLineWidth(3);
 	box_text->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 
-	box_text->addRow(bt_global::config[MODEL]);
+	box_text->addRow((*bt_global::config)[MODEL]);
 	box_text->addRow("");
-	box_text->addRow(bt_global::config[NAME]);
+	box_text->addRow((*bt_global::config)[NAME]);
 	box_text->addRow(tr("Mac"), "");
 	box_text->addRow(tr("IP"), "");
 	box_text->addRow(tr("Subnet mask"), "");
@@ -84,10 +105,10 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	label_layout->addWidget(box_text);
 	main_layout->addLayout(label_layout);
 
-	toggle_btn = new BtButton;
+	toggle_btn = new StateButton;
 	toggle_btn->setOnOff();
-	toggle_btn->setImage(bt_global::skin->getImage("network_disable"), BtButton::NO_FLAG);
-	toggle_btn->setPressedImage(bt_global::skin->getImage("network_enable"));
+	toggle_btn->setOffImage(bt_global::skin->getImage("network_disable"));
+	toggle_btn->setOnImage(bt_global::skin->getImage("network_enable"));
 	lan_status = false; // This value must be keep in sync with the icon of toggle_btn.
 	connect(toggle_btn, SIGNAL(clicked()), SLOT(toggleLan()));
 	main_layout->addWidget(toggle_btn, 0, Qt::AlignHCenter);
@@ -98,7 +119,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
 	dev = bt_global::add_device_to_cache(new PlatformDevice);
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 
 	// Set the network to the initial status
 	saved_status = getTextChild(config_node, "value").toInt();
@@ -122,7 +143,7 @@ void LanSettings::toggleLan()
 	dev->enableLan(!lan_status);
 }
 
-void LanSettings::status_changed(const StatusList &status_list)
+void LanSettings::status_changed(const DeviceValues &status_list)
 {
 	const int MACADDR_ROW = 4;
 	const int IP_ROW = 5;
@@ -139,7 +160,7 @@ void LanSettings::status_changed(const StatusList &status_list)
 	dim_to_row[PlatformDevice::DIM_DNS1] = DNS1_ROW;
 	dim_to_row[PlatformDevice::DIM_DNS2] = DNS2_ROW;
 
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		if (dim_to_row.contains(it.key()))
@@ -151,7 +172,8 @@ void LanSettings::status_changed(const StatusList &status_list)
 			if (lan_status != saved_status)
 			{
 				saved_status = lan_status;
-				setCfgValue("value", lan_status ? "1": "0", LANSETTINGS);
+				// TODO needs to be modified when removing CONFIG_BTOUCH
+				setCfgValue("value", lan_status, LANSETTINGS);
 			}
 		}
 		++it;

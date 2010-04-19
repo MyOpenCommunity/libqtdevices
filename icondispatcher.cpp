@@ -1,17 +1,21 @@
-/**
- * \file
- * <!--
- * Copyright 2007, 2008 Develer S.r.l. (http://www.develer.com/)
- * All rights reserved.
- * -->
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
  *
- * \brief Icon Cache Class
+ * Copyright (C) 2010 BTicino S.p.A.
  *
- * This class implement a cache for the icons used in banner objects.
- * The class creates, dispatches and destroys the needed QPixmap.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * \author Alessandro Della Villa <kemosh@develer.com>
- * \author Gianni Valdambrini <aleister@develer.com>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 
@@ -65,7 +69,7 @@ QPixmap* IconDispatcher::getIcon(QString name, const char * format, Qt::ImageCon
 		{
 			qDebug() << "Error loading icon" << name << ", using empty icon";
 			if (!image_pointer->load(ICON_VUOTO))
-				qWarning("*** FATAL ***: empty icon not found!");
+				qWarning("empty icon not found!");
 		}
 	return image_pointer;
 }

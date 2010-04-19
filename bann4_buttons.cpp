@@ -1,3 +1,24 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "bann4_buttons.h"
 #include "btbutton.h"
 #include "fontmanager.h" // FontManager
@@ -27,7 +48,7 @@ Bann4ButtonsIcon::Bann4ButtonsIcon(QWidget *parent) :
 	l->setSpacing(0);
 	l->addWidget(left_button, 0, Qt::AlignLeft);
 	l->addWidget(center_left_button);
-	l->addWidget(center_icon, 1, Qt::AlignLeft);
+	l->addWidget(center_icon, 1, Qt::AlignHCenter);
 	l->addWidget(center_right_button);
 	l->addWidget(right_button, 0, Qt::AlignRight);
 
@@ -65,8 +86,6 @@ void Bann4ButtonsIcon::setState(States new_state)
 		center_left_button->hide();
 		center_right_button->hide();
 		right_button->hide();
-		// TODO: this seems reasonable, but ask Agresta
-		//left_button->setImage(left_icon);
 		break;
 	case UNLOCKED:
 		center_icon->show();
@@ -106,7 +125,8 @@ Bann4Buttons::Bann4Buttons(QWidget *parent) :
 	center_right_button = new BtButton;
 	center_left_button = new BtButton;
 	left_button = new BtButton;
-	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
+	text = new QLabel;
+	text->setAlignment(Qt::AlignHCenter);
 
 	QGridLayout *grid = new QGridLayout;
 	grid->setContentsMargins(0, 0, 0, 0);
@@ -128,24 +148,16 @@ Bann4Buttons::Bann4Buttons(QWidget *parent) :
 void Bann4Buttons::initBanner(const QString &right, const QString &center_right,
 	const QString &center_left, const QString &left, const QString &banner_text)
 {
-	right_button->setImage(right);
-	center_right_button->setImage(center_right);
-	center_left_button->setImage(center_left);
-	left_button->setImage(left);
-	text->setText(banner_text);
-}
-
-void Bann4Buttons::deleteButton(BtButton *btn)
-{
-	Q_ASSERT_X(btn == right_button || btn == center_right_button || btn == center_left_button || btn == left_button,
-		"Bann4Buttons::deleteButton", "Button parameter is not a member of Bann4Buttons");
-	btn->hide();
-	btn->disconnect();
-	btn->deleteLater();
+	initButton(right_button, right);
+	initButton(center_right_button, center_right);
+	initButton(center_left_button, center_left);
+	initButton(left_button, left);
+	initLabel(text, banner_text, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 }
 
 
-bann4But::bann4But(QWidget *parent) : banner(parent)
+
+bann4But::bann4But(QWidget *parent) : BannerOld(parent)
 {
 	// sx
 	addItem(BUT1,(banner_width/4-BAN4BUT_DIM)/2, 0, BAN4BUT_DIM , BAN4BUT_DIM);
@@ -160,7 +172,7 @@ bann4But::bann4But(QWidget *parent) : banner(parent)
 }
 
 
-bann4tasLab::bann4tasLab(QWidget *parent) : banner(parent)
+bann4tasLab::bann4tasLab(QWidget *parent) : BannerOld(parent)
 {
 	// sx
 	addItem(BUT1, (banner_width/4-BUT4TL_DIM)/2, 0, BUT4TL_DIM, BUT4TL_DIM);

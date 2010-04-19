@@ -1,9 +1,28 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "bann_automation.h"
-#include "generic_functions.h" // createMsgOpen
-#include "device_status.h"
-#include "btbutton.h"
-#include "device.h"
-#include "devices_cache.h" // bt_global::devices_cache
+#include "generic_functions.h" // createCommandFrame
+#include "state_button.h"
+#include "devices_cache.h" // bt_global::add_device_to_cache
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "automation_device.h" // PPTStatDevice
 #include "lighting_device.h" // LightingDevice
@@ -12,33 +31,21 @@
 
 #include <QTimer>
 #include <QDebug>
-#include <QVariant>
-
-#include <openwebnet.h> // class openwebnet
 
 #define BUT_DIM     60
 
 
-InterblockedActuator::InterblockedActuator(QWidget *parent, const QDomNode &config_node)
-	: BannOpenClose(parent)
+InterblockedActuator::InterblockedActuator(const QString &descr, const QString &where, int openserver_id)
+	: BannOpenClose(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-	QString where = getTextChild(config_node, "where");
-	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
-
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL_UNKNOWN, openserver_id));
 	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
-		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP,
-		getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP, descr);
 
 	connect(right_button, SIGNAL(clicked()), SLOT(sendGoUp()));
 	connect(left_button, SIGNAL(clicked()), SLOT(sendGoDown()));
-	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
-}
-
-void InterblockedActuator::inizializza(bool forza)
-{
-	dev->requestStatus();
+	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	setOpenserverConnection(dev);
 }
 
 void InterblockedActuator::sendGoUp()
@@ -56,9 +63,15 @@ void InterblockedActuator::sendStop()
 	dev->stop();
 }
 
-void InterblockedActuator::status_changed(const StatusList &sl)
+void InterblockedActuator::connectButton(BtButton *btn, const char *slot)
 {
-	StatusList::const_iterator it = sl.constBegin();
+	btn->disconnect();
+	connect(btn, SIGNAL(clicked()), slot);
+}
+
+void InterblockedActuator::status_changed(const DeviceValues &sl)
+{
+	DeviceValues::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
 	{
 		switch (it.key())
@@ -66,60 +79,57 @@ void InterblockedActuator::status_changed(const StatusList &sl)
 		case AutomationDevice::DIM_UP:
 			setState(OPENING);
 			right_button->enable();
+			connectButton(right_button, SLOT(sendStop()));
 			left_button->disable();
 			break;
 		case AutomationDevice::DIM_DOWN:
 			setState(CLOSING);
 			right_button->disable();
 			left_button->enable();
+			connectButton(left_button, SLOT(sendStop()));
 			break;
 		case AutomationDevice::DIM_STOP:
 			setState(STOP);
 			right_button->enable();
+			connectButton(right_button, SLOT(sendGoUp()));
 			left_button->enable();
+			connectButton(left_button, SLOT(sendGoDown()));
 			break;
 		}
 		++it;
 	}
 }
 
-SecureInterblockedActuator::SecureInterblockedActuator(QWidget *parent, const QDomNode &config_node) :
-	BannOpenClose(parent)
+SecureInterblockedActuator::SecureInterblockedActuator(const QString &descr, const QString &where, int openserver_id) :
+	BannOpenClose(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-	QString where = getTextChild(config_node, "where");
-	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL_UNKNOWN, openserver_id));
 
 	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
-		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP,
-		getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP, descr);
 
-	connect(right_button, SIGNAL(pressed()), SLOT(sendOpen()));
-	connect(left_button, SIGNAL(pressed()), SLOT(sendClose()));
-	connect(right_button, SIGNAL(released()), SLOT(buttonReleased()));
-	connect(left_button, SIGNAL(released()), SLOT(buttonReleased()));
-	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
-}
-
-void SecureInterblockedActuator::inizializza(bool forza)
-{
-	dev->requestStatus();
+	is_any_button_pressed = false;
+	connectButtons();
+	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	setOpenserverConnection(dev);
 }
 
 void SecureInterblockedActuator::sendOpen()
 {
 	dev->goUp();
+	is_any_button_pressed = true;
 }
 
 void SecureInterblockedActuator::sendClose()
 {
 	dev->goDown();
+	is_any_button_pressed = true;
 }
 
 void SecureInterblockedActuator::buttonReleased()
 {
 	QTimer::singleShot(500, this, SLOT(sendStop()));
+	is_any_button_pressed = false;
 }
 
 void SecureInterblockedActuator::sendStop()
@@ -127,97 +137,106 @@ void SecureInterblockedActuator::sendStop()
 	dev->stop();
 }
 
-void SecureInterblockedActuator::status_changed(const StatusList &sl)
+void SecureInterblockedActuator::status_changed(const DeviceValues &sl)
 {
-	StatusList::const_iterator it = sl.constBegin();
+	DeviceValues::const_iterator it = sl.constBegin();
 	while (it != sl.constEnd())
 	{
 		switch (it.key())
 		{
 		case AutomationDevice::DIM_UP:
 			setState(OPENING);
-			right_button->enable();
 			left_button->disable();
+			right_button->enable();
+			changeButtonStatus(right_button);
 			break;
 		case AutomationDevice::DIM_DOWN:
 			setState(CLOSING);
 			right_button->disable();
 			left_button->enable();
+			changeButtonStatus(left_button);
 			break;
 		case AutomationDevice::DIM_STOP:
 			setState(STOP);
 			right_button->enable();
 			left_button->enable();
+			if (!is_any_button_pressed)
+			{
+				right_button->disconnect();
+				left_button->disconnect();
+				connectButtons();
+			}
 			break;
 		}
 		++it;
 	}
 }
 
-
-GateEntryphoneActuator::GateEntryphoneActuator(QWidget *parent, const QDomNode &config_node) :
-	BannSinglePuls(parent)
+void SecureInterblockedActuator::connectButtons()
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
+	connect(right_button, SIGNAL(pressed()), SLOT(sendOpen()));
+	connect(left_button, SIGNAL(pressed()), SLOT(sendClose()));
+	connect(right_button, SIGNAL(released()), SLOT(buttonReleased()));
+	connect(left_button, SIGNAL(released()), SLOT(buttonReleased()));
+}
 
-	where = getTextChild(config_node, "where");
+void SecureInterblockedActuator::changeButtonStatus(BtButton *btn)
+{
+	if (!is_any_button_pressed)
+	{
+		btn->disconnect();
+		connect(btn, SIGNAL(clicked()), SLOT(sendStop()));
+	}
+}
+
+
+GateEntryphoneActuator::GateEntryphoneActuator(const QString &descr, const QString &where, int openserver_id) :
+	BannSinglePuls(0)
+{
 	// TODO: we still miss entryphone devices, so I'm creating a generic device and send
 	// frames directly. Change as soon as entryphone devices are available!
-	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
-
-	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"),
-		getTextChild(config_node, "descr"));
-
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL_UNKNOWN, openserver_id), NO_INIT);
+	setOpenserverConnection(dev);
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"), descr);
 	connect(right_button, SIGNAL(pressed()), SLOT(activate()));
 }
 
 void GateEntryphoneActuator::activate()
 {
 	// TODO: argh!! fix it ASAP!!!
-	dev->sendFrame(createMsgOpen("6", "10", where));
+	dev->sendFrame(createCommandFrame("6", "10", where));
 }
 
 
-GateLightingActuator::GateLightingActuator(QWidget *parent, const QDomNode &config_node) :
-	BannSinglePuls(parent)
+GateLightingActuator::GateLightingActuator(const BtTime &t, const QString &descr, const QString &where, int openserver_id) :
+	BannSinglePuls(0),
+	time(t)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
-	QString where = getTextChild(config_node, "where");
-	dev = bt_global::add_device_to_cache(new LightingDevice(where));
-
-	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"),
-		getTextChild(config_node, "descr"));
-
-	QStringList sl = getTextChild(config_node, "time").split("*");
-	Q_ASSERT_X(sl.size() == 3, "GateLightingActuator::GateLightingActuator",
-		"time leaf must have 3 fields");
-	time_h = sl[0].toInt();
-	time_m = sl[1].toInt();
-	time_s = sl[2].toInt();
-
+	// we don't need to init the device, as we don't care about its status
+	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL_UNKNOWN, openserver_id), NO_INIT);
+	setOpenserverConnection(dev);
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"), descr);
 	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
 }
 
 void GateLightingActuator::activate()
 {
-	dev->variableTiming(time_h, time_m, time_s);
+	dev->variableTiming(time.hour(), time.minute(), time.second());
 }
 
 
-InterblockedActuatorGroup::InterblockedActuatorGroup(QWidget *parent, const QDomNode &config_node) :
-	Bann3Buttons(parent)
+InterblockedActuatorGroup::InterblockedActuatorGroup(const QStringList &addresses, const QString &descr, int openserver_id) :
+	Bann3Buttons(0)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
+	foreach (const QString &where, addresses)
+		actuators.append(bt_global::add_device_to_cache(new AutomationDevice(where, PULL, openserver_id), NO_INIT));
+	// since we have just one openserver_id, we just need to connect to one device
+	Q_ASSERT_X(!actuators.isEmpty(), "InterblockedActuatorGroup::InterblockedActuatorGroup", "No device found!");
+	setOpenserverConnection(actuators[0]);
 
-	foreach (const QDomNode &el, getChildren(config_node, "element"))
-	{
-		QString where = getTextChild(el, "where");
-		actuators.append(bt_global::add_device_to_cache(new AutomationDevice(where, PULL)));
-	}
 
 	initBanner(bt_global::skin->getImage("scroll_down"), bt_global::skin->getImage("stop"),
-		bt_global::skin->getImage("scroll_up"), getTextChild(config_node, "descr"));
+		bt_global::skin->getImage("scroll_up"), descr);
 
 	connect(right_button, SIGNAL(clicked()), SLOT(sendOpen()));
 	connect(center_button, SIGNAL(clicked()), SLOT(sendStop()));
@@ -242,365 +261,17 @@ void InterblockedActuatorGroup::sendStop()
 		dev->stop();
 }
 
-#if 0
-automCancAttuatVC::automCancAttuatVC(QWidget *parent, QString where, QString IconaSx, QString IconaDx)
-	: bannPuls(parent)
+
+PPTStat::PPTStat(QString where, int openserver_id) : BannerOld(0)
 {
-	qDebug("automCancAttuatVC::automCancAttuatVC()");
-	SetIcons(IconaSx, QString(), IconaDx);
-	setAddress(where);
-	connect(this, SIGNAL(pressed()), SLOT(Attiva()));
-	// Crea o preleva il dispositivo dalla cache
-	dev = bt_global::devices_cache.get_autom_device(getAddress());
-	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
-			this, SLOT(status_changed(QList<device_status*>)));
-}
-
-void automCancAttuatVC::Attiva()
-{
-	dev->sendFrame(createMsgOpen("6", "10", getAddress()));
-}
-
-
-automCancAttuatIll::automCancAttuatIll(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString t)
-	: bannPuls(parent)
-{
-	qDebug("automCancAttuatIll::automCancAttuatIll()");
-	SetIcons(IconaSx, QString(), IconaDx);
-	setAddress(where);
-	connect(this, SIGNAL(click()), SLOT(Attiva()));
-	// Crea o preleva il dispositivo dalla cache
-	dev = bt_global::devices_cache.get_autom_device(getAddress());
-	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
-			this, SLOT(status_changed(QList<device_status*>)));
-	time = !t.isEmpty() ? t : QString("0*0*18");
-	Draw();
-}
-
-void automCancAttuatIll::Attiva()
-{
-	openwebnet msg_open;
-	char val[100];
-	char *v[] = { val , };
-
-	QByteArray buf = time.toAscii();
-	strncpy(val, buf.constData(), sizeof(val));
-
-	msg_open.CreateNullMsgOpen();
-	msg_open.CreateWrDimensionMsgOpen("1", getAddress().toAscii().data(), "2", v, 1);
-	dev->sendFrame(msg_open.frame_open);
-}
-
-
-attuatAutomIntSic::attuatAutomIntSic(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString StopIcon)
-	: bannOnOff(parent)
-{
-	int pos = icon.indexOf(".");
-	if (pos != -1)
-	{
-		QString img1 = icon.left(pos) + "o" + icon.mid(pos);
-		QString img2 = icon.left(pos) + "c" + icon.mid(pos);
-		SetIcons(IconaSx, IconaDx, icon, img1, img2);
-	}
-	else
-		qWarning() << "Cannot find dot on image " << icon;
-
-	icon_sx = IconaSx;
-	icon_dx = IconaDx;
-	icon_stop = StopIcon;
-
-	setAddress(where);
-	connect(this,SIGNAL(sxPressed()),this,SLOT(upPres()));
-	connect(this,SIGNAL(dxPressed()),this,SLOT(doPres()));
-	connect(this,SIGNAL(sxReleased()),this,SLOT(upRil()));
-	connect(this,SIGNAL(dxReleased()),this,SLOT(doRil()));
-
-	uprunning = dorunning = 0;
-	dev = bt_global::devices_cache.get_autom_device(getAddress());
-	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
-			this, SLOT(status_changed(QList<device_status*>)));
-}
-
-void attuatAutomIntSic::status_changed(QList<device_status*> sl)
-{
-	stat_var curr_status(stat_var::STAT);
-	bool aggiorna = false;
-	qDebug("attuatAutomInt::status_changed()");
-
-	for (int i = 0; i < sl.size(); ++i)
-	{
-		device_status *ds = sl.at(i);
-		switch (ds->get_type())
-		{
-		case device_status::AUTOM:
-		{
-			qDebug("Autom status variation");
-			ds->read(device_status_autom::STAT_INDEX, curr_status);
-			int v = curr_status.get_val();
-			qDebug("status = %d", v);
-			switch(v)
-			{
-			case 0:
-				if (isActive())
-				{
-					impostaAttivo(0);
-					uprunning = dorunning = 0;
-					aggiorna = true;
-					SetIcons(0, icon_sx);
-					SetIcons(1, icon_dx);
-					sxButton->enable();
-					dxButton->enable();
-				}
-				break;
-			case 1:
-				if (!isActive() || (isActive() == 2))
-				{
-					impostaAttivo(1);
-					dorunning = 0;
-					uprunning = 1;
-					aggiorna = true;
-					SetIcons(0, icon_stop);
-					SetIcons(1, icon_dx);
-					dxButton->disable();
-					sxButton->enable();
-				}
-				break;
-			case 2:
-				if (!isActive() || (isActive() == 1))
-				{
-					impostaAttivo(2);
-					dorunning = 1;
-					uprunning = 0;
-					aggiorna = true;
-					SetIcons(0, icon_sx);
-					SetIcons(1, icon_stop);
-					sxButton->disable();
-					dxButton->enable();
-				}
-				break;
-			default:
-				qDebug("Unknown status in autom. message");
-				break;
-			}
-		}
-		default:
-			qDebug("Unknown device status type");
-			break;
-		}
-	}
-
-	if (aggiorna)
-	{
-		Draw();
-		sxButton->setStatus(sxButton->isDown());
-		dxButton->setStatus(dxButton->isDown());
-	}
-
-}
-
-void attuatAutomIntSic::upPres()
-{
-	if (!dorunning && !isActive())
-		dev->sendFrame(createMsgOpen("2", "1", getAddress()));
-}
-
-void attuatAutomIntSic::doPres()
-{
-	if (!uprunning && !isActive())
-		dev->sendFrame(createMsgOpen("2", "2", getAddress()));
-}
-
-void attuatAutomIntSic::upRil()
-{
-	if (!dorunning)
-		QTimer::singleShot(500, this, SLOT(sendStop()));
-}
-
-void attuatAutomIntSic::doRil()
-{
-	if (!uprunning)
-		QTimer::singleShot(500, this, SLOT(sendStop()));
-}
-
-void attuatAutomIntSic::sendStop()
-{
-	dev->sendFrame(createMsgOpen("2", "0", getAddress()));
-}
-
-void attuatAutomIntSic::inizializza(bool forza)
-{
-	dev->sendInit("*#1*" + getAddress() + "##");
-}
-
-
-attuatAutomInt::attuatAutomInt(QWidget *parent, QString where, QString IconaSx, QString IconaDx, QString icon, QString StopIcon)
-	: bannOnOff(parent)
-{
-
-	int pos = icon.indexOf(".");
-	if (pos != -1)
-	{
-		QString img1 = icon.left(pos) + "o" + icon.mid(pos);
-		QString img2 = icon.left(pos) + "c" + icon.mid(pos);
-		SetIcons(IconaSx, IconaDx, icon, img1, img2);
-	}
-	else
-		qWarning() << "Cannot find dot on image " << icon;
-
-	icon_sx = IconaSx;
-	icon_dx = IconaDx;
-	icon_stop = StopIcon;
-
-	setAddress(where);
-	connect(this,SIGNAL(sxClick()),this,SLOT(analizzaUp()));
-	connect(this,SIGNAL(dxClick()),this,SLOT(analizzaDown()));
-
-	uprunning = dorunning = 0;
-	dev = bt_global::devices_cache.get_autom_device(getAddress());
-	// Get status changed events back
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
-			this, SLOT(status_changed(QList<device_status*>)));
-}
-
-void attuatAutomInt::status_changed(QList<device_status*> sl)
-{
-	stat_var curr_status(stat_var::STAT);
-	bool aggiorna = false;
-	qDebug("attuatAutomInt::status_changed()");
-
-	for (int i = 0; i < sl.size(); ++i)
-	{
-		device_status *ds = sl.at(i);
-		switch (ds->get_type())
-		{
-		case device_status::AUTOM:
-		{
-			qDebug("Autom status variation");
-			ds->read(device_status_autom::STAT_INDEX, curr_status);
-			int v = curr_status.get_val();
-			qDebug("status = %d", v);
-			qDebug("isActive = %d", isActive());
-			switch (v)
-			{
-			case 0:
-				if (isActive())
-				{
-					impostaAttivo(0);
-					uprunning = dorunning = 0;
-					aggiorna = 1;
-					SetIcons(0, icon_sx);
-					SetIcons(1, icon_dx);
-					sxButton->enable();
-					dxButton->enable();
-				}
-				break;
-			case 1:
-				if (!isActive() || (isActive() == 2))
-				{
-					impostaAttivo(1);
-					dorunning = 0;
-					uprunning = 1;
-					aggiorna = 1;
-					SetIcons(0, icon_stop);
-					SetIcons(1, icon_dx);
-					sxButton->enable();
-					dxButton->disable();
-				}
-				break;
-			case 2:
-				if (!isActive() || (isActive() == 1))
-				{
-					impostaAttivo(2);
-					dorunning = 1;
-					uprunning = 0;
-					aggiorna = 1;
-					SetIcons(0, icon_sx);
-					SetIcons(1, icon_stop);
-					sxButton->disable();
-					dxButton->enable();
-				}
-				break;
-			default:
-				qDebug("Unknown status in autom. message");
-				break;
-			}
-			break;
-		}
-		default:
-			qDebug("Unknown device status type");
-			break;
-		}
-	}
-
-	if (aggiorna)
-		Draw();
-}
-
-void attuatAutomInt::analizzaUp()
-{
-	if (!dorunning)
-		dev->sendFrame(createMsgOpen("2", uprunning ? "0" : "1", getAddress()));
-}
-
-void attuatAutomInt::analizzaDown()
-{
-	if (!uprunning)
-		dev->sendFrame(createMsgOpen("2", dorunning ? "0" : "2", getAddress()));
-}
-
-void attuatAutomInt::inizializza(bool forza)
-{
-	dev->sendInit("*#1*" + getAddress() + "##");
-}
-
-
-grAttuatInt::grAttuatInt(QWidget *parent, QList<QString> addresses, QString IconaSx, QString IconaDx, QString icon)
-	: bann3But(parent)
-{
-	SetIcons(IconaDx, IconaSx, QString(), icon);
-	elencoDisp = addresses;
-	connect(this,SIGNAL(dxClick()), SLOT(Alza()));
-	connect(this,SIGNAL(sxClick()), SLOT(Abbassa()));
-	connect(this,SIGNAL(centerClick()), SLOT(Ferma()));
-}
-
-void grAttuatInt::sendAllFrames(QString msg)
-{
-	for (int i = 0; i < elencoDisp.size();++i)
-		sendFrame(createMsgOpen("2", msg, elencoDisp.at(i)));
-}
-
-void grAttuatInt::Alza()
-{
-	sendAllFrames("1");
-}
-
-void grAttuatInt::Abbassa()
-{
-	sendAllFrames("2");
-}
-
-void grAttuatInt::Ferma()
-{
-	sendAllFrames("0");
-}
-
-#endif
-
-
-PPTStat::PPTStat(QWidget *parent, QString where, int cid) : banner(parent)
-{
-	dev = bt_global::add_device_to_cache(new PPTStatDevice(where));
-	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
+	dev = bt_global::add_device_to_cache(new PPTStatDevice(where, openserver_id));
+	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	setOpenserverConnection(dev);
 
 	// This banner shows only an icon in central position and a text below.
 	addItem(ICON, (banner_width - BUT_DIM * 2) / 2, 0, BUT_DIM*2 ,BUT_DIM);
 	addItem(TEXT, 0, BUT_DIM, banner_width, banner_height - BUT_DIM);
 
-	SkinContext context(cid);
 	img_open = bt_global::skin->getImage("pptstat_open");
 	img_close = bt_global::skin->getImage("pptstat_close");
 
@@ -609,15 +280,10 @@ PPTStat::PPTStat(QWidget *parent, QString where, int cid) : banner(parent)
 	Draw();
 }
 
-void PPTStat::status_changed(const StatusList &status_list)
+void PPTStat::status_changed(const DeviceValues &status_list)
 {
 	bool st = status_list[PPTStatDevice::DIM_STATUS].toBool();
 	SetIcons(2, st ? img_close : img_open);
 	Draw();
-}
-
-void PPTStat::inizializza(bool forza)
-{
-	dev->requestStatus();
 }
 

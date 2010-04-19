@@ -1,14 +1,23 @@
-/**
- * \file
- * <!--
- * Copyright 2009 Develer S.r.l. (http://www.develer.com/)
- * All rights reserved.
- * -->
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
  *
- * \brief This file contains the class used to manage the font
+ * Copyright (C) 2010 BTicino S.p.A.
  *
- * \author Gianni Valdambrini <aleister@develer.com>
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 
 #ifndef FONTMANAGER_H
 #define FONTMANAGER_H
@@ -29,10 +38,26 @@ class FontManager
 public:
 	FontManager(QString font_file);
 
+	// TODO: need to split SUBTITLE and SMALLTEXT
+	//
+	// TITLE: title of the page (used for all TouchX pages, and for a couple of BTouch pages)
+	// SUBTITLE: AUX source, load deactivation time, external/non-controlled probe
+	//           RDS radio, version page, load management current consumption,
+	//           load management "force on" confirmation page
 	// TEXT: default text size
 	// BANNERTEXT: label text for banner labels aligned horizontally with the icons
-	// BANNERDESCRIPTION: descriptive text displayed under a banner
+	// BANNERDESCRIPTION: descriptive text displayed under a banner (or an icon)
+	// SMALLTEXT: energy graph, energy table date, energy view date, lan settings text,
+	//            version page, RDS radio
 	// HOMEPAGEWIDGET: date/time/temperature display in home page
+	// PROBE_TEMPERATURE: current temperature of a thermal probe
+	// PROBE_SETPOINT: set point temperature of a thermal probe
+	// REGULATOR_TEMPERATURE: current temperature of a thermal regulator
+	// REGULATOR_DESCRIPTION: description of a thermal regulator
+	// AIRCONDITIONING_TEMPERATURE: temperature measured by a split
+	// PLAYER_TITLE: song title (first line)
+	// PLAYER_AUTHOR: song author/info (second line)
+	// PLAYER_INFO: current track and elapsed time
 #ifdef LAYOUT_BTOUCH
 	enum Type
 	{
@@ -42,7 +67,13 @@ public:
 		BANNERTEXT = 2,
 		BANNERDESCRIPTION = 2,
 		SMALLTEXT = 3,
-		HOMEPAGEWIDGET = 6
+		HOMEPAGEWIDGET = 6,
+		// thermal regulation
+		PROBE_TEMPERATURE = 0,
+		PROBE_SETPOINT = 1,
+		REGULATOR_TEMPERATURE = 1,
+		REGULATOR_DESCRIPTION = 1,
+		AIRCONDITIONING_TEMPERATURE = 1,
 	};
 #else
 	enum Type
@@ -53,7 +84,24 @@ public:
 		BANNERTEXT = 4,
 		BANNERDESCRIPTION = 5,
 		SMALLTEXT = 2, // TBD, same as TEXT for now
-		HOMEPAGEWIDGET = 6
+		HOMEPAGEWIDGET = 6,
+		// thermal regulation
+		PROBE_TEMPERATURE = 7,
+		PROBE_SETPOINT = 8,
+		REGULATOR_TEMPERATURE = 8,
+		REGULATOR_DESCRIPTION = 8,
+		AIRCONDITIONING_TEMPERATURE = 0,
+		// date/time edit
+		DATE_TIME = 0,
+		// rds radio
+		RADIO_NAME = TITLE,
+		RADIO_MEMORY_NUMBER = SMALLTEXT,
+		RADIO_STATION = SMALLTEXT,
+		RADIO_ENVIRONMENT = TITLE,
+		// audio player
+		PLAYER_TITLE = HOMEPAGEWIDGET,
+		PLAYER_AUTHOR = TITLE,
+		PLAYER_INFO = BANNERDESCRIPTION,
 	};
 #endif
 

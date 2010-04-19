@@ -1,23 +1,50 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "pagefactory.h"
 #include "xml_functions.h" // getPageNode
 #include "btmain.h" // bt_global::btmain
 #include "sounddiffusion.h"
 #include "multisounddiff.h"
-#include "videoentryphone.h"
+#include "videodoorentry.h"
+#ifdef LAYOUT_TOUCHX
+#include "multimedia.h"
+#include "messages.h"
+#include "sounddiffusionpage.h"
+#else
+#include "settings.h"
+#endif
 #include "antintrusion.h"
 #include "automation.h"
 #include "lighting.h"
 #include "scenario.h"
-#include "settings.h"
 #include "loads.h"
 #include "thermalmenu.h"
-#include "feedmanager.h"
 #include "supervisionmenu.h"
 #include "specialpage.h"
 #include "energy_data.h"
-#include "openclient.h"
 #include "iconpage.h"
-#include "sectionpage.h"
+#include "energy_management.h"
+#include "load_management.h"
+
 
 #include <QObject>
 
@@ -41,44 +68,60 @@ Page *getPage(int page_id)
 	switch (id)
 	{
 	case AUTOMAZIONE:
-	{
-		Automation *p = new Automation(page_node);
-		//p->forceDraw();
-		page = p;
+		page = new Automation(page_node);
 		break;
-	}
 	case ILLUMINAZIONE:
-	{
-		Lighting *p = new Lighting(page_node);
-		//p->forceDraw();
-		// DELETE
-		//QObject::connect(p, SIGNAL(richStato(QString)), bt_global::btmain->client_richieste, SLOT(richStato(QString)));
-		page = p;
+		page = new Lighting(page_node);
 		break;
-	}
 	case ANTIINTRUSIONE:
-	{
-		Antintrusion *p = new Antintrusion(page_node);
-		p->draw();
-		QObject::connect(bt_global::btmain->client_comandi, SIGNAL(openAckRx()), p, SIGNAL(openAckRx()));
-		QObject::connect(bt_global::btmain->client_comandi, SIGNAL(openNakRx()), p, SIGNAL(openNakRx()));
-		page = p;
+		page = new Antintrusion(page_node);
 		break;
-	}
 	case CARICHI:
-	{
-		Loads *p = new Loads(page_node);
-		//p->forceDraw();
-		page = p;
+		page = new Loads(page_node);
 		break;
-	}
 	case TERMOREGOLAZIONE:
 	case TERMOREG_MULTI_PLANT:
+		page = new ThermalMenu(page_node);
+		break;
+	case ENERGY_MANAGEMENT:
 	{
-		ThermalMenu *p = new ThermalMenu(page_node);
+		EnergyManagement *p = new EnergyManagement(page_node);
 		page = p;
 		break;
 	}
+	case SCENARI:
+	case SCENARI_EVOLUTI:
+		page = new Scenario(page_node);
+		break;
+#ifndef LAYOUT_TOUCHX
+	case IMPOSTAZIONI:
+		page = new Settings(page_node);
+		break;
+#endif
+	case VIDEOCITOFONIA:
+		page = new VideoDoorEntry(page_node);
+		break;
+	case SUPERVISIONE:
+		page = new SupervisionMenu(page_node);
+		break;
+	case SPECIAL:
+		page = new SpecialPage(page_node);
+		break;
+	case ENERGY_DATA:
+		page = new EnergyData(page_node);
+		break;
+#ifdef LAYOUT_TOUCHX
+	case MULTIMEDIA:
+		page = new MultimediaSectionPage(page_node);
+		break;
+	case MESSAGES:
+		page = new MessagesListPage(page_node);
+		break;
+	case DIFSON_MULTI:
+		page = new SoundDiffusionPage(page_node);
+		break;
+#else
+	// TODO: this must be changed for btouch when page changes are clearer
 	case DIFSON:
 	{
 		SoundDiffusion *p = new SoundDiffusion(page_node);
@@ -87,10 +130,10 @@ Page *getPage(int page_id)
 
 		if (!bt_global::btmain->difSon)
 		{
-			SoundDiffusionAlarm *sd = new SoundDiffusionAlarm(p->getAudioSources(), page_node);
-			sd->forceDraw();
-			bt_global::btmain->difSon = sd;
-		}
+		SoundDiffusionAlarm *sd = new SoundDiffusionAlarm(p->getAudioSources(), page_node);
+		sd->forceDraw();
+		bt_global::btmain->difSon = sd;
+	}
 		break;
 	}
 	case DIFSON_MULTI:
@@ -101,80 +144,17 @@ Page *getPage(int page_id)
 
 		if (!bt_global::btmain->dm)
 		{
-			MultiSoundDiffAlarm *tmp = new MultiSoundDiffAlarm(page_node);
-			tmp->forceDraw();
-			bt_global::btmain->dm = tmp;
-		}
+		MultiSoundDiffAlarm *tmp = new MultiSoundDiffAlarm(page_node);
+		tmp->forceDraw();
+		bt_global::btmain->dm = tmp;
+	}
 		break;
 	}
-	case ENERGY_MANAGEMENT:
-	{
-		SectionPage *p = new SectionPage(page_node);
-		p->addBackButton();
-		page = p;
-		break;
-	}
-	case SCENARI:
-	case SCENARI_EVOLUTI:
-	{
-		Scenario *p = new Scenario(page_node);
-		p->forceDraw();
-		page = p;
-		break;
-	}
-	case IMPOSTAZIONI:
-	{
-		Settings *p = new Settings(page_node);
-		//p->forceDraw();
-		page = p;
-		break;
-	}
-	case VIDEOCITOFONIA:
-	{
-		VideoEntryPhone *p = new VideoEntryPhone(page_node);
-		//p->forceDraw();
-		page = p;
-		break;
-	}
-// TODO: this won't magically fix running BTouch with the new config file, but at least will
-// let us compile for BTouch (old conf) without problems.
-#ifdef LAYOUT_TOUCHX
-	case INTERCOM:
-		page = new Intercom(page_node);
-		break;
-	case VIDEO_CONTROL:
-		page = new VideoControl(page_node);
-		break;
-	case CALL_EXCLUSION:
-		page = new CallExclusion(page_node);
-		break;
 #endif
-	case SUPERVISIONE:
-	{
-		SupervisionMenu *p = new SupervisionMenu(page_node);
-		p->forceDraw();
-		QObject::connect(p, SIGNAL(richStato(QString)), bt_global::btmain->client_richieste, SLOT(richStato(QString)));
-		page = p;
+
+	case LOAD_MANAGEMENT:
+		page = new LoadManagement(page_node);
 		break;
-	}
-	case SPECIAL:
-	{
-		SpecialPage *p = new SpecialPage(page_node);
-		page = p;
-		break;
-	}
-	case ENERGY_DATA:
-	{
-		EnergyData *p = new EnergyData(page_node);
-		page = p;
-		break;
-	}
-	case FEED_READER:
-	{
-		FeedManager *p = new FeedManager;
-		page = p;
-		break;
-	}
 	default:
 		qFatal("Page %d not found on xml config file!", id);
 	}

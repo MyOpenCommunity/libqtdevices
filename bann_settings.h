@@ -1,20 +1,31 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-** bann_settings.h
-**
-** definizioni dei vari items implementati per impostazioni
-**
-****************************************************************/
 
 #ifndef BANN_SETTINGS_H
 #define BANN_SETTINGS_H
 
 #include "banner.h"
 #include "bann1_button.h" // bannOnDx, bannOnSx
-#include "bann2_buttons.h" // bann2But
+#include "bann2_buttons.h"
+#include "ringtonesmanager.h" // RingtoneType
 
 #include <QWidget>
 
@@ -24,21 +35,20 @@ class Keypad;
 class Calibrate;
 class Contrast;
 class contdiff;
+class StateButton;
 
 
 /*!
   \class bannAlarmClock
   \brief This class is made to make alarm clock settings.
 
-  \author Davide
-  \date lug 2005
 */
-class bannAlarmClock : public bann2But
+class bannAlarmClock : public Bann2StateButtons
 {
 Q_OBJECT
 public:
-	bannAlarmClock(QWidget *parent, int hour, int minute, QString icon_on,
-		QString icon_off, QString icon_label, int enabled, int freq, int tipo);
+	bannAlarmClock(int item_id, int hour, int minute, QString icon_on,
+		QString icon_off, QString icon_label, QString text, int enabled, int freq, int tipo);
 	/*!
 	\brief changes the abilitation af the alarm set
 	*/
@@ -69,7 +79,7 @@ class bannAlarmClockIcon : public BannOnOffState
 {
 Q_OBJECT
 public:
-	bannAlarmClockIcon(int hour, int minute, QString icon_on,
+	bannAlarmClockIcon(int item_id, int hour, int minute, QString icon_on,
 		QString icon_off, QString icon_state, QString icon_edit, QString text,
 		int enabled, int tipo, QList<bool> days);
 	/*!
@@ -90,6 +100,9 @@ public slots:
 	void toggleAbil();
 	void setButtonIcon();
 
+protected:
+	StateButton *left_button;
+
 private:
 	AlarmClock *alarm_clock;
 
@@ -102,8 +115,6 @@ private slots:
   \class calibration
   \brief Calibrate the device
 
-  \author Davide
-  \date lug 2005
 */
 // TODO: rimuovere questa classe, e usare direttamente bannOnDx! E' necessario intervenire su Calibrate
 // per modificare la gestione del grabMouse e del backup della vecchia calibrazione.
@@ -113,14 +124,9 @@ Q_OBJECT
 public:
 	calibration(QWidget *parent, QString icon);
 
-private slots:
-	void doCalib();
-	void fineCalib();
-private:
-	Calibrate* calib;
 signals:
-	void startCalib();
-	void endCalib();
+	void startCalibration();
+	void endCalibration();
 };
 
 
@@ -128,16 +134,18 @@ signals:
   \class setDataOra
   \brief Beep (dis)abilitation
 
-  \author Davide
-  \date lug 2005
 */
-class impBeep : public bannOnSx
+class impBeep : public Bann2StateButtons
 {
 Q_OBJECT
 public:
-	impBeep(QWidget *parent, QString val, QString icon_on, QString icon_off);
+	impBeep(int item_id, bool enabled, QString icon_on, QString icon_off, QString text);
+
 public slots:
 	void toggleBeep();
+
+private:
+	int item_id;
 };
 
 
@@ -145,10 +153,13 @@ class bannContrast : public bannOnDx
 {
 Q_OBJECT
 public:
-	bannContrast(QWidget *parent, QString val, QString icon);
+	bannContrast(int item_id, int val, QString icon);
 
 private slots:
 	void done();
+
+private:
+	int item_id;
 };
 
 
@@ -169,14 +180,13 @@ private:
   \brief Manages the password.
 
   It's possible (dis)abilitate the password and to change the actual password.
-  \author Davide
-  \date lug 2005
 */
-class impPassword : public bann2But
+class impPassword : public Bann2StateButtons
 {
 Q_OBJECT
 public:
-	impPassword(QWidget *parent, QString icon_on, QString icon_off, QString icon_label, QString pwd, int attiva);
+	impPassword(QString icon_on, QString icon_off, QString icon_label, QString descr,
+		    int item_id, QString pwd, int attiva);
 
 public slots:
 /*!
@@ -206,12 +216,31 @@ private:
 	QString password;
 	Keypad *tasti;
 	bool sb;
+	int item_id;
 
 signals:
 /*!
   \brief  Emitted when the password is (dis)abilitated so BtMain knows if has to ask password or not
 */
 	void activatePaswd(bool);
+};
+
+
+/**
+ * Banner to set ringtone for a specific function (ringtone 1-4 from external units, alarms etc.).
+ */
+class BannRingtone : public Bann2CentralButtons
+{
+Q_OBJECT
+public:
+	BannRingtone(const QString &descr, RingtoneType type);
+
+private:
+	int current_ring;
+
+private slots:
+	void plusClicked();
+	void minusClicked();
 };
 
 #endif

@@ -1,12 +1,23 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** MultimediaSource.cpp
- **
- ** finestra di dati sulla sorgente MultimediaSource
- **
- ****************************************************************/
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 
 #include "multimedia_source.h"
 #include "playwindow.h"
@@ -29,8 +40,6 @@
 
 #define BROWSER_ROWS_PER_PAGE 4
 
-#define MEDIASERVER_MSEC_WAIT_TIME 2000
-
 /*
  * Scripts launched before and after a track is played.
  */
@@ -40,22 +49,6 @@ static const char *stop_play_script = "/bin/audio_off.tcl";
 
 // Interface icon paths.
 static const char *IMG_SELECT = IMG_PATH "arrrg.png";
-static const char *IMG_WAIT = IMG_PATH "loading.png";
-
-
-inline QTime startTimeCounter()
-{
-	QTime timer;
-	timer.start();
-	return timer;
-}
-
-inline void waitTimeCounter(const QTime& timer, int msec)
-{
-	int wait_time = msec - timer.elapsed();
-	if (wait_time > 0)
-		usleep(wait_time * 1000);
-}
 
 
 enum ChoiceButtons
@@ -151,7 +144,7 @@ void MultimediaSource::sourceMenu(AudioSourceType t)
 	if (source_type == RADIO_SOURCE)
 		selector = new RadioSelector(BROWSER_ROWS_PER_PAGE, radio_node);
 	else
-		selector = new FileSelector(BROWSER_ROWS_PER_PAGE, MEDIASERVER_PATH);
+		selector = new AudioFileSelector(BROWSER_ROWS_PER_PAGE, MEDIASERVER_PATH);
 
 	// Connection to be notified about Start and Stop Play
 	connect(this, SIGNAL(notifyStartPlay()), SLOT(handleStartPlay()));
@@ -302,191 +295,61 @@ void MultimediaSource::startPlayer(QVector<AudioData> list, unsigned element)
 }
 
 
-FileSelector::FileSelector(unsigned rows_per_page, QString start_path)
+AudioFileSelector::AudioFileSelector(unsigned rows_per_page, QString start_path)
+	: FileSelector(rows_per_page, start_path)
 {
-	level = 0;
-	main_layout->setContentsMargins(0, 0, 0, 0);
-
-	list_browser = new ListBrowser(this, rows_per_page);
+	ListBrowser *list_browser = new ListBrowser(this, rows_per_page);
 	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
-	main_layout->addWidget(list_browser, 1);
+	connect(this, SIGNAL(fileClicked(int)), SLOT(startPlayback(int)));
 
 	bannFrecce *nav_bar = new bannFrecce(this, 4, ICON_DIFFSON);
 	connect(nav_bar, SIGNAL(downClick()), SLOT(prevItem()));
 	connect(nav_bar, SIGNAL(upClick()), SLOT(nextItem()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
-	main_layout->addWidget(nav_bar);
 
-	current_dir.setSorting(QDir::DirsFirst | QDir::Name);
-	current_dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable);
+	buildPage(list_browser, nav_bar);
+}
 
+void AudioFileSelector::startPlayback(int item)
+{
+	QVector<AudioData> play_list;
+	unsigned element = 0;
+	unsigned track_number = 0;
+
+	const QList<QFileInfo> &files_list = getFiles();
+	QFileInfo clicked_element = files_list[item];
+
+	for (int i = 0; i < files_list.size(); ++i)
+	{
+		const QFileInfo& fn = files_list[i];
+		if (fn.isDir())
+			continue;
+
+		play_list.append(AudioData(fn.absoluteFilePath(), fn.completeBaseName()));
+		if (clicked_element.absoluteFilePath() == fn.absoluteFilePath())
+			element = track_number;
+
+		++track_number;
+	}
+	emit startPlayer(play_list, element);
+}
+
+bool AudioFileSelector::browseFiles(const QDir &directory, QList<QFileInfo> &files)
+{
 	QStringList filters;
 	filters << "*.[mM]3[uU]" << "*.[mM][pP]3" << "*.[wW][[aA][vV]" << "*.[oO][gG][gG]" << "*.[wW][mM][aA]";
-	current_dir.setNameFilters(filters);
-	changePath(start_path);
-}
 
-void FileSelector::showPage()
-{
-	Selector::showPage();
-	// refresh QDir information
-	current_dir.refresh();
-
-	QLabel *l = createWaitDialog();
-	QTime time_counter = startTimeCounter();
-
-	if (!browseFiles())
-	{
-		waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
-		destroyWaitDialog(l);
-		emit notifyExit();
-		return;
-	}
-
-	waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
-	destroyWaitDialog(l);
-}
-
-void FileSelector::itemIsClicked(int item)
-{
-	QLabel *l = createWaitDialog();
-	QTime time_counter = startTimeCounter();
-
-	const QFileInfo& clicked_element = files_list[item];
-	qDebug() << "[AUDIO] FileSelector::itemIsClicked " << item << "-> " << clicked_element.fileName();
-
-	if (!clicked_element.exists())
-		qWarning() << "[AUDIO] Error retrieving file: " << clicked_element.absoluteFilePath();
-
-	if (clicked_element.isDir())
-	{
-		++level;
-		if (!browseFiles(clicked_element.absoluteFilePath()))
-		{
-			destroyWaitDialog(l);
-			emit notifyExit();
-			return;
-		}
-		waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
-		destroyWaitDialog(l);
-	}
-	else
-	{
-		QVector<AudioData> play_list;
-		unsigned element = 0;
-		unsigned track_number = 0;
-
-		for (int i = 0; i < files_list.size(); ++i)
-		{
-			const QFileInfo& fn = files_list[i];
-			if (fn.isDir())
-				continue;
-
-			play_list.append(AudioData(fn.absoluteFilePath(), fn.completeBaseName()));
-			if (clicked_element.absoluteFilePath() == fn.absoluteFilePath())
-				element = track_number;
-
-			++track_number;
-		}
-		waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
-		destroyWaitDialog(l);
-		emit startPlayer(play_list, element);
-	}
-}
-
-void FileSelector::browseUp()
-{
-	if (level)
-	{
-		--level;
-		QLabel *l = createWaitDialog();
-		QTime time_counter = startTimeCounter();
-
-		if (!browseFiles(QFileInfo(current_dir, "..").absoluteFilePath()))
-		{
-			destroyWaitDialog(l);
-			emit notifyExit();
-			return;
-		}
-		waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
-		destroyWaitDialog(l);
-	}
-	else
-		emit notifyExit();
-}
-
-bool FileSelector::browseFiles(QString new_path)
-{
-	QString old_path = current_dir.absolutePath();
-	if (changePath(new_path))
-	{
-		if (!browseFiles())
-		{
-			qDebug() << "[AUDIO] empty directory: "<< new_path;
-			changePath(old_path);
-			--level;
-		}
-		return true;
-	}
-	else
-	{
-		qDebug() << "[AUDIO] browseFiles(): path '" << new_path << "%s' doesn't exist";
-		changePath(old_path);
-		--level;
-	}
-	return browseFiles();
-}
-
-bool FileSelector::changePath(QString new_path)
-{
-	// if new_path is valid changes the path and run browseFiles()
-	if (QFileInfo(new_path).exists())
-	{
-		// save the info of old directory
-		pages_indexes[current_dir.absolutePath()] = list_browser->getCurrentPage();
-
-		QString new_path_string = QFileInfo(new_path).absoluteFilePath();
-		// change path
-		current_dir.setPath(new_path_string);
-		return true;
-	}
-	return false;
-}
-
-void FileSelector::destroyWaitDialog(QLabel *l)
-{
-	l->hide();
-	l->deleteLater();
-}
-
-QLabel *FileSelector::createWaitDialog()
-{
-	QLabel* l = new QLabel(0);
-	QPixmap *icon = bt_global::icons_cache.getIcon(IMG_WAIT);
-	l->setPixmap(*icon);
-
-	QRect r = icon->rect();
-	r.moveCenter(QPoint(width() / 2, height() / 2));
-	l->setGeometry(r);
-
-	l->showFullScreen();
-	qApp->processEvents();
-	return l;
-}
-
-bool FileSelector::browseFiles()
-{
 	// Create fileslist from files
-	QList<QFileInfo> temp_files_list = current_dir.entryInfoList();
+	QList<QFileInfo> temp_files_list = directory.entryInfoList(filters);
 
 	if (temp_files_list.empty())
 	{
-		qDebug() << "[AUDIO] empty directory: " << current_dir.absolutePath();
+		qDebug() << "[AUDIO] empty directory: " << directory.absolutePath();
 		return false;
 	}
 
-	files_list.clear();
+	files.clear();
 
 	QVector<QString> names_list;
 
@@ -496,32 +359,38 @@ bool FileSelector::browseFiles()
 		if (f.fileName() != "." && f.fileName() != "..")
 		{
 			names_list.append(f.fileName());
-			files_list.append(f);
+			files.append(f);
 		}
 	}
 
-	unsigned page = 0;
-	if (pages_indexes.contains(current_dir.absolutePath()))
-		page = pages_indexes[current_dir.absolutePath()];
+	page_content->setList(names_list, displayedPage(directory));
+	page_content->showList();
 
-	list_browser->setList(names_list, page);
-	list_browser->showList();
 	return true;
 }
 
-void FileSelector::nextItem()
+int AudioFileSelector::currentPage()
 {
-	list_browser->nextItem();
+	return page_content->getCurrentPage();
 }
 
-void FileSelector::prevItem()
+void AudioFileSelector::nextItem()
 {
-	list_browser->prevItem();
+	page_content->nextItem();
+}
+
+void AudioFileSelector::prevItem()
+{
+	page_content->prevItem();
 }
 
 
 RadioSelector::RadioSelector(unsigned rows_per_page, QDomNode config)
 {
+	main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(0, 5, 0, 0);
+	main_layout->setSpacing(0);
+
 	main_layout->setContentsMargins(0, 0, 0, 0);
 	list_browser = new ListBrowser(this, rows_per_page);
 	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));

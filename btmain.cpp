@@ -1,15 +1,34 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "btmain.h"
-#include "main.h" // bt_global::config
+#include "main.h" // (*bt_global::config)
 #include "homepage.h"
-#include "hardware_functions.h" // rearmWDT, getTimePress, setOrientation, getBacklight
+#include "hardware_functions.h" // rearmWDT, getTimePress, setOrientation, getBacklight, initScreen
 #include "xml_functions.h" // getPageNode, getElement, getChildWithId, getTextChild
-#include "calibrate.h"
-#include "genpage.h"
 #include "openclient.h"
 #include "version.h"
 #include "keypad.h"
 #include "screensaver.h"
-#include "displaycontrol.h" // bt_global::display
+#include "displaycontrol.h" // (*bt_global::display)
 #include "page.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "device.h"
@@ -23,7 +42,14 @@
 #include "homewindow.h"
 #include "iconwindow.h"
 #include "windowcontainer.h"
+#include "ringtonesmanager.h"
+#include "pagestack.h"
+#include "videodoorentry.h"
+#if !defined(BT_HARDWARE_X11)
+#include "calibration.h"
+#endif
 
+#include <QMutableHashIterator>
 #include <QXmlSimpleReader>
 #include <QXmlInputSource>
 #include <QApplication>
@@ -36,7 +62,8 @@
 #include <QTime>
 
 
-#define CFG_FILE MY_FILE_USER_CFG_DEFAULT
+// delay between two consecutive screensaver checks
+#define SCREENSAVER_CHECK 2000
 
 namespace
 {
@@ -49,7 +76,7 @@ namespace
 }
 
 
-#ifdef BT_HARDWARE_X11
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
 
 // used to store the time of the last click; used by the screen saver code
 // on x86
@@ -78,99 +105,157 @@ bool LastClickTime::eventFilter(QObject *obj, QEvent *ev)
 #endif
 
 
-BtMain::BtMain()
+BtMain::BtMain(int openserver_reconnection_time)
 {
-	boot_time = new QTime();
+	boot_time = new QTime;
 	boot_time->start();
 	difSon = 0;
 	dm = 0;
 	screensaver = 0;
+	// construct global objects
+	bt_global::config = new QHash<GlobalFields, QString>();
+
 	loadGlobalConfig();
-	qDebug("parte BtMain");
+	qDebug("BtMain::BtMain");
 
-	QString font_file = QString(MY_FILE_CFG_FONT).arg(bt_global::config[LANGUAGE]);
+	QString font_file = QString(MY_FILE_CFG_FONT).arg((*bt_global::config)[LANGUAGE]);
 	bt_global::font = new FontManager(font_file);
+	bt_global::display = new DisplayControl;
 	bt_global::skin = new SkinManager(SKIN_FILE);
+	bt_global::ringtones = new RingtonesManager;
 
-	client_monitor = new Client(Client::MONITOR);
-	client_comandi = new Client(Client::COMANDI);
-	client_richieste = new Client(Client::RICHIESTE);
-#if DEBUG
-	client_supervisor = new Client(Client::SUPERVISOR);
-	client_supervisor->forwardFrame(client_monitor);
-#endif
-#ifdef BT_HARDWARE_X11
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
 	// save last click time for the screen saver
 	qApp->installEventFilter(new LastClickTime);
+	// avoid calibration starting at every boot
+	setTimePress(QDateTime::currentDateTime().addSecs(-60));
 #endif
-	FrameReceiver::setClientMonitor(client_monitor);
-	banner::setClients(client_comandi, client_richieste);
-	Page::setClients(client_comandi, client_richieste);
+
+	initScreen();
+	monitor_ready = false;
+	config_loaded = false;
+
+	OpenServerManager::reconnection_time = openserver_reconnection_time;
+
+	// The configuration is usually loaded in the "init()" method, but in this
+	// case (that should be an exception) we need to know the list of openserver.
+	QDomNode openservers_node = getConfElement("setup/openserver");
+	if (!openservers_node.isNull())
+		foreach (const QDomNode &item, getChildren(openservers_node, "item"))
+		{
+			int id = getTextChild(item, "id").toInt();
+			QString host = getTextChild(item, "address");
+			int port = getTextChild(item, "port").toInt();
+			monitors[id] = new Client(Client::MONITOR, host, port);
+			clients[id].first = new Client(Client::COMMAND, host, port);
+			clients[id].second = new Client(Client::REQUEST, host, port);
+		}
+
+	// If it is not defined a main openserver, the main openserver is the local openserver
+	if (!clients.contains(MAIN_OPENSERVER))
+	{
+		monitors[MAIN_OPENSERVER] = new Client(Client::MONITOR);
+		clients[MAIN_OPENSERVER].first = new Client(Client::COMMAND);
+		clients[MAIN_OPENSERVER].second = new Client(Client::REQUEST);
+	}
+
+#if DEBUG
+	client_supervisor = new Client(Client::SUPERVISOR);
+	client_supervisor->forwardFrame(monitors[MAIN_OPENSERVER]);
+#endif
+
+	// When only the main openserver is defined the homepage is showed only when
+	// the monitor of the openserver is up. Otherwise the homepage is showed as
+	// soon as the configuration is loaded.
+	if (clients.count() > 1)
+		monitor_ready = true;
+	else
+		connect(monitors[MAIN_OPENSERVER], SIGNAL(connectionUp()), SLOT(monitorReady()));
+
+	banner::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
+	Page::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
+	FrameReceiver::setClientsMonitor(monitors);
+	device::setClients(clients);
+
 	window_container = new WindowContainer(maxWidth(), maxHeight());
 	page_container = window_container->centralLayout();
 	page_container->blockTransitions(true); // no transitions until homepage is showed
-	connect(page_container, SIGNAL(currentPageChanged(Page*)), SLOT(currentPageChanged(Page*)));
-	device::setClients(client_comandi, client_richieste);
-
-	connect(client_monitor,SIGNAL(monitorSu()), SLOT(monitorReady()));
-
-	monitor_ready = false;
-	config_loaded = false;
+	connect(page_container, SIGNAL(currentPageChanged(Page*)), &bt_global::page_stack, SLOT(currentPageChanged(Page *)));
 
 	rearmWDT();
 
 	calibrating = false;
-	event_unfreeze = false;
-	firstTime = true;
 	pagDefault = NULL;
-	prev_page = NULL;
 	Home = NULL;
-	screen = NULL;
 	version = NULL;
 	alreadyCalibrated = false;
-	svegliaIsOn = false;
-	tiempo_last_ev = 0;
-	pd_shown = false;
+	alarmClockIsOn = false;
+	last_event_time = 0;
+	frozen = false;
 
-	tasti = NULL;
+	passwordKeypad = NULL;
 	pwdOn = false;
 
 	Window *loading = NULL;
 
+	// TODO these must be read from configuration
+	freeze_time = 30;
+	screensaver_time = 60;
+	screenoff_time = 120;
+
 #ifdef LAYOUT_BTOUCH
 	version = new Version;
-	version->setModel(bt_global::config[MODEL]);
+	version->setModel((*bt_global::config)[MODEL]);
 #else
-	// the stylesheet on QApplication must be set later (see comment in hom())
+	// the stylesheet on QApplication must be set later (see comment in init())
 	loading = new IconWindow("splash_image", bt_global::skin->getStyle());
 #endif
 
-#if BT_EMBEDDED
-	if (QFile::exists("/etc/pointercal"))
-	{
-		if (version)
-			version->showPage();
-		if (loading)
-			loading->showWindow();
-		waitBeforeInit();
-	}
-	else
-	{
+	initMultimedia();
+
 #if !defined(BT_HARDWARE_X11)
-		calib = new Calibrate(NULL, 1);
-		calib->showFullScreen();
-		connect(calib, SIGNAL(fineCalib()), this, SLOT(waitBeforeInit()));
-		connect(calib, SIGNAL(fineCalib()), version, SLOT(showPage()));
-#endif
+	if (!Calibration::exists())
+	{
+		qDebug() << "No pointer calibration file, calibrating";
+
 		alreadyCalibrated = true;
-	}
+#ifdef LAYOUT_BTOUCH
+		Calibration *cal = new Calibration(true);
 #else
+		Calibration *cal = new Calibration;
+#endif
+		cal->showWindow();
+		connect(cal, SIGNAL(Closed()), SLOT(waitBeforeInit()));
+
+#ifdef LAYOUT_BTOUCH
+		connect(cal, SIGNAL(Closed()), version, SLOT(showPage()));
+#else
+		connect(cal, SIGNAL(Closed()), loading, SLOT(showWindow()));
+#endif
+		return;
+	}
+
+	if (qApp->arguments().contains("-testcalib"))
+	{
+		CalibrationTest *cal = new CalibrationTest;
+
+		cal->showWindow();
+		connect(cal, SIGNAL(Closed()), SLOT(waitBeforeInit()));
+
+#ifdef LAYOUT_BTOUCH
+		connect(cal, SIGNAL(Closed()), version, SLOT(showPage()));
+#else
+		connect(cal, SIGNAL(Closed()), loading, SLOT(showWindow()));
+#endif
+		return;
+	}
+#endif
+
 	if (version)
 		version->showPage();
 	if (loading)
 		loading->showWindow();
 	waitBeforeInit();
-#endif
 }
 
 BtMain::~BtMain()
@@ -178,9 +263,21 @@ BtMain::~BtMain()
 	delete screensaver;
 	delete bt_global::skin;
 	delete bt_global::font;
-	delete client_comandi;
-	delete client_monitor;
-	delete client_richieste;
+
+	QMutableHashIterator<int, QPair<Client*, Client*> > it(clients);
+	while (it.hasNext())
+	{
+		it.next();
+		delete it.value().first;
+		delete it.value().second;
+	}
+
+	QMutableHashIterator<int, Client*> mit(monitors);
+	while (mit.hasNext())
+	{
+		mit.next();
+		delete mit.value();
+	}
 #if DEBUG
 	delete client_supervisor;
 #endif
@@ -191,31 +288,41 @@ void BtMain::loadGlobalConfig()
 	using bt_global::config;
 
 	// Load the default values
-	config[TEMPERATURE_SCALE] = QString::number(CELSIUS);
-	config[LANGUAGE] = DEFAULT_LANGUAGE;
-	config[DATE_FORMAT] = QString::number(EUROPEAN_DATE);
+	(*config)[TEMPERATURE_SCALE] = QString::number(CELSIUS);
+	(*config)[LANGUAGE] = DEFAULT_LANGUAGE;
+	(*config)[DATE_FORMAT] = QString::number(EUROPEAN_DATE);
 
 	QDomNode n = getConfElement("setup/generale");
 
 	// Load the current values
-	setConfigValue(n, "temperature/format", config[TEMPERATURE_SCALE]);
-	setConfigValue(n, "language", config[LANGUAGE]);
-	setConfigValue(n, "clock/dateformat", config[DATE_FORMAT]);
-	setConfigValue(n, "modello", config[MODEL]);
-	setConfigValue(n, "nome", config[NAME]);
+	setConfigValue(n, "temperature/format", (*config)[TEMPERATURE_SCALE]);
+	Q_ASSERT_X(((*config)[TEMPERATURE_SCALE] == QString::number(CELSIUS)) ||
+		((*config)[TEMPERATURE_SCALE] == QString::number(FAHRENHEIT)), "BtMain::loadGlobalConfig",
+		"Temperature scale is invalid.");
+	setConfigValue(n, "language", (*config)[LANGUAGE]);
+	setConfigValue(n, "clock/dateformat", (*config)[DATE_FORMAT]);
+	setConfigValue(n, "modello", (*config)[MODEL]);
+	setConfigValue(n, "nome", (*config)[NAME]);
+
+	QDomNode scs_node = getConfElement("setup/scs");
+
+	setConfigValue(scs_node, "coordinate_scs/my_piaddress", (*config)[PI_ADDRESS]);
+	// transform address into internal address
+	if (!(*config)[PI_ADDRESS].isNull())
+		(*config)[PI_ADDRESS].prepend("1");
 }
 
 void BtMain::waitBeforeInit()
 {
-	QTimer::singleShot(200, this, SLOT(hom()));
+	QTimer::singleShot(200, this, SLOT(init()));
 }
 
-bool BtMain::loadConfiguration(QString cfg_file)
+void BtMain::loadConfiguration()
 {
-	if (QFile::exists(cfg_file))
+	if (version)
 	{
 		QDomNode setup = getConfElement("setup");
-		if (!setup.isNull() && version)
+		if (!setup.isNull())
 		{
 			QDomElement addr = getElement(setup, "scs/coordinate_scs/diag_addr");
 			bool ok;
@@ -224,77 +331,85 @@ bool BtMain::loadConfiguration(QString cfg_file)
 		}
 		else
 			qWarning("setup node not found on xml config file!");
+	}
 
-		QDomNode display_node = getChildWithId(getPageNode(IMPOSTAZIONI), QRegExp("item\\d{1,2}"), DISPLAY);
+	QDomNode display_node = getChildWithId(getPageNode(IMPOSTAZIONI), QRegExp("item\\d{1,2}"), DISPLAY);
 
-		BrightnessLevel level = BRIGHTNESS_NORMAL; // default brightness
-		if (!display_node.isNull())
-		{
-			QDomElement n = getElement(display_node, "brightness/level");
-			if (!n.isNull())
-				level = static_cast<BrightnessLevel>(n.text().toInt());
-		}
-		bt_global::display._setBrightness(level);
+#ifdef BT_HARDWARE_TOUCHX
+	// on TouchX there is no way to control the screensaver brightness
+	BrightnessLevel level = BRIGHTNESS_HIGH;
+#else
+	BrightnessLevel level = BRIGHTNESS_NORMAL; // default brightness
+#endif
+	if (!display_node.isNull())
+	{
+		QDomElement n = getElement(display_node, "brightness/level");
+		if (!n.isNull())
+			level = static_cast<BrightnessLevel>(n.text().toInt());
+	}
+	(*bt_global::display).setBrightness(level);
 
-		ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
-		if (!display_node.isNull())
-		{
-			QDomElement screensaver_node = getElement(display_node, "screensaver");
-			QDomElement n = getElement(screensaver_node, "type");
-			if (!n.isNull())
-				type = static_cast<ScreenSaver::Type>(n.text().toInt());
-			ScreenSaver::initData(screensaver_node);
-			if (type == ScreenSaver::DEFORM) // deform is for now disabled!
-				type = ScreenSaver::LINES;
-		}
-		bt_global::display.current_screensaver = type;
+	ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
+	if (!display_node.isNull())
+	{
+		QDomElement screensaver_node = getElement(display_node, "screensaver");
+		QDomElement n = getElement(screensaver_node, "type");
+		if (!n.isNull())
+			type = static_cast<ScreenSaver::Type>(n.text().toInt());
+		ScreenSaver::initData(screensaver_node);
+		if (type == ScreenSaver::DEFORM) // deform is for now disabled!
+			type = ScreenSaver::LINES;
+	}
+	(*bt_global::display).current_screensaver = type;
 
-		window_container->homeWindow()->loadConfiguration();
+	window_container->homeWindow()->loadConfiguration();
 
 #ifdef CONFIG_BTOUCH
-		QDomNode gui_node = getConfElement("displaypages");
-		QDomNode pagemenu_home = getChildWithId(gui_node, QRegExp("pagemenu(\\d{1,2}|)"), 0);
-		// homePage must be built after the loading of the configuration,
-		// to ensure that values displayed (by homePage or its child pages)
-		// is in according with saved values.
-		Home = new HomePage(pagemenu_home);
+	QDomNode gui_node = getConfElement("displaypages");
+	QDomNode pagemenu_home = getChildWithId(gui_node, QRegExp("pagemenu(\\d{1,2}|)"), 0);
+	// homePage must be built after the loading of the configuration,
+	// to ensure that values displayed (by homePage or its child pages)
+	// is in according with saved values.
+	Home = new HomePage(pagemenu_home);
 
-		QString orientation = getTextChild(gui_node, "orientation");
-		if (!orientation.isNull())
-			setOrientation(orientation);
+	QString orientation = getTextChild(gui_node, "orientation");
+	if (!orientation.isNull())
+		setOrientation(orientation);
 #else
-		QDomNode gui_node = getConfElement("gui");
-		// TODO read the id from the <homepage> node
-		QDomNode pagemenu_home = getHomepageNode();
-		Home = new HomePage(pagemenu_home);
-		connect(window_container->homeWindow(), SIGNAL(showHomePage()), Home, SLOT(showPage()));
-		connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), Home, SLOT(showSectionPage(int)));
+	QDomNode gui_node = getConfElement("gui");
+	// TODO read the id from the <homepage> node
+	QDomNode pagemenu_home = getHomepageNode();
+	Home = new HomePage(pagemenu_home);
+
+	QDomNode video_node = getPageNode(VIDEOCITOFONIA);
+	// Touch X can receive calls even if the videodoorentry section is not
+	// configured (but the configuration specifies it as an internal place).
+	if (video_node.isNull() && !(*bt_global::config)[PI_ADDRESS].isEmpty())
+		VideoDoorEntry::loadHiddenPages();
+
 #endif
+	connect(window_container->homeWindow(), SIGNAL(showHomePage()), Home, SLOT(showPage()));
+	connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), Home, SLOT(showSectionPage(int)));
 
-		QDomNode home_node = getChildWithName(gui_node, "homepage");
-		if (getTextChild(home_node, "isdefined").toInt())
-		{
-			int id_default = getTextChild(home_node, "id").toInt();
-			pagDefault = !id_default ? Home : getPage(id_default);
-		}
-
-		// TODO: read the transition effect from configuration
-		TransitionWidget *tr = new BlendingTransition;
-//		TransitionWidget *tr = new MosaicTransition;
-		window_container->installTransitionWidget(tr);
-		page_container->installTransitionWidget(tr);
-		return true;
+	QDomNode home_node = getChildWithName(gui_node, "homepage");
+	if (getTextChild(home_node, "isdefined").toInt())
+	{
+		int id_default = getTextChild(home_node, "id").toInt();
+		pagDefault = !id_default ? Home : getPage(id_default);
 	}
-	return false;
+
+	// Transition effects are for now disabled!
+//	TransitionWidget *tr = new BlendingTransition;
+//	window_container->installTransitionWidget(tr);
+//	page_container->installTransitionWidget(tr);
 }
 
-void BtMain::hom()
+void BtMain::init()
 {
 	if (version)
 		version->inizializza();
 
-	if (!loadConfiguration(CFG_FILE))
-		qFatal("Unable to load configuration");
+	loadConfiguration();
 
 	if (pagDefault)
 		connect(pagDefault, SIGNAL(Closed()), Home, SLOT(showPage()));
@@ -305,9 +420,16 @@ void BtMain::hom()
 	if (style.isNull())
 		qWarning("Unable to load skin file!");
 	else
+	{
+		// setStyleSheet may be slow, try to avoid the watchdog timeout
+		rearmWDT();
 		qApp->setStyleSheet(style);
+		rearmWDT();
+	}
 
 	config_loaded = true;
+	qDebug("Initialization complete, from now on will write to configuration");
+	(*bt_global::config)[INIT_COMPLETE] = "1"; // maybe change config to contain QVariant?
 
 	if (monitor_ready)
 		myMain();
@@ -320,9 +442,10 @@ void BtMain::monitorReady()
 		myMain();
 }
 
-void BtMain::init()
+void BtMain::myMain()
 {
-	qDebug("BtMain::init()");
+	// Called when both the connection is up and config is loaded.
+	qDebug("BtMain::MyMain");
 
 	Home->inizializza();
 	if (version)
@@ -331,125 +454,51 @@ void BtMain::init()
 	foreach (Page *p, page_list)
 		p->inizializza();
 
-#if BT_EMBEDDED
+	device::initDevices();
+
+#if !defined(BT_HARDWARE_X11)
 	if (static_cast<int>(getTimePress()) * 1000 <= boot_time->elapsed() && !alreadyCalibrated)
 	{
-#if !defined(BT_HARDWARE_X11)
-		calib = new Calibrate(NULL, 1);
-		calib->showFullScreen();
-		connect(calib, SIGNAL(fineCalib()),Home,SLOT(showPage()));
-#endif
+		qDebug() << "Boot time" << boot_time->elapsed() << "last press" << static_cast<int>(getTimePress()) * 1000;
+
 		alreadyCalibrated = true;
+#ifdef LAYOUT_BTOUCH
+		Calibration *cal = new Calibration(true);
+#else
+		Calibration *cal = new Calibration;
+#endif
+		cal->showWindow();
+		connect(cal, SIGNAL(Closed()), SLOT(startGui()));
+		return;
 	}
 #endif
-}
-
-void BtMain::myMain()
-{
-	qDebug("entro MyMain");
-
-	init();
-	Home->showPage();
-	// this needs to be after the showPage, and will be a no-op until transitions
-	// between windows are implemented
-	page_container->blockTransitions(false);
-	window_container->homeWindow()->showWindow();
-	bt_global::devices_cache.init_devices();
-
-	tempo1 = new QTimer(this);
-	tempo1->start(2000);
-	connect(tempo1,SIGNAL(timeout()),this,SLOT(gesScrSav()));
-
-	tempo2 = new QTimer(this);
-	tempo2->start(3000);
-	connect(tempo2,SIGNAL(timeout()),this,SLOT(testFiles()));
-}
-
-void BtMain::testFiles()
-{
-	if (QFile::exists(FILE_TEST1))
-	{
-		if ((screen) && (tiposcreen != genPage::RED))
-		{
-			delete screen;
-			screen = NULL;
-		}
-		else if (!screen)
-		{
-			tiposcreen = genPage::RED;
-			screen = new genPage(NULL,genPage::RED);
-			screen->show();
-			qDebug("TEST1");
-			bt_global::display.setState(DISPLAY_OPERATIVE);
-			tempo1->stop();
-		}
-	}
-	else if (QFile::exists(FILE_TEST2))
-	{
-		if ((screen) && (tiposcreen != genPage::GREEN))
-		{
-			delete screen;
-			screen = NULL;
-		}
-		else if (!screen)
-		{
-			tiposcreen=genPage::GREEN;
-			screen = new genPage(NULL,genPage::GREEN);
-			screen->show();
-			qDebug("TEST2");
-			bt_global::display.setState(DISPLAY_OPERATIVE);
-			tempo1->stop();
-		}
-	}
-	else if (QFile::exists(FILE_TEST3))
-	{
-		if ((screen) && (tiposcreen != genPage::BLUE))
-		{
-			delete screen;
-			screen = NULL;
-		}
-		else if (!screen)
-		{
-			tiposcreen = genPage::BLUE;
-			screen = new genPage(NULL,genPage::BLUE);
-			screen->show();
-			qDebug("TEST3");
-			bt_global::display.setState(DISPLAY_OPERATIVE);
-			tempo1->stop();
-		}
-	}
-	else if (QFile::exists(FILE_AGGIORNAMENTO))
-	{
-		if ((screen) && (tiposcreen != genPage::IMAGE))
-		{
-			delete screen;
-			screen = NULL;
-		}
-		else if (!screen)
-		{
-			screen = new genPage(NULL,genPage::IMAGE, IMG_PATH "dwnpage.png");
-			tiposcreen = genPage::IMAGE;
-			screen->show();
-			qDebug("AGGIORNAMENTO");
-			bt_global::display.setState(DISPLAY_OPERATIVE);
-			tempo1->stop();
-		}
-	}
-	else
-	{
-		if (screen)
-		{
-			delete screen;
-			screen = NULL;
-			tiposcreen = genPage::NONE;
-			tempo1->start(2000);
-		}
-	}
+	startGui();
 }
 
 static unsigned long now()
 {
 	return time(NULL);
+}
+
+void BtMain::startGui()
+{
+	// start the screensaver countdown when the home page is shown
+	last_event_time = now();
+
+	Home->showPage();
+	// this needs to be after the showPage, and will be a no-op until transitions
+	// between windows are implemented
+	page_container->blockTransitions(false);
+	window_container->homeWindow()->showWindow();
+
+	screensaver_timer = new QTimer(this);
+	screensaver_timer->start(SCREENSAVER_CHECK);
+	connect(screensaver_timer, SIGNAL(timeout()), SLOT(checkScreensaver()));
+}
+
+void BtMain::showHomePage()
+{
+	Home->showPage();
 }
 
 void BtMain::unrollPages()
@@ -471,144 +520,120 @@ void BtMain::unrollPages()
 		}
 }
 
-void BtMain::currentPageChanged(Page *p)
+void BtMain::makeActiveAndFreeze()
 {
 	if (screensaver && screensaver->isRunning())
-		prev_page = p;
-}
-
-// TODO: this method will be called when a page has modified the order of pages and
-// screensaver. We can do better if we use a more general way
-// TODO: this won't work with screensaver DEFORM. I'm leaving it here as a placeholder for a bugfix,
-// remove when a more general way to handle this case has been developed
-void BtMain::showScreensaverIfNeeded()
-{
-	if (screenSaverRunning())
 	{
-		if (Page *target = screensaver->targetPage())
-			target->showPage();
-		screensaver->targetWindow()->showWindow();
+		screensaver->stop();
+		(*bt_global::display).setState(DISPLAY_FREEZED);
+		last_event_time = now();
+
+		if (pwdOn)
+			freeze(true);
+	}
+
+	if (passwordKeypad)
+	{
+		bt_global::page_stack.closeWindow(passwordKeypad);
+		freeze(true);
 	}
 }
 
-void BtMain::gesScrSav()
+void BtMain::setScreenSaverTimeouts(int screensaver_start, int blank_screen)
 {
-	unsigned long tiempo, tiempo_press;
+	qDebug() << "Screensaver time" << screensaver_start << "blank screen" << blank_screen;
+
+	screenoff_time = blank_screen;
+	screensaver_time = screensaver_start;
+
+	if (freeze_time > screensaver_time)
+		freeze_time = screensaver_time;
+}
+
+void BtMain::checkScreensaver()
+{
 	rearmWDT();
 
-	if (bt_global::display.isForcedOperativeMode())
+	if ((*bt_global::display).isForcedOperativeMode())
+		return;
+	if (alarmClockIsOn || calibrating)
 		return;
 
-	tiempo_press = getTimePress();
-	if (event_unfreeze)
+	int time_press = getTimePress();
+	int time = qMin(time_press, int(now() - last_event_time));
+
+	if (screenoff_time != 0 && time >= screenoff_time &&
+		 (*bt_global::display).currentState() == DISPLAY_SCREENSAVER)
 	{
-		tiempo_last_ev = now();
-		event_unfreeze = false;
+		qDebug() << "Turning screen off";
+		screensaver->stop();
+		(*bt_global::display).setState(DISPLAY_OFF);
 	}
-	tiempo = qMin(tiempo_press, (now() - tiempo_last_ev));
-
-	if (!firstTime)
-	{
-		if  (tiempo >= 30 && getBacklight())
-		{
-			if (!svegliaIsOn)
-			{
-				if (!bloccato)
-					freeze(true);
-				tempo1->start(500);
-			}
-		}
-		else if (tiempo <= 5 && bloccato)
-		{
-			tempo1->start(2000);
-			pd_shown = false;
-		}
-		if  (tiempo >= 60 && !svegliaIsOn && !calibrating)
-		{
-			if (pagDefault)
-			{
-				if (!pd_shown && bt_global::display.currentState() == DISPLAY_OPERATIVE)
-				{
-					pd_shown = true;
-					if (pagDefault)
-					{
-						pagDefault->showPage();
-						prev_page = pagDefault;
-					}
-				}
-			}
-
-			if  (tiempo >= 65 && bt_global::display.currentState() == DISPLAY_FREEZED)
-			{
-				ScreenSaver::Type target_screensaver = bt_global::display.currentScreenSaver();
-				// When the brightness is set to off in the old hardware the display
-				// is not really off, so it is required to use a screensaver to protect
-				// the display, even if the screensaver is not visible.
-				if (bt_global::display.currentBrightness() == BRIGHTNESS_OFF)
-					target_screensaver = ScreenSaver::LINES;
-
-				if (screensaver && screensaver->type() != target_screensaver)
-				{
-					delete screensaver;
-					screensaver = 0;
-				}
-
-				if (!screensaver)
-					screensaver = getScreenSaver(target_screensaver);
-
-				Page *target = pagDefault ? pagDefault : Home;
-				prev_page = page_container->currentPage();
-
-				page_container->blockTransitions(true);
-				if (target == pagDefault)
-					unrollPages();
-
-				target->showPage();
-				window_container->homeWindow()->showWindow();
-				page_container->blockTransitions(false);
-				qDebug() << "start screensaver:" << target_screensaver << "on:" << page_container->currentPage();
-				screensaver->start(window_container->homeWindow());
-				emit startscreensaver(prev_page);
-				bt_global::display.setState(DISPLAY_SCREENSAVER);
-			}
-		}
-		else if (screensaver && screensaver->isRunning())
-		{
-			Page *target = screensaver->targetPage();
-			if (target && target != pagDefault)
-				page_container->setCurrentPage(prev_page);
-			screensaver->targetWindow()->showWindow();
-
-			screensaver->stop();
-		}
-	}
-	else if (tiempo >= 120)
+	else if (time >= freeze_time && getBacklight() && !frozen)
 	{
 		freeze(true);
-		tempo1->start(500);
-		firstTime = false;
 	}
-	else if (tiempo <= 5)
+	else if (time >= screensaver_time)
 	{
-		firstTime = false;
-		tempo1->start(2000);
-		bloccato = false;
+		if ((*bt_global::display).currentState() == DISPLAY_OPERATIVE &&
+		    pagDefault && page_container->currentPage() != pagDefault)
+		{
+			pagDefault->showPage();
+		}
+
+		if ((*bt_global::display).currentState() == DISPLAY_FREEZED)
+		{
+			ScreenSaver::Type target_screensaver = (*bt_global::display).currentScreenSaver();
+			// When the brightness is set to off in the old hardware the display
+			// is not really off, so it is required to use a screensaver to protect
+			// the display, even if the screensaver is not visible.
+			if ((*bt_global::display).currentBrightness() == BRIGHTNESS_OFF)
+				target_screensaver = ScreenSaver::LINES;
+
+			if (screensaver && screensaver->type() != target_screensaver)
+			{
+				delete screensaver;
+				screensaver = 0;
+			}
+
+			if (!screensaver)
+				screensaver = getScreenSaver(target_screensaver);
+
+			// TODO move the code until the end of the block to PageStack and/or ScreenSaver
+			Page *prev_page = page_container->currentPage();
+
+			page_container->blockTransitions(true);
+			if (pagDefault)
+			{
+				unrollPages();
+				pagDefault->showPage();
+			}
+			else
+			{
+				Home->showPage();
+				// this makes the screen saver go back to prev_page
+				// when exited
+				bt_global::page_stack.currentPageChanged(prev_page);
+			}
+
+			window_container->homeWindow()->showWindow();
+			page_container->blockTransitions(false);
+			qDebug() << "start screensaver:" << target_screensaver << "on:" << page_container->currentPage();
+			screensaver->start(window_container->homeWindow());
+			emit startscreensaver(prev_page);
+			(*bt_global::display).setState(DISPLAY_SCREENSAVER);
+		}
 	}
 }
 
-Page *BtMain::getPreviousPage()
+TrayBar *BtMain::trayBar()
 {
-	return prev_page;
+	return window_container->homeWindow()->tray_bar;
 }
 
 Window *BtMain::homeWindow()
 {
 	return window_container->homeWindow();
-}
-
-bool BtMain::screenSaverRunning()
-{
-	return screensaver && screensaver->isRunning();
 }
 
 bool BtMain::eventFilter(QObject *obj, QEvent *ev)
@@ -627,36 +652,33 @@ bool BtMain::eventFilter(QObject *obj, QEvent *ev)
 void BtMain::freeze(bool b)
 {
 	qDebug("BtMain::freeze(%d)", b);
-	bloccato = b;
-	emit freezed(bloccato);
+	frozen = b;
+	emit freezed(frozen);
 
-	if (!bloccato)
+	if (!frozen)
 	{
-		event_unfreeze = true;
-		bt_global::display.setState(DISPLAY_OPERATIVE);
+		last_event_time = now();
+		(*bt_global::display).setState(DISPLAY_OPERATIVE);
 		if (screensaver && screensaver->isRunning())
 		{
-			Page *target = screensaver->targetPage();
-			if (target && target != pagDefault)
-				page_container->setCurrentPage(prev_page);
-			screensaver->targetWindow()->showWindow();
-
 			screensaver->stop();
 		}
+
 		if (pwdOn)
 		{
-			if (!tasti)
+			if (!passwordKeypad)
 			{
-				tasti = new KeypadWindow(Keypad::HIDDEN);
-				connect(tasti, SIGNAL(Closed()), SLOT(testPwd()));
+				passwordKeypad = new KeypadWindow(Keypad::HIDDEN);
+				connect(passwordKeypad, SIGNAL(Closed()), SLOT(testPwd()));
 			}
-			tasti->showWindow();
+			bt_global::page_stack.showKeypad(passwordKeypad);
+			passwordKeypad->showWindow();
 		}
 		qApp->removeEventFilter(this);
 	}
 	else
 	{
-		bt_global::display.setState(DISPLAY_FREEZED);
+		(*bt_global::display).setState(DISPLAY_FREEZED);
 		qApp->installEventFilter(this);
 	}
 }
@@ -670,25 +692,24 @@ void BtMain::setPwd(bool b, QString p)
 
 void BtMain::testPwd()
 {
-	QString p = tasti->getText();
+	QString p = passwordKeypad->getText();
 	qDebug() << "testing password, input text is: " << p;
 	if (!p.isEmpty())
 	{
 		if (p != pwd)
 		{
-			tasti->resetText();
+			passwordKeypad->resetText();
 			qDebug() << "pwd ko" << p << "doveva essere " << pwd;
 		}
 		else
 		{
 			qDebug() << "pwd ok!";
-			if (pagDefault)
-				pagDefault->showPage();
-			else
-				Home->showPage();
-			tasti->disconnect();
-			tasti->deleteLater();
-			tasti = NULL;
+			Window *t = passwordKeypad;
+			// set to NULL to avoid freezing again in makeActiveAndFreeze
+			passwordKeypad = NULL;
+			bt_global::page_stack.closeWindow(t);
+			t->disconnect();
+			t->deleteLater();
 		}
 	}
 }
@@ -696,19 +717,26 @@ void BtMain::testPwd()
 void BtMain::svegl(bool b)
 {
 	qDebug("BtMain::svegl->%d",b);
-	svegliaIsOn = b;
+	alarmClockIsOn = b;
 }
 
-void BtMain::startCalib()
+bool BtMain::calibrating = false;
+
+void BtMain::calibrationStarted()
 {
-	qDebug("BtMain::startCalib()");
+	qDebug("BtMain::calibrationStarted()");
 	calibrating = true;
 }
 
-void BtMain::endCalib()
+void BtMain::calibrationEnded()
 {
-	qDebug("BtMain::endCalib()");
+	qDebug("BtMain::calibrationEnded()");
 	calibrating = false;
+}
+
+bool BtMain::isCalibrating()
+{
+	return calibrating;
 }
 
 void BtMain::resetTimer()

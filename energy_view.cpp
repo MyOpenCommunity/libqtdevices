@@ -1,15 +1,38 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "energy_view.h"
 #include "energy_graph.h"
 #include "banner.h"
 #include "btbutton.h"
 #include "icondispatcher.h" // icons_cache
-#include "generic_functions.h" // getPressName
+#include "generic_functions.h" // getPressName, DateConversion::formatDateConfig
 #include "fontmanager.h" // bt_global::font
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // bt_global::skin
 #include "transitionwidget.h"
-#include "bann1_button.h" // bannTextOnImage
 #include "energy_data.h" // EnergyInterface
+#include "energy_rates.h"
+#include "bann_energy.h"
+#include "bann2_buttons.h" // Bann2Buttons
 
 #include <QDebug>
 #include <QLabel>
@@ -24,8 +47,6 @@
 #define POLLING_CURRENT 5 // time to refresh data visualized in the current banner (in sec.)
 #define POLLING_CUMULATIVE_DAY 60 * 60 // time to refresh data visualized in the comulative day banner (in sec.)
 
-#define ENERGY_GRAPH_DELAY 1000 // msec to wait before request a graph data
-
 namespace
 {
 // The language used for the floating point number
@@ -35,14 +56,30 @@ QLocale loc(QLocale::Italian);
 
 namespace
 {
+	QHash<QString, QPixmap> cache;
+
 	BtButton *getTrimmedButton(QWidget *parent, QString icon)
 	{
 	#define SM_BTN_WIDTH 60
 	#define SM_BTN_HEIGHT 40
 		BtButton *btn = new BtButton(parent);
-		QPixmap tmp = (*bt_global::icons_cache.getIcon(icon)).copy(0, 10, SM_BTN_WIDTH, SM_BTN_HEIGHT);
+		QPixmap tmp;
+		if (cache.contains(icon))
+			tmp = cache[icon];
+		else
+		{
+			tmp = (*bt_global::icons_cache.getIcon(icon)).copy(0, 10, SM_BTN_WIDTH, SM_BTN_HEIGHT);
+			cache[icon] = tmp;
+		}
 		btn->setPixmap(tmp);
-		tmp = (*bt_global::icons_cache.getIcon(getPressName(icon))).copy(0, 10, SM_BTN_WIDTH, SM_BTN_HEIGHT);
+		QString picon = getPressName(icon);
+		if (cache.contains(picon))
+			tmp = cache[picon];
+		else
+		{
+			tmp = (*bt_global::icons_cache.getIcon(picon)).copy(0, 10, SM_BTN_WIDTH, SM_BTN_HEIGHT);
+			cache[picon] = tmp;
+		}
 		btn->setPressedPixmap(tmp);
 		return btn;
 	}
@@ -63,6 +100,13 @@ namespace
 		main_layout->setSpacing(0);
 		w->setLayout(main_layout);
 		return w;
+	}
+
+	void addWidgetToLayout(QWidget *parent, QWidget *child)
+	{
+		QVBoxLayout *l = static_cast<QVBoxLayout *>(parent->layout());
+
+		l->addWidget(child, 1, Qt::AlignTop);
 	}
 
 	enum EnergyViewPage
@@ -143,12 +187,7 @@ QString TimePeriodSelection::formatDate(const QDate &date, TimePeriod period)
 	switch (period)
 	{
 	case DAY:
-	{
-		QString format("dd.MM.yy");
-		if (bt_global::config[DATE_FORMAT].toInt() == USA_DATE)
-			format = "MM.dd.yy";
-		return date.toString(format);
-	}
+		return DateConversions::formatDateConfig(date);
 	case MONTH:
 		// no need to modify the format to american
 		return date.toString("MM.yy");
@@ -268,33 +307,33 @@ QString TimePeriodSelection::dateDisplayed()
 }
 
 
-bannTextOnImage *getBanner(QWidget *parent, QString primary_text)
+Bann2Buttons *getBanner(QWidget *parent, QString primary_text)
 {
 	Q_ASSERT_X(bt_global::skin->hasContext(), "getBanner", "Skin context not set!");
-	bannTextOnImage *bann = new bannTextOnImage(parent, "---", "bg_banner", "graph");
-	bann->setText(primary_text);
-	bann->Draw();
+	Bann2Buttons *bann = new Bann2Buttons(parent);
+	bann->initBanner(QString(), bt_global::skin->getImage("bg_banner"), bt_global::skin->getImage("graph"),
+			 primary_text);
+	bann->setCentralText("---");
+
 	return bann;
 }
 
 
-EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, const QString &_currency_symbol,
-		int n_dec, bool is_prod)
+EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id, EnergyTable *_table,
+		       EnergyGraph *_graph)
 {
+	// see comment about _table in EnergyInterface::loadItems
+	rate = EnergyRates::energy_rates.getRate(rate_id);
+	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
+
 	Q_ASSERT_X(bt_global::skin->hasContext(), "EnergyView::EnergyView", "Skin context not set!");
 	dev = bt_global::add_device_to_cache(new EnergyDevice(address, mode));
 	is_electricity_view = (mode == 1);
 
-	is_production = is_prod;
-	n_decimal = n_dec;
-
 	cumulative_day_value = cumulative_month_value = cumulative_year_value = 0;
 	daily_av_value = current_value = 0;
 
-	// We can't use frame compressor as below (or with a single what as filter), because
-	// it filter also valid requests with different what.
-	dev->installFrameCompressor(ENERGY_GRAPH_DELAY);
-	connect(dev, SIGNAL(status_changed(const StatusList&)), SLOT(status_changed(const StatusList&)));
+	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
 
 	mapper = new QSignalMapper(this);
 	connect(mapper, SIGNAL(mapped(int)), SLOT(showGraph(int)));
@@ -313,31 +352,31 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	connect(time_period, SIGNAL(timeChanged(int, QDate)), SLOT(changeTimePeriod(int, QDate)));
 	main_layout->addWidget(time_period);
 
-	connect(this, SIGNAL(Closed()), SLOT(handleClose()));
-
 	widget_container = new QStackedWidget;
 	widget_container->addWidget(buildBannerWidget());
-	widget_container->addWidget(new EnergyGraph);
 
 	main_layout->addWidget(widget_container, 1);
-	table = new EnergyTable(3);
+	table = _table;
+	graph = _graph;
 
-	currency_symbol = _currency_symbol;
 	nav_bar = new EnergyViewNavigation();
-	if (currency_symbol.isNull())
+	if (!rate.isValid())
 	{
 		nav_bar->showTableButton(false);
 		nav_bar->showCurrency(false);
 	}
+
 	connect(nav_bar, SIGNAL(toggleCurrency()), SLOT(toggleCurrency()));
-	connect(nav_bar, SIGNAL(showTable()), table, SLOT(showPageFromTable()));
-	connect(table, SIGNAL(Closed()), SLOT(showPage()));
+	connect(nav_bar, SIGNAL(showTable()), table, SLOT(showPage()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
 
 	buildPage(content, nav_bar);
 
 	// default period, sync with default period in TimePeriodSelection
-	changeTimePeriod(TimePeriodSelection::DAY, QDate::currentDate());
+	// this used to call changeTimePeriod(); doing the initialization here
+	// avoids useless status requests to the device
+	showGraph(EnergyDevice::CUMULATIVE_DAY, false);
+	setBannerPage(TimePeriodSelection::DAY, QDate::currentDate());
 
 	switch(mode)
 	{
@@ -354,7 +393,6 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 			unit_measure = measure;
 			break;
 	}
-	current_banner_timer_id = startTimer(POLLING_CURRENT * 1000);
 	cumulative_day_banner_timer_id = startTimer(POLLING_CUMULATIVE_DAY * 1000);
 
 	// this must be after creating bannNavigazione, otherwise segfault
@@ -376,9 +414,7 @@ void EnergyView::timerEvent(QTimerEvent *e)
 	// Poll only if the selected day is today.
 	if (current_banner->isVisible())
 	{
-		if (e->timerId() == current_banner_timer_id)
-			dev->requestCurrent();
-		else if (e->timerId() == cumulative_day_banner_timer_id)
+		if (e->timerId() == cumulative_day_banner_timer_id)
 			dev->requestCumulativeDay(QDate::currentDate());
 		else
 			Q_ASSERT_X(false, "EnergyView::timerEvent", qPrintable(QString::number(e->timerId())));
@@ -413,7 +449,12 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 	Q_ASSERT_X(v.canConvert<GraphData>(), "EnergyView::saveGraphInCache", "Cannot convert graph data");
 	GraphData *d = new GraphData(v.value<GraphData>());
 	if (!graph_data_cache.contains(t))
+	{
 		graph_data_cache[t] = new GraphCache;
+		// keep at most a full month in cache, to avoid
+		// excessive memory consumption
+		graph_data_cache[t]->setMaxCost(31);
+	}
 
 	GraphCache *cache = graph_data_cache[t];
 	QString key = dateToKey(d->date, t);
@@ -423,6 +464,9 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 
 void EnergyView::showPage()
 {
+	// disconnect all slots: can't disconnect a single slot on multiple objects
+	disconnect(table, SIGNAL(Closed()), 0, 0);
+	connect(table, SIGNAL(Closed()), SLOT(showPageFromTable()));
 	time_period->forceDate(QDate::currentDate());
 	showPageFromTable();
 }
@@ -430,7 +474,7 @@ void EnergyView::showPage()
 void EnergyView::showPageFromTable()
 {
 	// switch back to raw data visualization if currency is not supported
-	if (EnergyInterface::isCurrencyView() && currency_symbol.isNull())
+	if (EnergyInterface::isCurrencyView() && !rate.isValid())
 		EnergyInterface::toggleCurrencyView();
 	Page::showPage();
 }
@@ -448,8 +492,8 @@ QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 	// convert to raw data
 	QList<int> keys = data.keys();
 	for (int i = 0; i < keys.size(); ++i)
-		data[keys[i]] = EnergyConversions::convertToRawData(data[keys[i]],
-			is_electricity_view ? EnergyConversions::DEFAULT_ENERGY : EnergyConversions::OTHER_ENERGY);
+		data[keys[i]] = EnergyConversions::convertToRawData(static_cast<int>(data[keys[i]]),
+			is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
 
 	if (gd->type == EnergyDevice::DAILY_AVERAGE)
 	{
@@ -465,18 +509,22 @@ QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 	// convert to economic data
 	if (EnergyInterface::isCurrencyView())
 	{
-		float factor = is_production ? prod_factor : cons_factor;
 		for (int i = 0; i < keys.size(); ++i)
-			data[keys[i]] = EnergyConversions::convertToMoney(data[keys[i]], factor);
+			data[keys[i]] = EnergyConversions::convertToMoney(data[keys[i]], rate.rate);
 	}
+
 	return data;
 }
 
-void EnergyView::status_changed(const StatusList &status_list)
+bool EnergyView::isGraphOurs()
+{
+	return graph->parent() == widget_container;
+}
+
+void EnergyView::status_changed(const DeviceValues &status_list)
 {
 	current_date = time_period->date();
-	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
-	StatusList::const_iterator it = status_list.constBegin();
+	DeviceValues::const_iterator it = status_list.constBegin();
 	while (it != status_list.constEnd())
 	{
 		switch (it.key())
@@ -519,7 +567,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			// even if the graph page is already open.
 			const QDate &date = d->date;
 			if (current_graph == EnergyDevice::DAILY_AVERAGE && date.year() == current_date.year() &&
-				date.month() == current_date.month())
+				date.month() == current_date.month() && isGraphOurs())
 			{
 				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
@@ -530,7 +578,8 @@ void EnergyView::status_changed(const StatusList &status_list)
 		case EnergyDevice::DIM_DAY_GRAPH:
 		{
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_DAY);
-			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date)
+			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date &&
+			    isGraphOurs())
 			{
 				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
@@ -542,7 +591,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 		{
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_MONTH);
 			if (current_graph == EnergyDevice::CUMULATIVE_MONTH && d->date.month() == current_date.month()
-				&& d->date.year() == current_date.year())
+				&& d->date.year() == current_date.year() && isGraphOurs())
 			{
 				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
@@ -554,7 +603,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 		{
 			// TODO: see how to save the year graph...
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_YEAR);
-			if (current_graph == EnergyDevice::CUMULATIVE_YEAR)
+			if (current_graph == EnergyDevice::CUMULATIVE_YEAR && isGraphOurs())
 			{
 				QMap<int, float> g = convertGraphData(d);
 				graph->setData(g);
@@ -568,11 +617,6 @@ void EnergyView::status_changed(const StatusList &status_list)
 	updateBanners();
 }
 
-void EnergyView::handleClose()
-{
-	time_period->forceDate(QDate::currentDate());
-}
-
 void EnergyView::backClick()
 {
 	if (current_widget == BANNER_WIDGET)
@@ -583,9 +627,11 @@ void EnergyView::backClick()
 
 void EnergyView::updateCurrentGraph()
 {
-	EnergyGraph *graph = static_cast<EnergyGraph*>(widget_container->widget(GRAPH_WIDGET));
+	if (!isGraphOurs())
+		return;
+
 	current_date = time_period->date();
-	QString label = EnergyInterface::isCurrencyView() ? currency_symbol : unit_measure;
+	QString label = EnergyInterface::isCurrencyView() ? rate.currency_symbol : unit_measure;
 	QMap<int, QString> graph_x_axis;
 
 	switch (current_graph)
@@ -656,6 +702,11 @@ void EnergyView::showGraph(int graph_type, bool request_update)
 
 	current_widget = GRAPH_WIDGET;
 	current_graph = static_cast<EnergyDevice::GraphType>(graph_type);
+	if (!isGraphOurs())
+	{
+		qDebug() << "Reparenting the graph";
+		widget_container->addWidget(graph);
+	}
 
 	updateCurrentGraph();
 
@@ -684,36 +735,35 @@ QWidget *EnergyView::buildBannerWidget()
 
 	// Daily page
 	cumulative_day_banner = getBanner(this, cumulative_text);
-	connect(cumulative_day_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
+	connect(cumulative_day_banner, SIGNAL(rightClicked()), mapper, SLOT(map()));
 	mapper->setMapping(cumulative_day_banner, EnergyDevice::CUMULATIVE_DAY);
 
-	current_banner = getBanner(this, tr("Current"));
-	current_banner->nascondi(banner::BUT1);
+	current_banner = new BannCurrentEnergy(tr("Current"), dev);
 
 	QWidget *daily_widget = createWidgetWithVBoxLayout();
-	daily_widget->layout()->addWidget(cumulative_day_banner);
-	daily_widget->layout()->addWidget(current_banner);
+	addWidgetToLayout(daily_widget, cumulative_day_banner);
+	addWidgetToLayout(daily_widget, current_banner);
 
 	// Monthly page
 	cumulative_month_banner = getBanner(this, cumulative_text);
-	connect(cumulative_month_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
+	connect(cumulative_month_banner, SIGNAL(rightClicked()), mapper, SLOT(map()));
 	mapper->setMapping(cumulative_month_banner, EnergyDevice::CUMULATIVE_MONTH);
 
 	daily_av_banner = getBanner(this, tr("Daily Average"));
-	connect(daily_av_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
+	connect(daily_av_banner, SIGNAL(rightClicked()), mapper, SLOT(map()));
 	mapper->setMapping(daily_av_banner, EnergyDevice::DAILY_AVERAGE);
 
 	QWidget *monthly_widget = createWidgetWithVBoxLayout();
-	monthly_widget->layout()->addWidget(cumulative_month_banner);
-	monthly_widget->layout()->addWidget(daily_av_banner);
+	addWidgetToLayout(monthly_widget, cumulative_month_banner);
+	addWidgetToLayout(monthly_widget, daily_av_banner);
 
 	// Yearly page
 	cumulative_year_banner = getBanner(this, cumulative_text);
-	connect(cumulative_year_banner, SIGNAL(sxClick()), mapper, SLOT(map()));
+	connect(cumulative_year_banner, SIGNAL(rightClicked()), mapper, SLOT(map()));
 	mapper->setMapping(cumulative_year_banner, EnergyDevice::CUMULATIVE_YEAR);
 
 	QWidget *yearly_widget = createWidgetWithVBoxLayout();
-	yearly_widget->layout()->addWidget(cumulative_year_banner);
+	addWidgetToLayout(yearly_widget, cumulative_year_banner);
 
 	QStackedWidget *w = new QStackedWidget;
 	w->insertWidget(DAILY_PAGE, daily_widget);
@@ -727,7 +777,7 @@ QWidget *EnergyView::buildBannerWidget()
 
 void EnergyView::changeTimePeriod(int status, QDate selection_date)
 {
-	int graph_type;
+	int graph_type = EnergyDevice::CUMULATIVE_DAY;
 
 	switch (status)
 	{
@@ -771,7 +821,6 @@ void EnergyView::setBannerPage(int status, const QDate &selection_date)
 	{
 	case TimePeriodSelection::DAY:
 		w->setCurrentIndex(DAILY_PAGE);
-		// The request for the current is automatically done by the timerEvent slot.
 		current_banner->setVisible(QDate::currentDate() == selection_date);
 		break;
 	case TimePeriodSelection::MONTH:
@@ -794,59 +843,47 @@ void EnergyView::toggleCurrency()
 void EnergyView::updateBanners()
 {
 	float day = EnergyConversions::convertToRawData(cumulative_day_value,
-		is_electricity_view ? EnergyConversions::DEFAULT_ENERGY : EnergyConversions::OTHER_ENERGY);
+		is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
 	float current = EnergyConversions::convertToRawData(current_value,
-		is_electricity_view ? EnergyConversions::ELECTRICITY_CURRENT : EnergyConversions::OTHER_ENERGY);
+		is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
 	float month = EnergyConversions::convertToRawData(cumulative_month_value,
-		is_electricity_view ? EnergyConversions::DEFAULT_ENERGY : EnergyConversions::OTHER_ENERGY);
+		is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
 	float year = EnergyConversions::convertToRawData(cumulative_year_value,
-		is_electricity_view ? EnergyConversions::DEFAULT_ENERGY : EnergyConversions::OTHER_ENERGY);
+		is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
 	float average = EnergyConversions::convertToRawData(daily_av_value,
-		is_electricity_view ? EnergyConversions::DEFAULT_ENERGY : EnergyConversions::OTHER_ENERGY);
+		is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
 	QString str = unit_measure;
 	QString str_med_inst = unit_measure_med_inst;
-
-	float factor = is_production ? prod_factor : cons_factor;
 
 	// The number of decimals to show depends on the visualization mode
 	int dec = is_electricity_view ? 3 : 0;
 
 	if (EnergyInterface::isCurrencyView())
 	{
-		day = EnergyConversions::convertToMoney(day, factor);
-		current = EnergyConversions::convertToMoney(current, factor);
-		month = EnergyConversions::convertToMoney(month, factor);
-		year = EnergyConversions::convertToMoney(year, factor);
-		average = EnergyConversions::convertToMoney(average, factor);
-		str = currency_symbol;
-		str_med_inst = currency_symbol+"/h";
+		day = EnergyConversions::convertToMoney(day, rate.rate);
+		current = EnergyConversions::convertToMoney(current, rate.rate);
+		month = EnergyConversions::convertToMoney(month, rate.rate);
+		year = EnergyConversions::convertToMoney(year, rate.rate);
+		average = EnergyConversions::convertToMoney(average, rate.rate);
+		str = rate.currency_symbol;
+		str_med_inst = rate.currency_symbol+"/h";
 		dec = 3;
 	}
 
-	cumulative_day_banner->setInternalText(QString("%1 %2")
+	cumulative_day_banner->setCentralText(QString("%1 %2")
 		.arg(loc.toString(day, 'f', dec)).arg(str));
 
-	cumulative_month_banner->setInternalText(QString("%1 %2")
+	cumulative_month_banner->setCentralText(QString("%1 %2")
 		.arg(loc.toString(month, 'f', dec)).arg(str));
 
-	cumulative_year_banner->setInternalText(QString("%1 %2")
+	cumulative_year_banner->setCentralText(QString("%1 %2")
 		.arg(loc.toString(year, 'f', dec)).arg(str));
 
-	daily_av_banner->setInternalText(QString("%1 %2")
+	daily_av_banner->setCentralText(QString("%1 %2")
 		.arg(loc.toString(average, 'f', dec)).arg(str));
 
-	current_banner->setInternalText(QString("%1 %2")
+	current_banner->setCentralText(QString("%1 %2")
 		.arg(loc.toString(current, 'f', dec)).arg(str_med_inst));
-}
-
-void EnergyView::setProdFactor(float p)
-{
-	prod_factor = p;
-}
-
-void EnergyView::setConsFactor(float c)
-{
-	cons_factor = c;
 }
 
 void EnergyView::systemTimeChanged()
@@ -854,3 +891,11 @@ void EnergyView::systemTimeChanged()
 	changeTimePeriod(time_period->status(), time_period->date());
 }
 
+void EnergyView::rateChanged(int rate_id)
+{
+	if (rate.id != rate_id)
+		return;
+
+	rate = EnergyRates::energy_rates.getRate(rate_id);
+	updateBanners();
+}

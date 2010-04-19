@@ -1,12 +1,23 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** main.cpp
- **
- **Gestione apertura applicazione
- **
- ****************************************************************/
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 
 #include "btmain.h" // bt_global::btmain
 #include "xml_functions.h"
@@ -19,9 +30,10 @@
 #include <QWSServer>
 #include <QVector>
 #include <QDebug>
-#include <QHash>
 #include <QFile>
 #include <QTextCodec>
+#include <QDomNode>
+#include <QString>
 
 #define TIMESTAMP
 #ifdef TIMESTAMP
@@ -34,13 +46,13 @@
 /// The struct that contain the general configuration values
 struct GeneralConfig
 {
-	int verbosity_level;
-	QString log_file;
+	int verbosity_level; // the verbosity used to print in the log file
+	QString log_file; // the log filename
+	int openserver_reconnection_time; // the timeout after that if the connection is down the UI try to establish again a connection
 };
 
-QHash<GlobalFields, QString> bt_global::config;
-
 // Instance DOM global object to handle configuration.
+// TODO this can be freed after configuration loading completes
 QDomDocument qdom_appconfig;
 
 QDomElement getConfElement(QString path)
@@ -81,20 +93,33 @@ void myMessageOutput(QtMsgType type, const char *msg)
 
 QDomNode getPageNode(int id)
 {
+#ifdef CONFIG_BTOUCH
 	QDomElement n = getConfElement("displaypages");
+#else
+	QDomElement n = getConfElement("gui");
+#endif
 
 	if (n.isNull())
 		return QDomNode();
 
-	return getChildWithId(n, QRegExp("page(\\d{1,2}|vct|special|menu\\d{1,2})"), id);
+	return getChildWithId(n, QRegExp("page(\\d{1,2}|vct|special|menu\\d{1,2}|)"), id);
 }
 
+#ifndef CONFIG_BTOUCH
 QDomNode getPageNodeFromPageId(int pageid)
 {
-	QDomElement gui = qdom_appconfig.documentElement().firstChildElement("gui");
+	QDomElement gui = getConfElement("gui");
 	QDomNode page = getChildWithId(gui, QRegExp("page"), "pageID", pageid);
 
 	return page;
+}
+
+QDomNode getPageNodeFromChildNode(QDomNode n, QString child_name)
+{
+	int page_id = getTextChild(n, child_name).toInt();
+	QDomNode page_node = getPageNodeFromPageId(page_id);
+
+	return page_node;
 }
 
 QDomNode getHomepageNode()
@@ -102,11 +127,13 @@ QDomNode getHomepageNode()
 	// TODO read the id from the <homepage> node
 	return getPageNodeFromPageId(1);
 }
+#endif
 
 static void loadGeneralConfig(QString xml_file, GeneralConfig &general_config)
 {
 	general_config.verbosity_level = VERBOSITY_LEVEL_DEFAULT;
 	general_config.log_file = MY_FILE_LOG_DEFAULT;
+	general_config.openserver_reconnection_time = 30;
 
 	if (QFile::exists(xml_file))
 	{
@@ -120,6 +147,10 @@ static void loadGeneralConfig(QString xml_file, GeneralConfig &general_config)
 				QDomElement v = getElement(el, "BTouch/logverbosity");
 				if (!v.isNull())
 					general_config.verbosity_level = v.text().toInt();
+
+				QDomElement r = getElement(el, "BTouch/reconnectiontime");
+				if (!r.isNull())
+					general_config.openserver_reconnection_time = r.text().toInt();
 
 				QDomNode l = getChildWithName(el, "logfile");
 				if (!l.isNull())
@@ -180,7 +211,7 @@ int main(int argc, char **argv)
 	if (!qdom_appconfig.setContent(&file))
 	{
 		file.close();
-		qFatal("Error in qdom_appconfig file, exiting");
+		qFatal("Unable to load the configuration file: %s, exiting", MY_FILE_USER_CFG_DEFAULT);
 	}
 	file.close();
 
@@ -193,8 +224,8 @@ int main(int argc, char **argv)
 	signal(SIGUSR2, resetTimer);
 
 	qDebug("Start BtMain");
-	bt_global::btmain = new BtMain;
-	installTranslator(a, bt_global::config[LANGUAGE]);
+	bt_global::btmain = new BtMain(general_config.openserver_reconnection_time);
+	installTranslator(a, (*bt_global::config)[LANGUAGE]);
 	int res = a.exec();
 	delete bt_global::btmain;
 	return res;

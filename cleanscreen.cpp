@@ -1,7 +1,29 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "cleanscreen.h"
 #include "fontmanager.h" // bt_global::font
 #include "icondispatcher.h" // bt_global::icons_cache
-#include "displaycontrol.h" // bt_global::display
+#include "displaycontrol.h" // (*bt_global::display)
+#include "pagestack.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -46,14 +68,15 @@ void CleanScreen::showWindow()
 		secs_timer.start(1 * 1000);
 		timer.start(wait_time_sec * 1000);
 		secs_counter = 0;
-		bt_global::display.forceOperativeMode(true);
+		(*bt_global::display).forceOperativeMode(true);
 	}
+	bt_global::page_stack.showUserWindow(this);
 	Window::showWindow();
 }
 
 void CleanScreen::handleClose()
 {
-	bt_global::display.forceOperativeMode(false);
+	(*bt_global::display).forceOperativeMode(false);
 	secs_timer.stop();
 	emit Closed();
 }

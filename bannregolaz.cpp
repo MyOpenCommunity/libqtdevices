@@ -1,12 +1,23 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-** bannRegolaz.cpp
-**
-**Riga con tasto ON OFF, icona centrale divisa in due per regolazione
-**
-****************************************************************/
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 
 #include "bannregolaz.h"
 #include "btbutton.h"
@@ -25,20 +36,20 @@ BannLevel::BannLevel(QWidget *parent) :
 	center_right_button = new BtButton;
 	right_button = new BtButton;
 
-	QHBoxLayout *hbox = new QHBoxLayout;
-	hbox->setContentsMargins(0, 0, 0, 0);
-	hbox->setSpacing(0);
-	hbox->addWidget(left_button);
-	hbox->addWidget(center_left_button);
-	hbox->addWidget(center_right_button);
-	hbox->addWidget(right_button);
+	QGridLayout *grid = new QGridLayout;
+	grid->setContentsMargins(0, 0, 0, 0);
+	grid->setSpacing(0);
+	grid->addWidget(left_button, 0, 0);
+	grid->addWidget(center_left_button, 0, 1, Qt::AlignRight);
+	grid->addWidget(center_right_button, 0, 2, Qt::AlignLeft);
+	grid->addWidget(right_button, 0, 3);
 
 	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
 	QVBoxLayout *vbox = new QVBoxLayout(this);
 	vbox->setContentsMargins(0, 0, 0, 0);
 	vbox->setSpacing(0);
-	vbox->addLayout(hbox);
+	vbox->addLayout(grid);
 	vbox->addWidget(text);
 
 	timer.setInterval(TIME_RIP_REGOLAZ);
@@ -48,6 +59,10 @@ BannLevel::BannLevel(QWidget *parent) :
 
 	connect(center_left_button, SIGNAL(released()), &timer, SLOT(stop()));
 	connect(center_right_button, SIGNAL(released()), &timer, SLOT(stop()));
+
+	// we also want the user to be able to bash the button until the screen is broken
+	connect(center_left_button, SIGNAL(clicked()), SIGNAL(center_left_clicked()));
+	connect(center_right_button, SIGNAL(clicked()), SIGNAL(center_right_clicked()));
 }
 
 void BannLevel::initBanner(const QString &banner_text)
@@ -79,7 +94,7 @@ void BannLevel::startLeftTimer()
 {
 	if (!timer.isActive())
 	{
-		disconnect(&timer, SIGNAL(timeout()));
+		timer.disconnect(SIGNAL(timeout()));
 		connect(&timer, SIGNAL(timeout()), SIGNAL(center_left_clicked()));
 		timer.start();
 	}
@@ -89,7 +104,7 @@ void BannLevel::startRightTimer()
 {
 	if (!timer.isActive())
 	{
-		disconnect(&timer, SIGNAL(timeout()));
+		timer.disconnect(SIGNAL(timeout()));
 		connect(&timer, SIGNAL(timeout()), SIGNAL(center_right_clicked()));
 		timer.start();
 	}
@@ -97,7 +112,7 @@ void BannLevel::startRightTimer()
 
 
 
-bannRegolaz::bannRegolaz(QWidget *parent) : banner(parent)
+bannRegolaz::bannRegolaz(QWidget *parent) : BannerOld(parent)
 {
 	addItem(BUT2, 0, 0, BANREGOL_BUT_DIM , BANREGOL_BUT_DIM);
 	addItem(BUT1, banner_width - BANREGOL_BUT_DIM, 0, BANREGOL_BUT_DIM , BANREGOL_BUT_DIM);

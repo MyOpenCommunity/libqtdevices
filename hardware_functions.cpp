@@ -1,15 +1,46 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "hardware_functions.h"
-#include "generic_functions.h"
+#include "main.h"
 
 #include <QFile>
 #include <QScreen>
 #include <QtDebug>
 #include <QProcess>
+#include <QDateTime>
 
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h> // sprintf
+
+
+// values for /bin/settrimmer
+#define TFT_BRIGHTNESS    "1"
+#define TFT_CONTRAST      "2"
+#define TFT_COLOR         "3"
+#define TFT_CONTRAST_VCT  "4"
+#define TFT_COLOR_VCT     "5"
+#define TFT_BRIGTH_VCT    "6"
 
 
 int maxWidth()
@@ -28,15 +59,7 @@ int maxHeight()
 	return height;
 }
 
-HardwareType hardwareType()
-{
-	if (maxWidth() == 800)
-		return TOUCH_X;
-
-	return BTOUCH;
-}
-
-void setContrast(unsigned char c,bool b)
+void setContrast(unsigned char c)
 {
 	char contr[4];
 
@@ -50,11 +73,6 @@ void setContrast(unsigned char c,bool b)
 			write(fd, contr, 4);
 			close(fd);
 		}
-	}
-	if (b)
-	{
-		sprintf(contr,"%03d",c);
-		setCfgValue("value", contr, CONTRASTO);
 	}
 }
 
@@ -83,6 +101,7 @@ static void writeValueToFd(int fd, int value)
 
 void setBrightnessLevel(int level)
 {
+#ifdef BT_HARDWARE_BTOUCH
 	if (QFile::exists("/proc/sys/dev/btweb/brightness"))
 	{
 		int fd = open("/proc/sys/dev/btweb/brightness", O_WRONLY);
@@ -92,6 +111,12 @@ void setBrightnessLevel(int level)
 			close(fd);
 		}
 	}
+#else
+	int value = (level - 10) * 13 / 240;
+
+	QProcess::startDetached("/bin/settrimmer",
+				QStringList() << TFT_BRIGHTNESS << QString::number(value));
+#endif
 }
 
 void setBacklightOn(bool b)
@@ -105,6 +130,15 @@ void setBacklightOn(bool b)
 			close(fd);
 		}
 	}
+
+#ifdef BT_HARDWARE_TOUCHX
+	if (b)
+	{
+		QStringList args_contrast;
+		args_contrast << TFT_CONTRAST << "7";
+		QProcess::startDetached("/bin/settrimmer", args_contrast);
+	}
+#endif
 }
 
 void setBacklight(bool b)
@@ -126,7 +160,23 @@ void setBacklight(bool b)
 		setBacklightOn(b);
 }
 
-void setBeep(bool buzzer_enable, bool write_to_conf)
+#ifdef BT_HARDWARE_TOUCHX
+
+bool buzzer_enabled = false;
+
+void setBeep(bool buzzer_enable)
+{
+	buzzer_enabled = buzzer_enable;
+}
+
+bool getBeep()
+{
+	return buzzer_enabled;
+}
+
+#else
+
+void setBeep(bool buzzer_enable)
 {
 	const char *p = buzzer_enable ? "1" : "0";
 	if (QFile::exists("/proc/sys/dev/btweb/buzzer_enable"))
@@ -137,15 +187,6 @@ void setBeep(bool buzzer_enable, bool write_to_conf)
 			fwrite(p, 1, 1, fd);
 			fclose(fd);
 		}
-	}
-
-	if (write_to_conf)
-	{
-#ifdef CONFIG_BTOUCH
-		setCfgValue("value", p, SUONO);
-#else
-		setCfgValue("enabled", p, BEEP_ICON); //
-#endif
 	}
 }
 
@@ -164,6 +205,8 @@ bool getBeep()
 	}
 	return false;
 }
+
+#endif
 
 bool getBacklight()
 {
@@ -219,6 +262,7 @@ void setOrientation(QString orientation)
 
 void beep(int t)
 {
+#ifdef BT_HARDWARE_BTOUCH
 	if (QFile::exists("/proc/sys/dev/btweb/buzzer"))
 	{
 		int fd = open("/proc/sys/dev/btweb/buzzer", O_WRONLY);
@@ -230,17 +274,18 @@ void beep(int t)
 			close(fd);
 		}
 	}
-	else if (QFile::exists(SOUND_PATH "beep.wav"))
-	{
-		// needs BT_HARDWARE_TOUCHX
+#else // BT_HARDWARE_TOUCHX
+	if (buzzer_enabled && QFile::exists(SOUND_PATH "beep.wav"))
 		playSound(SOUND_PATH "beep.wav");
-	}
+#endif
 }
 
 void beep()
 {
 	beep(50);
 }
+
+#ifdef BT_HARDWARE_BTOUCH
 
 unsigned long getTimePress()
 {
@@ -258,6 +303,22 @@ unsigned long getTimePress()
 	}
 	return t;
 }
+
+#else
+
+static QDateTime lastPress = QDateTime::currentDateTime().addSecs(-3600);
+
+void setTimePress(const QDateTime &press)
+{
+	lastPress = press;
+}
+
+unsigned long getTimePress()
+{
+	return lastPress.secsTo(QDateTime::currentDateTime());
+}
+
+#endif
 
 void rearmWDT()
 {
@@ -344,11 +405,68 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 	close(eeprom);
 }
 
+
+// local variable to control an external process
+// TODO: sound playing really should be centralized, since only one process at the time can access /dev/dsp
+// For example, alarm or doorbell sound fails if an mp3 is playing.
+#ifdef BT_HARDWARE_TOUCHX
+static QProcess play_sound_process;
+#endif
+
 void playSound(const QString &wavFile)
 {
-	// needs BT_HARDWARE_TOUCHX
-	QProcess::startDetached("/bin/play",
-				QStringList() << "-t" << "wav" << "-s" << "w"
-				<< "-c" << "2" << "-f" << "s" << "-r" << "48000"
-				<< "-d" << "/dev/dsp1" << wavFile);
+#ifdef BT_HARDWARE_TOUCHX
+	if (play_sound_process.state() != QProcess::NotRunning)
+	{
+		play_sound_process.terminate();
+		play_sound_process.waitForFinished();
+	}
+
+	play_sound_process.start("/bin/sox",
+				 QStringList() << "-w" << "-c" << "2"
+				 << "-s" << "-t" << "wav" << wavFile
+				 << "-t" << "ossdsp" << "/dev/dsp1");
+#endif
+}
+
+void stopSound()
+{
+#ifdef BT_HARDWARE_TOUCHX
+	play_sound_process.terminate();
+#endif
+}
+
+void setVctVideoValue(const QString &command, const QString &value)
+{
+#ifdef BT_HARDWARE_TOUCHX
+	QProcess::startDetached("/home/bticino/bin/set_videocom",
+		QStringList() << command << value);
+#endif
+}
+
+void initMultimedia()
+{
+#ifdef BT_HARDWARE_TOUCHX
+	QProcess::execute("/bin/init_audio_system");
+	QProcess::execute("/bin/init_video_system");
+	QProcess::execute("/bin/rca2_on");
+
+	// TODO for now use a fixed value
+	setVolume(VOLUME_MMDIFFUSION, 3);
+#endif
+}
+
+void setVolume(VolumeType type, int value)
+{
+	QProcess::startDetached("/home/bticino/bin/set_volume",
+				QStringList() << QString::number(type) << QString::number(value));
+}
+
+void initScreen()
+{
+#ifdef BT_HARDWARE_TOUCHX
+	QStringList args_contrast;
+	args_contrast << TFT_CONTRAST << "7";
+	QProcess::startDetached("/bin/settrimmer", args_contrast);
+#endif
 }

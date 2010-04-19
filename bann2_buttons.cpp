@@ -1,8 +1,29 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "bann2_buttons.h"
-#include "btbutton.h"
-#include "fontmanager.h" // FontManager
+#include "state_button.h"
 #include "icondispatcher.h" // icons_cache
 #include "generic_functions.h" // getBostikName
+#include "titlelabel.h"
 
 #include <QWidget>
 #include <QLabel>
@@ -10,95 +31,130 @@
 #include <QBoxLayout>
 
 
-#define BAN2BUT_BUT_DIM 60
-#define BUTONOFF_ICON_DIM_X 120
-#define BUTONOFF_ICON_DIM_Y 60
-#define BANONOFF_BUT_DIM 60
-#define BUTONOFF2SCR_ICON_DIM_X 80
-#define BUTONOFF2SCR_ICON_DIM_Y 60
-#define BANONOFF2SCR_BUT_DIM 60
-
-
-
-BannOnOffNew::BannOnOffNew(QWidget *parent) :
+Bann2LinkedPages::Bann2LinkedPages(QWidget *parent) :
 	BannerNew(parent)
 {
-	left_button = new BtButton;
-	right_button = new BtButton;
-	center_icon = new QLabel;
-
-	QHBoxLayout *hbox = new QHBoxLayout;
-	hbox->setContentsMargins(0, 0, 0, 0);
-	hbox->setSpacing(0);
-	hbox->addWidget(left_button, 0, Qt::AlignLeft);
-	hbox->addWidget(center_icon, 1, Qt::AlignCenter);
-	hbox->addWidget(right_button, 0, Qt::AlignRight);
-
-	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
-	QVBoxLayout *vbox = new QVBoxLayout(this);
-	vbox->setContentsMargins(0, 0, 0, 0);
-	vbox->setSpacing(0);
-	vbox->addLayout(hbox);
-	vbox->addWidget(text);
 }
 
-void BannOnOffNew::initBanner(const QString &left, const QString &center, const QString &right,
-	const QString &banner_text)
-{
-	loadIcons(left, center, right);
-	text->setText(banner_text);
-}
-
-void BannOnOffNew::loadIcons(const QString &l, const QString &c, const QString &r)
-{
-	left = l;
-	center = c;
-	right = r;
-
-	left_button->setImage(left);
-	right_button->setImage(right);
-	center_icon->setPixmap(*bt_global::icons_cache.getIcon(c));
-}
-
-void BannOnOffNew::setBannerText(const QString &str)
-{
-	text->setText(str);
-}
-
-void BannOnOffNew::connectLeftButton(Page *p)
+void Bann2LinkedPages::connectLeftButton(Page *p)
 {
 	connectButtonToPage(left_button, p);
 }
 
-void BannOnOffNew::connectRightButton(Page *p)
+void Bann2LinkedPages::connectRightButton(Page *p)
 {
 	connectButtonToPage(right_button, p);
 }
 
 
 BannOnOffState::BannOnOffState(QWidget *parent) :
-	BannOnOffNew(parent)
+	Bann2Buttons(parent)
 {
 }
 
-void BannOnOffState::initBanner(const QString &left, const QString &center, const QString &right,
+void BannOnOffState::initBanner(const QString &left, const QString &_center, const QString &right,
 	States init_state, const QString &banner_text)
 {
-	BannOnOffNew::initBanner(left, center, right, banner_text);
+	center = _center;
+	Bann2Buttons::initBanner(left, center, right, banner_text);
 	setState(init_state);
 }
 
 void BannOnOffState::setState(States new_state)
 {
-	switch (new_state)
+	setBackgroundImage(getBostikName(center, new_state == ON ? "on" : "off"));
+}
+
+
+Bann2Buttons::Bann2Buttons(QWidget *parent) :
+	Bann2LinkedPages(parent)
+{
+	left_button = new BtButton;
+	right_button = new BtButton;
+
+	createBanner();
+}
+
+void Bann2Buttons::createBanner()
+{
+	center_icon = 0;
+	center_label = 0;
+	description = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
+
+	QGridLayout *l = new QGridLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	l->addWidget(left_button, 0, 0, Qt::AlignLeft);
+	l->setColumnStretch(0, 1);
+	// central widget added in initBanner()
+	l->setColumnStretch(1, 2);
+	l->addWidget(right_button, 0, 2, Qt::AlignRight);
+	l->setColumnStretch(2, 1);
+	l->addWidget(description, 1, 0, 1, 3);
+
+	connect(right_button, SIGNAL(clicked()), SIGNAL(rightClicked()));
+	connect(left_button, SIGNAL(clicked()), SIGNAL(leftClicked()));
+}
+
+void Bann2Buttons::initBanner(const QString &left, const QString &right, const QString &banner_text,
+	FontManager::Type text_font, const QString &banner_description, FontManager::Type description_font)
+{
+	center_label = new QLabel;
+	static_cast<QGridLayout*>(layout())->addWidget(center_label, 0, 1);
+
+	initButton(left_button, left);
+	initButton(right_button, right);
+	if (right.isEmpty())
 	{
-	case ON:
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center, "on")));
-		break;
-	case OFF:
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center, "off")));
-		break;
+		QGridLayout *l = static_cast<QGridLayout*>(layout());
+		l->setColumnStretch(2, 0);
 	}
+	center_label->setText(banner_text);
+	QFont central_font = bt_global::font->get(text_font);
+
+	center_label->setFont(central_font);
+
+	initLabel(description, banner_description, bt_global::font->get(description_font));
+}
+
+void Bann2Buttons::initBanner(const QString &left, const QString &center, const QString &right, const QString &descr,
+			      FontManager::Type description_font)
+{
+	center_icon = new TextOnImageLabel;
+	static_cast<QGridLayout*>(layout())->addWidget(center_icon, 0, 1);
+
+	initButton(left_button, left);
+	initButton(right_button, right);
+	center_icon->setBackgroundImage(center);
+
+	initLabel(description, descr, bt_global::font->get(description_font));
+}
+
+void Bann2Buttons::setCentralText(const QString &t)
+{
+	if (center_icon)
+		center_icon->setInternalText(t);
+	else
+		center_label->setText(t);
+}
+
+void Bann2Buttons::setDescriptionText(const QString &t)
+{
+	description->setText(t);
+}
+
+void Bann2Buttons::setBackgroundImage(const QString &path)
+{
+	Q_ASSERT_X(center_icon, "Bann2Buttons::setBackgroundImage", "Bann2Button created without a background image");
+	center_icon->setBackgroundImage(path);
+}
+
+
+Bann2StateButtons::Bann2StateButtons(QWidget *parent) :
+	Bann2Buttons(parent, static_cast<StateButton *>(0))
+{
+	left_button = static_cast<StateButton *>(Bann2Buttons::left_button);
+	right_button = static_cast<StateButton *>(Bann2Buttons::right_button);
 }
 
 
@@ -223,72 +279,41 @@ void BannOnOff2Labels::setState(States new_state)
 }
 
 
-Bann2CentralButtons::Bann2CentralButtons(QWidget *parent) : BannerNew(parent)
+Bann2CentralButtons::Bann2CentralButtons(bool spaced_buttons) : BannerNew(0)
 {
 	center_left = new BtButton;
 	center_right = new BtButton;
-	QHBoxLayout *l = new QHBoxLayout(this);
+
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
+	QGridLayout *l = new QGridLayout;
 	l->setContentsMargins(0, 0, 0, 0);
+#ifdef LAYOUT_TOUCHX
+	l->setSpacing(spaced_buttons ? 5 : 0);
+#else
 	l->setSpacing(0);
-	l->addWidget(center_left, 0, Qt::AlignTop | Qt::AlignRight);
-	l->addWidget(center_right, 0, Qt::AlignTop | Qt::AlignLeft);
+#endif
+	l->setColumnStretch(0, 1);
+	l->addWidget(center_left, 0, 1, Qt::AlignTop);
+	l->addWidget(center_right, 0, 2, Qt::AlignTop);
+	l->setColumnStretch(3, 1);
+
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->setContentsMargins(0, 0, 0, 0);
+	layout->setSpacing(0);
+	layout->addLayout(l);
+	layout->addWidget(text);
 }
 
-void Bann2CentralButtons::initBanner(const QString &left, const QString &right)
+void Bann2CentralButtons::initBanner(const QString &left, const QString &right, const QString &banner_text)
 {
 	center_left->setImage(left);
 	center_right->setImage(right);
+	if (banner_text.isEmpty())
+	{
+		// just to avoid surprises...
+		text->disconnect();
+		text->deleteLater();
+	}
+	else
+		text->setText(banner_text);
 }
-
-
-bann2But::bann2But(QWidget *parent) : banner(parent)
-{
-	banner_height = BAN2BUT_BUT_DIM;
-	addItem(BUT1, 0,(banner_height - BAN2BUT_BUT_DIM)/2 , BAN2BUT_BUT_DIM , BAN2BUT_BUT_DIM);
-	addItem(BUT2, banner_width - BAN2BUT_BUT_DIM ,(banner_height - BAN2BUT_BUT_DIM)/2 , BAN2BUT_BUT_DIM , BAN2BUT_BUT_DIM);
-	addItem(TEXT, BAN2BUT_BUT_DIM, 0, banner_width - 2 * BAN2BUT_BUT_DIM, banner_height);
-}
-
-
-bann2ButLab::bann2ButLab(QWidget *parent) : banner(parent)
-{
-	addItem(BUT1, 0, 0, BAN2BUT_BUT_DIM , BAN2BUT_BUT_DIM);
-	addItem(BUT2, banner_width - BAN2BUT_BUT_DIM, 0, BAN2BUT_BUT_DIM, BAN2BUT_BUT_DIM);
-	addItem(TEXT, BAN2BUT_BUT_DIM , 0,banner_width - 2 * BAN2BUT_BUT_DIM , BAN2BUT_BUT_DIM);
-	addItem(TEXT2, 0, BAN2BUT_BUT_DIM-5, banner_width , 25);
-}
-
-void bann2ButLab::setAutoRepeat()
-{
-	sxButton->setAutoRepeat(true);
-	dxButton->setAutoRepeat(true);
-}
-
-
-QSize bann2ButLab::sizeHint() const
-{
-	return banner::sizeHint() + QSize(0, 20);
-}
-
-
-
-#if 0
-bannOnOff::bannOnOff(QWidget *parent) : banner(parent)
-{
-	addItem(BUT1, banner_width-BANONOFF_BUT_DIM , 0 , BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
-	addItem(BUT2, 0, 0, BANONOFF_BUT_DIM , BANONOFF_BUT_DIM);
-	addItem(TEXT, 0, BANONOFF_BUT_DIM, banner_width , banner_height-BANONOFF_BUT_DIM);
-	addItem(ICON, BANONOFF_BUT_DIM, 0, BUTONOFF_ICON_DIM_X , BUTONOFF_ICON_DIM_Y);
-}
-
-
-bannOnOff2scr::bannOnOff2scr(QWidget *parent) : banner(parent)
-{
-	addItem(BUT1, 0, 0, BANONOFF2SCR_BUT_DIM , BANONOFF2SCR_BUT_DIM);
-	addItem(BUT2, banner_width-BANONOFF2SCR_BUT_DIM, 0, BANONOFF2SCR_BUT_DIM, BANONOFF2SCR_BUT_DIM);
-	addItem(TEXT, 0, BANONOFF2SCR_BUT_DIM, banner_width, banner_height-BANONOFF2SCR_BUT_DIM);
-	addItem(ICON, banner_width-BANONOFF2SCR_BUT_DIM-BUTONOFF2SCR_ICON_DIM_X, 0, BUTONOFF2SCR_ICON_DIM_X, BUTONOFF2SCR_ICON_DIM_Y);
-	addItem(TEXT2, BANONOFF2SCR_BUT_DIM, 0, banner_width-2*BANONOFF2SCR_BUT_DIM-BUTONOFF2SCR_ICON_DIM_X, BUTONOFF2SCR_ICON_DIM_Y);
-}
-#endif
-

@@ -1,36 +1,43 @@
-/*!
- * \bann_thermal_regulation.h
- * <!--
- * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
- * All rights reserved.
- * -->
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
  *
- * \brief A set of full screen banners
+ * Copyright (C) 2010 BTicino S.p.A.
  *
- * \author Luca Ottaviano <lottaviano@develer.com>
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+
 #ifndef BANN_THERMAL_REGULATION_H
 #define BANN_THERMAL_REGULATION_H
 
-#include "banner.h"
-#include "bann1_button.h" // bannPuls
-#include "bann2_buttons.h" // bann2CentralButtons
-#include "device_status.h"
+#include "bann1_button.h" // BannSinglePuls
+#include "bann2_buttons.h" // Bann2CentralButtons
 #include "bttime.h"
 #include "main.h"
 #include "page.h"
+#include "thermal_device.h" // thermo_type_t, ThermalDevice*
 
 #include <QLayout>
 #include <QButtonGroup>
 #include <QDomNode>
 #include <QLCDNumber>
 #include <QMap>
+#include <QDate>
 
 class device;
-class ThermalDevice;
-class ThermalDevice4Zones;
-class ThermalDevice99Zones;
-class temperature_probe_controlled;
+class ControlledProbeDevice;
 class TimeEditMenu;
 class DateEditMenu;
 class ProgramMenu;
@@ -41,6 +48,7 @@ class BtDateEdit;
 class NavigationPage;
 class PageSetDate;
 class PageSetTime;
+class PageSetDateTime;
 class SettingsPage;
 
 class QLabel;
@@ -63,8 +71,8 @@ enum BannID
 	fs_99z_fancoil,                       // 99 zones controlled probe with fancoil
 };
 
-/// Factory function to get banners
-NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, TemperatureScale scale = CELSIUS);
+/// Factory function to get pages
+NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, int openserver_id, TemperatureScale scale, banner* bann);
 
 
 /**
@@ -78,8 +86,8 @@ public:
 	ThermalNavigation(QWidget *parent = 0);
 
 signals:
-	void okClicked();
-	void backClicked();
+	void forwardClick();
+	void backClick();
 };
 
 
@@ -119,18 +127,20 @@ class PageSimpleProbe : public NavigationPage
 Q_OBJECT
 public:
 	PageSimpleProbe(QDomNode n, TemperatureScale scale = CELSIUS);
+
 public slots:
-	virtual void status_changed(QList<device_status*> sl);
+	virtual void status_changed(const DeviceValues &sl);
+
 protected:
 	void setTemperature(unsigned temp);
-	void setDescription(const QString &descr);
+
 protected:
 	/// Measured temperature label and string
 	QLabel *temp_label;
-	/// Zone description label and string
-	QLabel *descr_label;
 	/// Temperature scale
 	TemperatureScale temp_scale;
+	// button to toggle manual/automatic mode
+	BtButton *toggle_mode;
 };
 
 
@@ -143,10 +153,13 @@ class PageProbe : public PageSimpleProbe
 {
 Q_OBJECT
 public:
-	PageProbe(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg,
+	PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
 		TemperatureScale scale = CELSIUS);
+
+	virtual void inizializza();
+
 public slots:
-	virtual void status_changed(QList<device_status*> sl);
+	virtual void status_changed(const DeviceValues &sl);
 protected:
 	void updatePointLabel();
 	void updateControlState();
@@ -167,9 +180,10 @@ protected:
 	// ie. 0 = (rotella su) 0, 1 = 1, ... , 11 = -1, 12 = -2, 13 = -3, 4 = Off, 5 = Antigelo
 	QString local_temp;
 	QLabel *local_temp_label;
+	QHBoxLayout bottom_icons;
 
 	QDomNode conf_root;
-	temperature_probe_controlled *dev;
+	ControlledProbeDevice *dev;
 private:
 	/**
 	 * Called when it's needed to set the device to manual operation. A conversion to Celsius degrees is done if needed.
@@ -187,9 +201,6 @@ private:
 	thermo_type_t probe_type;
 	QString probe_icon_auto, probe_icon_manual;
 
-	/// Time to wait (in msec) before sending a frame when the user presses on plus or minus buttons to modify setpoint temperature
-	/// \sa setpoint
-	const unsigned setpoint_delay;
 	/// The delta of temperature (in 1/10 of degrees) when the user presses on plus or minus
 	const unsigned setpoint_delta;
 	/// The minimum temperature that can be set with manual operation
@@ -221,8 +232,10 @@ Q_OBJECT
 public:
 	PageTermoReg(QDomNode n);
 	virtual ThermalDevice *dev() = 0;
+
 public slots:
-	virtual void status_changed(const StatusList &sl);
+	virtual void status_changed(const DeviceValues &sl);
+
 protected:
 	void showDescription(const QString &desc);
 	void hideDescription();
@@ -230,7 +243,8 @@ protected:
 	/**
 	 * Utility function to create settings menu for the thermal regulator device.
 	 */
-	virtual void createSettingsMenu() = 0;
+	virtual void createSettingsMenu(QDomNode regulator_node) = 0;
+	void createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice *dev);
 
 	/**
 	 * Set the icon on the main page of thermal regulator and calls setSeason() on
@@ -251,29 +265,29 @@ protected:
 	 * Utility function to create the submenu to set the weekly program in thermal
 	 * regulator device.
 	 */
-	void weekSettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev);
+	void weekSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create the submenu to set the scenario program in thermal
 	 * regulator device.
 	 */
-	void scenarioSettings(SettingsPage *settings, QDomNode conf, ThermalDevice99Zones *dev);
+	void scenarioSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev);
 
 	/**
 	 * Utility function to create the submenu to set manually the temperature
 	 * for the thermal regulator device.
 	 */
-	void manualSettings(SettingsPage *settings, ThermalDevice *dev);
+	void manualSettings(QDomNode n, SettingsPage *settings, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create the submenu for holiday settings.
 	 */
-	void holidaySettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev);
+	void holidaySettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create the submenu for weekend settings.
 	 */
-	void weekendSettings(SettingsPage *settings, QDomNode conf, ThermalDevice *dev);
+	void weekendSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create off, antifreeze and summer/winter banners.
@@ -282,10 +296,12 @@ protected:
 
 	/// The settings menu of the thermal regulator
 	SettingsPage *settings;
-	/// A reference to the configuration of the thermal regulator
-	QDomNode conf_root;
+
+	/// list of programs/scenarios defined in the configuration
+	QMap<QString, QString> programs, scenarios;
 
 	TemperatureScale temp_scale;
+
 private slots:
 	/**
 	 * The following slots are used to control the status of input for holiday/weekend mode.
@@ -305,6 +321,11 @@ private slots:
 	 * User confirmed date, go to time editing.
 	 */
 	void dateSelected(QDate d);
+
+	/**
+	 * User confirmed date and time, go to time editing.
+	 */
+	void dateTimeSelected(QDate d, BtTime t);
 
 	/**
 	 * User cancelled time editing, go back to date editing.
@@ -331,6 +352,10 @@ private slots:
 	void manualSelected(unsigned temp);
 
 	void weekProgramSelected(int program);
+
+	// display the settings menu page
+	void showSettingsMenu();
+
 private:
 	enum weekend_t
 	{
@@ -339,16 +364,19 @@ private:
 	};
 	/// A flag to determine if the user started a weekend or holiday selection
 	weekend_t weekendHolidayStatus;
+	QString holiday_title, weekend_title;
+
 	/**
 	 * Utility function to create the submenu structure needed for holiday and weekend mode.
 	 * \param icon The icon to be visualized on the banner
 	 * \return The banner that will open the date edit menu
 	 */
-	BannSinglePuls *createHolidayWeekendBanner(SettingsPage *settings, QString icon);
+	BannSinglePuls *createHolidayWeekendBanner(SettingsPage *settings, QString icon, QString description);
 
 	PageSetDate *createDateEdit(SettingsPage *settings);
 	PageSetTime *createTimeEdit(SettingsPage *settings);
-	WeeklyMenu *createProgramChoice(SettingsPage *settings, QDomNode conf, device *dev);
+	PageSetDateTime *createDateTimeEdit(SettingsPage *settings);
+	WeeklyMenu *createProgramChoice(SettingsPage *settings, QMap<QString, QString> programs, device *dev);
 
 	/// Label and string that may be visualized
 	QLabel *description_label;
@@ -363,6 +391,7 @@ private:
 	BtTime time_end;
 	PageSetTime *time_edit;
 	PageSetDate *date_edit;
+	PageSetDateTime *date_time_edit;
 	ProgramMenu *program_choice;
 	WeeklyMenu *program_menu;
 };
@@ -381,18 +410,18 @@ public:
 	PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device);
 	virtual ThermalDevice *dev();
 protected:
-	virtual void createSettingsMenu();
+	virtual void createSettingsMenu(QDomNode regulator_node);
+	void createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice4Zones *dev);
 private:
 	/**
 	 * Utility function to create the submenu for timed manual operation mode.
 	 * This is used only with 4 zones thermal regulators
 	 */
-	void timedManualSettings(SettingsPage *settings, ThermalDevice4Zones *dev);
+	void timedManualSettings(QDomNode n, SettingsPage *settings, ThermalDevice4Zones *dev);
 
 	ThermalDevice4Zones *_dev;
 private slots:
 	void manualTimedSelected(BtTime time, int temp);
-	void showSettingsMenu();
 };
 
 
@@ -406,17 +435,20 @@ Q_OBJECT
 public:
 	PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device);
 	virtual ThermalDevice *dev();
+
 protected:
-	virtual void createSettingsMenu();
+	virtual void createSettingsMenu(QDomNode regulator_node);
 	virtual void setSeason(Season new_season);
+	void createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice99Zones *dev);
+
 private:
-	void scenarioSettings(SettingsPage *settings, QDomNode conf, ThermalDevice99Zones *dev);
+	void scenarioSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev);
 
 	ThermalDevice99Zones *_dev;
 	ScenarioMenu *scenario_menu;
+
 private slots:
 	void scenarioSelected(int scenario);
-	void showSettingsMenu();
 };
 
 
@@ -428,9 +460,9 @@ class PageFancoil : public PageProbe
 {
 Q_OBJECT
 public:
-	PageFancoil(QDomNode n, temperature_probe_controlled *_dev, ThermalDevice *thermo_reg,
+	PageFancoil(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
 		TemperatureScale scale = CELSIUS);
-	virtual void status_changed(QList<device_status*> sl);
+	virtual void status_changed(const DeviceValues &sl);
 protected:
 	void setFancoilStatus(int status);
 private:
@@ -452,29 +484,34 @@ class PageManual : public Page
 Q_OBJECT
 public:
 	PageManual(ThermalDevice *_dev, TemperatureScale scale = CELSIUS);
+
 public slots:
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
+
 protected:
-	void setDescription(const QString &descr);
 	void updateTemperature();
+
+protected slots:
+	virtual void performAction();
+
 protected:
 	QWidget content;
 	QVBoxLayout main_layout;
 	/// The setpoint temperature set on the interface. The scale is given by temp_scale
 	int temp;
 	TemperatureScale temp_scale;
-	ThermalNavigation *nav_bar;
+
 private:
-	QLabel *descr_label;
 	QLabel *temp_label;
 	ThermalDevice *dev;
 	int maximum_manual_temp;
 	int minimum_manual_temp;
 	unsigned setpoint_delta;
+
 private slots:
 	void incSetpoint();
 	void decSetpoint();
-	void performAction();
+
 signals:
 	void temperatureSelected(unsigned);
 };
@@ -490,12 +527,15 @@ public:
 	PageManualTimed(ThermalDevice4Zones *_dev, TemperatureScale scale = CELSIUS);
 	void setMaxHours(int max);
 	void setMaxMinutes(int max);
+
+protected slots:
+	virtual void performAction();
+
 private:
 	ThermalDevice4Zones *dev;
 	/// TimeEdit widget
 	BtTimeEdit *time_edit;
-private slots:
-	void performAction();
+
 signals:
 	void timeAndTempSelected(BtTime, int);
 };
@@ -532,8 +572,8 @@ private:
 	QWidget content;
 	QVBoxLayout main_layout;
 	BtTimeEdit *time_edit;
-	int hours, minutes;
 };
+
 
 
 /**
@@ -583,6 +623,29 @@ signals:
 
 
 /**
+ * Banner with two buttons, one to set the thermal regulator to "off" and one
+ * to set antifreeze mode.
+ */
+class BannOffAntifreeze : public Bann2CentralButtons
+{
+Q_OBJECT
+public:
+	BannOffAntifreeze(QWidget *parent, ThermalDevice *_dev);
+
+signals:
+	void clicked();
+
+private slots:
+	void setOff();
+	void setAntifreeze();
+
+private:
+	/// The device that this banner sends commands to
+	ThermalDevice *dev;
+};
+
+
+/**
  * This banner sets the thermal regulator in summer or winter status, depending on the
  * button pressed.
  * It displays two buttons at the center, one with the summer icon and one with the winter icon.
@@ -615,13 +678,16 @@ class BannWeekly : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	BannWeekly(QWidget *parent);
+	BannWeekly(QWidget *parent, int index);
 
 private slots:
 	void performAction();
 
 signals:
 	void programNumber(int);
+
+private:
+	int index;
 };
 
 #endif // BANN_THERMAL_REGULATION_H

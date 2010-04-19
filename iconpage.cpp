@@ -1,8 +1,31 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "iconpage.h"
-#include "btbutton.h"
+#include "state_button.h"
 #include "navigation_bar.h"
 #include "skinmanager.h"
-#include "main.h" // IMG_PATH
+#include "fontmanager.h" // bt_global::font
+#include "btmain.h" // bt_global::btmain
+#include "homewindow.h" // TrayBar
 
 #include <QDomNode>
 #include <QDebug>
@@ -14,21 +37,15 @@
 #define BACK_BUTTON_X    0
 #define BACK_BUTTON_Y  250
 #define BACK_BUTTON_DIM 60
-#define IMG_BACK_BUTTON IMG_PATH "arrlf.png"
+#define CONTENT_MARGIN  25
 
-
-IconPage::IconPage()
-	: buttons_group(this)
-{
-	connect(&buttons_group, SIGNAL(buttonClicked(int)), SLOT(clicked(int)));
-}
 
 void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QString &title)
 {
 	PageTitleWidget *title_widget = 0;
 	if (!title.isNull())
 	{
-		title_widget = new PageTitleWidget(title, 35);
+		title_widget = new PageTitleWidget(title, SMALL_TITLE_HEIGHT);
 		connect(content, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
 	}
 	Page::buildPage(content, nav_bar, 0, title_widget);
@@ -66,12 +83,10 @@ BtButton *IconPage::addButton(const QString &label, const QString& icon_path, in
 	return b;
 }
 
-void IconPage::addPage(Page *page, int id, const QString &label, const QString &iconName, int x, int y)
+void IconPage::addPage(Page *page, const QString &label, const QString &iconName, int x, int y)
 {
 	BtButton *b = addButton(label, iconName, x, y);
-
-	buttons_group.addButton(b, id);
-	page_list[id] = page;
+	connect(b, SIGNAL(clicked()), page, SLOT(showPage()));
 	connect(page, SIGNAL(Closed()), this, SLOT(showPage()));
 }
 
@@ -79,24 +94,17 @@ void IconPage::addBackButton()
 {
 	BtButton *b = new BtButton(this);
 	b->setGeometry(BACK_BUTTON_X, BACK_BUTTON_Y, BACK_BUTTON_DIM, BACK_BUTTON_DIM);
-	b->setImage(IMG_BACK_BUTTON);
+	b->setImage(bt_global::skin->getImage("back"));
 	connect(b, SIGNAL(clicked()), SIGNAL(Closed()));
 }
 
-void IconPage::clicked(int id)
-{
-	page_list[id]->showPage();
-}
 
-
-IconContent::IconContent(QWidget *parent) : QWidget(parent)
+IconContent::IconContent(QWidget *parent) : GridContent(parent)
 {
-	current_page = 0;
-	QGridLayout *l = new QGridLayout(this);
-	l->setContentsMargins(25, 0, 25, 0);
-	l->setSpacing(28);
-	l->setColumnStretch(5, 1);
-	need_update = true;
+	QGridLayout *l = static_cast<QGridLayout *>(layout());
+	l->setContentsMargins(CONTENT_MARGIN, 0, CONTENT_MARGIN, 0);
+	l->setSpacing(0);
+	l->setColumnStretch(4, 1);
 }
 
 void IconContent::addButton(QWidget *button, const QString &label)
@@ -110,13 +118,12 @@ void IconContent::addButton(QWidget *button, const QString &label)
 		QLabel *lbl = new QLabel(label);
 
 		lbl->setAlignment(Qt::AlignHCenter);
-
-		l->addWidget(button);
+		lbl->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
+		l->addWidget(button, 0, Qt::AlignHCenter);
 		l->addWidget(lbl);
 	}
 
-	items.append(w);
-	w->hide();
+	addWidget(w);
 }
 
 void IconContent::addWidget(QWidget *widget)
@@ -125,83 +132,73 @@ void IconContent::addWidget(QWidget *widget)
 	widget->hide();
 }
 
-void IconContent::resetIndex()
-{
-	need_update = true;
-	current_page = 0;
-}
-
-void IconContent::showEvent(QShowEvent *e)
-{
-	drawContent();
-	QWidget::showEvent(e);
-}
-
 void IconContent::drawContent()
 {
-	if (!need_update)
-		return;
-
 	QGridLayout *l = qobject_cast<QGridLayout*>(layout());
 
 	if (pages.size() == 0)
 	{
-		int total_height[4];
-		int area_height = contentsRect().height();
+		// compute the page list
+		prepareLayout(items, 4);
 
-		for (int k = 0; k < 4; ++k)
-			total_height[k] = 0;
-		pages.append(0);
-
-		for (int i = 0; i < items.size(); i += 4)
+		// add icons to the layout
+		for (int i = 0; i < pages.size() - 1; ++i)
 		{
-			for (int j = 0; j < 4 && i + j < items.size(); ++j)
+			int base = pages[i];
+			for (int j = 0; base + j < pages[i + 1]; ++j)
 			{
-				l->addWidget(items.at(i + j), i / 4, j);
-				total_height[j] += items.at(i + j)->sizeHint().height() + l->spacing();
-			}
-			for (int j = 0; j < 4; ++j)
-			{
-				if (total_height[j] > area_height)
-				{
-					for (int k = 0; k < 4; ++k)
-						total_height[k] = 0;
-					pages.append(i);
-					i -= 4;
-					break;
-				}
+				items.at(base + j)->setFixedWidth((width() - 2 * CONTENT_MARGIN) / 4);
+				l->addWidget(items.at(base + j), j / 4, j % 4);
 			}
 		}
 
-		pages.append(items.size());
 		l->setRowStretch(l->rowCount(), 1);
 	}
 
-	emit displayScrollButtons(pageCount() > 1);
-	emit contentScrolled(current_page, pageCount());
-
-	need_update = false;
-
-	for (int i = 0; i < items.size(); ++i)
-		items[i]->setVisible(i >= pages[current_page] && i < pages[current_page + 1]);
+	updateLayout(items);
 }
 
-void IconContent::pgUp()
+
+IconPageButton::IconPageButton(const QString &label)
 {
-	current_page = (current_page - 1 + pageCount()) % pageCount();
-	need_update = true;
-	drawContent();
+	QLabel *lbl = new QLabel(label);
+	lbl->setText(label);
+	lbl->setAlignment(Qt::AlignHCenter);
+	lbl->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
+
+	button = new StateButton;
+
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->addWidget(button, 0, Qt::AlignHCenter);
+	l->addWidget(lbl);
 }
 
-void IconContent::pgDown()
+
+IconButtonOnTray::IconButtonOnTray(const QString &label, const QString &icon_on, const QString &icon_off,
+	const QString &tray_icon) : IconPageButton(label)
 {
-	current_page = (current_page + 1) % pageCount();
-	need_update = true;
-	drawContent();
+	button->setOffImage(bt_global::skin->getImage(icon_off));
+	button->setOnImage(bt_global::skin->getImage(icon_on));
+	connect(button, SIGNAL(clicked()), SLOT(toggleActivation()));
+	tray_button = new BtButton(bt_global::skin->getImage(tray_icon));
+	connect(tray_button, SIGNAL(clicked()), SLOT(turnOff()));
+	bt_global::btmain->trayBar()->addButton(tray_button);
+	updateStatus();
 }
 
-int IconContent::pageCount() const
+void IconButtonOnTray::toggleActivation()
 {
-	return pages.size() - 1;
+	button->setStatus(!button->getStatus());
+	updateStatus();
 }
 
+void IconButtonOnTray::updateStatus()
+{
+	tray_button->setVisible(button->getStatus() == StateButton::ON);
+}
+
+void IconButtonOnTray::turnOff()
+{
+	button->setStatus(false);
+	updateStatus();
+}

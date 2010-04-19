@@ -1,3 +1,24 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "btbutton.h"
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "hardware_functions.h" // beep
@@ -5,15 +26,25 @@
 
 #include <QDebug>
 #include <QFile>
+#include <QEvent>
+#include <QPainter>
 
 
 BtButton::BtButton(QWidget *parent) : QPushButton(parent)
 {
-	setStyleSheet("border:0px;");
+	initButton();
+}
+
+BtButton::BtButton(QString icon_path, QWidget *parent) : QPushButton(parent)
+{
+	initButton();
+	setImage(icon_path);
+}
+
+void BtButton::initButton()
+{
 	setFocusPolicy(Qt::NoFocus);
-	is_on_off = false;
 	is_enabled = true;
-	connect(this, SIGNAL(toggled(bool)), SLOT(setStatus(bool)));
 }
 
 QSize BtButton::sizeHint() const
@@ -23,14 +54,13 @@ QSize BtButton::sizeHint() const
 	return QSize();
 }
 
-void BtButton::setOnOff()
+QPixmap BtButton::loadPressedImage(const QString &icon_path)
 {
-	is_on_off = true;
-}
-
-bool BtButton::isToggle()
-{
-	return isCheckable() || is_on_off;
+	QString pressed_name = getPressName(icon_path);
+	if (QFile::exists(pressed_name))
+		return *bt_global::icons_cache.getIcon(pressed_name);
+	else
+		return QPixmap();
 }
 
 void BtButton::setImage(const QString &icon_path, IconFlag f)
@@ -47,12 +77,14 @@ void BtButton::setImage(const QString &icon_path, IconFlag f)
 
 void BtButton::setPressedImage(const QString &pressed_icon)
 {
-	pressed_pixmap = *bt_global::icons_cache.getIcon(pressed_icon);
+	setPressedPixmap(*bt_global::icons_cache.getIcon(pressed_icon));
 }
 
 void BtButton::setPressedPixmap(const QPixmap &p)
 {
 	pressed_pixmap = p;
+	if (isDown() && !pressed_pixmap.isNull())
+		setIcon(pressed_pixmap);
 }
 
 void BtButton::setPixmap(const QPixmap &p)
@@ -63,18 +95,46 @@ void BtButton::setPixmap(const QPixmap &p)
 	// or normal) is set when there is a status change.
 	if (icon().isNull() || need_update)
 	{
-		setIcon(pixmap);
+		if (pressed_pixmap.isNull() || !isDown())
+			setIcon(pixmap);
 		setIconSize(pixmap.size());
+		setFixedSize(pixmap.size());
 	}
+}
+
+bool BtButton::event(QEvent *e)
+{
+	// this code is taken from QAbstractButton::event().
+	// Whenever we change Qt version, check the source to see if the check changed (eg. multitouch mouse events)
+	if (!is_enabled)
+	{
+		switch (e->type())
+		{
+		case QEvent::TabletPress:
+		case QEvent::TabletRelease:
+		case QEvent::TabletMove:
+		case QEvent::MouseButtonPress:
+		case QEvent::MouseButtonRelease:
+		case QEvent::MouseButtonDblClick:
+		case QEvent::MouseMove:
+		case QEvent::HoverMove:
+		case QEvent::HoverEnter:
+		case QEvent::HoverLeave:
+		case QEvent::ContextMenu:
+	#ifndef QT_NO_WHEELEVENT
+		case QEvent::Wheel:
+	#endif
+			return true;
+		default:
+			break;
+		}
+	}
+	return QPushButton::event(e);
 }
 
 void BtButton::mousePressEvent(QMouseEvent *event)
 {
-	if (!is_enabled)
-		return;
-	// Toggle buttons are managed by toggled slot, that is always called when
-	// the button changes its state.
-	if (!isToggle() && !pressed_pixmap.isNull())
+	if (!pressed_pixmap.isNull())
 		setIcon(pressed_pixmap);
 
 	beep();
@@ -83,21 +143,33 @@ void BtButton::mousePressEvent(QMouseEvent *event)
 
 void BtButton::mouseReleaseEvent(QMouseEvent *event)
 {
-	if (!is_enabled)
-		return;
-	// Manages only normal buttons. Toggle buttons are managed by toggled slot.
-	if (!isToggle() && !pressed_pixmap.isNull())
+	if (!pressed_pixmap.isNull())
 		setIcon(pixmap);
 
 	QPushButton::mouseReleaseEvent(event);
 }
 
-void BtButton::setStatus(bool on)
+void BtButton::paintEvent(QPaintEvent *e)
 {
-	// If the pressed_pixmap doesn't exists, there is nothing to do (because the
-	// pixmap is already the normal one)
-	if (!pressed_pixmap.isNull())
-		setIcon(!on ? pixmap : pressed_pixmap);
+#ifdef LAYOUT_BTOUCH
+	// TODO keep default behaviour for BTouch
+	QPushButton::paintEvent(e);
+#else
+	// the default QStyle implementation shifts the pushed button
+	// some pixel to the right/bottom, and for the TouchX we do not want
+	// that for buttons that have a separate "pressed" icon, BUT if there
+	// isn't a separate pressed image set, we want the default behaviour
+	if (isDown() && pressed_pixmap.isNull())
+	{
+		QPushButton::paintEvent(e);
+	}
+	else
+	{
+		QPainter p(this);
+
+		icon().paint(&p, 0, 0, width(), height());
+	}
+#endif
 }
 
 void BtButton::enable()

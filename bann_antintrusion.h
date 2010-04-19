@@ -1,7 +1,28 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #ifndef BANN_ANTINTRUSION_H
 #define BANN_ANTINTRUSION_H
 
-#include "bann1_button.h" // bannOnIcons
+#include "bann2_buttons.h" // Bann2Buttons
 #include "bann3_buttons.h" // bann3ButLab
 #include "device_status.h"
 
@@ -14,7 +35,7 @@ class device;
 class QDomNode;
 
 
-class BannSingleLeft : public BannerNew
+class BannSingleLeft : public Bann2Buttons
 {
 Q_OBJECT
 protected:
@@ -24,16 +45,13 @@ protected:
 		PARTIAL_OFF,
 	};
 
-	BannSingleLeft(QWidget *parent = 0);
-	void initBanner(const QString &_left_on, const QString &_left_off, const QString &_center_on,
-		const QString &_center_off, const QString &zone, States init_state, const QString &banner_text);
+	BannSingleLeft();
+	void initBanner(const QString &_left_on, const QString &_left_off,
+			States init_state, const QString &banner_text);
 	void setState(States new_state);
 
-	BtButton *left_button;
-
 private:
-	QLabel *zone_icon, *center_icon, *text;
-	QString left_on, left_off, center_on, center_off;
+	QString left_on, left_off;
 };
 
 
@@ -43,7 +61,7 @@ class AntintrusionZone : public BannSingleLeft
 {
 Q_OBJECT
 public:
-	AntintrusionZone(const QDomNode &config_node, QWidget *parent = 0);
+	AntintrusionZone(const QString &name, const QString &_where);
 	void inizializza(bool forza = false);
 	bool isActive();
 
@@ -56,20 +74,27 @@ public slots:
 
 private:
 	void setParzializzaOn(bool parz);
+	void updateButtonState();
+
 	bool already_changed;
-	bool is_on;
+	bool is_on, is_partial;
 	device *dev;
+	QString where;
+	QString left_disabled_on, left_disabled_off;
+
 signals:
 	void partChanged(AntintrusionZone *);
 };
+
+#if 0
+
+typedef class zonaAnti AntintrusionZone;
 
 /*!
  *  \class zonaAnti
  * \brief This class is made to manage an anti-intrusion zone.
  *
  * By this banner is possible to see if the zone is active or not in a certain moment.
- * \author Davide
- * \date lug 2005
  */
 class zonaAnti : public bannOnIcons
 {
@@ -93,9 +118,10 @@ private:
 	bool already_changed;
 	device *dev;
 signals:
-	void partChanged(zonaAnti *);
+	void partChanged(AntintrusionZone *);
 };
 
+#endif
 
 /*!
  * \class impAnti
@@ -103,8 +129,6 @@ signals:
  *
  * By this banner is possible to change the (dis)activation state of the system from the visualized one.
  * If there is an alarm queue it also possible to acces a page describing the it.
- * \author Davide
- * \date lug 2005
  */
 class impAnti : public bann3ButLab
 {
@@ -114,8 +138,8 @@ public:
 
 public slots:
 	void status_changed(QList<device_status*>);
-	void partChanged(zonaAnti*);
-	void setZona(zonaAnti*);
+	void partChanged(AntintrusionZone *);
+	void setZona(AntintrusionZone *);
 	int getIsActive(int zona);
 	void ToSendParz(bool s);
 	void openAckRx();
@@ -131,7 +155,7 @@ signals:
 private:
 	static const int MAX_ZONE = 8;
 	Keypad *tasti;
-	zonaAnti *le_zone[MAX_ZONE];
+	AntintrusionZone *le_zone[MAX_ZONE];
 	bool send_part_msg;
 	bool part_msg_sent;
 	bool inserting;

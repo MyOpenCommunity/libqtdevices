@@ -1,12 +1,28 @@
-/**
- * \file
- * <!--
- * Copyright 2007, 2008 Develer S.r.l. (http://www.develer.com/)
- * All rights reserved.
- * -->
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
  *
- * \brief This class implements the management of the multimedia part
+ * Copyright (C) 2010 BTicino S.p.A.
  *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
+#ifndef MULTIMEDIA_SOURCE_H
+#define MULTIMEDIA_SOURCE_H
+
+/*
  * This class is the manager of the multimedia part, that is used to choose and
  * play music (internet radio or song through upnp server). The classes involved
  * are:
@@ -20,15 +36,11 @@
  *   MediaPlayWindow, to play music using the MediaPlayer class.
  *
  * - the MediaPlayer, a wrapper around mplayer.
- *
- * \author Alessandro Della Villa <kemosh@develer.com>
- * \author Gianni Valdambrini <aleister@develer.com>
  */
 
-#ifndef MULTIMEDIA_SOURCE_H
-#define MULTIMEDIA_SOURCE_H
 
 #include "page.h"
+#include "fileselector.h"
 
 #include <QDir>
 #include <QMap>
@@ -161,77 +173,33 @@ private slots:
 	void handlePlayerExit();
 };
 
-/**
- * \class Selector
- *
- * Realize a common interface for all selector classes.
- *
- */
-class Selector : public PageLayout
-{
-Q_OBJECT
-public:
-	Selector() {}
-
-public slots:
-	virtual void nextItem() = 0;
-	virtual void prevItem() = 0;
-
-	virtual void itemIsClicked(int item) = 0;
-	virtual void browseUp() = 0;
-
-signals:
-	virtual void notifyExit();
-	virtual void startPlayer(QVector<AudioData> play_list, unsigned element);
-};
-
 
 /**
  * \class FileSelector
  *
  * implements a File Selector Windows with methods to navigate and play files.
  */
-class  FileSelector : public Selector
+class AudioFileSelector : public FileSelector
 {
 Q_OBJECT
 public:
-	FileSelector(unsigned rows_per_page, QString start_path);
+	typedef ListBrowser ContentType;
+
+	AudioFileSelector(unsigned rows_per_page, QString start_path);
 
 public slots:
 	void nextItem();
 	void prevItem();
 
-	void itemIsClicked(int item);
-	void browseUp();
-	virtual void showPage();
+signals:
+	void startPlayer(QVector<AudioData> play_list, unsigned element);
 
-private:
-	void showFiles();
+protected:
+	virtual int currentPage();
+	virtual bool browseFiles(const QDir &directory, QList<QFileInfo> &files);
 
-	/// The handler of current directory
-	QDir current_dir;
-
-	// How many subdirs we are descending from root.
-	unsigned level;
-
-	QVector<QFileInfo> files_list;
-
-	QMap<QString, unsigned>  pages_indexes;
-
-	/// The listBrowser instance, used to display files.
-	ListBrowser *list_browser;
-
-	/// Browse current path, return false in case of error.
-	bool browseFiles();
-
-	/// Browse given path, return false in case of error.
-	bool browseFiles(QString new_path);
-
-	/// Change the current dir, return false in case of error.
-	bool changePath(QString new_path);
-
-	QLabel *createWaitDialog();
-	void destroyWaitDialog(QLabel *l);
+private slots:
+	void startPlayback(int item);
 };
 
 
@@ -253,7 +221,11 @@ public slots:
 	void itemIsClicked(int item);
 	void browseUp();
 
+signals:
+	void startPlayer(QVector<AudioData> play_list, unsigned element);
+
 private:
+	QVBoxLayout *main_layout;
 	QVector<AudioData> radio_list;
 
 	/// The listBrowser instance, used to display files.

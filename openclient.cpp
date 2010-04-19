@@ -1,12 +1,23 @@
-/****************************************************************
-***
-* BTicino Touch scren Colori art. H4686
-**
-** openClient.cpp
-**
-** Finestra principale
-**
-****************************************************************/
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 
 #include "openclient.h"
 #include "hardware_functions.h" // rearmWDT
@@ -15,118 +26,128 @@
 #include <openmsg.h>
 
 #include <QDebug>
+#include <QMetaEnum>
+#include <QMetaObject>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/tcp.h>
 
 #define SOCKET_MONITOR "*99*1##"
 #define SOCKET_SUPERVISOR "*99*10##"
-#define SOCKET_COMANDI "*99*9##"
-#define SOCKET_RICHIESTE "*99*0##"
+#define SOCKET_COMMAND "*99*9##"
+#define SOCKET_REQUEST "*99*0##"
 
 
-Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host), port(_port)
+namespace
 {
-	qDebug("Client::Client()");
+	// TODO: make this function cross platform and move in hardware functions!
+	bool setTcpKeepaliveParams(int s, bool enable = true)
+	{
+		int idle = 3; // seconds from the setsockopt call
+		int interval = 10; // seconds
+		int count = 2; // the number of times after that the socket is not alive.
+		int optval = enable ? 1 : 0;
+		if (setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval)) < 0)
+			return false;
+
+		if (enable)
+		{
+			if (setsockopt(s, SOL_TCP, TCP_KEEPIDLE, &idle, sizeof(idle)) < 0 ||
+				setsockopt(s, SOL_TCP, TCP_KEEPINTVL, &interval, sizeof(interval)) < 0 ||
+				setsockopt(s, SOL_TCP, TCP_KEEPCNT, &count, sizeof(count)) < 0)
+				return false;
+		}
+		return true;
+	}
+}
+
+
+Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host)
+{
+	port = !_port ? OPENSERVER_PORT : _port;
+	is_connected = false;
+
 #if DEBUG
 	to_forward = 0;
 #endif
 
 	socket = new QTcpSocket(this);
-
 	connect(socket, SIGNAL(connected()), SLOT(socketConnected()));
-	connect(socket, SIGNAL(disconnected()), SLOT(socketConnectionClosed()));
 	connect(socket, SIGNAL(readyRead()), SLOT(socketFrameRead()));
 	connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(socketError(QAbstractSocket::SocketError)));
 
 	// connect to the server
-	connetti();
-
-	// azzero la variabile last_msg_open_read e last_msg_open_write
-	last_msg_open_read.CreateNullMsgOpen();
-	last_msg_open_write.CreateNullMsgOpen();
-
-	connect(&Open_read, SIGNAL(timeout()), this, SLOT(clear_last_msg_open_read()));
+	connectToHost();
 }
 
-Client::~Client()
+bool Client::isConnected()
 {
+	// A client of type REQUEST or COMMAND can treat as connected (after the
+	// first connection is done) until an error occurs, ignoring the disconnect
+	// signal of the underlying socket.
+	return is_connected;
 }
 
 void Client::socketConnected()
 {
-	qDebug("Client::socketConnected()");
+	is_connected = true;
+	emit connectionUp();
+
+	QMetaEnum e = staticMetaObject.enumerator(0);
+	qDebug("Client::socketConnected()[%s]", e.key(type));
 	if (type == MONITOR)
-	{
-		qDebug("TRY TO START monitor session");
 		socket->write(SOCKET_MONITOR);
-		emit monitorSu();
-	}
-	else if (type == RICHIESTE)
-	{
-		qDebug("TRY TO START request");
-		socket->write(SOCKET_RICHIESTE);
-	}
+	else if (type == REQUEST)
+		socket->write(SOCKET_REQUEST);
 	else if (type == SUPERVISOR)
-	{
-		qDebug("TRY TO START supervisor");
 		socket->write(SOCKET_SUPERVISOR);
-	}
 	else
-	{
-		qDebug("TRY TO START command");
-		socket->write(SOCKET_COMANDI);
-	}
-}
-
-void Client::ApriInviaFrameChiudi(const char* frame)
-{
-	if (strcmp(frame, last_msg_open_write.frame_open) != 0)
-		sendFrameOpen(frame);
-	else
-		qDebug("Client::ApriInviaFrameChiudi() Frame Open <%s> already send", frame);
-
-	// TODO: questa funzione dovra' gestire anche i Nak e ack (e la sua versione "w"
-	// dovra' sparire), attendendo che arrivi o un ack o un nack con un ciclo tipo:
-	// while (socketWaitForAck() < 0 || socketWaitForNak() < 0);
-	// restituendo quindi un booleano che vale true se e' un ack, false altrimenti.
+		socket->write(SOCKET_COMMAND);
 }
 
 void Client::sendFrameOpen(const QString &frame_open)
 {
+	// The openserver closes the connection with sockets of type REQUEST/COMMAND
+	// after 30 seconds of inactivity, while it doesn't close connections of
+	// type MONITOR/SUPERVISOR. So, a client of type COMMAND or REQUEST should
+	// treat as connected even if the read underlying socket is disconnected
+	// without errors.
+	if (!is_connected)
+		return;
+
 	QByteArray frame = frame_open.toLatin1();
-	last_msg_open_write.CreateMsgOpen(frame.data(), strlen(frame.data()));
 	if (socket->state() == QAbstractSocket::UnconnectedState || socket->state() == QAbstractSocket::ClosingState)
+		connectToHost();
+
+	// We assume that 100 milliseconds are a reasonable time to connect without problems.
+	if (!socket->waitForConnected(100))
 	{
-		connetti();
-		if (type == RICHIESTE)
-			socket->write(SOCKET_RICHIESTE);
-		else
-			socket->write(SOCKET_COMANDI); //lo metto qui else mando prima frame di questo!
+		is_connected = false;
+		emit connectionDown();
+		return;
 	}
+
 	socket->write(frame);
-	qDebug("Client::ApriInviaFrameChiudi() invio: %s",frame.data());
+
+	if (host != OPENSERVER_ADDR)
+		qDebug() << qPrintable(QString("Client::sendFrameOpen()[%1:%2]").arg(host).arg(port)) << "sent:" << frame;
+	else
+		qDebug() << "Client::sendFrameOpen() sent:" << frame;
 }
 
-void Client::ApriInviaFrameChiudiw(char *frame)
+void Client::disconnectFromHost()
 {
-	qDebug("Client::ApriInviaFrameChiudiw()");
-	ApriInviaFrameChiudi(frame);
-	qDebug("Frame sent waiting for ack");
-	while (socketWaitForAck() < 0) {}
-	qDebug("Ack received");
+	qDebug() << "Client::disconnectFromHost()";
+	socket->abort();
 }
 
-// richiesta stato all'openserver
-void Client::richStato(QString richiesta)
+void Client::connectToHost()
 {
-	qDebug("Client::richStato()");
-	if (socket->state() == QAbstractSocket::UnconnectedState)
-		connetti();
-	socket->write(richiesta.toAscii());
-}
-
-void Client::connetti()
-{
-	qDebug("Client::connetti()");
+	qDebug() << "Client::connectToHost(), host: " << host << ", port: " << port;
 	socket->connectToHost(host, port);
+	if (socket->socketDescriptor() != -1)
+		setTcpKeepaliveParams(socket->socketDescriptor());
 }
 
 QByteArray Client::readFromServer()
@@ -147,34 +168,28 @@ void Client::manageFrame(QByteArray frame)
 {
 	if (type == MONITOR || type == SUPERVISOR)
 	{
-		qDebug() << "frame read: " << frame;
+		if (host != OPENSERVER_ADDR)
+			qDebug() << qPrintable(QString("Client::manageFrame()[%1:%2]").arg(host).arg(port)) << "read:" << frame;
+		else
+			qDebug() << "Client::manageFrame() read:" << frame;
+
 		if (frame == "*#*1##")
 			qWarning("ERROR - ack received");
 		else if (frame == "*#*0##")
 			qWarning("ERROR - nak received");
-		else if (frame != last_msg_open_read.frame_open)
-		{
-			Open_read.stop();
-			last_msg_open_read.CreateMsgOpen(frame.data(),frame.size());
-			Open_read.setSingleShot(true);
-			Open_read.start(1000);
-			dispatchFrame(frame);
-		}
 		else
-			qDebug("Frame Open duplicated");
+			dispatchFrame(frame);
 	}
 	else
 	{
 		if (frame == "*#*1##")
 		{
 			qDebug("ack received");
-			last_msg_open_write.CreateNullMsgOpen();
 			emit openAckRx();
 		}
 		else if (frame == "*#*0##")
 		{
 			qDebug("nak received");
-			last_msg_open_write.CreateNullMsgOpen();
 			emit openNakRx();
 		}
 	}
@@ -228,11 +243,9 @@ void Client::unsubscribe(FrameReceiver *obj)
 	}
 }
 
-
 int Client::socketFrameRead()
 {
 	qDebug("Client::socketFrameRead()");
-	//riarmo il WD
 	rearmWDT();
 
 	while (true)
@@ -248,12 +261,6 @@ int Client::socketFrameRead()
 		manageFrame(frame);
 	}
 	return 0;
-}
-
-void Client::clear_last_msg_open_read()
-{
-	qDebug("Delete last Frame Open read");
-	last_msg_open_read.CreateNullMsgOpen();
 }
 
 // Aspetta ack
@@ -277,19 +284,20 @@ void Client::ackReceived()
 	ackRx = true;
 }
 
-void Client::socketConnectionClosed()
-{
-	qDebug("Client::socketConnectionClosed()");
-	if (type == MONITOR || type == SUPERVISOR)
-		connetti();
-}
-
 void Client::socketError(QAbstractSocket::SocketError e)
 {
-	if (e != QAbstractSocket::RemoteHostClosedError || type == MONITOR || type == SUPERVISOR)
-		qWarning() << "OpenClient: error " << e << "occurred " << socket->errorString()
-			<< "on client" << type;
+	if (!is_connected)
+		return;
 
-	if (type == MONITOR || type == SUPERVISOR)
-		QTimer::singleShot(500, this, SLOT(connetti()));
+	if (e != QAbstractSocket::RemoteHostClosedError || type == MONITOR || type == SUPERVISOR)
+	{
+		QMetaEnum e = staticMetaObject.enumerator(0);
+
+		qWarning() << qPrintable(QString("OpenClient [%1:%2]: error").arg(host).arg(port))
+			<< socket->errorString() << "occurred on client" << e.key(type);
+
+		is_connected = false;
+		emit connectionDown();
+	}
 }
+

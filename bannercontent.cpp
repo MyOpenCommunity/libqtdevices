@@ -1,24 +1,58 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "bannercontent.h"
 #include "banner.h"
+#include "fontmanager.h"
 
 #include <QBoxLayout>
+#include <QGridLayout>
 #include <QDebug>
+#include <QVariant>
+#include <QFontMetrics>
 
-
-// TODO: add an abstract base class for the BTouch and TouchX content
-// widgets and remove this #ifdef
 
 #ifdef LAYOUT_BTOUCH
-
-BannerContent::BannerContent(QWidget *parent) : QWidget(parent)
+BannerContent::BannerContent(QWidget *parent) :
+	GridContent(parent),
+	columns(1)
+#else
+BannerContent::BannerContent(QWidget *parent, int _columns) :
+	GridContent(parent),
+	columns(_columns)
+#endif
 {
-	current_index = 0;
-	QVBoxLayout *l = new QVBoxLayout(this);
+	QGridLayout *l = static_cast<QGridLayout *>(layout());
+#ifdef LAYOUT_BTOUCH
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
-	need_update = true;
-	first_time = true;
-	need_pagination = false;
+#else
+	l->setContentsMargins(18, 0, 17, 0);
+	l->setHorizontalSpacing(0);
+	l->setVerticalSpacing(5);
+#endif
+	// use column 1 for the vertical separator bar
+	l->setColumnStretch(0, 1);
+	if (columns == 2)
+		l->setColumnStretch(2, 1);
 }
 
 int BannerContent::bannerCount()
@@ -50,107 +84,63 @@ void BannerContent::appendBanner(banner *b)
 		}
 }
 
-void BannerContent::resetIndex()
-{
-	current_index = 0;
-	need_update = true;
-}
-
-void BannerContent::showEvent(QShowEvent *e)
-{
-	drawContent();
-	QWidget::showEvent(e);
-}
-
 void BannerContent::drawContent()
 {
-	if (!need_update)
-		return;
+	QGridLayout *l = qobject_cast<QGridLayout*>(layout());
 
-	if (first_time)
+	// copy the list to pass it to GridContent methods; as an alternative
+	// we could change them to template methods
+	QList<QWidget *> items;
+	for (int i = 0; i < banner_list.size(); ++i)
+		items.append(banner_list[i]);
+
+	if (pages.size() == 0)
 	{
-		int total_height = 0;
-		int area_height = contentsRect().height();
+		// prepare the page list
+		prepareLayout(items, columns);
 
-		for (int i = 0; i < banner_list.size(); ++i)
-			total_height += banner_list.at(i)->sizeHint().height();
-
-		need_pagination = total_height > area_height;
-		emit displayScrollButtons(need_pagination);
-	}
-
-	need_update = false;
-
-	// We want a circular list of banner, so we can't use a layout and hide/show
-	// the banner to display or when you click the up button the order is wrong.
-	// So we remove all the child from the layout, hide them and re-add to the
-	// layout only the banner to show.
-	QLayoutItem *child;
-	while ((child = layout()->takeAt(0)) != 0)
-		if (QWidget *w = child->widget())
-			w->hide();
-
-	if (need_pagination)
-	{
-		int next_index = calculateNextIndex(true);
-		Q_ASSERT_X(current_index != -1, "BannerContent::drawContent", "calculateNextIndex return -1!");
-		int index = current_index;
-		while (true)
+		// add items to the layout
+		for (int i = 0; i < pages.size() - 1; ++i)
 		{
-			banner *b = banner_list.at(index);
-			b->show();
-			layout()->addWidget(b);
-			index = (index + 1) % banner_list.size();
-			if (index == current_index || index == next_index)
-				break;
+			int base = pages[i];
+			for (int j = 0; base + j < pages[i + 1]; ++j)
+				l->addWidget(banner_list.at(base + j), j / columns, (j % columns) * columns);
+		}
+
+		l->setRowStretch(l->rowCount(), 1);
+
+		if (columns == 2)
+		{
+			// construct the vertical separator widget
+			QWidget *vertical_bar = new QWidget;
+			vertical_bar->setProperty("VerticalSeparator", true);
+
+			// create the layout with a spacer at the bottom, to
+			// mimick the layout of current code
+			QFont label_font = bt_global::font->get(FontManager::BANNERDESCRIPTION);
+			QVBoxLayout *bar_layout = new QVBoxLayout;
+			bar_layout->addWidget(vertical_bar, 1);
+			bar_layout->addItem(new QSpacerItem(20, QFontMetrics(label_font).height()));
+
+			// add the vertical bar to the layout
+			l->addLayout(bar_layout, 0, 1);
 		}
 	}
-	else
+
+	updateLayout(items);
+
+	// resize the vertical separator to span all completely filled rows
+	// and ignore the last row if it only contains a single item; pages with only
+	// one item need to be handled as a special case because QGridLayout does not
+	// support items wiht colspan 0
+	bool show_vertical_bar = columns == 2 && pages[current_page + 1] - pages[current_page] >= 2;
+
+	if (columns == 2)
 	{
-		QBoxLayout *l = qobject_cast<QVBoxLayout*>(layout());
-		for (int i = 0; i < banner_list.size(); ++i)
-		{
-			banner *b = banner_list.at(i);
-			b->show();
-			l->addWidget(b);
-		}
-		l->addStretch(1);
+		QLayoutItem *vertical_separator = l->itemAtPosition(0, 1);
+		l->removeItem(vertical_separator);
+		vertical_separator->layout()->itemAt(0)->widget()->setVisible(show_vertical_bar);
+		l->addItem(vertical_separator, 0, 1,
+			   (pages[current_page + 1] - pages[current_page]) / 2, 1);
 	}
 }
-
-void BannerContent::pgUp()
-{
-	current_index = calculateNextIndex(false);
-	Q_ASSERT_X(current_index != -1, "BannerContent::pgUp", "calculateNextIndex return -1!");
-	need_update = true;
-	drawContent();
-}
-
-void BannerContent::pgDown()
-{
-	current_index = calculateNextIndex(true);
-	Q_ASSERT_X(current_index != -1, "BannerContent::pgDown", "calculateNextIndex return -1!");
-	need_update = true;
-	drawContent();
-}
-
-int BannerContent::calculateNextIndex(bool up_to_down)
-{
-	int area_height = contentsRect().height();
-	int banners_height = 0;
-	int index = current_index;
-
-	while (true)
-	{
-		banner *b = banner_list.at(index);
-		banners_height += b->sizeHint().height();
-		if (banners_height > area_height)
-			return index;
-
-		// We add "banner_list.size()" to ensure that the module is always a positive number
-		index = (index + (up_to_down ? 1 : -1) + banner_list.size()) % banner_list.size();
-	}
-	return -1;
-}
-
-#endif // LAYOUT_BTOUCH

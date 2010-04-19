@@ -1,12 +1,22 @@
-/****************************************************************
- **
- ** BTicino Touch scren Colori art. H4686
- **
- ** playwindow.cpp
- **
- ** finestra di dati sulla sorgente MultimediaSource
- **
- ****************************************************************/
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 
 #include "playwindow.h"
@@ -17,8 +27,6 @@
 #include "bannfrecce.h"
 
 #include <QLayout>
-
-#include <unistd.h> // usleep
 
 /*
  * Interface icon paths.
@@ -164,17 +172,7 @@ void PlayWindow::stopPlayer()
 {
 	// quit mplayer if it is already playing
 	if (media_player->isInstanceRunning())
-	{
-		/*
-		 * After stop() and before starting a new istance,  we should wait
-		 * for the SIGCHLD signal emitted after quits.
-		 * usleep() exits immediately with EINTR error in case of signal.
-		 */
 		media_player->quit();
-		qDebug("[AUDIO] PlayWindow: waiting for mplayer to exit...");
-		usleep(1000000);
-		qDebug("[AUDIO] Ok");
-	}
 }
 
 QString PlayWindow::getCurrentDescription()

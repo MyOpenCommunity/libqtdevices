@@ -1,15 +1,21 @@
-/*!
- * \file
- * <!--
- * Copyright 2008 MAC S.r.l. (http://www.mac-italia.com/)
- * All rights reserved.
- * -->
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
  *
- * \brief  Stop & go related classes
+ * Copyright (C) 2010 BTicino S.p.A.
  *
- *  TODO: detailed description (optional) 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * \author Lucio Macellari
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 
@@ -18,7 +24,7 @@
 #include "device.h"
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "main.h" // ICON...
-#include "device.h"
+#include "deviceold.h"
 #include "devices_cache.h" // bt_global::devices_cache
 
 #include <QWidget>
@@ -87,65 +93,13 @@
 
 
 /*==================================================================================================
-	StopngoItem class definition
-==================================================================================================*/
-
-StopngoItem::StopngoItem(int _id, int _cid, QString _descr, QString _where)
-{
-	id = _id;
-	cid = _cid;
-	descr = _descr;
-	where = _where;
-}
-
-void StopngoItem::SetId(int _id)
-{
-	id = id;
-}
-
-void StopngoItem::SetCid(int _cid)
-{
-	cid = _cid;
-}
-
-void StopngoItem::SetDescr(QString _descr)
-{
-	descr = descr;
-}
-
-void StopngoItem::SetWhere(QString _where)
-{
-	where = where;
-}
-
-int StopngoItem::GetId()
-{
-	return id;
-}
-
-int StopngoItem::GetCid()
-{
-	return cid;
-}
-
-QString StopngoItem::GetDescr()
-{
-	return descr;
-}
-
-QString StopngoItem::GetWhere()
-{
-	return where;
-}
-
-/*==================================================================================================
 	BannPulsDynIcon class definition
 ==================================================================================================*/
 
 BannPulsDynIcon::BannPulsDynIcon(QWidget *parent, const QString &where) : bannPuls(parent)
 {
 	// Get status changed events back
-	mci_device* dev = (mci_device*)bt_global::devices_cache.get_mci_device(where);
+	mci_device* dev = bt_global::add_device_to_cache(new mci_device(where));
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 		SLOT(status_changed(QList<device_status*>)));
 }
@@ -241,7 +195,7 @@ StopngoPage::StopngoPage(QString where, int id, QString pageTitle)
 	AddItems();
 
 	// Get status changed events back
-	mci_device* dev = (mci_device*)bt_global::devices_cache.get_mci_device(where);
+	mci_device* dev = bt_global::add_device_to_cache(new mci_device(where));
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 		SLOT(status_changed(QList<device_status*>)));
 }

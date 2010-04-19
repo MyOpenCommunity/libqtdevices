@@ -1,14 +1,23 @@
-/**
- * \file
- * <!--
- * Copyright 2009 Develer S.r.l. (http://www.develer.com/)
- * All rights reserved.
- * -->
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
  *
- * \brief This file contain the page to show and control network settings.
+ * Copyright (C) 2010 BTicino S.p.A.
  *
- * \author Gianni Valdambrini <aleister@develer.com>
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 
 #ifndef LAN_SETTINGS_H
 #define LAN_SETTINGS_H
@@ -20,7 +29,7 @@
 #include <QHash>
 
 class PlatformDevice;
-class BtButton;
+class StateButton;
 class QGridLayout;
 class QDomNode;
 
@@ -61,7 +70,7 @@ public slots:
 	virtual void showPage();
 
 private:
-	BtButton *toggle_btn;
+	StateButton *toggle_btn;
 	Text2Column *box_text;
 	PlatformDevice *dev;
 	// The real status of the lan
@@ -70,7 +79,7 @@ private:
 	bool saved_status;
 
 private slots:
-	void status_changed(const StatusList &status_list);
+	void status_changed(const DeviceValues &status_list);
 	void toggleLan();
 };
 

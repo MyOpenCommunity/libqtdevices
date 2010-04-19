@@ -1,18 +1,46 @@
-/*!
- * \bttime.h
- * <!--
- * Copyright 2008 Develer S.r.l. (http://www.develer.com/)
- * All rights reserved.
- * -->
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
  *
- * \brief A reimplementation of QTime class that accepts a custom number of hours and minutes.
+ * Copyright (C) 2010 BTicino S.p.A.
  *
- * \author Luca Ottaviano <lottaviano@develer.com>
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+
 #include "bttime.h"
+//#include "main.h"
 
 #include <QDateTime>
+
+QString formatTime(const BtTime &t)
+{
+	QString str;
+	int h = t.hour();
+	int m = t.minute();
+	int s = t.second();
+	if (h == 0 && m == 0)  // time in secs
+		str = QString("%1''").arg(s);
+	else if (h == 0) // time in mins
+		str = QString("%1'").arg(m);
+	else if (h < 10)   // time in hh:mm
+		str = QString("%1:%2").arg(h).arg(m, 2, 10, QChar('0'));
+	else
+		str = QString("%1h").arg(h);
+	return str;
+}
+
 
 // BtTime implementation
 
@@ -86,6 +114,9 @@ BtTime BtTime::addSecond(int s) const
 
 BtTime BtTime::addMinute(int m) const
 {
+	if (-m > max_minutes)
+		qFatal("You can't subtract more than max_minutes.");
+
 	BtTime t = *this;
 	if (m == 1)
 	{
@@ -108,7 +139,18 @@ BtTime BtTime::addMinute(int m) const
 			--t._minute;
 	}
 	else
-		qFatal("BtTime::addHour(): _minute != +-1");
+	{
+		int tmp = t._minute + m;
+		t._minute = (tmp + max_minutes) % max_minutes;
+		int div = 0;
+		if (m < 0 && tmp < 0)
+		{
+			div = -((max_minutes - m) / max_minutes);
+		}
+		else
+			div = tmp / max_minutes;
+		t = t.addHour(div);
+	}
 	return t;
 }
 
@@ -134,7 +176,7 @@ BtTime BtTime::addHour(int h) const
 			--t._hour;
 	}
 	else
-		qFatal("BtTime::addHour(): _hour != +-1");
+		t._hour = (t._hour + h + max_hours) % max_hours;
 	return t;
 }
 
@@ -156,7 +198,7 @@ int BtTime::second() const
 QString BtTime::toString() const
 {
 	QString str;
-	str.sprintf("%u:%02u:%02u", _hour, _minute, _second);
+	str.sprintf("%d:%02d:%02d", _hour, _minute, _second);
 	return str;
 }
 

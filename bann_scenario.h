@@ -1,31 +1,46 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 
 #ifndef BANN_SCENARIO_H
 #define BANN_SCENARIO_H
 
-#include "bann1_button.h" // bannOnSx
-#include "bann3_buttons.h" // bann3But
-#include "bann4_buttons.h" // bann4But, bann4tasLab
-#include "device_status.h"
-
-#include <QObject>
-#include <QString>
-#include <QList>
+#include "bann2_buttons.h" // Bann2Buttons
+#include "bann3_buttons.h" // Bann3Buttons
+#include "bann4_buttons.h" // Bann4ButtonsIcon, bann4But
+#include "device.h" // DeviceValues
 
 class PPTSceDevice;
-class scenEvo_cond;
-class device;
+class ScenEvoCondition;
+class ScenEvoTimeCondition;
+class ScenEvoDeviceCondition;
 class QTimerEvent;
-class QWidget;
-class QDomNode;
 class ScenarioDevice;
 
 
 
-class BannSimpleScenario : public BannLeft
+class BannSimpleScenario : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	BannSimpleScenario(QWidget *parent, const QDomNode &config_node);
+	BannSimpleScenario(int scenario, const QString &descr, const QString &where, int openserver_id);
 
 private slots:
 	void activate();
@@ -36,15 +51,14 @@ private:
 };
 
 
-// substitute for gesModScen
-class ModifyScenario : public Bann4ButtonsIcon
+class ScenarioModule : public Bann4ButtonsIcon
 {
 Q_OBJECT
 public:
-	ModifyScenario(QWidget *parent, const QDomNode &config_node);
+	ScenarioModule(int scenario, const QString &descr, const QString &where, int openserver_id);
 
 private slots:
-	void status_changed(const StatusList &sl);
+	void status_changed(const DeviceValues &sl);
 	void activate();
 	void editScenario();
 	void startEditing();
@@ -59,100 +73,45 @@ private:
 };
 
 
-#if 1
-/*!
- * \class bannScenario
- * \brief This class is made to control a scenario of a \a scenario \a unit.
- *
- * \author Davide
- * \date lug 2005
+/**
+ * This banner represent an evolved scenario, that can do actions based on devices
+ * and times based conditions.
  */
-class bannScenario : public bannOnSx
+class ScenarioEvolved : public Bann3Buttons
 {
 Q_OBJECT
 public:
-	bannScenario(QWidget *parent, QString where, QString IconaSx);
-private slots:
-	void Attiva();
-};
+	ScenarioEvolved(int _item_id, QString descr, QString _action, bool _enabled,
+		ScenEvoTimeCondition *tcond, ScenEvoDeviceCondition *dcond);
 
-/*!
- * \class gesModScen
- * \brief This class is made to control a scenario of a \a din \a scenario \a module.
- *
- * From this banner is possible to actuate, clean and program the scenario controlled.
- * \author Davide
- * \date lug 2005
- */
-class gesModScen : public bann4tasLab
-{
-Q_OBJECT
-public:
-	gesModScen(QWidget *parent, QString where, QString IcoSx, QString IcoDx, QString IcoCsx,
-		QString IcoCdx, QString IcoDes, QString IcoSx2, QString IcoDx2);
-public slots:
-	void status_changed(QList<device_status*>);
-	void inizializza(bool forza = false);
-private:
-	QString icon_on, icon_stop, icon_info, icon_no_info;
-	QString cosa, dove;
-	unsigned char sendInProgr, bloccato, in_progr;
-	device *dev;
-private slots:
-	void attivaScenario();
-	void enterInfo();
-	void exitInfo();
-	void startProgScen();
-	void stopProgScen();
-	void cancScen();
-};
-
-#endif
-
-
-/*!
- * \class scenEvo
- * \brief This class represents an advanced scenario management object
- * \author Ciminaghi
- * \date apr 2006
- */
-class scenEvo : public Bann3Buttons
-{
-Q_OBJECT
-public:
-	scenEvo(QWidget *parent, const QDomNode &conf_node, QList<scenEvo_cond*> c);
-	~scenEvo();
 public slots:
 	void inizializza(bool forza = false);
 
+private slots:
+	void toggleActivation();
+	void forceTrig();
+	void trig(bool forced = false);
+	void trigOnStatusChanged();
+
+	void reset();
+	void save();
+
 private:
-	QList<scenEvo_cond*> condList;
-	unsigned current_condition;
 	QString action, enable_icon, disable_icon;
 	int serial_number;
 	static int next_serial_number;
 	bool enabled;
-
-private slots:
-	void toggleAttivaScev();
-	void configScev();
-	void forzaScev();
-	void nextCond();
-	void prevCond();
-	void firstCond();
-	void trig(bool forced = false);
-	void saveAndApplyAll();
-	void resetAll();
-	void trigOnStatusChanged();
+	int item_id;
+	ScenEvoTimeCondition *time_cond;
+	ScenEvoDeviceCondition *device_cond;
 };
 
 
-// substitute for scenSched
 class ScheduledScenario : public Bann4Buttons
 {
 Q_OBJECT
 public:
-	ScheduledScenario(QWidget *parent, const QDomNode &config_node);
+	ScheduledScenario(const QString &enable, const QString &start, const QString &stop, const QString &disable, const QString &descr);
 
 private slots:
 	void enable();
@@ -165,46 +124,11 @@ private:
 };
 
 
-#if 0
-// DELETE
-/*!
- * \class scenSched
- * \brief This class represents a scheduled scenario management object
- * \author Ciminaghi
- * \date apr 2006
- */
-class scenSched : public bann4But
+class PPTSce : public Bann4Buttons
 {
 Q_OBJECT
 public:
-	scenSched(QWidget *parent, QString Icona1, QString Icona2, QString Icona3, QString Icona4, QString act_enable,
-		QString act_disable, QString act_start, QString act_stop);
-	/*!
-	 * Reimplemented draw
-	 */
-	void Draw();
-public slots:
-	/*!
-	 * \brief Enable scheduled scenario
-	 */
-	void enable();
-	/*! Disable scheduled scenario */
-	void disable();
-	/*! Start scheduled scenario */
-	void start();
-	/*! Stop scheduled scenario */
-	void stop();
-private:
-	QString action_enable, action_disable, action_start, action_stop;
-};
-#endif
-
-
-class PPTSce : public bann4But
-{
-Q_OBJECT
-public:
-	PPTSce(QWidget *parent, QString where, int cid);
+	PPTSce(const QString &descr, const QString &where, int openserver_id);
 
 protected:
 	virtual void timerEvent(QTimerEvent *e);

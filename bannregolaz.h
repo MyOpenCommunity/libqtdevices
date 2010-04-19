@@ -1,12 +1,23 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-** bannregolaz.h
-**
-**Riga con tasto ON OFF, icona centrale divisa in 2 per regolare
-**
-****************************************************************/
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 
 #ifndef BANNREGOLAZ_H
 #define BANNREGOLAZ_H
@@ -58,11 +69,9 @@ signals:
 /*!
   \class bannRegolaz
   \brief This is a class that describes a banner with a button on the right and on the left and two adjacent buttons on the center (thought to represent each one an half of the same image) and a text in the bottom.
-  \author Davide
-  \date lug 2005
 */
 
-class bannRegolaz : public banner
+class bannRegolaz : public BannerOld
 {
 	Q_OBJECT
 public:

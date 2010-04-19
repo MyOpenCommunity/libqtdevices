@@ -1,22 +1,31 @@
-/****************************************************************
-**
-** BTicino Touch scren Colori art. H4686
-**
-** bann1_button.h
-**
-** In this file there are contained all generic banners with 1 button.
-**
-****************************************************************/
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 
 #ifndef BANN1_BUTTON_H
 #define BANN1_BUTTON_H
 
 #include "banner.h"
-#include "energy_device.h"
 
 #include <QList>
 #include <QPair>
-#include <QString>
 
 class BtButton;
 class Page;
@@ -31,13 +40,15 @@ class QLabel;
 
 
 // substitute for bannPuls
+// Don't use this class for new developments, use Bann2Buttons
 class BannSinglePuls : public BannerNew
 {
 Q_OBJECT
 public:
 	BannSinglePuls(QWidget *parent);
-	void initBanner(const QString &right, const QString &center, const QString &banner_text);
+	void initBanner(const QString &right, const QString &_center, const QString &banner_text);
 	void connectRightButton(Page *p);
+	void setCentralText(const QString &t);
 
 signals:
 	void rightClick();
@@ -46,12 +57,11 @@ protected:
 	BtButton *right_button;
 
 private:
-	void loadIcons(const QString &right, const QString &center);
-	QLabel *center_icon, *text;
+	QLabel *text;
+	TextOnImageLabel *center;
 };
 
 
-// substitute for bannOn2scr
 class BannOn2Labels : public BannerNew
 {
 Q_OBJECT
@@ -75,24 +85,13 @@ private:
 };
 
 
-// substitute for bannOnSx
-class BannLeft : public BannerNew
-{
-Q_OBJECT
-public:
-	BannLeft(QWidget *parent);
-	void initBanner(const QString &left, const QString &center);
-protected:
-	BtButton *left_button;
-
-private:
-	QLabel *text;
-};
-
 // Single button on the center, without bottom label
 class BannCenteredButton : public BannerNew
 {
 Q_OBJECT
+public:
+	void connectButton(Page *linked_page);
+
 protected:
 	BannCenteredButton(QWidget *parent);
 	void initBanner(const QString &center);
@@ -100,7 +99,7 @@ protected:
 	BtButton *center_button;
 };
 
-// replacement for bannSimple
+
 class BannSimple : public BannCenteredButton
 {
 Q_OBJECT
@@ -111,14 +110,12 @@ signals:
 	void clicked();
 };
 
+
 /*!
   \class bannPuls
   \brief This is a class that describes a banner with a button on the right, an icon in the center and a text on the bottom
-  \author Davide
-  \date lug 2005
 */
-
-class bannPuls : public banner
+class bannPuls : public BannerOld
 {
 Q_OBJECT
 public:
@@ -130,32 +127,12 @@ signals:
 	void released();
 };
 
-#if 0
-
-/*!
-  \class bannSimple
-  \brief A very simple banner with only a button in the center.
-*/
-
-class bannSimple : public banner
-{
-Q_OBJECT
-public:
-	bannSimple(QWidget *parent, QString icon=QString(), Page *page=0);
-
-signals:
-	void click();
-};
-
-#endif
 
 /*!
   \class bannOnDx
   \brief This is a class that describes a banner with a button on the right and a text on the remaining area
-  \author Davide
-  \date lug 2005
 */
-class bannOnDx : public banner
+class bannOnDx : public BannerOld
 {
 Q_OBJECT
 public:
@@ -169,10 +146,8 @@ signals:
 /*!
   \class bannOnSx
   \brief This is a class that describes a banner with a button on the left and a text on the remaining area
-  \author Davide
-  \date lug 2005
 */
-class bannOnSx : public banner
+class bannOnSx : public BannerOld
 {
 Q_OBJECT
 public:
@@ -183,53 +158,28 @@ signals:
 };
 
 
+#if 0
 
-class bannOnIcons : public banner
+class bannOnIcons : public BannerOld
 {
 Q_OBJECT
 public:
 	bannOnIcons(QWidget *parent);
 };
 
-
-/*!
-  \class bannOn2scr
-  \brief This is a class that describes a banner with a button on the right, text on the bottom area and on the left, plus a couple of icons in the middle
-  \author Ciminaghi
-  \date apr 2006
-*/
-class bannOn2scr : public banner
-{
-Q_OBJECT
-public:
-	bannOn2scr(QWidget *w=0);
-};
+#endif
 
 
 /*!
   \class bannBut2Icon
   \brief This is a class that describes a banner with a button on the right,
   two icons in the middle and some text below
-  \author Ciminaghi
-  \date jun 2006
 */
-class bannBut2Icon : public banner
+class bannBut2Icon : public BannerOld
 {
 Q_OBJECT
 public:
 	bannBut2Icon(QWidget *);
-};
-
-
-class bannTextOnImage : public banner
-{
-Q_OBJECT
-public:
-	bannTextOnImage(QWidget *parent, const QString &text = QString(), QString bg_image = "empty_icon", QString fwd_image = "forward");
-	void setInternalText(const QString &text);
-
-private:
-	TextOnImageLabel *label;
 };
 
 
@@ -250,19 +200,24 @@ public:
 	// Return the id of the current state
 	int currentState();
 
-signals:
-	void currentStateChanged(int id);
+	// Set a different state. The state must be previously added with addState().
+	// You can use states given from currentState().
+	void setCurrentState(int new_state);
 
 protected:
 	BtButton *left_button;
 
 private:
-	unsigned int current_index;
+	void updateText();
+	int current_index;
 	QLabel *text;
 	QList<QPair<int, QString> > states_list;
 
 private slots:
 	void changeState();
+
+signals:
+	void stateChanged(int);
 };
 
 

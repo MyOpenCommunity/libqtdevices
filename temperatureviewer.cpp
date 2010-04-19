@@ -1,8 +1,31 @@
+/* 
+ * BTouch - Graphical User Interface to control MyHome System
+ *
+ * Copyright (C) 2010 BTicino S.p.A.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "temperatureviewer.h"
 #include "fontmanager.h" // bt_global::font
 #include "scaleconversion.h"
 #include "page.h"
-#include "main.h" // bt_global::config
+#include "main.h" // (*bt_global::config)
+#include "probe_device.h"
+#include "devices_cache.h"
 
 #include <openmsg.h>
 
@@ -16,11 +39,10 @@
 
 TemperatureViewer::TemperatureViewer(Page *page) : linked_page(page)
 {
-	temp_scale = static_cast<TemperatureScale>(bt_global::config[TEMPERATURE_SCALE].toInt());
-	subscribe_monitor(4);
+	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 }
 
-void TemperatureViewer::add(QString where, int x, int y, int width, int height, QString descr, QString ext)
+void TemperatureViewer::add(QString where, int openserver_id, int x, int y, int width, int height, QString descr, QString ext)
 {
 	TemperatureData temp;
 	QLCDNumber *l = new QLCDNumber(linked_page);
@@ -42,8 +64,10 @@ void TemperatureViewer::add(QString where, int x, int y, int width, int height, 
 		temp.text->setGeometry(x, y + height - H_SCR_TEMP, width, H_SCR_TEMP);
 	}
 
-	temp.ext = ext;
-	temp.where = where;
+	temp.device = bt_global::add_device_to_cache(new NonControlledProbeDevice(where, ext == "1" ?
+		NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL, openserver_id));
+	connect(temp.device, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+
 	unsigned default_bt_temp = 1235;
 	updateDisplay(default_bt_temp, &temp);
 	temp_list.append(temp);
@@ -51,15 +75,6 @@ void TemperatureViewer::add(QString where, int x, int y, int width, int height, 
 
 void TemperatureViewer::inizializza()
 {
-	foreach (const TemperatureData &temp, temp_list)
-	{
-		QString frame = "*#4*" + temp.where;
-		if (temp.ext == "0")
-			frame += "*0##";
-		else
-			frame += "00*15#" + temp.where + "##";
-		linked_page->sendInit(frame);
-	}
 }
 
 void TemperatureViewer::updateDisplay(unsigned new_bt_temperature, TemperatureData *temp)
@@ -86,23 +101,14 @@ void TemperatureViewer::updateDisplay(unsigned new_bt_temperature, TemperatureDa
 	temp->lcd->display(displayed_temp);
 }
 
-void TemperatureViewer::manageFrame(OpenMsg &msg)
+void TemperatureViewer::status_changed(const DeviceValues &sl)
 {
-	char dove[30];
-	strcpy(dove, msg.Extract_dove());
-	if (dove[0] == '#')
-		strcpy(&dove[0], &dove[1]);
+	if (!sl.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
+		return;
+
+	device *dev = static_cast<device *>(sender());
 
 	foreach (TemperatureData temp, temp_list)
-	{
-		int icx = -1;
-		if (temp.ext == "0" && temp.where == QString(dove) && !strcmp(msg.Extract_grandezza(), "0"))
-			icx = atoi(msg.Extract_valori(0));
-		else if (temp.ext == "1" && !strcmp(msg.Extract_grandezza(),"15") && temp.where.at(0) == dove[0])
-			icx = atoi(msg.Extract_valori(1));
-		if (icx > -1)
-			updateDisplay(icx, &temp);
-	}
+		if (dev == temp.device)
+			updateDisplay(sl[NonControlledProbeDevice::DIM_TEMPERATURE].toInt(), &temp);
 }
-
-
