@@ -982,7 +982,7 @@ void DeviceConditionVolume::reset()
 
 
 DeviceConditionTemperature::DeviceConditionTemperature(DeviceConditionDisplayInterface *cond_display, QString trigger,
-	QString where, int openserver_id, bool external) : DeviceCondition(cond_display)
+	QString where, bool external, int openserver_id) : DeviceCondition(cond_display)
 {
 	// Temp condition is expressed in bticino format
 	int temp_condition = trigger.toInt();

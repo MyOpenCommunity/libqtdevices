@@ -161,7 +161,7 @@ ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &con
 	case 3:
 	case 8:
 		condition_display = new DeviceConditionDisplayTemperature(this, descr, bt_global::skin->getImage("probe"));
-		device_cond = new DeviceConditionTemperature(condition_display, trigger, w, oid, external);
+		device_cond = new DeviceConditionTemperature(condition_display, trigger, w, external, oid);
 		break;
 	case 9:
 		condition_display = new DeviceConditionDisplayOnOff(this, descr, bt_global::skin->getImage("aux"));

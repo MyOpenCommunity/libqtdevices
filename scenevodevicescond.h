@@ -369,7 +369,7 @@ class DeviceConditionTemperature : public DeviceCondition
 {
 Q_OBJECT
 public:
-	DeviceConditionTemperature(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id = 0, bool external = false);
+	DeviceConditionTemperature(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, bool external = false, int openserver_id = 0);
 	virtual void get_condition_value(QString&);
 	virtual void inizializza();
 
