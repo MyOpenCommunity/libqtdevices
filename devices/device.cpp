@@ -153,14 +153,14 @@ void device::sendFrame(QString frame) const
 {
 	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].first, "device::sendFrame",
 			   qPrintable(QString("Client comandi not set for id: %1!").arg(openserver_id)));
-	clients[openserver_id].first->sendFrameOpen(frame.toAscii().constData());
+	clients[openserver_id].first->sendFrameOpen(frame);
 }
 
 void device::sendInit(QString frame) const
 {
 	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].second, "device::sendInit",
 		qPrintable(QString("Client richieste not set for id: %1!").arg(openserver_id)));
-	clients[openserver_id].second->sendFrameOpen(frame.toAscii().constData());
+	clients[openserver_id].second->sendFrameOpen(frame);
 }
 
 void device::sendCommand(QString what, QString _where) const
