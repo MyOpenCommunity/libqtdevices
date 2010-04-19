@@ -25,6 +25,7 @@
 #include <QObject>
 #include <QHash>
 #include <QPair>
+#include <QDateTime>
 
 
 class SoundDiffusion;
@@ -118,6 +119,7 @@ private:
 	Page *pagDefault;
 
 	QTimer *screensaver_timer;
+	QDateTime last_date_time;
 	QString pwd;
 	bool pwdOn, alarmClockIsOn, alreadyCalibrated;
 	KeypadWindow *passwordKeypad;
