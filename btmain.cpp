@@ -580,7 +580,8 @@ void BtMain::checkScreensaver()
 		 (*bt_global::display).currentState() == DISPLAY_SCREENSAVER)
 	{
 		qDebug() << "Turning screen off";
-		screensaver->stop();
+		if (screensaver)
+			screensaver->stop();
 		(*bt_global::display).setState(DISPLAY_OFF);
 	}
 	else if (time >= freeze_time && getBacklight() && !frozen)
