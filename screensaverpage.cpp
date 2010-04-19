@@ -85,8 +85,11 @@ int ScreenSaverPage::getCurrentId()
 void ScreenSaverPage::bannerSelected(int id)
 {
 	(*bt_global::display).setScreenSaver(static_cast<ScreenSaver::Type>(id));
+	// TODO review when porting the code to BTouch
+#ifdef BT_HARDWARE_BTOUCH
 	if (id == ScreenSaver::NONE)
 		(*bt_global::display).setBrightness(BRIGHTNESS_OFF);
+#endif
 }
 
 
