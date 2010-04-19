@@ -554,6 +554,20 @@ void BtMain::checkScreensaver()
 {
 	rearmWDT();
 
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
+	// detect when the user adjusts date/time
+	// TODO add frame parsing to PlatformDevice to detect when date/time really changes
+	QDateTime curr = QDateTime::currentDateTime();
+
+	// TODO the correct handling would require to send a signal with the time delta and
+	//      have hardware_functions (and others) adjust the saved date/time; this works
+	//      for now
+	if (abs(last_date_time.secsTo(curr)) > 30)
+		// we assume that the user just clicked "OK" to change the date,
+		setTimePress(curr);
+	last_date_time = curr;
+#endif
+
 	if ((*bt_global::display).isForcedOperativeMode())
 		return;
 	if (alarmClockIsOn || calibrating)
