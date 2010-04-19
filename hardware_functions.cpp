@@ -410,19 +410,19 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 // TODO: sound playing really should be centralized, since only one process at the time can access /dev/dsp
 // For example, alarm or doorbell sound fails if an mp3 is playing.
 #ifdef BT_HARDWARE_TOUCHX
-static QProcess play_sound_process;
+Q_GLOBAL_STATIC(QProcess, play_sound_process);
 #endif
 
 void playSound(const QString &wavFile)
 {
 #ifdef BT_HARDWARE_TOUCHX
-	if (play_sound_process.state() != QProcess::NotRunning)
+	if (play_sound_process()->state() != QProcess::NotRunning)
 	{
-		play_sound_process.terminate();
-		play_sound_process.waitForFinished();
+		play_sound_process()->terminate();
+		play_sound_process()->waitForFinished();
 	}
 
-	play_sound_process.start("/bin/sox",
+	play_sound_process()->start("/bin/sox",
 				 QStringList() << "-w" << "-c" << "2"
 				 << "-s" << "-t" << "wav" << wavFile
 				 << "-t" << "ossdsp" << "/dev/dsp1");
@@ -432,7 +432,7 @@ void playSound(const QString &wavFile)
 void stopSound()
 {
 #ifdef BT_HARDWARE_TOUCHX
-	play_sound_process.terminate();
+	play_sound_process()->terminate();
 #endif
 }
 
