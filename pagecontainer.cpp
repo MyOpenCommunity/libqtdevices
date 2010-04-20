@@ -36,10 +36,12 @@
 #define IMG_BACK_BUTTON     IMG_PATH "arrlf.png"
 
 
-PageContainer::PageContainer(const QDomNode &config_node) : buttons_group(this)
+PageContainer::PageContainer(const QDomNode &config_node, bool load_items) :
+	buttons_group(this)
 {
 	connect(&buttons_group, SIGNAL(buttonClicked(int)), SLOT(clicked(int)));
-	loadItems(config_node);
+	if (load_items)
+		loadItems(config_node);
 }
 
 void PageContainer::loadItems(const QDomNode &config_node)

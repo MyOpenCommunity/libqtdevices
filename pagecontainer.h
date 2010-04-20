@@ -40,16 +40,16 @@ class PageContainer : public Page
 {
 Q_OBJECT
 public:
-	PageContainer(const QDomNode &config_node);
+	PageContainer(const QDomNode &config_node, bool load_items = true);
 	virtual void addBackButton();
 
 protected:
 	void addPage(Page *page, int id, QString iconName, int x, int y);
+	void loadItems(const QDomNode &config_node);
 
 private:
 	QButtonGroup buttons_group;
 	QHash<int, Page*> page_list;
-	void loadItems(const QDomNode &config_node);
 
 private slots:
 	void clicked(int id);
