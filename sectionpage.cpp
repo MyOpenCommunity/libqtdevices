@@ -31,9 +31,10 @@
 #include <QDomNode>
 
 
-SectionPage::SectionPage(const QDomNode &config_node)
+SectionPage::SectionPage(const QDomNode &config_node, bool load_items)
 {
-	loadItems(config_node);
+	if (load_items)
+		loadItems(config_node);
 }
 
 void SectionPage::loadItems(const QDomNode &config_node)

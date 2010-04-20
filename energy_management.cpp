@@ -30,7 +30,7 @@
 bool EnergyManagement::rate_edit_displayed = false;
 
 EnergyManagement::EnergyManagement(const QDomNode &conf_node)
-	: SectionPage(conf_node)
+	: SectionPage(conf_node, false)
 {
 	SkinContext cxt(getTextChild(conf_node, "cid").toInt());
 
@@ -49,7 +49,7 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 	if (rate_edit_displayed)
 	{
 		QPoint pos = rect().bottomRight();
-		pos -= QPoint(80, 80);
+		pos -= QPoint(69, 79);
 
 		EnergyRates::energy_rates.loadRates();
 		if (EnergyRates::energy_rates.hasRates())
@@ -57,6 +57,8 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 				bt_global::skin->getImage("currency_exchange"), pos.x(), pos.y());
 	}
 
+	// call loadItems here so EnergyView/LoadManagement will see the correct value for isRateEditDisplayed
+	loadItems(conf_node);
 	addBackButton();
 }
 
