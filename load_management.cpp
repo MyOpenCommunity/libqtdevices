@@ -195,6 +195,7 @@ LoadDataContent::LoadDataContent(int dec, int _rate_id)
 	main->addWidget(second_period);
 
 	rate_id = _rate_id;
+	EnergyRates::energy_rates.loadRates();
 	rate = EnergyRates::energy_rates.getRate(rate_id);
 	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
 	is_currency = false;
