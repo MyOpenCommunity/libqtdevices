@@ -62,6 +62,9 @@ signals:
 public slots:
 	void centralWidgetChanged(int index);
 
+private slots:
+	void aboutToChangePage();
+
 private:
 	PageContainer *central_widget;
 	HeaderWidget *header_widget;

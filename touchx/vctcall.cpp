@@ -415,6 +415,24 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 	layout->setSpacing(10);
 }
 
+void VCTCallPage::cleanUp()
+{
+	// the cleanUp is performed when we exit from the page using an external
+	// button. In this case, we have to send the end of call (even if is an
+	// autoswitch call) and terminate the video.
+	vct_call->endCall();
+
+	bt_global::display->forceOperativeMode(false);
+	vct_call->blockSignals(false);
+}
+
+void VCTCallPage::handleClose()
+{
+	bt_global::display->forceOperativeMode(false);
+	vct_call->blockSignals(false);
+	emit Closed();
+}
+
 int VCTCallPage::sectionId()
 {
 	return VIDEOCITOFONIA;
@@ -489,12 +507,6 @@ void VCTCallPage::autoIncomingCall()
 
 }
 
-void VCTCallPage::handleClose()
-{
-	bt_global::display->forceOperativeMode(false);
-	vct_call->blockSignals(false);
-	emit Closed();
-}
 
 
 VCTCallWindow::VCTCallWindow(EntryphoneDevice *d)

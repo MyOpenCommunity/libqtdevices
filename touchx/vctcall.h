@@ -182,6 +182,9 @@ public:
 	static void setProfStudio(bool on);
 	virtual int sectionId();
 
+public slots:
+	virtual void cleanUp();
+
 private slots:
 	void incomingCall();
 	void autoIncomingCall();

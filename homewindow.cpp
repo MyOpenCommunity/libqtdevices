@@ -94,6 +94,7 @@ HomeWindow::HomeWindow()
 
 	main_layout->addWidget(f, 1, 1, 1, 1);
 
+	connect(header_widget, SIGNAL(aboutToChangePage()), SLOT(aboutToChangePage()));
 	connect(header_widget, SIGNAL(showSectionPage(int)), SIGNAL(showSectionPage(int)));
 	connect(header_widget, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
 #else
@@ -103,6 +104,11 @@ HomeWindow::HomeWindow()
 #endif
 
 	central_widget->setContainerWindow(this);
+}
+
+void HomeWindow::aboutToChangePage()
+{
+	central_widget->currentPage()->cleanUp();
 }
 
 void HomeWindow::loadConfiguration()

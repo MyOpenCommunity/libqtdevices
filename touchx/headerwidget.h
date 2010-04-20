@@ -88,6 +88,10 @@ public:
 signals:
 	void pageClosed();
 	void clicked();
+	void aboutToClick();
+
+private slots:
+	void buttonClicked();
 };
 
 
@@ -178,6 +182,13 @@ public:
 
 signals:
 	void showHomePage();
+	void aboutToChangePage();
+
+private slots:
+	void showSettings();
+
+private:
+	Page *settings;
 };
 
 
@@ -190,7 +201,7 @@ public:
 	HeaderNavigationWidget();
 
 	void addButton(int section_id, int page_id, const QString &icon);
-	void addButton(Page *page, const QString &icon);
+	BtButton *createButton(int section_id, const QString &icon);
 	void setCurrentSection(int section_id);
 
 public slots:
@@ -205,7 +216,7 @@ protected:
 
 private:
 	void drawContent();
-	BtButton *createButton(int section_id, const QString &icon);
+
 
 private:
 	int current_index, selected_section_id, visible_buttons;
@@ -232,9 +243,16 @@ public:
 signals:
 	void showHomePage();
 	void showSectionPage(int page_id);
+	void aboutToChangePage();
+
+private slots:
+	void goHome();
+	void showSettings();
+	void pageSelected(int page_id);
 
 private:
 	HeaderNavigationWidget *navigation;
+	Page *settings;
 };
 
 
@@ -251,6 +269,7 @@ public:
 signals:
 	void showHomePage();
 	void showSectionPage(int page_id);
+	void aboutToChangePage();
 
 private:
 	QVBoxLayout *main_layout;

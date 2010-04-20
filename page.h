@@ -153,6 +153,11 @@ public slots:
 	// The the page as the current page on the main window
 	void setCurrentPage();
 
+	// Perform some cleanup operations that should be done when we exit from
+	// the page (we cannot use the hideEvent method because that event trigger even
+	// if we go in a next page).
+	virtual void cleanUp() { }
+
 signals:
 	/// Emitted when the page is closed.
 	void Closed();
