@@ -343,7 +343,7 @@ void EnergyDevice::requestDailyAverageGraph8Bit(QDate date) const
 
 void EnergyDevice::requestDailyAverageGraph16Bit(QDate date) const
 {
-	sendCompressedFrame(createMsgOpen(who, QString("%1#%2").arg(REQ_DAILY_AVERAGE_GRAPH_16BIT)
+	sendFrame(createMsgOpen(who, QString("%1#%2").arg(REQ_DAILY_AVERAGE_GRAPH_16BIT)
 		.arg(date.month()), where));
 }
 
@@ -401,7 +401,7 @@ void EnergyDevice::requestCumulativeMonthGraph8Bit(QDate date) const
 
 void EnergyDevice::requestCumulativeMonthGraph32Bit(QDate date) const
 {
-	sendCompressedFrame(createMsgOpen(who, QString("%1#%2").arg(REQ_CUMULATIVE_MONTH_GRAPH_32BIT)
+	sendFrame(createMsgOpen(who, QString("%1#%2").arg(REQ_CUMULATIVE_MONTH_GRAPH_32BIT)
 		.arg(date.month()), where));
 }
 
