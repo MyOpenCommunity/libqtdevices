@@ -30,13 +30,16 @@
 #include <QLabel>
 #include <QFont>
 
+enum {
+	ITEM_ICON = 0,
+	BUTTON_ICON
+};
 
-ItemList::ItemInfo::ItemInfo(QString n, QString descr, QString i, QString bi, QVariant d)
+ItemList::ItemInfo::ItemInfo(QString n, QString descr, QStringList i, QVariant d)
 {
 	name = n;
 	description = descr;
-	icon = i;
-	button_icon = bi;
+	icons = i;
 	data = d;
 }
 
@@ -57,6 +60,8 @@ ItemList::ItemList(QWidget *parent, int _rows_per_page)
 
 void ItemList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
 {
+	Q_ASSERT_X(item.icons.size() >= 2, "ItemList::addHorizontalBox()", "too few icons to construct the horizontal box");
+
 	QFont font = bt_global::font->get(FontManager::TEXT);
 
 	// top level widget (to set background using stylesheet)
@@ -68,7 +73,7 @@ void ItemList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id
 
 	// file icon on the left
 	QLabel *icon = new QLabel;
-	icon->setPixmap(*bt_global::icons_cache.getIcon(item.icon));
+	icon->setPixmap(*bt_global::icons_cache.getIcon(item.icons[ITEM_ICON]));
 	box->addWidget(icon);
 
 	// centered file name and description
@@ -85,7 +90,7 @@ void ItemList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id
 
 	// button on the right
 	BtButton *btn = new BtButton;
-	btn->setImage(item.button_icon);
+	btn->setImage(item.icons[BUTTON_ICON]);
 	box->addWidget(btn, 0, Qt::AlignRight);
 
 	buttons_group->addButton(btn, id_btn);
