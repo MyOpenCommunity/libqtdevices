@@ -11,7 +11,8 @@
 #include "loads_device.h" // LoadsDevice
 #include "devices_cache.h" // add_device_to_cache
 #include "bttime.h" // BtTime
-
+#include "energy_management.h" // isRateEditDisplayed
+#include "energy_data.h" // EnergyCost
 
 #include <QLabel>
 #include <QDebug>
@@ -82,7 +83,22 @@ LoadManagement::LoadManagement(const QDomNode &config_node) :
 	BannerPage(0)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
-	buildPage(getTextChild(config_node, "descr"));
+	EnergyRates::energy_rates.loadRates();
+
+	// display the button to edit rates if more than one family
+	if (EnergyRates::energy_rates.hasRates() && !EnergyManagement::isRateEditDisplayed())
+	{
+		NavigationBar *nav = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
+		buildPage(new BannerContent, nav);
+
+		Page *costs = new EnergyCost;
+
+		connect(this, SIGNAL(forwardClick()), costs, SLOT(showPage()));
+		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
+	}
+	else
+		buildPage();
+
 	loadItems(config_node);
 }
 
