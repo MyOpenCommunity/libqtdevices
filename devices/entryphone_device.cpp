@@ -188,14 +188,12 @@ void EntryphoneDevice::moveRightRelease() const
 	cameraMoveRelease(MOVE_RIGHT);
 }
 
-void EntryphoneDevice::manageFrame(OpenMsg &msg)
+bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (!is_calling && QString::fromStdString(msg.whereFull()) != where)
-		return;
+		return false;
 
 	int what = msg.what();
-	DeviceValues values_list;
-	QVariant v;
 
 	switch (what)
 	{
@@ -239,14 +237,14 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 			break;
 		default:
 			qWarning("Kind not supported by EntryphoneDevice, skip frame");
-			return;
+			return false;
 		}
 
 		if (ringtone != -1)
 			values_list[RINGTONE] = ringtone;
 
 		// we can safely ignore caller address, we will receive a frame later.
-		v.setValue(true);
+		values_list[what] = true;
 		is_calling = true;
 		break;
 	}
@@ -276,10 +274,10 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 	case END_OF_CALL:
 		resetCallState();
 		break;
+	default:
+		return false;
 	}
-
-	values_list[what] = v;
-	emit valueReceived(values_list);
+	return true;
 }
 
 void EntryphoneDevice::resetCallState()
