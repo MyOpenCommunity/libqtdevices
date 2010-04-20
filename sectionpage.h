@@ -36,9 +36,9 @@ class SectionPage : public IconPage
 {
 Q_OBJECT
 protected:
-	SectionPage(const QDomNode &config_node);
+	SectionPage(const QDomNode &config_node, bool load_items = true);
 
-private:
+protected:
 	void loadItems(const QDomNode &config_node);
 };
 

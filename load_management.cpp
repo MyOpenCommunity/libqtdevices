@@ -33,7 +33,8 @@
 #include "devices_cache.h" // add_device_to_cache
 #include "bttime.h" // BtTime
 #include "generic_functions.h" // DateConversion::formatDateConfig
-
+#include "energy_management.h" // isRateEditDisplayed
+#include "energy_data.h" // EnergyCost
 
 #include <QLabel>
 #include <QDebug>
@@ -107,10 +108,27 @@ namespace
 	// The language used for the floating point number
 	QLocale loc(QLocale::Italian);
 }
+
 LoadManagement::LoadManagement(const QDomNode &config_node) :
 	BannerPage(0)
 {
-	buildPage(getTextChild(config_node, "descr"));
+	SkinContext cxt(getTextChild(config_node, "cid").toInt());
+	EnergyRates::energy_rates.loadRates();
+
+	// display the button to edit rates if more than one family
+	if (EnergyRates::energy_rates.hasRates() && !EnergyManagement::isRateEditDisplayed())
+	{
+		NavigationBar *nav = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
+		buildPage(new BannerContent, nav);
+
+		Page *costs = new EnergyCost;
+
+		connect(this, SIGNAL(forwardClick()), costs, SLOT(showPage()));
+		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
+	}
+	else
+		buildPage();
+
 	loadItems(config_node);
 }
 
@@ -225,6 +243,7 @@ LoadDataContent::LoadDataContent(int dec, int _rate_id)
 	main->addWidget(second_period);
 
 	rate_id = _rate_id;
+	EnergyRates::energy_rates.loadRates();
 	rate = EnergyRates::energy_rates.getRate(rate_id);
 	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
 	is_currency = false;

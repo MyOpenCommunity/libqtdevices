@@ -45,7 +45,7 @@ static QLocale loc(QLocale::Italian);
 
 EnergyData::EnergyData(const QDomNode &config_node)
 {
-	loadTypes(config_node, EnergyManagement::isRateEditDisplayed());
+	loadTypes(config_node, !EnergyManagement::isRateEditDisplayed());
 	connect(bt_global::btmain, SIGNAL(resettimer()), SLOT(systemTimeChanged()));
 	connect(&day_timer, SIGNAL(timeout()), SLOT(updateDayTimer()));
 	connect(&day_timer, SIGNAL(timeout()), SLOT(updateInterfaces()));
