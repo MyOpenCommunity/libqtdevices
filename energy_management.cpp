@@ -28,7 +28,7 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 	if (rate_edit_displayed)
 	{
 		QPoint pos = rect().bottomRight();
-		pos -= QPoint(80, 80);
+		pos -= QPoint(69, 79);
 
 		EnergyRates::energy_rates.loadRates();
 		if (EnergyRates::energy_rates.hasRates())
