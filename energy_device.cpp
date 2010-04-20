@@ -43,7 +43,7 @@ enum RequestCurrent
 };
 
 /*
- * int the new frames the measure unit is:
+ * in the new frames the measure unit is:
  * electricity: watt
  * water: liters
  * gas: dm3 (liters)
@@ -385,7 +385,12 @@ void EnergyDevice::requestCumulativeMonthGraph(QDate date) const
 		requestCumulativeMonthGraph8Bit(date);
 	}
 	else
+	{
 		requestCumulativeMonthGraph32Bit(date);
+		// with the old frames the monthly average is computed using the cumulative month
+		// graph data; with the new frames it is necessary to explicitly requestit here
+		requestDailyAverageGraph16Bit(date);
+	}
 }
 
 void EnergyDevice::requestCumulativeMonthGraph8Bit(QDate date) const
