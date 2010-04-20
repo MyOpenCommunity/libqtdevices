@@ -24,6 +24,7 @@
 
 #include <QList>
 #include <QString>
+#include <QStringList>
 #include <QWidget>
 #include <QVariant>
 
@@ -46,12 +47,11 @@ public:
 	struct ItemInfo
 	{
 		ItemInfo(QString name = QString(), QString desc = QString(),
-			 QString icon = QString(), QString button_icon = QString(), QVariant data=QVariant());
+			 QStringList icons = QStringList(), QVariant data = QVariant());
 
 		QString name;
 		QString description;
-		QString icon;
-		QString button_icon;
+		QStringList icons;
 		QVariant data;
 	};
 
@@ -98,6 +98,14 @@ protected:
 
 	int pageCount();
 
+	/**
+	 * addHorizontalBox
+	 *
+	 * In the default implementation, creates a box with a left icon, a label with
+	 * the \a item name, a label with the \a item description and a button.
+	 *
+	 * \note \a item.icons must contain at least 2 entries: one for the left icon and one for the button.
+	 */
 	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
 };
 

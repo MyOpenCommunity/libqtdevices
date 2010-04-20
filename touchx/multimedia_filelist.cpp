@@ -133,20 +133,24 @@ bool MultimediaFileListPage::browseFiles(const QDir &directory, QList<QFileInfo>
 		if (f.fileName() == "." || f.fileName() == "..")
 			continue;
 
+		QStringList icons;
+
 		if (f.isFile())
 		{
-			ItemList::ItemInfo info(f.fileName(), QString(),
-						   file_icons[fileType(f)],
-						   play_file);
+			icons << file_icons[fileType(f)];
+			icons << play_file;
+
+			ItemList::ItemInfo info(f.fileName(), QString(), icons);
 
 			names_list.append(info);
 			files.append(f);
 		}
 		else if (f.isDir())
 		{
-			ItemList::ItemInfo info(f.fileName(), QString(),
-						   file_icons[DIRECTORY],
-						   browse_directory);
+			icons << file_icons[DIRECTORY];
+			icons << browse_directory;
+
+			ItemList::ItemInfo info(f.fileName(), QString(), icons);
 
 			names_list.append(info);
 			files.append(f);

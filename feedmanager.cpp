@@ -79,8 +79,11 @@ void FeedManager::loadFeedList(const QDomNode &conf_node)
 	QList<ItemList::ItemInfo> item_list;
 	for (int i = 0; i < feed_list.size(); ++i)
 	{
-		ItemList::ItemInfo item(feed_list[i].desc, QString(),
-					feed_list[i].icon, bt_global::skin->getImage("forward_icon"));
+		QStringList icons;
+		icons << feed_list[i].icon;
+		icons << bt_global::skin->getImage("forward_icon");
+
+		ItemList::ItemInfo item(feed_list[i].desc, QString(), icons);
 
 		item_list.append(item);
 	}
@@ -148,9 +151,11 @@ void FeedItemList::setFeedInfo(int page, const FeedData &feed_data)
 	QList<ItemList::ItemInfo> item_list;
 	for (int i = 0; i < data.entry_list.size(); ++i)
 	{
-		ItemList::ItemInfo item(data.entry_list[i].title, data.entry_list[i].last_updated,
-					feed_icon, forward_icon);
+		QStringList icons;
+		icons << feed_icon;
+		icons << forward_icon;
 
+		ItemList::ItemInfo item(data.entry_list[i].title, data.entry_list[i].last_updated, icons);
 		item_list.append(item);
 	}
 	title_widget->setTitle(data.feed_title);

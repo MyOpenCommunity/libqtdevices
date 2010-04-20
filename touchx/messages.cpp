@@ -64,6 +64,12 @@ namespace
 	}
 }
 
+
+enum {
+	BUTTON_ICON = 0
+};
+
+
 MessageList::MessageList(QWidget *parent, int rows_per_page) :
 		ItemList(parent, rows_per_page)
 {
@@ -96,7 +102,7 @@ void MessageList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int
 
 	// button on the right
 	BtButton *btn = new BtButton;
-	btn->setImage(item.button_icon);
+	btn->setImage(item.icons[BUTTON_ICON]);
 	box->addWidget(btn, 0, Qt::AlignRight);
 
 	buttons_group->addButton(btn, id_btn);
@@ -256,7 +262,9 @@ void MessagesListPage::loadMessages(const QString &filename)
 		QDateTime date = QDateTime::fromString(getTextChild(item, "date"), DATE_FORMAT_AS_STRING);
 		QString text = getTextChild(item, "text");
 		bool read = getTextChild(item, "read").toInt();
-		ItemList::ItemInfo info(DateConversions::formatDateTimeConfig(date), text, "", bt_global::skin->getImage("forward"), read);
+		QStringList icons;
+		icons << bt_global::skin->getImage("forward");
+		ItemList::ItemInfo info(DateConversions::formatDateTimeConfig(date), text, icons, read);
 		message_list.append(info);
 	}
 
@@ -284,7 +292,9 @@ void MessagesListPage::newMessage(const DeviceValues &values_list)
 	}
 
 	QString date = DateConversions::formatDateTimeConfig(message.datetime);
-	ItemList::ItemInfo info(date, message.text, "", bt_global::skin->getImage("forward"), false);
+	QStringList icons;
+	icons << bt_global::skin->getImage("forward");
+	ItemList::ItemInfo info(date, message.text, icons, false);
 	page_content->insertItem(0, info);
 	need_update = true;
 	saveMessages();
