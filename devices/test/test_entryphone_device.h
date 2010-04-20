@@ -57,8 +57,11 @@ private slots:
 	void sendMoveRightRelease();
 
 	void receiveIncomingCall();
-	void receiveCallerAddress();
+	void receiveCallerAddress1();
+	void receiveCallerAddress2();
+	void receiveCallerAddress3();
 	void receiveRearmSession();
+	void receiveStopVideo();
 
 private:
 	// init frame must be sent at constuction time

@@ -58,6 +58,7 @@ public:
 		// studio functionality we have to use the caller_address, obtained
 		// from the homonymous frame.
 		CALLER_ADDRESS = 9,
+		STOP_VIDEO = 202, // the value doesn't matter
 	};
 
 	EntryphoneDevice(const QString &where);

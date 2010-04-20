@@ -272,7 +272,10 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	}
 
 	case END_OF_CALL:
-		resetCallState();
+		if (msg.whatArgN(1) == 3) // with mmtype == 3 we have to stop the video
+			values_list[STOP_VIDEO] = true;
+		else
+			resetCallState();
 		break;
 	default:
 		return false;
