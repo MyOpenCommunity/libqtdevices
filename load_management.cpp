@@ -77,9 +77,11 @@ namespace
 	// The language used for the floating point number
 	QLocale loc(QLocale::Italian);
 }
+
 LoadManagement::LoadManagement(const QDomNode &config_node) :
 	BannerPage(0)
 {
+	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	buildPage(getTextChild(config_node, "descr"));
 	loadItems(config_node);
 }
