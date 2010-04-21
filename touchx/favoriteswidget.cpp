@@ -28,6 +28,8 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
+#define MAX_ITEM_COUNT 4
+
 
 FavoritesWidget::FavoritesWidget()
 {
@@ -44,18 +46,21 @@ void FavoritesWidget::loadItems(const QDomNode &config_node)
 
 	l->addWidget(title);
 
+	int count = 0;
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		if (banner *b = getBanner(item))
-			l->addWidget(b);
+			l->addWidget(b, 1, Qt::AlignTop);
 		else
 		{
 			int id = getTextChild(item, "id").toInt();
 			qFatal("Type of item %d not handled on favorites page!", id);
 		}
+		count += 1;
 	}
 
-	l->addStretch(1);
+	if (count != MAX_ITEM_COUNT)
+		l->addStretch(MAX_ITEM_COUNT - count);
 }
 
 QSize FavoritesWidget::minimumSizeHint() const
