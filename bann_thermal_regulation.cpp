@@ -34,6 +34,7 @@
 #include "navigation_bar.h"
 #include "bannercontent.h"
 #include "skinmanager.h"
+#include "state_button.h"
 
 #include <QVariant>
 #include <QLabel>
@@ -589,9 +590,10 @@ void PageFancoil::createFancoilButtons()
 	{
 		QString path = bt_global::skin->getImage(QString("fan_%1_off").arg(id + 1));
 		QString path_pressed = bt_global::skin->getImage(QString("fan_%1_on").arg(id + 1));
-		BtButton *btn = new BtButton(this);
-		btn->setImage(path);
-		btn->setPressedImage(path_pressed);
+		StateButton *btn = new StateButton(this);
+		btn->setOnOff();
+		btn->setOffImage(path);
+		btn->setOnImage(path_pressed);
 		btn->setCheckable(true);
 
 		bottom_icons.addWidget(btn);
