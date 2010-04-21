@@ -199,7 +199,7 @@ NavigationPage::NavigationPage()
 	main_layout.setContentsMargins(0, 0, 0, 0);
 }
 
-NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
+NavigationBar *NavigationPage::createNavigationBar(const QString &icon, int title_height)
 {
 #ifdef LAYOUT_BTOUCH
 	nav_bar = new NavigationBar(icon);
@@ -211,7 +211,7 @@ NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
 	connect(nav_bar, SIGNAL(upClick()), SIGNAL(upClick()));
 	connect(nav_bar, SIGNAL(downClick()), SIGNAL(downClick()));
 
-	buildPage(&content, nav_bar, "", TITLE_HEIGHT);
+	buildPage(&content, nav_bar, "", title_height);
 
 	return nav_bar;
 }
