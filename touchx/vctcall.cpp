@@ -411,7 +411,7 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 	layout->addLayout(sidebar, 0, 1, 2, 1);
 	layout->addWidget(vct_call->video_box, 1, 0);
 	layout->addLayout(bottom, 2, 0, 1, 2, Qt::AlignLeft);
-	layout->setContentsMargins(15, 0, 0, 20);
+	layout->setContentsMargins(20, 0, 0, 20);
 	layout->setSpacing(10);
 }
 
