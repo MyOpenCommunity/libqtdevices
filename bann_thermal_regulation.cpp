@@ -1012,25 +1012,25 @@ PageTermoReg::PageTermoReg(QDomNode n)
 
 	mode_icon = getLabelWithPixmap(bt_global::skin->getImage("regulator"), this, Qt::AlignHCenter);
 
-	QHBoxLayout *hbox = new QHBoxLayout;
-	hbox->setAlignment(Qt::AlignCenter);
+#ifdef LAYOUT_TOUCHX
+	main_layout.setContentsMargins(40, 0, 40, 50);
 
-	hbox->addStretch(1);
-	hbox->addWidget(season_icon, 1);
-
-#ifdef LAYOUT_BTOUCH
-	hbox->addStretch(1);
-#else
 	BtButton *settings = new BtButton;
 	settings->setImage(bt_global::skin->getImage("settings"));
 	connect(settings, SIGNAL(clicked()), SLOT(showSettingsMenu()));
 
-	hbox->addWidget(settings, 1);
+	QHBoxLayout *hbox = new QHBoxLayout;
+
+	hbox->addStretch(2);
+	hbox->addWidget(settings, 1, Qt::AlignCenter);
 #endif
 
 	main_layout.addWidget(mode_icon);
 	main_layout.addWidget(description_label);
+	main_layout.addWidget(season_icon, 0, Qt::AlignCenter);
+#ifdef LAYOUT_TOUCHX
 	main_layout.addLayout(hbox);
+#endif
 	main_layout.addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
 	main_layout.setAlignment(Qt::AlignHCenter);
 
@@ -1040,7 +1040,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	program_choice = 0;
 	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 
-	createNavigationBar(bt_global::skin->getImage("settings"));
+	createNavigationBar(bt_global::skin->getImage("settings"), SMALL_TITLE_HEIGHT);
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
 
 	showDescription(description);
