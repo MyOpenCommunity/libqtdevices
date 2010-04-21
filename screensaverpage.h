@@ -34,6 +34,7 @@ class BtButton;
 class QLabel;
 class QDomNode;
 class ImageSelectionHandler;
+class ScreensaverTiming;
 
 class ScreenSaverPage : public SingleChoicePage
 {
@@ -45,6 +46,9 @@ public:
 protected:
 	virtual int getCurrentId();
 	virtual void bannerSelected(int id);
+
+private:
+	ScreensaverTiming *timing;
 };
 
 
