@@ -389,3 +389,43 @@ void BannRingtone::plusClicked()
 	current_ring = (current_ring + 1) % bt_global::ringtones->getRingtonesNumber();
 	bt_global::ringtones->playRingtone(current_ring);
 }
+
+
+ScreensaverTiming::ScreensaverTiming(const QString &descr, int init_timing, int _delta, int min_timing, int max_timing) :
+	Bann2Buttons(0)
+{
+	initBanner(bt_global::skin->getImage("minus"), QString::number(init_timing), bt_global::skin->getImage("plus"), descr);
+	timing = init_timing;
+	delta = _delta;
+	max = max_timing;
+	min = min_timing;
+
+	connect(right_button, SIGNAL(clicked()), SLOT(increase()));
+	connect(left_button, SIGNAL(clicked()), SLOT(decrease()));
+	left_button->setAutoRepeat(true);
+	right_button->setAutoRepeat(true);
+	setFixedWidth(240);
+	updateText();
+}
+
+void ScreensaverTiming::updateText()
+{
+	setCentralText(QString::number(timing / 1000) + tr(" sec"));
+}
+
+void ScreensaverTiming::increase()
+{
+	timing += delta;
+	// clamp the result
+	if (timing > max)
+		timing = max;
+	updateText();
+}
+
+void ScreensaverTiming::decrease()
+{
+	timing -= delta;
+	if (timing < min)
+		timing = min;
+	updateText();
+}

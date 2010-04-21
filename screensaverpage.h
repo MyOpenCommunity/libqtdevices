@@ -24,12 +24,17 @@
 
 #include "singlechoicepage.h"
 #include "gridcontent.h" // GridContent
+#include "fileselector.h"
+#include "itemlist.h"
 
 #include <QDir>
 #include <QSet>
 
 class BtButton;
 class QLabel;
+class QDomNode;
+class ImageSelectionHandler;
+class ScreensaverTiming;
 
 class ScreenSaverPage : public SingleChoicePage
 {
@@ -41,127 +46,78 @@ public:
 protected:
 	virtual int getCurrentId();
 	virtual void bannerSelected(int id);
+
+private:
+	ScreensaverTiming *timing;
 };
 
 
-
 /**
- * Display items in a grid with 2 columns.
+ * The file list
  */
-class SlideshowImageContent : public GridContent
+class FileList : public ItemList
 {
 Q_OBJECT
 public:
-	SlideshowImageContent(QWidget *parent=0);
-	void addItem(QWidget *item);
-	void clearContent();
-	void showContent();
+	FileList(QWidget *parent, int rows_per_page);
+
+signals:
+	void itemSelectionChanged(const QString &path, bool selected);
+
+protected:
+	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
+
+private slots:
+	void checkButton(int btn_id);
+
+private:
+	QButtonGroup *sel_buttons;
+};
+
+
+/**
+ * SlideShowSelector
+ *
+ * Display the filesystem and permit to select images and directories.
+ */
+class SlideshowSelector : public FileSelector
+{
+Q_OBJECT
+public:
+	enum EntryType {
+		FILE = 0,
+		DIRECTORY
+	};
+
+	typedef FileList ContentType;
+
+	SlideshowSelector();
+
+	void browse(const QString &dir);
 
 public slots:
-	void nextItem();
-	void prevItem();
+	virtual void nextItem();
+	virtual void prevItem();
+	virtual void showPage();
+	virtual void showPageNoReload();
 
 protected:
-	virtual void drawContent();
-
-private:
-	QList<QWidget *> items;
-};
-
-
-/**
- * Base class for slideshow thumbnail items.
- * Derived classes must provide their own layout.
- */
-class SlideshowItem : public QWidget
-{
-Q_OBJECT
-public:
-	SlideshowItem(const QString &path, const QString &icon, const QString &pressed_icon);
-	void setChecked(bool check);
-	void setCheckable(bool is_checkable);
-
-protected:
-	BtButton *check_button;
-	QLabel *text;
-	QString item_path;
+	virtual bool browseFiles(const QDir &directory, QList<QFileInfo> &files);
+	virtual int currentPage();
 
 private slots:
-	void checked(bool check);
-
-signals:
-	void itemToggled(bool, QString);
-};
-
-
-/**
- * Slideshow content item to display a directory (directory button, check button, label below).
- */
-class SlideshowItemDir : public QWidget
-{
-Q_OBJECT
-public:
-	/**
-	 * \param path Returned when directoryToggled() is emitted.
-	 */
-	SlideshowItemDir(const QString &path, const QString &checked_icon, const QString &unchecked_icon, const QString &main_icon);
-	void setChecked(bool check);
+	void setSelection(const QString &path, bool selected);
 
 private:
-	BtButton *dir_button, *check_button;
-	QLabel *text;
-	QString dir_path;
+	// root path, used to unmount the device
+	QString root_path;
 
-private slots:
-	void checked(bool check);
-	void dirButtonClicked();
+	ImageSelectionHandler *handler;
 
-signals:
-	void browseDirectory(QString);
-	void directoryToggled(bool, QString);
-};
-
-
-/**
- * Slideshow content item to display a thumbnail (thumbnail label, check button, label below)
- */
-class SlideshowItemImage : public QWidget
-{
-Q_OBJECT
-public:
-	/**
-	 * \param filename Returned when fileToggled() is emitted.
-	 * \param working_dir Used internally to load the image with path working_dir + filename
-	 */
-	SlideshowItemImage(const QString &filename, const QString &working_dir, const QString &pressed_icon, const QString &icon);
-	void setChecked(bool check);
-
-private:
-	BtButton *check_button;
-	QLabel *thumbnail, *text;
-	QString file_name;
-
-private slots:
-	void checked(bool check);
-
-signals:
-	void fileToggled(bool, QString);
-};
-
-
-
-/**
- * Select slideshow settings: add images, remove all, delay between images.
- */
-class SlideshowSettings : public QWidget
-{
-Q_OBJECT
-public:
-	SlideshowSettings();
-
-signals:
-	void clearAllImages();
-	void addMoreImages();
+	// Icon path
+	QString browse_directory;
+	QString selbutton_on;
+	QString selbutton_off;
 };
 
 
@@ -243,64 +199,6 @@ private:
 	// selected_images: contains full path names for files. Full path names for directories if all files and dir
 	//                  below are selected.
 	QSet<QString> selected_images, removed_images, inserted_images;
-};
-
-
-
-/**
- * Select images to show during the slideshow.
- */
-class SlideshowSelectionPage : public Page
-{
-Q_OBJECT
-public:
-	typedef SlideshowImageContent ContentType;
-
-	SlideshowSelectionPage(const QString &start_path);
-	virtual void showPage();
-
-public slots:
-	void browseUp();
-
-private:
-	void showFiles();
-	void refreshContent();
-	bool areAllItemsSelected(const QFileInfoList &file_list);
-
-	QDir current_dir;
-	int level;
-	QString checked_icon, unchecked_icon, photo_icon;
-	ImageSelectionHandler *image_handler;
-
-private slots:
-	void enterDirectory(QString dir);
-	void confirmSelection();
-	void itemSelected(bool is_selected, QString relative_path);
-};
-
-
-/**
- * Show currently selected images for slideshow with option to remove them. Also select slideshow preferences.
- */
-class ImageRemovalPage : public Page
-{
-Q_OBJECT
-public:
-	typedef SlideshowImageContent ContentType;
-
-	ImageRemovalPage();
-	virtual void showPage();
-	virtual void activateLayout();
-
-private slots:
-	void imagesChanged();
-
-private:
-	void refreshContent();
-	void loadImages();
-	void addItemToContent(const QString &path);
-	QString button_icon;
-	ImageSelectionHandler *image_handler;
 };
 
 #endif // SCREENSAVERPAGE_H

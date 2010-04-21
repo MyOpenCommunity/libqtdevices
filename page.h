@@ -145,6 +145,13 @@ public:
 	 */
 	virtual void activateLayout();
 
+	/**
+	 * Insert a widget at the bottom of the page.
+	 *
+	 * The page takes ownership of the widget and will delete it when done.
+	 */
+	void addBottomWidget(QWidget *bottom);
+
 public slots:
 	/// An handle to allow customization of the page showed. Default implementation
 	/// show the page in fullscreen mode and call the transition effect if present.
