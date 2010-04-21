@@ -122,8 +122,11 @@ void ScreenSaverPage::bannerSelected(int id)
 
 
 FileList::FileList(QWidget *parent, int rows_per_page) :
-		ItemList(parent, rows_per_page)
+		ItemList(parent, rows_per_page), sel_buttons(new QButtonGroup)
 {
+	sel_buttons->setExclusive(false);
+
+	connect(sel_buttons, SIGNAL(buttonClicked(int)), SLOT(checkButton(int)));
 }
 
 void FileList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
@@ -152,8 +155,8 @@ void FileList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id
 	sel_button->setOnOff();
 	sel_button->setOffImage(item.icons[SELBUTTON_OFF]);
 	sel_button->setOnImage(item.icons[SELBUTTON_ON]);
-	if (metadata["selected"].toBool())
-		sel_button->setChecked(true);
+	sel_buttons->addButton(sel_button, id_btn);
+	sel_button->setStatus(metadata["selected"].toBool());
 	box->addWidget(sel_button, 0, Qt::AlignRight);
 
 	// If the item represent a directory, creates the button to enter in it.
@@ -172,6 +175,14 @@ void FileList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id
 	}
 
 	layout->addWidget(boxWidget);
+}
+
+void FileList::checkButton(int btn_id)
+{
+	StateButton *button = qobject_cast<StateButton *>(sel_buttons->button(btn_id));
+	Q_ASSERT_X(button, "FileList::checkButton", "invalid button");
+
+	item(btn_id).data.toMap()["selected"] = button->getStatus();
 }
 
 

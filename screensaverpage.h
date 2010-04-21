@@ -53,11 +53,18 @@ protected:
  */
 class FileList : public ItemList
 {
+Q_OBJECT
 public:
 	FileList(QWidget *parent, int rows_per_page);
 
 protected:
 	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
+
+private slots:
+	void checkButton(int btn_id);
+
+private:
+	QButtonGroup *sel_buttons;
 };
 
 
