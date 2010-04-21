@@ -24,12 +24,16 @@
 
 #include "singlechoicepage.h"
 #include "gridcontent.h" // GridContent
+#include "fileselector.h"
+#include "itemlist.h"
 
 #include <QDir>
 #include <QSet>
 
 class BtButton;
 class QLabel;
+class QDomNode;
+
 
 class ScreenSaverPage : public SingleChoicePage
 {
@@ -41,6 +45,60 @@ public:
 protected:
 	virtual int getCurrentId();
 	virtual void bannerSelected(int id);
+};
+
+
+/**
+ * The file list
+ */
+class FileList : public ItemList
+{
+public:
+	FileList(QWidget *parent, int rows_per_page);
+
+protected:
+	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
+};
+
+
+/**
+ * SlideShowSelector
+ *
+ * Display the filesystem and permit to select images and directories.
+ */
+class SlideshowSelector : public FileSelector
+{
+Q_OBJECT
+public:
+	enum EntryType {
+		FILE = 0,
+		DIRECTORY
+	};
+
+	typedef FileList ContentType;
+
+	SlideshowSelector();
+
+	void browse(const QString &dir);
+
+public slots:
+	virtual void nextItem();
+	virtual void prevItem();
+	virtual void showPage();
+	virtual void showPageNoReload();
+
+protected:
+	virtual bool browseFiles(const QDir &directory, QList<QFileInfo> &files);
+	virtual int currentPage();
+
+private:
+	// root path, used to unmount the device
+	QString root_path;
+
+	// Icon path
+	QString browse_directory;
+	QString selbutton_on;
+	QString selbutton_off;
 };
 
 

@@ -27,6 +27,9 @@
 #include "skinmanager.h" // bt_global::skin
 #include "btbutton.h" // BtButton
 #include "generic_functions.h" //getPressName
+#include "xml_functions.h" // getTextChild
+#include "itemlist.h"
+#include "state_button.h"
 
 #include <QAbstractButton>
 #include <QGridLayout>
@@ -36,6 +39,15 @@
 #include <errno.h> // errno
 
 #define SLIDESHOW_FILENAME "cfg/extra/slideshow_images.txt"
+#define ARRAY_SIZE(x) int(sizeof(x) / sizeof((x)[0]))
+
+
+enum {
+	SELBUTTON_ON = 0,
+	SELBUTTON_OFF,
+	BUTTON_ICON
+};
+
 
 namespace
 {
@@ -47,6 +59,22 @@ namespace
 		QStringList filters;
 		filters << "*.jpg" << "*.png";
 		return dir.entryInfoList(filters);
+	}
+
+	const char *image_files[] = {"png", "gif", "jpg", "jpeg"};
+
+	// transforms an extension to a pattern (es. "wav" -> "*.[wW][aA][vV]")
+	void addFilters(QStringList &filters, const char **extensions, int size)
+	{
+		for (int i = 0; i < size; ++i)
+		{
+			QString pattern = "*.";
+
+			for (const char *c = extensions[i]; *c; ++c)
+				pattern += QString("[%1%2]").arg(QChar(*c)).arg(QChar::toUpper((unsigned short)*c));
+
+			filters.append(pattern);
+		}
 	}
 }
 
@@ -64,7 +92,7 @@ ScreenSaverPage::ScreenSaverPage()
 #ifdef LAYOUT_TOUCHX
 	CheckableBanner *b = SingleChoice::createBanner(tr("Slideshow"), bt_global::skin->getImage("change_settings"));
 	addBanner(b, ScreenSaver::SLIDESHOW);
-	Page *p = new ImageRemovalPage;
+	Page *p = new SlideshowSelector;
 	b->connectRightButton(p);
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	connect(page_content, SIGNAL(bannerSelected(int)), SLOT(confirmSelection()));
@@ -93,9 +121,182 @@ void ScreenSaverPage::bannerSelected(int id)
 }
 
 
+FileList::FileList(QWidget *parent, int rows_per_page) :
+		ItemList(parent, rows_per_page)
+{
+}
+
+void FileList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
+{
+	QFont font = bt_global::font->get(FontManager::TEXT);
+
+	// top level widget (to set background using stylesheet)
+	QWidget *boxWidget = new QWidget;
+	boxWidget->setFixedHeight(68);
+
+	QHBoxLayout *box = new QHBoxLayout(boxWidget);
+	box->setSpacing(5);
+	box->setContentsMargins(5, 5, 5, 5);
+
+	QLabel *name = new QLabel(item.name);
+	name->setFont(font);
+	box->addWidget(name);
+	box->addStretch();
+
+	// Retrive item's metadata
+	QVariantMap metadata = item.data.toMap();
+
+	// Create the selection button
+	StateButton *sel_button = new StateButton;
+	sel_button->setCheckable(true);
+	sel_button->setOnOff();
+	sel_button->setOffImage(item.icons[SELBUTTON_OFF]);
+	sel_button->setOnImage(item.icons[SELBUTTON_ON]);
+	if (metadata["selected"].toBool())
+		sel_button->setChecked(true);
+	box->addWidget(sel_button, 0, Qt::AlignRight);
+
+	// If the item represent a directory, creates the button to enter in it.
+	int type = metadata["type"].toInt();
+	if (type == SlideshowSelector::DIRECTORY)
+	{
+		// button on the right
+		BtButton *btn = new BtButton;
+		btn->setImage(item.icons[BUTTON_ICON]);
+		box->addWidget(btn, 0, Qt::AlignRight);
+		buttons_group->addButton(btn, id_btn);
+	}
+	else
+	{
+		box->addSpacing(55);
+	}
+
+	layout->addWidget(boxWidget);
+}
+
+
+SlideshowSelector::SlideshowSelector() :
+		FileSelector(4, "/")
+{
+	FileList *item_list = new FileList(0, 4);
+	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
+
+	PageTitleWidget *title_widget = new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT);
+	connect(item_list, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
+
+	NavigationBar *nav_bar = new NavigationBar();
+
+	browse_directory = bt_global::skin->getImage("browse_directory");
+	selbutton_off = bt_global::skin->getImage("unchecked");
+	selbutton_on = bt_global::skin->getImage("checked");
+
+	buildPage(item_list, nav_bar, 0, title_widget);
+	layout()->setContentsMargins(0, 5, 25, 10);
+
+	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
+	connect(this, SIGNAL(notifyExit()), SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
+	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(nextItem()));
+	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+
+	root_path = "/";
+}
+
+void SlideshowSelector::browse(const QString &dir)
+{
+	root_path = dir;
+
+	setRootPath(dir);
+	showPage();
+}
+
+void SlideshowSelector::nextItem()
+{
+	page_content->nextItem();
+}
+
+void SlideshowSelector::prevItem()
+{
+	page_content->prevItem();
+}
+
+void SlideshowSelector::showPage()
+{
+	if (root_path.isEmpty())
+		emit Closed();
+	else
+		FileSelector::showPage();
+}
+
+void SlideshowSelector::showPageNoReload()
+{
+	if (root_path.isEmpty())
+		emit Closed();
+	else
+		Selector::showPage();
+}
+
+bool SlideshowSelector::browseFiles(const QDir &directory, QList<QFileInfo> &files)
+{
+	QStringList filters;
+	addFilters(filters, image_files, ARRAY_SIZE(image_files));
+
+	// Create fileslist from files
+	QList<QFileInfo> temp_files_list = directory.entryInfoList(filters);
+
+	if (temp_files_list.empty())
+	{
+		qDebug() << "[IMAGES] empty directory: " << directory.absolutePath();
+		return false;
+	}
+
+	files.clear();
+
+	QList<ItemList::ItemInfo> names_list;
+
+	for (int i = 0; i < temp_files_list.size(); ++i)
+	{
+		const QFileInfo& f = temp_files_list.at(i);
+		if (f.fileName() == "." || f.fileName() == "..")
+			continue;
+
+		QStringList icons;
+		icons << selbutton_on;
+		icons << selbutton_off;
+
+		QVariantMap metadata;
+		// TODO: get selection state for current file.
+		metadata.insert("selected", false);
+
+		if (f.isFile())
+		{
+			metadata.insert("type", SlideshowSelector::FILE);
+		}
+		else if (f.isDir())
+		{
+			metadata.insert("type", SlideshowSelector::DIRECTORY);
+			icons << browse_directory;
+		}
+
+		ItemList::ItemInfo info(f.fileName(), f.canonicalFilePath(), icons, metadata);
+		names_list.append(info);
+		files.append(f);
+	}
+
+	page_content->setList(names_list, displayedPage(directory));
+	page_content->showList();
+
+	return true;
+}
+
+int SlideshowSelector::currentPage()
+{
+	return page_content->getCurrentPage();
+}
+
 
 SlideshowImageContent::SlideshowImageContent(QWidget *parent) :
-	GridContent(parent)
+		GridContent(parent)
 {
 
 }
@@ -166,8 +367,8 @@ void SlideshowImageContent::showContent()
 
 
 SlideshowItem::SlideshowItem(const QString &path, const QString &icon, const QString &pressed_icon) :
-	QWidget(0),
-	item_path(path)
+		QWidget(0),
+		item_path(path)
 {
 	check_button = new BtButton;
 	check_button->setImage(icon, BtButton::NO_FLAG);
@@ -195,9 +396,9 @@ void SlideshowItem::setCheckable(bool is_checkable)
 
 
 SlideshowItemDir::SlideshowItemDir(const QString &path, const QString &checked_icon, const QString &unchecked_icon,
-		const QString &main_icon) :
-	QWidget(0),
-	dir_path(path)
+								   const QString &main_icon) :
+QWidget(0),
+dir_path(path)
 {
 	dir_button = new BtButton;
 	dir_button->setImage(main_icon);
@@ -237,8 +438,8 @@ void SlideshowItemDir::setChecked(bool check)
 
 
 SlideshowItemImage::SlideshowItemImage(const QString &filename, const QString &working_dir, const QString &pressed_icon, const QString &icon) :
-	QWidget(0),
-	file_name(filename)
+		QWidget(0),
+		file_name(filename)
 {
 	QPixmap p(working_dir + file_name);
 	p = p.scaled(QSize(80, 80), Qt::KeepAspectRatio);
@@ -273,7 +474,7 @@ void SlideshowItemImage::setChecked(bool check)
 
 
 SlideshowSettings::SlideshowSettings() :
-	QWidget(0)
+		QWidget(0)
 {
 	BtButton *add_images = new BtButton;
 	add_images->setImage(bt_global::skin->getImage("add_image"));
@@ -434,9 +635,9 @@ QSet<QString> ImageSelectionHandler::getSelectedImages()
 
 
 SlideshowSelectionPage::SlideshowSelectionPage(const QString &start_path) :
-	Page(0),
-	current_dir(start_path),
-	level(0)
+		Page(0),
+		current_dir(start_path),
+		level(0)
 {
 	SlideshowImageContent *content = new SlideshowImageContent;
 	PageTitleWidget *title_widget = new PageTitleWidget("Select photos", Page::TITLE_HEIGHT);
@@ -569,16 +770,16 @@ bool SlideshowSelectionPage::areAllItemsSelected(const QFileInfoList &file_list)
 		// here we don't need isItemSelected(), we just need to check all individual items in this dir
 		if (!image_handler->isItemExplicitlySelected(fi.absoluteFilePath()))
 		{
-			are_all_selected = false;
-			break;
-		}
+		are_all_selected = false;
+		break;
+	}
 	return are_all_selected;
 }
 
 
 
 ImageRemovalPage::ImageRemovalPage() :
-	Page(0)
+		Page(0)
 {
 	SlideshowImageContent *content = new SlideshowImageContent;
 	PageTitleWidget *title_widget = new PageTitleWidget("Select photos", TINY_TITLE_HEIGHT);
@@ -643,7 +844,7 @@ void ImageRemovalPage::addItemToContent(const QString &path)
 	if (fi.isFile())
 	{
 		SlideshowItemImage *im = new SlideshowItemImage(fi.fileName(), fi.absolutePath() + QDir::separator(),
-			getPressName(button_icon), button_icon);
+														getPressName(button_icon), button_icon);
 		page_content->addItem(im);
 	}
 }

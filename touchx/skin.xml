@@ -235,6 +235,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_trash>antintrusione/elimina.png</img_trash>
 		<img_remove_image>setup/eliminaimg.png</img_remove_image>
 		<img_change_settings>scenari/setscenariooff.png</img_change_settings>
+		<img_browse_directory>multimediale/vai.png</img_browse_directory>
 	</item>
 	<!-- clean screen button -->
 	<item>
