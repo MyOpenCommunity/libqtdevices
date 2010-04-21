@@ -33,7 +33,7 @@
 class BtButton;
 class QLabel;
 class QDomNode;
-
+class ImageSelectionHandler;
 
 class ScreenSaverPage : public SingleChoicePage
 {
@@ -56,6 +56,9 @@ class FileList : public ItemList
 Q_OBJECT
 public:
 	FileList(QWidget *parent, int rows_per_page);
+
+signals:
+	void itemSelectionChanged(const QString &path, bool selected);
 
 protected:
 	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
@@ -98,9 +101,14 @@ protected:
 	virtual bool browseFiles(const QDir &directory, QList<QFileInfo> &files);
 	virtual int currentPage();
 
+private slots:
+	void setSelection(const QString &path, bool selected);
+
 private:
 	// root path, used to unmount the device
 	QString root_path;
+
+	ImageSelectionHandler *handler;
 
 	// Icon path
 	QString browse_directory;

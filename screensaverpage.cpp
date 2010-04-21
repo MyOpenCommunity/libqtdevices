@@ -156,6 +156,7 @@ void FileList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id
 	sel_button->setOffImage(item.icons[SELBUTTON_OFF]);
 	sel_button->setOnImage(item.icons[SELBUTTON_ON]);
 	sel_buttons->addButton(sel_button, id_btn);
+	sel_button->setChecked(metadata["selected"].toBool());
 	sel_button->setStatus(metadata["selected"].toBool());
 	box->addWidget(sel_button, 0, Qt::AlignRight);
 
@@ -182,12 +183,17 @@ void FileList::checkButton(int btn_id)
 	StateButton *button = qobject_cast<StateButton *>(sel_buttons->button(btn_id));
 	Q_ASSERT_X(button, "FileList::checkButton", "invalid button");
 
-	item(btn_id).data.toMap()["selected"] = button->getStatus();
+	bool selected = button->getStatus();
+	ItemInfo info = item(current_page * rows_per_page + btn_id);
+
+	info.data.toMap()["selected"] = selected;
+
+	emit itemSelectionChanged(info.description, selected);
 }
 
 
 SlideshowSelector::SlideshowSelector() :
-		FileSelector(4, "/")
+		FileSelector(4, "/"), handler(new ImageSelectionHandler)
 {
 	FileList *item_list = new FileList(0, 4);
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
@@ -209,6 +215,8 @@ SlideshowSelector::SlideshowSelector() :
 	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
 	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(nextItem()));
 	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+
+	connect(item_list, SIGNAL(itemSelectionChanged(QString,bool)), SLOT(setSelection(QString,bool)));
 
 	root_path = "/";
 }
@@ -277,7 +285,7 @@ bool SlideshowSelector::browseFiles(const QDir &directory, QList<QFileInfo> &fil
 
 		QVariantMap metadata;
 		// TODO: get selection state for current file.
-		metadata.insert("selected", false);
+		metadata.insert("selected", handler->isItemSelected(f.canonicalFilePath()));
 
 		if (f.isFile())
 		{
@@ -303,6 +311,15 @@ bool SlideshowSelector::browseFiles(const QDir &directory, QList<QFileInfo> &fil
 int SlideshowSelector::currentPage()
 {
 	return page_content->getCurrentPage();
+}
+
+void SlideshowSelector::setSelection(const QString &path, bool selected)
+{
+	qWarning() << path;
+	if (selected)
+		handler->insertItem(path);
+	else
+		handler->removeCurrentFile(path, getFiles());
 }
 
 
