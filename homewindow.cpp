@@ -32,6 +32,7 @@
 #include "xml_functions.h"
 #include "pagecontainer.h"
 #include "btbutton.h"
+#include "pagestack.h" // bt_global::page_stack
 
 #include <QHBoxLayout>
 #include <QGridLayout>
@@ -108,7 +109,7 @@ HomeWindow::HomeWindow()
 
 void HomeWindow::aboutToChangePage()
 {
-	central_widget->currentPage()->cleanUp();
+	bt_global::page_stack.clear();
 }
 
 void HomeWindow::loadConfiguration()
