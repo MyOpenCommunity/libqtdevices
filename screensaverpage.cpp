@@ -305,7 +305,6 @@ int SlideshowSelector::currentPage()
 
 void SlideshowSelector::setSelection(const QString &path, bool selected)
 {
-	qWarning() << path;
 	if (selected)
 		handler->insertItem(path);
 	else
