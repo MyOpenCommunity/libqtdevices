@@ -287,7 +287,7 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	dev = _dev;
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
-	connect(nav_bar, SIGNAL(forwardClick()), SLOT(changeStatus()));
+	connect(toggle_mode, SIGNAL(clicked()), SLOT(changeStatus()));
 	//install compressor
 
 	QHBoxLayout *hbox = new QHBoxLayout();
