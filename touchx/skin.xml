@@ -649,11 +649,10 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>3013</cid>
 		<img_scroll_down>automazione/arrdw.png</img_scroll_down>
 		<img_scroll_up>automazione/arrup.png</img_scroll_up>
-		<!-- TODO check -->
-		<img_stop>automazione/stopbig.png</img_stop>
+		<img_stop>automazione/stopauto.png</img_stop>
 	</item>
 	<item>
-		<!-- automation group -->
+		<!-- actuator group -->
 		<cid>3014</cid>
 		<img_scroll_down>automazione/arrdw.png</img_scroll_down>
 		<img_scroll_up>automazione/arrup.png</img_scroll_up>
