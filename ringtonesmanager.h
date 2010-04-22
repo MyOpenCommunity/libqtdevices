@@ -77,6 +77,6 @@ private:
 	QHash<RingtoneType, int> type_to_ringtone;
 };
 
-namespace bt_global { extern RingtonesManager *ringtones; };
+namespace bt_global { extern RingtonesManager *ringtones; }
 
 #endif // RINGTONESMANAGER_H
