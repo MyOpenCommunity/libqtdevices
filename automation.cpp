@@ -26,6 +26,7 @@
 #include "bannercontent.h"
 #include "main.h"
 #include "skinmanager.h" // SkinContext
+#include "bannerfactory.h"
 
 #include <QDomNode>
 #include <QString>
@@ -50,7 +51,7 @@ enum BannerType
 	SIMPLE_ACTUATOR = 3007,
 	DOOR_LOCK = 3010,
 	PPT_STAT_AUTO = 3012,
-	ACTUATOR_GROUP = 3013,
+	ACTUATOR_GROUP = 3014,
 	/*
 	  TODO: What about these?
 	AUTOM_CANC_ATTUAT_ILL =234,
@@ -137,7 +138,9 @@ void Automation::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		if (banner *b = getBanner(item))
+		// here we use the getBanner from bannerfactory.h because there can be
+		// a light group in the automation section
+		if (banner *b = ::getBanner(item))
 			page_content->appendBanner(b);
 		else
 		{

@@ -24,7 +24,7 @@
 #include "fontmanager.h" // FontManager
 #include "icondispatcher.h" // icons_cache
 
-#include <QHBoxLayout>
+#include <QGridLayout>
 #include <QLabel>
 
 #define BAN4BUT_DIM 60
@@ -43,20 +43,20 @@ Bann4ButtonsIcon::Bann4ButtonsIcon(QWidget *parent) :
 	center_icon = new QLabel;
 	text = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
-	QHBoxLayout *l = new QHBoxLayout;
+	QGridLayout *l = new QGridLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
-	l->addWidget(left_button, 0, Qt::AlignLeft);
-	l->addWidget(center_left_button);
-	l->addWidget(center_icon, 1, Qt::AlignHCenter);
-	l->addWidget(center_right_button);
-	l->addWidget(right_button, 0, Qt::AlignRight);
 
-	QVBoxLayout *v = new QVBoxLayout(this);
-	v->setContentsMargins(0, 0, 0, 0);
-	v->setSpacing(0);
-	v->addLayout(l);
-	v->addWidget(text);
+	l->addWidget(left_button, 0, 0, Qt::AlignLeft);
+	l->setColumnStretch(0, 1);
+	l->addWidget(center_left_button, 0, 1, Qt::AlignHCenter);
+	l->addWidget(center_icon, 0, 1, 1, 2, Qt::AlignHCenter);
+	l->addWidget(center_right_button, 0, 2, Qt::AlignHCenter);
+	l->addWidget(right_button, 0, 3, Qt::AlignRight);
+	l->addWidget(text, 1, 0, 1, 4);
+
+	for (int i = 0; i < 4; ++i)
+		l->setColumnStretch(i, 1);
 }
 
 void Bann4ButtonsIcon::initBanner(const QString &_right, const QString &_right_alt, const QString &_center,
