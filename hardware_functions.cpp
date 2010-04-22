@@ -46,10 +46,13 @@
 #define DEV_E2 "/dev/nvram"
 
 
-#define BASE_EEPROM 11360
+#define E2_BASE 11360
+#define E2_BASE_CONF_ZARLINK 11694
+
 #define KEY_LENGTH 5
 #define AL_KEY "\125\252\125\252\125"
 #define SORG_PAR 2
+#define ZARLINK_KEY 0x63
 
 
 int maxWidth()
@@ -367,12 +370,12 @@ void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazion
 	if (eeprom == -1)
 		return;
 
-	lseek(eeprom, BASE_EEPROM+index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR),SEEK_SET);
+	lseek(eeprom, E2_BASE+index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR),SEEK_SET);
 	read(eeprom, keys, 5);
 
 	if (strcmp(keys, AL_KEY))
 	{
-		lseek(eeprom, BASE_EEPROM+index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR), SEEK_SET);
+		lseek(eeprom, E2_BASE+index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR), SEEK_SET);
 		write(eeprom,AL_KEY,5);
 		for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
 		{
@@ -382,7 +385,7 @@ void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazion
 	}
 	else
 	{
-		int ploffete = BASE_EEPROM + index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH;
+		int ploffete = E2_BASE + index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH;
 		lseek(eeprom,ploffete, SEEK_SET);
 		for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
 		{
@@ -404,7 +407,7 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 	if (eeprom == -1)
 		return;
 
-	lseek(eeprom,BASE_EEPROM + index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH, SEEK_SET);
+	lseek(eeprom,E2_BASE + index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH, SEEK_SET);
 	for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
 		write(eeprom,&volSveglia[idx],1);
 	write(eeprom,&sorgente,1);
@@ -412,6 +415,39 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 	close(eeprom);
 }
 
+void initEchoCanceller()
+{
+	char init = 0;
+	bool need_reset = false;
+
+	int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
+	lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
+	read(eeprom, &init, 1);
+
+	if (init != ZARLINK_KEY) // version mismatch, update the zarlink configuration
+	{
+		for (int i = 0; i < 5; ++i)
+		{
+			if (!QProcess::execute("/home/bticino/bin/zarlink 0400 0001 CONF /home/bticino/cfg/zle38004.cr"))
+			{
+				init = ZARLINK_KEY;
+				lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
+				write(eeprom, &init, 1);
+				need_reset = true;
+				break;
+			}
+			usleep(500000);
+		}
+	}
+
+	QProcess::execute(QString("echo %1 > /home/bticino/cfg/vers_conf_zarlink").arg(init));
+	if (need_reset)
+	{
+		QProcess::execute("echo 0 > /proc/sys/dev/btweb/reset_ZL1");
+		usleep(100000);
+		QProcess::execute("echo 1 > /proc/sys/dev/btweb/reset_ZL1");
+	}
+}
 
 // local variable to control an external process
 // TODO: sound playing really should be centralized, since only one process at the time can access /dev/dsp

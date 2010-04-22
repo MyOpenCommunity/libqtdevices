@@ -143,6 +143,10 @@ void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazion
 */
 void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione);
 
+// init the echo canceller, updating (if needed) the configuration. This function
+// MUST be called in a separate thread, in order to avoid the freeze of the ui.
+void initEchoCanceller();
+
 // play a WAV file
 void playSound(const QString &wavFile);
 // stops a file previously played with playSound

@@ -41,8 +41,7 @@ public:
 };
 
 
-class StateMachine
-	: public QObject
+class StateMachine : public QObject
 {
 	// private
 	struct State
@@ -60,7 +59,7 @@ public:
 
 	// must be called to initialize the state machine; does not call any
 	// state callbacks
-	void start(int state);
+	virtual void start(int state);
 
 	// returns the current state
 	int currentState() const;
@@ -109,8 +108,7 @@ private:
 // - add the enter/exit handlers to the 'private slots' section
 // - call addState() in the constructor to register the state in the
 //   state machine
-class AudioStateMachine
-	: public StateMachine
+class AudioStateMachine : public StateMachine
 {
 Q_OBJECT
 public:
@@ -134,6 +132,8 @@ public:
 	};
 
 	AudioStateMachine();
+
+	virtual void start(int state);
 
 private slots:
 	// declare state handlers here

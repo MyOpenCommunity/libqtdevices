@@ -20,23 +20,24 @@
 
 
 #include "audiostatemachine.h"
+#include "hardware_functions.h" // initEchoCanceller
+
 
 #include <QtGlobal>
 #include <QMetaMethod>
+#include <QtConcurrentRun>
 
 
 // helper class, disallows transitions from the states in the list
 
-class SourceStateConstraint
-	: public TransitionConstraint
+class SourceStateConstraint : public TransitionConstraint
 {
 public:
-	SourceStateConstraint(const QList<int> &states)
-	{
-	}
+	SourceStateConstraint(const QList<int> &states) {}
 
-	virtual bool isAllowed(const StateMachine *machine,
-			       int source_state, int dest_state)
+	virtual ~SourceStateConstraint() {}
+
+	virtual bool isAllowed(const StateMachine *machine, int source_state, int dest_state)
 	{
 		return !states.contains(source_state);
 	}
@@ -195,6 +196,12 @@ AudioStateMachine::AudioStateMachine()
 
 	// go to the start state: on startup IDLE is a transitional state, after a while it moves to BEEP_ON or BEEP_OFF
 	start(IDLE);
+}
+
+void AudioStateMachine::start(int state)
+{
+	QtConcurrent::run(initEchoCanceller);
+	StateMachine::start(state);
 }
 
 void AudioStateMachine::stateIdleEntered()

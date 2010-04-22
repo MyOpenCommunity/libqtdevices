@@ -148,6 +148,11 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 	// do nothing
 }
 
+void initEchoCanceller()
+{
+	// do.... nothing!
+}
+
 Q_GLOBAL_STATIC(QProcess, play_sound_process);
 void playSound(const QString &wavFile)
 {
