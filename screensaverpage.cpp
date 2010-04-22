@@ -30,6 +30,7 @@
 #include "xml_functions.h" // getTextChild
 #include "itemlist.h"
 #include "state_button.h"
+#include "bann_settings.h" // ScreensaverTiming
 
 #include <QAbstractButton>
 #include <QGridLayout>
@@ -71,22 +72,29 @@ namespace
 
 ScreenSaverPage::ScreenSaverPage()
 {
+	timing = 0;
 	addBanner(SingleChoice::createBanner(tr("No screensaver")), ScreenSaver::NONE);
-	addBanner(SingleChoice::createBanner(tr("Line")), ScreenSaver::LINES);
-	addBanner(SingleChoice::createBanner(tr("Balls")), ScreenSaver::BALLS);
 	addBanner(SingleChoice::createBanner(tr("Time")), ScreenSaver::TIME);
 	addBanner(SingleChoice::createBanner(tr("Text")), ScreenSaver::TEXT);
-	//addBanner(tr("Deform"), ScreenSaver::DEFORM); // the deform is for now unavailable!
+	// TODO: these types will be available on BTouch only
+	addBanner(SingleChoice::createBanner(tr("Line")), ScreenSaver::LINES);
+	addBanner(SingleChoice::createBanner(tr("Balls")), ScreenSaver::BALLS);
 
+	//addBanner(tr("Deform"), ScreenSaver::DEFORM); // the deform is for now unavailable!
 	// TODO maybe we want an OK button for touch 10 as well
+
 #ifdef LAYOUT_TOUCHX
 	CheckableBanner *b = SingleChoice::createBanner(tr("Slideshow"), bt_global::skin->getImage("change_settings"));
 	addBanner(b, ScreenSaver::SLIDESHOW);
 	Page *p = new SlideshowSelector;
 	b->connectRightButton(p);
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-	connect(page_content, SIGNAL(bannerSelected(int)), SLOT(confirmSelection()));
+
+	timing = new ScreensaverTiming(tr("Slideshow timeout"), 12000);
+	addBottomWidget(timing);
+	timing->hide();
 #endif
+	connect(page_content, SIGNAL(bannerSelected(int)), SLOT(confirmSelection()));
 }
 
 void ScreenSaverPage::showPage()
@@ -102,6 +110,16 @@ int ScreenSaverPage::getCurrentId()
 
 void ScreenSaverPage::bannerSelected(int id)
 {
+	// hide timing selection if photo slideshow is not selected
+	if (timing)
+	{
+		// TODO: is there a better way to check photo slideshow
+		if (id == 3)
+			timing->show();
+		else
+			timing->hide();
+	}
+
 	(*bt_global::display).setScreenSaver(static_cast<ScreenSaver::Type>(id));
 	// TODO review when porting the code to BTouch
 #ifdef BT_HARDWARE_BTOUCH

@@ -34,6 +34,7 @@
 #include "navigation_bar.h"
 #include "bannercontent.h"
 #include "skinmanager.h"
+#include "state_button.h"
 
 #include <QVariant>
 #include <QLabel>
@@ -198,7 +199,7 @@ NavigationPage::NavigationPage()
 	main_layout.setContentsMargins(0, 0, 0, 0);
 }
 
-NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
+NavigationBar *NavigationPage::createNavigationBar(const QString &icon, int title_height)
 {
 #ifdef LAYOUT_BTOUCH
 	nav_bar = new NavigationBar(icon);
@@ -210,7 +211,7 @@ NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
 	connect(nav_bar, SIGNAL(upClick()), SIGNAL(upClick()));
 	connect(nav_bar, SIGNAL(downClick()), SIGNAL(downClick()));
 
-	buildPage(&content, nav_bar, "", TITLE_HEIGHT);
+	buildPage(&content, nav_bar, "", title_height);
 
 	return nav_bar;
 }
@@ -286,7 +287,7 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	dev = _dev;
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
-	connect(nav_bar, SIGNAL(forwardClick()), SLOT(changeStatus()));
+	connect(toggle_mode, SIGNAL(clicked()), SLOT(changeStatus()));
 	//install compressor
 
 	QHBoxLayout *hbox = new QHBoxLayout();
@@ -589,9 +590,10 @@ void PageFancoil::createFancoilButtons()
 	{
 		QString path = bt_global::skin->getImage(QString("fan_%1_off").arg(id + 1));
 		QString path_pressed = bt_global::skin->getImage(QString("fan_%1_on").arg(id + 1));
-		BtButton *btn = new BtButton(this);
-		btn->setImage(path);
-		btn->setPressedImage(path_pressed);
+		StateButton *btn = new StateButton(this);
+		btn->setOnOff();
+		btn->setOffImage(path);
+		btn->setOnImage(path_pressed);
 		btn->setCheckable(true);
 
 		bottom_icons.addWidget(btn);
@@ -1010,25 +1012,25 @@ PageTermoReg::PageTermoReg(QDomNode n)
 
 	mode_icon = getLabelWithPixmap(bt_global::skin->getImage("regulator"), this, Qt::AlignHCenter);
 
-	QHBoxLayout *hbox = new QHBoxLayout;
-	hbox->setAlignment(Qt::AlignCenter);
+#ifdef LAYOUT_TOUCHX
+	main_layout.setContentsMargins(40, 0, 40, 50);
 
-	hbox->addStretch(1);
-	hbox->addWidget(season_icon, 1);
-
-#ifdef LAYOUT_BTOUCH
-	hbox->addStretch(1);
-#else
 	BtButton *settings = new BtButton;
 	settings->setImage(bt_global::skin->getImage("settings"));
 	connect(settings, SIGNAL(clicked()), SLOT(showSettingsMenu()));
 
-	hbox->addWidget(settings, 1);
+	QHBoxLayout *hbox = new QHBoxLayout;
+
+	hbox->addStretch(2);
+	hbox->addWidget(settings, 1, Qt::AlignCenter);
 #endif
 
 	main_layout.addWidget(mode_icon);
 	main_layout.addWidget(description_label);
+	main_layout.addWidget(season_icon, 0, Qt::AlignCenter);
+#ifdef LAYOUT_TOUCHX
 	main_layout.addLayout(hbox);
+#endif
 	main_layout.addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
 	main_layout.setAlignment(Qt::AlignHCenter);
 
@@ -1038,7 +1040,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	program_choice = 0;
 	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 
-	createNavigationBar(bt_global::skin->getImage("settings"));
+	createNavigationBar(bt_global::skin->getImage("settings"), SMALL_TITLE_HEIGHT);
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
 
 	showDescription(description);

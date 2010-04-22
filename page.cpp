@@ -132,6 +132,7 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget, QW
 	//      and current page number
 	l->addWidget(nav_bar, 0);
 
+	// WARNING: when you change this type, have a look at addBottomWidget() also!
 	QVBoxLayout *pl = new QVBoxLayout;
 	pl->setContentsMargins(0, 0, 0, 0);
 	pl->setSpacing(0);
@@ -155,6 +156,21 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget, QW
 	l->setSpacing(0);
 
 	__content = content;
+}
+
+void Page::addBottomWidget(QWidget *bottom)
+{
+#ifdef LAYOUT_TOUCHX
+	QLayout *main = layout();
+	QVBoxLayout *l = qobject_cast<QVBoxLayout *>(static_cast<QLayout *>(main->itemAt(1)));
+	Q_ASSERT_X(l, "Page::addBottomWidget", "Touchx layout()->itemAt(1) is not a QVBoxLayout, fix buildPage()!");
+	l->addWidget(bottom, 0, Qt::AlignCenter);
+#else
+	// take into account nav_bar
+	// TODO: test it.
+	//l->insertWidget(l->count() - 2, bottom);
+	qFatal("Page::addBottomWidget is not implemented for BTouch");
+#endif
 }
 
 void Page::activateLayout()

@@ -649,11 +649,10 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>3013</cid>
 		<img_scroll_down>automazione/arrdw.png</img_scroll_down>
 		<img_scroll_up>automazione/arrup.png</img_scroll_up>
-		<!-- TODO check -->
-		<img_stop>automazione/stopbig.png</img_stop>
+		<img_stop>automazione/stopauto.png</img_stop>
 	</item>
 	<item>
-		<!-- automation group -->
+		<!-- actuator group -->
 		<cid>3014</cid>
 		<img_scroll_down>automazione/arrdw.png</img_scroll_down>
 		<img_scroll_up>automazione/arrup.png</img_scroll_up>
@@ -795,8 +794,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<!-- regulator page 4 zones -->
 	<item>
 		<cid>200000</cid> <!-- TODO fix -->
-		<img_summer_flat>termoregolazione/estateoff.png</img_summer_flat>
-		<img_winter_flat>termoregolazione/invernooff.png</img_winter_flat>
+		<img_summer_flat>termoregolazione/estateoffp.png</img_summer_flat>
+		<img_winter_flat>termoregolazione/invernooffp.png</img_winter_flat>
 		<img_regulator>termoregolazione/imgcentrale.png</img_regulator>
 		<img_regulator_off>termoregolazione/imgoff.png</img_regulator_off>
 		<img_regulator_antifreeze>termoregolazione/imgantigelo.png</img_regulator_antifreeze>
@@ -861,8 +860,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<!-- regulator page 99 zones -->
 	<item>
 		<cid>8051</cid>
-		<img_summer_flat>termoregolazione/estateoff.png</img_summer_flat>
-		<img_winter_flat>termoregolazione/invernooff.png</img_winter_flat>
+		<img_summer_flat>termoregolazione/estateoffp.png</img_summer_flat>
+		<img_winter_flat>termoregolazione/invernooffp.png</img_winter_flat>
 		<img_regulator>termoregolazione/imgcentrale.png</img_regulator>
 		<img_regulator_off>termoregolazione/imgoff.png</img_regulator_off>
 		<img_regulator_antifreeze>termoregolazione/imgantigelo.png</img_regulator_antifreeze>

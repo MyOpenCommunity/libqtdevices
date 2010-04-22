@@ -163,4 +163,14 @@ void PageStack::removeFromStack(QObject *obj)
 	}
 }
 
+void PageStack::clear()
+{
+	while (states.size() > 1)
+	{
+		State el = states.takeLast();
+		if (el.page)
+			el.page->cleanUp();
+	}
+}
+
 PageStack bt_global::page_stack;

@@ -76,6 +76,9 @@ public:
 	void closeWindow(Window *window);
 	void closePage(Page *page);
 
+	// remove all the pages/windows from the stack
+	void clear();
+
 public slots:
 	// tracks the currently displayed page
 	void currentPageChanged(Page *page);

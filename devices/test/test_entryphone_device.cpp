@@ -175,6 +175,15 @@ void TestEntryphoneDevice::receiveIncomingCall()
 	t.check(frame, true);
 }
 
+void TestEntryphoneDevice::receiveAutoswitchCall()
+{
+	int kind = 5;
+	int mmtype = 4;
+	DeviceTester t(dev, EntryphoneDevice::AUTO_VCT_CALL, DeviceTester::MULTIPLE_VALUES);
+	QString frame = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
+	t.check(frame, true);
+}
+
 void TestEntryphoneDevice::receiveStopVideo()
 {
 	int kind = 1;
@@ -222,6 +231,15 @@ void TestEntryphoneDevice::receiveCallerAddress3()
 	DeviceTester t2(dev, EntryphoneDevice::MOVING_CAMERA, DeviceTester::MULTIPLE_VALUES);
 	t1.check(frame, true);
 	t2.check(frame, true);
+}
+
+void TestEntryphoneDevice::receiveEndOfCall()
+{
+	int kind = 1;
+	int mmtype = 4;
+	DeviceTester t(dev, EntryphoneDevice::END_OF_CALL);
+	QString frame = QString("*8*3#%1#%2*%3##").arg(kind).arg(mmtype).arg(dev->where);
+	t.check(frame, true);
 }
 
 void TestEntryphoneDevice::receiveRearmSession()
