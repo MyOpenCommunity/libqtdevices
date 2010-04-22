@@ -119,7 +119,7 @@ void ControlledProbeDevice::setManual(unsigned setpoint)
 	QString frame = "*#" + who + "*" + where + "*" + what + "##";
 
 	set_point = -1;
-	sendFrame(frame);
+	sendCompressedFrame(frame);
 }
 
 void ControlledProbeDevice::setAutomatic()
