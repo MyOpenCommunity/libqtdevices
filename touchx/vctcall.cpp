@@ -54,6 +54,7 @@ namespace VCTCallPrivate
 	struct VCTCallStatus
 	{
 		bool connected;
+		bool stopped;
 		StateButton::Status mute;
 		ItemTuningStatus volume_status;
 		bool hands_free;
@@ -177,6 +178,7 @@ VCTCallStatus::VCTCallStatus()
 void VCTCallStatus::init()
 {
 	connected = false;
+	stopped = false;
 	mute = StateButton::DISABLED;
 }
 
@@ -278,9 +280,26 @@ void VCTCall::toggleCall()
 
 	refreshStatus();
 	if (call_status->connected)
+	{
+		if (call_status->stopped)
+			resumeVideo();
 		dev->answerCall();
+	}
 	else
 		handleClose();
+}
+
+void VCTCall::resumeVideo()
+{
+	// We have to wait the ending of the process to restart the process.
+	if (video_grabber.state() == QProcess::NotRunning)
+	{
+		call_status->stopped = false;
+		disconnect(this, SIGNAL(videoFinished()), this, SLOT(resumeVideo()));
+		startVideo();
+	}
+	else // we re-try when the video is terminated.
+		connect(this, SIGNAL(videoFinished()), this, SLOT(resumeVideo()));
 }
 
 void VCTCall::startVideo()
@@ -311,7 +330,10 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 		switch (it.key())
 		{
 		case EntryphoneDevice::VCT_CALL:
-			emit incomingCall();
+			if (call_status->stopped)
+				resumeVideo();
+			else
+				emit incomingCall();
 			break;
 		case EntryphoneDevice::AUTO_VCT_CALL:
 			emit autoIncomingCall();
@@ -322,6 +344,10 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 		case EntryphoneDevice::END_OF_CALL:
 			stopVideo();
 			emit callClosed();
+			break;
+		case EntryphoneDevice::STOP_VIDEO:
+			call_status->stopped = true;
+			stopVideo();
 			break;
 		case EntryphoneDevice::MOVING_CAMERA:
 			camera->setMoveEnabled(it.value().toBool());
