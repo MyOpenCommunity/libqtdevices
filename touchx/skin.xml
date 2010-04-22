@@ -646,18 +646,17 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<item>
 		<!-- automation group -->
-		<cid>3013</cid>
+		<cid>3014</cid>
 		<img_scroll_down>automazione/arrdw.png</img_scroll_down>
 		<img_scroll_up>automazione/arrup.png</img_scroll_up>
 		<img_stop>automazione/stopauto.png</img_stop>
 	</item>
 	<item>
-		<!-- actuator group -->
-		<cid>3014</cid>
-		<img_scroll_down>automazione/arrdw.png</img_scroll_down>
-		<img_scroll_up>automazione/arrup.png</img_scroll_up>
-		<!-- TODO check -->
-		<img_stop>automazione/stopbig.png</img_stop>
+		<!-- light group in automation -->
+		<cid>3013</cid>
+		<img_off>illuminazione/off.png</img_off>
+		<img_on>illuminazione/on.png</img_on>
+		<img_lamp_group_on>illuminazione/imglampgrpon.png</img_lamp_group_on>
 	</item>
 	<!-- lighting banners -->
 	<item>
