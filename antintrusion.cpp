@@ -25,6 +25,7 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "alarmpage.h"
 #include "btmain.h" // bt_global::btmain
+#include "pagestack.h"
 #include "bannercontent.h"
 #include "navigation_bar.h"
 #include "btbutton.h"
@@ -322,7 +323,7 @@ void Antintrusion::addAlarm(QString descr, int t, int zona)
 
 void Antintrusion::showHomePage()
 {
-	doClearAlarms();
+	bt_global::page_stack.clear();
 	bt_global::btmain->showHomePage();
 }
 
@@ -389,7 +390,7 @@ void Antintrusion::showAlarms()
 
 void Antintrusion::showAlarms()
 {
-	doClearAlarms();
+	bt_global::page_stack.clear();
 	alarms->showPage();
 }
 
