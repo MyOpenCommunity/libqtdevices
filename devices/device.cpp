@@ -29,6 +29,7 @@
 
 #include <QDebug>
 
+#define COMPRESSION_TIMEOUT 1000
 
 // Inizialization of static member
 QHash<int, QPair<Client*, Client*> > device::clients;
@@ -120,6 +121,7 @@ device::device(QString _who, QString _where, int oid) : FrameReceiver(oid)
 
 	connect(openservers[openserver_id], SIGNAL(connectionUp()), SIGNAL(connectionUp()));
 	connect(openservers[openserver_id], SIGNAL(connectionDown()), SIGNAL(connectionDown()));
+	connect(&compressor_mapper, SIGNAL(mapped(int)), SLOT(emitCompressedFrame(int)));
 }
 
 void device::manageFrame(OpenMsg &msg)
@@ -154,6 +156,40 @@ void device::sendFrame(QString frame) const
 	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].first, "device::sendFrame",
 			   qPrintable(QString("Client comandi not set for id: %1!").arg(openserver_id)));
 	clients[openserver_id].first->sendFrameOpen(frame);
+}
+
+void device::sendCompressedFrame(QString frame) const
+{
+	OpenMsg msg(frame.toStdString());
+
+	int what = msg.what();
+	if (compressed_frames.contains(what))
+	{
+		compressed_frames[what].first->start();
+		compressed_frames[what].second = frame;
+	}
+	else
+	{
+		QTimer *timeout = new QTimer(const_cast<device*>(this));
+		timeout->setSingleShot(true);
+		timeout->start(COMPRESSION_TIMEOUT);
+
+		connect(timeout, SIGNAL(timeout()), &compressor_mapper, SLOT(map()));
+		compressor_mapper.setMapping(timeout, what);
+		compressed_frames[what] = qMakePair(timeout, frame);
+	}
+}
+
+void device::emitCompressedFrame(int what)
+{
+	qDebug() << "Emitting compressed frame" << where << what;
+
+	Q_ASSERT_X(compressed_frames.contains(what), "device::emitCompressedFrame", "tried to emit a frame twice");
+
+	compressed_frames[what].first->deleteLater();
+	sendFrame(compressed_frames[what].second);
+
+	compressed_frames.remove(what);
 }
 
 void device::sendInit(QString frame) const
