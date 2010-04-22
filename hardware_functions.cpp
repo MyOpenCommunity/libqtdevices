@@ -43,6 +43,15 @@
 #define TFT_BRIGTH_VCT    "6"
 
 
+#define DEV_E2 "/dev/nvram"
+
+
+#define BASE_EEPROM 11360
+#define KEY_LENGTH 5
+#define AL_KEY "\125\252\125\252\125"
+#define SORG_PAR 2
+
+
 int maxWidth()
 {
 	static int width = 0;
@@ -348,21 +357,20 @@ void getName(char *name)
 
 void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazione)
 {
-	int eeprom;
-	char chiave[6];
+	char keys[6];
 
-	qDebug() << "Reading alarm volume from nvram for index" << index;
+	qDebug() << "Reading alarm volume from e2 for index" << index;
 
-	memset(chiave,'\000',sizeof(chiave));
-	eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
+	memset(keys,'\000',sizeof(keys));
+	int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
 
 	if (eeprom == -1)
 		return;
 
 	lseek(eeprom, BASE_EEPROM+index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR),SEEK_SET);
-	read(eeprom, chiave, 5);
+	read(eeprom, keys, 5);
 
-	if (strcmp(chiave,AL_KEY))
+	if (strcmp(keys, AL_KEY))
 	{
 		lseek(eeprom, BASE_EEPROM+index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR), SEEK_SET);
 		write(eeprom,AL_KEY,5);
@@ -389,10 +397,9 @@ void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazion
 
 void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 {
-	int eeprom;
-	eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
+	int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
 
-	qDebug() << "Writing alarm volume to nvram for index" << index;
+	qDebug() << "Writing alarm volume to e2 for index" << index;
 
 	if (eeprom == -1)
 		return;
