@@ -312,6 +312,7 @@ void Antintrusion::addAlarm(QString descr, int t, int zona)
 	connect(curr, SIGNAL(Delete()), SLOT(deleteAlarm()));
 	connect(curr, SIGNAL(showHomePage()), SLOT(showHomePage()));
 	connect(curr, SIGNAL(showAlarmList()), SLOT(showAlarms()));
+	connect(curr, SIGNAL(destroyed(QObject*)), SLOT(cleanupAlarmPage(QObject*)));
 
 	alarms->addAlarm(t, alarm_description, zone_description, now);
 
@@ -365,6 +366,11 @@ void Antintrusion::deleteAlarm()
 		curr_alarm = allarmi.size() - 1;
 
 	allarmi.at(curr_alarm)->showPage();
+}
+
+void Antintrusion::cleanupAlarmPage(QObject *page)
+{
+	allarmi.removeOne(static_cast<AlarmPage*>(page));
 }
 
 #ifdef LAYOUT_BTOUCH

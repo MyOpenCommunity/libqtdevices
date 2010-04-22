@@ -159,3 +159,8 @@ void AlarmPage::showPage()
 	bt_global::page_stack.showAlert(this);
 	Page::showPage();
 }
+
+void AlarmPage::cleanUp()
+{
+	deleteLater();
+}
