@@ -207,21 +207,11 @@ SlideshowSelector::SlideshowSelector() :
 	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 
 	connect(item_list, SIGNAL(itemSelectionChanged(QString,bool)), SLOT(setSelection(QString,bool)));
-
-	root_path = "/";
 }
 
 SlideshowSelector::~SlideshowSelector()
 {
 	delete handler;
-}
-
-void SlideshowSelector::browse(const QString &dir)
-{
-	root_path = dir;
-
-	setRootPath(dir);
-	showPage();
 }
 
 void SlideshowSelector::nextItem()
@@ -236,7 +226,7 @@ void SlideshowSelector::prevItem()
 
 void SlideshowSelector::showPage()
 {
-	if (root_path.isEmpty())
+	if (getRootPath().isEmpty())
 		emit Closed();
 	else
 		FileSelector::showPage();
@@ -244,7 +234,7 @@ void SlideshowSelector::showPage()
 
 void SlideshowSelector::showPageNoReload()
 {
-	if (root_path.isEmpty())
+	if (getRootPath().isEmpty())
 		emit Closed();
 	else
 		Selector::showPage();

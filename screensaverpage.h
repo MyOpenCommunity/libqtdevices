@@ -90,8 +90,6 @@ public:
 	SlideshowSelector();
 	~SlideshowSelector();
 
-	void browse(const QString &dir);
-
 public slots:
 	virtual void nextItem();
 	virtual void prevItem();
@@ -106,9 +104,6 @@ private slots:
 	void setSelection(const QString &path, bool selected);
 
 private:
-	// root path, used to unmount the device
-	QString root_path;
-
 	ImageSelectionHandler *handler;
 
 	// Icon path

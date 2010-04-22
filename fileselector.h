@@ -68,10 +68,12 @@ public:
 	FileSelector(unsigned rows_per_page, QString start_path);
 
 public slots:
+	QString getRootPath() const;
 	void itemIsClicked(int item);
 	void browseUp();
 	virtual void showPage();
 	virtual void showPageNoReload();
+	virtual void browse(const QString &start_path);
 
 signals:
 	void fileClicked(int item);
@@ -112,6 +114,9 @@ private:
 
 	// How many subdirs we are descending from root.
 	unsigned level;
+
+	// The root path
+	QString root_path;
 
 	QMap<QString, unsigned>  pages_indexes;
 };
