@@ -69,7 +69,7 @@ namespace VCTCallPrivate
 		void init();
 	};
 
-	VCTCallStatus *VCTCall::call_status = new VCTCallStatus;
+	VCTCallStatus *VCTCall::call_status = 0;
 }
 
 using namespace VCTCallPrivate;
@@ -391,6 +391,8 @@ void VCTCall::handleClose()
 VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 {
 	dev = d;
+	// There is only 1 VCTCallPage instance, so I can build the VCTCallStatus here.
+	VCTCall::call_status = new VCTCallStatus;
 	vct_call = new VCTCall(d, VCTCall::NORMAL_VIDEO);
 	VCTCall::call_status->volume_status = vct_call->volume->getStatus();
 
@@ -439,6 +441,11 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 	layout->addLayout(bottom, 2, 0, 1, 2, Qt::AlignLeft);
 	layout->setContentsMargins(20, 0, 0, 20);
 	layout->setSpacing(10);
+}
+
+VCTCallPage::~VCTCallPage()
+{
+	delete VCTCall::call_status;
 }
 
 void VCTCallPage::cleanUp()

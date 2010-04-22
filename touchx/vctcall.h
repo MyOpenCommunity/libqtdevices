@@ -179,6 +179,7 @@ class VCTCallPage : public Page
 Q_OBJECT
 public:
 	VCTCallPage(EntryphoneDevice *d);
+	~VCTCallPage();
 	static void setHandsFree(bool on);
 	static void setProfStudio(bool on);
 	virtual int sectionId();
