@@ -10,6 +10,7 @@
 #include "message_device.h"
 #include "devices_cache.h"
 #include "btmain.h" // showHomePage
+#include "pagestack.h"
 
 #include <QLabel>
 #include <QLayout>
@@ -288,7 +289,8 @@ void MessagesListPage::newMessage(const DeviceValues &values_list)
 	if (count > MESSAGES_MAX)
 	{
 		page_content->removeItem(count - 1);
-		// TODO: Something to remove the page associated to the message.
+		AlertMessagePage *page = alert_pages.at(count - 1);
+		page->deleteLater();
 	}
 
 	QString date = DateConversions::formatDateTimeConfig(message.datetime);
@@ -306,6 +308,9 @@ void MessagesListPage::newMessage(const DeviceValues &values_list)
 	connect(page, SIGNAL(goHome()), SLOT(goHome()));
 	connect(page, SIGNAL(goMessagesList()), SLOT(goMessagesList()));
 	connect(page, SIGNAL(deleteMessage()), SLOT(showDeletePage()));
+
+	alert_pages.prepend(page);
+	bt_global::page_stack.showAlert(page);
 }
 
 void MessagesListPage::showMessage(int index)
@@ -365,6 +370,10 @@ void MessagesListPage::deleteAll()
 
 void MessagesListPage::deleteMessage()
 {
+	// Deletes the alert page about the current message.
+	if (alert_pages.size() > 0 && current_index == 0)
+		alert_pages.at(current_index)->deleteLater();
+
 	page_content->removeItem(current_index);
 	page_content->showList();
 	saveMessages();
@@ -422,6 +431,8 @@ void MessagesListPage::goHome()
 	// Set the last message arrived (that should be the one visualized) as read
 	setMessageAsRead(current_index);
 
+	bt_global::page_stack.clear();
+	alert_pages.clear();
 	bt_global::btmain->showHomePage();
 }
 
@@ -430,5 +441,7 @@ void MessagesListPage::goMessagesList()
 	// Set the last message arrived (that should be the one visualized) as read
 	setMessageAsRead(current_index);
 
+	bt_global::page_stack.clear();
+	alert_pages.clear();
 	showPage();
 }

@@ -144,6 +144,7 @@ private slots:
 	void requestZoneStatus();
 	void requestStatusIfCurrentWidget(Page *curr);
 	void plantInserted();
+	void cleanupAlarmPage(QObject *page);
 };
 
 

@@ -31,7 +31,9 @@
 #include "itemlist.h"
 #include "state_button.h"
 #include "bann_settings.h" // ScreensaverTiming
+#ifdef LAYOUT_TOUCHX
 #include "multimedia.h" // FilesystemBrowseButton
+#endif
 #include "main.h" // getPageNode(), MULTIMEDIA
 
 #include <QAbstractButton>
@@ -134,6 +136,8 @@ void ScreenSaverPage::bannerSelected(int id)
 		(*bt_global::display).setBrightness(BRIGHTNESS_OFF);
 #endif
 }
+
+#ifdef LAYOUT_TOUCHX
 
 StorageSelectionPage::StorageSelectionPage()
 {
@@ -547,3 +551,5 @@ QSet<QString> ImageSelectionHandler::getSelectedImages()
 {
 	return selected_images + inserted_images - removed_images;
 }
+
+#endif

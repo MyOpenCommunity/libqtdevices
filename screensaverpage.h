@@ -53,6 +53,7 @@ private:
 	ScreensaverTiming *timing;
 };
 
+#ifdef LAYOUT_TOUCHX
 
 class StorageSelectionPage : public IconPage
 {
@@ -212,5 +213,7 @@ private:
 	//                  below are selected.
 	QSet<QString> selected_images, removed_images, inserted_images;
 };
+
+#endif
 
 #endif // SCREENSAVERPAGE_H
