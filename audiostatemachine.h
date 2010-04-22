@@ -137,47 +137,47 @@ public:
 
 private slots:
 	// declare state handlers here
-	//Events: Startup, Screensaver without password, Screen OFF
+	// Events: Startup, Screensaver without password, Screen OFF
 	void stateIdleEntered();
 	void stateIdleExited();
-	//Events: Beep enabled
+	// Events: Beep enabled
 	void stateBeepOnEntered();
 	void stateBeepOnExited();
-	//Events: Beep disabled
+	// Events: Beep disabled
 	void stateBeepOffEntered();
 	void stateBeepOffExited();
-	//Events: Play media (mp3, wave. radio IP...) on local speaker
+	// Events: Play media (mp3, wave. radio IP...) on local speaker
 	void statePlayMediaToSpeakerEntered();
 	void statePlayMediaToSpeakerExited();
-	//Events: Play Diffusion Sound system on local speaker
+	// Events: Play Diffusion Sound system on local speaker
 	void statePlayFromDifsonToSpeakerEntered();
 	void statePlayFromDifsonToSpeakerExited();
-	//Events: Play media (mp3, wave. radio IP...) on diffusione sound system - set Touch as multimedia source
+	// Events: Play media (mp3, wave. radio IP...) on diffusione sound system - set Touch as multimedia source
 	void statePlayMediaToDifsonEntered();
 	void statePlayMediaToDifsonExited();
-	//Events: Play ringtone on local speaker, incoming video call or intercom
+	// Events: Play ringtone on local speaker, incoming video call or intercom
 	void statePlayRingtoneEntered();
 	void statePlayRingtoneExited();
-	//Events: Answer on an incoming scs video call
+	// Events: Answer on an incoming scs video call
 	void stateScsVideoCallEntered();
 	void stateScsVideoCallExited();
-	//Events: Answer on an incoming scs intercom call
+	// Events: Answer on an incoming scs intercom call
 	void stateScsIntercomCallEntered();
 	void stateScsIntercomCallExited();
-	//Events: Answer on an incoming IP video call
+	// Events: Answer on an incoming IP video call
 	void stateIpVideoCallEntered();
 	void stateIpVideoCallExited();
-	//Events: Answer on an incoming IP intercom call
+	// Events: Answer on an incoming IP intercom call
 	void stateIpIntercomCallEntered();
 	void stateIpIntercomCallExited();
-	//Events: Play Alarm on local speaker
+	// Events: Play Alarm on local speaker
 	void stateAlarmToSpeakerEntered();
 	void stateAlarmToSpeakerExited();
-	//Events: Play Alarm on sound diffusion system
-	//Maybe obsolete, can be used one of: statePlayMediaToSpeakerEntered, statePlayFromDifsonToSpeakerEntered, statePlayMediaToDifsonEntered
+	// Events: Play Alarm on sound diffusion system
+	// Maybe obsolete, can be used one of: statePlayMediaToSpeakerEntered, statePlayFromDifsonToSpeakerEntered, statePlayMediaToDifsonEntered
 	void stateAlarmToDifsonEntered();
 	void stateAlarmToDifsonExited();
-	//Events: Activate Screensaver during an interaction with diffusion sound system
+	// Events: Activate Screensaver during an interaction with diffusion sound system
 	void stateScreensaverWithPlayEntered();
 	void stateScreensaverWithPlayExited();
 };
