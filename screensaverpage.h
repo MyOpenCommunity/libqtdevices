@@ -88,6 +88,7 @@ public:
 	typedef FileList ContentType;
 
 	SlideshowSelector();
+	~SlideshowSelector();
 
 	void browse(const QString &dir);
 

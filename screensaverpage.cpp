@@ -112,7 +112,7 @@ void ScreenSaverPage::bannerSelected(int id)
 
 
 FileList::FileList(QWidget *parent, int rows_per_page) :
-		ItemList(parent, rows_per_page), sel_buttons(new QButtonGroup)
+		ItemList(parent, rows_per_page), sel_buttons(new QButtonGroup(this))
 {
 	sel_buttons->setExclusive(false);
 
@@ -209,6 +209,11 @@ SlideshowSelector::SlideshowSelector() :
 	connect(item_list, SIGNAL(itemSelectionChanged(QString,bool)), SLOT(setSelection(QString,bool)));
 
 	root_path = "/";
+}
+
+SlideshowSelector::~SlideshowSelector()
+{
+	delete handler;
 }
 
 void SlideshowSelector::browse(const QString &dir)
