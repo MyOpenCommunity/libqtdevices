@@ -28,6 +28,7 @@
 #include <QHash>
 #include <QList>
 #include <QTimer>
+#include <QSignalMapper>
 
 class device_status;
 class frame_interpreter;
@@ -124,6 +125,11 @@ public slots:
 	void sendFrame(QString frame) const;
 	void sendInit(QString frame) const;
 
+	// queues the frame to be emitted after a time interval; if another compressed
+	// frame with the same "what" is sent before the timeout, the first frame is
+	// discarded and the timeout restarted
+	void sendCompressedFrame(QString frame) const;
+
 protected:
 	// The costructor is protected only to make device abstract.
 	// NOTE: the default openserver id should be keep in sync with the define MAIN_OPENSERVER
@@ -147,9 +153,15 @@ protected:
 	// was recognized and processed.
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list) { return false; }
 
+private slots:
+	void emitCompressedFrame(int what);
+
 private:
 	static QHash<int, QPair<Client*, Client*> > clients;
 	static QHash<int, OpenServerManager*> openservers;
+
+	mutable QHash<int, QPair<QTimer*, QString> > compressed_frames;
+	mutable QSignalMapper compressor_mapper;
 };
 
 #endif //__DEVICE_H__

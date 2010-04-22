@@ -475,13 +475,13 @@ void PageProbe::valueReceived(const DeviceValues &values_list)
 			switch (temp_scale)
 			{
 			case FAHRENHEIT:
-				sp = fahrenheit2Bt(sp);
+				sp = fahrenheit2Bt(setpoint);
 				break;
 			default:
 				qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
 				// fall through
 			case CELSIUS:
-				sp = celsius2Bt(sp);
+				sp = celsius2Bt(setpoint);
 				break;
 			}
 
