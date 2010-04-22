@@ -48,8 +48,6 @@ public:
 
 	MultimediaFileListPage();
 
-	void browse(const QString &dir);
-
 public slots:
 	virtual void nextItem();
 	virtual void prevItem();
@@ -84,9 +82,6 @@ private:
 
 	// button icons for files/directories
 	QString play_file, browse_directory;
-
-	// root path, used to unmount the device
-	QString root_path;
 
 	// pages to display video/images
 	SlideshowPage *slideshow;

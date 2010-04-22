@@ -108,7 +108,7 @@ ControlledProbeDevice::ControlledProbeDevice(QString where, QString central, QSt
 	local_offset = 0;
 	local_status = ST_NORMAL;
 	status = ST_NONE;
-	set_point = 0;
+	set_point = -1;
 
 	connect(&new_request_timer, SIGNAL(timeout()), SLOT(timeoutElapsed()));
 }
@@ -118,11 +118,13 @@ void ControlledProbeDevice::setManual(unsigned setpoint)
 	QString what = QString("#14*%1*3").arg(setpoint, 4, 10, QChar('0'));
 	QString frame = "*#" + who + "*" + where + "*" + what + "##";
 
-	sendFrame(frame);
+	set_point = -1;
+	sendCompressedFrame(frame);
 }
 
 void ControlledProbeDevice::setAutomatic()
 {
+	set_point = -1;
 	sendFrame(createCommandFrame(who, "311", where));
 }
 
@@ -242,7 +244,8 @@ void ControlledProbeDevice::manageFrame(OpenMsg &msg)
 	{
 		values_list[DIM_LOCAL_STATUS] = local_status;
 		values_list[DIM_OFFSET] = local_offset;
-		values_list[DIM_SETPOINT] = set_point;
+		if (set_point >= 0)
+			values_list[DIM_SETPOINT] = set_point;
 
 		emit valueReceived(values_list);
 		return;
@@ -296,7 +299,8 @@ void ControlledProbeDevice::manageFrame(OpenMsg &msg)
 	{
 		values_list[DIM_LOCAL_STATUS] = local_status;
 		values_list[DIM_OFFSET] = local_offset;
-		values_list[DIM_SETPOINT] = set_point;
+		if (set_point >= 0)
+			values_list[DIM_SETPOINT] = set_point;
 		values_list[DIM_STATUS] = status;
 
 		emit valueReceived(values_list);

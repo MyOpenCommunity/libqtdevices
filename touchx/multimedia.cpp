@@ -43,7 +43,7 @@ enum
 };
 
 
-FileSystemBrowseButton::FileSystemBrowseButton(MountWatcher &watch, MultimediaFileListPage *_browser,
+FileSystemBrowseButton::FileSystemBrowseButton(MountWatcher &watch, FileSelector *_browser,
 					       MountType _type, const QString &label,
 					       const QString &icon_mounted, const QString &icon_unmounted) :
 	IconPageButton(label)

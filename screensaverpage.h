@@ -92,8 +92,7 @@ public:
 	typedef FileList ContentType;
 
 	SlideshowSelector();
-
-	void browse(const QString &dir);
+	~SlideshowSelector();
 
 public slots:
 	virtual void nextItem();
@@ -109,9 +108,6 @@ private slots:
 	void setSelection(const QString &path, bool selected);
 
 private:
-	// root path, used to unmount the device
-	QString root_path;
-
 	ImageSelectionHandler *handler;
 
 	// Icon path

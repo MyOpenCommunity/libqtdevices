@@ -28,13 +28,13 @@
 class QDomNode;
 class StateButton;
 class MultimediaFileListPage;
-
+class FileSelector;
 
 class FileSystemBrowseButton : public IconPageButton
 {
 Q_OBJECT
 public:
-	FileSystemBrowseButton(MountWatcher &watch, MultimediaFileListPage *browser,
+	FileSystemBrowseButton(MountWatcher &watch, FileSelector *browser,
 			       MountType type, const QString &label,
 			       const QString &icon_mounted, const QString &icon_unmounted);
 
@@ -44,7 +44,7 @@ private slots:
 	void browse();
 
 private:
-	MultimediaFileListPage *browser;
+	FileSelector *browser;
 	QString directory;
 	MountType type;
 };
