@@ -29,11 +29,12 @@
 #include "keypad.h"
 #include "screensaver.h"
 #include "displaycontrol.h" // bt_global::display
-#include "page.h"
 #include "devices_cache.h" // bt_global::devices_cache
-#include "device.h"
 #include "fontmanager.h" // bt_global::font
 #include "skinmanager.h" // bt_global::skin
+#include "audiostatemachine.h" // bt_global::audio_states
+#include "page.h"
+#include "device.h"
 #include "pagefactory.h" // getPage
 #include "banner.h"
 #include "transitionwidget.h"
@@ -73,36 +74,37 @@ namespace
 		if (!n.isNull())
 			dest = n.text();
 	}
-}
 
 
 #if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
 
-// used to store the time of the last click; used by the screen saver code
-// on x86
-class LastClickTime : public QObject
-{
-public:
-	LastClickTime();
+	// used to store the time of the last click; used by the screen saver code
+	// on x86
+	class LastClickTime : public QObject
+	{
+	public:
+		LastClickTime();
 
-protected:
-	bool eventFilter(QObject *obj, QEvent *ev);
-};
+	protected:
+		bool eventFilter(QObject *obj, QEvent *ev);
+	};
 
-LastClickTime::LastClickTime()
-{
-}
+	LastClickTime::LastClickTime()
+	{
+	}
 
-bool LastClickTime::eventFilter(QObject *obj, QEvent *ev)
-{
-	// Save last click time
-	if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick)
-		setTimePress(QDateTime::currentDateTime());
+	bool LastClickTime::eventFilter(QObject *obj, QEvent *ev)
+	{
+		// Save last click time
+		if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick)
+			setTimePress(QDateTime::currentDateTime());
 
-	return false;
-}
-
+		return false;
+	}
 #endif
+
+}
+
 
 
 BtMain::BtMain(int openserver_reconnection_time)
@@ -123,6 +125,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	bt_global::display = new DisplayControl;
 	bt_global::skin = new SkinManager(SKIN_FILE);
 	bt_global::ringtones = new RingtonesManager;
+	bt_global::audio_states = new AudioStateMachine;
 
 #if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
 	// save last click time for the screen saver

@@ -182,4 +182,7 @@ private slots:
 	void stateScreensaverWithPlayExited();
 };
 
+
+namespace bt_global { extern AudioStateMachine *audio_states; }
+
 #endif // AUDIOSTATEMACHINE_H

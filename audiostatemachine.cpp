@@ -344,3 +344,5 @@ void AudioStateMachine::stateScreensaverWithPlayExited()
 
 }
 
+AudioStateMachine *bt_global::audio_states = 0;
+
