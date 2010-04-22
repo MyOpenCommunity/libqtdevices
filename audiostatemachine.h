@@ -72,6 +72,7 @@ public:
 	// transition is disallowed by some constraint
 	bool toState(int state);
 
+	// exits from the current state and moves to the previous one.
 	void exitCurrentState();
 
 	// adds a new state to the state machine; the optional entered and exited
@@ -98,6 +99,8 @@ private:
 
 	// the list of currently active states
 	QList<int> active_states;
+
+	void changeState(int new_state, int old_state);
 };
 
 

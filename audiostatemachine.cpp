@@ -114,11 +114,22 @@ bool StateMachine::toState(int state)
 	if (!isTransitionAllowed(state))
 		return false;
 
-	const State &s = available_states[state];
-	const State &os = available_states[currentState()];
+	active_states.append(state);
+	changeState(state, currentState());
+	return true;
+}
 
-	// TODO needs to be used like a stack
-	active_states[0] = state;
+void StateMachine::exitCurrentState()
+{
+	int curr_state = active_states.takeLast();
+	changeState(currentState(), curr_state);
+}
+
+void StateMachine::changeState(int new_state, int old_state)
+{
+	const State &s = available_states[new_state];
+	const State &os = available_states[old_state];
+
 
 	const QMetaObject *mo = metaObject();
 
@@ -128,20 +139,19 @@ bool StateMachine::toState(int state)
 	{
 		QMetaMethod meth = mo->method(mo->indexOfMethod(QMetaObject::normalizedSignature(os.exited + 1)));
 
-		meth.invoke(this, Q_ARG(int, state), Q_ARG(int, os.state));
+		meth.invoke(this, Q_ARG(int, new_state), Q_ARG(int, old_state));
 	}
 
 	if (s.entered)
 	{
 		QMetaMethod meth = mo->method(mo->indexOfMethod(QMetaObject::normalizedSignature(s.entered + 1)));
 
-		meth.invoke(this, Q_ARG(int, state), Q_ARG(int, os.state));
+		meth.invoke(this, Q_ARG(int, new_state), Q_ARG(int, old_state));
 	}
 
-	emit stateChanged(state, os.state);
-
-	return true;
+	emit stateChanged(new_state, old_state);
 }
+
 
 
 // AudioStateMachine implementation
