@@ -433,7 +433,7 @@ void initEchoCanceller()
 	lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
 	read(eeprom, &init, 1);
 
-	if (init != ZARLINK_KEY) // version mismatch, update the zarlink configuration
+	if (init != ZARLINK_KEY) // different versions, update the zarlink configuration
 	{
 		for (int i = 0; i < 5; ++i)
 		{
