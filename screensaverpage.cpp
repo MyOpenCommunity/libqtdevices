@@ -31,6 +31,8 @@
 #include "itemlist.h"
 #include "state_button.h"
 #include "bann_settings.h" // ScreensaverTiming
+#include "multimedia.h" // FilesystemBrowseButton
+#include "main.h" // getPageNode(), MULTIMEDIA
 
 #include <QAbstractButton>
 #include <QGridLayout>
@@ -49,6 +51,11 @@ enum {
 	BUTTON_ICON
 };
 
+enum
+{
+	PAGE_USB = 16002,
+	PAGE_SD = 16005,
+};
 
 namespace
 {
@@ -86,7 +93,7 @@ ScreenSaverPage::ScreenSaverPage()
 #ifdef LAYOUT_TOUCHX
 	CheckableBanner *b = SingleChoice::createBanner(tr("Slideshow"), bt_global::skin->getImage("change_settings"));
 	addBanner(b, ScreenSaver::SLIDESHOW);
-	Page *p = new SlideshowSelector;
+	Page *p = new StorageSelectionPage;
 	b->connectRightButton(p);
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 
@@ -128,6 +135,65 @@ void ScreenSaverPage::bannerSelected(int id)
 #endif
 }
 
+StorageSelectionPage::StorageSelectionPage()
+{
+	QDomNode config_node = getPageNode(MULTIMEDIA);
+	SkinContext cxt(getTextChild(config_node, "cid").toInt());
+
+	buildPage(new IconContent, new NavigationBar, tr("Slideshow"));
+	loadItems(config_node);
+}
+
+void StorageSelectionPage::loadItems(const QDomNode &config_node)
+{
+	FileSelector *browser = NULL;
+
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		SkinContext cxt(getTextChild(item, "cid").toInt());
+		QString icon = bt_global::skin->getImage("link_icon");
+		QString descr = getTextChild(item, "descr");
+
+		QDomNode page_node = getPageNodeFromChildNode(item, "lnk_pageID");
+		int item_id = getTextChild(item, "id").toInt();
+
+		Page *p = 0;
+
+		// use the item_id for now because some of the items do not
+		// have a linked page
+		switch (item_id)
+		{
+		case PAGE_USB:
+		case PAGE_SD:
+		{
+			if (!browser)
+				browser = createBrowser();
+
+			QWidget *t = new FileSystemBrowseButton(MountWatcher::getWatcher(), browser,
+								item_id == PAGE_USB ? MOUNT_USB : MOUNT_SD, descr,
+								bt_global::skin->getImage("mounted"),
+								bt_global::skin->getImage("unmounted"));
+			page_content->addWidget(t);
+			break;
+		}
+		default:
+			;// qFatal("Unhandled page id in StorageSelectionPage::loadItems");
+		};
+
+		if (p)
+			addPage(p, descr, icon);
+	}
+
+	MountWatcher::getWatcher().startWatching();
+}
+
+FileSelector *StorageSelectionPage::createBrowser()
+{
+	FileSelector *browser = new SlideshowSelector;
+	connect(browser, SIGNAL(Closed()), SLOT(showPage()));
+
+	return browser;
+}
 
 FileList::FileList(QWidget *parent, int rows_per_page) :
 		ItemList(parent, rows_per_page), sel_buttons(new QButtonGroup(this))
@@ -209,8 +275,11 @@ SlideshowSelector::SlideshowSelector() :
 	PageTitleWidget *title_widget = new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT);
 	connect(item_list, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
 
-	NavigationBar *nav_bar = new NavigationBar();
+	NavigationBar *nav_bar = new NavigationBar("eject");
 
+	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
+		SLOT(unmounted(const QString &)));
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(unmount()));
 	browse_directory = bt_global::skin->getImage("browse_directory");
 	selbutton_off = bt_global::skin->getImage("unchecked");
 	selbutton_on = bt_global::skin->getImage("checked");
@@ -323,6 +392,19 @@ void SlideshowSelector::setSelection(const QString &path, bool selected)
 	else
 		handler->removeCurrentFile(path, getFiles());
 }
+
+void SlideshowSelector::unmounted(const QString &dir)
+{
+	if (dir == getRootPath() && isVisible())
+		emit Closed();
+	setRootPath("");
+}
+
+void SlideshowSelector::unmount()
+{
+	MountWatcher::getWatcher().unmount(getRootPath());
+}
+
 
 ImageSelectionHandler::ImageSelectionHandler()
 {

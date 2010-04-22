@@ -23,6 +23,7 @@
 #define SCREENSAVERPAGE_H
 
 #include "singlechoicepage.h"
+#include "iconpage.h"
 #include "gridcontent.h" // GridContent
 #include "fileselector.h"
 #include "itemlist.h"
@@ -35,6 +36,7 @@ class QLabel;
 class QDomNode;
 class ImageSelectionHandler;
 class ScreensaverTiming;
+class SlideshowSelector;
 
 class ScreenSaverPage : public SingleChoicePage
 {
@@ -49,6 +51,18 @@ protected:
 
 private:
 	ScreensaverTiming *timing;
+};
+
+
+class StorageSelectionPage : public IconPage
+{
+Q_OBJECT
+public:
+	StorageSelectionPage();
+
+private:
+	void loadItems(const QDomNode &config_node);
+	FileSelector *createBrowser();
 };
 
 
@@ -106,6 +120,8 @@ protected:
 
 private slots:
 	void setSelection(const QString &path, bool selected);
+	void unmount();
+	void unmounted(const QString &path);
 
 private:
 	ImageSelectionHandler *handler;
