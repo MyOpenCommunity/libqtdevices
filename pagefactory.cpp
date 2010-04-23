@@ -156,7 +156,7 @@ Page *getPage(int page_id)
 		page = new LoadManagement(page_node);
 		break;
 	default:
-		qFatal("Page %d not found on xml config file!", id);
+		qFatal("Page %d not handled!", id);
 	}
 
 	bt_global::btmain->page_list[id] = page;
