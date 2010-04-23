@@ -81,9 +81,11 @@ QMAKE_CXXFLAGS_RELEASE += -O3
 
 contains(HARDWARE, x11) {
 	SOURCES += hardware_functions_x11.cpp
+	SOURCES += audiostatemachine_x11.cpp
 }
 contains(HARDWARE, embedded) {
 	SOURCES += hardware_functions.cpp
+	SOURCES += audiostatemachine.cpp
 	HEADERS += calibration.h
 	SOURCES += calibration.cpp
 }
@@ -231,7 +233,6 @@ SOURCES += actuators.cpp \
 	ambdiffson.cpp \
 	bann_amplifiers.cpp \
 	antintrusion.cpp \
-	audiostatemachine.cpp \
 	automation.cpp \
 	aux.cpp \
 	bann1_button.cpp \

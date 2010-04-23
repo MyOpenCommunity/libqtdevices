@@ -58,6 +58,7 @@ public:
 
 	virtual void start(int state);
 
+#if !defined(BT_HARDWARE_X11)
 private slots:
 	// declare state handlers here
 	// Events: Startup, Screensaver without password, Screen OFF
@@ -103,6 +104,7 @@ private slots:
 	// Events: Activate Screensaver during an interaction with diffusion sound system
 	void stateScreensaverWithPlayEntered();
 	void stateScreensaverWithPlayExited();
+#endif
 };
 
 
