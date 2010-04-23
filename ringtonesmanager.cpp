@@ -41,7 +41,7 @@ RingtonesManager::RingtonesManager()
 	foreach (const QFileInfo &fi, scanDirectory(d, filters))
 	{
 		ringtone_to_file[id] = fi.filePath();
-		qDebug() << fi.filePath();
+//		qDebug() << fi.filePath();
 		++id;
 	}
 	// TODO: read ringtones from conf file
