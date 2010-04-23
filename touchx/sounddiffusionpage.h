@@ -69,12 +69,17 @@ public:
 	static banner *getBanner(const QDomNode &item_node);
 
 	virtual void showPage();
+	virtual void cleanUp();
+
+	// do not use directly, use SoundDiffusionPage::showCurrentAmbientPage
+	static Page *currentAmbientPage();
 
 private:
 	void loadItems(const QDomNode &config_node);
 
 private:
 	int section_id;
+	static Page *current_ambient_page;
 };
 
 /**
@@ -90,6 +95,8 @@ public:
 	SoundDiffusionPage(const QDomNode &config_node);
 	virtual int sectionId();
 
+	static void showCurrentAmbientPage();
+
 	virtual void showPage();
 
 private:
@@ -101,6 +108,7 @@ private:
 
 private:
 	Page *next_page;
+	static Page *sound_diffusion_page;
 };
 
 #endif // SOUNDDIFFUSIONPAGE_H

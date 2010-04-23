@@ -37,6 +37,11 @@
 #include <QDomNode>
 #include <QGridLayout>
 #include <QLabel>
+#include <QtDebug>
+
+
+Page *SoundDiffusionPage::sound_diffusion_page;
+Page *SoundAmbientPage::current_ambient_page;
 
 namespace
 {
@@ -146,8 +151,17 @@ void SoundAmbientPage::loadItems(const QDomNode &config_node)
 
 void SoundAmbientPage::showPage()
 {
+	current_ambient_page = this;
+
 	bt_global::page_stack.showUserPage(this);
 	BannerPage::showPage();
+}
+
+void SoundAmbientPage::cleanUp()
+{
+	Q_ASSERT_X(current_ambient_page == this, "SoundAmbientPage::cleanUp", "Something terrible happened");
+
+	current_ambient_page = NULL;
 }
 
 banner *SoundAmbientPage::getBanner(const QDomNode &item_node)
@@ -174,8 +188,10 @@ banner *SoundAmbientPage::getBanner(const QDomNode &item_node)
 	return b;
 }
 
-
-
+Page *SoundAmbientPage::currentAmbientPage()
+{
+	return current_ambient_page;
+}
 
 
 enum Items
@@ -193,6 +209,8 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 		loadItemsMulti(config_node);
 	else
 		loadItemsMono(config_node);
+
+	sound_diffusion_page = this;
 }
 
 int SoundDiffusionPage::sectionId()
@@ -286,4 +304,18 @@ void SoundDiffusionPage::showPage()
 		bt_global::page_stack.showUserPage(this);
 		BannerPage::showPage();
 	}
+}
+
+void SoundDiffusionPage::showCurrentAmbientPage()
+{
+	Page *current_ambient_page = SoundAmbientPage::currentAmbientPage();
+
+	Q_ASSERT_X(current_ambient_page || sound_diffusion_page, "SoundDiffusionPage::showCurrentAmbientPage", "Terrible stuff keeps on happening");
+
+	qDebug() << "Sound diffusion" << sound_diffusion_page << "ambient" << current_ambient_page;
+
+	if (current_ambient_page)
+		current_ambient_page->showPage();
+	else
+		sound_diffusion_page->showPage();
 }
