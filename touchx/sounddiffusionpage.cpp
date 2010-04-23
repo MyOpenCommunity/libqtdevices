@@ -105,6 +105,11 @@ enum BannerType
 
 SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources)
 {
+	if (getTextChild(conf_node, "id").toInt() == DIFSON_MONO)
+		section_id = DIFSON_MONO;
+	else
+		section_id = NO_SECTION;
+
 	QWidget *top_widget = 0;
 	// this handles the case for special ambient, which must not show sources
 	if (!sources.isEmpty())
@@ -116,6 +121,11 @@ SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<Source
 	}
 	buildPage(getTextChild(conf_node, "descr"), Page::TITLE_HEIGHT, top_widget);
 	loadItems(conf_node);
+}
+
+int SoundAmbientPage::sectionId()
+{
+	return section_id;
 }
 
 void SoundAmbientPage::loadItems(const QDomNode &config_node)
@@ -170,8 +180,13 @@ enum Items
 
 SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 {
+	next_page = NULL;
+
 	buildPage(getTextChild(config_node, "descr"));
-	loadItems(config_node);
+	if (getTextChild(config_node, "id").toInt() == DIFSON_MULTI)
+		loadItemsMulti(config_node);
+	else
+		loadItemsMono(config_node);
 }
 
 int SoundDiffusionPage::sectionId()
@@ -179,10 +194,8 @@ int SoundDiffusionPage::sectionId()
 	return DIFSON_MULTI;
 }
 
-void SoundDiffusionPage::loadItems(const QDomNode &config_node)
+QList<SourceDescription> SoundDiffusionPage::loadSources(const QDomNode &config_node)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-	// TODO: parse audio sources from conf.xml
 	QDomNode sources_node = getChildWithName(config_node, "multimediasources");
 	QList<SourceDescription> sources_list;
 	foreach (const QDomNode &source, getChildren(sources_node, "item"))
@@ -196,6 +209,14 @@ void SoundDiffusionPage::loadItems(const QDomNode &config_node)
 	}
 	Q_ASSERT_X(!sources_list.isEmpty(), "SoundDiffusionPage::loadItems", "No sound diffusion sources defined.");
 
+	return sources_list;
+}
+
+void SoundDiffusionPage::loadItemsMulti(const QDomNode &config_node)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
+	QList<SourceDescription> sources_list = loadSources(config_node);
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		banner *b = getAmbientBanner(item, sources_list);
@@ -207,6 +228,15 @@ void SoundDiffusionPage::loadItems(const QDomNode &config_node)
 		else
 			qFatal("ID %s not handled in SoundDiffusionPage", qPrintable(getTextChild(item, "id")));
 	}
+}
+
+void SoundDiffusionPage::loadItemsMono(const QDomNode &config_node)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
+	QList<SourceDescription> sources_list = loadSources(config_node);
+	next_page = new SoundAmbientPage(config_node, sources_list);
+	connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
 banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources)
@@ -237,4 +267,12 @@ banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QL
 	}
 	}
 	return b;
+}
+
+void SoundDiffusionPage::showPage()
+{
+	if (next_page)
+		next_page->showPage();
+	else
+		BannerPage::showPage();
 }

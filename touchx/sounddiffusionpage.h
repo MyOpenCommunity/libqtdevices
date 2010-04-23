@@ -65,14 +65,21 @@ class SoundAmbientPage : public BannerPage
 Q_OBJECT
 public:
 	SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources = QList<SourceDescription>());
+	virtual int sectionId();
 	static banner *getBanner(const QDomNode &item_node);
 
 private:
 	void loadItems(const QDomNode &config_node);
+
+private:
+	int section_id;
 };
 
 /**
  * General sound diffusion page. Shown only in multi sound diffusion.
+ *
+ * In practice this page is always created, even for mono sound diffusion, but
+ * its showPage method skips directly to the only ambient page.
  */
 class SoundDiffusionPage : public BannerPage
 {
@@ -81,10 +88,17 @@ public:
 	SoundDiffusionPage(const QDomNode &config_node);
 	virtual int sectionId();
 
-private:
-	banner *getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources);
-	void loadItems(const QDomNode &config_node);
+	virtual void showPage();
 
+private:
+	QList<SourceDescription> loadSources(const QDomNode &config_node);
+	void loadItemsMulti(const QDomNode &config_node);
+	void loadItemsMono(const QDomNode &config_node);
+
+	banner *getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources);
+
+private:
+	Page *next_page;
 };
 
 #endif // SOUNDDIFFUSIONPAGE_H
