@@ -114,6 +114,11 @@ void PageStack::currentPageChanged(Page *page)
 {
 	qDebug() << "PageStack::currentPageChanged on" << page;
 
+	// TODO review after implementing the selection of sources in sound diffusion;
+	//      the hard case happens when a page is in the stack and the user can navigate
+	//      to other pages using the "normal" navigation; it should be as easy as
+	//      always changing the page at the top of the stack, but needs some more thinking
+
 	for (int i = 0; i < states.size(); ++i)
 		if (states[i].page == page)
 			return;
