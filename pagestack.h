@@ -90,6 +90,10 @@ public slots:
 	// tracks the currently displayed page
 	void currentPageChanged(Page *page);
 
+signals:
+	// TODO see comment in showState
+	void sectionChanged(int section);
+
 private:
 	void showState(const State &state);
 	void addState(const State &state);

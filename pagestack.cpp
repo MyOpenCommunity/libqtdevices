@@ -109,7 +109,17 @@ void PageStack::addState(const State &state)
 void PageStack::showState(const State &state)
 {
 	if (state.page)
+	{
 		state.page->showPage();
+		// TODO this is wrong:
+		// - it breaks transition effects because the section icon will change
+		//   instantly at the end of the transition
+		// - it adds another dependency
+		//
+		// the right thing would be to pass the information to showPage()
+		// or to the PageContainer
+		emit sectionChanged(state.section_id);
+	}
 	else if (state.window)
 		state.window->showWindow();
 }
