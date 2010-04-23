@@ -68,6 +68,8 @@ public:
 	virtual int sectionId();
 	static banner *getBanner(const QDomNode &item_node);
 
+	virtual void showPage();
+
 private:
 	void loadItems(const QDomNode &config_node);
 

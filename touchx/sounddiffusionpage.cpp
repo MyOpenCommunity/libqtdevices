@@ -32,7 +32,7 @@
 #include "bann_amplifiers.h" // Amplifier
 #include "poweramplifier.h" // BannPowerAmplifier
 #include "sorgentiradio.h" // RadioSource
-
+#include "pagestack.h"
 
 #include <QDomNode>
 #include <QGridLayout>
@@ -144,6 +144,12 @@ void SoundAmbientPage::loadItems(const QDomNode &config_node)
 	}
 }
 
+void SoundAmbientPage::showPage()
+{
+	bt_global::page_stack.showUserPage(this);
+	BannerPage::showPage();
+}
+
 banner *SoundAmbientPage::getBanner(const QDomNode &item_node)
 {
 	SkinContext context(getTextChild(item_node, "cid").toInt());
@@ -221,10 +227,7 @@ void SoundDiffusionPage::loadItemsMulti(const QDomNode &config_node)
 	{
 		banner *b = getAmbientBanner(item, sources_list);
 		if (b)
-		{
 			page_content->appendBanner(b);
-			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-		}
 		else
 			qFatal("ID %s not handled in SoundDiffusionPage", qPrintable(getTextChild(item, "id")));
 	}
@@ -271,8 +274,16 @@ banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QL
 
 void SoundDiffusionPage::showPage()
 {
+	// TODO otherwise it remains connected to SectionPage::showPage
+	disconnect(SIGNAL(Closed()), 0, 0);
+
 	if (next_page)
+	{
 		next_page->showPage();
+	}
 	else
+	{
+		bt_global::page_stack.showUserPage(this);
 		BannerPage::showPage();
+	}
 }
