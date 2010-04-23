@@ -24,8 +24,10 @@
 #define TEST_IMAGESELECTION_H
 
 #include <QObject>
+#include <QStringList>
 
 class ImageSelectionHandler;
+class QTemporaryFile;
 
 class TestImageSelection : public QObject
 {
@@ -35,9 +37,12 @@ private slots:
 	void cleanupTestCase();
 
 	void testFileLoading();
+	void testFileSaving();
 
 private:
 	ImageSelectionHandler *image_handler;
+	QStringList images;
+	QTemporaryFile *f;
 };
 
 #endif // TEST_IMAGESELECTION_H

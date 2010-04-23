@@ -29,34 +29,52 @@
 
 void TestImageSelection::initTestCase()
 {
-	system("touch slideshow_file.txt");
-}
-
-void TestImageSelection::cleanupTestCase()
-{
-	system("rm slideshow_file.txt");
-}
-
-void TestImageSelection::testFileLoading()
-{
-	QStringList images;
 	images << "/mnt/disk/img/photo1.jpg"
 	       << "/mnt/disk/img/photo2.jpg"
 	       << "/mnt/disk/img/photo3.jpg"
 	       << "/mnt/disk/image.jpg";
 
-	QTemporaryFile f("./temp_slideshowXXXXXX.txt");
-	QVERIFY(f.open());
-
-	QSet<QString> result;
+	f = new QTemporaryFile("./temp_slideshowXXXXXX.txt");
+	QVERIFY(f->open());
 
 	foreach (const QString &i, images)
-	{
-		f.write(i.toAscii() + "\n");
-		result.insert(i);
-	}
-	f.close();
+		f->write(i.toLocal8Bit().simplified() + "\n");
+	f->flush();
+}
 
-	image_handler = new ImageSelectionHandler(f.fileName());
+void TestImageSelection::cleanupTestCase()
+{
+	f->close();
+	delete f;
+}
+
+void TestImageSelection::testFileLoading()
+{
+	QSet<QString> result;
+	foreach (const QString &i, images)
+		result << i;
+	image_handler = new ImageSelectionHandler(f->fileName());
+	QCOMPARE(image_handler->getSelectedImages(), result);
+}
+
+void TestImageSelection::testFileSaving()
+{
+	image_handler = new ImageSelectionHandler(f->fileName());
+	image_handler->selected_images.clear();
+
+	foreach (const QString &i, images)
+		image_handler->insertItem(i);
+	image_handler->saveSlideshowToFile();
+
+	// now verify correct saving
+	// read everything from file then compare it with the set inside image_handler
+	QFile test(f->fileName());
+	QVERIFY(test.open(QIODevice::ReadOnly));
+	QSet<QString> result;
+	while (!test.atEnd())
+	{
+		QString s = test.readLine().simplified();
+		result << s;
+	}
 	QCOMPARE(image_handler->getSelectedImages(), result);
 }
