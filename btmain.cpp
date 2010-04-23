@@ -665,7 +665,8 @@ Window *BtMain::homeWindow()
 bool BtMain::eventFilter(QObject *obj, QEvent *ev)
 {
 	// Discard the mouse press and mouse double click
-	if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick)
+	if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick ||
+	    ev->type() == QEvent::MouseMove || ev->type() == QEvent::Enter || ev->type() == QEvent::Leave)
 		return true;
 
 	if (ev->type() != QEvent::MouseButtonRelease)
