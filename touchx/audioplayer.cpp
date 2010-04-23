@@ -31,6 +31,7 @@
 #include "btmain.h"
 #include "homewindow.h" // TrayBar
 #include "sounddiffusionpage.h" // showCurrentAmbientPage
+#include "main.h" // MULTIMEDIA
 
 #include <QGridLayout>
 #include <QLabel>
@@ -137,6 +138,11 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 
 	connect(this, SIGNAL(started()), tray_icon, SLOT(started()));
 	connect(this, SIGNAL(stopped()), tray_icon, SLOT(stopped()));
+}
+
+int AudioPlayerPage::sectionId()
+{
+	return MULTIMEDIA;
 }
 
 void AudioPlayerPage::startMPlayer(int index, int time)
