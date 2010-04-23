@@ -105,6 +105,11 @@ void resetTimer(int signo);
 /*! \def VERBOSITY_LEVEL_DEFAULT
  * The default verbosity level
  */
+/*! \def RINGTONE_FILE
+ *  Define the css file that contains the ringtones
+ */
+#define RINGTONE_FILE                  "cfg/extra/2/ringtones.xml"
+
 #define MY_FILE_CFG_FONT        "cfg/extra/3/font_%1.xml"
 /*! \def MY_FILE_CFG_FONT
  *  The font configuration file

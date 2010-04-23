@@ -131,7 +131,7 @@ void VideoDoorEntry::valueReceived(const DeviceValues &values_list)
 		switch (it.key())
 		{
 		case EntryphoneDevice::RINGTONE:
-			RingtoneType ringtone = static_cast<RingtoneType>(it.value().toInt());
+			Ringtones::Type ringtone = static_cast<Ringtones::Type>(it.value().toInt());
 			if (!ring_exclusion->getStatus())
 				bt_global::ringtones->playRingtone(ringtone);
 

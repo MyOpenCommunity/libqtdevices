@@ -26,17 +26,21 @@
 #include <QFileInfo>
 #include <QHash>
 
-
-enum RingtoneType
+namespace Ringtones
 {
-	RINGTONE_PE1, // call from external unit with ringtone 1
-	RINGTONE_PE2,
-	RINGTONE_PE3,
-	RINGTONE_PE4,
-	RINGTONE_PI_INTERCOM,
-	RINGTONE_PE_INTERCOM
-};
-
+	enum Type
+	{
+		PE1 = 1,
+		PE2,
+		PE3,
+		PE4,
+		PI_INTERCOM,
+		PE_INTERCOM,
+		FLOORCALL,
+		ALARM,
+		MESSAGE
+	};
+}
 
 /**
  * Manages ringtones globally.
@@ -47,34 +51,36 @@ class RingtonesManager : public QObject
 {
 Q_OBJECT
 public:
-	RingtonesManager();
+	RingtonesManager(QString ringtone_file);
 
 	/**
 	 * Play the current ringtone set for the given ringtone type.
 	 */
-	void playRingtone(RingtoneType t);
+	void playRingtone(Ringtones::Type t);
+
 	// play the ringtone set for the given id
 	void playRingtone(int ring);
+
 	// stops playing a ringtone, if any
 	void stopRingtone();
 
 	/**
 	 * Set a new ringtone for a given ringtone type.
 	 */
-	void setRingtone(RingtoneType t, int ring);
+	void setRingtone(Ringtones::Type t, int item_id, int ring);
 
 	/**
 	 * Return the current ringtone for a given type.
 	 */
-	int getRingtone(RingtoneType t);
+	int getRingtone(Ringtones::Type t);
 
 	int getRingtonesNumber();
 
 private:
-	QList<QFileInfo> scanDirectory(const QDir &dir, const QStringList &filters);
-	QString typeToFilePath(RingtoneType t);
 	QHash<int, QString> ringtone_to_file;
-	QHash<RingtoneType, int> type_to_ringtone;
+	QHash<Ringtones::Type, int> type_to_ringtone;
+
+	QString typeToFilePath(Ringtones::Type t);
 };
 
 namespace bt_global { extern RingtonesManager *ringtones; }

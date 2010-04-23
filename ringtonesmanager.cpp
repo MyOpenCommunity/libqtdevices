@@ -20,40 +20,42 @@
 
 
 #include "ringtonesmanager.h"
-#include "hardware_functions.h"
+#include "hardware_functions.h" // playSound, stopSound
+#include "xml_functions.h" // getChildren, getTextChild
+#include "generic_functions.h" // setCfgValue
 
 #include <QStringList>
+#include <QDomDocument>
 #include <QDebug>
 #include <QDir>
 
-#include <unistd.h> // lseek, read
-#include <fcntl.h>  // open
 
-// TODO: this is not absolute for testing
-#define RINGTONE_DIR "cfg/extra/2/"
 
-RingtonesManager::RingtonesManager()
+RingtonesManager::RingtonesManager(QString ringtone_file)
 {
-	QStringList filters;
-	filters << "*.[wW][[aA][vV]";
-	int id = 0;
-	QDir d(RINGTONE_DIR);
-	foreach (const QFileInfo &fi, scanDirectory(d, filters))
+	QFile fh(ringtone_file);
+	QDomDocument qdom;
+
+	if (qdom.setContent(&fh))
 	{
-		ringtone_to_file[id] = fi.filePath();
-//		qDebug() << fi.filePath();
-		++id;
+		foreach (const QDomNode &item_node, getChildren(qdom.documentElement(), "ringtones/item"))
+		{
+			int id_ringtone = getTextChild(item_node, "id_ringtone").toInt();
+			QString filename = getTextChild(item_node, "descr");
+			ringtone_to_file[static_cast<Ringtones::Type>(id_ringtone)] = filename;
+		}
 	}
-	// TODO: read ringtones from conf file
 }
 
-void RingtonesManager::playRingtone(RingtoneType t)
+void RingtonesManager::playRingtone(Ringtones::Type t)
 {
+	return; // REMOVEME
 	playSound(typeToFilePath(t));
 }
 
 void RingtonesManager::playRingtone(int ring)
 {
+	return; // REMOVEME
 	Q_ASSERT_X(ring >= 0 && ring < ringtone_to_file.size(), "RingtonesManager::playRingtone(int)",
 		"Given ringtone is outside valid range.");
 	playSound(ringtone_to_file[ring]);
@@ -61,44 +63,36 @@ void RingtonesManager::playRingtone(int ring)
 
 void RingtonesManager::stopRingtone()
 {
+	return; // REMOVEME
 	stopSound();
 }
 
-void RingtonesManager::setRingtone(RingtoneType t, int ring)
+void RingtonesManager::setRingtone(Ringtones::Type t, int item_id, int ring)
 {
+	return; // REMOVEME
 	Q_ASSERT_X(ring >= 0 && ring < ringtone_to_file.size(), "RingtonesManager::setRingtone",
 		"Given ringtone is outside valid range.");
 	type_to_ringtone[t] = ring;
-	// TODO: save the map to conf
+
+	setCfgValue("id_ringtone", ring, item_id);
 }
 
-int RingtonesManager::getRingtone(RingtoneType t)
+int RingtonesManager::getRingtone(Ringtones::Type t)
 {
+	return 0; // REMOVEME
 	return type_to_ringtone[t];
 }
 
 int RingtonesManager::getRingtonesNumber()
 {
+	return 1; // REMOVEME
 	return ringtone_to_file.size();
 }
 
-QString RingtonesManager::typeToFilePath(RingtoneType t)
+QString RingtonesManager::typeToFilePath(Ringtones::Type t)
 {
 	return ringtone_to_file[type_to_ringtone[t]];
 }
 
-// TODO: this can be shared with AudioFileSelector::browseFiles()?
-QList<QFileInfo> RingtonesManager::scanDirectory(const QDir &dir, const QStringList &filters)
-{
-	QList<QFileInfo> temp_files_list;
-
-	foreach (const QFileInfo &fi, dir.entryInfoList(filters))
-	{
-		if (fi.fileName() != "." && fi.fileName() != "..")
-			temp_files_list.append(fi);
-	}
-
-	return temp_files_list;
-}
 
 RingtonesManager *bt_global::ringtones = 0;

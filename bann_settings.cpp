@@ -363,8 +363,7 @@ void impPassword::restoreBeepState()
 }
 
 
-
-BannRingtone::BannRingtone(const QString &descr, RingtoneType type) :
+BannRingtone::BannRingtone(const QString &descr, int id, Ringtones::Type type) :
 	Bann2CentralButtons(false)
 {
 	// TODO: this is necessary because of a setSpacing(5) in Bann2CentralButtons,
@@ -374,6 +373,10 @@ BannRingtone::BannRingtone(const QString &descr, RingtoneType type) :
 	connect(center_right, SIGNAL(clicked()), SLOT(plusClicked()));
 
 	current_ring = bt_global::ringtones->getRingtone(type);
+	ring_type = type;
+	item_id = id;
+	// initialize the global object bt_global::ringtones
+	bt_global::ringtones->setRingtone(ring_type, item_id, current_ring);
 }
 
 void BannRingtone::minusClicked()
@@ -382,12 +385,14 @@ void BannRingtone::minusClicked()
 	if (current_ring < 0)
 		current_ring = bt_global::ringtones->getRingtonesNumber() - 1;
 	bt_global::ringtones->playRingtone(current_ring);
+	bt_global::ringtones->setRingtone(ring_type, item_id, current_ring);
 }
 
 void BannRingtone::plusClicked()
 {
 	current_ring = (current_ring + 1) % bt_global::ringtones->getRingtonesNumber();
 	bt_global::ringtones->playRingtone(current_ring);
+	bt_global::ringtones->setRingtone(ring_type, item_id, current_ring);
 }
 
 
