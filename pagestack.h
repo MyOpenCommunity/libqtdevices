@@ -42,6 +42,9 @@ class PageStack : public QObject
 		Window *window;
 		Page *page;
 
+		// id of the section this page belongs to
+		int section_id;
+
 		// returns either window or page, depending on which is set
 		QObject *object() const;
 	};
@@ -77,11 +80,19 @@ public:
 	void closePage(Page *page);
 
 	// remove all the pages/windows from the stack
+	//
+	// leaves the home page as the only page in the stack but does not show it
+	//
+	// after calling clear(), the caller must call showPage() on the target page
 	void clear();
 
 public slots:
 	// tracks the currently displayed page
 	void currentPageChanged(Page *page);
+
+signals:
+	// TODO see comment in showState
+	void sectionChanged(int section);
 
 private:
 	void showState(const State &state);

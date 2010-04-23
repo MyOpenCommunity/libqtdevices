@@ -61,6 +61,7 @@ signals:
 
 public slots:
 	void centralWidgetChanged(int index);
+	void currentSectionChanged(int section_id);
 
 private slots:
 	void aboutToChangePage();

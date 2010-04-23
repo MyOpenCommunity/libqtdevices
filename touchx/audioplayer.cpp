@@ -30,6 +30,8 @@
 #include "hardware_functions.h" // setVolum
 #include "btmain.h"
 #include "homewindow.h" // TrayBar
+#include "sounddiffusionpage.h" // showCurrentAmbientPage
+#include "main.h" // MULTIMEDIA
 
 #include <QGridLayout>
 #include <QLabel>
@@ -110,6 +112,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	BtButton *goto_sounddiff = new BtButton(bt_global::skin->getImage("goto_sounddiffusion"));
 	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(type == IP_RADIO ? MultimediaPlayerButtons::IPRADIO_PAGE : MultimediaPlayerButtons::AUDIO_PAGE);
 
+	connect(goto_sounddiff, SIGNAL(clicked()), SLOT(gotoSoundDiffusion()));
 	connectMultimediaButtons(buttons);
 
 	l_btn->addWidget(buttons);
@@ -135,6 +138,11 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 
 	connect(this, SIGNAL(started()), tray_icon, SLOT(started()));
 	connect(this, SIGNAL(stopped()), tray_icon, SLOT(stopped()));
+}
+
+int AudioPlayerPage::sectionId()
+{
+	return MULTIMEDIA;
 }
 
 void AudioPlayerPage::startMPlayer(int index, int time)
@@ -226,4 +234,9 @@ void AudioPlayerPage::refreshPlayInfo()
 void AudioPlayerPage::changeVolume(int volume)
 {
 	setVolume(VOLUME_MMDIFFUSION, volume);
+}
+
+void AudioPlayerPage::gotoSoundDiffusion()
+{
+	SoundDiffusionPage::showCurrentAmbientPage();
 }
