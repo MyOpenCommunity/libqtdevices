@@ -208,6 +208,7 @@ HEADERS += actuators.h \
 	sottomenu.h \
 	sounddiffusion.h \
 	specialpage.h \
+	statemachine.h \
 	state_button.h \
 	stopngo.h \
 	styledwidget.h \
@@ -322,6 +323,7 @@ SOURCES += actuators.cpp \
 	sottomenu.cpp \
 	sounddiffusion.cpp \
 	specialpage.cpp \
+	statemachine.cpp \
 	state_button.cpp \
 	stopngo.cpp \
 	styledwidget.cpp \
