@@ -75,7 +75,20 @@ namespace
 			silentExecute("echo 1 > /proc/sys/dev/btweb/reset_ZL1");
 		}
 	}
+
+	void activateVCTAudio()
+	{
+		QProcess::startDetached("/bin/in_scsbb_on");
+	}
+
+	void disactivateVCTAudio()
+	{
+		QProcess::startDetached("/bin/in_scsbb_off");
+	}
 }
+
+
+using namespace AudioStates;
 
 // AudioStateMachine implementation
 
@@ -209,22 +222,22 @@ void AudioStateMachine::statePlayRingtoneExited()
 
 void AudioStateMachine::stateScsVideoCallEntered()
 {
-
+	activateVCTAudio();
 }
 
 void AudioStateMachine::stateScsVideoCallExited()
 {
-
+	disactivateVCTAudio();
 }
 
 void AudioStateMachine::stateScsIntercomCallEntered()
 {
-
+	activateVCTAudio();
 }
 
 void AudioStateMachine::stateScsIntercomCallExited()
 {
-
+	disactivateVCTAudio();
 }
 
 void AudioStateMachine::stateIpVideoCallEntered()
