@@ -140,7 +140,36 @@ private:
 class ImageSelectionHandler
 {
 public:
-	ImageSelectionHandler();
+	/*
+	 * \param file_path Path of the file to save/load the image list.
+	 * TODO: Can be a QIODevice?
+	 */
+	ImageSelectionHandler(const QString &file_path);
+
+	/*
+	 * Set a filter for operations that need file filtering, eg. removeItem() and compactDirectory()
+	 */
+	void setFileFilter(const QStringList &filters);
+
+	/*
+	 * Check if an item is selected.
+	 * By design we don't query the interface but rely only on the QSets below (it may well be that the interface
+	 * doesn't hold as many buttons as items in the directory).
+	 * Use it sparingly since it involves 1 lookup for each level of depth of the given path. For example the path:
+	 * /media/disk/photos/img001.jpg
+	 * will require 4 lookups if the file and any directory below it are not selected.
+	 *
+	 * TODO: compact a directory if dirty == true
+	 */
+	bool isItemSelected(QString abs_path);
+
+	/*
+	 * Check if an item is explicitly selected, don't check for parent directories.
+	 */
+	bool isItemExplicitlySelected(const QString &abs_path);
+
+	void insertItem(const QString &path);
+
 	/*
 	 * Remove a file from currently selected set.
 	 * Assumes that either path or one of its containing directories is selected.
@@ -151,8 +180,14 @@ public:
 	 * 2. add /usr/local/images/ *.jpg and directories (except slideshow/)
 	 * 3. add /usr/local/images/slideshow/ *.jpg and directories (except photo.jpg)
 	 */
-	void removeCurrentFile(const QString &path, const QFileInfoList &items_in_dir);
+	void removeItem(const QString &path);
 
+	void saveSlideshowToFile();
+	void loadSlideshowFromFile();
+
+	QSet<QString> getSelectedImages();
+
+private:
 	/*
 	 * Compact a directory when all its enclosed items are selected.
 	 * \param dir Directory to be compacted
@@ -162,40 +197,9 @@ public:
 	void compactDirectory(const QString &dir, const QFileInfoList &items_in_dir);
 
 	/*
-	 * Check if an item is selected.
-	 * By design we don't query the interface but rely only on the QSets below (it may well be that the interface
-	 * doesn't hold as many buttons as items in the directory).
-	 * Compared to pixmap loading or scaling, this operation is rather cheap; however, use it sparingly since
-	 * it involves 3 set lookups for each level of depth of the given path. For example the path:
-	 * /media/disk/photos/img001.jpg
-	 * will require 12 (3 * 4) lookups if the file and any directory below it are not selected.
+	 * Remove a path from selected_images and set dirty to true
 	 */
-	bool isItemSelected(QString abs_path);
-
-	/*
-	 * Check if an item is explicitly selected, don't check for parent directories.
-	 */
-	bool isItemExplicitlySelected(const QString &abs_path);
-
-	/*
-	 * Add an item
-	 * Must first remove from removed_images set then add to inserted_images.
-	 */
-	void insertItem(const QString &path);
-
-	void saveSlideshowToFile();
-	void loadSlideshowFromFile();
-
-	QSet<QString> getSelectedImages();
-
-private:
-	// Utility functions that correctly add or remove a path. Remember that any time a path can in only one
-	// between removed or inserted images sets (selected_images is really useful only for cancel operations).
-	/*
-	 * Remove an item.
-	 * Must first remove from inserted_images set then add to removed_images.
-	 */
-	void removeItem(const QString &path);
+	void removePath(const QString &path);
 
 	/*
 	 * Extract parent directory path from parameter.
@@ -207,11 +211,15 @@ private:
 	 */
 	QString getParentDirectory(const QString &path, QString *file_path = 0);
 
-	// removed_images: will be removed from selected_images
-	// inserted_images: will be added to selected_images
 	// selected_images: contains full path names for files. Full path names for directories if all files and dir
 	//                  below are selected.
-	QSet<QString> selected_images, removed_images, inserted_images;
+	QSet<QString> selected_images;
+
+	QStringList file_filter;
+	QString save_file_path;
+
+	// set whenever the user inserts or removes an item, used to check if a directory should be compacted
+	bool dirty;
 };
 
 #endif
