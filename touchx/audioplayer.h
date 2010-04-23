@@ -77,6 +77,7 @@ private:
 private slots:
 	void refreshPlayInfo();
 	void changeVolume(int volume);
+	void gotoSoundDiffusion();
 
 private:
 	MediaType type;
