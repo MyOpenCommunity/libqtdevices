@@ -47,7 +47,8 @@
 #define ARRAY_SIZE(x) int(sizeof(x) / sizeof((x)[0]))
 
 
-enum {
+enum
+{
 	SELBUTTON_ON = 0,
 	SELBUTTON_OFF,
 	BUTTON_ICON
@@ -56,7 +57,7 @@ enum {
 enum
 {
 	PAGE_USB = 16002,
-	PAGE_SD = 16005,
+	PAGE_SD = 16005
 };
 
 namespace
@@ -233,9 +234,11 @@ void FileList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id
 	sel_button->setOnOff();
 	sel_button->setOffImage(item.icons[SELBUTTON_OFF]);
 	sel_button->setOnImage(item.icons[SELBUTTON_ON]);
-	sel_buttons->addButton(sel_button, id_btn);
 	sel_button->setChecked(metadata["selected"].toBool());
 	sel_button->setStatus(metadata["selected"].toBool());
+
+	sel_buttons->addButton(sel_button, id_btn);
+
 	box->addWidget(sel_button, 0, Qt::AlignRight);
 
 	// If the item represent a directory, creates the button to enter in it.
@@ -258,15 +261,15 @@ void FileList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id
 
 void FileList::checkButton(int btn_id)
 {
-	int id = current_page * rows_per_page + btn_id;
-
-	StateButton *button = qobject_cast<StateButton *>(sel_buttons->button(id));
+	StateButton *button = qobject_cast<StateButton *>(sel_buttons->button(btn_id));
 	Q_ASSERT_X(button, "FileList::checkButton", "invalid button");
 
+	ItemInfo &info = item(current_page * rows_per_page + btn_id);
+	QVariantMap metadata = info.data.toMap();
 	bool selected = button->getStatus();
-	ItemInfo info = item(id);
 
-	info.data.toMap()["selected"] = selected;
+	metadata["selected"] = selected;
+	info.data = metadata;
 
 	emit itemSelectionChanged(info.description, selected);
 }

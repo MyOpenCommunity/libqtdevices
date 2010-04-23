@@ -67,6 +67,8 @@ public:
 
 	AudioPlayerPage(MediaType type);
 
+	virtual int sectionId();
+
 public slots:
 	void playAudioFiles(QList<QString> images, unsigned element);
 
@@ -77,6 +79,7 @@ private:
 private slots:
 	void refreshPlayInfo();
 	void changeVolume(int volume);
+	void gotoSoundDiffusion();
 
 private:
 	MediaType type;

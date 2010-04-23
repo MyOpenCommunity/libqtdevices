@@ -105,6 +105,8 @@ HomeWindow::HomeWindow()
 #endif
 
 	central_widget->setContainerWindow(this);
+
+	connect(&bt_global::page_stack, SIGNAL(sectionChanged(int)), SLOT(currentSectionChanged(int)));
 }
 
 void HomeWindow::aboutToChangePage()
@@ -138,6 +140,13 @@ void HomeWindow::centralWidgetChanged(int index)
 		// the window header size; see also the comment in PageContainer::showPage()
 		layout()->activate();
 	}
+#endif
+}
+
+void HomeWindow::currentSectionChanged(int section_id)
+{
+#ifdef LAYOUT_TOUCHX
+	header_widget->sectionChanged(section_id);
 #endif
 }
 
