@@ -114,8 +114,9 @@ bool StateMachine::toState(int state)
 	if (!isTransitionAllowed(state))
 		return false;
 
+	int old_state = currentState();
 	active_states.append(state);
-	changeState(state, currentState());
+	changeState(state, old_state);
 	return true;
 }
 
