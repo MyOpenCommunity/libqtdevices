@@ -258,11 +258,13 @@ void FileList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id
 
 void FileList::checkButton(int btn_id)
 {
-	StateButton *button = qobject_cast<StateButton *>(sel_buttons->button(btn_id));
+	int id = current_page * rows_per_page + btn_id;
+
+	StateButton *button = qobject_cast<StateButton *>(sel_buttons->button(id));
 	Q_ASSERT_X(button, "FileList::checkButton", "invalid button");
 
 	bool selected = button->getStatus();
-	ItemInfo info = item(current_page * rows_per_page + btn_id);
+	ItemInfo info = item(id);
 
 	info.data.toMap()["selected"] = selected;
 
