@@ -21,7 +21,7 @@
 
 
 #include "sounddiffusionpage.h"
-#include "main.h"
+#include "main.h" // bt_global::config, Section
 #include "xml_functions.h"
 #include "bann2_buttons.h" // Bann2Buttons
 #include "btbutton.h"
@@ -40,6 +40,7 @@
 #include <QtDebug>
 
 
+bool SoundDiffusionPage::is_source = false, SoundDiffusionPage::is_amplifier = false;
 Page *SoundDiffusionPage::sound_diffusion_page;
 Page *SoundAmbientPage::current_ambient_page;
 
@@ -211,6 +212,10 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 		loadItemsMono(config_node);
 
 	sound_diffusion_page = this;
+
+	// check if this hardware can work as a source/amplifier
+	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
+	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
 }
 
 int SoundDiffusionPage::sectionId()
@@ -318,4 +323,14 @@ void SoundDiffusionPage::showCurrentAmbientPage()
 		current_ambient_page->showPage();
 	else
 		sound_diffusion_page->showPage();
+}
+
+bool SoundDiffusionPage::isSource()
+{
+	return is_source;
+}
+
+bool SoundDiffusionPage::isAmplifier()
+{
+	return is_amplifier;
 }

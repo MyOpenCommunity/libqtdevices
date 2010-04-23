@@ -96,6 +96,8 @@ public:
 	virtual int sectionId();
 
 	static void showCurrentAmbientPage();
+	static bool isSource();
+	static bool isAmplifier();
 
 	virtual void showPage();
 
@@ -109,6 +111,7 @@ private:
 private:
 	Page *next_page;
 	static Page *sound_diffusion_page;
+	static bool is_source, is_amplifier;
 };
 
 #endif // SOUNDDIFFUSIONPAGE_H
