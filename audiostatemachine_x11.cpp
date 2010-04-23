@@ -21,6 +21,8 @@
 
 #include "audiostatemachine.h"
 
+using namespace AudioStates;
+
 
 AudioStateMachine::AudioStateMachine()
 {

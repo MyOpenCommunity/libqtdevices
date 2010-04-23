@@ -23,18 +23,8 @@
 
 #include "statemachine.h"
 
-
-// state machine for audio output
-//
-// to add a new state:
-// - add a new value to the enum below
-// - add the enter/exit handlers to the 'private slots' section
-// - call addState() in the constructor to register the state in the
-//   state machine
-class AudioStateMachine : public StateMachine
+namespace AudioStates
 {
-Q_OBJECT
-public:
 	enum
 	{
 		IDLE,
@@ -53,6 +43,19 @@ public:
 		SCREENSAVER_WITH_PLAY,
 		//SCREENSAVER_WITHOUT_PLAY --> IDLE
 	};
+}
+
+// state machine for audio output
+//
+// to add a new state:
+// - add a new value to the enum below
+// - add the enter/exit handlers to the 'private slots' section
+// - call addState() in the constructor to register the state in the
+//   state machine
+class AudioStateMachine : public StateMachine
+{
+Q_OBJECT
+public:
 
 	AudioStateMachine();
 
