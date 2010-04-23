@@ -23,6 +23,7 @@
 #include "page.h"
 #include "window.h"
 #include "btmain.h" // makeActiveAndFreeze, homePage, isCalibrating
+#include "main.h" // NO_SECTION
 
 #include <QtDebug>
 
@@ -31,12 +32,15 @@ PageStack::State::State(Window *_window)
 {
 	window = _window;
 	page = NULL;
+	section_id = NO_SECTION;
 }
 
 PageStack::State::State(Page *_page)
 {
 	window = NULL;
 	page = _page;
+	if (page)
+		section_id = page->sectionId();
 }
 
 QObject *PageStack::State::object() const
@@ -124,6 +128,8 @@ void PageStack::currentPageChanged(Page *page)
 			return;
 
 	states[0].page = page;
+	if (page->sectionId() != NO_SECTION)
+		states[0].section_id = page->sectionId();
 }
 
 void PageStack::closed()
@@ -180,6 +186,7 @@ void PageStack::clear()
 	// restoring the stack to a known sane state is important if the next page
 	// pushes itself in the page stack
 	states[0].page = bt_global::btmain->homePage();
+	states[0].section_id = NO_SECTION;
 }
 
 PageStack bt_global::page_stack;
