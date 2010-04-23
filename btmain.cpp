@@ -504,6 +504,11 @@ void BtMain::showHomePage()
 	Home->showPage();
 }
 
+Page *BtMain::homePage()
+{
+	return Home;
+}
+
 void BtMain::unrollPages()
 {
 	int seq_pages = 0;

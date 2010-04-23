@@ -22,7 +22,7 @@
 #include "pagestack.h"
 #include "page.h"
 #include "window.h"
-#include "btmain.h"
+#include "btmain.h" // makeActiveAndFreeze, homePage, isCalibrating
 
 #include <QtDebug>
 
@@ -171,6 +171,10 @@ void PageStack::clear()
 		if (el.page)
 			el.page->cleanUp();
 	}
+
+	// restoring the stack to a known sane state is important if the next page
+	// pushes itself in the page stack
+	states[0].page = bt_global::btmain->homePage();
 }
 
 PageStack bt_global::page_stack;
