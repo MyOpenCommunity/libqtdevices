@@ -47,7 +47,8 @@
 #define ARRAY_SIZE(x) int(sizeof(x) / sizeof((x)[0]))
 
 
-enum {
+enum
+{
 	SELBUTTON_ON = 0,
 	SELBUTTON_OFF,
 	BUTTON_ICON
@@ -56,7 +57,7 @@ enum {
 enum
 {
 	PAGE_USB = 16002,
-	PAGE_SD = 16005,
+	PAGE_SD = 16005
 };
 
 namespace
