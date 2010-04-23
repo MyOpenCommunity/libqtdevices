@@ -27,12 +27,21 @@
 #include <QTemporaryFile>
 #include <QDebug>
 
+const QString DIR_PATH = "disk/photos/";
+const QString FILE_PATH = "disk/img/photo4.jpg";
+const QString COMPLEX_FILE = DIR_PATH + "/tmp/image.jpg";
+const QString NOT_PRESENT = "disk/img/not_present.jpg";
+
 void TestImageSelection::initTestCase()
 {
-	images << "/mnt/disk/img/photo1.jpg"
-	       << "/mnt/disk/img/photo2.jpg"
-	       << "/mnt/disk/img/photo3.jpg"
-	       << "/mnt/disk/image.jpg";
+	images << "disk/img/photo1.jpg"
+	       << "disk/img/photo2.jpg"
+	       << "disk/img/photo3.jpg"
+	       << "disk/image.jpg"
+	       << DIR_PATH
+	       << FILE_PATH;
+
+	// TODO: probably all the items in images must be created on file system...
 
 	f = new QTemporaryFile("./temp_slideshowXXXXXX.txt");
 	QVERIFY(f->open());
@@ -77,4 +86,33 @@ void TestImageSelection::testFileSaving()
 		result << s;
 	}
 	QCOMPARE(image_handler->getSelectedImages(), result);
+	delete image_handler;
+}
+
+void TestImageSelection::testSimplePathSelected()
+{
+	image_handler = new ImageSelectionHandler(f->fileName());
+	QCOMPARE(image_handler->isItemSelected(FILE_PATH), true);
+	delete image_handler;
+}
+
+void TestImageSelection::testSimpleDirSelected()
+{
+	image_handler = new ImageSelectionHandler(f->fileName());
+	QCOMPARE(image_handler->isItemSelected(DIR_PATH), true);
+	delete image_handler;
+}
+
+void TestImageSelection::testFileSelected()
+{
+	image_handler = new ImageSelectionHandler(f->fileName());
+	QCOMPARE(image_handler->isItemSelected(COMPLEX_FILE), true);
+	delete image_handler;
+}
+
+void TestImageSelection::testFileNotSelected()
+{
+	image_handler = new ImageSelectionHandler(f->fileName());
+	QCOMPARE(image_handler->isItemSelected(NOT_PRESENT), false);
+	delete image_handler;
 }

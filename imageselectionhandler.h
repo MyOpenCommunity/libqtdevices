@@ -33,6 +33,7 @@
  */
 class ImageSelectionHandler
 {
+friend class TestImageSelection;
 public:
 	/*
 	 * \param file_path Path of the file to save/load the image list.

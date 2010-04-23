@@ -39,6 +39,18 @@ private slots:
 	void testFileLoading();
 	void testFileSaving();
 
+	// file explicitly present in the set
+	void testSimplePathSelected();
+
+	// directory explicitly present in the set
+	void testSimpleDirSelected();
+
+	// file included in a selected directory
+	void testFileSelected();
+
+	// file non present
+	void testFileNotSelected();
+
 private:
 	ImageSelectionHandler *image_handler;
 	QStringList images;
