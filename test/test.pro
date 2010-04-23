@@ -25,6 +25,7 @@ LIBS+= -L ../../common_files/lib/x86 -lcommon -lssl
 VPATH = ..
 
 HEADERS += test_bttime.h \
+           test_imageselection.h \
            test_scenevodevicescond.h \
            ../devices/test/openserver_mock.h \
            ../btbutton.h \
@@ -34,6 +35,7 @@ HEADERS += test_bttime.h \
            ../generic_functions.h \
            ../hardware_functions.h \
            ../icondispatcher.h \
+           ../imageselectionhandler.h \
            ../main.h \
            ../openclient.h \
            ../scaleconversion.h \
@@ -43,6 +45,7 @@ HEADERS += test_bttime.h \
 
 SOURCES += test_main.cpp \
            test_bttime.cpp \
+           test_imageselection.cpp \
            test_scenevodevicescond.cpp \
            ../devices/test/openserver_mock.cpp \
            ../btbutton.cpp \
@@ -52,6 +55,7 @@ SOURCES += test_main.cpp \
            ../generic_functions.cpp \
            ../hardware_functions_x11.cpp \
            ../icondispatcher.cpp \
+           ../imageselectionhandler.cpp \
            ../openclient.cpp \
            ../scaleconversion.cpp \
            ../scenevodevicescond.cpp \

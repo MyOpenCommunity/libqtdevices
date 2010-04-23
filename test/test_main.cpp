@@ -27,6 +27,7 @@
 
 #include "test_scenevodevicescond.h"
 #include "test_bttime.h"
+#include "test_imageselection.h"
 #include "main.h"
 
 
@@ -40,6 +41,9 @@ int main(int argc, char *argv[])
 
 	TestBtTime test_bttime;
 	test_list << &test_bttime;
+
+	TestImageSelection test_imageselection;
+	test_list << &test_imageselection;
 
 	QStringList arglist = app.arguments();
 	if (arglist.contains("--help"))
