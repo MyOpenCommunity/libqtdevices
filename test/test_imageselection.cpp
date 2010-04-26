@@ -26,33 +26,54 @@
 #include <QtTest/QTest>
 #include <QTemporaryFile>
 #include <QDebug>
+#include <QDir>
 
-const QString DIR_PATH = "disk/photos/";
-const QString FILE_PATH = "disk/img/photo4.jpg";
+const QString DIR_PATH = "disk/photos";
+QString FILE_PATH;
 const QString COMPLEX_FILE = DIR_PATH + "/tmp/image.jpg";
 const QString NOT_PRESENT = "disk/img/not_present.jpg";
 
 void TestImageSelection::initTestCase()
 {
-	images << "disk/img/photo1.jpg"
-	       << "disk/img/photo2.jpg"
-	       << "disk/img/photo3.jpg"
-	       << "disk/image.jpg"
-	       << DIR_PATH
-	       << FILE_PATH;
+	// create paths on disk, to be used with compactDirectory()
+	// paths created are:
+	QDir d(".");
+	d.mkpath("disk/img");
 
-	// TODO: probably all the items in images must be created on file system...
+	// disk/img/photo[1-4].jpg
+	for (int i = 1; i < 5; ++i)
+	{
+		QString path = QString("disk/img/photo%1.jpg").arg(i);
+		QFile f(path);
+		f.open(QIODevice::WriteOnly);
+		f.close();
+		images << path;
+	}
+	FILE_PATH = "disk/img/photo4.jpg";
+
+	// disk/photos/
+	images << DIR_PATH;
 
 	f = new QTemporaryFile("./temp_slideshowXXXXXX.txt");
 	QVERIFY(f->open());
 
 	foreach (const QString &i, images)
-		f->write(i.toLocal8Bit().simplified() + "\n");
+	{
+		// file saved must be full path names
+		QString path(QFileInfo(i).absoluteFilePath());
+		f->write(path.toLocal8Bit().simplified() + "\n");
+	}
 	f->flush();
 }
 
 void TestImageSelection::cleanupTestCase()
 {
+	// cleanup directory before deleting it
+	foreach (const QFileInfo &fi, QDir("disk/img").entryInfoList())
+		QFile::remove(fi.canonicalFilePath());
+
+	QDir cleanup(".");
+	cleanup.rmpath("disk/img");
 	f->close();
 	delete f;
 }
@@ -61,9 +82,13 @@ void TestImageSelection::testFileLoading()
 {
 	QSet<QString> result;
 	foreach (const QString &i, images)
-		result << i;
+	{
+		QString path(QFileInfo(i).absoluteFilePath());
+		result << path;
+	}
 	image_handler = new ImageSelectionHandler(f->fileName());
 	QCOMPARE(image_handler->getSelectedImages(), result);
+	delete image_handler;
 }
 
 void TestImageSelection::testFileSaving()
@@ -72,7 +97,7 @@ void TestImageSelection::testFileSaving()
 	image_handler->selected_images.clear();
 
 	foreach (const QString &i, images)
-		image_handler->insertItem(i);
+		image_handler->insertItem(QFileInfo(i).absoluteFilePath());
 	image_handler->saveSlideshowToFile();
 
 	// now verify correct saving
@@ -92,27 +117,39 @@ void TestImageSelection::testFileSaving()
 void TestImageSelection::testSimplePathSelected()
 {
 	image_handler = new ImageSelectionHandler(f->fileName());
-	QCOMPARE(image_handler->isItemSelected(FILE_PATH), true);
+	QCOMPARE(image_handler->isItemSelected(QFileInfo(FILE_PATH).absoluteFilePath()), true);
 	delete image_handler;
 }
 
 void TestImageSelection::testSimpleDirSelected()
 {
 	image_handler = new ImageSelectionHandler(f->fileName());
-	QCOMPARE(image_handler->isItemSelected(DIR_PATH), true);
+	QCOMPARE(image_handler->isItemSelected(QFileInfo(DIR_PATH).absoluteFilePath()), true);
 	delete image_handler;
 }
 
 void TestImageSelection::testFileSelected()
 {
 	image_handler = new ImageSelectionHandler(f->fileName());
-	QCOMPARE(image_handler->isItemSelected(COMPLEX_FILE), true);
+	QCOMPARE(image_handler->isItemSelected(QFileInfo(COMPLEX_FILE).absoluteFilePath()), true);
 	delete image_handler;
 }
 
 void TestImageSelection::testFileNotSelected()
 {
 	image_handler = new ImageSelectionHandler(f->fileName());
-	QCOMPARE(image_handler->isItemSelected(NOT_PRESENT), false);
+	QCOMPARE(image_handler->isItemSelected(QFileInfo(NOT_PRESENT).absoluteFilePath()), false);
+	delete image_handler;
+}
+
+void TestImageSelection::testCompactDirectory()
+{
+	image_handler = new ImageSelectionHandler(f->fileName());
+	// trigger compactDirectory()
+	image_handler->removeItem(QFileInfo(FILE_PATH).absoluteFilePath());
+	image_handler->insertItem(QFileInfo(FILE_PATH).absoluteFilePath());
+	image_handler->setFileFilter(QStringList() << "*.jpg");
+
+	QCOMPARE(image_handler->isItemSelected(QFileInfo("disk/img").absoluteFilePath()), true);
 	delete image_handler;
 }

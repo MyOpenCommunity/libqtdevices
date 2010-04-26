@@ -51,6 +51,8 @@ private slots:
 	// file non present
 	void testFileNotSelected();
 
+	void testCompactDirectory();
+
 private:
 	ImageSelectionHandler *image_handler;
 	QStringList images;
