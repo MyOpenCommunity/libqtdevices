@@ -558,7 +558,7 @@ VCTCallWindow::VCTCallWindow(EntryphoneDevice *d)
 	connect(vct_call->camera, SIGNAL(toggleFullScreen()), SLOT(fullScreenExit()));
 
 	QGridLayout *buttons_layout = new QGridLayout;
-	buttons_layout->setContentsMargins(23, 0, 23, 0);
+	buttons_layout->setContentsMargins(30, 0, 30, 0);
 	buttons_layout->setSpacing(5);
 	buttons_layout->addWidget(vct_call->call_accept, 0, 0);
 	buttons_layout->addWidget(vct_call->setup_vct, 0, 1);
