@@ -263,6 +263,7 @@ Q_OBJECT
 public:
 	HeaderWidget(TrayBar *tray_bar);
 	void centralPageChanged(int section_id, Page::PageType);
+	void sectionChanged(int section_id);
 
 	void loadConfiguration(const QDomNode &homepage_node, const QDomNode &infobar_node);
 

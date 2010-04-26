@@ -44,25 +44,13 @@
 #define TFT_BRIGTH_VCT    "6"
 
 
-#define DEV_E2 "/dev/nvram"
-
 
 #define E2_BASE 11360
-#define E2_BASE_CONF_ZARLINK 11694
 
 #define KEY_LENGTH 5
 #define AL_KEY "\125\252\125\252\125"
 #define SORG_PAR 2
-#define ZARLINK_KEY 0x63
 
-namespace
-{
-	bool silentExecute(const QString &program, QStringList args = QStringList())
-	{
-		args << "> /dev/null" << "2>&1";
-		return QProcess::execute(program, args);
-	}
-}
 
 int maxWidth()
 {
@@ -422,40 +410,6 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 	write(eeprom,&sorgente,1);
 	write(eeprom,&stazione,1);
 	close(eeprom);
-}
-
-void initEchoCanceller()
-{
-	char init = 0;
-	bool need_reset = false;
-
-	int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
-	lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
-	read(eeprom, &init, 1);
-
-	if (init != ZARLINK_KEY) // different versions, update the zarlink configuration
-	{
-		for (int i = 0; i < 5; ++i)
-		{
-			if (!silentExecute("/home/bticino/bin/zarlink 0400 0001 CONF /home/bticino/cfg/zle38004.cr"))
-			{
-				init = ZARLINK_KEY;
-				lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
-				write(eeprom, &init, 1);
-				need_reset = true;
-				break;
-			}
-			usleep(500000);
-		}
-	}
-
-	silentExecute(QString("echo %1 > /home/bticino/cfg/vers_conf_zarlink").arg(init));
-	if (need_reset)
-	{
-		silentExecute("echo 0 > /proc/sys/dev/btweb/reset_ZL1");
-		usleep(100000);
-		silentExecute("echo 1 > /proc/sys/dev/btweb/reset_ZL1");
-	}
 }
 
 // local variable to control an external process

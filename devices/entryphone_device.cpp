@@ -210,30 +210,30 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		{
 		case 1:
 			what = VCT_CALL;
-			ringtone = RINGTONE_PE1;
+			ringtone = Ringtones::PE1;
 			break;
 		case 2:
 			what = VCT_CALL;
-			ringtone = RINGTONE_PE2;
+			ringtone = Ringtones::PE2;
 			break;
 		case 3:
 			what = VCT_CALL;
-			ringtone = RINGTONE_PE3;
+			ringtone = Ringtones::PE3;
 			break;
 		case 4:
 			what = VCT_CALL;
-			ringtone = RINGTONE_PE4;
+			ringtone = Ringtones::PE4;
 			break;
 		case 5:
 			what = AUTO_VCT_CALL;
 			break;
 		case 6:
 			what = INTERCOM_CALL;
-			ringtone = RINGTONE_PI_INTERCOM;
+			ringtone = Ringtones::PI_INTERCOM;
 			break;
 		case 7:
 			what = INTERCOM_CALL;
-			ringtone = RINGTONE_PE_INTERCOM;
+			ringtone = Ringtones::PE_INTERCOM;
 			break;
 		default:
 			qWarning("Kind not supported by EntryphoneDevice, skip frame");

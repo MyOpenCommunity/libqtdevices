@@ -21,7 +21,7 @@
 
 
 #include "sounddiffusionpage.h"
-#include "main.h"
+#include "main.h" // bt_global::config, Section
 #include "xml_functions.h"
 #include "bann2_buttons.h" // Bann2Buttons
 #include "btbutton.h"
@@ -32,11 +32,17 @@
 #include "bann_amplifiers.h" // Amplifier
 #include "poweramplifier.h" // BannPowerAmplifier
 #include "sorgentiradio.h" // RadioSource
-
+#include "pagestack.h"
 
 #include <QDomNode>
 #include <QGridLayout>
 #include <QLabel>
+#include <QtDebug>
+
+
+bool SoundDiffusionPage::is_source = false, SoundDiffusionPage::is_amplifier = false;
+Page *SoundDiffusionPage::sound_diffusion_page;
+Page *SoundAmbientPage::current_ambient_page;
 
 namespace
 {
@@ -105,6 +111,11 @@ enum BannerType
 
 SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources)
 {
+	if (getTextChild(conf_node, "id").toInt() == DIFSON_MONO)
+		section_id = DIFSON_MONO;
+	else
+		section_id = NO_SECTION;
+
 	QWidget *top_widget = 0;
 	// this handles the case for special ambient, which must not show sources
 	if (!sources.isEmpty())
@@ -116,6 +127,11 @@ SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<Source
 	}
 	buildPage(getTextChild(conf_node, "descr"), Page::TITLE_HEIGHT, top_widget);
 	loadItems(conf_node);
+}
+
+int SoundAmbientPage::sectionId()
+{
+	return section_id;
 }
 
 void SoundAmbientPage::loadItems(const QDomNode &config_node)
@@ -132,6 +148,21 @@ void SoundAmbientPage::loadItems(const QDomNode &config_node)
 		else
 			qFatal("ID %s not handled in SoundAmbientPage", qPrintable(getTextChild(item, "id")));
 	}
+}
+
+void SoundAmbientPage::showPage()
+{
+	current_ambient_page = this;
+
+	bt_global::page_stack.showUserPage(this);
+	BannerPage::showPage();
+}
+
+void SoundAmbientPage::cleanUp()
+{
+	Q_ASSERT_X(current_ambient_page == this, "SoundAmbientPage::cleanUp", "Something terrible happened");
+
+	current_ambient_page = NULL;
 }
 
 banner *SoundAmbientPage::getBanner(const QDomNode &item_node)
@@ -158,8 +189,10 @@ banner *SoundAmbientPage::getBanner(const QDomNode &item_node)
 	return b;
 }
 
-
-
+Page *SoundAmbientPage::currentAmbientPage()
+{
+	return current_ambient_page;
+}
 
 
 enum Items
@@ -170,8 +203,19 @@ enum Items
 
 SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 {
+	next_page = NULL;
+
 	buildPage(getTextChild(config_node, "descr"));
-	loadItems(config_node);
+	if (getTextChild(config_node, "id").toInt() == DIFSON_MULTI)
+		loadItemsMulti(config_node);
+	else
+		loadItemsMono(config_node);
+
+	sound_diffusion_page = this;
+
+	// check if this hardware can work as a source/amplifier
+	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
+	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
 }
 
 int SoundDiffusionPage::sectionId()
@@ -179,10 +223,8 @@ int SoundDiffusionPage::sectionId()
 	return DIFSON_MULTI;
 }
 
-void SoundDiffusionPage::loadItems(const QDomNode &config_node)
+QList<SourceDescription> SoundDiffusionPage::loadSources(const QDomNode &config_node)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-	// TODO: parse audio sources from conf.xml
 	QDomNode sources_node = getChildWithName(config_node, "multimediasources");
 	QList<SourceDescription> sources_list;
 	foreach (const QDomNode &source, getChildren(sources_node, "item"))
@@ -196,17 +238,31 @@ void SoundDiffusionPage::loadItems(const QDomNode &config_node)
 	}
 	Q_ASSERT_X(!sources_list.isEmpty(), "SoundDiffusionPage::loadItems", "No sound diffusion sources defined.");
 
+	return sources_list;
+}
+
+void SoundDiffusionPage::loadItemsMulti(const QDomNode &config_node)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
+	QList<SourceDescription> sources_list = loadSources(config_node);
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		banner *b = getAmbientBanner(item, sources_list);
 		if (b)
-		{
 			page_content->appendBanner(b);
-			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-		}
 		else
 			qFatal("ID %s not handled in SoundDiffusionPage", qPrintable(getTextChild(item, "id")));
 	}
+}
+
+void SoundDiffusionPage::loadItemsMono(const QDomNode &config_node)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
+	QList<SourceDescription> sources_list = loadSources(config_node);
+	next_page = new SoundAmbientPage(config_node, sources_list);
+	connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
 banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources)
@@ -237,4 +293,44 @@ banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QL
 	}
 	}
 	return b;
+}
+
+void SoundDiffusionPage::showPage()
+{
+	// TODO otherwise it remains connected to SectionPage::showPage
+	disconnect(SIGNAL(Closed()), 0, 0);
+
+	if (next_page)
+	{
+		next_page->showPage();
+	}
+	else
+	{
+		bt_global::page_stack.showUserPage(this);
+		BannerPage::showPage();
+	}
+}
+
+void SoundDiffusionPage::showCurrentAmbientPage()
+{
+	Page *current_ambient_page = SoundAmbientPage::currentAmbientPage();
+
+	Q_ASSERT_X(current_ambient_page || sound_diffusion_page, "SoundDiffusionPage::showCurrentAmbientPage", "Terrible stuff keeps on happening");
+
+	qDebug() << "Sound diffusion" << sound_diffusion_page << "ambient" << current_ambient_page;
+
+	if (current_ambient_page)
+		current_ambient_page->showPage();
+	else
+		sound_diffusion_page->showPage();
+}
+
+bool SoundDiffusionPage::isSource()
+{
+	return is_source;
+}
+
+bool SoundDiffusionPage::isAmplifier()
+{
+	return is_amplifier;
 }

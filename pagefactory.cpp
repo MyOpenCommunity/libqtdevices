@@ -117,6 +117,7 @@ Page *getPage(int page_id)
 	case MESSAGES:
 		page = new MessagesListPage(page_node);
 		break;
+	case DIFSON_MONO:
 	case DIFSON_MULTI:
 		page = new SoundDiffusionPage(page_node);
 		break;
@@ -156,7 +157,7 @@ Page *getPage(int page_id)
 		page = new LoadManagement(page_node);
 		break;
 	default:
-		qFatal("Page %d not found on xml config file!", id);
+		qFatal("Page %d not handled!", id);
 	}
 
 	bt_global::btmain->page_list[id] = page;

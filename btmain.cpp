@@ -124,7 +124,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	bt_global::font = new FontManager(font_file);
 	bt_global::display = new DisplayControl;
 	bt_global::skin = new SkinManager(SKIN_FILE);
-	bt_global::ringtones = new RingtonesManager;
+	bt_global::ringtones = new RingtonesManager(RINGTONE_FILE);
 	bt_global::audio_states = new AudioStateMachine;
 
 #if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
@@ -313,6 +313,15 @@ void BtMain::loadGlobalConfig()
 	// transform address into internal address
 	if (!(*config)[PI_ADDRESS].isNull())
 		(*config)[PI_ADDRESS].prepend("1");
+
+	// TouchX source and amplifier addresses
+	setConfigValue(scs_node, "coordinate_scs/my_mmaddress", (*config)[SOURCE_ADDRESS]);
+	setConfigValue(scs_node, "coordinate_scs/my_maaddress", (*config)[AMPLIFIER_ADDRESS]);
+
+	if ((*config)[SOURCE_ADDRESS] == "-1")
+		(*config)[SOURCE_ADDRESS] = "";
+	if ((*config)[AMPLIFIER_ADDRESS] == "-1")
+		(*config)[AMPLIFIER_ADDRESS] = "";
 }
 
 void BtMain::waitBeforeInit()
@@ -504,6 +513,11 @@ void BtMain::showHomePage()
 	Home->showPage();
 }
 
+Page *BtMain::homePage()
+{
+	return Home;
+}
+
 void BtMain::unrollPages()
 {
 	int seq_pages = 0;
@@ -660,7 +674,8 @@ Window *BtMain::homeWindow()
 bool BtMain::eventFilter(QObject *obj, QEvent *ev)
 {
 	// Discard the mouse press and mouse double click
-	if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick)
+	if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick ||
+	    ev->type() == QEvent::MouseMove || ev->type() == QEvent::Enter || ev->type() == QEvent::Leave)
 		return true;
 
 	if (ev->type() != QEvent::MouseButtonRelease)

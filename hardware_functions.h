@@ -24,6 +24,8 @@
 
 #include <QtGlobal> // uchar
 
+#define DEV_E2 "/dev/nvram"
+
 #define AMPLI_NUM 100
 
 class QString;
@@ -142,10 +144,6 @@ void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazion
    \brief Stores alarm valume data
 */
 void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione);
-
-// init the echo canceller, updating (if needed) the configuration. This function
-// MUST be called in a separate thread, in order to avoid the freeze of the ui.
-void initEchoCanceller();
 
 // play a WAV file
 void playSound(const QString &wavFile);

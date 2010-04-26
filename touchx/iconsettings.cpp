@@ -64,17 +64,15 @@ enum
 	PAGE_CLEANSCREEN = 14152,
 	PAGE_DISPLAY = 14007,
 	PAGE_ALARMCLOCK = 14009,
-
-	// TODO should be the same ID
 	RINGTONE_0 = 14101,
 	RINGTONE_1 = 14102,
 	RINGTONE_2 = 14103,
 	RINGTONE_3 = 14104,
-	RINGTONE_INTERCOM = 14105,
-	RINGTONE_VCT = 14106,
-	RINGTONE_DOOR = 14107,
+	RINGTONE_PI_INTERCOM = 14105,
+	RINGTONE_PE_INTERCOM = 14106,
+	RINGTONE_FLOORCALL = 14107,
 	RINGTONE_ALARM = 14109,
-
+	RINGTONE_MESSAGE = 14110,
 	// TODO ids?
 	PAGE_LANSETTINGS = 1700000,
 	PAGE_CALIBRATION_TEST = 1777777,
@@ -172,7 +170,7 @@ void VolumePage::hideEvent(QHideEvent *e)
 void VolumePage::changeVolume(int new_vol)
 {
 	setVolume(VOLUME_RING, new_vol);
-	bt_global::ringtones->playRingtone(RINGTONE_PE1);
+	bt_global::ringtones->playRingtone(Ringtones::PE1);
 }
 
 
@@ -272,13 +270,14 @@ banner *IconSettings::getBanner(const QDomNode &item_node)
 {
 	SkinContext ctx(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
+	int item_id = getTextChild(item_node, "itemID").toInt();
+
 	banner *b = 0;
 	QString descr = getTextChild(item_node, "descr");
 	switch (id)
 	{
 	case SET_SVEGLIA_SINGLEPAGE:
 	{
-		int item_id = getTextChild(item_node, "itemID").toInt();
 		int type = getTextChild(item_node, "type").toInt();
 		int enabled = getTextChild(item_node, "enabled").toInt();
 		int hour = getTextChild(item_node, "hour").toInt();
@@ -303,20 +302,37 @@ banner *IconSettings::getBanner(const QDomNode &item_node)
 		break;
 	}
 	case RINGTONE_0:
+		b = new BannRingtone(descr, item_id, Ringtones::PE1);
+		break;
 	case RINGTONE_1:
+		b = new BannRingtone(descr, item_id, Ringtones::PE2);
+		break;
 	case RINGTONE_2:
+		b = new BannRingtone(descr, item_id, Ringtones::PE3);
+		break;
 	case RINGTONE_3:
-	case RINGTONE_INTERCOM:
-	case RINGTONE_VCT:
-	case RINGTONE_DOOR:
+		b = new BannRingtone(descr, item_id, Ringtones::PE4);
+		break;
+	case RINGTONE_PI_INTERCOM:
+		b = new BannRingtone(descr, item_id, Ringtones::PI_INTERCOM);
+		break;
+	case RINGTONE_PE_INTERCOM:
+		b = new BannRingtone(descr, item_id, Ringtones::PE_INTERCOM);
+		break;
+	case RINGTONE_FLOORCALL:
+		b = new BannRingtone(descr, item_id, Ringtones::FLOORCALL);
+		break;
 	case RINGTONE_ALARM:
-		// TODO: type should be read from config file
-		b = new BannRingtone(descr, RINGTONE_PE1);
+		b = new BannRingtone(descr, item_id, Ringtones::ALARM);
+		break;
+	case RINGTONE_MESSAGE:
+		b = new BannRingtone(descr, item_id, Ringtones::MESSAGE);
 		break;
 	}
 
 	return b;
 }
+
 
 void IconSettings::loadItems(const QDomNode &config_node)
 {

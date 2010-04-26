@@ -30,6 +30,8 @@
 #include "hardware_functions.h" // setVolum
 #include "btmain.h"
 #include "homewindow.h" // TrayBar
+#include "sounddiffusionpage.h" // showCurrentAmbientPage, isSource
+#include "main.h" // MULTIMEDIA
 
 #include <QGridLayout>
 #include <QLabel>
@@ -107,22 +109,37 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	l_bg->addWidget(elapsed, 2, 1, Qt::AlignVCenter|Qt::AlignRight);
 
 	QHBoxLayout *l_btn = new QHBoxLayout;
-	BtButton *goto_sounddiff = new BtButton(bt_global::skin->getImage("goto_sounddiffusion"));
-	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(type == IP_RADIO ? MultimediaPlayerButtons::IPRADIO_PAGE : MultimediaPlayerButtons::AUDIO_PAGE);
+	BtButton *goto_sounddiff = NULL;
+	if (SoundDiffusionPage::isSource())
+	{
+		goto_sounddiff = new BtButton(bt_global::skin->getImage("goto_sounddiffusion"));
+		connect(goto_sounddiff, SIGNAL(clicked()), SLOT(gotoSoundDiffusion()));
+	}
 
+	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(type == IP_RADIO ? MultimediaPlayerButtons::IPRADIO_PAGE : MultimediaPlayerButtons::AUDIO_PAGE);
 	connectMultimediaButtons(buttons);
 
 	l_btn->addWidget(buttons);
 	l_btn->addStretch(0);
-	l_btn->addWidget(goto_sounddiff);
+	if (goto_sounddiff)
+		l_btn->addWidget(goto_sounddiff);
 
-	ItemTuning *volume = new ItemTuning(tr("Volume"), bt_global::skin->getImage("volume"));
-	connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
+	ItemTuning *volume = NULL;
+
+	// if the touch is a sound diffusion source do not display the volume control
+	if (!SoundDiffusionPage::isSource())
+	{
+		volume = new ItemTuning(tr("Volume"), bt_global::skin->getImage("volume"));
+		connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
+	}
 
 	QVBoxLayout *l = new QVBoxLayout(content);
 	l->addWidget(bg, 1, Qt::AlignCenter);
 	l->addLayout(l_btn, 1);
-	l->addWidget(volume, 1, Qt::AlignCenter);
+	if (volume)
+		l->addWidget(volume, 1, Qt::AlignCenter);
+	else
+		l->addStretch(1);
 
 	connect(&refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
 
@@ -135,6 +152,11 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 
 	connect(this, SIGNAL(started()), tray_icon, SLOT(started()));
 	connect(this, SIGNAL(stopped()), tray_icon, SLOT(stopped()));
+}
+
+int AudioPlayerPage::sectionId()
+{
+	return MULTIMEDIA;
 }
 
 void AudioPlayerPage::startMPlayer(int index, int time)
@@ -226,4 +248,9 @@ void AudioPlayerPage::refreshPlayInfo()
 void AudioPlayerPage::changeVolume(int volume)
 {
 	setVolume(VOLUME_MMDIFFUSION, volume);
+}
+
+void AudioPlayerPage::gotoSoundDiffusion()
+{
+	SoundDiffusionPage::showCurrentAmbientPage();
 }

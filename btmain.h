@@ -78,6 +78,7 @@ public:
 	Window *homeWindow();
 	TrayBar *trayBar();
 	void showHomePage();
+	Page *homePage();
 
 	// set the screensaver and balcnk screen timeouts in seconds
 	void setScreenSaverTimeouts(int screensaver_start, int blank_screen);

@@ -792,3 +792,9 @@ void HeaderWidget::centralPageChanged(int section_id, Page::PageType type)
 	}
 	updateGeometry();
 }
+
+void HeaderWidget::sectionChanged(int section_id)
+{
+	qDebug() << "new section = " << section_id;
+	top_nav_bar->setCurrentSection(section_id);
+}

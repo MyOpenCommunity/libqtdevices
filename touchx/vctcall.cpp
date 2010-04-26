@@ -33,6 +33,8 @@
 #include "pagestack.h" // bt_global::page_stack
 #include "btmain.h" // isCalibrating
 #include "state_button.h"
+#include "audiostatemachine.h"
+
 
 #include <QDomNode>
 #include <QHBoxLayout>
@@ -275,18 +277,20 @@ void VCTCall::toggleMute()
 
 void VCTCall::toggleCall()
 {
-	call_status->connected = !call_status->connected;
-	call_status->mute = call_status->connected ? StateButton::OFF : StateButton::DISABLED;
-
-	refreshStatus();
-	if (call_status->connected)
+	if (!call_status->connected)
 	{
 		if (call_status->stopped)
 			resumeVideo();
 		dev->answerCall();
+		bt_global::audio_states->toState(AudioStates::SCS_VIDEO_CALL);
 	}
 	else
 		handleClose();
+
+	call_status->connected = !call_status->connected;
+	call_status->mute = call_status->connected ? StateButton::OFF : StateButton::DISABLED;
+
+	refreshStatus();
 }
 
 void VCTCall::resumeVideo()
@@ -377,6 +381,8 @@ void VCTCall::toggleCameraSettings()
 
 void VCTCall::endCall()
 {
+	if (call_status->connected)
+		bt_global::audio_states->exitCurrentState();
 	dev->endCall();
 	stopVideo();
 }

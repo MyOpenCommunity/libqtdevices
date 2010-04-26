@@ -96,7 +96,8 @@ class SlideshowSelector : public FileSelector
 {
 Q_OBJECT
 public:
-	enum EntryType {
+	enum EntryType
+	{
 		FILE = 0,
 		DIRECTORY
 	};
