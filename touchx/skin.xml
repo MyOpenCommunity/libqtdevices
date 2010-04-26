@@ -287,13 +287,16 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<item>
 		<!--
-		Energy supervision
+		Supervision
 		-->
 		<cid>6</cid>
 		<img_link_icon>energia/supervisioneimpianto.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/supervisioneimpianto.png</img_top_navigation_button>
 	</item>
 	<item>
+		<!--
+		Energy data
+		-->
 		<cid>7</cid>
 		<img_link_icon>energia/energydata.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/energydata.png</img_top_navigation_button>
