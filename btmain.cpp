@@ -313,6 +313,15 @@ void BtMain::loadGlobalConfig()
 	// transform address into internal address
 	if (!(*config)[PI_ADDRESS].isNull())
 		(*config)[PI_ADDRESS].prepend("1");
+
+	// TouchX source and amplifier addresses
+	setConfigValue(scs_node, "coordinate_scs/my_mmaddress", (*config)[SOURCE_ADDRESS]);
+	setConfigValue(scs_node, "coordinate_scs/my_maaddress", (*config)[AMPLIFIER_ADDRESS]);
+
+	if ((*config)[SOURCE_ADDRESS] == "-1")
+		(*config)[SOURCE_ADDRESS] = "";
+	if ((*config)[AMPLIFIER_ADDRESS] == "-1")
+		(*config)[AMPLIFIER_ADDRESS] = "";
 }
 
 void BtMain::waitBeforeInit()

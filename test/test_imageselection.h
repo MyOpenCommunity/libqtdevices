@@ -19,29 +19,44 @@
  */
 
 
-#ifndef TEST_BTTIME_H
-#define TEST_BTTIME_H
 
-#include <QtTest/QTest>
+#ifndef TEST_IMAGESELECTION_H
+#define TEST_IMAGESELECTION_H
 
-class BtTime;
+#include <QObject>
+#include <QStringList>
 
-namespace QTest {
-	template<> char *toString(const BtTime &t);
-}
+class ImageSelectionHandler;
+class QTemporaryFile;
 
-class TestBtTime : public QObject
+class TestImageSelection : public QObject
 {
 Q_OBJECT
 private slots:
-	void testDefaultTime();
-	void testSubtractOneMinute();
-	void testSubtractLessThanMaxMinutes();
-	void testSubtractLessThanMaxMinutes2();
-	void testAddOneMinute();
-	void testAddLessThanMaxMinutes();
-	void testAddMoreThanMaxMinutes();
-	void testAddMinutesWrapHour();
+	void initTestCase();
+	void cleanupTestCase();
+
+	void testFileLoading();
+	void testFileSaving();
+
+	// file explicitly present in the set
+	void testSimplePathSelected();
+
+	// directory explicitly present in the set
+	void testSimpleDirSelected();
+
+	// file included in a selected directory
+	void testFileSelected();
+
+	// file non present
+	void testFileNotSelected();
+
+	void testCompactDirectory();
+
+private:
+	ImageSelectionHandler *image_handler;
+	QStringList images;
+	QTemporaryFile *f;
 };
 
-#endif // TEST_BTTIME_H
+#endif // TEST_IMAGESELECTION_H

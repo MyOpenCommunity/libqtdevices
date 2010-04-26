@@ -399,7 +399,8 @@ void BannRingtone::plusClicked()
 ScreensaverTiming::ScreensaverTiming(const QString &descr, int init_timing, int _delta, int min_timing, int max_timing) :
 	Bann2Buttons(0)
 {
-	initBanner(bt_global::skin->getImage("minus"), QString::number(init_timing), bt_global::skin->getImage("plus"), descr);
+	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), QString::number(init_timing),
+		FontManager::BANNERTEXT, descr);
 	timing = init_timing;
 	delta = _delta;
 	max = max_timing;
