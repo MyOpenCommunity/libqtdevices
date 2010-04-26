@@ -39,7 +39,7 @@ class ScreenSaverPage : public SingleChoicePage
 {
 Q_OBJECT
 public:
-	ScreenSaverPage();
+	ScreenSaverPage(const QDomNode &conf_node);
 	virtual void showPage();
 
 protected:

@@ -79,6 +79,7 @@ ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 
 // Definition of static member
 QString ScreenSaver::text;
+int ScreenSaver::slideshow_timeout;
 
 
 ScreenSaver::ScreenSaver(int refresh_time)
@@ -112,6 +113,9 @@ bool ScreenSaver::isRunning()
 void ScreenSaver::initData(const QDomNode &config_node)
 {
 	text = getTextChild(config_node, "text");
+#ifdef CONFIG_TOUCHX
+	int slideshow_timeout = getTextChild(config_node, "timeSlideShow").toInt();
+#endif
 }
 
 
@@ -309,7 +313,7 @@ void ScreenSaverText::customizeLine()
 }
 
 
-ScreenSaverSlideshow::ScreenSaverSlideshow() : ScreenSaver(12000)
+ScreenSaverSlideshow::ScreenSaverSlideshow() : ScreenSaver(slideshow_timeout)
 {
 	QDir image_dir("cfg/slideshow");
 	QStringList name_filter;

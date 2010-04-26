@@ -79,16 +79,17 @@ namespace
 }
 
 
-ScreenSaverPage::ScreenSaverPage()
+ScreenSaverPage::ScreenSaverPage(const QDomNode &conf_node)
 {
 	timing = 0;
 	addBanner(SingleChoice::createBanner(tr("No screensaver")), ScreenSaver::NONE);
 	addBanner(SingleChoice::createBanner(tr("Time")), ScreenSaver::TIME);
 	addBanner(SingleChoice::createBanner(tr("Text")), ScreenSaver::TEXT);
 	// TODO: these types will be available on BTouch only
+#ifdef LAYOUT_BTOUCH
 	addBanner(SingleChoice::createBanner(tr("Line")), ScreenSaver::LINES);
 	addBanner(SingleChoice::createBanner(tr("Balls")), ScreenSaver::BALLS);
-
+#endif
 	//addBanner(tr("Deform"), ScreenSaver::DEFORM); // the deform is for now unavailable!
 	// TODO maybe we want an OK button for touch 10 as well
 
@@ -104,6 +105,7 @@ ScreenSaverPage::ScreenSaverPage()
 	timing->hide();
 #endif
 	connect(page_content, SIGNAL(bannerSelected(int)), SLOT(confirmSelection()));
+	bannerSelected(getTextChild(conf_node, "type").toInt());
 }
 
 void ScreenSaverPage::showPage()
@@ -122,7 +124,6 @@ void ScreenSaverPage::bannerSelected(int id)
 	// hide timing selection if photo slideshow is not selected
 	if (timing)
 	{
-		// TODO: is there a better way to check photo slideshow
 		if (id == ScreenSaver::SLIDESHOW)
 			timing->show();
 		else
