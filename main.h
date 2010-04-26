@@ -198,7 +198,7 @@ enum Section
 	BACK=9,                                       /*!< Back button - placed here for convenience */
 	SPECIAL=10,                                   /*!< Special button - placed here for convenience */
 	MESSAGES=17,                                  /*!< Textual Messages from scs */
-	LOAD_MANAGEMENT=18,                           /*!< Load management system */
+	LOAD_MANAGEMENT=18000,                        /*!< Load management system */
 	SCENARI=1000,                                 /*!< Scenarios managing */
 	SCENARI_EVOLUTI=20,                           /*!< Advanced scenarios management */
 	VIDEOCITOFONIA=10000,                         /*!< VideoDoorEntry system */
@@ -206,10 +206,10 @@ enum Section
 	MULTIMEDIA=16000,                             /*!< Multimedia system */
 	DIFSON_MONO=11000,                            /*!< Sound diffusion system (monochannel) */
 	DIFSON_MULTI=12000,                           /*!< Sound diffusion system (multichannel) */
-	SUPERVISIONE=-2,                              /*!< Supervision system */
+	SUPERVISIONE=6000,                            /*!< Supervision system */
 	TERMOREG_MULTI_PLANT=-3,                      /*!< Thermoregulation system with one or more 4-zones plants */
 	ENERGY_MANAGEMENT=-4,                         /*!< Energy management system */
-	ENERGY_DATA=-5,                               /*!< Energy data system */
+	ENERGY_DATA=7000,                             /*!< Energy data system */
 	FEED_READER=-6,                               /*!< Feed reader page */
 };
 #endif
@@ -392,7 +392,6 @@ enum ItemType
 	TERMO_HOME_NC_EXTPROBE=207,                   /*!< Home page external not-controlled probe */
 	TERMO_HOME_NC_PROBE=208,                      /*!< Home page not-controlled probe */
 #endif
-	CLASS_STOPNGO=59,                             /*!< StopnGo devices class */
 	STOPNGO=60,                                   /*!< StopnGo device */
 	STOPNGO_PLUS=61,                              /*!< StopnGo Plus device */
 	STOPNGO_BTEST=62,                             /*!< StopnGo BTest device */
@@ -418,7 +417,6 @@ enum ItemType
 #endif
 	LOAD_WITH_CU=80,                              /*!< Load with central unit */
 	LOAD_WITHOUT_CU=81,                           /*!< Load without central unit */
-	LOAD_DIAGNOSTIC=82,                           /*!< Load diagnostics */
 };
 
 #endif //MAIN_H
