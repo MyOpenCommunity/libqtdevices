@@ -103,6 +103,11 @@ namespace VCTCallPrivate
 		void startVideo();
 		void stopVideo();
 
+		// Only 1 instance can be active at the same time, so we have to use the
+		// enable/disable methods to ensure that.
+		void enable();
+		void disable();
+
 		// Common graphical objects
 		BtButton *setup_vct;
 		CameraMove *camera;
