@@ -56,6 +56,13 @@ EnergyData::EnergyData(const QDomNode &config_node)
 		connect(interfaces[0], SIGNAL(Closed()), SLOT(Closed()));
 }
 
+int EnergyData::sectionId()
+{
+	// TODO: we have to manage the case when the energy data is put inside the energy
+	// management
+	return ENERGY_DATA;
+}
+
 void EnergyData::updateDayTimer()
 {
 	const int msecs_in_a_day = 86400000;
