@@ -56,7 +56,7 @@ public:
 	 *
 	 * TODO: compact a directory if dirty == true
 	 */
-	bool isItemSelected(QString abs_path);
+	bool isItemSelected(const QString &abs_path);
 
 	/*
 	 * Check if an item is explicitly selected, don't check for parent directories.
@@ -84,12 +84,13 @@ public:
 
 private:
 	/*
-	 * Compact a directory when all its enclosed items are selected.
+	 * Compact the given directory.
+	 *
+	 * Get a fileinfo list from the filesystem; if every entry is selected, substitute them all with dir.
 	 * \param dir Directory to be compacted
-	 * \param items_in_dir List of items individually selected. This should contain the same items as a call
-	 * to getFilteredFiles(dir) [otherwise there's a bug somewhere...]
+	 * \return True if the directory is compacted, false otherwise.
 	 */
-	void compactDirectory(const QString &dir, const QFileInfoList &items_in_dir);
+	bool compactDirectory(const QString &dir);
 
 	/*
 	 * Remove a path from selected_images and set dirty to true

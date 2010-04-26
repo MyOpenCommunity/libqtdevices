@@ -34,13 +34,33 @@ ImageSelectionHandler::ImageSelectionHandler(const QString &file_path) :
 	loadSlideshowFromFile();
 }
 
-void ImageSelectionHandler::compactDirectory(const QString &dir, const QFileInfoList &items_in_dir)
+bool ImageSelectionHandler::compactDirectory(const QString &dir)
 {
-	qDebug() << "compacting directory " << dir;
-	foreach (const QFileInfo &fi, items_in_dir)
-		removeItem(fi.absoluteFilePath());
-	insertItem(dir);
-	qDebug() << "Result of compacting the directory: " << selected_images;
+	QDir d(dir);
+	QStringList deleting_items;
+
+	// check if every item in the directory is really selected
+	bool are_all_selected = true;
+	foreach (const QFileInfo &fi, d.entryInfoList(file_filter))
+	{
+		if (selected_images.contains(fi.absoluteFilePath()))
+			deleting_items << fi.absoluteFilePath();
+		else
+		{
+			are_all_selected = false;
+			break;
+		}
+	}
+
+	if (are_all_selected)
+	{
+		foreach (const QString &del, deleting_items)
+			removeItem(del);
+		insertItem(dir);
+		dirty = false;
+	}
+
+	return are_all_selected;
 }
 
 void ImageSelectionHandler::saveSlideshowToFile()
@@ -60,7 +80,6 @@ void ImageSelectionHandler::saveSlideshowToFile()
 	}
 	f.close();
 	QFileInfo fi(f);
-	qDebug() << "Saved file to " << fi.absoluteFilePath();
 
 	if (::rename(qPrintable(fi.absoluteFilePath()), qPrintable(save_file_path)))
 		qWarning() << "Could not correctly save slideshow file, error code = " << errno;
@@ -80,7 +99,6 @@ void ImageSelectionHandler::loadSlideshowFromFile()
 		QString path = f.readLine().simplified();
 		selected_images.insert(path);
 	}
-	qDebug() << "loadSlideshowFromFile, result: " << selected_images;
 }
 
 void ImageSelectionHandler::insertItem(const QString &path)
@@ -110,12 +128,11 @@ void ImageSelectionHandler::removePath(const QString &path)
 
 void ImageSelectionHandler::removeItem(const QString &path)
 {
-	Q_ASSERT_X(isItemSelected(path), "SlideshowSelectionPage::removeCurrentFile", "Given path is not selected!");
+	Q_ASSERT_X(isItemSelected(path), "SlideshowSelectionPage::removeItem", "Given path is not selected!");
 	// simple case: path is a file and is selected explicitly
 	if (selected_images.contains(path))
 	{
 		removePath(path);
-		qDebug() << "Removing explicitly selected file: " << path;
 		return;
 	}
 
@@ -124,7 +141,7 @@ void ImageSelectionHandler::removeItem(const QString &path)
 	while (!parent.isEmpty())
 	{
 		QFileInfoList items_in_dir = QDir(parent).entryInfoList(file_filter);
-		Q_ASSERT_X(isItemSelected(parent), "SlideshowSelectionPage::removeCurrentFile", "Parent is not selected.");
+		Q_ASSERT_X(isItemSelected(parent), "SlideshowSelectionPage::removeItem", "Parent is not selected.");
 		// first add all files and directories excluding current basename
 		foreach (const QFileInfo &fi, items_in_dir)
 		{
@@ -136,7 +153,6 @@ void ImageSelectionHandler::removeItem(const QString &path)
 		if (selected_images.contains(parent))
 		{
 			removePath(parent);
-			qDebug() << "Outermost directory: " << parent;
 			break;
 		}
 		parent = getParentDirectory(parent, &basename);
@@ -155,19 +171,32 @@ QString ImageSelectionHandler::getParentDirectory(const QString &path, QString *
 		return path.left(pos);
 }
 
-bool ImageSelectionHandler::isItemSelected(QString abs_path)
+bool ImageSelectionHandler::isItemSelected(const QString &abs_path)
 {
-	while (!abs_path.isEmpty())
+	if (selected_images.contains(abs_path))
+		return true;
+	else
 	{
-		if (selected_images.contains(abs_path))
+		QString path = abs_path;
+		while (!path.isEmpty())
 		{
-			qDebug() << "Item " << abs_path << " is selected";
-			return true;
-		}
+			if (selected_images.contains(path))
+				return true;
 
-		abs_path = getParentDirectory(abs_path);
+			path = getParentDirectory(path);
+		}
 	}
-	qDebug() << "Item " << abs_path << " is NOT selected";
+
+	// try to compact a directory
+	if (QFileInfo(abs_path).isDir() && dirty)
+	{
+		foreach (const QString &item, selected_images)
+		{
+			if (item.startsWith(abs_path))
+				return compactDirectory(abs_path);
+		}
+	}
+
 	return false;
 }
 
