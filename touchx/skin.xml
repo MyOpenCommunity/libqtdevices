@@ -268,26 +268,39 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_link_icon>home/illuminazione.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/illuminazione.png</img_top_navigation_button>
 	</item>
-    <item>
-        <!-- settings -->
-        <cid>14000</cid>
-        <img_videodoorentry>setup/videocitofonia.png</img_videodoorentry>
-        <img_handsfree_on>setup/beepon.png</img_handsfree_on>
-        <img_handsfree_off>setup/beepoff.png</img_handsfree_off>
-        <img_profstudio_on>setup/beepon.png</img_profstudio_on>
-        <img_profstudio_off>setup/beepoff.png</img_profstudio_off>
-        <img_tray_handsfree>home/statoportaoff.png</img_tray_handsfree>
-        <img_tray_profstudio>home/statoportaon.png</img_tray_profstudio>
-    </item>
 	<item>
-        <!-- antintrusion -->
+		<!-- settings -->
+		<cid>14000</cid>
+		<img_videodoorentry>setup/videocitofonia.png</img_videodoorentry>
+		<img_handsfree_on>setup/beepon.png</img_handsfree_on>
+		<img_handsfree_off>setup/beepoff.png</img_handsfree_off>
+		<img_profstudio_on>setup/beepon.png</img_profstudio_on>
+		<img_profstudio_off>setup/beepoff.png</img_profstudio_off>
+		<img_tray_handsfree>home/statoportaoff.png</img_tray_handsfree>
+		<img_tray_profstudio>home/statoportaon.png</img_tray_profstudio>
+	</item>
+	<item>
+		<!-- antintrusion -->
 		<cid>13</cid>
 		<img_link_icon>home/antintrusione.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/antintrusione.png</img_top_navigation_button>
 	</item>
 	<item>
-		<cid>104</cid>
-		<img_link_icon>home/carichi.png</img_link_icon>
+		<!--
+		Energy supervision
+		-->
+		<cid>6</cid>
+		<img_link_icon>energia/supervisioneimpianto.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/supervisioneimpianto.png</img_top_navigation_button>
+	</item>
+	<item>
+		<cid>7</cid>
+		<img_link_icon>energia/energydata.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/energydata.png</img_top_navigation_button>
+	</item>
+	<item>
+		<cid>18</cid>
+		<img_link_icon>energia/carichi.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/carichi.png</img_top_navigation_button>
 	</item>
 	<item>
@@ -361,8 +374,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_play_file>multimediale/play.png</img_play_file>
 		<img_browse_directory>multimediale/vai.png</img_browse_directory>
 
-                <!-- TODO duplicated in the homepage link, move to
-                     common section -->
+		<!-- TODO duplicated in the homepage link, move to
+			 common section -->
 		<img_previous>multimediale/precedente.png</img_previous>
 		<img_next>multimediale/successivo.png</img_next>
 		<img_start>multimediale/play.png</img_start>
@@ -670,8 +683,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<!-- ventilation -->
 		<!-- Notes:
-		     In ON state, 'on' will be appended to 'img_actuator_state' icon.
-		     In OFF state, 'off' will be appended.
+			In ON state, 'on' will be appended to 'img_actuator_state' icon.
+			In OFF state, 'off' will be appended.
 		-->
 		<cid>3007</cid>
 		<img_off>automazione/off.png</img_off>
@@ -1097,7 +1110,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_arrow_left>videocitofonia/arrsx.png</img_arrow_left>
 		<img_arrow_right>videocitofonia/arrdx.png</img_arrow_right>
 		<img_fullscreen>videocitofonia/screenfull.png</img_fullscreen>
-        <img_connection>videocitofonia/inconnessione.png</img_connection>
+		<img_connection>videocitofonia/inconnessione.png</img_connection>
 	</item>
 	<!-- Video control items -->
 	<!-- panel -->
@@ -1119,16 +1132,16 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>10102</cid>
 		<img_link_icon>videocitofonia/piintercompiano.png</img_link_icon>
 	</item>
-    <item>
-        <!--
-        SCS Messages
-        Other tags used: img_scroll_up, img_scroll_down, img_back, img_ok, img_go_home
-        -->
-        <cid>17000</cid>
-        <img_link_icon>home/messaggion.png</img_link_icon>
-        <img_top_navigation_button>barranavigazione/messaggioff.png</img_top_navigation_button>
-        <img_delete_all>navigazione/eliminatutti.png</img_delete_all>
-        <img_delete>antintrusione/elimina.png</img_delete>
-	<img_go_message_list>home/storicomessaggi.png</img_go_message_list>
-    </item>
+	<item>
+		<!--
+		SCS Messages
+		Other tags used: img_scroll_up, img_scroll_down, img_back, img_ok, img_go_home
+		-->
+		<cid>17000</cid>
+		<img_link_icon>home/messaggion.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/messaggioff.png</img_top_navigation_button>
+		<img_delete_all>navigazione/eliminatutti.png</img_delete_all>
+		<img_delete>antintrusione/elimina.png</img_delete>
+		<img_go_message_list>home/storicomessaggi.png</img_go_message_list>
+	</item>
 </style>
