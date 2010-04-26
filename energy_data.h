@@ -34,6 +34,9 @@ class EnergyInterface;
 struct EnergyRate;
 
 
+/**
+ * The page that contains the families of energy.
+ */
 class EnergyData : public BannerPage
 {
 Q_OBJECT
@@ -93,6 +96,9 @@ private:
 };
 
 
+/**
+ * A page container of interfaces banners.
+ */
 class EnergyInterface : public BannerPage
 {
 Q_OBJECT
