@@ -257,43 +257,37 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- Homepage links -->
 	<item>
-		<!-- automation (homepage) -->
+		<!-- automation link -->
 		<cid>3</cid>
 		<img_link_icon>home/automazioni.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/automazioni.png</img_top_navigation_button>
 	</item>
 	<item>
-		<!-- lighting -->
+		<!-- messages link -->
+		<cid>17</cid>
+		<img_link_icon>home/messaggion.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/messaggioff.png</img_top_navigation_button>
+	</item>
+	<item>
+		<!-- lighting link -->
 		<cid>2</cid>
 		<img_link_icon>home/illuminazione.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/illuminazione.png</img_top_navigation_button>
 	</item>
 	<item>
-		<!-- settings -->
-		<cid>14000</cid>
-		<img_videodoorentry>setup/videocitofonia.png</img_videodoorentry>
-		<img_handsfree_on>setup/beepon.png</img_handsfree_on>
-		<img_handsfree_off>setup/beepoff.png</img_handsfree_off>
-		<img_profstudio_on>setup/beepon.png</img_profstudio_on>
-		<img_profstudio_off>setup/beepoff.png</img_profstudio_off>
-		<img_tray_handsfree>home/statoportaoff.png</img_tray_handsfree>
-		<img_tray_profstudio>home/statoportaon.png</img_tray_profstudio>
-	</item>
-	<item>
-		<!-- antintrusion -->
+		<!-- antintrusion link-->
 		<cid>13</cid>
 		<img_link_icon>home/antintrusione.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/antintrusione.png</img_top_navigation_button>
 	</item>
 	<item>
-		<!--
-		Energy supervision
-		-->
+		<!-- Supervision link -->
 		<cid>6</cid>
 		<img_link_icon>energia/supervisioneimpianto.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/supervisioneimpianto.png</img_top_navigation_button>
 	</item>
 	<item>
+		<!-- Energy data link -->
 		<cid>7</cid>
 		<img_link_icon>energia/energydata.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/energydata.png</img_top_navigation_button>
@@ -312,7 +306,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_settings>termoregolazione/edit.png</img_settings>
 		<img_arrow_up>termoregolazione/piu.png</img_arrow_up>
 		<img_arrow_down>termoregolazione/meno.png</img_arrow_down>
-	</item>
+	</item>	
 	<item>
 		<!-- Multichannel sound diffusion -->
 		<cid>12</cid>
@@ -361,6 +355,17 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<cid>10003</cid>
 		<img_link_icon>videocitofonia/esclusionechiamata.png</img_link_icon>
+	</item>
+	<item>
+		<!-- settings -->
+		<cid>14000</cid>
+		<img_videodoorentry>setup/videocitofonia.png</img_videodoorentry>
+		<img_handsfree_on>setup/beepon.png</img_handsfree_on>
+		<img_handsfree_off>setup/beepoff.png</img_handsfree_off>
+		<img_profstudio_on>setup/beepon.png</img_profstudio_on>
+		<img_profstudio_off>setup/beepoff.png</img_profstudio_off>
+		<img_tray_handsfree>home/statoportaoff.png</img_tray_handsfree>
+		<img_tray_profstudio>home/statoportaon.png</img_tray_profstudio>
 	</item>
 	<!-- Multimedia page links -->
 	<item>
@@ -1138,10 +1143,16 @@ MessagePage QLabel#Text { background-color: #000000; }
 		Other tags used: img_scroll_up, img_scroll_down, img_back, img_ok, img_go_home
 		-->
 		<cid>17000</cid>
-		<img_link_icon>home/messaggion.png</img_link_icon>
-		<img_top_navigation_button>barranavigazione/messaggioff.png</img_top_navigation_button>
 		<img_delete_all>navigazione/eliminatutti.png</img_delete_all>
 		<img_delete>antintrusione/elimina.png</img_delete>
 		<img_go_message_list>home/storicomessaggi.png</img_go_message_list>
+	</item>
+	<item>
+		<!--
+		Energy data
+		Other tags used:
+		-->
+		<cid>7000</cid>
+		<img_link_icon>home/messaggion.png</img_link_icon>
 	</item>
 </style>

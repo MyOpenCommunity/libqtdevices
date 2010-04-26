@@ -34,6 +34,7 @@
 #include "btbutton.h"
 #include "energy_management.h"
 #include "energy_graph.h"
+#include "main.h" // getPageNodeFromChildNode
 
 #include <QDomNode>
 #include <QLocale>
@@ -53,6 +54,13 @@ EnergyData::EnergyData(const QDomNode &config_node)
 
 	if (interfaces.count() == 1)
 		connect(interfaces[0], SIGNAL(Closed()), SLOT(Closed()));
+}
+
+int EnergyData::sectionId()
+{
+	// TODO: we have to manage the case when the energy data is put inside the energy
+	// management
+	return ENERGY_DATA;
 }
 
 void EnergyData::updateDayTimer()
@@ -89,7 +97,11 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
 	EnergyRates::energy_rates.loadRates();
+#ifdef CONFIG_BTOUCH
 	QList<QDomNode> families = getChildren(config_node, "energy_type");
+#else
+	QList<QDomNode> families = getChildren(config_node, "item");
+#endif
 
 	// display the button to edit rates if more than one family
 	if (edit_rates && EnergyRates::energy_rates.hasRates() && families.count() > 1)
@@ -288,21 +300,30 @@ void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_
 	EnergyTable *table = new EnergyTable(3);
 	EnergyGraph *graph = new EnergyGraph;
 
+#ifdef CONFIG_BTOUCH
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
+#else
+	foreach (const QDomNode &item, getChildren(getPageNodeFromChildNode(config_node, "lnk_pageID"), "item"))
+#endif
 	{
 		int mode = getTextChild(item, "mode").toInt();
 		QString measure = getTextChild(item, "measure");
 
+#ifdef CONFIG_BTOUCH
 		bool is_currency_enabled = getElement(item, "rate/ab").text().toInt();
+		QString where = getTextChild(item, "address");
+#else
+		bool is_currency_enabled = getElement(item, "rate/enabled").text().toInt();
+		QString where = getTextChild(item, "where");
+#endif
 		int rate_id = is_currency_enabled ? getElement(item, "rate/rate_id").text().toInt() : EnergyRates::INVALID_RATE;
 
 		// check if any of the interfaces have currency enabled
 		show_currency_button |= is_currency_enabled;
 
-		QString addr = getTextChild(item, "address");
-		next_page = new EnergyView(measure, energy_type, addr, mode, rate_id, table, graph);
+		next_page = new EnergyView(measure, energy_type, where, mode, rate_id, table, graph);
 
-		EnergyDevice *dev = bt_global::add_device_to_cache(new EnergyDevice(addr, mode));
+		EnergyDevice *dev = bt_global::add_device_to_cache(new EnergyDevice(where, mode));
 
 		BannEnergyInterface *b = new BannEnergyInterface(rate_id, mode == 1, getTextChild(item, "descr"), dev);
 		b->connectRightButton(next_page);
