@@ -123,7 +123,7 @@ void ScreenSaverPage::bannerSelected(int id)
 	if (timing)
 	{
 		// TODO: is there a better way to check photo slideshow
-		if (id == 3)
+		if (id == ScreenSaver::SLIDESHOW)
 			timing->show();
 		else
 			timing->hide();
