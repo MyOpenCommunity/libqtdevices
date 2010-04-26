@@ -121,9 +121,13 @@ private slots:
 	void setSelection(const QString &path, bool selected);
 	void unmount();
 	void unmounted(const QString &path);
+	void saveFileList();
 
 private:
 	ImageSelectionHandler *handler;
+
+	// Filters for images
+	QStringList filters;
 
 	// Icon path
 	QString browse_directory;
