@@ -25,6 +25,8 @@
 #include "generic_functions.h" // setGlobalCfgValue
 
 #include <QLocale>
+#include <QDomNode>
+#include <QMap>
 
 
 static QLocale loc(QLocale::Italian);
