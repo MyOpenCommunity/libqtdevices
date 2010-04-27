@@ -42,7 +42,6 @@
 #include <QLabel>
 #include <QDebug>
 
-#define SLIDESHOW_FILENAME "cfg/extra/slideshow_images.txt"
 #define ARRAY_SIZE(x) int(sizeof(x) / sizeof((x)[0]))
 
 

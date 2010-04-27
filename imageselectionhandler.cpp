@@ -25,8 +25,77 @@
 #include <QTemporaryFile>
 #include <QDebug>
 #include <QDir>
+#include <QDirIterator>
 
 #include <errno.h> // errno
+
+
+ImageIterator::ImageIterator(const QString &file_path)
+{
+	// TODO: cut and paste from below, refactor loadSlideshowFromFile()
+	QFile f(SLIDESHOW_FILENAME);
+	if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+	{
+		qWarning() << "Could not read slideshow images file: " << QDir::currentPath() + SLIDESHOW_FILENAME;
+		return;
+	}
+
+	while (!f.atEnd())
+	{
+		QString path = f.readLine().simplified();
+		paths.append(path);
+		qDebug() << "Read path: " << path;
+	}
+
+	list_iter = new QMutableLinkedListIterator<QString>(paths);
+	dir_iter = 0;
+}
+
+QString ImageIterator::next()
+{
+	if (dir_iter)
+	{
+		if (dir_iter->hasNext())
+			return dir_iter->next();
+		// iterator finished its duty, cleanup
+		else
+		{
+			delete dir_iter;
+			dir_iter = 0;
+		}
+	}
+
+	if (!list_iter->hasNext())
+		list_iter->toFront();
+
+	QString path = list_iter->next();
+	qDebug() << "Analysing path: " << path;
+	QFileInfo fi(path);
+	if (fi.exists())
+	{
+		if (fi.isFile())
+			return path;
+		else
+		{
+			dir_iter = new QDirIterator(path, file_filters, QDir::Files | QDir::Readable, QDirIterator::Subdirectories);
+			return dir_iter->next();
+		}
+	}
+	return QString();
+}
+
+void ImageIterator::setFileFilter(const QStringList &filters)
+{
+	file_filters = filters;
+}
+
+ImageIterator::~ImageIterator()
+{
+	delete dir_iter;
+	delete list_iter;
+}
+
+
 
 ImageSelectionHandler::ImageSelectionHandler(const QString &file_path) :
 	save_file_path(file_path)
