@@ -79,7 +79,8 @@ namespace
 }
 
 
-ScreenSaverPage::ScreenSaverPage(const QDomNode &conf_node)
+ScreenSaverPage::ScreenSaverPage(const QDomNode &conf_node) :
+	SingleChoicePage(getTextChild(conf_node, "descr"))
 {
 	timing = 0;
 	addBanner(SingleChoice::createBanner(tr("No screensaver")), ScreenSaver::NONE);
