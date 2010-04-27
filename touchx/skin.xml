@@ -1192,5 +1192,40 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>7006</cid>
 		<img_energy_type>energia/liquifiedgas.png</img_energy_type>
 	</item>
+	<item>
+		<!-- Load Management -->
+		<cid>18</cid>
+		<img_link_icon>home/carichi.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/carichi.png</img_top_navigation_button>
+	</item>
+	<item>
+		<!-- Load Management -->
+		<cid>18000</cid>
+		<img_link_icon>home/energy.png</img_link_icon>
+	</item>
+	<item>
+		<!--
+		Load Management with central unit
 
+		Leaks img_reset and img_empty_background
+		-->
+		<cid>18001</cid>
+		<img_load>home/carichi.png</img_load>
+		<img_empty_background>energy/backenergy.png</img_empty_background>
+		<img_on>carichi/on.png</img_on>
+		<img_not_forced>carichi/on.png</img_not_forced>
+		<img_forced>carichi/ondis.png</img_forced>
+		<img_reset>home/energy.png</img_reset>
+	</item>
+	<item>
+		<!--
+		Load Management without central unit
+
+		Leaks img_reset and img_empty_background
+		-->
+		<cid>18002</cid>
+		<img_load>home/carichi.png</img_load>
+		<img_empty_background>energy/backenergy.png</img_empty_background>
+		<img_reset>home/energy.png</img_reset>
+	</item>
 </style>
