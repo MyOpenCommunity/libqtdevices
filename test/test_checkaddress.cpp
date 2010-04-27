@@ -36,7 +36,7 @@ void TestCheckAddress::testCheckAddressGlobal()
 void TestCheckAddress::testCheckAddressGlobalLevel3()
 {
 	QString global = "0#3";
-	QVERIFY(checkAddressIsForMe(global, "0312#4#12") != GLOBAL);
+	QCOMPARE(checkAddressIsForMe(global, "0312#4#12"), NOT_MINE);
 	QCOMPARE(checkAddressIsForMe(global, "01"), GLOBAL);
 }
 
@@ -51,14 +51,14 @@ void TestCheckAddress::testCheckAddressGlobalInterface()
 {
 	QString global = "0#4#12";
 	QCOMPARE(checkAddressIsForMe(global, "0312#4#12"), GLOBAL);
-	QVERIFY(checkAddressIsForMe(global, "01") != GLOBAL);
+	QCOMPARE(checkAddressIsForMe(global, "01"), NOT_MINE);
 }
 
 void TestCheckAddress::testCheckAddressGlobalInterfaceFalse()
 {
 	QString global = "0#4#01";
-	QVERIFY(checkAddressIsForMe(global, "0312#4#12") != GLOBAL);
-	QVERIFY(checkAddressIsForMe(global, "01") != GLOBAL);
+	QCOMPARE(checkAddressIsForMe(global, "0312#4#12"), NOT_MINE);
+	QCOMPARE(checkAddressIsForMe(global, "01"), NOT_MINE);
 }
 
 void TestCheckAddress::testCheckAddressEnvironment10()
@@ -73,8 +73,8 @@ void TestCheckAddress::testCheckAddressEnvironment0()
 	QString environment = "00#4#12";
 	QCOMPARE(checkAddressIsForMe(environment, "01#4#12"), ENVIRONMENT);
 	QCOMPARE(checkAddressIsForMe(environment, "0015#4#12"), ENVIRONMENT);
-	QVERIFY(checkAddressIsForMe(environment, "09") != ENVIRONMENT);
-	QVERIFY(checkAddressIsForMe(environment, "0015#4#99") != ENVIRONMENT);
+	QCOMPARE(checkAddressIsForMe(environment, "09"), NOT_MINE);
+	QCOMPARE(checkAddressIsForMe(environment, "0015#4#99"), NOT_MINE);
 }
 
 void TestCheckAddress::testCheckAddressEnvironmentLevel4()
@@ -101,6 +101,7 @@ void TestCheckAddress::testCheckAddressPointToPoint()
 {
 	QString addr = "12";
 	QCOMPARE(checkAddressIsForMe(addr, "11"), NOT_MINE);
+	QCOMPARE(checkAddressIsForMe(addr, "12"), P2P);
 	addr = "12#4#01";
 	QCOMPARE(checkAddressIsForMe(addr, "19#4#01"), NOT_MINE);
 	QCOMPARE(checkAddressIsForMe(addr, "12#4#02"), NOT_MINE);
@@ -109,7 +110,7 @@ void TestCheckAddress::testCheckAddressPointToPoint()
 void TestCheckAddress::testCheckAddressGroup()
 {
 	QString group = "#45";
-	QVERIFY(checkAddressIsForMe(group, "12") != ENVIRONMENT);
-	QVERIFY(checkAddressIsForMe(group, "34#4#45") != ENVIRONMENT);
+	QCOMPARE(checkAddressIsForMe(group, "12"), NOT_MINE);
+	QCOMPARE(checkAddressIsForMe(group, "34#4#45"), NOT_MINE);
 }
 
