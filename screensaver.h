@@ -23,6 +23,7 @@
 #define SCREENSAVER_H
 
 #include "window.h"
+#include "imageselectionhandler.h"
 
 #include <QObject>
 #include <QHash>
@@ -176,18 +177,17 @@ public:
 	virtual void start(Window *w);
 	virtual void stop();
 	virtual Type type() { return SLIDESHOW; }
+	virtual ~ScreenSaverSlideshow();
 
 protected slots:
 	virtual void refresh();
 
 private:
-	// index for images list
-	int image_index;
+	// iterator for images
+	ImageIterator iter;
 	// shows the image on the window
 	QLabel *image_on_screen;
 	QPixmap current_image, next_image;
-	// must contain file paths
-	QStringList images;
 	QTimeLine blending_timeline;
 
 private slots:
