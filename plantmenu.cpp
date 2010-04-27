@@ -30,6 +30,29 @@
 #include <QRegExp>
 
 
+enum
+{
+#ifdef CONFIG_BTOUCH
+	TERMO_99Z = 66,
+	TERMO_4Z = 68,
+	TERMO_99Z_PROBE = 22,
+	TERMO_99Z_PROBE_FANCOIL = 52,
+	TERMO_4Z_PROBE = 53,
+	TERMO_4Z_PROBE_FANCOIL = 54,
+	TERMO_NC_EXTPROBE = 55,
+	TERMO_NC_PROBE = 56,
+#else
+	TERMO_99Z = 8011,
+	TERMO_4Z = 8041,
+	TERMO_99Z_PROBE = 8012,
+	TERMO_99Z_PROBE_FANCOIL = 8012,
+	TERMO_4Z_PROBE = 8042,
+	TERMO_4Z_PROBE_FANCOIL = 8042,
+	TERMO_NC_EXTPROBE = 8021,
+	TERMO_NC_PROBE = 8031,
+#endif
+};
+
 PlantMenu::PlantMenu(const QDomNode &conf) : BannerPage(0)
 {
 	SkinContext cxt(getTextChild(conf, "cid").toInt());
