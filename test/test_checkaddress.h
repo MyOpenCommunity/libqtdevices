@@ -34,7 +34,7 @@ private slots:
 	void testCheckAddressGlobalInterfaceFalse();
 	void testCheckAddressEnvironment10();
 	void testCheckAddressEnvironment0();
-	void testCheckAddressEnvironmentInt();
+	void testCheckAddressEnvironmentLevel4();
 	void testCheckAddressEnvironmentLevel3();
 	void testCheckAddressGroup();
 	void testCheckAddressPointToPoint();

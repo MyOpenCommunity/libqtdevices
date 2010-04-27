@@ -70,7 +70,7 @@ void TestCheckAddress::testCheckAddressEnvironment0()
 	QVERIFY(checkAddressIsForMe(environment, "0015#4#99") != ENVIRONMENT);
 }
 
-void TestCheckAddress::testCheckAddressEnvironmentInt()
+void TestCheckAddress::testCheckAddressEnvironmentLevel4()
 {
 	QString environment = "3#4#12";
 	QCOMPARE(checkAddressIsForMe(environment, "0313#4#12"), ENVIRONMENT);
