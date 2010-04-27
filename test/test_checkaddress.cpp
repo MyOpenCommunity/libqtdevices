@@ -40,6 +40,13 @@ void TestCheckAddress::testCheckAddressGlobalLevel3()
 	QCOMPARE(checkAddressIsForMe(global, "01"), GLOBAL);
 }
 
+void TestCheckAddress::testCheckAddressGlobalLevel4()
+{
+	QString global = "0#4#06";
+	QCOMPARE(checkAddressIsForMe(global, "31"), NOT_MINE);
+	QCOMPARE(checkAddressIsForMe(global, "59#4#06"), GLOBAL);
+}
+
 void TestCheckAddress::testCheckAddressGlobalInterface()
 {
 	QString global = "0#4#12";

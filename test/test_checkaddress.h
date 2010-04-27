@@ -30,6 +30,7 @@ Q_OBJECT
 private slots:
 	void testCheckAddressGlobal();
 	void testCheckAddressGlobalLevel3();
+	void testCheckAddressGlobalLevel4();
 	void testCheckAddressGlobalInterface();
 	void testCheckAddressGlobalInterfaceFalse();
 	void testCheckAddressEnvironment10();
