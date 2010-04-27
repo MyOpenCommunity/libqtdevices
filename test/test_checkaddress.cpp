@@ -64,7 +64,7 @@ void TestCheckAddress::testCheckAddressGlobalInterfaceFalse()
 void TestCheckAddress::testCheckAddressEnvironment10()
 {
 	QString environment = "100";
-	QCOMPARE(checkAddressIsForMe(environment, "1015#4#12"), ENVIRONMENT);
+	QCOMPARE(checkAddressIsForMe(environment, "1015#4#12"), NOT_MINE);
 	QCOMPARE(checkAddressIsForMe(environment, "1001"), ENVIRONMENT);
 }
 
@@ -92,6 +92,9 @@ void TestCheckAddress::testCheckAddressEnvironmentLevel3()
 	QCOMPARE(checkAddressIsForMe(environment, "01"), ENVIRONMENT);
 	environment = "100#3";
 	QCOMPARE(checkAddressIsForMe(environment, "1014"), ENVIRONMENT);
+	environment = "3";
+	QCOMPARE(checkAddressIsForMe(environment, "0313#4#12"), NOT_MINE);
+	QCOMPARE(checkAddressIsForMe(environment, "31"), ENVIRONMENT);
 }
 
 void TestCheckAddress::testCheckAddressPointToPoint()

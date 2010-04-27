@@ -70,14 +70,23 @@ AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_whe
 	// device where (our)
 	QPair<QString, QString> our = splitWhere(dev_where);
 
-	if (!(in.second == "#3" && our.second.isEmpty()))
-		if (!(in.second.isEmpty()) && (in.second != our.second))
-			return NOT_MINE;
+	// general address: 0 = all levels
+	if (in.first == "0" && in.second.isEmpty())
+		return GLOBAL;
+
+	// no level means level 3 (except for the global address that is taken care of above)
+	if (in.second == "#3")
+		in.second = QString();
+
+	// 0#lev = general for the level
+	if (in.first == "0" && in.second == our.second)
+		return GLOBAL;
+
+	// for environment frames, check that level matches
+	if (in.second != our.second)
+		return NOT_MINE;
 
 	// here we don't need to care about extension anymore
-	// general address
-	if (in.first == "0")
-		return GLOBAL;
 
 	// environment address. The first part must be "00", "100" or numbers 1 to 9
 	// use toInt() to remove differences between "00" "0" and so on.
