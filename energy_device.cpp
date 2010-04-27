@@ -553,7 +553,11 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		if (what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_MONTH)
 		{
 			fillYearGraphData(status_list, msg);
-			fillMonthlyAverage(status_list, msg);
+			// with the old frames, the cumulative month is also used to compute the
+			// average value; with the new frames the average is filled using the 16 bit
+			// average graph data
+			if (!has_new_frames)
+				fillMonthlyAverage(status_list, msg);
 		}
 
 		emit status_changed(status_list);
