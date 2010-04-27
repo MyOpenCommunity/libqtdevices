@@ -34,7 +34,7 @@ QPair<QString, QString> splitWhere(const QString &w)
 {
 	int idx = w.indexOf("#");
 	if (idx < 0)
-		return qMakePair(w.left(idx), QString());
+		return qMakePair(w, QString());
 	else
 		return qMakePair(w.left(idx), w.mid(idx));
 }
