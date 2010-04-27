@@ -66,7 +66,7 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	b->Draw();
 	page_content->appendBanner(b);
 #endif
-	bannOnDx *bann = new bannOnDx(this, img_items, new ScreenSaverPage());
+	bannOnDx *bann = new bannOnDx(this, img_items, new ScreenSaverPage(getChildWithName(config_node, "screensaver")));
 	connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
 	bann->setText(tr("Screen Saver"));
 	bann->Draw();
