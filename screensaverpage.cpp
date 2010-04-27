@@ -79,16 +79,17 @@ namespace
 }
 
 
-ScreenSaverPage::ScreenSaverPage()
+ScreenSaverPage::ScreenSaverPage(const QDomNode &conf_node)
 {
 	timing = 0;
 	addBanner(SingleChoice::createBanner(tr("No screensaver")), ScreenSaver::NONE);
 	addBanner(SingleChoice::createBanner(tr("Time")), ScreenSaver::TIME);
 	addBanner(SingleChoice::createBanner(tr("Text")), ScreenSaver::TEXT);
 	// TODO: these types will be available on BTouch only
+#ifdef LAYOUT_BTOUCH
 	addBanner(SingleChoice::createBanner(tr("Line")), ScreenSaver::LINES);
 	addBanner(SingleChoice::createBanner(tr("Balls")), ScreenSaver::BALLS);
-
+#endif
 	//addBanner(tr("Deform"), ScreenSaver::DEFORM); // the deform is for now unavailable!
 	// TODO maybe we want an OK button for touch 10 as well
 
@@ -104,6 +105,7 @@ ScreenSaverPage::ScreenSaverPage()
 	timing->hide();
 #endif
 	connect(page_content, SIGNAL(bannerSelected(int)), SLOT(confirmSelection()));
+	bannerSelected(getTextChild(conf_node, "type").toInt());
 }
 
 void ScreenSaverPage::showPage()
@@ -122,7 +124,6 @@ void ScreenSaverPage::bannerSelected(int id)
 	// hide timing selection if photo slideshow is not selected
 	if (timing)
 	{
-		// TODO: is there a better way to check photo slideshow
 		if (id == ScreenSaver::SLIDESHOW)
 			timing->show();
 		else
@@ -277,6 +278,9 @@ void FileList::checkButton(int btn_id)
 SlideshowSelector::SlideshowSelector() :
 		FileSelector(4, "/"), handler(new ImageSelectionHandler(SLIDESHOW_FILENAME))
 {
+	addFilters(filters, image_files, ARRAY_SIZE(image_files));
+	handler->setFileFilter(filters);
+
 	FileList *item_list = new FileList(0, 4);
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 
@@ -297,6 +301,7 @@ SlideshowSelector::SlideshowSelector() :
 
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
 	connect(this, SIGNAL(notifyExit()), SIGNAL(Closed()));
+	connect(this, SIGNAL(Closed()), SLOT(saveFileList()));
 	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
 	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(nextItem()));
 	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
@@ -337,9 +342,6 @@ void SlideshowSelector::showPageNoReload()
 
 bool SlideshowSelector::browseFiles(const QDir &directory, QList<QFileInfo> &files)
 {
-	QStringList filters;
-	addFilters(filters, image_files, ARRAY_SIZE(image_files));
-
 	// Create fileslist from files
 	QList<QFileInfo> temp_files_list = directory.entryInfoList(filters);
 
@@ -364,7 +366,6 @@ bool SlideshowSelector::browseFiles(const QDir &directory, QList<QFileInfo> &fil
 		icons << selbutton_off;
 
 		QVariantMap metadata;
-		// TODO: get selection state for current file.
 		metadata.insert("selected", handler->isItemSelected(f.canonicalFilePath()));
 
 		if (f.isFile())
@@ -411,6 +412,13 @@ void SlideshowSelector::unmounted(const QString &dir)
 void SlideshowSelector::unmount()
 {
 	MountWatcher::getWatcher().unmount(getRootPath());
+}
+
+void SlideshowSelector::saveFileList()
+{
+	Q_ASSERT_X(handler, "SlideshowSelector::saveFileList()", "handler is null");
+
+	handler->saveSlideshowToFile();
 }
 
 #endif

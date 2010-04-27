@@ -55,8 +55,8 @@ public:
 		BALLS,      // many balls on screen
 		TIME,       // a single line with a clock inside
 		TEXT,       // a line with a text
-		DEFORM,     // the deformer
 		SLIDESHOW,  // image slideshow
+		DEFORM,     // the deformer
 	};
 
 	virtual void start(Window *w);
@@ -69,6 +69,7 @@ protected:
 	Window *window;
 	static QString text;
 	ScreenSaver(int refresh_time);
+	static int slideshow_timeout;
 
 protected slots:
 	virtual void refresh() = 0;
