@@ -41,6 +41,14 @@
 #include <QVBoxLayout>
 #include <QDate>
 
+#ifdef CONFIG_BTOUCH
+enum
+{
+	LOAD_WITH_CU=80,
+	LOAD_WITHOUT_CU=81,
+};
+#endif
+
 
 namespace
 {
@@ -80,7 +88,11 @@ namespace
 	bool isRateEnabled(const QDomNode &n)
 	{
 		int tmp;
+#ifdef CONFIG_BTOUCH
 		if (tryConvert(n, "rate/ab", &tmp))
+#else
+		if (tryConvert(n, "rate/enabled", &tmp))
+#endif
 			return (tmp == 1);
 		else
 			return false;
@@ -132,6 +144,11 @@ LoadManagement::LoadManagement(const QDomNode &config_node) :
 	loadItems(config_node);
 }
 
+int LoadManagement::sectionId()
+{
+	return LOAD_MANAGEMENT;
+}
+
 void LoadManagement::loadItems(const QDomNode &config_node)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
@@ -152,9 +169,14 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 	int id = getTextChild(item_node, "id").toInt();
 	LoadsDevice *dev = bt_global::add_device_to_cache(new LoadsDevice(getTextChild(item_node, "where")));
 	banner *b = 0;
+
+#ifdef CONFIG_BTOUCH
 	switch (id)
 	{
 	case LOAD_WITH_CU:
+#else
+	if (isRateEnabled(item_node))
+#endif
 	{
 		bool advanced = getTextChild(item_node, "advanced").toInt();
 		BannLoadWithCU *bann = new BannLoadWithCU(getDescriptionWithPriority(item_node), dev,
@@ -171,8 +193,12 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 
 		b = bann;
 	}
+#ifdef CONFIG_BTOUCH
 		break;
 	case LOAD_WITHOUT_CU:
+#else
+	else
+#endif
 	{
 		BannLoadNoCU *bann = new BannLoadNoCU(getTextChild(item_node, "descr"));
 		Page *p = new LoadDataPage(item_node, dev);
@@ -180,9 +206,10 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 		connect(p, SIGNAL(Closed()), bann, SIGNAL(pageClosed()));
 		b = bann;
 	}
+#ifdef CONFIG_BTOUCH
 		break;
 	}
-
+#endif
 	if (b)
 		b->setId(id);
 	return b;

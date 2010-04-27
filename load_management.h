@@ -42,6 +42,8 @@ Q_OBJECT
 public:
 	LoadManagement(const QDomNode &config_node);
 
+	int sectionId();
+
 	static banner *getBanner(const QDomNode &item_node);
 
 private:

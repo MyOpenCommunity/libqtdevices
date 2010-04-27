@@ -415,8 +415,6 @@ enum ItemType
 	AIR_SPLIT_ADV=4003,                           /*!< AIR conditioning single split (advanced) */
 	AIR_GENERAL_ADV=4004,                         /*!< AIR conditioning general split (advanced) */
 #endif
-	LOAD_WITH_CU=80,                              /*!< Load with central unit */
-	LOAD_WITHOUT_CU=81,                           /*!< Load without central unit */
 };
 
 #endif //MAIN_H
