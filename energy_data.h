@@ -24,7 +24,6 @@
 
 #include "page.h" // BannerPage
 
-#include <QHash>
 #include <QTimer>
 
 class banner;

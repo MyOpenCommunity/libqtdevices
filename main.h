@@ -197,7 +197,7 @@ enum Section
 	TERMOREGOLAZIONE=8000,                        /*!< Thermoregulation system */
 	BACK=9,                                       /*!< Back button - placed here for convenience */
 	SPECIAL=10,                                   /*!< Special button - placed here for convenience */
-	MESSAGES=17,                                  /*!< Textual Messages from scs */
+	MESSAGES=17000,                               /*!< Textual Messages from scs */
 	LOAD_MANAGEMENT=18000,                        /*!< Load management system */
 	SCENARI=1000,                                 /*!< Scenarios managing */
 	SCENARI_EVOLUTI=20,                           /*!< Advanced scenarios management */

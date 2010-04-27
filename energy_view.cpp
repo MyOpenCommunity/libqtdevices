@@ -95,10 +95,9 @@ namespace
 	QWidget *createWidgetWithVBoxLayout()
 	{
 		QWidget *w = new QWidget;
-		QVBoxLayout *main_layout = new QVBoxLayout;
+		QVBoxLayout *main_layout = new QVBoxLayout(w);
 		main_layout->setContentsMargins(0, 0, 0, 0);
 		main_layout->setSpacing(0);
-		w->setLayout(main_layout);
 		return w;
 	}
 
@@ -121,23 +120,28 @@ namespace
 
 EnergyViewNavigation::EnergyViewNavigation()
 {
-	BtButton *back_button = new BtButton();
-	back_button->setImage(bt_global::skin->getImage("back"));
+	BtButton *back_button = new BtButton(bt_global::skin->getImage("back"), this);
+	currency_button = new BtButton(bt_global::skin->getImage("currency"), this);
+	table_button = new BtButton(bt_global::skin->getImage("table"), this);
 
-	currency_button = new BtButton;
-	currency_button->setImage(bt_global::skin->getImage("currency"));
+#ifdef LAYOUT_BTOUCH
+	QHBoxLayout *main_layout = new QHBoxLayout(this);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
 
-	table_button = new BtButton;
-	table_button->setImage(bt_global::skin->getImage("table"));
+	main_layout->addWidget(back_button);
+	main_layout->addStretch(1);
+	main_layout->addWidget(table_button);
+	main_layout->addWidget(currency_button);
+#else
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(5);
 
-	QHBoxLayout *l = new QHBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-
-	l->addWidget(back_button);
-	l->addStretch(1);
-	l->addWidget(table_button);
-	l->addWidget(currency_button);
+	main_layout->addWidget(table_button);
+	main_layout->addWidget(currency_button);
+	main_layout->addWidget(back_button);
+#endif
 
 	connect(back_button, SIGNAL(clicked()), SIGNAL(backClick()));
 	connect(currency_button, SIGNAL(clicked()), SIGNAL(toggleCurrency()));
@@ -159,27 +163,35 @@ TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 {
 	_status = DAY;
 	selection_date = QDate::currentDate();
-	QHBoxLayout *main_layout = new QHBoxLayout;
+	QHBoxLayout *main_layout = new QHBoxLayout(this);
 	main_layout->setContentsMargins(0, 0, 0, 0);
-	main_layout->setSpacing(0);
 
+#ifdef LAYOUT_BTOUCH
+	main_layout->setSpacing(0);
 	back_period = getTrimmedButton(this, bt_global::skin->getImage("fast_backward"));
+	forw_period = getTrimmedButton(this, bt_global::skin->getImage("fast_forward"));
+	btn_cycle = getTrimmedButton(this, bt_global::skin->getImage("cycle"));
+	date_period_label = getLabel(this, formatDate(selection_date, _status), FontManager::SMALLTEXT);
+#else
+	main_layout->setSpacing(5);
+	back_period = new BtButton(bt_global::skin->getImage("fast_backward"), this);
+	forw_period = new BtButton(bt_global::skin->getImage("fast_forward"), this);
+	btn_cycle = new BtButton(bt_global::skin->getImage("cycle"), this);
+	date_period_label = getLabel(this, formatDate(selection_date, _status), FontManager::SUBTITLE);
+#endif
+
 	back_period->setAutoRepeat(true);
 	connect(back_period, SIGNAL(clicked()), SLOT(periodBackward()));
 	main_layout->addWidget(back_period);
 
-	date_period_label = getLabel(this, formatDate(selection_date, _status), FontManager::SMALLTEXT);
 	main_layout->addWidget(date_period_label, 1, Qt::AlignCenter);
 
-	forw_period = getTrimmedButton(this, bt_global::skin->getImage("fast_forward"));
 	forw_period->setAutoRepeat(true);
 	connect(forw_period, SIGNAL(clicked()), SLOT(periodForward()));
 	main_layout->addWidget(forw_period);
 
-	btn_cycle = getTrimmedButton(this, bt_global::skin->getImage("cycle"));
 	connect(btn_cycle, SIGNAL(clicked()), SLOT(changeTimeScale()));
 	main_layout->addWidget(btn_cycle);
-	setLayout(main_layout);
 }
 
 QString TimePeriodSelection::formatDate(const QDate &date, TimePeriod period)
@@ -187,7 +199,11 @@ QString TimePeriodSelection::formatDate(const QDate &date, TimePeriod period)
 	switch (period)
 	{
 	case DAY:
+#ifdef LAYOUT_BTOUCH
 		return DateConversions::formatDateConfig(date);
+#else
+		return DateConversions::formatDateConfig(date, '/'); // TODO: find a rules for Touch X!
+#endif
 	case MONTH:
 		// no need to modify the format to american
 		return date.toString("MM.yy");
@@ -307,10 +323,10 @@ QString TimePeriodSelection::dateDisplayed()
 }
 
 
-Bann2Buttons *getBanner(QWidget *parent, QString primary_text)
+Bann2Buttons *getBanner(QString primary_text)
 {
 	Q_ASSERT_X(bt_global::skin->hasContext(), "getBanner", "Skin context not set!");
-	Bann2Buttons *bann = new Bann2Buttons(parent);
+	Bann2Buttons *bann = new Bann2Buttons;
 	bann->initBanner(QString(), bt_global::skin->getImage("bg_banner"), bt_global::skin->getImage("graph"),
 			 primary_text);
 	bann->setCentralText("---");
@@ -340,15 +356,20 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	QWidget *content = new QWidget;
 	QVBoxLayout *main_layout = new QVBoxLayout(content);
+#ifdef LAYOUT_BTOUCH
 	main_layout->setContentsMargins(0, 0, 0, 0);
 	main_layout->setSpacing(0);
+#else
+	main_layout->setContentsMargins(30, 0, 30, 0);
+	main_layout->setSpacing(5);
+#endif
 
 	main_layout->setAlignment(Qt::AlignTop);
 
 	// title section
 	main_layout->addWidget(getLabel(this, energy_type, FontManager::TEXT), 0, Qt::AlignCenter);
 
-	time_period = new TimePeriodSelection(this);
+	time_period = new TimePeriodSelection;
 	connect(time_period, SIGNAL(timeChanged(int, QDate)), SLOT(changeTimePeriod(int, QDate)));
 	main_layout->addWidget(time_period);
 
@@ -359,7 +380,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	table = _table;
 	graph = _graph;
 
-	nav_bar = new EnergyViewNavigation();
+	nav_bar = new EnergyViewNavigation;
 	if (!rate.isValid())
 	{
 		nav_bar->showTableButton(false);
@@ -723,7 +744,7 @@ QWidget *EnergyView::buildBannerWidget()
 	QString cumulative_text = tr("Cumulative");
 
 	// Daily page
-	cumulative_day_banner = getBanner(this, cumulative_text);
+	cumulative_day_banner = getBanner(cumulative_text);
 	connect(cumulative_day_banner, SIGNAL(rightClicked()), mapper, SLOT(map()));
 	mapper->setMapping(cumulative_day_banner, EnergyDevice::CUMULATIVE_DAY);
 
@@ -734,11 +755,11 @@ QWidget *EnergyView::buildBannerWidget()
 	addWidgetToLayout(daily_widget, current_banner);
 
 	// Monthly page
-	cumulative_month_banner = getBanner(this, cumulative_text);
+	cumulative_month_banner = getBanner(cumulative_text);
 	connect(cumulative_month_banner, SIGNAL(rightClicked()), mapper, SLOT(map()));
 	mapper->setMapping(cumulative_month_banner, EnergyDevice::CUMULATIVE_MONTH);
 
-	daily_av_banner = getBanner(this, tr("Daily Average"));
+	daily_av_banner = getBanner(tr("Daily Average"));
 	connect(daily_av_banner, SIGNAL(rightClicked()), mapper, SLOT(map()));
 	mapper->setMapping(daily_av_banner, EnergyDevice::DAILY_AVERAGE);
 
@@ -747,7 +768,7 @@ QWidget *EnergyView::buildBannerWidget()
 	addWidgetToLayout(monthly_widget, daily_av_banner);
 
 	// Yearly page
-	cumulative_year_banner = getBanner(this, cumulative_text);
+	cumulative_year_banner = getBanner(cumulative_text);
 	connect(cumulative_year_banner, SIGNAL(rightClicked()), mapper, SLOT(map()));
 	mapper->setMapping(cumulative_year_banner, EnergyDevice::CUMULATIVE_YEAR);
 

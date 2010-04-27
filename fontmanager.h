@@ -43,7 +43,7 @@ public:
 	// TITLE: title of the page (used for all TouchX pages, and for a couple of BTouch pages)
 	// SUBTITLE: AUX source, load deactivation time, external/non-controlled probe
 	//           RDS radio, version page, load management current consumption,
-	//           load management "force on" confirmation page
+	//           load management "force on" confirmation page, energy management date selection
 	// TEXT: default text size
 	// BANNERTEXT: label text for banner labels aligned horizontally with the icons
 	// BANNERDESCRIPTION: descriptive text displayed under a banner (or an icon)

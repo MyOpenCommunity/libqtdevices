@@ -39,7 +39,9 @@ Q_OBJECT
 public:
 	typedef SingleChoiceContent ContentType;
 
-	SingleChoicePage();
+	// Maybe this should be a QDomNode, but it's used as the base class for BrightnessPage on BTouch
+	// which doesn't have a QDomNode in the ctor
+	SingleChoicePage(const QString &title = QString());
 
 private slots:
 	void okPressed();

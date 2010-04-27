@@ -36,6 +36,7 @@
 #include "energy_graph.h"
 #include "main.h" // getPageNodeFromChildNode
 
+#include <QHash>
 #include <QDomNode>
 #include <QLocale>
 #include <QDebug>
@@ -160,7 +161,7 @@ EnergyCost::EnergyCost()
 
 	EnergyRates::energy_rates.loadRates();
 
-	QMap<int, EditEnergyCost *> costs;
+	QHash<int, EditEnergyCost *> costs;
 	foreach (int rate_id, EnergyRates::energy_rates.allRateId())
 	{
 		const EnergyRate &rate = EnergyRates::energy_rates.getRate(rate_id);

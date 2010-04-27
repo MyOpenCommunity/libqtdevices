@@ -56,7 +56,7 @@ public:
 		MONTH,
 		YEAR,
 	};
-	TimePeriodSelection(QWidget *parent);
+	TimePeriodSelection(QWidget *parent = 0);
 	void hideCycleButton();
 	void showCycleButton();
 	QDate date();

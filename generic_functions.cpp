@@ -240,10 +240,9 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filena
 	return writeCfgFile(doc, filename);
 }
 
-#ifdef CONFIG_BTOUCH
 
 // TODO rewrite setCfgValue using setGlobalCfgValue when removing CONFIG_BTOUCH
-bool setGlobalCfgValue(QMap<QString, QString> data, const QString &id_name, int id_value, const QString &filename)
+bool setGlobalCfgValue(QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename)
 {
 	if (!(*bt_global::config).contains(INIT_COMPLETE))
 	{
@@ -256,8 +255,7 @@ bool setGlobalCfgValue(QMap<QString, QString> data, const QString &id_name, int 
 	if (!prepareWriteCfgFile(doc, filename))
 		return false;
 
-	int serial_number = 1; // dummy
-	QDomNode n = findXmlNode(doc, QRegExp(".*"), id_name, id_value, serial_number);
+	QDomNode n = findXmlNode(doc, QRegExp(".*"), tag_name, id_value);
 	Q_ASSERT_X(!n.isNull(), "setCfgValue", qPrintable(QString("No object found with id %1").arg(id_value)));
 
 	// TODO maybe refactor & move to xml_functions.cpp/h
@@ -273,8 +271,6 @@ bool setGlobalCfgValue(QMap<QString, QString> data, const QString &id_name, int 
 
 	return writeCfgFile(doc, filename);
 }
-
-#endif
 
 #ifdef CONFIG_BTOUCH
 
