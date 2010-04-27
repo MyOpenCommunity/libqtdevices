@@ -388,7 +388,7 @@ void EnergyDevice::requestCumulativeMonthGraph(QDate date) const
 	{
 		requestCumulativeMonthGraph32Bit(date);
 		// with the old frames the monthly average is computed using the cumulative month
-		// graph data; with the new frames it is necessary to explicitly requestit here
+		// graph data; with the new frames it is necessary to explicitly request it here
 		requestDailyAverageGraph16Bit(date);
 	}
 }
