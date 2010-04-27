@@ -200,12 +200,6 @@ bool ImageSelectionHandler::isItemSelected(const QString &abs_path)
 	return false;
 }
 
-bool ImageSelectionHandler::isItemExplicitlySelected(const QString &abs_path)
-{
-	// TODO: this should also check if abs_path is in removed_images
-	return selected_images.contains(abs_path);
-}
-
 QSet<QString> ImageSelectionHandler::getSelectedImages()
 {
 	return selected_images;

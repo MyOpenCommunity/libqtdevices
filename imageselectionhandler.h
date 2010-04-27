@@ -58,11 +58,6 @@ public:
 	 */
 	bool isItemSelected(const QString &abs_path);
 
-	/*
-	 * Check if an item is explicitly selected, don't check for parent directories.
-	 */
-	bool isItemExplicitlySelected(const QString &abs_path);
-
 	void insertItem(const QString &path);
 
 	/*
