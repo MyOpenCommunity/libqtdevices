@@ -27,6 +27,7 @@
 #include "titlelabel.h"
 #include "homewindow.h"
 #include "pagestack.h"
+#include "generic_functions.h"
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -320,6 +321,7 @@ ScreenSaverSlideshow::ScreenSaverSlideshow() :
 	ScreenSaver(slideshow_timeout),
 	iter(SLIDESHOW_FILENAME)
 {
+	iter.setFileFilter(getImageFileFilter());
 	image_on_screen = new QLabel(this);
 	image_on_screen->setGeometry(0, 0, width(), height());
 	blending_timeline.setDuration(2000);
