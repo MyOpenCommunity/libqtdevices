@@ -357,8 +357,8 @@ void ScreenSaverSlideshow::refresh()
 	else
 	{
 		qWarning() << "image is empty: ";
-		// display off
-		// stop screensaver
+		// display off?
+		stop();
 	}
 }
 

@@ -89,6 +89,9 @@ QString ImageIterator::next()
 			return dir_iter->next();
 		}
 	}
+	// remove elements not found
+	else
+		list_iter->remove();
 	return QString();
 }
 
