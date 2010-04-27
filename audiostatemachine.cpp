@@ -23,6 +23,7 @@
 #include "hardware_functions.h" // DEV_E2
 
 #include <QtConcurrentRun>
+#include <QThreadPool>
 #include <QProcess>
 
 #include <fcntl.h> // open
@@ -146,7 +147,10 @@ AudioStateMachine::AudioStateMachine()
 
 void AudioStateMachine::start(int state)
 {
+	// force the thread pool to allocate an additional thread
+	QThreadPool::globalInstance()->reserveThread();
 	QtConcurrent::run(initEchoCanceller);
+	QThreadPool::globalInstance()->releaseThread();
 	StateMachine::start(state);
 }
 
