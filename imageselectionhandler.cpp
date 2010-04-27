@@ -29,23 +29,32 @@
 
 #include <errno.h> // errno
 
+namespace
+{
+	QStringList loadTextFile(const QString &file_path)
+	{
+		QFile f(file_path);
+		if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+		{
+			qWarning() << "Could not read slideshow images file: " << QDir::currentPath() + file_path;
+			return QStringList();
+		}
+
+		QStringList li;
+		while (!f.atEnd())
+		{
+			QString path = f.readLine().simplified();
+			li << path;
+		}
+		return li;
+	}
+}
+
 
 ImageIterator::ImageIterator(const QString &file_path)
 {
-	// TODO: cut and paste from below, refactor loadSlideshowFromFile()
-	QFile f(SLIDESHOW_FILENAME);
-	if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
-	{
-		qWarning() << "Could not read slideshow images file: " << QDir::currentPath() + SLIDESHOW_FILENAME;
-		return;
-	}
-
-	while (!f.atEnd())
-	{
-		QString path = f.readLine().simplified();
-		paths.append(path);
-		qDebug() << "Read path: " << path;
-	}
+	foreach (const QString &path, loadTextFile(file_path))
+		paths << path;
 
 	list_iter = new QMutableLinkedListIterator<QString>(paths);
 	dir_iter = 0;
@@ -69,7 +78,6 @@ QString ImageIterator::next()
 		list_iter->toFront();
 
 	QString path = list_iter->next();
-	qDebug() << "Analysing path: " << path;
 	QFileInfo fi(path);
 	if (fi.exists())
 	{
@@ -156,18 +164,7 @@ void ImageSelectionHandler::saveSlideshowToFile()
 
 void ImageSelectionHandler::loadSlideshowFromFile()
 {
-	QFile f(save_file_path);
-	if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
-	{
-		qWarning() << "Could not read slideshow images file: " << QDir::currentPath() + save_file_path;
-		return;
-	}
-
-	while (!f.atEnd())
-	{
-		QString path = f.readLine().simplified();
-		selected_images.insert(path);
-	}
+	selected_images = QSet<QString>::fromList(loadTextFile(save_file_path));
 }
 
 void ImageSelectionHandler::insertItem(const QString &path)
