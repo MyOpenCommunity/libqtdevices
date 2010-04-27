@@ -219,7 +219,7 @@ protected:
 	virtual void set_condition_value(QString);
 
 private slots:
-	void status_changed(const DeviceValues &sl);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	LightingDevice *dev;
@@ -261,7 +261,7 @@ protected:
 	virtual void set_condition_value(QString);
 
 private slots:
-	void status_changed(const DeviceValues &sl);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	int min_val;
@@ -310,7 +310,7 @@ protected:
 	virtual void Draw();
 
 private slots:
-	void status_changed(const DeviceValues &sl);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	int min_val;
@@ -369,7 +369,7 @@ class DeviceConditionTemperature : public DeviceCondition
 {
 Q_OBJECT
 public:
-	DeviceConditionTemperature(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id = 0, bool external = false);
+	DeviceConditionTemperature(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, bool external = false, int openserver_id = 0);
 	virtual void get_condition_value(QString&);
 	virtual void inizializza();
 
@@ -382,7 +382,7 @@ protected:
 
 private slots:
 	//! Invoked when status changes
-	void status_changed(const DeviceValues &);
+	void valueReceived(const DeviceValues &);
 
 private:
 	/// Maximum and minimum values for temperature conditions

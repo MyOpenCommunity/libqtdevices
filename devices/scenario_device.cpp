@@ -101,7 +101,7 @@ void ScenarioDevice::manageFrame(OpenMsg &msg)
 		return;
 
 	QVariant v;
-	DeviceValues sl;
+	DeviceValues values_list;
 	int status_index = -1;
 	switch (what)
 	{
@@ -148,8 +148,8 @@ void ScenarioDevice::manageFrame(OpenMsg &msg)
 
 	if (status_index > -1)
 	{
-		sl[status_index] = v;
-		emit status_changed(sl);
+		values_list[status_index] = v;
+		emit valueReceived(values_list);
 	}
 }
 

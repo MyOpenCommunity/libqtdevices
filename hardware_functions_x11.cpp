@@ -148,20 +148,21 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 	// do nothing
 }
 
-static QProcess play_sound_process;
+
+Q_GLOBAL_STATIC(QProcess, play_sound_process);
 void playSound(const QString &wavFile)
 {
-	if (play_sound_process.state() != QProcess::NotRunning)
+	if (play_sound_process()->state() != QProcess::NotRunning)
 	{
-		play_sound_process.terminate();
-		play_sound_process.waitForFinished();
+		play_sound_process()->terminate();
+		play_sound_process()->waitForFinished();
 	}
-	play_sound_process.start("mplayer", QStringList(wavFile));
+	play_sound_process()->start("mplayer", QStringList(wavFile));
 }
 
 void stopSound()
 {
-	play_sound_process.terminate();
+	play_sound_process()->terminate();
 }
 
 void setVctVideoValue(const QString &command, const QString &value)

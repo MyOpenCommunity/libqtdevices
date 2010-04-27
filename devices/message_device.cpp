@@ -133,21 +133,21 @@ MessageDevice::MessageDevice(int openserver_id) :
  *   it sends a timeout response to the caller containing the number of bytes
  *   received.
  */
-bool MessageDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
+bool MessageDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	where = QString::number(msg.where());
-
-	if (msg.whereArgCnt() != 4)
-	{
-		qWarning("Malformed message where.");
-		return false;
-	}
 
 	int what = msg.what();
 	switch (what)
 	{
 	case MESSAGE_BEGIN:
 	{
+		if (msg.whereArgCnt() != 4)
+		{
+			qWarning("Malformed message where.");
+			return false;
+		}
+
 		QString caller_where = QString::fromStdString(msg.whereArg(2));
 		if (cdp_where.isEmpty())
 		{
@@ -167,7 +167,7 @@ bool MessageDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 		{
 			QVariant dim_message;
 			dim_message.setValue(parseMessage(message));
-			status_list[DIM_MESSAGE] = dim_message;
+			values_list[DIM_MESSAGE] = dim_message;
 			cleanup();
 		}
 		break;

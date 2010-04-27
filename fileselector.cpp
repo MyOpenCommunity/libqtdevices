@@ -49,10 +49,24 @@ inline void waitTimeCounter(const QTime& timer, int msec)
 FileSelector::FileSelector(unsigned rows_per_page, QString start_path)
 {
 	level = 0;
+	root_path = start_path;
 
 	current_dir.setSorting(QDir::DirsFirst | QDir::Name);
 	current_dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable);
 	current_dir.setPath(start_path);
+}
+
+QString FileSelector::getRootPath() const
+{
+	return root_path;
+}
+
+void FileSelector::browse(const QString &dir)
+{
+	root_path = dir;
+
+	setRootPath(dir);
+	showPage();
 }
 
 const QList<QFileInfo> &FileSelector::getFiles() const
@@ -143,7 +157,9 @@ void FileSelector::browseUp()
 
 void FileSelector::setRootPath(const QString &start_path)
 {
+	root_path = start_path;
 	current_dir.setPath(start_path);
+	level = 0;
 }
 
 bool FileSelector::browseDirectory(QString new_path)

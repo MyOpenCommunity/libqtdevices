@@ -44,7 +44,7 @@ InterblockedActuator::InterblockedActuator(const QString &descr, const QString &
 
 	connect(right_button, SIGNAL(clicked()), SLOT(sendGoUp()));
 	connect(left_button, SIGNAL(clicked()), SLOT(sendGoDown()));
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	setOpenserverConnection(dev);
 }
 
@@ -69,10 +69,10 @@ void InterblockedActuator::connectButton(BtButton *btn, const char *slot)
 	connect(btn, SIGNAL(clicked()), slot);
 }
 
-void InterblockedActuator::status_changed(const DeviceValues &sl)
+void InterblockedActuator::valueReceived(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
-	while (it != sl.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{
@@ -110,7 +110,7 @@ SecureInterblockedActuator::SecureInterblockedActuator(const QString &descr, con
 
 	is_any_button_pressed = false;
 	connectButtons();
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	setOpenserverConnection(dev);
 }
 
@@ -137,10 +137,10 @@ void SecureInterblockedActuator::sendStop()
 	dev->stop();
 }
 
-void SecureInterblockedActuator::status_changed(const DeviceValues &sl)
+void SecureInterblockedActuator::valueReceived(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
-	while (it != sl.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{
@@ -265,7 +265,7 @@ void InterblockedActuatorGroup::sendStop()
 PPTStat::PPTStat(QString where, int openserver_id) : BannerOld(0)
 {
 	dev = bt_global::add_device_to_cache(new PPTStatDevice(where, openserver_id));
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	setOpenserverConnection(dev);
 
 	// This banner shows only an icon in central position and a text below.
@@ -280,7 +280,7 @@ PPTStat::PPTStat(QString where, int openserver_id) : BannerOld(0)
 	Draw();
 }
 
-void PPTStat::status_changed(const DeviceValues &status_list)
+void PPTStat::valueReceived(const DeviceValues &status_list)
 {
 	bool st = status_list[PPTStatDevice::DIM_STATUS].toBool();
 	SetIcons(2, st ? img_close : img_open);

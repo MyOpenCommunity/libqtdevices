@@ -33,6 +33,8 @@
 #include "pagestack.h" // bt_global::page_stack
 #include "btmain.h" // isCalibrating
 #include "state_button.h"
+#include "audiostatemachine.h"
+
 
 #include <QDomNode>
 #include <QHBoxLayout>
@@ -54,6 +56,7 @@ namespace VCTCallPrivate
 	struct VCTCallStatus
 	{
 		bool connected;
+		bool stopped;
 		StateButton::Status mute;
 		ItemTuningStatus volume_status;
 		bool hands_free;
@@ -68,7 +71,7 @@ namespace VCTCallPrivate
 		void init();
 	};
 
-	VCTCallStatus *VCTCall::call_status = new VCTCallStatus;
+	VCTCallStatus *VCTCall::call_status = 0;
 }
 
 using namespace VCTCallPrivate;
@@ -177,6 +180,7 @@ VCTCallStatus::VCTCallStatus()
 void VCTCallStatus::init()
 {
 	connected = false;
+	stopped = false;
 	mute = StateButton::DISABLED;
 }
 
@@ -186,7 +190,6 @@ VCTCall::VCTCall(EntryphoneDevice *d, FormatVideo f)
 {
 	format = f;
 	dev = d;
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
 
 	SkinContext ctx(666);
 
@@ -232,6 +235,19 @@ VCTCall::VCTCall(EntryphoneDevice *d, FormatVideo f)
 	cycle->setImage(bt_global::skin->getImage("cycle"));
 	connect(cycle, SIGNAL(clicked()), dev, SLOT(cycleExternalUnits()));
 	connect(&video_grabber, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(finished(int,QProcess::ExitStatus)));
+	disable(); // only to preserve the consistency
+}
+
+void VCTCall::enable()
+{
+	blockSignals(false);
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), this, SLOT(valueReceived(DeviceValues)));
+}
+
+void VCTCall::disable()
+{
+	blockSignals(true);
+	disconnect(dev, SIGNAL(valueReceived(DeviceValues)), this, SLOT(valueReceived(DeviceValues)));
 }
 
 void VCTCall::finished(int exitcode, QProcess::ExitStatus exitstatus)
@@ -273,14 +289,33 @@ void VCTCall::toggleMute()
 
 void VCTCall::toggleCall()
 {
+	if (!call_status->connected)
+	{
+		if (call_status->stopped)
+			resumeVideo();
+		dev->answerCall();
+		bt_global::audio_states->toState(AudioStates::SCS_VIDEO_CALL);
+	}
+	else
+		handleClose();
+
 	call_status->connected = !call_status->connected;
 	call_status->mute = call_status->connected ? StateButton::OFF : StateButton::DISABLED;
 
 	refreshStatus();
-	if (call_status->connected)
-		dev->answerCall();
-	else
-		handleClose();
+}
+
+void VCTCall::resumeVideo()
+{
+	// We have to wait the ending of the process to restart the process.
+	if (video_grabber.state() == QProcess::NotRunning)
+	{
+		call_status->stopped = false;
+		disconnect(this, SIGNAL(videoFinished()), this, SLOT(resumeVideo()));
+		startVideo();
+	}
+	else // we re-try when the video is terminated.
+		connect(this, SIGNAL(videoFinished()), this, SLOT(resumeVideo()));
 }
 
 void VCTCall::startVideo()
@@ -303,15 +338,18 @@ void VCTCall::stopVideo()
 		video_grabber.terminate();
 }
 
-void VCTCall::status_changed(const DeviceValues &sl)
+void VCTCall::valueReceived(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = sl.constBegin();
-	while (it != sl.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{
 		case EntryphoneDevice::VCT_CALL:
-			emit incomingCall();
+			if (call_status->stopped)
+				resumeVideo();
+			else
+				emit incomingCall();
 			break;
 		case EntryphoneDevice::AUTO_VCT_CALL:
 			emit autoIncomingCall();
@@ -322,6 +360,10 @@ void VCTCall::status_changed(const DeviceValues &sl)
 		case EntryphoneDevice::END_OF_CALL:
 			stopVideo();
 			emit callClosed();
+			break;
+		case EntryphoneDevice::STOP_VIDEO:
+			call_status->stopped = true;
+			stopVideo();
 			break;
 		case EntryphoneDevice::MOVING_CAMERA:
 			camera->setMoveEnabled(it.value().toBool());
@@ -351,6 +393,8 @@ void VCTCall::toggleCameraSettings()
 
 void VCTCall::endCall()
 {
+	if (call_status->connected)
+		bt_global::audio_states->exitCurrentState();
 	dev->endCall();
 	stopVideo();
 }
@@ -365,7 +409,10 @@ void VCTCall::handleClose()
 VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 {
 	dev = d;
+	// There is only 1 VCTCallPage instance, so I can build the VCTCallStatus here.
+	VCTCall::call_status = new VCTCallStatus;
 	vct_call = new VCTCall(d, VCTCall::NORMAL_VIDEO);
+	vct_call->enable();
 	VCTCall::call_status->volume_status = vct_call->volume->getStatus();
 
 	connect(vct_call, SIGNAL(callClosed()), SLOT(handleClose()));
@@ -411,8 +458,31 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 	layout->addLayout(sidebar, 0, 1, 2, 1);
 	layout->addWidget(vct_call->video_box, 1, 0);
 	layout->addLayout(bottom, 2, 0, 1, 2, Qt::AlignLeft);
-	layout->setContentsMargins(15, 0, 0, 20);
+	layout->setContentsMargins(20, 0, 0, 20);
 	layout->setSpacing(10);
+}
+
+VCTCallPage::~VCTCallPage()
+{
+	delete VCTCall::call_status;
+}
+
+void VCTCallPage::cleanUp()
+{
+	// the cleanUp is performed when we exit from the page using an external
+	// button. In this case, we have to send the end of call (even if is an
+	// autoswitch call) and terminate the video.
+	vct_call->endCall();
+
+	bt_global::display->forceOperativeMode(false);
+	vct_call->enable();
+}
+
+void VCTCallPage::handleClose()
+{
+	bt_global::display->forceOperativeMode(false);
+	vct_call->enable();
+	emit Closed();
 }
 
 int VCTCallPage::sectionId()
@@ -432,7 +502,7 @@ void VCTCallPage::showVCTWindow()
 {
 	disconnect(vct_call, SIGNAL(videoFinished()), this, SLOT(showVCTWindow()));
 	// Signals from vct_call must be managed only when the window is not visible.
-	vct_call->blockSignals(true);
+	vct_call->disable();
 	window->showWindow();
 }
 
@@ -440,7 +510,7 @@ void VCTCallPage::exitFullScreen()
 {
 	vct_call->startVideo();
 	vct_call->refreshStatus();
-	vct_call->blockSignals(false);
+	vct_call->enable();
 	showPage();
 }
 
@@ -477,6 +547,9 @@ void VCTCallPage::autoIncomingCall()
 	VCTCall::call_status->init();
 	vct_call->refreshStatus();
 
+	showPage();
+	repaint();
+
 	if (!BtMain::isCalibrating())
 	{
 		vct_call->startVideo();
@@ -484,28 +557,21 @@ void VCTCallPage::autoIncomingCall()
 			bt_global::display->forceOperativeMode(true);
 	}
 
-	showPage();
 }
 
-void VCTCallPage::handleClose()
-{
-	bt_global::display->forceOperativeMode(false);
-	vct_call->blockSignals(false);
-	emit Closed();
-}
 
 
 VCTCallWindow::VCTCallWindow(EntryphoneDevice *d)
 {
 	vct_call = new VCTCall(d, VCTCall::FULLSCREEN_VIDEO);
-	vct_call->blockSignals(true);
+	vct_call->disable();
 
 	// Signals from vct_call must be managed only when the window is visible.
 	connect(vct_call, SIGNAL(callClosed()), SLOT(handleClose()));
 	connect(vct_call->camera, SIGNAL(toggleFullScreen()), SLOT(fullScreenExit()));
 
 	QGridLayout *buttons_layout = new QGridLayout;
-	buttons_layout->setContentsMargins(23, 0, 23, 0);
+	buttons_layout->setContentsMargins(30, 0, 30, 0);
 	buttons_layout->setSpacing(5);
 	buttons_layout->addWidget(vct_call->call_accept, 0, 0);
 	buttons_layout->addWidget(vct_call->setup_vct, 0, 1);
@@ -535,7 +601,7 @@ VCTCallWindow::VCTCallWindow(EntryphoneDevice *d)
 
 void VCTCallWindow::showWindow()
 {
-	vct_call->blockSignals(false);
+	vct_call->enable();
 	vct_call->startVideo();
 	vct_call->refreshStatus();
 	Window::showWindow();
@@ -550,13 +616,13 @@ void VCTCallWindow::fullScreenExit()
 void VCTCallWindow::showVCTPage()
 {
 	disconnect(vct_call, SIGNAL(videoFinished()), this, SLOT(showVCTPage()));
-	vct_call->blockSignals(true);
+	vct_call->disable();
 	emit exitFullScreen();
 }
 
 void VCTCallWindow::handleClose()
 {
 	vct_call->stopVideo();
-	vct_call->blockSignals(true);
+	vct_call->disable();
 	emit Closed();
 }

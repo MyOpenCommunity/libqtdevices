@@ -114,7 +114,7 @@ void PlatformDevice::manageFrame(OpenMsg &msg)
 	int what = msg.what();
 	int what_args = msg.whatArgCnt();
 
-	DeviceValues status_list;
+	DeviceValues values_list;
 	QVariant v;
 
 	if (what == DIM_MACADDR || what == DIM_IP || what == DIM_NETMASK ||
@@ -156,8 +156,8 @@ void PlatformDevice::manageFrame(OpenMsg &msg)
 		}
 		}
 
-		status_list[what] = v;
-		emit status_changed(status_list);
+		values_list[what] = v;
+		emit valueReceived(values_list);
 	}
 }
 

@@ -29,8 +29,6 @@
 
 #include <QtTest>
 
-#define TIMEOUT_DELAY 1000
-
 
 namespace QTest
 {
@@ -172,7 +170,7 @@ void TestMessageDevice::receiveCompleteMessage()
 	tst.check("*8*9001*165#8#00#350#8##", message);
 }
 
-void TestMessageDevice::recevieWrongChecksum()
+void TestMessageDevice::receiveWrongChecksum()
 {
 	QVERIFY(dev->cdp_where.isEmpty());
 	QVERIFY(dev->message.isEmpty());
@@ -227,8 +225,8 @@ void TestMessageDevice::receiveTimeout()
 	QVERIFY(dev->message.isEmpty());
 	QVERIFY(dev->timer.isActive());
 
-	testSleep(MessageDevicePrivate::TIMEOUT + TIMEOUT_DELAY);
-
+	dev->timeout();
+	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*8*9016#0*350#8#00#165#8##"));
 
 	// Verify that the cleanup is performed

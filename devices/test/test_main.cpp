@@ -23,6 +23,8 @@
 #include <QList>
 #include <QRegExp>
 
+#include <iostream>
+
 #include "test_platform_device.h"
 #include "test_energy_device.h"
 #include "test_lighting_device.h"
@@ -120,6 +122,9 @@ int main(int argc, char *argv[])
 	TestRadioSourceDevice test_radio_source_device;
 	test_list << &test_radio_source_device;
 
+	TestVirtualSourceDevice test_virtual_source_device;
+	test_list << &test_virtual_source_device;
+
 	TestAmplifierDevice test_amplifier_device;
 	test_list << &test_amplifier_device;
 
@@ -127,6 +132,18 @@ int main(int argc, char *argv[])
 	test_list << &test_message_device;
 
 	QStringList arglist = app.arguments();
+	if (arglist.contains("--help"))
+	{
+		std::cout << "Options:" << std::endl;
+		std::cout << " --test-class [REGEXP]\trun only tests that matches REGEXP" << std::endl;
+		std::cout << " --help\t\t\tprint this help" << std::endl;
+		std::cout << std::endl;
+		std::cout << "Class List:" << std::endl;
+		foreach (TestDevice *dev, test_list)
+			std::cout << " " << dev->metaObject()->className() << std::endl;
+		return 0;
+	}
+
 	QString testingClass;
 	int custom_param_pos = arglist.indexOf("--test-class");
 	if (custom_param_pos != -1 && custom_param_pos < arglist.size() - 1)

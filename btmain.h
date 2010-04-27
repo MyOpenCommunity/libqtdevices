@@ -25,6 +25,7 @@
 #include <QObject>
 #include <QHash>
 #include <QPair>
+#include <QDateTime>
 
 
 class SoundDiffusion;
@@ -77,6 +78,7 @@ public:
 	Window *homeWindow();
 	TrayBar *trayBar();
 	void showHomePage();
+	Page *homePage();
 
 	// set the screensaver and balcnk screen timeouts in seconds
 	void setScreenSaverTimeouts(int screensaver_start, int blank_screen);
@@ -118,6 +120,7 @@ private:
 	Page *pagDefault;
 
 	QTimer *screensaver_timer;
+	QDateTime last_date_time;
 	QString pwd;
 	bool pwdOn, alarmClockIsOn, alreadyCalibrated;
 	KeypadWindow *passwordKeypad;

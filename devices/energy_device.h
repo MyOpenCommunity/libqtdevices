@@ -103,7 +103,7 @@ private:
 
 /**
  * This class parses the incoming frames for who = 18 (Energy Management) and sends
- * updates to widgets through status_changed() signal.
+ * updates to widgets through valueReceived() signal.
  * The main assumptions on the incoming frames are that:
  *  - the frames for a graph arrive in order;
  *  - if a graph frame stream is interrupted, no other frames for that stream will arrive later
@@ -111,12 +111,12 @@ private:
  *  - if a stream is interrupted and the last value of the last frame is the high byte
  *      (ie, we can't reconstruct the complete value), nothing must be visualized for that value.
  *
- * The measure unit for the various energy types is:
+ * The measure unit for the various energy types is always:
  * electricity: watt
- * water: m3 (1000 liters)
- * gas: ?
- * dhw: ?
- * heating/cooling: ?
+ * water: liters
+ * gas: dm3 (liters)
+ * dhw: cal
+ * heating/cooling: cal
  */
 class EnergyDevice : public device
 {
@@ -185,9 +185,9 @@ private:
 
 	// The following fill* methods are special methods that handle the case when a single
 	// value or a graph value needs to be calculated from other values.
-	void fillYearGraphData(DeviceValues &status_list, OpenMsg &msg);
-	void fillMonthlyAverage(DeviceValues &status_list, OpenMsg &msg);
-	void fillCumulativeDay(DeviceValues &status_list, QString frame9, QString frame10);
+	void fillYearGraphData(DeviceValues &values_list, OpenMsg &msg);
+	void fillMonthlyAverage(DeviceValues &values_list, OpenMsg &msg);
+	void fillCumulativeDay(DeviceValues &values_list, QString frame9, QString frame10);
 
 	void setHasNewFrames();
 
@@ -230,7 +230,7 @@ struct GraphData
 Q_DECLARE_METATYPE(GraphData)
 
 
-// To use the QPair inside the status_changed we have to register the
+// To use the QPair inside the valueReceived we have to register the
 // QPair as a type known to QMetaType. We have also define a typedef
 // to avoid the limitation of the macro, that cannot handle correctly commas
 // inside its arguments.

@@ -342,7 +342,7 @@ void impPassword::checkPasswd()
 #ifdef LAYOUT_BTOUCH
 			sb = getBeep();
 			setBeep(true);
-			beep(1000);
+			beep(200);
 			QTimer::singleShot(1100, this, SLOT(restoreBeepState()));
 #endif
 			emit pageClosed();
@@ -363,8 +363,7 @@ void impPassword::restoreBeepState()
 }
 
 
-
-BannRingtone::BannRingtone(const QString &descr, RingtoneType type) :
+BannRingtone::BannRingtone(const QString &descr, int id, Ringtones::Type type) :
 	Bann2CentralButtons(false)
 {
 	// TODO: this is necessary because of a setSpacing(5) in Bann2CentralButtons,
@@ -374,6 +373,10 @@ BannRingtone::BannRingtone(const QString &descr, RingtoneType type) :
 	connect(center_right, SIGNAL(clicked()), SLOT(plusClicked()));
 
 	current_ring = bt_global::ringtones->getRingtone(type);
+	ring_type = type;
+	item_id = id;
+	// initialize the global object bt_global::ringtones
+	bt_global::ringtones->setRingtone(ring_type, item_id, current_ring);
 }
 
 void BannRingtone::minusClicked()
@@ -382,10 +385,53 @@ void BannRingtone::minusClicked()
 	if (current_ring < 0)
 		current_ring = bt_global::ringtones->getRingtonesNumber() - 1;
 	bt_global::ringtones->playRingtone(current_ring);
+	bt_global::ringtones->setRingtone(ring_type, item_id, current_ring);
 }
 
 void BannRingtone::plusClicked()
 {
 	current_ring = (current_ring + 1) % bt_global::ringtones->getRingtonesNumber();
 	bt_global::ringtones->playRingtone(current_ring);
+	bt_global::ringtones->setRingtone(ring_type, item_id, current_ring);
+}
+
+
+ScreensaverTiming::ScreensaverTiming(const QString &descr, int init_timing, int _delta, int min_timing, int max_timing) :
+	Bann2Buttons(0)
+{
+	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), QString::number(init_timing),
+		FontManager::BANNERTEXT, descr);
+	timing = init_timing;
+	delta = _delta;
+	max = max_timing;
+	min = min_timing;
+
+	connect(right_button, SIGNAL(clicked()), SLOT(increase()));
+	connect(left_button, SIGNAL(clicked()), SLOT(decrease()));
+	left_button->setAutoRepeat(true);
+	right_button->setAutoRepeat(true);
+	setFixedWidth(240);
+	updateText();
+}
+
+void ScreensaverTiming::updateText()
+{
+	setCentralText(QString::number(timing / 1000) + tr(" sec"));
+}
+
+void ScreensaverTiming::increase()
+{
+	timing += delta;
+	// clamp the result
+	if (timing > max)
+		timing = max;
+	updateText();
+}
+
+void ScreensaverTiming::decrease()
+{
+	timing -= delta;
+	if (timing < min)
+		timing = min;
+	updateText();
 }

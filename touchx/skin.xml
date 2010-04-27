@@ -235,6 +235,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_trash>antintrusione/elimina.png</img_trash>
 		<img_remove_image>setup/eliminaimg.png</img_remove_image>
 		<img_change_settings>scenari/setscenariooff.png</img_change_settings>
+		<img_browse_directory>multimediale/vai.png</img_browse_directory>
 	</item>
 	<!-- clean screen button -->
 	<item>
@@ -300,8 +301,14 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_arrow_down>termoregolazione/meno.png</img_arrow_down>
 	</item>
 	<item>
-		<!-- Multimedia sound diffusion -->
+		<!-- Multichannel sound diffusion -->
 		<cid>12</cid>
+		<img_link_icon>home/diffusionemultimediale.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/diffusionemultimediale.png</img_top_navigation_button>
+	</item>
+	<item>
+		<!-- Monochannel sound diffusion -->
+		<cid>11</cid>
 		<img_link_icon>home/diffusionemultimediale.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/diffusionemultimediale.png</img_top_navigation_button>
 	</item>
@@ -547,9 +554,67 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_ambient>diffusione/imgamb.png</img_ambient>
 		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
 	</item>
-	<!-- RDS radio source -->
+	<!-- RDS radio source (multi sound diffusion) -->
 	<item>
 		<cid>12001</cid>
+		<!--
+		Other images: cycle
+		Notes: There's also an image set in the stylesheet above
+		-->
+		<img_previous>diffusione/precedente.png</img_previous>
+		<img_next>diffusione/successivo.png</img_next>
+		<img_radio_dummy>diffusione/display.png</img_radio_dummy>
+		<img_details>diffusione/audiosetting.png</img_details>
+	</item>
+	<!-- mono channel sound diffusion -->
+	<!-- amplifier normal ambient (mono sound diffusion) -->
+	<item>
+		<cid>11020</cid>
+		<!--
+		Other images: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+	</item>
+	<!-- amplifier group normal ambient (mono sound diffusion) -->
+	<item>
+		<cid>11021</cid>
+		<!--
+		Other images: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/offampgrpsxl.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/offampgrpdxl.png</img_volume_off_right>
+	</item>
+	<!-- power amplifier (mono sound diffusion) -->
+	<item>
+		<cid>11022</cid>
+		<!--
+		other images: on, off, minus, plus
+		-->
+		<img_preset>diffusione/preset.png</img_preset>
+		<img_treble>diffusione/louds.png</img_treble>
+		<img_bass>diffusione/lows.png</img_bass>
+		<img_balance>diffusione/balance_0.png</img_balance>
+		<img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+		<img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+		<img_loud>diffusione/loud.png</img_loud>
+		<img_loud_on>diffusione/loud.png</img_loud_on>
+		<img_loud_off>diffusione/loud_off.png</img_loud_off>
+		<img_more>diffusione/more.png</img_more>
+		<img_less>diffusione/less.png</img_less>
+		<img_settings>diffusione/audiosetting.png</img_settings>
+		<img_volume_active>diffusione/onvolamp.png</img_volume_active>
+		<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+	</item>
+	<!-- RDS radio source (mono sound diffusion) -->
+	<item>
+		<cid>11001</cid>
 		<!--
 		Other images: cycle
 		Notes: There's also an image set in the stylesheet above
@@ -645,19 +710,17 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<item>
 		<!-- automation group -->
-		<cid>3013</cid>
-		<img_scroll_down>automazione/arrdw.png</img_scroll_down>
-		<img_scroll_up>automazione/arrup.png</img_scroll_up>
-		<!-- TODO check -->
-		<img_stop>automazione/stopbig.png</img_stop>
-	</item>
-	<item>
-		<!-- automation group -->
 		<cid>3014</cid>
 		<img_scroll_down>automazione/arrdw.png</img_scroll_down>
 		<img_scroll_up>automazione/arrup.png</img_scroll_up>
-		<!-- TODO check -->
-		<img_stop>automazione/stopbig.png</img_stop>
+		<img_stop>automazione/stopauto.png</img_stop>
+	</item>
+	<item>
+		<!-- light group in automation -->
+		<cid>3013</cid>
+		<img_off>illuminazione/off.png</img_off>
+		<img_on>illuminazione/on.png</img_on>
+		<img_lamp_group_on>illuminazione/imglampgrpon.png</img_lamp_group_on>
 	</item>
 	<!-- lighting banners -->
 	<item>
@@ -794,8 +857,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<!-- regulator page 4 zones -->
 	<item>
 		<cid>200000</cid> <!-- TODO fix -->
-		<img_summer_flat>termoregolazione/estateoff.png</img_summer_flat>
-		<img_winter_flat>termoregolazione/invernooff.png</img_winter_flat>
+		<img_summer_flat>termoregolazione/estateoffp.png</img_summer_flat>
+		<img_winter_flat>termoregolazione/invernooffp.png</img_winter_flat>
 		<img_regulator>termoregolazione/imgcentrale.png</img_regulator>
 		<img_regulator_off>termoregolazione/imgoff.png</img_regulator_off>
 		<img_regulator_antifreeze>termoregolazione/imgantigelo.png</img_regulator_antifreeze>
@@ -860,8 +923,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<!-- regulator page 99 zones -->
 	<item>
 		<cid>8051</cid>
-		<img_summer_flat>termoregolazione/estateoff.png</img_summer_flat>
-		<img_winter_flat>termoregolazione/invernooff.png</img_winter_flat>
+		<img_summer_flat>termoregolazione/estateoffp.png</img_summer_flat>
+		<img_winter_flat>termoregolazione/invernooffp.png</img_winter_flat>
 		<img_regulator>termoregolazione/imgcentrale.png</img_regulator>
 		<img_regulator_off>termoregolazione/imgoff.png</img_regulator_off>
 		<img_regulator_antifreeze>termoregolazione/imgantigelo.png</img_regulator_antifreeze>
@@ -1059,12 +1122,13 @@ MessagePage QLabel#Text { background-color: #000000; }
     <item>
         <!--
         SCS Messages
-        Other tags used: img_scroll_up, img_scroll_down, img_back, img_ok
+        Other tags used: img_scroll_up, img_scroll_down, img_back, img_ok, img_go_home
         -->
         <cid>17000</cid>
         <img_link_icon>home/messaggion.png</img_link_icon>
         <img_top_navigation_button>barranavigazione/messaggioff.png</img_top_navigation_button>
         <img_delete_all>navigazione/eliminatutti.png</img_delete_all>
         <img_delete>antintrusione/elimina.png</img_delete>
+	<img_go_message_list>home/storicomessaggi.png</img_go_message_list>
     </item>
 </style>

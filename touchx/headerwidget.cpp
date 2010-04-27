@@ -193,15 +193,15 @@ TemperatureDisplay::TemperatureDisplay(device *probe)
 	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 	label = "-";
 
-	connect(probe, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(probe, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
-void TemperatureDisplay::status_changed(const DeviceValues &sl)
+void TemperatureDisplay::valueReceived(const DeviceValues &values_list)
 {
-	if (!sl.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
+	if (!values_list.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
 		return;
 
-	int temperature = sl[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
+	int temperature = values_list[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
 	switch (temp_scale)
 	{
 		case CELSIUS:
@@ -267,9 +267,14 @@ HomepageLink::HomepageLink(const QString &description, const QString &icon)
 	l->addWidget(button);
 	l->addWidget(label, 1);
 
-	connect(button, SIGNAL(clicked()), SIGNAL(clicked()));
+	connect(button, SIGNAL(clicked()), SLOT(buttonClicked()));
 }
 
+void HomepageLink::buttonClicked()
+{
+	emit aboutToClick();
+	emit clicked();
+}
 
 HomepageFeedLink::HomepageFeedLink(const QString &description, const QString &feed) :
 	HomepageLink(description, bt_global::skin->getImage("link_icon"))
@@ -403,8 +408,9 @@ HeaderInfo::HeaderInfo()
 	setFixedSize(800, 105);
 }
 
-void HeaderInfo::loadItems(const QDomNode &config_node, Page *settings)
+void HeaderInfo::loadItems(const QDomNode &config_node, Page *s)
 {
+	settings = s;
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	main_layout->setContentsMargins(50, 0, 63, 0);
 	main_layout->setSpacing(0);
@@ -445,7 +451,7 @@ void HeaderInfo::loadItems(const QDomNode &config_node, Page *settings)
 			home_layout->addStretch(1);
 			home_layout->addWidget(button);
 
-			connect(button, SIGNAL(clicked()), settings, SLOT(showPage()));
+			connect(button, SIGNAL(clicked()), SLOT(showSettings()));
 
 			break;
 		}
@@ -465,6 +471,7 @@ void HeaderInfo::loadItems(const QDomNode &config_node, Page *settings)
 			HomepageFeedLink *feed_display = new HomepageFeedLink(getTextChild(item, "descr"), getTextChild(item, "url"));
 			info_layout->addWidget(feed_display);
 			connect(feed_display, SIGNAL(pageClosed()), SIGNAL(showHomePage()));
+			connect(feed_display, SIGNAL(aboutToClick()), SIGNAL(aboutToChangePage()));
 
 			break;
 		}
@@ -473,6 +480,7 @@ void HeaderInfo::loadItems(const QDomNode &config_node, Page *settings)
 			HomepageIPRadioLink *radio_display = new HomepageIPRadioLink(getTextChild(item, "descr"), getTextChild(item, "url"));
 			info_layout->addWidget(radio_display);
 			connect(radio_display, SIGNAL(pageClosed()), SIGNAL(showHomePage()));
+			connect(radio_display, SIGNAL(aboutToClick()), SIGNAL(aboutToChangePage()));
 
 			break;
 		}
@@ -481,6 +489,7 @@ void HeaderInfo::loadItems(const QDomNode &config_node, Page *settings)
 			HomepageWebcamLink *webcam_display = new HomepageWebcamLink(getTextChild(item, "descr"), getTextChild(item, "url"));
 			info_layout->addWidget(webcam_display);
 			connect(webcam_display, SIGNAL(pageClosed()), SIGNAL(showHomePage()));
+			connect(webcam_display, SIGNAL(aboutToClick()), SIGNAL(aboutToChangePage()));
 
 			break;
 		}
@@ -500,15 +509,22 @@ void HeaderInfo::loadItems(const QDomNode &config_node, Page *settings)
 	}
 }
 
+void HeaderInfo::showSettings()
+{
+	emit aboutToChangePage();
+	settings->showPage();
+}
+
 
 HeaderNavigationBar::HeaderNavigationBar()
 {
 	setFixedSize(800, 85);
 }
 
-void HeaderNavigationBar::loadItems(const QDomNode &config_node, Page *settings)
+void HeaderNavigationBar::loadItems(const QDomNode &config_node, Page *s)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
+	settings = s;
 
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
 	main_layout->setContentsMargins(10, 0, 0, 0);
@@ -517,11 +533,11 @@ void HeaderNavigationBar::loadItems(const QDomNode &config_node, Page *settings)
 	BtButton *home = new BtButton;
 	home->setImage(bt_global::skin->getImage("go_home"));
 	main_layout->addWidget(home);
-	connect(home, SIGNAL(clicked()), SIGNAL(showHomePage()));
+	connect(home, SIGNAL(clicked()), SLOT(goHome()));
 
 	navigation = new HeaderNavigationWidget;
 	main_layout->addWidget(navigation, 1);
-	connect(navigation, SIGNAL(pageSelected(int)), SIGNAL(showSectionPage(int)));
+	connect(navigation, SIGNAL(pageSelected(int)), SLOT(pageSelected(int)));
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
@@ -534,8 +550,28 @@ void HeaderNavigationBar::loadItems(const QDomNode &config_node, Page *settings)
 	}
 
 	// add link to settings
-	navigation->addButton(settings, bt_global::skin->getImage("settings_icon"));
+	BtButton *link = navigation->createButton(settings->sectionId(), bt_global::skin->getImage("settings_icon"));
+	connect(link, SIGNAL(clicked()), SLOT(showSettings()));
 }
+
+void HeaderNavigationBar::pageSelected(int page_id)
+{
+	emit aboutToChangePage();
+	emit showSectionPage(page_id);
+}
+
+void HeaderNavigationBar::goHome()
+{
+	emit aboutToChangePage();
+	emit showHomePage();
+}
+
+void HeaderNavigationBar::showSettings()
+{
+	emit aboutToChangePage();
+	settings->showPage();
+}
+
 
 void HeaderNavigationBar::setCurrentSection(int section_id)
 {
@@ -604,13 +640,6 @@ void HeaderNavigationWidget::addButton(int section_id, int page_id, const QStrin
 
 	mapper->setMapping(link, page_id);
 	connect(link, SIGNAL(clicked()), mapper, SLOT(map()));
-}
-
-void HeaderNavigationWidget::addButton(Page *page, const QString &icon)
-{
-	BtButton *link = createButton(page->sectionId(), icon);
-
-	connect(link, SIGNAL(clicked()), page, SLOT(showPage()));
 }
 
 void HeaderNavigationWidget::drawContent()
@@ -709,11 +738,13 @@ HeaderWidget::HeaderWidget(TrayBar *tray_bar)
 
 	connect(top_nav_bar, SIGNAL(showSectionPage(int)), SIGNAL(showSectionPage(int)));
 	connect(top_nav_bar, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
+	connect(top_nav_bar, SIGNAL(aboutToChangePage()), SIGNAL(aboutToChangePage()));
 
 	header_info = new HeaderInfo;
 	main_layout->addWidget(header_info);
 
 	connect(header_info, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
+	connect(header_info, SIGNAL(aboutToChangePage()), SIGNAL(aboutToChangePage()));
 }
 
 void HeaderWidget::loadConfiguration(const QDomNode &homepage_node, const QDomNode &infobar_node)
@@ -760,4 +791,10 @@ void HeaderWidget::centralPageChanged(int section_id, Page::PageType type)
 		break;
 	}
 	updateGeometry();
+}
+
+void HeaderWidget::sectionChanged(int section_id)
+{
+	qDebug() << "new section = " << section_id;
+	top_nav_bar->setCurrentSection(section_id);
 }

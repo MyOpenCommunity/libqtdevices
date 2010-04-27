@@ -22,8 +22,6 @@
 #ifndef TEST_BTTIME_H
 #define TEST_BTTIME_H
 
-#include "test_device.h"
-
 #include <QtTest/QTest>
 
 class BtTime;

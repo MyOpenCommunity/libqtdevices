@@ -23,8 +23,11 @@
 #include <QList>
 #include <QRegExp>
 
+#include <iostream>
+
 #include "test_scenevodevicescond.h"
 #include "test_bttime.h"
+#include "test_imageselection.h"
 #include "main.h"
 
 
@@ -39,7 +42,22 @@ int main(int argc, char *argv[])
 	TestBtTime test_bttime;
 	test_list << &test_bttime;
 
+	TestImageSelection test_imageselection;
+	test_list << &test_imageselection;
+
 	QStringList arglist = app.arguments();
+	if (arglist.contains("--help"))
+	{
+		std::cout << "Options:" << std::endl;
+		std::cout << " --test-class [REGEXP]\trun only tests that matches REGEXP" << std::endl;
+		std::cout << " --help\t\t\tprint this help" << std::endl;
+		std::cout << std::endl;
+		std::cout << "Class List:" << std::endl;
+		foreach (QObject *dev, test_list)
+			std::cout << " " << dev->metaObject()->className() << std::endl;
+		return 0;
+	}
+
 	QString testingClass;
 	int custom_param_pos = arglist.indexOf("--test-class");
 	if (custom_param_pos != -1 && custom_param_pos < arglist.size() - 1)

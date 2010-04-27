@@ -22,7 +22,8 @@
 #include "pagestack.h"
 #include "page.h"
 #include "window.h"
-#include "btmain.h"
+#include "btmain.h" // makeActiveAndFreeze, homePage, isCalibrating
+#include "main.h" // NO_SECTION
 
 #include <QtDebug>
 
@@ -31,12 +32,15 @@ PageStack::State::State(Window *_window)
 {
 	window = _window;
 	page = NULL;
+	section_id = NO_SECTION;
 }
 
 PageStack::State::State(Page *_page)
 {
 	window = NULL;
 	page = _page;
+	if (page)
+		section_id = page->sectionId();
 }
 
 QObject *PageStack::State::object() const
@@ -105,7 +109,17 @@ void PageStack::addState(const State &state)
 void PageStack::showState(const State &state)
 {
 	if (state.page)
+	{
 		state.page->showPage();
+		// TODO this is wrong:
+		// - it breaks transition effects because the section icon will change
+		//   instantly at the end of the transition
+		// - it adds another dependency
+		//
+		// the right thing would be to pass the information to showPage()
+		// or to the PageContainer
+		emit sectionChanged(state.section_id);
+	}
 	else if (state.window)
 		state.window->showWindow();
 }
@@ -114,11 +128,18 @@ void PageStack::currentPageChanged(Page *page)
 {
 	qDebug() << "PageStack::currentPageChanged on" << page;
 
+	// TODO review after implementing the selection of sources in sound diffusion;
+	//      the hard case happens when a page is in the stack and the user can navigate
+	//      to other pages using the "normal" navigation; it should be as easy as
+	//      always changing the page at the top of the stack, but needs some more thinking
+
 	for (int i = 0; i < states.size(); ++i)
 		if (states[i].page == page)
 			return;
 
 	states[0].page = page;
+	if (page->sectionId() != NO_SECTION)
+		states[0].section_id = page->sectionId();
 }
 
 void PageStack::closed()
@@ -161,6 +182,21 @@ void PageStack::removeFromStack(QObject *obj)
 			break;
 		}
 	}
+}
+
+void PageStack::clear()
+{
+	while (states.size() > 1)
+	{
+		State el = states.takeLast();
+		if (el.page)
+			el.page->cleanUp();
+	}
+
+	// restoring the stack to a known sane state is important if the next page
+	// pushes itself in the page stack
+	states[0].page = bt_global::btmain->homePage();
+	states[0].section_id = NO_SECTION;
 }
 
 PageStack bt_global::page_stack;

@@ -130,6 +130,12 @@ void Bann2Buttons::initBanner(const QString &left, const QString &center, const 
 	initLabel(description, descr, bt_global::font->get(description_font));
 }
 
+void Bann2Buttons::setTextAlignment(Qt::Alignment align)
+{
+	if (center_label)
+		center_label->setAlignment(align);
+}
+
 void Bann2Buttons::setCentralText(const QString &t)
 {
 	if (center_icon)

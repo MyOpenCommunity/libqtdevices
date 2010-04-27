@@ -28,6 +28,7 @@
 #include <QHash>
 #include <QList>
 #include <QTimer>
+#include <QSignalMapper>
 
 class device_status;
 class frame_interpreter;
@@ -96,7 +97,7 @@ public:
 	// The following method can be reimplemented in order to parse the incoming
 	// frames (from the client monitor). However, if the specific device can be
 	// subclassed, reimplement the parseFrame method in order to avoid a double
-	// status_changed signal.
+	// valueReceived signal.
 	virtual void manageFrame(OpenMsg &msg);
 
 	bool isConnected();
@@ -107,14 +108,15 @@ signals:
 	// TODO: Old Status changed, to be removed asap.
 	void status_changed(QList<device_status*>);
 
-	/// The status changed signal, used to inform that a dimension of device
-	/// has changed. For some devices, more than one dimension can change
-	/// at the same time, so the int is used as an enum to recognize the dimensions.
+	/// The valueReceived signal, used to inform that a dimension of device
+	/// has changed or a new command has received. For some devices, more than
+	/// one dimension can change at the same time, so the int is used as an enum
+	/// to recognize the dimensions.
 	/// Note that using an int is a design choice. In this way the signal is
 	/// generic (so the connections can be made in a generic way) and the enum
 	/// can be specific for a device, avoiding the coupling between abstract
 	/// and concrete device class.
-	void status_changed(const DeviceValues &status_list);
+	void valueReceived(const DeviceValues &values_list);
 
 	void connectionUp();
 	void connectionDown();
@@ -122,6 +124,11 @@ signals:
 public slots:
 	void sendFrame(QString frame) const;
 	void sendInit(QString frame) const;
+
+	// queues the frame to be emitted after a time interval; if another compressed
+	// frame with the same "what" is sent before the timeout, the first frame is
+	// discarded and the timeout restarted
+	void sendCompressedFrame(QString frame) const;
 
 protected:
 	// The costructor is protected only to make device abstract.
@@ -144,11 +151,17 @@ protected:
 	// This should be the preferred way to parse the incoming frames (see the comment
 	// above regarding the manageFrame method). Return true if the argument frame
 	// was recognized and processed.
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list) { return false; }
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list) { return false; }
+
+private slots:
+	void emitCompressedFrame(int what);
 
 private:
 	static QHash<int, QPair<Client*, Client*> > clients;
 	static QHash<int, OpenServerManager*> openservers;
+
+	mutable QHash<int, QPair<QTimer*, QString> > compressed_frames;
+	mutable QSignalMapper compressor_mapper;
 };
 
 #endif //__DEVICE_H__

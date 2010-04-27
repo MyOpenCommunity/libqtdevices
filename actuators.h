@@ -46,7 +46,7 @@ public:
 private slots:
 	void activate();
 	void deactivate();
-	void status_changed(const DeviceValues &status_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	LightingDevice *dev;

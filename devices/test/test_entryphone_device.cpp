@@ -168,12 +168,32 @@ void TestEntryphoneDevice::sendReleaseLock()
 
 void TestEntryphoneDevice::receiveIncomingCall()
 {
+	int kind = 1;
+	int mmtype = 4;
 	DeviceTester t(dev, EntryphoneDevice::VCT_CALL, DeviceTester::MULTIPLE_VALUES);
-	QString frame = QString("*8*1#%1#%2#21*%3##").arg(1).arg(4).arg(dev->where);
+	QString frame = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
 	t.check(frame, true);
 }
 
-void TestEntryphoneDevice::receiveCallerAddress()
+void TestEntryphoneDevice::receiveAutoswitchCall()
+{
+	int kind = 5;
+	int mmtype = 4;
+	DeviceTester t(dev, EntryphoneDevice::AUTO_VCT_CALL, DeviceTester::MULTIPLE_VALUES);
+	QString frame = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
+	t.check(frame, true);
+}
+
+void TestEntryphoneDevice::receiveStopVideo()
+{
+	int kind = 1;
+	int mmtype = 3;
+	DeviceTester t(dev, EntryphoneDevice::STOP_VIDEO);
+	QString frame = QString("*8*3#%1#%2*%3##").arg(kind).arg(mmtype).arg(dev->where);
+	t.check(frame, true);
+}
+
+void TestEntryphoneDevice::receiveCallerAddress1()
 {
 	int kind = 1;
 	int mmtype = 4;
@@ -183,6 +203,43 @@ void TestEntryphoneDevice::receiveCallerAddress()
 
 	QCOMPARE(dev->caller_address, caller_addr);
 	QCOMPARE(dev->master_caller_address, caller_addr);
+}
+
+void TestEntryphoneDevice::receiveCallerAddress2()
+{
+	int kind = 1;
+	int mmtype = 4;
+	QString caller_addr = "20";
+	simulateIncomingCall(kind, mmtype);
+
+	DeviceTester t1(dev, EntryphoneDevice::CALLER_ADDRESS, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester t2(dev, EntryphoneDevice::MOVING_CAMERA, DeviceTester::MULTIPLE_VALUES);
+	QString frame = QString("*8*9#%1#%2*%3##").arg(kind).arg(mmtype).arg(caller_addr);
+	t1.check(frame, true);
+	t2.check(frame, false);
+}
+
+void TestEntryphoneDevice::receiveCallerAddress3()
+{
+	int kind = 101;
+	int mmtype = 4;
+	QString caller_addr = "20";
+	simulateIncomingCall(kind, mmtype);
+	QString frame = QString("*8*9#%1#%2*%3##").arg(kind).arg(mmtype).arg(caller_addr);
+
+	DeviceTester t1(dev, EntryphoneDevice::CALLER_ADDRESS, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester t2(dev, EntryphoneDevice::MOVING_CAMERA, DeviceTester::MULTIPLE_VALUES);
+	t1.check(frame, true);
+	t2.check(frame, true);
+}
+
+void TestEntryphoneDevice::receiveEndOfCall()
+{
+	int kind = 1;
+	int mmtype = 4;
+	DeviceTester t(dev, EntryphoneDevice::END_OF_CALL);
+	QString frame = QString("*8*3#%1#%2*%3##").arg(kind).arg(mmtype).arg(dev->where);
+	t.check(frame, true);
 }
 
 void TestEntryphoneDevice::receiveRearmSession()

@@ -333,7 +333,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	cumulative_day_value = cumulative_month_value = cumulative_year_value = 0;
 	daily_av_value = current_value = 0;
 
-	connect(dev, SIGNAL(status_changed(const DeviceValues&)), SLOT(status_changed(const DeviceValues&)));
+	connect(dev, SIGNAL(valueReceived(const DeviceValues&)), SLOT(valueReceived(const DeviceValues&)));
 
 	mapper = new QSignalMapper(this);
 	connect(mapper, SIGNAL(mapped(int)), SLOT(showGraph(int)));
@@ -495,17 +495,6 @@ QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
 		data[keys[i]] = EnergyConversions::convertToRawData(static_cast<int>(data[keys[i]]),
 			is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
 
-	if (gd->type == EnergyDevice::DAILY_AVERAGE)
-	{
-		QDate curr = QDate::currentDate();
-		int divisor = gd->date.daysInMonth();
-		if (gd->date.month() == curr.month())
-			divisor = curr.day() == 1 ? 1 : curr.day() - 1;
-
-		for (int i = 0; i < keys.size(); ++i)
-			data[keys[i]] /= divisor;
-	}
-
 	// convert to economic data
 	if (EnergyInterface::isCurrencyView())
 	{
@@ -521,11 +510,11 @@ bool EnergyView::isGraphOurs()
 	return graph->parent() == widget_container;
 }
 
-void EnergyView::status_changed(const DeviceValues &status_list)
+void EnergyView::valueReceived(const DeviceValues &values_list)
 {
 	current_date = time_period->date();
-	DeviceValues::const_iterator it = status_list.constBegin();
-	while (it != status_list.constEnd())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
 		switch (it.key())
 		{
@@ -856,7 +845,25 @@ void EnergyView::updateBanners()
 	QString str_med_inst = unit_measure_med_inst;
 
 	// The number of decimals to show depends on the visualization mode
-	int dec = is_electricity_view ? 3 : 0;
+	int dec = 0, dec_current = 0;
+
+	// display values > 1 kW as kilowatts, lower values as watts
+	if (is_electricity_view)
+	{
+		dec = 3;
+
+		if (current >= 1)
+		{
+			dec_current = 3;
+			str_med_inst = "kW";
+		}
+		else
+		{
+			current = current * 1000;
+			dec_current = 0;
+			str_med_inst = "W";
+		}
+	}
 
 	if (EnergyInterface::isCurrencyView())
 	{
@@ -883,7 +890,7 @@ void EnergyView::updateBanners()
 		.arg(loc.toString(average, 'f', dec)).arg(str));
 
 	current_banner->setCentralText(QString("%1 %2")
-		.arg(loc.toString(current, 'f', dec)).arg(str_med_inst));
+		.arg(loc.toString(current, 'f', dec_current)).arg(str_med_inst));
 }
 
 void EnergyView::systemTimeChanged()

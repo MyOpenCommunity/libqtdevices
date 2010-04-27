@@ -25,6 +25,7 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "alarmpage.h"
 #include "btmain.h" // bt_global::btmain
+#include "pagestack.h"
 #include "bannercontent.h"
 #include "navigation_bar.h"
 #include "btbutton.h"
@@ -312,6 +313,7 @@ void Antintrusion::addAlarm(QString descr, int t, int zona)
 	connect(curr, SIGNAL(Delete()), SLOT(deleteAlarm()));
 	connect(curr, SIGNAL(showHomePage()), SLOT(showHomePage()));
 	connect(curr, SIGNAL(showAlarmList()), SLOT(showAlarms()));
+	connect(curr, SIGNAL(destroyed(QObject*)), SLOT(cleanupAlarmPage(QObject*)));
 
 	alarms->addAlarm(t, alarm_description, zone_description, now);
 
@@ -321,7 +323,7 @@ void Antintrusion::addAlarm(QString descr, int t, int zona)
 
 void Antintrusion::showHomePage()
 {
-	doClearAlarms();
+	bt_global::page_stack.clear();
 	bt_global::btmain->showHomePage();
 }
 
@@ -367,6 +369,11 @@ void Antintrusion::deleteAlarm()
 	allarmi.at(curr_alarm)->showPage();
 }
 
+void Antintrusion::cleanupAlarmPage(QObject *page)
+{
+	allarmi.removeOne(static_cast<AlarmPage*>(page));
+}
+
 #ifdef LAYOUT_BTOUCH
 
 void Antintrusion::showAlarms()
@@ -383,7 +390,7 @@ void Antintrusion::showAlarms()
 
 void Antintrusion::showAlarms()
 {
-	doClearAlarms();
+	bt_global::page_stack.clear();
 	alarms->showPage();
 }
 

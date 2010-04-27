@@ -82,9 +82,16 @@ void TestSourceDevice::sendRequestTrack()
 	QCOMPARE(server->frameRequest(), QString("*#22*2#%1*6##").arg(source_id));
 }
 
+void TestSourceDevice::sendRequestActiveAreas()
+{
+	dev->requestActiveAreas();
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), QString("*#22*2#%1*13##").arg(source_id));
+}
+
 void TestSourceDevice::receiveStatus()
 {
-	DeviceTester t(dev, SourceDevice::DIM_STATUS);
+	DeviceTester t(dev, SourceDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
 	t.check(QString("*#22*2#%1*12*1*4##").arg(source_id), true);
 	t.check(QString("*#22*2#%1*12*0*4##").arg(source_id), false);
 }
@@ -93,6 +100,29 @@ void TestSourceDevice::receiveTrack()
 {
 	DeviceTester t(dev, SourceDevice::DIM_TRACK);
 	t.check(QString("*#22*2#%1*6*3##").arg(source_id), 3);
+}
+
+void TestSourceDevice::testActiveAreas()
+{
+	QString area = "5";
+	QCOMPARE(dev->isActive(area), false);
+	QCOMPARE(dev->active_areas.count(), 0);
+
+	OpenMsg frame_on(qPrintable(QString("*22*2#4#%1*5#2#%2##").arg(area).arg(source_id)));
+	dev->manageFrame(frame_on);
+	QCOMPARE(dev->isActive(area), true);
+	QCOMPARE(dev->active_areas.count(), 1);
+
+	OpenMsg frame_areas(qPrintable(QString("*#22*5#2#%1*13*1*0*0*0*0*0*0*0*0*0*0*0*0*0*0*1##").arg(source_id)));
+	dev->manageFrame(frame_areas);
+	QCOMPARE(dev->active_areas.count(), 2);
+	QCOMPARE(dev->isActive(area), false);
+	QCOMPARE(dev->isActive("0"), true);
+	QCOMPARE(dev->isActive("15"), true);
+
+	OpenMsg frame_off(qPrintable(QString("*#22*2#%1*12*0*4##").arg(source_id)));
+	dev->manageFrame(frame_off);
+	QCOMPARE(dev->isActive(area), false);
 }
 
 
@@ -166,6 +196,52 @@ void TestRadioSourceDevice::receiveStopRDS()
 	QCOMPARE(server->frameCommand(), QString("*22*31*2#%1##").arg(source_id));
 }
 
+
+void TestVirtualSourceDevice::initTestCase()
+{
+	initVirtualSource();
+}
+
+void TestVirtualSourceDevice::initVirtualSource(VirtualSourceDevice *d)
+{
+	if (d)
+		dev = d;
+	else
+	{
+		dev = new VirtualSourceDevice(source_id);
+		initSource(dev);
+	}
+}
+
+void TestVirtualSourceDevice::cleanupTestCase()
+{
+	delete dev;
+}
+
+void TestVirtualSourceDevice::receiveNextTrack()
+{
+	DeviceTester t(dev, VirtualSourceDevice::REQ_NEXT_TRACK);
+	t.check(QString("*22*9*2#%1##").arg(source_id), true);
+}
+
+void TestVirtualSourceDevice::receivePrevTrack()
+{
+	DeviceTester t(dev, VirtualSourceDevice::REQ_PREV_TRACK);
+	t.check(QString("*22*10*2#%1##").arg(source_id), true);
+}
+
+void TestVirtualSourceDevice::receiveSourceOn()
+{
+	QString area = "5";
+	DeviceTester t(dev, VirtualSourceDevice::REQ_SOURCE_ON);
+	t.check(QString("*22*2#4#%1*5#2#%2##").arg(area).arg(source_id), area);
+}
+
+void TestVirtualSourceDevice::receiveSourceOff()
+{
+	DeviceTester t(dev, VirtualSourceDevice::REQ_SOURCE_OFF, DeviceTester::MULTIPLE_VALUES);
+	t.check(QString("*#22*2#%1*12*0*4##").arg(source_id), true);
+}
 
 
 TestAmplifierDevice::TestAmplifierDevice()

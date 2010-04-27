@@ -96,7 +96,7 @@ private slots:
 	void lightOff();
 	void increaseLevel();
 	void decreaseLevel();
-	void status_changed(const DeviceValues &sl);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	DimmerDevice *dev;
@@ -132,7 +132,7 @@ private slots:
 	void lightOff();
 	void increaseLevel();
 	void decreaseLevel();
-	void status_changed(const DeviceValues &sl);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	int roundTo5(int value);
@@ -177,7 +177,7 @@ protected slots:
 	virtual void activate();
 
 private slots:
-	void status_changed(const DeviceValues &sl);
+	void valueReceived(const DeviceValues &values_list);
 	void cycleTime();
 };
 
@@ -200,7 +200,7 @@ public:
 	TempLightFixed(int time, const QString &descr, const QString &where, int openserver_id);
 
 private slots:
-	void status_changed(const DeviceValues &sl);
+	void valueReceived(const DeviceValues &values_list);
 	void setOn();
 	void updateTimerLabel();
 

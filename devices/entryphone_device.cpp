@@ -188,14 +188,12 @@ void EntryphoneDevice::moveRightRelease() const
 	cameraMoveRelease(MOVE_RIGHT);
 }
 
-void EntryphoneDevice::manageFrame(OpenMsg &msg)
+bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (!is_calling && QString::fromStdString(msg.whereFull()) != where)
-		return;
+		return false;
 
 	int what = msg.what();
-	DeviceValues sl;
-	QVariant v;
 
 	switch (what)
 	{
@@ -212,41 +210,41 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 		{
 		case 1:
 			what = VCT_CALL;
-			ringtone = RINGTONE_PE1;
+			ringtone = Ringtones::PE1;
 			break;
 		case 2:
 			what = VCT_CALL;
-			ringtone = RINGTONE_PE2;
+			ringtone = Ringtones::PE2;
 			break;
 		case 3:
 			what = VCT_CALL;
-			ringtone = RINGTONE_PE3;
+			ringtone = Ringtones::PE3;
 			break;
 		case 4:
 			what = VCT_CALL;
-			ringtone = RINGTONE_PE4;
+			ringtone = Ringtones::PE4;
 			break;
 		case 5:
 			what = AUTO_VCT_CALL;
 			break;
 		case 6:
 			what = INTERCOM_CALL;
-			ringtone = RINGTONE_PI_INTERCOM;
+			ringtone = Ringtones::PI_INTERCOM;
 			break;
 		case 7:
 			what = INTERCOM_CALL;
-			ringtone = RINGTONE_PE_INTERCOM;
+			ringtone = Ringtones::PE_INTERCOM;
 			break;
 		default:
 			qWarning("Kind not supported by EntryphoneDevice, skip frame");
-			return;
+			return false;
 		}
 
 		if (ringtone != -1)
-			sl[RINGTONE] = ringtone;
+			values_list[RINGTONE] = ringtone;
 
 		// we can safely ignore caller address, we will receive a frame later.
-		v.setValue(true);
+		values_list[what] = true;
 		is_calling = true;
 		break;
 	}
@@ -255,7 +253,7 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 		master_caller_address = QString::fromStdString(msg.whereFull());
 		int kind_val = msg.whatArgN(0) % 100;
 		if (kind_val != 5)
-			sl[CALLER_ADDRESS] = true; // the value in the DeviceValues doesn't matter.
+			values_list[CALLER_ADDRESS] = true; // the value in the DeviceValues doesn't matter.
 	}
 		// manage the other things like in the rearm session case
 	case REARM_SESSION:
@@ -269,17 +267,23 @@ void EntryphoneDevice::manageFrame(OpenMsg &msg)
 		// The third digit means if the camera can receive movement instructions
 		// or not.
 		int kind_m = kind % 1000;
-		sl[MOVING_CAMERA] = (kind_m >= 101 && kind_m <= 105);
+		values_list[MOVING_CAMERA] = (kind_m >= 101 && kind_m <= 105);
 		break;
 	}
 
 	case END_OF_CALL:
-		resetCallState();
+		if (msg.whatArgN(1) == 3) // with mmtype == 3 we have to stop the video
+			values_list[STOP_VIDEO] = true;
+		else
+		{
+			resetCallState();
+			values_list[END_OF_CALL] = true;
+		}
 		break;
+	default:
+		return false;
 	}
-
-	sl[what] = v;
-	emit status_changed(sl);
+	return true;
 }
 
 void EntryphoneDevice::resetCallState()

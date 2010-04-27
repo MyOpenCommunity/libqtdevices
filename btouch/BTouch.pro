@@ -34,13 +34,13 @@ include(../devices.pri)
 # Add SOURCES and HEADERS with BTouch-specific source files
 
 HEADERS += displaypage.h \
-           brightnesspage.h \
-           radio.h \
-           scenevomanager.h \
-           settings.h
+	brightnesspage.h \
+	radio.h \
+	scenevomanager.h \
+	settings.h
 
 SOURCES += displaypage.cpp \
-           brightnesspage.cpp \
-           radio.cpp \
-           scenevomanager.cpp \
-           settings.cpp
+	brightnesspage.cpp \
+	radio.cpp \
+	scenevomanager.cpp \
+	settings.cpp

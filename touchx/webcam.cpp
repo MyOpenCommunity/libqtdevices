@@ -129,9 +129,12 @@ void WebcamListPage::loadWebcams(const QDomNode &config_node)
 	QList<ItemList::ItemInfo> webcam_list;
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
+		QStringList icons;
+		icons << bt_global::skin->getImage("webcam_icon");
+		icons << bt_global::skin->getImage("forward");
+
 		ItemList::ItemInfo info(getTextChild(item, "descr"), QString(),
-							bt_global::skin->getImage("webcam_icon"),
-							bt_global::skin->getImage("forward"),
+							icons,
 							getTextChild(item, "url"));
 
 		webcam_list.append(info);

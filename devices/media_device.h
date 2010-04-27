@@ -23,6 +23,9 @@
 
 #include "device.h"
 
+#include <QSet>
+#include <QString>
+
 
 /**
  * This class implements a multimedia source device, that can be used to send
@@ -30,12 +33,15 @@
  */
 class SourceDevice : public device
 {
+friend class TestSourceDevice;
 Q_OBJECT
 public:
 	enum
 	{
 		DIM_STATUS = 12,
 		DIM_TRACK = 6,
+		REQ_NEXT_TRACK = 9,
+		REQ_PREV_TRACK = 10,
 	};
 
 	SourceDevice(QString source, int openserver_id = 0);
@@ -46,12 +52,18 @@ public slots:
 	void turnOn(QString area) const;
 	void requestTrack() const;
 
-protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
+public:
+	bool isActive(QString area) const;
 
 protected:
 	int mmtype;
 	QString source_id;
+	QSet<QString> active_areas;
+
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+
+private slots:
+	void requestActiveAreas() const;
 };
 
 
@@ -80,7 +92,7 @@ public slots:
 	void requestRDS() const;
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 };
 
 
@@ -92,10 +104,16 @@ class VirtualSourceDevice : public SourceDevice
 {
 Q_OBJECT
 public:
+	enum
+	{
+		REQ_SOURCE_ON,
+		REQ_SOURCE_OFF,
+	};
+
 	VirtualSourceDevice(QString address, int openserver_id = 0);
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 };
 
 
@@ -127,7 +145,7 @@ public:
 	void volumeDown() const;
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 private:
 	QString area;
@@ -172,7 +190,7 @@ public:
 	void loudOff() const;
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 };
 
 #endif // MEDIA_DEVICE_H

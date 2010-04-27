@@ -58,7 +58,7 @@ public:
 	ScenarioModule(int scenario, const QString &descr, const QString &where, int openserver_id);
 
 private slots:
-	void status_changed(const DeviceValues &sl);
+	void valueReceived(const DeviceValues &values_list);
 	void activate();
 	void editScenario();
 	void startEditing();

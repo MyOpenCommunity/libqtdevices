@@ -34,6 +34,7 @@
 #include "navigation_bar.h"
 #include "bannercontent.h"
 #include "skinmanager.h"
+#include "state_button.h"
 
 #include <QVariant>
 #include <QLabel>
@@ -198,7 +199,7 @@ NavigationPage::NavigationPage()
 	main_layout.setContentsMargins(0, 0, 0, 0);
 }
 
-NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
+NavigationBar *NavigationPage::createNavigationBar(const QString &icon, int title_height)
 {
 #ifdef LAYOUT_BTOUCH
 	nav_bar = new NavigationBar(icon);
@@ -210,7 +211,7 @@ NavigationBar *NavigationPage::createNavigationBar(const QString &icon)
 	connect(nav_bar, SIGNAL(upClick()), SIGNAL(upClick()));
 	connect(nav_bar, SIGNAL(downClick()), SIGNAL(downClick()));
 
-	buildPage(&content, nav_bar, "", TITLE_HEIGHT);
+	buildPage(&content, nav_bar, "", title_height);
 
 	return nav_bar;
 }
@@ -262,12 +263,12 @@ void PageSimpleProbe::setTemperature(unsigned temp)
 	}
 }
 
-void PageSimpleProbe::status_changed(const DeviceValues &sl)
+void PageSimpleProbe::valueReceived(const DeviceValues &values_list)
 {
-	if (!sl.contains(ControlledProbeDevice::DIM_TEMPERATURE))
+	if (!values_list.contains(ControlledProbeDevice::DIM_TEMPERATURE))
 		return;
 
-	setTemperature(sl[ControlledProbeDevice::DIM_TEMPERATURE].toInt());
+	setTemperature(values_list[ControlledProbeDevice::DIM_TEMPERATURE].toInt());
 }
 
 
@@ -285,8 +286,8 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	conf_root = n;
 	dev = _dev;
 
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
-	connect(nav_bar, SIGNAL(forwardClick()), SLOT(changeStatus()));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+	connect(toggle_mode, SIGNAL(clicked()), SLOT(changeStatus()));
 	//install compressor
 
 	QHBoxLayout *hbox = new QHBoxLayout();
@@ -461,26 +462,26 @@ void PageProbe::updateControlState()
 	local_temp_label->setText(local_temp);
 }
 
-void PageProbe::status_changed(const DeviceValues &sl)
+void PageProbe::valueReceived(const DeviceValues &values_list)
 {
 	bool update = false;
 
-	if (sl.contains(ControlledProbeDevice::DIM_SETPOINT))
+	if (values_list.contains(ControlledProbeDevice::DIM_SETPOINT))
 	{
-		unsigned sp = sl[ControlledProbeDevice::DIM_SETPOINT].toInt();
+		unsigned sp = values_list[ControlledProbeDevice::DIM_SETPOINT].toInt();
 
 		if (delta_setpoint)
 		{
 			switch (temp_scale)
 			{
 			case FAHRENHEIT:
-				sp = fahrenheit2Bt(sp);
+				sp = fahrenheit2Bt(setpoint);
 				break;
 			default:
 				qWarning("BannProbe: unknown temperature scale, defaulting to celsius");
 				// fall through
 			case CELSIUS:
-				sp = celsius2Bt(sp);
+				sp = celsius2Bt(setpoint);
 				break;
 			}
 
@@ -503,13 +504,13 @@ void PageProbe::status_changed(const DeviceValues &sl)
 		updatePointLabel();
 	}
 
-	if (sl.contains(ControlledProbeDevice::DIM_LOCAL_STATUS))
+	if (values_list.contains(ControlledProbeDevice::DIM_LOCAL_STATUS))
 	{
-		int stat = sl[ControlledProbeDevice::DIM_LOCAL_STATUS].toInt();
+		int stat = values_list[ControlledProbeDevice::DIM_LOCAL_STATUS].toInt();
 
 		if (stat == ControlledProbeDevice::ST_NORMAL)
 		{
-			int off = sl[ControlledProbeDevice::DIM_OFFSET].toInt();
+			int off = values_list[ControlledProbeDevice::DIM_OFFSET].toInt();
 
 			isOff = false;
 			isAntigelo = false;
@@ -534,9 +535,9 @@ void PageProbe::status_changed(const DeviceValues &sl)
 		update = true;
 	}
 
-	if (sl.contains(ControlledProbeDevice::DIM_STATUS))
+	if (values_list.contains(ControlledProbeDevice::DIM_STATUS))
 	{
-		switch (sl[ControlledProbeDevice::DIM_STATUS].toInt())
+		switch (values_list[ControlledProbeDevice::DIM_STATUS].toInt())
 		{
 		case ControlledProbeDevice::ST_MANUAL:
 			status = MANUAL;
@@ -567,14 +568,14 @@ void PageProbe::status_changed(const DeviceValues &sl)
 	if (update)
 		updateControlState();
 
-	PageSimpleProbe::status_changed(sl);
+	PageSimpleProbe::valueReceived(values_list);
 }
 
 PageFancoil::PageFancoil(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
 	TemperatureScale scale) : PageProbe(n, _dev, thermo_reg, scale), fancoil_buttons(this)
 {
 	dev = _dev;
-	connect(dev, SIGNAL(status_changed(DeviceValues)), SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 
 	createFancoilButtons();
 	fancoil_buttons.setExclusive(true);
@@ -589,9 +590,10 @@ void PageFancoil::createFancoilButtons()
 	{
 		QString path = bt_global::skin->getImage(QString("fan_%1_off").arg(id + 1));
 		QString path_pressed = bt_global::skin->getImage(QString("fan_%1_on").arg(id + 1));
-		BtButton *btn = new BtButton(this);
-		btn->setImage(path);
-		btn->setPressedImage(path_pressed);
+		StateButton *btn = new StateButton(this);
+		btn->setOnOff();
+		btn->setOffImage(path);
+		btn->setOnImage(path_pressed);
 		btn->setCheckable(true);
 
 		bottom_icons.addWidget(btn);
@@ -619,11 +621,11 @@ void PageFancoil::handleFancoilButtons(int pressedButton)
 	dev->requestFancoilStatus();
 }
 
-void PageFancoil::status_changed(const DeviceValues &sl)
+void PageFancoil::valueReceived(const DeviceValues &values_list)
 {
-	if (sl.contains(ControlledProbeDevice::DIM_FANCOIL_STATUS))
+	if (values_list.contains(ControlledProbeDevice::DIM_FANCOIL_STATUS))
 	{
-		int spd = sl[ControlledProbeDevice::DIM_FANCOIL_STATUS].toInt();
+		int spd = values_list[ControlledProbeDevice::DIM_FANCOIL_STATUS].toInt();
 
 		// Set the fancoil Button in the buttons bar
 		if (speed_to_btn_tbl.contains(spd))
@@ -632,7 +634,7 @@ void PageFancoil::status_changed(const DeviceValues &sl)
 			qDebug("Fancoil speed val out of range (%d)", spd);
 	}
 
-	PageProbe::status_changed(sl);
+	PageProbe::valueReceived(values_list);
 }
 
 PageManual::PageManual(ThermalDevice *_dev, TemperatureScale scale)
@@ -720,8 +722,8 @@ PageManual::PageManual(ThermalDevice *_dev, TemperatureScale scale)
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(performAction()));
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
-	connect(dev, SIGNAL(status_changed(DeviceValues)),
-		SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)),
+		SLOT(valueReceived(DeviceValues)));
 
 	updateTemperature();
 }
@@ -779,16 +781,16 @@ void PageManual::updateTemperature()
 	}
 }
 
-void PageManual::status_changed(const DeviceValues &sl)
+void PageManual::valueReceived(const DeviceValues &values_list)
 {
 	// TODO check why only for 4-zone regulator
 	if (dev->type() != THERMO_Z4)
 		return;
 
-	if (!sl.contains(ThermalDevice::DIM_TEMPERATURE))
+	if (!values_list.contains(ThermalDevice::DIM_TEMPERATURE))
 		return;
 
-	unsigned temperature = sl[ThermalDevice::DIM_TEMPERATURE].toInt();
+	unsigned temperature = values_list[ThermalDevice::DIM_TEMPERATURE].toInt();
 
 	switch (temp_scale)
 	{
@@ -817,8 +819,8 @@ PageManualTimed::PageManualTimed(ThermalDevice4Zones *_dev, TemperatureScale sca
 	main_layout.insertWidget(2, time_edit);
 #endif
 
-	connect(dev, SIGNAL(status_changed(DeviceValues)),
-		SLOT(status_changed(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)),
+		SLOT(valueReceived(DeviceValues)));
 }
 
 void PageManualTimed::performAction()
@@ -1010,25 +1012,25 @@ PageTermoReg::PageTermoReg(QDomNode n)
 
 	mode_icon = getLabelWithPixmap(bt_global::skin->getImage("regulator"), this, Qt::AlignHCenter);
 
-	QHBoxLayout *hbox = new QHBoxLayout;
-	hbox->setAlignment(Qt::AlignCenter);
+#ifdef LAYOUT_TOUCHX
+	main_layout.setContentsMargins(40, 0, 40, 50);
 
-	hbox->addStretch(1);
-	hbox->addWidget(season_icon, 1);
-
-#ifdef LAYOUT_BTOUCH
-	hbox->addStretch(1);
-#else
 	BtButton *settings = new BtButton;
 	settings->setImage(bt_global::skin->getImage("settings"));
 	connect(settings, SIGNAL(clicked()), SLOT(showSettingsMenu()));
 
-	hbox->addWidget(settings, 1);
+	QHBoxLayout *hbox = new QHBoxLayout;
+
+	hbox->addStretch(2);
+	hbox->addWidget(settings, 1, Qt::AlignCenter);
 #endif
 
 	main_layout.addWidget(mode_icon);
 	main_layout.addWidget(description_label);
+	main_layout.addWidget(season_icon, 0, Qt::AlignCenter);
+#ifdef LAYOUT_TOUCHX
 	main_layout.addLayout(hbox);
+#endif
 	main_layout.addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
 	main_layout.setAlignment(Qt::AlignHCenter);
 
@@ -1038,7 +1040,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	program_choice = 0;
 	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 
-	createNavigationBar(bt_global::skin->getImage("settings"));
+	createNavigationBar(bt_global::skin->getImage("settings"), SMALL_TITLE_HEIGHT);
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
 
 	showDescription(description);
@@ -1079,16 +1081,16 @@ void PageTermoReg::createSettingsItem(QDomNode item, SettingsPage *settings, The
 	}
 }
 
-void PageTermoReg::status_changed(const DeviceValues &sl)
+void PageTermoReg::valueReceived(const DeviceValues &values_list)
 {
 	ThermalDevice::Season season = ThermalDevice::SE_SUMMER;
 
-	if (sl.contains(ThermalDevice::DIM_SEASON))
-		season = static_cast<ThermalDevice::Season>(sl[ThermalDevice::DIM_SEASON].toInt());
+	if (values_list.contains(ThermalDevice::DIM_SEASON))
+		season = static_cast<ThermalDevice::Season>(values_list[ThermalDevice::DIM_SEASON].toInt());
 
 	setSeason(season);
 
-	int status = sl[ThermalDevice::DIM_STATUS].toInt();
+	int status = values_list[ThermalDevice::DIM_STATUS].toInt();
 	if (status < status_icons.count())
 		mode_icon->setPixmap(*bt_global::icons_cache.getIcon(status_icons[status]));
 
@@ -1107,7 +1109,7 @@ void PageTermoReg::status_changed(const DeviceValues &sl)
 	case ThermalDevice::ST_MANUAL:
 	case ThermalDevice::ST_MANUAL_TIMED:
 		{
-			unsigned temperature = sl[ThermalDevice::DIM_TEMPERATURE].toInt();
+			unsigned temperature = values_list[ThermalDevice::DIM_TEMPERATURE].toInt();
 			// remember: stat_var::get_val() returns an int
 			QString description;
 			switch (temp_scale)
@@ -1119,7 +1121,7 @@ void PageTermoReg::status_changed(const DeviceValues &sl)
 				description = fahrenheitString(bt2Fahrenheit(temperature));
 				break;
 			default:
-				qWarning("TermoReg status_changed: unknown scale, defaulting to celsius");
+				qWarning("TermoReg valueReceived: unknown scale, defaulting to celsius");
 				description = celsiusString(temperature);
 			}
 			showDescription(description);
@@ -1128,7 +1130,7 @@ void PageTermoReg::status_changed(const DeviceValues &sl)
 	case ThermalDevice::ST_PROGRAM:
 		{
 			// now search the description in the DOM
-			int program = sl[ThermalDevice::DIM_PROGRAM].toInt();
+			int program = values_list[ThermalDevice::DIM_PROGRAM].toInt();
 			QString description;
 			switch (season)
 			{
@@ -1144,7 +1146,7 @@ void PageTermoReg::status_changed(const DeviceValues &sl)
 		break;
 	case ThermalDevice::ST_SCENARIO:
 		{
-			int scenario = sl[ThermalDevice::DIM_SCENARIO].toInt();
+			int scenario = values_list[ThermalDevice::DIM_SCENARIO].toInt();
 			QString description;
 			switch (season)
 			{
@@ -1243,8 +1245,8 @@ PageTermoReg4z::PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device)
 	: PageTermoReg(n)
 {
 	_dev = device;
-	connect(_dev, SIGNAL(status_changed(DeviceValues)),
-		SLOT(status_changed(DeviceValues)));
+	connect(_dev, SIGNAL(valueReceived(DeviceValues)),
+		SLOT(valueReceived(DeviceValues)));
 	createSettingsMenu(n);
 }
 
@@ -1313,8 +1315,8 @@ PageTermoReg99z::PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device)
 	: PageTermoReg(n)
 {
 	_dev = device;
-	connect(_dev, SIGNAL(status_changed(DeviceValues)),
-		SLOT(status_changed(DeviceValues)));
+	connect(_dev, SIGNAL(valueReceived(DeviceValues)),
+		SLOT(valueReceived(DeviceValues)));
 	createSettingsMenu(n);
 }
 

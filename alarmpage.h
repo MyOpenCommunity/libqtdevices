@@ -45,6 +45,7 @@ public:
 
 public slots:
 	virtual void showPage();
+	virtual void cleanUp();
 
 signals:
 	void Next();

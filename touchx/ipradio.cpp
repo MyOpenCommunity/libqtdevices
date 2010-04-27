@@ -45,9 +45,12 @@ void IPRadioPage::loadItems(const QDomNode &config_node)
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
+		QStringList icons;
+		icons << bt_global::skin->getImage("ipradio_icon");
+		icons << bt_global::skin->getImage("forward");
+
 		ItemList::ItemInfo info(getTextChild(item, "title"), getTextChild(item, "descr"),
-					bt_global::skin->getImage("ipradio_icon"),
-					bt_global::skin->getImage("forward"),
+					icons,
 					getTextChild(item, "url"));
 
 		radio_list.append(info);

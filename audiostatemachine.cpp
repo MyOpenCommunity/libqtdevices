@@ -20,128 +20,75 @@
 
 
 #include "audiostatemachine.h"
+#include "hardware_functions.h" // DEV_E2
 
-#include <QtGlobal>
-#include <QMetaMethod>
+#include <QtConcurrentRun>
+#include <QProcess>
+
+#include <fcntl.h> // open
+#include <unistd.h> // usleep
+
+#define E2_BASE_CONF_ZARLINK 11694
+#define ZARLINK_KEY 0x63
 
 
-// helper class, disallows transitions from the states in the list
-
-class SourceStateConstraint
-	: public TransitionConstraint
+namespace
 {
-public:
-	SourceStateConstraint(const QList<int> &states)
+	bool silentExecute(const QString &program, QStringList args = QStringList())
 	{
+		args << "> /dev/null" << "2>&1";
+		return QProcess::execute(program, args);
 	}
 
-	virtual bool isAllowed(const StateMachine *machine,
-			       int source_state, int dest_state)
+	// Init the echo canceller, updating (if needed) the configuration. This function
+	// MUST be called in a separate thread, in order to avoid the freeze of the ui.
+	void initEchoCanceller()
 	{
-		return !states.contains(source_state);
+		char init = 0;
+		bool need_reset = false;
+
+		int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
+		lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
+		read(eeprom, &init, 1);
+
+		if (init != ZARLINK_KEY) // different versions, update the zarlink configuration
+		{
+			for (int i = 0; i < 5; ++i)
+			{
+				if (!silentExecute("/home/bticino/bin/zarlink 0400 0001 CONF /home/bticino/cfg/zle38004.cr"))
+				{
+					init = ZARLINK_KEY;
+					lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
+					write(eeprom, &init, 1);
+					need_reset = true;
+					break;
+				}
+				usleep(500000);
+			}
+		}
+
+		silentExecute(QString("echo %1 > /home/bticino/cfg/vers_conf_zarlink").arg(init));
+		if (need_reset)
+		{
+			silentExecute("echo 0 > /proc/sys/dev/btweb/reset_ZL1");
+			usleep(100000);
+			silentExecute("echo 1 > /proc/sys/dev/btweb/reset_ZL1");
+		}
 	}
 
-private:
-	QList<int> states;
-};
-
-
-// StateMachine implementation
-
-StateMachine::StateMachine()
-{
-}
-
-void StateMachine::start(int state)
-{
-	active_states.clear();
-	active_states.append(state);
-}
-
-int StateMachine::currentState() const
-{
-	return active_states.back();
-}
-
-void StateMachine::addState(int state, const char *entered, const char *exited)
-{
-	State s;
-
-	s.state = state;
-	s.entered = entered;
-	s.exited = exited;
-
-	Q_ASSERT_X(!available_states.contains(state), "StateMachine::addState",
-		   "Duplicate state");
-
-	available_states[state] = s;
-
-	// TODO: check that entered/exited are signals/slots with the correct signature,
-	//       abort if they are not
-}
-
-void StateMachine::addTransitionConstraint(int dest_state, TransitionConstraint *constraint)
-{
-	State &s = available_states[dest_state];
-
-	s.constraints.append(constraint);
-}
-
-void StateMachine::removeTransitions(const QList<int> &source_states, int dest_state)
-{
-	addTransitionConstraint(dest_state, new SourceStateConstraint(source_states));
-}
-
-bool StateMachine::isTransitionAllowed(int state) const
-{
-	const State &s = available_states[state];
-
-	foreach (TransitionConstraint *c, s.constraints)
+	void activateVCTAudio()
 	{
-		if (!c->isAllowed(this, currentState(), state))
-			return false;
+		QProcess::startDetached("/bin/in_scsbb_on");
 	}
 
-	return true;
+	void disactivateVCTAudio()
+	{
+		QProcess::startDetached("/bin/in_scsbb_off");
+	}
 }
 
-bool StateMachine::toState(int state)
-{
-	if (state == currentState())
-		return true;
 
-	if (!isTransitionAllowed(state))
-		return false;
-
-	const State &s = available_states[state];
-	const State &os = available_states[currentState()];
-
-	// TODO needs to be used like a stack
-	active_states[0] = state;
-
-	const QMetaObject *mo = metaObject();
-
-	// TODO: resolve the method when addState() is called
-
-	if (os.exited)
-	{
-		QMetaMethod meth = mo->method(mo->indexOfMethod(QMetaObject::normalizedSignature(os.exited + 1)));
-
-		meth.invoke(this, Q_ARG(int, state), Q_ARG(int, os.state));
-	}
-
-	if (s.entered)
-	{
-		QMetaMethod meth = mo->method(mo->indexOfMethod(QMetaObject::normalizedSignature(s.entered + 1)));
-
-		meth.invoke(this, Q_ARG(int, state), Q_ARG(int, os.state));
-	}
-
-	emit stateChanged(state, os.state);
-
-	return true;
-}
-
+using namespace AudioStates;
 
 // AudioStateMachine implementation
 
@@ -195,6 +142,12 @@ AudioStateMachine::AudioStateMachine()
 
 	// go to the start state: on startup IDLE is a transitional state, after a while it moves to BEEP_ON or BEEP_OFF
 	start(IDLE);
+}
+
+void AudioStateMachine::start(int state)
+{
+	QtConcurrent::run(initEchoCanceller);
+	StateMachine::start(state);
 }
 
 void AudioStateMachine::stateIdleEntered()
@@ -269,22 +222,22 @@ void AudioStateMachine::statePlayRingtoneExited()
 
 void AudioStateMachine::stateScsVideoCallEntered()
 {
-
+	activateVCTAudio();
 }
 
 void AudioStateMachine::stateScsVideoCallExited()
 {
-
+	disactivateVCTAudio();
 }
 
 void AudioStateMachine::stateScsIntercomCallEntered()
 {
-
+	activateVCTAudio();
 }
 
 void AudioStateMachine::stateScsIntercomCallExited()
 {
-
+	disactivateVCTAudio();
 }
 
 void AudioStateMachine::stateIpVideoCallEntered()
@@ -336,4 +289,6 @@ void AudioStateMachine::stateScreensaverWithPlayExited()
 {
 
 }
+
+AudioStateMachine *bt_global::audio_states = 0;
 

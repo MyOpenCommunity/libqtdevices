@@ -29,8 +29,6 @@ enum RequestDimension
 	// Sources
 	REQ_FREQUENCE_UP = 5,
 	REQ_FREQUENCE_DOWN = 6,
-	REQ_NEXT_TRACK = 9,
-	REQ_PREV_TRACK = 10,
 	REQ_SOURCE_ON = 35,
 	REQ_SAVE_STATION = 33,
 	START_RDS = 31,
@@ -48,7 +46,9 @@ enum RequestDimension
 	REQ_BALANCE_DOWN = 43,
 	REQ_NEXT_PRESET = 55,
 	REQ_PREV_PRESET = 56,
-	REQ_LOUD = 20
+	REQ_LOUD = 20,
+	SOURCE_TURNED_ON = 2,
+	DIM_ACTIVE_AREAS = 13,
 };
 
 
@@ -69,6 +69,11 @@ void SourceDevice::prevTrack() const
 	sendCommand(REQ_PREV_TRACK);
 }
 
+bool SourceDevice::isActive(QString area) const
+{
+	return active_areas.contains(area);
+}
+
 void SourceDevice::turnOn(QString area) const
 {
 	QString what = QString("%1#%2#%3#%4").arg(REQ_SOURCE_ON).arg(mmtype).arg(area).arg(source_id);
@@ -81,32 +86,52 @@ void SourceDevice::requestTrack() const
 	sendRequest(DIM_TRACK);
 }
 
-bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
+void SourceDevice::requestActiveAreas() const
+{
+	sendRequest(DIM_ACTIVE_AREAS);
+}
+
+bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	QString msg_where = QString::fromStdString(msg.whereFull());
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
 		return false;
+
+	int what = msg.what();
+
+	if (what == SOURCE_TURNED_ON)
+	{
+		active_areas.insert(QString::fromStdString(msg.whatArg(1)));
+		return true; // the frame is managed even if we aren't interested at the values list.
+	}
 
 	if (!isDimensionFrame(msg))
 		return false;
 
 	QVariant v;
 
-	int what = msg.what();
 	switch (what)
 	{
 	case DIM_STATUS:
 		v.setValue(msg.whatArgN(0) == 1);
+		if (msg.whatArgN(0) == 0)
+			active_areas.clear();
 		break;
 	case DIM_TRACK:
 		v.setValue(msg.whatArgN(0));
 		break;
+	case DIM_ACTIVE_AREAS:
+		active_areas.clear();
+		for (unsigned int i = 0; i < msg.whatArgCnt(); ++i)
+			if (msg.whatArgN(i) == 1)
+				active_areas.insert(QString::number(i));
+		return true;
 	default:
 		return false;
 	}
 
-	status_list[what] = v;
-	return !status_list.isEmpty();
+	values_list[what] = v;
+	return true;
 }
 
 
@@ -140,13 +165,13 @@ void RadioSourceDevice::requestRDS() const
 	sendCommand(START_RDS);
 }
 
-bool RadioSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
+bool RadioSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	QString msg_where = QString::fromStdString(msg.whereFull());
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
 		return false;
 
-	if (SourceDevice::parseFrame(msg, status_list))
+	if (SourceDevice::parseFrame(msg, values_list))
 		return true;
 
 	if (isCommandFrame(msg) && static_cast<int>(msg.what()) == STOP_RDS)
@@ -178,8 +203,8 @@ bool RadioSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 		return false;
 	}
 
-	status_list[what] = v;
-	return !status_list.isEmpty();
+	values_list[what] = v;
+	return true;
 }
 
 
@@ -189,49 +214,40 @@ VirtualSourceDevice::VirtualSourceDevice(QString address, int openserver_id) :
 
 }
 
-bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
+bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	QString msg_where = QString::fromStdString(msg.whereFull());
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
 		return false;
 
-	if (SourceDevice::parseFrame(msg, status_list))
+	int what = msg.what();
+
+
+	if (SourceDevice::parseFrame(msg, values_list) && what != DIM_STATUS && what != SOURCE_TURNED_ON)
 		return true;
 
-	// TODO: e' necessario implementare la parte "attiva" del device e in particolare
-	// i comandi on e off. Resta da capire se e' meglio implementarli sul comando
-	// vero e proprio o sulla frame di notifica che comunque arriva al device.
+	if (isDimensionFrame(msg) && what == DIM_STATUS && msg.whatArgN(0) == 0)
+	{
+		values_list[REQ_SOURCE_OFF] = true;
+		return true;
+	}
 
 	if (!isCommandFrame(msg))
 		return false;
 
-
-	// TODO: non sono per niente convinto di questa soluzione. Questo e' il primo
-	// caso di device che deve fare qualcosa quando riceve dei comandi.. e nello
-	// specifico quando arrivano le frame di comando dovranno essere poi lanciati
-	// degli script per accendere/spegnere la sorgente o andare alla traccia
-	// precedente/successiva. Resta da capire però quest'ultima parte dove ha senso
-	// che sia messa, se dentro al device (così pero' diventa dipendente
-	// dall'hardware, e non mi piace molto) oppure che lo comunichi all'esterno e
-	// che sia la parte grafica a chiamare le funzioni specifiche dell'hardware.
-	// In questo secondo caso però non e' particolarmente bello usare la status_changed
-	// come fatto per il momento, in quanto come il nome suggerisce dovrebbe segnalare
-	// un cambiamento stato relativo ad un device, e non un comando per il quale è
-	// necessario fare qualcosa. Altre alternative potrebbero essere:
-	// - avere un altro segnale per esprimere la richiesta di lanciare comandi
-	// - avere segnali custom
-	// boh??
-
-	int what = msg.what();
 	switch (what)
 	{
-	case REQ_FREQUENCE_UP:
-	case REQ_FREQUENCE_DOWN:
+	case REQ_NEXT_TRACK:
+	case REQ_PREV_TRACK:
+		values_list[what] = true;
+		break;
+	case SOURCE_TURNED_ON:
+		values_list[REQ_SOURCE_ON] = QString::fromStdString(msg.whatArg(1));
 		break;
 	default:
 		return false;
 	}
-	status_list[what] = true;
+
 	return true;
 }
 
@@ -292,7 +308,7 @@ void AmplifierDevice::volumeDown() const
 	sendCommand(QString("%1#1").arg(AMPL_VOLUME_DOWN));
 }
 
-bool AmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
+bool AmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (where != QString::fromStdString(msg.whereFull()))
 		return false;
@@ -305,10 +321,10 @@ bool AmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 	switch (what)
 	{
 	case DIM_STATUS:
-		status_list[what] = msg.whatArgN(0) == 1;
+		values_list[what] = msg.whatArgN(0) == 1;
 		break;
 	case DIM_VOLUME:
-		status_list[what] = msg.whatArgN(0);
+		values_list[what] = msg.whatArgN(0);
 		break;
 	default:
 		return false;
@@ -322,7 +338,7 @@ PowerAmplifierDevice::PowerAmplifierDevice(QString address, int openserver_id) :
 {
 }
 
-bool PowerAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
+bool PowerAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (where != QString::fromStdString(msg.whereFull()))
 		return false;
@@ -333,7 +349,7 @@ bool PowerAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 	if (!msg.whatArgCnt() || !isDimensionFrame(msg))
 		return false;
 
-	if (AmplifierDevice::parseFrame(msg, status_list))
+	if (AmplifierDevice::parseFrame(msg, values_list))
 		return true;
 
 	int what = msg.what();
@@ -380,7 +396,7 @@ bool PowerAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &status_list)
 		return false;
 	}
 
-	status_list[what] = v;
+	values_list[what] = v;
 	return true;
 }
 

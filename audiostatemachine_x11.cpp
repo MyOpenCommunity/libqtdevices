@@ -19,37 +19,37 @@
  */
 
 
-#ifndef TEST_MESSAGE_DEVICE_H
-#define TEST_MESSAGE_DEVICE_H
+#include "audiostatemachine.h"
 
-#include "test_device.h"
-
-class MessageDevice;
+using namespace AudioStates;
 
 
-class TestMessageDevice : public TestDevice
+AudioStateMachine::AudioStateMachine()
 {
-Q_OBJECT
+	addState(IDLE);
+	addState(BEEP_ON);
+	addState(BEEP_OFF);
+	addState(PLAY_MEDIA_TO_SPEAKER);
+	addState(PLAY_FROM_DIFSON_TO_SPEAKER);
+	addState(PLAY_MEDIA_TO_DIFSON);
+	addState(PLAY_RINGTONE);
+	addState(SCS_VIDEO_CALL);
+	addState(SCS_INTERCOM_CALL);
+	addState(IP_VIDEO_CALL);
+	addState(IP_INTERCOM_CALL);
+	addState(ALARM_TO_SPEAKER);
+	addState(ALARM_TO_DIFSON);
+	addState(SCREENSAVER_WITH_PLAY);
 
-private slots:
-	void init();
-	void cleanup();
+	start(IDLE);
+}
 
-	void testChecksum();
-	void testParseMessage();
+void AudioStateMachine::start(int state)
+{
+	StateMachine::start(state);
+}
 
-	void sendReady();
-	void sendBusy();
-	void sendWrongChecksum();
-	void sendTimeout();
 
-	void connectFailed();
-	void receiveCompleteMessage();
-	void receiveWrongChecksum();
-	void receiveTimeout();
+AudioStateMachine *bt_global::audio_states = 0;
 
-private:
-	MessageDevice *dev;
-};
 
-#endif // TEST_MESSAGE_DEVICE_H

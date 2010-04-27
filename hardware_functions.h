@@ -24,11 +24,9 @@
 
 #include <QtGlobal> // uchar
 
+#define DEV_E2 "/dev/nvram"
+
 #define AMPLI_NUM 100
-#define BASE_EEPROM 11360
-#define KEY_LENGTH 5
-#define AL_KEY "\125\252\125\252\125"
-#define SORG_PAR 2
 
 class QString;
 

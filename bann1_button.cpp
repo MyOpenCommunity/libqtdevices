@@ -52,7 +52,12 @@ BannSinglePuls::BannSinglePuls(QWidget *parent) :
 
 	QHBoxLayout *hbox = new QHBoxLayout;
 	hbox->setContentsMargins(0, 0, 0, 0);
+	// TODO maybe it it better to rewrite the banner using a QGridLayout, like Bann2Buttons
+#ifdef LAYOUT_TOUCHX
+	hbox->setSpacing(3);
+#else
 	hbox->setSpacing(0);
+#endif
 	hbox->addWidget(center, 1, Qt::AlignRight);
 	hbox->addWidget(right_button, 0, Qt::AlignRight);
 

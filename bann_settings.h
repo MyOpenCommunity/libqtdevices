@@ -233,14 +233,34 @@ class BannRingtone : public Bann2CentralButtons
 {
 Q_OBJECT
 public:
-	BannRingtone(const QString &descr, RingtoneType type);
+	BannRingtone(const QString &descr, int id, Ringtones::Type type);
 
 private:
-	int current_ring;
+	int current_ring, item_id;
+	Ringtones::Type ring_type;
 
 private slots:
 	void plusClicked();
 	void minusClicked();
+};
+
+/**
+ * Set the time between screensaver frames.
+ * For example, it can be the timeout between images in the slideshow.
+ */
+class ScreensaverTiming : public Bann2Buttons
+{
+Q_OBJECT
+public:
+	ScreensaverTiming(const QString &descr, int init_timing, int _delta = 1000, int min_timing = 7000, int max_timing = 30000);
+
+private slots:
+	void increase();
+	void decrease();
+
+private:
+	void updateText();
+	int timing, delta, min, max;
 };
 
 #endif

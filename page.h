@@ -49,7 +49,7 @@ public slots:
 };
 
 
-// This typedef is needed by slots status_changed(DeviceValues). In order to avoid
+// This typedef is needed by slots valueReceived(DeviceValues). In order to avoid
 // duplication the typedef is put here, so all pages can be use freely
 typedef QHash<int, QVariant> DeviceValues;
 
@@ -145,6 +145,13 @@ public:
 	 */
 	virtual void activateLayout();
 
+	/**
+	 * Insert a widget at the bottom of the page.
+	 *
+	 * The page takes ownership of the widget and will delete it when done.
+	 */
+	void addBottomWidget(QWidget *bottom);
+
 public slots:
 	/// An handle to allow customization of the page showed. Default implementation
 	/// show the page in fullscreen mode and call the transition effect if present.
@@ -152,6 +159,16 @@ public slots:
 
 	// The the page as the current page on the main window
 	void setCurrentPage();
+
+	// Perform some cleanup operations that should be done when we exit from
+	// the page (we cannot use the hideEvent method because that event trigger even
+	// if we go in a next page).
+	virtual void cleanUp() { }
+
+signals:
+	/// Emitted when the page is closed.
+	void Closed();
+	void forwardClick();
 
 protected:
 	// used by page_content
@@ -195,11 +212,6 @@ private:
 	static Client *client_richieste;
 	static Client *client_comandi;
 	void forceClosed();
-
-signals:
-	/// Emitted when the page is closed.
-	void Closed();
-	void forwardClick();
 };
 
 

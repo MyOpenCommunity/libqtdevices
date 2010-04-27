@@ -1,4 +1,4 @@
-/*
+/* 
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -19,37 +19,44 @@
  */
 
 
-#ifndef TEST_MESSAGE_DEVICE_H
-#define TEST_MESSAGE_DEVICE_H
 
-#include "test_device.h"
+#ifndef TEST_IMAGESELECTION_H
+#define TEST_IMAGESELECTION_H
 
-class MessageDevice;
+#include <QObject>
+#include <QStringList>
 
+class ImageSelectionHandler;
+class QTemporaryFile;
 
-class TestMessageDevice : public TestDevice
+class TestImageSelection : public QObject
 {
 Q_OBJECT
-
 private slots:
-	void init();
-	void cleanup();
+	void initTestCase();
+	void cleanupTestCase();
 
-	void testChecksum();
-	void testParseMessage();
+	void testFileLoading();
+	void testFileSaving();
 
-	void sendReady();
-	void sendBusy();
-	void sendWrongChecksum();
-	void sendTimeout();
+	// file explicitly present in the set
+	void testSimplePathSelected();
 
-	void connectFailed();
-	void receiveCompleteMessage();
-	void receiveWrongChecksum();
-	void receiveTimeout();
+	// directory explicitly present in the set
+	void testSimpleDirSelected();
+
+	// file included in a selected directory
+	void testFileSelected();
+
+	// file non present
+	void testFileNotSelected();
+
+	void testCompactDirectory();
 
 private:
-	MessageDevice *dev;
+	ImageSelectionHandler *image_handler;
+	QStringList images;
+	QTemporaryFile *f;
 };
 
-#endif // TEST_MESSAGE_DEVICE_H
+#endif // TEST_IMAGESELECTION_H

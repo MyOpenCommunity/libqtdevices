@@ -27,6 +27,7 @@
 #include <QtDebug>
 #include <QProcess>
 #include <QDateTime>
+#include <QStringList>
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -41,6 +42,14 @@
 #define TFT_CONTRAST_VCT  "4"
 #define TFT_COLOR_VCT     "5"
 #define TFT_BRIGTH_VCT    "6"
+
+
+
+#define E2_BASE 11360
+
+#define KEY_LENGTH 5
+#define AL_KEY "\125\252\125\252\125"
+#define SORG_PAR 2
 
 
 int maxWidth()
@@ -348,23 +357,22 @@ void getName(char *name)
 
 void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazione)
 {
-	int eeprom;
-	char chiave[6];
+	char keys[6];
 
-	qDebug() << "Reading alarm volume from nvram for index" << index;
+	qDebug() << "Reading alarm volume from e2 for index" << index;
 
-	memset(chiave,'\000',sizeof(chiave));
-	eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
+	memset(keys,'\000',sizeof(keys));
+	int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
 
 	if (eeprom == -1)
 		return;
 
-	lseek(eeprom, BASE_EEPROM+index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR),SEEK_SET);
-	read(eeprom, chiave, 5);
+	lseek(eeprom, E2_BASE+index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR),SEEK_SET);
+	read(eeprom, keys, 5);
 
-	if (strcmp(chiave,AL_KEY))
+	if (strcmp(keys, AL_KEY))
 	{
-		lseek(eeprom, BASE_EEPROM+index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR), SEEK_SET);
+		lseek(eeprom, E2_BASE+index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR), SEEK_SET);
 		write(eeprom,AL_KEY,5);
 		for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
 		{
@@ -374,7 +382,7 @@ void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazion
 	}
 	else
 	{
-		int ploffete = BASE_EEPROM + index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH;
+		int ploffete = E2_BASE + index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH;
 		lseek(eeprom,ploffete, SEEK_SET);
 		for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
 		{
@@ -389,15 +397,14 @@ void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazion
 
 void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 {
-	int eeprom;
-	eeprom = open("/dev/nvram", O_RDWR | O_SYNC, 0666);
+	int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
 
-	qDebug() << "Writing alarm volume to nvram for index" << index;
+	qDebug() << "Writing alarm volume to e2 for index" << index;
 
 	if (eeprom == -1)
 		return;
 
-	lseek(eeprom,BASE_EEPROM + index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH, SEEK_SET);
+	lseek(eeprom,E2_BASE + index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH, SEEK_SET);
 	for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
 		write(eeprom,&volSveglia[idx],1);
 	write(eeprom,&sorgente,1);
@@ -405,24 +412,23 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 	close(eeprom);
 }
 
-
 // local variable to control an external process
 // TODO: sound playing really should be centralized, since only one process at the time can access /dev/dsp
 // For example, alarm or doorbell sound fails if an mp3 is playing.
 #ifdef BT_HARDWARE_TOUCHX
-static QProcess play_sound_process;
+Q_GLOBAL_STATIC(QProcess, play_sound_process);
 #endif
 
 void playSound(const QString &wavFile)
 {
 #ifdef BT_HARDWARE_TOUCHX
-	if (play_sound_process.state() != QProcess::NotRunning)
+	if (play_sound_process()->state() != QProcess::NotRunning)
 	{
-		play_sound_process.terminate();
-		play_sound_process.waitForFinished();
+		play_sound_process()->terminate();
+		play_sound_process()->waitForFinished();
 	}
 
-	play_sound_process.start("/bin/sox",
+	play_sound_process()->start("/bin/sox",
 				 QStringList() << "-w" << "-c" << "2"
 				 << "-s" << "-t" << "wav" << wavFile
 				 << "-t" << "ossdsp" << "/dev/dsp1");
@@ -432,7 +438,7 @@ void playSound(const QString &wavFile)
 void stopSound()
 {
 #ifdef BT_HARDWARE_TOUCHX
-	play_sound_process.terminate();
+	play_sound_process()->terminate();
 #endif
 }
 

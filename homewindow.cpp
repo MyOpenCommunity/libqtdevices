@@ -32,6 +32,7 @@
 #include "xml_functions.h"
 #include "pagecontainer.h"
 #include "btbutton.h"
+#include "pagestack.h" // bt_global::page_stack
 
 #include <QHBoxLayout>
 #include <QGridLayout>
@@ -94,6 +95,7 @@ HomeWindow::HomeWindow()
 
 	main_layout->addWidget(f, 1, 1, 1, 1);
 
+	connect(header_widget, SIGNAL(aboutToChangePage()), SLOT(aboutToChangePage()));
 	connect(header_widget, SIGNAL(showSectionPage(int)), SIGNAL(showSectionPage(int)));
 	connect(header_widget, SIGNAL(showHomePage()), SIGNAL(showHomePage()));
 #else
@@ -103,6 +105,13 @@ HomeWindow::HomeWindow()
 #endif
 
 	central_widget->setContainerWindow(this);
+
+	connect(&bt_global::page_stack, SIGNAL(sectionChanged(int)), SLOT(currentSectionChanged(int)));
+}
+
+void HomeWindow::aboutToChangePage()
+{
+	bt_global::page_stack.clear();
 }
 
 void HomeWindow::loadConfiguration()
@@ -131,6 +140,13 @@ void HomeWindow::centralWidgetChanged(int index)
 		// the window header size; see also the comment in PageContainer::showPage()
 		layout()->activate();
 	}
+#endif
+}
+
+void HomeWindow::currentSectionChanged(int section_id)
+{
+#ifdef LAYOUT_TOUCHX
+	header_widget->sectionChanged(section_id);
 #endif
 }
 

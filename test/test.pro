@@ -25,38 +25,42 @@ LIBS+= -L ../../common_files/lib/x86 -lcommon -lssl
 VPATH = ..
 
 HEADERS += test_bttime.h \
-           test_scenevodevicescond.h \
-           ../devices/test/openserver_mock.h \
-           ../btbutton.h \
-           ../bttime.h \
-           ../devices_cache.h \
-           ../fontmanager.h \
-           ../generic_functions.h \
-           ../hardware_functions.h \
-           ../icondispatcher.h \
-           ../main.h \
-           ../openclient.h \
-           ../scaleconversion.h \
-           ../scenevodevicescond.h \
-           ../skinmanager.h \
-           ../xml_functions.h
+	test_imageselection.h \
+	test_scenevodevicescond.h \
+	../devices/test/openserver_mock.h \
+	../btbutton.h \
+	../bttime.h \
+	../devices_cache.h \
+	../fontmanager.h \
+	../generic_functions.h \
+	../hardware_functions.h \
+	../icondispatcher.h \
+	../imageselectionhandler.h \
+	../main.h \
+	../openclient.h \
+	../scaleconversion.h \
+	../scenevodevicescond.h \
+	../skinmanager.h \
+	../xml_functions.h
 
 SOURCES += test_main.cpp \
-           test_bttime.cpp \
-           test_scenevodevicescond.cpp \
-           ../devices/test/openserver_mock.cpp \
-           ../btbutton.cpp \
-           ../bttime.cpp \
-           ../devices_cache.cpp \
-           ../fontmanager.cpp \
-           ../generic_functions.cpp \
-           ../hardware_functions_x11.cpp \
-           ../icondispatcher.cpp \
-           ../openclient.cpp \
-           ../scaleconversion.cpp \
-           ../scenevodevicescond.cpp \
-           ../skinmanager.cpp \
-           ../xml_functions.cpp \
-           ../definitions.cpp
+	test_bttime.cpp \
+	test_imageselection.cpp \
+	test_scenevodevicescond.cpp \
+	../devices/test/openserver_mock.cpp \
+	../btbutton.cpp \
+	../bttime.cpp \
+	../devices_cache.cpp \
+	../fontmanager.cpp \
+	../generic_functions.cpp \
+	../hardware_functions_x11.cpp \
+	../icondispatcher.cpp \
+	../imageselectionhandler.cpp \
+	../openclient.cpp \
+	../scaleconversion.cpp \
+	../scenevodevicescond.cpp \
+	../skinmanager.cpp \
+	../xml_functions.cpp \
+	../definitions.cpp
 
 include(../devices.pri)

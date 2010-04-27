@@ -28,12 +28,13 @@
 #include "version.h"
 #include "keypad.h"
 #include "screensaver.h"
-#include "displaycontrol.h" // (*bt_global::display)
-#include "page.h"
+#include "displaycontrol.h" // bt_global::display
 #include "devices_cache.h" // bt_global::devices_cache
-#include "device.h"
 #include "fontmanager.h" // bt_global::font
 #include "skinmanager.h" // bt_global::skin
+#include "audiostatemachine.h" // bt_global::audio_states
+#include "page.h"
+#include "device.h"
 #include "pagefactory.h" // getPage
 #include "banner.h"
 #include "transitionwidget.h"
@@ -73,36 +74,37 @@ namespace
 		if (!n.isNull())
 			dest = n.text();
 	}
-}
 
 
 #if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
 
-// used to store the time of the last click; used by the screen saver code
-// on x86
-class LastClickTime : public QObject
-{
-public:
-	LastClickTime();
+	// used to store the time of the last click; used by the screen saver code
+	// on x86
+	class LastClickTime : public QObject
+	{
+	public:
+		LastClickTime();
 
-protected:
-	bool eventFilter(QObject *obj, QEvent *ev);
-};
+	protected:
+		bool eventFilter(QObject *obj, QEvent *ev);
+	};
 
-LastClickTime::LastClickTime()
-{
-}
+	LastClickTime::LastClickTime()
+	{
+	}
 
-bool LastClickTime::eventFilter(QObject *obj, QEvent *ev)
-{
-	// Save last click time
-	if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick)
-		setTimePress(QDateTime::currentDateTime());
+	bool LastClickTime::eventFilter(QObject *obj, QEvent *ev)
+	{
+		// Save last click time
+		if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick)
+			setTimePress(QDateTime::currentDateTime());
 
-	return false;
-}
-
+		return false;
+	}
 #endif
+
+}
+
 
 
 BtMain::BtMain(int openserver_reconnection_time)
@@ -122,7 +124,8 @@ BtMain::BtMain(int openserver_reconnection_time)
 	bt_global::font = new FontManager(font_file);
 	bt_global::display = new DisplayControl;
 	bt_global::skin = new SkinManager(SKIN_FILE);
-	bt_global::ringtones = new RingtonesManager;
+	bt_global::ringtones = new RingtonesManager(RINGTONE_FILE);
+	bt_global::audio_states = new AudioStateMachine;
 
 #if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
 	// save last click time for the screen saver
@@ -310,6 +313,15 @@ void BtMain::loadGlobalConfig()
 	// transform address into internal address
 	if (!(*config)[PI_ADDRESS].isNull())
 		(*config)[PI_ADDRESS].prepend("1");
+
+	// TouchX source and amplifier addresses
+	setConfigValue(scs_node, "coordinate_scs/my_mmaddress", (*config)[SOURCE_ADDRESS]);
+	setConfigValue(scs_node, "coordinate_scs/my_maaddress", (*config)[AMPLIFIER_ADDRESS]);
+
+	if ((*config)[SOURCE_ADDRESS] == "-1")
+		(*config)[SOURCE_ADDRESS] = "";
+	if ((*config)[AMPLIFIER_ADDRESS] == "-1")
+		(*config)[AMPLIFIER_ADDRESS] = "";
 }
 
 void BtMain::waitBeforeInit()
@@ -347,7 +359,7 @@ void BtMain::loadConfiguration()
 		if (!n.isNull())
 			level = static_cast<BrightnessLevel>(n.text().toInt());
 	}
-	(*bt_global::display).setBrightness(level);
+	bt_global::display->setBrightness(level);
 
 	ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
 	if (!display_node.isNull())
@@ -360,7 +372,7 @@ void BtMain::loadConfiguration()
 		if (type == ScreenSaver::DEFORM) // deform is for now disabled!
 			type = ScreenSaver::LINES;
 	}
-	(*bt_global::display).current_screensaver = type;
+	bt_global::display->current_screensaver = type;
 
 	window_container->homeWindow()->loadConfiguration();
 
@@ -501,6 +513,11 @@ void BtMain::showHomePage()
 	Home->showPage();
 }
 
+Page *BtMain::homePage()
+{
+	return Home;
+}
+
 void BtMain::unrollPages()
 {
 	int seq_pages = 0;
@@ -525,7 +542,7 @@ void BtMain::makeActiveAndFreeze()
 	if (screensaver && screensaver->isRunning())
 	{
 		screensaver->stop();
-		(*bt_global::display).setState(DISPLAY_FREEZED);
+		bt_global::display->setState(DISPLAY_FREEZED);
 		last_event_time = now();
 
 		if (pwdOn)
@@ -554,42 +571,60 @@ void BtMain::checkScreensaver()
 {
 	rearmWDT();
 
-	if ((*bt_global::display).isForcedOperativeMode())
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
+	// detect when the user adjusts date/time
+	// TODO add frame parsing to PlatformDevice to detect when date/time really changes
+	QDateTime curr = QDateTime::currentDateTime();
+
+	// TODO the correct handling would require to send a signal with the time delta and
+	//      have hardware_functions (and others) adjust the saved date/time; this works
+	//      for now
+	if (abs(last_date_time.secsTo(curr)) > 30)
+		// we assume that the user just clicked "OK" to change the date,
+		setTimePress(curr);
+	last_date_time = curr;
+#endif
+
+	if (bt_global::display->isForcedOperativeMode())
 		return;
 	if (alarmClockIsOn || calibrating)
 		return;
+
+	ScreenSaver::Type target_screensaver = bt_global::display->currentScreenSaver();
+#ifdef BT_HARDWARE_BTOUCH
+	// When the brightness is set to off in the old hardware the display
+	// is not really off, so it is required to use a screensaver to protect
+	// the display, even if the screensaver is not visible.
+	if (bt_global::display->currentBrightness() == BRIGHTNESS_OFF)
+		target_screensaver = ScreenSaver::LINES;
+#endif
 
 	int time_press = getTimePress();
 	int time = qMin(time_press, int(now() - last_event_time));
 
 	if (screenoff_time != 0 && time >= screenoff_time &&
-		 (*bt_global::display).currentState() == DISPLAY_SCREENSAVER)
+		 (bt_global::display->currentState() == DISPLAY_SCREENSAVER ||
+		  (target_screensaver == ScreenSaver::NONE && bt_global::display->currentState() == DISPLAY_FREEZED)))
 	{
 		qDebug() << "Turning screen off";
-		screensaver->stop();
-		(*bt_global::display).setState(DISPLAY_OFF);
+		if (screensaver)
+			screensaver->stop();
+		bt_global::display->setState(DISPLAY_OFF);
 	}
 	else if (time >= freeze_time && getBacklight() && !frozen)
 	{
 		freeze(true);
 	}
-	else if (time >= screensaver_time)
+	else if (time >= screensaver_time && target_screensaver != ScreenSaver::NONE)
 	{
-		if ((*bt_global::display).currentState() == DISPLAY_OPERATIVE &&
+		if (bt_global::display->currentState() == DISPLAY_OPERATIVE &&
 		    pagDefault && page_container->currentPage() != pagDefault)
 		{
 			pagDefault->showPage();
 		}
 
-		if ((*bt_global::display).currentState() == DISPLAY_FREEZED)
+		if (bt_global::display->currentState() == DISPLAY_FREEZED)
 		{
-			ScreenSaver::Type target_screensaver = (*bt_global::display).currentScreenSaver();
-			// When the brightness is set to off in the old hardware the display
-			// is not really off, so it is required to use a screensaver to protect
-			// the display, even if the screensaver is not visible.
-			if ((*bt_global::display).currentBrightness() == BRIGHTNESS_OFF)
-				target_screensaver = ScreenSaver::LINES;
-
 			if (screensaver && screensaver->type() != target_screensaver)
 			{
 				delete screensaver;
@@ -621,7 +656,7 @@ void BtMain::checkScreensaver()
 			qDebug() << "start screensaver:" << target_screensaver << "on:" << page_container->currentPage();
 			screensaver->start(window_container->homeWindow());
 			emit startscreensaver(prev_page);
-			(*bt_global::display).setState(DISPLAY_SCREENSAVER);
+			bt_global::display->setState(DISPLAY_SCREENSAVER);
 		}
 	}
 }
@@ -639,7 +674,8 @@ Window *BtMain::homeWindow()
 bool BtMain::eventFilter(QObject *obj, QEvent *ev)
 {
 	// Discard the mouse press and mouse double click
-	if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick)
+	if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick ||
+	    ev->type() == QEvent::MouseMove || ev->type() == QEvent::Enter || ev->type() == QEvent::Leave)
 		return true;
 
 	if (ev->type() != QEvent::MouseButtonRelease)
@@ -658,7 +694,7 @@ void BtMain::freeze(bool b)
 	if (!frozen)
 	{
 		last_event_time = now();
-		(*bt_global::display).setState(DISPLAY_OPERATIVE);
+		bt_global::display->setState(DISPLAY_OPERATIVE);
 		if (screensaver && screensaver->isRunning())
 		{
 			screensaver->stop();
@@ -678,7 +714,7 @@ void BtMain::freeze(bool b)
 	}
 	else
 	{
-		(*bt_global::display).setState(DISPLAY_FREEZED);
+		bt_global::display->setState(DISPLAY_FREEZED);
 		qApp->installEventFilter(this);
 	}
 }

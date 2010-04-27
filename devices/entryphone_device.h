@@ -58,12 +58,12 @@ public:
 		// studio functionality we have to use the caller_address, obtained
 		// from the homonymous frame.
 		CALLER_ADDRESS = 9,
+		STOP_VIDEO = 202, // the value doesn't matter
 	};
 
 	EntryphoneDevice(const QString &where);
 
 	void answerCall() const;
-	virtual void manageFrame(OpenMsg &msg);
 	void initVctProcess();
 	virtual void init() { initVctProcess(); }
 
@@ -87,6 +87,8 @@ public slots:
 	void moveRightPress() const;
 	void moveRightRelease() const;
 
+protected:
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 private:
 	void resetCallState();
 	void cameraMovePress(int move_type) const;

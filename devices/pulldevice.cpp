@@ -28,6 +28,36 @@
 #include <QString>
 
 /*
+ * Pull/non-pull devices:
+ * a pull device does not react to environment/general frames; at startup we do not
+ * know if a specific HW device is pull or non-pull (no indication in the configuration
+ * file)
+ *
+ * Pull/non pull discovery algorithmm:
+ *
+ * The device starts with unknown state (opening/closing/stopped) and unknown pull
+ * mode (pull/non-pull)
+ *
+ * After receiving one point-to-point measure frame, the device state is set to the state
+ * contained in the frame.
+ *
+ * When receiving an environment/generic frame, and if the device state is known,
+ * we send a point-to-point status request for the device, because we want to know if
+ * the device reacted to the environment/general frame.
+ *
+ * When receiving the point-to-point measure frame in answer tot the previous request, if
+ * the status is equal to the saved status it means that the device did not react to the
+ * environment/generic frame (and so is a PULL device); if the status differs from the
+ * saved status, then the device is a  NON-PULL device
+ *
+ *
+ * If the environment/generic frame is received before any point-to-point frames (when
+ * both status and mode are unknown), the device always requests the point to point state to:
+ * - bootstrap the discovery process
+ * - retrieve the status of the device
+ */
+
+/*
  * Split a where into a+pf part and address extension.
  */
 QPair<QString, QString> splitWhere(const QString &w)
@@ -193,7 +223,7 @@ void PullDevice::manageFrame(OpenMsg &msg)
 		}
 		else if (state.getPullMode() == PULL)
 			return;
-		// when NOT_PULL we must parse the frame and emit status_changed() signal
+		// when NOT_PULL we must parse the frame and emit valueReceived() signal
 		break;
 	default:
 		if (state.getPullMode() == PULL_UNKNOWN)
@@ -201,11 +231,11 @@ void PullDevice::manageFrame(OpenMsg &msg)
 		break;
 	}
 
-	DeviceValues sl;
-	parseFrame(msg, sl);
+	DeviceValues values_list;
+	parseFrame(msg, values_list);
 
 	// DeviceValues may be empty, avoid emitting a signal in such cases
-	if (sl.size() > 0)
-		emit status_changed(sl);
+	if (values_list.size() > 0)
+		emit valueReceived(values_list);
 }
 

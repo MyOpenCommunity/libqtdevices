@@ -36,7 +36,7 @@ Q_DECLARE_METATYPE(DeviceValues)
 
 
 DeviceTester::DeviceTester(device *d, int type, ValuesNumber it) :
-	spy(d, SIGNAL(status_changed(const DeviceValues&)))
+	spy(d, SIGNAL(valueReceived(const DeviceValues&)))
 {
 	dim_type = type;
 	dev = d;
@@ -74,16 +74,17 @@ QVariant DeviceTester::getResult(const QStringList& frames)
 	QVariant signal_arg = spy.last().at(0); // get the first argument from last signal
 	if (signal_arg.canConvert<DeviceValues>())
 	{
-		DeviceValues sl = signal_arg.value<DeviceValues>();
-		if (sl.contains(dim_type))
+		DeviceValues values_list = signal_arg.value<DeviceValues>();
+		if (values_list.contains(dim_type))
 		{
 			if (item_number == ONE_VALUE)
-				Q_ASSERT_X(sl.size() == 1, "DeviceTester::getResult",
+				Q_ASSERT_X(values_list.size() == 1, "DeviceTester::getResult",
 					"DeviceValues must contain only one item");
-			return sl[dim_type];
+			return values_list[dim_type];
 		}
 	}
-	return QVariant();
+	Q_ASSERT_X(false, "DeviceTester::getResult", "DeviceTester: error on parsing the signal content.");
+	return QVariant(); // only to avoid warning
 }
 
 void DeviceTester::check(QString frame, const char *result)

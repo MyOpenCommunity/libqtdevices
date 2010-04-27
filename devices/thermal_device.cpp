@@ -198,7 +198,7 @@ void ThermalDevice::manageFrame(OpenMsg &msg)
 	int what = msg.what();
 	int command = commandRange(what);
 	int program = what - command;
-	DeviceValues sl;
+	DeviceValues values_list;
 
 	qDebug() << "ThermalDevice command" << command << "program" << program;
 
@@ -210,13 +210,13 @@ void ThermalDevice::manageFrame(OpenMsg &msg)
 		break;
 
 	case SUM_PROTECTION:
-		sl[DIM_STATUS] = ST_PROTECTION;
-		sl[DIM_SEASON] = SE_SUMMER;
+		values_list[DIM_STATUS] = ST_PROTECTION;
+		values_list[DIM_SEASON] = SE_SUMMER;
 		break;
 
 	case SUM_OFF:
-		sl[DIM_STATUS] = ST_OFF;
-		sl[DIM_SEASON] = SE_SUMMER;
+		values_list[DIM_STATUS] = ST_OFF;
+		values_list[DIM_SEASON] = SE_SUMMER;
 		break;
 
 	case SUM_MANUAL:
@@ -224,42 +224,42 @@ void ThermalDevice::manageFrame(OpenMsg &msg)
 		{
 			Q_ASSERT_X(msg.whatArgCnt() > 0, "ThermalDevice::manageFrame", "Manual setting frame with no arguments received");
 			int sp = msg.whatArgN(0);
-			sl[DIM_TEMPERATURE] = sp;
+			values_list[DIM_TEMPERATURE] = sp;
 		}
-		sl[DIM_STATUS] = command == SUM_MANUAL ? ST_MANUAL : ST_MANUAL_TIMED;
-		sl[DIM_SEASON] = SE_SUMMER;
+		values_list[DIM_STATUS] = command == SUM_MANUAL ? ST_MANUAL : ST_MANUAL_TIMED;
+		values_list[DIM_SEASON] = SE_SUMMER;
 		break;
 
 	case SUM_WEEKEND:
-		sl[DIM_STATUS] = ST_WEEKEND;
-		sl[DIM_SEASON] = SE_SUMMER;
+		values_list[DIM_STATUS] = ST_WEEKEND;
+		values_list[DIM_SEASON] = SE_SUMMER;
 		break;
 
 	case SUM_PROGRAM:
-		sl[DIM_PROGRAM] = program;
-		sl[DIM_STATUS] = ST_PROGRAM;
-		sl[DIM_SEASON] = SE_SUMMER;
+		values_list[DIM_PROGRAM] = program;
+		values_list[DIM_STATUS] = ST_PROGRAM;
+		values_list[DIM_SEASON] = SE_SUMMER;
 		break;
 
 	case SUM_SCENARIO:
-		sl[DIM_SCENARIO] = program;
-		sl[DIM_STATUS] = ST_SCENARIO;
-		sl[DIM_SEASON] = SE_SUMMER;
+		values_list[DIM_SCENARIO] = program;
+		values_list[DIM_STATUS] = ST_SCENARIO;
+		values_list[DIM_SEASON] = SE_SUMMER;
 		break;
 
 	case SUM_HOLIDAY:
-		sl[DIM_STATUS] = ST_HOLIDAY;
-		sl[DIM_SEASON] = SE_SUMMER;
+		values_list[DIM_STATUS] = ST_HOLIDAY;
+		values_list[DIM_SEASON] = SE_SUMMER;
 		break;
 
 	case WIN_PROTECTION:
-		sl[DIM_STATUS] = ST_PROTECTION;
-		sl[DIM_SEASON] = SE_WINTER;
+		values_list[DIM_STATUS] = ST_PROTECTION;
+		values_list[DIM_SEASON] = SE_WINTER;
 		break;
 
 	case WIN_OFF:
-		sl[DIM_STATUS] = ST_OFF;
-		sl[DIM_SEASON] = SE_WINTER;
+		values_list[DIM_STATUS] = ST_OFF;
+		values_list[DIM_SEASON] = SE_WINTER;
 		break;
 
 	case WIN_MANUAL:
@@ -267,40 +267,40 @@ void ThermalDevice::manageFrame(OpenMsg &msg)
 		{
 			Q_ASSERT_X(msg.whatArgCnt() > 0, "ThermalDevice::manageFrame", "Manual setting frame with no arguments received");
 			int sp = msg.whatArgN(0);
-			sl[DIM_TEMPERATURE] = sp;
+			values_list[DIM_TEMPERATURE] = sp;
 		}
-		sl[DIM_STATUS] = command == WIN_MANUAL ? ST_MANUAL : ST_MANUAL_TIMED;
-		sl[DIM_SEASON] = SE_WINTER;
+		values_list[DIM_STATUS] = command == WIN_MANUAL ? ST_MANUAL : ST_MANUAL_TIMED;
+		values_list[DIM_SEASON] = SE_WINTER;
 		break;
 
 	case WIN_WEEKEND:
-		sl[DIM_STATUS] = ST_WEEKEND;
-		sl[DIM_SEASON] = SE_WINTER;
+		values_list[DIM_STATUS] = ST_WEEKEND;
+		values_list[DIM_SEASON] = SE_WINTER;
 		break;
 
 	case WIN_PROGRAM:
-		sl[DIM_PROGRAM] = program;
-		sl[DIM_STATUS] = ST_PROGRAM;
-		sl[DIM_SEASON] = SE_WINTER;
+		values_list[DIM_PROGRAM] = program;
+		values_list[DIM_STATUS] = ST_PROGRAM;
+		values_list[DIM_SEASON] = SE_WINTER;
 		break;
 
 	case WIN_SCENARIO:
-		sl[DIM_SCENARIO] = program;
-		sl[DIM_STATUS] = ST_SCENARIO;
-		sl[DIM_SEASON] = SE_WINTER;
+		values_list[DIM_SCENARIO] = program;
+		values_list[DIM_STATUS] = ST_SCENARIO;
+		values_list[DIM_SEASON] = SE_WINTER;
 		break;
 
 	case WIN_HOLIDAY:
-		sl[DIM_STATUS] = ST_HOLIDAY;
-		sl[DIM_SEASON] = SE_WINTER;
+		values_list[DIM_STATUS] = ST_HOLIDAY;
+		values_list[DIM_SEASON] = SE_WINTER;
 		break;
 
 	default:
 		break;
 	}
 
-	if (sl.count() > 0)
-		emit status_changed(sl);
+	if (values_list.count() > 0)
+		emit valueReceived(values_list);
 }
 
 int ThermalDevice::commandRange(int what)

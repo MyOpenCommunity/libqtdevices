@@ -103,6 +103,11 @@ namespace VCTCallPrivate
 		void startVideo();
 		void stopVideo();
 
+		// Only 1 instance can be active at the same time, so we have to use the
+		// enable/disable methods to ensure that.
+		void enable();
+		void disable();
+
 		// Common graphical objects
 		BtButton *setup_vct;
 		CameraMove *camera;
@@ -128,12 +133,13 @@ namespace VCTCallPrivate
 		void videoFinished();
 
 	private slots:
-		void status_changed(const DeviceValues &sl);
+		void valueReceived(const DeviceValues &values_list);
 		void toggleCameraSettings();
 		void handleClose();
 		void toggleMute();
 		void changeVolume(int value);
 		void finished(int exitcode, QProcess::ExitStatus exitstatus);
+		void resumeVideo();
 
 	private:
 		FormatVideo format;
@@ -178,9 +184,13 @@ class VCTCallPage : public Page
 Q_OBJECT
 public:
 	VCTCallPage(EntryphoneDevice *d);
+	~VCTCallPage();
 	static void setHandsFree(bool on);
 	static void setProfStudio(bool on);
 	virtual int sectionId();
+
+public slots:
+	virtual void cleanUp();
 
 private slots:
 	void incomingCall();

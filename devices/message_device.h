@@ -80,7 +80,7 @@ public:
 	explicit MessageDevice(int openserver_id = 0);
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 private slots:
 	void timeout();

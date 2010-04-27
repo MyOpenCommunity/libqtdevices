@@ -46,7 +46,7 @@ public:
 	void requestStatus();
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 	virtual void requestPullStatus();
 };
 
@@ -63,14 +63,14 @@ public:
 	virtual void init();
 	void requestStatus() const;
 
-	// This enum is required to pass the information about the status with the status_changed signal
+	// This enum is required to pass the information about the status with the valueReceived signal
 	enum Type
 	{
 		DIM_STATUS
 	};
 
 protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &status_list);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 };
 
 #endif // DEV_AUTOMATION_H

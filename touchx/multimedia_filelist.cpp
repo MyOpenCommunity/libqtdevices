@@ -99,14 +99,6 @@ MultimediaFileListPage::MultimediaFileListPage()
 		audioplayer, SLOT(playAudioFiles(QList<QString>, unsigned)));
 }
 
-void MultimediaFileListPage::browse(const QString &dir)
-{
-	root_path = dir;
-
-	setRootPath(dir);
-	showPage();
-}
-
 bool MultimediaFileListPage::browseFiles(const QDir &directory, QList<QFileInfo> &files)
 {
 	QStringList filters;
@@ -133,20 +125,24 @@ bool MultimediaFileListPage::browseFiles(const QDir &directory, QList<QFileInfo>
 		if (f.fileName() == "." || f.fileName() == "..")
 			continue;
 
+		QStringList icons;
+
 		if (f.isFile())
 		{
-			ItemList::ItemInfo info(f.fileName(), QString(),
-						   file_icons[fileType(f)],
-						   play_file);
+			icons << file_icons[fileType(f)];
+			icons << play_file;
+
+			ItemList::ItemInfo info(f.fileName(), QString(), icons);
 
 			names_list.append(info);
 			files.append(f);
 		}
 		else if (f.isDir())
 		{
-			ItemList::ItemInfo info(f.fileName(), QString(),
-						   file_icons[DIRECTORY],
-						   browse_directory);
+			icons << file_icons[DIRECTORY];
+			icons << browse_directory;
+
+			ItemList::ItemInfo info(f.fileName(), QString(), icons);
 
 			names_list.append(info);
 			files.append(f);
@@ -230,19 +226,19 @@ void MultimediaFileListPage::prevItem()
 
 void MultimediaFileListPage::unmounted(const QString &dir)
 {
-	if (dir == root_path && isVisible())
+	if (dir == getRootPath() && isVisible())
 		emit Closed();
-	root_path = QString();
+	setRootPath("");
 }
 
 void MultimediaFileListPage::unmount()
 {
-	MountWatcher::getWatcher().unmount(root_path);
+	MountWatcher::getWatcher().unmount(getRootPath());
 }
 
 void MultimediaFileListPage::showPage()
 {
-	if (root_path.isEmpty())
+	if (getRootPath().isEmpty())
 		emit Closed();
 	else
 		FileSelector::showPage();
@@ -251,7 +247,7 @@ void MultimediaFileListPage::showPage()
 // TODO remove showPageNoReload, and only try to reload the file list if it is empty
 void MultimediaFileListPage::showPageNoReload()
 {
-	if (root_path.isEmpty())
+	if (getRootPath().isEmpty())
 		emit Closed();
 	else
 		Selector::showPage();
