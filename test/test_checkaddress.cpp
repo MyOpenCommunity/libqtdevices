@@ -81,6 +81,7 @@ void TestCheckAddress::testCheckAddressEnvironmentLevel4()
 {
 	QString environment = "3#4#12";
 	QCOMPARE(checkAddressIsForMe(environment, "0313#4#12"), ENVIRONMENT);
+	QCOMPARE(checkAddressIsForMe(environment, "31"), NOT_MINE);
 }
 
 void TestCheckAddress::testCheckAddressEnvironmentLevel3()
