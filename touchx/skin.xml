@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <style>
+	<!-- Touch 10'' skin file-->
 	<ver_xml>1.0</ver_xml>
 	<css>
 QLabel, QLCDNumber { color:#FFFFFF; }
@@ -13,7 +14,21 @@ QWidget[SecondFgColor="true"] QWidget {color:#6FB2FF;}
 QWidget[ReversedColor="true"] {color:#1E1E1E;background-color:#D8D8D8;}
 QWidget[PlayerInfo="true"] { color: #b0b0f8; }
 TextOnImageLabel { qproperty-text_color:#D8D8D8; }
-EnergyGraph { qproperty-primary_color:#1449C8; qproperty-secondary_color:#3587FF; qproperty-border_color: blue;}
+EnergyGraph {
+	qproperty-primary_color: #1449C8;
+	qproperty-secondary_color: #3587FF;
+	qproperty-border_color: blue;
+	qproperty-axis_color: white;
+	qproperty-text_color: white;
+}
+EnergyTableContent {
+	qproperty-border_color: #41474d;
+	qproperty-heading_color: #3587ff;
+	qproperty-odd_row_color: #41474d;
+	qproperty-even_row_color: #2e3236;
+	qproperty-text_color: #d8d8d8;
+}
+
 KeypadWithState QLabel[ActiveState="true"] { background-color:white; color:black; }
 HeaderInfo { background-image: url(cfg/extra/1/skin/topinfobar.png); }
 HeaderNavigationBar { background-image: url(cfg/extra/1/skin/topnavigationbar.png); }

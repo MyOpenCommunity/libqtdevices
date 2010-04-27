@@ -275,9 +275,13 @@ EnergyTable::EnergyTable(int n_dec)
 
 	NavigationBar *nav_bar = new NavigationBar;
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+#ifdef LAYOUT_BTOUCH
 	connect(nav_bar, SIGNAL(downClick()), table, SLOT(pageUp()));
 	connect(nav_bar, SIGNAL(upClick()), table, SLOT(pageDown()));
-
+#else
+	connect(nav_bar, SIGNAL(downClick()), table, SLOT(pageDown()));
+	connect(nav_bar, SIGNAL(upClick()), table, SLOT(pageUp()));
+#endif
 	buildPage(content, nav_bar);
 }
 
