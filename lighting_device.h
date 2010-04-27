@@ -25,6 +25,11 @@
 #include "pulldevice.h"
 
 
+#define PULL_DELAY_LIGHT       1500
+#define PULL_DELAY_DIMMER10    4000
+#define PULL_DELAY_DIMMER100   9000
+
+
 class LightingDevice : public PullDevice
 {
 friend class TestLightingDevice;
@@ -40,7 +45,7 @@ public:
 		DIM_DIMMER100_SPEED,
 	};
 
-	LightingDevice(QString where, PullMode pull = PULL_UNKNOWN);
+	LightingDevice(QString where, PullMode pull = PULL_UNKNOWN, int pull_delay = PULL_DELAY_LIGHT);
 
 	void turnOn();
 	void turnOn(int speed);
@@ -63,7 +68,7 @@ class DimmerDevice : public LightingDevice
 friend class TestDimmer;
 Q_OBJECT
 public:
-	DimmerDevice(QString where, PullMode pull = PULL_UNKNOWN);
+	DimmerDevice(QString where, PullMode pull = PULL_UNKNOWN, int pull_delay = PULL_DELAY_DIMMER10);
 
 	void increaseLevel();
 	void decreaseLevel();
@@ -79,7 +84,7 @@ class Dimmer100Device : public DimmerDevice
 friend class TestDimmer100;
 Q_OBJECT
 public:
-	Dimmer100Device(QString where, PullMode pull = PULL_UNKNOWN);
+	Dimmer100Device(QString where, PullMode pull = PULL_UNKNOWN, int pull_delay = PULL_DELAY_DIMMER100);
 
 	void increaseLevel100(int delta, int speed);
 	void decreaseLevel100(int delta, int speed);

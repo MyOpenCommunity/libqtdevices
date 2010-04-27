@@ -34,8 +34,8 @@ enum RequestDimension
 };
 
 
-AutomationDevice::AutomationDevice(QString where, PullMode m) :
-	PullDevice(QString("2"), where, m)
+AutomationDevice::AutomationDevice(QString where, PullMode m, int pull_delay) :
+	PullDevice(QString("2"), where, m, pull_delay)
 {
 }
 

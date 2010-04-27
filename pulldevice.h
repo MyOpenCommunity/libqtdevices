@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -56,6 +56,7 @@ AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_whe
 class PullStateManager
 {
 friend class TestLightingDevice;
+friend class TestPullManager;
 public:
 	PullStateManager(PullMode m);
 	/**
@@ -65,6 +66,7 @@ public:
 	 */
 	bool moreFrameNeeded(OpenMsg &msg, bool is_environment);
 	PullMode getPullMode();
+	void setStatusRequested(bool status);
 
 private:
 	int status;
@@ -93,13 +95,17 @@ public:
 	virtual void manageFrame(OpenMsg &msg);
 
 protected:
-	PullDevice(QString who, QString where, PullMode m);
+	PullDevice(QString who, QString where, PullMode m, int pull_delay);
 	// parse the frame and put the results into the provided StatusList
 	virtual void parseFrame(OpenMsg &msg, StatusList *sl) = 0;
 	// different devices may need different status requests (eg. Dimmer100)
 	virtual void requestPullStatus() = 0;
 
+private slots:
+	void delayedStatusRequest();
+
 private:
 	PullStateManager state;
+	QTimer delayed_request;
 };
 #endif // PULLDEVICE_H

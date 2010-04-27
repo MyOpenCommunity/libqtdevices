@@ -153,10 +153,7 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 	if (is_environment)
 	{
 		if (status == INVALID_STATE || status != new_state)
-		{
-			status_requested = true;
 			return true;
-		}
 	}
 	else
 	{
@@ -179,10 +176,19 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 	return false;
 }
 
-PullDevice::PullDevice(QString who, QString where, PullMode m) :
+void PullStateManager::setStatusRequested(bool status)
+{
+	status_requested = status;
+}
+
+
+PullDevice::PullDevice(QString who, QString where, PullMode m, int pull_delay) :
 	device(who, where),
 	state(m)
 {
+	delayed_request.setSingleShot(true);
+	delayed_request.setInterval(pull_delay);
+	connect(&delayed_request, SIGNAL(timeout()), SLOT(delayedStatusRequest()));
 }
 
 void PullDevice::frame_rx_handler(char *frame)
@@ -191,6 +197,12 @@ void PullDevice::frame_rx_handler(char *frame)
 	msg.CreateMsgOpen(frame, strlen(frame));
 	if (who.toInt() == msg.who())
 		manageFrame(msg);
+}
+
+void PullDevice::delayedStatusRequest()
+{
+	state.setStatusRequested(true);
+	requestPullStatus();
 }
 
 void PullDevice::manageFrame(OpenMsg &msg)
@@ -203,8 +215,10 @@ void PullDevice::manageFrame(OpenMsg &msg)
 	case ENVIRONMENT:
 		if (state.getPullMode() == PULL_UNKNOWN)
 		{
+			// we need to delay the status request in order for the
+			// state of the device to stabilize
 			if (state.moreFrameNeeded(msg, true))
-				requestPullStatus();
+				delayed_request.start();
 			return;
 		}
 		else if (state.getPullMode() == PULL)

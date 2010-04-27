@@ -45,8 +45,8 @@ enum
 	DIM_DEVICE_OFF = 0,
 };
 
-LightingDevice::LightingDevice(QString where, PullMode pull) :
-	PullDevice(QString("1"), where, pull)
+LightingDevice::LightingDevice(QString where, PullMode pull, int pull_delay) :
+	PullDevice(QString("1"), where, pull, pull_delay)
 {
 }
 
@@ -154,8 +154,8 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 }
 
 
-DimmerDevice::DimmerDevice(QString where, PullMode pull) :
-	LightingDevice(where, pull)
+DimmerDevice::DimmerDevice(QString where, PullMode pull, int pull_delay) :
+	LightingDevice(where, pull, pull_delay)
 {
 }
 
@@ -203,8 +203,8 @@ int DimmerDevice::getDimmerLevel(int what)
 }
 
 
-Dimmer100Device::Dimmer100Device(QString where, PullMode pull) :
-	DimmerDevice(where, pull)
+Dimmer100Device::Dimmer100Device(QString where, PullMode pull, int pull_delay) :
+	DimmerDevice(where, pull, pull_delay)
 {
 }
 
