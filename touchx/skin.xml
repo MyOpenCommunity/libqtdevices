@@ -1145,7 +1145,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<!--
 		Energy data
-		Other tags used: img_back, img_cycle
+		Other tags used: img_back, img_cycle, img_forward, img_ok, img_minus, img_plus
 		-->
 		<cid>7000</cid>
 		<img_currency_exchange>energia/valutaset.png</img_currency_exchange>
@@ -1156,6 +1156,11 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_fast_backward>multimediale/precedente.png</img_fast_backward>
 		<img_graph>energia/grafico.png</img_graph>
 		<img_bg_banner>energia/backenergy.png</img_bg_banner>
+		<img_cost_electricity>energia/electricity.png</img_cost_electricity>
+		<img_cost_water>energia/water.png</img_cost_water>
+		<img_cost_dhw>energia/dhw.png</img_cost_dhw>
+		<img_cost_gas>energia/gas.png</img_cost_gas>
+		<img_cost_conditioning>energia/liquifiedgas.png</img_cost_conditioning>
 	</item>
 	<item>
 		<!-- Energy data: link electricity -->
