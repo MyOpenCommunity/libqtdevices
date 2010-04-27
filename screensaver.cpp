@@ -113,8 +113,11 @@ bool ScreenSaver::isRunning()
 void ScreenSaver::initData(const QDomNode &config_node)
 {
 	text = getTextChild(config_node, "text");
-#ifdef CONFIG_TOUCHX
-	int slideshow_timeout = getTextChild(config_node, "timeSlideShow").toInt();
+#ifndef CONFIG_BTOUCH
+	QDomNode n = getChildWithName(config_node, "timeSlideShow");
+	QString time = getTextChild(config_node, "timeSlideShow");
+	Q_ASSERT_X(!time.isEmpty(), "ScreenSaver::initData", "config node does not contain timeSlideShow leaf");
+	slideshow_timeout = time.toInt();
 #endif
 }
 
