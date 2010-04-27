@@ -836,19 +836,19 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- 4 zones central -->
 	<item>
-		<cid>113</cid>
+		<cid>8004</cid>
 		<img_central_icon>termoregolazione/imgimpianto.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 	</item>
 	<!-- regulator page banner 4 zones -->
 	<item>
-		<cid>114</cid>
+		<cid>8041</cid>
 		<img_central_icon>termoregolazione/imgcentrale.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 	</item>
 	<!-- zones and zone page 4 zones -->
 	<item>
-		<cid>138</cid>
+		<cid>8042</cid>
 		<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 
@@ -869,7 +869,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- regulator page 4 zones -->
 	<item>
-		<cid>200000</cid> <!-- TODO fix -->
+		<cid>8301</cid>
 		<img_summer_flat>termoregolazione/estateoffp.png</img_summer_flat>
 		<img_winter_flat>termoregolazione/invernooffp.png</img_winter_flat>
 		<img_regulator>termoregolazione/imgcentrale.png</img_regulator>
@@ -896,7 +896,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- thermal regulator settings page 4 zones -->
 	<item>
-		<cid>15</cid>
+		<cid>8320</cid>
 		<img_regulator_manual>termoregolazione/imgmanuale.png</img_regulator_manual>
 		<img_regulator_manual_timed>termoregolazione/imgmanualetemporizzato.png</img_regulator_manual_timed>
 		<img_regulator_weekend>termoregolazione/imgfestivo.png</img_regulator_weekend>

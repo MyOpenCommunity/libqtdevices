@@ -373,34 +373,9 @@ enum ItemType
 	POSTO_ESTERNO=49,                             /*!< Posto esterno */
 	SORGENTE_MULTIM=50,                           /*!< Sorgente Multimediale per Diffusione Sonora */
 	SORGENTE_MULTIM_MC=51,                        /*!< Sorgente Multimediale per Diffusione Sonora Multicanale */
-#ifdef CONFIG_BTOUCH
-	TERMO_99Z_PROBE=22,                           /*!< Probe controlled by 99 zones thermal regulator */
-	TERMO_99Z_PROBE_FANCOIL=52,                   /*!< Probe controlled by 99 zones thermal regulator with fan-coil control */
-	TERMO_4Z_PROBE=53,                            /*!< Probe controlled by 4 zones thermal regulator */
-	TERMO_4Z_PROBE_FANCOIL=54,                    /*!< Probe controlled by 4 zones thermal regulator with fan-coil control */
-	TERMO_NC_EXTPROBE=55,                         /*!< External not-controlled probe */
-	TERMO_NC_PROBE=56,                            /*!< Not-controlled probe */
-	TERMO_HOME_NC_EXTPROBE=57,                    /*!< Home page external not-controlled probe */
-	TERMO_HOME_NC_PROBE=58,                       /*!< Home page not-controlled probe */
-#else
-	TERMO_99Z_PROBE=8012,                         /*!< Probe controlled by 99 zones thermal regulator */
-	TERMO_99Z_PROBE_FANCOIL=8012,                 /*!< Probe controlled by 99 zones thermal regulator with fan-coil control */
-	TERMO_4Z_PROBE=8042,                          /*!< Probe controlled by 4 zones thermal regulator */
-	TERMO_4Z_PROBE_FANCOIL=8042,                  /*!< Probe controlled by 4 zones thermal regulator with fan-coil control */
-	TERMO_NC_EXTPROBE=8021,                       /*!< External not-controlled probe */
-	TERMO_NC_PROBE=8031,                          /*!< Not-controlled probe */
-	TERMO_HOME_NC_EXTPROBE=207,                   /*!< Home page external not-controlled probe */
-	TERMO_HOME_NC_PROBE=208,                      /*!< Home page not-controlled probe */
-#endif
 	STOPNGO=60,                                   /*!< StopnGo device */
 	STOPNGO_PLUS=61,                              /*!< StopnGo Plus device */
 	STOPNGO_BTEST=62,                             /*!< StopnGo BTest device */
-#ifdef CONFIG_BTOUCH
-	TERMO_99Z=66,                                 /*!< 99 zones thermal regulator */
-#else
-	TERMO_99Z=8011,                               /*!< 99 zones thermal regulator */
-#endif
-	TERMO_4Z=68,                                  /*!< 4 zones thermal regulator */
 	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
 	ENERGY_TYPE=70,                               /*!< The type/interface of energy management */
 	LANSETTINGS=72,                               /*!< LAN settings and information */
@@ -414,6 +389,14 @@ enum ItemType
 	AIR_GENERAL=4002,                             /*!< AIR conditioning general split (basic) */
 	AIR_SPLIT_ADV=4003,                           /*!< AIR conditioning single split (advanced) */
 	AIR_GENERAL_ADV=4004,                         /*!< AIR conditioning general split (advanced) */
+#endif
+	// for SpecialPage, HeaderWidget
+#ifdef CONFIG_BTOUCH
+	TERMO_HOME_NC_EXTPROBE=57,                    /*!< Home page external not-controlled probe */
+	TERMO_HOME_NC_PROBE=58,                       /*!< Home page not-controlled probe */
+#else
+	TERMO_HOME_NC_EXTPROBE=207,                   /*!< Home page external not-controlled probe */
+	TERMO_HOME_NC_PROBE=208,                      /*!< Home page not-controlled probe */
 #endif
 };
 
