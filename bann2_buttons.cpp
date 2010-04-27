@@ -105,7 +105,7 @@ void Bann2Buttons::initBanner(const QString &left, const QString &right, const Q
 	FontManager::Type text_font, const QString &banner_description, FontManager::Type description_font)
 {
 	center_label = new QLabel;
-	static_cast<QGridLayout*>(layout())->addWidget(center_label, 0, 1);
+	static_cast<QGridLayout*>(layout())->addWidget(center_label, 0, 1, Qt::AlignCenter);
 
 	initButton(left_button, left);
 	initButton(right_button, right);
