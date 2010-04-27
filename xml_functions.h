@@ -57,11 +57,18 @@ QList<QDomNode> getChildren(const QDomNode &parent, const QString &name);
   * Find a node in the DOM tree that is descendent of the node 'parent'.
   * \param root the node root of the tree
   * \param node_regexp the regular expression that has to be matched with the target node
+  * \param tag_name the name of the tag to search
   * \param id the id of the target node
   * \param the serial number of the target node.
   * \return A Null node if the node is not found, the target node ortherwise.
   */
-QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, const QString &id_name, int id, int& serial_number);
+QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, const QString &tag_name, int id, int& serial_number);
+
+inline QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, const QString &tag_name, int id)
+{
+	int serial_number = 1;
+	return findXmlNode(root, node_regexp, tag_name, id, serial_number);
+}
 
 // Some convenient overloads for the above function
 inline QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, int id, int& serial_number)

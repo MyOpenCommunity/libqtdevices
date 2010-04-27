@@ -34,20 +34,15 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_back>navigazione/back.png</img_back>
 		<img_forward>setup/arrdx.png</img_forward>
 		<img_ok>setup/ok.png</img_ok>
-		<img_choice>btnemty.png</img_choice>
 		<img_scroll_up>navigazione/up.png</img_scroll_up>
 		<img_scroll_down>navigazione/down.png</img_scroll_down>
 		<img_arrow_up>navigazione/up.png</img_arrow_up>
 		<img_arrow_down>navigazione/down.png</img_arrow_down>
 		<img_plus>termoregolazione/piu.png</img_plus>
 		<img_minus>termoregolazione/meno.png</img_minus>
-		<img_fast_forward>btnforward.png</img_fast_forward>
-		<img_fast_backward>btnbackward.png</img_fast_backward>
 		<img_cycle>diffusione/cycle.png</img_cycle>
 		<img_on>setup/on.png</img_on>
 		<img_off>setup/off.png</img_off>
-		<img_stop>btnstop.png</img_stop>
-		<img_empty_icon>empty.png</img_empty_icon>
 		<img_info>settup/info.png</img_info>
 		<img_cancel>setup/canc.png</img_cancel>
 		<img_num_0>setup/numzero.png</img_num_0>
@@ -841,19 +836,19 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- 4 zones central -->
 	<item>
-		<cid>113</cid>
+		<cid>8004</cid>
 		<img_central_icon>termoregolazione/imgimpianto.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 	</item>
 	<!-- regulator page banner 4 zones -->
 	<item>
-		<cid>114</cid>
+		<cid>8041</cid>
 		<img_central_icon>termoregolazione/imgcentrale.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 	</item>
 	<!-- zones and zone page 4 zones -->
 	<item>
-		<cid>138</cid>
+		<cid>8042</cid>
 		<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 
@@ -874,7 +869,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- regulator page 4 zones -->
 	<item>
-		<cid>200000</cid> <!-- TODO fix -->
+		<cid>8301</cid>
 		<img_summer_flat>termoregolazione/estateoffp.png</img_summer_flat>
 		<img_winter_flat>termoregolazione/invernooffp.png</img_winter_flat>
 		<img_regulator>termoregolazione/imgcentrale.png</img_regulator>
@@ -901,7 +896,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- thermal regulator settings page 4 zones -->
 	<item>
-		<cid>15</cid>
+		<cid>8320</cid>
 		<img_regulator_manual>termoregolazione/imgmanuale.png</img_regulator_manual>
 		<img_regulator_manual_timed>termoregolazione/imgmanualetemporizzato.png</img_regulator_manual_timed>
 		<img_regulator_weekend>termoregolazione/imgfestivo.png</img_regulator_weekend>
@@ -1150,11 +1145,22 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<!--
 		Energy data
-		Other tags used:
+		Other tags used: img_back, img_cycle, img_forward, img_ok, img_minus, img_plus
 		-->
 		<cid>7000</cid>
-		<img_currency_exchange>energia/valuta.png</img_currency_exchange>
+		<img_currency_exchange>energia/valutaset.png</img_currency_exchange>
 		<img_select>energia/arrdx.png</img_select>
+		<img_currency>energia/valuta.png</img_currency>
+		<img_table>energia/edit.png</img_table>
+		<img_fast_forward>multimediale/successivo.png</img_fast_forward>
+		<img_fast_backward>multimediale/precedente.png</img_fast_backward>
+		<img_graph>energia/grafico.png</img_graph>
+		<img_bg_banner>energia/backenergy.png</img_bg_banner>
+		<img_cost_electricity>energia/electricity.png</img_cost_electricity>
+		<img_cost_water>energia/water.png</img_cost_water>
+		<img_cost_dhw>energia/dhw.png</img_cost_dhw>
+		<img_cost_gas>energia/gas.png</img_cost_gas>
+		<img_cost_conditioning>energia/liquifiedgas.png</img_cost_conditioning>
 	</item>
 	<item>
 		<!-- Energy data: link electricity -->
@@ -1186,5 +1192,40 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>7006</cid>
 		<img_energy_type>energia/liquifiedgas.png</img_energy_type>
 	</item>
+	<item>
+		<!-- Load Management -->
+		<cid>18</cid>
+		<img_link_icon>home/carichi.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/carichi.png</img_top_navigation_button>
+	</item>
+	<item>
+		<!-- Load Management -->
+		<cid>18000</cid>
+		<img_link_icon>home/energy.png</img_link_icon>
+	</item>
+	<item>
+		<!--
+		Load Management with central unit
 
+		Leaks img_reset and img_empty_background
+		-->
+		<cid>18001</cid>
+		<img_load>home/carichi.png</img_load>
+		<img_empty_background>energy/backenergy.png</img_empty_background>
+		<img_on>carichi/on.png</img_on>
+		<img_not_forced>carichi/on.png</img_not_forced>
+		<img_forced>carichi/ondis.png</img_forced>
+		<img_reset>home/energy.png</img_reset>
+	</item>
+	<item>
+		<!--
+		Load Management without central unit
+
+		Leaks img_reset and img_empty_background
+		-->
+		<cid>18002</cid>
+		<img_load>home/carichi.png</img_load>
+		<img_empty_background>energy/backenergy.png</img_empty_background>
+		<img_reset>home/energy.png</img_reset>
+	</item>
 </style>
