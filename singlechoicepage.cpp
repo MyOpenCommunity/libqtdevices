@@ -27,12 +27,12 @@
 #include <QDebug>
 
 
-SingleChoicePage::SingleChoicePage()
+SingleChoicePage::SingleChoicePage(const QString &title)
 {
 #ifdef LAYOUT_BTOUCH
-	buildPage(new SingleChoiceContent, new NavigationBar("ok"));
+	buildPage(new SingleChoiceContent, new NavigationBar("ok"), title);
 #else
-	buildPage(new SingleChoiceContent, new NavigationBar);
+	buildPage(new SingleChoiceContent, new NavigationBar, title);
 #endif
 
 	connect(this, SIGNAL(forwardClick()), SLOT(okPressed()));
