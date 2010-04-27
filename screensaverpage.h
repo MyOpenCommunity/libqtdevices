@@ -126,9 +126,6 @@ private slots:
 private:
 	ImageSelectionHandler *handler;
 
-	// Filters for images
-	QStringList filters;
-
 	// Icon path
 	QString browse_directory;
 	QString selbutton_on;
