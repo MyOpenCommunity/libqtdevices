@@ -35,6 +35,7 @@
 #include "generic_functions.h" // DateConversion::formatDateConfig
 #include "energy_management.h" // isRateEditDisplayed
 #include "energy_data.h" // EnergyCost
+#include "btbutton.h"
 
 #include <QLabel>
 #include <QDebug>
@@ -459,14 +460,36 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node, LoadsDev
 
 	QWidget *top = buildTitle(getDescriptionWithPriority(config_node));
 
+#ifdef LAYOUT_BTOUCH
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
-	nav_bar->displayScrollButtons(false);
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	// TODO: cancel user selection?
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(sendDeactivateDevice()));
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
+#else
+	NavigationBar *nav_bar = new NavigationBar();
+#endif
+	nav_bar->displayScrollButtons(false);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
+#ifdef LAYOUT_TOUCHX
+	QWidget *content = new QWidget;
+	QHBoxLayout *hlayout = new QHBoxLayout;
+	hlayout->addStretch();
+	hlayout->addWidget(new DeactivationTime(BtTime(2, 30, 0)));
+	hlayout->addStretch();
+
+	QVBoxLayout *vlayout = new QVBoxLayout;
+	vlayout->addLayout(hlayout);
+	BtButton *ok_button = new BtButton(bt_global::skin->getImage("ok"));
+	connect(ok_button, SIGNAL(clicked()), SLOT(sendDeactivateDevice()));
+	connect(ok_button, SIGNAL(clicked()), SIGNAL(Closed()));
+	vlayout->addWidget(ok_button, 0, Qt::AlignRight);
+
+	content->setLayout(vlayout);
+	buildPage(content, nav_bar, "", 0, top);
+#else
 	buildPage(new DeactivationTime(BtTime(2, 30, 0)), nav_bar, "", 0, top);
+#endif
 	dev = d;
 }
 
