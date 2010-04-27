@@ -349,7 +349,10 @@ void EnergyDevice::requestDailyAverageGraph16Bit(QDate date) const
 
 void EnergyDevice::requestMontlyAverage(QDate date) const
 {
-	requestCumulativeMonth(date);
+	if (!has_new_frames)
+		requestCumulativeMonth(date);
+	else
+		requestDailyAverageGraph16Bit(date);
 }
 
 void EnergyDevice::requestCumulativeDayGraph(QDate date) const
