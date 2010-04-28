@@ -28,6 +28,7 @@
 #include "homewindow.h"
 #include "pagestack.h"
 #include "generic_functions.h"
+#include "imageselectionhandler.h"
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -317,10 +318,8 @@ void ScreenSaverText::customizeLine()
 
 
 ScreenSaverSlideshow::ScreenSaverSlideshow() :
-	ScreenSaver(slideshow_timeout),
-	iter(SLIDESHOW_FILENAME)
+	ScreenSaver(slideshow_timeout)
 {
-	iter.setFileFilter(getImageFileFilter());
 	image_on_screen = new QLabel(this);
 	image_on_screen->setGeometry(0, 0, width(), height());
 	blending_timeline.setDuration(2000);
@@ -330,6 +329,8 @@ ScreenSaverSlideshow::ScreenSaverSlideshow() :
 
 void ScreenSaverSlideshow::start(Window *w)
 {
+	iter = new ImageIterator(SLIDESHOW_FILENAME);
+	iter->setFileFilter(getImageFileFilter());
 	ScreenSaver::start(w);
 	showWindow();
 	next_image = QPixmap(width(), height());
@@ -343,11 +344,13 @@ void ScreenSaverSlideshow::stop()
 {
 	blending_timeline.stop();
 	ScreenSaver::stop();
+	iter->saveImagesToFile();
+	delete iter;
 }
 
 void ScreenSaverSlideshow::refresh()
 {
-	QString img = iter.next();
+	QString img = iter->next();
 	if (!img.isEmpty())
 	{
 		current_image = next_image;

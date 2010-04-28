@@ -122,6 +122,15 @@ void ImageIterator::setFileFilter(const QStringList &filters)
 	file_filters = filters;
 }
 
+void ImageIterator::saveImagesToFile()
+{
+	QStringList l;
+	foreach (const QString &str, paths)
+		l << str;
+	if (!saveTextFile(l, SLIDESHOW_FILENAME))
+		qWarning() << "ImageIterator::saveImagesToFile, could not save images file";
+}
+
 ImageIterator::~ImageIterator()
 {
 	delete dir_iter;

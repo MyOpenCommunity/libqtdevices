@@ -55,6 +55,8 @@ public:
 	 */
 	QString next();
 
+	void saveImagesToFile();
+
 	~ImageIterator();
 
 private:
