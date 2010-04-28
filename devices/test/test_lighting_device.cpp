@@ -131,6 +131,12 @@ void TestLightingDevice::checkPullUnknown()
 	t.checkSignals(env_off, 0);
 }
 
+void TestLightingDevice::sendPullRequestIfNeeded()
+{
+	if (dev->delayed_request.isActive())
+		dev->delayedStatusRequest();
+}
+
 void TestLightingDevice::receiveLightOnOffPull()
 {
 	setParams(LIGHT_DEVICE_WHERE, PULL);
@@ -149,6 +155,7 @@ void TestLightingDevice::receiveLightOnOffUnknown2()
 	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
 	QString global_on = "*1*1*0##";
 	t.checkSignals(global_on, 0);
+	sendPullRequestIfNeeded();
 	client_request->flush();
 	QCOMPARE(server->frameRequest(), getRequestStatusFrame());
 }
@@ -172,6 +179,7 @@ void TestLightingDevice::receiveLightOnOffUnknownExt2()
 	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
 	QString env_off = QString("*1*0*3%1##").arg(LIGHT_ADDR_EXTENSION);
 	t.checkSignals(env_off, 0);
+	sendPullRequestIfNeeded();
 	client_request->flush();
 	QCOMPARE(server->frameRequest(), getRequestStatusFrame());
 }
