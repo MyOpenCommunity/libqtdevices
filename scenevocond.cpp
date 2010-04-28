@@ -28,6 +28,9 @@
 
 #include <QLabel>
 
+#ifdef CONFIG_BTOUCH
+#define SCENARIO_EVOLUTO 38
+#endif
 
 
 int ScenEvoCondition::get_serial_number()

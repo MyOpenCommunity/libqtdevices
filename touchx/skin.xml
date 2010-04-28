@@ -321,16 +321,19 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/scenari.png</img_top_navigation_button>
 	</item>
 	<item>
-		<cid>120</cid>
+		<!-- Scheduled/advanced scenarios section -->
+		<cid>9</cid>
 		<img_link_icon>home/scenarievoluti.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/scenarievoluti.png</img_top_navigation_button>
 	</item>
 	<item>
+		<!-- Videodoorentry section -->
 		<cid>10</cid>
 		<img_link_icon>home/videocitofonia.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/videocitofonia.png</img_top_navigation_button>
 	</item>
 	<item>
+		<!-- Multimedia section -->
 		<cid>16</cid>
 		<img_link_icon>home/contenutimultimediali.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/contenutimultimediali.png</img_top_navigation_button>
@@ -1009,14 +1012,14 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- evolved scenario menu banners -->
 	<item>
-		<cid>20000</cid>
+		<cid>9002</cid>
 		<img_enable_scen>scenarievoluti/scenariabon.png</img_enable_scen>
 		<img_disable_scen>scenarievoluti/scenariaboff.png</img_disable_scen>
 		<img_start>scenarievoluti/start.png</img_start>
 		<img_stop>scenarievoluti/stop.png</img_stop>
 	</item>
 	<item>
-		<cid>20001</cid>
+		<cid>9001</cid>
 		<img_enable_scen>scenarievoluti/scenariabon.png</img_enable_scen>
 		<img_disable_scen>scenarievoluti/scenariaboff.png</img_disable_scen>
 		<img_start>scenarievoluti/startbig.png</img_start>

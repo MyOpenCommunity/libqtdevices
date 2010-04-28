@@ -200,7 +200,7 @@ enum Section
 	MESSAGES=17000,                               /*!< Textual Messages from scs */
 	LOAD_MANAGEMENT=18000,                        /*!< Load management system */
 	SCENARI=1000,                                 /*!< Scenarios managing */
-	SCENARI_EVOLUTI=20,                           /*!< Advanced scenarios management */
+	SCENARI_EVOLUTI=9000,                         /*!< Advanced scenarios management */
 	VIDEOCITOFONIA=10000,                         /*!< VideoDoorEntry system */
 	IMPOSTAZIONI=29,                              /*!< Settings */
 	MULTIMEDIA=16000,                             /*!< Multimedia system */
@@ -359,8 +359,6 @@ enum ItemType
 	DIMMER_100=35,                                /*!<  New dimmer */
 	ATTUAT_AUTOM_TEMP_NUOVO_N=36,                 /*!< Attuatore temp nuovo, N tempi */
 	ATTUAT_AUTOM_TEMP_NUOVO_F=37,                 /*!< Attuatore temp nuovo, fisso */
-	SCENARIO_EVOLUTO=38,                          /*!< Scenario evoluto */
-	SCENARIO_SCHEDULATO=39,                       /*!< Scenario schedulato */
 	AUTOM_CANC_ATTUAT_ILL=40,                     /*!< Automatismi-Cancello con attuatore illuminazione */
 	AUTOM_CANC_ATTUAT_VC=41,                      /*!< Automatismi-Cancello con attuatore videocitofonia */
 	PPT_STAT=42,                                  /*!< Automatismi-PPTStat */
