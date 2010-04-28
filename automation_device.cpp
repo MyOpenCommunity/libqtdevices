@@ -98,6 +98,12 @@ void PPTStatDevice::manageFrame(OpenMsg &msg)
 	if (where.toInt() != msg.where())
 		return;
 
+	// In some cases (when more than a ts is present in the system)
+	// a request frame can arrive from the monitor socket. We have to manage this
+	// situation.
+	if (msg.IsStateFrame() || msg.IsNormalFrame())
+		return;
+
 	int what = msg.what();
 
 	if (what == REQ_STATUS_OPEN || what == REQ_STATUS_CLOSE)
