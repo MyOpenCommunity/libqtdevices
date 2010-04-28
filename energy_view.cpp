@@ -92,20 +92,22 @@ namespace
 		return label;
 	}
 
-	QWidget *createWidgetWithVBoxLayout()
+	QWidget *createWidgetWithGridLayout()
 	{
 		QWidget *w = new QWidget;
-		QVBoxLayout *main_layout = new QVBoxLayout(w);
+		QGridLayout *main_layout = new QGridLayout(w);
 		main_layout->setContentsMargins(0, 0, 0, 0);
 		main_layout->setSpacing(0);
+		main_layout->setColumnStretch(0, 1);
+		main_layout->setColumnStretch(2, 1);
 		return w;
 	}
 
 	void addWidgetToLayout(QWidget *parent, QWidget *child)
 	{
-		QVBoxLayout *l = static_cast<QVBoxLayout *>(parent->layout());
-
-		l->addWidget(child, 1, Qt::AlignTop);
+		QGridLayout *l = static_cast<QGridLayout*>(parent->layout());
+		l->addWidget(child, l->rowCount(), 1, 1, 1, Qt::AlignTop | Qt::AlignLeft);
+//		l->addWidget(child, 1, Qt::AlignTop);
 	}
 
 	enum EnergyViewPage
@@ -209,7 +211,8 @@ QString TimePeriodSelection::formatDate(const QDate &date, TimePeriod period)
 		return DateConversions::formatDateConfig(date);
 	case MONTH:
 		// no need to modify the format to american
-		return date.toString("MM.yy");
+		return date.toString(QString("MM%1yy").arg(DateConversions::separator));
+
 	case YEAR:
 	default:
 		return tr("Last 12 months");
@@ -387,7 +390,6 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	main_layout->addWidget(widget_container, 1);
 	connect(nav_bar, SIGNAL(toggleCurrency()), SLOT(toggleCurrency()));
 	connect(nav_bar, SIGNAL(showTable()), table, SLOT(showPage()));
-
 #else
 	table_button = new BtButton(bt_global::skin->getImage("table"), this);
 	currency_button = new BtButton(bt_global::skin->getImage("currency"), this);
@@ -787,7 +789,8 @@ QWidget *EnergyView::buildBannerWidget()
 
 	current_banner = new BannCurrentEnergy(tr("Current"), dev);
 
-	QWidget *daily_widget = createWidgetWithVBoxLayout();
+
+	QWidget *daily_widget = createWidgetWithGridLayout();
 	addWidgetToLayout(daily_widget, cumulative_day_banner);
 	addWidgetToLayout(daily_widget, current_banner);
 
@@ -800,7 +803,7 @@ QWidget *EnergyView::buildBannerWidget()
 	connect(daily_av_banner, SIGNAL(rightClicked()), mapper, SLOT(map()));
 	mapper->setMapping(daily_av_banner, EnergyDevice::DAILY_AVERAGE);
 
-	QWidget *monthly_widget = createWidgetWithVBoxLayout();
+	QWidget *monthly_widget = createWidgetWithGridLayout();
 	addWidgetToLayout(monthly_widget, cumulative_month_banner);
 	addWidgetToLayout(monthly_widget, daily_av_banner);
 
@@ -809,7 +812,7 @@ QWidget *EnergyView::buildBannerWidget()
 	connect(cumulative_year_banner, SIGNAL(rightClicked()), mapper, SLOT(map()));
 	mapper->setMapping(cumulative_year_banner, EnergyDevice::CUMULATIVE_YEAR);
 
-	QWidget *yearly_widget = createWidgetWithVBoxLayout();
+	QWidget *yearly_widget = createWidgetWithGridLayout();
 	addWidgetToLayout(yearly_widget, cumulative_year_banner);
 
 	QStackedWidget *w = new QStackedWidget;
