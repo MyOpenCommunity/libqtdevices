@@ -135,13 +135,34 @@ LoadManagement::LoadManagement(const QDomNode &config_node) :
 	// display the button to edit rates if more than one family
 	if (EnergyRates::energy_rates.hasRates() && !EnergyManagement::isRateEditDisplayed())
 	{
+		Page *costs = new EnergyCost;
+		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
+
+#ifdef LAYOUT_BTOUCH
 		NavigationBar *nav = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 		buildPage(new BannerContent, nav);
-
-		Page *costs = new EnergyCost;
-
 		connect(this, SIGNAL(forwardClick()), costs, SLOT(showPage()));
-		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
+#else
+		QWidget *content = new QWidget;
+
+		QVBoxLayout *vlayout = new QVBoxLayout;
+		BannerContent *banner_content = new BannerContent;
+		vlayout->addWidget(banner_content, 2);
+
+		QHBoxLayout *buttons_layout = new QHBoxLayout;
+		buttons_layout->addStretch(2);
+
+		BtButton *costs_button = new BtButton(bt_global::skin->getImage("currency_exchange"));
+		connect(costs_button, SIGNAL(clicked()), costs, SLOT(showPage()));
+
+		buttons_layout->addWidget(costs_button, 1, Qt::AlignCenter);
+
+		vlayout->addLayout(buttons_layout, 1);
+
+		content->setLayout(vlayout);
+		buildPage(content, banner_content, new NavigationBar);
+#endif
+
 	}
 	else
 		buildPage();
@@ -378,8 +399,12 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 	int decimals = getDecimals(config_node);
 	content = new LoadDataContent(decimals, rate_id);
 
+#ifdef LAYOUT_BTOUCH
 	NavigationBar *nav_bar = new NavigationBar(forward_button);
 	connect(nav_bar, SIGNAL(forwardClick()), content, SLOT(toggleCurrencyView()));
+#else
+	NavigationBar *nav_bar = new NavigationBar;
+#endif
 
 	QLabel *page_title = new QLabel(getDescriptionWithPriority(config_node));
 	page_title->setFont(bt_global::font->get(FontManager::TEXT));
@@ -398,7 +423,27 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+
+#ifdef LAYOUT_BTOUCH
 	buildPage(content, nav_bar, "", 0, top);
+#else
+	QWidget *container = new QWidget;
+	QVBoxLayout *vlayout = new QVBoxLayout;
+	vlayout->addWidget(content, 2);
+
+	QHBoxLayout *buttons_layout = new QHBoxLayout;
+	buttons_layout->addStretch(2);
+	if (isRateEnabled(config_node))
+	{
+		BtButton *currency_button = new BtButton(bt_global::skin->getImage("currency_exchange"));
+		connect(currency_button, SIGNAL(clicked()), content, SLOT(toggleCurrencyView()));
+		buttons_layout->addWidget(currency_button, 1, Qt::AlignCenter);
+	}
+	vlayout->addLayout(buttons_layout, 1);
+	container->setLayout(vlayout);
+
+	buildPage(container, nav_bar, "", 0, top);
+#endif
 }
 
 void LoadDataPage::showEvent(QShowEvent *e)
@@ -473,17 +518,24 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node, LoadsDev
 
 #ifdef LAYOUT_TOUCHX
 	QWidget *content = new QWidget;
-	QHBoxLayout *hlayout = new QHBoxLayout;
-	hlayout->addStretch();
-	hlayout->addWidget(new DeactivationTime(BtTime(2, 30, 0)));
-	hlayout->addStretch();
+	QHBoxLayout *banner_layout = new QHBoxLayout;
+	banner_layout->addStretch();
+	banner_layout->addWidget(new DeactivationTime(BtTime(2, 30, 0)));
+	banner_layout->addStretch();
 
 	QVBoxLayout *vlayout = new QVBoxLayout;
-	vlayout->addLayout(hlayout);
+	vlayout->addLayout(banner_layout);
+
+	QHBoxLayout *buttons_layout = new QHBoxLayout;
+	buttons_layout->addStretch(2);
+
 	BtButton *ok_button = new BtButton(bt_global::skin->getImage("ok"));
 	connect(ok_button, SIGNAL(clicked()), SLOT(sendDeactivateDevice()));
 	connect(ok_button, SIGNAL(clicked()), SIGNAL(Closed()));
-	vlayout->addWidget(ok_button, 0, Qt::AlignRight);
+
+	buttons_layout->addWidget(ok_button, 1, Qt::AlignCenter);
+
+	vlayout->addLayout(buttons_layout);
 
 	content->setLayout(vlayout);
 	buildPage(content, nav_bar, "", 0, top);
