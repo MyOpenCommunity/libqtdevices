@@ -27,6 +27,7 @@
 #include "videodoorentry.h"
 #ifdef LAYOUT_TOUCHX
 #include "multimedia.h"
+#include "multimedia_filelist.h"
 #include "messages.h"
 #include "sounddiffusionpage.h"
 #else
@@ -112,7 +113,7 @@ Page *getPage(int page_id)
 		break;
 #ifdef LAYOUT_TOUCHX
 	case MULTIMEDIA:
-		page = new MultimediaSectionPage(page_node);
+		page = new MultimediaSectionPage(page_node, MultimediaSectionPage::ITEMS_ALL, new MultimediaFileListPage);
 		break;
 	case MESSAGES:
 		page = new MessagesListPage(page_node);

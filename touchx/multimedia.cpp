@@ -87,10 +87,17 @@ void FileSystemBrowseButton::browse()
 	browser->browse(directory);
 }
 
-
-MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node)
+MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, MultimediaSectionPage::Items items, FileSelector *selector) :
+	browser(0)
 {
+	Q_ASSERT_X(items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM) && selector != 0,
+				"MultimediaSectionPage::MultimediaSectionPage",
+				"ITEMS_FILESYSTEM == true && browser == 0");
+
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
+
+	showed_items = items;
+	browser = selector;
 
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 	loadItems(config_node);
@@ -101,18 +108,8 @@ int MultimediaSectionPage::sectionId()
 	return MULTIMEDIA;
 }
 
-MultimediaFileListPage *MultimediaSectionPage::createBrowser()
-{
-	MultimediaFileListPage *browser = new MultimediaFileListPage;
-	connect(browser, SIGNAL(Closed()), SLOT(showPage()));
-
-	return browser;
-}
-
 void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 {
-	MultimediaFileListPage *browser = NULL;
-
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		SkinContext cxt(getTextChild(item, "cid").toInt());
@@ -132,24 +129,33 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		case PAGE_USB:
 		case PAGE_SD:
 		{
-			if (!browser)
-				browser = createBrowser();
-
-			QWidget *t = new FileSystemBrowseButton(MountWatcher::getWatcher(), browser,
-								item_id == PAGE_USB ? MOUNT_USB : MOUNT_SD, descr,
-								bt_global::skin->getImage("mounted"),
-								bt_global::skin->getImage("unmounted"));
-			page_content->addWidget(t);
+			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM))
+			{
+				QWidget *t = new FileSystemBrowseButton(MountWatcher::getWatcher(), browser,
+									item_id == PAGE_USB ? MOUNT_USB : MOUNT_SD, descr,
+									bt_global::skin->getImage("mounted"),
+									bt_global::skin->getImage("unmounted"));
+				page_content->addWidget(t);
+			}
 			break;
 		}
 		case PAGE_WEB_CAM:
-			p = new WebcamListPage(page_node);
+			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_WEBCAM))
+			{
+				p = new WebcamListPage(page_node);
+			}
 			break;
 		case PAGE_WEB_RADIO:
-			p = new IPRadioPage(page_node);
+			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_WEBRADIO))
+			{
+				p = new IPRadioPage(page_node);
+			}
 			break;
 		case PAGE_RSS:
-			p = new FeedManager(page_node);
+			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_RSS))
+			{
+				p = new FeedManager(page_node);
+			}
 			break;
 		default:
 			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");
