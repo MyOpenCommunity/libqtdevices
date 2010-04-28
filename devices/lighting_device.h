@@ -28,6 +28,11 @@
 int dimmerLevelTo100(int level);
 
 
+#define PULL_DELAY_LIGHT       1500
+#define PULL_DELAY_DIMMER10    4000
+#define PULL_DELAY_DIMMER100   9000
+
+
 class LightingDevice : public PullDevice
 {
 friend class TestLightingDevice;
@@ -49,7 +54,7 @@ public:
 		TIMED_LIGHT,
 	};
 
-	LightingDevice(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0);
+	LightingDevice(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0, int pull_delay = PULL_DELAY_LIGHT);
 
 	virtual void init();
 	void turnOn();
@@ -78,7 +83,7 @@ class DimmerDevice : public LightingDevice
 friend class TestDimmer;
 Q_OBJECT
 public:
-	DimmerDevice(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0);
+	DimmerDevice(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0, int pull_delay = PULL_DELAY_DIMMER10);
 
 	void increaseLevel();
 	void decreaseLevel();
@@ -93,7 +98,7 @@ class Dimmer100Device : public DimmerDevice
 friend class TestDimmer100;
 Q_OBJECT
 public:
-	Dimmer100Device(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0);
+	Dimmer100Device(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0, int pull_delay = PULL_DELAY_DIMMER100);
 
 	virtual void init();
 	void increaseLevel100(int delta, int speed);

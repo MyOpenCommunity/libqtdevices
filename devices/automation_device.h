@@ -27,6 +27,8 @@
 class OpenMsg;
 
 
+#define PULL_DELAY_AUTOMATION   6000
+
 class AutomationDevice : public PullDevice
 {
 friend class TestAutomationDevice;
@@ -38,7 +40,7 @@ public:
 		DIM_DOWN = 2,
 	};
 
-	AutomationDevice(QString where, PullMode mode = PULL_UNKNOWN, int openserver_id = 0);
+	AutomationDevice(QString where, PullMode mode = PULL_UNKNOWN, int openserver_id = 0, int pull_delay = PULL_DELAY_AUTOMATION);
 	virtual void init();
 	void goUp();
 	void goDown();

@@ -21,6 +21,7 @@
 
 #include "test_air_conditioning_device.h"
 #include "openserver_mock.h"
+#include "device_tester.h"
 
 #include <airconditioning_device.h>
 #include <openclient.h>
@@ -86,6 +87,40 @@ void TestAdvancedAirConditioningDevice::sendRequestStatus()
 	client_request->flush();
 	QString frame = QString ("*#4*%1*%2##").arg(dev->where).arg(ADVANCED_AIR_COND_DIM);
 	QCOMPARE(server->frameRequest(), frame);
+}
+
+void TestAdvancedAirConditioningDevice::receiveSetStatusSetOk()
+{
+	DeviceTester test(dev, AdvancedAirConditioningDevice::DIM_SETSTATUS_ERROR);
+
+	dev->setStatus(AdvancedAirConditioningDevice::MODE_FAN, 0, AdvancedAirConditioningDevice::VEL_MIN, AdvancedAirConditioningDevice::SWING_ON);
+	client_command->flush();
+	QString frame = QString("*#4*%1*#22*3**1*1##").arg(dev->where);
+	QCOMPARE(server->frameCommand(), frame);
+
+	test.checkSignals(QString("*#4*%1*22*3*123*1*1##").arg(dev->where), 0);
+}
+
+void TestAdvancedAirConditioningDevice::receiveSetStatusSetError()
+{
+	DeviceTester test(dev, AdvancedAirConditioningDevice::DIM_SETSTATUS_ERROR);
+
+	dev->setStatus(AdvancedAirConditioningDevice::MODE_DEHUM, 123, AdvancedAirConditioningDevice::VEL_MIN, AdvancedAirConditioningDevice::SWING_ON);
+	client_command->flush();
+	QString frame = QString("*#4*%1*#22*4**1*1##").arg(dev->where);
+	QCOMPARE(server->frameCommand(), frame);
+
+	test.check(QString("*#4*%1*22*4*123*2*1##").arg(dev->where), true);
+
+	// subsequent frames cause no error
+	test.checkSignals(QString("*#4*%1*22*4*123*2*1##").arg(dev->where), 0);
+}
+
+void TestAdvancedAirConditioningDevice::receiveSetStatusNotSet()
+{
+	DeviceTester test(dev, AdvancedAirConditioningDevice::DIM_SETSTATUS_ERROR);
+
+	test.checkSignals(QString("*#4*%1*22*4*123*2*1##").arg(dev->where), 0);
 }
 
 void TestAdvancedAirConditioningDevice::testStatusToString()

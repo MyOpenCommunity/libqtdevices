@@ -340,7 +340,10 @@ void EnergyDevice::requestDailyAverageGraph16Bit(QDate date) const
 
 void EnergyDevice::requestMontlyAverage(QDate date) const
 {
-	requestCumulativeMonth(date);
+	if (!has_new_frames)
+		requestCumulativeMonth(date);
+	else
+		requestDailyAverageGraph16Bit(date);
 }
 
 void EnergyDevice::requestCumulativeDayGraph(QDate date) const
@@ -379,7 +382,7 @@ void EnergyDevice::requestCumulativeMonthGraph(QDate date) const
 	{
 		requestCumulativeMonthGraph32Bit(date);
 		// with the old frames the monthly average is computed using the cumulative month
-		// graph data; with the new frames it is necessary to explicitly requestit here
+		// graph data; with the new frames it is necessary to explicitly request it here
 		requestDailyAverageGraph16Bit(date);
 	}
 }
@@ -533,7 +536,11 @@ void EnergyDevice::manageFrame(OpenMsg &msg)
 		if (what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_MONTH)
 		{
 			fillYearGraphData(values_list, msg);
-			fillMonthlyAverage(values_list, msg);
+			// with the old frames, the cumulative month is also used to compute the
+			// average value; with the new frames the average is filled using the 16 bit
+			// average graph data
+			if (!has_new_frames)
+				fillMonthlyAverage(values_list, msg);
 		}
 
 		emit valueReceived(values_list);
