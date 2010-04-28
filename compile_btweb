@@ -33,4 +33,28 @@ then
   cp BTouch_qws $BTWEB_APP_BIN_NO_STACKOPEN
   exit 0
 fi
+
+if [ "$MACHINE" = "MMT" ]
+then
+  cd touchx
+  export QTDIR=$QTDIR
+  export QMAKESPEC=$QMAKESPEC
+  export PATH=$PATH:$CROSS_LIB1
+  $QTDIR/bin/qmake CONFIG+=release
+  make || exit 1
+  mv TouchX.arm BTouch
+  cp BTouch BTouch_no_strip
+  $STRIP BTouch
+  cp BTouch $BTWEB_APP_BIN_NO_STACKOPEN
+  rm -f BTouch_qws
+  touch BTouch_qws
+  chmod +x BTouch_qws
+  echo "#!/bin/ettclsh" >> BTouch_qws
+  echo "set env(QTDIR) /lib/QTlib"
+  echo "set env(QWS_MOUSE_PROTO) LinuxTP:/dev/ts" >>  BTouch_qws
+  echo "exec bin/BTouch -qws -noswcursor &" >> BTouch_qws
+  cp BTouch_qws $BTWEB_APP_BIN_NO_STACKOPEN
+  cd ..
+  exit 0
+fi
 exit 1
