@@ -52,6 +52,10 @@ private slots:
 
 	void sendRequestStatus();
 
+	void receiveSetStatusSetOk();
+	void receiveSetStatusSetError();
+	void receiveSetStatusNotSet();
+
 	void testStatusToString();
 	void testStatusToString2();
 	void testStatusToString3();

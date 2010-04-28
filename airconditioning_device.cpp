@@ -22,6 +22,7 @@
 #include "airconditioning_device.h"
 #include "generic_functions.h" // createWriteRequestOpen
 
+#include <QStringList>
 #include <openmsg.h>
 
 
@@ -99,6 +100,13 @@ void AdvancedAirConditioningDevice::setStatus(Mode mode, int temp, Velocity vel,
 void AdvancedAirConditioningDevice::setStatus(AirConditionerStatus st) const
 {
 	QString what = statusToString(st);
+
+	// do not perform status check for OFF requests
+	if (st.mode != MODE_OFF)
+		last_status_set = what;
+	else
+		last_status_set.clear();
+
 	sendFrame(createWriteRequestOpen(who, what, where));
 }
 
@@ -107,8 +115,33 @@ void AdvancedAirConditioningDevice::frame_rx_handler(char *frame)
 	OpenMsg msg;
 	msg.CreateMsgOpen(frame, strlen(frame));
 
-	if (who.toInt() != msg.who() || msg.where() != where.toInt())
+	if (who.toInt() != msg.who() || msg.whereFull() != where.toStdString())
 		return;
+
+	int what = msg.what();
+	StatusList status_list;
+
+	// if we sent a command to set the status, check that the device set the
+	// status correctly; the values that have not been explicitly set are
+	// ignored
+	if (what == ADVANCED_SPLIT_DIM && !last_status_set.isEmpty())
+	{
+		QStringList last_what = last_status_set.split("*");
+		for (size_t i = 0; i < msg.whatArgCnt(); ++i)
+		{
+			if (last_what[i + 1].isEmpty())
+				continue;
+			QString value = QString::fromStdString(msg.whatArg(i));
+
+			if (last_what[i + 1] != value)
+				status_list[DIM_SETSTATUS_ERROR] = true;
+		}
+
+		last_status_set.clear();
+	}
+
+	if (status_list.count() != 0)
+		emit status_changed(status_list);
 }
 
 void AdvancedAirConditioningDevice::turnOff() const

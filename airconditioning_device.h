@@ -58,6 +58,10 @@ Q_OBJECT
 public:
 	AdvancedAirConditioningDevice(QString where);
 
+	enum
+	{
+		DIM_SETSTATUS_ERROR,
+	};
 
 	enum Mode
 	{
@@ -112,6 +116,10 @@ public slots:
 
 private:
 	QString statusToString(const AirConditionerStatus &st) const;
+
+private:
+	// contains the "what" of the last set status command; used for error detection
+	mutable QString last_status_set;
 };
 
 Q_DECLARE_TYPEINFO(AdvancedAirConditioningDevice::AirConditionerStatus, Q_MOVABLE_TYPE);
