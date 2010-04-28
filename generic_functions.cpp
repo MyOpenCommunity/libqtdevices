@@ -66,8 +66,32 @@ namespace
 
 		return format;
 	}
+
+
+	#define ARRAY_SIZE(x) int(sizeof(x) / sizeof((x)[0]))
+	const char *image_files[] = {"png", "gif", "jpg", "jpeg"};
+
+	// transforms an extension to a pattern (es. "wav" -> "*.[wW][aA][vV]")
+	void addFilters(QStringList &filters, const char **extensions, int size)
+	{
+		for (int i = 0; i < size; ++i)
+		{
+			QString pattern = "*.";
+
+			for (const char *c = extensions[i]; *c; ++c)
+				pattern += QString("[%1%2]").arg(QChar(*c)).arg(QChar::toUpper((unsigned short)*c));
+
+			filters.append(pattern);
+		}
+	}
 }
 
+QStringList getImageFileFilter()
+{
+	QStringList filters;
+	addFilters(filters, image_files, ARRAY_SIZE(image_files));
+	return filters;
+}
 
 bool isCommandFrame(OpenMsg &msg)
 {
@@ -240,10 +264,9 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filena
 	return writeCfgFile(doc, filename);
 }
 
-#ifdef CONFIG_BTOUCH
 
 // TODO rewrite setCfgValue using setGlobalCfgValue when removing CONFIG_BTOUCH
-bool setGlobalCfgValue(QMap<QString, QString> data, const QString &id_name, int id_value, const QString &filename)
+bool setGlobalCfgValue(QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename)
 {
 	if (!(*bt_global::config).contains(INIT_COMPLETE))
 	{
@@ -256,8 +279,7 @@ bool setGlobalCfgValue(QMap<QString, QString> data, const QString &id_name, int 
 	if (!prepareWriteCfgFile(doc, filename))
 		return false;
 
-	int serial_number = 1; // dummy
-	QDomNode n = findXmlNode(doc, QRegExp(".*"), id_name, id_value, serial_number);
+	QDomNode n = findXmlNode(doc, QRegExp(".*"), tag_name, id_value);
 	Q_ASSERT_X(!n.isNull(), "setCfgValue", qPrintable(QString("No object found with id %1").arg(id_value)));
 
 	// TODO maybe refactor & move to xml_functions.cpp/h
@@ -273,8 +295,6 @@ bool setGlobalCfgValue(QMap<QString, QString> data, const QString &id_name, int 
 
 	return writeCfgFile(doc, filename);
 }
-
-#endif
 
 #ifdef CONFIG_BTOUCH
 

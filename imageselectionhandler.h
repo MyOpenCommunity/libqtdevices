@@ -27,6 +27,44 @@
 #include <QStringList>
 #include <QSet>
 #include <QFileInfo>
+#include <QLinkedList>
+
+class QDirIterator;
+
+// default file name for slideshow saving
+#define SLIDESHOW_FILENAME "cfg/extra/slideshow_images.txt"
+
+/**
+ * Iterator over images selected using ImageSelectionHandler
+ */
+class ImageIterator
+{
+public:
+	/*
+	 * \param file_path The file to read images from
+	 */
+	ImageIterator(const QString &file_path);
+
+	void setFileFilter(const QStringList &filters);
+
+	/*
+	 * Return the next image found.
+	 *
+	 * In case of empty string you are allowed to call again this function to try to get a valid image.
+	 * \return Absolute file path of the image, empty string on errors.
+	 */
+	QString next();
+
+	~ImageIterator();
+
+private:
+	QLinkedList<QString> paths;
+	QDirIterator *dir_iter;
+	QMutableLinkedListIterator<QString> *list_iter;
+	QStringList file_filters;
+};
+
+
 
 /**
  * Handles image selection/removal and saving to file
@@ -57,11 +95,6 @@ public:
 	 * TODO: compact a directory if dirty == true
 	 */
 	bool isItemSelected(const QString &abs_path);
-
-	/*
-	 * Check if an item is explicitly selected, don't check for parent directories.
-	 */
-	bool isItemExplicitlySelected(const QString &abs_path);
 
 	void insertItem(const QString &path);
 

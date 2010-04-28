@@ -61,6 +61,7 @@
 #include <QTimer>
 #include <QFile>
 #include <QTime>
+#include <QThreadPool>
 
 
 // delay between two consecutive screensaver checks
@@ -119,6 +120,11 @@ BtMain::BtMain(int openserver_reconnection_time)
 
 	loadGlobalConfig();
 	qDebug("BtMain::BtMain");
+
+	// for unknown reason, when launched by bt_processi, the thread pool does not
+	// work (and a simple GUI restart from the shell does the trick); forcing the max
+	// thread count works
+	QThreadPool::globalInstance()->setMaxThreadCount(6);
 
 	QString font_file = QString(MY_FILE_CFG_FONT).arg((*bt_global::config)[LANGUAGE]);
 	bt_global::font = new FontManager(font_file);

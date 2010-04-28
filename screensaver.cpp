@@ -27,6 +27,7 @@
 #include "titlelabel.h"
 #include "homewindow.h"
 #include "pagestack.h"
+#include "generic_functions.h"
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -79,6 +80,7 @@ ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 
 // Definition of static member
 QString ScreenSaver::text;
+int ScreenSaver::slideshow_timeout;
 
 
 ScreenSaver::ScreenSaver(int refresh_time)
@@ -112,6 +114,12 @@ bool ScreenSaver::isRunning()
 void ScreenSaver::initData(const QDomNode &config_node)
 {
 	text = getTextChild(config_node, "text");
+#ifndef CONFIG_BTOUCH
+	QDomNode n = getChildWithName(config_node, "timeSlideShow");
+	QString time = getTextChild(config_node, "timeSlideShow");
+	Q_ASSERT_X(!time.isEmpty(), "ScreenSaver::initData", "config node does not contain timeSlideShow leaf");
+	slideshow_timeout = time.toInt();
+#endif
 }
 
 
@@ -309,21 +317,13 @@ void ScreenSaverText::customizeLine()
 }
 
 
-ScreenSaverSlideshow::ScreenSaverSlideshow() : ScreenSaver(12000)
+ScreenSaverSlideshow::ScreenSaverSlideshow() :
+	ScreenSaver(slideshow_timeout),
+	iter(SLIDESHOW_FILENAME)
 {
-	QDir image_dir("cfg/slideshow");
-	QStringList name_filter;
-	name_filter << "*.[Jj][Pp][Gg]" << "*.[Pp][Nn][Gg]";
-
-	QFileInfoList fl = image_dir.entryInfoList(name_filter);
-	foreach (const QFileInfo &fi, fl)
-		images << fi.absoluteFilePath();
-
-	if (images.isEmpty())
-		qWarning() << "Slideshow directory empty or no usable file";
+	iter.setFileFilter(getImageFileFilter());
 	image_on_screen = new QLabel(this);
 	image_on_screen->setGeometry(0, 0, width(), height());
-	image_index = 0;
 	blending_timeline.setDuration(2000);
 	blending_timeline.setFrameRange(1, 30);
 	connect(&blending_timeline, SIGNAL(valueChanged(qreal)), SLOT(updateImage(qreal)));
@@ -342,21 +342,26 @@ void ScreenSaverSlideshow::start(Window *w)
 
 void ScreenSaverSlideshow::stop()
 {
-	// TODO: add code here
+	blending_timeline.stop();
 	ScreenSaver::stop();
 }
 
 void ScreenSaverSlideshow::refresh()
 {
-	if (!images.isEmpty())
+	QString img = iter.next();
+	if (!img.isEmpty())
 	{
 		current_image = next_image;
-		image_index = (image_index + 1) % images.size();
-		next_image.load(images[image_index]);
+		next_image.load(img);
 		next_image = next_image.scaled(this->size(), Qt::KeepAspectRatio);
 		blending_timeline.start();
 	}
-	// else turn off screen
+	else
+	{
+		qWarning() << "image is empty: ";
+		// display off?
+		stop();
+	}
 }
 
 void ScreenSaverSlideshow::updateImage(qreal new_value)
@@ -371,6 +376,12 @@ void ScreenSaverSlideshow::updateImage(qreal new_value)
 		p.drawPixmap(QPoint(0,0), next_image);
 	}
 	image_on_screen->setPixmap(pix);
+}
+
+ScreenSaverSlideshow::~ScreenSaverSlideshow()
+{
+	image_on_screen->disconnect();
+	image_on_screen->deleteLater();
 }
 
 

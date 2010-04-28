@@ -34,20 +34,15 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_back>navigazione/back.png</img_back>
 		<img_forward>setup/arrdx.png</img_forward>
 		<img_ok>setup/ok.png</img_ok>
-		<img_choice>btnemty.png</img_choice>
 		<img_scroll_up>navigazione/up.png</img_scroll_up>
 		<img_scroll_down>navigazione/down.png</img_scroll_down>
 		<img_arrow_up>navigazione/up.png</img_arrow_up>
 		<img_arrow_down>navigazione/down.png</img_arrow_down>
 		<img_plus>termoregolazione/piu.png</img_plus>
 		<img_minus>termoregolazione/meno.png</img_minus>
-		<img_fast_forward>btnforward.png</img_fast_forward>
-		<img_fast_backward>btnbackward.png</img_fast_backward>
 		<img_cycle>diffusione/cycle.png</img_cycle>
 		<img_on>setup/on.png</img_on>
 		<img_off>setup/off.png</img_off>
-		<img_stop>btnstop.png</img_stop>
-		<img_empty_icon>empty.png</img_empty_icon>
 		<img_info>settup/info.png</img_info>
 		<img_cancel>setup/canc.png</img_cancel>
 		<img_num_0>setup/numzero.png</img_num_0>
@@ -257,37 +252,44 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- Homepage links -->
 	<item>
-		<!-- automation (homepage) -->
+		<!-- automation link -->
 		<cid>3</cid>
 		<img_link_icon>home/automazioni.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/automazioni.png</img_top_navigation_button>
 	</item>
 	<item>
-		<!-- lighting -->
+		<!-- messages link -->
+		<cid>17</cid>
+		<img_link_icon>home/messaggion.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/messaggioff.png</img_top_navigation_button>
+	</item>
+	<item>
+		<!-- lighting link -->
 		<cid>2</cid>
 		<img_link_icon>home/illuminazione.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/illuminazione.png</img_top_navigation_button>
 	</item>
-    <item>
-        <!-- settings -->
-        <cid>14000</cid>
-        <img_videodoorentry>setup/videocitofonia.png</img_videodoorentry>
-        <img_handsfree_on>setup/beepon.png</img_handsfree_on>
-        <img_handsfree_off>setup/beepoff.png</img_handsfree_off>
-        <img_profstudio_on>setup/beepon.png</img_profstudio_on>
-        <img_profstudio_off>setup/beepoff.png</img_profstudio_off>
-        <img_tray_handsfree>home/statoportaoff.png</img_tray_handsfree>
-        <img_tray_profstudio>home/statoportaon.png</img_tray_profstudio>
-    </item>
 	<item>
-        <!-- antintrusion -->
+		<!-- antintrusion link-->
 		<cid>13</cid>
 		<img_link_icon>home/antintrusione.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/antintrusione.png</img_top_navigation_button>
 	</item>
 	<item>
-		<cid>104</cid>
-		<img_link_icon>home/carichi.png</img_link_icon>
+		<!-- Supervision link -->
+		<cid>6</cid>
+		<img_link_icon>energia/supervisioneimpianto.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/supervisioneimpianto.png</img_top_navigation_button>
+	</item>
+	<item>
+		<!-- Energy data link -->
+		<cid>7</cid>
+		<img_link_icon>energia/energydata.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/energydata.png</img_top_navigation_button>
+	</item>
+	<item>
+		<cid>18</cid>
+		<img_link_icon>energia/carichi.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/carichi.png</img_top_navigation_button>
 	</item>
 	<item>
@@ -299,7 +301,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_settings>termoregolazione/edit.png</img_settings>
 		<img_arrow_up>termoregolazione/piu.png</img_arrow_up>
 		<img_arrow_down>termoregolazione/meno.png</img_arrow_down>
-	</item>
+	</item>	
 	<item>
 		<!-- Multichannel sound diffusion -->
 		<cid>12</cid>
@@ -349,6 +351,17 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>10003</cid>
 		<img_link_icon>videocitofonia/esclusionechiamata.png</img_link_icon>
 	</item>
+	<item>
+		<!-- settings -->
+		<cid>14000</cid>
+		<img_videodoorentry>setup/videocitofonia.png</img_videodoorentry>
+		<img_handsfree_on>setup/beepon.png</img_handsfree_on>
+		<img_handsfree_off>setup/beepoff.png</img_handsfree_off>
+		<img_profstudio_on>setup/beepon.png</img_profstudio_on>
+		<img_profstudio_off>setup/beepoff.png</img_profstudio_off>
+		<img_tray_handsfree>home/statoportaoff.png</img_tray_handsfree>
+		<img_tray_profstudio>home/statoportaon.png</img_tray_profstudio>
+	</item>
 	<!-- Multimedia page links -->
 	<item>
 		<cid>16000</cid>
@@ -361,8 +374,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_play_file>multimediale/play.png</img_play_file>
 		<img_browse_directory>multimediale/vai.png</img_browse_directory>
 
-                <!-- TODO duplicated in the homepage link, move to
-                     common section -->
+		<!-- TODO duplicated in the homepage link, move to
+			 common section -->
 		<img_previous>multimediale/precedente.png</img_previous>
 		<img_next>multimediale/successivo.png</img_next>
 		<img_start>multimediale/play.png</img_start>
@@ -670,8 +683,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<!-- ventilation -->
 		<!-- Notes:
-		     In ON state, 'on' will be appended to 'img_actuator_state' icon.
-		     In OFF state, 'off' will be appended.
+			In ON state, 'on' will be appended to 'img_actuator_state' icon.
+			In OFF state, 'off' will be appended.
 		-->
 		<cid>3007</cid>
 		<img_off>automazione/off.png</img_off>
@@ -823,19 +836,19 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- 4 zones central -->
 	<item>
-		<cid>113</cid>
+		<cid>8004</cid>
 		<img_central_icon>termoregolazione/imgimpianto.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 	</item>
 	<!-- regulator page banner 4 zones -->
 	<item>
-		<cid>114</cid>
+		<cid>8041</cid>
 		<img_central_icon>termoregolazione/imgcentrale.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 	</item>
 	<!-- zones and zone page 4 zones -->
 	<item>
-		<cid>138</cid>
+		<cid>8042</cid>
 		<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 
@@ -856,7 +869,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- regulator page 4 zones -->
 	<item>
-		<cid>200000</cid> <!-- TODO fix -->
+		<cid>8301</cid>
 		<img_summer_flat>termoregolazione/estateoffp.png</img_summer_flat>
 		<img_winter_flat>termoregolazione/invernooffp.png</img_winter_flat>
 		<img_regulator>termoregolazione/imgcentrale.png</img_regulator>
@@ -883,7 +896,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- thermal regulator settings page 4 zones -->
 	<item>
-		<cid>15</cid>
+		<cid>8320</cid>
 		<img_regulator_manual>termoregolazione/imgmanuale.png</img_regulator_manual>
 		<img_regulator_manual_timed>termoregolazione/imgmanualetemporizzato.png</img_regulator_manual_timed>
 		<img_regulator_weekend>termoregolazione/imgfestivo.png</img_regulator_weekend>
@@ -1097,7 +1110,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_arrow_left>videocitofonia/arrsx.png</img_arrow_left>
 		<img_arrow_right>videocitofonia/arrdx.png</img_arrow_right>
 		<img_fullscreen>videocitofonia/screenfull.png</img_fullscreen>
-        <img_connection>videocitofonia/inconnessione.png</img_connection>
+		<img_connection>videocitofonia/inconnessione.png</img_connection>
 	</item>
 	<!-- Video control items -->
 	<!-- panel -->
@@ -1119,16 +1132,100 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>10102</cid>
 		<img_link_icon>videocitofonia/piintercompiano.png</img_link_icon>
 	</item>
-    <item>
-        <!--
-        SCS Messages
-        Other tags used: img_scroll_up, img_scroll_down, img_back, img_ok, img_go_home
-        -->
-        <cid>17000</cid>
-        <img_link_icon>home/messaggion.png</img_link_icon>
-        <img_top_navigation_button>barranavigazione/messaggioff.png</img_top_navigation_button>
-        <img_delete_all>navigazione/eliminatutti.png</img_delete_all>
-        <img_delete>antintrusione/elimina.png</img_delete>
-	<img_go_message_list>home/storicomessaggi.png</img_go_message_list>
-    </item>
+	<item>
+		<!--
+		SCS Messages
+		Other tags used: img_scroll_up, img_scroll_down, img_back, img_ok, img_go_home
+		-->
+		<cid>17000</cid>
+		<img_delete_all>navigazione/eliminatutti.png</img_delete_all>
+		<img_delete>antintrusione/elimina.png</img_delete>
+		<img_go_message_list>home/storicomessaggi.png</img_go_message_list>
+	</item>
+	<item>
+		<!--
+		Energy data
+		Other tags used: img_back, img_cycle, img_forward, img_ok, img_minus, img_plus
+		-->
+		<cid>7000</cid>
+		<img_currency_exchange>energia/valutaset.png</img_currency_exchange>
+		<img_select>energia/arrdx.png</img_select>
+		<img_currency>energia/valuta.png</img_currency>
+		<img_table>energia/edit.png</img_table>
+		<img_fast_forward>multimediale/successivo.png</img_fast_forward>
+		<img_fast_backward>multimediale/precedente.png</img_fast_backward>
+		<img_graph>energia/grafico.png</img_graph>
+		<img_bg_banner>energia/backenergy.png</img_bg_banner>
+		<img_cost_electricity>energia/electricity.png</img_cost_electricity>
+		<img_cost_water>energia/water.png</img_cost_water>
+		<img_cost_dhw>energia/dhw.png</img_cost_dhw>
+		<img_cost_gas>energia/gas.png</img_cost_gas>
+		<img_cost_conditioning>energia/liquifiedgas.png</img_cost_conditioning>
+	</item>
+	<item>
+		<!-- Energy data: link electricity -->
+		<cid>7001</cid>
+		<img_energy_type>energia/electricity.png</img_energy_type>
+	</item>
+	<item>
+		<!-- Energy data: link water -->
+		<cid>7002</cid>
+		<img_energy_type>energia/water.png</img_energy_type>
+	</item>
+	<item>
+		<!-- Energy data: link gas -->
+		<cid>7003</cid>
+		<img_energy_type>energia/gas.png</img_energy_type>
+	</item>
+	<item>
+		<!-- Energy data: link dhw -->
+		<cid>7004</cid>
+		<img_energy_type>energia/dhw.png</img_energy_type>
+	</item>
+	<item>
+		<!-- Energy data: link heating/cooling -->
+		<cid>7005</cid>
+		<img_energy_type>energia/liquifiedgas.png</img_energy_type>
+	</item>
+	<item>
+		<!-- Energy data: link custom -->
+		<cid>7006</cid>
+		<img_energy_type>energia/liquifiedgas.png</img_energy_type>
+	</item>
+	<item>
+		<!-- Load Management -->
+		<cid>18</cid>
+		<img_link_icon>home/carichi.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/carichi.png</img_top_navigation_button>
+	</item>
+	<item>
+		<!-- Load Management -->
+		<cid>18000</cid>
+		<img_link_icon>home/energy.png</img_link_icon>
+	</item>
+	<item>
+		<!--
+		Load Management with central unit
+
+		Leaks img_reset and img_empty_background
+		-->
+		<cid>18001</cid>
+		<img_load>home/carichi.png</img_load>
+		<img_empty_background>energy/backenergy.png</img_empty_background>
+		<img_on>carichi/on.png</img_on>
+		<img_not_forced>carichi/on.png</img_not_forced>
+		<img_forced>carichi/ondis.png</img_forced>
+		<img_reset>home/energy.png</img_reset>
+	</item>
+	<item>
+		<!--
+		Load Management without central unit
+
+		Leaks img_reset and img_empty_background
+		-->
+		<cid>18002</cid>
+		<img_load>home/carichi.png</img_load>
+		<img_empty_background>energy/backenergy.png</img_empty_background>
+		<img_reset>home/energy.png</img_reset>
+	</item>
 </style>

@@ -39,7 +39,7 @@ class ScreenSaverPage : public SingleChoicePage
 {
 Q_OBJECT
 public:
-	ScreenSaverPage();
+	ScreenSaverPage(const QDomNode &conf_node);
 	virtual void showPage();
 
 protected:
@@ -121,6 +121,7 @@ private slots:
 	void setSelection(const QString &path, bool selected);
 	void unmount();
 	void unmounted(const QString &path);
+	void saveFileList();
 
 private:
 	ImageSelectionHandler *handler;

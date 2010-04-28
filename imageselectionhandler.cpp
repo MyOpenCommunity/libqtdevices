@@ -25,8 +25,88 @@
 #include <QTemporaryFile>
 #include <QDebug>
 #include <QDir>
+#include <QDirIterator>
 
 #include <errno.h> // errno
+
+namespace
+{
+	QStringList loadTextFile(const QString &file_path)
+	{
+		QFile f(file_path);
+		if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+		{
+			qWarning() << "Could not read slideshow images file: " << QDir::currentPath() + file_path;
+			return QStringList();
+		}
+
+		QStringList li;
+		while (!f.atEnd())
+		{
+			QString path = f.readLine().simplified();
+			li << path;
+		}
+		return li;
+	}
+}
+
+
+ImageIterator::ImageIterator(const QString &file_path)
+{
+	foreach (const QString &path, loadTextFile(file_path))
+		paths << path;
+
+	list_iter = new QMutableLinkedListIterator<QString>(paths);
+	dir_iter = 0;
+}
+
+QString ImageIterator::next()
+{
+	if (dir_iter)
+	{
+		if (dir_iter->hasNext())
+			return dir_iter->next();
+		// iterator finished its duty, cleanup
+		else
+		{
+			delete dir_iter;
+			dir_iter = 0;
+		}
+	}
+
+	if (!list_iter->hasNext())
+		list_iter->toFront();
+
+	QString path = list_iter->next();
+	QFileInfo fi(path);
+	if (fi.exists())
+	{
+		if (fi.isFile())
+			return path;
+		else
+		{
+			dir_iter = new QDirIterator(path, file_filters, QDir::Files | QDir::Readable, QDirIterator::Subdirectories);
+			return dir_iter->next();
+		}
+	}
+	// remove elements not found
+	else
+		list_iter->remove();
+	return QString();
+}
+
+void ImageIterator::setFileFilter(const QStringList &filters)
+{
+	file_filters = filters;
+}
+
+ImageIterator::~ImageIterator()
+{
+	delete dir_iter;
+	delete list_iter;
+}
+
+
 
 ImageSelectionHandler::ImageSelectionHandler(const QString &file_path) :
 	save_file_path(file_path)
@@ -87,18 +167,7 @@ void ImageSelectionHandler::saveSlideshowToFile()
 
 void ImageSelectionHandler::loadSlideshowFromFile()
 {
-	QFile f(save_file_path);
-	if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
-	{
-		qWarning() << "Could not read slideshow images file: " << QDir::currentPath() + save_file_path;
-		return;
-	}
-
-	while (!f.atEnd())
-	{
-		QString path = f.readLine().simplified();
-		selected_images.insert(path);
-	}
+	selected_images = QSet<QString>::fromList(loadTextFile(save_file_path));
 }
 
 void ImageSelectionHandler::insertItem(const QString &path)
@@ -198,12 +267,6 @@ bool ImageSelectionHandler::isItemSelected(const QString &abs_path)
 	}
 
 	return false;
-}
-
-bool ImageSelectionHandler::isItemExplicitlySelected(const QString &abs_path)
-{
-	// TODO: this should also check if abs_path is in removed_images
-	return selected_images.contains(abs_path);
 }
 
 QSet<QString> ImageSelectionHandler::getSelectedImages()

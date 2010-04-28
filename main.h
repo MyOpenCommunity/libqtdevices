@@ -197,8 +197,8 @@ enum Section
 	TERMOREGOLAZIONE=8000,                        /*!< Thermoregulation system */
 	BACK=9,                                       /*!< Back button - placed here for convenience */
 	SPECIAL=10,                                   /*!< Special button - placed here for convenience */
-	MESSAGES=17,                                  /*!< Textual Messages from scs */
-	LOAD_MANAGEMENT=18,                           /*!< Load management system */
+	MESSAGES=17000,                               /*!< Textual Messages from scs */
+	LOAD_MANAGEMENT=18000,                        /*!< Load management system */
 	SCENARI=1000,                                 /*!< Scenarios managing */
 	SCENARI_EVOLUTI=20,                           /*!< Advanced scenarios management */
 	VIDEOCITOFONIA=10000,                         /*!< VideoDoorEntry system */
@@ -206,10 +206,10 @@ enum Section
 	MULTIMEDIA=16000,                             /*!< Multimedia system */
 	DIFSON_MONO=11000,                            /*!< Sound diffusion system (monochannel) */
 	DIFSON_MULTI=12000,                           /*!< Sound diffusion system (multichannel) */
-	SUPERVISIONE=-2,                              /*!< Supervision system */
+	SUPERVISIONE=6000,                            /*!< Supervision system */
 	TERMOREG_MULTI_PLANT=-3,                      /*!< Thermoregulation system with one or more 4-zones plants */
 	ENERGY_MANAGEMENT=-4,                         /*!< Energy management system */
-	ENERGY_DATA=-5,                               /*!< Energy data system */
+	ENERGY_DATA=7000,                             /*!< Energy data system */
 	FEED_READER=-6,                               /*!< Feed reader page */
 };
 #endif
@@ -373,35 +373,9 @@ enum ItemType
 	POSTO_ESTERNO=49,                             /*!< Posto esterno */
 	SORGENTE_MULTIM=50,                           /*!< Sorgente Multimediale per Diffusione Sonora */
 	SORGENTE_MULTIM_MC=51,                        /*!< Sorgente Multimediale per Diffusione Sonora Multicanale */
-#ifdef CONFIG_BTOUCH
-	TERMO_99Z_PROBE=22,                           /*!< Probe controlled by 99 zones thermal regulator */
-	TERMO_99Z_PROBE_FANCOIL=52,                   /*!< Probe controlled by 99 zones thermal regulator with fan-coil control */
-	TERMO_4Z_PROBE=53,                            /*!< Probe controlled by 4 zones thermal regulator */
-	TERMO_4Z_PROBE_FANCOIL=54,                    /*!< Probe controlled by 4 zones thermal regulator with fan-coil control */
-	TERMO_NC_EXTPROBE=55,                         /*!< External not-controlled probe */
-	TERMO_NC_PROBE=56,                            /*!< Not-controlled probe */
-	TERMO_HOME_NC_EXTPROBE=57,                    /*!< Home page external not-controlled probe */
-	TERMO_HOME_NC_PROBE=58,                       /*!< Home page not-controlled probe */
-#else
-	TERMO_99Z_PROBE=8012,                         /*!< Probe controlled by 99 zones thermal regulator */
-	TERMO_99Z_PROBE_FANCOIL=8012,                 /*!< Probe controlled by 99 zones thermal regulator with fan-coil control */
-	TERMO_4Z_PROBE=8042,                          /*!< Probe controlled by 4 zones thermal regulator */
-	TERMO_4Z_PROBE_FANCOIL=8042,                  /*!< Probe controlled by 4 zones thermal regulator with fan-coil control */
-	TERMO_NC_EXTPROBE=8021,                       /*!< External not-controlled probe */
-	TERMO_NC_PROBE=8031,                          /*!< Not-controlled probe */
-	TERMO_HOME_NC_EXTPROBE=207,                   /*!< Home page external not-controlled probe */
-	TERMO_HOME_NC_PROBE=208,                      /*!< Home page not-controlled probe */
-#endif
-	CLASS_STOPNGO=59,                             /*!< StopnGo devices class */
 	STOPNGO=60,                                   /*!< StopnGo device */
 	STOPNGO_PLUS=61,                              /*!< StopnGo Plus device */
 	STOPNGO_BTEST=62,                             /*!< StopnGo BTest device */
-#ifdef CONFIG_BTOUCH
-	TERMO_99Z=66,                                 /*!< 99 zones thermal regulator */
-#else
-	TERMO_99Z=8011,                               /*!< 99 zones thermal regulator */
-#endif
-	TERMO_4Z=68,                                  /*!< 4 zones thermal regulator */
 	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
 	ENERGY_TYPE=70,                               /*!< The type/interface of energy management */
 	LANSETTINGS=72,                               /*!< LAN settings and information */
@@ -416,9 +390,14 @@ enum ItemType
 	AIR_SPLIT_ADV=4003,                           /*!< AIR conditioning single split (advanced) */
 	AIR_GENERAL_ADV=4004,                         /*!< AIR conditioning general split (advanced) */
 #endif
-	LOAD_WITH_CU=80,                              /*!< Load with central unit */
-	LOAD_WITHOUT_CU=81,                           /*!< Load without central unit */
-	LOAD_DIAGNOSTIC=82,                           /*!< Load diagnostics */
+	// for SpecialPage, HeaderWidget
+#ifdef CONFIG_BTOUCH
+	TERMO_HOME_NC_EXTPROBE=57,                    /*!< Home page external not-controlled probe */
+	TERMO_HOME_NC_PROBE=58,                       /*!< Home page not-controlled probe */
+#else
+	TERMO_HOME_NC_EXTPROBE=207,                   /*!< Home page external not-controlled probe */
+	TERMO_HOME_NC_PROBE=208,                      /*!< Home page not-controlled probe */
+#endif
 };
 
 #endif //MAIN_H

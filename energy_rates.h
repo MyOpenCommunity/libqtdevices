@@ -22,10 +22,10 @@
 #ifndef ENERGY_RATES_H
 #define ENERGY_RATES_H
 
+#include <QString>
 #include <QObject>
-#include <QMap>
-
-class QDomNode;
+#include <QList>
+#include <QHash>
 
 
 // information on a single energy rate
@@ -89,8 +89,7 @@ signals:
 	void rateChanged(int rate_id);
 
 private:
-	// TODO energy use a list if the rate ids are contiguous
-	QMap<int, EnergyRate> rates;
+	QHash<int, EnergyRate> rates;
 };
 
 

@@ -367,7 +367,9 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			int timeout = getTextChild(item, "timeout").toInt() / 1000;
 			int blank = getTextChild(item, "blankscreen").toInt() / 1000;
 			bt_global::btmain->setScreenSaverTimeouts(timeout, timeout + blank);
-			p = new ScreenSaverPage;
+			// Screensaver data is not correctly initialized (in BtMain) when using touchx conf file
+			ScreenSaver::initData(item);
+			p = new ScreenSaverPage(item);
 			break;
 		}
 		case PAGE_CLEANSCREEN:

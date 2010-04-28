@@ -21,7 +21,7 @@
 
 #include "supervisionmenu.h"
 #include "bann1_button.h"
-#include "main.h"
+#include "main.h" // getPageNodeFromChildNode
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bannercontent.h"
 #include "skinmanager.h"
@@ -32,6 +32,17 @@
 
 #include <QDebug>
 
+enum
+{
+#ifdef LAYOUT_TOUCHX
+	CLASS_STOPNGO = 6001,
+	LOAD_DIAGNOSTIC = 6002
+#else
+	CLASS_STOPNGO = 59,
+	LOAD_DIAGNOSTIC = 82
+#endif
+};
+
 SupervisionMenu::SupervisionMenu(const QDomNode &config_node)
 {
 	next_page = NULL;
@@ -39,13 +50,22 @@ SupervisionMenu::SupervisionMenu(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
+int SupervisionMenu::sectionId()
+{
+	return SUPERVISIONE;
+}
+
 void SupervisionMenu::loadItems(const QDomNode &config_node)
 {
+#ifdef CONFIG_BTOUCH
 	foreach (const QDomNode &node, getChildren(config_node, ""))
 	{
 		if (!node.nodeName().startsWith("class") && node.nodeName() != "load")
 			continue;
-
+#else
+	foreach (const QDomNode &node, getChildren(config_node, "item"))
+	{
+#endif
 		SkinContext cxt(getTextChild(node, "cid").toInt());
 		int id = getTextChild(node, "id").toInt();
 
@@ -56,13 +76,19 @@ void SupervisionMenu::loadItems(const QDomNode &config_node)
 
 		page_content->appendBanner(b);
 
+#ifdef CONFIG_BTOUCH
+		QDomNode page_node = node;
+#else
+		QDomNode page_node = getPageNodeFromChildNode(node, "lnk_pageID");
+#endif
+
 		switch (id)
 		{
 		case CLASS_STOPNGO:
-			next_page = new StopNGoMenu(node);
+			next_page = new StopNGoMenu(page_node);
 			break;
 		case LOAD_DIAGNOSTIC:
-			next_page = new LoadDiagnosticPage(node);
+			next_page = new LoadDiagnosticPage(page_node);
 			break;
 		default:
 			qFatal("Unsupported node type in supervision menu");
