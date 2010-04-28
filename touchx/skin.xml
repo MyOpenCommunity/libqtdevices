@@ -1225,8 +1225,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>18000</cid>
 		<img_link_icon>home/energy.png</img_link_icon>
 		<img_currency_exchange>energia/valutaset.png</img_currency_exchange>
-		<img_cost_elettricity>home/carichi.png</img_cost_elettricity>
-		<img_cost_water>home/carichi.png</img_cost_water>
+		<img_cost_electricity>energia/electricity.png</img_cost_electricity>
+		<img_cost_water>energia/water.png</img_cost_water>
 	</item>
 	<item>
 		<!--
@@ -1235,8 +1235,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		Leaks img_reset and img_empty_background
 		-->
 		<cid>18001</cid>
-		<img_load>home/carichi.png</img_load>
-		<img_empty_background>energy/backenergy.png</img_empty_background>
+		<img_load>energia/backenergy.png</img_load>
+		<img_empty_background>energia/backenergy.png</img_empty_background>
 		<img_on>carichi/on.png</img_on>
 		<img_not_forced>carichi/on.png</img_not_forced>
 		<img_forced>carichi/ondis.png</img_forced>
@@ -1249,8 +1249,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		Leaks img_reset and img_empty_background
 		-->
 		<cid>18002</cid>
-		<img_load>home/carichi.png</img_load>
-		<img_empty_background>energy/backenergy.png</img_empty_background>
+		<img_load>energia/backenergy.png</img_load>
+		<img_empty_background>energia/backenergy.png</img_empty_background>
 		<img_reset>home/energy.png</img_reset>
 	</item>
 </style>
