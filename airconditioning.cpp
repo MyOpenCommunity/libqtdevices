@@ -28,10 +28,14 @@
 #include "navigation_bar.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "probe_device.h" // NonControlledProbeDevice
+#include "icondispatcher.h"
 
+#include <QPainter>
 #include <QDomNode>
 #include <QString>
 #include <QDebug>
+
+#define SPLIT_ERROR_PAGE_TIMEOUT 5000
 
 typedef AdvancedAirConditioningDevice::Mode Mode;
 typedef AdvancedAirConditioningDevice::Swing Swing;
@@ -230,6 +234,17 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 
 	buildPage(new BannerContent, nav_bar);
 	loadScenarios(config_node, d);
+
+	error_page = new SplitErrorPage(bt_global::skin->getImage("setstate_error"));
+	connect(d, SIGNAL(status_changed(StatusList)), SLOT(status_changed(StatusList)));
+}
+
+void AdvancedSplitPage::status_changed(const StatusList &sl)
+{
+	if (!sl.contains(AdvancedAirConditioningDevice::DIM_SETSTATUS_ERROR))
+		return;
+
+	error_page->showPage();
 }
 
 void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d)
@@ -471,4 +486,52 @@ void AdvancedGeneralSplitPage::loadScenarios(const QDomNode &config_node)
 		page_content->appendBanner(b);
 
 	}
+}
+
+
+SplitErrorPage::SplitErrorPage(const QString &image)
+{
+	previous_page = NULL;
+	icon = *(bt_global::icons_cache.getIcon(image));
+
+	timeout.setSingleShot(true);
+	timeout.setInterval(SPLIT_ERROR_PAGE_TIMEOUT);
+	connect(&timeout, SIGNAL(timeout()), SLOT(handleClose()));
+}
+
+void SplitErrorPage::showPage()
+{
+	if (previous_page)
+		return;
+
+	// WARNING: this assumes that no antintrusion alarm will go off while the
+	//          page is shown; it also ignores the screen saver (should be safe,
+	//          since this should happen right after a command) and transitions
+	previous_page = currentPage();
+	timeout.start();
+	Page::showPage();
+}
+
+void SplitErrorPage::handleClose()
+{
+	if (!previous_page)
+		return;
+	timeout.stop();
+	previous_page->showPage();
+	previous_page = NULL;
+}
+
+void SplitErrorPage::mouseReleaseEvent(QMouseEvent *e)
+{
+	Page::mouseReleaseEvent(e);
+
+	handleClose();
+}
+
+void SplitErrorPage::paintEvent(QPaintEvent *e)
+{
+	Page::paintEvent(e);
+
+	QPainter p(this);
+	p.drawPixmap(0, 0, icon);
 }

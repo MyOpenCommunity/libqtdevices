@@ -114,10 +114,11 @@ public:
 private:
 	void loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d);
 	AdvancedAirConditioningDevice *dev;
-	Page *single_page;
+	Page *single_page, *error_page;
 
 private slots:
 	void setDeviceOff();
+	void status_changed(const StatusList &sl);
 };
 
 
@@ -178,6 +179,30 @@ public:
 
 private:
 	void loadScenarios(const QDomNode &config_node);
+};
+
+
+class SplitErrorPage : public Page
+{
+Q_OBJECT
+public:
+	SplitErrorPage(const QString &image);
+
+	virtual void showPage();
+
+protected:
+	// TODO use ImageLabel in master
+	void mouseReleaseEvent(QMouseEvent *e);
+	void paintEvent(QPaintEvent *e);
+
+private slots:
+	void handleClose();
+
+private:
+	// TODO use PageStack in master
+	Page *previous_page;
+	QPixmap icon;
+	QTimer timeout;
 };
 
 #endif // AIR_CONDITIONING_H

@@ -503,5 +503,6 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_minus_disabled>btnMeno.png</img_minus_disabled>
 		<img_cycle_speed>btnCiclaFancoil.png</img_cycle_speed>
 		<img_cycle_mode>btnCiclaMod.png</img_cycle_mode>
+		<img_setstate_error>airconditioning_error.png</img_setstate_error>
 	</item>
 </style>
