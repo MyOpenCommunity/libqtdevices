@@ -64,6 +64,8 @@ public:
 	};
 	Q_DECLARE_FLAGS(Items, Item);
 
+	// The FileSelector passed here, should be deleted by this class
+	// if the configuration doesn't support filesystem (usb and sd).
 	MultimediaSectionPage(const QDomNode &config_node, MultimediaSectionPage::Items items = MultimediaSectionPage::ITEMS_ALL, FileSelector *browser = 0);
 
 	virtual int sectionId();
@@ -73,6 +75,7 @@ private:
 
 	MultimediaSectionPage::Items showed_items;
 	FileSelector *browser;
+	bool delete_browser;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(MultimediaSectionPage::Items)

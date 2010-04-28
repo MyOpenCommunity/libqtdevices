@@ -88,7 +88,7 @@ void FileSystemBrowseButton::browse()
 }
 
 MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, MultimediaSectionPage::Items items, FileSelector *selector) :
-	browser(0)
+	browser(0), delete_browser(true)
 {
 	Q_ASSERT_X(items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM) && selector != 0,
 				"MultimediaSectionPage::MultimediaSectionPage",
@@ -101,6 +101,8 @@ MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, Multim
 
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 	loadItems(config_node);
+	if (delete_browser)
+		browser->deleteLater();
 }
 
 int MultimediaSectionPage::sectionId()
@@ -136,6 +138,7 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 									bt_global::skin->getImage("mounted"),
 									bt_global::skin->getImage("unmounted"));
 				page_content->addWidget(t);
+				delete_browser = false;
 			}
 			break;
 		}
