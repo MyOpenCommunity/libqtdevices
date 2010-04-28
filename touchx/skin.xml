@@ -58,7 +58,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_cycle>diffusione/cycle.png</img_cycle>
 		<img_on>setup/on.png</img_on>
 		<img_off>setup/off.png</img_off>
-		<img_info>settup/info.png</img_info>
+		<img_info>setup/info.png</img_info>
 		<img_cancel>setup/canc.png</img_cancel>
 		<img_num_0>setup/numzero.png</img_num_0>
 		<img_num_1>setup/numuno.png</img_num_1>
