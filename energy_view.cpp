@@ -121,10 +121,11 @@ namespace
 EnergyViewNavigation::EnergyViewNavigation()
 {
 	BtButton *back_button = new BtButton(bt_global::skin->getImage("back"), this);
+
+#ifdef LAYOUT_BTOUCH
 	currency_button = new BtButton(bt_global::skin->getImage("currency"), this);
 	table_button = new BtButton(bt_global::skin->getImage("table"), this);
 
-#ifdef LAYOUT_BTOUCH
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
 	main_layout->setContentsMargins(0, 0, 0, 0);
 	main_layout->setSpacing(0);
@@ -133,29 +134,35 @@ EnergyViewNavigation::EnergyViewNavigation()
 	main_layout->addStretch(1);
 	main_layout->addWidget(table_button);
 	main_layout->addWidget(currency_button);
+
+	connect(currency_button, SIGNAL(clicked()), SIGNAL(toggleCurrency()));
+	connect(table_button, SIGNAL(clicked()), SIGNAL(showTable()));
 #else
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	main_layout->setContentsMargins(0, 0, 0, 0);
 	main_layout->setSpacing(5);
-
-	main_layout->addWidget(table_button);
-	main_layout->addWidget(currency_button);
 	main_layout->addWidget(back_button);
 #endif
 
 	connect(back_button, SIGNAL(clicked()), SIGNAL(backClick()));
-	connect(currency_button, SIGNAL(clicked()), SIGNAL(toggleCurrency()));
-	connect(table_button, SIGNAL(clicked()), SIGNAL(showTable()));
 }
 
 void EnergyViewNavigation::showTableButton(bool show)
 {
+#ifdef LAYOUT_BTOUCH
 	table_button->setVisible(show);
+#else
+	Q_ASSERT_X(false, "EnergyViewNavigation::showTableButton", "You can't call this with Touch X!");
+#endif
 }
 
-void EnergyViewNavigation::showCurrency(bool show)
+void EnergyViewNavigation::showCurrencyButton(bool show)
 {
+#ifdef LAYOUT_BTOUCH
 	currency_button->setVisible(show);
+#else
+	Q_ASSERT_X(false, "EnergyViewNavigation::showCurrencyButton", "You can't call this with Touch X!");
+#endif
 }
 
 
@@ -376,16 +383,35 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	widget_container = new QStackedWidget;
 	widget_container->addWidget(buildBannerWidget());
 
-	main_layout->addWidget(widget_container, 1);
+	nav_bar = new EnergyViewNavigation;
 	table = _table;
 	graph = _graph;
 
-	nav_bar = new EnergyViewNavigation;
-	if (!rate.isValid())
-		nav_bar->showCurrency(false);
-
+#ifdef LAYOUT_BTOUCH
+	main_layout->addWidget(widget_container, 1);
 	connect(nav_bar, SIGNAL(toggleCurrency()), SLOT(toggleCurrency()));
 	connect(nav_bar, SIGNAL(showTable()), table, SLOT(showPage()));
+
+#else
+	table_button = new BtButton(bt_global::skin->getImage("table"), this);
+	currency_button = new BtButton(bt_global::skin->getImage("currency"), this);
+
+	QGridLayout *box_layout = new QGridLayout;
+	box_layout->setSpacing(5);
+	box_layout->setContentsMargins(0, 0, 0, 0);
+	box_layout->addWidget(widget_container, 0, 0, 3, 1);
+	box_layout->addWidget(table_button, 1, 1);
+	box_layout->addWidget(currency_button, 2, 1);
+	box_layout->setColumnMinimumWidth(1, table_button->width());
+
+	main_layout->addLayout(box_layout, 1);
+	connect(currency_button, SIGNAL(clicked()), SLOT(toggleCurrency()));
+	connect(table_button, SIGNAL(clicked()), table, SLOT(showPage()));
+#endif
+
+	if (!rate.isValid())
+		showCurrencyButton(false);
+
 	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
 
 	buildPage(content, nav_bar);
@@ -718,7 +744,7 @@ void EnergyView::showGraph(int graph_type, bool request_update)
 	updateCurrentGraph();
 
 	prepareTransition();
-	nav_bar->showTableButton(true);
+	showTableButton(true);
 	widget_container->setCurrentIndex(current_widget);
 	if (current_graph == EnergyDevice::DAILY_AVERAGE)
 		time_period->hideCycleButton();
@@ -726,11 +752,29 @@ void EnergyView::showGraph(int graph_type, bool request_update)
 	startTransition();
 }
 
+void EnergyView::showTableButton(bool show)
+{
+#ifdef LAYOUT_BTOUCH
+	nav_bar->showTableButton(show);
+#else
+	table_button->setVisible(show);
+#endif
+}
+
+void EnergyView::showCurrencyButton(bool show)
+{
+#ifdef LAYOUT_BTOUCH
+	nav_bar->showCurrencyButton(show);
+#else
+	currency_button->setVisible(show);
+#endif
+}
+
 void EnergyView::showBannerWidget()
 {
 	current_widget = BANNER_WIDGET;
 	prepareTransition();
-	nav_bar->showTableButton(false);
+	showTableButton(false);
 	time_period->showCycleButton();
 	widget_container->setCurrentIndex(current_widget);
 	startTransition();

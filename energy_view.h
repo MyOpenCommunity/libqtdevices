@@ -97,16 +97,18 @@ public:
 	EnergyViewNavigation();
 
 	void showTableButton(bool show);
-	void showCurrency(bool show);
+	void showCurrencyButton(bool show);
 
 signals:
 	void toggleCurrency();
 	void backClick();
 	void showTable();
 
+#ifdef LAYOUT_BTOUCH
 private:
 	BtButton *table_button;
 	BtButton *currency_button;
+#endif
 };
 
 
@@ -176,6 +178,11 @@ private:
 	int cumulative_day_banner_timer_id;
 	EnergyRate rate;
 
+#ifdef LAYOUT_TOUCHX
+	BtButton *table_button;
+	BtButton *currency_button;
+#endif
+
 private slots:
 	void toggleCurrency();
 	void changeTimePeriod(int, QDate);
@@ -184,6 +191,8 @@ private slots:
 	void backClick();
 	void valueReceived(const DeviceValues &values_list);
 	void rateChanged(int rate_id);
+	void showTableButton(bool show);
+	void showCurrencyButton(bool show);
 };
 
 
