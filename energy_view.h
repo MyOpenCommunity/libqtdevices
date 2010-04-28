@@ -25,6 +25,7 @@
 #include "page.h"
 #include "energy_device.h" // GraphData
 #include "energy_rates.h"  // EnergyRate
+#include "navigation_bar.h" // AbstractNavigationBar
 
 #include <QColor>
 #include <QDate>
@@ -90,7 +91,11 @@ signals:
 };
 
 
-class EnergyViewNavigation : public QWidget
+/**
+ * The navigation bar for the Energy view, that have (on BTouch) custom buttons
+ * to toggle the currency mode and to show the table of energy data.
+ */
+class EnergyViewNavigation : public AbstractNavigationBar
 {
 Q_OBJECT
 public:
@@ -100,11 +105,11 @@ public:
 	void showCurrencyButton(bool show);
 
 signals:
-	void toggleCurrency();
 	void backClick();
+#ifdef LAYOUT_BTOUCH
+	void toggleCurrency();
 	void showTable();
 
-#ifdef LAYOUT_BTOUCH
 private:
 	BtButton *table_button;
 	BtButton *currency_button;

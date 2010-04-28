@@ -118,35 +118,18 @@ namespace
 	};
 }
 
-// helper class for the navigation bar
 
 EnergyViewNavigation::EnergyViewNavigation()
 {
-	BtButton *back_button = new BtButton(bt_global::skin->getImage("back"), this);
 
 #ifdef LAYOUT_BTOUCH
-	currency_button = new BtButton(bt_global::skin->getImage("currency"), this);
-	table_button = new BtButton(bt_global::skin->getImage("table"), this);
+	BtButton *back_button = createButton(bt_global::skin->getImage("back"), SIGNAL(backClick()), 0);
 
-	QHBoxLayout *main_layout = new QHBoxLayout(this);
-	main_layout->setContentsMargins(0, 0, 0, 0);
-	main_layout->setSpacing(0);
-
-	main_layout->addWidget(back_button);
-	main_layout->addStretch(1);
-	main_layout->addWidget(table_button);
-	main_layout->addWidget(currency_button);
-
-	connect(currency_button, SIGNAL(clicked()), SIGNAL(toggleCurrency()));
-	connect(table_button, SIGNAL(clicked()), SIGNAL(showTable()));
+	table_button = createButton(bt_global::skin->getImage("table"), SIGNAL(showTable()), 2);
+	currency_button = createButton(bt_global::skin->getImage("currency"), SIGNAL(toggleCurrency()), 3);
 #else
-	QVBoxLayout *main_layout = new QVBoxLayout(this);
-	main_layout->setContentsMargins(0, 0, 0, 0);
-	main_layout->setSpacing(5);
-	main_layout->addWidget(back_button);
+	BtButton *back_button = createButton(bt_global::skin->getImage("back"), SIGNAL(backClick()), 3);
 #endif
-
-	connect(back_button, SIGNAL(clicked()), SIGNAL(backClick()));
 }
 
 void EnergyViewNavigation::showTableButton(bool show)
@@ -154,7 +137,7 @@ void EnergyViewNavigation::showTableButton(bool show)
 #ifdef LAYOUT_BTOUCH
 	table_button->setVisible(show);
 #else
-	Q_ASSERT_X(false, "EnergyViewNavigation::showTableButton", "You can't call this with Touch X!");
+	Q_ASSERT_X(false, "EnergyViewNavigation::showTableButton", "You can't call this on Touch X!");
 #endif
 }
 
@@ -163,7 +146,7 @@ void EnergyViewNavigation::showCurrencyButton(bool show)
 #ifdef LAYOUT_BTOUCH
 	currency_button->setVisible(show);
 #else
-	Q_ASSERT_X(false, "EnergyViewNavigation::showCurrencyButton", "You can't call this with Touch X!");
+	Q_ASSERT_X(false, "EnergyViewNavigation::showCurrencyButton", "You can't call this on Touch X!");
 #endif
 }
 
