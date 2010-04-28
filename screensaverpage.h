@@ -41,6 +41,7 @@ Q_OBJECT
 public:
 	ScreenSaverPage(const QDomNode &conf_node);
 	virtual void showPage();
+	virtual void cleanUp();
 
 protected:
 	virtual int getCurrentId();
@@ -48,6 +49,7 @@ protected:
 
 private:
 	ScreensaverTiming *timing;
+	int item_id;
 };
 
 #ifdef LAYOUT_TOUCHX
