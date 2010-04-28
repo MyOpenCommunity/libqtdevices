@@ -254,6 +254,11 @@ Q_OBJECT
 public:
 	ScreensaverTiming(const QString &descr, int init_timing, int _delta = 1000, int min_timing = 7000, int max_timing = 30000);
 
+	/*
+	 * Get the current value, in msec.
+	 */
+	int getTiming() const;
+
 private slots:
 	void increase();
 	void decrease();

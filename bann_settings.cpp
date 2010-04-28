@@ -435,3 +435,8 @@ void ScreensaverTiming::decrease()
 		timing = min;
 	updateText();
 }
+
+int ScreensaverTiming::getTiming() const
+{
+	return timing;
+}
