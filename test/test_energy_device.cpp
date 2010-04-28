@@ -734,7 +734,7 @@ void TestEnergyDevice::receiveInvalidFrameRequestCumulativeMonthGraph32Bit()
 	t.checkSignals(QString("*#18*%1*777##").arg(where), 0);
 	client_command->flush();
 
-	QCOMPARE(server->frameCommand(), QString("*18*59#9*%1##").arg(where));
+	QCOMPARE(server->frameCommand(), QString("*18*59#9*%1##*18*58#9*20##").arg(where));
 }
 
 
