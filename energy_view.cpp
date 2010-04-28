@@ -379,7 +379,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	QGridLayout *box_layout = new QGridLayout;
 	box_layout->setSpacing(5);
-	box_layout->setContentsMargins(0, 0, 0, 0);
+	box_layout->setContentsMargins(0, 0, 0, 40);
 	box_layout->addWidget(widget_container, 0, 0, 3, 1);
 	box_layout->addWidget(table_button, 1, 1);
 	box_layout->addWidget(currency_button, 2, 1);
