@@ -68,6 +68,7 @@ private slots:
 
 private:
 	void checkPullUnknown();
+	void sendPullRequestIfNeeded();
 
 	bool cleanup_required;
 	LightingDevice *dev;
