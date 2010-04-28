@@ -92,20 +92,22 @@ namespace
 		return label;
 	}
 
-	QWidget *createWidgetWithVBoxLayout()
+	QWidget *createWidgetWithGridLayout()
 	{
 		QWidget *w = new QWidget;
-		QVBoxLayout *main_layout = new QVBoxLayout(w);
+		QGridLayout *main_layout = new QGridLayout(w);
 		main_layout->setContentsMargins(0, 0, 0, 0);
 		main_layout->setSpacing(0);
+		main_layout->setColumnStretch(0, 1);
+		main_layout->setColumnStretch(2, 1);
 		return w;
 	}
 
 	void addWidgetToLayout(QWidget *parent, QWidget *child)
 	{
-		QVBoxLayout *l = static_cast<QVBoxLayout *>(parent->layout());
-
-		l->addWidget(child, 1, Qt::AlignTop);
+		QGridLayout *l = static_cast<QGridLayout*>(parent->layout());
+		l->addWidget(child, l->rowCount(), 1, 1, 1, Qt::AlignTop | Qt::AlignLeft);
+//		l->addWidget(child, 1, Qt::AlignTop);
 	}
 
 	enum EnergyViewPage
@@ -116,35 +118,18 @@ namespace
 	};
 }
 
-// helper class for the navigation bar
 
 EnergyViewNavigation::EnergyViewNavigation()
 {
-	BtButton *back_button = new BtButton(bt_global::skin->getImage("back"), this);
 
 #ifdef LAYOUT_BTOUCH
-	currency_button = new BtButton(bt_global::skin->getImage("currency"), this);
-	table_button = new BtButton(bt_global::skin->getImage("table"), this);
+	BtButton *back_button = createButton(bt_global::skin->getImage("back"), SIGNAL(backClick()), 0);
 
-	QHBoxLayout *main_layout = new QHBoxLayout(this);
-	main_layout->setContentsMargins(0, 0, 0, 0);
-	main_layout->setSpacing(0);
-
-	main_layout->addWidget(back_button);
-	main_layout->addStretch(1);
-	main_layout->addWidget(table_button);
-	main_layout->addWidget(currency_button);
-
-	connect(currency_button, SIGNAL(clicked()), SIGNAL(toggleCurrency()));
-	connect(table_button, SIGNAL(clicked()), SIGNAL(showTable()));
+	table_button = createButton(bt_global::skin->getImage("table"), SIGNAL(showTable()), 2);
+	currency_button = createButton(bt_global::skin->getImage("currency"), SIGNAL(toggleCurrency()), 3);
 #else
-	QVBoxLayout *main_layout = new QVBoxLayout(this);
-	main_layout->setContentsMargins(0, 0, 0, 0);
-	main_layout->setSpacing(5);
-	main_layout->addWidget(back_button);
+	BtButton *back_button = createButton(bt_global::skin->getImage("back"), SIGNAL(backClick()), 3);
 #endif
-
-	connect(back_button, SIGNAL(clicked()), SIGNAL(backClick()));
 }
 
 void EnergyViewNavigation::showTableButton(bool show)
@@ -152,7 +137,7 @@ void EnergyViewNavigation::showTableButton(bool show)
 #ifdef LAYOUT_BTOUCH
 	table_button->setVisible(show);
 #else
-	Q_ASSERT_X(false, "EnergyViewNavigation::showTableButton", "You can't call this with Touch X!");
+	Q_ASSERT_X(false, "EnergyViewNavigation::showTableButton", "You can't call this on Touch X!");
 #endif
 }
 
@@ -161,7 +146,7 @@ void EnergyViewNavigation::showCurrencyButton(bool show)
 #ifdef LAYOUT_BTOUCH
 	currency_button->setVisible(show);
 #else
-	Q_ASSERT_X(false, "EnergyViewNavigation::showCurrencyButton", "You can't call this with Touch X!");
+	Q_ASSERT_X(false, "EnergyViewNavigation::showCurrencyButton", "You can't call this on Touch X!");
 #endif
 }
 
@@ -209,7 +194,8 @@ QString TimePeriodSelection::formatDate(const QDate &date, TimePeriod period)
 		return DateConversions::formatDateConfig(date);
 	case MONTH:
 		// no need to modify the format to american
-		return date.toString("MM.yy");
+		return date.toString(QString("MM%1yy").arg(DateConversions::separator));
+
 	case YEAR:
 	default:
 		return tr("Last 12 months");
@@ -387,14 +373,13 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	main_layout->addWidget(widget_container, 1);
 	connect(nav_bar, SIGNAL(toggleCurrency()), SLOT(toggleCurrency()));
 	connect(nav_bar, SIGNAL(showTable()), table, SLOT(showPage()));
-
 #else
 	table_button = new BtButton(bt_global::skin->getImage("table"), this);
 	currency_button = new BtButton(bt_global::skin->getImage("currency"), this);
 
 	QGridLayout *box_layout = new QGridLayout;
 	box_layout->setSpacing(5);
-	box_layout->setContentsMargins(0, 0, 0, 0);
+	box_layout->setContentsMargins(0, 0, 0, 40);
 	box_layout->addWidget(widget_container, 0, 0, 3, 1);
 	box_layout->addWidget(table_button, 1, 1);
 	box_layout->addWidget(currency_button, 2, 1);
@@ -787,7 +772,8 @@ QWidget *EnergyView::buildBannerWidget()
 
 	current_banner = new BannCurrentEnergy(tr("Current"), dev);
 
-	QWidget *daily_widget = createWidgetWithVBoxLayout();
+
+	QWidget *daily_widget = createWidgetWithGridLayout();
 	addWidgetToLayout(daily_widget, cumulative_day_banner);
 	addWidgetToLayout(daily_widget, current_banner);
 
@@ -800,7 +786,7 @@ QWidget *EnergyView::buildBannerWidget()
 	connect(daily_av_banner, SIGNAL(rightClicked()), mapper, SLOT(map()));
 	mapper->setMapping(daily_av_banner, EnergyDevice::DAILY_AVERAGE);
 
-	QWidget *monthly_widget = createWidgetWithVBoxLayout();
+	QWidget *monthly_widget = createWidgetWithGridLayout();
 	addWidgetToLayout(monthly_widget, cumulative_month_banner);
 	addWidgetToLayout(monthly_widget, daily_av_banner);
 
@@ -809,7 +795,7 @@ QWidget *EnergyView::buildBannerWidget()
 	connect(cumulative_year_banner, SIGNAL(rightClicked()), mapper, SLOT(map()));
 	mapper->setMapping(cumulative_year_banner, EnergyDevice::CUMULATIVE_YEAR);
 
-	QWidget *yearly_widget = createWidgetWithVBoxLayout();
+	QWidget *yearly_widget = createWidgetWithGridLayout();
 	addWidgetToLayout(yearly_widget, cumulative_year_banner);
 
 	QStackedWidget *w = new QStackedWidget;
