@@ -32,6 +32,7 @@
 
 class QLabel;
 
+#define TEST_ENERGY_GRAPH
 
 class EnergyGraph : public QWidget
 {
@@ -82,6 +83,7 @@ public:
 
 class EnergyTableContent : public QFrame
 {
+friend class EnergyTable;
 Q_PROPERTY(QString border_color   READ borderColor WRITE setBorderColor)
 Q_PROPERTY(QString heading_color  READ headingColor WRITE setHeadingColor)
 Q_PROPERTY(QString odd_row_color  READ oddRowColor WRITE setOddRowColor)
@@ -99,7 +101,7 @@ public slots:
 	void pageDown();
 
 protected:
-	void paintEvent(QPaintEvent *e);
+	virtual void paintEvent(QPaintEvent *e);
 
 private:
 	void setBorderColor(const QString &color);
@@ -123,6 +125,9 @@ private:
 	int rows_per_page;
 	int current_page;
 	int n_decimal;
+	bool hide_content;
+
+	int pageCount();
 };
 
 
@@ -137,7 +142,16 @@ public:
 
 private:
 	QLabel *date_label;
+
+#ifdef LAYOUT_BTOUCH
 	EnergyTableContent *table;
+#else
+	EnergyTableContent *left_table, *right_table;
+
+private slots:
+	void pageUp();
+	void pageDown();
+#endif
 };
 
 
