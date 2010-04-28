@@ -66,8 +66,32 @@ namespace
 
 		return format;
 	}
+
+
+	#define ARRAY_SIZE(x) int(sizeof(x) / sizeof((x)[0]))
+	const char *image_files[] = {"png", "gif", "jpg", "jpeg"};
+
+	// transforms an extension to a pattern (es. "wav" -> "*.[wW][aA][vV]")
+	void addFilters(QStringList &filters, const char **extensions, int size)
+	{
+		for (int i = 0; i < size; ++i)
+		{
+			QString pattern = "*.";
+
+			for (const char *c = extensions[i]; *c; ++c)
+				pattern += QString("[%1%2]").arg(QChar(*c)).arg(QChar::toUpper((unsigned short)*c));
+
+			filters.append(pattern);
+		}
+	}
 }
 
+QStringList getImageFileFilter()
+{
+	QStringList filters;
+	addFilters(filters, image_files, ARRAY_SIZE(image_files));
+	return filters;
+}
 
 bool isCommandFrame(OpenMsg &msg)
 {

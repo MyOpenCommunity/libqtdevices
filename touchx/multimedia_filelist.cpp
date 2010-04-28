@@ -27,6 +27,7 @@
 #include "videoplayer.h"
 #include "audioplayer.h"
 #include "mount_watcher.h"
+#include "generic_functions.h"
 
 #include <QLayout>
 #include <QDebug>
@@ -101,8 +102,7 @@ MultimediaFileListPage::MultimediaFileListPage()
 
 bool MultimediaFileListPage::browseFiles(const QDir &directory, QList<QFileInfo> &files)
 {
-	QStringList filters;
-	addFilters(filters, image_files, ARRAY_SIZE(image_files));
+	QStringList filters(getImageFileFilter());
 	addFilters(filters, video_files, ARRAY_SIZE(video_files));
 	addFilters(filters, audio_files, ARRAY_SIZE(audio_files));
 

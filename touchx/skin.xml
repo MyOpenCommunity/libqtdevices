@@ -336,16 +336,19 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/scenari.png</img_top_navigation_button>
 	</item>
 	<item>
-		<cid>120</cid>
+		<!-- Scheduled/advanced scenarios section -->
+		<cid>9</cid>
 		<img_link_icon>home/scenarievoluti.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/scenarievoluti.png</img_top_navigation_button>
 	</item>
 	<item>
+		<!-- Videodoorentry section -->
 		<cid>10</cid>
 		<img_link_icon>home/videocitofonia.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/videocitofonia.png</img_top_navigation_button>
 	</item>
 	<item>
+		<!-- Multimedia section -->
 		<cid>16</cid>
 		<img_link_icon>home/contenutimultimediali.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/contenutimultimediali.png</img_top_navigation_button>
@@ -851,19 +854,19 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- 4 zones central -->
 	<item>
-		<cid>113</cid>
+		<cid>8004</cid>
 		<img_central_icon>termoregolazione/imgimpianto.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 	</item>
 	<!-- regulator page banner 4 zones -->
 	<item>
-		<cid>114</cid>
+		<cid>8041</cid>
 		<img_central_icon>termoregolazione/imgcentrale.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 	</item>
 	<!-- zones and zone page 4 zones -->
 	<item>
-		<cid>138</cid>
+		<cid>8042</cid>
 		<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 
@@ -884,7 +887,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- regulator page 4 zones -->
 	<item>
-		<cid>200000</cid> <!-- TODO fix -->
+		<cid>8301</cid>
 		<img_summer_flat>termoregolazione/estateoffp.png</img_summer_flat>
 		<img_winter_flat>termoregolazione/invernooffp.png</img_winter_flat>
 		<img_regulator>termoregolazione/imgcentrale.png</img_regulator>
@@ -911,7 +914,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- thermal regulator settings page 4 zones -->
 	<item>
-		<cid>15</cid>
+		<cid>8320</cid>
 		<img_regulator_manual>termoregolazione/imgmanuale.png</img_regulator_manual>
 		<img_regulator_manual_timed>termoregolazione/imgmanualetemporizzato.png</img_regulator_manual_timed>
 		<img_regulator_weekend>termoregolazione/imgfestivo.png</img_regulator_weekend>
@@ -1024,14 +1027,14 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- evolved scenario menu banners -->
 	<item>
-		<cid>20000</cid>
+		<cid>9002</cid>
 		<img_enable_scen>scenarievoluti/scenariabon.png</img_enable_scen>
 		<img_disable_scen>scenarievoluti/scenariaboff.png</img_disable_scen>
 		<img_start>scenarievoluti/start.png</img_start>
 		<img_stop>scenarievoluti/stop.png</img_stop>
 	</item>
 	<item>
-		<cid>20001</cid>
+		<cid>9001</cid>
 		<img_enable_scen>scenarievoluti/scenariabon.png</img_enable_scen>
 		<img_disable_scen>scenarievoluti/scenariaboff.png</img_disable_scen>
 		<img_start>scenarievoluti/startbig.png</img_start>
@@ -1207,5 +1210,40 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>7006</cid>
 		<img_energy_type>energia/liquifiedgas.png</img_energy_type>
 	</item>
+	<item>
+		<!-- Load Management -->
+		<cid>18</cid>
+		<img_link_icon>home/carichi.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/carichi.png</img_top_navigation_button>
+	</item>
+	<item>
+		<!-- Load Management -->
+		<cid>18000</cid>
+		<img_link_icon>home/energy.png</img_link_icon>
+	</item>
+	<item>
+		<!--
+		Load Management with central unit
 
+		Leaks img_reset and img_empty_background
+		-->
+		<cid>18001</cid>
+		<img_load>home/carichi.png</img_load>
+		<img_empty_background>energy/backenergy.png</img_empty_background>
+		<img_on>carichi/on.png</img_on>
+		<img_not_forced>carichi/on.png</img_not_forced>
+		<img_forced>carichi/ondis.png</img_forced>
+		<img_reset>home/energy.png</img_reset>
+	</item>
+	<item>
+		<!--
+		Load Management without central unit
+
+		Leaks img_reset and img_empty_background
+		-->
+		<cid>18002</cid>
+		<img_load>home/carichi.png</img_load>
+		<img_empty_background>energy/backenergy.png</img_empty_background>
+		<img_reset>home/energy.png</img_reset>
+	</item>
 </style>

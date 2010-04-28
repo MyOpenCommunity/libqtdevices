@@ -50,6 +50,8 @@ QString createDimensionFrame(QString who, QString dimension, QString where);
 QString createWriteDimensionFrame(QString who, QString dimension, QString where);
 QString createStatusRequestFrame(QString who, QString where);
 
+QStringList getImageFileFilter();
+
 
 QString getBostikName(const QString &name, const QString &suffix);
 

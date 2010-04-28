@@ -35,19 +35,24 @@
 #include "generic_functions.h" // DateConversion::formatDateConfig
 #include "energy_management.h" // isRateEditDisplayed
 #include "energy_data.h" // EnergyCost
+#include "btbutton.h"
 
 #include <QLabel>
 #include <QDebug>
 #include <QVBoxLayout>
 #include <QDate>
 
-#ifdef CONFIG_BTOUCH
+
 enum
 {
+#ifdef CONFIG_BTOUCH
 	LOAD_WITH_CU=80,
 	LOAD_WITHOUT_CU=81,
-};
+#else
+	LOAD_WITH_CU=18001,
+	LOAD_WITHOUT_CU=18002,
 #endif
+};
 
 
 namespace
@@ -170,13 +175,9 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 	LoadsDevice *dev = bt_global::add_device_to_cache(new LoadsDevice(getTextChild(item_node, "where")));
 	banner *b = 0;
 
-#ifdef CONFIG_BTOUCH
 	switch (id)
 	{
 	case LOAD_WITH_CU:
-#else
-	if (isRateEnabled(item_node))
-#endif
 	{
 		bool advanced = getTextChild(item_node, "advanced").toInt();
 		BannLoadWithCU *bann = new BannLoadWithCU(getDescriptionWithPriority(item_node), dev,
@@ -193,12 +194,8 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 
 		b = bann;
 	}
-#ifdef CONFIG_BTOUCH
 		break;
 	case LOAD_WITHOUT_CU:
-#else
-	else
-#endif
 	{
 		BannLoadNoCU *bann = new BannLoadNoCU(getTextChild(item_node, "descr"));
 		Page *p = new LoadDataPage(item_node, dev);
@@ -206,10 +203,8 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 		connect(p, SIGNAL(Closed()), bann, SIGNAL(pageClosed()));
 		b = bann;
 	}
-#ifdef CONFIG_BTOUCH
 		break;
 	}
-#endif
 	if (b)
 		b->setId(id);
 	return b;
@@ -465,14 +460,36 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node, LoadsDev
 
 	QWidget *top = buildTitle(getDescriptionWithPriority(config_node));
 
+#ifdef LAYOUT_BTOUCH
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
-	nav_bar->displayScrollButtons(false);
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	// TODO: cancel user selection?
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(sendDeactivateDevice()));
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
+#else
+	NavigationBar *nav_bar = new NavigationBar();
+#endif
+	nav_bar->displayScrollButtons(false);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
+#ifdef LAYOUT_TOUCHX
+	QWidget *content = new QWidget;
+	QHBoxLayout *hlayout = new QHBoxLayout;
+	hlayout->addStretch();
+	hlayout->addWidget(new DeactivationTime(BtTime(2, 30, 0)));
+	hlayout->addStretch();
+
+	QVBoxLayout *vlayout = new QVBoxLayout;
+	vlayout->addLayout(hlayout);
+	BtButton *ok_button = new BtButton(bt_global::skin->getImage("ok"));
+	connect(ok_button, SIGNAL(clicked()), SLOT(sendDeactivateDevice()));
+	connect(ok_button, SIGNAL(clicked()), SIGNAL(Closed()));
+	vlayout->addWidget(ok_button, 0, Qt::AlignRight);
+
+	content->setLayout(vlayout);
+	buildPage(content, nav_bar, "", 0, top);
+#else
 	buildPage(new DeactivationTime(BtTime(2, 30, 0)), nav_bar, "", 0, top);
+#endif
 	dev = d;
 }
 
