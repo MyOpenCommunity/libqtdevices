@@ -206,11 +206,7 @@ QString TimePeriodSelection::formatDate(const QDate &date, TimePeriod period)
 	switch (period)
 	{
 	case DAY:
-#ifdef LAYOUT_BTOUCH
 		return DateConversions::formatDateConfig(date);
-#else
-		return DateConversions::formatDateConfig(date, '/'); // TODO: find a rules for Touch X!
-#endif
 	case MONTH:
 		// no need to modify the format to american
 		return date.toString("MM.yy");
