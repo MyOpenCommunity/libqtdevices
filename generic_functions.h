@@ -118,10 +118,16 @@ int trasformaVol(int vol);
  */
 namespace DateConversions
 {
-	QString formatDateConfig(const QDate &date, char separator = '.');
-	QString formatDateTimeConfig(const QDateTime &datetime, char separator = '.');
-	QDate getDateConfig(const QString &date, char separator = '.');
-	QDateTime getDateTimeConfig(const QString &datetime, char separator = '.');
+#ifdef CONFIG_BTOUCH
+#define SEP '.'
+#else
+#define SEP '/'
+#endif
+
+	QString formatDateConfig(const QDate &date, char separator = SEP);
+	QString formatDateTimeConfig(const QDateTime &datetime, char separator = SEP);
+	QDate getDateConfig(const QString &date, char separator = SEP);
+	QDateTime getDateTimeConfig(const QString &datetime, char separator = SEP);
 }
 
 #endif // GENERIC_FUNCTIONS_H

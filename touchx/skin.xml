@@ -1253,4 +1253,19 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_empty_background>energia/backenergy.png</img_empty_background>
 		<img_reset>home/energy.png</img_reset>
 	</item>
+	<item>
+		<!--
+		Stop & Go
+		-->
+		<cid>6001</cid>
+		<img_center_icon></img_center_icon>
+	</item>
+	<item>
+		<!--
+		Load diagnostic
+		-->
+		<cid>6002</cid>
+		<img_center_icon></img_center_icon>
+		<img_state_icon></img_state_icon>
+	</item>
 </style>
