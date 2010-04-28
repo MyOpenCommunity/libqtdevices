@@ -382,10 +382,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	nav_bar = new EnergyViewNavigation;
 	if (!rate.isValid())
-	{
-		nav_bar->showTableButton(false);
 		nav_bar->showCurrency(false);
-	}
 
 	connect(nav_bar, SIGNAL(toggleCurrency()), SLOT(toggleCurrency()));
 	connect(nav_bar, SIGNAL(showTable()), table, SLOT(showPage()));
