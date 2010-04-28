@@ -402,6 +402,10 @@ ScreensaverTiming::ScreensaverTiming(const QString &descr, int init_timing, int 
 	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("plus"), QString::number(init_timing),
 		FontManager::BANNERTEXT, descr);
 	timing = init_timing;
+	if (init_timing < min_timing)
+		timing = min_timing;
+	if (init_timing > max_timing)
+		timing = max_timing;
 	delta = _delta;
 	max = max_timing;
 	min = min_timing;
@@ -434,4 +438,9 @@ void ScreensaverTiming::decrease()
 	if (timing < min)
 		timing = min;
 	updateText();
+}
+
+int ScreensaverTiming::getTiming() const
+{
+	return timing;
 }

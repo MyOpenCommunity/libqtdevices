@@ -193,6 +193,7 @@ void PageStack::clear()
 			el.page->cleanUp();
 	}
 
+	states[0].page->cleanUp();
 	// restoring the stack to a known sane state is important if the next page
 	// pushes itself in the page stack
 	states[0].page = bt_global::btmain->homePage();

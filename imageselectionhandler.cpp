@@ -48,6 +48,28 @@ namespace
 		}
 		return li;
 	}
+
+	bool saveTextFile(const QStringList &paths, const QString &file_path)
+	{
+		QTemporaryFile f("./temp_slideshowXXXXXX.txt");
+		if (!f.open())
+		{
+			qWarning() << "Error creating temporary file for slideshow images";
+			return false;
+		}
+
+		foreach (QString s, paths)
+		{
+			s = s.simplified();
+			f.write(s.toLocal8Bit());
+			f.write("\n");
+		}
+		f.close();
+		QFileInfo fi(f);
+
+		// this is not a bug, stlib functions return 0 on success
+		return !(::rename(qPrintable(fi.absoluteFilePath()), qPrintable(file_path)));
+	}
 }
 
 
@@ -100,6 +122,15 @@ void ImageIterator::setFileFilter(const QStringList &filters)
 	file_filters = filters;
 }
 
+void ImageIterator::saveImagesToFile()
+{
+	QStringList l;
+	foreach (const QString &str, paths)
+		l << str;
+	if (!saveTextFile(l, SLIDESHOW_FILENAME))
+		qWarning() << "ImageIterator::saveImagesToFile, could not save images file";
+}
+
 ImageIterator::~ImageIterator()
 {
 	delete dir_iter;
@@ -145,24 +176,8 @@ bool ImageSelectionHandler::compactDirectory(const QString &dir)
 
 void ImageSelectionHandler::saveSlideshowToFile()
 {
-	QTemporaryFile f("./temp_slideshowXXXXXX.txt");
-	if (!f.open())
-	{
-		qWarning() << "Error creating temporary file for slideshow images";
-		return;
-	}
-
-	foreach (QString path, selected_images)
-	{
-		path = path.simplified();
-		f.write(path.toLocal8Bit());
-		f.write("\n");
-	}
-	f.close();
-	QFileInfo fi(f);
-
-	if (::rename(qPrintable(fi.absoluteFilePath()), qPrintable(save_file_path)))
-		qWarning() << "Could not correctly save slideshow file, error code = " << errno;
+	if (!saveTextFile(selected_images.toList(), save_file_path))
+		qWarning() << "ImageSelectionHandler::saveSlideshowToFile, could not correctly save slideshow file";
 }
 
 void ImageSelectionHandler::loadSlideshowFromFile()

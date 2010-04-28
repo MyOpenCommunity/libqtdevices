@@ -23,7 +23,6 @@
 #define SCREENSAVER_H
 
 #include "window.h"
-#include "imageselectionhandler.h"
 
 #include <QObject>
 #include <QHash>
@@ -40,6 +39,7 @@ class Page;
 class QLabel;
 class QTimer;
 class QDomNode;
+class ImageIterator;
 
 
 /**
@@ -184,7 +184,7 @@ protected slots:
 
 private:
 	// iterator for images
-	ImageIterator iter;
+	ImageIterator *iter;
 	// shows the image on the window
 	QLabel *image_on_screen;
 	QPixmap current_image, next_image;

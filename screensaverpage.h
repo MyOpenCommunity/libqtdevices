@@ -41,6 +41,7 @@ Q_OBJECT
 public:
 	ScreenSaverPage(const QDomNode &conf_node);
 	virtual void showPage();
+	virtual void cleanUp();
 
 protected:
 	virtual int getCurrentId();
@@ -48,6 +49,7 @@ protected:
 
 private:
 	ScreensaverTiming *timing;
+	int item_id;
 };
 
 #ifdef LAYOUT_TOUCHX
@@ -112,6 +114,7 @@ public slots:
 	virtual void prevItem();
 	virtual void showPage();
 	virtual void showPageNoReload();
+	virtual void cleanUp();
 
 protected:
 	virtual bool browseFiles(const QDir &directory, QList<QFileInfo> &files);
@@ -121,9 +124,9 @@ private slots:
 	void setSelection(const QString &path, bool selected);
 	void unmount();
 	void unmounted(const QString &path);
-	void saveFileList();
 
 private:
+	void saveFileList();
 	ImageSelectionHandler *handler;
 
 	// Icon path

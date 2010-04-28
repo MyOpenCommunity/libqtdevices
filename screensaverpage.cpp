@@ -81,12 +81,25 @@ ScreenSaverPage::ScreenSaverPage(const QDomNode &conf_node) :
 	b->connectRightButton(p);
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 
-	timing = new ScreensaverTiming(tr("Slideshow timeout"), 12000);
+	timing = new ScreensaverTiming(tr("Slideshow timeout"), getTextChild(conf_node, "timeSlideShow").toInt());
 	addBottomWidget(timing);
 	timing->hide();
 #endif
 	connect(page_content, SIGNAL(bannerSelected(int)), SLOT(confirmSelection()));
+	connect(this, SIGNAL(Closed()), SLOT(cleanUp()));
 	bannerSelected(getTextChild(conf_node, "type").toInt());
+
+	// to save parameters
+	item_id = getTextChild(conf_node, "itemID").toInt();
+}
+
+void ScreenSaverPage::cleanUp()
+{
+	QMap<QString, QString> data;
+	data["type"] = QString::number(bt_global::display->currentScreenSaver());
+	if (timing)
+		data["timeSlideShow"] = QString::number(timing->getTiming());
+	setCfgValue(data, item_id);
 }
 
 void ScreenSaverPage::showPage()
@@ -281,7 +294,7 @@ SlideshowSelector::SlideshowSelector() :
 
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
 	connect(this, SIGNAL(notifyExit()), SIGNAL(Closed()));
-	connect(this, SIGNAL(Closed()), SLOT(saveFileList()));
+	connect(this, SIGNAL(Closed()), SLOT(cleanUp()));
 	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
 	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(nextItem()));
 	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
@@ -302,6 +315,11 @@ void SlideshowSelector::nextItem()
 void SlideshowSelector::prevItem()
 {
 	page_content->prevItem();
+}
+
+void SlideshowSelector::cleanUp()
+{
+	saveFileList();
 }
 
 void SlideshowSelector::showPage()
