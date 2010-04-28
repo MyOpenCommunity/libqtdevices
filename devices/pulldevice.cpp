@@ -64,7 +64,7 @@ QPair<QString, QString> splitWhere(const QString &w)
 {
 	int idx = w.indexOf("#");
 	if (idx < 0)
-		return qMakePair(w.left(idx), QString());
+		return qMakePair(w, QString());
 	else
 		return qMakePair(w.left(idx), w.mid(idx));
 }
@@ -100,14 +100,23 @@ AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_whe
 	// device where (our)
 	QPair<QString, QString> our = splitWhere(dev_where);
 
-	if (!(in.second == "#3" && our.second.isEmpty()))
-		if (!(in.second.isEmpty()) && (in.second != our.second))
-			return NOT_MINE;
+	// general address: 0 = all levels
+	if (in.first == "0" && in.second.isEmpty())
+		return GLOBAL;
+
+	// no level means level 3 (except for the global address that is taken care of above)
+	if (in.second == "#3")
+		in.second = QString();
+
+	// 0#lev = general for the level
+	if (in.first == "0" && in.second == our.second)
+		return GLOBAL;
+
+	// for environment frames, check that level matches
+	if (in.second != our.second)
+		return NOT_MINE;
 
 	// here we don't need to care about extension anymore
-	// general address
-	if (in.first == "0")
-		return GLOBAL;
 
 	// environment address. The first part must be "00", "100" or numbers 1 to 9
 	// use toInt() to remove differences between "00" "0" and so on.
@@ -174,10 +183,7 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 	if (is_environment)
 	{
 		if (status == INVALID_STATE || status != new_state)
-		{
-			status_requested = true;
 			return true;
-		}
 	}
 	else
 	{
@@ -200,12 +206,27 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 	return false;
 }
 
-PullDevice::PullDevice(QString who, QString where, PullMode m, int openserver_id) :
+void PullStateManager::setStatusRequested(bool status)
+{
+	status_requested = status;
+}
+
+
+PullDevice::PullDevice(QString who, QString where, PullMode m, int openserver_id, int pull_delay) :
 	device(who, where, openserver_id),
 	state(m)
 {
+	delayed_request.setSingleShot(true);
+	delayed_request.setInterval(pull_delay);
+	connect(&delayed_request, SIGNAL(timeout()), SLOT(delayedStatusRequest()));
 }
 
+
+void PullDevice::delayedStatusRequest()
+{
+	state.setStatusRequested(true);
+	requestPullStatus();
+}
 
 void PullDevice::manageFrame(OpenMsg &msg)
 {
@@ -217,8 +238,10 @@ void PullDevice::manageFrame(OpenMsg &msg)
 	case ENVIRONMENT:
 		if (state.getPullMode() == PULL_UNKNOWN)
 		{
+			// we need to delay the status request in order for the
+			// state of the device to stabilize
 			if (state.moreFrameNeeded(msg, true))
-				requestPullStatus();
+				delayed_request.start();
 			return;
 		}
 		else if (state.getPullMode() == PULL)

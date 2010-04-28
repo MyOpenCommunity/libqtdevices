@@ -39,11 +39,11 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 		ids.append(getTextChild(item, "id").toInt());
 
 	// if the energy management page only contains
-	// load management and diagnostic, display the rate edit icon
-	// inside load management
+	// supervision and another item, display the rate edit icon
+	// inside the other item (either energy view or load management)
 	rate_edit_displayed = true;
 
-	if (ids.count() == 2 && ids.contains(SUPERVISIONE) && ids.contains(LOAD_MANAGEMENT))
+	if (ids.count() == 2 && ids.contains(SUPERVISIONE))
 		rate_edit_displayed = false;
 
 	if (rate_edit_displayed)

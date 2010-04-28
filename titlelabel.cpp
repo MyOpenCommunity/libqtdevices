@@ -120,6 +120,7 @@ void TitleLabel::handleScrollingTimer()
 TextOnImageLabel::TextOnImageLabel(QWidget *parent, const QString &text) : QLabel(parent)
 {
 	setInternalText(text);
+	setAlignment(Qt::AlignHCenter);
 }
 
 void TextOnImageLabel::setInternalText(const QString &text)

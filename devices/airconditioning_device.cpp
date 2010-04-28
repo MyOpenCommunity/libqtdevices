@@ -22,6 +22,7 @@
 #include "airconditioning_device.h"
 #include "generic_functions.h" // createWriteDimensionFrame
 
+#include <QStringList>
 #include <openmsg.h>
 
 
@@ -101,7 +102,42 @@ void AdvancedAirConditioningDevice::setStatus(Mode mode, int temp, Velocity vel,
 void AdvancedAirConditioningDevice::setStatus(AirConditionerStatus st) const
 {
 	QString what = statusToString(st);
+
+	// do not perform status check for OFF requests
+	if (st.mode != MODE_OFF)
+		last_status_set = what;
+	else
+		last_status_set.clear();
+
 	sendFrame(createWriteDimensionFrame(who, what, where));
+}
+
+bool AdvancedAirConditioningDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
+{
+	if (msg.whereFull() != where.toStdString())
+		return false;
+
+	int what = msg.what();
+
+	// if we sent a command to set the status, check that the device set the
+	// status correctly; the values that have not been explicitly set are
+	// ignored
+	if (what == ADVANCED_SPLIT_DIM && !last_status_set.isEmpty())
+	{
+		QStringList last_what = last_status_set.split("*");
+		for (size_t i = 0; i < msg.whatArgCnt(); ++i)
+		{
+			if (last_what[i + 1].isEmpty())
+				continue;
+			QString value = QString::fromStdString(msg.whatArg(i));
+
+			if (last_what[i + 1] != value)
+				values_list[DIM_SETSTATUS_ERROR] = true;
+		}
+
+		last_status_set.clear();
+		return true;
+	}
 }
 
 void AdvancedAirConditioningDevice::turnOff() const

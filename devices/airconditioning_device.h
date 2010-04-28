@@ -58,6 +58,10 @@ Q_OBJECT
 public:
 	AdvancedAirConditioningDevice(QString where, int openserver_id = 0);
 
+	enum
+	{
+		DIM_SETSTATUS_ERROR,
+	};
 
 	enum Mode
 	{
@@ -106,8 +110,15 @@ public:
 	virtual void activateScenario(const QString &what) const;
 	template<class T> QString commandToString(const T &info) { return statusToString(info); };
 
+protected:
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+
 private:
 	QString statusToString(const AirConditionerStatus &st) const;
+
+private:
+	// contains the "what" of the last set status command; used for error detection
+	mutable QString last_status_set;
 };
 
 Q_DECLARE_TYPEINFO(AdvancedAirConditioningDevice::AirConditionerStatus, Q_MOVABLE_TYPE);

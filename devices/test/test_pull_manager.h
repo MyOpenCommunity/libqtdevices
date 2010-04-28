@@ -23,6 +23,9 @@
 #define TEST_PULL_MANAGER_H
 #include "test_device.h"
 
+
+class PullStateManager;
+
 class TestPullManager : public TestDevice
 {
 Q_OBJECT
@@ -39,6 +42,9 @@ private slots:
 	void testVariableTiming2();
 	void testVariableTiming3();
 	void testVariableTiming4();
+
+private:
+	bool parseFrames(const char *frame, PullStateManager *psm, bool is_environment);
 };
 
 #endif //TEST_PULL_MANAGER_H

@@ -25,15 +25,30 @@
 #include <QWidget>
 
 class BtButton;
-class QLayout;
 
 
-class NavigationBar : public QWidget
+/**
+ * The abstract version of the navigation bar, that defines only the dimension
+ * and the positioning of its buttons.
+ */
+class AbstractNavigationBar : public QWidget
+{
+protected:
+	AbstractNavigationBar(QWidget *parent = 0);
+	virtual QSize sizeHint() const;
+	BtButton *createButton(QString icon, const char *signal, int pos);
+};
+
+
+/**
+ * The navigation bar, used to navigate through pages
+ */
+class NavigationBar : public AbstractNavigationBar
 {
 Q_OBJECT
 public:
 	NavigationBar(QString forward_icon=QString(), QString down_icon="scroll_down",
-		QString up_icon="scroll_up", QString back_icon="back", QWidget *parent=0);
+		QString up_icon="scroll_up", QString back_icon="back", QWidget *parent = 0);
 
 	// the forward button is a common customization of the NavigationBar, so we
 	// do it public
@@ -48,12 +63,8 @@ signals:
 	void downClick();
 	void forwardClick();
 
-protected:
-	virtual QSize sizeHint() const;
-
 private:
 	BtButton *back_button, *up_button, *down_button;
-	BtButton *createButton(QString icon, const char *signal, int pos);
 };
 
 
