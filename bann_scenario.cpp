@@ -33,6 +33,9 @@
 #include <QTimerEvent>
 
 #define PPTSCE_INTERVAL 1000
+#ifdef CONFIG_BTOUCH
+#define SCENARIO_EVOLUTO 38
+#endif
 
 
 BannSimpleScenario::BannSimpleScenario(int scenario, const QString &descr, const QString &where, int openserver_id) :
