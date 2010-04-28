@@ -119,15 +119,15 @@ int trasformaVol(int vol);
 namespace DateConversions
 {
 #ifdef CONFIG_BTOUCH
-#define SEP '.'
+	const char separator = '.';
 #else
-#define SEP '/'
+	const char separator = '/';
 #endif
 
-	QString formatDateConfig(const QDate &date, char separator = SEP);
-	QString formatDateTimeConfig(const QDateTime &datetime, char separator = SEP);
-	QDate getDateConfig(const QString &date, char separator = SEP);
-	QDateTime getDateTimeConfig(const QString &datetime, char separator = SEP);
+	QString formatDateConfig(const QDate &date, char s = separator);
+	QString formatDateTimeConfig(const QDateTime &datetime, char s = separator);
+	QDate getDateConfig(const QString &date, char s = separator);
+	QDateTime getDateTimeConfig(const QString &datetime, char s = separator);
 }
 
 #endif // GENERIC_FUNCTIONS_H
