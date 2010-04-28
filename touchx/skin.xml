@@ -1199,9 +1199,16 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/carichi.png</img_top_navigation_button>
 	</item>
 	<item>
-		<!-- Load Management -->
+		<!--
+		Load Management
+
+		Leaks img_cost_elettricity and img_cost_water
+		-->
 		<cid>18000</cid>
 		<img_link_icon>home/energy.png</img_link_icon>
+		<img_currency_exchange>home/carichi.png</img_currency_exchange>
+		<img_cost_elettricity>home/carichi.png</img_cost_elettricity>
+		<img_cost_water>home/carichi.png</img_cost_water>
 	</item>
 	<item>
 		<!--
