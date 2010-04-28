@@ -1224,7 +1224,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		-->
 		<cid>18000</cid>
 		<img_link_icon>home/energy.png</img_link_icon>
-		<img_currency_exchange>home/carichi.png</img_currency_exchange>
+		<img_currency_exchange>energia/valutaset.png</img_currency_exchange>
 		<img_cost_elettricity>home/carichi.png</img_cost_elettricity>
 		<img_cost_water>home/carichi.png</img_cost_water>
 	</item>
