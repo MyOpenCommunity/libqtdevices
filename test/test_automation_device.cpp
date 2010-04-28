@@ -115,5 +115,6 @@ void TestPPTStatDevice::receiveStatus()
 	t.check(QString("*25*31#1*%1##").arg(where), true);
 	t.check(QString("*25*32#0*%1##").arg(where), false);
 	t.check(QString("*25*32#1*%1##").arg(where), false);
+	t.checkSignals(QString("*25*%1##").arg(where), 0);
 }
 

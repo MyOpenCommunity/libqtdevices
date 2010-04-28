@@ -101,7 +101,7 @@ void PPTStatDevice::manageFrame(OpenMsg &msg)
 	// In some cases (when more than a ts is present in the system)
 	// a request frame can arrive from the monitor socket. We have to manage this
 	// situation.
-	if (msg.IsStateFrame() || msg.IsNormalFrame())
+	if (msg.IsStateFrame())
 		return;
 
 	int what = msg.what();
