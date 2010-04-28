@@ -134,14 +134,6 @@ void ScreenSaverPage::bannerSelected(int id)
 
 #ifdef LAYOUT_TOUCHX
 
-FileSelector *StorageSelectionPage::createBrowser()
-{
-	FileSelector *browser = new SlideshowSelector;
-	connect(browser, SIGNAL(Closed()), SLOT(showPage()));
-
-	return browser;
-}
-
 FileList::FileList(QWidget *parent, int rows_per_page) :
 		ItemList(parent, rows_per_page), sel_buttons(new QButtonGroup(this))
 {
