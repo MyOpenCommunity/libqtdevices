@@ -1169,7 +1169,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_currency_exchange>energia/valutaset.png</img_currency_exchange>
 		<img_select>energia/arrdx.png</img_select>
 		<img_currency>energia/valuta.png</img_currency>
-		<img_table>energia/edit.png</img_table>
+		<img_table>energia/tabella.png</img_table>
 		<img_fast_forward>multimediale/successivo.png</img_fast_forward>
 		<img_fast_backward>multimediale/precedente.png</img_fast_backward>
 		<img_graph>energia/grafico.png</img_graph>
