@@ -24,7 +24,7 @@
 
 #include <QDebug>
 
-#define SOCKET_MONITOR "*99*10##"
+#define SOCKET_MONITOR "*99*1##"
 #define SOCKET_COMANDI "*99*9##"
 #define SOCKET_RICHIESTE "*99*0##"
 
