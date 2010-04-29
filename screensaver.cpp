@@ -258,6 +258,7 @@ void ScreenSaverLine::setLineHeight(int height)
 void ScreenSaverLine::stop()
 {
 	delete line;
+	line = 0;
 	ScreenSaver::stop();
 }
 

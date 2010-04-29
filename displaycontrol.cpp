@@ -28,6 +28,7 @@ DisplayControl::DisplayControl()
 {
 	forced_operative_mode = false;
 	operative_brightness = 10;
+	current_state = DISPLAY_OFF;
 	setBrightness(BRIGHTNESS_NORMAL);
 	setState(DISPLAY_OPERATIVE);
 }
