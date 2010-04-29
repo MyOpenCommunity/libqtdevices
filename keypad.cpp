@@ -71,6 +71,8 @@ Keypad::Keypad(bool back_button)
 
 	digitLabel = new QLabel;
 	QLabel *pwdLabel = new QLabel;
+	warningLabel = new QLabel(tr("Wrong password"));
+	warningLabel->hide();
 
 	ok->setImage(bt_global::skin->getImage("ok"));
 	canc->setImage(bt_global::skin->getImage("cancel"));
@@ -112,8 +114,12 @@ Keypad::Keypad(bool back_button)
 	p->addWidget(digitLabel, 1, Qt::AlignLeft);
 
 	// top layout
-	topLayout = new QVBoxLayout(top_widget);
+	topLayout = new QGridLayout(top_widget);
 	topLayout->setContentsMargins(0, 0, 0, 10);
+	// avoid expansion of keys
+	topLayout->setColumnStretch(0, 1);
+	topLayout->setColumnStretch(2, 1);
+
 #ifdef LAYOUT_BTOUCH
 	topLayout->setSpacing(0);
 #else
@@ -121,15 +127,22 @@ Keypad::Keypad(bool back_button)
 #endif
 
 	// when modifying this, modify insertLayout below
-	topLayout->addLayout(k);
-	topLayout->addLayout(p);
+	topLayout->addLayout(k, 0, 1);
+	topLayout->addLayout(p, 2, 1);
+	topLayout->addWidget(warningLabel, 3, 1);
+	topLayout->setRowStretch(3, 1);
 
 	updateText();
 }
 
 void Keypad::insertLayout(QLayout *l)
 {
-	topLayout->insertLayout(1, l);
+	topLayout->addLayout(l, 1, 1);
+}
+
+void Keypad::showWrongPassword(bool is_visible)
+{
+	warningLabel->setVisible(is_visible);
 }
 
 void Keypad::updateText()
@@ -148,6 +161,7 @@ void Keypad::buttonClicked(int number)
 	if (text.length() < 5)
 		text += QString::number(number);
 	updateText();
+	warningLabel->hide();
 }
 
 void Keypad::deleteChar()

@@ -26,7 +26,7 @@
 #include "window.h"
 
 class QLabel;
-class QVBoxLayout;
+class QGridLayout;
 
 /*!
   \class Keypad
@@ -59,6 +59,8 @@ public:
 	/// A function to reset the text inserted by virtual Keyboard.
 	void resetText();
 
+	void showWrongPassword(bool is_visible);
+
 protected:
 	// used by KeypadWithState to add the row with the zone state
 	void insertLayout(QLayout *l);
@@ -67,8 +69,9 @@ private:
 	void updateText();
 
 private:
-	QVBoxLayout *topLayout;
+	QGridLayout *topLayout;
 	QLabel *digitLabel;
+	QLabel *warningLabel;
 	QString text;
 	Type mode;
 
