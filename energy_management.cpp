@@ -49,6 +49,9 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 	if (ids.count() == 2 && ids.contains(SUPERVISIONE))
 		rate_edit_displayed = false;
 
+	// call loadItems here so EnergyView/LoadManagement will see the correct value for isRateEditDisplayed
+	loadItems(conf_node);
+
 	if (rate_edit_displayed)
 	{
 		QPoint pos = rect().bottomRight();
@@ -59,9 +62,6 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 			addPage(new EnergyCost, getTextChild(conf_node, "descr"),
 				bt_global::skin->getImage("currency_exchange"), pos.x(), pos.y());
 	}
-
-	// call loadItems here so EnergyView/LoadManagement will see the correct value for isRateEditDisplayed
-	loadItems(conf_node);
 }
 
 bool EnergyManagement::isBuilt()
