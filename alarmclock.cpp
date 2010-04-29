@@ -55,26 +55,14 @@
 // Alarmnavigation implementation
 
 AlarmNavigation::AlarmNavigation(bool forwardButton, QWidget *parent)
-		: QWidget(parent)
+	: AbstractNavigationBar(parent)
 {
-	QHBoxLayout *l = new QHBoxLayout(this);
-
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-
-	BtButton *ok = new BtButton();
-	connect(ok, SIGNAL(clicked()), SIGNAL(okClicked()));
-	ok->setImage(bt_global::skin->getImage("ok"));
-	l->addWidget(ok);
-	l->addStretch(1);
-
+	// For now, it used only in BTouch code.
+#ifdef LAYOUT_BTOUCH
+	createButton(bt_global::skin->getImage("ok"), SIGNAL(okClicked()), 0);
 	if (forwardButton)
-	{
-		BtButton *forward = new BtButton();
-		connect(forward, SIGNAL(clicked()), SIGNAL(forwardClicked()));
-		forward->setImage(bt_global::skin->getImage("forward"));
-		l->addWidget(forward);
-	}
+		createButton(bt_global::skin->getImage("forward"), SIGNAL(forwardClick()), 3);
+#endif
 }
 
 // AlarmClock implementation

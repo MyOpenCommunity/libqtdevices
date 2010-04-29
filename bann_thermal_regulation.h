@@ -28,6 +28,7 @@
 #include "main.h"
 #include "page.h"
 #include "thermal_device.h" // thermo_type_t, ThermalDevice*
+#include "navigation_bar.h" // AbstractNavigationBar
 
 #include <QLayout>
 #include <QButtonGroup>
@@ -79,7 +80,7 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, int openser
  * Simple widget with an OK button on the right
  * and a "back" button on the left
  */
-class ThermalNavigation : public QWidget
+class ThermalNavigation : public AbstractNavigationBar
 {
 Q_OBJECT
 public:
@@ -182,7 +183,6 @@ protected:
 	QLabel *local_temp_label;
 	QHBoxLayout bottom_icons;
 
-	QDomNode conf_root;
 	ControlledProbeDevice *dev;
 private:
 	/**

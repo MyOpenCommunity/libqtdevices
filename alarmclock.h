@@ -25,6 +25,7 @@
 #include "frame_receiver.h"
 #include "hardware_functions.h"
 #include "page.h"
+#include "navigation_bar.h" // AbstractNavigationBar
 
 #include <QTime>
 
@@ -272,7 +273,7 @@ private:
   \brief helper class for the bottom navigation bar.
 
 */
-class AlarmNavigation : public QWidget
+class AlarmNavigation : public AbstractNavigationBar
 {
 Q_OBJECT
 public:

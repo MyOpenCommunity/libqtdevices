@@ -87,25 +87,13 @@ void SettingsPage::resetIndex()
 	page_content->resetIndex();
 }
 
-ThermalNavigation::ThermalNavigation(QWidget *parent)
-	: QWidget(parent)
+ThermalNavigation::ThermalNavigation(QWidget *parent) : AbstractNavigationBar(parent)
 {
-	QHBoxLayout *l = new QHBoxLayout(this);
-
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-
-	BtButton *back = new BtButton();
-	connect(back, SIGNAL(clicked()), SIGNAL(backClick()));
-	back->setImage(bt_global::skin->getImage("back"));
-	l->addWidget(back);
-
-	l->addStretch(1);
-
-	BtButton *ok = new BtButton();
-	connect(ok, SIGNAL(clicked()), SIGNAL(forwardClick()));
-	ok->setImage(bt_global::skin->getImage("ok"));
-	l->addWidget(ok);
+	// For now, it used only in BTouch code.
+#ifdef LAYOUT_BTOUCH
+	back_button = createButton(bt_global::skin->getImage("back"), SIGNAL(backClick()), 0);
+	forward_button = createButton(bt_global::skin->getImage("ok"), SIGNAL(forwardClick()), 3);
+#endif
 }
 
 
@@ -283,7 +271,6 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	status = AUTOMATIC;
 	probe_type = thermo_reg->type();
 
-	conf_root = n;
 	dev = _dev;
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
