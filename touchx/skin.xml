@@ -1185,6 +1185,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_cost_dhw>energia/dhw.png</img_cost_dhw>
 		<img_cost_gas>energia/gas.png</img_cost_gas>
 		<img_cost_conditioning>energia/liquifiedgas.png</img_cost_conditioning>
+		<img_empty>energia/backenergy.png</img_empty>
 	</item>
 	<item>
 		<!--
