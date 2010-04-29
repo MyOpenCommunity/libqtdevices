@@ -29,6 +29,7 @@
 #include "bann_energy.h" // BannLoadDiagnostic
 #include "devices_cache.h"
 #include "loads_device.h"
+#include "energy_management.h" // isBuilt
 
 #include <QDebug>
 
@@ -52,7 +53,7 @@ SupervisionMenu::SupervisionMenu(const QDomNode &config_node)
 
 int SupervisionMenu::sectionId() const
 {
-	return SUPERVISIONE;
+	return EnergyManagement::isBuilt() ? ENERGY_MANAGEMENT : SUPERVISIONE;
 }
 
 void SupervisionMenu::loadItems(const QDomNode &config_node)

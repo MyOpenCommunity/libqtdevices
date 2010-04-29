@@ -33,7 +33,7 @@
 #include "devices_cache.h" // add_device_to_cache
 #include "bttime.h" // BtTime
 #include "generic_functions.h" // DateConversion::formatDateConfig
-#include "energy_management.h" // isRateEditDisplayed
+#include "energy_management.h" // isRateEditDisplayed, isBuilt
 #include "energy_data.h" // EnergyCost
 #include "btbutton.h"
 
@@ -172,7 +172,7 @@ LoadManagement::LoadManagement(const QDomNode &config_node) :
 
 int LoadManagement::sectionId() const
 {
-	return LOAD_MANAGEMENT;
+	return EnergyManagement::isBuilt() ? ENERGY_MANAGEMENT : LOAD_MANAGEMENT;
 }
 
 void LoadManagement::loadItems(const QDomNode &config_node)

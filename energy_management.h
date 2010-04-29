@@ -24,6 +24,10 @@
 
 #include "sectionpage.h"
 
+/**
+ * A container for other sections energy-related (SupervisionMenu, EnergyData
+ * and LoadManagement).
+ */
 class EnergyManagement : public SectionPage
 {
 public:
@@ -35,8 +39,13 @@ public:
 
 	virtual int sectionId() const;
 
+	// We have to know if the energy management is built, in order to update
+	// correctly the sectionId of the sections that the EnergyManagement can contains.
+	static bool isBuilt();
+
 private:
 	static bool rate_edit_displayed;
+	static bool is_built;
 };
 
 #endif // ENERGY_MANAGEMENT_H

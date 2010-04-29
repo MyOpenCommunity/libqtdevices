@@ -32,7 +32,7 @@
 #include "bannercontent.h"
 #include "bann1_button.h" // BannSinglePuls
 #include "btbutton.h"
-#include "energy_management.h"
+#include "energy_management.h" // isBuilt, isRateEditDisplayed
 #include "energy_graph.h"
 #include "main.h" // getPageNodeFromChildNode
 
@@ -59,9 +59,7 @@ EnergyData::EnergyData(const QDomNode &config_node)
 
 int EnergyData::sectionId() const
 {
-	// TODO: we have to manage the case when the energy data is put inside the energy
-	// management
-	return ENERGY_DATA;
+	return EnergyManagement::isBuilt() ? ENERGY_MANAGEMENT : ENERGY_DATA;
 }
 
 void EnergyData::updateDayTimer()
