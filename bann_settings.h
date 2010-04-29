@@ -207,6 +207,7 @@ private slots:
 	void resetState();
 
 private:
+	void savePassword(const QString &passwd);
 	enum PasswdStatus
 	{
 	    PASSWD_SET,                         // TODO: maybe not needed?

@@ -325,17 +325,7 @@ void impPassword::checkPasswd()
 	{
 	// TODO: understand what must be done when password is not set
 	case PASSWD_NOT_SET:
-		if (!c.isEmpty())
-		{
-			password = c;
-#ifdef CONFIG_BTOUCH
-			setCfgValue("value", password, item_id);
-#else
-			setCfgValue("password", password, item_id);
-#endif
-			bt_global::btmain->setPwd(active, password);
-			status = CHECK_OLD_PASSWORD;
-		}
+		savePassword(c);
 		emit pageClosed();
 		break;
 	case CHECK_OLD_PASSWORD:
@@ -376,21 +366,26 @@ void impPassword::checkPasswd()
 		else
 		{
 			// save password and quit
-			if (!c.isEmpty())
-			{
-				password = c;
-	#ifdef CONFIG_BTOUCH
-				setCfgValue("value", password, item_id);
-	#else
-				setCfgValue("password", password, item_id);
-	#endif
-				bt_global::btmain->setPwd(active, password);
-				status = CHECK_OLD_PASSWORD;
-			}
+			savePassword(c);
 			emit pageClosed();
 		}
 		break;
 
+	}
+}
+
+void impPassword::savePassword(const QString &passwd)
+{
+	if (!passwd.isEmpty())
+	{
+		password = passwd;
+#ifdef CONFIG_BTOUCH
+		setCfgValue("value", password, item_id);
+#else
+		setCfgValue("password", password, item_id);
+#endif
+		bt_global::btmain->setPwd(active, password);
+		status = CHECK_OLD_PASSWORD;
 	}
 }
 
