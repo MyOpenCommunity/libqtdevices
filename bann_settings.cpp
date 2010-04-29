@@ -341,8 +341,9 @@ void impPassword::checkPasswd()
 			setBeep(true);
 			beep(200);
 			QTimer::singleShot(1100, this, SLOT(restoreBeepState()));
+#else
+			tasti->showWrongPassword(true);
 #endif
-			emit pageClosed();
 		}
 		else //password is correct
 		{
