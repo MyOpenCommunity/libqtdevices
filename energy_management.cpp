@@ -28,12 +28,15 @@
 
 
 bool EnergyManagement::rate_edit_displayed = false;
+bool EnergyManagement::is_built = false;
+
 
 EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 	: SectionPage(conf_node, false)
 {
 	SkinContext cxt(getTextChild(conf_node, "cid").toInt());
 
+	is_built = true;
 	QList<int> ids;
 	foreach (const QDomNode &item, getChildren(conf_node, "item"))
 		ids.append(getTextChild(item, "id").toInt());
@@ -59,6 +62,11 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 
 	// call loadItems here so EnergyView/LoadManagement will see the correct value for isRateEditDisplayed
 	loadItems(conf_node);
+}
+
+bool EnergyManagement::isBuilt()
+{
+	return is_built;
 }
 
 bool EnergyManagement::isRateEditDisplayed()

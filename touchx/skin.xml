@@ -325,6 +325,12 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_arrow_down>termoregolazione/meno.png</img_arrow_down>
 	</item>	
 	<item>
+		<!-- air conditioning link -->
+		<cid>4</cid>
+		<img_link_icon>home/termoregolazione.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/termoregolazione.png</img_top_navigation_button>
+	</item>
+	<item>
 		<!-- Multichannel sound diffusion -->
 		<cid>12</cid>
 		<img_link_icon>home/diffusionemultimediale.png</img_link_icon>
@@ -994,7 +1000,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- air conditioning (cid may change) -->
 	<item>
-		<cid>4</cid>
+		<cid>4000</cid>
 		<img_central_icon>termoregolazione/aircond.png</img_central_icon>
 		<img_ok>termoregolazione/ok.png</img_ok>
 		<img_off>termoregolazione/off.png</img_off>
@@ -1008,9 +1014,12 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_cycle_speed>termoregolazione/ciclafancoil.png</img_cycle_speed>
 		<img_swing_on>termoregolazione/on.png</img_swing_on>
 		<img_swing_off>termoregolazione/off.png</img_swing_off>
+		<img_swing_on_checked>termoregolazione/autoon.png</img_swing_on_checked> <!-- WRONG ICON -->
+		<img_swing_off_checked>termoregolazione/statocentraleoff.png</img_swing_off_checked>
 		<img_split_cmd>termoregolazione/on.png</img_split_cmd>
 		<img_plus_disabled>termoregolazione/piudis.png</img_plus_disabled>
 		<img_minus_disabled>termoregolazione/menodis.png</img_minus_disabled>
+		<img_setstate_error>termoregolazione/airconditioning_error.png</img_setstate_error>
 	</item>
 	<!-- scenario menu banners -->
 	<item>
@@ -1182,6 +1191,20 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_fast_backward>multimediale/precedente.png</img_fast_backward>
 		<img_graph>energia/grafico.png</img_graph>
 		<img_bg_banner>energia/backenergy.png</img_bg_banner>
+		<img_cost_electricity>energia/electricity.png</img_cost_electricity>
+		<img_cost_water>energia/water.png</img_cost_water>
+		<img_cost_dhw>energia/dhw.png</img_cost_dhw>
+		<img_cost_gas>energia/gas.png</img_cost_gas>
+		<img_cost_conditioning>energia/liquifiedgas.png</img_cost_conditioning>
+		<img_empty>energia/backenergy.png</img_empty>
+	</item>
+	<item>
+		<!--
+		Energy management
+		Other tags used: img_back
+		-->
+		<cid>15000</cid>
+		<img_currency_exchange>energia/valutaset.png</img_currency_exchange>
 		<img_cost_electricity>energia/electricity.png</img_cost_electricity>
 		<img_cost_water>energia/water.png</img_cost_water>
 		<img_cost_dhw>energia/dhw.png</img_cost_dhw>

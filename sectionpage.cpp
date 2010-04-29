@@ -33,12 +33,6 @@
 
 SectionPage::SectionPage(const QDomNode &config_node, bool load_items)
 {
-	if (load_items)
-		loadItems(config_node);
-}
-
-void SectionPage::loadItems(const QDomNode &config_node)
-{
 #ifndef CONFIG_BTOUCH
 	// only show the back icon if there is a lnk_itemID to a banner
 	QString back_icon = getTextChild(config_node, "lnk_itemID").isEmpty() ? "" : "back";
@@ -46,6 +40,12 @@ void SectionPage::loadItems(const QDomNode &config_node)
 	buildPage(new IconContent, nav_bar);
 #endif
 
+	if (load_items)
+		loadItems(config_node);
+}
+
+void SectionPage::loadItems(const QDomNode &config_node)
+{
 	QTime wdtime;
 	wdtime.start(); // Start counting for wd refresh
 

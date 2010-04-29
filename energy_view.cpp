@@ -123,12 +123,12 @@ EnergyViewNavigation::EnergyViewNavigation()
 {
 
 #ifdef LAYOUT_BTOUCH
-	BtButton *back_button = createButton(bt_global::skin->getImage("back"), SIGNAL(backClick()), 0);
+	createButton(bt_global::skin->getImage("back"), SIGNAL(backClick()), 0);
 
 	table_button = createButton(bt_global::skin->getImage("table"), SIGNAL(showTable()), 2);
 	currency_button = createButton(bt_global::skin->getImage("currency"), SIGNAL(toggleCurrency()), 3);
 #else
-	BtButton *back_button = createButton(bt_global::skin->getImage("back"), SIGNAL(backClick()), 3);
+	createButton(bt_global::skin->getImage("back"), SIGNAL(backClick()), 3);
 #endif
 }
 

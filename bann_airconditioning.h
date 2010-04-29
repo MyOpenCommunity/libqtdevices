@@ -202,7 +202,7 @@ private:
 /**
  * The banner that represent the swing of the split
  */
-class SplitSwing : public Bann2Buttons
+class SplitSwing : public Bann2StateButtons
 {
 Q_OBJECT
 public:
