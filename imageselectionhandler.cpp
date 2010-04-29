@@ -36,7 +36,6 @@ namespace
 		QFile f(file_path);
 		if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
 		{
-			qWarning() << "Could not read slideshow images file: " << QDir::currentPath() + file_path;
 			return QStringList();
 		}
 

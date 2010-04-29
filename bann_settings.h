@@ -203,6 +203,7 @@ protected:
 	virtual void showEvent(QShowEvent *event);
 
 private slots:
+	// called on tasti::accept() (user has confirmed password entry)
 	void checkPasswd();
 
 private:

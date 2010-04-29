@@ -138,6 +138,7 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 									bt_global::skin->getImage("mounted"),
 									bt_global::skin->getImage("unmounted"));
 				page_content->addWidget(t);
+				connect(browser, SIGNAL(Closed()), this, SLOT(showPage()));
 				delete_browser = false;
 			}
 			break;

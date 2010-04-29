@@ -270,7 +270,8 @@ impPassword::impPassword(QString icon_on, QString icon_off, QString icon_label, 
 
 	connect(right_button, SIGNAL(clicked()), tasti, SLOT(showPage()));
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleActivation()));
-	connect(tasti, SIGNAL(Closed()), SLOT(checkPasswd()));
+	connect(tasti, SIGNAL(Closed()), SIGNAL(pageClosed()));
+	connect(tasti, SIGNAL(accept()), SLOT(checkPasswd()));
 
 	active = (attiva == 1);
 	bt_global::btmain->setPwd(active, password);
@@ -307,6 +308,7 @@ void impPassword::showEvent(QShowEvent *event)
 		tasti->setMode(Keypad::HIDDEN);
 		qDebug("password not ZERO");
 	}
+	tasti->resetText();
 }
 
 void impPassword::checkPasswd()
