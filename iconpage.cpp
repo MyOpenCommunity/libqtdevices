@@ -73,12 +73,13 @@ void IconPage::activateLayout()
 
 BtButton *IconPage::addButton(const QString &label, const QString& icon_path, int x, int y)
 {
-	BtButton *b = new BtButton(this);
-	if (page_content == NULL)
-		b->setGeometry(x, y, DIM_BUT, DIM_BUT);
-	else
-		page_content->addButton(b, label);
-	b->setImage(icon_path);
+	BtButton *b = new BtButton(icon_path, this);
+#ifdef LAYOUT_BTOUCH
+	b->setGeometry(x, y, DIM_BUT, DIM_BUT);
+#else
+	Q_ASSERT_X(page_content, "IconPage::addButton", "The IconPage must have the page_content!");
+	page_content->addButton(b, label);
+#endif
 
 	return b;
 }
