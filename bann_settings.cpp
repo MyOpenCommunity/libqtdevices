@@ -332,11 +332,6 @@ void impPassword::checkPasswd()
 	}
 	else // status == PASSWD_SET
 	{
-		if (c.isEmpty())
-		{
-			emit pageClosed();
-			return;
-		}
 		if (password != c)
 		{
 			qDebug() << "password errata doveva essere " << password;
