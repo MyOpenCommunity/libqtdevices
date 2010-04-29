@@ -28,6 +28,7 @@
 #include "scaleconversion.h" // celsiusString, fahrenheitString, toCelsius, toFahrenheit
 #include "generic_functions.h" // setCfgValue()
 #include "airconditioning.h" // AdvancedSplitPage
+#include "state_button.h"
 
 #include <QLabel> // BannerText
 #include <QDebug>
@@ -338,7 +339,7 @@ SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 
 // The button group guarantees that only one button is pressed at a given time.
 // Button ids are chosen so that they can be converted to bool values, ie. are 0 or 1.
-SplitSwing::SplitSwing(QString descr, bool init_swing) : Bann2Buttons(0)
+SplitSwing::SplitSwing(QString descr, bool init_swing) : Bann2StateButtons(0)
 {
 	initBanner(bt_global::skin->getImage("swing_off"), bt_global::skin->getImage("swing_on"), descr);
 
@@ -347,6 +348,11 @@ SplitSwing::SplitSwing(QString descr, bool init_swing) : Bann2Buttons(0)
 	// right = ON button, so id is 1
 	buttons.addButton(right_button, 1);
 	buttons.setExclusive(true);
+
+	right_button->setOffImage(bt_global::skin->getImage("swing_on"));
+	right_button->setOnImage(bt_global::skin->getImage("swing_on_checked"));
+	left_button->setOnImage(bt_global::skin->getImage("swing_off_checked"));
+	left_button->setOffImage(bt_global::skin->getImage("swing_off"));
 
 	right_button->setCheckable(true);
 	left_button->setCheckable(true);

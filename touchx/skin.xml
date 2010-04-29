@@ -1014,6 +1014,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_cycle_speed>termoregolazione/ciclafancoil.png</img_cycle_speed>
 		<img_swing_on>termoregolazione/on.png</img_swing_on>
 		<img_swing_off>termoregolazione/off.png</img_swing_off>
+		<img_swing_on_checked>termoregolazione/autoon.png</img_swing_on_checked> <!-- WRONG ICON -->
+		<img_swing_off_checked>termoregolazione/statocentraleoff.png</img_swing_off_checked>
 		<img_split_cmd>termoregolazione/on.png</img_split_cmd>
 		<img_plus_disabled>termoregolazione/piudis.png</img_plus_disabled>
 		<img_minus_disabled>termoregolazione/menodis.png</img_minus_disabled>
