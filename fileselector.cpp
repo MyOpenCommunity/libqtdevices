@@ -48,12 +48,10 @@ inline void waitTimeCounter(const QTime& timer, int msec)
 
 FileSelector::FileSelector(unsigned rows_per_page, QString start_path)
 {
-	level = 0;
-	root_path = start_path;
+	setRootPath(start_path);
 
 	current_dir.setSorting(QDir::DirsFirst | QDir::Name);
 	current_dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable);
-	current_dir.setPath(start_path);
 }
 
 QString FileSelector::getRootPath() const
@@ -63,8 +61,6 @@ QString FileSelector::getRootPath() const
 
 void FileSelector::browse(const QString &dir)
 {
-	root_path = dir;
-
 	setRootPath(dir);
 	showPage();
 }
@@ -136,7 +132,7 @@ void FileSelector::itemIsClicked(int item)
 
 void FileSelector::browseUp()
 {
-	if (level)
+	if (level > 0)
 	{
 		--level;
 		QLabel *l = createWaitDialog();
