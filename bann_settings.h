@@ -175,12 +175,10 @@ private:
 };
 
 
-/*!
-  \class impPassword
-  \brief Manages the password.
 
-  It's possible (dis)abilitate the password and to change the actual password.
-*/
+/**
+ * Enable/disable password on freeze and change password.
+ */
 class impPassword : public Bann2StateButtons
 {
 Q_OBJECT
@@ -189,14 +187,14 @@ public:
 		    int item_id, QString pwd, int attiva);
 
 public slots:
-/*!
-  \brief  Changes the activation state
-*/
+	/**
+	 * Enable/disable password checking on freeze
+	 */
 	void toggleActivation();
 
-/*!
-  \brief  Stops the error beep made when the password insertion is wrong
-*/
+	/**
+	 * Stops the error beep made when the password insertion is wrong
+	 */
 	void restoreBeepState();
 
 protected:
@@ -211,6 +209,9 @@ private:
 	{
 	    PASSWD_SET,
 	    PASSWD_NOT_SET,
+	    CHECK_OLD_PASSWORD,                 // check if user remembers old password
+	    INSERT_NEW_PASSWORD,                // let the user insert the new password (not showing text)
+	    VERIFY_PASSWORD,                    // insert again the new password, to avoid wrong touches
 	};
 	bool active;
 	PasswdStatus status;
