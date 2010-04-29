@@ -465,9 +465,9 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<!-- sound diffusion system -->
 	<!-- rds radio -->
 	<item>
-		<cid>6002</cid>
+		<cid>12001</cid>
 		<!--
-		RDS Radio control page
+		RDS Radio control page (multichannel)
 		Images: img_plus, img_minus, img_num_1, img_num_2, img_num_3, img_num_4, img_num_5
 		-->
 		<img_cycle>diffusione/cycle.png</img_cycle>
@@ -1289,14 +1289,22 @@ MessagePage QLabel#Text { background-color: #000000; }
 		Stop & Go
 		-->
 		<cid>6001</cid>
-		<img_center_icon></img_center_icon>
+		<img_center_icon>energia/backenergy.png</img_center_icon>
 	</item>
 	<item>
 		<!--
 		Load diagnostic
 		-->
 		<cid>6002</cid>
-		<img_center_icon></img_center_icon>
-		<img_state_icon></img_state_icon>
+		<img_center_icon>energia/backenergy.png</img_center_icon>
+		<img_state_icon>antintrusione/imgamb.png</img_state_icon>
+	</item>
+	<item>
+		<!--
+		Supervision menu
+		Other tags used: img_forward
+		-->
+		<cid>6000</cid>
+		<img_center_icon>energia/backenergy.png</img_center_icon>
 	</item>
 </style>

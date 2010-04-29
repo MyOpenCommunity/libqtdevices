@@ -46,6 +46,7 @@ enum
 
 SupervisionMenu::SupervisionMenu(const QDomNode &config_node)
 {
+	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	next_page = NULL;
 	buildPage();
 	loadItems(config_node);

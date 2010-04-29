@@ -35,7 +35,7 @@ SectionPage::SectionPage(const QDomNode &config_node, bool load_items)
 {
 #ifndef CONFIG_BTOUCH
 	// only show the back icon if there is a lnk_itemID to a banner
-	QString back_icon = getTextChild(config_node, "lnk_itemID").isEmpty() ? "" : "back";
+	QString back_icon = getTextChild(config_node, "lnk_itemID").isEmpty() ? QString() : "back";
 	NavigationBar *nav_bar = new NavigationBar("", "scroll_down", "scroll_up", back_icon);
 	buildPage(new IconContent, nav_bar);
 #endif
