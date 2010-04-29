@@ -66,7 +66,10 @@ public:
 
 	// The FileSelector passed here, should be deleted by this class
 	// if the configuration doesn't support filesystem (usb and sd).
-	MultimediaSectionPage(const QDomNode &config_node, MultimediaSectionPage::Items items = MultimediaSectionPage::ITEMS_ALL, FileSelector *browser = 0);
+	MultimediaSectionPage(const QDomNode &config_node,
+						  MultimediaSectionPage::Items items = MultimediaSectionPage::ITEMS_ALL,
+						  FileSelector *browser = 0,
+						  const QString &title = QString());
 
 	virtual int sectionId() const;
 
