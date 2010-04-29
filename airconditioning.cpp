@@ -578,7 +578,11 @@ void GeneralSplitPage::loadScenarios(const QDomNode &config_node)
 #endif
 	{
 		GeneralSplitScenario *b = new GeneralSplitScenario(getTextChild(scenario, "descr"));
+#ifdef CONFIG_BTOUCH
 		foreach (const QDomNode &split, getChildren(scenario, "split"))
+#else
+		foreach (const QDomNode &split, getChildren(getElement(scenario, "splits"), "item"))
+#endif
 		{
 			int oid = getTextChild(split, "openserver_id").toInt();
 			AirConditioningDevice *dev = new AirConditioningDevice(getTextChild(split, "where"), oid);
@@ -605,7 +609,11 @@ void AdvancedGeneralSplitPage::loadScenarios(const QDomNode &config_node)
 #endif
 	{
 		GeneralSplitScenario *b = new GeneralSplitScenario(getTextChild(scenario, "descr"));
+#ifdef CONFIG_BTOUCH
 		foreach (const QDomNode &split, getChildren(scenario, "split"))
+#else
+		foreach (const QDomNode &split, getChildren(getElement(scenario, "splits"), "item"))
+#endif
 		{
 			int oid = getTextChild(split, "openserver_id").toInt();
 			AdvancedAirConditioningDevice *dev = new AdvancedAirConditioningDevice(getTextChild(split, "where"), oid);
