@@ -50,7 +50,7 @@ SupervisionMenu::SupervisionMenu(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
-int SupervisionMenu::sectionId()
+int SupervisionMenu::sectionId() const
 {
 	return SUPERVISIONE;
 }

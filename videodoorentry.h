@@ -56,7 +56,7 @@ class VideoDoorEntry : public IconPage
 Q_OBJECT
 public:
 	VideoDoorEntry(const QDomNode &config_node);
-	virtual int sectionId();
+	virtual int sectionId() const;
 
 	static void loadHiddenPages();
 
@@ -97,7 +97,7 @@ Q_OBJECT
 public:
 	IntercomCallPage(EntryphoneDevice *d);
 	virtual void showPage();
-	virtual int sectionId();
+	virtual int sectionId() const;
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);

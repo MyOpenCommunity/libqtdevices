@@ -111,7 +111,7 @@ Lighting::Lighting(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
-int Lighting::sectionId()
+int Lighting::sectionId() const
 {
 	return ILLUMINAZIONE;
 }

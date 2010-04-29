@@ -42,7 +42,7 @@ Q_OBJECT
 public:
 	LoadManagement(const QDomNode &config_node);
 
-	int sectionId();
+	virtual int sectionId() const;
 
 	static banner *getBanner(const QDomNode &item_node);
 

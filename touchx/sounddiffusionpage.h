@@ -65,7 +65,7 @@ class SoundAmbientPage : public BannerPage
 Q_OBJECT
 public:
 	SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources = QList<SourceDescription>());
-	virtual int sectionId();
+	virtual int sectionId() const;
 	static banner *getBanner(const QDomNode &item_node);
 
 	virtual void showPage();
@@ -93,7 +93,7 @@ class SoundDiffusionPage : public BannerPage
 Q_OBJECT
 public:
 	SoundDiffusionPage(const QDomNode &config_node);
-	virtual int sectionId();
+	virtual int sectionId() const;
 
 	static void showCurrentAmbientPage();
 	static bool isSource();

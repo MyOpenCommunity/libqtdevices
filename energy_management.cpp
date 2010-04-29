@@ -66,7 +66,7 @@ bool EnergyManagement::isRateEditDisplayed()
 	return rate_edit_displayed;
 }
 
-int EnergyManagement::sectionId()
+int EnergyManagement::sectionId() const
 {
 	return ENERGY_MANAGEMENT;
 }

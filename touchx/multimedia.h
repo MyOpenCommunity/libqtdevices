@@ -68,7 +68,7 @@ public:
 	// if the configuration doesn't support filesystem (usb and sd).
 	MultimediaSectionPage(const QDomNode &config_node, MultimediaSectionPage::Items items = MultimediaSectionPage::ITEMS_ALL, FileSelector *browser = 0);
 
-	virtual int sectionId();
+	virtual int sectionId() const;
 
 private:
 	void loadItems(const QDomNode &config_node);

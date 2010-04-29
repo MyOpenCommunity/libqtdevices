@@ -107,7 +107,7 @@ Q_OBJECT
 public:
 	MessagesListPage(const QDomNode &config_node);
 	typedef MessageList ContentType;
-	virtual int sectionId();
+	virtual int sectionId() const;
 
 public slots:
 	virtual void showPage();

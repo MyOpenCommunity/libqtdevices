@@ -154,7 +154,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	connect(this, SIGNAL(stopped()), tray_icon, SLOT(stopped()));
 }
 
-int AudioPlayerPage::sectionId()
+int AudioPlayerPage::sectionId() const
 {
 	return MULTIMEDIA;
 }

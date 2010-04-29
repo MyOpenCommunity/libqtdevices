@@ -261,7 +261,7 @@ IconSettings::IconSettings(const QDomNode &config_node, bool load_vct_items)
 			bt_global::skin->getImage("videodoorentry"));
 }
 
-int IconSettings::sectionId()
+int IconSettings::sectionId() const
 {
 	return IMPOSTAZIONI;
 }

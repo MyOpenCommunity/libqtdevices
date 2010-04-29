@@ -95,7 +95,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	checkAlarmCount();
 }
 
-int Antintrusion::sectionId()
+int Antintrusion::sectionId() const
 {
 	return ANTIINTRUSIONE;
 }
@@ -593,7 +593,7 @@ AlarmList::AlarmList()
 	connect(alarms, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 }
 
-int AlarmList::sectionId()
+int AlarmList::sectionId() const
 {
 	return ANTIINTRUSIONE;
 }

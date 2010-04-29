@@ -43,7 +43,7 @@ public:
 	EnergyData(const QDomNode &config_node);
 
 	virtual void showPage();
-	virtual int sectionId();
+	virtual int sectionId() const;
 
 private slots:
 	void systemTimeChanged();

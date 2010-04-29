@@ -129,7 +129,7 @@ SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<Source
 	loadItems(conf_node);
 }
 
-int SoundAmbientPage::sectionId()
+int SoundAmbientPage::sectionId() const
 {
 	return section_id;
 }
@@ -218,7 +218,7 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
 }
 
-int SoundDiffusionPage::sectionId()
+int SoundDiffusionPage::sectionId() const
 {
 	return DIFSON_MULTI;
 }

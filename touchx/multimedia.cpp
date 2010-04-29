@@ -105,7 +105,7 @@ MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, Multim
 		browser->deleteLater();
 }
 
-int MultimediaSectionPage::sectionId()
+int MultimediaSectionPage::sectionId() const
 {
 	return MULTIMEDIA;
 }

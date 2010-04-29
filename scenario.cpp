@@ -60,7 +60,7 @@ Scenario::Scenario(const QDomNode &config_node)
 	section_id = getTextChild(config_node, "id").toInt();
 }
 
-int Scenario::sectionId()
+int Scenario::sectionId() const
 {
 	return section_id;
 }

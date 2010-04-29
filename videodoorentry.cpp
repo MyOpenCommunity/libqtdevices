@@ -141,7 +141,7 @@ void VideoDoorEntry::valueReceived(const DeviceValues &values_list)
 	}
 }
 
-int VideoDoorEntry::sectionId()
+int VideoDoorEntry::sectionId() const
 {
 	return VIDEOCITOFONIA;
 }
@@ -258,7 +258,7 @@ IntercomCallPage::IntercomCallPage(EntryphoneDevice *d)
 	layout->addLayout(buttons_layout, 0, 1, Qt::AlignHCenter);
 }
 
-int IntercomCallPage::sectionId()
+int IntercomCallPage::sectionId() const
 {
 	return VIDEOCITOFONIA;
 }

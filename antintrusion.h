@@ -59,7 +59,7 @@ public:
 	virtual void inizializza();
 	virtual void manageFrame(OpenMsg &msg);
 
-	virtual int sectionId();
+	virtual int sectionId() const;
 
 	virtual void showPage();
 
@@ -183,7 +183,7 @@ public:
 	int alarmCount();
 
 	virtual void activateLayout();
-	virtual int sectionId();
+	virtual int sectionId() const;
 
 private:
 	AlarmItems *alarms;

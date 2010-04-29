@@ -42,7 +42,7 @@ public:
 	IconSettings(const QDomNode &config_node, bool load_vct_items = false);
 	void loadVctItems();
 
-	virtual int sectionId();
+	virtual int sectionId() const;
 	static banner *getBanner(const QDomNode &item_node);
 
 private:

@@ -35,7 +35,7 @@ class Scenario : public BannerPage
 Q_OBJECT
 public:
 	Scenario(const QDomNode &config_node);
-	virtual int sectionId();
+	virtual int sectionId() const;
 	static banner *getBanner(const QDomNode &item_node);
 
 private:

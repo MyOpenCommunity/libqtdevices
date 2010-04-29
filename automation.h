@@ -36,7 +36,7 @@ Q_OBJECT
 public:
 	Automation(const QDomNode &config_node);
 
-	virtual int sectionId();
+	virtual int sectionId() const;
 
 	static banner *getBanner(const QDomNode &item_node);
 

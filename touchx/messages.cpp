@@ -273,7 +273,7 @@ void MessagesListPage::loadMessages(const QString &filename)
 	page_content->showList();
 }
 
-int MessagesListPage::sectionId()
+int MessagesListPage::sectionId() const
 {
 		return MESSAGES;
 }

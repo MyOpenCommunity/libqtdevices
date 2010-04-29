@@ -57,7 +57,7 @@ EnergyData::EnergyData(const QDomNode &config_node)
 		connect(interfaces[0], SIGNAL(Closed()), SLOT(Closed()));
 }
 
-int EnergyData::sectionId()
+int EnergyData::sectionId() const
 {
 	// TODO: we have to manage the case when the energy data is put inside the energy
 	// management

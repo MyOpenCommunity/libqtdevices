@@ -126,7 +126,7 @@ public:
 	 * section bar at the top of the page.
 	 * Internal pages of a section can return NO_SECTION.
 	 */
-	virtual int sectionId();
+	virtual int sectionId() const;
 
 	/// Needed by sendFrame() and sendInit(). Will be removed.
 	static void setClients(Client *command, Client *request);

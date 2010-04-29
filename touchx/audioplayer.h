@@ -67,7 +67,7 @@ public:
 
 	AudioPlayerPage(MediaType type);
 
-	virtual int sectionId();
+	virtual int sectionId() const;
 
 public slots:
 	void playAudioFiles(QList<QString> images, unsigned element);

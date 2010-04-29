@@ -57,7 +57,7 @@ ThermalMenu::ThermalMenu(const QDomNode &config_node)
 		connect(single_page, SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
-int ThermalMenu::sectionId()
+int ThermalMenu::sectionId() const
 {
 	return TERMOREGOLAZIONE;
 }

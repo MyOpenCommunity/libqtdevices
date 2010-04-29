@@ -41,7 +41,7 @@ Q_OBJECT
 public:
 	SupervisionMenu(const QDomNode &config_node);
 
-	virtual int sectionId();
+	virtual int sectionId() const;
 
 public slots:
 	virtual void showPage();

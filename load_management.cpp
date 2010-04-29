@@ -170,7 +170,7 @@ LoadManagement::LoadManagement(const QDomNode &config_node) :
 	loadItems(config_node);
 }
 
-int LoadManagement::sectionId()
+int LoadManagement::sectionId() const
 {
 	return LOAD_MANAGEMENT;
 }

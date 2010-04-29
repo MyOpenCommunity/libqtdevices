@@ -187,7 +187,7 @@ public:
 	~VCTCallPage();
 	static void setHandsFree(bool on);
 	static void setProfStudio(bool on);
-	virtual int sectionId();
+	virtual int sectionId() const;
 
 public slots:
 	virtual void cleanUp();

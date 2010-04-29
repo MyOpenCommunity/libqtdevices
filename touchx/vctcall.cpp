@@ -485,7 +485,7 @@ void VCTCallPage::handleClose()
 	emit Closed();
 }
 
-int VCTCallPage::sectionId()
+int VCTCallPage::sectionId() const
 {
 	return VIDEOCITOFONIA;
 }
