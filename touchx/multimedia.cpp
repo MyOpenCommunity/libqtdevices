@@ -87,7 +87,7 @@ void FileSystemBrowseButton::browse()
 	browser->browse(directory);
 }
 
-MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, MultimediaSectionPage::Items items, FileSelector *selector) :
+MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, MultimediaSectionPage::Items items, FileSelector *selector, const QString &title) :
 	browser(0), delete_browser(true)
 {
 	Q_ASSERT_X(items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM) && selector != 0,
@@ -99,7 +99,13 @@ MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, Multim
 	showed_items = items;
 	browser = selector;
 
-	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
+	QString descr;
+	if (title.isEmpty())
+		descr = getTextChild(config_node, "descr");
+	else
+		descr = title;
+
+	buildPage(new IconContent, new NavigationBar, descr);
 	loadItems(config_node);
 	if (delete_browser)
 		browser->deleteLater();
