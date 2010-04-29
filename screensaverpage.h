@@ -54,18 +54,6 @@ private:
 
 #ifdef LAYOUT_TOUCHX
 
-class StorageSelectionPage : public IconPage
-{
-Q_OBJECT
-public:
-	StorageSelectionPage();
-
-private:
-	void loadItems(const QDomNode &config_node);
-	FileSelector *createBrowser();
-};
-
-
 /**
  * The file list
  */

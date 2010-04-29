@@ -34,8 +34,8 @@ enum RequestDimension
 };
 
 
-AutomationDevice::AutomationDevice(QString where, PullMode m, int openserver_id) :
-	PullDevice(QString("2"), where, m, openserver_id)
+AutomationDevice::AutomationDevice(QString where, PullMode m, int openserver_id, int pull_delay) :
+	PullDevice(QString("2"), where, m, openserver_id, pull_delay)
 {
 }
 
@@ -100,6 +100,12 @@ void PPTStatDevice::requestStatus() const
 bool PPTStatDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (where.toInt() != msg.where())
+		return false;
+
+	// In some cases (when more than a ts is present in the system)
+	// a request frame can arrive from the monitor socket. We have to manage this
+	// situation.
+	if (msg.IsStateFrame())
 		return false;
 
 	int what = msg.what();

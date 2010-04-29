@@ -49,19 +49,36 @@ private:
 	MountType type;
 };
 
-
 class MultimediaSectionPage : public IconPage
 {
 Q_OBJECT
 public:
-	MultimediaSectionPage(const QDomNode &config_node);
+	enum Item
+	{
+		ITEMS_FILESYSTEM = 0x0001,
+		ITEMS_WEBCAM = 0x0010,
+		ITEMS_WEBRADIO = 0x0100,
+		ITEMS_RSS = 0x1000,
+		ITEMS_AUDIO = ITEMS_FILESYSTEM | ITEMS_WEBRADIO,
+		ITEMS_ALL = ITEMS_FILESYSTEM | ITEMS_AUDIO | ITEMS_WEBCAM | ITEMS_RSS
+	};
+	Q_DECLARE_FLAGS(Items, Item);
+
+	// The FileSelector passed here, should be deleted by this class
+	// if the configuration doesn't support filesystem (usb and sd).
+	MultimediaSectionPage(const QDomNode &config_node, MultimediaSectionPage::Items items = MultimediaSectionPage::ITEMS_ALL, FileSelector *browser = 0);
 
 	virtual int sectionId();
 
 private:
 	void loadItems(const QDomNode &config_node);
-	MultimediaFileListPage *createBrowser();
+
+	MultimediaSectionPage::Items showed_items;
+	FileSelector *browser;
+	bool delete_browser;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(MultimediaSectionPage::Items)
 
 #endif // MULTIMEDIA_H
 

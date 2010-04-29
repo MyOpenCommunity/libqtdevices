@@ -25,13 +25,14 @@
 
 #include <QtTest/QtTest>
 
-namespace
+bool TestPullManager::parseFrames(const char *frame, PullStateManager *psm, bool is_environment)
 {
-	bool parseFrames(const char *frame, PullStateManager *psm, bool is_environment)
-	{
-		OpenMsg msg(frame);
-		return psm->moreFrameNeeded(msg, is_environment);
-	}
+	OpenMsg msg(frame);
+	bool res = psm->moreFrameNeeded(msg, is_environment);
+	// assume the device sent the delayed status request
+	if (res)
+		psm->status_requested = res;
+	return res;
 }
 
 void TestPullManager::testSimpleLight()
