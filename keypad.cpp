@@ -86,7 +86,7 @@ Keypad::Keypad(bool back_button)
 
 	connect(buttons, SIGNAL(buttonClicked(int)), SLOT(buttonClicked(int)));
 	connect(canc, SIGNAL(clicked()), SLOT(deleteChar()));
-	connect(ok, SIGNAL(clicked()), SIGNAL(Closed()));
+	connect(ok, SIGNAL(clicked()), SIGNAL(accept()));
 
 	// digits, ok, cancel buttons
 	QGridLayout *k = new QGridLayout;

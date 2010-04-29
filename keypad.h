@@ -78,6 +78,10 @@ private slots:
 
 	// add a digit to the value
 	void buttonClicked(int number);
+
+signals:
+	// User confirms the selection
+	void accept();
 };
 
 
