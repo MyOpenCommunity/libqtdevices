@@ -138,6 +138,7 @@ bool AdvancedAirConditioningDevice::parseFrame(OpenMsg &msg, DeviceValues &value
 		last_status_set.clear();
 		return true;
 	}
+	return false;
 }
 
 void AdvancedAirConditioningDevice::turnOff() const
