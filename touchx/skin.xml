@@ -1019,6 +1019,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_split_cmd>termoregolazione/on.png</img_split_cmd>
 		<img_plus_disabled>termoregolazione/piudis.png</img_plus_disabled>
 		<img_minus_disabled>termoregolazione/menodis.png</img_minus_disabled>
+		<img_setstate_error>termoregolazione/airconditioning_error.png</img_setstate_error>
 	</item>
 	<!-- scenario menu banners -->
 	<item>

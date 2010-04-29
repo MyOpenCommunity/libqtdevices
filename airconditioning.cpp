@@ -30,6 +30,8 @@
 #include "probe_device.h" // NonControlledProbeDevice
 #include "btbutton.h"
 #include "icondispatcher.h"
+#include "imagelabel.h"
+#include "pagestack.h"
 
 #include <QPainter>
 #include <QDomNode>
@@ -632,47 +634,30 @@ void AdvancedGeneralSplitPage::loadScenarios(const QDomNode &config_node)
 
 SplitErrorPage::SplitErrorPage(const QString &image)
 {
-	previous_page = NULL;
-	icon = *(bt_global::icons_cache.getIcon(image));
+	ImageLabel *icon = new ImageLabel;
+	icon->setPixmap(*bt_global::icons_cache.getIcon(image));
+
+	connect(icon, SIGNAL(clicked()), SLOT(handleClose()));
 
 	timeout.setSingleShot(true);
 	timeout.setInterval(SPLIT_ERROR_PAGE_TIMEOUT);
 	connect(&timeout, SIGNAL(timeout()), SLOT(handleClose()));
+
+	QVBoxLayout *l = new QVBoxLayout(this);
+	l->addWidget(icon);
 }
 
 void SplitErrorPage::showPage()
 {
-	if (previous_page)
+	if (timeout.isActive())
 		return;
-
-	// WARNING: this assumes that no antintrusion alarm will go off while the
-	//          page is shown; it also ignores the screen saver (should be safe,
-	//          since this should happen right after a command) and transitions
-	previous_page = currentPage();
 	timeout.start();
+	bt_global::page_stack.showUserPage(this);
 	Page::showPage();
 }
 
 void SplitErrorPage::handleClose()
 {
-	if (!previous_page)
-		return;
 	timeout.stop();
-	previous_page->showPage();
-	previous_page = NULL;
-}
-
-void SplitErrorPage::mouseReleaseEvent(QMouseEvent *e)
-{
-	Page::mouseReleaseEvent(e);
-
-	handleClose();
-}
-
-void SplitErrorPage::paintEvent(QPaintEvent *e)
-{
-	Page::paintEvent(e);
-
-	QPainter p(this);
-	p.drawPixmap(0, 0, icon);
+	emit Closed();
 }

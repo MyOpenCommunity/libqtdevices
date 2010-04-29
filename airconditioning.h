@@ -195,18 +195,10 @@ public:
 
 	virtual void showPage();
 
-protected:
-	// TODO use ImageLabel in master
-	void mouseReleaseEvent(QMouseEvent *e);
-	void paintEvent(QPaintEvent *e);
-
 private slots:
 	void handleClose();
 
 private:
-	// TODO use PageStack in master
-	Page *previous_page;
-	QPixmap icon;
 	QTimer timeout;
 };
 
