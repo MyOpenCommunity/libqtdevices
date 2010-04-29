@@ -303,6 +303,12 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/energydata.png</img_top_navigation_button>
 	</item>
 	<item>
+		<!-- Energy management link -->
+		<cid>15</cid>
+		<img_link_icon>energia/energia.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/energymenagement.png</img_top_navigation_button>
+	</item>
+	<item>
 		<cid>18</cid>
 		<img_link_icon>energia/carichi.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/carichi.png</img_top_navigation_button>

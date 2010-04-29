@@ -208,7 +208,7 @@ enum Section
 	DIFSON_MULTI=12000,                           /*!< Sound diffusion system (multichannel) */
 	SUPERVISIONE=6000,                            /*!< Supervision system */
 	TERMOREG_MULTI_PLANT=-3,                      /*!< Thermoregulation system with one or more 4-zones plants */
-	ENERGY_MANAGEMENT=-4,                         /*!< Energy management system */
+	ENERGY_MANAGEMENT=15000,                      /*!< Energy management system */
 	ENERGY_DATA=7000,                             /*!< Energy data system */
 	FEED_READER=-6,                               /*!< Feed reader page */
 };

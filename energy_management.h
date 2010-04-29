@@ -33,6 +33,8 @@ public:
 	// and must not be displayed in energy data/load management
 	static bool isRateEditDisplayed();
 
+	virtual int sectionId();
+
 private:
 	static bool rate_edit_displayed;
 };

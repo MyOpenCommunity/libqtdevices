@@ -59,10 +59,14 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 
 	// call loadItems here so EnergyView/LoadManagement will see the correct value for isRateEditDisplayed
 	loadItems(conf_node);
-	addBackButton();
 }
 
 bool EnergyManagement::isRateEditDisplayed()
 {
 	return rate_edit_displayed;
+}
+
+int EnergyManagement::sectionId()
+{
+	return ENERGY_MANAGEMENT;
 }
