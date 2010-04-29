@@ -419,15 +419,15 @@ void EnergyDevice::requestCumulativeYearGraph() const
 		requestCumulativeMonth(curr.addMonths(i * -1));
 }
 
-void EnergyDevice::manageFrame(OpenMsg &msg)
+bool EnergyDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (where.toInt() != msg.where())
-		return;
+		return false;
 
 	int what = msg.what();
 
-	DeviceValues values_list;
 	QVariant v;
+	bool managed = false;
 
 	if (what == DIM_CUMULATIVE_DAY || what == REQ_CURRENT_MODE_1 || what == REQ_CURRENT_MODE_2 ||
 		what == REQ_CURRENT_MODE_3 || what == REQ_CURRENT_MODE_4 || what == REQ_CURRENT_MODE_5 ||
@@ -438,10 +438,9 @@ void EnergyDevice::manageFrame(OpenMsg &msg)
 	{
 
 		// In some cases (when more than a ts is present in the system)
-		// a request frame can arrive from the monitor socket. We have to manage this
-		// situation.
-		if (!msg.whatArgCnt() || msg.IsStateFrame() || msg.IsNormalFrame())
-			return;
+		// a status request frame or a command frame can arrive from the socket monitor.
+		if (!msg.whatArgCnt() || isStatusRequestFrame(msg) || isCommandFrame(msg))
+			return false;
 
 		qDebug("EnergyDevice::manageFrame -> frame read:%s", msg.frame_open);
 		int num_frame = msg.whatArgN(0);
@@ -543,24 +542,24 @@ void EnergyDevice::manageFrame(OpenMsg &msg)
 				fillMonthlyAverage(values_list, msg);
 		}
 
-		emit valueReceived(values_list);
+		managed = true;
 	}
 
-	if (what == _DIM_STATE_UPDATE_INTERVAL)
+	if (what == _DIM_STATE_UPDATE_INTERVAL && msg.whatArgCnt() == 1)
 	{
-		if (msg.whatArgCnt() != 1)
-			return;
-
 		current_updates.handleAutomaticUpdate(msg);
 		setHasNewFrames();
+		managed = true;
 	}
-
-	if (what == _DIM_INVALID_FRAME)
+	else if (what == _DIM_INVALID_FRAME)
 	{
 		// switch the flag for old/new frame support and resend
 		// the auto update request if needed
 		setHasNewFrames();
+		managed = true;
 	}
+
+	return managed;
 }
 
 void EnergyDevice::setHasNewFrames()

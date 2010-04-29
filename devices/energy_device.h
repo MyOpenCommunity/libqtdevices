@@ -138,8 +138,6 @@ public:
 	void requestCurrentUpdateStart();
 	void requestCurrentUpdateStop();
 
-	virtual void manageFrame(OpenMsg &msg);
-
 	enum Type
 	{
 		DIM_CUMULATIVE_YEAR   = 51,
@@ -163,9 +161,10 @@ public:
 		DAILY_AVERAGE
 	};
 
+protected:
+	bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 private:
-
 	void requestCumulativeDayGraph8Bit(QDate date) const;
 	void requestCumulativeDayGraph16Bit(QDate date) const;
 	void requestCumulativeMonthGraph8Bit(QDate date) const;
