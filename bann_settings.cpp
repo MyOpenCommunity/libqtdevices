@@ -269,7 +269,7 @@ impPassword::impPassword(QString icon_on, QString icon_off, QString icon_label, 
 	initBanner(icon_off, icon_label, descr);
 
 	connect(right_button, SIGNAL(clicked()), tasti, SLOT(showPage()));
-	connect(left_button, SIGNAL(clicked()), SLOT(toggleActivation()));
+	connect(left_button, SIGNAL(clicked()), SLOT(requestPasswdOn()));
 	connect(tasti, SIGNAL(Closed()), SIGNAL(pageClosed()));
 	connect(tasti, SIGNAL(Closed()), SLOT(resetState()));
 	connect(tasti, SIGNAL(accept()), SLOT(checkPasswd()));
@@ -281,6 +281,12 @@ impPassword::impPassword(QString icon_on, QString icon_off, QString icon_label, 
 	left_button->setOffImage(icon_off);
 	left_button->setOnImage(icon_on);
 	left_button->setStatus(active);
+}
+
+void impPassword::requestPasswdOn()
+{
+	status = ASK_PASSWORD;
+	tasti->showPage();
 }
 
 void impPassword::toggleActivation()
@@ -328,6 +334,7 @@ void impPassword::checkPasswd()
 		savePassword(c);
 		emit pageClosed();
 		break;
+
 	case CHECK_OLD_PASSWORD:
 		if (password != c)
 		{
@@ -349,12 +356,14 @@ void impPassword::checkPasswd()
 			tasti->showPage();
 		}
 		break;
+
 	case INSERT_NEW_PASSWORD:
 		new_password = c;
 		status = VERIFY_PASSWORD;
 		tasti->showPage();
 		qDebug("New password: %s", qPrintable(new_password));
 		break;
+
 	case VERIFY_PASSWORD:
 		if (new_password != c)
 		{
@@ -371,6 +380,14 @@ void impPassword::checkPasswd()
 		}
 		break;
 
+	case ASK_PASSWORD:
+		if (c == password)
+		{
+			toggleActivation();
+			status = CHECK_OLD_PASSWORD;
+			emit pageClosed();
+		}
+		break;
 	}
 }
 

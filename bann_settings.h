@@ -188,11 +188,6 @@ public:
 
 public slots:
 	/**
-	 * Enable/disable password checking on freeze
-	 */
-	void toggleActivation();
-
-	/**
 	 * Stops the error beep made when the password insertion is wrong
 	 */
 	void restoreBeepState();
@@ -201,17 +196,35 @@ protected:
 	virtual void showEvent(QShowEvent *event);
 
 private slots:
+	/*
+	 * User tries to activate password checking on freeze.
+	 *
+	 * Check if the user still remembers the password. Shows Keypad and compare input to current password before
+	 * actually activating password on freeze.
+	 */
+	void requestPasswdOn();
+
 	// called on tasti::accept() (user has confirmed password entry)
 	void checkPasswd();
 	//
 	void resetState();
 
 private:
+	/**
+	 * Enable/disable password checking on freeze
+	 */
+	void toggleActivation();
+
+	/*
+	 * Save password to conf.xml
+	 */
 	void savePassword(const QString &passwd);
+
 	enum PasswdStatus
 	{
 	    PASSWD_SET,                         // TODO: maybe not needed?
 	    PASSWD_NOT_SET,                     // TODO: maybe not needed?
+	    ASK_PASSWORD,                       // check if user remembers password then activate password on freeze
 	    CHECK_OLD_PASSWORD,                 // check if user remembers old password
 	    INSERT_NEW_PASSWORD,                // let the user insert the new password (not showing text)
 	    VERIFY_PASSWORD,                    // insert again the new password, to avoid wrong touches
