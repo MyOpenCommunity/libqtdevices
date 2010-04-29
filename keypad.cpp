@@ -252,7 +252,7 @@ KeypadWindow::KeypadWindow(Keypad::Type type)
 	keypad = new Keypad(false);
 	keypad->setMode(type);
 
-	connect(keypad, SIGNAL(Closed()), SIGNAL(Closed()));
+	connect(keypad, SIGNAL(accept()), SIGNAL(Closed()));
 
 	QVBoxLayout *l = new QVBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
