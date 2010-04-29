@@ -97,6 +97,11 @@ AirConditioning::AirConditioning(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
+int AirConditioning::sectionId() const
+{
+	return AIR_CONDITIONING;
+}
+
 banner *AirConditioning::getBanner(const QDomNode &item_node)
 {
 	int id = getTextChild(item_node, "id").toInt();

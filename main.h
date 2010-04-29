@@ -184,7 +184,8 @@ enum Section
 	FEED_READER=99,                               /*!< Feed reader page */
 	/* Added to avoid compile problems... */
 	MULTIMEDIA=26,
-	MESSAGES=27,
+	MESSAGES=27,\
+	AIR_CONDITIONING=-1
 };
 #else
 enum Section
@@ -211,6 +212,7 @@ enum Section
 	ENERGY_MANAGEMENT=15000,                      /*!< Energy management system */
 	ENERGY_DATA=7000,                             /*!< Energy data system */
 	FEED_READER=-6,                               /*!< Feed reader page */
+	AIR_CONDITIONING=4000,                        /*!< Air conditioning */
 };
 #endif
 

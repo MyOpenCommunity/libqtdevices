@@ -45,6 +45,7 @@
 #include "iconpage.h"
 #include "energy_management.h"
 #include "load_management.h"
+#include "airconditioning.h"
 
 
 #include <QObject>
@@ -121,6 +122,9 @@ Page *getPage(int page_id)
 	case DIFSON_MONO:
 	case DIFSON_MULTI:
 		page = new SoundDiffusionPage(page_node);
+		break;
+	case AIR_CONDITIONING:
+		page = new AirConditioning(page_node);
 		break;
 #else
 	// TODO: this must be changed for btouch when page changes are clearer

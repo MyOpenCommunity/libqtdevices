@@ -71,6 +71,8 @@ public:
 	AirConditioning(const QDomNode &config_node);
 	static banner *getBanner(const QDomNode &item_node);
 
+	virtual int sectionId() const;
+
 private:
 	static NonControlledProbeDevice *createProbeDevice(const QDomNode &item_node);
 	static GeneralSplit *createGeneralBanner(Page *gen_split_page, const QString &descr);
