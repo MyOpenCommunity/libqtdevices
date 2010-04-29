@@ -203,19 +203,21 @@ protected:
 private slots:
 	// called on tasti::accept() (user has confirmed password entry)
 	void checkPasswd();
+	//
+	void resetState();
 
 private:
 	enum PasswdStatus
 	{
-	    PASSWD_SET,
-	    PASSWD_NOT_SET,
+	    PASSWD_SET,                         // TODO: maybe not needed?
+	    PASSWD_NOT_SET,                     // TODO: maybe not needed?
 	    CHECK_OLD_PASSWORD,                 // check if user remembers old password
 	    INSERT_NEW_PASSWORD,                // let the user insert the new password (not showing text)
 	    VERIFY_PASSWORD,                    // insert again the new password, to avoid wrong touches
 	};
 	bool active;
 	PasswdStatus status;
-	QString password;
+	QString password, new_password;
 	Keypad *tasti;
 	bool sb;
 	int item_id;

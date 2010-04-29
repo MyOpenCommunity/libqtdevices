@@ -263,7 +263,7 @@ impPassword::impPassword(QString icon_on, QString icon_off, QString icon_label, 
 	}
 	else
 	{
-		status = PASSWD_SET;
+		status = CHECK_OLD_PASSWORD;
 		tasti->setMode(Keypad::HIDDEN);
 	}
 	initBanner(icon_off, icon_label, descr);
@@ -271,6 +271,7 @@ impPassword::impPassword(QString icon_on, QString icon_off, QString icon_label, 
 	connect(right_button, SIGNAL(clicked()), tasti, SLOT(showPage()));
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleActivation()));
 	connect(tasti, SIGNAL(Closed()), SIGNAL(pageClosed()));
+	connect(tasti, SIGNAL(Closed()), SLOT(resetState()));
 	connect(tasti, SIGNAL(accept()), SLOT(checkPasswd()));
 
 	active = (attiva == 1);
@@ -296,27 +297,34 @@ void impPassword::toggleActivation()
 
 void impPassword::showEvent(QShowEvent *event)
 {
-	qDebug() << "password = " << password;
+	// TODO: all this thing seems useless...
 	if (password.isEmpty())
 	{
-		qDebug("password = ZERO");
 		status = PASSWD_NOT_SET;
 	}
 	else
 	{
-		status = PASSWD_SET;
+		status = CHECK_OLD_PASSWORD;
 		tasti->setMode(Keypad::HIDDEN);
-		qDebug("password not ZERO");
 	}
 	tasti->resetText();
+}
+
+void impPassword::resetState()
+{
+	status = CHECK_OLD_PASSWORD;
+	tasti->resetText();
+	tasti->showWrongPassword(false);
 }
 
 void impPassword::checkPasswd()
 {
 	QString c = tasti->getText();
 	tasti->resetText();
-	if (status == PASSWD_NOT_SET)
+	switch (status)
 	{
+	// TODO: understand what must be done when password is not set
+	case PASSWD_NOT_SET:
 		if (!c.isEmpty())
 		{
 			password = c;
@@ -326,12 +334,11 @@ void impPassword::checkPasswd()
 			setCfgValue("password", password, item_id);
 #endif
 			bt_global::btmain->setPwd(active, password);
-			status = PASSWD_SET;
+			status = CHECK_OLD_PASSWORD;
 		}
 		emit pageClosed();
-	}
-	else // status == PASSWD_SET
-	{
+		break;
+	case CHECK_OLD_PASSWORD:
 		if (password != c)
 		{
 			qDebug() << "password errata doveva essere " << password;
@@ -347,11 +354,43 @@ void impPassword::checkPasswd()
 		}
 		else //password is correct
 		{
-			tasti->setMode(Keypad::CLEAN);
-			qDebug("password giusta");
-			status = PASSWD_NOT_SET;
+			qDebug("Old password correct, insert new password");
+			status = INSERT_NEW_PASSWORD;
 			tasti->showPage();
 		}
+		break;
+	case INSERT_NEW_PASSWORD:
+		new_password = c;
+		status = VERIFY_PASSWORD;
+		tasti->showPage();
+		qDebug("New password: %s", qPrintable(new_password));
+		break;
+	case VERIFY_PASSWORD:
+		if (new_password != c)
+		{
+			qDebug("Password mismatch, new: %s; repeated: %s", qPrintable(new_password), qPrintable(c));
+			tasti->showWrongPassword(true);
+			status = INSERT_NEW_PASSWORD;
+			tasti->showPage();
+		}
+		else
+		{
+			// save password and quit
+			if (!c.isEmpty())
+			{
+				password = c;
+	#ifdef CONFIG_BTOUCH
+				setCfgValue("value", password, item_id);
+	#else
+				setCfgValue("password", password, item_id);
+	#endif
+				bt_global::btmain->setPwd(active, password);
+				status = CHECK_OLD_PASSWORD;
+			}
+			emit pageClosed();
+		}
+		break;
+
 	}
 }
 
