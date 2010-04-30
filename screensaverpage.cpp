@@ -215,7 +215,7 @@ void FileList::checkButton(int btn_id)
 SlideshowSelector::SlideshowSelector() :
 		FileSelector(4, "/"), handler(new ImageSelectionHandler(SLIDESHOW_FILENAME))
 {
-	handler->setFileFilter(getImageFileFilter());
+	handler->setFileFilter(getFileFilter(IMAGE));
 
 	FileList *item_list = new FileList(0, 4);
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
@@ -284,7 +284,7 @@ void SlideshowSelector::showPageNoReload()
 bool SlideshowSelector::browseFiles(const QDir &directory, QList<QFileInfo> &files)
 {
 	// Create fileslist from files
-	QList<QFileInfo> temp_files_list = directory.entryInfoList(getImageFileFilter());
+	QList<QFileInfo> temp_files_list = directory.entryInfoList(getFileFilter(IMAGE));
 
 	if (temp_files_list.empty())
 	{

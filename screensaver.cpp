@@ -331,7 +331,7 @@ ScreenSaverSlideshow::ScreenSaverSlideshow() :
 void ScreenSaverSlideshow::start(Window *w)
 {
 	iter = new ImageIterator(SLIDESHOW_FILENAME);
-	iter->setFileFilter(getImageFileFilter());
+	iter->setFileFilter(getFileFilter(IMAGE));
 	ScreenSaver::start(w);
 	showWindow();
 	next_image = QPixmap(width(), height());

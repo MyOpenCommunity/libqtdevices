@@ -69,27 +69,96 @@ namespace
 
 
 	#define ARRAY_SIZE(x) int(sizeof(x) / sizeof((x)[0]))
-	const char *image_files[] = {"png", "gif", "jpg", "jpeg"};
+	const char *audio_files[] = {"m3u", "mp3", "wav", "ogg", "wma", 0};
+	const char *video_files[] = {"mpg", "avi", "mp4", 0};
+	const char *image_files[] = {"png", "gif", "jpg", "jpeg", 0};
 
 	// transforms an extension to a pattern (es. "wav" -> "*.[wW][aA][vV]")
 	void addFilters(QStringList &filters, const char **extensions, int size)
 	{
-		for (int i = 0; i < size; ++i)
+		for (int i = 0; extensions[i] != 0; ++i)
 		{
 			QString pattern = "*.";
 
-			for (const char *c = extensions[i]; *c; ++c)
-				pattern += QString("[%1%2]").arg(QChar(*c)).arg(QChar::toUpper((unsigned short)*c));
-
+			for (const char *c = extensions[i]; *c; ++c) {
+				QChar letter(*c);
+				pattern += QString("[%1%2]").arg(letter).arg(letter.toUpper());
+			}
 			filters.append(pattern);
 		}
 	}
 }
 
-QStringList getImageFileFilter()
+QStringList getFileExtensions(MultimediaFileType type)
+{
+	QStringList exts;
+	const char **files = 0;
+
+	switch (type)
+	{
+	case UNKNOWN:
+	case DIRECTORY:
+		break;
+	case AUDIO:
+		{
+			files = audio_files;
+		}
+		break;
+	case VIDEO:
+		{
+			files = video_files;
+		}
+		break;
+	case IMAGE:
+		{
+			files = image_files;
+		}
+		break;
+	default:
+		; // Never reached
+	}
+
+	if (files)
+	{
+		for (int i = 0; files[i] != 0; ++i)
+			exts.append(files[i]);
+	}
+
+	return exts;
+}
+
+QStringList getFileFilter(MultimediaFileType type)
 {
 	QStringList filters;
-	addFilters(filters, image_files, ARRAY_SIZE(image_files));
+	const char **files = 0;
+
+	switch (type)
+	{
+	case UNKNOWN:
+	case DIRECTORY:
+		break;
+	case AUDIO:
+		{
+			files = audio_files;
+		}
+		break;
+	case VIDEO:
+		{
+			files = video_files;
+		}
+		break;
+	case IMAGE:
+		{
+			files = image_files;
+		}
+		break;
+	default:
+		; // Never reached
+	}
+
+	if (files)
+		addFilters(filters, files, ARRAY_SIZE(files));
+
 	return filters;
 }
 
