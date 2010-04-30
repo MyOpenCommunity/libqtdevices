@@ -28,6 +28,7 @@
 #include "btbutton.h" // BtButton
 #include "skinmanager.h" // bt_global::skin
 #include "icondispatcher.h" // bt_global::icons_cache
+#include "media_device.h" // RadioSourceDevice
 
 #include <QWidget>
 #include <QDebug>
@@ -35,7 +36,9 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-RadioSource::RadioSource() : BannerNew(0)
+
+RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev) :
+	AudioSource(area, dev)
 {
 	left_button = new BtButton;
 	center_left_button = new BtButton;
