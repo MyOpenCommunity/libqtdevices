@@ -56,6 +56,10 @@ RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev) :
 	hbox->addWidget(dummy);
 	hbox->addWidget(center_right_button);
 	hbox->addWidget(right_button);
+
+	right_button->hide();
+
+	connect(this, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
 }
 
 void RadioSource::initBanner(const QString &left, const QString &center_left, const QString &center,
@@ -66,6 +70,11 @@ void RadioSource::initBanner(const QString &left, const QString &center_left, co
 	initButton(center_right_button, center_right);
 	initButton(right_button, right);
 	dummy->setPixmap(*bt_global::icons_cache.getIcon(center));
+}
+
+void RadioSource::sourceStateChanged(bool active)
+{
+	right_button->setVisible(active);
 }
 
 

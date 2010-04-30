@@ -49,6 +49,8 @@ protected:
 	void initBanner(const QString &left, const QString &center_left, const QString &center, const QString &center_right,
 		const QString &right);
 
+private slots:
+	void sourceStateChanged(bool active);
 
 private:
 	BtButton *left_button, *center_left_button, *center_right_button, *right_button;
