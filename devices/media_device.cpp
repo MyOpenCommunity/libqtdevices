@@ -102,6 +102,8 @@ bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	if (what == SOURCE_TURNED_ON)
 	{
 		active_areas.insert(QString::fromStdString(msg.whatArg(1)));
+		values_list[DIM_AREAS_UPDATED] = QVariant();
+
 		return true; // the frame is managed even if we aren't interested at the values list.
 	}
 
@@ -115,7 +117,10 @@ bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	case DIM_STATUS:
 		v.setValue(msg.whatArgN(0) == 1);
 		if (msg.whatArgN(0) == 0)
+		{
 			active_areas.clear();
+			values_list[DIM_AREAS_UPDATED] = QVariant();
+		}
 		break;
 	case DIM_TRACK:
 		v.setValue(msg.whatArgN(0));
@@ -125,6 +130,7 @@ bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		for (unsigned int i = 0; i < msg.whatArgCnt(); ++i)
 			if (msg.whatArgN(i) == 1)
 				active_areas.insert(QString::number(i));
+		values_list[DIM_AREAS_UPDATED] = QVariant();
 		return true;
 	default:
 		return false;
