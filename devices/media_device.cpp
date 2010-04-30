@@ -333,6 +333,59 @@ bool AmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 }
 
 
+
+VirtualAmplifierDevice::VirtualAmplifierDevice(const QString &where, int openserver_id) :
+	AmplifierDevice(where, openserver_id)
+{
+}
+
+void VirtualAmplifierDevice::updateVolume(int vol)
+{
+	sendFrame(createDimensionFrame(who, QString("1*%1").arg(vol), where));
+}
+
+bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
+{
+	if (AmplifierDevice::parseFrame(msg, values_list))
+		return true;
+
+	if (isDimensionFrame(msg) || isStatusRequestFrame(msg))
+		return false;
+
+	QString msg_where = QString::fromStdString(msg.whereFull());
+	if (msg_where != where)
+		return false;
+
+	int what = msg.what();
+
+	if (isWriteDimensionFrame(msg) && what == REQ_SET_VOLUME)
+	{
+		values_list[REQ_SET_VOLUME] = msg.whatArgN(0);
+		return true;
+	}
+
+	switch (what)
+	{
+	case REQ_AMPLI_ON:
+	case AMPL_STATUS_OFF:
+		values_list[REQ_AMPLI_ON] = static_cast<bool>(what);
+		break;
+	case REQ_VOLUME_DOWN:
+	case REQ_VOLUME_UP:
+		// value is missing, step is 1
+		if (msg.whatArgCnt() == 0)
+			values_list[what] = 1;
+		else
+			values_list[what] = msg.whatArgN(0);
+		break;
+	default:
+		return false;
+	}
+
+	return true;
+}
+
+
 PowerAmplifierDevice::PowerAmplifierDevice(QString address, int openserver_id) :
 	AmplifierDevice(address.at(0), address.at(1), openserver_id)
 {
