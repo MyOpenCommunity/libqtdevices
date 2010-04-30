@@ -362,6 +362,45 @@ void TestVirtualAmplifierDevice::sendUpdateVolume()
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
+void TestVirtualAmplifierDevice::receiveAmplifierOn()
+{
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
+	t.check(QString("*22*1#4#%1*3#%1#%2##").arg(where[0]).arg(where[1]), true);
+}
+
+void TestVirtualAmplifierDevice::receiveAmplifierOff()
+{
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
+	t.check(QString("*22*0#4#%1*3#%1#%2##").arg(where[0]).arg(where[1]), false);
+}
+
+void TestVirtualAmplifierDevice::receiveVolumeUp()
+{
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_VOLUME_UP);
+	// value is 4
+	t.check(QString("*22*3#4*3#%1#%2##").arg(where[0]).arg(where[1]), 4);
+
+	// value is missing
+	t.check(QString("*22*3*3#%1#%2##").arg(where[0]).arg(where[1]), 1);
+}
+
+void TestVirtualAmplifierDevice::receiveVolumeDown()
+{
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_VOLUME_DOWN);
+	// value is 25
+	t.check(QString("*22*4#25*3#%1#%2##").arg(where[0]).arg(where[1]), 25);
+
+	// value is missing
+	t.check(QString("*22*4*3#%1#%2##").arg(where[0]).arg(where[1]), 1);
+}
+
+void TestVirtualAmplifierDevice::receiveSetVolume()
+{
+	const int VOLUME = 11;
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_SET_VOLUME);
+	t.check(QString("*#22*3#%1#%2*1*%3##").arg(where[0]).arg(where[1]).arg(VOLUME), VOLUME);
+}
+
 
 
 

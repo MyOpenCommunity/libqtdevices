@@ -151,6 +151,11 @@ private slots:
 	void cleanupTestCase();
 
 	void sendUpdateVolume();
+	void receiveAmplifierOn();
+	void receiveAmplifierOff();
+	void receiveVolumeUp();
+	void receiveVolumeDown();
+	void receiveSetVolume();
 
 private:
 	VirtualAmplifierDevice *dev;
