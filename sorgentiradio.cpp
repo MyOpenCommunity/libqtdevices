@@ -49,8 +49,8 @@ RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev) :
 		bt_global::skin->getImage("next"), bt_global::skin->getImage("details"));
 	QHBoxLayout *hbox = new QHBoxLayout(this);
 	// these margins are the same as BannerContent
-	hbox->setContentsMargins(18, 0, 17, 10);
-	hbox->setSpacing(0);
+	hbox->setContentsMargins(0, 0, 0, 0);
+	hbox->setSpacing(5);
 	hbox->addWidget(left_button);
 	hbox->addWidget(center_left_button);
 	hbox->addWidget(dummy);
