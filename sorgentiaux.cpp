@@ -23,9 +23,44 @@
 #include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW
 #include "aux.h" // class Aux
 #include "generic_functions.h" // createCommandFrame
+#include "btbutton.h"
+#include "skinmanager.h"
+#include "icondispatcher.h"
 
 #include <QWidget>
 #include <QDebug>
+#include <QHBoxLayout>
+#include <QLabel>
+
+
+AuxSource::AuxSource(const QString &area, SourceDevice *dev) :
+	AudioSource(area, dev)
+{
+	left_button = new BtButton;
+	center_left_button = new BtButton;
+	center_right_button = new BtButton;
+	dummy = new QLabel;
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("aux_dummy"),
+		bt_global::skin->getImage("next"));
+	QHBoxLayout *hbox = new QHBoxLayout(this);
+	// these margins are the same as BannerContent
+	hbox->setContentsMargins(0, 0, 0, 0);
+	hbox->setSpacing(5);
+	hbox->addWidget(left_button);
+	hbox->addWidget(center_left_button);
+	hbox->addWidget(dummy);
+	hbox->addWidget(center_right_button);
+	hbox->addStretch(1);
+}
+
+void AuxSource::initBanner(const QString &left, const QString &center_left, const QString &center,
+	const QString &center_right)
+{
+	initButton(left_button, left);
+	initButton(center_left_button, center_left);
+	initButton(center_right_button, center_right);
+	dummy->setPixmap(*bt_global::icons_cache.getIcon(center));
+}
 
 
 sorgente_aux::sorgente_aux(QWidget *parent, QString indirizzo, bool vecchio)

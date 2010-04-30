@@ -23,12 +23,34 @@
 #define SORGENTI_AUX_H
 
 #include "bannciclaz.h"
+#include "audiosource.h"
 
 #include <QString>
 #include <QStringList>
 
 /// Forward Declarations
 class Aux;
+class SourceDevice;
+
+
+/**
+ * Banner for aux sources.
+ */
+class AuxSource : public AudioSource
+{
+Q_OBJECT
+public:
+	AuxSource(const QString &area, SourceDevice *dev);
+
+protected:
+	void initBanner(const QString &left, const QString &center_left, const QString &center, const QString &center_right);
+
+private:
+	BtButton *left_button, *center_left_button, *center_right_button;
+	// TODO: this must be changed with the proper widget
+	QLabel *dummy;
+};
+
 
 /*****************************************************************
  **Sorgente_AUX

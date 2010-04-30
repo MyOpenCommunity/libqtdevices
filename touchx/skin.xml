@@ -611,6 +611,17 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_radio_dummy>diffusione/display.png</img_radio_dummy>
 		<img_details>diffusione/audiosetting.png</img_details>
 	</item>
+	<!-- AUX source (multi sound diffusion) -->
+	<item>
+		<cid>12002</cid>
+		<!--
+		Other images: cycle
+		Notes: There's also an image set in the stylesheet above
+		-->
+		<img_previous>diffusione/precedente.png</img_previous>
+		<img_next>diffusione/successivo.png</img_next>
+		<img_aux_dummy>diffusione/display.png</img_aux_dummy>
+	</item>
 	<!-- mono channel sound diffusion -->
 	<!-- amplifier normal ambient (mono sound diffusion) -->
 	<item>
@@ -668,6 +679,17 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_next>diffusione/successivo.png</img_next>
 		<img_radio_dummy>diffusione/display.png</img_radio_dummy>
 		<img_details>diffusione/audiosetting.png</img_details>
+	</item>
+	<!-- AUX source (mono sound diffusion) -->
+	<item>
+		<cid>11002</cid>
+		<!--
+		Other images: cycle
+		Notes: There's also an image set in the stylesheet above
+		-->
+		<img_previous>diffusione/precedente.png</img_previous>
+		<img_next>diffusione/successivo.png</img_next>
+		<img_aux_dummy>diffusione/display.png</img_aux_dummy>
 	</item>
 
 
