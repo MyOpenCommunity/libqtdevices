@@ -267,8 +267,7 @@ int Page::sectionId() const
 }
 
 
-BannerPage::BannerPage(QWidget *parent)
-	: Page(parent)
+BannerPage::BannerPage(QWidget *parent) : Page(parent)
 {
 }
 
@@ -294,19 +293,17 @@ void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, const
 	buildPage(content, content, nav_bar, title, TITLE_HEIGHT, top_widget);
 }
 
-void BannerPage::buildPage(QWidget *parent, BannerContent *content, NavigationBar *nav_bar,
+void BannerPage::buildPage(QWidget *main_widget, BannerContent *content, NavigationBar *nav_bar,
 	const QString &title, int title_height, QWidget *top_widget)
 {
 #ifdef LAYOUT_TOUCHX
 	PageTitleWidget *title_widget = new PageTitleWidget(title, title_height);
-	Page::buildPage(parent, nav_bar, top_widget, title_widget);
+	Page::buildPage(main_widget, content, nav_bar, top_widget, title_widget);
 
 	connect(content, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
 #else
-	Page::buildPage(parent, nav_bar, top_widget);
+	Page::buildPage(main_widget, content, nav_bar, top_widget);
 #endif
-
-	__content = content;
 
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));

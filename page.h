@@ -62,6 +62,7 @@ typedef QHash<int, QVariant> DeviceValues;
 // inside the page subclass (see BannerPage for an example)
 #define page_content (content(this))
 
+
 /**
  * Base class for application pages
  *
@@ -253,7 +254,7 @@ protected:
 	 *
 	 * Connections are created between content and navigation bar, and between content and page.
 	 */
-	void buildPage(const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget=0);
+	void buildPage(const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget = 0);
 
 	/**
 	 * Create a page with a custom content that contains a BannerContent.
@@ -262,8 +263,8 @@ protected:
 	 * BannerContent will scroll using the navigation bar, the other widgets will not move.
 	 * Connections are created between content and navigation bar, and between content and page.
 	 */
-	void buildPage(QWidget *content, BannerContent *banners, NavigationBar *nav_bar,
-		       const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget = 0);
+	void buildPage(QWidget *main_widget, BannerContent *content, NavigationBar *nav_bar,
+		const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget = 0);
 };
 
 
