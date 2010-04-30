@@ -125,6 +125,9 @@ int main(int argc, char *argv[])
 	TestVirtualSourceDevice test_virtual_source_device;
 	test_list << &test_virtual_source_device;
 
+	TestVirtualAmplifierDevice test_virtual_amplifier_device;
+	test_list << &test_virtual_amplifier_device;
+
 	TestAmplifierDevice test_amplifier_device;
 	test_list << &test_amplifier_device;
 

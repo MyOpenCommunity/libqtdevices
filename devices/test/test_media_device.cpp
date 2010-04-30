@@ -326,6 +326,45 @@ void TestAmplifierDevice::receiveStatusRequest()
 }
 
 
+
+TestVirtualAmplifierDevice::TestVirtualAmplifierDevice()
+{
+	where = QString(AMPLI_AREA) + QString(AMPLI_POINT);
+}
+
+void TestVirtualAmplifierDevice::initTestCase()
+{
+	initVirtualAmplifier();
+}
+
+void TestVirtualAmplifierDevice::initVirtualAmplifier(VirtualAmplifierDevice *d)
+{
+	if (d)
+		dev = d;
+	else
+	{
+		dev = new VirtualAmplifierDevice(where);
+		initAmplifier(dev);
+	}
+}
+
+void TestVirtualAmplifierDevice::cleanupTestCase()
+{
+	delete dev;
+}
+
+void TestVirtualAmplifierDevice::sendUpdateVolume()
+{
+	const int NEW_VOL = 25;
+	dev->updateVolume(NEW_VOL);
+	client_command->flush();
+	QString cmd(QString("*#22*3#%1#%2*1*%3##").arg(where[0]).arg(where[1]).arg(NEW_VOL));
+	QCOMPARE(server->frameCommand(), cmd);
+}
+
+
+
+
 TestPowerAmplifierDevice::TestPowerAmplifierDevice()
 {
 	where = QString(AMPLI_AREA) + QString(AMPLI_POINT);
