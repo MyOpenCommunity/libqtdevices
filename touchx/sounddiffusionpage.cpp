@@ -185,6 +185,8 @@ enum BannerType
 
 SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources)
 {
+	SkinContext context(getTextChild(conf_node, "cid").toInt());
+
 	if (getTextChild(conf_node, "id").toInt() == DIFSON_MONO)
 		section_id = DIFSON_MONO;
 	else
@@ -206,7 +208,6 @@ int SoundAmbientPage::sectionId() const
 
 void SoundAmbientPage::loadItems(const QDomNode &config_node)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		banner *b = getBanner(item);
