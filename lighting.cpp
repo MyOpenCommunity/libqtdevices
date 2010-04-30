@@ -205,30 +205,3 @@ void Lighting::loadItems(const QDomNode &config_node)
 	}
 }
 
-void Lighting::inizializza()
-{
-	initDimmer();
-}
-
-void Lighting::initDimmer()
-{
-	qDebug("Lighting::initDimmer()");
-	for (int i = 0; i < page_content->bannerCount(); ++i)
-	{
-		banner *b = page_content->getBanner(i);
-		switch (b->getId())
-		{
-		case DIMMER10:
-		case DIMMER100:
-		case SINGLE_LIGHT:
-		case TEMP_LIGHT:
-		case TEMP_LIGHT_VARIABLE:
-		case TEMP_LIGHT_FIXED:
-			b->inizializza(true);
-			break;
-		default:
-			break;
-		}
-	}
-}
-
