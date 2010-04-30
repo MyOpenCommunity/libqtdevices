@@ -363,11 +363,6 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	updateControlState();
 }
 
-void PageProbe::inizializza()
-{
-	dev->requestStatus();
-}
-
 void PageProbe::setDeviceToManual()
 {
 	unsigned bt_temp;

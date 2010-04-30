@@ -157,8 +157,6 @@ public:
 	PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
 		TemperatureScale scale = CELSIUS);
 
-	virtual void inizializza();
-
 public slots:
 	virtual void valueReceived(const DeviceValues &values_list);
 protected:
