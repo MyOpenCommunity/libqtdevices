@@ -31,6 +31,7 @@
 /// Forward Declarations
 class Aux;
 class SourceDevice;
+class TextOnImageLabel;
 
 
 /**
@@ -40,15 +41,14 @@ class AuxSource : public AudioSource
 {
 Q_OBJECT
 public:
-	AuxSource(const QString &area, SourceDevice *dev);
+	AuxSource(const QString &area, SourceDevice *dev, const QString &description);
 
 protected:
 	void initBanner(const QString &left, const QString &center_left, const QString &center, const QString &center_right);
 
 private:
 	BtButton *left_button, *center_left_button, *center_right_button;
-	// TODO: this must be changed with the proper widget
-	QLabel *dummy;
+	TextOnImageLabel *center_icon;
 };
 
 

@@ -142,7 +142,7 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 		{
 			SourceDevice *dev = bt_global::add_device_to_cache(new SourceDevice(s.where));
 
-			w = new AuxSource(area, dev);
+			w = new AuxSource(area, dev, s.descr);
 			break;
 		}
 		default:
