@@ -45,7 +45,7 @@ RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev) :
 	center_right_button = new BtButton;
 	right_button = new BtButton;
 	dummy = new QLabel;
-	initBanner(bt_global::skin->getImage("cycle"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("radio_dummy"),
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("radio_dummy"),
 		bt_global::skin->getImage("next"), bt_global::skin->getImage("details"));
 	QHBoxLayout *hbox = new QHBoxLayout(this);
 	// these margins are the same as BannerContent
