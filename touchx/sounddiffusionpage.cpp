@@ -33,6 +33,7 @@
 #include "poweramplifier.h" // BannPowerAmplifier
 #include "sorgentiradio.h" // RadioSource
 #include "sorgentiaux.h" // AuxSource
+#include "sorgentimedia.h" // MultimediaSource
 #include "pagestack.h"
 #include "media_device.h"
 #include "devices_cache.h"
@@ -110,6 +111,8 @@ enum
 {
 	SOURCE_RADIO_MULTI = 12001,
 	SOURCE_AUX_MULTI = 12002,
+	// used internally
+	SOURCE_MULTIMEDIA = -1,
 };
 
 SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &src)
@@ -143,6 +146,13 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 			SourceDevice *dev = bt_global::add_device_to_cache(new SourceDevice(s.where));
 
 			w = new AuxSource(area, dev, s.descr);
+			break;
+		}
+		case SOURCE_MULTIMEDIA:
+		{
+			VirtualSourceDevice *dev = bt_global::add_device_to_cache(new VirtualSourceDevice(s.where));
+
+			w = new MediaSource(area, dev, s.descr);
 			break;
 		}
 		default:
@@ -307,6 +317,18 @@ QList<SourceDescription> SoundDiffusionPage::loadSources(const QDomNode &config_
 		d.where = getTextChild(source, "where");
 		sources_list << d;
 	}
+
+	// if we're a source, add an additional entry for the touch itself
+	if (isSource())
+	{
+		SourceDescription d;
+		d.id = SOURCE_MULTIMEDIA;
+		d.cid = getTextChild(config_node, "cid").toInt();
+		d.descr = tr("Multimedia source");
+		d.where = (*bt_global::config)[SOURCE_ADDRESS];
+		sources_list << d;
+	}
+
 	Q_ASSERT_X(!sources_list.isEmpty(), "SoundDiffusionPage::loadItems", "No sound diffusion sources defined.");
 
 	return sources_list;
