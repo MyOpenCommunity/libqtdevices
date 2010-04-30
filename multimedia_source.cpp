@@ -29,6 +29,7 @@
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "titlelabel.h"
 #include "xml_functions.h" // getChildren, getTextChild
+#include "navigation_bar.h"
 
 #include <QApplication> // processEvents
 #include <QButtonGroup>
@@ -302,7 +303,7 @@ AudioFileSelector::AudioFileSelector(unsigned rows_per_page, QString start_path)
 	connect(list_browser, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 	connect(this, SIGNAL(fileClicked(int)), SLOT(startPlayback(int)));
 
-	bannFrecce *nav_bar = new bannFrecce(this, 4, ICON_DIFFSON);
+	NavigationBar *nav_bar = new NavigationBar(ICON_DIFFSON);
 	connect(nav_bar, SIGNAL(downClick()), SLOT(prevItem()));
 	connect(nav_bar, SIGNAL(upClick()), SLOT(nextItem()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
