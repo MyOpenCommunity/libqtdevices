@@ -24,6 +24,7 @@
 
 #include "sectionpage.h"
 
+
 /**
  * A container for other sections energy-related (SupervisionMenu, EnergyData
  * and LoadManagement).

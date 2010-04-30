@@ -25,16 +25,29 @@
 #include "skinmanager.h"
 #include "xml_functions.h"
 #include "main.h" // SUPERVISIONE, LOAD_MANAGEMENT
+#include "btbutton.h"
+#include "navigation_bar.h"
 
+#include <QVBoxLayout>
 
 bool EnergyManagement::rate_edit_displayed = false;
 bool EnergyManagement::is_built = false;
 
 
 EnergyManagement::EnergyManagement(const QDomNode &conf_node)
-	: SectionPage(conf_node, false)
+	: SectionPage()
 {
 	SkinContext cxt(getTextChild(conf_node, "cid").toInt());
+
+	QWidget *main_widget = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(main_widget);
+	main_layout->setContentsMargins(5, 5, 25, 50);
+	IconContent *content = new IconContent;
+	main_layout->addWidget(content, 1);
+
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	Page::buildPage(main_widget, content, nav_bar);
 
 	is_built = true;
 	QList<int> ids;
@@ -54,6 +67,7 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 
 	if (rate_edit_displayed)
 	{
+#ifdef LAYOUT_BTOUCH
 		QPoint pos = rect().bottomRight();
 		pos -= QPoint(69, 79);
 
@@ -61,6 +75,13 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 		if (EnergyRates::energy_rates.hasRates())
 			addPage(new EnergyCost, getTextChild(conf_node, "descr"),
 				bt_global::skin->getImage("currency_exchange"), pos.x(), pos.y());
+#else
+		Page *page = new EnergyCost;
+		BtButton *b = new BtButton(bt_global::skin->getImage("currency_exchange"));
+		connect(b, SIGNAL(clicked()), page, SLOT(showPage()));
+		connect(page, SIGNAL(Closed()), this, SLOT(showPage()));
+		main_layout->addWidget(b, 0, Qt::AlignRight);
+#endif
 	}
 }
 

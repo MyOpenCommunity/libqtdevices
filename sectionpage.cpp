@@ -31,7 +31,7 @@
 #include <QDomNode>
 
 
-SectionPage::SectionPage(const QDomNode &config_node, bool load_items)
+SectionPage::SectionPage(const QDomNode &config_node)
 {
 #ifndef CONFIG_BTOUCH
 	// only show the back icon if there is a lnk_itemID to a banner
@@ -39,9 +39,11 @@ SectionPage::SectionPage(const QDomNode &config_node, bool load_items)
 	NavigationBar *nav_bar = new NavigationBar("", "scroll_down", "scroll_up", back_icon);
 	buildPage(new IconContent, nav_bar);
 #endif
+	loadItems(config_node);
+}
 
-	if (load_items)
-		loadItems(config_node);
+SectionPage::SectionPage()
+{
 }
 
 void SectionPage::loadItems(const QDomNode &config_node)
