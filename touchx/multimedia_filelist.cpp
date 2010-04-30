@@ -27,15 +27,12 @@
 #include "videoplayer.h"
 #include "audioplayer.h"
 #include "mount_watcher.h"
-#include "generic_functions.h"
 
 #include <QLayout>
 #include <QDebug>
 
 
-const char *audio_files[] = {"m3u", "mp3", "wav", "ogg", "wma"};
-const char *video_files[] = {"mpg", "avi", "mp4"};
-const char *image_files[] = {"png", "gif", "jpg", "jpeg"};
+
 
 #define ARRAY_SIZE(x) int(sizeof(x) / sizeof((x)[0]))
 
@@ -53,8 +50,8 @@ void addFilters(QStringList &filters, const char **extensions, int size)
 	}
 }
 
-MultimediaFileListPage::MultimediaFileListPage()
-	: FileSelector(4, "/")
+MultimediaFileListPage::MultimediaFileListPage(const QStringList &filters)
+	: FileSelector(4, "/"), file_filters(filters)
 {
 	ItemList *item_list = new ItemList(0, 4);
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
@@ -102,12 +99,8 @@ MultimediaFileListPage::MultimediaFileListPage()
 
 bool MultimediaFileListPage::browseFiles(const QDir &directory, QList<QFileInfo> &files)
 {
-	QStringList filters(getImageFileFilter());
-	addFilters(filters, video_files, ARRAY_SIZE(video_files));
-	addFilters(filters, audio_files, ARRAY_SIZE(audio_files));
-
 	// Create fileslist from files
-	QList<QFileInfo> temp_files_list = directory.entryInfoList(filters);
+	QList<QFileInfo> temp_files_list = directory.entryInfoList(file_filters);
 
 	if (temp_files_list.empty())
 	{
@@ -129,7 +122,11 @@ bool MultimediaFileListPage::browseFiles(const QDir &directory, QList<QFileInfo>
 
 		if (f.isFile())
 		{
-			icons << file_icons[fileType(f)];
+			MultimediaFileType t = fileType(f);
+			if (t == UNKNOWN)
+				continue;
+
+			icons << file_icons[t];
 			icons << play_file;
 
 			ItemList::ItemInfo info(f.fileName(), QString(), icons);
@@ -155,26 +152,26 @@ bool MultimediaFileListPage::browseFiles(const QDir &directory, QList<QFileInfo>
 	return true;
 }
 
-MultimediaFileListPage::Type MultimediaFileListPage::fileType(const QFileInfo &file)
+MultimediaFileType MultimediaFileListPage::fileType(const QFileInfo &file)
 {
 	QString ext = file.suffix().toLower();
 
-	for (int i = 0; i < ARRAY_SIZE(image_files); ++i)
-		if (ext == image_files[i])
+	foreach (const QString &extension, getFileExtensions(IMAGE))
+		if (ext == extension)
 			return IMAGE;
 
-	for (int i = 0; i < ARRAY_SIZE(video_files); ++i)
-		if (ext == video_files[i])
+	foreach (const QString &extension, getFileExtensions(VIDEO))
+		if (ext == extension)
 			return VIDEO;
 
-	for (int i = 0; i < ARRAY_SIZE(audio_files); ++i)
-		if (ext == audio_files[i])
+	foreach (const QString &extension, getFileExtensions(AUDIO))
+		if (ext == extension)
 			return AUDIO;
 
 	return UNKNOWN;
 }
 
-QList<QString> MultimediaFileListPage::filterFileList(int item, Type &type, int &current)
+QList<QString> MultimediaFileListPage::filterFileList(int item, MultimediaFileType &type, int &current)
 {
 	const QList<QFileInfo> &files_list = getFiles();
 	const QFileInfo &current_file = files_list[item];
@@ -197,7 +194,7 @@ QList<QString> MultimediaFileListPage::filterFileList(int item, Type &type, int 
 
 void MultimediaFileListPage::startPlayback(int item)
 {
-	Type type;
+	MultimediaFileType type;
 	int current;
 	QList<QString> files = filterFileList(item, type, current);
 

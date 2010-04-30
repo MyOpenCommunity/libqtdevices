@@ -31,6 +31,15 @@ class QDate;
 class QDateTime;
 class OpenMsg;
 
+// Enum to identify various file types
+enum MultimediaFileType
+{
+	UNKNOWN = -1,
+	DIRECTORY = 0,
+	AUDIO = 1,
+	VIDEO = 2,
+	IMAGE = 3
+};
 
 /** The following functions can be used to test the format of a frame or build it.
  *  The frame format can be:
@@ -50,7 +59,8 @@ QString createDimensionFrame(QString who, QString dimension, QString where);
 QString createWriteDimensionFrame(QString who, QString dimension, QString where);
 QString createStatusRequestFrame(QString who, QString where);
 
-QStringList getImageFileFilter();
+QStringList getFileExtensions(MultimediaFileType type);
+QStringList getFileFilter(MultimediaFileType type);
 
 
 QString getBostikName(const QString &name, const QString &suffix);
