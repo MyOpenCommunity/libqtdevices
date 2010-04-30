@@ -233,7 +233,7 @@ void TestVirtualSourceDevice::receivePrevTrack()
 void TestVirtualSourceDevice::receiveSourceOn()
 {
 	QString area = "5";
-	DeviceTester t(dev, VirtualSourceDevice::REQ_SOURCE_ON);
+	DeviceTester t(dev, VirtualSourceDevice::REQ_SOURCE_ON, DeviceTester::MULTIPLE_VALUES);
 	t.check(QString("*22*2#4#%1*5#2#%2##").arg(area).arg(source_id), area);
 }
 

@@ -28,6 +28,7 @@
 #include "btbutton.h" // BtButton
 #include "skinmanager.h" // bt_global::skin
 #include "icondispatcher.h" // bt_global::icons_cache
+#include "media_device.h" // RadioSourceDevice
 
 #include <QWidget>
 #include <QDebug>
@@ -35,24 +36,33 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-RadioSource::RadioSource() : BannerNew(0)
+
+RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev) :
+	AudioSource(area, dev)
 {
 	left_button = new BtButton;
 	center_left_button = new BtButton;
 	center_right_button = new BtButton;
 	right_button = new BtButton;
 	dummy = new QLabel;
-	initBanner(bt_global::skin->getImage("cycle"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("radio_dummy"),
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("radio_dummy"),
 		bt_global::skin->getImage("next"), bt_global::skin->getImage("details"));
 	QHBoxLayout *hbox = new QHBoxLayout(this);
-	// these margins are the same as BannerContent
-	hbox->setContentsMargins(18, 0, 17, 10);
-	hbox->setSpacing(0);
+	hbox->setContentsMargins(0, 0, 0, 0);
+	hbox->setSpacing(5);
 	hbox->addWidget(left_button);
 	hbox->addWidget(center_left_button);
 	hbox->addWidget(dummy);
 	hbox->addWidget(center_right_button);
 	hbox->addWidget(right_button);
+
+	right_button->hide();
+
+	connect(this, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
+
+	connect(left_button, SIGNAL(clicked()), SLOT(turnOn()));
+	connect(center_left_button, SIGNAL(clicked()), dev, SLOT(prevTrack()));
+	connect(center_right_button, SIGNAL(clicked()), dev, SLOT(nextTrack()));
 }
 
 void RadioSource::initBanner(const QString &left, const QString &center_left, const QString &center,
@@ -63,6 +73,11 @@ void RadioSource::initBanner(const QString &left, const QString &center_left, co
 	initButton(center_right_button, center_right);
 	initButton(right_button, right);
 	dummy->setPixmap(*bt_global::icons_cache.getIcon(center));
+}
+
+void RadioSource::sourceStateChanged(bool active)
+{
+	right_button->setVisible(active);
 }
 
 

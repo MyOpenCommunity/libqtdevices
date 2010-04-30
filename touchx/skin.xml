@@ -581,6 +581,18 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_volume_active>diffusione/onvolamp.png</img_volume_active>
 		<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
 	</item>
+	<!-- sound diffusion ambient (multi sound diffusion) -->
+	<item>
+		<cid>12121</cid>
+
+		<!-- multimedia source
+		Other images: on
+		-->
+		<img_previous>diffusione/precedente.png</img_previous>
+		<img_next>diffusione/successivo.png</img_next>
+		<img_multimedia_dummy>diffusione/display.png</img_multimedia_dummy>
+		<img_details>diffusione/contenutimultimediali.png</img_details>
+	</item>
 	<!-- special ambient -->
 	<item>
 		<cid>12020</cid>
@@ -603,7 +615,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<cid>12001</cid>
 		<!--
-		Other images: cycle
+		Other images: on
 		Notes: There's also an image set in the stylesheet above
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
@@ -611,12 +623,35 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_radio_dummy>diffusione/display.png</img_radio_dummy>
 		<img_details>diffusione/audiosetting.png</img_details>
 	</item>
+	<!-- AUX source (multi sound diffusion) -->
+	<item>
+		<cid>12002</cid>
+		<!--
+		Other images: on
+		Notes: There's also an image set in the stylesheet above
+		-->
+		<img_previous>diffusione/precedente.png</img_previous>
+		<img_next>diffusione/successivo.png</img_next>
+		<img_aux_dummy>diffusione/display.png</img_aux_dummy>
+	</item>
 	<!-- mono channel sound diffusion -->
+	<!-- sound diffusion page (mono sound diffusion) -->
+	<item>
+		<cid>11000</cid>
+
+		<!-- multimedia source
+		Other images: on
+		-->
+		<img_previous>diffusione/precedente.png</img_previous>
+		<img_next>diffusione/successivo.png</img_next>
+		<img_multimedia_dummy>diffusione/display.png</img_multimedia_dummy>
+		<img_details>diffusione/contenutimultimediali.png</img_details>
+	</item>
 	<!-- amplifier normal ambient (mono sound diffusion) -->
 	<item>
 		<cid>11020</cid>
 		<!--
-		Other images: on, off
+		Other images: on, off, cycle
 		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
 		-->
 		<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
@@ -661,13 +696,24 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<cid>11001</cid>
 		<!--
-		Other images: cycle
+		Other images: on
 		Notes: There's also an image set in the stylesheet above
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
 		<img_next>diffusione/successivo.png</img_next>
 		<img_radio_dummy>diffusione/display.png</img_radio_dummy>
 		<img_details>diffusione/audiosetting.png</img_details>
+	</item>
+	<!-- AUX source (mono sound diffusion) -->
+	<item>
+		<cid>11002</cid>
+		<!--
+		Other images: on
+		Notes: There's also an image set in the stylesheet above
+		-->
+		<img_previous>diffusione/precedente.png</img_previous>
+		<img_next>diffusione/successivo.png</img_next>
+		<img_aux_dummy>diffusione/display.png</img_aux_dummy>
 	</item>
 
 

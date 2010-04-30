@@ -42,6 +42,7 @@ public:
 		DIM_TRACK = 6,
 		REQ_NEXT_TRACK = 9,
 		REQ_PREV_TRACK = 10,
+		DIM_AREAS_UPDATED = -2,
 	};
 
 	SourceDevice(QString source, int openserver_id = 0);

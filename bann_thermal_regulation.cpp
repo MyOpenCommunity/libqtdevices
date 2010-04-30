@@ -91,8 +91,8 @@ ThermalNavigation::ThermalNavigation(QWidget *parent) : AbstractNavigationBar(pa
 {
 	// For now, it used only in BTouch code.
 #ifdef LAYOUT_BTOUCH
-	back_button = createButton(bt_global::skin->getImage("back"), SIGNAL(backClick()), 0);
-	forward_button = createButton(bt_global::skin->getImage("ok"), SIGNAL(forwardClick()), 3);
+	createButton(bt_global::skin->getImage("back"), SIGNAL(backClick()), 0);
+	createButton(bt_global::skin->getImage("ok"), SIGNAL(forwardClick()), 3);
 #endif
 }
 
