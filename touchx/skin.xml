@@ -615,7 +615,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<cid>12001</cid>
 		<!--
-		Other images: cycle
+		Other images: on
 		Notes: There's also an image set in the stylesheet above
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
@@ -627,7 +627,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<cid>12002</cid>
 		<!--
-		Other images: cycle
+		Other images: on
 		Notes: There's also an image set in the stylesheet above
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
@@ -651,7 +651,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<cid>11020</cid>
 		<!--
-		Other images: on, off
+		Other images: on, off, cycle
 		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
 		-->
 		<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
@@ -696,7 +696,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<cid>11001</cid>
 		<!--
-		Other images: cycle
+		Other images: on
 		Notes: There's also an image set in the stylesheet above
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
@@ -708,7 +708,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<cid>11002</cid>
 		<!--
-		Other images: cycle
+		Other images: on
 		Notes: There's also an image set in the stylesheet above
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
