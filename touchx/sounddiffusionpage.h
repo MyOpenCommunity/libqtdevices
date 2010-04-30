@@ -29,6 +29,8 @@
 class QDomNode;
 class QLabel;
 class BtButton;
+class QStackedWidget;
+
 
 // TODO: this should go to its own file if we need more banners
 class SoundAmbient : public BannerNew
@@ -55,6 +57,21 @@ struct SourceDescription
 };
 Q_DECLARE_TYPEINFO(SourceDescription, Q_MOVABLE_TYPE);
 
+
+
+class SoundSources : public QWidget
+{
+Q_OBJECT
+public:
+	SoundSources(const QString &area, const QList<SourceDescription> &sources);
+
+private slots:
+	void sourceCycle();
+	void sourceStateChanged(bool active);
+
+private:
+	QStackedWidget *sources;
+};
 
 
 /**

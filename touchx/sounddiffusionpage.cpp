@@ -32,12 +32,16 @@
 #include "bann_amplifiers.h" // Amplifier
 #include "poweramplifier.h" // BannPowerAmplifier
 #include "sorgentiradio.h" // RadioSource
+#include "sorgentiaux.h" // AuxSource
 #include "pagestack.h"
+#include "media_device.h"
+#include "devices_cache.h"
 
 #include <QDomNode>
 #include <QGridLayout>
 #include <QLabel>
 #include <QtDebug>
+#include <QStackedWidget>
 
 
 bool SoundDiffusionPage::is_source = false, SoundDiffusionPage::is_amplifier = false;
@@ -102,6 +106,76 @@ void SoundAmbient::connectRightButton(Page *p)
 }
 
 
+enum
+{
+	SOURCE_RADIO_MULTI = 12001,
+	SOURCE_AUX_MULTI = 12002,
+};
+
+SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &src)
+{
+	QHBoxLayout *l = new QHBoxLayout(this);
+	l->setContentsMargins(18, 0, 17, 10);
+	l->setSpacing(5);
+
+	BtButton *cycle = new BtButton(bt_global::skin->getImage("cycle"));
+	sources = new QStackedWidget;
+
+	l->addWidget(cycle);
+	l->addWidget(sources);
+
+	foreach (const SourceDescription &s, src)
+	{
+		SkinContext ctx(s.cid);
+		AudioSource *w = NULL;
+
+		switch (s.id)
+		{
+		case SOURCE_RADIO_MULTI:
+		{
+			RadioSourceDevice *dev = bt_global::add_device_to_cache(new RadioSourceDevice(s.where));
+
+			w = new RadioSource(area, dev);
+			break;
+		}
+		case SOURCE_AUX_MULTI:
+		{
+			SourceDevice *dev = bt_global::add_device_to_cache(new SourceDevice(s.where));
+
+			w = new AuxSource(area, dev);
+			break;
+		}
+		default:
+			qWarning() << "Ignoring source" << s.id;
+			continue;
+		};
+
+		sources->addWidget(w);
+		connect(w, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
+	}
+
+	connect(cycle, SIGNAL(clicked()), SLOT(sourceCycle()));
+}
+
+void SoundSources::sourceCycle()
+{
+	int index = sources->currentIndex();
+	int next = (index + 1) % sources->count();
+
+	sources->setCurrentIndex(next);
+}
+
+void SoundSources::sourceStateChanged(bool active)
+{
+	if (!active)
+		return;
+
+	AudioSource *source = static_cast<AudioSource*>(sender());
+
+	sources->setCurrentWidget(source);
+}
+
+
 enum BannerType
 {
 	AMPLIFIER = 11020,
@@ -119,12 +193,8 @@ SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<Source
 	QWidget *top_widget = 0;
 	// this handles the case for special ambient, which must not show sources
 	if (!sources.isEmpty())
-	{
-		// TODO: top widget should be a stackedWidget
-		SkinContext ctx(sources.at(0).cid);
-		// TODO: correctly create the top widget
-		top_widget = new RadioSource;
-	}
+		top_widget = new SoundSources(getTextChild(conf_node, "env"), sources);
+
 	buildPage(getTextChild(conf_node, "descr"), Page::TITLE_HEIGHT, top_widget);
 	loadItems(conf_node);
 }
