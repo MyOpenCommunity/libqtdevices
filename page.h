@@ -33,6 +33,7 @@ class TransitionWidget;
 class BannerContent;
 class NavigationBar;
 class BannerContent;
+class AbstractNavigationBar;
 
 
 // helper widget containing a centered label and a label on the right
@@ -68,9 +69,14 @@ typedef QHash<int, QVariant> DeviceValues;
  * full screen widgets; they just occupy the main part of the screen space, like on TouchX. However, they
  * can be full screen on low resolution hardware, like the BTouch. For full screen widgets, look at Window.
  *
- * A page is composed of a navigation bar, a content and optionally a top widget. Use the buildPage() method to create
- * a page with the correct layout for the hardware. BTouch pages are created with content at the top and navigation
- * bar at the bottom, while TouchX pages are created with navigation bar on the left and content on the right.
+ * A page is composed of a navigation bar, a main widget and optionally a top widget. In most cases, the main
+ * widget contains "items", that can be banners, icons or whatever you want. This container is named content,
+ * and usually is a generic class that contains the logic to paginate the items. All the logic about the
+ * 'life' of the page should be placed in the page itself and _not_ in the content.
+ *
+ * Use the buildPage() method to create a page with the correct layout for the hardware. BTouch pages are
+ * created with main widget at the top and navigation bar at the bottom, while TouchX pages are created with
+ * navigation bar on the left and main widget on the right.
  * The top widget is a widget that is always shown at the top of the page, ie. it will not scroll up/down like the
  * rest of the content. An example is the plant widget on anti intrusion section.
  *
@@ -105,9 +111,7 @@ public:
 	 */
 	typedef QWidget ContentType;
 
-	// Normally, the page is a fullscreen window, but sometimes is a part of
-	// another page (see Antintrusion or SoundDiffusion)
-	Page(QWidget *parent=0);
+	Page(QWidget *parent = 0);
 	/// Obsolete: don't use it in new code
 	virtual void inizializza();
 
@@ -186,14 +190,25 @@ protected:
 	void startTransition();
 
 	/**
-	 * Create a page with given content, navigation bar, top widget and title widget.
+	 * Convenience function to create a page using the content as the main widget.
 	 *
 	 * \param content Page content. Can be any widget.
 	 * \param nav_bar Navigation bar
 	 * \param top_widget Top widget for the page
 	 * \param title_widget Page title. It's invalid to use a title_widget on BTouch
 	 */
-	void buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget=0, QWidget *title_widget=0);
+	void buildPage(QWidget *content, AbstractNavigationBar *nav_bar, QWidget *top_widget = 0, QWidget *title_widget = 0);
+
+	/**
+	 * Create a page with given main widget, content, navigation bar, top widget and title widget.
+	 *
+	 * \param main_widget widget that contains the content.
+	 * \param content Page content. Can be any widget.
+	 * \param nav_bar Navigation bar
+	 * \param top_widget Top widget for the page
+	 * \param title_widget Page title. It's invalid to use a title_widget on BTouch
+	 */
+	void buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationBar *nav_bar, QWidget *top_widget = 0, QWidget *title_widget = 0);
 
 	/**
 	 * Convenience function to create a page with given content, navigation bar and title.
@@ -204,8 +219,8 @@ protected:
 	 * \param label_height Title height
 	 * \param top_widget Top widget for the page
 	 */
-	void buildPage(QWidget *content, QWidget *nav_bar, const QString& label,
-		       int label_height=TITLE_HEIGHT, QWidget *top_widget=0);
+	void buildPage(QWidget *content, AbstractNavigationBar *nav_bar, const QString& label,
+		int label_height = TITLE_HEIGHT, QWidget *top_widget = 0);
 
 private:
 	static PageContainer *page_container;

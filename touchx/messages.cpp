@@ -190,7 +190,7 @@ AlertMessagePage::AlertMessagePage(const QString &date, const QString &text)
 
 	PageTitleWidget *title_widget = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
 
-	buildPage(content, 0, 0, title_widget);
+	buildPage(content, static_cast<AbstractNavigationBar*>(0), 0, title_widget);
 }
 
 

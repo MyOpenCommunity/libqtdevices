@@ -99,7 +99,7 @@ Page::Page(QWidget *parent) : StyledWidget(parent)
 		page_container->addPage(this);
 }
 
-void Page::buildPage(QWidget *content, QWidget *nav_bar, const QString& label, int label_height, QWidget *top_widget)
+void Page::buildPage(QWidget *content, AbstractNavigationBar *nav_bar, const QString& label, int label_height, QWidget *top_widget)
 {
 	QLabel *page_title = 0;
 
@@ -111,10 +111,15 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, const QString& label, i
 	page_title->setFixedHeight(label_height + 10);
 #endif
 
-	buildPage(content, nav_bar, top_widget, page_title);
+	buildPage(content, content, nav_bar, top_widget, page_title);
 }
 
-void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget, QWidget *title_widget)
+void Page::buildPage(QWidget *content, AbstractNavigationBar *nav_bar, QWidget *top_widget, QWidget *title_widget)
+{
+	buildPage(content, content, nav_bar, top_widget, title_widget);
+}
+
+void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationBar *nav_bar, QWidget *top_widget, QWidget *title_widget)
 {
 	QBoxLayout *l;
 #ifdef LAYOUT_TOUCHX
@@ -124,15 +129,14 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget, QW
 #endif
 
 	// the top_widget (if present) is a widget that must be at the top of the page,
-	// limiting the height (so even the navigation) of the content; for TouchX
-	// it must be between the title and the content
+	// limiting the height (so even the navigation) of the main_widget; for TouchX
+	// it must be between the title and the central_widget
 
 #ifdef LAYOUT_TOUCHX
 	// TODO add an API to set the page title and to set the page count
 	//      and current page number
 	l->addWidget(nav_bar, 0);
 
-	// WARNING: when you change this type, have a look at addBottomWidget() also!
 	QVBoxLayout *pl = new QVBoxLayout;
 	pl->setContentsMargins(0, 0, 0, 0);
 	pl->setSpacing(0);
@@ -140,7 +144,7 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget, QW
 		pl->addWidget(title_widget);
 	if (top_widget)
 		pl->addWidget(top_widget);
-	pl->addWidget(content, 1);
+	pl->addWidget(main_widget, 1);
 
 	l->addLayout(pl, 1);
 
@@ -149,7 +153,7 @@ void Page::buildPage(QWidget *content, QWidget *nav_bar, QWidget *top_widget, QW
 		l->addWidget(top_widget);
 
 	Q_ASSERT_X(title_widget == NULL, "Page::buildPage", "BTouch pages can't have a title");
-	l->addWidget(content, 1);
+	l->addWidget(main_widget, 1);
 	l->addWidget(nav_bar);
 #endif
 	l->setContentsMargins(0, 5, 0, 10);
