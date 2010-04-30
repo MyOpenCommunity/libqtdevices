@@ -21,10 +21,53 @@
 
 #include "sorgentimedia.h"
 #include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW, ICON_IMPOSTA
+#include "media_device.h" // VirtualSourceDevice
+#include "titlelabel.h" // TextOnImageLabel
+#include "skinmanager.h"
+#include "btbutton.h"
+#include "fontmanager.h"
 
 #include <openmsg.h>
 
 #include <QDebug>
+#include <QHBoxLayout>
+
+
+MediaSource::MediaSource(const QString &area, VirtualSourceDevice *dev, const QString &description) :
+	AudioSource(area, dev)
+{
+	left_button = new BtButton;
+	center_left_button = new BtButton;
+	center_right_button = new BtButton;
+	right_button = new BtButton;
+	center_icon = new TextOnImageLabel(0, description);
+	center_icon->setFont(bt_global::font->get(FontManager::AUDIO_SOURCE_TEXT));
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("multimedia_dummy"),
+		bt_global::skin->getImage("next"), bt_global::skin->getImage("details"));
+	QHBoxLayout *hbox = new QHBoxLayout(this);
+	hbox->setContentsMargins(0, 0, 0, 0);
+	hbox->setSpacing(5);
+	hbox->addWidget(left_button);
+	hbox->addWidget(center_left_button);
+	hbox->addWidget(center_icon);
+	hbox->addWidget(center_right_button);
+	hbox->addWidget(right_button);
+	hbox->addStretch(1);
+
+	connect(left_button, SIGNAL(clicked()), SLOT(turnOn()));
+	connect(center_left_button, SIGNAL(clicked()), dev, SLOT(prevTrack()));
+	connect(center_right_button, SIGNAL(clicked()), dev, SLOT(nextTrack()));
+}
+
+void MediaSource::initBanner(const QString &left, const QString &center_left, const QString &center,
+	const QString &center_right, const QString &right)
+{
+	initButton(left_button, left);
+	initButton(center_left_button, center_left);
+	initButton(center_right_button, center_right);
+	initButton(right_button, right);
+	center_icon->setBackgroundImage(center);
+}
 
 
 BannerSorgenteMultimedia::BannerSorgenteMultimedia(QWidget *parent, const QDomNode &config_node, QString indirizzo,
