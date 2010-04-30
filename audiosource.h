@@ -36,12 +36,15 @@ public:
 signals:
 	void sourceStateChanged(bool active);
 
-private slots:
-	void valueReceived(const DeviceValues &values_list);
+protected slots:
+	void turnOn();
 
-private:
+protected:
 	QString area;
 	SourceDevice *dev;
+
+private slots:
+	void valueReceived(const DeviceValues &values_list);
 };
 
 #endif // AUDIOSOURCE_H

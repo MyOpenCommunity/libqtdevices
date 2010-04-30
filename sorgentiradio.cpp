@@ -60,6 +60,10 @@ RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev) :
 	right_button->hide();
 
 	connect(this, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
+
+	connect(left_button, SIGNAL(clicked()), SLOT(turnOn()));
+	connect(center_left_button, SIGNAL(clicked()), dev, SLOT(prevTrack()));
+	connect(center_right_button, SIGNAL(clicked()), dev, SLOT(nextTrack()));
 }
 
 void RadioSource::initBanner(const QString &left, const QString &center_left, const QString &center,

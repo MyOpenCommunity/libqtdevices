@@ -26,6 +26,7 @@
 #include "btbutton.h"
 #include "skinmanager.h"
 #include "icondispatcher.h"
+#include "media_device.h"
 
 #include <QWidget>
 #include <QDebug>
@@ -51,6 +52,10 @@ AuxSource::AuxSource(const QString &area, SourceDevice *dev) :
 	hbox->addWidget(dummy);
 	hbox->addWidget(center_right_button);
 	hbox->addStretch(1);
+
+	connect(left_button, SIGNAL(clicked()), SLOT(turnOn()));
+	connect(center_left_button, SIGNAL(clicked()), dev, SLOT(prevTrack()));
+	connect(center_right_button, SIGNAL(clicked()), dev, SLOT(nextTrack()));
 }
 
 void AuxSource::initBanner(const QString &left, const QString &center_left, const QString &center,
