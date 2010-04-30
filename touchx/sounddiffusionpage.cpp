@@ -109,6 +109,8 @@ void SoundAmbient::connectRightButton(Page *p)
 
 enum
 {
+	SOURCE_RADIO_MONO = 11001,
+	SOURCE_AUX_MONO = 11002,
 	SOURCE_RADIO_MULTI = 12001,
 	SOURCE_AUX_MULTI = 12002,
 	// used internally
@@ -134,6 +136,7 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 
 		switch (s.id)
 		{
+		case SOURCE_RADIO_MONO:
 		case SOURCE_RADIO_MULTI:
 		{
 			RadioSourceDevice *dev = bt_global::add_device_to_cache(new RadioSourceDevice(s.where));
@@ -141,6 +144,7 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 			w = new RadioSource(area, dev);
 			break;
 		}
+		case SOURCE_AUX_MONO:
 		case SOURCE_AUX_MULTI:
 		{
 			SourceDevice *dev = bt_global::add_device_to_cache(new SourceDevice(s.where));
