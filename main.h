@@ -318,7 +318,6 @@ enum Section
  */
 enum ItemType
 {
-	DIMMER=1,                                     /*!<  Dimmer */
 	CARICO=7,                                     /*!<  Appliance */
 	ATTUAT_AUTOM_PULS=11,                         /*!<  Pulse automation actuator */
 	SET_DATA_ORA=14,                              /*!<  Time setting */

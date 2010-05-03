@@ -279,56 +279,6 @@ bool device_status_mci::SetMciAutotestFreq(int s)
 	return false;
 }
 
-// Device status for lights
-device_status_light::device_status_light() : device_status(LIGHTS)
-{
-	add_var((int)device_status_light::ON_OFF_INDEX,
-			new stat_var(stat_var::ON_OFF, 0, 0, 1, 1));
-}
-
-// Device status for old dimmers
-device_status_dimmer::device_status_dimmer() : device_status(DIMMER)
-{
-	add_var((int)device_status_dimmer::LEV_INDEX,
-			new stat_var(stat_var::LEV, 0, -1, 100, 10));
-	add_var((int)device_status_dimmer::OLD_LEV_INDEX,
-			new stat_var(stat_var::OLD_LEV, 0, -1, 100, 10));
-	add_var((int)device_status_dimmer::FAULT_INDEX,
-			new stat_var(stat_var::FAULT, 0, 0, 1, 1));
-}
-
-// Device status for dimmer100
-device_status_dimmer100::device_status_dimmer100() : device_status(DIMMER100)
-{
-	add_var((int)device_status_dimmer100::LEV_INDEX,
-			new stat_var(stat_var::LEV, 0, -1, 100, 5));
-	add_var((int)device_status_dimmer100::OLD_LEV_INDEX,
-			new stat_var(stat_var::OLD_LEV, 0, -1, 100, 5));
-	add_var((int)device_status_dimmer100::SPEED_INDEX,
-			new stat_var(stat_var::SPEED, 1, 1, 255, 1));
-	add_var((int)device_status_dimmer100::FAULT_INDEX,
-			new stat_var(stat_var::FAULT, 0, 0, 1, 1));
-}
-
-// Device status for new timed devices
-device_status_new_timed::device_status_new_timed() : device_status(NEWTIMED)
-{
-	add_var((int)device_status_new_timed::HH_INDEX,
-			new stat_var(stat_var::HH, 0, 0, 23, 1));
-	add_var((int)device_status_new_timed::MM_INDEX,
-			new stat_var(stat_var::MM, 0, 0, 59, 1));
-	add_var((int)device_status_new_timed::SS_INDEX,
-			new stat_var(stat_var::SS, 0, 0, 59, 1));
-}
-
-// Device status for autom. devices
-device_status_autom::device_status_autom() :
-	device_status(AUTOM)
-{
-	add_var((int)device_status_autom::STAT_INDEX,
-			new stat_var(stat_var::STAT, 0, 0, 2, 1));
-}
-
 // Device status for amplifiers
 device_status_amplifier::device_status_amplifier() : 
 	device_status(AMPLIFIER)
@@ -387,16 +337,6 @@ device_status_zonanti::device_status_zonanti() :
 {
 	add_var((int)device_status_zonanti::ON_OFF_INDEX,
 			new stat_var(stat_var::ON_OFF, 0, 0, 1, 1));
-}
-
-// Device status for modscen
-device_status_modscen::device_status_modscen() :
-	device_status(MODSCEN)
-{
-	add_var((int)device_status_modscen::STAT_INDEX,
-			new stat_var(stat_var::STAT, 0, 
-				device_status_modscen::PROGRAMMING_START, 
-				device_status_modscen::FULL, 1));
 }
 
 // Device status for sound matrix

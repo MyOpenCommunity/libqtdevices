@@ -171,92 +171,6 @@ class device_status_mci : public device_status {
 	 bool SetMciAutotestFreq(int s);
 };
 
-//! Simple light status
-class device_status_light : public device_status
-{
-private:
-public:
-	enum
-	{
-		ON_OFF_INDEX = 0,
-	} ind;
-	device_status_light(); //{ add_var(new stat_var(ON_OFF, 0, 1, 1)); } ;
-	virtual int init_request_delay() { return LIGHT_REQ_DELAY; }
-	//~device_status_light();
-};
-
-#ifndef DIMMER_REQ_DELAY
-#define DIMMER_REQ_DELAY 4000
-#endif
-
-//! Dimmer status
-class device_status_dimmer : public device_status {
-private:
-public:
-	enum
-	{
-		LEV_INDEX = 0,
-		OLD_LEV_INDEX,
-		FAULT_INDEX,
-	} ind;
-	device_status_dimmer();
-	//! Return delay for init request deferral (msecs)
-	virtual int init_request_delay() { return DIMMER_REQ_DELAY; }
-	//~device_status_dimmer();
-};
-
-#ifndef DIMMER100_REQ_DELAY
-#define DIMMER100_REQ_DELAY 9000
-#endif
-
-//! Dimmer 100 status
-class device_status_dimmer100 : public device_status {
-private:
-public:
-	enum
-	{
-		LEV_INDEX = 0,
-		OLD_LEV_INDEX,
-		SPEED_INDEX,
-		FAULT_INDEX,
-	} ind;
-	//! Return delay for init request deferral (msecs)
-	virtual int init_request_delay() { return DIMMER100_REQ_DELAY; }
-	device_status_dimmer100();
-	//~device_status_dimmer100();
-};
-
-//! New timed device status
-class device_status_new_timed : public device_status {
-private:
-public:
-	enum
-	{
-		HH_INDEX = 0,
-		MM_INDEX,
-		SS_INDEX
-	} ind;
-	device_status_new_timed();
-	//~device_status_temp_new();
-};
-
-#ifndef AUTOM_REQ_DELAY
-#define AUTOM_REQ_DELAY 6000
-#endif
-
-//! Autom device status 
-class device_status_autom : public device_status {
-private:
-public:
-	enum
-	{
-		STAT_INDEX = 0,
-	} ind;
-	device_status_autom();
-	//! Return delay for init request deferral (msecs)
-	virtual int init_request_delay() { return AUTOM_REQ_DELAY; }
-};
-
 //! Amplifier status
 class device_status_amplifier : public device_status {
 public:
@@ -326,24 +240,6 @@ public:
 		ON_OFF_INDEX = 0,
 	} ind;
 	device_status_zonanti();
-};
-
-//! Modscen status
-class device_status_modscen : public device_status {
-public:
-	enum {
-		STAT_INDEX = 0,
-	};
-	enum {
-		PROGRAMMING_START = 40,
-		PROGRAMMING_STOP = 41,
-		DELETE_SCEN = 42,
-		LOCKED = 43,
-		UNLOCKED = 44,
-		BUSY = 45,
-		FULL = 46,
-	} val;
-	device_status_modscen();
 };
 
 #endif
