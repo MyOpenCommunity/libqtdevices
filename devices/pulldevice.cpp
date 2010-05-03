@@ -45,7 +45,7 @@
  * we send a point-to-point status request for the device, because we want to know if
  * the device reacted to the environment/general frame.
  *
- * When receiving the point-to-point measure frame in answer tot the previous request, if
+ * When receiving the point-to-point measure frame in answer to the previous request, if
  * the status is equal to the saved status it means that the device did not react to the
  * environment/generic frame (and so is a PULL device); if the status differs from the
  * saved status, then the device is a  NON-PULL device
