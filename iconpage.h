@@ -47,7 +47,6 @@ public:
 	// the type returned by page_content
 	typedef IconContent ContentType;
 
-	virtual void addBackButton();
 	virtual void activateLayout();
 
 protected:

@@ -24,7 +24,6 @@
 
 #include "singlechoicepage.h"
 #include "iconpage.h"
-#include "gridcontent.h" // GridContent
 #include "fileselector.h"
 #include "itemlist.h"
 

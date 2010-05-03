@@ -91,15 +91,6 @@ void IconPage::addPage(Page *page, const QString &label, const QString &iconName
 	connect(page, SIGNAL(Closed()), this, SLOT(showPage()));
 }
 
-void IconPage::addBackButton()
-{
-	BtButton *b = new BtButton(this);
-	b->setGeometry(BACK_BUTTON_X, BACK_BUTTON_Y, BACK_BUTTON_DIM, BACK_BUTTON_DIM);
-	b->setImage(bt_global::skin->getImage("back"));
-	connect(b, SIGNAL(clicked()), SIGNAL(Closed()));
-}
-
-
 IconContent::IconContent(QWidget *parent) : GridContent(parent)
 {
 	QGridLayout *l = static_cast<QGridLayout *>(layout());
