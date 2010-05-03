@@ -39,15 +39,20 @@ BannOnOffCombo::BannOnOffCombo(QWidget *parent) : BannerNew(parent)
 	left_icon = new QLabel;
 	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
+	// central box with balance icons and balance text
+	QHBoxLayout *hbox = new QHBoxLayout;
+	hbox->addWidget(left_icon);
+	hbox->addWidget(center_icon);
+	hbox->addWidget(internal_label);
+	hbox->addWidget(right_icon);
+
 	QGridLayout *l = new QGridLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
 	l->addWidget(left_button, 0, 0, Qt::AlignLeft);
-//	l->setColumnStretch(0, 1);
-	l->addWidget(center_icon, 0, 1);
+	l->addLayout(hbox, 0, 1);
 	l->setColumnStretch(1, 2);
 	l->addWidget(right_button, 0, 2, Qt::AlignRight);
-//	l->setColumnStretch(2, 1);
 	l->addWidget(text, 1, 0, 1, 3);
 }
 
