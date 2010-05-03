@@ -148,13 +148,6 @@ bool device::isConnected()
 	return openservers[openserver_id]->isConnected();
 }
 
-void device::initDevices()
-{
-	foreach (int id, openservers.keys())
-		if (openservers[id]->isConnected())
-			bt_global::devices_cache.initOpenserverDevices(id);
-}
-
 int device::openserverId()
 {
 	return openserver_id;
