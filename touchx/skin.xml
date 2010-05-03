@@ -261,7 +261,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<!-- lan settings button -->
 	<item>
-		<cid>872</cid>
+		<cid>14008</cid>
 		<img_link_icon>setup/aggiungiimg.png</img_link_icon>
 		<img_network_enable>setup/buzzer.png</img_network_enable>
 		<img_network_disable>setup/canc.png</img_network_disable>
@@ -463,6 +463,27 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_ipradio_icon>multimediale/radiooveripmini.png</img_ipradio_icon>
 	</item>
 	<!-- sound diffusion system -->
+        <item>
+		<!-- multi sound diffusion ambient list -->
+		<cid>12000</cid>
+
+                <!-- TODO duplicated in the multimedia section, move to
+                     common section -->
+		<img_previous>multimediale/precedente.png</img_previous>
+		<img_next>multimediale/successivo.png</img_next>
+		<img_start>multimediale/play.png</img_start>
+		<img_pause>multimediale/pause.png</img_pause>
+		<img_stop>multimediale/stop.png</img_stop>
+		<img_skip_forward>multimediale/avanti.png</img_skip_forward>
+		<img_skip_back>multimediale/indietro.png</img_skip_back>
+		<img_fullscreen>multimediale/screenfull.png</img_fullscreen>
+		<img_nofullscreen>multimediale/screen.png</img_nofullscreen>
+		<img_volume>diffusione/onvolamp.png</img_volume>
+
+		<img_audioplayer_background>multimediale/display.png</img_audioplayer_background>
+		<img_goto_sounddiffusion>multimediale/godiffusion.png</img_goto_sounddiffusion>
+		<img_tray_player>home/backtemp.png</img_tray_player>
+	</item>
 	<!-- rds radio -->
 	<item>
 		<cid>12001</cid>
@@ -646,6 +667,21 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_next>diffusione/successivo.png</img_next>
 		<img_multimedia_dummy>diffusione/display.png</img_multimedia_dummy>
 		<img_details>diffusione/contenutimultimediali.png</img_details>
+
+                <!-- TODO duplicated in the multimedia section, move to
+                     common section -->
+		<img_start>multimediale/play.png</img_start>
+		<img_pause>multimediale/pause.png</img_pause>
+		<img_stop>multimediale/stop.png</img_stop>
+		<img_skip_forward>multimediale/avanti.png</img_skip_forward>
+		<img_skip_back>multimediale/indietro.png</img_skip_back>
+		<img_fullscreen>multimediale/screenfull.png</img_fullscreen>
+		<img_nofullscreen>multimediale/screen.png</img_nofullscreen>
+		<img_volume>diffusione/onvolamp.png</img_volume>
+
+		<img_audioplayer_background>multimediale/display.png</img_audioplayer_background>
+		<img_goto_sounddiffusion>multimediale/godiffusion.png</img_goto_sounddiffusion>
+		<img_tray_player>home/backtemp.png</img_tray_player>
 	</item>
 	<!-- amplifier normal ambient (mono sound diffusion) -->
 	<item>
