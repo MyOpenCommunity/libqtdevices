@@ -45,6 +45,21 @@ typedef AdvancedAirConditioningDevice::Mode Mode;
 typedef AdvancedAirConditioningDevice::Swing Swing;
 typedef AdvancedAirConditioningDevice::Velocity Velocity;
 
+enum BannerType
+{
+#ifdef CONFIG_BTOUCH
+	AIR_SPLIT=74,                                 /*!< AIR conditioning single split (basic) */
+	AIR_GENERAL=75,                               /*!< AIR conditioning general split (basic) */
+	AIR_SPLIT_ADV=77,                             /*!< AIR conditioning single split (advanced) */
+	AIR_GENERAL_ADV=78,                           /*!< AIR conditioning general split (advanced) */
+#else
+	AIR_SPLIT=4001,                               /*!< AIR conditioning single split (basic) */
+	AIR_GENERAL=4002,                             /*!< AIR conditioning general split (basic) */
+	AIR_SPLIT_ADV=4003,                           /*!< AIR conditioning single split (advanced) */
+	AIR_GENERAL_ADV=4004,                         /*!< AIR conditioning general split (advanced) */
+#endif
+};
+
 AirConditionerStatus AirConditioningAdvanced::parseSettings(const QDomNode &values_node)
 {
 	AirConditionerStatus st;
