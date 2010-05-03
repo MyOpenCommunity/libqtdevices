@@ -28,6 +28,9 @@
 #include <QLabel>
 #include <QBoxLayout>
 
+#define VOLUME_MIN 0
+#define VOLUME_MAX 8
+
 
 ItemTuning::ItemTuning(QString text, QString icon, QWidget *parent) : QWidget(parent)
 {
@@ -60,8 +63,7 @@ ItemTuning::ItemTuning(QString text, QString icon, QWidget *parent) : QWidget(pa
 		main_layout->addWidget(label, 1, Qt::AlignHCenter);
 	}
 
-	// levels go from 0 to 8 inclusive
-	current_level = 4;
+	current_level = VOLUME_MAX / 2;
 	icon_name = icon;
 
 	left->setImage(getBostikName(icon_name, QString("sxl") + QString::number(current_level)));
@@ -84,7 +86,7 @@ void ItemTuning::setStatus(const ItemTuningStatus &st)
 
 void ItemTuning::decreaseLevel()
 {
-	if (current_level > 0)
+	if (current_level > VOLUME_MIN)
 	{
 		--current_level;
 		emit valueChanged(current_level);
@@ -93,7 +95,7 @@ void ItemTuning::decreaseLevel()
 
 void ItemTuning::increaseLevel()
 {
-	if (current_level < 8)
+	if (current_level < VOLUME_MAX)
 	{
 		++current_level;
 		emit valueChanged(current_level);
