@@ -196,6 +196,16 @@ void TestRadioSourceDevice::receiveStopRDS()
 	QCOMPARE(server->frameCommand(), QString("*22*31*2#%1##").arg(source_id));
 }
 
+void TestRadioSourceDevice::receiveMemorizedStation()
+{
+	DeviceTester tf(dev, RadioSourceDevice::DIM_FREQUENCY, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester ts(dev, RadioSourceDevice::DIM_TRACK, DeviceTester::MULTIPLE_VALUES);
+	QString frame = QString("*#22*5#2#%1*11*1*9800*5##").arg(source_id);
+
+	tf.check(frame, 9800);
+	ts.check(frame, 5);
+}
+
 
 void TestVirtualSourceDevice::initTestCase()
 {

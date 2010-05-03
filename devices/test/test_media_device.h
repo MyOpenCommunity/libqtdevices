@@ -82,6 +82,7 @@ private slots:
 	void receiveFrequency();
 	void receiveRDS();
 	void receiveStopRDS();
+	void receiveMemorizedStation();
 
 private:
 	RadioSourceDevice *dev;

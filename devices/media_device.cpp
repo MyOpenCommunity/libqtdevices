@@ -49,6 +49,7 @@ enum RequestDimension
 	REQ_LOUD = 20,
 	SOURCE_TURNED_ON = 2,
 	DIM_ACTIVE_AREAS = 13,
+	DIM_MEMORIZED_STATION = 11,
 };
 
 
@@ -197,6 +198,10 @@ bool RadioSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	case DIM_FREQUENCY:
 		v.setValue(msg.whatArgN(1));
 		break;
+	case DIM_MEMORIZED_STATION:
+		values_list[DIM_FREQUENCY] = msg.whatArgN(1);
+		values_list[DIM_TRACK] = msg.whatArgN(2);
+		return true;
 	case DIM_RDS:
 	{
 		QString rds_message;
