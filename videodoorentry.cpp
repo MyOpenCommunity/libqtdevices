@@ -51,8 +51,10 @@
 
 enum Pages
 {
-	VIDEO_CONTROL = 10050,  /*!< Video control menu */
-	INTERCOM = 10100,       /*!< Intercom menu */
+	VIDEO_CONTROL_MENU = 10001,  /*!< Video control menu */
+	INTERCOM_MENU = 10002,       /*!< Intercom menu */
+	INTERNAL_INTERCOM = 10101,
+	EXTERNAL_INTERCOM = 10102
 };
 
 
@@ -150,21 +152,21 @@ void VideoDoorEntry::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
+		int id = getTextChild(config_node, "id").toInt();
 		SkinContext cxt(getTextChild(item, "cid").toInt());
 		QDomNode page_node = getPageNodeFromChildNode(item, "lnk_pageID");
-		int page_id = getTextChild(page_node, "id").toInt();
 		Page *p = 0;
 
-		switch (page_id)
+		switch (id)
 		{
-		case INTERCOM:
+		case INTERCOM_MENU:
 			p = new Intercom(page_node);
 			break;
-		case VIDEO_CONTROL:
+		case VIDEO_CONTROL_MENU:
 			p = new VideoControl(page_node);
 			break;
 		default:
-			qFatal("Unhandled page id %d in VideoDoorEntry::loadItems", page_id);
+			qFatal("Unhandled page id %d in VideoDoorEntry::loadItems", id);
 		};
 
 		if (p)
@@ -190,7 +192,6 @@ VideoControl::VideoControl(const QDomNode &config_node)
 	call_page = new VCTCallPage(dev);
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		// TODO: aggiungere un check sull'id degli item relativi ai posti esterni!
 		SkinContext ctx(getTextChild(item, "cid").toInt());
 		BtButton *btn = addButton(getTextChild(item, "descr"), bt_global::skin->getImage("link_icon"), 0, 0);
 		connect(btn, SIGNAL(clicked()), mapper, SLOT(map()));
@@ -366,8 +367,7 @@ Intercom::Intercom(const QDomNode &config_node)
 		int id = getTextChild(item, "id").toInt();
 		QString where = getTextChild(item, "dev") + getTextChild(item, "where");
 
-		// TODO: aggiungere un check sull'id degli item relativi ai posti interni!
-		if (1) // dovra' essere (id == INTERNAL_INTERCOM)
+		if (id == INTERNAL_INTERCOM)
 		{
 			mapper_int_intercom->setMapping(btn, where);
 			connect(btn, SIGNAL(clicked()), mapper_int_intercom, SLOT(map()));
