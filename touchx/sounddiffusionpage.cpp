@@ -200,16 +200,23 @@ enum BannerType
 SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources)
 {
 	SkinContext context(getTextChild(conf_node, "cid").toInt());
+	QString area;
 
 	if (getTextChild(conf_node, "id").toInt() == DIFSON_MONO)
+	{
 		section_id = DIFSON_MONO;
+		area = "0";
+	}
 	else
+	{
 		section_id = NO_SECTION;
+		area = getTextChild(conf_node, "env");
+	}
 
 	QWidget *top_widget = 0;
 	// this handles the case for special ambient, which must not show sources
 	if (!sources.isEmpty())
-		top_widget = new SoundSources(getTextChild(conf_node, "env"), sources);
+		top_widget = new SoundSources(area, sources);
 
 	buildPage(getTextChild(conf_node, "descr"), Page::TITLE_HEIGHT, top_widget);
 	loadItems(conf_node);
