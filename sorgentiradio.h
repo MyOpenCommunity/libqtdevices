@@ -51,11 +51,11 @@ protected:
 
 private slots:
 	void sourceStateChanged(bool active);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	BtButton *left_button, *center_left_button, *center_right_button, *right_button;
-	// TODO: this must be changed with the proper widget
-	QLabel *dummy;
+	QLabel *background, *radio_station, *radio_frequency, *radio_channel;
 };
 
 /*****************************************************************
