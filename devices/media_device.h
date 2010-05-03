@@ -113,6 +113,8 @@ public:
 
 	VirtualSourceDevice(QString address, int openserver_id = 0);
 
+	static QString createMediaInitFrame(bool is_multichannel, const QString &source_addr, const QString &ampli_addr);
+
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 };

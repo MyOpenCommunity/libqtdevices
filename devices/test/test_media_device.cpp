@@ -253,6 +253,21 @@ void TestVirtualSourceDevice::receiveSourceOff()
 	t.check(QString("*#22*2#%1*12*0*4##").arg(source_id), true);
 }
 
+void TestVirtualSourceDevice::testInitFrame()
+{
+	// multichannel, source
+	QCOMPARE(VirtualSourceDevice::createMediaInitFrame(true, "3", ""), QString("*#22*7*#15*3***9*9**3*1*1*0*1##"));
+
+	// monochannel, source
+	QCOMPARE(VirtualSourceDevice::createMediaInitFrame(false, "3", ""), QString("*#22*7*#15*3***9*9***1*1*0*1##"));
+
+	// multichannel, ampli
+	QCOMPARE(VirtualSourceDevice::createMediaInitFrame(true, "", "28"), QString("*#22*7*#15**2*8*9*9***0*1*1*1##"));
+
+	// monochannel, ampli
+	QCOMPARE(VirtualSourceDevice::createMediaInitFrame(false, "", "8"), QString("*#22*7*#15***8*9*9***0*1*1*1##"));
+}
+
 
 TestAmplifierDevice::TestAmplifierDevice()
 {

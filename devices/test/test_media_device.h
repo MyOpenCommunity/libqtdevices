@@ -104,6 +104,8 @@ private slots:
 	void receiveSourceOn();
 	void receiveSourceOff();
 
+	void testInitFrame();
+
 private:
 	VirtualSourceDevice *dev;
 };

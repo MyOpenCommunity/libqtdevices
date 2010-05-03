@@ -262,6 +262,32 @@ bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	return true;
 }
 
+QString VirtualSourceDevice::createMediaInitFrame(bool is_multichannel, const QString &source_addr, const QString &ampli_addr)
+{
+	QString matrix_input = is_multichannel ? source_addr : "";
+	int is_source = !source_addr.isEmpty(), is_ampli = !ampli_addr.isEmpty(), is_gateway = 1;
+	int reads_scs = is_source || is_ampli;
+
+	QString ampli_area, ampli_point;
+	if (is_ampli)
+	{
+		if (is_multichannel)
+		{
+			ampli_area = ampli_addr.at(0);
+			ampli_point = ampli_addr.at(1);
+		}
+		else
+		{
+			ampli_point = ampli_addr;
+		}
+	}
+
+	QString frame = QString("*#22*7*#15*%1*%2*%3*9*9**%4*%5*%6*%7*%8##")
+			.arg(source_addr).arg(ampli_area).arg(ampli_point).arg(matrix_input).arg(is_source).arg(is_gateway).arg(is_ampli).arg(reads_scs);
+
+	return frame;
+}
+
 
 
 AmplifierDevice::AmplifierDevice(QString where, int openserver_id) :
