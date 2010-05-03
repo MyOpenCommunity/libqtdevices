@@ -25,6 +25,8 @@
 #include "banner.h"
 #include <QWidget>
 
+class BtButton;
+
 enum ComboStatus
 {
 	CENTER = 0,
@@ -34,17 +36,19 @@ enum ComboStatus
 };
 
 
-class BannOnOffCombo : public BannerOld
+class BannOnOffCombo : public BannerNew
 {
-	Q_OBJECT
-public:
-	BannOnOffCombo(QWidget *w=0);
-
+Q_OBJECT
 protected:
+	BannOnOffCombo(QWidget *w=0);
+	void initBanner(const QString &left, const QString center_left, const QString &center,
+		const QString &center_right, const QString &right, ComboStatus init_status, const QString &banner_text);
 	void changeStatus(ComboStatus st);
-	void SetIcons(QString sxIcon, QString dxIcon, QString centerIcon, QString centerSxIcon, QString centerDxIcon);
+	void setInternalText(const QString &t);
+	BtButton *left_button, *right_button;
 
 private:
+	QLabel *text, *internal_label, *left_icon, *center_icon, *right_icon;
 	QString status_icon[NUM_STATUS];
 };
 

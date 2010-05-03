@@ -20,55 +20,79 @@
 
 
 #include "bannonoffcombo.h"
+#include "btbutton.h"
+#include "skinmanager.h" // bt_global::skin
+#include "icondispatcher.h" // bt_global::icons_cache
+#include "fontmanager.h" // bt_global::font
 
 #include <QLabel>
+#include <QHBoxLayout>
 
-#define BUTONOFFCOMBO_ICON_DIM_Y 60
-#define BANONOFFCOMBO_BUT_DIM 60
-
-#define BUTONOFFCOMBO_ICON_DIM_MAX_X 120
-#define BUTONOFFCOMBO_ICON_DIM_MIN_X 80
-
-
-BannOnOffCombo::BannOnOffCombo(QWidget *parent) : BannerOld(parent)
+BannOnOffCombo::BannOnOffCombo(QWidget *parent) : BannerNew(parent)
 {
-	addItem(BUT1, banner_width-BANONOFFCOMBO_BUT_DIM, 0, BANONOFFCOMBO_BUT_DIM, BANONOFFCOMBO_BUT_DIM);
-	addItem(BUT2, 0, 0, BANONOFFCOMBO_BUT_DIM, BANONOFFCOMBO_BUT_DIM);
-	addItem(TEXT, 0, BANONOFFCOMBO_BUT_DIM, banner_width, banner_height-BANONOFFCOMBO_BUT_DIM);
-	addItem(ICON, BANONOFFCOMBO_BUT_DIM, 0, BUTONOFFCOMBO_ICON_DIM_MAX_X, BUTONOFFCOMBO_ICON_DIM_Y);
-	addItem(TEXT2, BANONOFFCOMBO_BUT_DIM, 0, banner_width - 2*BANONOFFCOMBO_BUT_DIM - BUTONOFFCOMBO_ICON_DIM_MIN_X, BUTONOFFCOMBO_ICON_DIM_Y);
-	nascondi(TEXT2);
+	left_button = new BtButton;
+	right_button = new BtButton;
+	internal_label = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::BANNERTEXT));
+	internal_label->setProperty("SecondFgColor", true);
+	center_icon = new QLabel;
+	right_icon = new QLabel;
+	left_icon = new QLabel;
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
+
+	QGridLayout *l = new QGridLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+	l->addWidget(left_button, 0, 0, Qt::AlignLeft);
+//	l->setColumnStretch(0, 1);
+	l->addWidget(center_icon, 0, 1);
+	l->setColumnStretch(1, 2);
+	l->addWidget(right_button, 0, 2, Qt::AlignRight);
+//	l->setColumnStretch(2, 1);
+	l->addWidget(text, 1, 0, 1, 3);
+}
+
+void BannOnOffCombo::initBanner(const QString &left, const QString center_left, const QString &center,
+	const QString &center_right, const QString &right, ComboStatus init_status, const QString &banner_text)
+{
+	left_button->setImage(left);
+	right_button->setImage(right);
+
+	left_icon->setPixmap(*bt_global::icons_cache.getIcon(center_left));
+	center_icon->setPixmap(*bt_global::icons_cache.getIcon(center));
+	right_icon->setPixmap(*bt_global::icons_cache.getIcon(center_right));
+
+	text->setText(banner_text);
+	changeStatus(init_status);
+}
+
+void BannOnOffCombo::setInternalText(const QString &t)
+{
+	internal_label->setText(t);
 }
 
 void BannOnOffCombo::changeStatus(ComboStatus st)
 {
-	BannerOld::SetIcons(2, status_icon[st]);
-
 	switch (st)
 	{
 	case CENTER:
-		BannerIcon->setGeometry(BANONOFFCOMBO_BUT_DIM, 0, BUTONOFFCOMBO_ICON_DIM_MAX_X,BUTONOFFCOMBO_ICON_DIM_Y);
-		nascondi(TEXT2);
+		center_icon->setVisible(true);
+		left_icon->setVisible(false);
+		right_icon->setVisible(false);
+		internal_label->setVisible(false);
 		break;
 	case SX:
-		BannerIcon->setGeometry(BANONOFFCOMBO_BUT_DIM, 0, BUTONOFFCOMBO_ICON_DIM_MIN_X,BUTONOFFCOMBO_ICON_DIM_Y);
-		SecondaryText->setGeometry(BANONOFFCOMBO_BUT_DIM+BUTONOFFCOMBO_ICON_DIM_MIN_X, 0, banner_width-2*BANONOFFCOMBO_BUT_DIM-BUTONOFFCOMBO_ICON_DIM_MIN_X, BUTONOFFCOMBO_ICON_DIM_Y);
-		mostra(TEXT2);
+		center_icon->setVisible(false);
+		left_icon->setVisible(true);
+		right_icon->setVisible(false);
+		internal_label->setVisible(true);
 		break;
 	case DX:
-		BannerIcon->setGeometry(banner_width-BANONOFFCOMBO_BUT_DIM-BUTONOFFCOMBO_ICON_DIM_MIN_X, 0, BUTONOFFCOMBO_ICON_DIM_MIN_X,BUTONOFFCOMBO_ICON_DIM_Y);
-		SecondaryText->setGeometry(BANONOFFCOMBO_BUT_DIM, 0, banner_width-2*BANONOFFCOMBO_BUT_DIM-BUTONOFFCOMBO_ICON_DIM_MIN_X, BUTONOFFCOMBO_ICON_DIM_Y);
-		mostra(TEXT2);
+		center_icon->setVisible(false);
+		left_icon->setVisible(false);
+		right_icon->setVisible(true);
+		internal_label->setVisible(true);
 		break;
 	default:
 		qWarning("STATUS UNKNOWN on BannOnOffCombo::changeStatus");
 	}
-}
-
-void BannOnOffCombo::SetIcons(QString sxIcon, QString dxIcon, QString centerIcon, QString centerSxIcon, QString centerDxIcon)
-{
-	status_icon[CENTER] = centerIcon;
-	status_icon[SX] = centerSxIcon;
-	status_icon[DX] = centerDxIcon;
-	BannerOld::SetIcons(sxIcon, dxIcon, QString(), centerIcon);
 }
