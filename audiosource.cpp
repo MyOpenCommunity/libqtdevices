@@ -29,7 +29,7 @@ AudioSource::AudioSource(const QString &_area, SourceDevice *_dev) :
 	area = _area;
 	dev = _dev;
 
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceivedAudioSource(DeviceValues)));
 }
 
 void AudioSource::turnOn()
@@ -37,7 +37,7 @@ void AudioSource::turnOn()
 	dev->turnOn(area);
 }
 
-void AudioSource::valueReceived(const DeviceValues &values_list)
+void AudioSource::valueReceivedAudioSource(const DeviceValues &values_list)
 {
 	if (values_list.contains(SourceDevice::DIM_AREAS_UPDATED))
 	{

@@ -44,7 +44,7 @@ protected:
 	SourceDevice *dev;
 
 private slots:
-	void valueReceived(const DeviceValues &values_list);
+	void valueReceivedAudioSource(const DeviceValues &values_list);
 };
 
 #endif // AUDIOSOURCE_H
