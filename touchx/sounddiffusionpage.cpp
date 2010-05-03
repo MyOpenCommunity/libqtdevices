@@ -34,7 +34,6 @@
 #include "sorgentiradio.h" // RadioSource
 #include "sorgentiaux.h" // AuxSource
 #include "sorgentimedia.h" // MultimediaSource
-#include "pagestack.h"
 #include "media_device.h"
 #include "devices_cache.h"
 
@@ -246,7 +245,6 @@ void SoundAmbientPage::showPage()
 {
 	current_ambient_page = this;
 
-	bt_global::page_stack.showUserPage(this);
 	BannerPage::showPage();
 }
 
@@ -364,7 +362,10 @@ void SoundDiffusionPage::loadItemsMulti(const QDomNode &config_node)
 	{
 		banner *b = getAmbientBanner(item, sources_list);
 		if (b)
+		{
 			page_content->appendBanner(b);
+			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+		}
 		else
 			qFatal("ID %s not handled in SoundDiffusionPage", qPrintable(getTextChild(item, "id")));
 	}
@@ -411,18 +412,10 @@ banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QL
 
 void SoundDiffusionPage::showPage()
 {
-	// TODO otherwise it remains connected to SectionPage::showPage
-	disconnect(SIGNAL(Closed()), 0, 0);
-
 	if (next_page)
-	{
 		next_page->showPage();
-	}
 	else
-	{
-		bt_global::page_stack.showUserPage(this);
 		BannerPage::showPage();
-	}
 }
 
 void SoundDiffusionPage::showCurrentAmbientPage()
