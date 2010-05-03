@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -19,37 +19,31 @@
  */
 
 
-#ifndef BANNONOFF_COMBO
-#define BANNONOFF_COMBO
+#include "audiosource.h"
+#include "media_device.h"
 
-#include "banner.h"
-#include <QWidget>
 
-class BtButton;
-
-enum ComboStatus
+AudioSource::AudioSource(const QString &_area, SourceDevice *_dev) :
+	BannerNew(0)
 {
-	CENTER = 0,
-	SX,
-	DX,
-	NUM_STATUS // fake status, used to get enum length
-};
+	area = _area;
+	dev = _dev;
 
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceivedAudioSource(DeviceValues)));
+}
 
-class BannOnOffCombo : public BannerNew
+void AudioSource::turnOn()
 {
-Q_OBJECT
-protected:
-	BannOnOffCombo(QWidget *w=0);
-	void initBanner(const QString &left, const QString center_left, const QString &center,
-		const QString &center_right, const QString &right, ComboStatus init_status, const QString &banner_text);
-	void changeStatus(ComboStatus st);
-	void setInternalText(const QString &t);
-	BtButton *left_button, *right_button;
+	dev->turnOn(area);
+}
 
-private:
-	QLabel *text, *internal_label, *left_icon, *center_icon, *right_icon;
-	QString status_icon[NUM_STATUS];
-};
+void AudioSource::valueReceivedAudioSource(const DeviceValues &values_list)
+{
+	if (values_list.contains(SourceDevice::DIM_AREAS_UPDATED))
+	{
+		bool active = dev->isActive(area);
 
-#endif
+		emit sourceStateChanged(active);
+	}
+}
+

@@ -91,6 +91,7 @@ public:
 
 	ControlledProbeDevice(QString where, QString central, QString simple_where, CentralType central_type, ProbeType type, int openserver_id = 0);
 
+	virtual void init() { requestStatus(); }
 	void setManual(unsigned setpoint);
 	void setAutomatic();
 

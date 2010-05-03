@@ -31,6 +31,7 @@ class RadioSourceDevice;
 class AmplifierDevice;
 class PowerAmplifierDevice;
 class VirtualSourceDevice;
+class VirtualAmplifierDevice;
 
 
 class TestSourceDevice : public TestDevice
@@ -81,6 +82,7 @@ private slots:
 	void receiveFrequency();
 	void receiveRDS();
 	void receiveStopRDS();
+	void receiveMemorizedStation();
 
 private:
 	RadioSourceDevice *dev;
@@ -101,6 +103,8 @@ private slots:
 	void receivePrevTrack();
 	void receiveSourceOn();
 	void receiveSourceOff();
+
+	void testInitFrame();
 
 private:
 	VirtualSourceDevice *dev;
@@ -133,6 +137,32 @@ private:
 	AmplifierDevice *dev;
 	QString area;
 	QString point;
+};
+
+
+class TestVirtualAmplifierDevice : public TestAmplifierDevice
+{
+Q_OBJECT
+public:
+	TestVirtualAmplifierDevice();
+
+protected:
+	void initVirtualAmplifier(VirtualAmplifierDevice *dev = 0);
+
+private slots:
+	void initTestCase();
+	void cleanupTestCase();
+
+	void sendUpdateVolume();
+	void receiveAmplifierOn();
+	void receiveAmplifierOff();
+	void receiveVolumeUp();
+	void receiveVolumeDown();
+	void receiveSetVolume();
+
+private:
+	VirtualAmplifierDevice *dev;
+	QString where;
 };
 
 

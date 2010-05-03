@@ -58,6 +58,8 @@ public:
 	// PLAYER_TITLE: song title (first line)
 	// PLAYER_AUTHOR: song author/info (second line)
 	// PLAYER_INFO: current track and elapsed time
+	// AUDIO_SOURCE_TEXT: source description text for aux/multimedia/radio banner
+	// AUDIO_SOURCE_DESCRIPTION: descriptive text, displayed under the source description
 #ifdef LAYOUT_BTOUCH
 	enum Type
 	{
@@ -74,6 +76,9 @@ public:
 		REGULATOR_TEMPERATURE = 1,
 		REGULATOR_DESCRIPTION = 1,
 		AIRCONDITIONING_TEMPERATURE = 1,
+		// TODO, check if it is correct
+		AUDIO_SOURCE_TEXT = 1,
+		AUDIO_SOURCE_DESCRIPTION = 1,
 	};
 #else
 	enum Type
@@ -93,6 +98,9 @@ public:
 		AIRCONDITIONING_TEMPERATURE = 0,
 		// date/time edit
 		DATE_TIME = 0,
+		// audio source text
+		AUDIO_SOURCE_TEXT = BANNERTEXT,
+		AUDIO_SOURCE_DESCRIPTION = BANNERDESCRIPTION,
 		// rds radio
 		RADIO_NAME = TITLE,
 		RADIO_MEMORY_NUMBER = SMALLTEXT,

@@ -25,12 +25,21 @@
 void DevicesCache::initOpenserverDevices(int openserver_id)
 {
 	qDebug("DevicesCache::initOpenserverDevices(), openserver_id = %d", openserver_id);
+
+	foreach (const QString &frame, init_frames[openserver_id])
+		device::sendCommandFrame(openserver_id, frame);
+
 	for (QHash<QString, device*>::Iterator it = cache.begin(); it != cache.end(); ++it)
 	{
 		device *dev = it.value();
 		if (dev->openserverId() == openserver_id)
 			dev->init();
 	}
+}
+
+void DevicesCache::addInitCommandFrame(int openserver_id, const QString &frame)
+{
+	init_frames[openserver_id].append(frame);
 }
 
 DevicesCache::~DevicesCache()

@@ -49,6 +49,7 @@ enum RequestDimension
 	REQ_LOUD = 20,
 	SOURCE_TURNED_ON = 2,
 	DIM_ACTIVE_AREAS = 13,
+	DIM_MEMORIZED_STATION = 11,
 };
 
 
@@ -102,6 +103,8 @@ bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	if (what == SOURCE_TURNED_ON)
 	{
 		active_areas.insert(QString::fromStdString(msg.whatArg(1)));
+		values_list[DIM_AREAS_UPDATED] = QVariant();
+
 		return true; // the frame is managed even if we aren't interested at the values list.
 	}
 
@@ -115,7 +118,10 @@ bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	case DIM_STATUS:
 		v.setValue(msg.whatArgN(0) == 1);
 		if (msg.whatArgN(0) == 0)
+		{
 			active_areas.clear();
+			values_list[DIM_AREAS_UPDATED] = QVariant();
+		}
 		break;
 	case DIM_TRACK:
 		v.setValue(msg.whatArgN(0));
@@ -125,6 +131,7 @@ bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		for (unsigned int i = 0; i < msg.whatArgCnt(); ++i)
 			if (msg.whatArgN(i) == 1)
 				active_areas.insert(QString::number(i));
+		values_list[DIM_AREAS_UPDATED] = QVariant();
 		return true;
 	default:
 		return false;
@@ -191,6 +198,10 @@ bool RadioSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	case DIM_FREQUENCY:
 		v.setValue(msg.whatArgN(1));
 		break;
+	case DIM_MEMORIZED_STATION:
+		values_list[DIM_FREQUENCY] = msg.whatArgN(1);
+		values_list[DIM_TRACK] = msg.whatArgN(2);
+		return true;
 	case DIM_RDS:
 	{
 		QString rds_message;
@@ -249,6 +260,33 @@ bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	}
 
 	return true;
+}
+
+QString VirtualSourceDevice::createMediaInitFrame(bool is_multichannel, const QString &source_addr, const QString &ampli_addr)
+{
+	QString matrix_input = is_multichannel ? source_addr : "";
+	int is_source = !source_addr.isEmpty(), is_ampli = !ampli_addr.isEmpty(), is_gateway = 1;
+	int reads_scs = is_source || is_ampli;
+
+	QString ampli_area, ampli_point;
+	if (is_ampli)
+	{
+		if (is_multichannel)
+		{
+			ampli_area = ampli_addr.at(0);
+			ampli_point = ampli_addr.at(1);
+		}
+		else
+		{
+			ampli_area = "0";
+			ampli_point = ampli_addr;
+		}
+	}
+
+	QString frame = QString("*#22*7*#15*%1*%2*%3*9*9**%4*%5*%6*%7*%8##")
+			.arg(source_addr).arg(ampli_area).arg(ampli_point).arg(matrix_input).arg(is_source).arg(is_gateway).arg(is_ampli).arg(reads_scs);
+
+	return frame;
 }
 
 
@@ -333,9 +371,73 @@ bool AmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 }
 
 
+
+VirtualAmplifierDevice::VirtualAmplifierDevice(const QString &where, int openserver_id) :
+	AmplifierDevice(where, openserver_id)
+{
+}
+
+void VirtualAmplifierDevice::updateVolume(int vol)
+{
+	sendFrame(createDimensionFrame(who, QString("1*%1").arg(vol), where));
+}
+
+bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
+{
+	if (AmplifierDevice::parseFrame(msg, values_list))
+		return true;
+
+	if (isDimensionFrame(msg) || isStatusRequestFrame(msg))
+		return false;
+
+	QString msg_where = QString::fromStdString(msg.whereFull());
+	if (msg_where != where)
+		return false;
+
+	int what = msg.what();
+
+	if (isWriteDimensionFrame(msg) && what == REQ_SET_VOLUME)
+	{
+		values_list[REQ_SET_VOLUME] = msg.whatArgN(0);
+		return true;
+	}
+
+	switch (what)
+	{
+	case REQ_AMPLI_ON:
+	case AMPL_STATUS_OFF:
+		values_list[REQ_AMPLI_ON] = static_cast<bool>(what);
+		break;
+	case REQ_VOLUME_DOWN:
+	case REQ_VOLUME_UP:
+		// value is missing, step is 1
+		if (msg.whatArgCnt() == 0)
+			values_list[what] = 1;
+		else
+			values_list[what] = msg.whatArgN(0);
+		break;
+	default:
+		return false;
+	}
+
+	return true;
+}
+
+
 PowerAmplifierDevice::PowerAmplifierDevice(QString address, int openserver_id) :
 	AmplifierDevice(address.at(0), address.at(1), openserver_id)
 {
+}
+
+void PowerAmplifierDevice::init()
+{
+	requestStatus();
+	requestVolume();
+	requestPreset();
+	requestTreble();
+	requestBass();
+	requestBalance();
+	requestLoud();
 }
 
 bool PowerAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)

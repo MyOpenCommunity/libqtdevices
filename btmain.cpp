@@ -86,19 +86,35 @@ namespace
 	public:
 		LastClickTime();
 
+		static bool isPressed() { return pressed; }
+
 	protected:
 		bool eventFilter(QObject *obj, QEvent *ev);
+
+	private:
+		static bool pressed;
 	};
 
 	LastClickTime::LastClickTime()
 	{
 	}
 
+	bool LastClickTime::pressed = false;
+
 	bool LastClickTime::eventFilter(QObject *obj, QEvent *ev)
 	{
 		// Save last click time
 		if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick)
+		{
 			setTimePress(QDateTime::currentDateTime());
+			pressed = true;
+		}
+
+		if (ev->type() == QEvent::MouseButtonRelease)
+		{
+			setTimePress(QDateTime::currentDateTime());
+			pressed = false;
+		}
 
 		return false;
 	}
@@ -472,8 +488,6 @@ void BtMain::myMain()
 	foreach (Page *p, page_list)
 		p->inizializza();
 
-	device::initDevices();
-
 #if !defined(BT_HARDWARE_X11)
 	if (static_cast<int>(getTimePress()) * 1000 <= boot_time->elapsed() && !alreadyCalibrated)
 	{
@@ -589,6 +603,9 @@ void BtMain::checkScreensaver()
 		// we assume that the user just clicked "OK" to change the date,
 		setTimePress(curr);
 	last_date_time = curr;
+
+	if (LastClickTime::isPressed())
+		return;
 #endif
 
 	if (bt_global::display->isForcedOperativeMode())

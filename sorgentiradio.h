@@ -23,6 +23,7 @@
 #define SORGENTI_RADIO_H
 
 #include "bannciclaz.h"
+#include "audiosource.h"
 #include "device_status.h"
 
 #include <QList>
@@ -32,26 +33,29 @@
 /// Forward Declarations
 class radio;
 class device;
+class RadioSourceDevice;
 
 
 /**
  * Banner for radio sources.
  */
-class RadioSource : public BannerNew
+class RadioSource : public AudioSource
 {
 Q_OBJECT
 public:
-	RadioSource();
+	RadioSource(const QString &area, RadioSourceDevice *dev);
 
 protected:
 	void initBanner(const QString &left, const QString &center_left, const QString &center, const QString &center_right,
 		const QString &right);
 
+private slots:
+	void sourceStateChanged(bool active);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	BtButton *left_button, *center_left_button, *center_right_button, *right_button;
-	// TODO: this must be changed with the proper widget
-	QLabel *dummy;
+	QLabel *background, *radio_station, *radio_frequency, *radio_channel;
 };
 
 /*****************************************************************

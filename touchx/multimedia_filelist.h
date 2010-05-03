@@ -23,6 +23,7 @@
 #define MULTIMEDIA_FILELIST_H
 
 #include "fileselector.h"
+#include "generic_functions.h"
 
 class QDomNode;
 class ItemList;
@@ -35,18 +36,12 @@ class MultimediaFileListPage : public FileSelector
 {
 Q_OBJECT
 public:
-	enum Type
-	{
-		UNKNOWN = -1,
-		DIRECTORY = 0,
-		AUDIO = 1,
-		VIDEO = 2,
-		IMAGE = 3
-	};
-
 	typedef ItemList ContentType;
 
-	MultimediaFileListPage();
+	// Leave the filters parameter empty to not apply any filter,
+	// pass a QStringList (made with getFileFilters()) to display
+	// only wanted file types.
+	MultimediaFileListPage(const QStringList &filters = QStringList());
 
 public slots:
 	virtual void nextItem();
@@ -64,12 +59,12 @@ protected:
 	virtual int currentPage();
 
 private:
-	static Type fileType(const QFileInfo &file);
+	static MultimediaFileType fileType(const QFileInfo &file);
 
 	// returns the files in the current directory with the same type as the "item"
 	// file; on return, type contains the file type and current is the index of the
 	// item in the output list
-	QList<QString> filterFileList(int item, Type &type, int &current);
+	QList<QString> filterFileList(int item, MultimediaFileType &type, int &current);
 
 private slots:
 	void startPlayback(int item);
@@ -82,6 +77,9 @@ private:
 
 	// button icons for files/directories
 	QString play_file, browse_directory;
+
+	// file filters
+	QStringList file_filters;
 
 	// pages to display video/images
 	SlideshowPage *slideshow;

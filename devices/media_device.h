@@ -42,6 +42,7 @@ public:
 		DIM_TRACK = 6,
 		REQ_NEXT_TRACK = 9,
 		REQ_PREV_TRACK = 10,
+		DIM_AREAS_UPDATED = -2,
 	};
 
 	SourceDevice(QString source, int openserver_id = 0);
@@ -112,6 +113,8 @@ public:
 
 	VirtualSourceDevice(QString address, int openserver_id = 0);
 
+	static QString createMediaInitFrame(bool is_multichannel, const QString &source_addr, const QString &ampli_addr);
+
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 };
@@ -153,6 +156,30 @@ private:
 };
 
 
+class VirtualAmplifierDevice : public AmplifierDevice
+{
+Q_OBJECT
+public:
+	enum
+	{
+		REQ_AMPLI_ON = 1,        // set amplifier status: true = ON, false = OFF
+		REQ_VOLUME_UP = 3,       // raise volume, value is the step
+		REQ_VOLUME_DOWN =4,      // decrease volume, value is the step
+		REQ_SET_VOLUME = 1,          // set volume to specified level (range: 1-32)
+
+	};
+	VirtualAmplifierDevice(const QString &where, int openserver_id = 0);
+	// TODO: do we need init() here?? I don't think so
+
+	// must be called every time volume is set to inform other devices on the bus
+	void updateVolume(int vol);
+
+protected:
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+};
+
+
+
 /**
  * This class represent a device for managing the power amplifier, an evolved
  * version of the amplifier.
@@ -162,6 +189,8 @@ class PowerAmplifierDevice : public AmplifierDevice
 Q_OBJECT
 public:
 	PowerAmplifierDevice(QString address, int openserver_id = 0);
+
+	virtual void init();
 
 	void requestTreble() const;
 	void requestBass() const;

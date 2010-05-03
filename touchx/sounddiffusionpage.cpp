@@ -32,12 +32,17 @@
 #include "bann_amplifiers.h" // Amplifier
 #include "poweramplifier.h" // BannPowerAmplifier
 #include "sorgentiradio.h" // RadioSource
+#include "sorgentiaux.h" // AuxSource
+#include "sorgentimedia.h" // MultimediaSource
 #include "pagestack.h"
+#include "media_device.h"
+#include "devices_cache.h"
 
 #include <QDomNode>
 #include <QGridLayout>
 #include <QLabel>
 #include <QtDebug>
+#include <QStackedWidget>
 
 
 bool SoundDiffusionPage::is_source = false, SoundDiffusionPage::is_amplifier = false;
@@ -102,6 +107,89 @@ void SoundAmbient::connectRightButton(Page *p)
 }
 
 
+enum
+{
+	SOURCE_RADIO_MONO = 11001,
+	SOURCE_AUX_MONO = 11002,
+	SOURCE_RADIO_MULTI = 12001,
+	SOURCE_AUX_MULTI = 12002,
+	// used internally
+	SOURCE_MULTIMEDIA = -1,
+};
+
+SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &src)
+{
+	QHBoxLayout *l = new QHBoxLayout(this);
+	l->setContentsMargins(18, 0, 17, 10);
+	l->setSpacing(5);
+
+	BtButton *cycle = new BtButton(bt_global::skin->getImage("cycle"));
+	sources = new QStackedWidget;
+
+	l->addWidget(cycle);
+	l->addWidget(sources);
+
+	foreach (const SourceDescription &s, src)
+	{
+		SkinContext ctx(s.cid);
+		AudioSource *w = NULL;
+
+		switch (s.id)
+		{
+		case SOURCE_RADIO_MONO:
+		case SOURCE_RADIO_MULTI:
+		{
+			RadioSourceDevice *dev = bt_global::add_device_to_cache(new RadioSourceDevice(s.where));
+
+			w = new RadioSource(area, dev);
+			break;
+		}
+		case SOURCE_AUX_MONO:
+		case SOURCE_AUX_MULTI:
+		{
+			SourceDevice *dev = bt_global::add_device_to_cache(new SourceDevice(s.where));
+
+			w = new AuxSource(area, dev, s.descr);
+			break;
+		}
+		case SOURCE_MULTIMEDIA:
+		{
+			VirtualSourceDevice *dev = bt_global::add_device_to_cache(new VirtualSourceDevice(s.where));
+
+			w = new MediaSource(area, dev, s.descr);
+			break;
+		}
+		default:
+			qWarning() << "Ignoring source" << s.id;
+			continue;
+		};
+
+		sources->addWidget(w);
+		connect(w, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
+	}
+
+	connect(cycle, SIGNAL(clicked()), SLOT(sourceCycle()));
+}
+
+void SoundSources::sourceCycle()
+{
+	int index = sources->currentIndex();
+	int next = (index + 1) % sources->count();
+
+	sources->setCurrentIndex(next);
+}
+
+void SoundSources::sourceStateChanged(bool active)
+{
+	if (!active)
+		return;
+
+	AudioSource *source = static_cast<AudioSource*>(sender());
+
+	sources->setCurrentWidget(source);
+}
+
+
 enum BannerType
 {
 	AMPLIFIER = 11020,
@@ -111,20 +199,25 @@ enum BannerType
 
 SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources)
 {
+	SkinContext context(getTextChild(conf_node, "cid").toInt());
+	QString area;
+
 	if (getTextChild(conf_node, "id").toInt() == DIFSON_MONO)
+	{
 		section_id = DIFSON_MONO;
+		area = "0";
+	}
 	else
+	{
 		section_id = NO_SECTION;
+		area = getTextChild(conf_node, "env");
+	}
 
 	QWidget *top_widget = 0;
 	// this handles the case for special ambient, which must not show sources
 	if (!sources.isEmpty())
-	{
-		// TODO: top widget should be a stackedWidget
-		SkinContext ctx(sources.at(0).cid);
-		// TODO: correctly create the top widget
-		top_widget = new RadioSource;
-	}
+		top_widget = new SoundSources(area, sources);
+
 	buildPage(getTextChild(conf_node, "descr"), Page::TITLE_HEIGHT, top_widget);
 	loadItems(conf_node);
 }
@@ -136,7 +229,6 @@ int SoundAmbientPage::sectionId() const
 
 void SoundAmbientPage::loadItems(const QDomNode &config_node)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		banner *b = getBanner(item);
@@ -205,17 +297,27 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 {
 	next_page = NULL;
 
+	// check if this hardware can work as a source/amplifier and create the virtual
+	// devices to handle the source/amplifier frames
+	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
+	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
+
 	buildPage(getTextChild(config_node, "descr"));
-	if (getTextChild(config_node, "id").toInt() == DIFSON_MULTI)
+	bool is_multichannel = getTextChild(config_node, "id").toInt() == DIFSON_MULTI;
+	if (is_multichannel)
 		loadItemsMulti(config_node);
 	else
 		loadItemsMono(config_node);
 
 	sound_diffusion_page = this;
 
-	// check if this hardware can work as a source/amplifier
-	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
-	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
+	if (is_source || is_amplifier)
+	{
+		QString init_frame = VirtualSourceDevice::createMediaInitFrame(is_multichannel,
+									       (*bt_global::config)[SOURCE_ADDRESS],
+									       (*bt_global::config)[AMPLIFIER_ADDRESS]);
+		bt_global::devices_cache.addInitCommandFrame(0, init_frame);
+	}
 }
 
 int SoundDiffusionPage::sectionId() const
@@ -236,6 +338,18 @@ QList<SourceDescription> SoundDiffusionPage::loadSources(const QDomNode &config_
 		d.where = getTextChild(source, "where");
 		sources_list << d;
 	}
+
+	// if we're a source, add an additional entry for the touch itself
+	if (isSource())
+	{
+		SourceDescription d;
+		d.id = SOURCE_MULTIMEDIA;
+		d.cid = getTextChild(config_node, "cid").toInt();
+		d.descr = tr("Multimedia source");
+		d.where = (*bt_global::config)[SOURCE_ADDRESS];
+		sources_list << d;
+	}
+
 	Q_ASSERT_X(!sources_list.isEmpty(), "SoundDiffusionPage::loadItems", "No sound diffusion sources defined.");
 
 	return sources_list;

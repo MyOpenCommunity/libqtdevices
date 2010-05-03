@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -19,37 +19,32 @@
  */
 
 
-#ifndef BANNONOFF_COMBO
-#define BANNONOFF_COMBO
+#ifndef AUDIOSOURCE_H
+#define AUDIOSOURCE_H
 
 #include "banner.h"
-#include <QWidget>
 
-class BtButton;
-
-enum ComboStatus
-{
-	CENTER = 0,
-	SX,
-	DX,
-	NUM_STATUS // fake status, used to get enum length
-};
+class SourceDevice;
 
 
-class BannOnOffCombo : public BannerNew
+class AudioSource : public BannerNew
 {
 Q_OBJECT
-protected:
-	BannOnOffCombo(QWidget *w=0);
-	void initBanner(const QString &left, const QString center_left, const QString &center,
-		const QString &center_right, const QString &right, ComboStatus init_status, const QString &banner_text);
-	void changeStatus(ComboStatus st);
-	void setInternalText(const QString &t);
-	BtButton *left_button, *right_button;
+public:
+	AudioSource(const QString &area, SourceDevice *dev);
 
-private:
-	QLabel *text, *internal_label, *left_icon, *center_icon, *right_icon;
-	QString status_icon[NUM_STATUS];
+signals:
+	void sourceStateChanged(bool active);
+
+protected slots:
+	void turnOn();
+
+protected:
+	QString area;
+	SourceDevice *dev;
+
+private slots:
+	void valueReceivedAudioSource(const DeviceValues &values_list);
 };
 
-#endif
+#endif // AUDIOSOURCE_H

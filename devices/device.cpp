@@ -46,6 +46,10 @@ OpenServerManager::OpenServerManager(int oid, Client *m, Client *c, Client *r)
 	command = c;
 	request = r;
 	is_connected = monitor->isConnected() && command->isConnected() && request->isConnected();
+	// This must be a single shot, because we must initialize devices only when we are sure that all banners
+	// are created. Since all creation is done at load time, this assures that all banners are in place.
+	if (is_connected)
+		QTimer::singleShot(0, this, SLOT(initDevices()));
 	connect(monitor, SIGNAL(connectionUp()), SLOT(handleConnectionUp()));
 	connect(command, SIGNAL(connectionUp()), SLOT(handleConnectionUp()));
 	connect(request, SIGNAL(connectionUp()), SLOT(handleConnectionUp()));
@@ -93,10 +97,15 @@ void OpenServerManager::handleConnectionUp()
 		if (is_connected)
 		{
 			qDebug("OpenServerManager::handleConnectionUp()[%d]", openserver_id);
-			bt_global::devices_cache.initOpenserverDevices(openserver_id);
-			emit connectionUp();
+			initDevices();
 		}
 	}
+}
+
+void OpenServerManager::initDevices()
+{
+	bt_global::devices_cache.initOpenserverDevices(openserver_id);
+	emit connectionUp();
 }
 
 bool OpenServerManager::isConnected()
@@ -139,19 +148,19 @@ bool device::isConnected()
 	return openservers[openserver_id]->isConnected();
 }
 
-void device::initDevices()
-{
-	foreach (int id, openservers.keys())
-		if (openservers[id]->isConnected())
-			bt_global::devices_cache.initOpenserverDevices(id);
-}
-
 int device::openserverId()
 {
 	return openserver_id;
 }
 
 void device::sendFrame(QString frame) const
+{
+	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].first, "device::sendFrame",
+			   qPrintable(QString("Client comandi not set for id: %1!").arg(openserver_id)));
+	clients[openserver_id].first->sendFrameOpen(frame);
+}
+
+void device::sendCommandFrame(int openserver_id, const QString &frame)
 {
 	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].first, "device::sendFrame",
 			   qPrintable(QString("Client comandi not set for id: %1!").arg(openserver_id)));

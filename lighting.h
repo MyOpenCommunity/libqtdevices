@@ -39,7 +39,6 @@ public:
 	virtual int sectionId() const;
 
 	static banner *getBanner(const QDomNode &item_node);
-	virtual void inizializza();
 
 private:
 	void initDimmer();

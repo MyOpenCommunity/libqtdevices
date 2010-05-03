@@ -122,7 +122,11 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	connect(dev, SIGNAL(valueReceived(const DeviceValues&)), SLOT(valueReceived(const DeviceValues&)));
 
 	// Set the network to the initial status
+#ifdef CONFIG_BTOUCH
 	saved_status = getTextChild(config_node, "value").toInt();
+#else
+	saved_status = getTextChild(config_node, "enable").toInt();
+#endif
 }
 
 void LanSettings::inizializza()
@@ -172,8 +176,11 @@ void LanSettings::valueReceived(const DeviceValues &values_list)
 			if (lan_status != saved_status)
 			{
 				saved_status = lan_status;
-				// TODO needs to be modified when removing CONFIG_BTOUCH
+#ifdef CONFIG_BTOUCH
 				setCfgValue("value", lan_status, LANSETTINGS);
+#else
+				setCfgValue("enable", lan_status, LANSETTINGS);
+#endif
 			}
 		}
 		++it;

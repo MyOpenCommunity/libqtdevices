@@ -28,6 +28,8 @@
 #include "btbutton.h" // BtButton
 #include "skinmanager.h" // bt_global::skin
 #include "icondispatcher.h" // bt_global::icons_cache
+#include "media_device.h" // RadioSourceDevice
+#include "fontmanager.h"
 
 #include <QWidget>
 #include <QDebug>
@@ -35,24 +37,52 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-RadioSource::RadioSource() : BannerNew(0)
+
+RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev) :
+	AudioSource(area, dev)
 {
 	left_button = new BtButton;
 	center_left_button = new BtButton;
 	center_right_button = new BtButton;
 	right_button = new BtButton;
-	dummy = new QLabel;
-	initBanner(bt_global::skin->getImage("cycle"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("radio_dummy"),
+	background = new QLabel;
+
+	radio_station = new QLabel("----");
+	radio_station->setAlignment(Qt::AlignCenter);
+	radio_station->setFont(bt_global::font->get(FontManager::AUDIO_SOURCE_TEXT));
+
+	radio_frequency = new QLabel(tr("FM %1").arg("--.-"));
+	radio_frequency->setFont(bt_global::font->get(FontManager::AUDIO_SOURCE_DESCRIPTION));
+
+	radio_channel = new QLabel(tr("Channel: %1").arg("-"));
+	radio_channel->setFont(bt_global::font->get(FontManager::AUDIO_SOURCE_DESCRIPTION));
+
+	QGridLayout *texts = new QGridLayout(background);
+	texts->setColumnStretch(1, 1);
+	texts->setRowStretch(0, 1);
+	texts->addWidget(radio_station, 0, 0, 1, 3);
+	texts->addWidget(radio_frequency, 1, 0);
+	texts->addWidget(radio_channel, 1, 2);
+
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("radio_dummy"),
 		bt_global::skin->getImage("next"), bt_global::skin->getImage("details"));
 	QHBoxLayout *hbox = new QHBoxLayout(this);
-	// these margins are the same as BannerContent
-	hbox->setContentsMargins(18, 0, 17, 10);
-	hbox->setSpacing(0);
+	hbox->setContentsMargins(0, 0, 0, 0);
+	hbox->setSpacing(5);
 	hbox->addWidget(left_button);
 	hbox->addWidget(center_left_button);
-	hbox->addWidget(dummy);
+	hbox->addWidget(background);
 	hbox->addWidget(center_right_button);
 	hbox->addWidget(right_button);
+
+	right_button->hide();
+
+	connect(this, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+
+	connect(left_button, SIGNAL(clicked()), SLOT(turnOn()));
+	connect(center_left_button, SIGNAL(clicked()), dev, SLOT(prevTrack()));
+	connect(center_right_button, SIGNAL(clicked()), dev, SLOT(nextTrack()));
 }
 
 void RadioSource::initBanner(const QString &left, const QString &center_left, const QString &center,
@@ -62,7 +92,37 @@ void RadioSource::initBanner(const QString &left, const QString &center_left, co
 	initButton(center_left_button, center_left);
 	initButton(center_right_button, center_right);
 	initButton(right_button, right);
-	dummy->setPixmap(*bt_global::icons_cache.getIcon(center));
+	background->setPixmap(*bt_global::icons_cache.getIcon(center));
+}
+
+void RadioSource::sourceStateChanged(bool active)
+{
+	right_button->setVisible(active);
+}
+
+void RadioSource::valueReceived(const DeviceValues &values_list)
+{
+	foreach (int dim, values_list.keys())
+	{
+		switch (dim)
+		{
+		case RadioSourceDevice::DIM_RDS:
+		{
+			QString label = values_list[dim].toString();
+			if (label.isEmpty())
+				radio_station->setText("----");
+			else
+				radio_station->setText(label);
+			break;
+		}
+		case RadioSourceDevice::DIM_FREQUENCY:
+			radio_frequency->setText(QString(tr("FM %1")).arg(values_list[dim].toInt() / 100.0, 0, 'f', 2));
+			break;
+		case RadioSourceDevice::DIM_TRACK:
+			radio_channel->setText(QString(tr("Channel: %1")).arg(values_list[dim].toInt()) + 1);
+			break;
+		}
+	}
 }
 
 

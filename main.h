@@ -235,9 +235,6 @@ enum Section
 /*!  \def ICON_IMPOSTA
   The file name for \a setting icon*/
 #define ICON_IMPOSTA  (IMG_PATH "audiosetting.png")
-/*!  \def ICON_INFO
-  The file name for \a information icon*/
-#define ICON_INFO  (IMG_PATH "btninfo.png")
 /*!  \def ICON_FRECCIA_SU
   The file name for \a up-arrow icon*/
 #define ICON_FRECCIA_SU  (IMG_PATH "arrup.png")
@@ -321,22 +318,9 @@ enum Section
  */
 enum ItemType
 {
-	ATTUAT_AUTOM=0,                               /*!<  Automation actuator */
-	DIMMER=1,                                     /*!<  Dimmer */
-	ATTUAT_AUTOM_INT=2,                           /*!<  Interblocked automation actuator */
-	VUOTO_3=3,                                    /*!<  Not used */
-	SCENARIO=4,                                   /*!<  Scenario */
-	GR_ATTUAT_AUTOM=5,                            /*!<  Automation actuator's group */
-	GR_DIMMER=6,                                  /*!<  Dimmer's group */
 	CARICO=7,                                     /*!<  Appliance */
-	ATTUAT_AUTOM_INT_SIC=8,                       /*!<  Secure interblocked actuator */
-	ATTUAT_AUTOM_TEMP=9,                          /*!<  Timed automation actuator */
-	GR_ATTUAT_INT=10,                             /*!<  Interblocked actuator's group */
 	ATTUAT_AUTOM_PULS=11,                         /*!<  Pulse automation actuator */
-	ATTUAT_VCT_LS=12,                             /*!<  Stairlight video-doorentrysystem actuator */
-	ATTUAT_VCT_SERR=13,                           /*!<  Lock video-doorentrysystem actuator */
 	SET_DATA_ORA=14,                              /*!<  Time setting */
-	VUOTO_15=15,                                  /*!<  Not used */
 	SORGENTE_AUX=16,                              /*!<  Auxiliary sound source */
 	SORGENTE_RADIO=17,                            /*!<  FM tuner */
 	AMPLIFICATORE=18,                             /*!<  Amplifier */
@@ -352,20 +336,11 @@ enum ItemType
 	PROTEZIONE=26,                                /*!<  Password's settings */
 	VERSIONE=27,                                  /*!<  Version */
 	CONTRASTO=28,                                 /*!<  Contrast */
-	MOD_SCENARI=29,                               /*!<  DIN scenario module's scenario */
 	DATA=30,                                      /*!<  Date */
 	TEMPERATURA=31,                               /*!<  Temperature */
 	OROLOGIO=32,                                  /*!<  Clock */
-	ALLARME=33,                                   /*!<  Alarm */
-	CMDSPECIAL=34,                                /*!<  Special command */
-	DIMMER_100=35,                                /*!<  New dimmer */
-	ATTUAT_AUTOM_TEMP_NUOVO_N=36,                 /*!< Attuatore temp nuovo, N tempi */
-	ATTUAT_AUTOM_TEMP_NUOVO_F=37,                 /*!< Attuatore temp nuovo, fisso */
 	AUTOM_CANC_ATTUAT_ILL=40,                     /*!< Automatismi-Cancello con attuatore illuminazione */
 	AUTOM_CANC_ATTUAT_VC=41,                      /*!< Automatismi-Cancello con attuatore videocitofonia */
-	PPT_STAT=42,                                  /*!< Automatismi-PPTStat */
-	PPT_SCE=43,                                   /*!< Automatismi-PPTSce */
-	GR_DIMMER100=44,                              /*!< Gruppo dimmer 100 livelli */
 	SORG_RADIO=45,                                /*!< Sorgente radio per Diffusione Sonora Multicanale */
 	SORG_AUX=46,                                  /*!< Sorgente aux per Diffusione Sonora Multicanale */
 	AMBIENTE=47,                                  /*!< Ambiente diff son. multi */
@@ -377,19 +352,7 @@ enum ItemType
 	STOPNGO_PLUS=61,                              /*!< StopnGo Plus device */
 	STOPNGO_BTEST=62,                             /*!< StopnGo BTest device */
 	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
-	ENERGY_TYPE=70,                               /*!< The type/interface of energy management */
 	LANSETTINGS=72,                               /*!< LAN settings and information */
-#ifdef CONFIG_BTOUCH
-	AIR_SPLIT=74,                                 /*!< AIR conditioning single split (basic) */
-	AIR_GENERAL=75,                               /*!< AIR conditioning general split (basic) */
-	AIR_SPLIT_ADV=77,                             /*!< AIR conditioning single split (advanced) */
-	AIR_GENERAL_ADV=78,                           /*!< AIR conditioning general split (advanced) */
-#else
-	AIR_SPLIT=4001,                               /*!< AIR conditioning single split (basic) */
-	AIR_GENERAL=4002,                             /*!< AIR conditioning general split (basic) */
-	AIR_SPLIT_ADV=4003,                           /*!< AIR conditioning single split (advanced) */
-	AIR_GENERAL_ADV=4004,                         /*!< AIR conditioning general split (advanced) */
-#endif
 	// for SpecialPage, HeaderWidget
 #ifdef CONFIG_BTOUCH
 	TERMO_HOME_NC_EXTPROBE=57,                    /*!< Home page external not-controlled probe */

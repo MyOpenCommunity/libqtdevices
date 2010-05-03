@@ -101,7 +101,6 @@ class BannPowerAmplifier : public bannRegolaz
 Q_OBJECT
 public:
 	BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString address, int openserver_id);
-	virtual void inizializza(bool forza=false);
 
 private slots:
 	void toggleStatus();
@@ -137,7 +136,6 @@ class PowerAmplifierPreset : public Bann2Buttons
 Q_OBJECT
 public:
 	PowerAmplifierPreset(PowerAmplifierDevice *d, QWidget *parent, const QMap<int, QString>& preset_list);
-	virtual void inizializza(bool forza=false);
 
 private slots:
 	void next();
@@ -157,7 +155,6 @@ class PowerAmplifierTreble : public BannOnOff2Labels
 Q_OBJECT
 public:
 	PowerAmplifierTreble(PowerAmplifierDevice *d, const QString &banner_text, QWidget *parent=0);
-	virtual void inizializza(bool forza=false);
 
 private slots:
 	void up();
@@ -175,7 +172,6 @@ class PowerAmplifierBass : public BannOnOff2Labels
 Q_OBJECT
 public:
 	PowerAmplifierBass(PowerAmplifierDevice *d, const QString &banner_text, QWidget *parent=0);
-	virtual void inizializza(bool forza=false);
 
 private slots:
 	void up();
@@ -192,8 +188,7 @@ class PowerAmplifierBalance : public BannOnOffCombo
 {
 Q_OBJECT
 public:
-	PowerAmplifierBalance(PowerAmplifierDevice *d, QWidget *parent=0);
-	virtual void inizializza(bool forza=false);
+	PowerAmplifierBalance(PowerAmplifierDevice *d, const QString &descr);
 
 private slots:
 	void dx();
@@ -211,7 +206,6 @@ class PowerAmplifierLoud : public BannOnOffState
 Q_OBJECT
 public:
 	PowerAmplifierLoud(PowerAmplifierDevice *d, const QString &banner_text, QWidget *parent=0);
-	virtual void inizializza(bool forza=false);
 
 private slots:
 	void on();
