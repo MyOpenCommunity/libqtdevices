@@ -31,6 +31,16 @@
 // TODO: in poweramplifier.h there's a base graphic banner to handle volume and state changes for amplifiers
 // use it also for Amplifier
 
+namespace {
+	AmplifierDevice *createDevice(const QString &where)
+	{
+		if ((*bt_global::config)[AMPLIFIER_ADDRESS] == where)
+			return bt_global::add_device_to_cache(new VirtualAmplifierDevice((*bt_global::config)[AMPLIFIER_ADDRESS]));
+		else
+			return bt_global::add_device_to_cache(new AmplifierDevice(where));
+	}
+}
+
 Amplifier::Amplifier(const QString &descr, const QString &where) : BannLevel(0)
 {
 	volume_value = 0;
@@ -41,7 +51,7 @@ Amplifier::Amplifier(const QString &descr, const QString &where) : BannLevel(0)
 	initBanner(bt_global::skin->getImage("off"), getBostikName(center_left_inactive, QString::number(volume_value)),
 		getBostikName(center_right_inactive, QString::number(volume_value)), bt_global::skin->getImage("on"), descr);
 
-	dev = bt_global::add_device_to_cache(new AmplifierDevice(where));
+	dev = createDevice(where);
 
 	connect(left_button, SIGNAL(clicked()), SLOT(turnOff()));
 	connect(right_button, SIGNAL(clicked()), SLOT(turnOn()));
@@ -101,7 +111,7 @@ AmplifierGroup::AmplifierGroup(QStringList addresses, const QString &descr) : Ba
 		getBostikName(center_right_inactive, "0"), bt_global::skin->getImage("on"), descr);
 
 	foreach (const QString &where, addresses)
-		devices.append(bt_global::add_device_to_cache(new AmplifierDevice(where)));
+		devices.append(createDevice(where));
 
 	connect(left_button, SIGNAL(clicked()), SLOT(turnOff()));
 	connect(right_button, SIGNAL(clicked()), SLOT(turnOn()));
