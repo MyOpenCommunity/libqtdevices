@@ -397,6 +397,17 @@ PowerAmplifierDevice::PowerAmplifierDevice(QString address, int openserver_id) :
 {
 }
 
+void PowerAmplifierDevice::init()
+{
+	requestStatus();
+	requestVolume();
+	requestPreset();
+	requestTreble();
+	requestBass();
+	requestBalance();
+	requestLoud();
+}
+
 bool PowerAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (where != QString::fromStdString(msg.whereFull()))

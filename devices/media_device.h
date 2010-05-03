@@ -188,6 +188,8 @@ Q_OBJECT
 public:
 	PowerAmplifierDevice(QString address, int openserver_id = 0);
 
+	virtual void init();
+
 	void requestTreble() const;
 	void requestBass() const;
 	void requestBalance() const;

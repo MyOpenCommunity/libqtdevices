@@ -198,13 +198,6 @@ void BannPowerAmplifier::toggleStatus()
 		dev->turnOn();
 }
 
-void BannPowerAmplifier::inizializza(bool forza)
-{
-	dev->requestStatus();
-	dev->requestVolume();
-	banner::inizializza(forza);
-}
-
 void BannPowerAmplifier::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
@@ -311,12 +304,6 @@ void PowerAmplifierPreset::fillPresetDesc(const QMap<int, QString>& preset_list)
 	}
 }
 
-void PowerAmplifierPreset::inizializza(bool forza)
-{
-	dev->requestPreset();
-	banner::inizializza(forza);
-}
-
 void PowerAmplifierPreset::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
@@ -357,12 +344,6 @@ PowerAmplifierTreble::PowerAmplifierTreble(PowerAmplifierDevice *d, const QStrin
 	connect(right_button, SIGNAL(clicked()), SLOT(up()));
 	connect(dev, SIGNAL(valueReceived(const DeviceValues&)), SLOT(valueReceived(const DeviceValues&)));
 	showLevel(0);
-}
-
-void PowerAmplifierTreble::inizializza(bool forza)
-{
-	dev->requestTreble();
-	banner::inizializza(forza);
 }
 
 void PowerAmplifierTreble::valueReceived(const DeviceValues &values_list)
@@ -408,12 +389,6 @@ PowerAmplifierBass::PowerAmplifierBass(PowerAmplifierDevice *d, const QString &b
 	showLevel(0);
 }
 
-void PowerAmplifierBass::inizializza(bool forza)
-{
-	dev->requestBass();
-	banner::inizializza(forza);
-}
-
 void PowerAmplifierBass::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
@@ -455,15 +430,6 @@ PowerAmplifierBalance::PowerAmplifierBalance(PowerAmplifierDevice *d, const QStr
 	showBalance(0);
 }
 
-// TODO: this must go into PoweramplifierDevice::init()
-/*
-void PowerAmplifierBalance::inizializza(bool forza)
-{
-	dev->requestBalance();
-	banner::inizializza(forza);
-}
-*/
-
 void PowerAmplifierBalance::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
@@ -504,15 +470,9 @@ PowerAmplifierLoud::PowerAmplifierLoud(PowerAmplifierDevice *d, const QString &b
 	dev = d;
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("loud"),
 		bt_global::skin->getImage("on"), OFF, banner_text);
-	connect(this, SIGNAL(sxClick()), SLOT(on()));
-	connect(this, SIGNAL(dxClick()), SLOT(off()));
+	connect(right_button, SIGNAL(clicked()), SLOT(on()));
+	connect(left_button, SIGNAL(clicked()), SLOT(off()));
 	connect(dev, SIGNAL(valueReceived(const DeviceValues&)), SLOT(valueReceived(const DeviceValues&)));
-}
-
-void PowerAmplifierLoud::inizializza(bool forza)
-{
-	dev->requestLoud();
-	banner::inizializza(forza);
 }
 
 void PowerAmplifierLoud::valueReceived(const DeviceValues &values_list)
