@@ -104,6 +104,8 @@ public:
 	int openserverId();
 	static void initDevices();
 
+	static void sendCommandFrame(int openserver_id, const QString &frame);
+
 signals:
 	// TODO: Old Status changed, to be removed asap.
 	void status_changed(QList<device_status*>);

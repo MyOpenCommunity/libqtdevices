@@ -158,6 +158,13 @@ void device::sendFrame(QString frame) const
 	clients[openserver_id].first->sendFrameOpen(frame);
 }
 
+void device::sendCommandFrame(int openserver_id, const QString &frame)
+{
+	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].first, "device::sendFrame",
+			   qPrintable(QString("Client comandi not set for id: %1!").arg(openserver_id)));
+	clients[openserver_id].first->sendFrameOpen(frame);
+}
+
 void device::sendCompressedFrame(QString frame) const
 {
 	OpenMsg msg(frame.toStdString());
