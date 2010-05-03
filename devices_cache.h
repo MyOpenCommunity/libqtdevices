@@ -55,8 +55,12 @@ public:
 
 	void initOpenserverDevices(int openserver_id);
 
+	void addInitCommandFrame(int openserver_id, const QString &frame);
+
 private:
 	QHash<QString, device*> cache;
+	QHash<int, QList<QString> > init_frames;
+
 	void clear();
 	bool contains(QString key) const;
 	device *get(QString key) const;
