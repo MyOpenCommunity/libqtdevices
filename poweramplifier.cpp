@@ -244,7 +244,10 @@ void PowerAmplifier::loadBanners(PowerAmplifierDevice *dev, const QDomNode &conf
 {
 	QMap<int, QString> preset_list;
 	foreach (const QDomNode &preset_node, getChildren(config_node, "pre"))
-		preset_list[preset_node.nodeName().mid(3).toInt()] = preset_node.toElement().text();
+	{
+		if (getTextChild(preset_node, "enable") == "1")
+			preset_list[preset_node.nodeName().mid(3).toInt()] = getTextChild(preset_node, "descr");
+	}
 
 	banner *b = new PowerAmplifierPreset(dev, this, preset_list);
 	page_content->appendBanner(b);
