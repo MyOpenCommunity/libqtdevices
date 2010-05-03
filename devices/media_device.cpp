@@ -278,6 +278,7 @@ QString VirtualSourceDevice::createMediaInitFrame(bool is_multichannel, const QS
 		}
 		else
 		{
+			ampli_area = "0";
 			ampli_point = ampli_addr;
 		}
 	}
