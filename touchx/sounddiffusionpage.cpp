@@ -290,6 +290,11 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 {
 	next_page = NULL;
 
+	// check if this hardware can work as a source/amplifier and create the virtual
+	// devices to handle the source/amplifier frames
+	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
+	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
+
 	buildPage(getTextChild(config_node, "descr"));
 	bool is_multichannel = getTextChild(config_node, "id").toInt() == DIFSON_MULTI;
 	if (is_multichannel)
@@ -298,11 +303,6 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 		loadItemsMono(config_node);
 
 	sound_diffusion_page = this;
-
-	// check if this hardware can work as a source/amplifier and create the virtual
-	// devices to handle the source/amplifier frames
-	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
-	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
 
 	if (is_source || is_amplifier)
 	{
