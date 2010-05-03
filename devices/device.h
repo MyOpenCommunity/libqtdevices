@@ -67,6 +67,7 @@ protected:
 private slots:
 	void handleConnectionUp();
 	void handleConnectionDown();
+	void initDevices();
 
 private:
 	Client *monitor, *command, *request;
