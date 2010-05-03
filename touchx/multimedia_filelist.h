@@ -39,7 +39,7 @@ public:
 	typedef ItemList ContentType;
 
 	// Leave the filters parameter empty to not apply any filter,
-	// pass a QStringList (made with getFileFilters()) to display
+	// pass a QStringList (made with getFileFilter()) to display
 	// only wanted file types.
 	MultimediaFileListPage(const QStringList &filters = QStringList());
 
