@@ -25,8 +25,7 @@
 #include "skinmanager.h"
 #include "btbutton.h"
 #include "fontmanager.h"
-
-#include <openmsg.h>
+#include "state_button.h"
 
 #include <QDebug>
 #include <QHBoxLayout>
@@ -35,14 +34,13 @@
 MediaSource::MediaSource(const QString &area, VirtualSourceDevice *dev, const QString &description, Page *details) :
 	AudioSource(area, dev, details)
 {
-	left_button = new BtButton;
-	center_left_button = new BtButton;
-	center_right_button = new BtButton;
-	right_button = new BtButton;
 	center_icon = new TextOnImageLabel(0, description);
 	center_icon->setFont(bt_global::font->get(FontManager::AUDIO_SOURCE_TEXT));
-	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("source_background"),
-		bt_global::skin->getImage("next"), bt_global::skin->getImage("details"));
+
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"), bt_global::skin->getImage("previous"),
+		   bt_global::skin->getImage("next"), bt_global::skin->getImage("details"));
+	center_icon->setBackgroundImage(bt_global::skin->getImage("source_background"));
+
 	QHBoxLayout *hbox = new QHBoxLayout(this);
 	hbox->setContentsMargins(0, 0, 0, 0);
 	hbox->setSpacing(5);
@@ -52,19 +50,4 @@ MediaSource::MediaSource(const QString &area, VirtualSourceDevice *dev, const QS
 	hbox->addWidget(center_right_button);
 	hbox->addWidget(right_button);
 	hbox->addStretch(1);
-
-	connect(left_button, SIGNAL(clicked()), SLOT(turnOn()));
-	connect(center_left_button, SIGNAL(clicked()), dev, SLOT(prevTrack()));
-	connect(center_right_button, SIGNAL(clicked()), dev, SLOT(nextTrack()));
-	connect(right_button, SIGNAL(clicked()), SLOT(showDetails()));
-}
-
-void MediaSource::initBanner(const QString &left, const QString &center_left, const QString &center,
-	const QString &center_right, const QString &right)
-{
-	initButton(left_button, left);
-	initButton(center_left_button, center_left);
-	initButton(center_right_button, center_right);
-	initButton(right_button, right);
-	center_icon->setBackgroundImage(center);
 }

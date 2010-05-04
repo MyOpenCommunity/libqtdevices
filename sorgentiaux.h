@@ -24,10 +24,6 @@
 
 #include "audiosource.h"
 
-#include <QString>
-#include <QStringList>
-
-/// Forward Declarations
 class Aux;
 class SourceDevice;
 class TextOnImageLabel;
@@ -42,11 +38,7 @@ Q_OBJECT
 public:
 	AuxSource(const QString &area, SourceDevice *dev, const QString &description);
 
-protected:
-	void initBanner(const QString &left, const QString &center_left, const QString &center, const QString &center_right);
-
 private:
-	BtButton *left_button, *center_left_button, *center_right_button;
 	TextOnImageLabel *center_icon;
 };
 

@@ -25,6 +25,7 @@
 #include "banner.h"
 
 class SourceDevice;
+class StateButton;
 
 
 class AudioSource : public BannerNew
@@ -36,6 +37,10 @@ public:
 signals:
 	void sourceStateChanged(bool active);
 
+protected:
+	void initBanner(const QString &left_on, const QString &left_off, const QString &center_left,
+			const QString &center_right, const QString &right);
+
 protected slots:
 	void turnOn();
 	void showDetails();
@@ -44,6 +49,9 @@ protected:
 	QString area;
 	SourceDevice *dev;
 	Page *details;
+
+	StateButton *left_button;
+	BtButton *center_left_button, *center_right_button, *right_button;
 
 private slots:
 	void valueReceivedAudioSource(const DeviceValues &values_list);

@@ -612,7 +612,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>12121</cid>
 
 		<!-- multimedia source
-		Other images: on
+		Other images: on, off
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
 		<img_next>diffusione/successivo.png</img_next>
@@ -641,7 +641,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<cid>12002</cid>
 		<!--
-		Other images: on
+		Other images: on, off
 		Notes: There's also an image set in the stylesheet above
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
@@ -654,7 +654,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>11000</cid>
 
 		<!-- multimedia source
-		Other images: on
+		Other images: on, off
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
 		<img_next>diffusione/successivo.png</img_next>
@@ -732,7 +732,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<cid>11001</cid>
 		<!--
-		Other images: on
+		Other images: on, off
 		Notes: There's also an image set in the stylesheet above
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
@@ -744,7 +744,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<cid>11002</cid>
 		<!--
-		Other images: on
+		Other images: on, off
 		Notes: There's also an image set in the stylesheet above
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>

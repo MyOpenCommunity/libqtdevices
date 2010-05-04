@@ -26,8 +26,8 @@
 #include "media_device.h" // SourceDevice
 #include "titlelabel.h" // TextOnImageLabel
 #include "fontmanager.h"
+#include "state_button.h"
 
-#include <QWidget>
 #include <QDebug>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -36,13 +36,13 @@
 AuxSource::AuxSource(const QString &area, SourceDevice *dev, const QString &description) :
 	AudioSource(area, dev)
 {
-	left_button = new BtButton;
-	center_left_button = new BtButton;
-	center_right_button = new BtButton;
 	center_icon = new TextOnImageLabel(0, description);
 	center_icon->setFont(bt_global::font->get(FontManager::AUDIO_SOURCE_TEXT));
-	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("source_background"),
-		bt_global::skin->getImage("next"));
+
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"), bt_global::skin->getImage("previous"),
+		   bt_global::skin->getImage("next"), QString());
+	center_icon->setBackgroundImage(bt_global::skin->getImage("source_background"));
+
 	QHBoxLayout *hbox = new QHBoxLayout(this);
 	hbox->setContentsMargins(0, 0, 0, 0);
 	hbox->setSpacing(5);
@@ -51,17 +51,4 @@ AuxSource::AuxSource(const QString &area, SourceDevice *dev, const QString &desc
 	hbox->addWidget(center_icon);
 	hbox->addWidget(center_right_button);
 	hbox->addStretch(1);
-
-	connect(left_button, SIGNAL(clicked()), SLOT(turnOn()));
-	connect(center_left_button, SIGNAL(clicked()), dev, SLOT(prevTrack()));
-	connect(center_right_button, SIGNAL(clicked()), dev, SLOT(nextTrack()));
-}
-
-void AuxSource::initBanner(const QString &left, const QString &center_left, const QString &center,
-	const QString &center_right)
-{
-	initButton(left_button, left);
-	initButton(center_left_button, center_left);
-	initButton(center_right_button, center_right);
-	center_icon->setBackgroundImage(center);
 }
