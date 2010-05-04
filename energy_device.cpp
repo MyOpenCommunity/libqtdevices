@@ -648,7 +648,7 @@ void EnergyDevice::fillYearGraphData(StatusList &status_list, OpenMsg &msg)
 		int month_distance = msg.whatSubArgN(1) - current.month();
 		index = month_distance < 0 ? month_distance + 12 : month_distance;
 	}
-	buffer_year_data[index] = msg.whatArg(0) == "4294967295" ? 0 : scaling_factor_old_frames * msg.whatArgN(0);
+	buffer_year_data[index] = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
 	GraphData data;
 	data.type = CUMULATIVE_YEAR;
 	data.graph = buffer_year_data;
