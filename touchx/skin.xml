@@ -661,6 +661,13 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_source_background>diffusione/display.png</img_source_background>
 		<img_details>diffusione/contenutimultimediali.png</img_details>
 
+		<!-- rds radio source -->
+		<img_auto_on>diffusione/autoon.png</img_auto_on>
+		<img_auto_off>diffusione/autooff.png</img_auto_off>
+		<img_man_on>diffusione/manualeon.png</img_man_on>
+		<img_man_off>diffusione/manualeoff.png</img_man_off>
+		<img_details_display>diffusione/displaybig.png</img_details_display>
+
                 <!-- TODO duplicated in the multimedia section, move to
                      common section -->
 		<img_start>multimediale/play.png</img_start>
