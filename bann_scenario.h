@@ -79,6 +79,9 @@ private:
 	ScenarioDevice *dev;
 	int scenario_number;
 	bool is_editing;
+	// if this banner has NOT started scenario programming, it must hide the right (pencil) button when
+	// a START_PROG frame arrives
+	bool has_started_prog;
 };
 
 

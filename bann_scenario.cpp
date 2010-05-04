@@ -75,6 +75,7 @@ ScenarioModule::ScenarioModule(QWidget *parent, const QDomNode &config_node) :
 
 	scenario_number = getTextChild(config_node, "what").toInt();
 	is_editing = false;
+	has_started_prog = false;
 	connect(left_button, SIGNAL(clicked()), SLOT(activate()));
 	connect(right_button, SIGNAL(clicked()), SLOT(editScenario()));
 	connect(center_left_button, SIGNAL(clicked()), SLOT(startEditing()));
@@ -101,6 +102,7 @@ void ScenarioModule::editScenario()
 void ScenarioModule::startEditing()
 {
 	dev->startProgramming(scenario_number);
+	has_started_prog = true;
 }
 
 void ScenarioModule::deleteScenario()
@@ -117,6 +119,7 @@ void ScenarioModule::changeLeftFunction(const char *slot)
 void ScenarioModule::stopEditing()
 {
 	dev->stopProgramming(scenario_number);
+	has_started_prog = false;
 }
 
 void ScenarioModule::status_changed(const StatusList &sl)
@@ -129,6 +132,7 @@ void ScenarioModule::status_changed(const StatusList &sl)
 		case ScenarioDevice::DIM_LOCK:
 			setState(it.value().toBool() ? LOCKED : UNLOCKED);
 			is_editing = false;
+			has_started_prog = false;
 			break;
 		case ScenarioDevice::DIM_START:
 		{
@@ -141,10 +145,15 @@ void ScenarioModule::status_changed(const StatusList &sl)
 				{
 					setEditingState(EDIT_ACTIVE);
 					changeLeftFunction(SLOT(stopEditing()));
+					// remove pencil icon from the banner but leave it capable of stopping scenario
+					// programming
+					if (has_started_prog)
+						setState(LOCKED);
 				}
 				else
 				{
 					setState(LOCKED);
+					has_started_prog = false;
 					changeLeftFunction(SLOT(activate()));
 				}
 			}
@@ -160,6 +169,7 @@ void ScenarioModule::status_changed(const StatusList &sl)
 					setState(UNLOCKED);
 
 				changeLeftFunction(SLOT(activate()));
+				has_started_prog = false;
 			}
 		}
 			break;
