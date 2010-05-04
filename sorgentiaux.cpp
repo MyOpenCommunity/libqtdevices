@@ -42,7 +42,7 @@ AuxSource::AuxSource(const QString &area, SourceDevice *dev, const QString &desc
 	center_right_button = new BtButton;
 	center_icon = new TextOnImageLabel(0, description);
 	center_icon->setFont(bt_global::font->get(FontManager::AUDIO_SOURCE_TEXT));
-	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("aux_dummy"),
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("source_background"),
 		bt_global::skin->getImage("next"));
 	QHBoxLayout *hbox = new QHBoxLayout(this);
 	hbox->setContentsMargins(0, 0, 0, 0);
