@@ -118,7 +118,7 @@ void RadioSource::valueReceived(const DeviceValues &values_list)
 			radio_frequency->setText(QString(tr("FM %1")).arg(values_list[dim].toInt() / 100.0, 0, 'f', 2));
 			break;
 		case RadioSourceDevice::DIM_TRACK:
-			radio_channel->setText(QString(tr("Channel: %1")).arg(values_list[dim].toInt()) + 1);
+			radio_channel->setText(QString(tr("Channel: %1")).arg(values_list[dim].toInt()));
 			break;
 		}
 	}
