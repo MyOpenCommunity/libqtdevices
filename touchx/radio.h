@@ -30,6 +30,7 @@
 class BtButton;
 class QLCDNumber;
 class QLabel;
+class RadioSourceDevice;
 
 
 class RadioInfo : public QWidget
@@ -37,9 +38,10 @@ class RadioInfo : public QWidget
 Q_OBJECT
 public:
 	RadioInfo();
-	void setFrequency(const QString &f){};
-	void setChannel(int memory_channel) {};
-	void setRadioName(const QString &rds){};
+
+	void setFrequency(int frequency);
+	void setChannel(int memory_channel);
+	void setRadioName(const QString &rds);
 
 protected:
 	void paintEvent(QPaintEvent *);
@@ -50,90 +52,34 @@ private:
 
 
 /*!
- * \class radio
+ * \class RadioPage
  * \brief This class implements the management of the FM tuner specific page.
- *
  */
 class  RadioPage : public Page
 {
 Q_OBJECT
 public:
-	RadioPage(const QString &amb = tr("RDS Radio"));
-	/*!
-	 * \brief Sets the name of the tuner found in user configuration file
-	 */
-	void setName(const QString &);
-	/*!
-	 * \brief Sets the station number of the syntonized station
-	 */
-	void setStaz(uchar);
-
-	/*!
-	 * \brief Sets the frequency of the syntonized station
-	 */
-	void setFreq(float);
-	/*!
-	 * \brief Gets the frequency of the syntonized station
-	 */
-	float getFreq();
-	/*!
-	 * \brief Sets the RDS message of the syntonized station
-	 */
-	void setRDS(const QString &);
-	/*!
-	 * \brief Sets amb. description
-	 */
-	void setAmbDescr(const QString &);
-
-signals:
-	/*!
-	 * \brief Emitted when there's a request of an automatic search towards greater frequencies
-	 */
-	void aumFreqAuto();
-	/*!
-	 * \brief Emitted when there's a request of an automatic search towards smaller frequencies
-	 */
-	void decFreqAuto();
-	/*!
-	 * \brief Emitted when there's a request of a manual search towards greater frequencies 
-	 */
-	void aumFreqMan();
-	/*!
-	 *\brief Emitted when there's a request of an manual search towards lesser frequencies
-	 */
-	void decFreqMan();
-	/*!
-	 * \brief Emitted to save the station actually tuned to one of the memorized stations
-	 */
-	void memoFreq(uchar);
-	/*!
-	 * \brief Emitted to switch to the next station
-	 */
-	void changeStaz();
-	/*!
-	 *\brief Emitted to ask the frequency actually tuned
-	 */
-	void richFreq();
-
-public slots:
-	/*!
-	 * \brief Save currently tuned station to memory location given by parameter
-	 */
-	void memo(int memory);
+	RadioPage(RadioSourceDevice *dev, const QString &amb = tr("RDS Radio"));
 
 private:
 	QWidget *createContent();
-	float frequenza;
+
+	// if set, use a fixed 50Hz step for the frequency up/down, do automatic tuning otherwise
 	bool manual;
+
 	QTimer memory_timer;
 	int memory_number;
 	BtButton *minus_button, *plus_button, *auto_button, *manual_button;
 	QButtonGroup button_group;
-	QLabel *rdsLabel, *radioName, *progrText, *ambDescr;
-	QLabel *freq;
 	QString manual_off, manual_on, auto_off, auto_on;
+	RadioInfo *radio_info;
+	RadioSourceDevice *dev;
 
 private slots:
+	void valueReceived(const DeviceValues &values_list);
+
+	void frequencyUp();
+	void frequencyDown();
 	void changeStation(int station_num);
 	void memoryButtonPressed(int but_num);
 	void memoryButtonReleased(int but_num);
@@ -150,13 +96,7 @@ private slots:
 	/*!
 	 * \brief Changes the state to manual search
 	 */
-	void setMan();
-
-	/*!
-	 * \brief At the end of a manual search ask the frequency tuned to the tuner to align to the visualized frequency
-	 */
-	void verTas();
+	void setManual();
 };
-
 
 #endif // RADIO_H

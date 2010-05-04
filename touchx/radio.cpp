@@ -24,7 +24,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "skinmanager.h" // bt_global::skin
 #include "navigation_bar.h" // NavigationBar
-#include "hardware_functions.h" // beep()
+#include "media_device.h" // RadioSourceDevice
 
 #include <QLabel>
 #include <QDebug>
@@ -58,19 +58,44 @@ RadioInfo::RadioInfo() : QWidget(0)
 	grid->setSpacing(0);
 
 	radio_name = new QLabel;
-	radio_name->setText("Virgin radio");
 	radio_name->setFont(bt_global::font->get(FontManager::RADIO_NAME));
 	grid->addWidget(radio_name, 0, 0, 1, 1, Qt::AlignCenter);
 
 	channel = new QLabel;
-	channel->setText(tr("Channel. -"));
 	channel->setFont(bt_global::font->get(FontManager::RADIO_MEMORY_NUMBER));
 	grid->addWidget(channel, 1, 0, 1, 1, Qt::AlignRight);
 
 	frequency = new QLabel;
-	frequency->setText("FM 123.75");
 	frequency->setFont(bt_global::font->get(FontManager::RADIO_STATION));
 	grid->addWidget(frequency, 1, 0, 1, 1, Qt::AlignLeft);
+
+	setFrequency(-1);
+	setChannel(-1);
+	setRadioName(QString());
+}
+
+void RadioInfo::setFrequency(const int freq)
+{
+	if (freq < 0)
+		frequency->setText(QString(tr("FM %1")).arg("-.--"));
+	else
+		frequency->setText(QString(tr("FM %1")).arg(freq / 100.0, 0, 'f', 2));
+}
+
+void RadioInfo::setChannel(int memory_channel)
+{
+	if (memory_channel < 0)
+		channel->setText(QString(tr("Channel: %1")).arg("-"));
+	else
+		channel->setText(QString(tr("Channel: %1")).arg(memory_channel));
+}
+
+void RadioInfo::setRadioName(const QString &rds)
+{
+	if (rds.isEmpty())
+		radio_name->setText("----");
+	else
+		radio_name->setText(rds);
 }
 
 void RadioInfo::paintEvent(QPaintEvent *)
@@ -84,8 +109,10 @@ void RadioInfo::paintEvent(QPaintEvent *)
 
 #define MEMORY_PRESS_TIME 3000
 
-RadioPage::RadioPage(const QString &amb)
+RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &amb)
 {
+	dev = _dev;
+
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
@@ -95,6 +122,8 @@ RadioPage::RadioPage(const QString &amb)
 	memory_timer.setInterval(MEMORY_PRESS_TIME);
 	memory_timer.setSingleShot(true);
 	connect(&memory_timer, SIGNAL(timeout()), SLOT(storeMemoryStation()));
+
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
 QWidget *RadioPage::createContent()
@@ -102,16 +131,14 @@ QWidget *RadioPage::createContent()
 	QWidget *content = new QWidget;
 
 	// radio description, with frequency and memory station
-	RadioInfo *name_box = new RadioInfo;
+	radio_info = new RadioInfo;
 
 	// tuning control, manual/auto buttons
-	minus_button = new BtButton;
-	plus_button = new BtButton;
+	minus_button = new BtButton(bt_global::skin->getImage("minus"));
+	plus_button = new BtButton(bt_global::skin->getImage("plus"));
 	auto_button = new BtButton;
 	manual_button = new BtButton;
 
-	plus_button->setImage(bt_global::skin->getImage("plus"));
-	minus_button->setImage(bt_global::skin->getImage("minus"));
 	manual_off = bt_global::skin->getImage("man_off");
 	manual_on = bt_global::skin->getImage("man_on");
 	auto_off = bt_global::skin->getImage("auto_off");
@@ -119,15 +146,13 @@ QWidget *RadioPage::createContent()
 	manual_button->setImage(manual_off);
 	auto_button->setImage(auto_on);
 
-	connect(auto_button,SIGNAL(clicked()),this,SLOT(setAuto()));
-	connect(manual_button,SIGNAL(clicked()),this,SLOT(setMan()));
-	connect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
-	connect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
+	connect(auto_button, SIGNAL(clicked()), SLOT(setAuto()));
+	connect(manual_button, SIGNAL(clicked()), SLOT(setManual()));
+	connect(minus_button, SIGNAL(clicked()), SLOT(frequencyDown()));
+	connect(plus_button, SIGNAL(clicked()), SLOT(frequencyUp()));
 
-	BtButton *next_station = new BtButton;
-	BtButton *prev_station = new BtButton;
-	next_station->setImage(bt_global::skin->getImage("next"));
-	prev_station->setImage(bt_global::skin->getImage("previous"));
+	BtButton *next_station = new BtButton(bt_global::skin->getImage("next"));
+	BtButton *prev_station = new BtButton(bt_global::skin->getImage("previous"));
 	connect(next_station, SIGNAL(clicked()), SLOT(nextStation()));
 	connect(prev_station, SIGNAL(clicked()), SLOT(previousStation()));
 
@@ -167,57 +192,19 @@ QWidget *RadioPage::createContent()
 	QVBoxLayout *main = new QVBoxLayout(content);
 	main->setContentsMargins(10, 0, 10, 45);
 	main->setSpacing(0);
-	main->addWidget(name_box);
+	main->addWidget(radio_info);
 	main->addLayout(tuning);
 	main->addLayout(memory);
 
-	manual=false;
+	manual = false;
 
 	return content;
 }
 
-void RadioPage::setFreq(float f)
-{
-	frequenza = f;
-	QString fr;
-	fr.sprintf("%.2f",frequenza);
-	freq->setText(fr);
-}
-
-float RadioPage::getFreq()
-{
-	return frequenza;
-}
-
-void RadioPage::setRDS(const QString & s)
-{
-	QString rds = s;
-	rds.truncate(8);
-	rdsLabel->setText(rds);
-}
-
-void RadioPage::setStaz(uchar st)
-{
-	if (st)
-		progrText->setText(QString::number((int)st)+":");
-	else
-		progrText->setText("--:");
-}
-
-void RadioPage::setAmbDescr(const QString & d)
-{
-	ambDescr->setText(d);
-}
-
-void RadioPage::setName(const QString & s)
-{
-	radioName->setText(s);
-}
-
 void RadioPage::changeStation(int station_num)
 {
-	beep();
 	qDebug("Changing to station number: %d", station_num);
+	dev->setStation(QString::number(station_num));
 }
 
 void RadioPage::memoryButtonPressed(int but_num)
@@ -235,63 +222,82 @@ void RadioPage::memoryButtonReleased(int but_num)
 
 void RadioPage::storeMemoryStation()
 {
-	emit memoFreq((uchar) memory_number);
 	qDebug("Storing frequency to memory station %d", memory_number);
+	dev->saveStation(QString::number(memory_number));
 }
 
 void RadioPage::setAuto()
 {
-	connect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
-	connect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
-	disconnect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqMan()));
-	disconnect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqMan()));
-	disconnect(plus_button,SIGNAL(clicked()),this,SLOT(verTas()));
-	disconnect(minus_button,SIGNAL(clicked()),this,SLOT(verTas()));
-	plus_button->setAutoRepeat (false);
-	minus_button->setAutoRepeat (false);
-	if (manual)
-	{
-		manual = false;
-		manual_button->setImage(manual_off);
-		auto_button->setImage(auto_on);
-	}
+	if (!manual)
+		return;
+
+	manual = false;
+
+	plus_button->setAutoRepeat(false);
+	minus_button->setAutoRepeat(false);
+	manual_button->setImage(manual_off);
+	auto_button->setImage(auto_on);
 }
 
-void RadioPage::setMan()
+void RadioPage::setManual()
 {
-	disconnect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
-	disconnect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
-	connect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqMan()));
-	connect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqMan()));
-	plus_button->setAutoRepeat (true);
-	minus_button->setAutoRepeat (true);
-	connect(plus_button,SIGNAL(clicked()),this,SLOT(verTas()));
-	connect(minus_button,SIGNAL(clicked()),this,SLOT(verTas()));
-	if (!manual)
-	{
-		manual = true;
-		manual_button->setImage(manual_on);
-		auto_button->setImage(auto_off);
-	}
+	if (manual)
+		return;
+
+	manual = true;
+
+	plus_button->setAutoRepeat(true);
+	minus_button->setAutoRepeat(true);
+	manual_button->setImage(manual_on);
+	auto_button->setImage(auto_off);
 }
 
 void RadioPage::nextStation()
 {
 	qDebug("Selecting next station");
+	dev->nextTrack();
 }
 
 void RadioPage::previousStation()
 {
 	qDebug("Selecting previous station");
+	dev->prevTrack();
 }
 
-void RadioPage::memo(int memory)
+void RadioPage::frequencyUp()
 {
-	emit(memoFreq(uchar(memory)));
+	if (manual)
+		dev->frequenceUp("1");
+	else
+		dev->frequenceUp();
 }
 
-void RadioPage::verTas()
+void RadioPage::frequencyDown()
 {
-	if ((!plus_button->isDown()) && (!minus_button->isDown()))
-		emit (richFreq());
+	if (manual)
+		dev->frequenceDown("1");
+	else
+		dev->frequenceDown();
+}
+
+void RadioPage::valueReceived(const DeviceValues &values_list)
+{
+	foreach (int dim, values_list.keys())
+	{
+		switch (dim)
+		{
+		case RadioSourceDevice::DIM_RDS:
+		{
+			QString label = values_list[dim].toString();
+			radio_info->setRadioName(label);
+			break;
+		}
+		case RadioSourceDevice::DIM_FREQUENCY:
+			radio_info->setFrequency(values_list[dim].toInt());
+			break;
+		case RadioSourceDevice::DIM_TRACK:
+			radio_info->setChannel(values_list[dim].toInt());
+			break;
+		}
+	}
 }
