@@ -95,12 +95,13 @@ void TestPullManager::testDimmer_increaseLevel()
 	parseFrames("*1*6*11##", &psm, false);
 	QCOMPARE(psm.getPullMode(), NOT_PULL);
 
+	PullStateManager psm2(PULL_UNKNOWN);
 	// PULL device
 	// dimmer level 5, general level up, dimmer level 5
-	parseFrames("*1*5*11##", &psm, false);
-	parseFrames("*1*30*1##", &psm, true);
-	parseFrames("*1*5*11##", &psm, false);
-	QCOMPARE(psm.getPullMode(), PULL);
+	parseFrames("*1*5*11##", &psm2, false);
+	parseFrames("*1*30*1##", &psm2, true);
+	parseFrames("*1*5*11##", &psm2, false);
+	QCOMPARE(psm2.getPullMode(), PULL);
 }
 
 void TestPullManager::testDimmer_decreaseLevel()
@@ -113,12 +114,13 @@ void TestPullManager::testDimmer_decreaseLevel()
 	parseFrames("*1*4*11##", &psm, false);
 	QCOMPARE(psm.getPullMode(), NOT_PULL);
 
+	PullStateManager psm2(PULL_UNKNOWN);
 	// PULL device
 	// dimmer level 5, general level down, dimmer level 5
-	parseFrames("*1*5*11##", &psm, false);
-	parseFrames("*1*31*1##", &psm, true);
-	parseFrames("*1*5*11##", &psm, false);
-	QCOMPARE(psm.getPullMode(), PULL);
+	parseFrames("*1*5*11##", &psm2, false);
+	parseFrames("*1*31*1##", &psm2, true);
+	parseFrames("*1*5*11##", &psm2, false);
+	QCOMPARE(psm2.getPullMode(), PULL);
 }
 
 void TestPullManager::testDimmer100()
@@ -160,11 +162,12 @@ void TestPullManager::testDimmer100_increaseLevel()
 	parseFrames("*#1*12*1*145*255##", &psm, false);
 	QCOMPARE(psm.getPullMode(), NOT_PULL);
 
+	PullStateManager psm2(PULL_UNKNOWN);
 	// dimmer level100 40, general increase level100 by 5, dimmer level100 40
-	parseFrames("*#1*12*1*140*255##", &psm, false);
-	parseFrames("*1*30#5#255*1##", &psm, true);
-	parseFrames("*#1*12*1*140*255##", &psm, false);
-	QCOMPARE(psm.getPullMode(), PULL);
+	parseFrames("*#1*12*1*140*255##", &psm2, false);
+	parseFrames("*1*30#5#255*1##", &psm2, true);
+	parseFrames("*#1*12*1*140*255##", &psm2, false);
+	QCOMPARE(psm2.getPullMode(), PULL);
 }
 
 void TestPullManager::testDimmer100_decreaseLevel()
@@ -176,11 +179,29 @@ void TestPullManager::testDimmer100_decreaseLevel()
 	parseFrames("*#1*12*1*135*255##", &psm, false);
 	QCOMPARE(psm.getPullMode(), NOT_PULL);
 
+	PullStateManager psm2(PULL_UNKNOWN);
 	// dimmer level100 40, general decrease level100 by 5, dimmer level100 40
-	parseFrames("*#1*12*1*140*255##", &psm, false);
-	parseFrames("*1*31#5#255*1##", &psm, true);
-	parseFrames("*#1*12*1*140*255##", &psm, false);
-	QCOMPARE(psm.getPullMode(), PULL);
+	parseFrames("*#1*12*1*140*255##", &psm2, false);
+	parseFrames("*1*31#5#255*1##", &psm2, true);
+	parseFrames("*#1*12*1*140*255##", &psm2, false);
+	QCOMPARE(psm2.getPullMode(), PULL);
+}
+
+void TestPullManager::testDimmer100_receiveIncreaseLevel10()
+{
+	PullStateManager psm(PULL_UNKNOWN);
+	// dimmer level100 4, general increase level, dimmer level100 10
+	parseFrames("*#1*12*1*104*255##", &psm, false);
+	parseFrames("*1*31*1##", &psm, true);
+	parseFrames("*#1*12*1*110*255##", &psm, false);
+	QCOMPARE(psm.getPullMode(), NOT_PULL);
+
+	PullStateManager psm2(PULL_UNKNOWN);
+	// dimmer level100 4, general increase level, dimmer level100 10
+	parseFrames("*#1*12*1*104*255##", &psm2, false);
+	parseFrames("*1*31*1##", &psm2, true);
+	parseFrames("*#1*12*1*104*255##", &psm2, false);
+	QCOMPARE(psm2.getPullMode(), PULL);
 }
 
 // From off to on (dimmer)

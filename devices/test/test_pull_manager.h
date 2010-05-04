@@ -42,6 +42,8 @@ private slots:
 	void testDimmer100_3();
 	void testDimmer100_increaseLevel();
 	void testDimmer100_decreaseLevel();
+	void testDimmer100_receiveIncreaseLevel10();
+
 	void testVariableTiming();
 	void testVariableTiming2();
 	void testVariableTiming3();
