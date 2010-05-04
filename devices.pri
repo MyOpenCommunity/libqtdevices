@@ -17,12 +17,13 @@ HEADERS += airconditioning_device.h \
 	lighting_device.h \
 	loads_device.h \
 	media_device.h \
+	message_device.h \
 	platform_device.h \
 	probe_device.h \
 	pulldevice.h \
 	scenario_device.h \
-	thermal_device.h \
-	message_device.h
+	stopandgo_device.h \
+	thermal_device.h
 
 SOURCES += airconditioning_device.cpp \
 	alarmsounddiff_device.cpp \
@@ -37,9 +38,11 @@ SOURCES += airconditioning_device.cpp \
 	lighting_device.cpp \
 	loads_device.cpp \
 	media_device.cpp \
+	message_device.cpp \
 	platform_device.cpp \
 	probe_device.cpp \
 	pulldevice.cpp \
 	scenario_device.cpp \
-	thermal_device.cpp \
-	message_device.cpp
+	stopandgo_device.cpp \
+	thermal_device.cpp
+
