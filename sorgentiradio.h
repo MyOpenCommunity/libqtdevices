@@ -22,9 +22,7 @@
 #ifndef SORGENTI_RADIO_H
 #define SORGENTI_RADIO_H
 
-#include "bannciclaz.h"
 #include "audiosource.h"
-#include "device_status.h"
 
 #include <QList>
 #include <QString>

@@ -22,8 +22,6 @@
 #ifndef SORGENTI_MEDIA_H
 #define SORGENTI_MEDIA_H
 
-#include "bannciclaz.h"
-#include "frame_receiver.h"
 #include "audiosource.h"
 
 #include <QStringList>

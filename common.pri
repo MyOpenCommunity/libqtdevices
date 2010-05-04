@@ -133,7 +133,6 @@ HEADERS += actuators.h \
 	bann_scenario.h \
 	bann_settings.h \
 	bann_videodoorentry.h \
-	bannciclaz.h \
 	banner.h \
 	bannerpage.h \
 	bannerfactory.h \
@@ -242,7 +241,6 @@ SOURCES += actuators.cpp \
 	bann_scenario.cpp \
 	bann_settings.cpp \
 	bann_videodoorentry.cpp \
-	bannciclaz.cpp \
 	banner.cpp \
 	bannerpage.cpp \
 	bannerfactory.cpp \

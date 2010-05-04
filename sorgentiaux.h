@@ -22,7 +22,6 @@
 #ifndef SORGENTI_AUX_H
 #define SORGENTI_AUX_H
 
-#include "bannciclaz.h"
 #include "audiosource.h"
 
 #include <QString>
