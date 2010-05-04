@@ -104,7 +104,7 @@ private slots:
 	void checkScreensaver();
 	void testPwd();
 	void waitBeforeInit();
-	void monitorReady();
+	void connectionReady();
 	void startGui();
 
 private:
