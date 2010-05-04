@@ -155,6 +155,9 @@ protected:
 	// was recognized and processed.
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list) { return false; }
 
+private:
+	static OpenServerManager *getManager(int openserver_id);
+
 private slots:
 	void emitCompressedFrame(int what);
 

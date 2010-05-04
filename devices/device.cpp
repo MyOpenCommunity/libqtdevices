@@ -122,15 +122,22 @@ device::device(QString _who, QString _where, int oid) : FrameReceiver(oid)
 	openserver_id = oid;
 	subscribe_monitor(who.toInt());
 
+	OpenServerManager *manager = getManager(openserver_id);
+
+	connect(manager, SIGNAL(connectionUp()), SIGNAL(connectionUp()));
+	connect(manager, SIGNAL(connectionDown()), SIGNAL(connectionDown()));
+	connect(&compressor_mapper, SIGNAL(mapped(int)), SLOT(emitCompressedFrame(int)));
+}
+
+OpenServerManager *device::getManager(int openserver_id)
+{
 	if (!openservers.contains(openserver_id))
 	{
 		openservers[openserver_id] = new OpenServerManager(openserver_id, clients_monitor[openserver_id],
 			clients[openserver_id].first, clients[openserver_id].second);
 	}
 
-	connect(openservers[openserver_id], SIGNAL(connectionUp()), SIGNAL(connectionUp()));
-	connect(openservers[openserver_id], SIGNAL(connectionDown()), SIGNAL(connectionDown()));
-	connect(&compressor_mapper, SIGNAL(mapped(int)), SLOT(emitCompressedFrame(int)));
+	return openservers[openserver_id];
 }
 
 void device::manageFrame(OpenMsg &msg)
