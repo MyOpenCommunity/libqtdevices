@@ -183,7 +183,6 @@ HEADERS += actuators.h \
 	load_management.h \
 	main.h \
 	mediaplayer.h \
-	multimedia_source.h \
 	navigation_bar.h \
 	openclient.h \
 	page.h \
@@ -191,7 +190,6 @@ HEADERS += actuators.h \
 	pagefactory.h \
 	pagestack.h \
 	plantmenu.h \
-	playwindow.h \
 	poweramplifier.h \
 	ringtonesmanager.h \
 	scaleconversion.h \
@@ -296,7 +294,6 @@ SOURCES += actuators.cpp \
 	load_management.cpp \
 	main.cpp \
 	mediaplayer.cpp \
-	multimedia_source.cpp \
 	navigation_bar.cpp \
 	openclient.cpp \
 	page.cpp \
@@ -304,7 +301,6 @@ SOURCES += actuators.cpp \
 	pagefactory.cpp \
 	pagestack.cpp \
 	plantmenu.cpp \
-	playwindow.cpp \
 	poweramplifier.cpp \
 	ringtonesmanager.cpp \
 	scaleconversion.cpp \

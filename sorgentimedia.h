@@ -24,7 +24,6 @@
 
 #include "bannciclaz.h"
 #include "frame_receiver.h"
-#include "multimedia_source.h"
 #include "audiosource.h"
 
 #include <QStringList>
