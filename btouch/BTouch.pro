@@ -35,12 +35,10 @@ include(../devices.pri)
 
 HEADERS += displaypage.h \
 	brightnesspage.h \
-	radio.h \
 	scenevomanager.h \
 	settings.h
 
 SOURCES += displaypage.cpp \
 	brightnesspage.cpp \
-	radio.cpp \
 	scenevomanager.cpp \
 	settings.cpp
