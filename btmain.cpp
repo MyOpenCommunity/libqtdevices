@@ -634,8 +634,8 @@ void BtMain::checkScreensaver()
 	int time = qMin(time_press, int(now() - last_event_time));
 
 	if (screenoff_time != 0 && time >= screenoff_time &&
-		 (bt_global::display->currentState() == DISPLAY_SCREENSAVER ||
-		  (target_screensaver == ScreenSaver::NONE && bt_global::display->currentState() == DISPLAY_FREEZED)))
+		(bt_global::display->currentState() == DISPLAY_SCREENSAVER ||
+		(target_screensaver == ScreenSaver::NONE && bt_global::display->currentState() == DISPLAY_FREEZED)))
 	{
 		qDebug() << "Turning screen off";
 		if (screensaver)
@@ -649,7 +649,7 @@ void BtMain::checkScreensaver()
 	else if (time >= screensaver_time && target_screensaver != ScreenSaver::NONE)
 	{
 		if (bt_global::display->currentState() == DISPLAY_OPERATIVE &&
-		    pagDefault && page_container->currentPage() != pagDefault)
+			pagDefault && page_container->currentPage() != pagDefault)
 		{
 			pagDefault->showPage();
 		}
