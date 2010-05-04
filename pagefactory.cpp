@@ -22,8 +22,6 @@
 #include "pagefactory.h"
 #include "xml_functions.h" // getPageNode
 #include "btmain.h" // bt_global::btmain
-#include "sounddiffusion.h"
-#include "multisounddiff.h"
 #include "videodoorentry.h"
 #ifdef LAYOUT_TOUCHX
 #include "multimedia.h"
@@ -126,36 +124,6 @@ Page *getPage(int page_id)
 	case AIR_CONDITIONING:
 		page = new AirConditioning(page_node);
 		break;
-#else
-	// TODO: this must be changed for btouch when page changes are clearer
-	case DIFSON:
-	{
-		SoundDiffusion *p = new SoundDiffusion(page_node);
-		p->draw();
-		page = p;
-
-		if (!bt_global::btmain->difSon)
-		{
-		SoundDiffusionAlarm *sd = new SoundDiffusionAlarm(p->getAudioSources(), page_node);
-		sd->forceDraw();
-		bt_global::btmain->difSon = sd;
-	}
-		break;
-	}
-	case DIFSON_MULTI:
-	{
-		MultiSoundDiff *p = new MultiSoundDiff(page_node);
-		p->forceDraw();
-		page = p;
-
-		if (!bt_global::btmain->dm)
-		{
-		MultiSoundDiffAlarm *tmp = new MultiSoundDiffAlarm(page_node);
-		tmp->forceDraw();
-		bt_global::btmain->dm = tmp;
-	}
-		break;
-	}
 #endif
 
 	case LOAD_MANAGEMENT:

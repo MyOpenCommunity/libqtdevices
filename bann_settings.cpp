@@ -23,7 +23,6 @@
 #include "version.h"
 #include "alarmclock.h"
 #include "keypad.h"
-#include "multisounddiff.h" // contdiff
 #include "contrast.h"
 #include "generic_functions.h" // setCfgValue
 #include "hardware_functions.h" // setBeep, getBeep, beep, setContrast, getContrast

@@ -22,14 +22,12 @@
 #include "alarmclock.h"
 #include "generic_functions.h" // setCfgValue
 #include "hardware_functions.h" // getBeep, setBeep, beep
-#include "multisounddiff.h" // contdiff
 #include "state_button.h"
 #include "openclient.h"
 #include "datetime.h"
 #include "fontmanager.h" // bt_global::font
 #include "displaycontrol.h" // (*bt_global::display)
 #include "btmain.h" // bt_global::btmain
-#include "sounddiffusion.h" // declare SoundDiffusion*
 #include "singlechoicecontent.h"
 #include "skinmanager.h"
 #include "alarmsounddiff_device.h"
@@ -508,10 +506,13 @@ QList<bool> AlarmClockFreq::getAlarmDays() const
 
 AlarmClockSoundDiff::AlarmClockSoundDiff(AlarmClock *alarm_page)
 {
+	// TODO fix alarm clock with sound diffusion
+#if 0
 	if (bt_global::btmain->difSon)
 		difson = bt_global::btmain->difSon;
 	if (bt_global::btmain->dm)
 		difson = bt_global::btmain->dm;
+#endif
 
 	connect(this, SIGNAL(Closed()), alarm_page, SLOT(handleClose()));
 }

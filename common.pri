@@ -115,7 +115,6 @@ HEADERS += actuators.h \
 	airconditioning.h \
 	alarmclock.h \
 	alarmpage.h \
-	ambdiffson.h \
 	audiosource.h \
 	bann_amplifiers.h \
 	antintrusion.h \
@@ -185,7 +184,6 @@ HEADERS += actuators.h \
 	main.h \
 	mediaplayer.h \
 	multimedia_source.h \
-	multisounddiff.h \
 	navigation_bar.h \
 	openclient.h \
 	page.h \
@@ -210,7 +208,6 @@ HEADERS += actuators.h \
 	sorgentimedia.h \
 	sorgentiradio.h \
 	sottomenu.h \
-	sounddiffusion.h \
 	specialpage.h \
 	statemachine.h \
 	state_button.h \
@@ -232,7 +229,6 @@ SOURCES += actuators.cpp \
 	airconditioning.cpp \
 	alarmclock.cpp \
 	alarmpage.cpp \
-	ambdiffson.cpp \
 	audiosource.cpp \
 	bann_amplifiers.cpp \
 	antintrusion.cpp \
@@ -301,7 +297,6 @@ SOURCES += actuators.cpp \
 	main.cpp \
 	mediaplayer.cpp \
 	multimedia_source.cpp \
-	multisounddiff.cpp \
 	navigation_bar.cpp \
 	openclient.cpp \
 	page.cpp \
@@ -326,7 +321,6 @@ SOURCES += actuators.cpp \
 	sorgentimedia.cpp \
 	sorgentiradio.cpp \
 	sottomenu.cpp \
-	sounddiffusion.cpp \
 	specialpage.cpp \
 	statemachine.cpp \
 	state_button.cpp \
