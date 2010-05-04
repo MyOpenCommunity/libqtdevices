@@ -613,8 +613,8 @@ void TestEnergyDevice::receiveCumulativeYearGraph()
 	int month_distance = month - QDate::currentDate().month();
 	int index = month_distance < 0 ? month_distance + 12 : month_distance;
 
-	data.graph[12] = 9500;
-	data.graph[index] = 10600;
+	data.graph[12] = 95;
+	data.graph[index] = 106;
 
 	// Check for the month that has an invalid value
 	int d = invalid_month - QDate::currentDate().month();
