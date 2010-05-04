@@ -220,9 +220,6 @@ enum Section
 /****************************************************************
  **  definizione dei file di immagini
  ****************************************************************/
-/*!  \def ICON_CICLA
-  The file name for \a changing icon*/
-#define ICON_CICLA  (IMG_PATH "btncycle.png")
 /*!  \def ICON_OK
   The file name for \a ok icon*/
 #define ICON_OK  (IMG_PATH "btnok.png")
@@ -250,15 +247,6 @@ enum Section
 /*!  \def ICON_FFWD
   The file name for \a feed \a forward icon*/
 #define ICON_FFWD  (IMG_PATH "btnforward.png")
-/*!  \def ICON_REW
-  The file name for \a rewind icon*/
-#define ICON_REW  (IMG_PATH "btnbackward.png")
-/*!  \def ICON_DIFFSON
-  The file name for \a diffson icon*/
-#define ICON_DIFFSON  (IMG_PATH "appdiffsmall.png")
-/*!  \def ICON_SVEGLIA_ON
-  The file name for \a alarm \a clock icon*/
-#define ICON_SVEGLIA_ON  (IMG_PATH "svegliaon.png")
 /*!  \def ICON_PIU
   The file name for \a plus icon*/
 #define ICON_PIU  (IMG_PATH "btnplus.png")
