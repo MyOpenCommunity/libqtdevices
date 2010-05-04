@@ -81,9 +81,10 @@ void RadioInfo::paintEvent(QPaintEvent *)
 	style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
+
 #define MEMORY_PRESS_TIME 3000
 
-radio::radio(const QString &amb)
+RadioPage::RadioPage(const QString &amb)
 {
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
@@ -96,7 +97,7 @@ radio::radio(const QString &amb)
 	connect(&memory_timer, SIGNAL(timeout()), SLOT(storeMemoryStation()));
 }
 
-QWidget *radio::createContent()
+QWidget *RadioPage::createContent()
 {
 	QWidget *content = new QWidget;
 
@@ -175,7 +176,7 @@ QWidget *radio::createContent()
 	return content;
 }
 
-void radio::setFreq(float f)
+void RadioPage::setFreq(float f)
 {
 	frequenza = f;
 	QString fr;
@@ -183,19 +184,19 @@ void radio::setFreq(float f)
 	freq->setText(fr);
 }
 
-float radio::getFreq()
+float RadioPage::getFreq()
 {
 	return frequenza;
 }
 
-void radio::setRDS(const QString & s)
+void RadioPage::setRDS(const QString & s)
 {
 	QString rds = s;
 	rds.truncate(8);
 	rdsLabel->setText(rds);
 }
 
-void radio::setStaz(uchar st)
+void RadioPage::setStaz(uchar st)
 {
 	if (st)
 		progrText->setText(QString::number((int)st)+":");
@@ -203,42 +204,42 @@ void radio::setStaz(uchar st)
 		progrText->setText("--:");
 }
 
-void radio::setAmbDescr(const QString & d)
+void RadioPage::setAmbDescr(const QString & d)
 {
 	ambDescr->setText(d);
 }
 
-void radio::setName(const QString & s)
+void RadioPage::setName(const QString & s)
 {
 	radioName->setText(s);
 }
 
-void radio::changeStation(int station_num)
+void RadioPage::changeStation(int station_num)
 {
 	beep();
 	qDebug("Changing to station number: %d", station_num);
 }
 
-void radio::memoryButtonPressed(int but_num)
+void RadioPage::memoryButtonPressed(int but_num)
 {
 	memory_timer.start();
 	memory_number = but_num;
 	qDebug("Memory button pressed: %d", but_num);
 }
 
-void radio::memoryButtonReleased(int but_num)
+void RadioPage::memoryButtonReleased(int but_num)
 {
 	memory_timer.stop();
 	qDebug("Memory button released: %d", but_num);
 }
 
-void radio::storeMemoryStation()
+void RadioPage::storeMemoryStation()
 {
 	emit memoFreq((uchar) memory_number);
 	qDebug("Storing frequency to memory station %d", memory_number);
 }
 
-void radio::setAuto()
+void RadioPage::setAuto()
 {
 	connect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
 	connect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
@@ -256,7 +257,7 @@ void radio::setAuto()
 	}
 }
 
-void radio::setMan()
+void RadioPage::setMan()
 {
 	disconnect(minus_button,SIGNAL(clicked()),this,SIGNAL(decFreqAuto()));
 	disconnect(plus_button,SIGNAL(clicked()),this,SIGNAL(aumFreqAuto()));
@@ -274,22 +275,22 @@ void radio::setMan()
 	}
 }
 
-void radio::nextStation()
+void RadioPage::nextStation()
 {
 	qDebug("Selecting next station");
 }
 
-void radio::previousStation()
+void RadioPage::previousStation()
 {
 	qDebug("Selecting previous station");
 }
 
-void radio::memo(int memory)
+void RadioPage::memo(int memory)
 {
 	emit(memoFreq(uchar(memory)));
 }
 
-void radio::verTas()
+void RadioPage::verTas()
 {
 	if ((!plus_button->isDown()) && (!minus_button->isDown()))
 		emit (richFreq());

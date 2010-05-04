@@ -54,11 +54,11 @@ private:
  * \brief This class implements the management of the FM tuner specific page.
  *
  */
-class  radio : public Page
+class  RadioPage : public Page
 {
 Q_OBJECT
 public:
-	radio(const QString &amb=tr("Default environment"));
+	RadioPage(const QString &amb = tr("RDS Radio"));
 	/*!
 	 * \brief Sets the name of the tuner found in user configuration file
 	 */
