@@ -20,8 +20,6 @@
 
 
 #include "sorgentiradio.h"
-#include "main.h" // ICON_CICLA
-#include "radio.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "deviceold.h"
 #include "generic_functions.h" // createCommandFrame

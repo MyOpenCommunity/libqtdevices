@@ -20,7 +20,6 @@
 
 
 #include "sorgentiaux.h"
-#include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW
 #include "aux.h" // class Aux
 #include "generic_functions.h" // createCommandFrame
 #include "btbutton.h"

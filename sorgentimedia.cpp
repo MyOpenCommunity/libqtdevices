@@ -20,7 +20,6 @@
 
 
 #include "sorgentimedia.h"
-#include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW, ICON_IMPOSTA
 #include "media_device.h" // VirtualSourceDevice
 #include "titlelabel.h" // TextOnImageLabel
 #include "skinmanager.h"
