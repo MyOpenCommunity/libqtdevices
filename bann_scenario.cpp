@@ -65,6 +65,7 @@ ScenarioModule::ScenarioModule(int scenario, const QString &descr, const QString
 
 	scenario_number = scenario;
 	is_editing = false;
+	has_started_prog = false;
 	connect(left_button, SIGNAL(clicked()), SLOT(activate()));
 	connect(right_button, SIGNAL(clicked()), SLOT(editScenario()));
 	connect(center_left_button, SIGNAL(clicked()), SLOT(startEditing()));
@@ -86,6 +87,7 @@ void ScenarioModule::editScenario()
 void ScenarioModule::startEditing()
 {
 	dev->startProgramming(scenario_number);
+	has_started_prog = true;
 }
 
 void ScenarioModule::deleteScenario()
@@ -102,6 +104,7 @@ void ScenarioModule::changeLeftFunction(const char *slot)
 void ScenarioModule::stopEditing()
 {
 	dev->stopProgramming(scenario_number);
+	has_started_prog = false;
 }
 
 void ScenarioModule::valueReceived(const DeviceValues &values_list)
@@ -114,6 +117,7 @@ void ScenarioModule::valueReceived(const DeviceValues &values_list)
 		case ScenarioDevice::DIM_LOCK:
 			setState(it.value().toBool() ? LOCKED : UNLOCKED);
 			is_editing = false;
+			has_started_prog = false;
 			break;
 		case ScenarioDevice::DIM_START:
 		{
@@ -126,10 +130,15 @@ void ScenarioModule::valueReceived(const DeviceValues &values_list)
 				{
 					setEditingState(EDIT_ACTIVE);
 					changeLeftFunction(SLOT(stopEditing()));
+					// remove pencil icon from the banner but leave it capable of stopping scenario
+					// programming
+					if (has_started_prog)
+						setState(LOCKED);
 				}
 				else
 				{
 					setState(LOCKED);
+					has_started_prog = false;
 					changeLeftFunction(SLOT(activate()));
 				}
 			}
@@ -145,6 +154,7 @@ void ScenarioModule::valueReceived(const DeviceValues &values_list)
 					setState(UNLOCKED);
 
 				changeLeftFunction(SLOT(activate()));
+				has_started_prog = false;
 			}
 		}
 			break;
