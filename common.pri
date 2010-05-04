@@ -189,6 +189,7 @@ HEADERS += actuators.h \
 	pagestack.h \
 	plantmenu.h \
 	poweramplifier.h \
+	radio.h \
 	ringtonesmanager.h \
 	scaleconversion.h \
 	scenario.h \
@@ -297,6 +298,7 @@ SOURCES += actuators.cpp \
 	pagestack.cpp \
 	plantmenu.cpp \
 	poweramplifier.cpp \
+	radio.cpp \
 	ringtonesmanager.cpp \
 	scaleconversion.cpp \
 	scenario.cpp \
