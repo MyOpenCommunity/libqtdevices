@@ -401,6 +401,8 @@ void EnergyTableContent::init(int num_val, QString _left_text, QString _right_te
 	shift_value = shift_val;
 	left_text = _left_text;
 	right_text = _right_text;
+	table_data.clear();
+	update();
 }
 
 void EnergyTableContent::setData(const QMap<int, float> &data)

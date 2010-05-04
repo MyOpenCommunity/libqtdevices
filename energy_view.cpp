@@ -676,6 +676,7 @@ void EnergyView::updateCurrentGraph()
 		table->init(time_period->date().daysInMonth(), tr("Day"), label, time_period->dateDisplayed());
 		break;
 	}
+
 #ifdef TEST_ENERGY_GRAPH
 	graph->generateRandomValues();
 	table->setData(graph->graph_data);
