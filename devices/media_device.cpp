@@ -276,16 +276,8 @@ QString VirtualSourceDevice::createMediaInitFrame(bool is_multichannel, const QS
 	QString ampli_area, ampli_point;
 	if (is_ampli)
 	{
-		if (is_multichannel)
-		{
-			ampli_area = ampli_addr.at(0);
-			ampli_point = ampli_addr.at(1);
-		}
-		else
-		{
-			ampli_area = "0";
-			ampli_point = ampli_addr;
-		}
+		ampli_area = ampli_addr.at(0);
+		ampli_point = ampli_addr.at(1);
 	}
 
 	QString frame = QString("*#22*7*#15*%1*%2*%3*9*9**%4*%5*%6*%7*%8##")
