@@ -81,6 +81,7 @@ private:
 class device : public QObject, FrameReceiver
 {
 friend class TestDevice;
+friend class BtMain;
 Q_OBJECT
 
 public:
