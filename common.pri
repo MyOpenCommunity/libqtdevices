@@ -135,7 +135,7 @@ HEADERS += actuators.h \
 	bann_videodoorentry.h \
 	bannciclaz.h \
 	banner.h \
-	bannercontent.h \
+	bannerpage.h \
 	bannerfactory.h \
 	bann_thermal_regulation.h \
 	bannonoffcombo.h \
@@ -162,7 +162,6 @@ HEADERS += actuators.h \
 	fileselector.h \
 	fontmanager.h \
 	generic_functions.h \
-	gridcontent.h \
 	hardware_functions.h \
 	homepage.h \
 	homewindow.h \
@@ -197,8 +196,8 @@ HEADERS += actuators.h \
 	scenevodevicescond.h \
 	screensaver.h \
 	screensaverpage.h \
+	scrollablepage.h \
 	sectionpage.h \
-	singlechoicecontent.h \
 	singlechoicepage.h \
 	skinmanager.h \
 	sorgentiaux.h \
@@ -244,7 +243,7 @@ SOURCES += actuators.cpp \
 	bann_videodoorentry.cpp \
 	bannciclaz.cpp \
 	banner.cpp \
-	bannercontent.cpp \
+	bannerpage.cpp \
 	bannerfactory.cpp \
 	bann_thermal_regulation.cpp \
 	bannonoffcombo.cpp \
@@ -272,7 +271,6 @@ SOURCES += actuators.cpp \
 	fileselector.cpp \
 	fontmanager.cpp \
 	generic_functions.cpp \
-	gridcontent.cpp \
 	homepage.cpp \
 	homewindow.cpp \
 	icondispatcher.cpp \
@@ -306,8 +304,8 @@ SOURCES += actuators.cpp \
 	scenevodevicescond.cpp \
 	screensaver.cpp \
 	screensaverpage.cpp \
+	scrollablepage.cpp \
 	sectionpage.cpp \
-	singlechoicecontent.cpp \
 	singlechoicepage.cpp \
 	skinmanager.cpp \
 	sorgentiaux.cpp \

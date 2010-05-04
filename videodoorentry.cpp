@@ -23,7 +23,6 @@
 #include "bann_videodoorentry.h"
 #include "bann2_buttons.h"
 #include "xml_functions.h" // getTextChild, getChildren
-#include "bannercontent.h"
 #include "main.h" // bt_global::config
 #include "skinmanager.h"
 #include "btbutton.h"

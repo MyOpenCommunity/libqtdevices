@@ -22,8 +22,7 @@
 #ifndef ICONPAGE_H
 #define ICONPAGE_H
 
-#include "page.h"
-#include "gridcontent.h"
+#include "scrollablepage.h"
 
 #include <QButtonGroup>
 #include <QHash>
@@ -32,6 +31,7 @@
 class IconContent;
 class BtButton;
 class StateButton;
+class NavigationBar;
 
 
 /**
@@ -40,14 +40,12 @@ class StateButton;
  * Show a list of buttons, each of them is automatically connected (in addPage method)
  * with the correspondent page through the slot 'showPage' and signal 'Closed'.
  */
-class IconPage : public Page
+class IconPage : public ScrollablePage
 {
 Q_OBJECT
 public:
 	// the type returned by page_content
 	typedef IconContent ContentType;
-
-	virtual void activateLayout();
 
 protected:
 	void buildPage(IconContent *content, NavigationBar *nav_bar, const QString &label = QString());
@@ -59,12 +57,11 @@ protected:
 /**
  * The IconContent class manages a grid of buttons.
  */
-class IconContent : public GridContent
+class IconContent : public ScrollableContent
 {
-friend void IconPage::activateLayout();
 Q_OBJECT
 public:
-	IconContent(QWidget *parent=0);
+	IconContent(QWidget *parent = 0);
 	void addButton(QWidget *button, const QString &label = QString());
 	void addWidget(QWidget *widget);
 

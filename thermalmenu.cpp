@@ -25,7 +25,6 @@
 #include "probe_device.h"
 #include "plantmenu.h"
 #include "xml_functions.h" // getChildren, getTextChild
-#include "bannercontent.h"
 #include "skinmanager.h"
 #include "airconditioning.h"
 #include "navigation_bar.h"

@@ -28,7 +28,6 @@
 #include "skinmanager.h" // bt_global::skin
 #include "generic_functions.h" // getBostikName
 #include "icondispatcher.h" // bt_global::icons_cache
-#include "bannercontent.h"
 #include "bann_amplifiers.h" // Amplifier
 #include "poweramplifier.h" // BannPowerAmplifier
 #include "sorgentiradio.h" // RadioSource

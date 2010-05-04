@@ -22,7 +22,7 @@
 #ifndef VIDEODOORENTRY_H
 #define VIDEODOORENTRY_H
 
-#include "page.h"
+#include "bannerpage.h"
 #include "iconpage.h"
 
 #include <QWidget>

@@ -23,7 +23,6 @@
 #include "xml_functions.h"
 #include "main.h" //(*bt_global::config)
 #include "bann1_button.h"
-#include "bannercontent.h"
 #include "skinmanager.h"
 
 #include <QVariant>

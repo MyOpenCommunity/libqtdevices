@@ -26,7 +26,6 @@
 #include "alarmpage.h"
 #include "btmain.h" // bt_global::btmain
 #include "pagestack.h"
-#include "bannercontent.h"
 #include "navigation_bar.h"
 #include "btbutton.h"
 #include "main.h"
@@ -531,7 +530,7 @@ void AlarmItems::prepareLayout()
 			w->hide();
 	pages.clear();
 
-	GridContent::prepareLayout(alarms, 1);
+	ScrollableContent::prepareLayout(alarms, 1);
 
 	// add alarms to the layout
 	for (int i = 0; i < pages.size() - 1; ++i)

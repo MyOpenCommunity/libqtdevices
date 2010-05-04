@@ -21,7 +21,6 @@
 
 #include "load_management.h"
 #include "xml_functions.h"
-#include "bannercontent.h"
 #include "main.h"
 #include "bann_energy.h"
 #include "skinmanager.h" // SkinContext

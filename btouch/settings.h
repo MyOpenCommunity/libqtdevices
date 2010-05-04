@@ -22,7 +22,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "page.h"
+#include "bannerpage.h"
 
 #include <QWidget>
 

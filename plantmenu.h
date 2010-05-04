@@ -22,7 +22,7 @@
 #ifndef PLANTMENU_H
 #define PLANTMENU_H
 
-#include "page.h"
+#include "bannerpage.h"
 #include "bann_thermal_regulation.h"
 
 #include <QSignalMapper>

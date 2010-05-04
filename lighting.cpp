@@ -23,7 +23,6 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bann_lighting.h"
 #include "actuators.h"
-#include "bannercontent.h"
 #include "main.h"
 #include "skinmanager.h" // SkinContext
 

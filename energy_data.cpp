@@ -27,9 +27,7 @@
 #include "btmain.h" // bt_global::btmain
 #include "energy_rates.h"
 #include "bann_energy.h" // BannEnergyInterface
-#include "bannercontent.h"
 #include "navigation_bar.h"
-#include "bannercontent.h"
 #include "bann1_button.h" // BannSinglePuls
 #include "btbutton.h"
 #include "energy_management.h" // isBuilt, isRateEditDisplayed

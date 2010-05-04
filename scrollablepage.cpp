@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -19,12 +19,44 @@
  */
 
 
-#include "gridcontent.h"
+#include "scrollablepage.h"
+#include "navigation_bar.h"
 
 #include <QGridLayout>
 
 
-GridContent::GridContent(QWidget *parent) : QWidget(parent)
+ScrollablePage::ScrollablePage(QWidget *parent) : Page(parent)
+{
+}
+
+void ScrollablePage::activateLayout()
+{
+	if (page_content)
+		page_content->updateGeometry();
+
+	Page::activateLayout();
+
+	if (page_content)
+		page_content->drawContent();
+}
+
+
+void ScrollablePage::buildPage(QWidget *main_widget, ScrollableContent *content, AbstractNavigationBar *nav_bar, QWidget *top_widget, PageTitleWidget *title_widget)
+{
+	Page::buildPage(main_widget, content, nav_bar, top_widget, title_widget);
+	if (title_widget)
+		connect(content, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
+
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(forwardClick()));
+	connect(nav_bar, SIGNAL(upClick()), content, SLOT(pgUp()));
+	connect(nav_bar, SIGNAL(downClick()), content, SLOT(pgDown()));
+	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+}
+
+
+ScrollableContent::ScrollableContent(QWidget *parent) : QWidget(parent)
 {
 	(void) new QGridLayout(this);
 
@@ -32,13 +64,13 @@ GridContent::GridContent(QWidget *parent) : QWidget(parent)
 	need_update = true;
 }
 
-void GridContent::resetIndex()
+void ScrollableContent::resetIndex()
 {
 	need_update = true;
 	current_page = 0;
 }
 
-void GridContent::showEvent(QShowEvent *e)
+void ScrollableContent::showEvent(QShowEvent *e)
 {
 	if (need_update)
 		drawContent();
@@ -46,7 +78,7 @@ void GridContent::showEvent(QShowEvent *e)
 	QWidget::showEvent(e);
 }
 
-void GridContent::prepareLayout(QList<QWidget *> items, int columns)
+void ScrollableContent::prepareLayout(QList<QWidget *> items, int columns)
 {
 	QGridLayout *l = static_cast<QGridLayout *>(layout());
 	QList<int> total_height;
@@ -86,7 +118,7 @@ void GridContent::prepareLayout(QList<QWidget *> items, int columns)
 	pages.append(items.size());
 }
 
-void GridContent::updateLayout(QList<QWidget *> items)
+void ScrollableContent::updateLayout(QList<QWidget *> items)
 {
 	emit displayScrollButtons(pageCount() > 1);
 	emit contentScrolled(current_page, pageCount());
@@ -99,21 +131,22 @@ void GridContent::updateLayout(QList<QWidget *> items)
 		items[i]->setVisible(i >= pages[current_page] && i < pages[current_page + 1]);
 }
 
-void GridContent::pgUp()
+void ScrollableContent::pgUp()
 {
 	current_page = (current_page - 1 + pageCount()) % pageCount();
 	drawContent();
 	need_update = false;
 }
 
-void GridContent::pgDown()
+void ScrollableContent::pgDown()
 {
 	current_page = (current_page + 1) % pageCount();
 	drawContent();
 	need_update = false;
 }
 
-int GridContent::pageCount() const
+int ScrollableContent::pageCount() const
 {
 	return pages.size() - 1;
 }
+

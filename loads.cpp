@@ -22,7 +22,6 @@
 #include "loads.h"
 #include "generic_functions.h" // createCommandFrame
 #include "xml_functions.h" // getChildren, getTextChild
-#include "bannercontent.h"
 
 
 bannLoads::bannLoads(Page *parent, QString indirizzo, QString IconaSx) : bannOnSx(parent)

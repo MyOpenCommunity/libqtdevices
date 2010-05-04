@@ -23,7 +23,6 @@
 #include "bann_automation.h"
 #include "actuators.h"
 #include "xml_functions.h" // getChildren, getTextChild
-#include "bannercontent.h"
 #include "main.h"
 #include "skinmanager.h" // SkinContext
 #include "bannerfactory.h"

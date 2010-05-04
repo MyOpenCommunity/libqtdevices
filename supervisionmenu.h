@@ -22,7 +22,7 @@
 #ifndef BTOUCH_SUPERVISION_MENU_H
 #define BTOUCH_SUPERVISION_MENU_H
 
-#include "page.h"
+#include "bannerpage.h"
 #include "stopngo.h"
 
 #include <QDomNode>

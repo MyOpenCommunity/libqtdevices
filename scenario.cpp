@@ -24,7 +24,6 @@
 #include "scenevocond.h"
 #include "xml_functions.h" // getChildren, getTextChild
 #include "btmain.h" // bt_global::btmain
-#include "bannercontent.h"
 #include "main.h"
 #include "skinmanager.h" //SkinContext
 

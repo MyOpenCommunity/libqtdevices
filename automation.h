@@ -22,7 +22,7 @@
 #ifndef AUTOMATION_H
 #define AUTOMATION_H
 
-#include "page.h"
+#include "bannerpage.h"
 
 #include <QWidget>
 

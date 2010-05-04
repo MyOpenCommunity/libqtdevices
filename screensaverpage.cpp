@@ -22,7 +22,7 @@
 #include "screensaverpage.h"
 #include "screensaver.h"
 #include "displaycontrol.h" // (*bt_global::display)
-#include "singlechoicecontent.h"
+#include "singlechoicepage.h"
 #include "navigation_bar.h" // NavigationBar
 #include "skinmanager.h" // bt_global::skin
 #include "btbutton.h" // BtButton

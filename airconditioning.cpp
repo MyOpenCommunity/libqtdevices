@@ -23,7 +23,6 @@
 #include "skinmanager.h"
 #include "main.h"
 #include "xml_functions.h" // getTextChild, getElement
-#include "bannercontent.h"
 #include "bann_airconditioning.h"
 #include "navigation_bar.h"
 #include "devices_cache.h" // bt_global::devices_cache

@@ -22,7 +22,7 @@
 #ifndef DISPLAYPAGE_H
 #define DISPLAYPAGE_H
 
-#include "page.h"
+#include "bannerpage.h"
 
 class QDomNode;
 

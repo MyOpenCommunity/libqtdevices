@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -19,20 +19,47 @@
  */
 
 
-#ifndef GRIDCONTENT_H
-#define GRIDCONTENT_H
+#ifndef SCROLLABLEPAGE_H
+#define SCROLLABLEPAGE_H
 
-#include <QWidget>
+#include "page.h"
+
+#include <QList>
+
+
+class AbstractNavigationBar;
+class PageTitleWidget;
+class ScrollableContent;
 
 
 /**
- * The GridContent class manages a grid of subwidgets.
+ * This abstract page is a page that manage a scrollable content.
  */
-class GridContent : public QWidget
+class ScrollablePage : public Page
 {
+public:
+	// the type returned by page_content
+	typedef ScrollableContent ContentType;
+	virtual void activateLayout();
+
+protected:
+	ScrollablePage(QWidget *parent = 0);
+
+	void buildPage(QWidget *main_widget, ScrollableContent *content, AbstractNavigationBar *nav_bar,
+		QWidget *top_widget = 0, PageTitleWidget *title_widget = 0);
+};
+
+
+
+/**
+ * The ScrollableContent is an abstract class that manages a scrollable grid of subwidgets.
+ */
+class ScrollableContent : public QWidget
+{
+friend void ScrollablePage::activateLayout();
 Q_OBJECT
 public:
-	GridContent(QWidget *parent=0);
+	ScrollableContent(QWidget *parent = 0);
 
 public slots:
 	void pgUp();
@@ -62,5 +89,5 @@ protected:
 	QList<int> pages;
 };
 
-#endif // GRIDCONTENT_H
+#endif
 

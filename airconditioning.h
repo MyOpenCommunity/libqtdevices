@@ -23,6 +23,7 @@
 #define AIR_CONDITIONING_H
 
 #include "page.h"
+#include "bannerpage.h"
 #include "airconditioning_device.h"
 
 class AirConditioningInterface;

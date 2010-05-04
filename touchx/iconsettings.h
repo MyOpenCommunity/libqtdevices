@@ -22,6 +22,7 @@
 #ifndef ICON_SETTINGS_H
 #define ICON_SETTINGS_H
 
+#include "bannerpage.h"
 #include "iconpage.h"
 #include "datetime.h" // PageSetDateTime
 #include "state_button.h"

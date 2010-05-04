@@ -22,6 +22,7 @@
 #ifndef BTOUCH_THERMALMENU_H
 #define BTOUCH_THERMALMENU_H
 
+#include "bannerpage.h"
 #include "bann1_button.h"
 #include "bttime.h"
 #include "bann_thermal_regulation.h"

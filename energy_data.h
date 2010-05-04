@@ -22,7 +22,7 @@
 #ifndef ENERGY_DATA_H
 #define ENERGY_DATA_H
 
-#include "page.h" // BannerPage
+#include "bannerpage.h"
 
 #include <QTimer>
 

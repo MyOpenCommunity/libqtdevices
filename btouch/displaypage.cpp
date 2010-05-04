@@ -27,7 +27,6 @@
 #include "xml_functions.h" // getElement
 #include "screensaverpage.h"
 #include "skinmanager.h" // SkinContext, bt_global::skin
-#include "bannercontent.h"
 
 
 DisplayPage::DisplayPage(const QDomNode &config_node)

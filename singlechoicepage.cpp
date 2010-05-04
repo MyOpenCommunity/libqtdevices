@@ -21,9 +21,11 @@
 
 #include "singlechoicepage.h"
 #include "navigation_bar.h"
-#include "singlechoicecontent.h"
 #include "btbutton.h"
+#include "state_button.h"
+#include "skinmanager.h"
 
+#include <QLayout>
 #include <QDebug>
 
 
@@ -62,3 +64,59 @@ void SingleChoicePage::confirmSelection()
 	bannerSelected(page_content->checkedId()); // update the current id and do custom actions
 	setCheckedId(getCurrentId());
 }
+
+
+
+CheckableBanner *SingleChoice::createBanner(const QString &text, const QString &right_icon)
+{
+	return new CheckableBanner(text, right_icon);
+}
+
+CheckableBanner::CheckableBanner(const QString &text, const QString &right_icon)
+	: Bann2StateButtons(0)
+{
+	initBanner(bt_global::skin->getImage("unchecked"), right_icon, text);
+#ifdef LAYOUT_TOUCHX
+	layout()->setContentsMargins(0, 0, 0, 10);
+#endif
+	left_button->setOnOff();
+	left_button->setCheckable(true);
+	left_button->setOffImage(bt_global::skin->getImage("unchecked"));
+	left_button->setOnImage(bt_global::skin->getImage("checked"));
+}
+
+BtButton *CheckableBanner::getButton()
+{
+	return left_button;
+}
+
+
+SingleChoiceContent::SingleChoiceContent()
+{
+	buttons.setExclusive(true);
+
+	connect(&buttons, SIGNAL(buttonClicked(int)),
+		this, SIGNAL(bannerSelected(int)));
+}
+
+void SingleChoiceContent::addBanner(CheckableBanner *bann, int id)
+{
+	buttons.addButton(bann->getButton(), id);
+	appendBanner(bann);
+}
+
+int SingleChoiceContent::checkedId() const
+{
+	return buttons.checkedId();
+}
+
+void SingleChoiceContent::setCheckedId(int id)
+{
+	buttons.button(id)->setChecked(true);
+}
+
+QList<QAbstractButton*> SingleChoiceContent::getButtons()
+{
+	return buttons.buttons();
+}
+

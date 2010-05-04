@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
-#include "bannercontent.h"
+#include "bannerpage.h"
+#include "navigation_bar.h"
 #include "banner.h"
 #include "fontmanager.h"
 
@@ -30,14 +30,45 @@
 #include <QFontMetrics>
 
 
+BannerPage::BannerPage(QWidget *parent) : ScrollablePage(parent)
+{
+}
+
+void BannerPage::inizializza()
+{
+	if (page_content)
+		page_content->initBanners();
+}
+
+void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title, QWidget *top_widget)
+{
+	buildPage(content, content, nav_bar, title, TITLE_HEIGHT, top_widget);
+}
+
+void BannerPage::buildPage(QWidget *main_widget, BannerContent *content, NavigationBar *nav_bar,
+	const QString &title, int title_height, QWidget *top_widget)
+{
+	PageTitleWidget *title_widget = 0;
+#ifdef LAYOUT_TOUCHX
+	title_widget = new PageTitleWidget(title, title_height);
+#endif
+
+	ScrollablePage::buildPage(main_widget, content, nav_bar, top_widget, title_widget);
+}
+
+void BannerPage::buildPage(const QString &title, int title_height, QWidget *top_widget)
+{
+	BannerContent *content = new BannerContent;
+
+	buildPage(content, content, new NavigationBar, title, title_height, top_widget);
+}
+
+
+
 #ifdef LAYOUT_BTOUCH
-BannerContent::BannerContent(QWidget *parent) :
-	GridContent(parent),
-	columns(1)
+BannerContent::BannerContent(QWidget *parent) : ScrollableContent(parent), columns(1)
 #else
-BannerContent::BannerContent(QWidget *parent, int _columns) :
-	GridContent(parent),
-	columns(_columns)
+BannerContent::BannerContent(QWidget *parent, int _columns) : ScrollableContent(parent), columns(_columns)
 #endif
 {
 	QGridLayout *l = static_cast<QGridLayout *>(layout());
@@ -88,7 +119,7 @@ void BannerContent::drawContent()
 {
 	QGridLayout *l = qobject_cast<QGridLayout*>(layout());
 
-	// copy the list to pass it to GridContent methods; as an alternative
+	// copy the list to pass it to ScrollableContent methods; as an alternative
 	// we could change them to template methods
 	QList<QWidget *> items;
 	for (int i = 0; i < banner_list.size(); ++i)

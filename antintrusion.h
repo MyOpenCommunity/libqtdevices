@@ -24,7 +24,8 @@
 
 #include "frame_receiver.h"
 #include "page.h"
-#include "gridcontent.h"
+#include "bannerpage.h"
+#include "scrollablepage.h" // ScrollableContent
 #include "skinmanager.h" // SkinManager::CidState
 
 #include <QString>
@@ -148,7 +149,7 @@ private slots:
 };
 
 
-class AlarmItems : public GridContent
+class AlarmItems : public ScrollableContent
 {
 Q_OBJECT
 public:

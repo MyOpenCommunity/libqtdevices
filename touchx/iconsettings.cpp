@@ -30,7 +30,6 @@
 #include "btbutton.h"
 #include "hardware_functions.h" // setBeep/getBeep/beep
 #include "bannerfactory.h"
-#include "bannercontent.h"
 #include "lansettings.h" // LanSettings, Text2Column
 #include "banner.h"
 #include "bann_settings.h" // impPassword

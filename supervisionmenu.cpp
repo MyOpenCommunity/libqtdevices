@@ -23,7 +23,6 @@
 #include "bann1_button.h"
 #include "main.h" // getPageNodeFromChildNode
 #include "xml_functions.h" // getChildren, getTextChild
-#include "bannercontent.h"
 #include "skinmanager.h"
 #include "bann2_buttons.h"
 #include "bann_energy.h" // BannLoadDiagnostic

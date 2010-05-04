@@ -20,14 +20,13 @@
 
 
 #include "page.h"
-#include "main.h" // IMG_PATH
 #include "openclient.h" // Client
 #include "btbutton.h"
 #include "transitionwidget.h"
 #include "pagecontainer.h"
 #include "navigation_bar.h"
-#include "bannercontent.h"
 #include "fontmanager.h"
+#include "main.h" // NO_SECTION
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -264,56 +263,3 @@ int Page::sectionId() const
 	return NO_SECTION;
 }
 
-
-BannerPage::BannerPage(QWidget *parent) : Page(parent)
-{
-}
-
-void BannerPage::inizializza()
-{
-	if (page_content)
-		page_content->initBanners();
-}
-
-void BannerPage::activateLayout()
-{
-	if (page_content)
-		page_content->updateGeometry();
-
-	Page::activateLayout();
-
-	if (page_content)
-		page_content->drawContent();
-}
-
-void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title, QWidget *top_widget)
-{
-	buildPage(content, content, nav_bar, title, TITLE_HEIGHT, top_widget);
-}
-
-void BannerPage::buildPage(QWidget *main_widget, BannerContent *content, NavigationBar *nav_bar,
-	const QString &title, int title_height, QWidget *top_widget)
-{
-#ifdef LAYOUT_TOUCHX
-	PageTitleWidget *title_widget = new PageTitleWidget(title, title_height);
-	Page::buildPage(main_widget, content, nav_bar, top_widget, title_widget);
-
-	connect(content, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
-#else
-	Page::buildPage(main_widget, content, nav_bar, top_widget);
-#endif
-
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
-	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
-	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(forwardClick()));
-	connect(nav_bar, SIGNAL(upClick()), content, SLOT(pgUp()));
-	connect(nav_bar, SIGNAL(downClick()), content, SLOT(pgDown()));
-	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
-}
-
-void BannerPage::buildPage(const QString &title, int title_height, QWidget *top_widget)
-{
-	BannerContent *content = new BannerContent;
-
-	buildPage(content, content, new NavigationBar, title, title_height, top_widget);
-}

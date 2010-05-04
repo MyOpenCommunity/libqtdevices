@@ -23,7 +23,7 @@
 #define LOADS_H
 
 #include "bann1_button.h" // class bannOnSx
-#include "page.h"
+#include "bannerpage.h"
 
 class QDomNode;
 

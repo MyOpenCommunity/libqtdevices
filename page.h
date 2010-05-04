@@ -30,9 +30,6 @@ class Client;
 class PageContainer;
 class QVBoxLayout;
 class TransitionWidget;
-class BannerContent;
-class NavigationBar;
-class BannerContent;
 class AbstractNavigationBar;
 
 
@@ -228,43 +225,6 @@ private:
 	static Client *client_richieste;
 	static Client *client_comandi;
 	void forceClosed();
-};
-
-
-/**
- * \class BannerPage
- *
- * A page containing a list of banners.
- */
-class BannerPage : public Page
-{
-public:
-	// the type returned by page_content
-	typedef BannerContent ContentType;
-
-	BannerPage(QWidget *parent=0);
-
-	virtual void activateLayout();
-	virtual void inizializza();
-
-protected:
-	void buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title = QString(), QWidget *top_widget=0);
-	/**
-	 * Utility function to build a standard banner page.
-	 *
-	 * Connections are created between content and navigation bar, and between content and page.
-	 */
-	void buildPage(const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget = 0);
-
-	/**
-	 * Create a page with a custom content that contains a BannerContent.
-	 *
-	 * Some pages need to display some widgets around the content. Use this overload for such cases. Only the
-	 * BannerContent will scroll using the navigation bar, the other widgets will not move.
-	 * Connections are created between content and navigation bar, and between content and page.
-	 */
-	void buildPage(QWidget *main_widget, BannerContent *content, NavigationBar *nav_bar,
-		const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget = 0);
 };
 
 #endif

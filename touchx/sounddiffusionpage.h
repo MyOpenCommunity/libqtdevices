@@ -23,7 +23,7 @@
 #ifndef SOUNDDIFFUSIONPAGE_H
 #define SOUNDDIFFUSIONPAGE_H
 
-#include "page.h"
+#include "bannerpage.h"
 #include "banner.h"
 
 class QDomNode;

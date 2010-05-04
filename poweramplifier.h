@@ -25,7 +25,7 @@
 #include "bannregolaz.h"
 #include "bann2_buttons.h" // BannOnOffState, BannOnOff2Labels
 #include "bannonoffcombo.h"
-#include "page.h"
+#include "bannerpage.h"
 
 #include <QVector>
 #include <QString>

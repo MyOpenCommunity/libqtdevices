@@ -46,30 +46,10 @@ void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QSt
 	if (!title.isNull())
 	{
 		title_widget = new PageTitleWidget(title, SMALL_TITLE_HEIGHT);
-		connect(content, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
 	}
-	Page::buildPage(content, nav_bar, 0, title_widget);
-
-	// TODO duplicated in BannerPage
-
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
-	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
-	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(forwardClick()));
-	connect(nav_bar, SIGNAL(upClick()), content, SLOT(pgUp()));
-	connect(nav_bar, SIGNAL(downClick()), content, SLOT(pgDown()));
-	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+	ScrollablePage::buildPage(content, content, nav_bar, 0, title_widget);
 }
 
-void IconPage::activateLayout()
-{
-	if (page_content)
-		page_content->updateGeometry();
-
-	Page::activateLayout();
-
-	if (page_content)
-		page_content->drawContent();
-}
 
 BtButton *IconPage::addButton(const QString &label, const QString& icon_path, int x, int y)
 {
@@ -91,7 +71,7 @@ void IconPage::addPage(Page *page, const QString &label, const QString &iconName
 	connect(page, SIGNAL(Closed()), this, SLOT(showPage()));
 }
 
-IconContent::IconContent(QWidget *parent) : GridContent(parent)
+IconContent::IconContent(QWidget *parent) : ScrollableContent(parent)
 {
 	QGridLayout *l = static_cast<QGridLayout *>(layout());
 	l->setContentsMargins(CONTENT_MARGIN, 0, CONTENT_MARGIN, 0);

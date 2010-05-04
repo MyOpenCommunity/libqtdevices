@@ -22,7 +22,7 @@
 #ifndef LIGHTING_H
 #define LIGHTING_H
 
-#include "page.h"
+#include "bannerpage.h"
 
 #include <QWidget>
 

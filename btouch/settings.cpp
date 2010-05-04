@@ -29,7 +29,6 @@
 #include "brightnesspage.h"
 #include "displaypage.h"
 #include "version.h"
-#include "bannercontent.h"
 #include "main.h"
 #include "skinmanager.h"
 

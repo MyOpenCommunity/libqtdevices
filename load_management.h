@@ -23,6 +23,7 @@
 #define LOAD_MANAGEMENT_H
 
 #include "page.h"
+#include "bannerpage.h"
 #include "energy_rates.h" // EnergyRate
 
 #include <QSignalMapper>
