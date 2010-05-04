@@ -108,6 +108,8 @@ void PageStack::addState(const State &state)
 
 void PageStack::showState(const State &state)
 {
+	Q_ASSERT_X(state.page || state.window, "PageStack::showState", "a state must have either window or page set");
+
 	if (state.page)
 	{
 		state.page->showPage();
