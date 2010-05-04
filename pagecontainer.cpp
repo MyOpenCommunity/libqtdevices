@@ -21,7 +21,6 @@
 
 #include "pagecontainer.h"
 #include "transitionwidget.h"
-#include "sottomenu.h"
 #include "page.h"
 #include "window.h"
 
@@ -37,8 +36,6 @@ namespace
 
 		if (p->layout())
 			p->activateLayout();
-		else if (sottoMenu *s = qobject_cast<sottoMenu*>(p))
-			s->forceDraw();
 	}
 }
 

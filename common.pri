@@ -137,7 +137,6 @@ HEADERS += actuators.h \
 	banner.h \
 	bannercontent.h \
 	bannerfactory.h \
-	bannfrecce.h \
 	bann_thermal_regulation.h \
 	bannonoffcombo.h \
 	bannregolaz.h \
@@ -205,7 +204,6 @@ HEADERS += actuators.h \
 	sorgentiaux.h \
 	sorgentimedia.h \
 	sorgentiradio.h \
-	sottomenu.h \
 	specialpage.h \
 	statemachine.h \
 	state_button.h \
@@ -248,7 +246,6 @@ SOURCES += actuators.cpp \
 	banner.cpp \
 	bannercontent.cpp \
 	bannerfactory.cpp \
-	bannfrecce.cpp \
 	bann_thermal_regulation.cpp \
 	bannonoffcombo.cpp \
 	bannregolaz.cpp \
@@ -316,7 +313,6 @@ SOURCES += actuators.cpp \
 	sorgentiaux.cpp \
 	sorgentimedia.cpp \
 	sorgentiradio.cpp \
-	sottomenu.cpp \
 	specialpage.cpp \
 	statemachine.cpp \
 	state_button.cpp \
