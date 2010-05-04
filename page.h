@@ -267,23 +267,4 @@ protected:
 		const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget = 0);
 };
 
-
-// NOTE: this class is temporary, to avoid problems with pages without layout
-class PageLayout : public Page
-{
-Q_OBJECT
-public:
-	PageLayout(QWidget *parent=0);
-
-	/// Add the back buttons at the bottom of Page, using the layout. The buttons
-	/// is connected with signal Closed.
-	virtual void addBackButton();
-
-protected:
-	/// The vertical layout set in the costructor of Page and preformatted
-	/// according to other pages (like sottoMenu pages..). No items are put in
-	/// layout, so you can simply ignore it if you don't use layouts.
-	QVBoxLayout *main_layout;
-};
-
 #endif

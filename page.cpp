@@ -38,8 +38,6 @@
 #include <QLabel>
 
 
-static const char *IMG_BACK = IMG_PATH "arrlf.png";
-
 // The defines to grab screenshot of pages
 #define GRAB_PAGES 0
 #define SCREENSHOT_DIR "/home/bticino/cfg/extra/0"
@@ -319,23 +317,3 @@ void BannerPage::buildPage(const QString &title, int title_height, QWidget *top_
 
 	buildPage(content, content, new NavigationBar, title, title_height, top_widget);
 }
-
-
-PageLayout::PageLayout(QWidget *parent) : Page(parent)
-{
-	main_layout = new QVBoxLayout(this);
-	main_layout->setContentsMargins(0, 5, 0, 0);
-	main_layout->setSpacing(0);
-}
-
-void PageLayout::addBackButton()
-{
-	BtButton *back_btn = new BtButton;
-	back_btn->setImage(IMG_BACK);
-	connect(back_btn, SIGNAL(clicked()), this, SIGNAL(Closed()));
-	main_layout->addStretch();
-	main_layout->addWidget(back_btn, 0, Qt::AlignLeft);
-	main_layout->addSpacing(10);
-}
-
-
