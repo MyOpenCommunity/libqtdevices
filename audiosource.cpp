@@ -21,11 +21,13 @@
 
 #include "audiosource.h"
 #include "media_device.h"
+#include "page.h"
 
 
-AudioSource::AudioSource(const QString &_area, SourceDevice *_dev) :
+AudioSource::AudioSource(const QString &_area, SourceDevice *_dev, Page *_details) :
 	BannerNew(0)
 {
+	details = _details;
 	area = _area;
 	dev = _dev;
 
@@ -35,6 +37,17 @@ AudioSource::AudioSource(const QString &_area, SourceDevice *_dev) :
 void AudioSource::turnOn()
 {
 	dev->turnOn(area);
+}
+
+void AudioSource::showDetails()
+{
+	// TODO using the page stack here means deciding what the behaviour should
+	//      be for pages that allow navigation (f.e. if cleanup should be called
+	//      for the current page, for the pushed page or for both)
+	disconnect(details, SIGNAL(Closed()), 0, 0);
+	connect(details, SIGNAL(Closed()), this, SIGNAL(pageClosed()));
+
+	details->showPage();
 }
 
 void AudioSource::valueReceivedAudioSource(const DeviceValues &values_list)

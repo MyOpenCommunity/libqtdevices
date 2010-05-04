@@ -65,6 +65,9 @@ Q_OBJECT
 public:
 	SoundSources(const QString &area, const QList<SourceDescription> &sources);
 
+signals:
+	void pageClosed();
+
 private slots:
 	void sourceCycle();
 	void sourceStateChanged(bool active);

@@ -31,17 +31,19 @@ class AudioSource : public BannerNew
 {
 Q_OBJECT
 public:
-	AudioSource(const QString &area, SourceDevice *dev);
+	AudioSource(const QString &area, SourceDevice *dev, Page *details = NULL);
 
 signals:
 	void sourceStateChanged(bool active);
 
 protected slots:
 	void turnOn();
+	void showDetails();
 
 protected:
 	QString area;
 	SourceDevice *dev;
+	Page *details;
 
 private slots:
 	void valueReceivedAudioSource(const DeviceValues &values_list);

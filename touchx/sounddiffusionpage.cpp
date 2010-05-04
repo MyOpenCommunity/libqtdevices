@@ -165,6 +165,7 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 
 		sources->addWidget(w);
 		connect(w, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
+		connect(w, SIGNAL(pageClosed()), SIGNAL(pageClosed()));
 	}
 
 	connect(cycle, SIGNAL(clicked()), SLOT(sourceCycle()));
@@ -212,10 +213,13 @@ SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<Source
 		area = getTextChild(conf_node, "env");
 	}
 
-	QWidget *top_widget = 0;
+	SoundSources *top_widget = 0;
 	// this handles the case for special ambient, which must not show sources
 	if (!sources.isEmpty())
+	{
 		top_widget = new SoundSources(area, sources);
+		connect(top_widget, SIGNAL(pageClosed()), SLOT(showPage()));
+	}
 
 	buildPage(getTextChild(conf_node, "descr"), Page::TITLE_HEIGHT, top_widget);
 	loadItems(conf_node);
