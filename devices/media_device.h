@@ -88,6 +88,7 @@ public slots:
 	void frequenceUp(QString value = QString()) const;
 	void frequenceDown(QString value = QString()) const;
 	void saveStation(QString station) const;
+	void setStation(QString station) const;
 
 	void requestFrequency() const;
 	void requestRDS() const;

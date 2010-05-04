@@ -77,6 +77,7 @@ private slots:
 	void sendFrequenceUp();
 	void sendFrequenceDown();
 	void sendSaveStation();
+	void sendSetStation();
 	void sendRequestFrequency();
 
 	void receiveFrequency();
