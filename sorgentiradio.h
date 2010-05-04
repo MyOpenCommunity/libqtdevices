@@ -43,7 +43,7 @@ class RadioSource : public AudioSource
 {
 Q_OBJECT
 public:
-	RadioSource(const QString &area, RadioSourceDevice *dev);
+	RadioSource(const QString &area, RadioSourceDevice *dev, Page *details);
 
 protected:
 	void initBanner(const QString &left, const QString &center_left, const QString &center, const QString &center_right,

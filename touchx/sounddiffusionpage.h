@@ -54,6 +54,7 @@ struct SourceDescription
 	QString where;
 	int id;
 	int cid;
+	mutable Page *details;
 };
 Q_DECLARE_TYPEINFO(SourceDescription, Q_MOVABLE_TYPE);
 

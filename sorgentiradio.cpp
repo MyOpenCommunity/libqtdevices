@@ -38,8 +38,8 @@
 #include <QLabel>
 
 
-RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev) :
-	AudioSource(area, dev)
+RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, Page *details) :
+	AudioSource(area, dev, details)
 {
 	left_button = new BtButton;
 	center_left_button = new BtButton;
@@ -83,6 +83,7 @@ RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev) :
 	connect(left_button, SIGNAL(clicked()), SLOT(turnOn()));
 	connect(center_left_button, SIGNAL(clicked()), dev, SLOT(prevTrack()));
 	connect(center_right_button, SIGNAL(clicked()), dev, SLOT(nextTrack()));
+	connect(right_button, SIGNAL(clicked()), SLOT(showDetails()));
 }
 
 void RadioSource::initBanner(const QString &left, const QString &center_left, const QString &center,

@@ -45,7 +45,7 @@ class MediaSource : public AudioSource
 {
 Q_OBJECT
 public:
-	MediaSource(const QString &area, VirtualSourceDevice *dev, const QString &description);
+	MediaSource(const QString &area, VirtualSourceDevice *dev, const QString &description, Page *details);
 
 protected:
 	void initBanner(const QString &left, const QString &center_left, const QString &center, const QString &center_right, const QString &right);

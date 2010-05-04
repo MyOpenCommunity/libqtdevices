@@ -36,6 +36,9 @@
 #include "sorgentimedia.h" // MultimediaSource
 #include "media_device.h"
 #include "devices_cache.h"
+#include "multimedia.h" // MultimediaSectionPage
+#include "multimedia_filelist.h"
+#include "radio.h" // RadioPage
 
 #include <QDomNode>
 #include <QGridLayout>
@@ -138,9 +141,11 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 		case SOURCE_RADIO_MONO:
 		case SOURCE_RADIO_MULTI:
 		{
+			if (!s.details)
+				s.details = new RadioPage;
 			RadioSourceDevice *dev = bt_global::add_device_to_cache(new RadioSourceDevice(s.where));
 
-			w = new RadioSource(area, dev);
+			w = new RadioSource(area, dev, s.details);
 			break;
 		}
 		case SOURCE_AUX_MONO:
@@ -153,9 +158,14 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 		}
 		case SOURCE_MULTIMEDIA:
 		{
+			if (!s.details)
+				s.details = new MultimediaSectionPage(getPageNode(MULTIMEDIA),
+								      MultimediaSectionPage::ITEMS_AUDIO,
+								      new MultimediaFileListPage(getFileFilter(AUDIO)));
+
 			VirtualSourceDevice *dev = bt_global::add_device_to_cache(new VirtualSourceDevice(s.where));
 
-			w = new MediaSource(area, dev, s.descr);
+			w = new MediaSource(area, dev, s.descr, s.details);
 			break;
 		}
 		default:
@@ -338,6 +348,7 @@ QList<SourceDescription> SoundDiffusionPage::loadSources(const QDomNode &config_
 		d.cid = getTextChild(source, "cid").toInt();
 		d.descr = getTextChild(source, "descr");
 		d.where = getTextChild(source, "where");
+		d.details = NULL;
 		sources_list << d;
 	}
 
@@ -349,6 +360,7 @@ QList<SourceDescription> SoundDiffusionPage::loadSources(const QDomNode &config_
 		d.cid = getTextChild(config_node, "cid").toInt();
 		d.descr = tr("Multimedia source");
 		d.where = (*bt_global::config)[SOURCE_ADDRESS];
+		d.details = NULL;
 		sources_list << d;
 	}
 

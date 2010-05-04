@@ -33,8 +33,8 @@
 #include <QHBoxLayout>
 
 
-MediaSource::MediaSource(const QString &area, VirtualSourceDevice *dev, const QString &description) :
-	AudioSource(area, dev)
+MediaSource::MediaSource(const QString &area, VirtualSourceDevice *dev, const QString &description, Page *details) :
+	AudioSource(area, dev, details)
 {
 	left_button = new BtButton;
 	center_left_button = new BtButton;
@@ -57,6 +57,7 @@ MediaSource::MediaSource(const QString &area, VirtualSourceDevice *dev, const QS
 	connect(left_button, SIGNAL(clicked()), SLOT(turnOn()));
 	connect(center_left_button, SIGNAL(clicked()), dev, SLOT(prevTrack()));
 	connect(center_right_button, SIGNAL(clicked()), dev, SLOT(nextTrack()));
+	connect(right_button, SIGNAL(clicked()), SLOT(showDetails()));
 }
 
 void MediaSource::initBanner(const QString &left, const QString &center_left, const QString &center,
