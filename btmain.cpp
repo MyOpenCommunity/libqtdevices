@@ -195,7 +195,11 @@ BtMain::BtMain(int openserver_reconnection_time)
 	if (clients.count() > 1)
 		monitor_ready = true;
 	else
-		connect(monitors[MAIN_OPENSERVER], SIGNAL(connectionUp()), SLOT(monitorReady()));
+	{
+		connect(monitors[MAIN_OPENSERVER], SIGNAL(connectionUp()), SLOT(connectionReady()));
+		connect(clients[MAIN_OPENSERVER].first, SIGNAL(connectionUp()), SLOT(connectionReady()));
+		connect(clients[MAIN_OPENSERVER].second, SIGNAL(connectionUp()), SLOT(connectionReady()));
+	}
 
 	banner::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
 	Page::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
@@ -469,11 +473,15 @@ void BtMain::init()
 		myMain();
 }
 
-void BtMain::monitorReady()
+void BtMain::connectionReady()
 {
-	monitor_ready = true;
-	if (config_loaded)
-		myMain();
+	if (monitors[MAIN_OPENSERVER]->isConnected() && clients[MAIN_OPENSERVER].first->isConnected() &&
+		clients[MAIN_OPENSERVER].second->isConnected())
+	{
+		monitor_ready = true;
+		if (config_loaded)
+			myMain();
+	}
 }
 
 void BtMain::myMain()
