@@ -294,8 +294,8 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	dev = bt_global::add_device_to_cache(new EnergyDevice(address, mode));
 	is_electricity_view = (mode == 1);
 
-	cumulative_day_value = cumulative_month_value = cumulative_year_value = 0;
-	daily_av_value = current_value = 0;
+	cumulative_day_value = cumulative_month_value = cumulative_year_value = -1;
+	daily_av_value = current_value = -1;
 
 	// We can't use frame compressor as below (or with a single what as filter), because
 	// it filter also valid requests with different what.
@@ -741,6 +741,8 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		graph_type = EnergyDevice::CUMULATIVE_DAY;
 		dev->requestCumulativeDay(selection_date);
 		dev->requestCumulativeDayGraph(selection_date);
+		cumulative_day_value = -1;
+		current_value = -1;
 		break;
 	case TimePeriodSelection::MONTH:
 		// we have to preserve the current visualized graph (can be daily average)
@@ -756,17 +758,21 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		}
 		dev->requestCumulativeMonth(selection_date);
 		dev->requestMontlyAverage(selection_date);
+		cumulative_month_value = -1;
+		daily_av_value = -1;
 		break;
 	case TimePeriodSelection::YEAR:
 		graph_type = EnergyDevice::CUMULATIVE_YEAR;
 		dev->requestCumulativeYear();
 		dev->requestCumulativeYearGraph();
+		cumulative_year_value = -1;
 		break;
 	}
 	if (widget_container->currentIndex() == GRAPH_WIDGET)
 		showGraph(graph_type, false);
 
 	setBannerPage(status, selection_date);
+	updateBanners();
 }
 
 void EnergyView::setBannerPage(int status, const QDate &selection_date)
@@ -796,30 +802,40 @@ void EnergyView::toggleCurrency()
 	updateCurrentGraph();
 }
 
+void EnergyView::updateBanner(Bann2Buttons *banner, int value, int dec, QString symbol)
+{
+	if (value == -1)
+		banner->setCentralText("---");
+	else
+	{
+		float displayed_val = EnergyConversions::convertToRawData(value,
+			is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
+
+		if (EnergyInterface::isCurrencyView())
+			displayed_val = EnergyConversions::convertToMoney(displayed_val, rate.rate);
+
+		banner->setCentralText(QString("%1 %2").arg(loc.toString(displayed_val, 'f', dec)).arg(symbol));
+	}
+}
+
 void EnergyView::updateBanners()
 {
-	float day = EnergyConversions::convertToRawData(cumulative_day_value,
-		is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
-	float current = EnergyConversions::convertToRawData(current_value,
-		is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
-	float month = EnergyConversions::convertToRawData(cumulative_month_value,
-		is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
-	float year = EnergyConversions::convertToRawData(cumulative_year_value,
-		is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
-	float average = EnergyConversions::convertToRawData(daily_av_value,
-		is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
 	QString str = unit_measure;
 	QString str_med_inst = unit_measure_med_inst;
 
 	// The number of decimals to show depends on the visualization mode
 	int dec = 0, dec_current = 0;
 
+	int current = current_value; // to preserve the stored value.
 	// display values > 1 kW as kilowatts, lower values as watts
 	if (is_electricity_view)
 	{
 		dec = 3;
 
-		if (current >= 1)
+		float cur = EnergyConversions::convertToRawData(current_value,
+			is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
+
+		if (cur >= 1 || current_value == -1)
 		{
 			dec_current = 3;
 			str_med_inst = "kW";
@@ -834,30 +850,16 @@ void EnergyView::updateBanners()
 
 	if (EnergyInterface::isCurrencyView())
 	{
-		day = EnergyConversions::convertToMoney(day, rate.rate);
-		current = EnergyConversions::convertToMoney(current, rate.rate);
-		month = EnergyConversions::convertToMoney(month, rate.rate);
-		year = EnergyConversions::convertToMoney(year, rate.rate);
-		average = EnergyConversions::convertToMoney(average, rate.rate);
 		str = rate.currency_symbol;
-		str_med_inst = rate.currency_symbol+"/h";
+		str_med_inst = rate.currency_symbol + "/h";
 		dec = 3;
 	}
 
-	cumulative_day_banner->setCentralText(QString("%1 %2")
-		.arg(loc.toString(day, 'f', dec)).arg(str));
-
-	cumulative_month_banner->setCentralText(QString("%1 %2")
-		.arg(loc.toString(month, 'f', dec)).arg(str));
-
-	cumulative_year_banner->setCentralText(QString("%1 %2")
-		.arg(loc.toString(year, 'f', dec)).arg(str));
-
-	daily_av_banner->setCentralText(QString("%1 %2")
-		.arg(loc.toString(average, 'f', dec)).arg(str));
-
-	current_banner->setCentralText(QString("%1 %2")
-		.arg(loc.toString(current, 'f', dec_current)).arg(str_med_inst));
+	updateBanner(cumulative_day_banner, cumulative_day_value, dec, str);
+	updateBanner(cumulative_month_banner, cumulative_month_value, dec, str);
+	updateBanner(cumulative_year_banner, cumulative_year_value, dec, str);
+	updateBanner(daily_av_banner, daily_av_value, dec, str);
+	updateBanner(current_banner, current, dec_current, str_med_inst);
 }
 
 void EnergyView::systemTimeChanged()

@@ -124,6 +124,7 @@ private:
 	void setBannerPage(int status, const QDate &selection_date);
 	QString dateToKey(const QDate &date, EnergyDevice::GraphType t);
 	void updateBanners();
+	void updateBanner(Bann2Buttons *banner, int value, int dec, QString symbol);
 	void updateCurrentGraph();
 	// returns true if we own the graph/table instances
 	bool isGraphOurs();
