@@ -34,6 +34,7 @@
 class radio;
 class device;
 class RadioSourceDevice;
+class RadioInfo;
 
 
 /**
@@ -55,7 +56,7 @@ private slots:
 
 private:
 	BtButton *left_button, *center_left_button, *center_right_button, *right_button;
-	QLabel *background, *radio_station, *radio_frequency, *radio_channel;
+	RadioInfo *radio_info;
 };
 
 #endif

@@ -25,6 +25,7 @@
 #include "skinmanager.h" // bt_global::skin
 #include "navigation_bar.h" // NavigationBar
 #include "media_device.h" // RadioSourceDevice
+#include "icondispatcher.h" // bt_global::icons_cache
 
 #include <QLabel>
 #include <QDebug>
@@ -47,11 +48,12 @@ namespace
 	}
 }
 
-RadioInfo::RadioInfo() : QWidget(0)
+RadioInfo::RadioInfo(const QString &background_image)
 {
-	// background image will be set using stylesheets
-	setFixedHeight(50);
-	setFixedWidth(452);
+	QPixmap background = *bt_global::icons_cache.getIcon(background_image);
+
+	setMaximumSize(background.size());
+	setPixmap(background);
 
 	QGridLayout *grid = new QGridLayout(this);
 	grid->setContentsMargins(10, 0, 5, 0);
@@ -131,7 +133,7 @@ QWidget *RadioPage::createContent()
 	QWidget *content = new QWidget;
 
 	// radio description, with frequency and memory station
-	radio_info = new RadioInfo;
+	radio_info = new RadioInfo(bt_global::skin->getImage("details_display"));
 
 	// tuning control, manual/auto buttons
 	minus_button = new BtButton(bt_global::skin->getImage("minus"));

@@ -501,8 +501,9 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_next>diffusione/successivo.png</img_next>
 		<img_previous>diffusione/precedente.png</img_previous>
 
-		<img_radio_dummy>diffusione/display.png</img_radio_dummy>
+		<img_source_background>diffusione/display.png</img_source_background>
 		<img_details>diffusione/audiosetting.png</img_details>
+		<img_details_display>diffusione/displaybig.png</img_details_display>
 	</item>
 	<!-- amplifier special ambient (multi sound diffusion) -->
 	<item>
@@ -729,7 +730,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
 		<img_next>diffusione/successivo.png</img_next>
-		<img_radio_dummy>diffusione/display.png</img_radio_dummy>
+		<img_source_background>diffusione/display.png</img_source_background>
 		<img_details>diffusione/audiosetting.png</img_details>
 	</item>
 	<!-- AUX source (mono sound diffusion) -->

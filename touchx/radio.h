@@ -26,6 +26,7 @@
 
 #include <QButtonGroup>
 #include <QTimer>
+#include <QLabel>
 
 class BtButton;
 class QLCDNumber;
@@ -33,11 +34,11 @@ class QLabel;
 class RadioSourceDevice;
 
 
-class RadioInfo : public QWidget
+class RadioInfo : public QLabel
 {
 Q_OBJECT
 public:
-	RadioInfo();
+	RadioInfo(const QString &background_image);
 
 	void setFrequency(int frequency);
 	void setChannel(int memory_channel);
