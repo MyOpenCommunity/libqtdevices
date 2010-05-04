@@ -92,7 +92,7 @@ void AdjustVolume::setLevel(int level)
 
 
 
-BannPowerAmplifierNew::BannPowerAmplifierNew(const QString &descr, const QDomNode& config_node, QString address, int openserver_id)
+BannPowerAmplifier::BannPowerAmplifier(const QString &descr, const QDomNode& config_node, QString address, int openserver_id)
 	: AdjustVolume(0)
 {
 	status = false;
@@ -113,7 +113,7 @@ BannPowerAmplifierNew::BannPowerAmplifierNew(const QString &descr, const QDomNod
 	connectButtonToPage(right_button, new PowerAmplifier(dev, config_node));
 }
 
-void BannPowerAmplifierNew::toggleStatus()
+void BannPowerAmplifier::toggleStatus()
 {
 	if (status)
 		dev->turnOff();
@@ -123,7 +123,7 @@ void BannPowerAmplifierNew::toggleStatus()
 
 // TODO: PoweramplifierDevice currently lacks the new init() method
 
-void BannPowerAmplifierNew::valueReceived(const DeviceValues &values_list)
+void BannPowerAmplifier::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())
@@ -143,9 +143,9 @@ void BannPowerAmplifierNew::valueReceived(const DeviceValues &values_list)
 			int level = trasformaVol(volume);
 			// TODO remove after aligning image names
 #ifdef LAYOUT_BTOUCH
-			Q_ASSERT_X(level > 0, "BannPowerAmplifierNew::valueReceived", "Received volume is not in range 0-31");
+			Q_ASSERT_X(level > 0, "BannPowerAmplifier::valueReceived", "Received volume is not in range 0-31");
 #else
-			Q_ASSERT_X(level >= 0, "BannPowerAmplifierNew::valueReceived", "Received volume is not in range 0-31");
+			Q_ASSERT_X(level >= 0, "BannPowerAmplifier::valueReceived", "Received volume is not in range 0-31");
 #endif
 			setLevel(level);
 		}
@@ -153,12 +153,12 @@ void BannPowerAmplifierNew::valueReceived(const DeviceValues &values_list)
 	}
 }
 
-void BannPowerAmplifierNew::volumeUp()
+void BannPowerAmplifier::volumeUp()
 {
 	dev->volumeUp();
 }
 
-void BannPowerAmplifierNew::volumeDown()
+void BannPowerAmplifier::volumeDown()
 {
 	dev->volumeDown();
 }

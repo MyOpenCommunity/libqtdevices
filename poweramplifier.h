@@ -64,16 +64,16 @@ private:
 
 
 /**
- * \class BannPowerAmplifierNew
+ * \class BannPowerAmplifier
  *
  * The main banner of the power amplifier. It instantiate the device and manage
  * the link with the page of settings.
  */
-class BannPowerAmplifierNew : public AdjustVolume
+class BannPowerAmplifier : public AdjustVolume
 {
 Q_OBJECT
 public:
-	BannPowerAmplifierNew(const QString &descr, const QDomNode& config_node, QString address, int openserver_id);
+	BannPowerAmplifier(const QString &descr, const QDomNode& config_node, QString address, int openserver_id);
 
 private slots:
 	void toggleStatus();
