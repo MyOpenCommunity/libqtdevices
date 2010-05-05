@@ -19,12 +19,8 @@
  */
 #include "stopandgo_device.h"
 
-#include <QTimer>
-
 #include "openmsg.h"
 
-
-#define REQUEST_TIMEOUT 1000
 
 namespace Commands
 {
@@ -61,19 +57,19 @@ StopAndGoDevice::StopAndGoDevice(const QString &where, int openserver_id) :
 void StopAndGoDevice::sendAutoResetActivation()
 {
 	sendCommand(Commands::AUTO_RESET_ACTIVATION);
-	QTimer::singleShot(REQUEST_TIMEOUT, this, SLOT(requestICMState()));
+	requestICMState();
 }
 
 void StopAndGoDevice::sendAutoResetDisactivation()
 {
 	sendCommand(Commands::AUTO_RESET_DISACTIVATION);
-	QTimer::singleShot(REQUEST_TIMEOUT, this, SLOT(requestICMState()));
+	requestICMState();
 }
 
 void StopAndGoDevice::requestICMState()
 {
 	sendRequest(Requests::ICM_STATE);
-	QTimer::singleShot(REQUEST_TIMEOUT, this, SLOT(requestICMState()));
+	requestICMState();
 }
 
 bool StopAndGoDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
@@ -100,25 +96,25 @@ StopAndGoPlusDevice::StopAndGoPlusDevice(const QString &where, int openserver_id
 void StopAndGoPlusDevice::sendClose()
 {
 	sendCommand(Commands::CLOSE);
-	QTimer::singleShot(REQUEST_TIMEOUT, this, SLOT(requestICMState()));
+	requestICMState();
 }
 
 void StopAndGoPlusDevice::sendOpen()
 {
 	sendCommand(Commands::OPEN);
-	QTimer::singleShot(REQUEST_TIMEOUT, this, SLOT(requestICMState()));
+	requestICMState();
 }
 
 void StopAndGoPlusDevice::sendTrackingSystemActivation()
 {
 	sendCommand(Commands::TRACKING_SYSTEM_ACTIVATION);
-	QTimer::singleShot(REQUEST_TIMEOUT, this, SLOT(requestICMState()));
+	requestICMState();
 }
 
 void StopAndGoPlusDevice::sendTrackingSystemDisactivation()
 {
 	sendCommand(Commands::TRACKING_SYSTEM_DISACTIVATION);
-	QTimer::singleShot(REQUEST_TIMEOUT, this, SLOT(requestICMState()));
+	requestICMState();
 }
 
 
@@ -131,13 +127,13 @@ StopAndGoBTestDevice::StopAndGoBTestDevice(const QString &where, int openserver_
 void StopAndGoBTestDevice::sendDiffSelftestActivation()
 {
 	sendCommand(Commands::DIFF_SELFTEST_ACTIVATION);
-	QTimer::singleShot(REQUEST_TIMEOUT, this, SLOT(requestICMState()));
+	requestICMState();
 }
 
 void StopAndGoBTestDevice::sendDiffSelftestDisactivation()
 {
 	sendCommand(Commands::DIFF_SELFTEST_DISACTIVATION);
-	QTimer::singleShot(REQUEST_TIMEOUT, this, SLOT(requestICMState()));
+	requestICMState();
 }
 
 void StopAndGoBTestDevice::sendSelftestFreq(int days)
@@ -145,8 +141,7 @@ void StopAndGoBTestDevice::sendSelftestFreq(int days)
 	Q_ASSERT_X(days >= 1 && days >= 180, "StopAndGoBTestDevice::sendSelftestFreq", "days must be between 1 and 180.");
 
 	sendFrame(QString("*#18*%1*#212*%2##").arg(where).arg(days));
-	QTimer::singleShot(REQUEST_TIMEOUT, this, SLOT(requestICMState()));
-	QTimer::singleShot(REQUEST_TIMEOUT, this, SLOT(requestSelftestFreq()));
+	requestSelftestFreq();
 }
 
 void StopAndGoBTestDevice::requestSelftestFreq()
