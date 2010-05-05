@@ -48,6 +48,7 @@
 
 bool SoundDiffusionPage::is_source = false, SoundDiffusionPage::is_amplifier = false;
 Page *SoundDiffusionPage::sound_diffusion_page = NULL;
+Page *SoundDiffusionPage::alarm_clock_page = NULL;
 Page *SoundAmbientPage::current_ambient_page = NULL;
 
 namespace
@@ -298,6 +299,44 @@ Page *SoundAmbientPage::currentAmbientPage()
 }
 
 
+SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QList<SourceDescription> &sources)
+{
+	SkinContext context(getTextChild(conf_node, "cid").toInt());
+	QString area;
+
+	if (getTextChild(conf_node, "id").toInt() == DIFSON_MONO)
+		area = "0";
+	else
+		area = getTextChild(conf_node, "env");
+
+	QList<SourceDescription> filtered_sources;
+	foreach (const SourceDescription &s, sources)
+		if (s.id != SOURCE_MULTIMEDIA)
+			filtered_sources.append(s);
+
+	SoundSources *top_widget = new SoundSources(area, filtered_sources);
+	connect(top_widget, SIGNAL(pageClosed()), SLOT(showPage()));
+
+	buildPage(getTextChild(conf_node, "descr"), Page::TITLE_HEIGHT, top_widget);
+	loadItems(conf_node);
+}
+
+void SoundAmbientAlarmPage::loadItems(const QDomNode &config_node)
+{
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		banner *b = SoundAmbientPage::getBanner(item);
+		if (b)
+		{
+			page_content->appendBanner(b);
+			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+		}
+		else
+			qFatal("ID %s not handled in SoundAmbientAlarmPage", qPrintable(getTextChild(item, "id")));
+	}
+}
+
+
 enum Items
 {
 	ITEM_SPECIAL_AMBIENT = 12020,              // special ambient
@@ -387,6 +426,8 @@ void SoundDiffusionPage::loadItemsMulti(const QDomNode &config_node)
 		else
 			qFatal("ID %s not handled in SoundDiffusionPage", qPrintable(getTextChild(item, "id")));
 	}
+
+	alarm_clock_page = new SoundDiffusionAlarmPage(config_node, sources_list);
 }
 
 void SoundDiffusionPage::loadItemsMono(const QDomNode &config_node)
@@ -396,6 +437,8 @@ void SoundDiffusionPage::loadItemsMono(const QDomNode &config_node)
 	QList<SourceDescription> sources_list = loadSources(config_node);
 	next_page = new SoundAmbientPage(config_node, sources_list);
 	connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
+
+	alarm_clock_page = new SoundAmbientAlarmPage(config_node, sources_list);
 }
 
 banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources)
@@ -436,6 +479,11 @@ void SoundDiffusionPage::showPage()
 		BannerPage::showPage();
 }
 
+Page *SoundDiffusionPage::alarmClockPage()
+{
+	return alarm_clock_page;
+}
+
 void SoundDiffusionPage::showCurrentAmbientPage()
 {
 	Page *current_ambient_page = SoundAmbientPage::currentAmbientPage();
@@ -458,6 +506,37 @@ bool SoundDiffusionPage::isSource()
 bool SoundDiffusionPage::isAmplifier()
 {
 	return is_amplifier;
+}
+
+
+SoundDiffusionAlarmPage::SoundDiffusionAlarmPage(const QDomNode &config_node, const QList<SourceDescription> &sources)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
+	buildPage(getTextChild(config_node, "descr"));
+	loadItems(config_node, sources);
+}
+
+void SoundDiffusionAlarmPage::loadItems(const QDomNode &config_node, const QList<SourceDescription> &sources)
+{
+	foreach (const QDomNode &item_node, getChildren(config_node, "item"))
+	{
+		SkinContext context(getTextChild(item_node, "cid").toInt());
+		int id = getTextChild(item_node, "id").toInt();
+		QDomNode page_node = getPageNodeFromChildNode(item_node, "lnk_pageID");
+
+		if (id == ITEM_SPECIAL_AMBIENT)
+			continue;
+		if (id != ITEM_AMBIENT)
+			qFatal("ID %s not handled in SoundDiffusionAlarmPage", qPrintable(getTextChild(item_node, "id")));
+
+		SoundAmbient *b = new SoundAmbient(getTextChild(item_node, "descr"), getTextChild(item_node, "env"));
+		SoundAmbientAlarmPage *p = new SoundAmbientAlarmPage(page_node, sources);
+		b->connectRightButton(p);
+
+		page_content->appendBanner(b);
+		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+	}
 }
 
 

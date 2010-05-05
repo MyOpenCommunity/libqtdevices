@@ -104,6 +104,21 @@ private:
 	static Page *current_ambient_page;
 };
 
+
+/**
+ * Ambient page for the alarm clock: has sources as top widget and amplifiers below
+ */
+class SoundAmbientAlarmPage : public BannerPage
+{
+Q_OBJECT
+public:
+	SoundAmbientAlarmPage(const QDomNode &conf_node, const QList<SourceDescription> &sources);
+
+private:
+	void loadItems(const QDomNode &config_node);
+};
+
+
 /**
  * General sound diffusion page. Shown only in multi sound diffusion.
  *
@@ -117,7 +132,10 @@ public:
 	SoundDiffusionPage(const QDomNode &config_node);
 	virtual int sectionId() const;
 
+	static banner *getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources);
+
 	static void showCurrentAmbientPage();
+	static Page *alarmClockPage();
 	static bool isSource();
 	static bool isAmplifier();
 
@@ -128,12 +146,26 @@ private:
 	void loadItemsMulti(const QDomNode &config_node);
 	void loadItemsMono(const QDomNode &config_node);
 
-	banner *getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources);
-
 private:
 	Page *next_page;
-	static Page *sound_diffusion_page;
+	static Page *sound_diffusion_page, *alarm_clock_page;
 	static bool is_source, is_amplifier;
+};
+
+
+/**
+ * General sound diffusion page for the alarm clock. Shown only in multi sound diffusion.
+ *
+ * The main difference from SoundDiffusionPage is that the special ambient is not shown.
+ */
+class SoundDiffusionAlarmPage : public BannerPage
+{
+Q_OBJECT
+public:
+	SoundDiffusionAlarmPage(const QDomNode &config_node, const QList<SourceDescription> &sources);
+
+private:
+	void loadItems(const QDomNode &config_node, const QList<SourceDescription> &sources);
 };
 
 
