@@ -22,7 +22,7 @@
 #ifndef POWER_AMPLIFIER_H
 #define POWER_AMPLIFIER_H
 
-#include "bannregolaz.h"
+#include "bannregolaz.h" // Bannlevel
 #include "bann2_buttons.h" // BannOnOffState, BannOnOff2Labels
 #include "bannonoffcombo.h"
 #include "bannerpage.h"
@@ -64,16 +64,16 @@ private:
 
 
 /**
- * \class BannPowerAmplifierNew
+ * \class BannPowerAmplifier
  *
  * The main banner of the power amplifier. It instantiate the device and manage
  * the link with the page of settings.
  */
-class BannPowerAmplifierNew : public AdjustVolume
+class BannPowerAmplifier : public AdjustVolume
 {
 Q_OBJECT
 public:
-	BannPowerAmplifierNew(const QString &descr, const QDomNode& config_node, QString address, int openserver_id);
+	BannPowerAmplifier(const QString &descr, const QDomNode& config_node, QString address, int openserver_id);
 
 private slots:
 	void toggleStatus();
@@ -83,32 +83,6 @@ private slots:
 
 private:
 	QString off_icon, on_icon;
-	bool status;
-	PowerAmplifierDevice *dev;
-};
-
-
-
-/**
- * \class BannPowerAmplifier
- *
- * The main banner of the power amplifier. It instantiate the device and manage
- * the link with the page of settings.
- * TODO: must be removed once the old sound diffusion is gone also on BTouch
- */
-class BannPowerAmplifier : public bannRegolaz
-{
-Q_OBJECT
-public:
-	BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString address, int openserver_id);
-
-private slots:
-	void toggleStatus();
-	void volumeUp();
-	void volumeDown();
-	void valueReceived(const DeviceValues &values_list);
-
-private:
 	bool status;
 	PowerAmplifierDevice *dev;
 };

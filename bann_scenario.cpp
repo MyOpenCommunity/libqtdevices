@@ -132,7 +132,7 @@ void ScenarioModule::valueReceived(const DeviceValues &values_list)
 					changeLeftFunction(SLOT(stopEditing()));
 					// remove pencil icon from the banner but leave it capable of stopping scenario
 					// programming
-					if (has_started_prog)
+					if (!has_started_prog)
 						setState(LOCKED);
 				}
 				else

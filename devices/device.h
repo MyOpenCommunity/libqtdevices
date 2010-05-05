@@ -81,6 +81,7 @@ private:
 class device : public QObject, FrameReceiver
 {
 friend class TestDevice;
+friend class BtMain;
 Q_OBJECT
 
 public:
@@ -154,6 +155,9 @@ protected:
 	// above regarding the manageFrame method). Return true if the argument frame
 	// was recognized and processed.
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list) { return false; }
+
+private:
+	static OpenServerManager *getManager(int openserver_id);
 
 private slots:
 	void emitCompressedFrame(int what);

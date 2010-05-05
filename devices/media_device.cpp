@@ -162,6 +162,11 @@ void RadioSourceDevice::saveStation(QString station) const
 	sendCommand(QString("%1#%2").arg(REQ_SAVE_STATION).arg(station));
 }
 
+void RadioSourceDevice::setStation(QString station) const
+{
+	sendFrame(createWriteDimensionFrame(who, QString("%1*%2").arg(DIM_TRACK).arg(station), where));
+}
+
 void RadioSourceDevice::requestFrequency() const
 {
 	sendRequest(DIM_FREQUENCY);

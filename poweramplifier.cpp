@@ -92,7 +92,7 @@ void AdjustVolume::setLevel(int level)
 
 
 
-BannPowerAmplifierNew::BannPowerAmplifierNew(const QString &descr, const QDomNode& config_node, QString address, int openserver_id)
+BannPowerAmplifier::BannPowerAmplifier(const QString &descr, const QDomNode& config_node, QString address, int openserver_id)
 	: AdjustVolume(0)
 {
 	status = false;
@@ -113,7 +113,7 @@ BannPowerAmplifierNew::BannPowerAmplifierNew(const QString &descr, const QDomNod
 	connectButtonToPage(right_button, new PowerAmplifier(dev, config_node));
 }
 
-void BannPowerAmplifierNew::toggleStatus()
+void BannPowerAmplifier::toggleStatus()
 {
 	if (status)
 		dev->turnOff();
@@ -123,7 +123,7 @@ void BannPowerAmplifierNew::toggleStatus()
 
 // TODO: PoweramplifierDevice currently lacks the new init() method
 
-void BannPowerAmplifierNew::valueReceived(const DeviceValues &values_list)
+void BannPowerAmplifier::valueReceived(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())
@@ -143,80 +143,11 @@ void BannPowerAmplifierNew::valueReceived(const DeviceValues &values_list)
 			int level = trasformaVol(volume);
 			// TODO remove after aligning image names
 #ifdef LAYOUT_BTOUCH
-			Q_ASSERT_X(level > 0, "BannPowerAmplifierNew::valueReceived", "Received volume is not in range 0-31");
+			Q_ASSERT_X(level > 0, "BannPowerAmplifier::valueReceived", "Received volume is not in range 0-31");
 #else
-			Q_ASSERT_X(level >= 0, "BannPowerAmplifierNew::valueReceived", "Received volume is not in range 0-31");
+			Q_ASSERT_X(level >= 0, "BannPowerAmplifier::valueReceived", "Received volume is not in range 0-31");
 #endif
 			setLevel(level);
-		}
-		++it;
-	}
-}
-
-void BannPowerAmplifierNew::volumeUp()
-{
-	dev->volumeUp();
-}
-
-void BannPowerAmplifierNew::volumeDown()
-{
-	dev->volumeDown();
-}
-
-
-
-
-
-
-BannPowerAmplifier::BannPowerAmplifier(QWidget *parent, const QDomNode& config_node, QString address, int openserver_id)
-	: bannRegolaz(parent)
-{
-	setRange(1, 9);
-	setValue(1);
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-	SetIcons(bt_global::skin->getImage("settings"), bt_global::skin->getImage("on"),
-		bt_global::skin->getImage("volume_active"), bt_global::skin->getImage("volume_inactive"), true);
-	setAddress(address);
-	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address, openserver_id));
-	connect(dev, SIGNAL(valueReceived(const DeviceValues&)), SLOT(valueReceived(const DeviceValues&)));
-
-	connect(this, SIGNAL(dxClick()), SLOT(toggleStatus()));
-	connect(this, SIGNAL(cdxClick()), SLOT(volumeUp()));
-	connect(this, SIGNAL(csxClick()), SLOT(volumeDown()));
-
-	status = false;
-
-	connectDxButton(new PowerAmplifier(dev, config_node));
-}
-
-void BannPowerAmplifier::toggleStatus()
-{
-	if (status)
-		dev->turnOff();
-	else
-		dev->turnOn();
-}
-
-void BannPowerAmplifier::valueReceived(const DeviceValues &values_list)
-{
-	DeviceValues::const_iterator it = values_list.constBegin();
-	while (it != values_list.constEnd())
-	{
-		if (it.key() == PowerAmplifierDevice::DIM_STATUS)
-		{
-			status = it.value().toBool();
-			impostaAttivo(status);
-			SetIcons(1, bt_global::skin->getImage(status ? "off" : "on"));
-			Draw();
-		}
-		else if (it.key() == PowerAmplifierDevice::DIM_VOLUME)
-		{
-			int volume = it.value().toInt();
-			// We have to normalize the volume value (from 0 to 31) in a value
-			// that we can represent into the banner (that accept values from 1 to 9)
-			// so we use the following formula.
-			setValue(trasformaVol(volume));
-			Draw();
 		}
 		++it;
 	}

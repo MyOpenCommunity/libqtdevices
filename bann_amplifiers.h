@@ -22,14 +22,12 @@
 #ifndef AMPLIFICATORI_H
 #define AMPLIFICATORI_H
 
-#include "bannregolaz.h"
+#include "bannregolaz.h" // BannLevel
 
 #include <QWidget>
 #include <QString>
 #include <QList>
 
-class device_status;
-class device;
 class AmplifierDevice;
 
 

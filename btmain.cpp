@@ -189,6 +189,11 @@ BtMain::BtMain(int openserver_reconnection_time)
 	client_supervisor->forwardFrame(monitors[MAIN_OPENSERVER]);
 #endif
 
+	banner::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
+	Page::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
+	FrameReceiver::setClientsMonitor(monitors);
+	device::setClients(clients);
+
 	// When only the main openserver is defined the homepage is showed only when
 	// the monitor of the openserver is up. Otherwise the homepage is showed as
 	// soon as the configuration is loaded.
@@ -196,15 +201,10 @@ BtMain::BtMain(int openserver_reconnection_time)
 		monitor_ready = true;
 	else
 	{
-		connect(monitors[MAIN_OPENSERVER], SIGNAL(connectionUp()), SLOT(connectionReady()));
-		connect(clients[MAIN_OPENSERVER].first, SIGNAL(connectionUp()), SLOT(connectionReady()));
-		connect(clients[MAIN_OPENSERVER].second, SIGNAL(connectionUp()), SLOT(connectionReady()));
-	}
+		OpenServerManager *manager = device::getManager(MAIN_OPENSERVER);
 
-	banner::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
-	Page::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
-	FrameReceiver::setClientsMonitor(monitors);
-	device::setClients(clients);
+		connect(manager, SIGNAL(connectionUp()), SLOT(connectionReady()));
+	}
 
 	window_container = new WindowContainer(maxWidth(), maxHeight());
 	page_container = window_container->centralLayout();
@@ -475,13 +475,9 @@ void BtMain::init()
 
 void BtMain::connectionReady()
 {
-	if (monitors[MAIN_OPENSERVER]->isConnected() && clients[MAIN_OPENSERVER].first->isConnected() &&
-		clients[MAIN_OPENSERVER].second->isConnected())
-	{
-		monitor_ready = true;
-		if (config_loaded)
-			myMain();
-	}
+	monitor_ready = true;
+	if (config_loaded)
+		myMain();
 }
 
 void BtMain::myMain()

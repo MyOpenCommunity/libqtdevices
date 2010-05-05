@@ -20,11 +20,9 @@
 
 
 #include "bann_amplifiers.h"
-#include "generic_functions.h" // createCommandFrame, trasformaVol
-#include "device_status.h"
-#include "deviceold.h"
-#include "devices_cache.h" // bt_global::devices_cache
+#include "devices_cache.h" // bt_global::add_device_to_cache
 #include "skinmanager.h" // bt_global::skin
+#include "generic_functions.h" // getBostikName
 #include "media_device.h"
 #include "btbutton.h"
 

@@ -484,12 +484,13 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_goto_sounddiffusion>multimediale/godiffusion.png</img_goto_sounddiffusion>
 		<img_tray_player>home/backtemp.png</img_tray_player>
 	</item>
-	<!-- rds radio -->
+	<!-- rds radio (multi sound diffusion) -->
 	<item>
 		<cid>12001</cid>
 		<!--
-		RDS Radio control page (multichannel)
-		Images: img_plus, img_minus, img_num_1, img_num_2, img_num_3, img_num_4, img_num_5
+		RDS Radio source banner and control page (multichannel)
+		Images: img_plus, img_minus, img_num_1, img_num_2, img_num_3, img_num_4, img_num_5 on
+		Notes: There's also an image set in the stylesheet above
 		-->
 		<img_cycle>diffusione/cycle.png</img_cycle>
 		<img_auto_on>diffusione/autoon.png</img_auto_on>
@@ -499,6 +500,10 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_memory>diffusione/mem.png</img_memory>
 		<img_next>diffusione/successivo.png</img_next>
 		<img_previous>diffusione/precedente.png</img_previous>
+
+		<img_source_background>diffusione/display.png</img_source_background>
+		<img_details>diffusione/audiosetting.png</img_details>
+		<img_details_display>diffusione/displaybig.png</img_details_display>
 	</item>
 	<!-- amplifier special ambient (multi sound diffusion) -->
 	<item>
@@ -611,7 +616,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
 		<img_next>diffusione/successivo.png</img_next>
-		<img_multimedia_dummy>diffusione/display.png</img_multimedia_dummy>
+		<img_source_background>diffusione/display.png</img_source_background>
 		<img_details>diffusione/contenutimultimediali.png</img_details>
 	</item>
 	<!-- special ambient -->
@@ -632,18 +637,6 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_ambient>diffusione/imgamb.png</img_ambient>
 		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
 	</item>
-	<!-- RDS radio source (multi sound diffusion) -->
-	<item>
-		<cid>12001</cid>
-		<!--
-		Other images: on
-		Notes: There's also an image set in the stylesheet above
-		-->
-		<img_previous>diffusione/precedente.png</img_previous>
-		<img_next>diffusione/successivo.png</img_next>
-		<img_radio_dummy>diffusione/display.png</img_radio_dummy>
-		<img_details>diffusione/audiosetting.png</img_details>
-	</item>
 	<!-- AUX source (multi sound diffusion) -->
 	<item>
 		<cid>12002</cid>
@@ -653,7 +646,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
 		<img_next>diffusione/successivo.png</img_next>
-		<img_aux_dummy>diffusione/display.png</img_aux_dummy>
+		<img_source_background>diffusione/display.png</img_source_background>
 	</item>
 	<!-- mono channel sound diffusion -->
 	<!-- sound diffusion page (mono sound diffusion) -->
@@ -665,8 +658,15 @@ MessagePage QLabel#Text { background-color: #000000; }
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
 		<img_next>diffusione/successivo.png</img_next>
-		<img_multimedia_dummy>diffusione/display.png</img_multimedia_dummy>
+		<img_source_background>diffusione/display.png</img_source_background>
 		<img_details>diffusione/contenutimultimediali.png</img_details>
+
+		<!-- rds radio source -->
+		<img_auto_on>diffusione/autoon.png</img_auto_on>
+		<img_auto_off>diffusione/autooff.png</img_auto_off>
+		<img_man_on>diffusione/manualeon.png</img_man_on>
+		<img_man_off>diffusione/manualeoff.png</img_man_off>
+		<img_details_display>diffusione/displaybig.png</img_details_display>
 
                 <!-- TODO duplicated in the multimedia section, move to
                      common section -->
@@ -737,7 +737,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
 		<img_next>diffusione/successivo.png</img_next>
-		<img_radio_dummy>diffusione/display.png</img_radio_dummy>
+		<img_source_background>diffusione/display.png</img_source_background>
 		<img_details>diffusione/audiosetting.png</img_details>
 	</item>
 	<!-- AUX source (mono sound diffusion) -->
@@ -749,7 +749,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
 		<img_next>diffusione/successivo.png</img_next>
-		<img_aux_dummy>diffusione/display.png</img_aux_dummy>
+		<img_source_background>diffusione/display.png</img_source_background>
 	</item>
 
 

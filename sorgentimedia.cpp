@@ -41,7 +41,7 @@ MediaSource::MediaSource(const QString &area, VirtualSourceDevice *dev, const QS
 	right_button = new BtButton;
 	center_icon = new TextOnImageLabel(0, description);
 	center_icon->setFont(bt_global::font->get(FontManager::AUDIO_SOURCE_TEXT));
-	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("multimedia_dummy"),
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("source_background"),
 		bt_global::skin->getImage("next"), bt_global::skin->getImage("details"));
 	QHBoxLayout *hbox = new QHBoxLayout(this);
 	hbox->setContentsMargins(0, 0, 0, 0);

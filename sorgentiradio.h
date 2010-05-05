@@ -22,9 +22,7 @@
 #ifndef SORGENTI_RADIO_H
 #define SORGENTI_RADIO_H
 
-#include "bannciclaz.h"
 #include "audiosource.h"
-#include "device_status.h"
 
 #include <QList>
 #include <QString>
@@ -34,6 +32,7 @@
 class radio;
 class device;
 class RadioSourceDevice;
+class RadioInfo;
 
 
 /**
@@ -55,7 +54,7 @@ private slots:
 
 private:
 	BtButton *left_button, *center_left_button, *center_right_button, *right_button;
-	QLabel *background, *radio_station, *radio_frequency, *radio_channel;
+	RadioInfo *radio_info;
 };
 
 #endif

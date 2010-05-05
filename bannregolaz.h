@@ -66,25 +66,4 @@ signals:
 	void center_right_clicked();
 };
 
-/*!
-  \class bannRegolaz
-  \brief This is a class that describes a banner with a button on the right and on the left and two adjacent buttons on the center (thought to represent each one an half of the same image) and a text in the bottom.
-*/
-
-class bannRegolaz : public BannerOld
-{
-	Q_OBJECT
-public:
-	bannRegolaz(QWidget *parent);
-
-private slots:
-	void armTimRipdx();
-	void armTimRipsx();
-	void killTimRipdx();
-	void killTimRipsx();
-
-private:
-	QTimer *timRip;
-};
-
 #endif //BANNREGOLAZ_H
