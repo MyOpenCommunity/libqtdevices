@@ -114,6 +114,9 @@ Q_OBJECT
 public:
 	SoundAmbientAlarmPage(const QDomNode &conf_node, const QList<SourceDescription> &sources);
 
+signals:
+	void saveVolumes();
+
 private:
 	void loadItems(const QDomNode &config_node);
 };
@@ -163,6 +166,9 @@ class SoundDiffusionAlarmPage : public BannerPage
 Q_OBJECT
 public:
 	SoundDiffusionAlarmPage(const QDomNode &config_node, const QList<SourceDescription> &sources);
+
+signals:
+	void saveVolumes();
 
 private:
 	void loadItems(const QDomNode &config_node, const QList<SourceDescription> &sources);

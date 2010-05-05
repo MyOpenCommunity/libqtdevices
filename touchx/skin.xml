@@ -612,7 +612,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>12121</cid>
 
 		<!-- multimedia source
-		Other images: on, off
+		Other images: on, off, ok
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
 		<img_next>diffusione/successivo.png</img_next>
@@ -663,7 +663,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>11000</cid>
 
 		<!-- multimedia source
-		Other images: on, off
+		Other images: on, off, ok
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
 		<img_next>diffusione/successivo.png</img_next>

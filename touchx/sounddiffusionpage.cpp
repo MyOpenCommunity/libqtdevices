@@ -38,6 +38,7 @@
 #include "multimedia.h" // MultimediaSectionPage
 #include "multimedia_filelist.h"
 #include "radio.h" // RadioPage
+#include "navigation_bar.h"
 
 #include <QDomNode>
 #include <QGridLayout>
@@ -317,7 +318,19 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 	SoundSources *top_widget = new SoundSources(area, filtered_sources);
 	connect(top_widget, SIGNAL(pageClosed()), SLOT(showPage()));
 
-	buildPage(getTextChild(conf_node, "descr"), Page::TITLE_HEIGHT, top_widget);
+	QWidget *main_widget = new QWidget;
+	QVBoxLayout *l = new QVBoxLayout(main_widget);
+	BannerContent *content = new BannerContent;
+	NavigationBar *nav_bar = new NavigationBar;
+	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
+
+	connect(ok, SIGNAL(clicked()), SIGNAL(saveVolumes()));
+
+	l->addWidget(top_widget);
+	l->addWidget(content, 1);
+	l->addWidget(ok, 0, Qt::AlignRight);
+
+	buildPage(main_widget, content, nav_bar, getTextChild(conf_node, "descr"), Page::SMALL_TITLE_HEIGHT);
 	loadItems(conf_node);
 }
 
@@ -536,6 +549,7 @@ void SoundDiffusionAlarmPage::loadItems(const QDomNode &config_node, const QList
 
 		page_content->appendBanner(b);
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+		connect(p, SIGNAL(saveVolumes()), SIGNAL(saveVolumes()));
 	}
 }
 
