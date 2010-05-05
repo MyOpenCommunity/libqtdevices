@@ -47,6 +47,8 @@ public:
 
 	SourceDevice(QString source, int openserver_id = 0);
 
+	virtual void init();
+
 public slots:
 	virtual void nextTrack();
 	virtual void prevTrack();

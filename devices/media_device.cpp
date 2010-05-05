@@ -63,6 +63,11 @@ SourceDevice::SourceDevice(QString source, int openserver_id) :
 	source_id = source;
 }
 
+void SourceDevice::init()
+{
+	requestActiveAreas();
+}
+
 void SourceDevice::nextTrack()
 {
 	sendCommand(REQ_NEXT_TRACK);
