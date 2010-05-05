@@ -391,10 +391,19 @@ bool AmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 VirtualAmplifierDevice::VirtualAmplifierDevice(const QString &where, int openserver_id) :
 	AmplifierDevice(where, openserver_id)
 {
+	status = false;
+	volume = 0;
 }
 
-void VirtualAmplifierDevice::updateStatus(bool status)
+void VirtualAmplifierDevice::init()
 {
+	updateStatus(status);
+	updateVolume(volume);
+}
+
+void VirtualAmplifierDevice::updateStatus(bool _status)
+{
+	status = _status;
 	sendFrame(createDimensionFrame(who, QString("12*%1*3").arg(status), where));
 
 	DeviceValues values_list;
@@ -403,8 +412,9 @@ void VirtualAmplifierDevice::updateStatus(bool status)
 	emit valueReceived(values_list);
 }
 
-void VirtualAmplifierDevice::updateVolume(int volume)
+void VirtualAmplifierDevice::updateVolume(int _volume)
 {
+	volume = _volume;
 	sendFrame(createDimensionFrame(who, QString("1*%1").arg(volume), where));
 
 	DeviceValues values_list;

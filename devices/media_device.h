@@ -174,6 +174,8 @@ public:
 
 	VirtualAmplifierDevice(const QString &where, int openserver_id = 0);
 
+	virtual void init();
+
 	// must be called every time status/volume is set to inform other devices on the bus
 	void updateStatus(bool status);
 	void updateVolume(int volume);
@@ -185,6 +187,10 @@ public:
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+
+private:
+	bool status;
+	int volume;
 };
 
 
