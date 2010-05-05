@@ -86,6 +86,8 @@ public:
 
 	RadioSourceDevice(QString source_id, int openserver_id = 0);
 
+	virtual void init();
+
 public slots:
 	void frequenceUp(QString value = QString()) const;
 	void frequenceDown(QString value = QString()) const;

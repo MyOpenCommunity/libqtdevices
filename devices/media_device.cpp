@@ -155,6 +155,15 @@ RadioSourceDevice::RadioSourceDevice(QString source_id, int openserver_id) :
 {
 }
 
+void RadioSourceDevice::init()
+{
+	SourceDevice::init();
+
+	requestTrack();
+	requestFrequency();
+	requestRDS();
+}
+
 void RadioSourceDevice::frequenceUp(QString value) const
 {
 	sendCommand(QString("%1#%2").arg(REQ_FREQUENCE_UP).arg(value));
