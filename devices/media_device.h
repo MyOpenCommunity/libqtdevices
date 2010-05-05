@@ -48,8 +48,8 @@ public:
 	SourceDevice(QString source, int openserver_id = 0);
 
 public slots:
-	void nextTrack() const;
-	void prevTrack() const;
+	virtual void nextTrack();
+	virtual void prevTrack();
 	void turnOn(QString area) const;
 	void requestTrack() const;
 
@@ -113,6 +113,9 @@ public:
 	};
 
 	VirtualSourceDevice(QString address, int openserver_id = 0);
+
+	virtual void nextTrack();
+	virtual void prevTrack();
 
 	static QString createMediaInitFrame(bool is_multichannel, const QString &source_addr, const QString &ampli_addr);
 

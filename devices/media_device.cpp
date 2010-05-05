@@ -60,12 +60,12 @@ SourceDevice::SourceDevice(QString source, int openserver_id) :
 	source_id = source;
 }
 
-void SourceDevice::nextTrack() const
+void SourceDevice::nextTrack()
 {
 	sendCommand(REQ_NEXT_TRACK);
 }
 
-void SourceDevice::prevTrack() const
+void SourceDevice::prevTrack()
 {
 	sendCommand(REQ_PREV_TRACK);
 }
@@ -228,6 +228,22 @@ VirtualSourceDevice::VirtualSourceDevice(QString address, int openserver_id) :
 	SourceDevice(address, openserver_id)
 {
 
+}
+
+void VirtualSourceDevice::nextTrack()
+{
+	DeviceValues values_list;
+
+	values_list[REQ_NEXT_TRACK] = true;
+	emit valueReceived(values_list);
+}
+
+void VirtualSourceDevice::prevTrack()
+{
+	DeviceValues values_list;
+
+	values_list[REQ_PREV_TRACK] = true;
+	emit valueReceived(values_list);
 }
 
 bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
