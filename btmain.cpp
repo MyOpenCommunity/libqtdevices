@@ -128,8 +128,6 @@ BtMain::BtMain(int openserver_reconnection_time)
 {
 	boot_time = new QTime;
 	boot_time->start();
-	difSon = 0;
-	dm = 0;
 	screensaver = 0;
 	// construct global objects
 	bt_global::config = new QHash<GlobalFields, QString>();

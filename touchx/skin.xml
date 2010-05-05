@@ -1225,6 +1225,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_arrow_down>setup/meno.png</img_arrow_down>
 		<img_day_on>setup/giornoon.png</img_day_on>
 		<img_day_off>setup/giornooff.png</img_day_off>
+		<img_goto_sounddiffusion>multimediale/godiffusion.png</img_goto_sounddiffusion>
 	</item>
 	<!-- Entryphone call page -->
 	<item>

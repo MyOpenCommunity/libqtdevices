@@ -33,6 +33,9 @@
 #include "alarmsounddiff_device.h"
 #include "navigation_bar.h"
 #include "generic_functions.h" // getBostikName
+#ifdef LAYOUT_TOUCHX
+#include "sounddiffusionpage.h" // alarmClockPage
+#endif
 
 #include <openmsg.h>
 
@@ -506,37 +509,23 @@ QList<bool> AlarmClockFreq::getAlarmDays() const
 
 AlarmClockSoundDiff::AlarmClockSoundDiff(AlarmClock *alarm_page)
 {
-	// TODO fix alarm clock with sound diffusion
-#if 0
-	if (bt_global::btmain->difSon)
-		difson = bt_global::btmain->difSon;
-	if (bt_global::btmain->dm)
-		difson = bt_global::btmain->dm;
-#endif
-
 	connect(this, SIGNAL(Closed()), alarm_page, SLOT(handleClose()));
 }
 
 void AlarmClockSoundDiff::showPage()
 {
-	Page::showPage();
+#ifdef LAYOUT_TOUCHX
+	Page *difson = SoundDiffusionPage::alarmClockPage();
+	disconnect(difson, SIGNAL(Closed()), 0, 0);
+	connect(difson, SIGNAL(Closed()), SIGNAL(Closed()));
 
-	// reparent only if we have a multichannel sound diffusion
-	if (bt_global::btmain->dm)
-		difson->setParent(this);
-	difson->forceDraw();
 	difson->showPage();
-
-	connect(difson, SIGNAL(Closed()), SLOT(handleClose()));
+#else
+	Q_ASSERT_X(false, "AlarmClockSoundDiff::showPage", "No sound diffusion alarm clock for BTouch yet");
+#endif
 }
 
-void AlarmClockSoundDiff::handleClose()
-{
-	disconnect(difson, SIGNAL(Closed()), this, SLOT(handleClose()));
-	emit Closed();
-}
-
-// AlarmClockDateTime implementation
+// AlarmClockTimeFreq implementation
 
 AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 {
@@ -582,7 +571,15 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 
 	top->addLayout(icon_label, 1);
 	top->addWidget(edit, 1);
-	top->addStretch(1);
+	if (alarm_page->type == AlarmClock::DI_SON)
+	{
+		BtButton *go_difson = new BtButton(bt_global::skin->getImage("goto_sounddiffusion"));
+		connect(go_difson, SIGNAL(clicked()), alarm_page, SLOT(showSoundDiffPage()));
+
+		top->addWidget(go_difson, 1, Qt::AlignCenter);
+	}
+	else
+		top->addStretch(1);
 
 	QList<bool> active = alarm_page->days;
 
@@ -635,4 +632,3 @@ void AlarmClockTimeFreq::setActive(bool active)
 {
 	alarm_label->setPixmap(getBostikName(alarm_icon, active ? "on" : "off"));
 }
-

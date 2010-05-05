@@ -28,8 +28,6 @@
 #include <QDateTime>
 
 
-class SoundDiffusion;
-class MultiSoundDiffAlarm;
 class Version;
 class HomePage;
 class Calibrate;
@@ -63,8 +61,6 @@ friend class HomePage;
 public:
 	BtMain(int openserver_reconnection_time);
 	~BtMain();
-	SoundDiffusion *difSon;
-	MultiSoundDiffAlarm *dm;
 	Version *version;
 
 	void resetTimer();

@@ -237,15 +237,6 @@ public:
   \brief Draws the first page for alarm set setting and initializes some connections.
 */
 	virtual void showPage();
-
-private slots:
-/*!
-  \brief Executed when the alarm set sequency is closed to save the data and adjust sound diffusion page if necessary.
-*/
-	void handleClose();
-
-private:
-	Page *difson;
 };
 
 
