@@ -111,11 +111,9 @@ void AlarmClock::showTypePage()
 	alarm_type->showPage();
 }
 
-void AlarmClock::handleClose()
+void AlarmClock::saveAndActivate()
 {
-	dev->setReceiveFrames(false);
 	setActive(true);
-	emit Closed();
 	alarmTime = alarm_time->getAlarmTime();
 	freq = alarm_type->getAlarmFreq();
 	days = alarm_type->getAlarmDays();
@@ -140,8 +138,7 @@ void AlarmClock::handleClose()
 	setCfgValue(data, item_id);
 #endif
 
-	if (aggiornaDatiEEprom)
-		setAlarmVolumes(serNum-1, volSveglia, sorgente, stazione);
+	emit Closed();
 }
 
 void AlarmClock::showSoundDiffPage()
@@ -154,6 +151,23 @@ void AlarmClock::showSoundDiffPage()
 		volSveglia[idx] = -1;
 
 	alarm_sound_diff->showPage();
+}
+
+void AlarmClock::saveVolumes()
+{
+	dev->setReceiveFrames(false);
+
+	if (aggiornaDatiEEprom)
+		setAlarmVolumes(serNum-1, volSveglia, sorgente, stazione);
+	aggiornaDatiEEprom = 0;
+	showPage();
+}
+
+void AlarmClock::resetVolumes()
+{
+	dev->setReceiveFrames(false);
+	aggiornaDatiEEprom = 0;
+	showPage();
 }
 
 void AlarmClock::setActive(bool a)
@@ -410,7 +424,10 @@ void AlarmClock::spegniSveglia(bool b)
 	else if (b)
 	{
 		if (isVisible())
-			handleClose();
+		{
+			saveAndActivate();
+			emit Closed();
+		}
 	}
 }
 
@@ -455,7 +472,7 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 	l->addLayout(r);
 
 	connect(navigation, SIGNAL(forwardClicked()), alarm_page, SLOT(showTypePage()));
-	connect(navigation, SIGNAL(okClicked()), alarm_page, SLOT(handleClose()));
+	connect(navigation, SIGNAL(okClicked()), alarm_page, SLOT(saveAndActivate()));
 
 	buildPage(content, navigation);
 }
@@ -483,7 +500,7 @@ AlarmClockFreq::AlarmClockFreq(AlarmClock *alarm_page)
 		SLOT(setSelection(int)));
 
 	connect(navigation,SIGNAL(forwardClicked()),alarm_page,SLOT(showSoundDiffPage()));
-	connect(navigation, SIGNAL(okClicked()), alarm_page, SLOT(handleClose()));
+	connect(navigation, SIGNAL(okClicked()), alarm_page, SLOT(saveAndActivate()));
 
 	content->setCheckedId(alarm_page->freq);
 
@@ -509,7 +526,8 @@ QList<bool> AlarmClockFreq::getAlarmDays() const
 
 AlarmClockSoundDiff::AlarmClockSoundDiff(AlarmClock *alarm_page)
 {
-	connect(this, SIGNAL(Closed()), alarm_page, SLOT(handleClose()));
+	connect(this, SIGNAL(Closed()), alarm_page, SLOT(resetVolumes()));
+	connect(this, SIGNAL(saveVolumes()), alarm_page, SLOT(saveVolumes()));
 }
 
 void AlarmClockSoundDiff::showPage()
@@ -517,7 +535,9 @@ void AlarmClockSoundDiff::showPage()
 #ifdef LAYOUT_TOUCHX
 	Page *difson = SoundDiffusionPage::alarmClockPage();
 	disconnect(difson, SIGNAL(Closed()), 0, 0);
+	disconnect(difson, SIGNAL(saveVolumes()), 0, 0);
 	connect(difson, SIGNAL(Closed()), SIGNAL(Closed()));
+	connect(difson, SIGNAL(saveVolumes()), SIGNAL(saveVolumes()));
 
 	difson->showPage();
 #else
@@ -542,10 +562,9 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 
 	NavigationBar *nav = new NavigationBar;
 	nav->displayScrollButtons(false);
-	buildPage(content, nav, tr("Wake up"), TITLE_HEIGHT);
+	buildPage(content, nav, tr("Wake up"), SMALL_TITLE_HEIGHT);
 
-	//connect(nav, SIGNAL(backClick()), alarm_page, SIGNAL(Closed()));
-	connect(nav, SIGNAL(backClick()), alarm_page, SLOT(handleClose()));
+	connect(nav, SIGNAL(backClick()), alarm_page, SIGNAL(Closed()));
 
 	alarm_label = new QLabel;
 	alarm_icon = bt_global::skin->getImage("alarm_icon");
@@ -561,8 +580,8 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 	QGridLayout *days = new QGridLayout;
 	QVBoxLayout *icon_label = new QVBoxLayout;
 
-	main->setContentsMargins(25, 0, 25, 25);
-	main->setSpacing(50);
+	main->setContentsMargins(25, 0, 25, 15);
+	main->setSpacing(15);
 	top->setSpacing(20);
 	days->setSpacing(5);
 
@@ -602,8 +621,12 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 		days->addWidget(day, 1, i);
 	}
 
+	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
+	connect(ok, SIGNAL(clicked()), alarm_page, SLOT(saveAndActivate()));
+
 	main->addLayout(top);
 	main->addLayout(days);
+	main->addWidget(ok, 0, Qt::AlignRight);
 }
 
 QTime AlarmClockTimeFreq::getAlarmTime() const

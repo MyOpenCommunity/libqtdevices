@@ -120,6 +120,9 @@ protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
 
 private slots:
+	void saveVolumes();
+	void resetVolumes();
+
 	void freezed(bool b);
 
 /*!
@@ -130,7 +133,7 @@ private slots:
 /*!
   \brief Executed when the alarm set sequency is closed to save the data and adjust sound diffusion page if necessary.
 */
-	void handleClose();
+	void saveAndActivate();
 
 /*!
   \brief Executed every minute when alarm set is active to detect if it's time to make the alarm ser start.
@@ -233,10 +236,10 @@ Q_OBJECT
 public:
 	AlarmClockSoundDiff(AlarmClock *alarm_page);
 
-/*!
-  \brief Draws the first page for alarm set setting and initializes some connections.
-*/
 	virtual void showPage();
+
+signals:
+	void saveVolumes();
 };
 
 
