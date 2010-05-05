@@ -618,6 +618,15 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_next>diffusione/successivo.png</img_next>
 		<img_source_background>diffusione/display.png</img_source_background>
 		<img_details>diffusione/contenutimultimediali.png</img_details>
+
+		<!-- Multimedia list icons -->
+		<img_eject>multimediale/umount.png</img_eject>
+		<img_image_icon>multimediale/fotomini.png</img_image_icon>
+		<img_audio_icon>multimediale/audiomini.png</img_audio_icon>
+		<img_video_icon>multimediale/videomini.png</img_video_icon>
+		<img_directory_icon>multimediale/cartellamini.png</img_directory_icon>
+		<img_play_file>multimediale/play.png</img_play_file>
+		<img_browse_directory>multimediale/vai.png</img_browse_directory>
 	</item>
 	<!-- special ambient -->
 	<item>
@@ -660,6 +669,15 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_next>diffusione/successivo.png</img_next>
 		<img_source_background>diffusione/display.png</img_source_background>
 		<img_details>diffusione/contenutimultimediali.png</img_details>
+
+		<!-- Multimedia list icons -->
+		<img_eject>multimediale/umount.png</img_eject>
+		<img_image_icon>multimediale/fotomini.png</img_image_icon>
+		<img_audio_icon>multimediale/audiomini.png</img_audio_icon>
+		<img_video_icon>multimediale/videomini.png</img_video_icon>
+		<img_directory_icon>multimediale/cartellamini.png</img_directory_icon>
+		<img_play_file>multimediale/play.png</img_play_file>
+		<img_browse_directory>multimediale/vai.png</img_browse_directory>
 
 		<!-- rds radio source -->
 		<img_auto_on>diffusione/autoon.png</img_auto_on>
