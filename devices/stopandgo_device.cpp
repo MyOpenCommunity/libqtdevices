@@ -69,7 +69,6 @@ void StopAndGoDevice::sendAutoResetDisactivation()
 void StopAndGoDevice::requestICMState()
 {
 	sendRequest(Requests::ICM_STATE);
-	requestICMState();
 }
 
 bool StopAndGoDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
