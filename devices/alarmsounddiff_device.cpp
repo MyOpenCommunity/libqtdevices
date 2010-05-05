@@ -135,16 +135,26 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 
 		values_list[DIM_SOURCE] = source;
 
-		// request the radio station to check if the source is a radio
-		QString f = QString("*#22*2#%1*11##").arg(source);
-		sendInit(f);
-	}
-	else if (where == 2)
-	{
 		if (what == 11)
 		{
 			// got radio station
 			int station = msg.whatArgN(2);
+
+			values_list[DIM_RADIO_STATION] = station;
+		}
+		else
+		{
+			// request the radio station to check if the source is a radio
+			QString f = QString("*#22*2#%1*11##").arg(source);
+			sendInit(f);
+		}
+	}
+	else if (where == 2)
+	{
+		if (what == 6)
+		{
+			// got radio station/track
+			int station = msg.whatArgN(0);
 
 			values_list[DIM_RADIO_STATION] = station;
 		}

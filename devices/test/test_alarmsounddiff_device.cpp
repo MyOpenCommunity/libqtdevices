@@ -125,8 +125,8 @@ void TestAlarmSoundDiffDevice::receiveSource()
 
 void TestAlarmSoundDiffDevice::receiveRadioStation()
 {
-	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_RADIO_STATION);
-	QString frame = QString("*#22*2#21*11*22*33*7##");
+	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_RADIO_STATION, DeviceTester::MULTIPLE_VALUES);
 
-	tss.check(frame, 7);
+	tss.check("*#22*5#2#21*11*22*33*7##", 7);
+	tss.check("*#22*2#21*6*4##", 4);
 }
