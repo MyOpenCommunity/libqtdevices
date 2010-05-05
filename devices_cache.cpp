@@ -22,8 +22,20 @@
 #include "devices_cache.h"
 
 
+void DevicesCache::devicesCreated()
+{
+	devices_created = true;
+}
+
 void DevicesCache::initOpenserverDevices(int openserver_id)
 {
+	if (!devices_created)
+	{
+		qDebug("Delaying DevicesCache::initOpenserverDevices(), openserver_id = %d until loading completes", openserver_id);
+
+		return;
+	}
+
 	qDebug("DevicesCache::initOpenserverDevices(), openserver_id = %d", openserver_id);
 
 	foreach (const QString &frame, init_frames[openserver_id])
@@ -40,6 +52,11 @@ void DevicesCache::initOpenserverDevices(int openserver_id)
 void DevicesCache::addInitCommandFrame(int openserver_id, const QString &frame)
 {
 	init_frames[openserver_id].append(frame);
+}
+
+DevicesCache::DevicesCache()
+{
+	devices_created = false;
 }
 
 DevicesCache::~DevicesCache()

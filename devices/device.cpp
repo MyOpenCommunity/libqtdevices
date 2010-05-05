@@ -148,6 +148,8 @@ bool device::isConnected()
 
 void device::initDevices()
 {
+	bt_global::devices_cache.devicesCreated();
+
 	foreach (int id, openservers.keys())
 		if (openservers[id]->isConnected())
 			bt_global::devices_cache.initOpenserverDevices(id);
