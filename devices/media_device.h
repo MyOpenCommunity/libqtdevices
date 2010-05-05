@@ -146,10 +146,10 @@ public:
 
 	void requestStatus() const;
 	void requestVolume() const;
-	void turnOn() const;
-	void turnOff() const;
-	void volumeUp() const;
-	void volumeDown() const;
+	virtual void turnOn();
+	virtual void turnOff();
+	virtual void volumeUp();
+	virtual void volumeDown();
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
@@ -172,11 +172,17 @@ public:
 		REQ_SET_VOLUME = 1,          // set volume to specified level (range: 1-32)
 
 	};
-	VirtualAmplifierDevice(const QString &where, int openserver_id = 0);
-	// TODO: do we need init() here?? I don't think so
 
-	// must be called every time volume is set to inform other devices on the bus
-	void updateVolume(int vol);
+	VirtualAmplifierDevice(const QString &where, int openserver_id = 0);
+
+	// must be called every time status/volume is set to inform other devices on the bus
+	void updateStatus(bool status);
+	void updateVolume(int volume);
+
+	virtual void turnOn();
+	virtual void turnOff();
+	virtual void volumeUp();
+	virtual void volumeDown();
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);

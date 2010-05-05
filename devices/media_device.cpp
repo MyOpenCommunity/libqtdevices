@@ -339,22 +339,22 @@ void AmplifierDevice::requestVolume() const
 	sendRequest(DIM_VOLUME);
 }
 
-void AmplifierDevice::turnOn() const
+void AmplifierDevice::turnOn()
 {
 	sendCommand(QString("%1#4#%2").arg(AMPL_STATUS_ON_FOLLOW_ME).arg(area));
 }
 
-void AmplifierDevice::turnOff() const
+void AmplifierDevice::turnOff()
 {
 	sendCommand(QString("%1#4#%2").arg(AMPL_STATUS_OFF).arg(area));
 }
 
-void AmplifierDevice::volumeUp() const
+void AmplifierDevice::volumeUp()
 {
 	sendCommand(QString("%1#1").arg(AMPL_VOLUME_UP));
 }
 
-void AmplifierDevice::volumeDown() const
+void AmplifierDevice::volumeDown()
 {
 	sendCommand(QString("%1#1").arg(AMPL_VOLUME_DOWN));
 }
@@ -390,9 +390,56 @@ VirtualAmplifierDevice::VirtualAmplifierDevice(const QString &where, int openser
 {
 }
 
-void VirtualAmplifierDevice::updateVolume(int vol)
+void VirtualAmplifierDevice::updateStatus(bool status)
 {
-	sendFrame(createDimensionFrame(who, QString("1*%1").arg(vol), where));
+	sendFrame(createDimensionFrame(who, QString("12*%1*3").arg(status), where));
+
+	DeviceValues values_list;
+
+	values_list[DIM_STATUS] = status;
+	emit valueReceived(values_list);
+}
+
+void VirtualAmplifierDevice::updateVolume(int volume)
+{
+	sendFrame(createDimensionFrame(who, QString("1*%1").arg(volume), where));
+
+	DeviceValues values_list;
+
+	values_list[DIM_VOLUME] = volume;
+	emit valueReceived(values_list);
+}
+
+void VirtualAmplifierDevice::turnOn()
+{
+	DeviceValues values_list;
+
+	values_list[REQ_AMPLI_ON] = true;
+	emit valueReceived(values_list);
+}
+
+void VirtualAmplifierDevice::turnOff()
+{
+	DeviceValues values_list;
+
+	values_list[REQ_AMPLI_ON] = false;
+	emit valueReceived(values_list);
+}
+
+void VirtualAmplifierDevice::volumeUp()
+{
+	DeviceValues values_list;
+
+	values_list[REQ_VOLUME_UP] = 1;
+	emit valueReceived(values_list);
+}
+
+void VirtualAmplifierDevice::volumeDown()
+{
+	DeviceValues values_list;
+
+	values_list[REQ_VOLUME_DOWN] = 1;
+	emit valueReceived(values_list);
 }
 
 bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
