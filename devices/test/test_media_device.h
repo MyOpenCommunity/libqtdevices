@@ -160,6 +160,8 @@ private slots:
 	void sendVolumeDown();
 
 	void sendUpdateVolume();
+	void sendUpdateStatus();
+
 	void receiveAmplifierOn();
 	void receiveAmplifierOff();
 	void receiveVolumeUp();

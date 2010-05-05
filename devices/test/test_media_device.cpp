@@ -394,6 +394,15 @@ void TestVirtualAmplifierDevice::sendUpdateVolume()
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
+void TestVirtualAmplifierDevice::sendUpdateStatus()
+{
+	const int STATUS = 1;
+	dev->updateStatus(STATUS);
+	client_command->flush();
+	QString cmd(QString("*#22*3#%1#%2*12*%3*3##").arg(where[0]).arg(where[1]).arg(STATUS));
+	QCOMPARE(server->frameCommand(), cmd);
+}
+
 void TestVirtualAmplifierDevice::sendVolumeUp()
 {
 	// only emits a signal
