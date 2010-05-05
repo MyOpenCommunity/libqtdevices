@@ -50,6 +50,9 @@ enum RequestDimension
 	SOURCE_TURNED_ON = 2,
 	DIM_ACTIVE_AREAS = 13,
 	DIM_MEMORIZED_STATION = 11,
+	// the dimension in the frame is 1, but we need a separate value for the notification
+	_REQ_AMPLI_ON = 1,
+	_REQ_SET_VOLUME = 1,
 };
 
 
@@ -456,7 +459,7 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	int what = msg.what();
 
-	if (isWriteDimensionFrame(msg) && what == REQ_SET_VOLUME)
+	if (isWriteDimensionFrame(msg) && what == _REQ_SET_VOLUME)
 	{
 		values_list[REQ_SET_VOLUME] = msg.whatArgN(0);
 		return true;
@@ -464,7 +467,7 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	switch (what)
 	{
-	case REQ_AMPLI_ON:
+	case _REQ_AMPLI_ON:
 	case AMPL_STATUS_OFF:
 		values_list[REQ_AMPLI_ON] = static_cast<bool>(what);
 		break;
