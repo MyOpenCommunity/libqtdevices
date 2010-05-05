@@ -104,6 +104,7 @@ public:
 
 	bool isConnected();
 	int openserverId();
+	static void initDevices();
 
 	static void sendCommandFrame(int openserver_id, const QString &frame);
 
