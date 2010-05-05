@@ -394,6 +394,26 @@ void TestVirtualAmplifierDevice::sendUpdateVolume()
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
+void TestVirtualAmplifierDevice::sendVolumeUp()
+{
+	// only emits a signal
+}
+
+void TestVirtualAmplifierDevice::sendVolumeDown()
+{
+	// only emits a signal
+}
+
+void TestVirtualAmplifierDevice::sendTurnOn()
+{
+	// only emits a signal
+}
+
+void TestVirtualAmplifierDevice::sendTurnOff()
+{
+	// only emits a signal
+}
+
 void TestVirtualAmplifierDevice::receiveAmplifierOn()
 {
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);

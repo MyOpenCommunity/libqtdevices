@@ -154,6 +154,11 @@ private slots:
 	void initTestCase();
 	void cleanupTestCase();
 
+	void sendTurnOn();
+	void sendTurnOff();
+	void sendVolumeUp();
+	void sendVolumeDown();
+
 	void sendUpdateVolume();
 	void receiveAmplifierOn();
 	void receiveAmplifierOff();
