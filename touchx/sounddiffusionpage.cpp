@@ -329,6 +329,9 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 									       (*bt_global::config)[AMPLIFIER_ADDRESS]);
 		bt_global::devices_cache.addInitCommandFrame(0, init_frame);
 	}
+
+	if (is_amplifier)
+		new LocalAmplifier(this);
 }
 
 int SoundDiffusionPage::sectionId() const
@@ -455,4 +458,54 @@ bool SoundDiffusionPage::isSource()
 bool SoundDiffusionPage::isAmplifier()
 {
 	return is_amplifier;
+}
+
+
+LocalAmplifier::LocalAmplifier(QObject *parent) : QObject(parent)
+{
+	state = false;
+	level = 8;
+
+	dev = bt_global::add_device_to_cache(new VirtualAmplifierDevice((*bt_global::config)[AMPLIFIER_ADDRESS]));
+
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+
+	dev->updateStatus(state);
+	dev->updateVolume(level);
+}
+
+void LocalAmplifier::valueReceived(const DeviceValues &device_values)
+{
+	// TODO must call audio state machine methods to do the actual work
+
+	foreach (int key, device_values.keys())
+	{
+		switch (key)
+		{
+		case VirtualAmplifierDevice::REQ_AMPLI_ON:
+			state = device_values[key].toBool();
+			dev->updateStatus(state);
+			if (state)
+				dev->updateVolume(level);
+			break;
+		case VirtualAmplifierDevice::REQ_VOLUME_UP:
+			if (level < 31)
+			{
+				level += 1;
+				dev->updateVolume(level);
+			}
+			break;
+		case VirtualAmplifierDevice::REQ_VOLUME_DOWN:
+			if (level > 0)
+			{
+				level -= 1;
+				dev->updateVolume(level);
+			}
+			break;
+		case VirtualAmplifierDevice::REQ_SET_VOLUME:
+			level = device_values[key].toInt();
+			dev->updateVolume(level);
+			break;
+		}
+	}
 }
