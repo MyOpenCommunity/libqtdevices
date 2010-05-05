@@ -47,8 +47,8 @@
 
 
 bool SoundDiffusionPage::is_source = false, SoundDiffusionPage::is_amplifier = false;
-Page *SoundDiffusionPage::sound_diffusion_page;
-Page *SoundAmbientPage::current_ambient_page;
+Page *SoundDiffusionPage::sound_diffusion_page = NULL;
+Page *SoundAmbientPage::current_ambient_page = NULL;
 
 namespace
 {
