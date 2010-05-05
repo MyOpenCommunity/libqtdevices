@@ -306,6 +306,8 @@ enum Items
 
 SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 {
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
 	next_page = NULL;
 
 	// check if this hardware can work as a source/amplifier and create the virtual
@@ -373,8 +375,6 @@ QList<SourceDescription> SoundDiffusionPage::loadSources(const QDomNode &config_
 
 void SoundDiffusionPage::loadItemsMulti(const QDomNode &config_node)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
 	QList<SourceDescription> sources_list = loadSources(config_node);
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
