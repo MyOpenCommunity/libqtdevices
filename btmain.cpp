@@ -485,6 +485,14 @@ void BtMain::myMain()
 	// Called when both the connection is up and config is loaded.
 	qDebug("BtMain::MyMain");
 
+	// disconnect the connectionReady slot: myMain must be called only once even
+	// in the case of openserver reconnection
+	{
+		OpenServerManager *manager = device::getManager(MAIN_OPENSERVER);
+
+		disconnect(manager, 0, this, 0);
+	}
+
 	Home->inizializza();
 	if (version)
 		version->inizializza();
