@@ -450,7 +450,7 @@ void TestVirtualAmplifierDevice::receiveSetVolume()
 {
 	const int VOLUME = 11;
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_SET_VOLUME);
-	t.check(QString("*#22*3#%1#%2*1*%3##").arg(where[0]).arg(where[1]).arg(VOLUME), VOLUME);
+	t.check(QString("*#22*3#%1#%2*#1*%3##").arg(where[0]).arg(where[1]).arg(VOLUME), VOLUME);
 }
 
 
