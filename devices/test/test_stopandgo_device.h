@@ -17,72 +17,65 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-#ifndef STOPANDGODEVICE_H
-#define STOPANDGODEVICE_H
+#ifndef TEST_STOPANDGO_DEVICE_H
+#define TEST_STOPANDGO_DEVICE_H
 
-#include "device.h"
+#include "test_device.h"
 
-class StopAndGoDevice : public device
+class StopAndGoDevice;
+class StopAndGoPlusDevice;
+class StopAndGoBTestDevice;
+
+
+class TestStopAndGoDevice : public TestDevice
 {
-friend class TestStopAndGoDevice;
-
 Q_OBJECT
-public:
-
-	enum Type
-	{
-		DIM_ICM_STATE = 250
-	};
-
-	explicit StopAndGoDevice(const QString &where, int openserver_id = 0);
+private slots:
+	void init();
+	void cleanup();
 
 	void sendAutoResetActivation();
 	void sendAutoResetDisactivation();
-
-public slots:
 	void requestICMState();
 
+	void receiveICMState();
+
 protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+	StopAndGoDevice *dev;
 };
 
-class StopAndGoPlusDevice : public StopAndGoDevice
+class TestStopAndGoPlusDevice : public TestStopAndGoDevice
 {
-friend class TestStopAndGoPlusDevice;
-
 Q_OBJECT
-public:
-	explicit StopAndGoPlusDevice(const QString &where, int openserver_id = 0);
+private slots:
+	void init();
+	void cleanup();
 
 	void sendClose();
 	void sendOpen();
 	void sendTrackingSystemActivation();
 	void sendTrackingSystemDisactivation();
+
+private:
+	StopAndGoPlusDevice *plus;
 };
 
-class StopAndGoBTestDevice : public StopAndGoDevice
+class TestStopAndGoBTestDevice : public TestStopAndGoDevice
 {
-friend class TestStopAndGoBTestDevice;
-
 Q_OBJECT
-public:
-
-	enum Type
-	{
-		DIM_AUTOTEST_FREQ = 212
-	};
-
-	explicit StopAndGoBTestDevice(const QString &where, int openserver_id = 0);
+private slots:
+	void init();
+	void cleanup();
 
 	void sendDiffSelftestActivation();
 	void sendDiffSelftestDisactivation();
 	void sendSelftestFreq(int days);
-
-public slots:
 	void requestSelftestFreq();
 
-protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+	void receiveSelftestFreq();
+
+private:
+	StopAndGoBTestDevice *btest;
 };
 
-#endif // STOPANDGODEVICE_H
+#endif // TEST_STOPANDGO_DEVICE_H

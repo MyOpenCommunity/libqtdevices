@@ -40,6 +40,7 @@ HEADERS += device_tester.h \
 	test_pull_manager.h \
 	test_probe_device.h \
 	test_message_device.h \
+	test_stopandgo_device.h \
 	openserver_mock.h \
 	../../bttime.h \
 	../../openclient.h \
@@ -66,6 +67,7 @@ SOURCES += test_main.cpp \
 	test_pull_manager.cpp \
 	test_probe_device.cpp \
 	test_message_device.cpp \
+	test_stopandgo_device.cpp \
 	openserver_mock.cpp \
 	../../bttime.cpp \
 	../../openclient.cpp \
