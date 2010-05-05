@@ -148,7 +148,8 @@ QStringList MountWatcher::parseMounts() const
 		if (line.isEmpty())
 			break;
 		QStringList parts = line.split(' ', QString::SkipEmptyParts);
-		if (!parts[1].startsWith(MOUNT_PATH))
+		// the "/" is necessary in case /mnt is mounted using tmpfs
+		if (!parts[1].startsWith(MOUNT_PATH "/"))
 			continue;
 		dirs.append(parts[1]);
 	}
