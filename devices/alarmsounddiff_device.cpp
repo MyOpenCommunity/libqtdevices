@@ -42,9 +42,9 @@ void AlarmSoundDiffDevice::setReceiveFrames(bool receive)
 
 void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmVolumes)
 {
+	activateSource(source);
 	if (radio_station)
 		setRadioStation(source, radio_station);
-	activateSource(source);
 
 	bool environments[AMPLI_NUM / 10 + 1];
 	for (int i = 0; i < ARRAY_SIZE(environments); ++i)
