@@ -332,17 +332,10 @@ void AlarmClock::sounddiffusionAlarm()
 	}
 	else if (conta2min > 49)
 	{
-		qDebug("Alarm clock timeout");
-		aumVolTimer->stop();
-		delete aumVolTimer;
-		aumVolTimer = NULL;
-
 		dev->stopAlarm(sorgente, volSveglia);
-
-		bt_global::btmain->freeze(false);
-		bt_global::btmain->svegl(false);
 		(*bt_global::display).forceOperativeMode(false);
-		emit alarmClockFired();
+
+		alarmTimeout();
 	}
 }
 
@@ -367,14 +360,9 @@ void AlarmClock::buzzerAlarm()
 	contaBuzzer++;
 	if (contaBuzzer >= 10*60*2)
 	{
-		qDebug("Alarm clock timeout");
-		aumVolTimer->stop();
 		setBeep(buzAbilOld);
-		delete aumVolTimer;
-		aumVolTimer = NULL;
-		bt_global::btmain->freeze(false);
-		bt_global::btmain->svegl(false);
-		emit alarmClockFired();
+
+		alarmTimeout();
 	}
 }
 
@@ -384,15 +372,23 @@ void AlarmClock::wavAlarm()
 
 	contaBuzzer++;
 	if (contaBuzzer >= 24)
-	{
-		qDebug("Alarm clock timeout");
-		aumVolTimer->stop();
-		delete aumVolTimer;
-		aumVolTimer = NULL;
-		bt_global::btmain->freeze(false);
-		bt_global::btmain->svegl(false);
-		emit alarmClockFired();
-	}
+		alarmTimeout();
+}
+
+void AlarmClock::alarmTimeout()
+{
+	qDebug("Alarm clock timeout");
+
+	// stop alarm timer
+	aumVolTimer->stop();
+	delete aumVolTimer;
+	aumVolTimer = NULL;
+
+	// restore display state
+	bt_global::btmain->freeze(false);
+	bt_global::btmain->svegl(false);
+
+	emit alarmClockFired();
 }
 
 void AlarmClock::stopAlarm(bool b)

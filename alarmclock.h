@@ -158,6 +158,9 @@ private slots:
 */
 	void stopAlarm(bool);
 
+	// called if the alarm times out
+	void alarmTimeout();
+
 private:
 	int id, item_id;
 	Type type;
