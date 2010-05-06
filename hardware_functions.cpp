@@ -355,49 +355,58 @@ void getName(char *name)
 	}
 }
 
+static inline int alarmOffset(int index)
+{
+	return E2_BASE + index * (AMPLI_NUM + KEY_LENGTH + SORG_PAR);
+}
+
 void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazione)
 {
-	char keys[6];
+	qDebug() << "Reading alarm volume from e2 for index" << index;
 
 	memset(volSveglia, 0, sizeof(int) * AMPLI_NUM);
 	*sorgente = *stazione = 0;
 
-	qDebug() << "Reading alarm volume from e2 for index" << index;
-
-	memset(keys,'\000',sizeof(keys));
 	int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
-
 	if (eeprom == -1)
 		return;
 
-	lseek(eeprom, E2_BASE+index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR),SEEK_SET);
+	// read the alarm key, to check if this E2 offset contains alarm data
+	char keys[5] = {0, 0, 0, 0, 0};
+	lseek(eeprom, alarmOffset(index), SEEK_SET);
 	read(eeprom, keys, 5);
 
-	if (strcmp(keys, AL_KEY))
+	if (memcmp(keys, AL_KEY, 5) != 0)
 	{
-		lseek(eeprom, E2_BASE+index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR), SEEK_SET);
-		write(eeprom,AL_KEY,5);
+		// no alarm data: initialize the E2 offset
+		lseek(eeprom, alarmOffset(index), SEEK_SET);
+		write(eeprom, AL_KEY, 5);
+
 		for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
 		{
-			write(eeprom,"\000",1);
-			volSveglia[idx]=-1;
+			write(eeprom, "\000", 1);
+			volSveglia[idx] = -1;
 		}
 	}
 	else
 	{
-		int ploffete = E2_BASE + index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH;
-		lseek(eeprom,ploffete, SEEK_SET);
+		// read the alarm data from E2
+		lseek(eeprom, alarmOffset(index) + KEY_LENGTH, SEEK_SET);
+
 		for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
 		{
-			read(eeprom,&volSveglia[idx],1);
+			read(eeprom, &volSveglia[idx], 1);
+
 			if (volSveglia[idx] == 0xff)
 				volSveglia[idx] = -1;
 			else
 				volSveglia[idx] &= 0x1F;
 		}
-		read(eeprom,sorgente,1);
-		read(eeprom,stazione,1);
+
+		read(eeprom, sorgente, 1);
+		read(eeprom, stazione, 1);
 	}
+
 	close(eeprom);
 }
 
@@ -410,11 +419,13 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 	if (eeprom == -1)
 		return;
 
-	lseek(eeprom,E2_BASE + index*(AMPLI_NUM+KEY_LENGTH+SORG_PAR) + KEY_LENGTH, SEEK_SET);
+	lseek(eeprom, alarmOffset(index) + KEY_LENGTH, SEEK_SET);
+
 	for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
-		write(eeprom,&volSveglia[idx],1);
-	write(eeprom,&sorgente,1);
-	write(eeprom,&stazione,1);
+		write(eeprom, &volSveglia[idx], 1);
+
+	write(eeprom, &sorgente, 1);
+	write(eeprom, &stazione, 1);
 	close(eeprom);
 }
 
