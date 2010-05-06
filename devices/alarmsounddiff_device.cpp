@@ -30,9 +30,10 @@
 #define ARRAY_SIZE(x) int(sizeof(x)/sizeof(x[0]))
 
 
-AlarmSoundDiffDevice::AlarmSoundDiffDevice()
+AlarmSoundDiffDevice::AlarmSoundDiffDevice(bool _multichannel)
 	: device("22", ""), receive_frames(false)
 {
+	is_multichannel = _multichannel;
 }
 
 void AlarmSoundDiffDevice::setReceiveFrames(bool receive)
@@ -56,9 +57,14 @@ void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmV
 			continue;
 
 		int environment = amplifier / 10;
-		if (environment > 0 && environment < 9)
+		if (is_multichannel && environment > 0 && environment < 9)
+		{
 			if (!environments[environment])
+			{
 				activateEnvironment(environment, source);
+				environments[environment] = true;
+			}
+		}
 		if (alarmVolumes[amplifier] < 10)
 			setVolume(amplifier, alarmVolumes[amplifier]);
 		else

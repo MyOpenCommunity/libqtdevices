@@ -96,7 +96,10 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, QList<bool> 
 
 	connect(bt_global::btmain, SIGNAL(freezed(bool)), SLOT(freezed(bool)));
 
-	dev = new AlarmSoundDiffDevice();
+#ifdef LAYOUT_TOUCHX
+	// TODO fix sound diffusion for BTouch
+	dev = new AlarmSoundDiffDevice(SoundDiffusionPage::isMultichannel());
+#endif
 	connect(dev, SIGNAL(valueReceived(DeviceValues)),
 		SLOT(valueReceived(DeviceValues)));
 }
