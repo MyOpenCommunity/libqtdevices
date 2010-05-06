@@ -36,8 +36,8 @@ enum
 // PPTSce commands
 #define CMD_PPT_SCE_ON "11#0"
 #define CMD_PPT_SCE_OFF "12"
-#define CMD_PPT_SCE_INC "13#0#1"
-#define CMD_PPT_SCE_DEC "14#0#1"
+#define CMD_PPT_SCE_INC "13#0#5"
+#define CMD_PPT_SCE_DEC "14#0#5"
 #define CMD_PPT_SCE_STOP "15"
 
 
