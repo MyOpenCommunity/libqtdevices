@@ -47,7 +47,7 @@
 #include <QStackedWidget>
 
 
-bool SoundDiffusionPage::is_source = false, SoundDiffusionPage::is_amplifier = false;
+bool SoundDiffusionPage::is_source = false, SoundDiffusionPage::is_amplifier = false, SoundDiffusionPage::is_multichannel = false;
 Page *SoundDiffusionPage::sound_diffusion_page = NULL;
 Page *SoundDiffusionPage::alarm_clock_page = NULL;
 Page *SoundAmbientPage::current_ambient_page = NULL;
@@ -366,9 +366,9 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 	// devices to handle the source/amplifier frames
 	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
 	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
+	is_multichannel = getTextChild(config_node, "id").toInt() == DIFSON_MULTI;
 
 	buildPage(getTextChild(config_node, "descr"));
-	bool is_multichannel = getTextChild(config_node, "id").toInt() == DIFSON_MULTI;
 	if (is_multichannel)
 		loadItemsMulti(config_node);
 	else
@@ -519,6 +519,11 @@ bool SoundDiffusionPage::isSource()
 bool SoundDiffusionPage::isAmplifier()
 {
 	return is_amplifier;
+}
+
+bool SoundDiffusionPage::isMultichannel()
+{
+	return is_multichannel;
 }
 
 
