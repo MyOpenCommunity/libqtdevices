@@ -22,13 +22,26 @@
 #include "alarmsounddiff_device.h"
 #include "hardware_functions.h" // AMPLI_NUM
 
-#include <stdlib.h> // atoi
 #include <openmsg.h>
 
 #include <QStringList>
 
+
 #define ARRAY_SIZE(x) int(sizeof(x)/sizeof(x[0]))
 
+enum
+{
+	_WHERE_SOURCE    = 2,
+	_WHERE_AMPLIFIER = 3,
+	_WHERE_GENERAL   = 5,
+
+	_DIM_SOURCE_TRACK = 6,
+	_DIM_SOURCE_STATION = 11,
+	_DIM_SOURCE_ON = 2,
+
+	_DIM_AMPLIFIER_VOLUME = 1,
+	_DIM_AMPLIFIER_STATE = 12,
+};
 
 AlarmSoundDiffDevice::AlarmSoundDiffDevice(bool _multichannel)
 	: device("22", ""), receive_frames(false)
@@ -130,34 +143,35 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 
 	DeviceValues values_list;
 
-	if (where == 5)
+	// where can have the form:
+	// 2#<source id>        source
+	// 5#2#<source id>      general (source)
+	// 3#<ambient>#<point>  amplifier
+
+	int source = -1;
+	if (where == _WHERE_GENERAL && msg.whereArg(0) == "2")
+		source = QString::fromStdString(msg.whereArg(1)).toInt();
+	else if (where == _WHERE_SOURCE)
+		source = QString::fromStdString(msg.whereArg(0)).toInt();
+
+	if (source != -1)
 	{
-		// got active source, request radio station
-		QStringList l = QString(msg.whereFull().c_str()).split('#');
-		if (l.size() != 3)
-			return;
-
-		int source = l[2].toInt();
-
 		values_list[DIM_SOURCE] = source;
 
-		if (what == 11)
+		if (what == _DIM_SOURCE_STATION)
 		{
 			// got radio station
 			int station = msg.whatArgN(2);
 
 			values_list[DIM_RADIO_STATION] = station;
 		}
-		else if (what == 2)
+		else if (what == _DIM_SOURCE_ON)
 		{
 			// request the radio station to check if the source is a radio
 			QString f = QString("*#22*2#%1*11##").arg(source);
 			sendInit(f);
 		}
-	}
-	else if (where == 2)
-	{
-		if (what == 6)
+		else if (what == _DIM_SOURCE_TRACK)
 		{
 			// got radio station/track
 			int station = msg.whatArgN(0);
@@ -165,14 +179,14 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 			values_list[DIM_RADIO_STATION] = station;
 		}
 	}
-	else if (where == 3)
+	else if (where == _WHERE_AMPLIFIER)
 	{
 		if (msg.whereArgCnt() != 2)
 			return;
-		int environment = atoi(msg.whereArg(0).c_str());
-		int amplifier = atoi(msg.whereArg(1).c_str());
+		int environment = QString::fromStdString(msg.whereArg(0)).toInt();
+		int amplifier = QString::fromStdString(msg.whereArg(1)).toInt();
 
-		if (what == 12)
+		if (what == _DIM_AMPLIFIER_STATE)
 		{
 			// got on/off state
 			int state = msg.whatArgN(0);
@@ -185,7 +199,7 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 				values_list[DIM_STATUS] = false;
 			}
 		}
-		else if (what == 1)
+		else if (what == _DIM_AMPLIFIER_VOLUME)
 		{
 			// got the volume
 			int volume = msg.whatArgN(0);
