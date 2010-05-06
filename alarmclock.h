@@ -156,7 +156,7 @@ private slots:
 /*!
   \brief Stops the alarm set.
 */
-	void stopAlarm(bool);
+	void stopAlarm();
 
 	// called if the alarm times out
 	void alarmTimeout();

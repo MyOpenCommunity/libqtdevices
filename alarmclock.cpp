@@ -237,7 +237,7 @@ bool AlarmClock::eventFilter(QObject *obj, QEvent *ev)
 
 	// We stop the alarm and restore the normal behaviour
 	qApp->removeEventFilter(this);
-	stopAlarm(false);
+	stopAlarm();
 	(*bt_global::display).forceOperativeMode(false);
 	return true;
 }
@@ -391,33 +391,24 @@ void AlarmClock::alarmTimeout()
 	emit alarmClockFired();
 }
 
-void AlarmClock::stopAlarm(bool b)
+void AlarmClock::stopAlarm()
 {
-	if (!b && aumVolTimer)
-	{
-		if (aumVolTimer->isActive())
-		{
-			qDebug("Stopping alarm clock");
-			aumVolTimer->stop();
+	// should never happen
+	if (!aumVolTimer || !aumVolTimer->isActive())
+		return;
+
+	qDebug("Stopping alarm clock");
+	aumVolTimer->stop();
 #ifdef BT_HARDWARE_BTOUCH
-			if (type == BUZZER)
-				setBeep(buzAbilOld);
+	if (type == BUZZER)
+		setBeep(buzAbilOld);
 #endif
 
-			delete aumVolTimer;
-			aumVolTimer = NULL;
-			bt_global::btmain->svegl(false);
-			emit alarmClockFired();
-		}
-	}
-	else if (b)
-	{
-		if (isVisible())
-		{
-			saveAndActivate();
-			emit Closed();
-		}
-	}
+	delete aumVolTimer;
+	aumVolTimer = NULL;
+	bt_global::btmain->svegl(false);
+
+	emit alarmClockFired();
 }
 
 void AlarmClock::setSerNum(int s)
