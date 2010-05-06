@@ -30,7 +30,7 @@
 
 void TestAlarmSoundDiffDevice::initTestCase()
 {
-	dev = new AlarmSoundDiffDevice();
+	dev = new AlarmSoundDiffDevice(true);
 	dev->setReceiveFrames(true);
 }
 
@@ -51,14 +51,14 @@ void TestAlarmSoundDiffDevice::sendActivateSource()
 {
 	dev->activateSource(7);
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*22*35#4#0#7*3#1#0##"));
+	QCOMPARE(server->frameCommand(), QString("*22*35#4#0#7*3#0#0##"));
 }
 
 void TestAlarmSoundDiffDevice::sendActivateEnvironment()
 {
 	dev->activateEnvironment(5, 7);
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*22*35#4#5#7*3*1*5*0##"));
+	QCOMPARE(server->frameCommand(), QString("*22*35#4#5#7*3*5*0##"));
 }
 
 void TestAlarmSoundDiffDevice::sendSetVolume()
@@ -72,7 +72,7 @@ void TestAlarmSoundDiffDevice::sendAmplifierOn()
 {
 	dev->amplifierOn(57);
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*22*1#4#5*3#5#7##"));
+	QCOMPARE(server->frameCommand(), QString("*22*34#4#5*3#5#7##"));
 }
 
 void TestAlarmSoundDiffDevice::sendAmplifierOff()

@@ -86,13 +86,13 @@ void AlarmSoundDiffDevice::setRadioStation(int source, int radio_station)
 
 void AlarmSoundDiffDevice::activateSource(int source)
 {
-	QString f = QString("*22*35#4#0#%1*3#1#0##").arg(source);
+	QString f = QString("*22*35#4#0#%1*3#0#0##").arg(source);
 	sendFrame(f);
 }
 
 void AlarmSoundDiffDevice::activateEnvironment(int environment, int source)
 {
-	QString f = QString("*22*35#4#%1#%2*3*1*%1*0##").arg(environment).arg(source);
+	QString f = QString("*22*35#4#%1#%2*3*%1*0##").arg(environment).arg(source);
 	sendFrame(f);
 }
 
@@ -104,7 +104,7 @@ void AlarmSoundDiffDevice::setVolume(int amplifier, int volume)
 
 void AlarmSoundDiffDevice::amplifierOn(int amplifier)
 {
-	QString f = QString("*22*1#4#%1*3#%1#%2##").arg(amplifier / 10).arg(amplifier % 10);
+	QString f = QString("*22*34#4#%1*3#%1#%2##").arg(amplifier / 10).arg(amplifier % 10);
 	sendFrame(f);
 }
 
