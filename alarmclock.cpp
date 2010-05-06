@@ -403,10 +403,10 @@ void AlarmClock::spegniSveglia(bool b)
 		{
 			qDebug("SPENGO LA SVEGLIA");
 			aumVolTimer->stop();
+#ifdef BT_HARDWARE_BTOUCH
 			if (type == BUZZER)
 				setBeep(buzAbilOld);
-			else
-				dev->stopAlarm(sorgente, volSveglia);
+#endif
 
 			delete aumVolTimer;
 			aumVolTimer = NULL;
