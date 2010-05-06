@@ -182,7 +182,7 @@ void AlarmClock::setActive(bool a)
 		{
 			minuTimer = new QTimer(this);
 			minuTimer->start(200);
-			connect(minuTimer,SIGNAL(timeout()), this,SLOT(verificaSveglia()));
+			connect(minuTimer,SIGNAL(timeout()), this,SLOT(checkAlarm()));
 		}
 	}
 	else
@@ -190,7 +190,7 @@ void AlarmClock::setActive(bool a)
 		if (minuTimer)
 		{
 			minuTimer->stop();
-			disconnect(minuTimer,SIGNAL(timeout()), this,SLOT(verificaSveglia()));
+			disconnect(minuTimer,SIGNAL(timeout()), this,SLOT(checkAlarm()));
 			delete minuTimer;
 			minuTimer = NULL;
 		}
@@ -237,12 +237,12 @@ bool AlarmClock::eventFilter(QObject *obj, QEvent *ev)
 
 	// We stop the alarm and restore the normal behaviour
 	qApp->removeEventFilter(this);
-	spegniSveglia(false);
+	stopAlarm(false);
 	(*bt_global::display).forceOperativeMode(false);
 	return true;
 }
 
-void AlarmClock::verificaSveglia()
+void AlarmClock::checkAlarm()
 {
 	if (!active)
 		return;
@@ -283,7 +283,7 @@ void AlarmClock::verificaSveglia()
 			{
 				aumVolTimer = new QTimer(this);
 				aumVolTimer->start(3000);
-				connect(aumVolTimer,SIGNAL(timeout()), SLOT(aumVol()));
+				connect(aumVolTimer,SIGNAL(timeout()), SLOT(sounddiffusionAlarm()));
 				conta2min = 0;
 			}
 			else
@@ -297,7 +297,7 @@ void AlarmClock::verificaSveglia()
 			qApp->installEventFilter(this);
 			bt_global::btmain->svegl(true);
 
-			qDebug("PARTE LA SVEGLIA");
+			qDebug("Starting alarm clock");
 
 			if (freq == ONCE)
 				setActive(false);
@@ -313,7 +313,7 @@ bool AlarmClock::isActive()
 	return active;
 }
 
-void AlarmClock::aumVol()
+void AlarmClock::sounddiffusionAlarm()
 {
 	if (conta2min == 0)
 	{
@@ -332,7 +332,7 @@ void AlarmClock::aumVol()
 	}
 	else if (conta2min > 49)
 	{
-		qDebug("SPENGO LA SVEGLIA per timeout");
+		qDebug("Alarm clock timeout");
 		aumVolTimer->stop();
 		delete aumVolTimer;
 		aumVolTimer = NULL;
@@ -367,7 +367,7 @@ void AlarmClock::buzzerAlarm()
 	contaBuzzer++;
 	if (contaBuzzer >= 10*60*2)
 	{
-		qDebug("SPENGO LA SVEGLIA");
+		qDebug("Alarm clock timeout");
 		aumVolTimer->stop();
 		setBeep(buzAbilOld);
 		delete aumVolTimer;
@@ -385,7 +385,7 @@ void AlarmClock::wavAlarm()
 	contaBuzzer++;
 	if (contaBuzzer >= 24)
 	{
-		qDebug("SPENGO LA SVEGLIA");
+		qDebug("Alarm clock timeout");
 		aumVolTimer->stop();
 		delete aumVolTimer;
 		aumVolTimer = NULL;
@@ -395,13 +395,13 @@ void AlarmClock::wavAlarm()
 	}
 }
 
-void AlarmClock::spegniSveglia(bool b)
+void AlarmClock::stopAlarm(bool b)
 {
 	if (!b && aumVolTimer)
 	{
 		if (aumVolTimer->isActive())
 		{
-			qDebug("SPENGO LA SVEGLIA");
+			qDebug("Stopping alarm clock");
 			aumVolTimer->stop();
 #ifdef BT_HARDWARE_BTOUCH
 			if (type == BUZZER)

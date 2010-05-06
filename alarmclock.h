@@ -136,12 +136,12 @@ private slots:
 /*!
   \brief Executed every minute when alarm set is active to detect if it's time to make the alarm ser start.
 */
-	void verificaSveglia();
+	void checkAlarm();
 
 /*!
   \brief Executed every three seconds to increase the soud volume during \a sound \a diffusion \a alarm \a set starting up.
 */
-	void aumVol();
+	void sounddiffusionAlarm();
 
 /*!
   \brief Executed every 100 ms to manage the \a buzzer  \a alarm \a set.
@@ -156,7 +156,7 @@ private slots:
 /*!
   \brief Stops the alarm set.
 */
-	void spegniSveglia(bool);
+	void stopAlarm(bool);
 
 private:
 	int id, item_id;
