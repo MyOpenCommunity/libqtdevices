@@ -94,8 +94,6 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, QList<bool> 
 	else
 		alarm_sound_diff = NULL;
 
-	connect(bt_global::btmain, SIGNAL(freezed(bool)), SLOT(freezed(bool)));
-
 #ifdef LAYOUT_TOUCHX
 	// TODO fix sound diffusion for BTouch
 	dev = new AlarmSoundDiffDevice(SoundDiffusionPage::isMultichannel());
@@ -280,8 +278,6 @@ void AlarmClock::verificaSveglia()
 #endif
 				contaBuzzer = 0;
 				conta2min = 0;
-				bt_global::btmain->freeze(true);
-				bt_global::btmain->svegl(true);
 			}
 			else if (type == DI_SON)
 			{
@@ -289,23 +285,25 @@ void AlarmClock::verificaSveglia()
 				aumVolTimer->start(3000);
 				connect(aumVolTimer,SIGNAL(timeout()), SLOT(aumVol()));
 				conta2min = 0;
-				// When the alarm ring we have to put the light on (like in the
-				// operative mode) but with a screen "locked" (like in the freezed
-				// mode). We do that with an event filter.
-				bt_global::btmain->freeze(false); // To stop a screensaver, if running
-				(*bt_global::display).forceOperativeMode(true); // Prevent the screeensaver start
-				qApp->installEventFilter(this);
-				bt_global::btmain->svegl(true);
 			}
 			else
 				qFatal("Unknown sveglia type!");
 
+			// When the alarm ring we have to put the light on (like in the
+			// operative mode) but with a screen "locked" (like in the freezed
+			// mode). We do that with an event filter.
+			bt_global::btmain->freeze(false); // To stop a screensaver, if running
+			(*bt_global::display).forceOperativeMode(true); // Prevent the screeensaver start
+			qApp->installEventFilter(this);
+			bt_global::btmain->svegl(true);
+
 			qDebug("PARTE LA SVEGLIA");
 
-		if (freq == ONCE)
-			setActive(false);
+			if (freq == ONCE)
+				setActive(false);
 		}
 	}
+
 	if (active)
 		minuTimer->start((60-actualDateTime.time().second())*1000);
 }
@@ -395,14 +393,6 @@ void AlarmClock::wavAlarm()
 		bt_global::btmain->svegl(false);
 		emit alarmClockFired();
 	}
-}
-
-void AlarmClock::freezed(bool b)
-{
-	// We use freeze only for the buzzer (for the difson we use an event Filter)
-	// TODO: use event filter even for the first.
-	if (!b && type == BUZZER)
-		spegniSveglia(b);
 }
 
 void AlarmClock::spegniSveglia(bool b)

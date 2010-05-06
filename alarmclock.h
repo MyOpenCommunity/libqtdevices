@@ -123,8 +123,6 @@ private slots:
 	void saveVolumes();
 	void resetVolumes();
 
-	void freezed(bool b);
-
 /*!
   \brief Draws the first page for alarm set setting and initializes some connections.
 */

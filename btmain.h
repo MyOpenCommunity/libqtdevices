@@ -89,7 +89,6 @@ public:
 
 signals:
 	void resettimer();
-	void freezed(bool);
 	void startscreensaver(Page*);
 
 protected:

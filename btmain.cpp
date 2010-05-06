@@ -724,7 +724,6 @@ void BtMain::freeze(bool b)
 {
 	qDebug("BtMain::freeze(%d)", b);
 	frozen = b;
-	emit freezed(frozen);
 
 	if (!frozen)
 	{
