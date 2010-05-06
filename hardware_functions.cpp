@@ -359,6 +359,9 @@ void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazion
 {
 	char keys[6];
 
+	memset(volSveglia, 0, sizeof(int) * AMPLI_NUM);
+	*sorgente = *stazione = 0;
+
 	qDebug() << "Reading alarm volume from e2 for index" << index;
 
 	memset(keys,'\000',sizeof(keys));
@@ -387,10 +390,13 @@ void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazion
 		for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
 		{
 			read(eeprom,&volSveglia[idx],1);
-			volSveglia[idx]&=0x1F;
+			if (volSveglia[idx] == 0xff)
+				volSveglia[idx] = -1;
+			else
+				volSveglia[idx] &= 0x1F;
 		}
-		read(eeprom,&sorgente,1);
-		read(eeprom,&stazione,1);
+		read(eeprom,sorgente,1);
+		read(eeprom,stazione,1);
 	}
 	close(eeprom);
 }
