@@ -29,6 +29,7 @@
 #include "devices_cache.h"
 #include "loads_device.h"
 #include "energy_management.h" // isBuilt
+#include "stopngo.h"
 
 #include <QDebug>
 
@@ -90,7 +91,7 @@ void SupervisionMenu::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case CLASS_STOPNGO:
-			next_page = new StopNGoMenu(page_node);
+			next_page = new StopAndGoMenu(page_node);
 			break;
 		case LOAD_DIAGNOSTIC:
 			next_page = new LoadDiagnosticPage(page_node);
@@ -112,47 +113,6 @@ void SupervisionMenu::loadItems(const QDomNode &config_node)
 }
 
 void SupervisionMenu::showPage()
-{
-	if (next_page)
-		next_page->showPage();
-	else
-		BannerPage::showPage();
-}
-
-
-StopNGoMenu::StopNGoMenu(const QDomNode &conf_node)
-{
-	buildPage();
-
-	QList<QDomNode> items = getChildren(conf_node, "item");
-	foreach (const QDomNode &item, items)
-	{
-		int id = getTextChild(item, "id").toInt();
-		QString descr = getTextChild(item, "descr");
-		QString where = getTextChild(item, "where");
-
-		BannPulsDynIcon *bp = new BannPulsDynIcon(this, where);  // Create a new banner
-		bp->SetIcons(ICON_FRECCIA_DX, 0, ICON_STOPNGO_CHIUSO);
-		bp->setText(descr);
-		bp->setAnimationParams(0, 0);
-		bp->setId(id);
-		bp->Draw();
-
-		page_content->appendBanner(bp);
-
-		next_page = new StopngoPage(where, id, descr);
-		bp->connectDxButton(next_page);
-		connect(bp, SIGNAL(pageClosed()), SLOT(showPage()));
-	}
-
-	// skip list if there's only one item
-	if (items.size() > 1)
-		next_page = NULL;
-	else
-		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
-}
-
-void StopNGoMenu::showPage()
 {
 	if (next_page)
 		next_page->showPage();
