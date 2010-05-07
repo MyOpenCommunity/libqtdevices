@@ -43,6 +43,13 @@ enum PullMode
 	PULL_UNKNOWN,
 };
 
+enum FrameHandled
+{
+	FRAME_NOT_HANDLED,
+	FRAME_HANDLED,
+	FRAME_MAYBE_HANDLED,
+};
+
 /**
  * Check if the address found in a frame is valid for the device.
  *
@@ -58,7 +65,16 @@ class PullStateManager
 friend class TestLightingDevice;
 friend class TestPullManager;
 public:
-	PullStateManager(PullMode m);
+	// this function acts as a filter for frames; the return value can be:
+	//
+	// FRAME_NOT_HANDLED: the pull/not pull algorithm is not run for this frame
+	// FRAME_HANDLED: the frame is considered for the pull/non pull algorithm
+	// FRAME_MAYBE_HANDLED: the device might react to the frame (in this case
+	//                      it is in non pull mode, and an "advanced" device) or
+	//                      it might not react (in this case the pull mode is unknown)
+	typedef FrameHandled (*FrameChecker)(OpenMsg &msg);
+
+	PullStateManager(PullMode m, FrameChecker checker = NULL);
 	/**
 	 * Logic for the state manager.
 	 * Return true if a point-to-point status frame is needed to choose device's mode, false
@@ -72,6 +88,11 @@ private:
 	int status;
 	bool status_requested;
 	PullMode mode;
+
+	// filters the frames interpreted by this device
+	FrameChecker frame_checker;
+	// the handled/maybe handled status of the last environment frame processed
+	FrameHandled last_handled;
 };
 
 
@@ -95,7 +116,7 @@ public:
 	virtual void manageFrame(OpenMsg &msg);
 
 protected:
-	PullDevice(QString who, QString where, PullMode m, int pull_delay);
+	PullDevice(QString who, QString where, PullMode m, int pull_delay, PullStateManager::FrameChecker checker = NULL);
 	// parse the frame and put the results into the provided StatusList
 	virtual void parseFrame(OpenMsg &msg, StatusList *sl) = 0;
 	// different devices may need different status requests (eg. Dimmer100)

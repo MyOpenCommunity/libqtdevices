@@ -104,11 +104,13 @@ enum
 	                                // for normal frames and 100 to 200 for dimmer100 level frames).
 };
 
-PullStateManager::PullStateManager(PullMode m)
+PullStateManager::PullStateManager(PullMode m, FrameChecker checker)
 {
 	mode = m;
 	status = INVALID_STATE;
 	status_requested = false;
+	frame_checker = checker;
+	last_handled = FRAME_NOT_HANDLED;
 }
 
 PullMode PullStateManager::getPullMode()
@@ -122,6 +124,10 @@ PullMode PullStateManager::getPullMode()
  */
 bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 {
+	FrameHandled handled = frame_checker ? frame_checker(msg) : FRAME_HANDLED;
+	if (handled == FRAME_NOT_HANDLED)
+		return false;
+
 	// PullStateManager will be used for automation and lighting only.
 	// I'll handle all 'what' combinations here, split to a different function or class when needed
 	// We need to look for write environment commands
@@ -152,6 +158,7 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 
 	if (is_environment)
 	{
+		last_handled = handled;
 		if (status == INVALID_STATE || status != new_state)
 			return true;
 	}
@@ -161,9 +168,9 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 		// If we just get PP frames, we can't decide the mode!
 		if (status_requested && status != INVALID_STATE)
 		{
-			if (status == new_state)
+			if (status == new_state && last_handled == FRAME_HANDLED)
 				mode = PULL;
-			else
+			else if (status != new_state)
 				mode = NOT_PULL;
 		}
 		else
@@ -182,9 +189,9 @@ void PullStateManager::setStatusRequested(bool status)
 }
 
 
-PullDevice::PullDevice(QString who, QString where, PullMode m, int pull_delay) :
+PullDevice::PullDevice(QString who, QString where, PullMode m, int pull_delay, PullStateManager::FrameChecker checker) :
 	device(who, where),
-	state(m)
+	state(m, checker)
 {
 	delayed_request.setSingleShot(true);
 	delayed_request.setInterval(pull_delay);
