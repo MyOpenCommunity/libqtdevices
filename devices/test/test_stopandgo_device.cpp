@@ -28,6 +28,26 @@
 #include <QtTest>
 
 
+// getFieldValue
+void TestGetStatusValue::testGetSingleValue()
+{
+	int status = 1;
+
+	bool result = getStatusValue(status, NO_VOLTAGE_INPUT);
+
+	QVERIFY(result);
+}
+
+void TestGetStatusValue::testGetMultipleValues()
+{
+	int status = 0b11;
+
+	bool result = getStatusValue(status, NO_VOLTAGE_OUTPUT | NO_VOLTAGE_INPUT);
+
+	QVERIFY(result);
+}
+
+
 // Stop and go device
 void TestStopAndGoDevice::init()
 {
@@ -74,12 +94,12 @@ void TestStopAndGoDevice::receiveICMState()
 	DeviceValues values;
 	QVERIFY(values.isEmpty());
 
-	OpenMsg request("*#18*666*250*12345##");
+	OpenMsg request("*#18*666*250*0101010101010##");
 
 	bool managed = dev->parseFrame(request, values);
 
 	QVERIFY(managed);
-	QCOMPARE(values[StopAndGoDevice::DIM_ICM_STATE].toString(), QString("12345"));
+	QCOMPARE(values[StopAndGoDevice::DIM_ICM_STATE].toInt(), 0b0101010101010);
 }
 
 

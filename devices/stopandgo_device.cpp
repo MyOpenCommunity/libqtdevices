@@ -21,6 +21,7 @@
 
 #include "openmsg.h"
 
+#define STATUS_BITS 13
 
 namespace Commands
 {
@@ -47,6 +48,29 @@ namespace Requests
 	};
 }
 
+int masc2int(const QString &masc)
+{
+	int length = masc.length();
+
+	Q_ASSERT_X(length != (STATUS_BITS + 1), "masc2int", "masc must be STATUS_BITS + 1 long");
+
+	int result = 0;
+
+	for (int i = 0; i < length; i++)
+	{
+		int value = masc[i].digitValue();
+		result = (value << (STATUS_BITS - i - 1)) | result;
+	}
+
+	return result;
+}
+
+bool getStatusValue(int status, int fields)
+{
+	int result = status & fields;
+
+	return result == fields;
+}
 
 // Stop and Go device
 StopAndGoDevice::StopAndGoDevice(const QString &where, int openserver_id) :
@@ -78,7 +102,7 @@ bool StopAndGoDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	if (static_cast<int>(msg.what()) == DIM_ICM_STATE)
 	{
-		values_list[DIM_ICM_STATE] = QString::fromStdString(msg.whatArg(0));
+		values_list[DIM_ICM_STATE] = masc2int(QString::fromStdString(msg.whatArg(0)));
 		return true;
 	}
 
