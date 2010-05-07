@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -41,18 +41,13 @@ void TestLightingDevice::initLightingDevice(LightingDevice *d)
 		dev = new LightingDevice(LIGHT_DEVICE_WHERE, PULL);
 }
 
-void TestLightingDevice::initTestCase()
-{
-	initLightingDevice();
-}
-
 void TestLightingDevice::cleanupLightingDevice()
 {
 	if (cleanup_required)
 		delete dev;
 }
 
-void TestLightingDevice::cleanupTestCase()
+void TestLightingDevice::cleanup()
 {
 	cleanupLightingDevice();
 }
@@ -60,6 +55,7 @@ void TestLightingDevice::cleanupTestCase()
 void TestLightingDevice::init()
 {
 	cleanBuffers();
+	initLightingDevice();
 }
 
 void TestLightingDevice::sendTurnOn()
@@ -234,19 +230,18 @@ void TestLightingDevice::receiveInvalidVariableTiming()
 	t.checkSignals(timing, 0);
 }
 
-void TestDimmer::initTestCase()
+void TestDimmer::init()
 {
 	initDimmer();
 }
 
-void TestDimmer::cleanupTestCase()
+void TestDimmer::cleanup()
 {
 	cleanupDimmer();
 }
 
 void TestDimmer::initDimmer(DimmerDevice *d)
 {
-	initLightingDevice(d);
 	if (d)
 	{
 		dimmer = d;
@@ -254,6 +249,8 @@ void TestDimmer::initDimmer(DimmerDevice *d)
 	}
 	else
 		dimmer = new DimmerDevice(LIGHT_DEVICE_WHERE, PULL);
+
+	initLightingDevice(dimmer);
 }
 
 void TestDimmer::cleanupDimmer()
@@ -300,13 +297,13 @@ void TestDimmer::receiveDimmerProblem()
 
 
 
-void TestDimmer100::initTestCase()
+void TestDimmer100::init()
 {
 	dimmer100 = new Dimmer100Device(LIGHT_DEVICE_WHERE, PULL);
 	initDimmer(dimmer100);
 }
 
-void TestDimmer100::cleanupTestCase()
+void TestDimmer100::cleanup()
 {
 	cleanupDimmer();
 	delete dimmer100;

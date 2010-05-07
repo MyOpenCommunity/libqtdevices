@@ -43,8 +43,7 @@ protected:
 
 private slots:
 	void init();
-	void initTestCase();
-	void cleanupTestCase();
+	void cleanup();
 
 	void sendTurnOn();
 	void sendRequestStatus();
@@ -83,8 +82,8 @@ protected:
 	virtual void checkLevel();
 
 private slots:
-	void initTestCase();
-	void cleanupTestCase();
+	void init();
+	void cleanup();
 
 	void sendDimmerIncreaseLevel();
 	void sendDimmerDecreaseLevel();
@@ -105,8 +104,8 @@ protected:
 	virtual QString getRequestStatusFrame();
 
 private slots:
-	void initTestCase();
-	void cleanupTestCase();
+	void init();
+	void cleanup();
 
 	void sendDimmer100IncreaseLevel();
 	void sendDimmer100DecreaseLevel();
