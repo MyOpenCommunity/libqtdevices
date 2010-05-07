@@ -45,8 +45,8 @@ enum
 	DIM_DEVICE_OFF = 0,
 };
 
-LightingDevice::LightingDevice(QString where, PullMode pull, int pull_delay) :
-	PullDevice(QString("1"), where, pull, pull_delay)
+LightingDevice::LightingDevice(QString where, PullMode pull, int pull_delay, PullStateManager::FrameChecker checker) :
+	PullDevice(QString("1"), where, pull, pull_delay, checker)
 {
 }
 
@@ -106,6 +106,28 @@ void LightingDevice::requestPullStatus()
 
 
 
+FrameHandled LightingDevice::isFrameHandled(OpenMsg &msg)
+{
+	int what = msg.what();
+
+	// dimmer 100 on/off
+	if (msg.IsNormalFrame() && (what == 1 || what == 0) && msg.whatArgCnt() == 1)
+		return FRAME_MAYBE_HANDLED;
+
+	// timed light
+	if ((msg.IsMeasureFrame() || msg.IsWriteFrame()) && what == DIM_VARIABLE_TIMING)
+		return FRAME_MAYBE_HANDLED;
+
+	// light commands
+	if (msg.IsNormalFrame() && (what == DIM_DEVICE_ON || what == DIM_DEVICE_OFF))
+		return FRAME_HANDLED;
+
+	if (what >= FIXED_TIMING_MIN && what <= FIXED_TIMING_MAX)
+		return FRAME_HANDLED;
+
+	return FRAME_NOT_HANDLED;
+}
+
 void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 {
 	QVariant v;
@@ -154,8 +176,8 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 }
 
 
-DimmerDevice::DimmerDevice(QString where, PullMode pull, int pull_delay) :
-	LightingDevice(where, pull, pull_delay)
+DimmerDevice::DimmerDevice(QString where, PullMode pull, int pull_delay, PullStateManager::FrameChecker checker) :
+	LightingDevice(where, pull, pull_delay, checker)
 {
 }
 
@@ -167,6 +189,39 @@ void DimmerDevice::increaseLevel()
 void DimmerDevice::decreaseLevel()
 {
 	sendCommand(QString::number(DIMMER_DEC));
+}
+
+FrameHandled DimmerDevice::isFrameHandled(OpenMsg &msg)
+{
+	if (LightingDevice::isFrameHandled(msg) == FRAME_HANDLED)
+		return FRAME_HANDLED;
+
+	int what = msg.what();
+
+	// dimmer 100 on/off
+	if (msg.IsNormalFrame() && (what == 1 || what == 0) && msg.whatArgCnt() == 1)
+		return FRAME_MAYBE_HANDLED;
+
+	// dimmer 100 set level
+	if ((msg.IsMeasureFrame() || msg.IsWriteFrame()) && what == DIMMER100_STATUS)
+		return FRAME_MAYBE_HANDLED;
+
+	// dimmer 100 increase/decrease level
+	if (msg.IsNormalFrame() && (what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 2)
+		return FRAME_MAYBE_HANDLED;
+
+	// timed light
+	if ((msg.IsMeasureFrame() || msg.IsWriteFrame()) && what == DIM_VARIABLE_TIMING)
+		return FRAME_MAYBE_HANDLED;
+
+	// dimmer commands
+	if (msg.IsNormalFrame() && (what >= DIMMER10_LEVEL_MIN && what <= DIMMER10_LEVEL_MAX))
+		return FRAME_HANDLED;
+
+	if (msg.IsNormalFrame() && (what == DIM_DIMMER_PROBLEM || what == DIMMER_INC || what == DIMMER_DEC))
+		return FRAME_HANDLED;
+
+	return FRAME_NOT_HANDLED;
 }
 
 void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
@@ -203,8 +258,8 @@ int DimmerDevice::getDimmerLevel(int what)
 }
 
 
-Dimmer100Device::Dimmer100Device(QString where, PullMode pull, int pull_delay) :
-	DimmerDevice(where, pull, pull_delay)
+Dimmer100Device::Dimmer100Device(QString where, PullMode pull, int pull_delay, PullStateManager::FrameChecker checker) :
+	DimmerDevice(where, pull, pull_delay, checker)
 {
 }
 
