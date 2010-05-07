@@ -54,6 +54,7 @@ public:
 
 	ItemTuningStatus getStatus();
 	void setStatus(const ItemTuningStatus &st);
+	void setLevel(int level);
 
 public slots:
 	void decreaseLevel();

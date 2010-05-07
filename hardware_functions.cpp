@@ -473,9 +473,6 @@ void initMultimedia()
 	QProcess::execute("/bin/init_audio_system");
 	QProcess::execute("/bin/init_video_system");
 	QProcess::execute("/bin/rca2_on");
-
-	// TODO for now use a fixed value
-	setVolume(VOLUME_MMDIFFUSION, 3);
 #endif
 }
 

@@ -40,6 +40,7 @@
 #include "displaycontrol.h"
 #include "videodoorentry.h"
 #include "main.h" // bt_global::config
+#include "audiostatemachine.h" // bt_global::audio_states
 
 #if !defined(BT_HARDWARE_X11)
 #include "calibration.h"
@@ -150,7 +151,7 @@ VolumePage::VolumePage(const QDomNode &config_node)
 	layout->setContentsMargins(0, 0, 0, TITLE_HEIGHT);
 
 	// TODO: is this text ok for the banner? Should it be read from conf?
-	ItemTuning *volume = new ItemTuning(tr("Volume"), bt_global::skin->getImage("volume"));
+	volume = new ItemTuning(tr("Volume"), bt_global::skin->getImage("volume"));
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
@@ -161,14 +162,21 @@ VolumePage::VolumePage(const QDomNode &config_node)
 	connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
 }
 
-void VolumePage::hideEvent(QHideEvent *e)
+void VolumePage::showEvent(QShowEvent *)
 {
+	bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
+	volume->setLevel(bt_global::audio_states->getVolume());
+}
+
+void VolumePage::hideEvent(QHideEvent *)
+{
+	bt_global::audio_states->exitCurrentState();
 	bt_global::ringtones->stopRingtone();
 }
 
 void VolumePage::changeVolume(int new_vol)
 {
-	setVolume(VOLUME_RING, new_vol);
+	bt_global::audio_states->setVolume(new_vol);
 	bt_global::ringtones->playRingtone(Ringtones::PE1);
 }
 

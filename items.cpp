@@ -24,12 +24,10 @@
 #include "btbutton.h"
 #include "generic_functions.h" // getBostikName
 #include "fontmanager.h"
+#include "audiostatemachine.h" // VOLUME_MAX, VOLUME_MIN, DEFAULT_VOLUME
 
 #include <QLabel>
 #include <QBoxLayout>
-
-#define VOLUME_MIN 0
-#define VOLUME_MAX 8
 
 
 ItemTuning::ItemTuning(QString text, QString icon, QWidget *parent) : QWidget(parent)
@@ -63,7 +61,7 @@ ItemTuning::ItemTuning(QString text, QString icon, QWidget *parent) : QWidget(pa
 		main_layout->addWidget(label, 1, Qt::AlignHCenter);
 	}
 
-	current_level = VOLUME_MAX / 2;
+	current_level = DEFAULT_VOLUME;
 	icon_name = icon;
 
 	left->setImage(getBostikName(icon_name, QString("sxl") + QString::number(current_level)));
@@ -80,7 +78,15 @@ ItemTuningStatus ItemTuning::getStatus()
 
 void ItemTuning::setStatus(const ItemTuningStatus &st)
 {
-	current_level = st.current_level;
+	setLevel(st.current_level);
+}
+
+void ItemTuning::setLevel(int level)
+{
+	Q_ASSERT_X(level >= VOLUME_MIN && level <= VOLUME_MAX, "ItemTuning::setLevel",
+		"level out of range!");
+
+	current_level = level;
 	changeIcons();
 }
 

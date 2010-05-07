@@ -23,6 +23,10 @@
 
 #include "statemachine.h"
 
+#define VOLUME_MIN 0
+#define VOLUME_MAX 8
+#define DEFAULT_VOLUME 3
+
 namespace AudioStates
 {
 	enum
@@ -45,6 +49,10 @@ namespace AudioStates
 	};
 }
 
+
+class QTimer;
+
+
 // state machine for audio output
 //
 // to add a new state:
@@ -56,12 +64,13 @@ class AudioStateMachine : public StateMachine
 {
 Q_OBJECT
 public:
-
 	AudioStateMachine();
-
 	virtual void start(int state);
+	void setVolume(int value);
+	int getVolume();
 
 #if !defined(BT_HARDWARE_X11)
+
 private slots:
 	// declare state handlers here
 	// Events: Startup, Screensaver without password, Screen OFF
@@ -107,6 +116,12 @@ private slots:
 	// Events: Activate Screensaver during an interaction with diffusion sound system
 	void stateScreensaverWithPlayEntered();
 	void stateScreensaverWithPlayExited();
+
+	void saveVolumes();
+
+private:
+	QTimer *volumes_timer;
+	int current_audio_path;
 #endif
 };
 
