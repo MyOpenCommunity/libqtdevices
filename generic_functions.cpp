@@ -96,26 +96,20 @@ QStringList getFileExtensions(MultimediaFileType type)
 
 	switch (type)
 	{
+	case AUDIO:
+		files = audio_files;
+		break;
+	case VIDEO:
+		files = video_files;
+		break;
+	case IMAGE:
+		files = image_files;
+		break;
 	case UNKNOWN:
 	case DIRECTORY:
 		break;
-	case AUDIO:
-		{
-			files = audio_files;
-		}
-		break;
-	case VIDEO:
-		{
-			files = video_files;
-		}
-		break;
-	case IMAGE:
-		{
-			files = image_files;
-		}
-		break;
 	default:
-		; // Never reached
+		Q_ASSERT_X(false, "getFileExtensions", "type not handled");
 	}
 
 	if (files)
