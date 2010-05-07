@@ -28,6 +28,9 @@
 #include <QtTest>
 
 
+#define WHERE "666"
+
+
 // getFieldValue
 void TestGetStatusValue::testGetSingleValue()
 {
@@ -51,7 +54,7 @@ void TestGetStatusValue::testGetMultipleValues()
 // Stop and go device
 void TestStopAndGoDevice::init()
 {
-	dev = new StopAndGoDevice("666");
+	dev = new StopAndGoDevice(WHERE);
 }
 
 void TestStopAndGoDevice::cleanup()
@@ -64,10 +67,10 @@ void TestStopAndGoDevice::sendAutoResetActivation()
 	dev->sendAutoResetActivation();
 
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*18*26*666##"));
+	QCOMPARE(server->frameCommand(), QString("*18*26*%1##").arg(WHERE));
 
 	client_request->flush();
-	QCOMPARE(server->frameRequest(), QString("*#18*666*250##"));
+	QCOMPARE(server->frameRequest(), QString("*#18*%1*250##").arg(WHERE));
 }
 
 void TestStopAndGoDevice::sendAutoResetDisactivation()
@@ -75,10 +78,10 @@ void TestStopAndGoDevice::sendAutoResetDisactivation()
 	dev->sendAutoResetDisactivation();
 
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*18*27*666##"));
+	QCOMPARE(server->frameCommand(), QString("*18*27*%1##").arg(WHERE));
 
 	client_request->flush();
-	QCOMPARE(server->frameRequest(), QString("*#18*666*250##"));
+	QCOMPARE(server->frameRequest(), QString("*#18*%1*250##").arg(WHERE));
 }
 
 void TestStopAndGoDevice::requestICMState()
@@ -86,7 +89,7 @@ void TestStopAndGoDevice::requestICMState()
 	dev->requestICMState();
 	client_request->flush();
 
-	QCOMPARE(server->frameRequest(), QString("*#18*666*250##"));
+	QCOMPARE(server->frameRequest(), QString("*#18*%1*250##").arg(WHERE));
 }
 
 void TestStopAndGoDevice::receiveICMState()
@@ -94,7 +97,7 @@ void TestStopAndGoDevice::receiveICMState()
 	DeviceValues values;
 	QVERIFY(values.isEmpty());
 
-	OpenMsg request("*#18*666*250*0101010101010##");
+	OpenMsg request(QString("*#18*%1*250*0101010101010##").arg(WHERE).toStdString());
 
 	bool managed = dev->parseFrame(request, values);
 
@@ -106,7 +109,7 @@ void TestStopAndGoDevice::receiveICMState()
 // Stop and go plus device
 void TestStopAndGoPlusDevice::init()
 {
-	dev = new StopAndGoPlusDevice("666");
+	dev = new StopAndGoPlusDevice(WHERE);
 	plus = qobject_cast<StopAndGoPlusDevice *>(dev);
 }
 
@@ -120,10 +123,10 @@ void TestStopAndGoPlusDevice::sendClose()
 	plus->sendClose();
 
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*18*21*666##"));
+	QCOMPARE(server->frameCommand(), QString("*18*21*%1##").arg(WHERE));
 
 	client_request->flush();
-	QCOMPARE(server->frameRequest(), QString("*#18*666*250##"));
+	QCOMPARE(server->frameRequest(), QString("*#18*%1*250##").arg(WHERE));
 }
 
 void TestStopAndGoPlusDevice::sendOpen()
@@ -131,10 +134,10 @@ void TestStopAndGoPlusDevice::sendOpen()
 	plus->sendOpen();
 
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*18*22*666##"));
+	QCOMPARE(server->frameCommand(), QString("*18*22*%1##").arg(WHERE));
 
 	client_request->flush();
-	QCOMPARE(server->frameRequest(), QString("*#18*666*250##"));
+	QCOMPARE(server->frameRequest(), QString("*#18*%1*250##").arg(WHERE));
 }
 
 void TestStopAndGoPlusDevice::sendTrackingSystemActivation()
@@ -142,10 +145,10 @@ void TestStopAndGoPlusDevice::sendTrackingSystemActivation()
 	plus->sendTrackingSystemActivation();
 
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*18*28*666##"));
+	QCOMPARE(server->frameCommand(), QString("*18*28*%1##").arg(WHERE));
 
 	client_request->flush();
-	QCOMPARE(server->frameRequest(), QString("*#18*666*250##"));
+	QCOMPARE(server->frameRequest(), QString("*#18*%1*250##").arg(WHERE));
 }
 
 void TestStopAndGoPlusDevice::sendTrackingSystemDisactivation()
@@ -153,17 +156,17 @@ void TestStopAndGoPlusDevice::sendTrackingSystemDisactivation()
 	plus->sendTrackingSystemDisactivation();
 
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*18*29*666##"));
+	QCOMPARE(server->frameCommand(), QString("*18*29*%1##").arg(WHERE));
 
 	client_request->flush();
-	QCOMPARE(server->frameRequest(), QString("*#18*666*250##"));
+	QCOMPARE(server->frameRequest(), QString("*#18*%1*250##").arg(WHERE));
 }
 
 
 // Stop and go btest device
 void TestStopAndGoBTestDevice::init()
 {
-	dev = new StopAndGoBTestDevice("666");
+	dev = new StopAndGoBTestDevice(WHERE);
 	btest = qobject_cast<StopAndGoBTestDevice *>(dev);
 }
 
@@ -177,10 +180,10 @@ void TestStopAndGoBTestDevice::sendDiffSelftestActivation()
 	btest->sendDiffSelftestActivation();
 
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*18*23*666##"));
+	QCOMPARE(server->frameCommand(), QString("*18*23*%1##").arg(WHERE));
 
 	client_request->flush();
-	QCOMPARE(server->frameRequest(), QString("*#18*666*250##"));
+	QCOMPARE(server->frameRequest(), QString("*#18*%1*250##").arg(WHERE));
 }
 
 void TestStopAndGoBTestDevice::sendDiffSelftestDisactivation()
@@ -188,10 +191,10 @@ void TestStopAndGoBTestDevice::sendDiffSelftestDisactivation()
 	btest->sendDiffSelftestDisactivation();
 
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*18*24*666##"));
+	QCOMPARE(server->frameCommand(), QString("*18*24*%1##").arg(WHERE));
 
 	client_request->flush();
-	QCOMPARE(server->frameRequest(), QString("*#18*666*250##"));
+	QCOMPARE(server->frameRequest(), QString("*#18*%1*250##").arg(WHERE));
 }
 
 void TestStopAndGoBTestDevice::sendSelftestFreq(int days)
@@ -199,10 +202,10 @@ void TestStopAndGoBTestDevice::sendSelftestFreq(int days)
 	btest->sendSelftestFreq(10);
 
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*#18*666*#212*10##"));
+	QCOMPARE(server->frameCommand(), QString("*#18*%1*#212*10##").arg(WHERE));
 
 	client_request->flush();
-	QCOMPARE(server->frameRequest(), QString("*#18*666*212##"));
+	QCOMPARE(server->frameRequest(), QString("*#18*%1*212##").arg(WHERE));
 }
 
 void TestStopAndGoBTestDevice::requestSelftestFreq()
@@ -210,7 +213,7 @@ void TestStopAndGoBTestDevice::requestSelftestFreq()
 	btest->requestSelftestFreq();
 	client_request->flush();
 
-	QCOMPARE(server->frameRequest(), QString("*#18*666*212##"));
+	QCOMPARE(server->frameRequest(), QString("*#18*%1*212##").arg(WHERE));
 }
 
 void TestStopAndGoBTestDevice::receiveSelftestFreq()
@@ -218,7 +221,7 @@ void TestStopAndGoBTestDevice::receiveSelftestFreq()
 	DeviceValues values;
 	QVERIFY(values.isEmpty());
 
-	OpenMsg request("*#18*666*#212*10##");
+	OpenMsg request(QString("*#18*%1*#212*10##").arg(WHERE).toStdString());
 
 	bool managed = btest->parseFrame(request, values);
 
