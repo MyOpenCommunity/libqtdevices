@@ -82,6 +82,11 @@ public:
 protected:
 	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
 	virtual int getDimmerLevel(int what);
+	virtual int getDimmer10Level();
+
+protected:
+	int level;
+	bool status;
 };
 
 
@@ -102,5 +107,7 @@ protected:
 	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
 	virtual void requestPullStatus();
 	virtual int getDimmerLevel(int what);
+	virtual int getDimmer10Level();
 };
+
 #endif // LIGHTINGDEVICE_H

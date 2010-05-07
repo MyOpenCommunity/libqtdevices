@@ -295,6 +295,42 @@ void TestDimmer::receiveDimmerProblem()
 	t.check(frame, true);
 }
 
+void TestDimmer::receiveGlobalIncrementLevel()
+{
+	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL);
+	QString frame = QString("*1*30*0##");
+
+	// pull unknown
+	t.checkSignals(frame, 0);
+
+	// not pull
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	dimmer->status = true;
+	dimmer->level = 50;
+	t.check(frame, 60);
+
+	// not pull, off
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	dimmer->status = false;
+	dimmer->level = 50;
+	t.check(frame, 50);
+	QCOMPARE(dimmer->status, true);
+}
+
+void TestDimmer::receiveGlobalDecrementLevel()
+{
+	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL);
+	QString frame = QString("*1*31*0##");
+
+	// pull unknown
+	t.checkSignals(frame, 0);
+
+	// not pull
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	dimmer->status = true;
+	dimmer->level = 50;
+	t.check(frame, 40);
+}
 
 
 void TestDimmer100::init()
@@ -365,4 +401,41 @@ void TestDimmer100::checkLevel()
 QString TestDimmer100::getRequestStatusFrame()
 {
 	return QString("*#1*%1*1##").arg(dimmer100->where);
+}
+
+void TestDimmer100::receiveGlobalIncrementLevel100()
+{
+	DeviceTester t(dimmer100, LightingDevice::DIM_DIMMER100_LEVEL);
+	QString frame = QString("*1*30#20#255*0##");
+
+	// pull unknown
+	t.checkSignals(frame, 0);
+
+	// not pull
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	dimmer100->status = true;
+	dimmer100->level = 50;
+	t.check(frame, 70);
+
+	// not pull, off
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	dimmer100->status = false;
+	dimmer100->level = 50;
+	t.check(frame, 50);
+	QCOMPARE(dimmer100->status, true);
+}
+
+void TestDimmer100::receiveGlobalDecrementLevel100()
+{
+	DeviceTester t(dimmer100, LightingDevice::DIM_DIMMER100_LEVEL);
+	QString frame = QString("*1*31#20#255*0##");
+
+	// pull unknown
+	t.checkSignals(frame, 0);
+
+	// not pull
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	dimmer100->status = true;
+	dimmer100->level = 50;
+	t.check(frame, 30);
 }

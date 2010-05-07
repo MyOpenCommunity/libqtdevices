@@ -179,6 +179,8 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 DimmerDevice::DimmerDevice(QString where, PullMode pull, int pull_delay, PullStateManager::FrameChecker checker) :
 	LightingDevice(where, pull, pull_delay, checker)
 {
+	 level = 0;
+	 status = false;
 }
 
 void DimmerDevice::increaseLevel()
@@ -228,15 +230,20 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 {
 	LightingDevice::parseFrame(msg, sl);
 
+	if (sl->contains(DIM_DEVICE_ON))
+		 status = (*sl)[DIM_DEVICE_ON].toBool();
+
+	int what = msg.what();
+
 	if (msg.IsNormalFrame())
 	{
 		QVariant v;
-		int what = msg.what();
 		int status_index = -1;
 
 		if (what >= DIMMER10_LEVEL_MIN && what <= DIMMER10_LEVEL_MAX)
 		{
-			v.setValue(getDimmerLevel(what));
+			level = getDimmerLevel(what);
+			v.setValue(level);
 			status_index = DIM_DIMMER_LEVEL;
 		}
 		else if (what == DIM_DIMMER_PROBLEM)
@@ -248,6 +255,27 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 		if (status_index > 0)
 			(*sl)[status_index] = v;
 	}
+
+	if ((what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 0)
+	{
+		if (status)
+		{
+			int dimmer10level = getDimmer10Level();
+
+			if (what == DIMMER_INC)
+				dimmer10level += 1;
+			else
+				dimmer10level -= 1;
+
+			dimmer10level = qMin(qMax(dimmer10level, 2), 10);
+			(*sl)[DIM_DIMMER_LEVEL] = level = getDimmerLevel(dimmer10level);
+		}
+		else
+		{
+			status = true;
+			(*sl)[DIM_DIMMER_LEVEL] = level;
+		}
+	}
 }
 
 int DimmerDevice::getDimmerLevel(int what)
@@ -255,6 +283,11 @@ int DimmerDevice::getDimmerLevel(int what)
 	Q_ASSERT_X(what >= 2 && what <= 10, "DimmerDevice::getDimmerLevel",
 		"DimmerDevice level must be between 2 and 10");
 	return what * 10;
+}
+
+int DimmerDevice::getDimmer10Level()
+{
+	return level / 10;
 }
 
 
@@ -295,21 +328,44 @@ void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
 		Q_ASSERT_X(msg.whatArgCnt() == 2, "Dimmer100Device::parseFrame",
 			"Dimmer 100 status frame must have 2 what args");
 		// convert the value in 0-100 range
-		int level = msg.whatArgN(0) - 100;
+		int new_level = msg.whatArgN(0) - 100;
 
 		// if level == 0 device is off
-		if (level == 0)
+		if (new_level == 0)
 		{
+			status = false;
 			v.setValue(false);
 			(*sl)[DIM_DEVICE_ON] = v;
 		}
 		else
 		{
-			v.setValue(level);
+			level = new_level;
+
+			v.setValue(new_level);
 			(*sl)[DIM_DIMMER100_LEVEL] = v;
 
 			v.setValue(msg.whatArgN(1));
 			(*sl)[DIM_DIMMER100_SPEED] = v;
+		}
+	}
+
+	if ((what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 2)
+	{
+		int delta = msg.whatArgN(0);
+
+		if (status)
+		{
+			if (what == DIMMER_INC)
+				level += delta;
+			else
+				level -= delta;
+
+			(*sl)[DIM_DIMMER100_LEVEL] = level = qMin(qMax(level, 1), 100);
+		}
+		else
+		{
+			status = true;
+			(*sl)[DIM_DIMMER100_LEVEL] = level;
 		}
 	}
 }
@@ -328,5 +384,20 @@ int Dimmer100Device::getDimmerLevel(int what)
 		Q_ASSERT_X((what >= 3 && what <= 8), "Dimmer100Device::getDimmerLevel",
 			"Dimmer level must be between 2 and 10");
 		return (what - 2) * 10;
+	}
+}
+
+int Dimmer100Device::getDimmer10Level()
+{
+	switch (level)
+	{
+	case 1:
+		return 2;
+	case 75:
+		return 9;
+	case 100:
+		return 10;
+	default:
+		return (level / 10) + 2;
 	}
 }

@@ -91,6 +91,9 @@ private slots:
 	void receiveDimmerLevel();
 	void receiveDimmerProblem();
 
+	void receiveGlobalIncrementLevel();
+	void receiveGlobalDecrementLevel();
+
 private:
 	bool cleanup_required;
 	DimmerDevice *dimmer;
@@ -113,6 +116,9 @@ private slots:
 
 	void receiveDimmer100Status();
 	void receiveDimmer100StatusLevel0();
+
+	void receiveGlobalIncrementLevel100();
+	void receiveGlobalDecrementLevel100();
 
 private:
 	Dimmer100Device *dimmer100;
