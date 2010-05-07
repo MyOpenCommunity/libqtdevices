@@ -130,6 +130,9 @@ LoadManagement::LoadManagement(const QDomNode &config_node) :
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	EnergyRates::energy_rates.loadRates();
+#ifdef LAYOUT_TOUCHX
+	QString title = getTextChild(config_node, "descr");
+#endif
 
 	// display the button to edit rates if more than one family
 	if (EnergyRates::energy_rates.hasRates() && !EnergyManagement::isRateEditDisplayed())
@@ -159,13 +162,18 @@ LoadManagement::LoadManagement(const QDomNode &config_node) :
 		vlayout->addLayout(buttons_layout, 1);
 
 		content->setLayout(vlayout);
-		buildPage(content, banner_content, new NavigationBar);
+		buildPage(content, banner_content, new NavigationBar, title, TITLE_HEIGHT);
 #endif
 
 	}
 	else
+	{
+#ifdef LAYOUT_BTOUCH
 		buildPage();
-
+#else
+		buildPage(title, TITLE_HEIGHT);
+#endif
+	}
 	loadItems(config_node);
 }
 

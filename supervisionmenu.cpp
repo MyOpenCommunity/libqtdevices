@@ -47,7 +47,11 @@ SupervisionMenu::SupervisionMenu(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	next_page = NULL;
+#ifdef LAYOUT_BTOUCH
 	buildPage();
+#else
+	buildPage(getTextChild(config_node, "descr"), TITLE_HEIGHT);
+#endif
 	loadItems(config_node);
 }
 
@@ -159,7 +163,11 @@ void StopNGoMenu::showPage()
 
 LoadDiagnosticPage::LoadDiagnosticPage(const QDomNode &config_node)
 {
+#ifdef LAYOUT_BTOUCH
 	buildPage();
+#else
+	buildPage(getTextChild(config_node, "descr"), TITLE_HEIGHT);
+#endif
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
