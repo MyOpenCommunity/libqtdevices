@@ -612,12 +612,21 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>12121</cid>
 
 		<!-- multimedia source
-		Other images: on
+		Other images: on, off, ok
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
 		<img_next>diffusione/successivo.png</img_next>
 		<img_source_background>diffusione/display.png</img_source_background>
 		<img_details>diffusione/contenutimultimediali.png</img_details>
+
+		<!-- Multimedia list icons -->
+		<img_eject>multimediale/umount.png</img_eject>
+		<img_image_icon>multimediale/fotomini.png</img_image_icon>
+		<img_audio_icon>multimediale/audiomini.png</img_audio_icon>
+		<img_video_icon>multimediale/videomini.png</img_video_icon>
+		<img_directory_icon>multimediale/cartellamini.png</img_directory_icon>
+		<img_play_file>multimediale/play.png</img_play_file>
+		<img_browse_directory>multimediale/vai.png</img_browse_directory>
 	</item>
 	<!-- special ambient -->
 	<item>
@@ -641,7 +650,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<cid>12002</cid>
 		<!--
-		Other images: on
+		Other images: on, off
 		Notes: There's also an image set in the stylesheet above
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
@@ -654,12 +663,21 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>11000</cid>
 
 		<!-- multimedia source
-		Other images: on
+		Other images: on, off, ok
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
 		<img_next>diffusione/successivo.png</img_next>
 		<img_source_background>diffusione/display.png</img_source_background>
 		<img_details>diffusione/contenutimultimediali.png</img_details>
+
+		<!-- Multimedia list icons -->
+		<img_eject>multimediale/umount.png</img_eject>
+		<img_image_icon>multimediale/fotomini.png</img_image_icon>
+		<img_audio_icon>multimediale/audiomini.png</img_audio_icon>
+		<img_video_icon>multimediale/videomini.png</img_video_icon>
+		<img_directory_icon>multimediale/cartellamini.png</img_directory_icon>
+		<img_play_file>multimediale/play.png</img_play_file>
+		<img_browse_directory>multimediale/vai.png</img_browse_directory>
 
 		<!-- rds radio source -->
 		<img_auto_on>diffusione/autoon.png</img_auto_on>
@@ -732,7 +750,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<cid>11001</cid>
 		<!--
-		Other images: on
+		Other images: on, off
 		Notes: There's also an image set in the stylesheet above
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
@@ -744,7 +762,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<cid>11002</cid>
 		<!--
-		Other images: on
+		Other images: on, off
 		Notes: There's also an image set in the stylesheet above
 		-->
 		<img_previous>diffusione/precedente.png</img_previous>
@@ -1207,6 +1225,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_arrow_down>setup/meno.png</img_arrow_down>
 		<img_day_on>setup/giornoon.png</img_day_on>
 		<img_day_off>setup/giornooff.png</img_day_off>
+		<img_goto_sounddiffusion>multimediale/godiffusion.png</img_goto_sounddiffusion>
 	</item>
 	<!-- Entryphone call page -->
 	<item>

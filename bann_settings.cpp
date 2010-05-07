@@ -74,8 +74,7 @@ void bannAlarmClock::setSerNum(int num)
 
 void bannAlarmClock::handleClose()
 {
-	// When the page of the alarmclock is closed, the alarm is always set as 'on'.
-	left_button->setStatus(true);
+	left_button->setStatus(alarm_clock->isActive());
 	emit pageClosed();
 }
 
@@ -138,9 +137,8 @@ void bannAlarmClockIcon::setSerNum(int num)
 
 void bannAlarmClockIcon::handleClose()
 {
-	// When the page of the alarmclock is closed, the alarm is always set as 'on'.
-	left_button->setStatus(true);
-	setState(ON);
+	left_button->setStatus(alarm_clock->isActive());
+	setState(alarm_clock->isActive() ? ON : OFF);
 	emit pageClosed();
 }
 

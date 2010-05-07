@@ -29,6 +29,7 @@
 #include <QApplication>
 #include <QProcess>
 #include <QDateTime>
+#include <QtDebug>
 
 #include <stdio.h> // sprintf
 
@@ -138,14 +139,49 @@ void getName(char *name)
 	name[0] = 0;
 }
 
+namespace {
+	struct VolumeData
+	{
+		int volSveglia[AMPLI_NUM];
+		uchar sorgente, stazione;
+
+		VolumeData()
+		{
+			memset(&volSveglia, 0, sizeof(volSveglia));
+			sorgente = stazione = 0;
+		}
+	};
+
+	QString toString(const VolumeData &d)
+	{
+		return QString("station=%1, source=%2").arg(d.stazione).arg(d.sorgente);
+	}
+}
+
+QHash<int, VolumeData> volumes;
+
 void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazione)
 {
-	// do nothing
+	VolumeData data = volumes[index];
+
+	memcpy(volSveglia, data.volSveglia, AMPLI_NUM * sizeof(int));
+	*sorgente = data.sorgente;
+	*stazione = data.stazione;
+
+	qDebug() << "Reading volume data" << toString(data);
 }
 
 void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 {
-	// do nothing
+	VolumeData data;
+
+	memcpy(data.volSveglia, volSveglia, AMPLI_NUM * sizeof(int));
+	data.sorgente = sorgente;
+	data.stazione = stazione;
+
+	qDebug() << "Saving volume data" << toString(data);
+
+	volumes[index] = data;
 }
 
 

@@ -24,13 +24,6 @@
 
 #include "audiosource.h"
 
-#include <QStringList>
-#include <QString>
-#include <QWidget>
-
-#define MAX_AMB 9
-
-class QDomNode;
 class VirtualSourceDevice;
 class TextOnImageLabel;
 
@@ -44,11 +37,7 @@ Q_OBJECT
 public:
 	MediaSource(const QString &area, VirtualSourceDevice *dev, const QString &description, Page *details);
 
-protected:
-	void initBanner(const QString &left, const QString &center_left, const QString &center, const QString &center_right, const QString &right);
-
 private:
-	BtButton *left_button, *center_left_button, *center_right_button, *right_button;
 	TextOnImageLabel *center_icon;
 };
 

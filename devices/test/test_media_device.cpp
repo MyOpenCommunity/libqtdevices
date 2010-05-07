@@ -272,7 +272,7 @@ void TestVirtualSourceDevice::testInitFrame()
 	QCOMPARE(VirtualSourceDevice::createMediaInitFrame(true, "", "28"), QString("*#22*7*#15**2*8*9*9***0*1*1*1##"));
 
 	// monochannel, ampli
-	QCOMPARE(VirtualSourceDevice::createMediaInitFrame(false, "", "8"), QString("*#22*7*#15**0*8*9*9***0*1*1*1##"));
+	QCOMPARE(VirtualSourceDevice::createMediaInitFrame(false, "", "28"), QString("*#22*7*#15**2*8*9*9***0*1*1*1##"));
 }
 
 
@@ -394,6 +394,35 @@ void TestVirtualAmplifierDevice::sendUpdateVolume()
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
+void TestVirtualAmplifierDevice::sendUpdateStatus()
+{
+	const int STATUS = 1;
+	dev->updateStatus(STATUS);
+	client_command->flush();
+	QString cmd(QString("*#22*3#%1#%2*12*%3*3##").arg(where[0]).arg(where[1]).arg(STATUS));
+	QCOMPARE(server->frameCommand(), cmd);
+}
+
+void TestVirtualAmplifierDevice::sendVolumeUp()
+{
+	// only emits a signal
+}
+
+void TestVirtualAmplifierDevice::sendVolumeDown()
+{
+	// only emits a signal
+}
+
+void TestVirtualAmplifierDevice::sendTurnOn()
+{
+	// only emits a signal
+}
+
+void TestVirtualAmplifierDevice::sendTurnOff()
+{
+	// only emits a signal
+}
+
 void TestVirtualAmplifierDevice::receiveAmplifierOn()
 {
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
@@ -430,7 +459,7 @@ void TestVirtualAmplifierDevice::receiveSetVolume()
 {
 	const int VOLUME = 11;
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_SET_VOLUME);
-	t.check(QString("*#22*3#%1#%2*1*%3##").arg(where[0]).arg(where[1]).arg(VOLUME), VOLUME);
+	t.check(QString("*#22*3#%1#%2*#1*%3##").arg(where[0]).arg(where[1]).arg(VOLUME), VOLUME);
 }
 
 

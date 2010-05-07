@@ -113,10 +113,6 @@ public:
 	/// Obsolete: don't use it in new code
 	virtual void inizializza();
 
-	// TODO: needed for sound diffusion in AlarmClock. To be removed
-	/// Obsolete: don't use it in new code
-	virtual void forceDraw() { }
-
 	// Defaults to NONE, reimplement to change page type.
 	// TODO: This should really be pure virtual
 	virtual PageType pageType();

@@ -21,6 +21,7 @@
 
 #include "sorgentiradio.h"
 #include "btbutton.h" // BtButton
+#include "state_button.h" // StateButton
 #include "skinmanager.h" // bt_global::skin
 #include "media_device.h" // RadioSourceDevice
 #include "radio.h" // RadioInfo
@@ -34,14 +35,11 @@
 RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, Page *details) :
 	AudioSource(area, dev, details)
 {
-	left_button = new BtButton;
-	center_left_button = new BtButton;
-	center_right_button = new BtButton;
-	right_button = new BtButton;
 	radio_info = new RadioInfo(bt_global::skin->getImage("source_background"));
 
-	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("previous"), bt_global::skin->getImage("source_background"),
-		bt_global::skin->getImage("next"), bt_global::skin->getImage("details"));
+	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"), bt_global::skin->getImage("previous"),
+		   bt_global::skin->getImage("next"), bt_global::skin->getImage("details"));
+
 	QHBoxLayout *hbox = new QHBoxLayout(this);
 	hbox->setContentsMargins(0, 0, 0, 0);
 	hbox->setSpacing(5);
@@ -55,20 +53,6 @@ RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, Page *deta
 
 	connect(this, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
-
-	connect(left_button, SIGNAL(clicked()), SLOT(turnOn()));
-	connect(center_left_button, SIGNAL(clicked()), dev, SLOT(prevTrack()));
-	connect(center_right_button, SIGNAL(clicked()), dev, SLOT(nextTrack()));
-	connect(right_button, SIGNAL(clicked()), SLOT(showDetails()));
-}
-
-void RadioSource::initBanner(const QString &left, const QString &center_left, const QString &center,
-	const QString &center_right, const QString &right)
-{
-	initButton(left_button, left);
-	initButton(center_left_button, center_left);
-	initButton(center_right_button, center_right);
-	initButton(right_button, right);
 }
 
 void RadioSource::sourceStateChanged(bool active)

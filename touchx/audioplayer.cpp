@@ -32,6 +32,8 @@
 #include "homewindow.h" // TrayBar
 #include "sounddiffusionpage.h" // showCurrentAmbientPage, isSource
 #include "main.h" // MULTIMEDIA
+#include "media_device.h"
+#include "devices_cache.h"
 
 #include <QGridLayout>
 #include <QLabel>
@@ -131,6 +133,12 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	{
 		volume = new ItemTuning(tr("Volume"), bt_global::skin->getImage("volume"));
 		connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
+	}
+	else
+	{
+		VirtualSourceDevice *dev = bt_global::add_device_to_cache(new VirtualSourceDevice((*bt_global::config)[SOURCE_ADDRESS]));
+
+		connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	}
 
 	QVBoxLayout *l = new QVBoxLayout(content);
@@ -253,4 +261,15 @@ void AudioPlayerPage::changeVolume(int volume)
 void AudioPlayerPage::gotoSoundDiffusion()
 {
 	SoundDiffusionPage::showCurrentAmbientPage();
+}
+
+void AudioPlayerPage::valueReceived(const DeviceValues &device_values)
+{
+	if (!player->isInstanceRunning())
+		return;
+
+	if (device_values.contains(VirtualSourceDevice::REQ_NEXT_TRACK))
+		next();
+	else if (device_values.contains(VirtualSourceDevice::REQ_PREV_TRACK))
+		previous();
 }

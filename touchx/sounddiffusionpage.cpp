@@ -38,6 +38,7 @@
 #include "multimedia.h" // MultimediaSectionPage
 #include "multimedia_filelist.h"
 #include "radio.h" // RadioPage
+#include "navigation_bar.h"
 
 #include <QDomNode>
 #include <QGridLayout>
@@ -46,9 +47,10 @@
 #include <QStackedWidget>
 
 
-bool SoundDiffusionPage::is_source = false, SoundDiffusionPage::is_amplifier = false;
-Page *SoundDiffusionPage::sound_diffusion_page;
-Page *SoundAmbientPage::current_ambient_page;
+bool SoundDiffusionPage::is_source = false, SoundDiffusionPage::is_amplifier = false, SoundDiffusionPage::is_multichannel = false;
+Page *SoundDiffusionPage::sound_diffusion_page = NULL;
+Page *SoundDiffusionPage::alarm_clock_page = NULL;
+Page *SoundAmbientPage::current_ambient_page = NULL;
 
 namespace
 {
@@ -298,6 +300,56 @@ Page *SoundAmbientPage::currentAmbientPage()
 }
 
 
+SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QList<SourceDescription> &sources)
+{
+	SkinContext context(getTextChild(conf_node, "cid").toInt());
+	QString area;
+
+	if (getTextChild(conf_node, "id").toInt() == DIFSON_MONO)
+		area = "0";
+	else
+		area = getTextChild(conf_node, "env");
+
+	QList<SourceDescription> filtered_sources;
+	foreach (const SourceDescription &s, sources)
+		if (s.id != SOURCE_MULTIMEDIA)
+			filtered_sources.append(s);
+
+	SoundSources *top_widget = new SoundSources(area, filtered_sources);
+	connect(top_widget, SIGNAL(pageClosed()), SLOT(showPage()));
+
+	QWidget *main_widget = new QWidget;
+	QVBoxLayout *l = new QVBoxLayout(main_widget);
+	BannerContent *content = new BannerContent;
+	NavigationBar *nav_bar = new NavigationBar;
+	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
+
+	connect(ok, SIGNAL(clicked()), SIGNAL(saveVolumes()));
+
+	l->addWidget(top_widget);
+	l->addWidget(content, 1);
+	l->addWidget(ok, 0, Qt::AlignRight);
+
+	buildPage(main_widget, content, nav_bar, getTextChild(conf_node, "descr"), Page::SMALL_TITLE_HEIGHT);
+	loadItems(conf_node);
+}
+
+void SoundAmbientAlarmPage::loadItems(const QDomNode &config_node)
+{
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		banner *b = SoundAmbientPage::getBanner(item);
+		if (b)
+		{
+			page_content->appendBanner(b);
+			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+		}
+		else
+			qFatal("ID %s not handled in SoundAmbientAlarmPage", qPrintable(getTextChild(item, "id")));
+	}
+}
+
+
 enum Items
 {
 	ITEM_SPECIAL_AMBIENT = 12020,              // special ambient
@@ -306,15 +358,17 @@ enum Items
 
 SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 {
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
 	next_page = NULL;
 
 	// check if this hardware can work as a source/amplifier and create the virtual
 	// devices to handle the source/amplifier frames
 	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
 	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
+	is_multichannel = getTextChild(config_node, "id").toInt() == DIFSON_MULTI;
 
 	buildPage(getTextChild(config_node, "descr"));
-	bool is_multichannel = getTextChild(config_node, "id").toInt() == DIFSON_MULTI;
 	if (is_multichannel)
 		loadItemsMulti(config_node);
 	else
@@ -329,6 +383,9 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 									       (*bt_global::config)[AMPLIFIER_ADDRESS]);
 		bt_global::devices_cache.addInitCommandFrame(0, init_frame);
 	}
+
+	if (is_amplifier)
+		new LocalAmplifier(this);
 }
 
 int SoundDiffusionPage::sectionId() const
@@ -370,8 +427,6 @@ QList<SourceDescription> SoundDiffusionPage::loadSources(const QDomNode &config_
 
 void SoundDiffusionPage::loadItemsMulti(const QDomNode &config_node)
 {
-	SkinContext context(getTextChild(config_node, "cid").toInt());
-
 	QList<SourceDescription> sources_list = loadSources(config_node);
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
@@ -384,6 +439,8 @@ void SoundDiffusionPage::loadItemsMulti(const QDomNode &config_node)
 		else
 			qFatal("ID %s not handled in SoundDiffusionPage", qPrintable(getTextChild(item, "id")));
 	}
+
+	alarm_clock_page = new SoundDiffusionAlarmPage(config_node, sources_list);
 }
 
 void SoundDiffusionPage::loadItemsMono(const QDomNode &config_node)
@@ -393,6 +450,8 @@ void SoundDiffusionPage::loadItemsMono(const QDomNode &config_node)
 	QList<SourceDescription> sources_list = loadSources(config_node);
 	next_page = new SoundAmbientPage(config_node, sources_list);
 	connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
+
+	alarm_clock_page = new SoundAmbientAlarmPage(config_node, sources_list);
 }
 
 banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources)
@@ -433,6 +492,11 @@ void SoundDiffusionPage::showPage()
 		BannerPage::showPage();
 }
 
+Page *SoundDiffusionPage::alarmClockPage()
+{
+	return alarm_clock_page;
+}
+
 void SoundDiffusionPage::showCurrentAmbientPage()
 {
 	Page *current_ambient_page = SoundAmbientPage::currentAmbientPage();
@@ -455,4 +519,91 @@ bool SoundDiffusionPage::isSource()
 bool SoundDiffusionPage::isAmplifier()
 {
 	return is_amplifier;
+}
+
+bool SoundDiffusionPage::isMultichannel()
+{
+	return is_multichannel;
+}
+
+
+SoundDiffusionAlarmPage::SoundDiffusionAlarmPage(const QDomNode &config_node, const QList<SourceDescription> &sources)
+{
+	SkinContext context(getTextChild(config_node, "cid").toInt());
+
+	buildPage(getTextChild(config_node, "descr"));
+	loadItems(config_node, sources);
+}
+
+void SoundDiffusionAlarmPage::loadItems(const QDomNode &config_node, const QList<SourceDescription> &sources)
+{
+	foreach (const QDomNode &item_node, getChildren(config_node, "item"))
+	{
+		SkinContext context(getTextChild(item_node, "cid").toInt());
+		int id = getTextChild(item_node, "id").toInt();
+		QDomNode page_node = getPageNodeFromChildNode(item_node, "lnk_pageID");
+
+		if (id == ITEM_SPECIAL_AMBIENT)
+			continue;
+		if (id != ITEM_AMBIENT)
+			qFatal("ID %s not handled in SoundDiffusionAlarmPage", qPrintable(getTextChild(item_node, "id")));
+
+		SoundAmbient *b = new SoundAmbient(getTextChild(item_node, "descr"), getTextChild(item_node, "env"));
+		SoundAmbientAlarmPage *p = new SoundAmbientAlarmPage(page_node, sources);
+		b->connectRightButton(p);
+
+		page_content->appendBanner(b);
+		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+		connect(p, SIGNAL(saveVolumes()), SIGNAL(saveVolumes()));
+	}
+}
+
+
+LocalAmplifier::LocalAmplifier(QObject *parent) : QObject(parent)
+{
+	state = false;
+	level = 8;
+
+	dev = bt_global::add_device_to_cache(new VirtualAmplifierDevice((*bt_global::config)[AMPLIFIER_ADDRESS]));
+
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+
+	dev->updateStatus(state);
+	dev->updateVolume(level);
+}
+
+void LocalAmplifier::valueReceived(const DeviceValues &device_values)
+{
+	// TODO must call audio state machine methods to do the actual work
+
+	foreach (int key, device_values.keys())
+	{
+		switch (key)
+		{
+		case VirtualAmplifierDevice::REQ_AMPLI_ON:
+			state = device_values[key].toBool();
+			dev->updateStatus(state);
+			if (state)
+				dev->updateVolume(level);
+			break;
+		case VirtualAmplifierDevice::REQ_VOLUME_UP:
+			if (level < 31)
+			{
+				level += 1;
+				dev->updateVolume(level);
+			}
+			break;
+		case VirtualAmplifierDevice::REQ_VOLUME_DOWN:
+			if (level > 0)
+			{
+				level -= 1;
+				dev->updateVolume(level);
+			}
+			break;
+		case VirtualAmplifierDevice::REQ_SET_VOLUME:
+			level = device_values[key].toInt();
+			dev->updateVolume(level);
+			break;
+		}
+	}
 }

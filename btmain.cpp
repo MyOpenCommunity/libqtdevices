@@ -128,8 +128,6 @@ BtMain::BtMain(int openserver_reconnection_time)
 {
 	boot_time = new QTime;
 	boot_time->start();
-	difSon = 0;
-	dm = 0;
 	screensaver = 0;
 	// construct global objects
 	bt_global::config = new QHash<GlobalFields, QString>();
@@ -485,12 +483,22 @@ void BtMain::myMain()
 	// Called when both the connection is up and config is loaded.
 	qDebug("BtMain::MyMain");
 
+	// disconnect the connectionReady slot: myMain must be called only once even
+	// in the case of openserver reconnection
+	{
+		OpenServerManager *manager = device::getManager(MAIN_OPENSERVER);
+
+		disconnect(manager, 0, this, 0);
+	}
+
 	Home->inizializza();
 	if (version)
 		version->inizializza();
 
 	foreach (Page *p, page_list)
 		p->inizializza();
+
+	device::initDevices();
 
 #if !defined(BT_HARDWARE_X11)
 	if (static_cast<int>(getTimePress()) * 1000 <= boot_time->elapsed() && !alreadyCalibrated)
@@ -716,7 +724,6 @@ void BtMain::freeze(bool b)
 {
 	qDebug("BtMain::freeze(%d)", b);
 	frozen = b;
-	emit freezed(frozen);
 
 	if (!frozen)
 	{

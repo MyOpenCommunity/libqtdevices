@@ -24,13 +24,7 @@
 
 #include "audiosource.h"
 
-#include <QList>
-#include <QString>
-#include <QStringList>
-
 /// Forward Declarations
-class radio;
-class device;
 class RadioSourceDevice;
 class RadioInfo;
 
@@ -44,16 +38,11 @@ Q_OBJECT
 public:
 	RadioSource(const QString &area, RadioSourceDevice *dev, Page *details);
 
-protected:
-	void initBanner(const QString &left, const QString &center_left, const QString &center, const QString &center_right,
-		const QString &right);
-
 private slots:
 	void sourceStateChanged(bool active);
 	void valueReceived(const DeviceValues &values_list);
 
 private:
-	BtButton *left_button, *center_left_button, *center_right_button, *right_button;
 	RadioInfo *radio_info;
 };
 

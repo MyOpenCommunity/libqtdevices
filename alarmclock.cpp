@@ -33,6 +33,9 @@
 #include "alarmsounddiff_device.h"
 #include "navigation_bar.h"
 #include "generic_functions.h" // getBostikName
+#ifdef LAYOUT_TOUCHX
+#include "sounddiffusionpage.h" // alarmClockPage
+#endif
 
 #include <openmsg.h>
 
@@ -91,9 +94,10 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, QList<bool> 
 	else
 		alarm_sound_diff = NULL;
 
-	connect(bt_global::btmain, SIGNAL(freezed(bool)), SLOT(freezed(bool)));
-
-	dev = new AlarmSoundDiffDevice();
+#ifdef LAYOUT_TOUCHX
+	// TODO fix sound diffusion for BTouch
+	dev = new AlarmSoundDiffDevice(SoundDiffusionPage::isMultichannel());
+#endif
 	connect(dev, SIGNAL(valueReceived(DeviceValues)),
 		SLOT(valueReceived(DeviceValues)));
 }
@@ -108,11 +112,9 @@ void AlarmClock::showTypePage()
 	alarm_type->showPage();
 }
 
-void AlarmClock::handleClose()
+void AlarmClock::saveAndActivate()
 {
-	dev->setReceiveFrames(false);
 	setActive(true);
-	emit Closed();
 	alarmTime = alarm_time->getAlarmTime();
 	freq = alarm_type->getAlarmFreq();
 	days = alarm_type->getAlarmDays();
@@ -137,8 +139,7 @@ void AlarmClock::handleClose()
 	setCfgValue(data, item_id);
 #endif
 
-	if (aggiornaDatiEEprom)
-		setAlarmVolumes(serNum-1, volSveglia, sorgente, stazione);
+	emit Closed();
 }
 
 void AlarmClock::showSoundDiffPage()
@@ -153,6 +154,23 @@ void AlarmClock::showSoundDiffPage()
 	alarm_sound_diff->showPage();
 }
 
+void AlarmClock::saveVolumes()
+{
+	dev->setReceiveFrames(false);
+
+	if (aggiornaDatiEEprom)
+		setAlarmVolumes(serNum-1, volSveglia, sorgente, stazione);
+	aggiornaDatiEEprom = 0;
+	showPage();
+}
+
+void AlarmClock::resetVolumes()
+{
+	dev->setReceiveFrames(false);
+	aggiornaDatiEEprom = 0;
+	showPage();
+}
+
 void AlarmClock::setActive(bool a)
 {
 	alarm_time->setActive(a);
@@ -164,7 +182,7 @@ void AlarmClock::setActive(bool a)
 		{
 			minuTimer = new QTimer(this);
 			minuTimer->start(200);
-			connect(minuTimer,SIGNAL(timeout()), this,SLOT(verificaSveglia()));
+			connect(minuTimer,SIGNAL(timeout()), this,SLOT(checkAlarm()));
 		}
 	}
 	else
@@ -172,7 +190,7 @@ void AlarmClock::setActive(bool a)
 		if (minuTimer)
 		{
 			minuTimer->stop();
-			disconnect(minuTimer,SIGNAL(timeout()), this,SLOT(verificaSveglia()));
+			disconnect(minuTimer,SIGNAL(timeout()), this,SLOT(checkAlarm()));
 			delete minuTimer;
 			minuTimer = NULL;
 		}
@@ -219,12 +237,12 @@ bool AlarmClock::eventFilter(QObject *obj, QEvent *ev)
 
 	// We stop the alarm and restore the normal behaviour
 	qApp->removeEventFilter(this);
-	spegniSveglia(false);
+	stopAlarm();
 	(*bt_global::display).forceOperativeMode(false);
 	return true;
 }
 
-void AlarmClock::verificaSveglia()
+void AlarmClock::checkAlarm()
 {
 	if (!active)
 		return;
@@ -260,32 +278,32 @@ void AlarmClock::verificaSveglia()
 #endif
 				contaBuzzer = 0;
 				conta2min = 0;
-				bt_global::btmain->freeze(true);
-				bt_global::btmain->svegl(true);
 			}
 			else if (type == DI_SON)
 			{
 				aumVolTimer = new QTimer(this);
 				aumVolTimer->start(3000);
-				connect(aumVolTimer,SIGNAL(timeout()), SLOT(aumVol()));
+				connect(aumVolTimer,SIGNAL(timeout()), SLOT(sounddiffusionAlarm()));
 				conta2min = 0;
-				// When the alarm ring we have to put the light on (like in the
-				// operative mode) but with a screen "locked" (like in the freezed
-				// mode). We do that with an event filter.
-				bt_global::btmain->freeze(false); // To stop a screensaver, if running
-				(*bt_global::display).forceOperativeMode(true); // Prevent the screeensaver start
-				qApp->installEventFilter(this);
-				bt_global::btmain->svegl(true);
 			}
 			else
 				qFatal("Unknown sveglia type!");
 
-			qDebug("PARTE LA SVEGLIA");
+			// When the alarm ring we have to put the light on (like in the
+			// operative mode) but with a screen "locked" (like in the freezed
+			// mode). We do that with an event filter.
+			bt_global::btmain->freeze(false); // To stop a screensaver, if running
+			(*bt_global::display).forceOperativeMode(true); // Prevent the screeensaver start
+			qApp->installEventFilter(this);
+			bt_global::btmain->svegl(true);
 
-		if (freq == ONCE)
-			setActive(false);
+			qDebug("Starting alarm clock");
+
+			if (freq == ONCE)
+				setActive(false);
 		}
 	}
+
 	if (active)
 		minuTimer->start((60-actualDateTime.time().second())*1000);
 }
@@ -295,7 +313,7 @@ bool AlarmClock::isActive()
 	return active;
 }
 
-void AlarmClock::aumVol()
+void AlarmClock::sounddiffusionAlarm()
 {
 	if (conta2min == 0)
 	{
@@ -314,17 +332,10 @@ void AlarmClock::aumVol()
 	}
 	else if (conta2min > 49)
 	{
-		qDebug("SPENGO LA SVEGLIA per timeout");
-		aumVolTimer->stop();
-		delete aumVolTimer;
-		aumVolTimer = NULL;
-
 		dev->stopAlarm(sorgente, volSveglia);
-
-		bt_global::btmain->freeze(false);
-		bt_global::btmain->svegl(false);
 		(*bt_global::display).forceOperativeMode(false);
-		emit alarmClockFired();
+
+		alarmTimeout();
 	}
 }
 
@@ -349,14 +360,9 @@ void AlarmClock::buzzerAlarm()
 	contaBuzzer++;
 	if (contaBuzzer >= 10*60*2)
 	{
-		qDebug("SPENGO LA SVEGLIA");
-		aumVolTimer->stop();
 		setBeep(buzAbilOld);
-		delete aumVolTimer;
-		aumVolTimer = NULL;
-		bt_global::btmain->freeze(false);
-		bt_global::btmain->svegl(false);
-		emit alarmClockFired();
+
+		alarmTimeout();
 	}
 }
 
@@ -366,49 +372,43 @@ void AlarmClock::wavAlarm()
 
 	contaBuzzer++;
 	if (contaBuzzer >= 24)
-	{
-		qDebug("SPENGO LA SVEGLIA");
-		aumVolTimer->stop();
-		delete aumVolTimer;
-		aumVolTimer = NULL;
-		bt_global::btmain->freeze(false);
-		bt_global::btmain->svegl(false);
-		emit alarmClockFired();
-	}
+		alarmTimeout();
 }
 
-void AlarmClock::freezed(bool b)
+void AlarmClock::alarmTimeout()
 {
-	// We use freeze only for the buzzer (for the difson we use an event Filter)
-	// TODO: use event filter even for the first.
-	if (!b && type == BUZZER)
-		spegniSveglia(b);
+	qDebug("Alarm clock timeout");
+
+	// stop alarm timer
+	aumVolTimer->stop();
+	delete aumVolTimer;
+	aumVolTimer = NULL;
+
+	// restore display state
+	bt_global::btmain->freeze(false);
+	bt_global::btmain->svegl(false);
+
+	emit alarmClockFired();
 }
 
-void AlarmClock::spegniSveglia(bool b)
+void AlarmClock::stopAlarm()
 {
-	if (!b && aumVolTimer)
-	{
-		if (aumVolTimer->isActive())
-		{
-			qDebug("SPENGO LA SVEGLIA");
-			aumVolTimer->stop();
-			if (type == BUZZER)
-				setBeep(buzAbilOld);
-			else
-				dev->stopAlarm(sorgente, volSveglia);
+	// should never happen
+	if (!aumVolTimer || !aumVolTimer->isActive())
+		return;
 
-			delete aumVolTimer;
-			aumVolTimer = NULL;
-			bt_global::btmain->svegl(false);
-			emit alarmClockFired();
-		}
-	}
-	else if (b)
-	{
-		if (isVisible())
-			handleClose();
-	}
+	qDebug("Stopping alarm clock");
+	aumVolTimer->stop();
+#ifdef BT_HARDWARE_BTOUCH
+	if (type == BUZZER)
+		setBeep(buzAbilOld);
+#endif
+
+	delete aumVolTimer;
+	aumVolTimer = NULL;
+	bt_global::btmain->svegl(false);
+
+	emit alarmClockFired();
 }
 
 void AlarmClock::setSerNum(int s)
@@ -452,7 +452,7 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 	l->addLayout(r);
 
 	connect(navigation, SIGNAL(forwardClicked()), alarm_page, SLOT(showTypePage()));
-	connect(navigation, SIGNAL(okClicked()), alarm_page, SLOT(handleClose()));
+	connect(navigation, SIGNAL(okClicked()), alarm_page, SLOT(saveAndActivate()));
 
 	buildPage(content, navigation);
 }
@@ -480,7 +480,7 @@ AlarmClockFreq::AlarmClockFreq(AlarmClock *alarm_page)
 		SLOT(setSelection(int)));
 
 	connect(navigation,SIGNAL(forwardClicked()),alarm_page,SLOT(showSoundDiffPage()));
-	connect(navigation, SIGNAL(okClicked()), alarm_page, SLOT(handleClose()));
+	connect(navigation, SIGNAL(okClicked()), alarm_page, SLOT(saveAndActivate()));
 
 	content->setCheckedId(alarm_page->freq);
 
@@ -506,37 +506,26 @@ QList<bool> AlarmClockFreq::getAlarmDays() const
 
 AlarmClockSoundDiff::AlarmClockSoundDiff(AlarmClock *alarm_page)
 {
-	// TODO fix alarm clock with sound diffusion
-#if 0
-	if (bt_global::btmain->difSon)
-		difson = bt_global::btmain->difSon;
-	if (bt_global::btmain->dm)
-		difson = bt_global::btmain->dm;
-#endif
-
-	connect(this, SIGNAL(Closed()), alarm_page, SLOT(handleClose()));
+	connect(this, SIGNAL(Closed()), alarm_page, SLOT(resetVolumes()));
+	connect(this, SIGNAL(saveVolumes()), alarm_page, SLOT(saveVolumes()));
 }
 
 void AlarmClockSoundDiff::showPage()
 {
-	Page::showPage();
+#ifdef LAYOUT_TOUCHX
+	Page *difson = SoundDiffusionPage::alarmClockPage();
+	disconnect(difson, SIGNAL(Closed()), 0, 0);
+	disconnect(difson, SIGNAL(saveVolumes()), 0, 0);
+	connect(difson, SIGNAL(Closed()), SIGNAL(Closed()));
+	connect(difson, SIGNAL(saveVolumes()), SIGNAL(saveVolumes()));
 
-	// reparent only if we have a multichannel sound diffusion
-	if (bt_global::btmain->dm)
-		difson->setParent(this);
-	difson->forceDraw();
 	difson->showPage();
-
-	connect(difson, SIGNAL(Closed()), SLOT(handleClose()));
+#else
+	Q_ASSERT_X(false, "AlarmClockSoundDiff::showPage", "No sound diffusion alarm clock for BTouch yet");
+#endif
 }
 
-void AlarmClockSoundDiff::handleClose()
-{
-	disconnect(difson, SIGNAL(Closed()), this, SLOT(handleClose()));
-	emit Closed();
-}
-
-// AlarmClockDateTime implementation
+// AlarmClockTimeFreq implementation
 
 AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 {
@@ -553,10 +542,9 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 
 	NavigationBar *nav = new NavigationBar;
 	nav->displayScrollButtons(false);
-	buildPage(content, nav, tr("Wake up"), TITLE_HEIGHT);
+	buildPage(content, nav, tr("Wake up"), SMALL_TITLE_HEIGHT);
 
-	//connect(nav, SIGNAL(backClick()), alarm_page, SIGNAL(Closed()));
-	connect(nav, SIGNAL(backClick()), alarm_page, SLOT(handleClose()));
+	connect(nav, SIGNAL(backClick()), alarm_page, SIGNAL(Closed()));
 
 	alarm_label = new QLabel;
 	alarm_icon = bt_global::skin->getImage("alarm_icon");
@@ -572,8 +560,8 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 	QGridLayout *days = new QGridLayout;
 	QVBoxLayout *icon_label = new QVBoxLayout;
 
-	main->setContentsMargins(25, 0, 25, 25);
-	main->setSpacing(50);
+	main->setContentsMargins(25, 0, 25, 15);
+	main->setSpacing(15);
 	top->setSpacing(20);
 	days->setSpacing(5);
 
@@ -582,7 +570,15 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 
 	top->addLayout(icon_label, 1);
 	top->addWidget(edit, 1);
-	top->addStretch(1);
+	if (alarm_page->type == AlarmClock::DI_SON)
+	{
+		BtButton *go_difson = new BtButton(bt_global::skin->getImage("goto_sounddiffusion"));
+		connect(go_difson, SIGNAL(clicked()), alarm_page, SLOT(showSoundDiffPage()));
+
+		top->addWidget(go_difson, 1, Qt::AlignCenter);
+	}
+	else
+		top->addStretch(1);
 
 	QList<bool> active = alarm_page->days;
 
@@ -605,8 +601,12 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 		days->addWidget(day, 1, i);
 	}
 
+	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
+	connect(ok, SIGNAL(clicked()), alarm_page, SLOT(saveAndActivate()));
+
 	main->addLayout(top);
 	main->addLayout(days);
+	main->addWidget(ok, 0, Qt::AlignRight);
 }
 
 QTime AlarmClockTimeFreq::getAlarmTime() const
@@ -635,4 +635,3 @@ void AlarmClockTimeFreq::setActive(bool active)
 {
 	alarm_label->setPixmap(getBostikName(alarm_icon, active ? "on" : "off"));
 }
-

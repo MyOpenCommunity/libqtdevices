@@ -112,7 +112,7 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
 	}
 	else
-		buildPage();
+		buildPage(getTextChild(config_node, "descr"));
 
 	foreach (const QDomNode& type, families)
 	{

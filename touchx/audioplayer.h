@@ -81,6 +81,8 @@ private slots:
 	void changeVolume(int volume);
 	void gotoSoundDiffusion();
 
+	void valueReceived(const DeviceValues &device_values);
+
 private:
 	MediaType type;
 	QLabel *description_top, *description_bottom, *track, *elapsed;

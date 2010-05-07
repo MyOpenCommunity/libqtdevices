@@ -47,9 +47,11 @@ public:
 
 	SourceDevice(QString source, int openserver_id = 0);
 
+	virtual void init();
+
 public slots:
-	void nextTrack() const;
-	void prevTrack() const;
+	virtual void nextTrack();
+	virtual void prevTrack();
 	void turnOn(QString area) const;
 	void requestTrack() const;
 
@@ -84,6 +86,8 @@ public:
 
 	RadioSourceDevice(QString source_id, int openserver_id = 0);
 
+	virtual void init();
+
 public slots:
 	void frequenceUp(QString value = QString()) const;
 	void frequenceDown(QString value = QString()) const;
@@ -114,6 +118,9 @@ public:
 
 	VirtualSourceDevice(QString address, int openserver_id = 0);
 
+	virtual void nextTrack();
+	virtual void prevTrack();
+
 	static QString createMediaInitFrame(bool is_multichannel, const QString &source_addr, const QString &ampli_addr);
 
 protected:
@@ -143,10 +150,10 @@ public:
 
 	void requestStatus() const;
 	void requestVolume() const;
-	void turnOn() const;
-	void turnOff() const;
-	void volumeUp() const;
-	void volumeDown() const;
+	virtual void turnOn();
+	virtual void turnOff();
+	virtual void volumeUp();
+	virtual void volumeDown();
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
@@ -163,20 +170,31 @@ Q_OBJECT
 public:
 	enum
 	{
-		REQ_AMPLI_ON = 1,        // set amplifier status: true = ON, false = OFF
+		REQ_AMPLI_ON = -2,       // set amplifier status: true = ON, false = OFF
 		REQ_VOLUME_UP = 3,       // raise volume, value is the step
-		REQ_VOLUME_DOWN =4,      // decrease volume, value is the step
-		REQ_SET_VOLUME = 1,          // set volume to specified level (range: 1-32)
-
+		REQ_VOLUME_DOWN = 4,     // decrease volume, value is the step
+		REQ_SET_VOLUME = -1,     // set volume to specified level (range: 1-32)
 	};
-	VirtualAmplifierDevice(const QString &where, int openserver_id = 0);
-	// TODO: do we need init() here?? I don't think so
 
-	// must be called every time volume is set to inform other devices on the bus
-	void updateVolume(int vol);
+	VirtualAmplifierDevice(const QString &where, int openserver_id = 0);
+
+	virtual void init();
+
+	// must be called every time status/volume is set to inform other devices on the bus
+	void updateStatus(bool status);
+	void updateVolume(int volume);
+
+	virtual void turnOn();
+	virtual void turnOff();
+	virtual void volumeUp();
+	virtual void volumeDown();
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+
+private:
+	bool status;
+	int volume;
 };
 
 

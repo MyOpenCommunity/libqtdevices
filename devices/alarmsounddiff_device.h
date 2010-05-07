@@ -40,7 +40,7 @@ public:
 		DIM_RADIO_STATION = 5
 	};
 
-	AlarmSoundDiffDevice();
+	AlarmSoundDiffDevice(bool is_multichannel);
 
 	void startAlarm(int source, int radio_station, int *alarmVolumes);
 	void stopAlarm(int source, int *alarmVolumes);
@@ -60,7 +60,7 @@ private:
 	void amplifierOff(int amplifier);
 
 private:
-	bool receive_frames;
+	bool receive_frames, is_multichannel;
 };
 
 #endif // ALARMSOUNDDIFF_DEVICE_H

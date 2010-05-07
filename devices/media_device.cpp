@@ -50,6 +50,9 @@ enum RequestDimension
 	SOURCE_TURNED_ON = 2,
 	DIM_ACTIVE_AREAS = 13,
 	DIM_MEMORIZED_STATION = 11,
+	// the dimension in the frame is 1, but we need a separate value for the notification
+	_REQ_AMPLI_ON = 1,
+	_REQ_SET_VOLUME = 1,
 };
 
 
@@ -60,12 +63,17 @@ SourceDevice::SourceDevice(QString source, int openserver_id) :
 	source_id = source;
 }
 
-void SourceDevice::nextTrack() const
+void SourceDevice::init()
+{
+	requestActiveAreas();
+}
+
+void SourceDevice::nextTrack()
 {
 	sendCommand(REQ_NEXT_TRACK);
 }
 
-void SourceDevice::prevTrack() const
+void SourceDevice::prevTrack()
 {
 	sendCommand(REQ_PREV_TRACK);
 }
@@ -145,6 +153,15 @@ bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 RadioSourceDevice::RadioSourceDevice(QString source_id, int openserver_id) :
 	SourceDevice(source_id, openserver_id)
 {
+}
+
+void RadioSourceDevice::init()
+{
+	SourceDevice::init();
+
+	requestTrack();
+	requestFrequency();
+	requestRDS();
 }
 
 void RadioSourceDevice::frequenceUp(QString value) const
@@ -230,6 +247,22 @@ VirtualSourceDevice::VirtualSourceDevice(QString address, int openserver_id) :
 
 }
 
+void VirtualSourceDevice::nextTrack()
+{
+	DeviceValues values_list;
+
+	values_list[REQ_NEXT_TRACK] = true;
+	emit valueReceived(values_list);
+}
+
+void VirtualSourceDevice::prevTrack()
+{
+	DeviceValues values_list;
+
+	values_list[REQ_PREV_TRACK] = true;
+	emit valueReceived(values_list);
+}
+
 bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	QString msg_where = QString::fromStdString(msg.whereFull());
@@ -276,16 +309,8 @@ QString VirtualSourceDevice::createMediaInitFrame(bool is_multichannel, const QS
 	QString ampli_area, ampli_point;
 	if (is_ampli)
 	{
-		if (is_multichannel)
-		{
-			ampli_area = ampli_addr.at(0);
-			ampli_point = ampli_addr.at(1);
-		}
-		else
-		{
-			ampli_area = "0";
-			ampli_point = ampli_addr;
-		}
+		ampli_area = ampli_addr.at(0);
+		ampli_point = ampli_addr.at(1);
 	}
 
 	QString frame = QString("*#22*7*#15*%1*%2*%3*9*9**%4*%5*%6*%7*%8##")
@@ -331,22 +356,22 @@ void AmplifierDevice::requestVolume() const
 	sendRequest(DIM_VOLUME);
 }
 
-void AmplifierDevice::turnOn() const
+void AmplifierDevice::turnOn()
 {
 	sendCommand(QString("%1#4#%2").arg(AMPL_STATUS_ON_FOLLOW_ME).arg(area));
 }
 
-void AmplifierDevice::turnOff() const
+void AmplifierDevice::turnOff()
 {
 	sendCommand(QString("%1#4#%2").arg(AMPL_STATUS_OFF).arg(area));
 }
 
-void AmplifierDevice::volumeUp() const
+void AmplifierDevice::volumeUp()
 {
 	sendCommand(QString("%1#1").arg(AMPL_VOLUME_UP));
 }
 
-void AmplifierDevice::volumeDown() const
+void AmplifierDevice::volumeDown()
 {
 	sendCommand(QString("%1#1").arg(AMPL_VOLUME_DOWN));
 }
@@ -380,11 +405,68 @@ bool AmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 VirtualAmplifierDevice::VirtualAmplifierDevice(const QString &where, int openserver_id) :
 	AmplifierDevice(where, openserver_id)
 {
+	status = false;
+	volume = 0;
 }
 
-void VirtualAmplifierDevice::updateVolume(int vol)
+void VirtualAmplifierDevice::init()
 {
-	sendFrame(createDimensionFrame(who, QString("1*%1").arg(vol), where));
+	updateStatus(status);
+	updateVolume(volume);
+}
+
+void VirtualAmplifierDevice::updateStatus(bool _status)
+{
+	status = _status;
+	sendFrame(createDimensionFrame(who, QString("12*%1*3").arg(status), where));
+
+	DeviceValues values_list;
+
+	values_list[DIM_STATUS] = status;
+	emit valueReceived(values_list);
+}
+
+void VirtualAmplifierDevice::updateVolume(int _volume)
+{
+	volume = _volume;
+	sendFrame(createDimensionFrame(who, QString("1*%1").arg(volume), where));
+
+	DeviceValues values_list;
+
+	values_list[DIM_VOLUME] = volume;
+	emit valueReceived(values_list);
+}
+
+void VirtualAmplifierDevice::turnOn()
+{
+	DeviceValues values_list;
+
+	values_list[REQ_AMPLI_ON] = true;
+	emit valueReceived(values_list);
+}
+
+void VirtualAmplifierDevice::turnOff()
+{
+	DeviceValues values_list;
+
+	values_list[REQ_AMPLI_ON] = false;
+	emit valueReceived(values_list);
+}
+
+void VirtualAmplifierDevice::volumeUp()
+{
+	DeviceValues values_list;
+
+	values_list[REQ_VOLUME_UP] = 1;
+	emit valueReceived(values_list);
+}
+
+void VirtualAmplifierDevice::volumeDown()
+{
+	DeviceValues values_list;
+
+	values_list[REQ_VOLUME_DOWN] = 1;
+	emit valueReceived(values_list);
 }
 
 bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
@@ -401,7 +483,7 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	int what = msg.what();
 
-	if (isWriteDimensionFrame(msg) && what == REQ_SET_VOLUME)
+	if (isWriteDimensionFrame(msg) && what == _REQ_SET_VOLUME)
 	{
 		values_list[REQ_SET_VOLUME] = msg.whatArgN(0);
 		return true;
@@ -409,7 +491,7 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	switch (what)
 	{
-	case REQ_AMPLI_ON:
+	case _REQ_AMPLI_ON:
 	case AMPL_STATUS_OFF:
 		values_list[REQ_AMPLI_ON] = static_cast<bool>(what);
 		break;

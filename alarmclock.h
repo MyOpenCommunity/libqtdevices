@@ -120,7 +120,8 @@ protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
 
 private slots:
-	void freezed(bool b);
+	void saveVolumes();
+	void resetVolumes();
 
 /*!
   \brief Draws the first page for alarm set setting and initializes some connections.
@@ -130,17 +131,17 @@ private slots:
 /*!
   \brief Executed when the alarm set sequency is closed to save the data and adjust sound diffusion page if necessary.
 */
-	void handleClose();
+	void saveAndActivate();
 
 /*!
   \brief Executed every minute when alarm set is active to detect if it's time to make the alarm ser start.
 */
-	void verificaSveglia();
+	void checkAlarm();
 
 /*!
   \brief Executed every three seconds to increase the soud volume during \a sound \a diffusion \a alarm \a set starting up.
 */
-	void aumVol();
+	void sounddiffusionAlarm();
 
 /*!
   \brief Executed every 100 ms to manage the \a buzzer  \a alarm \a set.
@@ -155,7 +156,10 @@ private slots:
 /*!
   \brief Stops the alarm set.
 */
-	void spegniSveglia(bool);
+	void stopAlarm();
+
+	// called if the alarm times out
+	void alarmTimeout();
 
 private:
 	int id, item_id;
@@ -233,19 +237,10 @@ Q_OBJECT
 public:
 	AlarmClockSoundDiff(AlarmClock *alarm_page);
 
-/*!
-  \brief Draws the first page for alarm set setting and initializes some connections.
-*/
 	virtual void showPage();
 
-private slots:
-/*!
-  \brief Executed when the alarm set sequency is closed to save the data and adjust sound diffusion page if necessary.
-*/
-	void handleClose();
-
-private:
-	Page *difson;
+signals:
+	void saveVolumes();
 };
 
 

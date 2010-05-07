@@ -151,7 +151,7 @@ void VideoDoorEntry::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		int id = getTextChild(config_node, "id").toInt();
+		int id = getTextChild(item, "id").toInt();
 		SkinContext cxt(getTextChild(item, "cid").toInt());
 		QDomNode page_node = getPageNodeFromChildNode(item, "lnk_pageID");
 		Page *p = 0;

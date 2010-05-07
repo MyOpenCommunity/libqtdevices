@@ -22,16 +22,38 @@
 #include "audiosource.h"
 #include "media_device.h"
 #include "page.h"
+#include "state_button.h"
 
 
 AudioSource::AudioSource(const QString &_area, SourceDevice *_dev, Page *_details) :
 	BannerNew(0)
 {
+	left_button = new StateButton;
+	left_button->setOnOff();
+	center_left_button = new BtButton;
+	center_right_button = new BtButton;
+	right_button = new BtButton;
+
 	details = _details;
 	area = _area;
 	dev = _dev;
 
+	connect(left_button, SIGNAL(clicked()), SLOT(turnOn()));
+	connect(center_left_button, SIGNAL(clicked()), dev, SLOT(prevTrack()));
+	connect(center_right_button, SIGNAL(clicked()), dev, SLOT(nextTrack()));
+	connect(right_button, SIGNAL(clicked()), SLOT(showDetails()));
+
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceivedAudioSource(DeviceValues)));
+}
+
+void AudioSource::initBanner(const QString &left_on, const QString &left_off, const QString &center_left,
+	const QString &center_right, const QString &right)
+{
+	left_button->setOnImage(left_on);
+	left_button->setOffImage(left_off);
+	initButton(center_left_button, center_left);
+	initButton(center_right_button, center_right);
+	initButton(right_button, right);
 }
 
 void AudioSource::turnOn()
@@ -56,6 +78,7 @@ void AudioSource::valueReceivedAudioSource(const DeviceValues &values_list)
 	{
 		bool active = dev->isActive(area);
 
+		left_button->setStatus(active);
 		emit sourceStateChanged(active);
 	}
 }

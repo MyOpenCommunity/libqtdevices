@@ -51,15 +51,20 @@ template<class T> friend T* DevicesCachePrivate::add_device_to_cache(T *device, 
 
 friend class TestScenEvoDevicesCond;
 public:
+	DevicesCache();
 	~DevicesCache();
 
 	void initOpenserverDevices(int openserver_id);
 
 	void addInitCommandFrame(int openserver_id, const QString &frame);
 
+	// call this after all devices have been created
+	void devicesCreated();
+
 private:
 	QHash<QString, device*> cache;
 	QHash<int, QList<QString> > init_frames;
+	bool devices_created;
 
 	void clear();
 	bool contains(QString key) const;
