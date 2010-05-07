@@ -26,6 +26,13 @@ class StopAndGoDevice;
 class StopAndGoPlusDevice;
 class StopAndGoBTestDevice;
 
+class TestGetStatusValue : public TestDevice
+{
+Q_OBJECT
+private slots:
+	void testGetSingleValue();
+	void testGetMultipleValues();
+};
 
 class TestStopAndGoDevice : public TestDevice
 {

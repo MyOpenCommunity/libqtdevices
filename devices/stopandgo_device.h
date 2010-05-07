@@ -22,6 +22,34 @@
 
 #include "device.h"
 
+
+enum StatusBits
+{
+	OPENED              = 0x1000,
+	FAULT               = 0x0800,
+	BLOCK               = 0x0400,
+	OPENED_LE_N         = 0x0200,
+	OPENED_GROUND       = 0x0100,
+	OPENED_VMAX         = 0x0080,
+	AUTOTEST_DISACTIVE  = 0x0040,
+	AUTORESET_DISACTIVE = 0x0020,
+	TRACKING_DISACTIVE  = 0x0010,
+	WAITING_RECLOSE     = 0x0008,
+	OPENED_FIRST_DAY    = 0x0004,
+	NO_VOLTAGE_OUTPUT   = 0x0002,
+	NO_VOLTAGE_INPUT    = 0x0001
+};
+
+// Function to verify if the fiven fields are setted in status. Returns true
+// if they are setted, false otherwise.
+//
+// Valid fields are the masks enumerated in StatusBits.
+//
+// It's possible to combine masks with a bitwise OR to check multiple fields
+// at once, in which case the function returns true ONLY IF ALL the fields
+// passed are setted in status.
+bool getStatusValue(int status, int fields);
+
 class StopAndGoDevice : public device
 {
 friend class TestStopAndGoDevice;
