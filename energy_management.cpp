@@ -41,13 +41,15 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 
 	QWidget *main_widget = new QWidget;
 	QVBoxLayout *main_layout = new QVBoxLayout(main_widget);
-	main_layout->setContentsMargins(5, 5, 25, 50);
+	main_layout->setContentsMargins(5, 5, 25, 47);
 	IconContent *content = new IconContent;
 	main_layout->addWidget(content, 1);
 
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
-	Page::buildPage(main_widget, content, nav_bar);
+
+	PageTitleWidget *title_widget = new PageTitleWidget(getTextChild(conf_node, "descr"), SMALL_TITLE_HEIGHT);
+	Page::buildPage(main_widget, content, nav_bar, 0, title_widget);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
 	is_built = true;
