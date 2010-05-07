@@ -49,6 +49,15 @@ void AudioStateMachine::start(int state)
 	StateMachine::start(state);
 }
 
+void AudioStateMachine::setVolume(int)
+{
+
+}
+
+int AudioStateMachine::getVolume()
+{
+	return DEFAULT_VOLUME;
+}
 
 AudioStateMachine *bt_global::audio_states = 0;
 

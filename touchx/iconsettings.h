@@ -34,6 +34,7 @@ class BtButton;
 class banner;
 class PlatformDevice;
 class Text2Column;
+class ItemTuning;
 
 
 class IconSettings : public IconPage
@@ -84,6 +85,10 @@ public slots:
 
 protected:
 	virtual void hideEvent(QHideEvent *e);
+	virtual void showEvent(QShowEvent *e);
+
+private:
+	ItemTuning *volume;
 };
 
 

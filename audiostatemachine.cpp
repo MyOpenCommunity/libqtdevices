@@ -24,16 +24,48 @@
 
 #include <QtConcurrentRun>
 #include <QProcess>
+#include <QTimer>
 
 #include <fcntl.h> // open
-#include <unistd.h> // usleep
+#include <unistd.h> // usleep, read, write
 
+
+// The address used to save information in the e2 memory.
 #define E2_BASE_CONF_ZARLINK 11694
+#define E2_BASE_INIT 11671
+#define E2_BASE_VOLUMES 11685
+
+// The keys used to update the e2, the eeprom memory where is stored the zarlink
+// configuration and the volumes.
 #define ZARLINK_KEY 0x63
+#define VOLUME_KEY 0x5b
+
+#define VOLUME_TIMER_SECS 5
+
+namespace Volumes
+{
+	enum Type
+	{
+		VIDEODOOR = 0,
+		INTERCOM,
+		MM_LOCALE,
+		BEEP,
+		RINGTONES,
+		FILE,
+		VCTIP,
+		MICROPHONE,
+		MM_SOURCE,
+		MM_AMPLIFIER,
+		COUNT // an invalid element, used only to calculate the size
+	};
+}
 
 
 namespace
 {
+	// The global container for volumes.
+	QByteArray volumes(Volumes::COUNT, DEFAULT_VOLUME);
+
 	bool silentExecute(const QString &program, QStringList args = QStringList())
 	{
 		args << "> /dev/null" << "2>&1";
@@ -48,6 +80,11 @@ namespace
 		bool need_reset = false;
 
 		int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
+		if (eeprom == -1)
+		{
+			qWarning() << "Unable to open E2 device";
+			return;
+		}
 		lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
 		read(eeprom, &init, 1);
 
@@ -76,6 +113,43 @@ namespace
 		}
 	}
 
+	void initVolumes()
+	{
+		char init = 0;
+		int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
+		if (eeprom == -1)
+		{
+			qWarning() << "Unable to open E2 device";
+			return;
+		}
+		lseek(eeprom, E2_BASE_INIT, SEEK_SET);
+		read(eeprom, &init, 1);
+
+		if (init != VOLUME_KEY) // reset volumes and update the e2
+		{
+			init = VOLUME_KEY;
+
+			lseek(eeprom, E2_BASE_INIT, SEEK_SET);
+			write(eeprom, &init, 1);
+
+			lseek(eeprom, E2_BASE_VOLUMES, SEEK_SET);
+			write(eeprom, volumes.data(), Volumes::COUNT);
+		}
+		else
+		{
+			lseek(eeprom, E2_BASE_VOLUMES, SEEK_SET);
+			read(eeprom, volumes.data(), Volumes::COUNT);
+
+			// We check if all the values read from the hardware is in the admitted range.
+			for (int i = 0;  i < Volumes::COUNT; ++i)
+			{
+				int volume_read = volumes.at(i);
+				if (volume_read <= VOLUME_MIN || volume_read >= VOLUME_MAX)
+					volumes[i] = DEFAULT_VOLUME;
+			}
+		}
+	}
+
 	void activateVCTAudio()
 	{
 		QProcess::startDetached("/bin/in_scsbb_on");
@@ -85,15 +159,43 @@ namespace
 	{
 		QProcess::startDetached("/bin/in_scsbb_off");
 	}
+
+	void changeVolumePath(Volumes::Type type, int value)
+	{
+		Q_ASSERT_X(value >= VOLUME_MIN && value <= VOLUME_MAX, "changeVolumePath",
+			"Volume value out of range!");
+
+		// Volumes for the script set_volume starts from 1, so we add it.
+		QProcess::startDetached("/home/bticino/bin/set_volume",
+					QStringList() << QString::number(type + 1) << QString::number(value));
+	}
+
+	void saveVolumes()
+	{
+		int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
+		if (eeprom == -1)
+		{
+			qWarning() << "Unable to open E2 device";
+			return;
+		}
+		lseek(eeprom, E2_BASE_VOLUMES, SEEK_SET);
+		write(eeprom, volumes.data(), Volumes::COUNT);
+	}
 }
 
 
 using namespace AudioStates;
 
-// AudioStateMachine implementation
 
 AudioStateMachine::AudioStateMachine()
 {
+	// To avoid useless write in the eeprom memory, we use a timer to 'compress'.
+	volumes_timer = new QTimer(this);
+	volumes_timer->setInterval(VOLUME_TIMER_SECS * 1000);
+	connect(volumes_timer, SIGNAL(timeout()), SLOT(saveVolumes()));
+
+	current_audio_path = -1;
+
 	addState(IDLE,
 		 SLOT(stateIdleEntered()),
 		 SLOT(stateIdleExited()));
@@ -147,7 +249,35 @@ AudioStateMachine::AudioStateMachine()
 void AudioStateMachine::start(int state)
 {
 	QtConcurrent::run(initEchoCanceller);
+	initVolumes();
 	StateMachine::start(state);
+}
+
+void AudioStateMachine::saveVolumes()
+{
+	::saveVolumes();
+	volumes_timer->stop();
+}
+
+void AudioStateMachine::setVolume(int value)
+{
+	Q_ASSERT_X(value >= VOLUME_MIN && value <= VOLUME_MAX, "AudioStateMachine::changeVolume",
+		"Volume value out of range!");
+
+	if (int audio_path = bt_global::audio_states->current_audio_path)
+	{
+		changeVolumePath(static_cast<Volumes::Type>(audio_path), value);
+		volumes[audio_path] = value;
+	}
+	volumes_timer->start();
+}
+
+int AudioStateMachine::getVolume()
+{
+	Q_ASSERT_X(current_audio_path != -1, "AudioStateMachine::getVolume",
+		"You must set the current audio path before getting the current volume value!");
+
+	return volumes.at(current_audio_path);
 }
 
 void AudioStateMachine::stateIdleEntered()
@@ -212,7 +342,7 @@ void AudioStateMachine::statePlayMediaToDifsonExited()
 
 void AudioStateMachine::statePlayRingtoneEntered()
 {
-
+	current_audio_path = Volumes::RINGTONES;
 }
 
 void AudioStateMachine::statePlayRingtoneExited()
@@ -223,6 +353,8 @@ void AudioStateMachine::statePlayRingtoneExited()
 void AudioStateMachine::stateScsVideoCallEntered()
 {
 	activateVCTAudio();
+	current_audio_path = Volumes::VIDEODOOR;
+	changeVolumePath(Volumes::VIDEODOOR, volumes.at(Volumes::VIDEODOOR));
 }
 
 void AudioStateMachine::stateScsVideoCallExited()
@@ -233,6 +365,8 @@ void AudioStateMachine::stateScsVideoCallExited()
 void AudioStateMachine::stateScsIntercomCallEntered()
 {
 	activateVCTAudio();
+	current_audio_path = Volumes::INTERCOM;
+	changeVolumePath(Volumes::INTERCOM, volumes.at(Volumes::INTERCOM));
 }
 
 void AudioStateMachine::stateScsIntercomCallExited()
