@@ -48,6 +48,7 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 	Page::buildPage(main_widget, content, nav_bar);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
 	is_built = true;
 	QList<int> ids;
