@@ -27,7 +27,7 @@ enum StatusBits
 {
 	OPENED              = 0x1000,
 	FAULT               = 0x0800,
-	BLOCK               = 0x0400,
+	LOCKED              = 0x0400,
 	OPENED_LE_N         = 0x0200,
 	OPENED_GROUND       = 0x0100,
 	OPENED_VMAX         = 0x0080,
