@@ -56,6 +56,11 @@ public:
 	void setStatus(const ItemTuningStatus &st);
 	void setLevel(int level);
 
+	// The enable/disable methods can be used to avoid the increase and decrease
+	// of the volume.
+	void enable();
+	void disable();
+
 public slots:
 	void decreaseLevel();
 	void increaseLevel();
@@ -67,6 +72,7 @@ private slots:
 	void changeIcons();
 
 private:
+	bool enabled;
 	int current_level;
 	QString icon_name;
 	BtButton *left, *right;
