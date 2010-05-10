@@ -42,11 +42,6 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 
 	// connect to the server
 	connetti();
-
-	// azzero la variabile last_msg_open_read
-	last_msg_open_read.CreateNullMsgOpen();
-
-	connect(&Open_read, SIGNAL(timeout()), this, SLOT(clear_last_msg_open_read()));
 }
 
 Client::~Client()
@@ -146,16 +141,8 @@ void Client::manageFrame(QByteArray frame)
 			qWarning("ERROR - ack received");
 		else if (frame == "*#*0##")
 			qWarning("ERROR - nak received");
-		else if (frame != last_msg_open_read.frame_open)
-		{
-			Open_read.stop();
-			last_msg_open_read.CreateMsgOpen(frame.data(),frame.size());
-			Open_read.setSingleShot(true);
-			Open_read.start(1000);
-			emit frameIn(frame.data());
-		}
 		else
-			qDebug("Frame Open duplicated");
+			emit frameIn(frame.data());
 	}
 	else
 	{
@@ -191,12 +178,6 @@ int Client::socketFrameRead()
 		manageFrame(frame);
 	}
 	return 0;
-}
-
-void Client::clear_last_msg_open_read()
-{
-	qDebug("Delete last Frame Open read");
-	last_msg_open_read.CreateNullMsgOpen();
 }
 
 // Aspetta ack
