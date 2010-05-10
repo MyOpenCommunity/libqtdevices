@@ -74,6 +74,7 @@ public:
 	 */
 	int getRingtone(Ringtones::Type t);
 
+	// Ringtones starts from 1 to... ringtones_number
 	int getRingtonesNumber();
 
 private:

@@ -60,6 +60,7 @@ void RingtonesManager::playRingtone(int ring)
 {
 	Q_ASSERT_X(ringtone_to_file.contains(ring), "RingtonesManager::playRingtone(int)",
 		qPrintable(QString("Given ringtone %1 is outside valid range.").arg(ring)));
+
 	playSound(ringtone_to_file[ring]);
 }
 

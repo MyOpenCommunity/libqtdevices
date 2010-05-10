@@ -166,9 +166,15 @@ RingtonesPage::RingtonesPage(const QDomNode &config_node) : ListPage(config_node
 {
 }
 
-void RingtonesPage::hideEvent(QHideEvent *e)
+void RingtonesPage::hideEvent(QHideEvent *)
 {
 	bt_global::ringtones->stopRingtone();
+	bt_global::audio_states->exitCurrentState();
+}
+
+void RingtonesPage::showEvent(QShowEvent *)
+{
+	bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
 }
 
 

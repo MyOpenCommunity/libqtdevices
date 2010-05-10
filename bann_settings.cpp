@@ -427,16 +427,16 @@ BannRingtone::BannRingtone(const QString &descr, int id, Ringtones::Type type, i
 
 void BannRingtone::minusClicked()
 {
-	--current_ring;
-	if (current_ring < 0)
-		current_ring = bt_global::ringtones->getRingtonesNumber() - 1;
+	if (--current_ring <= 0)
+		current_ring = bt_global::ringtones->getRingtonesNumber();
 	bt_global::ringtones->playRingtone(current_ring);
 	bt_global::ringtones->setRingtone(ring_type, item_id, current_ring);
 }
 
 void BannRingtone::plusClicked()
 {
-	current_ring = (current_ring + 1) % bt_global::ringtones->getRingtonesNumber();
+	if (++current_ring > bt_global::ringtones->getRingtonesNumber())
+		current_ring %= bt_global::ringtones->getRingtonesNumber();
 	bt_global::ringtones->playRingtone(current_ring);
 	bt_global::ringtones->setRingtone(ring_type, item_id, current_ring);
 }
