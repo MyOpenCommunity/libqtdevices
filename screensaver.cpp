@@ -44,16 +44,34 @@
 #include <stdlib.h> // RAND_MAX
 #define BALL_NUM 5
 
-inline void setRandomColor(QWidget *w)
+namespace
 {
-	QColor bg = QColor((int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150,
-						(int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150,
-						(int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150);
+	inline void setRandomColor(QWidget *w)
+	{
+		QColor bg = QColor((int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150,
+						   (int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150,
+						   (int) (100.0 * rand() / (RAND_MAX + 1.0)) + 150);
 
-	QString style = QString("QWidget {background-color:%1;}").arg(bg.name());
-	w->setStyleSheet(style);
+		QString style = QString("QWidget {background-color:%1;}").arg(bg.name());
+		w->setStyleSheet(style);
+	}
+
+	inline QPoint centeredOrigin(QRect container, QRect rect)
+	{
+		int x = (container.width() - rect.width()) / 2;
+		int y = (container.height() - rect.height()) / 2;
+
+		return QPoint(x, y);
+	}
+
+	inline QRect circle_bounds(const QPointF &center, qreal radius, qreal compensation)
+	{
+		return QRect(qRound(center.x() - radius - compensation),
+					 qRound(center.y() - radius - compensation),
+					 qRound((radius + compensation) * 2),
+					 qRound((radius + compensation) * 2));
+	}
 }
-
 
 ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 {
@@ -324,7 +342,7 @@ ScreenSaverSlideshow::ScreenSaverSlideshow() :
 	image_on_screen = new QLabel(this);
 	image_on_screen->setGeometry(0, 0, width(), height());
 	blending_timeline.setDuration(2000);
-	blending_timeline.setFrameRange(1, 30);
+	blending_timeline.setFrameRange(0, 1);
 	connect(&blending_timeline, SIGNAL(valueChanged(qreal)), SLOT(updateImage(qreal)));
 }
 
@@ -351,13 +369,25 @@ void ScreenSaverSlideshow::stop()
 
 void ScreenSaverSlideshow::refresh()
 {
+	static QString last_image_file;
 	QString img = iter->next();
+
 	if (!img.isEmpty())
 	{
-		current_image = next_image;
-		next_image.load(img);
-		next_image = next_image.scaled(this->size(), Qt::KeepAspectRatio);
-		blending_timeline.start();
+		// Check if the last image is equal to the current one.
+		// This could be possible if there is only one image.
+		// In this case, does nothing (no load, no transition, etc.)
+		if (img != last_image_file)
+		{
+			last_image_file = img;
+			current_image = next_image;
+			next_image.load(img);
+			if (!next_image.isNull())
+			{
+				next_image = next_image.scaled(size(), Qt::KeepAspectRatio);
+				blending_timeline.start();
+			}
+		}
 	}
 	else
 	{
@@ -369,15 +399,17 @@ void ScreenSaverSlideshow::refresh()
 
 void ScreenSaverSlideshow::updateImage(qreal new_value)
 {
-	QPixmap pix(current_image);
+	QPixmap pix(size());
+
 	QPainter p(&pix);
 	p.setRenderHint(QPainter::SmoothPixmapTransform, false);
-	// with 0.0 (ie. the first value), the destination image is painted. This is just a hack...
-	if (new_value > 0.01)
-	{
-		p.setOpacity(new_value);
-		p.drawPixmap(QPoint(0,0), next_image);
-	}
+
+	p.setOpacity(1.0 - new_value);
+	p.drawPixmap(centeredOrigin(rect(), current_image.rect()), current_image);
+
+	p.setOpacity(new_value);
+	p.drawPixmap(centeredOrigin(rect(), next_image.rect()), next_image);
+
 	image_on_screen->setPixmap(pix);
 }
 
@@ -385,15 +417,6 @@ ScreenSaverSlideshow::~ScreenSaverSlideshow()
 {
 	image_on_screen->disconnect();
 	image_on_screen->deleteLater();
-}
-
-
-static inline QRect circle_bounds(const QPointF &center, qreal radius, qreal compensation)
-{
-	return QRect(qRound(center.x() - radius - compensation),
-				 qRound(center.y() - radius - compensation),
-				 qRound((radius + compensation) * 2),
-				 qRound((radius + compensation) * 2));
 }
 
 
