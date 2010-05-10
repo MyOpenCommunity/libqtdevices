@@ -73,7 +73,7 @@ void VideoDoorEntry::loadDevices(const QDomNode &config_node)
 	{
 		int id = getTextChild(device, "id").toInt();
 		if (id != POSTO_ESTERNO)
-			qFatal("Type of device not handled by Video EntryPhone page!");
+			qFatal("Type of device not handled by VideoDoorEntry page!");
 		QString img1 = IMG_PATH + getTextChild(device, "cimg1");
 		QString img2 = IMG_PATH + getTextChild(device, "cimg2");
 		QString img3 = IMG_PATH + getTextChild(device, "cimg3");
