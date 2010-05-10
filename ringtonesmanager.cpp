@@ -26,6 +26,7 @@
 
 #include <QStringList>
 #include <QDomDocument>
+#include <QFileInfo>
 #include <QDebug>
 #include <QDir>
 
@@ -36,42 +37,42 @@ RingtonesManager::RingtonesManager(QString ringtone_file)
 	QFile fh(ringtone_file);
 	QDomDocument qdom;
 
+	QDir dirname = QFileInfo(fh).absoluteDir();
 	if (qdom.setContent(&fh))
 	{
-		foreach (const QDomNode &item_node, getChildren(qdom.documentElement(), "ringtones/item"))
+		QDomNode ring_node = getChildWithName(qdom.documentElement(), "ringtones");
+		foreach (const QDomNode &item_node, getChildren(ring_node, "item"))
 		{
 			int id_ringtone = getTextChild(item_node, "id_ringtone").toInt();
 			QString filename = getTextChild(item_node, "descr");
-			ringtone_to_file[static_cast<Ringtones::Type>(id_ringtone)] = filename;
+			ringtone_to_file[static_cast<Ringtones::Type>(id_ringtone)] =
+				QFileInfo(dirname, filename).absoluteFilePath();
 		}
 	}
 }
 
 void RingtonesManager::playRingtone(Ringtones::Type t)
 {
-	return; // REMOVEME
 	playSound(typeToFilePath(t));
 }
 
 void RingtonesManager::playRingtone(int ring)
 {
-	return; // REMOVEME
-	Q_ASSERT_X(ring >= 0 && ring < ringtone_to_file.size(), "RingtonesManager::playRingtone(int)",
-		"Given ringtone is outside valid range.");
+	Q_ASSERT_X(ringtone_to_file.contains(ring), "RingtonesManager::playRingtone(int)",
+		qPrintable(QString("Given ringtone %1 is outside valid range.").arg(ring)));
+
 	playSound(ringtone_to_file[ring]);
 }
 
 void RingtonesManager::stopRingtone()
 {
-	return; // REMOVEME
 	stopSound();
 }
 
 void RingtonesManager::setRingtone(Ringtones::Type t, int item_id, int ring)
 {
-	return; // REMOVEME
-	Q_ASSERT_X(ring >= 0 && ring < ringtone_to_file.size(), "RingtonesManager::setRingtone",
-		"Given ringtone is outside valid range.");
+	Q_ASSERT_X(ringtone_to_file.contains(ring), "RingtonesManager::setRingtone",
+		qPrintable(QString("Given ringtone %1 is outside valid range.").arg(ring)));
 	type_to_ringtone[t] = ring;
 
 	setCfgValue("id_ringtone", ring, item_id);
@@ -79,13 +80,11 @@ void RingtonesManager::setRingtone(Ringtones::Type t, int item_id, int ring)
 
 int RingtonesManager::getRingtone(Ringtones::Type t)
 {
-	return 0; // REMOVEME
 	return type_to_ringtone[t];
 }
 
 int RingtonesManager::getRingtonesNumber()
 {
-	return 1; // REMOVEME
 	return ringtone_to_file.size();
 }
 

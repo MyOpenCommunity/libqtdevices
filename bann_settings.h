@@ -251,7 +251,7 @@ class BannRingtone : public Bann2CentralButtons
 {
 Q_OBJECT
 public:
-	BannRingtone(const QString &descr, int id, Ringtones::Type type);
+	BannRingtone(const QString &descr, int id, Ringtones::Type type, int ring);
 
 private:
 	int current_ring, item_id;

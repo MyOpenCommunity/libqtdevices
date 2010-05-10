@@ -23,7 +23,7 @@
 #include "btbutton.h"
 #include "skinmanager.h"
 #include "generic_functions.h" //getBostikName
-#include "hardware_functions.h" // setVctContrast, setVolume
+#include "hardware_functions.h" // setVctContrast
 #include "displaycontrol.h" // bt_global::display
 #include "icondispatcher.h"
 #include "entryphone_device.h"
@@ -260,7 +260,7 @@ void VCTCall::finished(int exitcode, QProcess::ExitStatus exitstatus)
 void VCTCall::changeVolume(int value)
 {
 	call_status->volume_status = volume->getStatus();
-	setVolume(VOLUME_VIDEOCONTROL, value);
+	bt_global::audio_states->setVolume(value);
 }
 
 void VCTCall::refreshStatus()
@@ -273,17 +273,20 @@ void VCTCall::refreshStatus()
 void VCTCall::toggleMute()
 {
 	StateButton::Status st = mute_button->getStatus();
-	setVolume(VOLUME_MIC, st == StateButton::ON ? 0 : 1);
 
 	if (st == StateButton::ON)
 	{
+		bt_global::audio_states->exitCurrentState();
 		mute_button->setStatus(StateButton::OFF);
 		call_status->mute = StateButton::OFF;
+		volume->enable();
 	}
 	else
 	{
+		bt_global::audio_states->toState(AudioStates::MUTE);
 		mute_button->setStatus(StateButton::ON);
 		call_status->mute = StateButton::ON;
+		volume->disable();
 	}
 }
 
@@ -393,6 +396,11 @@ void VCTCall::toggleCameraSettings()
 
 void VCTCall::endCall()
 {
+	// if mute, exit from the correspondent state
+	if (call_status->mute == StateButton::ON)
+		bt_global::audio_states->exitCurrentState();
+
+	// if connected, exit from the videocall state
 	if (call_status->connected)
 		bt_global::audio_states->exitCurrentState();
 	dev->endCall();

@@ -160,11 +160,13 @@ namespace
 		QProcess::startDetached("/bin/in_scsbb_off");
 	}
 
-	void changeVolumePath(Volumes::Type type, int value)
+	void changeVolumePath(Volumes::Type type)
 	{
+		int value = volumes.at(type);
 		Q_ASSERT_X(value >= VOLUME_MIN && value <= VOLUME_MAX, "changeVolumePath",
 			"Volume value out of range!");
 
+		qDebug() << "/home/bticino/bin/set_volume" << type + 1 << value;
 		// Volumes for the script set_volume starts from 1, so we add it.
 		QProcess::startDetached("/home/bticino/bin/set_volume",
 					QStringList() << QString::number(type + 1) << QString::number(value));
@@ -205,6 +207,9 @@ AudioStateMachine::AudioStateMachine()
 	addState(BEEP_OFF,
 		 SLOT(stateBeepOffEntered()),
 		 SLOT(stateBeepOffExited()));
+	addState(MUTE,
+		 SLOT(stateMuteEntered()),
+		 SLOT(stateMuteExited()));
 	addState(PLAY_MEDIA_TO_SPEAKER,
 		 SLOT(statePlayMediaToSpeakerEntered()),
 		 SLOT(statePlayMediaToSpeakerExited()));
@@ -261,13 +266,13 @@ void AudioStateMachine::saveVolumes()
 
 void AudioStateMachine::setVolume(int value)
 {
-	Q_ASSERT_X(value >= VOLUME_MIN && value <= VOLUME_MAX, "AudioStateMachine::changeVolume",
+	Q_ASSERT_X(value >= VOLUME_MIN && value <= VOLUME_MAX, "AudioStateMachine::setVolume",
 		"Volume value out of range!");
 
 	if (int audio_path = bt_global::audio_states->current_audio_path)
 	{
-		changeVolumePath(static_cast<Volumes::Type>(audio_path), value);
 		volumes[audio_path] = value;
+		changeVolumePath(static_cast<Volumes::Type>(audio_path));
 	}
 	volumes_timer->start();
 }
@@ -343,6 +348,7 @@ void AudioStateMachine::statePlayMediaToDifsonExited()
 void AudioStateMachine::statePlayRingtoneEntered()
 {
 	current_audio_path = Volumes::RINGTONES;
+	changeVolumePath(Volumes::RINGTONES);
 }
 
 void AudioStateMachine::statePlayRingtoneExited()
@@ -354,7 +360,7 @@ void AudioStateMachine::stateScsVideoCallEntered()
 {
 	activateVCTAudio();
 	current_audio_path = Volumes::VIDEODOOR;
-	changeVolumePath(Volumes::VIDEODOOR, volumes.at(Volumes::VIDEODOOR));
+	changeVolumePath(Volumes::VIDEODOOR);
 }
 
 void AudioStateMachine::stateScsVideoCallExited()
@@ -366,12 +372,23 @@ void AudioStateMachine::stateScsIntercomCallEntered()
 {
 	activateVCTAudio();
 	current_audio_path = Volumes::INTERCOM;
-	changeVolumePath(Volumes::INTERCOM, volumes.at(Volumes::INTERCOM));
+	changeVolumePath(Volumes::INTERCOM);
 }
 
 void AudioStateMachine::stateScsIntercomCallExited()
 {
 	disactivateVCTAudio();
+}
+
+void AudioStateMachine::stateMuteEntered()
+{
+	current_audio_path = Volumes::MICROPHONE;
+	setVolume(0);
+}
+
+void AudioStateMachine::stateMuteExited()
+{
+	setVolume(1);
 }
 
 void AudioStateMachine::stateIpVideoCallEntered()

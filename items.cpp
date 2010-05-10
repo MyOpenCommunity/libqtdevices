@@ -63,6 +63,7 @@ ItemTuning::ItemTuning(QString text, QString icon, QWidget *parent) : QWidget(pa
 
 	current_level = DEFAULT_VOLUME;
 	icon_name = icon;
+	enabled = true;
 
 	left->setImage(getBostikName(icon_name, QString("sxl") + QString::number(current_level)));
 	right->setImage(getBostikName(icon_name, QString("dxl") + QString::number(current_level)));
@@ -90,9 +91,19 @@ void ItemTuning::setLevel(int level)
 	changeIcons();
 }
 
+void ItemTuning::enable()
+{
+	enabled = true;
+}
+
+void ItemTuning::disable()
+{
+	enabled = false;
+}
+
 void ItemTuning::decreaseLevel()
 {
-	if (current_level > VOLUME_MIN)
+	if (current_level > VOLUME_MIN && enabled)
 	{
 		--current_level;
 		emit valueChanged(current_level);
@@ -101,7 +112,7 @@ void ItemTuning::decreaseLevel()
 
 void ItemTuning::increaseLevel()
 {
-	if (current_level < VOLUME_MAX)
+	if (current_level < VOLUME_MAX && enabled)
 	{
 		++current_level;
 		emit valueChanged(current_level);
