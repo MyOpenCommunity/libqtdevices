@@ -26,8 +26,15 @@
 #include "stopandgo_device.h"
 #include "skinmanager.h"
 #include "xml_functions.h" // getTextChild
+#include "state_button.h"
+#include "navigation_bar.h"
 
-enum {
+#include <QVBoxLayout>
+#include <QLabel>
+
+
+enum
+{
 	STOP_AND_GO = 6101,
 	STOP_AND_GO_PLUS = 6102,
 	STOP_AND_GO_BTEST = 6103,
@@ -44,7 +51,29 @@ enum
 };
 
 
-BannStopAndGo::BannStopAndGo(StopAndGoDevice *dev, QWidget *parent) :
+namespace
+{
+	void addCommandButton(QBoxLayout *layout, const QString &on_image, const QString &off_image, const QString &descr, QObject *obj, const char *slot)
+	{
+		QVBoxLayout *button_layout = new QVBoxLayout;
+		StateButton *button = new StateButton;
+		button->setOnImage(bt_global::skin->getImage(on_image));
+		button->setOffImage(bt_global::skin->getImage(off_image));
+		button->setCheckable(true);
+		QObject::connect(button, SIGNAL(clicked(bool)), obj, slot);
+		button_layout->addWidget(button, 0, Qt::AlignHCenter);
+
+		QLabel *label = new QLabel(descr);
+		label->setAlignment(Qt::AlignHCenter);
+		label->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
+		button_layout->addWidget(label, Qt::AlignHCenter);
+
+		layout->addLayout(button_layout);
+	}
+}
+
+
+BannStopAndGo::BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QString &right, QWidget *parent) :
 	Bann2Buttons(parent)
 {
 	status_icons[STATUS_CLOSED] = bt_global::skin->getImage("status_closed");
@@ -54,7 +83,7 @@ BannStopAndGo::BannStopAndGo(StopAndGoDevice *dev, QWidget *parent) :
 	status_icons[STATUS_GROUND_FAIL] = bt_global::skin->getImage("status_ground_fail");
 	status_icons[STATUS_VMAX] = bt_global::skin->getImage("status_vmax");
 
-	initBanner("", status_icons[STATUS_CLOSED], bt_global::skin->getImage("forward_icon"));
+	initBanner(left, status_icons[STATUS_CLOSED], right, "");
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(statusChanged(DeviceValues)));
 }
@@ -91,34 +120,45 @@ StopAndGoMenu::StopAndGoMenu(const QDomNode &conf_node)
 	buildPage(getTextChild(conf_node, "descr"));
 #endif
 
+	SkinContext context(getTextChild(conf_node, "cid").toInt());
+	QString forward_icon = bt_global::skin->getImage("forward");
+
 	QList<QDomNode> items = getChildren(conf_node, "item");
 	foreach (const QDomNode &item, items)
 	{
 		int id = getTextChild(item, "id").toInt();
 		QString descr = getTextChild(item, "descr");
 		QString where = getTextChild(item, "where");
-		StopAndGoDevice *dev = 0;
+		BannStopAndGo *banner = 0;
 		Page *p = 0;
 
 		switch (id)
 		{
 		case STOP_AND_GO:
-			dev = bt_global::add_device_to_cache(new StopAndGoDevice(where));
-			p = new StopAndGoPage();
+			{
+				StopAndGoDevice *dev = bt_global::add_device_to_cache(new StopAndGoDevice(where));
+				banner = new BannStopAndGo(dev, "", forward_icon);
+				p = new StopAndGoPage(descr, dev);
+			}
 			break;
 		case STOP_AND_GO_PLUS:
-			dev = bt_global::add_device_to_cache(new StopAndGoPlusDevice(where));
-			p = new StopAndGoPlusPage();
+			{
+				StopAndGoPlusDevice *dev = bt_global::add_device_to_cache(new StopAndGoPlusDevice(where));
+				banner = new BannStopAndGo(dev, "", forward_icon);
+				p = new StopAndGoPlusPage(descr, dev);
+			}
 			break;
 		case STOP_AND_GO_BTEST:
-			dev = bt_global::add_device_to_cache(new StopAndGoBTestDevice(where));
-			p = new StopAndGoBTestPage;
+			{
+				StopAndGoBTestDevice *dev = bt_global::add_device_to_cache(new StopAndGoBTestDevice(where));
+				banner = new BannStopAndGo(dev, "", forward_icon);
+				p = new StopAndGoBTestPage(descr, dev);
+			}
 			break;
 		default:
 			Q_ASSERT_X(false, "StopAndGoMenu::StopAndGoMenu", "Unknown id");
 		}
 
-		BannStopAndGo *banner = new BannStopAndGo(dev);
 		banner->connectRightButton(p);
 		connect(banner, SIGNAL(pageClosed()), SLOT(showPage()));
 
@@ -143,19 +183,46 @@ void StopAndGoMenu::showPage()
 }
 
 
-StopAndGoPage::StopAndGoPage() :
-	Page()
+StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device) :
+	Page(), dev(device)
+{
+	QWidget *content = new QWidget;
+	QVBoxLayout *layout = new QVBoxLayout;
+
+	BannStopAndGo *status_banner = new BannStopAndGo(dev, "", "");
+	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
+	layout->addSpacing(30);
+
+	// TODO: Set the state of the command button depending on the device.
+	addCommandButton(layout, "autoreset_enabled", "autoreset_disabled", tr("Enable"), this, SLOT(turnOnOff(bool)));
+
+	layout->addStretch();
+
+	content->setLayout(layout);
+
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
+
+	buildPage(content, nav_bar, title, TITLE_HEIGHT);
+}
+
+void StopAndGoPage::turnOnOff(bool checked)
+{
+	if (checked)
+		dev->sendAutoResetActivation();
+	else
+		dev->sendAutoResetDisactivation();
+}
+
+
+StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *device) :
+	Page(), dev(device)
 {
 }
 
 
-StopAndGoPlusPage::StopAndGoPlusPage() :
-	Page()
-{
-}
-
-
-StopAndGoBTestPage::StopAndGoBTestPage() :
-	Page()
+StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevice *device) :
+	Page(), dev(device)
 {
 };
