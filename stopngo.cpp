@@ -90,20 +90,19 @@ BannStopAndGo::BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QS
 
 void BannStopAndGo::statusChanged(const DeviceValues &values_list)
 {
-	int status = values_list[StopAndGoDevice::DIM_ICM_STATE].toInt();
 	QString icon;
 
-	if (!getStatusValue(status, OPENED))
+	if (!values_list[StopAndGoDevice::DIM_OPENED].toBool())
 		icon = status_icons[STATUS_CLOSED];
 	else
 	{
-		if (getStatusValue(status, LOCKED))
+		if (values_list[StopAndGoDevice::DIM_LOCKED].toBool())
 			icon = status_icons[STATUS_LOCKED];
-		else if (getStatusValue(status, OPENED_LE_N))
+		else if (values_list[StopAndGoDevice::DIM_OPENED_LE_N].toBool())
 			icon = status_icons[STATUS_FAIL];
-		else if (getStatusValue(status, OPENED_GROUND))
+		else if (values_list[StopAndGoDevice::DIM_OPENED_GROUND].toBool())
 			icon = status_icons[STATUS_GROUND_FAIL];
-		else if (getStatusValue(status, OPENED_VMAX))
+		else if (values_list[StopAndGoDevice::DIM_OPENED_VMAX].toBool())
 			icon = status_icons[STATUS_VMAX];
 		else
 			icon = status_icons[STATUS_OPENED];

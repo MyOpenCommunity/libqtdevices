@@ -144,9 +144,6 @@ int main(int argc, char *argv[])
 	TestStopAndGoBTestDevice test_stopandgobtest_device;
 	test_list << &test_stopandgobtest_device;
 
-	TestGetStatusValue test_getstatusvalue;
-	test_list << &test_getstatusvalue;
-
 	QStringList arglist = app.arguments();
 	if (arglist.contains("--help"))
 	{
