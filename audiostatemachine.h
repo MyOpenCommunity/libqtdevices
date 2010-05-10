@@ -34,6 +34,7 @@ namespace AudioStates
 		IDLE,
 		BEEP_ON,
 		BEEP_OFF,
+		MUTE,
 		PLAY_MEDIA_TO_SPEAKER,
 		PLAY_FROM_DIFSON_TO_SPEAKER,
 		PLAY_MEDIA_TO_DIFSON,
@@ -66,6 +67,8 @@ Q_OBJECT
 public:
 	AudioStateMachine();
 	virtual void start(int state);
+
+	// Set and get the volume of the current state
 	void setVolume(int value);
 	int getVolume();
 
@@ -82,6 +85,9 @@ private slots:
 	// Events: Beep disabled
 	void stateBeepOffEntered();
 	void stateBeepOffExited();
+	// Events: Mute the microphone
+	void stateMuteEntered();
+	void stateMuteExited();
 	// Events: Play media (mp3, wave. radio IP...) on local speaker
 	void statePlayMediaToSpeakerEntered();
 	void statePlayMediaToSpeakerExited();

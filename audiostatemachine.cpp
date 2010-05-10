@@ -205,6 +205,9 @@ AudioStateMachine::AudioStateMachine()
 	addState(BEEP_OFF,
 		 SLOT(stateBeepOffEntered()),
 		 SLOT(stateBeepOffExited()));
+	addState(MUTE,
+		 SLOT(stateMuteEntered()),
+		 SLOT(stateMuteExited()));
 	addState(PLAY_MEDIA_TO_SPEAKER,
 		 SLOT(statePlayMediaToSpeakerEntered()),
 		 SLOT(statePlayMediaToSpeakerExited()));
@@ -372,6 +375,17 @@ void AudioStateMachine::stateScsIntercomCallEntered()
 void AudioStateMachine::stateScsIntercomCallExited()
 {
 	disactivateVCTAudio();
+}
+
+void AudioStateMachine::stateMuteEntered()
+{
+	current_audio_path = Volumes::MICROPHONE;
+	setVolume(0);
+}
+
+void AudioStateMachine::stateMuteExited()
+{
+	setVolume(1);
 }
 
 void AudioStateMachine::stateIpVideoCallEntered()
