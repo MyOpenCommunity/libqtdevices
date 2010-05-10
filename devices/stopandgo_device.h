@@ -27,7 +27,7 @@ enum StatusBits
 {
 	OPENED              = 0x1000,
 	FAULT               = 0x0800,
-	BLOCK               = 0x0400,
+	LOCKED              = 0x0400,
 	OPENED_LE_N         = 0x0200,
 	OPENED_GROUND       = 0x0100,
 	OPENED_VMAX         = 0x0080,
@@ -40,6 +40,7 @@ enum StatusBits
 	NO_VOLTAGE_INPUT    = 0x0001
 };
 
+
 // Function to verify if the fiven fields are setted in status. Returns true
 // if they are setted, false otherwise.
 //
@@ -49,6 +50,7 @@ enum StatusBits
 // at once, in which case the function returns true ONLY IF ALL the fields
 // passed are setted in status.
 bool getStatusValue(int status, int fields);
+
 
 class StopAndGoDevice : public device
 {
@@ -74,10 +76,9 @@ protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 };
 
+
 class StopAndGoPlusDevice : public StopAndGoDevice
 {
-friend class TestStopAndGoPlusDevice;
-
 Q_OBJECT
 public:
 	explicit StopAndGoPlusDevice(const QString &where, int openserver_id = 0);
@@ -87,6 +88,7 @@ public:
 	void sendTrackingSystemActivation();
 	void sendTrackingSystemDisactivation();
 };
+
 
 class StopAndGoBTestDevice : public StopAndGoDevice
 {

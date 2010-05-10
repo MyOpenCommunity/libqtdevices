@@ -22,77 +22,62 @@
 #ifndef STOPNGO_H
 #define STOPNGO_H
 
-#include "page.h"
-#include "bann1_button.h"
-#include "btbutton.h"
+#include "bannerpage.h"
+#include "bann2_buttons.h"
 
 
-#include <QList>
-
-class device_status;
-class QLCDNumber;
-class QWidget;
-class QTimer;
-class QLabel;
+class StopAndGoDevice;
+class QDomNode;
 
 
-/*!
-  \class BannPulsDynIcon
-  \brief Class derived from bannPuls with status changed event handling.
-
-*/
-class BannPulsDynIcon : public bannPuls
+class BannStopAndGo : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	BannPulsDynIcon(QWidget *parent, const QString &where);
-	~BannPulsDynIcon();
+	BannStopAndGo(StopAndGoDevice *dev, QWidget *parent = 0);
 
 public slots:
-	void status_changed(QList<device_status*>);
+	void statusChanged(const DeviceValues &values_list);
+
+private:
+	QMap<int, QString> status_icons;
 };
 
 
-
-/*!
-  \class StopngoPage
-  \brief Stop & go devices GUI page.
-  
-*/
-class StopngoPage : public Page
+class StopAndGoMenu : public BannerPage
 {
 Q_OBJECT
 public:
-	StopngoPage(QString where, int id = 0, QString pageTitle = "");
-	~StopngoPage();
+	StopAndGoMenu(const QDomNode &conf_node);
+
+	virtual void showPage();
 
 private:
-	QString pageTitle, where;
-	int id, statusBmp, autotestFreq;
-	QLabel *titleBar, *labelAutoArm, *labelVerify;
-	BtButton *okBut, *autoArmBut, *onBut, *offBut, *verifyBut, *autotestBut, *minusBut, *plusBut;
-	QLabel *statusIcon;
-	QLCDNumber *freqLcdNumber;
-	QTimer *freqSendTimer;
+	Page *next_page;
+};
 
-	void AddItems();
-	void SetStatusIcon(const char *);
-	void SetButtonIcon(BtButton *, const char *);
-	void SetFreqValue(int);
 
-public slots:
-	void status_changed(QList<device_status*>);
+class StopAndGoPage : public Page
+{
+Q_OBJECT
+public:
+	StopAndGoPage();
+};
 
-private slots:
-	void AutoArmClick();
-	void OnClick();
-	void OffClick();
-	void VerifyClick();
-	void AutotestClick();
-	void MinusClick();
-	void PlusClick();
-	void LoadTimer();
-	void FireFreqFrame();
+
+class StopAndGoPlusPage : public Page
+{
+Q_OBJECT
+public:
+	StopAndGoPlusPage();
+};
+
+
+class StopAndGoBTestPage : public Page
+{
+Q_OBJECT
+public:
+	StopAndGoBTestPage();
 };
 
 #endif

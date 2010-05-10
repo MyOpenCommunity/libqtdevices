@@ -34,6 +34,7 @@ private slots:
 	void testGetMultipleValues();
 };
 
+
 class TestStopAndGoDevice : public TestDevice
 {
 Q_OBJECT
@@ -51,6 +52,7 @@ protected:
 	StopAndGoDevice *dev;
 };
 
+
 class TestStopAndGoPlusDevice : public TestStopAndGoDevice
 {
 Q_OBJECT
@@ -66,6 +68,7 @@ private slots:
 private:
 	StopAndGoPlusDevice *plus;
 };
+
 
 class TestStopAndGoBTestDevice : public TestStopAndGoDevice
 {

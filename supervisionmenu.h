@@ -54,19 +54,6 @@ private:
 };
 
 
-class StopNGoMenu : public BannerPage
-{
-Q_OBJECT
-public:
-	StopNGoMenu(const QDomNode &conf_node);
-
-	virtual void showPage();
-
-private:
-	Page *next_page;
-};
-
-
 class LoadDiagnosticPage : public BannerPage
 {
 Q_OBJECT
