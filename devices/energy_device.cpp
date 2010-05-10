@@ -296,7 +296,9 @@ void EnergyDevice::requestCumulativeDay(QDate date) const
 
 void EnergyDevice::requestCumulativeYear() const
 {
-	sendRequest(DIM_CUMULATIVE_YEAR);
+	// measure DIM_CUMULATIVE_YEAR (51) returns the grand total, not the yearly total,
+	// the yearly total is computed by adding the monthly totals
+	requestCumulativeYearGraph();
 }
 
 void EnergyDevice::requestCurrent() const
@@ -431,7 +433,7 @@ bool EnergyDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	if (what == DIM_CUMULATIVE_DAY || what == REQ_CURRENT_MODE_1 || what == REQ_CURRENT_MODE_2 ||
 		what == REQ_CURRENT_MODE_3 || what == REQ_CURRENT_MODE_4 || what == REQ_CURRENT_MODE_5 ||
-		what == DIM_CUMULATIVE_MONTH || what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_YEAR ||
+		what == DIM_CUMULATIVE_MONTH || what == _DIM_CUMULATIVE_MONTH ||
 		what == DIM_DAILY_AVERAGE_GRAPH || what == DIM_DAY_GRAPH || what == DIM_CUMULATIVE_MONTH_GRAPH ||
 		what == _DIM_DAY_GRAPH_16BIT || what == _DIM_DAILY_AVERAGE_GRAPH_16BIT ||
 		what == _DIM_CUMULATIVE_MONTH_GRAPH_32BIT || what == _DIM_CUMULATIVE_MONTH_GRAPH_PREV_32BIT)
@@ -535,6 +537,9 @@ bool EnergyDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		if (what == _DIM_CUMULATIVE_MONTH || what == DIM_CUMULATIVE_MONTH)
 		{
 			fillYearGraphData(values_list, msg);
+			// this uses buffer_year_data filled by fillYearGraphData above
+			fillYearTotalData(values_list, msg);
+
 			// with the old frames, the cumulative month is also used to compute the
 			// average value; with the new frames the average is filled using the 16 bit
 			// average graph data
@@ -630,13 +635,24 @@ void EnergyDevice::fillYearGraphData(DeviceValues &values_list, OpenMsg &msg)
 		int month_distance = msg.whatSubArgN(1) - current.month();
 		index = month_distance < 0 ? month_distance + 12 : month_distance;
 	}
-	buffer_year_data[index] = msg.whatArg(0) == "4294967295" ? 0 : scaling_factor_old_frames * msg.whatArgN(0);
+	buffer_year_data[index] = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
 	GraphData data;
 	data.type = CUMULATIVE_YEAR;
 	data.graph = buffer_year_data;
 	QVariant v_graph;
 	v_graph.setValue(data);
 	values_list[DIM_CUMULATIVE_YEAR_GRAPH] = v_graph;
+}
+
+void EnergyDevice::fillYearTotalData(DeviceValues &values_list, OpenMsg &msg)
+{
+	int total = 0;
+	for (int i = 1; i < 13; ++i)
+		total += buffer_year_data.value(i);
+
+	QVariant v;
+	v.setValue(EnergyValue(QDate::currentDate(), total));
+	values_list[DIM_CUMULATIVE_YEAR] = v;
 }
 
 void EnergyDevice::parseDailyAverageGraph8Bit(const QStringList &buffer_frame, QVariant &v)

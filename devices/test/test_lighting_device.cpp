@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -41,24 +41,20 @@ void TestLightingDevice::initLightingDevice(LightingDevice *d)
 		dev = new LightingDevice(LIGHT_DEVICE_WHERE, PULL);
 }
 
-void TestLightingDevice::initTestCase()
-{
-	initLightingDevice();
-}
-
 void TestLightingDevice::cleanupLightingDevice()
 {
 	if (cleanup_required)
 		delete dev;
 }
 
-void TestLightingDevice::cleanupTestCase()
+void TestLightingDevice::cleanup()
 {
 	cleanupLightingDevice();
 }
 
 void TestLightingDevice::init()
 {
+	initLightingDevice();
 	cleanBuffers();
 }
 
@@ -234,19 +230,19 @@ void TestLightingDevice::receiveInvalidVariableTiming()
 	t.checkSignals(timing, 0);
 }
 
-void TestDimmer::initTestCase()
+void TestDimmer::init()
 {
 	initDimmer();
+	cleanBuffers();
 }
 
-void TestDimmer::cleanupTestCase()
+void TestDimmer::cleanup()
 {
 	cleanupDimmer();
 }
 
 void TestDimmer::initDimmer(DimmerDevice *d)
 {
-	initLightingDevice(d);
 	if (d)
 	{
 		dimmer = d;
@@ -254,6 +250,8 @@ void TestDimmer::initDimmer(DimmerDevice *d)
 	}
 	else
 		dimmer = new DimmerDevice(LIGHT_DEVICE_WHERE, PULL);
+
+	initLightingDevice(dimmer);
 }
 
 void TestDimmer::cleanupDimmer()
@@ -303,15 +301,52 @@ void TestDimmer::receiveDimmerProblem()
 	t.check(frame, true);
 }
 
+void TestDimmer::receiveGlobalIncrementLevel()
+{
+	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL);
+	QString frame = QString("*1*30*0##");
+
+	// pull unknown
+	t.checkSignals(frame, 0);
+
+	// not pull
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	dimmer->status = true;
+	dimmer->level = 50;
+	t.check(frame, 8);
+
+	// not pull, off
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	dimmer->status = false;
+	dimmer->level = 50;
+	t.check(frame, 7);
+	QCOMPARE(dimmer->status, true);
+}
+
+void TestDimmer::receiveGlobalDecrementLevel()
+{
+	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL);
+	QString frame = QString("*1*31*0##");
+
+	// pull unknown
+	t.checkSignals(frame, 0);
+
+	// not pull
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	dimmer->status = true;
+	dimmer->level = 50;
+	t.check(frame, 6);
+}
 
 
-void TestDimmer100::initTestCase()
+void TestDimmer100::init()
 {
 	dimmer100 = new Dimmer100Device(LIGHT_DEVICE_WHERE, PULL);
 	initDimmer(dimmer100);
+	cleanBuffers();
 }
 
-void TestDimmer100::cleanupTestCase()
+void TestDimmer100::cleanup()
 {
 	cleanupDimmer();
 	delete dimmer100;
@@ -362,4 +397,41 @@ void TestDimmer100::receiveDimmer100StatusLevel0()
 QString TestDimmer100::getRequestStatusFrame()
 {
 	return QString("*#1*%1*1##").arg(dimmer100->where);
+}
+
+void TestDimmer100::receiveGlobalIncrementLevel100()
+{
+	DeviceTester t(dimmer100, LightingDevice::DIM_DIMMER100_LEVEL);
+	QString frame = QString("*1*30#20#255*0##");
+
+	// pull unknown
+	t.checkSignals(frame, 0);
+
+	// not pull
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	dimmer100->status = true;
+	dimmer100->level = 50;
+	t.check(frame, 70);
+
+	// not pull, off
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	dimmer100->status = false;
+	dimmer100->level = 50;
+	t.check(frame, 50);
+	QCOMPARE(dimmer100->status, true);
+}
+
+void TestDimmer100::receiveGlobalDecrementLevel100()
+{
+	DeviceTester t(dimmer100, LightingDevice::DIM_DIMMER100_LEVEL);
+	QString frame = QString("*1*31#20#255*0##");
+
+	// pull unknown
+	t.checkSignals(frame, 0);
+
+	// not pull
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	dimmer100->status = true;
+	dimmer100->level = 50;
+	t.check(frame, 30);
 }
