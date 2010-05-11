@@ -68,16 +68,15 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 	// call loadItems here so EnergyView/LoadManagement will see the correct value for isRateEditDisplayed
 	loadItems(conf_node);
 
-	if (rate_edit_displayed)
+	EnergyRates::energy_rates.loadRates();
+	if (rate_edit_displayed && EnergyRates::energy_rates.hasRates())
 	{
 #ifdef LAYOUT_BTOUCH
 		QPoint pos = rect().bottomRight();
 		pos -= QPoint(69, 79);
 
-		EnergyRates::energy_rates.loadRates();
-		if (EnergyRates::energy_rates.hasRates())
-			addPage(new EnergyCost, getTextChild(conf_node, "descr"),
-				bt_global::skin->getImage("currency_exchange"), pos.x(), pos.y());
+		addPage(new EnergyCost, getTextChild(conf_node, "descr"),
+			bt_global::skin->getImage("currency_exchange"), pos.x(), pos.y());
 #else
 		Page *page = new EnergyCost;
 		BtButton *b = new BtButton(bt_global::skin->getImage("currency_exchange"));
