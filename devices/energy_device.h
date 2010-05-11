@@ -40,7 +40,7 @@ namespace EnergyConversions
 		OTHER_ENERGY,              // conversion for other current energy value
 	};
 
-	float convertToRawData(int bt_bus_data, EnergyTypology type);
+	float convertToRawData(unsigned int bt_bus_data, EnergyTypology type);
 	float convertToMoney(float raw_data, float money_factor);
 }
 
@@ -180,7 +180,7 @@ private:
 	void parseCumulativeMonthGraph32Bit(const QStringList &buffer_frame, QVariant &v, bool prev_year);
 	void parseDailyAverageGraph8Bit(const QStringList &buffer_frame, QVariant &v);
 	void parseDailyAverageGraph16Bit(const QStringList &buffer_frame, QVariant &v);
-	void computeMonthGraphData(int days_in_month, const QList<int> &values, QMap<int, int> &graph);
+	void computeMonthGraphData(int days_in_month, const QList<int> &values, QMap<int, unsigned int> &graph);
 
 	// The following fill* methods are special methods that handle the case when a single
 	// value or a graph value needs to be calculated from other values.
@@ -211,14 +211,14 @@ private:
 
 	mutable QStringList buffer_frame;
 
-	QMap<int, int> buffer_year_data; // a buffer used to store the graph data
+	QMap<int, unsigned int> buffer_year_data; // a buffer used to store the graph data
 };
 
 
 struct GraphData
 {
 	GraphData() : type(EnergyDevice::CUMULATIVE_DAY) { }
-	QMap<int, int> graph;
+	QMap<int, unsigned int> graph;
 	QDate date;
 	EnergyDevice::GraphType type;
 	bool operator==(const GraphData &other) const
@@ -234,7 +234,7 @@ Q_DECLARE_METATYPE(GraphData)
 // QPair as a type known to QMetaType. We have also define a typedef
 // to avoid the limitation of the macro, that cannot handle correctly commas
 // inside its arguments.
-typedef QPair<QDate, int> EnergyValue;
+typedef QPair<QDate, unsigned int> EnergyValue;
 Q_DECLARE_METATYPE(EnergyValue);
 
 #endif // ENERGY_DEVICE_H

@@ -62,7 +62,7 @@ BannEnergyInterface::BannEnergyInterface(int rate_id, bool is_ele, const QString
 	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
 
 	is_electricity = is_ele;
-	device_value = -1;
+	device_value = INVALID_VALUE;
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), this, SLOT(valueReceived(DeviceValues)));
 }
@@ -86,7 +86,7 @@ void BannEnergyInterface::updateText()
 {
 	QString text("---");
 
-	if (device_value >= 0)
+	if (device_value != INVALID_VALUE)
 	{
 		float data = EnergyConversions::convertToRawData(device_value,
 			is_electricity ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);

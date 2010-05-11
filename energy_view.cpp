@@ -335,8 +335,8 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	dev = bt_global::add_device_to_cache(new EnergyDevice(address, mode));
 	is_electricity_view = (mode == 1);
 
-	cumulative_day_value = cumulative_month_value = cumulative_year_value = -1;
-	daily_av_value = current_value = -1;
+	cumulative_day_value = cumulative_month_value = cumulative_year_value = INVALID_VALUE;
+	daily_av_value = current_value = INVALID_VALUE;
 
 	connect(dev, SIGNAL(valueReceived(const DeviceValues&)), SLOT(valueReceived(const DeviceValues&)));
 
@@ -819,8 +819,8 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		graph_type = EnergyDevice::CUMULATIVE_DAY;
 		dev->requestCumulativeDay(selection_date);
 		dev->requestCumulativeDayGraph(selection_date);
-		cumulative_day_value = -1;
-		current_value = -1;
+		cumulative_day_value = INVALID_VALUE;
+		current_value = INVALID_VALUE;
 		break;
 	case TimePeriodSelection::MONTH:
 		// we have to preserve the current visualized graph (can be daily average)
@@ -836,14 +836,14 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		}
 		dev->requestCumulativeMonth(selection_date);
 		dev->requestMontlyAverage(selection_date);
-		cumulative_month_value = -1;
-		daily_av_value = -1;
+		cumulative_month_value = INVALID_VALUE;
+		daily_av_value = INVALID_VALUE;
 		break;
 	case TimePeriodSelection::YEAR:
 		graph_type = EnergyDevice::CUMULATIVE_YEAR;
 		dev->requestCumulativeYear();
 		dev->requestCumulativeYearGraph();
-		cumulative_year_value = -1;
+		cumulative_year_value = INVALID_VALUE;
 		break;
 	}
 	if (widget_container->currentIndex() == GRAPH_WIDGET)
@@ -880,9 +880,9 @@ void EnergyView::toggleCurrency()
 	updateCurrentGraph();
 }
 
-void EnergyView::updateBanner(Bann2Buttons *banner, int value, int dec, QString symbol)
+void EnergyView::updateBanner(Bann2Buttons *banner, unsigned int value, int dec, QString symbol)
 {
-	if (value == -1)
+	if (value == INVALID_VALUE)
 		banner->setCentralText("---");
 	else
 	{
@@ -904,7 +904,7 @@ void EnergyView::updateBanners()
 	// The number of decimals to show depends on the visualization mode
 	int dec = 0, dec_current = 0;
 
-	int current = current_value; // to preserve the stored value.
+	unsigned int current = current_value; // to preserve the stored value.
 	// display values > 1 kW as kilowatts, lower values as watts
 	if (is_electricity_view)
 	{
@@ -913,7 +913,7 @@ void EnergyView::updateBanners()
 		float cur = EnergyConversions::convertToRawData(current_value,
 			is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
 
-		if (cur >= 1 || current_value == -1)
+		if (cur >= 1 || current_value == INVALID_VALUE)
 		{
 			dec_current = 3;
 			str_med_inst = "kW";
