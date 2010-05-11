@@ -78,6 +78,34 @@ enum
 	PAGE_CALIBRATION_TEST = 1777777,
 };
 
+namespace
+{
+	Ringtones::Type idToRingtoneType(int id)
+	{
+		switch (id)
+		{
+		case RINGTONE_0:
+			return Ringtones::PE1;
+		case RINGTONE_1:
+			return Ringtones::PE2;
+		case RINGTONE_2:
+			return Ringtones::PE3;
+		case RINGTONE_3:
+			return Ringtones::PE4;
+		case RINGTONE_PI_INTERCOM:
+			return Ringtones::PI_INTERCOM;
+		case RINGTONE_PE_INTERCOM:
+			return Ringtones::PE_INTERCOM;
+		case RINGTONE_FLOORCALL:
+			return Ringtones::FLOORCALL;
+		case RINGTONE_ALARM:
+			return Ringtones::ALARM;
+		case RINGTONE_MESSAGE:
+		default:
+			return Ringtones::MESSAGE;
+		}
+	}
+}
 
 ToggleBeep::ToggleBeep(int _item_id, bool status, QString label, QString icon_on, QString icon_off) :
 	IconPageButton(label)
@@ -138,9 +166,15 @@ RingtonesPage::RingtonesPage(const QDomNode &config_node) : ListPage(config_node
 {
 }
 
-void RingtonesPage::hideEvent(QHideEvent *e)
+void RingtonesPage::hideEvent(QHideEvent *)
 {
 	bt_global::ringtones->stopRingtone();
+	bt_global::audio_states->exitCurrentState();
+}
+
+void RingtonesPage::showEvent(QShowEvent *)
+{
+	bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
 }
 
 
@@ -308,33 +342,22 @@ banner *IconSettings::getBanner(const QDomNode &item_node)
 
 		break;
 	}
+
 	case RINGTONE_0:
-		b = new BannRingtone(descr, item_id, Ringtones::PE1);
-		break;
 	case RINGTONE_1:
-		b = new BannRingtone(descr, item_id, Ringtones::PE2);
-		break;
 	case RINGTONE_2:
-		b = new BannRingtone(descr, item_id, Ringtones::PE3);
-		break;
 	case RINGTONE_3:
-		b = new BannRingtone(descr, item_id, Ringtones::PE4);
-		break;
 	case RINGTONE_PI_INTERCOM:
-		b = new BannRingtone(descr, item_id, Ringtones::PI_INTERCOM);
-		break;
 	case RINGTONE_PE_INTERCOM:
-		b = new BannRingtone(descr, item_id, Ringtones::PE_INTERCOM);
-		break;
 	case RINGTONE_FLOORCALL:
-		b = new BannRingtone(descr, item_id, Ringtones::FLOORCALL);
-		break;
 	case RINGTONE_ALARM:
-		b = new BannRingtone(descr, item_id, Ringtones::ALARM);
-		break;
 	case RINGTONE_MESSAGE:
-		b = new BannRingtone(descr, item_id, Ringtones::MESSAGE);
+	{
+
+		b = new BannRingtone(descr, item_id, idToRingtoneType(id),
+				getTextChild(item_node, "id_ringtone").toInt());
 		break;
+	}
 	}
 
 	return b;

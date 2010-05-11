@@ -41,6 +41,7 @@
 #include "homewindow.h" // TrayBar
 #include "pagestack.h" // bt_global::page_stack
 #include "state_button.h"
+#include "audiostatemachine.h" // bt_global::audio_states
 
 #include <QGridLayout>
 #include <QSignalMapper>
@@ -134,7 +135,11 @@ void VideoDoorEntry::valueReceived(const DeviceValues &values_list)
 		case EntryphoneDevice::RINGTONE:
 			Ringtones::Type ringtone = static_cast<Ringtones::Type>(it.value().toInt());
 			if (!ring_exclusion->getStatus())
+			{
+				bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
 				bt_global::ringtones->playRingtone(ringtone);
+				bt_global::audio_states->exitCurrentState();
+			}
 
 			break;
 		}
