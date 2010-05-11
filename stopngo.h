@@ -36,7 +36,7 @@ class BannStopAndGo : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QString &right, QWidget *parent = 0);
+	BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QString &right, const QString &descr = QString(), QWidget *parent = 0);
 
 public slots:
 	void valueReceived(const DeviceValues &values_list);

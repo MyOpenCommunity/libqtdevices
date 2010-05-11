@@ -73,7 +73,7 @@ namespace
 }
 
 
-BannStopAndGo::BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QString &right, QWidget *parent) :
+BannStopAndGo::BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QString &right, const QString &descr, QWidget *parent) :
 	Bann2Buttons(parent)
 {
 	status_icons[STATUS_CLOSED] = bt_global::skin->getImage("status_closed");
@@ -83,7 +83,7 @@ BannStopAndGo::BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QS
 	status_icons[STATUS_GROUND_FAIL] = bt_global::skin->getImage("status_ground_fail");
 	status_icons[STATUS_VMAX] = bt_global::skin->getImage("status_vmax");
 
-	initBanner(bt_global::skin->getImage(left), status_icons[STATUS_CLOSED], bt_global::skin->getImage(right), "");
+	initBanner(bt_global::skin->getImage(left), status_icons[STATUS_CLOSED], bt_global::skin->getImage(right), descr);
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
@@ -135,21 +135,21 @@ StopAndGoMenu::StopAndGoMenu(const QDomNode &conf_node)
 		case STOP_AND_GO:
 			{
 				StopAndGoDevice *dev = bt_global::add_device_to_cache(new StopAndGoDevice(where));
-				banner = new BannStopAndGo(dev, "", "forward");
+				banner = new BannStopAndGo(dev, "", "forward", descr);
 				p = new StopAndGoPage(descr, dev);
 			}
 			break;
 		case STOP_AND_GO_PLUS:
 			{
 				StopAndGoPlusDevice *dev = bt_global::add_device_to_cache(new StopAndGoPlusDevice(where));
-				banner = new BannStopAndGo(dev, "", "forward");
+				banner = new BannStopAndGo(dev, "", "forward", descr);
 				p = new StopAndGoPlusPage(descr, dev);
 			}
 			break;
 		case STOP_AND_GO_BTEST:
 			{
 				StopAndGoBTestDevice *dev = bt_global::add_device_to_cache(new StopAndGoBTestDevice(where));
-				banner = new BannStopAndGo(dev, "", "forward");
+				banner = new BannStopAndGo(dev, "", "forward", descr);
 				p = new StopAndGoBTestPage(descr, dev);
 			}
 			break;
