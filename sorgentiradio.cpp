@@ -37,7 +37,7 @@ RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, Page *deta
 {
 	radio_info = new RadioInfo(bt_global::skin->getImage("source_background"));
 
-	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"), bt_global::skin->getImage("previous"),
+	initBanner(bt_global::skin->getImage("turned_on"), bt_global::skin->getImage("turn_on"), bt_global::skin->getImage("previous"),
 		   bt_global::skin->getImage("next"), bt_global::skin->getImage("details"));
 
 	QHBoxLayout *hbox = new QHBoxLayout(this);
