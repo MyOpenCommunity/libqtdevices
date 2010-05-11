@@ -399,8 +399,8 @@ void EnergyInterface::updateBanners()
 
 void EnergyInterface::showPage()
 {
-	// restore visualization of raw data if we aren't enabled
-	if (isCurrencyView() && !is_any_interface_enabled)
+	// restore visualization of raw data
+	if (isCurrencyView())
 		toggleCurrencyView();
 
 	updateBanners();
