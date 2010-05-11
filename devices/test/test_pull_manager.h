@@ -30,18 +30,57 @@ class TestPullManager : public TestDevice
 {
 Q_OBJECT
 private slots:
+	void testSimpleLight_on();
+	void testSimpleLight_off();
+	void testSimpleLight_on_100();
+	void testSimpleLight_off_100();
+	void testSimpleLight_setLevel();
+	void testSimpleLight_setLevel_100();
+	void testSimpleLight_increaseLevel();
+	void testSimpleLight_decreaseLevel();
+	void testSimpleLight_increaseLevel_100();
+	void testSimpleLight_decreaseLevel_100();
+	void testSimpleLight_timing();
+	void testSimpleLight_variabletiming();
+
+	void testDimmer_on();
+	void testDimmer_off();
+	void testDimmer_on_100();
+	void testDimmer_off_100();
+	void testDimmer_setLevel();
+	void testDimmer_setLevel_100();
+	void testDimmer_increaseLevel();
+	void testDimmer_decreaseLevel();
+	void testDimmer_increaseLevel_100();
+	void testDimmer_decreaseLevel_100();
+	void testDimmer_timing();
+	void testDimmer_variabletiming();
+
+	void testDimmer100_on();
+	void testDimmer100_off();
+	void testDimmer100_on_100();
+	void testDimmer100_off_100();
+	void testDimmer100_setLevel();
+	void testDimmer100_setLevel_100();
+	void testDimmer100_increaseLevel();
+	void testDimmer100_decreaseLevel();
+	void testDimmer100_increaseLevel_100();
+	void testDimmer100_decreaseLevel_100();
+	void testDimmer100_timing();
+	void testDimmer100_variabletiming();
+
 	void testSimpleLight();
 	void testSimpleLight2();
 	void testDimmer();
 	void testDimmer2();
 	void testDimmer3();
-	void testDimmer_increaseLevel();
-	void testDimmer_decreaseLevel();
+	void testDimmer_increaseLevel_old();
+	void testDimmer_decreaseLevel_old();
 	void testDimmer100();
 	void testDimmer100_2();
 	void testDimmer100_3();
-	void testDimmer100_increaseLevel();
-	void testDimmer100_decreaseLevel();
+	void testDimmer100_increaseLevel_old();
+	void testDimmer100_decreaseLevel_old();
 	void testDimmer100_receiveIncreaseLevel10();
 
 	void testVariableTiming();

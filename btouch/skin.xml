@@ -423,6 +423,7 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_not_forced>btnLoadManAb.png</img_not_forced>
 		<img_forced>btnLoadManDis.png</img_forced>
 		<img_reset>btnReset.png</img_reset>
+		<img_currency>currency.png</img_currency>
 	</item>
 	<!-- Load management, no central unit -->
 	<item>
@@ -430,6 +431,7 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_load>LoadManagement.png</img_load>
 		<img_empty_background>empty_180.png</img_empty_background>
 		<img_reset>btnReset.png</img_reset>
+		<img_currency>currency.png</img_currency>
 	</item>
 	<item>
 		<cid>603</cid>
