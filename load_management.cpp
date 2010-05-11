@@ -263,7 +263,7 @@ ConfirmationPage::ConfirmationPage(const QString &text)
 #define FIRST_PERIOD 0
 #define SECOND_PERIOD 1
 
-LoadDataContent::LoadDataContent(int dec, int _rate_id)
+LoadDataContent::LoadDataContent(int _currency_decimals, int _rate_id)
 {
 	current_consumption = new QLabel;
 	current_consumption->setText("---");
@@ -298,7 +298,7 @@ LoadDataContent::LoadDataContent(int dec, int _rate_id)
 	rate = EnergyRates::energy_rates.getRate(rate_id);
 	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
 	is_currency = false;
-	decimals = dec;
+	currency_decimals = _currency_decimals;
 }
 
 void LoadDataContent::updatePeriodDate(int period, const QDate &date, const BtTime &time)
@@ -381,7 +381,7 @@ void LoadDataContent::updateValues()
 		current = EnergyConversions::convertToMoney(current, rate.rate);
 		period1 = EnergyConversions::convertToMoney(period1, rate.rate);
 		period2 = EnergyConversions::convertToMoney(period2, rate.rate);
-		dec = rate.display_decimals;
+		dec = currency_decimals;
 		unit_current = unit_period = rate.currency_symbol;
 	}
 
