@@ -126,13 +126,30 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 	// display the button to edit rates if more than one family
 	if (edit_rates && EnergyRates::energy_rates.hasRates() && families.count() > 1)
 	{
-		NavigationBar *nav = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
-		buildPage(new BannerContent, nav);
-
 		Page *costs = new EnergyCost;
+
+#ifdef LAYOUT_BTOUCH
+		NavigationBar *nav = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
+		buildPage(new BannerContent, nav, getTextChild(config_node, "descr"));
 
 		connect(this, SIGNAL(forwardClick()), costs, SLOT(showPage()));
 		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
+#else
+		QWidget *main = new QWidget;
+		QVBoxLayout *l = new QVBoxLayout(main);
+		l->setContentsMargins(5, 5, 25, 47);
+
+		BannerContent *content = new BannerContent;
+		BtButton *edit_costs = new BtButton(bt_global::skin->getImage("currency_exchange"));
+
+		l->addWidget(content, 1);
+		l->addWidget(edit_costs, 0, Qt::AlignRight);
+
+		buildPage(main, content, new NavigationBar, getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT);
+
+		connect(edit_costs, SIGNAL(clicked()), costs, SLOT(showPage()));
+		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
+#endif
 	}
 	else
 		buildPage(getTextChild(config_node, "descr"));
