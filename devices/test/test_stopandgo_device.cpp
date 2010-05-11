@@ -31,26 +31,6 @@
 #define WHERE "666"
 
 
-// getFieldValue
-void TestGetStatusValue::testGetSingleValue()
-{
-	int status = 1;
-
-	bool result = getStatusValue(status, NO_VOLTAGE_INPUT);
-
-	QVERIFY(result);
-}
-
-void TestGetStatusValue::testGetMultipleValues()
-{
-	int status = 0b11;
-
-	bool result = getStatusValue(status, NO_VOLTAGE_OUTPUT | NO_VOLTAGE_INPUT);
-
-	QVERIFY(result);
-}
-
-
 // Stop and go device
 void TestStopAndGoDevice::init()
 {
@@ -97,14 +77,53 @@ void TestStopAndGoDevice::receiveICMState()
 	DeviceValues values;
 	QVERIFY(values.isEmpty());
 
-	OpenMsg request(QString("*#18*%1*250*0101010101010##").arg(WHERE).toStdString());
+	OpenMsg false_request(QString("*#18*%1*250*0000000000000##").arg(WHERE).toStdString());
 
-	bool managed = dev->parseFrame(request, values);
+	bool managed = dev->parseFrame(false_request, values);
 
 	QVERIFY(managed);
-	QCOMPARE(values[StopAndGoDevice::DIM_ICM_STATE].toInt(), 0b0101010101010);
+
+	for (int i = 0; i < 13; i++)
+		QCOMPARE(values[i].toBool(), false);
+
+	values.clear();
+
+	QVERIFY(values.isEmpty());
+
+	OpenMsg true_request(QString("*#18*%1*250*1111111111111##").arg(WHERE).toStdString());
+
+	managed = dev->parseFrame(true_request, values);
+
+	QVERIFY(managed);
+
+	for (int i = 0; i < 13; i++)
+		QVERIFY(values[i].toBool());
 }
 
+void TestStopAndGoDevice::testSingleState()
+{
+	for (int i = 0; i < 13; i++)
+	{
+		DeviceValues values;
+		QVERIFY(values.isEmpty());
+
+		int val = 0b1000000000000 >> i;
+
+		OpenMsg request(QString("*#18*%1*250*%2##").arg(WHERE).arg(val, 13, 2, QChar('0')).toStdString());
+
+		bool managed = dev->parseFrame(request, values);
+		QVERIFY(managed);
+
+		// Check a DIM a time if it's correctly setted.
+		for (int j = 0; j < 13; j++)
+		{
+			if (j == i)
+				QVERIFY(values[j].toBool());
+			else
+				QVERIFY(!values[j].toBool());
+		}
+	}
+}
 
 // Stop and go plus device
 void TestStopAndGoPlusDevice::init()

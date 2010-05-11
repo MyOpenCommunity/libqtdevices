@@ -27,6 +27,8 @@
 
 
 class StopAndGoDevice;
+class StopAndGoPlusDevice;
+class StopAndGoBTestDevice;
 class QDomNode;
 
 
@@ -34,10 +36,10 @@ class BannStopAndGo : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	BannStopAndGo(StopAndGoDevice *dev, QWidget *parent = 0);
+	BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QString &right, QWidget *parent = 0);
 
 public slots:
-	void statusChanged(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	QMap<int, QString> status_icons;
@@ -61,7 +63,15 @@ class StopAndGoPage : public Page
 {
 Q_OBJECT
 public:
-	StopAndGoPage();
+	StopAndGoPage(const QString &title, StopAndGoDevice *device);
+
+private slots:
+	void valueReceived(const DeviceValues &values_list);
+	void switchAutoReset();
+
+private:
+	StopAndGoDevice *dev;
+	StateButton *autoreset_button;
 };
 
 
@@ -69,7 +79,17 @@ class StopAndGoPlusPage : public Page
 {
 Q_OBJECT
 public:
-	StopAndGoPlusPage();
+	StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *device);
+
+private slots:
+	void valueReceived(const DeviceValues &values_list);
+	void switchAutoReset();
+	void switchAutoCheck();
+
+private:
+	StopAndGoPlusDevice *dev;
+	StateButton *autoreset_button;
+	StateButton *autocheck_button;
 };
 
 
@@ -77,7 +97,10 @@ class StopAndGoBTestPage : public Page
 {
 Q_OBJECT
 public:
-	StopAndGoBTestPage();
+	StopAndGoBTestPage(const QString &title, StopAndGoBTestDevice *device);
+
+private:
+	StopAndGoBTestDevice *dev;
 };
 
 #endif

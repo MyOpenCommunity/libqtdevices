@@ -1408,4 +1408,23 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>6000</cid>
 		<img_center_icon>energia/backenergy.png</img_center_icon>
 	</item>
+	<item>
+		<!--
+		Stop & Go Pages
+		-->
+		<cid>6100</cid>
+		<img_status_closed>supervisioneimpianto/sng_chiuso.png</img_status_closed>
+		<img_status_opened>supervisioneimpianto/sng_aperto.png</img_status_opened>
+		<img_status_locked>supervisioneimpianto/sng_aperto_blocco.png</img_status_locked>
+		<img_status_cc>supervisioneimpianto/sng_aperto_cortocircuito.png</img_status_cc>
+		<img_status_ground_fail>supervisioneimpianto/sng_aperto_guastoversoterra.png</img_status_ground_fail>
+		<img_status_vmax>supervisioneimpianto/sng_aperto_sovratensione.png</img_status_vmax>
+		<img_autoreset_enabled>supervisioneimpianto/riarmoon.png</img_autoreset_enabled>
+		<img_autoreset_disabled>supervisioneimpianto/riarmooff.png</img_autoreset_disabled>
+		<img_forward>supervisioneimpianto/vai.png</img_forward>
+		<img_open>supervisioneimpianto/on.png</img_open>
+		<img_close>supervisioneimpianto/off.png</img_close>
+		<img_autocheck_enabled>supervisioneimpianto/autoteston.png</img_autocheck_enabled>
+		<img_autocheck_disabled>supervisioneimpianto/autotestoff.png</img_autocheck_disabled>
+	</item>
 </style>

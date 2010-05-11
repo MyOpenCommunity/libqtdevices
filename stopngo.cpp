@@ -26,8 +26,16 @@
 #include "stopandgo_device.h"
 #include "skinmanager.h"
 #include "xml_functions.h" // getTextChild
+#include "state_button.h"
+#include "navigation_bar.h"
 
-enum {
+#include <QVBoxLayout>
+#include <QLabel>
+
+#include <QDebug>
+
+enum
+{
 	STOP_AND_GO = 6101,
 	STOP_AND_GO_PLUS = 6102,
 	STOP_AND_GO_BTEST = 6103,
@@ -44,7 +52,28 @@ enum
 };
 
 
-BannStopAndGo::BannStopAndGo(StopAndGoDevice *dev, QWidget *parent) :
+namespace
+{
+	void addCommandButton(QBoxLayout *layout, StateButton *button, const QString &on_image, const QString &off_image, const QString &descr, QObject *obj, const char *slot)
+	{
+		QVBoxLayout *button_layout = new QVBoxLayout;
+		button->setOnImage(bt_global::skin->getImage(on_image));
+		button->setOffImage(bt_global::skin->getImage(off_image));
+		button->setOnOff();
+		QObject::connect(button, SIGNAL(clicked()), obj, slot);
+		button_layout->addWidget(button, 0, Qt::AlignHCenter);
+
+		QLabel *label = new QLabel(descr);
+		label->setAlignment(Qt::AlignHCenter);
+		label->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
+		button_layout->addWidget(label, Qt::AlignHCenter);
+
+		layout->addLayout(button_layout);
+	}
+}
+
+
+BannStopAndGo::BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QString &right, QWidget *parent) :
 	Bann2Buttons(parent)
 {
 	status_icons[STATUS_CLOSED] = bt_global::skin->getImage("status_closed");
@@ -54,27 +83,26 @@ BannStopAndGo::BannStopAndGo(StopAndGoDevice *dev, QWidget *parent) :
 	status_icons[STATUS_GROUND_FAIL] = bt_global::skin->getImage("status_ground_fail");
 	status_icons[STATUS_VMAX] = bt_global::skin->getImage("status_vmax");
 
-	initBanner("", status_icons[STATUS_CLOSED], bt_global::skin->getImage("forward_icon"));
+	initBanner(bt_global::skin->getImage(left), status_icons[STATUS_CLOSED], bt_global::skin->getImage(right), "");
 
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(statusChanged(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
-void BannStopAndGo::statusChanged(const DeviceValues &values_list)
+void BannStopAndGo::valueReceived(const DeviceValues &values_list)
 {
-	int status = values_list[StopAndGoDevice::DIM_ICM_STATE].toInt();
 	QString icon;
 
-	if (!getStatusValue(status, OPENED))
+	if (!values_list[StopAndGoDevice::DIM_OPENED].toBool())
 		icon = status_icons[STATUS_CLOSED];
 	else
 	{
-		if (getStatusValue(status, LOCKED))
+		if (values_list[StopAndGoDevice::DIM_LOCKED].toBool())
 			icon = status_icons[STATUS_LOCKED];
-		else if (getStatusValue(status, OPENED_LE_N))
+		else if (values_list[StopAndGoDevice::DIM_OPENED_LE_N].toBool())
 			icon = status_icons[STATUS_FAIL];
-		else if (getStatusValue(status, OPENED_GROUND))
+		else if (values_list[StopAndGoDevice::DIM_OPENED_GROUND].toBool())
 			icon = status_icons[STATUS_GROUND_FAIL];
-		else if (getStatusValue(status, OPENED_VMAX))
+		else if (values_list[StopAndGoDevice::DIM_OPENED_VMAX].toBool())
 			icon = status_icons[STATUS_VMAX];
 		else
 			icon = status_icons[STATUS_OPENED];
@@ -91,34 +119,44 @@ StopAndGoMenu::StopAndGoMenu(const QDomNode &conf_node)
 	buildPage(getTextChild(conf_node, "descr"));
 #endif
 
+	SkinContext context(getTextChild(conf_node, "cid").toInt());
+
 	QList<QDomNode> items = getChildren(conf_node, "item");
 	foreach (const QDomNode &item, items)
 	{
 		int id = getTextChild(item, "id").toInt();
 		QString descr = getTextChild(item, "descr");
 		QString where = getTextChild(item, "where");
-		StopAndGoDevice *dev = 0;
+		BannStopAndGo *banner = 0;
 		Page *p = 0;
 
 		switch (id)
 		{
 		case STOP_AND_GO:
-			dev = bt_global::add_device_to_cache(new StopAndGoDevice(where));
-			p = new StopAndGoPage();
+			{
+				StopAndGoDevice *dev = bt_global::add_device_to_cache(new StopAndGoDevice(where));
+				banner = new BannStopAndGo(dev, "", "forward");
+				p = new StopAndGoPage(descr, dev);
+			}
 			break;
 		case STOP_AND_GO_PLUS:
-			dev = bt_global::add_device_to_cache(new StopAndGoPlusDevice(where));
-			p = new StopAndGoPlusPage();
+			{
+				StopAndGoPlusDevice *dev = bt_global::add_device_to_cache(new StopAndGoPlusDevice(where));
+				banner = new BannStopAndGo(dev, "", "forward");
+				p = new StopAndGoPlusPage(descr, dev);
+			}
 			break;
 		case STOP_AND_GO_BTEST:
-			dev = bt_global::add_device_to_cache(new StopAndGoBTestDevice(where));
-			p = new StopAndGoBTestPage;
+			{
+				StopAndGoBTestDevice *dev = bt_global::add_device_to_cache(new StopAndGoBTestDevice(where));
+				banner = new BannStopAndGo(dev, "", "forward");
+				p = new StopAndGoBTestPage(descr, dev);
+			}
 			break;
 		default:
 			Q_ASSERT_X(false, "StopAndGoMenu::StopAndGoMenu", "Unknown id");
 		}
 
-		BannStopAndGo *banner = new BannStopAndGo(dev);
 		banner->connectRightButton(p);
 		connect(banner, SIGNAL(pageClosed()), SLOT(showPage()));
 
@@ -143,19 +181,113 @@ void StopAndGoMenu::showPage()
 }
 
 
-StopAndGoPage::StopAndGoPage() :
-	Page()
+StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device) :
+	Page(), dev(device), autoreset_button(new StateButton)
 {
+	QWidget *content = new QWidget;
+	QVBoxLayout *layout = new QVBoxLayout;
+
+	BannStopAndGo *status_banner = new BannStopAndGo(dev, "", "");
+	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
+	layout->addSpacing(30);
+
+	addCommandButton(layout, autoreset_button, "autoreset_enabled", "autoreset_disabled", tr("Enable"), this, SLOT(switchAutoReset()));
+
+	layout->addStretch();
+
+	content->setLayout(layout);
+
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
+
+	buildPage(content, nav_bar, title, TITLE_HEIGHT);
+}
+
+void StopAndGoPage::valueReceived(const DeviceValues &values_list)
+{
+	if (!values_list.contains(StopAndGoDevice::DIM_AUTORESET_DISACTIVE))
+		return;
+
+	autoreset_button->setStatus(!values_list[StopAndGoDevice::DIM_AUTORESET_DISACTIVE].toBool());
+}
+
+void StopAndGoPage::switchAutoReset()
+{
+	if (autoreset_button->getStatus() == StateButton::OFF)
+		dev->sendAutoResetActivation();
+	else
+		dev->sendAutoResetDisactivation();
 }
 
 
-StopAndGoPlusPage::StopAndGoPlusPage() :
-	Page()
+StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *device) :
+	Page(), dev(device), autoreset_button(new StateButton), autocheck_button(new StateButton)
 {
+	QWidget *content = new QWidget;
+	QVBoxLayout *layout = new QVBoxLayout;
+
+	BannStopAndGo *status_banner = new BannStopAndGo(dev, "close", "open");
+	connect(status_banner, SIGNAL(leftClicked()), dev, SLOT(sendClose()));
+	connect(status_banner, SIGNAL(rightClicked()), dev, SLOT(sendOpen()));
+	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
+	layout->addSpacing(30);
+
+	QHBoxLayout *buttons_layout = new QHBoxLayout;
+	addCommandButton(buttons_layout, autoreset_button, "autoreset_enabled", "autoreset_disabled", tr("Enable"), this, SLOT(switchAutoReset()));
+	buttons_layout->addStretch();
+	addCommandButton(buttons_layout, autocheck_button, "autocheck_enabled", "autocheck_disabled", tr("Enable"), this, SLOT(switchAutoCheck()));
+	layout->addLayout(buttons_layout);
+
+	layout->addStretch();
+
+	content->setLayout(layout);
+
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
+
+	buildPage(content, nav_bar, title, TITLE_HEIGHT);
+}
+
+void StopAndGoPlusPage::valueReceived(const DeviceValues &values_list)
+{
+	if (!values_list.contains(StopAndGoDevice::DIM_AUTORESET_DISACTIVE) ||
+		!values_list.contains(StopAndGoDevice::DIM_AUTOTEST_DISACTIVE) ||
+		!values_list.contains(StopAndGoDevice::DIM_OPENED_LE_N) ||
+		!values_list.contains(StopAndGoDevice::DIM_OPENED_GROUND))
+	{
+		return;
+	}
+
+	autoreset_button->setStatus(!values_list[StopAndGoDevice::DIM_AUTORESET_DISACTIVE].toBool());
+	autocheck_button->setStatus(!values_list[StopAndGoDevice::DIM_AUTORESET_DISACTIVE].toBool());
+
+	// Show the autotest button only if opened for cc between n or ground fail.
+	if (values_list[StopAndGoDevice::DIM_OPENED_LE_N].toBool() || values_list[StopAndGoDevice::DIM_OPENED_GROUND].toBool())
+		autocheck_button->show();
+	else
+		autocheck_button->hide();
+}
+
+void StopAndGoPlusPage::switchAutoReset()
+{
+	if (autoreset_button->getStatus() == StateButton::OFF)
+		dev->sendAutoResetActivation();
+	else
+		dev->sendAutoResetDisactivation();
+}
+
+void StopAndGoPlusPage::switchAutoCheck()
+{
+	if (autocheck_button->getStatus() == StateButton::OFF)
+		dev->sendTrackingSystemActivation();
+	else
+		dev->sendTrackingSystemDisactivation();
 }
 
 
-StopAndGoBTestPage::StopAndGoBTestPage() :
-	Page()
+StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevice *device) :
+	Page(), dev(device)
 {
 };

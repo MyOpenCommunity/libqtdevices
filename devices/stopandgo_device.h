@@ -23,35 +23,6 @@
 #include "device.h"
 
 
-enum StatusBits
-{
-	OPENED              = 0x1000,
-	FAULT               = 0x0800,
-	LOCKED              = 0x0400,
-	OPENED_LE_N         = 0x0200,
-	OPENED_GROUND       = 0x0100,
-	OPENED_VMAX         = 0x0080,
-	AUTOTEST_DISACTIVE  = 0x0040,
-	AUTORESET_DISACTIVE = 0x0020,
-	TRACKING_DISACTIVE  = 0x0010,
-	WAITING_RECLOSE     = 0x0008,
-	OPENED_FIRST_DAY    = 0x0004,
-	NO_VOLTAGE_OUTPUT   = 0x0002,
-	NO_VOLTAGE_INPUT    = 0x0001
-};
-
-
-// Function to verify if the fiven fields are setted in status. Returns true
-// if they are setted, false otherwise.
-//
-// Valid fields are the masks enumerated in StatusBits.
-//
-// It's possible to combine masks with a bitwise OR to check multiple fields
-// at once, in which case the function returns true ONLY IF ALL the fields
-// passed are setted in status.
-bool getStatusValue(int status, int fields);
-
-
 class StopAndGoDevice : public device
 {
 friend class TestStopAndGoDevice;
@@ -61,10 +32,24 @@ public:
 
 	enum Type
 	{
-		DIM_ICM_STATE = 250
+		DIM_OPENED = 0,
+		DIM_FAULT,
+		DIM_LOCKED,
+		DIM_OPENED_LE_N,
+		DIM_OPENED_GROUND,
+		DIM_OPENED_VMAX,
+		DIM_AUTOTEST_DISACTIVE,
+		DIM_AUTORESET_DISACTIVE,
+		DIM_TRACKING_DISACTIVE,
+		DIM_WAITING_RECLOSE,
+		DIM_OPENED_FIRST_DAY,
+		DIM_NO_VOLTAGE_OUTPUT,
+		DIM_NO_VOLTAGE_INPUT
 	};
 
 	explicit StopAndGoDevice(const QString &where, int openserver_id = 0);
+
+	virtual void init();
 
 	void sendAutoResetActivation();
 	void sendAutoResetDisactivation();
@@ -83,10 +68,12 @@ Q_OBJECT
 public:
 	explicit StopAndGoPlusDevice(const QString &where, int openserver_id = 0);
 
-	void sendClose();
-	void sendOpen();
 	void sendTrackingSystemActivation();
 	void sendTrackingSystemDisactivation();
+
+public slots:
+	void sendClose();
+	void sendOpen();
 };
 
 

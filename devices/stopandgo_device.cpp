@@ -23,7 +23,7 @@
 
 #define STATUS_BITS 13
 
-namespace Commands
+namespace StopAndGoCommands
 {
 	enum
 	{
@@ -39,7 +39,7 @@ namespace Commands
 	};
 }
 
-namespace Requests
+namespace StopAndGoRequests
 {
 	enum
 	{
@@ -78,21 +78,26 @@ StopAndGoDevice::StopAndGoDevice(const QString &where, int openserver_id) :
 {
 }
 
+void StopAndGoDevice::init()
+{
+	requestICMState();
+}
+
 void StopAndGoDevice::sendAutoResetActivation()
 {
-	sendCommand(Commands::AUTO_RESET_ACTIVATION);
+	sendCommand(StopAndGoCommands::AUTO_RESET_ACTIVATION);
 	requestICMState();
 }
 
 void StopAndGoDevice::sendAutoResetDisactivation()
 {
-	sendCommand(Commands::AUTO_RESET_DISACTIVATION);
+	sendCommand(StopAndGoCommands::AUTO_RESET_DISACTIVATION);
 	requestICMState();
 }
 
 void StopAndGoDevice::requestICMState()
 {
-	sendRequest(Requests::ICM_STATE);
+	sendRequest(StopAndGoRequests::ICM_STATE);
 }
 
 bool StopAndGoDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
@@ -100,9 +105,14 @@ bool StopAndGoDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	if (where.toInt() != msg.where() || msg.whatArgCnt() != 1)
 		return false;
 
-	if (static_cast<int>(msg.what()) == DIM_ICM_STATE)
+	if (static_cast<int>(msg.what()) == StopAndGoRequests::ICM_STATE)
 	{
-		values_list[DIM_ICM_STATE] = masc2int(QString::fromStdString(msg.whatArg(0)));
+		const QString status = QString::fromStdString(msg.whatArg(0));
+		int i = 0;
+
+		foreach (const QChar &c, status)
+			values_list[i++] = static_cast<bool>(c.digitValue());
+
 		return true;
 	}
 
@@ -116,27 +126,27 @@ StopAndGoPlusDevice::StopAndGoPlusDevice(const QString &where, int openserver_id
 {
 }
 
-void StopAndGoPlusDevice::sendClose()
-{
-	sendCommand(Commands::CLOSE);
-	requestICMState();
-}
-
-void StopAndGoPlusDevice::sendOpen()
-{
-	sendCommand(Commands::OPEN);
-	requestICMState();
-}
-
 void StopAndGoPlusDevice::sendTrackingSystemActivation()
 {
-	sendCommand(Commands::TRACKING_SYSTEM_ACTIVATION);
+	sendCommand(StopAndGoCommands::TRACKING_SYSTEM_ACTIVATION);
 	requestICMState();
 }
 
 void StopAndGoPlusDevice::sendTrackingSystemDisactivation()
 {
-	sendCommand(Commands::TRACKING_SYSTEM_DISACTIVATION);
+	sendCommand(StopAndGoCommands::TRACKING_SYSTEM_DISACTIVATION);
+	requestICMState();
+}
+
+void StopAndGoPlusDevice::sendClose()
+{
+	sendCommand(StopAndGoCommands::CLOSE);
+	requestICMState();
+}
+
+void StopAndGoPlusDevice::sendOpen()
+{
+	sendCommand(StopAndGoCommands::OPEN);
 	requestICMState();
 }
 
@@ -149,13 +159,13 @@ StopAndGoBTestDevice::StopAndGoBTestDevice(const QString &where, int openserver_
 
 void StopAndGoBTestDevice::sendDiffSelftestActivation()
 {
-	sendCommand(Commands::DIFF_SELFTEST_ACTIVATION);
+	sendCommand(StopAndGoCommands::DIFF_SELFTEST_ACTIVATION);
 	requestICMState();
 }
 
 void StopAndGoBTestDevice::sendDiffSelftestDisactivation()
 {
-	sendCommand(Commands::DIFF_SELFTEST_DISACTIVATION);
+	sendCommand(StopAndGoCommands::DIFF_SELFTEST_DISACTIVATION);
 	requestICMState();
 }
 
@@ -169,7 +179,7 @@ void StopAndGoBTestDevice::sendSelftestFreq(int days)
 
 void StopAndGoBTestDevice::requestSelftestFreq()
 {
-	sendRequest(Requests::SELFTEST_FREQ);
+	sendRequest(StopAndGoRequests::SELFTEST_FREQ);
 }
 
 bool StopAndGoBTestDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
@@ -177,7 +187,7 @@ bool StopAndGoBTestDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	if (where.toInt() != msg.where() || msg.whatArgCnt() != 1)
 		return false;
 
-	if (static_cast<int>(msg.what()) == DIM_AUTOTEST_FREQ)
+	if (static_cast<int>(msg.what()) == StopAndGoRequests::SELFTEST_FREQ)
 	{
 		values_list[DIM_AUTOTEST_FREQ] = QString::fromStdString(msg.whatArg(0)).toInt();
 		return true;
