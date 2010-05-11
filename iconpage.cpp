@@ -26,6 +26,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "btmain.h" // bt_global::btmain
 #include "homewindow.h" // TrayBar
+#include "titlelabel.h"
 
 #include <QDomNode>
 #include <QDebug>
@@ -87,7 +88,7 @@ void IconContent::addButton(QWidget *button, const QString &label)
 	{
 		w = new QWidget;
 		QVBoxLayout *l = new QVBoxLayout(w);
-		QLabel *lbl = new QLabel(label);
+		ScrollingLabel *lbl = new ScrollingLabel(label);
 
 		lbl->setAlignment(Qt::AlignHCenter);
 		lbl->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
@@ -133,8 +134,7 @@ void IconContent::drawContent()
 
 IconPageButton::IconPageButton(const QString &label)
 {
-	QLabel *lbl = new QLabel(label);
-	lbl->setText(label);
+	ScrollingLabel *lbl = new ScrollingLabel(label);
 	lbl->setAlignment(Qt::AlignHCenter);
 	lbl->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
