@@ -22,6 +22,7 @@
 #include "bann2_buttons.h"
 #include "state_button.h"
 #include "icondispatcher.h" // icons_cache
+#include "skinmanager.h" // bt_global::skin
 #include "generic_functions.h" // getBostikName
 #include "titlelabel.h"
 
@@ -29,7 +30,8 @@
 #include <QLabel>
 #include <QVariant> // used for setProperty
 #include <QBoxLayout>
-
+#include <QTimer>
+#include <QLCDNumber>
 
 Bann2LinkedPages::Bann2LinkedPages(QWidget *parent) :
 	BannerNew(parent)
@@ -322,4 +324,100 @@ void Bann2CentralButtons::initBanner(const QString &left, const QString &right, 
 	}
 	else
 		text->setText(banner_text);
+}
+
+#define INPUT_INTERVAL 500
+
+BannLCDRange::BannLCDRange(QWidget *parent) :
+	BannerNew(parent), control_timer(new QTimer(this)), lcd(new QLCDNumber),
+	minus(new BtButton), plus(new BtButton),
+	min(0), max(100)
+{
+	initBanner();
+
+	connect(control_timer, SIGNAL(timeout()), SLOT(emitValueChanged()));
+	connect(minus, SIGNAL(clicked()), SLOT(minusClicked()));
+	connect(plus, SIGNAL(clicked()), SLOT(plusClicked()));
+
+	QHBoxLayout *hbox = new QHBoxLayout;
+	hbox->setContentsMargins(0, 0, 0, 0);
+	hbox->setSpacing(5);
+
+	hbox->addWidget(minus, 0, Qt::AlignLeft);
+	hbox->addWidget(lcd, 1, Qt::AlignCenter);
+	hbox->addWidget(plus, 0, Qt::AlignRight);
+
+	setLayout(hbox);
+}
+
+void BannLCDRange::setRange(int minimum, int maximum)
+{
+	min = minimum;
+	max = maximum;
+}
+
+void BannLCDRange::setValue(int value)
+{
+	int v = 0;
+
+	if (value < min)
+		v = min;
+	else if (value > max)
+		v = max;
+	else
+		v = value;
+
+	lcd->display(v);
+}
+
+void BannLCDRange::setNumDigits(int n)
+{
+	lcd->setNumDigits(n);
+}
+
+int BannLCDRange::value() const
+{
+	return lcd->intValue();
+}
+
+void BannLCDRange::initBanner()
+{
+	control_timer->setInterval(INPUT_INTERVAL);
+
+	minus->setImage(bt_global::skin->getImage("minus"));
+	minus->setAutoRepeat(true);
+
+	plus->setImage(bt_global::skin->getImage("plus"));
+	plus->setAutoRepeat(true);
+
+	lcd->setMinimumHeight(50);
+	lcd->setSegmentStyle(QLCDNumber::Flat);
+	lcd->setFrameShape(QFrame::NoFrame);
+}
+
+void BannLCDRange::startTimer()
+{
+	if (control_timer->isActive())
+		control_timer->stop();
+
+	control_timer->start();
+}
+
+void BannLCDRange::plusClicked()
+{
+	setValue(value() + 1);
+	startTimer();
+}
+
+void BannLCDRange::minusClicked()
+{
+	setValue(value() - 1);
+	startTimer();
+}
+
+void BannLCDRange::emitValueChanged()
+{
+	control_timer->stop();
+
+	emit valueChanged(lcd->intValue());
 }
