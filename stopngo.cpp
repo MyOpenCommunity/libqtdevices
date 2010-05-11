@@ -222,7 +222,7 @@ void StopAndGoPage::switchAutoReset()
 
 
 StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *device) :
-	Page(), dev(device), autoreset_button(new StateButton), autocheck_button(new StateButton)
+	Page(), dev(device), autoreset_button(new StateButton), tracking_button(new StateButton)
 {
 	QWidget *content = new QWidget;
 	QVBoxLayout *layout = new QVBoxLayout;
@@ -236,7 +236,7 @@ StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
 	addCommandButton(buttons_layout, autoreset_button, "autoreset_enabled", "autoreset_disabled", tr("Enable"), this, SLOT(switchAutoReset()));
 	buttons_layout->addStretch();
-	addCommandButton(buttons_layout, autocheck_button, "autocheck_enabled", "autocheck_disabled", tr("Enable"), this, SLOT(switchAutoCheck()));
+	addCommandButton(buttons_layout, tracking_button, "tracking_enabled", "tracking_disabled", tr("Enable"), this, SLOT(switchTracking()));
 	layout->addLayout(buttons_layout);
 
 	layout->addStretch();
@@ -253,7 +253,7 @@ StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *
 void StopAndGoPlusPage::valueReceived(const DeviceValues &values_list)
 {
 	if (!values_list.contains(StopAndGoDevice::DIM_AUTORESET_DISACTIVE) ||
-		!values_list.contains(StopAndGoDevice::DIM_AUTOTEST_DISACTIVE) ||
+		!values_list.contains(StopAndGoDevice::DIM_TRACKING_DISACTIVE) ||
 		!values_list.contains(StopAndGoDevice::DIM_OPENED_LE_N) ||
 		!values_list.contains(StopAndGoDevice::DIM_OPENED_GROUND))
 	{
@@ -261,13 +261,13 @@ void StopAndGoPlusPage::valueReceived(const DeviceValues &values_list)
 	}
 
 	autoreset_button->setStatus(!values_list[StopAndGoDevice::DIM_AUTORESET_DISACTIVE].toBool());
-	autocheck_button->setStatus(!values_list[StopAndGoDevice::DIM_AUTORESET_DISACTIVE].toBool());
+	tracking_button->setStatus(!values_list[StopAndGoDevice::DIM_TRACKING_DISACTIVE].toBool());
 
 	// Show the autotest button only if opened for cc between n or ground fail.
 	if (values_list[StopAndGoDevice::DIM_OPENED_LE_N].toBool() || values_list[StopAndGoDevice::DIM_OPENED_GROUND].toBool())
-		autocheck_button->show();
+		tracking_button->show();
 	else
-		autocheck_button->hide();
+		tracking_button->hide();
 }
 
 void StopAndGoPlusPage::switchAutoReset()
@@ -278,9 +278,9 @@ void StopAndGoPlusPage::switchAutoReset()
 		dev->sendAutoResetDisactivation();
 }
 
-void StopAndGoPlusPage::switchAutoCheck()
+void StopAndGoPlusPage::switchTracking()
 {
-	if (autocheck_button->getStatus() == StateButton::OFF)
+	if (tracking_button->getStatus() == StateButton::OFF)
 		dev->sendTrackingSystemActivation();
 	else
 		dev->sendTrackingSystemDisactivation();

@@ -84,12 +84,12 @@ public:
 private slots:
 	void valueReceived(const DeviceValues &values_list);
 	void switchAutoReset();
-	void switchAutoCheck();
+	void switchTracking();
 
 private:
 	StopAndGoPlusDevice *dev;
 	StateButton *autoreset_button;
-	StateButton *autocheck_button;
+	StateButton *tracking_button;
 };
 
 
