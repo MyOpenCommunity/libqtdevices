@@ -114,10 +114,12 @@ enum
 {
 	SOURCE_RADIO_MONO = 11001,
 	SOURCE_AUX_MONO = 11002,
+	SOURCE_MULTIMEDIA_MONO = 11003,
+	SOURCE_MYSELF_MONO = 11004,
 	SOURCE_RADIO_MULTI = 12001,
 	SOURCE_AUX_MULTI = 12002,
-	// used internally
-	SOURCE_MULTIMEDIA = -1,
+	SOURCE_MULTIMEDIA_MULTI = 12003,
+	SOURCE_MYSELF_MULTI = 12004,
 };
 
 SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &src)
@@ -151,13 +153,16 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 		}
 		case SOURCE_AUX_MONO:
 		case SOURCE_AUX_MULTI:
+		case SOURCE_MULTIMEDIA_MONO:
+		case SOURCE_MULTIMEDIA_MULTI:
 		{
 			SourceDevice *dev = bt_global::add_device_to_cache(new SourceDevice(s.where));
 
 			w = new AuxSource(area, dev, s.descr);
 			break;
 		}
-		case SOURCE_MULTIMEDIA:
+		case SOURCE_MYSELF_MONO:
+		case SOURCE_MYSELF_MULTI:
 		{
 			if (!s.details)
 				s.details = new MultimediaSectionPage(getPageNode(MULTIMEDIA),
@@ -312,7 +317,8 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 
 	QList<SourceDescription> filtered_sources;
 	foreach (const SourceDescription &s, sources)
-		if (s.id != SOURCE_MULTIMEDIA)
+		if (s.id == SOURCE_RADIO_MONO || s.id == SOURCE_RADIO_MULTI ||
+		    s.id == SOURCE_AUX_MONO || s.id == SOURCE_AUX_MULTI)
 			filtered_sources.append(s);
 
 	SoundSources *top_widget = new SoundSources(area, filtered_sources);
@@ -404,18 +410,6 @@ QList<SourceDescription> SoundDiffusionPage::loadSources(const QDomNode &config_
 		d.cid = getTextChild(source, "cid").toInt();
 		d.descr = getTextChild(source, "descr");
 		d.where = getTextChild(source, "where");
-		d.details = NULL;
-		sources_list << d;
-	}
-
-	// if we're a source, add an additional entry for the touch itself
-	if (isSource())
-	{
-		SourceDescription d;
-		d.id = SOURCE_MULTIMEDIA;
-		d.cid = getTextChild(config_node, "cid").toInt();
-		d.descr = tr("Multimedia source");
-		d.where = (*bt_global::config)[SOURCE_ADDRESS];
 		d.details = NULL;
 		sources_list << d;
 	}
