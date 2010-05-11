@@ -132,7 +132,7 @@ public:
 	 * \param is_production True if the data must be interpreted as production, false for consumption
 	 */
 	EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id,
-		   EnergyTable *_table, EnergyGraph *_graph);
+		   int currency_decimals, EnergyTable *_table, EnergyGraph *_graph);
 	~EnergyView();
 	virtual void inizializza();
 	void systemTimeChanged();
@@ -185,6 +185,7 @@ private:
 	// the id of the timers used to poll data
 	int cumulative_day_banner_timer_id;
 	EnergyRate rate;
+	int currency_decimals;
 
 #ifdef LAYOUT_TOUCHX
 	BtButton *table_button;
