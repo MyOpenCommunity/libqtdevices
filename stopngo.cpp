@@ -85,10 +85,10 @@ BannStopAndGo::BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QS
 
 	initBanner(left, status_icons[STATUS_CLOSED], right, "");
 
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(statusChanged(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
-void BannStopAndGo::statusChanged(const DeviceValues &values_list)
+void BannStopAndGo::valueReceived(const DeviceValues &values_list)
 {
 	QString icon;
 

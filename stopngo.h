@@ -39,7 +39,7 @@ public:
 	BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QString &right, QWidget *parent = 0);
 
 public slots:
-	void statusChanged(const DeviceValues &values_list);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	QMap<int, QString> status_icons;
