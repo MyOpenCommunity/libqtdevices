@@ -126,18 +126,6 @@ StopAndGoPlusDevice::StopAndGoPlusDevice(const QString &where, int openserver_id
 {
 }
 
-void StopAndGoPlusDevice::sendClose()
-{
-	sendCommand(StopAndGoCommands::CLOSE);
-	requestICMState();
-}
-
-void StopAndGoPlusDevice::sendOpen()
-{
-	sendCommand(StopAndGoCommands::OPEN);
-	requestICMState();
-}
-
 void StopAndGoPlusDevice::sendTrackingSystemActivation()
 {
 	sendCommand(StopAndGoCommands::TRACKING_SYSTEM_ACTIVATION);
@@ -147,6 +135,18 @@ void StopAndGoPlusDevice::sendTrackingSystemActivation()
 void StopAndGoPlusDevice::sendTrackingSystemDisactivation()
 {
 	sendCommand(StopAndGoCommands::TRACKING_SYSTEM_DISACTIVATION);
+	requestICMState();
+}
+
+void StopAndGoPlusDevice::sendClose()
+{
+	sendCommand(StopAndGoCommands::CLOSE);
+	requestICMState();
+}
+
+void StopAndGoPlusDevice::sendOpen()
+{
+	sendCommand(StopAndGoCommands::OPEN);
 	requestICMState();
 }
 

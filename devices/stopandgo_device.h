@@ -68,10 +68,12 @@ Q_OBJECT
 public:
 	explicit StopAndGoPlusDevice(const QString &where, int openserver_id = 0);
 
-	void sendClose();
-	void sendOpen();
 	void sendTrackingSystemActivation();
 	void sendTrackingSystemDisactivation();
+
+public slots:
+	void sendClose();
+	void sendOpen();
 };
 
 
