@@ -50,11 +50,13 @@ class StopAndGoMenu : public BannerPage
 {
 Q_OBJECT
 public:
-	StopAndGoMenu(const QDomNode &conf_node);
+	StopAndGoMenu(const QDomNode &config_node);
 
 	virtual void showPage();
 
 private:
+	void loadItems(const QDomNode &config_node);
+
 	Page *next_page;
 };
 

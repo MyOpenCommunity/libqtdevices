@@ -54,7 +54,7 @@ enum
 
 namespace
 {
-	void addCommandButton(QBoxLayout *layout, StateButton *button, const QString &on_image, const QString &off_image, const QString &descr, QObject *obj, const char *slot)
+	QVBoxLayout* addCommandButton(StateButton *button, const QString &on_image, const QString &off_image, const QString &descr, QObject *obj, const char *slot)
 	{
 		QVBoxLayout *button_layout = new QVBoxLayout;
 		button->setOnImage(bt_global::skin->getImage(on_image));
@@ -68,7 +68,7 @@ namespace
 		label->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
 		button_layout->addWidget(label, Qt::AlignHCenter);
 
-		layout->addLayout(button_layout);
+		return button_layout;
 	}
 }
 
@@ -111,17 +111,30 @@ void BannStopAndGo::valueReceived(const DeviceValues &values_list)
 }
 
 
-StopAndGoMenu::StopAndGoMenu(const QDomNode &conf_node)
+StopAndGoMenu::StopAndGoMenu(const QDomNode &config_node)
 {
 #ifdef LAYOUT_BTOUCH
 	buildPage();
 #else
-	buildPage(getTextChild(conf_node, "descr"));
+	buildPage(getTextChild(config_node, "descr"));
 #endif
 
-	SkinContext context(getTextChild(conf_node, "cid").toInt());
+	SkinContext context(getTextChild(config_node, "cid").toInt());
 
-	QList<QDomNode> items = getChildren(conf_node, "item");
+	loadItems(config_node);
+}
+
+void StopAndGoMenu::showPage()
+{
+	if (next_page)
+		next_page->showPage();
+	else
+		BannerPage::showPage();
+}
+
+void StopAndGoMenu::loadItems(const QDomNode &config_node)
+{
+	QList<QDomNode> items = getChildren(config_node, "item");
 	foreach (const QDomNode &item, items)
 	{
 		int id = getTextChild(item, "id").toInt();
@@ -154,7 +167,7 @@ StopAndGoMenu::StopAndGoMenu(const QDomNode &conf_node)
 			}
 			break;
 		default:
-			Q_ASSERT_X(false, "StopAndGoMenu::StopAndGoMenu", "Unknown id");
+			Q_ASSERT_X(false, "StopAndGoMenu::StopAndGoMenu", qPrintable(QString("Unknown id %1").arg(id)));
 		}
 
 		banner->connectRightButton(p);
@@ -172,14 +185,6 @@ StopAndGoMenu::StopAndGoMenu(const QDomNode &conf_node)
 		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
-void StopAndGoMenu::showPage()
-{
-	if (next_page)
-		next_page->showPage();
-	else
-		BannerPage::showPage();
-}
-
 
 StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device) :
 	Page(), dev(device), autoreset_button(new StateButton)
@@ -191,7 +196,9 @@ StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device) :
 	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
 	layout->addSpacing(30);
 
-	addCommandButton(layout, autoreset_button, "autoreset_enabled", "autoreset_disabled", tr("Enable"), this, SLOT(switchAutoReset()));
+	layout->addLayout(addCommandButton(autoreset_button, "autoreset_enabled",
+									   "autoreset_disabled", tr("Enable"),
+									   this, SLOT(switchAutoReset())));
 
 	layout->addStretch();
 
@@ -234,9 +241,13 @@ StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *
 	layout->addSpacing(30);
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
-	addCommandButton(buttons_layout, autoreset_button, "autoreset_enabled", "autoreset_disabled", tr("Enable"), this, SLOT(switchAutoReset()));
+	buttons_layout->addLayout(addCommandButton(autoreset_button, "autoreset_enabled",
+											   "autoreset_disabled", tr("Enable"),
+											   this, SLOT(switchAutoReset())));
 	buttons_layout->addStretch();
-	addCommandButton(buttons_layout, tracking_button, "tracking_enabled", "tracking_disabled", tr("Enable"), this, SLOT(switchTracking()));
+	buttons_layout->addLayout(addCommandButton(tracking_button, "tracking_enabled",
+											   "tracking_disabled", tr("Enable"),
+											   this, SLOT(switchTracking())));
 	layout->addLayout(buttons_layout);
 
 	layout->addStretch();
