@@ -157,6 +157,12 @@ StopAndGoBTestDevice::StopAndGoBTestDevice(const QString &where, int openserver_
 {
 }
 
+void StopAndGoBTestDevice::init()
+{
+	StopAndGoDevice::init();
+	requestSelftestFreq();
+}
+
 void StopAndGoBTestDevice::sendDiffSelftestActivation()
 {
 	sendCommand(StopAndGoCommands::DIFF_SELFTEST_ACTIVATION);
