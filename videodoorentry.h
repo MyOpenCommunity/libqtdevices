@@ -53,18 +53,18 @@ private:
 
 class VideoDoorEntry : public IconPage
 {
+friend class BtMain;
 Q_OBJECT
 public:
 	VideoDoorEntry(const QDomNode &config_node);
 	virtual int sectionId() const;
-
-	static void loadHiddenPages();
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);
 	void toggleRingExclusion();
 
 private:
+	VideoDoorEntry(); // available only for BtMain
 	StateButton *ring_exclusion;
 	EntryphoneDevice *dev;
 	void loadItems(const QDomNode &config_node);

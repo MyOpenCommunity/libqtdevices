@@ -53,7 +53,13 @@ RingtonesManager::RingtonesManager(QString ringtone_file)
 
 void RingtonesManager::playRingtone(Ringtones::Type t)
 {
-	playSound(typeToFilePath(t));
+	if (!type_to_ringtone.contains(t))
+	{
+		qWarning() << "Unable to play a ringtone for type: " << t;
+		return;
+	}
+
+	playSound(ringtone_to_file[type_to_ringtone[t]]);
 }
 
 void RingtonesManager::playRingtone(int ring)
@@ -78,20 +84,9 @@ void RingtonesManager::setRingtone(Ringtones::Type t, int item_id, int ring)
 	setCfgValue("id_ringtone", ring, item_id);
 }
 
-int RingtonesManager::getRingtone(Ringtones::Type t)
-{
-	return type_to_ringtone[t];
-}
-
 int RingtonesManager::getRingtonesNumber()
 {
 	return ringtone_to_file.size();
 }
-
-QString RingtonesManager::typeToFilePath(Ringtones::Type t)
-{
-	return ringtone_to_file[type_to_ringtone[t]];
-}
-
 
 RingtonesManager *bt_global::ringtones = 0;

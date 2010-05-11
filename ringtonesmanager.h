@@ -69,19 +69,12 @@ public:
 	 */
 	void setRingtone(Ringtones::Type t, int item_id, int ring);
 
-	/**
-	 * Return the current ringtone for a given type.
-	 */
-	int getRingtone(Ringtones::Type t);
-
 	// Ringtones starts from 1 to... ringtones_number
 	int getRingtonesNumber();
 
 private:
 	QHash<int, QString> ringtone_to_file;
 	QHash<Ringtones::Type, int> type_to_ringtone;
-
-	QString typeToFilePath(Ringtones::Type t);
 };
 
 namespace bt_global { extern RingtonesManager *ringtones; }
