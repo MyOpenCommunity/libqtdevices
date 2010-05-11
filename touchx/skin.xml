@@ -1424,6 +1424,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_forward>supervisioneimpianto/vai.png</img_forward>
 		<img_open>supervisioneimpianto/on.png</img_open>
 		<img_close>supervisioneimpianto/off.png</img_close>
+		<img_tracking_enabled>supervisioneimpianto/verificaimpiantoon.png</img_tracking_enabled>
+		<img_tracking_disabled>supervisioneimpianto/verificaimpiantooff.png</img_tracking_disabled>
 		<img_autocheck_enabled>supervisioneimpianto/autoteston.png</img_autocheck_enabled>
 		<img_autocheck_disabled>supervisioneimpianto/autotestoff.png</img_autocheck_disabled>
 	</item>

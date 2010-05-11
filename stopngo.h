@@ -36,7 +36,7 @@ class BannStopAndGo : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QString &right, QWidget *parent = 0);
+	BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QString &right, const QString &descr = QString(), QWidget *parent = 0);
 
 public slots:
 	void valueReceived(const DeviceValues &values_list);
@@ -50,11 +50,13 @@ class StopAndGoMenu : public BannerPage
 {
 Q_OBJECT
 public:
-	StopAndGoMenu(const QDomNode &conf_node);
+	StopAndGoMenu(const QDomNode &config_node);
 
 	virtual void showPage();
 
 private:
+	void loadItems(const QDomNode &config_node);
+
 	Page *next_page;
 };
 
@@ -84,12 +86,12 @@ public:
 private slots:
 	void valueReceived(const DeviceValues &values_list);
 	void switchAutoReset();
-	void switchAutoCheck();
+	void switchTracking();
 
 private:
 	StopAndGoPlusDevice *dev;
 	StateButton *autoreset_button;
-	StateButton *autocheck_button;
+	StateButton *tracking_button;
 };
 
 
