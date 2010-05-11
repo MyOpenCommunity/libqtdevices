@@ -49,6 +49,8 @@ public:
 
 	explicit StopAndGoDevice(const QString &where, int openserver_id = 0);
 
+	virtual void init();
+
 	void sendAutoResetActivation();
 	void sendAutoResetDisactivation();
 

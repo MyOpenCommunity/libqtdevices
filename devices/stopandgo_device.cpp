@@ -78,6 +78,11 @@ StopAndGoDevice::StopAndGoDevice(const QString &where, int openserver_id) :
 {
 }
 
+void StopAndGoDevice::init()
+{
+	requestICMState();
+}
+
 void StopAndGoDevice::sendAutoResetActivation()
 {
 	sendCommand(StopAndGoCommands::AUTO_RESET_ACTIVATION);
