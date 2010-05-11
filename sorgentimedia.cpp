@@ -50,4 +50,13 @@ MediaSource::MediaSource(const QString &area, VirtualSourceDevice *dev, const QS
 	hbox->addWidget(center_right_button);
 	hbox->addWidget(right_button);
 	hbox->addStretch(1);
+
+	right_button->hide();
+
+	connect(this, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
+}
+
+void MediaSource::sourceStateChanged(bool active)
+{
+	right_button->setVisible(active);
 }
