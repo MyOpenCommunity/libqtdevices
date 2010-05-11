@@ -420,8 +420,10 @@ void BtMain::loadConfiguration()
 	QDomNode video_node = getPageNode(VIDEOCITOFONIA);
 	// Touch X can receive calls even if the videodoorentry section is not
 	// configured (but the configuration specifies it as an internal place).
+	// In this case, we create an "empty" version of the VideoDoorEntry page,
+	// only to manage the ringtone and the loading of the VCTCallPage/IntercomPage.
 	if (video_node.isNull() && !(*bt_global::config)[PI_ADDRESS].isEmpty())
-		VideoDoorEntry::loadHiddenPages();
+		(void) new VideoDoorEntry;
 
 #endif
 	connect(window_container->homeWindow(), SIGNAL(showHomePage()), Home, SLOT(showPage()));

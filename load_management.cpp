@@ -400,7 +400,7 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 	int rate_id = -1;
 	if (isRateEnabled(config_node))
 	{
-		forward_button = bt_global::skin->getImage("currency_exchange");
+		forward_button = bt_global::skin->getImage("currency");
 		rate_id = getRateId(config_node);
 	}
 	int decimals = getDecimals(config_node);

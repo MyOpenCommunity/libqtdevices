@@ -107,6 +107,7 @@ namespace
 	}
 }
 
+
 ToggleBeep::ToggleBeep(int _item_id, bool status, QString label, QString icon_on, QString icon_off) :
 	IconPageButton(label)
 {

@@ -45,7 +45,6 @@ enum
 	DIM_DEVICE_OFF = 0,
 };
 
-
 int dimmerLevelTo100(int level)
 {
 	switch (level)
@@ -61,10 +60,25 @@ int dimmerLevelTo100(int level)
 	}
 }
 
+int dimmer100LevelTo10(int level)
+{
+	switch (level)
+	{
+	case 1:
+		return 2;
+	case 75:
+		return 9;
+	case 100:
+		return 10;
+	default:
+		return (level / 10) + 2;
+	}
+}
 
 
-LightingDevice::LightingDevice(QString where, PullMode pull, int openserver_id, int pull_delay) :
-	PullDevice(QString("1"), where, pull, openserver_id, pull_delay)
+
+LightingDevice::LightingDevice(QString where, PullMode pull, int openserver_id, int pull_delay, PullStateManager::FrameChecker checker) :
+	PullDevice(QString("1"), where, pull, openserver_id, pull_delay, checker)
 {
 	timed_light = NOT_TIMED_LIGHT;
 }
@@ -135,6 +149,28 @@ void LightingDevice::setTimingBehaviour(Timed t)
 	timed_light = t;
 }
 
+FrameHandled LightingDevice::isFrameHandled(OpenMsg &msg)
+{
+	int what = msg.what();
+
+	// dimmer 100 on/off
+	if (msg.IsNormalFrame() && (what == 1 || what == 0) && msg.whatArgCnt() == 1)
+		return FRAME_MAYBE_HANDLED;
+
+	// timed light
+	if ((msg.IsMeasureFrame() || msg.IsWriteFrame()) && what == DIM_VARIABLE_TIMING)
+		return FRAME_MAYBE_HANDLED;
+
+	// light commands
+	if (msg.IsNormalFrame() && (what == DIM_DEVICE_ON || what == DIM_DEVICE_OFF))
+		return FRAME_HANDLED;
+
+	if (what >= FIXED_TIMING_MIN && what <= FIXED_TIMING_MAX)
+		return FRAME_HANDLED;
+
+	return FRAME_NOT_HANDLED;
+}
+
 bool LightingDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	int what = msg.what();
@@ -173,9 +209,11 @@ bool LightingDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 }
 
 
-DimmerDevice::DimmerDevice(QString where, PullMode pull, int openserver_id, int pull_delay) :
-	LightingDevice(where, pull, openserver_id, pull_delay)
+DimmerDevice::DimmerDevice(QString where, PullMode pull, int openserver_id, int pull_delay, PullStateManager::FrameChecker checker) :
+	LightingDevice(where, pull, openserver_id, pull_delay, checker)
 {
+	 level = 0;
+	 status = false;
 }
 
 void DimmerDevice::increaseLevel()
@@ -188,27 +226,90 @@ void DimmerDevice::decreaseLevel()
 	sendCommand(DIMMER_DEC);
 }
 
+FrameHandled DimmerDevice::isFrameHandled(OpenMsg &msg)
+{
+	if (LightingDevice::isFrameHandled(msg) == FRAME_HANDLED)
+		return FRAME_HANDLED;
+
+	int what = msg.what();
+
+	// dimmer 100 on/off
+	if (msg.IsNormalFrame() && (what == 1 || what == 0) && msg.whatArgCnt() == 1)
+		return FRAME_MAYBE_HANDLED;
+
+	// dimmer 100 set level
+	if ((msg.IsMeasureFrame() || msg.IsWriteFrame()) && what == DIMMER100_STATUS)
+		return FRAME_MAYBE_HANDLED;
+
+	// dimmer 100 increase/decrease level
+	if (msg.IsNormalFrame() && (what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 2)
+		return FRAME_MAYBE_HANDLED;
+
+	// timed light
+	if ((msg.IsMeasureFrame() || msg.IsWriteFrame()) && what == DIM_VARIABLE_TIMING)
+		return FRAME_MAYBE_HANDLED;
+
+	// dimmer commands
+	if (msg.IsNormalFrame() && (what >= DIMMER10_LEVEL_MIN && what <= DIMMER10_LEVEL_MAX))
+		return FRAME_HANDLED;
+
+	if (msg.IsNormalFrame() && (what == DIM_DIMMER_PROBLEM || what == DIMMER_INC || what == DIMMER_DEC))
+		return FRAME_HANDLED;
+
+	return FRAME_NOT_HANDLED;
+}
+
 bool DimmerDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	LightingDevice::parseFrame(msg, values_list);
 
+	if (values_list.contains(DIM_DEVICE_ON))
+		 status = values_list[DIM_DEVICE_ON].toBool();
+
+	int what = msg.what();
+
 	if (isCommandFrame(msg))
 	{
-		int what = msg.what();
-
 		if (what >= DIMMER10_LEVEL_MIN && what <= DIMMER10_LEVEL_MAX)
+		{
+			level = dimmerLevelTo100(what);
 			values_list[DIM_DIMMER_LEVEL] = what;
+		}
 		else if (what == DIM_DIMMER_PROBLEM)
 			values_list[what] = true;
 	}
+
+	if ((what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 0)
+	{
+		if (status)
+		{
+			int dimmer10level = dimmer100LevelTo10(level);
+
+			if (what == DIMMER_INC)
+				dimmer10level += 1;
+			else
+				dimmer10level -= 1;
+
+			dimmer10level = qMin(qMax(dimmer10level, 2), 10);
+			level = dimmerLevelTo100(dimmer10level);
+			values_list[DIM_DIMMER_LEVEL] = dimmer10level;
+		}
+		else
+		{
+			status = true;
+			values_list[DIM_DIMMER_LEVEL] = dimmer100LevelTo10(level);
+		}
+	}
+
 	return !values_list.isEmpty();
 }
 
 
-
-Dimmer100Device::Dimmer100Device(QString where, PullMode pull, int openserver_id, int pull_delay) :
-	DimmerDevice(where, pull, openserver_id, pull_delay)
+Dimmer100Device::Dimmer100Device(QString where, PullMode pull, int openserver_id, int pull_delay, PullStateManager::FrameChecker checker) :
+	DimmerDevice(where, pull, openserver_id, pull_delay, checker)
 {
+	DimmerDevice::init();
+	requestDimmer100Status();
 }
 
 void Dimmer100Device::init()
@@ -247,16 +348,42 @@ bool Dimmer100Device::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		Q_ASSERT_X(msg.whatArgCnt() == 2, "Dimmer100Device::parseFrame",
 			"Dimmer 100 status frame must have 2 what args");
 		// convert the value in 0-100 range
-		int level = msg.whatArgN(0) - 100;
+		int new_level = msg.whatArgN(0) - 100;
 
 		// if level == 0 device is off
-		if (level == 0)
+		if (new_level == 0)
+		{
+			status = false;
 			values_list[DIM_DEVICE_ON] = false;
+		}
 		else
 		{
-			values_list[DIM_DIMMER100_LEVEL] = level;
+			level = new_level;
+
+			values_list[DIM_DIMMER100_LEVEL] = new_level;
 			values_list[DIM_DIMMER100_SPEED] = msg.whatArgN(1);
 		}
 	}
+
+	if ((what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 2)
+	{
+		int delta = msg.whatArgN(0);
+
+		if (status)
+		{
+			if (what == DIMMER_INC)
+				level += delta;
+			else
+				level -= delta;
+
+			values_list[DIM_DIMMER100_LEVEL] = level = qMin(qMax(level, 1), 100);
+		}
+		else
+		{
+			status = true;
+			values_list[DIM_DIMMER100_LEVEL] = level;
+		}
+	}
+
 	return !values_list.isEmpty();
 }

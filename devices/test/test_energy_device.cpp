@@ -261,8 +261,20 @@ void TestEnergyDevice::receiveCumulativeMonth()
 
 void TestEnergyDevice::receiveCumulativeYear()
 {
-	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR);
-	t.check(QString("*#18*%1*51*33##").arg(where), EnergyValue(QDate::currentDate(), 33));
+	// We have to reset the device buffer
+	dev->buffer_year_data.clear();
+	for (int i = 1; i <= 12; ++i)
+		dev->buffer_year_data[i] = 0;
+
+	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR, DeviceTester::MULTIPLE_VALUES);
+	QStringList frames;
+	int month = 1;
+	int invalid_month = 3;
+	frames << QString("*#18*%1*52#9#%2*106##").arg(where).arg(month);
+	frames << QString("*#18*%1*52#9#%2*4294967295##").arg(where).arg(invalid_month);
+	frames << QString("*#18*%1*53*95##").arg(where);
+
+	t.check(frames, EnergyValue(QDate::currentDate(), 95 + 106));
 }
 
 void TestEnergyDevice::receiveDailyAverageGraph()
@@ -612,8 +624,8 @@ void TestEnergyDevice::receiveCumulativeYearGraph()
 	int month_distance = month - QDate::currentDate().month();
 	int index = month_distance < 0 ? month_distance + 12 : month_distance;
 
-	data.graph[12] = 9500;
-	data.graph[index] = 10600;
+	data.graph[12] = 95;
+	data.graph[index] = 106;
 
 	// Check for the month that has an invalid value
 	int d = invalid_month - QDate::currentDate().month();

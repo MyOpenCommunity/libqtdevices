@@ -43,8 +43,7 @@ protected:
 
 private slots:
 	void init();
-	void initTestCase();
-	void cleanupTestCase();
+	void cleanup();
 
 	void sendTurnOn();
 	void sendRequestStatus();
@@ -82,8 +81,8 @@ protected:
 	void cleanupDimmer();
 
 private slots:
-	void initTestCase();
-	void cleanupTestCase();
+	void init();
+	void cleanup();
 
 	void sendDimmerIncreaseLevel();
 	void sendDimmerDecreaseLevel();
@@ -91,6 +90,9 @@ private slots:
 	void receiveDimmerLevel();
 	void receiveDimmerLevel2();
 	void receiveDimmerProblem();
+
+	void receiveGlobalIncrementLevel();
+	void receiveGlobalDecrementLevel();
 
 private:
 	bool cleanup_required;
@@ -104,8 +106,8 @@ protected:
 	virtual QString getRequestStatusFrame();
 
 private slots:
-	void initTestCase();
-	void cleanupTestCase();
+	void init();
+	void cleanup();
 
 	void sendDimmer100IncreaseLevel();
 	void sendDimmer100DecreaseLevel();
@@ -113,6 +115,9 @@ private slots:
 
 	void receiveDimmer100Status();
 	void receiveDimmer100StatusLevel0();
+
+	void receiveGlobalIncrementLevel100();
+	void receiveGlobalDecrementLevel100();
 
 private:
 	Dimmer100Device *dimmer100;

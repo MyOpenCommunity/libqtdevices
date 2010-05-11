@@ -32,8 +32,11 @@
 
 class QLabel;
 
-#define TEST_ENERGY_GRAPH
 
+/**
+ * This widget draws a graph of the energy consumption. See EnergyTable for a
+ * tabular representation.
+ */
 class EnergyGraph : public QWidget
 {
 Q_OBJECT
@@ -130,7 +133,10 @@ private:
 	int pageCount();
 };
 
-
+/**
+ * This widget show a table of the energy consumption. To a graphical representation
+ * see the EnergyGraph widget.
+ */
 class EnergyTable : public Page
 {
 Q_OBJECT
