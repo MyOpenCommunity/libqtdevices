@@ -77,16 +77,12 @@ private slots:
 	void ackReceived();
 	void sendFrameOpen(const QString &frame_open);
 
-	void clear_last_msg_open_read();
-
 private:
 	QTcpSocket *socket;
 	Type type;
 	QString host;
 	unsigned port;
 	QByteArray data_read;
-	QTimer Open_read;
-	openwebnet last_msg_open_read;
 	bool ackRx;
 
 	void socketStateRead(char*);
