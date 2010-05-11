@@ -209,6 +209,8 @@ StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device) :
 	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
 
 	buildPage(content, nav_bar, title, TITLE_HEIGHT);
+
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
 void StopAndGoPage::valueReceived(const DeviceValues &values_list)
@@ -259,6 +261,8 @@ StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *
 	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
 
 	buildPage(content, nav_bar, title, TITLE_HEIGHT);
+
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
 void StopAndGoPlusPage::valueReceived(const DeviceValues &values_list)
@@ -334,6 +338,8 @@ StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevic
 	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
 
 	buildPage(content, nav_bar, title, TITLE_HEIGHT);
+
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 };
 
 void StopAndGoBTestPage::valueReceived(const DeviceValues &values_list)
