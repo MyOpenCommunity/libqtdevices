@@ -278,6 +278,7 @@ void LoadDataContent::updateValues()
 	float current = EnergyConversions::convertToRawData(current_value, EnergyConversions::ELECTRICITY);
 	float period1 = EnergyConversions::convertToRawData(first_period_value, EnergyConversions::ELECTRICITY);
 	float period2 = EnergyConversions::convertToRawData(second_period_value, EnergyConversions::ELECTRICITY);
+	float current_kw = current; // to compute the cost
 	int dec_current;
 	QString unit_current;
 	int dec = 3; // use always 3 decimals for the value
@@ -298,7 +299,7 @@ void LoadDataContent::updateValues()
 
 	if (is_currency)
 	{
-		current = EnergyConversions::convertToMoney(current, rate.rate);
+		current = EnergyConversions::convertToMoney(current_kw, rate.rate);
 		period1 = EnergyConversions::convertToMoney(period1, rate.rate);
 		period2 = EnergyConversions::convertToMoney(period2, rate.rate);
 		dec = currency_decimals;

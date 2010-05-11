@@ -829,6 +829,7 @@ void EnergyView::updateBanners()
 	int dec = 0, dec_current = 0;
 
 	unsigned int current = current_value; // to preserve the stored value.
+	unsigned int current_kw = current_value; // to compute the cost
 	// display values > 1 kW as kilowatts, lower values as watts
 	if (is_electricity_view)
 	{
@@ -861,7 +862,7 @@ void EnergyView::updateBanners()
 	updateBanner(cumulative_month_banner, cumulative_month_value, dec, str);
 	updateBanner(cumulative_year_banner, cumulative_year_value, dec, str);
 	updateBanner(daily_av_banner, daily_av_value, dec, str);
-	updateBanner(current_banner, current, dec_current, str_med_inst);
+	updateBanner(current_banner, EnergyInterface::isCurrencyView() ? current_kw : current, dec_current, str_med_inst);
 }
 
 void EnergyView::systemTimeChanged()
