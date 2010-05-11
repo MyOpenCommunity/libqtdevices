@@ -67,7 +67,7 @@ public:
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);
-	void turnOnOff();
+	void switchAutoReset();
 
 private:
 	StopAndGoDevice *dev;
@@ -81,8 +81,15 @@ Q_OBJECT
 public:
 	StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *device);
 
+private slots:
+	void valueReceived(const DeviceValues &values_list);
+	void switchAutoReset();
+	void switchAutoCheck();
+
 private:
 	StopAndGoPlusDevice *dev;
+	StateButton *autoreset_button;
+	StateButton *autocheck_button;
 };
 
 
