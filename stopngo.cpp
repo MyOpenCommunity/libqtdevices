@@ -299,6 +299,69 @@ void StopAndGoPlusPage::switchTracking()
 
 
 StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevice *device) :
-	Page(), dev(device)
+	Page(), dev(device), autoreset_button(new StateButton), autotest_button(new StateButton),
+	autotest_banner(new BannLCDRange)
 {
+	QWidget *content = new QWidget;
+	QVBoxLayout *layout = new QVBoxLayout;
+
+	BannStopAndGo *status_banner = new BannStopAndGo(dev, "", "");
+	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
+	layout->addSpacing(30);
+
+	QHBoxLayout *buttons_layout = new QHBoxLayout;
+	buttons_layout->addLayout(addCommandButton(autoreset_button, "autoreset_enabled",
+											   "autoreset_disabled", tr("Enable"),
+											   this, SLOT(switchAutoReset())));
+	buttons_layout->addStretch();
+	buttons_layout->addLayout(addCommandButton(autotest_button, "autocheck_enabled",
+											   "autocheck_disabled", tr("Enable"),
+											   this, SLOT(switchAutoTest())));
+	layout->addLayout(buttons_layout);
+
+	layout->addStretch();
+
+	content->setLayout(layout);
+
+	autotest_banner->setRange(1, 180);
+	autotest_banner->setNumDigits(3);
+	autotest_banner->setValue(180);
+	connect(autotest_banner, SIGNAL(valueChanged(int)), dev, SLOT(sendSelftestFreq(int)));
+	layout->addWidget(autotest_banner, 0, Qt::AlignHCenter);
+
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
+
+	buildPage(content, nav_bar, title, TITLE_HEIGHT);
 };
+
+void StopAndGoBTestPage::valueReceived(const DeviceValues &values_list)
+{
+	if (values_list.contains(StopAndGoDevice::DIM_AUTORESET_DISACTIVE) &&
+		values_list.contains(StopAndGoDevice::DIM_AUTOTEST_DISACTIVE))
+	{
+		autoreset_button->setStatus(!values_list[StopAndGoDevice::DIM_AUTORESET_DISACTIVE].toBool());
+		autotest_button->setStatus(!values_list[StopAndGoDevice::DIM_AUTOTEST_DISACTIVE].toBool());
+	}
+	else if (values_list.contains(StopAndGoBTestDevice::DIM_AUTOTEST_FREQ))
+	{
+		autotest_banner->setValue(values_list[StopAndGoBTestDevice::DIM_AUTOTEST_FREQ].toInt());
+	}
+}
+
+void StopAndGoBTestPage::switchAutoReset()
+{
+	if (autoreset_button->getStatus() == StateButton::OFF)
+		dev->sendAutoResetActivation();
+	else
+		dev->sendAutoResetDisactivation();
+}
+
+void StopAndGoBTestPage::switchAutoTest()
+{
+	if (autotest_button->getStatus() == StateButton::OFF)
+		dev->sendDiffSelftestActivation();
+	else
+		dev->sendDiffSelftestDisactivation();
+}
