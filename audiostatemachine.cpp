@@ -152,12 +152,12 @@ namespace
 
 	void activateVCTAudio()
 	{
-		QProcess::startDetached("/bin/in_scsbb_on");
+		QProcess::execute("/bin/in_scsbb_on");
 	}
 
 	void disactivateVCTAudio()
 	{
-		QProcess::startDetached("/bin/in_scsbb_off");
+		QProcess::execute("/bin/in_scsbb_off");
 	}
 
 	void changeVolumePath(Volumes::Type type)
