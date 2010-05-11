@@ -19,7 +19,7 @@
  */
 
 
-#include "titlelabel.h"
+#include "labels.h"
 #include "skinmanager.h"
 #include "fontmanager.h" //bt_global::font
 #include "icondispatcher.h" //bt_global::icons_cache

@@ -26,7 +26,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "btmain.h" // bt_global::btmain
 #include "homewindow.h" // TrayBar
-#include "titlelabel.h"
+#include "labels.h" // TextOnImageLabel
 
 #include <QDomNode>
 #include <QDebug>

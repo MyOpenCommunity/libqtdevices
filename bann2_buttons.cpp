@@ -23,7 +23,7 @@
 #include "state_button.h"
 #include "icondispatcher.h" // icons_cache
 #include "generic_functions.h" // getBostikName
-#include "titlelabel.h"
+#include "labels.h" // TextOnImageLabel
 
 #include <QWidget>
 #include <QLabel>

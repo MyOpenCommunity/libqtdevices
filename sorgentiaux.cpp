@@ -24,7 +24,7 @@
 #include "btbutton.h"
 #include "skinmanager.h"
 #include "media_device.h" // SourceDevice
-#include "titlelabel.h" // TextOnImageLabel
+#include "labels.h" // TextOnImageLabel
 #include "fontmanager.h"
 #include "state_button.h"
 

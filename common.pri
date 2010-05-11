@@ -173,6 +173,7 @@ HEADERS += actuators.h \
 	itemlistpage.h \
 	items.h \
 	keypad.h \
+	labels.h \
 	lansettings.h \
 	lighting.h \
 	loads.h \
@@ -211,7 +212,6 @@ HEADERS += actuators.h \
 	temperatureviewer.h \
 	thermalmenu.h \
 	timescript.h \
-	titlelabel.h \
 	transitionwidget.h \
 	version.h \
 	videodoorentry.h \
@@ -280,6 +280,7 @@ SOURCES += actuators.cpp \
 	itemlistpage.cpp \
 	items.cpp \
 	keypad.cpp \
+	labels.cpp \
 	lansettings.cpp \
 	lighting.cpp \
 	loads.cpp \
@@ -318,7 +319,6 @@ SOURCES += actuators.cpp \
 	temperatureviewer.cpp \
 	thermalmenu.cpp \
 	timescript.cpp \
-	titlelabel.cpp \
 	transitionwidget.cpp \
 	version.cpp \
 	videodoorentry.cpp \

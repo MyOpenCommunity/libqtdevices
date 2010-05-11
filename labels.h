@@ -19,8 +19,8 @@
  */
 
 
-#ifndef TITLE_LABEL_H
-#define TITLE_LABEL_H
+#ifndef LABELS_H
+#define LABELS_H
 
 #include <QString>
 #include <QLabel>

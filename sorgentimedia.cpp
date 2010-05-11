@@ -21,7 +21,7 @@
 
 #include "sorgentimedia.h"
 #include "media_device.h" // VirtualSourceDevice
-#include "titlelabel.h" // TextOnImageLabel
+#include "labels.h" // TextOnImageLabel
 #include "skinmanager.h"
 #include "btbutton.h"
 #include "fontmanager.h"
