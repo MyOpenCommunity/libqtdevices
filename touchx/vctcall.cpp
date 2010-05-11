@@ -174,6 +174,10 @@ void CameraImageControl::setBrightness(int value)
 
 VCTCallStatus::VCTCallStatus()
 {
+	// Hands free and Professional studio are initialized here, see the comment
+	// above regarding the init() method.
+	hands_free = false;
+	prof_studio = false;
 	init();
 }
 
@@ -235,19 +239,25 @@ VCTCall::VCTCall(EntryphoneDevice *d, FormatVideo f)
 	cycle->setImage(bt_global::skin->getImage("cycle"));
 	connect(cycle, SIGNAL(clicked()), dev, SLOT(cycleExternalUnits()));
 	connect(&video_grabber, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(finished(int,QProcess::ExitStatus)));
-	disable(); // only to preserve the consistency
+	disable();
 }
 
 void VCTCall::enable()
 {
-	blockSignals(false);
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), this, SLOT(valueReceived(DeviceValues)));
+	if (signalsBlocked())
+	{
+		blockSignals(false);
+		connect(dev, SIGNAL(valueReceived(DeviceValues)), this, SLOT(valueReceived(DeviceValues)));
+	}
 }
 
 void VCTCall::disable()
 {
-	blockSignals(true);
-	disconnect(dev, SIGNAL(valueReceived(DeviceValues)), this, SLOT(valueReceived(DeviceValues)));
+	if (!signalsBlocked())
+	{
+		blockSignals(true);
+		disconnect(dev, SIGNAL(valueReceived(DeviceValues)), this, SLOT(valueReceived(DeviceValues)));
+	}
 }
 
 void VCTCall::finished(int exitcode, QProcess::ExitStatus exitstatus)
