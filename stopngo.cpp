@@ -32,6 +32,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
+#include <QDebug>
 
 enum
 {
@@ -53,14 +54,13 @@ enum
 
 namespace
 {
-	void addCommandButton(QBoxLayout *layout, const QString &on_image, const QString &off_image, const QString &descr, QObject *obj, const char *slot)
+	void addCommandButton(QBoxLayout *layout, StateButton *button, const QString &on_image, const QString &off_image, const QString &descr, QObject *obj, const char *slot)
 	{
 		QVBoxLayout *button_layout = new QVBoxLayout;
-		StateButton *button = new StateButton;
 		button->setOnImage(bt_global::skin->getImage(on_image));
 		button->setOffImage(bt_global::skin->getImage(off_image));
-		button->setCheckable(true);
-		QObject::connect(button, SIGNAL(clicked(bool)), obj, slot);
+		button->setOnOff();
+		QObject::connect(button, SIGNAL(clicked()), obj, slot);
 		button_layout->addWidget(button, 0, Qt::AlignHCenter);
 
 		QLabel *label = new QLabel(descr);
@@ -183,7 +183,7 @@ void StopAndGoMenu::showPage()
 
 
 StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device) :
-	Page(), dev(device)
+	Page(), dev(device), autoreset_button(new StateButton)
 {
 	QWidget *content = new QWidget;
 	QVBoxLayout *layout = new QVBoxLayout;
@@ -192,8 +192,7 @@ StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device) :
 	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
 	layout->addSpacing(30);
 
-	// TODO: Set the state of the command button depending on the device.
-	addCommandButton(layout, "autoreset_enabled", "autoreset_disabled", tr("Enable"), this, SLOT(turnOnOff(bool)));
+	addCommandButton(layout, autoreset_button, "autoreset_enabled", "autoreset_disabled", tr("Enable"), this, SLOT(turnOnOff()));
 
 	layout->addStretch();
 
@@ -206,9 +205,16 @@ StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device) :
 	buildPage(content, nav_bar, title, TITLE_HEIGHT);
 }
 
-void StopAndGoPage::turnOnOff(bool checked)
+void StopAndGoPage::valueReceived(const DeviceValues &values_list)
 {
-	if (checked)
+	Q_ASSERT_X(values_list.contains(StopAndGoDevice::DIM_AUTORESET_DISACTIVE), "StopAndGoPage::valueReceived()", "values_list don't contains DIM_AUTORESET_DISACTIVE");
+
+	autoreset_button->setStatus(!values_list[StopAndGoDevice::DIM_AUTORESET_DISACTIVE].toBool());
+}
+
+void StopAndGoPage::turnOnOff()
+{
+	if (autoreset_button->getStatus() == StateButton::OFF)
 		dev->sendAutoResetActivation();
 	else
 		dev->sendAutoResetDisactivation();

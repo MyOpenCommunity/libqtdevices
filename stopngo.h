@@ -66,10 +66,12 @@ public:
 	StopAndGoPage(const QString &title, StopAndGoDevice *device);
 
 private slots:
-	void turnOnOff(bool checked);
+	void valueReceived(const DeviceValues &values_list);
+	void turnOnOff();
 
 private:
 	StopAndGoDevice *dev;
+	StateButton *autoreset_button;
 };
 
 
