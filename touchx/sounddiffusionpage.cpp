@@ -359,7 +359,14 @@ void SoundAmbientAlarmPage::loadItems(const QDomNode &config_node)
 enum Items
 {
 	ITEM_SPECIAL_AMBIENT = 12020,              // special ambient
-	ITEM_AMBIENT = 12021,                      // normal ambient (with a zone)
+	ITEM_AMBIENT_1 = 12021,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_2 = 12022,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_3 = 12023,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_4 = 12024,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_5 = 12025,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_6 = 12026,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_7 = 12027,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_8 = 12028,                    // normal ambient (with a zone)
 };
 
 SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
@@ -457,7 +464,14 @@ banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QL
 	banner *b = 0;
 	switch (id)
 	{
-	case ITEM_AMBIENT:
+	case ITEM_AMBIENT_1:
+	case ITEM_AMBIENT_2:
+	case ITEM_AMBIENT_3:
+	case ITEM_AMBIENT_4:
+	case ITEM_AMBIENT_5:
+	case ITEM_AMBIENT_6:
+	case ITEM_AMBIENT_7:
+	case ITEM_AMBIENT_8:
 	{
 		SoundAmbient *bann = new SoundAmbient(getTextChild(item_node, "descr"), getTextChild(item_node, "env"));
 		SoundAmbientPage *p = new SoundAmbientPage(page_node, sources);
@@ -539,7 +553,7 @@ void SoundDiffusionAlarmPage::loadItems(const QDomNode &config_node, const QList
 
 		if (id == ITEM_SPECIAL_AMBIENT)
 			continue;
-		if (id != ITEM_AMBIENT)
+		if (id < ITEM_AMBIENT_1 || id > ITEM_AMBIENT_8)
 			qFatal("ID %s not handled in SoundDiffusionAlarmPage", qPrintable(getTextChild(item_node, "id")));
 
 		SoundAmbient *b = new SoundAmbient(getTextChild(item_node, "descr"), getTextChild(item_node, "env"));
