@@ -19,102 +19,92 @@
  */
 
 
-#include "titlelabel.h"
+#include "labels.h"
 #include "skinmanager.h"
 #include "fontmanager.h" //bt_global::font
 #include "icondispatcher.h" //bt_global::icons_cache
 
+#include <QTimer>
 #include <QPainter>
 #include <QTextDocument>
 #include <QDebug>
 
 
-TitleLabel::TitleLabel(QWidget *parent, int w, int h, int _w_offset, int _h_offset, bool _scrolling) :
-	QLabel(parent)
+ScrollingLabel::ScrollingLabel(const QString &text, QWidget *parent) : QLabel(parent)
 {
-	// Style
-	setFixedWidth(w);
-	setFixedHeight(h);
-	setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
-	setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	separator = "   --   ";
 
-	// init
-	time_per_step   = 333;
-	visible_chars   = 18;
-	text_length     = 0;
-	current_shift   = 0;
-	w_offset        = _w_offset;
-	h_offset        = _h_offset;
+	timer = new QTimer(this);
+	timer->setInterval(333);
+	connect(timer, SIGNAL(timeout()), SLOT(handleScroll()));
 
-	// separator for ciclic text scrolling
-	separator        = "   --   ";
-
-	// define if it is scrolling label or not
-	scrolling = _scrolling;
-
-	// connect timer to scroll text
-	connect(&scrolling_timer, SIGNAL(timeout()), SLOT(handleScrollingTimer()));
+	setScrollingText(text);
 }
 
-void TitleLabel::paintEvent(QPaintEvent *event)
+ScrollingLabel::ScrollingLabel(QWidget *parent) : QLabel(parent)
 {
-	QPainter painter;
-	painter.begin(this);
-	painter.translate(w_offset, h_offset);
-	painter.end();
-	QLabel::paintEvent(event);
+	separator = "   --   ";
+
+	timer = new QTimer(this);
+	timer->setInterval(333);
+	connect(timer, SIGNAL(timeout()), SLOT(handleScroll()));
 }
 
-void TitleLabel::resetTextPosition()
+void ScrollingLabel::setScrollingText(const QString &text)
 {
-	current_shift = 0;
+	scrolling_text = text;
+	setText(scrolling_text);
+	// We use a single shot to allow a scenario like this (because the
+	// checkScrolling use the fontMetrics):
+	// label->setScrollingText()
+	// label->setFont()
+	QTimer::singleShot(0, this, SLOT(checkScrolling()));
 }
 
-void TitleLabel::setText(const QString & text_to_set)
+void ScrollingLabel::resizeEvent(QResizeEvent *e)
 {
-	// store full string and full length
-	text         = text_to_set;
-	text_length  = text_to_set.length();
-	current_shift = 0;
+	QLabel::resizeEvent(e);
+	int displayable_chars = width() / fontMetrics().averageCharWidth();
+	setText(scrolling_text.left(displayable_chars));
+	checkScrolling();
+}
 
-	// call method of ancestor
-	QLabel::setText(text_to_set);
+void ScrollingLabel::hideEvent(QHideEvent *e)
+{
+	QLabel::hideEvent(e);
+	timer->stop();
+}
 
-	// start the timer if scroll is needed
-	if (scrolling && text_length > visible_chars)
-		scrolling_timer.start(time_per_step);
+void ScrollingLabel::showEvent(QShowEvent *e)
+{
+	QLabel::showEvent(e);
+	int displayable_chars = width() / fontMetrics().averageCharWidth();
+	setText(scrolling_text.left(displayable_chars));
+	checkScrolling();
+}
+
+void ScrollingLabel::checkScrolling()
+{
+	text_offset = 0;
+	timer->stop();
+	if (fontMetrics().width(scrolling_text) > width())
+		QTimer::singleShot(200, timer, SLOT(start())); // empirical delay
+}
+
+void ScrollingLabel::handleScroll()
+{
+	QString entire_text = scrolling_text + separator;
+
+	int displayable_chars = width() / fontMetrics().averageCharWidth();
+
+	if (text_offset < entire_text.length())
+		++text_offset;
 	else
-		scrolling_timer.stop();
+		text_offset = 0;
+
+	QString to_display = entire_text.mid(text_offset) + entire_text.left(text_offset);
+	setText(to_display.left(displayable_chars));
 }
-
-void TitleLabel::refreshText()
-{
-	QString banner_string = QString("%1%2").arg(text).arg(separator);
-
-	QString head = banner_string.mid(current_shift, banner_string.length() - current_shift);
-	QString tail = banner_string.mid(0, current_shift);
-
-	QLabel::setText(QString("%1%2").arg(head).arg(tail));
-}
-
-void TitleLabel::setMaxVisibleChars(int n)
-{
-	visible_chars = n;
-	current_shift = 0;
-	refreshText();
-}
-
-void TitleLabel::handleScrollingTimer()
-{
-	if (current_shift < text_length + separator.length())
-		++current_shift;
-	else
-		current_shift = 0;
-
-	refreshText();
-	repaint();
-}
-
 
 
 TextOnImageLabel::TextOnImageLabel(QWidget *parent, const QString &text) : QLabel(parent)

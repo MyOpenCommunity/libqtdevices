@@ -38,6 +38,7 @@
 #include <QDomNode>
 #include <QLocale>
 #include <QDebug>
+#include <QVBoxLayout>
 
 // The language used for the floating point number
 static QLocale loc(QLocale::Italian);
@@ -200,13 +201,31 @@ void EnergyCost::showPage()
 
 EditEnergyCost::EditEnergyCost()
 {
+#ifdef LAYOUT_BTOUCH
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
 	buildPage(new BannerContent, nav_bar);
 
-	production_count = consumption_count = 0;
-
 	connect(nav_bar, SIGNAL(backClick()), SLOT(resetRates()));
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(saveRates()));
+#else
+	QWidget *main = new QWidget;
+	QVBoxLayout *l = new QVBoxLayout(main);
+	l->setContentsMargins(5, 5, 25, 47);
+
+	BannerContent *content = new BannerContent;
+	BtButton *save = new BtButton(bt_global::skin->getImage("ok"));
+
+	l->addWidget(content, 1);
+	l->addWidget(save, 0, Qt::AlignRight);
+
+	buildPage(main, content, new NavigationBar);
+
+	connect(this, SIGNAL(Closed()), SLOT(resetRates()));
+	connect(save, SIGNAL(clicked()), SLOT(saveRates()));
+#endif
+
+	production_count = consumption_count = 0;
+
 }
 
 void EditEnergyCost::addRate(int rate_id)

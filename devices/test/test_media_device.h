@@ -59,6 +59,8 @@ private slots:
 
 	void testActiveAreas();
 
+	void testCrash();
+
 private:
 	SourceDevice *dev;
 };

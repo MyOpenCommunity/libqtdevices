@@ -105,6 +105,8 @@ bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	QString msg_where = QString::fromStdString(msg.whereFull());
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
 		return false;
+	if (isStatusRequestFrame(msg))
+		return false;
 
 	int what = msg.what();
 
@@ -209,7 +211,8 @@ bool RadioSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		return true;
 	}
 
-	if (!isDimensionFrame(msg))
+	// check for status requests for a single dimension
+	if (!isDimensionFrame(msg) || msg.whatArgCnt() == 0)
 		return false;
 
 	QVariant v;
@@ -268,9 +271,10 @@ bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	QString msg_where = QString::fromStdString(msg.whereFull());
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
 		return false;
+	if (isStatusRequestFrame(msg))
+		return false;
 
 	int what = msg.what();
-
 
 	if (SourceDevice::parseFrame(msg, values_list) && what != DIM_STATUS && what != SOURCE_TURNED_ON)
 		return true;

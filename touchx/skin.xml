@@ -484,12 +484,26 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_goto_sounddiffusion>multimediale/godiffusion.png</img_goto_sounddiffusion>
 		<img_tray_player>home/backtemp.png</img_tray_player>
 	</item>
-	<!-- rds radio (multi sound diffusion) -->
+	<!-- Multi sound diffusion sources -->
 	<item>
 		<cid>12001</cid>
+
+		<!-- source banner -->
 		<!--
-		RDS Radio source banner and control page (multichannel)
-		Images: img_plus, img_minus, img_num_1, img_num_2, img_num_3, img_num_4, img_num_5 on
+		Other images:
+		Notes: There's also an image set in the stylesheet above
+		-->
+		<img_cycle>diffusione/cycle.png</img_cycle>
+		<img_previous>diffusione/precedente.png</img_previous>
+		<img_next>diffusione/successivo.png</img_next>
+		<img_source_background>diffusione/display.png</img_source_background>
+		<img_details>diffusione/audiosetting.png</img_details>
+		<img_turn_on>carichi/on.png</img_turn_on>
+		<img_turned_on>carichi/ondis.png</img_turned_on>
+
+		<!--
+		RDS Radio details page
+		Images: img_plus, img_minus, img_num_1, img_num_2, img_num_3, img_num_4, img_num_5
 		Notes: There's also an image set in the stylesheet above
 		-->
 		<img_cycle>diffusione/cycle.png</img_cycle>
@@ -501,9 +515,17 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_next>diffusione/successivo.png</img_next>
 		<img_previous>diffusione/precedente.png</img_previous>
 
-		<img_source_background>diffusione/display.png</img_source_background>
 		<img_details>diffusione/audiosetting.png</img_details>
 		<img_details_display>diffusione/displaybig.png</img_details_display>
+
+		<!-- Multimedia list icons -->
+		<img_eject>multimediale/umount.png</img_eject>
+		<img_image_icon>multimediale/fotomini.png</img_image_icon>
+		<img_audio_icon>multimediale/audiomini.png</img_audio_icon>
+		<img_video_icon>multimediale/videomini.png</img_video_icon>
+		<img_directory_icon>multimediale/cartellamini.png</img_directory_icon>
+		<img_play_file>multimediale/play.png</img_play_file>
+		<img_browse_directory>multimediale/vai.png</img_browse_directory>
 	</item>
 	<!-- amplifier special ambient (multi sound diffusion) -->
 	<item>
@@ -607,27 +629,6 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_volume_active>diffusione/onvolamp.png</img_volume_active>
 		<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
 	</item>
-	<!-- sound diffusion ambient (multi sound diffusion) -->
-	<item>
-		<cid>12121</cid>
-
-		<!-- multimedia source
-		Other images: on, off, ok
-		-->
-		<img_previous>diffusione/precedente.png</img_previous>
-		<img_next>diffusione/successivo.png</img_next>
-		<img_source_background>diffusione/display.png</img_source_background>
-		<img_details>diffusione/contenutimultimediali.png</img_details>
-
-		<!-- Multimedia list icons -->
-		<img_eject>multimediale/umount.png</img_eject>
-		<img_image_icon>multimediale/fotomini.png</img_image_icon>
-		<img_audio_icon>multimediale/audiomini.png</img_audio_icon>
-		<img_video_icon>multimediale/videomini.png</img_video_icon>
-		<img_directory_icon>multimediale/cartellamini.png</img_directory_icon>
-		<img_play_file>multimediale/play.png</img_play_file>
-		<img_browse_directory>multimediale/vai.png</img_browse_directory>
-	</item>
 	<!-- special ambient -->
 	<item>
 		<cid>12020</cid>
@@ -636,7 +637,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		-->
 		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
 	</item>
-	<!-- normal ambient -->
+	<!-- ambient 1 (multi) -->
 	<item>
 		<cid>12021</cid>
 		<!--
@@ -646,38 +647,80 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_ambient>diffusione/imgamb.png</img_ambient>
 		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
 	</item>
-	<!-- AUX source (multi sound diffusion) -->
+	<!-- ambient 2 (multi) -->
 	<item>
-		<cid>12002</cid>
+		<cid>12022</cid>
 		<!--
-		Other images: on, off
-		Notes: There's also an image set in the stylesheet above
+		Other images: forward
+		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
 		-->
-		<img_previous>diffusione/precedente.png</img_previous>
-		<img_next>diffusione/successivo.png</img_next>
-		<img_source_background>diffusione/display.png</img_source_background>
+		<img_ambient>diffusione/imgamb.png</img_ambient>
+		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+	</item>
+	<!-- ambient 3 (multi) -->
+	<item>
+		<cid>12023</cid>
+		<!--
+		Other images: forward
+		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
+		-->
+		<img_ambient>diffusione/imgamb.png</img_ambient>
+		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+	</item>
+	<!-- ambient 4 (multi) -->
+	<item>
+		<cid>12024</cid>
+		<!--
+		Other images: forward
+		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
+		-->
+		<img_ambient>diffusione/imgamb.png</img_ambient>
+		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+	</item>
+	<!-- ambient 5 (multi) -->
+	<item>
+		<cid>12025</cid>
+		<!--
+		Other images: forward
+		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
+		-->
+		<img_ambient>diffusione/imgamb.png</img_ambient>
+		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+	</item>
+	<!-- ambient 6 (multi) -->
+	<item>
+		<cid>12026</cid>
+		<!--
+		Other images: forward
+		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
+		-->
+		<img_ambient>diffusione/imgamb.png</img_ambient>
+		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+	</item>
+	<!-- ambient 7 (multi) -->
+	<item>
+		<cid>12027</cid>
+		<!--
+		Other images: forward
+		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
+		-->
+		<img_ambient>diffusione/imgamb.png</img_ambient>
+		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+	</item>
+	<!-- ambient 8 (multi) -->
+	<item>
+		<cid>12028</cid>
+		<!--
+		Other images: forward
+		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
+		-->
+		<img_ambient>diffusione/imgamb.png</img_ambient>
+		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
 	</item>
 	<!-- mono channel sound diffusion -->
 	<!-- sound diffusion page (mono sound diffusion) -->
 	<item>
 		<cid>11000</cid>
-
-		<!-- multimedia source
-		Other images: on, off, ok
-		-->
-		<img_previous>diffusione/precedente.png</img_previous>
-		<img_next>diffusione/successivo.png</img_next>
-		<img_source_background>diffusione/display.png</img_source_background>
-		<img_details>diffusione/contenutimultimediali.png</img_details>
-
-		<!-- Multimedia list icons -->
-		<img_eject>multimediale/umount.png</img_eject>
-		<img_image_icon>multimediale/fotomini.png</img_image_icon>
-		<img_audio_icon>multimediale/audiomini.png</img_audio_icon>
-		<img_video_icon>multimediale/videomini.png</img_video_icon>
-		<img_directory_icon>multimediale/cartellamini.png</img_directory_icon>
-		<img_play_file>multimediale/play.png</img_play_file>
-		<img_browse_directory>multimediale/vai.png</img_browse_directory>
 
 		<!-- rds radio source -->
 		<img_auto_on>diffusione/autoon.png</img_auto_on>
@@ -746,30 +789,47 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_volume_active>diffusione/onvolamp.png</img_volume_active>
 		<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
 	</item>
-	<!-- RDS radio source (mono sound diffusion) -->
+	<!-- Mono sound diffusion sources -->
 	<item>
 		<cid>11001</cid>
+
+		<!-- source banner -->
 		<!--
-		Other images: on, off
+		Other images:
 		Notes: There's also an image set in the stylesheet above
 		-->
+		<img_cycle>diffusione/cycle.png</img_cycle>
 		<img_previous>diffusione/precedente.png</img_previous>
 		<img_next>diffusione/successivo.png</img_next>
 		<img_source_background>diffusione/display.png</img_source_background>
 		<img_details>diffusione/audiosetting.png</img_details>
-	</item>
-	<!-- AUX source (mono sound diffusion) -->
-	<item>
-		<cid>11002</cid>
+		<img_turn_on>carichi/on.png</img_turn_on>
+		<img_turned_on>carichi/ondis.png</img_turned_on>
+
 		<!--
-		Other images: on, off
+		RDS Radio details page
+		Images: img_plus, img_minus, img_num_1, img_num_2, img_num_3, img_num_4, img_num_5
 		Notes: There's also an image set in the stylesheet above
 		-->
-		<img_previous>diffusione/precedente.png</img_previous>
+		<img_auto_on>diffusione/autoon.png</img_auto_on>
+		<img_auto_off>diffusione/autooff.png</img_auto_off>
+		<img_man_on>diffusione/manualeon.png</img_man_on>
+		<img_man_off>diffusione/manualeoff.png</img_man_off>
+		<img_memory>diffusione/mem.png</img_memory>
 		<img_next>diffusione/successivo.png</img_next>
-		<img_source_background>diffusione/display.png</img_source_background>
-	</item>
+		<img_previous>diffusione/precedente.png</img_previous>
 
+		<img_details_display>diffusione/displaybig.png</img_details_display>
+
+		<!-- Multimedia list icons -->
+		<img_eject>multimediale/umount.png</img_eject>
+		<img_image_icon>multimediale/fotomini.png</img_image_icon>
+		<img_audio_icon>multimediale/audiomini.png</img_audio_icon>
+		<img_video_icon>multimediale/videomini.png</img_video_icon>
+		<img_directory_icon>multimediale/cartellamini.png</img_directory_icon>
+		<img_play_file>multimediale/play.png</img_play_file>
+		<img_browse_directory>multimediale/vai.png</img_browse_directory>
+	</item>
 
 	<!-- automation banners -->
 	<item>

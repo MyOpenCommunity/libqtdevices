@@ -19,67 +19,50 @@
  */
 
 
-#ifndef TITLE_LABEL_H
-#define TITLE_LABEL_H
+#ifndef LABELS_H
+#define LABELS_H
 
 #include <QString>
 #include <QLabel>
-#include <QTimer>
+
+class QResizeEvent;
+class QShowEvent;
+class QHideEvent;
+
 
 /**
- * \class TitleLabel
- *
- * this class is derived from QLabel
- * and reimplements drawContent to have scrolling text
+ * A label that scrolls its text one char at time from left to right.
  */
-class TitleLabel : public QLabel
+class ScrollingLabel : public QLabel
 {
 Q_OBJECT
 public:
-	TitleLabel(QWidget *parent = 0, int w = 0, int h = 0, int w_offset = 0, int h_offset = 0, bool scrolling = false);
+	ScrollingLabel(const QString &text, QWidget *parent = 0);
+	ScrollingLabel(QWidget *parent = 0);
+	void setScrollingText(const QString &text);
 
-	// TODO: setText era un metodo virtual di QLabel, adesso non lo e' piu'..
-	// riscrivere il funzionamento di questa classe tenendo conto di questa cosa!
-	void setText(const QString & text_to_set);
-	void resetTextPosition();
-	void setMaxVisibleChars(int n);
+private slots:
+	void handleScroll();
+	void checkScrolling();
 
 protected:
-	virtual void paintEvent(QPaintEvent *event);
+using QLabel::setText;
+	virtual void resizeEvent(QResizeEvent *e);
+	virtual void showEvent(QShowEvent *e);
+	virtual void hideEvent(QHideEvent *e);
 
 private:
-	// internal data
-	QString text;
-
-	// Total chars
-	unsigned text_length;
-
-	int     w_offset;
-	int     h_offset;
-	bool    scrolling;
-
-	// Text scrolling Timer
-	QTimer scrolling_timer;
-
-	/*
-	 * Text scrolling parameters.
-	 */
-	int time_per_step;
-	// current chars shifted
-	unsigned current_shift;
-	// how many chars can be shown at the same time_shift
-	unsigned visible_chars;
-
+	QString scrolling_text;
+	QTimer *timer;
+	int text_offset;
 	QString separator;
-
-	/// refresh text
-	void refreshText();
-
-public slots:
-	void handleScrollingTimer();
 };
 
 
+
+/**
+ * A label that can have both the text and a background image.
+ */
 class TextOnImageLabel : public QLabel
 {
 Q_OBJECT
@@ -91,6 +74,7 @@ public:
 	void setInternalText(const QString &text);
 
 protected:
+using QLabel::setText;
 	virtual void paintEvent(QPaintEvent *);
 
 private:

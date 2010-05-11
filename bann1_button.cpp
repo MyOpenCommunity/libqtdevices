@@ -20,7 +20,7 @@
 
 
 #include "bann1_button.h"
-#include "titlelabel.h" // TextOnImageLabel
+#include "labels.h" // TextOnImageLabel
 #include "skinmanager.h" // bt_global::skin
 #include "btbutton.h"
 #include "icondispatcher.h" // bt_global::icons_cache
