@@ -48,7 +48,7 @@ public:
 	 * \param dec Number of decimals to display when in energy view
 	 * \param _rate_id Rate id to be used for economic data conversions
 	 */
-	LoadDataContent(int dec, int _rate_id = -1);
+	LoadDataContent(int currency_decimals, int _rate_id = -1);
 
 	/**
 	 * Set text on consumption label
@@ -78,7 +78,7 @@ private:
 	QSignalMapper mapper;
 	Bann2Buttons *first_period, *second_period;
 	int first_period_value, second_period_value, current_value;
-	int rate_id, decimals;
+	int rate_id, currency_decimals;
 	EnergyRate rate;
 	bool is_currency;
 
