@@ -51,8 +51,8 @@
 
 namespace
 {
-// The language used for the floating point number
-QLocale loc(QLocale::Italian);
+	// The language used for the floating point number
+	QLocale loc(QLocale::Italian);
 }
 
 
@@ -283,10 +283,12 @@ Bann2Buttons *getBanner(QWidget *parent, QString primary_text)
 }
 
 
-EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id, EnergyTable *_table,
-		       EnergyGraph *_graph)
+EnergyView::EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id,
+		       int _currency_decimals, EnergyTable *_table, EnergyGraph *_graph)
 {
 	// see comment about _table in EnergyInterface::loadItems
+
+	currency_decimals = _currency_decimals;
 	rate = EnergyRates::energy_rates.getRate(rate_id);
 	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
 
@@ -852,7 +854,7 @@ void EnergyView::updateBanners()
 	{
 		str = rate.currency_symbol;
 		str_med_inst = rate.currency_symbol + "/h";
-		dec = 3;
+		dec = dec_current = currency_decimals;
 	}
 
 	updateBanner(cumulative_day_banner, cumulative_day_value, dec, str);
