@@ -79,13 +79,13 @@ AirConditionerStatus AirConditioningAdvanced::parseSettings(const QDomNode &valu
 	int speed = 0;
 	if (!values_node.isNull())
 		speed = getTextChild(values_node, "speed").toInt();
-	st.vel = static_cast<AdvancedAirConditioningDevice::Velocity>(speed);
+	st.vel = speed == -1 ? AdvancedAirConditioningDevice::VEL_INVALID : static_cast<AdvancedAirConditioningDevice::Velocity>(speed);
 
 	int swing = AdvancedAirConditioningDevice::SWING_OFF;
 	// read values from conf if present
 	if (!values_node.isNull())
 		swing = getTextChild(values_node, "fan_swing").toInt();
-	st.swing = static_cast<AdvancedAirConditioningDevice::Swing>(swing);
+	st.swing = swing == -1 ? AdvancedAirConditioningDevice::SWING_INVALID : static_cast<AdvancedAirConditioningDevice::Swing>(swing);
 	return st;
 }
 
@@ -635,10 +635,12 @@ void AdvancedGeneralSplitPage::loadScenarios(const QDomNode &config_node)
 			AdvancedAirConditioningDevice *dev = new AdvancedAirConditioningDevice(getTextChild(split, "where"), oid);
 			Mode m = static_cast<Mode>(getTextChild(split, "mode").toInt());
 			int t = getTextChild(split, "setpoint").toInt();
-			Velocity v = static_cast<Velocity>(getTextChild(split, "speed").toInt());
-			Swing s = static_cast<Swing>(getTextChild(split, "fan_swing").toInt());
+			int v = getTextChild(split, "speed").toInt();
+			int s = getTextChild(split, "fan_swing").toInt();
+			Velocity vel = v == -1 ? AdvancedAirConditioningDevice::VEL_INVALID : static_cast<Velocity>(v);
+			Swing swing = s == -1 ? AdvancedAirConditioningDevice::SWING_INVALID : static_cast<Swing>(s);
 			// this is ok, since general scenarios are taken from conf file and never change
-			b->appendDevice(dev->commandToString(AirConditionerStatus(m, t, v, s)),
+			b->appendDevice(dev->commandToString(AirConditionerStatus(m, t, vel, swing)),
 				bt_global::add_device_to_cache(dev));
 		}
 		page_content->appendBanner(b);
