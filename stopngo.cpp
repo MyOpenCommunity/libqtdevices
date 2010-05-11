@@ -54,7 +54,7 @@ enum
 
 namespace
 {
-	QVBoxLayout* addCommandButton(StateButton *button, const QString &on_image, const QString &off_image, const QString &descr, QObject *obj, const char *slot)
+	QVBoxLayout* getCommandButton(StateButton *button, const QString &on_image, const QString &off_image, const QString &descr, QObject *obj, const char *slot)
 	{
 		QVBoxLayout *button_layout = new QVBoxLayout;
 		button->setOnImage(bt_global::skin->getImage(on_image));
@@ -196,7 +196,7 @@ StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device) :
 	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
 	layout->addSpacing(30);
 
-	layout->addLayout(addCommandButton(autoreset_button, "autoreset_enabled",
+	layout->addLayout(getCommandButton(autoreset_button, "autoreset_enabled",
 									   "autoreset_disabled", tr("Enable"),
 									   this, SLOT(switchAutoReset())));
 
@@ -243,11 +243,11 @@ StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *
 	layout->addSpacing(30);
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
-	buttons_layout->addLayout(addCommandButton(autoreset_button, "autoreset_enabled",
+	buttons_layout->addLayout(getCommandButton(autoreset_button, "autoreset_enabled",
 											   "autoreset_disabled", tr("Enable"),
 											   this, SLOT(switchAutoReset())));
 	buttons_layout->addStretch();
-	buttons_layout->addLayout(addCommandButton(tracking_button, "tracking_enabled",
+	buttons_layout->addLayout(getCommandButton(tracking_button, "tracking_enabled",
 											   "tracking_disabled", tr("Enable"),
 											   this, SLOT(switchTracking())));
 	layout->addLayout(buttons_layout);
@@ -314,11 +314,11 @@ StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevic
 	layout->addSpacing(30);
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
-	buttons_layout->addLayout(addCommandButton(autoreset_button, "autoreset_enabled",
+	buttons_layout->addLayout(getCommandButton(autoreset_button, "autoreset_enabled",
 											   "autoreset_disabled", tr("Enable"),
 											   this, SLOT(switchAutoReset())));
 	buttons_layout->addStretch();
-	buttons_layout->addLayout(addCommandButton(autotest_button, "autocheck_enabled",
+	buttons_layout->addLayout(getCommandButton(autotest_button, "autocheck_enabled",
 											   "autocheck_disabled", tr("Enable"),
 											   this, SLOT(switchAutoTest())));
 	layout->addLayout(buttons_layout);
