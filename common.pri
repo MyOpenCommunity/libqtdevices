@@ -175,7 +175,6 @@ HEADERS += actuators.h \
 	keypad.h \
 	lansettings.h \
 	lighting.h \
-	listbrowser.h \
 	loads.h \
 	load_management.h \
 	main.h \
@@ -283,7 +282,6 @@ SOURCES += actuators.cpp \
 	keypad.cpp \
 	lansettings.cpp \
 	lighting.cpp \
-	listbrowser.cpp \
 	loads.cpp \
 	load_management.cpp \
 	main.cpp \
