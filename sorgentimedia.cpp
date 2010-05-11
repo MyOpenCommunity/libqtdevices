@@ -37,7 +37,7 @@ MediaSource::MediaSource(const QString &area, VirtualSourceDevice *dev, const QS
 	center_icon = new TextOnImageLabel(0, description);
 	center_icon->setFont(bt_global::font->get(FontManager::AUDIO_SOURCE_TEXT));
 
-	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("off"), bt_global::skin->getImage("previous"),
+	initBanner(bt_global::skin->getImage("turned_on"), bt_global::skin->getImage("turn_on"), bt_global::skin->getImage("previous"),
 		   bt_global::skin->getImage("next"), bt_global::skin->getImage("details"));
 	center_icon->setBackgroundImage(bt_global::skin->getImage("source_background"));
 
@@ -50,4 +50,13 @@ MediaSource::MediaSource(const QString &area, VirtualSourceDevice *dev, const QS
 	hbox->addWidget(center_right_button);
 	hbox->addWidget(right_button);
 	hbox->addStretch(1);
+
+	right_button->hide();
+
+	connect(this, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
+}
+
+void MediaSource::sourceStateChanged(bool active)
+{
+	right_button->setVisible(active);
 }

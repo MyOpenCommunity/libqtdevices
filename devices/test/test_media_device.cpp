@@ -125,6 +125,15 @@ void TestSourceDevice::testActiveAreas()
 	QCOMPARE(dev->isActive(area), false);
 }
 
+void TestSourceDevice::testCrash()
+{
+	OpenMsg frame_request_freq(qPrintable(QString("*#22*2#%1*5##").arg(source_id)));
+	dev->manageFrame(frame_request_freq);
+
+	OpenMsg frame_request_status(qPrintable(QString("*#22*2#%1##").arg(source_id)));
+	dev->manageFrame(frame_request_status);
+}
+
 
 void TestRadioSourceDevice::initTestCase()
 {
@@ -356,7 +365,6 @@ void TestAmplifierDevice::receiveStatusRequest()
 	DeviceTester t(dev, AmplifierDevice::DIM_VOLUME); // the dim doesn't matter
 	t.checkSignals(QString("*#22*3#%1#%2##").arg(area).arg(point), 0);
 }
-
 
 
 TestVirtualAmplifierDevice::TestVirtualAmplifierDevice()

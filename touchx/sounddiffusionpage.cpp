@@ -114,10 +114,12 @@ enum
 {
 	SOURCE_RADIO_MONO = 11001,
 	SOURCE_AUX_MONO = 11002,
+	SOURCE_MULTIMEDIA_MONO = 11003,
+	SOURCE_MYSELF_MONO = 11004,
 	SOURCE_RADIO_MULTI = 12001,
 	SOURCE_AUX_MULTI = 12002,
-	// used internally
-	SOURCE_MULTIMEDIA = -1,
+	SOURCE_MULTIMEDIA_MULTI = 12003,
+	SOURCE_MYSELF_MULTI = 12004,
 };
 
 SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &src)
@@ -151,13 +153,16 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 		}
 		case SOURCE_AUX_MONO:
 		case SOURCE_AUX_MULTI:
+		case SOURCE_MULTIMEDIA_MONO:
+		case SOURCE_MULTIMEDIA_MULTI:
 		{
 			SourceDevice *dev = bt_global::add_device_to_cache(new SourceDevice(s.where));
 
 			w = new AuxSource(area, dev, s.descr);
 			break;
 		}
-		case SOURCE_MULTIMEDIA:
+		case SOURCE_MYSELF_MONO:
+		case SOURCE_MYSELF_MULTI:
 		{
 			if (!s.details)
 				s.details = new MultimediaSectionPage(getPageNode(MULTIMEDIA),
@@ -312,7 +317,8 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 
 	QList<SourceDescription> filtered_sources;
 	foreach (const SourceDescription &s, sources)
-		if (s.id != SOURCE_MULTIMEDIA)
+		if (s.id == SOURCE_RADIO_MONO || s.id == SOURCE_RADIO_MULTI ||
+		    s.id == SOURCE_AUX_MONO || s.id == SOURCE_AUX_MULTI)
 			filtered_sources.append(s);
 
 	SoundSources *top_widget = new SoundSources(area, filtered_sources);
@@ -353,7 +359,14 @@ void SoundAmbientAlarmPage::loadItems(const QDomNode &config_node)
 enum Items
 {
 	ITEM_SPECIAL_AMBIENT = 12020,              // special ambient
-	ITEM_AMBIENT = 12021,                      // normal ambient (with a zone)
+	ITEM_AMBIENT_1 = 12021,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_2 = 12022,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_3 = 12023,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_4 = 12024,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_5 = 12025,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_6 = 12026,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_7 = 12027,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_8 = 12028,                    // normal ambient (with a zone)
 };
 
 SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
@@ -408,18 +421,6 @@ QList<SourceDescription> SoundDiffusionPage::loadSources(const QDomNode &config_
 		sources_list << d;
 	}
 
-	// if we're a source, add an additional entry for the touch itself
-	if (isSource())
-	{
-		SourceDescription d;
-		d.id = SOURCE_MULTIMEDIA;
-		d.cid = getTextChild(config_node, "cid").toInt();
-		d.descr = tr("Multimedia source");
-		d.where = (*bt_global::config)[SOURCE_ADDRESS];
-		d.details = NULL;
-		sources_list << d;
-	}
-
 	Q_ASSERT_X(!sources_list.isEmpty(), "SoundDiffusionPage::loadItems", "No sound diffusion sources defined.");
 
 	return sources_list;
@@ -463,7 +464,14 @@ banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QL
 	banner *b = 0;
 	switch (id)
 	{
-	case ITEM_AMBIENT:
+	case ITEM_AMBIENT_1:
+	case ITEM_AMBIENT_2:
+	case ITEM_AMBIENT_3:
+	case ITEM_AMBIENT_4:
+	case ITEM_AMBIENT_5:
+	case ITEM_AMBIENT_6:
+	case ITEM_AMBIENT_7:
+	case ITEM_AMBIENT_8:
 	{
 		SoundAmbient *bann = new SoundAmbient(getTextChild(item_node, "descr"), getTextChild(item_node, "env"));
 		SoundAmbientPage *p = new SoundAmbientPage(page_node, sources);
@@ -545,7 +553,7 @@ void SoundDiffusionAlarmPage::loadItems(const QDomNode &config_node, const QList
 
 		if (id == ITEM_SPECIAL_AMBIENT)
 			continue;
-		if (id != ITEM_AMBIENT)
+		if (id < ITEM_AMBIENT_1 || id > ITEM_AMBIENT_8)
 			qFatal("ID %s not handled in SoundDiffusionAlarmPage", qPrintable(getTextChild(item_node, "id")));
 
 		SoundAmbient *b = new SoundAmbient(getTextChild(item_node, "descr"), getTextChild(item_node, "env"));

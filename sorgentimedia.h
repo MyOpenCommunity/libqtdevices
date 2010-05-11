@@ -37,6 +37,9 @@ Q_OBJECT
 public:
 	MediaSource(const QString &area, VirtualSourceDevice *dev, const QString &description, Page *details);
 
+private slots:
+	void sourceStateChanged(bool active);
+
 private:
 	TextOnImageLabel *center_icon;
 };
