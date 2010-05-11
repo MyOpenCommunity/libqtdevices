@@ -36,7 +36,9 @@ private slots:
 	void rateChanged(int rate_id);
 
 private:
-	int device_value;
+	static const unsigned int INVALID_VALUE = (unsigned int)-1;
+
+	unsigned int device_value;
 	QString measure;
 	bool is_electricity;
 	EnergyRate rate;

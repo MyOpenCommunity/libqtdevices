@@ -66,6 +66,11 @@ namespace
 	{
 		return high == MAX_VALUE && low == MAX_VALUE ? 0 : high * 256 + low;
 	}
+
+	inline unsigned int whatArgU(OpenMsg &msg, int index)
+	{
+		return QString::fromStdString(msg.whatArg(index)).toUInt();
+	}
 }
 
 enum RequestDimension
@@ -507,7 +512,7 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		}
 		else
 		{
-			int val = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
+			unsigned int val = msg.whatArg(0) == "4294967295" ? 0 : whatArgU(msg, 0);
 			v.setValue(EnergyValue(getDateFromFrame(msg), val));
 		}
 
@@ -630,7 +635,7 @@ void EnergyDevice::fillMonthlyAverage(StatusList &status_list, OpenMsg &msg)
 {
 	int average;
 
-	int val = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
+	unsigned int val = msg.whatArg(0) == "4294967295" ? 0 : whatArgU(msg, 0);
 	if (static_cast<int>(msg.what()) == _DIM_CUMULATIVE_MONTH)
 	{
 		QDate date = getDateFromFrame(msg);
@@ -653,7 +658,7 @@ void EnergyDevice::fillYearGraphData(StatusList &status_list, OpenMsg &msg)
 		int month_distance = msg.whatSubArgN(1) - current.month();
 		index = month_distance < 0 ? month_distance + 12 : month_distance;
 	}
-	buffer_year_data[index] = msg.whatArg(0) == "4294967295" ? 0 : msg.whatArgN(0);
+	buffer_year_data[index] = msg.whatArg(0) == "4294967295" ? 0 : whatArgU(msg, 0);
 	GraphData data;
 	data.type = CUMULATIVE_YEAR;
 	data.graph = buffer_year_data;
@@ -664,7 +669,7 @@ void EnergyDevice::fillYearGraphData(StatusList &status_list, OpenMsg &msg)
 
 void EnergyDevice::fillYearTotalData(StatusList &status_list, OpenMsg &msg)
 {
-	int total = 0;
+	unsigned int total = 0;
 	for (int i = 1; i < 13; ++i)
 		total += buffer_year_data.value(i);
 
@@ -813,13 +818,13 @@ void EnergyDevice::parseCumulativeMonthGraph32Bit(const QStringList &buffer_fram
 		OpenMsg frame_parser(buffer_frame[i].toStdString());
 		Q_ASSERT_X(frame_parser.whatArgCnt() > 1, "EnergyDevice::parseCumulativeMonthGraph", frame_parser.frame_open);
 
-		data.graph[i + 1] = frame_parser.whatArgN(1);
+		data.graph[i + 1] = whatArgU(frame_parser, 1);
 	}
 
 	v.setValue(data);
 }
 
-void EnergyDevice::computeMonthGraphData(int days_in_month, const QList<int> &values, QMap<int, int> &graph)
+void EnergyDevice::computeMonthGraphData(int days_in_month, const QList<int> &values, QMap<int, unsigned int> &graph)
 {
 	for (int i = 0; i + 1 < values.size(); i += 2)
 	{
@@ -853,7 +858,7 @@ QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)
 	return QDate::currentDate();
 }
 
-float EnergyConversions::convertToRawData(int bt_bus_data, EnergyConversions::EnergyTypology type)
+float EnergyConversions::convertToRawData(unsigned int bt_bus_data, EnergyConversions::EnergyTypology type)
 {
 	float factor;
 	switch (type)
