@@ -29,6 +29,14 @@
 
 namespace AudioStates
 {
+	/*
+	 * BEEP_ON, PLAY_RINGTONE, ALARM_TO_SPEAKER have the same output path, but
+	 *     maybe different volumes
+	 * SCREENSAVER_WITH_PLAY is the same as the other play states (maybe it should be removed)
+	 * SCRENSAVER_WITHOUT_PLAY, BEEP_OFF: power off the local amplifier
+	 * PLAY_FROM_DIFSON_TO_SPEAKER, PLAY_MEDIA_TO_DIFSON can be active at the same time
+	 *     ALARM_TO_DIFSON is the same as the two states above
+	 */
 	enum
 	{
 		IDLE,
@@ -46,7 +54,7 @@ namespace AudioStates
 		ALARM_TO_SPEAKER,
 		ALARM_TO_DIFSON,
 		SCREENSAVER_WITH_PLAY,
-		//SCREENSAVER_WITHOUT_PLAY --> IDLE
+		SCREENSAVER_WITHOUT_PLAY,
 	};
 }
 
