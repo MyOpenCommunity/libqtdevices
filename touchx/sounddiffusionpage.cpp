@@ -39,6 +39,7 @@
 #include "multimedia_filelist.h"
 #include "radio.h" // RadioPage
 #include "navigation_bar.h"
+#include "audiostatemachine.h"
 
 #include <QDomNode>
 #include <QGridLayout>
@@ -567,10 +568,19 @@ void SoundDiffusionAlarmPage::loadItems(const QDomNode &config_node, const QList
 }
 
 
+namespace
+{
+	int levelToVolume(int level)
+	{
+		return (level - 1) * 8 / 30;
+	}
+}
+
 LocalAmplifier::LocalAmplifier(QObject *parent) : QObject(parent)
 {
 	state = false;
-	level = 8;
+	// TODO add a method to read current volume w/o changing the machine state
+	level = 16;
 
 	dev = bt_global::add_device_to_cache(new VirtualAmplifierDevice((*bt_global::config)[AMPLIFIER_ADDRESS]));
 
@@ -582,23 +592,36 @@ LocalAmplifier::LocalAmplifier(QObject *parent) : QObject(parent)
 
 void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 {
-	// TODO must call audio state machine methods to do the actual work
-
 	foreach (int key, device_values.keys())
 	{
 		switch (key)
 		{
 		case VirtualAmplifierDevice::REQ_AMPLI_ON:
-			state = device_values[key].toBool();
+		{
+			bool new_state = device_values[key].toBool();
+
+			if (state != new_state)
+			{
+				if (new_state)
+					bt_global::audio_states->toState(AudioStates::PLAY_FROM_DIFSON_TO_SPEAKER);
+				else
+					// TODO need a "removeState" or something
+					bt_global::audio_states->exitCurrentState();
+			}
+
+			state = new_state;
 			dev->updateStatus(state);
 			if (state)
 				dev->updateVolume(level);
 			break;
+		}
 		case VirtualAmplifierDevice::REQ_VOLUME_UP:
 			if (level < 31)
 			{
 				level += 1;
 				dev->updateVolume(level);
+				if (bt_global::audio_states->currentState() == AudioStates::PLAY_FROM_DIFSON_TO_SPEAKER)
+					bt_global::audio_states->setVolume(levelToVolume(level));
 			}
 			break;
 		case VirtualAmplifierDevice::REQ_VOLUME_DOWN:
@@ -606,11 +629,15 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			{
 				level -= 1;
 				dev->updateVolume(level);
+				if (bt_global::audio_states->currentState() == AudioStates::PLAY_FROM_DIFSON_TO_SPEAKER)
+					bt_global::audio_states->setVolume(levelToVolume(level));
 			}
 			break;
 		case VirtualAmplifierDevice::REQ_SET_VOLUME:
 			level = device_values[key].toInt();
 			dev->updateVolume(level);
+			if (bt_global::audio_states->currentState() == AudioStates::PLAY_FROM_DIFSON_TO_SPEAKER)
+				bt_global::audio_states->setVolume(levelToVolume(level));
 			break;
 		}
 	}
