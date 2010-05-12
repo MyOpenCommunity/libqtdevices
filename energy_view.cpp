@@ -351,7 +351,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	main_layout->setContentsMargins(0, 0, 0, 0);
 	main_layout->setSpacing(0);
 #else
-	main_layout->setContentsMargins(30, 0, 30, 0);
+	main_layout->setContentsMargins(25, 0, 25, 0);
 	main_layout->setSpacing(5);
 #endif
 
@@ -381,11 +381,12 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	QGridLayout *box_layout = new QGridLayout;
 	box_layout->setSpacing(5);
-	box_layout->setContentsMargins(0, 0, 0, 40);
+	box_layout->setContentsMargins(0, 0, 0, 47);
 	box_layout->addWidget(widget_container, 0, 0, 3, 1);
-	box_layout->addWidget(table_button, 1, 1);
-	box_layout->addWidget(currency_button, 2, 1);
+	box_layout->addWidget(currency_button, 1, 1);
+	box_layout->addWidget(table_button, 2, 1);
 	box_layout->setColumnMinimumWidth(1, table_button->width());
+	box_layout->setRowMinimumHeight(2, currency_button->height());
 
 	main_layout->addLayout(box_layout, 1);
 	connect(currency_button, SIGNAL(clicked()), SLOT(toggleCurrency()));
