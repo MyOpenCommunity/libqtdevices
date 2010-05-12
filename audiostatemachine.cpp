@@ -269,11 +269,11 @@ void AudioStateMachine::setVolume(int value)
 	Q_ASSERT_X(value >= VOLUME_MIN && value <= VOLUME_MAX, "AudioStateMachine::setVolume",
 		"Volume value out of range!");
 
-	if (int audio_path = bt_global::audio_states->current_audio_path)
-	{
-		volumes[audio_path] = value;
-		changeVolumePath(static_cast<Volumes::Type>(audio_path));
-	}
+	int audio_path = bt_global::audio_states->current_audio_path;
+
+	Q_ASSERT_X(audio_path != -1, "AudioStateMachine::setVolume", "setVolume called without set an audio path!");
+	volumes[audio_path] = value;
+	changeVolumePath(static_cast<Volumes::Type>(audio_path));
 	volumes_timer->start();
 }
 
