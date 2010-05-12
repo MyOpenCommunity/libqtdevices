@@ -199,7 +199,7 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	{
 	case CALL:
 	{
-		Q_ASSERT_X(msg.whatSubArgCnt() < 2, "EntryphoneDevice::manageFrame",
+		Q_ASSERT_X(msg.whatSubArgCnt() < 2, "EntryphoneDevice::parseFrame",
 			"Incomplete open frame received");
 		kind = msg.whatArgN(0);
 		mmtype = msg.whatArgN(1);
@@ -260,7 +260,7 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	{
 		caller_address = QString::fromStdString(msg.whereFull());
 
-		Q_ASSERT_X(msg.whatSubArgCnt() < 2, "EntryphoneDevice::manageFrame",
+		Q_ASSERT_X(msg.whatSubArgCnt() < 2, "EntryphoneDevice::parseFrame",
 			"Incomplete open frame received");
 		kind = msg.whatArgN(0);
 		mmtype = msg.whatArgN(1);

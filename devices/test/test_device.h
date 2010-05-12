@@ -26,6 +26,7 @@
 
 class OpenServerMock;
 class Client;
+class device;
 
 /**
  * Sleep function that runs an event loop.
@@ -54,6 +55,7 @@ protected:
 	Client *client_request;
 	Client *client_monitor;
 	void cleanBuffers();
+	void flushCompressedFrames(device *dev);
 };
 
 

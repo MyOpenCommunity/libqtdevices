@@ -125,6 +125,43 @@ void TestSourceDevice::testActiveAreas()
 	QCOMPARE(dev->isActive(area), false);
 }
 
+void TestSourceDevice::testActiveAreas2()
+{
+	QString other_id = "2";
+	SourceDevice *other = new SourceDevice(other_id);
+
+	QString area = "5", area2 = "6";
+	QCOMPARE(dev->isActive(area), false);
+	QCOMPARE(other->isActive(area2), false);
+
+	OpenMsg frame_on(qPrintable(QString("*22*2#4#%1*5#2#%2##").arg(area).arg(source_id)));
+	dev->manageFrame(frame_on);
+
+	OpenMsg frame_on2(qPrintable(QString("*22*2#4#%1*5#2#%2##").arg(area2).arg(other_id)));
+	other->manageFrame(frame_on2);
+
+	QCOMPARE(dev->isActive(area), true);
+	QCOMPARE(other->isActive(area2), true);
+
+	// turning on a source in area 6 turns off active sources in that area
+	OpenMsg frame_areas(qPrintable(QString("*#22*5#2#%1*13*0*0*0*0*0*0*1*0*0*0*0*0*0*0*0*1##").arg(source_id)));
+	dev->manageFrame(frame_areas);
+	other->manageFrame(frame_areas);
+	QCOMPARE(dev->isActive(area), false);
+	QCOMPARE(dev->isActive(area2), true);
+	QCOMPARE(dev->isActive("15"), true);
+	QCOMPARE(other->isActive(area2), false);
+
+	// turning on a source in area 6 turns off active sources in that area
+	OpenMsg frame_on3(qPrintable(QString("*22*2#4#%1*5#2#%2##").arg(area2).arg(other_id)));
+	dev->manageFrame(frame_on3);
+	other->manageFrame(frame_on3);
+	QCOMPARE(dev->isActive(area), false);
+	QCOMPARE(dev->isActive(area2), false);
+	QCOMPARE(dev->isActive("15"), true);
+	QCOMPARE(other->isActive(area2), true);
+}
+
 void TestSourceDevice::testCrash()
 {
 	OpenMsg frame_request_freq(qPrintable(QString("*#22*2#%1*5##").arg(source_id)));
@@ -242,6 +279,16 @@ void TestVirtualSourceDevice::initVirtualSource(VirtualSourceDevice *d)
 void TestVirtualSourceDevice::cleanupTestCase()
 {
 	delete dev;
+}
+
+void TestVirtualSourceDevice::sendNextTrack()
+{
+	// only emits a signal
+}
+
+void TestVirtualSourceDevice::sendPrevTrack()
+{
+	// only emits a signal
 }
 
 void TestVirtualSourceDevice::receiveNextTrack()

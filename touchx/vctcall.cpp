@@ -219,6 +219,7 @@ VCTCall::VCTCall(EntryphoneDevice *d, FormatVideo f)
 	connect(call_accept, SIGNAL(clicked()), SLOT(toggleCall()));
 
 	volume = new ItemTuning("", bt_global::skin->getImage("volume"));
+	volume->disable();
 	connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
 
 	mute_icon = bt_global::skin->getImage("mute");
@@ -308,6 +309,7 @@ void VCTCall::toggleCall()
 			resumeVideo();
 		dev->answerCall();
 		bt_global::audio_states->toState(AudioStates::SCS_VIDEO_CALL);
+		volume->enable();
 	}
 	else
 		handleClose();
@@ -412,7 +414,10 @@ void VCTCall::endCall()
 
 	// if connected, exit from the videocall state
 	if (call_status->connected)
+	{
 		bt_global::audio_states->exitCurrentState();
+		volume->disable();
+	}
 	dev->endCall();
 	stopVideo();
 }
