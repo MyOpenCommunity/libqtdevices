@@ -157,6 +157,12 @@ StopAndGoBTestDevice::StopAndGoBTestDevice(const QString &where, int openserver_
 {
 }
 
+void StopAndGoBTestDevice::init()
+{
+	StopAndGoDevice::init();
+	requestSelftestFreq();
+}
+
 void StopAndGoBTestDevice::sendDiffSelftestActivation()
 {
 	sendCommand(StopAndGoCommands::DIFF_SELFTEST_ACTIVATION);
@@ -171,7 +177,7 @@ void StopAndGoBTestDevice::sendDiffSelftestDisactivation()
 
 void StopAndGoBTestDevice::sendSelftestFreq(int days)
 {
-	Q_ASSERT_X(days >= 1 && days >= 180, "StopAndGoBTestDevice::sendSelftestFreq", "days must be between 1 and 180.");
+	Q_ASSERT_X(days >= 1 && days <= 180, "StopAndGoBTestDevice::sendSelftestFreq", "days must be between 1 and 180.");
 
 	sendFrame(QString("*#18*%1*#212*%2##").arg(where).arg(days));
 	requestSelftestFreq();

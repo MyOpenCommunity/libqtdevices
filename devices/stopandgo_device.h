@@ -91,11 +91,13 @@ public:
 
 	explicit StopAndGoBTestDevice(const QString &where, int openserver_id = 0);
 
+	virtual void init();
+
 	void sendDiffSelftestActivation();
 	void sendDiffSelftestDisactivation();
-	void sendSelftestFreq(int days);
 
 public slots:
+	void sendSelftestFreq(int days);
 	void requestSelftestFreq();
 
 protected:

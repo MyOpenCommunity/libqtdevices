@@ -27,6 +27,7 @@
 
 class QWidget;
 class QLabel;
+class QLCDNumber;
 class BtButton;
 class TextOnImageLabel;
 class StateButton;
@@ -316,5 +317,47 @@ protected:
 private:
 	QLabel *text;
 };
+
+
+/**
+ * Banner with a central LCD and two lateral buttons to change the value.
+ *
+ * This banner sends the signal valueChanged() after the user has stoped to use the controls.
+ */
+class BannLCDRange : public BannerNew
+{
+Q_OBJECT
+public:
+	BannLCDRange(QWidget *parent = 0);
+
+	void setRange(int minimum, int maximum);
+
+	void setValue(int value);
+	int value() const;
+
+	void setNumDigits(int n);
+
+protected:
+	void initBanner();
+
+signals:
+	void valueChanged(int value);
+
+private slots:
+	void plusClicked();
+	void minusClicked();
+	void emitValueChanged();
+
+private:
+	void startTimer();
+
+	QTimer *control_timer;
+	QLCDNumber *lcd;
+	BtButton *minus;
+	BtButton *plus;
+	int min;
+	int max;
+};
+
 
 #endif // BANN2_BUTTONS_H

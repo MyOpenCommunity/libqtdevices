@@ -101,8 +101,16 @@ Q_OBJECT
 public:
 	StopAndGoBTestPage(const QString &title, StopAndGoBTestDevice *device);
 
+private slots:
+	void valueReceived(const DeviceValues &values_list);
+	void switchAutoReset();
+	void switchAutoTest();
+
 private:
 	StopAndGoBTestDevice *dev;
+	StateButton *autoreset_button;
+	StateButton *autotest_button;
+	BannLCDRange *autotest_banner;
 };
 
 #endif
