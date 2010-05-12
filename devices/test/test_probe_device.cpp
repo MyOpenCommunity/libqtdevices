@@ -104,6 +104,7 @@ void TestControlledProbeDevice::cleanupTestCase()
 void TestControlledProbeDevice::sendSetManual()
 {
 	dev->setManual(250);
+	flushCompressedFrames(dev);
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*#4*#23#1*#14*0250*3##"));
 }

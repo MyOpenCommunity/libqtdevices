@@ -64,6 +64,8 @@ protected:
 	QSet<QString> active_areas;
 
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+	// parse status updates for other devices to update the list of areas this device is active on
+	virtual bool parseFrameOtherDevices(OpenMsg &msg, DeviceValues &values_list);
 
 private slots:
 	void requestActiveAreas() const;
