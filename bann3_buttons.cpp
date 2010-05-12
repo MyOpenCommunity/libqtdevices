@@ -90,10 +90,10 @@ Bann3ButtonsLabel::Bann3ButtonsLabel(QWidget *parent) :
 	QGridLayout *l = new QGridLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
-	l->addWidget(left_button, 0, 0);
+	l->addWidget(left_button, 0, 0, Qt::AlignLeft);
 	l->addWidget(center_button, 0, 1);
 	l->addWidget(center_label, 0, 1);
-	l->addWidget(right_button, 0, 2);
+	l->addWidget(right_button, 0, 2, Qt::AlignRight);
 	l->addWidget(text, 1, 0, 1, 3);
 }
 

@@ -306,12 +306,12 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<!-- Energy management link -->
 		<cid>15</cid>
-		<img_link_icon>energia/energia.png</img_link_icon>
+		<img_link_icon>home/energymenagement.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/energymenagement.png</img_top_navigation_button>
 	</item>
 	<item>
 		<cid>18</cid>
-		<img_link_icon>energia/carichi.png</img_link_icon>
+		<img_link_icon>home/apploadmanagement.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/carichi.png</img_top_navigation_button>
 	</item>
 	<item>
@@ -412,12 +412,12 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<!-- settings -->
 		<cid>14000</cid>
 		<img_videodoorentry>setup/videocitofonia.png</img_videodoorentry>
-		<img_handsfree_on>setup/beepon.png</img_handsfree_on>
-		<img_handsfree_off>setup/beepoff.png</img_handsfree_off>
-		<img_profstudio_on>setup/beepon.png</img_profstudio_on>
-		<img_profstudio_off>setup/beepoff.png</img_profstudio_off>
-		<img_tray_handsfree>home/statoportaoff.png</img_tray_handsfree>
-		<img_tray_profstudio>home/statoportaon.png</img_tray_profstudio>
+		<img_handsfree_on>setup/manilibere.png</img_handsfree_on>
+		<img_handsfree_off>setup/maniliberedis.png</img_handsfree_off>
+		<img_profstudio_on>setup/studioprofessionale.png</img_profstudio_on>
+		<img_profstudio_off>setup/studioprofessionaledis.png</img_profstudio_off>
+		<img_tray_handsfree>home/maniliberes.png</img_tray_handsfree>
+		<img_tray_profstudio>home/studioprofessionales.png</img_tray_profstudio>
 	</item>
 	<!-- Multimedia page links -->
 	<item>
@@ -918,14 +918,14 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>3014</cid>
 		<img_scroll_down>automazione/arrdw.png</img_scroll_down>
 		<img_scroll_up>automazione/arrup.png</img_scroll_up>
-		<img_stop>automazione/stopauto.png</img_stop>
+		<img_stop>automazione/stopbig.png</img_stop>
 	</item>
 	<item>
 		<!-- light group in automation -->
 		<cid>3013</cid>
 		<img_off>illuminazione/off.png</img_off>
 		<img_on>illuminazione/on.png</img_on>
-		<img_lamp_group_on>illuminazione/imglampgrpon.png</img_lamp_group_on>
+		<img_lamp_group_on>automazione/imgillumgrpon.png</img_lamp_group_on>
 	</item>
 	<!-- lighting banners -->
 	<item>
@@ -973,8 +973,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_on>illuminazione/on.png</img_on>
 		<img_off>illuminazione/off.png</img_off>
 		<!-- TODO wrong icons! Touch 10 has a single central icon -->
-		<img_dimmer_grp_sx>illuminazione/ondimmersxl0.png</img_dimmer_grp_sx>
-		<img_dimmer_grp_dx>illuminazione/ondimmerdxl0.png</img_dimmer_grp_dx>
+		<img_dimmer_grp_sx>illuminazione/groupdimmer100sxoff.png</img_dimmer_grp_sx>
+		<img_dimmer_grp_dx>illuminazione/groupdimmer100dxoff.png</img_dimmer_grp_dx>
 	</item>
 	<item>
 		<!-- staircase light -->
@@ -1161,24 +1161,24 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<!-- air conditioning (cid may change) -->
 	<item>
 		<cid>4000</cid>
-		<img_central_icon>termoregolazione/aircond.png</img_central_icon>
+		<img_central_icon>termoregolazione/airconditioning.png</img_central_icon>
 		<img_ok>termoregolazione/ok.png</img_ok>
 		<img_off>termoregolazione/off.png</img_off>
-		<img_air_general>termoregolazione/aircondgen.png</img_air_general>
-		<img_air_single>termoregolazione/aircond.png</img_air_single>
+		<img_air_general>termoregolazione/customairconditioning.png</img_air_general>
+		<img_air_single>termoregolazione/airconditioning.png</img_air_single>
 		<img_air_single_temp>termoregolazione/backtemperatura.png</img_air_single_temp>
-		<img_split_cmd>energia/edit.png</img_split_cmd>
-		<img_split_settings>energia/edit.png</img_split_settings>
-		<img_custom_button>termoregolazione/aircondcust.png</img_custom_button>
-		<img_cycle_mode>termoregolazione/ciclamod.png</img_cycle_mode>
-		<img_cycle_speed>termoregolazione/ciclafancoil.png</img_cycle_speed>
+		<img_split_cmd>termoregolazione/edit.png</img_split_cmd>
+		<img_split_settings>termoregolazione/edit.png</img_split_settings>
+		<img_custom_button>termoregolazione/customairconditioning.png</img_custom_button>
+		<img_cycle_mode>termoregolazione/btnciclamod.png</img_cycle_mode>
+		<img_cycle_speed>termoregolazione/btnciclafancoil.png</img_cycle_speed>
 		<img_swing_on>termoregolazione/on.png</img_swing_on>
 		<img_swing_off>termoregolazione/off.png</img_swing_off>
 		<img_swing_on_checked>termoregolazione/autoon.png</img_swing_on_checked> <!-- WRONG ICON -->
 		<img_swing_off_checked>termoregolazione/statocentraleoff.png</img_swing_off_checked>
 		<img_split_cmd>termoregolazione/on.png</img_split_cmd>
-		<img_plus_disabled>termoregolazione/piudis.png</img_plus_disabled>
-		<img_minus_disabled>termoregolazione/menodis.png</img_minus_disabled>
+		<img_plus_disabled>termoregolazione/piup.png</img_plus_disabled>
+		<img_minus_disabled>termoregolazione/menop.png</img_minus_disabled>
 		<img_setstate_error>termoregolazione/airconditioning_error.png</img_setstate_error>
 	</item>
 	<!-- scenario menu banners -->
@@ -1356,7 +1356,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_cost_water>energia/water.png</img_cost_water>
 		<img_cost_dhw>energia/dhw.png</img_cost_dhw>
 		<img_cost_gas>energia/gas.png</img_cost_gas>
-		<img_cost_conditioning>energia/liquifiedgas.png</img_cost_conditioning>
+		<img_cost_conditioning>energia/heating_cooling.png</img_cost_conditioning>
 		<img_empty>energia/backenergy.png</img_empty>
 	</item>
 	<item>
@@ -1370,7 +1370,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_cost_water>energia/water.png</img_cost_water>
 		<img_cost_dhw>energia/dhw.png</img_cost_dhw>
 		<img_cost_gas>energia/gas.png</img_cost_gas>
-		<img_cost_conditioning>energia/liquifiedgas.png</img_cost_conditioning>
+		<img_cost_conditioning>energia/heating_cooling.png</img_cost_conditioning>
 	</item>
 	<item>
 		<!-- Energy data: link electricity -->
@@ -1395,17 +1395,17 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<!-- Energy data: link heating/cooling -->
 		<cid>7005</cid>
-		<img_energy_type>energia/liquifiedgas.png</img_energy_type>
+		<img_energy_type>energia/heating_cooling.png</img_energy_type>
 	</item>
 	<item>
 		<!-- Energy data: link custom -->
 		<cid>7006</cid>
-		<img_energy_type>energia/liquifiedgas.png</img_energy_type>
+		<img_energy_type>energia/energydata_custom.png</img_energy_type>
 	</item>
 	<item>
 		<!-- Load Management -->
 		<cid>18</cid>
-		<img_link_icon>home/carichi.png</img_link_icon>
+		<img_link_icon>home/apploadmanagement.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/carichi.png</img_top_navigation_button>
 	</item>
 	<item>
@@ -1415,7 +1415,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		Leaks img_cost_elettricity and img_cost_water
 		-->
 		<cid>18000</cid>
-		<img_link_icon>home/energy.png</img_link_icon>
+		<img_link_icon>home/apploadmanagement.png</img_link_icon>
 		<img_currency_exchange>energia/valutaset.png</img_currency_exchange>
 		<img_cost_electricity>energia/electricity.png</img_cost_electricity>
 		<img_cost_water>energia/water.png</img_cost_water>
@@ -1427,11 +1427,11 @@ MessagePage QLabel#Text { background-color: #000000; }
 		Leaks img_reset and img_empty_background
 		-->
 		<cid>18001</cid>
-		<img_load>energia/backenergy.png</img_load>
+		<img_load>loadmanagement/loadmanagement.png</img_load>
 		<img_empty_background>energia/backenergy.png</img_empty_background>
 		<img_on>carichi/on.png</img_on>
-		<img_not_forced>carichi/on.png</img_not_forced>
-		<img_forced>carichi/ondis.png</img_forced>
+		<img_not_forced>loadmanagement/btnloadmanab.png</img_not_forced>
+		<img_forced>loadmanagement/btnloadmandis.png</img_forced>
 		<img_reset>messaggi/eliminatutti.png</img_reset>
 	</item>
 	<item>
@@ -1441,7 +1441,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		Leaks img_reset and img_empty_background
 		-->
 		<cid>18002</cid>
-		<img_load>energia/backenergy.png</img_load>
+		<img_load>loadmanagement/loadmanagement.png</img_load>
 		<img_empty_background>energia/backenergy.png</img_empty_background>
 		<img_reset>messaggi/eliminatutti.png</img_reset>
 	</item>
@@ -1450,15 +1450,15 @@ MessagePage QLabel#Text { background-color: #000000; }
 		Stop & Go
 		-->
 		<cid>6001</cid>
-		<img_center_icon>energia/backenergy.png</img_center_icon>
+		<img_center_icon>supervisioneimpianto/sng_chiuso.png</img_center_icon>
 	</item>
 	<item>
 		<!--
 		Load diagnostic
 		-->
 		<cid>6002</cid>
-		<img_center_icon>energia/backenergy.png</img_center_icon>
-		<img_state_icon>antintrusione/imgamb.png</img_state_icon>
+		<img_center_icon>supervisioneimpianto/loadmanagement.png</img_center_icon>
+		<img_state_icon>supervisioneimpianto/load.png</img_state_icon>
 	</item>
 	<item>
 		<!--
@@ -1484,8 +1484,6 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_forward>supervisioneimpianto/vai.png</img_forward>
 		<img_open>supervisioneimpianto/on.png</img_open>
 		<img_close>supervisioneimpianto/off.png</img_close>
-		<img_tracking_enabled>supervisioneimpianto/verificaimpiantoon.png</img_tracking_enabled>
-		<img_tracking_disabled>supervisioneimpianto/verificaimpiantooff.png</img_tracking_disabled>
 		<img_autocheck_enabled>supervisioneimpianto/autoteston.png</img_autocheck_enabled>
 		<img_autocheck_disabled>supervisioneimpianto/autotestoff.png</img_autocheck_disabled>
 	</item>

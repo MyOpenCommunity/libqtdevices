@@ -241,28 +241,48 @@ banner *LoadManagement::getBanner(const QDomNode &item_node)
 
 ConfirmationPage::ConfirmationPage(const QString &text)
 {
+	QWidget *content = NULL;
+	QLabel *label = new QLabel(text);
+
+#ifdef LAYOUT_BTOUCH
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(cancel()));
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(accept()));
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
+
+	content = label;
+#else
+	NavigationBar *nav_bar = new NavigationBar;
+	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
+
+	connect(ok, SIGNAL(clicked()), SIGNAL(accept()));
+	connect(ok, SIGNAL(clicked()), SIGNAL(Closed()));
+
+	label->setAlignment(Qt::AlignHCenter);
+	content = new QWidget;
+	QGridLayout *l = new QGridLayout(content);
+	l->setContentsMargins(5, 5, 25, 47);
+	l->setColumnStretch(0, 1);
+
+	l->addWidget(label, 0, 0);
+	l->addWidget(ok, 1, 1);
+#endif
+
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(cancel()));
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	nav_bar->displayScrollButtons(false);
 
-	QLabel *content = new QLabel(text);
-	content->setFont(bt_global::font->get(FontManager::SUBTITLE));
-	content->setWordWrap(true);
+	label->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	label->setWordWrap(true);
+	label->setIndent(5);
 
-	QVBoxLayout *main = new QVBoxLayout(this);
-	main->setContentsMargins(0, 5, 0, 10);
-	main->setSpacing(0);
-	main->addWidget(content, 1);
-	main->addWidget(nav_bar);
+	buildPage(content, nav_bar, QString());
 }
 
 #define FIRST_PERIOD 0
 #define SECOND_PERIOD 1
 
-LoadDataContent::LoadDataContent(int dec, int _rate_id)
+LoadDataContent::LoadDataContent(int _currency_decimals, int _rate_id)
 {
 	current_consumption = new QLabel;
 	current_consumption->setText("---");
@@ -283,11 +303,16 @@ LoadDataContent::LoadDataContent(int dec, int _rate_id)
 	connect(second_period, SIGNAL(rightClicked()), &mapper, SLOT(map()));
 	mapper.setMapping(second_period, SECOND_PERIOD);
 
+#ifdef LAYOUT_TOUCHX
+	first_period->layout()->setSpacing(5);
+	second_period->layout()->setSpacing(5);
+#endif
+
 	connect(&mapper, SIGNAL(mapped(int)), SIGNAL(resetActuator(int)));
 
 	QVBoxLayout *main = new QVBoxLayout(this);
 	main->setContentsMargins(0, 0, 0, 0);
-	main->setSpacing(0);
+	main->setSpacing(5);
 	main->addWidget(current_consumption, 0, Qt::AlignHCenter);
 	main->addWidget(first_period);
 	main->addWidget(second_period);
@@ -297,7 +322,7 @@ LoadDataContent::LoadDataContent(int dec, int _rate_id)
 	rate = EnergyRates::energy_rates.getRate(rate_id);
 	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
 	is_currency = false;
-	decimals = dec;
+	currency_decimals = _currency_decimals;
 }
 
 void LoadDataContent::updatePeriodDate(int period, const QDate &date, const BtTime &time)
@@ -357,6 +382,7 @@ void LoadDataContent::updateValues()
 	float current = EnergyConversions::convertToRawData(current_value, EnergyConversions::ELECTRICITY);
 	float period1 = EnergyConversions::convertToRawData(first_period_value, EnergyConversions::ELECTRICITY);
 	float period2 = EnergyConversions::convertToRawData(second_period_value, EnergyConversions::ELECTRICITY);
+	float current_kw = current; // to compute the cost
 	int dec_current;
 	QString unit_current;
 	int dec = 3; // use always 3 decimals for the value
@@ -377,10 +403,10 @@ void LoadDataContent::updateValues()
 
 	if (is_currency)
 	{
-		current = EnergyConversions::convertToMoney(current, rate.rate);
+		current = EnergyConversions::convertToMoney(current_kw, rate.rate);
 		period1 = EnergyConversions::convertToMoney(period1, rate.rate);
 		period2 = EnergyConversions::convertToMoney(period2, rate.rate);
-		dec = rate.display_decimals;
+		dec = currency_decimals;
 		unit_current = unit_period = rate.currency_symbol;
 	}
 
@@ -436,7 +462,11 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 #else
 	QWidget *container = new QWidget;
 	QVBoxLayout *vlayout = new QVBoxLayout;
+#ifdef LAYOUT_BTOUCH
 	vlayout->addWidget(content, 2);
+#else
+	vlayout->addWidget(content, 2, Qt::AlignHCenter);
+#endif
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
 	buttons_layout->addStretch(2);

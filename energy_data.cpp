@@ -40,9 +40,31 @@
 #include <QDebug>
 #include <QVBoxLayout>
 
-// The language used for the floating point number
-static QLocale loc(QLocale::Italian);
+namespace
+{
+	bool tryConvert(const QDomNode &n, const QString &node_path, int *value)
+	{
+		Q_ASSERT_X(value, "tryConvert", "value must be a valid pointer!");
+		QDomElement e = getElement(n, node_path);
+		bool ok;
+		*value = e.text().toInt(&ok);
+		if (!ok)
+			qDebug() << "tryConvert failed converting node: " << node_path << "Text was: " << e.text();
+		return ok;
+	}
 
+	int getDecimals(const QDomNode &n)
+	{
+		int tmp;
+		if (tryConvert(n, "rate/n_decimal_view", &tmp))
+			return tmp;
+		else
+			return 0;
+	}
+
+	// The language used for the floating point number
+	static QLocale loc(QLocale::Italian);
+}
 
 EnergyData::EnergyData(const QDomNode &config_node)
 {
@@ -104,13 +126,30 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 	// display the button to edit rates if more than one family
 	if (edit_rates && EnergyRates::energy_rates.hasRates() && families.count() > 1)
 	{
-		NavigationBar *nav = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
-		buildPage(new BannerContent, nav);
-
 		Page *costs = new EnergyCost;
+
+#ifdef LAYOUT_BTOUCH
+		NavigationBar *nav = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
+		buildPage(new BannerContent, nav, getTextChild(config_node, "descr"));
 
 		connect(this, SIGNAL(forwardClick()), costs, SLOT(showPage()));
 		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
+#else
+		QWidget *main = new QWidget;
+		QVBoxLayout *l = new QVBoxLayout(main);
+		l->setContentsMargins(5, 5, 25, 47);
+
+		BannerContent *content = new BannerContent;
+		BtButton *edit_costs = new BtButton(bt_global::skin->getImage("currency_exchange"));
+
+		l->addWidget(content, 1);
+		l->addWidget(edit_costs, 0, Qt::AlignRight);
+
+		buildPage(main, content, new NavigationBar, getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT);
+
+		connect(edit_costs, SIGNAL(clicked()), costs, SLOT(showPage()));
+		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
+#endif
 	}
 	else
 		buildPage(getTextChild(config_node, "descr"));
@@ -333,11 +372,12 @@ void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_
 		QString where = getTextChild(item, "where");
 #endif
 		int rate_id = is_currency_enabled ? getElement(item, "rate/rate_id").text().toInt() : EnergyRates::INVALID_RATE;
+		int decimals = getDecimals(item);
 
 		// check if any of the interfaces have currency enabled
 		show_currency_button |= is_currency_enabled;
 
-		next_page = new EnergyView(measure, energy_type, where, mode, rate_id, table, graph);
+		next_page = new EnergyView(measure, energy_type, where, mode, rate_id, decimals, table, graph);
 
 		EnergyDevice *dev = bt_global::add_device_to_cache(new EnergyDevice(where, mode));
 
@@ -399,8 +439,8 @@ void EnergyInterface::updateBanners()
 
 void EnergyInterface::showPage()
 {
-	// restore visualization of raw data if we aren't enabled
-	if (isCurrencyView() && !is_any_interface_enabled)
+	// restore visualization of raw data
+	if (isCurrencyView())
 		toggleCurrencyView();
 
 	updateBanners();
