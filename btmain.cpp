@@ -644,7 +644,7 @@ void BtMain::checkScreensaver()
 		(target_screensaver == ScreenSaver::NONE && bt_global::display->currentState() == DISPLAY_FREEZED)))
 	{
 		qDebug() << "Turning screen off";
-		if (screensaver)
+		if (screensaver && screensaver->isRunning())
 			screensaver->stop();
 		bt_global::display->setState(DISPLAY_OFF);
 	}
