@@ -281,6 +281,16 @@ void TestVirtualSourceDevice::cleanupTestCase()
 	delete dev;
 }
 
+void TestVirtualSourceDevice::sendNextTrack()
+{
+	// only emits a signal
+}
+
+void TestVirtualSourceDevice::sendPrevTrack()
+{
+	// only emits a signal
+}
+
 void TestVirtualSourceDevice::receiveNextTrack()
 {
 	DeviceTester t(dev, VirtualSourceDevice::REQ_NEXT_TRACK);

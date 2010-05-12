@@ -103,6 +103,9 @@ private slots:
 	void initTestCase();
 	void cleanupTestCase();
 
+	void sendPrevTrack();
+	void sendNextTrack();
+
 	void receiveNextTrack();
 	void receivePrevTrack();
 	void receiveSourceOn();
