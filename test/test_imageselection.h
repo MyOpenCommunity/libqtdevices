@@ -53,6 +53,9 @@ private slots:
 
 	void testCompactDirectory();
 
+	// file empty
+	void testFileEmpty();
+
 private:
 	ImageSelectionHandler *image_handler;
 	QStringList images;

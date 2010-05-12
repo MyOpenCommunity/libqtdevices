@@ -83,6 +83,9 @@ ImageIterator::ImageIterator(const QString &file_path)
 
 QString ImageIterator::next()
 {
+	if (paths.isEmpty())
+		return QString();
+
 	if (dir_iter)
 	{
 		if (dir_iter->hasNext())
@@ -99,6 +102,7 @@ QString ImageIterator::next()
 		list_iter->toFront();
 
 	QString path = list_iter->next();
+
 	QFileInfo fi(path);
 	if (fi.exists())
 	{
@@ -113,6 +117,7 @@ QString ImageIterator::next()
 	// remove elements not found
 	else
 		list_iter->remove();
+
 	return QString();
 }
 

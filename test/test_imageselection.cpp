@@ -153,3 +153,17 @@ void TestImageSelection::testCompactDirectory()
 	QCOMPARE(image_handler->isItemSelected(QFileInfo("disk/img").absoluteFilePath()), true);
 	delete image_handler;
 }
+
+void TestImageSelection::testFileEmpty()
+{
+	QTemporaryFile empty_file("./temp_slideshowXXXXXX.txt");
+
+	QVERIFY(empty_file.open());
+
+	ImageIterator *iter = new ImageIterator(empty_file.fileName());
+
+	for (int i = 0; i < 5; i++)
+		QCOMPARE(iter->next(), QString());
+
+	delete iter;
+}

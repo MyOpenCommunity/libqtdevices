@@ -362,8 +362,12 @@ void ScreenSaverSlideshow::stop()
 {
 	blending_timeline.stop();
 	ScreenSaver::stop();
-	iter->saveImagesToFile();
-	delete iter;
+	if (iter)
+	{
+		iter->saveImagesToFile();
+		delete iter;
+		iter = 0;
+	}
 }
 
 void ScreenSaverSlideshow::refresh()
