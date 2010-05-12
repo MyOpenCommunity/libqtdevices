@@ -40,8 +40,8 @@ namespace EnergyConversions
 		OTHER_ENERGY,              // conversion for other current energy value
 	};
 
-	float convertToRawData(unsigned int bt_bus_data, EnergyTypology type);
-	float convertToMoney(float raw_data, float money_factor);
+	double convertToRawData(qint64 bt_bus_data, EnergyTypology type);
+	double convertToMoney(double raw_data, float money_factor);
 }
 
 
@@ -238,7 +238,7 @@ Q_DECLARE_METATYPE(GraphData)
 // QPair as a type known to QMetaType. We have also define a typedef
 // to avoid the limitation of the macro, that cannot handle correctly commas
 // inside its arguments.
-typedef QPair<QDate, unsigned int> EnergyValue;
+typedef QPair<QDate, qint64> EnergyValue;
 Q_DECLARE_METATYPE(EnergyValue);
 
 #endif // ENERGY_DEVICE_H

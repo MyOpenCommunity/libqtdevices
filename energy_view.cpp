@@ -804,13 +804,13 @@ void EnergyView::toggleCurrency()
 	updateCurrentGraph();
 }
 
-void EnergyView::updateBanner(Bann2Buttons *banner, unsigned int value, int dec, QString symbol)
+void EnergyView::updateBanner(Bann2Buttons *banner, qint64 value, int dec, QString symbol)
 {
 	if (value == INVALID_VALUE)
 		banner->setCentralText("---");
 	else
 	{
-		float displayed_val = EnergyConversions::convertToRawData(value,
+		double displayed_val = EnergyConversions::convertToRawData(value,
 			is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
 
 		if (EnergyInterface::isCurrencyView())

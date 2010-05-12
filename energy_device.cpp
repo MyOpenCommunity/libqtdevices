@@ -512,7 +512,7 @@ void EnergyDevice::frame_rx_handler(char *frame)
 		}
 		else
 		{
-			unsigned int val = msg.whatArg(0) == "4294967295" ? 0 : whatArgU(msg, 0);
+			qint64 val = msg.whatArg(0) == "4294967295" ? 0 : whatArgU(msg, 0);
 			v.setValue(EnergyValue(getDateFromFrame(msg), val));
 		}
 
@@ -669,7 +669,7 @@ void EnergyDevice::fillYearGraphData(StatusList &status_list, OpenMsg &msg)
 
 void EnergyDevice::fillYearTotalData(StatusList &status_list, OpenMsg &msg)
 {
-	unsigned int total = 0;
+	qint64 total = 0;
 	for (int i = 1; i < 13; ++i)
 		total += buffer_year_data.value(i);
 
@@ -858,7 +858,7 @@ QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)
 	return QDate::currentDate();
 }
 
-float EnergyConversions::convertToRawData(unsigned int bt_bus_data, EnergyConversions::EnergyTypology type)
+double EnergyConversions::convertToRawData(qint64 bt_bus_data, EnergyConversions::EnergyTypology type)
 {
 	float factor;
 	switch (type)
@@ -876,7 +876,7 @@ float EnergyConversions::convertToRawData(unsigned int bt_bus_data, EnergyConver
 	return bt_bus_data / factor;
 }
 
-float EnergyConversions::convertToMoney(float raw_data, float money_factor)
+double EnergyConversions::convertToMoney(double raw_data, float money_factor)
 {
 	return raw_data * money_factor;
 }
