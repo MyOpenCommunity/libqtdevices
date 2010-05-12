@@ -122,7 +122,7 @@ private:
 
 	QWidget *buildBannerWidget();
 	GraphData *saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t);
-	QMap<int, float> convertGraphData(GraphData *gd);
+	QMap<int, double> convertGraphData(GraphData *gd);
 	void setBannerPage(int status, const QDate &selection_date);
 	QString dateToKey(const QDate &date, EnergyDevice::GraphType t);
 	void updateBanners();
