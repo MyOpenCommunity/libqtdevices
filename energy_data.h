@@ -114,12 +114,11 @@ public slots:
 	void toggleCurrency();
 
 private:
-	void loadItems(const QDomNode &config_node, NavigationBar *nav_bar);
+	bool loadItems(const QDomNode &config_node);
 	bool checkTypeForCurrency(const QString &type, const QDomNode &conf);
 	void updateBanners();
 	EnergyView *next_page;
 	QList<EnergyView*> views;
-	bool is_any_interface_enabled;
 	static bool is_currency_view;
 };
 

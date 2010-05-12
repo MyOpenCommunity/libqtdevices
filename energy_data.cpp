@@ -322,9 +322,10 @@ bool EnergyInterface::is_currency_view = false;
 
 EnergyInterface::EnergyInterface(const QDomNode &config_node, bool edit_rates, bool parent_skipped)
 {
-	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
-	buildPage(new BannerContent, nav_bar);
+	BtButton *edit_costs = 0;
 
+#ifdef LAYOUT_BTOUCH
+	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 	if (edit_rates && EnergyRates::energy_rates.hasRates())
 	{
 		Page *costs = new EnergyCost;
@@ -335,8 +336,31 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node, bool edit_rates, b
 	else
 		nav_bar->forward_button->setVisible(false);
 
-	is_any_interface_enabled = false;
-	loadItems(config_node, nav_bar);
+	edit_costs = nav_bar->forward_button;
+	buildPage(new BannerContent, nav_bar);
+
+#else
+	QWidget *main = new QWidget;
+	QVBoxLayout *l = new QVBoxLayout(main);
+	l->setContentsMargins(5, 5, 25, 47);
+
+	BannerContent *content = new BannerContent;
+	l->addWidget(content, 1);
+
+	if (edit_rates && EnergyRates::energy_rates.hasRates())
+	{
+		Page *costs = new EnergyCost;
+		edit_costs = new BtButton(bt_global::skin->getImage("currency_exchange"));
+		l->addWidget(edit_costs, 0, Qt::AlignRight);
+		connect(edit_costs, SIGNAL(clicked()), costs, SLOT(showPage()));
+		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
+	}
+	buildPage(main, content, new NavigationBar, getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT);
+#endif
+
+	bool show_currency_button = loadItems(config_node);
+	if (edit_costs)
+		edit_costs->setVisible(show_currency_button);
 
 	// only skip page if parent was not skipped
 	if (parent_skipped)
@@ -345,11 +369,11 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node, bool edit_rates, b
 		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
-void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_bar)
+bool EnergyInterface::loadItems(const QDomNode &config_node)
 {
 	Q_ASSERT_X(bt_global::skin->hasContext() , "EnergyInterface::loadItems", "Skin context not set!");
 	QString energy_type = getTextChild(config_node, "descr");
-	bool show_currency_button = false;
+	bool is_any_interface_enabled = false;
 	// IMPORTANT: the table instance is shared between all energy interfaces: any
 	// signals must be disconnected and reconnected when the interface page is shown
 	EnergyTable *table = new EnergyTable(3);
@@ -375,7 +399,7 @@ void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_
 		int decimals = getDecimals(item);
 
 		// check if any of the interfaces have currency enabled
-		show_currency_button |= is_currency_enabled;
+		is_any_interface_enabled |= is_currency_enabled;
 
 		next_page = new EnergyView(measure, energy_type, where, mode, rate_id, decimals, table, graph);
 
@@ -391,12 +415,10 @@ void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_
 		page_content->appendBanner(b);
 	}
 
-	nav_bar->forward_button->setVisible(show_currency_button);
-	if (show_currency_button)
-		is_any_interface_enabled = show_currency_button;
-
 	if (page_content->bannerCount() > 1)
 		next_page = NULL;
+
+	return is_any_interface_enabled;
 }
 
 void EnergyInterface::systemTimeChanged()
