@@ -49,7 +49,7 @@ public:
 	void setReceiveFrames(bool receive);
 
 protected:
-	virtual void manageFrame(OpenMsg &msg);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 private:
 	void setRadioStation(int source, int radio_station);

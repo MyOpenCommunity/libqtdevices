@@ -90,7 +90,7 @@ void ScenarioDevice::requestStatus()
 	sendRequest(QString());
 }
 
-void ScenarioDevice::manageFrame(OpenMsg &msg)
+bool ScenarioDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	int what = msg.what();
 	int what_arg_count = msg.whatArgCnt();
@@ -98,11 +98,11 @@ void ScenarioDevice::manageFrame(OpenMsg &msg)
 	// *0*40*<where>##
 	// since this locks all devices (not only our own address).
 	if ((!(what == START_PROG && what_arg_count == 0)) && (QString::fromStdString(msg.whereFull()) != where))
-		return;
+		return false;
 
 	QVariant v;
-	DeviceValues values_list;
 	int status_index = -1;
+
 	switch (what)
 	{
 	case LOCK:
@@ -149,8 +149,10 @@ void ScenarioDevice::manageFrame(OpenMsg &msg)
 	if (status_index > -1)
 	{
 		values_list[status_index] = v;
-		emit valueReceived(values_list);
+		return true;
 	}
+
+	return false;
 }
 
 

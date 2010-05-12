@@ -220,85 +220,9 @@ enum Section
 /****************************************************************
  **  definizione dei file di immagini
  ****************************************************************/
-/*!  \def ICON_OK
-  The file name for \a ok icon*/
-#define ICON_OK  (IMG_PATH "btnok.png")
-/*!  \def ICON_ON
-  The file name for \a on icon*/
-#define ICON_ON  (IMG_PATH "btnon.png")
-/*!  \def ICON_OFF
-  The file name for \a off icon*/
-#define ICON_OFF  (IMG_PATH "btnoff.png")
-/*!  \def ICON_IMPOSTA
-  The file name for \a setting icon*/
-#define ICON_IMPOSTA  (IMG_PATH "audiosetting.png")
-/*!  \def ICON_FRECCIA_SU
-  The file name for \a up-arrow icon*/
-#define ICON_FRECCIA_SU  (IMG_PATH "arrup.png")
-/*!  \def ICON_FRECCIA_GIU
-  The file name for \a down-arrow icon*/
-#define ICON_FRECCIA_GIU  (IMG_PATH "arrdw.png")
-/*!  \def ICON_FRECCIA_SX
-  The file name for \a left-arrow icon*/
-#define ICON_FRECCIA_SX  (IMG_PATH "arrlf.png")
-/*!  \def ICON_FRECCIA_DX
-  The file name for \a right-arrow icon*/
-#define ICON_FRECCIA_DX  (IMG_PATH "arrrg.png")
 /*!  \def ICON_FFWD
   The file name for \a feed \a forward icon*/
 #define ICON_FFWD  (IMG_PATH "btnforward.png")
-/*!  \def ICON_PIU
-  The file name for \a plus icon*/
-#define ICON_PIU  (IMG_PATH "btnplus.png")
-/*!  \def ICON_MENO
-  The file name for \a minus icon*/
-#define ICON_MENO  (IMG_PATH "btnmin.png")
-
-/*!  \def ICON_CANC
-  The file name for \a cancellation icon*/
-#define ICON_CANC  (IMG_PATH "btncanc.png")
-/*!  \def ICON_VUOTO
-  The file name for \a empty icon*/
-#define ICON_VUOTO  (IMG_PATH "btnempty.png")
-/*!  \def ICON_DEL
-  The file name for \a delete icon*/
-#define ICON_DEL  (IMG_PATH "btndel.png")
-/*!  \def ICON_STOPNGO_APERTO
-  The file name for \a open stopngo icon*/
-#define ICON_STOPNGO_APERTO (IMG_PATH "S&G_Aperto.png")
-/*!  \def ICON_STOPNGO_CHIUSO
-  The file name for \a closed stopngo icon*/
-#define ICON_STOPNGO_CHIUSO (IMG_PATH "S&G_Chiuso.png")
-/*!  \def ICON_STOPNGO_BLOCCO
-  The file name for \a locked stopngo icon*/
-#define ICON_STOPNGO_BLOCCO (IMG_PATH "S&G_Aperto_Blocco.png")
-/*!  \def ICON_STOPNGO_CORTOCIRCUITO
-  The file name for \a short circuit stopngo icon*/
-#define ICON_STOPNGO_CORTOCIRCUITO (IMG_PATH "S&G_Aperto_Cortocircuito.png")
-/*!  \def ICON_STOPNGO_GUASTO_TERRA
-  The file name for \a earth failure stopngo icon*/
-#define ICON_STOPNGO_GUASTO_TERRA (IMG_PATH "S&G_Aperto_Guastoversoterra.png")
-/*!  \def ICON_STOPNGO_SOVRATENSIONE
-  The file name for \a out of Vmax stopngo icon*/
-#define ICON_STOPNGO_SOVRATENSIONE (IMG_PATH "S&G_Aperto_Sovratensione.png")
-/*!  \def ICON_STOPNGO_A_RIARMO
-  The file name for \a stopngo enabled arm icon*/
-#define ICON_STOPNGO_A_RIARMO (IMG_PATH "a_riarmo.png")
-/*!  \def ICON_STOPNGO_D_RIARMO
-  The file name for \a stopngo disabled arm icon*/
-#define ICON_STOPNGO_D_RIARMO (IMG_PATH "d_riarmo.png")
-/*!  \def ICON_STOPNGO_A_VERIFICA_IMPIANTO
-  The file name for \a stopngo verify icon*/
-#define ICON_STOPNGO_A_VERIFICA_IMPIANTO (IMG_PATH "a_verifica_impianto.png")
-/*!  \def ICON_STOPNGO_D_VERIFICA_IMPIANTO
-  The file name for \a stopngo disabled verify icon*/
-#define ICON_STOPNGO_D_VERIFICA_IMPIANTO (IMG_PATH "d_verifica_impianto.png")
-/*!  \def ICON_STOPNGO_A_AUTOTEST
-  The file name for \a stopngo autotest icon*/
-#define ICON_STOPNGO_A_AUTOTEST (IMG_PATH "a_autotest.png")
-/*!  \def ICON_STOPNGO_D_AUTOTEST
-  The file name for \a stopngo disabled autotest icon*/
-#define ICON_STOPNGO_D_AUTOTEST (IMG_PATH "d_autotest.png")
 
 
 /*! \enum ItemType
@@ -336,9 +260,6 @@ enum ItemType
 	POSTO_ESTERNO=49,                             /*!< Posto esterno */
 	SORGENTE_MULTIM=50,                           /*!< Sorgente Multimediale per Diffusione Sonora */
 	SORGENTE_MULTIM_MC=51,                        /*!< Sorgente Multimediale per Diffusione Sonora Multicanale */
-	STOPNGO=60,                                   /*!< StopnGo device */
-	STOPNGO_PLUS=61,                              /*!< StopnGo Plus device */
-	STOPNGO_BTEST=62,                             /*!< StopnGo BTest device */
 	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
 	LANSETTINGS=72,                               /*!< LAN settings and information */
 	// for SpecialPage, HeaderWidget

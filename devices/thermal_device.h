@@ -113,7 +113,7 @@ protected:
 	ThermalDevice(QString where, int openserver_id);
 
 	void sendWriteRequest(const QString &what);
-	virtual void manageFrame(OpenMsg &msg);
+	bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 private:
 	/**

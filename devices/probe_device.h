@@ -46,7 +46,7 @@ public:
 	virtual void init() { requestStatus(); }
 
 protected:
-	virtual void manageFrame(OpenMsg &msg);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 private:
 	ProbeType type;
@@ -101,7 +101,7 @@ public:
 	void requestStatus();
 
 protected:
-	virtual void manageFrame(OpenMsg &msg);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 private slots:
 	void timeoutElapsed();

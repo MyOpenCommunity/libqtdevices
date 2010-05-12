@@ -190,15 +190,14 @@ unsigned ThermalDevice::minimumTemp() const
 	return 30;
 }
 
-void ThermalDevice::manageFrame(OpenMsg &msg)
+bool ThermalDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (where.toStdString() != msg.whereFull())
-		return;
+		return false;
 
 	int what = msg.what();
 	int command = commandRange(what);
 	int program = what - command;
-	DeviceValues values_list;
 
 	qDebug() << "ThermalDevice command" << command << "program" << program;
 
@@ -222,7 +221,7 @@ void ThermalDevice::manageFrame(OpenMsg &msg)
 	case SUM_MANUAL:
 	case SUM_MANUAL_TIMED:
 		{
-			Q_ASSERT_X(msg.whatArgCnt() > 0, "ThermalDevice::manageFrame", "Manual setting frame with no arguments received");
+			Q_ASSERT_X(msg.whatArgCnt() > 0, "ThermalDevice::parseFrame", "Manual setting frame with no arguments received");
 			int sp = msg.whatArgN(0);
 			values_list[DIM_TEMPERATURE] = sp;
 		}
@@ -265,7 +264,7 @@ void ThermalDevice::manageFrame(OpenMsg &msg)
 	case WIN_MANUAL:
 	case WIN_MANUAL_TIMED:
 		{
-			Q_ASSERT_X(msg.whatArgCnt() > 0, "ThermalDevice::manageFrame", "Manual setting frame with no arguments received");
+			Q_ASSERT_X(msg.whatArgCnt() > 0, "ThermalDevice::parseFrame", "Manual setting frame with no arguments received");
 			int sp = msg.whatArgN(0);
 			values_list[DIM_TEMPERATURE] = sp;
 		}
@@ -300,7 +299,9 @@ void ThermalDevice::manageFrame(OpenMsg &msg)
 	}
 
 	if (values_list.count() > 0)
-		emit valueReceived(values_list);
+		return true;
+
+	return false;
 }
 
 int ThermalDevice::commandRange(int what)
