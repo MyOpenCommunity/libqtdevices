@@ -32,6 +32,15 @@ class StopAndGoBTestDevice;
 class QDomNode;
 
 
+/**
+ * BannStopAndGo
+ *
+ * Banner connected to a stop and go device.
+ * It is composed by a central image, two optionals buttons and an optional
+ * description.
+ *
+ * The central image automatically changes to reflect the device status.
+ */
 class BannStopAndGo : public Bann2Buttons
 {
 Q_OBJECT
@@ -46,6 +55,13 @@ private:
 };
 
 
+/**
+ * StopAndGoMenu
+ *
+ * This page list all the configured stop and go pages.
+ * If there is only one stop and go page, this page isn't displayed and will
+ * forward directly to the stop and go page.
+ */
 class StopAndGoMenu : public BannerPage
 {
 Q_OBJECT
@@ -61,6 +77,12 @@ private:
 };
 
 
+/**
+ * StopAndGoPage
+ *
+ * This page contains a banner which reflects the device status and a button
+ * used to enable or disable the autoreset.
+ */
 class StopAndGoPage : public Page
 {
 Q_OBJECT
@@ -77,6 +99,12 @@ private:
 };
 
 
+/**
+ * StopAndGoPlusPage
+ *
+ * This page is like the StopAndGoPage, but in addiction, permits to open
+ * and close, and track fails.
+ */
 class StopAndGoPlusPage : public Page
 {
 Q_OBJECT
@@ -95,6 +123,13 @@ private:
 };
 
 
+/**
+ * StopAndGoBTestPage
+ *
+ * This page is like the StopAndGoPage, but in addiction, permits to switch on
+ * and off the self tests, and to set the interval in days to perform
+ * the tests.
+ */
 class StopAndGoBTestPage : public Page
 {
 Q_OBJECT
