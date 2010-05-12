@@ -82,3 +82,8 @@ void TestDevice::cleanBuffers()
 	server->frameRequest(1);
 }
 
+void TestDevice::flushCompressedFrames(device *dev)
+{
+	foreach (int what, dev->compressed_frames.keys())
+		dev->emitCompressedFrame(what);
+}
