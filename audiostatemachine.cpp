@@ -321,7 +321,8 @@ void AudioStateMachine::stateBeepOffExited()
 
 void AudioStateMachine::statePlayMediaToSpeakerEntered()
 {
-
+	current_audio_path = Volumes::MM_LOCALE;
+	changeVolumePath(Volumes::MM_LOCALE);
 }
 
 void AudioStateMachine::statePlayMediaToSpeakerExited()
@@ -331,17 +332,19 @@ void AudioStateMachine::statePlayMediaToSpeakerExited()
 
 void AudioStateMachine::statePlayFromDifsonToSpeakerEntered()
 {
-
+	current_audio_path = Volumes::MM_AMPLIFIER;
+	changeVolumePath(Volumes::MM_AMPLIFIER);
 }
 
 void AudioStateMachine::statePlayFromDifsonToSpeakerExited()
 {
-
+	changeVolumePath(Volumes::MM_AMPLIFIER, 0);
 }
 
 void AudioStateMachine::statePlayMediaToDifsonEntered()
 {
-
+	current_audio_path = Volumes::MM_SOURCE;
+	changeVolumePath(Volumes::MM_SOURCE);
 }
 
 void AudioStateMachine::statePlayMediaToDifsonExited()
