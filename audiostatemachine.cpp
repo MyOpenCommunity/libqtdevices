@@ -160,9 +160,8 @@ namespace
 		QProcess::execute("/bin/in_scsbb_off");
 	}
 
-	void changeVolumePath(Volumes::Type type)
+	void changeVolumePath(Volumes::Type type, int value)
 	{
-		int value = volumes.at(type);
 		Q_ASSERT_X(value >= VOLUME_MIN && value <= VOLUME_MAX, "changeVolumePath",
 			"Volume value out of range!");
 
@@ -170,6 +169,11 @@ namespace
 		// Volumes for the script set_volume starts from 1, so we add it.
 		QProcess::startDetached("/home/bticino/bin/set_volume",
 					QStringList() << QString::number(type + 1) << QString::number(value));
+	}
+
+	void changeVolumePath(Volumes::Type type)
+	{
+		changeVolumePath(type, volumes.at(type));
 	}
 
 	void saveVolumes()
