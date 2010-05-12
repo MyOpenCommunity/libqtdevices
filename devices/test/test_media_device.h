@@ -58,6 +58,7 @@ private slots:
 	void receiveTrack();
 
 	void testActiveAreas();
+	void testActiveAreas2();
 
 	void testCrash();
 

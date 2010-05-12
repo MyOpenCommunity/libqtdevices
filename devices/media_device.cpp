@@ -100,13 +100,54 @@ void SourceDevice::requestActiveAreas() const
 	sendRequest(DIM_ACTIVE_AREAS);
 }
 
-bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
+bool SourceDevice::parseFrameOtherDevices(OpenMsg &msg, DeviceValues &values_list)
 {
-	QString msg_where = QString::fromStdString(msg.whereFull());
-	if (msg_where != where && msg_where != QString("5#%1").arg(where))
-		return false;
 	if (isStatusRequestFrame(msg))
 		return false;
+	int what = msg.what();
+
+	// we need to handle some frames destined to other devices to correctly
+	// update our status, because we do not receive a status update when
+	// the device is turned off on an area but is still on on others
+	if (what == SOURCE_TURNED_ON)
+	{
+		QString area = QString::fromStdString(msg.whatArg(1));
+
+		if (active_areas.contains(area))
+		{
+			active_areas.remove(area);
+			values_list[DIM_AREAS_UPDATED] = QVariant();
+
+			return true;
+		}
+	}
+	else if (what == DIM_ACTIVE_AREAS && isDimensionFrame(msg))
+	{
+		for (unsigned int i = 0; i < msg.whatArgCnt(); ++i)
+		{
+			QString area = QString::number(i);
+
+			if (msg.whatArgN(i) == 1 && active_areas.contains(area))
+			{
+				active_areas.remove(area);
+				values_list[DIM_AREAS_UPDATED] = QVariant();
+
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
+{
+	if (isStatusRequestFrame(msg))
+		return false;
+	QString msg_where = QString::fromStdString(msg.whereFull());
+
+	if (msg_where != where && msg_where != QString("5#%1").arg(where))
+		return parseFrameOtherDevices(msg, values_list);
 
 	int what = msg.what();
 
@@ -198,12 +239,12 @@ void RadioSourceDevice::requestRDS() const
 
 bool RadioSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
+	if (SourceDevice::parseFrame(msg, values_list))
+		return true;
+
 	QString msg_where = QString::fromStdString(msg.whereFull());
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
 		return false;
-
-	if (SourceDevice::parseFrame(msg, values_list))
-		return true;
 
 	if (isCommandFrame(msg) && static_cast<int>(msg.what()) == STOP_RDS)
 	{
@@ -268,16 +309,16 @@ void VirtualSourceDevice::prevTrack()
 
 bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
-	QString msg_where = QString::fromStdString(msg.whereFull());
-	if (msg_where != where && msg_where != QString("5#%1").arg(where))
-		return false;
 	if (isStatusRequestFrame(msg))
 		return false;
-
 	int what = msg.what();
 
 	if (SourceDevice::parseFrame(msg, values_list) && what != DIM_STATUS && what != SOURCE_TURNED_ON)
 		return true;
+
+	QString msg_where = QString::fromStdString(msg.whereFull());
+	if (msg_where != where && msg_where != QString("5#%1").arg(where))
+		return false;
 
 	if (isDimensionFrame(msg) && what == DIM_STATUS && msg.whatArgN(0) == 0)
 	{
