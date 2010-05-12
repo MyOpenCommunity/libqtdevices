@@ -30,7 +30,6 @@
 
 class Version;
 class HomePage;
-class Calibrate;
 class Client;
 class KeypadWindow;
 class ScreenSaver;
@@ -134,7 +133,6 @@ private:
 	int screenoff_time;
 
 	static bool calibrating;
-	Calibrate *calib;
 	ScreenSaver *screensaver;
 	PageContainer *page_container;
 	WindowContainer *window_container;

@@ -32,7 +32,6 @@
 class Version;
 class AlarmClock;
 class Keypad;
-class Calibrate;
 class Contrast;
 class contdiff;
 class StateButton;
