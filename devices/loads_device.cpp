@@ -97,13 +97,12 @@ void LoadsDevice::resetTotal(int period) const
 	sendCommand(QString("75#%1").arg(period + 1));
 }
 
-void LoadsDevice::manageFrame(OpenMsg &msg)
+bool LoadsDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (where.toStdString() != msg.whereFull())
-		return;
+		return false;
 
 	int what = msg.what();
-	DeviceValues values_list;
 
 	if (what == _DIM_STATUS && msg.whatArgCnt() == 5)
 	{
@@ -134,11 +133,13 @@ void LoadsDevice::manageFrame(OpenMsg &msg)
 	if (what == _DIM_STATE_UPDATE_INTERVAL)
 	{
 		if (msg.whatArgCnt() != 1)
-			return;
+			return false;
 
 		current_updates.handleAutomaticUpdate(msg);
 	}
 
 	if (values_list.count() != 0)
-		emit valueReceived(values_list);
+		return true;
+
+	return false;
 }

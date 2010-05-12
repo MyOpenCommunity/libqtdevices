@@ -133,15 +133,13 @@ void AlarmSoundDiffDevice::amplifierOff(int amplifier)
 	sendFrame(f);
 }
 
-void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
+bool AlarmSoundDiffDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (!receive_frames)
-		return;
+		return false;
 
 	int where = msg.where();
 	int what = msg.what();
-
-	DeviceValues values_list;
 
 	// where can have the form:
 	// 2#<source id>        source
@@ -182,7 +180,7 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 	else if (where == _WHERE_AMPLIFIER)
 	{
 		if (msg.whereArgCnt() != 2)
-			return;
+			return false;
 		int environment = QString::fromStdString(msg.whereArg(0)).toInt();
 		int amplifier = QString::fromStdString(msg.whereArg(1)).toInt();
 
@@ -211,5 +209,7 @@ void AlarmSoundDiffDevice::manageFrame(OpenMsg &msg)
 	}
 
 	if (values_list.count() > 0)
-		emit valueReceived(values_list);
+		return true;
+
+	return false;
 }

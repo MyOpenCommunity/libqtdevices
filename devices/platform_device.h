@@ -63,7 +63,7 @@ public:
 	void requestKernelVersion() const;
 	void requestFirmwareVersion() const;
 
-	virtual void manageFrame(OpenMsg &msg);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 	enum Type
 	{

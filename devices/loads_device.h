@@ -108,7 +108,7 @@ public slots:
 	void forceOn() const;
 
 protected:
-	virtual void manageFrame(OpenMsg &msg);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 private:
 	// handle automatic updates of current measure

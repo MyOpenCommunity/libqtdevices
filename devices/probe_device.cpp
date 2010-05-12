@@ -70,27 +70,25 @@ void NonControlledProbeDevice::requestStatus()
 	sendRequest(type == EXTERNAL ? "15#1" : "0");
 }
 
-void NonControlledProbeDevice::manageFrame(OpenMsg &msg)
+bool NonControlledProbeDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (where.toInt() != msg.where())
-		return;
+		return false;
 
 	if (type == EXTERNAL && what_t(msg.what()) == EXTERNAL_TEMPERATURE)
 	{
-		DeviceValues values_list;
-
 		values_list[DIM_TEMPERATURE] = msg.whatArgN(1);
-		emit valueReceived(values_list);
+		return true;
 	}
 	else if (type == INTERNAL && what_t(msg.what()) == INTERNAL_TEMPERATURE)
 	{
-		DeviceValues values_list;
-
 		values_list[DIM_TEMPERATURE] = msg.whatArgN(0);
-		emit valueReceived(values_list);
+		return true;
 	}
 	else
 		qDebug() << "Unhandled frame" << msg.frame_open;
+
+	return false;
 }
 
 
@@ -158,7 +156,7 @@ void ControlledProbeDevice::requestStatus()
 		requestFancoilStatus();
 }
 
-void ControlledProbeDevice::manageFrame(OpenMsg &msg)
+bool ControlledProbeDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	QString where_full = msg.whereFull().c_str();
 
@@ -168,14 +166,13 @@ void ControlledProbeDevice::manageFrame(OpenMsg &msg)
 		has_central_info = true;
 		sendRequest(QString());
 
-		return;
+		return true;
 	}
 
 	if (simple_where.toInt() != msg.where())
-		return;
+		return false;
 
 	int what = msg.what();
-	DeviceValues values_list;
 
 	qDebug() << "Full where" << where_full << "what" << what;
 
@@ -247,12 +244,11 @@ void ControlledProbeDevice::manageFrame(OpenMsg &msg)
 		if (set_point >= 0)
 			values_list[DIM_SETPOINT] = set_point;
 
-		emit valueReceived(values_list);
-		return;
+		return true;
 	}
 
-	if (msg.IsNormalFrame())
-		return;
+	if (isCommandFrame(msg))
+		return false;
 
 	switch (what)
 	{
@@ -303,8 +299,10 @@ void ControlledProbeDevice::manageFrame(OpenMsg &msg)
 			values_list[DIM_SETPOINT] = set_point;
 		values_list[DIM_STATUS] = status;
 
-		emit valueReceived(values_list);
+		return true;
 	}
+
+	return false;
 }
 
 void ControlledProbeDevice::timeoutElapsed()

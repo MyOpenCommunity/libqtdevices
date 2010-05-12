@@ -449,7 +449,7 @@ bool EnergyDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		if (!msg.whatArgCnt() || isStatusRequestFrame(msg) || isCommandFrame(msg))
 			return false;
 
-		qDebug("EnergyDevice::manageFrame -> frame read:%s", msg.frame_open);
+		qDebug("EnergyDevice::parseFrame -> frame read:%s", msg.frame_open);
 		int num_frame = msg.whatArgN(0);
 		// clear the buffer if the first frame of a new graph arrives
 		if (num_frame == 1 && msg.whatArgCnt() > 1)

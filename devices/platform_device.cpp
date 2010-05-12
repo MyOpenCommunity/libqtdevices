@@ -108,20 +108,19 @@ void PlatformDevice::requestFirmwareVersion() const
 //	sendRequest(DIM_FW_VERS);
 }
 
-void PlatformDevice::manageFrame(OpenMsg &msg)
+bool PlatformDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 
 	int what = msg.what();
 	int what_args = msg.whatArgCnt();
 
-	DeviceValues values_list;
 	QVariant v;
 
 	if (what == DIM_MACADDR || what == DIM_IP || what == DIM_NETMASK ||
 		what == DIM_GATEWAY || what == DIM_DNS1 || what == DIM_DNS2 ||
 		what == DIM_STATUS || what == DIM_KERN_VERS || what == DIM_FW_VERS)
 	{
-		qDebug("PlatformDevice::manageFrame -> frame read:%s", msg.frame_open);
+		qDebug("PlatformDevice::parseFrame -> frame read:%s", msg.frame_open);
 
 		switch (what)
 		{
@@ -157,8 +156,10 @@ void PlatformDevice::manageFrame(OpenMsg &msg)
 		}
 
 		values_list[what] = v;
-		emit valueReceived(values_list);
+		return true;
 	}
+
+	return false;
 }
 
 QString PlatformDevice::extractVersionValues(OpenMsg &msg)

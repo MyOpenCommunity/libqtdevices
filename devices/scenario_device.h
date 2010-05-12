@@ -57,7 +57,7 @@ public:
 
 	void requestStatus();
 
-	virtual void manageFrame(OpenMsg &msg);
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 private:
 	bool is_unlocked;
