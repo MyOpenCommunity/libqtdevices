@@ -352,7 +352,8 @@ void AudioStateMachine::stateIdleExited()
 
 void AudioStateMachine::stateBeepOnEntered()
 {
-
+	current_audio_path = Volumes::BEEP;
+	changeVolumePath(Volumes::BEEP);
 }
 
 void AudioStateMachine::stateBeepOnExited()
@@ -474,7 +475,8 @@ void AudioStateMachine::stateIpIntercomCallExited()
 
 void AudioStateMachine::stateAlarmToSpeakerEntered()
 {
-
+	current_audio_path = Volumes::RINGTONES;
+	changeVolumePath(Volumes::RINGTONES);
 }
 
 void AudioStateMachine::stateAlarmToSpeakerExited()
