@@ -31,6 +31,7 @@ class QLabel;
 class BtButton;
 class QStackedWidget;
 class VirtualAmplifierDevice;
+class VirtualSourceDevice;
 
 
 // TODO: this should go to its own file if we need more banners
@@ -192,6 +193,22 @@ private:
 	VirtualAmplifierDevice *dev;
 	bool state;
 	int level;
+};
+
+/**
+ * Handles the device logic for the local sound diffusion source
+ */
+class LocalSource : public QObject
+{
+Q_OBJECT
+public:
+	LocalSource(QObject *parent);
+
+private slots:
+	void valueReceived(const DeviceValues &device_values);
+
+private:
+	VirtualSourceDevice *dev;
 };
 
 #endif // SOUNDDIFFUSIONPAGE_H

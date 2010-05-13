@@ -400,6 +400,8 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 
 	if (is_amplifier)
 		new LocalAmplifier(this);
+	if (is_source)
+		new LocalSource(this);
 }
 
 int SoundDiffusionPage::sectionId() const
@@ -631,6 +633,40 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			if (bt_global::audio_states->currentState() == AudioStates::PLAY_DIFSON)
 				bt_global::audio_states->setVolume(trasformaVol(level));
 			break;
+		}
+	}
+}
+
+
+LocalSource::LocalSource(QObject *parent) : QObject(parent)
+{
+	dev = bt_global::add_device_to_cache(new VirtualSourceDevice((*bt_global::config)[SOURCE_ADDRESS]));
+
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+}
+
+void LocalSource::valueReceived(const DeviceValues &device_values)
+{
+	foreach (int key, device_values.keys())
+	{
+		switch (key)
+		{
+		case VirtualSourceDevice::REQ_SOURCE_ON:
+		case VirtualSourceDevice::REQ_SOURCE_OFF:
+		{
+			bool new_state = key == VirtualSourceDevice::REQ_SOURCE_ON;
+			bool state = bt_global::audio_states->getLocalSourceStatus();
+
+			if (state != new_state)
+			{
+				if (new_state && !bt_global::audio_states->isSoundDiffusionActive())
+					bt_global::audio_states->toState(AudioStates::PLAY_DIFSON);
+				bt_global::audio_states->setLocalSourceStatus(new_state);
+			}
+
+			state = new_state;
+			break;
+		}
 		}
 	}
 }
