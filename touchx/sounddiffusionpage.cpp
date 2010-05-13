@@ -578,6 +578,20 @@ LocalAmplifier::LocalAmplifier(QObject *parent) : QObject(parent)
 	dev = bt_global::add_device_to_cache(new VirtualAmplifierDevice((*bt_global::config)[AMPLIFIER_ADDRESS]));
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+	connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(audioStateChanged(int,int)));
+
+	dev->updateStatus(state);
+	dev->updateVolume(level);
+}
+
+void LocalAmplifier::audioStateChanged(int new_state, int old_state)
+{
+	if (old_state != AudioStates::PLAY_DIFSON && new_state != AudioStates::PLAY_DIFSON)
+		return;
+
+	// re-read volume/status, since state transitions might change it
+	level = localVolumeToAmplifier(bt_global::audio_states->getLocalAmplifierVolume());
+	state = bt_global::audio_states->getLocalAmplifierStatus();
 
 	dev->updateStatus(state);
 	dev->updateVolume(level);
