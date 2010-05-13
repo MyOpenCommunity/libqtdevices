@@ -74,6 +74,7 @@ void MediaPlayerPage::pause()
 {
 	player->pause();
 	refresh_data.stop();
+	emit paused();
 	emit stopped();
 }
 
@@ -122,6 +123,7 @@ void MediaPlayerPage::seekBack()
 void MediaPlayerPage::playbackTerminated()
 {
 	emit stopped();
+	emit terminated();
 	refresh_data.stop();
 }
 

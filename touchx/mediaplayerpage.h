@@ -55,6 +55,9 @@ signals:
 	void started();
 	void stopped();
 
+	void paused();
+	void terminated();
+
 protected:
 	// adds default behaviour for multimedia buttons
 	void connectMultimediaButtons(MultimediaPlayerButtons *buttons);
