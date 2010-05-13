@@ -36,6 +36,7 @@
 #ifdef LAYOUT_TOUCHX
 #include "sounddiffusionpage.h" // alarmClockPage
 #endif
+#include "audiostatemachine.h"
 
 #include <openmsg.h>
 
@@ -267,6 +268,7 @@ void AlarmClock::checkAlarm()
 		{
 			if (type == BUZZER)
 			{
+				bt_global::audio_states->toState(AudioStates::ALARM_TO_SPEAKER);
 #ifdef BT_HARDWARE_TOUCHX
 				aumVolTimer = new QTimer(this);
 				aumVolTimer->start(5000);
@@ -384,6 +386,9 @@ void AlarmClock::alarmTimeout()
 	delete aumVolTimer;
 	aumVolTimer = NULL;
 
+	if (type == BUZZER)
+		bt_global::audio_states->toState(AudioStates::ALARM_TO_SPEAKER);
+
 	// restore display state
 	bt_global::btmain->freeze(false);
 	bt_global::btmain->svegl(false);
@@ -403,6 +408,8 @@ void AlarmClock::stopAlarm()
 	if (type == BUZZER)
 		setBeep(buzAbilOld);
 #endif
+	if (type == BUZZER)
+		bt_global::audio_states->toState(AudioStates::ALARM_TO_SPEAKER);
 
 	delete aumVolTimer;
 	aumVolTimer = NULL;
