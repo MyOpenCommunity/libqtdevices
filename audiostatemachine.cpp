@@ -169,8 +169,8 @@ namespace
 
 		qDebug() << "/home/bticino/bin/set_volume" << type + 1 << value;
 		// Volumes for the script set_volume starts from 1, so we add it.
-		QProcess::startDetached("/home/bticino/bin/set_volume",
-					QStringList() << QString::number(type + 1) << QString::number(value));
+		QProcess::execute("/home/bticino/bin/set_volume",
+				  QStringList() << QString::number(type + 1) << QString::number(value));
 	}
 
 	void changeVolumePath(Volumes::Type type)
