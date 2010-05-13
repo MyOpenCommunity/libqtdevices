@@ -210,6 +210,8 @@ Q_OBJECT
 public:
 	CompositeAmplifierDevice(const QList<AmplifierDevice*> &devices);
 
+	virtual QString get_key();
+
 	virtual void turnOn();
 	virtual void turnOff();
 	virtual void volumeUp();
@@ -220,6 +222,7 @@ protected:
 
 private:
 	QList<AmplifierDevice*> devices;
+	QString key;
 };
 
 

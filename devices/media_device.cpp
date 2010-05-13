@@ -571,6 +571,17 @@ CompositeAmplifierDevice::CompositeAmplifierDevice(const QList<AmplifierDevice *
 	AmplifierDevice("0") // the where is not really used by the device
 {
 	devices = _devices;
+
+	// not computationally expensive, and simplifies get_key implementation
+	qSort(devices);
+
+	foreach (device *d, devices)
+		key += "-" + d->get_key();
+}
+
+QString CompositeAmplifierDevice::get_key()
+{
+	return key;;
 }
 
 void CompositeAmplifierDevice::turnOn()
