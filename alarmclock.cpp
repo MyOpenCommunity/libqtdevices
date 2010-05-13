@@ -387,7 +387,7 @@ void AlarmClock::alarmTimeout()
 	aumVolTimer = NULL;
 
 	if (type == BUZZER)
-		bt_global::audio_states->toState(AudioStates::ALARM_TO_SPEAKER);
+		bt_global::audio_states->exitCurrentState();
 
 	// restore display state
 	bt_global::btmain->freeze(false);
@@ -409,7 +409,7 @@ void AlarmClock::stopAlarm()
 		setBeep(buzAbilOld);
 #endif
 	if (type == BUZZER)
-		bt_global::audio_states->toState(AudioStates::ALARM_TO_SPEAKER);
+		bt_global::audio_states->exitCurrentState();
 
 	delete aumVolTimer;
 	aumVolTimer = NULL;
