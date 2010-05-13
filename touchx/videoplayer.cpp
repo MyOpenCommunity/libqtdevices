@@ -149,7 +149,7 @@ void VideoPlayerPage::hideEvent(QHideEvent *event)
 	if (fullscreen)
 		return;
 
-	emit stopped();
+	stop();
 }
 
 void VideoPlayerPage::displayFullScreen()
