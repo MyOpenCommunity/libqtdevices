@@ -27,6 +27,7 @@
 #include "items.h" // ItemTuning
 #include "skinmanager.h"
 #include "audiostatemachine.h"
+#include "sounddiffusionpage.h" // isSource
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -134,13 +135,15 @@ void VideoPlayerPage::playbackTerminated()
 void VideoPlayerPage::playbackStarted()
 {
 	bt_global::display->forceOperativeMode(true);
-	bt_global::audio_states->toState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
+	if (!SoundDiffusionPage::isSource())
+		bt_global::audio_states->toState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
 }
 
 void VideoPlayerPage::playbackStopped()
 {
 	bt_global::display->forceOperativeMode(false);
-	bt_global::audio_states->exitCurrentState();
+	if (!SoundDiffusionPage::isSource())
+		bt_global::audio_states->exitCurrentState();
 }
 
 void VideoPlayerPage::hideEvent(QHideEvent *event)
