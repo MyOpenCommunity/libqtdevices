@@ -552,6 +552,43 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 }
 
 
+CompositeAmplifierDevice::CompositeAmplifierDevice(const QList<AmplifierDevice *> &_devices) :
+	AmplifierDevice("0") // the where is not really used by the device
+{
+	devices = _devices;
+}
+
+void CompositeAmplifierDevice::turnOn()
+{
+	foreach (AmplifierDevice *dev, devices)
+		dev->turnOn();
+}
+
+void CompositeAmplifierDevice::turnOff()
+{
+	foreach (AmplifierDevice *dev, devices)
+		dev->turnOff();
+}
+
+void CompositeAmplifierDevice::volumeUp()
+{
+	foreach (AmplifierDevice *dev, devices)
+		dev->volumeUp();
+}
+
+void CompositeAmplifierDevice::volumeDown()
+{
+	foreach (AmplifierDevice *dev, devices)
+		dev->volumeDown();
+}
+
+bool CompositeAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
+{
+	// avoid actually parsing the frames
+	return true;
+}
+
+
 PowerAmplifierDevice::PowerAmplifierDevice(QString address, int openserver_id) :
 	AmplifierDevice(address, openserver_id)
 {

@@ -199,6 +199,24 @@ private:
 };
 
 
+class CompositeAmplifierDevice : public AmplifierDevice
+{
+Q_OBJECT
+public:
+	CompositeAmplifierDevice(const QList<AmplifierDevice*> &devices);
+
+	virtual void turnOn();
+	virtual void turnOff();
+	virtual void volumeUp();
+	virtual void volumeDown();
+
+protected:
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+
+private:
+	QList<AmplifierDevice*> devices;
+};
+
 
 /**
  * This class represent a device for managing the power amplifier, an evolved
