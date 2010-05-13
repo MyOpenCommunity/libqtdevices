@@ -24,7 +24,6 @@
 #include "navigation_bar.h"
 #include "mediaplayer.h"
 #include "displaycontrol.h" // forceOperativeMode
-#include "hardware_functions.h" // setVolume
 #include "items.h" // ItemTuning
 #include "skinmanager.h"
 #include "audiostatemachine.h"
@@ -269,5 +268,5 @@ void VideoPlayerWindow::showButtons()
 
 void VideoPlayerWindow::setVolume(int value)
 {
-	::setVolume(VOLUME_MMDIFFUSION, value);
+	bt_global::audio_states->setVolume(value);
 }
