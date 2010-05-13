@@ -26,7 +26,7 @@
 #include "bann2_buttons.h" // Bann2Buttons
 #include "btbutton.h"
 #include "skinmanager.h" // bt_global::skin
-#include "generic_functions.h" // getBostikName
+#include "generic_functions.h" // getBostikName, trasformaVol
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "bann_amplifiers.h" // Amplifier
 #include "poweramplifier.h" // BannPowerAmplifier
@@ -568,14 +568,6 @@ void SoundDiffusionAlarmPage::loadItems(const QDomNode &config_node, const QList
 }
 
 
-namespace
-{
-	int levelToVolume(int level)
-	{
-		return (level - 1) * 8 / 30;
-	}
-}
-
 LocalAmplifier::LocalAmplifier(QObject *parent) : QObject(parent)
 {
 	state = false;
@@ -621,7 +613,7 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 				level += 1;
 				dev->updateVolume(level);
 				if (bt_global::audio_states->currentState() == AudioStates::PLAY_FROM_DIFSON_TO_SPEAKER)
-					bt_global::audio_states->setVolume(levelToVolume(level));
+					bt_global::audio_states->setVolume(trasformaVol(level));
 			}
 			break;
 		case VirtualAmplifierDevice::REQ_VOLUME_DOWN:
@@ -630,14 +622,14 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 				level -= 1;
 				dev->updateVolume(level);
 				if (bt_global::audio_states->currentState() == AudioStates::PLAY_FROM_DIFSON_TO_SPEAKER)
-					bt_global::audio_states->setVolume(levelToVolume(level));
+					bt_global::audio_states->setVolume(trasformaVol(level));
 			}
 			break;
 		case VirtualAmplifierDevice::REQ_SET_VOLUME:
 			level = device_values[key].toInt();
 			dev->updateVolume(level);
 			if (bt_global::audio_states->currentState() == AudioStates::PLAY_FROM_DIFSON_TO_SPEAKER)
-				bt_global::audio_states->setVolume(levelToVolume(level));
+				bt_global::audio_states->setVolume(trasformaVol(level));
 			break;
 		}
 	}
