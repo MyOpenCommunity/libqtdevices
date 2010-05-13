@@ -20,9 +20,9 @@
 
 #include "aux.h"
 #include "btbutton.h"
-#include "main.h" // ICON_FFWD
 #include "fontmanager.h" // bt_global::font
 #include "navigation_bar.h"
+#include "skinmanager.h" // bt_global::skin
 
 #include <QVBoxLayout>
 #include <QLabel>
@@ -50,7 +50,7 @@ Aux::Aux(const QString &name, const QString &amb)
 
 	main_layout->addSpacing(20);
 	BtButton *fwd_but = new BtButton;
-	fwd_but->setImage(ICON_FFWD);
+	fwd_but->setImage(bt_global::skin->getImage("forward"));
 	main_layout->addWidget(fwd_but, 0, Qt::AlignHCenter);
 	main_layout->addStretch(1);
 
