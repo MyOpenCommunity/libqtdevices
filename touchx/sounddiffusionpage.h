@@ -30,6 +30,7 @@ class QDomNode;
 class QLabel;
 class BtButton;
 class QStackedWidget;
+class AmplifierDevice;
 class VirtualAmplifierDevice;
 class VirtualSourceDevice;
 
@@ -113,13 +114,19 @@ class SoundAmbientAlarmPage : public BannerPage
 {
 Q_OBJECT
 public:
-	SoundAmbientAlarmPage(const QDomNode &conf_node, const QList<SourceDescription> &sources);
+	SoundAmbientAlarmPage(const QDomNode &conf_node, const QList<SourceDescription> &sources,
+			      AmplifierDevice *general = NULL);
+
+	virtual void showPage();
 
 signals:
 	void saveVolumes();
 
 private:
 	void loadItems(const QDomNode &config_node);
+
+private:
+	AmplifierDevice *general;
 };
 
 
@@ -150,6 +157,7 @@ private:
 	QList<SourceDescription> loadSources(const QDomNode &config_node);
 	void loadItemsMulti(const QDomNode &config_node);
 	void loadItemsMono(const QDomNode &config_node);
+	AmplifierDevice *createGeneralAmplifierDevice();
 
 private:
 	Page *next_page;
@@ -167,13 +175,19 @@ class SoundDiffusionAlarmPage : public BannerPage
 {
 Q_OBJECT
 public:
-	SoundDiffusionAlarmPage(const QDomNode &config_node, const QList<SourceDescription> &sources);
+	SoundDiffusionAlarmPage(const QDomNode &config_node, const QList<SourceDescription> &sources,
+				AmplifierDevice *general);
+
+	virtual void showPage();
 
 signals:
 	void saveVolumes();
 
 private:
 	void loadItems(const QDomNode &config_node, const QList<SourceDescription> &sources);
+
+private:
+	AmplifierDevice *general;
 };
 
 

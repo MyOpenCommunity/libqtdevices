@@ -306,8 +306,11 @@ Page *SoundAmbientPage::currentAmbientPage()
 }
 
 
-SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QList<SourceDescription> &sources)
+SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QList<SourceDescription> &sources,
+					     AmplifierDevice *_general)
 {
+	general = _general;
+
 	SkinContext context(getTextChild(conf_node, "cid").toInt());
 	QString area;
 
@@ -354,6 +357,14 @@ void SoundAmbientAlarmPage::loadItems(const QDomNode &config_node)
 		else
 			qFatal("ID %s not handled in SoundAmbientAlarmPage", qPrintable(getTextChild(item, "id")));
 	}
+}
+
+void SoundAmbientAlarmPage::showPage()
+{
+	if (general)
+		general->turnOff();
+
+	BannerPage::showPage();
 }
 
 
@@ -444,7 +455,7 @@ void SoundDiffusionPage::loadItemsMulti(const QDomNode &config_node)
 			qFatal("ID %s not handled in SoundDiffusionPage", qPrintable(getTextChild(item, "id")));
 	}
 
-	alarm_clock_page = new SoundDiffusionAlarmPage(config_node, sources_list);
+	alarm_clock_page = new SoundDiffusionAlarmPage(config_node, sources_list, createGeneralAmplifierDevice());
 }
 
 void SoundDiffusionPage::loadItemsMono(const QDomNode &config_node)
@@ -455,7 +466,21 @@ void SoundDiffusionPage::loadItemsMono(const QDomNode &config_node)
 	next_page = new SoundAmbientPage(config_node, sources_list);
 	connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 
-	alarm_clock_page = new SoundAmbientAlarmPage(config_node, sources_list);
+	alarm_clock_page = new SoundAmbientAlarmPage(config_node, sources_list, createGeneralAmplifierDevice());
+}
+
+AmplifierDevice *SoundDiffusionPage::createGeneralAmplifierDevice()
+{
+	AmplifierDevice *g = bt_global::add_device_to_cache(new AmplifierDevice("0"));
+
+	if (isAmplifier())
+	{
+		AmplifierDevice *v = bt_global::add_device_to_cache(new VirtualAmplifierDevice((*bt_global::config)[AMPLIFIER_ADDRESS]));
+
+		return bt_global::add_device_to_cache(new CompositeAmplifierDevice(QList<AmplifierDevice*>() << g << v));
+	}
+	else
+		return g;
 }
 
 banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources)
@@ -538,8 +563,11 @@ bool SoundDiffusionPage::isMultichannel()
 }
 
 
-SoundDiffusionAlarmPage::SoundDiffusionAlarmPage(const QDomNode &config_node, const QList<SourceDescription> &sources)
+SoundDiffusionAlarmPage::SoundDiffusionAlarmPage(const QDomNode &config_node, const QList<SourceDescription> &sources,
+						 AmplifierDevice *_general)
 {
+	general = _general;
+
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
 	buildPage(getTextChild(config_node, "descr"));
@@ -567,6 +595,13 @@ void SoundDiffusionAlarmPage::loadItems(const QDomNode &config_node, const QList
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		connect(p, SIGNAL(saveVolumes()), SIGNAL(saveVolumes()));
 	}
+}
+
+void SoundDiffusionAlarmPage::showPage()
+{
+	general->turnOff();
+
+	BannerPage::showPage();
 }
 
 
