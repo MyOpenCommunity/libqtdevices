@@ -573,8 +573,7 @@ void SoundDiffusionAlarmPage::loadItems(const QDomNode &config_node, const QList
 LocalAmplifier::LocalAmplifier(QObject *parent) : QObject(parent)
 {
 	state = false;
-	// TODO add a method to read current volume w/o changing the machine state
-	level = 16;
+	level = localVolumeToAmplifier(bt_global::audio_states->getLocalAmplifierVolume());
 
 	dev = bt_global::add_device_to_cache(new VirtualAmplifierDevice((*bt_global::config)[AMPLIFIER_ADDRESS]));
 
@@ -596,11 +595,10 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 
 			if (state != new_state)
 			{
-				if (new_state)
-					bt_global::audio_states->toState(AudioStates::PLAY_DIFSON);
-				else
-					// TODO need a "removeState" or something
-					bt_global::audio_states->exitCurrentState();
+				if (new_state && !bt_global::audio_states->isSoundDiffusionActive())
+					if (!bt_global::audio_states->toState(AudioStates::PLAY_DIFSON));
+						return;
+				bt_global::audio_states->setLocalAmplifierStatus(new_state);
 			}
 
 			state = new_state;
@@ -614,8 +612,7 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			{
 				level += 1;
 				dev->updateVolume(level);
-				if (bt_global::audio_states->currentState() == AudioStates::PLAY_DIFSON)
-					bt_global::audio_states->setVolume(trasformaVol(level));
+				bt_global::audio_states->setLocalAmplifierVolume(trasformaVol(level));
 			}
 			break;
 		case VirtualAmplifierDevice::REQ_VOLUME_DOWN:
@@ -623,15 +620,13 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			{
 				level -= 1;
 				dev->updateVolume(level);
-				if (bt_global::audio_states->currentState() == AudioStates::PLAY_DIFSON)
-					bt_global::audio_states->setVolume(trasformaVol(level));
+				bt_global::audio_states->setLocalAmplifierVolume(trasformaVol(level));
 			}
 			break;
 		case VirtualAmplifierDevice::REQ_SET_VOLUME:
 			level = device_values[key].toInt();
 			dev->updateVolume(level);
-			if (bt_global::audio_states->currentState() == AudioStates::PLAY_DIFSON)
-				bt_global::audio_states->setVolume(trasformaVol(level));
+			bt_global::audio_states->setLocalAmplifierVolume(trasformaVol(level));
 			break;
 		}
 	}
@@ -660,7 +655,8 @@ void LocalSource::valueReceived(const DeviceValues &device_values)
 			if (state != new_state)
 			{
 				if (new_state && !bt_global::audio_states->isSoundDiffusionActive())
-					bt_global::audio_states->toState(AudioStates::PLAY_DIFSON);
+					if (!bt_global::audio_states->toState(AudioStates::PLAY_DIFSON))
+						return;
 				bt_global::audio_states->setLocalSourceStatus(new_state);
 			}
 
