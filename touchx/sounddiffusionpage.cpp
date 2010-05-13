@@ -611,7 +611,7 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			break;
 		}
 		case VirtualAmplifierDevice::REQ_VOLUME_UP:
-			if (level < 31)
+			if (state && level < 31)
 			{
 				level += 1;
 				dev->updateVolume(level);
@@ -619,7 +619,7 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			}
 			break;
 		case VirtualAmplifierDevice::REQ_VOLUME_DOWN:
-			if (level > 0)
+			if (state && level > 0)
 			{
 				level -= 1;
 				dev->updateVolume(level);
@@ -627,9 +627,12 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			}
 			break;
 		case VirtualAmplifierDevice::REQ_SET_VOLUME:
-			level = device_values[key].toInt();
-			dev->updateVolume(level);
-			bt_global::audio_states->setLocalAmplifierVolume(trasformaVol(level));
+			if (state)
+			{
+				level = device_values[key].toInt();
+				dev->updateVolume(level);
+				bt_global::audio_states->setLocalAmplifierVolume(trasformaVol(level));
+			}
 			break;
 		}
 	}
