@@ -159,7 +159,7 @@ bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		return true; // the frame is managed even if we aren't interested at the values list.
 	}
 
-	if (!isDimensionFrame(msg))
+	if (!isDimensionFrame(msg) || msg.whatArgCnt() == 0)
 		return false;
 
 	QVariant v;

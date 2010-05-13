@@ -167,6 +167,9 @@ void TestSourceDevice::testCrash()
 	OpenMsg frame_request_freq(qPrintable(QString("*#22*2#%1*5##").arg(source_id)));
 	dev->manageFrame(frame_request_freq);
 
+	OpenMsg frame_request_track(qPrintable(QString("*#22*2#%1*6##").arg(source_id)));
+	dev->manageFrame(frame_request_track);
+
 	OpenMsg frame_request_status(qPrintable(QString("*#22*2#%1##").arg(source_id)));
 	dev->manageFrame(frame_request_status);
 }
