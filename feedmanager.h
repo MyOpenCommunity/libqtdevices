@@ -94,12 +94,15 @@ public:
 
 private slots:
 	void itemIsClicked(int item);
+	void showPrev();
+	void showNext();
 
 private:
 	FeedData data;
 	PageTitleWidget *title_widget;
 	FeedItem *feed_item;
 	QString forward_icon, feed_icon;
+	int current_shown_item;
 };
 
 
@@ -111,6 +114,10 @@ public:
 	FeedItem();
 
 	void setInfo(const QString &feed_title, const FeedItemInfo &feed_item);
+
+signals:
+	void showNext();
+	void showPrev();
 
 private:
 	FeedItemWidget *item_widget;

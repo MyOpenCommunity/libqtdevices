@@ -43,6 +43,10 @@ public slots:
 protected:
 	void hideEvent(QHideEvent *e);
 
+signals:
+	void showPrev();
+	void showNext();
+
 private:
 	/**
 	 * Remove image tags from html. QTextBrowser doesn't load automatically images from the net
@@ -55,7 +59,6 @@ private:
 	// remove <a> tags
 	void removeLinks(QString &html);
 
-	QVBoxLayout *main_layout;
 	QTextEdit *text_area;
 };
 

@@ -142,11 +142,14 @@ FeedItemList::FeedItemList()
 	connect(feed_items, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
 
 	connect(feed_item, SIGNAL(Closed()), SLOT(showPage()));
+	connect(feed_item, SIGNAL(showPrev()), SLOT(showPrev()));
+	connect(feed_item, SIGNAL(showNext()), SLOT(showNext()));
 }
 
 void FeedItemList::setFeedInfo(int page, const FeedData &feed_data)
 {
 	data = feed_data;
+	current_shown_item = -1;
 
 	QList<ItemList::ItemInfo> item_list;
 	for (int i = 0; i < data.entry_list.size(); ++i)
@@ -166,8 +169,31 @@ void FeedItemList::setFeedInfo(int page, const FeedData &feed_data)
 
 void FeedItemList::itemIsClicked(int item)
 {
+	current_shown_item = item;
 	feed_item->setInfo(data.feed_title, data.entry_list[item]);
 	feed_item->showPage();
+}
+
+void FeedItemList::showPrev()
+{
+	// Cyclic visualization
+	if (current_shown_item > 0)
+		current_shown_item--;
+	else
+		current_shown_item = data.entry_list.size() - 1;
+
+	feed_item->setInfo(data.feed_title, data.entry_list[current_shown_item]);
+}
+
+void FeedItemList::showNext()
+{
+	// Cyclic visualization
+	if (current_shown_item < data.entry_list.size() - 1)
+		current_shown_item++;
+	else
+		current_shown_item = 0;
+
+	feed_item->setInfo(data.feed_title, data.entry_list[current_shown_item]);
 }
 
 int FeedItemList::currentPage()
@@ -181,7 +207,10 @@ int FeedItemList::currentPage()
 FeedItem::FeedItem()
 {
 	item_widget = new FeedItemWidget;
-	title_widget = new PageTitleWidget("", SMALL_TITLE_HEIGHT);
+	connect(item_widget, SIGNAL(showPrev()), SIGNAL(showPrev()));
+	connect(item_widget, SIGNAL(showNext()), SIGNAL(showNext()));
+
+	title_widget = new PageTitleWidget("", TINY_TITLE_HEIGHT);
 	NavigationBar *nav_bar = new NavigationBar;
 
 	buildPage(item_widget, nav_bar, 0, title_widget);

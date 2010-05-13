@@ -22,22 +22,40 @@
 #include "feeditemwidget.h"
 #include "fontmanager.h"
 #include "main.h"
+#include "btbutton.h"
+#include "skinmanager.h"
 
 #include <QTextEdit>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QScrollBar>
 #include <QRegExp>
 #include <QDebug>
 
 FeedItemWidget::FeedItemWidget(QWidget *parent) : QWidget(parent)
 {
-	main_layout = new QVBoxLayout(this);
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	text_area = new QTextEdit;
 	text_area->setTextInteractionFlags(Qt::NoTextInteraction);
 	text_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	text_area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	text_area->setFrameShape(QFrame::NoFrame);
 	main_layout->addWidget(text_area);
+
+	QHBoxLayout *buttons_layout = new QHBoxLayout;
+	buttons_layout->addStretch();
+
+	BtButton *prev_button = new BtButton;
+	prev_button->setImage(bt_global::skin->getImage("back"));
+	connect(prev_button, SIGNAL(clicked()), SIGNAL(showPrev()));
+	buttons_layout->addWidget(prev_button);
+
+	BtButton *next_button = new BtButton;
+	next_button->setImage(bt_global::skin->getImage("forward"));
+	connect(next_button, SIGNAL(clicked()), SIGNAL(showNext()));
+	buttons_layout->addWidget(next_button);
+
+	main_layout->addLayout(buttons_layout);
 }
 
 void FeedItemWidget::removeImages(QString &html)

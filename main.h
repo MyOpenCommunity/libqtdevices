@@ -217,14 +217,6 @@ enum Section
 #endif
 
 
-/****************************************************************
- **  definizione dei file di immagini
- ****************************************************************/
-/*!  \def ICON_FFWD
-  The file name for \a feed \a forward icon*/
-#define ICON_FFWD  (IMG_PATH "btnforward.png")
-
-
 /*! \enum ItemType
  *  This enum describes the various items implemented
  */
