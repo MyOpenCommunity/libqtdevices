@@ -44,15 +44,13 @@ namespace AudioStates
 		BEEP_OFF,
 		MUTE,
 		PLAY_MEDIA_TO_SPEAKER,
-		PLAY_FROM_DIFSON_TO_SPEAKER,
-		PLAY_MEDIA_TO_DIFSON,
+		PLAY_DIFSON,
 		PLAY_RINGTONE,
 		SCS_VIDEO_CALL,
 		SCS_INTERCOM_CALL,
 		IP_VIDEO_CALL,
 		IP_INTERCOM_CALL,
 		ALARM_TO_SPEAKER,
-		ALARM_TO_DIFSON,
 		SCREENSAVER_WITH_PLAY,
 		SCREENSAVER_WITHOUT_PLAY,
 	};
@@ -99,12 +97,9 @@ private slots:
 	// Events: Play media (mp3, wave. radio IP...) on local speaker
 	void statePlayMediaToSpeakerEntered();
 	void statePlayMediaToSpeakerExited();
-	// Events: Play Diffusion Sound system on local speaker
-	void statePlayFromDifsonToSpeakerEntered();
-	void statePlayFromDifsonToSpeakerExited();
-	// Events: Play media (mp3, wave. radio IP...) on diffusione sound system - set Touch as multimedia source
-	void statePlayMediaToDifsonEntered();
-	void statePlayMediaToDifsonExited();
+	// Events: Play Diffusion Sound system (source, amplifier or both)
+	void statePlayDifsonEntered();
+	void statePlayDifsonExited();
 	// Events: Play ringtone on local speaker, incoming video call or intercom
 	void statePlayRingtoneEntered();
 	void statePlayRingtoneExited();
@@ -123,13 +118,12 @@ private slots:
 	// Events: Play Alarm on local speaker
 	void stateAlarmToSpeakerEntered();
 	void stateAlarmToSpeakerExited();
-	// Events: Play Alarm on sound diffusion system
-	// Maybe obsolete, can be used one of: statePlayMediaToSpeakerEntered, statePlayFromDifsonToSpeakerEntered, statePlayMediaToDifsonEntered
-	void stateAlarmToDifsonEntered();
-	void stateAlarmToDifsonExited();
 	// Events: Activate Screensaver during an interaction with diffusion sound system
 	void stateScreensaverWithPlayEntered();
 	void stateScreensaverWithPlayExited();
+	// Events: Activate Screensaver when there is no sound diffusion
+	void stateScreensaverWithoutPlayEntered();
+	void stateScreensaverWithoutPlayExited();
 
 	void saveVolumes();
 

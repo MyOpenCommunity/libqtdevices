@@ -595,7 +595,7 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			if (state != new_state)
 			{
 				if (new_state)
-					bt_global::audio_states->toState(AudioStates::PLAY_FROM_DIFSON_TO_SPEAKER);
+					bt_global::audio_states->toState(AudioStates::PLAY_DIFSON);
 				else
 					// TODO need a "removeState" or something
 					bt_global::audio_states->exitCurrentState();
@@ -612,7 +612,7 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			{
 				level += 1;
 				dev->updateVolume(level);
-				if (bt_global::audio_states->currentState() == AudioStates::PLAY_FROM_DIFSON_TO_SPEAKER)
+				if (bt_global::audio_states->currentState() == AudioStates::PLAY_DIFSON)
 					bt_global::audio_states->setVolume(trasformaVol(level));
 			}
 			break;
@@ -621,14 +621,14 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			{
 				level -= 1;
 				dev->updateVolume(level);
-				if (bt_global::audio_states->currentState() == AudioStates::PLAY_FROM_DIFSON_TO_SPEAKER)
+				if (bt_global::audio_states->currentState() == AudioStates::PLAY_DIFSON)
 					bt_global::audio_states->setVolume(trasformaVol(level));
 			}
 			break;
 		case VirtualAmplifierDevice::REQ_SET_VOLUME:
 			level = device_values[key].toInt();
 			dev->updateVolume(level);
-			if (bt_global::audio_states->currentState() == AudioStates::PLAY_FROM_DIFSON_TO_SPEAKER)
+			if (bt_global::audio_states->currentState() == AudioStates::PLAY_DIFSON)
 				bt_global::audio_states->setVolume(trasformaVol(level));
 			break;
 		}

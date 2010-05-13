@@ -217,12 +217,9 @@ AudioStateMachine::AudioStateMachine()
 	addState(PLAY_MEDIA_TO_SPEAKER,
 		 SLOT(statePlayMediaToSpeakerEntered()),
 		 SLOT(statePlayMediaToSpeakerExited()));
-	addState(PLAY_FROM_DIFSON_TO_SPEAKER,
-		 SLOT(statePlayFromDifsonToSpeakerEntered()),
-		 SLOT(statePlayFromDifsonToSpeakerExited()));
-	addState(PLAY_MEDIA_TO_DIFSON,
-		 SLOT(statePlayMediaToDifsonEntered()),
-		 SLOT(statePlayMediaToDifsonExited()));
+	addState(PLAY_DIFSON,
+		 SLOT(statePlayDifsonEntered()),
+		 SLOT(statePlayDifsonExited()));
 	addState(PLAY_RINGTONE,
 		 SLOT(statePlayRingtoneEntered()),
 		 SLOT(statePlayRingtoneExited()));
@@ -241,12 +238,12 @@ AudioStateMachine::AudioStateMachine()
 	addState(ALARM_TO_SPEAKER,
 		 SLOT(stateAlarmToSpeakerEntered()),
 		 SLOT(stateAlarmToSpeakerExited()));
-	addState(ALARM_TO_DIFSON,
-		 SLOT(stateAlarmToDifsonEntered()),
-		 SLOT(stateAlarmToDifsonExited()));
 	addState(SCREENSAVER_WITH_PLAY,
 		 SLOT(stateScreensaverWithPlayEntered()),
 		 SLOT(stateScreensaverWithPlayExited()));
+	addState(SCREENSAVER_WITHOUT_PLAY,
+		 SLOT(stateScreensaverWithoutPlayEntered()),
+		 SLOT(stateScreensaverWithoutPlayExited()));
 
 	// by default, all state transitions are possible, if this is not
 	// correct, use removeTransitions() to make some transitions impossible
@@ -330,26 +327,15 @@ void AudioStateMachine::statePlayMediaToSpeakerExited()
 
 }
 
-void AudioStateMachine::statePlayFromDifsonToSpeakerEntered()
+void AudioStateMachine::statePlayDifsonEntered()
 {
 	current_audio_path = Volumes::MM_AMPLIFIER;
 	changeVolumePath(Volumes::MM_AMPLIFIER);
 }
 
-void AudioStateMachine::statePlayFromDifsonToSpeakerExited()
+void AudioStateMachine::statePlayDifsonExited()
 {
 	changeVolumePath(Volumes::MM_AMPLIFIER, 0);
-}
-
-void AudioStateMachine::statePlayMediaToDifsonEntered()
-{
-	current_audio_path = Volumes::MM_SOURCE;
-	changeVolumePath(Volumes::MM_SOURCE);
-}
-
-void AudioStateMachine::statePlayMediaToDifsonExited()
-{
-
 }
 
 void AudioStateMachine::statePlayRingtoneEntered()
@@ -428,22 +414,22 @@ void AudioStateMachine::stateAlarmToSpeakerExited()
 
 }
 
-void AudioStateMachine::stateAlarmToDifsonEntered()
-{
-
-}
-
-void AudioStateMachine::stateAlarmToDifsonExited()
-{
-
-}
-
 void AudioStateMachine::stateScreensaverWithPlayEntered()
 {
 
 }
 
 void AudioStateMachine::stateScreensaverWithPlayExited()
+{
+
+}
+
+void AudioStateMachine::stateScreensaverWithoutPlayEntered()
+{
+
+}
+
+void AudioStateMachine::stateScreensaverWithoutPlayExited()
 {
 
 }

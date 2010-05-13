@@ -30,15 +30,13 @@ AudioStateMachine::AudioStateMachine()
 	addState(BEEP_ON);
 	addState(BEEP_OFF);
 	addState(PLAY_MEDIA_TO_SPEAKER);
-	addState(PLAY_FROM_DIFSON_TO_SPEAKER);
-	addState(PLAY_MEDIA_TO_DIFSON);
+	addState(PLAY_DIFSON);
 	addState(PLAY_RINGTONE);
 	addState(SCS_VIDEO_CALL);
 	addState(SCS_INTERCOM_CALL);
 	addState(IP_VIDEO_CALL);
 	addState(IP_INTERCOM_CALL);
 	addState(ALARM_TO_SPEAKER);
-	addState(ALARM_TO_DIFSON);
 	addState(SCREENSAVER_WITH_PLAY);
 
 	start(IDLE);
