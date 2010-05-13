@@ -160,7 +160,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	}
 
 	connect(this, SIGNAL(started()), tray_icon, SLOT(started()));
-	connect(this, SIGNAL(stopped()), tray_icon, SLOT(stopped()));
+	connect(this, SIGNAL(terminated()), tray_icon, SLOT(stopped()));
 	connect(this, SIGNAL(started()), SLOT(playbackStarted()));
 	connect(this, SIGNAL(stopped()), SLOT(playbackStopped()));
 }
