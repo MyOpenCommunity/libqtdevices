@@ -445,7 +445,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			p = new BrightnessPage;
 			break;
 		default:
-			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");
+			qFatal("Unhandled page id in SettingsTouchX::loadItems");
 		};
 
 		if (p)
