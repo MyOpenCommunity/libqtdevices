@@ -369,6 +369,21 @@ QString VirtualSourceDevice::createMediaInitFrame(bool is_multichannel, const QS
 
 
 
+bool AmplifierDevice::isGeneralAddress(const QString &where)
+{
+	return where == "0";
+}
+
+bool AmplifierDevice::isAreaAddress(const QString &where)
+{
+	return where.size() == 2 && where.at(1) == '0';
+}
+
+QString AmplifierDevice::getAmplifierArea(const QString &where)
+{
+	return where.at(0);
+}
+
 AmplifierDevice::AmplifierDevice(QString where, int openserver_id) :
 	device(QString("22"), where == "0" ? "5#3#0#0" : QString("3#") + where.at(0) + "#" + where.at(1), openserver_id)
 {

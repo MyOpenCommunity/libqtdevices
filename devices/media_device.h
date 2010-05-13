@@ -145,6 +145,7 @@ public:
 	};
 
 	// passing "0" as the where creates a device commanding all amplifiers
+	// passing "<area>0" as the where creates a device commanding all amplifiers in an area
 	AmplifierDevice(QString where, int openserver_id = 0);
 
 	virtual void init();
@@ -155,6 +156,10 @@ public:
 	virtual void turnOff();
 	virtual void volumeUp();
 	virtual void volumeDown();
+
+	static bool isGeneralAddress(const QString &where);
+	static bool isAreaAddress(const QString &where);
+	static QString getAmplifierArea(const QString &where);
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
