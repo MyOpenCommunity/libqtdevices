@@ -163,7 +163,7 @@ namespace
 	void changeVolumePath(Volumes::Type type, int value)
 	{
 		Q_ASSERT_X(value >= VOLUME_MIN && value <= VOLUME_MAX, "changeVolumePath",
-			"Volume value out of range!");
+			qPrintable(QString("Volume value %1 out of range for audio path %2!").arg(value).arg(type)));
 
 		qDebug() << "/home/bticino/bin/set_volume" << type + 1 << value;
 		// Volumes for the script set_volume starts from 1, so we add it.
@@ -268,7 +268,7 @@ void AudioStateMachine::saveVolumes()
 void AudioStateMachine::setVolume(int value)
 {
 	Q_ASSERT_X(value >= VOLUME_MIN && value <= VOLUME_MAX, "AudioStateMachine::setVolume",
-		"Volume value out of range!");
+		qPrintable(QString("Volume value %1 out of range for audio path %2!").arg(value).arg(bt_global::audio_states->current_audio_path)));
 
 	int audio_path = bt_global::audio_states->current_audio_path;
 
