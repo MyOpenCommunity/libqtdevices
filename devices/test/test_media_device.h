@@ -137,6 +137,8 @@ private slots:
 	void receiveVolume();
 	void receiveStatusRequest();
 
+	void testCrash();
+
 protected:
 	void initAmplifier(AmplifierDevice *dev = 0);
 

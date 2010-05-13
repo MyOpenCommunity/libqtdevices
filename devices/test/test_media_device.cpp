@@ -172,6 +172,9 @@ void TestSourceDevice::testCrash()
 
 	OpenMsg frame_request_status(qPrintable(QString("*#22*2#%1##").arg(source_id)));
 	dev->manageFrame(frame_request_status);
+
+	OpenMsg frame_request_high(qPrintable(QString("*#22*3#1#8*2##")));
+	dev->manageFrame(frame_request_high);
 }
 
 
@@ -414,6 +417,12 @@ void TestAmplifierDevice::receiveStatusRequest()
 {
 	DeviceTester t(dev, AmplifierDevice::DIM_VOLUME); // the dim doesn't matter
 	t.checkSignals(QString("*#22*3#%1#%2##").arg(area).arg(point), 0);
+}
+
+void TestAmplifierDevice::testCrash()
+{
+	OpenMsg frame_request_high(qPrintable(QString("*#22*3#%1#%2*2##").arg(area).arg(point)));
+	dev->manageFrame(frame_request_high);
 }
 
 

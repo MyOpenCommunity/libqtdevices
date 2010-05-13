@@ -104,6 +104,9 @@ bool SourceDevice::parseFrameOtherDevices(OpenMsg &msg, DeviceValues &values_lis
 {
 	if (isStatusRequestFrame(msg))
 		return false;
+	// skip frames destined to amplifiers
+	if (msg.where() == 3)
+		return false;
 	int what = msg.what();
 
 	// we need to handle some frames destined to other devices to correctly
