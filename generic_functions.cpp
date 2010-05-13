@@ -393,6 +393,15 @@ bool setCfgValue(QString field, int value, int item_id, const QString &filename)
 
 #endif
 
+#ifdef LAYOUT_TOUCHX
+
+int localVolumeToAmplifier(int vol)
+{
+	return vol * 31 / 8;
+}
+
+#endif
+
 int trasformaVol(int vol)
 {
 	// TODO remove after aligning image names
