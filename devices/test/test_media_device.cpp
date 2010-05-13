@@ -445,7 +445,7 @@ void TestVirtualAmplifierDevice::sendUpdateVolume()
 	const int NEW_VOL = 25;
 	dev->updateVolume(NEW_VOL);
 	client_command->flush();
-	QString cmd(QString("*#22*3#%1#%2*1*%3##").arg(where[0]).arg(where[1]).arg(NEW_VOL));
+	QString cmd(QString("*#22*5#3#%1#%2*1*%3##").arg(where[0]).arg(where[1]).arg(NEW_VOL));
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
@@ -454,7 +454,7 @@ void TestVirtualAmplifierDevice::sendUpdateStatus()
 	const int STATUS = 1;
 	dev->updateStatus(STATUS);
 	client_command->flush();
-	QString cmd(QString("*#22*3#%1#%2*12*%3*3##").arg(where[0]).arg(where[1]).arg(STATUS));
+	QString cmd(QString("*#22*5#3#%1#%2*12*%3*3##").arg(where[0]).arg(where[1]).arg(STATUS));
 	QCOMPARE(server->frameCommand(), cmd);
 }
 

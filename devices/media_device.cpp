@@ -463,7 +463,7 @@ void VirtualAmplifierDevice::init()
 void VirtualAmplifierDevice::updateStatus(bool _status)
 {
 	status = _status;
-	sendFrame(createDimensionFrame(who, QString("12*%1*3").arg(status), where));
+	sendFrame(createDimensionFrame(who, QString("12*%1*3").arg(status), "5#" + where));
 
 	DeviceValues values_list;
 
@@ -474,7 +474,7 @@ void VirtualAmplifierDevice::updateStatus(bool _status)
 void VirtualAmplifierDevice::updateVolume(int _volume)
 {
 	volume = _volume;
-	sendFrame(createDimensionFrame(who, QString("1*%1").arg(volume), where));
+	sendFrame(createDimensionFrame(who, QString("1*%1").arg(volume), "5#" + where));
 
 	DeviceValues values_list;
 
