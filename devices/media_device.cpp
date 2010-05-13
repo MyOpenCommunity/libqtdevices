@@ -381,13 +381,6 @@ AmplifierDevice::AmplifierDevice(QString where, int openserver_id) :
 		area = point = '0';
 }
 
-AmplifierDevice::AmplifierDevice(QString _area, QString _point, int openserver_id) :
-	device(QString("22"), "3#" + _area + "#" + _point, openserver_id)
-{
-	area = _area;
-	point = _point;
-}
-
 void AmplifierDevice::init()
 {
 	requestStatus();
@@ -560,7 +553,7 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 
 PowerAmplifierDevice::PowerAmplifierDevice(QString address, int openserver_id) :
-	AmplifierDevice(address.at(0), address.at(1), openserver_id)
+	AmplifierDevice(address, openserver_id)
 {
 }
 

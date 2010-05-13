@@ -146,7 +146,6 @@ public:
 
 	// passing "0" as the where creates a device commanding all amplifiers
 	AmplifierDevice(QString where, int openserver_id = 0);
-	AmplifierDevice(QString area, QString point, int openserver_id = 0);
 
 	virtual void init();
 

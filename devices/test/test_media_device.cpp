@@ -351,7 +351,7 @@ void TestAmplifierDevice::initTestCase()
 
 void TestAmplifierDevice::initAmplifier(AmplifierDevice *d)
 {
-	dev = d ? d : new AmplifierDevice(area, point);
+	dev = d ? d : new AmplifierDevice(area + point);
 }
 
 void TestAmplifierDevice::cleanupTestCase()
