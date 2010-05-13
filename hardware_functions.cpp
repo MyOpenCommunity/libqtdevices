@@ -319,6 +319,7 @@ static QDateTime lastPress = QDateTime::currentDateTime().addSecs(-3600);
 
 void setTimePress(const QDateTime &press)
 {
+	qDebug() << "Setted last time press to: " << press;
 	lastPress = press;
 }
 
