@@ -416,6 +416,10 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		case PAGE_CALIBRATION_TEST:
 			w = new CalibrationTest;
 			break;
+#else
+		case PAGE_CALIBRATION:
+		case PAGE_CALIBRATION_TEST:
+			break;
 #endif
 		case PAGE_LANSETTINGS:
 			p = new LanSettings(item);

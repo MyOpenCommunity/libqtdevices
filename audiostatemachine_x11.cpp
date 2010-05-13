@@ -57,6 +57,40 @@ int AudioStateMachine::getVolume()
 	return DEFAULT_VOLUME;
 }
 
+void AudioStateMachine::setLocalAmplifierStatus(bool status)
+{
+	local_amplifier_status = status;
+}
+
+bool AudioStateMachine::getLocalAmplifierStatus()
+{
+	return local_amplifier_status;
+}
+
+void AudioStateMachine::setLocalAmplifierVolume(int volume)
+{
+}
+
+int AudioStateMachine::getLocalAmplifierVolume()
+{
+	return 16;
+}
+
+void AudioStateMachine::setLocalSourceStatus(bool status)
+{
+	local_source_status = status;
+}
+
+bool AudioStateMachine::getLocalSourceStatus()
+{
+	return local_source_status;
+}
+
+bool AudioStateMachine::isSoundDiffusionActive()
+{
+	return getLocalAmplifierStatus() || getLocalSourceStatus();
+}
+
 AudioStateMachine *bt_global::audio_states = 0;
 
 
