@@ -596,8 +596,11 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			if (state != new_state)
 			{
 				if (new_state && !bt_global::audio_states->isSoundDiffusionActive())
-					if (!bt_global::audio_states->toState(AudioStates::PLAY_DIFSON));
+					if (!bt_global::audio_states->toState(AudioStates::PLAY_DIFSON))
+					{
+						qDebug() << "Refusing to turn on the local amplifier";
 						return;
+					}
 				bt_global::audio_states->setLocalAmplifierStatus(new_state);
 			}
 
@@ -656,7 +659,10 @@ void LocalSource::valueReceived(const DeviceValues &device_values)
 			{
 				if (new_state && !bt_global::audio_states->isSoundDiffusionActive())
 					if (!bt_global::audio_states->toState(AudioStates::PLAY_DIFSON))
+					{
+						qDebug() << "Refusing to turn on the local source";
 						return;
+					}
 				bt_global::audio_states->setLocalSourceStatus(new_state);
 			}
 
