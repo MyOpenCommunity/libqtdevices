@@ -362,16 +362,18 @@ void AudioStateMachine::stateBeepOnExited()
 
 void AudioStateMachine::stateBeepOffEntered()
 {
-
+	// TODO turn off the amplifier
 }
 
 void AudioStateMachine::stateBeepOffExited()
 {
-
+	// TODO turn back on the amplfier
 }
 
 void AudioStateMachine::statePlayMediaToSpeakerEntered()
 {
+	qDebug() << "AudioStateMachine" << "play media to speaker state";
+
 	current_audio_path = Volumes::MM_LOCALE;
 	changeVolumePath(Volumes::MM_LOCALE);
 }
@@ -383,13 +385,25 @@ void AudioStateMachine::statePlayMediaToSpeakerExited()
 
 void AudioStateMachine::statePlayDifsonEntered()
 {
-	current_audio_path = Volumes::MM_AMPLIFIER;
-	changeVolumePath(Volumes::MM_AMPLIFIER);
+	qDebug() << "AudioStateMachine" << "play sound diffusion state";
+
+	if (local_amplifier_status)
+	{
+		current_audio_path = Volumes::MM_AMPLIFIER;
+		changeVolumePath(Volumes::MM_AMPLIFIER);
+	}
+
+	if (local_source_status)
+	{
+		current_audio_path = Volumes::MM_SOURCE;
+		changeVolumePath(Volumes::MM_SOURCE);
+	}
 }
 
 void AudioStateMachine::statePlayDifsonExited()
 {
 	changeVolumePath(Volumes::MM_AMPLIFIER, 0);
+	changeVolumePath(Volumes::MM_SOURCE, 0);
 }
 
 void AudioStateMachine::statePlayRingtoneEntered()
