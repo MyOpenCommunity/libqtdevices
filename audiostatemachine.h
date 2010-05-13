@@ -78,6 +78,17 @@ public:
 	void setVolume(int value);
 	int getVolume();
 
+	// the source does not have a volume yet
+	void setLocalSourceStatus(bool status);
+	bool getLocalSourceStatus();
+
+	int getLocalAmplifierVolume();
+	bool getLocalAmplifierStatus();
+	void setLocalAmplifierVolume(int value);
+	void setLocalAmplifierStatus(bool status);
+
+	bool isSoundDiffusionActive();
+
 #if !defined(BT_HARDWARE_X11)
 
 private slots:
@@ -131,6 +142,7 @@ private:
 	QTimer *volumes_timer;
 	int current_audio_path;
 #endif
+	bool local_source_status, local_amplifier_status;
 };
 
 

@@ -42,6 +42,8 @@
 
 #define VOLUME_TIMER_SECS 5
 
+#define MM_SOURCE_VOLUME 3
+
 namespace Volumes
 {
 	enum Type
@@ -255,6 +257,7 @@ AudioStateMachine::AudioStateMachine()
 void AudioStateMachine::start(int state)
 {
 	QtConcurrent::run(initEchoCanceller);
+	local_source_status = local_amplifier_status = false;
 	initVolumes();
 	StateMachine::start(state);
 }
@@ -263,6 +266,57 @@ void AudioStateMachine::saveVolumes()
 {
 	::saveVolumes();
 	volumes_timer->stop();
+}
+
+void AudioStateMachine::setLocalAmplifierStatus(bool status)
+{
+	local_amplifier_status = status;
+	if (currentState() == AudioStates::PLAY_DIFSON)
+	{
+		if (status)
+			changeVolumePath(Volumes::MM_AMPLIFIER, volumes[Volumes::MM_AMPLIFIER]);
+		else
+			changeVolumePath(Volumes::MM_AMPLIFIER, 0);
+	}
+}
+
+bool AudioStateMachine::getLocalAmplifierStatus()
+{
+	return local_amplifier_status;
+}
+
+void AudioStateMachine::setLocalAmplifierVolume(int volume)
+{
+	volumes[Volumes::MM_AMPLIFIER] = volume;
+	if (local_amplifier_status && currentState() == AudioStates::PLAY_DIFSON)
+		changeVolumePath(Volumes::MM_AMPLIFIER, volumes[Volumes::MM_AMPLIFIER]);
+}
+
+int AudioStateMachine::getLocalAmplifierVolume()
+{
+	return volumes[Volumes::MM_AMPLIFIER];
+}
+
+void AudioStateMachine::setLocalSourceStatus(bool status)
+{
+	local_source_status = status;
+	if (currentState() == AudioStates::PLAY_DIFSON)
+	{
+		if (status)
+			changeVolumePath(Volumes::MM_SOURCE, MM_SOURCE_VOLUME);
+		else
+			changeVolumePath(Volumes::MM_SOURCE, 0);
+	}
+}
+
+bool AudioStateMachine::getLocalSourceStatus()
+{
+	return local_source_status;
+}
+
+bool AudioStateMachine::isSoundDiffusionActive()
+{
+	return getLocalAmplifierStatus() || getLocalSourceStatus();
 }
 
 void AudioStateMachine::setVolume(int value)
