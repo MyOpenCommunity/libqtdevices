@@ -514,7 +514,9 @@ QList<bool> AlarmClockFreq::getAlarmDays() const
 AlarmClockSoundDiff::AlarmClockSoundDiff(AlarmClock *alarm_page)
 {
 	connect(this, SIGNAL(Closed()), alarm_page, SLOT(resetVolumes()));
+	// when confirming the sound diffusion status, also save and activate this alarm
 	connect(this, SIGNAL(saveVolumes()), alarm_page, SLOT(saveVolumes()));
+	connect(this, SIGNAL(saveVolumes()), alarm_page, SLOT(saveAndActivate()));
 }
 
 void AlarmClockSoundDiff::showPage()
