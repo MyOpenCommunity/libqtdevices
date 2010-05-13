@@ -29,13 +29,34 @@
 // TODO: in poweramplifier.h there's a base graphic banner to handle volume and state changes for amplifiers
 // use it also for Amplifier
 
-namespace {
+namespace
+{
+	AmplifierDevice *createVirtualDevice()
+	{
+		return bt_global::add_device_to_cache(new VirtualAmplifierDevice((*bt_global::config)[AMPLIFIER_ADDRESS]));
+	}
+
 	AmplifierDevice *createDevice(const QString &where)
 	{
-		if ((*bt_global::config)[AMPLIFIER_ADDRESS] == where)
-			return bt_global::add_device_to_cache(new VirtualAmplifierDevice((*bt_global::config)[AMPLIFIER_ADDRESS]));
-		else
-			return bt_global::add_device_to_cache(new AmplifierDevice(where));
+		QString virtual_amplifier = (*bt_global::config)[AMPLIFIER_ADDRESS];
+
+		if (!virtual_amplifier.isEmpty())
+		{
+			if (virtual_amplifier == where)
+				return createVirtualDevice();
+			else if (AmplifierDevice::isGeneralAddress(where) ||
+				 (AmplifierDevice::isAreaAddress(where) &&
+				  AmplifierDevice::getAmplifierArea(where) == AmplifierDevice::getAmplifierArea(virtual_amplifier)))
+			{
+				AmplifierDevice *v = createVirtualDevice();
+				AmplifierDevice *n = bt_global::add_device_to_cache(new AmplifierDevice(where));
+
+				return bt_global::add_device_to_cache(new CompositeAmplifierDevice(QList<AmplifierDevice*>() << n << v));
+			}
+
+		}
+
+		return bt_global::add_device_to_cache(new AmplifierDevice(where));
 	}
 }
 
