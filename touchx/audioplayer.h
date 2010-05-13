@@ -83,6 +83,9 @@ private slots:
 
 	void valueReceived(const DeviceValues &device_values);
 
+	void playbackStarted();
+	void playbackStopped();
+
 private:
 	MediaType type;
 	QLabel *description_top, *description_bottom, *track, *elapsed;

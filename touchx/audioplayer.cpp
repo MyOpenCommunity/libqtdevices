@@ -34,6 +34,7 @@
 #include "main.h" // MULTIMEDIA
 #include "media_device.h"
 #include "devices_cache.h"
+#include "audiostatemachine.h"
 
 #include <QGridLayout>
 #include <QLabel>
@@ -160,11 +161,25 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 
 	connect(this, SIGNAL(started()), tray_icon, SLOT(started()));
 	connect(this, SIGNAL(stopped()), tray_icon, SLOT(stopped()));
+	connect(this, SIGNAL(started()), SLOT(playbackStarted()));
+	connect(this, SIGNAL(stopped()), SLOT(playbackStopped()));
 }
 
 int AudioPlayerPage::sectionId() const
 {
 	return MULTIMEDIA;
+}
+
+void AudioPlayerPage::playbackStarted()
+{
+	if (!SoundDiffusionPage::isSource())
+		bt_global::audio_states->toState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
+}
+
+void AudioPlayerPage::playbackStopped()
+{
+	if (!SoundDiffusionPage::isSource())
+		bt_global::audio_states->exitCurrentState();
 }
 
 void AudioPlayerPage::startMPlayer(int index, int time)
