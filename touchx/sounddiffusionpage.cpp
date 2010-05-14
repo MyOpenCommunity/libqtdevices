@@ -617,7 +617,7 @@ void LocalAmplifier::audioStateChanged(int new_state, int old_state)
 	state = bt_global::audio_states->getLocalAmplifierStatus();
 
 	dev->updateStatus(state);
-	dev->updateVolume(level);
+	dev->updateVolume(bt_global::audio_states->currentState() == AudioStates::PLAY_DIFSON ? level : 0);
 }
 
 void LocalAmplifier::valueReceived(const DeviceValues &device_values)
