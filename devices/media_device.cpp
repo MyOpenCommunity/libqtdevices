@@ -199,6 +199,7 @@ bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 RadioSourceDevice::RadioSourceDevice(QString source_id, int openserver_id) :
 	SourceDevice(source_id, openserver_id)
 {
+	frequency = -1;
 }
 
 void RadioSourceDevice::init()
@@ -210,13 +211,35 @@ void RadioSourceDevice::init()
 	requestRDS();
 }
 
-void RadioSourceDevice::frequenceUp(QString value) const
+void RadioSourceDevice::frequenceUp(QString value)
 {
+	// we do not receive status updates for the manual frequency up command: emulate it
+	if (frequency != -1 && !value.isEmpty())
+	{
+		frequency += value.toInt() * 5;
+
+		DeviceValues values_list;
+
+		values_list[DIM_FREQUENCY] = frequency;
+		emit valueReceived(values_list);
+	}
+
 	sendCommand(QString("%1#%2").arg(REQ_FREQUENCE_UP).arg(value));
 }
 
-void RadioSourceDevice::frequenceDown(QString value) const
+void RadioSourceDevice::frequenceDown(QString value)
 {
+	// we do not receive status updates for the manual frequency downb command: emulate it
+	if (frequency != -1 && !value.isEmpty())
+	{
+		frequency -= value.toInt() * 5;
+
+		DeviceValues values_list;
+
+		values_list[DIM_FREQUENCY] = frequency;
+		emit valueReceived(values_list);
+	}
+
 	sendCommand(QString("%1#%2").arg(REQ_FREQUENCE_DOWN).arg(value));
 }
 
@@ -259,16 +282,14 @@ bool RadioSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	if (!isDimensionFrame(msg) || msg.whatArgCnt() == 0)
 		return false;
 
-	QVariant v;
-
 	int what = msg.what();
 	switch (what)
 	{
 	case DIM_FREQUENCY:
-		v.setValue(msg.whatArgN(1));
+		values_list[DIM_FREQUENCY] = frequency = msg.whatArgN(1);
 		break;
 	case DIM_MEMORIZED_STATION:
-		values_list[DIM_FREQUENCY] = msg.whatArgN(1);
+		values_list[DIM_FREQUENCY] = frequency = msg.whatArgN(1);
 		values_list[DIM_TRACK] = msg.whatArgN(2);
 		return true;
 	case DIM_RDS:
@@ -276,14 +297,13 @@ bool RadioSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		QString rds_message;
 		for (unsigned int i = 0; i < msg.whatArgCnt(); ++i)
 			rds_message.append(QChar(msg.whatArgN(i)));
-		v.setValue(rds_message);
+		values_list[DIM_RDS] = rds_message;
 		break;
 	}
 	default:
 		return false;
 	}
 
-	values_list[what] = v;
 	return true;
 }
 

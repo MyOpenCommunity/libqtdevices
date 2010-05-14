@@ -91,8 +91,8 @@ public:
 	virtual void init();
 
 public slots:
-	void frequenceUp(QString value = QString()) const;
-	void frequenceDown(QString value = QString()) const;
+	void frequenceUp(QString value = QString());
+	void frequenceDown(QString value = QString());
 	void saveStation(QString station) const;
 	void setStation(QString station) const;
 
@@ -101,6 +101,9 @@ public slots:
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+
+private:
+	int frequency;
 };
 
 
