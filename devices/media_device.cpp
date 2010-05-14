@@ -83,6 +83,11 @@ bool SourceDevice::isActive(QString area) const
 	return active_areas.contains(area);
 }
 
+bool SourceDevice::isActive() const
+{
+	return !active_areas.isEmpty();
+}
+
 void SourceDevice::turnOn(QString area) const
 {
 	QString what = QString("%1#%2#%3#%4").arg(REQ_SOURCE_ON).arg(mmtype).arg(area).arg(source_id);
