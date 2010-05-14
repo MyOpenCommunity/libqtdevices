@@ -30,7 +30,7 @@
 #include "hardware_functions.h" // setVolum
 #include "btmain.h"
 #include "homewindow.h" // TrayBar
-#include "sounddiffusionpage.h" // showCurrentAmbientPage, isSource
+#include "sounddiffusionpage.h" // showCurrentAmbientPage
 #include "main.h" // MULTIMEDIA
 #include "media_device.h"
 #include "devices_cache.h"
@@ -113,7 +113,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 
 	QHBoxLayout *l_btn = new QHBoxLayout;
 	BtButton *goto_sounddiff = NULL;
-	if (SoundDiffusionPage::isSource())
+	if (bt_global::audio_states->isSource())
 	{
 		goto_sounddiff = new BtButton(bt_global::skin->getImage("goto_sounddiffusion"));
 		connect(goto_sounddiff, SIGNAL(clicked()), SLOT(gotoSoundDiffusion()));
@@ -130,7 +130,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	ItemTuning *volume = NULL;
 
 	// if the touch is a sound diffusion source do not display the volume control
-	if (!SoundDiffusionPage::isSource())
+	if (!bt_global::audio_states->isSource())
 	{
 		volume = new ItemTuning(tr("Volume"), bt_global::skin->getImage("volume"));
 		connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
@@ -172,13 +172,13 @@ int AudioPlayerPage::sectionId() const
 
 void AudioPlayerPage::playbackStarted()
 {
-	if (!SoundDiffusionPage::isSource())
+	if (!bt_global::audio_states->isSource())
 		bt_global::audio_states->toState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
 }
 
 void AudioPlayerPage::playbackStopped()
 {
-	if (!SoundDiffusionPage::isSource())
+	if (!bt_global::audio_states->isSource())
 		bt_global::audio_states->exitCurrentState();
 }
 

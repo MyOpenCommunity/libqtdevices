@@ -147,8 +147,6 @@ public:
 
 	static void showCurrentAmbientPage();
 	static Page *alarmClockPage();
-	static bool isSource();
-	static bool isAmplifier();
 	static bool isMultichannel();
 
 	virtual void showPage();
@@ -162,7 +160,7 @@ private:
 private:
 	Page *next_page;
 	static Page *sound_diffusion_page, *alarm_clock_page;
-	static bool is_source, is_amplifier, is_multichannel;
+	static bool is_multichannel;
 };
 
 

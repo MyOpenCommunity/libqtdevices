@@ -21,6 +21,7 @@
 
 #include "audiostatemachine.h"
 #include "hardware_functions.h" // DEV_E2
+#include "main.h" // bt_global::config
 
 #include <QtConcurrentRun>
 #include <QProcess>
@@ -257,6 +258,8 @@ AudioStateMachine::AudioStateMachine()
 void AudioStateMachine::start(int state)
 {
 	QtConcurrent::run(initEchoCanceller);
+	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
+	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
 	local_source_status = local_amplifier_status = false;
 	initVolumes();
 	StateMachine::start(state);
@@ -266,6 +269,16 @@ void AudioStateMachine::saveVolumes()
 {
 	::saveVolumes();
 	volumes_timer->stop();
+}
+
+bool AudioStateMachine::isSource()
+{
+	return is_source;
+}
+
+bool AudioStateMachine::isAmplifier()
+{
+	return is_amplifier;
 }
 
 void AudioStateMachine::setLocalAmplifierStatus(bool status)

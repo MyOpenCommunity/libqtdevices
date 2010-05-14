@@ -21,7 +21,7 @@
 
 
 #include "sounddiffusionpage.h"
-#include "main.h" // bt_global::config, Section
+#include "main.h" // Section
 #include "xml_functions.h"
 #include "bann2_buttons.h" // Bann2Buttons
 #include "btbutton.h"
@@ -48,7 +48,7 @@
 #include <QStackedWidget>
 
 
-bool SoundDiffusionPage::is_source = false, SoundDiffusionPage::is_amplifier = false, SoundDiffusionPage::is_multichannel = false;
+bool SoundDiffusionPage::is_multichannel = false;
 Page *SoundDiffusionPage::sound_diffusion_page = NULL;
 Page *SoundDiffusionPage::alarm_clock_page = NULL;
 Page *SoundAmbientPage::current_ambient_page = NULL;
@@ -389,8 +389,6 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 
 	// check if this hardware can work as a source/amplifier and create the virtual
 	// devices to handle the source/amplifier frames
-	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
-	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
 	is_multichannel = getTextChild(config_node, "id").toInt() == DIFSON_MULTI;
 
 	buildPage(getTextChild(config_node, "descr"));
@@ -401,7 +399,7 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 
 	sound_diffusion_page = this;
 
-	if (is_source || is_amplifier)
+	if (bt_global::audio_states->isSource() || bt_global::audio_states->isAmplifier())
 	{
 		QString init_frame = VirtualSourceDevice::createMediaInitFrame(is_multichannel,
 									       (*bt_global::config)[SOURCE_ADDRESS],
@@ -409,9 +407,9 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 		bt_global::devices_cache.addInitCommandFrame(0, init_frame);
 	}
 
-	if (is_amplifier)
+	if (bt_global::audio_states->isAmplifier())
 		new LocalAmplifier(this);
-	if (is_source)
+	if (bt_global::audio_states->isSource())
 		new LocalSource(this);
 }
 
@@ -473,7 +471,7 @@ AmplifierDevice *SoundDiffusionPage::createGeneralAmplifierDevice()
 {
 	AmplifierDevice *g = bt_global::add_device_to_cache(new AmplifierDevice("0"));
 
-	if (isAmplifier())
+	if (bt_global::audio_states->isAmplifier())
 	{
 		AmplifierDevice *v = bt_global::add_device_to_cache(new VirtualAmplifierDevice((*bt_global::config)[AMPLIFIER_ADDRESS]));
 
@@ -545,16 +543,6 @@ void SoundDiffusionPage::showCurrentAmbientPage()
 		current_ambient_page->showPage();
 	else
 		sound_diffusion_page->showPage();
-}
-
-bool SoundDiffusionPage::isSource()
-{
-	return is_source;
-}
-
-bool SoundDiffusionPage::isAmplifier()
-{
-	return is_amplifier;
 }
 
 bool SoundDiffusionPage::isMultichannel()

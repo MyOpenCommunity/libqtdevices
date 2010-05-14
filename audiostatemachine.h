@@ -78,6 +78,10 @@ public:
 	void setVolume(int value);
 	int getVolume();
 
+	// wether this touch can act as a sound diffusion source/amplifier
+	bool isSource();
+	bool isAmplifier();
+
 	// the source does not have a volume yet
 	void setLocalSourceStatus(bool status);
 	bool getLocalSourceStatus();
@@ -142,6 +146,7 @@ private:
 	QTimer *volumes_timer;
 	int current_audio_path;
 #endif
+	bool is_source, is_amplifier;
 	bool local_source_status, local_amplifier_status;
 };
 
