@@ -24,6 +24,9 @@
 #include <openmsg.h>
 
 
+#define RADIO_MIN_FREQ  8750
+#define RADIO_MAX_FREQ 10800
+
 enum RequestDimension
 {
 	// Sources
@@ -219,7 +222,7 @@ void RadioSourceDevice::init()
 void RadioSourceDevice::frequenceUp(QString value)
 {
 	// we do not receive status updates for the manual frequency up command: emulate it
-	if (frequency != -1 && !value.isEmpty())
+	if (frequency != -1 && !value.isEmpty() && frequency < RADIO_MAX_FREQ)
 	{
 		frequency += value.toInt() * 5;
 
@@ -235,7 +238,7 @@ void RadioSourceDevice::frequenceUp(QString value)
 void RadioSourceDevice::frequenceDown(QString value)
 {
 	// we do not receive status updates for the manual frequency downb command: emulate it
-	if (frequency != -1 && !value.isEmpty())
+	if (frequency != -1 && !value.isEmpty() && frequency > RADIO_MIN_FREQ)
 	{
 		frequency -= value.toInt() * 5;
 
