@@ -116,11 +116,9 @@ enum
 	SOURCE_RADIO_MONO = 11001,
 	SOURCE_AUX_MONO = 11002,
 	SOURCE_MULTIMEDIA_MONO = 11003,
-	SOURCE_MYSELF_MONO = 11004,
 	SOURCE_RADIO_MULTI = 12001,
 	SOURCE_AUX_MULTI = 12002,
 	SOURCE_MULTIMEDIA_MULTI = 12003,
-	SOURCE_MYSELF_MULTI = 12004,
 };
 
 SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &src)
@@ -157,22 +155,25 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 		case SOURCE_MULTIMEDIA_MONO:
 		case SOURCE_MULTIMEDIA_MULTI:
 		{
-			SourceDevice *dev = bt_global::add_device_to_cache(new SourceDevice(s.where));
+			if ((s.id == SOURCE_MULTIMEDIA_MONO || s.id == SOURCE_MULTIMEDIA_MULTI) &&
+			    s.where == (*bt_global::config)[SOURCE_ADDRESS])
+			{
+				if (!s.details)
+					s.details = new MultimediaSectionPage(getPageNode(MULTIMEDIA),
+									      MultimediaSectionPage::ITEMS_AUDIO,
+									      new MultimediaFileListPage(getFileFilter(AUDIO)));
 
-			w = new AuxSource(area, dev, s.descr);
-			break;
-		}
-		case SOURCE_MYSELF_MONO:
-		case SOURCE_MYSELF_MULTI:
-		{
-			if (!s.details)
-				s.details = new MultimediaSectionPage(getPageNode(MULTIMEDIA),
-								      MultimediaSectionPage::ITEMS_AUDIO,
-								      new MultimediaFileListPage(getFileFilter(AUDIO)));
+				VirtualSourceDevice *dev = bt_global::add_device_to_cache(new VirtualSourceDevice(s.where));
 
-			VirtualSourceDevice *dev = bt_global::add_device_to_cache(new VirtualSourceDevice(s.where));
+				w = new MediaSource(area, dev, s.descr, s.details);
+			}
+			else
+			{
+				SourceDevice *dev = bt_global::add_device_to_cache(new SourceDevice(s.where));
 
-			w = new MediaSource(area, dev, s.descr, s.details);
+				w = new AuxSource(area, dev, s.descr);
+			}
+
 			break;
 		}
 		default:
