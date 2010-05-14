@@ -56,7 +56,7 @@ void TestAlarmSoundDiffDevice::testStartAlarm()
 	QVERIFY(frames.contains("*#22*2#7*#6*33")); // set the radio station
 
 	// First amplifier with address 20
-	QVERIFY(frames.contains("*22*35#4#2#7*3*2*0")); // turn on the source in the area
+	QVERIFY(frames.contains("*22*35#4#2#7*3#2#0")); // turn on the source in the area
 	QVERIFY(frames.contains("*#22*3#2#0*#1*3")); // set the volume
 	QVERIFY(frames.contains("*22*34#4#2*3#2#0")); // turn on the amplifier
 
@@ -100,7 +100,7 @@ void TestAlarmSoundDiffDevice::sendActivateEnvironment()
 {
 	dev->activateEnvironment(5, 7);
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*22*35#4#5#7*3*5*0##"));
+	QCOMPARE(server->frameCommand(), QString("*22*35#4#5#7*3#5#0##"));
 }
 
 void TestAlarmSoundDiffDevice::sendSetVolume()
