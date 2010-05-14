@@ -132,12 +132,14 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	// if the touch is a sound diffusion source do not display the volume control
 	if (!bt_global::audio_states->isSource())
 	{
+		dev = NULL;
+
 		volume = new ItemTuning(tr("Volume"), bt_global::skin->getImage("volume"));
 		connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
 	}
 	else
 	{
-		VirtualSourceDevice *dev = bt_global::add_device_to_cache(new VirtualSourceDevice((*bt_global::config)[SOURCE_ADDRESS]));
+		dev = bt_global::add_device_to_cache(new VirtualSourceDevice((*bt_global::config)[SOURCE_ADDRESS]));
 
 		connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	}
@@ -280,6 +282,26 @@ void AudioPlayerPage::gotoSoundDiffusion()
 
 void AudioPlayerPage::valueReceived(const DeviceValues &device_values)
 {
+	// when we are turned off on all areas, pause the reproduction;
+	// when we are turned back on, resume the reproduction
+	if (device_values.contains(SourceDevice::DIM_AREAS_UPDATED))
+	{
+		bool status = dev->isActive();
+
+		if (status)
+		{
+			if (!player->isInstanceRunning())
+			{
+				// TODO implement
+				qDebug("Start playing a random mp3");
+			}
+			else if (player->isPaused())
+				resume();
+		}
+		else if (player->isInstanceRunning())
+			pause();
+	}
+
 	if (!player->isInstanceRunning())
 		return;
 
