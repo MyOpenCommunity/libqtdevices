@@ -159,6 +159,7 @@ public:
 	virtual void turnOff();
 	virtual void volumeUp();
 	virtual void volumeDown();
+	virtual void setVolume(int volume);
 
 	static bool isGeneralAddress(const QString &where);
 	static bool isAreaAddress(const QString &where);
@@ -197,6 +198,7 @@ public:
 	virtual void turnOff();
 	virtual void volumeUp();
 	virtual void volumeDown();
+	virtual void setVolume(int volume);
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);

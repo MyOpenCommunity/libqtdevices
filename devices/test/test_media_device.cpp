@@ -399,6 +399,16 @@ void TestAmplifierDevice::sendVolumeDown()
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
+void TestAmplifierDevice::sendSetVolume()
+{
+	int volume = 5;
+	dev->setVolume(volume);
+	client_command->flush();
+	QString cmd(QString("*#22*3#%1#%2*#1*%3##").arg(area).arg(point).arg(volume));
+	QCOMPARE(server->frameCommand(), cmd);
+}
+
+
 void TestAmplifierDevice::receiveStatus()
 {
 	DeviceTester t(dev, AmplifierDevice::DIM_STATUS);
@@ -486,6 +496,11 @@ void TestVirtualAmplifierDevice::sendTurnOn()
 }
 
 void TestVirtualAmplifierDevice::sendTurnOff()
+{
+	// only emits a signal
+}
+
+void TestVirtualAmplifierDevice::sendSetVolume()
 {
 	// only emits a signal
 }

@@ -452,6 +452,11 @@ void AmplifierDevice::volumeDown()
 	sendCommand(QString("%1#1").arg(AMPL_VOLUME_DOWN));
 }
 
+void AmplifierDevice::setVolume(int volume)
+{
+	sendFrame(createWriteDimensionFrame(who, QString("%1*%2").arg(DIM_VOLUME).arg(volume), where));
+}
+
 bool AmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (where != QString::fromStdString(msg.whereFull()))
@@ -542,6 +547,14 @@ void VirtualAmplifierDevice::volumeDown()
 	DeviceValues values_list;
 
 	values_list[REQ_VOLUME_DOWN] = 1;
+	emit valueReceived(values_list);
+}
+
+void VirtualAmplifierDevice::setVolume(int volume)
+{
+	DeviceValues values_list;
+
+	values_list[REQ_SET_VOLUME] = volume;
 	emit valueReceived(values_list);
 }
 
