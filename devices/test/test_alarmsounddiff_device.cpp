@@ -24,7 +24,7 @@
 #include "openserver_mock.h"
 #include "openclient.h"
 #include "device_tester.h"
-
+#include "hardware_functions.h" // AMPLI_NUM
 #include <QtTest/QtTest>
 
 
@@ -38,6 +38,48 @@ void TestAlarmSoundDiffDevice::cleanupTestCase()
 {
 	delete dev;
 	dev = NULL;
+}
+
+void TestAlarmSoundDiffDevice::testStartAlarm()
+{
+	int alarmVolumes[AMPLI_NUM];
+	for (int i = 0; i < AMPLI_NUM; ++i)
+		alarmVolumes[i] = -1;
+
+	alarmVolumes[20] = 3;
+	alarmVolumes[6] = 5;
+	dev->startAlarm(7, 33, alarmVolumes);
+	client_command->flush();
+
+	QStringList frames = server->frameCommand().split("##", QString::SkipEmptyParts);
+	QVERIFY(frames.contains("*22*35#4#0#7*3#0#0")); // turn on the source with id 7
+	QVERIFY(frames.contains("*#22*2#7*#6*33")); // set the radio station
+
+	// First amplifier with address 20
+	QVERIFY(frames.contains("*22*35#4#2#7*3*2*0")); // turn on the source in the area
+	QVERIFY(frames.contains("*#22*3#2#0*#1*3")); // set the volume
+	QVERIFY(frames.contains("*22*34#4#2*3#2#0")); // turn on the amplifier
+
+	// Second amplifier with address 6
+	QVERIFY(frames.contains("*#22*3#0#6*#1*5")); // set the volume
+	QVERIFY(frames.contains("*22*34#4#0*3#0#6")); // turn on the amplifier
+	QVERIFY(frames.count() == 7);
+}
+
+void TestAlarmSoundDiffDevice::testStopAlarm()
+{
+	int alarmVolumes[AMPLI_NUM];
+	for (int i = 0; i < AMPLI_NUM; ++i)
+		alarmVolumes[i] = -1;
+
+	alarmVolumes[20] = 3;
+	alarmVolumes[6] = 5;
+	dev->stopAlarm(7, alarmVolumes);
+	client_command->flush();
+
+	QStringList frames = server->frameCommand().split("##", QString::SkipEmptyParts);
+	QVERIFY(frames.contains("*22*0#4#2*3#2#0")); // amplifier with address 20
+	QVERIFY(frames.contains("*22*0#4#0*3#0#6")); // amplifier with address 6
 }
 
 void TestAlarmSoundDiffDevice::sendSetRadioStation()

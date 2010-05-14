@@ -47,6 +47,9 @@ private slots:
 	void receiveSource();
 	void receiveRadioStation();
 
+	void testStartAlarm();
+	void testStopAlarm();
+
 private:
 	AlarmSoundDiffDevice *dev;
 };
