@@ -482,27 +482,37 @@ void TestVirtualAmplifierDevice::sendUpdateStatus()
 
 void TestVirtualAmplifierDevice::sendVolumeUp()
 {
-	// only emits a signal
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_VOLUME_UP);
+	dev->volumeUp();
+	t.check(1);
 }
 
 void TestVirtualAmplifierDevice::sendVolumeDown()
 {
-	// only emits a signal
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_VOLUME_DOWN);
+	dev->volumeDown();
+	t.check(1);
 }
 
 void TestVirtualAmplifierDevice::sendTurnOn()
 {
-	// only emits a signal
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
+	dev->turnOn();
+	t.check(true);
 }
 
 void TestVirtualAmplifierDevice::sendTurnOff()
 {
-	// only emits a signal
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
+	dev->turnOff();
+	t.check(false);
 }
 
 void TestVirtualAmplifierDevice::sendSetVolume()
 {
-	// only emits a signal
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_SET_VOLUME);
+	dev->setVolume(5);
+	t.check(5);
 }
 
 void TestVirtualAmplifierDevice::receiveAmplifierOn()

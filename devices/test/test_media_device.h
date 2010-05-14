@@ -22,6 +22,7 @@
 #define TEST_MEDIA_DEVICE_H
 
 #include "test_device.h"
+#include "device.h"
 
 #include <QString>
 

@@ -536,7 +536,8 @@ void TestEnergyDevice::receiveCumulativeMonthGraph3()
 	for (int i = 1; i <= 22; ++i)
 		frames << tmp + QString("*%1*0*0*0##").arg(i);
 
-	QVariant result = t.getResult(frames);
+	t.simulateIncomingFrames(frames);
+	QVariant result = t.getResult();
 	QVERIFY(result.canConvert<GraphData>());
 	GraphData d = result.value<GraphData>();
 	QVERIFY(d.graph.size() == QDate(QDate::currentDate().year(), month, 1).daysInMonth());
