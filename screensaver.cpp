@@ -28,6 +28,7 @@
 #include "pagestack.h"
 #include "generic_functions.h"
 #include "imageselectionhandler.h"
+#include "displaycontrol.h" // bt_global::display
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -373,7 +374,16 @@ void ScreenSaverSlideshow::stop()
 void ScreenSaverSlideshow::refresh()
 {
 	static QString last_image_file;
-	QString img = iter->next();
+	QString img;
+
+	if (iter && iter->hasNext())
+		img = iter->next();
+	else
+	{
+		stop();
+		bt_global::display->setState(DISPLAY_OFF);
+		return;
+	}
 
 	if (!img.isEmpty())
 	{
@@ -384,7 +394,8 @@ void ScreenSaverSlideshow::refresh()
 		{
 			last_image_file = img;
 			current_image = next_image;
-			next_image.load(img);
+			if (QFile::exists(img))
+				next_image.load(img);
 			if (!next_image.isNull())
 			{
 				next_image = next_image.scaled(size(), Qt::KeepAspectRatio);
@@ -395,8 +406,7 @@ void ScreenSaverSlideshow::refresh()
 	else
 	{
 		qWarning() << "image is empty: ";
-		// display off?
-		stop();
+		refresh();
 	}
 }
 
