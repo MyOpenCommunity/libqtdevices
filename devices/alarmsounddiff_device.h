@@ -52,14 +52,6 @@ protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 private:
-	void setRadioStation(int source, int radio_station);
-	// TODO check function name
-	void activateEnvironment(int environment, int source);
-	void activateSource(int source);
-	void amplifierOn(int amplifier);
-	void amplifierOff(int amplifier);
-
-private:
 	bool receive_frames, is_multichannel;
 };
 

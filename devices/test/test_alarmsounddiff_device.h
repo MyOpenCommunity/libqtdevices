@@ -34,12 +34,7 @@ private slots:
 	void initTestCase();
 	void cleanupTestCase();
 
-	void sendSetRadioStation();
-	void sendActivateSource();
-	void sendActivateEnvironment();
 	void sendSetVolume();
-	void sendAmplifierOn();
-	void sendAmplifierOff();
 
 	void receiveStatusOn();
 	void receiveVolume();

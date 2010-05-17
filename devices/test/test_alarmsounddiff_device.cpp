@@ -82,46 +82,11 @@ void TestAlarmSoundDiffDevice::testStopAlarm()
 	QVERIFY(frames.contains("*22*0#4#0*3#0#6")); // amplifier with address 6
 }
 
-void TestAlarmSoundDiffDevice::sendSetRadioStation()
-{
-	dev->setRadioStation(7, 33);
-	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*#22*2#7*#6*33##"));
-}
-
-void TestAlarmSoundDiffDevice::sendActivateSource()
-{
-	dev->activateSource(7);
-	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*22*35#4#0#7*3#0#0##"));
-}
-
-void TestAlarmSoundDiffDevice::sendActivateEnvironment()
-{
-	dev->activateEnvironment(5, 7);
-	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*22*35#4#5#7*3#5#0##"));
-}
-
 void TestAlarmSoundDiffDevice::sendSetVolume()
 {
 	dev->setVolume(57, 22);
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*#22*3#5#7*#1*22##"));
-}
-
-void TestAlarmSoundDiffDevice::sendAmplifierOn()
-{
-	dev->amplifierOn(57);
-	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*22*34#4#5*3#5#7##"));
-}
-
-void TestAlarmSoundDiffDevice::sendAmplifierOff()
-{
-	dev->amplifierOff(57);
-	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*22*0#4#5*3#5#7##"));
 }
 
 void TestAlarmSoundDiffDevice::receiveStatusOn()
