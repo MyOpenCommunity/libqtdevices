@@ -505,9 +505,7 @@ void BtMain::myMain()
 #if !defined(BT_HARDWARE_X11)
 	if (static_cast<int>(getTimePress()) * 1000 <= boot_time->elapsed() && !alreadyCalibrated)
 	{
-		qDebug() << "Perform calibration: timePress:" << getTimePress() * 1000
-				<< "timeElapsed:" << boot_time->elapsed()
-				<< "alreadyCalibrated" << alreadyCalibrated;
+		qDebug() << "Boot time" << boot_time->elapsed() << "last press" << static_cast<int>(getTimePress()) * 1000;
 
 		alreadyCalibrated = true;
 #ifdef LAYOUT_BTOUCH
