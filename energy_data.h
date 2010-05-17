@@ -79,6 +79,8 @@ public:
 
 	void addRate(int rate_id);
 
+	virtual void showPage();
+
 private slots:
 	void saveRates();
 	void resetRates();
@@ -86,6 +88,7 @@ private slots:
 private:
 	// TODO CONFIG_BTOUCH
 	int production_count, consumption_count;
+	bool initialized;
 };
 
 

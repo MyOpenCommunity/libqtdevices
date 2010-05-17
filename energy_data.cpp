@@ -219,35 +219,53 @@ EditEnergyCost::EditEnergyCost()
 	buildPage(new BannerContent, nav_bar);
 
 	production_count = consumption_count = 0;
+	initialized = false;
 
 	connect(nav_bar, SIGNAL(backClick()), SLOT(resetRates()));
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(saveRates()));
+}
+
+void EditEnergyCost::showPage()
+{
+	if (initialized)
+		BannerPage::showPage();
+
+	for (int i = 0; i < page_content->bannerCount(); ++i)
+	{
+		BannEnergyCost *b = static_cast<BannEnergyCost *>(page_content->getBanner(i));
+		const EnergyRate &rate = EnergyRates::energy_rates.getRate(b->getRateId());
+
+		QString text;
+		if (rate.description.isEmpty() || rate.description == " ")
+		{
+			if (rate.is_production)
+			{
+				production_count += 1;
+				text = tr("Production") + " " + QString::number(production_count);
+			}
+			else
+			{
+				consumption_count += 1;
+				text = tr("Consumption") + " " + QString::number(consumption_count);
+			}
+		}
+		else
+			text = rate.description;
+
+		b->setDescriptionText(text);
+	}
+
+	initialized = true;
+	BannerPage::showPage();
 }
 
 void EditEnergyCost::addRate(int rate_id)
 {
 	// TODO BTOUCH_CONFIG Use a generic description for old Btouch config,
 	//      rate.config for new config format
-	const EnergyRate &rate = EnergyRates::energy_rates.getRate(rate_id);
-
-	QString descr = rate.is_production ? tr("Production") : tr("Consumption");
-	if (rate.is_production)
-	{
-		production_count += 1;
-		if (production_count > 1)
-			descr += " " + QString::number(production_count);
-	}
-	else
-	{
-		consumption_count += 1;
-		if (consumption_count > 1)
-			descr += " " + QString::number(consumption_count);
-	}
-
-
 	BannEnergyCost *b = new BannEnergyCost(rate_id, bt_global::skin->getImage("minus"),
 					       bt_global::skin->getImage("plus"),
-					       descr);
+					       "dummy");
 
 	page_content->appendBanner(b);
 }

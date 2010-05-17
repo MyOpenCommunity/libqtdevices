@@ -323,6 +323,7 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 	{
 		forward_button = bt_global::skin->getImage("currency");
 		rate_id = getRateId(config_node);
+		EnergyRates::energy_rates.setRateDescription(rate_id, getTextChild(config_node, "descr"));
 	}
 	int decimals = getDecimals(config_node);
 	content = new LoadDataContent(decimals, rate_id);

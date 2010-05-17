@@ -37,6 +37,7 @@ BannEnergyInterface::BannEnergyInterface(int rate_id, bool is_ele, const QString
 	setCentralText("---");
 
 	rate = EnergyRates::energy_rates.getRate(rate_id);
+	EnergyRates::energy_rates.setRateDescription(rate_id, description);
 	connect(&EnergyRates::energy_rates, SIGNAL(rateChanged(int)), SLOT(rateChanged(int)));
 
 	is_electricity = is_ele;
@@ -194,6 +195,11 @@ void BannEnergyCost::resetRate()
 {
 	current_value = rate.rate;
 	updateLabel();
+}
+
+int BannEnergyCost::getRateId()
+{
+	return rate.id;
 }
 
 

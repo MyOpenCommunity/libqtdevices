@@ -77,6 +77,14 @@ QList<int> EnergyRates::allRateId() const
 	return rates.keys();
 }
 
+void EnergyRates::setRateDescription(int rate_id, const QString &description)
+{
+	if (rates[rate_id].description.isEmpty())
+		rates[rate_id].description = description;
+	else
+		rates[rate_id].description = " ";
+}
+
 void EnergyRates::setRate(const EnergyRate &new_rate)
 {
 	Q_ASSERT_X(rates.contains(new_rate.id), "EnergyRates::setRate", "missing rate");
