@@ -646,6 +646,11 @@ temperature_probe_notcontrolled::temperature_probe_notcontrolled(QString w, bool
 	setup_frame_interpreter(new frame_interpreter_temperature_probe(w, external, p, g));
 }
 
+QString temperature_probe_notcontrolled::get_key()
+{
+	return who + "*" + where + "*" + metaObject()->className();
+}
+
 // modscen device
 modscen_device::modscen_device(QString w, bool p, int g) : device(QString("0"), w, p, g)
 {

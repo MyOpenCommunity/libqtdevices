@@ -298,19 +298,7 @@ device *DevicesCache::get_temperature_probe_controlled(QString w, thermo_type_t 
 // Get temperature probe device
 device *DevicesCache::get_temperature_probe(QString w, bool external)
 {
-	QString k = get_device_key(QString("4"), w);
-	qDebug() << "DevicesCache::get_temperature_probe(), key=" << k
-		<< " external=" << (external ? "true" : "false");
-	device *out = (*this)[k];
-	if (!out)
-	{
-		out = new temperature_probe_notcontrolled(w, external);
-		qDebug("device is not there, creating device %p", out);
-		(*this)[k] = out;
-	}
-	out->get();
-	qDebug("DevicesCache::get_temperature_probe() returning %p", out);
-	return out;
+	return bt_global::add_device_to_cache(new temperature_probe_notcontrolled(w, external));
 }
 
 
