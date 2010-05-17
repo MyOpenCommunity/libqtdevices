@@ -26,7 +26,7 @@
 #include "openclient.h"
 #include "datetime.h"
 #include "fontmanager.h" // bt_global::font
-#include "displaycontrol.h" // (*bt_global::display)
+#include "displaycontrol.h" // bt_global::display
 #include "btmain.h" // bt_global::btmain
 #include "singlechoicepage.h"
 #include "skinmanager.h"
@@ -239,7 +239,7 @@ bool AlarmClock::eventFilter(QObject *obj, QEvent *ev)
 	// We stop the alarm and restore the normal behaviour
 	qApp->removeEventFilter(this);
 	stopAlarm();
-	(*bt_global::display).forceOperativeMode(false);
+	bt_global::display->forceOperativeMode(false);
 	return true;
 }
 
@@ -295,7 +295,7 @@ void AlarmClock::checkAlarm()
 			// operative mode) but with a screen "locked" (like in the freezed
 			// mode). We do that with an event filter.
 			bt_global::btmain->freeze(false); // To stop a screensaver, if running
-			(*bt_global::display).forceOperativeMode(true); // Prevent the screeensaver start
+			bt_global::display->forceOperativeMode(true); // Prevent the screeensaver start
 			qApp->installEventFilter(this);
 			bt_global::btmain->svegl(true);
 
@@ -335,7 +335,7 @@ void AlarmClock::sounddiffusionAlarm()
 	else if (conta2min > 49)
 	{
 		dev->stopAlarm(sorgente, volSveglia);
-		(*bt_global::display).forceOperativeMode(false);
+		bt_global::display->forceOperativeMode(false);
 
 		alarmTimeout();
 	}
@@ -355,9 +355,9 @@ void AlarmClock::buzzerAlarm()
 	}
 
 	if (contaBuzzer % 8 == 0)
-		(*bt_global::display).setState(DISPLAY_OPERATIVE);
+		bt_global::display->setState(DISPLAY_OPERATIVE);
 	else
-		(*bt_global::display).setState(DISPLAY_FREEZED);
+		bt_global::display->setState(DISPLAY_FREEZED);
 
 	contaBuzzer++;
 	if (contaBuzzer >= 10*60*2)
