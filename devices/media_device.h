@@ -56,6 +56,12 @@ public:
 	void stopAlarm(int source, int *alarmVolumes);
 	void setVolume(int amplifier, int volume);
 
+	// The device for the alarm clock (that uses the sound diffusion) has a
+	// different logic than the other devices:
+	// it registers the status of the sound diffusion during the configuration
+	// to discover what is the active source (and the station if is a radio)
+	// and what are the active amplifiers in order to use the same setup of the
+	// sound diffusion during the alarm.
 	void setReceiveFrames(bool receive);
 
 	static void addSource(SourceDevice *dev, int source_id);
