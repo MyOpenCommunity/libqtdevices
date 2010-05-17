@@ -30,7 +30,7 @@
 #include "btmain.h" // bt_global::btmain
 #include "singlechoicepage.h"
 #include "skinmanager.h"
-#include "alarmsounddiff_device.h"
+#include "media_device.h" // AlarmSoundDiffDevice
 #include "navigation_bar.h"
 #include "generic_functions.h" // getBostikName
 #ifdef LAYOUT_TOUCHX

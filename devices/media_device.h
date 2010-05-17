@@ -28,6 +28,41 @@
 
 
 /**
+ * The device for the alarm clock when using the sound diffusion to reproduce
+ * music from a source in multiple areas.
+ */
+class AlarmSoundDiffDevice : public device
+{
+friend class TestAlarmSoundDiffDevice;
+Q_OBJECT
+public:
+
+	enum Type
+	{
+		DIM_AMPLIFIER = 1,
+		DIM_STATUS = 2,
+		DIM_VOLUME = 3,
+		DIM_SOURCE = 4,
+		DIM_RADIO_STATION = 5
+	};
+
+	AlarmSoundDiffDevice(bool is_multichannel);
+
+	void startAlarm(int source, int radio_station, int *alarmVolumes);
+	void stopAlarm(int source, int *alarmVolumes);
+	void setVolume(int amplifier, int volume);
+
+	void setReceiveFrames(bool receive);
+
+protected:
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+
+private:
+	bool receive_frames, is_multichannel;
+};
+
+
+/**
  * This class implements a multimedia source device, that can be used to send
  * command to the actual device or notified status changed.
  */
@@ -273,5 +308,6 @@ public:
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 };
+
 
 #endif // MEDIA_DEVICE_H

@@ -5,7 +5,6 @@
 
 
 HEADERS += airconditioning_device.h \
-	alarmsounddiff_device.h \
 	automation_device.h \
 	device.h \
 	deviceold.h \
@@ -26,7 +25,6 @@ HEADERS += airconditioning_device.h \
 	thermal_device.h
 
 SOURCES += airconditioning_device.cpp \
-	alarmsounddiff_device.cpp \
 	automation_device.cpp \
 	device.cpp \
 	deviceold.cpp \

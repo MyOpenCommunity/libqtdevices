@@ -33,7 +33,6 @@
 #include "test_scenario_device.h"
 #include "test_thermal_device.h"
 #include "test_pull_manager.h"
-#include "test_alarmsounddiff_device.h"
 #include "test_entryphone_device.h"
 #include "test_probe_device.h"
 #include "test_air_conditioning_device.h"
@@ -59,9 +58,6 @@ int main(int argc, char *argv[])
 
 	TestEnergyDevice test_energy_device;
 	test_list << &test_energy_device;
-
-	TestPowerAmplifierDevice test_poweramplifier_device;
-	test_list << &test_poweramplifier_device;
 
 	TestPPTStatDevice test_pptstat_device;
 	test_list << &test_pptstat_device;
@@ -92,9 +88,6 @@ int main(int argc, char *argv[])
 
 	TestThermalDevice99Zones test_thermal_regulator_99zones_device;
 	test_list << &test_thermal_regulator_99zones_device;
-
-	TestAlarmSoundDiffDevice test_alarm_sound_diff_device;
-	test_list << &test_alarm_sound_diff_device;
 
 	TestEntryphoneDevice test_entryphone_device;
 	test_list << &test_entryphone_device;
@@ -131,6 +124,12 @@ int main(int argc, char *argv[])
 
 	TestAmplifierDevice test_amplifier_device;
 	test_list << &test_amplifier_device;
+
+	TestPowerAmplifierDevice test_poweramplifier_device;
+	test_list << &test_poweramplifier_device;
+
+	TestAlarmSoundDiffDevice test_alarm_sound_diff_device;
+	test_list << &test_alarm_sound_diff_device;
 
 	TestMessageDevice test_message_device;
 	test_list << &test_message_device;
