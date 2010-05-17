@@ -171,6 +171,7 @@ ConfirmationPage::ConfirmationPage(const QString &text)
 	QLabel *content = new QLabel(text);
 	content->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	content->setWordWrap(true);
+	content->setAlignment(Qt::AlignCenter);
 	content->setIndent(5);
 
 	QVBoxLayout *main = new QVBoxLayout(this);
