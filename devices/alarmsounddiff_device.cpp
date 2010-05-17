@@ -21,6 +21,7 @@
 
 #include "alarmsounddiff_device.h"
 #include "hardware_functions.h" // AMPLI_NUM
+#include "media_device.h"
 
 #include <openmsg.h>
 
@@ -56,13 +57,14 @@ void AlarmSoundDiffDevice::setReceiveFrames(bool receive)
 
 void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmVolumes)
 {
-	activateSource(source);
-	if (radio_station)
-		setRadioStation(source, radio_station);
-
 	bool environments[AMPLI_NUM / 10 + 1];
 	for (int i = 0; i < ARRAY_SIZE(environments); ++i)
 		environments[i] = false;
+
+	RadioSourceDevice source_device(QString::number(source));
+	source_device.turnOn("0");
+	if (radio_station)
+		source_device.setStation(QString::number(radio_station));
 
 	for (int amplifier = 0; amplifier < AMPLI_NUM; ++amplifier)
 	{
@@ -74,15 +76,17 @@ void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmV
 		{
 			if (!environments[environment])
 			{
-				activateEnvironment(environment, source);
+				source_device.turnOn(QString::number(environment));
 				environments[environment] = true;
 			}
 		}
-		if (alarmVolumes[amplifier] < 10)
-			setVolume(amplifier, alarmVolumes[amplifier]);
-		else
-			setVolume(amplifier, 8);
-		amplifierOn(amplifier);
+		QString address = QString("%1%2").arg(amplifier < 10 ? "0" : "").arg(amplifier);
+
+		AmplifierDevice ampli_device(address);
+		int vol = alarmVolumes[amplifier] < 10 ? alarmVolumes[amplifier] : 8;
+
+		ampli_device.setVolume(vol);
+		ampli_device.turnOn();
 	}
 }
 
@@ -93,7 +97,9 @@ void AlarmSoundDiffDevice::stopAlarm(int source, int *alarmVolumes)
 		if (alarmVolumes[amplifier] < 0)
 			continue;
 
-		amplifierOff(amplifier);
+		QString address = QString("%1%2").arg(amplifier < 10 ? "0" : "").arg(amplifier);
+		AmplifierDevice ampli_device(address);
+		ampli_device.turnOff();
 	}
 }
 
@@ -111,7 +117,7 @@ void AlarmSoundDiffDevice::activateSource(int source)
 
 void AlarmSoundDiffDevice::activateEnvironment(int environment, int source)
 {
-	QString f = QString("*22*35#4#%1#%2*3*%1*0##").arg(environment).arg(source);
+	QString f = QString("*22*35#4#%1#%2*3#%1#0##").arg(environment).arg(source);
 	sendFrame(f);
 }
 
