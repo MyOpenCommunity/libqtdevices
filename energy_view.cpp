@@ -507,11 +507,11 @@ void EnergyView::showPageFromTable()
 	Page::showPage();
 }
 
-QMap<int, float> EnergyView::convertGraphData(GraphData *gd)
+QMap<int, double> EnergyView::convertGraphData(GraphData *gd)
 {
 	// TODO: remove the theorical bottleneck using a QMutableMapIterator instead of
 	// accessing to the values using the operator[]
-	QMap<int, float> data;
+	QMap<int, double> data;
 	// copy map to float values
 	QList<int> graph_keys = gd->graph.keys();
 	for (int i = 0; i < graph_keys.size(); ++i)
@@ -586,7 +586,7 @@ void EnergyView::valueReceived(const DeviceValues &values_list)
 			if (current_graph == EnergyDevice::DAILY_AVERAGE && date.year() == current_date.year() &&
 				date.month() == current_date.month() && isGraphOurs())
 			{
-				QMap<int, float> g = convertGraphData(d);
+				QMap<int, double> g = convertGraphData(d);
 				graph->setData(g);
 				table->setData(g);
 			}
@@ -598,7 +598,7 @@ void EnergyView::valueReceived(const DeviceValues &values_list)
 			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date &&
 			    isGraphOurs())
 			{
-				QMap<int, float> g = convertGraphData(d);
+				QMap<int, double> g = convertGraphData(d);
 				graph->setData(g);
 				table->setData(g);
 			}
@@ -610,7 +610,7 @@ void EnergyView::valueReceived(const DeviceValues &values_list)
 			if (current_graph == EnergyDevice::CUMULATIVE_MONTH && d->date.month() == current_date.month()
 				&& d->date.year() == current_date.year() && isGraphOurs())
 			{
-				QMap<int, float> g = convertGraphData(d);
+				QMap<int, double> g = convertGraphData(d);
 				graph->setData(g);
 				table->setData(g);
 			}
@@ -622,7 +622,7 @@ void EnergyView::valueReceived(const DeviceValues &values_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_YEAR);
 			if (current_graph == EnergyDevice::CUMULATIVE_YEAR && isGraphOurs())
 			{
-				QMap<int, float> g = convertGraphData(d);
+				QMap<int, double> g = convertGraphData(d);
 				graph->setData(g);
 				table->setData(g);
 			}
@@ -689,7 +689,7 @@ void EnergyView::updateCurrentGraph()
 	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(key))
 	{
 		GraphData *d = graph_data_cache[current_graph]->object(key);
-		QMap<int, float> g = convertGraphData(d);
+		QMap<int, double> g = convertGraphData(d);
 		graph->setData(g);
 		table->setData(g);
 	}
@@ -883,13 +883,13 @@ void EnergyView::toggleCurrency()
 	updateCurrentGraph();
 }
 
-void EnergyView::updateBanner(Bann2Buttons *banner, unsigned int value, int dec, QString symbol)
+void EnergyView::updateBanner(Bann2Buttons *banner, qint64 value, int dec, QString symbol)
 {
 	if (value == INVALID_VALUE)
 		banner->setCentralText("---");
 	else
 	{
-		float displayed_val = EnergyConversions::convertToRawData(value,
+		double displayed_val = EnergyConversions::convertToRawData(value,
 			is_electricity_view ? EnergyConversions::ELECTRICITY : EnergyConversions::OTHER_ENERGY);
 
 		if (EnergyInterface::isCurrencyView())

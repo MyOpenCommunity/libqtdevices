@@ -149,11 +149,11 @@ private:
 
 	QWidget *buildBannerWidget();
 	GraphData *saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t);
-	QMap<int, float> convertGraphData(GraphData *gd);
+	QMap<int, double> convertGraphData(GraphData *gd);
 	void setBannerPage(int status, const QDate &selection_date);
 	QString dateToKey(const QDate &date, EnergyDevice::GraphType t);
 	void updateBanners();
-	void updateBanner(Bann2Buttons *banner, unsigned int value, int dec, QString symbol);
+	void updateBanner(Bann2Buttons *banner, qint64 value, int dec, QString symbol);
 	void updateCurrentGraph();
 	// returns true if we own the graph/table instances
 	bool isGraphOurs();
@@ -167,8 +167,8 @@ private:
 	EnergyViewNavigation *nav_bar;
 	Bann2Buttons *current_banner, *daily_av_banner;
 	Bann2Buttons *cumulative_day_banner, *cumulative_month_banner, *cumulative_year_banner;
-	unsigned int current_value, daily_av_value;
-	unsigned int cumulative_day_value, cumulative_month_value, cumulative_year_value;
+	qint64 current_value, daily_av_value;
+	qint64 cumulative_day_value, cumulative_month_value, cumulative_year_value;
 	TimePeriodSelection *time_period;
 	QStackedWidget *widget_container;
 	EnergyTable *table;

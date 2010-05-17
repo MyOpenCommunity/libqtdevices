@@ -81,4 +81,3 @@ QString OpenServerMock::frameCommand(unsigned int timeout)
 	command->waitForReadyRead(timeout);
 	return command->readAll();
 }
-
