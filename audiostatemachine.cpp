@@ -43,7 +43,6 @@
 
 #define VOLUME_TIMER_SECS 5
 
-#define MM_SOURCE_VOLUME 3
 
 namespace Volumes
 {
@@ -287,7 +286,7 @@ void AudioStateMachine::setLocalAmplifierStatus(bool status)
 	if (currentState() == AudioStates::PLAY_DIFSON)
 	{
 		if (status)
-			changeVolumePath(Volumes::MM_AMPLIFIER, volumes[Volumes::MM_AMPLIFIER]);
+			changeVolumePath(Volumes::MM_AMPLIFIER);
 		else
 			changeVolumePath(Volumes::MM_AMPLIFIER, 0);
 	}
@@ -302,7 +301,7 @@ void AudioStateMachine::setLocalAmplifierVolume(int volume)
 {
 	volumes[Volumes::MM_AMPLIFIER] = volume;
 	if (local_amplifier_status && currentState() == AudioStates::PLAY_DIFSON)
-		changeVolumePath(Volumes::MM_AMPLIFIER, volumes[Volumes::MM_AMPLIFIER]);
+		changeVolumePath(Volumes::MM_AMPLIFIER);
 }
 
 int AudioStateMachine::getLocalAmplifierVolume()
@@ -316,7 +315,7 @@ void AudioStateMachine::setLocalSourceStatus(bool status)
 	if (currentState() == AudioStates::PLAY_DIFSON)
 	{
 		if (status)
-			changeVolumePath(Volumes::MM_SOURCE, MM_SOURCE_VOLUME);
+			changeVolumePath(Volumes::MM_SOURCE, DEFAULT_VOLUME);
 		else
 			changeVolumePath(Volumes::MM_SOURCE, 0);
 	}
