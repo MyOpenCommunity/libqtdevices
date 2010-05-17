@@ -238,7 +238,7 @@ void LoadDataContent::updatePeriodDate(int period, const QDate &date, const BtTi
 		qDebug() << "LoadDataContent::updatePeriodDate: Invalid period";
 }
 
-void LoadDataContent::updatePeriodValue(int period, int new_value)
+void LoadDataContent::updatePeriodValue(int period, qint64 new_value)
 {
 	if (period == FIRST_PERIOD)
 	{
@@ -276,10 +276,10 @@ void LoadDataContent::rateChanged(int id)
 
 void LoadDataContent::updateValues()
 {
-	float current = EnergyConversions::convertToRawData(current_value, EnergyConversions::ELECTRICITY);
-	float period1 = EnergyConversions::convertToRawData(first_period_value, EnergyConversions::ELECTRICITY);
-	float period2 = EnergyConversions::convertToRawData(second_period_value, EnergyConversions::ELECTRICITY);
-	float current_kw = current; // to compute the cost
+	double current = EnergyConversions::convertToRawData(current_value, EnergyConversions::ELECTRICITY);
+	double period1 = EnergyConversions::convertToRawData(first_period_value, EnergyConversions::ELECTRICITY);
+	double period2 = EnergyConversions::convertToRawData(second_period_value, EnergyConversions::ELECTRICITY);
+	double current_kw = current; // to compute the cost
 	int dec_current;
 	QString unit_current;
 	int dec = 3; // use always 3 decimals for the value
@@ -390,7 +390,7 @@ void LoadDataPage::status_changed(const StatusList &sl)
 		switch (it.key())
 		{
 		case LoadsDevice::DIM_TOTAL:
-			content->updatePeriodValue(period, it.value().toInt());
+			content->updatePeriodValue(period, it.value().toLongLong());
 			break;
 		case LoadsDevice::DIM_RESET_DATE:
 		{
