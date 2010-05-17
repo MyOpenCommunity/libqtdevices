@@ -89,9 +89,9 @@ void AlarmSoundDiffDevice::setReceiveFrames(bool receive)
 
 void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmVolumes)
 {
-	bool environments[AMPLI_NUM / 10 + 1];
-	for (int i = 0; i < ARRAY_SIZE(environments); ++i)
-		environments[i] = false;
+	bool areas[AMPLI_NUM / 10 + 1];
+	for (int i = 0; i < ARRAY_SIZE(areas); ++i)
+		areas[i] = false;
 
 	RadioSourceDevice source_device(QString::number(source));
 	source_device.turnOn("0");
@@ -103,13 +103,13 @@ void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmV
 		if (alarmVolumes[amplifier] < 0)
 			continue;
 
-		int environment = amplifier / 10;
-		if (is_multichannel && environment > 0 && environment < 9)
+		int area = amplifier / 10;
+		if (is_multichannel && area > 0 && area < 9)
 		{
-			if (!environments[environment])
+			if (!areas[area])
 			{
-				source_device.turnOn(QString::number(environment));
-				environments[environment] = true;
+				source_device.turnOn(QString::number(area));
+				areas[area] = true;
 			}
 		}
 		QString address = QString("%1%2").arg(amplifier < 10 ? "0" : "").arg(amplifier);
@@ -192,7 +192,7 @@ bool AlarmSoundDiffDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	{
 		if (msg.whereArgCnt() != 2)
 			return false;
-		int environment = QString::fromStdString(msg.whereArg(0)).toInt();
+		int area = QString::fromStdString(msg.whereArg(0)).toInt();
 		int amplifier = QString::fromStdString(msg.whereArg(1)).toInt();
 
 		if (what == _DIM_AMPLIFIER_STATE)
@@ -204,7 +204,7 @@ bool AlarmSoundDiffDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			// valueReceived notification
 			if (state == 0)
 			{
-				values_list[DIM_AMPLIFIER] = environment * 10 + amplifier;
+				values_list[DIM_AMPLIFIER] = area * 10 + amplifier;
 				values_list[DIM_STATUS] = false;
 			}
 		}
@@ -213,7 +213,7 @@ bool AlarmSoundDiffDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			// got the volume
 			int volume = msg.whatArgN(0);
 
-			values_list[DIM_AMPLIFIER] = environment * 10 + amplifier;
+			values_list[DIM_AMPLIFIER] = area * 10 + amplifier;
 			values_list[DIM_STATUS] = true;
 			values_list[DIM_VOLUME] = volume;
 		}
