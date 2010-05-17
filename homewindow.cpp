@@ -47,9 +47,17 @@ TrayBar::TrayBar()
 	l->setSpacing(3);
 }
 
-void TrayBar::addButton(BtButton *b)
+void TrayBar::addButton(BtButton *b, ButtonId id)
 {
 	layout()->addWidget(b);
+	buttons[id] = b;
+}
+
+BtButton *TrayBar::getButton(ButtonId id)
+{
+	if (buttons.contains(id))
+		return buttons[id];
+	return 0;
 }
 
 

@@ -25,6 +25,7 @@
 #include "window.h"
 
 #include <QWidget>
+#include <QHash>
 
 class PageContainer;
 class HeaderWidget;
@@ -33,12 +34,29 @@ class Page;
 class BtButton;
 
 
+/**
+ * This class manages the buttons placed on the top of the window, near the
+ * logo. Buttons of these types have a global role, no matter what is the
+ * current page/window.
+ */
 class TrayBar : public QWidget
 {
 Q_OBJECT
 public:
+	enum ButtonId
+	{
+		RING_EXCLUSION,
+		HANDS_FREE,
+		PROF_STUDIO,
+		AUDIO_PLAYER,
+	};
+
 	TrayBar();
-	void addButton(BtButton *b);
+	void addButton(BtButton *b, ButtonId id);
+	BtButton *getButton(ButtonId id);
+
+private:
+	QHash<int, BtButton*> buttons;
 };
 
 

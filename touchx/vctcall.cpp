@@ -432,6 +432,7 @@ void VCTCall::handleClose()
 VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 {
 	dev = d;
+
 	// There is only 1 VCTCallPage instance, so I can build the VCTCallStatus here.
 	VCTCall::call_status = new VCTCallStatus;
 	vct_call = new VCTCall(d, VCTCall::NORMAL_VIDEO);

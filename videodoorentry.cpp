@@ -115,7 +115,7 @@ VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
 	ring_exclusion->setOffImage(bt_global::skin->getImage("tray_ring_ex_off"));
 	ring_exclusion->setOnImage(bt_global::skin->getImage("tray_ring_ex_on"));
 	connect(ring_exclusion, SIGNAL(clicked()), SLOT(toggleRingExclusion()));
-	bt_global::btmain->trayBar()->addButton(ring_exclusion);
+	bt_global::btmain->trayBar()->addButton(ring_exclusion, TrayBar::RING_EXCLUSION);
 
 	loadItems(config_node);
 	dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS]));
@@ -389,7 +389,7 @@ Intercom::Intercom(const QDomNode &config_node)
 
 
 HandsFree::HandsFree() : IconButtonOnTray(tr("Hands Free"),
-	"handsfree_on", "handsfree_off", "tray_handsfree")
+	"handsfree_on", "handsfree_off", "tray_handsfree", TrayBar::HANDS_FREE)
 {
 }
 
@@ -401,7 +401,7 @@ void HandsFree::updateStatus()
 
 
 ProfessionalStudio::ProfessionalStudio() : IconButtonOnTray(tr("Professional studio"),
-	"profstudio_on", "profstudio_off", "tray_profstudio")
+	"profstudio_on", "profstudio_off", "tray_profstudio", TrayBar::PROF_STUDIO)
 {
 }
 

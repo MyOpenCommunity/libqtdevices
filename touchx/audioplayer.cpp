@@ -158,7 +158,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	if (!tray_icon)
 	{
 		tray_icon = new AudioPlayerTray(bt_global::skin->getImage("tray_player"));
-		bt_global::btmain->trayBar()->addButton(tray_icon);
+		bt_global::btmain->trayBar()->addButton(tray_icon, TrayBar::AUDIO_PLAYER);
 	}
 
 	connect(this, SIGNAL(started()), tray_icon, SLOT(started()));

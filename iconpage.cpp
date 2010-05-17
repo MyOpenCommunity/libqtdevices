@@ -25,7 +25,6 @@
 #include "skinmanager.h"
 #include "fontmanager.h" // bt_global::font
 #include "btmain.h" // bt_global::btmain
-#include "homewindow.h" // TrayBar
 #include "labels.h" // TextOnImageLabel
 
 #include <QDomNode>
@@ -147,14 +146,14 @@ IconPageButton::IconPageButton(const QString &label)
 
 
 IconButtonOnTray::IconButtonOnTray(const QString &label, const QString &icon_on, const QString &icon_off,
-	const QString &tray_icon) : IconPageButton(label)
+	const QString &tray_icon, TrayBar::ButtonId tray_id) : IconPageButton(label)
 {
 	button->setOffImage(bt_global::skin->getImage(icon_off));
 	button->setOnImage(bt_global::skin->getImage(icon_on));
 	connect(button, SIGNAL(clicked()), SLOT(toggleActivation()));
 	tray_button = new BtButton(bt_global::skin->getImage(tray_icon));
 	connect(tray_button, SIGNAL(clicked()), SLOT(turnOff()));
-	bt_global::btmain->trayBar()->addButton(tray_button);
+	bt_global::btmain->trayBar()->addButton(tray_button, tray_id);
 	updateStatus();
 }
 

@@ -23,6 +23,7 @@
 #define ICONPAGE_H
 
 #include "scrollablepage.h"
+#include "homewindow.h" // TrayBar
 
 #include <QButtonGroup>
 #include <QHash>
@@ -100,7 +101,7 @@ class IconButtonOnTray : public IconPageButton
 Q_OBJECT
 public:
 	IconButtonOnTray(const QString &label, const QString &icon_on, const QString &icon_off,
-		const QString &tray_icon);
+		const QString &tray_icon, TrayBar::ButtonId tray_id);
 
 private slots:
 	void toggleActivation();
