@@ -333,7 +333,7 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 	QLabel *page_title = new QLabel(getDescriptionWithPriority(config_node));
 	page_title->setFont(bt_global::font->get(FontManager::TEXT));
 
-	ConfirmationPage *confirm = new ConfirmationPage(tr("Are you sure to delete all consumption data?"));
+	ConfirmationPage *confirm = new ConfirmationPage(tr("Text-Confirm-LoadDataPage"));
 	// show pages correctly
 	connect(content, SIGNAL(resetActuator(int)), confirm, SLOT(showPage()));
 	connect(confirm, SIGNAL(Closed()), SLOT(showPage()));
