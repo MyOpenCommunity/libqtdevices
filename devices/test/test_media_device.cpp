@@ -43,7 +43,12 @@ void TestAlarmSoundDiffDevice::initTestCase()
 void TestAlarmSoundDiffDevice::cleanupTestCase()
 {
 	delete dev;
-	dev = NULL;
+}
+
+void TestAlarmSoundDiffDevice::init()
+{
+	AlarmSoundDiffDevice::sources.clear();
+	AlarmSoundDiffDevice::amplifiers.clear();
 }
 
 void TestAlarmSoundDiffDevice::testStartAlarm()
@@ -54,6 +59,12 @@ void TestAlarmSoundDiffDevice::testStartAlarm()
 
 	alarmVolumes[20] = 3;
 	alarmVolumes[6] = 5;
+
+	// Create the devices required by the AlarmSoundDiffDevice.
+	RadioSourceDevice radio("7");
+	AmplifierDevice ampl1("20");
+	AmplifierDevice ampl2("06");
+
 	dev->startAlarm(7, 33, alarmVolumes);
 	client_command->flush();
 
@@ -78,6 +89,9 @@ void TestAlarmSoundDiffDevice::testStopAlarm()
 	for (int i = 0; i < AMPLI_NUM; ++i)
 		alarmVolumes[i] = -1;
 
+	SourceDevice source("7");
+	AmplifierDevice ampl1("20");
+	AmplifierDevice ampl2("06");
 	alarmVolumes[20] = 3;
 	alarmVolumes[6] = 5;
 	dev->stopAlarm(7, alarmVolumes);
@@ -90,6 +104,7 @@ void TestAlarmSoundDiffDevice::testStopAlarm()
 
 void TestAlarmSoundDiffDevice::sendSetVolume()
 {
+	AmplifierDevice amplifier("57");
 	dev->setVolume(57, 22);
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*#22*3#5#7*#1*22##"));

@@ -24,6 +24,8 @@
 
 #include <openmsg.h>
 
+#include <QDebug>
+
 
 #define RADIO_MIN_FREQ  8750
 #define RADIO_MAX_FREQ 10800
@@ -76,10 +78,36 @@ enum
 };
 
 
+// Inizialization of static member
+QHash<int, SourceDevice*> AlarmSoundDiffDevice::sources;
+QHash<int, AmplifierDevice*> AlarmSoundDiffDevice::amplifiers;
+
+
 AlarmSoundDiffDevice::AlarmSoundDiffDevice(bool _multichannel)
 	: device("22", ""), receive_frames(false)
 {
 	is_multichannel = _multichannel;
+}
+
+void AlarmSoundDiffDevice::addSource(SourceDevice *dev, int source_id)
+{
+	// NOTE: required by the device_cache.
+	// To mantain a clean code we want that sources or amplifiers add
+	// themselves to the list in their constructor using the addSource/addAmplifier
+	// methods. However, the device_cache can delete the newly created device
+	// if another object with the same key is found on the cache. So, we
+	// have to mimic the behavior of the device_cache adding a source or an
+	// amplifier to the list only if it is not already present.
+	// We use integers for address and source_id to avoid problems with leading zeros.
+	if (!sources.contains(source_id))
+		sources[source_id] = dev;
+}
+
+void AlarmSoundDiffDevice::addAmplifier(AmplifierDevice *dev, int address)
+{
+	// NOTE: required by the device_cache (see above).
+	if (!amplifiers.contains(address))
+		amplifiers[address] = dev;
 }
 
 void AlarmSoundDiffDevice::setReceiveFrames(bool receive)
@@ -93,10 +121,16 @@ void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmV
 	for (int i = 0; i < ARRAY_SIZE(areas); ++i)
 		areas[i] = false;
 
-	RadioSourceDevice source_device(QString::number(source));
-	source_device.turnOn("0");
+	SourceDevice *source_device = sources[source];
+	source_device->turnOn("0");
 	if (radio_station)
-		source_device.setStation(QString::number(radio_station));
+	{
+		RadioSourceDevice *radio_source = qobject_cast<RadioSourceDevice*>(source_device);
+		if (radio_source)
+			radio_source->setStation(QString::number(radio_station));
+		else
+			qWarning() << QString("AlarmSoundDiffDevice::startAlarm: the source with address %1 is not a radio source!").arg(source);
+	}
 
 	for (int amplifier = 0; amplifier < AMPLI_NUM; ++amplifier)
 	{
@@ -108,17 +142,15 @@ void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmV
 		{
 			if (!areas[area])
 			{
-				source_device.turnOn(QString::number(area));
+				source_device->turnOn(QString::number(area));
 				areas[area] = true;
 			}
 		}
-		QString address = QString("%1%2").arg(amplifier < 10 ? "0" : "").arg(amplifier);
-
-		AmplifierDevice ampli_device(address);
+		AmplifierDevice *ampli_device = amplifiers[amplifier];
 		int vol = alarmVolumes[amplifier] < 10 ? alarmVolumes[amplifier] : 8;
 
-		ampli_device.setVolume(vol);
-		ampli_device.turnOn();
+		ampli_device->setVolume(vol);
+		ampli_device->turnOn();
 	}
 }
 
@@ -130,18 +162,15 @@ void AlarmSoundDiffDevice::stopAlarm(int source, int *alarmVolumes)
 		if (alarmVolumes[amplifier] < 0)
 			continue;
 
-		QString address = QString("%1%2").arg(amplifier < 10 ? "0" : "").arg(amplifier);
-		AmplifierDevice ampli_device(address);
-		ampli_device.turnOff();
+		AmplifierDevice *ampli_device = amplifiers[amplifier];
+		ampli_device->turnOff();
 	}
 }
 
 void AlarmSoundDiffDevice::setVolume(int amplifier, int volume)
 {
-	QString address = QString("%1%2").arg(amplifier < 10 ? "0" : "").arg(amplifier);
-
-	AmplifierDevice ampli_device(address);
-	ampli_device.setVolume(volume);
+	AmplifierDevice *ampli_device = amplifiers[amplifier];
+	ampli_device->setVolume(volume);
 }
 
 bool AlarmSoundDiffDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
@@ -231,6 +260,7 @@ SourceDevice::SourceDevice(QString source, int openserver_id) :
 {
 	mmtype = 4;
 	source_id = source;
+	AlarmSoundDiffDevice::addSource(this, source.toInt());
 }
 
 void SourceDevice::init()
@@ -579,16 +609,18 @@ QString AmplifierDevice::getAmplifierArea(const QString &where)
 	return where.at(0);
 }
 
-AmplifierDevice::AmplifierDevice(QString where, int openserver_id) :
-	device(QString("22"), where == "0" ? "5#3#0#0" : QString("3#") + where.at(0) + "#" + where.at(1), openserver_id)
+AmplifierDevice::AmplifierDevice(QString _where, int openserver_id) :
+	device(QString("22"), _where == "0" ? "5#3#0#0" : QString("3#") + _where.at(0) + "#" + _where.at(1), openserver_id)
 {
-	if (where != "0")
+	if (_where != "0")
 	{
-		area = where.at(0);
-		point = where.at(1);
+		area = _where.at(0);
+		point = _where.at(1);
 	}
 	else
 		area = point = '0';
+
+	AlarmSoundDiffDevice::addAmplifier(this, _where.toInt());
 }
 
 void AmplifierDevice::init()

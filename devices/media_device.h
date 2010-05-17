@@ -25,6 +25,10 @@
 
 #include <QSet>
 #include <QString>
+#include <QHash>
+
+class SourceDevice;
+class AmplifierDevice;
 
 
 /**
@@ -54,11 +58,16 @@ public:
 
 	void setReceiveFrames(bool receive);
 
+	static void addSource(SourceDevice *dev, int source_id);
+	static void addAmplifier(AmplifierDevice *dev, int address);
+
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 private:
 	bool receive_frames, is_multichannel;
+	static QHash<int, SourceDevice*> sources;
+	static QHash<int, AmplifierDevice*> amplifiers;
 };
 
 

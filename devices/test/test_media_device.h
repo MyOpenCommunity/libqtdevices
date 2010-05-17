@@ -42,6 +42,7 @@ Q_OBJECT
 private slots:
 	void initTestCase();
 	void cleanupTestCase();
+	void init();
 
 	void sendSetVolume();
 
