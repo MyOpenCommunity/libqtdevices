@@ -860,7 +860,7 @@ QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)
 
 double EnergyConversions::convertToRawData(qint64 bt_bus_data, EnergyConversions::EnergyTypology type)
 {
-	float factor;
+	double factor;
 	switch (type)
 	{
 	case DEFAULT_ENERGY:
