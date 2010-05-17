@@ -23,9 +23,11 @@
 #include "btbutton.h"
 #include "fontmanager.h" // FontManager
 #include "icondispatcher.h" // icons_cache
+#include "labels.h" // ScrollingLabel
+
 
 #include <QGridLayout>
-#include <QLabel>
+
 
 #define BAN4BUT_DIM 60
 #define BUT4TL_DIM 60
@@ -125,7 +127,7 @@ Bann4Buttons::Bann4Buttons(QWidget *parent) :
 	center_right_button = new BtButton;
 	center_left_button = new BtButton;
 	left_button = new BtButton;
-	text = new QLabel;
+	text = new ScrollingLabel;
 	text->setAlignment(Qt::AlignHCenter);
 
 	QGridLayout *grid = new QGridLayout;

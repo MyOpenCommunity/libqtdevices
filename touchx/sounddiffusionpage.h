@@ -33,6 +33,7 @@ class QStackedWidget;
 class AmplifierDevice;
 class VirtualAmplifierDevice;
 class VirtualSourceDevice;
+class ScrollingLabel;
 
 
 // TODO: this should go to its own file if we need more banners
@@ -46,7 +47,8 @@ public:
 	void connectRightButton(Page *p);
 
 private:
-	QLabel *ambient_icon, *center_icon, *text;
+	QLabel *ambient_icon, *center_icon;
+	ScrollingLabel *text;
 	BtButton *right_button;
 };
 

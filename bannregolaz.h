@@ -58,7 +58,7 @@ private slots:
 
 private:
 	BtButton *center_left_button, *center_right_button;
-	QLabel *text;
+	ScrollingLabel *text;
 	QTimer timer;
 
 signals:

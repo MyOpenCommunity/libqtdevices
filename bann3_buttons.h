@@ -24,7 +24,12 @@
 
 #include "banner.h"
 
+
+class ScrollingLabel;
+
+
 class QWidget;
+
 
 /**
  * Banner with 3 buttons left, center and right + description below
@@ -45,7 +50,7 @@ protected:
 	BtButton *right_button, *center_button, *left_button;
 
 private:
-	QLabel *text;
+	ScrollingLabel *text;
 };
 
 /**
@@ -77,7 +82,8 @@ protected:
 	BtButton *right_button, *center_button, *left_button;
 
 private:
-	QLabel *text, *center_label;
+	QLabel *center_label;
+	ScrollingLabel *text;
 	QString left_forced, left_not_forced;
 };
 

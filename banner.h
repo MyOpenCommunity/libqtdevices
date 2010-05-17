@@ -35,6 +35,8 @@ class BtButton;
 class Client;
 class Page;
 class BannerContent;
+class ScrollingLabel;
+
 
 class QPixmap;
 class QTimer;
@@ -454,12 +456,12 @@ public:
 	virtual void inizializza(bool forza=false);
 
 protected:
-	QLabel *createTextLabel(const QRect &size, Qt::Alignment align, const QFont &font);
-	QLabel *createTextLabel(Qt::Alignment align, const QFont &font);
+	ScrollingLabel *createTextLabel(const QRect &size, Qt::Alignment align, const QFont &font);
+	ScrollingLabel *createTextLabel(Qt::Alignment align, const QFont &font);
 	void connectButtonToPage(BtButton *b, Page *p);
 	virtual void hideEvent(QHideEvent *event);
 	void initButton(BtButton *btn, const QString &icon);
-	void initLabel(QLabel *lbl, const QString &text, const QFont &font);
+	void initLabel(ScrollingLabel *lbl, const QString &text, const QFont &font);
 
 private:
 	QVector<Page *> linked_pages;

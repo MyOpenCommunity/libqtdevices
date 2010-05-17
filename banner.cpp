@@ -27,6 +27,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "openclient.h"
 #include "page.h"
+#include "labels.h" // ScrollingLabel
 
 #include <QPixmap>
 #include <QLabel>
@@ -712,18 +713,18 @@ void BannerOld::hideEvent(QHideEvent *event)
 
 
 
-QLabel *BannerNew::createTextLabel(const QRect &size, Qt::Alignment align, const QFont &font)
+ScrollingLabel *BannerNew::createTextLabel(const QRect &size, Qt::Alignment align, const QFont &font)
 {
-	QLabel *text = new QLabel(this);
+	ScrollingLabel *text = new ScrollingLabel(this);
 	text->setGeometry(size);
 	text->setAlignment(align);
 	text->setFont(font);
 	return text;
 }
 
-QLabel *BannerNew::createTextLabel(Qt::Alignment align, const QFont &font)
+ScrollingLabel *BannerNew::createTextLabel(Qt::Alignment align, const QFont &font)
 {
-	QLabel *text = new QLabel(this);
+	ScrollingLabel *text = new ScrollingLabel(this);
 	text->setAlignment(align);
 	text->setFont(font);
 	return text;
@@ -766,7 +767,7 @@ void BannerNew::initButton(BtButton *btn, const QString &icon)
 		btn->setImage(icon);
 }
 
-void BannerNew::initLabel(QLabel *lbl, const QString &text, const QFont &font)
+void BannerNew::initLabel(ScrollingLabel *lbl, const QString &text, const QFont &font)
 {
 	if (text.isEmpty())
 	{
@@ -776,7 +777,7 @@ void BannerNew::initLabel(QLabel *lbl, const QString &text, const QFont &font)
 	}
 	else
 	{
-		lbl->setText(text);
+		lbl->setScrollingText(text);
 		lbl->setFont(font);
 	}
 }

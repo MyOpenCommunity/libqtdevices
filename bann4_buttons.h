@@ -25,8 +25,11 @@
 #include "banner.h"
 
 class BtButton;
+class ScrollingLabel;
+
+
 class QWidget;
-class QLabel;
+
 
 // substitute for bann4tasLab
 class Bann4ButtonsIcon : public BannerNew
@@ -69,7 +72,7 @@ protected:
 
 	BtButton *right_button, *center_right_button, *center_left_button, *left_button;
 private:
-	QLabel *text;
+	ScrollingLabel *text;
 };
 
 

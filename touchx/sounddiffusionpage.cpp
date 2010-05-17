@@ -40,6 +40,7 @@
 #include "radio.h" // RadioPage
 #include "navigation_bar.h"
 #include "audiostatemachine.h"
+#include "labels.h" // ScrollingLabel
 
 #include <QDomNode>
 #include <QGridLayout>
@@ -102,7 +103,7 @@ void SoundAmbient::initBanner(const QString &_ambient_icon, const QString &_cent
 	right_button->setImage(right);
 	ambient_icon->setPixmap(*bt_global::icons_cache.getIcon(_ambient_icon));
 	center_icon->setPixmap(*bt_global::icons_cache.getIcon(_center_icon));
-	text->setText(banner_text);
+	text->setScrollingText(banner_text);
 }
 
 void SoundAmbient::connectRightButton(Page *p)
