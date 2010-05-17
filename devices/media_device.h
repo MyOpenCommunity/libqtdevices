@@ -57,6 +57,7 @@ public slots:
 
 public:
 	bool isActive(QString area) const;
+	bool isActive() const;
 
 protected:
 	int mmtype;

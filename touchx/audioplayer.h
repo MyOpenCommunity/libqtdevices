@@ -27,6 +27,7 @@
 
 class QLabel;
 class AudioPlayerPage;
+class VirtualSourceDevice;
 
 
 /*
@@ -89,6 +90,7 @@ private slots:
 private:
 	MediaType type;
 	QLabel *description_top, *description_bottom, *track, *elapsed;
+	VirtualSourceDevice *dev;
 	// icon in tray bar
 	static AudioPlayerTray *tray_icon;
 };

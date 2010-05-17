@@ -386,7 +386,7 @@ void AudioStateMachine::stateBeepOffExited()
 
 void AudioStateMachine::statePlayMediaToSpeakerEntered()
 {
-	qDebug() << "AudioStateMachine" << "play media to speaker state";
+	qDebug() << "AudioStateMachine::statePlayMediaToSpeakerEntered";
 
 	current_audio_path = Volumes::MM_LOCALE;
 	changeVolumePath(Volumes::MM_LOCALE);
@@ -394,12 +394,12 @@ void AudioStateMachine::statePlayMediaToSpeakerEntered()
 
 void AudioStateMachine::statePlayMediaToSpeakerExited()
 {
-
+	qDebug() << "AudioStateMachine::statePlayMediaToSpeakerExited";
 }
 
 void AudioStateMachine::statePlayDifsonEntered()
 {
-	qDebug() << "AudioStateMachine" << "play sound diffusion state";
+	qDebug() << "AudioStateMachine::statePlayDifsonEntered";
 
 	if (local_amplifier_status)
 	{
@@ -416,23 +416,29 @@ void AudioStateMachine::statePlayDifsonEntered()
 
 void AudioStateMachine::statePlayDifsonExited()
 {
+	qDebug() << "AudioStateMachine::statePlayDifsonExited";
+
 	changeVolumePath(Volumes::MM_AMPLIFIER, 0);
 	changeVolumePath(Volumes::MM_SOURCE, 0);
 }
 
 void AudioStateMachine::statePlayRingtoneEntered()
 {
+	qDebug() << "AudioStateMachine::statePlayRingtoneEntered";
+
 	current_audio_path = Volumes::RINGTONES;
 	changeVolumePath(Volumes::RINGTONES);
 }
 
 void AudioStateMachine::statePlayRingtoneExited()
 {
-
+	qDebug() << "AudioStateMachine::statePlayRingtoneExited";
 }
 
 void AudioStateMachine::stateScsVideoCallEntered()
 {
+	qDebug() << "AudioStateMachine::stateScsVideoCallEntered";
+
 	activateVCTAudio();
 	current_audio_path = Volumes::VIDEODOOR;
 	changeVolumePath(Volumes::VIDEODOOR);
@@ -440,11 +446,15 @@ void AudioStateMachine::stateScsVideoCallEntered()
 
 void AudioStateMachine::stateScsVideoCallExited()
 {
+	qDebug() << "AudioStateMachine::stateScsVideoCallExited";
+
 	disactivateVCTAudio();
 }
 
 void AudioStateMachine::stateScsIntercomCallEntered()
 {
+	qDebug() << "AudioStateMachine::stateScsIntercomCallEntered";
+
 	activateVCTAudio();
 	current_audio_path = Volumes::INTERCOM;
 	changeVolumePath(Volumes::INTERCOM);
@@ -452,17 +462,23 @@ void AudioStateMachine::stateScsIntercomCallEntered()
 
 void AudioStateMachine::stateScsIntercomCallExited()
 {
+	qDebug() << "AudioStateMachine::stateScsIntercomCallExited";
+
 	disactivateVCTAudio();
 }
 
 void AudioStateMachine::stateMuteEntered()
 {
+	qDebug() << "AudioStateMachine::stateMuteEntered";
+
 	current_audio_path = Volumes::MICROPHONE;
 	setVolume(0);
 }
 
 void AudioStateMachine::stateMuteExited()
 {
+	qDebug() << "AudioStateMachine::stateMuteExited";
+
 	setVolume(1);
 }
 
@@ -488,13 +504,15 @@ void AudioStateMachine::stateIpIntercomCallExited()
 
 void AudioStateMachine::stateAlarmToSpeakerEntered()
 {
+	qDebug() << "AudioStateMachine::stateAlarmToSpeakerEntered";
+
 	current_audio_path = Volumes::RINGTONES;
 	changeVolumePath(Volumes::RINGTONES);
 }
 
 void AudioStateMachine::stateAlarmToSpeakerExited()
 {
-
+	qDebug() << "AudioStateMachine::stateAlarmToSpeakerExited";
 }
 
 void AudioStateMachine::stateScreensaverWithPlayEntered()
@@ -518,4 +536,3 @@ void AudioStateMachine::stateScreensaverWithoutPlayExited()
 }
 
 AudioStateMachine *bt_global::audio_states = 0;
-
