@@ -119,4 +119,7 @@ void TestLoadsDevice::receiveTotals()
 	tst_period.check(QString("*#18*%1*72#2*1432*1*10*2009*17*12##").arg(dev->where), 1);
 	tst_total.check(QString("*#18*%1*72#2*1432*1*10*2009*17*12##").arg(dev->where), 1432);
 	tst_date.check(QString("*#18*%1*72#2*1432*1*10*2009*17*12##").arg(dev->where), QDateTime(QDate(2009, 10, 1), QTime(17, 12, 0)));
+
+	tst_total.check(QString("*#18*%1*72#1*4294967295*18*5*2010*17*49##").arg(dev->where), 0);
+	tst_total.check(QString("*#18*%1*72#1*4294967294*18*5*2010*17*49##").arg(dev->where), 4294967294u);
 }
