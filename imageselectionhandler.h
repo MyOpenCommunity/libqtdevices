@@ -59,6 +59,8 @@ public:
 
 	~ImageIterator();
 
+	bool hasNext() const;
+
 private:
 	QLinkedList<QString> paths;
 	QDirIterator *dir_iter;

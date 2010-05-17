@@ -56,6 +56,7 @@ private:
 	QTimer *timer;
 	int text_offset;
 	QString separator;
+	bool scrolling_needed;
 };
 
 

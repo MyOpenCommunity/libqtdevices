@@ -24,6 +24,7 @@
 #include "skinmanager.h" // bt_global::skin
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "fontmanager.h" // bt_global::font
+#include "labels.h" // ScrollingLabel
 
 #include <QLabel>
 #include <QHBoxLayout>
@@ -66,13 +67,13 @@ void BannOnOffCombo::initBanner(const QString &left, const QString center_left, 
 	center_icon->setPixmap(*bt_global::icons_cache.getIcon(center));
 	right_icon->setPixmap(*bt_global::icons_cache.getIcon(center_right));
 
-	text->setText(banner_text);
+	text->setScrollingText(banner_text);
 	changeStatus(init_status);
 }
 
 void BannOnOffCombo::setInternalText(const QString &t)
 {
-	internal_label->setText(t);
+	internal_label->setScrollingText(t);
 }
 
 void BannOnOffCombo::changeStatus(ComboStatus st)

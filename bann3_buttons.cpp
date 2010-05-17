@@ -23,6 +23,7 @@
 #include "fontmanager.h" // FontManager
 #include "btbutton.h"
 #include "icondispatcher.h" // icons_cache
+#include "labels.h" // ScrollingLabel
 
 #include <QLabel>
 #include <QHBoxLayout>
@@ -75,7 +76,7 @@ void Bann3Buttons::initBanner(const QString &left, const QString &center, const 
 	right_button->setImage(right);
 	center_button->setImage(center);
 	left_button->setImage(left);
-	text->setText(banner_text);
+	text->setScrollingText(banner_text);
 }
 
 Bann3ButtonsLabel::Bann3ButtonsLabel(QWidget *parent) :

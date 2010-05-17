@@ -22,8 +22,8 @@
 #include "bannregolaz.h"
 #include "btbutton.h"
 #include "fontmanager.h" // fontmanager
+#include "labels.h" // ScrollingLabel
 
-#include <QLabel>
 #include <QHBoxLayout>
 
 #define TIME_RIP_REGOLAZ 500
@@ -67,7 +67,7 @@ BannLevel::BannLevel(QWidget *parent) :
 
 void BannLevel::initBanner(const QString &banner_text)
 {
-	text->setText(banner_text);
+	text->setScrollingText(banner_text);
 }
 
 void BannLevel::initBanner(const QString &left, const QString &center_left, const QString &center_right,
@@ -77,7 +77,7 @@ void BannLevel::initBanner(const QString &left, const QString &center_left, cons
 	center_left_button->setImage(center_left);
 	center_right_button->setImage(center_right);
 	right_button->setImage(right);
-	text->setText(banner_text);
+	text->setScrollingText(banner_text);
 }
 
 void BannLevel::setCenterLeftIcon(const QString &image)

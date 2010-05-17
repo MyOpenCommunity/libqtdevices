@@ -26,6 +26,7 @@
 #include <QWidget>
 
 class BtButton;
+class QLabel;
 
 enum ComboStatus
 {
@@ -48,7 +49,8 @@ protected:
 	BtButton *left_button, *right_button;
 
 private:
-	QLabel *text, *internal_label, *left_icon, *center_icon, *right_icon;
+	ScrollingLabel *text, *internal_label;
+	QLabel *left_icon, *center_icon, *right_icon;
 	QString status_icon[NUM_STATUS];
 };
 

@@ -83,9 +83,6 @@ ImageIterator::ImageIterator(const QString &file_path)
 
 QString ImageIterator::next()
 {
-	if (paths.isEmpty())
-		return QString();
-
 	if (dir_iter)
 	{
 		if (dir_iter->hasNext())
@@ -141,6 +138,10 @@ ImageIterator::~ImageIterator()
 	delete list_iter;
 }
 
+bool ImageIterator::hasNext() const
+{
+	return !paths.isEmpty();
+}
 
 
 ImageSelectionHandler::ImageSelectionHandler(const QString &file_path) :

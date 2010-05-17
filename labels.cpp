@@ -64,8 +64,6 @@ void ScrollingLabel::setScrollingText(const QString &text)
 void ScrollingLabel::resizeEvent(QResizeEvent *e)
 {
 	QLabel::resizeEvent(e);
-	int displayable_chars = width() / fontMetrics().averageCharWidth();
-	setText(scrolling_text.left(displayable_chars));
 	checkScrolling();
 }
 
@@ -78,8 +76,6 @@ void ScrollingLabel::hideEvent(QHideEvent *e)
 void ScrollingLabel::showEvent(QShowEvent *e)
 {
 	QLabel::showEvent(e);
-	int displayable_chars = width() / fontMetrics().averageCharWidth();
-	setText(scrolling_text.left(displayable_chars));
 	checkScrolling();
 }
 

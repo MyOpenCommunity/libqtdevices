@@ -31,6 +31,7 @@ class QLCDNumber;
 class BtButton;
 class TextOnImageLabel;
 class StateButton;
+class ScrollingLabel;
 
 
 /*
@@ -132,7 +133,7 @@ private:
 	// only one of center_icon/center_label is created, depending on which initBanner() is called
 	TextOnImageLabel *center_icon;
 	QLabel *center_label;
-	QLabel *description;
+	ScrollingLabel *description;
 };
 
 

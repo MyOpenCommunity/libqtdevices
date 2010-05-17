@@ -148,7 +148,7 @@ void Bann2Buttons::setCentralText(const QString &t)
 
 void Bann2Buttons::setDescriptionText(const QString &t)
 {
-	description->setText(t);
+	description->setScrollingText(t);
 }
 
 void Bann2Buttons::setBackgroundImage(const QString &path)
