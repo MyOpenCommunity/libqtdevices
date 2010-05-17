@@ -86,8 +86,4 @@ void OpenServerMock::cleanClients(Client *cmd, Client *req, Client *mon)
 {
 	// avoid warnings
 	char str[] = "";
-
-	cmd->last_msg_open_read.CreateMsgOpen(str, 0);
-	mon->last_msg_open_read.CreateMsgOpen(str, 0);
-	req->last_msg_open_read.CreateMsgOpen(str, 0);
 }
