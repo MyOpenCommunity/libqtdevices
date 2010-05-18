@@ -55,6 +55,15 @@
  * both status and mode are unknown), the device always requests the point to point state to:
  * - bootstrap the discovery process
  * - retrieve the status of the device
+ *
+ *
+ * There is a twist in that some actuators may or may not react to some frames; for example
+ * some advanced light actuators react to dimmer 100 on/off frames.  The FrameChecker is used
+ * to handle this case; if it returns FRAME_NOT_HANDLED the frame is completely ignored; if it
+ * returns FRAME_HANDLED the detection algorithm works as described above; when it returns
+ * FRAME_MAYBE_HANDLED, the algorithm is run as above, but the pull state is changed only if it
+ * is non pull (because we do not know if the device does not react to frames because it is in pull
+ * mode or because it can't understand the frames).
  */
 
 /*
