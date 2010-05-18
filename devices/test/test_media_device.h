@@ -46,7 +46,7 @@ private slots:
 
 	void sendSetVolume();
 
-	void receiveStatusOn();
+	void receiveStatus();
 	void receiveVolume();
 	void receiveStatusOff();
 	void receiveSource();

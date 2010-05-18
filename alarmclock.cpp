@@ -222,7 +222,10 @@ void AlarmClock::valueReceived(const DeviceValues &values_list)
 	}
 
 	if (values_list.contains(AlarmSoundDiffDevice::DIM_SOURCE))
+	{
 		sorgente = values_list[AlarmSoundDiffDevice::DIM_SOURCE].toInt();
+		dev->requestStation(sorgente);
+	}
 	if (values_list.contains(AlarmSoundDiffDevice::DIM_RADIO_STATION))
 		stazione = values_list[AlarmSoundDiffDevice::DIM_RADIO_STATION].toInt();
 }

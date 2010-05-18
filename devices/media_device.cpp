@@ -24,6 +24,7 @@
 
 #include <openmsg.h>
 
+#include <QHashIterator>
 #include <QDebug>
 
 
@@ -63,30 +64,25 @@ enum RequestDimension
 
 #define ARRAY_SIZE(x) int(sizeof(x)/sizeof(x[0]))
 
-enum
-{
-	_WHERE_SOURCE    = 2,
-	_WHERE_AMPLIFIER = 3,
-	_WHERE_GENERAL   = 5,
-
-	_DIM_SOURCE_TRACK = 6,
-	_DIM_SOURCE_STATION = 11,
-	_DIM_SOURCE_ON = 2,
-
-	_DIM_AMPLIFIER_VOLUME = 1,
-	_DIM_AMPLIFIER_STATE = 12,
-};
-
 
 // Inizialization of static member
 QHash<int, SourceDevice*> AlarmSoundDiffDevice::sources;
 QHash<int, AmplifierDevice*> AlarmSoundDiffDevice::amplifiers;
+AlarmSoundDiffDevice *AlarmSoundDiffDevice::alarm_device = 0;
 
 
 AlarmSoundDiffDevice::AlarmSoundDiffDevice(bool _multichannel)
-	: device("22", ""), receive_frames(false)
+	: device("22", "")
 {
 	is_multichannel = _multichannel;
+	receive_frames = false;
+	alarm_device = this;
+
+	foreach (SourceDevice *source, sources)
+		connect(source, SIGNAL(valueReceived(DeviceValues)), SLOT(sourceValueReceived(DeviceValues)));
+
+	foreach (AmplifierDevice *amplifier, amplifiers)
+		connect(amplifier, SIGNAL(valueReceived(DeviceValues)), SLOT(amplifierValueReceived(DeviceValues)));
 }
 
 void AlarmSoundDiffDevice::addSource(SourceDevice *dev, int source_id)
@@ -101,6 +97,9 @@ void AlarmSoundDiffDevice::addSource(SourceDevice *dev, int source_id)
 	// We use integers for address and source_id to avoid problems with leading zeros.
 	if (!sources.contains(source_id))
 		sources[source_id] = dev;
+
+	if (alarm_device)
+		QObject::connect(dev, SIGNAL(valueReceived(DeviceValues)), alarm_device, SLOT(sourceValueReceived(DeviceValues)));
 }
 
 void AlarmSoundDiffDevice::addAmplifier(AmplifierDevice *dev, int address)
@@ -108,11 +107,21 @@ void AlarmSoundDiffDevice::addAmplifier(AmplifierDevice *dev, int address)
 	// NOTE: required by the device_cache (see above).
 	if (!amplifiers.contains(address))
 		amplifiers[address] = dev;
+
+	if (alarm_device)
+		QObject::connect(dev, SIGNAL(valueReceived(DeviceValues)), alarm_device, SLOT(amplifierValueReceived(DeviceValues)));
 }
 
 void AlarmSoundDiffDevice::setReceiveFrames(bool receive)
 {
 	receive_frames = receive;
+}
+
+void AlarmSoundDiffDevice::requestStation(int source)
+{
+	// If the source is not a radio, we skip the frame
+	if (RadioSourceDevice *dev = qobject_cast<RadioSourceDevice*>(sources[source]))
+		dev->requestTrack();
 }
 
 void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmVolumes)
@@ -173,85 +182,57 @@ void AlarmSoundDiffDevice::setVolume(int amplifier, int volume)
 	ampli_device->setVolume(volume);
 }
 
-bool AlarmSoundDiffDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
+void AlarmSoundDiffDevice::amplifierValueReceived(const DeviceValues &values_list)
 {
 	if (!receive_frames)
-		return false;
+		return;
 
-	int where = msg.where();
-	int what = msg.what();
+	DeviceValues alarm_values_list;
 
-	// where can have the form:
-	// 2#<source id>        source
-	// 5#2#<source id>      general (source)
-	// 3#<ambient>#<point>  amplifier
-
-	int source = -1;
-	if (where == _WHERE_GENERAL && msg.whereArg(0) == "2")
-		source = QString::fromStdString(msg.whereArg(1)).toInt();
-	else if (where == _WHERE_SOURCE)
-		source = QString::fromStdString(msg.whereArg(0)).toInt();
-
-	if (source != -1)
+	if (values_list.contains(AmplifierDevice::DIM_STATUS))
 	{
-		values_list[DIM_SOURCE] = source;
-
-		if (what == _DIM_SOURCE_STATION)
+		// if we got an "on" state, wait for the volume to emit the
+		// valueReceived notification
+		if (!values_list[AmplifierDevice::DIM_STATUS].toBool())
 		{
-			// got radio station
-			int station = msg.whatArgN(2);
-
-			values_list[DIM_RADIO_STATION] = station;
-		}
-		else if (what == _DIM_SOURCE_ON)
-		{
-			// request the radio station to check if the source is a radio
-			QString f = QString("*#22*2#%1*11##").arg(source);
-			sendInit(f);
-		}
-		else if (what == _DIM_SOURCE_TRACK)
-		{
-			// got radio station/track
-			int station = msg.whatArgN(0);
-
-			values_list[DIM_RADIO_STATION] = station;
+			AmplifierDevice *amplifier = qobject_cast<AmplifierDevice*>(sender());
+			alarm_values_list[DIM_AMPLIFIER] = amplifier->getArea() + amplifier->getPoint();
+			alarm_values_list[DIM_STATUS] = false;
 		}
 	}
-	else if (where == _WHERE_AMPLIFIER)
+	else if (values_list.contains(AmplifierDevice::DIM_VOLUME))
 	{
-		if (msg.whereArgCnt() != 2)
-			return false;
-		int area = QString::fromStdString(msg.whereArg(0)).toInt();
-		int amplifier = QString::fromStdString(msg.whereArg(1)).toInt();
+		AmplifierDevice *amplifier = qobject_cast<AmplifierDevice*>(sender());
+		int volume = values_list[AmplifierDevice::DIM_VOLUME].toInt();
 
-		if (what == _DIM_AMPLIFIER_STATE)
+		alarm_values_list[DIM_AMPLIFIER] = amplifier->getArea() + amplifier->getPoint();
+		alarm_values_list[DIM_STATUS] = true;
+		alarm_values_list[DIM_VOLUME] = volume;
+	}
+
+	if (alarm_values_list.count() > 0)
+		emit valueReceived(alarm_values_list);
+}
+
+void AlarmSoundDiffDevice::sourceValueReceived(const DeviceValues &values_list)
+{
+	if (!receive_frames)
+		return;
+
+	DeviceValues alarm_values_list;
+	if (values_list.contains(SourceDevice::DIM_TRACK))
+		alarm_values_list[DIM_RADIO_STATION] = values_list[SourceDevice::DIM_TRACK];
+	else if (values_list.contains(SourceDevice::DIM_STATUS))
+	{
+		if (values_list[SourceDevice::DIM_STATUS].toBool())
 		{
-			// got on/off state
-			int state = msg.whatArgN(0);
-
-			// if we got an "on" state, wait for the volume to emit the
-			// valueReceived notification
-			if (state == 0)
-			{
-				values_list[DIM_AMPLIFIER] = area * 10 + amplifier;
-				values_list[DIM_STATUS] = false;
-			}
-		}
-		else if (what == _DIM_AMPLIFIER_VOLUME)
-		{
-			// got the volume
-			int volume = msg.whatArgN(0);
-
-			values_list[DIM_AMPLIFIER] = area * 10 + amplifier;
-			values_list[DIM_STATUS] = true;
-			values_list[DIM_VOLUME] = volume;
+			SourceDevice *source = qobject_cast<SourceDevice*>(sender());
+			alarm_values_list[DIM_SOURCE] = source->getSourceId();
 		}
 	}
 
-	if (values_list.count() > 0)
-		return true;
-
-	return false;
+	if (alarm_values_list.count() > 0)
+		emit valueReceived(alarm_values_list);
 }
 
 

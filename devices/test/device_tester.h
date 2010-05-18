@@ -27,6 +27,7 @@
 #include <QtTest/QtTest>
 #include <QVariant>
 #include <QMetaType>
+#include <QList>
 
 
 class QStringList;
@@ -68,11 +69,15 @@ public:
 	void simulateIncomingFrames(const QStringList& frames);
 	QVariant getResult();
 
+	// Register the device arguments as a receiver of the incoming (simulated) frames.
+	void addReceiver(device *d);
+
 private:
 	QSignalSpy spy;
 	int dim_type;
 	device *dev;
 	ValuesNumber item_number;
+	QList <device*> receivers;
 };
 
 

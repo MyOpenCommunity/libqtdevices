@@ -80,7 +80,8 @@ namespace
 		{
 			QString pattern = "*.";
 
-			for (const char *c = extensions[i]; *c; ++c) {
+			for (const char *c = extensions[i]; *c; ++c)
+			{
 				QChar letter(*c);
 				pattern += QString("[%1%2]").arg(letter).arg(letter.toUpper());
 			}
@@ -109,7 +110,7 @@ QStringList getFileExtensions(MultimediaFileType type)
 	case DIRECTORY:
 		break;
 	default:
-		Q_ASSERT_X(false, "getFileExtensions", "type not handled");
+		Q_ASSERT_X(false, "getFileExtensions", qPrintable(QString("type %1 not handled").arg(type)));
 	}
 
 	if (files)
@@ -132,22 +133,16 @@ QStringList getFileFilter(MultimediaFileType type)
 	case DIRECTORY:
 		break;
 	case AUDIO:
-		{
 			files = audio_files;
-		}
 		break;
 	case VIDEO:
-		{
 			files = video_files;
-		}
 		break;
 	case IMAGE:
-		{
 			files = image_files;
-		}
 		break;
 	default:
-		; // Never reached
+		Q_ASSERT_X(false, "getFileFilter", qPrintable(QString("type %1 not handled").arg(type)));
 	}
 
 	if (files)
