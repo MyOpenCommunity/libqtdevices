@@ -38,7 +38,7 @@ Q_OBJECT
 protected:
 	void initLightingDevice(LightingDevice *d = 0);
 	void cleanupLightingDevice();
-	void setParams(QString w, PullMode m);
+	void setParams(QString w, PullMode m, bool a = false);
 	virtual QString getRequestStatusFrame();
 
 private slots:
@@ -64,6 +64,10 @@ private slots:
 	void receiveFixedTiming();
 	void receiveVariableTiming();
 	void receiveInvalidVariableTiming();
+
+	void receiveGlobalDimmer100OnOffNonPullBase();
+	void receiveGlobalDimmer100OnOffNonPullAdvanced();
+	void receiveGlobalDimmer100OnOffPull();
 
 private:
 	void checkPullUnknown();
@@ -94,6 +98,13 @@ private slots:
 	void receiveGlobalIncrementLevel();
 	void receiveGlobalDecrementLevel();
 
+	void receiveGlobalDimmer100SetlevelNonPullBase();
+	void receiveGlobalDimmer100SetlevelNonPullAdvanced();
+	void receiveGlobalDimmer100SetlevelPull();
+	void receiveGlobalDimmer100IncDecNonPullBase();
+	void receiveGlobalDimmer100IncDecNonPullAdvanced();
+	void receiveGlobalDimmer100IncDecPull();
+
 private:
 	bool cleanup_required;
 	DimmerDevice *dimmer;
@@ -119,6 +130,17 @@ private slots:
 
 	void receiveGlobalIncrementLevel100();
 	void receiveGlobalDecrementLevel100();
+
+	// disable some tests from superclasses
+	void receiveGlobalDimmer100OnOffNonPullBase();
+	void receiveGlobalDimmer100OnOffNonPullAdvanced();
+	void receiveGlobalDimmer100OnOffPull();
+	void receiveGlobalDimmer100SetlevelNonPullBase();
+	void receiveGlobalDimmer100SetlevelNonPullAdvanced();
+	void receiveGlobalDimmer100SetlevelPull();
+	void receiveGlobalDimmer100IncDecNonPullBase();
+	void receiveGlobalDimmer100IncDecNonPullAdvanced();
+	void receiveGlobalDimmer100IncDecPull();
 
 private:
 	Dimmer100Device *dimmer100;

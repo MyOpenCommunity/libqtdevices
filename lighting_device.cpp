@@ -45,6 +45,38 @@ enum
 	DIM_DEVICE_OFF = 0,
 };
 
+int dimmerLevelTo100(int level)
+{
+	switch (level)
+	{
+	case 2:
+		return 1;
+	case 9:
+		return 75;
+	case 10:
+		return 100;
+	default:
+		return (level - 2) * 10;
+	}
+}
+
+int dimmer100LevelTo10(int level)
+{
+	switch (level)
+	{
+	case 1:
+		return 2;
+	case 75:
+		return 9;
+	case 100:
+		return 10;
+	default:
+		return (level / 10) + 2;
+	}
+}
+
+
+
 LightingDevice::LightingDevice(QString where, PullMode pull, int pull_delay, PullStateManager::FrameChecker checker) :
 	PullDevice(QString("1"), where, pull, pull_delay, checker)
 {
@@ -140,7 +172,9 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 	{
 	case DIM_DEVICE_ON:
 	case DIM_DEVICE_OFF:
-		if (msg.IsNormalFrame())
+		// skip dimmer 100 on/off commands for base actuators, interpret them for advanced actuators
+		if (msg.IsNormalFrame() &&
+		    (msg.whatArgCnt() == 0 || (msg.whatArgCnt() == 1 && isAdvanced())))
 		{
 			v.setValue(what == DIM_DEVICE_ON);
 			status_index = DIM_DEVICE_ON;
@@ -256,6 +290,7 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 			(*sl)[status_index] = v;
 	}
 
+	// dimmer 10 increment/decrement
 	if ((what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 0)
 	{
 		if (status)
@@ -275,6 +310,37 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 			status = true;
 			(*sl)[DIM_DIMMER_LEVEL] = level;
 		}
+	}
+
+	// dimmer 100 increment/decrement for advanced dimmers
+	if ((what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 2 && isAdvanced())
+	{
+		if (status)
+		{
+			int dimmer100level = dimmerLevelTo100(getDimmer10Level());
+			int delta = msg.whatArgN(0);
+
+			if (what == DIMMER_INC)
+				dimmer100level += delta;
+			else
+				dimmer100level -= delta;
+
+			dimmer100level = qMin(qMax(dimmer100level, 1), 100);
+			(*sl)[DIM_DIMMER_LEVEL] = level = getDimmerLevel(dimmer100LevelTo10(dimmer100level));
+		}
+		else
+		{
+			status = true;
+			(*sl)[DIM_DIMMER_LEVEL] = level;
+		}
+	}
+
+	// dimmer 100 set status, for advanced dimmers
+	if (what == DIMMER100_STATUS && (msg.IsMeasureFrame() || msg.IsWriteFrame()) && isAdvanced())
+	{
+		int dimmer100level = msg.whatArgN(0) - 100;
+
+		(*sl)[DIM_DIMMER_LEVEL] = level = getDimmerLevel(dimmer100LevelTo10(dimmer100level));
 	}
 }
 
@@ -372,32 +438,10 @@ void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
 
 int Dimmer100Device::getDimmerLevel(int what)
 {
-	switch (what)
-	{
-	case 2:
-		return 1;
-	case 9:
-		return 75;
-	case 10:
-		return 100;
-	default:
-		Q_ASSERT_X((what >= 3 && what <= 8), "Dimmer100Device::getDimmerLevel",
-			"Dimmer level must be between 2 and 10");
-		return (what - 2) * 10;
-	}
+	return dimmerLevelTo100(what);
 }
 
 int Dimmer100Device::getDimmer10Level()
 {
-	switch (level)
-	{
-	case 1:
-		return 2;
-	case 75:
-		return 9;
-	case 100:
-		return 10;
-	default:
-		return (level / 10) + 2;
-	}
+	return dimmer100LevelTo10(level);
 }
