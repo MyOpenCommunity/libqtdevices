@@ -110,20 +110,25 @@ void TestAlarmSoundDiffDevice::sendSetVolume()
 	QCOMPARE(server->frameCommand(), QString("*#22*3#5#7*#1*22##"));
 }
 
-void TestAlarmSoundDiffDevice::receiveStatusOn()
+void TestAlarmSoundDiffDevice::receiveStatus()
 {
+	AmplifierDevice amplifier("57");
 	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_STATUS);
-	QString frame = QString("*#22*3#5#7*12*1*22##");
-
-	tss.checkSignals(frame, 0);
+	tss.addReceiver(&amplifier);
+	tss.checkSignals("*#22*3#5#7*12*1*22##", 0);
+	tss.checkSignals("*#22*3#5#7*12*0*22##", 1);
 }
 
 void TestAlarmSoundDiffDevice::receiveVolume()
 {
+	AmplifierDevice amplifier("57");
 	DeviceTester tsa(dev, AlarmSoundDiffDevice::DIM_AMPLIFIER, DeviceTester::MULTIPLE_VALUES);
 	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
 	DeviceTester tsv(dev, AlarmSoundDiffDevice::DIM_VOLUME, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*#22*3#5#7*1*13##");
+	tsa.addReceiver(&amplifier);
+	tss.addReceiver(&amplifier);
+	tsv.addReceiver(&amplifier);
 
 	tsa.check(frame, 57);
 	tss.check(frame, true);
@@ -132,9 +137,12 @@ void TestAlarmSoundDiffDevice::receiveVolume()
 
 void TestAlarmSoundDiffDevice::receiveStatusOff()
 {
+	AmplifierDevice amplifier("57");
 	DeviceTester tsa(dev, AlarmSoundDiffDevice::DIM_AMPLIFIER, DeviceTester::MULTIPLE_VALUES);
 	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*#22*3#5#7*12*0*22##");
+	tsa.addReceiver(&amplifier);
+	tss.addReceiver(&amplifier);
 
 	tsa.check(frame, 57);
 	tss.check(frame, false);
@@ -142,18 +150,18 @@ void TestAlarmSoundDiffDevice::receiveStatusOff()
 
 void TestAlarmSoundDiffDevice::receiveSource()
 {
+	SourceDevice source("21");
 	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_SOURCE);
-	QString frame = QString("*22*2#4#5*5#2#21##");
+	tss.addReceiver(&source);
 
-	tss.check(frame, 21);
-
-	client_request->flush();
-	QCOMPARE(server->frameRequest(), QString("*#22*2#21*11##"));
+	tss.check("*#22*2#21*12*1*4##", 21);
 }
 
 void TestAlarmSoundDiffDevice::receiveRadioStation()
 {
+	RadioSourceDevice source("21");
 	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_RADIO_STATION, DeviceTester::MULTIPLE_VALUES);
+	tss.addReceiver(&source);
 
 	tss.check("*#22*5#2#21*11*22*33*7##", 7);
 	tss.check("*#22*2#21*6*4##", 4);

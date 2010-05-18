@@ -40,14 +40,13 @@ class AlarmSoundDiffDevice : public device
 friend class TestAlarmSoundDiffDevice;
 Q_OBJECT
 public:
-
-	enum Type
+	enum
 	{
-		DIM_AMPLIFIER = 1,
-		DIM_STATUS = 2,
-		DIM_VOLUME = 3,
-		DIM_SOURCE = 4,
-		DIM_RADIO_STATION = 5
+		DIM_AMPLIFIER,
+		DIM_STATUS,
+		DIM_VOLUME,
+		DIM_SOURCE,
+		DIM_RADIO_STATION
 	};
 
 	AlarmSoundDiffDevice(bool is_multichannel);
@@ -67,13 +66,22 @@ public:
 	static void addSource(SourceDevice *dev, int source_id);
 	static void addAmplifier(AmplifierDevice *dev, int address);
 
-protected:
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+	void requestStation(int source);
+
+private slots:
+	void sourceValueReceived(const DeviceValues &values_list);
+	void amplifierValueReceived(const DeviceValues &values_list);
 
 private:
 	bool receive_frames, is_multichannel;
+	// the list of the sources used in sound diffusion
 	static QHash<int, SourceDevice*> sources;
+	// the list of the amplifiers used in sound diffusion
 	static QHash<int, AmplifierDevice*> amplifiers;
+
+	// A trick. used to connect all the sound diffusion devices to the slots
+	// sourceValueReceived / amplifierValueReceived
+	static AlarmSoundDiffDevice *alarm_device;
 };
 
 
@@ -98,6 +106,7 @@ public:
 	SourceDevice(QString source, int openserver_id = 0);
 
 	virtual void init();
+	QString getSourceId() const { return source_id; }
 
 public slots:
 	virtual void nextTrack();
@@ -215,6 +224,8 @@ public:
 	static bool isGeneralAddress(const QString &where);
 	static bool isAreaAddress(const QString &where);
 	static QString getAmplifierArea(const QString &where);
+	QString getArea() const { return area; }
+	QString getPoint() const { return point; }
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
