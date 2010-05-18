@@ -119,7 +119,6 @@ private:
 	bool pwdOn, alarmClockIsOn, alreadyCalibrated;
 	KeypadWindow *passwordKeypad;
 	bool frozen;
-	unsigned char screen_type;
 	int last_event_time;
 
 	// the four values below are in seconds; screenoff_time can be 0
