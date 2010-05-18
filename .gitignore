@@ -3,6 +3,7 @@ BTouch_no_strip
 BTouch_qws
 test/test
 *.pro.user
+*.pro.user.1.3
 moc
 obj
 cfg
