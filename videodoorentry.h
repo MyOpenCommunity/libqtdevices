@@ -60,7 +60,6 @@ public:
 	virtual int sectionId() const;
 
 private slots:
-	void valueReceived(const DeviceValues &values_list);
 	void toggleRingExclusion();
 
 private:

@@ -34,7 +34,8 @@
 #include "btmain.h" // isCalibrating
 #include "state_button.h"
 #include "audiostatemachine.h"
-
+#include "homewindow.h" // TrayBar
+#include "ringtonesmanager.h" // bt_global::ringtones
 
 #include <QDomNode>
 #include <QHBoxLayout>
@@ -432,6 +433,9 @@ void VCTCall::handleClose()
 VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 {
 	dev = d;
+	// Manage only the ringtones, the other values are managed by the VCTCall
+	// object, to avoid duplicated code between the VCTCallPage and the VCTCallWindow.
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 
 	// There is only 1 VCTCallPage instance, so I can build the VCTCallStatus here.
 	VCTCall::call_status = new VCTCallStatus;
@@ -489,6 +493,22 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 VCTCallPage::~VCTCallPage()
 {
 	delete VCTCall::call_status;
+}
+
+void VCTCallPage::valueReceived(const DeviceValues &values_list)
+{
+	if (values_list.contains(EntryphoneDevice::RINGTONE))
+	{
+		StateButton *ring_exclusion = qobject_cast<StateButton*>(bt_global::btmain->trayBar()->getButton(TrayBar::RING_EXCLUSION));
+
+		if (!ring_exclusion || !ring_exclusion->getStatus())
+		{
+			Ringtones::Type ringtone = static_cast<Ringtones::Type>(values_list[EntryphoneDevice::RINGTONE].toInt());
+			bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
+			bt_global::ringtones->playRingtone(ringtone);
+			bt_global::audio_states->exitCurrentState();
+		}
+	}
 }
 
 void VCTCallPage::cleanUp()
