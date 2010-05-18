@@ -339,11 +339,9 @@ void ScreenSaverText::customizeLine()
 ScreenSaverSlideshow::ScreenSaverSlideshow() :
 	ScreenSaver(slideshow_timeout)
 {
-	image_on_screen = new QLabel(this);
-	image_on_screen->setGeometry(0, 0, width(), height());
 	blending_timeline.setDuration(2000);
 	blending_timeline.setFrameRange(0, 1);
-	connect(&blending_timeline, SIGNAL(valueChanged(qreal)), SLOT(updateImage(qreal)));
+	connect(&blending_timeline, SIGNAL(valueChanged(qreal)), SLOT(updateOpacity(qreal)));
 }
 
 void ScreenSaverSlideshow::start(Window *w)
@@ -369,6 +367,19 @@ void ScreenSaverSlideshow::stop()
 		delete iter;
 		iter = 0;
 	}
+}
+
+void ScreenSaverSlideshow::paintEvent(QPaintEvent *e)
+{
+	QPainter p(this);
+	p.fillRect(e->rect(), Qt::black);
+	p.setRenderHint(QPainter::SmoothPixmapTransform, false);
+
+	p.setOpacity(1.0 - opacity);
+	p.drawPixmap(centeredOrigin(e->rect(), current_image.rect()), current_image);
+
+	p.setOpacity(opacity);
+	p.drawPixmap(centeredOrigin(e->rect(), next_image.rect()), next_image);
 }
 
 void ScreenSaverSlideshow::refresh()
@@ -410,26 +421,14 @@ void ScreenSaverSlideshow::refresh()
 	}
 }
 
-void ScreenSaverSlideshow::updateImage(qreal new_value)
+void ScreenSaverSlideshow::updateOpacity(qreal new_value)
 {
-	QPixmap pix(size());
-
-	QPainter p(&pix);
-	p.setRenderHint(QPainter::SmoothPixmapTransform, false);
-
-	p.setOpacity(1.0 - new_value);
-	p.drawPixmap(centeredOrigin(rect(), current_image.rect()), current_image);
-
-	p.setOpacity(new_value);
-	p.drawPixmap(centeredOrigin(rect(), next_image.rect()), next_image);
-
-	image_on_screen->setPixmap(pix);
+	opacity = new_value;
+	update();
 }
 
 ScreenSaverSlideshow::~ScreenSaverSlideshow()
 {
-	image_on_screen->disconnect();
-	image_on_screen->deleteLater();
 }
 
 
