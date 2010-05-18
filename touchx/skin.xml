@@ -642,80 +642,64 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<cid>12021</cid>
 		<!--
 		Other images: forward
-		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
 		-->
-		<img_ambient>diffusione/imgamb.png</img_ambient>
-		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
 	</item>
 	<!-- ambient 2 (multi) -->
 	<item>
 		<cid>12022</cid>
 		<!--
 		Other images: forward
-		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
 		-->
-		<img_ambient>diffusione/imgamb.png</img_ambient>
-		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
 	</item>
 	<!-- ambient 3 (multi) -->
 	<item>
 		<cid>12023</cid>
 		<!--
 		Other images: forward
-		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
 		-->
-		<img_ambient>diffusione/imgamb.png</img_ambient>
-		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
 	</item>
 	<!-- ambient 4 (multi) -->
 	<item>
 		<cid>12024</cid>
 		<!--
 		Other images: forward
-		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
 		-->
-		<img_ambient>diffusione/imgamb.png</img_ambient>
-		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
 	</item>
 	<!-- ambient 5 (multi) -->
 	<item>
 		<cid>12025</cid>
 		<!--
 		Other images: forward
-		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
 		-->
-		<img_ambient>diffusione/imgamb.png</img_ambient>
-		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
 	</item>
 	<!-- ambient 6 (multi) -->
 	<item>
 		<cid>12026</cid>
 		<!--
 		Other images: forward
-		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
 		-->
-		<img_ambient>diffusione/imgamb.png</img_ambient>
-		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
 	</item>
 	<!-- ambient 7 (multi) -->
 	<item>
 		<cid>12027</cid>
 		<!--
 		Other images: forward
-		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
 		-->
-		<img_ambient>diffusione/imgamb.png</img_ambient>
-		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
 	</item>
 	<!-- ambient 8 (multi) -->
 	<item>
 		<cid>12028</cid>
 		<!--
 		Other images: forward
-		Notes: for 'ambient' tag, the ambient number is appended to file name (eg. icon.png -> icon1.png)
 		-->
-		<img_ambient>diffusione/imgamb.png</img_ambient>
-		<img_amplifier>diffusione/imgdiffusione.png</img_amplifier>
+		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
 	</item>
 	<!-- mono channel sound diffusion -->
 	<!-- sound diffusion page (mono sound diffusion) -->
