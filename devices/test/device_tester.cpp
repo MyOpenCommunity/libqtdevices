@@ -24,11 +24,6 @@
 #include <device.h>
 #include <openmsg.h>
 
-#include <QStringList>
-#include <QVariant>
-#include <QMetaType>
-#include <QtTest/QtTest>
-
 #include <assert.h>
 
 // To put/extract in QVariant
@@ -51,7 +46,14 @@ void DeviceTester::simulateIncomingFrames(const QStringList& frames)
 		OpenMsg msg;
 		msg.CreateMsgOpen(frames[i].toAscii().data(), frames[i].length());
 		dev->manageFrame(msg);
+		foreach (device *dev, receivers)
+			dev->manageFrame(msg);
 	}
+}
+
+void DeviceTester::addReceiver(device *d)
+{
+	receivers.append(d);
 }
 
 void DeviceTester::checkSignals(QString frame, int num_signals)
