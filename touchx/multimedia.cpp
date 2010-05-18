@@ -125,7 +125,6 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		QString descr = getTextChild(item, "descr");
 
 		QDomNode page_node = getPageNodeFromChildNode(item, "lnk_pageID");
-		int page_id = getTextChild(page_node, "id").toInt();
 		int item_id = getTextChild(item, "id").toInt();
 
 		Page *p = 0;
@@ -151,24 +150,18 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		}
 		case PAGE_WEB_CAM:
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_WEBCAM))
-			{
 				p = new WebcamListPage(page_node);
-			}
 			break;
 		case PAGE_WEB_RADIO:
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_WEBRADIO))
-			{
 				p = new IPRadioPage(page_node);
-			}
 			break;
 		case PAGE_RSS:
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_RSS))
-			{
 				p = new FeedManager(page_node);
-			}
 			break;
 		default:
-			;// qFatal("Unhandled page id in SettingsTouchX::loadItems");
+			;// qFatal("Unhandled page id in MultimediaSectionPage::loadItems");
 		};
 
 		if (p)
