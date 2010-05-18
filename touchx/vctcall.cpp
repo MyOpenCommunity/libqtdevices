@@ -506,7 +506,6 @@ void VCTCallPage::valueReceived(const DeviceValues &values_list)
 			Ringtones::Type ringtone = static_cast<Ringtones::Type>(values_list[EntryphoneDevice::RINGTONE].toInt());
 			bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
 			bt_global::ringtones->playRingtone(ringtone);
-			bt_global::audio_states->exitCurrentState();
 		}
 	}
 }
@@ -518,12 +517,17 @@ void VCTCallPage::cleanUp()
 	// autoswitch call) and terminate the video.
 	vct_call->endCall();
 
+	if (bt_global::audio_states->currentState() == AudioStates::PLAY_RINGTONE)
+		bt_global::audio_states->exitCurrentState();
 	bt_global::display->forceOperativeMode(false);
 	vct_call->enable();
 }
 
 void VCTCallPage::handleClose()
 {
+	if (bt_global::audio_states->currentState() == AudioStates::PLAY_RINGTONE)
+		bt_global::audio_states->exitCurrentState();
+
 	bt_global::display->forceOperativeMode(false);
 	vct_call->enable();
 	emit Closed();

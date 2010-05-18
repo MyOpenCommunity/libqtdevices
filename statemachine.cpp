@@ -106,7 +106,10 @@ bool StateMachine::isTransitionAllowed(int state) const
 bool StateMachine::toState(int state)
 {
 	if (state == currentState())
+	{
+		active_states.append(state);
 		return true;
+	}
 
 	if (!isTransitionAllowed(state))
 		return false;
@@ -120,7 +123,8 @@ bool StateMachine::toState(int state)
 void StateMachine::exitCurrentState()
 {
 	int curr_state = active_states.takeLast();
-	changeState(currentState(), curr_state);
+	if (currentState() != curr_state)
+		changeState(currentState(), curr_state);
 }
 
 void StateMachine::changeState(int new_state, int old_state)
