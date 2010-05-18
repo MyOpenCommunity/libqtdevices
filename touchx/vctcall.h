@@ -200,6 +200,7 @@ private slots:
 	void exitFullScreen();
 	void callerAddress();
 	void showVCTWindow();
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	VCTCallPrivate::VCTCallWindow *window;

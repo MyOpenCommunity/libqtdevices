@@ -141,6 +141,7 @@ PullStateManager::PullStateManager(PullMode m, FrameChecker checker)
 	status_requested = false;
 	frame_checker = checker;
 	last_handled = FRAME_NOT_HANDLED;
+	advanced = false;
 }
 
 PullMode PullStateManager::getPullMode()
@@ -201,7 +202,10 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 			if (status == new_state && last_handled == FRAME_HANDLED)
 				mode = PULL;
 			else if (status != new_state)
+			{
 				mode = NOT_PULL;
+				advanced = last_handled == FRAME_MAYBE_HANDLED;
+			}
 		}
 		else
 		{

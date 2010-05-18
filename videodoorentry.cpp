@@ -36,7 +36,6 @@
 #include "items.h" // ItemTuning
 #include "displaycontrol.h" // (*bt_global::display)
 #include "hardware_functions.h" // setVolume
-#include "ringtonesmanager.h" // bt_global::ringtones
 #include "btmain.h" // bt_global::btmain
 #include "homewindow.h" // TrayBar
 #include "pagestack.h" // bt_global::page_stack
@@ -96,7 +95,6 @@ void VideoDoorEntry::loadDevices(const QDomNode &config_node)
 VideoDoorEntry::VideoDoorEntry()
 {
 	EntryphoneDevice *dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS]));
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 
 	// These pages are showed only after the receiving of a call frame, so we
 	// don't store any pointer to these. The destruction is provided by the PageContainer.
@@ -119,34 +117,11 @@ VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
 
 	loadItems(config_node);
 	dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS]));
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
 void VideoDoorEntry::toggleRingExclusion()
 {
 	ring_exclusion->setStatus(!ring_exclusion->getStatus());
-}
-
-void VideoDoorEntry::valueReceived(const DeviceValues &values_list)
-{
-	DeviceValues::const_iterator it = values_list.constBegin();
-	while (it != values_list.constEnd())
-	{
-		switch (it.key())
-		{
-		case EntryphoneDevice::RINGTONE:
-			Ringtones::Type ringtone = static_cast<Ringtones::Type>(it.value().toInt());
-			if (!ring_exclusion || !ring_exclusion->getStatus())
-			{
-				bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
-				bt_global::ringtones->playRingtone(ringtone);
-				bt_global::audio_states->exitCurrentState();
-			}
-
-			break;
-		}
-		++it;
-	}
 }
 
 int VideoDoorEntry::sectionId() const
