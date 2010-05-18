@@ -54,7 +54,7 @@ public:
 
 public slots:
 	void init(int bars, QString t, const QMap<int, QString> &x_axis);
-	void setData(const QMap<int, float> &data);
+	void setData(const QMap<int, double> &data);
 
 protected:
 	void paintEvent(QPaintEvent *e);
@@ -80,7 +80,7 @@ private:
 #ifdef TEST_ENERGY_GRAPH
 public:
 #endif
-	QMap<int, float> graph_data;
+	QMap<int, double> graph_data;
 };
 
 
@@ -96,7 +96,7 @@ Q_OBJECT
 public:
 	EnergyTableContent(int n_dec);
 	void init(int num_val, QString left_text, QString right_text, int shift_val=-1);
-	void setData(const QMap<int, float> &data);
+	void setData(const QMap<int, double> &data);
 	void setNumDecimal(int d);
 
 public slots:
@@ -121,7 +121,7 @@ private:
 
 private:
 	QString border_color, heading_color, odd_row_color, even_row_color, text_color;
-	QMap<int, float> table_data;
+	QMap<int, double> table_data;
 	QString left_text, right_text;
 	int num_values;
 	int shift_value;
@@ -143,7 +143,7 @@ Q_OBJECT
 public:
 	EnergyTable(int n_dec);
 	void init(int num_val, QString left_text, QString right_text, QString date, int shift_val=-1);
-	void setData(const QMap<int, float> &data);
+	void setData(const QMap<int, double> &data);
 	void setNumDecimal(int d);
 
 private:

@@ -25,6 +25,14 @@
 
 #include <QDateTime>
 
+namespace
+{
+	inline unsigned int whatArgU(OpenMsg &msg, int index)
+	{
+		return QString::fromStdString(msg.whatArg(index)).toUInt();
+	}
+}
+
 enum
 {
 	_DIM_STATUS = 71,
@@ -114,7 +122,7 @@ bool LoadsDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	else if (what == _DIM_TOTALS && msg.whatArgCnt() == 6 && msg.whatSubArgCnt() == 1)
 	{
 		values_list[DIM_PERIOD] = msg.whatSubArgN(0) - 1;
-		values_list[DIM_TOTAL] = msg.whatArgN(0);
+		values_list[DIM_TOTAL] = msg.whatArg(0) == "4294967295" ? 0u : whatArgU(msg, 0);
 
 		QDate d(msg.whatArgN(3), msg.whatArgN(2), msg.whatArgN(1));
 		QTime t(msg.whatArgN(4), msg.whatArgN(5), 0);

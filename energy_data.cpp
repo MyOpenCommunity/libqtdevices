@@ -269,10 +269,9 @@ EditEnergyCost::EditEnergyCost()
 
 void EditEnergyCost::addRate(int rate_id)
 {
-	// TODO BTOUCH_CONFIG Use a generic description for old Btouch config,
-	//      rate.config for new config format
 	const EnergyRate &rate = EnergyRates::energy_rates.getRate(rate_id);
 
+#ifdef CONFIG_BTOUCH
 	QString descr = rate.is_production ? tr("Production") : tr("Consumption");
 	if (rate.is_production)
 	{
@@ -286,7 +285,9 @@ void EditEnergyCost::addRate(int rate_id)
 		if (consumption_count > 1)
 			descr += " " + QString::number(consumption_count);
 	}
-
+#else
+	QString descr = rate.description;
+#endif
 
 	BannEnergyCost *b = new BannEnergyCost(rate_id, bt_global::skin->getImage("minus"),
 					       bt_global::skin->getImage("plus"),

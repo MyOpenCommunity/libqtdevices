@@ -62,7 +62,7 @@ void EnergyGraph::generateRandomValues()
 }
 #endif
 
-void EnergyGraph::setData(const QMap<int, float> &data)
+void EnergyGraph::setData(const QMap<int, double> &data)
 {
 	graph_data = data;
 	update();
@@ -79,8 +79,8 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 	{
 		// do not use 0 for the max value, otherwise the graph scale becomes
 		// too small when the measures are all zero
-		float max_value = 0.02;
-		foreach (float val, graph_data)
+		double max_value = 0.02;
+		foreach (double val, graph_data)
 			max_value = qMax(max_value, val);
 
 		// Coordinates have the origin in the point on the top left of the display
@@ -127,7 +127,7 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		{
 			if (i == 0 || i == 2)
 			{
-				float value = i == 0 ? max_value : max_value / 2;
+				double value = i == 0 ? max_value : max_value / 2;
 				QString text = loc.toString(value + 0.00499, 'f', 2);
 				p.setPen(pen_text);
 				p.drawText(left, y_max_value + quarter*i + fm.ascent() / 2, text);
@@ -193,7 +193,7 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		p.setPen(_border_color);
 		int current_left = axis_left + AXIS_PEN_WIDTH;
 
-		QMapIterator<int, float> it(graph_data);
+		QMapIterator<int, double> it(graph_data);
 		while (it.hasNext())
 		{
 			it.next();
@@ -291,7 +291,7 @@ void EnergyTable::setNumDecimal(int n_dec)
 	table->setNumDecimal(n_dec);
 }
 
-void EnergyTable::setData(const QMap<int, float> &data)
+void EnergyTable::setData(const QMap<int, double> &data)
 {
 	table->setData(data);
 }
@@ -339,7 +339,7 @@ void EnergyTable::setNumDecimal(int n_dec)
 	right_table->setNumDecimal(n_dec);
 }
 
-void EnergyTable::setData(const QMap<int, float> &data)
+void EnergyTable::setData(const QMap<int, double> &data)
 {
 	left_table->setData(data);
 	if (left_table->pageCount() > 1)
@@ -405,11 +405,11 @@ void EnergyTableContent::init(int num_val, QString _left_text, QString _right_te
 	update();
 }
 
-void EnergyTableContent::setData(const QMap<int, float> &data)
+void EnergyTableContent::setData(const QMap<int, double> &data)
 {
 	table_data.clear();
 	int i = 0;
-	QMapIterator<int, float> it(data);
+	QMapIterator<int, double> it(data);
 	while (it.hasNext() && i < num_values)
 	{
 		it.next();

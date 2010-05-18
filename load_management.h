@@ -91,7 +91,7 @@ public:
 	 *
 	 * \param period Extracted from frame
 	 */
-	void updatePeriodValue(int period, int new_value);
+	void updatePeriodValue(int period, qint64 new_value);
 
 public slots:
 	void toggleCurrencyView();
@@ -101,7 +101,7 @@ private:
 	QLabel *current_consumption;
 	QSignalMapper mapper;
 	Bann2Buttons *first_period, *second_period;
-	int first_period_value, second_period_value, current_value;
+	qint64 first_period_value, second_period_value, current_value;
 	int rate_id, currency_decimals;
 	EnergyRate rate;
 	bool is_currency;
