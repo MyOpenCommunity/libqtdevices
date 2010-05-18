@@ -184,11 +184,11 @@ static const char *family_cost_icons[] = {
 };
 
 static const char *family_descriptions[] = {
-	QT_TR_NOOP("Electricity"),
-	QT_TR_NOOP("Water"),
-	QT_TR_NOOP("Gas"),
-	QT_TR_NOOP("DHW"),
-	QT_TR_NOOP("Heating/Cooling")
+	QT_TRANSLATE_NOOP("EditEnergyCost", "Electricity"),
+	QT_TRANSLATE_NOOP("EditEnergyCost", "Water"),
+	QT_TRANSLATE_NOOP("EditEnergyCost", "Gas"),
+	QT_TRANSLATE_NOOP("EditEnergyCost", "DHW"),
+	QT_TRANSLATE_NOOP("EditEnergyCost", "Heating/Cooling")
 };
 
 EnergyCost::EnergyCost()
