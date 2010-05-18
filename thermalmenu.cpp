@@ -217,8 +217,10 @@ void ProbesPage::loadItems(const QDomNode &config_node, bool are_probes_external
 	{
 		QString addr = getTextChild(item, "where");
 		QString text = getTextChild(item, "descr");
+#ifdef CONFIG_BTOUCH
 		if (are_probes_external)
 			addr += "00";
+#endif
 
 		NonControlledProbeDevice *dev = bt_global::add_device_to_cache(new NonControlledProbeDevice(addr,
 			are_probes_external ? NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL));

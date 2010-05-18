@@ -106,7 +106,7 @@ BannPowerAmplifier::BannPowerAmplifier(const QString &descr, const QDomNode& con
 	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address, openserver_id));
 	connect(dev, SIGNAL(valueReceived(const DeviceValues&)), SLOT(valueReceived(const DeviceValues&)));
 
-	connect(right_button, SIGNAL(clicked()), SLOT(toggleStatus()));
+	connect(left_button, SIGNAL(clicked()), SLOT(toggleStatus()));
 	connect(this, SIGNAL(center_right_clicked()), SLOT(volumeUp()));
 	connect(this, SIGNAL(center_left_clicked()), SLOT(volumeDown()));
 
