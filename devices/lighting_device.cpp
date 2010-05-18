@@ -179,7 +179,8 @@ bool LightingDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	{
 	case DIM_DEVICE_ON:
 	case DIM_DEVICE_OFF:
-		if (isCommandFrame(msg))
+		if (isCommandFrame(msg) &&
+		    (msg.whatArgCnt() == 0 || (msg.whatArgCnt() == 1 && isAdvanced())))
 			values_list[DIM_DEVICE_ON] = what == DIM_DEVICE_ON;
 		break;
 	case DIM_VARIABLE_TIMING:
@@ -279,6 +280,7 @@ bool DimmerDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			values_list[what] = true;
 	}
 
+	// dimmer 10 increment/decrement
 	if ((what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 0)
 	{
 		if (status)
@@ -299,6 +301,36 @@ bool DimmerDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			status = true;
 			values_list[DIM_DIMMER_LEVEL] = dimmer100LevelTo10(level);
 		}
+	}
+
+	// dimmer 100 increment/decrement for advanced dimmers
+	if ((what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 2 && isAdvanced())
+	{
+		if (status)
+		{
+			int delta = msg.whatArgN(0);
+
+			if (what == DIMMER_INC)
+				level += delta;
+			else
+				level -= delta;
+
+			level = qMin(qMax(level, 1), 100);
+			values_list[DIM_DIMMER_LEVEL] = dimmer100LevelTo10(level);
+		}
+		else
+		{
+			status = true;
+			values_list[DIM_DIMMER_LEVEL] = dimmer100LevelTo10(level);
+		}
+	}
+
+	// dimmer 100 set status, for advanced dimmers
+	if (what == DIMMER100_STATUS && (msg.IsMeasureFrame() || msg.IsWriteFrame()) && isAdvanced())
+	{
+		level = msg.whatArgN(0) - 100;
+
+		values_list[DIM_DIMMER_LEVEL] = dimmer100LevelTo10(level);
 	}
 
 	return !values_list.isEmpty();
