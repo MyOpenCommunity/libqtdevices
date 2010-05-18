@@ -83,10 +83,11 @@ public:
 	bool moreFrameNeeded(OpenMsg &msg, bool is_environment);
 	PullMode getPullMode();
 	void setStatusRequested(bool status);
+	bool isAdvanced() { return advanced; }
 
 private:
 	int status;
-	bool status_requested;
+	bool status_requested, advanced;
 	PullMode mode;
 
 	// filters the frames interpreted by this device
@@ -121,6 +122,8 @@ protected:
 	virtual void parseFrame(OpenMsg &msg, StatusList *sl) = 0;
 	// different devices may need different status requests (eg. Dimmer100)
 	virtual void requestPullStatus() = 0;
+
+	bool isAdvanced() { return state.isAdvanced(); }
 
 private slots:
 	void delayedStatusRequest();
