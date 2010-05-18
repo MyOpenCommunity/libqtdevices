@@ -76,6 +76,7 @@ AlarmSoundDiffDevice::AlarmSoundDiffDevice(bool _multichannel)
 {
 	is_multichannel = _multichannel;
 	receive_frames = false;
+	Q_ASSERT_X(alarm_device == 0, "AlarmSoundDiffDevice::AlarmSoundDiffDevice", "alarm sound diffusion device created multiple times");
 	alarm_device = this;
 
 	foreach (SourceDevice *source, sources)
@@ -131,6 +132,7 @@ void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmV
 		areas[i] = false;
 
 	SourceDevice *source_device = sources[source];
+	Q_ASSERT_X(source_device != 0, "AlarmSoundDiffDevice::startAlarm", "Invalid source");
 	source_device->turnOn("0");
 	if (radio_station)
 	{
@@ -156,6 +158,7 @@ void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmV
 			}
 		}
 		AmplifierDevice *ampli_device = amplifiers[amplifier];
+		Q_ASSERT_X(ampli_device != 0, "AlarmSoundDiffDevice::startAlarm", "Invalid amplifier");
 		int vol = alarmVolumes[amplifier] < 10 ? alarmVolumes[amplifier] : 8;
 
 		ampli_device->setVolume(vol);
@@ -172,6 +175,7 @@ void AlarmSoundDiffDevice::stopAlarm(int source, int *alarmVolumes)
 			continue;
 
 		AmplifierDevice *ampli_device = amplifiers[amplifier];
+		Q_ASSERT_X(ampli_device != 0, "AlarmSoundDiffDevice::startAlarm", "Invalid amplifier");
 		ampli_device->turnOff();
 	}
 }
@@ -179,6 +183,7 @@ void AlarmSoundDiffDevice::stopAlarm(int source, int *alarmVolumes)
 void AlarmSoundDiffDevice::setVolume(int amplifier, int volume)
 {
 	AmplifierDevice *ampli_device = amplifiers[amplifier];
+	Q_ASSERT_X(ampli_device != 0, "AlarmSoundDiffDevice::startAlarm", "Invalid amplifier");
 	ampli_device->setVolume(volume);
 }
 
