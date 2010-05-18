@@ -28,37 +28,41 @@
 class QResizeEvent;
 class QShowEvent;
 class QHideEvent;
-
+class QTimerEvent;
+class QPaintEvent;
 
 /**
  * A label that scrolls its text one char at time from left to right.
  */
 class ScrollingLabel : public QLabel
 {
-Q_OBJECT
-public:
-	ScrollingLabel(const QString &text, QWidget *parent = 0);
-	ScrollingLabel(QWidget *parent = 0);
-	void setScrollingText(const QString &text);
+	Q_OBJECT
 
-private slots:
-	void handleScroll();
-	void checkScrolling();
+public:
+	ScrollingLabel(QWidget *parent = 0);
+	ScrollingLabel(const QString &text, QWidget *parent = 0);
+	~ScrollingLabel();
+
+	void setScrollingText(const QString &text);
 
 protected:
 using QLabel::setText;
-	virtual void resizeEvent(QResizeEvent *e);
-	virtual void showEvent(QShowEvent *e);
-	virtual void hideEvent(QHideEvent *e);
+	void paintEvent(QPaintEvent *e);
+	void timerEvent(QTimerEvent *e);
+	void showEvent(QShowEvent *e);
+	void hideEvent(QHideEvent *e);
+	void resizeEvent(QResizeEvent *e);
 
 private:
-	QString scrolling_text;
-	QTimer *timer;
-	int text_offset;
-	QString separator;
-	bool scrolling_needed;
-};
+	void init();
 
+	bool scrolling_needed;
+	int offset;
+	int timer_id;
+	int text_width;
+	int separator_width;
+	QString separator;
+};
 
 
 /**

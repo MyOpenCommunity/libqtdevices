@@ -179,6 +179,9 @@ public:
 	virtual Type type() { return SLIDESHOW; }
 	virtual ~ScreenSaverSlideshow();
 
+protected:
+	virtual void paintEvent(QPaintEvent *e);
+
 protected slots:
 	virtual void refresh();
 
@@ -186,12 +189,12 @@ private:
 	// iterator for images
 	ImageIterator *iter;
 	// shows the image on the window
-	QLabel *image_on_screen;
 	QPixmap current_image, next_image;
 	QTimeLine blending_timeline;
+	qreal opacity;
 
 private slots:
-	void updateImage(qreal new_value);
+	void updateOpacity(qreal new_value);
 };
 
 

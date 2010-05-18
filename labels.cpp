@@ -24,82 +24,118 @@
 #include "fontmanager.h" //bt_global::font
 #include "icondispatcher.h" //bt_global::icons_cache
 
-#include <QTimer>
 #include <QPainter>
+#include <QPaintEvent>
+#include <QTimerEvent>
 #include <QTextDocument>
 #include <QDebug>
 
 
-ScrollingLabel::ScrollingLabel(const QString &text, QWidget *parent) : QLabel(parent)
+#define SCROLL_INTERVAL 500
+
+
+ScrollingLabel::ScrollingLabel(QWidget *parent)
+	: QLabel(parent)
 {
-	separator = "   --   ";
+	init();
+}
 
-	timer = new QTimer(this);
-	timer->setInterval(333);
-	connect(timer, SIGNAL(timeout()), SLOT(handleScroll()));
-
+ScrollingLabel::ScrollingLabel(const QString &text, QWidget *parent)
+	: QLabel(parent)
+{
+	init();
 	setScrollingText(text);
 }
 
-ScrollingLabel::ScrollingLabel(QWidget *parent) : QLabel(parent)
+ScrollingLabel::~ScrollingLabel()
 {
-	separator = "   --   ";
-
-	timer = new QTimer(this);
-	timer->setInterval(333);
-	connect(timer, SIGNAL(timeout()), SLOT(handleScroll()));
+	if (timer_id != 0)
+		killTimer(timer_id);
 }
 
 void ScrollingLabel::setScrollingText(const QString &text)
 {
-	scrolling_text = text;
-	setText(scrolling_text);
-	// We use a single shot to allow a scenario like this (because the
-	// checkScrolling use the fontMetrics):
-	// label->setScrollingText()
-	// label->setFont()
-	QTimer::singleShot(0, this, SLOT(checkScrolling()));
+	setText(text);
+	text_width = fontMetrics().width(text);
 }
 
-void ScrollingLabel::resizeEvent(QResizeEvent *e)
+void ScrollingLabel::paintEvent(QPaintEvent *e)
 {
-	QLabel::resizeEvent(e);
-	checkScrolling();
+	if (scrolling_needed)
+	{
+		QPainter p(this);
+		int full_width = text_width + separator_width;
+
+		int x = -offset;
+		while (x < width())
+		{
+			p.drawText(x, 0, full_width, height(), Qt::AlignLeft | Qt::AlignVCenter, text() + separator);
+			x += full_width;
+		}
+	}
+	else
+		QLabel::paintEvent(e);
 }
 
-void ScrollingLabel::hideEvent(QHideEvent *e)
+void ScrollingLabel::timerEvent(QTimerEvent *e)
 {
-	QLabel::hideEvent(e);
-	timer->stop();
+	if (e->timerId() == timer_id)
+	{
+		offset += fontMetrics().averageCharWidth();
+		if (offset >= fontMetrics().width(text()))
+			offset = 0;
+		scroll(-fontMetrics().averageCharWidth(), 0);
+	}
+	else
+		QWidget::timerEvent(e);
 }
 
 void ScrollingLabel::showEvent(QShowEvent *e)
 {
+	if (scrolling_needed)
+		timer_id = startTimer(SCROLL_INTERVAL);
 	QLabel::showEvent(e);
-	checkScrolling();
 }
 
-void ScrollingLabel::checkScrolling()
+void ScrollingLabel::hideEvent(QHideEvent *e)
 {
-	text_offset = 0;
-	timer->stop();
-	if (fontMetrics().width(scrolling_text) > width())
-		QTimer::singleShot(200, timer, SLOT(start())); // empirical delay
+	if (timer_id != 0)
+	{
+		killTimer(timer_id);
+		timer_id = 0;
+		offset = 0;
+	}
+	QLabel::hideEvent(e);
 }
 
-void ScrollingLabel::handleScroll()
+
+void ScrollingLabel::resizeEvent(QResizeEvent *e)
 {
-	QString entire_text = scrolling_text + separator;
+	int w = e->size().width();
 
-	int displayable_chars = width() / fontMetrics().averageCharWidth();
-
-	if (text_offset < entire_text.length())
-		++text_offset;
+	if (w < text_width)
+	{
+		if (timer_id != 0)
+			killTimer(timer_id);
+		timer_id = startTimer(SCROLL_INTERVAL);
+		scrolling_needed = true;
+	}
 	else
-		text_offset = 0;
+	{
+		killTimer(timer_id);
+		timer_id = 0;
+		scrolling_needed = false;
+	}
+}
 
-	QString to_display = entire_text.mid(text_offset) + entire_text.left(text_offset);
-	setText(to_display.left(displayable_chars));
+void ScrollingLabel::init()
+{
+	scrolling_needed = false;
+	offset = 0;
+	timer_id = 0;
+	text_width = 0;
+	separator = " -- ";
+	separator_width = fontMetrics().width(separator);
 }
 
 

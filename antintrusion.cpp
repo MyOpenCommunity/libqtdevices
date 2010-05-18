@@ -224,8 +224,9 @@ void Antintrusion::Parzializza()
 	if (tasti)
 		delete tasti;
 	tasti = new KeypadWithState(s);
-	connect(tasti, SIGNAL(Closed()), SLOT(Parz()));
 	connect(tasti, SIGNAL(Closed()), SLOT(showPage()));
+	connect(tasti, SIGNAL(accept()), SLOT(Parz()));
+	connect(tasti, SIGNAL(accept()), SLOT(showPage()));
 	tasti->setMode(Keypad::HIDDEN);
 	tasti->showPage();
 }
