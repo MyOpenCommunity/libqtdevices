@@ -283,8 +283,8 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 
 		if (what >= DIMMER10_LEVEL_MIN && what <= DIMMER10_LEVEL_MAX)
 		{
-			level = getDimmerLevel(what);
-			v.setValue(level);
+			level = dimmerLevelTo100(what);
+			v.setValue(getDimmer10Level());
 			status_index = DIM_DIMMER_LEVEL;
 		}
 		else if (what == DIM_DIMMER_PROBLEM)
@@ -302,7 +302,7 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 	{
 		if (status)
 		{
-			int dimmer10level = getDimmer10Level();
+			int dimmer10level = dimmer100LevelTo10(level);
 
 			if (what == DIMMER_INC)
 				dimmer10level += 1;
@@ -310,12 +310,13 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 				dimmer10level -= 1;
 
 			dimmer10level = qMin(qMax(dimmer10level, 2), 10);
-			(*sl)[DIM_DIMMER_LEVEL] = level = getDimmerLevel(dimmer10level);
+			level = dimmerLevelTo100(dimmer10level);
+			(*sl)[DIM_DIMMER_LEVEL] = dimmer10level * 10;
 		}
 		else
 		{
 			status = true;
-			(*sl)[DIM_DIMMER_LEVEL] = level;
+			(*sl)[DIM_DIMMER_LEVEL] = getDimmer10Level();
 		}
 	}
 
@@ -324,43 +325,35 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 	{
 		if (status)
 		{
-			int dimmer100level = dimmerLevelTo100(getDimmer10Level());
 			int delta = msg.whatArgN(0);
 
 			if (what == DIMMER_INC)
-				dimmer100level += delta;
+				level += delta;
 			else
-				dimmer100level -= delta;
+				level -= delta;
 
-			dimmer100level = qMin(qMax(dimmer100level, 1), 100);
-			(*sl)[DIM_DIMMER_LEVEL] = level = getDimmerLevel(dimmer100LevelTo10(dimmer100level));
+			level = qMin(qMax(level, 1), 100);
+			(*sl)[DIM_DIMMER_LEVEL] = getDimmer10Level();
 		}
 		else
 		{
 			status = true;
-			(*sl)[DIM_DIMMER_LEVEL] = level;
+			(*sl)[DIM_DIMMER_LEVEL] = getDimmer10Level();
 		}
 	}
 
 	// dimmer 100 set status, for advanced dimmers
 	if (what == DIMMER100_STATUS && (msg.IsMeasureFrame() || msg.IsWriteFrame()) && isAdvanced())
 	{
-		int dimmer100level = msg.whatArgN(0) - 100;
+		level = msg.whatArgN(0) - 100;
 
-		(*sl)[DIM_DIMMER_LEVEL] = level = getDimmerLevel(dimmer100LevelTo10(dimmer100level));
+		(*sl)[DIM_DIMMER_LEVEL] = getDimmer10Level();
 	}
-}
-
-int DimmerDevice::getDimmerLevel(int what)
-{
-	Q_ASSERT_X(what >= 2 && what <= 10, "DimmerDevice::getDimmerLevel",
-		"DimmerDevice level must be between 2 and 10");
-	return what * 10;
 }
 
 int DimmerDevice::getDimmer10Level()
 {
-	return level / 10;
+	return dimmer100LevelTo10(level) * 10;
 }
 
 
@@ -393,6 +386,9 @@ void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
 {
 	DimmerDevice::parseFrame(msg, sl);
 	int what = msg.what();
+
+	if (msg.IsNormalFrame() && (what == DIM_DEVICE_ON || what == DIM_DEVICE_OFF) && msg.whatArgCnt() == 1)
+		(*sl)[DIM_DEVICE_ON] = (what == DIM_DEVICE_ON);
 
 	if (what == DIMMER100_STATUS && msg.IsMeasureFrame())
 	{
@@ -443,12 +439,7 @@ void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
 	}
 }
 
-int Dimmer100Device::getDimmerLevel(int what)
-{
-	return dimmerLevelTo100(what);
-}
-
 int Dimmer100Device::getDimmer10Level()
 {
-	return dimmer100LevelTo10(level);
+	return level;
 }
