@@ -208,7 +208,7 @@ public:
 	};
 
 	// passing "0" as the where creates a device commanding all amplifiers
-	// passing "<area>0" as the where creates a device commanding all amplifiers in an area
+	// passing "#<area>" as the where creates a device commanding all amplifiers in an area
 	AmplifierDevice(QString where, int openserver_id = 0);
 
 	virtual void init();
