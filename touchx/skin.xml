@@ -765,8 +765,6 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
 		<img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
 		<img_loud>diffusione/loud.png</img_loud>
-		<img_loud_on>diffusione/loud.png</img_loud_on>
-		<img_loud_off>diffusione/loud_off.png</img_loud_off>
 		<img_more>diffusione/more.png</img_more>
 		<img_less>diffusione/less.png</img_less>
 		<img_settings>diffusione/audiosetting.png</img_settings>
