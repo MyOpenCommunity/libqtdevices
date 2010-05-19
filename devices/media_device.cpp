@@ -21,6 +21,7 @@
 #include "media_device.h"
 #include "generic_functions.h"
 #include "hardware_functions.h" // AMPLI_NUM
+#include "devices_cache.h" // bt_global::add_device_to_cache
 
 #include <openmsg.h>
 
@@ -69,7 +70,7 @@ enum RequestDimension
 QHash<int, SourceDevice*> AlarmSoundDiffDevice::sources;
 QHash<int, AmplifierDevice*> AlarmSoundDiffDevice::amplifiers;
 AlarmSoundDiffDevice *AlarmSoundDiffDevice::alarm_device = 0;
-
+QString AmplifierDevice::virtual_amplifier_where;
 
 AlarmSoundDiffDevice::AlarmSoundDiffDevice(bool _multichannel)
 	: device("22", "")
@@ -583,6 +584,11 @@ QString VirtualSourceDevice::createMediaInitFrame(bool is_multichannel, const QS
 
 
 
+void AmplifierDevice::setVirtualAmplifierWhere(const QString &where)
+{
+	virtual_amplifier_where = where;
+}
+
 bool AmplifierDevice::isGeneralAddress(const QString &where)
 {
 	return where == "0";
@@ -613,6 +619,32 @@ namespace
 			return QString("4#%1").arg(AmplifierDevice::getAmplifierArea(where_conf));
 		return QString("3#") + where_conf.at(0) + "#" + where_conf.at(1);
 	}
+}
+
+AmplifierDevice *AmplifierDevice::createVirtualDevice()
+{
+	return bt_global::add_device_to_cache(new VirtualAmplifierDevice(virtual_amplifier_where));
+}
+
+AmplifierDevice *AmplifierDevice::createDevice(const QString &where)
+{
+	if (!virtual_amplifier_where.isEmpty())
+	{
+		if (virtual_amplifier_where == where)
+			return createVirtualDevice();
+		else if (AmplifierDevice::isGeneralAddress(where) ||
+			 (AmplifierDevice::isAreaAddress(where) &&
+			  AmplifierDevice::getAmplifierArea(where) == AmplifierDevice::getAmplifierArea(virtual_amplifier_where)))
+		{
+			AmplifierDevice *v = createVirtualDevice();
+			AmplifierDevice *n = bt_global::add_device_to_cache(new AmplifierDevice(where));
+
+			return bt_global::add_device_to_cache(new CompositeAmplifierDevice(QList<AmplifierDevice*>() << n << v));
+		}
+
+	}
+
+	return bt_global::add_device_to_cache(new AmplifierDevice(where));
 }
 
 AmplifierDevice::AmplifierDevice(QString _where, int openserver_id) :

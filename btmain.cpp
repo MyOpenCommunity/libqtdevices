@@ -49,6 +49,7 @@
 #if !defined(BT_HARDWARE_X11)
 #include "calibration.h"
 #endif
+#include "media_device.h" // AmplifierDevice::setVirtualAmplifierWhere
 
 #include <QMutableHashIterator>
 #include <QXmlSimpleReader>
@@ -349,6 +350,8 @@ void BtMain::loadGlobalConfig()
 		(*config)[SOURCE_ADDRESS] = "";
 	if ((*config)[AMPLIFIER_ADDRESS] == "-1")
 		(*config)[AMPLIFIER_ADDRESS] = "";
+
+	AmplifierDevice::setVirtualAmplifierWhere((*config)[AMPLIFIER_ADDRESS]);
 }
 
 void BtMain::waitBeforeInit()
