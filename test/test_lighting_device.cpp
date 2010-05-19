@@ -341,15 +341,8 @@ void TestDimmer::receiveGlobalIncrementLevel()
 	// not pull
 	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
 	dimmer->status = true;
-	dimmer->level = 50;
+	dimmer->level = 30;
 	t.check(frame, 60);
-
-	// not pull, off
-	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
-	dimmer->status = false;
-	dimmer->level = 50;
-	t.check(frame, 50);
-	QCOMPARE(dimmer->status, true);
 }
 
 void TestDimmer::receiveGlobalDecrementLevel()
@@ -363,7 +356,7 @@ void TestDimmer::receiveGlobalDecrementLevel()
 	// not pull
 	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
 	dimmer->status = true;
-	dimmer->level = 50;
+	dimmer->level = 30;
 	t.check(frame, 40);
 }
 
@@ -409,14 +402,17 @@ void TestDimmer::receiveGlobalDimmer100IncDecNonPullAdvanced()
 {
 	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, true);
 	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL);
+	QString inc_3 = "*1*30#3#1*0##";
 	QString inc_level = "*1*30#20#1*0##";
 	QString dec_level = "*1*31#30#1*0##";
 
 	dimmer->status = true;
-	dimmer->level = 50;
+	dimmer->level = 31;
 
-	t.check(inc_level, 70);
-	t.check(dec_level, 40);
+	t.check(inc_3, 50);
+	t.check(inc_3, 60);
+	t.check(inc_level, 80);
+	t.check(dec_level, 50);
 }
 
 void TestDimmer::receiveGlobalDimmer100IncDecPull()
