@@ -26,18 +26,25 @@
 
 class SourceDevice;
 class StateButton;
+class TextOnImageLabel;
+class VirtualSourceDevice;
+class RadioSourceDevice;
+class RadioInfo;
 
 
+/**
+ * The (abstract) base class for all the audio sources
+ */
 class AudioSource : public BannerNew
 {
 Q_OBJECT
-public:
-	AudioSource(const QString &area, SourceDevice *dev, Page *details = NULL);
 
 signals:
 	void sourceStateChanged(bool active);
 
 protected:
+	AudioSource(const QString &area, SourceDevice *dev, Page *details = NULL);
+
 	void initBanner(const QString &left_on, const QString &left_off, const QString &center_left,
 			const QString &center_right, const QString &right);
 
@@ -55,6 +62,55 @@ protected:
 
 private slots:
 	void valueReceivedAudioSource(const DeviceValues &values_list);
+};
+
+
+/**
+ * Banner for aux sources.
+ */
+class AuxSource : public AudioSource
+{
+Q_OBJECT
+public:
+	AuxSource(const QString &area, SourceDevice *dev, const QString &description);
+
+private:
+	TextOnImageLabel *center_icon;
+};
+
+
+/**
+ * Banner for multimedia sources.
+ */
+class MediaSource : public AudioSource
+{
+Q_OBJECT
+public:
+	MediaSource(const QString &area, VirtualSourceDevice *dev, const QString &description, Page *details);
+
+private slots:
+	void sourceStateChanged(bool active);
+
+private:
+	TextOnImageLabel *center_icon;
+};
+
+
+/**
+ * Banner for radio sources.
+ */
+class RadioSource : public AudioSource
+{
+Q_OBJECT
+public:
+	RadioSource(const QString &area, RadioSourceDevice *dev, Page *details);
+
+private slots:
+	void sourceStateChanged(bool active);
+	void valueReceived(const DeviceValues &values_list);
+
+private:
+	RadioInfo *radio_info;
 };
 
 #endif // AUDIOSOURCE_H

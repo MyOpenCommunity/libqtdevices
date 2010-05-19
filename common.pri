@@ -200,9 +200,6 @@ HEADERS += actuators.h \
 	sectionpage.h \
 	singlechoicepage.h \
 	skinmanager.h \
-	sorgentiaux.h \
-	sorgentimedia.h \
-	sorgentiradio.h \
 	specialpage.h \
 	statemachine.h \
 	state_button.h \
@@ -307,9 +304,6 @@ SOURCES += actuators.cpp \
 	sectionpage.cpp \
 	singlechoicepage.cpp \
 	skinmanager.cpp \
-	sorgentiaux.cpp \
-	sorgentimedia.cpp \
-	sorgentiradio.cpp \
 	specialpage.cpp \
 	statemachine.cpp \
 	state_button.cpp \
