@@ -53,9 +53,11 @@ using QLabel::setText;
 	void hideEvent(QHideEvent *e);
 	void resizeEvent(QResizeEvent *e);
 
+private slots:
+	void checkWidth();
+
 private:
 	void init();
-	void checkWidth(int width);
 
 	bool scrolling_needed;
 	int offset;
