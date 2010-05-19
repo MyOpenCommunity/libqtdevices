@@ -62,7 +62,9 @@ int dimmerLevelTo100(int level)
 
 int dimmer100LevelTo10(int level)
 {
-	if (level <= 4)
+	if (level == 0)
+		return 0;
+	else if (level <= 4)
 		return 2;
 	else if (level <= 15)
 		return 3;
