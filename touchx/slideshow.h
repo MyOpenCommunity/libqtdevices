@@ -28,6 +28,7 @@
 #include <QList>
 #include <QTimer>
 #include <QFutureWatcher>
+#include <QPointer>
 
 class QLabel;
 class ImageLabel;
@@ -80,6 +81,7 @@ class SlideshowPage : public Page
 Q_OBJECT
 public:
 	SlideshowPage();
+	~SlideshowPage();
 
 public slots:
 	// displays the page and stores the image list for the slide show
@@ -104,7 +106,7 @@ private:
 	QList<QString> image_list;
 	SlideshowController *controller;
 	SlideshowWindow *window;
-	QFutureWatcher<QImage *> async_load;
+	QPointer<QFutureWatcher<QImage> > async_load;
 };
 
 
@@ -113,6 +115,7 @@ class SlideshowWindow : public Window
 Q_OBJECT
 public:
 	SlideshowWindow(SlideshowPage *slideshow_page);
+	~SlideshowWindow();
 
 public slots:
 	// displays the page and stores the image list for the slide show
@@ -140,7 +143,7 @@ private:
 	QList<QString> image_list;
 	SlideshowController *controller;
 	SlideshowPage *page;
-	QFutureWatcher<QImage *> async_load;
+	QPointer<QFutureWatcher<QImage> > async_load;
 };
 
 #endif // SLIDESHOW_H

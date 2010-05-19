@@ -38,9 +38,9 @@
 
 namespace
 {
-	QImage *loadImage(const QString &image)
+	QImage loadImage(const QString &image)
 	{
-		return new QImage(image);
+		return QImage(image);
 	}
 }
 
@@ -168,9 +168,12 @@ SlideshowPage::SlideshowPage()
 	// close the slideshow page when the user clicks the stop button on the
 	// full screen slide show
 	connect(window, SIGNAL(Closed()), SLOT(handleClose()));
+}
 
-	// async image load
-	connect(&async_load, SIGNAL(finished()), SLOT(imageReady()));
+SlideshowPage::~SlideshowPage()
+{
+	if (async_load)
+		async_load->deleteLater();
 }
 
 void SlideshowPage::displayImages(QList<QString> images, unsigned element)
@@ -183,12 +186,15 @@ void SlideshowPage::displayImages(QList<QString> images, unsigned element)
 
 void SlideshowPage::showImage(int index)
 {
+	if (async_load)
+		async_load->deleteLater();
+
 	qDebug() << "Loading image" << image_list[index];
 
-	// TODO should avoid enqueuing multiple image loading actions if the user
-	// clicks like one possessed by spirits, or if the image loading can't keep up
-	// with the slideshow
-	async_load.setFuture(QtConcurrent::run(&loadImage, image_list[index]));
+	async_load = new QFutureWatcher<QImage>();
+	connect(async_load, SIGNAL(finished()), SLOT(imageReady()));
+
+	async_load->setFuture(QtConcurrent::run(&loadImage, image_list[index]));
 	title->setText(QFileInfo(image_list[index]).fileName());
 }
 
@@ -196,9 +202,8 @@ void SlideshowPage::imageReady()
 {
 	qDebug() << "Image loading complete";
 
-	QImage *img = async_load.result();
-	image->setPixmap(QPixmap::fromImage(*img));
-	delete img;
+	image->setPixmap(QPixmap::fromImage(async_load->result()));
+	async_load->deleteLater();
 }
 
 void SlideshowPage::startSlideshow()
@@ -278,9 +283,12 @@ SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
 	connect(buttons, SIGNAL(next()), SLOT(showButtons()));
 	connect(buttons, SIGNAL(play()), SLOT(showButtons()));
 	connect(buttons, SIGNAL(pause()), SLOT(showButtons()));
+}
 
-	// async image loading
-	connect(&async_load, SIGNAL(finished()), SLOT(imageReady()));
+SlideshowWindow::~SlideshowWindow()
+{
+	if (async_load)
+		async_load->deleteLater();
 }
 
 void SlideshowWindow::displayImages(QList<QString> images, unsigned element)
@@ -295,16 +303,18 @@ void SlideshowWindow::showImage(int index)
 {
 	qDebug() << "Loading image" << image_list[index];
 
-	async_load.setFuture(QtConcurrent::run(&loadImage, image_list[index]));
+	async_load = new QFutureWatcher<QImage>();
+	connect(async_load, SIGNAL(finished()), SLOT(imageReady()));
+
+	async_load->setFuture(QtConcurrent::run(&loadImage, image_list[index]));
 }
 
 void SlideshowWindow::imageReady()
 {
 	qDebug() << "Image loading complete";
 
-	QImage *img = async_load.result();
-	image->setPixmap(QPixmap::fromImage(*img));
-	delete img;
+	image->setPixmap(QPixmap::fromImage(async_load->result()));
+	async_load->deleteLater();
 }
 
 void SlideshowWindow::showButtons()
