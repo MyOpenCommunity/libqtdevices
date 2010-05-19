@@ -195,7 +195,6 @@ void SlideshowPage::showImage(int index)
 	connect(async_load, SIGNAL(finished()), SLOT(imageReady()));
 
 	async_load->setFuture(QtConcurrent::run(&loadImage, image_list[index]));
-	title->setText(QFileInfo(image_list[index]).fileName());
 }
 
 void SlideshowPage::imageReady()
@@ -203,6 +202,7 @@ void SlideshowPage::imageReady()
 	qDebug() << "Image loading complete";
 
 	image->setPixmap(QPixmap::fromImage(async_load->result()));
+	title->setText(QFileInfo(image_list[controller->currentImage()]).fileName());
 	async_load->deleteLater();
 }
 
