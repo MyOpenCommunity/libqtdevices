@@ -29,7 +29,7 @@
 #include "probe_device.h" // NonControlledProbeDevice
 #include "btbutton.h"
 #include "icondispatcher.h"
-#include "imagelabel.h"
+#include "labels.h" // ImageLabel
 #include "pagestack.h"
 
 #include <QPainter>

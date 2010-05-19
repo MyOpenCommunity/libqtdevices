@@ -165,7 +165,6 @@ HEADERS += actuators.h \
 	icondispatcher.h \
 	iconpage.h \
 	iconwindow.h \
-	imagelabel.h \
 	imageselectionhandler.h \
 	itemlist.h \
 	itemlistpage.h \
@@ -267,7 +266,6 @@ SOURCES += actuators.cpp \
 	icondispatcher.cpp \
 	iconpage.cpp \
 	iconwindow.cpp \
-	imagelabel.cpp \
 	imageselectionhandler.cpp \
 	itemlist.cpp \
 	itemlistpage.cpp \

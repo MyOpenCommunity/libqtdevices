@@ -30,6 +30,9 @@ class QShowEvent;
 class QHideEvent;
 class QTimerEvent;
 class QPaintEvent;
+class QMouseEvent;
+class QPixmap;
+
 
 /**
  * A label that scrolls its text one char at time from left to right.
@@ -90,5 +93,25 @@ private:
 	QString textColor();
 	void setTextColor(QString color);
 };
+
+
+// common code to display an image
+class ImageLabel : public QLabel
+{
+Q_OBJECT
+public:
+	ImageLabel();
+
+	// if the pixmap is too big for the label, it is scaled down, respecting
+	// proportions, otherwise it is displayed as it is
+	void setPixmap(const QPixmap &pixmap);
+
+signals:
+	void clicked();
+
+protected:
+	void mouseReleaseEvent(QMouseEvent *e);
+};
+
 
 #endif

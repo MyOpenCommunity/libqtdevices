@@ -23,7 +23,7 @@
 #include "navigation_bar.h"
 #include "skinmanager.h"
 #include "xml_functions.h" // getChildren, getTextChild
-#include "imagelabel.h"
+#include "labels.h" // ImageLabel
 #include "btbutton.h"
 
 #include <QDomNode>
