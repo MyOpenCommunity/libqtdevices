@@ -104,7 +104,7 @@ private:
 	QList<QString> image_list;
 	SlideshowController *controller;
 	SlideshowWindow *window;
-	QFutureWatcher<QImage> async_load;
+	QFutureWatcher<QImage *> async_load;
 };
 
 
@@ -140,7 +140,7 @@ private:
 	QList<QString> image_list;
 	SlideshowController *controller;
 	SlideshowPage *page;
-	QFutureWatcher<QImage> async_load;
+	QFutureWatcher<QImage *> async_load;
 };
 
 #endif // SLIDESHOW_H

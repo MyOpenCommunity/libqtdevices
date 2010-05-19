@@ -38,9 +38,9 @@
 
 namespace
 {
-	QImage loadImage(const QString &image)
+	QImage *loadImage(const QString &image)
 	{
-		return QImage(image);
+		return new QImage(image);
 	}
 }
 
@@ -196,7 +196,9 @@ void SlideshowPage::imageReady()
 {
 	qDebug() << "Image loading complete";
 
-	image->setPixmap(QPixmap::fromImage(async_load.result()));
+	QImage *img = async_load.result();
+	image->setPixmap(QPixmap::fromImage(*img));
+	delete img;
 }
 
 void SlideshowPage::startSlideshow()
@@ -300,7 +302,9 @@ void SlideshowWindow::imageReady()
 {
 	qDebug() << "Image loading complete";
 
-	image->setPixmap(QPixmap::fromImage(async_load.result()));
+	QImage *img = async_load.result();
+	image->setPixmap(QPixmap::fromImage(*img));
+	delete img;
 }
 
 void SlideshowWindow::showButtons()
