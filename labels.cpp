@@ -24,6 +24,7 @@
 #include "fontmanager.h" //bt_global::font
 #include "icondispatcher.h" //bt_global::icons_cache
 
+#include <QTimer>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QTimerEvent>
@@ -56,7 +57,7 @@ ScrollingLabel::~ScrollingLabel()
 void ScrollingLabel::setScrollingText(const QString &text)
 {
 	setText(text);
-	checkWidth(size().width());
+	QTimer::singleShot(0, this, SLOT(checkWidth()));
 }
 
 void ScrollingLabel::paintEvent(QPaintEvent *e)
@@ -111,9 +112,8 @@ void ScrollingLabel::hideEvent(QHideEvent *e)
 
 void ScrollingLabel::resizeEvent(QResizeEvent *e)
 {
-	int w = e->size().width();
-
-	checkWidth(w);
+	QLabel::resizeEvent(e);
+	checkWidth();
 }
 
 void ScrollingLabel::init()
@@ -124,9 +124,9 @@ void ScrollingLabel::init()
 	separator = " -- ";
 }
 
-void ScrollingLabel::checkWidth(int width)
+void ScrollingLabel::checkWidth()
 {
-	if (width < fontMetrics().width(text()))
+	if (width() < fontMetrics().width(text()))
 	{
 		if (timer_id != 0)
 			killTimer(timer_id);
