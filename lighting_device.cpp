@@ -394,6 +394,9 @@ void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
 	DimmerDevice::parseFrame(msg, sl);
 	int what = msg.what();
 
+	if (msg.IsNormalFrame() && (what == DIM_DEVICE_ON || what == DIM_DEVICE_OFF) && msg.whatArgCnt() == 1)
+		(*sl)[DIM_DEVICE_ON] = (what == DIM_DEVICE_ON);
+
 	if (what == DIMMER100_STATUS && msg.IsMeasureFrame())
 	{
 		QVariant v;

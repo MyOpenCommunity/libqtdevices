@@ -132,15 +132,14 @@ private slots:
 	void receiveGlobalDecrementLevel100();
 
 	// disable some tests from superclasses
-	void receiveGlobalDimmer100OnOffNonPullBase();
 	void receiveGlobalDimmer100OnOffNonPullAdvanced();
-	void receiveGlobalDimmer100OnOffPull();
-	void receiveGlobalDimmer100SetlevelNonPullBase();
 	void receiveGlobalDimmer100SetlevelNonPullAdvanced();
-	void receiveGlobalDimmer100SetlevelPull();
-	void receiveGlobalDimmer100IncDecNonPullBase();
 	void receiveGlobalDimmer100IncDecNonPullAdvanced();
-	void receiveGlobalDimmer100IncDecPull();
+
+	// override some more tests from superclasses
+	void receiveGlobalDimmer100OnOffNonPullBase();
+	void receiveGlobalDimmer100SetlevelNonPullBase();
+	void receiveGlobalDimmer100IncDecNonPullBase();
 
 private:
 	Dimmer100Device *dimmer100;
