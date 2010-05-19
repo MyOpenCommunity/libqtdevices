@@ -11,3 +11,4 @@ obj
 cfg
 Makefile
 *.qm
+.nfs*
