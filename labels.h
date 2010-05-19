@@ -55,12 +55,11 @@ using QLabel::setText;
 
 private:
 	void init();
+	void checkWidth(int width);
 
 	bool scrolling_needed;
 	int offset;
 	int timer_id;
-	int text_width;
-	int separator_width;
 	QString separator;
 };
 

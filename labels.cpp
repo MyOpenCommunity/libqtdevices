@@ -56,7 +56,7 @@ ScrollingLabel::~ScrollingLabel()
 void ScrollingLabel::setScrollingText(const QString &text)
 {
 	setText(text);
-	text_width = fontMetrics().width(text);
+	checkWidth(size().width());
 }
 
 void ScrollingLabel::paintEvent(QPaintEvent *e)
@@ -64,12 +64,13 @@ void ScrollingLabel::paintEvent(QPaintEvent *e)
 	if (scrolling_needed)
 	{
 		QPainter p(this);
-		int full_width = text_width + separator_width;
+		QString full_text = text() + separator;
+		int full_width = fontMetrics().width(full_text);
 
 		int x = -offset;
 		while (x < width())
 		{
-			p.drawText(x, 0, full_width, height(), Qt::AlignLeft | Qt::AlignVCenter, text() + separator);
+			p.drawText(x, 0, full_width, height(), Qt::AlignLeft | Qt::AlignVCenter, full_text);
 			x += full_width;
 		}
 	}
@@ -108,12 +109,24 @@ void ScrollingLabel::hideEvent(QHideEvent *e)
 	QLabel::hideEvent(e);
 }
 
-
 void ScrollingLabel::resizeEvent(QResizeEvent *e)
 {
 	int w = e->size().width();
 
-	if (w < text_width)
+	checkWidth(w);
+}
+
+void ScrollingLabel::init()
+{
+	scrolling_needed = false;
+	offset = 0;
+	timer_id = 0;
+	separator = " -- ";
+}
+
+void ScrollingLabel::checkWidth(int width)
+{
+	if (width < fontMetrics().width(text()))
 	{
 		if (timer_id != 0)
 			killTimer(timer_id);
@@ -126,16 +139,6 @@ void ScrollingLabel::resizeEvent(QResizeEvent *e)
 		timer_id = 0;
 		scrolling_needed = false;
 	}
-}
-
-void ScrollingLabel::init()
-{
-	scrolling_needed = false;
-	offset = 0;
-	timer_id = 0;
-	text_width = 0;
-	separator = " -- ";
-	separator_width = fontMetrics().width(separator);
 }
 
 

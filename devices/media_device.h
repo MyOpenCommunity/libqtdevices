@@ -271,6 +271,10 @@ private:
 };
 
 
+/**
+ * This class represent a group of amplifiers.  It is used to send general/environment
+ * command to both normal SCS amplifiers and a virtual amplifier at the same time.
+ */
 class CompositeAmplifierDevice : public AmplifierDevice
 {
 Q_OBJECT
