@@ -138,7 +138,6 @@ HEADERS += actuators.h \
 	bannerfactory.h \
 	bann_thermal_regulation.h \
 	bannonoffcombo.h \
-	bannregolaz.h \
 	banntemperature.h \
 	btbutton.h \
 	btmain.h \
@@ -242,7 +241,6 @@ SOURCES += actuators.cpp \
 	bannerfactory.cpp \
 	bann_thermal_regulation.cpp \
 	bannonoffcombo.cpp \
-	bannregolaz.cpp \
 	banntemperature.cpp \
 	btbutton.cpp \
 	btmain.cpp \

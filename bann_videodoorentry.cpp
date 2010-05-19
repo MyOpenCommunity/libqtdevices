@@ -40,6 +40,26 @@ call_notifier_manager *postoExt::cnm = NULL;
 // Static pointer to unknown station
 call_notifier *postoExt::unknown_notifier = NULL;
 
+#define BUT4TL_DIM 60
+#define ICO4TL_DIM 120
+
+
+bann4tasLab::bann4tasLab(QWidget *parent) : BannerOld(parent)
+{
+	// sx
+	addItem(BUT1, (banner_width/4-BUT4TL_DIM)/2, 0, BUT4TL_DIM, BUT4TL_DIM);
+	// csx
+	addItem(BUT3, banner_width/4+(banner_width/4-BUT4TL_DIM)/2, 0, BUT4TL_DIM, BUT4TL_DIM);
+	// cdx
+	addItem(BUT4, banner_width/2+(banner_width/4-BUT4TL_DIM)/2, 0, BUT4TL_DIM, BUT4TL_DIM);
+	// dx
+	addItem(BUT2, banner_width*3/4+(banner_width/4-BUT4TL_DIM)/2, 0, BUT4TL_DIM, BUT4TL_DIM);
+	addItem(ICON, (banner_width-ICO4TL_DIM)/2, 0, ICO4TL_DIM, BUT4TL_DIM);
+	addItem(TEXT, 0, BUT4TL_DIM , banner_width, banner_height-BUT4TL_DIM);
+	impostaAttivo(2);
+	Draw();
+}
+
 
 postoExt::postoExt(QWidget *parent, QString d, QString Icona1, QString Icona2, QString Icona3, QString Icona4, QString _where,
 	QString _light, QString _key, QString _unknown) : bann4tasLab(parent)

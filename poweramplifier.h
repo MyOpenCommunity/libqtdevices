@@ -22,7 +22,7 @@
 #ifndef POWER_AMPLIFIER_H
 #define POWER_AMPLIFIER_H
 
-#include "bannregolaz.h" // Bannlevel
+#include "bann4_buttons.h" // Bannlevel
 #include "bann2_buttons.h" // BannOnOffState, BannOnOff2Labels
 #include "bannonoffcombo.h"
 #include "bannerpage.h"

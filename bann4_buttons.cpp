@@ -25,13 +25,12 @@
 #include "icondispatcher.h" // icons_cache
 #include "labels.h" // ScrollingLabel
 
-
 #include <QGridLayout>
 
 
 #define BAN4BUT_DIM 60
-#define BUT4TL_DIM 60
-#define ICO4TL_DIM 120
+
+#define TIME_RIP_REGOLAZ 500
 
 
 Bann4ButtonsIcon::Bann4ButtonsIcon(QWidget *parent) :
@@ -158,6 +157,88 @@ void Bann4Buttons::initBanner(const QString &right, const QString &center_right,
 }
 
 
+BannLevel::BannLevel(QWidget *parent) :
+	BannerNew(parent)
+{
+	left_button = new BtButton;
+	center_left_button = new BtButton;
+	center_right_button = new BtButton;
+	right_button = new BtButton;
+
+	QGridLayout *grid = new QGridLayout;
+	grid->setContentsMargins(0, 0, 0, 0);
+	grid->setSpacing(0);
+	grid->addWidget(left_button, 0, 0);
+	grid->addWidget(center_left_button, 0, 1, Qt::AlignRight);
+	grid->addWidget(center_right_button, 0, 2, Qt::AlignLeft);
+	grid->addWidget(right_button, 0, 3);
+
+	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
+
+	QVBoxLayout *vbox = new QVBoxLayout(this);
+	vbox->setContentsMargins(0, 0, 0, 0);
+	vbox->setSpacing(0);
+	vbox->addLayout(grid);
+	vbox->addWidget(text);
+
+	timer.setInterval(TIME_RIP_REGOLAZ);
+	// start rate controlling timer
+	connect(center_left_button, SIGNAL(pressed()), SLOT(startLeftTimer()));
+	connect(center_right_button, SIGNAL(pressed()), SLOT(startRightTimer()));
+
+	connect(center_left_button, SIGNAL(released()), &timer, SLOT(stop()));
+	connect(center_right_button, SIGNAL(released()), &timer, SLOT(stop()));
+
+	// we also want the user to be able to bash the button until the screen is broken
+	connect(center_left_button, SIGNAL(clicked()), SIGNAL(center_left_clicked()));
+	connect(center_right_button, SIGNAL(clicked()), SIGNAL(center_right_clicked()));
+}
+
+void BannLevel::initBanner(const QString &banner_text)
+{
+	text->setScrollingText(banner_text);
+}
+
+void BannLevel::initBanner(const QString &left, const QString &center_left, const QString &center_right,
+		const QString &right, const QString &banner_text)
+{
+	left_button->setImage(left);
+	center_left_button->setImage(center_left);
+	center_right_button->setImage(center_right);
+	right_button->setImage(right);
+	text->setScrollingText(banner_text);
+}
+
+void BannLevel::setCenterLeftIcon(const QString &image)
+{
+	center_left_button->setImage(image);
+}
+
+void BannLevel::setCenterRightIcon(const QString &image)
+{
+	center_right_button->setImage(image);
+}
+
+void BannLevel::startLeftTimer()
+{
+	if (!timer.isActive())
+	{
+		timer.disconnect(SIGNAL(timeout()));
+		connect(&timer, SIGNAL(timeout()), SIGNAL(center_left_clicked()));
+		timer.start();
+	}
+}
+
+void BannLevel::startRightTimer()
+{
+	if (!timer.isActive())
+	{
+		timer.disconnect(SIGNAL(timeout()));
+		connect(&timer, SIGNAL(timeout()), SIGNAL(center_right_clicked()));
+		timer.start();
+	}
+}
+
 
 bann4But::bann4But(QWidget *parent) : BannerOld(parent)
 {
@@ -170,23 +251,6 @@ bann4But::bann4But(QWidget *parent) : BannerOld(parent)
 	// dx
 	addItem(BUT2, banner_width*3/4+(banner_width/4-BAN4BUT_DIM)/2, 0, BAN4BUT_DIM, BAN4BUT_DIM);
 	addItem(TEXT, 0, BAN4BUT_DIM, banner_width, banner_height-BAN4BUT_DIM);
-	Draw();
-}
-
-
-bann4tasLab::bann4tasLab(QWidget *parent) : BannerOld(parent)
-{
-	// sx
-	addItem(BUT1, (banner_width/4-BUT4TL_DIM)/2, 0, BUT4TL_DIM, BUT4TL_DIM);
-	// csx
-	addItem(BUT3, banner_width/4+(banner_width/4-BUT4TL_DIM)/2, 0, BUT4TL_DIM, BUT4TL_DIM);
-	// cdx
-	addItem(BUT4, banner_width/2+(banner_width/4-BUT4TL_DIM)/2, 0, BUT4TL_DIM, BUT4TL_DIM);
-	// dx
-	addItem(BUT2, banner_width*3/4+(banner_width/4-BUT4TL_DIM)/2, 0, BUT4TL_DIM, BUT4TL_DIM);
-	addItem(ICON, (banner_width-ICO4TL_DIM)/2, 0, ICO4TL_DIM, BUT4TL_DIM);
-	addItem(TEXT, 0, BUT4TL_DIM , banner_width, banner_height-BUT4TL_DIM);
-	impostaAttivo(2);
 	Draw();
 }
 
