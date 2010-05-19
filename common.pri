@@ -142,7 +142,6 @@ HEADERS += actuators.h \
 	btbutton.h \
 	btmain.h \
 	bttime.h \
-	buttons_bar.h \
 	changedatetime.h \
 	cleanscreen.h \
 	contrast.h \
@@ -245,7 +244,6 @@ SOURCES += actuators.cpp \
 	btbutton.cpp \
 	btmain.cpp \
 	bttime.cpp \
-	buttons_bar.cpp \
 	changedatetime.cpp \
 	cleanscreen.cpp \
 	contrast.cpp \
