@@ -393,7 +393,7 @@ void PowerAmplifierBalance::showBalance(int balance)
 	else
 		changeStatus(SX);
 
-	setInternalText(QString::number(balance));
+	setInternalText(QString::number(qAbs(balance)));
 }
 
 
