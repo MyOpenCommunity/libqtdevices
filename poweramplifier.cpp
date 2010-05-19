@@ -355,8 +355,8 @@ PowerAmplifierBalance::PowerAmplifierBalance(PowerAmplifierDevice *d, const QStr
 	BannOnOffCombo(0)
 {
 	dev = d;
-	initBanner(bt_global::skin->getImage("less"), bt_global::skin->getImage("balance_sx"), bt_global::skin->getImage("balance"),
-		bt_global::skin->getImage("balance_dx"), bt_global::skin->getImage("more"), CENTER, descr);
+	initBanner(bt_global::skin->getImage("less"), bt_global::skin->getImage("balance_dx"), bt_global::skin->getImage("balance"),
+		bt_global::skin->getImage("balance_sx"), bt_global::skin->getImage("more"), CENTER, descr);
 	connect(right_button, SIGNAL(clicked()), SLOT(dx()));
 	connect(left_button, SIGNAL(clicked()), SLOT(sx()));
 	connect(dev, SIGNAL(valueReceived(const DeviceValues&)), SLOT(valueReceived(const DeviceValues&)));
