@@ -39,7 +39,8 @@ void EnergyRates::loadRates()
 		EnergyRate rate;
 
 		rate.id = getTextChild(item, "rate_id").toInt();
-		rate.description = getTextChild(item, "descr");
+		// do not read description for touch 3.5
+		// rate.description = getTextChild(item, "descr");
 		rate.currency_name = getTextChild(item, "name");
 		rate.mode = getTextChild(item, "mode").toInt();
 		rate.is_production = getTextChild(item, "type").toInt() == 1;
