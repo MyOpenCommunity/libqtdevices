@@ -30,9 +30,7 @@
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "bann_amplifiers.h" // Amplifier
 #include "poweramplifier.h" // BannPowerAmplifier
-#include "sorgentiradio.h" // RadioSource
-#include "sorgentiaux.h" // AuxSource
-#include "sorgentimedia.h" // MultimediaSource
+#include "audiosource.h" // RadioSource, AuxSource, MediaSource
 #include "media_device.h"
 #include "devices_cache.h"
 #include "multimedia.h" // MultimediaSectionPage

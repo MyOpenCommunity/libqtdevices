@@ -76,8 +76,11 @@ AlarmSoundDiffDevice::AlarmSoundDiffDevice(bool _multichannel)
 {
 	is_multichannel = _multichannel;
 	receive_frames = false;
-	Q_ASSERT_X(alarm_device == 0, "AlarmSoundDiffDevice::AlarmSoundDiffDevice", "alarm sound diffusion device created multiple times");
-	alarm_device = this;
+
+	// NOTE: this works only because the device_cache destroys all the AlarmSoundDiffDevice
+	// except the first (because they have all the same key for the cache)
+	if (!alarm_device)
+		alarm_device = this;
 
 	foreach (SourceDevice *source, sources)
 		connect(source, SIGNAL(valueReceived(DeviceValues)), SLOT(sourceValueReceived(DeviceValues)));

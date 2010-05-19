@@ -138,7 +138,6 @@ HEADERS += actuators.h \
 	bannerfactory.h \
 	bann_thermal_regulation.h \
 	bannonoffcombo.h \
-	bannregolaz.h \
 	banntemperature.h \
 	btbutton.h \
 	btmain.h \
@@ -200,9 +199,6 @@ HEADERS += actuators.h \
 	sectionpage.h \
 	singlechoicepage.h \
 	skinmanager.h \
-	sorgentiaux.h \
-	sorgentimedia.h \
-	sorgentiradio.h \
 	specialpage.h \
 	statemachine.h \
 	state_button.h \
@@ -245,7 +241,6 @@ SOURCES += actuators.cpp \
 	bannerfactory.cpp \
 	bann_thermal_regulation.cpp \
 	bannonoffcombo.cpp \
-	bannregolaz.cpp \
 	banntemperature.cpp \
 	btbutton.cpp \
 	btmain.cpp \
@@ -307,9 +302,6 @@ SOURCES += actuators.cpp \
 	sectionpage.cpp \
 	singlechoicepage.cpp \
 	skinmanager.cpp \
-	sorgentiaux.cpp \
-	sorgentimedia.cpp \
-	sorgentiradio.cpp \
 	specialpage.cpp \
 	statemachine.cpp \
 	state_button.cpp \

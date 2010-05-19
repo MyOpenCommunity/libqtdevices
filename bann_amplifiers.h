@@ -22,7 +22,7 @@
 #ifndef AMPLIFICATORI_H
 #define AMPLIFICATORI_H
 
-#include "bannregolaz.h" // BannLevel
+#include "bann4_buttons.h" // BannLevel
 
 #include <QWidget>
 #include <QString>

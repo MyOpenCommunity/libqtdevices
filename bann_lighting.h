@@ -22,7 +22,7 @@
 #ifndef BANN_LIGHTING_H
 #define BANN_LIGHTING_H
 
-#include "bannregolaz.h" // BannLevel
+#include "bann4_buttons.h" // BannLevel
 #include "bann2_buttons.h" // BannOnOffNew, BannOnOff2Labels
 #include "bann1_button.h" // BannOn2Labels
 #include "bttime.h" // BtTime

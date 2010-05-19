@@ -146,7 +146,7 @@ void AlarmClock::saveAndActivate()
 void AlarmClock::showSoundDiffPage()
 {
 	aggiornaDatiEEprom = 1;
-	sorgente = 101;
+	sorgente = 1;
 	stazione = 0;
 	dev->setReceiveFrames(true);
 	for (unsigned idx = 0; idx < AMPLI_NUM; idx++)
