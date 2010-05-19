@@ -62,17 +62,24 @@ int dimmerLevelTo100(int level)
 
 int dimmer100LevelTo10(int level)
 {
-	switch (level)
-	{
-	case 1:
+	if (level <= 4)
 		return 2;
-	case 75:
+	else if (level <= 15)
+		return 3;
+	else if (level <= 25)
+		return 4;
+	else if (level <= 35)
+		return 5;
+	else if (level <= 45)
+		return 6;
+	else if (level <= 53)
+		return 7;
+	else if (level <= 67)
+		return 8;
+	else if (level <= 85)
 		return 9;
-	case 100:
+	else
 		return 10;
-	default:
-		return (level / 10) + 2;
-	}
 }
 
 
