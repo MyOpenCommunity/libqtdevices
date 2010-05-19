@@ -37,6 +37,7 @@
 #include "sounddiffusionpage.h" // alarmClockPage
 #endif
 #include "audiostatemachine.h"
+#include "devices_cache.h"
 
 #include <openmsg.h>
 
@@ -97,7 +98,7 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, QList<bool> 
 
 #ifdef LAYOUT_TOUCHX
 	// TODO fix sound diffusion for BTouch
-	dev = new AlarmSoundDiffDevice(SoundDiffusionPage::isMultichannel());
+	dev = bt_global::add_device_to_cache(new AlarmSoundDiffDevice(SoundDiffusionPage::isMultichannel()));
 #endif
 	connect(dev, SIGNAL(valueReceived(DeviceValues)),
 		SLOT(valueReceived(DeviceValues)));
