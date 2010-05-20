@@ -148,7 +148,7 @@ private slots:
 	void sendDeactivateDevice();
 
 private:
-	DeactivationTime *content;
+	DeactivationTime *deactivation_time;
 	LoadsDevice *dev;
 };
 
