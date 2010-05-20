@@ -35,6 +35,7 @@ class BtTimeEdit;
 class QWidget;
 class QLabel;
 class QTimer;
+class AmplifierDevice;
 class AlarmClockTime;
 class AlarmClockFreq;
 class AlarmClockTimeFreq;
@@ -183,6 +184,7 @@ private:
 #endif
 	AlarmClockSoundDiff *alarm_sound_diff;
 	AlarmSoundDiffDevice *dev;
+	AmplifierDevice *general;
 
 signals:
 	void alarmClockFired();
