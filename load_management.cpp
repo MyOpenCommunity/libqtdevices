@@ -553,11 +553,13 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node, LoadsDev
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
+	deactivation_time = new DeactivationTime(BtTime(2, 30, 0));
+
 #ifdef LAYOUT_TOUCHX
 	QWidget *content = new QWidget;
 	QHBoxLayout *banner_layout = new QHBoxLayout;
 	banner_layout->addStretch();
-	banner_layout->addWidget(new DeactivationTime(BtTime(2, 30, 0)));
+	banner_layout->addWidget(deactivation_time);
 	banner_layout->addStretch();
 
 	QVBoxLayout *vlayout = new QVBoxLayout;
@@ -577,14 +579,14 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node, LoadsDev
 	content->setLayout(vlayout);
 	buildPage(content, nav_bar, "", 0, top);
 #else
-	buildPage(new DeactivationTime(BtTime(2, 30, 0)), nav_bar, "", 0, top);
+	buildPage(deactivation_time, nav_bar, "", 0, top);
 #endif
 	dev = d;
 }
 
 void DeactivationTimePage::sendDeactivateDevice()
 {
-	BtTime t = content->currentTime();
+	BtTime t = deactivation_time->currentTime();
 	int off_time = t.hour() * 60 + t.minute();
 	dev->forceOff(off_time);
 }
