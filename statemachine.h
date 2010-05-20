@@ -99,6 +99,18 @@ signals:
 	// callbacks have been called
 	void stateChanged(int new_state, int old_state);
 
+protected:
+	// returns the number of states
+	int stateCount();
+
+	// returns the state at the given position (0 is the bottom of the stack)
+	int stateAt(int index);
+
+	// inserts the state in the middle of the stack, without performing any
+	// checks or emitting any signal; can't be used to push a state at the top
+	// of the stack
+	void insertState(int index, int state);
+
 private:
 	// the map of available states
 	QHash<int, State> available_states;

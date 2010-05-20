@@ -61,6 +61,23 @@ int StateMachine::currentState() const
 	return active_states.back();
 }
 
+int StateMachine::stateCount()
+{
+	return active_states.size();
+}
+
+int StateMachine::stateAt(int index)
+{
+	return active_states.at(index);
+}
+
+void StateMachine::insertState(int index, int state)
+{
+	Q_ASSERT_X(index != active_states.size(), "StateMachine::insertState", "Can't insert a state at the top of the stack");
+
+	active_states.insert(index, state);
+}
+
 void StateMachine::addState(int state, const char *entered, const char *exited)
 {
 	State s;
