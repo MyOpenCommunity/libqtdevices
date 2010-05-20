@@ -223,12 +223,7 @@ enum Section
 enum ItemType
 {
 	CARICO=7,                                     /*!<  Appliance */
-	ATTUAT_AUTOM_PULS=11,                         /*!<  Pulse automation actuator */
 	SET_DATA_ORA=14,                              /*!<  Time setting */
-	SORGENTE_AUX=16,                              /*!<  Auxiliary sound source */
-	SORGENTE_RADIO=17,                            /*!<  FM tuner */
-	AMPLIFICATORE=18,                             /*!<  Amplifier */
-	GR_AMPLIFICATORI=19,                          /*!<  Amplifier's group */
 	SET_SVEGLIA=20,                               /*!<  AlarmClock setting */
 	SET_SVEGLIA_SINGLEPAGE=14201,                 /*!<  AlarmClock setting with state icon */
 	DISPLAY=21,                                   /*!<  Display */
@@ -243,16 +238,7 @@ enum ItemType
 	DATA=30,                                      /*!<  Date */
 	TEMPERATURA=31,                               /*!<  Temperature */
 	OROLOGIO=32,                                  /*!<  Clock */
-	AUTOM_CANC_ATTUAT_ILL=40,                     /*!< Automatismi-Cancello con attuatore illuminazione */
-	AUTOM_CANC_ATTUAT_VC=41,                      /*!< Automatismi-Cancello con attuatore videocitofonia */
-	SORG_RADIO=45,                                /*!< Sorgente radio per Diffusione Sonora Multicanale */
-	SORG_AUX=46,                                  /*!< Sorgente aux per Diffusione Sonora Multicanale */
-	AMBIENTE=47,                                  /*!< Ambiente diff son. multi */
-	INSIEME_AMBIENTI=48,                          /*!< Ins. amb. diff. son. multi */
 	POSTO_ESTERNO=49,                             /*!< Posto esterno */
-	SORGENTE_MULTIM=50,                           /*!< Sorgente Multimediale per Diffusione Sonora */
-	SORGENTE_MULTIM_MC=51,                        /*!< Sorgente Multimediale per Diffusione Sonora Multicanale */
-	POWER_AMPLIFIER=69,                           /*!< Power amplifier*/
 	LANSETTINGS=72,                               /*!< LAN settings and information */
 	// for SpecialPage, HeaderWidget
 #ifdef CONFIG_BTOUCH

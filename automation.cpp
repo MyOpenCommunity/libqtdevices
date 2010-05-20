@@ -38,25 +38,25 @@ enum BannerType
 	SECURE_AUTOMATIC_ACTUATOR = 8,
 	INTERBLOCKED_ACTUATOR = 2,
 	SIMPLE_ACTUATOR = 0,
-	DOOR_LOCK = 13,
+	DOOR_LOCK_VCT = 13,
 	PPT_STAT_AUTO = 42,
 	ACTUATOR_GROUP = 10,
+	DOOR_LOCK = 11,
+	GATE_LIGHTING_ACT = 40,
+	GATE_VCT_ACT =  41
 };
 #else
 enum BannerType
 {
-	INTERBLOCKED_ACTUATOR = 3001,
-	SECURE_AUTOMATIC_ACTUATOR = 3002,
+	SECURE_AUTOMATIC_ACTUATOR = 3001,
+	INTERBLOCKED_ACTUATOR = 3004,
 	SIMPLE_ACTUATOR = 3007,
-	DOOR_LOCK = 3010,
+	DOOR_LOCK_VCT = 3011,
 	PPT_STAT_AUTO = 3012,
 	ACTUATOR_GROUP = 3014,
-	/*
-	  TODO: What about these?
-	AUTOM_CANC_ATTUAT_ILL =234,
-	AUTOM_CANC_ATTUAT_VC = 234,
-	ATTUAT_AUTOM_PULS = 234,
-	*/
+	DOOR_LOCK = 3010,
+	GATE_LIGHTING_ACT = 3005,
+	GATE_VCT_ACT = 3006
 };
 #endif
 
@@ -92,9 +92,12 @@ banner *Automation::getBanner(const QDomNode &item_node)
 	case SIMPLE_ACTUATOR:
 		b = new SingleActuator(descr, where, oid);
 		break;
-	case DOOR_LOCK:
-		b = new ButtonActuator(descr, where, VCT_SERR);
+	case DOOR_LOCK_VCT:
+	{
+		where = getTextChild(item_node, "dev") + getTextChild(item_node, "where");
+		b = new ButtonActuator(descr, where, VCT_LOCK, oid);
 		break;
+	}
 	case ACTUATOR_GROUP:
 	{
 		QStringList addresses;
@@ -108,7 +111,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		b = new InterblockedActuatorGroup(addresses, descr, oid);
 	}
 		break;
-	case AUTOM_CANC_ATTUAT_ILL:
+	case GATE_LIGHTING_ACT:
 	{
 		QStringList sl = getTextChild(item_node, "time").split("*");
 		Q_ASSERT_X(sl.size() == 3, "Automation::getBanner", "time leaf must have 3 fields");
@@ -116,11 +119,14 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		b = new GateLightingActuator(t, descr, where, oid);
 	}
 		break;
-	case AUTOM_CANC_ATTUAT_VC:
+	case GATE_VCT_ACT:
+	{
+		where = getTextChild(item_node, "dev") + getTextChild(item_node, "where");
 		b = new GateEntryphoneActuator(descr, where, oid);
 		break;
-	case ATTUAT_AUTOM_PULS:
-		b = new ButtonActuator(descr, where, AUTOMAZ);
+	}
+	case DOOR_LOCK:
+		b = new ButtonActuator(descr, where, PULSE_ACT, oid);
 		break;
 	case PPT_STAT_AUTO:
 		b = new PPTStat(where, oid);
