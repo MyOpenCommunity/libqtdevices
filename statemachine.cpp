@@ -127,6 +127,25 @@ void StateMachine::exitCurrentState()
 		changeState(currentState(), curr_state);
 }
 
+void StateMachine::removeState(int state)
+{
+	if (currentState() == state)
+		exitCurrentState();
+	else
+	{
+		for (int i = active_states.size() - 1; i >= 0; --i)
+		{
+			if (active_states.at(i) == state)
+			{
+				active_states.removeAt(i);
+				return;
+			}
+		}
+
+		Q_ASSERT_X(false, "StateMachine::removeState", "Tried to remove a state not in the state stack");
+	}
+}
+
 void StateMachine::changeState(int new_state, int old_state)
 {
 	const State &s = available_states[new_state];

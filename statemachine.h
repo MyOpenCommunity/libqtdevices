@@ -76,6 +76,11 @@ public:
 	// exits from the current state and moves to the previous one.
 	void exitCurrentState();
 
+	// removes the given state from the state stack; if the current state is
+	// the given state, it is equivalent to exitCurrentState, otherwise the state
+	// is removed from the state stack but no other actions are performed
+	void removeState(int state);
+
 	// adds a new state to the state machine; the optional entered and exited
 	// parameters are signals/slots that will be called when the state is entered
 	// or exited
