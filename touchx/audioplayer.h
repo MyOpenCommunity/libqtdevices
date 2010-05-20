@@ -64,9 +64,10 @@ public:
 	{
 		LOCAL_FILE,
 		IP_RADIO,
+		MAX_MEDIA_TYPE
 	};
 
-	AudioPlayerPage(MediaType type);
+	static AudioPlayerPage *getAudioPlayerPage(MediaType type);
 
 	virtual int sectionId() const;
 
@@ -88,6 +89,8 @@ private slots:
 	void playbackStopped();
 
 private:
+	AudioPlayerPage(MediaType type);
+
 	MediaType type;
 	QLabel *description_top, *description_bottom, *track, *elapsed;
 	VirtualSourceDevice *dev;

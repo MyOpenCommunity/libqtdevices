@@ -76,6 +76,17 @@ void AudioPlayerTray::gotoPlayer()
 		current_player->showPage();
 }
 
+AudioPlayerPage *AudioPlayerPage::getAudioPlayerPage(MediaType type)
+{
+	Q_ASSERT_X(type < MAX_MEDIA_TYPE, "AudioPlayerPage::getAudioPlayerPage", "invalid type");
+
+	static QVector<AudioPlayerPage *> audioplayer_pages(MAX_MEDIA_TYPE, 0);
+
+	if (!audioplayer_pages[type])
+		audioplayer_pages[type] = new AudioPlayerPage(type);
+
+	return audioplayer_pages[type];
+}
 
 AudioPlayerPage::AudioPlayerPage(MediaType t)
 {
