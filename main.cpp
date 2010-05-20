@@ -184,16 +184,13 @@ void resetTimer(int signo)
 
 void installTranslator(QApplication &a, QString language_suffix)
 {
-	if (language_suffix != QString(DEFAULT_LANGUAGE))
-	{
-		QString language_file;
-		language_file.sprintf(LANGUAGE_FILE_TMPL, language_suffix.toAscii().constData());
-		QTranslator *translator = new QTranslator(0);
-		if (translator->load(language_file))
-			a.installTranslator(translator);
-		else
-			qWarning() << "File " << language_file << " not found for language " << language_suffix;
-	}
+	QString language_file;
+	language_file.sprintf(LANGUAGE_FILE_TMPL, language_suffix.toAscii().constData());
+	QTranslator *translator = new QTranslator(0);
+	if (translator->load(language_file))
+		a.installTranslator(translator);
+	else
+		qWarning() << "File " << language_file << " not found for language " << language_suffix;
 }
 
 int main(int argc, char **argv)
