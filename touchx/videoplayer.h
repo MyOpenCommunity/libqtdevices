@@ -54,9 +54,9 @@ private:
 	QRect playbackGeometry();
 	void displayMedia(int index);
 	void displayFullScreen(bool fullscreen);
-	void startMPlayer(int index, int time);
 
 private slots:
+	void startMPlayer();
 	void refreshPlayInfo();
 
 	void displayFullScreen();
