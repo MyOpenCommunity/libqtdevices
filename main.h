@@ -228,10 +228,6 @@ enum ItemType
 	SET_SVEGLIA=20,                               /*!<  AlarmClock setting */
 	SET_SVEGLIA_SINGLEPAGE=14201,                 /*!<  AlarmClock setting with state icon */
 	DISPLAY=21,                                   /*!<  Display */
-#ifdef CONFIG_BTOUCH
-	ZONANTINTRUS=23,                              /*!<  Anti-intrusion zone */
-	IMPIANTINTRUS=24,                             /*!<  Anti-intrusion system */
-#endif
 	SUONO=25,                                     /*!<  Beep */
 	PROTEZIONE=26,                                /*!<  Password's settings */
 	VERSIONE=27,                                  /*!<  Version */
