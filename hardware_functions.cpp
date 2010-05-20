@@ -176,15 +176,15 @@ void setBacklight(bool b)
 
 bool buzzer_enabled = false;
 
-void setBeep(bool buzzer_enable)
+void setBeep(bool enable)
 {
 	// enter the BEEP_ON state to enable the buzzer
-	if (buzzer_enable)
+	if (enable)
 		bt_global::audio_states->toState(AudioStates::BEEP_ON);
 	// exit the BEEP_ON state to disable the buzzer
-	else if (!buzzer_enable && buzzer_enabled)
+	else if (!enable && buzzer_enabled)
 		bt_global::audio_states->removeState(AudioStates::BEEP_ON);
-	buzzer_enabled = buzzer_enable;
+	buzzer_enabled = enable;
 }
 
 bool getBeep()
@@ -194,11 +194,11 @@ bool getBeep()
 
 #else
 
-void setBeep(bool buzzer_enable)
+void setBeep(bool enable)
 {
 	// TODO port the audio state machine to touch 3.5
 
-	const char *p = buzzer_enable ? "1" : "0";
+	const char *p = enable ? "1" : "0";
 	if (QFile::exists("/proc/sys/dev/btweb/buzzer_enable"))
 	{
 		FILE* fd = fopen("/proc/sys/dev/btweb/buzzer_enable", "w");
