@@ -29,7 +29,6 @@ AudioStateMachine::AudioStateMachine()
 {
 	addState(IDLE);
 	addState(BEEP_ON);
-	addState(BEEP_OFF);
 	addState(PLAY_MEDIA_TO_SPEAKER);
 	addState(PLAY_DIFSON);
 	addState(PLAY_RINGTONE);
@@ -48,6 +47,11 @@ void AudioStateMachine::start(int state)
 	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
 	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
 	StateMachine::start(state);
+}
+
+bool AudioStateMachine::toState(int state)
+{
+	return StateMachine::toState(state);
 }
 
 void AudioStateMachine::setVolume(int)

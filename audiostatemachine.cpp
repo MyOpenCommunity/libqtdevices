@@ -210,9 +210,6 @@ AudioStateMachine::AudioStateMachine()
 	addState(BEEP_ON,
 		 SLOT(stateBeepOnEntered()),
 		 SLOT(stateBeepOnExited()));
-	addState(BEEP_OFF,
-		 SLOT(stateBeepOffEntered()),
-		 SLOT(stateBeepOffExited()));
 	addState(MUTE,
 		 SLOT(stateMuteEntered()),
 		 SLOT(stateMuteExited()));
@@ -250,7 +247,7 @@ AudioStateMachine::AudioStateMachine()
 	// by default, all state transitions are possible, if this is not
 	// correct, use removeTransitions() to make some transitions impossible
 
-	// go to the start state: on startup IDLE is a transitional state, after a while it moves to BEEP_ON or BEEP_OFF
+	// go to the start state
 	start(IDLE);
 }
 
@@ -359,12 +356,12 @@ int AudioStateMachine::getVolume()
 
 void AudioStateMachine::stateIdleEntered()
 {
-	// do something when entering the idle state
+	// TODO turn off the amplifier
 }
 
 void AudioStateMachine::stateIdleExited()
 {
-	// do something when leaving the idle state
+	// TODO turn back on the amplfier
 }
 
 void AudioStateMachine::stateBeepOnEntered()
@@ -376,16 +373,6 @@ void AudioStateMachine::stateBeepOnEntered()
 void AudioStateMachine::stateBeepOnExited()
 {
 
-}
-
-void AudioStateMachine::stateBeepOffEntered()
-{
-	// TODO turn off the amplifier
-}
-
-void AudioStateMachine::stateBeepOffExited()
-{
-	// TODO turn back on the amplfier
 }
 
 void AudioStateMachine::statePlayMediaToSpeakerEntered()
