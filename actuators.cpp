@@ -21,9 +21,9 @@
 
 #include "actuators.h"
 #include "btbutton.h"
-#include "generic_functions.h" // createCommandFrame
 #include "devices_cache.h" // bt_global::devices_cache
-#include "lighting_device.h"
+#include "lighting_device.h" // LightingDevice
+#include "entryphone_device.h" // EntryphoneDevice
 #include "skinmanager.h" //skin
 
 #include <QDebug>
@@ -70,48 +70,55 @@ void SingleActuator::valueReceived(const DeviceValues &values_list)
 
 
 
-ButtonActuator::ButtonActuator(const QString &descr, const QString &_where, int t) :
-	BannSinglePuls(0),
-	where(_where)
+ButtonActuator::ButtonActuator(const QString &descr, const QString &_where, int t, int openserver_id) : BannSinglePuls(0)
 {
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("action_icon"), descr);
 
 	type = t;
+	where = _where;
+
+	switch (type)
+	{
+	case PULSE_ACT:
+		dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL_UNKNOWN, openserver_id));
+		break;
+	case VCT_LOCK:
+	case VCT_STAIRLIGHT:
+		dev = bt_global::add_device_to_cache(new EntryphoneDevice(where, openserver_id));
+		break;
+	default:
+		Q_ASSERT_X(false, "ButtonActuator::ButtonActuator", "Type of actuator unknown!");
+	}
 
 	connect(right_button, SIGNAL(pressed()), SLOT(activate()));
 	connect(right_button, SIGNAL(released()), SLOT(deactivate()));
 }
 
-// This banner should have a real device but 1) no vct devices are implemented, 2) three classes should be
-// implemented, which really seems to me an overkill
 void ButtonActuator::activate()
 {
-	switch (type)
+	if (type == PULSE_ACT)
+		(static_cast<LightingDevice*>(dev))->turnOn();
+	else
 	{
-	case  AUTOMAZ:
-		sendFrame(createCommandFrame("1", "1", where));
-		break;
-	case  VCT_SERR:
-		sendFrame(createCommandFrame("6", "10", where));
-		break;
-	case  VCT_LS:
-		sendFrame(createCommandFrame("6", "12", where));
-		break;
+		EntryphoneDevice *d = static_cast<EntryphoneDevice*>(dev);
+		if (type == VCT_LOCK)
+			d->openLock();
+		else
+			d->stairLightActivate();
 	}
 }
 
 void ButtonActuator::deactivate()
 {
-	switch (type)
+	if (type == PULSE_ACT)
+		(static_cast<LightingDevice*>(dev))->turnOff();
+	else
 	{
-	case  AUTOMAZ:
-		sendFrame(createCommandFrame("1", "0", where));
-		break;
-	case  VCT_SERR:
-		break;
-	case  VCT_LS:
-		sendFrame(createCommandFrame("6", "11", where));
-		break;
+		EntryphoneDevice *d = static_cast<EntryphoneDevice*>(dev);
+		if (type == VCT_LOCK)
+			d->releaseLock();
+		else
+			d->stairLightRelease();
 	}
 }
 

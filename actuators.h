@@ -24,16 +24,16 @@
 
 #include "bann2_buttons.h" // BannOnOffState
 #include "bann1_button.h" // BannSinglePuls
-#include "device.h" //DeviceValues
+#include "device.h" // DeviceValues
 
 class LightingDevice;
 
 
 enum ActuatorType
 {
-	AUTOMAZ,  /*!< driving as a pulse an automation actuator */
-	VCT_SERR, /*!< driving as a pulse a video-doorentrysystem actuator configured as "lock" */
-	VCT_LS,   /*!< driving as a pulse a video-doorentrysystem actuator configured as "stairlight" */
+	PULSE_ACT,  /*!< driving as a pulse an automation actuator */
+	VCT_LOCK, /*!< driving as a pulse a video-doorentrysystem actuator configured as "lock" */
+	VCT_STAIRLIGHT,   /*!< driving as a pulse a video-doorentrysystem actuator configured as "stairlight" */
 };
 
 
@@ -57,7 +57,7 @@ class ButtonActuator : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	ButtonActuator(const QString &descr, const QString &_where, int t);
+	ButtonActuator(const QString &descr, const QString &_where, int t, int openserver_id);
 
 private slots:
 	void activate();
@@ -66,6 +66,7 @@ private slots:
 private:
 	int type;
 	QString where;
+	device *dev;
 };
 
 #endif

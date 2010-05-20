@@ -20,8 +20,9 @@
 
 
 #include "entryphone_device.h"
-#include "generic_functions.h"
+#include "generic_functions.h" // createCommandFrame
 #include "ringtonesmanager.h"
+#include "openclient.h" // MAIN_OPENSERVER
 
 #include <openmsg.h>
 #include <QDebug>
@@ -48,8 +49,8 @@ enum
 	MOVE_RIGHT = 62,
 };
 
-EntryphoneDevice::EntryphoneDevice(const QString &where) :
-	device(QString("8"), where)
+EntryphoneDevice::EntryphoneDevice(const QString &where, int openserver_id) :
+	device(QString("8"), where, openserver_id)
 {
 	// invalid values
 	kind = mmtype = -1;
@@ -104,12 +105,18 @@ void EntryphoneDevice::stairLightRelease() const
 
 void EntryphoneDevice::openLock() const
 {
-	sendCommand(QString::number(OPEN_LOCK), caller_address);
+	if (is_calling)
+		sendCommand(QString::number(OPEN_LOCK), caller_address);
+	else
+		sendCommand(QString::number(OPEN_LOCK));
 }
 
 void EntryphoneDevice::releaseLock() const
 {
-	sendCommand(QString::number(RELEASE_LOCK), caller_address);
+	if (is_calling)
+		sendCommand(QString::number(RELEASE_LOCK), caller_address);
+	else
+		sendCommand(QString::number(RELEASE_LOCK));
 }
 
 void EntryphoneDevice::cycleExternalUnits() const
@@ -129,11 +136,14 @@ void EntryphoneDevice::endCall()
 
 void EntryphoneDevice::initVctProcess()
 {
-	// TODO: enumerate the values for type, which can be: scs only, ip only, both scs and ip
-	// TODO: find out values
-	int type = 1;
-	QString what = QString("%1#%2").arg(READY).arg(type);
-	sendCommand(what);
+	if (openserver_id == MAIN_OPENSERVER)
+	{
+		// TODO: enumerate the values for type, which can be: scs only, ip only, both scs and ip
+		// TODO: find out values
+		int type = 1;
+		QString what = QString("%1#%2").arg(READY).arg(type);
+		sendCommand(what);
+	}
 }
 
 void EntryphoneDevice::cameraMovePress(int move_type) const

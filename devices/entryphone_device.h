@@ -61,7 +61,7 @@ public:
 		STOP_VIDEO = 202, // the value doesn't matter
 	};
 
-	EntryphoneDevice(const QString &where);
+	EntryphoneDevice(const QString &where, int openserver_id = 0);
 
 	void answerCall() const;
 	void initVctProcess();

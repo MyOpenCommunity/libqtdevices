@@ -142,7 +142,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		b = new TempLight(descr, where, oid);
 		break;
 	case STAIR_LIGHT:
-		b = new ButtonActuator(descr, where, VCT_LS);
+		b = new ButtonActuator(descr, where, VCT_STAIRLIGHT, oid);
 		break;
 	case DIMMER100:
 	{

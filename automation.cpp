@@ -41,6 +41,7 @@ enum BannerType
 	DOOR_LOCK = 13,
 	PPT_STAT_AUTO = 42,
 	ACTUATOR_GROUP = 10,
+	PULSE_ACTUATOR = 11,
 };
 #else
 enum BannerType
@@ -48,14 +49,14 @@ enum BannerType
 	INTERBLOCKED_ACTUATOR = 3001,
 	SECURE_AUTOMATIC_ACTUATOR = 3002,
 	SIMPLE_ACTUATOR = 3007,
-	DOOR_LOCK = 3010,
+	DOOR_LOCK = 3011,
 	PPT_STAT_AUTO = 3012,
 	ACTUATOR_GROUP = 3014,
+	PULSE_ACTUATOR = 3010,
 	/*
 	  TODO: What about these?
 	AUTOM_CANC_ATTUAT_ILL =234,
 	AUTOM_CANC_ATTUAT_VC = 234,
-	ATTUAT_AUTOM_PULS = 234,
 	*/
 };
 #endif
@@ -93,7 +94,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		b = new SingleActuator(descr, where, oid);
 		break;
 	case DOOR_LOCK:
-		b = new ButtonActuator(descr, where, VCT_SERR);
+		b = new ButtonActuator(descr, where, VCT_LOCK, oid);
 		break;
 	case ACTUATOR_GROUP:
 	{
@@ -119,8 +120,8 @@ banner *Automation::getBanner(const QDomNode &item_node)
 	case AUTOM_CANC_ATTUAT_VC:
 		b = new GateEntryphoneActuator(descr, where, oid);
 		break;
-	case ATTUAT_AUTOM_PULS:
-		b = new ButtonActuator(descr, where, AUTOMAZ);
+	case ATTUAT_AUTOM_PULSE:
+		b = new ButtonActuator(descr, where, PULSE_ACT, oid);
 		break;
 	case PPT_STAT_AUTO:
 		b = new PPTStat(where, oid);
