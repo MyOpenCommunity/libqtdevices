@@ -823,7 +823,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 
 	<!-- automation banners -->
 	<item>
-		<!-- curtains -->
+		<!-- blind -->
 		<!--Notes:
 		    In STOP state, image in 'img_actuator_state' will be used.
 		    In OPENING state, an 'o' will be appended to the image in 'img_actuator_state'.
@@ -836,7 +836,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_actuator_state>automazione/imgtenda.png</img_actuator_state>
 	</item>
 	<item>
-		<!-- garage -->
+		<!-- pivoting door -->
 		<!-- See Notes section on previous cid -->
 		<cid>3002</cid>
 		<img_close>automazione/arrdw.png</img_close>
@@ -854,13 +854,27 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_actuator_state>automazione/imgtappa.png</img_actuator_state>
 	</item>
 	<item>
-		<!-- gate -->
+		<!-- gate automation -->
 		<!-- See Notes section on previous cid -->
 		<cid>3004</cid>
 		<img_close>automazione/close.png</img_close>
 		<img_open>automazione/open.png</img_open>
 		<img_stop>automazione/stop.png</img_stop>
 		<img_actuator_state>automazione/imgcanc.png</img_actuator_state>
+	</item>
+	<item>
+		<!-- gate lighting -->
+		<!-- See Notes section on previous cid -->
+		<cid>3005</cid>
+		<img_on>automazione/on.png</img_on>
+		<img_gate>automazione/imgcanc.png</img_gate>
+	</item>
+	<item>
+		<!-- gate vct -->
+		<!-- See Notes section on previous cid -->
+		<cid>3006</cid>
+		<img_on>automazione/on.png</img_on>
+		<img_gate>automazione/imgcanc.png</img_gate>
 	</item>
 	<item>
 		<!-- ventilation -->
@@ -890,10 +904,15 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_actuator_state>automazione/imgcarico.png</img_actuator_state>
 	</item>
 	<item>
-		<!-- door lock -->
+		<!-- door lock automation-->
 		<cid>3010</cid>
 		<img_on>automazione/on.png</img_on>
-		<!-- TODO check -->
+		<img_action_icon>automazione/imgserraturaoff.png</img_action_icon>
+	</item>
+	<item>
+		<!-- door lock vct-->
+		<cid>3011</cid>
+		<img_on>automazione/on.png</img_on>
 		<img_action_icon>automazione/imgserraturaoff.png</img_action_icon>
 	</item>
 	<item>
