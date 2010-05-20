@@ -272,7 +272,7 @@ void AudioPlayerPage::refreshPlayInfo()
 
 void AudioPlayerPage::changeVolume(int volume)
 {
-	setVolume(VOLUME_MMDIFFUSION, volume);
+	bt_global::audio_states->setVolume(volume);
 }
 
 void AudioPlayerPage::gotoSoundDiffusion()
