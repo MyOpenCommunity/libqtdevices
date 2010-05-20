@@ -41,7 +41,7 @@ then
   export QMAKESPEC=$QMAKESPEC
   export PATH=$PATH:$CROSS_LIB1
   $QTDIR/bin/qmake CONFIG+=release
-  #make clean
+  make clean
   make || exit 1
   mv TouchX.arm BTouch
   cp BTouch BTouch_no_strip
