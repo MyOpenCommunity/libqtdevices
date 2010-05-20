@@ -374,6 +374,7 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			emit callerAddress();
 			break;
 		case EntryphoneDevice::END_OF_CALL:
+			cleanAudioStates();
 			stopVideo();
 			emit callClosed();
 			break;
@@ -407,7 +408,7 @@ void VCTCall::toggleCameraSettings()
 	}
 }
 
-void VCTCall::endCall()
+void VCTCall::cleanAudioStates()
 {
 	// if mute, exit from the correspondent state
 	if (call_status->mute == StateButton::ON)
@@ -419,6 +420,11 @@ void VCTCall::endCall()
 		bt_global::audio_states->exitCurrentState();
 		volume->disable();
 	}
+}
+
+void VCTCall::endCall()
+{
+	cleanAudioStates();
 	dev->endCall();
 	stopVideo();
 }
