@@ -189,6 +189,18 @@ namespace
 		lseek(eeprom, E2_BASE_VOLUMES, SEEK_SET);
 		write(eeprom, volumes.data(), Volumes::COUNT);
 	}
+
+	bool isVideoCallState(int state)
+	{
+		return state == AudioStates::IP_INTERCOM_CALL || state == AudioStates::IP_VIDEO_CALL ||
+		       state == AudioStates::SCS_INTERCOM_CALL || state == AudioStates::SCS_VIDEO_CALL ||
+		       state == AudioStates::PLAY_RINGTONE || state == AudioStates::MUTE;
+	}
+
+	bool isAlarmState(int state)
+	{
+		return state == AudioStates::ALARM_TO_SPEAKER;
+	}
 }
 
 
@@ -264,6 +276,32 @@ void AudioStateMachine::start(int state)
 	changeVolumePath(Volumes::MM_SOURCE, 0);
 
 	StateMachine::start(state);
+}
+
+bool AudioStateMachine::toState(int state)
+{
+	int index = stateCount();
+
+	// there are these "interesting" special cases: video call states have precedence
+	// over alarm states, which have precedence over everithing else; if we try
+	// to transition from a high priority state to a low	 priority state, we note
+	// this fact by inserting the state in the state stack below the high priority states
+	if (!isVideoCallState(state))
+		while (isVideoCallState(stateAt(index - 1)))
+			index -= 1;
+	if (!isAlarmState(state) && !isVideoCallState(state))
+		while (isAlarmState(stateAt(index - 1)))
+			index -= 1;
+	// beep is always the lowest state (just above IDLE)
+	if (state == AudioStates::BEEP_ON)
+		index = 1;
+
+	if (index == stateCount())
+		return StateMachine::toState(state);
+
+	insertState(index, state);
+
+	return true;
 }
 
 void AudioStateMachine::saveVolumes()

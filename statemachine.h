@@ -71,7 +71,7 @@ public:
 
 	// moves the state machine to the given state; returns false if the
 	// transition is disallowed by some constraint
-	bool toState(int state);
+	virtual bool toState(int state);
 
 	// exits from the current state and moves to the previous one.
 	void exitCurrentState();

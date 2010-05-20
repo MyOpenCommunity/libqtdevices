@@ -73,6 +73,10 @@ public:
 	AudioStateMachine();
 	virtual void start(int state);
 
+	// this override might insert the state in the middle of the state stack instea
+	// of pushing it at the top
+	virtual bool toState(int state);
+
 	// Set and get the volume of the current state
 	void setVolume(int value);
 	int getVolume();
