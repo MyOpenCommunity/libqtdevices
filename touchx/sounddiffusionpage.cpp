@@ -453,7 +453,7 @@ void SoundDiffusionPage::loadItemsMulti(const QDomNode &config_node)
 			qFatal("ID %s not handled in SoundDiffusionPage", qPrintable(getTextChild(item, "id")));
 	}
 
-	alarm_clock_page = new SoundDiffusionAlarmPage(config_node, sources_list, createGeneralAmplifierDevice());
+	alarm_clock_page = new SoundDiffusionAlarmPage(config_node, sources_list, AmplifierDevice::createDevice("0"));
 }
 
 void SoundDiffusionPage::loadItemsMono(const QDomNode &config_node)
@@ -464,21 +464,7 @@ void SoundDiffusionPage::loadItemsMono(const QDomNode &config_node)
 	next_page = new SoundAmbientPage(config_node, sources_list);
 	connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 
-	alarm_clock_page = new SoundAmbientAlarmPage(config_node, sources_list, createGeneralAmplifierDevice());
-}
-
-AmplifierDevice *SoundDiffusionPage::createGeneralAmplifierDevice()
-{
-	AmplifierDevice *g = bt_global::add_device_to_cache(new AmplifierDevice("0"));
-
-	if (bt_global::audio_states->isAmplifier())
-	{
-		AmplifierDevice *v = bt_global::add_device_to_cache(new VirtualAmplifierDevice((*bt_global::config)[AMPLIFIER_ADDRESS]));
-
-		return bt_global::add_device_to_cache(new CompositeAmplifierDevice(QList<AmplifierDevice*>() << g << v));
-	}
-	else
-		return g;
+	alarm_clock_page = new SoundAmbientAlarmPage(config_node, sources_list, AmplifierDevice::createDevice("0"));
 }
 
 banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources)

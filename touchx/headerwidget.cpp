@@ -212,7 +212,7 @@ void TemperatureDisplay::valueReceived(const DeviceValues &values_list)
 			label = fahrenheitString(bt2Fahrenheit(celsius2Bt(temperature)));
 			break;
 		default:
-			qWarning("BannTemperature: unknown scale");
+			qWarning("TemperatureDisplay: unknown scale");
 	}
 
 	update();
@@ -757,7 +757,7 @@ void HeaderWidget::loadConfiguration(const QDomNode &homepage_node, const QDomNo
 
 		if (id == ITEM_SETTINGS_LINK)
 		{
-			settings = new IconSettings(getPageNodeFromChildNode(item, "lnk_pageID"), true);
+			settings = new IconSettings(getPageNodeFromChildNode(item, "lnk_pageID"));
 			connect(settings, SIGNAL(Closed()), SIGNAL(showHomePage()));
 
 			break;

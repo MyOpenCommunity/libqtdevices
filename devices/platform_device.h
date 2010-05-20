@@ -46,6 +46,8 @@ Q_OBJECT
 public:
 	PlatformDevice();
 
+	virtual void init();
+
 	// date/time methods
 	void setTime(const BtTime &t);
 	void setDate(const QDate &d);

@@ -142,7 +142,6 @@ HEADERS += actuators.h \
 	btbutton.h \
 	btmain.h \
 	bttime.h \
-	buttons_bar.h \
 	changedatetime.h \
 	cleanscreen.h \
 	contrast.h \
@@ -166,7 +165,6 @@ HEADERS += actuators.h \
 	icondispatcher.h \
 	iconpage.h \
 	iconwindow.h \
-	imagelabel.h \
 	imageselectionhandler.h \
 	itemlist.h \
 	itemlistpage.h \
@@ -245,7 +243,6 @@ SOURCES += actuators.cpp \
 	btbutton.cpp \
 	btmain.cpp \
 	bttime.cpp \
-	buttons_bar.cpp \
 	changedatetime.cpp \
 	cleanscreen.cpp \
 	contrast.cpp \
@@ -269,7 +266,6 @@ SOURCES += actuators.cpp \
 	icondispatcher.cpp \
 	iconpage.cpp \
 	iconwindow.cpp \
-	imagelabel.cpp \
 	imageselectionhandler.cpp \
 	itemlist.cpp \
 	itemlistpage.cpp \

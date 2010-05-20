@@ -49,6 +49,7 @@
 #if !defined(BT_HARDWARE_X11)
 #include "calibration.h"
 #endif
+#include "media_device.h" // AmplifierDevice::setVirtualAmplifierWhere
 
 #include <QMutableHashIterator>
 #include <QXmlSimpleReader>
@@ -330,12 +331,16 @@ void BtMain::loadGlobalConfig()
 	setConfigValue(n, "modello", (*config)[MODEL]);
 	setConfigValue(n, "nome", (*config)[NAME]);
 
-	QDomNode scs_node = getConfElement("setup/scs");
+	QDomNode vde_node = getConfElement("setup/vdes/communication");
+	if (!vde_node.isNull())
+	{
+		QString address = getTextChild(vde_node, "address");
+		QString dev = getTextChild(vde_node, "dev");
+		if (!address.isNull())
+			(*config)[PI_ADDRESS] = dev + address;
+	}
 
-	setConfigValue(scs_node, "coordinate_scs/my_piaddress", (*config)[PI_ADDRESS]);
-	// transform address into internal address
-	if (!(*config)[PI_ADDRESS].isNull())
-		(*config)[PI_ADDRESS].prepend("1");
+	QDomNode scs_node = getConfElement("setup/scs");
 
 	// TouchX source and amplifier addresses
 	setConfigValue(scs_node, "coordinate_scs/my_mmaddress", (*config)[SOURCE_ADDRESS]);
@@ -345,6 +350,8 @@ void BtMain::loadGlobalConfig()
 		(*config)[SOURCE_ADDRESS] = "";
 	if ((*config)[AMPLIFIER_ADDRESS] == "-1")
 		(*config)[AMPLIFIER_ADDRESS] = "";
+
+	AmplifierDevice::setVirtualAmplifierWhere((*config)[AMPLIFIER_ADDRESS]);
 }
 
 void BtMain::waitBeforeInit()

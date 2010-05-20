@@ -36,6 +36,9 @@
 
 void TestAlarmSoundDiffDevice::initTestCase()
 {
+	// clear the source/amplifier list created by earlier tests
+	AlarmSoundDiffDevice::sources.clear();
+	AlarmSoundDiffDevice::amplifiers.clear();
 	dev = new AlarmSoundDiffDevice(true);
 	dev->setReceiveFrames(true);
 }
@@ -43,6 +46,7 @@ void TestAlarmSoundDiffDevice::initTestCase()
 void TestAlarmSoundDiffDevice::cleanupTestCase()
 {
 	delete dev;
+	AlarmSoundDiffDevice::alarm_device = NULL; // shouldn't be necessary, but does not hurt
 }
 
 void TestAlarmSoundDiffDevice::init()

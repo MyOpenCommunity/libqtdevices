@@ -20,7 +20,6 @@
 
 
 #include "bann_amplifiers.h"
-#include "devices_cache.h" // bt_global::add_device_to_cache
 #include "skinmanager.h" // bt_global::skin
 #include "generic_functions.h" // getBostikName
 #include "media_device.h"
@@ -28,37 +27,6 @@
 
 // TODO: in poweramplifier.h there's a base graphic banner to handle volume and state changes for amplifiers
 // use it also for Amplifier
-
-namespace
-{
-	AmplifierDevice *createVirtualDevice()
-	{
-		return bt_global::add_device_to_cache(new VirtualAmplifierDevice((*bt_global::config)[AMPLIFIER_ADDRESS]));
-	}
-
-	AmplifierDevice *createDevice(const QString &where)
-	{
-		QString virtual_amplifier = (*bt_global::config)[AMPLIFIER_ADDRESS];
-
-		if (!virtual_amplifier.isEmpty())
-		{
-			if (virtual_amplifier == where)
-				return createVirtualDevice();
-			else if (AmplifierDevice::isGeneralAddress(where) ||
-				 (AmplifierDevice::isAreaAddress(where) &&
-				  AmplifierDevice::getAmplifierArea(where) == AmplifierDevice::getAmplifierArea(virtual_amplifier)))
-			{
-				AmplifierDevice *v = createVirtualDevice();
-				AmplifierDevice *n = bt_global::add_device_to_cache(new AmplifierDevice(where));
-
-				return bt_global::add_device_to_cache(new CompositeAmplifierDevice(QList<AmplifierDevice*>() << n << v));
-			}
-
-		}
-
-		return bt_global::add_device_to_cache(new AmplifierDevice(where));
-	}
-}
 
 Amplifier::Amplifier(const QString &descr, const QString &where) : BannLevel(0)
 {
@@ -71,7 +39,7 @@ Amplifier::Amplifier(const QString &descr, const QString &where) : BannLevel(0)
 	initBanner(bt_global::skin->getImage("off"), getBostikName(center_left_inactive, QString::number(volume_value)),
 		getBostikName(center_right_inactive, QString::number(volume_value)), bt_global::skin->getImage("on"), descr);
 
-	dev = createDevice(where);
+	dev = AmplifierDevice::createDevice(where);
 
 	connect(left_button, SIGNAL(clicked()), SLOT(turnOff()));
 	connect(right_button, SIGNAL(clicked()), SLOT(turnOn()));
@@ -131,7 +99,7 @@ AmplifierGroup::AmplifierGroup(QStringList addresses, const QString &descr) : Ba
 		getBostikName(center_right_inactive, "0"), bt_global::skin->getImage("on"), descr);
 
 	foreach (const QString &where, addresses)
-		devices.append(createDevice(where));
+		devices.append(AmplifierDevice::createDevice(where));
 
 	connect(left_button, SIGNAL(clicked()), SLOT(turnOff()));
 	connect(right_button, SIGNAL(clicked()), SLOT(turnOn()));

@@ -23,7 +23,7 @@
 #include "navigation_bar.h"
 #include "multimedia_buttons.h"
 #include "displaycontrol.h" // forceOperativeMode
-#include "imagelabel.h"
+#include "labels.h" // ImageLabel
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

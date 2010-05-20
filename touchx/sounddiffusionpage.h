@@ -157,7 +157,6 @@ private:
 	QList<SourceDescription> loadSources(const QDomNode &config_node);
 	void loadItemsMulti(const QDomNode &config_node);
 	void loadItemsMono(const QDomNode &config_node);
-	AmplifierDevice *createGeneralAmplifierDevice();
 
 private:
 	Page *next_page;

@@ -95,8 +95,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 	<!-- Videodoorentry section-->
 	<item>
 		<cid>10000</cid>
-		<img_tray_ring_ex_on>home/esclusionechiamataon.png</img_tray_ring_ex_on>
-		<img_tray_ring_ex_off>home/esclusionechiamataoff.png</img_tray_ring_ex_off>
+		<img_tray_ring_ex_on>home/btnesclusionechiamataon.png</img_tray_ring_ex_on>
+		<img_tray_ring_ex_off>home/btnesclusionechiamataoff.png</img_tray_ring_ex_off>
 	</item>
 	<!-- Home and info bar -->
 	<item>
@@ -266,6 +266,11 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_network_enable>setup/buzzer.png</img_network_enable>
 		<img_network_disable>setup/canc.png</img_network_disable>
 	</item>
+	<!-- videodoorentry settings button -->
+	<item>
+		<cid>14010</cid>
+		<img_link_icon>setup/videocitofonia.png</img_link_icon>
+	</item>
 	<!-- Homepage links -->
 	<item>
 		<!-- automation link -->
@@ -409,14 +414,17 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_link_icon>videocitofonia/esclusionechiamata.png</img_link_icon>
 	</item>
 	<item>
-		<!-- settings -->
-		<cid>14000</cid>
-		<img_videodoorentry>setup/videocitofonia.png</img_videodoorentry>
+		<!-- Videodoorentry: Hands free -->
+		<cid>14251</cid>
 		<img_handsfree_on>setup/manilibere.png</img_handsfree_on>
 		<img_handsfree_off>setup/maniliberedis.png</img_handsfree_off>
+		<img_tray_handsfree>home/maniliberes.png</img_tray_handsfree>
+	</item>
+		<!-- Videodoorentry: Professional studio -->
+	<item>
+		<cid>14252</cid>
 		<img_profstudio_on>setup/studioprofessionale.png</img_profstudio_on>
 		<img_profstudio_off>setup/studioprofessionaledis.png</img_profstudio_off>
-		<img_tray_handsfree>home/maniliberes.png</img_tray_handsfree>
 		<img_tray_profstudio>home/studioprofessionales.png</img_tray_profstudio>
 	</item>
 	<!-- Multimedia page links -->
@@ -765,8 +773,6 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
 		<img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
 		<img_loud>diffusione/loud.png</img_loud>
-		<img_loud_on>diffusione/loud.png</img_loud_on>
-		<img_loud_off>diffusione/loud_off.png</img_loud_off>
 		<img_more>diffusione/more.png</img_more>
 		<img_less>diffusione/less.png</img_less>
 		<img_settings>diffusione/audiosetting.png</img_settings>

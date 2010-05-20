@@ -53,13 +53,14 @@ RingtonesManager::RingtonesManager(QString ringtone_file)
 
 void RingtonesManager::playRingtone(Ringtones::Type t)
 {
-	qDebug() << "RingtonesManager::playRingtone" << t;
 	if (!type_to_ringtone.contains(t))
 	{
 		qWarning() << "Unable to play a ringtone for type: " << t;
 		return;
 	}
 
+	qDebug() << "RingtonesManager::playRingtone:" << ringtone_to_file[type_to_ringtone[t]]
+		<< "for type:" << t;
 	playSound(ringtone_to_file[type_to_ringtone[t]]);
 }
 

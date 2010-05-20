@@ -38,7 +38,7 @@
 #include "platform_device.h" // PlatformDevice
 #include "generic_functions.h" // setCfgValue
 #include "displaycontrol.h"
-#include "videodoorentry.h"
+#include "videodoorentry.h" // HandsFree, ProfessionalStudio
 #include "main.h" // bt_global::config
 #include "audiostatemachine.h" // bt_global::audio_states
 
@@ -74,6 +74,9 @@ enum
 	RINGTONE_ALARM = 14109,
 	RINGTONE_MESSAGE = 14110,
 	PAGE_LANSETTINGS = 14008,
+	PAGE_VCTSETTINGS = 14010,
+	ITEM_HANDSFREE = 14251,
+	ITEM_PROF_STUDIO = 14252,
 	// TODO ids?
 	PAGE_CALIBRATION_TEST = 1777777,
 };
@@ -218,12 +221,11 @@ void VolumePage::changeVolume(int new_vol)
 
 VersionPage::VersionPage(const QDomNode &config_node)
 {
+	// TODO for touch 3.5 we need to send status requests as early as possible,
+	// because the version page is shown during boot
+
 	dev = bt_global::add_device_to_cache(new PlatformDevice);
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
-	dev->requestFirmwareVersion();
-	dev->requestKernelVersion();
-	dev->requestIp();
-	dev->requestNetmask();
 
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
@@ -291,16 +293,11 @@ void ChangeDateTime::dateTimeChanged(QDate date, BtTime time)
 }
 
 
-IconSettings::IconSettings(const QDomNode &config_node, bool load_vct_items)
+IconSettings::IconSettings(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 	loadItems(config_node);
-
-
-	if (load_vct_items && !(*bt_global::config)[PI_ADDRESS].isEmpty())
-		addPage(new SettingsVideoDoorEntry, tr("Video door entry"),
-			bt_global::skin->getImage("videodoorentry"));
 }
 
 int IconSettings::sectionId() const
@@ -448,6 +445,15 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		case PAGE_BRIGHTNESS:
 			p = new BrightnessPage;
 			break;
+		case PAGE_VCTSETTINGS:
+			p = new IconSettings(page_node);
+			break;
+		case ITEM_HANDSFREE:
+			page_content->addWidget(new HandsFree);
+			break;
+		case ITEM_PROF_STUDIO:
+			page_content->addWidget(new ProfessionalStudio);
+			break;
 		default:
 			qFatal("Unhandled page id in SettingsTouchX::loadItems");
 		};
@@ -460,7 +466,6 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		else if (w)
 		{
 			BtButton *b = addButton(descr, icon);
-
 			connect(b, SIGNAL(clicked()), w, SLOT(showWindow()));
 		}
 	}

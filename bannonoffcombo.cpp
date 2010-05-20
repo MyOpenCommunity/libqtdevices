@@ -42,10 +42,12 @@ BannOnOffCombo::BannOnOffCombo(QWidget *parent) : BannerNew(parent)
 
 	// central box with balance icons and balance text
 	QHBoxLayout *hbox = new QHBoxLayout;
-	hbox->addWidget(left_icon);
-	hbox->addWidget(center_icon);
-	hbox->addWidget(internal_label);
-	hbox->addWidget(right_icon);
+	hbox->setContentsMargins(0, 0, 0, 0);
+	hbox->setSpacing(0);
+	hbox->addWidget(left_icon, 1);
+	hbox->addWidget(center_icon, 0, Qt::AlignHCenter);
+	hbox->addWidget(internal_label, 1);
+	hbox->addWidget(right_icon, 1);
 
 	QGridLayout *l = new QGridLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);

@@ -199,6 +199,8 @@ protected:
  */
 class AmplifierDevice : public device
 {
+friend class TestAlarmSoundDiffDevice;
+friend class TestAmplifierDevice;
 Q_OBJECT
 public:
 	enum
@@ -207,9 +209,19 @@ public:
 		DIM_VOLUME = 1,
 	};
 
-	// passing "0" as the where creates a device commanding all amplifiers
-	// passing "<area>0" as the where creates a device commanding all amplifiers in an area
-	AmplifierDevice(QString where, int openserver_id = 0);
+	/*
+	 * this function transparently handles device creation for normal amplifier
+	 * devices (either SCS or virtual) and for general and area commands; it will
+	 * automatically handle the virtual amplifier and add the created device to the
+	 * device cache.
+	 *
+	 * passing <area><point> as the where (eg. 18, 23) will create a device for a single amplifier
+	 * passing #<area> as the where (es. #4) will create an area command
+	 * passing "0" as the where will create a general command
+	 */
+	static AmplifierDevice *createDevice(const QString &where);
+
+	static void setVirtualAmplifierWhere(const QString &where);
 
 	virtual void init();
 
@@ -228,11 +240,20 @@ public:
 	QString getPoint() const { return point; }
 
 protected:
+	// passing "0" as the where creates a device commanding all amplifiers
+	// passing "#<area>" as the where creates a device commanding all amplifiers in an area
+	AmplifierDevice(QString where, int openserver_id = 0);
+
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+
+private:
+	static AmplifierDevice *createVirtualDevice();
 
 private:
 	QString area;
 	QString point;
+
+	static QString virtual_amplifier_where;
 };
 
 

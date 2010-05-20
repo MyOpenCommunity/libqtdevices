@@ -387,12 +387,4 @@ void ProfessionalStudio::updateStatus()
 }
 
 
-SettingsVideoDoorEntry::SettingsVideoDoorEntry()
-{
-	buildPage(new IconContent, new NavigationBar, "Video Door Entry");
-
-	page_content->addWidget(new HandsFree);
-	page_content->addWidget(new ProfessionalStudio);
-}
-
 #endif

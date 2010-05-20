@@ -160,17 +160,6 @@ protected:
 };
 
 
-/**
- * The page of the settings for the VideoDoorEntry section.
- */
-class SettingsVideoDoorEntry : public IconPage
-{
-Q_OBJECT
-public:
-	SettingsVideoDoorEntry();
-};
-
-
 #endif // #ifdef LAYOUT_BTOUCH
 
 #endif
