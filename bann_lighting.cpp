@@ -308,17 +308,11 @@ void Dimmer100New::status_changed(const StatusList &sl)
 			setState(it.value().toBool() ? ON : OFF);
 			setLevel(light_value);
 			break;
-		case LightingDevice::DIM_DIMMER_LEVEL:
-			setState(ON);
-			light_value = it.value().toInt();
-			// values too low are not registered by UI
-			if (light_value < 5)
-				light_value = 5;
-			setLevel(light_value);
-			break;
 		case LightingDevice::DIM_DIMMER_PROBLEM:
 			setState(BROKEN);
 			break;
+		// there is no need to handle DIM_DIMMER_LEVEL, because the dimmer 100
+		// device always emits both DIM_DIMMER100_LEVEL and DIM_DIMMER_LEVEL
 		case LightingDevice::DIM_DIMMER100_LEVEL:
 		{
 			// light values are between 0 (min) and 100 (max)

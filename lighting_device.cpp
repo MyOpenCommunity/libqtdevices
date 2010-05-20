@@ -62,7 +62,9 @@ int dimmerLevelTo100(int level)
 
 int dimmer100LevelTo10(int level)
 {
-	if (level <= 4)
+	if (level == 0)
+		return 0;
+	else if (level <= 4)
 		return 2;
 	else if (level <= 15)
 		return 3;
@@ -385,6 +387,12 @@ void Dimmer100Device::requestPullStatus()
 void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
 {
 	DimmerDevice::parseFrame(msg, sl);
+
+	// DimmerDevice::parseFrame already performed the operation for us, and updated level
+	// with the dimmer 100 level, we only need to set the dimmer 100 dimension
+	if (sl->contains(DIM_DIMMER_LEVEL))
+		(*sl)[DIM_DIMMER100_LEVEL] = level;
+
 	int what = msg.what();
 
 	if (msg.IsNormalFrame() && (what == DIM_DEVICE_ON || what == DIM_DEVICE_OFF) && msg.whatArgCnt() == 1)
