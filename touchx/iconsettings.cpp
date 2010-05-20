@@ -223,10 +223,6 @@ VersionPage::VersionPage(const QDomNode &config_node)
 {
 	dev = bt_global::add_device_to_cache(new PlatformDevice);
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
-	dev->requestFirmwareVersion();
-	dev->requestKernelVersion();
-	dev->requestIp();
-	dev->requestNetmask();
 
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);

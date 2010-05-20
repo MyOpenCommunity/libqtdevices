@@ -36,6 +36,14 @@ PlatformDevice::PlatformDevice() : device(QString("13"), QString(""))
 {
 }
 
+void PlatformDevice::init()
+{
+	requestFirmwareVersion();
+	requestKernelVersion();
+	requestIp();
+	requestNetmask();
+}
+
 void PlatformDevice::setTime(const BtTime &t)
 {
 	QString f;
