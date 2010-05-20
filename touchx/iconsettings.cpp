@@ -221,12 +221,11 @@ void VolumePage::changeVolume(int new_vol)
 
 VersionPage::VersionPage(const QDomNode &config_node)
 {
+	// TODO for touch 3.5 we need to send status requests as early as possible,
+	// because the version page is shown during boot
+
 	dev = bt_global::add_device_to_cache(new PlatformDevice);
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
-	dev->requestFirmwareVersion();
-	dev->requestKernelVersion();
-	dev->requestIp();
-	dev->requestNetmask();
 
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);

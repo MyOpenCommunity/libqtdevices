@@ -195,7 +195,6 @@ void SlideshowPage::showImage(int index)
 	connect(async_load, SIGNAL(finished()), SLOT(imageReady()));
 
 	async_load->setFuture(QtConcurrent::run(&loadImage, image_list[index]));
-	title->setText(QFileInfo(image_list[index]).fileName());
 }
 
 void SlideshowPage::imageReady()
@@ -203,6 +202,7 @@ void SlideshowPage::imageReady()
 	qDebug() << "Image loading complete";
 
 	image->setPixmap(QPixmap::fromImage(async_load->result()));
+	title->setText(QFileInfo(image_list[controller->currentImage()]).fileName());
 	async_load->deleteLater();
 }
 
@@ -227,6 +227,10 @@ void SlideshowPage::displayFullScreen()
 	bool active = controller->slideshowActive();
 	controller->stopSlideshow();
 	window->displayImages(image_list, controller->currentImage());
+
+	if (async_load)
+		async_load->deleteLater();
+
 	if (active)
 		window->startSlideshow();
 }
@@ -301,6 +305,9 @@ void SlideshowWindow::displayImages(QList<QString> images, unsigned element)
 
 void SlideshowWindow::showImage(int index)
 {
+	if (async_load)
+		async_load->deleteLater();
+
 	qDebug() << "Loading image" << image_list[index];
 
 	async_load = new QFutureWatcher<QImage>();
@@ -345,6 +352,10 @@ void SlideshowWindow::displayNoFullScreen()
 	bool active = controller->slideshowActive();
 	controller->stopSlideshow();
 	page->displayImages(image_list, controller->currentImage());
+
+	if (async_load)
+		async_load->deleteLater();
+
 	if (active)
 		page->startSlideshow();
 }

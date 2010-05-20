@@ -99,6 +99,7 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, QList<bool> 
 #ifdef LAYOUT_TOUCHX
 	// TODO fix sound diffusion for BTouch
 	dev = bt_global::add_device_to_cache(new AlarmSoundDiffDevice(SoundDiffusionPage::isMultichannel()));
+	general = AmplifierDevice::createDevice("0");
 #endif
 	connect(dev, SIGNAL(valueReceived(DeviceValues)),
 		SLOT(valueReceived(DeviceValues)));
@@ -159,6 +160,7 @@ void AlarmClock::showSoundDiffPage()
 void AlarmClock::saveVolumes()
 {
 	dev->setReceiveFrames(false);
+	general->turnOff();
 
 	if (aggiornaDatiEEprom)
 		setAlarmVolumes(serNum-1, volSveglia, sorgente, stazione);
@@ -169,6 +171,7 @@ void AlarmClock::saveVolumes()
 void AlarmClock::resetVolumes()
 {
 	dev->setReceiveFrames(false);
+	general->turnOff();
 	aggiornaDatiEEprom = 0;
 	showPage();
 }
