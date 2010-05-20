@@ -93,17 +93,17 @@ void PlatformDevice::requestMacAddress() const
 
 void PlatformDevice::requestGateway() const
 {
-	sendRequest(DIM_GATEWAY);
+//	sendRequest(DIM_GATEWAY);
 }
 
 void PlatformDevice::requestDNS1() const
 {
-	sendRequest(DIM_DNS1);
+//	sendRequest(DIM_DNS1);
 }
 
 void PlatformDevice::requestDNS2() const
 {
-	sendRequest(DIM_DNS2);
+//	sendRequest(DIM_DNS2);
 }
 
 void PlatformDevice::requestKernelVersion() const
