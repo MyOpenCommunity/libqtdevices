@@ -31,16 +31,13 @@
 #include <QHBoxLayout>
 
 
-BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, NonControlledProbeDevice *_dev)
-	: BannerOld(parent),
-	dev(_dev)
+BannTemperature::BannTemperature(QString descr, NonControlledProbeDevice *dev)
+	: BannerNew(0)
 {
-	temperature = -235;
-	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
+	temperature_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 
-	QLabel *descr_label = new QLabel;
+	QLabel *descr_label = new QLabel(descr);
 	descr_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
-	descr_label->setText(descr);
 
 	QVBoxLayout *t = new QVBoxLayout(this);
 
@@ -53,15 +50,15 @@ BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, 
 	t->addWidget(sep);
 #endif
 
-	temp_label = new QLabel;
-	temp_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
-	setTemperature();
+	temperature_label = new QLabel;
+	temperature_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	updateTemperature(1235);
 
 	QHBoxLayout *l = new QHBoxLayout;
 	l->setContentsMargins(0, 0, 10, 0);
 	l->setSpacing(10);
 	l->addWidget(descr_label, 0, Qt::AlignLeft);
-	l->addWidget(temp_label, 0, Qt::AlignRight);
+	l->addWidget(temperature_label, 0, Qt::AlignRight);
 
 	t->addLayout(l);
 
@@ -69,29 +66,23 @@ BannTemperature::BannTemperature(QWidget *parent, QString where, QString descr, 
 			SLOT(valueReceived(DeviceValues)));
 }
 
-void BannTemperature::inizializza(bool forza)
-{
-}
-
 void BannTemperature::valueReceived(const DeviceValues &values_list)
 {
 	if (!values_list.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
 		return;
 
-	temperature = values_list[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
-	setTemperature();
+	updateTemperature(values_list[NonControlledProbeDevice::DIM_TEMPERATURE].toInt());
 }
 
-void BannTemperature::setTemperature()
+void BannTemperature::updateTemperature(int temperature)
 {
-	switch (temp_scale)
+	switch (temperature_scale)
 	{
 		case CELSIUS:
-			temp_label->setText(celsiusString(temperature));
+			temperature_label->setText(celsiusString(bt2Celsius(temperature)));
 			break;
 		case FAHRENHEIT:
-			// we don't have a direct conversion from celsius degrees to farhrenheit degrees
-			temp_label->setText(fahrenheitString(bt2Fahrenheit(celsius2Bt(temperature))));
+			temperature_label->setText(fahrenheitString(bt2Fahrenheit(temperature)));
 			break;
 		default:
 			qWarning("BannTemperature: unknown scale");

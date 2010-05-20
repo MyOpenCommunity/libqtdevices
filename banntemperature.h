@@ -30,36 +30,25 @@ class QLabel;
 typedef QHash<int, QVariant> DeviceValues;
 
 
-class BannTemperature : public BannerOld
+/**
+ * A banner to display the temperature for not controlled and external probes.
+ */
+class BannTemperature : public BannerNew
 {
 Q_OBJECT
 public:
-	/**
-	 * Creates a banner to display temperature information got from
-	 * single (not controlled) and external probes.
-	 *
-	 * \param parent The parent widget
-	 * \param name   The widget name
-	 * \param config The node in the Dom tree that acts as root of this device
-	 * \param dev    The probe (device) connected with this banner
-	 */
-	BannTemperature(QWidget *parent, QString where, QString descr, NonControlledProbeDevice *dev);
-
-	virtual void inizializza(bool forza=false);
+	BannTemperature(QString descr, NonControlledProbeDevice *dev);
 
 public slots:
-	/**
-	 * Manages a change in status, like temperature change.
-	 */
 	void valueReceived(const DeviceValues &values_list);
+
 private:
-	void setTemperature();
-	/// Probed temperature (arrives from frame_interpreter directly in celsius, not in bt)
-	int temperature;
-	/// Temperature label
-	QLabel  *temp_label;
-	TemperatureScale temp_scale;
-	NonControlledProbeDevice *dev;
+	void updateTemperature(int temperature);
+
+private:
+	QLabel *temperature_label;
+
+	TemperatureScale temperature_scale;
 };
 
 #endif // BANNTEMPERATURE_H

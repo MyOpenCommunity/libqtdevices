@@ -224,7 +224,7 @@ void ProbesPage::loadItems(const QDomNode &config_node, bool are_probes_external
 
 		NonControlledProbeDevice *dev = bt_global::add_device_to_cache(new NonControlledProbeDevice(addr,
 			are_probes_external ? NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL));
-		banner *b = new BannTemperature(this, addr, text, dev);
+		banner *b = new BannTemperature(text, dev);
 
 		page_content->appendBanner(b);
 	}
