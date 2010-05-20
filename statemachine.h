@@ -73,9 +73,6 @@ public:
 	// transition is disallowed by some constraint
 	virtual bool toState(int state);
 
-	// exits from the current state and moves to the previous one.
-	void exitCurrentState();
-
 	// removes the given state from the state stack; if the current state is
 	// the given state, it is equivalent to exitCurrentState, otherwise the state
 	// is removed from the state stack but no other actions are performed
@@ -119,6 +116,9 @@ private:
 	QList<int> active_states;
 
 	void changeState(int new_state, int old_state);
+
+	// exits from the current state and moves to the previous one.
+	void exitCurrentState();
 };
 
 
