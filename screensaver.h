@@ -71,6 +71,8 @@ protected:
 	static QString text;
 	ScreenSaver(int refresh_time);
 	static int slideshow_timeout;
+	void startRefresh();
+	void stopRefresh();
 
 protected slots:
 	virtual void refresh() = 0;

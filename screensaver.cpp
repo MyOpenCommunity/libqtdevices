@@ -28,7 +28,6 @@
 #include "pagestack.h"
 #include "generic_functions.h"
 #include "imageselectionhandler.h"
-#include "displaycontrol.h" // bt_global::display
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -108,6 +107,16 @@ ScreenSaver::ScreenSaver(int refresh_time)
 	timer = new QTimer(this);
 	timer->setInterval(refresh_time);
 	connect(timer, SIGNAL(timeout()), SLOT(refresh()));
+}
+
+void ScreenSaver::startRefresh()
+{
+	timer->start();
+}
+
+void ScreenSaver::stopRefresh()
+{
+	timer->stop();
 }
 
 void ScreenSaver::start(Window *w)
@@ -391,8 +400,9 @@ void ScreenSaverSlideshow::refresh()
 		img = iter->next();
 	else
 	{
-		stop();
-		bt_global::display->setState(DISPLAY_OFF);
+		qDebug() << "no images, blank screen.";
+		update();
+		stopRefresh();
 		return;
 	}
 
