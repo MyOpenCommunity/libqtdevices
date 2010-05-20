@@ -261,6 +261,11 @@ void AudioStateMachine::start(int state)
 	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
 	local_source_status = local_amplifier_status = false;
 	initVolumes();
+
+	// turn off the local source/amplifier at startup
+	changeVolumePath(Volumes::MM_AMPLIFIER, 0);
+	changeVolumePath(Volumes::MM_SOURCE, 0);
+
 	StateMachine::start(state);
 }
 
