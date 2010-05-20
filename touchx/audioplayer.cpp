@@ -181,7 +181,7 @@ void AudioPlayerPage::playbackStarted()
 void AudioPlayerPage::playbackStopped()
 {
 	if (!bt_global::audio_states->isSource())
-		bt_global::audio_states->exitCurrentState();
+		bt_global::audio_states->removeState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
 }
 
 void AudioPlayerPage::startMPlayer(int index, int time)
