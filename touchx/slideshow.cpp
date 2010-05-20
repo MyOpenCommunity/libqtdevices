@@ -227,6 +227,10 @@ void SlideshowPage::displayFullScreen()
 	bool active = controller->slideshowActive();
 	controller->stopSlideshow();
 	window->displayImages(image_list, controller->currentImage());
+
+	if (async_load)
+		async_load->deleteLater();
+
 	if (active)
 		window->startSlideshow();
 }
@@ -301,6 +305,9 @@ void SlideshowWindow::displayImages(QList<QString> images, unsigned element)
 
 void SlideshowWindow::showImage(int index)
 {
+	if (async_load)
+		async_load->deleteLater();
+
 	qDebug() << "Loading image" << image_list[index];
 
 	async_load = new QFutureWatcher<QImage>();
@@ -345,6 +352,10 @@ void SlideshowWindow::displayNoFullScreen()
 	bool active = controller->slideshowActive();
 	controller->stopSlideshow();
 	page->displayImages(image_list, controller->currentImage());
+
+	if (async_load)
+		async_load->deleteLater();
+
 	if (active)
 		page->startSlideshow();
 }
