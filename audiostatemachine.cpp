@@ -189,6 +189,18 @@ namespace
 		lseek(eeprom, E2_BASE_VOLUMES, SEEK_SET);
 		write(eeprom, volumes.data(), Volumes::COUNT);
 	}
+
+	bool isVideoCallState(int state)
+	{
+		return state == AudioStates::IP_INTERCOM_CALL || state == AudioStates::IP_VIDEO_CALL ||
+		       state == AudioStates::SCS_INTERCOM_CALL || state == AudioStates::SCS_VIDEO_CALL ||
+		       state == AudioStates::PLAY_RINGTONE || state == AudioStates::MUTE;
+	}
+
+	bool isAlarmState(int state)
+	{
+		return state == AudioStates::ALARM_TO_SPEAKER;
+	}
 }
 
 
@@ -210,9 +222,6 @@ AudioStateMachine::AudioStateMachine()
 	addState(BEEP_ON,
 		 SLOT(stateBeepOnEntered()),
 		 SLOT(stateBeepOnExited()));
-	addState(BEEP_OFF,
-		 SLOT(stateBeepOffEntered()),
-		 SLOT(stateBeepOffExited()));
 	addState(MUTE,
 		 SLOT(stateMuteEntered()),
 		 SLOT(stateMuteExited()));
@@ -250,7 +259,7 @@ AudioStateMachine::AudioStateMachine()
 	// by default, all state transitions are possible, if this is not
 	// correct, use removeTransitions() to make some transitions impossible
 
-	// go to the start state: on startup IDLE is a transitional state, after a while it moves to BEEP_ON or BEEP_OFF
+	// go to the start state
 	start(IDLE);
 }
 
@@ -261,7 +270,38 @@ void AudioStateMachine::start(int state)
 	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
 	local_source_status = local_amplifier_status = false;
 	initVolumes();
+
+	// turn off the local source/amplifier at startup
+	changeVolumePath(Volumes::MM_AMPLIFIER, 0);
+	changeVolumePath(Volumes::MM_SOURCE, 0);
+
 	StateMachine::start(state);
+}
+
+bool AudioStateMachine::toState(int state)
+{
+	int index = stateCount();
+
+	// there are these "interesting" special cases: video call states have precedence
+	// over alarm states, which have precedence over everithing else; if we try
+	// to transition from a high priority state to a low	 priority state, we note
+	// this fact by inserting the state in the state stack below the high priority states
+	if (!isVideoCallState(state))
+		while (isVideoCallState(stateAt(index - 1)))
+			index -= 1;
+	if (!isAlarmState(state) && !isVideoCallState(state))
+		while (isAlarmState(stateAt(index - 1)))
+			index -= 1;
+	// beep is always the lowest state (just above IDLE)
+	if (state == AudioStates::BEEP_ON)
+		index = 1;
+
+	if (index == stateCount())
+		return StateMachine::toState(state);
+
+	insertState(index, state);
+
+	return true;
 }
 
 void AudioStateMachine::saveVolumes()
@@ -354,12 +394,12 @@ int AudioStateMachine::getVolume()
 
 void AudioStateMachine::stateIdleEntered()
 {
-	// do something when entering the idle state
+	// TODO turn off the amplifier
 }
 
 void AudioStateMachine::stateIdleExited()
 {
-	// do something when leaving the idle state
+	// TODO turn back on the amplfier
 }
 
 void AudioStateMachine::stateBeepOnEntered()
@@ -371,16 +411,6 @@ void AudioStateMachine::stateBeepOnEntered()
 void AudioStateMachine::stateBeepOnExited()
 {
 
-}
-
-void AudioStateMachine::stateBeepOffEntered()
-{
-	// TODO turn off the amplifier
-}
-
-void AudioStateMachine::stateBeepOffExited()
-{
-	// TODO turn back on the amplfier
 }
 
 void AudioStateMachine::statePlayMediaToSpeakerEntered()

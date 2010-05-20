@@ -173,7 +173,7 @@ RingtonesPage::RingtonesPage(const QDomNode &config_node) : ListPage(config_node
 void RingtonesPage::hideEvent(QHideEvent *)
 {
 	bt_global::ringtones->stopRingtone();
-	bt_global::audio_states->exitCurrentState();
+	bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
 }
 
 void RingtonesPage::showEvent(QShowEvent *)
@@ -208,7 +208,7 @@ void VolumePage::showEvent(QShowEvent *)
 
 void VolumePage::hideEvent(QHideEvent *)
 {
-	bt_global::audio_states->exitCurrentState();
+	bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
 	bt_global::ringtones->stopRingtone();
 }
 

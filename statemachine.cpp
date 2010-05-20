@@ -61,6 +61,23 @@ int StateMachine::currentState() const
 	return active_states.back();
 }
 
+int StateMachine::stateCount()
+{
+	return active_states.size();
+}
+
+int StateMachine::stateAt(int index)
+{
+	return active_states.at(index);
+}
+
+void StateMachine::insertState(int index, int state)
+{
+	Q_ASSERT_X(index != active_states.size(), "StateMachine::insertState", "Can't insert a state at the top of the stack");
+
+	active_states.insert(index, state);
+}
+
 void StateMachine::addState(int state, const char *entered, const char *exited)
 {
 	State s;
@@ -125,6 +142,25 @@ void StateMachine::exitCurrentState()
 	int curr_state = active_states.takeLast();
 	if (currentState() != curr_state)
 		changeState(currentState(), curr_state);
+}
+
+void StateMachine::removeState(int state)
+{
+	if (currentState() == state)
+		exitCurrentState();
+	else
+	{
+		for (int i = active_states.size() - 1; i >= 0; --i)
+		{
+			if (active_states.at(i) == state)
+			{
+				active_states.removeAt(i);
+				return;
+			}
+		}
+
+		Q_ASSERT_X(false, "StateMachine::removeState", "Tried to remove a state not in the state stack");
+	}
 }
 
 void StateMachine::changeState(int new_state, int old_state)

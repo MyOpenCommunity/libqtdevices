@@ -62,17 +62,26 @@ int dimmerLevelTo100(int level)
 
 int dimmer100LevelTo10(int level)
 {
-	switch (level)
-	{
-	case 1:
+	if (level == 0)
+		return 0;
+	else if (level <= 4)
 		return 2;
-	case 75:
+	else if (level <= 15)
+		return 3;
+	else if (level <= 25)
+		return 4;
+	else if (level <= 35)
+		return 5;
+	else if (level <= 45)
+		return 6;
+	else if (level <= 53)
+		return 7;
+	else if (level <= 67)
+		return 8;
+	else if (level <= 85)
 		return 9;
-	case 100:
+	else
 		return 10;
-	default:
-		return (level / 10) + 2;
-	}
 }
 
 
@@ -274,7 +283,7 @@ bool DimmerDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		if (what >= DIMMER10_LEVEL_MIN && what <= DIMMER10_LEVEL_MAX)
 		{
 			level = dimmerLevelTo100(what);
-			values_list[DIM_DIMMER_LEVEL] = what;
+			values_list[DIM_DIMMER_LEVEL] = dimmer100LevelTo10(level);
 		}
 		else if (what == DIM_DIMMER_PROBLEM)
 			values_list[what] = true;
@@ -373,7 +382,16 @@ void Dimmer100Device::requestPullStatus()
 bool Dimmer100Device::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	DimmerDevice::parseFrame(msg, values_list);
+
+	// DimmerDevice::parseFrame already performed the operation for us, and updated level
+	// with the dimmer 100 level, we only need to set the dimmer 100 dimension
+	if (values_list.contains(DIM_DIMMER_LEVEL))
+		values_list[DIM_DIMMER100_LEVEL] = level;
+
 	int what = msg.what();
+
+	if (msg.IsNormalFrame() && (what == DIM_DEVICE_ON || what == DIM_DEVICE_OFF) && msg.whatArgCnt() == 1)
+		values_list[DIM_DEVICE_ON] = (what == DIM_DEVICE_ON);
 
 	if (what == DIMMER100_STATUS && isDimensionFrame(msg))
 	{
