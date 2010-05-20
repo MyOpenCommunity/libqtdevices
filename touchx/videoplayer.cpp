@@ -98,19 +98,22 @@ void VideoPlayerPage::showPage()
 	fullscreen = false;
 }
 
-void VideoPlayerPage::startMPlayer(int index, int time)
+void VideoPlayerPage::startMPlayer()
 {
 	if (fullscreen)
-		player->playVideoFullScreen(file_list[index], time);
+		player->playVideoFullScreen(file_list[current_file], current_time);
 	else
-		player->playVideo(file_list[index], playbackGeometry(), time);
+		player->playVideo(file_list[current_file], playbackGeometry(), current_time);
 	refresh_data.start(MPLAYER_POLLING);
 }
 
 void VideoPlayerPage::displayMedia(int index)
 {
 	title->setText(QFileInfo(file_list[index]).fileName());
-	startMPlayer(index, 0);
+	current_file = index;
+	current_time = 0;
+
+	QTimer::singleShot(0, this, SLOT(startMPlayer()));
 	emit started();
 }
 
@@ -173,7 +176,7 @@ void VideoPlayerPage::displayFullScreen(bool fs)
 	else
 		showPage();
 
-	startMPlayer(current_file, current_time);
+	QTimer::singleShot(0, this, SLOT(startMPlayer()));
 	emit started();
 }
 
