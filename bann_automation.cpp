@@ -192,7 +192,7 @@ void SecureInterblockedActuator::changeButtonStatus(BtButton *btn)
 GateEntryphoneActuator::GateEntryphoneActuator(const QString &descr, const QString &where, int openserver_id) :
 	BannSinglePuls(0)
 {
-	dev = bt_global::add_device_to_cache(new EntryphoneDevice(where, openserver_id));
+	dev = bt_global::add_device_to_cache(new EntryphoneDevice(where, QString(), openserver_id));
 	setOpenserverConnection(dev);
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"), descr);
 	connect(right_button, SIGNAL(pressed()), SLOT(activate()));

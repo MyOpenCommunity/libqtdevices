@@ -105,12 +105,17 @@ void TestEntryphoneDevice::sendEndCall()
 
 void TestEntryphoneDevice::sendInitVctProcess()
 {
+	dev->vct_mode = "0"; // SCS
 	// call type accepted, 1 = scs bus only
-	int type = 1;
 	dev->initVctProcess();
 	client_command->flush();
-	QString frame = QString("*8*37#%1*%2##").arg(type).arg(dev->where);
-	QCOMPARE(server->frameCommand(), frame);
+	QCOMPARE(server->frameCommand(), QString("*8*37#%1*%2##").arg(1).arg(dev->where));
+
+	dev->vct_mode = "1"; // IP
+	// call type accepted, 1 = scs bus only
+	dev->initVctProcess();
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*8*37#%1*%2##").arg(2).arg(dev->where));
 }
 
 void TestEntryphoneDevice::sendCameraOn()

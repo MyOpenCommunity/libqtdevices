@@ -338,7 +338,11 @@ void BtMain::loadGlobalConfig()
 		QString dev = getTextChild(vde_node, "dev");
 		if (!address.isNull())
 			(*config)[PI_ADDRESS] = dev + address;
+
+		(*config)[PI_MODE] = getTextChild(vde_node, "mode").toInt();
 	}
+	else
+		(*config)[PI_MODE] = QString();
 
 	QDomNode scs_node = getConfElement("setup/scs");
 

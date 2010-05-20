@@ -85,7 +85,7 @@ ButtonActuator::ButtonActuator(const QString &descr, const QString &_where, int 
 		break;
 	case VCT_LOCK:
 	case VCT_STAIRLIGHT:
-		dev = bt_global::add_device_to_cache(new EntryphoneDevice(where, openserver_id));
+		dev = bt_global::add_device_to_cache(new EntryphoneDevice(where, QString(), openserver_id));
 		break;
 	default:
 		Q_ASSERT_X(false, "ButtonActuator::ButtonActuator", "Type of actuator unknown!");

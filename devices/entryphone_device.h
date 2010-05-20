@@ -61,7 +61,7 @@ public:
 		STOP_VIDEO = 202, // the value doesn't matter
 	};
 
-	EntryphoneDevice(const QString &where, int openserver_id = 0);
+	EntryphoneDevice(const QString &where, QString mode = QString(), int openserver_id = 0);
 
 	void answerCall() const;
 	void initVctProcess();
@@ -99,6 +99,7 @@ private:
 	QString caller_address;
 	QString master_caller_address;
 	bool is_calling;
+	QString vct_mode;
 };
 
 #endif //ENTRYPHONE_DEVICE_H

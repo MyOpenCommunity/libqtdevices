@@ -94,7 +94,8 @@ void VideoDoorEntry::loadDevices(const QDomNode &config_node)
 
 VideoDoorEntry::VideoDoorEntry()
 {
-	EntryphoneDevice *dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS]));
+	EntryphoneDevice *dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS],
+		(*bt_global::config)[PI_MODE]));
 
 	// These pages are showed only after the receiving of a call frame, so we
 	// don't store any pointer to these. The destruction is provided by the PageContainer.
@@ -116,7 +117,8 @@ VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
 	bt_global::btmain->trayBar()->addButton(ring_exclusion, TrayBar::RING_EXCLUSION);
 
 	loadItems(config_node);
-	dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS]));
+	dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS],
+		(*bt_global::config)[PI_MODE]));
 }
 
 void VideoDoorEntry::toggleRingExclusion()
@@ -164,7 +166,8 @@ void VideoDoorEntry::loadItems(const QDomNode &config_node)
 VideoControl::VideoControl(const QDomNode &config_node)
 {
 	// we must have only one entryphone device since we need to remember some state
-	dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS]));
+	dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS],
+		(*bt_global::config)[PI_MODE]));
 
 	mapper = new QSignalMapper(this);
 	connect(mapper, SIGNAL(mapped(QString)), SLOT(cameraOn(QString)));
@@ -330,7 +333,8 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 
 Intercom::Intercom(const QDomNode &config_node)
 {
-	EntryphoneDevice *dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS]));
+	EntryphoneDevice *dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS],
+		(*bt_global::config)[PI_MODE]));
 
 	mapper_int_intercom = new QSignalMapper(this);
 	mapper_ext_intercom = new QSignalMapper(this);

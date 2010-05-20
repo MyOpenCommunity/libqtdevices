@@ -49,11 +49,12 @@ enum
 	MOVE_RIGHT = 62,
 };
 
-EntryphoneDevice::EntryphoneDevice(const QString &where, int openserver_id) :
+EntryphoneDevice::EntryphoneDevice(const QString &where, QString mode, int openserver_id) :
 	device(QString("8"), where, openserver_id)
 {
 	// invalid values
 	kind = mmtype = -1;
+	vct_mode = mode;
 	is_calling = false;
 }
 
@@ -136,11 +137,11 @@ void EntryphoneDevice::endCall()
 
 void EntryphoneDevice::initVctProcess()
 {
-	if (openserver_id == MAIN_OPENSERVER)
+	if (!vct_mode.isNull())
 	{
-		// TODO: enumerate the values for type, which can be: scs only, ip only, both scs and ip
-		// TODO: find out values
-		int type = 1;
+		// vct_mode == 0 -> SCS
+		// vct_mode == 1 -> IP
+		int type = vct_mode.toInt() == 0 ? 1 : 2;
 		QString what = QString("%1#%2").arg(READY).arg(type);
 		sendCommand(what);
 	}
