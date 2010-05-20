@@ -42,6 +42,8 @@ enum BannerType
 	PPT_STAT_AUTO = 42,
 	ACTUATOR_GROUP = 10,
 	PULSE_ACTUATOR = 11,
+	GATE_LIGHTING_ACT = 40,
+	GATE_VCT_ACT =  41
 };
 #else
 enum BannerType
@@ -53,11 +55,8 @@ enum BannerType
 	PPT_STAT_AUTO = 3012,
 	ACTUATOR_GROUP = 3014,
 	PULSE_ACTUATOR = 3010,
-	/*
-	  TODO: What about these?
-	AUTOM_CANC_ATTUAT_ILL =234,
-	AUTOM_CANC_ATTUAT_VC = 234,
-	*/
+	GATE_LIGHTING_ACT = 3005,
+	GATE_VCT_ACT = 3006
 };
 #endif
 
@@ -94,8 +93,11 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		b = new SingleActuator(descr, where, oid);
 		break;
 	case DOOR_LOCK:
+	{
+		where = getTextChild(item_node, "dev") + getTextChild(item_node, "where");
 		b = new ButtonActuator(descr, where, VCT_LOCK, oid);
 		break;
+	}
 	case ACTUATOR_GROUP:
 	{
 		QStringList addresses;
@@ -109,7 +111,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		b = new InterblockedActuatorGroup(addresses, descr, oid);
 	}
 		break;
-	case AUTOM_CANC_ATTUAT_ILL:
+	case GATE_LIGHTING_ACT:
 	{
 		QStringList sl = getTextChild(item_node, "time").split("*");
 		Q_ASSERT_X(sl.size() == 3, "Automation::getBanner", "time leaf must have 3 fields");
@@ -117,10 +119,13 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		b = new GateLightingActuator(t, descr, where, oid);
 	}
 		break;
-	case AUTOM_CANC_ATTUAT_VC:
+	case GATE_VCT_ACT:
+	{
+		where = getTextChild(item_node, "dev") + getTextChild(item_node, "where");
 		b = new GateEntryphoneActuator(descr, where, oid);
 		break;
-	case ATTUAT_AUTOM_PULSE:
+	}
+	case PULSE_ACTUATOR:
 		b = new ButtonActuator(descr, where, PULSE_ACT, oid);
 		break;
 	case PPT_STAT_AUTO:

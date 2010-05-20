@@ -34,6 +34,7 @@ class device_status;
 class PPTStatDevice;
 class AutomationDevice;
 class LightingDevice;
+class EntryphoneDevice;
 class QDomNode;
 
 
@@ -83,6 +84,7 @@ private:
 	bool is_any_button_pressed;
 };
 
+
 class GateEntryphoneActuator : public BannSinglePuls
 {
 Q_OBJECT
@@ -94,8 +96,9 @@ private slots:
 
 private:
 	QString where;
-	device *dev;
+	EntryphoneDevice *dev;
 };
+
 
 class GateLightingActuator : public BannSinglePuls
 {

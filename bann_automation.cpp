@@ -20,14 +20,13 @@
 
 
 #include "bann_automation.h"
-#include "generic_functions.h" // createCommandFrame
 #include "state_button.h"
 #include "devices_cache.h" // bt_global::add_device_to_cache
 #include "skinmanager.h" // SkinContext, bt_global::skin
-#include "automation_device.h" // PPTStatDevice
 #include "lighting_device.h" // LightingDevice
 #include "xml_functions.h" // getTextChild
 #include "automation_device.h"
+#include "entryphone_device.h"
 
 #include <QTimer>
 #include <QDebug>
@@ -193,9 +192,7 @@ void SecureInterblockedActuator::changeButtonStatus(BtButton *btn)
 GateEntryphoneActuator::GateEntryphoneActuator(const QString &descr, const QString &where, int openserver_id) :
 	BannSinglePuls(0)
 {
-	// TODO: we still miss entryphone devices, so I'm creating a generic device and send
-	// frames directly. Change as soon as entryphone devices are available!
-	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL_UNKNOWN, openserver_id), NO_INIT);
+	dev = bt_global::add_device_to_cache(new EntryphoneDevice(where, openserver_id));
 	setOpenserverConnection(dev);
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"), descr);
 	connect(right_button, SIGNAL(pressed()), SLOT(activate()));
@@ -203,8 +200,8 @@ GateEntryphoneActuator::GateEntryphoneActuator(const QString &descr, const QStri
 
 void GateEntryphoneActuator::activate()
 {
-	// TODO: argh!! fix it ASAP!!!
-	dev->sendFrame(createCommandFrame("6", "10", where));
+	dev->openLock();
+	dev->releaseLock();
 }
 
 

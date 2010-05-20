@@ -37,6 +37,7 @@ SingleActuator::SingleActuator(const QString &descr, const QString &where, int o
 
 	// TODO: read pull mode from config
 	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL_UNKNOWN, openserver_id));
+	setOpenserverConnection(dev);
 
 	connect(left_button, SIGNAL(clicked()), SLOT(deactivate()));
 	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
@@ -89,7 +90,7 @@ ButtonActuator::ButtonActuator(const QString &descr, const QString &_where, int 
 	default:
 		Q_ASSERT_X(false, "ButtonActuator::ButtonActuator", "Type of actuator unknown!");
 	}
-
+	setOpenserverConnection(dev);
 	connect(right_button, SIGNAL(pressed()), SLOT(activate()));
 	connect(right_button, SIGNAL(released()), SLOT(deactivate()));
 }
