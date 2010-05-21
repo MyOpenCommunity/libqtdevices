@@ -350,7 +350,8 @@ Intercom::Intercom(const QDomNode &config_node)
 		BtButton *btn = addButton(getTextChild(item, "descr"), bt_global::skin->getImage("link_icon"), 0, 0);
 
 		int id = getTextChild(item, "id").toInt();
-		QString where = getTextChild(item, "dev") + getTextChild(item, "where");
+		QDomNode addresses = getElement(item, "addresses");
+		QString where = getTextChild(addresses, "dev") + getTextChild(addresses, "where");
 
 		if (id == INTERNAL_INTERCOM)
 		{
