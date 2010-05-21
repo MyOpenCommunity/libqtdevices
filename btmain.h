@@ -44,13 +44,11 @@ class QString;
 class QTimer;
 class QTime;
 
-/*!
-  \class BtMain
-  \brief This is a class used to manage the starting sequence, call the xml handler that builds the objects configured, shunt signals and controlling screen-saver and special page displaying (such as configuration page, colored pages and so on).
 
-  This is the widget used for screen saver but has the main aim to connect the various class passing signal from one to the others. This class supervise the freezing (baclight off and uman inteface disabled) and the starting sequence also deciding if there's need of a new calibration.
-*/
-
+/**
+ * This is the main class of the touchscreen interface. It loads the configuration,
+ * establishes the connection with the openserver(s) and manage the global objects.
+ */
 class BtMain : public QObject
 {
 Q_OBJECT
