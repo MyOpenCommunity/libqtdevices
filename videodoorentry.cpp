@@ -249,6 +249,15 @@ int IntercomCallPage::sectionId() const
 	return VIDEOCITOFONIA;
 }
 
+void IntercomCallPage::cleanUp()
+{
+	// the cleanUp is performed when we exit from the page using an external
+	// button. In this case, we have to send the end of call (even if is an
+	// autoswitch call).
+	dev->endCall();
+	bt_global::display->forceOperativeMode(false);
+}
+
 void IntercomCallPage::showPage()
 {
 	bt_global::page_stack.showVCTPage(this);

@@ -101,6 +101,9 @@ public:
 	virtual void showPage();
 	virtual int sectionId() const;
 
+public slots:
+	virtual void cleanUp();
+
 private slots:
 	void valueReceived(const DeviceValues &values_list);
 	void toggleCall();
