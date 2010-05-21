@@ -64,9 +64,11 @@ public:
 	{
 		LOCAL_FILE,
 		IP_RADIO,
+		MAX_MEDIA_TYPE
 	};
 
-	AudioPlayerPage(MediaType type);
+	static AudioPlayerPage *getAudioPlayerPage(MediaType type);
+	static QVector<AudioPlayerPage *>audioPlayerPages();
 
 	virtual int sectionId() const;
 
@@ -82,17 +84,17 @@ private slots:
 	void changeVolume(int volume);
 	void gotoSoundDiffusion();
 
-	void valueReceived(const DeviceValues &device_values);
-
 	void playbackStarted();
 	void playbackStopped();
 
 private:
+	AudioPlayerPage(MediaType type);
+
 	MediaType type;
 	QLabel *description_top, *description_bottom, *track, *elapsed;
-	VirtualSourceDevice *dev;
 	// icon in tray bar
 	static AudioPlayerTray *tray_icon;
+	static QVector<AudioPlayerPage *> audioplayer_pages;
 };
 
 #endif

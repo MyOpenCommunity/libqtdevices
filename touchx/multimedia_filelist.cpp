@@ -92,7 +92,7 @@ MultimediaFileListPage::MultimediaFileListPage(const QStringList &filters)
 	connect(this, SIGNAL(displayVideos(QList<QString>, unsigned)),
 		videoplayer, SLOT(displayVideos(QList<QString>, unsigned)));
 
-	audioplayer = new AudioPlayerPage(AudioPlayerPage::LOCAL_FILE);
+	audioplayer = AudioPlayerPage::getAudioPlayerPage(AudioPlayerPage::LOCAL_FILE);
 	connect(this, SIGNAL(playAudioFiles(QList<QString>, unsigned)),
 		audioplayer, SLOT(playAudioFiles(QList<QString>, unsigned)));
 }

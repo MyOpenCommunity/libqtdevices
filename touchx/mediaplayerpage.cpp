@@ -43,6 +43,16 @@ void MediaPlayerPage::showPage()
 	Page::showPage();
 }
 
+bool MediaPlayerPage::isPlayerInstanceRunning() const
+{
+	return player->isInstanceRunning();
+}
+
+bool MediaPlayerPage::isPlayerPaused() const
+{
+	return player->isPaused();
+}
+
 void MediaPlayerPage::connectMultimediaButtons(MultimediaPlayerButtons *buttons)
 {
 	// handle clicks on buttons

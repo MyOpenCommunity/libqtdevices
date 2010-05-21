@@ -311,7 +311,7 @@ HomepageIPRadioLink::HomepageIPRadioLink(const QString &description, const QStri
 	HomepageLink(description, bt_global::skin->getImage("link_icon"))
 {
 	url = radio_url;
-	player = new AudioPlayerPage(AudioPlayerPage::IP_RADIO);
+	player = AudioPlayerPage::getAudioPlayerPage(AudioPlayerPage::IP_RADIO);
 
 	connect(this, SIGNAL(clicked()), SLOT(playRadio()));
 }

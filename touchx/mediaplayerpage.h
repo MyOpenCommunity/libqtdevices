@@ -50,6 +50,9 @@ public:
 
 	virtual void showPage();
 
+	bool isPlayerInstanceRunning() const;
+	bool isPlayerPaused() const;
+
 signals:
 	// emitted when reproduction starts/stops (also emitted for pause/resume)
 	void started();
@@ -67,7 +70,7 @@ protected:
 	// must emit started() and start the refresh_data timer
 	virtual void displayMedia(int index) = 0;
 
-protected slots:
+public slots:
 	// standard player functionality
 	//
 	// note that previous()/next() wrap around at the start/end of the playlist
