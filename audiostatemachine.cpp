@@ -234,6 +234,9 @@ AudioStateMachine::AudioStateMachine()
 	addState(PLAY_RINGTONE,
 		 SLOT(statePlayRingtoneEntered()),
 		 SLOT(statePlayRingtoneExited()));
+	addState(PLAY_VDE_RINGTONE,
+		 SLOT(statePlayRingtoneEntered()),
+		 SLOT(statePlayRingtoneExited()));
 	addState(SCS_VIDEO_CALL,
 		 SLOT(stateScsVideoCallEntered()),
 		 SLOT(stateScsVideoCallExited()));
@@ -284,7 +287,7 @@ bool AudioStateMachine::toState(int state)
 
 	// there are these "interesting" special cases: video call states have precedence
 	// over alarm states, which have precedence over everithing else; if we try
-	// to transition from a high priority state to a low	 priority state, we note
+	// to transition from a high priority state to a low priority state, we note
 	// this fact by inserting the state in the state stack below the high priority states
 	if (!isVideoCallState(state))
 		while (isVideoCallState(stateAt(index - 1)))

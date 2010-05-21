@@ -30,7 +30,7 @@
 namespace AudioStates
 {
 	/*
-	 * BEEP_ON, PLAY_RINGTONE, ALARM_TO_SPEAKER have the same output path, but
+	 * BEEP_ON, PLAY_RINGTONE, PLAY_VDE_RINGTONE, ALARM_TO_SPEAKER have the same output path, but
 	 *     maybe different volumes
 	 * SCREENSAVER_WITH_PLAY is the same as the other play states (maybe it should be removed)
 	 * SCRENSAVER_WITHOUT_PLAY, IDLE: power off the local amplifier
@@ -45,6 +45,7 @@ namespace AudioStates
 		PLAY_MEDIA_TO_SPEAKER,
 		PLAY_DIFSON,
 		PLAY_RINGTONE,
+		PLAY_VDE_RINGTONE,
 		SCS_VIDEO_CALL,
 		SCS_INTERCOM_CALL,
 		IP_VIDEO_CALL,
