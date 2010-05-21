@@ -41,6 +41,7 @@
 #include "pagestack.h" // bt_global::page_stack
 #include "state_button.h"
 #include "audiostatemachine.h" // bt_global::audio_states
+#include "ringtonesmanager.h" // bt_global::ringtones
 
 #include <QGridLayout>
 #include <QSignalMapper>
@@ -256,6 +257,12 @@ void IntercomCallPage::cleanUp()
 	// autoswitch call).
 	dev->endCall();
 	bt_global::display->forceOperativeMode(false);
+
+	if (bt_global::audio_states->currentState() == AudioStates::PLAY_VDE_RINGTONE)
+	{
+		bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
+		bt_global::ringtones->stopRingtone();
+	}
 }
 
 void IntercomCallPage::showPage()
@@ -285,6 +292,11 @@ void IntercomCallPage::showPageIncomingCall()
 void IntercomCallPage::handleClose()
 {
 	bt_global::display->forceOperativeMode(false);
+	if (bt_global::audio_states->currentState() == AudioStates::PLAY_VDE_RINGTONE)
+	{
+		bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
+		bt_global::ringtones->stopRingtone();
+	}
 	emit Closed();
 }
 
@@ -333,6 +345,21 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 			call_active = true;
 			showPageIncomingCall();
 			break;
+		case EntryphoneDevice::RINGTONE:
+		{
+			StateButton *ring_exclusion = qobject_cast<StateButton*>(bt_global::btmain->trayBar()->getButton(TrayBar::RING_EXCLUSION));
+
+			if (!ring_exclusion || !ring_exclusion->getStatus())
+			{
+				Ringtones::Type ringtone = static_cast<Ringtones::Type>(values_list[EntryphoneDevice::RINGTONE].toInt());
+				if (ringtone == Ringtones::PI_INTERCOM || ringtone == Ringtones::PE_INTERCOM)
+				{
+					bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
+					bt_global::ringtones->playRingtone(ringtone);
+				}
+			}
+			break;
+		}
 		case EntryphoneDevice::END_OF_CALL:
 			if (call_active)
 			{
