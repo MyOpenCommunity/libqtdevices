@@ -120,7 +120,7 @@ bool setGlobalCfgValue(QMap<QString, QString> data, const QString &tag_name, int
 void getName(char *name);
 
 int localVolumeToAmplifier(int vol);
-int trasformaVol(int vol);
+int scsToLocalVolume(int vol);
 
 
 /**

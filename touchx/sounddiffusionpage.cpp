@@ -26,7 +26,7 @@
 #include "bann2_buttons.h" // Bann2Buttons
 #include "btbutton.h"
 #include "skinmanager.h" // bt_global::skin
-#include "generic_functions.h" // getBostikName, trasformaVol
+#include "generic_functions.h" // getBostikName, scsToLocalVolume
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "bann_amplifiers.h" // Amplifier
 #include "poweramplifier.h" // BannPowerAmplifier
@@ -647,7 +647,7 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			{
 				level += 1;
 				dev->updateVolume(level);
-				bt_global::audio_states->setLocalAmplifierVolume(trasformaVol(level));
+				bt_global::audio_states->setLocalAmplifierVolume(scsToLocalVolume(level));
 			}
 			break;
 		case VirtualAmplifierDevice::REQ_VOLUME_DOWN:
@@ -655,7 +655,7 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			{
 				level -= 1;
 				dev->updateVolume(level);
-				bt_global::audio_states->setLocalAmplifierVolume(trasformaVol(level));
+				bt_global::audio_states->setLocalAmplifierVolume(scsToLocalVolume(level));
 			}
 			break;
 		case VirtualAmplifierDevice::REQ_SET_VOLUME:
@@ -663,7 +663,7 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			{
 				level = device_values[key].toInt();
 				dev->updateVolume(level);
-				bt_global::audio_states->setLocalAmplifierVolume(trasformaVol(level));
+				bt_global::audio_states->setLocalAmplifierVolume(scsToLocalVolume(level));
 			}
 			break;
 		}

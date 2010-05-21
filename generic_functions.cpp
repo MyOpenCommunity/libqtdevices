@@ -397,7 +397,7 @@ int localVolumeToAmplifier(int vol)
 
 #endif
 
-int trasformaVol(int vol)
+int scsToLocalVolume(int vol)
 {
 	// TODO remove after aligning image names
 #ifdef LAYOUT_TOUCHX
