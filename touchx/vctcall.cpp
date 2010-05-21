@@ -510,8 +510,12 @@ void VCTCallPage::valueReceived(const DeviceValues &values_list)
 		if (!ring_exclusion || !ring_exclusion->getStatus())
 		{
 			Ringtones::Type ringtone = static_cast<Ringtones::Type>(values_list[EntryphoneDevice::RINGTONE].toInt());
-			bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
-			bt_global::ringtones->playRingtone(ringtone);
+			if (ringtone == Ringtones::PE1 || ringtone == Ringtones::PE2 ||
+				ringtone == Ringtones::PE3 || ringtone == Ringtones::PE4)
+			{
+				bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
+				bt_global::ringtones->playRingtone(ringtone);
+			}
 		}
 	}
 }
