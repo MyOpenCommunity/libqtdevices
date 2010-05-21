@@ -63,8 +63,6 @@ public:
 	void resetTimer();
 	/// Freeze or unfreeze the application
 	void freeze(bool);
-	/// Set on/off the sveglia status
-	void svegl(bool);
 
 	void setPwd(bool, QString);
 
@@ -83,6 +81,8 @@ public:
 	static bool isCalibrating();
 	static void calibrationStarted();
 	static void calibrationEnded();
+
+	bool alarm_clock_on;
 
 signals:
 	void resettimer();
@@ -114,7 +114,7 @@ private:
 	QTimer *screensaver_timer;
 	QDateTime last_date_time;
 	QString pwd;
-	bool pwdOn, alarmClockIsOn, alreadyCalibrated;
+	bool pwdOn, alreadyCalibrated;
 	KeypadWindow *passwordKeypad;
 	bool frozen;
 	int last_event_time;

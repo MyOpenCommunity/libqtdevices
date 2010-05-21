@@ -217,7 +217,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	Home = NULL;
 	version = NULL;
 	alreadyCalibrated = false;
-	alarmClockIsOn = false;
+	alarm_clock_on = false;
 	last_event_time = 0;
 	frozen = false;
 
@@ -634,7 +634,7 @@ void BtMain::checkScreensaver()
 
 	if (bt_global::display->isForcedOperativeMode())
 		return;
-	if (alarmClockIsOn || calibrating)
+	if (alarm_clock_on || calibrating)
 		return;
 
 	ScreenSaver::Type target_screensaver = bt_global::display->currentScreenSaver();
@@ -794,12 +794,6 @@ void BtMain::testPwd()
 			t->deleteLater();
 		}
 	}
-}
-
-void BtMain::svegl(bool b)
-{
-	qDebug("BtMain::svegl->%d",b);
-	alarmClockIsOn = b;
 }
 
 bool BtMain::calibrating = false;
