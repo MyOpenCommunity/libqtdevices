@@ -33,7 +33,7 @@ namespace AudioStates
 	 * BEEP_ON, PLAY_RINGTONE, ALARM_TO_SPEAKER have the same output path, but
 	 *     maybe different volumes
 	 * SCREENSAVER_WITH_PLAY is the same as the other play states (maybe it should be removed)
-	 * SCRENSAVER_WITHOUT_PLAY, BEEP_OFF: power off the local amplifier
+	 * SCRENSAVER_WITHOUT_PLAY, IDLE: power off the local amplifier
 	 * PLAY_FROM_DIFSON_TO_SPEAKER, PLAY_MEDIA_TO_DIFSON can be active at the same time
 	 *     ALARM_TO_DIFSON is the same as the two states above
 	 */
@@ -41,7 +41,6 @@ namespace AudioStates
 	{
 		IDLE,
 		BEEP_ON,
-		BEEP_OFF,
 		MUTE,
 		PLAY_MEDIA_TO_SPEAKER,
 		PLAY_DIFSON,
@@ -74,6 +73,10 @@ public:
 	AudioStateMachine();
 	virtual void start(int state);
 
+	// this override might insert the state in the middle of the state stack instea
+	// of pushing it at the top
+	virtual bool toState(int state);
+
 	// Set and get the volume of the current state
 	void setVolume(int value);
 	int getVolume();
@@ -101,15 +104,12 @@ public:
 
 private slots:
 	// declare state handlers here
-	// Events: Startup, Screensaver without password, Screen OFF
+	// Events: Startup, Beep disabled
 	void stateIdleEntered();
 	void stateIdleExited();
 	// Events: Beep enabled
 	void stateBeepOnEntered();
 	void stateBeepOnExited();
-	// Events: Beep disabled
-	void stateBeepOffEntered();
-	void stateBeepOffExited();
 	// Events: Mute the microphone
 	void stateMuteEntered();
 	void stateMuteExited();

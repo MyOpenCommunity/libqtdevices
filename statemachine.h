@@ -71,10 +71,12 @@ public:
 
 	// moves the state machine to the given state; returns false if the
 	// transition is disallowed by some constraint
-	bool toState(int state);
+	virtual bool toState(int state);
 
-	// exits from the current state and moves to the previous one.
-	void exitCurrentState();
+	// removes the given state from the state stack; if the current state is
+	// the given state, it is equivalent to exitCurrentState, otherwise the state
+	// is removed from the state stack but no other actions are performed
+	void removeState(int state);
 
 	// adds a new state to the state machine; the optional entered and exited
 	// parameters are signals/slots that will be called when the state is entered
@@ -94,6 +96,18 @@ signals:
 	// callbacks have been called
 	void stateChanged(int new_state, int old_state);
 
+protected:
+	// returns the number of states
+	int stateCount();
+
+	// returns the state at the given position (0 is the bottom of the stack)
+	int stateAt(int index);
+
+	// inserts the state in the middle of the stack, without performing any
+	// checks or emitting any signal; can't be used to push a state at the top
+	// of the stack
+	void insertState(int index, int state);
+
 private:
 	// the map of available states
 	QHash<int, State> available_states;
@@ -102,6 +116,9 @@ private:
 	QList<int> active_states;
 
 	void changeState(int new_state, int old_state);
+
+	// exits from the current state and moves to the previous one.
+	void exitCurrentState();
 };
 
 

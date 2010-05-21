@@ -45,7 +45,12 @@
 
 enum
 {
+#ifdef CONFIG_BTOUCH
+	ZONANTINTRUS = 23,
+	IMPIANTINTRUS = 24,
+#else
 	ITEM_ANTINTRUSION_ZONE = 13001,
+#endif
 };
 
 Antintrusion::Antintrusion(const QDomNode &config_node)
@@ -158,8 +163,9 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 			createImpianto(descr);
 		else
 		if (id == ZONANTINTRUS)
-#endif
+#else
 		if (id == ITEM_ANTINTRUSION_ZONE)
+#endif
 		{
 			zones[zone_count] = descr;
 			b = new AntintrusionZone(descr, getTextChild(item, "where"));

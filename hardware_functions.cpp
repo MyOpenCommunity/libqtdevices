@@ -21,6 +21,9 @@
 
 #include "hardware_functions.h"
 #include "main.h"
+#ifdef BT_HARDWARE_TOUCHX
+#include "audiostatemachine.h"
+#endif
 
 #include <QFile>
 #include <QScreen>
@@ -173,9 +176,15 @@ void setBacklight(bool b)
 
 bool buzzer_enabled = false;
 
-void setBeep(bool buzzer_enable)
+void setBeep(bool enable)
 {
-	buzzer_enabled = buzzer_enable;
+	// enter the BEEP_ON state to enable the buzzer
+	if (enable)
+		bt_global::audio_states->toState(AudioStates::BEEP_ON);
+	// exit the BEEP_ON state to disable the buzzer
+	else if (!enable && buzzer_enabled)
+		bt_global::audio_states->removeState(AudioStates::BEEP_ON);
+	buzzer_enabled = enable;
 }
 
 bool getBeep()
@@ -185,9 +194,11 @@ bool getBeep()
 
 #else
 
-void setBeep(bool buzzer_enable)
+void setBeep(bool enable)
 {
-	const char *p = buzzer_enable ? "1" : "0";
+	// TODO port the audio state machine to touch 3.5
+
+	const char *p = enable ? "1" : "0";
 	if (QFile::exists("/proc/sys/dev/btweb/buzzer_enable"))
 	{
 		FILE* fd = fopen("/proc/sys/dev/btweb/buzzer_enable", "w");
@@ -284,7 +295,7 @@ void beep(int t)
 		}
 	}
 #else // BT_HARDWARE_TOUCHX
-	if (buzzer_enabled && QFile::exists(SOUND_PATH "beep.wav"))
+	if (buzzer_enabled && bt_global::audio_states->currentState() == AudioStates::BEEP_ON && QFile::exists(SOUND_PATH "beep.wav"))
 		playSound(SOUND_PATH "beep.wav");
 #endif
 }

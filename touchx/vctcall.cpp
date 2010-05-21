@@ -288,7 +288,7 @@ void VCTCall::toggleMute()
 
 	if (st == StateButton::ON)
 	{
-		bt_global::audio_states->exitCurrentState();
+		bt_global::audio_states->removeState(AudioStates::MUTE);
 		mute_button->setStatus(StateButton::OFF);
 		call_status->mute = StateButton::OFF;
 		volume->enable();
@@ -374,6 +374,7 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			emit callerAddress();
 			break;
 		case EntryphoneDevice::END_OF_CALL:
+			cleanAudioStates();
 			stopVideo();
 			emit callClosed();
 			break;
@@ -407,18 +408,23 @@ void VCTCall::toggleCameraSettings()
 	}
 }
 
-void VCTCall::endCall()
+void VCTCall::cleanAudioStates()
 {
 	// if mute, exit from the correspondent state
 	if (call_status->mute == StateButton::ON)
-		bt_global::audio_states->exitCurrentState();
+		bt_global::audio_states->removeState(AudioStates::MUTE);
 
 	// if connected, exit from the videocall state
 	if (call_status->connected)
 	{
-		bt_global::audio_states->exitCurrentState();
+		bt_global::audio_states->removeState(AudioStates::SCS_VIDEO_CALL);
 		volume->disable();
 	}
+}
+
+void VCTCall::endCall()
+{
+	cleanAudioStates();
 	dev->endCall();
 	stopVideo();
 }
@@ -518,7 +524,11 @@ void VCTCallPage::cleanUp()
 	vct_call->endCall();
 
 	if (bt_global::audio_states->currentState() == AudioStates::PLAY_RINGTONE)
-		bt_global::audio_states->exitCurrentState();
+	{
+		bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
+		bt_global::ringtones->stopRingtone();
+	}
+
 	bt_global::display->forceOperativeMode(false);
 	vct_call->enable();
 }
@@ -526,7 +536,10 @@ void VCTCallPage::cleanUp()
 void VCTCallPage::handleClose()
 {
 	if (bt_global::audio_states->currentState() == AudioStates::PLAY_RINGTONE)
-		bt_global::audio_states->exitCurrentState();
+	{
+		bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
+		bt_global::ringtones->stopRingtone();
+	}
 
 	bt_global::display->forceOperativeMode(false);
 	vct_call->enable();

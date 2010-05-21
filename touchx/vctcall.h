@@ -140,6 +140,7 @@ namespace VCTCallPrivate
 		void changeVolume(int value);
 		void finished(int exitcode, QProcess::ExitStatus exitstatus);
 		void resumeVideo();
+		void cleanAudioStates();
 
 	private:
 		FormatVideo format;
