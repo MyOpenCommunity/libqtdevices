@@ -241,6 +241,7 @@ IntercomCallPage::IntercomCallPage(EntryphoneDevice *d)
 	buttons_layout->addWidget(volume, 3, 0, 1, 2, Qt::AlignHCenter);
 
 	layout->addLayout(buttons_layout, 0, 1, Qt::AlignHCenter);
+	call_active = false;
 }
 
 int IntercomCallPage::sectionId() const
@@ -320,10 +321,15 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 		switch (it.key())
 		{
 		case EntryphoneDevice::INTERCOM_CALL:
+			call_active = true;
 			showPageIncomingCall();
 			break;
 		case EntryphoneDevice::END_OF_CALL:
-			handleClose();
+			if (call_active)
+			{
+				call_active = false;
+				handleClose();
+			}
 			break;
 		}
 		++it;

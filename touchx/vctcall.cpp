@@ -62,6 +62,7 @@ namespace VCTCallPrivate
 		ItemTuningStatus volume_status;
 		bool hands_free;
 		bool prof_studio;
+		bool call_active;
 
 		VCTCallStatus();
 
@@ -187,6 +188,7 @@ void VCTCallStatus::init()
 	connected = false;
 	stopped = false;
 	mute = StateButton::DISABLED;
+	call_active = false;
 }
 
 
@@ -356,6 +358,13 @@ void VCTCall::stopVideo()
 
 void VCTCall::valueReceived(const DeviceValues &values_list)
 {
+	if (!call_status->call_active)
+		if (!values_list.contains(EntryphoneDevice::VCT_CALL) &&
+			!values_list.contains(EntryphoneDevice::AUTO_VCT_CALL))
+		{
+			return;
+		}
+
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())
 	{
@@ -366,14 +375,17 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 				resumeVideo();
 			else
 				emit incomingCall();
+			call_status->call_active = true;
 			break;
 		case EntryphoneDevice::AUTO_VCT_CALL:
 			emit autoIncomingCall();
+			call_status->call_active = true;
 			break;
 		case EntryphoneDevice::CALLER_ADDRESS:
 			emit callerAddress();
 			break;
 		case EntryphoneDevice::END_OF_CALL:
+			call_status->call_active = false;
 			cleanAudioStates();
 			stopVideo();
 			emit callClosed();
