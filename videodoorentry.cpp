@@ -258,11 +258,15 @@ void IntercomCallPage::cleanUp()
 	dev->endCall();
 	bt_global::display->forceOperativeMode(false);
 
-	if (bt_global::audio_states->currentState() == AudioStates::PLAY_VDE_RINGTONE)
+	if (bt_global::audio_states->contains(AudioStates::MUTE))
+		bt_global::audio_states->removeState(AudioStates::MUTE);
+
+	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
 	{
 		bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
 		bt_global::ringtones->stopRingtone();
 	}
+
 }
 
 void IntercomCallPage::showPage()
@@ -292,7 +296,11 @@ void IntercomCallPage::showPageIncomingCall()
 void IntercomCallPage::handleClose()
 {
 	bt_global::display->forceOperativeMode(false);
-	if (bt_global::audio_states->currentState() == AudioStates::PLAY_VDE_RINGTONE)
+
+	if (bt_global::audio_states->contains(AudioStates::MUTE))
+		bt_global::audio_states->removeState(AudioStates::MUTE);
+
+	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
 	{
 		bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
 		bt_global::ringtones->stopRingtone();
@@ -321,17 +329,24 @@ void IntercomCallPage::toggleCall()
 void IntercomCallPage::toggleMute()
 {
 	StateButton::Status st = mute_button->getStatus();
-	setVolume(VOLUME_MIC, st == StateButton::ON ? 0 : 1);
 
 	if (st == StateButton::ON)
+	{
 		mute_button->setStatus(StateButton::OFF);
+		bt_global::audio_states->removeState(AudioStates::MUTE);
+	}
 	else
+	{
 		mute_button->setStatus(StateButton::ON);
+		bt_global::audio_states->toState(AudioStates::MUTE);
+	}
 }
 
 void IntercomCallPage::changeVolume(int value)
 {
-	setVolume(VOLUME_VIDEOCONTROL, value);
+	// TODO: capire come settare la fonica e abilitare/disabilitare il banner
+	// del volume in sua corrispondenza, come fatto per la videocitofonia
+//	setVolume(value);
 }
 
 void IntercomCallPage::valueReceived(const DeviceValues &values_list)
