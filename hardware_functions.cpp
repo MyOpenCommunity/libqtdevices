@@ -487,12 +487,6 @@ void initMultimedia()
 #endif
 }
 
-void setVolume(VolumeType type, int value)
-{
-	QProcess::startDetached("/home/bticino/bin/set_volume",
-				QStringList() << QString::number(type) << QString::number(value));
-}
-
 void initScreen()
 {
 #ifdef BT_HARDWARE_TOUCHX
@@ -501,3 +495,4 @@ void initScreen()
 	QProcess::startDetached("/bin/settrimmer", args_contrast);
 #endif
 }
+
