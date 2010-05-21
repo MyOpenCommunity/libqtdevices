@@ -83,17 +83,17 @@ void TestLoadsDevice::receiveStatus()
 	DeviceTester tst_threshold(dev, LoadsDevice::DIM_ABOVE_THRESHOLD, DeviceTester::MULTIPLE_VALUES);
 	DeviceTester tst_protection(dev, LoadsDevice::DIM_PROTECTION, DeviceTester::MULTIPLE_VALUES);
 
-	tst_enabled.check(QString("*#18*%1*71*0*0*0*0*0##").arg(dev->where), true);
-	tst_enabled.check(QString("*#18*%1*71*1*0*0*0*0##").arg(dev->where), false);
+	tst_enabled.check(QString("*#18*%1*71*0*0*0*0*0*0##").arg(dev->where), true);
+	tst_enabled.check(QString("*#18*%1*71*1*0*0*0*0*0##").arg(dev->where), false);
 
-	tst_forced.check(QString("*#18*%1*71*0*0*0*0*0##").arg(dev->where), false);
-	tst_forced.check(QString("*#18*%1*71*0*1*0*0*0##").arg(dev->where), true);
+	tst_forced.check(QString("*#18*%1*71*0*0*0*0*0*0##").arg(dev->where), false);
+	tst_forced.check(QString("*#18*%1*71*0*1*0*0*0*0##").arg(dev->where), true);
 
-	tst_threshold.check(QString("*#18*%1*71*0*0*0*0*0##").arg(dev->where), true);
-	tst_threshold.check(QString("*#18*%1*71*0*0*1*0*0##").arg(dev->where), false);
+	tst_threshold.check(QString("*#18*%1*71*0*0*0*0*0*0##").arg(dev->where), true);
+	tst_threshold.check(QString("*#18*%1*71*0*0*1*0*0*0##").arg(dev->where), false);
 
-	tst_protection.check(QString("*#18*%1*71*0*0*0*0*0##").arg(dev->where), false);
-	tst_protection.check(QString("*#18*%1*71*0*0*0*1*0##").arg(dev->where), true);
+	tst_protection.check(QString("*#18*%1*71*0*0*0*0*0*0##").arg(dev->where), false);
+	tst_protection.check(QString("*#18*%1*71*0*0*0*1*0*0##").arg(dev->where), true);
 }
 
 void TestLoadsDevice::receiveCurrent()

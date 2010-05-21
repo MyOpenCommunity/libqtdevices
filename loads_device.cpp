@@ -92,7 +92,7 @@ void LoadsDevice::frame_rx_handler(char *frame)
 	int what = msg.what();
 	StatusList status_list;
 
-	if (what == _DIM_STATUS && msg.whatArgCnt() == 5)
+	if (what == _DIM_STATUS && msg.whatArgCnt() == 6)
 	{
 		status_list[DIM_ENABLED] = msg.whatArgN(0) == 0;
 		status_list[DIM_FORCED] = msg.whatArgN(1) == 1;
