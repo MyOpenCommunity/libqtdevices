@@ -539,7 +539,7 @@ void VCTCallPage::cleanUp()
 	// autoswitch call) and terminate the video.
 	vct_call->endCall();
 
-	if (bt_global::audio_states->currentState() == AudioStates::PLAY_VDE_RINGTONE)
+	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
 	{
 		bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
 		bt_global::ringtones->stopRingtone();
@@ -551,7 +551,7 @@ void VCTCallPage::cleanUp()
 
 void VCTCallPage::handleClose()
 {
-	if (bt_global::audio_states->currentState() == AudioStates::PLAY_VDE_RINGTONE)
+	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
 	{
 		bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
 		bt_global::ringtones->stopRingtone();
