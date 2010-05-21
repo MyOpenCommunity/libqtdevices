@@ -39,6 +39,7 @@
 #include "navigation_bar.h"
 #include "audiostatemachine.h"
 #include "labels.h" // ScrollingLabel
+#include "audioplayer.h"
 
 #include <QDomNode>
 #include <QGridLayout>
@@ -695,6 +696,50 @@ void LocalSource::valueReceived(const DeviceValues &device_values)
 			}
 
 			state = new_state;
+			break;
+		}
+		case SourceDevice::DIM_AREAS_UPDATED:
+		{
+			bool status = dev->isActive();
+			AudioPlayerPage *page = 0;
+
+			foreach (page, AudioPlayerPage::audioPlayerPages())
+			{
+				if (!page)
+					continue;
+
+				if (status)
+				{
+					if (page->isPlayerPaused())
+					{
+						page->resume();
+						return;
+					}
+				}
+				else if (page->isPlayerInstanceRunning() && !page->isPlayerPaused())
+				{
+					page->pause();
+					return;
+				}
+			}
+
+			// TODO: try to play something random searching on each media source
+			// using the multimedia configuration order (es. usb -> sd -> ip radio)
+
+			break;
+		}
+		case VirtualSourceDevice::REQ_NEXT_TRACK:
+		{
+			foreach (AudioPlayerPage *page, AudioPlayerPage::audioPlayerPages())
+				if (page && !page->isPlayerInstanceRunning())
+					page->next();
+			break;
+		}
+		case VirtualSourceDevice::REQ_PREV_TRACK:
+		{
+			foreach (AudioPlayerPage *page, AudioPlayerPage::audioPlayerPages())
+				if (page && !page->isPlayerInstanceRunning())
+					page->previous();
 			break;
 		}
 		}
