@@ -64,7 +64,6 @@ typedef struct {
 } TS_EVENT;
 
 #define QT_QWS_EV_SAMPLE_SIZE 1
-#define QT_QWS_TP_SAMPLE_SIZE 1
 #define QT_QWS_EV_MINIMUM_SAMPLES 1
 #define QT_QWS_EV_PRESSURE_THRESHOLD 1
 #define QT_QWS_EV_MOVE_LIMIT 100
@@ -84,22 +83,15 @@ class QWSLinuxTPMouseHandlerPrivate : public QObject
 {
     Q_OBJECT
 public:
-    QWSLinuxTPMouseHandlerPrivate( QWSLinuxTPMouseHandler *h );
+    QWSLinuxTPMouseHandlerPrivate( QWSLinuxTPMouseHandler *h, const QString & );
     ~QWSLinuxTPMouseHandlerPrivate();
 
 private:
-//    static const int mouseBufSize = 2048;
-//    static const int mouseBufSize = 128;
     static const int mouseBufSize = 100 * sizeof( TS_EVENT );
     int mouseFD;
     QPoint oldmouse;
-    QPoint oldTotalMousePos;
+    QPoint oldoldmouse;
     bool waspressed;
-    QPolygon samples;
-    unsigned int currSample;
-    unsigned int lastSample;
-    unsigned int numSamples;
-    int skipCount;
     int mouseIdx;
     uchar mouseBuf[mouseBufSize];
     QWSLinuxTPMouseHandler *handler;
@@ -108,9 +100,9 @@ private slots:
     void readMouseData();
 };
 
-QWSLinuxTPMouseHandler::QWSLinuxTPMouseHandler( const QString &, const QString & )
+QWSLinuxTPMouseHandler::QWSLinuxTPMouseHandler( const QString &, const QString &device )
 {
-    d = new QWSLinuxTPMouseHandlerPrivate( this );
+    d = new QWSLinuxTPMouseHandlerPrivate( this, device );
 }
 
 QWSLinuxTPMouseHandler::~QWSLinuxTPMouseHandler()
@@ -118,16 +110,24 @@ QWSLinuxTPMouseHandler::~QWSLinuxTPMouseHandler()
     delete d;
 }
 
-QWSLinuxTPMouseHandlerPrivate::QWSLinuxTPMouseHandlerPrivate( QWSLinuxTPMouseHandler *h )
-    : samples(QT_QWS_EV_SAMPLE_SIZE), currSample(0), lastSample(0),
-    numSamples(0), skipCount(0), handler(h)
+QWSLinuxTPMouseHandlerPrivate::QWSLinuxTPMouseHandlerPrivate( QWSLinuxTPMouseHandler *h,
+        const QString &device )
+    : handler(h)
 {
-    if ((mouseFD = open( QT_QWS_EV_DEVICE, O_RDONLY | O_NDELAY)) < 0)
+    QString mousedev;
+    if (device.isEmpty()) {
+       mousedev = QT_QWS_EV_DEVICE;
+    }
+    else
     {
-        qDebug( "Cannot open %s (%s)", QT_QWS_EV_DEVICE, strerror(errno));
+        mousedev = device;
+    }
+    if ((mouseFD = open( mousedev.toLatin1().constData() , O_RDONLY | O_NDELAY)) < 0)
+    {
+        qDebug( "Cannot open %s (%s)", qPrintable(mousedev), strerror(errno));
         return;
     }
-    qDebug( "OK open %s",QT_QWS_EV_DEVICE);
+    qDebug( "OK open %s", qPrintable(mousedev) );
     
     QSocketNotifier *mouseNotifier;
     mouseNotifier = new QSocketNotifier( mouseFD, QSocketNotifier::Read,
@@ -135,7 +135,7 @@ QWSLinuxTPMouseHandlerPrivate::QWSLinuxTPMouseHandlerPrivate( QWSLinuxTPMouseHan
     
     connect(mouseNotifier, SIGNAL(activated(int)),this, SLOT(readMouseData()));
 
-    waspressed=FALSE;
+    waspressed=false;
     mouseIdx = 0;
 }
 
@@ -151,9 +151,6 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
 {
   int n;
   static unsigned int tmpx = 0,tmpy = 0;
-  unsigned int press = 0;
-  static QPoint oldpress = QPoint(-1,-1);
-
 
   //qDebug( "readMouseData ");
 
@@ -194,46 +191,49 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
       QPoint point = QPoint( tmpx, tmpy );
       mousePos = handler->transform( point );
       //qDebug( "S:%d,%d",mousePos.x(),mousePos.y());
-      oldpress = mousePos;
-      handler->mouseChanged(mousePos,Qt::LeftButton);
+      if (oldmouse != QPoint(-1,-1))
+      {
+        handler->mouseChanged(oldmouse,Qt::LeftButton);
+	//qDebug( "V:%d,%d",tmpx,tmpy);
+        //qCritical("Sample at x:<%d> and y:<%d>", oldmouse.x(), oldmouse.y());
+      }
+      oldoldmouse = oldmouse;
+      oldmouse = mousePos;
     }
     break;
     case EV_KEY:
       //qDebug( "EV_KEY"); 
       if ((data->code == BTN_TOUCH) && (data->value == 0x1)) {
         //qDebug( "BTN_TOUCH DOWN"); 
+	//qCritical("Pressed");
         tmpx=0; tmpy=0;
-        press=1;
+        waspressed=true;
       } else if ((data->code == BTN_TOUCH) && (data->value == 0x0)) {
 	//qDebug( "BTN_TOUCH UP"); 
-        press=0;
+        waspressed=false;
         tmpx=0; tmpy=0;
-        //qDebug( "R:%d,%d",oldpress.x(),oldpress.y()); 
-        handler->mouseChanged(oldpress,0);
-        oldpress=QPoint(-1,-1);
+        if (oldoldmouse != QPoint(-1,-1))
+        {
+          //qDebug( "R:%d,%d",oldpress.x(),oldpress.y()); 
+	  //qCritical("Released at x:<%d> and y:<%d>", oldoldmouse.x(), oldoldmouse.y());
+          handler->mouseChanged(oldoldmouse,0);
+        }
+        //else
+          //qCritical("Released invalid");
+        oldoldmouse=QPoint(-1,-1);
+        oldmouse=QPoint(-1,-1);
       }
     break;
     case EV_ABS:
       //qDebug( "EV_ABS"); 
       /* the TS */
-      if (press==1) {
+      if (waspressed) {
         if (data->code == ABS_Y) tmpx = data->value;
         if (data->code == ABS_X) tmpy = data->value;
       } 
       //qDebug( "A:%d,%d",tmpx,tmpy);
     }
 
-#if 0
-    if ((press==1) && tmpx && tmpy) {
-      qDebug( "V:%d,%d",tmpx,tmpy);
-      press = 0;
-      QPoint point = QPoint( tmpx, tmpy );
-      mousePos = handler->transform( point );
-      qDebug( "M:%d,%d",mousePos.x(),mousePos.y());
-      oldpress = mousePos;
-      handler->mouseChanged(mousePos,Qt::LeftButton);
-    }
-#endif
     //qDebug( "-------------- idx=%d",idx);
 
     idx += sizeof( TS_EVENT );
