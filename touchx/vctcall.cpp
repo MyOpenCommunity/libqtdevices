@@ -525,7 +525,7 @@ void VCTCallPage::valueReceived(const DeviceValues &values_list)
 			if (ringtone == Ringtones::PE1 || ringtone == Ringtones::PE2 ||
 				ringtone == Ringtones::PE3 || ringtone == Ringtones::PE4)
 			{
-				bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
+				bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
 				bt_global::ringtones->playRingtone(ringtone);
 			}
 		}
@@ -539,9 +539,9 @@ void VCTCallPage::cleanUp()
 	// autoswitch call) and terminate the video.
 	vct_call->endCall();
 
-	if (bt_global::audio_states->currentState() == AudioStates::PLAY_RINGTONE)
+	if (bt_global::audio_states->currentState() == AudioStates::PLAY_VDE_RINGTONE)
 	{
-		bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
+		bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
 		bt_global::ringtones->stopRingtone();
 	}
 
@@ -551,9 +551,9 @@ void VCTCallPage::cleanUp()
 
 void VCTCallPage::handleClose()
 {
-	if (bt_global::audio_states->currentState() == AudioStates::PLAY_RINGTONE)
+	if (bt_global::audio_states->currentState() == AudioStates::PLAY_VDE_RINGTONE)
 	{
-		bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
+		bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
 		bt_global::ringtones->stopRingtone();
 	}
 
