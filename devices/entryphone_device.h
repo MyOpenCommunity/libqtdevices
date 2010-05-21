@@ -27,8 +27,7 @@
 class OpenMsg;
 
 /*
- * Controls entryphone functionality. There can be only one instance of this class, since Touch 10 is only
- * one destination for calls.
+ * Controls entryphone functionality.
  * This device has two states: not connected and connected.
  *
  * Connected state:
