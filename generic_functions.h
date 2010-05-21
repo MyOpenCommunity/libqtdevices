@@ -72,17 +72,6 @@ QString getBostikName(const QString &name, const QString &suffix);
 */
 QString getPressName(QString name);
 
- /*!
-  \brief Transform a image file name into a pressed one with a index taken from a \a antiintrusion \a zone name.
-
-  Return the ".png" file name converted into a "[number]p.png" file name. The first argument is the name to convert, the second is a string like "zn" where n is the number of the \a antiintrusion \a zone.
-*/
-QString getZoneName(QString name, QString zone);
-
-/*!
-  Like getZoneName, but receives an "ambiente" number
-*/
-QString getAmbName(QString name, QString amb);
 
 /**
  * Save one or more values in the configuration file related to a specific object.
@@ -117,7 +106,6 @@ bool setCfgValue(QString field, int value, int item_id, const QString &filename=
 // sets config values for nodes that do not have an id
 bool setGlobalCfgValue(QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
-void getName(char *name);
 
 int localVolumeToAmplifier(int vol);
 int scsToLocalVolume(int vol);

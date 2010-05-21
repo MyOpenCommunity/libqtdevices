@@ -34,7 +34,7 @@
 #endif
 #include "generic_functions.h" //getBostikName
 #include "items.h" // ItemTuning
-#include "displaycontrol.h" // (*bt_global::display)
+#include "displaycontrol.h" // bt_global::display
 #include "hardware_functions.h" // setVolume
 #include "btmain.h" // bt_global::btmain
 #include "homewindow.h" // TrayBar
@@ -251,7 +251,7 @@ int IntercomCallPage::sectionId() const
 void IntercomCallPage::showPage()
 {
 	bt_global::page_stack.showVCTPage(this);
-	(*bt_global::display).forceOperativeMode(true);
+	bt_global::display->forceOperativeMode(true);
 	call_accept->setStatus(true);
 	mute_button->setStatus(StateButton::DISABLED);
 	Page::showPage();
@@ -263,8 +263,8 @@ void IntercomCallPage::showPageIncomingCall()
 
 	if (!BtMain::isCalibrating())
 	{
-		if ((*bt_global::display).currentState() != DISPLAY_FREEZED)
-			(*bt_global::display).forceOperativeMode(true);
+		if (bt_global::display->currentState() != DISPLAY_FREEZED)
+			bt_global::display->forceOperativeMode(true);
 		call_accept->setStatus(false);
 		mute_button->setStatus(StateButton::OFF);
 	}
@@ -274,7 +274,7 @@ void IntercomCallPage::showPageIncomingCall()
 
 void IntercomCallPage::handleClose()
 {
-	(*bt_global::display).forceOperativeMode(false);
+	bt_global::display->forceOperativeMode(false);
 	emit Closed();
 }
 

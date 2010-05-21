@@ -21,12 +21,12 @@
 
 #include "screensaverpage.h"
 #include "screensaver.h"
-#include "displaycontrol.h" // (*bt_global::display)
+#include "displaycontrol.h" // bt_global::display
 #include "singlechoicepage.h"
 #include "navigation_bar.h" // NavigationBar
 #include "skinmanager.h" // bt_global::skin
 #include "btbutton.h" // BtButton
-#include "generic_functions.h" //getPressName
+#include "generic_functions.h" // setCfgValue, getFileFilter, IMAGE
 #include "xml_functions.h" // getTextChild
 #include "itemlist.h"
 #include "state_button.h"
@@ -113,7 +113,7 @@ void ScreenSaverPage::showPage()
 
 int ScreenSaverPage::getCurrentId()
 {
-	return (*bt_global::display).currentScreenSaver();
+	return bt_global::display->currentScreenSaver();
 }
 
 void ScreenSaverPage::bannerSelected(int id)
@@ -127,11 +127,11 @@ void ScreenSaverPage::bannerSelected(int id)
 			timing->hide();
 	}
 
-	(*bt_global::display).setScreenSaver(static_cast<ScreenSaver::Type>(id));
+	bt_global::display->setScreenSaver(static_cast<ScreenSaver::Type>(id));
 	// TODO review when porting the code to BTouch
 #ifdef BT_HARDWARE_BTOUCH
 	if (id == ScreenSaver::NONE)
-		(*bt_global::display).setBrightness(BRIGHTNESS_OFF);
+		bt_global::display->setBrightness(BRIGHTNESS_OFF);
 #endif
 }
 

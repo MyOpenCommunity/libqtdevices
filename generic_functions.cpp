@@ -206,15 +206,6 @@ QString getPressName(QString name)
 	return getBostikName(name, "p");
 }
 
-QString getZoneName(QString name, QString zone)
-{
-	return getBostikName(name, zone.at(1));
-}
-
-QString getAmbName(QString name, QString amb)
-{
-	return getBostikName(name, amb.at(0));
-}
 
 /**
  * Changes a value in conf.xml file atomically.
@@ -282,7 +273,7 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, co
 bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filename)
 #endif
 {
-	if (!(*bt_global::config).contains(INIT_COMPLETE))
+	if (!bt_global::config->contains(INIT_COMPLETE))
 	{
 		qDebug() << "Not writing to configuration during init";
 
@@ -326,7 +317,7 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filena
 // TODO rewrite setCfgValue using setGlobalCfgValue when removing CONFIG_BTOUCH
 bool setGlobalCfgValue(QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename)
 {
-	if (!(*bt_global::config).contains(INIT_COMPLETE))
+	if (!bt_global::config->contains(INIT_COMPLETE))
 	{
 		qDebug() << "Not writing to configuration during init";
 
