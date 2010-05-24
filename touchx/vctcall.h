@@ -100,7 +100,11 @@ namespace VCTCallPrivate
 
 		VCTCall(EntryphoneDevice *d, FormatVideo f);
 		void refreshStatus();
+
+		// Start the video process, if it is not already running
 		void startVideo();
+
+		// Stop the video process, if it is running
 		void stopVideo();
 
 		// Only 1 instance can be active at the same time, so we have to use the
@@ -192,6 +196,10 @@ public:
 
 public slots:
 	virtual void cleanUp();
+
+protected:
+	virtual void showEvent(QShowEvent *);
+	virtual void hideEvent(QHideEvent *);
 
 private slots:
 	void incomingCall();

@@ -570,7 +570,8 @@ int VCTCallPage::sectionId() const
 void VCTCallPage::enterFullScreen()
 {
 	// We need this two-pass signal-slot because we have to wait until the
-	// terminating process exit.
+	// terminating process exit. We don't care about calling twice the stopVideo
+	// method (see the doc of that method)
 	vct_call->stopVideo();
 	connect(vct_call, SIGNAL(videoFinished()), this, SLOT(showVCTWindow()));
 }
@@ -585,7 +586,6 @@ void VCTCallPage::showVCTWindow()
 
 void VCTCallPage::exitFullScreen()
 {
-	vct_call->startVideo();
 	vct_call->refreshStatus();
 	vct_call->enable();
 	showPage();
@@ -618,6 +618,17 @@ void VCTCallPage::callerAddress()
 	}
 }
 
+void VCTCallPage::showEvent(QShowEvent *)
+{
+	if (!BtMain::isCalibrating())
+		vct_call->startVideo();
+}
+
+void VCTCallPage::hideEvent(QHideEvent *)
+{
+	vct_call->stopVideo();
+}
+
 void VCTCallPage::autoIncomingCall()
 {
 	bt_global::page_stack.showVCTPage(this);
@@ -627,9 +638,6 @@ void VCTCallPage::autoIncomingCall()
 
 	showPage();
 	repaint();
-
-	if (!BtMain::isCalibrating())
-		vct_call->startVideo();
 }
 
 
