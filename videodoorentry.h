@@ -98,11 +98,11 @@ class IntercomCallPage : public Page
 Q_OBJECT
 public:
 	IntercomCallPage(EntryphoneDevice *d);
-	virtual void showPage();
 	virtual int sectionId() const;
 
 public slots:
 	virtual void cleanUp();
+	void showPageAfterCall();
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);

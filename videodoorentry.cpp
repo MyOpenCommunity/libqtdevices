@@ -276,26 +276,25 @@ void IntercomCallPage::cleanUp()
 
 }
 
-void IntercomCallPage::showPage()
+void IntercomCallPage::showPageAfterCall()
 {
+	// The only difference between this method and the following is that
+	// when the touch call an internal place the "accept" button should be
+	// in the active status.
 	bt_global::page_stack.showVCTPage(this);
 	bt_global::btmain->vde_call_active = true;
 	call_accept->setStatus(true);
 	mute_button->setStatus(StateButton::DISABLED);
-	Page::showPage();
+	showPage();
 }
 
 void IntercomCallPage::showPageIncomingCall()
 {
 	bt_global::page_stack.showVCTPage(this);
 	bt_global::btmain->vde_call_active = true;
-	Page::showPage();
-
-	if (!BtMain::isCalibrating())
-	{
-		call_accept->setStatus(false);
-		mute_button->setStatus(StateButton::OFF);
-	}
+	call_accept->setStatus(false);
+	mute_button->setStatus(StateButton::DISABLED);
+	showPage();
 }
 
 void IntercomCallPage::handleClose()
@@ -443,7 +442,7 @@ Intercom::Intercom(const QDomNode &config_node)
 			mapper_ext_intercom->setMapping(btn, where);
 			connect(btn, SIGNAL(clicked()), mapper_ext_intercom, SLOT(map()));
 		}
-		connect(btn, SIGNAL(clicked()), call_page, SLOT(showPage()));
+		connect(btn, SIGNAL(clicked()), call_page, SLOT(showPageAfterCall()));
 	}
 }
 
