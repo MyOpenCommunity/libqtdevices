@@ -287,7 +287,9 @@ void TestEntryphoneDevice::sendCycleExternalUnits()
 void TestEntryphoneDevice::sendInternalIntercomCall()
 {
 	QString where = "16";
+	QCOMPARE(dev->is_calling, false);
 	dev->internalIntercomCall(where);
+	QCOMPARE(dev->is_calling, true);
 	client_command->flush();
 	QString frame = QString("*8*1#6#2#%1*%2##").arg(dev->where).arg(where);
 	QCOMPARE(server->frameCommand(), frame);
@@ -296,7 +298,9 @@ void TestEntryphoneDevice::sendInternalIntercomCall()
 void TestEntryphoneDevice::sendExternalIntercomCall()
 {
 	QString where = "16";
+	QCOMPARE(dev->is_calling, false);
 	dev->externalIntercomCall(where);
+	QCOMPARE(dev->is_calling, true);
 	client_command->flush();
 	QString frame = QString("*8*1#7#2#%1*%2##").arg(dev->where).arg(where);
 	QCOMPARE(server->frameCommand(), frame);

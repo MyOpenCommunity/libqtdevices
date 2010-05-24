@@ -67,6 +67,7 @@ void EntryphoneDevice::internalIntercomCall(QString _where)
 {
 	kind = 6;
 	mmtype = 2;
+	is_calling = true;
 
 	QString what = QString("%1#%2#%3#%4").arg(CALL).arg(kind).arg(mmtype).arg(where);
 	sendCommand(what, _where);
@@ -76,6 +77,7 @@ void EntryphoneDevice::externalIntercomCall(QString _where)
 {
 	kind = 7;
 	mmtype = 2;
+	is_calling = true;
 
 	QString what = QString("%1#%2#%3#%4").arg(CALL).arg(kind).arg(mmtype).arg(where);
 	sendCommand(what, _where);
