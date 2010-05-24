@@ -238,6 +238,7 @@ IntercomCallPage::IntercomCallPage(EntryphoneDevice *d)
 	buttons_layout->addWidget(mute_button, 2, 1);
 
 	volume = new ItemTuning("", bt_global::skin->getImage("volume"));
+	volume->disable();
 	connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
 	buttons_layout->addWidget(volume, 3, 0, 1, 2, Qt::AlignHCenter);
 
@@ -260,6 +261,12 @@ void IntercomCallPage::cleanUp()
 
 	if (bt_global::audio_states->contains(AudioStates::MUTE))
 		bt_global::audio_states->removeState(AudioStates::MUTE);
+
+	if (bt_global::audio_states->contains(AudioStates::SCS_INTERCOM_CALL))
+	{
+		bt_global::audio_states->removeState(AudioStates::SCS_INTERCOM_CALL);
+		volume->disable();
+	}
 
 	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
 	{
@@ -296,9 +303,16 @@ void IntercomCallPage::showPageIncomingCall()
 void IntercomCallPage::handleClose()
 {
 	bt_global::display->forceOperativeMode(false);
+	volume->disable();
 
 	if (bt_global::audio_states->contains(AudioStates::MUTE))
 		bt_global::audio_states->removeState(AudioStates::MUTE);
+
+	if (bt_global::audio_states->contains(AudioStates::SCS_INTERCOM_CALL))
+	{
+		bt_global::audio_states->removeState(AudioStates::SCS_INTERCOM_CALL);
+		volume->disable();
+	}
 
 	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
 	{
@@ -322,7 +336,9 @@ void IntercomCallPage::toggleCall()
 	else
 	{
 		dev->answerCall();
+		bt_global::audio_states->toState(AudioStates::SCS_INTERCOM_CALL);
 		mute_button->setStatus(StateButton::OFF);
+		volume->enable();
 	}
 }
 
@@ -334,19 +350,19 @@ void IntercomCallPage::toggleMute()
 	{
 		mute_button->setStatus(StateButton::OFF);
 		bt_global::audio_states->removeState(AudioStates::MUTE);
+		volume->enable();
 	}
 	else
 	{
 		mute_button->setStatus(StateButton::ON);
 		bt_global::audio_states->toState(AudioStates::MUTE);
+		volume->disable();
 	}
 }
 
 void IntercomCallPage::changeVolume(int value)
 {
-	// TODO: capire come settare la fonica e abilitare/disabilitare il banner
-	// del volume in sua corrispondenza, come fatto per la videocitofonia
-//	setVolume(value);
+	bt_global::audio_states->setVolume(value);
 }
 
 void IntercomCallPage::valueReceived(const DeviceValues &values_list)
@@ -375,6 +391,15 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 			}
 			break;
 		}
+		case EntryphoneDevice::ANSWER_CALL:
+			if (!call_active)
+			{
+				call_active = true;
+				bt_global::audio_states->toState(AudioStates::SCS_INTERCOM_CALL);
+				mute_button->setStatus(StateButton::OFF);
+				volume->enable();
+			}
+			break;
 		case EntryphoneDevice::END_OF_CALL:
 			if (call_active)
 			{
