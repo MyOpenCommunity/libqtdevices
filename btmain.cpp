@@ -218,6 +218,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	version = NULL;
 	alreadyCalibrated = false;
 	alarm_clock_on = false;
+	vde_call_active = false;
 	last_event_time = 0;
 	frozen = false;
 
@@ -634,7 +635,7 @@ void BtMain::checkScreensaver()
 
 	if (bt_global::display->isForcedOperativeMode())
 		return;
-	if (alarm_clock_on || calibrating)
+	if (alarm_clock_on || calibrating || vde_call_active)
 		return;
 
 	ScreenSaver::Type target_screensaver = bt_global::display->currentScreenSaver();

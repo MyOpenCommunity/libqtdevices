@@ -31,7 +31,7 @@
 #include "bann2_buttons.h"
 #include "items.h" // ItemTuning
 #include "pagestack.h" // bt_global::page_stack
-#include "btmain.h" // isCalibrating
+#include "btmain.h" // isCalibrating, vde_call_active
 #include "state_button.h"
 #include "audiostatemachine.h"
 #include "homewindow.h" // TrayBar
@@ -546,6 +546,7 @@ void VCTCallPage::cleanUp()
 	}
 
 	bt_global::display->forceOperativeMode(false);
+	bt_global::btmain->vde_call_active = false;
 	vct_call->enable();
 }
 
@@ -558,6 +559,7 @@ void VCTCallPage::handleClose()
 	}
 
 	bt_global::display->forceOperativeMode(false);
+	bt_global::btmain->vde_call_active = false;
 	vct_call->enable();
 	emit Closed();
 }
@@ -631,11 +633,13 @@ void VCTCallPage::autoIncomingCall()
 	{
 		vct_call->startVideo();
 		if (bt_global::display->currentState() != DISPLAY_FREEZED)
+		{
+			bt_global::btmain->freeze(false);
 			bt_global::display->forceOperativeMode(true);
+		}
+		bt_global::btmain->vde_call_active = true;
 	}
-
 }
-
 
 
 VCTCallWindow::VCTCallWindow(EntryphoneDevice *d)

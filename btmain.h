@@ -71,7 +71,7 @@ public:
 	void showHomePage();
 	Page *homePage();
 
-	// set the screensaver and balcnk screen timeouts in seconds
+	// set the screensaver and blank screen timeouts in seconds
 	void setScreenSaverTimeouts(int screensaver_start, int blank_screen);
 
 	// stop the screen saver and hide the password keypad but keep the
@@ -83,6 +83,7 @@ public:
 	static void calibrationEnded();
 
 	bool alarm_clock_on;
+	bool vde_call_active;
 
 signals:
 	void resettimer();

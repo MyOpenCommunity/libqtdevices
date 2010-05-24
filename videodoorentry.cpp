@@ -258,6 +258,7 @@ void IntercomCallPage::cleanUp()
 	// autoswitch call).
 	dev->endCall();
 	bt_global::display->forceOperativeMode(false);
+	bt_global::btmain->vde_call_active = false;
 
 	if (bt_global::audio_states->contains(AudioStates::MUTE))
 		bt_global::audio_states->removeState(AudioStates::MUTE);
@@ -279,7 +280,9 @@ void IntercomCallPage::cleanUp()
 void IntercomCallPage::showPage()
 {
 	bt_global::page_stack.showVCTPage(this);
+	// The display can't be frozen
 	bt_global::display->forceOperativeMode(true);
+	bt_global::btmain->vde_call_active = true;
 	call_accept->setStatus(true);
 	mute_button->setStatus(StateButton::DISABLED);
 	Page::showPage();
@@ -292,7 +295,11 @@ void IntercomCallPage::showPageIncomingCall()
 	if (!BtMain::isCalibrating())
 	{
 		if (bt_global::display->currentState() != DISPLAY_FREEZED)
+		{
+			bt_global::btmain->freeze(false);
 			bt_global::display->forceOperativeMode(true);
+		}
+		bt_global::btmain->vde_call_active = true;
 		call_accept->setStatus(false);
 		mute_button->setStatus(StateButton::OFF);
 	}
@@ -303,6 +310,7 @@ void IntercomCallPage::showPageIncomingCall()
 void IntercomCallPage::handleClose()
 {
 	bt_global::display->forceOperativeMode(false);
+	bt_global::btmain->vde_call_active = false;
 	volume->disable();
 
 	if (bt_global::audio_states->contains(AudioStates::MUTE))
