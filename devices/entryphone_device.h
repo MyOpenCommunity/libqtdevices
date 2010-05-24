@@ -31,7 +31,7 @@ class OpenMsg;
  * This device has two states: not connected and connected.
  *
  * Connected state:
- * The device switces to the connected state when a CALL frame arrives; in this state,
+ * The device switches to the connected state when a CALL frame arrives; in this state,
  * the field 'where' in incoming frames contains the address of the sender, not the device own address.
  *
  * Unconnected state:
@@ -47,8 +47,9 @@ public:
 	enum Type
 	{
 		VCT_CALL = 1,
-		AUTO_VCT_CALL = 2, // the value doesn't matter
+		AUTO_VCT_CALL = 99, // the value doesn't matter
 		INTERCOM_CALL = 100, // the value doesn't matter
+		ANSWER_CALL = 2,
 		END_OF_CALL = 3,
 		RINGTONE = 200, // the value doesn't matter
 		MOVING_CAMERA = 201, // the value doesn't matter

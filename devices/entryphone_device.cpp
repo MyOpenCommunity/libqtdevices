@@ -34,7 +34,6 @@ static const char *END_ALL_CALLS = "4";
 enum
 {
 	CALL = 1,
-	ANSWER = 2,
 	AUTOSWITCHING = 4,
 	CYCLE_EXT_UNIT = 6,
 	OPEN_LOCK = 19,
@@ -60,13 +59,7 @@ EntryphoneDevice::EntryphoneDevice(const QString &where, QString mode, int opens
 
 void EntryphoneDevice::answerCall() const
 {
-	// TODO: this can be removed once the code is tested
-	if (kind == -1 || mmtype == -1)
-	{
-		qWarning() << "Kind or mmtype are invalid, there's no active call";
-		return;
-	}
-	QString what = QString("%1#%2#%3").arg(ANSWER).arg(kind).arg(mmtype);
+	QString what = QString("%1#%2#%3").arg(ANSWER_CALL).arg(kind).arg(mmtype);
 	sendCommand(what);
 }
 
@@ -281,6 +274,10 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		values_list[MOVING_CAMERA] = (kind_m >= 101 && kind_m <= 105);
 		break;
 	}
+
+	case ANSWER_CALL:
+		values_list[ANSWER_CALL] = true;
+		break;
 
 	case END_OF_CALL:
 		if (msg.whatArgN(1) == 3) // with mmtype == 3 we have to stop the video

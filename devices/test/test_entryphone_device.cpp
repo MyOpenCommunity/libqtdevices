@@ -189,6 +189,15 @@ void TestEntryphoneDevice::receiveAutoswitchCall()
 	t.check(frame, true);
 }
 
+void TestEntryphoneDevice::receiveAnswerCall()
+{
+	int kind = 1;
+	int mmtype = 4;
+	DeviceTester t(dev, EntryphoneDevice::ANSWER_CALL);
+	QString frame = QString("*8*2#%1#%2*%3##").arg(kind).arg(mmtype).arg(dev->where);
+	t.check(frame, true);
+}
+
 void TestEntryphoneDevice::receiveStopVideo()
 {
 	int kind = 1;
