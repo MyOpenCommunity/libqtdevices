@@ -272,7 +272,7 @@ impPassword::impPassword(QString icon_on, QString icon_off, QString icon_label, 
 	connect(tasti, SIGNAL(accept()), SLOT(checkPasswd()));
 
 	active = (attiva == 1);
-	bt_global::btmain->setPwd(active, password);
+	bt_global::btmain->setPassword(active, password);
 
 	left_button->setOnOff();
 	left_button->setOffImage(icon_off);
@@ -294,7 +294,7 @@ void impPassword::toggleActivation()
 #else
 	setCfgValue("actived", active, item_id);
 #endif
-	bt_global::btmain->setPwd(active, password);
+	bt_global::btmain->setPassword(active, password);
 	left_button->setStatus(active);
 }
 
@@ -398,7 +398,7 @@ void impPassword::savePassword(const QString &passwd)
 #else
 		setCfgValue("password", password, item_id);
 #endif
-		bt_global::btmain->setPwd(active, password);
+		bt_global::btmain->setPassword(active, password);
 		status = CHECK_OLD_PASSWORD;
 	}
 }

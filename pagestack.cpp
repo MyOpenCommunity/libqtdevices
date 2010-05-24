@@ -60,7 +60,7 @@ void PageStack::showAlert(Page *alert_page)
 
 	connect(alert_page, SIGNAL(Delete()), SLOT(closed()));
 
-	bt_global::btmain->makeActiveAndFreeze();
+	bt_global::btmain->makeActive();
 }
 
 void PageStack::showVCTPage(Page *page)
@@ -69,7 +69,7 @@ void PageStack::showVCTPage(Page *page)
 
 	connect(page, SIGNAL(Closed()), SLOT(closed()));
 
-	bt_global::btmain->makeActiveAndFreeze();
+	bt_global::btmain->makeActive();
 }
 
 void PageStack::showKeypad(Window *window)

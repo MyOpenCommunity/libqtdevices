@@ -257,7 +257,6 @@ void IntercomCallPage::cleanUp()
 	// button. In this case, we have to send the end of call (even if is an
 	// autoswitch call).
 	dev->endCall();
-	bt_global::display->forceOperativeMode(false);
 	bt_global::btmain->vde_call_active = false;
 
 	if (bt_global::audio_states->contains(AudioStates::MUTE))
@@ -280,8 +279,6 @@ void IntercomCallPage::cleanUp()
 void IntercomCallPage::showPage()
 {
 	bt_global::page_stack.showVCTPage(this);
-	// The display can't be frozen
-	bt_global::display->forceOperativeMode(true);
 	bt_global::btmain->vde_call_active = true;
 	call_accept->setStatus(true);
 	mute_button->setStatus(StateButton::DISABLED);
@@ -291,25 +288,18 @@ void IntercomCallPage::showPage()
 void IntercomCallPage::showPageIncomingCall()
 {
 	bt_global::page_stack.showVCTPage(this);
+	bt_global::btmain->vde_call_active = true;
+	Page::showPage();
 
 	if (!BtMain::isCalibrating())
 	{
-		if (bt_global::display->currentState() != DISPLAY_FREEZED)
-		{
-			bt_global::btmain->freeze(false);
-			bt_global::display->forceOperativeMode(true);
-		}
-		bt_global::btmain->vde_call_active = true;
 		call_accept->setStatus(false);
 		mute_button->setStatus(StateButton::OFF);
 	}
-
-	Page::showPage();
 }
 
 void IntercomCallPage::handleClose()
 {
-	bt_global::display->forceOperativeMode(false);
 	bt_global::btmain->vde_call_active = false;
 	volume->disable();
 

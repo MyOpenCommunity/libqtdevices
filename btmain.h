@@ -62,9 +62,9 @@ public:
 
 	void resetTimer();
 	/// Freeze or unfreeze the application
-	void freeze(bool);
+	void freeze(bool freeze);
 
-	void setPwd(bool, QString);
+	void setPassword(bool enable, QString password);
 
 	Window *homeWindow();
 	TrayBar *trayBar();
@@ -74,9 +74,8 @@ public:
 	// set the screensaver and blank screen timeouts in seconds
 	void setScreenSaverTimeouts(int screensaver_start, int blank_screen);
 
-	// stop the screen saver and hide the password keypad but keep the
-	// screen frozen if password protection is active
-	void makeActiveAndFreeze();
+	// stop the screen saver but keep the screen frozen if password protection is active.
+	void makeActive();
 
 	static bool isCalibrating();
 	static void calibrationStarted();
@@ -95,7 +94,7 @@ protected:
 private slots:
 	void init();
 	void checkScreensaver();
-	void testPwd();
+	void testPassword();
 	void waitBeforeInit();
 	void connectionReady();
 	void startGui();

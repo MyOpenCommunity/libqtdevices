@@ -545,7 +545,6 @@ void VCTCallPage::cleanUp()
 		bt_global::ringtones->stopRingtone();
 	}
 
-	bt_global::display->forceOperativeMode(false);
 	bt_global::btmain->vde_call_active = false;
 	vct_call->enable();
 }
@@ -558,7 +557,6 @@ void VCTCallPage::handleClose()
 		bt_global::ringtones->stopRingtone();
 	}
 
-	bt_global::display->forceOperativeMode(false);
 	bt_global::btmain->vde_call_active = false;
 	vct_call->enable();
 	emit Closed();
@@ -623,6 +621,7 @@ void VCTCallPage::callerAddress()
 void VCTCallPage::autoIncomingCall()
 {
 	bt_global::page_stack.showVCTPage(this);
+	bt_global::btmain->vde_call_active = true;
 	VCTCall::call_status->init();
 	vct_call->refreshStatus();
 
@@ -630,15 +629,7 @@ void VCTCallPage::autoIncomingCall()
 	repaint();
 
 	if (!BtMain::isCalibrating())
-	{
 		vct_call->startVideo();
-		if (bt_global::display->currentState() != DISPLAY_FREEZED)
-		{
-			bt_global::btmain->freeze(false);
-			bt_global::display->forceOperativeMode(true);
-		}
-		bt_global::btmain->vde_call_active = true;
-	}
 }
 
 
