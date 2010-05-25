@@ -555,9 +555,9 @@ MessagePage QLabel#Text { background-color: #000000; }
 		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
 		-->
 		<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
-		<img_volume_off_left>diffusione/offampgrpsxl.png</img_volume_off_left>
+		<img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
 		<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
-		<img_volume_off_right>diffusione/offampgrpdxl.png</img_volume_off_right>
+		<img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
 	</item>
 	<!-- general, special ambient (multi sound diffusion) -->
 	<item>
@@ -567,9 +567,9 @@ MessagePage QLabel#Text { background-color: #000000; }
 		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
 		-->
 		<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
-		<img_volume_off_left>diffusione/offampgrpsxl.png</img_volume_off_left>
+		<img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
 		<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
-		<img_volume_off_right>diffusione/offampgrpdxl.png</img_volume_off_right>
+		<img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
 	</item>
 	<!-- power amplifier (special ambient) -->
 	<item>
@@ -612,9 +612,9 @@ MessagePage QLabel#Text { background-color: #000000; }
 		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
 		-->
 		<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
-		<img_volume_off_left>diffusione/offampgrpsxl.png</img_volume_off_left>
+		<img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
 		<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
-		<img_volume_off_right>diffusione/offampgrpdxl.png</img_volume_off_right>
+		<img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
 	</item>
 	<!-- power amplifier normal ambient -->
 	<item>
@@ -756,9 +756,9 @@ MessagePage QLabel#Text { background-color: #000000; }
 		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
 		-->
 		<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
-		<img_volume_off_left>diffusione/offampgrpsxl.png</img_volume_off_left>
+		<img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
 		<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
-		<img_volume_off_right>diffusione/offampgrpdxl.png</img_volume_off_right>
+		<img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
 	</item>
 	<!-- power amplifier (mono sound diffusion) -->
 	<item>
