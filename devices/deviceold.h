@@ -64,43 +64,6 @@ private:
 
 /********************* Specific class device children classes **********************/
 
-//! MCI
-class mci_device : public DeviceOld
-{
-Q_OBJECT
-public:
-	//! Constructor
-	mci_device(QString, bool p=false, int g=-1);
-};
-
-
-//! Sound device (ampli)
-class sound_device : public DeviceOld
-{
-Q_OBJECT
-public:
-	//! Constructor
-	sound_device(QString, bool p=false, int g=-1);
-};
-
-//! Radio
-class radio_device : public DeviceOld
-{
-Q_OBJECT
-public:
-	//! Constructor
-	radio_device(QString, bool p=false, int g=-1);
-	virtual QString get_key();
-};
-
-//! Sound matrix
-class sound_matr : public DeviceOld
-{
-Q_OBJECT
-public:
-	//! Constructor
-	sound_matr(QString, bool p=false, int g=-1);
-};
 
 //! Doorphone device
 class doorphone_device : public DeviceOld

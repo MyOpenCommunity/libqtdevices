@@ -156,62 +156,6 @@ public slots:
 	virtual void handle_frame_handler(char *, QList<device_status*>);
 };
 
-//! Sound device frame interpreter
-class frame_interpreter_sound_device : public frame_interpreter
-{
-Q_OBJECT
-private:
-	//! Set status, amplifier
-	void set_status(device_status_amplifier *ds, int s, int on);
-	//! Analyze a frame
-	void handle_frame(openwebnet_ext, device_status_amplifier *);
-public:
-	//! Constructor
-	frame_interpreter_sound_device(QString, bool, int);
-	//! Returns init messages (more than one !!) given device status
-	void get_init_messages(device_status *, QStringList&);
-public slots:
-	//! Receive a frame
-	virtual void handle_frame_handler(char *, QList<device_status*>);
-};
-
-//! Radio frame interpreter
-class frame_interpreter_radio_device : public frame_interpreter
-{
-Q_OBJECT
-private:
-	//! Analyze a frame
-	void handle_frame(openwebnet_ext, device_status_radio *);
-public:
-	//! Constructor
-	frame_interpreter_radio_device(QString, bool, int);
-	//! Returns init message given device status
-	void get_init_message(device_status *, QString&);
-	//! Returns true if frame is ours
-	bool is_frame_ours(openwebnet_ext, bool& request_status);
-public slots:
-	//! Receive a frame
-	virtual void handle_frame_handler(char *, QList<device_status*>);
-};
-
-//! Sound matr interpreter
-class frame_interpreter_sound_matr_device : public frame_interpreter
-{
-Q_OBJECT
-private:
-	//! Analyze a frame
-	void handle_frame(openwebnet_ext, device_status_sound_matr *);
-public:
-	//! Constructor
-	frame_interpreter_sound_matr_device(QString, bool, int);
-	//! Returns init message given device status
-	void get_init_message(device_status *, QString&);
-	//! Returns true if frame is ours
-	//bool is_frame_ours(openwebnet_ext);
-public slots:
-	//! Receive a frame
-	virtual void handle_frame_handler(char *, QList<device_status*>);
-};
 
 //! Doorphone device frame interpreter
 class frame_interpreter_doorphone_device : public frame_interpreter
@@ -271,23 +215,5 @@ public slots:
 	//! Receive a frame
 	virtual void handle_frame_handler(char *, QList<device_status*>);
 };
-
-//! MCI frame interpreter
-class frame_interpreter_mci : public frame_interpreter
-{
-Q_OBJECT
-private:
-	//! Analyze a frame for a dimmer status
-	void handle_frame(openwebnet_ext, device_status_mci *);
-public:
-	//! Constructor
-	frame_interpreter_mci(QString, bool, int);
-	//! Returns init message given device status
-  void get_init_messages(device_status *, QStringList&);
-public slots:
-	//! Receive a frame
-	virtual void handle_frame_handler(char *, QList<device_status*>);
-};
-
 
 #endif //__FRAME_INTERPRETER_H__

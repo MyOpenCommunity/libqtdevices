@@ -116,48 +116,6 @@ void DeviceOld::setup_frame_interpreter(frame_interpreter* i)
 	connect(i, SIGNAL(init_requested(QString)), SLOT(init_requested_handler(QString)));
 }
 
-
-// MCI implementation
-mci_device::mci_device(QString w, bool p, int g) : DeviceOld(QString("18"), w)
-{
-	stat.append(new device_status_mci());
-	setup_frame_interpreter(new frame_interpreter_mci(w, p, g));
-}
-
-// Sound device implementation
-sound_device::sound_device(QString w, bool p, int g) : DeviceOld(QString("16"), w)
-{
-	stat.append(new device_status_amplifier());
-	setup_frame_interpreter(new frame_interpreter_sound_device(w, p, g));
-}
-
-// Radio device implementation
-radio_device::radio_device(QString w, bool p, int g) : DeviceOld(QString("16"), w)
-{
-	stat.append(new device_status_radio());
-	setup_frame_interpreter(new frame_interpreter_radio_device(w, p, g));
-}
-
-QString radio_device::get_key()
-{
-	// Radio devices are different, we build the key based only on
-	// the least significant digit
-	int wh = where.toInt();
-	while (wh >= 100)
-		wh -= 100;
-	while (wh >= 10)
-		wh -= 10;
-
-	return QString("%1#%2*%3").arg(openserver_id).arg(who).arg(wh);
-}
-
-// Sound matrix device implementation
-sound_matr::sound_matr(QString w, bool p, int g) : DeviceOld(QString("16"), QString("1000"))
-{
-	stat.append(new device_status_sound_matr());
-	setup_frame_interpreter(new frame_interpreter_sound_matr_device(QString("1000"), p, g));
-}
-
 // Doorphone device implementation
 doorphone_device::doorphone_device(QString w, bool p, int g) : DeviceOld(QString("6"), w)
 {
