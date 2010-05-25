@@ -162,8 +162,7 @@ void TestImageSelection::testFileEmpty()
 
 	ImageIterator *iter = new ImageIterator(empty_file.fileName());
 
-	for (int i = 0; i < 5; i++)
-		QCOMPARE(iter->next(), QString());
+	QCOMPARE(iter->hasNext(), false);
 
 	delete iter;
 }
