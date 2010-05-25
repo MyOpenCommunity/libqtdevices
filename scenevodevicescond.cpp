@@ -203,9 +203,7 @@ void DeviceCondition::set_condition_value(QString s)
 
 void DeviceCondition::get_condition_value(QString& out)
 {
-	char tmp[100];
-	sprintf(tmp, "%d", get_condition_value());
-	out = tmp;
+	out = QString::number(get_condition_value());
 }
 
 void DeviceCondition::Up()
@@ -491,12 +489,11 @@ void DeviceConditionDimming::set_condition_value(QString s)
 
 void DeviceConditionDimming::get_condition_value(QString& out)
 {
-	char tmp[100];
+
 	if (get_condition_value_min() == 0)
-		sprintf(tmp, "0");
+		out = "0";
 	else
-		sprintf(tmp, "%d-%d", get_condition_value_min(), get_condition_value_max());
-	out =  tmp;
+		out = QString("%1-%2").arg(get_condition_value_min()).arg(get_condition_value_max());
 }
 
 
@@ -701,12 +698,10 @@ void DeviceConditionDimming100::set_condition_value(QString s)
 
 void DeviceConditionDimming100::get_condition_value(QString& out)
 {
-	char tmp[100];
 	if (get_condition_value_min() == 0)
-		sprintf(tmp, "0");
+		out = "0";
 	else
-		sprintf(tmp, "%d-%d", get_condition_value_min(), get_condition_value_max());
-	out =  tmp;
+		out = QString("%1-%2").arg(get_condition_value_min()).arg(get_condition_value_max());
 }
 
 void DeviceConditionDimming100::valueReceived(const DeviceValues &values_list)
@@ -832,12 +827,10 @@ void DeviceConditionVolume::set_condition_value(QString s)
 
 void DeviceConditionVolume::get_condition_value(QString& out)
 {
-	char tmp[100];
 	if (get_condition_value_min() == -1)
-		sprintf(tmp, "-1");
+		out = "-1";
 	else
-		sprintf(tmp, "%d-%d", get_condition_value_min(), get_condition_value_max());
-	out =  tmp;
+		out = QString("%1-%2").arg(get_condition_value_min()).arg(get_condition_value_max());
 }
 
 void DeviceConditionVolume::Up()
@@ -961,8 +954,8 @@ void DeviceConditionVolume::status_changed(QList<device_status*> sl)
 			}
 			else
 			{
-			qDebug("Condition not triggered");
-			satisfied = false;
+				qDebug("Condition not triggered");
+				satisfied = false;
 			}
 			break;
 		default:
