@@ -137,6 +137,12 @@ public slots:
 
 
 
+/**
+ * This abstract class represents a device based condition, used in the evolved
+ * scenarios. Every DeviceCondition has a condition that depends on the actual
+ * device and can trigger the signal condSatisfied if the device status matches the
+ * condition set.
+ */
 class DeviceCondition : public QObject
 {
 Q_OBJECT
@@ -153,8 +159,9 @@ public:
 		DIMMING100 = 6
 	};
 
-	//! Returns true when actual condition is satisfied
+	//! Returns true when the condition is satisfied
 	bool isTrue();
+
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 
