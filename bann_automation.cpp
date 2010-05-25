@@ -40,13 +40,13 @@
 #define BUT_DIM     60
 
 
-InterblockedActuator::InterblockedActuator(QWidget *parent, const QDomNode &config_node)
+InterblockedActuator::InterblockedActuator(QWidget *parent, const QDomNode &config_node, PullMode pull_mode)
 	: BannOpenClose(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
 	QString where = getTextChild(config_node, "where");
-	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where, pull_mode));
 
 	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
 		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP,
@@ -114,13 +114,13 @@ void InterblockedActuator::status_changed(const StatusList &sl)
 	}
 }
 
-SecureInterblockedActuator::SecureInterblockedActuator(QWidget *parent, const QDomNode &config_node) :
+SecureInterblockedActuator::SecureInterblockedActuator(QWidget *parent, const QDomNode &config_node, PullMode pull_mode) :
 	BannOpenClose(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
 	QString where = getTextChild(config_node, "where");
-	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where, pull_mode));
 
 	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
 		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP,
@@ -242,13 +242,13 @@ void GateEntryphoneActuator::activate()
 }
 
 
-GateLightingActuator::GateLightingActuator(QWidget *parent, const QDomNode &config_node) :
+GateLightingActuator::GateLightingActuator(QWidget *parent, const QDomNode &config_node, PullMode pull_mode) :
 	BannSinglePuls(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
 	QString where = getTextChild(config_node, "where");
-	dev = bt_global::add_device_to_cache(new LightingDevice(where));
+	dev = bt_global::add_device_to_cache(new LightingDevice(where, pull_mode));
 
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"),
 		getTextChild(config_node, "descr"));

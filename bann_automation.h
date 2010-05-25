@@ -25,7 +25,7 @@
 #include "bann1_button.h" // bannPuls
 #include "bann3_buttons.h" // bann3But
 #include "bann2_buttons.h" // bannOnOff
-#include "device.h"        // StatusList
+#include "pulldevice.h"    // StatusList, PullMode
 
 #include <QWidget>
 #include <QString>
@@ -43,7 +43,7 @@ class InterblockedActuator : public BannOpenClose
 {
 Q_OBJECT
 public:
-	InterblockedActuator(QWidget *parent, const QDomNode &config_node);
+	InterblockedActuator(QWidget *parent, const QDomNode &config_node, PullMode pull_mode);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -70,7 +70,7 @@ class SecureInterblockedActuator : public BannOpenClose
 {
 Q_OBJECT
 public:
-	SecureInterblockedActuator(QWidget *parent, const QDomNode &config_node);
+	SecureInterblockedActuator(QWidget *parent, const QDomNode &config_node, PullMode pull_mode);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -105,7 +105,7 @@ class GateLightingActuator : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	GateLightingActuator(QWidget *parent, const QDomNode &config_node);
+	GateLightingActuator(QWidget *parent, const QDomNode &config_node, PullMode pull_mode);
 
 private slots:
 	void activate();

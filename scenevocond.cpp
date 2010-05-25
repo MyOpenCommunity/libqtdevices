@@ -97,6 +97,22 @@ void scenEvo_cond::reset()
 	qDebug("scenEvo_cond::reset()");
 }
 
+// TODO remove after debugging is complete
+namespace
+{
+	inline PullMode getPullMode(const QDomNode &node)
+	{
+		QDomNode element = getChildWithName(node, "pul");
+		Q_ASSERT_X(!element.isNull(), "getPullMode", qPrintable(QString("Pull device node %1 without <pul> child").arg(getTextChild(node, "where"))));
+		bool ok;
+		int value = element.toElement().text().toInt(&ok);
+		Q_ASSERT_X(ok && (value == 0 || value == 1), "getPullMode", qPrintable(QString("Pull device %1 with invalid <pul> child").arg(getTextChild(node, "where"))));
+
+		return value ? PULL : NOT_PULL;
+	}
+}
+
+
 int scenEvo_cond::get_serial_number()
 {
 	return serial_number;

@@ -26,7 +26,7 @@
 #include "bann2_buttons.h" // bannOnOff, bannOnOff2scr
 #include "bann1_button.h" // bannOn2scr
 #include "bttime.h" // BtTime
-#include "device.h" // StatusList
+#include "pulldevice.h" // StatusList, PullMode
 
 #include <QWidget>
 #include <QString>
@@ -93,7 +93,7 @@ class DimmerNew : public AdjustDimmer
 {
 Q_OBJECT
 public:
-	DimmerNew(QWidget *parent, const QDomNode &config_node, QString where);
+	DimmerNew(QWidget *parent, const QDomNode &config_node, QString where, PullMode pull_mode);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -129,7 +129,7 @@ class Dimmer100New : public AdjustDimmer
 {
 Q_OBJECT
 public:
-	Dimmer100New(QWidget *parent, const QDomNode &config_node);
+	Dimmer100New(QWidget *parent, const QDomNode &config_node, PullMode pull_mode);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -168,7 +168,7 @@ class TempLight : public BannOnOff2Labels
 {
 Q_OBJECT
 public:
-	TempLight(QWidget *parent, const QDomNode &config_node);
+	TempLight(QWidget *parent, const QDomNode &config_node, PullMode pull_mode);
 	virtual void inizializza(bool forza);
 
 protected:
@@ -191,7 +191,7 @@ class TempLightVariable : public TempLight
 {
 Q_OBJECT
 public:
-	TempLightVariable(QWidget *parent, const QDomNode &config_node);
+	TempLightVariable(QWidget *parent, const QDomNode &config_node, PullMode pull_mode);
 	virtual void inizializza(bool forza);
 
 protected:
@@ -206,7 +206,7 @@ class TempLightFixed : public BannOn2Labels
 {
 Q_OBJECT
 public:
-	TempLightFixed(QWidget *parent, const QDomNode &config_node);
+	TempLightFixed(QWidget *parent, const QDomNode &config_node, PullMode pull_mode);
 	virtual void inizializza(bool forza);
 
 private slots:
