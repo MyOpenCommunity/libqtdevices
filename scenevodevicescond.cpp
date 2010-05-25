@@ -23,6 +23,7 @@
 #include "probe_device.h" // NonControlledProbeDevice
 #include "devices_cache.h" // add_device_to_cache
 #include "lighting_device.h"
+#include "media_device.h" // AmplifierDevice
 #include "scaleconversion.h" // bt2Celsius, bt2Fahrenheit, celsius2Bt, fahrenheit2Bt
 #include "fontmanager.h" // bt_global::font
 #include "icondispatcher.h" // bt_global::icons_cache
@@ -757,16 +758,14 @@ DeviceConditionVolume::DeviceConditionVolume(DeviceConditionDisplayInterface* co
 
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
-	dev = bt_global::add_device_to_cache(new sound_device(QString(where)));
-	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
-		this, SLOT(status_changed(QList<device_status*>)));
+	dev = AmplifierDevice::createDevice(where);
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	Draw();
 }
 
 
 void DeviceConditionVolume::inizializza()
 {
-	dev->init();
 }
 
 void DeviceConditionVolume::set_condition_value_min(int s)
@@ -910,53 +909,48 @@ void DeviceConditionVolume::Draw()
 	updateText(get_current_value_min(), get_current_value_max());
 }
 
-void DeviceConditionVolume::status_changed(QList<device_status*> sl)
+void DeviceConditionVolume::valueReceived(const DeviceValues &values_list)
 {
 	int trig_v_min = get_condition_value_min();
 	int trig_v_max = get_condition_value_max();
-	stat_var curr_volume(stat_var::AUDIO_LEVEL);
-	stat_var curr_stato(stat_var::ON_OFF);
 
-	for (int i = 0; i < sl.size(); ++i)
+	DeviceValues::const_iterator it = values_list.constBegin();
+
+	while (it != values_list.constEnd())
 	{
-		device_status *ds = sl.at(i);
-		switch (ds->get_type())
+		if (it.key() == AmplifierDevice::DIM_STATUS)
 		{
-		case device_status::AMPLIFIER:
-			qDebug("Amplifier status change");
-			qDebug("Confition value_min = %d - value_max = %d", trig_v_min, trig_v_max);
-			ds->read(device_status_amplifier::AUDIO_LEVEL_INDEX, curr_volume);
-			ds->read(device_status_amplifier::ON_OFF_INDEX, curr_stato);
-			qDebug("volume = %d - stato = %d", curr_volume.get_val(), curr_stato.get_val());
-			if ((trig_v_min == -1) && (curr_stato.get_val() == 0))
+			if ((it.value().toInt() == 1 && trig_v_min == get_min() && trig_v_max == get_max()) ||
+				(it.value().toInt() == 0 && trig_v_min == -1))
 			{
-				qDebug("Condition triggered");
 				if (!satisfied)
 				{
-					satisfied = true;
-					emit condSatisfied();
-				}
-			}
-			else if ((curr_stato.get_val() == 1) && (curr_volume.get_val() >= trig_v_min) && (curr_volume.get_val() <= trig_v_max))
-			{
-				qDebug("Condition triggered");
-				if (!satisfied)
-				{
+					qDebug("Condition triggered");
 					satisfied = true;
 					emit condSatisfied();
 				}
 			}
 			else
-			{
-				qDebug("Condition not triggered");
 				satisfied = false;
-			}
-			break;
-		default:
-			qDebug("device status of unknown type (%d)", ds->get_type());
-			break;
 		}
+		else if (it.key() == AmplifierDevice::DIM_VOLUME)
+		{
+			int volume = it.value().toInt();
+			if (volume >= trig_v_min && volume <= trig_v_max)
+			{
+				if (!satisfied)
+				{
+					qDebug("Condition triggered");
+					satisfied = true;
+					emit condSatisfied();
+				}
+			}
+			else
+				satisfied = false;
+		}
+		++it;
 	}
+
 }
 
 void DeviceConditionVolume::reset()

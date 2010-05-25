@@ -73,6 +73,12 @@ private slots:
 	void testExternalTemperature3();
 	void testExternalTemperatureMinMax();
 	void testAux();
+	void testVolumeOn();
+	void testVolumeOff();
+	void testVolumeRange1();
+	void testVolumeRange2();
+	void testVolumeRange3();
+	void testVolumeRange4();
 };
 
 #endif // TEST_SCENEVODEVICESCOND_H

@@ -34,8 +34,7 @@ class aux_device;
 class LightingDevice;
 class DimmerDevice;
 class Dimmer100Device;
-class sound_device;
-class device_status;
+class AmplifierDevice;
 class stat_var;
 class QString;
 class QLabel;
@@ -363,15 +362,14 @@ protected:
 	virtual void Draw();
 
 private slots:
-	//! Invoked when status changes
-	void status_changed(QList<device_status*>);
+	void valueReceived(const DeviceValues &values_list);
 
 private:
 	int min_val;
 	int max_val;
 	int current_value_min;
 	int current_value_max;
-	sound_device *dev;
+	AmplifierDevice *dev;
 };
 
 
