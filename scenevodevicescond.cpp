@@ -842,73 +842,73 @@ void DeviceConditionVolume::get_condition_value(QString& out)
 
 void DeviceConditionVolume::Up()
 {
-	int v_m = get_current_value_min();
-	int v_M = get_current_value_max();
-	qDebug("v_m = %d - v_M = %d", v_m, v_M);
-	if (v_m == -1)
+	int value_min = get_current_value_min();
+	int value_max = get_current_value_max();
+	qDebug("value_min = %d - value_max = %d", value_min, value_max);
+	if (value_min == -1)
 	{
-		v_m = 0;
-		v_M = 31;
+		value_min = 0;
+		value_max = 31;
 	}
-	else if (v_m == 0)
+	else if (value_min == 0)
 	{
-		if (v_M == 31)
-			v_M = 6;
+		if (value_max == 31)
+			value_max = 6;
 		else
 		{
-			v_m = 7;
-			v_M = 12;
+			value_min = 7;
+			value_max = 12;
 		}
 	}
-	else if (v_m == 7)
+	else if (value_min == 7)
 	{
-		v_m = 13;
-		v_M = 22;
+		value_min = 13;
+		value_max = 22;
 	}
 	else
 	{
-		v_m = 23;
-		v_M = 31;
+		value_min = 23;
+		value_max = 31;
 	}
-	qDebug("new value m = %d - M = %d", v_m, v_M);
-	set_current_value_min(v_m);
-	set_current_value_max(v_M);
+	qDebug("new value m = %d - M = %d", value_min, value_max);
+	set_current_value_min(value_min);
+	set_current_value_max(value_max);
 	Draw();
 }
 
 void DeviceConditionVolume::Down()
 {
-	int v_m = get_current_value_min();
-	int v_M = get_current_value_max();
-	qDebug("v_m = %d - v_M = %d", v_m, v_M);
-	if (v_m == 23)
+	int value_min = get_current_value_min();
+	int value_max = get_current_value_max();
+	qDebug("value_min = %d - value_max = %d", value_min, value_max);
+	if (value_min == 23)
 	{
-		v_m = 13;
-		v_M = 22;
+		value_min = 13;
+		value_max = 22;
 	}
-	else if (v_m == 13)
+	else if (value_min == 13)
 	{
-		v_m = 7;
-		v_M = 12;
+		value_min = 7;
+		value_max = 12;
 	}
-	else if (v_m == 7)
+	else if (value_min == 7)
 	{
-		v_m = 0;
-		v_M = 6;
+		value_min = 0;
+		value_max = 6;
 	}
-	else if (v_m == 0)
+	else if (value_min == 0)
 	{
-		if (v_M == 6)
-			v_M = 31;
+		if (value_max == 6)
+			value_max = 31;
 		else
 		{
-			v_m = -1;
-			v_M = -1;
+			value_min = -1;
+			value_max = -1;
 		}
 	}
-	qDebug("new value m = %d - M = %d", v_m, v_M);
-	set_current_value_min(v_m);
-	set_current_value_max(v_M);
+	qDebug("new value m = %d - M = %d", value_min, value_max);
+	set_current_value_min(value_min);
+	set_current_value_max(value_max);
 	Draw();
 }
 
