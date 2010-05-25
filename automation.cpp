@@ -61,6 +61,22 @@ enum BannerType
 #endif
 
 
+// TODO remove after debugging is complete
+namespace
+{
+	inline PullMode getPullMode(const QDomNode &node)
+	{
+		QDomNode element = getChildWithName(node, "pul");
+		Q_ASSERT_X(!element.isNull(), "getPullMode", qPrintable(QString("Pull device node %1 without <pul> child").arg(getTextChild(node, "id"))));
+		bool ok;
+		int value = element.toElement().text().toInt(&ok);
+		Q_ASSERT_X(ok && (value == 0 || value == 1), "getPullMode", qPrintable(QString("Pull device %1 with invalid <pul> child").arg(getTextChild(node, "id"))));
+
+		return value ? PULL : NOT_PULL;
+	}
+}
+
+
 Automation::Automation(const QDomNode &config_node)
 {
 	buildPage(getTextChild(config_node, "descr"));
@@ -84,18 +100,18 @@ banner *Automation::getBanner(const QDomNode &item_node)
 	switch (id)
 	{
 	case SECURE_AUTOMATIC_ACTUATOR:
-		b = new SecureInterblockedActuator(descr, where, oid);
+		b = new SecureInterblockedActuator(descr, where, oid, getPullMode(item_node));
 		break;
 	case INTERBLOCKED_ACTUATOR:
-		b = new InterblockedActuator(descr, where, oid);
+		b = new InterblockedActuator(descr, where, oid, getPullMode(item_node));
 		break;
 	case SIMPLE_ACTUATOR:
-		b = new SingleActuator(descr, where, oid);
+		b = new SingleActuator(descr, where, oid, getPullMode(item_node));
 		break;
 	case DOOR_LOCK_VCT:
 	{
 		where = getTextChild(item_node, "dev") + getTextChild(item_node, "where");
-		b = new ButtonActuator(descr, where, VCT_LOCK, oid);
+		b = new ButtonActuator(descr, where, VCT_LOCK, oid, getPullMode(item_node));
 		break;
 	}
 	case ACTUATOR_GROUP:
@@ -116,7 +132,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		QStringList sl = getTextChild(item_node, "time").split("*");
 		Q_ASSERT_X(sl.size() == 3, "Automation::getBanner", "time leaf must have 3 fields");
 		BtTime t(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
-		b = new GateLightingActuator(t, descr, where, oid);
+		b = new GateLightingActuator(t, descr, where, oid, getPullMode(item_node));
 	}
 		break;
 	case GATE_VCT_ACT:
@@ -126,7 +142,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		break;
 	}
 	case DOOR_LOCK:
-		b = new ButtonActuator(descr, where, PULSE_ACT, oid);
+		b = new ButtonActuator(descr, where, PULSE_ACT, oid, getPullMode(item_node));
 		break;
 	case PPT_STAT_AUTO:
 		b = new PPTStat(where, oid);

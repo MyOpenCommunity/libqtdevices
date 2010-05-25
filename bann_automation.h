@@ -25,7 +25,7 @@
 #include "bann1_button.h" // BannSinglePuls
 #include "bann3_buttons.h" // Bann3Buttons
 #include "bann2_buttons.h" // BannOpenClose
-#include "device.h" // DeviceValues
+#include "pulldevice.h" // DeviceValues, PullMode
 #include "bttime.h" // BtTime
 
 /// Forward Declarations
@@ -42,7 +42,7 @@ class InterblockedActuator : public BannOpenClose
 {
 Q_OBJECT
 public:
-	InterblockedActuator(const QString &descr, const QString &where, int openserver_id);
+	InterblockedActuator(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode);
 
 private slots:
 	void sendGoUp();
@@ -68,7 +68,7 @@ class SecureInterblockedActuator : public BannOpenClose
 {
 Q_OBJECT
 public:
-	SecureInterblockedActuator(const QString &descr, const QString &where, int openserver_id);
+	SecureInterblockedActuator(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode);
 
 private slots:
 	void sendOpen();
@@ -104,7 +104,7 @@ class GateLightingActuator : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	GateLightingActuator(const BtTime &t, const QString &descr, const QString &where, int openserver_id);
+	GateLightingActuator(const BtTime &t, const QString &descr, const QString &where, int openserver_id, PullMode pull_mode);
 
 private slots:
 	void activate();

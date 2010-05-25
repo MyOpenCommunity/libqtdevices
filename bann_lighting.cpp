@@ -22,7 +22,7 @@
 #include "bann_lighting.h"
 #include "btbutton.h"
 #include "devices_cache.h" // bt_global::devices_cache
-#include "generic_functions.h" //getBostikName
+#include "generic_functions.h" // getBostikName
 #include "skinmanager.h" // skin
 #include "lighting_device.h"
 
@@ -117,7 +117,7 @@ void AdjustDimmer::setLevel(int level)
 
 
 
-Dimmer::Dimmer(const QString &descr, const QString &where, int openserver_id) :
+Dimmer::Dimmer(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode) :
 	AdjustDimmer(0)
 {
 	light_value = 20;
@@ -125,7 +125,7 @@ Dimmer::Dimmer(const QString &descr, const QString &where, int openserver_id) :
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, descr);
 
-	dev = bt_global::add_device_to_cache(new DimmerDevice(where, PULL_UNKNOWN, openserver_id));
+	dev = bt_global::add_device_to_cache(new DimmerDevice(where, pull_mode, openserver_id));
 	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
 	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
 	connect(this, SIGNAL(center_left_clicked()), SLOT(decreaseLevel()));
@@ -227,7 +227,7 @@ enum
 	DIMMER100_SPEED = 255,
 };
 
-Dimmer100::Dimmer100(const QString &descr, const QString &where, int openserver_id, int _start_speed, int _stop_speed) :
+Dimmer100::Dimmer100(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode, int _start_speed, int _stop_speed) :
 	AdjustDimmer(0)
 {
 	light_value = 5;
@@ -235,7 +235,7 @@ Dimmer100::Dimmer100(const QString &descr, const QString &where, int openserver_
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, descr);
 
-	dev = bt_global::add_device_to_cache(new Dimmer100Device(where, PULL_UNKNOWN, openserver_id));
+	dev = bt_global::add_device_to_cache(new Dimmer100Device(where, pull_mode, openserver_id));
 
 	start_speed = _start_speed;
 	stop_speed = _stop_speed;
@@ -355,13 +355,13 @@ void Dimmer100Group::decreaseLevel()
 }
 
 
-TempLight::TempLight(const QString &descr, const QString &where, int openserver_id) :
+TempLight::TempLight(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode) :
 	BannOnOff2Labels(0)
 {
 	initBanner(bt_global::skin->getImage("lamp_cycle"), bt_global::skin->getImage("lamp_time_on"),
 		bt_global::skin->getImage("on"), OFF, descr, QString());
 
-	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL_UNKNOWN, openserver_id));
+	dev = bt_global::add_device_to_cache(new LightingDevice(where, pull_mode, openserver_id));
 
 	time_index = 0;
 	// Time values are fixed for TempLight
@@ -411,8 +411,8 @@ void TempLight::valueReceived(const DeviceValues &values_list)
 }
 
 
-TempLightVariable::TempLightVariable(const QList<BtTime> &time_values, const QString &descr, const QString &where, int openserver_id) :
-	TempLight(descr, where, openserver_id)
+TempLightVariable::TempLightVariable(const QList<BtTime> &time_values, const QString &descr, const QString &where, int openserver_id, PullMode pull_mode) :
+	TempLight(descr, where, openserver_id, pull_mode)
 {
 	times = time_values;
 	dev->setTimingBehaviour(LightingDevice::TIMED_LIGHT);
@@ -431,13 +431,13 @@ enum {
 	TLF_TIME_STATES = 8,
 };
 
-TempLightFixed::TempLightFixed(int time, const QString &descr, const QString &where, int openserver_id) :
+TempLightFixed::TempLightFixed(int time, const QString &descr, const QString &where, int openserver_id, PullMode pull_mode) :
 	BannOn2Labels(0)
 {
 	total_time = time;
 	lighting_time = BtTime(total_time / 3600, (total_time / 60) % 60, total_time % 60);
 
-	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL_UNKNOWN, openserver_id));
+	dev = bt_global::add_device_to_cache(new LightingDevice(where, pull_mode, openserver_id));
 	dev->setTimingBehaviour(LightingDevice::TIMED_LIGHT);
 
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("lamp_status"),

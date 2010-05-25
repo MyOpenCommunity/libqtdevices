@@ -33,6 +33,22 @@
 #endif
 
 
+// TODO remove after debugging is complete
+namespace
+{
+	inline PullMode getPullMode(const QDomNode &node)
+	{
+		QDomNode element = getChildWithName(node, "pul");
+		Q_ASSERT_X(!element.isNull(), "getPullMode", qPrintable(QString("Pull device node %1 without <pul> child").arg(getTextChild(node, "where"))));
+		bool ok;
+		int value = element.toElement().text().toInt(&ok);
+		Q_ASSERT_X(ok && (value == 0 || value == 1), "getPullMode", qPrintable(QString("Pull device %1 with invalid <pul> child").arg(getTextChild(node, "where"))));
+
+		return value ? PULL : NOT_PULL;
+	}
+}
+
+
 int ScenEvoCondition::get_serial_number()
 {
 	return serial_number;
@@ -151,11 +167,11 @@ ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &con
 	{
 	case DeviceCondition::LIGHT:
 		condition_display = new DeviceConditionDisplayOnOff(this, descr, bt_global::skin->getImage("light"));
-		device_cond = new DeviceConditionLight(condition_display, trigger, w, oid);
+		device_cond = new DeviceConditionLight(condition_display, trigger, w, oid, getPullMode(config_node));
 		break;
 	case DeviceCondition::DIMMING:
 		condition_display = new DeviceConditionDisplayDimming(this, descr, bt_global::skin->getImage("dimmer"));
-		device_cond = new DeviceConditionDimming(condition_display, trigger, w, oid);
+		device_cond = new DeviceConditionDimming(condition_display, trigger, w, oid, getPullMode(config_node));
 		break;
 	case DeviceCondition::EXTERNAL_PROBE:
 		external = true;
@@ -175,7 +191,7 @@ ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &con
 		break;
 	case DeviceCondition::DIMMING100:
 		condition_display = new DeviceConditionDisplayDimming(this, descr, bt_global::skin->getImage("dimmer"));
-		device_cond = new DeviceConditionDimming100(condition_display, trigger, w, oid);
+		device_cond = new DeviceConditionDimming100(condition_display, trigger, w, oid, getPullMode(config_node));
 		break;
 	default:
 		qFatal("Unknown device condition: %d", condition_type);

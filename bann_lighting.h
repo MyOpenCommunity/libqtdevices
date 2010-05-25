@@ -26,7 +26,7 @@
 #include "bann2_buttons.h" // BannOnOffNew, BannOnOff2Labels
 #include "bann1_button.h" // BannOn2Labels
 #include "bttime.h" // BtTime
-#include "device.h" // DeviceValues
+#include "pulldevice.h" // DeviceValues, PullMode
 
 #include <QList>
 #include <QTimer>
@@ -89,7 +89,7 @@ class Dimmer : public AdjustDimmer
 {
 Q_OBJECT
 public:
-	Dimmer(const QString &descr, const QString &where, int openserver_id);
+	Dimmer(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode);
 
 private slots:
 	void lightOn();
@@ -125,7 +125,7 @@ class Dimmer100 : public AdjustDimmer
 {
 Q_OBJECT
 public:
-	Dimmer100(const QString &descr, const QString &where, int openserver_id, int _start_speed, int _stop_speed);
+	Dimmer100(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode, int _start_speed, int _stop_speed);
 
 private slots:
 	void lightOn();
@@ -164,7 +164,7 @@ class TempLight : public BannOnOff2Labels
 {
 Q_OBJECT
 public:
-	TempLight(const QString &descr, const QString &where, int openserver_id);
+	TempLight(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode);
 
 protected:
 	void updateTimeLabel();
@@ -186,7 +186,7 @@ class TempLightVariable : public TempLight
 {
 Q_OBJECT
 public:
-	TempLightVariable(const QList<BtTime> &time_values, const QString &descr, const QString &where, int openserver_id);
+	TempLightVariable(const QList<BtTime> &time_values, const QString &descr, const QString &where, int openserver_id, PullMode pull_mode);
 
 protected slots:
 	virtual void activate();
@@ -197,7 +197,7 @@ class TempLightFixed : public BannOn2Labels
 {
 Q_OBJECT
 public:
-	TempLightFixed(int time, const QString &descr, const QString &where, int openserver_id);
+	TempLightFixed(int time, const QString &descr, const QString &where, int openserver_id, PullMode pull_mode);
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);

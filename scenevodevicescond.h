@@ -26,8 +26,9 @@
 #include <QList>
 
 #include "main.h" // TemperatureScale
-#include "device.h" // DeviceValues
-#include "deviceold.h"
+#include "pulldevice.h" // DeviceValues, PullMode
+#include "deviceold.h" // aux_device
+
 
 class NonControlledProbeDevice;
 class aux_device;
@@ -225,7 +226,7 @@ class DeviceConditionLight : public DeviceCondition
 Q_OBJECT
 public:
 	//! Constructor
-	DeviceConditionLight(DeviceConditionDisplayInterface* condition_display, QString trigger, QString where, int openserver_id = 0);
+	DeviceConditionLight(DeviceConditionDisplayInterface* condition_display, QString trigger, QString where, int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 	virtual void inizializza();
@@ -248,7 +249,7 @@ class DeviceConditionDimming : public DeviceCondition
 {
 Q_OBJECT
 public:
-	DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id = 0);
+	DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 	virtual void inizializza();
@@ -295,7 +296,7 @@ class DeviceConditionDimming100 : public DeviceCondition
 Q_OBJECT
 public:
 	//! Constructor
-	DeviceConditionDimming100(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id = 0);
+	DeviceConditionDimming100(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 	virtual void inizializza();

@@ -24,7 +24,7 @@
 
 #include "bann2_buttons.h" // BannOnOffState
 #include "bann1_button.h" // BannSinglePuls
-#include "device.h" // DeviceValues
+#include "pulldevice.h" // DeviceValues, PullMode
 
 class LightingDevice;
 
@@ -41,7 +41,7 @@ class SingleActuator : public BannOnOffState
 {
 Q_OBJECT
 public:
-	SingleActuator(const QString &descr, const QString &where, int openserver_id);
+	SingleActuator(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode);
 
 private slots:
 	void activate();
@@ -57,7 +57,7 @@ class ButtonActuator : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	ButtonActuator(const QString &descr, const QString &_where, int t, int openserver_id);
+	ButtonActuator(const QString &descr, const QString &_where, int t, int openserver_id, PullMode pull_mode);
 
 private slots:
 	void activate();
