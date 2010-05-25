@@ -125,7 +125,6 @@ void ScenEvoTimeCondition::reset()
 }
 
 
-
 ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &config_node)
 {
 	item_id = _item_id;
@@ -150,31 +149,31 @@ ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &con
 
 	switch (condition_type)
 	{
-	case 1:
+	case DeviceCondition::LIGHT:
 		condition_display = new DeviceConditionDisplayOnOff(this, descr, bt_global::skin->getImage("light"));
 		device_cond = new DeviceConditionLight(condition_display, trigger, w, oid);
 		break;
-	case 2:
+	case DeviceCondition::DIMMING:
 		condition_display = new DeviceConditionDisplayDimming(this, descr, bt_global::skin->getImage("dimmer"));
 		device_cond = new DeviceConditionDimming(condition_display, trigger, w, oid);
 		break;
-	case 7:
+	case DeviceCondition::EXTERNAL_PROBE:
 		external = true;
 		w += "00";
-	case 3:
-	case 8:
+	case DeviceCondition::PROBE:
+	case DeviceCondition::TEMPERATURE:
 		condition_display = new DeviceConditionDisplayTemperature(this, descr, bt_global::skin->getImage("probe"));
 		device_cond = new DeviceConditionTemperature(condition_display, trigger, w, external, oid);
 		break;
-	case 9:
+	case DeviceCondition::AUX:
 		condition_display = new DeviceConditionDisplayOnOff(this, descr, bt_global::skin->getImage("aux"));
 		device_cond = new DeviceConditionAux(condition_display, trigger, w);
 		break;
-	case 4:
+	case DeviceCondition::AMPLIFIER:
 		condition_display = new DeviceConditionDisplayVolume(this, descr, bt_global::skin->getImage("amplifier"));
 		device_cond = new DeviceConditionVolume(condition_display, trigger, w);
 		break;
-	case 6:
+	case DeviceCondition::DIMMING100:
 		condition_display = new DeviceConditionDisplayDimming(this, descr, bt_global::skin->getImage("dimmer"));
 		device_cond = new DeviceConditionDimming100(condition_display, trigger, w, oid);
 		break;

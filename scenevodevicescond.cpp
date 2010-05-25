@@ -819,12 +819,6 @@ int DeviceConditionVolume::get_max()
 	return 31;
 }
 
-void DeviceConditionVolume::set_condition_value(QString s)
-{
-	int v = s.toInt();
-	DeviceCondition::set_condition_value(v);
-}
-
 void DeviceConditionVolume::get_condition_value(QString& out)
 {
 	if (get_condition_value_min() == -1)

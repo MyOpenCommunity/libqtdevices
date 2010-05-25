@@ -142,6 +142,18 @@ class DeviceCondition : public QObject
 {
 Q_OBJECT
 public:
+	enum Type
+	{
+		LIGHT = 1,
+		DIMMING = 2,
+		EXTERNAL_PROBE = 7,
+		PROBE = 3,
+		TEMPERATURE = 8,
+		AUX = 9,
+		AMPLIFIER = 4,
+		DIMMING100 = 6
+	};
+
 	//! Returns true when actual condition is satisfied
 	bool isTrue();
 	//! Translates current trigger condition to open
@@ -349,8 +361,6 @@ protected:
 	void set_current_value_max(int max);
 
 	virtual void Draw();
-	//! Translates trigger condition from open encoding to int and sets val
-	virtual void set_condition_value(QString);
 
 private slots:
 	//! Invoked when status changes
