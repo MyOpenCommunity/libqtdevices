@@ -31,7 +31,7 @@
 #include "bann2_buttons.h"
 #include "items.h" // ItemTuning
 #include "pagestack.h" // bt_global::page_stack
-#include "btmain.h" // isCalibrating
+#include "btmain.h" // isCalibrating, vde_call_active
 #include "state_button.h"
 #include "audiostatemachine.h"
 #include "homewindow.h" // TrayBar
@@ -62,6 +62,7 @@ namespace VCTCallPrivate
 		ItemTuningStatus volume_status;
 		bool hands_free;
 		bool prof_studio;
+		bool call_active;
 
 		VCTCallStatus();
 
@@ -187,6 +188,7 @@ void VCTCallStatus::init()
 	connected = false;
 	stopped = false;
 	mute = StateButton::DISABLED;
+	call_active = false;
 }
 
 
@@ -356,6 +358,13 @@ void VCTCall::stopVideo()
 
 void VCTCall::valueReceived(const DeviceValues &values_list)
 {
+	if (!call_status->call_active)
+		if (!values_list.contains(EntryphoneDevice::VCT_CALL) &&
+			!values_list.contains(EntryphoneDevice::AUTO_VCT_CALL))
+		{
+			return;
+		}
+
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())
 	{
@@ -366,14 +375,17 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 				resumeVideo();
 			else
 				emit incomingCall();
+			call_status->call_active = true;
 			break;
 		case EntryphoneDevice::AUTO_VCT_CALL:
 			emit autoIncomingCall();
+			call_status->call_active = true;
 			break;
 		case EntryphoneDevice::CALLER_ADDRESS:
 			emit callerAddress();
 			break;
 		case EntryphoneDevice::END_OF_CALL:
+			call_status->call_active = false;
 			cleanAudioStates();
 			stopVideo();
 			emit callClosed();
@@ -510,8 +522,12 @@ void VCTCallPage::valueReceived(const DeviceValues &values_list)
 		if (!ring_exclusion || !ring_exclusion->getStatus())
 		{
 			Ringtones::Type ringtone = static_cast<Ringtones::Type>(values_list[EntryphoneDevice::RINGTONE].toInt());
-			bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
-			bt_global::ringtones->playRingtone(ringtone);
+			if (ringtone == Ringtones::PE1 || ringtone == Ringtones::PE2 ||
+				ringtone == Ringtones::PE3 || ringtone == Ringtones::PE4)
+			{
+				bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
+				bt_global::ringtones->playRingtone(ringtone);
+			}
 		}
 	}
 }
@@ -523,25 +539,25 @@ void VCTCallPage::cleanUp()
 	// autoswitch call) and terminate the video.
 	vct_call->endCall();
 
-	if (bt_global::audio_states->currentState() == AudioStates::PLAY_RINGTONE)
+	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
 	{
-		bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
+		bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
 		bt_global::ringtones->stopRingtone();
 	}
 
-	bt_global::display->forceOperativeMode(false);
+	bt_global::btmain->vde_call_active = false;
 	vct_call->enable();
 }
 
 void VCTCallPage::handleClose()
 {
-	if (bt_global::audio_states->currentState() == AudioStates::PLAY_RINGTONE)
+	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
 	{
-		bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
+		bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
 		bt_global::ringtones->stopRingtone();
 	}
 
-	bt_global::display->forceOperativeMode(false);
+	bt_global::btmain->vde_call_active = false;
 	vct_call->enable();
 	emit Closed();
 }
@@ -554,7 +570,8 @@ int VCTCallPage::sectionId() const
 void VCTCallPage::enterFullScreen()
 {
 	// We need this two-pass signal-slot because we have to wait until the
-	// terminating process exit.
+	// terminating process exit. We don't care about calling twice the stopVideo
+	// method (see the doc of that method)
 	vct_call->stopVideo();
 	connect(vct_call, SIGNAL(videoFinished()), this, SLOT(showVCTWindow()));
 }
@@ -569,7 +586,6 @@ void VCTCallPage::showVCTWindow()
 
 void VCTCallPage::exitFullScreen()
 {
-	vct_call->startVideo();
 	vct_call->refreshStatus();
 	vct_call->enable();
 	showPage();
@@ -602,24 +618,27 @@ void VCTCallPage::callerAddress()
 	}
 }
 
+void VCTCallPage::showEvent(QShowEvent *)
+{
+	if (!BtMain::isCalibrating())
+		vct_call->startVideo();
+}
+
+void VCTCallPage::hideEvent(QHideEvent *)
+{
+	vct_call->stopVideo();
+}
+
 void VCTCallPage::autoIncomingCall()
 {
 	bt_global::page_stack.showVCTPage(this);
+	bt_global::btmain->vde_call_active = true;
 	VCTCall::call_status->init();
 	vct_call->refreshStatus();
 
 	showPage();
 	repaint();
-
-	if (!BtMain::isCalibrating())
-	{
-		vct_call->startVideo();
-		if (bt_global::display->currentState() != DISPLAY_FREEZED)
-			bt_global::display->forceOperativeMode(true);
-	}
-
 }
-
 
 
 VCTCallWindow::VCTCallWindow(EntryphoneDevice *d)

@@ -304,7 +304,7 @@ void AlarmClock::checkAlarm()
 			bt_global::btmain->freeze(false); // To stop a screensaver, if running
 			bt_global::display->forceOperativeMode(true); // Prevent the screeensaver start
 			qApp->installEventFilter(this);
-			bt_global::btmain->svegl(true);
+			bt_global::btmain->alarm_clock_on = true;
 
 			qDebug("Starting alarm clock");
 
@@ -398,7 +398,7 @@ void AlarmClock::alarmTimeout()
 
 	// restore display state
 	bt_global::btmain->freeze(false);
-	bt_global::btmain->svegl(false);
+	bt_global::btmain->alarm_clock_on = false;
 
 	emit alarmClockFired();
 }
@@ -420,7 +420,7 @@ void AlarmClock::stopAlarm()
 
 	delete aumVolTimer;
 	aumVolTimer = NULL;
-	bt_global::btmain->svegl(false);
+	bt_global::btmain->alarm_clock_on = false;
 
 	emit alarmClockFired();
 }

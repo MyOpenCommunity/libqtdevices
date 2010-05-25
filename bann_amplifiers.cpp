@@ -21,7 +21,7 @@
 
 #include "bann_amplifiers.h"
 #include "skinmanager.h" // bt_global::skin
-#include "generic_functions.h" // getBostikName
+#include "generic_functions.h" // getBostikName, scsToLocalVolume
 #include "media_device.h"
 #include "btbutton.h"
 
@@ -71,7 +71,7 @@ void Amplifier::turnOff()
 
 void Amplifier::setIcons()
 {
-	int index = trasformaVol(volume_value);
+	int index = scsToLocalVolume(volume_value);
 
 	setCenterLeftIcon(getBostikName(active ? center_left_active : center_left_inactive, QString::number(index)));
 	setCenterRightIcon(getBostikName(active ? center_right_active : center_right_inactive, QString::number(index)));

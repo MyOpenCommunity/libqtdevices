@@ -78,6 +78,11 @@ void StateMachine::insertState(int index, int state)
 	active_states.insert(index, state);
 }
 
+bool StateMachine::contains(int state)
+{
+	return active_states.contains(state);
+}
+
 void StateMachine::addState(int state, const char *entered, const char *exited)
 {
 	State s;

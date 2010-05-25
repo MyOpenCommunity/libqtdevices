@@ -31,21 +31,6 @@
 class QString;
 
 
-// for setVolume
-enum VolumeType
-{
-    VOLUME_VIDEOCONTROL = 1,
-    VOLUME_INTERCOM,
-    VOLUME_MMDIFFUSION,
-    VOLUME_BEEP,
-    VOLUME_RING, //Suonerie
-    VOLUME_FILE,
-    VOLUME_VCTIP,
-    VOLUME_MIC,
-    VOLUME_MMDIFFUSIONSOURCE,
-    VOLUME_MMDIFFUSIONAMPLIFIER
-};
-
 // Return the maximum width of the gui
 int maxWidth();
 
@@ -155,9 +140,6 @@ void setVctVideoValue(const QString &command, const QString &value);
 
 // init multimedia playback
 void initMultimedia();
-
-// set the volume
-void setVolume(VolumeType type, int value);
 
 void initScreen();
 

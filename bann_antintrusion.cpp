@@ -20,7 +20,7 @@
 
 
 #include "bann_antintrusion.h"
-#include "generic_functions.h" // void getZoneName(...), getBostikName
+#include "generic_functions.h" // getBostikName
 #include "fontmanager.h" // bt_global::font
 #include "btbutton.h"
 #include "skinmanager.h" // bt_global::skin
@@ -36,6 +36,14 @@
 #include <QLabel>
 #include <QHBoxLayout>
 
+
+namespace
+{
+	QString getZoneName(QString name, QString zone)
+	{
+		return getBostikName(name, zone.at(1));
+	}
+}
 
 BannSingleLeft::BannSingleLeft() :
 	Bann2Buttons(0)

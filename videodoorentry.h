@@ -70,6 +70,10 @@ private:
 };
 
 
+/**
+ * The main class of an videdoorentry call, which shows a button for each external place,
+ * allowing the user to call the place.
+ */
 class VideoControl : public IconPage
 {
 Q_OBJECT
@@ -87,16 +91,18 @@ private:
 
 
 /**
- * The page for an intercom call, that allow the user to set the parameters of
- * the call (that is only audio).
+ * The page for an intercom call (that is only audio).
  */
 class IntercomCallPage : public Page
 {
 Q_OBJECT
 public:
 	IntercomCallPage(EntryphoneDevice *d);
-	virtual void showPage();
 	virtual int sectionId() const;
+
+public slots:
+	virtual void cleanUp();
+	void showPageAfterCall();
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);
@@ -111,12 +117,13 @@ private:
 	StateButton *call_accept;
 	StateButton *mute_button;
 	ItemTuning *volume;
+	bool call_active;
 };
 
 
 /**
  * The main class of an intercom call, which shows a button for each internal place,
- * that allow the user to call the place.
+ * allowing the user to call the place.
  */
 class Intercom : public IconPage
 {
@@ -131,7 +138,7 @@ private:
 
 
 /**
- * The button (actually, the couple of buttons) that represent the professional
+ * The button (actually, the couple of buttons) that represents the professional
  * studio facility (automatically open the door on an incoming call)
  */
 class ProfessionalStudio : public IconButtonOnTray
@@ -146,7 +153,7 @@ protected:
 
 
 /**
- * The button (actually, the couple of buttons) that represent the hands
+ * The button (actually, the couple of buttons) that represents the hands
  * free facility (automatically answer on an incoming call)
  */
 class HandsFree : public IconButtonOnTray

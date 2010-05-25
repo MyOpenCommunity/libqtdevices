@@ -91,6 +91,9 @@ public:
 	// checked before performing a transition to dest_state
 	void addTransitionConstraint(int dest_state, TransitionConstraint *constraint);
 
+	// return true if the state machine contains the argument state.
+	bool contains(int state);
+
 signals:
 	// emitted when the state transition is complete, after the entered/exited
 	// callbacks have been called

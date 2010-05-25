@@ -34,13 +34,14 @@
 #endif
 #include "generic_functions.h" //getBostikName
 #include "items.h" // ItemTuning
-#include "displaycontrol.h" // (*bt_global::display)
+#include "displaycontrol.h" // bt_global::display
 #include "hardware_functions.h" // setVolume
 #include "btmain.h" // bt_global::btmain
 #include "homewindow.h" // TrayBar
 #include "pagestack.h" // bt_global::page_stack
 #include "state_button.h"
 #include "audiostatemachine.h" // bt_global::audio_states
+#include "ringtonesmanager.h" // bt_global::ringtones
 
 #include <QGridLayout>
 #include <QSignalMapper>
@@ -237,10 +238,12 @@ IntercomCallPage::IntercomCallPage(EntryphoneDevice *d)
 	buttons_layout->addWidget(mute_button, 2, 1);
 
 	volume = new ItemTuning("", bt_global::skin->getImage("volume"));
+	volume->disable();
 	connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
 	buttons_layout->addWidget(volume, 3, 0, 1, 2, Qt::AlignHCenter);
 
 	layout->addLayout(buttons_layout, 0, 1, Qt::AlignHCenter);
+	call_active = false;
 }
 
 int IntercomCallPage::sectionId() const
@@ -248,33 +251,71 @@ int IntercomCallPage::sectionId() const
 	return VIDEOCITOFONIA;
 }
 
-void IntercomCallPage::showPage()
+void IntercomCallPage::cleanUp()
 {
+	// the cleanUp is performed when we exit from the page using an external
+	// button. In this case, we have to send the end of call (even if is an
+	// autoswitch call).
+	dev->endCall();
+	bt_global::btmain->vde_call_active = false;
+
+	if (bt_global::audio_states->contains(AudioStates::MUTE))
+		bt_global::audio_states->removeState(AudioStates::MUTE);
+
+	if (bt_global::audio_states->contains(AudioStates::SCS_INTERCOM_CALL))
+	{
+		bt_global::audio_states->removeState(AudioStates::SCS_INTERCOM_CALL);
+		volume->disable();
+	}
+
+	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
+	{
+		bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
+		bt_global::ringtones->stopRingtone();
+	}
+
+}
+
+void IntercomCallPage::showPageAfterCall()
+{
+	// The only difference between this method and the following is that
+	// when the touch call an internal place the "accept" button should be
+	// in the active status.
 	bt_global::page_stack.showVCTPage(this);
-	(*bt_global::display).forceOperativeMode(true);
+	bt_global::btmain->vde_call_active = true;
 	call_accept->setStatus(true);
 	mute_button->setStatus(StateButton::DISABLED);
-	Page::showPage();
+	showPage();
 }
 
 void IntercomCallPage::showPageIncomingCall()
 {
 	bt_global::page_stack.showVCTPage(this);
-
-	if (!BtMain::isCalibrating())
-	{
-		if ((*bt_global::display).currentState() != DISPLAY_FREEZED)
-			(*bt_global::display).forceOperativeMode(true);
-		call_accept->setStatus(false);
-		mute_button->setStatus(StateButton::OFF);
-	}
-
-	Page::showPage();
+	bt_global::btmain->vde_call_active = true;
+	call_accept->setStatus(false);
+	mute_button->setStatus(StateButton::DISABLED);
+	showPage();
 }
 
 void IntercomCallPage::handleClose()
 {
-	(*bt_global::display).forceOperativeMode(false);
+	bt_global::btmain->vde_call_active = false;
+	volume->disable();
+
+	if (bt_global::audio_states->contains(AudioStates::MUTE))
+		bt_global::audio_states->removeState(AudioStates::MUTE);
+
+	if (bt_global::audio_states->contains(AudioStates::SCS_INTERCOM_CALL))
+	{
+		bt_global::audio_states->removeState(AudioStates::SCS_INTERCOM_CALL);
+		volume->disable();
+	}
+
+	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
+	{
+		bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
+		bt_global::ringtones->stopRingtone();
+	}
 	emit Closed();
 }
 
@@ -292,24 +333,33 @@ void IntercomCallPage::toggleCall()
 	else
 	{
 		dev->answerCall();
+		bt_global::audio_states->toState(AudioStates::SCS_INTERCOM_CALL);
 		mute_button->setStatus(StateButton::OFF);
+		volume->enable();
 	}
 }
 
 void IntercomCallPage::toggleMute()
 {
 	StateButton::Status st = mute_button->getStatus();
-	setVolume(VOLUME_MIC, st == StateButton::ON ? 0 : 1);
 
 	if (st == StateButton::ON)
+	{
 		mute_button->setStatus(StateButton::OFF);
+		bt_global::audio_states->removeState(AudioStates::MUTE);
+		volume->enable();
+	}
 	else
+	{
 		mute_button->setStatus(StateButton::ON);
+		bt_global::audio_states->toState(AudioStates::MUTE);
+		volume->disable();
+	}
 }
 
 void IntercomCallPage::changeVolume(int value)
 {
-	setVolume(VOLUME_VIDEOCONTROL, value);
+	bt_global::audio_states->setVolume(value);
 }
 
 void IntercomCallPage::valueReceived(const DeviceValues &values_list)
@@ -320,10 +370,39 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 		switch (it.key())
 		{
 		case EntryphoneDevice::INTERCOM_CALL:
+			call_active = true;
 			showPageIncomingCall();
 			break;
+		case EntryphoneDevice::RINGTONE:
+		{
+			StateButton *ring_exclusion = qobject_cast<StateButton*>(bt_global::btmain->trayBar()->getButton(TrayBar::RING_EXCLUSION));
+
+			if (!ring_exclusion || !ring_exclusion->getStatus())
+			{
+				Ringtones::Type ringtone = static_cast<Ringtones::Type>(values_list[EntryphoneDevice::RINGTONE].toInt());
+				if (ringtone == Ringtones::PI_INTERCOM || ringtone == Ringtones::PE_INTERCOM)
+				{
+					bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
+					bt_global::ringtones->playRingtone(ringtone);
+				}
+			}
+			break;
+		}
+		case EntryphoneDevice::ANSWER_CALL:
+			if (!call_active)
+			{
+				call_active = true;
+				bt_global::audio_states->toState(AudioStates::SCS_INTERCOM_CALL);
+				mute_button->setStatus(StateButton::OFF);
+				volume->enable();
+			}
+			break;
 		case EntryphoneDevice::END_OF_CALL:
-			handleClose();
+			if (call_active)
+			{
+				call_active = false;
+				handleClose();
+			}
 			break;
 		}
 		++it;
@@ -350,7 +429,8 @@ Intercom::Intercom(const QDomNode &config_node)
 		BtButton *btn = addButton(getTextChild(item, "descr"), bt_global::skin->getImage("link_icon"), 0, 0);
 
 		int id = getTextChild(item, "id").toInt();
-		QString where = getTextChild(item, "dev") + getTextChild(item, "where");
+		QDomNode addresses = getElement(item, "addresses");
+		QString where = getTextChild(addresses, "dev") + getTextChild(addresses, "where");
 
 		if (id == INTERNAL_INTERCOM)
 		{
@@ -362,7 +442,7 @@ Intercom::Intercom(const QDomNode &config_node)
 			mapper_ext_intercom->setMapping(btn, where);
 			connect(btn, SIGNAL(clicked()), mapper_ext_intercom, SLOT(map()));
 		}
-		connect(btn, SIGNAL(clicked()), call_page, SLOT(showPage()));
+		connect(btn, SIGNAL(clicked()), call_page, SLOT(showPageAfterCall()));
 	}
 }
 

@@ -112,7 +112,7 @@ bool LoadsDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	int what = msg.what();
 
-	if (what == _DIM_STATUS && msg.whatArgCnt() == 5)
+	if (what == _DIM_STATUS && msg.whatArgCnt() == 6)
 	{
 		values_list[DIM_ENABLED] = msg.whatArgN(0) == 0;
 		values_list[DIM_FORCED] = msg.whatArgN(1) == 1;

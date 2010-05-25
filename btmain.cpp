@@ -217,7 +217,8 @@ BtMain::BtMain(int openserver_reconnection_time)
 	Home = NULL;
 	version = NULL;
 	alreadyCalibrated = false;
-	alarmClockIsOn = false;
+	alarm_clock_on = false;
+	vde_call_active = false;
 	last_event_time = 0;
 	frozen = false;
 
@@ -581,22 +582,30 @@ void BtMain::unrollPages()
 		}
 }
 
-void BtMain::makeActiveAndFreeze()
+void BtMain::makeActive()
 {
-	if (screensaver && screensaver->isRunning())
-	{
+	last_event_time = now();
+
+	if (bt_global::display->currentState() == DISPLAY_SCREENSAVER)
 		screensaver->stop();
-		bt_global::display->setState(DISPLAY_FREEZED);
-		last_event_time = now();
 
-		if (pwdOn)
-			freeze(true);
-	}
-
-	if (passwordKeypad)
+	if (bt_global::display->currentState() == DISPLAY_OFF ||
+		bt_global::display->currentState() == DISPLAY_SCREENSAVER ||
+		bt_global::display->currentState() == DISPLAY_FREEZED)
 	{
-		bt_global::page_stack.closeWindow(passwordKeypad);
-		freeze(true);
+		if (pwdOn)
+		{
+			if (bt_global::display->currentState() != DISPLAY_FREEZED)
+			{
+				bt_global::display->setState(DISPLAY_FREEZED);
+				freeze(true);
+			}
+		}
+		else
+		{
+			bt_global::display->setState(DISPLAY_OPERATIVE);
+			freeze(false);
+		}
 	}
 }
 
@@ -634,7 +643,7 @@ void BtMain::checkScreensaver()
 
 	if (bt_global::display->isForcedOperativeMode())
 		return;
-	if (alarmClockIsOn || calibrating)
+	if (alarm_clock_on || calibrating || vde_call_active)
 		return;
 
 	ScreenSaver::Type target_screensaver = bt_global::display->currentScreenSaver();
@@ -751,7 +760,7 @@ void BtMain::freeze(bool b)
 			if (!passwordKeypad)
 			{
 				passwordKeypad = new KeypadWindow(Keypad::HIDDEN);
-				connect(passwordKeypad, SIGNAL(Closed()), SLOT(testPwd()));
+				connect(passwordKeypad, SIGNAL(Closed()), SLOT(testPassword()));
 			}
 			bt_global::page_stack.showKeypad(passwordKeypad);
 			passwordKeypad->showWindow();
@@ -765,14 +774,14 @@ void BtMain::freeze(bool b)
 	}
 }
 
-void BtMain::setPwd(bool b, QString p)
+void BtMain::setPassword(bool enable, QString password)
 {
-	pwdOn = b;
-	pwd = p;
+	pwdOn = enable;
+	pwd = password;
 	qDebug() << "new password:" << pwd << "active:" << pwdOn;
 }
 
-void BtMain::testPwd()
+void BtMain::testPassword()
 {
 	QString p = passwordKeypad->getText();
 	qDebug() << "testing password, input text is: " << p;
@@ -787,19 +796,12 @@ void BtMain::testPwd()
 		{
 			qDebug() << "pwd ok!";
 			Window *t = passwordKeypad;
-			// set to NULL to avoid freezing again in makeActiveAndFreeze
 			passwordKeypad = NULL;
 			bt_global::page_stack.closeWindow(t);
 			t->disconnect();
 			t->deleteLater();
 		}
 	}
-}
-
-void BtMain::svegl(bool b)
-{
-	qDebug("BtMain::svegl->%d",b);
-	alarmClockIsOn = b;
 }
 
 bool BtMain::calibrating = false;

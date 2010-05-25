@@ -64,6 +64,7 @@ private slots:
 	void receiveRearmSession();
 	void receiveStopVideo();
 	void receiveEndOfCall();
+	void receiveAnswerCall();
 
 private:
 	// init frame must be sent at constuction time

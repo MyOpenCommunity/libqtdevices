@@ -44,13 +44,11 @@ class QString;
 class QTimer;
 class QTime;
 
-/*!
-  \class BtMain
-  \brief This is a class used to manage the starting sequence, call the xml handler that builds the objects configured, shunt signals and controlling screen-saver and special page displaying (such as configuration page, colored pages and so on).
 
-  This is the widget used for screen saver but has the main aim to connect the various class passing signal from one to the others. This class supervise the freezing (baclight off and uman inteface disabled) and the starting sequence also deciding if there's need of a new calibration.
-*/
-
+/**
+ * This is the main class of the touchscreen interface. It loads the configuration,
+ * establishes the connection with the openserver(s) and manage the global objects.
+ */
 class BtMain : public QObject
 {
 Q_OBJECT
@@ -64,27 +62,27 @@ public:
 
 	void resetTimer();
 	/// Freeze or unfreeze the application
-	void freeze(bool);
-	/// Set on/off the sveglia status
-	void svegl(bool);
+	void freeze(bool freeze);
 
-	void setPwd(bool, QString);
+	void setPassword(bool enable, QString password);
 
 	Window *homeWindow();
 	TrayBar *trayBar();
 	void showHomePage();
 	Page *homePage();
 
-	// set the screensaver and balcnk screen timeouts in seconds
+	// set the screensaver and blank screen timeouts in seconds
 	void setScreenSaverTimeouts(int screensaver_start, int blank_screen);
 
-	// stop the screen saver and hide the password keypad but keep the
-	// screen frozen if password protection is active
-	void makeActiveAndFreeze();
+	// stop the screen saver but keep the screen frozen if password protection is active.
+	void makeActive();
 
 	static bool isCalibrating();
 	static void calibrationStarted();
 	static void calibrationEnded();
+
+	bool alarm_clock_on;
+	bool vde_call_active;
 
 signals:
 	void resettimer();
@@ -96,7 +94,7 @@ protected:
 private slots:
 	void init();
 	void checkScreensaver();
-	void testPwd();
+	void testPassword();
 	void waitBeforeInit();
 	void connectionReady();
 	void startGui();
@@ -116,7 +114,7 @@ private:
 	QTimer *screensaver_timer;
 	QDateTime last_date_time;
 	QString pwd;
-	bool pwdOn, alarmClockIsOn, alreadyCalibrated;
+	bool pwdOn, alreadyCalibrated;
 	KeypadWindow *passwordKeypad;
 	bool frozen;
 	int last_event_time;
