@@ -50,7 +50,8 @@ public:
 	/*
 	 * Return the next image found.
 	 *
-	 * In case of empty string you are allowed to call again this function to try to get a valid image.
+	 * Always use hasNext() first of call this function.
+	 * Call next on an empty iterator has an undefined behaviour.
 	 * \return Absolute file path of the image, empty string on errors.
 	 */
 	QString next();
@@ -59,6 +60,9 @@ public:
 
 	~ImageIterator();
 
+	/*
+	 * Returns true if there are other elements to iterate on, false otherwise.
+	 */
 	bool hasNext() const;
 
 private:

@@ -59,7 +59,18 @@ QString createDimensionFrame(QString who, QString dimension, QString where);
 QString createWriteDimensionFrame(QString who, QString dimension, QString where);
 QString createStatusRequestFrame(QString who, QString where);
 
+/*!
+ * getFileExtensions
+ *
+ * This function return a list of the recognized file types associated to \a type.
+ */
 QStringList getFileExtensions(MultimediaFileType type);
+
+/*!
+ * getFileFilter
+ *
+ * This function return a list of file filter expressions associated to \a type.
+ */
 QStringList getFileFilter(MultimediaFileType type);
 
 
