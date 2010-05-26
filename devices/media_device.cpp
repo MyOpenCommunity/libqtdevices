@@ -409,9 +409,11 @@ void RadioSourceDevice::init()
 void RadioSourceDevice::frequenceUp(QString value)
 {
 	// we do not receive status updates for the manual frequency up command: emulate it
-	if (frequency != -1 && !value.isEmpty() && frequency < RADIO_MAX_FREQ)
+	if (frequency != -1 && !value.isEmpty())
 	{
 		frequency += value.toInt() * 5;
+		if (frequency > RADIO_MAX_FREQ)
+			frequency = RADIO_MIN_FREQ;
 
 		DeviceValues values_list;
 
@@ -425,9 +427,11 @@ void RadioSourceDevice::frequenceUp(QString value)
 void RadioSourceDevice::frequenceDown(QString value)
 {
 	// we do not receive status updates for the manual frequency downb command: emulate it
-	if (frequency != -1 && !value.isEmpty() && frequency > RADIO_MIN_FREQ)
+	if (frequency != -1 && !value.isEmpty())
 	{
 		frequency -= value.toInt() * 5;
+		if (frequency < RADIO_MIN_FREQ)
+			frequency = RADIO_MAX_FREQ;
 
 		DeviceValues values_list;
 
