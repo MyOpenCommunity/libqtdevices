@@ -88,6 +88,8 @@ contains(HARDWARE, embedded) {
 	SOURCES += audiostatemachine.cpp
 	HEADERS += calibration.h
 	SOURCES += calibration.cpp
+	HEADERS += calibration_widget.h
+	SOURCES += calibration_widget.cpp
 }
 
 TRANSLATIONS += ../linguist-ts/btouch_ar.ts \
