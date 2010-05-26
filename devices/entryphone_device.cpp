@@ -20,7 +20,7 @@
 
 
 #include "entryphone_device.h"
-#include "generic_functions.h" // createCommandFrame
+#include "frame_functions.h" // createCommandFrame
 #include "ringtonesmanager.h"
 #include "openclient.h" // MAIN_OPENSERVER
 

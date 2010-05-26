@@ -22,9 +22,8 @@
 #include "specialpage.h"
 #include "timescript.h"
 #include "btbutton.h"
-#include "main.h" // ICON_FRECCIA_SX
 #include "xml_functions.h" // getChildren, getTextChild, getChildWithName
-#include "generic_functions.h" // createCommandFrame
+#include "frame_functions.h" // createCommandFrame
 #include "fontmanager.h" // bt_global::font
 #include "temperatureviewer.h"
 #include "skinmanager.h" //skin

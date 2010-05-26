@@ -20,8 +20,9 @@
 
 
 #include "message_device.h"
+#include "frame_functions.h" // isWriteDimensionFrame
+
 #include "openmsg.h"
-#include "generic_functions.h"
 
 #include <QRegExp>
 #include <QDateTime>

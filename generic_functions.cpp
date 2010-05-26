@@ -21,7 +21,7 @@
 
 #include "generic_functions.h"
 #include "xml_functions.h"
-#include "openmsg.h"
+
 
 #include <QMapIterator>
 #include <QTextStream>
@@ -150,47 +150,6 @@ QStringList getFileFilter(MultimediaFileType type)
 
 	return filters;
 }
-
-bool isCommandFrame(OpenMsg &msg)
-{
-	return msg.IsNormalFrame();
-}
-
-bool isDimensionFrame(OpenMsg &msg)
-{
-	return msg.IsMeasureFrame();
-}
-
-bool isWriteDimensionFrame(OpenMsg &msg)
-{
-	return msg.IsWriteFrame();
-}
-
-bool isStatusRequestFrame(OpenMsg &msg)
-{
-	return msg.IsStateFrame();
-}
-
-QString createCommandFrame(QString who, QString what, QString where)
-{
-	return QString("*%1*%2*%3##").arg(who).arg(what).arg(where);
-}
-
-QString createDimensionFrame(QString who, QString what, QString where)
-{
-	return QString("*#%1*%2*%3##").arg(who).arg(where).arg(what);
-}
-
-QString createWriteDimensionFrame(QString who, QString what, QString where)
-{
-	return QString("*#%1*%2*#%3##").arg(who).arg(where).arg(what);
-}
-
-QString createStatusRequestFrame(QString who, QString where)
-{
-	return QString("*#%1*%2##").arg(who).arg(where);
-}
-
 
 QString getBostikName(const QString &name, const QString &suffix)
 {

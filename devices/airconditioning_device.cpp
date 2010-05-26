@@ -20,7 +20,7 @@
 
 
 #include "airconditioning_device.h"
-#include "generic_functions.h" // createWriteDimensionFrame
+#include "frame_functions.h" // createWriteDimensionFrame
 
 #include <QStringList>
 #include <openmsg.h>

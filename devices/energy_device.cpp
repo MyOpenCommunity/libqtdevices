@@ -20,7 +20,7 @@
 
 
 #include "energy_device.h"
-#include "generic_functions.h" // createDimensionFrame
+#include "frame_functions.h" // createDimensionFrame, createCommandFrame
 
 #include <openmsg.h>
 

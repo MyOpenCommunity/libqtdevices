@@ -20,9 +20,10 @@
 
 
 #include "thermal_device.h"
-#include "openmsg.h"
 #include "bttime.h"
-#include "generic_functions.h" // createWriteDimensionFrame
+#include "frame_functions.h" // createWriteDimensionFrame
+
+#include "openmsg.h"
 
 #include <QDebug>
 #include <QDate>

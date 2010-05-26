@@ -20,8 +20,9 @@
 
 
 #include "probe_device.h"
+#include "frame_functions.h" // createCommandFrame, isCommandFrame
+
 #include "openmsg.h"
-#include "generic_functions.h" // createCommandFrame
 
 #include <QVariant>
 #include <QtDebug>

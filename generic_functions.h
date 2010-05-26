@@ -29,7 +29,6 @@
 
 class QDate;
 class QDateTime;
-class OpenMsg;
 
 // Enum to identify various file types
 enum MultimediaFileType
@@ -40,24 +39,6 @@ enum MultimediaFileType
 	VIDEO = 2,
 	IMAGE = 3
 };
-
-/** The following functions can be used to test the format of a frame or build it.
- *  The frame format can be:
- *  - a command frame, in the form *who*what*where##
- *  - a read dimension frame, in the form *#who*where*dimension##
- *  - a write dimension frame, in the form *#who*where*#dimension*val1*..*valn##
- *  - a status request frame, in the form *#who*where##
- */
-
-bool isCommandFrame(OpenMsg &msg);
-bool isDimensionFrame(OpenMsg &msg);
-bool isWriteDimensionFrame(OpenMsg &msg);
-bool isStatusRequestFrame(OpenMsg &msg);
-
-QString createCommandFrame(QString who, QString what, QString where);
-QString createDimensionFrame(QString who, QString dimension, QString where);
-QString createWriteDimensionFrame(QString who, QString dimension, QString where);
-QString createStatusRequestFrame(QString who, QString where);
 
 /*!
  * getFileExtensions

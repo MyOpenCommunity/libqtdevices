@@ -43,7 +43,7 @@ HEADERS += device_tester.h \
 	openserver_mock.h \
 	../../bttime.h \
 	../../openclient.h \
-	../../generic_functions.h \
+	../../frame_functions.h \
 	../../xml_functions.h \
 	../../main.h \
 	../../devices_cache.h
@@ -69,7 +69,7 @@ SOURCES += test_main.cpp \
 	openserver_mock.cpp \
 	../../bttime.cpp \
 	../../openclient.cpp \
-	../../generic_functions.cpp \
+	../../frame_functions.cpp \
 	../../xml_functions.cpp \
 	../../definitions.cpp \
 	../../devices_cache.cpp

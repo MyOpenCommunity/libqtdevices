@@ -21,7 +21,7 @@
 
 #include "lighting_device.h"
 #include "openmsg.h"
-#include "generic_functions.h"
+#include "frame_functions.h" // createWriteDimensionFrame, isCommandFrame, isDimensionFrame
 #include "bttime.h" // BtTime
 
 #include <QDebug>

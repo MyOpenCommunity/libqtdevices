@@ -20,8 +20,9 @@
 
 
 #include "loads.h"
-#include "generic_functions.h" // createCommandFrame
+#include "frame_functions.h" // createCommandFrame
 #include "xml_functions.h" // getChildren, getTextChild
+#include "main.h" // CARICO
 
 
 bannLoads::bannLoads(Page *parent, QString indirizzo, QString IconaSx) : bannOnSx(parent)

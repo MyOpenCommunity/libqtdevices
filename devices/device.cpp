@@ -22,7 +22,7 @@
 #include "device.h"
 #include "openclient.h"
 #include "bttime.h"
-#include "generic_functions.h" // createDimensionFrame, createCommandFrame
+#include "frame_functions.h" // createDimensionFrame, createCommandFrame
 #include "devices_cache.h" // bt_global::devices_cache
 
 #include <openmsg.h>

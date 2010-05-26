@@ -27,7 +27,6 @@
 #include <QDir>
 #include <QDirIterator>
 
-#include <errno.h> // errno
 
 namespace
 {

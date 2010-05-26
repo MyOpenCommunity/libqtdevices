@@ -20,9 +20,9 @@
 
 
 #include "bttime.h"
-//#include "main.h"
 
 #include <QDateTime>
+
 
 QString formatTime(const BtTime &t)
 {

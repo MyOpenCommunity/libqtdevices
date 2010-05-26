@@ -19,7 +19,7 @@
  */
 
 #include "media_device.h"
-#include "generic_functions.h"
+#include "frame_functions.h" // isStatusRequestFrame, isDimensionFrame, createWriteDimensionFrame
 #include "hardware_functions.h" // AMPLI_NUM
 #include "devices_cache.h" // bt_global::add_device_to_cache
 

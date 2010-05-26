@@ -32,6 +32,7 @@ HEADERS += test_bttime.h \
 	../bttime.h \
 	../devices_cache.h \
 	../fontmanager.h \
+	../frame_functions.h \
 	../generic_functions.h \
 	../hardware_functions.h \
 	../icondispatcher.h \
@@ -52,6 +53,7 @@ SOURCES += test_main.cpp \
 	../bttime.cpp \
 	../devices_cache.cpp \
 	../fontmanager.cpp \
+	../frame_functions.cpp \
 	../generic_functions.cpp \
 	../hardware_functions_x11.cpp \
 	../icondispatcher.cpp \
