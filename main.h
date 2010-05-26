@@ -89,10 +89,14 @@ void resetTimer(int signo);
  *  The logFile name if not specified in stack_open.xml
  */
 #define MY_FILE_LOG_DEFAULT        "log/BTouch.log"
+
 /*! \def IMG_PATH
  *  Define path for Icons
  */
+#ifndef IMG_PATH
 #define IMG_PATH                    "cfg/extra/1/skin/"
+#endif
+
 /*! \def SOUND_PATH
  *  Define path for Sounds
  */
