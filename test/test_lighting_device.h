@@ -38,7 +38,8 @@ Q_OBJECT
 protected:
 	void initLightingDevice(LightingDevice *d = 0);
 	void cleanupLightingDevice();
-	void setParams(QString w, PullMode m, bool a = false);
+	void setParams(QString w, PullMode m, AdvancedMode a);
+	void setParams(QString w, PullMode m);
 	virtual QString getRequestStatusFrame();
 
 private slots:

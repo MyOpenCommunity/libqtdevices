@@ -150,7 +150,7 @@ PullStateManager::PullStateManager(PullMode m, FrameChecker checker)
 	status_requested = false;
 	frame_checker = checker;
 	last_handled = FRAME_NOT_HANDLED;
-	advanced = false;
+	advanced = m == PULL ? PULL_NOT_ADVANCED : PULL_ADVANCED_UNKNOWN;
 }
 
 PullMode PullStateManager::getPullMode()
@@ -208,12 +208,23 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 		// If we just get PP frames, we can't decide the mode!
 		if (status_requested && status != INVALID_STATE)
 		{
-			if (status == new_state && last_handled == FRAME_HANDLED)
+			if (mode == NOT_PULL)
+			{
+				// if the last frame was a definitely handled frame, we can't know anything
+				// about the base/advanced state of the device
+				if (last_handled == FRAME_MAYBE_HANDLED)
+					advanced = status == new_state ? PULL_NOT_ADVANCED : PULL_ADVANCED;
+			}
+			else if (status == new_state && last_handled == FRAME_HANDLED)
+			{
 				mode = PULL;
+				advanced = PULL_NOT_ADVANCED;
+			}
 			else if (status != new_state)
 			{
 				mode = NOT_PULL;
-				advanced = last_handled == FRAME_MAYBE_HANDLED;
+				if (last_handled == FRAME_MAYBE_HANDLED)
+					advanced = PULL_ADVANCED;
 			}
 		}
 		else
@@ -263,7 +274,7 @@ void PullDevice::manageFrame(OpenMsg &msg)
 		return;
 	case GLOBAL:
 	case ENVIRONMENT:
-		if (state.getPullMode() == PULL_UNKNOWN)
+		if (!state.isDetectionComplete())
 		{
 			// we need to delay the status request in order for the
 			// state of the device to stabilize
@@ -276,7 +287,7 @@ void PullDevice::manageFrame(OpenMsg &msg)
 		// when NOT_PULL we must parse the frame and emit status_changed() signal
 		break;
 	default:
-		if (state.getPullMode() == PULL_UNKNOWN)
+		if (!state.isDetectionComplete())
 			state.moreFrameNeeded(msg, false);
 		break;
 	}
