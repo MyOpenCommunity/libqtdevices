@@ -260,12 +260,12 @@ bool DeviceCondition::isTrue()
 }
 
 
-DeviceConditionLight::DeviceConditionLight(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id)
+DeviceConditionLight::DeviceConditionLight(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id, PullMode pull_mode)
 	: DeviceCondition(cond_display)
 {
 	set_condition_value(trigger);
 	set_current_value(DeviceCondition::get_condition_value());
-	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL, openserver_id));
+	dev = bt_global::add_device_to_cache(new LightingDevice(where, pull_mode, openserver_id));
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	Draw();
 }
@@ -328,7 +328,7 @@ void DeviceConditionLight::get_condition_value(QString& out)
 
 
 
-DeviceConditionDimming::DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id)
+DeviceConditionDimming::DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id, PullMode pull_mode)
 	: DeviceCondition(cond_display)
 {
 	if (trigger == "0")
@@ -349,7 +349,7 @@ DeviceConditionDimming::DeviceConditionDimming(DeviceConditionDisplayInterface* 
 	set_current_value_max(get_condition_value_max());
 
 	// TODO: to PULL or not to PULL? That is the question...
-	dev = bt_global::add_device_to_cache(new DimmerDevice(where, PULL, openserver_id));
+	dev = bt_global::add_device_to_cache(new DimmerDevice(where, pull_mode, openserver_id));
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	Draw();
 }
@@ -530,7 +530,7 @@ void DeviceConditionDimming::valueReceived(const DeviceValues &values_list)
 }
 
 
-DeviceConditionDimming100::DeviceConditionDimming100(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id)
+DeviceConditionDimming100::DeviceConditionDimming100(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id, PullMode pull_mode)
 	: DeviceCondition(cond_display)
 {
 	if (trigger == "0")
@@ -548,7 +548,7 @@ DeviceConditionDimming100::DeviceConditionDimming100(DeviceConditionDisplayInter
 	}
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
-	dev = bt_global::add_device_to_cache(new Dimmer100Device(where, PULL, openserver_id));
+	dev = bt_global::add_device_to_cache(new Dimmer100Device(where, pull_mode, openserver_id));
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	Draw();
 }

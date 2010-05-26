@@ -29,14 +29,14 @@
 #include <QDebug>
 
 
-SingleActuator::SingleActuator(const QString &descr, const QString &where, int openserver_id)
+SingleActuator::SingleActuator(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode)
 	: BannOnOffState(0)
 {
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("actuator_state"),
 		bt_global::skin->getImage("on"), OFF, descr);
 
 	// TODO: read pull mode from config
-	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL_UNKNOWN, openserver_id));
+	dev = bt_global::add_device_to_cache(new LightingDevice(where, pull_mode, openserver_id));
 	setOpenserverConnection(dev);
 
 	connect(left_button, SIGNAL(clicked()), SLOT(deactivate()));
@@ -71,7 +71,7 @@ void SingleActuator::valueReceived(const DeviceValues &values_list)
 
 
 
-ButtonActuator::ButtonActuator(const QString &descr, const QString &_where, int t, int openserver_id) : BannSinglePuls(0)
+ButtonActuator::ButtonActuator(const QString &descr, const QString &_where, int t, int openserver_id, PullMode pull_mode) : BannSinglePuls(0)
 {
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("action_icon"), descr);
 
@@ -81,7 +81,7 @@ ButtonActuator::ButtonActuator(const QString &descr, const QString &_where, int 
 	switch (type)
 	{
 	case PULSE_ACT:
-		dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL_UNKNOWN, openserver_id));
+		dev = bt_global::add_device_to_cache(new LightingDevice(where, pull_mode, openserver_id));
 		break;
 	case VCT_LOCK:
 	case VCT_STAIRLIGHT:

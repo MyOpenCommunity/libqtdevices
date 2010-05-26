@@ -43,6 +43,16 @@ enum PullMode
 	PULL_UNKNOWN,
 };
 
+enum AdvancedMode
+{
+	// PULL_UNKNOWN and NOT_PULL devices with unknown state
+	PULL_ADVANCED_UNKNOWN,
+	// NOT_PULL advanced devices
+	PULL_ADVANCED,
+	// NOT_PULL base devices and PULL devices
+	PULL_NOT_ADVANCED,
+};
+
 enum FrameHandled
 {
 	FRAME_NOT_HANDLED,
@@ -83,12 +93,14 @@ public:
 	bool moreFrameNeeded(OpenMsg &msg, bool is_environment);
 	PullMode getPullMode();
 	void setStatusRequested(bool status);
-	bool isAdvanced() { return advanced; }
+	AdvancedMode getAdvanced() { return advanced; }
+	bool isDetectionComplete() { return mode != PULL_UNKNOWN && advanced != PULL_ADVANCED_UNKNOWN; }
 
 private:
 	int status;
-	bool status_requested, advanced;
+	bool status_requested;
 	PullMode mode;
+	AdvancedMode advanced;
 
 	// filters the frames interpreted by this device
 	FrameChecker frame_checker;
@@ -120,7 +132,7 @@ protected:
 	// different devices may need different status requests (eg. Dimmer100)
 	virtual void requestPullStatus() = 0;
 
-	bool isAdvanced() { return state.isAdvanced(); }
+	bool isAdvanced() { return state.getAdvanced() == PULL_ADVANCED; }
 
 private slots:
 	void delayedStatusRequest();

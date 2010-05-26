@@ -63,6 +63,22 @@ enum BannerType
 #endif
 
 
+// TODO remove after debugging is complete
+namespace
+{
+	inline PullMode getPullMode(const QDomNode &node)
+	{
+		QDomNode element = getChildWithName(node, "pul");
+		Q_ASSERT_X(!element.isNull(), "getPullMode", qPrintable(QString("Pull device node %1 without <pul> child").arg(getTextChild(node, "id"))));
+		bool ok;
+		int value = element.toElement().text().toInt(&ok);
+		Q_ASSERT_X(ok && (value == 0 || value == 1), "getPullMode", qPrintable(QString("Pull device %1 with invalid <pul> child").arg(getTextChild(node, "id"))));
+
+		return value ? PULL : NOT_PULL;
+	}
+}
+
+
 namespace
 {
 	QList<QString> getAddresses(QDomNode item, QList<int> *start_values = 0, QList<int> *stop_values = 0)
@@ -127,10 +143,10 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 	switch (id)
 	{
 	case DIMMER10:
-		b = new Dimmer(descr, where, oid);
+		b = new Dimmer(descr, where, oid, getPullMode(item_node));
 		break;
 	case SINGLE_LIGHT:
-		b = new SingleActuator(descr, where, oid);
+		b = new SingleActuator(descr, where, oid, getPullMode(item_node));
 		break;
 	case DIMMER_GROUP:
 		b = new DimmerGroup(getAddresses(item_node), descr);
@@ -139,21 +155,21 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		b = new LightGroup(getAddresses(item_node), descr);
 		break;
 	case TEMP_LIGHT:
-		b = new TempLight(descr, where, oid);
+		b = new TempLight(descr, where, oid, getPullMode(item_node));
 		break;
 	case STAIR_LIGHT:
-		b = new ButtonActuator(descr, where, VCT_STAIRLIGHT, oid);
+		b = new ButtonActuator(descr, where, VCT_STAIRLIGHT, oid, getPullMode(item_node));
 		break;
 	case DIMMER100:
 	{
 		// TODO: CONFIG_BTOUCH touch10??
 		int start = getTextChild(item_node, "softstart").toInt();
 		int stop = getTextChild(item_node, "softstop").toInt();
-		b = new Dimmer100(descr, where, oid, start, stop);
+		b = new Dimmer100(descr, where, oid, getPullMode(item_node), start, stop);
 	}
 		break;
 	case TEMP_LIGHT_VARIABLE:
-		b = new TempLightVariable(getTimes(item_node), descr, where, oid);
+		b = new TempLightVariable(getTimes(item_node), descr, where, oid, getPullMode(item_node));
 		break;
 	case DIMMER100_GROUP:
 	{
@@ -180,7 +196,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 	#else
 		t = getTextChild(item_node, "time").toInt();
 	#endif
-		b = new TempLightFixed(t, descr, where, oid);
+		b = new TempLightFixed(t, descr, where, oid, getPullMode(item_node));
 		}
 		break;
 	}

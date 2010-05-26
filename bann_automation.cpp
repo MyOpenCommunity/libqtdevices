@@ -34,10 +34,10 @@
 #define BUT_DIM     60
 
 
-InterblockedActuator::InterblockedActuator(const QString &descr, const QString &where, int openserver_id)
+InterblockedActuator::InterblockedActuator(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode)
 	: BannOpenClose(0)
 {
-	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL_UNKNOWN, openserver_id));
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where, pull_mode, openserver_id));
 	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
 		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP, descr);
 
@@ -99,10 +99,10 @@ void InterblockedActuator::valueReceived(const DeviceValues &values_list)
 	}
 }
 
-SecureInterblockedActuator::SecureInterblockedActuator(const QString &descr, const QString &where, int openserver_id) :
+SecureInterblockedActuator::SecureInterblockedActuator(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode) :
 	BannOpenClose(0)
 {
-	dev = bt_global::add_device_to_cache(new AutomationDevice(where, PULL_UNKNOWN, openserver_id));
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where, pull_mode, openserver_id));
 
 	initBanner(bt_global::skin->getImage("close"), bt_global::skin->getImage("actuator_state"),
 		bt_global::skin->getImage("open"), bt_global::skin->getImage("stop"), STOP, descr);
@@ -205,12 +205,12 @@ void GateEntryphoneActuator::activate()
 }
 
 
-GateLightingActuator::GateLightingActuator(const BtTime &t, const QString &descr, const QString &where, int openserver_id) :
+GateLightingActuator::GateLightingActuator(const BtTime &t, const QString &descr, const QString &where, int openserver_id, PullMode pull_mode) :
 	BannSinglePuls(0),
 	time(t)
 {
 	// we don't need to init the device, as we don't care about its status
-	dev = bt_global::add_device_to_cache(new LightingDevice(where, PULL_UNKNOWN, openserver_id), NO_INIT);
+	dev = bt_global::add_device_to_cache(new LightingDevice(where, pull_mode, openserver_id), NO_INIT);
 	setOpenserverConnection(dev);
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"), descr);
 	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
