@@ -136,13 +136,11 @@ void VideoPlayerPage::videoPlaybackTerminated()
 
 void VideoPlayerPage::videoPlaybackStarted()
 {
-	qDebug() << "VideoPlayerPage::videoPlaybackStarted";
 	bt_global::display->forceOperativeMode(true);
 }
 
 void VideoPlayerPage::videoPlaybackStopped()
 {
-	qDebug() << "VideoPlayerPage::videoPlaybackStopped";
 	bt_global::display->forceOperativeMode(false);
 }
 
