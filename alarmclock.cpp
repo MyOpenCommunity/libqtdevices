@@ -64,7 +64,7 @@ AlarmNavigation::AlarmNavigation(bool forwardButton, QWidget *parent)
 #ifdef LAYOUT_BTOUCH
 	createButton(bt_global::skin->getImage("ok"), SIGNAL(okClicked()), 0);
 	if (forwardButton)
-		createButton(bt_global::skin->getImage("forward"), SIGNAL(forwardClick()), 3);
+		createButton(bt_global::skin->getImage("forward"), SIGNAL(forwardClicked()), 3);
 #endif
 }
 
@@ -100,9 +100,9 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, QList<bool> 
 	// TODO fix sound diffusion for BTouch
 	dev = bt_global::add_device_to_cache(new AlarmSoundDiffDevice(SoundDiffusionPage::isMultichannel()));
 	general = AmplifierDevice::createDevice("0");
+
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 #endif
-	connect(dev, SIGNAL(valueReceived(DeviceValues)),
-		SLOT(valueReceived(DeviceValues)));
 }
 
 void AlarmClock::showPage()
