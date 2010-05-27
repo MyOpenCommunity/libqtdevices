@@ -91,7 +91,7 @@ void TestScenEvoDevicesCond::testLightOn()
 {
 	DeviceConditionLight cond(mock_display, "1", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
-	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), true);
+	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), true);
@@ -101,6 +101,8 @@ void TestScenEvoDevicesCond::testLightOff()
 {
 	DeviceConditionLight cond(mock_display, "0", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);

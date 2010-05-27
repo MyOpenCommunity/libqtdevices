@@ -268,6 +268,7 @@ DeviceConditionLight::DeviceConditionLight(DeviceConditionDisplayInterface* cond
 	dev = bt_global::add_device_to_cache(new LightingDevice(where, pull_mode, openserver_id));
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	Draw();
+	initialized = false;
 }
 
 void DeviceConditionLight::inizializza()
@@ -282,26 +283,35 @@ void DeviceConditionLight::Draw()
 
 void DeviceConditionLight::valueReceived(const DeviceValues &values_list)
 {
-	DeviceValues::const_iterator it = values_list.constBegin();
-	while (it != values_list.constEnd())
+	if (!initialized)
 	{
-		switch (it.key())
-		{
-		case LightingDevice::DIM_DEVICE_ON:
-			if (DeviceCondition::get_condition_value() == static_cast<int>(it.value().toBool()))
-			{
-				if (!satisfied)
-				{
-					satisfied = true;
-					emit condSatisfied();
-				}
-			}
-			else
-				satisfied = false;
-			break;
-		}
-		++it;
+		if (parseValues(values_list))
+			initialized = true;
 	}
+	else
+	{
+		if (!satisfied)
+		{
+			parseValues(values_list);
+			if (satisfied)
+				emit condSatisfied();
+		}
+		else
+			parseValues(values_list);
+	}
+}
+
+bool DeviceConditionLight::parseValues(const DeviceValues &values_list)
+{
+	if (values_list.contains(LightingDevice::DIM_DEVICE_ON))
+	{
+		if (DeviceCondition::get_condition_value() == values_list[LightingDevice::DIM_DEVICE_ON].toBool())
+			satisfied = true;
+		else
+			satisfied = false;
+		return true;
+	}
+	return false;
 }
 
 int DeviceConditionLight::get_max()

@@ -239,9 +239,11 @@ protected:
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);
+	bool parseValues(const DeviceValues &values_list);
 
 private:
 	LightingDevice *dev;
+	bool initialized;
 };
 
 
