@@ -110,7 +110,8 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		break;
 	case DOOR_LOCK_VCT:
 	{
-		where = getTextChild(item_node, "dev") + getTextChild(item_node, "where");
+		QDomNode addresses = getElement(item_node, "addresses");
+		where = getTextChild(addresses, "dev") + getTextChild(addresses, "where");
 		b = new ButtonActuator(descr, where, VCT_LOCK, oid, getPullMode(item_node));
 		break;
 	}
