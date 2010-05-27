@@ -24,16 +24,26 @@
 #include "multimedia_buttons.h"
 #include "mount_watcher.h"
 #include "pagestack.h"
+#include "audiostatemachine.h"
 
 
 MediaPlayerPage::MediaPlayerPage() :
 	refresh_data(this)
 {
 	player = new MediaPlayer(this);
+	resume_on_state_change = false;
 
 	// terminate player when unmounted
 	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
 		SLOT(unmounted(const QString &)));
+
+	// pause local playback when receiving a VCT call
+	if (!bt_global::audio_states->isSource())
+		connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(audioStateChanged(int,int)));
+
+	// handle audio state machine state changes
+	connect(this, SIGNAL(started()), SLOT(playbackStarted()));
+	connect(this, SIGNAL(stopped()), SLOT(playbackStopped()));
 }
 
 void MediaPlayerPage::showPage()
@@ -70,8 +80,8 @@ void MediaPlayerPage::connectMultimediaButtons(MultimediaPlayerButtons *buttons)
 
 	// handle mplayer termination
 	connect(player, SIGNAL(mplayerDone()), SLOT(next()));
-	connect(player, SIGNAL(mplayerAborted()), SLOT(playbackTerminated()));
-	connect(player, SIGNAL(mplayerKilled()), SLOT(playbackTerminated()));
+	connect(player, SIGNAL(mplayerAborted()), SLOT(videoPlaybackTerminated()));
+	connect(player, SIGNAL(mplayerKilled()), SLOT(videoPlaybackTerminated()));
 }
 
 void MediaPlayerPage::stop()
@@ -130,7 +140,7 @@ void MediaPlayerPage::seekBack()
 	player->seek(-10);
 }
 
-void MediaPlayerPage::playbackTerminated()
+void MediaPlayerPage::videoPlaybackTerminated()
 {
 	emit stopped();
 	emit terminated();
@@ -141,4 +151,31 @@ void MediaPlayerPage::unmounted(const QString &dir)
 {
 	if (player->isInstanceRunning() && file_list[current_file].startsWith(dir))
 		stop();
+}
+
+void MediaPlayerPage::audioStateChanged(int new_state, int old_state)
+{
+	if (new_state == AudioStates::PLAY_MEDIA_TO_SPEAKER && resume_on_state_change && player->isPaused())
+		resume();
+	else if (old_state == AudioStates::PLAY_MEDIA_TO_SPEAKER && player->isInstanceRunning() && !player->isPaused())
+	{
+		resume_on_state_change = true;
+		pause();
+	}
+}
+
+void MediaPlayerPage::playbackStarted()
+{
+	// when the player resumes after an higher priority state (alarm, vct) there is no
+	// need to reenter the play state
+	if (!bt_global::audio_states->isSource() && !resume_on_state_change)
+		bt_global::audio_states->toState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
+	resume_on_state_change = false;
+}
+
+void MediaPlayerPage::playbackStopped()
+{
+	// leave the play state on the stack when the player is paused beacuse of a higher priority state
+	if (!bt_global::audio_states->isSource() && !resume_on_state_change)
+		bt_global::audio_states->removeState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
 }

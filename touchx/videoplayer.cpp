@@ -80,8 +80,8 @@ VideoPlayerPage::VideoPlayerPage()
 	connect(window, SIGNAL(Closed()), SLOT(stop()));
 
 	// disable/reenable screen saver
-	connect(this, SIGNAL(started()), SLOT(playbackStarted()));
-	connect(this, SIGNAL(stopped()), SLOT(playbackStopped()));
+	connect(this, SIGNAL(started()), SLOT(videoPlaybackStarted()));
+	connect(this, SIGNAL(stopped()), SLOT(videoPlaybackStopped()));
 
 	connect(&refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
 }
@@ -127,25 +127,23 @@ void VideoPlayerPage::displayVideos(QList<QString> videos, unsigned element)
 	displayMedia(current_file);
 }
 
-void VideoPlayerPage::playbackTerminated()
+void VideoPlayerPage::videoPlaybackTerminated()
 {
-	MediaPlayerPage::playbackTerminated();
+	MediaPlayerPage::videoPlaybackTerminated();
 
 	video->update();
 }
 
-void VideoPlayerPage::playbackStarted()
+void VideoPlayerPage::videoPlaybackStarted()
 {
+	qDebug() << "VideoPlayerPage::videoPlaybackStarted";
 	bt_global::display->forceOperativeMode(true);
-	if (!bt_global::audio_states->isSource())
-		bt_global::audio_states->toState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
 }
 
-void VideoPlayerPage::playbackStopped()
+void VideoPlayerPage::videoPlaybackStopped()
 {
+	qDebug() << "VideoPlayerPage::videoPlaybackStopped";
 	bt_global::display->forceOperativeMode(false);
-	if (!bt_global::audio_states->isSource())
-		bt_global::audio_states->removeState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
 }
 
 void VideoPlayerPage::hideEvent(QHideEvent *event)

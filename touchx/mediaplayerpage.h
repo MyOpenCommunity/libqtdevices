@@ -85,7 +85,7 @@ public slots:
 	virtual void seekBack();
 
 	// called for abnormal MPlayer termination
-	virtual void playbackTerminated();
+	virtual void videoPlaybackTerminated();
 
 protected:
 	// media objects handled by the page
@@ -99,6 +99,14 @@ protected:
 
 private slots:
 	void unmounted(const QString &path);
+
+	void playbackStarted();
+	void playbackStopped();
+	void audioStateChanged(int new_state, int old_state);
+
+private:
+	// set to true when the player is paused due to a audio state change (es. vct call)
+	bool resume_on_state_change;
 };
 
 #endif // MEDIAPLAYERPAGE_H

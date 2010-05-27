@@ -84,15 +84,9 @@ private slots:
 	void changeVolume(int volume);
 	void gotoSoundDiffusion();
 
-	void playbackStarted();
-	void playbackStopped();
-	void audioStateChanged(int new_state, int old_state);
-
 private:
 	AudioPlayerPage(MediaType type);
 
-	// set to true when the player is paused due to a audio state change (es. vct call)
-	bool resume_on_state_change;
 	MediaType type;
 	QLabel *description_top, *description_bottom, *track, *elapsed;
 	// icon in tray bar

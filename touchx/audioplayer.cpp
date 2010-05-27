@@ -96,7 +96,6 @@ QVector<AudioPlayerPage *>AudioPlayerPage::audioPlayerPages()
 AudioPlayerPage::AudioPlayerPage(MediaType t)
 {
 	type = t;
-	resume_on_state_change = false;
 
 	QWidget *content = new QWidget;
 	NavigationBar *nav_bar = new NavigationBar;
@@ -153,10 +152,6 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 		connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
 	}
 
-	// pause local playback when receiving a VCT call
-	if (!bt_global::audio_states->isSource())
-		connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(audioStateChanged(int,int)));
-
 	QVBoxLayout *l = new QVBoxLayout(content);
 	l->addWidget(bg, 1, Qt::AlignCenter);
 	l->addLayout(l_btn, 1);
@@ -176,40 +171,11 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 
 	connect(this, SIGNAL(started()), tray_icon, SLOT(started()));
 	connect(this, SIGNAL(terminated()), tray_icon, SLOT(stopped()));
-	connect(this, SIGNAL(started()), SLOT(playbackStarted()));
-	connect(this, SIGNAL(stopped()), SLOT(playbackStopped()));
 }
 
 int AudioPlayerPage::sectionId() const
 {
 	return MULTIMEDIA;
-}
-
-void AudioPlayerPage::playbackStarted()
-{
-	// when the player resumes after an higher priority state (alarm, vct) there is no
-	// need to reenter the play state
-	if (!bt_global::audio_states->isSource() && !resume_on_state_change)
-		bt_global::audio_states->toState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
-	resume_on_state_change = false;
-}
-
-void AudioPlayerPage::playbackStopped()
-{
-	// leave the play state on the stack when the player is paused beacuse of a higher priority state
-	if (!bt_global::audio_states->isSource() && !resume_on_state_change)
-		bt_global::audio_states->removeState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
-}
-
-void AudioPlayerPage::audioStateChanged(int new_state, int old_state)
-{
-	if (new_state == AudioStates::PLAY_MEDIA_TO_SPEAKER && resume_on_state_change && player->isPaused())
-		resume();
-	else if (old_state == AudioStates::PLAY_MEDIA_TO_SPEAKER && player->isInstanceRunning() && !player->isPaused())
-	{
-		resume_on_state_change = true;
-		pause();
-	}
 }
 
 void AudioPlayerPage::startMPlayer(int index, int time)
