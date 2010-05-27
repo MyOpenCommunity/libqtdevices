@@ -144,11 +144,9 @@ void VideoPlayerPage::videoPlaybackStopped()
 	bt_global::display->forceOperativeMode(false);
 }
 
-void VideoPlayerPage::hideEvent(QHideEvent *event)
-{
-	if (fullscreen)
-		return;
 
+void VideoPlayerPage::cleanUp()
+{
 	stop();
 }
 

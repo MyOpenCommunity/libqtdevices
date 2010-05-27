@@ -41,13 +41,12 @@ public:
 
 	virtual void showPage();
 
+	// kills mplayer
+	virtual void cleanUp();
+
 public slots:
 	// displays the page and stores the video list for playback
 	void displayVideos(QList<QString> videos, unsigned element);
-
-protected:
-	// kills mplayer
-	void hideEvent(QHideEvent *event);
 
 private:
 	// the position/size where to play the video
