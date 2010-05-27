@@ -245,8 +245,10 @@ bool AlarmClock::eventFilter(QObject *obj, QEvent *ev)
 
 	// We stop the alarm and restore the normal behaviour
 	qApp->removeEventFilter(this);
-	stopAlarm();
+	// must reset forceOperativeMode before stopAlarm(), otherwise video playback
+	// will not restart correctly
 	bt_global::display->forceOperativeMode(false);
+	stopAlarm();
 	return true;
 }
 
@@ -342,8 +344,10 @@ void AlarmClock::sounddiffusionAlarm()
 	else if (conta2min > 49)
 	{
 		dev->stopAlarm(sorgente, volSveglia);
-		bt_global::display->forceOperativeMode(false);
 
+		// must reset forceOperativeMode before stopAlarm(), otherwise video playback
+		// will not restart correctly
+		bt_global::display->forceOperativeMode(false);
 		alarmTimeout();
 	}
 }
