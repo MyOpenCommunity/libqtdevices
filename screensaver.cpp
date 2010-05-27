@@ -376,6 +376,8 @@ void ScreenSaverSlideshow::stop()
 		delete iter;
 		iter = 0;
 	}
+	current_image.fill(Qt::black);
+	next_image.fill(Qt::black);
 }
 
 void ScreenSaverSlideshow::paintEvent(QPaintEvent *e)
