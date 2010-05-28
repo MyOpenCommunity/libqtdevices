@@ -29,12 +29,6 @@
 #include "pulldevice.h" // DeviceValues, PullMode
 
 
-class NonControlledProbeDevice;
-class AuxDevice;
-class LightingDevice;
-class DimmerDevice;
-class Dimmer100Device;
-class AmplifierDevice;
 class QString;
 class QLabel;
 class BtButton;
@@ -187,6 +181,10 @@ protected:
 	// the DeviceConditionDisplay widget.
 	void updateText(int min_condition_value, int max_condition_value);
 
+	void setDevice(device *d);
+
+	virtual bool parseValues(const DeviceValues &values_list) = 0;
+
 	//! Returns min value
 	virtual int get_min();
 	//! Returns max value
@@ -210,12 +208,19 @@ protected:
 	//! True when condition is satisfied
 	bool satisfied;
 
+private slots:
+	void valueReceived(const DeviceValues &values_list);
+
 private:
 	//! Condition value
 	int cond_value;
 	//! Current value (displayed, not confirmed)
 	int current_value;
+
 	DeviceConditionDisplayInterface *condition_display;
+
+	device *dev;
+	bool initialized;
 };
 
 
@@ -227,7 +232,6 @@ public:
 	DeviceConditionLight(DeviceConditionDisplayInterface* condition_display, QString trigger, QString where, int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
-	virtual void inizializza();
 
 protected:
 	virtual void Draw();
@@ -235,14 +239,7 @@ protected:
 	//! Translates trigger condition from open encoding to int and sets val
 	virtual void set_condition_value(QString);
 
-
-private slots:
-	void valueReceived(const DeviceValues &values_list);
-	bool parseValues(const DeviceValues &values_list);
-
-private:
-	LightingDevice *dev;
-	bool initialized;
+	virtual bool parseValues(const DeviceValues &values_list);
 };
 
 
@@ -253,7 +250,6 @@ public:
 	DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
-	virtual void inizializza();
 
 public slots:
 	virtual void OK();
@@ -280,15 +276,13 @@ protected:
 	//! Translates trigger condition from open encoding to int and sets val
 	virtual void set_condition_value(QString);
 
-private slots:
-	void valueReceived(const DeviceValues &values_list);
+	virtual bool parseValues(const DeviceValues &values_list);
 
 private:
 	int min_val;
 	int max_val;
 	int current_value_min;
 	int current_value_max;
-	DimmerDevice *dev;
 };
 
 
@@ -296,11 +290,9 @@ class DeviceConditionDimming100 : public DeviceCondition
 {
 Q_OBJECT
 public:
-	//! Constructor
 	DeviceConditionDimming100(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
-	virtual void inizializza();
 
 public slots:
 	virtual void OK();
@@ -329,15 +321,13 @@ protected:
 	virtual void set_condition_value(QString);
 	virtual void Draw();
 
-private slots:
-	void valueReceived(const DeviceValues &values_list);
+	virtual bool parseValues(const DeviceValues &values_list);
 
 private:
 	int min_val;
 	int max_val;
 	int current_value_min;
 	int current_value_max;
-	Dimmer100Device *dev;
 };
 
 
@@ -345,10 +335,8 @@ class DeviceConditionVolume : public DeviceCondition
 {
 Q_OBJECT
 public:
-	//! Constructor
 	DeviceConditionVolume(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where);
 	void get_condition_value(QString& out);
-	virtual void inizializza();
 
 public slots:
 	virtual void OK();
@@ -370,15 +358,13 @@ protected:
 
 	virtual void Draw();
 
-private slots:
-	void valueReceived(const DeviceValues &values_list);
+	virtual bool parseValues(const DeviceValues &values_list);
 
 private:
 	int min_val;
 	int max_val;
 	int current_value_min;
 	int current_value_max;
-	AmplifierDevice *dev;
 };
 
 
@@ -388,7 +374,6 @@ Q_OBJECT
 public:
 	DeviceConditionTemperature(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, bool external = false, int openserver_id = 0);
 	virtual void get_condition_value(QString&);
-	virtual void inizializza();
 
 protected:
 	int get_min();
@@ -397,9 +382,7 @@ protected:
 	int intValue();
 	virtual void Draw();
 
-private slots:
-	//! Invoked when status changes
-	void valueReceived(const DeviceValues &);
+	virtual bool parseValues(const DeviceValues &values_list);
 
 private:
 	/// Maximum and minimum values for temperature conditions
@@ -407,7 +390,6 @@ private:
 	/// Step value for temperature conditions
 	int step;
 	TemperatureScale temp_scale;
-	NonControlledProbeDevice *dev;
 };
 
 
@@ -416,20 +398,13 @@ class DeviceConditionAux : public DeviceCondition
 Q_OBJECT
 public:
 	DeviceConditionAux(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where);
-	virtual void inizializza();
 
 protected:
 	virtual void Draw();
 	virtual int get_max();
 	virtual void set_condition_value(QString);
 
-private slots:
-	void valueReceived(const DeviceValues &values_list);
-	bool parseValues(const DeviceValues &values_list);
-
-private:
-	AuxDevice *dev;
-	bool initialized;
+	virtual bool parseValues(const DeviceValues &values_list);
 };
 
 

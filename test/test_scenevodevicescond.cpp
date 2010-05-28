@@ -113,7 +113,7 @@ void TestScenEvoDevicesCond::testDimmingOff()
 {
 	DeviceConditionDimming cond(mock_display, "0", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
-	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
@@ -123,6 +123,7 @@ void TestScenEvoDevicesCond::testDimmingRange1()
 {
 	DeviceConditionDimming cond(mock_display, "2-4", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*2*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*2*%1##").arg(dev_where), true);
 	checkCondition(spy, QString("*1*5*%1##").arg(dev_where), false);
@@ -134,9 +135,10 @@ void TestScenEvoDevicesCond::testDimmingRange2()
 {
 	DeviceConditionDimming cond(mock_display, "5-7", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
-	checkCondition(spy, QString("*1*6*%1##").arg(dev_where), true);
+	checkCondition(spy, QString("*1*6*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*7*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*6*%1##").arg(dev_where), true);
 	checkCondition(spy, QString("*1*8*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*5*%1##").arg(dev_where), true);
 }
@@ -145,8 +147,9 @@ void TestScenEvoDevicesCond::testDimmingRange3()
 {
 	DeviceConditionDimming cond(mock_display, "8-10", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
-	checkCondition(spy, QString("*1*10*%1##").arg(dev_where), true);
+	checkCondition(spy, QString("*1*10*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*7*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*10*%1##").arg(dev_where), true);
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*8*%1##").arg(dev_where), true);
 	checkCondition(spy, QString("*1*9*%1##").arg(dev_where), false);
@@ -157,6 +160,7 @@ void TestScenEvoDevicesCond::testDimming100Off()
 {
 	DeviceConditionDimming100 cond(mock_display, "0", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
 	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
@@ -169,6 +173,8 @@ void TestScenEvoDevicesCond::testDimming100Range1()
 {
 	DeviceConditionDimming100 cond(mock_display, "1-20", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*2*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*2*%1##").arg(dev_where), true);
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*#1*%1*1*105*0##").arg(dev_where), true);
@@ -176,12 +182,16 @@ void TestScenEvoDevicesCond::testDimming100Range1()
 	checkCondition(spy, QString("*#1*%1*1*120*0##").arg(dev_where), true);
 	checkCondition(spy, QString("*#1*%1*1*180*0##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*4*%1##").arg(dev_where), true);
+	checkCondition(spy, QString("*#1*%1*1*180*0##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*2*%1##").arg(dev_where), true);
 }
 
 void TestScenEvoDevicesCond::testDimming100Range2()
 {
 	DeviceConditionDimming100 cond(mock_display, "21-40", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*#1*%1*1*121*0##").arg(dev_where), false);
+	checkCondition(spy, QString("*#1*%1*1*160*0##").arg(dev_where), false);
 	checkCondition(spy, QString("*#1*%1*1*121*0##").arg(dev_where), true);
 	checkCondition(spy, QString("*#1*%1*1*122*0##").arg(dev_where), false);
 	checkCondition(spy, QString("*#1*%1*1*141*0##").arg(dev_where), false);
@@ -197,6 +207,8 @@ void TestScenEvoDevicesCond::testDimming100Range3()
 {
 	DeviceConditionDimming100 cond(mock_display, "41-70", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*7*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*#1*%1*1*103*0##").arg(dev_where), false);
 	checkCondition(spy, QString("*#1*%1*1*141*0##").arg(dev_where), true);
 	checkCondition(spy, QString("*#1*%1*1*103*0##").arg(dev_where), false);
 	checkCondition(spy, QString("*#1*%1*1*170*0##").arg(dev_where), true);
@@ -210,14 +222,15 @@ void TestScenEvoDevicesCond::testDimming100Range4()
 {
 	DeviceConditionDimming100 cond(mock_display, "71-100", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
-	checkCondition(spy, QString("*#1*%1*1*171*0##").arg(dev_where), true);
-	checkCondition(spy, QString("*#1*%1*1*170*0##").arg(dev_where), false);
-	checkCondition(spy, QString("*#1*%1*1*200*0##").arg(dev_where), true);
-	checkCondition(spy, QString("*1*8*%1##").arg(dev_where), false);
-	checkCondition(spy, QString("*1*9*%1##").arg(dev_where), true);
-	checkCondition(spy, QString("*1*8*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*10*%1##").arg(dev_where), true);
+	checkCondition(spy, QString("*#1*%1*1*170*0##").arg(dev_where), false);
+	checkCondition(spy, QString("*#1*%1*1*171*0##").arg(dev_where), true);
+	checkCondition(spy, QString("*1*8*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*#1*%1*1*200*0##").arg(dev_where), true);
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*9*%1##").arg(dev_where), true);
+	checkCondition(spy, QString("*1*8*%1##").arg(dev_where), false);
 }
 
 void TestScenEvoDevicesCond::testInternalTemperature1()
@@ -225,6 +238,7 @@ void TestScenEvoDevicesCond::testInternalTemperature1()
 	DeviceConditionTemperature cond(mock_display, "0000", dev_where, false);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
 
+	checkCondition(spy, QString("*#4*%1*0*0100##").arg(dev_where), false);
 	checkCondition(spy, QString("*#4*%1*0*0000##").arg(dev_where), true);
 	checkCondition(spy, QString("*#4*%1*0*0100##").arg(dev_where), false);
 	checkCondition(spy, QString("*#4*%1*0*0010##").arg(dev_where), true);
@@ -261,6 +275,7 @@ void TestScenEvoDevicesCond::testInternalTemperatureMinMax()
 	DeviceConditionTemperature cond_out_min(mock_display, "1100", dev_where, false);
 	QSignalSpy spy_min(&cond_out_min, SIGNAL(condSatisfied()));
 
+	checkCondition(spy_min, QString("*#4*%1*0*1039##").arg(dev_where), false);
 	checkCondition(spy_min, QString("*#4*%1*0*1050##").arg(dev_where), true);
 	checkCondition(spy_min, QString("*#4*%1*0*1039##").arg(dev_where), false);
 	checkCondition(spy_min, QString("*#4*%1*0*1040##").arg(dev_where), true);
@@ -269,6 +284,7 @@ void TestScenEvoDevicesCond::testInternalTemperatureMinMax()
 	DeviceConditionTemperature cond_out_max(mock_display, "0700", dev_where);
 	QSignalSpy spy_max(&cond_out_max, SIGNAL(condSatisfied()));
 
+	checkCondition(spy_max, QString("*#4*%1*0*0489##").arg(dev_where), false);
 	checkCondition(spy_max, QString("*#4*%1*0*0499##").arg(dev_where), true);
 	checkCondition(spy_max, QString("*#4*%1*0*0489##").arg(dev_where), false);
 	checkCondition(spy_max, QString("*#4*%1*0*0500##").arg(dev_where), true);
@@ -279,6 +295,7 @@ void TestScenEvoDevicesCond::testExternalTemperature1()
 	DeviceConditionTemperature cond(mock_display, "0000", dev_where, true);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
 
+	checkCondition(spy, QString("*#4*%1*15*1*0100*1111##").arg(dev_where), false);
 	checkCondition(spy, QString("*#4*%1*15*1*0000*1111##").arg(dev_where), true);
 	checkCondition(spy, QString("*#4*%1*15*1*0100*1111##").arg(dev_where), false);
 	checkCondition(spy, QString("*#4*%1*15*1*0010*1111##").arg(dev_where), true);
@@ -315,6 +332,7 @@ void TestScenEvoDevicesCond::testExternalTemperatureMinMax()
 	DeviceConditionTemperature cond_out_min(mock_display, "1100", dev_where, true);
 	QSignalSpy spy_min(&cond_out_min, SIGNAL(condSatisfied()));
 
+	checkCondition(spy_min, QString("*#4*%1*15*1*1039*1111##").arg(dev_where), false);
 	checkCondition(spy_min, QString("*#4*%1*15*1*1050*1111##").arg(dev_where), true);
 	checkCondition(spy_min, QString("*#4*%1*15*1*1039*1111##").arg(dev_where), false);
 	checkCondition(spy_min, QString("*#4*%1*15*1*1040*1111##").arg(dev_where), true);
@@ -323,6 +341,7 @@ void TestScenEvoDevicesCond::testExternalTemperatureMinMax()
 	DeviceConditionTemperature cond_out_max(mock_display, "0700", dev_where);
 	QSignalSpy spy_max(&cond_out_max, SIGNAL(condSatisfied()));
 
+	checkCondition(spy_max, QString("*#4*%1*15*1*0489*1111##").arg(dev_where), false);
 	checkCondition(spy_max, QString("*#4*%1*15*1*0499*1111##").arg(dev_where), true);
 	checkCondition(spy_max, QString("*#4*%1*15*1*0489*1111##").arg(dev_where), false);
 	checkCondition(spy_max, QString("*#4*%1*15*1*0500*1111##").arg(dev_where), true);
@@ -330,12 +349,6 @@ void TestScenEvoDevicesCond::testExternalTemperatureMinMax()
 
 void TestScenEvoDevicesCond::testAux()
 {
-	// TODO: verificare quale deve essere il comportamento desiderato! Per come
-	// e' implementato il device la prima frame viene scartata.. e il condSatisfied
-	// sulla seconda frame viene emesso solo se la prima frame non rispetta la
-	// condizione. Questo sembra contrario alla logica delle altre condizioni
-	// su device (per le quali il condSatisfied viene emesso subito), ma sembra
-	// anche fatto di proposito (vedi ticket #77 trac develer),
 	DeviceConditionAux cond(mock_display, "0", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
 	checkCondition(spy, QString("*9*1*%1##").arg(dev_where), false);
@@ -348,6 +361,7 @@ void TestScenEvoDevicesCond::testVolumeOn()
 {
 	DeviceConditionVolume cond(mock_display, "0-31", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*#22*3#%1#%2*12*0*10##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
 	checkCondition(spy, QString("*#22*3#%1#%2*12*1*4##").arg(dev_where.at(0)).arg(dev_where.at(1)), true);
 	checkCondition(spy, QString("*#22*3#%1#%2*12*1*4##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
 	checkCondition(spy, QString("*#22*3#%1#%2*12*0*10##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
@@ -358,6 +372,8 @@ void TestScenEvoDevicesCond::testVolumeOff()
 {
 	DeviceConditionVolume cond(mock_display, "-1", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*#22*3#%1#%2*12*0*10##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
+	checkCondition(spy, QString("*#22*3#%1#%2*12*1*4##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
 	checkCondition(spy, QString("*#22*3#%1#%2*12*0*10##").arg(dev_where.at(0)).arg(dev_where.at(1)), true);
 	checkCondition(spy, QString("*#22*3#%1#%2*12*0*10##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
 	checkCondition(spy, QString("*#22*3#%1#%2*12*1*4##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
@@ -368,19 +384,20 @@ void TestScenEvoDevicesCond::testVolumeRange1()
 {
 	DeviceConditionVolume cond(mock_display, "0-6", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*#22*3#%1#%2*1*0##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
+	checkCondition(spy, QString("*#22*3#%1#%2*1*20##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
 	checkCondition(spy, QString("*#22*3#%1#%2*1*6##").arg(dev_where.at(0)).arg(dev_where.at(1)), true);
 	checkCondition(spy, QString("*#22*3#%1#%2*1*0##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
 	checkCondition(spy, QString("*#22*3#%1#%2*1*10##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
 	checkCondition(spy, QString("*#22*3#%1#%2*1*7##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
 	checkCondition(spy, QString("*#22*3#%1#%2*1*4##").arg(dev_where.at(0)).arg(dev_where.at(1)), true);
-	checkCondition(spy, QString("*#22*3#%1#%2*1*20##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
-	checkCondition(spy, QString("*#22*3#%1#%2*1*0##").arg(dev_where.at(0)).arg(dev_where.at(1)), true);
 }
 
 void TestScenEvoDevicesCond::testVolumeRange2()
 {
 	DeviceConditionVolume cond(mock_display, "7-12", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*#22*3#%1#%2*1*6##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
 	checkCondition(spy, QString("*#22*3#%1#%2*1*7##").arg(dev_where.at(0)).arg(dev_where.at(1)), true);
 	checkCondition(spy, QString("*#22*3#%1#%2*1*7##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
 	checkCondition(spy, QString("*#22*3#%1#%2*1*20##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
@@ -391,6 +408,7 @@ void TestScenEvoDevicesCond::testVolumeRange3()
 {
 	DeviceConditionVolume cond(mock_display, "13-22", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*#22*3#%1#%2*1*10##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
 	checkCondition(spy, QString("*#22*3#%1#%2*1*13##").arg(dev_where.at(0)).arg(dev_where.at(1)), true);
 	checkCondition(spy, QString("*#22*3#%1#%2*1*13##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
 	checkCondition(spy, QString("*#22*3#%1#%2*1*20##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
@@ -402,6 +420,7 @@ void TestScenEvoDevicesCond::testVolumeRange4()
 {
 	DeviceConditionVolume cond(mock_display, "23-31", dev_where);
 	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*#22*3#%1#%2*1*13##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
 	checkCondition(spy, QString("*#22*3#%1#%2*1*31##").arg(dev_where.at(0)).arg(dev_where.at(1)), true);
 	checkCondition(spy, QString("*#22*3#%1#%2*1*13##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
 	checkCondition(spy, QString("*#22*3#%1#%2*1*23##").arg(dev_where.at(0)).arg(dev_where.at(1)), true);

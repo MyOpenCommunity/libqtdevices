@@ -161,6 +161,8 @@ DeviceCondition::DeviceCondition(DeviceConditionDisplayInterface *cond_display)
 {
 	condition_display = cond_display;
 	satisfied = false;
+	initialized = false;
+	dev = 0;
 }
 
 void DeviceCondition::updateText(int min_condition_value, int max_condition_value)
@@ -244,44 +246,19 @@ int DeviceCondition::set_current_value(int v)
 	return current_value;
 }
 
+void DeviceCondition::setDevice(device *d)
+{
+	dev = d;
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+}
+
 void DeviceCondition::inizializza()
 {
+	Q_ASSERT_X(dev, "DeviceCondition::inizializza", "device not set!");
+	dev->init();
 }
 
-void DeviceCondition::reset()
-{
-	set_current_value(get_condition_value());
-	Draw();
-}
-
-bool DeviceCondition::isTrue()
-{
-	return satisfied;
-}
-
-
-DeviceConditionLight::DeviceConditionLight(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id, PullMode pull_mode)
-	: DeviceCondition(cond_display)
-{
-	set_condition_value(trigger);
-	set_current_value(DeviceCondition::get_condition_value());
-	dev = bt_global::add_device_to_cache(new LightingDevice(where, pull_mode, openserver_id));
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
-	Draw();
-	initialized = false;
-}
-
-void DeviceConditionLight::inizializza()
-{
-	dev->requestStatus();
-}
-
-void DeviceConditionLight::Draw()
-{
-	updateText(get_current_value(), get_current_value());
-}
-
-void DeviceConditionLight::valueReceived(const DeviceValues &values_list)
+void DeviceCondition::valueReceived(const DeviceValues &values_list)
 {
 	if (!initialized)
 	{
@@ -301,14 +278,37 @@ void DeviceConditionLight::valueReceived(const DeviceValues &values_list)
 	}
 }
 
+void DeviceCondition::reset()
+{
+	set_current_value(get_condition_value());
+	Draw();
+}
+
+bool DeviceCondition::isTrue()
+{
+	return satisfied;
+}
+
+
+DeviceConditionLight::DeviceConditionLight(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id, PullMode pull_mode)
+	: DeviceCondition(cond_display)
+{
+	set_condition_value(trigger);
+	set_current_value(DeviceCondition::get_condition_value());
+	setDevice(bt_global::add_device_to_cache(new LightingDevice(where, pull_mode, openserver_id)));
+	Draw();
+}
+
+void DeviceConditionLight::Draw()
+{
+	updateText(get_current_value(), get_current_value());
+}
+
 bool DeviceConditionLight::parseValues(const DeviceValues &values_list)
 {
 	if (values_list.contains(LightingDevice::DIM_DEVICE_ON))
 	{
-		if (DeviceCondition::get_condition_value() == values_list[LightingDevice::DIM_DEVICE_ON].toBool())
-			satisfied = true;
-		else
-			satisfied = false;
+		satisfied = DeviceCondition::get_condition_value() == values_list[LightingDevice::DIM_DEVICE_ON].toBool();
 		return true;
 	}
 	return false;
@@ -337,7 +337,6 @@ void DeviceConditionLight::get_condition_value(QString& out)
 }
 
 
-
 DeviceConditionDimming::DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id, PullMode pull_mode)
 	: DeviceCondition(cond_display)
 {
@@ -358,15 +357,8 @@ DeviceConditionDimming::DeviceConditionDimming(DeviceConditionDisplayInterface* 
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
 
-	// TODO: to PULL or not to PULL? That is the question...
-	dev = bt_global::add_device_to_cache(new DimmerDevice(where, pull_mode, openserver_id));
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+	setDevice(bt_global::add_device_to_cache(new DimmerDevice(where, pull_mode, openserver_id)));
 	Draw();
-}
-
-void DeviceConditionDimming::inizializza()
-{
-	dev->requestStatus();
 }
 
 QString DeviceConditionDimming::get_current_value()
@@ -507,13 +499,13 @@ void DeviceConditionDimming::get_condition_value(QString& out)
 		out = QString("%1-%2").arg(get_condition_value_min()).arg(get_condition_value_max());
 }
 
-
-void DeviceConditionDimming::valueReceived(const DeviceValues &values_list)
+bool DeviceConditionDimming::parseValues(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	int trig_min = get_condition_value_min();
 	int trig_max = get_condition_value_max();
 
+	bool managed = false;
 	while (it != values_list.constEnd())
 	{
 		int level = 0;
@@ -525,18 +517,11 @@ void DeviceConditionDimming::valueReceived(const DeviceValues &values_list)
 			continue;
 		}
 
-		if (level >= trig_min && level <= trig_max)
-		{
-			if (!satisfied)
-			{
-				satisfied = true;
-				emit condSatisfied();
-			}
-		}
-		else
-			satisfied = false;
+		managed = true;
+		satisfied = (level >= trig_min && level <= trig_max);
 		++it;
 	}
+	return managed;
 }
 
 
@@ -558,15 +543,8 @@ DeviceConditionDimming100::DeviceConditionDimming100(DeviceConditionDisplayInter
 	}
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
-	dev = bt_global::add_device_to_cache(new Dimmer100Device(where, pull_mode, openserver_id));
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+	setDevice(bt_global::add_device_to_cache(new Dimmer100Device(where, pull_mode, openserver_id)));
 	Draw();
-}
-
-
-void DeviceConditionDimming100::inizializza()
-{
-	dev->requestStatus();
 }
 
 QString DeviceConditionDimming100::get_current_value()
@@ -715,12 +693,13 @@ void DeviceConditionDimming100::get_condition_value(QString& out)
 		out = QString("%1-%2").arg(get_condition_value_min()).arg(get_condition_value_max());
 }
 
-void DeviceConditionDimming100::valueReceived(const DeviceValues &values_list)
+bool DeviceConditionDimming100::parseValues(const DeviceValues &values_list)
 {
 	DeviceValues::const_iterator it = values_list.constBegin();
 	int trig_min = get_condition_value_min();
 	int trig_max = get_condition_value_max();
 
+	bool managed;
 	while (it != values_list.constEnd())
 	{
 		int level;
@@ -734,18 +713,11 @@ void DeviceConditionDimming100::valueReceived(const DeviceValues &values_list)
 			continue;
 		}
 
-		if (level >= trig_min && level <= trig_max)
-		{
-			if (!satisfied)
-			{
-				satisfied = true;
-				emit condSatisfied();
-			}
-		}
-		else
-			satisfied = false;
+		managed = true;
+		satisfied = (level >= trig_min && level <= trig_max);
 		++it;
 	}
+	return managed;
 }
 
 
@@ -768,14 +740,8 @@ DeviceConditionVolume::DeviceConditionVolume(DeviceConditionDisplayInterface* co
 
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
-	dev = AmplifierDevice::createDevice(where);
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+	setDevice(AmplifierDevice::createDevice(where));
 	Draw();
-}
-
-
-void DeviceConditionVolume::inizializza()
-{
 }
 
 void DeviceConditionVolume::set_condition_value_min(int s)
@@ -919,48 +885,34 @@ void DeviceConditionVolume::Draw()
 	updateText(get_current_value_min(), get_current_value_max());
 }
 
-void DeviceConditionVolume::valueReceived(const DeviceValues &values_list)
+bool DeviceConditionVolume::parseValues(const DeviceValues &values_list)
 {
 	int trig_v_min = get_condition_value_min();
 	int trig_v_max = get_condition_value_max();
 
 	DeviceValues::const_iterator it = values_list.constBegin();
 
+	bool managed = false;
 	while (it != values_list.constEnd())
 	{
 		if (it.key() == AmplifierDevice::DIM_STATUS)
 		{
+			managed = true;
 			if ((it.value().toInt() == 1 && trig_v_min == get_min() && trig_v_max == get_max()) ||
 				(it.value().toInt() == 0 && trig_v_min == -1))
-			{
-				if (!satisfied)
-				{
-					qDebug("Condition triggered");
-					satisfied = true;
-					emit condSatisfied();
-				}
-			}
+				satisfied = true;
 			else
 				satisfied = false;
 		}
 		else if (it.key() == AmplifierDevice::DIM_VOLUME)
 		{
+			managed = true;
 			int volume = it.value().toInt();
-			if (volume >= trig_v_min && volume <= trig_v_max)
-			{
-				if (!satisfied)
-				{
-					qDebug("Condition triggered");
-					satisfied = true;
-					emit condSatisfied();
-				}
-			}
-			else
-				satisfied = false;
+			satisfied = (volume >= trig_v_min && volume <= trig_v_max);
 		}
 		++it;
 	}
-
+	return managed;
 }
 
 void DeviceConditionVolume::reset()
@@ -1002,9 +954,9 @@ DeviceConditionTemperature::DeviceConditionTemperature(DeviceConditionDisplayInt
 
 	// The condition value and the current value are stored in Celsius or Fahrenheit
 	set_current_value(DeviceCondition::get_condition_value());
-	dev = bt_global::add_device_to_cache(new NonControlledProbeDevice(where,
-		external ? NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL, openserver_id));
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+	device *d = new NonControlledProbeDevice(where, external ? NonControlledProbeDevice::EXTERNAL :
+		NonControlledProbeDevice::INTERNAL, openserver_id);
+	setDevice(bt_global::add_device_to_cache(d));
 	Draw();
 }
 
@@ -1049,15 +1001,10 @@ void DeviceConditionTemperature::get_condition_value(QString& out)
 	out = QString("%1").arg(temp, 4, 10, QChar('0'));
 }
 
-void DeviceConditionTemperature::inizializza()
-{
-	dev->requestStatus();
-}
-
-void DeviceConditionTemperature::valueReceived(const DeviceValues &values_list)
+bool DeviceConditionTemperature::parseValues(const DeviceValues &values_list)
 {
 	if (!values_list.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
-		return;
+		return false;
 
 	// get_condition_value() returns an int, which is Celsius or Fahrenheit
 	int trig_v = DeviceCondition::get_condition_value();
@@ -1079,20 +1026,8 @@ void DeviceConditionTemperature::valueReceived(const DeviceValues &values_list)
 		measured_temp = bt2Celsius(temp);
 	}
 
-	if (measured_temp >= (trig_v - 10) && measured_temp <= (trig_v + 10))
-	{
-		qDebug("Condition triggered");
-		if (!satisfied)
-		{
-			satisfied = true;
-			emit condSatisfied();
-		}
-	}
-	else
-	{
-		qDebug("Condition not triggered");
-		satisfied = false;
-	}
+	satisfied = (measured_temp >= (trig_v - 10) && measured_temp <= (trig_v + 10));
+	return true;
 }
 
 
@@ -1101,30 +1036,8 @@ DeviceConditionAux::DeviceConditionAux(DeviceConditionDisplayInterface* cond_dis
 {
 	set_condition_value(trigger);
 	set_current_value(DeviceCondition::get_condition_value());
-	dev = bt_global::add_device_to_cache(new AuxDevice(where));
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+	setDevice(bt_global::add_device_to_cache(new AuxDevice(where)));
 	Draw();
-	initialized = false;
-}
-
-void DeviceConditionAux::valueReceived(const DeviceValues &values_list)
-{
-	if (!initialized)
-	{
-		if (parseValues(values_list))
-			initialized = true;
-	}
-	else
-	{
-		if (!satisfied)
-		{
-			parseValues(values_list);
-			if (satisfied)
-				emit condSatisfied();
-		}
-		else
-			parseValues(values_list);
-	}
 }
 
 bool DeviceConditionAux::parseValues(const DeviceValues &values_list)
@@ -1138,11 +1051,6 @@ bool DeviceConditionAux::parseValues(const DeviceValues &values_list)
 		return true;
 	}
 	return false;
-}
-
-void DeviceConditionAux::inizializza()
-{
-	dev->init();
 }
 
 void DeviceConditionAux::Draw()
