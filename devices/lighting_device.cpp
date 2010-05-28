@@ -349,8 +349,6 @@ bool DimmerDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 Dimmer100Device::Dimmer100Device(QString where, PullMode pull, int openserver_id, int pull_delay, PullStateManager::FrameChecker checker) :
 	DimmerDevice(where, pull, openserver_id, pull_delay, checker)
 {
-	DimmerDevice::init();
-	requestDimmer100Status();
 }
 
 void Dimmer100Device::init()
