@@ -39,6 +39,8 @@
 #include <QPaintEvent>
 #include <qmath.h>
 #include <QDir>
+#include <QtConcurrentRun>
+
 
 #include <stdlib.h> // RAND_MAX
 #define BALL_NUM 5
@@ -69,6 +71,11 @@ namespace
 					 qRound(center.y() - radius - compensation),
 					 qRound((radius + compensation) * 2),
 					 qRound((radius + compensation) * 2));
+	}
+
+	QImage loadImageScaled(const QString &image, const QSize &size)
+	{
+		return QImage(image).scaled(size, Qt::KeepAspectRatio);
 	}
 }
 
@@ -376,6 +383,10 @@ void ScreenSaverSlideshow::stop()
 		delete iter;
 		iter = 0;
 	}
+
+	if (async_load)
+		async_load->deleteLater();
+
 	current_image.fill(Qt::black);
 	next_image.fill(Qt::black);
 }
@@ -418,11 +429,14 @@ void ScreenSaverSlideshow::refresh()
 			last_image_file = img;
 			current_image = next_image;
 			if (QFile::exists(img))
-				next_image.load(img);
-			if (!next_image.isNull())
 			{
-				next_image = next_image.scaled(size(), Qt::KeepAspectRatio);
-				blending_timeline.start();
+				if (async_load)
+					async_load->deleteLater();
+
+				async_load = new QFutureWatcher<QImage>();
+				connect(async_load, SIGNAL(finished()), SLOT(imageReady()));
+
+				async_load->setFuture(QtConcurrent::run(&loadImageScaled, img, size()));
 			}
 		}
 	}
@@ -433,6 +447,15 @@ void ScreenSaverSlideshow::refresh()
 	}
 }
 
+void ScreenSaverSlideshow::imageReady()
+{
+	next_image = QPixmap::fromImage(async_load->result());
+	async_load->deleteLater();
+
+	if (!next_image.isNull())
+		blending_timeline.start();
+}
+
 void ScreenSaverSlideshow::updateOpacity(qreal new_value)
 {
 	opacity = new_value;
@@ -441,6 +464,8 @@ void ScreenSaverSlideshow::updateOpacity(qreal new_value)
 
 ScreenSaverSlideshow::~ScreenSaverSlideshow()
 {
+	if (async_load)
+		async_load->deleteLater();
 }
 
 
