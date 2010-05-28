@@ -68,7 +68,7 @@ private:
 	// if set, use a fixed 50Hz step for the frequency up/down, do automatic tuning otherwise
 	bool manual;
 
-	QTimer memory_timer;
+	QTimer memory_timer, request_frequency;
 	int memory_number;
 	BtButton *minus_button, *plus_button, *auto_button, *manual_button;
 	QButtonGroup button_group;
@@ -81,6 +81,7 @@ private slots:
 
 	void frequencyUp();
 	void frequencyDown();
+	void requestFrequency();
 	void changeStation(int station_num);
 	void memoryButtonPressed(int but_num);
 	void memoryButtonReleased(int but_num);
