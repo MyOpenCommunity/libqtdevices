@@ -211,7 +211,7 @@ ScenEvoDeviceCondition::~ScenEvoDeviceCondition()
 
 void ScenEvoDeviceCondition::Apply()
 {
-	device_cond->OK();
+	device_cond->save();
 }
 
 void ScenEvoDeviceCondition::save()
@@ -225,19 +225,12 @@ void ScenEvoDeviceCondition::save()
 	setCfgValue("scen/device/trigger", s, item_id);
 #endif
 	device_cond->reset();
-	inizializza();
 }
 
 void ScenEvoDeviceCondition::reset()
 {
 	qDebug("ScenEvoDeviceCondition::reset()");
 	device_cond->reset();
-}
-
-void ScenEvoDeviceCondition::inizializza()
-{
-	if (device_cond)
-		device_cond->inizializza();
 }
 
 bool ScenEvoDeviceCondition::isTrue()

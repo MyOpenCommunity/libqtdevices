@@ -226,9 +226,26 @@ void DeviceCondition::Down()
 	Draw();
 }
 
-void DeviceCondition::OK()
+void DeviceCondition::save()
+{
+	onConditionSaved();
+	dev->init();
+}
+
+void DeviceCondition::onConditionSaved()
 {
 	set_condition_value(get_current_value());
+}
+
+void DeviceCondition::reset()
+{
+	onConditionReset();
+	Draw();
+}
+
+void DeviceCondition::onConditionReset()
+{
+	set_current_value(get_condition_value());
 }
 
 int DeviceCondition::get_current_value()
@@ -252,12 +269,6 @@ void DeviceCondition::setDevice(device *d)
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
-void DeviceCondition::inizializza()
-{
-	Q_ASSERT_X(dev, "DeviceCondition::inizializza", "device not set!");
-	dev->init();
-}
-
 void DeviceCondition::valueReceived(const DeviceValues &values_list)
 {
 	if (!initialized)
@@ -276,12 +287,6 @@ void DeviceCondition::valueReceived(const DeviceValues &values_list)
 		else
 			parseValues(values_list);
 	}
-}
-
-void DeviceCondition::reset()
-{
-	set_current_value(get_condition_value());
-	Draw();
 }
 
 bool DeviceCondition::isTrue()
@@ -432,17 +437,16 @@ void DeviceConditionDimming::Draw()
 	updateText(get_current_value_min()*10, get_current_value_max()*10);
 }
 
-void DeviceConditionDimming::OK()
+void DeviceConditionDimming::onConditionSaved()
 {
 	set_condition_value_min(get_current_value_min());
 	set_condition_value_max(get_current_value_max());
 }
 
-void DeviceConditionDimming::reset()
+void DeviceConditionDimming::onConditionReset()
 {
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
-	Draw();
 }
 
 void DeviceConditionDimming::set_condition_value_min(int s)
@@ -626,17 +630,16 @@ void DeviceConditionDimming100::Draw()
 	updateText(get_current_value_min(), get_current_value_max());
 }
 
-void DeviceConditionDimming100::OK()
+void DeviceConditionDimming100::onConditionSaved()
 {
 	set_condition_value_min(get_current_value_min());
 	set_condition_value_max(get_current_value_max());
 }
 
-void DeviceConditionDimming100::reset()
+void DeviceConditionDimming100::onConditionReset()
 {
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
-	Draw();
 }
 
 
@@ -874,10 +877,16 @@ void DeviceConditionVolume::Down()
 	Draw();
 }
 
-void DeviceConditionVolume::OK()
+void DeviceConditionVolume::onConditionSaved()
 {
 	set_condition_value_min(get_current_value_min());
 	set_condition_value_max(get_current_value_max());
+}
+
+void DeviceConditionVolume::onConditionReset()
+{
+	set_current_value_min(get_condition_value_min());
+	set_current_value_max(get_condition_value_max());
 }
 
 void DeviceConditionVolume::Draw()
@@ -915,13 +924,6 @@ bool DeviceConditionVolume::parseValues(const DeviceValues &values_list)
 	return managed;
 }
 
-void DeviceConditionVolume::reset()
-{
-	qDebug("device_condition_volume::reset()");
-	set_current_value_min(get_condition_value_min());
-	set_current_value_max(get_condition_value_max());
-	Draw();
-}
 
 
 DeviceConditionTemperature::DeviceConditionTemperature(DeviceConditionDisplayInterface *cond_display, QString trigger,

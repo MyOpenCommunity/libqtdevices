@@ -158,17 +158,16 @@ public:
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 
+	// Saves the current value as the condition
+	void save();
+	// Resets the current value to the condition
+	void reset();
+
 public slots:
 	//! Invoked when UP button is pressed
 	virtual void Up();
 	//! Invoked when DOWN button is pressed
 	virtual void Down();
-	//! Invoked when OK button is pressed
-	virtual void OK();
-	//! Resets condition
-	virtual void reset();
-	//! Inits condition
-	virtual void inizializza();
 
 signals:
 	//! Emitted when the condition on device is satisfied
@@ -207,6 +206,10 @@ protected:
 
 	//! True when condition is satisfied
 	bool satisfied;
+
+	// Invoked when called the public methods save/reset
+	virtual void onConditionSaved();
+	virtual void onConditionReset();
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);
@@ -252,12 +255,13 @@ public:
 	virtual void get_condition_value(QString&);
 
 public slots:
-	virtual void OK();
 	virtual void Up();
 	virtual void Down();
-	virtual void reset();
 
 protected:
+	virtual void onConditionSaved();
+	virtual void onConditionReset();
+
 	virtual int get_min();
 	virtual int get_max();
 	virtual int get_step();
@@ -295,10 +299,8 @@ public:
 	virtual void get_condition_value(QString&);
 
 public slots:
-	virtual void OK();
 	virtual void Up();
 	virtual void Down();
-	virtual void reset();
 
 protected:
 	//! Returns min value
@@ -322,6 +324,8 @@ protected:
 	virtual void Draw();
 
 	virtual bool parseValues(const DeviceValues &values_list);
+	virtual void onConditionSaved();
+	virtual void onConditionReset();
 
 private:
 	int min_val;
@@ -339,10 +343,8 @@ public:
 	void get_condition_value(QString& out);
 
 public slots:
-	virtual void OK();
 	virtual void Up();
 	virtual void Down();
-	virtual void reset();
 
 protected:
 	int get_min();
@@ -359,6 +361,8 @@ protected:
 	virtual void Draw();
 
 	virtual bool parseValues(const DeviceValues &values_list);
+	virtual void onConditionSaved();
+	virtual void onConditionReset();
 
 private:
 	int min_val;

@@ -278,8 +278,6 @@ void ScenarioEvolved::trig(bool forced)
 void ScenarioEvolved::inizializza(bool forza)
 {
 	Q_UNUSED(forza)
-	if (device_cond)
-		device_cond->inizializza();
 }
 
 

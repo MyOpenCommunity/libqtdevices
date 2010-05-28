@@ -98,7 +98,6 @@ public:
 	ScenEvoDeviceCondition(int item_id, const QDomNode &config_node);
 	~ScenEvoDeviceCondition();
 
-	virtual void inizializza();
 	//! Returns true when the condition is satisfied
 	virtual bool isTrue();
 
