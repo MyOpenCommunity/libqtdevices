@@ -484,8 +484,9 @@ void impAnti::Disinserisci()
 	if (tasti)
 		delete tasti;
 	tasti = new Keypad();
-	connect(tasti, SIGNAL(Closed()), SLOT(DeInsert()));
 	connect(tasti, SIGNAL(Closed()), SIGNAL(pageClosed()));
+	connect(tasti, SIGNAL(accept()), SLOT(DeInsert()));
+	connect(tasti, SIGNAL(accept()), SIGNAL(pageClosed()));
 	tasti->setMode(Keypad::HIDDEN);
 	tasti->showPage();
 }
