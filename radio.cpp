@@ -109,6 +109,7 @@ void RadioInfo::paintEvent(QPaintEvent *)
 }
 
 
+#define REQUEST_FREQUENCY_TIME 1000
 #define MEMORY_PRESS_TIME 3000
 
 RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &amb)
@@ -124,6 +125,10 @@ RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &amb)
 	memory_timer.setInterval(MEMORY_PRESS_TIME);
 	memory_timer.setSingleShot(true);
 	connect(&memory_timer, SIGNAL(timeout()), SLOT(storeMemoryStation()));
+
+	request_frequency.setInterval(REQUEST_FREQUENCY_TIME);
+	request_frequency.setSingleShot(true);
+	connect(&request_frequency, SIGNAL(timeout()), SLOT(requestFrequency()));
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
@@ -266,10 +271,18 @@ void RadioPage::previousStation()
 	dev->prevTrack();
 }
 
+void RadioPage::requestFrequency()
+{
+	dev->requestFrequency();
+}
+
 void RadioPage::frequencyUp()
 {
 	if (manual)
+	{
 		dev->frequenceUp("1");
+		request_frequency.start();
+	}
 	else
 		dev->frequenceUp();
 }
@@ -277,7 +290,10 @@ void RadioPage::frequencyUp()
 void RadioPage::frequencyDown()
 {
 	if (manual)
+	{
 		dev->frequenceDown("1");
+		request_frequency.start();
+	}
 	else
 		dev->frequenceDown();
 }

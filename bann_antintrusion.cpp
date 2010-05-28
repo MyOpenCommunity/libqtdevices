@@ -472,8 +472,9 @@ void impAnti::Inserisci()
 		delete tasti;
 	inserting = true;
 	tasti = new KeypadWithState(s);
-	connect(tasti, SIGNAL(Closed()), SLOT(Insert1()));
 	connect(tasti, SIGNAL(Closed()), SIGNAL(pageClosed()));
+	connect(tasti, SIGNAL(accept()), SLOT(Insert1()));
+	connect(tasti, SIGNAL(accept()), SIGNAL(pageClosed()));
 	tasti->setMode(Keypad::HIDDEN);
 	tasti->showPage();
 }
