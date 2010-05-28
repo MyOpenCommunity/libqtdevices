@@ -92,23 +92,5 @@ public:
 	zonanti_device(QString, bool p=false, int g=-1);
 };
 
-//! Aux device
-class aux_device : public DeviceOld
-{
-Q_OBJECT
-public:
-	aux_device(QString w, bool p=false, int g=-1);
-	virtual void init();
-
-	virtual void manageFrame(OpenMsg &msg);
-
-private:
-	stat_var status;
-
-signals:
-	// TODO: rimpiazzare questo segnale con lo status_changed(QHash<>)..
-	void status_changed(stat_var);
-};
-
 
 #endif // DEVICEOLD_H

@@ -23,7 +23,7 @@
 #include "probe_device.h" // NonControlledProbeDevice
 #include "devices_cache.h" // add_device_to_cache
 #include "lighting_device.h"
-#include "media_device.h" // AmplifierDevice
+#include "media_device.h" // AmplifierDevice, AuxDevice
 #include "scaleconversion.h" // bt2Celsius, bt2Fahrenheit, celsius2Bt, fahrenheit2Bt
 #include "fontmanager.h" // bt_global::font
 #include "icondispatcher.h" // bt_global::icons_cache
@@ -1097,13 +1097,47 @@ void DeviceConditionTemperature::valueReceived(const DeviceValues &values_list)
 
 
 DeviceConditionAux::DeviceConditionAux(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where) :
-	DeviceCondition(cond_display), device_initialized(false), device_value(-1)
+	DeviceCondition(cond_display)
 {
 	set_condition_value(trigger);
 	set_current_value(DeviceCondition::get_condition_value());
-	dev = bt_global::add_device_to_cache(new aux_device(where));
-	connect(dev, SIGNAL(status_changed(stat_var)), SLOT(status_changed(stat_var)));
+	dev = bt_global::add_device_to_cache(new AuxDevice(where));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	Draw();
+	initialized = false;
+}
+
+void DeviceConditionAux::valueReceived(const DeviceValues &values_list)
+{
+	if (!initialized)
+	{
+		if (parseValues(values_list))
+			initialized = true;
+	}
+	else
+	{
+		if (!satisfied)
+		{
+			parseValues(values_list);
+			if (satisfied)
+				emit condSatisfied();
+		}
+		else
+			parseValues(values_list);
+	}
+}
+
+bool DeviceConditionAux::parseValues(const DeviceValues &values_list)
+{
+	if (values_list.contains(AuxDevice::DIM_STATUS))
+	{
+		if (DeviceCondition::get_condition_value() == values_list[AuxDevice::DIM_STATUS].toBool())
+			satisfied = true;
+		else
+			satisfied = false;
+		return true;
+	}
+	return false;
 }
 
 void DeviceConditionAux::inizializza()
@@ -1116,33 +1150,6 @@ void DeviceConditionAux::Draw()
 	updateText(get_current_value(), get_current_value());
 }
 
-void DeviceConditionAux::check_condition(bool emit_signal)
-{
-	int trig_v = DeviceCondition::get_condition_value();
-	if (trig_v == device_value)
-	{
-		qDebug("aux condition (%d) satisfied", trig_v);
-		if (!satisfied)
-		{
-			satisfied = true;
-			if (emit_signal)
-				emit condSatisfied();
-		}
-	}
-	else
-	{
-		qDebug("aux condition (%d) NOT satisfied", trig_v);
-		satisfied = false;
-	}
-}
-
-void DeviceConditionAux::status_changed(stat_var status)
-{
-	device_value = status.get_val();
-	// We emit signal condSatisfied only if the device is initialized.
-	check_condition(device_initialized);
-	device_initialized = true;
-}
 
 int DeviceConditionAux::get_max()
 {
@@ -1159,12 +1166,6 @@ void DeviceConditionAux::set_condition_value(QString s)
 	else
 		qDebug() << "Unknown condition value " << s << " for device_condition_aux";
 	DeviceCondition::set_condition_value(v);
-	check_condition(false);
 }
 
-void DeviceConditionAux::OK()
-{
-	DeviceCondition::OK();
-	check_condition(false);
-}
 

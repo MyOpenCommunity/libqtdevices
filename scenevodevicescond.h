@@ -27,16 +27,14 @@
 
 #include "main.h" // TemperatureScale
 #include "pulldevice.h" // DeviceValues, PullMode
-#include "deviceold.h" // aux_device
 
 
 class NonControlledProbeDevice;
-class aux_device;
+class AuxDevice;
 class LightingDevice;
 class DimmerDevice;
 class Dimmer100Device;
 class AmplifierDevice;
-class stat_var;
 class QString;
 class QLabel;
 class BtButton;
@@ -237,6 +235,7 @@ protected:
 	//! Translates trigger condition from open encoding to int and sets val
 	virtual void set_condition_value(QString);
 
+
 private slots:
 	void valueReceived(const DeviceValues &values_list);
 	bool parseValues(const DeviceValues &values_list);
@@ -419,25 +418,18 @@ public:
 	DeviceConditionAux(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where);
 	virtual void inizializza();
 
-public slots:
-	void OK();
-
 protected:
 	virtual void Draw();
 	virtual int get_max();
 	virtual void set_condition_value(QString);
 
-
 private slots:
-	// TODO: use a more generic approach!
-	void status_changed(stat_var status);
+	void valueReceived(const DeviceValues &values_list);
+	bool parseValues(const DeviceValues &values_list);
 
 private:
-	/// check if the condition is satisfied
-	void check_condition(bool emit_signal);
-	bool device_initialized;
-	int device_value;
-	aux_device *dev;
+	AuxDevice *dev;
+	bool initialized;
 };
 
 

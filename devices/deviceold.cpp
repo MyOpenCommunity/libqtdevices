@@ -140,35 +140,3 @@ zonanti_device::zonanti_device(QString w, bool p, int g) : DeviceOld(QString("5"
 	setup_frame_interpreter(new frame_interpreter_zonanti_device(w, p, g));
 }
 
-aux_device::aux_device(QString w, bool p, int g) : DeviceOld(QString("9"), w)
-{
-	// We set an initial value out of admitted range to force the emission of
-	// status_changed signal.
-	status = stat_var(stat_var::NONE, -1, 0, 1, 1);
-}
-
-void aux_device::init()
-{
-	OpenMsg msg = OpenMsg::createReadDim(who.toStdString(), where.toStdString());
-	qDebug("aux_device::init message: %s", msg.frame_open);
-	sendInit(msg.frame_open);
-}
-
-void aux_device::manageFrame(OpenMsg &msg)
-{
-	if (where.toInt() != msg.where())
-		return;
-
-	qDebug("aux_device::manageFrame -> frame read:%s", msg.frame_open);
-
-	if (msg.IsNormalFrame())
-	{
-		int cosa = atoi(msg.Extract_cosa());
-		if (status.get_val() != cosa)
-		{
-			status.set_val(cosa);
-			emit status_changed(status);
-		}
-	}
-}
-
