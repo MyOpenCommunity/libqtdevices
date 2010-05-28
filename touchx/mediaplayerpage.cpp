@@ -176,6 +176,6 @@ void MediaPlayerPage::playbackStarted()
 void MediaPlayerPage::playbackStopped()
 {
 	// leave the play state on the stack when the player is paused beacuse of a higher priority state
-	if (!bt_global::audio_states->isSource() && !resume_on_state_change)
+	if (!bt_global::audio_states->isSource() && !resume_on_state_change && !player->isPaused())
 		bt_global::audio_states->removeState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
 }
