@@ -138,6 +138,7 @@ public slots:
  */
 class DeviceCondition : public QObject
 {
+friend class TestScenEvoDevicesCond;
 Q_OBJECT
 public:
 	enum Type
@@ -248,6 +249,7 @@ protected:
 
 class DeviceConditionDimming : public DeviceCondition
 {
+friend class TestScenEvoDevicesCond;
 Q_OBJECT
 public:
 	DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
@@ -292,6 +294,7 @@ private:
 
 class DeviceConditionDimming100 : public DeviceCondition
 {
+friend class TestScenEvoDevicesCond;
 Q_OBJECT
 public:
 	DeviceConditionDimming100(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);

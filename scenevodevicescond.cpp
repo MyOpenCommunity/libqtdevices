@@ -229,7 +229,27 @@ void DeviceCondition::Down()
 void DeviceCondition::save()
 {
 	onConditionSaved();
+	// Request again the status of the device
 	dev->init();
+	// If the condition was already satisfied (before the condition change), we
+	// want to emit the condSatisfied if the condition is satisfied after the
+	// condition change.
+	// Otherwise we reset the "initialized" status of the device in order to
+	// avoid a condSatisfied emitted without a real change of the device status.
+	//
+	// Example using a device with an on/off status:
+	// Condition -> on  device status -> off
+	// Condition -> off device status -> off
+	// we won't emit the condSatisfied
+	//
+	// Condition -> on device status -> on
+	// Condition -> off device status -> off
+	// we want to emit the condSatisfied
+
+	if (satisfied)
+		satisfied = false;
+	else
+		initialized = false;
 }
 
 void DeviceCondition::onConditionSaved()
@@ -273,6 +293,7 @@ void DeviceCondition::valueReceived(const DeviceValues &values_list)
 {
 	if (!initialized)
 	{
+		// We won't emit the condSatisfied during the initialization
 		if (parseValues(values_list))
 			initialized = true;
 	}
@@ -281,6 +302,9 @@ void DeviceCondition::valueReceived(const DeviceValues &values_list)
 		if (!satisfied)
 		{
 			parseValues(values_list);
+
+			// We emit the condSatisfied only if we pass from condition-not-satisfied
+			// to condition-satisfied.
 			if (satisfied)
 				emit condSatisfied();
 		}
@@ -641,7 +665,6 @@ void DeviceConditionDimming100::onConditionReset()
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
 }
-
 
 void DeviceConditionDimming100::set_condition_value_min(int s)
 {

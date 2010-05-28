@@ -44,6 +44,8 @@ public:
 private:
 	OpenServerMock *server;
 	Client *client_monitor;
+	Client *client_command;
+	Client *client_request;
 	QString dev_where;
 
 	DeviceConditionDisplayMock *mock_display;
@@ -55,15 +57,21 @@ private slots:
 	// tests below
 	void testLightOn();
 	void testLightOff();
+	void testLightConditionChange1();
+	void testLightConditionChange2();
 	void testDimmingOff();
 	void testDimmingRange1();
 	void testDimmingRange2();
 	void testDimmingRange3();
+	void testDimmingConditionChange1();
+	void testDimmingConditionChange2();
 	void testDimming100Off();
 	void testDimming100Range1();
 	void testDimming100Range2();
 	void testDimming100Range3();
 	void testDimming100Range4();
+	void testDimming100ConditionChange1();
+	void testDimming100ConditionChange2();
 	void testInternalTemperature1();
 	void testInternalTemperature2();
 	void testInternalTemperature3();

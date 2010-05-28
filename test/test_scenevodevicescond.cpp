@@ -56,8 +56,8 @@ TestScenEvoDevicesCond::TestScenEvoDevicesCond()
 	FrameReceiver::setClientsMonitor(monitors);
 
 	QHash<int, QPair<Client*, Client*> > clients;
-	clients[0].first = server->connectCommand();
-	clients[0].second = server->connectRequest();
+	client_command = clients[0].first = server->connectCommand();
+	client_request = clients[0].second = server->connectRequest();
 	device::setClients(clients);
 
 	mock_display = new DeviceConditionDisplayMock;
@@ -109,6 +109,36 @@ void TestScenEvoDevicesCond::testLightOff()
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
 }
 
+void TestScenEvoDevicesCond::testLightConditionChange1()
+{
+	DeviceConditionLight cond(mock_display, "0", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
+	cond.set_current_value(1);
+	cond.save();
+
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), QString("*#1*%1##").arg(dev_where));
+	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), true);
+}
+
+void TestScenEvoDevicesCond::testLightConditionChange2()
+{
+	DeviceConditionLight cond(mock_display, "0", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
+	cond.set_current_value(1);
+	cond.save();
+
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), QString("*#1*%1##").arg(dev_where));
+	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), true);
+}
+
 void TestScenEvoDevicesCond::testDimmingOff()
 {
 	DeviceConditionDimming cond(mock_display, "0", dev_where);
@@ -154,6 +184,39 @@ void TestScenEvoDevicesCond::testDimmingRange3()
 	checkCondition(spy, QString("*1*8*%1##").arg(dev_where), true);
 	checkCondition(spy, QString("*1*9*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*5*%1##").arg(dev_where), false);
+}
+
+void TestScenEvoDevicesCond::testDimmingConditionChange1()
+{
+	DeviceConditionDimming cond(mock_display, "5-7", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*7*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
+	cond.set_current_value_min(8);
+	cond.set_current_value_max(10);
+	cond.save();
+
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), QString("*#1*%1##").arg(dev_where));
+	checkCondition(spy, QString("*1*8*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*9*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*5*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*8*%1##").arg(dev_where), true);
+}
+
+void TestScenEvoDevicesCond::testDimmingConditionChange2()
+{
+	DeviceConditionDimming cond(mock_display, "0", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
+	cond.set_current_value_min(5);
+	cond.set_current_value_max(7);
+	cond.save();
+
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), QString("*#1*%1##").arg(dev_where));
+	checkCondition(spy, QString("*1*5*%1##").arg(dev_where), true);
 }
 
 void TestScenEvoDevicesCond::testDimming100Off()
@@ -231,6 +294,43 @@ void TestScenEvoDevicesCond::testDimming100Range4()
 	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), false);
 	checkCondition(spy, QString("*1*9*%1##").arg(dev_where), true);
 	checkCondition(spy, QString("*1*8*%1##").arg(dev_where), false);
+}
+
+void TestScenEvoDevicesCond::testDimming100ConditionChange1()
+{
+	DeviceConditionDimming100 cond(mock_display, "71-100", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*#1*%1*1*170*0##").arg(dev_where), false);
+	cond.set_current_value_min(41);
+	cond.set_current_value_max(70);
+	cond.save();
+
+	client_request->flush();
+	QStringList frames = server->frameRequest().split("##", QString::SkipEmptyParts);
+	QVERIFY(frames.contains(QString("*#1*%1").arg(dev_where)));
+	QVERIFY(frames.contains(QString("*#1*%1*1").arg(dev_where)));
+
+	checkCondition(spy, QString("*#1*%1*1*141*0##").arg(dev_where), false);
+	checkCondition(spy, QString("*#1*%1*1*140*0##").arg(dev_where), false);
+	checkCondition(spy, QString("*#1*%1*1*141*0##").arg(dev_where), true);
+}
+
+void TestScenEvoDevicesCond::testDimming100ConditionChange2()
+{
+	DeviceConditionDimming100 cond(mock_display, "21-40", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*#1*%1*1*170*0##").arg(dev_where), false);
+	checkCondition(spy, QString("*#1*%1*1*121*0##").arg(dev_where), true);
+	cond.set_current_value_min(71);
+	cond.set_current_value_max(100);
+	cond.save();
+
+	client_request->flush();
+	QStringList frames = server->frameRequest().split("##", QString::SkipEmptyParts);
+	QVERIFY(frames.contains(QString("*#1*%1").arg(dev_where)));
+	QVERIFY(frames.contains(QString("*#1*%1*1").arg(dev_where)));
+
+	checkCondition(spy, QString("*#1*%1*1*200*0##").arg(dev_where), true);
 }
 
 void TestScenEvoDevicesCond::testInternalTemperature1()
@@ -426,4 +526,5 @@ void TestScenEvoDevicesCond::testVolumeRange4()
 	checkCondition(spy, QString("*#22*3#%1#%2*1*23##").arg(dev_where.at(0)).arg(dev_where.at(1)), true);
 	checkCondition(spy, QString("*#22*3#%1#%2*1*25##").arg(dev_where.at(0)).arg(dev_where.at(1)), false);
 }
+
 
