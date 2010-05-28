@@ -34,6 +34,8 @@
 #include <QTime>
 #include <QVector>
 #include <QTimeLine>
+#include <QPointer>
+#include <QFutureWatcher>
 
 class Page;
 class QLabel;
@@ -187,12 +189,16 @@ protected:
 protected slots:
 	virtual void refresh();
 
+private slots:
+	void imageReady();
+
 private:
 	// iterator for images
 	ImageIterator *iter;
 	// shows the image on the window
 	QPixmap current_image, next_image;
 	QTimeLine blending_timeline;
+	QPointer<QFutureWatcher<QImage> > async_load;
 	qreal opacity;
 
 private slots:
