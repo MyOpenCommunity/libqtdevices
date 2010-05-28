@@ -70,6 +70,7 @@ public:
 	bool isConnected();
 
 #if DEBUG
+	int bytesAvailable() { return socket->bytesAvailable(); }
 	void flush() { socket->flush(); }
 	void forwardFrame(Client *c);
 #endif
