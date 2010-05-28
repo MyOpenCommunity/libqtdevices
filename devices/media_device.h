@@ -361,4 +361,29 @@ protected:
 };
 
 
+
+/**
+ * The device for the aux
+ */
+class AuxDevice : public device
+{
+friend class TestAuxDevice;
+Q_OBJECT
+public:
+	AuxDevice(QString address, int openserver_id = 0);
+
+	virtual void init();
+
+	enum
+	{
+		DIM_STATUS // the value doesn't matter
+	};
+
+protected:
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+
+private:
+	void requestStatus();
+};
+
 #endif // MEDIA_DEVICE_H

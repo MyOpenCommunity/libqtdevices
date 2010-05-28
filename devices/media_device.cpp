@@ -61,6 +61,9 @@ enum RequestDimension
 	// the dimension in the frame is 1, but we need a separate value for the notification
 	_REQ_AMPLI_ON = 1,
 	_REQ_SET_VOLUME = 1,
+	// Aux
+	CMD_TURN_ON = 1,
+	CMD_TURN_OFF = 0
 };
 
 #define ARRAY_SIZE(x) int(sizeof(x)/sizeof(x[0]))
@@ -1043,5 +1046,39 @@ void PowerAmplifierDevice::loudOn() const
 void PowerAmplifierDevice::loudOff() const
 {
 	sendFrame(createWriteDimensionFrame(who, QString("%1*0").arg(REQ_LOUD), where));
+}
+
+
+AuxDevice::AuxDevice(QString address, int openserver_id) : device("9", address, openserver_id)
+{
+}
+
+void AuxDevice::requestStatus()
+{
+	sendRequest(QString());
+}
+
+void AuxDevice::init()
+{
+	requestStatus();
+}
+
+bool AuxDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
+{
+	if (!isCommandFrame(msg))
+		return false;
+
+	switch (msg.what())
+	{
+	case CMD_TURN_ON:
+		values_list[DIM_STATUS] = true;
+		break;
+	case CMD_TURN_OFF:
+		values_list[DIM_STATUS] = false;
+		break;
+	default:
+		return false;
+	}
+	return true;
 }
 

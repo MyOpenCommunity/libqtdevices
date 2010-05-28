@@ -853,3 +853,28 @@ void TestPowerAmplifierDevice::receiveBalance()
 	t.check(QString("*#22*3#%1#%2*17*115##").arg(where[0]).arg(where[1]), 5);
 }
 
+
+void TestAuxDevice::initTestCase()
+{
+	dev = new AuxDevice("22");
+}
+
+void TestAuxDevice::cleanupTestCase()
+{
+	delete dev;
+}
+
+void TestAuxDevice::sendRequestStatus()
+{
+	dev->requestStatus();
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), QString("*#9*%1##").arg(dev->where));
+}
+
+void TestAuxDevice::receiveStatus()
+{
+	DeviceTester t(dev, AuxDevice::DIM_STATUS);
+	t.check(QString("*9*1*%1##").arg(dev->where), true);
+	t.check(QString("*9*0*%1##").arg(dev->where), false);
+}
+

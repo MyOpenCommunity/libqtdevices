@@ -131,6 +131,9 @@ int main(int argc, char *argv[])
 	TestAlarmSoundDiffDevice test_alarm_sound_diff_device;
 	test_list << &test_alarm_sound_diff_device;
 
+	TestAuxDevice test_aux_device;
+	test_list << &test_aux_device;
+
 	TestMessageDevice test_message_device;
 	test_list << &test_message_device;
 

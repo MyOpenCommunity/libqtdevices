@@ -34,6 +34,7 @@ class PowerAmplifierDevice;
 class VirtualSourceDevice;
 class VirtualAmplifierDevice;
 class AlarmSoundDiffDevice;
+class AuxDevice;
 
 
 class TestAlarmSoundDiffDevice : public TestDevice
@@ -245,5 +246,19 @@ private:
 	QString where;
 };
 
+
+class TestAuxDevice : public TestDevice
+{
+Q_OBJECT
+private slots:
+	void initTestCase();
+	void cleanupTestCase();
+
+	void sendRequestStatus();
+	void receiveStatus();
+
+private:
+	AuxDevice *dev;
+};
 
 #endif // TEST_MEDIA_DEVICE_H
