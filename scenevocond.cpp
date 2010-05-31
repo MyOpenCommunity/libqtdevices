@@ -544,7 +544,6 @@ void device_condition::setup_device(QString s)
 	// Add the device to cache, or replace it with the instance found in cache
 	dev = bt_global::add_device_to_cache(dev);
 	// Get status changed events back
-	//DELETE
 	connect(dev, SIGNAL(status_changed(QList<device_status*>)),
 		this, SLOT(status_changed(QList<device_status*>)));
 	connect(dev, SIGNAL(status_changed(const StatusList &)), SLOT(status_changed(const StatusList &)));
@@ -567,9 +566,8 @@ device_condition_light_status::device_condition_light_status(QWidget *parent, QS
 	frame = l;
 	set_condition_value(*c);
 	set_current_value(device_condition::get_condition_value());
-	//dev = new light(QString(""));
 	// TODO: we just need dummy device here, address will be set later on by setup_device()
-	dev = new LightingDevice("", PULL);
+	dev = new LightingDevice("", PULL_UNKNOWN);
 	Draw();
 }
 
@@ -612,7 +610,6 @@ void device_condition_light_status::status_changed(const StatusList &sl)
 	qDebug() << "device_condition_light_status::status_changed end";
 }
 
-//DELETE
 void device_condition_light_status::status_changed(QList<device_status*> sl)
 {
 	qFatal("Old status changed on device_condition_light_status not implemented!");
@@ -666,9 +663,6 @@ device_condition_dimming::device_condition_dimming(QWidget *parent, QString *c)
 	}
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
-	// A dimmer is actually a light
-	//DELETE
-	//dev = new dimm(QString(""));
 	dev = new DimmerDevice("", PULL_UNKNOWN);
 	Draw();
 }
@@ -921,9 +915,7 @@ device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QStr
 	}
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
-	// A dimmer is actually a light
-	//dev = new dimm100(QString(""));
-	dev = new Dimmer100Device("", PULL);
+	dev = new Dimmer100Device("", PULL_UNKNOWN);
 	Draw();
 }
 
@@ -1151,7 +1143,6 @@ void device_condition_dimming_100::status_changed(const StatusList &sl)
 	}
 }
 
-//DELETE
 void device_condition_dimming_100::status_changed(QList<device_status*> sl)
 {
 	qFatal("Old status changed on device_condition_dimmin_100 not implemented!");
