@@ -80,8 +80,10 @@ VideoPlayerPage::VideoPlayerPage()
 	connect(window, SIGNAL(Closed()), SLOT(stop()));
 
 	// disable/reenable screen saver
-	connect(this, SIGNAL(started()), SLOT(videoPlaybackStarted()));
-	connect(this, SIGNAL(stopped()), SLOT(videoPlaybackStopped()));
+	connect(player, SIGNAL(mplayerStarted()), SLOT(videoPlaybackStarted()));
+	connect(player, SIGNAL(mplayerResumed()), SLOT(videoPlaybackStarted()));
+	connect(player, SIGNAL(mplayerKilled()), SLOT(videoPlaybackStopped()));
+	connect(player, SIGNAL(mplayerAborted()), SLOT(videoPlaybackStopped()));
 
 	connect(&refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
 }
@@ -114,7 +116,6 @@ void VideoPlayerPage::displayMedia(int index)
 	current_time = 0;
 
 	QTimer::singleShot(0, this, SLOT(startMPlayer()));
-	emit started();
 }
 
 void VideoPlayerPage::displayVideos(QList<QString> videos, unsigned element)
@@ -171,7 +172,6 @@ void VideoPlayerPage::displayFullScreen(bool fs)
 		showPage();
 
 	QTimer::singleShot(0, this, SLOT(startMPlayer()));
-	emit started();
 }
 
 QRect VideoPlayerPage::playbackGeometry()
@@ -224,8 +224,10 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
 	connect(buttons, SIGNAL(seekBack()), page, SLOT(seekBack()));
 
 	// update the icon of the play button
-	connect(page, SIGNAL(started()), buttons, SLOT(started()));
-	connect(page, SIGNAL(stopped()), buttons, SLOT(stopped()));
+	connect(player, SIGNAL(mplayerStarted()), buttons, SLOT(started()));
+	connect(player, SIGNAL(mplayerDone()), buttons, SLOT(stopped()));
+	connect(player, SIGNAL(mplayerKilled()), buttons, SLOT(stopped()));
+	connect(player, SIGNAL(mplayerAborted()), buttons, SLOT(stopped()));
 
 	// reapint control buttons after MPlayer starts
 	connect(page, SIGNAL(started()), controls, SLOT(update()));

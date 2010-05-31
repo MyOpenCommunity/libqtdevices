@@ -169,8 +169,9 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 		bt_global::btmain->trayBar()->addButton(tray_icon, TrayBar::AUDIO_PLAYER);
 	}
 
-	connect(this, SIGNAL(started()), tray_icon, SLOT(started()));
-	connect(this, SIGNAL(terminated()), tray_icon, SLOT(stopped()));
+	connect(player, SIGNAL(mplayerStarted()), tray_icon, SLOT(started()));
+	connect(player, SIGNAL(mplayerKilled()), tray_icon, SLOT(stopped()));
+	connect(player, SIGNAL(mplayerAborted()), tray_icon, SLOT(stopped()));
 }
 
 int AudioPlayerPage::sectionId() const
@@ -199,7 +200,6 @@ void AudioPlayerPage::displayMedia(int index)
 {
 	track->setText(tr("Track: %1 / %2").arg(index + 1).arg(total_files));
 	startMPlayer(index, 0);
-	emit started();
 }
 
 void AudioPlayerPage::playAudioFiles(QList<QString> files, unsigned element)
