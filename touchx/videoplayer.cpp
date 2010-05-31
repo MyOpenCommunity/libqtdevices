@@ -230,8 +230,10 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
 	connect(player, SIGNAL(mplayerAborted()), buttons, SLOT(stopped()));
 
 	// reapint control buttons after MPlayer starts
-	connect(page, SIGNAL(started()), controls, SLOT(update()));
-	connect(page, SIGNAL(stopped()), controls, SLOT(update()));
+	connect(player, SIGNAL(mplayerStarted()), SLOT(update()));
+	connect(player, SIGNAL(mplayerResumed()), SLOT(update()));
+	connect(player, SIGNAL(mplayerKilled()), SLOT(update()));
+	connect(player, SIGNAL(mplayerAborted()), SLOT(update()));
 
 	connect(buttons, SIGNAL(noFullScreen()), page, SLOT(displayNoFullScreen()));
 
