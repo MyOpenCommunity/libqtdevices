@@ -403,6 +403,7 @@ bool scenEvo_cond_d::isTrue()
 device_condition::device_condition()
 {
 	satisfied = false;
+	initialized = false;
 }
 
 int device_condition::get_min()
@@ -496,7 +497,15 @@ void device_condition::Down()
 void device_condition::OK()
 {
 	qDebug("device_condition::OK()");
-	set_condition_value(get_current_value());
+	if (get_current_value() != get_condition_value())
+	{
+		set_condition_value(get_current_value());
+
+		if (satisfied)
+			satisfied = false;
+		else
+			initialized = false;
+	}
 }
 
 int device_condition::get_current_value()
@@ -590,19 +599,18 @@ void device_condition_light_status::status_changed(const StatusList &sl)
 		switch (it.key())
 		{
 		case LightingDevice::DIM_DEVICE_ON:
-			qDebug() << "Receive condition DIM_DEVICE_ON, get_cond_value = " <<
-				device_condition::get_condition_value() << ", received value = " << (int)it.value().toBool()
-				<< "satisfied: " << satisfied;
 			if (device_condition::get_condition_value() == static_cast<int>(it.value().toBool()))
 			{
 				if (!satisfied)
 				{
 					satisfied = true;
-					emit condSatisfied();
+					if (initialized)
+						emit condSatisfied();
 				}
 			}
 			else
 				satisfied = false;
+			initialized = true;
 			break;
 		}
 		++it;
@@ -759,8 +767,16 @@ void device_condition_dimming::Draw()
 void device_condition_dimming::OK()
 {
 	qDebug("device_condition_dimming::OK()");
-	set_condition_value_min(get_current_value_min());
-	set_condition_value_max(get_current_value_max());
+	if (get_current_value_min() != get_condition_value_min() ||
+		get_current_value_max() != get_condition_value_max())
+	{
+		set_condition_value_min(get_current_value_min());
+		set_condition_value_max(get_current_value_max());
+		if (satisfied)
+			satisfied = false;
+		else
+			initialized = false;
+	}
 }
 
 void device_condition_dimming::reset()
@@ -859,26 +875,28 @@ void device_condition_dimming::status_changed(const StatusList &sl)
 
 	while (it != sl.constEnd())
 	{
-			int level = 0;
-			if ((it.key() == LightingDevice::DIM_DEVICE_ON) || (it.key() == LightingDevice::DIM_DIMMER_LEVEL))
-					level = it.value().toInt();
-			else
-			{
-					++it;
-					continue;
-			}
-
-			if (level >= trig_min && level <= trig_max)
-			{
-					if (!satisfied)
-					{
-							satisfied = true;
-							emit condSatisfied();
-					}
-			}
-			else
-					satisfied = false;
+		int level = 0;
+		if ((it.key() == LightingDevice::DIM_DEVICE_ON) || (it.key() == LightingDevice::DIM_DIMMER_LEVEL))
+				level = it.value().toInt();
+		else
+		{
 			++it;
+			continue;
+		}
+
+		if (level >= trig_min && level <= trig_max)
+		{
+			if (!satisfied)
+			{
+					satisfied = true;
+					if (initialized)
+						emit condSatisfied();
+			}
+		}
+		else
+			satisfied = false;
+		initialized = true;
+		++it;
 	}
 }
 
@@ -1018,8 +1036,16 @@ void device_condition_dimming_100::Draw()
 void device_condition_dimming_100::OK()
 {
 	qDebug("device_condition_dimming_100::OK()");
-	set_condition_value_min(get_current_value_min());
-	set_condition_value_max(get_current_value_max());
+	if (get_current_value_min() != get_condition_value_min() ||
+		get_current_value_max() != get_condition_value_max())
+	{
+		set_condition_value_min(get_current_value_min());
+		set_condition_value_max(get_current_value_max());
+		if (satisfied)
+			satisfied = false;
+		else
+			initialized = false;
+	}
 }
 
 void device_condition_dimming_100::reset()
@@ -1118,28 +1144,30 @@ void device_condition_dimming_100::status_changed(const StatusList &sl)
 
 	while (it != sl.constEnd())
 	{
-			int level;
-			if (it.key() == LightingDevice::DIM_DEVICE_ON || it.key() == LightingDevice::DIM_DIMMER100_LEVEL)
-					level = it.value().toInt();
-			else if (it.key() == LightingDevice::DIM_DIMMER_LEVEL)
-					level = dimmerLevelTo100(it.value().toInt());
-			else
-			{
-					++it;
-					continue;
-			}
-
-			if (level >= trig_min && level <= trig_max)
-			{
-					if (!satisfied)
-					{
-							satisfied = true;
-							emit condSatisfied();
-					}
-			}
-			else
-					satisfied = false;
+		int level;
+		if (it.key() == LightingDevice::DIM_DEVICE_ON || it.key() == LightingDevice::DIM_DIMMER100_LEVEL)
+			level = it.value().toInt();
+		else if (it.key() == LightingDevice::DIM_DIMMER_LEVEL)
+			level = dimmerLevelTo100(it.value().toInt());
+		else
+		{
 			++it;
+			continue;
+		}
+
+		if (level >= trig_min && level <= trig_max)
+		{
+			if (!satisfied)
+			{
+				satisfied = true;
+				if (initialized)
+					emit condSatisfied();
+			}
+		}
+		else
+			satisfied = false;
+		initialized = true;
+		++it;
 	}
 }
 
@@ -1337,8 +1365,16 @@ void device_condition_volume::Down()
 void device_condition_volume::OK()
 {
 	qDebug("device_condition_volume::OK()");
-	set_condition_value_min(get_current_value_min());
-	set_condition_value_max(get_current_value_max());
+	if (get_current_value_min() != get_condition_value_min() ||
+		get_current_value_max() != get_condition_value_max())
+	{
+		set_condition_value_min(get_current_value_min());
+		set_condition_value_max(get_current_value_max());
+		if (satisfied)
+			satisfied = false;
+		else
+			initialized = false;
+	}
 }
 
 void device_condition_volume::Draw()
@@ -1387,7 +1423,8 @@ void device_condition_volume::status_changed(QList<device_status*> sl)
 				if (!satisfied)
 				{
 					satisfied = true;
-					emit condSatisfied();
+					if (initialized)
+						emit condSatisfied();
 				}
 			}
 			else if ((curr_stato.get_val() == 1) && (curr_volume.get_val() >= trig_v_min) && (curr_volume.get_val() <= trig_v_max))
@@ -1396,14 +1433,16 @@ void device_condition_volume::status_changed(QList<device_status*> sl)
 				if (!satisfied)
 				{
 					satisfied = true;
-					emit condSatisfied();
+					if (initialized)
+						emit condSatisfied();
 				}
 			}
 			else
 			{
-			qDebug("Condition not triggered");
-			satisfied = false;
+				qDebug("Condition not triggered");
+				satisfied = false;
 			}
+			initialized = true;
 			break;
 		default:
 			qDebug("device status of unknown type (%d)", ds->get_type());
@@ -1572,7 +1611,8 @@ void device_condition_temp::status_changed(QList<device_status*> sl)
 				if (!satisfied)
 				{
 					satisfied = true;
-					emit condSatisfied();
+					if (initialized)
+						emit condSatisfied();
 				}
 			}
 			else
@@ -1580,6 +1620,7 @@ void device_condition_temp::status_changed(QList<device_status*> sl)
 				qDebug("Condition not triggered");
 				satisfied = false;
 			}
+			initialized = true;
 			break;
 		default:
 			qDebug("device status of unknown type (%d)", ds->get_type());
@@ -1593,8 +1634,7 @@ void device_condition_temp::status_changed(QList<device_status*> sl)
 ** Aux device condition
 ****************************************************************/
 
-device_condition_aux::device_condition_aux(QWidget *parent, QString *c) :
-	device_initialized(false), device_value(-1)
+device_condition_aux::device_condition_aux(QWidget *parent, QString *c)
 {
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
@@ -1621,8 +1661,11 @@ void device_condition_aux::Draw()
 	((QLabel *)frame)->setText(get_current_value() ? tr("ON") : tr("OFF"));
 }
 
-void device_condition_aux::check_condition(bool emit_signal)
+void device_condition_aux::status_changed(stat_var status)
 {
+	qDebug("device_condition_aux::status_changed");
+	int device_value = status.get_val();
+
 	int trig_v = device_condition::get_condition_value();
 	if (trig_v == device_value)
 	{
@@ -1630,7 +1673,7 @@ void device_condition_aux::check_condition(bool emit_signal)
 		if (!satisfied)
 		{
 			satisfied = true;
-			if (emit_signal)
+			if (initialized)
 				emit condSatisfied();
 		}
 	}
@@ -1639,15 +1682,7 @@ void device_condition_aux::check_condition(bool emit_signal)
 		qDebug("aux condition (%d) NOT satisfied", trig_v);
 		satisfied = false;
 	}
-}
-
-void device_condition_aux::status_changed(stat_var status)
-{
-	qDebug("device_condition_aux::status_changed");
-	device_value = status.get_val();
-	// We emit signal condSatisfied only if the device is initialized.
-	check_condition(device_initialized);
-	device_initialized = true;
+	initialized = true;
 }
 
 int device_condition_aux::get_max()
@@ -1666,7 +1701,6 @@ void device_condition_aux::set_condition_value(QString s)
 	else
 		qDebug() << "Unknown condition value " << s << " for device_condition_aux";
 	device_condition::set_condition_value(v);
-	check_condition(false);
 }
 
 void device_condition_aux::status_changed(QList<device_status*> sl)
@@ -1674,9 +1708,3 @@ void device_condition_aux::status_changed(QList<device_status*> sl)
 	qFatal("Old status changed on device_condition_aux not implemented!");
 }
 
-void device_condition_aux::OK()
-{
-	qDebug("device_condition_aux::OK()");
-	device_condition::OK();
-	check_condition(false);
-}
