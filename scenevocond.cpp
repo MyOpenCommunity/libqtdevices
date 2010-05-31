@@ -616,51 +616,6 @@ void device_condition_light_status::status_changed(const StatusList &sl)
 void device_condition_light_status::status_changed(QList<device_status*> sl)
 {
 	qFatal("Old status changed on device_condition_light_status not implemented!");
-	/*
-	int trig_v = device_condition::get_condition_value();
-	stat_var curr_status(stat_var::ON_OFF);
-	qDebug("device_condition_light_status::status_changed()");
-
-	for (int i = 0; i < sl.size(); ++i)
-	{
-		device_status *ds = sl.at(i);
-		switch (ds->get_type())
-		{
-		case device_status::LIGHTS:
-			ds->read(device_status_light::ON_OFF_INDEX, curr_status);
-			qDebug("Light status variation");
-			qDebug("trigger value = %d, current value = %d\n", trig_v,
-			curr_status.get_val());
-			if (trig_v == curr_status.get_val())
-			{
-				qDebug("light condition (%d) satisfied", trig_v);
-				if (!satisfied)
-				{
-					satisfied = true;
-					emit condSatisfied();
-				}
-			}
-			else
-			{
-				qDebug("light condition (%d) NOT satisfied", trig_v);
-				satisfied = false;
-			}
-			break;
-		case device_status::DIMMER:
-			qDebug("dimmer status variation, ignored");
-			break;
-		case device_status::DIMMER100:
-			qDebug("new dimmer status variation, ignored");
-			break;
-		case device_status::NEWTIMED:
-			qDebug("new timed device status variation, ignored");
-			break;
-		default:
-			qDebug("device status of unknown type (%d)", ds->get_type());
-			break;
-		}
-	}
-	*/
 }
 
 int device_condition_light_status::get_max()
@@ -714,8 +669,7 @@ device_condition_dimming::device_condition_dimming(QWidget *parent, QString *c)
 	// A dimmer is actually a light
 	//DELETE
 	//dev = new dimm(QString(""));
-	// TODO: to PULL or not to PULL? That is the question...
-	dev = new DimmerDevice("", PULL);
+	dev = new DimmerDevice("", PULL_UNKNOWN);
 	Draw();
 }
 
@@ -734,12 +688,12 @@ int device_condition_dimming::get_min()
 
 int device_condition_dimming::get_max()
 {
-	return 100;
+	return 10;
 }
 
 int device_condition_dimming::get_step()
 {
-	return 10;
+	return 1;
 }
 
 
@@ -911,82 +865,33 @@ void device_condition_dimming::status_changed(const StatusList &sl)
 
 	while (it != sl.constEnd())
 	{
-		switch (it.key())
-		{
-		// TODO: what about on level? is this code ok?
-		case LightingDevice::DIM_DEVICE_ON:
-		case LightingDevice::DIM_DIMMER_LEVEL:
-		{
-			int level = it.value().toInt() / 10;
+			int level = 0;
+			if ((it.key() == LightingDevice::DIM_DEVICE_ON) || (it.key() == LightingDevice::DIM_DIMMER_LEVEL))
+					level = it.value().toInt();
+			else
+			{
+					++it;
+					continue;
+			}
+
 			if (level >= trig_min && level <= trig_max)
 			{
-				if (!satisfied)
-				{
-					satisfied = true;
-					emit condSatisfied();
-				}
+					if (!satisfied)
+					{
+							satisfied = true;
+							emit condSatisfied();
+					}
 			}
 			else
-				satisfied = false;
-		}
-			break;
-		}
-		++it;
+					satisfied = false;
+			++it;
 	}
 }
 
-//DELETE
+
 void device_condition_dimming::status_changed(QList<device_status*> sl)
 {
 	qFatal("Old status changed on device_condition_dimming not implemented!");
-	/*
-	int trig_v_min = get_condition_value_min();
-	int trig_v_max = get_condition_value_max();
-	stat_var curr_lev(stat_var::LEV);
-	stat_var curr_speed(stat_var::SPEED);
-	stat_var curr_status(stat_var::ON_OFF);
-
-	qDebug("device_condition_dimming::status_changed()");
-	for (int i = 0; i < sl.size(); ++i)
-	{
-		device_status *ds = sl.at(i);
-		switch (ds->get_type())
-		{
-		case device_status::LIGHTS:
-			qDebug("Light status variation, ignored");
-			break;
-			case device_status::DIMMER:
-			ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
-			qDebug("dimmer status variation");
-			qDebug("level = %d", curr_lev.get_val()/10);
-			qDebug("trigger value min is %d - max is %d, val10 = %d", trig_v_min, trig_v_max, curr_lev.get_val()/10);
-			if ((curr_lev.get_val()/10 >= trig_v_min) && (curr_lev.get_val()/10 <= trig_v_max))
-			{
-				qDebug("Condition triggered");
-				if (!satisfied)
-				{
-					satisfied = true;
-					emit condSatisfied();
-				}
-			}
-			else
-			{
-				qDebug("Condition not triggered");
-				satisfied = false;
-			}
-			break;
-		case device_status::DIMMER100:
-			qDebug("dimmer 100 status variation, ignored");
-			break;
-		case device_status::NEWTIMED:
-			qDebug("new timed device status variation, ignored");
-			break;
-		default:
-			qDebug("device status of unknown type (%d)", ds->get_type());
-			break;
-		}
-	}
-	*/
 }
 
 /*****************************************************************
@@ -1221,26 +1126,28 @@ void device_condition_dimming_100::status_changed(const StatusList &sl)
 
 	while (it != sl.constEnd())
 	{
-		switch (it.key())
-		{
-		// TODO: previous code ignored dim_dimmer_level. What should I do?
-		case LightingDevice::DIM_DIMMER100_LEVEL:
-		{
-			int level = it.value().toInt();
+			int level;
+			if (it.key() == LightingDevice::DIM_DEVICE_ON || it.key() == LightingDevice::DIM_DIMMER100_LEVEL)
+					level = it.value().toInt();
+			else if (it.key() == LightingDevice::DIM_DIMMER_LEVEL)
+					level = dimmerLevelTo100(it.value().toInt());
+			else
+			{
+					++it;
+					continue;
+			}
+
 			if (level >= trig_min && level <= trig_max)
 			{
-				if (!satisfied)
-				{
-					satisfied = true;
-					emit condSatisfied();
-				}
+					if (!satisfied)
+					{
+							satisfied = true;
+							emit condSatisfied();
+					}
 			}
 			else
-				satisfied = false;
-		}
-			break;
-		}
-		++it;
+					satisfied = false;
+			++it;
 	}
 }
 
@@ -1248,57 +1155,6 @@ void device_condition_dimming_100::status_changed(const StatusList &sl)
 void device_condition_dimming_100::status_changed(QList<device_status*> sl)
 {
 	qFatal("Old status changed on device_condition_dimmin_100 not implemented!");
-	/*
-	int trig_v_min = get_condition_value_min();
-	int trig_v_max = get_condition_value_max();
-	stat_var curr_lev(stat_var::LEV);
-	stat_var curr_speed(stat_var::SPEED);
-	stat_var curr_status(stat_var::ON_OFF);
-	int val10;
-	qDebug("device_condition_dimming_100::status_changed()");
-	for (int i = 0; i < sl.size(); ++i)
-	{
-		device_status *ds = sl.at(i);
-		switch (ds->get_type())
-		{
-		case device_status::LIGHTS:
-			qDebug("Light status variation, ignored");
-			break;
-		case device_status::DIMMER:
-			ds->read(device_status_dimmer::LEV_INDEX, curr_lev);
-			qDebug("dimmer status variation, ignored");
-		case device_status::DIMMER100:
-			qDebug("dimmer 100 status variation");
-			ds->read(device_status_dimmer100::LEV_INDEX, curr_lev);
-			ds->read(device_status_dimmer100::SPEED_INDEX, curr_speed);
-			qDebug("level = %d, speed = %d", curr_lev.get_val(),
-			curr_speed.get_val());
-			val10 = curr_lev.get_val();
-			qDebug("trigger value min is %d - max is %d, val = %d", trig_v_min, trig_v_max, val10);
-			if ((val10 >= trig_v_min) && (val10 <= trig_v_max))
-			{
-				qDebug("Condition triggered");
-				if (!satisfied)
-				{
-					satisfied = true;
-					emit condSatisfied();
-				}
-			}
-			else
-			{
-				qDebug("Condition not triggered");
-				satisfied = false;
-			}
-			break;
-		case device_status::NEWTIMED:
-			qDebug("new timed device status variation, ignored");
-			break;
-		default:
-			qDebug("device status of unknown type (%d)", ds->get_type());
-			break;
-		}
-	}
-	*/
 }
 
 /*****************************************************************

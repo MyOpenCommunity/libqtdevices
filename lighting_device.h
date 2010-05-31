@@ -29,6 +29,8 @@
 #define PULL_DELAY_DIMMER10    4000
 #define PULL_DELAY_DIMMER100   9000
 
+int dimmerLevelTo100(int level);
+
 
 class LightingDevice : public PullDevice
 {
