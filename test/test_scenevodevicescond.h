@@ -78,18 +78,30 @@ private slots:
 	void testInternalTemperature1();
 	void testInternalTemperature2();
 	void testInternalTemperature3();
+	void testInternalTemperatureConditionChange1();
+	void testInternalTemperatureConditionChange2();
+	void testInternalTemperatureConditionChange3();
 	void testInternalTemperatureMinMax();
 	void testExternalTemperature1();
 	void testExternalTemperature2();
 	void testExternalTemperature3();
 	void testExternalTemperatureMinMax();
+	void testExternalTemperatureConditionChange1();
+	void testExternalTemperatureConditionChange2();
+	void testExternalTemperatureConditionChange3();
 	void testAux();
+	void testAuxConditionChange1();
+	void testAuxConditionChange2();
+	void testAuxConditionChange3();
 	void testVolumeOn();
 	void testVolumeOff();
 	void testVolumeRange1();
 	void testVolumeRange2();
 	void testVolumeRange3();
 	void testVolumeRange4();
+	void testVolumeConditionChange1();
+	void testVolumeConditionChange2();
+	void testVolumeConditionChange3();
 };
 
 #endif // TEST_SCENEVODEVICESCOND_H

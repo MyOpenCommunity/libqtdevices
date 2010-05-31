@@ -230,7 +230,7 @@ void DeviceCondition::save()
 {
 	// Avoid a 'strange' behaviour after calling this method without change
 	// the condition.
-	if (!currentConditionChanged())
+	if (!conditionChanged())
 		return;
 
 	onConditionSaved();
@@ -257,7 +257,7 @@ void DeviceCondition::save()
 		initialized = false;
 }
 
-bool DeviceCondition::currentConditionChanged()
+bool DeviceCondition::conditionChanged()
 {
 	return get_condition_value() != get_current_value();
 }
@@ -471,7 +471,7 @@ void DeviceConditionDimming::Draw()
 	updateText(get_current_value_min()*10, get_current_value_max()*10);
 }
 
-bool DeviceConditionDimming::currentConditionChanged()
+bool DeviceConditionDimming::conditionChanged()
 {
 	return get_condition_value_min() != get_current_value_min() ||
 		get_condition_value_max() != get_current_value_max();
@@ -670,7 +670,7 @@ void DeviceConditionDimming100::Draw()
 	updateText(get_current_value_min(), get_current_value_max());
 }
 
-bool DeviceConditionDimming100::currentConditionChanged()
+bool DeviceConditionDimming100::conditionChanged()
 {
 	return get_condition_value_min() != get_current_value_min() ||
 		get_condition_value_max() != get_current_value_max();
@@ -842,6 +842,12 @@ int DeviceConditionVolume::get_max()
 	return 31;
 }
 
+bool DeviceConditionVolume::conditionChanged()
+{
+	return get_condition_value_min() != get_current_value_min() ||
+		get_condition_value_max() != get_current_value_max();
+}
+
 void DeviceConditionVolume::get_condition_value(QString& out)
 {
 	if (get_condition_value_min() == -1)
@@ -968,7 +974,6 @@ bool DeviceConditionVolume::parseValues(const DeviceValues &values_list)
 	}
 	return managed;
 }
-
 
 
 DeviceConditionTemperature::DeviceConditionTemperature(DeviceConditionDisplayInterface *cond_display, QString trigger,

@@ -183,6 +183,8 @@ protected:
 
 	void setDevice(device *d);
 
+	// Parse the values cames from the correspondent device and set the 'satisfied'
+	// var properly.
 	virtual bool parseValues(const DeviceValues &values_list) = 0;
 
 	//! Returns min value
@@ -213,7 +215,7 @@ protected:
 	virtual void onConditionReset();
 
 	 // true if the condition is changed (but not yet saved)
-	virtual bool currentConditionChanged();
+	virtual bool conditionChanged();
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);
@@ -227,6 +229,8 @@ private:
 	DeviceConditionDisplayInterface *condition_display;
 
 	device *dev;
+	// Because we won't trigger during the device initialization, we use this
+	// flag to recognize if trigger or not.
 	bool initialized;
 };
 
@@ -267,7 +271,7 @@ public slots:
 protected:
 	virtual void onConditionSaved();
 	virtual void onConditionReset();
-	virtual bool currentConditionChanged();
+	virtual bool conditionChanged();
 
 	virtual int get_min();
 	virtual int get_max();
@@ -336,7 +340,7 @@ protected:
 	virtual bool parseValues(const DeviceValues &values_list);
 	virtual void onConditionSaved();
 	virtual void onConditionReset();
-	virtual bool currentConditionChanged();
+	virtual bool conditionChanged();
 
 private:
 	int min_val;
@@ -348,6 +352,7 @@ private:
 
 class DeviceConditionVolume : public DeviceCondition
 {
+friend class TestScenEvoDevicesCond;
 Q_OBJECT
 public:
 	DeviceConditionVolume(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where);
@@ -374,6 +379,7 @@ protected:
 	virtual bool parseValues(const DeviceValues &values_list);
 	virtual void onConditionSaved();
 	virtual void onConditionReset();
+	virtual bool conditionChanged();
 
 private:
 	int min_val;
