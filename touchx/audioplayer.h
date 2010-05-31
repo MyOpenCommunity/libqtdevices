@@ -40,9 +40,8 @@ Q_OBJECT
 public:
 	AudioPlayerTray(const QString &icon);
 
-public slots:
-	void stopped();
-	void started();
+	void setCurrentPlayer(AudioPlayerPage *player);
+	AudioPlayerPage *currentPlayer() const;
 
 private slots:
 	void gotoPlayer();
@@ -83,6 +82,8 @@ private slots:
 	void refreshPlayInfo();
 	void changeVolume(int volume);
 	void gotoSoundDiffusion();
+	void showTrayIcon();
+	void hideTrayIcon();
 
 private:
 	AudioPlayerPage(MediaType type);

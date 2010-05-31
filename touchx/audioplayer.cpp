@@ -53,21 +53,14 @@ AudioPlayerTray::AudioPlayerTray(const QString &icon) :
 	connect(this, SIGNAL(clicked()), SLOT(gotoPlayer()));
 }
 
-void AudioPlayerTray::started()
+void AudioPlayerTray::setCurrentPlayer(AudioPlayerPage *player)
 {
-	show();
-	current_player = static_cast<AudioPlayerPage*>(sender());
+	current_player = player;
 }
 
-void AudioPlayerTray::stopped()
+AudioPlayerPage *AudioPlayerTray::currentPlayer() const
 {
-	AudioPlayerPage *player = static_cast<AudioPlayerPage*>(sender());
-
-	if (player != current_player)
-		return;
-
-	hide();
-	current_player = NULL;
+	return current_player;
 }
 
 void AudioPlayerTray::gotoPlayer()
@@ -75,6 +68,7 @@ void AudioPlayerTray::gotoPlayer()
 	if (current_player)
 		current_player->showPage();
 }
+
 
 QVector<AudioPlayerPage *> AudioPlayerPage::audioplayer_pages(MAX_MEDIA_TYPE, 0);
 
@@ -169,9 +163,9 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 		bt_global::btmain->trayBar()->addButton(tray_icon, TrayBar::AUDIO_PLAYER);
 	}
 
-	connect(player, SIGNAL(mplayerStarted()), tray_icon, SLOT(started()));
-	connect(player, SIGNAL(mplayerKilled()), tray_icon, SLOT(stopped()));
-	connect(player, SIGNAL(mplayerAborted()), tray_icon, SLOT(stopped()));
+	connect(player, SIGNAL(mplayerStarted()), SLOT(showTrayIcon()));
+	connect(player, SIGNAL(mplayerKilled()), SLOT(hideTrayIcon()));
+	connect(player, SIGNAL(mplayerAborted()), SLOT(hideTrayIcon()));
 }
 
 int AudioPlayerPage::sectionId() const
@@ -274,3 +268,19 @@ void AudioPlayerPage::gotoSoundDiffusion()
 	SoundDiffusionPage::showCurrentAmbientPage();
 }
 
+void AudioPlayerPage::showTrayIcon()
+{
+	if (!tray_icon->currentPlayer())
+		tray_icon->setCurrentPlayer(this);
+
+	tray_icon->show();
+}
+
+void AudioPlayerPage::hideTrayIcon()
+{
+	if (tray_icon->currentPlayer() != this)
+		return;
+
+	tray_icon->setCurrentPlayer(0);
+	tray_icon->hide();
+}
