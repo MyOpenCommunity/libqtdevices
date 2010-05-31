@@ -139,6 +139,19 @@ void TestScenEvoDevicesCond::testLightConditionChange2()
 	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), true);
 }
 
+void TestScenEvoDevicesCond::testLightConditionChange3()
+{
+	DeviceConditionLight cond(mock_display, "0", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
+	cond.set_current_value(0);
+	cond.save();
+	client_request->flush();
+
+	QCOMPARE(client_request->bytesAvailable(), 0);
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
+}
+
 void TestScenEvoDevicesCond::testDimmingOff()
 {
 	DeviceConditionDimming cond(mock_display, "0", dev_where);
@@ -217,6 +230,18 @@ void TestScenEvoDevicesCond::testDimmingConditionChange2()
 	client_request->flush();
 	QCOMPARE(server->frameRequest(), QString("*#1*%1##").arg(dev_where));
 	checkCondition(spy, QString("*1*5*%1##").arg(dev_where), true);
+}
+
+void TestScenEvoDevicesCond::testDimmingConditionChange3()
+{
+	DeviceConditionDimming cond(mock_display, "0", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
+	cond.save();
+
+	client_request->flush();
+	QCOMPARE(client_request->bytesAvailable(), 0);
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
 }
 
 void TestScenEvoDevicesCond::testDimming100Off()
@@ -331,6 +356,18 @@ void TestScenEvoDevicesCond::testDimming100ConditionChange2()
 	QVERIFY(frames.contains(QString("*#1*%1*1").arg(dev_where)));
 
 	checkCondition(spy, QString("*#1*%1*1*200*0##").arg(dev_where), true);
+}
+
+void TestScenEvoDevicesCond::testDimming100ConditionChange3()
+{
+	DeviceConditionDimming100 cond(mock_display, "0", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*1*1*%1##").arg(dev_where), false);
+	cond.save();
+
+	client_request->flush();
+	QCOMPARE(client_request->bytesAvailable(), 0);
+	checkCondition(spy, QString("*1*0*%1##").arg(dev_where), true);
 }
 
 void TestScenEvoDevicesCond::testInternalTemperature1()

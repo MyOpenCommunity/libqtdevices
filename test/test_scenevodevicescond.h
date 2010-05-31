@@ -59,12 +59,14 @@ private slots:
 	void testLightOff();
 	void testLightConditionChange1();
 	void testLightConditionChange2();
+	void testLightConditionChange3();
 	void testDimmingOff();
 	void testDimmingRange1();
 	void testDimmingRange2();
 	void testDimmingRange3();
 	void testDimmingConditionChange1();
 	void testDimmingConditionChange2();
+	void testDimmingConditionChange3();
 	void testDimming100Off();
 	void testDimming100Range1();
 	void testDimming100Range2();
@@ -72,6 +74,7 @@ private slots:
 	void testDimming100Range4();
 	void testDimming100ConditionChange1();
 	void testDimming100ConditionChange2();
+	void testDimming100ConditionChange3();
 	void testInternalTemperature1();
 	void testInternalTemperature2();
 	void testInternalTemperature3();

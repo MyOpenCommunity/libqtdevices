@@ -212,6 +212,9 @@ protected:
 	virtual void onConditionSaved();
 	virtual void onConditionReset();
 
+	 // true if the condition is changed (but not yet saved)
+	virtual bool currentConditionChanged();
+
 private slots:
 	void valueReceived(const DeviceValues &values_list);
 
@@ -232,8 +235,8 @@ class DeviceConditionLight : public DeviceCondition
 {
 Q_OBJECT
 public:
-	//! Constructor
-	DeviceConditionLight(DeviceConditionDisplayInterface* condition_display, QString trigger, QString where, int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
+	DeviceConditionLight(DeviceConditionDisplayInterface* condition_display, QString trigger, QString where,
+		int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 
@@ -252,7 +255,8 @@ class DeviceConditionDimming : public DeviceCondition
 friend class TestScenEvoDevicesCond;
 Q_OBJECT
 public:
-	DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
+	DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where,
+		int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 
@@ -263,6 +267,7 @@ public slots:
 protected:
 	virtual void onConditionSaved();
 	virtual void onConditionReset();
+	virtual bool currentConditionChanged();
 
 	virtual int get_min();
 	virtual int get_max();
@@ -297,7 +302,8 @@ class DeviceConditionDimming100 : public DeviceCondition
 friend class TestScenEvoDevicesCond;
 Q_OBJECT
 public:
-	DeviceConditionDimming100(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
+	DeviceConditionDimming100(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where,
+		int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
 	//! Translates current trigger condition to open
 	virtual void get_condition_value(QString&);
 
@@ -326,9 +332,11 @@ protected:
 	virtual void set_condition_value(QString);
 	virtual void Draw();
 
+
 	virtual bool parseValues(const DeviceValues &values_list);
 	virtual void onConditionSaved();
 	virtual void onConditionReset();
+	virtual bool currentConditionChanged();
 
 private:
 	int min_val;

@@ -228,6 +228,11 @@ void DeviceCondition::Down()
 
 void DeviceCondition::save()
 {
+	// Avoid a 'strange' behaviour after calling this method without change
+	// the condition.
+	if (!currentConditionChanged())
+		return;
+
 	onConditionSaved();
 	// Request again the status of the device
 	dev->init();
@@ -250,6 +255,11 @@ void DeviceCondition::save()
 		satisfied = false;
 	else
 		initialized = false;
+}
+
+bool DeviceCondition::currentConditionChanged()
+{
+	return get_condition_value() != get_current_value();
 }
 
 void DeviceCondition::onConditionSaved()
@@ -461,6 +471,12 @@ void DeviceConditionDimming::Draw()
 	updateText(get_current_value_min()*10, get_current_value_max()*10);
 }
 
+bool DeviceConditionDimming::currentConditionChanged()
+{
+	return get_condition_value_min() != get_current_value_min() ||
+		get_condition_value_max() != get_current_value_max();
+}
+
 void DeviceConditionDimming::onConditionSaved()
 {
 	set_condition_value_min(get_current_value_min());
@@ -652,6 +668,12 @@ void DeviceConditionDimming100::Down()
 void DeviceConditionDimming100::Draw()
 {
 	updateText(get_current_value_min(), get_current_value_max());
+}
+
+bool DeviceConditionDimming100::currentConditionChanged()
+{
+	return get_condition_value_min() != get_current_value_min() ||
+		get_condition_value_max() != get_current_value_max();
 }
 
 void DeviceConditionDimming100::onConditionSaved()
