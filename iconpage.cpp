@@ -33,10 +33,6 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
-#define DIM_BUT 80
-#define BACK_BUTTON_X    0
-#define BACK_BUTTON_Y  250
-#define BACK_BUTTON_DIM 60
 #define CONTENT_MARGIN  25
 
 
