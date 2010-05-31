@@ -308,11 +308,11 @@ SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 	modes_descr[AdvancedAirConditioningDevice::MODE_SUMMER] = tr("COOLING");
 	modes_descr[AdvancedAirConditioningDevice::MODE_DEHUM] = tr("DRY");
 	modes_descr[AdvancedAirConditioningDevice::MODE_FAN] = tr("FAN");
-	modes_descr[AdvancedAirConditioningDevice::MODE_AUTO] = tr("AUTO");
+	modes_descr[AdvancedAirConditioningDevice::MODE_AUTO] = tr("AUTOMATIC");
 
 	foreach (int mode_id, modes)
 		if (modes_descr.contains(mode_id))
-			addState(mode_id, modes_descr[mode_id]);
+			addState(mode_id, modes_descr[mode_id].toUpper());
 		else
 			qWarning("The mode id %d doesn't exists", mode_id);
 
@@ -324,7 +324,7 @@ SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 
 SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 {
-	speeds_descr[AdvancedAirConditioningDevice::VEL_AUTO] = tr("AUTO");
+	speeds_descr[AdvancedAirConditioningDevice::VEL_AUTO] = tr("AUTOMATIC");
 	speeds_descr[AdvancedAirConditioningDevice::VEL_MIN] = tr("LOW");
 	speeds_descr[AdvancedAirConditioningDevice::VEL_MED] = tr("MEDIUM");
 	speeds_descr[AdvancedAirConditioningDevice::VEL_MAX] = tr("HIGH");
@@ -332,7 +332,7 @@ SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 
 	foreach (int speed_id, speeds)
 		if (speeds_descr.contains(speed_id))
-			addState(speed_id, speeds_descr[speed_id]);
+			addState(speed_id, speeds_descr[speed_id].toUpper());
 		else
 			qWarning("The speed id %d doesn't exists", speed_id);
 

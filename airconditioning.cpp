@@ -383,7 +383,7 @@ void SplitSettings::readSwingConfig(const QDomNode &swing_node)
 	{
 		Q_ASSERT_X(current_swing == 0 || current_swing == 1, "SplitSettings::readSwingConfig",
 			"Using a value that is not bool.");
-		swing = new SplitSwing(tr("SWING"), current_swing);
+		swing = new SplitSwing(tr("SWING").toUpper(), current_swing);
 		page_content->appendBanner(swing);
 	}
 	else
