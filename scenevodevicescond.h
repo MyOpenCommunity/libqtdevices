@@ -396,7 +396,6 @@ public:
 protected:
 	int get_min();
 	virtual int get_max();
-	int get_step();
 	int intValue();
 	virtual void Draw();
 
@@ -405,8 +404,7 @@ protected:
 private:
 	/// Maximum and minimum values for temperature conditions
 	int max_temp, min_temp;
-	/// Step value for temperature conditions
-	int step;
+
 	TemperatureScale temp_scale;
 };
 

@@ -992,7 +992,6 @@ DeviceConditionTemperature::DeviceConditionTemperature(DeviceConditionDisplayInt
 		min_temp = bt2Celsius(CONDITION_MIN_TEMP);
 		set_condition_value(bt2Celsius(temp_condition));
 	}
-	step = 1;
 
 	// The condition value and the current value are stored in Celsius or Fahrenheit
 	set_current_value(DeviceCondition::get_condition_value());
@@ -1010,11 +1009,6 @@ int DeviceConditionTemperature::get_min()
 int DeviceConditionTemperature::get_max()
 {
 	return max_temp;
-}
-
-int DeviceConditionTemperature::get_step()
-{
-	return step;
 }
 
 void DeviceConditionTemperature::Draw()
