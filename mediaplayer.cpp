@@ -104,14 +104,13 @@ bool MediaPlayer::play(QString track, bool write_output)
 	QList<QString> mplayer_args = getStandardArgs();
 	mplayer_args.append(getAudioArgs(0));
 
-	QByteArray t = track.toLocal8Bit();
 	if ((track.endsWith(".m3u", Qt::CaseInsensitive)) || (track.endsWith(".asx", Qt::CaseInsensitive)))
 	{
 		mplayer_args << "-playlist";
-		mplayer_args << t.constData();
+		mplayer_args << track;
 	}
 	else
-		mplayer_args << t.constData();
+		mplayer_args << track;
 
 	return runMPlayer(mplayer_args, write_output);
 }
