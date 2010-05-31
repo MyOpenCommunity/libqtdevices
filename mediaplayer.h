@@ -86,6 +86,9 @@ private:
 	/// Send a string to the mplayer process to execute.
 	void execCmd(const QByteArray &command);
 
+	// called when the mplayer process really stops playback
+	void actuallyPaused();
+
 	bool runMPlayer(const QList<QString> &args, bool write_output);
 	QList<QString> getStandardArgs();
 	QList<QString> getVideoArgs(int seek_time);

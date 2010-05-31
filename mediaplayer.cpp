@@ -144,11 +144,13 @@ void MediaPlayer::pause()
 		return;
 
 	if (!paused)
-	{
 		execCmd("pause");
-		paused = true;
-		emit mplayerPaused();
-	}
+}
+
+void MediaPlayer::actuallyPaused()
+{
+	paused = true;
+	emit mplayerPaused();
 }
 
 void MediaPlayer::resume()
@@ -235,6 +237,10 @@ QMap<QString, QString> MediaPlayer::getMediaInfo(const QMap<QString, QString> &d
 		if (rx.indexIn(raw_data) > -1)
 			info_data[it.key()] = rx.cap(1);
 	}
+
+	QRegExp paused("=====  PAUSE  =====");
+	if (paused.indexIn(raw_data) > -1)
+		actuallyPaused();
 
 	return info_data;
 }
