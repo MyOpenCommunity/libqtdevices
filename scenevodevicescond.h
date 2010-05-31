@@ -133,8 +133,8 @@ public slots:
 /**
  * This abstract class represents a device based condition, used in the evolved
  * scenarios. Every DeviceCondition has a condition that depends on the actual
- * device and can trigger the signal condSatisfied if the device status matches the
- * condition set.
+ * device and can trigger the signal condSatisfied if the device status changes
+ * and matches the condition set.
  */
 class DeviceCondition : public QObject
 {
@@ -156,8 +156,8 @@ public:
 	//! Returns true when the condition is satisfied
 	bool isTrue();
 
-	//! Translates current trigger condition to open
-	virtual void get_condition_value(QString&);
+	// Return a textual representation of the condition
+	virtual QString getConditionAsString();
 
 	// Saves the current value as the condition
 	void save();
@@ -241,8 +241,6 @@ Q_OBJECT
 public:
 	DeviceConditionLight(DeviceConditionDisplayInterface* condition_display, QString trigger, QString where,
 		int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
-	//! Translates current trigger condition to open
-	virtual void get_condition_value(QString&);
 
 protected:
 	virtual void Draw();
@@ -261,8 +259,8 @@ Q_OBJECT
 public:
 	DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where,
 		int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
-	//! Translates current trigger condition to open
-	virtual void get_condition_value(QString&);
+
+	virtual QString getConditionAsString();
 
 public slots:
 	virtual void Up();
@@ -307,8 +305,8 @@ Q_OBJECT
 public:
 	DeviceConditionDimming100(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where,
 		int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
-	//! Translates current trigger condition to open
-	virtual void get_condition_value(QString&);
+
+	virtual QString getConditionAsString();
 
 public slots:
 	virtual void Up();
@@ -353,7 +351,8 @@ friend class TestScenEvoDevicesCond;
 Q_OBJECT
 public:
 	DeviceConditionVolume(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where);
-	void get_condition_value(QString& out);
+
+	virtual QString getConditionAsString();
 
 public slots:
 	virtual void Up();
@@ -391,7 +390,8 @@ class DeviceConditionTemperature : public DeviceCondition
 Q_OBJECT
 public:
 	DeviceConditionTemperature(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, bool external = false, int openserver_id = 0);
-	virtual void get_condition_value(QString&);
+
+	virtual QString getConditionAsString();
 
 protected:
 	int get_min();

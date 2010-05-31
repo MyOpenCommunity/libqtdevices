@@ -204,9 +204,9 @@ void DeviceCondition::set_condition_value(QString s)
 	set_condition_value(s.toInt());
 }
 
-void DeviceCondition::get_condition_value(QString& out)
+QString DeviceCondition::getConditionAsString()
 {
-	out = QString::number(get_condition_value());
+	return QString::number(get_condition_value());
 }
 
 void DeviceCondition::Up()
@@ -370,11 +370,6 @@ void DeviceConditionLight::set_condition_value(QString s)
 	DeviceCondition::set_condition_value(v);
 }
 
-void DeviceConditionLight::get_condition_value(QString& out)
-{
-	out = DeviceCondition::get_condition_value() ? "1" : "0";
-}
-
 
 DeviceConditionDimming::DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id, PullMode pull_mode)
 	: DeviceCondition(cond_display)
@@ -529,13 +524,12 @@ void DeviceConditionDimming::set_condition_value(QString s)
 	DeviceCondition::set_condition_value(s.toInt() * 10);
 }
 
-void DeviceConditionDimming::get_condition_value(QString& out)
+QString DeviceConditionDimming::getConditionAsString()
 {
-
 	if (get_condition_value_min() == 0)
-		out = "0";
-	else
-		out = QString("%1-%2").arg(get_condition_value_min()).arg(get_condition_value_max());
+		return "0";
+
+	return QString("%1-%2").arg(get_condition_value_min()).arg(get_condition_value_max());
 }
 
 bool DeviceConditionDimming::parseValues(const DeviceValues &values_list)
@@ -723,12 +717,12 @@ void DeviceConditionDimming100::set_condition_value(QString s)
 	DeviceCondition::set_condition_value(s.toInt() * 10);
 }
 
-void DeviceConditionDimming100::get_condition_value(QString& out)
+QString DeviceConditionDimming100::getConditionAsString()
 {
 	if (get_condition_value_min() == 0)
-		out = "0";
-	else
-		out = QString("%1-%2").arg(get_condition_value_min()).arg(get_condition_value_max());
+		return "0";
+
+	return QString("%1-%2").arg(get_condition_value_min()).arg(get_condition_value_max());
 }
 
 bool DeviceConditionDimming100::parseValues(const DeviceValues &values_list)
@@ -838,12 +832,12 @@ bool DeviceConditionVolume::conditionChanged()
 		get_condition_value_max() != get_current_value_max();
 }
 
-void DeviceConditionVolume::get_condition_value(QString& out)
+QString DeviceConditionVolume::getConditionAsString()
 {
 	if (get_condition_value_min() == -1)
-		out = "-1";
-	else
-		out = QString("%1-%2").arg(get_condition_value_min()).arg(get_condition_value_max());
+		return "-1";
+
+	return QString("%1-%2").arg(get_condition_value_min()).arg(get_condition_value_max());
 }
 
 void DeviceConditionVolume::Up()
@@ -1016,7 +1010,7 @@ void DeviceConditionTemperature::Draw()
 	updateText(get_current_value(), get_current_value());
 }
 
-void DeviceConditionTemperature::get_condition_value(QString& out)
+QString DeviceConditionTemperature::getConditionAsString()
 {
 	// transform an int value to a string in bticino 4-digit form
 	int val = DeviceCondition::get_condition_value();
@@ -1034,7 +1028,7 @@ void DeviceConditionTemperature::get_condition_value(QString& out)
 		temp = celsius2Bt(val);
 	}
 	// bticino_temp is stored in 4 digit format.
-	out = QString("%1").arg(temp, 4, 10, QChar('0'));
+	return QString("%1").arg(temp, 4, 10, QChar('0'));
 }
 
 bool DeviceConditionTemperature::parseValues(const DeviceValues &values_list)

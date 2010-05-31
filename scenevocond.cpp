@@ -217,8 +217,7 @@ void ScenEvoDeviceCondition::Apply()
 void ScenEvoDeviceCondition::save()
 {
 	qDebug("ScenEvoDeviceCondition::save()");
-	QString s;
-	device_cond->get_condition_value(s);
+	QString s = device_cond->getConditionAsString();
 #ifdef CONFIG_BTOUCH
 	setCfgValue("condDevice/trigger", s, SCENARIO_EVOLUTO, get_serial_number());
 #else
