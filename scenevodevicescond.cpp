@@ -415,11 +415,6 @@ int DeviceConditionDimming::get_max()
 	return 10;
 }
 
-int DeviceConditionDimming::get_step()
-{
-	return 1;
-}
-
 void DeviceConditionDimming::Up()
 {
 	int val = get_current_value_min();
@@ -604,11 +599,6 @@ int DeviceConditionDimming100::get_min()
 int DeviceConditionDimming100::get_max()
 {
 	return 100;
-}
-
-int DeviceConditionDimming100::get_step()
-{
-	return 10;
 }
 
 void DeviceConditionDimming100::Up()

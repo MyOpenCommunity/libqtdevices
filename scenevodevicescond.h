@@ -275,7 +275,6 @@ protected:
 
 	virtual int get_min();
 	virtual int get_max();
-	virtual int get_step();
 	virtual void Draw();
 
 	void set_condition_value_min(int);
@@ -320,8 +319,6 @@ protected:
 	int get_min();
 	//! Returns max value
 	virtual int get_max();
-	//! Returns step
-	int get_step();
 	void set_condition_value_min(int);
 	int get_condition_value_min();
 	void set_condition_value_max(int);
