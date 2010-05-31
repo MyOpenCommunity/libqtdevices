@@ -77,17 +77,18 @@ IconContent::IconContent(QWidget *parent) : ScrollableContent(parent)
 
 void IconContent::addButton(QWidget *button, const QString &label)
 {
-	QWidget *w = button;
+	// always create the container widget; this way the container is set to the
+	// correct fixed size during layout and the button keeps its (smaller) fixed size
+	QWidget *w = new QWidget;
+	QVBoxLayout *l = new QVBoxLayout(w);
+	l->addWidget(button, 0, Qt::AlignHCenter);
 
 	if (!label.isEmpty())
 	{
-		w = new QWidget;
-		QVBoxLayout *l = new QVBoxLayout(w);
 		ScrollingLabel *lbl = new ScrollingLabel(label);
 
 		lbl->setAlignment(Qt::AlignHCenter);
 		lbl->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
-		l->addWidget(button, 0, Qt::AlignHCenter);
 		l->addWidget(lbl);
 	}
 
