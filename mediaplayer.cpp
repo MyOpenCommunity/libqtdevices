@@ -131,7 +131,12 @@ bool MediaPlayer::runMPlayer(const QList<QString> &args, bool write_output)
 
 	mplayer_proc.start(MPLAYER_FILENAME, args);
 	paused = false;
-	return mplayer_proc.waitForStarted(300);
+
+	bool started = mplayer_proc.waitForStarted(300);
+	if (started)
+		emit mplayerStarted();
+
+	return started;
 }
 
 void MediaPlayer::pause()
@@ -143,6 +148,7 @@ void MediaPlayer::pause()
 	{
 		execCmd("pause");
 		paused = true;
+		emit mplayerPaused();
 	}
 }
 
@@ -155,6 +161,7 @@ void MediaPlayer::resume()
 	{
 		execCmd("pause");
 		paused = false;
+		emit mplayerResumed();
 	}
 }
 
@@ -166,6 +173,8 @@ void MediaPlayer::seek(int seconds)
 	QByteArray cmd("seek ");
 	cmd += QByteArray::number(seconds);
 	execCmd(cmd);
+	paused = false;
+	emit mplayerResumed();
 }
 
 void MediaPlayer::execCmd(const QByteArray &command)

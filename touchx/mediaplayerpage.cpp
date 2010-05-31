@@ -42,8 +42,12 @@ MediaPlayerPage::MediaPlayerPage() :
 		connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(audioStateChanged(int,int)));
 
 	// handle audio state machine state changes
-	connect(this, SIGNAL(started()), SLOT(playbackStarted()));
-	connect(this, SIGNAL(stopped()), SLOT(playbackStopped()));
+	connect(player, SIGNAL(mplayerStarted()), SLOT(playbackStarted()));
+	connect(player, SIGNAL(mplayerResumed()), SLOT(playbackStarted()));
+	connect(player, SIGNAL(mplayerDone()), SLOT(playbackStopped()));
+	connect(player, SIGNAL(mplayerKilled()), SLOT(playbackStopped()));
+	connect(player, SIGNAL(mplayerAborted()), SLOT(playbackStopped()));
+	connect(player, SIGNAL(mplayerPaused()), SLOT(playbackStopped()));
 }
 
 void MediaPlayerPage::showPage()
@@ -75,8 +79,12 @@ void MediaPlayerPage::connectMultimediaButtons(MultimediaPlayerButtons *buttons)
 	connect(buttons, SIGNAL(seekBack()), SLOT(seekBack()));
 
 	// update the icon of the play button
-	connect(this, SIGNAL(started()), buttons, SLOT(started()));
-	connect(this, SIGNAL(stopped()), buttons, SLOT(stopped()));
+	connect(player, SIGNAL(mplayerStarted()), buttons, SLOT(started()));
+	connect(player, SIGNAL(mplayerResumed()), buttons, SLOT(started()));
+	connect(player, SIGNAL(mplayerDone()), buttons, SLOT(stopped()));
+	connect(player, SIGNAL(mplayerKilled()), buttons, SLOT(stopped()));
+	connect(player, SIGNAL(mplayerAborted()), buttons, SLOT(stopped()));
+	connect(player, SIGNAL(mplayerPaused()), buttons, SLOT(stopped()));
 
 	// handle mplayer termination
 	connect(player, SIGNAL(mplayerDone()), SLOT(next()));
@@ -94,8 +102,6 @@ void MediaPlayerPage::pause()
 {
 	player->pause();
 	refresh_data.stop();
-	emit paused();
-	emit stopped();
 }
 
 void MediaPlayerPage::resume()
@@ -104,7 +110,6 @@ void MediaPlayerPage::resume()
 	{
 		player->resume();
 		refresh_data.start(MPLAYER_POLLING);
-		emit started();
 	}
 	else
 		displayMedia(current_file);
@@ -133,17 +138,17 @@ void MediaPlayerPage::next()
 void MediaPlayerPage::seekForward()
 {
 	player->seek(10);
+	refresh_data.start(MPLAYER_POLLING);
 }
 
 void MediaPlayerPage::seekBack()
 {
 	player->seek(-10);
+	refresh_data.start(MPLAYER_POLLING);
 }
 
 void MediaPlayerPage::videoPlaybackTerminated()
 {
-	emit stopped();
-	emit terminated();
 	refresh_data.stop();
 }
 
@@ -176,6 +181,6 @@ void MediaPlayerPage::playbackStarted()
 void MediaPlayerPage::playbackStopped()
 {
 	// leave the play state on the stack when the player is paused beacuse of a higher priority state
-	if (!bt_global::audio_states->isSource() && !resume_on_state_change && !player->isPaused())
+	if (!bt_global::audio_states->isSource() && !resume_on_state_change && bt_global::audio_states->contains(AudioStates::PLAY_MEDIA_TO_SPEAKER))
 		bt_global::audio_states->removeState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
 }

@@ -100,6 +100,13 @@ private slots:
 	void mplayerError(QProcess::ProcessError error);
 
 signals:
+	/// mplayer started the reproduction of the media
+	void mplayerStarted();
+	/// mplayer paused the reproduction of the media
+	void mplayerPaused();
+	/// mplayer resumed the reproduction of the media
+	void mplayerResumed();
+
 	/// mplayer child process quit gracefully and done it's work.
 	void mplayerDone();
 
