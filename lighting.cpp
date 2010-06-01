@@ -23,7 +23,7 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bann_lighting.h"
 #include "actuators.h"
-#include "main.h"
+#include "main.h" // LIGHTING
 #include "skinmanager.h" // SkinContext
 
 #include <QDomNode>
@@ -128,7 +128,7 @@ Lighting::Lighting(const QDomNode &config_node)
 
 int Lighting::sectionId() const
 {
-	return ILLUMINAZIONE;
+	return LIGHTING;
 }
 
 banner *Lighting::getBanner(const QDomNode &item_node)

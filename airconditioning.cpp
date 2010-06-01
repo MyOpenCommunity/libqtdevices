@@ -21,7 +21,6 @@
 
 #include "airconditioning.h"
 #include "skinmanager.h"
-#include "main.h"
 #include "xml_functions.h" // getTextChild, getElement
 #include "bann_airconditioning.h"
 #include "navigation_bar.h"
@@ -115,7 +114,7 @@ AirConditioning::AirConditioning(const QDomNode &config_node)
 
 int AirConditioning::sectionId() const
 {
-	return AIR_CONDITIONING;
+	return NO_SECTION;
 }
 
 banner *AirConditioning::getBanner(const QDomNode &item_node)

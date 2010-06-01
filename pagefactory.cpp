@@ -43,7 +43,6 @@
 #include "iconpage.h"
 #include "energy_management.h"
 #include "load_management.h"
-#include "airconditioning.h"
 
 
 #include <QObject>
@@ -67,20 +66,20 @@ Page *getPage(int page_id)
 	Page *page = 0;
 	switch (id)
 	{
-	case AUTOMAZIONE:
+	case AUTOMATION:
 		page = new Automation(page_node);
 		break;
-	case ILLUMINAZIONE:
+	case LIGHTING:
 		page = new Lighting(page_node);
 		break;
-	case ANTIINTRUSIONE:
+	case ANTIINTRUSION:
 		page = new Antintrusion(page_node);
 		break;
-	case CARICHI:
+	case LOADS:
 		page = new Loads(page_node);
 		break;
-	case TERMOREGOLAZIONE:
-	case TERMOREG_MULTI_PLANT:
+	case THERMALREGULATION:
+	case THERMALREGULATION_MULTI:
 		page = new ThermalMenu(page_node);
 		break;
 	case ENERGY_MANAGEMENT:
@@ -89,19 +88,19 @@ Page *getPage(int page_id)
 		page = p;
 		break;
 	}
-	case SCENARI:
-	case SCENARI_EVOLUTI:
+	case SCENARIOS:
+	case EVOLVED_SCENARIOS:
 		page = new Scenario(page_node);
 		break;
 #ifndef LAYOUT_TOUCHX
-	case IMPOSTAZIONI:
+	case SETTINGS:
 		page = new Settings(page_node);
 		break;
 #endif
-	case VIDEOCITOFONIA:
+	case VIDEODOORENTRY:
 		page = new VideoDoorEntry(page_node);
 		break;
-	case SUPERVISIONE:
+	case SUPERVISION:
 		page = new SupervisionMenu(page_node);
 		break;
 	case SPECIAL:
@@ -117,12 +116,9 @@ Page *getPage(int page_id)
 	case MESSAGES:
 		page = new MessagesListPage(page_node);
 		break;
-	case DIFSON_MONO:
-	case DIFSON_MULTI:
+	case SOUNDDIFFUSION:
+	case SOUNDDIFFUSION_MULTI:
 		page = new SoundDiffusionPage(page_node);
-		break;
-	case AIR_CONDITIONING:
-		page = new AirConditioning(page_node);
 		break;
 #endif
 

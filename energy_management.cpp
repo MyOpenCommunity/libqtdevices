@@ -24,7 +24,7 @@
 #include "energy_data.h" // EnergyCost
 #include "skinmanager.h"
 #include "xml_functions.h"
-#include "main.h" // SUPERVISIONE, LOAD_MANAGEMENT
+#include "main.h" // SUPERVISION, LOAD_MANAGEMENT
 #include "btbutton.h"
 #include "navigation_bar.h"
 
@@ -62,7 +62,7 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 	// inside the other item (either energy view or load management)
 	rate_edit_displayed = true;
 
-	if (ids.count() == 2 && ids.contains(SUPERVISIONE))
+	if (ids.count() == 2 && ids.contains(SUPERVISION))
 		rate_edit_displayed = false;
 
 	// call loadItems here so EnergyView/LoadManagement will see the correct value for isRateEditDisplayed

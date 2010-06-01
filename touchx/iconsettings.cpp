@@ -39,7 +39,7 @@
 #include "generic_functions.h" // setCfgValue
 #include "displaycontrol.h"
 #include "videodoorentry.h" // HandsFree, ProfessionalStudio
-#include "main.h" // bt_global::config
+#include "main.h" // bt_global::config, SETTINGS
 #include "audiostatemachine.h" // bt_global::audio_states
 
 #if !defined(BT_HARDWARE_X11)
@@ -302,7 +302,7 @@ IconSettings::IconSettings(const QDomNode &config_node)
 
 int IconSettings::sectionId() const
 {
-	return IMPOSTAZIONI;
+	return SETTINGS;
 }
 
 banner *IconSettings::getBanner(const QDomNode &item_node)

@@ -21,7 +21,7 @@
 
 #include "supervisionmenu.h"
 #include "bann1_button.h"
-#include "main.h" // getPageNodeFromChildNode
+#include "main.h" // getPageNodeFromChildNode, SUPERVISION
 #include "xml_functions.h" // getChildren, getTextChild
 #include "skinmanager.h"
 #include "bann2_buttons.h"
@@ -58,7 +58,7 @@ SupervisionMenu::SupervisionMenu(const QDomNode &config_node)
 
 int SupervisionMenu::sectionId() const
 {
-	return EnergyManagement::isBuilt() ? ENERGY_MANAGEMENT : SUPERVISIONE;
+	return EnergyManagement::isBuilt() ? ENERGY_MANAGEMENT : SUPERVISION;
 }
 
 void SupervisionMenu::loadItems(const QDomNode &config_node)

@@ -380,7 +380,7 @@ void BtMain::loadConfiguration()
 			qWarning("setup node not found on xml config file!");
 	}
 
-	QDomNode display_node = getChildWithId(getPageNode(IMPOSTAZIONI), QRegExp("item\\d{1,2}"), DISPLAY);
+	QDomNode display_node = getChildWithId(getPageNode(SETTINGS), QRegExp("item\\d{1,2}"), DISPLAY);
 
 #ifdef BT_HARDWARE_TOUCHX
 	// on TouchX there is no way to control the screensaver brightness
@@ -428,7 +428,7 @@ void BtMain::loadConfiguration()
 	QDomNode pagemenu_home = getHomepageNode();
 	Home = new HomePage(pagemenu_home);
 
-	QDomNode video_node = getPageNode(VIDEOCITOFONIA);
+	QDomNode video_node = getPageNode(VIDEODOORENTRY);
 	// Touch X can receive calls even if the videodoorentry section is not
 	// configured (but the configuration specifies it as an internal place).
 	// In this case, we create an "empty" version of the VideoDoorEntry page,

@@ -167,57 +167,51 @@ void resetTimer(int signo);
 #ifdef CONFIG_BTOUCH
 enum Section
 {
-	NO_SECTION=0,
-	AUTOMAZIONE=1,                                /*!< Automation system */
-	ILLUMINAZIONE=2,                              /*!< Lighting system */
-	ANTIINTRUSIONE=3,                             /*!< Anti-intrusion system */
-	CARICHI=4,                                    /*!< Appliances managing system */
-	TERMOREGOLAZIONE=5,                           /*!< Thermoregulation system */
-	DIFSON=6,                                     /*!< Sound diffusion system */
-	SCENARI=7,                                    /*!< Scenarios managing */
-	IMPOSTAZIONI=8,                               /*!< Settings */
-	BACK=9,                                       /*!< Back button - placed here for convenience */
-	SPECIAL=10,                                   /*!< Special button - placed here for convenience */
-	VIDEOCITOFONIA=11,
-	SCENARI_EVOLUTI=12,                           /*!< Advanced scenarios management */
-	DIFSON_MULTI=13,                              /*!< Multichannel sound diffusion system */
-	SUPERVISIONE=14,                              /*!< Supervision system */
-	TERMOREG_MULTI_PLANT=15,                      /*!< Thermoregulation system with one or more 4-zones plants */
-	ENERGY_MANAGEMENT=16,                         /*!< Energy management system */
-	ENERGY_DATA=17,                               /*!< Energy data system */
-	LOAD_MANAGEMENT=18,                           /*!< Load management system */
-	FEED_READER=99,                               /*!< Feed reader page */
+	NO_SECTION = 0,
+	AUTOMATION = 1,                                 /*!< Automation system */
+	LIGHTING = 2,                                   /*!< Lighting system */
+	ANTIINTRUSION = 3,                              /*!< Anti-intrusion system */
+	LOADS = 4,                                      /*!< Appliances managing system */
+	THERMALREGULATION = 5,                          /*!< Thermoregulation system */
+	SOUNDDIFFUSION = 6,                             /*!< Sound diffusion system (monochannel) */
+	SCENARIOS = 7,                                  /*!< Scenarios managing */
+	SETTINGS = 8,                                   /*!< Settings */
+	SPECIAL = 10,                                   /*!< Special button - placed here for convenience */
+	VIDEODOORENTRY = 11,                            /*!< VideoDoorEntry system */
+	EVOLVED_SCENARIOS = 12,                         /*!< Evolved scenarios management */
+	SOUNDDIFFUSION_MULTI = 13,                      /*!< Multichannel sound diffusion system */
+	SUPERVISION = 14,                               /*!< Supervision system */
+	THERMALREGULATION_MULTI = 15,                   /*!< Thermoregulation system with one or more 4-zones plants */
+	ENERGY_MANAGEMENT = 16,                         /*!< Energy management system */
+	ENERGY_DATA = 17,                               /*!< Energy data system */
+	LOAD_MANAGEMENT = 18,                           /*!< Load management system */
 	/* Added to avoid compile problems... */
-	MULTIMEDIA=26,
-	MESSAGES=27,\
-	AIR_CONDITIONING=-1
+	MULTIMEDIA = 26,
+	MESSAGES = 27,\
 };
 #else
 enum Section
 {
-	NO_SECTION=0,
-	AUTOMAZIONE=3000,                             /*!< Automation system */
-	ILLUMINAZIONE=2000,                           /*!< Lighting system */
-	ANTIINTRUSIONE=13000,                         /*!< Anti-intrusion system */
-	CARICHI=4,                                    /*!< Appliances managing system */
-	TERMOREGOLAZIONE=8000,                        /*!< Thermoregulation system */
-	BACK=9,                                       /*!< Back button - placed here for convenience */
-	SPECIAL=10,                                   /*!< Special button - placed here for convenience */
-	MESSAGES=17000,                               /*!< Textual Messages from scs */
-	LOAD_MANAGEMENT=18000,                        /*!< Load management system */
-	SCENARI=1000,                                 /*!< Scenarios managing */
-	SCENARI_EVOLUTI=9000,                         /*!< Advanced scenarios management */
-	VIDEOCITOFONIA=10000,                         /*!< VideoDoorEntry system */
-	IMPOSTAZIONI=29,                              /*!< Settings */
-	MULTIMEDIA=16000,                             /*!< Multimedia system */
-	DIFSON_MONO=11000,                            /*!< Sound diffusion system (monochannel) */
-	DIFSON_MULTI=12000,                           /*!< Sound diffusion system (multichannel) */
-	SUPERVISIONE=6000,                            /*!< Supervision system */
-	TERMOREG_MULTI_PLANT=-3,                      /*!< Thermoregulation system with one or more 4-zones plants */
-	ENERGY_MANAGEMENT=15000,                      /*!< Energy management system */
-	ENERGY_DATA=7000,                             /*!< Energy data system */
-	FEED_READER=-6,                               /*!< Feed reader page */
-	AIR_CONDITIONING=4000,                        /*!< Air conditioning */
+	NO_SECTION = 0,
+	AUTOMATION = 3000,                              /*!< Automation system */
+	LIGHTING = 2000,                                /*!< Lighting system */
+	ANTIINTRUSION = 13000,                          /*!< Anti-intrusion system */
+	LOADS = 5000,                                   /*!< Appliances managing system */
+	THERMALREGULATION = 8000,                       /*!< Thermoregulation system */
+	SPECIAL = 10,                                   /*!< Special button - placed here for convenience */
+	MESSAGES = 17000,                               /*!< Textual Messages from scs */
+	LOAD_MANAGEMENT = 18000,                        /*!< Load management system */
+	SCENARIOS = 1000,                               /*!< Scenarios managing */
+	EVOLVED_SCENARIOS = 9000,                       /*!< Evolved scenarios management */
+	VIDEODOORENTRY = 10000,                         /*!< VideoDoorEntry system */
+	SETTINGS = 29,                                  /*!< Settings */
+	MULTIMEDIA = 16000,                             /*!< Multimedia system */
+	SOUNDDIFFUSION = 11000,                         /*!< Sound diffusion system (monochannel) */
+	SOUNDDIFFUSION_MULTI = 12000,                   /*!< Sound diffusion system (multichannel) */
+	SUPERVISION = 6000,                             /*!< Supervision system */
+	THERMALREGULATION_MULTI = -3,                   /*!< Thermoregulation system with one or more 4-zones plants */
+	ENERGY_MANAGEMENT = 15000,                      /*!< Energy management system */
+	ENERGY_DATA = 7000,                             /*!< Energy data system */
 };
 #endif
 

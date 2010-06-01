@@ -36,6 +36,7 @@
 #include "audiostatemachine.h"
 #include "homewindow.h" // TrayBar
 #include "ringtonesmanager.h" // bt_global::ringtones
+#include "main.h" // VIDEODOORENTRY
 
 #include <QDomNode>
 #include <QHBoxLayout>
@@ -564,7 +565,7 @@ void VCTCallPage::handleClose()
 
 int VCTCallPage::sectionId() const
 {
-	return VIDEOCITOFONIA;
+	return VIDEODOORENTRY;
 }
 
 void VCTCallPage::enterFullScreen()

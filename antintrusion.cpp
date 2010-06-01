@@ -28,7 +28,7 @@
 #include "pagestack.h"
 #include "navigation_bar.h"
 #include "btbutton.h"
-#include "main.h"
+#include "main.h" // ANTIINTRUSION
 #include "skinmanager.h"
 #include "icondispatcher.h"
 
@@ -101,7 +101,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 
 int Antintrusion::sectionId() const
 {
-	return ANTIINTRUSIONE;
+	return ANTIINTRUSION;
 }
 
 void Antintrusion::createImpianto(const QString &descr)
@@ -212,7 +212,7 @@ Antintrusion::~Antintrusion()
 
 void Antintrusion::IsParz(bool ab)
 {
-	qDebug("antintrusione::IsParz(%d)", ab);
+	qDebug("Antintrusion::IsParz(%d)", ab);
 
 	if (ab)
 		forward_button->show();
@@ -222,7 +222,7 @@ void Antintrusion::IsParz(bool ab)
 
 void Antintrusion::Parzializza()
 {
-	qDebug("antintrusione::Parzializza()");
+	qDebug("Antintrusion::Parzializza()");
 	int s[MAX_ZONE];
 	for (int i = 0; i < MAX_ZONE; i++)
 		s[i] = impianto->getIsActive(i);
@@ -239,7 +239,7 @@ void Antintrusion::Parzializza()
 
 void Antintrusion::Parz()
 {
-	qDebug("antintrusione::Parz()");
+	qDebug("Antintrusion::Parz()");
 	QString pwd = tasti->getText();
 	if (!pwd.isEmpty())
 	{
@@ -601,7 +601,7 @@ AlarmList::AlarmList()
 
 int AlarmList::sectionId() const
 {
-	return ANTIINTRUSIONE;
+	return ANTIINTRUSION;
 }
 
 void AlarmList::activateLayout()

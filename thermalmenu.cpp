@@ -30,6 +30,7 @@
 #include "navigation_bar.h"
 #include "icondispatcher.h"
 #include "fontmanager.h"
+#include "main.h" // THERMALREGULATION
 
 #include <QRegExp>
 #include <QDebug>
@@ -58,7 +59,7 @@ ThermalMenu::ThermalMenu(const QDomNode &config_node)
 
 int ThermalMenu::sectionId() const
 {
-	return TERMOREGOLAZIONE;
+	return THERMALREGULATION;
 }
 
 void ThermalMenu::createPlantMenu(QDomNode config, BannSinglePuls *bann)

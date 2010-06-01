@@ -34,6 +34,7 @@
 #include <QVBoxLayout>
 
 #define CONTENT_MARGIN  25
+#define DIM_BUT 80
 
 
 void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QString &title)

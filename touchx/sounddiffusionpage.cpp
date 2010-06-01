@@ -220,9 +220,9 @@ SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<Source
 	SkinContext context(getTextChild(conf_node, "cid").toInt());
 	QString area;
 
-	if (getTextChild(conf_node, "id").toInt() == DIFSON_MONO)
+	if (getTextChild(conf_node, "id").toInt() == SOUNDDIFFUSION)
 	{
-		section_id = DIFSON_MONO;
+		section_id = SOUNDDIFFUSION;
 		area = "0";
 	}
 	else
@@ -315,7 +315,7 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 	SkinContext context(getTextChild(conf_node, "cid").toInt());
 	QString area;
 
-	if (getTextChild(conf_node, "id").toInt() == DIFSON_MONO)
+	if (getTextChild(conf_node, "id").toInt() == SOUNDDIFFUSION)
 		area = "0";
 	else
 		area = getTextChild(conf_node, "env");
@@ -390,7 +390,7 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 
 	// check if this hardware can work as a source/amplifier and create the virtual
 	// devices to handle the source/amplifier frames
-	is_multichannel = getTextChild(config_node, "id").toInt() == DIFSON_MULTI;
+	is_multichannel = getTextChild(config_node, "id").toInt() == SOUNDDIFFUSION_MULTI;
 
 	buildPage(getTextChild(config_node, "descr"));
 	if (is_multichannel)
@@ -416,7 +416,7 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 
 int SoundDiffusionPage::sectionId() const
 {
-	return DIFSON_MULTI;
+	return SOUNDDIFFUSION_MULTI;
 }
 
 QList<SourceDescription> SoundDiffusionPage::loadSources(const QDomNode &config_node)

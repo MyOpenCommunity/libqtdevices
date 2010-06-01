@@ -23,7 +23,7 @@
 #include "bann_automation.h"
 #include "actuators.h"
 #include "xml_functions.h" // getChildren, getTextChild
-#include "main.h"
+#include "main.h" // AUTOMATION
 #include "skinmanager.h" // SkinContext
 #include "bannerfactory.h"
 
@@ -85,7 +85,7 @@ Automation::Automation(const QDomNode &config_node)
 
 int Automation::sectionId() const
 {
-	return AUTOMAZIONE;
+	return AUTOMATION;
 }
 
 banner *Automation::getBanner(const QDomNode &item_node)

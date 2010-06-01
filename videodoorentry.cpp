@@ -23,7 +23,7 @@
 #include "bann_videodoorentry.h"
 #include "bann2_buttons.h"
 #include "xml_functions.h" // getTextChild, getChildren
-#include "main.h" // bt_global::config
+#include "main.h" // bt_global::config, VIDEODOORENTRY
 #include "skinmanager.h"
 #include "btbutton.h"
 #include "navigation_bar.h"
@@ -129,7 +129,7 @@ void VideoDoorEntry::toggleRingExclusion()
 
 int VideoDoorEntry::sectionId() const
 {
-	return VIDEOCITOFONIA;
+	return VIDEODOORENTRY;
 }
 
 void VideoDoorEntry::loadItems(const QDomNode &config_node)
@@ -248,7 +248,7 @@ IntercomCallPage::IntercomCallPage(EntryphoneDevice *d)
 
 int IntercomCallPage::sectionId() const
 {
-	return VIDEOCITOFONIA;
+	return VIDEODOORENTRY;
 }
 
 void IntercomCallPage::cleanUp()
