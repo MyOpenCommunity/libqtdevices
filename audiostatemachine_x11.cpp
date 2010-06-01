@@ -90,7 +90,7 @@ void AudioStateMachine::setLocalAmplifierVolume(int volume)
 
 int AudioStateMachine::getLocalAmplifierVolume()
 {
-	return 16;
+	return DEFAULT_VOLUME;
 }
 
 void AudioStateMachine::setLocalSourceStatus(bool status)

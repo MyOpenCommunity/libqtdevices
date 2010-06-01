@@ -29,7 +29,7 @@
 #include "generic_functions.h" // getBostikName, scsToLocalVolume
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "bann_amplifiers.h" // Amplifier
-#include "poweramplifier.h" // BannPowerAmplifier
+#include "poweramplifier.h" // BannPowerAmplifier, PowerAmplifierPage
 #include "audiosource.h" // RadioSource, AuxSource, MediaSource
 #include "media_device.h"
 #include "devices_cache.h"
@@ -291,11 +291,14 @@ banner *SoundAmbientPage::getBanner(const QDomNode &item_node)
 	case AMPLIFIER:
 		b = new Amplifier(descr, where);
 		break;
+	case BANN_POWER_AMPLIFIER:
+	{
+		PowerAmplifierDevice *dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(where, oid));
+		b = new BannPowerAmplifier(descr, dev, new PowerAmplifierPage(dev, item_node));
+		break;
+	}
 	case AMPLIFIER_GROUP:
 		b = new AmplifierGroup(getAddresses(getChildWithName(item_node, "addresses")), descr);
-		break;
-	case BANN_POWER_AMPLIFIER:
-		b = new BannPowerAmplifier(descr, item_node, where, oid);
 		break;
 	}
 	return b;

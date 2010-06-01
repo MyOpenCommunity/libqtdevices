@@ -25,6 +25,7 @@
 #include "media_device.h"
 #include "btbutton.h"
 
+
 // TODO: in poweramplifier.h there's a base graphic banner to handle volume and state changes for amplifiers
 // use it also for Amplifier
 
@@ -32,6 +33,7 @@ Amplifier::Amplifier(const QString &descr, const QString &where) : BannLevel(0)
 {
 	volume_value = 0;
 	active = false;
+
 	center_left_active = bt_global::skin->getImage("volume_on_left");
 	center_right_active = bt_global::skin->getImage("volume_on_right");
 	center_left_inactive = bt_global::skin->getImage("volume_off_left");

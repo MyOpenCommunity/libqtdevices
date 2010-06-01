@@ -31,6 +31,7 @@
 #include <QString>
 #include <QMap>
 
+class PowerAmplifierPage;
 class PowerAmplifierDevice;
 class QDomNode;
 class QWidget;
@@ -73,7 +74,7 @@ class BannPowerAmplifier : public AdjustVolume
 {
 Q_OBJECT
 public:
-	BannPowerAmplifier(const QString &descr, const QDomNode& config_node, QString address, int openserver_id);
+	BannPowerAmplifier(const QString &descr, PowerAmplifierDevice *d, PowerAmplifierPage* page);
 
 private slots:
 	void toggleStatus();
@@ -89,16 +90,16 @@ private:
 
 
 /**
- * \class PowerAmplifier
+ * \class PowerAmplifierPage
  *
  * The page of the settings of the power amplifier. It simply delegate the
  * functionality to the correct banner.
  */
-class PowerAmplifier : public BannerPage
+class PowerAmplifierPage : public BannerPage
 {
 Q_OBJECT
 public:
-	PowerAmplifier(PowerAmplifierDevice *dev, const QDomNode &config_node);
+	PowerAmplifierPage(PowerAmplifierDevice *dev, const QDomNode &config_node);
 
 private:
 	void loadBanners(PowerAmplifierDevice *dev, const QDomNode &config_node);

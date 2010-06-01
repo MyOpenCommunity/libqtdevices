@@ -92,25 +92,25 @@ void AdjustVolume::setLevel(int level)
 
 
 
-BannPowerAmplifier::BannPowerAmplifier(const QString &descr, const QDomNode& config_node, QString address, int openserver_id)
+BannPowerAmplifier::BannPowerAmplifier(const QString &descr, PowerAmplifierDevice *d, PowerAmplifierPage* page)
 	: AdjustVolume(0)
 {
 	status = false;
+	dev = d;
 
-	// TODO: remove config_node from params, and also SkinContext
-	SkinContext context(getTextChild(config_node, "cid").toInt());
 	on_icon = bt_global::skin->getImage("on");
 	off_icon = bt_global::skin->getImage("off");
+
 	initBanner(on_icon, bt_global::skin->getImage("volume_active"),
 		bt_global::skin->getImage("volume_inactive"), bt_global::skin->getImage("settings"), OFF, 1, descr);
-	dev = bt_global::add_device_to_cache(new PowerAmplifierDevice(address, openserver_id));
-	connect(dev, SIGNAL(valueReceived(const DeviceValues&)), SLOT(valueReceived(const DeviceValues&)));
+
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleStatus()));
 	connect(this, SIGNAL(center_right_clicked()), SLOT(volumeUp()));
 	connect(this, SIGNAL(center_left_clicked()), SLOT(volumeDown()));
 
-	connectButtonToPage(right_button, new PowerAmplifier(dev, config_node));
+	connectButtonToPage(right_button, page);
 }
 
 void BannPowerAmplifier::toggleStatus()
@@ -120,8 +120,6 @@ void BannPowerAmplifier::toggleStatus()
 	else
 		dev->turnOn();
 }
-
-// TODO: PoweramplifierDevice currently lacks the new init() method
 
 void BannPowerAmplifier::valueReceived(const DeviceValues &values_list)
 {
@@ -164,13 +162,13 @@ void BannPowerAmplifier::volumeDown()
 }
 
 
-PowerAmplifier::PowerAmplifier(PowerAmplifierDevice *dev, const QDomNode &config_node)
+PowerAmplifierPage::PowerAmplifierPage(PowerAmplifierDevice *dev, const QDomNode &config_node)
 {
 	buildPage();
 	loadBanners(dev, config_node);
 }
 
-void PowerAmplifier::loadBanners(PowerAmplifierDevice *dev, const QDomNode &config_node)
+void PowerAmplifierPage::loadBanners(PowerAmplifierDevice *dev, const QDomNode &config_node)
 {
 	QMap<int, QString> preset_list;
 	foreach (const QDomNode &preset_node, getChildren(config_node, "pre"))
