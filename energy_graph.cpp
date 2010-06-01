@@ -45,11 +45,12 @@ EnergyGraph::EnergyGraph()
 	number_of_bars = 1;
 }
 
-void EnergyGraph::init(int bars, QString t, const QMap<int, QString>& x_axis)
+void EnergyGraph::init(int bars, QString t, const QMap<int, QString>& x_axis, bool center_x_axis)
 {
 	text = t;
 	number_of_bars = bars;
 	custom_x_axis = x_axis;
+	centered_x_axis = center_x_axis;
 	graph_data.clear();
 	update();
 }
@@ -146,6 +147,9 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 		// Min & Max values on x axis
 		int font_y_pos = axis_top + AXIS_PEN_WIDTH + fm.ascent() + SPACING;
 
+		// draw the text at the center of the bar
+		int x_offset = centered_x_axis ? -bar_width / 2 : 0;
+
 		if (!custom_x_axis.empty())
 		{
 			QMapIterator<int, QString> it(custom_x_axis);
@@ -158,7 +162,7 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 				p.drawText(current_left - bar_width + (bar_width - fm.width(it.value())) / 2, font_y_pos, it.value());
 
 				p.setPen(pen_axis);
-				p.drawLine(current_left, axis_top, current_left, axis_top + MARGIN);
+				p.drawLine(current_left + x_offset, axis_top, current_left + x_offset, axis_top + MARGIN);
 			}
 		}
 		else
@@ -167,11 +171,11 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 			p.drawText(axis_left, font_y_pos, "1");
 
 			QString center = QString::number(number_of_bars / 2);
-			int left = axis_left + AXIS_PEN_WIDTH;
-			p.drawText(left + bar_width * (number_of_bars / 2) - fm.width(center) / 2 - bar_width / 2 , font_y_pos, center);
+			int left = axis_left + AXIS_PEN_WIDTH + x_offset;
+			p.drawText(left + bar_width * (number_of_bars / 2) - fm.width(center) / 2, font_y_pos, center);
 
 			QString max = QString::number(number_of_bars);
-			p.drawText(left + bar_width * number_of_bars - fm.width(max) / 2 - bar_width / 2, font_y_pos, max);
+			p.drawText(left + bar_width * number_of_bars - fm.width(max) / 2, font_y_pos, max);
 
 			// Draw a line for each quarter of the graph.
 			QList<int> lines;
@@ -184,7 +188,7 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 
 			foreach (int i, lines)
 			{
-				int current_left = left + i * bar_width - bar_width / 2;
+				int current_left = left + i * bar_width;
 				p.drawLine(current_left, axis_top, current_left, axis_top + MARGIN);
 			}
 		}

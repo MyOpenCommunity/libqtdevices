@@ -655,7 +655,7 @@ void EnergyView::updateCurrentGraph()
 	{
 	case EnergyDevice::DAILY_AVERAGE:
 	case EnergyDevice::CUMULATIVE_DAY:
-		graph->init(24, label + tr("/hours"), graph_x_axis);
+		graph->init(24, label + tr("/hours"), graph_x_axis, true);
 		table->init(24, tr("Hour"), label, time_period->dateDisplayed());
 		break;
 	case EnergyDevice::CUMULATIVE_YEAR:
@@ -669,13 +669,19 @@ void EnergyView::updateCurrentGraph()
 			graph_x_axis[i] = QString::number(month);
 		}
 
-		graph->init(12, label + tr("/months"), graph_x_axis);
+		graph->init(12, label + tr("/months"), graph_x_axis, false);
 		table->init(12, tr("Month"), label, time_period->dateDisplayed(), curr_month % 12);
 		break;
 	}
 	case EnergyDevice::CUMULATIVE_MONTH:
 	default:
-		graph->init(time_period->date().daysInMonth(), label + tr("/days"), graph_x_axis);
+		graph_x_axis[1] = "1";
+		graph_x_axis[7] = "";
+		graph_x_axis[14] = "14";
+		graph_x_axis[21] = "";
+		graph_x_axis[28] = "28";
+
+		graph->init(time_period->date().daysInMonth(), label + tr("/days"), graph_x_axis, true);
 		table->init(time_period->date().daysInMonth(), tr("Day"), label, time_period->dateDisplayed());
 		break;
 	}
