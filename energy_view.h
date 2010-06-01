@@ -69,6 +69,7 @@ private slots:
 	void changeTimeScale();
 	void periodForward();
 	void periodBackward();
+	void emitTimeChanged();
 
 private:
 	/**
@@ -85,6 +86,7 @@ private:
 	BtButton *back_period, *forw_period, *btn_cycle;
 	QLabel *date_period_label;
 	QDate selection_date;
+	QTimer delayed_update;
 
 signals:
 	void timeChanged(int, QDate);

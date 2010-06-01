@@ -46,6 +46,7 @@
 
 #define POLLING_CURRENT 5 // time to refresh data visualized in the current banner (in sec.)
 #define POLLING_CUMULATIVE_DAY 60 * 60 // time to refresh data visualized in the comulative day banner (in sec.)
+#define TIME_UPDATE_DELAY 200
 
 namespace
 {
@@ -153,6 +154,10 @@ void EnergyViewNavigation::showCurrencyButton(bool show)
 
 TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 {
+	delayed_update.setSingleShot(true);
+	delayed_update.setInterval(TIME_UPDATE_DELAY);
+	connect(&delayed_update, SIGNAL(timeout()), SLOT(emitTimeChanged()));
+
 	_status = DAY;
 	selection_date = QDate::currentDate();
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
@@ -283,7 +288,12 @@ void TimePeriodSelection::changeTimePeriod(int delta)
 		break;
 	}
 	if (selection_date != previous_date)
-		emit timeChanged(_status, selection_date);
+		delayed_update.start();
+}
+
+void TimePeriodSelection::emitTimeChanged()
+{
+	emit timeChanged(_status, selection_date);
 }
 
 QDate TimePeriodSelection::date()
