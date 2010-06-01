@@ -108,6 +108,15 @@ bool AudioStateMachine::isSoundDiffusionActive()
 	return getLocalAmplifierStatus() || getLocalSourceStatus();
 }
 
+void AudioStateMachine::setDirectAudioAccess(bool status)
+{
+}
+
+bool AudioStateMachine::isDirectAudioAccess()
+{
+       return false;
+}
+
 AudioStateMachine *bt_global::audio_states = 0;
 
 

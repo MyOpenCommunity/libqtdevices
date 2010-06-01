@@ -161,6 +161,8 @@ private:
 	QTimer *volumes_timer;
 	int current_audio_path;
 #endif
+
+private:
 	bool is_source, is_amplifier;
 	bool local_source_status, local_amplifier_status;
 	int direct_audio_access;
