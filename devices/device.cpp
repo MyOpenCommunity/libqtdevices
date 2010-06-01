@@ -250,6 +250,6 @@ void device::setClients(const QHash<int, QPair<Client*, Client*> > &c)
 
 QString device::get_key()
 {
-	return QString("%1#%2*%3").arg(openserver_id).arg(who).arg(where);
+	return QString("%4-%1#%2*%3").arg(openserver_id).arg(who).arg(where).arg(metaObject()->className());
 }
 

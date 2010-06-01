@@ -22,6 +22,17 @@
 #include "devices_cache.h"
 
 
+/*
+ * Most of the time there will only be a single device in the system with a given where; however,
+ * there can be multiple devices with the same where in the system with different classes; this happens
+ * most frequently with device groups (eg. a ligh group might contain a dimmer) or with advanced scenarios
+ * (eg. a scenario on amplifier status that uses a power amplifier).
+ *
+ * In this case the device cache will contain two instances, one per class type.  To avoid sending duplicate
+ * frames either in initialization or in response to anoter frame, output frames are sent with a small delay,
+ * and the client socket sends a frame at most once every time it flushes its internal queue.
+ */
+
 void DevicesCache::devicesCreated()
 {
 	devices_created = true;
