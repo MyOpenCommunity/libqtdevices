@@ -877,7 +877,7 @@ void device_condition_dimming::status_changed(const StatusList &sl)
 	{
 		int level = 0;
 		if ((it.key() == LightingDevice::DIM_DEVICE_ON) || (it.key() == LightingDevice::DIM_DIMMER_LEVEL))
-				level = it.value().toInt();
+				level = it.value().toInt() / 10;
 		else
 		{
 			++it;
