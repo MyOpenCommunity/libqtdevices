@@ -49,7 +49,7 @@ public:
 #endif
 
 public slots:
-	void init(int bars, QString t, const QMap<int, QString> &x_axis);
+	void init(int bars, QString t, const QMap<int, QString> &x_axis, bool center_x_axis);
 	void setData(const QMap<int, double> &data);
 
 protected:
@@ -59,6 +59,7 @@ private:
 	int number_of_bars;
 	QString text;
 	QMap<int, QString> custom_x_axis;
+	bool centered_x_axis;
 
 	// The attributes to store information set from stylesheet (using the properties)
 	QString _primary_color, _secondary_color, _border_color, _axis_color, _text_color;
