@@ -47,6 +47,9 @@ class Loads : public BannerPage
 Q_OBJECT
 public:
 	Loads(const QDomNode &config_node);
+
+	virtual int sectionId() const;
+
 private:
 	void loadItems(const QDomNode &config_node);
 };

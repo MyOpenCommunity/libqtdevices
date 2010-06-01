@@ -22,7 +22,21 @@
 #include "loads.h"
 #include "frame_functions.h" // createCommandFrame
 #include "xml_functions.h" // getChildren, getTextChild
-#include "main.h" // CARICO
+#include "skinmanager.h"
+#include "main.h" // LOADS
+
+
+#ifdef CONFIG_BTOUCH
+enum BannerType
+{
+	LOAD = 7,
+};
+#else
+enum BannerType
+{
+	LOAD = 5001,
+};
+#endif
 
 
 bannLoads::bannLoads(Page *parent, QString indirizzo, QString IconaSx) : bannOnSx(parent)
@@ -40,20 +54,26 @@ void bannLoads::Attiva()
 
 Loads::Loads(const QDomNode &config_node)
 {
+	SkinContext context(getTextChild(config_node, "cid").toInt());
 	buildPage();
 	loadItems(config_node);
+}
+
+int Loads::sectionId() const
+{
+	return LOADS;
 }
 
 void Loads::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
+		SkinContext context(getTextChild(item, "cid").toInt());
 		int id = getTextChild(item, "id").toInt();
-		Q_ASSERT_X(id == CARICO, "Loads::loadItems", "Type of item not handled on loads page!");
+		Q_ASSERT_X(id == LOAD, "Loads::loadItems", "Type of item not handled on loads page!");
 		QString where = getTextChild(item, "where");
-		QString img = IMG_PATH + getTextChild(item, "cimg1");
 
-		bannLoads *b = new bannLoads(this, where, img);
+		bannLoads *b = new bannLoads(this, where, bt_global::skin->getImage("ok"));
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);
 		b->Draw();

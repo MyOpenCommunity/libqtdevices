@@ -221,7 +221,6 @@ enum Section
  */
 enum ItemType
 {
-	CARICO=7,                                     /*!<  Appliance */
 	SET_DATA_ORA=14,                              /*!<  Time setting */
 	SET_SVEGLIA=20,                               /*!<  AlarmClock setting */
 	SET_SVEGLIA_SINGLEPAGE=14201,                 /*!<  AlarmClock setting with state icon */

@@ -336,6 +336,12 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/termoregolazione.png</img_top_navigation_button>
 	</item>
 	<item>
+		<!-- loads link -->
+		<cid>5</cid>
+		<img_link_icon>home/carichi.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/carichi.png</img_top_navigation_button>
+	</item>
+	<item>
 		<!-- Multichannel sound diffusion -->
 		<cid>12</cid>
 		<img_link_icon>home/diffusionemultimediale.png</img_link_icon>
