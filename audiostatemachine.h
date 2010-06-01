@@ -101,6 +101,16 @@ public:
 
 	bool isSoundDiffusionActive();
 
+	// Call to notify watchers that some program (mplayer, sox, ...) is writing directly
+	// to the dsp; there can only be one such program active at a given time
+	void setDirectAudioAccess(bool status);
+	bool isDirectAudioAccess();
+
+signals:
+	// notify that some program (mplayer, sox, ...) is writing directly to the dsp
+	void directAudioAccessStarted();
+	void directAudioAccessStopped();
+
 #if !defined(BT_HARDWARE_X11)
 
 private slots:
@@ -153,6 +163,7 @@ private:
 #endif
 	bool is_source, is_amplifier;
 	bool local_source_status, local_amplifier_status;
+	int direct_audio_access;
 };
 
 

@@ -46,8 +46,9 @@ enum DisplayStatus
 /*
  * This class is a global controller of the properties of display.
  */
-class DisplayControl
+class DisplayControl : public QObject
 {
+Q_OBJECT
 friend class BtMain;
 public:
 	DisplayControl();
@@ -71,6 +72,16 @@ public:
 	void forceOperativeMode(bool enable);
 	bool isForcedOperativeMode();
 
+	// Call to notify watchers that some program (mplayer, rsize, ...) is writing directly
+	// to the screen; typically there can only be one such program active at a given time
+	void setDirectScreenAccess(bool status);
+	bool isDirectScreenAccess();
+
+signals:
+	// notify that some program (mplayer, rsize, ...) is writing directly to the screen
+	void directScreenAccessStarted();
+	void directScreenAccessStopped();
+
 private:
 	void updateBrightnessData();
 
@@ -87,7 +98,7 @@ private:
 	ScreenSaver::Type current_screensaver;
 	DisplayStatus current_state;
 	bool forced_operative_mode;
-	int operative_brightness;
+	int operative_brightness, direct_screen_access;
 };
 
 namespace bt_global { extern DisplayControl *display; }

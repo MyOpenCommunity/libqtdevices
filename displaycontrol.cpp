@@ -27,6 +27,7 @@
 DisplayControl::DisplayControl()
 {
 	forced_operative_mode = false;
+	direct_screen_access = 0;
 	operative_brightness = 10;
 	current_state = DISPLAY_OFF;
 	setBrightness(BRIGHTNESS_NORMAL);
@@ -138,6 +139,22 @@ void DisplayControl::forceOperativeMode(bool enable)
 bool DisplayControl::isForcedOperativeMode()
 {
 	return forced_operative_mode;
+}
+
+void DisplayControl::setDirectScreenAccess(bool status)
+{
+	if (!status && !direct_screen_access)
+		return;
+	direct_screen_access += status ? 1 : -1;
+	if (direct_screen_access == 1 && status)
+		emit directScreenAccessStarted();
+	else if (direct_screen_access == 0)
+		emit directScreenAccessStopped();
+}
+
+bool DisplayControl::isDirectScreenAccess()
+{
+	return direct_screen_access != 0;
 }
 
 void DisplayControl::setState(DisplayStatus status)

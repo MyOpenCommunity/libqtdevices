@@ -215,6 +215,7 @@ AudioStateMachine::AudioStateMachine()
 	connect(volumes_timer, SIGNAL(timeout()), SLOT(saveVolumes()));
 
 	current_audio_path = -1;
+	direct_audio_access = 0;
 
 	addState(IDLE,
 		 SLOT(stateIdleEntered()),
@@ -372,6 +373,22 @@ bool AudioStateMachine::getLocalSourceStatus()
 bool AudioStateMachine::isSoundDiffusionActive()
 {
 	return getLocalAmplifierStatus() || getLocalSourceStatus();
+}
+
+void AudioStateMachine::setDirectAudioAccess(bool status)
+{
+	if (!status && !direct_audio_access)
+		return;
+	direct_audio_access += status ? 1 : -1;
+	if (direct_audio_access == 1 && status)
+		emit directAudioAccessStarted();
+	else if (direct_audio_access == 0)
+		emit directAudioAccessStopped();
+}
+
+bool AudioStateMachine::isDirectAudioAccess()
+{
+       return direct_audio_access != 0;
 }
 
 void AudioStateMachine::setVolume(int value)
