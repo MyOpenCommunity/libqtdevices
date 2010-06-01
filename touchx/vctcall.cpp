@@ -270,6 +270,7 @@ void VCTCall::finished(int exitcode, QProcess::ExitStatus exitstatus)
 	Q_UNUSED(exitcode)
 	Q_UNUSED(exitstatus)
 	emit videoFinished();
+	bt_global::display->setDirectScreenAccess(false);
 }
 
 void VCTCall::changeVolume(int value)
@@ -348,6 +349,7 @@ void VCTCall::startVideo()
 			args = video_grabber_fullscreen_args;
 
 		video_grabber.start(video_grabber_path + " " + args);
+		bt_global::display->setDirectScreenAccess(true);
 	}
 }
 
