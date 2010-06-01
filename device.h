@@ -114,6 +114,8 @@ public slots:
 
 	void sendFrame(QString frame) const;
 	void sendInit(QString frame) const;
+	void sendDelayedInit(QString frame) const;
+	void sendDelayedFrame(QString frame) const;
 
 protected:
 	// The costructor is protected only to make device abstract.

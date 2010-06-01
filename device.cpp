@@ -103,6 +103,18 @@ void device::sendInit(QString frame) const
 	client_richieste->ApriInviaFrameChiudi(buf.constData());
 }
 
+void device::sendDelayedFrame(QString frame) const
+{
+	assert(client_richieste && "Client comandi not set!");
+	client_comandi->sendFrameOpenDelayed(frame);
+}
+
+void device::sendDelayedInit(QString frame) const
+{
+	assert(client_richieste && "Client richieste not set!");
+	client_richieste->sendFrameOpenDelayed(frame);
+}
+
 void device::sendCompressedFrame(const QString &frame) const
 {
 	if (cmd_compressor)

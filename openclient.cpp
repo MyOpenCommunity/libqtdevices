@@ -27,6 +27,7 @@
 #define SOCKET_MONITOR "*99*1##"
 #define SOCKET_COMANDI "*99*9##"
 #define SOCKET_RICHIESTE "*99*0##"
+#define FRAME_DELAY_TIMEOUT 10
 
 
 Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host), port(_port)
@@ -42,6 +43,11 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 
 	// connect to the server
 	connetti();
+
+	// set up delayed frame sending
+	connect(&delay_timer, SIGNAL(timeout()), SLOT(sendDelayedFrames()));
+	delay_timer.setSingleShot(true);
+	delay_timer.setInterval(FRAME_DELAY_TIMEOUT);
 }
 
 Client::~Client()
@@ -69,6 +75,24 @@ void Client::socketConnected()
 	}
 }
 
+void Client::sendDelayedFrames()
+{
+	QSet<QByteArray> discard_duplicates;
+
+	foreach (const QByteArray &frame, delayed_frames)
+	{
+		if (discard_duplicates.contains(frame))
+			continue;
+		discard_duplicates.insert(frame);
+
+		socket->write(frame);
+
+		qDebug("Client::ApriInviaFrameChiudi() invio: %s", frame.data());
+	}
+
+	delayed_frames.clear();
+}
+
 void Client::ApriInviaFrameChiudi(const char* frame)
 {
 	sendFrameOpen(frame);
@@ -92,6 +116,23 @@ void Client::sendFrameOpen(const QString &frame_open)
 	}
 	socket->write(frame);
 	qDebug("Client::ApriInviaFrameChiudi() invio: %s",frame.data());
+}
+
+void Client::sendFrameOpenDelayed(const QString &frame_open)
+{
+	QByteArray frame = frame_open.toLatin1();
+	if (socket->state() == QAbstractSocket::UnconnectedState || socket->state() == QAbstractSocket::ClosingState)
+	{
+		connetti();
+		if (type == RICHIESTE)
+			socket->write(SOCKET_RICHIESTE);
+		else
+			socket->write(SOCKET_COMANDI); //lo metto qui else mando prima frame di questo!
+	}
+	// queue the frames to be sent later, but avoid delaying frames indefinitely
+	delayed_frames.append(frame);
+	if (!delay_timer.isActive())
+		delay_timer.start();
 }
 
 void Client::ApriInviaFrameChiudiw(char *frame)

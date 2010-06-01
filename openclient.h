@@ -29,6 +29,7 @@
 #include <QByteArray>
 #include <QRegExp>
 #include <QHash>
+#include <QTimer>
 
 #ifndef OPENSERVER_ADDR
 #define OPENSERVER_ADDR "127.0.0.1"
@@ -58,6 +59,7 @@ public:
 
 	Client(Type t, const QString &_host=OPENSERVER_ADDR, unsigned _port=OPENSERVER_PORT);
 	void ApriInviaFrameChiudi(const char *);
+	void sendFrameOpenDelayed(const QString &frame_open);
 	void installFrameCompressor(int timeout, const QString &regex);
 	void flush() { socket->flush(); }
 	~Client();
@@ -77,6 +79,9 @@ private slots:
 	void ackReceived();
 	void sendFrameOpen(const QString &frame_open);
 
+	// sends queued frames, removing duplicates
+	void sendDelayedFrames();
+
 private:
 	QTcpSocket *socket;
 	Type type;
@@ -85,7 +90,10 @@ private:
 	QByteArray data_read;
 	bool ackRx;
 
-	void socketStateRead(char*);
+	// gather sent frames to be sent later; using a list because frame order is important
+	QList<QByteArray> delayed_frames;
+	QTimer delay_timer;
+
 	void manageFrame(QByteArray frame);
 	QByteArray readFromServer();
 
