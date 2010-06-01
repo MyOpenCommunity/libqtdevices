@@ -134,7 +134,6 @@ namespace VCTCallPrivate
 		void incomingCall();
 		void autoIncomingCall();
 		void callerAddress();
-		void videoFinished();
 
 	private slots:
 		void valueReceived(const DeviceValues &values_list);
@@ -190,9 +189,12 @@ Q_OBJECT
 public:
 	VCTCallPage(EntryphoneDevice *d);
 	~VCTCallPage();
+
 	static void setHandsFree(bool on);
 	static void setProfStudio(bool on);
+
 	virtual int sectionId() const;
+	virtual void showPage();
 
 public slots:
 	virtual void cleanUp();
@@ -210,8 +212,10 @@ private slots:
 	void callerAddress();
 	void showVCTWindow();
 	void valueReceived(const DeviceValues &values_list);
+	void playRingtone();
 
 private:
+	int ringtone;
 	VCTCallPrivate::VCTCallWindow *window;
 	VCTCallPrivate::VCTCall *vct_call;
 	EntryphoneDevice *dev;

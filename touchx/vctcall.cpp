@@ -269,7 +269,6 @@ void VCTCall::finished(int exitcode, QProcess::ExitStatus exitstatus)
 {
 	Q_UNUSED(exitcode)
 	Q_UNUSED(exitstatus)
-	emit videoFinished();
 	bt_global::display->setDirectScreenAccess(false);
 }
 
@@ -327,15 +326,15 @@ void VCTCall::toggleCall()
 
 void VCTCall::resumeVideo()
 {
-	// We have to wait the ending of the process to restart the process.
-	if (video_grabber.state() == QProcess::NotRunning)
+	disconnect(bt_global::display, SIGNAL(directScreenAccessStopped()), this, SLOT(resumeVideo()));
+	if (bt_global::display->isDirectScreenAccess())
 	{
-		call_status->stopped = false;
-		disconnect(this, SIGNAL(videoFinished()), this, SLOT(resumeVideo()));
-		startVideo();
+		connect(bt_global::display, SIGNAL(directScreenAccessStopped()), SLOT(resumeVideo()));
+		return;
 	}
-	else // we re-try when the video is terminated.
-		connect(this, SIGNAL(videoFinished()), this, SLOT(resumeVideo()));
+
+	call_status->stopped = false;
+	startVideo();
 }
 
 void VCTCall::startVideo()
@@ -524,12 +523,12 @@ void VCTCallPage::valueReceived(const DeviceValues &values_list)
 
 		if (!ring_exclusion || !ring_exclusion->getStatus())
 		{
-			Ringtones::Type ringtone = static_cast<Ringtones::Type>(values_list[EntryphoneDevice::RINGTONE].toInt());
+			ringtone = values_list[EntryphoneDevice::RINGTONE].toInt();
 			if (ringtone == Ringtones::PE1 || ringtone == Ringtones::PE2 ||
 				ringtone == Ringtones::PE3 || ringtone == Ringtones::PE4)
 			{
 				bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
-				bt_global::ringtones->playRingtone(ringtone);
+				playRingtone();
 			}
 		}
 	}
@@ -541,6 +540,9 @@ void VCTCallPage::cleanUp()
 	// button. In this case, we have to send the end of call (even if is an
 	// autoswitch call) and terminate the video.
 	vct_call->endCall();
+
+	disconnect(bt_global::audio_states, SIGNAL(directAudioAccessStopped()),	this, SLOT(playRingtone()));
+	disconnect(bt_global::display, SIGNAL(directScreenAccessStopped()), this, SLOT(showPage()));
 
 	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
 	{
@@ -554,6 +556,9 @@ void VCTCallPage::cleanUp()
 
 void VCTCallPage::handleClose()
 {
+	disconnect(bt_global::audio_states, SIGNAL(directAudioAccessStopped()),	this, SLOT(playRingtone()));
+	disconnect(bt_global::display, SIGNAL(directScreenAccessStopped()), this, SLOT(showPage()));
+
 	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
 	{
 		bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
@@ -570,18 +575,30 @@ int VCTCallPage::sectionId() const
 	return VIDEODOORENTRY;
 }
 
+void VCTCallPage::playRingtone()
+{
+	disconnect(bt_global::audio_states, SIGNAL(directAudioAccessStopped()),	this, SLOT(playRingtone()));
+	if (bt_global::audio_states->isDirectAudioAccess())
+	{
+		connect(bt_global::audio_states, SIGNAL(directAudioAccessStopped()), SLOT(playRingtone()));
+		return;
+	}
+
+	bt_global::ringtones->playRingtone(static_cast<Ringtones::Type>(ringtone));
+}
+
 void VCTCallPage::enterFullScreen()
 {
 	// We need this two-pass signal-slot because we have to wait until the
 	// terminating process exit. We don't care about calling twice the stopVideo
 	// method (see the doc of that method)
 	vct_call->stopVideo();
-	connect(vct_call, SIGNAL(videoFinished()), this, SLOT(showVCTWindow()));
+	connect(bt_global::display, SIGNAL(directScreenAccessStopped()), SLOT(showVCTWindow()));
 }
 
 void VCTCallPage::showVCTWindow()
 {
-	disconnect(vct_call, SIGNAL(videoFinished()), this, SLOT(showVCTWindow()));
+	disconnect(bt_global::display, SIGNAL(directScreenAccessStopped()), this, SLOT(showVCTWindow()));
 	// Signals from vct_call must be managed only when the window is not visible.
 	vct_call->disable();
 	window->showWindow();
@@ -621,6 +638,19 @@ void VCTCallPage::callerAddress()
 	}
 }
 
+void VCTCallPage::showPage()
+{
+	disconnect(bt_global::display, SIGNAL(directScreenAccessStopped()), this, SLOT(showPage()));
+	if (bt_global::display->isDirectScreenAccess())
+	{
+		connect(bt_global::display, SIGNAL(directScreenAccessStopped()), SLOT(showPage()));
+		return;
+	}
+
+	bt_global::page_stack.showVCTPage(this);
+	Page::showPage();
+}
+
 void VCTCallPage::showEvent(QShowEvent *)
 {
 	if (!BtMain::isCalibrating())
@@ -634,7 +664,6 @@ void VCTCallPage::hideEvent(QHideEvent *)
 
 void VCTCallPage::autoIncomingCall()
 {
-	bt_global::page_stack.showVCTPage(this);
 	bt_global::btmain->vde_call_active = true;
 	VCTCall::call_status->init();
 	vct_call->refreshStatus();
@@ -693,12 +722,12 @@ void VCTCallWindow::showWindow()
 void VCTCallWindow::fullScreenExit()
 {
 	vct_call->stopVideo();
-	connect(vct_call, SIGNAL(videoFinished()), this, SLOT(showVCTPage()));
+	connect(bt_global::display, SIGNAL(directScreenAccessStopped()), SLOT(showVCTPage()));
 }
 
 void VCTCallWindow::showVCTPage()
 {
-	disconnect(vct_call, SIGNAL(videoFinished()), this, SLOT(showVCTPage()));
+	disconnect(bt_global::display, SIGNAL(directScreenAccessStopped()), this, SLOT(showVCTPage()));
 	vct_call->disable();
 	emit exitFullScreen();
 }
