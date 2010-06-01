@@ -135,6 +135,7 @@ public:
 		   int currency_decimals, EnergyTable *_table, EnergyGraph *_graph);
 	~EnergyView();
 	virtual void inizializza();
+	virtual void cleanUp();
 	void systemTimeChanged();
 
 public slots:

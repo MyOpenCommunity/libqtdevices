@@ -634,6 +634,17 @@ void EnergyView::valueReceived(const DeviceValues &values_list)
 	updateBanners();
 }
 
+void EnergyView::cleanUp()
+{
+	if (current_widget == BANNER_WIDGET)
+		return;
+
+	current_widget = BANNER_WIDGET;
+	showTableButton(false);
+	time_period->showCycleButton();
+	widget_container->setCurrentIndex(current_widget);
+}
+
 void EnergyView::backClick()
 {
 	if (current_widget == BANNER_WIDGET)
