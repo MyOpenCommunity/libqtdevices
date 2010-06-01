@@ -111,6 +111,7 @@ private slots:
 	void changeVolume(int value);
 	void toggleMute();
 	void showPageIncomingCall();
+	void playRingtone();
 
 private:
 	EntryphoneDevice *dev;
@@ -118,6 +119,7 @@ private:
 	StateButton *mute_button;
 	ItemTuning *volume;
 	bool call_active;
+	int ringtone;
 };
 
 
