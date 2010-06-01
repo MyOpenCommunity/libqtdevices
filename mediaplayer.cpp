@@ -21,6 +21,8 @@
 
 #include "mediaplayer.h"
 #include "hardware_functions.h" // maxWidth, maxHeight
+#include "displaycontrol.h"
+#include "audiostatemachine.h"
 
 #include <QRegExp>
 #include <QDebug>
@@ -50,9 +52,12 @@ QProcess MediaPlayer::mplayer_proc;
 MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 {
 	active = false;
+	is_video = false;
 	paused = false;
 	connect(&mplayer_proc, SIGNAL(finished(int, QProcess::ExitStatus)), SLOT(mplayerFinished(int, QProcess::ExitStatus)));
 	connect(&mplayer_proc, SIGNAL(error(QProcess::ProcessError)), SLOT(mplayerError(QProcess::ProcessError)));
+	connect(this, SIGNAL(mplayerResumed()), SLOT(playbackStarted()));
+	connect(this, SIGNAL(mplayerStarted()), SLOT(playbackStarted()));
 }
 
 bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool write_output)
@@ -63,6 +68,7 @@ bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool 
 	mplayer_args << "-vf" << QString("scale=%1:%2").arg(geometry.width()).arg(geometry.height())
 		     << "-geometry" << QString("%1:%2").arg(geometry.left()).arg(geometry.top())
 		     << track;
+	is_video = true;
 
 	return runMPlayer(mplayer_args, write_output);
 }
@@ -74,6 +80,7 @@ bool MediaPlayer::playVideoFullScreen(QString track, int start_time, bool write_
 
 	mplayer_args << "-fs"
 		     << track;
+	is_video = true;
 
 	return runMPlayer(mplayer_args, write_output);
 }
@@ -111,6 +118,7 @@ bool MediaPlayer::play(QString track, bool write_output)
 	}
 	else
 		mplayer_args << track;
+	is_video = false;
 
 	return runMPlayer(mplayer_args, write_output);
 }
@@ -151,6 +159,7 @@ void MediaPlayer::actuallyPaused()
 {
 	paused = true;
 	emit mplayerPaused();
+	updateDirectAccessState(false);
 }
 
 void MediaPlayer::resume()
@@ -273,6 +282,7 @@ void MediaPlayer::mplayerFinished(int exit_code, QProcess::ExitStatus exit_statu
 	if (!active)
 		return;
 	active = false;
+	updateDirectAccessState(false);
 
 	if (exit_status == QProcess::CrashExit)
 	{
@@ -300,4 +310,18 @@ void MediaPlayer::mplayerError(QProcess::ProcessError error)
 	int idx = mplayer_proc.metaObject()->indexOfEnumerator("ProcessError");
 	QMetaEnum e = mplayer_proc.metaObject()->enumerator(idx);
 	qDebug() << "[AUDIO] mplayer_proc raised an error: " << e.key(error);
+}
+
+void MediaPlayer::playbackStarted()
+{
+	if (!active)
+		return;
+	updateDirectAccessState(true);
+}
+
+void MediaPlayer::updateDirectAccessState(bool state)
+{
+	if (is_video)
+		bt_global::display->setDirectScreenAccess(state);
+	bt_global::audio_states->setDirectAudioAccess(state);
 }

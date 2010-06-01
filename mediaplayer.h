@@ -80,7 +80,7 @@ private:
 	// When an instance is not active, calling one of the play*() methods will stop
 	// the current playback, if any, and start the requested file.
 	// All other methods are no-ops.
-	bool active;
+	bool active, is_video;
 	static QProcess mplayer_proc;
 
 	/// Send a string to the mplayer process to execute.
@@ -88,6 +88,9 @@ private:
 
 	// called when the mplayer process really stops playback
 	void actuallyPaused();
+
+	// update the direct video/audio access state
+	void updateDirectAccessState(bool state);
 
 	bool runMPlayer(const QList<QString> &args, bool write_output);
 	QList<QString> getStandardArgs();
@@ -101,6 +104,7 @@ private:
 private slots:
 	void mplayerFinished(int exit_code, QProcess::ExitStatus exit_status);
 	void mplayerError(QProcess::ProcessError error);
+	void playbackStarted();
 
 signals:
 	/// mplayer started the reproduction of the media
