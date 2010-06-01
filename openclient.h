@@ -26,6 +26,7 @@
 #include <QTcpSocket>
 #include <QByteArray>
 #include <QHash>
+#include <QTimer>
 
 #ifndef OPENSERVER_ADDR
 #define OPENSERVER_ADDR "127.0.0.1"
@@ -97,6 +98,9 @@ private slots:
 
 	void ackReceived();
 
+	// sends queued frames, removing duplicates
+	void sendDelayedFrames();
+
 private:
 	QTcpSocket *socket;
 	Type type;
@@ -112,6 +116,10 @@ private:
 
 	// The list of the FrameReceivers that will receive the incoming frames.
 	QHash<int, QList<FrameReceiver*> > subscribe_list;
+
+	// gather sent frames to be sent later; using a list because frame order is important
+	QList<QByteArray> delayed_frames;
+	QTimer delay_timer;
 
 	// This flag marks if the client is logically connected or not.
 	bool is_connected;

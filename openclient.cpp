@@ -37,6 +37,7 @@
 #define SOCKET_SUPERVISOR "*99*10##"
 #define SOCKET_COMMAND "*99*9##"
 #define SOCKET_REQUEST "*99*0##"
+#define FRAME_DELAY_TIMEOUT 10
 
 
 namespace
@@ -79,6 +80,11 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 
 	// connect to the server
 	connectToHost();
+
+	// set up delayed frame sending
+	connect(&delay_timer, SIGNAL(timeout()), SLOT(sendDelayedFrames()));
+	delay_timer.setSingleShot(true);
+	delay_timer.setInterval(FRAME_DELAY_TIMEOUT);
 }
 
 bool Client::isConnected()
@@ -106,6 +112,27 @@ void Client::socketConnected()
 		socket->write(SOCKET_COMMAND);
 }
 
+void Client::sendDelayedFrames()
+{
+	QSet<QByteArray> discard_duplicates;
+
+	foreach (const QByteArray &frame, delayed_frames)
+	{
+		if (discard_duplicates.contains(frame))
+			continue;
+		discard_duplicates.insert(frame);
+
+		socket->write(frame);
+
+		if (host != OPENSERVER_ADDR)
+			qDebug() << qPrintable(QString("Client::sendFrameOpen()[%1:%2]").arg(host).arg(port)) << "sent:" << frame;
+		else
+			qDebug() << "Client::sendFrameOpen() sent:" << frame;
+	}
+
+	delayed_frames.clear();
+}
+
 void Client::sendFrameOpen(const QString &frame_open)
 {
 	// The openserver closes the connection with sockets of type REQUEST/COMMAND
@@ -128,12 +155,10 @@ void Client::sendFrameOpen(const QString &frame_open)
 		return;
 	}
 
-	socket->write(frame);
-
-	if (host != OPENSERVER_ADDR)
-		qDebug() << qPrintable(QString("Client::sendFrameOpen()[%1:%2]").arg(host).arg(port)) << "sent:" << frame;
-	else
-		qDebug() << "Client::sendFrameOpen() sent:" << frame;
+	// queue the frames to be sent later, but avoid delaying frames indefinitely
+	delayed_frames.append(frame);
+	if (!delay_timer.isActive())
+		delay_timer.start();
 }
 
 void Client::disconnectFromHost()
