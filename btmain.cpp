@@ -569,6 +569,7 @@ void BtMain::unrollPages()
 	if (page_container->currentPage() != pagDefault && page_container->currentPage() != version)
 		while (page_container->currentPage() != Home)
 		{
+			page_container->currentPage()->cleanUp();
 			page_container->currentPage()->forceClosed();
 			++seq_pages;
 			// To avoid infinite loop, we assume that the application
