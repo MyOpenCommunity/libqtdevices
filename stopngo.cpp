@@ -319,7 +319,7 @@ StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevic
 											   this, SLOT(switchAutoReset())));
 	buttons_layout->addStretch();
 	buttons_layout->addLayout(getCommandButton(autotest_button, "autocheck_enabled",
-											   "autocheck_disabled", tr("Enable"),
+											   "autocheck_disabled", tr("Self-test"),
 											   this, SLOT(switchAutoTest())));
 	layout->addLayout(buttons_layout);
 
@@ -344,6 +344,10 @@ StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevic
 
 void StopAndGoBTestPage::valueReceived(const DeviceValues &values_list)
 {
+	// Show the autotest button only if closed.
+	if (values_list.contains(StopAndGoDevice::DIM_OPENED))
+		autotest_button->setVisible(!values_list[StopAndGoDevice::DIM_OPENED].toBool());
+
 	if (values_list.contains(StopAndGoDevice::DIM_AUTORESET_DISACTIVE) &&
 		values_list.contains(StopAndGoDevice::DIM_AUTOTEST_DISACTIVE))
 	{
