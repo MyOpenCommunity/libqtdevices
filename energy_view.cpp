@@ -48,6 +48,7 @@
 #define POLLING_CUMULATIVE_DAY 60 * 60 // time to refresh data visualized in the comulative day banner (in sec.)
 #define TIME_UPDATE_DELAY 200
 
+
 namespace
 {
 	// The language used for the floating point number
@@ -830,10 +831,10 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		else
 			graph_type = EnergyDevice::CUMULATIVE_MONTH;
 
-		dev->requestCumulativeMonthGraph(selection_date);
-		dev->requestDailyAverageGraph(selection_date);
 		dev->requestCumulativeMonth(selection_date);
 		dev->requestMontlyAverage(selection_date);
+		dev->requestDailyAverageGraph(selection_date);
+		dev->requestCumulativeMonthGraph(selection_date);
 		cumulative_month_value = INVALID_VALUE;
 		daily_av_value = INVALID_VALUE;
 		break;
