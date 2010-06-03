@@ -165,7 +165,7 @@ private:
 private slots:
 	void toggleCurrency();
 	void changeTimePeriod(int, QDate);
-	void showGraph(int graph_type, bool request_update=true);
+	void showGraph(int graph_type);
 	void showBannerWidget();
 	void backClick();
 	void status_changed(const StatusList &status_list);
