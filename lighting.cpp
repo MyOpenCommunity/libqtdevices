@@ -53,11 +53,11 @@ enum BannerType
 	SINGLE_LIGHT = 2003,
 	DIMMER_GROUP = 2006,
 	LIGHT_GROUP = 2004,
-	TEMP_LIGHT,
+	TEMP_LIGHT = 2007,
 	STAIR_LIGHT = 2011,
-	DIMMER100,
-	TEMP_LIGHT_VARIABLE = 2007,
-	DIMMER100_GROUP,
+	DIMMER100 = 2001,
+	TEMP_LIGHT_VARIABLE = 2008,
+	DIMMER100_GROUP = 2005,
 	TEMP_LIGHT_FIXED = 2010,
 };
 #endif
@@ -197,7 +197,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		t = getTextChild(item_node, "time").toInt();
 	#endif
 		b = new TempLightFixed(t, descr, where, oid, getPullMode(item_node));
-		}
+	}
 		break;
 	}
 
