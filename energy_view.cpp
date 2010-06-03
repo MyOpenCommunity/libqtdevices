@@ -736,8 +736,6 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 	{
 	case TimePeriodSelection::DAY:
 		graph_type = EnergyDevice::CUMULATIVE_DAY;
-		dev->requestCumulativeDay(selection_date);
-		dev->requestCumulativeDayGraph(selection_date);
 		cumulative_day_value = INVALID_VALUE;
 		current_value = INVALID_VALUE;
 		break;
@@ -748,17 +746,11 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		else
 			graph_type = EnergyDevice::CUMULATIVE_MONTH;
 
-		dev->requestCumulativeMonth(selection_date);
-		dev->requestMontlyAverage(selection_date);
-		dev->requestDailyAverageGraph(selection_date);
-		dev->requestCumulativeMonthGraph(selection_date);
 		cumulative_month_value = INVALID_VALUE;
 		daily_av_value = INVALID_VALUE;
 		break;
 	case TimePeriodSelection::YEAR:
 		graph_type = EnergyDevice::CUMULATIVE_YEAR;
-		dev->requestCumulativeYear();
-		dev->requestCumulativeYearGraph();
 		cumulative_year_value = INVALID_VALUE;
 		break;
 	}
@@ -767,6 +759,26 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 
 	setBannerPage(status, selection_date);
 	updateBanners();
+
+	// we request the status updates here because we want these to happen after
+	// the sutomatic status update start/stop frames sent when the "current" banner is shown
+	switch (status)
+	{
+	case TimePeriodSelection::DAY:
+		dev->requestCumulativeDay(selection_date);
+		dev->requestCumulativeDayGraph(selection_date);
+		break;
+	case TimePeriodSelection::MONTH:
+		dev->requestCumulativeMonth(selection_date);
+		dev->requestMontlyAverage(selection_date);
+		dev->requestDailyAverageGraph(selection_date);
+		dev->requestCumulativeMonthGraph(selection_date);
+		break;
+	case TimePeriodSelection::YEAR:
+		dev->requestCumulativeYear();
+		dev->requestCumulativeYearGraph();
+		break;
+	}
 }
 
 void EnergyView::setBannerPage(int status, const QDate &selection_date)
