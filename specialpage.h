@@ -36,7 +36,6 @@ class SpecialPage : public Page, FrameReceiver
 Q_OBJECT
 public:
 	SpecialPage(const QDomNode &config_node);
-	virtual void inizializza();
 	virtual void manageFrame(OpenMsg &msg);
 
 private:
