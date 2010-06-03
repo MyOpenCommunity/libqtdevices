@@ -152,8 +152,3 @@ void SpecialPage::manageFrame(OpenMsg &msg)
 		if (where == QString(msg.Extract_dove()))
 			what = QString(msg.Extract_cosa());
 }
-
-void SpecialPage::inizializza()
-{
-	temp_viewer->inizializza();
-}

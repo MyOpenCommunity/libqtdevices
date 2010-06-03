@@ -76,11 +76,6 @@ void HomePage::loadItems(const QDomNode &config_node)
 #endif
 }
 
-void HomePage::inizializza()
-{
-	temp_viewer->inizializza();
-}
-
 Page::PageType HomePage::pageType()
 {
 	return HOMEPAGE;

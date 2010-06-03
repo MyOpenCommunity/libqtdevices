@@ -45,7 +45,6 @@ class HomePage : public SectionPage
 Q_OBJECT
 public:
 	HomePage(const QDomNode &config_node);
-	void inizializza();
 
 	virtual PageType pageType();
 

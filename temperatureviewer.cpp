@@ -73,10 +73,6 @@ void TemperatureViewer::add(QString where, int openserver_id, int x, int y, int 
 	temp_list.append(temp);
 }
 
-void TemperatureViewer::inizializza()
-{
-}
-
 void TemperatureViewer::updateDisplay(unsigned new_bt_temperature, TemperatureData *temp)
 {
 	QString displayed_temp;

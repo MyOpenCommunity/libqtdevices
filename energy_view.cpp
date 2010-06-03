@@ -414,7 +414,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	// default period, sync with default period in TimePeriodSelection
 	// this used to call changeTimePeriod(); doing the initialization here
 	// avoids useless status requests to the device
-	showGraph(EnergyDevice::CUMULATIVE_DAY, false);
+	showGraph(EnergyDevice::CUMULATIVE_DAY);
 	setBannerPage(TimePeriodSelection::DAY, QDate::currentDate());
 
 	switch(mode)
@@ -458,14 +458,6 @@ void EnergyView::timerEvent(QTimerEvent *e)
 		else
 			Q_ASSERT_X(false, "EnergyView::timerEvent", qPrintable(QString::number(e->timerId())));
 	}
-}
-
-void EnergyView::inizializza()
-{
-	// Ask for the data showed in the default period.
-	dev->requestCurrent();
-	dev->requestCumulativeDay(QDate::currentDate());
-	dev->requestCumulativeDayGraph(QDate::currentDate());
 }
 
 QString EnergyView::dateToKey(const QDate &date, EnergyDevice::GraphType t)
@@ -723,29 +715,8 @@ void EnergyView::updateCurrentGraph()
 	}
 }
 
-void EnergyView::showGraph(int graph_type, bool request_update)
+void EnergyView::showGraph(int graph_type)
 {
-	if (request_update)
-	{
-		QDate selected_date = time_period->date();
-		switch (graph_type)
-		{
-		case EnergyDevice::CUMULATIVE_DAY:
-			dev->requestCumulativeDayGraph(selected_date);
-			break;
-		case EnergyDevice::CUMULATIVE_MONTH:
-			dev->requestCumulativeMonthGraph(selected_date);
-			break;
-		case EnergyDevice::DAILY_AVERAGE:
-			dev->requestDailyAverageGraph(selected_date);
-			break;
-		case EnergyDevice::CUMULATIVE_YEAR:
-		default:
-			dev->requestCumulativeYearGraph();
-			break;
-		}
-	}
-
 	current_widget = GRAPH_WIDGET;
 	current_graph = static_cast<EnergyDevice::GraphType>(graph_type);
 	if (!isGraphOurs())
@@ -854,19 +825,16 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		current_value = INVALID_VALUE;
 		break;
 	case TimePeriodSelection::MONTH:
-		dev->requestCumulativeMonth(selection_date);
-		dev->requestMontlyAverage(selection_date);
 		// we have to preserve the current visualized graph (can be daily average)
 		if (current_graph == EnergyDevice::DAILY_AVERAGE)
-		{
 			graph_type = EnergyDevice::DAILY_AVERAGE;
-			dev->requestDailyAverageGraph(selection_date);
-		}
 		else
-		{
 			graph_type = EnergyDevice::CUMULATIVE_MONTH;
-			dev->requestCumulativeMonthGraph(selection_date);
-		}
+
+		dev->requestCumulativeMonth(selection_date);
+		dev->requestMontlyAverage(selection_date);
+		dev->requestDailyAverageGraph(selection_date);
+		dev->requestCumulativeMonthGraph(selection_date);
 		cumulative_month_value = INVALID_VALUE;
 		daily_av_value = INVALID_VALUE;
 		break;
@@ -878,7 +846,7 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		break;
 	}
 	if (widget_container->currentIndex() == GRAPH_WIDGET)
-		showGraph(graph_type, false);
+		showGraph(graph_type);
 
 	setBannerPage(status, selection_date);
 	updateBanners();

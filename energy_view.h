@@ -136,7 +136,7 @@ public:
 	EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id,
 		   int currency_decimals, EnergyTable *_table, EnergyGraph *_graph);
 	~EnergyView();
-	virtual void inizializza();
+
 	virtual void cleanUp();
 	void systemTimeChanged();
 
@@ -198,7 +198,7 @@ private:
 private slots:
 	void toggleCurrency();
 	void changeTimePeriod(int, QDate);
-	void showGraph(int graph_type, bool request_update=true);
+	void showGraph(int graph_type);
 	void showBannerWidget();
 	void backClick();
 	void valueReceived(const DeviceValues &values_list);

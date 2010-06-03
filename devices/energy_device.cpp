@@ -286,6 +286,14 @@ EnergyDevice::EnergyDevice(QString where, int _mode) :
 		buffer_year_data[i] = 0;
 }
 
+void EnergyDevice::init()
+{
+	// Ask for the data shown in the default period.
+	requestCurrent();
+	requestCumulativeDay(QDate::currentDate());
+	requestCumulativeDayGraph(QDate::currentDate());
+}
+
 void EnergyDevice::sendRequest(int what) const
 {
 	sendRequest(QString::number(what));
