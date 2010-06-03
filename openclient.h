@@ -61,7 +61,7 @@ public:
 	void ApriInviaFrameChiudi(const char *);
 	void sendFrameOpenDelayed(const QString &frame_open);
 	void installFrameCompressor(int timeout, const QString &regex);
-	void flush() { socket->flush(); }
+	void flush() { sendDelayedFrames(); socket->flush(); }
 	~Client();
 
 private slots:
