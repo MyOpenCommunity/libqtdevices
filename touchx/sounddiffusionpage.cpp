@@ -334,15 +334,22 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 
 	QWidget *main_widget = new QWidget;
 	QVBoxLayout *l = new QVBoxLayout(main_widget);
+	QHBoxLayout *b = new QHBoxLayout;
+	l->setContentsMargins(0, 0, 0, 0);
+#ifdef LAYOUT_TOUCHX
+	b->setContentsMargins(18, 0, 17, 0);
+#endif
 	BannerContent *content = new BannerContent;
 	NavigationBar *nav_bar = new NavigationBar;
 	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
 
 	connect(ok, SIGNAL(clicked()), SIGNAL(saveVolumes()));
 
+	b->addWidget(ok, 0, Qt::AlignRight);
+
 	l->addWidget(top_widget);
 	l->addWidget(content, 1);
-	l->addWidget(ok, 0, Qt::AlignRight);
+	l->addLayout(b);
 
 	buildPage(main_widget, content, nav_bar, getTextChild(conf_node, "descr"), Page::SMALL_TITLE_HEIGHT);
 	loadItems(conf_node);
