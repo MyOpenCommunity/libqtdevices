@@ -387,10 +387,11 @@ void EnergyDevice::requestCumulativeMonthGraph(QDate date) const
 	}
 	else
 	{
-		requestCumulativeMonthGraph32Bit(date);
 		// with the old frames the monthly average is computed using the cumulative month
 		// graph data; with the new frames it is necessary to explicitly request it here
 		requestDailyAverageGraph16Bit(date);
+		// this is the last request to make because there are some versions of PIC SCS with problems in tx/rx
+		requestCumulativeMonthGraph32Bit(date);
 	}
 }
 
