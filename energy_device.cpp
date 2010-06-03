@@ -29,9 +29,9 @@
 #include <QList>
 
 const int MAX_VALUE = 255;
-const int POLLING_INTERVAL = 10;
+const int POLLING_INTERVAL = 10000;
 const int UPDATE_INTERVAL = 255;
-const int STOPPING_TIMEOUT = 5;
+const int STOPPING_TIMEOUT = 100;
 
 enum RequestCurrent
 {
@@ -120,7 +120,7 @@ void AutomaticUpdates::requestCurrentUpdateStart()
 			if (!has_new_frames)
 			{
 				requestCurrent();
-				update_timer->start(POLLING_INTERVAL * 1000);
+				update_timer->start(POLLING_INTERVAL);
 			}
 			sendUpdateStart();
 
@@ -149,7 +149,7 @@ void AutomaticUpdates::requestCurrentUpdateStop()
 		case UPDATE_AUTO:
 			update_state = UPDATE_STOPPING;
 
-			QTimer::singleShot(STOPPING_TIMEOUT * 1000, this, SLOT(stoppingTimeout()));
+			QTimer::singleShot(STOPPING_TIMEOUT, this, SLOT(stoppingTimeout()));
 			break;
 		default:
 			qFatal("State is UPDATE_STOPPING or UPDATE_IDLE update_count > 0");
