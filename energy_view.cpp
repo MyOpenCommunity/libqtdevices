@@ -459,14 +459,6 @@ void EnergyView::timerEvent(QTimerEvent *e)
 	}
 }
 
-void EnergyView::inizializza()
-{
-	// Ask for the data showed in the default period.
-	dev->requestCurrent();
-	dev->requestCumulativeDay(QDate::currentDate());
-	dev->requestCumulativeDayGraph(QDate::currentDate());
-}
-
 QString EnergyView::dateToKey(const QDate &date, EnergyDevice::GraphType t)
 {
 	switch (t)
