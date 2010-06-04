@@ -30,9 +30,6 @@
 **
 **********************************************************************/
 
-#if defined (BTWEB) ||  defined (BT_EMBEDDED)
-
-
 #include "qmouselinuxevent-2-6_qws.h"
 
 
@@ -244,4 +241,3 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
 
 #endif //QT_NO_QWS_MOUSE_LINUXEV
 
-#endif
