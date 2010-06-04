@@ -332,7 +332,7 @@ void TestDimmer::receiveDimmerProblem()
 
 void TestDimmer::receiveGlobalIncrementLevel()
 {
-	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL);
+	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*1*30*0##");
 
 	// pull unknown
@@ -347,7 +347,7 @@ void TestDimmer::receiveGlobalIncrementLevel()
 
 void TestDimmer::receiveGlobalDecrementLevel()
 {
-	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL);
+	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*1*31*0##");
 
 	// pull unknown
@@ -484,7 +484,7 @@ void TestDimmer100::receiveDimmer100StatusLevel0()
 
 void TestDimmer100::checkLevel()
 {
-	DeviceTester t(dimmer100, LightingDevice::DIM_DIMMER_LEVEL);
+	DeviceTester t(dimmer100, LightingDevice::DIM_DIMMER_LEVEL, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*1*%1*%2##").arg(9).arg(dimmer100->where);
 	t.check(frame, 75);
 	frame = QString("*1*%1*%2##").arg(5).arg(dimmer100->where);
