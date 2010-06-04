@@ -1109,23 +1109,6 @@ void PageTermoReg::valueReceived(const DeviceValues &values_list)
 			showDescription(description);
 		}
 		break;
-	case ThermalDevice::ST_PROGRAM:
-		{
-			// now search the description in the DOM
-			int program = values_list[ThermalDevice::DIM_PROGRAM].toInt();
-			QString description;
-			switch (season)
-			{
-			case ThermalDevice::SE_SUMMER:
-				description = lookupProgramDescription("summer", "prog", program);
-				break;
-			case ThermalDevice::SE_WINTER:
-				description = lookupProgramDescription("winter", "prog", program);
-				break;
-			}
-			showDescription(description);
-		}
-		break;
 	case ThermalDevice::ST_SCENARIO:
 		{
 			int scenario = values_list[ThermalDevice::DIM_SCENARIO].toInt();
@@ -1142,14 +1125,22 @@ void PageTermoReg::valueReceived(const DeviceValues &values_list)
 			showDescription(description);
 		}
 		break;
+	case ThermalDevice::ST_PROGRAM:
 	case ThermalDevice::ST_HOLIDAY:
-		{
-			hideDescription();
-		}
-		break;
 	case ThermalDevice::ST_WEEKEND:
 		{
-			hideDescription();
+			int scenario = values_list[ThermalDevice::DIM_PROGRAM].toInt();
+			QString description;
+			switch (season)
+			{
+			case ThermalDevice::SE_SUMMER:
+				description = lookupProgramDescription("summer", "prog", scenario);
+				break;
+			case ThermalDevice::SE_WINTER:
+				description = lookupProgramDescription("winter", "prog", scenario);
+				break;
+			}
+			showDescription(description);
 		}
 		break;
 	default:
@@ -1184,7 +1175,10 @@ QString PageTermoReg::lookupProgramDescription(QString season, QString what, int
 	const QMap<QString, QString> &map = what == "prog" ? programs : scenarios;
 	QString key = season + QString::number(program_number);
 	if (!map.contains(key))
+	{
+		qDebug() << "Missing description for program" << key;
 		return "";
+	}
 	else
 		return map[key];
 }
