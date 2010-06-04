@@ -197,17 +197,17 @@ void AutomaticUpdates::requestCurrent() const
 	default:
 		Q_ASSERT(!"Unknown mode on the energy management!");
 	}
-	dev->sendInit(createRequestOpen("18", QString::number(what), where));
+	dev->sendDelayedInit(createRequestOpen("18", QString::number(what), where));
 }
 
 void AutomaticUpdates::sendUpdateStart()
 {
-	dev->sendFrame(createRequestOpen("18", QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL).arg(mode).arg(UPDATE_INTERVAL), where));
+	dev->sendDelayedFrame(createRequestOpen("18", QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL).arg(mode).arg(UPDATE_INTERVAL), where));
 }
 
 void AutomaticUpdates::sendUpdateStop()
 {
-	dev->sendFrame(createRequestOpen("18", QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL).arg(mode).arg(0), where));
+	dev->sendDelayedFrame(createRequestOpen("18", QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL).arg(mode).arg(0), where));
 }
 
 void AutomaticUpdates::setHasNewFrames()
