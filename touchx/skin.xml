@@ -297,16 +297,26 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/antintrusione.png</img_top_navigation_button>
 	</item>
 	<item>
-		<!-- Supervision link -->
+		<!-- Supervision link in homepage -->
 		<cid>6</cid>
 		<img_link_icon>energia/supervisioneimpianto.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/supervisioneimpianto.png</img_top_navigation_button>
 	</item>
 	<item>
-		<!-- Energy data link -->
+		<!-- Supervision link in load management -->
+		<cid>15003</cid>
+		<img_link_icon>energia/supervisioneimpianto.png</img_link_icon>
+	</item>
+	<item>
+		<!-- Energy data link in homepage -->
 		<cid>7</cid>
 		<img_link_icon>energia/energydata.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/energydata.png</img_top_navigation_button>
+	</item>
+	<item>
+		<!-- Energy data link in energy management -->
+		<cid>15001</cid>
+		<img_link_icon>energia/energydata.png</img_link_icon>
 	</item>
 	<item>
 		<!-- Energy management link -->
@@ -315,9 +325,15 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/energymenagement.png</img_top_navigation_button>
 	</item>
 	<item>
+		<!-- Load management link in homepage -->
 		<cid>18</cid>
 		<img_link_icon>home/apploadmanagement.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/carichi.png</img_top_navigation_button>
+	</item>
+	<item>
+		<!-- Load management link in energy management -->
+		<cid>15002</cid>
+		<img_link_icon>home/apploadmanagement.png</img_link_icon>
 	</item>
 	<item>
 		<!-- thermal regulation -->
