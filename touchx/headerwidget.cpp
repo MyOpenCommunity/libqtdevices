@@ -642,12 +642,26 @@ void HeaderNavigationWidget::addButton(int section_id, int page_id, const QStrin
 	connect(link, SIGNAL(clicked()), mapper, SLOT(map()));
 }
 
+QWidget *HeaderNavigationWidget::itemForIndex(int i)
+{
+	int index = (current_index + i) % buttons.size();
+
+	if (section_ids[index] == selected_section_id)
+		return selected[index];
+	else
+		return buttons[index];
+}
+
 void HeaderNavigationWidget::drawContent()
 {
 	if (!need_update)
 		return;
 
 	need_update = false;
+
+	while (QLayoutItem *child = button_layout->takeAt(0))
+		if (QWidget *w = child->widget())
+			w->hide();
 
 	// first time, compute if there is need for scroll arrows
 	if (visible_buttons == 0)
@@ -674,27 +688,10 @@ void HeaderNavigationWidget::drawContent()
 
 	for (int i = 0; i < visible_buttons; ++i)
 	{
-		int index = (current_index + i) % buttons.size();
-		QWidget *item, *hitem;
-		if (section_ids[index] == selected_section_id)
-		{
-			item = selected[index];
-			hitem = buttons[index];
-		}
-		else
-		{
-			item = buttons[index];
-			hitem = selected[index];
-		}
+		QWidget *item = itemForIndex(i);
 
-		// it might be more natural to first remove all items from the
-		// layout and then add the correct ones; unfortunately this
-		// sometimes causes some flicker
-		button_layout->takeAt(i);
-
-		button_layout->insertWidget(i, item, 1, Qt::AlignCenter);
 		item->show();
-		hitem->hide();
+		button_layout->addWidget(item, 1, Qt::AlignCenter);
 	}
 }
 
@@ -717,9 +714,33 @@ void HeaderNavigationWidget::setCurrentSection(int section_id)
 	if (section_id == NO_SECTION || section_id == selected_section_id)
 		return;
 
+	int prev_index = section_ids.indexOf(selected_section_id);
+	int index = section_ids.indexOf(section_id);
+
+	for (int item_index = 0; item_index < button_layout->count(); ++item_index)
+	{
+		// show the selected icon if the corresponding button is in the layout
+		if (button_layout->itemAt(item_index)->widget() == buttons[index])
+		{
+			delete button_layout->takeAt(item_index);
+			button_layout->insertWidget(item_index, selected[index], 1, Qt::AlignCenter);
+
+			buttons[index]->hide();
+			selected[index]->show();
+		}
+
+		// show the button if the corresponding selected icon is in the layout
+		if (button_layout->itemAt(item_index)->widget() == selected[prev_index])
+		{
+			delete button_layout->takeAt(item_index);
+			button_layout->insertWidget(item_index, buttons[prev_index], 1, Qt::AlignCenter);
+
+			buttons[prev_index]->show();
+			selected[prev_index]->hide();
+		}
+	}
+
 	selected_section_id = section_id;
-	need_update = true;
-	drawContent();
 }
 
 

@@ -216,7 +216,7 @@ protected:
 
 private:
 	void drawContent();
-
+	QWidget *itemForIndex(int i);
 
 private:
 	int current_index, selected_section_id, visible_buttons;
