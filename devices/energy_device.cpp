@@ -29,9 +29,9 @@
 #include <QList>
 
 const int MAX_VALUE = 255;
-const int POLLING_INTERVAL = 10;
+const int POLLING_INTERVAL = 10000;
 const int UPDATE_INTERVAL = 255;
-const int STOPPING_TIMEOUT = 5;
+const int STOPPING_TIMEOUT = 100;
 
 enum RequestCurrent
 {
@@ -106,6 +106,13 @@ AutomaticUpdates::AutomaticUpdates(QString _where, int _mode, device *_dev)
 	connect(update_timer, SIGNAL(timeout()), SLOT(pollingTimeout()));
 }
 
+void AutomaticUpdates::requestCurrentUpdate()
+{
+	if (!has_new_frames)
+		requestCurrent();
+	sendUpdateStart();
+}
+
 void AutomaticUpdates::requestCurrentUpdateStart()
 {
 	update_count += 1;
@@ -118,11 +125,8 @@ void AutomaticUpdates::requestCurrentUpdateStart()
 			update_state = UPDATE_AUTO;
 
 			if (!has_new_frames)
-			{
-				requestCurrent();
-				update_timer->start(POLLING_INTERVAL * 1000);
-			}
-			sendUpdateStart();
+				update_timer->start(POLLING_INTERVAL);
+			requestCurrentUpdate();
 
 			break;
 		case UPDATE_STOPPING:
@@ -149,13 +153,18 @@ void AutomaticUpdates::requestCurrentUpdateStop()
 		case UPDATE_AUTO:
 			update_state = UPDATE_STOPPING;
 
-			QTimer::singleShot(STOPPING_TIMEOUT * 1000, this, SLOT(stoppingTimeout()));
+			QTimer::singleShot(STOPPING_TIMEOUT, this, SLOT(stoppingTimeout()));
 			break;
 		default:
 			qFatal("State is UPDATE_STOPPING or UPDATE_IDLE update_count > 0");
 			break;
 		}
 	}
+}
+
+void AutomaticUpdates::flushCurrentUpdateStop()
+{
+	stoppingTimeout();
 }
 
 void AutomaticUpdates::pollingTimeout()
@@ -197,7 +206,7 @@ void AutomaticUpdates::requestCurrent() const
 	default:
 		qFatal("Unknown mode on the energy management!");
 	}
-	dev->sendInit(createDimensionFrame("18", QString::number(what), where));
+	dev->sendFrame(createDimensionFrame("18", QString::number(what), where));
 }
 
 void AutomaticUpdates::sendUpdateStart()
@@ -294,9 +303,24 @@ void EnergyDevice::init()
 	requestCumulativeDayGraph(QDate::currentDate());
 }
 
+void EnergyDevice::sendInit(QString frame) const
+{
+	// it is not a bug that we use sendFrame here and not sendInit:
+	// we need to ensure a strict frame ordering, in particular we need that the
+	// cumulative month graph request always comes last (firmware problem), so
+	// we must send all the frame using a single socket
+	sendFrame(frame);
+}
+
 void EnergyDevice::sendRequest(int what) const
 {
 	sendRequest(QString::number(what));
+}
+
+void EnergyDevice::sendRequest(QString what) const
+{
+	QString req = createDimensionFrame(who, what, where);
+	sendInit(req);
 }
 
 void EnergyDevice::requestCumulativeDay(QDate date) const
@@ -319,6 +343,11 @@ void EnergyDevice::requestCurrent() const
 	current_updates.requestCurrent();
 }
 
+void EnergyDevice::requestCurrentUpdate()
+{
+	current_updates.requestCurrentUpdate();
+}
+
 void EnergyDevice::requestCurrentUpdateStart()
 {
 	current_updates.requestCurrentUpdateStart();
@@ -327,6 +356,11 @@ void EnergyDevice::requestCurrentUpdateStart()
 void EnergyDevice::requestCurrentUpdateStop()
 {
 	current_updates.requestCurrentUpdateStop();
+}
+
+void EnergyDevice::flushCurrentUpdateStop()
+{
+	current_updates.flushCurrentUpdateStop();
 }
 
 void EnergyDevice::requestDailyAverageGraph(QDate date) const

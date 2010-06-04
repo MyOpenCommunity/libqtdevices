@@ -53,8 +53,10 @@ public:
 	AutomaticUpdates(QString where, int _mode, device *_dev);
 
 	void requestCurrent() const;
+	void requestCurrentUpdate();
 	void requestCurrentUpdateStart();
 	void requestCurrentUpdateStop();
+	void flushCurrentUpdateStop();
 
 	// not part of the public interface, but used by the containing device
 	void setHasNewFrames();
@@ -137,8 +139,10 @@ public:
 	void requestCumulativeDayGraph(QDate date) const;
 	void requestCumulativeMonthGraph(QDate date) const;
 	void requestCumulativeYearGraph() const;
+	void requestCurrentUpdate();
 	void requestCurrentUpdateStart();
 	void requestCurrentUpdateStop();
+	void flushCurrentUpdateStop();
 
 	enum Type
 	{
@@ -175,7 +179,9 @@ private:
 	void requestDailyAverageGraph16Bit(QDate date) const;
 
 	void sendRequest(int what) const;
-	using device::sendRequest;
+	void sendRequest(QString what) const;
+	void sendInit(QString frame) const;
+
 	void parseCumulativeDayGraph8Bit(const QStringList &buffer_frame, QVariant &v);
 	void parseCumulativeDayGraph16Bit(const QStringList &buffer_frame, QVariant &v);
 	void parseCumulativeMonthGraph8Bit(const QStringList &buffer_frame, QVariant &v);
