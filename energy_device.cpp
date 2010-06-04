@@ -201,7 +201,7 @@ void AutomaticUpdates::requestCurrent() const
 	default:
 		Q_ASSERT(!"Unknown mode on the energy management!");
 	}
-	dev->sendDelayedInit(createRequestOpen("18", QString::number(what), where));
+	dev->sendDelayedFrame(createRequestOpen("18", QString::number(what), where));
 }
 
 void AutomaticUpdates::sendUpdateStart()
@@ -302,7 +302,11 @@ void EnergyDevice::sendFrame(QString frame) const
 
 void EnergyDevice::sendInit(QString frame) const
 {
-	sendDelayedInit(frame);
+	// it is not a bug that we use sendDelayedFrame here and not sendDelayedInit:
+	// we need to ensure a strict frame ordering, in particular we need that the
+	// cumulative month graph request always comes last (firmware problem), so
+	// we must send all the frame using a single socket
+	sendDelayedFrame(frame);
 }
 
 void EnergyDevice::sendRequest(int what) const
