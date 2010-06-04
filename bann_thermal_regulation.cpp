@@ -1029,13 +1029,14 @@ PageTermoReg::PageTermoReg(QDomNode n)
 
 void PageTermoReg::showDescription(const QString &desc)
 {
+	// we do not hide/show the label to avoid other page elements moving around
 	description_label->setText(desc);
-	description_label->setVisible(true);
 }
 
 void PageTermoReg::hideDescription()
 {
-	description_label->setVisible(false);
+	// we do not hide/show the label to avoid other page elements moving around
+	description_label->setText(" ");
 }
 
 void PageTermoReg::createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice *_dev)
