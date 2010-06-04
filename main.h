@@ -239,8 +239,8 @@ enum ItemType
 	TERMO_HOME_NC_EXTPROBE=57,                    /*!< Home page external not-controlled probe */
 	TERMO_HOME_NC_PROBE=58,                       /*!< Home page not-controlled probe */
 #else
-	TERMO_HOME_NC_EXTPROBE=207,                   /*!< Home page external not-controlled probe */
-	TERMO_HOME_NC_PROBE=208,                      /*!< Home page not-controlled probe */
+	TERMO_HOME_NC_EXTPROBE=208,                   /*!< Home page external not-controlled probe */
+	TERMO_HOME_NC_PROBE=207,                      /*!< Home page not-controlled probe */
 #endif
 };
 
