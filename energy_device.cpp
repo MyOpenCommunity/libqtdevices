@@ -162,6 +162,11 @@ void AutomaticUpdates::requestCurrentUpdateStop()
 	}
 }
 
+void AutomaticUpdates::flushCurrentUpdateStop()
+{
+	stoppingTimeout();
+}
+
 void AutomaticUpdates::pollingTimeout()
 {
 	requestCurrent();
@@ -353,6 +358,11 @@ void EnergyDevice::requestCurrentUpdateStart()
 void EnergyDevice::requestCurrentUpdateStop()
 {
 	current_updates.requestCurrentUpdateStop();
+}
+
+void EnergyDevice::flushCurrentUpdateStop()
+{
+	current_updates.flushCurrentUpdateStop();
 }
 
 void EnergyDevice::requestDailyAverageGraph(QDate date) const

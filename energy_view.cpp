@@ -756,7 +756,10 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 	updateBanners();
 
 	// we request the status updates here because we want these to happen after
-	// the sutomatic status update start/stop frames sent when the "current" banner is shown
+	// the sutomatic status update start/stop frames sent when the "current" banner is shown;
+	// we also need to force the stop frames to be sent before the other frames
+	dev->flushCurrentUpdateStop();
+
 	switch (status)
 	{
 	case TimePeriodSelection::DAY:
