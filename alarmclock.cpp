@@ -96,13 +96,10 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, QList<bool> 
 	else
 		alarm_sound_diff = NULL;
 
-#ifdef LAYOUT_TOUCHX
-	// TODO fix sound diffusion for BTouch
-	dev = bt_global::add_device_to_cache(new AlarmSoundDiffDevice(SoundDiffusionPage::isMultichannel()));
+	dev = bt_global::add_device_to_cache(new AlarmSoundDiffDevice());
 	general = AmplifierDevice::createDevice("0");
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
-#endif
 }
 
 void AlarmClock::showPage()
@@ -328,7 +325,10 @@ void AlarmClock::sounddiffusionAlarm()
 {
 	if (conta2min == 0)
 	{
-		dev->startAlarm(sorgente, stazione, volSveglia);
+#ifdef LAYOUT_TOUCHX
+		// TODO fix sound diffusion for BTouch
+		dev->startAlarm(SoundDiffusionPage::isMultichannel(), sorgente, stazione, volSveglia);
+#endif
 		conta2min = 9;
 	}
 

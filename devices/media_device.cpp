@@ -75,10 +75,9 @@ QHash<int, AmplifierDevice*> AlarmSoundDiffDevice::amplifiers;
 AlarmSoundDiffDevice *AlarmSoundDiffDevice::alarm_device = 0;
 QString AmplifierDevice::virtual_amplifier_where;
 
-AlarmSoundDiffDevice::AlarmSoundDiffDevice(bool _multichannel)
+AlarmSoundDiffDevice::AlarmSoundDiffDevice()
 	: device("22", "")
 {
-	is_multichannel = _multichannel;
 	receive_frames = false;
 
 	// NOTE: this works only because the device_cache destroys all the AlarmSoundDiffDevice
@@ -132,7 +131,7 @@ void AlarmSoundDiffDevice::requestStation(int source)
 		dev->requestTrack();
 }
 
-void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmVolumes)
+void AlarmSoundDiffDevice::startAlarm(bool is_multichannel, int source, int radio_station, int *alarmVolumes)
 {
 	bool areas[AMPLI_NUM / 10 + 1];
 	for (int i = 0; i < ARRAY_SIZE(areas); ++i)

@@ -49,9 +49,9 @@ public:
 		DIM_RADIO_STATION
 	};
 
-	AlarmSoundDiffDevice(bool is_multichannel);
+	AlarmSoundDiffDevice();
 
-	void startAlarm(int source, int radio_station, int *alarmVolumes);
+	void startAlarm(bool is_multichannel, int source, int radio_station, int *alarmVolumes);
 	void stopAlarm(int source, int *alarmVolumes);
 	void setVolume(int amplifier, int volume);
 
@@ -73,7 +73,7 @@ private slots:
 	void amplifierValueReceived(const DeviceValues &values_list);
 
 private:
-	bool receive_frames, is_multichannel;
+	bool receive_frames;
 	// the list of the sources used in sound diffusion
 	static QHash<int, SourceDevice*> sources;
 	// the list of the amplifiers used in sound diffusion

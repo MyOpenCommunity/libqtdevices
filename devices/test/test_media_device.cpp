@@ -39,7 +39,7 @@ void TestAlarmSoundDiffDevice::initTestCase()
 	// clear the source/amplifier list created by earlier tests
 	AlarmSoundDiffDevice::sources.clear();
 	AlarmSoundDiffDevice::amplifiers.clear();
-	dev = new AlarmSoundDiffDevice(true);
+	dev = new AlarmSoundDiffDevice();
 	dev->setReceiveFrames(true);
 }
 
@@ -69,7 +69,7 @@ void TestAlarmSoundDiffDevice::testStartAlarm()
 	AmplifierDevice ampl1("20");
 	AmplifierDevice ampl2("06");
 
-	dev->startAlarm(7, 33, alarmVolumes);
+	dev->startAlarm(true, 7, 33, alarmVolumes);
 	client_command->flush();
 
 	QStringList frames = server->frameCommand().split("##", QString::SkipEmptyParts);
