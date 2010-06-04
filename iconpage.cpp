@@ -82,7 +82,9 @@ void IconContent::addButton(QWidget *button, const QString &label)
 	// correct fixed size during layout and the button keeps its (smaller) fixed size
 	QWidget *w = new QWidget;
 	QVBoxLayout *l = new QVBoxLayout(w);
+	l->setContentsMargins(0, 0, 0, 0);
 	l->addWidget(button, 0, Qt::AlignHCenter);
+	l->setSpacing(5);
 
 	if (!label.isEmpty())
 	{
@@ -138,6 +140,8 @@ IconPageButton::IconPageButton(const QString &label)
 	button = new StateButton;
 
 	QVBoxLayout *l = new QVBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(5);
 	l->addWidget(button, 0, Qt::AlignHCenter);
 	l->addWidget(lbl);
 }
