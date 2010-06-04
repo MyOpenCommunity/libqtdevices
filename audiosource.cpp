@@ -85,7 +85,11 @@ void AudioSource::valueReceivedAudioSource(const DeviceValues &values_list)
 {
 	if (values_list.contains(SourceDevice::DIM_AREAS_UPDATED))
 	{
+		bool status = left_button->getStatus();
 		bool active = dev->isActive(area);
+
+		if (status == active)
+			return;
 
 		left_button->setStatus(active);
 		emit sourceStateChanged(active);
