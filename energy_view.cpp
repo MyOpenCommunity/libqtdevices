@@ -469,6 +469,8 @@ void EnergyView::updateGraphData(GraphData *d)
 	QMap<int, double> g = convertGraphData(d);
 	graph->setData(g);
 	table->setData(g);
+
+	table->setNumDecimal(EnergyInterface::isCurrencyView() ? currency_decimals : 3);
 }
 
 QMap<int, double> EnergyView::convertGraphData(GraphData *gd)
@@ -637,6 +639,7 @@ void EnergyView::updateCurrentGraph()
 #ifdef TEST_ENERGY_GRAPH
 	graph->generateRandomValues();
 	table->setData(graph->graph_data);
+	table->setNumDecimal(EnergyInterface::isCurrencyView() ? currency_decimals : 3);
 	return;
 #endif
 	QString key = dateToKey(current_date, current_graph);
@@ -795,7 +798,6 @@ void EnergyView::setBannerPage(int status, const QDate &selection_date)
 void EnergyView::toggleCurrency()
 {
 	EnergyInterface::toggleCurrencyView();
-	table->setNumDecimal(3);
 	updateBanners();
 	updateCurrentGraph();
 }
