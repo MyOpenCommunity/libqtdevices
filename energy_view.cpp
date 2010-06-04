@@ -464,6 +464,13 @@ void EnergyView::showPageFromTable()
 	Page::showPage();
 }
 
+void EnergyView::updateGraphData(GraphData *d)
+{
+	QMap<int, double> g = convertGraphData(d);
+	graph->setData(g);
+	table->setData(g);
+}
+
 QMap<int, double> EnergyView::convertGraphData(GraphData *gd)
 {
 	// TODO: remove the theorical bottleneck using a QMutableMapIterator instead of
@@ -542,11 +549,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			const QDate &date = d->date;
 			if (current_graph == EnergyDevice::DAILY_AVERAGE && date.year() == current_date.year() &&
 				date.month() == current_date.month() && isGraphOurs())
-			{
-				QMap<int, double> g = convertGraphData(d);
-				graph->setData(g);
-				table->setData(g);
-			}
+				updateGraphData(d);
 			break;
 		}
 		case EnergyDevice::DIM_DAY_GRAPH:
@@ -554,11 +557,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_DAY);
 			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date &&
 			    isGraphOurs())
-			{
-				QMap<int, double> g = convertGraphData(d);
-				graph->setData(g);
-				table->setData(g);
-			}
+				updateGraphData(d);
 			break;
 		}
 		case EnergyDevice::DIM_CUMULATIVE_MONTH_GRAPH:
@@ -566,11 +565,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_MONTH);
 			if (current_graph == EnergyDevice::CUMULATIVE_MONTH && d->date.month() == current_date.month()
 				&& d->date.year() == current_date.year() && isGraphOurs())
-			{
-				QMap<int, double> g = convertGraphData(d);
-				graph->setData(g);
-				table->setData(g);
-			}
+				updateGraphData(d);
 			break;
 		}
 		case EnergyDevice::DIM_CUMULATIVE_YEAR_GRAPH:
@@ -578,11 +573,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			// TODO: see how to save the year graph...
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_YEAR);
 			if (current_graph == EnergyDevice::CUMULATIVE_YEAR && isGraphOurs())
-			{
-				QMap<int, double> g = convertGraphData(d);
-				graph->setData(g);
-				table->setData(g);
-			}
+				updateGraphData(d);
 			break;
 		}
 		}
@@ -650,12 +641,7 @@ void EnergyView::updateCurrentGraph()
 #endif
 	QString key = dateToKey(current_date, current_graph);
 	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(key))
-	{
-		GraphData *d = graph_data_cache[current_graph]->object(key);
-		QMap<int, double> g = convertGraphData(d);
-		graph->setData(g);
-		table->setData(g);
-	}
+		updateGraphData(graph_data_cache[current_graph]->object(key));
 }
 
 void EnergyView::showGraph(int graph_type)
