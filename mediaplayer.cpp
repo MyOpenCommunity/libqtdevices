@@ -180,11 +180,9 @@ void MediaPlayer::seek(int seconds)
 	if (!active)
 		return;
 
-	QByteArray cmd("seek ");
+	QByteArray cmd("pausing_keep seek ");
 	cmd += QByteArray::number(seconds);
 	execCmd(cmd);
-	paused = false;
-	emit mplayerResumed();
 }
 
 void MediaPlayer::execCmd(const QByteArray &command)
