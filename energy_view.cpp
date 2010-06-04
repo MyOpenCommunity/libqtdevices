@@ -443,6 +443,12 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 
 void EnergyView::showPage()
 {
+	// when there are more than two interfaces, we request an update start in the
+	// previous page, but we clear the received value as a side effect of the
+	// forceDate() below, so here we need to force a new update request; the correct
+	// solution would be to make the caching smarter
+	dev->requestCurrentUpdate();
+
 	// disconnect all slots: can't disconnect a single slot on multiple objects
 	disconnect(table, SIGNAL(Closed()), 0, 0);
 	connect(table, SIGNAL(Closed()), SLOT(showPageFromTable()));

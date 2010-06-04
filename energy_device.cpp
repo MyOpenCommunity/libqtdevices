@@ -106,6 +106,13 @@ AutomaticUpdates::AutomaticUpdates(QString _where, int _mode, device *_dev)
 	connect(update_timer, SIGNAL(timeout()), SLOT(pollingTimeout()));
 }
 
+void AutomaticUpdates::requestCurrentUpdate()
+{
+	if (!has_new_frames)
+		requestCurrent();
+	sendUpdateStart();
+}
+
 void AutomaticUpdates::requestCurrentUpdateStart()
 {
 	update_count += 1;
@@ -118,11 +125,8 @@ void AutomaticUpdates::requestCurrentUpdateStart()
 			update_state = UPDATE_AUTO;
 
 			if (!has_new_frames)
-			{
-				requestCurrent();
 				update_timer->start(POLLING_INTERVAL);
-			}
-			sendUpdateStart();
+			requestCurrentUpdate();
 
 			break;
 		case UPDATE_STOPPING:
@@ -330,6 +334,11 @@ void EnergyDevice::requestCumulativeYear() const
 void EnergyDevice::requestCurrent() const
 {
 	current_updates.requestCurrent();
+}
+
+void EnergyDevice::requestCurrentUpdate()
+{
+	current_updates.requestCurrentUpdate();
 }
 
 void EnergyDevice::requestCurrentUpdateStart()

@@ -53,6 +53,7 @@ public:
 	AutomaticUpdates(QString where, int _mode, device *_dev);
 
 	void requestCurrent() const;
+	void requestCurrentUpdate();
 	void requestCurrentUpdateStart();
 	void requestCurrentUpdateStop();
 
@@ -135,6 +136,7 @@ public:
 	void requestCumulativeDayGraph(QDate date) const;
 	void requestCumulativeMonthGraph(QDate date) const;
 	void requestCumulativeYearGraph() const;
+	void requestCurrentUpdate();
 	void requestCurrentUpdateStart();
 	void requestCurrentUpdateStop();
 
