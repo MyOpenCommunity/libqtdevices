@@ -756,14 +756,14 @@ void LocalSource::valueReceived(const DeviceValues &device_values)
 		case VirtualSourceDevice::REQ_NEXT_TRACK:
 		{
 			foreach (AudioPlayerPage *page, AudioPlayerPage::audioPlayerPages())
-				if (page && !page->isPlayerInstanceRunning())
+				if (page && page->isPlayerInstanceRunning())
 					page->next();
 			break;
 		}
 		case VirtualSourceDevice::REQ_PREV_TRACK:
 		{
 			foreach (AudioPlayerPage *page, AudioPlayerPage::audioPlayerPages())
-				if (page && !page->isPlayerInstanceRunning())
+				if (page && page->isPlayerInstanceRunning())
 					page->previous();
 			break;
 		}
