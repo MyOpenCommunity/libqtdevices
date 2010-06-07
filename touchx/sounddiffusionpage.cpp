@@ -740,6 +740,8 @@ void LocalSource::valueReceived(const DeviceValues &device_values)
 						page->resume();
 						return;
 					}
+					else if (page->isPlayerInstanceRunning())
+						return;
 				}
 				else if (page->isPlayerInstanceRunning() && !page->isPlayerPaused())
 				{
