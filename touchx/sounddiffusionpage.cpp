@@ -750,8 +750,10 @@ void LocalSource::valueReceived(const DeviceValues &device_values)
 				}
 			}
 
-			// TODO: try to play something random searching on each media source
+			// try to play something searching on each media source
 			// using the multimedia configuration order (es. usb -> sd -> ip radio)
+			if (status)
+				MultimediaSectionPage::playSomethingRandomly();
 
 			break;
 		}

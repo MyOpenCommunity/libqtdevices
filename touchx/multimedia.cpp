@@ -29,7 +29,11 @@
 #include "ipradio.h"
 #include "feedmanager.h"
 #include "state_button.h"
+#include "generic_functions.h" // getFileFilter
+#include "audioplayer.h"
 
+#include <QFutureWatcher>
+#include <QtConcurrentRun>
 #include <QtDebug>
 
 
@@ -41,6 +45,8 @@ enum
 	PAGE_RSS = 16003,
 	PAGE_SD = 16005,
 };
+
+SongSearch *MultimediaSectionPage::song_search = NULL;
 
 
 FileSystemBrowseButton::FileSystemBrowseButton(MountWatcher &watch, FileSelector *_browser,
@@ -118,6 +124,11 @@ int MultimediaSectionPage::sectionId() const
 
 void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 {
+	// for SongSearch
+	QList<int> sources;
+	FileSystemBrowseButton *usb_button = NULL, *sd_button = NULL;
+	IPRadioPage *ip_radio = NULL;
+
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		SkinContext cxt(getTextChild(item, "cid").toInt());
@@ -138,13 +149,20 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		{
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM))
 			{
-				QWidget *t = new FileSystemBrowseButton(MountWatcher::getWatcher(), browser,
-									item_id == PAGE_USB ? MOUNT_USB : MOUNT_SD, descr,
-									bt_global::skin->getImage("mounted"),
-									bt_global::skin->getImage("unmounted"));
+				FileSystemBrowseButton *t = new FileSystemBrowseButton(MountWatcher::getWatcher(), browser,
+										       item_id == PAGE_USB ? MOUNT_USB : MOUNT_SD, descr,
+										       bt_global::skin->getImage("mounted"),
+										       bt_global::skin->getImage("unmounted"));
 				page_content->addWidget(t);
 				connect(browser, SIGNAL(Closed()), this, SLOT(showPage()));
 				delete_browser = false;
+
+				sources.append(item_id);
+
+				if (item_id == PAGE_USB)
+					usb_button = t;
+				else
+					sd_button = t;
 			}
 			break;
 		}
@@ -154,14 +172,15 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 			break;
 		case PAGE_WEB_RADIO:
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_WEBRADIO))
-				p = new IPRadioPage(page_node);
+				p = ip_radio = new IPRadioPage(page_node);
+			sources.append(item_id);
 			break;
 		case PAGE_RSS:
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_RSS))
 				p = new FeedManager(page_node);
 			break;
 		default:
-			;// qFatal("Unhandled page id in MultimediaSectionPage::loadItems");
+			qFatal("Unhandled page id in MultimediaSectionPage::loadItems");
 		};
 
 		if (p)
@@ -173,4 +192,170 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 
 	MountWatcher::getWatcher().startWatching();
 	MountWatcher::getWatcher().notifyAll();
+
+	if (showed_items == ITEMS_ALL && !song_search)
+		song_search = new SongSearch(sources, usb_button, sd_button, ip_radio);
+}
+
+void MultimediaSectionPage::playSomethingRandomly()
+{
+	song_search->startSearch();
+}
+
+
+SongSearch::SongSearch(QList<int> _sources, FileSystemBrowseButton *_usb, FileSystemBrowseButton *_sd, IPRadioPage *_radio)
+{
+	sources = _sources;
+	sd_button = _sd;
+	usb_button = _usb;
+	ip_radio = _radio;
+	current_source = -1;
+	terminate = NULL;
+}
+
+void SongSearch::startSearch()
+{
+	terminateSearch();
+	nextSource();
+}
+
+void SongSearch::terminateSearch()
+{
+	if (current_source == -1)
+		return;
+
+	switch (sources[current_source])
+	{
+	case PAGE_USB:
+	case PAGE_SD:
+		qDebug() << "Terminating USB/SD search";
+		*terminate = true;
+		break;
+	case PAGE_WEB_RADIO:
+		Q_ASSERT_X(false, "SongSearch::terminateSearch", "PANIC: tried to terminate a web radio search");
+		break;
+	}
+
+	current_source = -1;
+}
+
+void SongSearch::nextSource()
+{
+	current_source += 1;
+
+	if (current_source >= sources.size())
+	{
+		qDebug() << "Uh, oh! Ran out of sources!";
+		current_source = -1;
+
+		return;
+	}
+
+	switch (sources[current_source])
+	{
+	case PAGE_USB:
+	case PAGE_SD:
+	{
+		FileSystemBrowseButton *b = sources[current_source] == PAGE_USB ? usb_button : sd_button;
+		QString root = b->currentPath();
+
+		if (root.isEmpty())
+		{
+			nextSource();
+
+			return;
+		}
+
+		// run the search asynchronously
+		terminate = new bool(false);
+		QFuture<AsyncRes> res = QtConcurrent::run(&scanPath, root, terminate);
+		QFutureWatcher<AsyncRes> *watch = new QFutureWatcher<AsyncRes>(this);
+
+		connect(watch, SIGNAL(finished()), SLOT(pathScanComplete()));
+
+		watch->setFuture(res);
+
+		break;
+	}
+	case PAGE_WEB_RADIO:
+		QStringList urls = ip_radio->radioUrls();
+
+		qDebug() << "Playing from Web radio";
+		playAudioFiles(urls, AudioPlayerPage::IP_RADIO);
+		break;
+	}
+}
+
+void SongSearch::pathScanComplete()
+{
+	qDebug() << "USB/SD search complete";
+
+	QFutureWatcher<AsyncRes> *watch = static_cast<QFutureWatcher<AsyncRes> *>(sender());
+	QStringList files = watch->result().first;
+	bool terminated = *watch->result().second;
+
+	if (!terminated && !files.isEmpty())
+	{
+		qDebug() << "Playing from USB/SD";
+		playAudioFiles(files, AudioPlayerPage::LOCAL_FILE);
+	}
+	else if (!terminated)
+		nextSource();
+
+	delete watch->result().second;
+	watch->deleteLater();
+}
+
+void SongSearch::playAudioFiles(QStringList things, int type)
+{
+	AudioPlayerPage *page = AudioPlayerPage::getAudioPlayerPage(static_cast<AudioPlayerPage::MediaType>(type));
+
+	current_source = -1;
+	page->playAudioFilesBackground(things, 0);
+}
+
+namespace
+{
+	template<class R>
+	R makeAbsolute(QFileInfoList files)
+	{
+		R result;
+
+		foreach (const QFileInfo &fi, files)
+			result.append(fi.absoluteFilePath());
+
+		return result;
+	}
+}
+
+SongSearch::AsyncRes SongSearch::scanPath(const QString &path, bool * volatile terminate)
+{
+	QList<QFileInfo> queue;
+	QDir files, dirs;
+
+	dirs.setFilter(QDir::Dirs|QDir::NoDotAndDotDot);
+	files.setFilter(QDir::Files);
+	files.setNameFilters(getFileFilter(AUDIO));
+
+	queue << path;
+
+	while (!queue.isEmpty() && !*terminate)
+	{
+		QFileInfo dir = queue.takeFirst();
+
+		// search for files
+		qDebug() << "Scanning" << dir.absoluteFilePath();
+		files.setCurrent(dir.absoluteFilePath());
+
+		// found some files
+		QFileInfoList file_list = files.entryInfoList();
+		if (!file_list.isEmpty())
+			return qMakePair(makeAbsolute<QStringList>(file_list), terminate);
+
+		// recurse into subdirectories
+		dirs.setCurrent(dir.absoluteFilePath());
+		queue.append(makeAbsolute<QFileInfoList>(dirs.entryInfoList()));
+	}
+
+	return qMakePair(QStringList(), terminate);
 }
