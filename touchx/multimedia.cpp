@@ -172,4 +172,5 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 	}
 
 	MountWatcher::getWatcher().startWatching();
+	MountWatcher::getWatcher().notifyAll();
 }
