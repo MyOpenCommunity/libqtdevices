@@ -72,6 +72,7 @@ protected:
 	void checkStatusSeason(int what, int status, int season);
 	void checkStatusSeasonTemperature(int what, int status,
 					  int season, int temperature);
+	void checkStatusSeasonProgram(const QString &frame, int status, int season, int program);
 
 private:
 	QString holidayDateFrame(const QDate &date);

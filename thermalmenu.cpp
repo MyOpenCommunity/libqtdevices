@@ -151,6 +151,8 @@ BannSinglePuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon)
 	return bp;
 }
 
+#ifdef CONFIG_BTOUCH
+
 void ThermalMenu::createProbeMenu(QDomNode config, BannSinglePuls *bann, bool external)
 {
 	ProbesPage *sm = new ProbesPage(config, external);
@@ -159,6 +161,8 @@ void ThermalMenu::createProbeMenu(QDomNode config, BannSinglePuls *bann, bool ex
 	bann->connectRightButton(sm);
 	connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
 }
+
+#endif
 
 void ThermalMenu::showPage()
 {

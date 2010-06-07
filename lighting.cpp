@@ -81,6 +81,21 @@ namespace
 
 namespace
 {
+	QList<QString> getAddresses100(QDomNode item, QList<int> *start_values, QList<int> *stop_values)
+	{
+		QList<QString> l;
+		foreach (const QDomNode &item_node, getChildren(getElement(item, "addresses"), "item"))
+		{
+			l.append(getTextChild(item_node, "where"));
+			start_values->append(getTextChild(item_node, "softstart").toInt());
+			stop_values->append(getTextChild(item_node, "softstop").toInt());
+		}
+
+		Q_ASSERT_X(!l.isEmpty(), "getAddresses", "No device found!");
+
+		return l;
+	}
+
 	QList<QString> getAddresses(QDomNode item, QList<int> *start_values = 0, QList<int> *stop_values = 0)
 	{
 		QList<QString> l;
@@ -93,10 +108,15 @@ namespace
 		{
 			l.append(el.toElement().text());
 #endif
+
+#ifdef CONFIG_BTOUCH
 			if (start_values)
 				start_values->append(getTextChild(el, "softstart").toInt());
 			if (stop_values)
 				stop_values->append(getTextChild(el, "softstop").toInt());
+#else
+			Q_ASSERT_X(start_values == NULL && stop_values == NULL, "getAddresses", "Use getAddresses100 for dimmer100 group on TouchX");
+#endif
 		}
 
 		Q_ASSERT_X(!l.isEmpty(), "getAddresses", "No device found!");
@@ -162,7 +182,6 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		break;
 	case DIMMER100:
 	{
-		// TODO: CONFIG_BTOUCH touch10??
 		int start = getTextChild(item_node, "softstart").toInt();
 		int stop = getTextChild(item_node, "softstop").toInt();
 		b = new Dimmer100(descr, where, oid, getPullMode(item_node), start, stop);
@@ -173,9 +192,12 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		break;
 	case DIMMER100_GROUP:
 	{
-		// TODO: CONFIG_BTOUCH touch10??
 		QList<int> start, stop;
+#ifdef CONFIG_BTOUCH
 		QList<QString> addresses = getAddresses(item_node, &start, &stop);
+#else
+		QList<QString> addresses = getAddresses100(item_node, &start, &stop);
+#endif
 		b = new Dimmer100Group(addresses, start, stop, descr);
 	}
 		break;

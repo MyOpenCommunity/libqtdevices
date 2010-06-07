@@ -75,10 +75,9 @@ QHash<int, AmplifierDevice*> AlarmSoundDiffDevice::amplifiers;
 AlarmSoundDiffDevice *AlarmSoundDiffDevice::alarm_device = 0;
 QString AmplifierDevice::virtual_amplifier_where;
 
-AlarmSoundDiffDevice::AlarmSoundDiffDevice(bool _multichannel)
+AlarmSoundDiffDevice::AlarmSoundDiffDevice()
 	: device("22", "")
 {
-	is_multichannel = _multichannel;
 	receive_frames = false;
 
 	// NOTE: this works only because the device_cache destroys all the AlarmSoundDiffDevice
@@ -132,7 +131,7 @@ void AlarmSoundDiffDevice::requestStation(int source)
 		dev->requestTrack();
 }
 
-void AlarmSoundDiffDevice::startAlarm(int source, int radio_station, int *alarmVolumes)
+void AlarmSoundDiffDevice::startAlarm(bool is_multichannel, int source, int radio_station, int *alarmVolumes)
 {
 	bool areas[AMPLI_NUM / 10 + 1];
 	for (int i = 0; i < ARRAY_SIZE(areas); ++i)
@@ -298,7 +297,31 @@ void SourceDevice::requestActiveAreas() const
 	sendRequest(DIM_ACTIVE_AREAS);
 }
 
-bool SourceDevice::parseFrameOtherDevices(OpenMsg &msg, DeviceValues &values_list)
+bool SourceDevice::parseFrameAmplifiers(OpenMsg &msg, DeviceValues &values_list)
+{
+	if (isStatusRequestFrame(msg))
+		return false;
+	// only process general frames
+	if (msg.where() != 5)
+		return false;
+	int what = msg.what();
+
+	if (what == REQ_NEXT_TRACK && msg.whereArgCnt() == 3 && msg.whereArg(0) == "3")
+	{
+		// monochannel case, we always deliver the next track request
+		if (active_areas.size() == 1 && active_areas.contains("0"))
+			values_list[what] = true;
+		// multichannel case, we only deliver the event if the areas match
+		else if (active_areas.contains(QString::fromStdString(msg.whereArg(1))))
+			values_list[what] = true;
+
+		return true;
+	}
+
+	return false;
+}
+
+bool SourceDevice::parseFrameOtherSources(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (isStatusRequestFrame(msg))
 		return false;
@@ -348,7 +371,7 @@ bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	QString msg_where = QString::fromStdString(msg.whereFull());
 
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
-		return parseFrameOtherDevices(msg, values_list);
+		return parseFrameOtherSources(msg, values_list);
 
 	int what = msg.what();
 
@@ -539,6 +562,9 @@ bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	int what = msg.what();
 
 	if (SourceDevice::parseFrame(msg, values_list) && what != DIM_STATUS && what != SOURCE_TURNED_ON)
+		return true;
+	// parse general frames where the source is an amplifier
+	if (msg.where() == 5 && parseFrameAmplifiers(msg, values_list))
 		return true;
 
 	QString msg_where = QString::fromStdString(msg.whereFull());

@@ -495,6 +495,12 @@ GraphData *EnergyView::saveGraphInCache(const QVariant &v, EnergyDevice::GraphTy
 
 void EnergyView::showPage()
 {
+	// when there are more than two interfaces, we request an update start in the
+	// previous page, but we clear the received value as a side effect of the
+	// forceDate() below, so here we need to force a new update request; the correct
+	// solution would be to make the caching smarter
+	dev->requestCurrentUpdate();
+
 	// disconnect all slots: can't disconnect a single slot on multiple objects
 	disconnect(table, SIGNAL(Closed()), 0, 0);
 	connect(table, SIGNAL(Closed()), SLOT(showPageFromTable()));
@@ -508,6 +514,15 @@ void EnergyView::showPageFromTable()
 	if (EnergyInterface::isCurrencyView() && !rate.isValid())
 		EnergyInterface::toggleCurrencyView();
 	Page::showPage();
+}
+
+void EnergyView::updateGraphData(GraphData *d)
+{
+	QMap<int, double> g = convertGraphData(d);
+	graph->setData(g);
+	table->setData(g);
+
+	table->setNumDecimal(EnergyInterface::isCurrencyView() ? currency_decimals : 3);
 }
 
 QMap<int, double> EnergyView::convertGraphData(GraphData *gd)
@@ -588,11 +603,7 @@ void EnergyView::valueReceived(const DeviceValues &values_list)
 			const QDate &date = d->date;
 			if (current_graph == EnergyDevice::DAILY_AVERAGE && date.year() == current_date.year() &&
 				date.month() == current_date.month() && isGraphOurs())
-			{
-				QMap<int, double> g = convertGraphData(d);
-				graph->setData(g);
-				table->setData(g);
-			}
+				updateGraphData(d);
 			break;
 		}
 		case EnergyDevice::DIM_DAY_GRAPH:
@@ -600,11 +611,7 @@ void EnergyView::valueReceived(const DeviceValues &values_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_DAY);
 			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date &&
 			    isGraphOurs())
-			{
-				QMap<int, double> g = convertGraphData(d);
-				graph->setData(g);
-				table->setData(g);
-			}
+				updateGraphData(d);
 			break;
 		}
 		case EnergyDevice::DIM_CUMULATIVE_MONTH_GRAPH:
@@ -612,11 +619,7 @@ void EnergyView::valueReceived(const DeviceValues &values_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_MONTH);
 			if (current_graph == EnergyDevice::CUMULATIVE_MONTH && d->date.month() == current_date.month()
 				&& d->date.year() == current_date.year() && isGraphOurs())
-			{
-				QMap<int, double> g = convertGraphData(d);
-				graph->setData(g);
-				table->setData(g);
-			}
+				updateGraphData(d);
 			break;
 		}
 		case EnergyDevice::DIM_CUMULATIVE_YEAR_GRAPH:
@@ -624,11 +627,7 @@ void EnergyView::valueReceived(const DeviceValues &values_list)
 			// TODO: see how to save the year graph...
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_YEAR);
 			if (current_graph == EnergyDevice::CUMULATIVE_YEAR && isGraphOurs())
-			{
-				QMap<int, double> g = convertGraphData(d);
-				graph->setData(g);
-				table->setData(g);
-			}
+				updateGraphData(d);
 			break;
 		}
 		}
@@ -703,16 +702,12 @@ void EnergyView::updateCurrentGraph()
 #ifdef TEST_ENERGY_GRAPH
 	graph->generateRandomValues();
 	table->setData(graph->graph_data);
+	table->setNumDecimal(EnergyInterface::isCurrencyView() ? currency_decimals : 3);
 	return;
 #endif
 	QString key = dateToKey(current_date, current_graph);
 	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(key))
-	{
-		GraphData *d = graph_data_cache[current_graph]->object(key);
-		QMap<int, double> g = convertGraphData(d);
-		graph->setData(g);
-		table->setData(g);
-	}
+		updateGraphData(graph_data_cache[current_graph]->object(key));
 }
 
 void EnergyView::showGraph(int graph_type)
@@ -819,8 +814,6 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 	{
 	case TimePeriodSelection::DAY:
 		graph_type = EnergyDevice::CUMULATIVE_DAY;
-		dev->requestCumulativeDay(selection_date);
-		dev->requestCumulativeDayGraph(selection_date);
 		cumulative_day_value = INVALID_VALUE;
 		current_value = INVALID_VALUE;
 		break;
@@ -831,17 +824,11 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 		else
 			graph_type = EnergyDevice::CUMULATIVE_MONTH;
 
-		dev->requestCumulativeMonth(selection_date);
-		dev->requestMontlyAverage(selection_date);
-		dev->requestDailyAverageGraph(selection_date);
-		dev->requestCumulativeMonthGraph(selection_date);
 		cumulative_month_value = INVALID_VALUE;
 		daily_av_value = INVALID_VALUE;
 		break;
 	case TimePeriodSelection::YEAR:
 		graph_type = EnergyDevice::CUMULATIVE_YEAR;
-		dev->requestCumulativeYear();
-		dev->requestCumulativeYearGraph();
 		cumulative_year_value = INVALID_VALUE;
 		break;
 	}
@@ -850,6 +837,29 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 
 	setBannerPage(status, selection_date);
 	updateBanners();
+
+	// we request the status updates here because we want these to happen after
+	// the sutomatic status update start/stop frames sent when the "current" banner is shown;
+	// we also need to force the stop frames to be sent before the other frames
+	dev->flushCurrentUpdateStop();
+
+	switch (status)
+	{
+	case TimePeriodSelection::DAY:
+		dev->requestCumulativeDay(selection_date);
+		dev->requestCumulativeDayGraph(selection_date);
+		break;
+	case TimePeriodSelection::MONTH:
+		dev->requestCumulativeMonth(selection_date);
+		dev->requestMontlyAverage(selection_date);
+		dev->requestDailyAverageGraph(selection_date);
+		dev->requestCumulativeMonthGraph(selection_date);
+		break;
+	case TimePeriodSelection::YEAR:
+		dev->requestCumulativeYear();
+		dev->requestCumulativeYearGraph();
+		break;
+	}
 }
 
 void EnergyView::setBannerPage(int status, const QDate &selection_date)
@@ -874,7 +884,6 @@ void EnergyView::setBannerPage(int status, const QDate &selection_date)
 void EnergyView::toggleCurrency()
 {
 	EnergyInterface::toggleCurrencyView();
-	table->setNumDecimal(3);
 	updateBanners();
 	updateCurrentGraph();
 }

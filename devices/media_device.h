@@ -49,9 +49,9 @@ public:
 		DIM_RADIO_STATION
 	};
 
-	AlarmSoundDiffDevice(bool is_multichannel);
+	AlarmSoundDiffDevice();
 
-	void startAlarm(int source, int radio_station, int *alarmVolumes);
+	void startAlarm(bool is_multichannel, int source, int radio_station, int *alarmVolumes);
 	void stopAlarm(int source, int *alarmVolumes);
 	void setVolume(int amplifier, int volume);
 
@@ -73,7 +73,7 @@ private slots:
 	void amplifierValueReceived(const DeviceValues &values_list);
 
 private:
-	bool receive_frames, is_multichannel;
+	bool receive_frames;
 	// the list of the sources used in sound diffusion
 	static QHash<int, SourceDevice*> sources;
 	// the list of the amplifiers used in sound diffusion
@@ -92,6 +92,7 @@ private:
 class SourceDevice : public device
 {
 friend class TestSourceDevice;
+friend class TestVirtualSourceDevice;
 Q_OBJECT
 public:
 	enum
@@ -124,8 +125,10 @@ protected:
 	QSet<QString> active_areas;
 
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
-	// parse status updates for other devices to update the list of areas this device is active on
-	virtual bool parseFrameOtherDevices(OpenMsg &msg, DeviceValues &values_list);
+	// parse status updates for other sources to update the list of areas this device is active on
+	virtual bool parseFrameOtherSources(OpenMsg &msg, DeviceValues &values_list);
+	// parse general commands coming from an amplifier (required for next)
+	virtual bool parseFrameAmplifiers(OpenMsg &msg, DeviceValues &values_list);
 
 private slots:
 	void requestActiveAreas() const;

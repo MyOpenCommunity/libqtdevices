@@ -39,7 +39,7 @@ void TestAlarmSoundDiffDevice::initTestCase()
 	// clear the source/amplifier list created by earlier tests
 	AlarmSoundDiffDevice::sources.clear();
 	AlarmSoundDiffDevice::amplifiers.clear();
-	dev = new AlarmSoundDiffDevice(true);
+	dev = new AlarmSoundDiffDevice();
 	dev->setReceiveFrames(true);
 }
 
@@ -69,7 +69,7 @@ void TestAlarmSoundDiffDevice::testStartAlarm()
 	AmplifierDevice ampl1("20");
 	AmplifierDevice ampl2("06");
 
-	dev->startAlarm(7, 33, alarmVolumes);
+	dev->startAlarm(true, 7, 33, alarmVolumes);
 	client_command->flush();
 
 	QStringList frames = server->frameCommand().split("##", QString::SkipEmptyParts);
@@ -439,7 +439,24 @@ void TestVirtualSourceDevice::sendPrevTrack()
 void TestVirtualSourceDevice::receiveNextTrack()
 {
 	DeviceTester t(dev, VirtualSourceDevice::REQ_NEXT_TRACK);
+
+	// normal point-to-point frame
 	t.check(QString("*22*9*2#%1##").arg(source_id), true);
+
+	// general frame from amplifier, monochannel
+	dev->active_areas = QSet<QString>() << "0";
+	t.check(QString("*22*9*5#3#2#3##"), true);
+	t.check(QString("*22*9*5#3#7#2##"), true);
+
+	// general frame from amplifier, multichannel, same area
+	dev->active_areas = QSet<QString>() << "2" << "4";
+	t.check(QString("*22*9*5#3#2#3##"), true);
+	t.check(QString("*22*9*5#3#4#1##"), true);
+
+	// general frame from amplifier, multichannel, different area
+	dev->active_areas = QSet<QString>() << "3";
+	t.checkSignals(QString("*22*9*5#3#2#3##"), 0);
+	t.checkSignals(QString("*22*9*5#3#4#1##"), 0);
 }
 
 void TestVirtualSourceDevice::receivePrevTrack()

@@ -377,7 +377,7 @@ bool EnergyInterface::loadItems(const QDomNode &config_node)
 	bool is_any_interface_enabled = false;
 	// IMPORTANT: the table instance is shared between all energy interfaces: any
 	// signals must be disconnected and reconnected when the interface page is shown
-	EnergyTable *table = new EnergyTable(3);
+	EnergyTable *table = new EnergyTable;
 	EnergyGraph *graph = new EnergyGraph;
 
 #ifdef CONFIG_BTOUCH

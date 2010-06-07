@@ -231,6 +231,7 @@ bool ThermalDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		break;
 
 	case SUM_WEEKEND:
+		values_list[DIM_PROGRAM] = msg.whatArgN(0) % 100;
 		values_list[DIM_STATUS] = ST_WEEKEND;
 		values_list[DIM_SEASON] = SE_SUMMER;
 		break;
@@ -248,6 +249,7 @@ bool ThermalDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		break;
 
 	case SUM_HOLIDAY:
+		values_list[DIM_PROGRAM] = program;
 		values_list[DIM_STATUS] = ST_HOLIDAY;
 		values_list[DIM_SEASON] = SE_SUMMER;
 		break;
@@ -274,6 +276,7 @@ bool ThermalDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		break;
 
 	case WIN_WEEKEND:
+		values_list[DIM_PROGRAM] = msg.whatArgN(0) % 100;
 		values_list[DIM_STATUS] = ST_WEEKEND;
 		values_list[DIM_SEASON] = SE_WINTER;
 		break;
@@ -291,6 +294,7 @@ bool ThermalDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		break;
 
 	case WIN_HOLIDAY:
+		values_list[DIM_PROGRAM] = program;
 		values_list[DIM_STATUS] = ST_HOLIDAY;
 		values_list[DIM_SEASON] = SE_WINTER;
 		break;

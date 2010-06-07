@@ -616,7 +616,8 @@ void LocalAmplifier::audioStateChanged(int new_state, int old_state)
 	state = bt_global::audio_states->getLocalAmplifierStatus();
 
 	dev->updateStatus(state);
-	dev->updateVolume(bt_global::audio_states->currentState() == AudioStates::PLAY_DIFSON ? level : 0);
+	if (state)
+		dev->updateVolume(bt_global::audio_states->currentState() == AudioStates::PLAY_DIFSON ? level : 0);
 }
 
 void LocalAmplifier::valueReceived(const DeviceValues &device_values)
@@ -755,14 +756,14 @@ void LocalSource::valueReceived(const DeviceValues &device_values)
 		case VirtualSourceDevice::REQ_NEXT_TRACK:
 		{
 			foreach (AudioPlayerPage *page, AudioPlayerPage::audioPlayerPages())
-				if (page && !page->isPlayerInstanceRunning())
+				if (page && page->isPlayerInstanceRunning())
 					page->next();
 			break;
 		}
 		case VirtualSourceDevice::REQ_PREV_TRACK:
 		{
 			foreach (AudioPlayerPage *page, AudioPlayerPage::audioPlayerPages())
-				if (page && !page->isPlayerInstanceRunning())
+				if (page && page->isPlayerInstanceRunning())
 					page->previous();
 			break;
 		}
