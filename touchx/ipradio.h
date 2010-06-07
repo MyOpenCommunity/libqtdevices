@@ -34,6 +34,9 @@ Q_OBJECT
 public:
 	IPRadioPage(const QDomNode &config_node);
 
+	// returns all the radio URLs
+	QStringList radioUrls();
+
 private:
 	void loadItems(const QDomNode &config_node);
 
