@@ -109,6 +109,25 @@ CalibrationWidget::CalibrationWidget(bool minimal)
 	minimal_version = minimal;
 }
 
+bool CalibrationWidget::isValid()
+{
+	QFile fh(pointercalFile());
+	if (!fh.open(QIODevice::ReadOnly))
+		return false;
+
+	QByteArray data = fh.readAll();
+	// An invalid pointercal file is one that contains only 0.
+	foreach (QByteArray val,  data.split(' '))
+		if (val.toInt())
+		{
+			fh.close();
+			return true;
+		}
+
+	fh.close();
+	return false;
+}
+
 bool CalibrationWidget::exists()
 {
 	return QFile::exists(pointercalFile());
@@ -131,12 +150,6 @@ void CalibrationWidget::startCalibration()
 
 	QWSServer::mouseHandler()->clearCalibration();
 	grabMouse();
-}
-
-
-void CalibrationWidget::showEvent(QShowEvent*)
-{
-	startCalibration();
 }
 
 void CalibrationWidget::hideEvent(QHideEvent*)

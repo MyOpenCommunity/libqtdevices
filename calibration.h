@@ -38,6 +38,9 @@ public:
 	// Return true if the calibration file exists.
 	static bool exists();
 
+protected:
+	virtual void showEvent(QShowEvent*);
+
 private slots:
 	void calibrationEnded();
 	void calibrationStarted();

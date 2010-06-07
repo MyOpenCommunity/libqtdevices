@@ -24,6 +24,12 @@ public:
 	// Return true if the calibration file exists.
 	static bool exists();
 
+	// Return true if the calibration file is valid
+	static bool isValid();
+
+	// Start or restart the calibration
+	void startCalibration();
+
 signals:
 	void calibrationEnded();
 	void calibrationStarted();
@@ -31,7 +37,6 @@ signals:
 protected:
 	virtual void paintEvent(QPaintEvent*);
 	virtual void mouseReleaseEvent(QMouseEvent*);
-	virtual void showEvent(QShowEvent*);
 	virtual void hideEvent(QHideEvent*);
 
 private slots:
@@ -83,9 +88,6 @@ private:
 
 	// Check if the calibration was doing right
 	bool sanityCheck();
-
-	// Start or restart the calibration
-	void startCalibration();
 
 	// Start the test with buttons
 	void startTestButtons();

@@ -56,6 +56,11 @@ void Calibration::showWindow()
 	Window::showWindow();
 }
 
+void Calibration::showEvent(QShowEvent*)
+{
+	widget->startCalibration();
+}
+
 void Calibration::calibrationEnded()
 {
 	BtMain::calibrationEnded();
