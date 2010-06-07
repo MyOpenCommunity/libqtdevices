@@ -38,6 +38,8 @@ public:
 			       MountType type, const QString &label,
 			       const QString &icon_mounted, const QString &icon_unmounted);
 
+	QString currentPath() const { return directory; }
+
 private slots:
 	void mounted(const QString &path, MountType type);
 	void unmounted(const QString &path, MountType type);
@@ -48,6 +50,7 @@ private:
 	QString directory;
 	MountType type;
 };
+
 
 class MultimediaSectionPage : public IconPage
 {
