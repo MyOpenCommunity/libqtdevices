@@ -164,6 +164,7 @@ private:
 	int currency_decimals;
 
 private slots:
+	void screenSaverStarted(Page *prev_page);
 	void toggleCurrency();
 	void changeTimePeriod(int, QDate);
 	void showGraph(int graph_type);

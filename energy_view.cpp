@@ -34,6 +34,7 @@
 #include "energy_rates.h"
 #include "bann_energy.h"
 #include "bann2_buttons.h" // Bann2Buttons
+#include "btmain.h"
 
 #include <QDebug>
 #include <QLabel>
@@ -376,6 +377,9 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	// this must be after creating bannNavigazione, otherwise segfault
 	showBannerWidget();
+
+	// to switch back to the graph view
+	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)), SLOT(screenSaverStarted(Page*)));
 }
 
 EnergyView::~EnergyView()
@@ -582,6 +586,18 @@ void EnergyView::status_changed(const StatusList &status_list)
 		++it;
 	}
 	updateBanners();
+}
+
+void EnergyView::screenSaverStarted(Page *prev_page)
+{
+	// we do not check prev_page, because unrollPages changes it
+	if (current_widget == BANNER_WIDGET)
+		return;
+
+	current_widget = BANNER_WIDGET;
+	bannNavigazione->hideCdxButton();
+	time_period->showCycleButton();
+	widget_container->setCurrentIndex(current_widget);
 }
 
 void EnergyView::backClick()

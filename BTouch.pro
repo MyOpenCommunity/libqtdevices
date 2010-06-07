@@ -10,6 +10,7 @@ isEmpty(TEST_ARCH) {
 	message(x86 architecture detected.)
 	DEFINES += OPENSERVER_ADDR=\\\"btouch\\\"
 	DEFINES += MEDIASERVER_PATH=\\\"/video/mp3/bticino_test/\\\"
+	DEFINES += TEST_ENERGY_GRAPH
 	LIBS+= -L../common_files/lib/x86 -lcommon
 	OBJECTS_DIR = obj/x86
 	MOC_DIR = moc/x86
