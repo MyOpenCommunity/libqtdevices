@@ -473,8 +473,12 @@ void AudioStateMachine::statePlayRingtoneEntered()
 {
 	qDebug() << "AudioStateMachine::statePlayRingtoneEntered";
 
-	current_audio_path = Volumes::RINGTONES;
-	changeVolumePath(Volumes::RINGTONES);
+	// TODO: move this check in the changeVolumePath!
+	if (current_audio_path != Volumes::RINGTONES)
+	{
+		current_audio_path = Volumes::RINGTONES;
+		changeVolumePath(Volumes::RINGTONES);
+	}
 }
 
 void AudioStateMachine::statePlayRingtoneExited()
