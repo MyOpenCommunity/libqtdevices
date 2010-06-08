@@ -274,6 +274,7 @@ void AudioStateMachine::start(int state)
 	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
 	local_source_status = local_amplifier_status = false;
 	initVolumes();
+	disactivateVCTAudio();
 
 	// turn off the local source/amplifier at startup
 	changeVolumePath(Volumes::MM_AMPLIFIER, 0);
