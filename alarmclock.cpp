@@ -269,7 +269,6 @@ void AlarmClock::checkAlarm()
 
 	if (ring_alarm)
 	{
-		qDebug("secsTo: %d",alarmTime.secsTo(actualDateTime.time()));
 		if ((actualDateTime.time() >= alarmTime) && (alarmTime.secsTo(actualDateTime.time())<60))
 		{
 			if (type == BUZZER)
