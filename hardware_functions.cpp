@@ -124,14 +124,14 @@ void setBrightnessLevel(int level)
 		}
 	}
 #else
-	int value = (level - 10) * 13 / 240;
+	int value = 13 - ((level - 10) * 13 / 240);
 
 	QProcess::startDetached("/bin/settrimmer",
 				QStringList() << TFT_BRIGHTNESS << QString::number(value));
 #endif
 }
 
-void setBacklightOn(bool b)
+void setBacklight(bool b)
 {
 	if (QFile::exists("/proc/sys/dev/btweb/backlight"))
 	{
@@ -153,24 +153,6 @@ void setBacklightOn(bool b)
 #endif
 }
 
-void setBacklight(bool b)
-{
-	char name[50];
-
-	getName(name);
-	if (!strncmp(name, "H4684_IP", strlen("H4684_IP")))
-	{
-		if (b)
-			setBrightnessLevel(10);
-		else
-			setBrightnessLevel(210);
-
-		if (b)
-			setBacklightOn(true);
-	}
-	else
-		setBacklightOn(b);
-}
 
 #ifdef BT_HARDWARE_TOUCHX
 

@@ -74,14 +74,9 @@ void setBrightnessLevel(int level)
 	// do nothing
 }
 
-void setBacklightOn(bool b)
-{
-	backlight = b;
-}
-
 void setBacklight(bool b)
 {
-	setBacklightOn(b);
+	backlight = b;
 }
 
 void setBeep(bool buzzer_enable)
