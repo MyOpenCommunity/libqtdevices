@@ -533,8 +533,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 		case EnergyDevice::DIM_CUMULATIVE_YEAR:
 		{
 			EnergyValue val = it.value().value<EnergyValue>();
-			if (current_date.year() == val.first.year())
-				cumulative_year_value = val.second;
+			cumulative_year_value = val.second;
 		}
 			break;
 		case EnergyDevice::DIM_MONTLY_AVERAGE:
