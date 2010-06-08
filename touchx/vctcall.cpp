@@ -64,6 +64,7 @@ namespace VCTCallPrivate
 		bool hands_free;
 		bool prof_studio;
 		bool call_active;
+		bool move_enabled;
 
 		VCTCallStatus();
 
@@ -190,6 +191,7 @@ void VCTCallStatus::init()
 	stopped = false;
 	mute = StateButton::DISABLED;
 	call_active = false;
+	move_enabled = false;
 }
 
 
@@ -283,6 +285,7 @@ void VCTCall::refreshStatus()
 	call_accept->setStatus(call_status->connected);
 	volume->setStatus(call_status->volume_status);
 	mute_button->setStatus(call_status->mute);
+	camera->setMoveEnabled(call_status->move_enabled);
 }
 
 void VCTCall::toggleMute()
@@ -397,7 +400,8 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			stopVideo();
 			break;
 		case EntryphoneDevice::MOVING_CAMERA:
-			camera->setMoveEnabled(it.value().toBool());
+			call_status->move_enabled = it.value().toBool();
+			camera->setMoveEnabled(call_status->move_enabled);
 			break;
 
 		}

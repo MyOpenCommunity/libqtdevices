@@ -48,7 +48,11 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 
+#ifdef LAYOUT_BTOUCH
+	PageTitleWidget *title_widget = 0;
+#else
 	PageTitleWidget *title_widget = new PageTitleWidget(getTextChild(conf_node, "descr"), SMALL_TITLE_HEIGHT);
+#endif
 	Page::buildPage(main_widget, content, nav_bar, 0, title_widget);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 

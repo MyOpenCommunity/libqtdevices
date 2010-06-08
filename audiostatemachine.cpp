@@ -394,13 +394,11 @@ bool AudioStateMachine::isDirectAudioAccess()
 void AudioStateMachine::setVolume(int value)
 {
 	Q_ASSERT_X(value >= VOLUME_MIN && value <= VOLUME_MAX, "AudioStateMachine::setVolume",
-		qPrintable(QString("Volume value %1 out of range for audio path %2!").arg(value).arg(bt_global::audio_states->current_audio_path)));
+		qPrintable(QString("Volume value %1 out of range for audio path %2!").arg(value).arg(current_audio_path)));
 
-	int audio_path = bt_global::audio_states->current_audio_path;
-
-	Q_ASSERT_X(audio_path != -1, "AudioStateMachine::setVolume", "setVolume called without set an audio path!");
-	volumes[audio_path] = value;
-	changeVolumePath(static_cast<Volumes::Type>(audio_path));
+	Q_ASSERT_X(current_audio_path != -1, "AudioStateMachine::setVolume", "setVolume called without set an audio path!");
+	volumes[current_audio_path] = value;
+	changeVolumePath(static_cast<Volumes::Type>(current_audio_path));
 	volumes_timer->start();
 }
 
@@ -419,7 +417,7 @@ void AudioStateMachine::stateIdleEntered()
 
 void AudioStateMachine::stateIdleExited()
 {
-	// TODO turn back on the amplfier
+	// TODO turn back on the amplifier
 }
 
 void AudioStateMachine::stateBeepOnEntered()
@@ -475,8 +473,12 @@ void AudioStateMachine::statePlayRingtoneEntered()
 {
 	qDebug() << "AudioStateMachine::statePlayRingtoneEntered";
 
-	current_audio_path = Volumes::RINGTONES;
-	changeVolumePath(Volumes::RINGTONES);
+	// TODO: move this check in the changeVolumePath!
+	if (current_audio_path != Volumes::RINGTONES)
+	{
+		current_audio_path = Volumes::RINGTONES;
+		changeVolumePath(Volumes::RINGTONES);
+	}
 }
 
 void AudioStateMachine::statePlayRingtoneExited()
