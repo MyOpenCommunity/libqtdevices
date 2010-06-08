@@ -127,8 +127,6 @@ Q_OBJECT
 public:
 	EnergyDevice(QString where, int _mode);
 
-	virtual void init();
-
 	// The request methods, used to request an information
 	void requestCumulativeDay(QDate date) const;
 	void requestCurrent() const;
