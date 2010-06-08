@@ -119,6 +119,7 @@ public:
 
 	virtual void activateLayout();
 	virtual void showPage();
+	virtual void inizializza();
 
 signals:
 	void forwardClick();

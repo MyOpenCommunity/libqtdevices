@@ -213,6 +213,11 @@ void BannerPage::buildPage(QWidget *top_widget)
 	buildPage(new BannerContent, new NavigationBar, top_widget);
 }
 
+void BannerPage::inizializza()
+{
+	if (page_content)
+		page_content->initBanners();
+}
 
 
 PageLayout::PageLayout(QWidget *parent) : Page(parent)

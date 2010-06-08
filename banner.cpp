@@ -698,6 +698,12 @@ void banner::hideEvent(QHideEvent *event)
 
 
 
+void BannerNew::inizializza(bool forza)
+{
+	foreach (Page *p, linked_pages)
+		p->inizializza();
+}
+
 QLabel *BannerNew::createTextLabel(const QRect &size, Qt::Alignment align, const QFont &font)
 {
 	QLabel *text = new QLabel(this);
