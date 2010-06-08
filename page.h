@@ -89,6 +89,9 @@ protected:
 
 	static Page *currentPage();
 
+	// required to apply style sheets to a QWidget subclass
+	void paintEvent(QPaintEvent *e);
+
 private:
 	static Client *client_richieste;
 	static Client *client_comandi;
