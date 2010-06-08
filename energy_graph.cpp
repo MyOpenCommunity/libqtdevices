@@ -80,7 +80,8 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 	{
 		// do not use 0 for the max value, otherwise the graph scale becomes
 		// too small when the measures are all zero
-		double max_value = 0.02;
+		const double MAX_VALUE = 0.01;
+		double max_value = MAX_VALUE;
 		foreach (double val, graph_data)
 			max_value = qMax(max_value, val);
 
@@ -126,7 +127,7 @@ void EnergyGraph::paintEvent(QPaintEvent *e)
 
 		for (int i = 0; i < 4; ++i)
 		{
-			if (i == 0 || i == 2)
+			if (i == 0 || (i == 2 && max_value != MAX_VALUE))
 			{
 				double value = i == 0 ? max_value : max_value / 2;
 				QString text = loc.toString(value + 0.00499, 'f', 2);
