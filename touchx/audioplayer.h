@@ -67,12 +67,13 @@ public:
 	};
 
 	static AudioPlayerPage *getAudioPlayerPage(MediaType type);
-	static QVector<AudioPlayerPage *>audioPlayerPages();
+	static QVector<AudioPlayerPage *> audioPlayerPages();
 
 	virtual int sectionId() const;
 
 public slots:
 	void playAudioFiles(QList<QString> images, unsigned element);
+	void playAudioFilesBackground(QList<QString> images, unsigned element);
 
 private:
 	void startMPlayer(int index, int time);

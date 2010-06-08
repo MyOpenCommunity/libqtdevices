@@ -196,6 +196,15 @@ void AudioPlayerPage::displayMedia(int index)
 	startMPlayer(index, 0);
 }
 
+void AudioPlayerPage::playAudioFilesBackground(QList<QString> files, unsigned element)
+{
+	current_file = element;
+	total_files = files.size();
+	file_list = files;
+
+	displayMedia(current_file);
+}
+
 void AudioPlayerPage::playAudioFiles(QList<QString> files, unsigned element)
 {
 	current_file = element;

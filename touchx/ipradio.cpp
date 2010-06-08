@@ -60,11 +60,16 @@ void IPRadioPage::loadItems(const QDomNode &config_node)
 	page_content->showList();
 }
 
-void IPRadioPage::itemIsClicked(int index)
+QStringList IPRadioPage::radioUrls()
 {
-	QList<QString> urls;
+	QStringList urls;
 	for (int i = 0; i < page_content->itemCount(); ++i)
 		urls.append(page_content->item(i).data.toString());
 
-	player->playAudioFiles(urls, index);
+	return urls;
+}
+
+void IPRadioPage::itemIsClicked(int index)
+{
+	player->playAudioFiles(radioUrls(), index);
 }

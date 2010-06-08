@@ -101,7 +101,7 @@ MountWatcher &MountWatcher::getWatcher()
 
 MountWatcher::MountWatcher()
 {
-	sd_mounted = false;
+	sd_mounted = watching = false;
 
 	// USB mount/umount
 	watcher = new QFileSystemWatcher(this);
@@ -183,8 +183,21 @@ MountType MountWatcher::mountType(const QString &dir) const
 	return dir == SD_PATH ? MOUNT_SD : MOUNT_USB;
 }
 
+void MountWatcher::notifyAll()
+{
+	foreach (const QString &dir, mount_points)
+	{
+		MountType type = mountType(dir);
+		emit directoryMounted(dir, type);
+	}
+}
+
 void MountWatcher::startWatching()
 {
+	if (watching)
+		return;
+	watching = true;
+
 	mount_points = parseMounts();
 
 	foreach (const QString &dir, mount_points)
@@ -192,7 +205,6 @@ void MountWatcher::startWatching()
 		MountType type = mountType(dir);
 		if (type == MOUNT_SD)
 			sd_mounted = true;
-		emit directoryMounted(dir, type);
 	}
 
 	// USB mount/umount

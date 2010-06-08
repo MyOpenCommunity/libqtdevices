@@ -56,6 +56,9 @@ public:
 	// for every mounted filesystem
 	void startWatching();
 
+	// force notifications for all currently-mounted mountpoints
+	void notifyAll();
+
 signals:
 	void directoryMounted(const QString &dir, MountType type);
 	void directoryUnmounted(const QString &dir, MountType type);
@@ -80,6 +83,9 @@ private:
 	// the SD has already been mounted; this is unset only after the
 	// SD card has been removed, not when it is unmounted
 	bool sd_mounted;
+
+	// avoid double initialization
+	bool watching;
 
 	// list of currently-mounted filesystems
 	QStringList mount_points;

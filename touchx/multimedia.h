@@ -25,11 +25,20 @@
 #include "iconpage.h"
 #include "mount_watcher.h"
 
+#include <QFutureWatcher>
+
 class QDomNode;
 class StateButton;
 class MultimediaFileListPage;
 class FileSelector;
+class SongSearch;
+class IPRadioPage;
 
+
+/*
+ * Display a button that monitors the state of a mount point; when a device is
+ * mounted, clcking the button browses the corresponding mount point.
+ */
 class FileSystemBrowseButton : public IconPageButton
 {
 Q_OBJECT
@@ -37,6 +46,8 @@ public:
 	FileSystemBrowseButton(MountWatcher &watch, FileSelector *browser,
 			       MountType type, const QString &label,
 			       const QString &icon_mounted, const QString &icon_unmounted);
+
+	QString currentPath() const { return directory; }
 
 private slots:
 	void mounted(const QString &path, MountType type);
@@ -49,6 +60,10 @@ private:
 	MountType type;
 };
 
+
+/*
+ * Main page for the multimedia section.
+ */
 class MultimediaSectionPage : public IconPage
 {
 Q_OBJECT
@@ -73,15 +88,61 @@ public:
 
 	virtual int sectionId() const;
 
+	static void playSomethingRandomly();
+
 private:
 	void loadItems(const QDomNode &config_node);
 
 	MultimediaSectionPage::Items showed_items;
 	FileSelector *browser;
 	bool delete_browser;
+
+	// used by playSomethingRandomly()
+	static SongSearch *song_search;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(MultimediaSectionPage::Items)
+Q_DECLARE_OPERATORS_FOR_FLAGS(MultimediaSectionPage::Items);
+
+
+/*
+ * Search asynchronously for a web radio or mp3 to play; used when the touch is
+ * turned on as a source and nothing is playing.
+ */
+class SongSearch : public QObject
+{
+Q_OBJECT
+public:
+	SongSearch(QList<int> sources, FileSystemBrowseButton *usb, FileSystemBrowseButton *sd, IPRadioPage *radio);
+
+	void startSearch();
+
+private:
+	typedef QPair<QStringList, bool * volatile> AsyncRes;
+
+	void terminateSearch();
+	void nextSource();
+	void playAudioFiles(QStringList things, int type);
+
+	// called in a separate thread
+	static AsyncRes scanPath(const QString &path, bool *terminate);
+
+private slots:
+	void pathScanComplete();
+
+private:
+	// the page IDs of the available sources
+	QList<int> sources;
+	// -1 when the search is not active; index in the sources array during search
+	int current_source;
+
+	// available sources
+	FileSystemBrowseButton *usb_button, *sd_button;
+	IPRadioPage *ip_radio;
+
+	// terminate the current search; only set once to true in the main thread
+	// and only read in the slave thread
+	bool * volatile terminate;
+};
 
 #endif // MULTIMEDIA_H
 
