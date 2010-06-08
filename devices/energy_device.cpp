@@ -295,14 +295,6 @@ EnergyDevice::EnergyDevice(QString where, int _mode) :
 		buffer_year_data[i] = 0;
 }
 
-void EnergyDevice::init()
-{
-	// Ask for the data shown in the default period.
-	requestCurrent();
-	requestCumulativeDay(QDate::currentDate());
-	requestCumulativeDayGraph(QDate::currentDate());
-}
-
 void EnergyDevice::sendInit(QString frame) const
 {
 	// it is not a bug that we use sendFrame here and not sendInit:
