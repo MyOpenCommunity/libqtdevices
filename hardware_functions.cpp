@@ -483,7 +483,7 @@ void initMultimedia()
 #ifdef BT_HARDWARE_TOUCHX
 	QProcess::execute("/bin/init_audio_system");
 	QProcess::execute("/bin/init_video_system");
-	QProcess::execute("/bin/rca2_on");
+	QProcess::execute("/bin/rca2_off");
 #endif
 }
 
