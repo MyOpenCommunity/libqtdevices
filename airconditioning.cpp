@@ -94,11 +94,6 @@ AirConditioning::AirConditioning(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
-void AirConditioning::inizializza()
-{
-	page_content->initBanners();
-}
-
 banner *AirConditioning::getBanner(const QDomNode &item_node)
 {
 	int id = getTextChild(item_node, "id").toInt();

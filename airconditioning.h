@@ -70,7 +70,6 @@ Q_OBJECT
 public:
 	AirConditioning(const QDomNode &config_node);
 	static banner *getBanner(const QDomNode &item_node);
-	virtual void inizializza();
 
 private:
 	static NonControlledProbeDevice *createProbeDevice(const QDomNode &item_node);
