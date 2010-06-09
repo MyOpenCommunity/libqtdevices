@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="hr" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
@@ -73,7 +73,7 @@
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>jačina osvjetljenja</translation>
+        <translation>Jačina osvjetljenja</translation>
     </message>
     <message>
         <source>Calibration</source>
@@ -89,14 +89,34 @@
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
         <translation>Potrošnja</translation>
     </message>
     <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>Struja</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>Gorivo</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>Grijanje/hlađenje</translation>
+    </message>
+    <message>
         <source>Production</source>
         <translation>Produkcija</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>Voda</translation>
     </message>
 </context>
 <context>
@@ -176,6 +196,21 @@
     </message>
 </context>
 <context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>DATUM/SAT</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">Pohranjeni podaci će biti izbrisani.
+U redu za potvrdu.</translation>
+    </message>
+</context>
+<context>
     <name>MediaPlayWindow</name>
     <message>
         <source>Album:</source>
@@ -248,10 +283,6 @@
         <translation>Pop</translation>
     </message>
     <message>
-        <source>Preset</source>
-        <translation>Zadana postavka</translation>
-    </message>
-    <message>
         <source>Rock</source>
         <translation>Rock</translation>
     </message>
@@ -263,16 +294,16 @@
         <source>Techno</source>
         <translation>Tehno</translation>
     </message>
+    <message>
+        <source>User</source>
+        <translation>Korisnik</translation>
+    </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
         <translation>Bal</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>Deformiran</translation>
     </message>
     <message>
         <source>Line</source>
@@ -300,6 +331,63 @@
     <message>
         <source>Servers</source>
         <translation>Poslužitelji</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>Hlađenje</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>Suh</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>Grijanje</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation type="unfinished">Navijač</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">Automatski</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>Okretanje</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>Visina</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>Nisko </translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>Medij</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>Tiho</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">Automatski</translation>
     </message>
 </context>
 <context>

@@ -89,13 +89,33 @@
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
+    <message>
+        <source>Production</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Consumption</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Production</source>
+        <source>Electricity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DHW</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -172,6 +192,20 @@
     </message>
     <message>
         <source>DNS</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -260,7 +294,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Preset</source>
+        <source>User</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -286,10 +320,6 @@
         <source>Text</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Deform</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>SourceChoice</name>
@@ -299,6 +329,63 @@
     </message>
     <message>
         <source>Servers</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>COOLING</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>LOW</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HIGH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

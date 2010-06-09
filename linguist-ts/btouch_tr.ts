@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="tr" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
@@ -73,7 +73,7 @@
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>parlaklık</translation>
+        <translation>Parlaklık</translation>
     </message>
     <message>
         <source>Calibration</source>
@@ -89,14 +89,34 @@
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
         <translation>Tüketim</translation>
     </message>
     <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>Elektrik</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>Gaz</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>Isıtma/Soğutma</translation>
+    </message>
+    <message>
         <source>Production</source>
         <translation>Üretim</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>Su</translation>
     </message>
 </context>
 <context>
@@ -176,6 +196,21 @@
     </message>
 </context>
 <context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>TARİH/SAAT</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">Saklanan veriler silinecektir.
+Onaylamak için OK.</translation>
+    </message>
+</context>
+<context>
     <name>MediaPlayWindow</name>
     <message>
         <source>Album:</source>
@@ -248,10 +283,6 @@
         <translation>Pop</translation>
     </message>
     <message>
-        <source>Preset</source>
-        <translation>Ön ayar</translation>
-    </message>
-    <message>
         <source>Rock</source>
         <translation>Rock</translation>
     </message>
@@ -263,16 +294,16 @@
         <source>Techno</source>
         <translation>Tekno</translation>
     </message>
+    <message>
+        <source>User</source>
+        <translation>Kullanıcı</translation>
+    </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
         <translation>Toplar</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>Deforme</translation>
     </message>
     <message>
         <source>Line</source>
@@ -300,6 +331,63 @@
     <message>
         <source>Servers</source>
         <translation>Sunucular</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>Soğutma</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>Nem Giderici</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>Isıtma</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>OFF (KAPALI)</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation type="unfinished">FAN</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">Otomatik</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>Salınım</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>Yüksek</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>Düşük</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>Ortam</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>Sessiz</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">Otomatik</translation>
     </message>
 </context>
 <context>

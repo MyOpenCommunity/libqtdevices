@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="pt" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
@@ -73,7 +73,7 @@
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>luminosidade</translation>
+        <translation>Luminosidade</translation>
     </message>
     <message>
         <source>Calibration</source>
@@ -89,14 +89,34 @@
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
         <translation>Consumo</translation>
     </message>
     <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>Electricidade</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>Gás</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>Aquecimento/Arrefecimento</translation>
+    </message>
+    <message>
         <source>Production</source>
         <translation>Produção</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>Água</translation>
     </message>
 </context>
 <context>
@@ -176,6 +196,21 @@
     </message>
 </context>
 <context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>Data/Hora</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">Os dados armazenados serão apagados.
+OK para confirmar.</translation>
+    </message>
+</context>
+<context>
     <name>MediaPlayWindow</name>
     <message>
         <source>Album:</source>
@@ -248,10 +283,6 @@
         <translation>Pop</translation>
     </message>
     <message>
-        <source>Preset</source>
-        <translation>Preset</translation>
-    </message>
-    <message>
         <source>Rock</source>
         <translation>Rock</translation>
     </message>
@@ -263,16 +294,16 @@
         <source>Techno</source>
         <translation>Tecno</translation>
     </message>
+    <message>
+        <source>User</source>
+        <translation>Utilitário</translation>
+    </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
         <translation>Bolas</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>Deformação</translation>
     </message>
     <message>
         <source>Line</source>
@@ -300,6 +331,63 @@
     <message>
         <source>Servers</source>
         <translation>Servers</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>Arrefecimento</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>Desumidificador</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>Aquecimento</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation type="unfinished">Ventilador</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">Automático</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>Oscilação</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>Alta</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>Baixa</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>Média</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>Silenciosa</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">Automático</translation>
     </message>
 </context>
 <context>

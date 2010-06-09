@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="el" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
@@ -73,7 +73,7 @@
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>φωτεινότητα</translation>
+        <translation>Φωτεινότητα</translation>
     </message>
     <message>
         <source>Calibration</source>
@@ -89,14 +89,34 @@
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
         <translation>Κατανάλωση</translation>
     </message>
     <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>Ηλεκτρισμός</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>Αέριο</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>Θέρμανση/Ψύξη</translation>
+    </message>
+    <message>
         <source>Production</source>
         <translation>Παραγωγή</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>Νερό</translation>
     </message>
 </context>
 <context>
@@ -176,10 +196,25 @@
     </message>
 </context>
 <context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>ΗΜΕΡΟΜΗΝΙΑ/ΩΡΑ</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">Τα αποθηκευμένα δεδομένα θα διαγραφούν.
+OK για επιβεβαίωση.</translation>
+    </message>
+</context>
+<context>
     <name>MediaPlayWindow</name>
     <message>
         <source>Album:</source>
-        <translation>ΆΛΜΠΟΥΜ</translation>
+        <translation>ΆΛΜΠΟΥΜ:</translation>
     </message>
     <message>
         <source>Artist:</source>
@@ -248,10 +283,6 @@
         <translation>Ποπ</translation>
     </message>
     <message>
-        <source>Preset</source>
-        <translation>Πρίμα στο φουλ</translation>
-    </message>
-    <message>
         <source>Rock</source>
         <translation>Ροκ</translation>
     </message>
@@ -263,16 +294,16 @@
         <source>Techno</source>
         <translation>Τέχνο</translation>
     </message>
+    <message>
+        <source>User</source>
+        <translation>Χρήστης</translation>
+    </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
         <translation>Μπίλιες</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>Παραμόρφωση</translation>
     </message>
     <message>
         <source>Line</source>
@@ -300,6 +331,63 @@
     <message>
         <source>Servers</source>
         <translation>Διακομιστές</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>Ψύξη</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>Dry</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>Θέρμανση</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation type="unfinished">Ανεμιστήρας</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">Αυτόματο</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>παλινδρόμηση</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>Υψηλό</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>Χαμηλή</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>Μεσαίο</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>Σιωπηρή</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">Αυτόματο</translation>
     </message>
 </context>
 <context>
