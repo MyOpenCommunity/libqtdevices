@@ -20,6 +20,7 @@
 
 
 #include "pagefactory.h"
+#include "main.h"
 #include "xml_functions.h" // getPageNode
 #include "btmain.h" // bt_global::btmain
 #include "videodoorentry.h"
