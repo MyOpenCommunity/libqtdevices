@@ -88,9 +88,6 @@ NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, int openser
 	ThermalDevice *thermal_device = 0;
 	switch (id)
 	{
-	case fs_nc_probe:
-		p = new PageSimpleProbe(n, scale);
-		break;
 	case fs_4z_probe:
 	{
 		ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(where_composed,

@@ -38,8 +38,7 @@ class QLabel;
 
 enum BannID
 {
-	fs_nc_probe = 1,                      // not controlled probe
-	fs_4z_thermal_regulator,              // 4 zones thermal regulator device
+	fs_4z_thermal_regulator = 1,          // 4 zones thermal regulator device
 	fs_4z_probe,                          // 4 zones controlled probe
 	fs_4z_fancoil,                        // 4 zones controlled probe with fancoil
 	fs_99z_thermal_regulator,             // 99 zones thermal regulator device
