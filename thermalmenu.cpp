@@ -20,7 +20,7 @@
 
 
 #include "thermalmenu.h"
-#include "banntemperature.h"
+#include "bann_thermal_regulation.h" // BannTemperature
 #include "devices_cache.h" // bt_global::devices_cache
 #include "probe_device.h"
 #include "plantmenu.h"

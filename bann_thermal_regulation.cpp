@@ -24,6 +24,13 @@
 #include "thermal_device.h"
 #include "skinmanager.h"
 #include "btbutton.h"
+#include "icondispatcher.h"
+#include "probe_device.h" // NonControlledProbeDevice
+#include "scaleconversion.h"
+
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
 
 
 BannOff::BannOff(QWidget *parent, ThermalDevice *_dev) : BannCenteredButton(parent)
@@ -110,3 +117,61 @@ void BannWeekly::performAction()
 	emit programNumber(index);
 }
 
+
+BannTemperature::BannTemperature(QString descr, NonControlledProbeDevice *dev)
+	: BannerNew(0)
+{
+	temperature_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
+
+	QLabel *descr_label = new QLabel(descr);
+	descr_label->setFont(bt_global::font->get(FontManager::EXTERNAL_PROBE));
+
+	QVBoxLayout *t = new QVBoxLayout(this);
+
+#ifdef LAYOUT_TOUCHX
+	descr_label->setFixedHeight(40);
+
+	QLabel *sep = new QLabel;
+	sep->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("horizontal_separator")));
+
+	t->addWidget(sep);
+#endif
+
+	temperature_label = new QLabel;
+	temperature_label->setFont(bt_global::font->get(FontManager::EXTERNAL_PROBE));
+	updateTemperature(1235);
+
+	QHBoxLayout *l = new QHBoxLayout;
+	l->setContentsMargins(0, 0, 10, 0);
+	l->setSpacing(10);
+	l->addWidget(descr_label, 0, Qt::AlignLeft);
+	l->addWidget(temperature_label, 0, Qt::AlignRight);
+
+	t->addLayout(l);
+
+	connect(dev, SIGNAL(valueReceived(DeviceValues)),
+			SLOT(valueReceived(DeviceValues)));
+}
+
+void BannTemperature::valueReceived(const DeviceValues &values_list)
+{
+	if (!values_list.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
+		return;
+
+	updateTemperature(values_list[NonControlledProbeDevice::DIM_TEMPERATURE].toInt());
+}
+
+void BannTemperature::updateTemperature(int temperature)
+{
+	switch (temperature_scale)
+	{
+		case CELSIUS:
+			temperature_label->setText(celsiusString(bt2Celsius(temperature)));
+			break;
+		case FAHRENHEIT:
+			temperature_label->setText(fahrenheitString(bt2Fahrenheit(temperature)));
+			break;
+		default:
+			qWarning("BannTemperature: unknown scale");
+	}
+}

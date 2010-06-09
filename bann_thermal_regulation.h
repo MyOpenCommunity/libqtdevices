@@ -24,8 +24,10 @@
 
 #include "bann1_button.h" // BannSinglePuls
 #include "bann2_buttons.h" // Bann2CentralButtons
+#include "main.h" // TemperatureScale
 
 class ThermalDevice;
+class NonControlledProbeDevice;
 
 class QLabel;
 
@@ -142,6 +144,28 @@ signals:
 
 private:
 	int index;
+};
+
+
+/**
+ * A banner to display the temperature for not controlled and external probes.
+ */
+class BannTemperature : public BannerNew
+{
+Q_OBJECT
+public:
+	BannTemperature(QString descr, NonControlledProbeDevice *dev);
+
+public slots:
+	void valueReceived(const DeviceValues &values_list);
+
+private:
+	void updateTemperature(int temperature);
+
+private:
+	QLabel *temperature_label;
+
+	TemperatureScale temperature_scale;
 };
 
 #endif // BANN_THERMAL_REGULATION_H
