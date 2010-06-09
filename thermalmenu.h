@@ -25,7 +25,6 @@
 #include "bannerpage.h"
 #include "bann1_button.h"
 #include "bttime.h"
-#include "bann_thermal_regulation.h"
 
 #include <QDomNode>
 #include <QWidget>
@@ -82,60 +81,6 @@ public:
 
 private:
 	void loadItems(const QDomNode &config_node, bool are_probes_external);
-};
-
-
-/**
- * A base class for submenus that allow to choose one program in a list. The list changes
- * when season changes (summer/winter).
- * This class emits a signal when a program is clicked. This signal should be used to close
- * the submenu and to take further action, for example sending a frame to the thermal regulator.
- */
-class ProgramMenu : public BannerPage
-{
-Q_OBJECT
-public:
-	ProgramMenu(QWidget *parent, QMap<QString, QString> descriptions, QString title);
-	virtual void createSummerBanners() = 0;
-	virtual void createWinterBanners() = 0;
-	void setSeason(Season new_season);
-protected:
-	QString summer_icon, winter_icon;
-	int season;
-	QMap<QString, QString> descriptions;
-	/**
-	 * \param season Either "summer" or "winter"
-	 * \param what Either "prog" or "scen"
-	 */
-	void createSeasonBanner(QString season, QString icon);
-signals:
-	void programClicked(int);
-};
-
-/**
- * This is a specialized version of ProgramMenu to select week programs. The list
- * of programs is read from DOM.
- */
-class WeeklyMenu : public ProgramMenu
-{
-Q_OBJECT
-public:
-	WeeklyMenu(QWidget *parent, QMap<QString, QString> programs, QString title = "");
-	virtual void createSummerBanners();
-	virtual void createWinterBanners();
-};
-
-/**
- * This is a specialized version of ProgramMenu to select scenarios. The list
- * of scenarios is read from DOM and updated when season changes
- */
-class ScenarioMenu : public ProgramMenu
-{
-Q_OBJECT
-public:
-	ScenarioMenu(QWidget *parent, QMap<QString, QString> scenarios, QString title = "");
-	virtual void createSummerBanners();
-	virtual void createWinterBanners();
 };
 
 #endif

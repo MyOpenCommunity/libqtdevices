@@ -288,10 +288,15 @@ void AlarmClock::checkAlarm()
 			}
 			else if (type == DI_SON)
 			{
-				aumVolTimer = new QTimer(this);
-				aumVolTimer->start(3000);
-				connect(aumVolTimer,SIGNAL(timeout()), SLOT(sounddiffusionAlarm()));
-				conta2min = 0;
+				if (dev->isValid(sorgente, stazione, volSveglia))
+				{
+					aumVolTimer = new QTimer(this);
+					aumVolTimer->start(3000);
+					connect(aumVolTimer,SIGNAL(timeout()), SLOT(sounddiffusionAlarm()));
+					conta2min = 0;
+				}
+				else
+					qWarning() << "Invalid source data for alarm, failed to start";
 			}
 			else
 				qFatal("Unknown sveglia type!");

@@ -131,6 +131,31 @@ void AlarmSoundDiffDevice::requestStation(int source)
 		dev->requestTrack();
 }
 
+bool AlarmSoundDiffDevice::isValid(int source, int radio_station, int *alarmVolumes)
+{
+	if (!sources[source])
+	{
+		qDebug() << "Invalid alarm clock source" << source;
+
+		return false;
+	}
+
+	for (int amplifier = 0; amplifier < AMPLI_NUM; ++amplifier)
+	{
+		if (alarmVolumes[amplifier] < 0)
+			continue;
+
+		if (!amplifiers[amplifier])
+		{
+			qDebug() << "Invalid alarm clock amplifier" << amplifier;
+
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void AlarmSoundDiffDevice::startAlarm(bool is_multichannel, int source, int radio_station, int *alarmVolumes)
 {
 	bool areas[AMPLI_NUM / 10 + 1];
