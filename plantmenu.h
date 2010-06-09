@@ -36,7 +36,7 @@ class ThermalDevice;
 class QLabel;
 
 
-enum BannID
+enum ThermalPageID
 {
 	fs_4z_thermal_regulator = 1,          // 4 zones thermal regulator device
 	fs_4z_probe,                          // 4 zones controlled probe
@@ -65,7 +65,7 @@ private:
 	 * \param type          The type of full screen banner that is linked to the banner in plant menu
 	 * \return A pointer to the small banner that will show the corresponding full screen banner.
 	 */
-	NavigationPage *addMenuItem(QDomNode n, QString central_icon, BannID type);
+	NavigationPage *addMenuItem(QDomNode n, QString central_icon, ThermalPageID type);
 
 	/// Address of the thermal regulation device
 	/// empty in case of 99z device

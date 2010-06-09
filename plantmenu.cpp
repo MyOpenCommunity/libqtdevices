@@ -72,7 +72,7 @@ namespace
 }
 
 
-NavigationPage *getPage(BannID id, QDomNode n, QString ind_centrale, int openserver_id, TemperatureScale scale, banner *bann)
+NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_centrale, int openserver_id, TemperatureScale scale, banner *bann)
 {
 	NavigationPage *p = 0;
 	QString simple_address = getTextChild(n, "where");
@@ -307,7 +307,7 @@ banner *PlantMenu::getBanner(const QDomNode &item_node)
 	return NULL;
 }
 
-NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, BannID type)
+NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, ThermalPageID type)
 {
 	/*
 	 * Create little banner in selection menu.
@@ -320,7 +320,7 @@ NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, BannID 
 	 * Create page in detail menu.
 	 */
 	TemperatureScale scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
-	NavigationPage *p = getPage(type, n, ind_centrale, openserver_id, scale, bp);
+	NavigationPage *p = getThermalPage(type, n, ind_centrale, openserver_id, scale, bp);
 	bp->connectRightButton(p);
 	connect(bp, SIGNAL(pageClosed()), SLOT(showPage()));
 
