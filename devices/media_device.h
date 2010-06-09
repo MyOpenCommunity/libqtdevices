@@ -52,6 +52,7 @@ public:
 	AlarmSoundDiffDevice();
 
 	void startAlarm(bool is_multichannel, int source, int radio_station, int *alarmVolumes);
+	bool isValid(int source, int radio_station, int *alarmVolumes);
 	void stopAlarm(int source, int *alarmVolumes);
 	void setVolume(int amplifier, int volume);
 
