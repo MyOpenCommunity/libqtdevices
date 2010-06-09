@@ -208,6 +208,7 @@ HEADERS += actuators.h \
 	supervisionmenu.h \
 	temperatureviewer.h \
 	thermalmenu.h \
+	thermalregulator.h \
 	timescript.h \
 	transitionwidget.h \
 	version.h \
@@ -310,6 +311,7 @@ SOURCES += actuators.cpp \
 	supervisionmenu.cpp \
 	temperatureviewer.cpp \
 	thermalmenu.cpp \
+	thermalregulator.cpp \
 	timescript.cpp \
 	transitionwidget.cpp \
 	version.cpp \
