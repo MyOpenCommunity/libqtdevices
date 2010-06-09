@@ -37,7 +37,7 @@ BannTemperature::BannTemperature(QString descr, NonControlledProbeDevice *dev)
 	temperature_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 
 	QLabel *descr_label = new QLabel(descr);
-	descr_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	descr_label->setFont(bt_global::font->get(FontManager::EXTERNAL_PROBE));
 
 	QVBoxLayout *t = new QVBoxLayout(this);
 
@@ -51,7 +51,7 @@ BannTemperature::BannTemperature(QString descr, NonControlledProbeDevice *dev)
 #endif
 
 	temperature_label = new QLabel;
-	temperature_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	temperature_label->setFont(bt_global::font->get(FontManager::EXTERNAL_PROBE));
 	updateTemperature(1235);
 
 	QHBoxLayout *l = new QHBoxLayout;

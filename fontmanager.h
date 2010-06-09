@@ -52,6 +52,7 @@ public:
 	// HOMEPAGEWIDGET: date/time/temperature display in home page
 	// PROBE_TEMPERATURE: current temperature of a thermal probe
 	// PROBE_SETPOINT: set point temperature of a thermal probe
+	// EXTERNAL_PROBE: description and temperature for external/non controlled probes
 	// REGULATOR_TEMPERATURE: current temperature of a thermal regulator
 	// REGULATOR_DESCRIPTION: description of a thermal regulator
 	// AIRCONDITIONING_TEMPERATURE: temperature measured by a split
@@ -73,6 +74,7 @@ public:
 		// thermal regulation
 		PROBE_TEMPERATURE = 0,
 		PROBE_SETPOINT = 1,
+		EXTERNAL_PROBE = 1,
 		REGULATOR_TEMPERATURE = 1,
 		REGULATOR_DESCRIPTION = 1,
 		AIRCONDITIONING_TEMPERATURE = 1,
@@ -100,6 +102,7 @@ public:
 		// thermal regulation
 		PROBE_TEMPERATURE = 7,
 		PROBE_SETPOINT = 8,
+		EXTERNAL_PROBE = 2,
 		REGULATOR_TEMPERATURE = 8,
 		REGULATOR_DESCRIPTION = 8,
 		AIRCONDITIONING_TEMPERATURE = 0,
