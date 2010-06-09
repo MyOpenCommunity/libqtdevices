@@ -32,6 +32,8 @@
 #include <QMetaObject> // className
 #include <QTime>
 #include <QDir>
+#include <QStyleOption>
+#include <QPainter>
 
 #include <assert.h>
 
@@ -155,6 +157,16 @@ void Page::forceClosed()
 {
 	emit Closed();
 }
+
+void Page::paintEvent(QPaintEvent *)
+{
+	// required for Style Sheets on a QWidget subclass
+	QStyleOption opt;
+	opt.init(this);
+	QPainter p(this);
+	style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
 
 BannerPage::BannerPage(QWidget *parent)
 	: Page(parent)
