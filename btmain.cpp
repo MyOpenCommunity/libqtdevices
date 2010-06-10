@@ -382,7 +382,9 @@ void BtMain::loadConfiguration()
 			qWarning("setup node not found on xml config file!");
 	}
 
+#ifdef CONFIG_BTOUCH
 	QDomNode display_node = getChildWithId(getPageNode(SETTINGS), QRegExp("item\\d{1,2}"), DISPLAY);
+#endif
 
 #ifdef BT_HARDWARE_TOUCHX
 	// on TouchX there is no way to control the screensaver brightness
@@ -390,15 +392,19 @@ void BtMain::loadConfiguration()
 #else
 	BrightnessLevel level = BRIGHTNESS_NORMAL; // default brightness
 #endif
+
+#ifdef CONFIG_BTOUCH
 	if (!display_node.isNull())
 	{
 		QDomElement n = getElement(display_node, "brightness/level");
 		if (!n.isNull())
 			level = static_cast<BrightnessLevel>(n.text().toInt());
 	}
+#endif
 	bt_global::display->setBrightness(level);
 
 	ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
+#ifdef CONFIG_BTOUCH
 	if (!display_node.isNull())
 	{
 		QDomElement screensaver_node = getElement(display_node, "screensaver");
@@ -409,6 +415,7 @@ void BtMain::loadConfiguration()
 		if (type == ScreenSaver::DEFORM) // deform is for now disabled!
 			type = ScreenSaver::LINES;
 	}
+#endif
 	bt_global::display->current_screensaver = type;
 
 	window_container->homeWindow()->loadConfiguration();
