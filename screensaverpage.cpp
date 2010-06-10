@@ -101,7 +101,10 @@ void ScreenSaverPage::cleanUp()
 	QMap<QString, QString> data;
 	data["type"] = QString::number(bt_global::display->currentScreenSaver());
 	if (timing)
+	{
+		ScreenSaver::setSlideshowInterval(timing->getTiming());
 		data["timeSlideShow"] = QString::number(timing->getTiming());
+	}
 	setCfgValue(data, item_id);
 }
 
