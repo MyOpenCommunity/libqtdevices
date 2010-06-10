@@ -65,7 +65,6 @@ private slots:
 private:
 	VideoDoorEntry(); // available only for BtMain
 	StateButton *ring_exclusion;
-	EntryphoneDevice *dev;
 	void loadItems(const QDomNode &config_node);
 };
 

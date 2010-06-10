@@ -80,6 +80,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_small_8>antintrusione/otto.png</img_small_8>
 		<img_splash_image>loading.png</img_splash_image>
 		<img_horizontal_separator>sephoriz.png</img_horizontal_separator>
+		<img_tray_ring_ex_on>home/btnesclusionechiamataon.png</img_tray_ring_ex_on>
+		<img_tray_ring_ex_off>home/btnesclusionechiamataoff.png</img_tray_ring_ex_off>
 	</common>
 	<!-- Home page -->
 	<item>
