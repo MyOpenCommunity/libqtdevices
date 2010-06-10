@@ -25,10 +25,12 @@
 #include <QMap>
 #include <QObject>
 #include <QProcess>
+#include <QFutureWatcher>
 
 #include <stdio.h>
 
 class QRect;
+
 
 class MediaPlayer : public QObject
 {
@@ -66,6 +68,9 @@ public:
 
 	QMap<QString, QString> getVideoInfo();
 
+	void requestInitialPlayingInfo(const QString &track);
+	void requestInitialVideoInfo(const QString &track);
+
 	/// Need to be public because called by signal handler
 	void sigChildReceived(int dead_pid, int status);
 
@@ -99,12 +104,15 @@ private:
 
 	QMap<QString, QString> getMediaInfo(const QMap<QString, QString> &data_search);
 
+	QFutureWatcher<QMap<QString,QString> > *info_watcher;
+
 	bool paused;
 
 private slots:
 	void mplayerFinished(int exit_code, QProcess::ExitStatus exit_status);
 	void mplayerError(QProcess::ProcessError error);
 	void playbackStarted();
+	void infoReceived();
 
 signals:
 	/// mplayer started the reproduction of the media
@@ -122,6 +130,8 @@ signals:
 
 	/// mplayer exited with error or aborted
 	void mplayerAborted();
+
+	void playingInfoUpdated(const QMap<QString,QString> &info);
 };
 
 #endif
