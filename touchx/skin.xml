@@ -37,7 +37,6 @@ QWidget[Favorites="true"] { background-image: url(cfg/extra/1/skin/preferiti.png
 HeaderLogo { background-image: url(cfg/extra/1/skin/topstatusbar_3.png); }
 QWidget[VerticalSeparator="true"] { background-image: url(cfg/extra/1/skin/sepvert.png); background-position: top center; background-repeat: no-repeat; }
 ItemList > QWidget { background-image: url(cfg/extra/1/skin/multimediale/backfileaudio.png); }
-RadioInfo { background-image: url(cfg/extra/1/skin/diffusione/displaybig.png); }
 FileSelector > QLabel[Loading="true"] { background-color: #000000; background-image: url(cfg/extra/1/skin/clessidra.png); background-position: center center; background-repeat: no-repeat; }
 FeedItemWidget > QTextEdit { background-color: #c0c0c0; color: #000000; }
 MessagesListPage QLabel[UnreadMessage="true"] { color:#FF0000; }
@@ -528,8 +527,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_next>diffusione/successivo.png</img_next>
 		<img_source_background>diffusione/display.png</img_source_background>
 		<img_details>diffusione/audiosetting.png</img_details>
-		<img_turn_on>carichi/on.png</img_turn_on>
-		<img_turned_on>carichi/ondis.png</img_turned_on>
+		<img_turn_on>diffusione/on.png</img_turn_on>
+		<img_turned_on>diffusione/onon.png</img_turned_on>
 
 		<!--
 		RDS Radio details page
@@ -815,8 +814,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_next>diffusione/successivo.png</img_next>
 		<img_source_background>diffusione/display.png</img_source_background>
 		<img_details>diffusione/audiosetting.png</img_details>
-		<img_turn_on>carichi/on.png</img_turn_on>
-		<img_turned_on>carichi/ondis.png</img_turned_on>
+		<img_turn_on>diffusione/on.png</img_turn_on>
+		<img_turned_on>diffusione/onon.png</img_turned_on>
 
 		<!--
 		RDS Radio details page

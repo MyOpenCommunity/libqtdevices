@@ -100,14 +100,6 @@ void RadioInfo::setRadioName(const QString &rds)
 		radio_name->setText(rds);
 }
 
-void RadioInfo::paintEvent(QPaintEvent *)
-{
-	QStyleOption opt;
-	opt.init(this);
-	QPainter p(this);
-	style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-}
-
 
 #define REQUEST_FREQUENCY_TIME 1000
 #define MEMORY_PRESS_TIME 3000

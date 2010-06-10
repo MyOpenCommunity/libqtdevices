@@ -44,9 +44,6 @@ public:
 	void setChannel(int memory_channel);
 	void setRadioName(const QString &rds);
 
-protected:
-	void paintEvent(QPaintEvent *);
-
 private:
 	QLabel *radio_name, *frequency, *channel;
 };
