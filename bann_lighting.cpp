@@ -358,8 +358,10 @@ void Dimmer100Group::decreaseLevel()
 TempLight::TempLight(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode) :
 	BannOnOff2Labels(0)
 {
-	initBanner(bt_global::skin->getImage("lamp_cycle"), bt_global::skin->getImage("lamp_time_on"),
-		bt_global::skin->getImage("on"), OFF, descr, QString());
+	QString icon_on_off = bt_global::skin->getImage("lamp_time_on");
+	initBanner(bt_global::skin->getImage("lamp_cycle"), getBostikName(icon_on_off, "on"),
+		   getBostikName(icon_on_off, "off"),
+		   bt_global::skin->getImage("on"), OFF, descr, QString());
 
 	dev = bt_global::add_device_to_cache(new LightingDevice(where, pull_mode, openserver_id));
 

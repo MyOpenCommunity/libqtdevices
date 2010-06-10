@@ -251,11 +251,14 @@ BannOnOff2Labels::BannOnOff2Labels(QWidget *parent) :
 	l->addWidget(text);
 }
 
-void BannOnOff2Labels::initBanner(const QString &left, const QString &_center, const QString &right,
-		States init_state, const QString &banner_text, const QString &second_text)
+void BannOnOff2Labels::initBanner(const QString &left, const QString &_center_on,
+				  const QString &_center_off, const QString &right,
+				  States init_state, const QString &banner_text,
+				  const QString &second_text)
 {
 	left_button->setImage(left);
-	center = _center;
+	center_on = _center_on;
+	center_off = _center_off;
 	right_button->setImage(right);
 
 	text->setText(banner_text);
@@ -278,10 +281,10 @@ void BannOnOff2Labels::setState(States new_state)
 	switch (new_state)
 	{
 	case ON:
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center));
+		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_on));
 		break;
 	case OFF:
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center, "off")));
+		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_off));
 		break;
 	}
 }

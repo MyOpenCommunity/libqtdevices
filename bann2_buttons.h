@@ -206,7 +206,7 @@ protected:
 	 * \param banner_text Text below the banner
 	 * \param second_text Initial center text
 	 */
-	void initBanner(const QString &left, const QString &_center, const QString &right,
+	void initBanner(const QString &left, const QString &_center_on, const QString &_center_off, const QString &right,
 		States init_state, const QString &banner_text, const QString &second_text);
 	/**
 	 * Set the text between left button and center right icon
@@ -233,7 +233,7 @@ protected:
 	BtButton *right_button, *left_button;
 private:
 	QLabel *center_icon, *center_text, *text;
-	QString center;
+	QString center_on, center_off;
 };
 
 /**
