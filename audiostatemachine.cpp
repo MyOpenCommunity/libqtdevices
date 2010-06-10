@@ -486,9 +486,14 @@ void AudioStateMachine::statePlayDifsonExited()
 {
 	qDebug() << "AudioStateMachine::statePlayDifsonExited";
 
-	changeVolumePath(Volumes::MM_AMPLIFIER, 0);
-	deactivateLocalSource();
-	changeVolumePath(Volumes::MM_SOURCE, 0);
+	if (local_amplifier_status)
+		changeVolumePath(Volumes::MM_AMPLIFIER, 0);
+
+	if (local_source_status)
+	{
+		deactivateLocalSource();
+		changeVolumePath(Volumes::MM_SOURCE, 0);
+	}
 }
 
 void AudioStateMachine::statePlayRingtoneEntered()
