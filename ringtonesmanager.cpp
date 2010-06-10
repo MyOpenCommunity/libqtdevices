@@ -20,7 +20,7 @@
 
 
 #include "ringtonesmanager.h"
-#include "hardware_functions.h" // playSound, stopSound
+#include "mediaplayer.h"  // bt_global::sound
 #include "xml_functions.h" // getChildren, getTextChild
 #include "generic_functions.h" // setCfgValue
 
@@ -61,7 +61,7 @@ void RingtonesManager::playRingtone(Ringtones::Type t)
 
 	qDebug() << "RingtonesManager::playRingtone:" << ringtone_to_file[type_to_ringtone[t]]
 		<< "for type:" << t;
-	playSound(ringtone_to_file[type_to_ringtone[t]]);
+	bt_global::sound->play(ringtone_to_file[type_to_ringtone[t]]);
 }
 
 void RingtonesManager::playRingtone(int ring)
@@ -69,12 +69,12 @@ void RingtonesManager::playRingtone(int ring)
 	Q_ASSERT_X(ringtone_to_file.contains(ring), "RingtonesManager::playRingtone(int)",
 		qPrintable(QString("Given ringtone %1 is outside valid range.").arg(ring)));
 
-	playSound(ringtone_to_file[ring]);
+	bt_global::sound->play(ringtone_to_file[ring]);
 }
 
 void RingtonesManager::stopRingtone()
 {
-	stopSound();
+	bt_global::sound->stop();
 }
 
 void RingtonesManager::setRingtone(Ringtones::Type t, int item_id, int ring)

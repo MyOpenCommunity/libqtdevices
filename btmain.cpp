@@ -50,6 +50,7 @@
 #include "calibration.h"
 #endif
 #include "media_device.h" // AmplifierDevice::setVirtualAmplifierWhere
+#include "mediaplayer.h" // bt_global::sound
 
 #include <QMutableHashIterator>
 #include <QXmlSimpleReader>
@@ -147,6 +148,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	bt_global::skin = new SkinManager(SKIN_FILE);
 	bt_global::ringtones = new RingtonesManager(RINGTONE_FILE);
 	bt_global::audio_states = new AudioStateMachine;
+	bt_global::sound = new SoundPlayer;
 
 #if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
 	// save last click time for the screen saver

@@ -20,7 +20,7 @@
 
 
 #include "mediaplayer.h"
-#include "hardware_functions.h" // maxWidth, maxHeight
+#include "hardware_functions.h" // maxWidth, maxHeight, getAudioCmdLine
 #include "displaycontrol.h"
 #include "audiostatemachine.h"
 
@@ -323,3 +323,48 @@ void MediaPlayer::updateDirectAccessState(bool state)
 		bt_global::display->setDirectScreenAccess(state);
 	bt_global::audio_states->setDirectAudioAccess(state);
 }
+
+
+SoundPlayer::SoundPlayer()
+{
+	process = new QProcess(this);
+	connect(process, SIGNAL(error(QProcess::ProcessError)), SLOT(error()));
+}
+
+void SoundPlayer::play(const QString &path)
+{
+	to_play = path;
+	if (process->state() != QProcess::NotRunning)
+	{
+		connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(delayedStart()));
+		process->terminate();
+	}
+	else
+		start();
+}
+
+void SoundPlayer::delayedStart()
+{
+	disconnect(process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(delayedStart()));
+	start();
+}
+
+void SoundPlayer::start()
+{
+	QPair<QString, QStringList> cmdline = getAudioCmdLine(to_play);
+	process->start(cmdline.first, cmdline.second);
+	to_play = QString();
+}
+
+void SoundPlayer::error()
+{
+	qWarning() << "SoundPlayer::error" << process->errorString();
+}
+
+void SoundPlayer::stop()
+{
+	process->terminate();
+}
+
+// The global definition of sound player pointer
+SoundPlayer *bt_global::sound = 0;

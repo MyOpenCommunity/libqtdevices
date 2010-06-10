@@ -23,12 +23,14 @@
 #define HARDWARE_FUNCTIONS_H
 
 #include <QtGlobal> // uchar
+#include <QPair>
+#include <QString>
 
 #define DEV_E2 "/dev/nvram"
 
 #define AMPLI_NUM 100
 
-class QString;
+class QProcess;
 
 
 // Return the maximum width of the gui
@@ -123,10 +125,8 @@ void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazion
 */
 void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione);
 
-// play a WAV file
-void playSound(const QString &wavFile);
-// stops a file previously played with playSound
-void stopSound();
+// Return the pair command, arguments to reproduce the audio file argument.
+QPair <QString, QStringList> getAudioCmdLine(const QString &audio_path);
 
 // set contrast value for entryphone
 void setVctVideoValue(const QString &command, const QString &value);

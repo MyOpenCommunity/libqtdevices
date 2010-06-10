@@ -38,6 +38,7 @@
 #endif
 #include "audiostatemachine.h"
 #include "devices_cache.h"
+#include "mediaplayer.h" // bt_global::sound
 
 #include <openmsg.h>
 
@@ -385,7 +386,7 @@ void AlarmClock::buzzerAlarm()
 
 void AlarmClock::wavAlarm()
 {
-	playSound(SOUND_PATH "alarm.wav");
+	bt_global::sound->play(SOUND_PATH "alarm.wav");
 
 	contaBuzzer++;
 	if (contaBuzzer >= 24)
