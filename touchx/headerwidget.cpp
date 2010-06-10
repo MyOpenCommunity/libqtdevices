@@ -717,6 +717,12 @@ void HeaderNavigationWidget::setCurrentSection(int section_id)
 	int prev_index = section_ids.indexOf(selected_section_id);
 	int index = section_ids.indexOf(section_id);
 
+	// should only happen when there are pages instantiated for a section without
+	// the related section; the only known case is a touch that works as a videocall
+	// receiver without the videodoor section
+	if (index == -1)
+		return;
+
 	for (int item_index = 0; item_index < button_layout->count(); ++item_index)
 	{
 		// show the selected icon if the corresponding button is in the layout

@@ -162,6 +162,18 @@ namespace
 		QProcess::execute("/bin/in_scsbb_off");
 	}
 
+	void activateLocalSource()
+	{
+		qDebug() << "/bin/rca2_on";
+		QProcess::execute("/bin/rca2_on");
+	}
+
+	void deactivateLocalSource()
+	{
+		qDebug() << "/bin/rca2_off";
+		QProcess::execute("/bin/rca2_off");
+	}
+
 	void changeVolumePath(Volumes::Type type, int value)
 	{
 		Q_ASSERT_X(value >= VOLUME_MIN && value <= VOLUME_MAX, "changeVolumePath",
@@ -278,6 +290,7 @@ void AudioStateMachine::start(int state)
 
 	// turn off the local source/amplifier at startup
 	changeVolumePath(Volumes::MM_AMPLIFIER, 0);
+	deactivateLocalSource();
 	changeVolumePath(Volumes::MM_SOURCE, 0);
 
 	StateMachine::start(state);
@@ -360,9 +373,15 @@ void AudioStateMachine::setLocalSourceStatus(bool status)
 	if (currentState() == AudioStates::PLAY_DIFSON)
 	{
 		if (status)
+		{
+			activateLocalSource();
 			changeVolumePath(Volumes::MM_SOURCE, DEFAULT_VOLUME);
+		}
 		else
+		{
+			deactivateLocalSource();
 			changeVolumePath(Volumes::MM_SOURCE, 0);
+		}
 	}
 }
 
@@ -457,6 +476,7 @@ void AudioStateMachine::statePlayDifsonEntered()
 
 	if (local_source_status)
 	{
+		activateLocalSource();
 		current_audio_path = Volumes::MM_SOURCE;
 		changeVolumePath(Volumes::MM_SOURCE);
 	}
@@ -466,8 +486,14 @@ void AudioStateMachine::statePlayDifsonExited()
 {
 	qDebug() << "AudioStateMachine::statePlayDifsonExited";
 
-	changeVolumePath(Volumes::MM_AMPLIFIER, 0);
-	changeVolumePath(Volumes::MM_SOURCE, 0);
+	if (local_amplifier_status)
+		changeVolumePath(Volumes::MM_AMPLIFIER, 0);
+
+	if (local_source_status)
+	{
+		deactivateLocalSource();
+		changeVolumePath(Volumes::MM_SOURCE, 0);
+	}
 }
 
 void AudioStateMachine::statePlayRingtoneEntered()

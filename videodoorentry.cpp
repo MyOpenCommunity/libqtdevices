@@ -102,7 +102,13 @@ VideoDoorEntry::VideoDoorEntry()
 	// don't store any pointer to these. The destruction is provided by the PageContainer.
 	(void) new IntercomCallPage(dev);
 	(void) new VCTCallPage(dev);
-	ring_exclusion = 0;
+
+	ring_exclusion = new StateButton;
+	ring_exclusion->setOnOff();
+	ring_exclusion->setOffImage(bt_global::skin->getImage("tray_ring_ex_off"));
+	ring_exclusion->setOnImage(bt_global::skin->getImage("tray_ring_ex_on"));
+	connect(ring_exclusion, SIGNAL(clicked()), SLOT(toggleRingExclusion()));
+	bt_global::btmain->trayBar()->addButton(ring_exclusion, TrayBar::RING_EXCLUSION);
 }
 
 VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
@@ -118,8 +124,6 @@ VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
 	bt_global::btmain->trayBar()->addButton(ring_exclusion, TrayBar::RING_EXCLUSION);
 
 	loadItems(config_node);
-	dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS],
-		(*bt_global::config)[PI_MODE]));
 }
 
 void VideoDoorEntry::toggleRingExclusion()

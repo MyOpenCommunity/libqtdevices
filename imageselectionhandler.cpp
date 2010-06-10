@@ -47,9 +47,15 @@ namespace
 		return li;
 	}
 
-	bool saveTextFile(const QStringList &paths, const QString &file_path)
+	bool saveTextFile(const QStringList &paths, const QString &file_name)
 	{
-		QTemporaryFile f("./temp_slideshowXXXXXX.txt");
+		// create the temporary file in the same directory as the final file
+		QFileInfo file_path(file_name);
+		file_path.makeAbsolute();
+		QDir dir_path = file_path.absoluteDir();
+		QString temp_pattern = dir_path.absoluteFilePath("temp_slideshowXXXXXX.txt");
+
+		QTemporaryFile f(temp_pattern);
 		if (!f.open())
 		{
 			qWarning() << "Error creating temporary file for slideshow images";
@@ -65,8 +71,8 @@ namespace
 		f.close();
 		QFileInfo fi(f);
 
-		// this is not a bug, stlib functions return 0 on success
-		return !(::rename(qPrintable(fi.absoluteFilePath()), qPrintable(file_path)));
+		// this is not a bug, stdlib functions return 0 on success
+		return !(::rename(qPrintable(fi.absoluteFilePath()), qPrintable(file_name)));
 	}
 }
 

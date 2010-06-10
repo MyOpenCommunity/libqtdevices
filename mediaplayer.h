@@ -134,5 +134,29 @@ signals:
 	void playingInfoUpdated(const QMap<QString,QString> &info);
 };
 
+
+class SoundPlayer : public QObject
+{
+Q_OBJECT
+public:
+	SoundPlayer();
+
+	void play(const QString &path);
+	void stop();
+
+private slots:
+	void delayedStart();
+	void error();
+
+private:
+	QProcess *process;
+	QString to_play;
+	void start();
+};
+
+
+namespace bt_global { extern SoundPlayer *sound; }
+
+
 #endif
 

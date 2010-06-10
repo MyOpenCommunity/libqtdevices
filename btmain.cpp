@@ -50,6 +50,7 @@
 #include "calibration.h"
 #endif
 #include "media_device.h" // AmplifierDevice::setVirtualAmplifierWhere
+#include "mediaplayer.h" // bt_global::sound
 
 #include <QMutableHashIterator>
 #include <QXmlSimpleReader>
@@ -147,6 +148,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	bt_global::skin = new SkinManager(SKIN_FILE);
 	bt_global::ringtones = new RingtonesManager(RINGTONE_FILE);
 	bt_global::audio_states = new AudioStateMachine;
+	bt_global::sound = new SoundPlayer;
 
 #if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
 	// save last click time for the screen saver
@@ -380,7 +382,9 @@ void BtMain::loadConfiguration()
 			qWarning("setup node not found on xml config file!");
 	}
 
+#ifdef CONFIG_BTOUCH
 	QDomNode display_node = getChildWithId(getPageNode(SETTINGS), QRegExp("item\\d{1,2}"), DISPLAY);
+#endif
 
 #ifdef BT_HARDWARE_TOUCHX
 	// on TouchX there is no way to control the screensaver brightness
@@ -388,15 +392,19 @@ void BtMain::loadConfiguration()
 #else
 	BrightnessLevel level = BRIGHTNESS_NORMAL; // default brightness
 #endif
+
+#ifdef CONFIG_BTOUCH
 	if (!display_node.isNull())
 	{
 		QDomElement n = getElement(display_node, "brightness/level");
 		if (!n.isNull())
 			level = static_cast<BrightnessLevel>(n.text().toInt());
 	}
+#endif
 	bt_global::display->setBrightness(level);
 
 	ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
+#ifdef CONFIG_BTOUCH
 	if (!display_node.isNull())
 	{
 		QDomElement screensaver_node = getElement(display_node, "screensaver");
@@ -407,6 +415,7 @@ void BtMain::loadConfiguration()
 		if (type == ScreenSaver::DEFORM) // deform is for now disabled!
 			type = ScreenSaver::LINES;
 	}
+#endif
 	bt_global::display->current_screensaver = type;
 
 	window_container->homeWindow()->loadConfiguration();

@@ -20,6 +20,7 @@
 
 
 #include "hardware_functions.h"
+#include "mediaplayer.h" // bt_global::sound
 #include "main.h"
 
 #ifdef Q_WS_QWS
@@ -74,14 +75,9 @@ void setBrightnessLevel(int level)
 	// do nothing
 }
 
-void setBacklightOn(bool b)
-{
-	backlight = b;
-}
-
 void setBacklight(bool b)
 {
-	setBacklightOn(b);
+	backlight = b;
 }
 
 void setBeep(bool buzzer_enable)
@@ -108,7 +104,7 @@ void beep(int t)
 {
 	if (buzzer_enabled)
 #ifdef LAYOUT_TOUCHX
-		playSound(SOUND_PATH "beep.wav");
+		bt_global::sound->play(SOUND_PATH "beep.wav");
 #else
 		QProcess::execute("beep");
 #endif
@@ -185,22 +181,6 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 }
 
 
-Q_GLOBAL_STATIC(QProcess, play_sound_process);
-void playSound(const QString &wavFile)
-{
-	if (play_sound_process()->state() != QProcess::NotRunning)
-	{
-		play_sound_process()->terminate();
-		play_sound_process()->waitForFinished();
-	}
-	play_sound_process()->start("mplayer", QStringList(wavFile));
-}
-
-void stopSound()
-{
-	play_sound_process()->terminate();
-}
-
 void setVctVideoValue(const QString &command, const QString &value)
 {
 }
@@ -211,4 +191,9 @@ void initMultimedia()
 
 void initScreen()
 {
+}
+
+QPair <QString, QStringList> getAudioCmdLine(const QString &audio_path)
+{
+	return qMakePair(QString("mplayer"), QStringList(audio_path));
 }

@@ -165,6 +165,7 @@ RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, Page *deta
 	hbox->addWidget(radio_info);
 	hbox->addWidget(center_right_button);
 	hbox->addWidget(right_button);
+	hbox->addStretch(1);
 
 	right_button->hide();
 

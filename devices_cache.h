@@ -81,8 +81,10 @@ namespace DevicesCachePrivate
 		QString key = device->get_key();
 		if (cache.contains(key))
 		{
-			delete device;
-			device = static_cast<T*>(cache.get(key));
+			T *cached_device = static_cast<T*>(cache.get(key));
+			if (cached_device != device)
+				delete device;
+			device = cached_device;
 		}
 		else
 			cache.insert(key, device);

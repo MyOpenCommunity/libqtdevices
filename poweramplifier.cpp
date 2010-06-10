@@ -268,7 +268,7 @@ PowerAmplifierTreble::PowerAmplifierTreble(PowerAmplifierDevice *d, const QStrin
 {
 	dev = d;
 	setCentralTextSecondaryColor(true);
-	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("treble"),
+	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("treble"), QString(),
 		bt_global::skin->getImage("plus"), ON, banner_text, "");
 
 	connect(left_button, SIGNAL(clicked()), SLOT(down()));
@@ -311,7 +311,7 @@ PowerAmplifierBass::PowerAmplifierBass(PowerAmplifierDevice *d, const QString &b
 {
 	dev = d;
 	setCentralTextSecondaryColor(true);
-	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("bass"),
+	initBanner(bt_global::skin->getImage("minus"), bt_global::skin->getImage("bass"), QString(),
 		bt_global::skin->getImage("plus"), ON, banner_text, "");
 
 	connect(left_button, SIGNAL(clicked()), SLOT(down()));

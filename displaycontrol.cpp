@@ -21,7 +21,7 @@
 
 #include "displaycontrol.h"
 #include "generic_functions.h" // setCfgValue
-#include "hardware_functions.h" // setBrightnessLevel, setBacklightOn
+#include "hardware_functions.h" // setBrightnessLevel, setBacklight
 
 
 DisplayControl::DisplayControl()
@@ -161,7 +161,7 @@ void DisplayControl::setState(DisplayStatus status)
 {
 	if (!forced_operative_mode || (forced_operative_mode && status == DISPLAY_OPERATIVE))
 	{
-		setBacklightOn(data[status].backlight);
+		setBacklight(data[status].backlight);
 		setBrightnessLevel(data[status].brightness);
 	}
 

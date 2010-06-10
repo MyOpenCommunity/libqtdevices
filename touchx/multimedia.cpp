@@ -345,7 +345,7 @@ SongSearch::AsyncRes SongSearch::scanPath(const QString &path, bool * volatile t
 
 		// search for files
 		qDebug() << "Scanning" << dir.absoluteFilePath();
-		files.setCurrent(dir.absoluteFilePath());
+		files.cd(dir.absoluteFilePath());
 
 		// found some files
 		QFileInfoList file_list = files.entryInfoList();
@@ -353,7 +353,7 @@ SongSearch::AsyncRes SongSearch::scanPath(const QString &path, bool * volatile t
 			return qMakePair(makeAbsolute<QStringList>(file_list), terminate);
 
 		// recurse into subdirectories
-		dirs.setCurrent(dir.absoluteFilePath());
+		dirs.cd(dir.absoluteFilePath());
 		queue.append(makeAbsolute<QFileInfoList>(dirs.entryInfoList()));
 	}
 
