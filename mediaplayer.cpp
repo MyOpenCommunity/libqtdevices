@@ -336,6 +336,7 @@ void SoundPlayer::play(const QString &path)
 	to_play = path;
 	if (process->state() != QProcess::NotRunning)
 	{
+		// We want to wait the end of the running process before starting the new one
 		connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(delayedStart()));
 		process->terminate();
 	}
