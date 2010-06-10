@@ -615,7 +615,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_volume_active>diffusione/onvolamp.png</img_volume_active>
 		<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
 	</item>
-	<!-- amplifier normal ambient (multi sound diffusion) -->
+	<!-- amplifier normal ambient 1 (multi sound diffusion) -->
 	<item>
 		<cid>12150</cid>
 		<!--
@@ -627,7 +627,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
 		<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
 	</item>
-	<!-- amplifier group normal ambient (multi sound diffusion) -->
+	<!-- amplifier group normal ambient 1 (multi sound diffusion) -->
 	<item>
 		<cid>12151</cid>
 		<!--
@@ -639,7 +639,7 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
 		<img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
 	</item>
-	<!-- power amplifier normal ambient -->
+	<!-- power amplifier normal ambient 1 -->
 	<item>
 		<cid>12152</cid>
 		<!--
@@ -660,6 +660,321 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_volume_active>diffusione/onvolamp.png</img_volume_active>
 		<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
 	</item>
+        <!-- amplifier normal ambient 2 (multi sound diffusion) -->
+        <item>
+                <cid>12160</cid>
+                <!--
+                Other images: on, off
+                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+                -->
+                <img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+                <img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+                <img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+                <img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+        </item>
+        <!-- amplifier group normal ambient 2 (multi sound diffusion) -->
+        <item>
+                <cid>12161</cid>
+                <!--
+                Other images: on, off
+                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+                -->
+                <img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+                <img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
+                <img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+                <img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
+        </item>
+        <!-- power amplifier normal ambient 2 -->
+        <item>
+                <cid>12162</cid>
+                <!--
+                other images: on, off, minus, plus
+                -->
+                <img_preset>diffusione/preset.png</img_preset>
+                <img_treble>diffusione/louds.png</img_treble>
+                <img_bass>diffusione/lows.png</img_bass>
+                <img_balance>diffusione/balance_0.png</img_balance>
+                <img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+                <img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+                <img_loud>diffusione/loud.png</img_loud>
+                <img_loud_on>diffusione/loud.png</img_loud_on>
+                <img_loud_off>diffusione/loud_off.png</img_loud_off>
+                <img_more>diffusione/more.png</img_more>
+                <img_less>diffusione/less.png</img_less>
+                <img_settings>diffusione/audiosetting.png</img_settings>
+                <img_volume_active>diffusione/onvolamp.png</img_volume_active>
+                <img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+        </item>
+        <!-- amplifier normal ambient 3 (multi sound diffusion) -->
+        <item>
+                <cid>12170</cid>
+                <!--
+                Other images: on, off
+                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+                -->
+                <img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+                <img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+                <img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+                <img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+        </item>
+        <!-- amplifier group normal ambient 3 (multi sound diffusion) -->
+        <item>
+                <cid>12171</cid>
+                <!--
+                Other images: on, off
+                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+                -->
+                <img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+                <img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
+                <img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+                <img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
+        </item>
+        <!-- power amplifier normal ambient 3 -->
+        <item>
+                <cid>12172</cid>
+                <!--
+                other images: on, off, minus, plus
+                -->
+                <img_preset>diffusione/preset.png</img_preset>
+                <img_treble>diffusione/louds.png</img_treble>
+                <img_bass>diffusione/lows.png</img_bass>
+                <img_balance>diffusione/balance_0.png</img_balance>
+                <img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+                <img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+                <img_loud>diffusione/loud.png</img_loud>
+                <img_loud_on>diffusione/loud.png</img_loud_on>
+                <img_loud_off>diffusione/loud_off.png</img_loud_off>
+                <img_more>diffusione/more.png</img_more>
+                <img_less>diffusione/less.png</img_less>
+                <img_settings>diffusione/audiosetting.png</img_settings>
+                <img_volume_active>diffusione/onvolamp.png</img_volume_active>
+                <img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+        </item>
+        <!-- amplifier normal ambient 4 (multi sound diffusion) -->
+        <item>
+                <cid>12180</cid>
+                <!--
+                Other images: on, off
+                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+                -->
+                <img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+                <img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+                <img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+                <img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+        </item>
+        <!-- amplifier group normal ambient 4 (multi sound diffusion) -->
+        <item>
+                <cid>12181</cid>
+                <!--
+                Other images: on, off
+                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+                -->
+                <img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+                <img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
+                <img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+                <img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
+        </item>
+        <!-- power amplifier normal ambient 4 -->
+        <item>
+                <cid>12182</cid>
+                <!--
+                other images: on, off, minus, plus
+                -->
+                <img_preset>diffusione/preset.png</img_preset>
+                <img_treble>diffusione/louds.png</img_treble>
+                <img_bass>diffusione/lows.png</img_bass>
+                <img_balance>diffusione/balance_0.png</img_balance>
+                <img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+                <img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+                <img_loud>diffusione/loud.png</img_loud>
+                <img_loud_on>diffusione/loud.png</img_loud_on>
+                <img_loud_off>diffusione/loud_off.png</img_loud_off>
+                <img_more>diffusione/more.png</img_more>
+                <img_less>diffusione/less.png</img_less>
+                <img_settings>diffusione/audiosetting.png</img_settings>
+                <img_volume_active>diffusione/onvolamp.png</img_volume_active>
+                <img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+        </item>
+        <!-- amplifier normal ambient 5 (multi sound diffusion) -->
+        <item>
+                <cid>12190</cid>
+                <!--
+                Other images: on, off
+                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+                -->
+                <img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+                <img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+                <img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+                <img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+        </item>
+        <!-- amplifier group normal ambient 5 (multi sound diffusion) -->
+        <item>
+                <cid>12191</cid>
+                <!--
+                Other images: on, off
+                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+                -->
+                <img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+                <img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
+                <img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+                <img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
+        </item>
+        <!-- power amplifier normal ambient 5 -->
+        <item>
+                <cid>12192</cid>
+                <!--
+                other images: on, off, minus, plus
+                -->
+                <img_preset>diffusione/preset.png</img_preset>
+                <img_treble>diffusione/louds.png</img_treble>
+                <img_bass>diffusione/lows.png</img_bass>
+                <img_balance>diffusione/balance_0.png</img_balance>
+                <img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+                <img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+                <img_loud>diffusione/loud.png</img_loud>
+                <img_loud_on>diffusione/loud.png</img_loud_on>
+                <img_loud_off>diffusione/loud_off.png</img_loud_off>
+                <img_more>diffusione/more.png</img_more>
+                <img_less>diffusione/less.png</img_less>
+                <img_settings>diffusione/audiosetting.png</img_settings>
+                <img_volume_active>diffusione/onvolamp.png</img_volume_active>
+                <img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+        </item>
+        <!-- amplifier normal ambient 6 (multi sound diffusion) -->
+        <item>
+                <cid>12200</cid>
+                <!--
+                Other images: on, off
+                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+                -->
+                <img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+                <img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+                <img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+                <img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+        </item>
+        <!-- amplifier group normal ambient 6 (multi sound diffusion) -->
+        <item>
+                <cid>12201</cid>
+                <!--
+                Other images: on, off
+                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+                -->
+                <img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+                <img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
+                <img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+                <img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
+        </item>
+        <!-- power amplifier normal ambient 6 -->
+        <item>
+                <cid>12202</cid>
+                <!--
+                other images: on, off, minus, plus
+                -->
+                <img_preset>diffusione/preset.png</img_preset>
+                <img_treble>diffusione/louds.png</img_treble>
+                <img_bass>diffusione/lows.png</img_bass>
+                <img_balance>diffusione/balance_0.png</img_balance>
+                <img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+                <img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+                <img_loud>diffusione/loud.png</img_loud>
+                <img_loud_on>diffusione/loud.png</img_loud_on>
+                <img_loud_off>diffusione/loud_off.png</img_loud_off>
+                <img_more>diffusione/more.png</img_more>
+                <img_less>diffusione/less.png</img_less>
+                <img_settings>diffusione/audiosetting.png</img_settings>
+                <img_volume_active>diffusione/onvolamp.png</img_volume_active>
+                <img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+        </item>
+        <!-- amplifier normal ambient 7 (multi sound diffusion) -->
+        <item>
+                <cid>12210</cid>
+                <!--
+                Other images: on, off
+                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+                -->
+                <img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+                <img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+                <img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+                <img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+        </item>
+        <!-- amplifier group normal ambient 7 (multi sound diffusion) -->
+        <item>
+                <cid>12211</cid>
+                <!--
+                Other images: on, off
+                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+                -->
+                <img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+                <img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
+                <img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+                <img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
+        </item>
+        <!-- power amplifier normal ambient 7 -->
+        <item>
+                <cid>12212</cid>
+                <!--
+                other images: on, off, minus, plus
+                -->
+                <img_preset>diffusione/preset.png</img_preset>
+                <img_treble>diffusione/louds.png</img_treble>
+                <img_bass>diffusione/lows.png</img_bass>
+                <img_balance>diffusione/balance_0.png</img_balance>
+                <img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+                <img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+                <img_loud>diffusione/loud.png</img_loud>
+                <img_loud_on>diffusione/loud.png</img_loud_on>
+                <img_loud_off>diffusione/loud_off.png</img_loud_off>
+                <img_more>diffusione/more.png</img_more>
+                <img_less>diffusione/less.png</img_less>
+                <img_settings>diffusione/audiosetting.png</img_settings>
+                <img_volume_active>diffusione/onvolamp.png</img_volume_active>
+                <img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+        </item>
+        <!-- amplifier normal ambient 8 (multi sound diffusion) -->
+        <item>
+                <cid>12220</cid>
+                <!--
+                Other images: on, off
+                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+                -->
+                <img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+                <img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+                <img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+                <img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+        </item>
+        <!-- amplifier group normal ambient 8 (multi sound diffusion) -->
+        <item>
+                <cid>12221</cid>
+                <!--
+                Other images: on, off
+                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+                -->
+                <img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+                <img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
+                <img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+                <img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
+        </item>
+        <!-- power amplifier normal ambient 8 -->
+        <item>
+                <cid>12222</cid>
+                <!--
+                other images: on, off, minus, plus
+                -->
+                <img_preset>diffusione/preset.png</img_preset>
+                <img_treble>diffusione/louds.png</img_treble>
+                <img_bass>diffusione/lows.png</img_bass>
+                <img_balance>diffusione/balance_0.png</img_balance>
+                <img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+                <img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+                <img_loud>diffusione/loud.png</img_loud>
+                <img_loud_on>diffusione/loud.png</img_loud_on>
+                <img_loud_off>diffusione/loud_off.png</img_loud_off>
+                <img_more>diffusione/more.png</img_more>
+                <img_less>diffusione/less.png</img_less>
+                <img_settings>diffusione/audiosetting.png</img_settings>
+                <img_volume_active>diffusione/onvolamp.png</img_volume_active>
+                <img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+        </item>
 	<!-- special ambient -->
 	<item>
 		<cid>12020</cid>
