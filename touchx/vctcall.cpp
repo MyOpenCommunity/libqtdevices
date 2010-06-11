@@ -525,15 +525,13 @@ void VCTCallPage::valueReceived(const DeviceValues &values_list)
 	{
 		StateButton *ring_exclusion = qobject_cast<StateButton*>(bt_global::btmain->trayBar()->getButton(TrayBar::RING_EXCLUSION));
 
-		if (!ring_exclusion || !ring_exclusion->getStatus())
+		ringtone = values_list[EntryphoneDevice::RINGTONE].toInt();
+		if (ringtone == Ringtones::PE1 || ringtone == Ringtones::PE2 ||
+			ringtone == Ringtones::PE3 || ringtone == Ringtones::PE4)
 		{
-			ringtone = values_list[EntryphoneDevice::RINGTONE].toInt();
-			if (ringtone == Ringtones::PE1 || ringtone == Ringtones::PE2 ||
-				ringtone == Ringtones::PE3 || ringtone == Ringtones::PE4)
-			{
-				bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
+			bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
+			if (!ring_exclusion || !ring_exclusion->getStatus())
 				playRingtone();
-			}
 		}
 	}
 }
