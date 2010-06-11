@@ -113,7 +113,7 @@ public:
 public slots:
 	virtual void nextTrack();
 	virtual void prevTrack();
-	void turnOn(QString area) const;
+	virtual void turnOn(QString area);
 	void requestTrack() const;
 
 public:
@@ -191,6 +191,7 @@ public:
 
 	virtual void nextTrack();
 	virtual void prevTrack();
+	virtual void turnOn(QString area);
 
 	static QString createMediaInitFrame(bool is_multichannel, const QString &source_addr, const QString &ampli_addr);
 

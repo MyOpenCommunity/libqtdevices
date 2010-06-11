@@ -305,7 +305,7 @@ bool SourceDevice::isActive() const
 	return !active_areas.isEmpty();
 }
 
-void SourceDevice::turnOn(QString area) const
+void SourceDevice::turnOn(QString area)
 {
 	QString what = QString("%1#%2#%3#%4").arg(REQ_SOURCE_ON).arg(mmtype).arg(area).arg(source_id);
 	QString where = QString("3#%1#0").arg(area);
@@ -579,6 +579,19 @@ void VirtualSourceDevice::prevTrack()
 
 	values_list[REQ_PREV_TRACK] = true;
 	values_list[DIM_SELF_REQUEST] = true;
+	emit valueReceived(values_list);
+}
+
+void VirtualSourceDevice::turnOn(QString area)
+{
+	SourceDevice::turnOn(area);
+
+	DeviceValues values_list;
+
+	active_areas.insert(area);
+	values_list[DIM_AREAS_UPDATED] = QVariant();
+	values_list[DIM_SELF_REQUEST] = true;
+	values_list[REQ_SOURCE_ON] = area;
 	emit valueReceived(values_list);
 }
 
