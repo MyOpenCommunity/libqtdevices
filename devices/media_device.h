@@ -181,7 +181,7 @@ Q_OBJECT
 public:
 	enum
 	{
-		REQ_SOURCE_ON,
+		REQ_SOURCE_ON = 1,
 		REQ_SOURCE_OFF,
 	};
 

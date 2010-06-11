@@ -611,8 +611,8 @@ bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	case REQ_PREV_TRACK:
 		values_list[what] = true;
 		break;
-	case SOURCE_TURNED_ON:
-		values_list[REQ_SOURCE_ON] = QString::fromStdString(msg.whatArg(1));
+	case REQ_SOURCE_ON:
+		values_list[what] = QString::fromStdString(msg.whatArg(1));
 		break;
 	default:
 		return false;
