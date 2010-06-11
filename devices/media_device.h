@@ -183,6 +183,8 @@ public:
 	{
 		REQ_SOURCE_ON = 1,
 		REQ_SOURCE_OFF,
+		// boolean, set to true if the status update is from a command we sent ourselves
+		DIM_SELF_REQUEST,
 	};
 
 	VirtualSourceDevice(QString address, int openserver_id = 0);

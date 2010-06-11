@@ -569,6 +569,7 @@ void VirtualSourceDevice::nextTrack()
 	DeviceValues values_list;
 
 	values_list[REQ_NEXT_TRACK] = true;
+	values_list[DIM_SELF_REQUEST] = true;
 	emit valueReceived(values_list);
 }
 
@@ -577,6 +578,7 @@ void VirtualSourceDevice::prevTrack()
 	DeviceValues values_list;
 
 	values_list[REQ_PREV_TRACK] = true;
+	values_list[DIM_SELF_REQUEST] = true;
 	emit valueReceived(values_list);
 }
 
