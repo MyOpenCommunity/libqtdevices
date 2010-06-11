@@ -241,6 +241,8 @@ SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<Source
 
 	buildPage(getTextChild(conf_node, "descr"), Page::TITLE_HEIGHT, top_widget);
 	loadItems(conf_node);
+
+	connect(this, SIGNAL(Closed()), SLOT(clearCurrentAmbient()));
 }
 
 int SoundAmbientPage::sectionId() const
@@ -272,7 +274,14 @@ void SoundAmbientPage::showPage()
 
 void SoundAmbientPage::cleanUp()
 {
-	Q_ASSERT_X(current_ambient_page == this, "SoundAmbientPage::cleanUp", "Something terrible happened");
+	Q_ASSERT_X(!current_ambient_page || current_ambient_page == this, "SoundAmbientPage::cleanUp", "Something terrible happened");
+
+	current_ambient_page = NULL;
+}
+
+void SoundAmbientPage::clearCurrentAmbient()
+{
+	Q_ASSERT_X(!current_ambient_page || current_ambient_page == this, "SoundAmbientPage::clearCurrentAmbient", "There is no end to terrible things");
 
 	current_ambient_page = NULL;
 }

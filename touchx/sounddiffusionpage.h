@@ -103,6 +103,9 @@ public:
 private:
 	void loadItems(const QDomNode &config_node);
 
+private slots:
+	void clearCurrentAmbient();
+
 private:
 	int section_id;
 	static Page *current_ambient_page;
