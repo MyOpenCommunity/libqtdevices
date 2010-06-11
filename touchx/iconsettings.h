@@ -61,19 +61,25 @@ private:
 };
 
 
+/**
+ * The page where the user changes the ringtones related to main events
+ */
 class RingtonesPage : public ListPage
 {
 Q_OBJECT
 public:
 	RingtonesPage(const QDomNode &config_node);
+	virtual void showPage();
+	virtual void cleanUp();
 
-protected:
-	virtual void hideEvent(QHideEvent *e);
-	virtual void showEvent(QShowEvent *e);
+private slots:
+	void handleClose();
 };
 
 
-
+/**
+ * The page where the user changes the volume of the ringtones.
+ */
 class VolumePage : public Page
 {
 Q_OBJECT
@@ -82,16 +88,20 @@ public:
 
 public slots:
 	void changeVolume(int new_vol);
+	virtual void showPage();
+	virtual void cleanUp();
 
-protected:
-	virtual void hideEvent(QHideEvent *e);
-	virtual void showEvent(QShowEvent *e);
+private slots:
+	void handleClose();
 
 private:
 	ItemTuning *volume;
 };
 
 
+/**
+ * The page where the user can see the version of the software
+ */
 class VersionPage : public Page
 {
 Q_OBJECT

@@ -168,17 +168,24 @@ void ListPage::loadItems(const QDomNode &config_node)
 
 RingtonesPage::RingtonesPage(const QDomNode &config_node) : ListPage(config_node)
 {
+	connect(this, SIGNAL(Closed()), SLOT(handleClose()));
 }
 
-void RingtonesPage::hideEvent(QHideEvent *)
+void RingtonesPage::handleClose()
 {
-	bt_global::ringtones->stopRingtone();
 	bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
+	bt_global::ringtones->stopRingtone();
 }
 
-void RingtonesPage::showEvent(QShowEvent *)
+void RingtonesPage::cleanUp()
+{
+	handleClose();
+}
+
+void RingtonesPage::showPage()
 {
 	bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
+	Page::showPage();
 }
 
 
@@ -188,11 +195,11 @@ VolumePage::VolumePage(const QDomNode &config_node)
 	QHBoxLayout *layout = new QHBoxLayout(content);
 	layout->setContentsMargins(0, 0, 0, TITLE_HEIGHT);
 
-	// TODO: is this text ok for the banner? Should it be read from conf?
 	volume = new ItemTuning(tr("Volume"), bt_global::skin->getImage("volume"));
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(this, SIGNAL(Closed()), SLOT(handleClose()));
 
 	layout->addWidget(volume, 0, Qt::AlignCenter);
 	buildPage(content, nav_bar, getTextChild(config_node, "descr"));
@@ -200,16 +207,22 @@ VolumePage::VolumePage(const QDomNode &config_node)
 	connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
 }
 
-void VolumePage::showEvent(QShowEvent *)
+void VolumePage::showPage()
 {
 	bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
 	volume->setLevel(bt_global::audio_states->getVolume());
+	Page::showPage();
 }
 
-void VolumePage::hideEvent(QHideEvent *)
+void VolumePage::handleClose()
 {
 	bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
 	bt_global::ringtones->stopRingtone();
+}
+
+void VolumePage::cleanUp()
+{
+	handleClose();
 }
 
 void VolumePage::changeVolume(int new_vol)
