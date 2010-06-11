@@ -391,8 +391,8 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			break;
 		case EntryphoneDevice::END_OF_CALL:
 			call_status->call_active = false;
-			cleanAudioStates();
 			stopVideo();
+			cleanAudioStates();
 			emit callClosed();
 			break;
 		case EntryphoneDevice::STOP_VIDEO:
