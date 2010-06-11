@@ -24,11 +24,13 @@
 
 #include "main.h" // MY_FILE_USER_CFG_DEFAULT, bt_global::config
 
+#include <QStringList>
 #include <QString>
 #include <QMap>
 
 class QDate;
 class QDateTime;
+
 
 // Enum to identify various file types
 enum MultimediaFileType
@@ -120,5 +122,12 @@ namespace DateConversions
 	QDate getDateConfig(const QString &date, char s = separator);
 	QDateTime getDateTimeConfig(const QString &datetime, char s = separator);
 }
+
+// A wrapper around the QProcess::execute that show the time elapsed in DEBUG mode
+bool smartExecute(const QString &program, QStringList args = QStringList());
+
+// A wrapper around the QProcess::execute that show the time elapsed in DEBUG mode appending
+// some args to the process in order to silent its output & error messages.
+bool silentExecute(const QString &program, QStringList args = QStringList());
 
 #endif // GENERIC_FUNCTIONS_H

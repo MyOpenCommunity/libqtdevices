@@ -20,6 +20,7 @@
 
 
 #include "hardware_functions.h"
+#include "generic_functions.h" // smartExecute
 #include "main.h"
 #ifdef BT_HARDWARE_TOUCHX
 #include "audiostatemachine.h"
@@ -434,8 +435,8 @@ void setVctVideoValue(const QString &command, const QString &value)
 void initMultimedia()
 {
 #ifdef BT_HARDWARE_TOUCHX
-	QProcess::execute("/bin/init_audio_system");
-	QProcess::execute("/bin/init_video_system");
+	smartExecute("/bin/init_audio_system");
+	smartExecute("/bin/init_video_system");
 #endif
 }
 

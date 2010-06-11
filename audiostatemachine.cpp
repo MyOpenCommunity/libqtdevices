@@ -21,11 +21,13 @@
 
 #include "audiostatemachine.h"
 #include "hardware_functions.h" // DEV_E2
+#include "generic_functions.h" // smartExecute, silentExecute
 #include "main.h" // bt_global::config
 
 #include <QtConcurrentRun>
 #include <QProcess>
 #include <QTimer>
+#include <QTime>
 
 #include <fcntl.h> // open
 #include <unistd.h> // usleep, read, write
@@ -67,12 +69,6 @@ namespace
 {
 	// The global container for volumes.
 	QByteArray volumes(Volumes::COUNT, DEFAULT_VOLUME);
-
-	bool silentExecute(const QString &program, QStringList args = QStringList())
-	{
-		args << "> /dev/null" << "2>&1";
-		return QProcess::execute(program, args);
-	}
 
 	// Init the echo canceller, updating (if needed) the configuration. This function
 	// MUST be called in a separate thread, in order to avoid the freeze of the ui.
@@ -154,24 +150,22 @@ namespace
 
 	void activateVCTAudio()
 	{
-		QProcess::execute("/bin/in_scsbb_on");
+		smartExecute("/bin/in_scsbb_on");
 	}
 
 	void disactivateVCTAudio()
 	{
-		QProcess::execute("/bin/in_scsbb_off");
+		smartExecute("/bin/in_scsbb_off");
 	}
 
 	void activateLocalSource()
 	{
-		qDebug() << "/bin/rca2_on";
-		QProcess::execute("/bin/rca2_on");
+		smartExecute("/bin/rca2_on");
 	}
 
 	void deactivateLocalSource()
 	{
-		qDebug() << "/bin/rca2_off";
-		QProcess::execute("/bin/rca2_off");
+		smartExecute("/bin/rca2_off");
 	}
 
 	void changeVolumePath(Volumes::Type type, int value)
@@ -179,10 +173,9 @@ namespace
 		Q_ASSERT_X(value >= VOLUME_MIN && value <= VOLUME_MAX, "changeVolumePath",
 			qPrintable(QString("Volume value %1 out of range for audio path %2!").arg(value).arg(type)));
 
-		qDebug() << "/home/bticino/bin/set_volume" << type + 1 << value;
 		// Volumes for the script set_volume starts from 1, so we add it.
-		QProcess::execute("/home/bticino/bin/set_volume",
-				  QStringList() << QString::number(type + 1) << QString::number(value));
+		smartExecute("/home/bticino/bin/set_volume",
+			QStringList() << QString::number(type + 1) << QString::number(value));
 	}
 
 	void changeVolumePath(Volumes::Type type)
