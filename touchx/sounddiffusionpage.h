@@ -222,6 +222,10 @@ private slots:
 	void valueReceived(const DeviceValues &device_values);
 
 private:
+	void startLocalPlayback();
+	void pauseLocalPlayback();
+
+private:
 	VirtualSourceDevice *dev;
 };
 

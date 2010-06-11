@@ -690,6 +690,43 @@ LocalSource::LocalSource(QObject *parent) : QObject(parent)
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
+void LocalSource::startLocalPlayback()
+{
+	foreach (MediaPlayerPage *page, AudioPlayerPage::audioPlayerPages())
+	{
+		if (!page)
+			continue;
+
+		if (page->isPlayerPaused())
+		{
+			page->resume();
+			return;
+		}
+		else if (page->isPlayerInstanceRunning())
+			return;
+	}
+
+	// try to play something searching on each media source
+	// using the multimedia configuration order (es. usb -> sd -> ip radio)
+	MultimediaSectionPage::playSomethingRandomly();
+
+}
+
+void LocalSource::pauseLocalPlayback()
+{
+	foreach (MediaPlayerPage *page, AudioPlayerPage::audioPlayerPages())
+	{
+		if (!page)
+			continue;
+
+		if (page->isPlayerInstanceRunning() && !page->isPlayerPaused())
+		{
+			page->pause();
+			return;
+		}
+	}
+}
+
 void LocalSource::valueReceived(const DeviceValues &device_values)
 {
 	foreach (int key, device_values.keys())
@@ -720,40 +757,20 @@ void LocalSource::valueReceived(const DeviceValues &device_values)
 					bt_global::audio_states->removeState(AudioStates::PLAY_DIFSON);
 			}
 
+			if (new_state && !device_values.contains(VirtualSourceDevice::DIM_SELF_REQUEST))
+				startLocalPlayback();
+			else if (!new_state)
+				pauseLocalPlayback();
+
 			state = new_state;
 			break;
 		}
 		case SourceDevice::DIM_AREAS_UPDATED:
 		{
 			bool status = dev->isActive();
-			AudioPlayerPage *page = 0;
 
-			foreach (page, AudioPlayerPage::audioPlayerPages())
-			{
-				if (!page)
-					continue;
-
-				if (status)
-				{
-					if (page->isPlayerPaused())
-					{
-						page->resume();
-						return;
-					}
-					else if (page->isPlayerInstanceRunning())
-						return;
-				}
-				else if (page->isPlayerInstanceRunning() && !page->isPlayerPaused())
-				{
-					page->pause();
-					return;
-				}
-			}
-
-			// try to play something searching on each media source
-			// using the multimedia configuration order (es. usb -> sd -> ip radio)
-			if (status)
-				MultimediaSectionPage::playSomethingRandomly();
+			if (!status)
+				pauseLocalPlayback();
 
 			break;
 		}
