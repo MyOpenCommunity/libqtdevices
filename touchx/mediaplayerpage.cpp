@@ -156,7 +156,7 @@ void MediaPlayerPage::audioStateChanged(int new_state, int old_state)
 {
 	if ((new_state == AudioStates::PLAY_MEDIA_TO_SPEAKER || new_state == AudioStates::PLAY_DIFSON) && resume_on_state_change && player->isPaused())
 		resume();
-	else if ((old_state == AudioStates::PLAY_MEDIA_TO_SPEAKER || old_state == old_state == AudioStates::PLAY_DIFSON) && player->isInstanceRunning() && !player->isPaused())
+	else if ((old_state == AudioStates::PLAY_MEDIA_TO_SPEAKER || old_state == AudioStates::PLAY_DIFSON) && player->isInstanceRunning() && !player->isPaused())
 	{
 		resume_on_state_change = true;
 		pause();
