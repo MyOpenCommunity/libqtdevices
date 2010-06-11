@@ -44,6 +44,11 @@ public:
 	// kills mplayer
 	virtual void cleanUp();
 
+protected:
+	virtual QString currentFileName(int index) const;
+	virtual void previous();
+	virtual void next();
+
 public slots:
 	// displays the page and stores the video list for playback
 	void displayVideos(QList<QString> videos, unsigned element);
@@ -56,6 +61,7 @@ private:
 
 private slots:
 	void startMPlayer();
+	void refreshPlayInfo(const QMap<QString,QString> &info);
 	void refreshPlayInfo();
 
 	void displayFullScreen();

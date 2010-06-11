@@ -31,6 +31,8 @@
 #include <QVector>
 #include <QList>
 #include <QMetaEnum>
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -39,12 +41,93 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+#include <unistd.h>
 
 #ifdef BT_HARDWARE_BTOUCH
 static const char *MPLAYER_FILENAME = "/usr/bin/mplayer";
 #else
 static const char *MPLAYER_FILENAME = "/home/bticino/cfg/extra/10/mplayer";
 #endif
+
+
+namespace {
+	QMap<QString, QString> getAudioDataSearchMap()
+	{
+		/// Define Search Data Map
+		QMap<QString, QString> data_search;
+		data_search["file_name"]    = "Playing [^\\n]*([^/\\n]+)\\.\\n";
+		data_search["meta_title"]   = "Title: ([^\\n]*)\\n";
+		data_search["meta_artist"]  = "Artist: ([^\\n]*)\\n";
+		data_search["meta_album"]   = "Album: ([^\\n]*)\\n";
+		data_search["total_time"]   = "of\\s+\\d+\\.\\d+\\s+[(](\\d+:\\d+\\.\\d+)[)]";
+		data_search["current_time"] = "A:\\s+\\d+\\.\\d+\\s+[(](\\d*:*\\d+\\.\\d+)[)]";
+		// shoutcast info
+		// MPlayer does not quote "'" inside titles, so parsing the shoutcast info
+		// with a regex is tricky; the regexes below can be improved
+		data_search["stream_title"] = "\\bStreamTitle='([^;]+)';";
+		data_search["stream_url"] = "\\bStreamUrl='([^;]+)';";
+
+		return data_search;
+	}
+
+	QMap<QString,QString> getVideoDataSearchMap()
+	{
+		/// Define Search Data Map
+		QMap<QString, QString> data_search;
+		data_search["current_time"] = "A:\\s+(\\d+\\.\\d+)\\s+";
+
+		return data_search;
+	}
+
+	QMap<QString,QString> parsePlayerOutput(const QString &raw_data, QMap<QString,QString> data_search)
+	{
+		/// Create output Map
+		QMap<QString, QString> info_data;
+
+		/// Parse RAW data to get info
+		QMap<QString, QString>::ConstIterator it;
+		for (it = data_search.begin(); it != data_search.end(); ++it)
+		{
+			QRegExp rx(it.value());
+
+			if (rx.indexIn(raw_data) > -1)
+				info_data[it.key()] = rx.cap(1);
+		}
+
+		return info_data;
+	}
+
+	QMap<QString, QString> startFakePlayer(const QString &track, QMap<QString,QString> data_search)
+	{
+		qDebug() << "Started fake player";
+		QList<QString> args;
+		args << "-nolirc" << "-ao" << "null" << "-vo" << "null" << track;
+		QProcess fake_player;
+		fake_player.start(MPLAYER_FILENAME, args);
+		fake_player.waitForStarted(300);
+
+		QMap<QString, QString> info_data;
+		QString raw_data;
+		bool wait = true;
+		while (wait)
+		{
+			fake_player.waitForReadyRead(300);
+			raw_data.append(fake_player.readAll());
+
+			info_data = parsePlayerOutput(raw_data, data_search);
+
+			// Wait untile the current time info because it's the last, always present
+			// info of the mplayer output.
+			if (!info_data["current_time"].isEmpty())
+				wait = false;
+		}
+		fake_player.terminate();
+		fake_player.waitForFinished(300);
+
+		return info_data;
+	}
+}
+
 
 QProcess MediaPlayer::mplayer_proc;
 
@@ -199,27 +282,34 @@ bool MediaPlayer::isInstanceRunning()
 QMap<QString, QString> MediaPlayer::getVideoInfo()
 {
 	/// Define Search Data Map
-	QMap<QString, QString> data_search;
-	data_search["current_time"] = "A:\\s+(\\d+\\.\\d+)\\s+";
+	QMap<QString, QString> data_search = getVideoDataSearchMap();
 
 	return getMediaInfo(data_search);
 }
 
+void MediaPlayer::requestInitialPlayingInfo(const QString &track)
+{
+	if (info_watcher)
+		info_watcher->deleteLater();
+
+	info_watcher = new QFutureWatcher<QMap<QString, QString> >(this);
+	connect(info_watcher, SIGNAL(finished()), SLOT(infoReceived()));
+
+	QFuture<QMap<QString,QString> > future = QtConcurrent::run(startFakePlayer, track, getAudioDataSearchMap());
+	info_watcher->setFuture(future);
+}
+
+void MediaPlayer::requestInitialVideoInfo(const QString &track)
+{
+	QMap<QString, QString> info;
+	info.insert("current_time", "00:00");
+
+	emit playingInfoUpdated(info);
+}
+
 QMap<QString, QString> MediaPlayer::getPlayingInfo()
 {
-	/// Define Search Data Map
-	QMap<QString, QString> data_search;
-	data_search["file_name"]    = "Playing [^\\n]*([^/\\n]+)\\.\\n";
-	data_search["meta_title"]   = "Title: ([^\\n]*)\\n";
-	data_search["meta_artist"]  = "Artist: ([^\\n]*)\\n";
-	data_search["meta_album"]   = "Album: ([^\\n]*)\\n";
-	data_search["total_time"]   = "of\\s+\\d+\\.\\d+\\s+[(](\\d+:\\d+\\.\\d+)[)]";
-	data_search["current_time"] = "A:\\s+\\d+\\.\\d+\\s+[(](\\d*:*\\d+\\.\\d+)[)]";
-	// shoutcast info
-	// MPlayer does not quote "'" inside titles, so parsing the shoutcast info
-	// with a regex is tricky; the regexes below can be improved
-	data_search["stream_title"] = "\\bStreamTitle='([^;]+)';";
-	data_search["stream_url"] = "\\bStreamUrl='([^;]+)';";
+	QMap<QString, QString> data_search = getAudioDataSearchMap();
 
 	return getMediaInfo(data_search);
 }
@@ -233,17 +323,7 @@ QMap<QString, QString> MediaPlayer::getMediaInfo(const QMap<QString, QString> &d
 	QString raw_data = mplayer_proc.readAll();
 
 	/// Create output Map
-	QMap<QString, QString> info_data;
-
-	/// Parse RAW data to get info
-	QMap<QString, QString>::ConstIterator it;
-	for (it = data_search.begin(); it != data_search.end(); ++it)
-	{
-		QRegExp rx(it.value());
-
-		if (rx.indexIn(raw_data) > -1)
-			info_data[it.key()] = rx.cap(1);
-	}
+	QMap<QString, QString> info_data = parsePlayerOutput(raw_data, data_search);
 
 	QRegExp paused("=====  PAUSE  =====");
 	if (paused.indexIn(raw_data) > -1)
@@ -324,6 +404,18 @@ void MediaPlayer::updateDirectAccessState(bool state)
 	bt_global::audio_states->setDirectAudioAccess(state);
 }
 
+void MediaPlayer::infoReceived()
+{
+	if (info_watcher)
+	{
+		QMap<QString, QString> info = info_watcher->result();
+		qDebug() << "Received track info:" << info;
+		emit playingInfoUpdated(info);
+
+		info_watcher->deleteLater();
+		info_watcher = 0;
+	}
+}
 
 SoundPlayer::SoundPlayer()
 {

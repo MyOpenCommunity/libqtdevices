@@ -120,8 +120,6 @@ void MediaPlayerPage::previous()
 	current_file -= 1;
 	if (current_file < 0)
 		current_file = total_files - 1;
-
-	displayMedia(current_file);
 }
 
 void MediaPlayerPage::next()
@@ -130,8 +128,6 @@ void MediaPlayerPage::next()
 	current_file += 1;
 	if (current_file >= total_files)
 		current_file = 0;
-
-	displayMedia(current_file);
 }
 
 void MediaPlayerPage::seekForward()

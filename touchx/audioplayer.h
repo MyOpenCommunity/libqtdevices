@@ -71,15 +71,22 @@ public:
 
 	virtual int sectionId() const;
 
+protected:
+	QString currentFileName(int index) const;
+
 public slots:
-	void playAudioFiles(QList<QString> images, unsigned element);
-	void playAudioFilesBackground(QList<QString> images, unsigned element);
+	void playAudioFiles(QList<QString> files, unsigned element);
+	void playAudioFilesBackground(QList<QString> files, unsigned element);
+	virtual void previous();
+	virtual void next();
 
 private:
 	void startMPlayer(int index, int time);
 	void displayMedia(int index);
+	void clearLabels();
 
 private slots:
+	void refreshPlayInfo(const QMap<QString, QString> &attrs);
 	void refreshPlayInfo();
 	void changeVolume(int volume);
 	void gotoSoundDiffusion();

@@ -126,6 +126,11 @@ void ScreenSaver::stopRefresh()
 	timer->stop();
 }
 
+void ScreenSaver::setRefreshInterval(int msecs)
+{
+	timer->setInterval(msecs);
+}
+
 void ScreenSaver::start(Window *w)
 {
 	bt_global::page_stack.showUserWindow(this);
@@ -154,6 +159,11 @@ void ScreenSaver::initData(const QDomNode &config_node)
 	Q_ASSERT_X(!time.isEmpty(), "ScreenSaver::initData", "config node does not contain timeSlideShow leaf");
 	slideshow_timeout = time.toInt();
 #endif
+}
+
+void ScreenSaver::setSlideshowInterval(int interval)
+{
+	slideshow_timeout = interval;
 }
 
 
@@ -362,6 +372,7 @@ ScreenSaverSlideshow::ScreenSaverSlideshow() :
 
 void ScreenSaverSlideshow::start(Window *w)
 {
+	setRefreshInterval(slideshow_timeout);
 	iter = new ImageIterator(SLIDESHOW_FILENAME);
 	iter->setFileFilter(getFileFilter(IMAGE));
 	ScreenSaver::start(w);

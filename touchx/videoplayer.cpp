@@ -85,6 +85,7 @@ VideoPlayerPage::VideoPlayerPage()
 	connect(player, SIGNAL(mplayerKilled()), SLOT(videoPlaybackStopped()));
 	connect(player, SIGNAL(mplayerAborted()), SLOT(videoPlaybackStopped()));
 
+	connect(player, SIGNAL(playingInfoUpdated(QMap<QString,QString>)), SLOT(refreshPlayInfo(QMap<QString,QString>)));
 	connect(&refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
 }
 
@@ -145,10 +146,40 @@ void VideoPlayerPage::videoPlaybackStopped()
 	bt_global::display->forceOperativeMode(false);
 }
 
-
 void VideoPlayerPage::cleanUp()
 {
 	stop();
+}
+
+QString VideoPlayerPage::currentFileName(int index) const
+{
+	return file_list[index];
+}
+
+void VideoPlayerPage::previous()
+{
+	MediaPlayerPage::previous();
+
+	if (player->isPaused())
+	{
+		player->requestInitialVideoInfo(currentFileName(current_file));
+		title->setText(QFileInfo(file_list[current_file]).fileName());
+	}
+	else
+		displayMedia(current_file);
+}
+
+void VideoPlayerPage::next()
+{
+	MediaPlayerPage::next();
+
+	if (player->isPaused())
+	{
+		player->requestInitialVideoInfo(currentFileName(current_file));
+		title->setText(QFileInfo(file_list[current_file]).fileName());
+	}
+	else
+		displayMedia(current_file);
 }
 
 void VideoPlayerPage::displayFullScreen()
@@ -179,19 +210,25 @@ QRect VideoPlayerPage::playbackGeometry()
 	return QRect(video->mapToGlobal(video->rect().topLeft()), video->size());
 }
 
+void VideoPlayerPage::refreshPlayInfo(const QMap<QString,QString> &info)
+{
+	if (info.contains("current_time") && !info["current_time"].isEmpty())
+	{
+		QString timeS = info["current_time"];
+		// remove after recompiling with the correct toolchain
+		current_time = timeS.left(timeS.indexOf(QChar('.'))).toInt();
+	}
+}
+
 void VideoPlayerPage::refreshPlayInfo()
 {
-	QString timeS = player->getVideoInfo()["current_time"];
-	if (timeS.isEmpty())
-		return;
+	QMap<QString,QString> info = player->getVideoInfo();
 
-	// remove after recompiling with the correct toolchain
-	current_time = timeS.left(timeS.indexOf(QChar('.'))).toInt();
+	refreshPlayInfo(info);
 }
 
 
 // VideoPlayerWindow implementation
-
 VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
 	: controls_timer(this)
 {

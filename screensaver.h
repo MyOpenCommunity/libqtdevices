@@ -67,6 +67,7 @@ public:
 	bool isRunning();
 	virtual Type type() = 0;
 	static void initData(const QDomNode &config_node);
+	static void setSlideshowInterval(int interval);
 
 protected:
 	Window *window;
@@ -75,6 +76,7 @@ protected:
 	static int slideshow_timeout;
 	void startRefresh();
 	void stopRefresh();
+	void setRefreshInterval(int msecs);
 
 protected slots:
 	virtual void refresh() = 0;

@@ -154,6 +154,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	else
 		l->addStretch(1);
 
+	connect(player, SIGNAL(playingInfoUpdated(QMap<QString,QString>)), SLOT(refreshPlayInfo(QMap<QString,QString>)));
 	connect(&refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
 
 	// create the tray icon and add it to tray
@@ -171,6 +172,11 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 int AudioPlayerPage::sectionId() const
 {
 	return MULTIMEDIA;
+}
+
+QString AudioPlayerPage::currentFileName(int index) const
+{
+	return file_list[index];
 }
 
 void AudioPlayerPage::startMPlayer(int index, int time)
@@ -196,6 +202,13 @@ void AudioPlayerPage::displayMedia(int index)
 	startMPlayer(index, 0);
 }
 
+void AudioPlayerPage::clearLabels()
+{
+	description_top->clear();
+	description_bottom->clear();
+	elapsed->clear();
+}
+
 void AudioPlayerPage::playAudioFilesBackground(QList<QString> files, unsigned element)
 {
 	current_file = element;
@@ -213,6 +226,28 @@ void AudioPlayerPage::playAudioFiles(QList<QString> files, unsigned element)
 	showPage();
 
 	displayMedia(current_file);
+}
+
+void AudioPlayerPage::previous()
+{
+	clearLabels();
+	MediaPlayerPage::previous();
+	if (player->isPaused())
+		player->requestInitialPlayingInfo(currentFileName(current_file));
+	else
+		displayMedia(current_file);
+	track->setText(tr("Track: %1 / %2").arg(current_file + 1).arg(total_files));
+}
+
+void AudioPlayerPage::next()
+{
+	clearLabels();
+	MediaPlayerPage::next();
+	if (player->isPaused())
+		player->requestInitialPlayingInfo(currentFileName(current_file));
+	else
+		displayMedia(current_file);
+	track->setText(tr("Track: %1 / %2").arg(current_file + 1).arg(total_files));
 }
 
 // strips the decimal dot from the time returned by mplayer; if match_length is passed,
@@ -233,10 +268,8 @@ static QString formatTime(const QString &mp_time, const QString &match_length = 
 	return res;
 }
 
-void AudioPlayerPage::refreshPlayInfo()
+void AudioPlayerPage::refreshPlayInfo(const QMap<QString, QString> &attrs)
 {
-	QMap<QString, QString> attrs = player->getPlayingInfo();
-
 	if (type == LOCAL_FILE)
 	{
 		if (attrs.contains("meta_title"))
@@ -265,6 +298,13 @@ void AudioPlayerPage::refreshPlayInfo()
 
 		elapsed->setText(current + " / " + total);
 	}
+}
+
+void AudioPlayerPage::refreshPlayInfo()
+{
+	QMap<QString, QString> attrs = player->getPlayingInfo();
+
+	refreshPlayInfo(attrs);
 }
 
 void AudioPlayerPage::changeVolume(int volume)

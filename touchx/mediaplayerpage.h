@@ -62,6 +62,8 @@ protected:
 	// must emit started() and start the refresh_data timer
 	virtual void displayMedia(int index) = 0;
 
+	virtual QString currentFileName(int index) const = 0;
+
 public slots:
 	// standard player functionality
 	//
