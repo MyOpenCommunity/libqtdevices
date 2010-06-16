@@ -83,6 +83,7 @@ public:
 	//                      it is in non pull mode, and an "advanced" device) or
 	//                      it might not react (in this case the pull mode is unknown)
 	typedef FrameHandled (*FrameChecker)(OpenMsg &msg);
+	typedef QPair<bool, FrameHandled> CheckResult;
 
 	PullStateManager(PullMode m, AdvancedMode adv = PULL_ADVANCED_UNKNOWN, FrameChecker checker = NULL);
 	/**
@@ -90,7 +91,7 @@ public:
 	 * Return true if a point-to-point status frame is needed to choose device's mode, false
 	 * if no request frame must be sent.
 	 */
-	bool moreFrameNeeded(OpenMsg &msg, bool is_environment);
+	CheckResult moreFrameNeeded(OpenMsg &msg, bool is_environment);
 	PullMode getPullMode();
 	void setStatusRequested(bool status);
 	AdvancedMode getAdvanced() { return advanced; }

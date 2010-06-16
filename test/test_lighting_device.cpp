@@ -210,6 +210,17 @@ void TestLightingDevice::receiveLightOnOffNotPullExt()
 	t.check(env_off, false);
 }
 
+void TestLightingDevice::receiveLightOnOffNotPullAdvUnknown()
+{
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_ADVANCED_UNKNOWN);
+	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON);
+	QString global_on = "*1*1*0##";
+
+	t.check(global_on, true);
+
+	QCOMPARE(dev->delayed_request.isActive(), false);
+}
+
 void TestLightingDevice::receiveFixedTiming()
 {
 	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
