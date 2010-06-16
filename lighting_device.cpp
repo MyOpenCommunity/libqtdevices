@@ -224,6 +224,15 @@ DimmerDevice::DimmerDevice(QString where, PullMode pull, int pull_delay, Advance
 {
 	 level = 0;
 	 status = false;
+
+	 delayed_request.setSingleShot(true);
+	 delayed_request.setInterval(pull_delay);
+	 connect(&delayed_request, SIGNAL(timeout()), SLOT(delayedStatusRequest()));
+}
+
+void DimmerDevice::delayedStatusRequest()
+{
+	requestStatus();
 }
 
 void DimmerDevice::increaseLevel()
@@ -274,7 +283,15 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 	LightingDevice::parseFrame(msg, sl);
 
 	if (sl->contains(DIM_DEVICE_ON))
+	{
 		 status = (*sl)[DIM_DEVICE_ON].toBool();
+		 // when a dimmer is turned on by a global/environment command, and we do not know its level, we
+		 // need to issue a status request in order to get the level
+		 if (status && level == 0 && checkAddressIsForMe(QString::fromStdString(msg.whereFull()), where) != P2P)
+			 delayed_request.start();
+		 else
+			 delayed_request.stop();
+	}
 
 	int what = msg.what();
 
@@ -313,7 +330,7 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 
 			dimmer10level = qMin(qMax(dimmer10level, 2), 10);
 			level = dimmerLevelTo100(dimmer10level);
-			(*sl)[DIM_DIMMER_LEVEL] = dimmer10level * 10;
+			(*sl)[DIM_DIMMER_LEVEL] = getDimmer10Level();
 		}
 		else
 		{
@@ -362,6 +379,11 @@ int DimmerDevice::getDimmer10Level()
 Dimmer100Device::Dimmer100Device(QString where, PullMode pull, int pull_delay, PullStateManager::FrameChecker checker) :
 	DimmerDevice(where, pull, pull_delay, PULL_ADVANCED, checker)
 {
+}
+
+void Dimmer100Device::delayedStatusRequest()
+{
+	requestDimmer100Status();
 }
 
 void Dimmer100Device::increaseLevel100(int delta, int speed)

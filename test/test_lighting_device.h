@@ -86,6 +86,7 @@ protected:
 	void initDimmer(DimmerDevice *d = 0);
 	void cleanupDimmer();
 	virtual void checkLevel();
+	virtual int convertLevel(int level);
 
 private slots:
 	void init();
@@ -94,6 +95,7 @@ private slots:
 	void sendDimmerIncreaseLevel();
 	void sendDimmerDecreaseLevel();
 
+	void receiveLightOnRequestLevel();
 	void receiveDimmerLevel();
 	void receiveDimmerProblem();
 
@@ -118,6 +120,7 @@ Q_OBJECT
 protected:
 	virtual void checkLevel();
 	virtual QString getRequestStatusFrame();
+	virtual int convertLevel(int level);
 
 private slots:
 	void init();

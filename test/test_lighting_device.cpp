@@ -30,6 +30,10 @@
 
 #include <QtTest/QtTest>
 
+// defined in lighting_device.cpp
+int dimmerLevelTo100(int level);
+int dimmer100LevelTo10(int level);
+
 void TestLightingDevice::initLightingDevice(LightingDevice *d)
 {
 	if (d)
@@ -293,6 +297,11 @@ void TestDimmer::cleanup()
 	cleanupDimmer();
 }
 
+int TestDimmer::convertLevel(int level)
+{
+	return level;
+}
+
 void TestDimmer::initDimmer(DimmerDevice *d)
 {
 	if (d)
@@ -336,6 +345,28 @@ void TestDimmer::checkLevel()
 	t.check(frame, 90);
 }
 
+void TestDimmer::receiveLightOnRequestLevel()
+{
+	DeviceTester t(dimmer, LightingDevice::DIM_DEVICE_ON);
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	QString global_on = QString("*1*1*0##");
+	QString global_off = QString("*1*0*0##");
+	QString light_on = QString("*1*1*%1##").arg(dimmer->where);
+	QString light_off = QString("*1*0*%1##").arg(dimmer->where);
+
+	t.check(global_on, true);
+	QCOMPARE(dimmer->delayed_request.isActive(), true);
+
+	t.check(global_off, false);
+	QCOMPARE(dimmer->delayed_request.isActive(), false);
+
+	t.check(light_on, true);
+	QCOMPARE(dimmer->delayed_request.isActive(), false);
+
+	t.check(light_off, false);
+	QCOMPARE(dimmer->delayed_request.isActive(), false);
+}
+
 void TestDimmer::receiveDimmerLevel()
 {
 	checkLevel();
@@ -360,7 +391,7 @@ void TestDimmer::receiveGlobalIncrementLevel()
 	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
 	dimmer->status = true;
 	dimmer->level = 30;
-	t.check(frame, 60);
+	t.check(frame, convertLevel(60));
 }
 
 void TestDimmer::receiveGlobalDecrementLevel()
@@ -375,7 +406,7 @@ void TestDimmer::receiveGlobalDecrementLevel()
 	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
 	dimmer->status = true;
 	dimmer->level = 30;
-	t.check(frame, 40);
+	t.check(frame, convertLevel(40));
 }
 
 void TestDimmer::receiveGlobalDimmer100SetlevelNonPullBase()
@@ -456,6 +487,11 @@ void TestDimmer100::cleanup()
 {
 	cleanupDimmer();
 	delete dimmer100;
+}
+
+int TestDimmer100::convertLevel(int level)
+{
+	return dimmerLevelTo100(level / 10);
 }
 
 void TestDimmer100::sendDimmer100DecreaseLevel()
