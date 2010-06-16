@@ -38,7 +38,7 @@ bool TestPullManager::parseFrames(const char *frame, PullStateManager *psm, bool
 void TestPullManager::testSimpleLight_on()
 {
 	// NOT_PULL device
-	PullStateManager psm(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light off, general on, light on
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*1*1*0##", &psm, true);
@@ -47,7 +47,7 @@ void TestPullManager::testSimpleLight_on()
 	QCOMPARE(psm.getAdvanced(), PULL_ADVANCED_UNKNOWN);
 
 	// PULL device
-	PullStateManager psm2(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light off, general on, light on
 	parseFrames("*1*0*11##", &psm2, false);
 	parseFrames("*1*1*0##", &psm2, true);
@@ -59,7 +59,7 @@ void TestPullManager::testSimpleLight_on()
 void TestPullManager::testSimpleLight_off()
 {
 	// NOT_PULL device
-	PullStateManager psm(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light on, general off, light off
 	parseFrames("*1*1*11##", &psm, false);
 	parseFrames("*1*0*0##", &psm, true);
@@ -68,7 +68,7 @@ void TestPullManager::testSimpleLight_off()
 	QCOMPARE(psm.getAdvanced(), PULL_ADVANCED_UNKNOWN);
 
 	// PULL device
-	PullStateManager psm2(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light on, general off, light on
 	parseFrames("*1*1*11##", &psm2, false);
 	parseFrames("*1*0*0##", &psm2, true);
@@ -80,7 +80,7 @@ void TestPullManager::testSimpleLight_off()
 void TestPullManager::testSimpleLight_on_100()
 {
 	// NOT_PULL device
-	PullStateManager psm(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light off, general on 100, light on
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*1*1#1*0##", &psm, true);
@@ -89,7 +89,7 @@ void TestPullManager::testSimpleLight_on_100()
 	QCOMPARE(psm.getAdvanced(), PULL_ADVANCED);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light off, general on 100, light on
 	parseFrames("*1*0*11##", &psm2, false);
 	parseFrames("*1*1#1*0##", &psm2, true);
@@ -101,7 +101,7 @@ void TestPullManager::testSimpleLight_on_100()
 void TestPullManager::testSimpleLight_off_100()
 {
 	// NOT_PULL device
-	PullStateManager psm(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light on, general off 100, light off
 	parseFrames("*1*1*11##", &psm, false);
 	parseFrames("*1*0#1*0##", &psm, true);
@@ -110,7 +110,7 @@ void TestPullManager::testSimpleLight_off_100()
 	QCOMPARE(psm.getAdvanced(), PULL_ADVANCED);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light on, general off 100, light on
 	parseFrames("*1*1*11##", &psm2, false);
 	parseFrames("*1*0#1*0##", &psm2, true);
@@ -122,7 +122,7 @@ void TestPullManager::testSimpleLight_off_100()
 void TestPullManager::testSimpleLight_setLevel()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light on, general off 100, light off
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*1*2*0##", &psm, true);
@@ -134,7 +134,7 @@ void TestPullManager::testSimpleLight_setLevel()
 void TestPullManager::testSimpleLight_setLevel_100()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light on, general off 100, light off
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*#1*0*#1*110*255####", &psm, true);
@@ -146,7 +146,7 @@ void TestPullManager::testSimpleLight_setLevel_100()
 void TestPullManager::testSimpleLight_increaseLevel()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light on, general increaseLevel, light off
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*1*30*0##", &psm, true);
@@ -158,7 +158,7 @@ void TestPullManager::testSimpleLight_increaseLevel()
 void TestPullManager::testSimpleLight_decreaseLevel()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light on, general decreaseLevel, light off
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*1*31*0##", &psm, true);
@@ -170,7 +170,7 @@ void TestPullManager::testSimpleLight_decreaseLevel()
 void TestPullManager::testSimpleLight_increaseLevel_100()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light on, general increaseLevel 100, light off
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*1*30#1#1*0##", &psm, true);
@@ -182,7 +182,7 @@ void TestPullManager::testSimpleLight_increaseLevel_100()
 void TestPullManager::testSimpleLight_decreaseLevel_100()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light on, general decreaseLevel 100, light off
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*1*31#1#1*0##", &psm, true);
@@ -194,7 +194,7 @@ void TestPullManager::testSimpleLight_decreaseLevel_100()
 void TestPullManager::testSimpleLight_timing()
 {
 	// PULL device
-	PullStateManager psm(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light on, general timing, light off
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*1*11*0##", &psm, true);
@@ -203,7 +203,7 @@ void TestPullManager::testSimpleLight_timing()
 	QCOMPARE(psm.getAdvanced(), PULL_NOT_ADVANCED);
 
 	// NOT_PULL device
-	PullStateManager psm2(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light on, general timing, light off
 	parseFrames("*1*0*11##", &psm2, false);
 	parseFrames("*1*11*0##", &psm2, true);
@@ -215,7 +215,7 @@ void TestPullManager::testSimpleLight_timing()
 void TestPullManager::testSimpleLight_variabletiming()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light on, general timing, light off
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*#1*0*#2*1*2*3##", &psm, true);
@@ -224,7 +224,7 @@ void TestPullManager::testSimpleLight_variabletiming()
 	QCOMPARE(psm.getAdvanced(), PULL_ADVANCED_UNKNOWN);
 
 	// NOT_PULL device
-	PullStateManager psm2(PULL_UNKNOWN, &LightingDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &LightingDevice::isFrameHandled);
 	// light on, general timing, light off
 	parseFrames("*1*0*11##", &psm2, false);
 	parseFrames("*#1*0*#2*1*2*3##", &psm2, true);
@@ -236,7 +236,7 @@ void TestPullManager::testSimpleLight_variabletiming()
 void TestPullManager::testDimmer_on()
 {
 	// NOT_PULL device
-	PullStateManager psm(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light off, general on, light on
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*1*1*0##", &psm, true);
@@ -245,7 +245,7 @@ void TestPullManager::testDimmer_on()
 	QCOMPARE(psm.getAdvanced(), PULL_ADVANCED_UNKNOWN);
 
 	// PULL device
-	PullStateManager psm2(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light off, general on, light on
 	parseFrames("*1*0*11##", &psm2, false);
 	parseFrames("*1*1*0##", &psm2, true);
@@ -257,7 +257,7 @@ void TestPullManager::testDimmer_on()
 void TestPullManager::testDimmer_off()
 {
 	// NOT_PULL device
-	PullStateManager psm(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general off, light off
 	parseFrames("*1*3*11##", &psm, false);
 	parseFrames("*1*0*0##", &psm, true);
@@ -266,7 +266,7 @@ void TestPullManager::testDimmer_off()
 	QCOMPARE(psm.getAdvanced(), PULL_ADVANCED_UNKNOWN);
 
 	// PULL device
-	PullStateManager psm2(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general off, light on
 	parseFrames("*1*3*11##", &psm2, false);
 	parseFrames("*1*0*0##", &psm2, true);
@@ -278,7 +278,7 @@ void TestPullManager::testDimmer_off()
 void TestPullManager::testDimmer_on_100()
 {
 	// NOT_PULL device
-	PullStateManager psm(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light off, general on 100, light on
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*1*1#1*0##", &psm, true);
@@ -287,7 +287,7 @@ void TestPullManager::testDimmer_on_100()
 	QCOMPARE(psm.getAdvanced(), PULL_ADVANCED);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light off, general on 100, light on
 	parseFrames("*1*0*11##", &psm2, false);
 	parseFrames("*1*1#1*0##", &psm2, true);
@@ -299,7 +299,7 @@ void TestPullManager::testDimmer_on_100()
 void TestPullManager::testDimmer_off_100()
 {
 	// NOT_PULL device
-	PullStateManager psm(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general off 100, light off
 	parseFrames("*1*3*11##", &psm, false);
 	parseFrames("*1*0#1*0##", &psm, true);
@@ -308,7 +308,7 @@ void TestPullManager::testDimmer_off_100()
 	QCOMPARE(psm.getAdvanced(), PULL_ADVANCED);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general off 100, light on
 	parseFrames("*1*3*11##", &psm2, false);
 	parseFrames("*1*0#1*0##", &psm2, true);
@@ -320,7 +320,7 @@ void TestPullManager::testDimmer_off_100()
 void TestPullManager::testDimmer_setLevel()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general off 100, light off
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*1*2*0##", &psm, true);
@@ -329,7 +329,7 @@ void TestPullManager::testDimmer_setLevel()
 	QCOMPARE(psm.getAdvanced(), PULL_NOT_ADVANCED);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general off 100, light off
 	parseFrames("*1*0*11##", &psm2, false);
 	parseFrames("*1*2*0##", &psm2, true);
@@ -341,7 +341,7 @@ void TestPullManager::testDimmer_setLevel()
 void TestPullManager::testDimmer_setLevel_100()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general off 100, light off
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*#1*0*#1*110*255####", &psm, true);
@@ -350,7 +350,7 @@ void TestPullManager::testDimmer_setLevel_100()
 	QCOMPARE(psm.getAdvanced(), PULL_ADVANCED);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general off 100, light off
 	parseFrames("*1*0*11##", &psm2, false);
 	parseFrames("*#1*0*#1*110*255####", &psm2, true);
@@ -362,7 +362,7 @@ void TestPullManager::testDimmer_setLevel_100()
 void TestPullManager::testDimmer_increaseLevel()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general increaseLevel, light off
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*1*30*0##", &psm, true);
@@ -371,7 +371,7 @@ void TestPullManager::testDimmer_increaseLevel()
 	QCOMPARE(psm.getAdvanced(), PULL_NOT_ADVANCED);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general increaseLevel, light off
 	parseFrames("*1*0*11##", &psm2, false);
 	parseFrames("*1*30*0##", &psm2, true);
@@ -383,7 +383,7 @@ void TestPullManager::testDimmer_increaseLevel()
 void TestPullManager::testDimmer_decreaseLevel()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general decreaseLevel, light off
 	parseFrames("*1*2*11##", &psm, false);
 	parseFrames("*1*31*0##", &psm, true);
@@ -392,7 +392,7 @@ void TestPullManager::testDimmer_decreaseLevel()
 	QCOMPARE(psm.getAdvanced(), PULL_NOT_ADVANCED);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general decreaseLevel, light off
 	parseFrames("*1*0*11##", &psm2, false);
 	parseFrames("*1*31*0##", &psm2, true);
@@ -404,7 +404,7 @@ void TestPullManager::testDimmer_decreaseLevel()
 void TestPullManager::testDimmer_increaseLevel_100()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general increaseLevel 100, light off
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*1*30#1#1*0##", &psm, true);
@@ -413,7 +413,7 @@ void TestPullManager::testDimmer_increaseLevel_100()
 	QCOMPARE(psm.getAdvanced(), PULL_ADVANCED_UNKNOWN);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general increaseLevel 100, light off
 	parseFrames("*1*0*11##", &psm2, false);
 	parseFrames("*1*30#1#1*0##", &psm2, true);
@@ -425,7 +425,7 @@ void TestPullManager::testDimmer_increaseLevel_100()
 void TestPullManager::testDimmer_decreaseLevel_100()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general decreaseLevel 100, light off
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*1*31#1#1*0##", &psm, true);
@@ -434,7 +434,7 @@ void TestPullManager::testDimmer_decreaseLevel_100()
 	QCOMPARE(psm.getAdvanced(), PULL_ADVANCED_UNKNOWN);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general decreaseLevel 100, light off
 	parseFrames("*1*0*11##", &psm2, false);
 	parseFrames("*1*31#1#1*0##", &psm2, true);
@@ -446,7 +446,7 @@ void TestPullManager::testDimmer_decreaseLevel_100()
 void TestPullManager::testDimmer_timing()
 {
 	// PULL device
-	PullStateManager psm(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general timing, light off
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*1*11*0##", &psm, true);
@@ -455,7 +455,7 @@ void TestPullManager::testDimmer_timing()
 	QCOMPARE(psm.getAdvanced(), PULL_NOT_ADVANCED);
 
 	// NOT_PULL device
-	PullStateManager psm2(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general timing, light off
 	parseFrames("*1*0*11##", &psm2, false);
 	parseFrames("*1*11*0##", &psm2, true);
@@ -467,7 +467,7 @@ void TestPullManager::testDimmer_timing()
 void TestPullManager::testDimmer_variabletiming()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general timing, light off
 	parseFrames("*1*0*11##", &psm, false);
 	parseFrames("*#1*0*#2*1*2*3##", &psm, true);
@@ -476,7 +476,7 @@ void TestPullManager::testDimmer_variabletiming()
 	QCOMPARE(psm.getAdvanced(), PULL_ADVANCED_UNKNOWN);
 
 	// NOT_PULL device
-	PullStateManager psm2(PULL_UNKNOWN, &DimmerDevice::isFrameHandled);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED_UNKNOWN, &DimmerDevice::isFrameHandled);
 	// light on, general timing, light off
 	parseFrames("*1*0*11##", &psm2, false);
 	parseFrames("*#1*0*#2*1*2*3##", &psm2, true);
@@ -488,7 +488,7 @@ void TestPullManager::testDimmer_variabletiming()
 void TestPullManager::testDimmer100_on()
 {
 	// NOT_PULL device
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// light off, general on, light on
 	parseFrames("*#1*11*1*100*255##", &psm, false);
 	parseFrames("*1*1*0##", &psm, true);
@@ -496,7 +496,7 @@ void TestPullManager::testDimmer100_on()
 	QCOMPARE(psm.getPullMode(), NOT_PULL);
 
 	// PULL device
-	PullStateManager psm2(PULL_UNKNOWN);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED);
 	// light off, general on, light on
 	parseFrames("*#1*11*1*100*255##", &psm2, false);
 	parseFrames("*1*1*0##", &psm2, true);
@@ -507,7 +507,7 @@ void TestPullManager::testDimmer100_on()
 void TestPullManager::testDimmer100_off()
 {
 	// NOT_PULL device
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general off, light off
 	parseFrames("*#1*11*1*110*255##", &psm, false);
 	parseFrames("*1*0*0##", &psm, true);
@@ -515,7 +515,7 @@ void TestPullManager::testDimmer100_off()
 	QCOMPARE(psm.getPullMode(), NOT_PULL);
 
 	// PULL device
-	PullStateManager psm2(PULL_UNKNOWN);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general off, light on
 	parseFrames("*#1*11*1*110*255###", &psm2, false);
 	parseFrames("*1*0*0##", &psm2, true);
@@ -526,7 +526,7 @@ void TestPullManager::testDimmer100_off()
 void TestPullManager::testDimmer100_on_100()
 {
 	// NOT_PULL device
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// light off, general on 100, light on
 	parseFrames("*#1*11*1*100*255##", &psm, false);
 	parseFrames("*1*1#1*0##", &psm, true);
@@ -534,7 +534,7 @@ void TestPullManager::testDimmer100_on_100()
 	QCOMPARE(psm.getPullMode(), NOT_PULL);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED);
 	// light off, general on 100, light on
 	parseFrames("*#1*11*1*100*255##", &psm2, false);
 	parseFrames("*1*1#1*0##", &psm2, true);
@@ -545,7 +545,7 @@ void TestPullManager::testDimmer100_on_100()
 void TestPullManager::testDimmer100_off_100()
 {
 	// NOT_PULL device
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general off 100, light off
 	parseFrames("*#1*11*1*110*255##", &psm, false);
 	parseFrames("*1*0#1*0##", &psm, true);
@@ -553,7 +553,7 @@ void TestPullManager::testDimmer100_off_100()
 	QCOMPARE(psm.getPullMode(), NOT_PULL);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general off 100, light on
 	parseFrames("*#1*11*1*110*255##", &psm2, false);
 	parseFrames("*1*0#1*0##", &psm2, true);
@@ -564,7 +564,7 @@ void TestPullManager::testDimmer100_off_100()
 void TestPullManager::testDimmer100_setLevel()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general off 100, light off
 	parseFrames("*#1*11*1*100*255##", &psm, false);
 	parseFrames("*1*2*0##", &psm, true);
@@ -572,7 +572,7 @@ void TestPullManager::testDimmer100_setLevel()
 	QCOMPARE(psm.getPullMode(), PULL);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general off 100, light off
 	parseFrames("*#1*11*1*100*255##", &psm2, false);
 	parseFrames("*1*2*0##", &psm2, true);
@@ -583,7 +583,7 @@ void TestPullManager::testDimmer100_setLevel()
 void TestPullManager::testDimmer100_setLevel_100()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general off 100, light off
 	parseFrames("*#1*11*1*100*255##", &psm, false);
 	parseFrames("*#1*0*#1*110*255####", &psm, true);
@@ -591,7 +591,7 @@ void TestPullManager::testDimmer100_setLevel_100()
 	QCOMPARE(psm.getPullMode(), PULL);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general off 100, light off
 	parseFrames("*#1*11*1*100*255##", &psm2, false);
 	parseFrames("*#1*0*#1*110*255####", &psm2, true);
@@ -602,7 +602,7 @@ void TestPullManager::testDimmer100_setLevel_100()
 void TestPullManager::testDimmer100_increaseLevel()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general increaseLevel, light off
 	parseFrames("*#1*11*1*100*255##", &psm, false);
 	parseFrames("*1*30*0##", &psm, true);
@@ -610,7 +610,7 @@ void TestPullManager::testDimmer100_increaseLevel()
 	QCOMPARE(psm.getPullMode(), PULL);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general increaseLevel, light off
 	parseFrames("*#1*11*1*100*255##", &psm2, false);
 	parseFrames("*1*30*0##", &psm2, true);
@@ -621,7 +621,7 @@ void TestPullManager::testDimmer100_increaseLevel()
 void TestPullManager::testDimmer100_decreaseLevel()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general decreaseLevel, light off
 	parseFrames("*#1*11*1*100*255##", &psm, false);
 	parseFrames("*1*31*0##", &psm, true);
@@ -629,7 +629,7 @@ void TestPullManager::testDimmer100_decreaseLevel()
 	QCOMPARE(psm.getPullMode(), PULL);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general decreaseLevel, light off
 	parseFrames("*#1*11*1*100*255##", &psm2, false);
 	parseFrames("*1*31*0##", &psm2, true);
@@ -640,7 +640,7 @@ void TestPullManager::testDimmer100_decreaseLevel()
 void TestPullManager::testDimmer100_increaseLevel_100()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general increaseLevel 100, light off
 	parseFrames("*#1*11*1*100*255##", &psm, false);
 	parseFrames("*1*30#1#1*0##", &psm, true);
@@ -648,7 +648,7 @@ void TestPullManager::testDimmer100_increaseLevel_100()
 	QCOMPARE(psm.getPullMode(), PULL);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general increaseLevel 100, light off
 	parseFrames("*#1*11*1*100*255##", &psm2, false);
 	parseFrames("*1*30#1#1*0##", &psm2, true);
@@ -659,7 +659,7 @@ void TestPullManager::testDimmer100_increaseLevel_100()
 void TestPullManager::testDimmer100_decreaseLevel_100()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general decreaseLevel 100, light off
 	parseFrames("*#1*11*1*100*255##", &psm, false);
 	parseFrames("*1*31#1#1*0##", &psm, true);
@@ -667,7 +667,7 @@ void TestPullManager::testDimmer100_decreaseLevel_100()
 	QCOMPARE(psm.getPullMode(), PULL);
 
 	// PULL_UNKNOWN device
-	PullStateManager psm2(PULL_UNKNOWN);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general decreaseLevel 100, light off
 	parseFrames("*#1*11*1*100*255##", &psm2, false);
 	parseFrames("*1*31#1#1*0##", &psm2, true);
@@ -678,7 +678,7 @@ void TestPullManager::testDimmer100_decreaseLevel_100()
 void TestPullManager::testDimmer100_timing()
 {
 	// PULL device
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general timing, light off
 	parseFrames("*#1*11*1*100*255##", &psm, false);
 	parseFrames("*1*11*0##", &psm, true);
@@ -686,7 +686,7 @@ void TestPullManager::testDimmer100_timing()
 	QCOMPARE(psm.getPullMode(), PULL);
 
 	// NOT_PULL device
-	PullStateManager psm2(PULL_UNKNOWN);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general timing, light off
 	parseFrames("*#1*11*1*100*255##", &psm2, false);
 	parseFrames("*1*11*0##", &psm2, true);
@@ -697,7 +697,7 @@ void TestPullManager::testDimmer100_timing()
 void TestPullManager::testDimmer100_variabletiming()
 {
 	// PULL_UNKNOWN device
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general timing, light off
 	parseFrames("*#1*11*1*100*255##", &psm, false);
 	parseFrames("*#1*0*#2*1*2*3##", &psm, true);
@@ -705,7 +705,7 @@ void TestPullManager::testDimmer100_variabletiming()
 	QCOMPARE(psm.getPullMode(), PULL);
 
 	// NOT_PULL device
-	PullStateManager psm2(PULL_UNKNOWN);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED);
 	// light on, general timing, light off
 	parseFrames("*#1*11*1*100*255##", &psm2, false);
 	parseFrames("*#1*0*#2*1*2*3##", &psm2, true);
@@ -812,7 +812,7 @@ void TestPullManager::testDimmer_decreaseLevel_old()
 
 void TestPullManager::testDimmer100()
 {
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// dimmer level100 20, general level100 40, dimmer level100 40
 	parseFrames("*#1*12*1*120*255##", &psm, false);
 	parseFrames("*#1*0*#1*140*255##", &psm, true);
@@ -822,7 +822,7 @@ void TestPullManager::testDimmer100()
 
 void TestPullManager::testDimmer100_2()
 {
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// dimmer level100 20, general level100 40, dimmer level100 40
 	parseFrames("*#1*12*1*100*255##", &psm, false);
 	parseFrames("*#1*1*#1*140*255##", &psm, true);
@@ -832,7 +832,7 @@ void TestPullManager::testDimmer100_2()
 
 void TestPullManager::testDimmer100_3()
 {
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// dimmer on, general level100 40, dimmer level100 40
 	parseFrames("*1*1*12##", &psm, false);
 	parseFrames("*#1*1*#1*140*255##", &psm, true);
@@ -842,14 +842,14 @@ void TestPullManager::testDimmer100_3()
 
 void TestPullManager::testDimmer100_increaseLevel_old()
 {
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// dimmer level100 40, general increase level100 by 5, dimmer level100 45
 	parseFrames("*#1*12*1*140*255##", &psm, false);
 	parseFrames("*1*30#5#255*1##", &psm, true);
 	parseFrames("*#1*12*1*145*255##", &psm, false);
 	QCOMPARE(psm.getPullMode(), NOT_PULL);
 
-	PullStateManager psm2(PULL_UNKNOWN);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED);
 	// dimmer level100 40, general increase level100 by 5, dimmer level100 40
 	parseFrames("*#1*12*1*140*255##", &psm2, false);
 	parseFrames("*1*30#5#255*1##", &psm2, true);
@@ -859,14 +859,14 @@ void TestPullManager::testDimmer100_increaseLevel_old()
 
 void TestPullManager::testDimmer100_decreaseLevel_old()
 {
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// dimmer level100 40, general decrease level100 by 5, dimmer level100 35
 	parseFrames("*#1*12*1*140*255##", &psm, false);
 	parseFrames("*1*31#5#255*1##", &psm, true);
 	parseFrames("*#1*12*1*135*255##", &psm, false);
 	QCOMPARE(psm.getPullMode(), NOT_PULL);
 
-	PullStateManager psm2(PULL_UNKNOWN);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED);
 	// dimmer level100 40, general decrease level100 by 5, dimmer level100 40
 	parseFrames("*#1*12*1*140*255##", &psm2, false);
 	parseFrames("*1*31#5#255*1##", &psm2, true);
@@ -876,14 +876,14 @@ void TestPullManager::testDimmer100_decreaseLevel_old()
 
 void TestPullManager::testDimmer100_receiveIncreaseLevel10()
 {
-	PullStateManager psm(PULL_UNKNOWN);
+	PullStateManager psm(PULL_UNKNOWN, PULL_ADVANCED);
 	// dimmer level100 4, general increase level, dimmer level100 10
 	parseFrames("*#1*12*1*104*255##", &psm, false);
 	parseFrames("*1*31*1##", &psm, true);
 	parseFrames("*#1*12*1*110*255##", &psm, false);
 	QCOMPARE(psm.getPullMode(), NOT_PULL);
 
-	PullStateManager psm2(PULL_UNKNOWN);
+	PullStateManager psm2(PULL_UNKNOWN, PULL_ADVANCED);
 	// dimmer level100 4, general increase level, dimmer level100 10
 	parseFrames("*#1*12*1*104*255##", &psm2, false);
 	parseFrames("*1*31*1##", &psm2, true);

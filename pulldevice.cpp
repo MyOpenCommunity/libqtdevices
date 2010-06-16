@@ -143,14 +143,14 @@ enum
 	                                // for normal frames and 100 to 200 for dimmer100 level frames).
 };
 
-PullStateManager::PullStateManager(PullMode m, FrameChecker checker)
+PullStateManager::PullStateManager(PullMode m, AdvancedMode adv, FrameChecker checker)
 {
 	mode = m;
 	status = INVALID_STATE;
 	status_requested = false;
 	frame_checker = checker;
 	last_handled = FRAME_NOT_HANDLED;
-	advanced = m == PULL ? PULL_NOT_ADVANCED : PULL_ADVANCED_UNKNOWN;
+	advanced = m == PULL ? PULL_NOT_ADVANCED : adv;
 }
 
 PullMode PullStateManager::getPullMode()
@@ -243,9 +243,9 @@ void PullStateManager::setStatusRequested(bool status)
 }
 
 
-PullDevice::PullDevice(QString who, QString where, PullMode m, int pull_delay, PullStateManager::FrameChecker checker) :
+PullDevice::PullDevice(QString who, QString where, PullMode m, int pull_delay, AdvancedMode adv, PullStateManager::FrameChecker checker) :
 	device(who, where),
-	state(m, checker)
+	state(m, adv, checker)
 {
 	delayed_request.setSingleShot(true);
 	delayed_request.setInterval(pull_delay);

@@ -507,20 +507,20 @@ QString TestDimmer100::getRequestStatusFrame()
 
 void TestDimmer100::receiveGlobalIncrementLevel100()
 {
-	DeviceTester t(dimmer100, LightingDevice::DIM_DIMMER100_LEVEL);
+	DeviceTester t(dimmer100, LightingDevice::DIM_DIMMER100_LEVEL, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*1*30#20#255*0##");
 
 	// pull unknown
 	t.checkSignals(frame, 0);
 
 	// not pull
-	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_ADVANCED);
 	dimmer100->status = true;
 	dimmer100->level = 50;
 	t.check(frame, 70);
 
 	// not pull, off
-	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_ADVANCED);
 	dimmer100->status = false;
 	dimmer100->level = 50;
 	t.check(frame, 50);
@@ -529,14 +529,14 @@ void TestDimmer100::receiveGlobalIncrementLevel100()
 
 void TestDimmer100::receiveGlobalDecrementLevel100()
 {
-	DeviceTester t(dimmer100, LightingDevice::DIM_DIMMER100_LEVEL);
+	DeviceTester t(dimmer100, LightingDevice::DIM_DIMMER100_LEVEL, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*1*31#20#255*0##");
 
 	// pull unknown
 	t.checkSignals(frame, 0);
 
 	// not pull
-	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_ADVANCED);
 	dimmer100->status = true;
 	dimmer100->level = 50;
 	t.check(frame, 30);
@@ -544,7 +544,7 @@ void TestDimmer100::receiveGlobalDecrementLevel100()
 
 void TestDimmer100::receiveGlobalDimmer100OnOffNonPullBase()
 {
-	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_NOT_ADVANCED);
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_ADVANCED);
 	DeviceTester t(dimmer100, LightingDevice::DIM_DEVICE_ON);
 	QString global_on = "*1*1#1*0##";
 	QString global_off = "*1*0#1*0##";
@@ -555,7 +555,7 @@ void TestDimmer100::receiveGlobalDimmer100OnOffNonPullBase()
 
 void TestDimmer100::receiveGlobalDimmer100SetlevelNonPullBase()
 {
-	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_NOT_ADVANCED);
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_ADVANCED);
 	DeviceTester t(dimmer100, LightingDevice::DIM_DIMMER100_LEVEL, DeviceTester::MULTIPLE_VALUES);
 	QString set_level = "*#1*0*1*134*50##";
 
@@ -564,8 +564,8 @@ void TestDimmer100::receiveGlobalDimmer100SetlevelNonPullBase()
 
 void TestDimmer100::receiveGlobalDimmer100IncDecNonPullBase()
 {
-	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_NOT_ADVANCED);
-	DeviceTester t(dimmer100, LightingDevice::DIM_DIMMER100_LEVEL);
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_ADVANCED);
+	DeviceTester t(dimmer100, LightingDevice::DIM_DIMMER100_LEVEL, DeviceTester::MULTIPLE_VALUES);
 	QString inc_level = "*1*30#20#1*0##";
 	QString dec_level = "*1*31#30#1*0##";
 

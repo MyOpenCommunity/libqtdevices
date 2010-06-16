@@ -86,8 +86,8 @@ int dimmer100LevelTo10(int level)
 
 
 
-LightingDevice::LightingDevice(QString where, PullMode pull, int pull_delay, PullStateManager::FrameChecker checker) :
-	PullDevice(QString("1"), where, pull, pull_delay, checker)
+LightingDevice::LightingDevice(QString where, PullMode pull, int pull_delay, AdvancedMode adv, PullStateManager::FrameChecker checker) :
+	PullDevice(QString("1"), where, pull, pull_delay, adv, checker)
 {
 }
 
@@ -219,8 +219,8 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 }
 
 
-DimmerDevice::DimmerDevice(QString where, PullMode pull, int pull_delay, PullStateManager::FrameChecker checker) :
-	LightingDevice(where, pull, pull_delay, checker)
+DimmerDevice::DimmerDevice(QString where, PullMode pull, int pull_delay, AdvancedMode adv, PullStateManager::FrameChecker checker) :
+	LightingDevice(where, pull, pull_delay, adv, checker)
 {
 	 level = 0;
 	 status = false;
@@ -360,7 +360,7 @@ int DimmerDevice::getDimmer10Level()
 
 
 Dimmer100Device::Dimmer100Device(QString where, PullMode pull, int pull_delay, PullStateManager::FrameChecker checker) :
-	DimmerDevice(where, pull, pull_delay, checker)
+	DimmerDevice(where, pull, pull_delay, PULL_ADVANCED, checker)
 {
 }
 
@@ -426,24 +426,14 @@ void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
 		}
 	}
 
+	// the level adjustment is already performed in DimmerDevice::parseFrame, we only
+	// need to send the status update
 	if ((what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 2)
 	{
-		int delta = msg.whatArgN(0);
-
 		if (status)
-		{
-			if (what == DIMMER_INC)
-				level += delta;
-			else
-				level -= delta;
-
-			(*sl)[DIM_DIMMER100_LEVEL] = level = qMin(qMax(level, 1), 100);
-		}
-		else
-		{
-			status = true;
 			(*sl)[DIM_DIMMER100_LEVEL] = level;
-		}
+		else
+			(*sl)[DIM_DIMMER100_LEVEL] = level;
 	}
 }
 
