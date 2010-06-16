@@ -55,7 +55,7 @@ public:
 	};
 
 	LightingDevice(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0, int pull_delay = PULL_DELAY_LIGHT,
-		       PullStateManager::FrameChecker checker = &LightingDevice::isFrameHandled);
+		       AdvancedMode adv = PULL_ADVANCED_UNKNOWN, PullStateManager::FrameChecker checker = &LightingDevice::isFrameHandled);
 
 	virtual void init();
 	void turnOn();
@@ -87,7 +87,7 @@ friend class TestDimmer;
 Q_OBJECT
 public:
 	DimmerDevice(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0, int pull_delay = PULL_DELAY_DIMMER10,
-		     PullStateManager::FrameChecker checker = &DimmerDevice::isFrameHandled);
+		     AdvancedMode adv = PULL_ADVANCED_UNKNOWN, PullStateManager::FrameChecker checker = &DimmerDevice::isFrameHandled);
 
 	void increaseLevel();
 	void decreaseLevel();

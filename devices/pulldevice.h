@@ -84,7 +84,7 @@ public:
 	//                      it might not react (in this case the pull mode is unknown)
 	typedef FrameHandled (*FrameChecker)(OpenMsg &msg);
 
-	PullStateManager(PullMode m, FrameChecker checker = NULL);
+	PullStateManager(PullMode m, AdvancedMode adv = PULL_ADVANCED_UNKNOWN, FrameChecker checker = NULL);
 	/**
 	 * Logic for the state manager.
 	 * Return true if a point-to-point status frame is needed to choose device's mode, false
@@ -127,7 +127,7 @@ public:
 	virtual void manageFrame(OpenMsg &msg);
 
 protected:
-	PullDevice(QString who, QString where, PullMode m, int openserver_id, int pull_delay, PullStateManager::FrameChecker checker = NULL);
+	PullDevice(QString who, QString where, PullMode m, int openserver_id, int pull_delay, AdvancedMode adv = PULL_ADVANCED_UNKNOWN, PullStateManager::FrameChecker checker = NULL);
 
 	// different devices may need different status requests (eg. Dimmer100)
 	virtual void requestPullStatus() = 0;

@@ -86,8 +86,8 @@ int dimmer100LevelTo10(int level)
 
 
 
-LightingDevice::LightingDevice(QString where, PullMode pull, int openserver_id, int pull_delay, PullStateManager::FrameChecker checker) :
-	PullDevice(QString("1"), where, pull, openserver_id, pull_delay, checker)
+LightingDevice::LightingDevice(QString where, PullMode pull, int openserver_id, int pull_delay, AdvancedMode adv, PullStateManager::FrameChecker checker) :
+	PullDevice(QString("1"), where, pull, openserver_id, pull_delay, adv, checker)
 {
 	timed_light = NOT_TIMED_LIGHT;
 }
@@ -219,8 +219,8 @@ bool LightingDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 }
 
 
-DimmerDevice::DimmerDevice(QString where, PullMode pull, int openserver_id, int pull_delay, PullStateManager::FrameChecker checker) :
-	LightingDevice(where, pull, openserver_id, pull_delay, checker)
+DimmerDevice::DimmerDevice(QString where, PullMode pull, int openserver_id, int pull_delay, AdvancedMode adv, PullStateManager::FrameChecker checker) :
+	LightingDevice(where, pull, openserver_id, pull_delay, adv, checker)
 {
 	 level = 0;
 	 status = false;
@@ -347,7 +347,7 @@ bool DimmerDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 
 Dimmer100Device::Dimmer100Device(QString where, PullMode pull, int openserver_id, int pull_delay, PullStateManager::FrameChecker checker) :
-	DimmerDevice(where, pull, openserver_id, pull_delay, checker)
+	DimmerDevice(where, pull, openserver_id, pull_delay, PULL_ADVANCED, checker)
 {
 }
 
@@ -413,24 +413,14 @@ bool Dimmer100Device::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		}
 	}
 
+	// the level adjustment is already performed in DimmerDevice::parseFrame, we only
+	// need to send the status update
 	if ((what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 2)
 	{
-		int delta = msg.whatArgN(0);
-
 		if (status)
-		{
-			if (what == DIMMER_INC)
-				level += delta;
-			else
-				level -= delta;
-
-			values_list[DIM_DIMMER100_LEVEL] = level = qMin(qMax(level, 1), 100);
-		}
-		else
-		{
-			status = true;
 			values_list[DIM_DIMMER100_LEVEL] = level;
-		}
+		else
+			values_list[DIM_DIMMER100_LEVEL] = level;
 	}
 
 	return !values_list.isEmpty();
