@@ -28,11 +28,11 @@
 bool TestPullManager::parseFrames(const char *frame, PullStateManager *psm, bool is_environment)
 {
 	OpenMsg msg(frame);
-	bool res = psm->moreFrameNeeded(msg, is_environment);
+	PullStateManager::CheckResult res = psm->moreFrameNeeded(msg, is_environment);
 	// assume the device sent the delayed status request
-	if (res)
-		psm->status_requested = res;
-	return res;
+	if (res.first)
+		psm->status_requested = res.first;
+	return res.first;
 }
 
 void TestPullManager::testSimpleLight_on()

@@ -162,11 +162,13 @@ PullMode PullStateManager::getPullMode()
  * When ignoring the frame, return false so that the calling code doesn't generate useless
  * traffic on the bus.
  */
-bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
+PullStateManager::CheckResult PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 {
 	FrameHandled handled = frame_checker ? frame_checker(msg) : FRAME_HANDLED;
 	if (handled == FRAME_NOT_HANDLED)
-		return false;
+		return qMakePair(false, handled);
+	if (mode != PULL_UNKNOWN && handled == FRAME_HANDLED)
+		return qMakePair(false, handled);
 
 	// PullStateManager will be used for automation and lighting only.
 	// I'll handle all 'what' combinations here, split to a different function or class when needed
@@ -194,13 +196,13 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 	}
 
 	if (ignore_frame)
-		return false;
+		return qMakePair(false, handled);
 
 	if (is_environment)
 	{
 		last_handled = handled;
 		if (status == INVALID_STATE || status != new_state)
-			return true;
+			return qMakePair(true, handled);
 	}
 	else
 	{
@@ -234,7 +236,7 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 		}
 	}
 
-	return false;
+	return qMakePair(false, handled);
 }
 
 void PullStateManager::setStatusRequested(bool status)
@@ -269,11 +271,15 @@ void PullDevice::manageFrame(OpenMsg &msg)
 	case ENVIRONMENT:
 		if (!state.isDetectionComplete())
 		{
+			PullStateManager::CheckResult res = state.moreFrameNeeded(msg, true);
 			// we need to delay the status request in order for the
 			// state of the device to stabilize
-			if (state.moreFrameNeeded(msg, true))
+			if (res.first)
 				delayed_request.start();
-			return;
+			// when the device is NOT_PULL and the frame is definitely handled, we fall through
+			// and let the parsing continue
+			if (state.getPullMode() != NOT_PULL || res.second != FRAME_HANDLED)
+				return;
 		}
 		else if (state.getPullMode() == PULL)
 			return;

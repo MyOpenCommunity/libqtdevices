@@ -60,6 +60,7 @@ private slots:
 	void receiveLightOnOffUnknown2();
 	void receiveLightOnOffPullExt();
 	void receiveLightOnOffNotPullExt();
+	void receiveLightOnOffNotPullAdvUnknown();
 	void receiveLightOnOffUnknownExt2();
 	void receiveLightOnOffUnknownExt();
 	void receiveFixedTiming();
