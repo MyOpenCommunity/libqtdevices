@@ -330,6 +330,28 @@ void TestDimmer::sendDimmerIncreaseLevel()
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
+void TestDimmer::receiveLightOnRequestLevel()
+{
+	DeviceTester t(dimmer, LightingDevice::DIM_DEVICE_ON);
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL);
+	QString global_on = QString("*1*1*0##");
+	QString global_off = QString("*1*0*0##");
+	QString light_on = QString("*1*1*%1##").arg(dimmer->where);
+	QString light_off = QString("*1*0*%1##").arg(dimmer->where);
+
+	t.check(global_on, true);
+	QCOMPARE(dimmer->delayed_request.isActive(), true);
+
+	t.check(global_off, false);
+	QCOMPARE(dimmer->delayed_request.isActive(), false);
+
+	t.check(light_on, true);
+	QCOMPARE(dimmer->delayed_request.isActive(), false);
+
+	t.check(light_off, false);
+	QCOMPARE(dimmer->delayed_request.isActive(), false);
+}
+
 void TestDimmer::receiveDimmerLevel()
 {
 	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL, DeviceTester::MULTIPLE_VALUES);

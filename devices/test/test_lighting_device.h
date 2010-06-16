@@ -93,6 +93,7 @@ private slots:
 	void sendDimmerIncreaseLevel();
 	void sendDimmerDecreaseLevel();
 
+	void receiveLightOnRequestLevel();
 	void receiveDimmerLevel();
 	void receiveDimmerLevel2();
 	void receiveDimmerProblem();
