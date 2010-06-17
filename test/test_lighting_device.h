@@ -79,7 +79,7 @@ private:
 	LightingDevice *dev;
 };
 
-class TestDimmer : public TestLightingDevice
+class TestDimmerDevice : public TestLightingDevice
 {
 Q_OBJECT
 protected:
@@ -97,6 +97,7 @@ private slots:
 
 	void receiveLightOnRequestLevel();
 	void receiveDimmerLevel();
+	void receiveDimmerLevel2();
 	void receiveDimmerProblem();
 
 	void receiveGlobalIncrementLevel();
@@ -114,7 +115,7 @@ private:
 	DimmerDevice *dimmer;
 };
 
-class TestDimmer100 : public TestDimmer
+class TestDimmer100Device : public TestDimmerDevice
 {
 Q_OBJECT
 protected:
