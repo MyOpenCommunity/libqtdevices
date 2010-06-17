@@ -41,6 +41,9 @@ class PageStack : public QObject
 		// either window or page are set, not both
 		Window *window;
 		Page *page;
+		// current page is set only when the page is set; it starts equal to page
+		// and is updated if the user navigates to a different page
+		Page *current_page;
 
 		// id of the section this page belongs to
 		int section_id;

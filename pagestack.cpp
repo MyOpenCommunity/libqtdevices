@@ -31,14 +31,14 @@
 PageStack::State::State(Window *_window)
 {
 	window = _window;
-	page = NULL;
+	current_page = page = NULL;
 	section_id = NO_SECTION;
 }
 
 PageStack::State::State(Page *_page)
 {
 	window = NULL;
-	page = _page;
+	current_page = page = _page;
 	if (page)
 		section_id = page->sectionId();
 }
@@ -108,9 +108,9 @@ void PageStack::addState(const State &state)
 
 void PageStack::showState(const State &state)
 {
-	if (state.page)
+	if (state.current_page)
 	{
-		state.page->showPage();
+		state.current_page->showPage();
 		// TODO this is wrong:
 		// - it breaks transition effects because the section icon will change
 		//   instantly at the end of the transition
@@ -128,18 +128,25 @@ void PageStack::currentPageChanged(Page *page)
 {
 	qDebug() << "PageStack::currentPageChanged on" << page;
 
-	// TODO review after implementing the selection of sources in sound diffusion;
-	//      the hard case happens when a page is in the stack and the user can navigate
-	//      to other pages using the "normal" navigation; it should be as easy as
-	//      always changing the page at the top of the stack, but needs some more thinking
+	int sid = page->sectionId();
 
-	for (int i = 0; i < states.size(); ++i)
-		if (states[i].page == page)
+	// this handles the case when the user can start from the page in the stack
+	// and navigate to other pages
+	for (int i = states.size() - 1; i >= 0; --i)
+	{
+		if (states[i].page)
+		{
+			states[i].current_page = page;
+			if (sid != NO_SECTION)
+				states[i].section_id = sid;
 			return;
+		}
+	}
 
-	states[0].page = page;
-	if (page->sectionId() != NO_SECTION)
-		states[0].section_id = page->sectionId();
+	// should be only triggered once at startup
+	states[0].current_page = page;
+	if (sid != NO_SECTION)
+		states[0].section_id = sid;
 }
 
 void PageStack::closed()
@@ -186,17 +193,16 @@ void PageStack::removeFromStack(QObject *obj)
 
 void PageStack::clear()
 {
-	while (states.size() > 1)
+	while (states.size() > 0)
 	{
 		State el = states.takeLast();
-		if (el.page)
-			el.page->cleanUp();
+		if (el.current_page)
+			el.current_page->cleanUp();
 	}
 
-	states[0].page->cleanUp();
 	// restoring the stack to a known sane state is important if the next page
 	// pushes itself in the page stack
-	states[0].page = bt_global::btmain->homePage();
+	states.push_back(State(bt_global::btmain->homePage()));
 	states[0].section_id = NO_SECTION;
 }
 
