@@ -173,7 +173,6 @@ RingtonesPage::RingtonesPage(const QDomNode &config_node) : ListPage(config_node
 
 void RingtonesPage::handleClose()
 {
-	bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
 	bt_global::ringtones->stopRingtone();
 }
 
@@ -184,7 +183,6 @@ void RingtonesPage::cleanUp()
 
 void RingtonesPage::showPage()
 {
-	bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
 	Page::showPage();
 }
 

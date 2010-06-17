@@ -252,13 +252,17 @@ Q_OBJECT
 public:
 	BannRingtone(const QString &descr, int id, Ringtones::Type type, int ring);
 
-private:
-	int current_ring, item_id;
-	Ringtones::Type ring_type;
-
 private slots:
 	void plusClicked();
 	void minusClicked();
+	void playRingtone();
+	void ringtoneFinished();
+
+private:
+	int current_ring, item_id;
+	Ringtones::Type ring_type;
+	bool is_playing;
+
 };
 
 /**
