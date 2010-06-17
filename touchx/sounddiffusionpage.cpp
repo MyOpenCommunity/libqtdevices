@@ -643,6 +643,10 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			{
 				bool sounddiff_active = bt_global::audio_states->isSoundDiffusionActive();
 
+				// assign it here so the audioStateChanged() notification sees the correct state
+				state = new_state;
+				bt_global::audio_states->setLocalAmplifierStatus(new_state);
+
 				// enter the sound diffusion state if it isn't already on the stack
 				if (new_state && !sounddiff_active)
 					if (!bt_global::audio_states->toState(AudioStates::PLAY_DIFSON))
@@ -650,14 +654,14 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 						qDebug() << "Refusing to turn on the local amplifier";
 						return;
 					}
-				bt_global::audio_states->setLocalAmplifierStatus(new_state);
 
 				// exit the sound diffusion state if neither source nor amplifier is active
 				if (sounddiff_active && !bt_global::audio_states->isSoundDiffusionActive())
 					bt_global::audio_states->removeState(AudioStates::PLAY_DIFSON);
 			}
 
-			state = new_state;
+			// in some cases this and audioStateChanged() will send the same frames twice; this is OK
+			// since they are de-duplicated by the openclient
 			dev->updateStatus(state);
 			if (state)
 				dev->updateVolume(level);
