@@ -126,8 +126,9 @@ namespace
 
 	QList<BtTime> getTimes(const QDomNode &item)
 	{
+		QDomNode times_node = getElement(item, "times");
 		QList<BtTime> times;
-		foreach (const QDomNode &time, getChildren(item, "time"))
+		foreach (const QDomNode &time, getChildren(times_node, "time"))
 		{
 			QString s = time.toElement().text();
 			QStringList sl = s.split("*");
