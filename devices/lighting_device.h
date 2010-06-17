@@ -99,7 +99,7 @@ protected:
 	virtual void delayedStatusRequest();
 
 protected:
-	QTimer delayed_request;
+	QTimer delayed_level_request;
 	int level;
 	bool status;
 };

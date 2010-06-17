@@ -225,9 +225,9 @@ DimmerDevice::DimmerDevice(QString where, PullMode pull, int openserver_id, int 
 	 level = 0;
 	 status = false;
 
-	 delayed_request.setSingleShot(true);
-	 delayed_request.setInterval(pull_delay);
-	 connect(&delayed_request, SIGNAL(timeout()), SLOT(delayedStatusRequest()));
+	 delayed_level_request.setSingleShot(true);
+	 delayed_level_request.setInterval(pull_delay);
+	 connect(&delayed_level_request, SIGNAL(timeout()), SLOT(delayedStatusRequest()));
 }
 
 void DimmerDevice::delayedStatusRequest()
@@ -288,9 +288,9 @@ bool DimmerDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		 // when a dimmer is turned on by a global/environment command, and we do not know its level, we
 		 // need to issue a status request in order to get the level
 		 if (status && level == 0 && checkAddressIsForMe(QString::fromStdString(msg.whereFull()), where) != P2P)
-			 delayed_request.start();
+			 delayed_level_request.start();
 		 else
-			 delayed_request.stop();
+			 delayed_level_request.stop();
 	}
 
 	int what = msg.what();
