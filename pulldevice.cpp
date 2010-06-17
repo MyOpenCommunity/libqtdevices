@@ -167,7 +167,7 @@ PullStateManager::CheckResult PullStateManager::moreFrameNeeded(OpenMsg &msg, bo
 	FrameHandled handled = frame_checker ? frame_checker(msg) : FRAME_HANDLED;
 	if (handled == FRAME_NOT_HANDLED)
 		return qMakePair(false, handled);
-	if (mode != PULL_UNKNOWN && handled == FRAME_HANDLED)
+	if (mode != PULL_UNKNOWN && handled == FRAME_HANDLED && is_environment)
 		return qMakePair(false, handled);
 
 	// PullStateManager will be used for automation and lighting only.

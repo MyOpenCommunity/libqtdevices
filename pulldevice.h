@@ -123,6 +123,7 @@ private:
 class PullDevice : public device
 {
 friend class TestLightingDevice;
+friend class TestDimmerDevice;
 Q_OBJECT
 public:
 	// TODO: hack to avoid too many changes in device.h, REMOVE when new device parsing is ok.
