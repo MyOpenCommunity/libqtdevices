@@ -417,10 +417,20 @@ void MediaPlayer::infoReceived()
 	}
 }
 
+
 SoundPlayer::SoundPlayer()
 {
 	process = new QProcess(this);
 	connect(process, SIGNAL(error(QProcess::ProcessError)), SLOT(error()));
+	connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(processFinished()));
+}
+
+void SoundPlayer::processFinished()
+{
+	if (!to_play.isNull())
+		start();
+	else
+		emit soundFinished();
 }
 
 void SoundPlayer::play(const QString &path)
@@ -429,17 +439,10 @@ void SoundPlayer::play(const QString &path)
 	if (process->state() != QProcess::NotRunning)
 	{
 		// We want to wait the end of the running process before starting the new one
-		connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(delayedStart()));
 		process->terminate();
 	}
 	else
 		start();
-}
-
-void SoundPlayer::delayedStart()
-{
-	disconnect(process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(delayedStart()));
-	start();
 }
 
 void SoundPlayer::start()

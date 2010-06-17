@@ -61,6 +61,7 @@ void RingtonesManager::playRingtone(Ringtones::Type t)
 
 	qDebug() << "RingtonesManager::playRingtone:" << ringtone_to_file[type_to_ringtone[t]]
 		<< "for type:" << t;
+	connect(bt_global::sound, SIGNAL(soundFinished()), this, SLOT(soundFinished()));
 	bt_global::sound->play(ringtone_to_file[type_to_ringtone[t]]);
 }
 
@@ -69,7 +70,15 @@ void RingtonesManager::playRingtone(int ring)
 	Q_ASSERT_X(ringtone_to_file.contains(ring), "RingtonesManager::playRingtone(int)",
 		qPrintable(QString("Given ringtone %1 is outside valid range.").arg(ring)));
 
+	qDebug() << "RingtonesManager::playRingtone:" << ringtone_to_file[ring];
+	connect(bt_global::sound, SIGNAL(soundFinished()), this, SLOT(soundFinished()));
 	bt_global::sound->play(ringtone_to_file[ring]);
+}
+
+void RingtonesManager::soundFinished()
+{
+	disconnect(bt_global::sound, SIGNAL(soundFinished()), this, SLOT(soundFinished()));
+	emit ringtoneFinished();
 }
 
 void RingtonesManager::stopRingtone()
