@@ -126,7 +126,11 @@ namespace
 
 	QList<BtTime> getTimes(const QDomNode &item)
 	{
+#ifdef CONFIG_BTOUCH
+		QDomNode times_node = time;
+#else
 		QDomNode times_node = getElement(item, "times");
+#endif
 		QList<BtTime> times;
 		foreach (const QDomNode &time, getChildren(times_node, "time"))
 		{
