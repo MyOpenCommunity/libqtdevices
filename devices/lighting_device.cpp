@@ -440,12 +440,7 @@ bool Dimmer100Device::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	// the level adjustment is already performed in DimmerDevice::parseFrame, we only
 	// need to send the status update
 	if ((what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 2)
-	{
-		if (status)
-			values_list[DIM_DIMMER100_LEVEL] = level;
-		else
-			values_list[DIM_DIMMER100_LEVEL] = level;
-	}
+		values_list[DIM_DIMMER100_LEVEL] = level;
 
 	return !values_list.isEmpty();
 }
