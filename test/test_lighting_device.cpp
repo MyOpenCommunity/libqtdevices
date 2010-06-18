@@ -621,7 +621,7 @@ void TestDimmer100Device::receiveDimmer100Status()
 
 void TestDimmer100Device::receiveDimmer100StatusLevel0()
 {
-	DeviceTester t(dimmer100, LightingDevice::DIM_DEVICE_ON);
+	DeviceTester t(dimmer100, LightingDevice::DIM_DEVICE_ON, DeviceTester::MULTIPLE_VALUES);
 
 	QString frame = QString("*#1*%1*1*%2*%3##").arg(dimmer100->where).arg(100).arg(50);
 	t.check(frame, false);

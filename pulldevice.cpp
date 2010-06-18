@@ -150,7 +150,10 @@ PullStateManager::PullStateManager(PullMode m, AdvancedMode adv, FrameChecker ch
 	status_requested = false;
 	frame_checker = checker;
 	last_handled = FRAME_NOT_HANDLED;
-	advanced = m == PULL ? PULL_NOT_ADVANCED : adv;
+	if (m == PULL && adv == PULL_ADVANCED_UNKNOWN)
+		advanced = PULL_NOT_ADVANCED;
+	else
+		advanced = adv;
 }
 
 PullMode PullStateManager::getPullMode()
