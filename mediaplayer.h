@@ -147,9 +147,12 @@ public:
 	void play(const QString &path);
 	void stop();
 
+signals:
+	void soundFinished();
+
 private slots:
-	void delayedStart();
 	void error();
+	void processFinished();
 
 private:
 	QProcess *process;

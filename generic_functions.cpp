@@ -436,6 +436,6 @@ bool smartExecute(const QString &program, QStringList args)
 bool silentExecute(const QString &program, QStringList args)
 {
 	args << "> /dev/null" << "2>&1";
-	smartExecute(program, args);
+	return smartExecute(program, args);
 }
 

@@ -120,7 +120,7 @@ void AdjustDimmer::setLevel(int level)
 Dimmer::Dimmer(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode) :
 	AdjustDimmer(0)
 {
-	light_value = 20;
+	light_value = 5;
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, descr);

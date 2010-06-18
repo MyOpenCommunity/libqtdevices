@@ -83,7 +83,7 @@ private:
 
 class DimmerDevice : public LightingDevice
 {
-friend class TestDimmer;
+friend class TestDimmerDevice;
 Q_OBJECT
 public:
 	DimmerDevice(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0, int pull_delay = PULL_DELAY_DIMMER10,
@@ -99,7 +99,7 @@ protected:
 	virtual void delayedStatusRequest();
 
 protected:
-	QTimer delayed_request;
+	QTimer delayed_level_request;
 	int level;
 	bool status;
 };
@@ -107,7 +107,7 @@ protected:
 
 class Dimmer100Device : public DimmerDevice
 {
-friend class TestDimmer100;
+friend class TestDimmer100Device;
 Q_OBJECT
 public:
 	Dimmer100Device(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0, int pull_delay = PULL_DELAY_DIMMER100,

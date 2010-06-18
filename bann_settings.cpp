@@ -30,6 +30,7 @@
 #include "state_button.h"
 #include "fontmanager.h"
 #include "skinmanager.h" // bt_global::skin
+#include "audiostatemachine.h" // bt_global::audio_states
 #if !defined(BT_HARDWARE_X11)
 #include "calibration.h"
 #endif
@@ -423,22 +424,45 @@ BannRingtone::BannRingtone(const QString &descr, int id, Ringtones::Type type, i
 	item_id = id;
 	// initialize the global object bt_global::ringtones
 	bt_global::ringtones->setRingtone(ring_type, item_id, ring);
+	is_playing = false;
+}
+
+void BannRingtone::ringtoneFinished()
+{
+	if (is_playing)
+	{
+		is_playing = false;
+		bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
+		disconnect(bt_global::ringtones, SIGNAL(ringtoneFinished()), this, SLOT(ringtoneFinished()));
+	}
+}
+
+void BannRingtone::playRingtone()
+{
+	if (!is_playing)
+	{
+		is_playing = true;
+		bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
+		connect(bt_global::ringtones, SIGNAL(ringtoneFinished()), this, SLOT(ringtoneFinished()));
+	}
+	bt_global::ringtones->playRingtone(current_ring);
+	bt_global::ringtones->setRingtone(ring_type, item_id, current_ring);
 }
 
 void BannRingtone::minusClicked()
 {
 	if (--current_ring <= 0)
 		current_ring = bt_global::ringtones->getRingtonesNumber();
-	bt_global::ringtones->playRingtone(current_ring);
-	bt_global::ringtones->setRingtone(ring_type, item_id, current_ring);
+
+	playRingtone();
 }
 
 void BannRingtone::plusClicked()
 {
 	if (++current_ring > bt_global::ringtones->getRingtonesNumber())
 		current_ring %= bt_global::ringtones->getRingtonesNumber();
-	bt_global::ringtones->playRingtone(current_ring);
-	bt_global::ringtones->setRingtone(ring_type, item_id, current_ring);
+
+	playRingtone();
 }
 
 

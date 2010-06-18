@@ -342,7 +342,7 @@ void BtMain::loadGlobalConfig()
 		if (!address.isNull())
 			(*config)[PI_ADDRESS] = dev + address;
 
-		(*config)[PI_MODE] = getTextChild(vde_node, "mode").toInt();
+		(*config)[PI_MODE] = getTextChild(vde_node, "mode");
 	}
 	else
 		(*config)[PI_MODE] = QString();
