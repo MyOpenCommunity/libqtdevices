@@ -134,7 +134,7 @@ DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where
 	AdjustDimmer(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	light_value = 20;
+	light_value = 5;
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, getTextChild(config_node, "descr"));
