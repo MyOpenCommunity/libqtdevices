@@ -147,6 +147,8 @@ private slots:
 	void receiveGlobalIncrementLevel100();
 	void receiveGlobalDecrementLevel100();
 
+	void testRequestLevel100();
+
 	// disable some tests from superclasses
 	void receiveGlobalDimmer100OnOffNonPullAdvanced();
 	void receiveGlobalDimmer100SetlevelNonPullAdvanced();
