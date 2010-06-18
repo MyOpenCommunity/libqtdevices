@@ -100,6 +100,9 @@ private slots:
 	void receiveDimmerLevel2();
 	void receiveDimmerProblem();
 
+	void receiveDimmer100WriteLevel();
+	void receiveDimmer100Level();
+
 	void receiveGlobalIncrementLevel();
 	void receiveGlobalDecrementLevel();
 
