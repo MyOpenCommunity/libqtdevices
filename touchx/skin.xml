@@ -304,9 +304,9 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/supervisioneimpianto.png</img_top_navigation_button>
 	</item>
 	<item>
-		<!-- Supervision link in load management -->
+		<!-- Load control new link in energy management -->
 		<cid>15003</cid>
-		<img_link_icon>energia/supervisioneimpianto.png</img_link_icon>
+		<img_link_icon>energia/apploadmanagement.png</img_link_icon>
 	</item>
 	<item>
 		<!-- Energy data link in homepage -->
@@ -315,9 +315,9 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/energydata.png</img_top_navigation_button>
 	</item>
 	<item>
-		<!-- Energy data link in energy management -->
+		<!-- Supervision system link in Energy management -->
 		<cid>15001</cid>
-		<img_link_icon>energia/energydata.png</img_link_icon>
+		<img_link_icon>energia/supervisioneimpianto.png</img_link_icon>
 	</item>
 	<item>
 		<!-- Energy management link -->
@@ -332,9 +332,9 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/carichi.png</img_top_navigation_button>
 	</item>
 	<item>
-		<!-- Load management link in energy management -->
+		<!-- Energy data link in energy management -->
 		<cid>15002</cid>
-		<img_link_icon>home/apploadmanagement.png</img_link_icon>
+		<img_link_icon>home/energydata.png</img_link_icon>
 	</item>
 	<item>
 		<!-- thermal regulation -->

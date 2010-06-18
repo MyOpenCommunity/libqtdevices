@@ -225,9 +225,9 @@ DimmerDevice::DimmerDevice(QString where, PullMode pull, int openserver_id, int 
 	 level = 0;
 	 status = false;
 
-	 delayed_request.setSingleShot(true);
-	 delayed_request.setInterval(pull_delay);
-	 connect(&delayed_request, SIGNAL(timeout()), SLOT(delayedStatusRequest()));
+	 delayed_level_request.setSingleShot(true);
+	 delayed_level_request.setInterval(pull_delay);
+	 connect(&delayed_level_request, SIGNAL(timeout()), SLOT(delayedStatusRequest()));
 }
 
 void DimmerDevice::delayedStatusRequest()
@@ -288,9 +288,9 @@ bool DimmerDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		 // when a dimmer is turned on by a global/environment command, and we do not know its level, we
 		 // need to issue a status request in order to get the level
 		 if (status && level == 0 && checkAddressIsForMe(QString::fromStdString(msg.whereFull()), where) != P2P)
-			 delayed_request.start();
+			 delayed_level_request.start();
 		 else
-			 delayed_request.stop();
+			 delayed_level_request.stop();
 	}
 
 	int what = msg.what();
@@ -352,11 +352,25 @@ bool DimmerDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	}
 
 	// dimmer 100 set status, for advanced dimmers
-	if (what == DIMMER100_STATUS && (msg.IsMeasureFrame() || msg.IsWriteFrame()) && isAdvanced())
+	if (what == DIMMER100_STATUS && (isDimensionFrame(msg) || isWriteDimensionFrame(msg)) && isAdvanced())
 	{
-		level = msg.whatArgN(0) - 100;
+		Q_ASSERT_X(msg.whatArgCnt() == 2, "DimmerDevice::parseFrame",
+			"Dimmer 100 status frame must have 2 what args");
 
-		values_list[DIM_DIMMER_LEVEL] = dimmer100LevelTo10(level);
+		int new_level = msg.whatArgN(0) - 100;
+
+		// if level == 0 device is off
+		if (new_level == 0)
+		{
+			values_list[DIM_DEVICE_ON] = status = false;
+		}
+		else
+		{
+			level = new_level;
+
+			values_list[DIM_DEVICE_ON] = status = true;
+			values_list[DIM_DIMMER_LEVEL] = dimmer100LevelTo10(level);
+		}
 	}
 
 	return !values_list.isEmpty();
@@ -417,22 +431,10 @@ bool Dimmer100Device::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	{
 		Q_ASSERT_X(msg.whatArgCnt() == 2, "Dimmer100Device::parseFrame",
 			"Dimmer 100 status frame must have 2 what args");
-		// convert the value in 0-100 range
-		int new_level = msg.whatArgN(0) - 100;
 
-		// if level == 0 device is off
-		if (new_level == 0)
-		{
-			status = false;
-			values_list[DIM_DEVICE_ON] = false;
-		}
-		else
-		{
-			level = new_level;
-
-			values_list[DIM_DIMMER100_LEVEL] = new_level;
+		// status/level handling performed in DimmerDevice
+		if (status)
 			values_list[DIM_DIMMER100_SPEED] = msg.whatArgN(1);
-		}
 	}
 
 	// the level adjustment is already performed in DimmerDevice::parseFrame, we only
