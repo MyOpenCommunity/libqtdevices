@@ -41,7 +41,7 @@ protected:
 	void setParams(QString w, PullMode m, AdvancedMode a);
 	void setParams(QString w, PullMode m);
 	virtual QString getRequestStatusFrame();
-	void sendPullRequestIfNeeded();
+	virtual void sendPullRequestIfNeeded();
 
 private slots:
 	void init();
@@ -86,6 +86,8 @@ protected:
 	void initDimmer(DimmerDevice *d = 0);
 	void cleanupDimmer();
 
+	virtual void sendPullRequestIfNeeded();
+
 private slots:
 	void init();
 	void cleanup();
@@ -109,6 +111,7 @@ private slots:
 	void receiveGlobalDimmer100IncDecPull();
 
 	void testAdvancedDetection();
+	void testRequestLevel();
 
 private:
 	bool cleanup_required;
