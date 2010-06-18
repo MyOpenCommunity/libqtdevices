@@ -101,7 +101,8 @@ void AdjustDimmer::setState(States new_state)
 	switch (new_state)
 	{
 	case ON:
-		setOnIcons();
+		if (current_level != 0)
+			setOnIcons();
 		break;
 	case OFF:
 		setCenterLeftIcon(getBostikName(center_left, "sxl0"));
@@ -124,7 +125,7 @@ void AdjustDimmer::setOnIcons()
 void AdjustDimmer::setLevel(int level)
 {
 	current_level = level;
-	if (current_state == ON)
+	if (current_state == ON && current_level != 0)
 		setOnIcons();
 }
 
@@ -134,7 +135,7 @@ DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where
 	AdjustDimmer(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	light_value = 5;
+	light_value = 0;
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, getTextChild(config_node, "descr"));
@@ -254,7 +255,7 @@ Dimmer100New::Dimmer100New(QWidget *parent, const QDomNode &config_node, PullMod
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
-	light_value = 5;
+	light_value = 0;
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, getTextChild(config_node, "descr"));
