@@ -88,7 +88,8 @@ void AdjustDimmer::setState(States new_state)
 	switch (new_state)
 	{
 	case ON:
-		setOnIcons();
+		if (current_level != 0)
+			setOnIcons();
 		break;
 	case OFF:
 		setCenterLeftIcon(getBostikName(center_left, "sxl0"));
@@ -111,7 +112,7 @@ void AdjustDimmer::setOnIcons()
 void AdjustDimmer::setLevel(int level)
 {
 	current_level = level;
-	if (current_state == ON)
+	if (current_state == ON && current_level != 0)
 		setOnIcons();
 }
 
@@ -120,7 +121,7 @@ void AdjustDimmer::setLevel(int level)
 Dimmer::Dimmer(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode) :
 	AdjustDimmer(0)
 {
-	light_value = 5;
+	light_value = 0;
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, descr);
@@ -230,7 +231,7 @@ enum
 Dimmer100::Dimmer100(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode, int _start_speed, int _stop_speed) :
 	AdjustDimmer(0)
 {
-	light_value = 5;
+	light_value = 0;
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, descr);
