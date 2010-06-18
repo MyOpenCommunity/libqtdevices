@@ -364,9 +364,23 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 	// dimmer 100 set status, for advanced dimmers
 	if (what == DIMMER100_STATUS && (msg.IsMeasureFrame() || msg.IsWriteFrame()) && isAdvanced())
 	{
-		level = msg.whatArgN(0) - 100;
+		Q_ASSERT_X(msg.whatArgCnt() == 2, "DimmerDevice::parseFrame",
+			"Dimmer 100 status frame must have 2 what args");
 
-		(*sl)[DIM_DIMMER_LEVEL] = getDimmer10Level();
+		int new_level = msg.whatArgN(0) - 100;
+
+		// if level == 0 device is off
+		if (new_level == 0)
+		{
+			(*sl)[DIM_DEVICE_ON] = status = false;
+		}
+		else
+		{
+			level = new_level;
+
+			(*sl)[DIM_DEVICE_ON] = status = true;
+			(*sl)[DIM_DIMMER_LEVEL] = getDimmer10Level();
+		}
 	}
 }
 
@@ -426,26 +440,10 @@ void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
 
 		Q_ASSERT_X(msg.whatArgCnt() == 2, "Dimmer100Device::parseFrame",
 			"Dimmer 100 status frame must have 2 what args");
-		// convert the value in 0-100 range
-		int new_level = msg.whatArgN(0) - 100;
 
-		// if level == 0 device is off
-		if (new_level == 0)
-		{
-			status = false;
-			v.setValue(false);
-			(*sl)[DIM_DEVICE_ON] = v;
-		}
-		else
-		{
-			level = new_level;
-
-			v.setValue(new_level);
-			(*sl)[DIM_DIMMER100_LEVEL] = v;
-
-			v.setValue(msg.whatArgN(1));
-			(*sl)[DIM_DIMMER100_SPEED] = v;
-		}
+		// status/level handling performed in DimmerDevice
+		if (status)
+			(*sl)[DIM_DIMMER100_SPEED] = msg.whatArgN(1);
 	}
 
 	// the level adjustment is already performed in DimmerDevice::parseFrame, we only

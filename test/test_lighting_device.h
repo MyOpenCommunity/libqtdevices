@@ -87,6 +87,7 @@ protected:
 	void cleanupDimmer();
 	virtual void checkLevel();
 	virtual int convertLevel(int level);
+	virtual int convertLevel100(int level);
 
 	virtual void sendPullRequestIfNeeded();
 
@@ -101,6 +102,9 @@ private slots:
 	void receiveDimmerLevel();
 	void receiveDimmerLevel2();
 	void receiveDimmerProblem();
+
+	void receiveDimmer100WriteLevel();
+	void receiveDimmer100Level();
 
 	void receiveGlobalIncrementLevel();
 	void receiveGlobalDecrementLevel();
@@ -127,6 +131,7 @@ protected:
 	virtual void checkLevel();
 	virtual QString getRequestStatusFrame();
 	virtual int convertLevel(int level);
+	virtual int convertLevel100(int level);
 
 private slots:
 	void init();

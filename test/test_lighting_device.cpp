@@ -303,6 +303,11 @@ int TestDimmerDevice::convertLevel(int level)
 	return level;
 }
 
+int TestDimmerDevice::convertLevel100(int level)
+{
+	return dimmer100LevelTo10(level) * 10;
+}
+
 void TestDimmerDevice::sendPullRequestIfNeeded()
 {
 	TestLightingDevice::sendPullRequestIfNeeded();
@@ -399,6 +404,32 @@ void TestDimmerDevice::receiveDimmerProblem()
 	t.check(frame, true);
 }
 
+void TestDimmerDevice::receiveDimmer100WriteLevel()
+{
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_ADVANCED);
+	DeviceTester ts(dimmer, LightingDevice::DIM_DEVICE_ON, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tl(dimmer, LightingDevice::DIM_DIMMER_LEVEL, DeviceTester::MULTIPLE_VALUES);
+	QString frame_level_0 = QString("*#1*%1*#1*100*50##").arg(dimmer->where);
+	QString frame_level_5 = QString("*#1*%1*#1*134*50##").arg(dimmer->where);
+
+	ts.check(frame_level_0, false);
+	ts.check(frame_level_5, true);
+	tl.check(frame_level_5, convertLevel100(34));
+}
+
+void TestDimmerDevice::receiveDimmer100Level()
+{
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_ADVANCED);
+	DeviceTester ts(dimmer, LightingDevice::DIM_DEVICE_ON, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tl(dimmer, LightingDevice::DIM_DIMMER_LEVEL, DeviceTester::MULTIPLE_VALUES);
+	QString frame_level_0 = QString("*#1*%1*1*100*50##").arg(dimmer->where);
+	QString frame_level_5 = QString("*#1*%1*1*134*50##").arg(dimmer->where);
+
+	ts.check(frame_level_0, false);
+	ts.check(frame_level_5, true);
+	tl.check(frame_level_5, convertLevel100(34));
+}
+
 void TestDimmerDevice::receiveGlobalIncrementLevel()
 {
 	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL, DeviceTester::MULTIPLE_VALUES);
@@ -444,7 +475,7 @@ void TestDimmerDevice::receiveGlobalDimmer100SetlevelNonPullAdvanced()
 	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL, DeviceTester::MULTIPLE_VALUES);
 	QString set_level = "*#1*0*1*134*50##";
 
-	t.check(set_level, 50);
+	t.check(set_level, convertLevel(50));
 }
 
 void TestDimmerDevice::receiveGlobalDimmer100SetlevelPull()
@@ -583,6 +614,11 @@ void TestDimmer100Device::cleanup()
 int TestDimmer100Device::convertLevel(int level)
 {
 	return dimmerLevelTo100(level / 10);
+}
+
+int TestDimmer100Device::convertLevel100(int level)
+{
+	return level;
 }
 
 void TestDimmer100Device::sendDimmer100DecreaseLevel()
