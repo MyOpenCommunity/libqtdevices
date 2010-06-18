@@ -541,17 +541,12 @@ bool DeviceConditionDimming::parseValues(const DeviceValues &values_list)
 	bool managed = false;
 	while (it != values_list.constEnd())
 	{
-		int level = 0;
 		if ((it.key() == LightingDevice::DIM_DEVICE_ON) || (it.key() == LightingDevice::DIM_DIMMER_LEVEL))
-			level = it.value().toInt();
-		else
 		{
-			++it;
-			continue;
+			int level = it.value().toInt();
+			managed = true;
+			satisfied = (level >= trig_min && level <= trig_max);
 		}
-
-		managed = true;
-		satisfied = (level >= trig_min && level <= trig_max);
 		++it;
 	}
 	return managed;
