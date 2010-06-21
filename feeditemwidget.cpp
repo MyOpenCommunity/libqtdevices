@@ -92,6 +92,7 @@ void FeedItemWidget::removeLinks(QString &html)
 
 void FeedItemWidget::setFeedInfo(const FeedItemInfo &feed_item)
 {
+	text_area->clear();
 	text_area->insertHtml("<h2>" + feed_item.title + "</h2><br>");
 	text_area->insertHtml("<h2>" + feed_item.last_updated + "</h2><br>");
 	QString descr = feed_item.description;
