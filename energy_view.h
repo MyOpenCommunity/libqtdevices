@@ -109,7 +109,6 @@ public:
 	EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id,
 		   int currency_decimals, EnergyTable *_table, EnergyGraph *_graph);
 	~EnergyView();
-	virtual void inizializza();
 	void systemTimeChanged();
 
 public slots:
@@ -124,6 +123,7 @@ private:
 
 	QWidget *buildBannerWidget();
 	GraphData *saveGraphInCache(const QVariant &v, EnergyDevice::GraphType t);
+	void updateGraphData(GraphData *gd);
 	QMap<int, double> convertGraphData(GraphData *gd);
 	void setBannerPage(int status, const QDate &selection_date);
 	QString dateToKey(const QDate &date, EnergyDevice::GraphType t);
@@ -163,6 +163,7 @@ private:
 	int currency_decimals;
 
 private slots:
+	void screenSaverStarted(Page *prev_page);
 	void toggleCurrency();
 	void changeTimePeriod(int, QDate);
 	void showGraph(int graph_type);

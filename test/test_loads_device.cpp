@@ -39,9 +39,9 @@ void TestLoadsDevice::sendForceOff()
 void TestLoadsDevice::sendRequestCurrent()
 {
 	dev->requestCurrent();
-	client_request->flush();
+	client_command->flush();
 
-	QCOMPARE(server->frameRequest(), QString("*#18*%1*113##").arg(dev->where));
+	QCOMPARE(server->frameCommand(), QString("*#18*%1*113##").arg(dev->where));
 }
 
 void TestLoadsDevice::sendRequestStatus()

@@ -34,6 +34,7 @@
 #include "energy_rates.h"
 #include "bann_energy.h"
 #include "bann2_buttons.h" // Bann2Buttons
+#include "btmain.h"
 
 #include <QDebug>
 #include <QLabel>
@@ -376,6 +377,9 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	// this must be after creating bannNavigazione, otherwise segfault
 	showBannerWidget();
+
+	// to switch back to the graph view
+	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)), SLOT(screenSaverStarted(Page*)));
 }
 
 EnergyView::~EnergyView()
@@ -398,14 +402,6 @@ void EnergyView::timerEvent(QTimerEvent *e)
 		else
 			Q_ASSERT_X(false, "EnergyView::timerEvent", qPrintable(QString::number(e->timerId())));
 	}
-}
-
-void EnergyView::inizializza()
-{
-	// Ask for the data showed in the default period.
-	dev->requestCurrent();
-	dev->requestCumulativeDay(QDate::currentDate());
-	dev->requestCumulativeDayGraph(QDate::currentDate());
 }
 
 QString EnergyView::dateToKey(const QDate &date, EnergyDevice::GraphType t)
@@ -464,6 +460,15 @@ void EnergyView::showPageFromTable()
 	Page::showPage();
 }
 
+void EnergyView::updateGraphData(GraphData *d)
+{
+	QMap<int, double> g = convertGraphData(d);
+	graph->setData(g);
+	table->setData(g);
+
+	table->setNumDecimal(EnergyInterface::isCurrencyView() ? currency_decimals : 3);
+}
+
 QMap<int, double> EnergyView::convertGraphData(GraphData *gd)
 {
 	// TODO: remove the theorical bottleneck using a QMutableMapIterator instead of
@@ -520,8 +525,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 		case EnergyDevice::DIM_CUMULATIVE_YEAR:
 		{
 			EnergyValue val = it.value().value<EnergyValue>();
-			if (current_date.year() == val.first.year())
-				cumulative_year_value = val.second;
+			cumulative_year_value = val.second;
 		}
 			break;
 		case EnergyDevice::DIM_MONTLY_AVERAGE:
@@ -542,11 +546,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			const QDate &date = d->date;
 			if (current_graph == EnergyDevice::DAILY_AVERAGE && date.year() == current_date.year() &&
 				date.month() == current_date.month() && isGraphOurs())
-			{
-				QMap<int, double> g = convertGraphData(d);
-				graph->setData(g);
-				table->setData(g);
-			}
+				updateGraphData(d);
 			break;
 		}
 		case EnergyDevice::DIM_DAY_GRAPH:
@@ -554,11 +554,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_DAY);
 			if (current_graph == EnergyDevice::CUMULATIVE_DAY && d->date == current_date &&
 			    isGraphOurs())
-			{
-				QMap<int, double> g = convertGraphData(d);
-				graph->setData(g);
-				table->setData(g);
-			}
+				updateGraphData(d);
 			break;
 		}
 		case EnergyDevice::DIM_CUMULATIVE_MONTH_GRAPH:
@@ -566,11 +562,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_MONTH);
 			if (current_graph == EnergyDevice::CUMULATIVE_MONTH && d->date.month() == current_date.month()
 				&& d->date.year() == current_date.year() && isGraphOurs())
-			{
-				QMap<int, double> g = convertGraphData(d);
-				graph->setData(g);
-				table->setData(g);
-			}
+				updateGraphData(d);
 			break;
 		}
 		case EnergyDevice::DIM_CUMULATIVE_YEAR_GRAPH:
@@ -578,17 +570,25 @@ void EnergyView::status_changed(const StatusList &status_list)
 			// TODO: see how to save the year graph...
 			GraphData *d = saveGraphInCache(it.value(), EnergyDevice::CUMULATIVE_YEAR);
 			if (current_graph == EnergyDevice::CUMULATIVE_YEAR && isGraphOurs())
-			{
-				QMap<int, double> g = convertGraphData(d);
-				graph->setData(g);
-				table->setData(g);
-			}
+				updateGraphData(d);
 			break;
 		}
 		}
 		++it;
 	}
 	updateBanners();
+}
+
+void EnergyView::screenSaverStarted(Page *prev_page)
+{
+	// we do not check prev_page, because unrollPages changes it
+	if (current_widget == BANNER_WIDGET)
+		return;
+
+	current_widget = BANNER_WIDGET;
+	bannNavigazione->hideCdxButton();
+	time_period->showCycleButton();
+	widget_container->setCurrentIndex(current_widget);
 }
 
 void EnergyView::backClick()
@@ -646,16 +646,12 @@ void EnergyView::updateCurrentGraph()
 #ifdef TEST_ENERGY_GRAPH
 	graph->generateRandomValues();
 	table->setData(graph->graph_data);
+	table->setNumDecimal(EnergyInterface::isCurrencyView() ? currency_decimals : 3);
 	return;
 #endif
 	QString key = dateToKey(current_date, current_graph);
 	if (graph_data_cache.contains(current_graph) && graph_data_cache[current_graph]->contains(key))
-	{
-		GraphData *d = graph_data_cache[current_graph]->object(key);
-		QMap<int, double> g = convertGraphData(d);
-		graph->setData(g);
-		table->setData(g);
-	}
+		updateGraphData(graph_data_cache[current_graph]->object(key));
 }
 
 void EnergyView::showGraph(int graph_type)
@@ -767,7 +763,10 @@ void EnergyView::changeTimePeriod(int status, QDate selection_date)
 	updateBanners();
 
 	// we request the status updates here because we want these to happen after
-	// the sutomatic status update start/stop frames sent when the "current" banner is shown
+	// the sutomatic status update start/stop frames sent when the "current" banner is shown;
+	// we also need to force the stop frames to be sent before the other frames
+	dev->flushCurrentUpdateStop();
+
 	switch (status)
 	{
 	case TimePeriodSelection::DAY:
@@ -809,7 +808,6 @@ void EnergyView::setBannerPage(int status, const QDate &selection_date)
 void EnergyView::toggleCurrency()
 {
 	EnergyInterface::toggleCurrencyView();
-	table->setNumDecimal(3);
 	updateBanners();
 	updateCurrentGraph();
 }

@@ -330,7 +330,7 @@ void EnergyInterface::loadItems(const QDomNode &config_node, NavigationBar *nav_
 	bool show_currency_button = false;
 	// IMPORTANT: the table instance is shared between all energy interfaces: any
 	// signals must be disconnected and reconnected when the interface page is shown
-	EnergyTable *table = new EnergyTable(3);
+	EnergyTable *table = new EnergyTable;
 	EnergyGraph *graph = new EnergyGraph;
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))

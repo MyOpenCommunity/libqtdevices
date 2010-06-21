@@ -56,6 +56,7 @@ public:
 	void requestCurrentUpdate();
 	void requestCurrentUpdateStart();
 	void requestCurrentUpdateStop();
+	void flushCurrentUpdateStop();
 
 	// not part of the public interface, but used by the containing device
 	void setHasNewFrames();
@@ -139,6 +140,7 @@ public:
 	void requestCurrentUpdate();
 	void requestCurrentUpdateStart();
 	void requestCurrentUpdateStop();
+	void flushCurrentUpdateStop();
 
 	enum Type
 	{

@@ -131,7 +131,7 @@ class EnergyTable : public PageLayout
 {
 Q_OBJECT
 public:
-	EnergyTable(int n_dec);
+	EnergyTable(int n_dec = 0);
 	void init(int num_val, QString left_text, QString right_text, QString date, int shift_val=-1);
 	void setData(const QMap<int, double> &data);
 	void setNumDecimal(int d);
