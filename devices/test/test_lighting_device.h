@@ -72,6 +72,8 @@ private slots:
 	void receiveGlobalDimmer100OnOffNonPullAdvanced();
 	void receiveGlobalDimmer100OnOffPull();
 
+	void testAdvancedDetection2();
+
 private:
 	void checkPullUnknown();
 
@@ -114,6 +116,7 @@ private slots:
 	void receiveGlobalDimmer100IncDecPull();
 
 	void testAdvancedDetection();
+	void testAdvancedDetection2();
 	void testRequestLevel();
 
 private:
@@ -148,6 +151,7 @@ private slots:
 	void receiveGlobalDimmer100SetlevelNonPullAdvanced();
 	void receiveGlobalDimmer100IncDecNonPullAdvanced();
 	void testAdvancedDetection();
+	void testAdvancedDetection2();
 
 	// override some more tests from superclasses
 	void receiveGlobalDimmer100OnOffNonPullBase();

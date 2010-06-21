@@ -227,10 +227,10 @@ DimmerDevice::DimmerDevice(QString where, PullMode pull, int openserver_id, int 
 
 	 delayed_level_request.setSingleShot(true);
 	 delayed_level_request.setInterval(pull_delay);
-	 connect(&delayed_level_request, SIGNAL(timeout()), SLOT(delayedStatusRequest()));
+	 connect(&delayed_level_request, SIGNAL(timeout()), SLOT(delayedLevelRequest()));
 }
 
-void DimmerDevice::delayedStatusRequest()
+void DimmerDevice::delayedLevelRequest()
 {
 	requestStatus();
 }
@@ -388,7 +388,7 @@ void Dimmer100Device::init()
 	requestDimmer100Status();
 }
 
-void Dimmer100Device::delayedStatusRequest()
+void Dimmer100Device::delayedLevelRequest()
 {
 	requestDimmer100Status();
 }
@@ -440,12 +440,7 @@ bool Dimmer100Device::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	// the level adjustment is already performed in DimmerDevice::parseFrame, we only
 	// need to send the status update
 	if ((what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 2)
-	{
-		if (status)
-			values_list[DIM_DIMMER100_LEVEL] = level;
-		else
-			values_list[DIM_DIMMER100_LEVEL] = level;
-	}
+		values_list[DIM_DIMMER100_LEVEL] = level;
 
 	return !values_list.isEmpty();
 }
