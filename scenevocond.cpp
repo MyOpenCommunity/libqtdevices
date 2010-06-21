@@ -875,36 +875,32 @@ void device_condition_dimming::status_changed(const StatusList &sl)
 
 	while (it != sl.constEnd())
 	{
-		int level = 0;
-		if ((it.key() == LightingDevice::DIM_DEVICE_ON) || (it.key() == LightingDevice::DIM_DIMMER_LEVEL))
-				level = it.value().toInt() / 10;
-		else
+		if ((it.key() == LightingDevice::DIM_DEVICE_ON && it.value().toBool() == false) || it.key() == LightingDevice::DIM_DIMMER_LEVEL)
 		{
-			++it;
-			continue;
-		}
+			int level = it.value().toInt() / 10;
 
-		if (level >= trig_min && level <= trig_max)
-		{
-			if (!satisfied)
+			if (level >= trig_min && level <= trig_max)
 			{
-					satisfied = true;
-					if (initialized)
-						emit condSatisfied();
+				if (!satisfied)
+				{
+						satisfied = true;
+						if (initialized)
+							emit condSatisfied();
+				}
 			}
+			else
+				satisfied = false;
+			initialized = true;
 		}
-		else
-			satisfied = false;
-		initialized = true;
 		++it;
 	}
 }
-
 
 void device_condition_dimming::status_changed(QList<device_status*> sl)
 {
 	qFatal("Old status changed on device_condition_dimming not implemented!");
 }
+
 
 /*****************************************************************
  ** Actual dimming 100 value device condition
@@ -1144,29 +1140,22 @@ void device_condition_dimming_100::status_changed(const StatusList &sl)
 
 	while (it != sl.constEnd())
 	{
-		int level;
-		if (it.key() == LightingDevice::DIM_DEVICE_ON || it.key() == LightingDevice::DIM_DIMMER100_LEVEL)
-			level = it.value().toInt();
-		else if (it.key() == LightingDevice::DIM_DIMMER_LEVEL)
-			level = dimmerLevelTo100(it.value().toInt());
-		else
+		if ((it.key() == LightingDevice::DIM_DEVICE_ON  && it.value().toBool() == false) || it.key() == LightingDevice::DIM_DIMMER100_LEVEL)
 		{
-			++it;
-			continue;
-		}
-
-		if (level >= trig_min && level <= trig_max)
-		{
-			if (!satisfied)
+			int level = it.value().toInt();
+			if (level >= trig_min && level <= trig_max)
 			{
-				satisfied = true;
-				if (initialized)
-					emit condSatisfied();
+				if (!satisfied)
+				{
+					satisfied = true;
+					if (initialized)
+						emit condSatisfied();
+				}
 			}
+			else
+				satisfied = false;
+			initialized = true;
 		}
-		else
-			satisfied = false;
-		initialized = true;
 		++it;
 	}
 }
