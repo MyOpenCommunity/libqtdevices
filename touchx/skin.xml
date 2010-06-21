@@ -134,6 +134,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_link_icon>home/rss.png</img_link_icon>
 		<img_forward_icon>multimediale/avanti.png</img_forward_icon>
 		<img_feed_icon>multimediale/rssmini.png</img_feed_icon>
+		<img_next>multimediale/successivo.png</img_next>
+		<img_previous>multimediale/precedente.png</img_previous>
 	</item>
 	<!-- Home page meteo link -->
 	<item>
@@ -141,6 +143,8 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_link_icon>home/meteo.png</img_link_icon>
 		<img_forward_icon>multimediale/avanti.png</img_forward_icon>
 		<img_feed_icon>multimediale/rssmini.png</img_feed_icon>
+		<img_next>multimediale/successivo.png</img_next>
+		<img_previous>multimediale/precedente.png</img_previous>
 	</item>
 	<!-- Home page ip radio link -->
 	<item>
@@ -472,11 +476,15 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_link_icon>multimediale/rss.png</img_link_icon>
 		<img_forward_icon>multimediale/avanti.png</img_forward_icon>
 		<img_feed_icon>multimediale/rssmini.png</img_feed_icon>
+		<img_next>multimediale/successivo.png</img_next>
+		<img_previous>multimediale/precedente.png</img_previous>
 	</item>
 	<!-- RSS meteo -->
 	<item>
 		<cid>16152</cid>
 		<img_feed_icon>multimediale/meteomini.png</img_feed_icon>
+		<img_next>multimediale/successivo.png</img_next>
+		<img_previous>multimediale/precedente.png</img_previous>
 	</item>
 	<!-- Webcam -->
 	<item>
