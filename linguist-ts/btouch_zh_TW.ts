@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="zh_TW" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
@@ -89,14 +89,34 @@
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
         <translation>消耗</translation>
     </message>
     <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>電</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>燃氣</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>加熱/製冷</translation>
+    </message>
+    <message>
         <source>Production</source>
         <translation>發電</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>水</translation>
     </message>
 </context>
 <context>
@@ -176,6 +196,21 @@
     </message>
 </context>
 <context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>日期/時間</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">存儲的數據將被刪除.
+確定以確認.</translation>
+    </message>
+</context>
+<context>
     <name>MediaPlayWindow</name>
     <message>
         <source>Album:</source>
@@ -248,10 +283,6 @@
         <translation>流行</translation>
     </message>
     <message>
-        <source>Preset</source>
-        <translation>預設</translation>
-    </message>
-    <message>
         <source>Rock</source>
         <translation>搖滾</translation>
     </message>
@@ -263,16 +294,16 @@
         <source>Techno</source>
         <translation>Techno音樂</translation>
     </message>
+    <message>
+        <source>User</source>
+        <translation>用戶</translation>
+    </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
         <translation>球式螢幕保護程式</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>變形式螢幕保護程式</translation>
     </message>
     <message>
         <source>Line</source>
@@ -300,6 +331,63 @@
     <message>
         <source>Servers</source>
         <translation>服務器</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>降溫</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>去濕</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>暖氣</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>關閉</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation type="unfinished">風扇</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">自動</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>擺風</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>高</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>低</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>中</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>安靜</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">自動</translation>
     </message>
 </context>
 <context>

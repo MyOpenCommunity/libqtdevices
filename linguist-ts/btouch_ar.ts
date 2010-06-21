@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="ar" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
@@ -73,7 +73,7 @@
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>سطوع</translation>
+        <translation>اللمعان</translation>
     </message>
     <message>
         <source>Calibration</source>
@@ -89,14 +89,34 @@
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
         <translation>الاستهلاك</translation>
     </message>
     <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>الكهرباء</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>غاز</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>تدفئة/تبريد</translation>
+    </message>
+    <message>
         <source>Production</source>
         <translation>الاستهلاك</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>ماء</translation>
     </message>
 </context>
 <context>
@@ -176,6 +196,21 @@
     </message>
 </context>
 <context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>تاريخ/وقت</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">سيتم حذف البيانات المخزنة.
+موافق للتأكيد.</translation>
+    </message>
+</context>
+<context>
     <name>MediaPlayWindow</name>
     <message>
         <source>Album:</source>
@@ -248,10 +283,6 @@
         <translation>بوب</translation>
     </message>
     <message>
-        <source>Preset</source>
-        <translation>تعيين مسبق</translation>
-    </message>
-    <message>
         <source>Rock</source>
         <translation>روك</translation>
     </message>
@@ -263,16 +294,16 @@
         <source>Techno</source>
         <translation>صوت Techno</translation>
     </message>
+    <message>
+        <source>User</source>
+        <translation>مستخدم</translation>
+    </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
         <translation>كرات</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>تشويه</translation>
     </message>
     <message>
         <source>Line</source>
@@ -300,6 +331,63 @@
     <message>
         <source>Servers</source>
         <translation>الملقم</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>تبريد</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>جاف (مزيل الرطوبة)</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>تدفئة</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation type="unfinished">مروحة</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">أوتوماتيكي</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>التأرجح</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>عالية</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>منخفضة</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>متوسطة</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>صامت</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">أوتوماتيكي</translation>
     </message>
 </context>
 <context>

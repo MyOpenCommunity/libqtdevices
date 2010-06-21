@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="ru" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
@@ -51,7 +51,7 @@
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation>Нормальная яркость</translation>
+        <translation>Нормальная яркость </translation>
     </message>
     <message>
         <source>Off</source>
@@ -73,7 +73,7 @@
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>яркость</translation>
+        <translation>Яркость</translation>
     </message>
     <message>
         <source>Calibration</source>
@@ -89,14 +89,34 @@
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
         <translation>Потребление</translation>
     </message>
     <message>
+        <source>DHW</source>
+        <translation>Снабжение горячей водой</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>Электричество</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>Газ</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>Отопление / охлаждение</translation>
+    </message>
+    <message>
         <source>Production</source>
         <translation>Производство</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>Вода</translation>
     </message>
 </context>
 <context>
@@ -176,6 +196,21 @@
     </message>
 </context>
 <context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>ДАТА/ВРЕМЯ</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">Сохраненные данные будут удалены.
+OK для подтверждения.</translation>
+    </message>
+</context>
+<context>
     <name>MediaPlayWindow</name>
     <message>
         <source>Album:</source>
@@ -248,10 +283,6 @@
         <translation>Поп</translation>
     </message>
     <message>
-        <source>Preset</source>
-        <translation>Настройка</translation>
-    </message>
-    <message>
         <source>Rock</source>
         <translation>Рок</translation>
     </message>
@@ -263,16 +294,16 @@
         <source>Techno</source>
         <translation>Техно</translation>
     </message>
+    <message>
+        <source>User</source>
+        <translation>Пользователь</translation>
+    </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
         <translation>Шарики</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>Деформация</translation>
     </message>
     <message>
         <source>Line</source>
@@ -300,6 +331,63 @@
     <message>
         <source>Servers</source>
         <translation>Серверы</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>Охлаждение</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>Поглощение влаги</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>Отопление</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation type="unfinished">Вентилятор</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">Автоматический</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>Качание</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>Высокая</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>Низкая</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>Средний</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>Бесшумный</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">Автоматический</translation>
     </message>
 </context>
 <context>
