@@ -112,7 +112,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 	{
 		QDomNode addresses = getElement(item_node, "addresses");
 		where = getTextChild(addresses, "dev") + getTextChild(addresses, "where");
-		b = new ButtonActuator(descr, where, VCT_LOCK, oid, getPullMode(item_node));
+		b = new ButtonActuator(descr, where, VCT_LOCK, oid, NOT_PULL);
 		break;
 	}
 	case ACTUATOR_GROUP:
@@ -138,7 +138,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		int seconds = getTextChild(item_node, "time").toInt();
 		BtTime t(seconds / 3600, (seconds / 60) % 60, seconds % 60);
 #endif
-		b = new GateLightingActuator(t, descr, where, oid, getPullMode(item_node));
+		b = new GateLightingActuator(t, descr, where, oid, NOT_PULL);
 	}
 		break;
 	case GATE_VCT_ACT:
@@ -153,7 +153,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		break;
 	}
 	case DOOR_LOCK:
-		b = new ButtonActuator(descr, where, PULSE_ACT, oid, getPullMode(item_node));
+		b = new ButtonActuator(descr, where, PULSE_ACT, oid, NOT_PULL);
 		break;
 	case PPT_STAT_AUTO:
 		b = new PPTStat(where, oid);
