@@ -465,6 +465,10 @@ public slots:
 	void Up();
 	//! Invoked when DOWN button is pressed
 	void Down();
+
+private slots:
+	virtual void status_changed(const StatusList &sl);
+
 private:
 	int min_val;
 	int max_val;

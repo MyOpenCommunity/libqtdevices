@@ -707,3 +707,126 @@ void aux_device::frame_rx_handler(char *frame)
 		}
 	}
 }
+
+enum RequestDimension
+{
+	AMPL_STATUS_ON_FOLLOW_ME = 34,
+	AMPL_STATUS_OFF = 0,
+	AMPL_VOLUME_UP = 3,
+	AMPL_VOLUME_DOWN = 4,
+};
+
+namespace
+{
+	QString getAmplifierPoint(const QString &where)
+	{
+		return where.length() == 2 && where.at(0) != '#' ? where.at(1) : '0';
+	}
+
+	QString createAmplifierWhere(const QString &where_conf)
+	{
+		if (where_conf == "0")
+			return "5#3#0#0";
+		if (AmplifierDevice::isAreaAddress(where_conf))
+			return QString("4#%1").arg(AmplifierDevice::getAmplifierArea(where_conf));
+		return QString("3#") + where_conf.at(0) + "#" + where_conf.at(1);
+	}
+}
+
+bool AmplifierDevice::isAreaAddress(const QString &where)
+{
+	return where.size() == 2 && where.at(0) == '#';
+}
+
+QString AmplifierDevice::getAmplifierArea(const QString &where)
+{
+	return where.at(0) == '#' ? where.at(1) : where.at(0);
+}
+
+AmplifierDevice::AmplifierDevice(QString _where) :
+	device(QString("22"), "")
+{
+}
+
+void AmplifierDevice::set_where(QString w)
+{
+	area = getAmplifierArea(w);
+	point = getAmplifierPoint(w);
+	where = createAmplifierWhere(w);
+}
+
+void AmplifierDevice::init()
+{
+	requestStatus();
+	requestVolume();
+}
+
+void AmplifierDevice::requestStatus() const
+{
+	sendRequest(QString::number(DIM_STATUS));
+}
+
+void AmplifierDevice::requestVolume() const
+{
+	sendRequest(QString::number(DIM_VOLUME));
+}
+
+void AmplifierDevice::turnOn()
+{
+	sendCommand(QString("%1#4#%2").arg(AMPL_STATUS_ON_FOLLOW_ME).arg(area));
+}
+
+void AmplifierDevice::turnOff()
+{
+	sendCommand(QString("%1#4#%2").arg(AMPL_STATUS_OFF).arg(area));
+}
+
+void AmplifierDevice::volumeUp()
+{
+	sendCommand(QString("%1#1").arg(AMPL_VOLUME_UP));
+}
+
+void AmplifierDevice::volumeDown()
+{
+	sendCommand(QString("%1#1").arg(AMPL_VOLUME_DOWN));
+}
+
+void AmplifierDevice::setVolume(int volume)
+{
+	sendFrame(createWriteRequestOpen(who, QString("%1*%2").arg(DIM_VOLUME).arg(volume), where));
+}
+
+void AmplifierDevice::manageFrame(OpenMsg &msg)
+{
+	if (where != QString::fromStdString(msg.whereFull()))
+		return;
+
+	if (!msg.whatArgCnt() || !msg.IsMeasureFrame())
+		return;
+
+	StatusList status_list;
+	int what = msg.what();
+
+	switch (what)
+	{
+	case DIM_STATUS:
+		status_list[what] = msg.whatArgN(0) == 1;
+		break;
+	case DIM_VOLUME:
+		status_list[what] = msg.whatArgN(0);
+		break;
+	default:
+		return;
+	}
+
+	emit status_changed(status_list);
+}
+
+void AmplifierDevice::frame_rx_handler(char *frame)
+{
+	OpenMsg msg;
+	msg.CreateMsgOpen(frame, strlen(frame));
+	if (who.toInt() == msg.who())
+		manageFrame(msg);
+}
+

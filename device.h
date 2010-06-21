@@ -35,6 +35,7 @@
 class frame_interpreter;
 class Client;
 class BtTime;
+class OpenMsg;
 
 typedef QHash<int, QVariant> StatusList;
 
@@ -70,7 +71,7 @@ public:
 	//! Init device: send messages initializing data
 	virtual void init(bool force = false);
 	//! Set where
-	void set_where(QString);
+	virtual void set_where(QString);
 	//! Set pul status
 	void set_pul(bool);
 	//! Set group
@@ -454,6 +455,50 @@ private:
 signals:
 	// TODO: rimpiazzare questo segnale con lo status_changed(QHash<>)..
 	void status_changed(stat_var);
+};
+
+
+/**
+ * This class represents an amplifier device, that can be used to reproduce audio
+ * from various kind of sources inside an area.
+ */
+class AmplifierDevice : public device
+{
+Q_OBJECT
+public:
+	enum
+	{
+		DIM_STATUS = 12,
+		DIM_VOLUME = 1,
+	};
+
+	// passing "0" as the where creates a device commanding all amplifiers
+	// passing "#<area>" as the where creates a device commanding all amplifiers in an area
+	AmplifierDevice(QString where);
+
+	virtual void set_where(QString);
+
+	virtual void init();
+
+	void requestStatus() const;
+	void requestVolume() const;
+	virtual void turnOn();
+	virtual void turnOff();
+	virtual void volumeUp();
+	virtual void volumeDown();
+	virtual void setVolume(int volume);
+
+	static bool isAreaAddress(const QString &where);
+	static QString getAmplifierArea(const QString &where);
+	QString getArea() const { return area; }
+	QString getPoint() const { return point; }
+
+	virtual void manageFrame(OpenMsg &msg);
+	virtual void frame_rx_handler(char *frame);
+
+private:
+	QString area;
+	QString point;
 };
 
 

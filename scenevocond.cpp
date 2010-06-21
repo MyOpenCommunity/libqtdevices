@@ -1192,7 +1192,7 @@ device_condition_volume::device_condition_volume(QWidget *parent, QString *c)
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
 	Draw();
-	dev = new sound_device(QString(""));
+	dev = new AmplifierDevice(QString(""));
 }
 
 void device_condition_volume::set_condition_value_min(int s)
@@ -1387,38 +1387,20 @@ void device_condition_volume::Draw()
 	((QLabel *)frame)->setText(tmp);
 }
 
-void device_condition_volume::status_changed(QList<device_status*> sl)
+void device_condition_volume::status_changed(const StatusList &sl)
 {
+	StatusList::const_iterator it = sl.constBegin();
 	int trig_v_min = get_condition_value_min();
 	int trig_v_max = get_condition_value_max();
-	stat_var curr_volume(stat_var::AUDIO_LEVEL);
-	stat_var curr_stato(stat_var::ON_OFF);
-	qDebug("device_condition_volume::status_changed()");
 
-	for (int i = 0; i < sl.size(); ++i)
+	while (it != sl.constEnd())
 	{
-		device_status *ds = sl.at(i);
-		switch (ds->get_type())
+		// When the Amplifier is turned on the device send both the DIM_STATUS
+		// and the DIM_VOLUME, so we can ignore the DIM_STATUS
+		if (it.key() == AmplifierDevice::DIM_STATUS && it.value().toInt() == 0)
 		{
-		case device_status::AMPLIFIER:
-			qDebug("Amplifier status change");
-			qDebug("Confition value_min = %d - value_max = %d", trig_v_min, trig_v_max);
-			ds->read(device_status_amplifier::AUDIO_LEVEL_INDEX, curr_volume);
-			ds->read(device_status_amplifier::ON_OFF_INDEX, curr_stato);
-			qDebug("volume = %d - stato = %d", curr_volume.get_val(), curr_stato.get_val());
-			if ((trig_v_min == -1) && (curr_stato.get_val() == 0))
+			if (trig_v_min == -1)
 			{
-				qDebug("Condition triggered");
-				if (!satisfied)
-				{
-					satisfied = true;
-					if (initialized)
-						emit condSatisfied();
-				}
-			}
-			else if ((curr_stato.get_val() == 1) && (curr_volume.get_val() >= trig_v_min) && (curr_volume.get_val() <= trig_v_max))
-			{
-				qDebug("Condition triggered");
 				if (!satisfied)
 				{
 					satisfied = true;
@@ -1427,17 +1409,32 @@ void device_condition_volume::status_changed(QList<device_status*> sl)
 				}
 			}
 			else
-			{
-				qDebug("Condition not triggered");
 				satisfied = false;
-			}
 			initialized = true;
-			break;
-		default:
-			qDebug("device status of unknown type (%d)", ds->get_type());
-			break;
 		}
+		else if (it.key() == AmplifierDevice::DIM_VOLUME)
+		{
+			int volume = it.value().toInt();
+			if (volume >= trig_v_min && volume <= trig_v_max)
+			{
+				if (!satisfied)
+				{
+					satisfied = true;
+					if (initialized)
+						emit condSatisfied();
+				}
+			}
+			else
+				satisfied = false;
+			initialized = true;
+		}
+		++it;
 	}
+}
+
+void device_condition_volume::status_changed(QList<device_status*> sl)
+{
+	qFatal("Old status changed on device_condition_volume not implemented!");
 }
 
 QString device_condition_volume::get_unit()
