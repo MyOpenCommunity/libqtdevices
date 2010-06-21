@@ -150,7 +150,10 @@ PullStateManager::PullStateManager(PullMode m, AdvancedMode adv, FrameChecker ch
 	status_requested = false;
 	frame_checker = checker;
 	last_handled = FRAME_NOT_HANDLED;
-	advanced = m == PULL ? PULL_NOT_ADVANCED : adv;
+	if (m == PULL && adv == PULL_ADVANCED_UNKNOWN)
+		advanced = PULL_NOT_ADVANCED;
+	else
+		advanced = adv;
 }
 
 PullMode PullStateManager::getPullMode()
@@ -166,8 +169,6 @@ PullStateManager::CheckResult PullStateManager::moreFrameNeeded(OpenMsg &msg, bo
 {
 	FrameHandled handled = frame_checker ? frame_checker(msg) : FRAME_HANDLED;
 	if (handled == FRAME_NOT_HANDLED)
-		return qMakePair(false, handled);
-	if (mode != PULL_UNKNOWN && handled == FRAME_HANDLED && is_environment)
 		return qMakePair(false, handled);
 
 	// PullStateManager will be used for automation and lighting only.
@@ -198,7 +199,14 @@ PullStateManager::CheckResult PullStateManager::moreFrameNeeded(OpenMsg &msg, bo
 	if (ignore_frame)
 		return qMakePair(false, handled);
 
-	if (is_environment)
+	if (mode != PULL_UNKNOWN && handled == FRAME_HANDLED && is_environment)
+	{
+		status = new_state;
+		last_handled = handled;
+
+		return qMakePair(false, handled);
+	}
+	else if (is_environment)
 	{
 		last_handled = handled;
 		if (status == INVALID_STATE || status != new_state)

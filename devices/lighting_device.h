@@ -96,7 +96,9 @@ public:
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
-	virtual void delayedStatusRequest();
+
+protected slots:
+	virtual void delayedLevelRequest();
 
 protected:
 	QTimer delayed_level_request;
@@ -122,7 +124,7 @@ public:
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 	virtual void requestPullStatus();
-	virtual void delayedStatusRequest();
+	virtual void delayedLevelRequest();
 };
 
 #endif // LIGHTINGDEVICE_H

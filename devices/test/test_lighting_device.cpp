@@ -283,6 +283,45 @@ void TestLightingDevice::receiveInvalidVariableTiming()
 	t.checkSignals(timing, 0);
 }
 
+void TestLightingDevice::testAdvancedDetection2()
+{
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_ADVANCED_UNKNOWN);
+	QCOMPARE(dev->isAdvanced(), false);
+	DeviceTester ts(dev, LightingDevice::DIM_DEVICE_ON, DeviceTester::MULTIPLE_VALUES);
+
+	QString global_on_100 = QString("*1*1#1*0##");
+	QString global_off_100 = QString("*1*0#1*0##");
+	QString global_on = QString("*1*1*0##");
+	QString light_on = QString("*1*1*%1##").arg(dev->where);
+	QString light_off = QString("*1*0*%1##").arg(dev->where);
+
+	// start off
+	ts.check(light_off, false);
+	QCOMPARE(dev->isAdvanced(), false);
+
+	// global light on
+	ts.check(global_on, true);
+	QCOMPARE(dev->isAdvanced(), false);
+
+	// dimmer 100 off, request status
+	ts.checkSignals(global_off_100, 0);
+	QCOMPARE(dev->isAdvanced(), false);
+	sendPullRequestIfNeeded();
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), getRequestStatusFrame());
+
+	// got status off, switch to advanced
+	ts.check(light_off, false);
+	QCOMPARE(dev->isAdvanced(), true);
+
+	// further advanced requests do not trigger status requests
+	ts.check(global_on_100, true);
+	QCOMPARE(dev->delayed_request.isActive(), false);
+
+	ts.check(global_off_100, false);
+	QCOMPARE(dev->delayed_request.isActive(), false);
+}
+
 
 void TestDimmerDevice::init()
 {
@@ -300,7 +339,7 @@ void TestDimmerDevice::sendPullRequestIfNeeded()
 	TestLightingDevice::sendPullRequestIfNeeded();
 
 	if (dimmer->delayed_level_request.isActive())
-		dimmer->delayedStatusRequest();
+		dimmer->delayedLevelRequest();
 	dimmer->delayed_level_request.stop();
 }
 
@@ -384,6 +423,32 @@ void TestDimmerDevice::receiveDimmerProblem()
 	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_PROBLEM);
 	QString frame = QString("*1*%1*%2##").arg(19).arg(dimmer->where);
 	t.check(frame, true);
+}
+
+void TestDimmerDevice::receiveDimmer100WriteLevel()
+{
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_ADVANCED);
+	DeviceTester ts(dimmer, LightingDevice::DIM_DEVICE_ON, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tl(dimmer, LightingDevice::DIM_DIMMER_LEVEL, DeviceTester::MULTIPLE_VALUES);
+	QString frame_level_0 = QString("*#1*%1*#1*100*50##").arg(dimmer->where);
+	QString frame_level_5 = QString("*#1*%1*#1*134*50##").arg(dimmer->where);
+
+	ts.check(frame_level_0, false);
+	ts.check(frame_level_5, true);
+	tl.check(frame_level_5, 5);
+}
+
+void TestDimmerDevice::receiveDimmer100Level()
+{
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_ADVANCED);
+	DeviceTester ts(dimmer, LightingDevice::DIM_DEVICE_ON, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tl(dimmer, LightingDevice::DIM_DIMMER_LEVEL, DeviceTester::MULTIPLE_VALUES);
+	QString frame_level_0 = QString("*#1*%1*1*100*50##").arg(dimmer->where);
+	QString frame_level_5 = QString("*#1*%1*1*134*50##").arg(dimmer->where);
+
+	ts.check(frame_level_0, false);
+	ts.check(frame_level_5, true);
+	tl.check(frame_level_5, 5);
 }
 
 void TestDimmerDevice::receiveGlobalIncrementLevel()
@@ -524,6 +589,55 @@ void TestDimmerDevice::testAdvancedDetection()
 	QCOMPARE(dimmer->delayed_level_request.isActive(), false);
 
 	ts.check(global_on_100, true);
+	QCOMPARE(dimmer->delayed_request.isActive(), false);
+	QCOMPARE(dimmer->delayed_level_request.isActive(), false);
+}
+
+void TestDimmerDevice::testAdvancedDetection2()
+{
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_ADVANCED_UNKNOWN);
+	QCOMPARE(dimmer->isAdvanced(), false);
+	DeviceTester ts(dimmer, LightingDevice::DIM_DEVICE_ON, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tl(dimmer, LightingDevice::DIM_DIMMER_LEVEL, DeviceTester::MULTIPLE_VALUES);
+
+	QString global_on_100 = QString("*1*1#1*0##");
+	QString global_off_100 = QString("*1*0#1*0##");
+	QString global_light_on = QString("*1*1*0##");
+	QString light_off = QString("*1*0*%1##").arg(dimmer->where);
+	QString dimmer_level = QString("*1*%1*%2##").arg(9).arg(dimmer->where);
+
+	// start off
+	ts.check(light_off, false);
+	QCOMPARE(dimmer->isAdvanced(), false);
+
+	// global on, request and get status
+	ts.check(global_light_on, true);
+	QCOMPARE(dimmer->isAdvanced(), false);
+	QCOMPARE(dimmer->delayed_level_request.isActive(), true);
+	sendPullRequestIfNeeded();
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), getRequestStatusFrame());
+
+	tl.check(dimmer_level, 9);
+
+	// dimmer 100 off, request status
+	ts.checkSignals(global_off_100, 0);
+	QCOMPARE(dimmer->delayed_level_request.isActive(), false);
+	QCOMPARE(dimmer->isAdvanced(), false);
+	sendPullRequestIfNeeded();
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), getRequestStatusFrame());
+
+	// got light off, switch to advanced
+	ts.check(light_off, false);
+	QCOMPARE(dimmer->isAdvanced(), true);
+
+	// further advanced requests do not trigger status requests
+	ts.check(global_on_100, true);
+	QCOMPARE(dimmer->delayed_request.isActive(), false);
+	QCOMPARE(dimmer->delayed_level_request.isActive(), false);
+
+	ts.check(global_off_100, false);
 	QCOMPARE(dimmer->delayed_request.isActive(), false);
 	QCOMPARE(dimmer->delayed_level_request.isActive(), false);
 }
@@ -693,6 +807,41 @@ void TestDimmer100Device::receiveGlobalDimmer100IncDecNonPullBase()
 	t.check(dec_level, 40);
 }
 
+void TestDimmer100Device::testRequestLevel100()
+{
+	setParams(LIGHT_DEVICE_WHERE, NOT_PULL, PULL_ADVANCED);
+	DeviceTester ts(dimmer100, LightingDevice::DIM_DEVICE_ON, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tl(dimmer100, LightingDevice::DIM_DIMMER100_LEVEL, DeviceTester::MULTIPLE_VALUES);
+
+	QString global_on = QString("*1*1*0##");
+	QString global_off = QString("*1*0*0##");
+	QString light_on = QString("*1*1*%1##").arg(dimmer100->where);
+	QString dimmer_100_off = QString("*#1*%1*#1*100*50##").arg(dimmer100->where);
+	QString light_off = QString("*1*0*%1##").arg(dimmer100->where);
+	QString dimmer_level = QString("*1*%1*%2##").arg(9).arg(dimmer100->where);
+
+	// start off
+	ts.check(light_off, false);
+
+	// general on, request status
+	ts.check(global_on, true);
+	QCOMPARE(dimmer100->delayed_level_request.isActive(), true);
+	sendPullRequestIfNeeded();
+	client_request->flush();
+	QCOMPARE(server->frameRequest(), getRequestStatusFrame());
+
+	// got dimmer level, level is stored
+	tl.check(dimmer_level, 75);
+	QCOMPARE(dimmer100->level, 75);
+
+	// dimmer 100 off
+	ts.check(dimmer_100_off, false);
+
+	// general on, do not request status
+	ts.check(global_on, true);
+	QCOMPARE(dimmer100->delayed_level_request.isActive(), false);
+}
+
 // the tests below make sense for superclasses, since they test the ability
 // of some lighting/dimmer10 devices to correctly interpret dimmer100 frames
 void TestDimmer100Device::receiveGlobalDimmer100OnOffNonPullAdvanced()
@@ -708,5 +857,9 @@ void TestDimmer100Device::receiveGlobalDimmer100IncDecNonPullAdvanced()
 }
 
 void TestDimmer100Device::testAdvancedDetection()
+{
+}
+
+void TestDimmer100Device::testAdvancedDetection2()
 {
 }

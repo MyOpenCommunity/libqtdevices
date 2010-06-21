@@ -541,17 +541,14 @@ bool DeviceConditionDimming::parseValues(const DeviceValues &values_list)
 	bool managed = false;
 	while (it != values_list.constEnd())
 	{
-		int level = 0;
-		if ((it.key() == LightingDevice::DIM_DEVICE_ON) || (it.key() == LightingDevice::DIM_DIMMER_LEVEL))
-			level = it.value().toInt();
-		else
+		// When the Dimmer is turned on the device send both the DIM_DEVICE_ON
+		// and the DIM_DIMMER_LEVEL, so we can ignore the DIM_DEVICE_ON
+		if ((it.key() == LightingDevice::DIM_DEVICE_ON && it.value().toBool() == false) || it.key() == LightingDevice::DIM_DIMMER_LEVEL)
 		{
-			++it;
-			continue;
+			int level = it.value().toInt();
+			managed = true;
+			satisfied = (level >= trig_min && level <= trig_max);
 		}
-
-		managed = true;
-		satisfied = (level >= trig_min && level <= trig_max);
 		++it;
 	}
 	return managed;
@@ -731,24 +728,21 @@ bool DeviceConditionDimming100::parseValues(const DeviceValues &values_list)
 	int trig_min = get_condition_value_min();
 	int trig_max = get_condition_value_max();
 
-	bool managed;
+	bool managed = false;
+
 	while (it != values_list.constEnd())
 	{
-		int level;
-		if (it.key() == LightingDevice::DIM_DEVICE_ON || it.key() == LightingDevice::DIM_DIMMER100_LEVEL)
-			level = it.value().toInt();
-		else if (it.key() == LightingDevice::DIM_DIMMER_LEVEL)
-			level = dimmerLevelTo100(it.value().toInt());
-		else
+		// When the Dimmer is turned on the device send both the DIM_DEVICE_ON
+		// and the DIM_DIMMER100_LEVEL, so we can ignore the DIM_DEVICE_ON
+		if ((it.key() == LightingDevice::DIM_DEVICE_ON && it.value().toBool() == false) || it.key() == LightingDevice::DIM_DIMMER100_LEVEL)
 		{
-			++it;
-			continue;
+			int level = it.value().toInt();
+			managed = true;
+			satisfied = (level >= trig_min && level <= trig_max);
 		}
-
-		managed = true;
-		satisfied = (level >= trig_min && level <= trig_max);
 		++it;
 	}
+
 	return managed;
 }
 
@@ -939,14 +933,12 @@ bool DeviceConditionVolume::parseValues(const DeviceValues &values_list)
 	bool managed = false;
 	while (it != values_list.constEnd())
 	{
-		if (it.key() == AmplifierDevice::DIM_STATUS)
+		// When the Amplifier is turned on the device send both the DIM_STATUS
+		// and the DIM_VOLUME, so we can ignore the DIM_STATUS
+		if (it.key() == AmplifierDevice::DIM_STATUS && it.value().toInt() == 0)
 		{
 			managed = true;
-			if ((it.value().toInt() == 1 && trig_v_min == get_min() && trig_v_max == get_max()) ||
-				(it.value().toInt() == 0 && trig_v_min == -1))
-				satisfied = true;
-			else
-				satisfied = false;
+			satisfied = (trig_v_min == -1);
 		}
 		else if (it.key() == AmplifierDevice::DIM_VOLUME)
 		{
@@ -1040,7 +1032,6 @@ bool DeviceConditionTemperature::parseValues(const DeviceValues &values_list)
 	int trig_v = DeviceCondition::get_condition_value();
 	int temp = values_list[NonControlledProbeDevice::DIM_TEMPERATURE].toInt();
 
-	qDebug("Temperature changed");
 	qDebug("Current temperature %d", temp);
 	int measured_temp;
 	switch (temp_scale)
