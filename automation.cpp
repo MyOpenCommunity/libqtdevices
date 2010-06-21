@@ -83,7 +83,7 @@ void Automation::loadItems(const QDomNode &config_node)
 			break;
 		case ATTUAT_VCT_SERR:
 //			b = new attuatPuls(this, where, img1, img2, VCT_SERR);
-			b = new ButtonActuator(this, item, VCT_SERR, getPullMode(item));
+			b = new ButtonActuator(this, item, VCT_SERR, NOT_PULL);
 			break;
 		case GR_ATTUAT_INT:
 		{
@@ -97,15 +97,15 @@ void Automation::loadItems(const QDomNode &config_node)
 		}
 		case AUTOM_CANC_ATTUAT_ILL:
 //			b = new automCancAttuatIll(this, where, img1, img2, time);
-			b = new GateLightingActuator(this, item, getPullMode(item));
+			b = new GateLightingActuator(this, item, NOT_PULL);
 			break;
 		case AUTOM_CANC_ATTUAT_VC:
 //			b = new automCancAttuatVC(this, where, img1, img2);
-			b = new GateEntryphoneActuator(this, item);
+			b = new GateEntryphoneActuator(this, item, NOT_PULL);
 			break;
 		case ATTUAT_AUTOM_PULS:
 //			b = new attuatPuls(this, where, img1, img2, AUTOMAZ);
-			b = new ButtonActuator(this, item, AUTOMAZ, getPullMode(item));
+			b = new ButtonActuator(this, item, AUTOMAZ, NOT_PULL);
 			break;
 		case PPT_STAT:
 			b = new PPTStat(this, where, cid);

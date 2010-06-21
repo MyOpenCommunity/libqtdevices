@@ -91,7 +91,7 @@ class GateEntryphoneActuator : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	GateEntryphoneActuator(QWidget *parent, const QDomNode &config_node);
+	GateEntryphoneActuator(QWidget *parent, const QDomNode &config_node, PullMode mode);
 
 private slots:
 	void activate();

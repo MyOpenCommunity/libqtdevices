@@ -102,7 +102,7 @@ void Lighting::loadItems(const QDomNode &config_node)
 			break;
 		case ATTUAT_VCT_LS:
 //			b = new attuatPuls(this, where, img1, img2, VCT_LS);
-			b = new ButtonActuator(this, item, VCT_LS, getPullMode(item));
+			b = new ButtonActuator(this, item, VCT_LS, NOT_PULL);
 			break;
 		case DIMMER_100:
 //			b = new dimmer100(this, where, img1, img2 ,img3, img4, img5, getTextChild(item,"softstart").toInt(),

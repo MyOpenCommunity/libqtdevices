@@ -219,7 +219,7 @@ void SecureInterblockedActuator::changeButtonStatus(BtButton *btn)
 }
 
 
-GateEntryphoneActuator::GateEntryphoneActuator(QWidget *parent, const QDomNode &config_node) :
+GateEntryphoneActuator::GateEntryphoneActuator(QWidget *parent, const QDomNode &config_node, PullMode mode) :
 	BannSinglePuls(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
@@ -227,7 +227,7 @@ GateEntryphoneActuator::GateEntryphoneActuator(QWidget *parent, const QDomNode &
 	where = getTextChild(config_node, "where");
 	// TODO: we still miss entryphone devices, so I'm creating a generic device and send
 	// frames directly. Change as soon as entryphone devices are available!
-	dev = bt_global::add_device_to_cache(new AutomationDevice(where));
+	dev = bt_global::add_device_to_cache(new AutomationDevice(where, mode));
 
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("gate"),
 		getTextChild(config_node, "descr"));
