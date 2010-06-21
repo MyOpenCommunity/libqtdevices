@@ -227,10 +227,10 @@ DimmerDevice::DimmerDevice(QString where, PullMode pull, int openserver_id, int 
 
 	 delayed_level_request.setSingleShot(true);
 	 delayed_level_request.setInterval(pull_delay);
-	 connect(&delayed_level_request, SIGNAL(timeout()), SLOT(delayedStatusRequest()));
+	 connect(&delayed_level_request, SIGNAL(timeout()), SLOT(delayedLevelRequest()));
 }
 
-void DimmerDevice::delayedStatusRequest()
+void DimmerDevice::delayedLevelRequest()
 {
 	requestStatus();
 }
@@ -388,7 +388,7 @@ void Dimmer100Device::init()
 	requestDimmer100Status();
 }
 
-void Dimmer100Device::delayedStatusRequest()
+void Dimmer100Device::delayedLevelRequest()
 {
 	requestDimmer100Status();
 }
