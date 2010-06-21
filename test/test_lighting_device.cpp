@@ -313,7 +313,7 @@ void TestDimmerDevice::sendPullRequestIfNeeded()
 	TestLightingDevice::sendPullRequestIfNeeded();
 
 	if (dimmer->delayed_level_request.isActive())
-		dimmer->delayedStatusRequest();
+		dimmer->delayedLevelRequest();
 	dimmer->delayed_level_request.stop();
 }
 

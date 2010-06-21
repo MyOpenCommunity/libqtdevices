@@ -84,7 +84,9 @@ public:
 protected:
 	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
 	virtual int getDimmer10Level();
-	virtual void delayedStatusRequest();
+
+protected slots:
+	virtual void delayedLevelRequest();
 
 protected:
 	QTimer delayed_level_request;
@@ -110,7 +112,7 @@ protected:
 	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
 	virtual void requestPullStatus();
 	virtual int getDimmer10Level();
-	virtual void delayedStatusRequest();
+	virtual void delayedLevelRequest();
 };
 
 #endif // LIGHTINGDEVICE_H
