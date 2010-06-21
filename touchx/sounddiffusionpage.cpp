@@ -703,7 +703,7 @@ LocalSource::LocalSource(QObject *parent) : QObject(parent)
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
-void LocalSource::startLocalPlayback()
+void LocalSource::startLocalPlayback(bool force)
 {
 	foreach (MediaPlayerPage *page, AudioPlayerPage::audioPlayerPages())
 	{
@@ -721,8 +721,8 @@ void LocalSource::startLocalPlayback()
 
 	// try to play something searching on each media source
 	// using the multimedia configuration order (es. usb -> sd -> ip radio)
-	MultimediaSectionPage::playSomethingRandomly();
-
+	if (force)
+		MultimediaSectionPage::playSomethingRandomly();
 }
 
 void LocalSource::pauseLocalPlayback()
@@ -770,8 +770,8 @@ void LocalSource::valueReceived(const DeviceValues &device_values)
 					bt_global::audio_states->removeState(AudioStates::PLAY_DIFSON);
 			}
 
-			if (new_state && !device_values.contains(VirtualSourceDevice::DIM_SELF_REQUEST))
-				startLocalPlayback();
+			if (new_state)
+				startLocalPlayback(!device_values.contains(VirtualSourceDevice::DIM_SELF_REQUEST));
 			else if (!new_state)
 				pauseLocalPlayback();
 

@@ -59,6 +59,13 @@ public:
 		// from the homonymous frame.
 		CALLER_ADDRESS = 9,
 		STOP_VIDEO = 202, // the value doesn't matter
+		VCT_TYPE,  // the value doesn't matter
+	};
+
+	enum VctType
+	{
+		AUDIO_VIDEO,
+		ONLY_AUDIO
 	};
 
 	EntryphoneDevice(const QString &where, QString mode = QString(), int openserver_id = 0);

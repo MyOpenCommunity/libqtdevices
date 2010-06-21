@@ -48,6 +48,7 @@ enum
 	MOVE_RIGHT = 62,
 };
 
+
 EntryphoneDevice::EntryphoneDevice(const QString &where, QString mode, int openserver_id) :
 	device(QString("8"), where, openserver_id)
 {
@@ -250,7 +251,7 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			values_list[RINGTONE] = ringtone;
 
 		// we can safely ignore caller address, we will receive a frame later.
-		values_list[what] = true;
+		values_list[what] = (mmtype == 2 ? ONLY_AUDIO : AUDIO_VIDEO);
 		is_calling = true;
 		break;
 	}
@@ -274,6 +275,7 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		// or not.
 		int kind_m = kind % 1000;
 		values_list[MOVING_CAMERA] = (kind_m >= 101 && kind_m <= 105);
+		values_list[VCT_TYPE] = (mmtype == 2 ? ONLY_AUDIO : AUDIO_VIDEO);
 		break;
 	}
 

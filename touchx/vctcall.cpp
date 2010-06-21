@@ -65,6 +65,7 @@ namespace VCTCallPrivate
 		bool prof_studio;
 		bool call_active;
 		bool move_enabled;
+		bool video_enabled;
 
 		VCTCallStatus();
 
@@ -182,6 +183,7 @@ VCTCallStatus::VCTCallStatus()
 	// above regarding the init() method.
 	hands_free = false;
 	prof_studio = false;
+	video_enabled = true;
 	init();
 }
 
@@ -342,7 +344,7 @@ void VCTCall::resumeVideo()
 
 void VCTCall::startVideo()
 {
-	if (video_grabber.state() == QProcess::NotRunning)
+	if (call_status->video_enabled && video_grabber.state() == QProcess::NotRunning)
 	{
 		QString args;
 		if (format == NORMAL_VIDEO)
@@ -357,7 +359,7 @@ void VCTCall::startVideo()
 
 void VCTCall::stopVideo()
 {
-	if (video_grabber.state() == QProcess::Running)
+	if (call_status->video_enabled && video_grabber.state() == QProcess::Running)
 		video_grabber.terminate();
 }
 
@@ -376,6 +378,7 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 		switch (it.key())
 		{
 		case EntryphoneDevice::VCT_CALL:
+			call_status->video_enabled = (it.value().toInt() == EntryphoneDevice::AUDIO_VIDEO);
 			if (call_status->stopped)
 				resumeVideo();
 			else
@@ -383,6 +386,7 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			call_status->call_active = true;
 			break;
 		case EntryphoneDevice::AUTO_VCT_CALL:
+			call_status->video_enabled = (it.value().toInt() == EntryphoneDevice::AUDIO_VIDEO);
 			emit autoIncomingCall();
 			call_status->call_active = true;
 			break;
@@ -399,11 +403,25 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			call_status->stopped = true;
 			stopVideo();
 			break;
+		case EntryphoneDevice::VCT_TYPE:
+		{
+			bool new_status = (it.value().toInt() == EntryphoneDevice::AUDIO_VIDEO);
+			bool old_status = call_status->video_enabled;
+
+			call_status->video_enabled = new_status;
+			// Switch from a camera with video to a camera without video
+			if (old_status && !new_status)
+				stopVideo();
+			// Switch from a camera without video to a camera with video
+			else if (!old_status && new_status)
+				startVideo();
+
+			break;
+		}
 		case EntryphoneDevice::MOVING_CAMERA:
 			call_status->move_enabled = it.value().toBool();
 			camera->setMoveEnabled(call_status->move_enabled);
 			break;
-
 		}
 		++it;
 	}
