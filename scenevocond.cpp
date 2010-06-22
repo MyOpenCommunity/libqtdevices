@@ -1193,6 +1193,7 @@ device_condition_volume::device_condition_volume(QWidget *parent, QString *c)
 	set_current_value_max(get_condition_value_max());
 	Draw();
 	dev = new AmplifierDevice(QString(""));
+	amplifier_on = false;
 }
 
 void device_condition_volume::set_condition_value_min(int s)
@@ -1396,23 +1397,32 @@ void device_condition_volume::status_changed(const StatusList &sl)
 	while (it != sl.constEnd())
 	{
 		// When the Amplifier is turned on the device send both the DIM_STATUS
-		// and the DIM_VOLUME, so we can ignore the DIM_STATUS
-		if (it.key() == AmplifierDevice::DIM_STATUS && it.value().toInt() == 0)
+		// and the DIM_VOLUME. But we can't simply ignore the DIM_STATUS
+		// because that dimension can arrive after a status request.
+		// So we need to remember the status of the amplifier, and trigger
+		// for the On/Off condition only after a DIM_STATUS followed by
+		// a DIM_VOLUME.
+
+		if (it.key() == AmplifierDevice::DIM_STATUS)
 		{
-			if (trig_v_min == -1)
+			amplifier_on = (it.value().toInt() != 0);
+			if (it.value().toInt() == 0)
 			{
-				if (!satisfied)
+				if (trig_v_min == -1)
 				{
-					satisfied = true;
-					if (initialized)
-						emit condSatisfied();
+					if (!satisfied)
+					{
+						satisfied = true;
+						if (initialized)
+							emit condSatisfied();
+					}
 				}
+				else
+					satisfied = false;
+				initialized = true;
 			}
-			else
-				satisfied = false;
-			initialized = true;
 		}
-		else if (it.key() == AmplifierDevice::DIM_VOLUME)
+		else if (it.key() == AmplifierDevice::DIM_VOLUME && amplifier_on)
 		{
 			int volume = it.value().toInt();
 			if (volume >= trig_v_min && volume <= trig_v_max)
