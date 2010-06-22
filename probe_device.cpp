@@ -53,6 +53,8 @@ void NonControlledProbeDevice::manageFrame(OpenMsg &msg)
 {
 	if (where.toInt() != msg.where())
 		return;
+	if (!msg.IsMeasureFrame())
+		return;
 
 	if (type == EXTERNAL && what_t(msg.what()) == EXTERNAL_TEMPERATURE)
 	{
