@@ -139,6 +139,7 @@ signals:
 	void resettimer();
 	void freezed(bool);
 	void startscreensaver(Page*);
+	void stopscreensaver();
 };
 
 namespace bt_global { extern BtMain *btmain; }

@@ -437,6 +437,7 @@ void BtMain::gesScrSav()
 		}
 		else if (screensaver && screensaver->isRunning())
 		{
+			emit stopscreensaver();
 			Page *target = screensaver->target();
 			if (target != pagDefault)
 				main_window.setCurrentWidget(prev_page);
@@ -494,6 +495,7 @@ void BtMain::freeze(bool b)
 		(*bt_global::display).setState(DISPLAY_OPERATIVE);
 		if (screensaver && screensaver->isRunning())
 		{
+			emit stopscreensaver();
 			Page *target = screensaver->target();
 			if (target != pagDefault)
 				main_window.setCurrentWidget(prev_page);
