@@ -380,6 +380,10 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	// to switch back to the graph view
 	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)), SLOT(screenSaverStarted(Page*)));
+	connect(bt_global::btmain, SIGNAL(stopscreensaver()), SLOT(screenSaverStopped()));
+
+	// keep track for screensaver exit
+	update_after_ssaver = false;
 }
 
 EnergyView::~EnergyView()
@@ -581,6 +585,19 @@ void EnergyView::status_changed(const StatusList &status_list)
 
 void EnergyView::screenSaverStarted(Page *prev_page)
 {
+	update_after_ssaver = false;
+	if (prev_page == this)
+	{
+		if (time_period->status() == TimePeriodSelection::YEAR)
+			update_after_ssaver = true;
+		else if (time_period->status() == TimePeriodSelection::DAY && time_period->date() == QDate::currentDate())
+			update_after_ssaver = true;
+		else if (time_period->status() == TimePeriodSelection::MONTH &&
+			 time_period->date().year() == QDate::currentDate().year() &&
+			 time_period->date().month() == QDate::currentDate().month())
+			update_after_ssaver = true;
+	}
+
 	// we do not check prev_page, because unrollPages changes it
 	if (current_widget == BANNER_WIDGET)
 		return;
@@ -589,6 +606,12 @@ void EnergyView::screenSaverStarted(Page *prev_page)
 	bannNavigazione->hideCdxButton();
 	time_period->showCycleButton();
 	widget_container->setCurrentIndex(current_widget);
+}
+
+void EnergyView::screenSaverStopped()
+{
+	if (update_after_ssaver)
+		time_period->forceDate(time_period->date(), time_period->status());
 }
 
 void EnergyView::backClick()
