@@ -97,6 +97,7 @@ private slots:
 	void playbackStarted();
 	void playbackStopped();
 	void audioStateChanged(int new_state, int old_state);
+	void audioStateAboutToChange(int old_state);
 
 private:
 	// set to true when the player is paused due to a audio state change (es. vct call)

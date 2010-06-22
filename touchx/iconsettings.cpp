@@ -202,32 +202,43 @@ VolumePage::VolumePage(const QDomNode &config_node)
 	layout->addWidget(volume, 0, Qt::AlignCenter);
 	buildPage(content, nav_bar, getTextChild(config_node, "descr"));
 
-	connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));
+	connect(volume, SIGNAL(valueChanged(int)), SLOT(playRingtone()));
+
+	is_playing = false;
 }
 
-void VolumePage::showPage()
+void VolumePage::ringtoneFinished()
 {
-	bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
-	volume->setLevel(bt_global::audio_states->getVolume());
-	Page::showPage();
+	if (is_playing)
+	{
+		is_playing = false;
+		bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
+		disconnect(bt_global::ringtones, SIGNAL(ringtoneFinished()), this, SLOT(ringtoneFinished()));
+	}
 }
 
-void VolumePage::handleClose()
+void VolumePage::playRingtone()
 {
-	bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
-	bt_global::ringtones->stopRingtone();
+	if (!is_playing)
+	{
+		connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(startPlayRingtone()));
+		bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
+	}
+	else
+		startPlayRingtone();
 }
 
-void VolumePage::cleanUp()
+void VolumePage::startPlayRingtone()
 {
-	handleClose();
-}
+	disconnect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), this, SLOT(startPlayRingtone()));
+	if (!is_playing)
+		connect(bt_global::ringtones, SIGNAL(ringtoneFinished()), SLOT(ringtoneFinished()));
+	is_playing = true;
 
-void VolumePage::changeVolume(int new_vol)
-{
-	bt_global::audio_states->setVolume(new_vol);
+	bt_global::audio_states->setVolume(volume->level());
 	bt_global::ringtones->playRingtone(Ringtones::PE1);
 }
+
 
 
 VersionPage::VersionPage(const QDomNode &config_node)

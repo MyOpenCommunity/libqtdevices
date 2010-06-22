@@ -153,6 +153,7 @@ signals:
 private slots:
 	void error();
 	void processFinished();
+	void audioStateAboutToChange();
 
 private:
 	QProcess *process;

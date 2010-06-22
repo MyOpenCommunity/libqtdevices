@@ -256,6 +256,7 @@ private slots:
 	void plusClicked();
 	void minusClicked();
 	void playRingtone();
+	void startPlayRingtone();
 	void ringtoneFinished();
 
 private:

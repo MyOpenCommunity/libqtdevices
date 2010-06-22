@@ -723,6 +723,9 @@ void HeaderNavigationWidget::setCurrentSection(int section_id)
 	if (index == -1)
 		return;
 
+	Q_ASSERT_X(prev_index != -1, "HeaderNavigationWidget::setCurrentSection",
+		   qPrintable(QString("Invalid section value %1").arg(selected_section_id)));
+
 	for (int item_index = 0; item_index < button_layout->count(); ++item_index)
 	{
 		// show the selected icon if the corresponding button is in the layout

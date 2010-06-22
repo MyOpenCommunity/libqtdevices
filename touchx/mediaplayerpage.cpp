@@ -38,6 +38,7 @@ MediaPlayerPage::MediaPlayerPage() :
 		SLOT(unmounted(const QString &)));
 
 	// pause local playback when receiving a VCT call
+	connect(bt_global::audio_states, SIGNAL(stateAboutToChange(int)), SLOT(audioStateAboutToChange(int)));
 	connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(audioStateChanged(int,int)));
 
 	// handle audio state machine state changes
@@ -156,7 +157,11 @@ void MediaPlayerPage::audioStateChanged(int new_state, int old_state)
 {
 	if ((new_state == AudioStates::PLAY_MEDIA_TO_SPEAKER || new_state == AudioStates::PLAY_DIFSON) && resume_on_state_change && player->isPaused())
 		resume();
-	else if ((old_state == AudioStates::PLAY_MEDIA_TO_SPEAKER || old_state == AudioStates::PLAY_DIFSON) && player->isInstanceRunning() && !player->isPaused())
+}
+
+void MediaPlayerPage::audioStateAboutToChange(int old_state)
+{
+	if ((old_state == AudioStates::PLAY_MEDIA_TO_SPEAKER || old_state == AudioStates::PLAY_DIFSON) && player->isInstanceRunning() && !player->isPaused())
 	{
 		resume_on_state_change = true;
 		pause();

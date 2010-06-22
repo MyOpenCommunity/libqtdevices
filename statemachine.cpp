@@ -170,9 +170,17 @@ void StateMachine::removeState(int state)
 
 void StateMachine::changeState(int new_state, int old_state)
 {
+	emit stateAboutToChange(old_state);
+
+	callStateCallbacks(new_state, old_state);
+
+	emit stateChanged(new_state, old_state);
+}
+
+void StateMachine::callStateCallbacks(int new_state, int old_state)
+{
 	const State &s = available_states[new_state];
 	const State &os = available_states[old_state];
-
 
 	const QMetaObject *mo = metaObject();
 
@@ -191,7 +199,5 @@ void StateMachine::changeState(int new_state, int old_state)
 
 		meth.invoke(this, Q_ARG(int, new_state), Q_ARG(int, old_state));
 	}
-
-	emit stateChanged(new_state, old_state);
 }
 
