@@ -382,6 +382,7 @@ private:
 	int max_val;
 	int current_value_min;
 	int current_value_max;
+	bool amplifier_on;
 };
 
 
