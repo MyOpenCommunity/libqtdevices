@@ -207,6 +207,16 @@ VolumePage::VolumePage(const QDomNode &config_node)
 	is_playing = false;
 }
 
+void VolumePage::handleClose()
+{
+	bt_global::ringtones->stopRingtone();
+}
+
+void VolumePage::cleanUp()
+{
+	handleClose();
+}
+
 void VolumePage::ringtoneFinished()
 {
 	if (is_playing)
