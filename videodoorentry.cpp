@@ -263,7 +263,7 @@ void IntercomCallPage::cleanUp()
 	dev->endCall();
 	bt_global::btmain->vde_call_active = false;
 
-	disconnect(bt_global::audio_states, SIGNAL(directAudioAccessStopped()),	this, SLOT(playRingtone()));
+	disconnect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), this, SLOT(playRingtone()));
 	disconnect(bt_global::display, SIGNAL(directScreenAccessStopped()), this, SLOT(showPage()));
 
 	if (bt_global::audio_states->contains(AudioStates::MUTE))
@@ -316,7 +316,7 @@ void IntercomCallPage::handleClose()
 	bt_global::btmain->vde_call_active = false;
 	volume->disable();
 
-	disconnect(bt_global::audio_states, SIGNAL(directAudioAccessStopped()),	this, SLOT(playRingtone()));
+	disconnect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), this, SLOT(playRingtone()));
 	disconnect(bt_global::display, SIGNAL(directScreenAccessStopped()), this, SLOT(showPage()));
 
 	if (bt_global::audio_states->contains(AudioStates::MUTE))
@@ -394,14 +394,12 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 		{
 			StateButton *ring_exclusion = qobject_cast<StateButton*>(bt_global::btmain->trayBar()->getButton(TrayBar::RING_EXCLUSION));
 
-			if (!ring_exclusion || !ring_exclusion->getStatus())
+			ringtone = static_cast<Ringtones::Type>(values_list[EntryphoneDevice::RINGTONE].toInt());
+			if (ringtone == Ringtones::PI_INTERCOM || ringtone == Ringtones::PE_INTERCOM)
 			{
-				ringtone = static_cast<Ringtones::Type>(values_list[EntryphoneDevice::RINGTONE].toInt());
-				if (ringtone == Ringtones::PI_INTERCOM || ringtone == Ringtones::PE_INTERCOM)
-				{
-					bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
-					playRingtone();
-				}
+				if (!ring_exclusion || !ring_exclusion->getStatus())
+					connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(playRingtone()));
+				bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
 			}
 			break;
 		}
@@ -429,12 +427,6 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 void IntercomCallPage::playRingtone()
 {
 	disconnect(bt_global::audio_states, SIGNAL(directAudioAccessStopped()),	this, SLOT(playRingtone()));
-	if (bt_global::audio_states->isDirectAudioAccess())
-	{
-		connect(bt_global::audio_states, SIGNAL(directAudioAccessStopped()), SLOT(playRingtone()));
-		return;
-	}
-
 	bt_global::ringtones->playRingtone(static_cast<Ringtones::Type>(ringtone));
 }
 
