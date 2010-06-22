@@ -91,6 +91,11 @@ void ItemTuning::setLevel(int level)
 	changeIcons();
 }
 
+int ItemTuning::level()
+{
+	return current_level;
+}
+
 void ItemTuning::enable()
 {
 	enabled = true;
