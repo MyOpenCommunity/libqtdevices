@@ -48,7 +48,7 @@ public:
 	};
 
 	LightingDevice(QString where, PullMode pull = PULL_UNKNOWN, int pull_delay = PULL_DELAY_LIGHT,
-		       PullStateManager::FrameChecker checker = &LightingDevice::isFrameHandled);
+		       AdvancedMode adv = PULL_ADVANCED_UNKNOWN, PullStateManager::FrameChecker checker = &LightingDevice::isFrameHandled);
 
 	void turnOn();
 	void turnOn(int speed);
@@ -70,11 +70,11 @@ protected:
 
 class DimmerDevice : public LightingDevice
 {
-friend class TestDimmer;
+friend class TestDimmerDevice;
 Q_OBJECT
 public:
 	DimmerDevice(QString where, PullMode pull = PULL_UNKNOWN, int pull_delay = PULL_DELAY_DIMMER10,
-		     PullStateManager::FrameChecker checker = &DimmerDevice::isFrameHandled);
+		     AdvancedMode adv = PULL_ADVANCED_UNKNOWN, PullStateManager::FrameChecker checker = &DimmerDevice::isFrameHandled);
 
 	void increaseLevel();
 	void decreaseLevel();
@@ -85,7 +85,11 @@ protected:
 	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
 	virtual int getDimmer10Level();
 
+protected slots:
+	virtual void delayedLevelRequest();
+
 protected:
+	QTimer delayed_level_request;
 	int level;
 	bool status;
 };
@@ -93,7 +97,7 @@ protected:
 
 class Dimmer100Device : public DimmerDevice
 {
-friend class TestDimmer100;
+friend class TestDimmer100Device;
 Q_OBJECT
 public:
 	Dimmer100Device(QString where, PullMode pull = PULL_UNKNOWN, int pull_delay = PULL_DELAY_DIMMER100,
@@ -108,6 +112,7 @@ protected:
 	virtual void parseFrame(OpenMsg &msg, StatusList *sl);
 	virtual void requestPullStatus();
 	virtual int getDimmer10Level();
+	virtual void delayedLevelRequest();
 };
 
 #endif // LIGHTINGDEVICE_H

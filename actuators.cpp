@@ -32,15 +32,14 @@
 #include <QDebug>
 
 
-SingleActuator::SingleActuator(QWidget *parent, const QDomNode &config_node, QString address)
+SingleActuator::SingleActuator(QWidget *parent, const QDomNode &config_node, QString address, PullMode pull_mode)
 	: BannOnOffState(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("actuator_state"),
 		bt_global::skin->getImage("on"), OFF, getTextChild(config_node, "descr"));
 
-	// TODO: read pull mode from config
-	dev = bt_global::add_device_to_cache(new LightingDevice(address));
+	dev = bt_global::add_device_to_cache(new LightingDevice(address, pull_mode));
 
 	connect(left_button, SIGNAL(clicked()), SLOT(deactivate()));
 	connect(right_button, SIGNAL(clicked()), SLOT(activate()));
@@ -79,7 +78,7 @@ void SingleActuator::status_changed(const StatusList &status_list)
 
 
 
-ButtonActuator::ButtonActuator(QWidget *parent, const QDomNode &config_node, int t) :
+ButtonActuator::ButtonActuator(QWidget *parent, const QDomNode &config_node, int t, PullMode pull_mode) :
 	BannSinglePuls(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());

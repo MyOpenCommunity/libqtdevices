@@ -32,6 +32,22 @@
 #include <assert.h>
 
 
+// TODO remove after debugging is complete
+namespace
+{
+	inline PullMode getPullMode(const QDomNode &node)
+	{
+		QDomNode element = getChildWithName(node, "pul");
+		Q_ASSERT_X(!element.isNull(), "getPullMode", qPrintable(QString("Pull device node %1 without <pul> child").arg(getTextChild(node, "id"))));
+		bool ok;
+		int value = element.toElement().text().toInt(&ok);
+		Q_ASSERT_X(ok && (value == 0 || value == 1), "getPullMode", qPrintable(QString("Pull device %1 with invalid <pul> child").arg(getTextChild(node, "id"))));
+
+		return value ? PULL : NOT_PULL;
+	}
+}
+
+
 Automation::Automation(const QDomNode &config_node)
 {
 	loadItems(config_node);
@@ -55,19 +71,19 @@ void Automation::loadItems(const QDomNode &config_node)
 		{
 		case ATTUAT_AUTOM_INT_SIC:
 //			b = new attuatAutomIntSic(this, where, img1, img2, img3, img4);
-			b = new SecureInterblockedActuator(this, item);
+			b = new SecureInterblockedActuator(this, item, getPullMode(item));
 			break;
 		case ATTUAT_AUTOM_INT:
 //			b = new attuatAutomInt(this, where, img1, img2, img3, img4);
-			b = new InterblockedActuator(this, item);
+			b = new InterblockedActuator(this, item, getPullMode(item));
 			break;
 		case ATTUAT_AUTOM:
 //			b = new attuatAutom(this, where, img1, img2, img3, img4);
-			b = new SingleActuator(this, item, where);
+			b = new SingleActuator(this, item, where, getPullMode(item));
 			break;
 		case ATTUAT_VCT_SERR:
 //			b = new attuatPuls(this, where, img1, img2, VCT_SERR);
-			b = new ButtonActuator(this, item, VCT_SERR);
+			b = new ButtonActuator(this, item, VCT_SERR, NOT_PULL);
 			break;
 		case GR_ATTUAT_INT:
 		{
@@ -81,15 +97,15 @@ void Automation::loadItems(const QDomNode &config_node)
 		}
 		case AUTOM_CANC_ATTUAT_ILL:
 //			b = new automCancAttuatIll(this, where, img1, img2, time);
-			b = new GateLightingActuator(this, item);
+			b = new GateLightingActuator(this, item, NOT_PULL);
 			break;
 		case AUTOM_CANC_ATTUAT_VC:
 //			b = new automCancAttuatVC(this, where, img1, img2);
-			b = new GateEntryphoneActuator(this, item);
+			b = new GateEntryphoneActuator(this, item, NOT_PULL);
 			break;
 		case ATTUAT_AUTOM_PULS:
 //			b = new attuatPuls(this, where, img1, img2, AUTOMAZ);
-			b = new ButtonActuator(this, item, AUTOMAZ);
+			b = new ButtonActuator(this, item, AUTOMAZ, NOT_PULL);
 			break;
 		case PPT_STAT:
 			b = new PPTStat(this, where, cid);

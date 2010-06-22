@@ -32,6 +32,21 @@
 #include <assert.h>
 
 
+// TODO remove after debugging is complete
+namespace
+{
+	inline PullMode getPullMode(const QDomNode &node)
+	{
+		QDomNode element = getChildWithName(node, "pul");
+		Q_ASSERT_X(!element.isNull(), "getPullMode", qPrintable(QString("Pull device node %1 without <pul> child").arg(getTextChild(node, "id"))));
+		bool ok;
+		int value = element.toElement().text().toInt(&ok);
+		Q_ASSERT_X(ok && (value == 0 || value == 1), "getPullMode", qPrintable(QString("Pull device %1 with invalid <pul> child").arg(getTextChild(node, "id"))));
+
+		return value ? PULL : NOT_PULL;
+	}
+}
+
 static QList<QString> getAddresses(QDomNode item)
 {
 	QList<QString> l;
@@ -67,11 +82,11 @@ void Lighting::loadItems(const QDomNode &config_node)
 		{
 		case DIMMER:
 //			b = new dimmer(this, where, img1, img2, img3, img4, img5);
-			b = new DimmerNew(this, item, where);
+			b = new DimmerNew(this, item, where, getPullMode(item));
 			break;
 		case ATTUAT_AUTOM:
 //			b = new attuatAutom(this, where, img1, img2, img3, img4);
-			b = new SingleActuator(this, item, where);
+			b = new SingleActuator(this, item, where, getPullMode(item));
 			break;
 		case GR_DIMMER:
 //			b = new grDimmer(this, getAddresses(item), img1, img2, img3, img4);
@@ -83,26 +98,26 @@ void Lighting::loadItems(const QDomNode &config_node)
 			break;
 		case ATTUAT_AUTOM_TEMP:
 //			b = new attuatAutomTemp(this, where, img1, img2, img3, img4, times);
-			b = new TempLight(this, item);
+			b = new TempLight(this, item, getPullMode(item));
 			break;
 		case ATTUAT_VCT_LS:
 //			b = new attuatPuls(this, where, img1, img2, VCT_LS);
-			b = new ButtonActuator(this, item, VCT_LS);
+			b = new ButtonActuator(this, item, VCT_LS, NOT_PULL);
 			break;
 		case DIMMER_100:
 //			b = new dimmer100(this, where, img1, img2 ,img3, img4, img5, getTextChild(item,"softstart").toInt(),
 //					getTextChild(item,"softstop").toInt());
-			b = new Dimmer100New(this, item);
+			b = new Dimmer100New(this, item, getPullMode(item));
 			break;
 		case ATTUAT_AUTOM_TEMP_NUOVO_N:
 //			b = new attuatAutomTempNuovoN(this, where, img1, img2, img3, img4, times);
-			b = new TempLightVariable(this, item);
+			b = new TempLightVariable(this, item, getPullMode(item));
 			break;
 		case ATTUAT_AUTOM_TEMP_NUOVO_F:
 //			if (!times.count())
 //				times.append("");
 //			b = new attuatAutomTempNuovoF(this, where, img1, img2, img3, times.at(0));
-			b = new TempLightFixed(this, item);
+			b = new TempLightFixed(this, item, getPullMode(item));
 			break;
 		case GR_DIMMER100:
 		{

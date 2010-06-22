@@ -28,6 +28,45 @@
 #include <QString>
 
 /*
+ * Pull/non-pull devices:
+ * a pull device does not react to environment/general frames; at startup we do not
+ * know if a specific HW device is pull or non-pull (no indication in the configuration
+ * file)
+ *
+ * Pull/non pull discovery algorithmm:
+ *
+ * The device starts with unknown state (opening/closing/stopped) and unknown pull
+ * mode (pull/non-pull)
+ *
+ * After receiving one point-to-point measure frame, the device state is set to the state
+ * contained in the frame.
+ *
+ * When receiving an environment/generic frame, and if the device state is known,
+ * we send a point-to-point status request for the device, because we want to know if
+ * the device reacted to the environment/general frame.
+ *
+ * When receiving the point-to-point measure frame in answer to the previous request, if
+ * the status is equal to the saved status it means that the device did not react to the
+ * environment/generic frame (and so is a PULL device); if the status differs from the
+ * saved status, then the device is a  NON-PULL device
+ *
+ *
+ * If the environment/generic frame is received before any point-to-point frames (when
+ * both status and mode are unknown), the device always requests the point to point state to:
+ * - bootstrap the discovery process
+ * - retrieve the status of the device
+ *
+ *
+ * There is a twist in that some actuators may or may not react to some frames; for example
+ * some advanced light actuators react to dimmer 100 on/off frames.  The FrameChecker is used
+ * to handle this case; if it returns FRAME_NOT_HANDLED the frame is completely ignored; if it
+ * returns FRAME_HANDLED the detection algorithm works as described above; when it returns
+ * FRAME_MAYBE_HANDLED, the algorithm is run as above, but the pull state is changed only if it
+ * is non pull (because we do not know if the device does not react to frames because it is in pull
+ * mode or because it can't understand the frames).
+ */
+
+/*
  * Split a where into a+pf part and address extension.
  */
 QPair<QString, QString> splitWhere(const QString &w)
@@ -104,14 +143,17 @@ enum
 	                                // for normal frames and 100 to 200 for dimmer100 level frames).
 };
 
-PullStateManager::PullStateManager(PullMode m, FrameChecker checker)
+PullStateManager::PullStateManager(PullMode m, AdvancedMode adv, FrameChecker checker)
 {
 	mode = m;
 	status = INVALID_STATE;
 	status_requested = false;
 	frame_checker = checker;
 	last_handled = FRAME_NOT_HANDLED;
-	advanced = false;
+	if (m == PULL && adv == PULL_ADVANCED_UNKNOWN)
+		advanced = PULL_NOT_ADVANCED;
+	else
+		advanced = adv;
 }
 
 PullMode PullStateManager::getPullMode()
@@ -123,11 +165,11 @@ PullMode PullStateManager::getPullMode()
  * When ignoring the frame, return false so that the calling code doesn't generate useless
  * traffic on the bus.
  */
-bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
+PullStateManager::CheckResult PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 {
 	FrameHandled handled = frame_checker ? frame_checker(msg) : FRAME_HANDLED;
 	if (handled == FRAME_NOT_HANDLED)
-		return false;
+		return qMakePair(false, handled);
 
 	// PullStateManager will be used for automation and lighting only.
 	// I'll handle all 'what' combinations here, split to a different function or class when needed
@@ -155,13 +197,20 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 	}
 
 	if (ignore_frame)
-		return false;
+		return qMakePair(false, handled);
 
-	if (is_environment)
+	if (mode != PULL_UNKNOWN && handled == FRAME_HANDLED && is_environment)
+	{
+		status = new_state;
+		last_handled = handled;
+
+		return qMakePair(false, handled);
+	}
+	else if (is_environment)
 	{
 		last_handled = handled;
 		if (status == INVALID_STATE || status != new_state)
-			return true;
+			return qMakePair(true, handled);
 	}
 	else
 	{
@@ -169,12 +218,23 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 		// If we just get PP frames, we can't decide the mode!
 		if (status_requested && status != INVALID_STATE)
 		{
-			if (status == new_state && last_handled == FRAME_HANDLED)
+			if (mode == NOT_PULL)
+			{
+				// if the last frame was a definitely handled frame, we can't know anything
+				// about the base/advanced state of the device
+				if (last_handled == FRAME_MAYBE_HANDLED)
+					advanced = status == new_state ? PULL_NOT_ADVANCED : PULL_ADVANCED;
+			}
+			else if (status == new_state && last_handled == FRAME_HANDLED)
+			{
 				mode = PULL;
+				advanced = PULL_NOT_ADVANCED;
+			}
 			else if (status != new_state)
 			{
 				mode = NOT_PULL;
-				advanced = last_handled == FRAME_MAYBE_HANDLED;
+				if (last_handled == FRAME_MAYBE_HANDLED)
+					advanced = PULL_ADVANCED;
 			}
 		}
 		else
@@ -184,7 +244,7 @@ bool PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 		}
 	}
 
-	return false;
+	return qMakePair(false, handled);
 }
 
 void PullStateManager::setStatusRequested(bool status)
@@ -193,9 +253,9 @@ void PullStateManager::setStatusRequested(bool status)
 }
 
 
-PullDevice::PullDevice(QString who, QString where, PullMode m, int pull_delay, PullStateManager::FrameChecker checker) :
+PullDevice::PullDevice(QString who, QString where, PullMode m, int pull_delay, AdvancedMode adv, PullStateManager::FrameChecker checker) :
 	device(who, where),
-	state(m, checker)
+	state(m, adv, checker)
 {
 	delayed_request.setSingleShot(true);
 	delayed_request.setInterval(pull_delay);
@@ -224,20 +284,24 @@ void PullDevice::manageFrame(OpenMsg &msg)
 		return;
 	case GLOBAL:
 	case ENVIRONMENT:
-		if (state.getPullMode() == PULL_UNKNOWN)
+		if (!state.isDetectionComplete())
 		{
+			PullStateManager::CheckResult res = state.moreFrameNeeded(msg, true);
 			// we need to delay the status request in order for the
 			// state of the device to stabilize
-			if (state.moreFrameNeeded(msg, true))
+			if (res.first)
 				delayed_request.start();
-			return;
+			// when the device is NOT_PULL and the frame is definitely handled, we fall through
+			// and let the parsing continue
+			if (state.getPullMode() != NOT_PULL || res.second != FRAME_HANDLED)
+				return;
 		}
 		else if (state.getPullMode() == PULL)
 			return;
 		// when NOT_PULL we must parse the frame and emit status_changed() signal
 		break;
 	default:
-		if (state.getPullMode() == PULL_UNKNOWN)
+		if (!state.isDetectionComplete())
 			state.moreFrameNeeded(msg, false);
 		break;
 	}

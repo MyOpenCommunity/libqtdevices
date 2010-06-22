@@ -101,7 +101,8 @@ void AdjustDimmer::setState(States new_state)
 	switch (new_state)
 	{
 	case ON:
-		setOnIcons();
+		if (current_level != 0)
+			setOnIcons();
 		break;
 	case OFF:
 		setCenterLeftIcon(getBostikName(center_left, "sxl0"));
@@ -124,22 +125,22 @@ void AdjustDimmer::setOnIcons()
 void AdjustDimmer::setLevel(int level)
 {
 	current_level = level;
-	if (current_state == ON)
+	if (current_state == ON && current_level != 0)
 		setOnIcons();
 }
 
 
 
-DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where) :
+DimmerNew::DimmerNew(QWidget *parent, const QDomNode &config_node, QString where, PullMode pull_mode) :
 	AdjustDimmer(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
-	light_value = 20;
+	light_value = 0;
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, getTextChild(config_node, "descr"));
 
-	dev = bt_global::add_device_to_cache(new DimmerDevice(where));
+	dev = bt_global::add_device_to_cache(new DimmerDevice(where, pull_mode));
 	connect(right_button, SIGNAL(clicked()), SLOT(lightOn()));
 	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
 	connect(this, SIGNAL(center_left_clicked()), SLOT(decreaseLevel()));
@@ -249,18 +250,18 @@ enum
 	DIMMER100_SPEED = 255,
 };
 
-Dimmer100New::Dimmer100New(QWidget *parent, const QDomNode &config_node) :
+Dimmer100New::Dimmer100New(QWidget *parent, const QDomNode &config_node, PullMode pull_mode) :
 	AdjustDimmer(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
-	light_value = 5;
+	light_value = 0;
 	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("dimmer"),
 		bt_global::skin->getImage("dimmer"), bt_global::skin->getImage("on"),
 		bt_global::skin->getImage("dimmer_broken"), OFF, light_value, getTextChild(config_node, "descr"));
 
 	QString where = getTextChild(config_node, "where");
-	dev = bt_global::add_device_to_cache(new Dimmer100Device(where));
+	dev = bt_global::add_device_to_cache(new Dimmer100Device(where, pull_mode));
 
 	start_speed = getTextChild(config_node, "softstart").toInt();
 	stop_speed = getTextChild(config_node, "softstop").toInt();
@@ -392,7 +393,7 @@ void Dimmer100Group::decreaseLevel()
 }
 
 
-TempLight::TempLight(QWidget *parent, const QDomNode &config_node) :
+TempLight::TempLight(QWidget *parent, const QDomNode &config_node, PullMode pull_mode) :
 	BannOnOff2Labels(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
@@ -402,7 +403,7 @@ TempLight::TempLight(QWidget *parent, const QDomNode &config_node) :
 		bt_global::skin->getImage("on"), OFF, descr, QString());
 
 	QString where = getTextChild(config_node, "where");
-	dev = bt_global::add_device_to_cache(new LightingDevice(where));
+	dev = bt_global::add_device_to_cache(new LightingDevice(where, pull_mode));
 
 	time_index = 0;
 	readTimes(config_node);
@@ -464,8 +465,8 @@ void TempLight::status_changed(const StatusList &sl)
 }
 
 
-TempLightVariable::TempLightVariable(QWidget *parent, const QDomNode &config_node) :
-	TempLight(parent, config_node)
+TempLightVariable::TempLightVariable(QWidget *parent, const QDomNode &config_node, PullMode pull_mode) :
+	TempLight(parent, config_node, pull_mode)
 {
 	readTimes(config_node);
 	updateTimeLabel();
@@ -500,7 +501,7 @@ enum {
 	TLF_TIME_STATES = 8,
 };
 
-TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
+TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node, PullMode pull_mode) :
 	BannOn2Labels(parent)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
@@ -523,7 +524,7 @@ TempLightFixed::TempLightFixed(QWidget *parent, const QDomNode &config_node) :
 #endif
 
 	QString where = getTextChild(config_node, "where");
-	dev = bt_global::add_device_to_cache(new LightingDevice(where));
+	dev = bt_global::add_device_to_cache(new LightingDevice(where, pull_mode));
 
 	QString descr = getTextChild(config_node, "descr");
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("lamp_status"),

@@ -38,8 +38,10 @@ Q_OBJECT
 protected:
 	void initLightingDevice(LightingDevice *d = 0);
 	void cleanupLightingDevice();
-	void setParams(QString w, PullMode m, bool a = false);
+	void setParams(QString w, PullMode m, AdvancedMode a);
+	void setParams(QString w, PullMode m);
 	virtual QString getRequestStatusFrame();
+	virtual void sendPullRequestIfNeeded();
 
 private slots:
 	void init();
@@ -59,6 +61,7 @@ private slots:
 	void receiveLightOnOffUnknown2();
 	void receiveLightOnOffPullExt();
 	void receiveLightOnOffNotPullExt();
+	void receiveLightOnOffNotPullAdvUnknown();
 	void receiveLightOnOffUnknownExt2();
 	void receiveLightOnOffUnknownExt();
 	void receiveFixedTiming();
@@ -69,21 +72,26 @@ private slots:
 	void receiveGlobalDimmer100OnOffNonPullAdvanced();
 	void receiveGlobalDimmer100OnOffPull();
 
+	void testAdvancedDetection2();
+
 private:
 	void checkPullUnknown();
-	void sendPullRequestIfNeeded();
 
 	bool cleanup_required;
 	LightingDevice *dev;
 };
 
-class TestDimmer : public TestLightingDevice
+class TestDimmerDevice : public TestLightingDevice
 {
 Q_OBJECT
 protected:
 	void initDimmer(DimmerDevice *d = 0);
 	void cleanupDimmer();
 	virtual void checkLevel();
+	virtual int convertLevel(int level);
+	virtual int convertLevel100(int level);
+
+	virtual void sendPullRequestIfNeeded();
 
 private slots:
 	void init();
@@ -92,8 +100,13 @@ private slots:
 	void sendDimmerIncreaseLevel();
 	void sendDimmerDecreaseLevel();
 
+	void receiveLightOnRequestLevel();
 	void receiveDimmerLevel();
+	void receiveDimmerLevel2();
 	void receiveDimmerProblem();
+
+	void receiveDimmer100WriteLevel();
+	void receiveDimmer100Level();
 
 	void receiveGlobalIncrementLevel();
 	void receiveGlobalDecrementLevel();
@@ -105,17 +118,23 @@ private slots:
 	void receiveGlobalDimmer100IncDecNonPullAdvanced();
 	void receiveGlobalDimmer100IncDecPull();
 
+	void testAdvancedDetection();
+	void testAdvancedDetection2();
+	void testRequestLevel();
+
 private:
 	bool cleanup_required;
 	DimmerDevice *dimmer;
 };
 
-class TestDimmer100 : public TestDimmer
+class TestDimmer100Device : public TestDimmerDevice
 {
 Q_OBJECT
 protected:
 	virtual void checkLevel();
 	virtual QString getRequestStatusFrame();
+	virtual int convertLevel(int level);
+	virtual int convertLevel100(int level);
 
 private slots:
 	void init();
@@ -131,10 +150,14 @@ private slots:
 	void receiveGlobalIncrementLevel100();
 	void receiveGlobalDecrementLevel100();
 
+	void testRequestLevel100();
+
 	// disable some tests from superclasses
 	void receiveGlobalDimmer100OnOffNonPullAdvanced();
 	void receiveGlobalDimmer100SetlevelNonPullAdvanced();
 	void receiveGlobalDimmer100IncDecNonPullAdvanced();
+	void testAdvancedDetection();
+	void testAdvancedDetection2();
 
 	// override some more tests from superclasses
 	void receiveGlobalDimmer100OnOffNonPullBase();

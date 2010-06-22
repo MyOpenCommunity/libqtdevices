@@ -86,8 +86,8 @@ int dimmer100LevelTo10(int level)
 
 
 
-LightingDevice::LightingDevice(QString where, PullMode pull, int pull_delay, PullStateManager::FrameChecker checker) :
-	PullDevice(QString("1"), where, pull, pull_delay, checker)
+LightingDevice::LightingDevice(QString where, PullMode pull, int pull_delay, AdvancedMode adv, PullStateManager::FrameChecker checker) :
+	PullDevice(QString("1"), where, pull, pull_delay, adv, checker)
 {
 }
 
@@ -219,11 +219,20 @@ void LightingDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 }
 
 
-DimmerDevice::DimmerDevice(QString where, PullMode pull, int pull_delay, PullStateManager::FrameChecker checker) :
-	LightingDevice(where, pull, pull_delay, checker)
+DimmerDevice::DimmerDevice(QString where, PullMode pull, int pull_delay, AdvancedMode adv, PullStateManager::FrameChecker checker) :
+	LightingDevice(where, pull, pull_delay, adv, checker)
 {
 	 level = 0;
 	 status = false;
+
+	 delayed_level_request.setSingleShot(true);
+	 delayed_level_request.setInterval(pull_delay);
+	 connect(&delayed_level_request, SIGNAL(timeout()), SLOT(delayedLevelRequest()));
+}
+
+void DimmerDevice::delayedLevelRequest()
+{
+	requestStatus();
 }
 
 void DimmerDevice::increaseLevel()
@@ -274,7 +283,15 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 	LightingDevice::parseFrame(msg, sl);
 
 	if (sl->contains(DIM_DEVICE_ON))
+	{
 		 status = (*sl)[DIM_DEVICE_ON].toBool();
+		 // when a dimmer is turned on by a global/environment command, and we do not know its level, we
+		 // need to issue a status request in order to get the level
+		 if (status && level == 0 && checkAddressIsForMe(QString::fromStdString(msg.whereFull()), where) != P2P)
+			 delayed_level_request.start();
+		 else
+			 delayed_level_request.stop();
+	}
 
 	int what = msg.what();
 
@@ -313,7 +330,7 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 
 			dimmer10level = qMin(qMax(dimmer10level, 2), 10);
 			level = dimmerLevelTo100(dimmer10level);
-			(*sl)[DIM_DIMMER_LEVEL] = dimmer10level * 10;
+			(*sl)[DIM_DIMMER_LEVEL] = getDimmer10Level();
 		}
 		else
 		{
@@ -347,9 +364,23 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 	// dimmer 100 set status, for advanced dimmers
 	if (what == DIMMER100_STATUS && (msg.IsMeasureFrame() || msg.IsWriteFrame()) && isAdvanced())
 	{
-		level = msg.whatArgN(0) - 100;
+		Q_ASSERT_X(msg.whatArgCnt() == 2, "DimmerDevice::parseFrame",
+			"Dimmer 100 status frame must have 2 what args");
 
-		(*sl)[DIM_DIMMER_LEVEL] = getDimmer10Level();
+		int new_level = msg.whatArgN(0) - 100;
+
+		// if level == 0 device is off
+		if (new_level == 0)
+		{
+			(*sl)[DIM_DEVICE_ON] = status = false;
+		}
+		else
+		{
+			level = new_level;
+
+			(*sl)[DIM_DEVICE_ON] = status = true;
+			(*sl)[DIM_DIMMER_LEVEL] = getDimmer10Level();
+		}
 	}
 }
 
@@ -360,8 +391,13 @@ int DimmerDevice::getDimmer10Level()
 
 
 Dimmer100Device::Dimmer100Device(QString where, PullMode pull, int pull_delay, PullStateManager::FrameChecker checker) :
-	DimmerDevice(where, pull, pull_delay, checker)
+	DimmerDevice(where, pull, pull_delay, PULL_ADVANCED, checker)
 {
+}
+
+void Dimmer100Device::delayedLevelRequest()
+{
+	requestDimmer100Status();
 }
 
 void Dimmer100Device::increaseLevel100(int delta, int speed)
@@ -404,46 +440,20 @@ void Dimmer100Device::parseFrame(OpenMsg &msg, StatusList *sl)
 
 		Q_ASSERT_X(msg.whatArgCnt() == 2, "Dimmer100Device::parseFrame",
 			"Dimmer 100 status frame must have 2 what args");
-		// convert the value in 0-100 range
-		int new_level = msg.whatArgN(0) - 100;
 
-		// if level == 0 device is off
-		if (new_level == 0)
-		{
-			status = false;
-			v.setValue(false);
-			(*sl)[DIM_DEVICE_ON] = v;
-		}
-		else
-		{
-			level = new_level;
-
-			v.setValue(new_level);
-			(*sl)[DIM_DIMMER100_LEVEL] = v;
-
-			v.setValue(msg.whatArgN(1));
-			(*sl)[DIM_DIMMER100_SPEED] = v;
-		}
+		// status/level handling performed in DimmerDevice
+		if (status)
+			(*sl)[DIM_DIMMER100_SPEED] = msg.whatArgN(1);
 	}
 
+	// the level adjustment is already performed in DimmerDevice::parseFrame, we only
+	// need to send the status update
 	if ((what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 2)
 	{
-		int delta = msg.whatArgN(0);
-
 		if (status)
-		{
-			if (what == DIMMER_INC)
-				level += delta;
-			else
-				level -= delta;
-
-			(*sl)[DIM_DIMMER100_LEVEL] = level = qMin(qMax(level, 1), 100);
-		}
-		else
-		{
-			status = true;
 			(*sl)[DIM_DIMMER100_LEVEL] = level;
-		}
+		else
+			(*sl)[DIM_DIMMER100_LEVEL] = level;
 	}
 }
 

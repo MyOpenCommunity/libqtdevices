@@ -24,7 +24,7 @@
 
 #include "bann2_buttons.h" // BannOnOffState
 #include "bann1_button.h"  // BannSinglePuls
-#include "device.h"        // StatusList
+#include "pulldevice.h"    // StatusList, PullMode
 
 class device;
 class device_status;
@@ -36,7 +36,7 @@ class SingleActuator : public BannOnOffState
 {
 Q_OBJECT
 public:
-	SingleActuator(QWidget *parent, const QDomNode &config_node, QString address);
+	SingleActuator(QWidget *parent, const QDomNode &config_node, QString address, PullMode pull_mode);
 	virtual void inizializza(bool forza = false);
 
 private slots:
@@ -52,7 +52,7 @@ class ButtonActuator : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	ButtonActuator(QWidget *parent, const QDomNode &config_node, int type);
+	ButtonActuator(QWidget *parent, const QDomNode &config_node, int type, PullMode pull_mode);
 
 private slots:
 	void activate();
