@@ -619,7 +619,7 @@ void PageTermoReg::valueReceived(const DeviceValues &values_list)
 	}
 }
 
-void PageTermoReg::setSeason(int new_season)
+void PageTermoReg::setSeason(ThermalDevice::Season new_season)
 {
 	if (new_season == ThermalDevice::SE_SUMMER || new_season == ThermalDevice::SE_WINTER)
 	{
@@ -630,8 +630,8 @@ void PageTermoReg::setSeason(int new_season)
 			img = icon_winter;
 		QPixmap *icon = bt_global::icons_cache.getIcon(img);
 		season_icon->setPixmap(*icon);
-		program_choice->setSeason(static_cast<Season>(new_season));
-		program_menu->setSeason(static_cast<Season>(new_season));
+		program_choice->setSeason(new_season);
+		program_menu->setSeason(new_season);
 	}
 	else
 		qWarning("Received season is not SUMMER or WINTER, ignoring");
@@ -772,9 +772,9 @@ ThermalDevice *PageTermoReg99z::dev()
 	return _dev;
 }
 
-void PageTermoReg99z::setSeason(Season new_season)
+void PageTermoReg99z::setSeason(ThermalDevice::Season new_season)
 {
-	if (new_season == SUMMER || new_season == WINTER)
+	if (new_season == ThermalDevice::SE_SUMMER || new_season == ThermalDevice::SE_WINTER)
 		scenario_menu->setSeason(new_season);
 	else
 		qWarning("Received season is not SUMMER or WINTER, ignoring");
@@ -1077,17 +1077,17 @@ ProgramMenu::ProgramMenu(QWidget *parent, QMap<QString, QString> _descriptions, 
 	buildPage(title);
 }
 
-void ProgramMenu::setSeason(Season new_season)
+void ProgramMenu::setSeason(ThermalDevice::Season new_season)
 {
 	if (new_season != season)
 	{
 		season = new_season;
 		switch (season)
 		{
-		case SUMMER:
+		case ThermalDevice::SE_SUMMER:
 			createSummerBanners();
 			break;
-		case WINTER:
+		case ThermalDevice::SE_WINTER:
 			createWinterBanners();
 			break;
 		}
@@ -1128,7 +1128,7 @@ WeeklyMenu::WeeklyMenu(QWidget *parent, QMap<QString, QString> programs, QString
 {
 	summer_icon = bt_global::skin->getImage("summer_program");
 	winter_icon = bt_global::skin->getImage("winter_program");
-	season = SUMMER;
+	season = ThermalDevice::SE_SUMMER;
 	createSummerBanners();
 }
 
@@ -1147,7 +1147,7 @@ ScenarioMenu::ScenarioMenu(QWidget *parent, QMap<QString, QString> scenarios, QS
 {
 	summer_icon = bt_global::skin->getImage("summer_scenario");
 	winter_icon = bt_global::skin->getImage("winter_scenario");
-	season = SUMMER;
+	season = ThermalDevice::SE_SUMMER;
 	createSummerBanners();
 }
 
