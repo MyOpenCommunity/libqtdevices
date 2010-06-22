@@ -302,7 +302,7 @@ QDate TimePeriodSelection::date()
 	return selection_date;
 }
 
-int TimePeriodSelection::status()
+TimePeriodSelection::TimePeriod TimePeriodSelection::status()
 {
 	return _status;
 }

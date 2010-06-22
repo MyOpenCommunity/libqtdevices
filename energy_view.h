@@ -62,7 +62,7 @@ public:
 	void showCycleButton();
 	QDate date();
 	QString dateDisplayed();
-	int status();
+	TimePeriod status();
 	void forceDate(QDate new_date, TimePeriod period=DAY);
 
 private slots:
