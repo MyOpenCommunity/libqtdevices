@@ -423,6 +423,12 @@ SoundPlayer::SoundPlayer()
 	process = new QProcess(this);
 	connect(process, SIGNAL(error(QProcess::ProcessError)), SLOT(error()));
 	connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(processFinished()));
+	connect(bt_global::audio_states, SIGNAL(stateAboutToChange(int)), SLOT(audioStateAboutToChange()));
+}
+
+void SoundPlayer::audioStateAboutToChange()
+{
+	stop();
 }
 
 void SoundPlayer::processFinished()
