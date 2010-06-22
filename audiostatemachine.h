@@ -75,7 +75,9 @@ public:
 	virtual void start(int state);
 
 	// this override might insert the state in the middle of the state stack instea
-	// of pushing it at the top
+	// of pushing it at the top; also, since the state change happens asynchronously,
+	// you need to use the stateAboutToChange()/stateChanged() to be notified
+	// when the transition completes
 	virtual bool toState(int state);
 
 	// Set and get the volume of the current state
@@ -112,6 +114,9 @@ signals:
 	void directAudioAccessStopped();
 
 #if !defined(BT_HARDWARE_X11)
+
+protected:
+	void changeState(int new_state, int old_state);
 
 private slots:
 	// declare state handlers here
@@ -156,10 +161,11 @@ private slots:
 	void stateScreensaverWithoutPlayExited();
 
 	void saveVolumes();
+	void completeStateChange();
 
 private:
 	QTimer *volumes_timer;
-	int current_audio_path;
+	int current_audio_path, pending_old_state, pending_new_state;
 #endif
 
 private:

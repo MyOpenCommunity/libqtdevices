@@ -114,14 +114,17 @@ protected:
 	// of the stack
 	void insertState(int index, int state);
 
+	// called to change the state
+	virtual void changeState(int new_state, int old_state);
+
+	void callStateCallbacks(int new_state, int old_state);
+
 private:
 	// the map of available states
 	QHash<int, State> available_states;
 
 	// the list of currently active states
 	QList<int> active_states;
-
-	void changeState(int new_state, int old_state);
 
 	// exits from the current state and moves to the previous one.
 	void exitCurrentState();

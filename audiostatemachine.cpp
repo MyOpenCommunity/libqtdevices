@@ -218,9 +218,11 @@ AudioStateMachine::AudioStateMachine()
 	volumes_timer = new QTimer(this);
 	volumes_timer->setInterval(VOLUME_TIMER_SECS * 1000);
 	connect(volumes_timer, SIGNAL(timeout()), SLOT(saveVolumes()));
+	connect(this, SIGNAL(directAudioAccessStopped()), SLOT(completeStateChange()));
 
 	current_audio_path = -1;
 	direct_audio_access = 0;
+	pending_old_state = pending_new_state = -1;
 
 	addState(IDLE,
 		 SLOT(stateIdleEntered()),
@@ -313,6 +315,39 @@ bool AudioStateMachine::toState(int state)
 	insertState(index, state);
 
 	return true;
+}
+
+void AudioStateMachine::changeState(int new_state, int old_state)
+{
+	emit stateAboutToChange(old_state);
+
+	pending_old_state = old_state;
+	pending_new_state = new_state;
+
+	if (isDirectAudioAccess())
+	{
+		// completeStateChange will be called after the playing process completes
+		qDebug() << "Delaying audio state transition";
+	}
+	else
+	{
+		qDebug() << "Direct audio state transition";
+
+		completeStateChange();
+	}
+}
+
+void AudioStateMachine::completeStateChange()
+{
+	// check if there is any pending transition
+	if (pending_new_state == -1 || pending_old_state == -1)
+		return;
+
+	callStateCallbacks(pending_new_state, pending_old_state);
+
+	emit stateChanged(pending_new_state, pending_old_state);
+
+	pending_old_state = pending_new_state = -1;
 }
 
 void AudioStateMachine::saveVolumes()
