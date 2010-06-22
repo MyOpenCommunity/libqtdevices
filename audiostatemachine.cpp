@@ -199,7 +199,7 @@ namespace
 	{
 		return state == AudioStates::IP_INTERCOM_CALL || state == AudioStates::IP_VIDEO_CALL ||
 		       state == AudioStates::SCS_INTERCOM_CALL || state == AudioStates::SCS_VIDEO_CALL ||
-		       state == AudioStates::PLAY_RINGTONE || state == AudioStates::MUTE;
+		       state == AudioStates::PLAY_VDE_RINGTONE || state == AudioStates::MUTE;
 	}
 
 	bool isAlarmState(int state)
