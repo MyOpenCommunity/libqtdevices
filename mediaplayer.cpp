@@ -436,7 +436,10 @@ void SoundPlayer::processFinished()
 	if (!to_play.isNull())
 		start();
 	else
+	{
+		bt_global::audio_states->setDirectAudioAccess(false);
 		emit soundFinished();
+	}
 }
 
 void SoundPlayer::play(const QString &path)
@@ -448,7 +451,10 @@ void SoundPlayer::play(const QString &path)
 		process->terminate();
 	}
 	else
+	{
+		bt_global::audio_states->setDirectAudioAccess(true);
 		start();
+	}
 }
 
 void SoundPlayer::start()
