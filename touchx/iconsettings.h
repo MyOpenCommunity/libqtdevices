@@ -86,16 +86,14 @@ Q_OBJECT
 public:
 	VolumePage(const QDomNode &config_node);
 
-public slots:
-	void changeVolume(int new_vol);
-	virtual void showPage();
-	virtual void cleanUp();
-
 private slots:
-	void handleClose();
+	void ringtoneFinished();
+	void playRingtone();
+	void startPlayRingtone();
 
 private:
 	ItemTuning *volume;
+	bool is_playing;
 };
 
 
