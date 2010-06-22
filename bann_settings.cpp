@@ -441,10 +441,20 @@ void BannRingtone::playRingtone()
 {
 	if (!is_playing)
 	{
-		is_playing = true;
+		connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(startPlayRingtone()));
 		bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
-		connect(bt_global::ringtones, SIGNAL(ringtoneFinished()), this, SLOT(ringtoneFinished()));
 	}
+	else
+		startPlayRingtone();
+}
+
+void BannRingtone::startPlayRingtone()
+{
+	disconnect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), this, SLOT(startPlayRingtone()));
+	if (!is_playing)
+		connect(bt_global::ringtones, SIGNAL(ringtoneFinished()), SLOT(ringtoneFinished()));
+	is_playing = true;
+
 	bt_global::ringtones->playRingtone(current_ring);
 	bt_global::ringtones->setRingtone(ring_type, item_id, current_ring);
 }
