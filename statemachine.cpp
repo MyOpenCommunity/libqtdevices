@@ -170,9 +170,10 @@ void StateMachine::removeState(int state)
 
 void StateMachine::changeState(int new_state, int old_state)
 {
+	emit stateAboutToChange(old_state);
+
 	const State &s = available_states[new_state];
 	const State &os = available_states[old_state];
-
 
 	const QMetaObject *mo = metaObject();
 

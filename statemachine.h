@@ -95,6 +95,9 @@ public:
 	bool contains(int state);
 
 signals:
+	// emitted before the state changes
+	void stateAboutToChange(int old_state);
+
 	// emitted when the state transition is complete, after the entered/exited
 	// callbacks have been called
 	void stateChanged(int new_state, int old_state);
