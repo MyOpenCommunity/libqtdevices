@@ -768,6 +768,7 @@ DeviceConditionVolume::DeviceConditionVolume(DeviceConditionDisplayInterface* co
 	set_current_value_max(get_condition_value_max());
 	setDevice(AmplifierDevice::createDevice(where));
 	Draw();
+	amplifier_on = false;
 }
 
 void DeviceConditionVolume::set_condition_value_min(int s)
@@ -934,17 +935,31 @@ bool DeviceConditionVolume::parseValues(const DeviceValues &values_list)
 	while (it != values_list.constEnd())
 	{
 		// When the Amplifier is turned on the device send both the DIM_STATUS
-		// and the DIM_VOLUME, so we can ignore the DIM_STATUS
-		if (it.key() == AmplifierDevice::DIM_STATUS && it.value().toInt() == 0)
+		// and the DIM_VOLUME. But we can't simply ignore the DIM_STATUS
+		// because that dimension can arrive after a status request.
+		// So we need to remember the status of the amplifier, and trigger
+		// for the On/Off condition only after a DIM_STATUS followed by
+		// a DIM_VOLUME.
+
+		if (it.key() == AmplifierDevice::DIM_STATUS)
 		{
-			managed = true;
-			satisfied = (trig_v_min == -1);
+			amplifier_on = (it.value().toInt() != 0);
+			if (it.value().toInt() == 0)
+			{
+				managed = true;
+				satisfied = (trig_v_min == -1);
+			}
 		}
-		else if (it.key() == AmplifierDevice::DIM_VOLUME)
+		else if (it.key() == AmplifierDevice::DIM_VOLUME && amplifier_on)
 		{
 			managed = true;
 			int volume = it.value().toInt();
-			satisfied = (volume >= trig_v_min && volume <= trig_v_max);
+			if (trig_v_min == get_min() && trig_v_max == get_max()) // the On condition
+				satisfied = true;
+			else if (trig_v_min == -1) // the Off condition
+				satisfied = false;
+			else // a volume condition
+				satisfied = (volume >= trig_v_min && volume <= trig_v_max);
 		}
 		++it;
 	}
