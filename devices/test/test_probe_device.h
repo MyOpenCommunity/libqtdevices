@@ -37,6 +37,7 @@ private slots:
 	void sendRequestStatus();
 
 	void receiveTemperature();
+	void testCrash();
 
 private:
 	NonControlledProbeDevice *dev;
@@ -52,6 +53,7 @@ private slots:
 	void sendRequestStatus();
 
 	void receiveTemperature();
+	void testCrash();
 
 private:
 	NonControlledProbeDevice *dev;

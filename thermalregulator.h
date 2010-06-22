@@ -39,13 +39,6 @@ class BtTimeEdit;
 class BtDateEdit;
 
 
-enum Season
-{
-	SUMMER = 0,
-	WINTER = 1,
-};
-
-
 /**
  *
  */
@@ -73,7 +66,7 @@ protected:
 	 * Set the icon on the main page of thermal regulator and calls setSeason() on
 	 * his own ProgramMenu's.
 	 */
-	virtual void setSeason(int new_season);
+	virtual void setSeason(ThermalDevice::Season new_season);
 
 	/**
 	 * Utility function to find in the DOM the program description to be displayed on screen.
@@ -261,7 +254,7 @@ public:
 
 protected:
 	virtual void createSettingsMenu(QDomNode regulator_node);
-	virtual void setSeason(Season new_season);
+	virtual void setSeason(ThermalDevice::Season new_season);
 	void createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice99Zones *dev);
 
 private:
@@ -384,10 +377,10 @@ public:
 	ProgramMenu(QWidget *parent, QMap<QString, QString> descriptions, QString title);
 	virtual void createSummerBanners() = 0;
 	virtual void createWinterBanners() = 0;
-	void setSeason(Season new_season);
+	void setSeason(ThermalDevice::Season new_season);
 protected:
 	QString summer_icon, winter_icon;
-	int season;
+	ThermalDevice::Season season;
 	QMap<QString, QString> descriptions;
 	/**
 	 * \param season Either "summer" or "winter"
