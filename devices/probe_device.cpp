@@ -75,6 +75,8 @@ bool NonControlledProbeDevice::parseFrame(OpenMsg &msg, DeviceValues &values_lis
 {
 	if (where.toInt() != msg.where())
 		return false;
+	if (!isDimensionFrame(msg))
+		return false;
 
 	if (type == EXTERNAL && what_t(msg.what()) == EXTERNAL_TEMPERATURE)
 	{
