@@ -27,6 +27,8 @@
 
 class NonControlledProbeDevice : public device
 {
+friend class TestNonControlledProbeDevice;
+friend class TestExternalProbeDevice;
 Q_OBJECT
 public:
 	enum ProbeType
