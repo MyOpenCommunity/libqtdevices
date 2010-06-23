@@ -48,6 +48,8 @@ private:
 
 StateMachine::StateMachine()
 {
+	connect(this, SIGNAL(stateChanged(int,int)), SIGNAL(stateTransition(int,int)));
+	connect(this, SIGNAL(stateReentered(int,int)), SIGNAL(stateTransition(int,int)));
 }
 
 void StateMachine::start(int state)
@@ -130,6 +132,7 @@ bool StateMachine::toState(int state)
 	if (state == currentState())
 	{
 		active_states.append(state);
+		emit stateReentered(state, state);
 		return true;
 	}
 
