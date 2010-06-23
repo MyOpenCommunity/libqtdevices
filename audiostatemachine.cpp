@@ -28,6 +28,7 @@
 #include <QProcess>
 #include <QTimer>
 #include <QTime>
+#include <QFile>
 
 #include <fcntl.h> // open
 #include <unistd.h> // usleep, read, write
@@ -166,6 +167,28 @@ namespace
 	void deactivateLocalSource()
 	{
 		smartExecute("/bin/rca2_off");
+	}
+
+	void activateLocalAmplifier()
+	{
+		QFile ampli_device("/proc/sys/dev/btweb/en_ampli");
+
+		qDebug() << "Enabling local amplifier";
+		ampli_device.open(QFile::WriteOnly);
+		ampli_device.write("1\n");
+		ampli_device.flush();
+		ampli_device.close();
+	}
+
+	void deactivateLocalAmplifier()
+	{
+		QFile ampli_device("/proc/sys/dev/btweb/en_ampli");
+
+		qDebug() << "Disabling local amplifier";
+		ampli_device.open(QFile::WriteOnly);
+		ampli_device.write("0\n");
+		ampli_device.flush();
+		ampli_device.close();
 	}
 
 	void changeVolumePath(Volumes::Type type, int value)
