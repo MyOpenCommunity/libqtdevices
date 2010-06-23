@@ -547,9 +547,9 @@ void VCTCallPage::valueReceived(const DeviceValues &values_list)
 		if (ringtone == Ringtones::PE1 || ringtone == Ringtones::PE2 ||
 			ringtone == Ringtones::PE3 || ringtone == Ringtones::PE4)
 		{
-			bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
 			if (!ring_exclusion || !ring_exclusion->getStatus())
-				playRingtone();
+				connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(playRingtone()));
+			bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
 		}
 	}
 }
@@ -561,7 +561,7 @@ void VCTCallPage::cleanUp()
 	// autoswitch call) and terminate the video.
 	vct_call->endCall();
 
-	disconnect(bt_global::audio_states, SIGNAL(directAudioAccessStopped()),	this, SLOT(playRingtone()));
+	disconnect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), this, SLOT(playRingtone()));
 	disconnect(bt_global::display, SIGNAL(directScreenAccessStopped()), this, SLOT(showPage()));
 
 	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
@@ -576,7 +576,7 @@ void VCTCallPage::cleanUp()
 
 void VCTCallPage::handleClose()
 {
-	disconnect(bt_global::audio_states, SIGNAL(directAudioAccessStopped()),	this, SLOT(playRingtone()));
+	disconnect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), this, SLOT(playRingtone()));
 	disconnect(bt_global::display, SIGNAL(directScreenAccessStopped()), this, SLOT(showPage()));
 
 	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
@@ -597,13 +597,7 @@ int VCTCallPage::sectionId() const
 
 void VCTCallPage::playRingtone()
 {
-	disconnect(bt_global::audio_states, SIGNAL(directAudioAccessStopped()),	this, SLOT(playRingtone()));
-	if (bt_global::audio_states->isDirectAudioAccess())
-	{
-		connect(bt_global::audio_states, SIGNAL(directAudioAccessStopped()), SLOT(playRingtone()));
-		return;
-	}
-
+	disconnect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), this, SLOT(playRingtone()));
 	bt_global::ringtones->playRingtone(static_cast<Ringtones::Type>(ringtone));
 }
 

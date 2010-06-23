@@ -55,6 +55,7 @@ public:
 	ItemTuningStatus getStatus();
 	void setStatus(const ItemTuningStatus &st);
 	void setLevel(int level);
+	int level();
 
 	// The enable/disable methods can be used to avoid the increase and decrease
 	// of the volume.

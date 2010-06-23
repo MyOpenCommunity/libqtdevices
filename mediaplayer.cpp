@@ -423,6 +423,12 @@ SoundPlayer::SoundPlayer()
 	process = new QProcess(this);
 	connect(process, SIGNAL(error(QProcess::ProcessError)), SLOT(error()));
 	connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(processFinished()));
+	connect(bt_global::audio_states, SIGNAL(stateAboutToChange(int)), SLOT(audioStateAboutToChange()));
+}
+
+void SoundPlayer::audioStateAboutToChange()
+{
+	stop();
 }
 
 void SoundPlayer::processFinished()
@@ -430,7 +436,10 @@ void SoundPlayer::processFinished()
 	if (!to_play.isNull())
 		start();
 	else
+	{
+		bt_global::audio_states->setDirectAudioAccess(false);
 		emit soundFinished();
+	}
 }
 
 void SoundPlayer::play(const QString &path)
@@ -442,7 +451,10 @@ void SoundPlayer::play(const QString &path)
 		process->terminate();
 	}
 	else
+	{
+		bt_global::audio_states->setDirectAudioAccess(true);
 		start();
+	}
 }
 
 void SoundPlayer::start()
