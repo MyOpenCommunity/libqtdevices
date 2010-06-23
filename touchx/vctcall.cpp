@@ -413,9 +413,11 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			if (old_status && !new_status)
 				stopVideo();
 			// Switch from a camera without video to a camera with video
-			else if (!old_status && new_status)
+			else if ((!old_status || call_status->stopped) && new_status)
+			{
+				call_status->stopped = false;
 				startVideo();
-
+			}
 			break;
 		}
 		case EntryphoneDevice::MOVING_CAMERA:

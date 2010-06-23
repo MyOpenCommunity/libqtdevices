@@ -954,12 +954,7 @@ bool DeviceConditionVolume::parseValues(const DeviceValues &values_list)
 		{
 			managed = true;
 			int volume = it.value().toInt();
-			if (trig_v_min == get_min() && trig_v_max == get_max()) // the On condition
-				satisfied = true;
-			else if (trig_v_min == -1) // the Off condition
-				satisfied = false;
-			else // a volume condition
-				satisfied = (volume >= trig_v_min && volume <= trig_v_max);
+			satisfied = (volume >= trig_v_min && volume <= trig_v_max);
 		}
 		++it;
 	}

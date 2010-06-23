@@ -32,8 +32,8 @@ namespace AudioStates
 	/*
 	 * BEEP_ON, PLAY_RINGTONE, PLAY_VDE_RINGTONE, ALARM_TO_SPEAKER have the same output path, but
 	 *     maybe different volumes
-	 * SCREENSAVER_WITH_PLAY is the same as the other play states (maybe it should be removed)
-	 * SCRENSAVER_WITHOUT_PLAY, IDLE: power off the local amplifier
+	 * IDLE: power off the local amplifier
+	 * SCREENSAVER: like IDLE, only entered when there is a BEEP_ON state on the stack
 	 * PLAY_FROM_DIFSON_TO_SPEAKER, PLAY_MEDIA_TO_DIFSON can be active at the same time
 	 *     ALARM_TO_DIFSON is the same as the two states above
 	 */
@@ -51,8 +51,7 @@ namespace AudioStates
 		IP_VIDEO_CALL,
 		IP_INTERCOM_CALL,
 		ALARM_TO_SPEAKER,
-		SCREENSAVER_WITH_PLAY,
-		SCREENSAVER_WITHOUT_PLAY,
+		SCREENSAVER,
 	};
 }
 
@@ -153,12 +152,9 @@ private slots:
 	// Events: Play Alarm on local speaker
 	void stateAlarmToSpeakerEntered();
 	void stateAlarmToSpeakerExited();
-	// Events: Activate Screensaver during an interaction with diffusion sound system
-	void stateScreensaverWithPlayEntered();
-	void stateScreensaverWithPlayExited();
-	// Events: Activate Screensaver when there is no sound diffusion
-	void stateScreensaverWithoutPlayEntered();
-	void stateScreensaverWithoutPlayExited();
+	// Events: Screensaver activated, not playing anything
+	void stateScreensaverEntered();
+	void stateScreensaverExited();
 
 	void saveVolumes();
 	void completeStateChange();

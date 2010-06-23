@@ -22,7 +22,7 @@
 #include "pagestack.h"
 #include "page.h"
 #include "window.h"
-#include "btmain.h" // makeActiveAndFreeze, homePage, isCalibrating
+#include "btmain.h" // makeActive, homePage, isCalibrating
 #include "main.h" // NO_SECTION
 
 #include <QtDebug>
