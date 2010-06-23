@@ -58,6 +58,15 @@ void TestNonControlledProbeDevice::receiveTemperature()
 	tst.check("*#4*11*0*123##", 123);
 }
 
+void TestNonControlledProbeDevice::testCrash()
+{
+	DeviceTester t(dev, NonControlledProbeDevice::DIM_TEMPERATURE); // dimension not used
+	QString frame = QString("*4*0*%1##").arg(dev->where);
+
+	t.checkSignals(frame, 0);
+}
+
+
 // TestExternalProbeDevice implementation
 
 void TestExternalProbeDevice::initTestCase()
@@ -83,4 +92,12 @@ void TestExternalProbeDevice::receiveTemperature()
 	DeviceTester tst(dev, NonControlledProbeDevice::DIM_TEMPERATURE);
 
 	tst.check("*#4*11*15*1*123*1111##", 123);
+}
+
+void TestExternalProbeDevice::testCrash()
+{
+	DeviceTester t(dev, NonControlledProbeDevice::DIM_TEMPERATURE); // dimension not used
+	QString frame = QString("*4*0*%1##").arg(dev->where);
+
+	t.checkSignals(frame, 0);
 }
