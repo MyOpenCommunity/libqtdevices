@@ -191,6 +191,7 @@ private:
 	EnergyRate rate;
 	int currency_decimals;
 	bool update_after_ssaver;
+	bool is_current_page;
 
 #ifdef LAYOUT_TOUCHX
 	BtButton *table_button;
@@ -209,6 +210,7 @@ private slots:
 	void rateChanged(int rate_id);
 	void showTableButton(bool show);
 	void showCurrencyButton(bool show);
+	void handleClose();
 };
 
 
