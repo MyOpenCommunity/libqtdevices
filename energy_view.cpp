@@ -612,6 +612,7 @@ void EnergyView::screenSaverStopped()
 {
 	if (update_after_ssaver)
 		time_period->forceDate(time_period->date(), time_period->status());
+	update_after_ssaver = false;
 }
 
 void EnergyView::backClick()
