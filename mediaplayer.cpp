@@ -418,16 +418,21 @@ void MediaPlayer::infoReceived()
 }
 
 
+Q_GLOBAL_STATIC(QProcess, sox_process);
+
 SoundPlayer::SoundPlayer()
 {
-	process = new QProcess(this);
-	connect(process, SIGNAL(error(QProcess::ProcessError)), SLOT(error()));
-	connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(processFinished()));
+	connect(sox_process(), SIGNAL(error(QProcess::ProcessError)), SLOT(error()));
+	connect(sox_process(), SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(processFinished()));
 	connect(bt_global::audio_states, SIGNAL(stateAboutToChange(int)), SLOT(audioStateAboutToChange()));
+	active = false;
 }
 
 void SoundPlayer::audioStateAboutToChange()
 {
+	if (!active)
+		return;
+
 	stop();
 }
 
@@ -435,8 +440,9 @@ void SoundPlayer::processFinished()
 {
 	if (!to_play.isNull())
 		start();
-	else
+	else if (active)
 	{
+		active = false;
 		bt_global::audio_states->setDirectAudioAccess(false);
 		emit soundFinished();
 	}
@@ -445,10 +451,10 @@ void SoundPlayer::processFinished()
 void SoundPlayer::play(const QString &path)
 {
 	to_play = path;
-	if (process->state() != QProcess::NotRunning)
+	if (sox_process()->state() != QProcess::NotRunning)
 	{
 		// We want to wait the end of the running process before starting the new one
-		process->terminate();
+		sox_process()->terminate();
 	}
 	else
 	{
@@ -459,19 +465,31 @@ void SoundPlayer::play(const QString &path)
 
 void SoundPlayer::start()
 {
+	// if we are here and the process is already active, there were two pending
+	// requests to play; wait for our turn
+	if (sox_process()->state() != QProcess::NotRunning)
+		return;
+	active = true;
+
 	QPair<QString, QStringList> cmdline = getAudioCmdLine(to_play);
-	process->start(cmdline.first, cmdline.second);
+	sox_process()->start(cmdline.first, cmdline.second);
 	to_play = QString();
 }
 
 void SoundPlayer::error()
 {
-	qWarning() << "SoundPlayer::error" << process->errorString();
+	if (!active)
+		return;
+
+	qWarning() << "SoundPlayer::error" << sox_process()->errorString();
 }
 
 void SoundPlayer::stop()
 {
-	process->terminate();
+	if (!active)
+		return;
+
+	sox_process()->terminate();
 }
 
 // The global definition of sound player pointer

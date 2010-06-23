@@ -156,7 +156,7 @@ private slots:
 	void audioStateAboutToChange();
 
 private:
-	QProcess *process;
+	bool active;
 	QString to_play;
 	void start();
 };

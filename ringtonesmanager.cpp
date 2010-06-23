@@ -20,7 +20,7 @@
 
 
 #include "ringtonesmanager.h"
-#include "mediaplayer.h"  // bt_global::sound
+#include "mediaplayer.h"  // SoundPlayer
 #include "xml_functions.h" // getChildren, getTextChild
 #include "generic_functions.h" // setCfgValue
 
@@ -49,6 +49,11 @@ RingtonesManager::RingtonesManager(QString ringtone_file)
 				QFileInfo(dirname, filename).absoluteFilePath();
 		}
 	}
+
+	sound_player = new SoundPlayer();
+	sound_player->setParent(this);
+
+	connect(sound_player, SIGNAL(soundFinished()), this, SLOT(soundFinished()));
 }
 
 void RingtonesManager::playRingtone(Ringtones::Type t)
@@ -61,8 +66,7 @@ void RingtonesManager::playRingtone(Ringtones::Type t)
 
 	qDebug() << "RingtonesManager::playRingtone:" << ringtone_to_file[type_to_ringtone[t]]
 		<< "for type:" << t;
-	connect(bt_global::sound, SIGNAL(soundFinished()), this, SLOT(soundFinished()));
-	bt_global::sound->play(ringtone_to_file[type_to_ringtone[t]]);
+	sound_player->play(ringtone_to_file[type_to_ringtone[t]]);
 }
 
 void RingtonesManager::playRingtone(int ring)
@@ -71,19 +75,17 @@ void RingtonesManager::playRingtone(int ring)
 		qPrintable(QString("Given ringtone %1 is outside valid range.").arg(ring)));
 
 	qDebug() << "RingtonesManager::playRingtone:" << ringtone_to_file[ring];
-	connect(bt_global::sound, SIGNAL(soundFinished()), this, SLOT(soundFinished()));
-	bt_global::sound->play(ringtone_to_file[ring]);
+	sound_player->play(ringtone_to_file[ring]);
 }
 
 void RingtonesManager::soundFinished()
 {
-	disconnect(bt_global::sound, SIGNAL(soundFinished()), this, SLOT(soundFinished()));
 	emit ringtoneFinished();
 }
 
 void RingtonesManager::stopRingtone()
 {
-	bt_global::sound->stop();
+	sound_player->stop();
 }
 
 void RingtonesManager::setRingtone(Ringtones::Type t, int item_id, int ring)
