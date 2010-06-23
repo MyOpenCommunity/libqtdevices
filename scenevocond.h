@@ -26,6 +26,7 @@
 #include "device_status.h"
 #include "main.h"
 #include "datetime.h" //BtTimeEdit
+#include "pulldevice.h" // PullMode
 
 #include <QList>
 #include <QTimer>
@@ -284,7 +285,7 @@ class device_condition_light_status : public device_condition
 Q_OBJECT
 public:
 	//! Constructor
-	device_condition_light_status(QWidget *parent, QString *trigger);
+	device_condition_light_status(QWidget *parent, QString *trigger, PullMode pull_mode);
 	//! Draws frame
 	virtual void Draw();
 	//! Returns max value
@@ -315,7 +316,7 @@ class device_condition_dimming : public device_condition
 Q_OBJECT
 public:
 	//! Constructor
-	device_condition_dimming(QWidget *parent, QString *trigger);
+	device_condition_dimming(QWidget *parent, QString *trigger, PullMode pull_mode);
 	//! Returns min value
 	int get_min();
 	//! Returns max value
@@ -375,7 +376,7 @@ class device_condition_dimming_100 : public device_condition
 Q_OBJECT
 public:
 	//! Constructor
-	device_condition_dimming_100(QWidget *parent, QString *trigger);
+	device_condition_dimming_100(QWidget *parent, QString *trigger, PullMode pull_mode);
 	//! Returns min value
 	int get_min();
 	//! Returns max value

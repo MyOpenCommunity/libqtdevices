@@ -312,11 +312,11 @@ scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
 	switch (condition_type)
 	{
 	case 1:
-		dc = new device_condition_light_status(this, &trigger);
+		dc = new device_condition_light_status(this, &trigger, getPullMode(config_node));
 		icon = bt_global::skin->getImage("light");
 		break;
 	case 2:
-		dc = new device_condition_dimming(this, &trigger);
+		dc = new device_condition_dimming(this, &trigger, getPullMode(config_node));
 		icon = bt_global::skin->getImage("dimmer");
 		break;
 	case 7:
@@ -338,7 +338,7 @@ scenEvo_cond_d::scenEvo_cond_d(const QDomNode &config_node)
 		icon = bt_global::skin->getImage("amplifier");
 		break;
 	case 6:
-		dc = new device_condition_dimming_100(this, &trigger);
+		dc = new device_condition_dimming_100(this, &trigger, getPullMode(config_node));
 		icon = bt_global::skin->getImage("dimmer");
 		break;
 	default:
@@ -582,7 +582,7 @@ void device_condition::status_changed(const StatusList &sl)
 /*****************************************************************
 ** Actual light status device condition
 ****************************************************************/
-device_condition_light_status::device_condition_light_status(QWidget *parent, QString *c)
+device_condition_light_status::device_condition_light_status(QWidget *parent, QString *c, PullMode pull_mode)
 {
 	QLabel *l = new QLabel(parent);
 	l->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
@@ -592,7 +592,7 @@ device_condition_light_status::device_condition_light_status(QWidget *parent, QS
 	set_condition_value(*c);
 	set_current_value(device_condition::get_condition_value());
 	// TODO: we just need dummy device here, address will be set later on by setup_device()
-	dev = new LightingDevice("", PULL_UNKNOWN);
+	dev = new LightingDevice("", pull_mode);
 	Draw();
 }
 
@@ -666,7 +666,7 @@ void device_condition_light_status::get_condition_value(QString& out)
 /*****************************************************************
 ** Actual dimming value device condition
 ****************************************************************/
-device_condition_dimming::device_condition_dimming(QWidget *parent, QString *c)
+device_condition_dimming::device_condition_dimming(QWidget *parent, QString *c, PullMode pull_mode)
 {
 	qDebug() << "device_condition_dimming::device_condition_dimming(" << c << ")";
 	QLabel *l = new QLabel(parent);
@@ -687,7 +687,7 @@ device_condition_dimming::device_condition_dimming(QWidget *parent, QString *c)
 	}
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
-	dev = new DimmerDevice("", PULL_UNKNOWN);
+	dev = new DimmerDevice("", pull_mode);
 	Draw();
 }
 
@@ -921,7 +921,7 @@ void device_condition_dimming::status_changed(QList<device_status*> sl)
 /*****************************************************************
  ** Actual dimming 100 value device condition
 ****************************************************************/
-device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QString *c)
+device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QString *c, PullMode pull_mode)
 {
 	char sup[10];
 	qDebug() << "device_condition_dimming_100::device_condition_dimming_100(" << c << ")";
@@ -945,7 +945,7 @@ device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QStr
 	}
 	set_current_value_min(get_condition_value_min());
 	set_current_value_max(get_condition_value_max());
-	dev = new Dimmer100Device("", PULL_UNKNOWN);
+	dev = new Dimmer100Device("", pull_mode);
 	Draw();
 }
 
