@@ -891,23 +891,30 @@ void device_condition_dimming::status_changed(const StatusList &sl)
 
 	while (it != sl.constEnd())
 	{
+		int level;
 		if ((it.key() == LightingDevice::DIM_DEVICE_ON && it.value().toBool() == false) || it.key() == LightingDevice::DIM_DIMMER_LEVEL)
+			level = it.value().toInt() / 10;
+		else if (it.key() == LightingDevice::DIM_DEVICE_ON && it.value().toBool() == true && !sl.contains(LightingDevice::DIM_DIMMER_LEVEL))
+			level = 1;
+		else
 		{
-			int level = it.value().toInt() / 10;
-
-			if (level >= trig_min && level <= trig_max)
-			{
-				if (!satisfied)
-				{
-						satisfied = true;
-						if (initialized)
-							emit condSatisfied();
-				}
-			}
-			else
-				satisfied = false;
-			initialized = true;
+			++it;
+			continue;
 		}
+
+		if (level >= trig_min && level <= trig_max)
+		{
+			if (!satisfied)
+			{
+					satisfied = true;
+					if (initialized)
+						emit condSatisfied();
+			}
+		}
+		else
+			satisfied = false;
+		initialized = true;
+
 		++it;
 	}
 }
@@ -1156,29 +1163,36 @@ void device_condition_dimming_100::status_changed(const StatusList &sl)
 
 	while (it != sl.constEnd())
 	{
+		int level;
 		if ((it.key() == LightingDevice::DIM_DEVICE_ON  && it.value().toBool() == false) || it.key() == LightingDevice::DIM_DIMMER100_LEVEL)
+			level = it.value().toInt();
+		else if (it.key() == LightingDevice::DIM_DEVICE_ON && it.value().toBool() == true && !sl.contains(LightingDevice::DIM_DIMMER100_LEVEL))
+			level = 1;
+		else
 		{
-			int level = it.value().toInt();
-			if (level >= trig_min && level <= trig_max)
-			{
-				if (!satisfied)
-				{
-					satisfied = true;
-					if (initialized)
-						emit condSatisfied();
-				}
-			}
-			else
-				satisfied = false;
-			initialized = true;
+			++it;
+			continue;
 		}
+
+		if (level >= trig_min && level <= trig_max)
+		{
+			if (!satisfied)
+			{
+				satisfied = true;
+				if (initialized)
+					emit condSatisfied();
+			}
+		}
+		else
+			satisfied = false;
+		initialized = true;
 		++it;
 	}
 }
 
 void device_condition_dimming_100::status_changed(QList<device_status*> sl)
 {
-	qFatal("Old status changed on device_condition_dimmin_100 not implemented!");
+	qFatal("Old status changed on device_condition_dimming_100 not implemented!");
 }
 
 /*****************************************************************
