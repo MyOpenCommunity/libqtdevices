@@ -162,6 +162,7 @@ private:
 	EnergyRate rate;
 	int currency_decimals;
 	bool update_after_ssaver;
+	bool is_current_page;
 
 private slots:
 	void screenSaverStarted(Page *prev_page);
@@ -173,6 +174,7 @@ private slots:
 	void backClick();
 	void status_changed(const StatusList &status_list);
 	void rateChanged(int rate_id);
+	void handleClose();
 };
 
 
