@@ -146,9 +146,9 @@ BtMain::BtMain(int openserver_reconnection_time)
 	bt_global::font = new FontManager(font_file);
 	bt_global::display = new DisplayControl;
 	bt_global::skin = new SkinManager(SKIN_FILE);
-	bt_global::ringtones = new RingtonesManager(RINGTONE_FILE);
 	bt_global::audio_states = new AudioStateMachine;
 	bt_global::sound = new SoundPlayer;
+	bt_global::ringtones = new RingtonesManager(RINGTONE_FILE);
 
 #if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
 	// save last click time for the screen saver
