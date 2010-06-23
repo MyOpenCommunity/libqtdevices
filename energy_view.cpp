@@ -677,6 +677,9 @@ void EnergyView::screenSaverStarted(Page *prev_page)
 			 time_period->date().year() == QDate::currentDate().year() &&
 			 time_period->date().month() == QDate::currentDate().month())
 			update_after_ssaver = true;
+
+		if (prev_page == table)
+			bt_global::btmain->setPreviousPage(this);
 	}
 }
 
