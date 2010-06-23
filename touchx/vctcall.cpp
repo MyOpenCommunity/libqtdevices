@@ -69,11 +69,11 @@ namespace VCTCallPrivate
 
 		VCTCallStatus();
 
-		// This method is used to initialize the status of the call every time
+		// This method is used to reset the status of the call every time
 		// a new videocall is performed (so, attributes like the volume of the
 		// audio are not set in the init method because they must to be
 		// preserved betweeen different calls).
-		void init();
+		void resetStatus();
 	};
 
 	VCTCallStatus *VCTCall::call_status = 0;
@@ -180,14 +180,14 @@ void CameraImageControl::setBrightness(int value)
 VCTCallStatus::VCTCallStatus()
 {
 	// Hands free and Professional studio are initialized here, see the comment
-	// above regarding the init() method.
+	// above regarding the resetStatus() method.
 	hands_free = false;
 	prof_studio = false;
 	video_enabled = true;
-	init();
+	resetStatus();
 }
 
-void VCTCallStatus::init()
+void VCTCallStatus::resetStatus()
 {
 	connected = false;
 	stopped = false;
@@ -394,9 +394,9 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			emit callerAddress();
 			break;
 		case EntryphoneDevice::END_OF_CALL:
-			call_status->call_active = false;
 			stopVideo();
 			cleanAudioStates();
+			call_status->resetStatus();
 			emit callClosed();
 			break;
 		case EntryphoneDevice::STOP_VIDEO:
@@ -462,9 +462,10 @@ void VCTCall::cleanAudioStates()
 
 void VCTCall::endCall()
 {
-	cleanAudioStates();
 	dev->endCall();
 	stopVideo();
+	cleanAudioStates();
+	call_status->resetStatus();
 }
 
 void VCTCall::handleClose()
@@ -681,7 +682,6 @@ void VCTCallPage::hideEvent(QHideEvent *)
 void VCTCallPage::autoIncomingCall()
 {
 	bt_global::btmain->vde_call_active = true;
-	VCTCall::call_status->init();
 	vct_call->refreshStatus();
 
 	showPage();

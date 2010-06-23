@@ -242,6 +242,9 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			what = INTERCOM_CALL;
 			ringtone = Ringtones::PE_INTERCOM;
 			break;
+		case 13:
+			values_list[RINGTONE] = Ringtones::FLOORCALL;
+			return true;
 		default:
 			qWarning("Kind not supported by EntryphoneDevice, skip frame");
 			return false;
