@@ -128,8 +128,8 @@ void setBrightnessLevel(int level)
 #else
 	int value = 13 - ((level - 10) * 13 / 240);
 
-	QProcess::startDetached("/bin/settrimmer",
-				QStringList() << TFT_BRIGHTNESS << QString::number(value));
+	QProcess::execute("/bin/settrimmer",
+			  QStringList() << TFT_BRIGHTNESS << QString::number(value));
 #endif
 }
 
@@ -150,7 +150,7 @@ void setBacklight(bool b)
 	{
 		QStringList args_contrast;
 		args_contrast << TFT_CONTRAST << "7";
-		QProcess::startDetached("/bin/settrimmer", args_contrast);
+		QProcess::execute("/bin/settrimmer", args_contrast);
 	}
 #endif
 }
@@ -445,7 +445,7 @@ void initScreen()
 #ifdef BT_HARDWARE_TOUCHX
 	QStringList args_contrast;
 	args_contrast << TFT_CONTRAST << "7";
-	QProcess::startDetached("/bin/settrimmer", args_contrast);
+	QProcess::execute("/bin/settrimmer", args_contrast);
 #endif
 }
 
