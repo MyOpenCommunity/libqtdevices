@@ -610,7 +610,9 @@ void EnergyView::screenSaverStarted(Page *prev_page)
 
 void EnergyView::screenSaverStopped()
 {
-	if (update_after_ssaver)
+	if (time_period->date() > QDate::currentDate())
+		time_period->forceDate(QDate::currentDate(), time_period->status());
+	else if (update_after_ssaver)
 		time_period->forceDate(time_period->date(), time_period->status());
 	update_after_ssaver = false;
 }
