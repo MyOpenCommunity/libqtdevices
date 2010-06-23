@@ -87,6 +87,7 @@ public:
 signals:
 	void resettimer();
 	void startscreensaver(Page*);
+	void stopscreensaver();
 
 protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);

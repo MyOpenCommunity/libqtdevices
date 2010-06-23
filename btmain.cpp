@@ -597,7 +597,11 @@ void BtMain::makeActive()
 	last_event_time = now();
 
 	if (bt_global::display->currentState() == DISPLAY_SCREENSAVER)
+	{
+		bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
+		emit stopscreensaver();
 		screensaver->stop();
+	}
 
 	if (bt_global::display->currentState() == DISPLAY_OFF ||
 		bt_global::display->currentState() == DISPLAY_SCREENSAVER ||
@@ -674,7 +678,11 @@ void BtMain::checkScreensaver()
 	{
 		qDebug() << "Turning screen off";
 		if (screensaver && screensaver->isRunning())
+		{
+			bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
+			emit stopscreensaver();
 			screensaver->stop();
+		}
 		bt_global::display->setState(DISPLAY_OFF);
 	}
 	else if (time >= freeze_time && getBacklight() && !frozen)
@@ -723,6 +731,7 @@ void BtMain::checkScreensaver()
 			screensaver->start(window_container->homeWindow());
 			emit startscreensaver(prev_page);
 			bt_global::display->setState(DISPLAY_SCREENSAVER);
+			bt_global::audio_states->toState(AudioStates::SCREENSAVER);
 		}
 	}
 }
@@ -762,6 +771,8 @@ void BtMain::freeze(bool b)
 		bt_global::display->setState(DISPLAY_OPERATIVE);
 		if (screensaver && screensaver->isRunning())
 		{
+			bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
+			emit stopscreensaver();
 			screensaver->stop();
 		}
 
