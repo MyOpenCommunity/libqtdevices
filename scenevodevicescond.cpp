@@ -552,7 +552,7 @@ bool DeviceConditionDimming::parseValues(const DeviceValues &values_list)
 			managed = true;
 			satisfied = (level >= trig_min && level <= trig_max);
 		}
-		else if ((it.key() == LightingDevice::DIM_DEVICE_ON && it.value().toBool() == true && !values_list.contains(LightingDevice::DIM_DIMMER_LEVEL)))
+		else if (it.key() == LightingDevice::DIM_DEVICE_ON && it.value().toBool() == true && !values_list.contains(LightingDevice::DIM_DIMMER_LEVEL))
 		{
 			int level = 1;
 			managed = true;
@@ -752,7 +752,7 @@ bool DeviceConditionDimming100::parseValues(const DeviceValues &values_list)
 			managed = true;
 			satisfied = (level >= trig_min && level <= trig_max);
 		}
-		else if ((it.key() == LightingDevice::DIM_DEVICE_ON && it.value().toBool() == true && !values_list.contains(LightingDevice::DIM_DIMMER100_LEVEL)))
+		else if (it.key() == LightingDevice::DIM_DEVICE_ON && it.value().toBool() == true && !values_list.contains(LightingDevice::DIM_DIMMER100_LEVEL))
 		{
 			int level = 1;
 			managed = true;
