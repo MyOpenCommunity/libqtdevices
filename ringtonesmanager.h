@@ -26,6 +26,8 @@
 #include <QFileInfo>
 #include <QHash>
 
+class SoundPlayer;
+
 namespace Ringtones
 {
 	enum Type
@@ -81,6 +83,7 @@ private slots:
 private:
 	QHash<int, QString> ringtone_to_file;
 	QHash<Ringtones::Type, int> type_to_ringtone;
+	SoundPlayer *sound_player;
 };
 
 namespace bt_global { extern RingtonesManager *ringtones; }

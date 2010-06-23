@@ -146,9 +146,9 @@ BtMain::BtMain(int openserver_reconnection_time)
 	bt_global::font = new FontManager(font_file);
 	bt_global::display = new DisplayControl;
 	bt_global::skin = new SkinManager(SKIN_FILE);
-	bt_global::ringtones = new RingtonesManager(RINGTONE_FILE);
 	bt_global::audio_states = new AudioStateMachine;
 	bt_global::sound = new SoundPlayer;
+	bt_global::ringtones = new RingtonesManager(RINGTONE_FILE);
 
 #if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
 	// save last click time for the screen saver
@@ -677,12 +677,9 @@ void BtMain::checkScreensaver()
 		(target_screensaver == ScreenSaver::NONE && bt_global::display->currentState() == DISPLAY_FREEZED)))
 	{
 		qDebug() << "Turning screen off";
+		// the stopscreensaver() event is emitted when the user clicks on screen
 		if (screensaver && screensaver->isRunning())
-		{
-			bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
-			emit stopscreensaver();
 			screensaver->stop();
-		}
 		bt_global::display->setState(DISPLAY_OFF);
 	}
 	else if (time >= freeze_time && getBacklight() && !frozen)
@@ -767,8 +764,17 @@ void BtMain::freeze(bool b)
 
 	if (!frozen)
 	{
+		// in this case the screeensaver is not running, to reduce power consumption,
+		// but the state is as if it were
+		if (bt_global::display->currentState() == DISPLAY_OFF)
+		{
+			bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
+			emit stopscreensaver();
+		}
+
 		last_event_time = now();
 		bt_global::display->setState(DISPLAY_OPERATIVE);
+
 		if (screensaver && screensaver->isRunning())
 		{
 			bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
