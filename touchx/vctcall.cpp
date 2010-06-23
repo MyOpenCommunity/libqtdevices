@@ -552,7 +552,10 @@ void VCTCallPage::valueReceived(const DeviceValues &values_list)
 		{
 			if (!ring_exclusion || !ring_exclusion->getStatus())
 				connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(playRingtone()));
-			bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
+			if (bt_global::audio_states->currentState() != AudioStates::PLAY_VDE_RINGTONE)
+				bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
+			else if (!ring_exclusion || !ring_exclusion->getStatus())
+				playRingtone();
 		}
 	}
 }
