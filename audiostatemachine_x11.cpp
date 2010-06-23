@@ -37,7 +37,7 @@ AudioStateMachine::AudioStateMachine()
 	addState(IP_VIDEO_CALL);
 	addState(IP_INTERCOM_CALL);
 	addState(ALARM_TO_SPEAKER);
-	addState(SCREENSAVER_WITH_PLAY);
+	addState(SCREENSAVER);
 
 	start(IDLE);
 }

@@ -283,12 +283,9 @@ AudioStateMachine::AudioStateMachine()
 	addState(ALARM_TO_SPEAKER,
 		 SLOT(stateAlarmToSpeakerEntered()),
 		 SLOT(stateAlarmToSpeakerExited()));
-	addState(SCREENSAVER_WITH_PLAY,
-		 SLOT(stateScreensaverWithPlayEntered()),
-		 SLOT(stateScreensaverWithPlayExited()));
-	addState(SCREENSAVER_WITHOUT_PLAY,
-		 SLOT(stateScreensaverWithoutPlayEntered()),
-		 SLOT(stateScreensaverWithoutPlayExited()));
+	addState(SCREENSAVER,
+		 SLOT(stateScreensaverEntered()),
+		 SLOT(stateScreensaverExited()));
 
 	// by default, all state transitions are possible, if this is not
 	// correct, use removeTransitions() to make some transitions impossible
@@ -307,6 +304,7 @@ void AudioStateMachine::start(int state)
 	disactivateVCTAudio();
 
 	// turn off the local source/amplifier at startup
+	deactivateLocalAmplifier();
 	changeVolumePath(Volumes::MM_AMPLIFIER, 0);
 	deactivateLocalSource();
 	changeVolumePath(Volumes::MM_SOURCE, 0);
@@ -328,6 +326,9 @@ bool AudioStateMachine::toState(int state)
 	if (!isAlarmState(state) && !isVideoCallState(state))
 		while (isAlarmState(stateAt(index - 1)))
 			index -= 1;
+	// screensaver must be added just above the beep (if present)
+	if (state == AudioStates::SCREENSAVER)
+		index = (stateCount() > 1 && stateAt(1) == AudioStates::BEEP_ON ? 2 : 1);
 	// beep is always the lowest state (just above IDLE)
 	if (state == AudioStates::BEEP_ON)
 		index = 1;
@@ -379,6 +380,8 @@ void AudioStateMachine::saveVolumes()
 	volumes_timer->stop();
 }
 
+// local source/amplifier handling for sound diffusion
+
 bool AudioStateMachine::isSource()
 {
 	return is_source;
@@ -395,9 +398,15 @@ void AudioStateMachine::setLocalAmplifierStatus(bool status)
 	if (currentState() == AudioStates::PLAY_DIFSON)
 	{
 		if (status)
+		{
+			activateLocalAmplifier();
 			changeVolumePath(Volumes::MM_AMPLIFIER);
+		}
 		else
+		{
+			deactivateLocalAmplifier();
 			changeVolumePath(Volumes::MM_AMPLIFIER, 0);
+		}
 	}
 }
 
@@ -446,6 +455,8 @@ bool AudioStateMachine::isSoundDiffusionActive()
 	return getLocalAmplifierStatus() || getLocalSourceStatus();
 }
 
+// misc methods
+
 void AudioStateMachine::setDirectAudioAccess(bool status)
 {
 	if (!status && !direct_audio_access)
@@ -481,14 +492,16 @@ int AudioStateMachine::getVolume()
 	return volumes.at(current_audio_path);
 }
 
+// state callbacks
+
 void AudioStateMachine::stateIdleEntered()
 {
-	// TODO turn off the amplifier
+	deactivateLocalAmplifier();
 }
 
 void AudioStateMachine::stateIdleExited()
 {
-	// TODO turn back on the amplifier
+	activateLocalAmplifier();
 }
 
 void AudioStateMachine::stateBeepOnEntered()
@@ -521,9 +534,12 @@ void AudioStateMachine::statePlayDifsonEntered()
 
 	if (local_amplifier_status)
 	{
+		activateLocalAmplifier();
 		current_audio_path = Volumes::MM_AMPLIFIER;
 		changeVolumePath(Volumes::MM_AMPLIFIER);
 	}
+	else
+		deactivateLocalAmplifier();
 
 	if (local_source_status)
 	{
@@ -539,6 +555,8 @@ void AudioStateMachine::statePlayDifsonExited()
 
 	if (local_amplifier_status)
 		changeVolumePath(Volumes::MM_AMPLIFIER, 0);
+	// always leave local amplifier active on exit
+	activateLocalAmplifier();
 
 	if (local_source_status)
 	{
@@ -644,24 +662,16 @@ void AudioStateMachine::stateAlarmToSpeakerExited()
 	qDebug() << "AudioStateMachine::stateAlarmToSpeakerExited";
 }
 
-void AudioStateMachine::stateScreensaverWithPlayEntered()
+void AudioStateMachine::stateScreensaverEntered()
 {
-
+	qDebug() << "AudioStateMachine::stateScreensaverEntered";
+	deactivateLocalAmplifier();
 }
 
-void AudioStateMachine::stateScreensaverWithPlayExited()
+void AudioStateMachine::stateScreensaverExited()
 {
-
-}
-
-void AudioStateMachine::stateScreensaverWithoutPlayEntered()
-{
-
-}
-
-void AudioStateMachine::stateScreensaverWithoutPlayExited()
-{
-
+	qDebug() << "AudioStateMachine::stateScreensaverExited";
+	activateLocalAmplifier();
 }
 
 AudioStateMachine *bt_global::audio_states = 0;
