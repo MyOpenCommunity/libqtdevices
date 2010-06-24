@@ -496,23 +496,29 @@ int AudioStateMachine::getVolume()
 
 void AudioStateMachine::stateIdleEntered()
 {
+	qDebug() << "AudioStateMachine::stateIdleEntered";
+
 	deactivateLocalAmplifier();
 }
 
 void AudioStateMachine::stateIdleExited()
 {
+	qDebug() << "AudioStateMachine::stateIdleExited";
+
 	activateLocalAmplifier();
 }
 
 void AudioStateMachine::stateBeepOnEntered()
 {
+	qDebug() << "AudioStateMachine::stateBeepOnEntered";
+
 	current_audio_path = Volumes::BEEP;
 	changeVolumePath(Volumes::BEEP);
 }
 
 void AudioStateMachine::stateBeepOnExited()
 {
-
+	qDebug() << "AudioStateMachine::stateBeepOnExited";
 }
 
 void AudioStateMachine::statePlayMediaToSpeakerEntered()
@@ -665,12 +671,14 @@ void AudioStateMachine::stateAlarmToSpeakerExited()
 void AudioStateMachine::stateScreensaverEntered()
 {
 	qDebug() << "AudioStateMachine::stateScreensaverEntered";
+
 	deactivateLocalAmplifier();
 }
 
 void AudioStateMachine::stateScreensaverExited()
 {
 	qDebug() << "AudioStateMachine::stateScreensaverExited";
+
 	activateLocalAmplifier();
 }
 
