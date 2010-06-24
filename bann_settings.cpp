@@ -441,7 +441,7 @@ void BannRingtone::playRingtone()
 {
 	if (!is_playing)
 	{
-		connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(startPlayRingtone()));
+		connect(bt_global::audio_states, SIGNAL(stateTransition(int,int)), SLOT(startPlayRingtone()));
 		bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
 	}
 	else
@@ -450,7 +450,7 @@ void BannRingtone::playRingtone()
 
 void BannRingtone::startPlayRingtone()
 {
-	disconnect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), this, SLOT(startPlayRingtone()));
+	disconnect(bt_global::audio_states, SIGNAL(stateTransition(int,int)), this, SLOT(startPlayRingtone()));
 	if (!is_playing)
 		connect(bt_global::ringtones, SIGNAL(ringtoneFinished()), SLOT(ringtoneFinished()));
 	is_playing = true;

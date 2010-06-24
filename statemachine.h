@@ -102,6 +102,15 @@ signals:
 	// callbacks have been called
 	void stateChanged(int new_state, int old_state);
 
+	// emitted when a state is reentered (it is pushed twice on the stack)
+	// new_state is guaranteed to be equal to old_state; it is passed twice to
+	// be compatible with stateChanged
+	void stateReentered(int new_state, int old_state);
+
+	// emitted every time a state is entered either from the same state or from a
+	// different state
+	void stateTransition(int new_state, int old_state);
+
 protected:
 	// returns the number of states
 	int stateCount();
