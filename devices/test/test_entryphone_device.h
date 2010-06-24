@@ -58,6 +58,7 @@ private slots:
 
 	void receiveIncomingCall();
 	void receiveAutoswitchCall();
+	void receiveAudioCall();
 	void receiveCallerAddress1();
 	void receiveCallerAddress2();
 	void receiveCallerAddress3();
