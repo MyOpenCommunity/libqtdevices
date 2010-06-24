@@ -680,6 +680,8 @@ void BtMain::checkScreensaver()
 		// the stopscreensaver() event is emitted when the user clicks on screen
 		if (screensaver && screensaver->isRunning())
 			screensaver->stop();
+		if (bt_global::display->currentState() != DISPLAY_SCREENSAVER)
+			bt_global::audio_states->toState(AudioStates::SCREENSAVER);
 		bt_global::display->setState(DISPLAY_OFF);
 	}
 	else if (time >= freeze_time && getBacklight() && !frozen)
