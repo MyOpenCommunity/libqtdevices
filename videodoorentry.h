@@ -111,6 +111,7 @@ private slots:
 	void toggleMute();
 	void showPageIncomingCall();
 	void playRingtone();
+	void floorCallFinished();
 
 private:
 	EntryphoneDevice *dev;
