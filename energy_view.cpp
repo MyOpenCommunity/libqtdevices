@@ -688,11 +688,7 @@ void EnergyView::screenSaverStarted(Page *prev_page)
 
 void EnergyView::screenSaverStopped()
 {
-	if (is_current_page && time_period->status() == TimePeriodSelection::DAY && time_period->date() > QDate::currentDate())
-		time_period->forceDate(QDate::currentDate(), time_period->status());
-	else if (is_current_page && time_period->date().month() > QDate::currentDate().month())
-		time_period->forceDate(QDate::currentDate(), time_period->status());
-	else if (update_after_ssaver)
+	if (update_after_ssaver)
 		time_period->forceDate(time_period->date(), time_period->status());
 	update_after_ssaver = false;
 }
@@ -1001,7 +997,12 @@ void EnergyView::updateBanners()
 
 void EnergyView::systemTimeChanged()
 {
-	changeTimePeriod(time_period->status(), time_period->date());
+	if (is_current_page && time_period->status() == TimePeriodSelection::DAY && time_period->date() > QDate::currentDate())
+		time_period->forceDate(QDate::currentDate(), time_period->status());
+	else if (is_current_page && time_period->date().month() > QDate::currentDate().month())
+		time_period->forceDate(QDate::currentDate(), time_period->status());
+	else
+		changeTimePeriod(time_period->status(), time_period->date());
 }
 
 void EnergyView::rateChanged(int rate_id)
