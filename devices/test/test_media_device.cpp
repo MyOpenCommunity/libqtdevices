@@ -638,35 +638,35 @@ void TestVirtualAmplifierDevice::sendUpdateStatus()
 
 void TestVirtualAmplifierDevice::sendVolumeUp()
 {
-	DeviceTester t(dev, VirtualAmplifierDevice::REQ_VOLUME_UP);
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_VOLUME_UP, DeviceTester::MULTIPLE_VALUES);
 	dev->volumeUp();
 	t.check(1);
 }
 
 void TestVirtualAmplifierDevice::sendVolumeDown()
 {
-	DeviceTester t(dev, VirtualAmplifierDevice::REQ_VOLUME_DOWN);
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_VOLUME_DOWN, DeviceTester::MULTIPLE_VALUES);
 	dev->volumeDown();
 	t.check(1);
 }
 
 void TestVirtualAmplifierDevice::sendTurnOn()
 {
-	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON, DeviceTester::MULTIPLE_VALUES);
 	dev->turnOn();
 	t.check(true);
 }
 
 void TestVirtualAmplifierDevice::sendTurnOff()
 {
-	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON, DeviceTester::MULTIPLE_VALUES);
 	dev->turnOff();
 	t.check(false);
 }
 
 void TestVirtualAmplifierDevice::sendSetVolume()
 {
-	DeviceTester t(dev, VirtualAmplifierDevice::REQ_SET_VOLUME);
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_SET_VOLUME, DeviceTester::MULTIPLE_VALUES);
 	dev->setVolume(5);
 	t.check(5);
 }

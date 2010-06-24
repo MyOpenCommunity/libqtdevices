@@ -274,6 +274,8 @@ public:
 		REQ_VOLUME_UP = 3,       // raise volume, value is the step
 		REQ_VOLUME_DOWN = 4,     // decrease volume, value is the step
 		REQ_SET_VOLUME = -1,     // set volume to specified level (range: 1-32)
+		// boolean, set to true if the status update is from a command we sent ourselves
+		DIM_SELF_REQUEST,
 	};
 
 	VirtualAmplifierDevice(const QString &where, int openserver_id = 0);
