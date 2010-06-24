@@ -106,10 +106,7 @@ void MediaPlayerPage::pause()
 void MediaPlayerPage::resume()
 {
 	if (player->isInstanceRunning())
-	{
 		player->resume();
-		refresh_data.start(MPLAYER_POLLING);
-	}
 	else
 		displayMedia(current_file);
 }
@@ -133,13 +130,11 @@ void MediaPlayerPage::next()
 void MediaPlayerPage::seekForward()
 {
 	player->seek(10);
-	refresh_data.start(MPLAYER_POLLING);
 }
 
 void MediaPlayerPage::seekBack()
 {
 	player->seek(-10);
-	refresh_data.start(MPLAYER_POLLING);
 }
 
 void MediaPlayerPage::videoPlaybackTerminated()
@@ -175,6 +170,7 @@ void MediaPlayerPage::playbackStarted()
 	if (!bt_global::audio_states->isSource() && !resume_on_state_change)
 		bt_global::audio_states->toState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
 	resume_on_state_change = false;
+	refresh_data.start();
 }
 
 void MediaPlayerPage::playbackStopped()
