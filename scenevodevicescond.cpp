@@ -542,10 +542,19 @@ bool DeviceConditionDimming::parseValues(const DeviceValues &values_list)
 	while (it != values_list.constEnd())
 	{
 		// When the Dimmer is turned on the device send both the DIM_DEVICE_ON
-		// and the DIM_DIMMER_LEVEL, so we can ignore the DIM_DEVICE_ON
+		// and the DIM_DIMMER_LEVEL, so we can ignore the DIM_DEVICE_ON.
+		// As exception, when the Dimmer is turned by a "light on" frame the
+		// level is invalid but the frame should be handled in order to manage
+		// the off condition properly.
 		if ((it.key() == LightingDevice::DIM_DEVICE_ON && it.value().toBool() == false) || it.key() == LightingDevice::DIM_DIMMER_LEVEL)
 		{
 			int level = it.value().toInt();
+			managed = true;
+			satisfied = (level >= trig_min && level <= trig_max);
+		}
+		else if (it.key() == LightingDevice::DIM_DEVICE_ON && it.value().toBool() == true && !values_list.contains(LightingDevice::DIM_DIMMER_LEVEL))
+		{
+			int level = 1;
 			managed = true;
 			satisfied = (level >= trig_min && level <= trig_max);
 		}
@@ -734,9 +743,18 @@ bool DeviceConditionDimming100::parseValues(const DeviceValues &values_list)
 	{
 		// When the Dimmer is turned on the device send both the DIM_DEVICE_ON
 		// and the DIM_DIMMER100_LEVEL, so we can ignore the DIM_DEVICE_ON
+		// As exception, when the Dimmer is turned by a "light on" frame the
+		// level is invalid but the frame should be handled in order to manage
+		// the off condition properly.
 		if ((it.key() == LightingDevice::DIM_DEVICE_ON && it.value().toBool() == false) || it.key() == LightingDevice::DIM_DIMMER100_LEVEL)
 		{
 			int level = it.value().toInt();
+			managed = true;
+			satisfied = (level >= trig_min && level <= trig_max);
+		}
+		else if (it.key() == LightingDevice::DIM_DEVICE_ON && it.value().toBool() == true && !values_list.contains(LightingDevice::DIM_DIMMER100_LEVEL))
+		{
+			int level = 1;
 			managed = true;
 			satisfied = (level >= trig_min && level <= trig_max);
 		}
