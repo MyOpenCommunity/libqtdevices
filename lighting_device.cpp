@@ -291,6 +291,9 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 			 delayed_level_request.start();
 		 else
 			 delayed_level_request.stop();
+
+		if (status && level != 0)
+			(*sl)[DIM_DIMMER_LEVEL] = getDimmer10Level();
 	}
 
 	int what = msg.what();
@@ -305,6 +308,7 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 			level = dimmerLevelTo100(what);
 			v.setValue(getDimmer10Level());
 			status_index = DIM_DIMMER_LEVEL;
+			(*sl)[DIM_DEVICE_ON] = true;
 		}
 		else if (what == DIM_DIMMER_PROBLEM)
 		{
@@ -337,6 +341,7 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 			status = true;
 			(*sl)[DIM_DIMMER_LEVEL] = getDimmer10Level();
 		}
+		(*sl)[DIM_DEVICE_ON] = true;
 	}
 
 	// dimmer 100 increment/decrement for advanced dimmers
@@ -359,6 +364,7 @@ void DimmerDevice::parseFrame(OpenMsg &msg, StatusList *sl)
 			status = true;
 			(*sl)[DIM_DIMMER_LEVEL] = getDimmer10Level();
 		}
+		(*sl)[DIM_DEVICE_ON] = true;
 	}
 
 	// dimmer 100 set status, for advanced dimmers

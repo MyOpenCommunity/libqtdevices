@@ -394,7 +394,7 @@ void TestDimmerDevice::sendDimmerIncreaseLevel()
 
 void TestDimmerDevice::checkLevel()
 {
-	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL);
+	DeviceTester t(dimmer, LightingDevice::DIM_DIMMER_LEVEL, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*1*%1*%2##").arg(9).arg(dimmer->where);
 	t.check(frame, 90);
 }
