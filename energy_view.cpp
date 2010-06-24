@@ -383,7 +383,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	connect(bt_global::btmain, SIGNAL(stopscreensaver()), SLOT(screenSaverStopped()));
 
 	// keep track for screensaver exit
-	update_after_ssaver = false;
+	update_after_ssaver = is_current_page = false;
 }
 
 EnergyView::~EnergyView()
@@ -454,6 +454,8 @@ void EnergyView::showPage()
 	connect(table, SIGNAL(Closed()), SLOT(showPageFromTable()));
 	time_period->forceDate(QDate::currentDate());
 	showPageFromTable();
+
+	is_current_page = true;
 }
 
 void EnergyView::showPageFromTable()
@@ -462,6 +464,11 @@ void EnergyView::showPageFromTable()
 	if (EnergyInterface::isCurrencyView() && !rate.isValid())
 		EnergyInterface::toggleCurrencyView();
 	Page::showPage();
+}
+
+void EnergyView::handleClose()
+{
+	is_current_page = false;
 }
 
 void EnergyView::updateGraphData(GraphData *d)
@@ -586,7 +593,7 @@ void EnergyView::status_changed(const StatusList &status_list)
 void EnergyView::screenSaverStarted(Page *prev_page)
 {
 	update_after_ssaver = false;
-	if (prev_page == this)
+	if (is_current_page)
 	{
 		if (time_period->status() == TimePeriodSelection::YEAR)
 			update_after_ssaver = true;
@@ -596,6 +603,9 @@ void EnergyView::screenSaverStarted(Page *prev_page)
 			 time_period->date().year() == QDate::currentDate().year() &&
 			 time_period->date().month() == QDate::currentDate().month())
 			update_after_ssaver = true;
+
+		if (prev_page == table)
+			bt_global::btmain->setPreviousPage(this);
 	}
 
 	// we do not check prev_page, because unrollPages changes it
@@ -610,8 +620,13 @@ void EnergyView::screenSaverStarted(Page *prev_page)
 
 void EnergyView::screenSaverStopped()
 {
-	if (update_after_ssaver)
+	if (is_current_page && time_period->status() == TimePeriodSelection::DAY && time_period->date() > QDate::currentDate())
+		time_period->forceDate(QDate::currentDate(), time_period->status());
+	else if (is_current_page && time_period->date().month() > QDate::currentDate().month())
+		time_period->forceDate(QDate::currentDate(), time_period->status());
+	else if (update_after_ssaver)
 		time_period->forceDate(time_period->date(), time_period->status());
+	update_after_ssaver = false;
 }
 
 void EnergyView::backClick()
