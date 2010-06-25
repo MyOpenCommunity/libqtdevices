@@ -35,6 +35,7 @@
 #include "media_device.h"
 #include "devices_cache.h"
 #include "audiostatemachine.h"
+#include "pagestack.h" // bt_global::page_stack
 
 #include <QGridLayout>
 #include <QLabel>
@@ -66,7 +67,11 @@ AudioPlayerPage *AudioPlayerTray::currentPlayer() const
 void AudioPlayerTray::gotoPlayer()
 {
 	if (current_player)
+	{
+		// Clear the stack and make the cleanUp operations.
+		bt_global::page_stack.clear();
 		current_player->showPage();
+	}
 }
 
 

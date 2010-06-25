@@ -177,7 +177,7 @@ void TestEntryphoneDevice::receiveIncomingCall()
 	int mmtype = 4;
 	DeviceTester t(dev, EntryphoneDevice::VCT_CALL, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
-	t.check(frame, true);
+	t.check(frame, static_cast<int>(EntryphoneDevice::AUDIO_VIDEO));
 }
 
 void TestEntryphoneDevice::receiveAutoswitchCall()
@@ -186,7 +186,16 @@ void TestEntryphoneDevice::receiveAutoswitchCall()
 	int mmtype = 4;
 	DeviceTester t(dev, EntryphoneDevice::AUTO_VCT_CALL, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
-	t.check(frame, true);
+	t.check(frame, static_cast<int>(EntryphoneDevice::AUDIO_VIDEO));
+}
+
+void TestEntryphoneDevice::receiveAudioCall()
+{
+	int kind = 5;
+	int mmtype = 2;
+	DeviceTester t(dev, EntryphoneDevice::AUTO_VCT_CALL, DeviceTester::MULTIPLE_VALUES);
+	QString frame = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
+	t.check(frame, static_cast<int>(EntryphoneDevice::ONLY_AUDIO));
 }
 
 void TestEntryphoneDevice::receiveAnswerCall()

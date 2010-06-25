@@ -37,6 +37,7 @@
 #include "homewindow.h" // TrayBar
 #include "ringtonesmanager.h" // bt_global::ringtones
 #include "main.h" // VIDEODOORENTRY
+#include "btmain.h" // makeActive
 
 #include <QDomNode>
 #include <QHBoxLayout>
@@ -397,6 +398,8 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			stopVideo();
 			cleanAudioStates();
 			call_status->resetStatus();
+			// Reset the timers for the freeze/screensaver.
+			bt_global::btmain->makeActive();
 			emit callClosed();
 			break;
 		case EntryphoneDevice::STOP_VIDEO:
