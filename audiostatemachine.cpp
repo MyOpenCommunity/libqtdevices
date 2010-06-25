@@ -229,6 +229,11 @@ namespace
 	{
 		return state == AudioStates::ALARM_TO_SPEAKER;
 	}
+
+	bool isMediaPlaybackState(int state)
+	{
+		return state == AudioStates::PLAY_MEDIA_TO_SPEAKER || state == AudioStates::PLAY_DIFSON;
+	}
 }
 
 
@@ -243,9 +248,17 @@ AudioStateMachine::AudioStateMachine()
 	connect(volumes_timer, SIGNAL(timeout()), SLOT(saveVolumes()));
 	connect(this, SIGNAL(directAudioAccessStopped()), SLOT(completeStateChange()));
 
+	transition_guard = new QTimer(this);
+	transition_guard->setInterval(1000);
+	transition_guard->setSingleShot(true);
+	connect(transition_guard, SIGNAL(timeout()), SLOT(forceStateChange()));
+
 	current_audio_path = -1;
-	direct_audio_access = 0;
+	direct_audio_access = false;
 	pending_old_state = pending_new_state = -1;
+	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
+	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
+	local_source_status = local_amplifier_status = media_player_status = media_player_temporary_pause = false;
 
 	addState(IDLE,
 		 SLOT(stateIdleEntered()),
@@ -297,9 +310,6 @@ AudioStateMachine::AudioStateMachine()
 void AudioStateMachine::start(int state)
 {
 	QtConcurrent::run(initEchoCanceller);
-	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
-	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
-	local_source_status = local_amplifier_status = false;
 	initVolumes();
 	disactivateVCTAudio();
 
@@ -348,10 +358,15 @@ void AudioStateMachine::changeState(int new_state, int old_state)
 	pending_old_state = old_state;
 	pending_new_state = new_state;
 
-	if (isDirectAudioAccess())
+	// do not delay the state transition if we are entering a state where MPlayer should be
+	// active and it's already active
+	if (isDirectAudioAccess() && !(media_player_status && isMediaPlaybackState(new_state)))
 	{
 		// completeStateChange will be called after the playing process completes
 		qDebug() << "Delaying audio state transition";
+
+		// safety catch
+		transition_guard->start();
 	}
 	else
 	{
@@ -359,6 +374,16 @@ void AudioStateMachine::changeState(int new_state, int old_state)
 
 		completeStateChange();
 	}
+}
+
+void AudioStateMachine::forceStateChange()
+{
+	// check if there is any pending transition
+	if (pending_new_state == -1 || pending_old_state == -1)
+		return;
+
+	qDebug() << "Forcing a delayed state change";
+	completeStateChange();
 }
 
 void AudioStateMachine::completeStateChange()
@@ -381,6 +406,39 @@ void AudioStateMachine::saveVolumes()
 }
 
 // local source/amplifier handling for sound diffusion
+
+void AudioStateMachine::manageMediaPlaybackStates()
+{
+	if (!isSource())
+	{
+		// remove difson/play to speaker states if not needed anymore
+		if (contains(AudioStates::PLAY_MEDIA_TO_SPEAKER) && !media_player_status && !media_player_temporary_pause)
+		{
+			removeState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
+			media_player_temporary_pause = false;
+		}
+
+		if (contains(AudioStates::PLAY_DIFSON) && !local_amplifier_status)
+			removeState(AudioStates::PLAY_DIFSON);
+
+		// enter difson/play to speaker states if required
+		if (media_player_status && !contains(AudioStates::PLAY_MEDIA_TO_SPEAKER))
+		{
+			toState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
+			if (contains(AudioStates::PLAY_DIFSON))
+				removeState(AudioStates::PLAY_DIFSON);
+		}
+		else if (local_amplifier_status && !contains(AudioStates::PLAY_DIFSON) && !contains(AudioStates::PLAY_MEDIA_TO_SPEAKER))
+			toState(AudioStates::PLAY_DIFSON);
+	}
+	else
+	{
+		if (contains(AudioStates::PLAY_DIFSON) && !isSoundDiffusionActive() && !media_player_temporary_pause)
+			removeState(AudioStates::PLAY_DIFSON);
+		else if (isSoundDiffusionActive() && !contains(AudioStates::PLAY_DIFSON))
+			toState(AudioStates::PLAY_DIFSON);
+	}
+}
 
 bool AudioStateMachine::isSource()
 {
@@ -408,6 +466,8 @@ void AudioStateMachine::setLocalAmplifierStatus(bool status)
 			changeVolumePath(Volumes::MM_AMPLIFIER, 0);
 		}
 	}
+
+	manageMediaPlaybackStates();
 }
 
 bool AudioStateMachine::getLocalAmplifierStatus()
@@ -443,6 +503,8 @@ void AudioStateMachine::setLocalSourceStatus(bool status)
 			changeVolumePath(Volumes::MM_SOURCE, 0);
 		}
 	}
+
+	manageMediaPlaybackStates();
 }
 
 bool AudioStateMachine::getLocalSourceStatus()
@@ -450,27 +512,39 @@ bool AudioStateMachine::getLocalSourceStatus()
 	return local_source_status;
 }
 
+void AudioStateMachine::setMediaPlayerActive(bool active)
+{
+	media_player_status = active;
+	manageMediaPlaybackStates();
+}
+
+void AudioStateMachine::setMediaPlayerTemporaryPause(bool paused)
+{
+	media_player_temporary_pause = paused;
+	manageMediaPlaybackStates();
+}
+
 bool AudioStateMachine::isSoundDiffusionActive()
 {
-	return getLocalAmplifierStatus() || getLocalSourceStatus();
+	return getLocalAmplifierStatus() || getLocalSourceStatus() || media_player_status;
 }
 
 // misc methods
 
 void AudioStateMachine::setDirectAudioAccess(bool status)
 {
-	if (!status && !direct_audio_access)
+	if (status == direct_audio_access)
 		return;
-	direct_audio_access += status ? 1 : -1;
-	if (direct_audio_access == 1 && status)
+	direct_audio_access = status;
+	if (direct_audio_access)
 		emit directAudioAccessStarted();
-	else if (direct_audio_access == 0)
+	else
 		emit directAudioAccessStopped();
 }
 
 bool AudioStateMachine::isDirectAudioAccess()
 {
-       return direct_audio_access != 0;
+       return direct_audio_access;
 }
 
 void AudioStateMachine::setVolume(int value)
@@ -496,23 +570,29 @@ int AudioStateMachine::getVolume()
 
 void AudioStateMachine::stateIdleEntered()
 {
+	qDebug() << "AudioStateMachine::stateIdleEntered";
+
 	deactivateLocalAmplifier();
 }
 
 void AudioStateMachine::stateIdleExited()
 {
+	qDebug() << "AudioStateMachine::stateIdleExited";
+
 	activateLocalAmplifier();
 }
 
 void AudioStateMachine::stateBeepOnEntered()
 {
+	qDebug() << "AudioStateMachine::stateBeepOnEntered";
+
 	current_audio_path = Volumes::BEEP;
 	changeVolumePath(Volumes::BEEP);
 }
 
 void AudioStateMachine::stateBeepOnExited()
 {
-
+	qDebug() << "AudioStateMachine::stateBeepOnExited";
 }
 
 void AudioStateMachine::statePlayMediaToSpeakerEntered()
@@ -665,12 +745,14 @@ void AudioStateMachine::stateAlarmToSpeakerExited()
 void AudioStateMachine::stateScreensaverEntered()
 {
 	qDebug() << "AudioStateMachine::stateScreensaverEntered";
+
 	deactivateLocalAmplifier();
 }
 
 void AudioStateMachine::stateScreensaverExited()
 {
 	qDebug() << "AudioStateMachine::stateScreensaverExited";
+
 	activateLocalAmplifier();
 }
 

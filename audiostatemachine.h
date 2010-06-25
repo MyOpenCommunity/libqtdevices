@@ -99,6 +99,8 @@ public:
 	void setLocalAmplifierVolume(int value);
 	bool getLocalAmplifierStatus();
 	void setLocalAmplifierStatus(bool status);
+	void setMediaPlayerActive(bool active);
+	void setMediaPlayerTemporaryPause(bool paused);
 
 	bool isSoundDiffusionActive();
 
@@ -116,6 +118,9 @@ signals:
 
 protected:
 	void changeState(int new_state, int old_state);
+
+private:
+	void manageMediaPlaybackStates();
 
 private slots:
 	// declare state handlers here
@@ -158,16 +163,17 @@ private slots:
 
 	void saveVolumes();
 	void completeStateChange();
+	void forceStateChange();
 
 private:
-	QTimer *volumes_timer;
+	QTimer *volumes_timer, *transition_guard;
 	int current_audio_path, pending_old_state, pending_new_state;
 #endif
 
 private:
 	bool is_source, is_amplifier;
-	bool local_source_status, local_amplifier_status;
-	int direct_audio_access;
+	bool local_source_status, local_amplifier_status, media_player_status, media_player_temporary_pause;
+	bool direct_audio_access;
 };
 
 

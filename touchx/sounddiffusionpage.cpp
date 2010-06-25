@@ -639,25 +639,23 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 		{
 			bool new_state = device_values[key].toBool();
 
+			// refuse to activate amplifier when playing locally
+			if (new_state && bt_global::audio_states->contains(AudioStates::PLAY_MEDIA_TO_SPEAKER))
+			{
+				qDebug() << "Not activating amplifier from bus";
+				if (device_values.contains(VirtualAmplifierDevice::DIM_SELF_REQUEST))
+					dev->turnOff();
+				else
+					dev->updateStatus(state);
+
+				return;
+			}
+
 			if (state != new_state)
 			{
-				bool sounddiff_active = bt_global::audio_states->isSoundDiffusionActive();
-
 				// assign it here so the audioStateChanged() notification sees the correct state
 				state = new_state;
 				bt_global::audio_states->setLocalAmplifierStatus(new_state);
-
-				// enter the sound diffusion state if it isn't already on the stack
-				if (new_state && !sounddiff_active)
-					if (!bt_global::audio_states->toState(AudioStates::PLAY_DIFSON))
-					{
-						qDebug() << "Refusing to turn on the local amplifier";
-						return;
-					}
-
-				// exit the sound diffusion state if neither source nor amplifier is active
-				if (sounddiff_active && !bt_global::audio_states->isSoundDiffusionActive())
-					bt_global::audio_states->removeState(AudioStates::PLAY_DIFSON);
 			}
 
 			// in some cases this and audioStateChanged() will send the same frames twice; this is OK
@@ -753,22 +751,7 @@ void LocalSource::valueReceived(const DeviceValues &device_values)
 			bool state = bt_global::audio_states->getLocalSourceStatus();
 
 			if (state != new_state)
-			{
-				bool sounddiff_active = bt_global::audio_states->isSoundDiffusionActive();
-
-				// enter the sound diffusion state if it isn't already on the stack
-				if (new_state && !sounddiff_active)
-					if (!bt_global::audio_states->toState(AudioStates::PLAY_DIFSON))
-					{
-						qDebug() << "Refusing to turn on the local source";
-						return;
-					}
 				bt_global::audio_states->setLocalSourceStatus(new_state);
-
-				// exit the sound diffusion state if neither source nor amplifier is active
-				if (sounddiff_active && !bt_global::audio_states->isSoundDiffusionActive())
-					bt_global::audio_states->removeState(AudioStates::PLAY_DIFSON);
-			}
 
 			if (new_state)
 				startLocalPlayback(!device_values.contains(VirtualSourceDevice::DIM_SELF_REQUEST));
