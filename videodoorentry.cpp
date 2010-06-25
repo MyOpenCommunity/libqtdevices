@@ -398,11 +398,16 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 			if (ringtone == Ringtones::PI_INTERCOM || ringtone == Ringtones::PE_INTERCOM)
 			{
 				if (!ring_exclusion || !ring_exclusion->getStatus())
-					connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(playRingtone()));
+					connect(bt_global::audio_states, SIGNAL(stateTransition(int,int)), SLOT(playRingtone()));
 				if (bt_global::audio_states->currentState() != AudioStates::PLAY_VDE_RINGTONE)
 					bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
 				else if (!ring_exclusion || !ring_exclusion->getStatus())
 					playRingtone();
+			}
+			else if (ringtone == Ringtones::FLOORCALL && (!ring_exclusion || !ring_exclusion->getStatus()))
+			{
+				connect(bt_global::audio_states, SIGNAL(stateTransition(int,int)), SLOT(playRingtone()));
+				bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
 			}
 			break;
 		}
@@ -429,8 +434,18 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 
 void IntercomCallPage::playRingtone()
 {
-	disconnect(bt_global::audio_states, SIGNAL(directAudioAccessStopped()),	this, SLOT(playRingtone()));
-	bt_global::ringtones->playRingtone(static_cast<Ringtones::Type>(ringtone));
+	disconnect(bt_global::audio_states, SIGNAL(stateTransition(int,int)), this, SLOT(playRingtone()));
+	Ringtones::Type ring = static_cast<Ringtones::Type>(ringtone);
+	if (ring == Ringtones::FLOORCALL)
+		connect(bt_global::ringtones, SIGNAL(ringtoneFinished()), this, SLOT(floorCallFinished()));
+
+	bt_global::ringtones->playRingtone(ring);
+}
+
+void IntercomCallPage::floorCallFinished()
+{
+	bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
+	disconnect(bt_global::ringtones, SIGNAL(ringtoneFinished()), this, SLOT(floorCallFinished()));
 }
 
 

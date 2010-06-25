@@ -317,7 +317,7 @@ bool AudioStateMachine::toState(int state)
 	int index = stateCount();
 
 	// there are these "interesting" special cases: video call states have precedence
-	// over alarm states, which have precedence over everithing else; if we try
+	// over alarm states, which have precedence over everything else; if we try
 	// to transition from a high priority state to a low priority state, we note
 	// this fact by inserting the state in the state stack below the high priority states
 	if (!isVideoCallState(state))
