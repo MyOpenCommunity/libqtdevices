@@ -639,10 +639,21 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 		{
 			bool new_state = device_values[key].toBool();
 
+			// refuse to activate amplifier when playing locally
+			if (new_state && bt_global::audio_states->contains(AudioStates::PLAY_MEDIA_TO_SPEAKER))
+			{
+				qDebug() << "Not activating amplifier from bus";
+				if (device_values.contains(VirtualAmplifierDevice::DIM_SELF_REQUEST))
+					dev->turnOff();
+				else
+					dev->updateStatus(state);
+
+				return;
+			}
+
 			if (state != new_state)
 			{
 				bool sounddiff_active = bt_global::audio_states->isSoundDiffusionActive();
-
 				// assign it here so the audioStateChanged() notification sees the correct state
 				state = new_state;
 				bt_global::audio_states->setLocalAmplifierStatus(new_state);
