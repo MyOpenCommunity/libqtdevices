@@ -156,6 +156,10 @@ void MediaPlayerPage::audioStateChanged(int new_state, int old_state)
 
 void MediaPlayerPage::audioStateAboutToChange(int old_state)
 {
+	// when not a sound diffusion source, do not force the player off when going from sound-diffusion to local playback
+	if (old_state == AudioStates::PLAY_DIFSON && !bt_global::audio_states->isSource())
+		return;
+
 	if ((old_state == AudioStates::PLAY_MEDIA_TO_SPEAKER || old_state == AudioStates::PLAY_DIFSON) && player->isInstanceRunning() && !player->isPaused())
 	{
 		resume_on_state_change = true;
@@ -166,10 +170,6 @@ void MediaPlayerPage::audioStateAboutToChange(int old_state)
 
 void MediaPlayerPage::playbackStarted()
 {
-	// when the player resumes after an higher priority state (alarm, vct) there is no
-	// need to reenter the play state
-	if (!bt_global::audio_states->isSource() && !resume_on_state_change)
-		bt_global::audio_states->toState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
 	resume_on_state_change = false;
 	refresh_data.start();
 	bt_global::audio_states->setMediaPlayerTemporaryPause(false);
@@ -177,8 +177,5 @@ void MediaPlayerPage::playbackStarted()
 
 void MediaPlayerPage::playbackStopped()
 {
-	// leave the play state on the stack when the player is paused beacuse of a higher priority state
-	if (!bt_global::audio_states->isSource() && !resume_on_state_change && bt_global::audio_states->contains(AudioStates::PLAY_MEDIA_TO_SPEAKER))
-		bt_global::audio_states->removeState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
 	refresh_data.stop();
 }

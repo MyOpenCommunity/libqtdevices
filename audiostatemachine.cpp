@@ -229,6 +229,11 @@ namespace
 	{
 		return state == AudioStates::ALARM_TO_SPEAKER;
 	}
+
+	bool isMediaPlaybackState(int state)
+	{
+		return state == AudioStates::PLAY_MEDIA_TO_SPEAKER || state == AudioStates::PLAY_DIFSON;
+	}
 }
 
 
@@ -353,7 +358,9 @@ void AudioStateMachine::changeState(int new_state, int old_state)
 	pending_old_state = old_state;
 	pending_new_state = new_state;
 
-	if (isDirectAudioAccess())
+	// do not delay the state transition if we are entering a state where MPlayer should be
+	// active and it's already active
+	if (isDirectAudioAccess() && !(media_player_status && isMediaPlaybackState(new_state)))
 	{
 		// completeStateChange will be called after the playing process completes
 		qDebug() << "Delaying audio state transition";
@@ -400,6 +407,39 @@ void AudioStateMachine::saveVolumes()
 
 // local source/amplifier handling for sound diffusion
 
+void AudioStateMachine::manageMediaPlaybackStates()
+{
+	if (!isSource())
+	{
+		// remove difson/play to speaker states if not needed anymore
+		if (contains(AudioStates::PLAY_MEDIA_TO_SPEAKER) && !media_player_status && !media_player_temporary_pause)
+		{
+			removeState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
+			media_player_temporary_pause = false;
+		}
+
+		if (contains(AudioStates::PLAY_DIFSON) && !local_amplifier_status)
+			removeState(AudioStates::PLAY_DIFSON);
+
+		// enter difson/play to speaker states if required
+		if (media_player_status && !contains(AudioStates::PLAY_MEDIA_TO_SPEAKER))
+		{
+			toState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
+			if (contains(AudioStates::PLAY_DIFSON))
+				removeState(AudioStates::PLAY_DIFSON);
+		}
+		else if (local_amplifier_status && !contains(AudioStates::PLAY_DIFSON) && !contains(AudioStates::PLAY_MEDIA_TO_SPEAKER))
+			toState(AudioStates::PLAY_DIFSON);
+	}
+	else
+	{
+		if (contains(AudioStates::PLAY_DIFSON) && !isSoundDiffusionActive() && !media_player_temporary_pause)
+			removeState(AudioStates::PLAY_DIFSON);
+		else if (isSoundDiffusionActive() && !contains(AudioStates::PLAY_DIFSON))
+			toState(AudioStates::PLAY_DIFSON);
+	}
+}
+
 bool AudioStateMachine::isSource()
 {
 	return is_source;
@@ -426,6 +466,8 @@ void AudioStateMachine::setLocalAmplifierStatus(bool status)
 			changeVolumePath(Volumes::MM_AMPLIFIER, 0);
 		}
 	}
+
+	manageMediaPlaybackStates();
 }
 
 bool AudioStateMachine::getLocalAmplifierStatus()
@@ -461,6 +503,8 @@ void AudioStateMachine::setLocalSourceStatus(bool status)
 			changeVolumePath(Volumes::MM_SOURCE, 0);
 		}
 	}
+
+	manageMediaPlaybackStates();
 }
 
 bool AudioStateMachine::getLocalSourceStatus()
@@ -471,11 +515,13 @@ bool AudioStateMachine::getLocalSourceStatus()
 void AudioStateMachine::setMediaPlayerActive(bool active)
 {
 	media_player_status = active;
+	manageMediaPlaybackStates();
 }
 
 void AudioStateMachine::setMediaPlayerTemporaryPause(bool paused)
 {
 	media_player_temporary_pause = paused;
+	manageMediaPlaybackStates();
 }
 
 bool AudioStateMachine::isSoundDiffusionActive()

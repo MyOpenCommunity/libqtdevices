@@ -119,6 +119,9 @@ signals:
 protected:
 	void changeState(int new_state, int old_state);
 
+private:
+	void manageMediaPlaybackStates();
+
 private slots:
 	// declare state handlers here
 	// Events: Startup, Beep disabled
