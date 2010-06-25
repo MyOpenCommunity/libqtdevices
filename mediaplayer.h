@@ -57,7 +57,10 @@ public:
 	/// Like quit, but wait for mplayer to terminate
 	void quitAndWait();
 
-	/// Wheather the player is on pause
+	/// Wheather the player is on pause; due to the asynchronous nature of the communication
+	/// with MPlayer, isPaused() does not always coincide with current MPlayer state; isPaused()
+	/// returns the state MPlayer will have after it processes all pending commands; to detect when
+	/// MPlayer really pauses, use the mplayerPaused() signal.
 	bool isPaused() { return paused; }
 
 	/// Retrun true if music is playing
