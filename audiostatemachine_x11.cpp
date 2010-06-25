@@ -103,9 +103,14 @@ bool AudioStateMachine::getLocalSourceStatus()
 	return local_source_status;
 }
 
+void AudioStateMachine::setMediaPlayerActive(bool active)
+{
+	media_player_status = active;
+}
+
 bool AudioStateMachine::isSoundDiffusionActive()
 {
-	return getLocalAmplifierStatus() || getLocalSourceStatus();
+	return getLocalAmplifierStatus() || getLocalSourceStatus() || media_player_status;
 }
 
 void AudioStateMachine::setDirectAudioAccess(bool status)

@@ -816,6 +816,7 @@ void VirtualAmplifierDevice::updateStatus(bool _status)
 
 	DeviceValues values_list;
 
+	values_list[DIM_SELF_REQUEST] = true;
 	values_list[DIM_STATUS] = status;
 	emit valueReceived(values_list);
 }
@@ -827,6 +828,7 @@ void VirtualAmplifierDevice::updateVolume(int _volume)
 
 	DeviceValues values_list;
 
+	values_list[DIM_SELF_REQUEST] = true;
 	values_list[DIM_VOLUME] = volume;
 	emit valueReceived(values_list);
 }
@@ -835,6 +837,7 @@ void VirtualAmplifierDevice::turnOn()
 {
 	DeviceValues values_list;
 
+	values_list[DIM_SELF_REQUEST] = true;
 	values_list[REQ_AMPLI_ON] = true;
 	emit valueReceived(values_list);
 }
@@ -843,6 +846,7 @@ void VirtualAmplifierDevice::turnOff()
 {
 	DeviceValues values_list;
 
+	values_list[DIM_SELF_REQUEST] = true;
 	values_list[REQ_AMPLI_ON] = false;
 	emit valueReceived(values_list);
 }
@@ -851,6 +855,7 @@ void VirtualAmplifierDevice::volumeUp()
 {
 	DeviceValues values_list;
 
+	values_list[DIM_SELF_REQUEST] = true;
 	values_list[REQ_VOLUME_UP] = 1;
 	emit valueReceived(values_list);
 }
@@ -859,6 +864,7 @@ void VirtualAmplifierDevice::volumeDown()
 {
 	DeviceValues values_list;
 
+	values_list[DIM_SELF_REQUEST] = true;
 	values_list[REQ_VOLUME_DOWN] = 1;
 	emit valueReceived(values_list);
 }
@@ -867,6 +873,7 @@ void VirtualAmplifierDevice::setVolume(int volume)
 {
 	DeviceValues values_list;
 
+	values_list[DIM_SELF_REQUEST] = true;
 	values_list[REQ_SET_VOLUME] = volume;
 	emit valueReceived(values_list);
 }

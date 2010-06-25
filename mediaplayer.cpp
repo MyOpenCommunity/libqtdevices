@@ -234,13 +234,16 @@ void MediaPlayer::pause()
 	if (!active)
 		return;
 
-	if (!paused)
-		execCmd("pause");
+	if (paused)
+		return;
+	// we set the paused flag here to avoid two consecutive calls to pause()
+	// leaving the player in playback state; see also the comment about isPaused
+	paused = true;
+	execCmd("pause");
 }
 
 void MediaPlayer::actuallyPaused()
 {
-	paused = true;
 	emit mplayerPaused();
 	updateDirectAccessState(false);
 }
@@ -401,6 +404,7 @@ void MediaPlayer::updateDirectAccessState(bool state)
 {
 	if (is_video)
 		bt_global::display->setDirectScreenAccess(state);
+	bt_global::audio_states->setMediaPlayerActive(state);
 	bt_global::audio_states->setDirectAudioAccess(state);
 }
 
