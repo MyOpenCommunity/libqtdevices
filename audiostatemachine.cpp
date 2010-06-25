@@ -246,6 +246,9 @@ AudioStateMachine::AudioStateMachine()
 	current_audio_path = -1;
 	direct_audio_access = false;
 	pending_old_state = pending_new_state = -1;
+	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
+	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
+	local_source_status = local_amplifier_status = false;
 
 	addState(IDLE,
 		 SLOT(stateIdleEntered()),
@@ -297,9 +300,6 @@ AudioStateMachine::AudioStateMachine()
 void AudioStateMachine::start(int state)
 {
 	QtConcurrent::run(initEchoCanceller);
-	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
-	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
-	local_source_status = local_amplifier_status = false;
 	initVolumes();
 	disactivateVCTAudio();
 
