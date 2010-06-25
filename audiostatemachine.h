@@ -160,9 +160,10 @@ private slots:
 
 	void saveVolumes();
 	void completeStateChange();
+	void forceStateChange();
 
 private:
-	QTimer *volumes_timer;
+	QTimer *volumes_timer, *transition_guard;
 	int current_audio_path, pending_old_state, pending_new_state;
 #endif
 

@@ -243,6 +243,11 @@ AudioStateMachine::AudioStateMachine()
 	connect(volumes_timer, SIGNAL(timeout()), SLOT(saveVolumes()));
 	connect(this, SIGNAL(directAudioAccessStopped()), SLOT(completeStateChange()));
 
+	transition_guard = new QTimer(this);
+	transition_guard->setInterval(1000);
+	transition_guard->setSingleShot(true);
+	connect(transition_guard, SIGNAL(timeout()), SLOT(forceStateChange()));
+
 	current_audio_path = -1;
 	direct_audio_access = false;
 	pending_old_state = pending_new_state = -1;
@@ -352,6 +357,9 @@ void AudioStateMachine::changeState(int new_state, int old_state)
 	{
 		// completeStateChange will be called after the playing process completes
 		qDebug() << "Delaying audio state transition";
+
+		// safety catch
+		transition_guard->start();
 	}
 	else
 	{
@@ -359,6 +367,16 @@ void AudioStateMachine::changeState(int new_state, int old_state)
 
 		completeStateChange();
 	}
+}
+
+void AudioStateMachine::forceStateChange()
+{
+	// check if there is any pending transition
+	if (pending_new_state == -1 || pending_old_state == -1)
+		return;
+
+	qDebug() << "Forcing a delayed state change";
+	completeStateChange();
 }
 
 void AudioStateMachine::completeStateChange()
