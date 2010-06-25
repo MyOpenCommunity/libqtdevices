@@ -248,7 +248,7 @@ AudioStateMachine::AudioStateMachine()
 	pending_old_state = pending_new_state = -1;
 	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
 	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
-	local_source_status = local_amplifier_status = false;
+	local_source_status = local_amplifier_status = media_player_status = media_player_temporary_pause = false;
 
 	addState(IDLE,
 		 SLOT(stateIdleEntered()),
@@ -450,9 +450,19 @@ bool AudioStateMachine::getLocalSourceStatus()
 	return local_source_status;
 }
 
+void AudioStateMachine::setMediaPlayerActive(bool active)
+{
+	media_player_status = active;
+}
+
+void AudioStateMachine::setMediaPlayerTemporaryPause(bool paused)
+{
+	media_player_temporary_pause = paused;
+}
+
 bool AudioStateMachine::isSoundDiffusionActive()
 {
-	return getLocalAmplifierStatus() || getLocalSourceStatus();
+	return getLocalAmplifierStatus() || getLocalSourceStatus() || media_player_status;
 }
 
 // misc methods

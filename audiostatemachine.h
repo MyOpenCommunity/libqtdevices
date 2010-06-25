@@ -99,6 +99,8 @@ public:
 	void setLocalAmplifierVolume(int value);
 	bool getLocalAmplifierStatus();
 	void setLocalAmplifierStatus(bool status);
+	void setMediaPlayerActive(bool active);
+	void setMediaPlayerTemporaryPause(bool paused);
 
 	bool isSoundDiffusionActive();
 
@@ -166,7 +168,7 @@ private:
 
 private:
 	bool is_source, is_amplifier;
-	bool local_source_status, local_amplifier_status;
+	bool local_source_status, local_amplifier_status, media_player_status, media_player_temporary_pause;
 	bool direct_audio_access;
 };
 

@@ -404,6 +404,7 @@ void MediaPlayer::updateDirectAccessState(bool state)
 {
 	if (is_video)
 		bt_global::display->setDirectScreenAccess(state);
+	bt_global::audio_states->setMediaPlayerActive(state);
 	bt_global::audio_states->setDirectAudioAccess(state);
 }
 

@@ -159,6 +159,7 @@ void MediaPlayerPage::audioStateAboutToChange(int old_state)
 	if ((old_state == AudioStates::PLAY_MEDIA_TO_SPEAKER || old_state == AudioStates::PLAY_DIFSON) && player->isInstanceRunning() && !player->isPaused())
 	{
 		resume_on_state_change = true;
+		bt_global::audio_states->setMediaPlayerTemporaryPause(true);
 		pause();
 	}
 }
@@ -171,6 +172,7 @@ void MediaPlayerPage::playbackStarted()
 		bt_global::audio_states->toState(AudioStates::PLAY_MEDIA_TO_SPEAKER);
 	resume_on_state_change = false;
 	refresh_data.start();
+	bt_global::audio_states->setMediaPlayerTemporaryPause(false);
 }
 
 void MediaPlayerPage::playbackStopped()
