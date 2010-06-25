@@ -167,7 +167,7 @@ private:
 private:
 	bool is_source, is_amplifier;
 	bool local_source_status, local_amplifier_status;
-	int direct_audio_access;
+	bool direct_audio_access;
 };
 
 
