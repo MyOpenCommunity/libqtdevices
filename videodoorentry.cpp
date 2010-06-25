@@ -425,6 +425,8 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 			{
 				call_active = false;
 				handleClose();
+				// Reset the timers for the freeze/screensaver.
+				bt_global::btmain->makeActive();
 			}
 			break;
 		}
