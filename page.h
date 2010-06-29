@@ -150,6 +150,8 @@ public:
 	 */
 	void addBottomWidget(QWidget *bottom);
 
+	void forceClosed();
+
 public slots:
 	/// An handle to allow customization of the page showed. Default implementation
 	/// show the page in fullscreen mode and call the transition effect if present.
@@ -220,7 +222,6 @@ private:
 	static PageContainer *page_container;
 	static Client *client_richieste;
 	static Client *client_comandi;
-	void forceClosed();
 };
 
 #endif

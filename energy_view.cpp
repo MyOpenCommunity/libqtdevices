@@ -678,8 +678,11 @@ void EnergyView::screenSaverStarted(Page *prev_page)
 			 time_period->date().month() == QDate::currentDate().month())
 			update_after_ssaver = true;
 
+		// When the screensaver starts and we are showing a table or a graph
+		// we want to move to the consumptions page (the graph part is done
+		// in the cleanUp method).
 		if (prev_page == table)
-			bt_global::btmain->setPreviousPage(this);
+			table->forceClosed();
 	}
 }
 
