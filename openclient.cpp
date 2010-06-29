@@ -20,7 +20,6 @@
 
 
 #include "openclient.h"
-#include "hardware_functions.h" // rearmWDT
 #include "frame_receiver.h"
 
 #include <openmsg.h>
@@ -271,7 +270,6 @@ void Client::unsubscribe(FrameReceiver *obj)
 int Client::socketFrameRead()
 {
 	qDebug("Client::socketFrameRead()");
-	rearmWDT();
 
 	while (true)
 	{
