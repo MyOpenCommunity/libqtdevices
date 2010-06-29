@@ -23,6 +23,7 @@
 #include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW
 #include "aux.h" // class myAux
 #include "generic_functions.h" // createMsgOpen
+#include "devices_cache.h" // device_status_sound_matr::AMBx_INDEX 
 
 #include <QWidget>
 #include <QDebug>
@@ -99,20 +100,22 @@ sorgenteMultiAux::sorgenteMultiAux(QWidget *parent, QString aux_name, QString in
 
 void sorgenteMultiAux::attiva()
 {
+	QString f;
 	qDebug("sorgenteMultiAux::attiva()");
 
 	if (!multiamb)
 	{
-		QString f = QString("*22*35#4#%1#%2*3#%1#0##").arg(indirizzo_ambiente).arg(indirizzo_semplice.toInt());
+		f = QString("*22*35#4#%1#%2*3#%1#0##").arg(indirizzo_ambiente).arg(indirizzo_semplice.toInt());
 		sendFrame(f);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 	}
 	else
 	{
-		qDebug("DA INSIEME AMBIENTI. CI SONO %d INDIRIZZI", indirizzi_ambienti.count());
-		for (QStringList::Iterator it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
+		qDebug("DA INSIEME AMBIENTI. CI SONO 8 INDIRIZZI");
+		for (int it = device_status_sound_matr::AMB1_INDEX; it <= device_status_sound_matr::AMB8_INDEX; ++it)
 		{
-			sendFrame("*22*35#4#" + *it + "#" + indirizzo_semplice + "*3#" + *it + "#0##");
+			f = QString("*22*35#4#%1#%2*3#%1#0##").arg(it + 1).arg(indirizzo_semplice.toInt());
+			sendFrame(f);
 		}
 	}
 }

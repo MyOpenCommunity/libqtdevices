@@ -21,6 +21,7 @@
 
 #include "sorgentimedia.h"
 #include "main.h" // ICON_CICLA, ICON_FFWD, ICON_REW, ICON_IMPOSTA
+#include "devices_cache.h" // device_status_sound_matr::AMBx_INDEX 
 
 #include <openwebnet.h> // class openwebnet
 
@@ -160,11 +161,12 @@ BannerSorgenteMultimediaMC::BannerSorgenteMultimediaMC(QWidget *parent, const QD
 
 void BannerSorgenteMultimediaMC::attiva()
 {
+	QString f;
 	qDebug("BannerSorgenteMultimediaMC::attiva()");
 
 	if (!multiamb)
 	{
-		QString f = QString("*22*35#4#%1#%2*3#%1#0##").arg(indirizzo_ambiente).arg(indirizzo_semplice.toInt());
+		f = QString("*22*35#4#%1#%2*3#%1#0##").arg(indirizzo_ambiente).arg(indirizzo_semplice.toInt());
 		sendFrame(f);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 		source_menu.enableSource(false);
@@ -172,11 +174,11 @@ void BannerSorgenteMultimediaMC::attiva()
 	}
 	else
 	{
-		QStringList::Iterator it;
 		source_menu.enableSource(false);
-		for (it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
+		for (int it = device_status_sound_matr::AMB1_INDEX; it <= device_status_sound_matr::AMB8_INDEX; ++it)
 		{
-			sendFrame("*22*35#4#" + *it + "#" + indirizzo_semplice + "*3#" + *it + "#0##");
+			f = QString("*22*35#4#%1#%2*3#%1#0##").arg(it + 1).arg(indirizzo_semplice.toInt());
+			sendFrame(f);
 		}
 		source_menu.enableSource(false);
 		source_menu.resume();

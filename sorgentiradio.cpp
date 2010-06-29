@@ -22,7 +22,7 @@
 #include "sorgentiradio.h"
 #include "main.h" // ICON_CICLA
 #include "radio.h"
-#include "devices_cache.h" // bt_global::devices_cache
+#include "devices_cache.h" // bt_global::devices_cache, device_status_sound_matr::AMBx_INDEX 
 #include "device.h"
 #include "generic_functions.h" // createMsgOpen
 
@@ -293,20 +293,23 @@ sorgenteMultiRadio::sorgenteMultiRadio(QWidget *parent, QString indirizzo, QStri
 
 void sorgenteMultiRadio::attiva()
 {
+	QString f;
+
 	qDebug("sorgenteMultiRadio::attiva()");
 
 	if (!multiamb)
 	{
-		QString f = QString("*22*35#4#%1#%2*3#%1#0##").arg(indirizzo_ambiente).arg(indirizzo_semplice.toInt());
+		f = QString("*22*35#4#%1#%2*3#%1#0##").arg(indirizzo_ambiente).arg(indirizzo_semplice.toInt());
 		dev->sendFrame(f);
 		emit active(indirizzo_ambiente, indirizzo_semplice.toInt());
 	}
 	else
 	{
-		qDebug("DA INSIEME AMBIENTI. CI SONO %d INDIRIZZI", indirizzi_ambienti.count());
-		for (QStringList::Iterator it = indirizzi_ambienti.begin(); it != indirizzi_ambienti.end(); ++it)
+		qDebug("DA INSIEME AMBIENTI. CI SONO 8 INDIRIZZI");
+		for (int it = device_status_sound_matr::AMB1_INDEX; it <= device_status_sound_matr::AMB8_INDEX; ++it)
 		{
-			dev->sendFrame("*22*35#4#" + *it + "#" + indirizzo_semplice + "*3#" + *it + "#0##");
+			f = QString("*22*35#4#%1#%2*3#%1#0##").arg(it + 1).arg(indirizzo_semplice.toInt());
+			dev->sendFrame(f);
 		}
 	}
 }
