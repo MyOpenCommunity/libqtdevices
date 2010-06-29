@@ -596,6 +596,11 @@ device_condition_light_status::device_condition_light_status(QWidget *parent, QS
 	Draw();
 }
 
+void device_condition_light_status::inizializza()
+{
+	(static_cast<LightingDevice*>(dev))->requestStatus();
+}
+
 QString device_condition_light_status::get_string()
 {
 	return get_current_value() ? tr("ON") : tr("OFF");
@@ -689,6 +694,11 @@ device_condition_dimming::device_condition_dimming(QWidget *parent, QString *c, 
 	set_current_value_max(get_condition_value_max());
 	dev = new DimmerDevice("", pull_mode);
 	Draw();
+}
+
+void device_condition_dimming::inizializza()
+{
+	(static_cast<DimmerDevice*>(dev))->requestStatus();
 }
 
 QString device_condition_dimming::get_current_value()
@@ -954,6 +964,12 @@ device_condition_dimming_100::device_condition_dimming_100(QWidget *parent, QStr
 	set_current_value_max(get_condition_value_max());
 	dev = new Dimmer100Device("", pull_mode);
 	Draw();
+}
+
+void device_condition_dimming_100::inizializza()
+{
+	(static_cast<Dimmer100Device*>(dev))->requestStatus();
+	(static_cast<Dimmer100Device*>(dev))->requestDimmer100Status();
 }
 
 QString device_condition_dimming_100::get_current_value()
@@ -1224,6 +1240,11 @@ device_condition_volume::device_condition_volume(QWidget *parent, QString *c)
 	Draw();
 	dev = new AmplifierDevice(QString(""));
 	amplifier_on = false;
+}
+
+void device_condition_volume::inizializza()
+{
+	(static_cast<AmplifierDevice*>(dev))->init();
 }
 
 void device_condition_volume::set_condition_value_min(int s)

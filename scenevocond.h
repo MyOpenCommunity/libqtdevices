@@ -298,6 +298,9 @@ public slots:
 	//! Invoked when status changes
 	virtual void status_changed(QList<device_status*>);
 
+protected:
+	virtual void inizializza();
+
 private slots:
 	void status_changed(const StatusList &sl);
 
@@ -354,6 +357,9 @@ public slots:
 	void Down();
 	//! Invoked when status changes
 	virtual void status_changed(QList<device_status*>);
+
+protected:
+	virtual void inizializza();
 
 private slots:
 	void status_changed(const StatusList &sl);
@@ -414,6 +420,9 @@ public slots:
 	//! Invoked when status changes
 	virtual void status_changed(QList<device_status*>);
 
+protected:
+	virtual void inizializza();
+
 private slots:
 	void status_changed(const StatusList &sl);
 
@@ -466,6 +475,9 @@ public slots:
 	void Up();
 	//! Invoked when DOWN button is pressed
 	void Down();
+
+protected:
+	virtual void inizializza();
 
 private slots:
 	virtual void status_changed(const StatusList &sl);
