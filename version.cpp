@@ -34,13 +34,13 @@ Version::Version()
 {
 	SkinContext version_cxt(806);
 
-	setProperty("noStyle", true);
 	box_text = new QLabel(this);
 	box_text->setGeometry(15, 150, 210, 160);
 	box_text->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	box_text->setLineWidth(3);
 	box_text->setText("");
 	box_text->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	box_text->setProperty("noStyle", true);
 
 	QLabel *myHome = new QLabel(this);
 	myHome->setGeometry(30, 12, 181, 128);
@@ -51,6 +51,7 @@ Version::Version()
 	bticino->setGeometry(129, 258, 92, 42);
 	bticino->setFrameStyle(QFrame::Plain);
 	bticino->setPixmap(bt_global::skin->getImage("bticino"));
+	bticino->setProperty("noStyle", true);
 
 	box_text->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	indDisp = 0;
