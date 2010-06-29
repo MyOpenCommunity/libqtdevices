@@ -384,6 +384,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	// keep track for screensaver exit
 	update_after_ssaver = is_current_page = false;
+	connect(this, SIGNAL(Closed()), SLOT(handleClose()));
 }
 
 EnergyView::~EnergyView()
