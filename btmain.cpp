@@ -116,7 +116,17 @@ BtMain::BtMain()
 
 	tasti = NULL;
 	pwdOn = false;
+
+	// We want to set the stylesheet for the version page, but we have to wait
+	// after all the pages are built in order to set the dynamic properties _before_
+	// applying the styles. As an exception, we set the styles for the version page
+	// here and only after the styles for all the pages.
+	bt_global::skin = new SkinManager(SKIN_FILE);
+	QString style = bt_global::skin->getStyle();
+
 	version = new Version;
+	if (!style.isNull())
+		version->setStyleSheet(style);
 	version->setModel((*bt_global::config)[MODEL]);
 
 #if BT_EMBEDDED
@@ -250,7 +260,6 @@ bool BtMain::loadConfiguration(QString cfg_file)
 void BtMain::hom()
 {
 	version->inizializza();
-	bt_global::skin = new SkinManager(SKIN_FILE);
 
 	if (!loadConfiguration(CFG_FILE))
 		qFatal("Unable to load configuration");
