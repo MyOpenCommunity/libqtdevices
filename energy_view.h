@@ -190,6 +190,7 @@ private:
 	int cumulative_day_banner_timer_id;
 	EnergyRate rate;
 	int currency_decimals;
+	bool update_after_ssaver;
 
 #ifdef LAYOUT_TOUCHX
 	BtButton *table_button;
@@ -197,6 +198,8 @@ private:
 #endif
 
 private slots:
+	void screenSaverStarted(Page *prev_page);
+	void screenSaverStopped();
 	void toggleCurrency();
 	void changeTimePeriod(int, QDate);
 	void showGraph(int graph_type);

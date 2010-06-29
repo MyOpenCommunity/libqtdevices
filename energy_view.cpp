@@ -33,6 +33,7 @@
 #include "energy_rates.h"
 #include "bann_energy.h"
 #include "bann2_buttons.h" // Bann2Buttons
+#include "btmain.h" // bt_global::btmain
 
 #include <QDebug>
 #include <QLabel>
@@ -436,6 +437,13 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	// this must be after creating bannNavigazione, otherwise segfault
 	showBannerWidget();
+
+	// to switch back to the graph view
+	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)), SLOT(screenSaverStarted(Page*)));
+	connect(bt_global::btmain, SIGNAL(stopscreensaver()), SLOT(screenSaverStopped()));
+
+	// keep track for screensaver exit
+	update_after_ssaver = false;
 }
 
 EnergyView::~EnergyView()
@@ -637,6 +645,7 @@ void EnergyView::valueReceived(const DeviceValues &values_list)
 
 void EnergyView::cleanUp()
 {
+	// we do not check prev_page, because unrollPages changes it
 	if (current_widget == BANNER_WIDGET)
 		return;
 
@@ -644,6 +653,28 @@ void EnergyView::cleanUp()
 	showTableButton(false);
 	time_period->showCycleButton();
 	widget_container->setCurrentIndex(current_widget);
+}
+
+void EnergyView::screenSaverStarted(Page *prev_page)
+{
+	update_after_ssaver = false;
+	if (prev_page == this)
+	{
+		if (time_period->status() == TimePeriodSelection::YEAR)
+			update_after_ssaver = true;
+		else if (time_period->status() == TimePeriodSelection::DAY && time_period->date() == QDate::currentDate())
+			update_after_ssaver = true;
+		else if (time_period->status() == TimePeriodSelection::MONTH &&
+			 time_period->date().year() == QDate::currentDate().year() &&
+			 time_period->date().month() == QDate::currentDate().month())
+			update_after_ssaver = true;
+	}
+}
+
+void EnergyView::screenSaverStopped()
+{
+	if (update_after_ssaver)
+		time_period->forceDate(time_period->date(), time_period->status());
 }
 
 void EnergyView::backClick()
