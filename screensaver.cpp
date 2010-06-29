@@ -26,6 +26,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "xml_functions.h"
 #include "titlelabel.h"
+#include "btmain.h" // bt_global::btmain
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -90,12 +91,14 @@ void ScreenSaver::start(Page *p)
 {
 	page = p;
 	timer->start();
+	connect(bt_global::btmain, SIGNAL(resettimer()), SLOT(restart()));
 }
 
 void ScreenSaver::stop()
 {
 	page = 0;
 	timer->stop();
+	disconnect(bt_global::btmain, SIGNAL(resettimer()), this, SLOT(restart()));
 }
 
 bool ScreenSaver::isRunning()
@@ -108,6 +111,12 @@ void ScreenSaver::initData(const QDomNode &config_node)
 	text = getTextChild(config_node, "text");
 }
 
+void ScreenSaver::restart()
+{
+	qDebug("ScreenSaver::restart()");
+	timer->stop();
+	timer->start();
+}
 
 ScreenSaverBalls::ScreenSaverBalls() : ScreenSaver(120)
 {

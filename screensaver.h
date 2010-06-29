@@ -70,6 +70,7 @@ protected:
 
 protected slots:
 	virtual void refresh() = 0;
+	void restart();
 
 private:
 	QTimer *timer;
