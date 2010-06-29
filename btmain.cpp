@@ -588,6 +588,8 @@ void BtMain::endCalib()
 void BtMain::resetTimer()
 {
 	qDebug("BtMain::ResetTimer()");
+	tempo1->stop();
+	tempo1->start();
 	emit resettimer();
 }
 

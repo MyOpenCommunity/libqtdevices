@@ -422,6 +422,7 @@ unsigned long getTimePress()
 
 void rearmWDT()
 {
+	qDebug("rearmWDT()");
 	if (! QFile::exists(FILE_WDT))
 	{
 
