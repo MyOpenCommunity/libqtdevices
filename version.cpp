@@ -34,7 +34,6 @@
 
 Version::Version()
 {
-	setProperty("noStyle", true);
 	box_text = new QLabel(this);
 	box_text->setGeometry(15, 150, 210, 160);
 	box_text->setFrameStyle(QFrame::Panel | QFrame::Raised);
@@ -51,8 +50,10 @@ Version::Version()
 	bticino->setGeometry(129, 258, 92, 42);
 	bticino->setFrameStyle(QFrame::Plain);
 	bticino->setPixmap(QPixmap(IMG_PATH "bticino.png"));
+	bticino->setProperty("noStyle", true);
 
 	box_text->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	box_text->setProperty("noStyle", true);
 	indDisp = 0;
 }
 
