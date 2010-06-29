@@ -21,6 +21,7 @@
 
 #include "timescript.h"
 #include "main.h" // getConfElement, (*bt_global::config)
+#include "btmain.h" // bt_global::btmain
 
 #include <QTimerEvent>
 
@@ -34,7 +35,10 @@ timeScript::timeScript(QWidget *parent, uchar tipo, QDateTime* mioOrol)
 	else
 		setNumDigits(5);
 	if (type != 2)
+	{
 		normalTimer = startTimer(1000);
+		connect(bt_global::btmain, SIGNAL(resettimer()), SLOT(resetTimer()));
+	}
 	showDateTimer = -1;
 	setSegmentStyle(Flat);
 	mioClock = NULL;
@@ -64,10 +68,12 @@ void timeScript::timerEvent(QTimerEvent *e)
 		prevDateTime = now;
 	}
 	if (e->timerId() == showDateTimer)
+	{
 		if (!type)
 			stopDate();
 		else
 			showDate();
+	}
 	else
 	{
 		if (showDateTimer == -1)
@@ -77,6 +83,16 @@ void timeScript::timerEvent(QTimerEvent *e)
 
 void timeScript::mousePressEvent(QMouseEvent *)
 {
+}
+
+void timeScript::resetTimer()
+{
+	qDebug("timeScript::resetTimer()");
+
+	killTimer(normalTimer);
+
+	if (type != 2)
+		normalTimer = startTimer(1000);
 }
 
 void timeScript::showDate()

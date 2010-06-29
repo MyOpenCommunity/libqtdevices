@@ -120,6 +120,11 @@ public slots:
 */
 	void aumYear();
 
+/*!
+  \brief Reset timer afeter SIGUSR2
+*/
+	void resetTimer();
+
 private:
     int normalTimer;
     int showDateTimer;
