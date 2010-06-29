@@ -448,10 +448,12 @@ void BtMain::gesScrSav()
 		{
 			emit stopscreensaver();
 			Page *target = screensaver->target();
+
+			qDebug() << "stop screensaver";
+			screensaver->stop();
+
 			if (target != pagDefault)
 				main_window.setCurrentWidget(prev_page);
-
-			screensaver->stop();
 		}
 	}
 	else if (tiempo >= 120)
@@ -501,16 +503,18 @@ void BtMain::freeze(bool b)
 	if (!bloccato)
 	{
 		event_unfreeze = true;
-		(*bt_global::display).setState(DISPLAY_OPERATIVE);
 		if (screensaver && screensaver->isRunning())
 		{
 			emit stopscreensaver();
 			Page *target = screensaver->target();
+
+			qDebug() << "stop screensaver";
+			screensaver->stop();
+
 			if (target != pagDefault)
 				main_window.setCurrentWidget(prev_page);
-
-			screensaver->stop();
 		}
+		(*bt_global::display).setState(DISPLAY_OPERATIVE);
 		if (pwdOn)
 		{
 			if (!tasti)

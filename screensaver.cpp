@@ -154,6 +154,7 @@ void ScreenSaverBalls::initBall(QLabel *ball, BallData &data)
 
 void ScreenSaverBalls::stop()
 {
+	ScreenSaver::stop();
 	QMutableHashIterator<QLabel*, BallData> it(ball_list);
 	while (it.hasNext())
 	{
@@ -162,7 +163,6 @@ void ScreenSaverBalls::stop()
 	}
 
 	ball_list.clear();
-	ScreenSaver::stop();
 }
 
 void ScreenSaverBalls::refresh()
@@ -243,8 +243,8 @@ void ScreenSaverLine::setLineHeight(int height)
 
 void ScreenSaverLine::stop()
 {
-	delete line;
 	ScreenSaver::stop();
+	delete line;
 }
 
 void ScreenSaverLine::refresh()
