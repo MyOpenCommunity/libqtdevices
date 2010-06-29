@@ -20,7 +20,6 @@
 
 
 #include "frame_interpreter.h"
-#include "generic_functions.h" // rearmWDT
 #include "device.h"
 
 #include <openmsg.h>
@@ -490,7 +489,6 @@ void frame_interpreter_lights::handle_frame_handler(char *frame, QList<device_st
 {
 	bool request_status;
 	openwebnet_ext msg_open;
-	rearmWDT();
 	qDebug("frame_interpreter_lights::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
@@ -1273,7 +1271,6 @@ void frame_interpreter_dimmer::handle_frame_handler(char *frame, QList<device_st
 {
 	bool request_status;
 	openwebnet_ext msg_open;
-	rearmWDT();
 	qDebug("frame_interpreter_dimmer::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
@@ -1529,7 +1526,6 @@ void frame_interpreter_temperature_probe::handle_frame_handler(char *frame, QLis
 	qDebug("frame_interpreter_temperature_probe::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 
-	rearmWDT();
 	openwebnet_ext msg_open;
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 
@@ -1645,7 +1641,6 @@ void frame_interpreter_autom::handle_frame_handler(char *frame, QList<device_sta
 {
 	bool request_status;
 	openwebnet_ext msg_open;
-	rearmWDT();
 	qDebug("frame_interpreter_autom::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
@@ -1784,7 +1779,6 @@ void frame_interpreter_sound_device::handle_frame_handler(char *frame, QList<dev
 {
 	bool request_status = false;
 	openwebnet_ext msg_open;
-	rearmWDT();
 	qDebug("frame_interpreter_sound_device::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
@@ -1832,7 +1826,6 @@ void frame_interpreter_sound_matr_device::handle_frame_handler(char *frame, QLis
 {
 	bool request_status = false;
 	openwebnet_ext msg_open;
-	rearmWDT();
 	qDebug("frame_interpreter_sound_matr_device::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
@@ -2070,7 +2063,6 @@ void frame_interpreter_radio_device::handle_frame_handler(char *frame, QList<dev
 {
 	bool request_status = false;
 	openwebnet_ext msg_open;
-	rearmWDT();
 	qDebug("frame_interpreter_radio_device::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
@@ -2170,7 +2162,6 @@ void frame_interpreter_doorphone_device::handle_frame_handler(char *frame, QList
 {
 	bool request_status = false;
 	openwebnet_ext msg_open;
-	rearmWDT();
 	qDebug("frame_interpreter_doorphone_device::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
@@ -2272,7 +2263,6 @@ void frame_interpreter_impanti_device::handle_frame_handler(char *frame, QList<d
 {
 	bool request_status;
 	openwebnet_ext msg_open;
-	rearmWDT();
 	qDebug("frame_interpreter_impanti_device::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
@@ -2370,7 +2360,6 @@ void frame_interpreter_zonanti_device::handle_frame_handler(char *frame, QList<d
 {
 	bool request_status = false;
 	openwebnet_ext msg_open;
-	rearmWDT();
 	qDebug("frame_interpreter_zonanti_device::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
@@ -2418,7 +2407,6 @@ void frame_interpreter_thermal_regulator::handle_frame_handler(char *frame, QLis
 {
 	bool request_status;
 	openwebnet msg_open;
-	rearmWDT();
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 	if (!is_frame_ours(msg_open, request_status))
 		return;
@@ -3105,7 +3093,6 @@ void frame_interpreter_temperature_probe_controlled::handle_frame_handler(char *
 {
 	bool request_status;
 	openwebnet_ext msg_open;
-	rearmWDT();
 	qDebug("frame_interpreter_temperature_probe_controlled::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
@@ -3190,7 +3177,6 @@ void frame_interpreter_modscen_device::handle_frame_handler(char *frame, QList<d
 {
 	bool request_status = false;
 	openwebnet_ext msg_open;
-	rearmWDT();
 	qDebug("frame_interpreter_modscen_device::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
@@ -3253,7 +3239,6 @@ void frame_interpreter_mci::handle_frame_handler(char *frame, QList<device_statu
 {
 	bool request_status;
 	openwebnet_ext msg_open;
-	rearmWDT();
 	qDebug("frame_interpreter_mci::handle_frame_handler");
 	qDebug("#### frame is %s ####", frame);
 

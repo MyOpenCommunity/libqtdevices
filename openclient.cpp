@@ -20,7 +20,6 @@
 
 
 #include "openclient.h"
-#include "generic_functions.h" // rearmWDT
 
 #include <QDebug>
 
@@ -203,8 +202,6 @@ void Client::manageFrame(QByteArray frame)
 int Client::socketFrameRead()
 {
 	qDebug("Client::socketFrameRead()");
-	//riarmo il WD
-	rearmWDT();
 
 	while (true)
 	{
