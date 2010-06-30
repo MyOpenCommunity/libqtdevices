@@ -27,6 +27,7 @@
 #include "main.h"
 #include "skinmanager.h" //SkinContext
 
+#include <QStringList>
 #include <QDomNode>
 #include <QString>
 #include <QDebug>
@@ -139,18 +140,11 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 				actions[i] = getTextChild(node, "open");
 		}
 #else
-		// these must be in the order: attiva, start, stop, disattiva (the same given by actions above)
-		names << "attiva" << "start" << "stop" << "disattiva";
+		// these must be in the order: enable, start, stop, disable (the same given by actions above)
+		names << "enable" << "start" << "stop" << "disable";
 		for (int i = 0; i < names.size(); ++i)
-		{
-			// look for a node called where{attiva,disattiva,start,stop} to decide if the action is enabled
-			QDomElement where = getElement(item_node, QString("schedscen/where") + names[i]);
-			if (!where.isNull())
-			{
-				QDomElement what = getElement(item_node, QString("schedscen/what") + names[i]);
-				actions[i] = QString("*15*%1*%2##").arg(what.text()).arg(where.text());
-			}
-		}
+			actions[i] = getElement(item_node, QString("schedscen/") + names[i] + "/open").text();
+
 #endif
 		b = new ScheduledScenario(actions[0], actions[1], actions[2], actions[3], descr);
 		break;
