@@ -108,6 +108,11 @@ void AudioStateMachine::setMediaPlayerActive(bool active)
 	media_player_status = active;
 }
 
+void AudioStateMachine::setMediaPlayerTemporaryPause(bool paused)
+{
+
+}
+
 bool AudioStateMachine::isSoundDiffusionActive()
 {
 	return getLocalAmplifierStatus() || getLocalSourceStatus() || media_player_status;
