@@ -38,8 +38,8 @@ enum BannerType
 	BANN_SCENARIO = 4,
 	SCENARIO_MODULE = 29,
 	PPT_SCENARIO = 43,
-	SCENARIO_EVOLUTO = 38,
-	SCENARIO_SCHEDULATO = 39,
+	SCENARIO_EVOLVED = 38,
+	SCHEDULED_SCENARIO = 39,
 };
 #else
 enum BannerType
@@ -47,8 +47,8 @@ enum BannerType
 	BANN_SCENARIO = 1001,
 	SCENARIO_MODULE = 1002,
 	PPT_SCENARIO = 1003,
-	SCENARIO_EVOLUTO = 9001,
-	SCENARIO_SCHEDULATO = 9002,
+	SCENARIO_EVOLVED = 9001,
+	SCHEDULED_SCENARIO = 9002,
 };
 #endif
 
@@ -81,7 +81,7 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 	case SCENARIO_MODULE:
 		b = new ScenarioModule(getTextChild(item_node, "what").toInt(), descr, where, oid);
 		break;
-	case SCENARIO_EVOLUTO:
+	case SCENARIO_EVOLVED:
 	{
 		ScenEvoTimeCondition *time_cond = 0;
 		ScenEvoDeviceCondition *device_cond = 0;
@@ -120,7 +120,7 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		b = new ScenarioEvolved(item_id, descr, action, enabled, time_cond, device_cond);
 	}
 		break;
-	case SCENARIO_SCHEDULATO:
+	case SCHEDULED_SCENARIO:
 	{
 		// prepare a vector of 4 empty actions, which will be used to init ScheduledScenario
 		// 4 actions are: enable, start, stop, disable. Order is important!
