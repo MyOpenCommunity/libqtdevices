@@ -229,7 +229,7 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(newMessage(DeviceValues)));
 
 	current_index = -1;
-	need_update = false;
+	need_update = true;
 }
 
 void MessagesListPage::showPage()
