@@ -320,14 +320,17 @@ void VCTCall::toggleCall()
 		dev->answerCall();
 		bt_global::audio_states->toState(AudioStates::SCS_VIDEO_CALL);
 		volume->enable();
+
+		call_status->connected = true;
+		call_status->mute = StateButton::OFF;
+		refreshStatus();
 	}
 	else
+	{
+		call_status->connected = false;
+		call_status->mute = StateButton::DISABLED;
 		handleClose();
-
-	call_status->connected = !call_status->connected;
-	call_status->mute = call_status->connected ? StateButton::OFF : StateButton::DISABLED;
-
-	refreshStatus();
+	}
 }
 
 void VCTCall::resumeVideo()
@@ -512,8 +515,7 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 
 	vct_call->video_box->setFixedSize(352, 240);
 
-	BtButton *back = new BtButton;
-	back->setImage(bt_global::skin->getImage("back"));
+	BtButton *back = new BtButton(bt_global::skin->getImage("back"));
 	connect(back, SIGNAL(clicked()), vct_call, SLOT(endCall()));
 	connect(back, SIGNAL(clicked()), SLOT(handleClose()));
 
