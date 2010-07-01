@@ -143,7 +143,10 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		// these must be in the order: enable, start, stop, disable (the same given by actions above)
 		names << "enable" << "start" << "stop" << "disable";
 		for (int i = 0; i < names.size(); ++i)
-			actions[i] = getElement(item_node, QString("schedscen/") + names[i] + "/open").text();
+		{
+			if (getElement(item_node, QString("schedscen/") + names[i] + "/presence").text().toInt() == 1)
+				actions[i] = getElement(item_node, QString("schedscen/") + names[i] + "/open").text();
+		}
 
 #endif
 		b = new ScheduledScenario(actions[0], actions[1], actions[2], actions[3], descr);
