@@ -50,7 +50,8 @@ static const char *MPLAYER_FILENAME = "/home/bticino/cfg/extra/10/mplayer";
 #endif
 
 
-namespace {
+namespace
+{
 	QMap<QString, QString> getAudioDataSearchMap()
 	{
 		/// Define Search Data Map
@@ -116,7 +117,7 @@ namespace {
 
 			info_data = parsePlayerOutput(raw_data, data_search);
 
-			// Wait untile the current time info because it's the last, always present
+			// Wait until the current time info because it's the last, always present
 			// info of the mplayer output.
 			if (!info_data["current_time"].isEmpty())
 				wait = false;
@@ -137,10 +138,18 @@ MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 	active = false;
 	is_video = false;
 	paused = false;
+	connect(&mplayer_proc, SIGNAL(readyReadStandardError()), SLOT(readStandardError()));
 	connect(&mplayer_proc, SIGNAL(finished(int, QProcess::ExitStatus)), SLOT(mplayerFinished(int, QProcess::ExitStatus)));
 	connect(&mplayer_proc, SIGNAL(error(QProcess::ProcessError)), SLOT(mplayerError(QProcess::ProcessError)));
 	connect(this, SIGNAL(mplayerResumed()), SLOT(playbackStarted()));
 	connect(this, SIGNAL(mplayerStarted()), SLOT(playbackStarted()));
+}
+
+void MediaPlayer::readStandardError()
+{
+	QByteArray error = mplayer_proc.readAllStandardError();
+	if (!error.isEmpty())
+		qWarning() << "MediaPlayer::error: " << error;
 }
 
 bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool write_output)
@@ -426,10 +435,18 @@ Q_GLOBAL_STATIC(QProcess, sox_process);
 
 SoundPlayer::SoundPlayer()
 {
+	connect(sox_process(), SIGNAL(readyReadStandardError()), SLOT(readStandardError()));
 	connect(sox_process(), SIGNAL(error(QProcess::ProcessError)), SLOT(error()));
 	connect(sox_process(), SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(processFinished()));
 	connect(bt_global::audio_states, SIGNAL(stateAboutToChange(int)), SLOT(audioStateAboutToChange()));
 	active = false;
+}
+
+void SoundPlayer::readStandardError()
+{
+	QByteArray error = sox_process()->readAllStandardError();
+	if (!error.isEmpty())
+		qWarning() << "SoundPlayer::error: " << error;
 }
 
 void SoundPlayer::audioStateAboutToChange()

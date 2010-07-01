@@ -116,6 +116,7 @@ private slots:
 	void mplayerError(QProcess::ProcessError error);
 	void playbackStarted();
 	void infoReceived();
+	void readStandardError();
 
 signals:
 	/// mplayer started the reproduction of the media
@@ -157,6 +158,8 @@ private slots:
 	void error();
 	void processFinished();
 	void audioStateAboutToChange();
+
+	void readStandardError();
 
 private:
 	bool active;
