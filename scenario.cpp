@@ -27,6 +27,7 @@
 #include "main.h"
 #include "skinmanager.h" //SkinContext
 
+#include <QStringList>
 #include <QDomNode>
 #include <QString>
 #include <QDebug>
@@ -38,8 +39,8 @@ enum BannerType
 	BANN_SCENARIO = 4,
 	SCENARIO_MODULE = 29,
 	PPT_SCENARIO = 43,
-	SCENARIO_EVOLUTO = 38,
-	SCENARIO_SCHEDULATO = 39,
+	SCENARIO_EVOLVED = 38,
+	SCHEDULED_SCENARIO = 39,
 };
 #else
 enum BannerType
@@ -47,8 +48,8 @@ enum BannerType
 	BANN_SCENARIO = 1001,
 	SCENARIO_MODULE = 1002,
 	PPT_SCENARIO = 1003,
-	SCENARIO_EVOLUTO = 9001,
-	SCENARIO_SCHEDULATO = 9002,
+	SCENARIO_EVOLVED = 9001,
+	SCHEDULED_SCENARIO = 9002,
 };
 #endif
 
@@ -81,7 +82,7 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 	case SCENARIO_MODULE:
 		b = new ScenarioModule(getTextChild(item_node, "what").toInt(), descr, where, oid);
 		break;
-	case SCENARIO_EVOLUTO:
+	case SCENARIO_EVOLVED:
 	{
 		ScenEvoTimeCondition *time_cond = 0;
 		ScenEvoDeviceCondition *device_cond = 0;
@@ -120,7 +121,7 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		b = new ScenarioEvolved(item_id, descr, action, enabled, time_cond, device_cond);
 	}
 		break;
-	case SCENARIO_SCHEDULATO:
+	case SCHEDULED_SCENARIO:
 	{
 		// prepare a vector of 4 empty actions, which will be used to init ScheduledScenario
 		// 4 actions are: enable, start, stop, disable. Order is important!
@@ -139,18 +140,14 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 				actions[i] = getTextChild(node, "open");
 		}
 #else
-		// these must be in the order: attiva, start, stop, disattiva (the same given by actions above)
-		names << "attiva" << "start" << "stop" << "disattiva";
+		// these must be in the order: enable, start, stop, disable (the same given by actions above)
+		names << "enable" << "start" << "stop" << "disable";
 		for (int i = 0; i < names.size(); ++i)
 		{
-			// look for a node called where{attiva,disattiva,start,stop} to decide if the action is enabled
-			QDomElement where = getElement(item_node, QString("schedscen/where") + names[i]);
-			if (!where.isNull())
-			{
-				QDomElement what = getElement(item_node, QString("schedscen/what") + names[i]);
-				actions[i] = QString("*15*%1*%2##").arg(what.text()).arg(where.text());
-			}
+			if (getElement(item_node, QString("schedscen/") + names[i] + "/presence").text().toInt() == 1)
+				actions[i] = getElement(item_node, QString("schedscen/") + names[i] + "/open").text();
 		}
+
 #endif
 		b = new ScheduledScenario(actions[0], actions[1], actions[2], actions[3], descr);
 		break;

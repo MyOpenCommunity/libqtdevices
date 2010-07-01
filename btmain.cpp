@@ -234,8 +234,14 @@ BtMain::BtMain(int openserver_reconnection_time)
 	screenoff_time = 120;
 
 #ifdef LAYOUT_BTOUCH
+	// We want to set the stylesheet for the version page, but we have to wait
+	// after all the pages are built in order to set the dynamic properties _before_
+	// applying the styles. As an exception, we set the styles for the version page
+	// here and only after the styles for all the pages.
 	version = new Version;
 	version->setModel((*bt_global::config)[MODEL]);
+	if (!style.isNull())
+		version->setStyleSheet(style);
 #else
 	// the stylesheet on QApplication must be set later (see comment in init())
 	loading = new IconWindow("splash_image", bt_global::skin->getStyle());
@@ -774,15 +780,15 @@ void BtMain::freeze(bool b)
 			emit stopscreensaver();
 		}
 
-		last_event_time = now();
-		bt_global::display->setState(DISPLAY_OPERATIVE);
-
 		if (screensaver && screensaver->isRunning())
 		{
 			bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
 			emit stopscreensaver();
 			screensaver->stop();
 		}
+
+		last_event_time = now();
+		bt_global::display->setState(DISPLAY_OPERATIVE);
 
 		if (pwdOn)
 		{

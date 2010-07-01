@@ -33,6 +33,7 @@
 #include "energy_rates.h"
 #include "bann_energy.h"
 #include "bann2_buttons.h" // Bann2Buttons
+#include "btmain.h" // bt_global::btmain
 
 #include <QDebug>
 #include <QLabel>
@@ -302,7 +303,7 @@ QDate TimePeriodSelection::date()
 	return selection_date;
 }
 
-int TimePeriodSelection::status()
+TimePeriodSelection::TimePeriod TimePeriodSelection::status()
 {
 	return _status;
 }
@@ -436,6 +437,14 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	// this must be after creating bannNavigazione, otherwise segfault
 	showBannerWidget();
+
+	// to switch back to the graph view
+	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)), SLOT(screenSaverStarted(Page*)));
+	connect(bt_global::btmain, SIGNAL(stopscreensaver()), SLOT(screenSaverStopped()));
+
+	// keep track for screensaver exit
+	update_after_ssaver = is_current_page = false;
+	connect(this, SIGNAL(Closed()), SLOT(handleClose()));
 }
 
 EnergyView::~EnergyView()
@@ -506,6 +515,8 @@ void EnergyView::showPage()
 	connect(table, SIGNAL(Closed()), SLOT(showPageFromTable()));
 	time_period->forceDate(QDate::currentDate());
 	showPageFromTable();
+
+	is_current_page = true;
 }
 
 void EnergyView::showPageFromTable()
@@ -514,6 +525,11 @@ void EnergyView::showPageFromTable()
 	if (EnergyInterface::isCurrencyView() && !rate.isValid())
 		EnergyInterface::toggleCurrencyView();
 	Page::showPage();
+}
+
+void EnergyView::handleClose()
+{
+	is_current_page = false;
 }
 
 void EnergyView::updateGraphData(GraphData *d)
@@ -637,6 +653,7 @@ void EnergyView::valueReceived(const DeviceValues &values_list)
 
 void EnergyView::cleanUp()
 {
+	// we do not check prev_page, because unrollPages changes it
 	if (current_widget == BANNER_WIDGET)
 		return;
 
@@ -644,6 +661,36 @@ void EnergyView::cleanUp()
 	showTableButton(false);
 	time_period->showCycleButton();
 	widget_container->setCurrentIndex(current_widget);
+	is_current_page = false;
+}
+
+void EnergyView::screenSaverStarted(Page *prev_page)
+{
+	update_after_ssaver = false;
+	if (is_current_page)
+	{
+		if (time_period->status() == TimePeriodSelection::YEAR)
+			update_after_ssaver = true;
+		else if (time_period->status() == TimePeriodSelection::DAY && time_period->date() == QDate::currentDate())
+			update_after_ssaver = true;
+		else if (time_period->status() == TimePeriodSelection::MONTH &&
+			 time_period->date().year() == QDate::currentDate().year() &&
+			 time_period->date().month() == QDate::currentDate().month())
+			update_after_ssaver = true;
+
+		// When the screensaver starts and we are showing a table or a graph
+		// we want to move to the consumptions page (the graph part is done
+		// in the cleanUp method).
+		if (prev_page == table)
+			table->forceClosed();
+	}
+}
+
+void EnergyView::screenSaverStopped()
+{
+	if (update_after_ssaver)
+		time_period->forceDate(time_period->date(), time_period->status());
+	update_after_ssaver = false;
 }
 
 void EnergyView::backClick()
@@ -950,7 +997,12 @@ void EnergyView::updateBanners()
 
 void EnergyView::systemTimeChanged()
 {
-	changeTimePeriod(time_period->status(), time_period->date());
+	if (is_current_page && time_period->status() == TimePeriodSelection::DAY && time_period->date() > QDate::currentDate())
+		time_period->forceDate(QDate::currentDate(), time_period->status());
+	else if (is_current_page && time_period->date().month() > QDate::currentDate().month())
+		time_period->forceDate(QDate::currentDate(), time_period->status());
+	else
+		changeTimePeriod(time_period->status(), time_period->date());
 }
 
 void EnergyView::rateChanged(int rate_id)

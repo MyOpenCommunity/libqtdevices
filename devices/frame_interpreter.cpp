@@ -20,7 +20,6 @@
 
 
 #include "frame_interpreter.h"
-#include "hardware_functions.h" // rearmWDT
 #include "device.h"
 
 #include <openmsg.h>
@@ -519,7 +518,6 @@ void frame_interpreter_doorphone_device::handle_frame_handler(char *frame, QList
 {
 	bool request_status = false;
 	openwebnet_ext msg_open;
-	rearmWDT();
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 	if (!is_frame_ours(msg_open, request_status))
 	{
@@ -619,7 +617,6 @@ void frame_interpreter_impanti_device::handle_frame_handler(char *frame, QList<d
 {
 	bool request_status;
 	openwebnet_ext msg_open;
-	rearmWDT();
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 	if (!is_frame_ours(msg_open, request_status)) // Discard frame if not ours
 		return;
@@ -715,7 +712,6 @@ void frame_interpreter_zonanti_device::handle_frame_handler(char *frame, QList<d
 {
 	bool request_status = false;
 	openwebnet_ext msg_open;
-	rearmWDT();
 	msg_open.CreateMsgOpen(frame,strstr(frame,"##")-frame+2);
 	if (!is_frame_ours(msg_open, request_status))
 		return;

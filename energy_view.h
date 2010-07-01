@@ -62,7 +62,7 @@ public:
 	void showCycleButton();
 	QDate date();
 	QString dateDisplayed();
-	int status();
+	TimePeriod status();
 	void forceDate(QDate new_date, TimePeriod period=DAY);
 
 private slots:
@@ -190,6 +190,8 @@ private:
 	int cumulative_day_banner_timer_id;
 	EnergyRate rate;
 	int currency_decimals;
+	bool update_after_ssaver;
+	bool is_current_page;
 
 #ifdef LAYOUT_TOUCHX
 	BtButton *table_button;
@@ -197,6 +199,8 @@ private:
 #endif
 
 private slots:
+	void screenSaverStarted(Page *prev_page);
+	void screenSaverStopped();
 	void toggleCurrency();
 	void changeTimePeriod(int, QDate);
 	void showGraph(int graph_type);
@@ -206,6 +210,7 @@ private slots:
 	void rateChanged(int rate_id);
 	void showTableButton(bool show);
 	void showCurrencyButton(bool show);
+	void handleClose();
 };
 
 
