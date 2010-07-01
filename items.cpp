@@ -77,6 +77,12 @@ ItemTuningStatus ItemTuning::getStatus()
 	return st;
 }
 
+void ItemTuning::enableBeep(bool enable)
+{
+	left->enableBeep(enable);
+	right->enableBeep(enable);
+}
+
 void ItemTuning::setStatus(const ItemTuningStatus &st)
 {
 	setLevel(st.current_level);

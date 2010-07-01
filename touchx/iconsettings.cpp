@@ -194,6 +194,7 @@ VolumePage::VolumePage(const QDomNode &config_node)
 	layout->setContentsMargins(0, 0, 0, TITLE_HEIGHT);
 
 	volume = new ItemTuning(tr("Volume"), bt_global::skin->getImage("volume"));
+	volume->enableBeep(false);
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
