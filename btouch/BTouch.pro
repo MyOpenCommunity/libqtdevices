@@ -42,3 +42,5 @@ SOURCES += displaypage.cpp \
 	brightnesspage.cpp \
 	scenevomanager.cpp \
 	settings.cpp
+
+OTHER_FILES = skin.xml
