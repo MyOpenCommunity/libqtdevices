@@ -150,7 +150,6 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 	createImpianto("");
 #endif
 
-	int zone_count = 0;
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
@@ -167,7 +166,8 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 		if (id == ITEM_ANTINTRUSION_ZONE)
 #endif
 		{
-			zones[zone_count] = descr;
+			int id_zone = getTextChild(item, "where").mid(1).toInt();
+			zones[id_zone - 1] = descr;
 			b = new AntintrusionZone(descr, getTextChild(item, "where"));
 #if 0
 			b = new zonaAnti(this, descr, getTextChild(item, "where"),
@@ -186,8 +186,6 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 			// We assume that the antintrusion impianto came before all the zones
 			Q_ASSERT_X(impianto, "Antintrusion::loadItems", "Found a zone before the impianto!");
 			impianto->setZona((AntintrusionZone *)b);
-
-			++zone_count;
 		}
 		else
 			Q_ASSERT_X(false, "Antintrusion::loadItems", qPrintable(QString("Type of item %1 not handled!").arg(id)));
