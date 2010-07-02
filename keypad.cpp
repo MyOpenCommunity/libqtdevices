@@ -239,8 +239,11 @@ KeypadWithState::KeypadWithState(int s[8])
 	l->setSpacing(5);
 	l->setAlignment(Qt::AlignHCenter);
 
-	for (int i = 0; i < 8 && s[i] != -1; i++)
+	for (int i = 0; i < 8; i++)
 	{
+		if (s[i] == -1)
+			continue;
+
 		QLabel *state = new QLabel;
 		QString icon = bt_global::skin->getImage("small_" + QString::number(i + 1));
 
