@@ -1393,9 +1393,72 @@ MessagePage QLabel#Text { background-color: #000000; }
 		<img_central_icon>termoregolazione/imgcentrale.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 	</item>
-	<!-- zones and zone page 4 zones -->
+	<!-- central probe page 4 zones -->
 	<item>
 		<cid>8042</cid>
+		        <img_central_icon>termoregolazione/imgzona.png</img_central_icon>
+                <img_forward>termoregolazione/vai.png</img_forward>
+
+                <img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
+                <img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
+                <img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
+                <img_probe_off>termoregolazione/imgoff.png</img_probe_off>
+                <img_minus>termoregolazione/meno.png</img_minus>
+                <img_plus>termoregolazione/piu.png</img_plus>
+                <img_fan_1_on>termoregolazione/fancoilminon.png</img_fan_1_on>
+                <img_fan_2_on>termoregolazione/fancoilmedon.png</img_fan_2_on>
+                <img_fan_3_on>termoregolazione/fancoilmaxon.png</img_fan_3_on>
+                <img_fan_4_on>termoregolazione/fancoilautoon.png</img_fan_4_on>
+                <img_fan_1_off>termoregolazione/fancoilminoff.png</img_fan_1_off>
+                <img_fan_2_off>termoregolazione/fancoilmedoff.png</img_fan_2_off>
+                <img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
+                <img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
+        </item>
+        <!-- central probe +1 (page 4 zones) -->
+        <item>
+                <cid>8043</cid>
+                        <img_central_icon>termoregolazione/imgzona.png</img_central_icon>
+                <img_forward>termoregolazione/vai.png</img_forward>
+
+                <img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
+                <img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
+                <img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
+                <img_probe_off>termoregolazione/imgoff.png</img_probe_off>
+                <img_minus>termoregolazione/meno.png</img_minus>
+                <img_plus>termoregolazione/piu.png</img_plus>
+                <img_fan_1_on>termoregolazione/fancoilminon.png</img_fan_1_on>
+                <img_fan_2_on>termoregolazione/fancoilmedon.png</img_fan_2_on>
+                <img_fan_3_on>termoregolazione/fancoilmaxon.png</img_fan_3_on>
+                <img_fan_4_on>termoregolazione/fancoilautoon.png</img_fan_4_on>
+                <img_fan_1_off>termoregolazione/fancoilminoff.png</img_fan_1_off>
+                <img_fan_2_off>termoregolazione/fancoilmedoff.png</img_fan_2_off>
+                <img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
+                <img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
+        </item>
+        <!-- central probe +2 (page 4 zones) -->
+        <item>
+                <cid>8044</cid>
+                        <img_central_icon>termoregolazione/imgzona.png</img_central_icon>
+                <img_forward>termoregolazione/vai.png</img_forward>
+
+                <img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
+                <img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
+                <img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
+                <img_probe_off>termoregolazione/imgoff.png</img_probe_off>
+                <img_minus>termoregolazione/meno.png</img_minus>
+                <img_plus>termoregolazione/piu.png</img_plus>
+                <img_fan_1_on>termoregolazione/fancoilminon.png</img_fan_1_on>
+                <img_fan_2_on>termoregolazione/fancoilmedon.png</img_fan_2_on>
+                <img_fan_3_on>termoregolazione/fancoilmaxon.png</img_fan_3_on>
+                <img_fan_4_on>termoregolazione/fancoilautoon.png</img_fan_4_on>
+                <img_fan_1_off>termoregolazione/fancoilminoff.png</img_fan_1_off>
+                <img_fan_2_off>termoregolazione/fancoilmedoff.png</img_fan_2_off>
+                <img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
+                <img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
+        </item>
+        <!-- central probe +3 (page 4 zones) -->
+        <item>
+                <cid>8045</cid>
 		<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
 
