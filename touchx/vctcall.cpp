@@ -326,11 +326,7 @@ void VCTCall::toggleCall()
 		refreshStatus();
 	}
 	else
-	{
-		call_status->connected = false;
-		call_status->mute = StateButton::DISABLED;
 		handleClose();
-	}
 }
 
 void VCTCall::resumeVideo()
