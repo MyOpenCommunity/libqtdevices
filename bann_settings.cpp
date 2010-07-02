@@ -416,9 +416,10 @@ BannRingtone::BannRingtone(const QString &descr, int id, Ringtones::Type type, i
 	// TODO: this is necessary because of a setSpacing(5) in Bann2CentralButtons,
 	// that will be removed when all borders are removed from images.
 	initBanner(bt_global::skin->getImage("prev_ring"), bt_global::skin->getImage("next_ring"), descr);
+	center_left->enableBeep(false);
+	center_right->enableBeep(false);
 	connect(center_left, SIGNAL(clicked()), SLOT(minusClicked()));
 	connect(center_right, SIGNAL(clicked()), SLOT(plusClicked()));
-
 	current_ring = ring;
 	ring_type = type;
 	item_id = id;

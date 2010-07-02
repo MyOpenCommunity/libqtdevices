@@ -198,6 +198,21 @@ void TestEntryphoneDevice::receiveAudioCall()
 	t.check(frame, static_cast<int>(EntryphoneDevice::ONLY_AUDIO));
 }
 
+void TestEntryphoneDevice::receiveFloorCall()
+{
+	int kind = 1;
+	int mmtype = 4;
+	simulateIncomingCall(kind, mmtype);
+
+	kind = 13;
+	mmtype = 2;
+	DeviceTester t(dev, EntryphoneDevice::RINGTONE);
+	QString frame = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
+	t.simulateIncomingFrames(QStringList() << frame);
+	QCOMPARE(dev->kind, 1);
+	QCOMPARE(dev->mmtype, 4);
+}
+
 void TestEntryphoneDevice::receiveAnswerCall()
 {
 	int kind = 1;

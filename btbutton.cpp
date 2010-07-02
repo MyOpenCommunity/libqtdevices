@@ -45,6 +45,12 @@ void BtButton::initButton()
 {
 	setFocusPolicy(Qt::NoFocus);
 	is_enabled = true;
+	beep_enabled = true;
+}
+
+void BtButton::enableBeep(bool enable)
+{
+	beep_enabled = enable;
 }
 
 QSize BtButton::sizeHint() const
@@ -137,7 +143,8 @@ void BtButton::mousePressEvent(QMouseEvent *event)
 	if (!pressed_pixmap.isNull())
 		setIcon(pressed_pixmap);
 
-	beep();
+	if (beep_enabled)
+		beep();
 	QPushButton::mousePressEvent(event);
 }
 

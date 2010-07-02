@@ -62,6 +62,8 @@ public:
 	void enable();
 	void disable();
 
+	void enableBeep(bool enable);
+
 public slots:
 	void decreaseLevel();
 	void increaseLevel();

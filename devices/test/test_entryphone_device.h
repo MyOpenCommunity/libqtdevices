@@ -66,6 +66,7 @@ private slots:
 	void receiveStopVideo();
 	void receiveEndOfCall();
 	void receiveAnswerCall();
+	void receiveFloorCall();
 
 private:
 	// init frame must be sent at constuction time

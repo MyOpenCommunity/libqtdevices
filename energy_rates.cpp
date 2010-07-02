@@ -58,7 +58,7 @@ void EnergyRates::loadRates()
 #ifdef CONFIG_BTOUCH
 	const QDomNode &conf_node = getConfElement("displaypages/rate_info");
 #else
-	const QDomNode &conf_node = getConfElement("gui/rate_info");
+	const QDomNode &conf_node = getConfElement("tariff_setting/rate_info");
 #endif
 	foreach (const QDomNode &item, getChildren(conf_node, "item"))
 	{

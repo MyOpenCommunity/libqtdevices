@@ -208,8 +208,7 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	{
 		Q_ASSERT_X(msg.whatSubArgCnt() < 2, "EntryphoneDevice::parseFrame",
 			"Incomplete open frame received");
-		kind = msg.whatArgN(0);
-		mmtype = msg.whatArgN(1);
+
 
 		int kind_val = msg.whatArgN(0) % 100;
 		int ringtone = -1;
@@ -249,6 +248,9 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			qWarning("Kind not supported by EntryphoneDevice, skip frame");
 			return false;
 		}
+
+		kind = msg.whatArgN(0);
+		mmtype = msg.whatArgN(1);
 
 		if (ringtone != -1)
 			values_list[RINGTONE] = ringtone;

@@ -52,6 +52,8 @@ public:
 	virtual void enable();
 	virtual void disable();
 
+	void enableBeep(bool enable);
+
 protected:
 	virtual void mousePressEvent(QMouseEvent *event);
 	virtual void mouseReleaseEvent(QMouseEvent *event);
@@ -73,6 +75,7 @@ protected:
 
 private:
 	bool is_enabled;
+	bool beep_enabled;
 
 	void initButton();
 };
