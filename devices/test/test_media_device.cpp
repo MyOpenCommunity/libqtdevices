@@ -650,6 +650,10 @@ void TestVirtualAmplifierDevice::sendTurnOn()
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON, DeviceTester::MULTIPLE_VALUES);
 	dev->turnOn();
 	t.check(true);
+
+	client_command->flush();
+	QString cmd(QString("*22*34#4#%1*3#%1#%2##").arg(area).arg(point));
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestVirtualAmplifierDevice::sendTurnOff()
@@ -657,6 +661,10 @@ void TestVirtualAmplifierDevice::sendTurnOff()
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON, DeviceTester::MULTIPLE_VALUES);
 	dev->turnOff();
 	t.check(false);
+
+	client_command->flush();
+	QString cmd(QString("*22*0#4#%1*3#%1#%2##").arg(area).arg(point));
+	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestVirtualAmplifierDevice::sendSetVolume()

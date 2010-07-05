@@ -837,6 +837,8 @@ void VirtualAmplifierDevice::turnOn()
 {
 	DeviceValues values_list;
 
+	AmplifierDevice::turnOn();
+
 	values_list[DIM_SELF_REQUEST] = true;
 	values_list[REQ_AMPLI_ON] = true;
 	emit valueReceived(values_list);
@@ -845,6 +847,8 @@ void VirtualAmplifierDevice::turnOn()
 void VirtualAmplifierDevice::turnOff()
 {
 	DeviceValues values_list;
+
+	AmplifierDevice::turnOff();
 
 	values_list[DIM_SELF_REQUEST] = true;
 	values_list[REQ_AMPLI_ON] = false;
