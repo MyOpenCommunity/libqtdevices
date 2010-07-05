@@ -240,6 +240,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	// here and only after the styles for all the pages.
 	version = new Version;
 	version->setModel((*bt_global::config)[MODEL]);
+	QString style = bt_global::skin->getStyle();
 	if (!style.isNull())
 		version->setStyleSheet(style);
 #else
