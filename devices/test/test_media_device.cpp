@@ -592,11 +592,6 @@ void TestAmplifierDevice::testCrash()
 }
 
 
-TestVirtualAmplifierDevice::TestVirtualAmplifierDevice()
-{
-	where = QString(AMPLI_AREA) + QString(AMPLI_POINT);
-}
-
 void TestVirtualAmplifierDevice::initTestCase()
 {
 	initVirtualAmplifier();
@@ -608,7 +603,7 @@ void TestVirtualAmplifierDevice::initVirtualAmplifier(VirtualAmplifierDevice *d)
 		dev = d;
 	else
 	{
-		dev = new VirtualAmplifierDevice(where);
+		dev = new VirtualAmplifierDevice(area + point);
 		initAmplifier(dev);
 	}
 }
@@ -623,7 +618,7 @@ void TestVirtualAmplifierDevice::sendUpdateVolume()
 	const int NEW_VOL = 25;
 	dev->updateVolume(NEW_VOL);
 	client_command->flush();
-	QString cmd(QString("*#22*5#3#%1#%2*1*%3##").arg(where[0]).arg(where[1]).arg(NEW_VOL));
+	QString cmd(QString("*#22*5#3#%1#%2*1*%3##").arg(area).arg(point).arg(NEW_VOL));
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
@@ -632,7 +627,7 @@ void TestVirtualAmplifierDevice::sendUpdateStatus()
 	const int STATUS = 1;
 	dev->updateStatus(STATUS);
 	client_command->flush();
-	QString cmd(QString("*#22*5#3#%1#%2*12*%3*3##").arg(where[0]).arg(where[1]).arg(STATUS));
+	QString cmd(QString("*#22*5#3#%1#%2*12*%3*3##").arg(area).arg(point).arg(STATUS));
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
@@ -674,47 +669,42 @@ void TestVirtualAmplifierDevice::sendSetVolume()
 void TestVirtualAmplifierDevice::receiveAmplifierOn()
 {
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
-	t.check(QString("*22*1#4#%1*3#%1#%2##").arg(where[0]).arg(where[1]), true);
+	t.check(QString("*22*1#4#%1*3#%1#%2##").arg(area).arg(point), true);
 }
 
 void TestVirtualAmplifierDevice::receiveAmplifierOff()
 {
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
-	t.check(QString("*22*0#4#%1*3#%1#%2##").arg(where[0]).arg(where[1]), false);
+	t.check(QString("*22*0#4#%1*3#%1#%2##").arg(area).arg(point), false);
 }
 
 void TestVirtualAmplifierDevice::receiveVolumeUp()
 {
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_VOLUME_UP);
 	// value is 4
-	t.check(QString("*22*3#4*3#%1#%2##").arg(where[0]).arg(where[1]), 4);
+	t.check(QString("*22*3#4*3#%1#%2##").arg(area).arg(point), 4);
 
 	// value is missing
-	t.check(QString("*22*3*3#%1#%2##").arg(where[0]).arg(where[1]), 1);
+	t.check(QString("*22*3*3#%1#%2##").arg(area).arg(point), 1);
 }
 
 void TestVirtualAmplifierDevice::receiveVolumeDown()
 {
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_VOLUME_DOWN);
 	// value is 25
-	t.check(QString("*22*4#25*3#%1#%2##").arg(where[0]).arg(where[1]), 25);
+	t.check(QString("*22*4#25*3#%1#%2##").arg(area).arg(point), 25);
 
 	// value is missing
-	t.check(QString("*22*4*3#%1#%2##").arg(where[0]).arg(where[1]), 1);
+	t.check(QString("*22*4*3#%1#%2##").arg(area).arg(point), 1);
 }
 
 void TestVirtualAmplifierDevice::receiveSetVolume()
 {
 	const int VOLUME = 11;
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_SET_VOLUME);
-	t.check(QString("*#22*3#%1#%2*#1*%3##").arg(where[0]).arg(where[1]).arg(VOLUME), VOLUME);
+	t.check(QString("*#22*3#%1#%2*#1*%3##").arg(area).arg(point).arg(VOLUME), VOLUME);
 }
 
-
-TestPowerAmplifierDevice::TestPowerAmplifierDevice()
-{
-	where = QString(AMPLI_AREA) + QString(AMPLI_POINT);
-}
 
 void TestPowerAmplifierDevice::initTestCase()
 {
@@ -727,7 +717,7 @@ void TestPowerAmplifierDevice::initPowerAmplifier(PowerAmplifierDevice *d)
 		dev = d;
 	else
 	{
-		dev = new PowerAmplifierDevice(where);
+		dev = new PowerAmplifierDevice(area + point);
 		initAmplifier(dev);
 	}
 }
@@ -741,7 +731,7 @@ void TestPowerAmplifierDevice::sendTrebleUp()
 {
 	dev->trebleUp();
 	client_command->flush();
-	QString cmd(QString("*22*40#1*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QString cmd(QString("*22*40#1*3#%1#%2##").arg(area).arg(point));
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
@@ -749,7 +739,7 @@ void TestPowerAmplifierDevice::sendTrebleDown()
 {
 	dev->trebleDown();
 	client_command->flush();
-	QString cmd(QString("*22*41#1*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QString cmd(QString("*22*41#1*3#%1#%2##").arg(area).arg(point));
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
@@ -757,7 +747,7 @@ void TestPowerAmplifierDevice::sendBassUp()
 {
 	dev->bassUp();
 	client_command->flush();
-	QString cmd(QString("*22*36#1*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QString cmd(QString("*22*36#1*3#%1#%2##").arg(area).arg(point));
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
@@ -765,7 +755,7 @@ void TestPowerAmplifierDevice::sendBassDown()
 {
 	dev->bassDown();
 	client_command->flush();
-	QString cmd(QString("*22*37#1*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QString cmd(QString("*22*37#1*3#%1#%2##").arg(area).arg(point));
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
@@ -773,7 +763,7 @@ void TestPowerAmplifierDevice::sendBalanceUp()
 {
 	dev->balanceUp();
 	client_command->flush();
-	QString cmd(QString("*22*42#1*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QString cmd(QString("*22*42#1*3#%1#%2##").arg(area).arg(point));
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
@@ -781,7 +771,7 @@ void TestPowerAmplifierDevice::sendBalanceDown()
 {
 	dev->balanceDown();
 	client_command->flush();
-	QString cmd(QString("*22*43#1*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QString cmd(QString("*22*43#1*3#%1#%2##").arg(area).arg(point));
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
@@ -789,7 +779,7 @@ void TestPowerAmplifierDevice::sendNextPreset()
 {
 	dev->nextPreset();
 	client_command->flush();
-	QString cmd(QString("*22*55*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QString cmd(QString("*22*55*3#%1#%2##").arg(area).arg(point));
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
@@ -797,7 +787,7 @@ void TestPowerAmplifierDevice::sendPrevPreset()
 {
 	dev->prevPreset();
 	client_command->flush();
-	QString cmd(QString("*22*56*3#%1#%2##").arg(where[0]).arg(where[1]));
+	QString cmd(QString("*22*56*3#%1#%2##").arg(area).arg(point));
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
@@ -805,7 +795,7 @@ void TestPowerAmplifierDevice::sendLoudOn()
 {
 	dev->loudOn();
 	client_command->flush();
-	QString cmd(QString("*#22*3#%1#%2*#20*1##").arg(where[0]).arg(where[1]));
+	QString cmd(QString("*#22*3#%1#%2*#20*1##").arg(area).arg(point));
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
@@ -813,61 +803,61 @@ void TestPowerAmplifierDevice::sendLoudOff()
 {
 	dev->loudOff();
 	client_command->flush();
-	QString cmd(QString("*#22*3#%1#%2*#20*0##").arg(where[0]).arg(where[1]));
+	QString cmd(QString("*#22*3#%1#%2*#20*0##").arg(area).arg(point));
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
 void TestPowerAmplifierDevice::receiveLoud()
 {
 	DeviceTester t(dev, PowerAmplifierDevice::DIM_LOUD);
-	t.check(QString("*#22*3#%1#%2*20*0##").arg(where[0]).arg(where[1]), false);
-	t.check(QString("*#22*3#%1#%2*20*1##").arg(where[0]).arg(where[1]), true);
+	t.check(QString("*#22*3#%1#%2*20*0##").arg(area).arg(point), false);
+	t.check(QString("*#22*3#%1#%2*20*1##").arg(area).arg(point), true);
 }
 
 void TestPowerAmplifierDevice::receivePreset()
 {
 	DeviceTester t(dev, PowerAmplifierDevice::DIM_PRESET);
-	t.check(QString("*#22*3#%1#%2*19*2##").arg(where[0]).arg(where[1]), 0);
-	t.check(QString("*#22*3#%1#%2*19*6##").arg(where[0]).arg(where[1]), 4);
-	t.check(QString("*#22*3#%1#%2*19*11##").arg(where[0]).arg(where[1]), 9);
-	t.checkSignals(QString("*#22*3#%1#%2*19*12##").arg(where[0]).arg(where[1]), 0);
-	t.checkSignals(QString("*#22*3#%1#%2*19*15##").arg(where[0]).arg(where[1]), 0);
-	t.check(QString("*#22*3#%1#%2*19*16##").arg(where[0]).arg(where[1]), 10);
-	t.check(QString("*#22*3#%1#%2*19*25##").arg(where[0]).arg(where[1]), 19);
+	t.check(QString("*#22*3#%1#%2*19*2##").arg(area).arg(point), 0);
+	t.check(QString("*#22*3#%1#%2*19*6##").arg(area).arg(point), 4);
+	t.check(QString("*#22*3#%1#%2*19*11##").arg(area).arg(point), 9);
+	t.checkSignals(QString("*#22*3#%1#%2*19*12##").arg(area).arg(point), 0);
+	t.checkSignals(QString("*#22*3#%1#%2*19*15##").arg(area).arg(point), 0);
+	t.check(QString("*#22*3#%1#%2*19*16##").arg(area).arg(point), 10);
+	t.check(QString("*#22*3#%1#%2*19*25##").arg(area).arg(point), 19);
 }
 
 void TestPowerAmplifierDevice::receiveTreble()
 {
 	DeviceTester t(dev, PowerAmplifierDevice::DIM_TREBLE);
-	t.check(QString("*#22*3#%1#%2*2*0##").arg(where[0]).arg(where[1]), -10);
-	t.check(QString("*#22*3#%1#%2*2*3##").arg(where[0]).arg(where[1]), -9);
-	t.check(QString("*#22*3#%1#%2*2*4##").arg(where[0]).arg(where[1]), -9);
-	t.check(QString("*#22*3#%1#%2*2*30##").arg(where[0]).arg(where[1]), 0);
-	t.check(QString("*#22*3#%1#%2*2*60##").arg(where[0]).arg(where[1]), 10);
+	t.check(QString("*#22*3#%1#%2*2*0##").arg(area).arg(point), -10);
+	t.check(QString("*#22*3#%1#%2*2*3##").arg(area).arg(point), -9);
+	t.check(QString("*#22*3#%1#%2*2*4##").arg(area).arg(point), -9);
+	t.check(QString("*#22*3#%1#%2*2*30##").arg(area).arg(point), 0);
+	t.check(QString("*#22*3#%1#%2*2*60##").arg(area).arg(point), 10);
 }
 
 void TestPowerAmplifierDevice::receiveBass()
 {
 	DeviceTester t(dev, PowerAmplifierDevice::DIM_BASS);
-	t.check(QString("*#22*3#%1#%2*4*0##").arg(where[0]).arg(where[1]), -10);
-	t.check(QString("*#22*3#%1#%2*4*3##").arg(where[0]).arg(where[1]), -9);
-	t.check(QString("*#22*3#%1#%2*4*4##").arg(where[0]).arg(where[1]), -9);
-	t.check(QString("*#22*3#%1#%2*4*30##").arg(where[0]).arg(where[1]), 0);
-	t.check(QString("*#22*3#%1#%2*4*60##").arg(where[0]).arg(where[1]), 10);
-	t.checkSignals(QString("*22*4#1*3#%1#%2##").arg(where[0]).arg(where[1]), 0);
+	t.check(QString("*#22*3#%1#%2*4*0##").arg(area).arg(point), -10);
+	t.check(QString("*#22*3#%1#%2*4*3##").arg(area).arg(point), -9);
+	t.check(QString("*#22*3#%1#%2*4*4##").arg(area).arg(point), -9);
+	t.check(QString("*#22*3#%1#%2*4*30##").arg(area).arg(point), 0);
+	t.check(QString("*#22*3#%1#%2*4*60##").arg(area).arg(point), 10);
+	t.checkSignals(QString("*22*4#1*3#%1#%2##").arg(area).arg(point), 0);
 }
 
 void TestPowerAmplifierDevice::receiveBalance()
 {
 	DeviceTester t(dev, PowerAmplifierDevice::DIM_BALANCE);
-	t.check(QString("*#22*3#%1#%2*17*00##").arg(where[0]).arg(where[1]), 0);
-	t.check(QString("*#22*3#%1#%2*17*03##").arg(where[0]).arg(where[1]), -1);
-	t.check(QString("*#22*3#%1#%2*17*04##").arg(where[0]).arg(where[1]), -1);
-	t.check(QString("*#22*3#%1#%2*17*030##").arg(where[0]).arg(where[1]), -10);
-	t.check(QString("*#22*3#%1#%2*17*10##").arg(where[0]).arg(where[1]), 0);
-	t.check(QString("*#22*3#%1#%2*17*11##").arg(where[0]).arg(where[1]), 0);
-	t.check(QString("*#22*3#%1#%2*17*13##").arg(where[0]).arg(where[1]), 1);
-	t.check(QString("*#22*3#%1#%2*17*115##").arg(where[0]).arg(where[1]), 5);
+	t.check(QString("*#22*3#%1#%2*17*00##").arg(area).arg(point), 0);
+	t.check(QString("*#22*3#%1#%2*17*03##").arg(area).arg(point), -1);
+	t.check(QString("*#22*3#%1#%2*17*04##").arg(area).arg(point), -1);
+	t.check(QString("*#22*3#%1#%2*17*030##").arg(area).arg(point), -10);
+	t.check(QString("*#22*3#%1#%2*17*10##").arg(area).arg(point), 0);
+	t.check(QString("*#22*3#%1#%2*17*11##").arg(area).arg(point), 0);
+	t.check(QString("*#22*3#%1#%2*17*13##").arg(area).arg(point), 1);
+	t.check(QString("*#22*3#%1#%2*17*115##").arg(area).arg(point), 5);
 }
 
 

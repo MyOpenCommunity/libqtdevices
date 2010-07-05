@@ -170,19 +170,18 @@ private slots:
 protected:
 	void initAmplifier(AmplifierDevice *dev = 0);
 
-private:
-	AmplifierDevice *dev;
+protected:
 	QString area;
 	QString point;
+
+private:
+	AmplifierDevice *dev;
 };
 
 
 class TestVirtualAmplifierDevice : public TestAmplifierDevice
 {
 Q_OBJECT
-public:
-	TestVirtualAmplifierDevice();
-
 protected:
 	void initVirtualAmplifier(VirtualAmplifierDevice *dev = 0);
 
@@ -207,16 +206,12 @@ private slots:
 
 private:
 	VirtualAmplifierDevice *dev;
-	QString where;
 };
 
 
 class TestPowerAmplifierDevice : public TestAmplifierDevice
 {
 Q_OBJECT
-public:
-	TestPowerAmplifierDevice();
-
 protected:
 	void initPowerAmplifier(PowerAmplifierDevice *dev = 0);
 
@@ -243,7 +238,6 @@ private slots:
 
 private:
 	PowerAmplifierDevice *dev;
-	QString where;
 };
 
 
