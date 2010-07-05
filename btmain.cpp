@@ -603,7 +603,8 @@ void BtMain::makeActive()
 {
 	last_event_time = now();
 
-	if (bt_global::display->currentState() == DISPLAY_SCREENSAVER)
+	// only exit the screensaver if it is running
+	if (screensaver && screensaver->isRunning())
 	{
 		bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
 		emit stopscreensaver();
