@@ -375,7 +375,11 @@ void Antintrusion::deleteAlarm()
 
 void Antintrusion::cleanupAlarmPage(QObject *page)
 {
+	if (curr_alarm >= 0 && allarmi.at(curr_alarm) == page)
+		curr_alarm -= 1;
 	allarmi.removeOne(static_cast<AlarmPage*>(page));
+	if (curr_alarm < 0)
+		curr_alarm = allarmi.size() - 1;
 }
 
 #ifdef LAYOUT_BTOUCH
@@ -413,6 +417,7 @@ void Antintrusion::clearAlarms()
 		AlarmPage *a = allarmi.takeFirst();
 		a->deleteLater();
 	}
+	curr_alarm = -1;
 }
 
 void Antintrusion::requestZoneStatus()
