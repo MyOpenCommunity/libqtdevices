@@ -108,7 +108,8 @@ namespace bt_global
 			bt_global::devices_cache[key] = device;
 
 		QString current_class_name = device->metaObject()->className();
-		Q_ASSERT_X(orig_class_name == current_class_name, "bt_global::add_device_to_cache", "Device returned is different from the given one. Maybe two devices have the same address?");
+		Q_ASSERT_X(orig_class_name == current_class_name, "bt_global::add_device_to_cache",
+			qPrintable(QString("Device returned [%1] is different from the given one [%2]. Key -> [%3]").arg(current_class_name).arg(orig_class_name).arg(key)));
 		return device;
 	}
 
