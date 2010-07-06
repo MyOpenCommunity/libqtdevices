@@ -89,9 +89,6 @@ namespace DevicesCachePrivate
 		else
 			cache.insert(key, device);
 
-		QString current_class_name = device->metaObject()->className();
-		Q_ASSERT_X(orig_class_name == current_class_name, "bt_global::add_device_to_cache",
-				   "Device returned is different from the given one. Maybe two devices have the same address?");
 		return device;
 	}
 
@@ -105,7 +102,9 @@ namespace bt_global
 	extern DevicesCache devices_cache;
 
 	// Add an already created device to cache. The key is obtained using the methos
-	// get_key of the device, and usually is composed by who + '*' + where.
+	// get_key of the device, and usually is composed by openserver_id-who#where*className.
+	// Device added with the second parameters as NO_INIT we are not initialized
+	// through the init method.
 	// NOTE: be aware that the device argument can be destroyed if the device for
 	// the key already exists.
 	template<class T> T* add_device_to_cache(T *device, DevicesCacheInitType init = INIT)
