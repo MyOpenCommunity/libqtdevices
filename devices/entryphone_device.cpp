@@ -213,6 +213,9 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		Q_ASSERT_X(msg.whatSubArgCnt() < 2, "EntryphoneDevice::parseFrame",
 			"Incomplete open frame received");
 
+		ip_call = msg.whatArgN(0) > 1000;
+		if ((ip_call && vct_mode != IP_MODE) || (!ip_call && vct_mode != SCS_MODE))
+			qWarning() << "The incoming call has a different mode than the configured one";
 
 		int kind_val = msg.whatArgN(0) % 100;
 		int ringtone = -1;
@@ -294,8 +297,10 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	case END_OF_CALL:
 		if (msg.whatArgN(1) == 3) // with mmtype == 3 we have to stop the video
+		{
 			if (vct_mode == SCS_MODE) // we manage the frame only for the scs vct.
 				values_list[STOP_VIDEO] = true;
+		}
 		else
 		{
 			resetCallState();
@@ -311,6 +316,7 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 void EntryphoneDevice::resetCallState()
 {
 	is_calling = false;
+	ip_call = false;
 	caller_address = "";
 	master_caller_address = "";
 	kind = -1;

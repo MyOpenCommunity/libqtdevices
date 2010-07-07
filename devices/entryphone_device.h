@@ -80,7 +80,7 @@ public:
 	void answerCall() const;
 	void initVctProcess();
 	virtual void init() { initVctProcess(); }
-	VctMode mode() const { return vct_mode; }
+	bool ipCall() const { return ip_call; }
 
 public slots:
 	void endCall();
@@ -114,6 +114,7 @@ private:
 	QString caller_address;
 	QString master_caller_address;
 	bool is_calling;
+	bool ip_call;
 	VctMode vct_mode;
 };
 

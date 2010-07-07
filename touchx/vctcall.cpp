@@ -378,7 +378,10 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 		switch (it.key())
 		{
 		case EntryphoneDevice::VCT_CALL:
-			call_status->video_enabled = (it.value().toInt() == EntryphoneDevice::AUDIO_VIDEO);
+			if (dev->ipCall())
+				call_status->video_enabled = false;
+			else
+				call_status->video_enabled = (it.value().toInt() == EntryphoneDevice::AUDIO_VIDEO);
 			if (call_status->stopped)
 				resumeVideo();
 			else
@@ -386,7 +389,10 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			call_status->call_active = true;
 			break;
 		case EntryphoneDevice::AUTO_VCT_CALL:
-			call_status->video_enabled = (it.value().toInt() == EntryphoneDevice::AUDIO_VIDEO);
+			if (dev->ipCall())
+				call_status->video_enabled = false;
+			else
+				call_status->video_enabled = (it.value().toInt() == EntryphoneDevice::AUDIO_VIDEO);
 			emit autoIncomingCall();
 			call_status->call_active = true;
 			break;
