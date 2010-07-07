@@ -73,8 +73,9 @@ public:
 #if DEBUG
 	int bytesAvailable() { return socket->bytesAvailable(); }
 	void flush() { sendDelayedFrames(); socket->flush(); }
-	void forwardFrame(Client *c);
 #endif
+
+	void forwardFrame(Client *c);
 
 public slots:
 	void connectToHost();
@@ -124,9 +125,8 @@ private:
 	// This flag marks if the client is logically connected or not.
 	bool is_connected;
 
-#if DEBUG
+	// The client where forward the frames received.
 	Client *to_forward;
-#endif
 
 	void manageFrame(QByteArray frame);
 	QByteArray readFromServer();

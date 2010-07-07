@@ -104,9 +104,12 @@ private:
 	QHash<int, QPair<Client*, Client*> > clients;
 	QHash<int, Client*> monitors;
 
-#if DEBUG
+	// The supervisor socket is opened only in two cases: when the GUI in in debug
+	// mode in order to receive the frames sent using a client like the jClientOpen
+	// or when we have the videocall ip enabled. In both situations, the openserver
+	// is the local one, so we manage only this case.
 	Client *client_supervisor;
-#endif
+
 	QHash<int, Page*> page_list;
 	QTime *boot_time;
 	HomePage *Home;

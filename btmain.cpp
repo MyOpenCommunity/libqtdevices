@@ -185,10 +185,23 @@ BtMain::BtMain(int openserver_reconnection_time)
 		clients[MAIN_OPENSERVER].second = new Client(Client::REQUEST);
 	}
 
+	client_supervisor = 0;
+
 #if DEBUG
-	client_supervisor = new Client(Client::SUPERVISOR);
-	client_supervisor->forwardFrame(monitors[MAIN_OPENSERVER]);
+	bool debug = true;
+#else
+	bool debug = false;
 #endif
+
+	if (debug || (*bt_global::config)[PI_MODE].toInt() == 1) // debug or vct full ip
+	{
+		// All the devices are connected to the client MONITOR, but sometimes we can
+		// receive frames from the client SUPERVISOR. To mantain the code clean (and
+		// because we have not to distinguish the input channel) we forward the frame
+		// received from the SUPERVISOR to the MONITOR.
+		client_supervisor = new Client(Client::SUPERVISOR);
+		client_supervisor->forwardFrame(monitors[MAIN_OPENSERVER]);
+	}
 
 	banner::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
 	Page::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
@@ -315,9 +328,7 @@ BtMain::~BtMain()
 		mit.next();
 		delete mit.value();
 	}
-#if DEBUG
 	delete client_supervisor;
-#endif
 }
 
 void BtMain::loadGlobalConfig()

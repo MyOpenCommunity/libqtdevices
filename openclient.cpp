@@ -68,9 +68,7 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 	port = !_port ? OPENSERVER_PORT : _port;
 	is_connected = false;
 
-#if DEBUG
 	to_forward = 0;
-#endif
 
 	socket = new QTcpSocket(this);
 	connect(socket, SIGNAL(connected()), SLOT(socketConnected()));
@@ -219,22 +217,19 @@ void Client::manageFrame(QByteArray frame)
 	}
 }
 
-#if DEBUG
 void Client::forwardFrame(Client *c)
 {
 	to_forward = c;
 }
-#endif
 
 void Client::dispatchFrame(QString frame)
 {
-#if DEBUG
 	if (to_forward)
 	{
 		to_forward->dispatchFrame(frame);
 		return;
 	}
-#endif
+
 	OpenMsg msg;
 	msg.CreateMsgOpen(frame.toAscii().data(), frame.length());
 	if (subscribe_list.contains(msg.who()))
