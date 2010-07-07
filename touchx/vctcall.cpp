@@ -318,7 +318,10 @@ void VCTCall::toggleCall()
 		if (call_status->stopped)
 			resumeVideo();
 		dev->answerCall();
-		bt_global::audio_states->toState(AudioStates::SCS_VIDEO_CALL);
+		if (dev->ipCall())
+			bt_global::audio_states->toState(AudioStates::IP_VIDEO_CALL);
+		else
+			bt_global::audio_states->toState(AudioStates::SCS_VIDEO_CALL);
 		volume->enable();
 
 		call_status->connected = true;
@@ -463,7 +466,12 @@ void VCTCall::cleanAudioStates()
 	// if connected, exit from the videocall state
 	if (call_status->connected)
 	{
-		bt_global::audio_states->removeState(AudioStates::SCS_VIDEO_CALL);
+		// We cannot use "dev->ipCall()" because the status of the device is reset
+		// after the end of the call.
+		if (bt_global::audio_states->contains(AudioStates::IP_VIDEO_CALL))
+			bt_global::audio_states->removeState(AudioStates::IP_VIDEO_CALL);
+		else
+			bt_global::audio_states->removeState(AudioStates::SCS_VIDEO_CALL);
 		volume->disable();
 	}
 }
