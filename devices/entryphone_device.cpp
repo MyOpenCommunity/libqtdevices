@@ -54,8 +54,14 @@ EntryphoneDevice::EntryphoneDevice(const QString &where, QString mode, int opens
 {
 	// invalid values
 	kind = mmtype = -1;
-	vct_mode = mode;
 	is_calling = false;
+
+	if (mode.isNull())
+		vct_mode = NONE;
+	else if (mode.toInt() == 1)
+		vct_mode = IP_MODE;
+	else
+		vct_mode = SCS_MODE;
 }
 
 void EntryphoneDevice::answerCall() const
@@ -133,11 +139,9 @@ void EntryphoneDevice::endCall()
 
 void EntryphoneDevice::initVctProcess()
 {
-	if (!vct_mode.isNull())
+	if (vct_mode != NONE)
 	{
-		// vct_mode == 0 -> SCS
-		// vct_mode == 1 -> IP
-		int type = vct_mode.toInt() == 0 ? 1 : 2;
+		int type = vct_mode == SCS_MODE ? 1 : 2;
 		QString what = QString("%1#%2").arg(READY).arg(type);
 		sendCommand(what);
 	}
@@ -290,7 +294,8 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	case END_OF_CALL:
 		if (msg.whatArgN(1) == 3) // with mmtype == 3 we have to stop the video
-			values_list[STOP_VIDEO] = true;
+			if (vct_mode == SCS_MODE) // we manage the frame only for the scs vct.
+				values_list[STOP_VIDEO] = true;
 		else
 		{
 			resetCallState();

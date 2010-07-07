@@ -68,11 +68,19 @@ public:
 		ONLY_AUDIO
 	};
 
+	enum VctMode
+	{
+		NONE,
+		SCS_MODE,
+		IP_MODE
+	};
+
 	EntryphoneDevice(const QString &where, QString mode = QString(), int openserver_id = 0);
 
 	void answerCall() const;
 	void initVctProcess();
 	virtual void init() { initVctProcess(); }
+	VctMode mode() const { return vct_mode; }
 
 public slots:
 	void endCall();
@@ -106,7 +114,7 @@ private:
 	QString caller_address;
 	QString master_caller_address;
 	bool is_calling;
-	QString vct_mode;
+	VctMode vct_mode;
 };
 
 #endif //ENTRYPHONE_DEVICE_H
