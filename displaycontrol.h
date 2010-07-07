@@ -90,7 +90,6 @@ private:
 	{
 		int brightness;
 		bool backlight;
-		bool screensaver;
 	};
 
 	QMap<DisplayStatus, DisplayData> data;

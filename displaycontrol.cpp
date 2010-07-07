@@ -52,37 +52,29 @@ void DisplayControl::updateBrightnessData()
 	case BRIGHTNESS_OFF:
 		data[DISPLAY_FREEZED].brightness = brightness_max;
 		data[DISPLAY_FREEZED].backlight = false;
-		data[DISPLAY_FREEZED].screensaver = false;
 		data[DISPLAY_SCREENSAVER].brightness = brightness_max;
 		data[DISPLAY_SCREENSAVER].backlight = false;
-		data[DISPLAY_SCREENSAVER].screensaver = false;
 		break;
 
 	case BRIGHTNESS_LOW:
 		data[DISPLAY_FREEZED].brightness = brightness_min;
 		data[DISPLAY_FREEZED].backlight = true;
-		data[DISPLAY_FREEZED].screensaver = false;
 		data[DISPLAY_SCREENSAVER].brightness = brightness_min;
 		data[DISPLAY_SCREENSAVER].backlight = true;
-		data[DISPLAY_SCREENSAVER].screensaver = true;
 		break;
 
 	case BRIGHTNESS_NORMAL:
 		data[DISPLAY_FREEZED].brightness = brightness_low;
 		data[DISPLAY_FREEZED].backlight = true;
-		data[DISPLAY_FREEZED].screensaver = false;
 		data[DISPLAY_SCREENSAVER].brightness = brightness_low;
 		data[DISPLAY_SCREENSAVER].backlight = true;
-		data[DISPLAY_SCREENSAVER].screensaver = true;
 		break;
 
 	case BRIGHTNESS_HIGH:
 		data[DISPLAY_FREEZED].brightness = brightness_medium;
 		data[DISPLAY_FREEZED].backlight = true;
-		data[DISPLAY_FREEZED].screensaver = false;
 		data[DISPLAY_SCREENSAVER].brightness = brightness_medium;
 		data[DISPLAY_SCREENSAVER].backlight = true;
-		data[DISPLAY_SCREENSAVER].screensaver = true;
 		break;
 
 	default:
@@ -92,11 +84,9 @@ void DisplayControl::updateBrightnessData()
 	// Off and operative status have the same values for all levels
 	data[DISPLAY_OFF].brightness = brightness_max;
 	data[DISPLAY_OFF].backlight = false;
-	data[DISPLAY_OFF].screensaver = false;
 
 	data[DISPLAY_OPERATIVE].brightness = operative_brightness;
 	data[DISPLAY_OPERATIVE].backlight = true;
-	data[DISPLAY_OPERATIVE].screensaver = false;
 
 	if (data[current_state].backlight)
 		setBrightnessLevel(data[current_state].brightness);
@@ -108,7 +98,6 @@ void DisplayControl::setBrightness(BrightnessLevel level)
 	updateBrightnessData();
 
 #ifdef CONFIG_BTOUCH
-	// TODO: to be changed on TouchX
 	setCfgValue("brightness/level", level, DISPLAY);
 #endif
 }
