@@ -580,14 +580,14 @@ BrightnessPage::BrightnessPage()
 
 void BrightnessPage::incBrightness()
 {
-	int b = (*bt_global::display).operativeBrightness();
-	if (b > 10)
-		(*bt_global::display).setOperativeBrightness(b - 10);
+	int b = bt_global::display->operativeBrightness();
+	if (b < 10)
+		bt_global::display->setOperativeBrightness(b + 1);
 }
 
 void BrightnessPage::decBrightness()
 {
-	int b = (*bt_global::display).operativeBrightness();
-	if (b < 250)
-		(*bt_global::display).setOperativeBrightness(b + 10);
+	int b = bt_global::display->operativeBrightness();
+	if (b > 1)
+		bt_global::display->setOperativeBrightness(b - 1);
 }

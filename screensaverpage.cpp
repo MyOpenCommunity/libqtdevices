@@ -134,7 +134,7 @@ void ScreenSaverPage::bannerSelected(int id)
 	// TODO review when porting the code to BTouch
 #ifdef BT_HARDWARE_BTOUCH
 	if (id == ScreenSaver::NONE)
-		bt_global::display->setBrightness(BRIGHTNESS_OFF);
+		bt_global::display->setInactiveBrightness(BRIGHTNESS_OFF);
 #endif
 }
 

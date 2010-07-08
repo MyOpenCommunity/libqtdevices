@@ -22,7 +22,7 @@
 #include "btmain.h"
 #include "main.h" // (*bt_global::config)
 #include "homepage.h"
-#include "hardware_functions.h" // rearmWDT, getTimePress, setOrientation, getBacklight, initScreen
+#include "hardware_functions.h" // rearmWDT, getTimePress, setOrientation, getBacklight
 #include "xml_functions.h" // getPageNode, getElement, getChildWithId, getTextChild
 #include "openclient.h"
 #include "version.h"
@@ -157,7 +157,6 @@ BtMain::BtMain(int openserver_reconnection_time)
 	setTimePress(QDateTime::currentDateTime().addSecs(-60));
 #endif
 
-	initScreen();
 	monitor_ready = false;
 	config_loaded = false;
 
@@ -404,22 +403,14 @@ void BtMain::loadConfiguration()
 	QDomNode display_node = getChildWithId(getPageNode(SETTINGS), QRegExp("item\\d{1,2}"), DISPLAY);
 #endif
 
-#ifdef BT_HARDWARE_TOUCHX
-	// on TouchX there is no way to control the screensaver brightness
-	BrightnessLevel level = BRIGHTNESS_HIGH;
-#else
-	BrightnessLevel level = BRIGHTNESS_NORMAL; // default brightness
-#endif
-
 #ifdef CONFIG_BTOUCH
 	if (!display_node.isNull())
 	{
 		QDomElement n = getElement(display_node, "brightness/level");
 		if (!n.isNull())
-			level = static_cast<BrightnessLevel>(n.text().toInt());
+			bt_global::display->setInactiveBrightness(static_cast<BrightnessLevel>(n.text().toInt()));
 	}
 #endif
-	bt_global::display->setBrightness(level);
 
 	ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
 #ifdef CONFIG_BTOUCH
@@ -684,7 +675,7 @@ void BtMain::checkScreensaver()
 	// When the brightness is set to off in the old hardware the display
 	// is not really off, so it is required to use a screensaver to protect
 	// the display, even if the screensaver is not visible.
-	if (bt_global::display->currentBrightness() == BRIGHTNESS_OFF)
+	if (bt_global::display->inactiveBrightness() == BRIGHTNESS_OFF)
 		target_screensaver = ScreenSaver::LINES;
 #endif
 

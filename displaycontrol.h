@@ -56,13 +56,13 @@ public:
 	void setState(DisplayStatus status);
 	DisplayStatus currentState();
 
-	// set the brightness to be used in operative mode
+	// Set the brightness to be used in operative mode. Valid values are from 1 (min) to 10 (max).
 	void setOperativeBrightness(int brightness);
 	int operativeBrightness();
 
-	// Brightness methods
-	BrightnessLevel currentBrightness();
-	void setBrightness(BrightnessLevel level);
+	// Methods to set the brightness used when the touchscreen is inactive (freezed or screensaver)
+	BrightnessLevel inactiveBrightness();
+	void setInactiveBrightness(BrightnessLevel level);
 
 	// Screensaver methods
 	void setScreenSaver(ScreenSaver::Type t);
@@ -85,7 +85,6 @@ signals:
 private:
 	void updateBrightnessData();
 
-private:
 	struct DisplayData
 	{
 		int brightness;
@@ -93,7 +92,7 @@ private:
 	};
 
 	QMap<DisplayStatus, DisplayData> data;
-	BrightnessLevel current_brightness;
+	BrightnessLevel inactive_brightness;
 	ScreenSaver::Type current_screensaver;
 	DisplayStatus current_state;
 	bool forced_operative_mode;

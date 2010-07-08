@@ -59,7 +59,7 @@ void setBacklight(bool value);
 
 /**
  * Sets the brightness level of the display.
- * \param level The new brightness level. Allowed values are 0 <= level <= 255
+ * \param level The new brightness level. Allowed values are 1 <= level <= 10
  * Using values outside this range yields no results.
  */
 void setBrightnessLevel(int level);
@@ -133,8 +133,5 @@ void setVctVideoValue(const QString &command, const QString &value);
 
 // init multimedia playback
 void initMultimedia();
-
-void initScreen();
-
 
 #endif // HARDWARE_FUNCTIONS_H

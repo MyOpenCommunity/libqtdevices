@@ -28,73 +28,61 @@ DisplayControl::DisplayControl()
 {
 	forced_operative_mode = false;
 	direct_screen_access = 0;
-	operative_brightness = 10;
-	current_state = DISPLAY_OFF;
-	setBrightness(BRIGHTNESS_NORMAL);
-	setState(DISPLAY_OPERATIVE);
-}
 
-static inline int min_brightness(int a, int b)
-{
-	return qMin(qMax(a, b), 255);
+#ifdef BT_HARDWARE_TOUCHX
+	operative_brightness = 1; // a low brightness for the touch 10''
+	setInactiveBrightness(BRIGHTNESS_LOW);
+#else
+	operative_brightness = 9; // an high brightness for the touch 3.5''
+	setInactiveBrightness(BRIGHTNESS_NORMAL);
+#endif
+
+	setState(DISPLAY_OPERATIVE);
 }
 
 void DisplayControl::updateBrightnessData()
 {
-	// always use low/medium brightness values that are below current brightness level
-	int brightness_max = operative_brightness;
-	int brightness_min = 255;
-	int brightness_low = min_brightness(210, brightness_max + 200);
-	int brightness_medium = min_brightness(50, brightness_max + 40);
-
-	switch (current_brightness)
+	switch (inactive_brightness)
 	{
 	case BRIGHTNESS_OFF:
-		data[DISPLAY_FREEZED].brightness = brightness_max;
+		data[DISPLAY_FREEZED].brightness = qMax(operative_brightness - 8, 1);
 		data[DISPLAY_FREEZED].backlight = false;
-		data[DISPLAY_SCREENSAVER].brightness = brightness_max;
-		data[DISPLAY_SCREENSAVER].backlight = false;
 		break;
 
 	case BRIGHTNESS_LOW:
-		data[DISPLAY_FREEZED].brightness = brightness_min;
+		data[DISPLAY_FREEZED].brightness = qMax(operative_brightness - 8, 1);
 		data[DISPLAY_FREEZED].backlight = true;
-		data[DISPLAY_SCREENSAVER].brightness = brightness_min;
-		data[DISPLAY_SCREENSAVER].backlight = true;
 		break;
 
 	case BRIGHTNESS_NORMAL:
-		data[DISPLAY_FREEZED].brightness = brightness_low;
+		data[DISPLAY_FREEZED].brightness = qMax(operative_brightness - 5, 1);
 		data[DISPLAY_FREEZED].backlight = true;
-		data[DISPLAY_SCREENSAVER].brightness = brightness_low;
-		data[DISPLAY_SCREENSAVER].backlight = true;
 		break;
 
 	case BRIGHTNESS_HIGH:
-		data[DISPLAY_FREEZED].brightness = brightness_medium;
+		data[DISPLAY_FREEZED].brightness = qMax(operative_brightness - 1, 1);
 		data[DISPLAY_FREEZED].backlight = true;
-		data[DISPLAY_SCREENSAVER].brightness = brightness_medium;
-		data[DISPLAY_SCREENSAVER].backlight = true;
 		break;
 
 	default:
-		qFatal("Unknown level for brightness");
+		qFatal("Unknown level for inactive brightness");
 	}
 
+	// The screensaver status has the same values than the freezed one.
+	data[DISPLAY_SCREENSAVER].brightness = data[DISPLAY_FREEZED].brightness;
+	data[DISPLAY_SCREENSAVER].backlight = data[DISPLAY_FREEZED].backlight;
+
 	// Off and operative status have the same values for all levels
-	data[DISPLAY_OFF].brightness = brightness_max;
+	data[DISPLAY_OFF].brightness = operative_brightness;
 	data[DISPLAY_OFF].backlight = false;
 
 	data[DISPLAY_OPERATIVE].brightness = operative_brightness;
 	data[DISPLAY_OPERATIVE].backlight = true;
-
-	if (data[current_state].backlight)
-		setBrightnessLevel(data[current_state].brightness);
 }
 
-void DisplayControl::setBrightness(BrightnessLevel level)
+void DisplayControl::setInactiveBrightness(BrightnessLevel level)
 {
-	current_brightness = level;
+	inactive_brightness = level;
 	updateBrightnessData();
 
 #ifdef CONFIG_BTOUCH
@@ -104,8 +92,15 @@ void DisplayControl::setBrightness(BrightnessLevel level)
 
 void DisplayControl::setOperativeBrightness(int brightness)
 {
+	if (brightness > 10 || brightness < 1)
+	{
+		qWarning() << "Operative brightness out of range 1 - 10";
+		brightness = qMax(qMin(brightness, 10), 1);
+	}
+
 	operative_brightness = brightness;
 	updateBrightnessData();
+	setBrightnessLevel(data[current_state].brightness);
 }
 
 int DisplayControl::operativeBrightness()
@@ -113,9 +108,9 @@ int DisplayControl::operativeBrightness()
 	return operative_brightness;
 }
 
-BrightnessLevel DisplayControl::currentBrightness()
+BrightnessLevel DisplayControl::inactiveBrightness()
 {
-	return current_brightness;
+	return inactive_brightness;
 }
 
 void DisplayControl::forceOperativeMode(bool enable)
@@ -154,9 +149,6 @@ void DisplayControl::setState(DisplayStatus status)
 		setBrightnessLevel(data[status].brightness);
 	}
 
-	// We have to re-initialize the screen when the GUI exit from the state DISPLAY_OFF
-	if (current_state == DISPLAY_OFF && status != DISPLAY_OFF)
-		initScreen();
 	current_state = status;
 }
 

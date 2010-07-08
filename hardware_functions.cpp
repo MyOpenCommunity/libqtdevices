@@ -113,25 +113,100 @@ static void writeValueToFd(int fd, int value)
 	write(fd, str.constData(), str.length());
 }
 
+#ifdef BT_HARDWARE_BTOUCH
 void setBrightnessLevel(int level)
 {
-#ifdef BT_HARDWARE_BTOUCH
+	int hardware_level;
+	switch (level)
+	{
+	case 1:
+		hardware_level = 255;
+		break;
+	case 2:
+		hardware_level = 240;
+		break;
+	case 3:
+		hardware_level = 225;
+		break;
+	case 4:
+		hardware_level = 210;
+		break;
+	case 5:
+		hardware_level = 180;
+		break;
+	case 6:
+		hardware_level = 140;
+		break;
+	case 7:
+		hardware_level = 100;
+		break;
+	case 8:
+		hardware_level = 50;
+		break;
+	case 9:
+		hardware_level = 10;
+		break;
+	case 10:
+		hardware_level = 0;
+		break;
+	default:
+		return;
+	};
+
 	if (QFile::exists("/proc/sys/dev/btweb/brightness"))
 	{
 		int fd = open("/proc/sys/dev/btweb/brightness", O_WRONLY);
 		if (fd >= 0)
 		{
-			writeValueToFd(fd, level);
+			writeValueToFd(fd, hardware_level);
 			close(fd);
 		}
 	}
-#else
-	int value = 13 - ((level - 10) * 13 / 240);
-
-	smartExecute("/bin/settrimmer",
-		QStringList() << TFT_BRIGHTNESS << QString::number(value));
-#endif
 }
+#else
+void setBrightnessLevel(int level)
+{
+	int hardware_level;
+
+	switch (level)
+	{
+	case 1:
+		hardware_level = 13;
+		break;
+	case 2:
+		hardware_level = 12;
+		break;
+	case 3:
+		hardware_level = 10;
+		break;
+	case 4:
+		hardware_level = 9;
+		break;
+	case 5:
+		hardware_level = 7;
+		break;
+	case 6:
+		hardware_level = 6;
+		break;
+	case 7:
+		hardware_level = 4;
+		break;
+	case 8:
+		hardware_level = 3;
+		break;
+	case 9:
+		hardware_level = 1;
+		break;
+	case 10:
+		hardware_level = 0;
+		break;
+	default:
+		return;
+	};
+	smartExecute("/bin/settrimmer",
+		QStringList() << TFT_BRIGHTNESS << QString::number(hardware_level));
+}
+#endif
 
 void setBacklight(bool b)
 {
@@ -437,15 +512,6 @@ void initMultimedia()
 #ifdef BT_HARDWARE_TOUCHX
 	smartExecute("/bin/init_audio_system");
 	smartExecute("/bin/init_video_system");
-#endif
-}
-
-void initScreen()
-{
-#ifdef BT_HARDWARE_TOUCHX
-	QStringList args_contrast;
-	args_contrast << TFT_CONTRAST << "7";
-	smartExecute("/bin/settrimmer", args_contrast);
 #endif
 }
 
