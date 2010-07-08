@@ -70,7 +70,7 @@ public:
 
 	enum VctMode
 	{
-		NONE,
+		NONE = 0,
 		SCS_MODE,
 		IP_MODE
 	};

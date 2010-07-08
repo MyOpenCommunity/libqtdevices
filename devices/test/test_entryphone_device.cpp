@@ -31,7 +31,7 @@
 
 void TestEntryphoneDevice::initTestCase()
 {
-	dev = new EntryphoneDevice("11");
+	dev = new EntryphoneDevice("11", "0");
 }
 
 void TestEntryphoneDevice::cleanupTestCase()
@@ -105,17 +105,21 @@ void TestEntryphoneDevice::sendEndCall()
 
 void TestEntryphoneDevice::sendInitVctProcess()
 {
-	dev->vct_mode = "0"; // SCS
+	EntryphoneDevice::VctMode old_mode = dev->vct_mode;
+	dev->vct_mode = EntryphoneDevice::SCS_MODE;
 	// call type accepted, 1 = scs bus only
 	dev->initVctProcess();
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*8*37#%1*%2##").arg(1).arg(dev->where));
 
-	dev->vct_mode = "1"; // IP
+	dev->vct_mode = EntryphoneDevice::IP_MODE;
 	// call type accepted, 1 = scs bus only
 	dev->initVctProcess();
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*8*37#%1*%2##").arg(2).arg(dev->where));
+
+	// Restore the default status for the tests
+	dev->vct_mode = old_mode;
 }
 
 void TestEntryphoneDevice::sendCameraOn()
