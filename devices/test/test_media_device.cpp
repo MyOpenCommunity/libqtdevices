@@ -487,10 +487,10 @@ void TestVirtualSourceDevice::testInitFrame()
 	QCOMPARE(VirtualSourceDevice::createMediaInitFrame(false, "3", ""), QString("*#22*7*#15*3***9*9***1*1*0*1##"));
 
 	// multichannel, ampli
-	QCOMPARE(VirtualSourceDevice::createMediaInitFrame(true, "", "28"), QString("*#22*7*#15**2*8*9*9***0*1*1*1##"));
+	QCOMPARE(VirtualSourceDevice::createMediaInitFrame(true, "", "28"), QString("*#22*7*#15*0*2*8*9*9***0*1*1*1##"));
 
 	// monochannel, ampli
-	QCOMPARE(VirtualSourceDevice::createMediaInitFrame(false, "", "28"), QString("*#22*7*#15**2*8*9*9***0*1*1*1##"));
+	QCOMPARE(VirtualSourceDevice::createMediaInitFrame(false, "", "28"), QString("*#22*7*#15*0*2*8*9*9***0*1*1*1##"));
 }
 
 

@@ -649,8 +649,9 @@ QString VirtualSourceDevice::createMediaInitFrame(bool is_multichannel, const QS
 		ampli_point = ampli_addr.at(1);
 	}
 
+	QString source = source_addr.isEmpty() ? "0" : source_addr;
 	QString frame = QString("*#22*7*#15*%1*%2*%3*9*9**%4*%5*%6*%7*%8##")
-			.arg(source_addr).arg(ampli_area).arg(ampli_point).arg(matrix_input).arg(is_source).arg(is_gateway).arg(is_ampli).arg(reads_scs);
+		.arg(source).arg(ampli_area).arg(ampli_point).arg(matrix_input).arg(is_source).arg(is_gateway).arg(is_ampli).arg(reads_scs);
 
 	return frame;
 }
