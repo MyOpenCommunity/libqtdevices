@@ -75,7 +75,7 @@ EnergyData::EnergyData(const QDomNode &config_node)
 	day_timer.setSingleShot(true);
 
 	if (interfaces.count() == 1)
-		connect(interfaces[0], SIGNAL(Closed()), SLOT(Closed()));
+		connect(interfaces[0], SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
 int EnergyData::sectionId() const
