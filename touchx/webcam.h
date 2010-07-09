@@ -25,11 +25,13 @@
 #include "page.h"
 #include "itemlist.h"
 
+class BtButton;
+class ImageLabel;
 class QDomNode;
 class QHttp;
 class QUrl;
 class QString;
-class ImageLabel;
+
 
 
 /**
@@ -41,6 +43,7 @@ Q_OBJECT
 public:
 	WebcamPage();
 	void setImage(QUrl url, QString label);
+	void displayNavigationButtons(bool display);
 
 signals:
 	void reloadImage();
@@ -51,6 +54,7 @@ private slots:
 	void downloadFinished(int id, bool error);
 
 private:
+	BtButton *prev_btn, *next_btn;
 	PageTitleWidget *page_title;
 	ImageLabel *image;
 	QHttp *http;

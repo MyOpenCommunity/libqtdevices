@@ -329,10 +329,17 @@ HomepageWebcamLink::HomepageWebcamLink(const QString &description, const QString
 	title = description;
 
 	webcam = new WebcamPage;
+	webcam->displayNavigationButtons(false);
 
 	connect(this, SIGNAL(clicked()), SLOT(showWebcam()));
 
 	connect(webcam, SIGNAL(Closed()), SIGNAL(pageClosed()));
+	connect(webcam, SIGNAL(reloadImage()), SLOT(reloadWebcam()));
+}
+
+void HomepageWebcamLink::reloadWebcam()
+{
+	webcam->setImage(QUrl(url), title);
 }
 
 void HomepageWebcamLink::showWebcam()

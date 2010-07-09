@@ -48,18 +48,15 @@ WebcamPage::WebcamPage()
 	buttons_layout->setContentsMargins(0, 0, 0, 0);
 	buttons_layout->setSpacing(5);
 
-	BtButton* prev_btn = new BtButton;
-	prev_btn->setImage(bt_global::skin->getImage("previous"));
+	prev_btn = new BtButton(bt_global::skin->getImage("previous"));
 	connect(prev_btn, SIGNAL(clicked()), this, SIGNAL(prevImage()));
 	buttons_layout->addWidget(prev_btn);
 
-	BtButton* reload_btn = new BtButton;
-	reload_btn->setImage(bt_global::skin->getImage("reload"));
+	BtButton *reload_btn = new BtButton(bt_global::skin->getImage("reload"));
 	connect(reload_btn, SIGNAL(clicked()), this, SIGNAL(reloadImage()));
 	buttons_layout->addWidget(reload_btn);
 
-	BtButton* next_btn = new BtButton;
-	next_btn->setImage(bt_global::skin->getImage("next"));
+	next_btn = new BtButton(bt_global::skin->getImage("next"));
 	connect(next_btn, SIGNAL(clicked()), this, SIGNAL(nextImage()));
 	buttons_layout->addWidget(next_btn);
 
@@ -72,6 +69,12 @@ WebcamPage::WebcamPage()
 	buildPage(content, nav_bar, 0, page_title);
 	http = new QHttp(this);
 	connect(http, SIGNAL(requestFinished(int,bool)), SLOT(downloadFinished(int, bool)));
+}
+
+void WebcamPage::displayNavigationButtons(bool display)
+{
+	prev_btn->setVisible(display);
+	next_btn->setVisible(display);
 }
 
 void WebcamPage::setImage(QUrl url, QString descr)

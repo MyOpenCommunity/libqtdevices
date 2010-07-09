@@ -144,6 +144,7 @@ public:
 
 private slots:
 	void showWebcam();
+	void reloadWebcam();
 
 private:
 	WebcamPage *webcam;
