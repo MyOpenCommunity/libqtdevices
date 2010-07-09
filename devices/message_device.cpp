@@ -117,7 +117,7 @@ MessageDevice::MessageDevice(int openserver_id) :
 }
 
 /**
- * parseFramne
+ * parseFrame
  *
  * Message protocol description:
  * * begin
@@ -143,13 +143,18 @@ bool MessageDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	{
 	case MESSAGE_BEGIN:
 	{
-		if (msg.whereArgCnt() != 4)
+		QString caller_where;
+
+		if (msg.whereArgCnt() == 4)
+			caller_where = QString::fromStdString(msg.whereArg(2));
+		else if (msg.whereArgCnt() == 3)
+			caller_where = QString::fromStdString(msg.whereArg(1));
+		else
 		{
 			qWarning("Malformed message where.");
 			return false;
 		}
 
-		QString caller_where = QString::fromStdString(msg.whereArg(2));
 		if (cdp_where.isEmpty())
 		{
 			cdp_where = caller_where;

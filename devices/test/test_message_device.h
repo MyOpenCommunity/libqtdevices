@@ -47,6 +47,7 @@ private slots:
 	void receiveCompleteMessage();
 	void receiveWrongChecksum();
 	void receiveTimeout();
+	void receiveBeginMessage();
 
 private:
 	MessageDevice *dev;

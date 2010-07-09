@@ -234,3 +234,30 @@ void TestMessageDevice::receiveTimeout()
 	QVERIFY(dev->message.isEmpty());
 	QVERIFY(!dev->timer.isActive());
 }
+
+void TestMessageDevice::receiveBeginMessage()
+{
+	// where#lev#00..
+	QVERIFY(dev->cdp_where.isEmpty());
+	QVERIFY(dev->message.isEmpty());
+	QVERIFY(!dev->timer.isActive());
+
+	OpenMsg begin_msg("*8*9012#1001*165#8#00#350#8##");
+	dev->manageFrame(begin_msg);
+	client_command->flush();
+
+	QCOMPARE(dev->cdp_where, QString("350"));
+
+	dev->cleanup();
+	// where#00..
+	QVERIFY(dev->cdp_where.isEmpty());
+	QVERIFY(dev->message.isEmpty());
+	QVERIFY(!dev->timer.isActive());
+
+	OpenMsg begin_msg2("*8*9012#1001*165#00#350#8##");
+	dev->manageFrame(begin_msg2);
+	client_command->flush();
+
+	QCOMPARE(dev->cdp_where, QString("350"));
+}
+
