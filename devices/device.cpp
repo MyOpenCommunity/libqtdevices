@@ -92,7 +92,7 @@ void OpenServerManager::handleConnectionUp()
 		is_connected = monitor->isConnected() && command->isConnected() && request->isConnected();
 		if (is_connected)
 		{
-			qDebug("OpenServerManager::handleConnectionUp()[%d]", openserver_id);
+			qDebug("OpenServerManager::connectionUp for openserver [%d]", openserver_id);
 			bt_global::devices_cache.initOpenserverDevices(openserver_id);
 			emit connectionUp();
 		}

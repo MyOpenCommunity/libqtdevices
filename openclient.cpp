@@ -111,6 +111,25 @@ void Client::socketConnected()
 
 void Client::sendDelayedFrames()
 {
+	// The openserver closes the connection with sockets of type REQUEST/COMMAND
+	// after 30 seconds of inactivity, while it doesn't close connections of
+	// type MONITOR/SUPERVISOR. So, a client of type COMMAND or REQUEST should
+	// treat as connected even if the read underlying socket is disconnected
+	// without errors.
+	if (!is_connected)
+		return;
+
+	if (socket->state() == QAbstractSocket::UnconnectedState || socket->state() == QAbstractSocket::ClosingState)
+		connectToHost();
+
+	// We assume that 100 milliseconds are a reasonable time to connect without problems.
+	if (!socket->waitForConnected(100))
+	{
+		is_connected = false;
+		emit connectionDown();
+		return;
+	}
+
 	QSet<QByteArray> discard_duplicates;
 
 	foreach (const QByteArray &frame, delayed_frames)
@@ -140,26 +159,7 @@ void Client::sendDelayedFrames()
 
 void Client::sendFrameOpen(const QString &frame_open)
 {
-	// The openserver closes the connection with sockets of type REQUEST/COMMAND
-	// after 30 seconds of inactivity, while it doesn't close connections of
-	// type MONITOR/SUPERVISOR. So, a client of type COMMAND or REQUEST should
-	// treat as connected even if the read underlying socket is disconnected
-	// without errors.
-	if (!is_connected)
-		return;
-
 	QByteArray frame = frame_open.toLatin1();
-	if (socket->state() == QAbstractSocket::UnconnectedState || socket->state() == QAbstractSocket::ClosingState)
-		connectToHost();
-
-	// We assume that 100 milliseconds are a reasonable time to connect without problems.
-	if (!socket->waitForConnected(100))
-	{
-		is_connected = false;
-		emit connectionDown();
-		return;
-	}
-
 	// queue the frames to be sent later, but avoid delaying frames indefinitely
 	delayed_frames.append(frame);
 	if (!delay_timer.isActive())
