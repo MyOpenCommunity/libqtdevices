@@ -40,6 +40,7 @@ public:
 	WindowContainer(int width, int height);
 	PageContainer *centralLayout();
 	HomeWindow *homeWindow();
+	Window *currentWindow();
 
 	void addWindow(Window *w);
 	void showWindow(Window *w);

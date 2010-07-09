@@ -71,6 +71,11 @@ HomeWindow *WindowContainer::homeWindow()
 	return main;
 }
 
+Window *WindowContainer::currentWindow()
+{
+	return static_cast<Window*>(currentWidget());
+}
+
 void WindowContainer::installTransitionWidget(TransitionWidget *tr)
 {
 	if (transition_widget)

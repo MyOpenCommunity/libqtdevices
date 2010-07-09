@@ -720,6 +720,7 @@ void BtMain::checkScreensaver()
 			// TODO move the code until the end of the block to PageStack and/or ScreenSaver
 			Page *prev_page = page_container->currentPage();
 
+#ifdef LAYOUT_BTOUCH
 			page_container->blockTransitions(true);
 			if (pagDefault)
 			{
@@ -736,8 +737,12 @@ void BtMain::checkScreensaver()
 
 			window_container->homeWindow()->showWindow();
 			page_container->blockTransitions(false);
-			qDebug() << "start screensaver:" << target_screensaver << "on:" << page_container->currentPage();
-			screensaver->start(window_container->homeWindow());
+#endif
+			if (window_container->currentWindow() == window_container->homeWindow())
+				qDebug() << "start screensaver:" << target_screensaver << "on:" << page_container->currentPage();
+			else
+				qDebug() << "start screensaver:" << target_screensaver << "on:" << window_container->currentWindow();
+			screensaver->start(window_container->currentWindow());
 			emit startscreensaver(prev_page);
 			bt_global::display->setState(DISPLAY_SCREENSAVER);
 			bt_global::audio_states->toState(AudioStates::SCREENSAVER);
