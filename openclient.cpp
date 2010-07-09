@@ -119,7 +119,15 @@ void Client::sendDelayedFrames()
 			continue;
 		discard_duplicates.insert(frame);
 
-		socket->write(frame);
+		int written = socket->write(frame);
+		if (written == -1)
+		{
+			if (host != OPENSERVER_ADDR)
+				qWarning() << "Unable to send the frame:" << frame << QString("to [%1:%2]").arg(host).arg(port);
+			else
+				qWarning() << "Unable to send the frame:" << frame;
+			continue;
+		}
 
 		if (host != OPENSERVER_ADDR)
 			qDebug() << qPrintable(QString("Client::sendFrameOpen()[%1:%2]").arg(host).arg(port)) << "sent:" << frame;
