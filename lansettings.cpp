@@ -57,6 +57,11 @@ Text2Column::Text2Column()
 	main_layout->setSpacing(0);
 }
 
+void Text2Column::setSpacing(int spacing)
+{
+	main_layout->setSpacing(spacing);
+}
+
 void Text2Column::addRow(QString text, Qt::Alignment align)
 {
 	main_layout->addWidget(new QLabel(text), main_layout->rowCount(), 0, 1, 2, align);
@@ -80,11 +85,14 @@ LanSettings::LanSettings(const QDomNode &config_node)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	box_text = new Text2Column;
+#ifdef LAYOUT_BTOUCH
 	box_text->setStyleSheet("background-color:#f0f0f0; color:#000000;");
 	box_text->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	box_text->setLineWidth(3);
 	box_text->setFont(bt_global::font->get(FontManager::SMALLTEXT));
-
+#else
+	box_text->setFont(bt_global::font->get(FontManager::TEXT));
+#endif
 	box_text->addRow((*bt_global::config)[MODEL]);
 	box_text->addRow("");
 	box_text->addRow((*bt_global::config)[NAME]);

@@ -101,13 +101,13 @@ private:
 
 
 /**
- * The page where the user can see the version of the software
+ * The page where the user can see the information about the software
  */
-class VersionPage : public Page
+class InfoPage : public Page
 {
 Q_OBJECT
 public:
-	VersionPage(const QDomNode &config_node);
+	InfoPage(const QDomNode &config_node);
 
 private:
 	Text2Column *text_area;

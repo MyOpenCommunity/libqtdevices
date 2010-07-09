@@ -41,6 +41,7 @@
 #include "videodoorentry.h" // HandsFree, ProfessionalStudio
 #include "main.h" // bt_global::config, SETTINGS
 #include "audiostatemachine.h" // bt_global::audio_states
+#include "fontmanager.h"
 
 #if !defined(BT_HARDWARE_X11)
 #include "calibration.h"
@@ -59,7 +60,7 @@ enum
 	PAGE_VOLUME = 14004,
 	PAGE_RINGTONES = 14005,
 	PAGE_CALIBRATION = 14153,
-	PAGE_VERSION = 14006,
+	PAGE_INFO = 14006,
 	PAGE_SCREENSAVER = 14154,
 	PAGE_CLEANSCREEN = 14152,
 	PAGE_DISPLAY = 14007,
@@ -252,7 +253,7 @@ void VolumePage::startPlayRingtone()
 
 
 
-VersionPage::VersionPage(const QDomNode &config_node)
+InfoPage::InfoPage(const QDomNode &config_node)
 {
 	// TODO for touch 3.5 we need to send status requests as early as possible,
 	// because the version page is shown during boot
@@ -264,22 +265,26 @@ VersionPage::VersionPage(const QDomNode &config_node)
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
+	QWidget *content = new QWidget;
+	QVBoxLayout *content_layout = new QVBoxLayout(content);
+	content_layout->setContentsMargins(0, 10, 0, 0);
+
 	text_area = new Text2Column;
+	text_area->setSpacing(20);
+	text_area->setFont(bt_global::font->get(FontManager::TEXT));
 	text_area->addRow(tr("Model"), (*bt_global::config)[MODEL]);
 	text_area->addRow(tr("Firmware version"), "");
 	text_area->addRow(tr("Kernel version"), "");
-	text_area->addRow(tr("IP address"), "");
-	text_area->addRow(tr("Netmask"), "");
 
-	buildPage(text_area, nav_bar, getTextChild(config_node, "descr"), TINY_TITLE_HEIGHT);
+	content_layout->addWidget(text_area);
+	content_layout->addStretch(1);
+	buildPage(content, nav_bar, getTextChild(config_node, "descr"), TINY_TITLE_HEIGHT);
 }
 
-void VersionPage::valueReceived(const DeviceValues &values_list)
+void InfoPage::valueReceived(const DeviceValues &values_list)
 {
 	const int FW_ROW = 2;
 	const int KERN_ROW = 3;
-	const int IP_ROW = 4;
-	const int NETMASK_ROW = 5;
 
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())
@@ -291,12 +296,6 @@ void VersionPage::valueReceived(const DeviceValues &values_list)
 			break;
 		case PlatformDevice::DIM_FW_VERS:
 			text_area->setText(FW_ROW, it.value().toString());
-			break;
-		case PlatformDevice::DIM_IP:
-			text_area->setText(IP_ROW, it.value().toString());
-			break;
-		case PlatformDevice::DIM_NETMASK:
-			text_area->setText(NETMASK_ROW, it.value().toString());
 			break;
 		}
 
@@ -472,8 +471,8 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		case PAGE_VOLUME:
 			p = new VolumePage(item);
 			break;
-		case PAGE_VERSION:
-			p = new VersionPage(item);
+		case PAGE_INFO:
+			p = new InfoPage(item);
 			break;
 		case PAGE_BRIGHTNESS:
 			p = new BrightnessPage;

@@ -47,6 +47,7 @@ public:
 	void addRow(QString text, Qt::Alignment align=Qt::AlignLeft);
 	void addRow(QString label, QString text);
 	void setText(int row, QString text);
+	void setSpacing(int spacing);
 
 private:
 	QGridLayout *main_layout;
