@@ -69,6 +69,13 @@
 // delay between two consecutive screensaver checks
 #define SCREENSAVER_CHECK 2000
 
+#if LAYOUT_BTOUCH
+#define TS_NUM_BASE_ADDRESS 0x300
+#else
+#define TS_NUM_BASE_ADDRESS 0x700
+#endif
+
+
 namespace
 {
 	void setConfigValue(QDomNode root, QString path, QString &dest)
@@ -365,6 +372,16 @@ void BtMain::loadGlobalConfig()
 		(*config)[PI_MODE] = QString();
 
 	QDomNode scs_node = getConfElement("setup/scs");
+
+	bool ok;
+	int num = getElement(scs_node, "coordinate_scs/diag_addr").text().toInt(&ok, 16);
+	if (ok && num - TS_NUM_BASE_ADDRESS >= 1)
+		(*config)[TS_NUMBER] = QString::number(num - TS_NUM_BASE_ADDRESS);
+	else
+	{
+		qWarning() << "Unable to read the serial number of the touchscreen";
+		(*config)[TS_NUMBER] = QString::number(1);
+	}
 
 	// TouchX source and amplifier addresses
 	setConfigValue(scs_node, "coordinate_scs/my_mmaddress", (*config)[SOURCE_ADDRESS]);
