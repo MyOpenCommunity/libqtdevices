@@ -24,6 +24,7 @@
 #include "multimedia_buttons.h"
 #include "displaycontrol.h" // forceOperativeMode
 #include "labels.h" // ImageLabel
+#include "pagestack.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -293,6 +294,12 @@ SlideshowWindow::~SlideshowWindow()
 {
 	if (async_load)
 		async_load->deleteLater();
+}
+
+void SlideshowWindow::showWindow()
+{
+	bt_global::page_stack.showUserWindow(this);
+	Window::showWindow();
 }
 
 void SlideshowWindow::displayImages(QList<QString> images, unsigned element)
