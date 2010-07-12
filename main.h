@@ -72,8 +72,6 @@ QDomNode getHomepageNode();
 // See getElement
 QDomElement getConfElement(QString path);
 
-void resetTimer(int signo);
-
 /*! \def MY_FILE_CFG_DEFAULT
  *  The default configuration file
  */
