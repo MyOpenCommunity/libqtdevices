@@ -375,12 +375,12 @@ void BtMain::loadGlobalConfig()
 
 	bool ok;
 	int num = getElement(scs_node, "coordinate_scs/diag_addr").text().toInt(&ok, 16);
-	if (ok && num - TS_NUM_BASE_ADDRESS >= 1)
+	if (ok && (num - TS_NUM_BASE_ADDRESS >= 0))
 		(*config)[TS_NUMBER] = QString::number(num - TS_NUM_BASE_ADDRESS);
 	else
 	{
 		qWarning() << "Unable to read the serial number of the touchscreen";
-		(*config)[TS_NUMBER] = QString::number(1);
+		(*config)[TS_NUMBER] = QString::number(0);
 	}
 
 	// TouchX source and amplifier addresses
