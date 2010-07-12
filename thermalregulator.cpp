@@ -490,6 +490,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	time_edit = 0;
 	date_time_edit = 0;
 	program_choice = 0;
+	program_menu = 0;
 	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 
 	createNavigationBar(bt_global::skin->getImage("settings"), SMALL_TITLE_HEIGHT);
@@ -630,8 +631,10 @@ void PageTermoReg::setSeason(ThermalDevice::Season new_season)
 			img = icon_winter;
 		QPixmap *icon = bt_global::icons_cache.getIcon(img);
 		season_icon->setPixmap(*icon);
-		program_choice->setSeason(new_season);
-		program_menu->setSeason(new_season);
+		if (program_choice)
+			program_choice->setSeason(new_season);
+		if (program_menu)
+			program_menu->setSeason(new_season);
 	}
 	else
 		qWarning("Received season is not SUMMER or WINTER, ignoring");
@@ -761,6 +764,7 @@ void PageTermoReg4z::createSettingsMenu(QDomNode regulator_node)
 PageTermoReg99z::PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device)
 	: PageTermoReg(n)
 {
+	scenario_menu = 0;
 	_dev = device;
 	connect(_dev, SIGNAL(valueReceived(DeviceValues)),
 		SLOT(valueReceived(DeviceValues)));
@@ -775,7 +779,10 @@ ThermalDevice *PageTermoReg99z::dev()
 void PageTermoReg99z::setSeason(ThermalDevice::Season new_season)
 {
 	if (new_season == ThermalDevice::SE_SUMMER || new_season == ThermalDevice::SE_WINTER)
-		scenario_menu->setSeason(new_season);
+	{
+		if (scenario_menu)
+			scenario_menu->setSeason(new_season);
+	}
 	else
 		qWarning("Received season is not SUMMER or WINTER, ignoring");
 	PageTermoReg::setSeason(new_season);
