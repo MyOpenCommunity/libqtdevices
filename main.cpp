@@ -19,7 +19,7 @@
  */
 
 
-#include "btmain.h" // bt_global::btmain
+#include "btmain.h" // bt_global::btmain, SignalsHandler
 #include "xml_functions.h"
 #include "generic_functions.h"
 
@@ -176,12 +176,6 @@ static void setupLogger(QString log_file)
 	qInstallMsgHandler(myMessageOutput);
 }
 
-void resetTimer(int signo)
-{
-	qDebug("resetTimer()");
-	bt_global::btmain->resetTimer();
-}
-
 void installTranslator(QApplication &a, QString language_suffix)
 {
 	QString language_file;
@@ -218,12 +212,21 @@ int main(int argc, char **argv)
 
 	// Fine Lettura configurazione applicativo
 	signal(SIGUSR1, MySignal);
-	signal(SIGUSR2, resetTimer);
+	struct sigaction sa;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sa.sa_flags |= SA_RESTART;
+	sa.sa_handler = SignalsHandler::signalUSR2Handler;
+	if (sigaction(SIGUSR2, &sa, 0) != 0)
+		qWarning() << "Error on installing the handler for the SIGUSR2 signal";
+
+	SignalsHandler *sh = new SignalsHandler;
 
 	qDebug("Start BtMain");
 	bt_global::btmain = new BtMain(general_config.openserver_reconnection_time);
 	installTranslator(a, (*bt_global::config)[LANGUAGE]);
 	int res = a.exec();
 	delete bt_global::btmain;
+	delete sh;
 	return res;
 }

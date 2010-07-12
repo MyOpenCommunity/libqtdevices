@@ -64,6 +64,11 @@
 #include <QFile>
 #include <QTime>
 #include <QThreadPool>
+#include <QSocketNotifier>
+
+#include <sys/types.h>
+#include <sys/socket.h> // socketpair
+#include <unistd.h> // write
 
 
 // delay between two consecutive screensaver checks
@@ -131,6 +136,43 @@ namespace
 
 }
 
+
+int SignalsHandler::sigUSR2fd[2];
+
+
+SignalsHandler::SignalsHandler()
+{
+	if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sigUSR2fd))
+		qWarning() << "Cannot create USR2 socketpair";
+
+	snUSR2 = new QSocketNotifier(sigUSR2fd[1], QSocketNotifier::Read, this);
+	snUSR2->setEnabled(true);
+	connect(snUSR2, SIGNAL(activated(int)), SLOT(handleUSR2()));
+}
+
+SignalsHandler::~SignalsHandler()
+{
+	delete snUSR2;
+}
+
+void SignalsHandler::handleUSR2()
+{
+	snUSR2->setEnabled(false);
+	char tmp;
+	::read(sigUSR2fd[1], &tmp, sizeof(tmp));
+
+	qDebug("handleUSR2()");
+	bt_global::btmain->resetTimer();
+
+	snUSR2->setEnabled(true);
+}
+
+void SignalsHandler::signalUSR2Handler(int signal_number)
+{
+	Q_UNUSED(signal_number)
+	char tmp = 1;
+	::write(sigUSR2fd[0], &tmp, sizeof(tmp)); // write something, in order to "activate" the notifier
+}
 
 
 BtMain::BtMain(int openserver_reconnection_time)
