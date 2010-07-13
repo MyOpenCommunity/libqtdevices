@@ -406,8 +406,13 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 			}
 			else if (ringtone == Ringtones::FLOORCALL && (!ring_exclusion || !ring_exclusion->getStatus()))
 			{
-				connect(bt_global::audio_states, SIGNAL(stateTransition(int,int)), SLOT(playRingtone()));
-				bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
+				if (bt_global::audio_states->currentState() != AudioStates::PLAY_VDE_RINGTONE)
+				{
+					connect(bt_global::audio_states, SIGNAL(stateTransition(int,int)), SLOT(playRingtone()));
+					bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
+				}
+				else
+					playRingtone();
 			}
 			break;
 		}
