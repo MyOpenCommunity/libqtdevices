@@ -275,7 +275,7 @@ InfoPage::InfoPage(const QDomNode &config_node)
 	text_area->addRow(tr("Model"), (*bt_global::config)[MODEL]);
 	text_area->addRow(tr("Firmware version"), "");
 	text_area->addRow(tr("Kernel version"), "");
-	text_area->addRow(tr("Address N."), (*bt_global::config)[PI_ADDRESS]);
+	text_area->addRow(tr("Address N."), (*bt_global::config)[PI_ADDRESS].mid(1));
 	text_area->addRow(tr("T.S. N."), (*bt_global::config)[TS_NUMBER]);
 
 	content_layout->addWidget(text_area);
