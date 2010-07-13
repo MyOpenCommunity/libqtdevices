@@ -75,7 +75,7 @@ QDomNode getChildWithId(const QDomNode &parent, const QRegExp &node_regexp, cons
 	return QDomNode();
 }
 
-QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, const QString &tag_name, int id, int& serial_number)
+QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, const QString &tag_name, int value, int& serial_number)
 {
 	QDomNode n = root.firstChild();
 	while (!n.isNull())
@@ -86,13 +86,13 @@ QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, const QSt
 			while (!child.isNull() && child.nodeName() != tag_name)
 				child = child.nextSibling();
 
-			if (!child.isNull() && child.toElement().text().toInt() == id)
+			if (!child.isNull() && child.toElement().text().toInt() == value)
 				if (!--serial_number)
 					return n;
 		}
 		if (n.hasChildNodes())
 		{
-			QDomNode res = findXmlNode(n, node_regexp, tag_name, id, serial_number);
+			QDomNode res = findXmlNode(n, node_regexp, tag_name, value, serial_number);
 			if (!res.isNull())
 				return res;
 		}

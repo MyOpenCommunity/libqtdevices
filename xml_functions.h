@@ -54,11 +54,11 @@ QString getTextChild(const QDomNode &parent, const QString &name);
 QList<QDomNode> getChildren(const QDomNode &parent, const QString &name);
 
 /**
-  * Find a node in the DOM tree that is descendent of the node 'parent'.
+  * Find a node in the DOM tree that is descendent of the node 'root' and have a child "tag_name" with a "value".
   * \param root the node root of the tree
   * \param node_regexp the regular expression that has to be matched with the target node
   * \param tag_name the name of the tag to search
-  * \param id the id of the target node
+  * \param value the value of the target node
   * \param the serial number of the target node.
   * \return A Null node if the node is not found, the target node ortherwise.
   */
