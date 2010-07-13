@@ -126,7 +126,7 @@ void MountWatcher::unmount(const QString &dir)
 
 void MountWatcher::mount(const QString &device, const QString &dir)
 {
-	QProcess::startDetached("/bin/mount", QStringList() << "-r" << "-t" << "vfat" << device << dir);
+	QProcess::startDetached("/bin/mount", QStringList() << "-r" << "-t" << "vfat" << "-o" << "utf8=1" << device << dir);
 }
 
 QStringList MountWatcher::parseMounts() const

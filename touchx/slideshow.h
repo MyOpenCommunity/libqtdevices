@@ -117,6 +117,8 @@ public:
 	SlideshowWindow(SlideshowPage *slideshow_page);
 	~SlideshowWindow();
 
+	virtual void showWindow();
+
 public slots:
 	// displays the page and stores the image list for the slide show
 	void displayImages(QList<QString> images, unsigned element);

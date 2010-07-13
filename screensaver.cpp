@@ -133,9 +133,7 @@ void ScreenSaver::setRefreshInterval(int msecs)
 
 void ScreenSaver::start(Window *w)
 {
-#ifdef LAYOUT_BTOUCH
 	bt_global::page_stack.showUserWindow(this);
-#endif
 	window = w;
 	timer->start();
 }
