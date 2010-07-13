@@ -113,5 +113,11 @@ void EnergyRates::setRate(const EnergyRate &new_rate)
 	QMap<QString, QString> map;
 
 	map["tariff"] = loc.toString(new_rate.rate, 'f', 3);
-	setGlobalCfgValue(map, "rate_id", new_rate.id);
+
+#ifdef CONFIG_BTOUCH
+	QString root_name = "displaypages";
+#else
+	QString root_name = "tariff_setting";
+#endif
+	setGlobalCfgValue(root_name, map, "rate_id", new_rate.id);
 }

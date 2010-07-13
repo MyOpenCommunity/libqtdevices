@@ -97,8 +97,8 @@ bool setCfgValue(QString field, int value, int item_id, const QString &filename=
 
 #endif
 
-// sets config values for nodes that do not have an id
-bool setGlobalCfgValue(QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
+// sets config values for nodes that do not have an id. We have to specify a root node to avoid duplicates.
+bool setGlobalCfgValue(const QString &root_name, QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
 
 int localVolumeToAmplifier(int vol);
