@@ -30,6 +30,9 @@ public:
 	// Start or restart the calibration
 	void startCalibration();
 
+	// Abort the changes and restore the old calibration file
+	void rollbackCalibration();
+
 signals:
 	void calibrationEnded();
 	void calibrationStarted();
@@ -44,8 +47,8 @@ private slots:
 	void drawCrosshair();
 	// End the calibration (with success)
 	void endCalibration();
-	// Abort the changes with the wrong calibration and re-start another calibration.
-	void rollbackCalibration();
+	// Rollback the changes and re-start another calibration.
+	void restartCalibration();
 
 private:
 	// The positions of the crosshair are:

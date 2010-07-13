@@ -101,7 +101,7 @@ CalibrationWidget::CalibrationWidget(bool minimal)
 #endif
 
 	buttons_timer = new QTimer(this);
-	connect(buttons_timer, SIGNAL(timeout()), SLOT(rollbackCalibration()));
+	connect(buttons_timer, SIGNAL(timeout()), SLOT(restartCalibration()));
 
 	crosshair_timer = new QTimer(this);
 	connect(crosshair_timer, SIGNAL(timeout()), SLOT(drawCrosshair()));
@@ -158,13 +158,20 @@ void CalibrationWidget::hideEvent(QHideEvent*)
 	releaseMouse();
 }
 
+void CalibrationWidget::restartCalibration()
+{
+	rollbackCalibration();
+	startCalibration();
+	update();
+}
+
 void CalibrationWidget::rollbackCalibration()
 {
 	if (QFile::exists(QString("%1.calibrated").arg(pointercal_file)))
 		system(qPrintable(QString("mv %1.calibrated %1").arg(pointercal_file)));
 
-	startCalibration();
-	update();
+	buttons_timer->stop();
+	releaseMouse();
 }
 
 void CalibrationWidget::paintEvent(QPaintEvent*)
