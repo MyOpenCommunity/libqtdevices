@@ -261,7 +261,7 @@ void EnergyGraph::setTextColor(QString color)
 	_text_color = color;
 }
 
-#ifdef LAYOUT_BTOUCH
+
 EnergyTable::EnergyTable(int n_dec)
 {
 	date_label = new QLabel;
@@ -276,7 +276,14 @@ EnergyTable::EnergyTable(int n_dec)
 
 	table = new EnergyTableContent(n_dec);
 
+#ifdef LAYOUT_TOUCHX
+	QHBoxLayout *table_layout = new QHBoxLayout;
+	table_layout->setContentsMargins(110, 0, 110, 0);
+	table_layout->addWidget(table);
+	main_layout->addLayout(table_layout, 1);
+#else
 	main_layout->addWidget(table, 1);
+#endif
 
 	NavigationBar *nav_bar = new NavigationBar;
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
@@ -300,94 +307,6 @@ void EnergyTable::setData(const QMap<int, double> &data)
 {
 	table->setData(data);
 }
-
-#else
-
-EnergyTable::EnergyTable(int n_dec)
-{
-	date_label = new QLabel;
-	date_label->setFont(bt_global::font->get(FontManager::SMALLTEXT));
-
-	QWidget *content = new QWidget;
-	QVBoxLayout *main_layout = new QVBoxLayout(content);
-	main_layout->setContentsMargins(0, 10, 0, 10);
-	main_layout->setSpacing(0);
-
-	main_layout->addWidget(date_label, 0, Qt::AlignCenter);
-
-	QHBoxLayout *table_layout = new QHBoxLayout;
-	table_layout->setSpacing(5);
-	table_layout->setContentsMargins(0, 0, 0, 0);
-	left_table = new EnergyTableContent(n_dec);
-	table_layout->addWidget(left_table);
-	right_table = new EnergyTableContent(n_dec);
-	table_layout->addWidget(right_table);
-	main_layout->addLayout(table_layout, 1);
-
-	NavigationBar *nav_bar = new NavigationBar;
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
-	connect(nav_bar, SIGNAL(downClick()), SLOT(pageDown()));
-	connect(nav_bar, SIGNAL(upClick()), SLOT(pageUp()));
-	buildPage(content, nav_bar);
-}
-
-void EnergyTable::init(int num_val, QString left_text, QString right_text, QString date, int shift_val)
-{
-	date_label->setText(date);
-	left_table->init(num_val, left_text, right_text, shift_val);
-	right_table->init(num_val, left_text, right_text, shift_val);
-}
-
-void EnergyTable::setNumDecimal(int n_dec)
-{
-	left_table->setNumDecimal(n_dec);
-	right_table->setNumDecimal(n_dec);
-}
-
-void EnergyTable::setData(const QMap<int, double> &data)
-{
-	left_table->setData(data);
-	if (left_table->pageCount() > 1)
-	{
-		right_table->setData(data);
-		right_table->pageDown();
-	}
-}
-
-void EnergyTable::pageDown()
-{
-	if (left_table->current_page + 2 < left_table->pageCount())
-	{
-		left_table->current_page = left_table->current_page + 2;
-
-		if (right_table->current_page + 2 < right_table->pageCount())
-			right_table->current_page = right_table->current_page + 2;
-		else
-		{
-			right_table->hide_content = true;
-		}
-		left_table->update();
-		right_table->update();
-	}
-
-}
-
-void EnergyTable::pageUp()
-{
-	int current_page = left_table->current_page;
-	if (current_page - 2 >= 0)
-	{
-		left_table->current_page = current_page - 2;
-		if (right_table->hide_content)
-			right_table->hide_content = false;
-
-		right_table->current_page = current_page - 1;
-		left_table->update();
-		right_table->update();
-	}
-}
-
-#endif
 
 
 EnergyTableContent::EnergyTableContent(int n_dec)

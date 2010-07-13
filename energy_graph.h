@@ -150,15 +150,7 @@ public:
 private:
 	QLabel *date_label;
 
-#ifdef LAYOUT_BTOUCH
 	EnergyTableContent *table;
-#else
-	EnergyTableContent *left_table, *right_table;
-
-private slots:
-	void pageUp();
-	void pageDown();
-#endif
 };
 
 
