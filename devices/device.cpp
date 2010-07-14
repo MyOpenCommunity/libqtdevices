@@ -163,14 +163,14 @@ int device::openserverId()
 void device::sendFrame(QString frame) const
 {
 	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].first, "device::sendFrame",
-			   qPrintable(QString("Client comandi not set for id: %1!").arg(openserver_id)));
+			   qPrintable(QString("Client COMMAND not set for id: %1!").arg(openserver_id)));
 	clients[openserver_id].first->sendFrameOpen(frame);
 }
 
 void device::sendCommandFrame(int openserver_id, const QString &frame)
 {
 	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].first, "device::sendFrame",
-			   qPrintable(QString("Client comandi not set for id: %1!").arg(openserver_id)));
+			   qPrintable(QString("Client COMMAND not set for id: %1!").arg(openserver_id)));
 	clients[openserver_id].first->sendFrameOpen(frame);
 }
 
@@ -211,7 +211,7 @@ void device::emitCompressedFrame(int what)
 void device::sendInit(QString frame) const
 {
 	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].second, "device::sendInit",
-		qPrintable(QString("Client richieste not set for id: %1!").arg(openserver_id)));
+		qPrintable(QString("Client REQUEST not set for id: %1!").arg(openserver_id)));
 	clients[openserver_id].second->sendFrameOpen(frame);
 }
 
