@@ -145,7 +145,6 @@ QDomElement getConfElement(QString path);
  *  Default language used in BTouch
  */
 
-
 /*! \def MAX_WIDTH
  *  Maximum width of the screen
  */
@@ -154,13 +153,11 @@ QDomElement getConfElement(QString path);
  *  Maximum height of the screen
  */
 #define MAX_HEIGHT                 320
-/*! \def NUM_RIGHE
- *  Number of lines shown on the screen
- */
-#define NUM_RIGHE                  4
 
 /// The simbol of temperature degrees
 #define TEMP_DEGREES "\272"
+
+#define TS_NUMBER_FRAME_DELAY 500
 
 
 #ifdef CONFIG_BTOUCH

@@ -72,10 +72,12 @@ public:
 
 #if DEBUG
 	int bytesAvailable() { return socket->bytesAvailable(); }
-	void flush() { sendDelayedFrames(); socket->flush(); }
+	void flush() { sendDelayedFrames(); sendFrames(); socket->flush(); }
 #endif
 
 	void forwardFrame(Client *c);
+
+	static void delayFrames(bool delay);
 
 public slots:
 	void connectToHost();
@@ -101,6 +103,7 @@ private slots:
 
 	// sends queued frames, removing duplicates
 	void sendDelayedFrames();
+	void sendFrames();
 
 private:
 	QTcpSocket *socket;
@@ -119,8 +122,8 @@ private:
 	QHash<int, QList<FrameReceiver*> > subscribe_list;
 
 	// gather sent frames to be sent later; using a list because frame order is important
-	QList<QByteArray> delayed_frames;
-	QTimer delay_timer;
+	QList<QByteArray> list_frames, delayed_list_frames;
+	QTimer frame_timer, delayed_frame_timer;
 
 	// This flag marks if the client is logically connected or not.
 	bool is_connected;
@@ -128,12 +131,16 @@ private:
 	// The client where forward the frames received.
 	Client *to_forward;
 
+	static bool delay_frames;
+
 	void manageFrame(QByteArray frame);
 	QByteArray readFromServer();
 
 	//! Wait for ack (returns 0 on ack, -1 on nak or when socket is a monitor socket)
 	int socketWaitForAck();
 	void dispatchFrame(QString frame);
+
+	void sendFrames(const QList<QByteArray> &to_send);
 };
 
 #endif

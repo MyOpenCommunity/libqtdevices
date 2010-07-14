@@ -160,6 +160,11 @@ int device::openserverId()
 	return openserver_id;
 }
 
+void device::delayFrames(bool delay)
+{
+	Client::delayFrames(delay);
+}
+
 void device::sendFrame(QString frame) const
 {
 	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].first, "device::sendFrame",

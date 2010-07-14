@@ -21,7 +21,7 @@
 
 #include "pulldevice.h"
 #include "frame_functions.h" // isWriteDimensionFrame, isDimensionFrame
-
+#include "main.h" // bt_global::config, TS_NUMBER_FRAME_DELAY
 #include <openmsg.h>
 
 #include <QPair>
@@ -259,7 +259,7 @@ PullDevice::PullDevice(QString who, QString where, PullMode m, int openserver_id
 	state(m, adv, checker)
 {
 	delayed_request.setSingleShot(true);
-	delayed_request.setInterval(pull_delay);
+	delayed_request.setInterval(pull_delay + (*bt_global::config)[TS_NUMBER].toInt() * TS_NUMBER_FRAME_DELAY);
 	connect(&delayed_request, SIGNAL(timeout()), SLOT(delayedStatusRequest()));
 }
 

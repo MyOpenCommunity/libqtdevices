@@ -21,6 +21,7 @@
 
 #include "openclient.h"
 #include "frame_receiver.h"
+#include "main.h" // bt_global::config, TS_NUMBER_FRAME_DELAY
 
 #include <openmsg.h>
 
@@ -36,7 +37,8 @@
 #define SOCKET_SUPERVISOR "*99*10##"
 #define SOCKET_COMMAND "*99*9##"
 #define SOCKET_REQUEST "*99*0##"
-#define FRAME_DELAY_TIMEOUT 10
+
+#define FRAME_TIMEOUT 10
 
 
 namespace
@@ -63,6 +65,8 @@ namespace
 }
 
 
+bool Client::delay_frames = false;
+
 Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host)
 {
 	port = !_port ? OPENSERVER_PORT : _port;
@@ -78,10 +82,14 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 	// connect to the server
 	connectToHost();
 
-	// set up delayed frame sending
-	connect(&delay_timer, SIGNAL(timeout()), SLOT(sendDelayedFrames()));
-	delay_timer.setSingleShot(true);
-	delay_timer.setInterval(FRAME_DELAY_TIMEOUT);
+	// set up the timer for normal and delayed frame sending
+	connect(&frame_timer, SIGNAL(timeout()), SLOT(sendFrames()));
+	frame_timer.setSingleShot(true);
+	frame_timer.setInterval(FRAME_TIMEOUT);
+
+	connect(&delayed_frame_timer, SIGNAL(timeout()), SLOT(sendDelayedFrames()));
+	delayed_frame_timer.setSingleShot(true);
+	delayed_frame_timer.setInterval(FRAME_TIMEOUT + (*bt_global::config)[TS_NUMBER].toInt() * TS_NUMBER_FRAME_DELAY);
 }
 
 bool Client::isConnected()
@@ -109,7 +117,24 @@ void Client::socketConnected()
 		socket->write(SOCKET_COMMAND);
 }
 
+void Client::delayFrames(bool delay)
+{
+	delay_frames = delay;
+}
+
+void Client::sendFrames()
+{
+	sendFrames(list_frames);
+	list_frames.clear();
+}
+
 void Client::sendDelayedFrames()
+{
+	sendFrames(delayed_list_frames);
+	delayed_list_frames.clear();
+}
+
+void Client::sendFrames(const QList<QByteArray> &to_send)
 {
 	// The openserver closes the connection with sockets of type REQUEST/COMMAND
 	// after 30 seconds of inactivity, while it doesn't close connections of
@@ -132,7 +157,7 @@ void Client::sendDelayedFrames()
 
 	QSet<QByteArray> discard_duplicates;
 
-	foreach (const QByteArray &frame, delayed_frames)
+	foreach (const QByteArray &frame, to_send)
 	{
 		if (discard_duplicates.contains(frame))
 			continue;
@@ -153,17 +178,18 @@ void Client::sendDelayedFrames()
 		else
 			qDebug() << "Client::sendFrameOpen() sent:" << frame;
 	}
-
-	delayed_frames.clear();
 }
 
 void Client::sendFrameOpen(const QString &frame_open)
 {
 	QByteArray frame = frame_open.toLatin1();
 	// queue the frames to be sent later, but avoid delaying frames indefinitely
-	delayed_frames.append(frame);
-	if (!delay_timer.isActive())
-		delay_timer.start();
+	QList<QByteArray> &list = delay_frames ? delayed_list_frames : list_frames;
+	QTimer &timer = delay_frames ? delayed_frame_timer : frame_timer;
+
+	list.append(frame);
+	if (!timer.isActive())
+		timer.start();
 }
 
 void Client::disconnectFromHost()
@@ -240,12 +266,14 @@ void Client::dispatchFrame(QString frame)
 
 	OpenMsg msg;
 	msg.CreateMsgOpen(frame.toAscii().data(), frame.length());
+	delay_frames = true;
 	if (subscribe_list.contains(msg.who()))
 	{
 		QList<FrameReceiver*> &l = subscribe_list[msg.who()];
 		for (int i = 0; i < l.size(); ++i)
 			l[i]->manageFrame(msg);
 	}
+	delay_frames = false;
 }
 
 void Client::subscribe(FrameReceiver *obj, int who)

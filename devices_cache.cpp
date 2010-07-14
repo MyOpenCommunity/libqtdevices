@@ -49,6 +49,7 @@ void DevicesCache::initOpenserverDevices(int openserver_id)
 
 	qDebug("DevicesCache::initOpenserverDevices(), openserver_id = %d", openserver_id);
 
+	device::delayFrames(true);
 	foreach (const QString &frame, init_frames[openserver_id])
 		device::sendCommandFrame(openserver_id, frame);
 
@@ -58,6 +59,7 @@ void DevicesCache::initOpenserverDevices(int openserver_id)
 		if (dev->openserverId() == openserver_id)
 			dev->init();
 	}
+	device::delayFrames(false);
 }
 
 void DevicesCache::addInitCommandFrame(int openserver_id, const QString &frame)

@@ -106,6 +106,7 @@ public:
 	static void initDevices();
 
 	static void sendCommandFrame(int openserver_id, const QString &frame);
+	static void delayFrames(bool delay);
 
 signals:
 	// TODO: Old Status changed, to be removed asap.

@@ -50,8 +50,10 @@ void rearmWDT() {}
 int main(int argc, char *argv[])
 {
 	QCoreApplication app(argc, argv);
-
 	QList<TestDevice *> test_list;
+
+	bt_global::config = new QHash<GlobalFields, QString>();
+	(*bt_global::config)[TS_NUMBER] = "0";
 
 	TestPlatformDevice test_platform_device;
 	test_list << &test_platform_device;
