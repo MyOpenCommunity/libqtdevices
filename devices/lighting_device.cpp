@@ -21,7 +21,7 @@
 
 #include "lighting_device.h"
 #include "openmsg.h"
-#include "frame_functions.h" // createWriteDimensionFrame, isCommandFrame, isDimensionFrame
+#include "frame_functions.h" // createWriteDimensionFrame, isCommandFrame, isDimensionFrame, isWriteDimensionFrame
 #include "bttime.h" // BtTime
 
 #include <QDebug>
@@ -163,15 +163,15 @@ FrameHandled LightingDevice::isFrameHandled(OpenMsg &msg)
 	int what = msg.what();
 
 	// dimmer 100 on/off
-	if (msg.IsNormalFrame() && (what == 1 || what == 0) && msg.whatArgCnt() == 1)
+	if (isCommandFrame(msg) && (what == 1 || what == 0) && msg.whatArgCnt() == 1)
 		return FRAME_MAYBE_HANDLED;
 
 	// timed light
-	if ((msg.IsMeasureFrame() || msg.IsWriteFrame()) && what == DIM_VARIABLE_TIMING)
+	if ((isDimensionFrame(msg) || isWriteDimensionFrame(msg)) && what == DIM_VARIABLE_TIMING)
 		return FRAME_MAYBE_HANDLED;
 
 	// light commands
-	if (msg.IsNormalFrame() && (what == DIM_DEVICE_ON || what == DIM_DEVICE_OFF))
+	if (isCommandFrame(msg) && (what == DIM_DEVICE_ON || what == DIM_DEVICE_OFF))
 		return FRAME_HANDLED;
 
 	if (what >= FIXED_TIMING_MIN && what <= FIXED_TIMING_MAX)
@@ -253,26 +253,26 @@ FrameHandled DimmerDevice::isFrameHandled(OpenMsg &msg)
 	int what = msg.what();
 
 	// dimmer 100 on/off
-	if (msg.IsNormalFrame() && (what == 1 || what == 0) && msg.whatArgCnt() == 1)
+	if (isCommandFrame(msg) && (what == 1 || what == 0) && msg.whatArgCnt() == 1)
 		return FRAME_MAYBE_HANDLED;
 
 	// dimmer 100 set level
-	if ((msg.IsMeasureFrame() || msg.IsWriteFrame()) && what == DIMMER100_STATUS)
+	if ((isDimensionFrame(msg) || isWriteDimensionFrame(msg)) && what == DIMMER100_STATUS)
 		return FRAME_MAYBE_HANDLED;
 
 	// dimmer 100 increase/decrease level
-	if (msg.IsNormalFrame() && (what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 2)
+	if (isCommandFrame(msg) && (what == DIMMER_INC || what == DIMMER_DEC) && msg.whatArgCnt() == 2)
 		return FRAME_MAYBE_HANDLED;
 
 	// timed light
-	if ((msg.IsMeasureFrame() || msg.IsWriteFrame()) && what == DIM_VARIABLE_TIMING)
+	if ((isDimensionFrame(msg) || isWriteDimensionFrame(msg)) && what == DIM_VARIABLE_TIMING)
 		return FRAME_MAYBE_HANDLED;
 
 	// dimmer commands
-	if (msg.IsNormalFrame() && (what >= DIMMER10_LEVEL_MIN && what <= DIMMER10_LEVEL_MAX))
+	if (isCommandFrame(msg) && (what >= DIMMER10_LEVEL_MIN && what <= DIMMER10_LEVEL_MAX))
 		return FRAME_HANDLED;
 
-	if (msg.IsNormalFrame() && (what == DIM_DIMMER_PROBLEM || what == DIMMER_INC || what == DIMMER_DEC))
+	if (isCommandFrame(msg) && (what == DIM_DIMMER_PROBLEM || what == DIMMER_INC || what == DIMMER_DEC))
 		return FRAME_HANDLED;
 
 	return FRAME_NOT_HANDLED;

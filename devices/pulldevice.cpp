@@ -20,6 +20,7 @@
 
 
 #include "pulldevice.h"
+#include "frame_functions.h" // isWriteDimensionFrame, isDimensionFrame
 
 #include <openmsg.h>
 
@@ -175,7 +176,7 @@ PullStateManager::CheckResult PullStateManager::moreFrameNeeded(OpenMsg &msg, bo
 	// I'll handle all 'what' combinations here, split to a different function or class when needed
 	// We need to look for write environment commands
 	int new_state = msg.what();
-	bool measure_frame = (is_environment && msg.IsWriteFrame()) || (!is_environment && msg.IsMeasureFrame());
+	bool measure_frame = (is_environment && isWriteDimensionFrame(msg)) || (!is_environment && isDimensionFrame(msg));
 	bool ignore_frame = false;
 	if (measure_frame)
 	{

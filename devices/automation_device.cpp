@@ -20,6 +20,7 @@
 
 
 #include "automation_device.h"
+#include "frame_functions.h" // isStatusRequestFrame
 
 #include <openmsg.h>
 
@@ -105,7 +106,7 @@ bool PPTStatDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	// In some cases (when more than a ts is present in the system)
 	// a request frame can arrive from the monitor socket. We have to manage this
 	// situation.
-	if (msg.IsStateFrame())
+	if (isStatusRequestFrame(msg))
 		return false;
 
 	int what = msg.what();

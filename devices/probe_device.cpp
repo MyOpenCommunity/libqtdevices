@@ -227,7 +227,7 @@ bool ControlledProbeDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		break;
 	case CONDITIONING:
 	case HEATING:
-		if (!msg.IsNormalFrame())
+		if (!isCommandFrame(msg))
 			break;
 		if (status != ST_MANUAL && status != ST_AUTO)
 		{
