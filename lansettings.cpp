@@ -34,7 +34,14 @@
 #include <QLabel>
 #include <QDomNode>
 #include <QBoxLayout>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QTimer>
+#include <QHash>
 
+
+#define TIMEOUT_CONNECTION 5
 
 namespace
 {
@@ -48,6 +55,59 @@ namespace
 		dev->requestDNS1();
 		dev->requestDNS2();
 	}
+}
+
+
+using namespace LanSettingsPrivate;
+
+ConnectionTester::ConnectionTester(QObject *parent) : QObject(parent)
+{
+	urls = QStringList() << "http://www.google.it" << "http://www.bticino.it";
+	manager = new QNetworkAccessManager(this);
+	timeout_timer = new QTimer(this);
+	timeout_timer->setSingleShot(true);
+	timeout_timer->setInterval(TIMEOUT_CONNECTION * 1000);
+	connect(timeout_timer, SIGNAL(timeout()), SLOT(downloadFailed()));
+}
+
+void ConnectionTester::test()
+{
+	current_url = 0;
+	startTest();
+}
+
+void ConnectionTester::startTest()
+{
+	QString url = urls.at(current_url);
+	current_reply = manager->get(QNetworkRequest(QUrl(url)));
+	connect(current_reply, SIGNAL(finished()), SLOT(downloadFinished()));
+	timeout_timer->start();
+}
+
+void ConnectionTester::downloadFailed()
+{
+	current_reply->disconnect();
+	current_reply->deleteLater();
+	if (current_url + 1 >= urls.size())
+	{
+		emit testFailed();
+		return;
+	}
+	++current_url;
+	startTest();
+}
+
+void ConnectionTester::downloadFinished()
+{
+	timeout_timer->stop();
+	if (current_reply->error() != QNetworkReply::NoError)
+	{
+		downloadFailed();
+		return;
+	}
+	current_reply->disconnect();
+	current_reply->deleteLater();
+	emit testPassed();
 }
 
 
@@ -102,6 +162,11 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	box_text->addRow(tr("Gateway"), "");
 	box_text->addRow(tr("DNS"), "");
 	box_text->addRow("", "");
+	box_text->addRow(tr("Connection Status"), "");
+	tester = new ConnectionTester(this);
+	connect(tester, SIGNAL(testFailed()), SLOT(connectionDown()));
+	connect(tester, SIGNAL(testPassed()), SLOT(connectionUp()));
+	tester->test();
 
 	QWidget *content = new QWidget;
 	QVBoxLayout *main_layout = new QVBoxLayout(content);
@@ -137,6 +202,16 @@ LanSettings::LanSettings(const QDomNode &config_node)
 #endif
 }
 
+void LanSettings::connectionDown()
+{
+	box_text->setText(10, tr("Down"));
+}
+
+void LanSettings::connectionUp()
+{
+	box_text->setText(10, tr("Up"));
+}
+
 void LanSettings::inizializza()
 {
 	qDebug() << "LanSettings::inizializza()";
@@ -147,6 +222,7 @@ void LanSettings::inizializza()
 void LanSettings::showPage()
 {
 	requestNetworkInfo(dev);
+	tester->test();
 	Page::showPage();
 }
 

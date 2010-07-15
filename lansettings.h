@@ -24,18 +24,54 @@
 
 #include "page.h"
 
-#include <QVariant>
+#include <QStringList>
 #include <QFrame>
-#include <QHash>
 
 class PlatformDevice;
 class StateButton;
 class QGridLayout;
 class QDomNode;
+class QNetworkAccessManager;
+class QNetworkReply;
+class QTimer;
+
+
+namespace LanSettingsPrivate
+{
+
+	/**
+	 * An helper class that tests the connection status, trying to download a list
+	 * of web pages from internet. It emits testFailed/testPassed to notify
+	 * the test result.
+	 */
+	class ConnectionTester : public QObject
+	{
+	Q_OBJECT
+	public:
+		ConnectionTester(QObject *parent);
+		void test();
+
+	signals:
+		void testFailed();
+		void testPassed();
+
+	private slots:
+		void downloadFailed();
+		void downloadFinished();
+
+	private:
+		QNetworkAccessManager *manager;
+		QNetworkReply *current_reply;
+		QTimer *timeout_timer;
+		QStringList urls;
+		int current_url;
+		void startTest();
+	};
+};
 
 
 /**
- * \class Fram2Column
+ * \class Text2Column
  *
  * An utility class to show text in 2 column like a table.
  */
@@ -51,6 +87,7 @@ public:
 
 private:
 	QGridLayout *main_layout;
+	QTimer *timer;
 };
 
 
@@ -70,6 +107,12 @@ public:
 public slots:
 	virtual void showPage();
 
+private slots:
+	void valueReceived(const DeviceValues &values_list);
+	void toggleLan();
+	void connectionUp();
+	void connectionDown();
+
 private:
 	StateButton *toggle_btn;
 	Text2Column *box_text;
@@ -79,9 +122,7 @@ private:
 	// The status of the lan as stored in the configuration file
 	bool saved_status;
 
-private slots:
-	void valueReceived(const DeviceValues &values_list);
-	void toggleLan();
+	LanSettingsPrivate::ConnectionTester *tester;
 };
 
 #endif // LAN_SETTINGS_H
