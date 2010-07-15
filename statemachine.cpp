@@ -167,7 +167,7 @@ void StateMachine::removeState(int state)
 			}
 		}
 
-		Q_ASSERT_X(false, "StateMachine::removeState", "Tried to remove a state not in the state stack");
+		Q_ASSERT_X(false, "StateMachine::removeState", qPrintable(QString("Tried to remove a state [%1] not in the state stack").arg(state)));
 	}
 }
 
