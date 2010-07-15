@@ -121,7 +121,7 @@ private:
 	bool lan_status;
 	// The status of the lan as stored in the configuration file
 	bool saved_status;
-
+	int item_id;
 	LanSettingsPrivate::ConnectionTester *tester;
 };
 

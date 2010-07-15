@@ -188,7 +188,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
-	buildPage(content, nav_bar);
+	buildPage(content, nav_bar, getTextChild(config_node, "descr"), TINY_TITLE_HEIGHT);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
 	dev = bt_global::add_device_to_cache(new PlatformDevice);
@@ -197,8 +197,10 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	// Set the network to the initial status
 #ifdef CONFIG_BTOUCH
 	saved_status = getTextChild(config_node, "value").toInt();
+	item_id = 0;
 #else
 	saved_status = getTextChild(config_node, "enable").toInt();
+	item_id = getTextChild(config_node, "itemID").toInt();
 #endif
 }
 
@@ -263,7 +265,7 @@ void LanSettings::valueReceived(const DeviceValues &values_list)
 #ifdef CONFIG_BTOUCH
 				setCfgValue("value", lan_status, LANSETTINGS);
 #else
-				setCfgValue("enable", lan_status, LANSETTINGS);
+				setCfgValue("enable", lan_status, item_id);
 #endif
 			}
 		}
