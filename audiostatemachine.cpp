@@ -46,6 +46,7 @@
 
 #define VOLUME_TIMER_SECS 5
 
+#define TRANSITION_TIMEOUT_SECS 10
 
 namespace Volumes
 {
@@ -249,7 +250,7 @@ AudioStateMachine::AudioStateMachine()
 	connect(this, SIGNAL(directAudioAccessStopped()), SLOT(completeStateChange()));
 
 	transition_guard = new QTimer(this);
-	transition_guard->setInterval(1000);
+	transition_guard->setInterval(TRANSITION_TIMEOUT_SECS * 1000);
 	transition_guard->setSingleShot(true);
 	connect(transition_guard, SIGNAL(timeout()), SLOT(forceStateChange()));
 
