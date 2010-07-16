@@ -208,7 +208,9 @@ QWSLinuxTPMouseHandlerPrivate::QWSLinuxTPMouseHandlerPrivate ( QWSLinuxTPMouseHa
         if ((mouseFD =::open ("/dev/ts", O_RDONLY | O_NDELAY)) <= 0)
         {
             printf ("\nCANNOT OPEN /dev/ts : %s\n", strerror (errno));
+#ifndef DEBUG
             system ("/sbin/reboot");
+#endif
             return;
         }
     }
