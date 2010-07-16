@@ -79,6 +79,7 @@ void ConnectionTester::test()
 void ConnectionTester::startTest()
 {
 	QString url = urls.at(current_url);
+	qDebug() << "start testing the connection with" << url;
 	current_reply = manager->get(QNetworkRequest(QUrl(url)));
 	connect(current_reply, SIGNAL(finished()), SLOT(downloadFinished()));
 	timeout_timer->start();
@@ -86,6 +87,7 @@ void ConnectionTester::startTest()
 
 void ConnectionTester::downloadFailed()
 {
+	qDebug() << "connection failed for" <<  urls.at(current_url);
 	current_reply->disconnect();
 	current_reply->deleteLater();
 	if (current_url + 1 >= urls.size())
@@ -105,6 +107,7 @@ void ConnectionTester::downloadFinished()
 		downloadFailed();
 		return;
 	}
+	qDebug() << "connection established for" <<  urls.at(current_url);
 	current_reply->disconnect();
 	current_reply->deleteLater();
 	emit testPassed();
