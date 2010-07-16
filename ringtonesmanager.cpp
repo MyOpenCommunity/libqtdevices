@@ -50,9 +50,7 @@ RingtonesManager::RingtonesManager(QString ringtone_file)
 		}
 	}
 
-	sound_player = new SoundPlayer();
-	sound_player->setParent(this);
-
+	sound_player = new SoundPlayer(this);
 	connect(sound_player, SIGNAL(soundFinished()), this, SLOT(soundFinished()));
 }
 

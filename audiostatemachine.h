@@ -30,8 +30,8 @@
 namespace AudioStates
 {
 	/*
-	 * BEEP_ON, PLAY_RINGTONE, PLAY_VDE_RINGTONE, ALARM_TO_SPEAKER have the same output path, but
-	 *     maybe different volumes
+	 * BEEP_ON, PLAY_RINGTONE, PLAY_VDE_RINGTONE, PLAY_FLOORCALL, ALARM_TO_SPEAKER
+	 *     have the same output path, but maybe different volumes
 	 * IDLE: power off the local amplifier
 	 * SCREENSAVER: like IDLE, only entered when there is a BEEP_ON state on the stack
 	 * PLAY_FROM_DIFSON_TO_SPEAKER, PLAY_MEDIA_TO_DIFSON can be active at the same time
@@ -46,6 +46,7 @@ namespace AudioStates
 		PLAY_DIFSON,
 		PLAY_RINGTONE,
 		PLAY_VDE_RINGTONE,
+		PLAY_FLOORCALL,
 		SCS_VIDEO_CALL,
 		SCS_INTERCOM_CALL,
 		IP_VIDEO_CALL,

@@ -146,7 +146,7 @@ class SoundPlayer : public QObject
 {
 Q_OBJECT
 public:
-	SoundPlayer();
+	SoundPlayer(QObject *parent=0);
 
 	void play(const QString &path);
 	void stop();

@@ -223,7 +223,8 @@ namespace
 	{
 		return state == AudioStates::IP_INTERCOM_CALL || state == AudioStates::IP_VIDEO_CALL ||
 		       state == AudioStates::SCS_INTERCOM_CALL || state == AudioStates::SCS_VIDEO_CALL ||
-		       state == AudioStates::PLAY_VDE_RINGTONE || state == AudioStates::MUTE;
+			   state == AudioStates::PLAY_VDE_RINGTONE || state == AudioStates::MUTE ||
+			   state == AudioStates::PLAY_FLOORCALL;
 	}
 
 	bool isAlarmState(int state)
@@ -280,6 +281,9 @@ AudioStateMachine::AudioStateMachine()
 		 SLOT(statePlayRingtoneEntered()),
 		 SLOT(statePlayRingtoneExited()));
 	addState(PLAY_VDE_RINGTONE,
+		 SLOT(statePlayRingtoneEntered()),
+		 SLOT(statePlayRingtoneExited()));
+	addState(PLAY_FLOORCALL,
 		 SLOT(statePlayRingtoneEntered()),
 		 SLOT(statePlayRingtoneExited()));
 	addState(SCS_VIDEO_CALL,

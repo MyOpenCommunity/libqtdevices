@@ -433,7 +433,7 @@ void MediaPlayer::infoReceived()
 
 Q_GLOBAL_STATIC(QProcess, sox_process);
 
-SoundPlayer::SoundPlayer()
+SoundPlayer::SoundPlayer(QObject *parent) : QObject(parent)
 {
 	connect(sox_process(), SIGNAL(readyReadStandardError()), SLOT(readStandardError()));
 	connect(sox_process(), SIGNAL(error(QProcess::ProcessError)), SLOT(error()));
@@ -464,8 +464,11 @@ void SoundPlayer::processFinished()
 	else if (active)
 	{
 		active = false;
-		bt_global::audio_states->setDirectAudioAccess(false);
 		emit soundFinished();
+		// The order is important! Releasing the audio resource should be the last
+		// instruction (because on that event the audio state machine performs
+		// its state change).
+		bt_global::audio_states->setDirectAudioAccess(false);
 	}
 }
 
