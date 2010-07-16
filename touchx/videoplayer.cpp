@@ -236,13 +236,18 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
 	controls->hide();
 
 	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::VIDEO_WINDOW);
-	ItemTuning *volume = new ItemTuning(QString(), bt_global::skin->getImage("volume"));
+
+	ItemTuning *volume = 0;
+	// if the touch is a sound diffusion source do not display the volume control
+	if (!bt_global::audio_states->isSource())
+		volume = new ItemTuning(QString(), bt_global::skin->getImage("volume"));
 
 	QHBoxLayout *control_layout = new QHBoxLayout(controls);
 	control_layout->setContentsMargins(0, 0, 0, 0);
 	control_layout->addWidget(buttons);
 	control_layout->addSpacing(50);
-	control_layout->addWidget(volume);
+	if (volume)
+		control_layout->addWidget(volume);
 
 	QGridLayout *window_layout = new QGridLayout(this);
 	window_layout->setContentsMargins(0, 0, 0, 0);
@@ -286,10 +291,12 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
 	connect(buttons, SIGNAL(next()), SLOT(showButtons()));
 	connect(buttons, SIGNAL(play()), SLOT(showButtons()));
 	connect(buttons, SIGNAL(pause()), SLOT(showButtons()));
-	connect(volume, SIGNAL(valueChanged(int)), SLOT(showButtons()));
 
-	// volume up/down
-	connect(volume, SIGNAL(valueChanged(int)), SLOT(setVolume(int)));
+	if (volume)
+	{
+		connect(volume, SIGNAL(valueChanged(int)), SLOT(showButtons()));
+		connect(volume, SIGNAL(valueChanged(int)), SLOT(setVolume(int)));
+	}
 }
 
 void VideoPlayerWindow::mouseReleaseEvent(QMouseEvent *e)
