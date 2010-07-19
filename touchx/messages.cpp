@@ -9,7 +9,7 @@
 #include "btbutton.h"
 #include "message_device.h"
 #include "devices_cache.h"
-#include "btmain.h" // showHomePage
+#include "btmain.h" // showHomePage, makeActive
 #include "pagestack.h"
 
 #include <QLabel>
@@ -310,7 +310,9 @@ void MessagesListPage::newMessage(const DeviceValues &values_list)
 	connect(page, SIGNAL(deleteMessage()), SLOT(showDeletePage()));
 
 	alert_pages.prepend(page);
+	bt_global::btmain->makeActive();
 	bt_global::page_stack.showAlert(page);
+	page->showPage();
 }
 
 void MessagesListPage::showMessage(int index)

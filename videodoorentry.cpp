@@ -289,6 +289,7 @@ void IntercomCallPage::showPageAfterCall()
 	// when the touch call an internal place the "accept" button should be
 	// in the active status.
 	bt_global::page_stack.showVCTPage(this);
+	bt_global::btmain->makeActive();
 	bt_global::btmain->vde_call_active = true;
 	call_accept->setStatus(true);
 	mute_button->setStatus(StateButton::DISABLED);
@@ -305,6 +306,7 @@ void IntercomCallPage::showPageIncomingCall()
 	}
 
 	bt_global::page_stack.showVCTPage(this);
+	bt_global::btmain->makeActive();
 	bt_global::btmain->vde_call_active = true;
 	call_accept->setStatus(false);
 	mute_button->setStatus(StateButton::DISABLED);

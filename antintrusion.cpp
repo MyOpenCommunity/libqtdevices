@@ -322,7 +322,7 @@ void Antintrusion::addAlarm(QString descr, int t, int zona)
 	connect(curr, SIGNAL(destroyed(QObject*)), SLOT(cleanupAlarmPage(QObject*)));
 
 	alarms->addAlarm(t, alarm_description, zone_description, now);
-
+	bt_global::btmain->makeActive();
 	curr->showPage();
 	checkAlarmCount();
 }

@@ -662,6 +662,7 @@ void BtMain::unrollPages()
 
 void BtMain::makeActive()
 {
+	qDebug() << "BtMain::makeActive";
 	last_event_time = now();
 
 	// only exit the screensaver if it is running

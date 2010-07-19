@@ -57,19 +57,13 @@ PageStack::PageStack()
 void PageStack::showAlert(Page *alert_page)
 {
 	addState(State(alert_page));
-
 	connect(alert_page, SIGNAL(Delete()), SLOT(closed()));
-
-	bt_global::btmain->makeActive();
 }
 
 void PageStack::showVCTPage(Page *page)
 {
 	addState(State(page));
-
 	connect(page, SIGNAL(Closed()), SLOT(closed()));
-
-	bt_global::btmain->makeActive();
 }
 
 void PageStack::showKeypad(Window *window)

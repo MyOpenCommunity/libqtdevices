@@ -683,6 +683,13 @@ void VCTCallPage::showPage()
 	}
 
 	bt_global::page_stack.showVCTPage(this);
+	// When we exit from the screensaver to enter in the screenoff state the code
+	// calls the showPage on the page where the screensaver starts.
+	// And if the showPage contains a makeActive calls the UI doesn't exit from the
+	// screen off state.
+	// Fortunately in this case the problem is only theorical, because the screensaver
+	// can't start if the vct page is still on the top of the stack.
+	bt_global::btmain->makeActive();
 	Page::showPage();
 }
 
