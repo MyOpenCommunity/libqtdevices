@@ -127,14 +127,9 @@ AlarmPage::AlarmPage(altype t, const QString &description, const QString &zone,
 	QLabel *d = new AlarmPageData(QStringList() << "Hour" << "Date" << "Zone",
 				      QStringList() << time.toString("hh:mm") << time.toString("dd/MM") << zone);
 
-	BtButton *home = new BtButton;
-	home->setImage(bt_global::skin->getImage("go_home"));
-
-	BtButton *list = new BtButton;
-	list->setImage(bt_global::skin->getImage("info"));
-
-	BtButton *trash = new BtButton;
-	trash->setImage(bt_global::skin->getImage("alarm_del"));
+	BtButton *home = new BtButton(bt_global::skin->getImage("go_home"));
+	BtButton *list = new BtButton(bt_global::skin->getImage("info"));
+	BtButton *trash = new BtButton(bt_global::skin->getImage("alarm_del"));
 
 	QGridLayout *l = new QGridLayout(this);
 	l->setAlignment(Qt::AlignCenter);
