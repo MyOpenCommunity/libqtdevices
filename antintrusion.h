@@ -149,6 +149,9 @@ private slots:
 };
 
 
+/**
+ * The content of the AlarmList page.
+ */
 class AlarmItems : public ScrollableContent
 {
 Q_OBJECT
@@ -172,6 +175,9 @@ private:
 };
 
 
+/**
+ * The page that shows the list of the alarms received.
+ */
 class AlarmList : public Page
 {
 Q_OBJECT
