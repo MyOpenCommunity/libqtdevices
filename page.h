@@ -110,6 +110,7 @@ public:
 	typedef QWidget ContentType;
 
 	Page(QWidget *parent = 0);
+	~Page();
 	/// Obsolete: don't use it in new code
 	virtual void inizializza();
 

@@ -96,6 +96,15 @@ Page::Page(QWidget *parent) : StyledWidget(parent)
 		page_container->addPage(this);
 }
 
+Page::~Page()
+{
+	// This should not be necessary. However with Qt 4.5.0 when delete the
+	// AlarmPage there was a 'race condition' or something like that which causes
+	// a segfault fixed removing immediately the AlarmPage from the stacked widget.
+	if (page_container->indexOf(this) != -1)
+		page_container->removeWidget(this);
+}
+
 void Page::buildPage(QWidget *content, AbstractNavigationBar *nav_bar, const QString& label, int label_height, QWidget *top_widget)
 {
 	QLabel *page_title = 0;
