@@ -41,6 +41,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QSignalMapper>
+#include <QVariant> // setProperty
 
 
 enum
@@ -52,6 +53,9 @@ enum
 	ITEM_ANTINTRUSION_ZONE = 13001,
 #endif
 };
+
+static int alarm_serial_id = 0;
+
 
 Antintrusion::Antintrusion(const QDomNode &config_node)
 {
@@ -309,11 +313,9 @@ void Antintrusion::addAlarm(QString descr, int t, int zona)
 
 	QDateTime now = QDateTime::currentDateTime();
 
-	allarmi.append(new AlarmPage(static_cast<AlarmPage::altype>(t), alarm_description, zone_description, now));
-	// The current alarm is the last alarm inserted
-	curr_alarm = allarmi.size() - 1;
-
-	AlarmPage *curr = allarmi.at(curr_alarm);
+	int alarm_id = ++alarm_serial_id;
+	AlarmPage *curr = new AlarmPage(static_cast<AlarmPage::altype>(t), alarm_description, zone_description, now, alarm_id);
+	allarmi.append(curr);
 	connect(curr, SIGNAL(Next()), SLOT(nextAlarm()));
 	connect(curr, SIGNAL(Prev()), SLOT(prevAlarm()));
 	connect(curr, SIGNAL(Delete()), SLOT(deleteAlarm()));
@@ -321,7 +323,10 @@ void Antintrusion::addAlarm(QString descr, int t, int zona)
 	connect(curr, SIGNAL(showAlarmList()), SLOT(showAlarms()));
 	connect(curr, SIGNAL(destroyed(QObject*)), SLOT(cleanupAlarmPage(QObject*)));
 
-	alarms->addAlarm(t, alarm_description, zone_description, now);
+	// The current alarm is the last alarm inserted
+	curr_alarm = allarmi.size() - 1;
+
+	alarms->addAlarm(t, alarm_description, zone_description, now, alarm_id);
 	bt_global::btmain->makeActive();
 	curr->showPage();
 	checkAlarmCount();
@@ -360,13 +365,17 @@ void Antintrusion::deleteAlarm()
 {
 	Q_ASSERT_X(curr_alarm >= 0 && curr_alarm < allarmi.size(), "Antintrusion::deleteAlarm",
 		qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(curr_alarm).arg(allarmi.size())));
-	allarmi.takeAt(curr_alarm)->deleteLater();
+	AlarmPage *to_die = allarmi.takeAt(curr_alarm);
+	// In this case the user has seen the alarm and delete it directly from the AlarmPage,
+	// so we want to delete also the entry from the AlarmList. We do that using a global
+	// static alarm id.
+	alarms->removeAlarm(to_die->alarm_id);
+	to_die->deleteLater();
 
 	if (allarmi.isEmpty())
 	{
 		curr_alarm = -1;
-		// TODO the delay is probably not needed anymore
-		QTimer::singleShot(150, this, SLOT(checkAlarmCount()));
+		checkAlarmCount();
 		return;
 	}
 	else if (curr_alarm >= allarmi.size())
@@ -419,6 +428,7 @@ void Antintrusion::clearAlarms()
 		AlarmPage *a = allarmi.takeFirst();
 		a->deleteLater();
 	}
+	alarms->removeAll(); // we want to clean up the alarm list
 	curr_alarm = -1;
 }
 
@@ -456,9 +466,10 @@ AlarmItems::AlarmItems()
 	connect(&mapper, SIGNAL(mapped(QWidget *)), SLOT(removeAlarm(QWidget *)));
 }
 
-void AlarmItems::addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date)
+void AlarmItems::addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date, int alarm_id)
 {
 	QWidget *alarm = new QWidget(this);
+	alarm->setProperty("alarm_id", alarm_id);
 	QHBoxLayout *l = new QHBoxLayout(alarm);
 
 	// alarm type icon
@@ -477,8 +488,7 @@ void AlarmItems::addAlarm(int type, const QString &description, const QString &z
 	d->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 
 	// delete button
-	BtButton *trash = new BtButton;
-	trash->setImage(bt_global::skin->getImage("alarm_del"));
+	BtButton *trash = new BtButton(bt_global::skin->getImage("alarm_del"));
 
 	l->addWidget(icon);
 	l->addWidget(s, 1);
@@ -498,17 +508,20 @@ void AlarmItems::addAlarm(int type, const QString &description, const QString &z
 	}
 }
 
+void AlarmItems::removeAll()
+{
+	while (!alarms.isEmpty())
+		removeWidgetAlarm(0);
+}
+
 void AlarmItems::removeAlarm(QWidget *item)
 {
-	// TODO after removing the alarm, needs to:
-	// - close the alarm list page if it was the last alarm
-	// - hide the link to the alarm list page in the parent page
 	int i = 0;
 	foreach (QWidget *a, alarms)
 	{
 		if (a == item)
 		{
-			removeAlarm(i);
+			removeWidgetAlarm(i);
 			break;
 		}
 
@@ -516,7 +529,22 @@ void AlarmItems::removeAlarm(QWidget *item)
 	}
 }
 
-void AlarmItems::removeAlarm(int index)
+void AlarmItems::removeAlarm(int alarm_id)
+{
+	int i = 0;
+	foreach (QWidget *a, alarms)
+	{
+		if (a->property("alarm_id").toInt() == alarm_id)
+		{
+			removeWidgetAlarm(i);
+			break;
+		}
+
+		++i;
+	}
+}
+
+void AlarmItems::removeWidgetAlarm(int index)
 {
 	alarms[index]->hide();
 	alarms[index]->deleteLater();
@@ -524,12 +552,7 @@ void AlarmItems::removeAlarm(int index)
 
 	need_update = true;
 	if (isVisible())
-		prepareLayout();
-	if (current_page >= pageCount())
-		current_page = pageCount() - 1;
-
-	if (isVisible())
-		updateLayout(alarms);
+		drawContent();
 }
 
 void AlarmItems::prepareLayout()
@@ -559,6 +582,8 @@ void AlarmItems::drawContent()
 {
 	if (need_update)
 		prepareLayout();
+	if (current_page >= pageCount())
+		current_page = pageCount() - 1;
 	updateLayout(alarms);
 }
 
@@ -620,12 +645,23 @@ void AlarmList::activateLayout()
 		page_content->drawContent();
 }
 
-void AlarmList::addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date)
+void AlarmList::addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date, int alarm_id)
 {
-	alarms->addAlarm(type, description, zone, date);
+	alarms->addAlarm(type, description, zone, date, alarm_id);
 }
 
 int AlarmList::alarmCount()
 {
 	return alarms->alarmCount();
 }
+
+void AlarmList::removeAlarm(int alarm_id)
+{
+	alarms->removeAlarm(alarm_id);
+}
+
+void AlarmList::removeAll()
+{
+	alarms->removeAll();
+}
+

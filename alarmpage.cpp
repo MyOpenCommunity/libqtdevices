@@ -40,8 +40,7 @@ static const char *alarm_icons[] = { "technic_alarm_page", "intrusion_alarm_page
 
 #ifdef LAYOUT_BTOUCH
 
-AlarmPage::AlarmPage(altype t, const QString &d, const QString &zone,
-		     const QDateTime &time)
+AlarmPage::AlarmPage(altype t, const QString &d, const QString &zone, const QDateTime &time, int id)
 {
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("alarm_del"));
 	QWidget *content = new QWidget;
@@ -73,6 +72,7 @@ AlarmPage::AlarmPage(altype t, const QString &d, const QString &zone,
 	connect(nav_bar, SIGNAL(upClick()), this, SIGNAL(Prev()));
 	connect(nav_bar, SIGNAL(downClick()), this, SIGNAL(Next()));
 	connect(nav_bar, SIGNAL(forwardClick()), this, SIGNAL(Delete()));
+	alarm_id = id;
 }
 
 #else
@@ -114,8 +114,7 @@ void AlarmPageData::paintEvent(QPaintEvent *e)
 }
 
 
-AlarmPage::AlarmPage(altype t, const QString &description, const QString &zone,
-		     const QDateTime &time)
+AlarmPage::AlarmPage(altype t, const QString &description, const QString &zone, const QDateTime &time, int id)
 {
 	QLabel *title = new QLabel(description);
 	title->setAlignment(Qt::AlignHCenter);
@@ -145,6 +144,7 @@ AlarmPage::AlarmPage(altype t, const QString &description, const QString &zone,
 	connect(home, SIGNAL(clicked()), SIGNAL(showHomePage()));
 	connect(list, SIGNAL(clicked()), SIGNAL(showAlarmList()));
 	connect(trash, SIGNAL(clicked()), SIGNAL(Delete()));
+	alarm_id = id;
 }
 
 #endif

@@ -158,9 +158,10 @@ Q_OBJECT
 public:
 	AlarmItems();
 
-	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date);
-	void removeAlarm(int index);
+	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date, int alarm_id);
 	int alarmCount();
+	void removeAlarm(int alarm_id);
+	void removeAll();
 
 	void drawContent();
 	void prepareLayout();
@@ -172,6 +173,7 @@ private:
 	QList<QWidget*> alarms;
 	QStringList icons;
 	QSignalMapper mapper;
+	void removeWidgetAlarm(int index);
 };
 
 
@@ -186,7 +188,9 @@ public:
 
 	AlarmList();
 
-	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date);
+	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date, int alarm_id);
+	void removeAlarm(int alarm_id);
+	void removeAll();
 	int alarmCount();
 
 	virtual void activateLayout();

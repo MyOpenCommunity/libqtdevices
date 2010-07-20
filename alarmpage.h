@@ -30,6 +30,7 @@ class QDateTime;
 
 class AlarmPage : public Page
 {
+friend class Antintrusion;
 Q_OBJECT
 public:
 	typedef enum
@@ -40,8 +41,7 @@ public:
 		PANIC,
 	} altype;
 
-	AlarmPage(altype t, const QString &description, const QString &zone,
-		  const QDateTime &time);
+	AlarmPage(altype t, const QString &description, const QString &zone, const QDateTime &time, int id);
 
 public slots:
 	virtual void showPage();
@@ -57,6 +57,7 @@ signals:
 private:
 	QLabel *image;
 	QLabel *description;
+	int alarm_id;
 };
 
 #endif // _ALARM_PAGE_H_
