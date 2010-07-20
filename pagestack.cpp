@@ -54,18 +54,6 @@ PageStack::PageStack()
 	states.append(State(static_cast<Window*>(NULL)));
 }
 
-void PageStack::showAlert(Page *alert_page)
-{
-	addState(State(alert_page));
-	connect(alert_page, SIGNAL(Delete()), SLOT(closed()));
-}
-
-void PageStack::showVCTPage(Page *page)
-{
-	addState(State(page));
-	connect(page, SIGNAL(Closed()), SLOT(closed()));
-}
-
 void PageStack::showKeypad(Window *window)
 {
 	addState(State(window));

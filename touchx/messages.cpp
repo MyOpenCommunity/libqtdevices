@@ -311,7 +311,7 @@ void MessagesListPage::newMessage(const DeviceValues &values_list)
 
 	alert_pages.prepend(page);
 	bt_global::btmain->makeActive();
-	bt_global::page_stack.showAlert(page);
+	bt_global::page_stack.showUserPage(page);
 	page->showPage();
 }
 

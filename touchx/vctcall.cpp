@@ -682,7 +682,7 @@ void VCTCallPage::showPage()
 		return;
 	}
 
-	bt_global::page_stack.showVCTPage(this);
+	bt_global::page_stack.showUserPage(this);
 	// When we exit from the screensaver to enter in the screenoff state the code
 	// calls the showPage on the page where the screensaver starts.
 	// And if the showPage contains a makeActive calls the UI doesn't exit from the

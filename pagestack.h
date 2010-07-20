@@ -59,14 +59,6 @@ public:
 	// register when different types of window/pages are shown; must be
 	// called before Page::showPage() and Window::showWindow()
 
-	// for alert pages; stops the screen saver but keeps the screen frozen
-	// if it already is
-	void showAlert(Page *alert_page);
-
-	// for VCTCallPage and IntercomPage; stops the screen saver but keeps the
-	// screen frozen if it already is
-	void showVCTPage(Page *page);
-
 	// for windows that do not need any special treatment
 	void showUserWindow(Window *window);
 
