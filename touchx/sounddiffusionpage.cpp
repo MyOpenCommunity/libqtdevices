@@ -624,7 +624,6 @@ void LocalAmplifier::audioStateChanged(int new_state, int old_state)
 	level = localVolumeToAmplifier(bt_global::audio_states->getLocalAmplifierVolume());
 	state = bt_global::audio_states->getLocalAmplifierStatus();
 
-	dev->updateStatus(state);
 	if (state)
 		dev->updateVolume(bt_global::audio_states->currentState() == AudioStates::PLAY_DIFSON ? level : 0);
 }
@@ -658,9 +657,9 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 				bt_global::audio_states->setLocalAmplifierStatus(new_state);
 			}
 
-			// in some cases this and audioStateChanged() will send the same frames twice; this is OK
-			// since they are de-duplicated by the openclient
 			dev->updateStatus(state);
+			// in some cases this and audioStateChanged() will send the volume frame twice; this is OK
+			// since they are de-duplicated by the openclient
 			if (state)
 				dev->updateVolume(level);
 			break;
