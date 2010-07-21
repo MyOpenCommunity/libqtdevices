@@ -27,15 +27,13 @@
 #include "audiostatemachine.h"
 
 
-MediaPlayerPage::MediaPlayerPage() :
-	refresh_data(this)
+MediaPlayerPage::MediaPlayerPage() : refresh_data(this)
 {
 	player = new MediaPlayer(this);
 	resume_on_state_change = false;
 
 	// terminate player when unmounted
-	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
-		SLOT(unmounted(const QString &)));
+	connect(&MountWatcher::getWatcher(), SIGNAL(directoryMounted(QString,MountType)), SLOT(unmounted(QString)));
 
 	// pause local playback when receiving a VCT call
 	connect(bt_global::audio_states, SIGNAL(stateAboutToChange(int)), SLOT(audioStateAboutToChange(int)));
