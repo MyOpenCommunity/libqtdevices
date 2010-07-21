@@ -51,11 +51,8 @@ public:
 	/// Resume playing of current song
 	void resume();
 
-	/// Stop and quit mplayer
+	/// Stop and quit mplayer (waiting for mplayer to terminate)
 	void quit();
-
-	/// Like quit, but wait for mplayer to terminate
-	void quitAndWait();
 
 	/// Wheather the player is on pause; due to the asynchronous nature of the communication
 	/// with MPlayer, isPaused() does not always coincide with current MPlayer state; isPaused()

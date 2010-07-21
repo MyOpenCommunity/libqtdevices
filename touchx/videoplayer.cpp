@@ -194,7 +194,7 @@ void VideoPlayerPage::displayNoFullScreen()
 
 void VideoPlayerPage::displayFullScreen(bool fs)
 {
-	player->quitAndWait();
+	player->quit();
 
 	fullscreen = fs;
 	if (fullscreen)

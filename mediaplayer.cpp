@@ -358,15 +358,6 @@ void MediaPlayer::quit()
 	}
 }
 
-void MediaPlayer::quitAndWait()
-{
-	if (!active)
-		return;
-
-	quit();
-	mplayer_proc.waitForFinished();
-}
-
 void MediaPlayer::mplayerFinished(int exit_code, QProcess::ExitStatus exit_status)
 {
 	if (!active)

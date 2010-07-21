@@ -113,7 +113,7 @@ void MediaPlayerPage::resume()
 
 void MediaPlayerPage::previous()
 {
-	player->quitAndWait();
+	player->quit();
 	current_file -= 1;
 	if (current_file < 0)
 		current_file = total_files - 1;
@@ -121,7 +121,7 @@ void MediaPlayerPage::previous()
 
 void MediaPlayerPage::next()
 {
-	player->quitAndWait();
+	player->quit();
 	current_file += 1;
 	if (current_file >= total_files)
 		current_file = 0;
