@@ -45,7 +45,9 @@
 
 #ifdef BT_HARDWARE_BTOUCH
 static const char *MPLAYER_FILENAME = "/usr/bin/mplayer";
-#else
+#elif BT_HARDWARE_X11
+static const char *MPLAYER_FILENAME = "mplayer";
+#else // BT_HARDWARE_TOUCHX
 static const char *MPLAYER_FILENAME = "/home/bticino/cfg/extra/10/mplayer";
 #endif
 
@@ -193,9 +195,13 @@ QList<QString> MediaPlayer::getVideoArgs(int seek_time)
 
 QList<QString> MediaPlayer::getAudioArgs(int seek_time)
 {
+#ifdef BT_HARDWARE_X11
+	return QList<QString>();
+#else
 	return QList<QString>() << "-ac" << "mad," << "-af" << "channels=2,resample=48000"
 			<< "-ao" << "oss:/dev/dsp1"
 			<< "-ss" << QString::number(seek_time);
+#endif
 }
 
 bool MediaPlayer::play(QString track, bool write_output)
