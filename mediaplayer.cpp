@@ -140,6 +140,7 @@ MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 	active = false;
 	is_video = false;
 	paused = false;
+	info_watcher = 0;
 	connect(&mplayer_proc, SIGNAL(readyReadStandardError()), SLOT(readStandardError()));
 	connect(&mplayer_proc, SIGNAL(finished(int, QProcess::ExitStatus)), SLOT(mplayerFinished(int, QProcess::ExitStatus)));
 	connect(&mplayer_proc, SIGNAL(error(QProcess::ProcessError)), SLOT(mplayerError(QProcess::ProcessError)));
@@ -308,8 +309,10 @@ QMap<QString, QString> MediaPlayer::getVideoInfo()
 void MediaPlayer::requestInitialPlayingInfo(const QString &track)
 {
 	if (info_watcher)
+	{
 		info_watcher->deleteLater();
-
+		info_watcher = 0;
+	}
 	info_watcher = new QFutureWatcher<QMap<QString, QString> >(this);
 	connect(info_watcher, SIGNAL(finished()), SLOT(infoReceived()));
 
