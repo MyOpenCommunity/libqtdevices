@@ -160,6 +160,17 @@ namespace
 		smartExecute("/bin/in_scsbb_off");
 	}
 
+	void activateIpVCTAudio()
+	{
+		smartExecute("/bin/in_eth_on");
+	}
+
+	void disactivateIpVCTAudio()
+	{
+		//smartExecute("killall gst-launch-0.10");
+		smartExecute("/bin/in_eth_off");
+	}
+
 	void activateLocalSource()
 	{
 		smartExecute("/bin/rca2_on");
@@ -716,12 +727,18 @@ void AudioStateMachine::stateMuteExited()
 
 void AudioStateMachine::stateIpVideoCallEntered()
 {
+	qDebug() << "AudioStateMachine::stateIpVideoCallEntered";
 
+	activateIpVCTAudio();
+	current_audio_path = Volumes::VCTIP;
+	changeVolumePath(Volumes::VCTIP);
 }
 
 void AudioStateMachine::stateIpVideoCallExited()
 {
+	qDebug() << "AudioStateMachine::stateIpVideoCallExited";
 
+	disactivateIpVCTAudio();
 }
 
 void AudioStateMachine::stateIpIntercomCallEntered()
