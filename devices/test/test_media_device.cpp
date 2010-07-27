@@ -735,6 +735,7 @@ void TestVirtualAmplifierDevice::receiveTemporaryOff()
 {
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_TEMPORARY_OFF);
 	t.check(QString("*22*0#4#%1*6##").arg(area), true);
+	t.check(QString("*22*22#4#%1*5#3#%1#%2##").arg(area).arg(point), true);
 }
 
 

@@ -37,6 +37,7 @@ enum RequestDimension
 	// Sources
 	REQ_FREQUENCE_UP = 5,
 	REQ_FREQUENCE_DOWN = 6,
+	REQ_SLIDE = 22,
 	REQ_SOURCE_ON = 35,
 	REQ_SAVE_STATION = 33,
 	START_RDS = 31,
@@ -964,6 +965,11 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			values_list[what] = 1;
 		else
 			values_list[what] = msg.whatArgN(0);
+		break;
+	case REQ_SLIDE:
+		// in case we receive a slide request, we must lower the volume
+		// to 0 for a second
+		values_list[REQ_TEMPORARY_OFF] = true;
 		break;
 	default:
 		return false;
