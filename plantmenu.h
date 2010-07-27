@@ -54,6 +54,8 @@ public:
 	PlantMenu(const QDomNode &conf);
 	static banner *getBanner(const QDomNode &item_node);
 
+	virtual int sectionId() const;
+
 private:
 	void loadItems(const QDomNode &conf);
 
