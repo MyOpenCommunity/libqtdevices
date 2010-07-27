@@ -96,10 +96,14 @@ public:
 	// note that the volume might be non-zero and the status true
 	// even when the amplifier is off, if the amplifier is off
 	// because the state machine is not PLAY_DIFSON
+	//
+	// the temporary off state of the amplifier does not change the sound diffusion
+	// state, and only affects the amplifier volume
 	int getLocalAmplifierVolume();
 	void setLocalAmplifierVolume(int value);
 	bool getLocalAmplifierStatus();
 	void setLocalAmplifierStatus(bool status);
+	void setLocalAmplifierTemporaryOff(bool off);
 	void setMediaPlayerActive(bool active);
 	void setMediaPlayerTemporaryPause(bool paused);
 
@@ -173,7 +177,8 @@ private:
 
 private:
 	bool is_source, is_amplifier;
-	bool local_source_status, local_amplifier_status, media_player_status, media_player_temporary_pause;
+	bool local_source_status, local_amplifier_status, local_amplifier_temporary_off;
+	bool media_player_status, media_player_temporary_pause;
 	bool direct_audio_access;
 };
 
