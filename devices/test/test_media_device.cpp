@@ -678,12 +678,24 @@ void TestVirtualAmplifierDevice::receiveAmplifierOn()
 {
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
 	t.check(QString("*22*1#4#%1*3#%1#%2##").arg(area).arg(point), true);
+
+	DeviceTester t1(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
+	t1.check(QString("*22*1#4#0*5#3#0#0##"), true);
+
+	DeviceTester t2(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
+	t2.check(QString("*22*1#4#%1*4#%1##").arg(area), true);
 }
 
 void TestVirtualAmplifierDevice::receiveAmplifierOff()
 {
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
 	t.check(QString("*22*0#4#%1*3#%1#%2##").arg(area).arg(point), false);
+
+	DeviceTester t1(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
+	t1.check(QString("*22*0#4#0*5#3#0#0##"), false);
+
+	DeviceTester t2(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
+	t2.check(QString("*22*0#4#%1*4#%1##").arg(area), false);
 }
 
 void TestVirtualAmplifierDevice::receiveVolumeUp()

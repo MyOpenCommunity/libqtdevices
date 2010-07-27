@@ -253,6 +253,8 @@ protected:
 
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
+	bool checkAddressIsForMe(OpenMsg &msg);
+
 private:
 	static AmplifierDevice *createVirtualDevice();
 

@@ -771,9 +771,39 @@ void AmplifierDevice::setVolume(int volume)
 	sendFrame(createWriteDimensionFrame(who, QString("%1*%2").arg(DIM_VOLUME).arg(volume), where));
 }
 
+bool AmplifierDevice::checkAddressIsForMe(OpenMsg &msg)
+{
+	if (msg.where() == 3)
+	{
+		// point to point
+		if (msg.whereArgCnt() == 2 &&
+		    msg.whereArg(0) == area.toStdString() &&
+		    msg.whereArg(1) == point.toStdString())
+			return true;
+	}
+	else if (msg.where() == 4)
+	{
+		// area
+		if (msg.whereArgCnt() == 1 &&
+		    msg.whereArg(0) == area.toStdString())
+			return true;
+	}
+	else if (msg.where() == 5)
+	{
+		// general
+		if (msg.whereArgCnt() == 3 &&
+		    msg.whereArg(0) == "3" &&
+		    msg.whereArg(1) == "0" &&
+		    msg.whereArg(2) == "0")
+			return true;
+	}
+
+	return false;
+}
+
 bool AmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
-	if (where != QString::fromStdString(msg.whereFull()))
+	if (!checkAddressIsForMe(msg))
 		return false;
 
 	if (!msg.whatArgCnt() || !isDimensionFrame(msg))
@@ -891,8 +921,7 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	if (isDimensionFrame(msg) || isStatusRequestFrame(msg))
 		return false;
 
-	QString msg_where = QString::fromStdString(msg.whereFull());
-	if (msg_where != where)
+	if (!checkAddressIsForMe(msg))
 		return false;
 
 	int what = msg.what();
@@ -991,7 +1020,7 @@ void PowerAmplifierDevice::init()
 
 bool PowerAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
-	if (where != QString::fromStdString(msg.whereFull()))
+	if (!checkAddressIsForMe(msg))
 		return false;
 
 	// In some cases (when more than a power amplifier is present in the system)
