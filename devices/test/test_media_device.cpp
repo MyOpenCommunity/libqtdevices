@@ -731,6 +731,12 @@ void TestVirtualAmplifierDevice::receiveSetVolume()
 	t.check(QString("*#22*3#%1#%2*#1*%3##").arg(area).arg(point).arg(VOLUME), VOLUME);
 }
 
+void TestVirtualAmplifierDevice::receiveTemporaryOff()
+{
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_TEMPORARY_OFF);
+	t.check(QString("*22*0#4#%1*6##").arg(area), true);
+}
+
 
 void TestPowerAmplifierDevice::initTestCase()
 {

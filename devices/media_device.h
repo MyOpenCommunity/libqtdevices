@@ -258,10 +258,11 @@ protected:
 private:
 	static AmplifierDevice *createVirtualDevice();
 
-private:
+protected:
 	QString area;
 	QString point;
 
+private:
 	static QString virtual_amplifier_where;
 };
 
@@ -276,8 +277,9 @@ public:
 		REQ_VOLUME_UP = 3,       // raise volume, value is the step
 		REQ_VOLUME_DOWN = 4,     // decrease volume, value is the step
 		REQ_SET_VOLUME = -1,     // set volume to specified level (range: 1-32)
+		REQ_TEMPORARY_OFF = -3,  // temporary off of the amplifier
 		// boolean, set to true if the status update is from a command we sent ourselves
-		DIM_SELF_REQUEST,
+		DIM_SELF_REQUEST = -4,
 	};
 
 	VirtualAmplifierDevice(const QString &where, int openserver_id = 0);
