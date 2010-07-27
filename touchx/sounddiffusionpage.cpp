@@ -411,6 +411,8 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 	// check if this hardware can work as a source/amplifier and create the virtual
 	// devices to handle the source/amplifier frames
 	is_multichannel = getTextChild(config_node, "id").toInt() == SOUNDDIFFUSION_MULTI;
+	// required for the parsing of some frames
+	AmplifierDevice::setIsMultichannel(is_multichannel);
 
 	buildPage(getTextChild(config_node, "descr"));
 	if (is_multichannel)

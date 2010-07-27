@@ -33,6 +33,7 @@
 #define AMPLI_AREA "3"
 #define AMPLI_POINT "1"
 #define AMPLI_WRONG_AREA "4"
+#define AMPLI_WRONG_POINT "2"
 
 
 void TestAlarmSoundDiffDevice::initTestCase()
@@ -736,6 +737,11 @@ void TestVirtualAmplifierDevice::receiveTemporaryOff()
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_TEMPORARY_OFF);
 	t.check(QString("*22*0#4#%1*6##").arg(area), true);
 	t.check(QString("*22*22#4#%1*5#3#%1#%2##").arg(area).arg(point), true);
+	t.check(QString("*22*22#4#%1*5#3#%1#%2##").arg(area).arg(AMPLI_WRONG_POINT), true);
+	AmplifierDevice::setIsMultichannel(true);
+	t.checkSignals(QString("*22*22#4#%1*5#3#%1#%2##").arg(AMPLI_WRONG_AREA).arg(point), 0);
+	AmplifierDevice::setIsMultichannel(false);
+	t.check(QString("*22*22#4#%1*5#3#%1#%2##").arg(AMPLI_WRONG_AREA).arg(point), true);
 }
 
 

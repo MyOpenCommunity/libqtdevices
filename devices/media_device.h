@@ -229,6 +229,7 @@ public:
 	static AmplifierDevice *createDevice(const QString &where);
 
 	static void setVirtualAmplifierWhere(const QString &where);
+	static void setIsMultichannel(bool is_multichannel);
 
 	virtual void init();
 
@@ -261,6 +262,7 @@ private:
 protected:
 	QString area;
 	QString point;
+	static bool is_multichannel;
 
 private:
 	static QString virtual_amplifier_where;

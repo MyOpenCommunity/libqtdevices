@@ -75,6 +75,7 @@ QHash<int, SourceDevice*> AlarmSoundDiffDevice::sources;
 QHash<int, AmplifierDevice*> AlarmSoundDiffDevice::amplifiers;
 AlarmSoundDiffDevice *AlarmSoundDiffDevice::alarm_device = 0;
 QString AmplifierDevice::virtual_amplifier_where;
+bool AmplifierDevice::is_multichannel = false;
 
 AlarmSoundDiffDevice::AlarmSoundDiffDevice()
 	: device("22", "")
@@ -664,6 +665,11 @@ void AmplifierDevice::setVirtualAmplifierWhere(const QString &where)
 	virtual_amplifier_where = where;
 }
 
+void AmplifierDevice::setIsMultichannel(bool multichannel)
+{
+	is_multichannel = multichannel;
+}
+
 bool AmplifierDevice::isGeneralAddress(const QString &where)
 {
 	return where == "0";
@@ -796,13 +802,6 @@ bool AmplifierDevice::checkAddressIsForMe(OpenMsg &msg)
 		    msg.whereArg(0) == "3" &&
 		    msg.whereArg(1) == "0" &&
 		    msg.whereArg(2) == "0")
-			return true;
-
-		// point to point
-		if (msg.whereArgCnt() == 3 &&
-		    msg.whereArg(0) == "3" &&
-		    msg.whereArg(1) == area.toStdString() &&
-		    msg.whereArg(2) == point.toStdString())
 			return true;
 	}
 
@@ -937,6 +936,20 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	    msg.whatArgCnt() == 2 &&
 	    msg.whatArg(1) == area.toStdString())
 	{
+		values_list[REQ_TEMPORARY_OFF] = true;
+		return true;
+	}
+
+	// the amplifier slide frame must turn the local amplifier off if it comes
+	// from the same area (for multichannel) or for any source amplifier (for monochannel)
+	if (msg.what() == 22 &&
+	    msg.where() == 5 &&
+	    msg.whereArgCnt() == 3)
+	{
+		if (is_multichannel &&
+		    msg.whereArg(1) != area.toStdString())
+			return false;
+
 		values_list[REQ_TEMPORARY_OFF] = true;
 		return true;
 	}
