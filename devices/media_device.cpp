@@ -925,7 +925,7 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	// to mean "turn the amplifier off temporarily"; it is probably cleaner
 	// to do it here rather than in the source device
 	if (msg.where() == 6 &&
-	    msg.what() == 0 &&
+	    msg.what() == AMPL_STATUS_OFF &&
 	    msg.whatArgCnt() == 2 &&
 	    msg.whatArg(1) == area.toStdString())
 	{
