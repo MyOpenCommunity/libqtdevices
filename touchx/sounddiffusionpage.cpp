@@ -47,6 +47,7 @@
 #include <QtDebug>
 #include <QStackedWidget>
 
+#define TEMPORARY_OFF_TIMEOUT 1000
 
 bool SoundDiffusionPage::is_multichannel = false;
 Page *SoundDiffusionPage::sound_diffusion_page = NULL;
@@ -688,8 +689,17 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 				bt_global::audio_states->setLocalAmplifierVolume(scsToLocalVolume(level));
 			}
 			break;
+		case VirtualAmplifierDevice::REQ_TEMPORARY_OFF:
+			bt_global::audio_states->setLocalAmplifierTemporaryOff(true);
+			QTimer::singleShot(TEMPORARY_OFF_TIMEOUT, this,  SLOT(reenableLocalAmplifier()));
+			break;
 		}
 	}
+}
+
+void LocalAmplifier::reenableLocalAmplifier()
+{
+	bt_global::audio_states->setLocalAmplifierTemporaryOff(false);
 }
 
 

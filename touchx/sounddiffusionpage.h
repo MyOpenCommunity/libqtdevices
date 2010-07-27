@@ -205,6 +205,7 @@ public:
 private slots:
 	void valueReceived(const DeviceValues &device_values);
 	void audioStateChanged(int new_state, int old_state);
+	void reenableLocalAmplifier();
 
 private:
 	VirtualAmplifierDevice *dev;
