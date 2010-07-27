@@ -32,6 +32,7 @@
 
 #define AMPLI_AREA "3"
 #define AMPLI_POINT "1"
+#define AMPLI_WRONG_AREA "4"
 
 
 void TestAlarmSoundDiffDevice::initTestCase()
@@ -570,6 +571,11 @@ void TestAmplifierDevice::receiveStatus()
 	DeviceTester t(dev, AmplifierDevice::DIM_STATUS);
 	t.check(QString("*#22*3#%1#%2*12*1*0##").arg(area).arg(point), true);
 	t.check(QString("*#22*3#%1#%2*12*0*255##").arg(area).arg(point), false);
+
+	// global/environment frames
+	t.check(QString("*#22*5#3#0#0*12*0*255##"), false);
+	t.check(QString("*#22*4#%1*12*0*255##").arg(area), false);
+	t.checkSignals(QString("*#22*4#%1*12*0*255##").arg(AMPLI_WRONG_AREA), 0);
 }
 
 void TestAmplifierDevice::receiveVolume()
