@@ -796,6 +796,13 @@ bool AmplifierDevice::checkAddressIsForMe(OpenMsg &msg)
 		    msg.whereArg(1) == "0" &&
 		    msg.whereArg(2) == "0")
 			return true;
+
+		// point to point
+		if (msg.whereArgCnt() == 3 &&
+		    msg.whereArg(0) == "3" &&
+		    msg.whereArg(1) == area.toStdString() &&
+		    msg.whereArg(2) == point.toStdString())
+			return true;
 	}
 
 	return false;
