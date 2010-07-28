@@ -43,6 +43,7 @@ enum RequestDimension
 	// Sources
 	REQ_FREQUENCE_UP = 5,
 	REQ_FREQUENCE_DOWN = 6,
+	REQ_SLIDE = 22,
 	REQ_SOURCE_ON = 35,
 	REQ_SAVE_STATION = 33,
 	START_RDS = 31,
@@ -78,6 +79,7 @@ QHash<int, SourceDevice*> AlarmSoundDiffDevice::sources;
 QHash<int, AmplifierDevice*> AlarmSoundDiffDevice::amplifiers;
 AlarmSoundDiffDevice *AlarmSoundDiffDevice::alarm_device = 0;
 QString AmplifierDevice::virtual_amplifier_where;
+bool AmplifierDevice::is_multichannel = false;
 
 AlarmSoundDiffDevice::AlarmSoundDiffDevice()
 	: device("22", "")
@@ -695,6 +697,11 @@ void AmplifierDevice::setVirtualAmplifierWhere(const QString &where)
 	virtual_amplifier_where = where;
 }
 
+void AmplifierDevice::setIsMultichannel(bool multichannel)
+{
+	is_multichannel = multichannel;
+}
+
 bool AmplifierDevice::isGeneralAddress(const QString &where)
 {
 	return where == "0";
@@ -803,9 +810,39 @@ void AmplifierDevice::setVolume(int volume)
 	sendFrame(createWriteDimensionFrame(who, QString("%1*%2").arg(DIM_VOLUME).arg(volume), where));
 }
 
+bool AmplifierDevice::checkAddressIsForMe(OpenMsg &msg)
+{
+	if (msg.where() == 3)
+	{
+		// point to point
+		if (msg.whereArgCnt() == 2 &&
+		    msg.whereArg(0) == area.toStdString() &&
+		    msg.whereArg(1) == point.toStdString())
+			return true;
+	}
+	else if (msg.where() == 4)
+	{
+		// area
+		if (msg.whereArgCnt() == 1 &&
+		    msg.whereArg(0) == area.toStdString())
+			return true;
+	}
+	else if (msg.where() == 5)
+	{
+		// general
+		if (msg.whereArgCnt() == 3 &&
+		    msg.whereArg(0) == "3" &&
+		    msg.whereArg(1) == "0" &&
+		    msg.whereArg(2) == "0")
+			return true;
+	}
+
+	return false;
+}
+
 bool AmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
-	if (where != QString::fromStdString(msg.whereFull()))
+	if (!checkAddressIsForMe(msg))
 		return false;
 
 	if (!msg.whatArgCnt() || !isDimensionFrame(msg))
@@ -923,8 +960,33 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	if (isDimensionFrame(msg) || isStatusRequestFrame(msg))
 		return false;
 
-	QString msg_where = QString::fromStdString(msg.whereFull());
-	if (msg_where != where)
+	// here we interpret the "turn source off" with where 6 (all sources)
+	// to mean "turn the amplifier off temporarily"; it is probably cleaner
+	// to do it here rather than in the source device
+	if (msg.where() == 6 &&
+	    msg.what() == AMPL_STATUS_OFF &&
+	    msg.whatArgCnt() == 2 &&
+	    msg.whatArg(1) == area.toStdString())
+	{
+		values_list[REQ_TEMPORARY_OFF] = true;
+		return true;
+	}
+
+	// the amplifier slide frame must turn the local amplifier off if it comes
+	// from the same area (for multichannel) or for any source amplifier (for monochannel)
+	if (msg.what() == 22 &&
+	    msg.where() == 5 &&
+	    msg.whereArgCnt() == 3)
+	{
+		if (is_multichannel &&
+		    msg.whereArg(1) != area.toStdString())
+			return false;
+
+		values_list[REQ_TEMPORARY_OFF] = true;
+		return true;
+	}
+
+	if (!checkAddressIsForMe(msg))
 		return false;
 
 	int what = msg.what();
@@ -948,6 +1010,11 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			values_list[what] = 1;
 		else
 			values_list[what] = msg.whatArgN(0);
+		break;
+	case REQ_SLIDE:
+		// in case we receive a slide request, we must lower the volume
+		// to 0 for a second
+		values_list[REQ_TEMPORARY_OFF] = true;
 		break;
 	default:
 		return false;
@@ -1023,7 +1090,7 @@ void PowerAmplifierDevice::init()
 
 bool PowerAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
-	if (where != QString::fromStdString(msg.whereFull()))
+	if (!checkAddressIsForMe(msg))
 		return false;
 
 	// In some cases (when more than a power amplifier is present in the system)

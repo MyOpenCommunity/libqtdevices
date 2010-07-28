@@ -161,6 +161,11 @@ PlantMenu::PlantMenu(const QDomNode &conf) : BannerPage(0)
 	loadItems(conf);
 }
 
+int PlantMenu::sectionId() const
+{
+	return THERMALREGULATION;
+}
+
 #ifdef CONFIG_BTOUCH
 void PlantMenu::loadItems(const QDomNode &conf)
 {

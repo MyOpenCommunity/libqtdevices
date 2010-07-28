@@ -203,6 +203,7 @@ private slots:
 	void receiveVolumeUp();
 	void receiveVolumeDown();
 	void receiveSetVolume();
+	void receiveTemporaryOff();
 
 private:
 	VirtualAmplifierDevice *dev;

@@ -271,7 +271,7 @@ AudioStateMachine::AudioStateMachine()
 	pending_old_state = pending_new_state = -1;
 	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
 	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
-	local_source_status = local_amplifier_status = media_player_status = media_player_temporary_pause = false;
+	local_source_status = local_amplifier_status = local_amplifier_temporary_off = media_player_status = media_player_temporary_pause = false;
 
 	addState(IDLE,
 		 SLOT(stateIdleEntered()),
@@ -474,7 +474,8 @@ void AudioStateMachine::setLocalAmplifierStatus(bool status)
 		if (status)
 		{
 			activateLocalAmplifier();
-			changeVolumePath(Volumes::MM_AMPLIFIER);
+			if (!local_amplifier_temporary_off)
+				changeVolumePath(Volumes::MM_AMPLIFIER);
 		}
 		else
 		{
@@ -486,6 +487,21 @@ void AudioStateMachine::setLocalAmplifierStatus(bool status)
 	manageMediaPlaybackStates();
 }
 
+void AudioStateMachine::setLocalAmplifierTemporaryOff(bool off)
+{
+	qDebug() << "AudioStateMachine::setLocalAmplifierTemporaryOff" << off;
+
+	local_amplifier_temporary_off = off;
+
+	if (!getLocalAmplifierStatus() || currentState() != AudioStates::PLAY_DIFSON)
+		return;
+
+	if (!local_amplifier_temporary_off)
+		changeVolumePath(Volumes::MM_AMPLIFIER);
+	else
+		changeVolumePath(Volumes::MM_AMPLIFIER, 0);
+}
+
 bool AudioStateMachine::getLocalAmplifierStatus()
 {
 	return local_amplifier_status;
@@ -494,7 +510,7 @@ bool AudioStateMachine::getLocalAmplifierStatus()
 void AudioStateMachine::setLocalAmplifierVolume(int volume)
 {
 	volumes[Volumes::MM_AMPLIFIER] = volume;
-	if (local_amplifier_status && currentState() == AudioStates::PLAY_DIFSON)
+	if (local_amplifier_status && currentState() == AudioStates::PLAY_DIFSON && !local_amplifier_temporary_off)
 		changeVolumePath(Volumes::MM_AMPLIFIER);
 }
 
@@ -632,7 +648,8 @@ void AudioStateMachine::statePlayDifsonEntered()
 	{
 		activateLocalAmplifier();
 		current_audio_path = Volumes::MM_AMPLIFIER;
-		changeVolumePath(Volumes::MM_AMPLIFIER);
+		if (!local_amplifier_temporary_off)
+			changeVolumePath(Volumes::MM_AMPLIFIER);
 	}
 	else
 		deactivateLocalAmplifier();

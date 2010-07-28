@@ -32,6 +32,8 @@
 
 #define AMPLI_AREA "3"
 #define AMPLI_POINT "1"
+#define AMPLI_WRONG_AREA "4"
+#define AMPLI_WRONG_POINT "2"
 
 
 void TestAlarmSoundDiffDevice::initTestCase()
@@ -571,6 +573,11 @@ void TestAmplifierDevice::receiveStatus()
 	DeviceTester t(dev, AmplifierDevice::DIM_STATUS);
 	t.check(QString("*#22*3#%1#%2*12*1*0##").arg(area).arg(point), true);
 	t.check(QString("*#22*3#%1#%2*12*0*255##").arg(area).arg(point), false);
+
+	// global/environment frames
+	t.check(QString("*#22*5#3#0#0*12*0*255##"), false);
+	t.check(QString("*#22*4#%1*12*0*255##").arg(area), false);
+	t.checkSignals(QString("*#22*4#%1*12*0*255##").arg(AMPLI_WRONG_AREA), 0);
 }
 
 void TestAmplifierDevice::receiveVolume()
@@ -679,12 +686,24 @@ void TestVirtualAmplifierDevice::receiveAmplifierOn()
 {
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
 	t.check(QString("*22*1#4#%1*3#%1#%2##").arg(area).arg(point), true);
+
+	DeviceTester t1(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
+	t1.check(QString("*22*1#4#0*5#3#0#0##"), true);
+
+	DeviceTester t2(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
+	t2.check(QString("*22*1#4#%1*4#%1##").arg(area), true);
 }
 
 void TestVirtualAmplifierDevice::receiveAmplifierOff()
 {
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
 	t.check(QString("*22*0#4#%1*3#%1#%2##").arg(area).arg(point), false);
+
+	DeviceTester t1(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
+	t1.check(QString("*22*0#4#0*5#3#0#0##"), false);
+
+	DeviceTester t2(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
+	t2.check(QString("*22*0#4#%1*4#%1##").arg(area), false);
 }
 
 void TestVirtualAmplifierDevice::receiveVolumeUp()
@@ -712,6 +731,18 @@ void TestVirtualAmplifierDevice::receiveSetVolume()
 	const int VOLUME = 11;
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_SET_VOLUME);
 	t.check(QString("*#22*3#%1#%2*#1*%3##").arg(area).arg(point).arg(VOLUME), VOLUME);
+}
+
+void TestVirtualAmplifierDevice::receiveTemporaryOff()
+{
+	DeviceTester t(dev, VirtualAmplifierDevice::REQ_TEMPORARY_OFF);
+	t.check(QString("*22*0#4#%1*6##").arg(area), true);
+	t.check(QString("*22*22#4#%1*5#3#%1#%2##").arg(area).arg(point), true);
+	t.check(QString("*22*22#4#%1*5#3#%1#%2##").arg(area).arg(AMPLI_WRONG_POINT), true);
+	AmplifierDevice::setIsMultichannel(true);
+	t.checkSignals(QString("*22*22#4#%1*5#3#%1#%2##").arg(AMPLI_WRONG_AREA).arg(point), 0);
+	AmplifierDevice::setIsMultichannel(false);
+	t.check(QString("*22*22#4#%1*5#3#%1#%2##").arg(AMPLI_WRONG_AREA).arg(point), true);
 }
 
 

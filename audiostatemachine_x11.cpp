@@ -74,6 +74,10 @@ bool AudioStateMachine::isAmplifier()
 	return is_amplifier;
 }
 
+void AudioStateMachine::setLocalAmplifierTemporaryOff(bool off)
+{
+}
+
 void AudioStateMachine::setLocalAmplifierStatus(bool status)
 {
 	local_amplifier_status = status;
