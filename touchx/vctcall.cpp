@@ -479,6 +479,10 @@ void VCTCall::cleanAudioStates()
 void VCTCall::endCall()
 {
 	dev->endCall();
+	// It the GUI close the call the MM_AMPLI_OFF is not generated, so we
+	// restore here the volume of the amplifier.
+	if (!(*bt_global::config)[AMPLIFIER_ADDRESS].isNull())
+		bt_global::audio_states->setLocalAmplifierTemporaryOff(false);
 	stopVideo();
 	cleanAudioStates();
 	call_status->resetStatus();
@@ -573,6 +577,10 @@ void VCTCallPage::valueReceived(const DeviceValues &values_list)
 				playRingtone();
 		}
 	}
+	else if (values_list.contains(EntryphoneDevice::MM_AMPLI_OFF))
+		bt_global::audio_states->setLocalAmplifierTemporaryOff(true); // silence the local amplifier
+	else if (values_list.contains(EntryphoneDevice::MM_AMPLI_ON))
+		bt_global::audio_states->setLocalAmplifierTemporaryOff(false); // restore the local amplifier
 }
 
 void VCTCallPage::cleanUp()

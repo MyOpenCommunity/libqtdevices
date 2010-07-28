@@ -134,7 +134,7 @@ void EntryphoneDevice::endCall()
 {
 	QString what = QString("%1#%2#%3").arg(END_OF_CALL).arg(kind).arg(mmtype);
 	sendFrame(createCommandFrame(who, what, QString(END_ALL_CALLS) + where));
-	resetCallState();
+//	resetCallState();
 }
 
 void EntryphoneDevice::initVctProcess()
@@ -201,16 +201,10 @@ void EntryphoneDevice::moveRightRelease() const
 
 bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
-	int what = msg.what();
-	if (what == MM_AMPLI_OFF || what == MM_AMPLI_ON)
-	{
-		values_list[what] = true;
-		return true;
-	}
-
 	if (!is_calling && QString::fromStdString(msg.whereFull()) != where)
 		return false;
 
+	int what = msg.what();
 
 	switch (what)
 	{

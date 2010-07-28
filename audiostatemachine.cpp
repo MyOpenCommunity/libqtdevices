@@ -493,9 +493,6 @@ void AudioStateMachine::setLocalAmplifierTemporaryOff(bool off)
 
 	local_amplifier_temporary_off = off;
 
-	if (!getLocalAmplifierStatus() || currentState() != AudioStates::PLAY_DIFSON)
-		return;
-
 	if (!local_amplifier_temporary_off)
 		changeVolumePath(Volumes::MM_AMPLIFIER);
 	else
