@@ -27,10 +27,16 @@
 
 #include <QHashIterator>
 #include <QDebug>
+#include <QTimer>
 
 
 #define RADIO_MIN_FREQ  8750
 #define RADIO_MAX_FREQ 10800
+
+const int STOPPING_TIMEOUT = 100;
+
+#define ARRAY_SIZE(x) int(sizeof(x)/sizeof(x[0]))
+
 
 enum RequestDimension
 {
@@ -65,8 +71,6 @@ enum RequestDimension
 	CMD_TURN_ON = 1,
 	CMD_TURN_OFF = 0
 };
-
-#define ARRAY_SIZE(x) int(sizeof(x)/sizeof(x[0]))
 
 
 // Inizialization of static member
@@ -446,6 +450,12 @@ RadioSourceDevice::RadioSourceDevice(QString source_id, int openserver_id) :
 	SourceDevice(source_id, openserver_id)
 {
 	frequency = -1;
+	update_count = 0;
+	rds_updates = false;
+	stopping_timer = new QTimer(this);
+	stopping_timer->setSingleShot(true);
+	stopping_timer->setInterval(STOPPING_TIMEOUT);
+	connect(stopping_timer, SIGNAL(timeout()), SLOT(stopRDS()));
 }
 
 void RadioSourceDevice::init()
@@ -454,7 +464,6 @@ void RadioSourceDevice::init()
 
 	requestTrack();
 	requestFrequency();
-	requestRDS();
 }
 
 void RadioSourceDevice::frequenceUp(QString value)
@@ -508,9 +517,35 @@ void RadioSourceDevice::requestFrequency() const
 	sendRequest(DIM_FREQUENCY);
 }
 
-void RadioSourceDevice::requestRDS() const
+void RadioSourceDevice::requestStartRDS()
 {
-	sendCommand(START_RDS);
+	if (++update_count == 1)
+	{
+		rds_updates = true;
+		if (stopping_timer->isActive())
+			stopping_timer->stop();
+		else
+			sendCommand(START_RDS);
+	}
+}
+
+void RadioSourceDevice::requestStopRDS()
+{
+	if (!rds_updates)
+		return;
+
+	if (--update_count == 0)
+	{
+		rds_updates = false;
+		// We use a timer to avoid a couple stop-start frames when the user
+		// change the page between two pages that both need to know the RDS updates.
+		stopping_timer->start();
+	}
+}
+
+void RadioSourceDevice::stopRDS() const
+{
+	sendCommand(STOP_RDS);
 }
 
 bool RadioSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
@@ -522,11 +557,8 @@ bool RadioSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
 		return false;
 
-	if (isCommandFrame(msg) && static_cast<int>(msg.what()) == STOP_RDS)
-	{
-		requestRDS();
-		return true;
-	}
+	if (isCommandFrame(msg) && static_cast<int>(msg.what()) == STOP_RDS && rds_updates)
+		sendCommand(START_RDS);
 
 	// check for status requests for a single dimension
 	if (!isDimensionFrame(msg) || msg.whatArgCnt() == 0)

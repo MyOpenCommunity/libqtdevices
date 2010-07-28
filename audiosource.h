@@ -39,6 +39,13 @@ class AudioSource : public BannerNew
 {
 Q_OBJECT
 
+public:
+	// Method called when the source is hidden or showed. It differs from the
+	// standard hideEvent/showEvent because it refers to the container of the
+	// source banner.
+	virtual void sourceShowed() {}
+	virtual void sourceHidden() {}
+
 signals:
 	void sourceStateChanged(bool active);
 
@@ -105,9 +112,11 @@ Q_OBJECT
 public:
 	RadioSource(const QString &area, RadioSourceDevice *dev, Page *details);
 
+	virtual void sourceHidden();
+	virtual void sourceShowed();
+
 private slots:
 	void sourceStateChanged(bool active);
-	void valueReceived(const DeviceValues &values_list);
 
 private:
 	RadioInfo *radio_info;

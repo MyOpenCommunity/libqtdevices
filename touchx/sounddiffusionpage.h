@@ -65,6 +65,9 @@ Q_DECLARE_TYPEINFO(SourceDescription, Q_MOVABLE_TYPE);
 
 
 
+/**
+ * The widget container for the audio sources.
+ */
 class SoundSources : public QWidget
 {
 Q_OBJECT
@@ -73,6 +76,10 @@ public:
 
 signals:
 	void pageClosed();
+
+protected:
+	virtual void showEvent(QShowEvent *);
+	virtual void hideEvent(QHideEvent *);
 
 private slots:
 	void sourceCycle();

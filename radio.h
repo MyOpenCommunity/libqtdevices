@@ -34,18 +34,30 @@ class QLabel;
 class RadioSourceDevice;
 
 
+/**
+ * The label that shows info about the Radio (the name, taken from the RDS system,
+ * the frequency and the number of the channel).
+ */
 class RadioInfo : public QLabel
 {
 Q_OBJECT
 public:
-	RadioInfo(const QString &background_image);
+	RadioInfo(const QString &background_image, QString area, RadioSourceDevice *dev);
 
 	void setFrequency(int frequency);
 	void setChannel(int memory_channel);
 	void setRadioName(const QString &rds);
 
+	void isShowed(bool sh);
+
+private slots:
+	void valueReceived(const DeviceValues &values_list);
+
 private:
+	QString area;
 	QLabel *radio_name, *frequency, *channel;
+	RadioSourceDevice *dev;
+	bool showed;
 };
 
 
@@ -57,7 +69,11 @@ class  RadioPage : public Page
 {
 Q_OBJECT
 public:
-	RadioPage(RadioSourceDevice *dev, const QString &amb = tr("RDS Radio"));
+	RadioPage(QString area, RadioSourceDevice *dev, const QString &amb = tr("RDS Radio"));
+
+protected:
+	virtual void showEvent(QShowEvent *);
+	virtual void hideEvent(QHideEvent *);
 
 private:
 	QWidget *createContent();
@@ -74,7 +90,6 @@ private:
 	RadioSourceDevice *dev;
 
 private slots:
-	void valueReceived(const DeviceValues &values_list);
 
 	void frequencyUp();
 	void frequencyDown();
@@ -96,6 +111,9 @@ private slots:
 	 * \brief Changes the state to manual search
 	 */
 	void setManual();
+
+private:
+	QString area;
 };
 
 #endif // RADIO_H

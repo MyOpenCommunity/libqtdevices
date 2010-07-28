@@ -145,7 +145,7 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 		{
 			RadioSourceDevice *dev = bt_global::add_device_to_cache(new RadioSourceDevice(s.where));
 			if (!s.details)
-				s.details = new RadioPage(dev);
+				s.details = new RadioPage(area, dev);
 
 			w = new RadioSource(area, dev, s.details);
 			break;
@@ -187,6 +187,18 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 	}
 
 	connect(cycle, SIGNAL(clicked()), SLOT(sourceCycle()));
+}
+
+void SoundSources::hideEvent(QHideEvent *)
+{
+	for (int i = 0; i < sources->count(); ++i)
+		static_cast<AudioSource*>(sources->widget(i))->sourceHidden();
+}
+
+void SoundSources::showEvent(QShowEvent *)
+{
+	for (int i = 0; i < sources->count(); ++i)
+		static_cast<AudioSource*>(sources->widget(i))->sourceShowed();
 }
 
 void SoundSources::sourceCycle()

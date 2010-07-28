@@ -48,8 +48,13 @@ namespace
 	}
 }
 
-RadioInfo::RadioInfo(const QString &background_image)
+
+RadioInfo::RadioInfo(const QString &background_image, QString _area, RadioSourceDevice *_dev)
 {
+	showed = false;
+	area = _area;
+	dev = _dev;
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	QPixmap background = *bt_global::icons_cache.getIcon(background_image);
 
 	setMaximumSize(background.size());
@@ -74,6 +79,46 @@ RadioInfo::RadioInfo(const QString &background_image)
 	setFrequency(-1);
 	setChannel(-1);
 	setRadioName(QString());
+}
+
+void RadioInfo::valueReceived(const DeviceValues &values_list)
+{
+	foreach (int dim, values_list.keys())
+	{
+		switch (dim)
+		{
+		case RadioSourceDevice::DIM_AREAS_UPDATED:
+			if (showed)
+			{
+				if (dev->isActive(area) && !dev->rdsUpdates())
+					dev->requestStartRDS();
+				else if (!dev->isActive(area) && dev->rdsUpdates())
+					dev->requestStopRDS();
+			}
+			break;
+		case RadioSourceDevice::DIM_RDS:
+			setRadioName(values_list[dim].toString());
+			break;
+		case RadioSourceDevice::DIM_FREQUENCY:
+			setFrequency(values_list[dim].toInt());
+			break;
+		case RadioSourceDevice::DIM_TRACK:
+			setChannel(values_list[dim].toInt());
+			break;
+		}
+	}
+}
+
+void RadioInfo::isShowed(bool sh)
+{
+	showed = sh;
+	if (dev->isActive(area))
+	{
+		if (showed)
+			dev->requestStartRDS();
+		else
+			dev->requestStopRDS();
+	}
 }
 
 void RadioInfo::setFrequency(const int freq)
@@ -104,9 +149,10 @@ void RadioInfo::setRadioName(const QString &rds)
 #define REQUEST_FREQUENCY_TIME 1000
 #define MEMORY_PRESS_TIME 3000
 
-RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &amb)
+RadioPage::RadioPage(QString _area, RadioSourceDevice *_dev, const QString &amb)
 {
 	dev = _dev;
+	area = _area;
 
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
@@ -121,8 +167,16 @@ RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &amb)
 	request_frequency.setInterval(REQUEST_FREQUENCY_TIME);
 	request_frequency.setSingleShot(true);
 	connect(&request_frequency, SIGNAL(timeout()), SLOT(requestFrequency()));
+}
 
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+void RadioPage::hideEvent(QHideEvent *)
+{
+	radio_info->isShowed(false);
+}
+
+void RadioPage::showEvent(QShowEvent *)
+{
+	radio_info->isShowed(true);
 }
 
 QWidget *RadioPage::createContent()
@@ -130,7 +184,7 @@ QWidget *RadioPage::createContent()
 	QWidget *content = new QWidget;
 
 	// radio description, with frequency and memory station
-	radio_info = new RadioInfo(bt_global::skin->getImage("details_display"));
+	radio_info = new RadioInfo(bt_global::skin->getImage("details_display"), area, dev);
 
 	// tuning control, manual/auto buttons
 	minus_button = new BtButton(bt_global::skin->getImage("minus"));
@@ -290,24 +344,3 @@ void RadioPage::frequencyDown()
 		dev->frequenceDown();
 }
 
-void RadioPage::valueReceived(const DeviceValues &values_list)
-{
-	foreach (int dim, values_list.keys())
-	{
-		switch (dim)
-		{
-		case RadioSourceDevice::DIM_RDS:
-		{
-			QString label = values_list[dim].toString();
-			radio_info->setRadioName(label);
-			break;
-		}
-		case RadioSourceDevice::DIM_FREQUENCY:
-			radio_info->setFrequency(values_list[dim].toInt());
-			break;
-		case RadioSourceDevice::DIM_TRACK:
-			radio_info->setChannel(values_list[dim].toInt());
-			break;
-		}
-	}
-}

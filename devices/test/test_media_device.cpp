@@ -389,6 +389,7 @@ void TestRadioSourceDevice::receiveRDS()
 void TestRadioSourceDevice::receiveStopRDS()
 {
 	OpenMsg frame(qPrintable(QString("*22*32*2#%1##").arg(source_id)));
+	dev->rds_updates = true;
 	dev->manageFrame(frame);
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*22*31*2#%1##").arg(source_id));

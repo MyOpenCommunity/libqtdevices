@@ -29,6 +29,7 @@
 
 class SourceDevice;
 class AmplifierDevice;
+class QTimer;
 
 
 /**
@@ -142,6 +143,7 @@ private slots:
  */
 class RadioSourceDevice : public SourceDevice
 {
+friend class TestRadioSourceDevice;
 Q_OBJECT
 public:
 	enum
@@ -153,6 +155,7 @@ public:
 	RadioSourceDevice(QString source_id, int openserver_id = 0);
 
 	virtual void init();
+	bool rdsUpdates() const { return rds_updates; }
 
 public slots:
 	void frequenceUp(QString value = QString());
@@ -161,13 +164,22 @@ public slots:
 	void setStation(QString station) const;
 
 	void requestFrequency() const;
-	void requestRDS() const;
+
+	// request to start/stop the RDS updates.
+	void requestStartRDS();
+	void requestStopRDS();
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
+private slots:
+	void stopRDS() const;
+
 private:
 	int frequency;
+	int update_count; // the number of items that requests for RDS updates
+	bool rds_updates; // the status of RDS updates
+	QTimer *stopping_timer;
 };
 
 
