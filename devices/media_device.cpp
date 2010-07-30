@@ -965,9 +965,12 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	// to do it here rather than in the source device
 	if (msg.where() == 6 &&
 	    msg.what() == AMPL_STATUS_OFF &&
-	    msg.whatArgCnt() == 2 &&
-	    msg.whatArg(1) == area.toStdString())
+	    msg.whatArgCnt() == 2)
 	{
+		if (is_multichannel &&
+		    msg.whatArg(1) != area.toStdString())
+			return false;
+
 		values_list[REQ_TEMPORARY_OFF] = true;
 		return true;
 	}
