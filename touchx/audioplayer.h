@@ -104,8 +104,9 @@ private:
 	static AudioPlayerTray *tray_icon;
 	static QVector<AudioPlayerPage *> audioplayer_pages;
 
-	int loop_starting_file, loop_total_time;
-	QTime loop_time_counter;
+	int loop_starting_file; // the index of the song used to detect loop
+	int loop_total_time; // the total time used to detect a loop
+	QTime loop_time_counter; // used to count the time elapsed
 };
 
 #endif
