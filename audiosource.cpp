@@ -180,11 +180,11 @@ void RadioSource::sourceStateChanged(bool active)
 
 void RadioSource::sourceHidden()
 {
-	radio_info->isShowed(false);
+	radio_info->isShown(false);
 }
 
 void RadioSource::sourceShowed()
 {
-	radio_info->isShowed(true);
+	radio_info->isShown(true);
 }
 

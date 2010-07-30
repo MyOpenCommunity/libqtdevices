@@ -48,16 +48,18 @@ public:
 	void setChannel(int memory_channel);
 	void setRadioName(const QString &rds);
 
-	void isShowed(bool sh);
+	void isShown(bool sh);
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);
+	void screensaverStarted();
+	void screensaverStopped();
 
 private:
 	QString area;
 	QLabel *radio_name, *frequency, *channel;
 	RadioSourceDevice *dev;
-	bool showed;
+	bool shown;
 };
 
 

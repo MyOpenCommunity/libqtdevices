@@ -26,6 +26,7 @@
 #include "navigation_bar.h" // NavigationBar
 #include "media_device.h" // RadioSourceDevice
 #include "icondispatcher.h" // bt_global::icons_cache
+#include "btmain.h" // startscreensaver, stopscreensaver
 
 #include <QLabel>
 #include <QDebug>
@@ -51,7 +52,7 @@ namespace
 
 RadioInfo::RadioInfo(const QString &background_image, QString _area, RadioSourceDevice *_dev)
 {
-	showed = false;
+	shown = false;
 	area = _area;
 	dev = _dev;
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
@@ -79,6 +80,21 @@ RadioInfo::RadioInfo(const QString &background_image, QString _area, RadioSource
 	setFrequency(-1);
 	setChannel(-1);
 	setRadioName(QString());
+
+	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)), SLOT(screensaverStarted()));
+	connect(bt_global::btmain, SIGNAL(stopscreensaver()), SLOT(screensaverStopped()));
+}
+
+void RadioInfo::screensaverStarted()
+{
+	if (shown && dev->rdsUpdates())
+		dev->requestStopRDS();
+}
+
+void RadioInfo::screensaverStopped()
+{
+	if (shown && dev->isActive(area) && !dev->rdsUpdates())
+		dev->requestStartRDS();
 }
 
 void RadioInfo::valueReceived(const DeviceValues &values_list)
@@ -88,7 +104,7 @@ void RadioInfo::valueReceived(const DeviceValues &values_list)
 		switch (dim)
 		{
 		case RadioSourceDevice::DIM_AREAS_UPDATED:
-			if (showed)
+			if (shown)
 			{
 				if (dev->isActive(area) && !dev->rdsUpdates())
 					dev->requestStartRDS();
@@ -109,12 +125,12 @@ void RadioInfo::valueReceived(const DeviceValues &values_list)
 	}
 }
 
-void RadioInfo::isShowed(bool sh)
+void RadioInfo::isShown(bool sh)
 {
-	showed = sh;
+	shown = sh;
 	if (dev->isActive(area))
 	{
-		if (showed)
+		if (shown)
 			dev->requestStartRDS();
 		else
 			dev->requestStopRDS();
@@ -171,12 +187,12 @@ RadioPage::RadioPage(QString _area, RadioSourceDevice *_dev, const QString &amb)
 
 void RadioPage::hideEvent(QHideEvent *)
 {
-	radio_info->isShowed(false);
+	radio_info->isShown(false);
 }
 
 void RadioPage::showEvent(QShowEvent *)
 {
-	radio_info->isShowed(true);
+	radio_info->isShown(true);
 }
 
 QWidget *RadioPage::createContent()
