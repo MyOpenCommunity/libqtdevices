@@ -83,6 +83,7 @@ public:
 	void initVctProcess();
 	virtual void init() { initVctProcess(); }
 	bool ipCall() const { return ip_call; }
+	VctMode vctMode() const { return vct_mode; }
 
 public slots:
 	void endCall();

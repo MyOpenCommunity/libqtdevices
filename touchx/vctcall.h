@@ -213,12 +213,14 @@ private slots:
 	void showVCTWindow();
 	void valueReceived(const DeviceValues &values_list);
 	void playRingtone();
+	void backClicked();
 
 private:
 	int ringtone;
 	VCTCallPrivate::VCTCallWindow *window;
 	VCTCallPrivate::VCTCall *vct_call;
 	EntryphoneDevice *dev;
+	bool already_closed;
 };
 
 #endif //VCTCALL_H

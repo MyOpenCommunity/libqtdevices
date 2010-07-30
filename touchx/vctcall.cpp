@@ -45,6 +45,7 @@
 #include <QLabel>
 #include <QSpacerItem>
 #include <QGridLayout>
+#include <QApplication>
 
 #define BOTTOM_SPACING 15
 
@@ -211,8 +212,7 @@ VCTCall::VCTCall(EntryphoneDevice *d, FormatVideo f)
 	camera = new CameraMove(dev);
 	camera->setMoveEnabled(false);
 
-	setup_vct = new BtButton;
-	setup_vct_icon = bt_global::skin->getImage("setup_vct");
+	setup_vct = new BtButton(bt_global::skin->getImage("setup_vct"));
 	camera_settings_shown = false;
 	toggleCameraSettings();
 	connect(setup_vct, SIGNAL(clicked()), SLOT(toggleCameraSettings()));
@@ -245,8 +245,7 @@ VCTCall::VCTCall(EntryphoneDevice *d, FormatVideo f)
 	connect(unlock_door, SIGNAL(pressed()), dev, SLOT(openLock()));
 	connect(unlock_door, SIGNAL(released()), dev, SLOT(releaseLock()));
 
-	cycle = new BtButton;
-	cycle->setImage(bt_global::skin->getImage("cycle"));
+	cycle = new BtButton(bt_global::skin->getImage("cycle"));
 	connect(cycle, SIGNAL(clicked()), dev, SLOT(cycleExternalUnits()));
 	connect(&video_grabber, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(finished(int,QProcess::ExitStatus)));
 	disable();
@@ -329,7 +328,13 @@ void VCTCall::toggleCall()
 		refreshStatus();
 	}
 	else
-		handleClose();
+	{
+		// Se the comment about the IP calls on VCTCall::endCall
+		if (dev->vctMode() == EntryphoneDevice::SCS_MODE)
+			handleClose();
+		else
+			endCall();
+	}
 }
 
 void VCTCall::resumeVideo()
@@ -483,9 +488,16 @@ void VCTCall::endCall()
 	// restore here the volume of the amplifier.
 	if (!(*bt_global::config)[AMPLIFIER_ADDRESS].isNull())
 		bt_global::audio_states->setLocalAmplifierTemporaryOff(false);
-	stopVideo();
-	cleanAudioStates();
-	call_status->resetStatus();
+
+	// We close the page and change the audio state only for the SCS call. For
+	// the IP call, after sent the END_OF_CALL frame, we have to wait an incoming
+	// END_OF_CALL frame to avoid problems for the underlying audio system.
+	if (dev->vctMode() == EntryphoneDevice::SCS_MODE)
+	{
+		stopVideo();
+		cleanAudioStates();
+		call_status->resetStatus();
+	}
 }
 
 void VCTCall::handleClose()
@@ -498,6 +510,7 @@ void VCTCall::handleClose()
 VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 {
 	dev = d;
+	already_closed = false;
 	// Manage only the ringtones, the other values are managed by the VCTCall
 	// object, to avoid duplicated code between the VCTCallPage and the VCTCallWindow.
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
@@ -530,8 +543,7 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 	vct_call->video_box->setFixedSize(352, 240);
 
 	BtButton *back = new BtButton(bt_global::skin->getImage("back"));
-	connect(back, SIGNAL(clicked()), vct_call, SLOT(endCall()));
-	connect(back, SIGNAL(clicked()), SLOT(handleClose()));
+	connect(back, SIGNAL(clicked()), SLOT(backClicked()));
 
 	QHBoxLayout *bottom = new QHBoxLayout;
 	bottom->setContentsMargins(0, 0, 0, 0);
@@ -557,6 +569,13 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 VCTCallPage::~VCTCallPage()
 {
 	delete VCTCall::call_status;
+}
+
+void VCTCallPage::backClicked()
+{
+	vct_call->endCall();
+	if (dev->vctMode() == EntryphoneDevice::SCS_MODE)
+		handleClose();
 }
 
 void VCTCallPage::valueReceived(const DeviceValues &values_list)
@@ -590,17 +609,21 @@ void VCTCallPage::cleanUp()
 	// autoswitch call) and terminate the video.
 	vct_call->endCall();
 
-	disconnect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), this, SLOT(playRingtone()));
-	disconnect(bt_global::display, SIGNAL(directScreenAccessStopped()), this, SLOT(showPage()));
-
-	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
+	already_closed = true;
+	// For IP calls we have to send the end of call frame and wait that the same
+	// frame came back on the monitor channel to avoid problems with the underlying
+	// audio system.
+	// But the cleanUp method is designed to be syncronous, so we have to use this
+	// trick to obtain the same result (the page is closed and the script audio were
+	// called only after the incoming END_OF_CALL frame).
+	// TODO: we can do better refactor the pagestack!
+	if (dev->vctMode() == EntryphoneDevice::IP_MODE)
 	{
-		bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
-		bt_global::ringtones->stopRingtone();
+		while (vct_call->call_status->call_active) // We wait for the callClosed()
+			QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 	}
-
-	bt_global::btmain->vde_call_active = false;
-	vct_call->enable();
+	else
+		handleClose();
 }
 
 void VCTCallPage::handleClose()
@@ -616,7 +639,10 @@ void VCTCallPage::handleClose()
 
 	bt_global::btmain->vde_call_active = false;
 	vct_call->enable();
-	emit Closed();
+	if (!already_closed)
+		emit Closed();
+
+	already_closed = false;
 }
 
 int VCTCallPage::sectionId() const

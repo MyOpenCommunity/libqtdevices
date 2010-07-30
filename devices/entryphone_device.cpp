@@ -134,7 +134,13 @@ void EntryphoneDevice::endCall()
 {
 	QString what = QString("%1#%2#%3").arg(END_OF_CALL).arg(kind).arg(mmtype);
 	sendFrame(createCommandFrame(who, what, QString(END_ALL_CALLS) + where));
-	resetCallState();
+
+	// In the vct full ip we have to wait to execute the scripts after the end
+	// of the calls. So we wait for the END_OF_CALL frame that the underlying
+	// bt_<process> forward on the monitor channel to close the call from the
+	// GUI/device point of view.
+	if (vct_mode == SCS_MODE)
+		resetCallState();
 }
 
 void EntryphoneDevice::initVctProcess()
