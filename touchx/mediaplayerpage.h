@@ -25,6 +25,9 @@
 #include "page.h"
 
 #include <QTimer>
+#include <QList>
+#include <QString>
+
 
 class MediaPlayer;
 class MultimediaPlayerButtons;
@@ -88,7 +91,7 @@ protected:
 
 	MediaPlayer *player;
 
-	// can be conntec
+	// can be connected
 	QTimer refresh_data;
 
 private slots:
@@ -102,6 +105,7 @@ private slots:
 private:
 	// set to true when the player is paused due to a audio state change (es. vct call)
 	bool resume_on_state_change;
+
 };
 
 #endif // MEDIAPLAYERPAGE_H

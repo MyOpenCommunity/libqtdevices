@@ -41,6 +41,9 @@
 #include <QLabel>
 #include <QVariant> // for setProperty
 
+// The timeout for a single item in msec
+#define LOOP_TIMEOUT 2000
+
 
 AudioPlayerTray *AudioPlayerPage::tray_icon = NULL;
 
@@ -95,6 +98,14 @@ QVector<AudioPlayerPage *>AudioPlayerPage::audioPlayerPages()
 AudioPlayerPage::AudioPlayerPage(MediaType t)
 {
 	type = t;
+	// Sometimes it happens that mplayer can't reproduce a song or a web radio,
+	// for example because the network is down. In this case the mplayer exits
+	// immediately with the signal mplayerDone (== everything ok). Since the
+	// UI starts reproducing the next item when receiving the mplayerDone signal,
+	// this causes an infinite loop. To avoid that, we count the time elapsed to
+	// reproduce the whole item list, and if it is under LOOP_TIMEOUT * num_of_items
+	// we stop the reproduction.
+	loop_starting_file = -1;
 
 	QWidget *content = new QWidget;
 	NavigationBar *nav_bar = new NavigationBar;
@@ -170,8 +181,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	}
 
 	connect(player, SIGNAL(mplayerStarted()), SLOT(showTrayIcon()));
-	connect(player, SIGNAL(mplayerKilled()), SLOT(hideTrayIcon()));
-	connect(player, SIGNAL(mplayerAborted()), SLOT(hideTrayIcon()));
+	connect(this, SIGNAL(Closed()), SLOT(hideTrayIcon()));
 }
 
 int AudioPlayerPage::sectionId() const
@@ -220,6 +230,8 @@ void AudioPlayerPage::playAudioFilesBackground(QList<QString> files, unsigned el
 	total_files = files.size();
 	file_list = files;
 
+	loop_starting_file = -1;
+
 	displayMedia(current_file);
 }
 
@@ -229,6 +241,8 @@ void AudioPlayerPage::playAudioFiles(QList<QString> files, unsigned element)
 	total_files = files.size();
 	file_list = files;
 	showPage();
+
+	loop_starting_file = -1;
 
 	displayMedia(current_file);
 }
@@ -246,6 +260,28 @@ void AudioPlayerPage::previous()
 
 void AudioPlayerPage::next()
 {
+	if (loop_starting_file == -1)
+	{
+		loop_starting_file = current_file;
+		loop_total_time = total_files * LOOP_TIMEOUT;
+		loop_time_counter.start();
+	}
+	else if (loop_starting_file == current_file)
+	{
+		if (loop_time_counter.elapsed() < loop_total_time)
+		{
+			qWarning() << "MediaPlayer: loop detected, force stop";
+			stop();
+			return;
+		}
+		else
+		{
+			// we restart the time counter to find loop that happens when the player
+			// is already started.
+			loop_time_counter.start();
+		}
+	}
+
 	clearLabels();
 	MediaPlayerPage::next();
 	if (player->isPaused())

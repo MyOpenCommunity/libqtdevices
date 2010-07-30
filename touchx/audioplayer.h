@@ -25,6 +25,8 @@
 #include "mediaplayerpage.h"
 #include "btbutton.h"
 
+#include <QTime>
+
 class QLabel;
 class AudioPlayerPage;
 class VirtualSourceDevice;
@@ -101,6 +103,9 @@ private:
 	// icon in tray bar
 	static AudioPlayerTray *tray_icon;
 	static QVector<AudioPlayerPage *> audioplayer_pages;
+
+	int loop_starting_file, loop_total_time;
+	QTime loop_time_counter;
 };
 
 #endif

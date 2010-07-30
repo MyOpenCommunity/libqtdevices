@@ -31,6 +31,7 @@ MediaPlayerPage::MediaPlayerPage() : refresh_data(this)
 {
 	player = new MediaPlayer(this);
 	resume_on_state_change = false;
+	current_file = 0;
 
 	// terminate player when unmounted
 	connect(&MountWatcher::getWatcher(), SIGNAL(directoryMounted(QString,MountType)), SLOT(unmounted(QString)));
@@ -86,9 +87,8 @@ void MediaPlayerPage::connectMultimediaButtons(MultimediaPlayerButtons *buttons)
 
 	// handle mplayer termination
 	connect(player, SIGNAL(mplayerDone()), SLOT(next()));
-	connect(player, SIGNAL(mplayerAborted()), SLOT(videoPlaybackTerminated()));
-	connect(player, SIGNAL(mplayerKilled()), SLOT(videoPlaybackTerminated()));
 }
+
 
 void MediaPlayerPage::stop()
 {
