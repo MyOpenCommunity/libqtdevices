@@ -665,14 +665,6 @@ void BtMain::makeActive()
 	qDebug() << "BtMain::makeActive";
 	last_event_time = now();
 
-	// only exit the screensaver if it is running
-	if (screensaver && screensaver->isRunning())
-	{
-		bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
-		emit stopscreensaver();
-		screensaver->stop();
-	}
-
 	if (bt_global::display->currentState() == DISPLAY_OFF ||
 		bt_global::display->currentState() == DISPLAY_SCREENSAVER ||
 		bt_global::display->currentState() == DISPLAY_FREEZED)
@@ -681,6 +673,9 @@ void BtMain::makeActive()
 		{
 			if (bt_global::display->currentState() != DISPLAY_FREEZED)
 			{
+				emit stopscreensaver(); // emitted both in DISPLAY_OFF and DISPLAY_SCREENSAVER
+				if (screensaver && screensaver->isRunning())
+					screensaver->stop();
 				bt_global::display->setState(DISPLAY_FREEZED);
 				freeze(true);
 			}
@@ -750,9 +745,17 @@ void BtMain::checkScreensaver()
 		// the stopscreensaver() event is emitted when the user clicks on screen
 		if (screensaver && screensaver->isRunning())
 			screensaver->stop();
+		else
+		{
+			// Some pages do things when the screensaver starts. For example the
+			// RDS radio stop the RDS updates. We want the same behaviour when
+			// the screen turn off.
+			emit startscreensaver(page_container->currentPage());
+		}
 		if (bt_global::display->currentState() != DISPLAY_SCREENSAVER)
 			bt_global::audio_states->toState(AudioStates::SCREENSAVER);
 		bt_global::display->setState(DISPLAY_OFF);
+
 	}
 	else if (time >= freeze_time && getBacklight() && !frozen)
 	{
