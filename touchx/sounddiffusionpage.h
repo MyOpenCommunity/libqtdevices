@@ -211,12 +211,15 @@ public:
 
 private slots:
 	void valueReceived(const DeviceValues &device_values);
+	void vctValueReceived(const DeviceValues &device_values); // Values received from the VCT device (if present)
+
 	void audioStateChanged(int new_state, int old_state);
 	void reenableLocalAmplifier();
 
 private:
 	VirtualAmplifierDevice *dev;
 	bool state;
+	bool disabled;
 	int level;
 };
 

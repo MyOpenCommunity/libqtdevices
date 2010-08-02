@@ -38,10 +38,10 @@ PlatformDevice::PlatformDevice() : device(QString("13"), QString(""))
 
 void PlatformDevice::init()
 {
-	requestFirmwareVersion();
-	requestKernelVersion();
-	requestIp();
-	requestNetmask();
+//	requestFirmwareVersion();
+//	requestKernelVersion();
+//	requestIp();
+//	requestNetmask();
 }
 
 void PlatformDevice::setTime(const BtTime &t)
@@ -73,47 +73,47 @@ void PlatformDevice::enableLan(bool enable)
 
 void PlatformDevice::requestStatus() const
 {
-	sendRequest(DIM_STATUS);
+//	sendRequest(DIM_STATUS);
 }
 
 void PlatformDevice::requestIp() const
 {
-	sendRequest(DIM_IP);
+//	sendRequest(DIM_IP);
 }
 
 void PlatformDevice::requestNetmask() const
 {
-	sendRequest(DIM_NETMASK);
+//	sendRequest(DIM_NETMASK);
 }
 
 void PlatformDevice::requestMacAddress() const
 {
-	sendRequest(DIM_MACADDR);
+//	sendRequest(DIM_MACADDR);
 }
 
 void PlatformDevice::requestGateway() const
 {
-	sendRequest(DIM_GATEWAY);
+//	sendRequest(DIM_GATEWAY);
 }
 
 void PlatformDevice::requestDNS1() const
 {
-	sendRequest(DIM_DNS1);
+//	sendRequest(DIM_DNS1);
 }
 
 void PlatformDevice::requestDNS2() const
 {
-	sendRequest(DIM_DNS2);
+//	sendRequest(DIM_DNS2);
 }
 
 void PlatformDevice::requestKernelVersion() const
 {
-	sendRequest(DIM_KERN_VERS);
+//	sendRequest(DIM_KERN_VERS);
 }
 
 void PlatformDevice::requestFirmwareVersion() const
 {
-	sendRequest(DIM_FW_VERS);
+//	sendRequest(DIM_FW_VERS);
 }
 
 bool PlatformDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)

@@ -169,7 +169,6 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	tester = new ConnectionTester(this);
 	connect(tester, SIGNAL(testFailed()), SLOT(connectionDown()));
 	connect(tester, SIGNAL(testPassed()), SLOT(connectionUp()));
-	tester->test();
 
 	QWidget *content = new QWidget;
 	QVBoxLayout *main_layout = new QVBoxLayout(content);
@@ -222,6 +221,7 @@ void LanSettings::inizializza()
 	qDebug() << "LanSettings::inizializza()";
 	dev->enableLan(saved_status);
 	requestNetworkInfo(dev);
+	tester->test();
 }
 
 void LanSettings::showPage()

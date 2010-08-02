@@ -40,6 +40,7 @@
 #include "audiostatemachine.h"
 #include "labels.h" // ScrollingLabel
 #include "audioplayer.h"
+#include "entryphone_device.h"
 
 #include <QDomNode>
 #include <QGridLayout>
@@ -618,6 +619,7 @@ void SoundDiffusionAlarmPage::showPage()
 
 LocalAmplifier::LocalAmplifier(QObject *parent) : QObject(parent)
 {
+	disabled = false;
 	state = false;
 	level = localVolumeToAmplifier(bt_global::audio_states->getLocalAmplifierVolume());
 
@@ -628,6 +630,32 @@ LocalAmplifier::LocalAmplifier(QObject *parent) : QObject(parent)
 
 	dev->updateStatus(state);
 	dev->updateVolume(level);
+
+	if (!(*bt_global::config)[PI_ADDRESS].isEmpty())
+	{
+		EntryphoneDevice *vct_dev = new EntryphoneDevice((*bt_global::config)[PI_ADDRESS], (*bt_global::config)[PI_MODE]);
+		vct_dev = bt_global::add_device_to_cache(vct_dev);
+		connect(vct_dev, SIGNAL(valueReceived(DeviceValues)), SLOT(vctValueReceived(DeviceValues)));
+	}
+
+}
+
+void LocalAmplifier::vctValueReceived(const DeviceValues &values_list)
+{
+	if (disabled && values_list.contains(EntryphoneDevice::RESTORE_MM_AMPLI) ||
+		!disabled && values_list.contains(EntryphoneDevice::DISABLE_MM_AMPLI))
+	{
+		disabled = values_list.contains(EntryphoneDevice::DISABLE_MM_AMPLI);
+		qDebug() << "LocalAmplifier::vctValueReceived " << disabled;
+		bt_global::audio_states->setLocalAmplifierTemporaryOff(disabled);
+
+		if (bt_global::audio_states->getLocalAmplifierStatus())
+		{
+			dev->updateStatus(!disabled);
+			if (!disabled)
+				dev->updateVolume(localVolumeToAmplifier(bt_global::audio_states->getLocalAmplifierVolume()));
+		}
+	}
 }
 
 void LocalAmplifier::audioStateChanged(int new_state, int old_state)

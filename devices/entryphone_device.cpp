@@ -208,7 +208,7 @@ void EntryphoneDevice::moveRightRelease() const
 bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	int what = msg.what();
-	if (what == MM_AMPLI_OFF || what == MM_AMPLI_ON)
+	if (what == DISABLE_MM_AMPLI || what == RESTORE_MM_AMPLI)
 	{
 		values_list[what] = true;
 		return true;

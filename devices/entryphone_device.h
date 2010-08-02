@@ -60,8 +60,8 @@ public:
 		CALLER_ADDRESS = 9,
 		STOP_VIDEO = 202, // the value doesn't matter
 		VCT_TYPE,  // the value doesn't matter
-		MM_AMPLI_ON = 64,
-		MM_AMPLI_OFF = 63,
+		RESTORE_MM_AMPLI = 64,
+		DISABLE_MM_AMPLI = 63,
 	};
 
 	enum VctType

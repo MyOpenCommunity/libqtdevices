@@ -493,7 +493,8 @@ void AudioStateMachine::setLocalAmplifierTemporaryOff(bool off)
 
 	local_amplifier_temporary_off = off;
 
-	if (!local_amplifier_temporary_off)
+	// Restore the old volume
+	if (!local_amplifier_temporary_off && local_amplifier_status)
 		changeVolumePath(Volumes::MM_AMPLIFIER);
 	else
 		changeVolumePath(Volumes::MM_AMPLIFIER, 0);
@@ -665,6 +666,7 @@ void AudioStateMachine::statePlayDifsonExited()
 
 	if (local_amplifier_status)
 		changeVolumePath(Volumes::MM_AMPLIFIER, 0);
+
 	// always leave local amplifier active on exit
 	activateLocalAmplifier();
 
@@ -679,12 +681,8 @@ void AudioStateMachine::statePlayRingtoneEntered()
 {
 	qDebug() << "AudioStateMachine::statePlayRingtoneEntered";
 
-	// TODO: move this check in the changeVolumePath!
-	if (current_audio_path != Volumes::RINGTONES)
-	{
-		current_audio_path = Volumes::RINGTONES;
-		changeVolumePath(Volumes::RINGTONES);
-	}
+	current_audio_path = Volumes::RINGTONES;
+	changeVolumePath(Volumes::RINGTONES);
 }
 
 void AudioStateMachine::statePlayRingtoneExited()
