@@ -52,6 +52,7 @@ namespace
 
 RadioInfo::RadioInfo(const QString &background_image, QString _area, RadioSourceDevice *_dev)
 {
+	screensaver_running = false;
 	shown = false;
 	area = _area;
 	dev = _dev;
@@ -92,12 +93,14 @@ void RadioInfo::setArea(const QString &_area)
 
 void RadioInfo::screensaverStarted()
 {
+	screensaver_running = true;
 	if (shown && dev->rdsUpdates())
 		dev->requestStopRDS();
 }
 
 void RadioInfo::screensaverStopped()
 {
+	screensaver_running = false;
 	if (shown && dev->isActive(area) && !dev->rdsUpdates())
 		dev->requestStartRDS();
 }
@@ -109,7 +112,7 @@ void RadioInfo::valueReceived(const DeviceValues &values_list)
 		switch (dim)
 		{
 		case RadioSourceDevice::DIM_AREAS_UPDATED:
-			if (shown)
+			if (shown && !screensaver_running)
 			{
 				if (dev->isActive(area) && !dev->rdsUpdates())
 					dev->requestStartRDS();

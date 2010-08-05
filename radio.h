@@ -61,6 +61,7 @@ private:
 	QLabel *radio_name, *frequency, *channel;
 	RadioSourceDevice *dev;
 	bool shown;
+	bool screensaver_running;
 };
 
 
