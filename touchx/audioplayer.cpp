@@ -181,7 +181,8 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	}
 
 	connect(player, SIGNAL(mplayerStarted()), SLOT(showTrayIcon()));
-	connect(this, SIGNAL(Closed()), SLOT(hideTrayIcon()));
+	connect(player, SIGNAL(mplayerKilled()), SLOT(hideTrayIcon()));
+	connect(player, SIGNAL(mplayerAborted()), SLOT(hideTrayIcon()));
 }
 
 int AudioPlayerPage::sectionId() const
@@ -272,6 +273,7 @@ void AudioPlayerPage::next()
 		{
 			qWarning() << "MediaPlayer: loop detected, force stop";
 			stop();
+			hideTrayIcon();
 			return;
 		}
 		else
