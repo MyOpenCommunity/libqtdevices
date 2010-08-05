@@ -367,7 +367,7 @@ void VCTCall::startVideo()
 
 void VCTCall::stopVideo()
 {
-	if (call_status->video_enabled && video_grabber.state() == QProcess::Running)
+	if (call_status->video_enabled && video_grabber.state() != QProcess::NotRunning)
 		video_grabber.terminate();
 }
 

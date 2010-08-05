@@ -248,7 +248,7 @@ void InnerPageTemperatureDisplay::paintEvent(QPaintEvent *e)
 	QLabel::paintEvent(e);
 	QPainter p(this);
 
-	p.drawText(rect().adjusted(0, 0, -3, 0), Qt::AlignRight|Qt::AlignVCenter, label);
+	p.drawText(rect().adjusted(0, 0, -3, -3), Qt::AlignRight|Qt::AlignVCenter, label);
 }
 
 
