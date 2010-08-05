@@ -85,6 +85,11 @@ RadioInfo::RadioInfo(const QString &background_image, QString _area, RadioSource
 	connect(bt_global::btmain, SIGNAL(stopscreensaver()), SLOT(screensaverStopped()));
 }
 
+void RadioInfo::setArea(const QString &_area)
+{
+	area = _area;
+}
+
 void RadioInfo::screensaverStarted()
 {
 	if (shown && dev->rdsUpdates())
@@ -165,11 +170,9 @@ void RadioInfo::setRadioName(const QString &rds)
 #define REQUEST_FREQUENCY_TIME 1000
 #define MEMORY_PRESS_TIME 3000
 
-RadioPage::RadioPage(QString _area, RadioSourceDevice *_dev, const QString &amb)
+RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &amb)
 {
 	dev = _dev;
-	area = _area;
-
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
@@ -183,6 +186,11 @@ RadioPage::RadioPage(QString _area, RadioSourceDevice *_dev, const QString &amb)
 	request_frequency.setInterval(REQUEST_FREQUENCY_TIME);
 	request_frequency.setSingleShot(true);
 	connect(&request_frequency, SIGNAL(timeout()), SLOT(requestFrequency()));
+}
+
+void RadioPage::setArea(const QString &area)
+{
+	radio_info->setArea(area);
 }
 
 void RadioPage::hideEvent(QHideEvent *)
@@ -200,7 +208,7 @@ QWidget *RadioPage::createContent()
 	QWidget *content = new QWidget;
 
 	// radio description, with frequency and memory station
-	radio_info = new RadioInfo(bt_global::skin->getImage("details_display"), area, dev);
+	radio_info = new RadioInfo(bt_global::skin->getImage("details_display"), QString(), dev);
 
 	// tuning control, manual/auto buttons
 	minus_button = new BtButton(bt_global::skin->getImage("minus"));

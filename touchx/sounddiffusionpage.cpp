@@ -147,9 +147,9 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 		{
 			RadioSourceDevice *dev = bt_global::add_device_to_cache(new RadioSourceDevice(s.where));
 			if (!s.details)
-				s.details = new RadioPage(area, dev);
+				s.details = new RadioPage(dev);
 
-			w = new RadioSource(area, dev, s.details);
+			w = new RadioSource(area, dev, static_cast<RadioPage*>(s.details));
 			break;
 		}
 		case SOURCE_AUX_MONO:

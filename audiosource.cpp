@@ -149,7 +149,7 @@ void MediaSource::sourceStateChanged(bool active)
 }
 
 
-RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, Page *details) :
+RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, RadioPage *details) :
 	AudioSource(area, dev, details)
 {
 	radio_info = new RadioInfo(bt_global::skin->getImage("source_background"), area, dev);
@@ -171,6 +171,12 @@ RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, Page *deta
 
 	connect(this, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
 
+}
+
+void RadioSource::showDetails()
+{
+	static_cast<RadioPage*>(details)->setArea(area);
+	AudioSource::showDetails();
 }
 
 void RadioSource::sourceStateChanged(bool active)

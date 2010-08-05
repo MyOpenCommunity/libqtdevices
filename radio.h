@@ -49,6 +49,7 @@ public:
 	void setRadioName(const QString &rds);
 
 	void isShown(bool sh);
+	void setArea(const QString &area);
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);
@@ -71,7 +72,11 @@ class  RadioPage : public Page
 {
 Q_OBJECT
 public:
-	RadioPage(QString area, RadioSourceDevice *dev, const QString &amb = tr("RDS Radio"));
+	RadioPage(RadioSourceDevice *dev, const QString &amb = tr("RDS Radio"));
+
+	// The page is shared between different areas, so we need to set the area
+	// every time that it is shown.
+	void setArea(const QString &area);
 
 protected:
 	virtual void showEvent(QShowEvent *);
@@ -113,9 +118,6 @@ private slots:
 	 * \brief Changes the state to manual search
 	 */
 	void setManual();
-
-private:
-	QString area;
 };
 
 #endif // RADIO_H

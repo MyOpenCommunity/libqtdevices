@@ -30,6 +30,7 @@ class TextOnImageLabel;
 class VirtualSourceDevice;
 class RadioSourceDevice;
 class RadioInfo;
+class RadioPage;
 
 
 /**
@@ -57,7 +58,7 @@ protected:
 
 protected slots:
 	void turnOn();
-	void showDetails();
+	virtual void showDetails();
 
 protected:
 	QString area;
@@ -110,10 +111,13 @@ class RadioSource : public AudioSource
 {
 Q_OBJECT
 public:
-	RadioSource(const QString &area, RadioSourceDevice *dev, Page *details);
+	RadioSource(const QString &area, RadioSourceDevice *dev, RadioPage *details);
 
 	virtual void sourceHidden();
 	virtual void sourceShowed();
+
+protected slots:
+	virtual void showDetails();
 
 private slots:
 	void sourceStateChanged(bool active);
