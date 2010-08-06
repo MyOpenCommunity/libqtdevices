@@ -53,7 +53,7 @@ inline bool operator==(const Message &m1, const Message &m2)
  */
 namespace MessageDevicePrivate
 {
-	static const int TIMEOUT = 3000;
+	static const int TIMEOUT = 5000;
 
 	int checksum(const QString &string);
 	Message parseMessage(const QString &raw_message);
