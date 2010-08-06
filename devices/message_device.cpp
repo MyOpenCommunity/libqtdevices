@@ -214,22 +214,23 @@ void MessageDevice::timeout()
 
 void MessageDevice::sendReady()
 {
-	sendCommand(QString::number(COMMAND_READY), QString("%1#8#00#%2#8").arg(cdp_where).arg(where));
+	sendCommand(QString::number(COMMAND_READY), QString("%1#00#%2").arg(cdp_where).arg(where));
+
 }
 
 void MessageDevice::sendBusy(const QString &caller_where)
 {
-	sendCommand(QString::number(COMMAND_BUSY), QString("%1#8#00#%2#8").arg(caller_where).arg(where));
+	sendCommand(QString::number(COMMAND_BUSY), QString("%1#00#%2").arg(caller_where).arg(where));
 }
 
 void MessageDevice::sendWrongChecksum(const QString &message_id)
 {
-	sendCommand(QString("%1#%2").arg(COMMAND_WRONG_CHECKSUM).arg(message_id), QString("%1#8#00#%2#8").arg(cdp_where).arg(where));
+	sendCommand(QString("%1#%2").arg(COMMAND_WRONG_CHECKSUM).arg(message_id), QString("%1#00#%2").arg(cdp_where).arg(where));
 }
 
 void MessageDevice::sendTimeout()
 {
-	sendCommand(QString("%1#%2").arg(COMMAND_TIMEOUT).arg(message.size()), QString("%1#8#00#%2#8").arg(cdp_where).arg(where));
+	sendCommand(QString("%1#%2").arg(COMMAND_TIMEOUT).arg(message.size()), QString("%1#00#%2").arg(cdp_where).arg(where));
 }
 
 void MessageDevice::resetTimer()
