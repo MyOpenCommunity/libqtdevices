@@ -94,6 +94,7 @@ private slots:
 	void gotoSoundDiffusion();
 	void showTrayIcon();
 	void hideTrayIcon();
+	void quit();
 
 private:
 	AudioPlayerPage(MediaType type);

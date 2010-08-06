@@ -148,6 +148,10 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(type == IP_RADIO ? MultimediaPlayerButtons::IPRADIO_PAGE : MultimediaPlayerButtons::AUDIO_PAGE);
 	connectMultimediaButtons(buttons);
 
+	// a radio channel is without an end. If mplayer has finished maybe there is an error.
+	const char *done_slot = (type == IP_RADIO) ? SLOT(quit()) : SLOT(next());
+	connect(player, SIGNAL(mplayerDone()), done_slot);
+
 	l_btn->addWidget(buttons);
 	l_btn->addStretch(0);
 	if (goto_sounddiff)
@@ -259,6 +263,12 @@ void AudioPlayerPage::previous()
 	track->setText(tr("Track: %1 / %2").arg(current_file + 1).arg(total_files));
 }
 
+void AudioPlayerPage::quit()
+{
+	stop();
+	hideTrayIcon();
+}
+
 void AudioPlayerPage::next()
 {
 	if (loop_starting_file == -1)
@@ -272,8 +282,7 @@ void AudioPlayerPage::next()
 		if (loop_time_counter.elapsed() < loop_total_time)
 		{
 			qWarning() << "MediaPlayer: loop detected, force stop";
-			stop();
-			hideTrayIcon();
+			quit();
 			return;
 		}
 		else

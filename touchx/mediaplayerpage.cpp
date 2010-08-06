@@ -84,11 +84,7 @@ void MediaPlayerPage::connectMultimediaButtons(MultimediaPlayerButtons *buttons)
 	connect(player, SIGNAL(mplayerKilled()), buttons, SLOT(stopped()));
 	connect(player, SIGNAL(mplayerAborted()), buttons, SLOT(stopped()));
 	connect(player, SIGNAL(mplayerPaused()), buttons, SLOT(stopped()));
-
-	// handle mplayer termination
-	connect(player, SIGNAL(mplayerDone()), SLOT(next()));
 }
-
 
 void MediaPlayerPage::stop()
 {

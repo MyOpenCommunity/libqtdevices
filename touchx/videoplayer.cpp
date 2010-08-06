@@ -61,6 +61,9 @@ VideoPlayerPage::VideoPlayerPage()
 	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::VIDEO_PAGE);
 	connectMultimediaButtons(buttons);
 
+	// handle mplayer termination
+	connect(player, SIGNAL(mplayerDone()), SLOT(next()));
+
 	l->addWidget(title, 0, Qt::AlignHCenter);
 	l->addLayout(v, 1);
 	l->addWidget(buttons, 0, Qt::AlignHCenter);
