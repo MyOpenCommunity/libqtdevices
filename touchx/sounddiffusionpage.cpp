@@ -619,7 +619,7 @@ void SoundDiffusionAlarmPage::showPage()
 
 LocalAmplifier::LocalAmplifier(QObject *parent) : QObject(parent)
 {
-	disabled = false;
+	freezed_level = -1;
 	state = false;
 	level = localVolumeToAmplifier(bt_global::audio_states->getLocalAmplifierVolume());
 
@@ -642,19 +642,22 @@ LocalAmplifier::LocalAmplifier(QObject *parent) : QObject(parent)
 
 void LocalAmplifier::vctValueReceived(const DeviceValues &values_list)
 {
-	if (disabled && values_list.contains(EntryphoneDevice::RESTORE_MM_AMPLI) ||
-		!disabled && values_list.contains(EntryphoneDevice::DISABLE_MM_AMPLI))
+	// Because the "silence frame" can arrive more times we simply ignore it if
+	// we have already silenced the local amplifier.
+	if (freezed_level == -1 && values_list.contains(EntryphoneDevice::SILENCE_MM_AMPLI))
 	{
-		disabled = values_list.contains(EntryphoneDevice::DISABLE_MM_AMPLI);
-		qDebug() << "LocalAmplifier::vctValueReceived " << disabled;
-		bt_global::audio_states->setLocalAmplifierTemporaryOff(disabled);
-
-		if (bt_global::audio_states->getLocalAmplifierStatus())
-		{
-			dev->updateStatus(!disabled);
-			if (!disabled)
-				dev->updateVolume(localVolumeToAmplifier(bt_global::audio_states->getLocalAmplifierVolume()));
-		}
+		freezed_level = bt_global::audio_states->getLocalAmplifierVolume();
+		// We want the same behaviour than the actual amplifier, so we think about
+		// the volume as scs.
+		const int scs_silenced_level = 1;
+		bt_global::audio_states->setLocalAmplifierVolume(scsToLocalVolume(scs_silenced_level));
+		dev->updateVolume(scs_silenced_level);
+	}
+	else if (freezed_level > -1 && values_list.contains(EntryphoneDevice::RESTORE_MM_AMPLI))
+	{
+		bt_global::audio_states->setLocalAmplifierVolume(freezed_level);
+		dev->updateVolume(localVolumeToAmplifier(freezed_level));
+		freezed_level = -1;
 	}
 }
 
@@ -708,7 +711,7 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			break;
 		}
 		case VirtualAmplifierDevice::REQ_VOLUME_UP:
-			if (state && level < 31)
+			if (state && level < 31 && freezed_level == -1)
 			{
 				level += 1;
 				dev->updateVolume(level);
@@ -716,7 +719,7 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			}
 			break;
 		case VirtualAmplifierDevice::REQ_VOLUME_DOWN:
-			if (state && level > 0)
+			if (state && level > 0 && freezed_level == -1)
 			{
 				level -= 1;
 				dev->updateVolume(level);
@@ -724,7 +727,7 @@ void LocalAmplifier::valueReceived(const DeviceValues &device_values)
 			}
 			break;
 		case VirtualAmplifierDevice::REQ_SET_VOLUME:
-			if (state)
+			if (state && freezed_level == -1)
 			{
 				level = device_values[key].toInt();
 				dev->updateVolume(level);

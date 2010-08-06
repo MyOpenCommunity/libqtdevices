@@ -219,7 +219,7 @@ private slots:
 private:
 	VirtualAmplifierDevice *dev;
 	bool state;
-	bool disabled;
+	int freezed_level; // used when we have to freeze the current level and restore it later.
 	int level;
 };
 

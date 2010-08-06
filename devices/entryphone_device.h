@@ -61,7 +61,7 @@ public:
 		STOP_VIDEO = 202, // the value doesn't matter
 		VCT_TYPE,  // the value doesn't matter
 		RESTORE_MM_AMPLI = 64,
-		DISABLE_MM_AMPLI = 63,
+		SILENCE_MM_AMPLI = 63,
 	};
 
 	enum VctType

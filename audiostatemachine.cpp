@@ -508,8 +508,7 @@ bool AudioStateMachine::getLocalAmplifierStatus()
 void AudioStateMachine::setLocalAmplifierVolume(int volume)
 {
 	volumes[Volumes::MM_AMPLIFIER] = volume;
-	if (local_amplifier_status && currentState() == AudioStates::PLAY_DIFSON && !local_amplifier_temporary_off)
-		changeVolumePath(Volumes::MM_AMPLIFIER);
+	changeVolumePath(Volumes::MM_AMPLIFIER);
 }
 
 int AudioStateMachine::getLocalAmplifierVolume()
