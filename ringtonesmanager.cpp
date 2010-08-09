@@ -51,7 +51,7 @@ RingtonesManager::RingtonesManager(QString ringtone_file)
 	}
 
 	sound_player = new SoundPlayer(this);
-	connect(sound_player, SIGNAL(soundFinished()), this, SLOT(soundFinished()));
+	connect(sound_player, SIGNAL(soundFinished()), this, SIGNAL(ringtoneFinished()));
 }
 
 void RingtonesManager::playRingtone(Ringtones::Type t)
@@ -74,11 +74,6 @@ void RingtonesManager::playRingtone(int ring)
 
 	qDebug() << "RingtonesManager::playRingtone:" << ringtone_to_file[ring];
 	sound_player->play(ringtone_to_file[ring]);
-}
-
-void RingtonesManager::soundFinished()
-{
-	emit ringtoneFinished();
 }
 
 void RingtonesManager::stopRingtone()

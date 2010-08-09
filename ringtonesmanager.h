@@ -77,9 +77,6 @@ public:
 signals:
 	void ringtoneFinished();
 
-private slots:
-	void soundFinished();
-
 private:
 	QHash<int, QString> ringtone_to_file;
 	QHash<Ringtones::Type, int> type_to_ringtone;

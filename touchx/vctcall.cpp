@@ -386,22 +386,15 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 		switch (it.key())
 		{
 		case EntryphoneDevice::VCT_CALL:
-			if (dev->ipCall())
-				call_status->video_enabled = false;
-			else
-				call_status->video_enabled = (it.value().toInt() == EntryphoneDevice::AUDIO_VIDEO);
-			if (call_status->stopped)
-				resumeVideo();
-			else
-				emit incomingCall();
-			call_status->call_active = true;
-			break;
 		case EntryphoneDevice::AUTO_VCT_CALL:
 			if (dev->ipCall())
 				call_status->video_enabled = false;
 			else
 				call_status->video_enabled = (it.value().toInt() == EntryphoneDevice::AUDIO_VIDEO);
-			emit autoIncomingCall();
+			if (call_status->stopped && it.key() == EntryphoneDevice::VCT_CALL)
+				resumeVideo();
+			else
+				emit incomingCall();
 			call_status->call_active = true;
 			break;
 		case EntryphoneDevice::CALLER_ADDRESS:
@@ -519,7 +512,6 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 
 	connect(vct_call, SIGNAL(callClosed()), SLOT(handleClose()));
 	connect(vct_call, SIGNAL(incomingCall()), SLOT(incomingCall()));
-	connect(vct_call, SIGNAL(autoIncomingCall()), SLOT(autoIncomingCall()));
 	connect(vct_call, SIGNAL(callerAddress()), SLOT(callerAddress()));
 
 	window = new VCTCallWindow(d);
@@ -578,18 +570,26 @@ void VCTCallPage::valueReceived(const DeviceValues &values_list)
 {
 	if (values_list.contains(EntryphoneDevice::RINGTONE))
 	{
+		// Ring exlusion is always present if the system can receive vct calls.
 		StateButton *ring_exclusion = qobject_cast<StateButton*>(bt_global::btmain->trayBar()->getButton(TrayBar::RING_EXCLUSION));
 
 		ringtone = values_list[EntryphoneDevice::RINGTONE].toInt();
 		if (ringtone == Ringtones::PE1 || ringtone == Ringtones::PE2 ||
 			ringtone == Ringtones::PE3 || ringtone == Ringtones::PE4)
 		{
-			if (!ring_exclusion || !ring_exclusion->getStatus())
+			if (!ring_exclusion->getStatus())
 				connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(playRingtone()));
+
+			// We always enter in the VDE_RINGTONE state, because if we are running an audio files
+			// we want to stop the reproduction even if the ring exclusion is on.
 			if (bt_global::audio_states->currentState() != AudioStates::PLAY_VDE_RINGTONE)
 				bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
-			else if (!ring_exclusion || !ring_exclusion->getStatus())
+			else if (!ring_exclusion->getStatus())
 				playRingtone();
+
+			// We are supposing that the VCT ringtones arrive (only) together the VCT call.
+			if (ring_exclusion->getStatus())
+				manageHandsFree();
 		}
 	}
 }
@@ -645,7 +645,15 @@ int VCTCallPage::sectionId() const
 void VCTCallPage::playRingtone()
 {
 	disconnect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), this, SLOT(playRingtone()));
+	connect(bt_global::ringtones, SIGNAL(ringtoneFinished()), this, SLOT(manageHandsFree()));
 	bt_global::ringtones->playRingtone(static_cast<Ringtones::Type>(ringtone));
+}
+
+void VCTCallPage::manageHandsFree()
+{
+	disconnect(bt_global::ringtones, SIGNAL(ringtoneFinished()), this, SLOT(manageHandsFree()));
+	if (VCTCall::call_status->hands_free)
+		vct_call->toggleCall();
 }
 
 void VCTCallPage::enterFullScreen()
@@ -684,10 +692,11 @@ void VCTCallPage::setProfStudio(bool on)
 
 void VCTCallPage::incomingCall()
 {
-	autoIncomingCall();
-	// We want to answer automatically if hands free is on.
-	if (VCTCall::call_status->hands_free)
-		vct_call->toggleCall();
+	bt_global::btmain->vde_call_active = true;
+	vct_call->refreshStatus();
+
+	showPage();
+	repaint();
 }
 
 void VCTCallPage::callerAddress()
@@ -728,15 +737,6 @@ void VCTCallPage::showEvent(QShowEvent *)
 void VCTCallPage::hideEvent(QHideEvent *)
 {
 	vct_call->stopVideo();
-}
-
-void VCTCallPage::autoIncomingCall()
-{
-	bt_global::btmain->vde_call_active = true;
-	vct_call->refreshStatus();
-
-	showPage();
-	repaint();
 }
 
 

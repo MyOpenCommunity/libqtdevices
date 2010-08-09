@@ -132,7 +132,6 @@ namespace VCTCallPrivate
 	signals:
 		void callClosed();
 		void incomingCall();
-		void autoIncomingCall();
 		void callerAddress();
 
 	private slots:
@@ -205,7 +204,6 @@ protected:
 
 private slots:
 	void incomingCall();
-	void autoIncomingCall();
 	void handleClose();
 	void enterFullScreen();
 	void exitFullScreen();
@@ -214,6 +212,8 @@ private slots:
 	void valueReceived(const DeviceValues &values_list);
 	void playRingtone();
 	void backClicked();
+
+	void manageHandsFree();
 
 private:
 	int ringtone;
