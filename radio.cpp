@@ -136,7 +136,9 @@ void RadioInfo::valueReceived(const DeviceValues &values_list)
 void RadioInfo::isShown(bool sh)
 {
 	shown = sh;
-	if (dev->isActive(area))
+	// we won't activate/disactivate the RDS updates when the screensaver is
+	// running, even if something change the current page.
+	if (dev->isActive(area) && !screensaver_running)
 	{
 		if (shown)
 			dev->requestStartRDS();
