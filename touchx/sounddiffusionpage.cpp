@@ -637,7 +637,6 @@ LocalAmplifier::LocalAmplifier(QObject *parent) : QObject(parent)
 		vct_dev = bt_global::add_device_to_cache(vct_dev);
 		connect(vct_dev, SIGNAL(valueReceived(DeviceValues)), SLOT(vctValueReceived(DeviceValues)));
 	}
-
 }
 
 void LocalAmplifier::vctValueReceived(const DeviceValues &values_list)
@@ -646,17 +645,28 @@ void LocalAmplifier::vctValueReceived(const DeviceValues &values_list)
 	// we have already silenced the local amplifier.
 	if (freezed_level == -1 && values_list.contains(EntryphoneDevice::SILENCE_MM_AMPLI))
 	{
-		freezed_level = bt_global::audio_states->getLocalAmplifierVolume();
-		// We want the same behaviour than the actual amplifier, so we think about
-		// the volume as scs.
+		//  We want the same behaviour than the actual amplifier
 		const int scs_silenced_level = 1;
-		bt_global::audio_states->setLocalAmplifierVolume(scsToLocalVolume(scs_silenced_level));
 		dev->updateVolume(scs_silenced_level);
+
+		// The freezed_level is used both to save and restore the volume of the
+		// local amplifier and to mark the "silenced state".
+		freezed_level = bt_global::audio_states->getLocalAmplifierVolume();
+
+		// If we aren't in the DIFSON state the local amplifier is turned off, so
+		// we only notify the volume.
+		if (bt_global::audio_states->currentState() == AudioStates::PLAY_DIFSON)
+			bt_global::audio_states->setLocalAmplifierVolume(scsToLocalVolume(scs_silenced_level));
 	}
 	else if (freezed_level > -1 && values_list.contains(EntryphoneDevice::RESTORE_MM_AMPLI))
 	{
-		bt_global::audio_states->setLocalAmplifierVolume(freezed_level);
-		dev->updateVolume(localVolumeToAmplifier(freezed_level));
+		if (bt_global::audio_states->currentState() != AudioStates::PLAY_DIFSON)
+			dev->updateVolume(0);
+		else
+		{
+			bt_global::audio_states->setLocalAmplifierVolume(freezed_level);
+			dev->updateVolume(localVolumeToAmplifier(freezed_level));
+		}
 		freezed_level = -1;
 	}
 }
