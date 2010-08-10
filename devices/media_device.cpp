@@ -1254,6 +1254,9 @@ void AuxDevice::init()
 
 bool AuxDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
+	if (where.toStdString() != msg.whereFull())
+		return false;
+
 	if (!isCommandFrame(msg))
 		return false;
 
