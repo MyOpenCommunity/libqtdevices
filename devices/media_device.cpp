@@ -80,6 +80,7 @@ QHash<int, AmplifierDevice*> AlarmSoundDiffDevice::amplifiers;
 AlarmSoundDiffDevice *AlarmSoundDiffDevice::alarm_device = 0;
 QString AmplifierDevice::virtual_amplifier_where;
 bool AmplifierDevice::is_multichannel = false;
+bool SourceDevice::is_multichannel = false;
 
 AlarmSoundDiffDevice::AlarmSoundDiffDevice()
 	: device("22", "")
@@ -286,6 +287,11 @@ SourceDevice::SourceDevice(QString source, int openserver_id) :
 	AlarmSoundDiffDevice::addSource(this, source.toInt());
 }
 
+void SourceDevice::setIsMultichannel(bool multichannel)
+{
+	is_multichannel = multichannel;
+}
+
 void SourceDevice::init()
 {
 	requestActiveAreas();
@@ -408,10 +414,13 @@ bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	if (what == SOURCE_TURNED_ON)
 	{
-		active_areas.insert(QString::fromStdString(msg.whatArg(1)));
+		// As exception, if we are in monochannel mode (where the only area is "0"), we
+		// turn the source on even if the area in the frame is not the right one.
+		QString area = is_multichannel ? QString::fromStdString(msg.whatArg(1)) : "0";
+		active_areas.insert(area);
 		values_list[DIM_AREAS_UPDATED] = QVariant();
 
-		return true; // the frame is managed even if we aren't interested at the values list.
+		return true;
 	}
 
 	if (!isDimensionFrame(msg) || msg.whatArgCnt() == 0)

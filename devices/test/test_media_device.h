@@ -86,6 +86,7 @@ private slots:
 
 	void testActiveAreas();
 	void testActiveAreas2();
+	void testMonochannelArea();
 
 	void testCrash();
 

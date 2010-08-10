@@ -245,6 +245,7 @@ void TestSourceDevice::receiveTrack()
 
 void TestSourceDevice::testActiveAreas()
 {
+	SourceDevice::setIsMultichannel(true);
 	QString area = "5";
 	QCOMPARE(dev->isActive(area), false);
 	QCOMPARE(dev->active_areas.count(), 0);
@@ -268,6 +269,7 @@ void TestSourceDevice::testActiveAreas()
 
 void TestSourceDevice::testActiveAreas2()
 {
+	SourceDevice::setIsMultichannel(true);
 	QString other_id = "2";
 	SourceDevice *other = new SourceDevice(other_id);
 
@@ -301,6 +303,19 @@ void TestSourceDevice::testActiveAreas2()
 	QCOMPARE(dev->isActive(area2), false);
 	QCOMPARE(dev->isActive("15"), true);
 	QCOMPARE(other->isActive(area2), true);
+}
+
+void TestSourceDevice::testMonochannelArea()
+{
+	dev->active_areas.clear();
+	SourceDevice::setIsMultichannel(false);
+	QString monochannel_area = "0";
+	QCOMPARE(dev->isActive(monochannel_area), false);
+
+	OpenMsg frame_on(qPrintable(QString("*22*2#4#%1*5#2#%2##").arg("5").arg(source_id)));
+	dev->manageFrame(frame_on);
+	QCOMPARE(dev->isActive(monochannel_area), true);
+	QCOMPARE(dev->active_areas.count(), 1);
 }
 
 void TestSourceDevice::testCrash()

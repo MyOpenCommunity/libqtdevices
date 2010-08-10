@@ -110,6 +110,7 @@ public:
 
 	virtual void init();
 	QString getSourceId() const { return source_id; }
+	static void setIsMultichannel(bool is_multichannel);
 
 public slots:
 	virtual void nextTrack();
@@ -125,6 +126,7 @@ protected:
 	int mmtype;
 	QString source_id;
 	QSet<QString> active_areas;
+	static bool is_multichannel;
 
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 	// parse status updates for other sources to update the list of areas this device is active on
