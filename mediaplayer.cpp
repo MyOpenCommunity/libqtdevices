@@ -346,8 +346,8 @@ QMap<QString, QString> MediaPlayer::getMediaInfo(const QMap<QString, QString> &d
 	/// Create output Map
 	QMap<QString, QString> info_data = parsePlayerOutput(raw_data, data_search);
 
-	QRegExp paused("=====  PAUSE  =====");
-	if (paused.indexIn(raw_data) > -1)
+	QRegExp paused_rx("=====  PAUSE  =====");
+	if (paused_rx.indexIn(raw_data) > -1)
 		actuallyPaused();
 
 	return info_data;
