@@ -271,6 +271,9 @@ void MediaPlayer::resume()
 
 	if (paused)
 	{
+		// When the user clicks two times on the seek forward (or back) button
+		// mplayer print the pause string, so we need to cleanup its output buffer.
+		mplayer_proc.readAll();
 		execCmd("pause");
 		paused = false;
 		emit mplayerResumed();
