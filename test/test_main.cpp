@@ -36,6 +36,11 @@ int main(int argc, char *argv[])
 	QCoreApplication app(argc, argv);
 	QList<QObject *> test_list;
 
+	// Initialize the config object for tests.
+	bt_global::config = new QHash<GlobalFields, QString>();
+	(*bt_global::config)[TEMPERATURE_SCALE] = CELSIUS;
+	(*bt_global::config)[TS_NUMBER] = "0";
+
 	TestScenEvoDevicesCond test_scenevo_devices_cond;
 	test_list << &test_scenevo_devices_cond;
 
