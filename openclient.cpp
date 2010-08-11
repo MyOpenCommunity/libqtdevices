@@ -69,6 +69,12 @@ bool Client::delay_frames = false;
 
 Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host)
 {
+	QMetaEnum e = staticMetaObject.enumerator(0);
+	if (host != OPENSERVER_ADDR)
+		description = QString("%1 [%2:%3]").arg(e.key(type)).arg(host).arg(port);
+	else
+		description = e.key(type);
+
 	port = !_port ? OPENSERVER_PORT : _port;
 	is_connected = false;
 
@@ -94,7 +100,7 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 
 bool Client::isConnected()
 {
-	// A client of type REQUEST or COMMAND can treat as connected (after the
+	// A client of type REQUEST or COMMAND should treat as connected (after the
 	// first connection is done) until an error occurs, ignoring the disconnect
 	// signal of the underlying socket.
 	return is_connected;
@@ -105,8 +111,7 @@ void Client::socketConnected()
 	is_connected = true;
 	emit connectionUp();
 
-	QMetaEnum e = staticMetaObject.enumerator(0);
-	qDebug("Client::socketConnected()[%s]", e.key(type));
+	qDebug() << "Client::socketConnected()" << qPrintable(description);
 	if (type == MONITOR)
 		socket->write(SOCKET_MONITOR);
 	else if (type == REQUEST)
@@ -139,8 +144,8 @@ void Client::sendFrames(const QList<QByteArray> &to_send)
 	// The openserver closes the connection with sockets of type REQUEST/COMMAND
 	// after 30 seconds of inactivity, while it doesn't close connections of
 	// type MONITOR/SUPERVISOR. So, a client of type COMMAND or REQUEST should
-	// treat as connected even if the read underlying socket is disconnected
-	// without errors.
+	// treat as connected even if the underlying socket is disconnected without
+	// errors.
 	if (!is_connected)
 		return;
 
@@ -165,18 +170,9 @@ void Client::sendFrames(const QList<QByteArray> &to_send)
 
 		int written = socket->write(frame);
 		if (written == -1)
-		{
-			if (host != OPENSERVER_ADDR)
-				qWarning() << "Unable to send the frame:" << frame << QString("to [%1:%2]").arg(host).arg(port);
-			else
-				qWarning() << "Unable to send the frame:" << frame;
-			continue;
-		}
-
-		if (host != OPENSERVER_ADDR)
-			qDebug() << qPrintable(QString("Client::sendFrameOpen()[%1:%2]").arg(host).arg(port)) << "sent:" << frame;
+			qWarning() << "Unable to send the frame" << frame << "to" << qPrintable(description);
 		else
-			qDebug() << "Client::sendFrameOpen() sent:" << frame;
+			qDebug() << "Client::sendFrameOpen()" << qPrintable(description) << "sent:" << frame;
 	}
 }
 
@@ -194,13 +190,13 @@ void Client::sendFrameOpen(const QString &frame_open)
 
 void Client::disconnectFromHost()
 {
-	qDebug() << "Client::disconnectFromHost()";
+	qDebug() << "Client::disconnectFromHost()" << qPrintable(description);
 	socket->abort();
 }
 
 void Client::connectToHost()
 {
-	qDebug() << "Client::connectToHost(), host: " << host << ", port: " << port;
+	qDebug() << "Client::connectToHost()" << qPrintable(description);
 	socket->connectToHost(host, port);
 	if (socket->socketDescriptor() != -1)
 		setTcpKeepaliveParams(socket->socketDescriptor());
@@ -224,10 +220,7 @@ void Client::manageFrame(QByteArray frame)
 {
 	if (type == MONITOR || type == SUPERVISOR)
 	{
-		if (host != OPENSERVER_ADDR)
-			qDebug() << qPrintable(QString("Client::manageFrame()[%1:%2]").arg(host).arg(port)) << "read:" << frame;
-		else
-			qDebug() << "Client::manageFrame() read:" << frame;
+		qDebug() << "Client::manageFrame()" << qPrintable(description) << "read:" << frame;
 
 		if (frame == "*#*1##")
 			qWarning("ERROR - ack received");
@@ -345,11 +338,7 @@ void Client::socketError(QAbstractSocket::SocketError e)
 
 	if (e != QAbstractSocket::RemoteHostClosedError || type == MONITOR || type == SUPERVISOR)
 	{
-		QMetaEnum e = staticMetaObject.enumerator(0);
-
-		qWarning() << qPrintable(QString("OpenClient [%1:%2]: error").arg(host).arg(port))
-			<< socket->errorString() << "occurred on client" << e.key(type);
-
+		qWarning() << "OpenClient: error" << socket->errorString() << "occurred on client" << qPrintable(description);
 		is_connected = false;
 		emit connectionDown();
 	}

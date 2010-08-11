@@ -107,7 +107,11 @@ private slots:
 
 private:
 	QTcpSocket *socket;
+	// The channel type
 	Type type;
+	// The channel description
+	QString description;
+
 	// The address of the openserver
 	QString host;
 	// The port of the openserver
