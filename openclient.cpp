@@ -38,8 +38,9 @@
 #define SOCKET_COMMAND "*99*9##"
 #define SOCKET_REQUEST "*99*0##"
 
-#define FRAME_TIMEOUT 10
+#define FRAME_TIMEOUT_MSECS 10
 
+#define CONNECTION_TIMEOUT_SECS 25
 
 namespace
 {
@@ -91,25 +92,46 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 	// set up the timer for normal and delayed frame sending
 	connect(&frame_timer, SIGNAL(timeout()), SLOT(sendFrames()));
 	frame_timer.setSingleShot(true);
-	frame_timer.setInterval(FRAME_TIMEOUT);
+	frame_timer.setInterval(FRAME_TIMEOUT_MSECS);
 
 	connect(&delayed_frame_timer, SIGNAL(timeout()), SLOT(sendDelayedFrames()));
 	delayed_frame_timer.setSingleShot(true);
-	delayed_frame_timer.setInterval(FRAME_TIMEOUT + (*bt_global::config)[TS_NUMBER].toInt() * TS_NUMBER_FRAME_DELAY);
+	delayed_frame_timer.setInterval(FRAME_TIMEOUT_MSECS + (*bt_global::config)[TS_NUMBER].toInt() * TS_NUMBER_FRAME_DELAY);
 }
 
 bool Client::isConnected()
 {
-	// A client of type REQUEST or COMMAND should treat as connected (after the
-	// first connection is done) until an error occurs, ignoring the disconnect
-	// signal of the underlying socket.
+	// The openserver closes the connection for sockets of type REQUEST/COMMAND
+	// after 30 seconds of inactivity, while it doesn't close connections of
+	// type MONITOR/SUPERVISOR. So, a client of type COMMAND or REQUEST should
+	// treat as connected even if the underlying socket is disconnected without
+	// errors.
 	return is_connected;
 }
 
 void Client::socketConnected()
 {
-	is_connected = true;
-	emit connectionUp();
+	if (!is_connected)
+	{
+		// Signals in the same thread are dispatched immediately, so we have
+		// to set the is_connected variable before the emission of the signal
+		// connectionUp (in order to have a right result for the isConnected
+		// method).
+		is_connected = true;
+		emit connectionUp();
+	}
+	else
+		is_connected = true;
+
+	// Sometimes can happen that the QTCPSocket thinks that the connection is still
+	// up while the openserver has already closes its side of the socket.
+	// To prevent losing frames we use a time counter and manually disconnect the
+	// connection after CONNECTION_TIMEOUT_SECS of inactivity.
+	// NOTE: we cannot use a QTimer because in the startup phase sometimes the
+	// timeout signal has dispatched too late.
+
+	if (type == COMMAND || type == REQUEST)
+		disconnection_time.start();
 
 	qDebug() << "Client::socketConnected()" << qPrintable(description);
 	if (type == MONITOR)
@@ -120,6 +142,12 @@ void Client::socketConnected()
 		socket->write(SOCKET_SUPERVISOR);
 	else
 		socket->write(SOCKET_COMMAND);
+
+	if (!send_on_connected.isEmpty())
+	{
+		sendFrames(send_on_connected);
+		send_on_connected.clear();
+	}
 }
 
 void Client::delayFrames(bool delay)
@@ -130,33 +158,30 @@ void Client::delayFrames(bool delay)
 void Client::sendFrames()
 {
 	sendFrames(list_frames);
-	list_frames.clear();
 }
 
 void Client::sendDelayedFrames()
 {
 	sendFrames(delayed_list_frames);
-	delayed_list_frames.clear();
 }
 
-void Client::sendFrames(const QList<QByteArray> &to_send)
+void Client::sendFrames(QList<QByteArray> &to_send)
 {
-	// The openserver closes the connection with sockets of type REQUEST/COMMAND
-	// after 30 seconds of inactivity, while it doesn't close connections of
-	// type MONITOR/SUPERVISOR. So, a client of type COMMAND or REQUEST should
-	// treat as connected even if the underlying socket is disconnected without
-	// errors.
-	if (!is_connected)
-		return;
+	if ((type == COMMAND || type == REQUEST) && disconnection_time.elapsed() > CONNECTION_TIMEOUT_SECS * 1000)
+	{
+		// We can safely call abort because if we aren't sending frames for
+		// CONNECTION_TIMEOUT_SECS we won't lose frame.
+		socket->abort();
+		qDebug() << "Disconnect for inactivity of" << disconnection_time.elapsed() / 1000
+			<< "seconds on client" << qPrintable(description);
+		disconnection_time.start();
+	}
 
 	if (socket->state() == QAbstractSocket::UnconnectedState || socket->state() == QAbstractSocket::ClosingState)
-		connectToHost();
-
-	// We assume that 100 milliseconds are a reasonable time to connect without problems.
-	if (!socket->waitForConnected(100))
 	{
-		is_connected = false;
-		emit connectionDown();
+		connectToHost();
+		send_on_connected = to_send;
+		to_send.clear();
 		return;
 	}
 
@@ -174,11 +199,31 @@ void Client::sendFrames(const QList<QByteArray> &to_send)
 		else
 			qDebug() << "Client::sendFrameOpen()" << qPrintable(description) << "sent:" << frame;
 	}
+
+	to_send.clear();
+
+	if (type == COMMAND || type == REQUEST)
+	{
+		// Sometimes can happen that the QTCPSocket thinks that the connection is still
+		// up while the openserver has already closes its side of the socket.
+		// To prevent losing frames we use a timer and manually disconnect the connection
+		// after CONNECTION_TIMEOUT_SECS of inactivity.
+		disconnection_time.start();
+	}
 }
 
 void Client::sendFrameOpen(const QString &frame_open)
 {
 	QByteArray frame = frame_open.toLatin1();
+
+	if (!is_connected)
+	{
+		qWarning() << "Client::sendFrameOpen try to send the frame" << frame_open
+			<< "in unconnected state for client" << qPrintable(description);
+		send_on_connected.append(frame);
+		return;
+	}
+
 	// queue the frames to be sent later, but avoid delaying frames indefinitely
 	QList<QByteArray> &list = delay_frames ? delayed_list_frames : list_frames;
 	QTimer &timer = delay_frames ? delayed_frame_timer : frame_timer;
@@ -191,7 +236,8 @@ void Client::sendFrameOpen(const QString &frame_open)
 void Client::disconnectFromHost()
 {
 	qDebug() << "Client::disconnectFromHost()" << qPrintable(description);
-	socket->abort();
+	socket->disconnectFromHost();
+	is_connected = false;
 }
 
 void Client::connectToHost()
@@ -293,8 +339,6 @@ void Client::unsubscribe(FrameReceiver *obj)
 
 int Client::socketFrameRead()
 {
-	qDebug("Client::socketFrameRead()");
-
 	while (true)
 	{
 		QByteArray frame = readFromServer();
@@ -338,7 +382,7 @@ void Client::socketError(QAbstractSocket::SocketError e)
 
 	if (e != QAbstractSocket::RemoteHostClosedError || type == MONITOR || type == SUPERVISOR)
 	{
-		qWarning() << "OpenClient: error" << socket->errorString() << "occurred on client" << qPrintable(description);
+		qWarning() << "Client: error" << socket->errorString() << "occurred on client" << qPrintable(description);
 		is_connected = false;
 		emit connectionDown();
 	}

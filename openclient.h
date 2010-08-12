@@ -27,6 +27,7 @@
 #include <QByteArray>
 #include <QHash>
 #include <QTimer>
+#include <QTime>
 
 #ifndef OPENSERVER_ADDR
 #define OPENSERVER_ADDR "127.0.0.1"
@@ -43,8 +44,8 @@ class FrameReceiver;
 /**
  * This class manages the socket communication throught the application and the openserver.
  *
- * Clients of type MONITOR can be used to receive frames from openserver while clients
- * of types COMMAND or REQUEST can be used to send frames to the openserver.
+ * Clients of type MONITOR/SUPERVISOR can be used to receive frames from openserver while
+ * clients of types COMMAND or REQUEST can be used to send frames to the openserver.
  */
 class Client : public QObject
 {
@@ -65,6 +66,7 @@ public:
 	Client(Type t, const QString &_host=OPENSERVER_ADDR, unsigned _port=0);
 	void sendFrameOpen(const QString &frame_open);
 
+	// This methods should be used for a FrameReceiver that wants to receive frames
 	void subscribe(FrameReceiver *obj, int who);
 	void unsubscribe(FrameReceiver *obj);
 
@@ -75,6 +77,7 @@ public:
 	void flush() { sendDelayedFrames(); sendFrames(); socket->flush(); }
 #endif
 
+	// Used to forward the frames received from a Client to another (for ex: SUPERTVISOR -> MONITOR)
 	void forwardFrame(Client *c);
 
 	static void delayFrames(bool delay);
@@ -129,6 +132,12 @@ private:
 	QList<QByteArray> list_frames, delayed_list_frames;
 	QTimer frame_timer, delayed_frame_timer;
 
+	// The list of the frames to send as soon as the connection is established.
+	QList<QByteArray> send_on_connected;
+
+	// A time counter used to prevent losing frames (see the implementation for details)
+	QTime disconnection_time;
+
 	// This flag marks if the client is logically connected or not.
 	bool is_connected;
 
@@ -142,9 +151,9 @@ private:
 
 	//! Wait for ack (returns 0 on ack, -1 on nak or when socket is a monitor socket)
 	int socketWaitForAck();
-	void dispatchFrame(QString frame);
 
-	void sendFrames(const QList<QByteArray> &to_send);
+	void dispatchFrame(QString frame);
+	void sendFrames(QList<QByteArray> &to_send);
 };
 
 #endif
