@@ -570,7 +570,7 @@ void BtMain::connectionReady()
 
 void BtMain::myMain()
 {
-	// Called when both the connection is up and config is loaded.
+	// Called when both the connection with the main openserver is up and config is loaded.
 	qDebug("BtMain::MyMain");
 
 	// disconnect the connectionReady slot: myMain must be called only once even
