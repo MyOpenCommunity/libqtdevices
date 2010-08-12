@@ -1,9 +1,8 @@
 #include "messages.h"
 #include "itemlist.h"
-#include "skinmanager.h"
 #include "navigation_bar.h"
 #include "main.h"
-#include "generic_functions.h" // DateConvesion::formatDateTimeConfig, getDateTimeConfig
+#include "generic_functions.h" //  DateConversions::formatDateTimeConfig, getDateTimeConfig
 #include "xml_functions.h" // getChildren
 #include "fontmanager.h"
 #include "btbutton.h"
@@ -102,8 +101,7 @@ void MessageList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int
 	box->addLayout(labels, 1);
 
 	// button on the right
-	BtButton *btn = new BtButton;
-	btn->setImage(item.icons[BUTTON_ICON]);
+	BtButton *btn = new BtButton(item.icons[BUTTON_ICON]);
 	box->addWidget(btn, 0, Qt::AlignRight);
 
 	buttons_group->addButton(btn, id_btn);
@@ -172,16 +170,13 @@ void MessagePage::setData(const QString &date, const QString &text, bool already
 AlertMessagePage::AlertMessagePage(const QString &date, const QString &text)
 {
 	QVBoxLayout *box_layout = new QVBoxLayout;
-	QLabel *new_message_label = new QLabel(tr("New Message"));
-	QLabel *date_label = new QLabel(date);
-	QLabel *message_label = new QLabel(text);
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
 	buttons_layout->setSpacing(20);
 	buttons_layout->setContentsMargins(0, 0, 0, 0);
 	buttons_layout->addStretch(1);
 
-	QWidget *content = buildMessagePage(box_layout, new_message_label, date_label, message_label);
+	QWidget *content = buildMessagePage(box_layout, new QLabel(tr("New Message")), new QLabel(date), new QLabel(text));
 
 	BtButton *go_home_button = new BtButton(bt_global::skin->getImage("go_home"));
 	connect(go_home_button, SIGNAL(clicked()), this, SIGNAL(goHome()));
@@ -203,6 +198,11 @@ AlertMessagePage::AlertMessagePage(const QString &date, const QString &text)
 	buildPage(content, static_cast<AbstractNavigationBar*>(0), 0, title_widget);
 }
 
+int AlertMessagePage::sectionId() const
+{
+	return MESSAGES;
+}
+
 
 MessagesListPage::MessagesListPage(const QDomNode &config_node)
 {
@@ -211,11 +211,15 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 	skin_cid = bt_global::skin->getCidState();
 	MessageList *item_list = new MessageList(0, 4);
 
+	delete_page = new DeleteMessagesPage;
+	connect(delete_page, SIGNAL(Closed()), SLOT(showPage()));
+	connect(delete_page, SIGNAL(deleteAll()), SLOT(deleteAll()));
+
 	title = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("delete_all"));
 	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
 	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(nextItem()));
-	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showDeletePage()));
+	connect(nav_bar, SIGNAL(forwardClick()), delete_page, SLOT(showPage()));
 
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(showMessage(int)));
 	connect(item_list, SIGNAL(contentScrolled(int, int)), title, SLOT(setCurrentPage(int, int)));
@@ -231,10 +235,6 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 	connect(message_page, SIGNAL(nextMessage()), SLOT(showNextMessage()));
 	connect(message_page, SIGNAL(prevMessage()), SLOT(showPrevMessage()));
 	connect(message_page, SIGNAL(deleteMessage()), SLOT(deleteMessage()));
-
-	delete_page = new DeleteMessagesPage;
-	connect(delete_page, SIGNAL(Closed()), SLOT(showPage()));
-	connect(delete_page, SIGNAL(deleteAll()), SLOT(deleteAll()));
 
 	MessageDevice *dev = bt_global::add_device_to_cache(new MessageDevice);
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(newMessage(DeviceValues)));
@@ -286,7 +286,7 @@ void MessagesListPage::loadMessages(const QString &filename)
 
 int MessagesListPage::sectionId() const
 {
-		return MESSAGES;
+	return MESSAGES;
 }
 
 void MessagesListPage::newMessage(const DeviceValues &values_list)
@@ -319,7 +319,7 @@ void MessagesListPage::newMessage(const DeviceValues &values_list)
 	AlertMessagePage *page = new AlertMessagePage(date, message.text);
 	connect(page, SIGNAL(goHome()), SLOT(goHome()));
 	connect(page, SIGNAL(goMessagesList()), SLOT(goMessagesList()));
-	connect(page, SIGNAL(deleteMessage()), SLOT(showDeletePage()));
+	connect(page, SIGNAL(deleteMessage()), SLOT(deleteAlertMessage()));
 
 	alert_pages.prepend(page);
 	bt_global::btmain->makeActive();
@@ -382,15 +382,17 @@ void MessagesListPage::deleteAll()
 	title->setCurrentPage(1, 1);
 }
 
+void MessagesListPage::deleteAlertMessage()
+{
+	Q_ASSERT_X(!alert_pages.isEmpty(), "MessagesListPage::deleteAlertMessage", "List of alert empty!");
+	AlertMessagePage *page = alert_pages.takeAt(current_index);
+	page->deleteLater();
+	page_content->removeItem(current_index);
+	saveMessages();
+}
+
 void MessagesListPage::deleteMessage()
 {
-	// Deletes the alert page about the current message.
-	if (alert_pages.size() > 0 && current_index == 0)
-	{
-		AlertMessagePage *page = alert_pages.takeAt(current_index);
-		page->deleteLater();
-	}
-
 	page_content->removeItem(current_index);
 	page_content->showList();
 	saveMessages();
@@ -399,11 +401,6 @@ void MessagesListPage::deleteMessage()
 		showMessage(current_index);
 	else
 		showPage();
-}
-
-void MessagesListPage::showDeletePage()
-{
-	delete_page->showPage();
 }
 
 void MessagesListPage::saveMessages()
@@ -449,6 +446,8 @@ void MessagesListPage::goHome()
 	setMessageAsRead(current_index);
 
 	bt_global::page_stack.clear();
+	foreach (AlertMessagePage *page, alert_pages)
+		page->deleteLater();
 	alert_pages.clear();
 	bt_global::btmain->showHomePage();
 }
@@ -459,6 +458,8 @@ void MessagesListPage::goMessagesList()
 	setMessageAsRead(current_index);
 
 	bt_global::page_stack.clear();
+	foreach (AlertMessagePage *page, alert_pages)
+		page->deleteLater();
 	alert_pages.clear();
 	showPage();
 }

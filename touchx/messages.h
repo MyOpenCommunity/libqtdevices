@@ -88,9 +88,10 @@ class AlertMessagePage : public Page
 Q_OBJECT
 public:
 	AlertMessagePage(const QString &date, const QString &text);
+	virtual int sectionId() const;
 
 public slots:
-	virtual void cleanUp() { deleteLater(); };
+	virtual void cleanUp() { deleteLater(); }
 
 signals:
 	void goHome();
@@ -130,13 +131,15 @@ private:
 private slots:
 	void newMessage(const DeviceValues &values_list);
 	void showMessage(int index);
+
 	// Delete all the messages
 	void deleteAll();
 	// Delete a single message
 	void deleteMessage();
+	void deleteAlertMessage();
+
 	void showPrevMessage();
 	void showNextMessage();
-	void showDeletePage();
 
 	// Slots for the AlarmMessagePage
 	void goHome();
