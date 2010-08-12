@@ -26,6 +26,7 @@
 #include "btbutton.h"
 #include "skinmanager.h"
 #include "pagestack.h"
+#include "main.h" // ANTIINTRUSION
 
 #include <QPixmap>
 #include <QWidget>
@@ -159,3 +160,9 @@ void AlarmPage::cleanUp()
 {
 	deleteLater();
 }
+
+int AlarmPage::sectionId() const
+{
+	return ANTIINTRUSION;
+}
+

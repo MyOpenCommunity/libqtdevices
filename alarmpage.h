@@ -42,6 +42,7 @@ public:
 	} altype;
 
 	AlarmPage(altype t, const QString &description, const QString &zone, const QDateTime &time, int id);
+	virtual int sectionId() const;
 
 public slots:
 	virtual void showPage();
