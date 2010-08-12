@@ -139,9 +139,11 @@ DeleteMessagesPage::DeleteMessagesPage()
 }
 
 
-MessagePage::MessagePage() :
-		date_label(new QLabel), message_label(new QLabel), new_message_label(new QLabel)
+MessagePage::MessagePage()
 {
+	date_label = new QLabel;
+	message_label = new QLabel;
+	new_message_label = new QLabel;
 	QVBoxLayout *box_layout = new QVBoxLayout;
 
 	QWidget *content = buildMessagePage(box_layout, new_message_label, date_label, message_label);
@@ -174,19 +176,27 @@ AlertMessagePage::AlertMessagePage(const QString &date, const QString &text)
 	QLabel *date_label = new QLabel(date);
 	QLabel *message_label = new QLabel(text);
 
+	QHBoxLayout *buttons_layout = new QHBoxLayout;
+	buttons_layout->setSpacing(20);
+	buttons_layout->setContentsMargins(0, 0, 0, 0);
+	buttons_layout->addStretch(1);
+
 	QWidget *content = buildMessagePage(box_layout, new_message_label, date_label, message_label);
 
 	BtButton *go_home_button = new BtButton(bt_global::skin->getImage("go_home"));
 	connect(go_home_button, SIGNAL(clicked()), this, SIGNAL(goHome()));
-	box_layout->addWidget(go_home_button, 0, Qt::AlignHCenter);
+	buttons_layout->addWidget(go_home_button);
 
 	BtButton *go_message_list_button = new BtButton(bt_global::skin->getImage("go_message_list"));
 	connect(go_message_list_button, SIGNAL(clicked()), this, SIGNAL(goMessagesList()));
-	box_layout->addWidget(go_message_list_button, 0, Qt::AlignHCenter);
+	buttons_layout->addWidget(go_message_list_button);
 
 	BtButton *delete_button = new BtButton(bt_global::skin->getImage("delete"));
 	connect(delete_button, SIGNAL(clicked()), this, SIGNAL(deleteMessage()));
-	box_layout->addWidget(delete_button, 0, Qt::AlignHCenter);
+	buttons_layout->addWidget(delete_button);
+	buttons_layout->addStretch(1);
+	box_layout->addSpacing(5);
+	box_layout->addLayout(buttons_layout);
 
 	PageTitleWidget *title_widget = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
 
@@ -198,6 +208,7 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 {
 	Q_UNUSED(config_node)
 	SkinContext context(getTextChild(config_node, "cid").toInt());
+	skin_cid = bt_global::skin->getCidState();
 	MessageList *item_list = new MessageList(0, 4);
 
 	title = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
@@ -281,6 +292,7 @@ int MessagesListPage::sectionId() const
 void MessagesListPage::newMessage(const DeviceValues &values_list)
 {
 	Q_ASSERT_X(values_list[MessageDevice::DIM_MESSAGE].canConvert<Message>(), "MessageListPage::newMessage", "conversion error");
+	bt_global::skin->setCidState(skin_cid);
 	Message message = values_list[MessageDevice::DIM_MESSAGE].value<Message>();
 
 	int count = page_content->itemCount();
@@ -289,7 +301,7 @@ void MessagesListPage::newMessage(const DeviceValues &values_list)
 	if (count > MESSAGES_MAX)
 	{
 		page_content->removeItem(count - 1);
-		AlertMessagePage *page = alert_pages.at(count - 1);
+		AlertMessagePage *page = alert_pages.takeAt(count - 1);
 		page->deleteLater();
 	}
 
@@ -374,7 +386,10 @@ void MessagesListPage::deleteMessage()
 {
 	// Deletes the alert page about the current message.
 	if (alert_pages.size() > 0 && current_index == 0)
-		alert_pages.at(current_index)->deleteLater();
+	{
+		AlertMessagePage *page = alert_pages.takeAt(current_index);
+		page->deleteLater();
+	}
 
 	page_content->removeItem(current_index);
 	page_content->showList();

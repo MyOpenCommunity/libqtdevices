@@ -23,6 +23,7 @@
 
 #include "page.h"
 #include "itemlist.h"
+#include "skinmanager.h" // SkinManager::CidState
 
 #include <QList>
 
@@ -120,6 +121,8 @@ private:
 
 	int current_index;
 	bool need_update;
+	SkinManager::CidState skin_cid; // required to save/restore the cid, when a new message arrives.
+
 	void loadMessages(const QString &filename);
 	void saveMessages();
 	void setMessageAsRead(int index, bool read = true);
