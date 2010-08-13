@@ -123,17 +123,17 @@ void Client::socketConnected()
 	else
 		is_connected = true;
 
-	// Sometimes can happen that the QTCPSocket thinks that the connection is still
+	// Sometimes happens that the QTCPSocket thinks that the connection is still
 	// up while the openserver has already closes its side of the socket.
 	// To prevent losing frames we use a time counter and manually disconnect the
 	// connection after CONNECTION_TIMEOUT_SECS of inactivity.
-	// NOTE: we cannot use a QTimer because in the startup phase sometimes the
-	// timeout signal has dispatched too late.
-
+	// NOTE: we cannot use a QTimer because at the startup sometimes the timeout
+	// signal has dispatched too late.
 	if (type == COMMAND || type == REQUEST)
-		disconnection_time.start();
+		inactivity_time.start();
 
 	qDebug() << "Client::socketConnected()" << qPrintable(description);
+
 	if (type == MONITOR)
 		socket->write(SOCKET_MONITOR);
 	else if (type == REQUEST)
@@ -143,11 +143,8 @@ void Client::socketConnected()
 	else
 		socket->write(SOCKET_COMMAND);
 
-	if (!send_on_connected.isEmpty())
-	{
-		sendFrames(send_on_connected);
+	if (!send_on_connected.isEmpty() && sendFrames(send_on_connected))
 		send_on_connected.clear();
-	}
 }
 
 void Client::delayFrames(bool delay)
@@ -157,32 +154,40 @@ void Client::delayFrames(bool delay)
 
 void Client::sendFrames()
 {
-	sendFrames(list_frames);
+	if (!sendFrames(list_frames))
+		send_on_connected.append(list_frames);
+
+	list_frames.clear();
 }
 
 void Client::sendDelayedFrames()
 {
-	sendFrames(delayed_list_frames);
+	if (!sendFrames(delayed_list_frames))
+		send_on_connected.append(delayed_list_frames);
+
+	delayed_list_frames.clear();
 }
 
-void Client::sendFrames(QList<QByteArray> &to_send)
+bool Client::sendFrames(const QList<QByteArray> &to_send)
 {
-	if ((type == COMMAND || type == REQUEST) && disconnection_time.elapsed() > CONNECTION_TIMEOUT_SECS * 1000)
+	if (socket->state() == QAbstractSocket::ConnectedState && (type == COMMAND || type == REQUEST) &&
+		inactivity_time.elapsed() > CONNECTION_TIMEOUT_SECS * 1000)
 	{
 		// We can safely call abort because if we aren't sending frames for
-		// CONNECTION_TIMEOUT_SECS we won't lose frame.
+		// CONNECTION_TIMEOUT_SECS we won't lose frame. The abort call drop immediately
+		// the connection, so after the call the socket is unconnected.
 		socket->abort();
-		qDebug() << "Disconnect for inactivity of" << disconnection_time.elapsed() / 1000
+		qDebug() << "Disconnect for inactivity of" << inactivity_time.elapsed() / 1000
 			<< "seconds on client" << qPrintable(description);
-		disconnection_time.start();
 	}
 
-	if (socket->state() == QAbstractSocket::UnconnectedState || socket->state() == QAbstractSocket::ClosingState)
+	QAbstractSocket::SocketState state = socket->state();
+	if (state == QAbstractSocket::UnconnectedState || state == QAbstractSocket::ClosingState ||
+		state == QAbstractSocket::HostLookupState || state == QAbstractSocket::ConnectingState)
 	{
-		connectToHost();
-		send_on_connected = to_send;
-		to_send.clear();
-		return;
+		if (state == QAbstractSocket::UnconnectedState || state == QAbstractSocket::ClosingState)
+			connectToHost();
+		return false;
 	}
 
 	QSet<QByteArray> discard_duplicates;
@@ -200,16 +205,10 @@ void Client::sendFrames(QList<QByteArray> &to_send)
 			qDebug() << "Client::sendFrameOpen()" << qPrintable(description) << "sent:" << frame;
 	}
 
-	to_send.clear();
-
 	if (type == COMMAND || type == REQUEST)
-	{
-		// Sometimes can happen that the QTCPSocket thinks that the connection is still
-		// up while the openserver has already closes its side of the socket.
-		// To prevent losing frames we use a timer and manually disconnect the connection
-		// after CONNECTION_TIMEOUT_SECS of inactivity.
-		disconnection_time.start();
-	}
+		inactivity_time.start();
+
+	return true;
 }
 
 void Client::sendFrameOpen(const QString &frame_open)

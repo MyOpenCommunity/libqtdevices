@@ -135,8 +135,8 @@ private:
 	// The list of the frames to send as soon as the connection is established.
 	QList<QByteArray> send_on_connected;
 
-	// A time counter used to prevent losing frames (see the implementation for details)
-	QTime disconnection_time;
+	// The time since the last frame sent (only for REQUEST and COMMAND)
+	QTime inactivity_time;
 
 	// This flag marks if the client is logically connected or not.
 	bool is_connected;
@@ -153,7 +153,9 @@ private:
 	int socketWaitForAck();
 
 	void dispatchFrame(QString frame);
-	void sendFrames(QList<QByteArray> &to_send);
+
+	// try to send the argument frames and return true on success.
+	bool sendFrames(const QList<QByteArray> &to_send);
 };
 
 #endif
