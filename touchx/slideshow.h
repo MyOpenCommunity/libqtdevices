@@ -58,7 +58,7 @@ public slots:
 	// called internally by the slideshow timer
 	void nextImageSlideshow();
 
-	// start/stop the slideshow
+	// start/stop the slideshow. During it, the display mode is forced to be operative.
 	void startSlideshow();
 	void stopSlideshow();
 
@@ -90,9 +90,13 @@ public slots:
 	// starts the slide show from the current image
 	void startSlideshow();
 
+	virtual void cleanUp();
+
 protected:
 	// kills the slideshow timer
 	void hideEvent(QHideEvent *event);
+
+	void showEvent(QShowEvent *event);
 
 private slots:
 	void handleClose();
@@ -107,6 +111,9 @@ private:
 	SlideshowController *controller;
 	SlideshowWindow *window;
 	QPointer<QFutureWatcher<QImage> > async_load;
+	// when we exit from the page due to a videocall or an alarm we want to paused
+	// and then restore the slideshow.
+	bool paused;
 };
 
 
@@ -130,6 +137,8 @@ protected:
 	// kills the slideshow timer
 	void hideEvent(QHideEvent *event);
 
+	void showEvent(QShowEvent *event);
+
 private slots:
 	void handleClose();
 	void showImage(int image);
@@ -146,6 +155,7 @@ private:
 	SlideshowController *controller;
 	SlideshowPage *page;
 	QPointer<QFutureWatcher<QImage> > async_load;
+	bool paused;
 };
 
 #endif // SLIDESHOW_H

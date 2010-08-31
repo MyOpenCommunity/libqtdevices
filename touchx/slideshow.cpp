@@ -102,7 +102,7 @@ void SlideshowController::startSlideshow()
 	if (slideshowActive())
 		return;
 	timer.start(SLIDESHOW_TIMEOUT);
-	(*bt_global::display).forceOperativeMode(true);
+	bt_global::display->forceOperativeMode(true);
 	emit slideshowStarted();
 }
 
@@ -111,7 +111,7 @@ void SlideshowController::stopSlideshow()
 	if (!slideshowActive())
 		return;
 	timer.stop();
-	(*bt_global::display).forceOperativeMode(false);
+	bt_global::display->forceOperativeMode(false);
 	emit slideshowStopped();
 }
 
@@ -132,6 +132,7 @@ SlideshowPage::SlideshowPage()
 {
 	controller = new SlideshowController(this);
 	window = new SlideshowWindow(this);
+	paused = false;
 
 	QWidget *content = new QWidget;
 	QVBoxLayout *l = new QVBoxLayout(content);
@@ -218,9 +219,30 @@ void SlideshowPage::handleClose()
 	emit Closed();
 }
 
-void SlideshowPage::hideEvent(QHideEvent *event)
+void SlideshowPage::cleanUp()
 {
+	// We want that the slideshow is paused/restarted when we exit from the page
+	// due to a videocall or an alarm, but not when we exit due to a click from
+	// an user. The cleanUp method is used to avoid a restart when the user
+	// clicks on the heeder widget and it works only because the cleanUp is
+	// performed before closing the page (so also before the hideEvent).
 	controller->stopSlideshow();
+}
+
+void SlideshowPage::hideEvent(QHideEvent *)
+{
+	if (controller->slideshowActive())
+	{
+		controller->stopSlideshow();
+		paused = true;
+	}
+}
+
+void SlideshowPage::showEvent(QShowEvent *)
+{
+	if (paused)
+		controller->startSlideshow();
+	paused = false;
 }
 
 void SlideshowPage::displayFullScreen()
@@ -244,6 +266,7 @@ SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
 {
 	controller = new SlideshowController(this);
 	page = slideshow_page;
+	paused = false;
 
 	// pixmap used to display the image
 	image = new ImageLabel;
@@ -298,6 +321,8 @@ SlideshowWindow::~SlideshowWindow()
 
 void SlideshowWindow::showWindow()
 {
+	// showUserWindow is required when we exit from the screensaver, because we
+	// want to turn back to the window (otherwise, we turn back to the SlideshowPage)
 	bt_global::page_stack.showUserWindow(this);
 	Window::showWindow();
 }
@@ -349,9 +374,20 @@ void SlideshowWindow::handleClose()
 	emit Closed();
 }
 
-void SlideshowWindow::hideEvent(QHideEvent *event)
+void SlideshowWindow::hideEvent(QHideEvent *)
 {
-	controller->stopSlideshow();
+	if (controller->slideshowActive())
+	{
+		controller->stopSlideshow();
+		paused = true;
+	}
+}
+
+void SlideshowWindow::showEvent(QShowEvent *)
+{
+	if (paused)
+		controller->startSlideshow();
+	paused = false;
 }
 
 void SlideshowWindow::displayNoFullScreen()
