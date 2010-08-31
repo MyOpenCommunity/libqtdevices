@@ -783,6 +783,7 @@ void VCTCallWindow::showWindow()
 	vct_call->enable();
 	vct_call->startVideo();
 	vct_call->refreshStatus();
+	bt_global::page_stack.showUserWindow(this);
 	Window::showWindow();
 }
 
