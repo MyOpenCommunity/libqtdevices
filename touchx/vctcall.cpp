@@ -787,6 +787,17 @@ void VCTCallWindow::showWindow()
 	Window::showWindow();
 }
 
+void VCTCallWindow::showEvent(QShowEvent *)
+{
+	if (!BtMain::isCalibrating())
+		vct_call->startVideo();
+}
+
+void VCTCallWindow::hideEvent(QHideEvent *)
+{
+	vct_call->stopVideo();
+}
+
 void VCTCallWindow::fullScreenExit()
 {
 	vct_call->stopVideo();

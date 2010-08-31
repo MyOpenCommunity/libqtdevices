@@ -167,6 +167,10 @@ namespace VCTCallPrivate
 	signals:
 		void exitFullScreen();
 
+	protected:
+		void showEvent(QShowEvent *);
+		void hideEvent(QHideEvent *);
+
 	private slots:
 		void handleClose();
 		void fullScreenExit();
