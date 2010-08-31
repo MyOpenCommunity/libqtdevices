@@ -113,8 +113,3 @@ void FeedItemWidget::scrollDown()
 	QScrollBar *vbar = text_area->verticalScrollBar();
 	vbar->setValue(vbar->value() + vbar->pageStep());
 }
-
-void FeedItemWidget::hideEvent(QHideEvent *e)
-{
-	text_area->clear();
-}

@@ -40,9 +40,6 @@ public slots:
 	void scrollUp();
 	void scrollDown();
 
-protected:
-	void hideEvent(QHideEvent *e);
-
 signals:
 	void showPrev();
 	void showNext();
