@@ -65,11 +65,12 @@
 #include <QTime>
 #include <QThreadPool>
 #include <QSocketNotifier>
+#include <QFileSystemWatcher>
 
 #include <sys/types.h>
 #include <sys/socket.h> // socketpair
 #include <unistd.h> // write
-
+#include <resolv.h> // res_init
 
 // delay between two consecutive screensaver checks
 #define SCREENSAVER_CHECK 2000
@@ -79,6 +80,8 @@
 #else
 #define TS_NUM_BASE_ADDRESS 0x700
 #endif
+
+#define RESOLV_CONF "/etc/resolv.conf"
 
 
 namespace
@@ -294,6 +297,9 @@ BtMain::BtMain(int openserver_reconnection_time)
 	screensaver_time = 60;
 	screenoff_time = 120;
 
+	resolv_watcher = new QFileSystemWatcher(this);
+	connect(resolv_watcher, SIGNAL(fileChanged(QString)), SLOT(resolvChanged()));
+
 #ifdef LAYOUT_BTOUCH
 	// We want to set the stylesheet for the version page, but we have to wait
 	// after all the pages are built in order to set the dynamic properties _before_
@@ -377,6 +383,16 @@ BtMain::~BtMain()
 		delete mit.value();
 	}
 	delete client_supervisor;
+}
+
+void BtMain::resolvChanged()
+{
+	// libc doesn't realize that the resolv.conf has changed. As result, the
+	// gethostbyname, getaddrinfo functions fail. To avoid that we monitor every
+	// change at the resolv.conf and manually call the res_init that update
+	// the system info.
+	qDebug() << "Detect changes to resolv.conf!";
+	res_init();
 }
 
 void BtMain::loadGlobalConfig()
@@ -559,6 +575,7 @@ void BtMain::init()
 
 	if (monitor_ready)
 		myMain();
+
 }
 
 void BtMain::connectionReady()
@@ -606,6 +623,8 @@ void BtMain::myMain()
 		return;
 	}
 #endif
+
+	resolv_watcher->addPath(RESOLV_CONF);
 	startGui();
 }
 
