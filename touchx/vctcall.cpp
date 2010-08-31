@@ -730,6 +730,8 @@ void VCTCallPage::showPage()
 
 void VCTCallPage::showEvent(QShowEvent *)
 {
+	// TODO the check should never be necessary (the window is never shown
+	//      during calibration)
 	if (!BtMain::isCalibrating())
 		vct_call->startVideo();
 }
@@ -789,6 +791,8 @@ void VCTCallWindow::showWindow()
 
 void VCTCallWindow::showEvent(QShowEvent *)
 {
+	// TODO the check should never be necessary (the window is never shown
+	//      during calibration)
 	if (!BtMain::isCalibrating())
 		vct_call->startVideo();
 }
