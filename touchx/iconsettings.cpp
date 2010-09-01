@@ -520,7 +520,7 @@ PasswordPage::PasswordPage(const QDomNode &config_node)
 
 	int item_id = getTextChild(config_node, "itemID").toInt();
 	banner *b = new impPassword(bt_global::skin->getImage("state_on"),
-		bt_global::skin->getImage("state_off"), bt_global::skin->getImage("edit"), descr, item_id,
+		bt_global::skin->getImage("state_off"), bt_global::skin->getImage("edit"), QString(), item_id,
 		getTextChild(config_node, "password"), getTextChild(config_node, "actived").toInt());
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 
