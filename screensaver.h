@@ -202,6 +202,7 @@ private:
 	QTimeLine blending_timeline;
 	QPointer<QFutureWatcher<QImage> > async_load;
 	qreal opacity;
+	QString last_image_file;
 
 private slots:
 	void updateOpacity(qreal new_value);

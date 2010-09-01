@@ -376,6 +376,7 @@ void ScreenSaverSlideshow::start(Window *w)
 	ScreenSaver::start(w);
 	showWindow();
 	next_image = QPixmap(width(), height());
+	last_image_file = QString();
 	// TODO: take background from skin
 	next_image.fill(QColor(Qt::black));
 	// this call will update both current_image and next_image
@@ -415,7 +416,6 @@ void ScreenSaverSlideshow::paintEvent(QPaintEvent *e)
 
 void ScreenSaverSlideshow::refresh()
 {
-	static QString last_image_file;
 	QString img;
 
 	if (iter && iter->hasNext())
