@@ -44,7 +44,6 @@ class QString;
 class QTimer;
 class QTime;
 class QSocketNotifier;
-class QFileSystemWatcher;
 
 
 /**
@@ -67,7 +66,6 @@ private:
 	static int sigUSR2fd[2];
 	QSocketNotifier *snUSR2;
 };
-
 
 
 /**
@@ -125,8 +123,6 @@ private slots:
 	void connectionReady();
 	void startGui();
 
-	void resolvChanged();
-
 private:
 	QHash<int, QPair<Client*, Client*> > clients;
 	QHash<int, Client*> monitors;
@@ -149,8 +145,6 @@ private:
 	KeypadWindow *passwordKeypad;
 	bool frozen;
 	int last_event_time;
-
-	QFileSystemWatcher *resolv_watcher;
 
 	// the four values below are in seconds; screenoff_time can be 0
 	// it must always be freeze_time < screensaver_time < screenoff_time
