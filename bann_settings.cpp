@@ -256,12 +256,12 @@ impPassword::impPassword(QString icon_on, QString icon_off, QString icon_label, 
 	tasti = new Keypad();
 	if (password.isEmpty())
 	{
-		status = PASSWD_NOT_SET;
+		setStatus(PASSWD_NOT_SET);
 		tasti->setMode(Keypad::CLEAN);
 	}
 	else
 	{
-		status = CHECK_OLD_PASSWORD;
+		setStatus(CHECK_OLD_PASSWORD);
 		tasti->setMode(Keypad::HIDDEN);
 	}
 	initBanner(icon_off, icon_label, descr);
@@ -283,7 +283,7 @@ impPassword::impPassword(QString icon_on, QString icon_off, QString icon_label, 
 
 void impPassword::requestPasswdOn()
 {
-	status = ASK_PASSWORD;
+	setStatus(ASK_PASSWORD);
 	tasti->showPage();
 }
 
@@ -304,11 +304,11 @@ void impPassword::showEvent(QShowEvent *event)
 	// TODO: all this thing seems useless...
 	if (password.isEmpty())
 	{
-		status = PASSWD_NOT_SET;
+		setStatus(PASSWD_NOT_SET);
 	}
 	else
 	{
-		status = CHECK_OLD_PASSWORD;
+		setStatus(CHECK_OLD_PASSWORD);
 		tasti->setMode(Keypad::HIDDEN);
 	}
 	tasti->resetText();
@@ -316,7 +316,7 @@ void impPassword::showEvent(QShowEvent *event)
 
 void impPassword::resetState()
 {
-	status = CHECK_OLD_PASSWORD;
+	setStatus(CHECK_OLD_PASSWORD);
 	tasti->resetText();
 	tasti->showWrongPassword(false);
 }
@@ -350,14 +350,14 @@ void impPassword::checkPasswd()
 		else //password is correct
 		{
 			qDebug("Old password correct, insert new password");
-			status = INSERT_NEW_PASSWORD;
+			setStatus(INSERT_NEW_PASSWORD);
 			tasti->showPage();
 		}
 		break;
 
 	case INSERT_NEW_PASSWORD:
 		new_password = c;
-		status = VERIFY_PASSWORD;
+		setStatus(VERIFY_PASSWORD);
 		tasti->showPage();
 		qDebug("New password: %s", qPrintable(new_password));
 		break;
@@ -367,7 +367,7 @@ void impPassword::checkPasswd()
 		{
 			qDebug("Password mismatch, new: %s; repeated: %s", qPrintable(new_password), qPrintable(c));
 			tasti->showWrongPassword(true);
-			status = INSERT_NEW_PASSWORD;
+			setStatus(INSERT_NEW_PASSWORD);
 			tasti->showPage();
 		}
 		else
@@ -382,11 +382,16 @@ void impPassword::checkPasswd()
 		if (c == password)
 		{
 			toggleActivation();
-			status = CHECK_OLD_PASSWORD;
+			setStatus(CHECK_OLD_PASSWORD);
 			emit pageClosed();
 		}
 		break;
 	}
+}
+
+void impPassword::setStatus(PasswdStatus _status)
+{
+	status = _status;
 }
 
 void impPassword::savePassword(const QString &passwd)
@@ -400,7 +405,7 @@ void impPassword::savePassword(const QString &passwd)
 		setCfgValue("password", password, item_id);
 #endif
 		bt_global::btmain->setPassword(active, password);
-		status = CHECK_OLD_PASSWORD;
+		setStatus(CHECK_OLD_PASSWORD);
 	}
 }
 

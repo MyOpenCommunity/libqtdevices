@@ -228,6 +228,9 @@ private:
 	    INSERT_NEW_PASSWORD,                // let the user insert the new password (not showing text)
 	    VERIFY_PASSWORD,                    // insert again the new password, to avoid wrong touches
 	};
+
+	void setStatus(PasswdStatus status);
+
 	bool active;
 	PasswdStatus status;
 	QString password, new_password;
