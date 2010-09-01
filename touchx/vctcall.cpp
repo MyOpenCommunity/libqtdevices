@@ -212,7 +212,8 @@ VCTCall::VCTCall(EntryphoneDevice *d, FormatVideo f)
 	camera = new CameraMove(dev);
 	camera->setMoveEnabled(false);
 
-	setup_vct = new BtButton(bt_global::skin->getImage("setup_vct"));
+	setup_vct_icon = bt_global::skin->getImage("setup_vct");
+	setup_vct = new BtButton();
 	camera_settings_shown = false;
 	toggleCameraSettings();
 	connect(setup_vct, SIGNAL(clicked()), SLOT(toggleCameraSettings()));
