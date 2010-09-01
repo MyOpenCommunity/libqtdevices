@@ -392,6 +392,26 @@ void impPassword::checkPasswd()
 void impPassword::setStatus(PasswdStatus _status)
 {
 	status = _status;
+
+	switch (status)
+	{
+	case CHECK_OLD_PASSWORD:
+		tasti->setMessage(tr("Old password:"));
+		break;
+
+	case INSERT_NEW_PASSWORD:
+	case PASSWD_NOT_SET:
+		tasti->setMessage(tr("New password:"));
+		break;
+
+	case VERIFY_PASSWORD:
+		tasti->setMessage(tr("Verify password:"));
+		break;
+
+	case ASK_PASSWORD:
+		tasti->setMessage(tr("Check password:"));
+		break;
+	}
 }
 
 void impPassword::savePassword(const QString &passwd)
