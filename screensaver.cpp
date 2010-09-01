@@ -396,9 +396,6 @@ void ScreenSaverSlideshow::stop()
 
 	if (async_load)
 		async_load->deleteLater();
-
-	current_image.fill(Qt::black);
-	next_image.fill(Qt::black);
 }
 
 void ScreenSaverSlideshow::paintEvent(QPaintEvent *e)
