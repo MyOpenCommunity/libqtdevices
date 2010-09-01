@@ -60,6 +60,7 @@ public:
 	void resetText();
 
 	void showWrongPassword(bool is_visible);
+	void setMessage(const QString &text);
 
 protected:
 	// used by KeypadWithState to add the row with the zone state
@@ -71,7 +72,7 @@ private:
 private:
 	QGridLayout *topLayout;
 	QLabel *digitLabel;
-	QLabel *warningLabel;
+	QLabel *warningLabel, *msgLabel;
 	QString text;
 	Type mode;
 

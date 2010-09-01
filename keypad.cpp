@@ -70,7 +70,7 @@ Keypad::Keypad(bool back_button)
 	}
 
 	digitLabel = new QLabel;
-	QLabel *pwdLabel = new QLabel;
+	msgLabel = new QLabel;
 	warningLabel = new QLabel(tr("Wrong password"));
 	warningLabel->hide();
 
@@ -79,9 +79,9 @@ Keypad::Keypad(bool back_button)
 
 	mode = CLEAN;
 
-	pwdLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	pwdLabel->setFont(bt_global::font->get(FontManager::TEXT));
-	pwdLabel->setText(tr("PASSWORD:"));
+	msgLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	msgLabel->setFont(bt_global::font->get(FontManager::TEXT));
+	msgLabel->setText(tr("PASSWORD:"));
 
 	digitLabel->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
 	digitLabel->setFont(bt_global::font->get(FontManager::TEXT));
@@ -110,7 +110,7 @@ Keypad::Keypad(bool back_button)
 	p->setContentsMargins(0, 0, 0, 0);
 	p->setSpacing(10);
 
-	p->addWidget(pwdLabel, 1, Qt::AlignRight);
+	p->addWidget(msgLabel, 1, Qt::AlignRight);
 	p->addWidget(digitLabel, 1, Qt::AlignLeft);
 
 	// top layout
@@ -143,6 +143,11 @@ void Keypad::insertLayout(QLayout *l)
 void Keypad::showWrongPassword(bool is_visible)
 {
 	warningLabel->setVisible(is_visible);
+}
+
+void Keypad::setMessage(const QString &message)
+{
+	msgLabel->setText(message);
 }
 
 void Keypad::updateText()
