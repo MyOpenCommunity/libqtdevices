@@ -385,6 +385,8 @@ void impPassword::checkPasswd()
 			setStatus(CHECK_OLD_PASSWORD);
 			emit pageClosed();
 		}
+		else
+			tasti->showWrongPassword(true);
 		break;
 	}
 }
