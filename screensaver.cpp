@@ -423,8 +423,10 @@ void ScreenSaverSlideshow::refresh()
 	else
 	{
 		qDebug() << "no images, blank screen.";
-		update();
 		stopRefresh();
+		current_image.fill(Qt::black);
+		next_image.fill(Qt::black);
+		update();
 		return;
 	}
 
