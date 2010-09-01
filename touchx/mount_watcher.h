@@ -24,6 +24,8 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QPair>
+#include <QProcess>
 
 class QFileSystemWatcher;
 
@@ -41,6 +43,8 @@ enum MountType
 class MountWatcher : public QObject
 {
 Q_OBJECT
+
+	typedef QPair<QString, QStringList> ProcessEntry;
 public:
 	// returns the global mount watcher object
 	static MountWatcher &getWatcher();
@@ -71,6 +75,8 @@ private:
 
 	void mtabChanged();
 	void usbRemoved();
+	void enqueueCommand(const QString &command, const QStringList &arguments);
+	void runQueue();
 
 	MountType mountType(const QString &dir) const;
 
@@ -78,6 +84,8 @@ private slots:
 	void fileChanged(const QString &file);
 	void directoryChanged(const QString &directory);
 	void checkSD();
+	void mountComplete();
+	void mountError(QProcess::ProcessError error);
 
 private:
 	// the SD has already been mounted; this is unset only after the
@@ -91,6 +99,8 @@ private:
 	QStringList mount_points;
 
 	QFileSystemWatcher *watcher;
+	QProcess mount_process;
+	QList<ProcessEntry> command_queue;
 };
 
 #endif // MOUNT_WATCHER_H

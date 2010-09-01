@@ -103,6 +103,9 @@ MountWatcher::MountWatcher()
 {
 	sd_mounted = watching = false;
 
+	connect(&mount_process, SIGNAL(finished(int)), SLOT(mountComplete()));
+	connect(&mount_process, SIGNAL(error(QProcess::ProcessError)), SLOT(mountError(QProcess::ProcessError)));
+
 	// USB mount/umount
 	watcher = new QFileSystemWatcher(this);
 	connect(watcher, SIGNAL(directoryChanged(const QString &)), SLOT(directoryChanged(const QString &)));
@@ -116,17 +119,55 @@ QStringList MountWatcher::mountState() const
 	return mount_points;
 }
 
+void MountWatcher::enqueueCommand(const QString &command, const QStringList &arguments)
+{
+	qDebug() << "Enqueuing mount command:" << command << arguments;
+	command_queue << qMakePair(command, arguments);
+}
+
+void MountWatcher::runQueue()
+{
+	if (command_queue.empty())
+		return;
+	if (mount_process.state() != QProcess::NotRunning)
+		return;
+
+	ProcessEntry entry = command_queue.front();
+	command_queue.pop_front();
+
+	qDebug() << "Running mount command:" << entry.first << entry.second;
+	mount_process.start(entry.first, entry.second);
+}
+
+void MountWatcher::mountError(QProcess::ProcessError error)
+{
+	qDebug() << "Mount error" << mount_process.errorString();
+}
+
+void MountWatcher::mountComplete()
+{
+	qDebug() << "Mount/umount command complete";
+
+	// dequeue the next command, if any
+	runQueue();
+}
+
 void MountWatcher::unmount(const QString &dir)
 {
+	qDebug() << "Unmounting" << dir;
+
 	// only try to unmount if it is mounted
 	foreach (const QString &mp, parseMounts())
 		if (mp == dir)
-			QProcess::startDetached("/bin/umount", QStringList() << "-l" << dir);
+			enqueueCommand("/bin/umount", QStringList() << "-l" << dir);
+
+	runQueue();
 }
 
 void MountWatcher::mount(const QString &device, const QString &dir)
 {
-	QProcess::startDetached("/bin/mount", QStringList() << "-r" << "-t" << "vfat" << "-o" << "utf8=1" << device << dir);
+	enqueueCommand("/bin/mount", QStringList() << "-r" << "-t" << "vfat" << "-o" << "utf8=1" << device << dir);
+	runQueue();
 }
 
 QStringList MountWatcher::parseMounts() const
