@@ -296,6 +296,11 @@ void MediaPlayer::execCmd(const QByteArray &command)
 		qDebug() << "Error MediaPlayer::execCmd():" << mplayer_proc.errorString();
 }
 
+bool MediaPlayer::isPlaying()
+{
+	return isInstanceRunning() && !isPaused();
+}
+
 bool MediaPlayer::isInstanceRunning()
 {
 	return (active && mplayer_proc.state() == QProcess::Running);

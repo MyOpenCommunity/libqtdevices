@@ -154,7 +154,7 @@ void MediaPlayerPage::audioStateAboutToChange(int old_state)
 	if (old_state == AudioStates::PLAY_DIFSON && !bt_global::audio_states->isSource())
 		return;
 
-	if ((old_state == AudioStates::PLAY_MEDIA_TO_SPEAKER || old_state == AudioStates::PLAY_DIFSON) && player->isInstanceRunning() && !player->isPaused())
+	if ((old_state == AudioStates::PLAY_MEDIA_TO_SPEAKER || old_state == AudioStates::PLAY_DIFSON) && player->isPlaying())
 	{
 		resume_on_state_change = true;
 		bt_global::audio_states->setMediaPlayerTemporaryPause(true);
