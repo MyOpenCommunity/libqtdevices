@@ -44,6 +44,9 @@ public:
 	// kills mplayer
 	virtual void cleanUp();
 
+	// do not resume mplayer unless the page is visible
+	virtual void resume();
+
 protected:
 	virtual QString currentFileName(int index) const;
 	virtual void previous();

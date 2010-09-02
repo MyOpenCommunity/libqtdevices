@@ -185,6 +185,14 @@ void VideoPlayerPage::next()
 		displayMedia(current_file);
 }
 
+void VideoPlayerPage::resume()
+{
+	if (!isVisible())
+		return;
+
+	MediaPlayerPage::resume();
+}
+
 void VideoPlayerPage::displayFullScreen()
 {
 	displayFullScreen(true);
