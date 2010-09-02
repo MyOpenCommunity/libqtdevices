@@ -63,6 +63,9 @@ public:
 	/// MPlayer really pauses, use the mplayerPaused() signal.
 	bool isPaused() { return paused; }
 
+	/// Return true is player is really paused (it has completed processing of the pause command)
+	bool isReallyPaused() { return really_paused; }
+
 	/// Return true if music is playing or in pause
 	bool isInstanceRunning();
 
@@ -109,7 +112,7 @@ private:
 
 	QFutureWatcher<QMap<QString,QString> > *info_watcher;
 
-	bool paused;
+	bool paused, really_paused;
 
 private slots:
 	void mplayerFinished(int exit_code, QProcess::ExitStatus exit_status);

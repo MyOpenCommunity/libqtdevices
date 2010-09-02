@@ -140,6 +140,7 @@ MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 	active = false;
 	is_video = false;
 	paused = false;
+	really_paused = false;
 	info_watcher = 0;
 	connect(&mplayer_proc, SIGNAL(readyReadStandardError()), SLOT(readStandardError()));
 	connect(&mplayer_proc, SIGNAL(finished(int, QProcess::ExitStatus)), SLOT(mplayerFinished(int, QProcess::ExitStatus)));
@@ -236,7 +237,7 @@ bool MediaPlayer::runMPlayer(const QList<QString> &args, bool write_output)
 		mplayer_proc.setStandardOutputFile("/dev/null");
 
 	mplayer_proc.start(MPLAYER_FILENAME, args);
-	paused = false;
+	paused = really_paused = false;
 
 	bool started = mplayer_proc.waitForStarted(300);
 	if (started)
@@ -260,6 +261,7 @@ void MediaPlayer::pause()
 
 void MediaPlayer::actuallyPaused()
 {
+	really_paused = true;
 	emit mplayerPaused();
 	updateDirectAccessState(false);
 }
@@ -275,7 +277,7 @@ void MediaPlayer::resume()
 		// mplayer print the pause string, so we need to cleanup its output buffer.
 		mplayer_proc.readAll();
 		execCmd("pause");
-		paused = false;
+		paused = really_paused = false;
 		emit mplayerResumed();
 	}
 }
