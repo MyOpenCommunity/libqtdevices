@@ -153,6 +153,9 @@ public:
 
 	void forceClosed();
 
+	/// Called right before the page is hidden by showPage() or by showWindow()
+	virtual void aboutToHideEvent() {};
+
 public slots:
 	/// An handle to allow customization of the page showed. Default implementation
 	/// show the page in fullscreen mode and call the transition effect if present.

@@ -73,6 +73,8 @@ public:
 	void loadConfiguration();
 	TrayBar *tray_bar;
 
+	virtual void aboutToHideEvent();
+
 signals:
 	void showHomePage();
 	void showSectionPage(int page_id);

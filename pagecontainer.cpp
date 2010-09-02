@@ -76,6 +76,7 @@ void PageContainer::setCurrentPage(Page *p)
 void PageContainer::showPage(Page *p)
 {
 	emit currentChanging(indexOf(p));
+	currentPage()->aboutToHideEvent();
 
 	if (transition_widget && !block_transitions)
 	{

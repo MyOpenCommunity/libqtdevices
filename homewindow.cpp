@@ -117,6 +117,11 @@ HomeWindow::HomeWindow()
 	connect(&bt_global::page_stack, SIGNAL(sectionChanged(int)), SLOT(currentSectionChanged(int)));
 }
 
+void HomeWindow::aboutToHideEvent()
+{
+	central_widget->currentPage()->aboutToHideEvent();
+}
+
 void HomeWindow::aboutToChangePage()
 {
 	bt_global::page_stack.clear();
