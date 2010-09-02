@@ -130,4 +130,7 @@ bool smartExecute(const QString &program, QStringList args = QStringList());
 // some args to the process in order to silent its output & error messages.
 bool silentExecute(const QString &program, QStringList args = QStringList());
 
+// Returns true if the image can be loaded without exausting the ram
+bool checkImageLoad(const QString &path);
+
 #endif // GENERIC_FUNCTIONS_H

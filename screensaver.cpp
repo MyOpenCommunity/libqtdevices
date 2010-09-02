@@ -26,7 +26,7 @@
 #include "xml_functions.h"
 #include "homewindow.h"
 #include "pagestack.h"
-#include "generic_functions.h"
+#include "generic_functions.h" // checkImageLoad, getFileFilter
 #include "imageselectionhandler.h"
 
 #include <QVBoxLayout>
@@ -75,6 +75,9 @@ namespace
 
 	QImage loadImageScaled(const QString &image, const QSize &size)
 	{
+		if (!checkImageLoad(image))
+			return QImage();
+
 		return QImage(image).scaled(size, Qt::KeepAspectRatio);
 	}
 }

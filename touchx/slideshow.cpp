@@ -25,6 +25,7 @@
 #include "displaycontrol.h" // forceOperativeMode
 #include "labels.h" // ImageLabel
 #include "pagestack.h"
+#include "generic_functions.h" // checkImageLoad
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -41,6 +42,9 @@ namespace
 {
 	QImage loadImage(const QString &image)
 	{
+		if (!checkImageLoad(image))
+			return QImage();
+
 		return QImage(image);
 	}
 }

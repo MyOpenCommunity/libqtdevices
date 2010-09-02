@@ -35,6 +35,7 @@
 #include <QDate>
 #include <QDateTime>
 #include <QProcess>
+#include <QImageReader>
 
 #include <fcntl.h>
 #include <stdio.h> // rename
@@ -442,3 +443,42 @@ bool silentExecute(const QString &program, QStringList args)
 	return smartExecute(program, args);
 }
 
+bool checkImageLoad(const QString &path)
+{
+	QFile file(path);
+
+	if (!file.open(QFile::ReadOnly))
+	{
+		qDebug() << "checkImageLoad: can't open" << path;
+
+		return false;
+	}
+
+	QImageReader rd(&file);
+	QSize sz = rd.size();
+
+	if (!sz.isValid())
+	{
+		qDebug() << "checkImageLoad: invalid size for" << path;
+
+		return false;
+	}
+
+#if DEBUG
+	qDebug() << "checkImageLoad: mallocing" << sz.width() * sz.height() * 3 / (1024 * 1024) << "MB";
+#endif
+	void *mem = malloc(sz.width() * sz.height() * 3);
+	if (!mem)
+	{
+		qDebug() << "checkImageLoad: failed to allocate memory" << path << sz;
+
+		return false;
+	}
+
+	free(mem);
+#if DEBUG
+	qDebug() << "checkImageLoad: image" << path << "size" << sz << "OK";
+#endif
+
+	return true;
+}
