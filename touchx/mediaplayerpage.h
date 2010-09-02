@@ -94,6 +94,10 @@ protected:
 	// can be connected
 	QTimer refresh_data;
 
+	// set to true when the player is paused due to a audio state change (es. vct call)
+	// or (for video player) due to a page change (es. alarm)
+	bool temporary_pause;
+
 private slots:
 	void unmounted(const QString &path);
 
@@ -101,11 +105,6 @@ private slots:
 	void playbackStopped();
 	void audioStateChanged(int new_state, int old_state);
 	void audioStateAboutToChange(int old_state);
-
-private:
-	// set to true when the player is paused due to a audio state change (es. vct call)
-	bool resume_on_state_change;
-
 };
 
 #endif // MEDIAPLAYERPAGE_H

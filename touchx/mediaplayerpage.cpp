@@ -30,7 +30,7 @@
 MediaPlayerPage::MediaPlayerPage() : refresh_data(this)
 {
 	player = new MediaPlayer(this);
-	resume_on_state_change = false;
+	temporary_pause = false;
 	current_file = 0;
 
 	// terminate player when unmounted
@@ -144,7 +144,7 @@ void MediaPlayerPage::unmounted(const QString &dir)
 
 void MediaPlayerPage::audioStateChanged(int new_state, int old_state)
 {
-	if ((new_state == AudioStates::PLAY_MEDIA_TO_SPEAKER || new_state == AudioStates::PLAY_DIFSON) && resume_on_state_change && player->isPaused())
+	if ((new_state == AudioStates::PLAY_MEDIA_TO_SPEAKER || new_state == AudioStates::PLAY_DIFSON) && temporary_pause && player->isPaused())
 		resume();
 }
 
@@ -156,7 +156,7 @@ void MediaPlayerPage::audioStateAboutToChange(int old_state)
 
 	if ((old_state == AudioStates::PLAY_MEDIA_TO_SPEAKER || old_state == AudioStates::PLAY_DIFSON) && player->isPlaying())
 	{
-		resume_on_state_change = true;
+		temporary_pause = true;
 		bt_global::audio_states->setMediaPlayerTemporaryPause(true);
 		pause();
 	}
@@ -164,7 +164,7 @@ void MediaPlayerPage::audioStateAboutToChange(int old_state)
 
 void MediaPlayerPage::playbackStarted()
 {
-	resume_on_state_change = false;
+	temporary_pause = false;
 	refresh_data.start();
 	bt_global::audio_states->setMediaPlayerTemporaryPause(false);
 }
