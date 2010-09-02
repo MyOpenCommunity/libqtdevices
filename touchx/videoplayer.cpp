@@ -102,6 +102,7 @@ void VideoPlayerPage::showPage()
 {
 	MediaPlayerPage::showPage();
 	fullscreen = false;
+	resumePlayOnShow();
 }
 
 void VideoPlayerPage::startMPlayer()
@@ -154,9 +155,38 @@ void VideoPlayerPage::cleanUp()
 	stop();
 }
 
+void VideoPlayerPage::aboutToHideEvent()
+{
+	MediaPlayerPage::aboutToHideEvent();
+	temporaryPauseOnHide();
+}
+
 QString VideoPlayerPage::currentFileName(int index) const
 {
 	return file_list[index];
+}
+
+void VideoPlayerPage::temporaryPauseOnHide()
+{
+	if (!player->isPlaying())
+		return;
+
+	temporary_pause = true;
+	pause();
+
+	while (!player->isReallyPaused())
+	{
+		qDebug() << "Waiting for MPlayer to pause...";
+		player->getPlayingInfo(500);
+	}
+	qDebug() << "MPlayer paused";
+}
+
+void VideoPlayerPage::resumePlayOnShow()
+{
+	if (temporary_pause && player->isPaused())
+		MediaPlayerPage::resume();
+	temporary_pause = false;
 }
 
 void VideoPlayerPage::previous()

@@ -47,6 +47,9 @@ public:
 	// do not resume mplayer unless the page is visible
 	virtual void resume();
 
+	// temporary pause mplayer
+	virtual void aboutToHideEvent();
+
 protected:
 	virtual QString currentFileName(int index) const;
 	virtual void previous();
@@ -72,6 +75,9 @@ private slots:
 	void videoPlaybackTerminated();
 	void videoPlaybackStarted();
 	void videoPlaybackStopped();
+
+	void temporaryPauseOnHide();
+	void resumePlayOnShow();
 
 private:
 	QLabel *title, *video;
