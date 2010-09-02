@@ -69,10 +69,13 @@ public:
 	/// Return true if music is playing or in pause
 	bool isInstanceRunning();
 
-	/// Read ASYNCHRONOUSLY the output from the PIPE and parse it to get INFO
-	QMap<QString, QString> getPlayingInfo();
+	/// Read the output from the PIPE and parse it to get INFO; if msecs_timeout
+	/// is greater than 0, waits for input to become available; if this metod is called
+	/// when the event loop is not running, you must use msecs_timeout > 0 or no output
+	/// will be ever read
+	QMap<QString, QString> getPlayingInfo(int msecs_timeout = 0);
 
-	QMap<QString, QString> getVideoInfo();
+	QMap<QString, QString> getVideoInfo(int msecs_timeout = 0);
 
 	void requestInitialPlayingInfo(const QString &track);
 	void requestInitialVideoInfo(const QString &track);
@@ -108,7 +111,7 @@ private:
 	QList<QString> getVideoArgs(int seek_time);
 	QList<QString> getAudioArgs(int seek_time);
 
-	QMap<QString, QString> getMediaInfo(const QMap<QString, QString> &data_search);
+	QMap<QString, QString> getMediaInfo(const QMap<QString, QString> &data_search, int msecs_timeout = 0);
 
 	QFutureWatcher<QMap<QString,QString> > *info_watcher;
 

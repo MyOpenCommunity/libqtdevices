@@ -308,12 +308,12 @@ bool MediaPlayer::isInstanceRunning()
 	return (active && mplayer_proc.state() == QProcess::Running);
 }
 
-QMap<QString, QString> MediaPlayer::getVideoInfo()
+QMap<QString, QString> MediaPlayer::getVideoInfo(int msecs_timeout)
 {
 	/// Define Search Data Map
 	QMap<QString, QString> data_search = getVideoDataSearchMap();
 
-	return getMediaInfo(data_search);
+	return getMediaInfo(data_search, msecs_timeout);
 }
 
 void MediaPlayer::requestInitialPlayingInfo(const QString &track)
@@ -338,17 +338,20 @@ void MediaPlayer::requestInitialVideoInfo(const QString &track)
 	emit playingInfoUpdated(info);
 }
 
-QMap<QString, QString> MediaPlayer::getPlayingInfo()
+QMap<QString, QString> MediaPlayer::getPlayingInfo(int msecs_timeout)
 {
 	QMap<QString, QString> data_search = getAudioDataSearchMap();
 
-	return getMediaInfo(data_search);
+	return getMediaInfo(data_search, msecs_timeout);
 }
 
-QMap<QString, QString> MediaPlayer::getMediaInfo(const QMap<QString, QString> &data_search)
+QMap<QString, QString> MediaPlayer::getMediaInfo(const QMap<QString, QString> &data_search, int msecs_timeout)
 {
 	if (!active)
 		return QMap<QString, QString>();
+
+	if (msecs_timeout)
+		mplayer_proc.waitForReadyRead(msecs_timeout);
 
 	/// READ RAW output from MPlayer
 	QString raw_data = mplayer_proc.readAll();
