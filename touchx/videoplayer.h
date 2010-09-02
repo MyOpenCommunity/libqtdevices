@@ -50,6 +50,10 @@ public:
 	// temporary pause mplayer
 	virtual void aboutToHideEvent();
 
+	// also used by the player Window
+	void temporaryPauseOnHide();
+	void resumePlayOnShow();
+
 protected:
 	virtual QString currentFileName(int index) const;
 	virtual void previous();
@@ -76,9 +80,6 @@ private slots:
 	void videoPlaybackStarted();
 	void videoPlaybackStopped();
 
-	void temporaryPauseOnHide();
-	void resumePlayOnShow();
-
 private:
 	QLabel *title, *video;
 	VideoPlayerWindow *window;
@@ -94,6 +95,9 @@ Q_OBJECT
 public:
 	VideoPlayerWindow(VideoPlayerPage *videoplayer_page, MediaPlayer *mediaplayer);
 
+	virtual void showWindow();
+	virtual void aboutToHideEvent();
+
 signals:
 	void clicked();
 
@@ -107,6 +111,7 @@ private slots:
 private:
 	QWidget *controls;
 	QTimer controls_timer;
+	VideoPlayerPage *page;
 };
 
 #endif // VIDEOPLAYER_H

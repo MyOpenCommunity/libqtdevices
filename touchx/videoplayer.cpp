@@ -27,6 +27,7 @@
 #include "items.h" // ItemTuning
 #include "skinmanager.h"
 #include "audiostatemachine.h"
+#include "pagestack.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -217,7 +218,7 @@ void VideoPlayerPage::next()
 
 void VideoPlayerPage::resume()
 {
-	if (!isVisible())
+	if (!isVisible() && !window->isVisible())
 		return;
 
 	MediaPlayerPage::resume();
@@ -241,7 +242,10 @@ void VideoPlayerPage::displayFullScreen(bool fs)
 	if (fullscreen)
 		window->showWindow();
 	else
+	{
+		bt_global::page_stack.closeWindow(window);
 		showPage();
+	}
 
 	QTimer::singleShot(0, this, SLOT(startMPlayer()));
 }
@@ -270,9 +274,11 @@ void VideoPlayerPage::refreshPlayInfo()
 
 
 // VideoPlayerWindow implementation
-VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *page, MediaPlayer *player)
+VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *_page, MediaPlayer *player)
 	: controls_timer(this)
 {
+	page = _page;
+
 	controls = new QWidget;
 	controls->hide();
 
@@ -347,6 +353,13 @@ void VideoPlayerWindow::mouseReleaseEvent(QMouseEvent *e)
 	emit clicked();
 }
 
+void VideoPlayerWindow::showWindow()
+{
+	bt_global::page_stack.showUserWindow(this);
+	Window::showWindow();
+	page->resumePlayOnShow();
+}
+
 void VideoPlayerWindow::showButtons()
 {
 	controls_timer.stop();
@@ -357,4 +370,10 @@ void VideoPlayerWindow::showButtons()
 void VideoPlayerWindow::setVolume(int value)
 {
 	bt_global::audio_states->setVolume(value);
+}
+
+void VideoPlayerWindow::aboutToHideEvent()
+{
+	Window::aboutToHideEvent();
+	page->temporaryPauseOnHide();
 }
