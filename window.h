@@ -35,6 +35,9 @@ public:
 
 	static void setWindowContainer(WindowContainer *container);
 
+	/// Called right before the window is hidden by showWindow()
+	virtual void aboutToHideEvent() {};
+
 public slots:
 	virtual void showWindow();
 
