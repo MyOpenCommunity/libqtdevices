@@ -550,11 +550,10 @@ void PageTermoReg::valueReceived(const DeviceValues &values_list)
 
 	switch (status)
 	{
+	// we should display the program name for holiday, but the frame is broken and reports
+	// the wrong program number
+	case ThermalDevice::ST_HOLIDAY:
 	case ThermalDevice::ST_OFF:
-		{
-			hideDescription();
-		}
-		break;
 	case ThermalDevice::ST_PROTECTION:
 		{
 			hideDescription();
@@ -598,7 +597,6 @@ void PageTermoReg::valueReceived(const DeviceValues &values_list)
 		}
 		break;
 	case ThermalDevice::ST_PROGRAM:
-	case ThermalDevice::ST_HOLIDAY:
 	case ThermalDevice::ST_WEEKEND:
 		{
 			int scenario = values_list[ThermalDevice::DIM_PROGRAM].toInt();
