@@ -142,15 +142,17 @@ void TestControlledProbeDevice::sendSetFancoilSpeed()
 void TestControlledProbeDevice::sendRequestFancoilStatus()
 {
 	dev->requestFancoilStatus();
-	client_request->flush();
-	QCOMPARE(server->frameRequest(), QString("*#4*23*11##"));
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*#4*23*11##"));
 }
 
 void TestControlledProbeDevice::sendRequestStatus()
 {
 	dev->requestStatus();
 	client_request->flush();
-	QCOMPARE(server->frameRequest(), QString("*#4*#23#1##" "*#4*23##" "*#4*23*11##"));
+	client_command->flush();
+	QCOMPARE(server->frameRequest(), QString("*#4*#23#1##" "*#4*23##"));
+	QCOMPARE(server->frameCommand(), QString("*#4*23*11##"));
 }
 
 void TestControlledProbeDevice::receiveFancoilStatus()

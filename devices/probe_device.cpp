@@ -145,7 +145,7 @@ void ControlledProbeDevice::requestFancoilStatus()
 		return;
 
 	QString msg = QString("*#") + who + "*" + simple_where + "*11##";
-	sendInit(msg);
+	sendFrame(msg);
 }
 
 void ControlledProbeDevice::requestStatus()
