@@ -999,7 +999,7 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	}
 
 	// handle the general off frame from the special command
-	if (   msg.what() == AMPL_STATUS_OFF
+	if (   msg.what() == int(AMPL_STATUS_OFF)
 	    && msg.whatArgCnt() == 2
 	    && msg.whatArgN(1) == 15
 	    && msg.whereFull() == "5#1#1")
