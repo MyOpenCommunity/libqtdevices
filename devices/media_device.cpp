@@ -986,7 +986,7 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	// the amplifier slide frame must turn the local amplifier off if it comes
 	// from the same area (for multichannel) or for any source amplifier (for monochannel)
-	if (msg.what() == 22 &&
+	if (msg.what() == int(REQ_SLIDE) &&
 	    msg.where() == 5 &&
 	    msg.whereArgCnt() == 3)
 	{
