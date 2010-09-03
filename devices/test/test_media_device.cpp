@@ -719,6 +719,9 @@ void TestVirtualAmplifierDevice::receiveAmplifierOff()
 
 	DeviceTester t2(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
 	t2.check(QString("*22*0#4#%1*4#%1##").arg(area), false);
+
+	DeviceTester t3(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
+	t3.check(QString("*22*0#4#15*5#1#1##"), false);
 }
 
 void TestVirtualAmplifierDevice::receiveVolumeUp()

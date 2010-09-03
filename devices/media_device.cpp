@@ -998,6 +998,17 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		return true;
 	}
 
+	// handle the general off frame from the special command
+	if (   msg.what() == AMPL_STATUS_OFF
+	    && msg.whatArgCnt() == 2
+	    && msg.whatArgN(1) == 15
+	    && msg.whereFull() == "5#1#1")
+	{
+		values_list[REQ_AMPLI_ON] = false;
+
+		return true;
+	}
+
 	if (!checkAddressIsForMe(msg))
 		return false;
 
