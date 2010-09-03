@@ -146,8 +146,6 @@ bool MessageDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		QString caller_where;
 		if (msg.whereArgCnt() == 4)
 			caller_where = QString::fromStdString(msg.whereArg(2));
-//		else if (msg.whereArgCnt() == 3)
-//			caller_where = QString::fromStdString(msg.whereArg(1));
 		else if (msg.whereArgCnt() == 2)
 			caller_where = QString::fromStdString(msg.whereArg(1));
 		else
