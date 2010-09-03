@@ -221,7 +221,6 @@ private:
 
 	enum PasswdStatus
 	{
-	    PASSWD_SET,                         // TODO: maybe not needed?
 	    PASSWD_NOT_SET,                     // TODO: maybe not needed?
 	    ASK_PASSWORD,                       // check if user remembers password then activate password on freeze
 	    CHECK_OLD_PASSWORD,                 // check if user remembers old password
