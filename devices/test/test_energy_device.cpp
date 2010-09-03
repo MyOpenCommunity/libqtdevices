@@ -280,11 +280,11 @@ void TestEnergyDevice::receiveCumulativeYear()
 
 void TestEnergyDevice::receiveDailyAverageGraph()
 {
-	int month = 9;
+	int month = QDate::currentDate().month() == 9 ? 4 : 9;
 	dev->buffer_frame.clear();
 	DeviceTester t(dev, EnergyDevice::DIM_DAILY_AVERAGE_GRAPH);
 	QStringList frames;
-	frames << "*#18*20*57#9*1*2*5##" << "*#18*20*57#9*2*0*9*3##";
+	frames << QString("*#18*20*57#%1*1*2*5##").arg(month) << QString("*#18*20*57#%1*2*0*9*3##").arg(month);
 
 	int divisor = getDate(month, 1).daysInMonth();
 
@@ -297,21 +297,23 @@ void TestEnergyDevice::receiveDailyAverageGraph()
 
 void TestEnergyDevice::receiveDailyAverageGraph2()
 {
+	int month = QDate::currentDate().month() == 9 ? 4 : 9;
+
 	dev->buffer_frame.clear();
 	DeviceTester t(dev, EnergyDevice::DIM_DAILY_AVERAGE_GRAPH);
 	QStringList frames;
-	frames << "*#18*20*57#9*1*2*5##" << "*#18*20*57#9*2*1*9*3##";
-	frames << "*#18*20*57#9*3*66*1*10##" << "*#18*20*57#9*4*5*1*0##";
-	frames << "*#18*20*57#9*5*14*0*2##" << "*#18*20*57#9*6*2*9*4##";
-	frames << "*#18*20*57#9*7*6*3*0##" << "*#18*20*57#9*8*7*11*3##";
-	frames << "*#18*20*57#9*9*2*5*1##" << "*#18*20*57#9*10*0*120*1##";
-	frames << "*#18*20*57#9*11*88*1*0##" << "*#18*20*57#9*12*2*31*2##";
-	frames << "*#18*20*57#9*13*32*0*65##" << "*#18*20*57#9*14*1*180*0##";
-	frames << "*#18*20*57#9*15*7*3*3##" << "*#18*20*57#9*16*1*2*4##";
-	frames << "*#18*20*57#9*17*1*2*4##" << "*#18*20*57#9*18*0*0*0##";
-	frames << "*#18*20*57#9*19*0##";
+	frames << QString("*#18*20*57#%1*1*2*5##").arg(month) << QString("*#18*20*57#%1*2*1*9*3##").arg(month);
+	frames << QString("*#18*20*57#%1*3*66*1*10##").arg(month) << QString("*#18*20*57#%1*4*5*1*0##").arg(month);
+	frames << QString("*#18*20*57#%1*5*14*0*2##").arg(month) << QString("*#18*20*57#%1*6*2*9*4##").arg(month);
+	frames << QString("*#18*20*57#%1*7*6*3*0##").arg(month) << QString("*#18*20*57#%1*8*7*11*3##").arg(month);
+	frames << QString("*#18*20*57#%1*9*2*5*1##").arg(month) << QString("*#18*20*57#%1*10*0*120*1##").arg(month);
+	frames << QString("*#18*20*57#%1*11*88*1*0##").arg(month) << QString("*#18*20*57#%1*12*2*31*2##").arg(month);
+	frames << QString("*#18*20*57#%1*13*32*0*65##").arg(month) << QString("*#18*20*57#%1*14*1*180*0##").arg(month);
+	frames << QString("*#18*20*57#%1*15*7*3*3##").arg(month) << QString("*#18*20*57#%1*16*1*2*4##").arg(month);
+	frames << QString("*#18*20*57#%1*17*1*2*4##").arg(month) << QString("*#18*20*57#%1*18*0*0*0##").arg(month);
+	frames << QString("*#18*20*57#%1*19*0##").arg(month);
 
-	int divisor = getDate(9, 1).daysInMonth();
+	int divisor = getDate(month, 1).daysInMonth();
 
 	GraphData data;
 	data.graph[1] = 26500 / divisor;
@@ -338,7 +340,7 @@ void TestEnergyDevice::receiveDailyAverageGraph2()
 	data.graph[22] = 25800 / divisor;
 	data.graph[23] = 102500 / divisor;
 	data.graph[24] = 51600 / divisor;
-	data.date = getDate(9, 1);
+	data.date = getDate(month, 1);
 	data.type = EnergyDevice::DAILY_AVERAGE;
 
 	t.check(frames, data);
