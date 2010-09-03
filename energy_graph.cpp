@@ -494,5 +494,5 @@ void EnergyTableContent::paintEvent(QPaintEvent *e)
 	p.drawLine(right_cell_x - 1, mtop, right_cell_x - 1, height() - mbottom - mtop);
 
 	// header bottom border
-	p.drawLine(left, top + row_height, left + row_width, top + row_height);
+	p.drawLine(left, top + static_cast<int>(row_height), left + row_width, top + static_cast<int>(row_height));
 }
