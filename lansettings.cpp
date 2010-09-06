@@ -63,6 +63,7 @@ using namespace LanSettingsPrivate;
 ConnectionTester::ConnectionTester(QObject *parent) : QObject(parent)
 {
 	urls = QStringList() << "http://www.google.it" << "http://www.bticino.it";
+	is_testing = false;
 	manager = new QNetworkAccessManager(this);
 	timeout_timer = new QTimer(this);
 	timeout_timer->setSingleShot(true);
@@ -70,9 +71,15 @@ ConnectionTester::ConnectionTester(QObject *parent) : QObject(parent)
 	connect(timeout_timer, SIGNAL(timeout()), SLOT(downloadFailed()));
 }
 
+bool ConnectionTester::isTesting() const
+{
+	return is_testing;
+}
+
 void ConnectionTester::test()
 {
 	current_url = 0;
+	is_testing = true;
 	startTest();
 }
 
@@ -92,6 +99,7 @@ void ConnectionTester::downloadFailed()
 	current_reply->deleteLater();
 	if (current_url + 1 >= urls.size())
 	{
+		is_testing = false;
 		emit testFailed();
 		return;
 	}
@@ -110,6 +118,7 @@ void ConnectionTester::downloadFinished()
 	qDebug() << "connection established for" <<  urls.at(current_url);
 	current_reply->disconnect();
 	current_reply->deleteLater();
+	is_testing = false;
 	emit testPassed();
 }
 
@@ -221,13 +230,15 @@ void LanSettings::inizializza()
 	qDebug() << "LanSettings::inizializza()";
 	dev->enableLan(saved_status);
 	requestNetworkInfo(dev);
-	tester->test();
+	if (!tester->isTesting())
+		tester->test();
 }
 
 void LanSettings::showPage()
 {
 	requestNetworkInfo(dev);
-	tester->test();
+	if (!tester->isTesting())
+		tester->test();
 	Page::showPage();
 }
 

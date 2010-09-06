@@ -50,6 +50,7 @@ namespace LanSettingsPrivate
 	public:
 		ConnectionTester(QObject *parent);
 		void test();
+		bool isTesting() const;
 
 	signals:
 		void testFailed();
@@ -65,6 +66,7 @@ namespace LanSettingsPrivate
 		QTimer *timeout_timer;
 		QStringList urls;
 		int current_url;
+		bool is_testing;
 		void startTest();
 	};
 };
