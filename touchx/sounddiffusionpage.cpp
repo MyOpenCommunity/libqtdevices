@@ -652,7 +652,7 @@ void LocalAmplifier::vctValueReceived(const DeviceValues &values_list)
 
 		// The freezed_level is used both to save and restore the volume of the
 		// local amplifier and to mark the "silenced state".
-		freezed_level = localVolumeToAmplifier(bt_global::audio_states->getLocalAmplifierVolume());
+		freezed_level = level;
 
 		// If we aren't in the DIFSON state the local amplifier is turned off, so
 		// we only notify the volume.
@@ -678,8 +678,7 @@ void LocalAmplifier::audioStateChanged(int new_state, int old_state)
 	if (old_state != AudioStates::PLAY_DIFSON && new_state != AudioStates::PLAY_DIFSON)
 		return;
 
-	// re-read volume/status, since state transitions might change it
-	level = localVolumeToAmplifier(bt_global::audio_states->getLocalAmplifierVolume());
+	// re-read the status, since state transitions might change it
 	state = bt_global::audio_states->getLocalAmplifierStatus();
 
 	if (state)
