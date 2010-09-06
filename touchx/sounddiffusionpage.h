@@ -219,8 +219,8 @@ private slots:
 private:
 	VirtualAmplifierDevice *dev;
 	bool state;
-	int freezed_level; // used when we have to freeze the current level and restore it later.
-	int level;
+	int freezed_level; // the (scs) amplifier level, used when we have to freeze the current level and restore it later.
+	int level; // the current (scs) level of the amplifier
 };
 
 /**

@@ -26,7 +26,7 @@
 #include <QMapIterator>
 #include <QTextStream>
 #include <QDomElement>
-#include <QtGlobal> // Q_ASSERT_X
+#include <QtGlobal> // Q_ASSERT_X, qRound
 #include <QDomNode>
 #include <QWidget>
 #include <QRegExp>
@@ -347,7 +347,7 @@ bool setCfgValue(QString field, int value, int item_id, const QString &filename)
 
 int localVolumeToAmplifier(int vol)
 {
-	return vol * 31 / 8;
+	return qRound(vol * 31 / 8.0);
 }
 
 #endif
@@ -359,7 +359,7 @@ int scsToLocalVolume(int vol)
 	if (vol < 0 || vol > 31)
 		return -1;
 
-	return vol * 8 / 31;
+	return qRound(vol * 8 / 31.0);
 #else
 	if (vol < 0)
 		return -1;
