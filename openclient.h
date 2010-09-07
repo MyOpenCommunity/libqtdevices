@@ -63,8 +63,14 @@ public:
 		COMMAND
 	};
 
+	enum FrameDelay
+	{
+		DELAY_NONE,
+		DELAY_IF_REQUESTED
+	};
+
 	Client(Type t, const QString &_host=OPENSERVER_ADDR, unsigned _port=0);
-	void sendFrameOpen(const QString &frame_open);
+	void sendFrameOpen(const QString &frame_open, FrameDelay delay=DELAY_IF_REQUESTED);
 
 	// This methods should be used for a FrameReceiver that wants to receive frames
 	void subscribe(FrameReceiver *obj, int who);

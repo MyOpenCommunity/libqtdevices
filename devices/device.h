@@ -105,7 +105,10 @@ public:
 	int openserverId();
 	static void initDevices();
 
+	// Send (without delay) a frame to the openserver with the given id
 	static void sendCommandFrame(int openserver_id, const QString &frame);
+
+	// Set this flag to delay the frames sent using the sendFrame/sendInit methods.
 	static void delayFrames(bool delay);
 
 signals:
@@ -126,8 +129,14 @@ signals:
 	void connectionDown();
 
 public slots:
+	// The following methods send frames to the openserver, using the COMMAND or the REQUEST
+	// channel. The frame can be really sent after a delay.
 	void sendFrame(QString frame) const;
 	void sendInit(QString frame) const;
+
+	// As the previous method, without delay.
+	void sendFrameNow(QString frame) const;
+	void sendInitNow(QString frame) const;
 
 	// queues the frame to be emitted after a time interval; if another compressed
 	// frame with the same "what" is sent before the timeout, the first frame is

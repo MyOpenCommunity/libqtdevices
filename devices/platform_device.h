@@ -85,6 +85,7 @@ public slots:
 
 private:
 	QString extractVersionValues(OpenMsg &msg);
+	void sendRequest(int what) const;
 };
 
 #endif // PLATFORM_DEVICE_H

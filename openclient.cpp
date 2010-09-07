@@ -211,7 +211,7 @@ bool Client::sendFrames(const QList<QByteArray> &to_send)
 	return true;
 }
 
-void Client::sendFrameOpen(const QString &frame_open)
+void Client::sendFrameOpen(const QString &frame_open, FrameDelay delay)
 {
 	QByteArray frame = frame_open.toLatin1();
 
@@ -224,8 +224,8 @@ void Client::sendFrameOpen(const QString &frame_open)
 	}
 
 	// queue the frames to be sent later, but avoid delaying frames indefinitely
-	QList<QByteArray> &list = delay_frames ? delayed_list_frames : list_frames;
-	QTimer &timer = delay_frames ? delayed_frame_timer : frame_timer;
+	QList<QByteArray> &list = delay_frames && delay == DELAY_IF_REQUESTED ? delayed_list_frames : list_frames;
+	QTimer &timer = delay_frames && delay == DELAY_IF_REQUESTED ? delayed_frame_timer : frame_timer;
 
 	list.append(frame);
 	if (!timer.isActive())
