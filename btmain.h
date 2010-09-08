@@ -59,6 +59,9 @@ public:
 
 	static void signalUSR2Handler(int signal_number);
 
+signals:
+	void signalReceived(int signal_number);
+
 private slots:
 	void handleUSR2();
 

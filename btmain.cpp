@@ -158,11 +158,11 @@ SignalsHandler::~SignalsHandler()
 void SignalsHandler::handleUSR2()
 {
 	snUSR2->setEnabled(false);
-	char tmp;
-	::read(sigUSR2fd[1], &tmp, sizeof(tmp));
+	char signal_number;
+	::read(sigUSR2fd[1], &signal_number, sizeof(signal_number));
 
-	qDebug("handleUSR2()");
-	bt_global::btmain->resetTimer();
+	qDebug() << "Handling signal" << int(signal_number);
+	emit signalReceived(int(signal_number));
 
 	snUSR2->setEnabled(true);
 }
@@ -170,7 +170,7 @@ void SignalsHandler::handleUSR2()
 void SignalsHandler::signalUSR2Handler(int signal_number)
 {
 	Q_UNUSED(signal_number)
-	char tmp = 1;
+	char tmp = signal_number;
 	::write(sigUSR2fd[0], &tmp, sizeof(tmp)); // write something, in order to "activate" the notifier
 }
 
