@@ -105,7 +105,6 @@ public:
 
 private slots:
 	void toggleActivation();
-	void turnOff();
 
 protected:
 	virtual void updateStatus();

@@ -154,7 +154,6 @@ IconButtonOnTray::IconButtonOnTray(const QString &label, const QString &icon_on,
 	button->setOnImage(bt_global::skin->getImage(icon_on));
 	connect(button, SIGNAL(clicked()), SLOT(toggleActivation()));
 	tray_button = new BtButton(bt_global::skin->getImage(tray_icon));
-	connect(tray_button, SIGNAL(clicked()), SLOT(turnOff()));
 	bt_global::btmain->trayBar()->addButton(tray_button, tray_id);
 	updateStatus();
 }
@@ -170,8 +169,3 @@ void IconButtonOnTray::updateStatus()
 	tray_button->setVisible(button->getStatus() == StateButton::ON);
 }
 
-void IconButtonOnTray::turnOff()
-{
-	button->setStatus(false);
-	updateStatus();
-}
