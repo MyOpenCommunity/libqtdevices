@@ -89,6 +89,13 @@ public:
 	virtual int sectionId() const;
 
 	static void playSomethingRandomly();
+	static Page *current_player;
+
+protected:
+	virtual void showEvent(QShowEvent *);
+
+private slots:
+	void gotoPlayerPage();
 
 private:
 	void loadItems(const QDomNode &config_node);
@@ -96,6 +103,8 @@ private:
 	MultimediaSectionPage::Items showed_items;
 	FileSelector *browser;
 	bool delete_browser;
+	BtButton *play_button;
+
 
 	// used by playSomethingRandomly()
 	static SongSearch *song_search;

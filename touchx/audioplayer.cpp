@@ -36,6 +36,7 @@
 #include "devices_cache.h"
 #include "audiostatemachine.h"
 #include "pagestack.h" // bt_global::page_stack
+#include "multimedia.h"
 
 #include <QGridLayout>
 #include <QLabel>
@@ -44,41 +45,10 @@
 // The timeout for a single item in msec
 #define LOOP_TIMEOUT 2000
 
-
-AudioPlayerTray *AudioPlayerPage::tray_icon = NULL;
-
-
-AudioPlayerTray::AudioPlayerTray(const QString &icon) :
-	BtButton(icon)
-{
-	current_player = NULL;
-	hide();
-
-	connect(this, SIGNAL(clicked()), SLOT(gotoPlayer()));
-}
-
-void AudioPlayerTray::setCurrentPlayer(AudioPlayerPage *player)
-{
-	current_player = player;
-}
-
-AudioPlayerPage *AudioPlayerTray::currentPlayer() const
-{
-	return current_player;
-}
-
-void AudioPlayerTray::gotoPlayer()
-{
-	if (current_player)
-	{
-		// Clear the stack and make the cleanUp operations.
-		bt_global::page_stack.clear();
-		current_player->showPage();
-	}
-}
-
-
 QVector<AudioPlayerPage *> AudioPlayerPage::audioplayer_pages(MAX_MEDIA_TYPE, 0);
+
+BtButton *AudioPlayerPage::tray_icon = 0;
+
 
 AudioPlayerPage *AudioPlayerPage::getAudioPlayerPage(MediaType type)
 {
@@ -180,13 +150,14 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	// create the tray icon and add it to tray
 	if (!tray_icon)
 	{
-		tray_icon = new AudioPlayerTray(bt_global::skin->getImage("tray_player"));
+		tray_icon = new BtButton(bt_global::skin->getImage("tray_player"));
 		bt_global::btmain->trayBar()->addButton(tray_icon, TrayBar::AUDIO_PLAYER);
+		tray_icon->hide();
 	}
 
-	connect(player, SIGNAL(mplayerStarted()), SLOT(showTrayIcon()));
-	connect(player, SIGNAL(mplayerKilled()), SLOT(hideTrayIcon()));
-	connect(player, SIGNAL(mplayerAborted()), SLOT(hideTrayIcon()));
+	connect(player, SIGNAL(mplayerStarted()), SLOT(playerStarted()));
+	connect(player, SIGNAL(mplayerKilled()), SLOT(playerStopped()));
+	connect(player, SIGNAL(mplayerAborted()), SLOT(playerStopped()));
 }
 
 int AudioPlayerPage::sectionId() const
@@ -266,7 +237,7 @@ void AudioPlayerPage::previous()
 void AudioPlayerPage::quit()
 {
 	stop();
-	hideTrayIcon();
+	playerStopped();
 }
 
 void AudioPlayerPage::next()
@@ -369,19 +340,15 @@ void AudioPlayerPage::gotoSoundDiffusion()
 	SoundDiffusionPage::showCurrentAmbientPage();
 }
 
-void AudioPlayerPage::showTrayIcon()
+void AudioPlayerPage::playerStarted()
 {
-	if (!tray_icon->currentPlayer())
-		tray_icon->setCurrentPlayer(this);
-
-	tray_icon->show();
+	MultimediaSectionPage::current_player = this;
+	tray_icon->setVisible(true);
 }
 
-void AudioPlayerPage::hideTrayIcon()
+void AudioPlayerPage::playerStopped()
 {
-	if (tray_icon->currentPlayer() != this)
-		return;
-
-	tray_icon->setCurrentPlayer(0);
-	tray_icon->hide();
+	if (MultimediaSectionPage::current_player == this)
+		MultimediaSectionPage::current_player = 0;
+	tray_icon->setVisible(false);
 }

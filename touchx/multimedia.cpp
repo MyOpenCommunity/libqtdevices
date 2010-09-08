@@ -47,6 +47,7 @@ enum
 };
 
 SongSearch *MultimediaSectionPage::song_search = NULL;
+Page *MultimediaSectionPage::current_player = 0;
 
 
 FileSystemBrowseButton::FileSystemBrowseButton(MountWatcher &watch, FileSelector *_browser,
@@ -93,8 +94,9 @@ void FileSystemBrowseButton::browse()
 	browser->browse(directory);
 }
 
-MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, MultimediaSectionPage::Items items, FileSelector *selector, const QString &title) :
-	browser(0), delete_browser(true)
+
+
+MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, MultimediaSectionPage::Items items, FileSelector *selector, const QString &title)
 {
 	Q_ASSERT_X(items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM) && selector != 0,
 				"MultimediaSectionPage::MultimediaSectionPage",
@@ -103,6 +105,7 @@ MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, Multim
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 
 	showed_items = items;
+	delete_browser = true;
 	browser = selector;
 
 	QString descr;
@@ -111,10 +114,26 @@ MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, Multim
 	else
 		descr = title;
 
-	buildPage(new IconContent, new NavigationBar, descr);
+	NavigationBar *nav_bar = new NavigationBar("play_file");
+	buildPage(new IconContent, nav_bar, descr);
 	loadItems(config_node);
 	if (delete_browser)
 		browser->deleteLater();
+
+	play_button = nav_bar->forward_button;
+	connect(play_button, SIGNAL(clicked()), SLOT(gotoPlayerPage()));
+	play_button->hide();
+}
+
+void MultimediaSectionPage::showEvent(QShowEvent *)
+{
+	play_button->setVisible(current_player != 0);
+}
+
+void MultimediaSectionPage::gotoPlayerPage()
+{
+	if (current_player)
+		current_player->showPage();
 }
 
 int MultimediaSectionPage::sectionId() const

@@ -33,27 +33,6 @@ class VirtualSourceDevice;
 
 
 /*
- * Tray icon displayed in the header when either an audio file or a web radio
- * is playing.  Clicking the icon jumps to the player page.
- */
-class AudioPlayerTray : public BtButton
-{
-Q_OBJECT
-public:
-	AudioPlayerTray(const QString &icon);
-
-	void setCurrentPlayer(AudioPlayerPage *player);
-	AudioPlayerPage *currentPlayer() const;
-
-private slots:
-	void gotoPlayer();
-
-private:
-	AudioPlayerPage *current_player;
-};
-
-
-/*
  * Page that can be used to play both audio files (es. MP3) and ShoutCast
  * streams (for IP radio).
  */
@@ -92,8 +71,8 @@ private slots:
 	void refreshPlayInfo();
 	void changeVolume(int volume);
 	void gotoSoundDiffusion();
-	void showTrayIcon();
-	void hideTrayIcon();
+	void playerStarted();
+	void playerStopped();
 	void quit();
 
 private:
@@ -102,7 +81,7 @@ private:
 	MediaType type;
 	QLabel *description_top, *description_bottom, *track, *elapsed;
 	// icon in tray bar
-	static AudioPlayerTray *tray_icon;
+	static BtButton *tray_icon;
 	static QVector<AudioPlayerPage *> audioplayer_pages;
 
 	int loop_starting_file; // the index of the song used to detect loop
