@@ -356,7 +356,26 @@ void Dimmer100Group::decreaseLevel()
 }
 
 
-TempLight::TempLight(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode) :
+static LightingDevice *createLightingDevice(const QString &where, int openserver_id, DeviceType device_type, PullMode pull_mode)
+{
+	switch (device_type)
+	{
+	case LIGHT_DEVICE:
+		return new LightingDevice(where, pull_mode, openserver_id);
+	case DIMMER10_DEVICE:
+		return new DimmerDevice(where, pull_mode, openserver_id);
+	case DIMMER100_DEVICE:
+		return new Dimmer100Device(where, pull_mode, openserver_id);
+	default:
+		qFatal("createLightingDevice: Invalid device type %d", device_type);
+	}
+
+	return NULL;
+}
+
+
+TempLight::TempLight(const QString &descr, const QString &where, int openserver_id,
+		     DeviceType device_type, PullMode pull_mode) :
 	BannOnOff2Labels(0)
 {
 	QString icon_on_off = bt_global::skin->getImage("lamp_time_on");
@@ -364,7 +383,7 @@ TempLight::TempLight(const QString &descr, const QString &where, int openserver_
 		   getBostikName(icon_on_off, "off"),
 		   bt_global::skin->getImage("on"), OFF, descr, QString());
 
-	dev = bt_global::add_device_to_cache(new LightingDevice(where, pull_mode, openserver_id));
+	dev = bt_global::add_device_to_cache(createLightingDevice(where, openserver_id, device_type, pull_mode));
 
 	time_index = 0;
 	// Time values are fixed for TempLight
@@ -414,8 +433,9 @@ void TempLight::valueReceived(const DeviceValues &values_list)
 }
 
 
-TempLightVariable::TempLightVariable(const QList<BtTime> &time_values, const QString &descr, const QString &where, int openserver_id, PullMode pull_mode) :
-	TempLight(descr, where, openserver_id, pull_mode)
+TempLightVariable::TempLightVariable(const QList<BtTime> &time_values, const QString &descr, const QString &where, int openserver_id,
+				     DeviceType device_type, PullMode pull_mode) :
+	TempLight(descr, where, openserver_id, device_type, pull_mode)
 {
 	times = time_values;
 	dev->setTimingBehaviour(LightingDevice::TIMED_LIGHT);
@@ -434,13 +454,14 @@ enum {
 	TLF_TIME_STATES = 8,
 };
 
-TempLightFixed::TempLightFixed(int time, const QString &descr, const QString &where, int openserver_id, PullMode pull_mode) :
+TempLightFixed::TempLightFixed(int time, const QString &descr, const QString &where, int openserver_id,
+			       DeviceType device_type, PullMode pull_mode) :
 	BannOn2Labels(0)
 {
 	total_time = time;
 	lighting_time = BtTime(total_time / 3600, (total_time / 60) % 60, total_time % 60);
 
-	dev = bt_global::add_device_to_cache(new LightingDevice(where, pull_mode, openserver_id));
+	dev = bt_global::add_device_to_cache(createLightingDevice(where, openserver_id, device_type, pull_mode));
 	dev->setTimingBehaviour(LightingDevice::TIMED_LIGHT);
 
 	initBanner(bt_global::skin->getImage("on"), bt_global::skin->getImage("lamp_status"),

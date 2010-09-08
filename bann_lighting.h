@@ -40,6 +40,13 @@ class DimmerDevice;
 class Dimmer100Device;
 
 
+enum DeviceType
+{
+	LIGHT_DEVICE     = 0,
+	DIMMER10_DEVICE  = 1,
+	DIMMER100_DEVICE = 2,
+};
+
 class LightGroup : public Bann2Buttons
 {
 Q_OBJECT
@@ -164,7 +171,8 @@ class TempLight : public BannOnOff2Labels
 {
 Q_OBJECT
 public:
-	TempLight(const QString &descr, const QString &where, int openserver_id, PullMode pull_mode);
+	TempLight(const QString &descr, const QString &where, int openserver_id,
+		  DeviceType device_type, PullMode pull_mode);
 
 protected:
 	void updateTimeLabel();
@@ -186,7 +194,8 @@ class TempLightVariable : public TempLight
 {
 Q_OBJECT
 public:
-	TempLightVariable(const QList<BtTime> &time_values, const QString &descr, const QString &where, int openserver_id, PullMode pull_mode);
+	TempLightVariable(const QList<BtTime> &time_values, const QString &descr, const QString &where, int openserver_id,
+			  DeviceType device_type, PullMode pull_mode);
 
 protected slots:
 	virtual void activate();
@@ -197,7 +206,8 @@ class TempLightFixed : public BannOn2Labels
 {
 Q_OBJECT
 public:
-	TempLightFixed(int time, const QString &descr, const QString &where, int openserver_id, PullMode pull_mode);
+	TempLightFixed(int time, const QString &descr, const QString &where, int openserver_id,
+		       DeviceType device_type, PullMode pull_mode);
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);
