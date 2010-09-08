@@ -58,13 +58,10 @@ Q_OBJECT
 public:
 	VideoDoorEntry(const QDomNode &config_node);
 	virtual int sectionId() const;
-
-private slots:
-	void toggleRingExclusion();
+	static bool ring_exclusion;
 
 private:
 	VideoDoorEntry(); // available only for BtMain
-	StateButton *ring_exclusion;
 	void loadItems(const QDomNode &config_node);
 };
 
@@ -163,6 +160,21 @@ class HandsFree : public IconButtonOnTray
 Q_OBJECT
 public:
 	HandsFree();
+
+protected:
+	virtual void updateStatus();
+};
+
+
+/**
+ * The button (actually, the couple of buttons) that represents the ringtone
+ * exclusion.
+ */
+class RingtoneExclusion : public IconButtonOnTray
+{
+Q_OBJECT
+public:
+	RingtoneExclusion();
 
 protected:
 	virtual void updateStatus();

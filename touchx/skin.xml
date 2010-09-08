@@ -95,12 +95,6 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_date_background>home/backdate.png</img_date_background>
 		<img_temperature_background>home/backtemp.png</img_temperature_background>
 	</item>
-	<!-- Videodoorentry section-->
-	<item>
-		<cid>10000</cid>
-		<img_tray_ring_ex_on>home/btnesclusionechiamataon.png</img_tray_ring_ex_on>
-		<img_tray_ring_ex_off>home/btnesclusionechiamataoff.png</img_tray_ring_ex_off>
-	</item>
 	<!-- Home and info bar -->
 	<item>
 		<cid>99</cid>
@@ -437,11 +431,6 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<cid>10002</cid>
 		<img_link_icon>videocitofonia/postiinterni.png</img_link_icon>
 	</item>
-        <!-- ring exclusion link -->
-	<item>
-		<cid>10003</cid>
-		<img_link_icon>videocitofonia/esclusionechiamata.png</img_link_icon>
-	</item>
 	<item>
 		<!-- Videodoorentry: Hands free -->
 		<cid>14251</cid>
@@ -455,6 +444,13 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_profstudio_on>setup/studioprofessionale.png</img_profstudio_on>
 		<img_profstudio_off>setup/studioprofessionaledis.png</img_profstudio_off>
 		<img_tray_profstudio>home/studioprofessionales.png</img_tray_profstudio>
+	</item>
+		<!-- Videodoorentry: Ringtone Exclusion -->
+	<item>
+		<cid>14253</cid>
+		<img_ringexclusion_on>setup/beepon.png</img_ringexclusion_on>
+		<img_ringexclusion_off>setup/beepoff.png</img_ringexclusion_off>
+		<img_tray_ringexclusion>home/btnesclusionechiamataon.png</img_tray_ringexclusion>
 	</item>
 	<!-- Multimedia page links -->
 	<item>

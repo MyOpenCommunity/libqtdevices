@@ -78,6 +78,7 @@ enum
 	PAGE_VCTSETTINGS = 14010,
 	ITEM_HANDSFREE = 14251,
 	ITEM_PROF_STUDIO = 14252,
+	ITEM_RING_EXCLUSION = 14253,
 	// TODO ids?
 	PAGE_CALIBRATION_TEST = 1777777,
 };
@@ -487,6 +488,9 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			break;
 		case ITEM_PROF_STUDIO:
 			page_content->addWidget(new ProfessionalStudio);
+			break;
+		case ITEM_RING_EXCLUSION:
+			page_content->addWidget(new RingtoneExclusion);
 			break;
 		default:
 			qFatal("Unhandled page id %d in IconSettings::loadItems", link_id);

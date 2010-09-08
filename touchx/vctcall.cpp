@@ -38,6 +38,7 @@
 #include "ringtonesmanager.h" // bt_global::ringtones
 #include "main.h" // VIDEODOORENTRY
 #include "btmain.h" // makeActive
+#include "videodoorentry.h" // VideoDoorEntry::ring_exclusion
 
 #include <QDomNode>
 #include <QHBoxLayout>
@@ -571,25 +572,24 @@ void VCTCallPage::valueReceived(const DeviceValues &values_list)
 {
 	if (values_list.contains(EntryphoneDevice::RINGTONE))
 	{
-		// Ring exlusion is always present if the system can receive vct calls.
-		StateButton *ring_exclusion = qobject_cast<StateButton*>(bt_global::btmain->trayBar()->getButton(TrayBar::RING_EXCLUSION));
+		bool ring_exclusion = VideoDoorEntry::ring_exclusion;
 
 		ringtone = values_list[EntryphoneDevice::RINGTONE].toInt();
 		if (ringtone == Ringtones::PE1 || ringtone == Ringtones::PE2 ||
 			ringtone == Ringtones::PE3 || ringtone == Ringtones::PE4)
 		{
-			if (!ring_exclusion->getStatus())
+			if (!ring_exclusion)
 				connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(playRingtone()));
 
 			// We always enter in the VDE_RINGTONE state, because if we are running an audio files
 			// we want to stop the reproduction even if the ring exclusion is on.
 			if (bt_global::audio_states->currentState() != AudioStates::PLAY_VDE_RINGTONE)
 				bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
-			else if (!ring_exclusion->getStatus())
+			else if (!ring_exclusion)
 				playRingtone();
 
 			// We are supposing that the VCT ringtones arrive (only) together the VCT call.
-			if (ring_exclusion->getStatus())
+			if (ring_exclusion) // We have not to wait the end of the ringtone
 				manageHandsFree();
 		}
 	}

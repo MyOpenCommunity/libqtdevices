@@ -57,6 +57,8 @@ enum Pages
 	EXTERNAL_INTERCOM = 10102
 };
 
+bool VideoDoorEntry::ring_exclusion = false;
+
 
 #ifdef LAYOUT_BTOUCH
 VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
@@ -102,33 +104,13 @@ VideoDoorEntry::VideoDoorEntry()
 	// don't store any pointer to these. The destruction is provided by the PageContainer.
 	(void) new IntercomCallPage(dev);
 	(void) new VCTCallPage(dev);
-
-	ring_exclusion = new StateButton;
-	ring_exclusion->setOnOff();
-	ring_exclusion->setOffImage(bt_global::skin->getImage("tray_ring_ex_off"));
-	ring_exclusion->setOnImage(bt_global::skin->getImage("tray_ring_ex_on"));
-	connect(ring_exclusion, SIGNAL(clicked()), SLOT(toggleRingExclusion()));
-	bt_global::btmain->trayBar()->addButton(ring_exclusion, TrayBar::RING_EXCLUSION);
 }
 
 VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
-
-	ring_exclusion = new StateButton;
-	ring_exclusion->setOnOff();
-	ring_exclusion->setOffImage(bt_global::skin->getImage("tray_ring_ex_off"));
-	ring_exclusion->setOnImage(bt_global::skin->getImage("tray_ring_ex_on"));
-	connect(ring_exclusion, SIGNAL(clicked()), SLOT(toggleRingExclusion()));
-	bt_global::btmain->trayBar()->addButton(ring_exclusion, TrayBar::RING_EXCLUSION);
-
 	loadItems(config_node);
-}
-
-void VideoDoorEntry::toggleRingExclusion()
-{
-	ring_exclusion->setStatus(!ring_exclusion->getStatus());
 }
 
 int VideoDoorEntry::sectionId() const
@@ -394,19 +376,19 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 			break;
 		case EntryphoneDevice::RINGTONE:
 		{
-			StateButton *ring_exclusion = qobject_cast<StateButton*>(bt_global::btmain->trayBar()->getButton(TrayBar::RING_EXCLUSION));
+			bool ring_exclusion = VideoDoorEntry::ring_exclusion;
 
 			ringtone = static_cast<Ringtones::Type>(values_list[EntryphoneDevice::RINGTONE].toInt());
 			if (ringtone == Ringtones::PI_INTERCOM || ringtone == Ringtones::PE_INTERCOM)
 			{
-				if (!ring_exclusion || !ring_exclusion->getStatus())
+				if (!ring_exclusion)
 					connect(bt_global::audio_states, SIGNAL(stateTransition(int,int)), SLOT(playRingtone()));
 				if (bt_global::audio_states->currentState() != AudioStates::PLAY_VDE_RINGTONE)
 					bt_global::audio_states->toState(AudioStates::PLAY_VDE_RINGTONE);
-				else if (!ring_exclusion || !ring_exclusion->getStatus())
+				else if (!ring_exclusion)
 					playRingtone();
 			}
-			else if (ringtone == Ringtones::FLOORCALL && (!ring_exclusion || !ring_exclusion->getStatus()))
+			else if (ringtone == Ringtones::FLOORCALL && !ring_exclusion)
 			{
 				if (bt_global::audio_states->currentState() != AudioStates::PLAY_FLOORCALL)
 				{
@@ -518,5 +500,16 @@ void ProfessionalStudio::updateStatus()
 	VCTCallPage::setProfStudio(button->getStatus() == StateButton::ON);
 }
 
+
+RingtoneExclusion::RingtoneExclusion() : IconButtonOnTray(tr("Ringtone Exclusion"),
+	"ringexclusion_on", "ringexclusion_off", "tray_ringexclusion", TrayBar::RING_EXCLUSION)
+{
+}
+
+void RingtoneExclusion::updateStatus()
+{
+	IconButtonOnTray::updateStatus();
+	VideoDoorEntry::ring_exclusion = button->getStatus() == StateButton::ON;
+}
 
 #endif
