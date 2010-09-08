@@ -219,6 +219,8 @@ int main(int argc, char **argv)
 	sa.sa_handler = SignalsHandler::signalUSR2Handler;
 	if (sigaction(SIGUSR2, &sa, 0) != 0)
 		qWarning() << "Error on installing the handler for the SIGUSR2 signal";
+	if (sigaction(SIGTERM, &sa, 0) != 0)
+		qWarning() << "Error on installing the handler for the SIGTERM signal";
 
 	SignalsHandler *sh = new SignalsHandler;
 

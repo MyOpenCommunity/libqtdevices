@@ -69,7 +69,7 @@
 #include <sys/types.h>
 #include <sys/socket.h> // socketpair
 #include <unistd.h> // write
-#include <signal.h> // SIGUSR2
+#include <signal.h> // SIGUSR2, SIGTERM
 
 
 // delay between two consecutive screensaver checks
@@ -941,6 +941,11 @@ void BtMain::handleSignal(int signal_number)
 {
 	if (signal_number == SIGUSR2)
 		resetTimer();
+	else if (signal_number == SIGTERM)
+	{
+		qDebug("Terminating on SIGTERM");
+		qApp->quit();
+	}
 }
 
 // The global definition of btmain pointer
