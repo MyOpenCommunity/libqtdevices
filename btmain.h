@@ -125,6 +125,7 @@ private slots:
 	void waitBeforeInit();
 	void connectionReady();
 	void startGui();
+	void handleSignal(int signal_number);
 
 private:
 	QHash<int, QPair<Client*, Client*> > clients;

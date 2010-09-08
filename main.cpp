@@ -224,6 +224,7 @@ int main(int argc, char **argv)
 
 	qDebug("Start BtMain");
 	bt_global::btmain = new BtMain(general_config.openserver_reconnection_time);
+	sh->connect(sh, SIGNAL(signalReceived(int)), bt_global::btmain, SLOT(handleSignal(int)));
 	installTranslator(a, (*bt_global::config)[LANGUAGE]);
 	int res = a.exec();
 	delete bt_global::btmain;
