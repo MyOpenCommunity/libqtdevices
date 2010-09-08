@@ -138,41 +138,41 @@ namespace
 }
 
 
-int SignalsHandler::sigUSR2fd[2];
+int SignalsHandler::signalfd[2];
 
 
 SignalsHandler::SignalsHandler()
 {
-	if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sigUSR2fd))
-		qWarning() << "Cannot create USR2 socketpair";
+	if (::socketpair(AF_UNIX, SOCK_STREAM, 0, signalfd))
+		qWarning() << "Cannot create SignalsHandler socketpair";
 
-	snUSR2 = new QSocketNotifier(sigUSR2fd[1], QSocketNotifier::Read, this);
-	snUSR2->setEnabled(true);
-	connect(snUSR2, SIGNAL(activated(int)), SLOT(handleUSR2()));
+	snSignal = new QSocketNotifier(signalfd[1], QSocketNotifier::Read, this);
+	snSignal->setEnabled(true);
+	connect(snSignal, SIGNAL(activated(int)), SLOT(handleSignal()));
 }
 
 SignalsHandler::~SignalsHandler()
 {
-	delete snUSR2;
+	delete snSignal;
 }
 
-void SignalsHandler::handleUSR2()
+void SignalsHandler::handleSignal()
 {
-	snUSR2->setEnabled(false);
+	snSignal->setEnabled(false);
 	char signal_number;
-	::read(sigUSR2fd[1], &signal_number, sizeof(signal_number));
+	::read(signalfd[1], &signal_number, sizeof(signal_number));
 
 	qDebug() << "Handling signal" << int(signal_number);
 	emit signalReceived(int(signal_number));
 
-	snUSR2->setEnabled(true);
+	snSignal->setEnabled(true);
 }
 
-void SignalsHandler::signalUSR2Handler(int signal_number)
+void SignalsHandler::signalHandler(int signal_number)
 {
 	Q_UNUSED(signal_number)
 	char tmp = signal_number;
-	::write(sigUSR2fd[0], &tmp, sizeof(tmp)); // write something, in order to "activate" the notifier
+	::write(signalfd[0], &tmp, sizeof(tmp)); // write something, in order to "activate" the notifier
 }
 
 

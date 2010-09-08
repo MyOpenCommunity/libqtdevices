@@ -47,8 +47,7 @@ class QSocketNotifier;
 
 
 /**
- * This class manages the unix signal SIGUSR2, used on the BTouch hardware
- * to notify a date-time shift.
+ * This class manages the unix signals used on the BTouch hardware.
  */
 class SignalsHandler : public QObject
 {
@@ -57,17 +56,17 @@ public:
 	SignalsHandler();
 	~SignalsHandler();
 
-	static void signalUSR2Handler(int signal_number);
+	static void signalHandler(int signal_number);
 
 signals:
 	void signalReceived(int signal_number);
 
 private slots:
-	void handleUSR2();
+	void handleSignal();
 
 private:
-	static int sigUSR2fd[2];
-	QSocketNotifier *snUSR2;
+	static int signalfd[2];
+	QSocketNotifier *snSignal;
 };
 
 
