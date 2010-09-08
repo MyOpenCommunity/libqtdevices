@@ -57,7 +57,9 @@ enum Pages
 	EXTERNAL_INTERCOM = 10102
 };
 
+#ifdef LAYOUT_TOUCHX
 bool VideoDoorEntry::ring_exclusion = false;
+#endif
 
 
 #ifdef LAYOUT_BTOUCH
