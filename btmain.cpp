@@ -65,6 +65,7 @@
 #include <QTime>
 #include <QThreadPool>
 #include <QSocketNotifier>
+#include <QtConcurrentRun>
 
 #include <sys/types.h>
 #include <sys/socket.h> // socketpair
@@ -74,6 +75,7 @@
 
 // delay between two consecutive screensaver checks
 #define SCREENSAVER_CHECK 2000
+#define WD_THREAD_INTERVAL 5000
 
 #if LAYOUT_BTOUCH
 #define TS_NUM_BASE_ADDRESS 0x300
@@ -135,6 +137,29 @@ namespace
 	}
 #endif
 
+	volatile bool stop_watch_dog;
+
+	void updateWatchDog()
+	{
+		while (!stop_watch_dog)
+		{
+			qDebug() << "Rearming watchdog from thread";
+			rearmWDT();
+			usleep(WD_THREAD_INTERVAL * 1000);
+		}
+	}
+
+	void startUpdateWatchDog()
+	{
+		stop_watch_dog = false;
+
+		QtConcurrent::run(&updateWatchDog);
+	}
+
+	void stopUpdateWatchDog()
+	{
+		stop_watch_dog = true;
+	}
 }
 
 
@@ -549,9 +574,10 @@ void BtMain::init()
 	else
 	{
 		// setStyleSheet may be slow, try to avoid the watchdog timeout
-		rearmWDT();
+		// by calling it in a secondary thread
+		startUpdateWatchDog();
 		qApp->setStyleSheet(style);
-		rearmWDT();
+		stopUpdateWatchDog();
 	}
 
 	config_loaded = true;
