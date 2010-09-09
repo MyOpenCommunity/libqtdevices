@@ -49,6 +49,7 @@ TrayBar::TrayBar()
 
 void TrayBar::addButton(BtButton *b, ButtonId id)
 {
+	b->disable();
 	layout()->addWidget(b);
 	buttons[id] = b;
 }
