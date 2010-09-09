@@ -149,14 +149,20 @@ private:
 	bool frozen;
 	int last_event_time;
 
-	// the four values below are in seconds; screenoff_time can be 0
-	// it must always be freeze_time < screensaver_time < screenoff_time
-
+	// take into account selected screensaver when computing freeze/blank screen times
+	//
 	// if the user is idle for this number of seconds, freeze the screen
-	int freeze_time;
+	int freezeTime();
 	// if the user is idle for this number of seconds, start the screen saver
-	int screensaver_time;
+	int screensaverTime();
 	// if the user is idle for this number of seconds, turn off the screen
+	int blankScreenTime();
+
+	// the three values below are in seconds; screenoff_time can be 0
+	// it must always be screensaver_time < screenoff_time
+
+	int freeze_time;
+	int screensaver_time;
 	int screenoff_time;
 
 	static bool calibrating;

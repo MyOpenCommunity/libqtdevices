@@ -695,9 +695,28 @@ void BtMain::setScreenSaverTimeouts(int screensaver_start, int blank_screen)
 
 	screenoff_time = blank_screen;
 	screensaver_time = screensaver_start;
+}
 
-	if (freeze_time > screensaver_time)
-		freeze_time = screensaver_time;
+int BtMain::freezeTime()
+{
+	return qMin(qMin(freeze_time, screensaverTime()), blankScreenTime());
+}
+
+int BtMain::screensaverTime()
+{
+	return screensaver_time;
+}
+
+int BtMain::blankScreenTime()
+{
+	ScreenSaver::Type target_screensaver = bt_global::display->currentScreenSaver();
+
+	if (screenoff_time == 0)
+		return 0;
+	else if (target_screensaver == ScreenSaver::NONE)
+		return screenoff_time - screensaver_time;
+	else
+		return screenoff_time;
 }
 
 void BtMain::checkScreensaver()
@@ -738,9 +757,9 @@ void BtMain::checkScreensaver()
 	int time_press = getTimePress();
 	int time = qMin(time_press, int(now() - last_event_time));
 
-	if (screenoff_time != 0 && time >= screenoff_time &&
-		(bt_global::display->currentState() == DISPLAY_SCREENSAVER ||
-		(target_screensaver == ScreenSaver::NONE && bt_global::display->currentState() == DISPLAY_FREEZED)))
+	if (blankScreenTime() != 0 &&
+		((bt_global::display->currentState() == DISPLAY_SCREENSAVER && time >= blankScreenTime()) ||
+		 (bt_global::display->currentState() == DISPLAY_FREEZED && target_screensaver == ScreenSaver::NONE && time >= blankScreenTime())))
 	{
 		qDebug() << "Turning screen off";
 		// the stopscreensaver() event is emitted when the user clicks on screen
@@ -758,11 +777,11 @@ void BtMain::checkScreensaver()
 		bt_global::display->setState(DISPLAY_OFF);
 
 	}
-	else if (time >= freeze_time && getBacklight() && !frozen)
+	else if (time >= freezeTime() && getBacklight() && !frozen)
 	{
 		freeze(true);
 	}
-	else if (time >= screensaver_time && target_screensaver != ScreenSaver::NONE)
+	else if (time >= screensaverTime() && target_screensaver != ScreenSaver::NONE)
 	{
 		if (bt_global::display->currentState() == DISPLAY_OPERATIVE &&
 			pagDefault && page_container->currentPage() != pagDefault)
