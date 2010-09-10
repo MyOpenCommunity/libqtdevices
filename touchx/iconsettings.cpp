@@ -484,13 +484,16 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			p = new IconSettings(page_node);
 			break;
 		case ITEM_HANDSFREE:
-			page_content->addWidget(new HandsFree);
+			page_content->addWidget(new HandsFree(getTextChild(item, "enable").toInt(),
+				getTextChild(item, "itemID").toInt()));
 			break;
 		case ITEM_PROF_STUDIO:
-			page_content->addWidget(new ProfessionalStudio);
+			page_content->addWidget(new ProfessionalStudio(getTextChild(item, "enable").toInt(),
+				getTextChild(item, "itemID").toInt()));
 			break;
 		case ITEM_RING_EXCLUSION:
-			page_content->addWidget(new RingtoneExclusion);
+			page_content->addWidget(new RingtoneExclusion(getTextChild(item, "enable").toInt(),
+				getTextChild(item, "itemID").toInt()));
 			break;
 		default:
 			qFatal("Unhandled page id %d in IconSettings::loadItems", link_id);

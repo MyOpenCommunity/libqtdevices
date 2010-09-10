@@ -477,8 +477,8 @@ Intercom::Intercom(const QDomNode &config_node)
 }
 
 
-HandsFree::HandsFree() : IconButtonOnTray(tr("Hands Free"),
-	"handsfree_on", "handsfree_off", "tray_handsfree", TrayBar::HANDS_FREE)
+HandsFree::HandsFree(bool status, int item_id) : IconButtonOnTray(tr("Hands Free"),
+	"handsfree_on", "handsfree_off", "tray_handsfree", TrayBar::HANDS_FREE, status, item_id)
 {
 }
 
@@ -489,8 +489,8 @@ void HandsFree::updateStatus()
 }
 
 
-ProfessionalStudio::ProfessionalStudio() : IconButtonOnTray(tr("Professional studio"),
-	"profstudio_on", "profstudio_off", "tray_profstudio", TrayBar::PROF_STUDIO)
+ProfessionalStudio::ProfessionalStudio(bool status, int item_id) : IconButtonOnTray(tr("Professional studio"),
+	"profstudio_on", "profstudio_off", "tray_profstudio", TrayBar::PROF_STUDIO, status, item_id)
 {
 }
 
@@ -501,8 +501,8 @@ void ProfessionalStudio::updateStatus()
 }
 
 
-RingtoneExclusion::RingtoneExclusion() : IconButtonOnTray(tr("Ringtone Exclusion"),
-	"ringexclusion_on", "ringexclusion_off", "tray_ringexclusion", TrayBar::RING_EXCLUSION)
+RingtoneExclusion::RingtoneExclusion(bool status, int item_id) : IconButtonOnTray(tr("Ringtone Exclusion"),
+	"ringexclusion_on", "ringexclusion_off", "tray_ringexclusion", TrayBar::RING_EXCLUSION, status, item_id)
 {
 }
 
