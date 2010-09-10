@@ -49,6 +49,8 @@ private slots:
 	void endCalibration();
 	// Rollback the changes and re-start another calibration.
 	void restartCalibration();
+	// Print log after a pression on topleft calibration button (used during a production step)
+	void showButtonLog();
 
 private:
 	// The positions of the crosshair are:

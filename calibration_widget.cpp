@@ -92,7 +92,7 @@ CalibrationWidget::CalibrationWidget(bool minimal)
 		height - buttons_margin - bottomright_button->height());
 
 	connect(topleft_button, SIGNAL(clicked()), topleft_button, SLOT(hide()));
-	connect(topleft_button, SIGNAL(clicked()), bottomright_button, SLOT(show()));
+	connect(topleft_button, SIGNAL(clicked()), SLOT(showButtonLog()));
 	connect(bottomright_button, SIGNAL(clicked()), bottomright_button, SLOT(hide()));
 	connect(bottomright_button, SIGNAL(clicked()), SLOT(endCalibration()));
 
@@ -150,6 +150,7 @@ void CalibrationWidget::startCalibration()
 
 	QWSServer::mouseHandler()->clearCalibration();
 	grabMouse();
+	qCritical("Start Calibration");
 }
 
 void CalibrationWidget::hideEvent(QHideEvent*)
@@ -160,9 +161,16 @@ void CalibrationWidget::hideEvent(QHideEvent*)
 
 void CalibrationWidget::restartCalibration()
 {
+	qCritical("Calibration KO");
 	rollbackCalibration();
 	startCalibration();
 	update();
+}
+
+void CalibrationWidget::showButtonLog()
+{
+	qCritical("Step Button 1 OK");
+	bottomright_button->show();
 }
 
 void CalibrationWidget::rollbackCalibration()
@@ -207,6 +215,7 @@ void CalibrationWidget::paintEvent(QPaintEvent*)
 
 void CalibrationWidget::startTestButtons()
 {
+	qCritical("Step 5 OK");
 	text = tr("Click the OK button");
 	test_buttons = true;
 	topleft_button->show();
@@ -229,7 +238,10 @@ void CalibrationWidget::mouseReleaseEvent(QMouseEvent *event)
 	int num_checks = minimal_version ? 4 : 5;
 
 	if (++current_location < num_checks)
+	{
+		qCritical("Step %d OK", current_location);
 		trackCrosshair();
+	}
 	else
 	{
 		if (sanityCheck())
@@ -243,6 +255,8 @@ void CalibrationWidget::mouseReleaseEvent(QMouseEvent *event)
 		}
 		else
 		{
+			qCritical("Calibration KO");
+			qCritical("Start Calibration");
 			current_location = 0;
 			trackCrosshair();
 		}
@@ -287,12 +301,14 @@ void CalibrationWidget::drawCrosshair()
 
 void CalibrationWidget::endCalibration()
 {
+	qCritical("Step Button 2 OK");
 	// The calibration was done right so we can remove the old calibration file
 	if (QFile::exists(QString("%1.calibrated").arg(pointercal_file)))
 		system(qPrintable(QString("rm %1.calibrated").arg(pointercal_file)));
 
 	buttons_timer->stop();
 	emit calibrationEnded();
+	qCritical("Calibration OK");
 }
 
 bool CalibrationWidget::sanityCheck()
