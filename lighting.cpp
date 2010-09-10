@@ -180,7 +180,10 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		b = new LightGroup(getAddresses(item_node), descr);
 		break;
 	case TEMP_LIGHT:
-		b = new TempLight(descr, where, oid, getPullMode(item_node));
+	{
+		DeviceType device_type = static_cast<DeviceType>(getTextChild(item_node, "device").toInt());
+		b = new TempLight(descr, where, oid, device_type, getPullMode(item_node));
+	}
 		break;
 	case STAIR_LIGHT:
 		b = new ButtonActuator(descr, where, VCT_STAIRLIGHT, oid, NOT_PULL);
@@ -193,7 +196,10 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 	}
 		break;
 	case TEMP_LIGHT_VARIABLE:
-		b = new TempLightVariable(getTimes(item_node), descr, where, oid, getPullMode(item_node));
+	{
+		DeviceType device_type = static_cast<DeviceType>(getTextChild(item_node, "device").toInt());
+		b = new TempLightVariable(getTimes(item_node), descr, where, oid, device_type, getPullMode(item_node));
+	}
 		break;
 	case DIMMER100_GROUP:
 	{
@@ -223,7 +229,8 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 	#else
 		t = getTextChild(item_node, "time").toInt();
 	#endif
-		b = new TempLightFixed(t, descr, where, oid, getPullMode(item_node));
+		DeviceType device_type = static_cast<DeviceType>(getTextChild(item_node, "device").toInt());
+		b = new TempLightFixed(t, descr, where, oid, device_type, getPullMode(item_node));
 	}
 		break;
 	}

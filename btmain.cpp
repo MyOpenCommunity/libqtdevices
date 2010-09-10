@@ -65,14 +65,17 @@
 #include <QTime>
 #include <QThreadPool>
 #include <QSocketNotifier>
+#include <QtConcurrentRun>
 
 #include <sys/types.h>
 #include <sys/socket.h> // socketpair
 #include <unistd.h> // write
+#include <signal.h> // SIGUSR2, SIGTERM
 
 
 // delay between two consecutive screensaver checks
 #define SCREENSAVER_CHECK 2000
+#define WD_THREAD_INTERVAL 5000
 
 #if LAYOUT_BTOUCH
 #define TS_NUM_BASE_ADDRESS 0x300
@@ -134,44 +137,67 @@ namespace
 	}
 #endif
 
+	volatile bool stop_watch_dog;
+
+	void updateWatchDog()
+	{
+		while (!stop_watch_dog)
+		{
+			qDebug() << "Rearming watchdog from thread";
+			rearmWDT();
+			usleep(WD_THREAD_INTERVAL * 1000);
+		}
+	}
+
+	void startUpdateWatchDog()
+	{
+		stop_watch_dog = false;
+
+		QtConcurrent::run(&updateWatchDog);
+	}
+
+	void stopUpdateWatchDog()
+	{
+		stop_watch_dog = true;
+	}
 }
 
 
-int SignalsHandler::sigUSR2fd[2];
+int SignalsHandler::signalfd[2];
 
 
 SignalsHandler::SignalsHandler()
 {
-	if (::socketpair(AF_UNIX, SOCK_STREAM, 0, sigUSR2fd))
-		qWarning() << "Cannot create USR2 socketpair";
+	if (::socketpair(AF_UNIX, SOCK_STREAM, 0, signalfd))
+		qWarning() << "Cannot create SignalsHandler socketpair";
 
-	snUSR2 = new QSocketNotifier(sigUSR2fd[1], QSocketNotifier::Read, this);
-	snUSR2->setEnabled(true);
-	connect(snUSR2, SIGNAL(activated(int)), SLOT(handleUSR2()));
+	snSignal = new QSocketNotifier(signalfd[1], QSocketNotifier::Read, this);
+	snSignal->setEnabled(true);
+	connect(snSignal, SIGNAL(activated(int)), SLOT(handleSignal()));
 }
 
 SignalsHandler::~SignalsHandler()
 {
-	delete snUSR2;
+	delete snSignal;
 }
 
-void SignalsHandler::handleUSR2()
+void SignalsHandler::handleSignal()
 {
-	snUSR2->setEnabled(false);
-	char tmp;
-	::read(sigUSR2fd[1], &tmp, sizeof(tmp));
+	snSignal->setEnabled(false);
+	char signal_number;
+	::read(signalfd[1], &signal_number, sizeof(signal_number));
 
-	qDebug("handleUSR2()");
-	bt_global::btmain->resetTimer();
+	qDebug() << "Handling signal" << int(signal_number);
+	emit signalReceived(int(signal_number));
 
-	snUSR2->setEnabled(true);
+	snSignal->setEnabled(true);
 }
 
-void SignalsHandler::signalUSR2Handler(int signal_number)
+void SignalsHandler::signalHandler(int signal_number)
 {
 	Q_UNUSED(signal_number)
-	char tmp = 1;
-	::write(sigUSR2fd[0], &tmp, sizeof(tmp)); // write something, in order to "activate" the notifier
+	char tmp = signal_number;
+	::write(signalfd[0], &tmp, sizeof(tmp)); // write something, in order to "activate" the notifier
 }
 
 
@@ -548,9 +574,10 @@ void BtMain::init()
 	else
 	{
 		// setStyleSheet may be slow, try to avoid the watchdog timeout
-		rearmWDT();
+		// by calling it in a secondary thread
+		startUpdateWatchDog();
 		qApp->setStyleSheet(style);
-		rearmWDT();
+		stopUpdateWatchDog();
 	}
 
 	config_loaded = true;
@@ -694,9 +721,28 @@ void BtMain::setScreenSaverTimeouts(int screensaver_start, int blank_screen)
 
 	screenoff_time = blank_screen;
 	screensaver_time = screensaver_start;
+}
 
-	if (freeze_time > screensaver_time)
-		freeze_time = screensaver_time;
+int BtMain::freezeTime()
+{
+	return qMin(qMin(freeze_time, screensaverTime()), blankScreenTime());
+}
+
+int BtMain::screensaverTime()
+{
+	return screensaver_time;
+}
+
+int BtMain::blankScreenTime()
+{
+	ScreenSaver::Type target_screensaver = bt_global::display->currentScreenSaver();
+
+	if (screenoff_time == 0)
+		return 0;
+	else if (target_screensaver == ScreenSaver::NONE)
+		return screenoff_time - screensaver_time;
+	else
+		return screenoff_time;
 }
 
 void BtMain::checkScreensaver()
@@ -737,9 +783,9 @@ void BtMain::checkScreensaver()
 	int time_press = getTimePress();
 	int time = qMin(time_press, int(now() - last_event_time));
 
-	if (screenoff_time != 0 && time >= screenoff_time &&
-		(bt_global::display->currentState() == DISPLAY_SCREENSAVER ||
-		(target_screensaver == ScreenSaver::NONE && bt_global::display->currentState() == DISPLAY_FREEZED)))
+	if (blankScreenTime() != 0 &&
+		((bt_global::display->currentState() == DISPLAY_SCREENSAVER && time >= blankScreenTime()) ||
+		 (bt_global::display->currentState() == DISPLAY_FREEZED && target_screensaver == ScreenSaver::NONE && time >= blankScreenTime())))
 	{
 		qDebug() << "Turning screen off";
 		// the stopscreensaver() event is emitted when the user clicks on screen
@@ -757,11 +803,11 @@ void BtMain::checkScreensaver()
 		bt_global::display->setState(DISPLAY_OFF);
 
 	}
-	else if (time >= freeze_time && getBacklight() && !frozen)
+	else if (time >= freezeTime() && getBacklight() && !frozen)
 	{
 		freeze(true);
 	}
-	else if (time >= screensaver_time && target_screensaver != ScreenSaver::NONE)
+	else if (time >= screensaverTime() && target_screensaver != ScreenSaver::NONE)
 	{
 		if (bt_global::display->currentState() == DISPLAY_OPERATIVE &&
 			pagDefault && page_container->currentPage() != pagDefault)
@@ -934,6 +980,17 @@ void BtMain::resetTimer()
 {
 	qDebug("BtMain::ResetTimer()");
 	emit resettimer();
+}
+
+void BtMain::handleSignal(int signal_number)
+{
+	if (signal_number == SIGUSR2)
+		resetTimer();
+	else if (signal_number == SIGTERM)
+	{
+		qDebug("Terminating on SIGTERM");
+		qApp->quit();
+	}
 }
 
 // The global definition of btmain pointer

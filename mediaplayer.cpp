@@ -261,9 +261,22 @@ void MediaPlayer::pause()
 
 void MediaPlayer::actuallyPaused()
 {
-	really_paused = true;
-	emit mplayerPaused();
-	updateDirectAccessState(false);
+	// scenario:
+	// - call to pause()
+	// - call to resume()
+	// - mplayer processes the pause command and pauses
+	// - mplayer processes the resume command and resumes right after the pause
+	//
+	// this condition is here to avoid emitting the mplayerPaused() after the
+	// mplayerResumed() emitted by resume(); another (more complicated) option would
+	// be to queue the command in resume and only execute it here after mplayer actually
+	// pauses
+	if (paused)
+	{
+		really_paused = true;
+		emit mplayerPaused();
+		updateDirectAccessState(false);
+	}
 }
 
 void MediaPlayer::resume()

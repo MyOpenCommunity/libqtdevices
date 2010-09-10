@@ -216,14 +216,17 @@ int main(int argc, char **argv)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
 	sa.sa_flags |= SA_RESTART;
-	sa.sa_handler = SignalsHandler::signalUSR2Handler;
+	sa.sa_handler = SignalsHandler::signalHandler;
 	if (sigaction(SIGUSR2, &sa, 0) != 0)
 		qWarning() << "Error on installing the handler for the SIGUSR2 signal";
+	if (sigaction(SIGTERM, &sa, 0) != 0)
+		qWarning() << "Error on installing the handler for the SIGTERM signal";
 
 	SignalsHandler *sh = new SignalsHandler;
 
 	qDebug("Start BtMain");
 	bt_global::btmain = new BtMain(general_config.openserver_reconnection_time);
+	sh->connect(sh, SIGNAL(signalReceived(int)), bt_global::btmain, SLOT(handleSignal(int)));
 	installTranslator(a, (*bt_global::config)[LANGUAGE]);
 	int res = a.exec();
 	delete bt_global::btmain;

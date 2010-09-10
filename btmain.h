@@ -47,8 +47,7 @@ class QSocketNotifier;
 
 
 /**
- * This class manages the unix signal SIGUSR2, used on the BTouch hardware
- * to notify a date-time shift.
+ * This class manages the unix signals used on the BTouch hardware.
  */
 class SignalsHandler : public QObject
 {
@@ -57,14 +56,17 @@ public:
 	SignalsHandler();
 	~SignalsHandler();
 
-	static void signalUSR2Handler(int signal_number);
+	static void signalHandler(int signal_number);
+
+signals:
+	void signalReceived(int signal_number);
 
 private slots:
-	void handleUSR2();
+	void handleSignal();
 
 private:
-	static int sigUSR2fd[2];
-	QSocketNotifier *snUSR2;
+	static int signalfd[2];
+	QSocketNotifier *snSignal;
 };
 
 
@@ -122,6 +124,7 @@ private slots:
 	void waitBeforeInit();
 	void connectionReady();
 	void startGui();
+	void handleSignal(int signal_number);
 
 private:
 	QHash<int, QPair<Client*, Client*> > clients;
@@ -146,14 +149,20 @@ private:
 	bool frozen;
 	int last_event_time;
 
-	// the four values below are in seconds; screenoff_time can be 0
-	// it must always be freeze_time < screensaver_time < screenoff_time
-
+	// take into account selected screensaver when computing freeze/blank screen times
+	//
 	// if the user is idle for this number of seconds, freeze the screen
-	int freeze_time;
+	int freezeTime();
 	// if the user is idle for this number of seconds, start the screen saver
-	int screensaver_time;
+	int screensaverTime();
 	// if the user is idle for this number of seconds, turn off the screen
+	int blankScreenTime();
+
+	// the three values below are in seconds; screenoff_time can be 0
+	// it must always be screensaver_time < screenoff_time
+
+	int freeze_time;
+	int screensaver_time;
 	int screenoff_time;
 
 	static bool calibrating;
