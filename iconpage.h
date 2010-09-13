@@ -101,7 +101,7 @@ class IconButtonOnTray : public IconPageButton
 Q_OBJECT
 public:
 	IconButtonOnTray(const QString &label, const QString &icon_on, const QString &icon_off,
-		const QString &tray_icon, TrayBar::ButtonId tray_id);
+		const QString &tray_icon, TrayBar::ButtonId tray_id, bool status=false, int item_id=-1);
 
 private slots:
 	void toggleActivation();
@@ -109,6 +109,8 @@ private slots:
 protected:
 	virtual void updateStatus();
 	BtButton *tray_button;
+private:
+	int item_id;
 };
 
 #endif // ICONPAGE_H

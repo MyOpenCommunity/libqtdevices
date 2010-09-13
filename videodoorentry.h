@@ -144,7 +144,7 @@ class ProfessionalStudio : public IconButtonOnTray
 {
 Q_OBJECT
 public:
-	ProfessionalStudio();
+	ProfessionalStudio(bool status, int item_id);
 
 protected:
 	virtual void updateStatus();
@@ -159,7 +159,7 @@ class HandsFree : public IconButtonOnTray
 {
 Q_OBJECT
 public:
-	HandsFree();
+	HandsFree(bool status, int item_id);
 
 protected:
 	virtual void updateStatus();
@@ -174,7 +174,7 @@ class RingtoneExclusion : public IconButtonOnTray
 {
 Q_OBJECT
 public:
-	RingtoneExclusion();
+	RingtoneExclusion(bool status, int item_id);
 
 protected:
 	virtual void updateStatus();

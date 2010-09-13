@@ -26,6 +26,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "btmain.h" // bt_global::btmain
 #include "labels.h" // TextOnImageLabel
+#include "generic_functions.h" // setCfgValue
 
 #include <QDomNode>
 #include <QDebug>
@@ -148,19 +149,23 @@ IconPageButton::IconPageButton(const QString &label)
 
 
 IconButtonOnTray::IconButtonOnTray(const QString &label, const QString &icon_on, const QString &icon_off,
-	const QString &tray_icon, TrayBar::ButtonId tray_id) : IconPageButton(label)
+	const QString &tray_icon, TrayBar::ButtonId tray_id, bool status, int _item_id) : IconPageButton(label)
 {
 	button->setOffImage(bt_global::skin->getImage(icon_off));
 	button->setOnImage(bt_global::skin->getImage(icon_on));
 	connect(button, SIGNAL(clicked()), SLOT(toggleActivation()));
 	tray_button = new BtButton(bt_global::skin->getImage(tray_icon));
 	bt_global::btmain->trayBar()->addButton(tray_button, tray_id);
+	button->setStatus(status);
 	updateStatus();
+	item_id = _item_id;
 }
 
 void IconButtonOnTray::toggleActivation()
 {
 	button->setStatus(!button->getStatus());
+	if (item_id != -1)
+		setCfgValue("enable", button->getStatus(), item_id);
 	updateStatus();
 }
 
