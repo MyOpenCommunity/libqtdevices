@@ -195,9 +195,9 @@ void AudioPlayerPage::displayMedia(int index)
 
 void AudioPlayerPage::clearLabels()
 {
-	description_top->clear();
-	description_bottom->clear();
-	elapsed->clear();
+	description_top->setText(" ");
+	description_bottom->setText(" ");
+	elapsed->setText(" ");
 }
 
 void AudioPlayerPage::playAudioFilesBackground(QList<QString> files, unsigned element)
