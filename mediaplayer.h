@@ -52,6 +52,11 @@ public:
 	void resume();
 
 	/// Stop and quit mplayer (waiting for mplayer to terminate)
+	void stop();
+
+	/// Similar to stop, but does not reset the paused state; must only be used
+	/// when mplayer is "logically" paused (for example if the user uses prev/next
+	/// while the player is paused)
 	void quit();
 
 	/// Return true if player is currently playing
