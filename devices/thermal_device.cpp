@@ -84,6 +84,11 @@ ThermalDevice::ThermalDevice(QString where, int openserver_id) : device(QString(
 {
 }
 
+void ThermalDevice::init()
+{
+	sendInit(createStatusRequestFrame(who, where));
+}
+
 void ThermalDevice::sendWriteRequest(const QString &what)
 {
 	sendFrame(createWriteDimensionFrame(who, what, where));
