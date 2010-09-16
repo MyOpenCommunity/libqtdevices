@@ -70,6 +70,8 @@ public:
 		SE_WINTER = 1
 	};
 
+	virtual void init();
+
 	void setOff();
 	void setSummer();
 	void setWinter();

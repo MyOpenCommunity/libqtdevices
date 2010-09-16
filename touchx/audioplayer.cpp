@@ -118,6 +118,9 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(type == IP_RADIO ? MultimediaPlayerButtons::IPRADIO_PAGE : MultimediaPlayerButtons::AUDIO_PAGE);
 	connectMultimediaButtons(buttons);
 
+	connect(buttons, SIGNAL(previous()), SLOT(resetLoopCheck()));
+	connect(buttons, SIGNAL(next()), SLOT(resetLoopCheck()));
+
 	// a radio channel is without an end. If mplayer has finished maybe there is an error.
 	const char *done_slot = (type == IP_RADIO) ? SLOT(quit()) : SLOT(next());
 	connect(player, SIGNAL(mplayerDone()), done_slot);
@@ -195,9 +198,9 @@ void AudioPlayerPage::displayMedia(int index)
 
 void AudioPlayerPage::clearLabels()
 {
-	description_top->clear();
-	description_bottom->clear();
-	elapsed->clear();
+	description_top->setText(" ");
+	description_bottom->setText(" ");
+	elapsed->setText(" ");
 }
 
 void AudioPlayerPage::playAudioFilesBackground(QList<QString> files, unsigned element)
@@ -221,6 +224,12 @@ void AudioPlayerPage::playAudioFiles(QList<QString> files, unsigned element)
 	loop_starting_file = -1;
 
 	displayMedia(current_file);
+}
+
+void AudioPlayerPage::resetLoopCheck()
+{
+	// avoid the loop-detection code kicking in
+	loop_starting_file = -1;
 }
 
 void AudioPlayerPage::previous()

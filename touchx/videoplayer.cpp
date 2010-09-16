@@ -95,7 +95,7 @@ VideoPlayerPage::VideoPlayerPage()
 
 VideoPlayerPage::~VideoPlayerPage()
 {
-	player->quit();
+	player->stop();
 	delete player;
 }
 

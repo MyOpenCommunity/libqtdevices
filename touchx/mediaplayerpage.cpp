@@ -88,7 +88,7 @@ void MediaPlayerPage::connectMultimediaButtons(MultimediaPlayerButtons *buttons)
 
 void MediaPlayerPage::stop()
 {
-	player->quit();
+	player->stop();
 	emit Closed();
 }
 

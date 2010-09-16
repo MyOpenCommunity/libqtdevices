@@ -390,8 +390,16 @@ void MediaPlayer::quit()
 		qDebug("MediaPlayer::quit() waiting for mplayer to quit...");
 		if (!mplayer_proc.waitForFinished(300))
 			qWarning() << "Couldn't terminate mplayer";
-		paused = false;
 	}
+}
+
+void MediaPlayer::stop()
+{
+	if (!active)
+		return;
+
+	quit();
+	paused = false;
 }
 
 void MediaPlayer::mplayerFinished(int exit_code, QProcess::ExitStatus exit_status)
