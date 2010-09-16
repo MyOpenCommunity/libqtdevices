@@ -164,12 +164,14 @@ namespace
 
 
 int SignalsHandler::signalfd[2];
+long SignalsHandler::parent_pid = 0;
 
 
 SignalsHandler::SignalsHandler()
 {
 	if (::socketpair(AF_UNIX, SOCK_STREAM, 0, signalfd))
 		qWarning() << "Cannot create SignalsHandler socketpair";
+	parent_pid = getpid();
 
 	snSignal = new QSocketNotifier(signalfd[1], QSocketNotifier::Read, this);
 	snSignal->setEnabled(true);
@@ -195,7 +197,11 @@ void SignalsHandler::handleSignal()
 
 void SignalsHandler::signalHandler(int signal_number)
 {
-	Q_UNUSED(signal_number)
+	// ignore signals sent to childs; this handles the
+	// time interval between fork() and exec() when using QProcess
+	if (getpid() != parent_pid)
+		return;
+
 	char tmp = signal_number;
 	::write(signalfd[0], &tmp, sizeof(tmp)); // write something, in order to "activate" the notifier
 }
