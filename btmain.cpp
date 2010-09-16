@@ -725,7 +725,10 @@ void BtMain::setScreenSaverTimeouts(int screensaver_start, int blank_screen)
 
 int BtMain::freezeTime()
 {
-	return qMin(qMin(freeze_time, screensaverTime()), blankScreenTime());
+	if (blankScreenTime())
+		return qMin(qMin(freeze_time, screensaverTime()), blankScreenTime());
+	else
+		return qMin(freeze_time, screensaverTime());
 }
 
 int BtMain::screensaverTime()
