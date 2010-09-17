@@ -398,8 +398,8 @@ void MediaPlayer::stop()
 	if (!active)
 		return;
 
-	quit();
 	paused = false;
+	quit();
 }
 
 void MediaPlayer::mplayerFinished(int exit_code, QProcess::ExitStatus exit_status)
