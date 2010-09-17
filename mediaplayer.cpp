@@ -395,6 +395,13 @@ void MediaPlayer::quit()
 
 void MediaPlayer::stop()
 {
+	// simulate player termination when the player is logically paused
+	if (!active && paused)
+	{
+		paused = false;
+		emit mplayerStopped();
+	}
+
 	if (!active)
 		return;
 
