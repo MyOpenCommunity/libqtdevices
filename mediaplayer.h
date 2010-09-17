@@ -51,6 +51,10 @@ public:
 	/// Resume playing of current song
 	void resume();
 
+	// TODO cleanly separate the logical player state from the physical MPlayer state
+	// (for things like the next-while-paused that are currently handled multiple
+	// parts of the GUI code)
+
 	/// Stop and quit mplayer (waiting for mplayer to terminate)
 	void stop();
 
