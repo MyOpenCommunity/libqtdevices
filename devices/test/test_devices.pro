@@ -24,8 +24,9 @@ LIBS+= -L ../../../common_files/lib/x86 -lcommon -lssl
 VPATH = ../.. ..
 
 HEADERS += device_tester.h \
-	test_automation_device.h \
 	test_air_conditioning_device.h \
+	test_antintrusion_device.h \
+	test_automation_device.h \
 	test_checkaddress.h \
 	test_scenario_device.h \
 	test_thermal_device.h \
@@ -50,8 +51,9 @@ HEADERS += device_tester.h \
 
 SOURCES += test_main.cpp \
 	device_tester.cpp \
-	test_automation_device.cpp \
 	test_air_conditioning_device.cpp \
+	test_antintrusion_device.cpp \
+	test_automation_device.cpp \
 	test_checkaddress.cpp \
 	test_scenario_device.cpp \
 	test_thermal_device.cpp \

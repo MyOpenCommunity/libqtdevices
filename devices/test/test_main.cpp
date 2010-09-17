@@ -40,6 +40,7 @@
 #include "test_media_device.h"
 #include "test_message_device.h"
 #include "test_stopandgo_device.h"
+#include "test_antintrusion_device.h"
 #include "main.h" // bt_global::config
 
 // This empty function is required because frame_interpreter use a rearmWDT
@@ -147,6 +148,9 @@ int main(int argc, char *argv[])
 
 	TestStopAndGoBTestDevice test_stopandgobtest_device;
 	test_list << &test_stopandgobtest_device;
+
+	TestAntintrusionDevice test_antintrusion_device;
+	test_list << &test_antintrusion_device;
 
 	QStringList arglist = app.arguments();
 	if (arglist.contains("--help"))
