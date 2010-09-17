@@ -140,11 +140,8 @@ signals:
 	/// mplayer child process quit gracefully and done it's work.
 	void mplayerDone();
 
-	/// mplayer child process was killed by a signal
-	void mplayerKilled();
-
-	/// mplayer exited with error or aborted
-	void mplayerAborted();
+	/// mplayer child process has been stopped (either by an error, by the GUI or by another process).
+	void mplayerStopped();
 
 	void playingInfoUpdated(const QMap<QString,QString> &info);
 };

@@ -411,7 +411,7 @@ void MediaPlayer::mplayerFinished(int exit_code, QProcess::ExitStatus exit_statu
 
 	if (exit_status == QProcess::CrashExit)
 	{
-		emit mplayerAborted();
+		emit mplayerStopped();
 		return;
 	}
 	else
@@ -424,7 +424,7 @@ void MediaPlayer::mplayerFinished(int exit_code, QProcess::ExitStatus exit_statu
 		}
 		else if(exit_code == 1) //signal received
 		{
-			emit mplayerKilled();
+			emit mplayerStopped();
 			return;
 		}
 	}

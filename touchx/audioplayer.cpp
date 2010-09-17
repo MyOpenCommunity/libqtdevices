@@ -159,8 +159,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	}
 
 	connect(player, SIGNAL(mplayerStarted()), SLOT(playerStarted()));
-	connect(player, SIGNAL(mplayerKilled()), SLOT(playerStopped()));
-	connect(player, SIGNAL(mplayerAborted()), SLOT(playerStopped()));
+	connect(player, SIGNAL(mplayerStopped()), SLOT(playerStopped()));
 }
 
 int AudioPlayerPage::sectionId() const

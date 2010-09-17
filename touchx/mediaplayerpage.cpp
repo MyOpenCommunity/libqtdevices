@@ -44,8 +44,7 @@ MediaPlayerPage::MediaPlayerPage() : refresh_data(this)
 	connect(player, SIGNAL(mplayerStarted()), SLOT(playbackStarted()));
 	connect(player, SIGNAL(mplayerResumed()), SLOT(playbackStarted()));
 	connect(player, SIGNAL(mplayerDone()), SLOT(playbackStopped()));
-	connect(player, SIGNAL(mplayerKilled()), SLOT(playbackStopped()));
-	connect(player, SIGNAL(mplayerAborted()), SLOT(playbackStopped()));
+	connect(player, SIGNAL(mplayerStopped()), SLOT(playbackStopped()));
 	connect(player, SIGNAL(mplayerPaused()), SLOT(playbackStopped()));
 }
 
@@ -81,8 +80,7 @@ void MediaPlayerPage::connectMultimediaButtons(MultimediaPlayerButtons *buttons)
 	connect(player, SIGNAL(mplayerStarted()), buttons, SLOT(started()));
 	connect(player, SIGNAL(mplayerResumed()), buttons, SLOT(started()));
 	connect(player, SIGNAL(mplayerDone()), buttons, SLOT(stopped()));
-	connect(player, SIGNAL(mplayerKilled()), buttons, SLOT(stopped()));
-	connect(player, SIGNAL(mplayerAborted()), buttons, SLOT(stopped()));
+	connect(player, SIGNAL(mplayerStopped()), buttons, SLOT(stopped()));
 	connect(player, SIGNAL(mplayerPaused()), buttons, SLOT(stopped()));
 }
 
