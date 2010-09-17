@@ -356,6 +356,10 @@ void AudioPlayerPage::playerStarted()
 
 void AudioPlayerPage::playerStopped()
 {
+	// handle the next-while-paused case
+	if (isPlayerPaused())
+		return;
+
 	if (MultimediaSectionPage::current_player == this)
 		MultimediaSectionPage::current_player = 0;
 	tray_icon->setVisible(false);
