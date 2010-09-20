@@ -159,8 +159,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	}
 
 	connect(player, SIGNAL(mplayerStarted()), SLOT(playerStarted()));
-	connect(player, SIGNAL(mplayerKilled()), SLOT(playerStopped()));
-	connect(player, SIGNAL(mplayerAborted()), SLOT(playerStopped()));
+	connect(player, SIGNAL(mplayerStopped()), SLOT(playerStopped()));
 }
 
 int AudioPlayerPage::sectionId() const
@@ -357,6 +356,10 @@ void AudioPlayerPage::playerStarted()
 
 void AudioPlayerPage::playerStopped()
 {
+	// handle the next-while-paused case
+	if (isPlayerPaused())
+		return;
+
 	if (MultimediaSectionPage::current_player == this)
 		MultimediaSectionPage::current_player = 0;
 	tray_icon->setVisible(false);

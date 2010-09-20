@@ -27,7 +27,6 @@
 #include <QPair>
 #include <QDateTime>
 
-
 class Version;
 class HomePage;
 class Client;
@@ -65,6 +64,7 @@ private slots:
 	void handleSignal();
 
 private:
+	static long parent_pid;
 	static int signalfd[2];
 	QSocketNotifier *snSignal;
 };

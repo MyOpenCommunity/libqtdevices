@@ -445,16 +445,6 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	}
 #endif
 
-	// Put a sensible default for the description
-	QDomNode descr = n.namedItem("descr");
-	QString description;
-	if (!descr.isNull())
-		description = descr.toElement().text();
-	else
-	{
-		qDebug("[TERMO] PageTermoReg ctor: no description found, maybe wrong node conf?");
-		description = "Wrong node";
-	}
 	description_label = new QLabel(this);
 	description_label->setFont(bt_global::font->get(FontManager::REGULATOR_DESCRIPTION));
 	description_label->setAlignment(Qt::AlignHCenter);
@@ -496,7 +486,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	createNavigationBar(bt_global::skin->getImage("settings"), SMALL_TITLE_HEIGHT);
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
 
-	showDescription(description);
+	hideDescription();
 }
 
 void PageTermoReg::showDescription(const QString &desc)

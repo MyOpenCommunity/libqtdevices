@@ -51,6 +51,10 @@ public:
 	/// Resume playing of current song
 	void resume();
 
+	// TODO cleanly separate the logical player state from the physical MPlayer state
+	// (for things like the next-while-paused that are currently handled multiple
+	// parts of the GUI code)
+
 	/// Stop and quit mplayer (waiting for mplayer to terminate)
 	void stop();
 
@@ -140,11 +144,8 @@ signals:
 	/// mplayer child process quit gracefully and done it's work.
 	void mplayerDone();
 
-	/// mplayer child process was killed by a signal
-	void mplayerKilled();
-
-	/// mplayer exited with error or aborted
-	void mplayerAborted();
+	/// mplayer child process has been stopped (either by an error, by the GUI or by another process).
+	void mplayerStopped();
 
 	void playingInfoUpdated(const QMap<QString,QString> &info);
 };

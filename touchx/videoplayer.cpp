@@ -86,8 +86,7 @@ VideoPlayerPage::VideoPlayerPage()
 	// disable/reenable screen saver
 	connect(player, SIGNAL(mplayerStarted()), SLOT(videoPlaybackStarted()));
 	connect(player, SIGNAL(mplayerResumed()), SLOT(videoPlaybackStarted()));
-	connect(player, SIGNAL(mplayerKilled()), SLOT(videoPlaybackStopped()));
-	connect(player, SIGNAL(mplayerAborted()), SLOT(videoPlaybackStopped()));
+	connect(player, SIGNAL(mplayerStopped()), SLOT(videoPlaybackStopped()));
 
 	connect(player, SIGNAL(playingInfoUpdated(QMap<QString,QString>)), SLOT(refreshPlayInfo(QMap<QString,QString>)));
 	connect(&refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
@@ -315,14 +314,12 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *_page, MediaPlayer *player
 	// update the icon of the play button
 	connect(player, SIGNAL(mplayerStarted()), buttons, SLOT(started()));
 	connect(player, SIGNAL(mplayerDone()), buttons, SLOT(stopped()));
-	connect(player, SIGNAL(mplayerKilled()), buttons, SLOT(stopped()));
-	connect(player, SIGNAL(mplayerAborted()), buttons, SLOT(stopped()));
+	connect(player, SIGNAL(mplayerStopped()), buttons, SLOT(stopped()));
 
 	// reapint control buttons after MPlayer starts
 	connect(player, SIGNAL(mplayerStarted()), SLOT(update()));
 	connect(player, SIGNAL(mplayerResumed()), SLOT(update()));
-	connect(player, SIGNAL(mplayerKilled()), SLOT(update()));
-	connect(player, SIGNAL(mplayerAborted()), SLOT(update()));
+	connect(player, SIGNAL(mplayerStopped()), SLOT(update()));
 
 	connect(buttons, SIGNAL(noFullScreen()), page, SLOT(displayNoFullScreen()));
 
