@@ -42,6 +42,9 @@ private slots:
 	void receiveZoneInserted();
 	void receiveIntrusionAlarm();
 	void receiveManomissionAlarm();
+	void receiveAntipanicAlarm();
+	void receiveTechnicalAlarm();
+	void receiveResetTechnicalAlarm();
 
 private:
 	AntintrusionDevice *dev;

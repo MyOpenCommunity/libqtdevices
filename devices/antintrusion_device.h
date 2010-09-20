@@ -26,6 +26,7 @@
 
 #define NUM_ZONES 8
 
+
 /*
  * This class manages the antintrusion system.
  */
@@ -56,6 +57,9 @@ public:
 		DIM_ZONE_INSERTED = 11,
 		DIM_INTRUSION_ALARM = 15,
 		DIM_MANOMISSION_ALARM = 16,
+		DIM_ANTIPANIC_ALARM = 17,
+		DIM_TECHNICAL_ALARM = 12,
+		DIM_RESET_TECHNICAL_ALARM = 13,
 	};
 
 private:

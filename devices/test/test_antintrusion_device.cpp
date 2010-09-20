@@ -84,6 +84,9 @@ void TestAntintrusionDevice::receiveZonePartialized()
 	DeviceTester t(dev, AntintrusionDevice::DIM_ZONE_PARTIALIZED);
 	t.check("*5*18*#2##", 2);
 	t.check("*5*18*#8##", 8);
+	// invalid zones
+	t.checkSignals("*5*18*#16##", 0);
+	t.checkSignals("*5*18*#-1##", 0);
 }
 
 void TestAntintrusionDevice::receiveZoneInserted()
@@ -91,13 +94,19 @@ void TestAntintrusionDevice::receiveZoneInserted()
 	DeviceTester t(dev, AntintrusionDevice::DIM_ZONE_INSERTED);
 	t.check("*5*11*#1##", 1);
 	t.check("*5*11*#5##", 5);
+	// invalid zones
+	t.checkSignals("*5*11*#16##", 0);
+	t.checkSignals("*5*11*#-1##", 0);
 }
 
 void TestAntintrusionDevice::receiveIntrusionAlarm()
 {
 	DeviceTester t(dev, AntintrusionDevice::DIM_INTRUSION_ALARM);
 	t.check("*5*15*#1##", 1);
-	t.check("*5*15*#15##", 15);
+	t.check("*5*15*#8##", 8);
+	// invalid zones
+	t.checkSignals("*5*15*#9##", 0);
+	t.checkSignals("*5*15*#0##", 0);
 }
 
 void TestAntintrusionDevice::receiveManomissionAlarm()
@@ -105,5 +114,38 @@ void TestAntintrusionDevice::receiveManomissionAlarm()
 	DeviceTester t(dev, AntintrusionDevice::DIM_MANOMISSION_ALARM);
 	t.check("*5*16*#7##", 7);
 	t.check("*5*16*#12##", 12);
+	// invalid zones
+	t.checkSignals("*5*16*#16##", 0);
+	t.checkSignals("*5*16*#-1##", 0);
 }
+
+void TestAntintrusionDevice::receiveAntipanicAlarm()
+{
+	DeviceTester t(dev, AntintrusionDevice::DIM_ANTIPANIC_ALARM);
+	t.check("*5*17*#9##", 9);
+	// invalid zones
+	t.checkSignals("*5*17*#10##", 0);
+	t.checkSignals("*5*17*#8##", 0);
+}
+
+void TestAntintrusionDevice::receiveTechnicalAlarm()
+{
+	DeviceTester t(dev, AntintrusionDevice::DIM_TECHNICAL_ALARM);
+	t.check("*5*12*#1##", 1);
+	t.check("*5*12*#15##", 15);
+	// invalid zones
+	t.checkSignals("*5*12*#0##", 0);
+	t.checkSignals("*5*12*#16##", 0);
+}
+
+void TestAntintrusionDevice::receiveResetTechnicalAlarm()
+{
+	DeviceTester t(dev, AntintrusionDevice::DIM_RESET_TECHNICAL_ALARM);
+	t.check("*5*13*#1##", 1);
+	t.check("*5*13*#15##", 15);
+	// invalid zones
+	t.checkSignals("*5*13*#0##", 0);
+	t.checkSignals("*5*13*#16##", 0);
+}
+
 

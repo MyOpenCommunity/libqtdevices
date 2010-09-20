@@ -85,23 +85,27 @@ bool AntintrusionDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		return false;
 
 	int what = msg.what();
-	switch (what)
+
+	if (what == DIM_SYSTEM_ON || what == DIM_SYSTEM_OFF)
+		values_list[DIM_SYSTEM_INSERTED] = (what == DIM_SYSTEM_ON);
+	else if (what == DIM_ZONE_PARTIALIZED || what == DIM_ZONE_INSERTED)
 	{
-	case DIM_SYSTEM_ON:
-		values_list[DIM_SYSTEM_INSERTED] = true;
-		break;
-	case DIM_SYSTEM_OFF:
-		values_list[DIM_SYSTEM_INSERTED] = false;
-		break;
-	case DIM_ZONE_PARTIALIZED:
-	case DIM_ZONE_INSERTED:
-	case DIM_INTRUSION_ALARM:
-	case DIM_MANOMISSION_ALARM:
-		values_list[what] = zoneNumber(msg.whereFull());
-		break;
-	default:
-		return false;
+		int zone = zoneNumber(msg.whereFull());
+		if (zone >= 1 && zone <= NUM_ZONES)
+			values_list[what] = zone;
 	}
+	else // alarms
+	{
+		int zone = zoneNumber(msg.whereFull());
+		if ((what == DIM_ANTIPANIC_ALARM && zone == 9) || // the antipanic can arrive only on the 9th zone
+			(what == DIM_INTRUSION_ALARM && zone >= 1 && zone <= NUM_ZONES) || // normal zones
+			(what == DIM_MANOMISSION_ALARM && zone >= 0 && zone < 16) || // zones and special zones
+			((what == DIM_TECHNICAL_ALARM || what == DIM_RESET_TECHNICAL_ALARM) && zone >= 1 && zone < 16)) // auxiliaries
+			values_list[what] = zone;
+	}
+
+	if (values_list.isEmpty())
+		return false;
 
 	return true;
 }
