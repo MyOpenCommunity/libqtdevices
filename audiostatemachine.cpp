@@ -511,7 +511,10 @@ void AudioStateMachine::setLocalAmplifierVolume(int volume)
 	// We can't call this method if we aren't in DIFSON state, because it may cause
 	// a disalignment between the audio path state and the audiostate machine state.
 	if (currentState() == AudioStates::PLAY_DIFSON)
-		changeVolumePath(Volumes::MM_AMPLIFIER);
+	{
+		if (!local_amplifier_temporary_off && local_amplifier_status)
+			changeVolumePath(Volumes::MM_AMPLIFIER);
+	}
 	else
 		qWarning() << "AudioStateMachine::setLocalAmplifierVolume called not in DIFSON state!";
 }
