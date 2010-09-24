@@ -61,8 +61,9 @@
 #include <errno.h>
 #include <termios.h>
 
+
 #define GET_SECOND_LAST
-#undef NO_MOVE_VERIFY
+#define NO_MOVE_VERIFY
 
 /*
 #if defined(QT_QWS_IPAQ)
@@ -146,7 +147,7 @@ typedef struct
 #endif
 
 #ifndef QT_QWS_TP_MOVE_LIMIT
-#define QT_QWS_TP_MOVE_LIMIT 100
+#define QT_QWS_TP_MOVE_LIMIT 2
 #endif
 
 #ifndef QT_QWS_TP_JITTER_LIMIT
@@ -293,7 +294,9 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
             numSamples++;
             if (numSamples >= QT_QWS_TP_MINIMUM_SAMPLES)
             {
+#ifndef GET_SECOND_LAST
                 int sampleCount = qMin ((int) numSamples + 1, samples.count ());
+#endif
                 // average the rest
                 QPoint mousePos = QPoint (0, 0);
                 QPoint totalMousePos = oldTotalMousePos;
@@ -321,10 +324,10 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
                 if (!waspressed)
                     oldmouse = mousePos;
                 QPoint dp = mousePos - oldmouse;
+#ifdef NO_MOVE_VERIFY
                 int dxSqr = dp.x () * dp.x ();
                 int dySqr = dp.y () * dp.y ();
 
-#ifdef NO_MOVE_VERIFY
                 if ( dxSqr + dySqr < ( QT_QWS_TP_MOVE_LIMIT * QT_QWS_TP_MOVE_LIMIT ) )
 #endif
                 {
@@ -364,6 +367,7 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
 #ifdef NO_MOVE_VERIFY
                 else
                 {
+                    //qCritical ("Skip Samples");
                     numSamples--;	// don't use this sample, it was bad.
                 }
 #endif
