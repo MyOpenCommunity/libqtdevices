@@ -141,7 +141,8 @@ void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationB
 #ifdef LAYOUT_TOUCHX
 	// TODO add an API to set the page title and to set the page count
 	//      and current page number
-	l->addWidget(nav_bar, 0);
+	if (nav_bar)
+		l->addWidget(nav_bar, 0);
 
 	QVBoxLayout *pl = new QVBoxLayout;
 	pl->setContentsMargins(0, 0, 0, 0);
