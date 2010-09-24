@@ -282,7 +282,8 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<!-- messages link -->
 		<cid>17</cid>
-		<img_link_icon>home/messaggion.png</img_link_icon>
+		<img_link_icon>home/messaggioff.png</img_link_icon>
+		<img_link_icon_on>home/messaggion.png</img_link_icon_on>
 		<img_top_navigation_button>barranavigazione/messaggioff.png</img_top_navigation_button>
 	</item>
 	<item>

@@ -22,7 +22,9 @@
 #include <QFont>
 #include <QButtonGroup>
 #include <QXmlStreamWriter>
-
+#include <QFileInfo>
+#include <QDir>
+#include <QTimer>
 
 #define MESSAGES_MAX 10
 #define MESSAGES_FILENAME "cfg/extra/4/messages.xml"
@@ -77,13 +79,13 @@ MessageList::MessageList(QWidget *parent, int rows_per_page) :
 
 void MessageList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
 {
-	QFont font = bt_global::font->get(FontManager::TEXT);
+	const QFont &font = bt_global::font->get(FontManager::TEXT);
 
 	// top level widget (to set background using stylesheet)
-	QWidget *boxWidget = new QWidget;
-	boxWidget->setFixedHeight(68);
+	QWidget *box_widget = new QWidget;
+	box_widget->setFixedHeight(68);
 
-	QHBoxLayout *box = new QHBoxLayout(boxWidget);
+	QHBoxLayout *box = new QHBoxLayout(box_widget);
 	box->setContentsMargins(5, 5, 5, 5);
 
 	// centered file name and description
@@ -105,7 +107,7 @@ void MessageList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int
 	box->addWidget(btn, 0, Qt::AlignRight);
 
 	buttons_group->addButton(btn, id_btn);
-	layout->addWidget(boxWidget);
+	layout->addWidget(box_widget);
 }
 
 
@@ -192,9 +194,7 @@ AlertMessagePage::AlertMessagePage(const QString &date, const QString &text)
 	buttons_layout->addStretch(1);
 	box_layout->addSpacing(5);
 	box_layout->addLayout(buttons_layout);
-
 	PageTitleWidget *title_widget = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
-
 	buildPage(content, static_cast<AbstractNavigationBar*>(0), 0, title_widget);
 }
 
@@ -241,6 +241,10 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 
 	current_index = -1;
 	need_update = true;
+	unread_messages = false;
+	// The signal changeIconState must emit after the construction of the page,
+	// so we use this little trick.
+	QTimer::singleShot(0, this, SLOT(checkForUnread()));
 }
 
 void MessagesListPage::showPage()
@@ -254,10 +258,7 @@ void MessagesListPage::showPage()
 void MessagesListPage::loadMessages(const QString &filename)
 {
 	if (!QFile::exists(filename))
-	{
-		qWarning() << "The messages file:" << filename << "doesn't exist.";
 		return;
-	}
 
 	QDomDocument qdom_messages;
 	QFile fh(filename);
@@ -282,6 +283,24 @@ void MessagesListPage::loadMessages(const QString &filename)
 
 	page_content->setList(message_list);
 	page_content->showList();
+}
+
+void MessagesListPage::checkForUnread()
+{
+	bool unread = false;
+	int count = page_content->itemCount();
+	for (int i = 0; i < count; ++i)
+		if (!page_content->item(i).data.toBool())
+		{
+			unread = true;
+			break;
+		}
+
+	if (unread_messages != unread)
+	{
+		unread_messages = unread;
+		emit changeIconState(unread ? StateButton::ON : StateButton::OFF);
+	}
 }
 
 int MessagesListPage::sectionId() const
@@ -312,6 +331,12 @@ void MessagesListPage::newMessage(const DeviceValues &values_list)
 	page_content->insertItem(0, info);
 	need_update = true;
 	saveMessages();
+
+	if (!unread_messages)
+	{
+		unread_messages = true;
+		emit changeIconState(StateButton::ON);
+	}
 
 	// Set the current index to the newly inserted item.
 	current_index = 0;
@@ -380,6 +405,12 @@ void MessagesListPage::deleteAll()
 	page_content->showList();
 	saveMessages();
 	title->setCurrentPage(1, 1);
+
+	if (unread_messages)
+	{
+		unread_messages = false;
+		emit changeIconState(StateButton::OFF);
+	}
 }
 
 void MessagesListPage::deleteAlertMessage()
@@ -405,6 +436,14 @@ void MessagesListPage::deleteMessage()
 
 void MessagesListPage::saveMessages()
 {
+	checkForUnread();
+	QString dirname = QFileInfo(MESSAGES_FILENAME).absolutePath();
+	if (!QDir(dirname).exists() && !QDir().mkpath(dirname))
+	{
+		qWarning() << "Unable to create the directory" << dirname << "for scs messages";
+		return;
+	}
+
 	QString tmp_filename = QString(MESSAGES_FILENAME) + ".new";
 	QFile f(tmp_filename);
 	if (!f.open(QIODevice::WriteOnly | QIODevice::Text))

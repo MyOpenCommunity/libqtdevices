@@ -84,6 +84,21 @@ bool SkinManager::hasContext()
 	return !cid_lookup_list.isEmpty();
 }
 
+bool SkinManager::exists(QString name)
+{
+	for (int i = cid_lookup_list.size() - 1; i >= 0; --i)
+	{
+		int cid = cid_lookup_list[i];
+		if (images[cid].contains(name))
+			return true;
+	}
+
+	if (images[-1].contains(name))
+		return true;
+
+	return false;
+}
+
 QString SkinManager::getImage(QString name)
 {
 	for (int i = cid_lookup_list.size() - 1; i >= 0; --i)

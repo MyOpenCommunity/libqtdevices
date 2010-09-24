@@ -109,6 +109,7 @@ private slots:
 protected:
 	virtual void updateStatus();
 	BtButton *tray_button;
+
 private:
 	int item_id;
 };

@@ -26,9 +26,11 @@
 #include "main.h" // IMG_PATH
 #include "pagefactory.h" // getPage
 #include "skinmanager.h"
+#include "state_button.h"
 
 #include <QTime>
 #include <QDomNode>
+#include <QDebug>
 
 
 SectionPage::SectionPage(const QDomNode &config_node)
@@ -46,6 +48,28 @@ SectionPage::SectionPage()
 {
 }
 
+void SectionPage::addPage(Page *page, const QString &label, const QString &icon_name, const QString &icon_name_on, int x, int y)
+{
+	StateButton *b = new StateButton(this);
+	b->setOffImage(icon_name);
+	if (!icon_name_on.isEmpty())
+		b->setOnImage(icon_name_on);
+
+#ifdef LAYOUT_BTOUCH
+	b->setGeometry(x, y, DIM_BUT, DIM_BUT);
+#else
+	Q_ASSERT_X(page_content, "SectionPage::addButton", "The SectionPage must have the page_content!");
+	page_content->addButton(b, label);
+#endif
+	connect(b, SIGNAL(clicked()), page, SLOT(showPage()));
+	connect(page, SIGNAL(Closed()), this, SLOT(showPage()));
+
+	// NOTE: indexOfSignal doesn't work with the normal signature of a signal, that is "2<methodname>".
+	// Removing the prefix of the signals (the 2) it works fine with Qt 4.5
+	if (page->metaObject()->indexOfSignal(SIGNAL(changeIconState(StateButton::Status)) + 1) != -1)
+		connect(page, SIGNAL(changeIconState(StateButton::Status)), b, SLOT(setStatus(StateButton::Status)));
+}
+
 void SectionPage::loadItems(const QDomNode &config_node)
 {
 	QTime wdtime;
@@ -61,17 +85,22 @@ void SectionPage::loadItems(const QDomNode &config_node)
 
 		// Within the pagemenu element, it can exists items that are not a page.
 		if (Page *p = getPage(id))
-			addPage(p, QString(), img1, x, y);
+			addPage(p, QString(), img1, QString(), x, y);
 #else
 		SkinContext cxt(getTextChild(item, "cid").toInt());
 		QString icon = bt_global::skin->getImage("link_icon");
+
+		QString icon_on;
+		if (bt_global::skin->exists("link_icon_on"))
+			icon_on = bt_global::skin->getImage("link_icon_on");
+
 		// Home page buttons don't have description set
 		QString descr = getTextChild(item, "descr");
 
 		// TODO some ids are not links
 		int pageid = getTextChild(item, "lnk_pageID").toInt();
 		if (Page *p = getPage(pageid))
-			addPage(p, descr, icon, 0, 0);
+			addPage(p, descr, icon, icon_on, 0, 0);
 #endif
 
 		if (wdtime.elapsed() > 1000)

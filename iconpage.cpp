@@ -157,7 +157,6 @@ IconButtonOnTray::IconButtonOnTray(const QString &label, const QString &icon_on,
 	tray_button = new BtButton(bt_global::skin->getImage(tray_icon));
 	bt_global::btmain->trayBar()->addButton(tray_button, tray_id);
 	button->setStatus(status);
-	updateStatus();
 	item_id = _item_id;
 }
 

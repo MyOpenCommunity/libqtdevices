@@ -79,7 +79,9 @@ namespace VCTCallPrivate
 		void resetStatus();
 	};
 
-	VCTCallStatus *VCTCall::call_status = 0;
+	// We build the VCTCallStatus here because some the members hands_free and prof_studio
+	// are used in other context, that might be constructed before the VCTCallPage.
+	VCTCallStatus *VCTCall::call_status = new VCTCallStatus;
 }
 
 using namespace VCTCallPrivate;
@@ -506,8 +508,7 @@ VCTCallPage::VCTCallPage(EntryphoneDevice *d)
 	// object, to avoid duplicated code between the VCTCallPage and the VCTCallWindow.
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 
-	// There is only 1 VCTCallPage instance, so I can build the VCTCallStatus here.
-	VCTCall::call_status = new VCTCallStatus;
+	// We assume that the VCTCall::call_status is previously built.
 	vct_call = new VCTCall(d, VCTCall::NORMAL_VIDEO);
 	vct_call->enable();
 	VCTCall::call_status->volume_status = vct_call->volume->getStatus();

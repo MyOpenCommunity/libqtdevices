@@ -234,3 +234,8 @@ void ProbesPage::loadItems(const QDomNode &config_node, bool are_probes_external
 		page_content->appendBanner(b);
 	}
 }
+
+int ProbesPage::sectionId() const
+{
+	return THERMALREGULATION;
+}
