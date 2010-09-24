@@ -24,6 +24,7 @@
 #include <QXmlStreamWriter>
 #include <QFileInfo>
 #include <QDir>
+#include <QTimer>
 
 #define MESSAGES_MAX 10
 #define MESSAGES_FILENAME "cfg/extra/4/messages.xml"
@@ -240,6 +241,10 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 
 	current_index = -1;
 	need_update = true;
+	unread_messages = false;
+	// The signal changeIconState must emit after the construction of the page,
+	// so we use this little trick.
+	QTimer::singleShot(0, this, SLOT(checkForUnread()));
 }
 
 void MessagesListPage::showPage()
@@ -253,10 +258,7 @@ void MessagesListPage::showPage()
 void MessagesListPage::loadMessages(const QString &filename)
 {
 	if (!QFile::exists(filename))
-	{
-		qWarning() << "The messages file:" << filename << "doesn't exist.";
 		return;
-	}
 
 	QDomDocument qdom_messages;
 	QFile fh(filename);
@@ -281,6 +283,24 @@ void MessagesListPage::loadMessages(const QString &filename)
 
 	page_content->setList(message_list);
 	page_content->showList();
+}
+
+void MessagesListPage::checkForUnread()
+{
+	bool unread = false;
+	int count = page_content->itemCount();
+	for (int i = 0; i < count; ++i)
+		if (!page_content->item(i).data.toBool())
+		{
+			unread = true;
+			break;
+		}
+
+	if (unread_messages != unread)
+	{
+		unread_messages = unread;
+		emit changeIconState(unread ? StateButton::ON : StateButton::OFF);
+	}
 }
 
 int MessagesListPage::sectionId() const
@@ -311,6 +331,12 @@ void MessagesListPage::newMessage(const DeviceValues &values_list)
 	page_content->insertItem(0, info);
 	need_update = true;
 	saveMessages();
+
+	if (!unread_messages)
+	{
+		unread_messages = true;
+		emit changeIconState(StateButton::ON);
+	}
 
 	// Set the current index to the newly inserted item.
 	current_index = 0;
@@ -379,6 +405,12 @@ void MessagesListPage::deleteAll()
 	page_content->showList();
 	saveMessages();
 	title->setCurrentPage(1, 1);
+
+	if (unread_messages)
+	{
+		unread_messages = false;
+		emit changeIconState(StateButton::OFF);
+	}
 }
 
 void MessagesListPage::deleteAlertMessage()
@@ -404,6 +436,7 @@ void MessagesListPage::deleteMessage()
 
 void MessagesListPage::saveMessages()
 {
+	checkForUnread();
 	QString dirname = QFileInfo(MESSAGES_FILENAME).absolutePath();
 	if (!QDir(dirname).exists() && !QDir().mkpath(dirname))
 	{

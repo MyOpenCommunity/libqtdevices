@@ -24,6 +24,7 @@
 #include "page.h"
 #include "itemlist.h"
 #include "skinmanager.h" // SkinManager::CidState
+#include "state_button.h" // StateButton::Status
 
 #include <QList>
 
@@ -114,12 +115,16 @@ public:
 public slots:
 	virtual void showPage();
 
+signals:
+	void changeIconState(StateButton::Status);
+
 private:
 	MessagePage *message_page;
 	DeleteMessagesPage *delete_page;
 	PageTitleWidget *title;
 	QList<AlertMessagePage *> alert_pages;
 
+	bool unread_messages; // true if there is at least one message unread
 	int current_index;
 	bool need_update;
 	SkinManager::CidState skin_cid; // required to save/restore the cid, when a new message arrives.
@@ -144,6 +149,8 @@ private slots:
 	// Slots for the AlarmMessagePage
 	void goHome();
 	void goMessagesList();
+
+	void checkForUnread();
 };
 
 

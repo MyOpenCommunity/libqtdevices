@@ -64,7 +64,7 @@ using BtButton::setImage;
 	void setOnOff();
 
 public slots:
-	void setStatus(Status st);
+	void setStatus(StateButton::Status st);
 	void setStatus(bool st) { setStatus(st ? ON : OFF); }
 
 private:

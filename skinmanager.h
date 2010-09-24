@@ -55,6 +55,9 @@ public:
 	// the xml file without the prefix "img_".
 	QString getImage(QString name);
 
+	// Check if an image with tagname 'img_' + name is defined in the xml file.
+	bool exists(QString name);
+
 	// save and restore the context state
 	CidState getCidState();
 	void setCidState(const CidState &state);
