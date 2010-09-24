@@ -43,9 +43,6 @@ public:
 	// from the "list of zones watched"
 	void setPartialization(const QString &password);
 
-	// Partialize or activate a zone (the zones are numbered from 1 to 8)
-	void partializeZone(int num_zone, bool partialize);
-
 	void requestStatus();
 
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
@@ -61,6 +58,10 @@ public:
 		DIM_TECHNICAL_ALARM = 12,
 		DIM_RESET_TECHNICAL_ALARM = 13,
 	};
+
+public slots:
+	// Partialize or activate a zone (the zones are numbered from 1 to 8)
+	void partializeZone(int num_zone, bool partialize);
 
 private:
 	bool zones[NUM_ZONES];

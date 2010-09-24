@@ -237,6 +237,50 @@ KeypadWithState::KeypadWithState(int s[8])
 
 #else
 
+KeypadWithState::KeypadWithState(const QList<int> &s)
+{
+	states_layout = new QHBoxLayout;
+	states_layout->setContentsMargins(5, 5, 5, 5);
+	states_layout->setSpacing(5);
+	states_layout->setAlignment(Qt::AlignHCenter);
+	insertLayout(states_layout);
+
+	if (!s.isEmpty())
+		setStates(s);
+}
+
+void KeypadWithState::setStates(const QList<int> &s)
+{
+	foreach(QLabel *state, states)
+	{
+		if (state)
+		{
+			states_layout->removeWidget(state);
+			state->deleteLater();
+		}
+	}
+
+	states.clear();
+
+	for (int i = 0; i < s.size(); ++i)
+	{
+		QLabel *state = 0;
+
+		if (s[i] != -1)
+		{
+			state = new QLabel;
+			QString icon = bt_global::skin->getImage("small_" + QString::number(i + 1));
+
+			icon = getBostikName(icon, s[i] ? "on" : "off");
+			state->setPixmap(*bt_global::icons_cache.getIcon(icon));
+
+			states_layout->addWidget(state);
+		}
+		states.append(state);
+	}
+}
+
+/*
 KeypadWithState::KeypadWithState(int s[8])
 {
 	QHBoxLayout *l = new QHBoxLayout;
@@ -263,7 +307,7 @@ KeypadWithState::KeypadWithState(int s[8])
 
 	insertLayout(l);
 }
-
+*/
 #endif
 
 

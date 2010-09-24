@@ -26,6 +26,7 @@
 #include "window.h"
 
 class QLabel;
+class QHBoxLayout;
 class QGridLayout;
 
 /*!
@@ -98,7 +99,13 @@ class KeypadWithState : public Keypad
 {
 Q_OBJECT
 public:
-	KeypadWithState(int s[8]);
+	KeypadWithState(const QList<int> &s);
+
+	void setStates(const QList<int> &s);
+
+private:
+	QList<QLabel*> states;
+	QHBoxLayout *states_layout;
 };
 
 

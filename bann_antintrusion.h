@@ -22,113 +22,57 @@
 #ifndef BANN_ANTINTRUSION_H
 #define BANN_ANTINTRUSION_H
 
-#include "bann2_buttons.h" // Bann2Buttons
-#include "bann3_buttons.h" // bann3ButLab
-#include "device_status.h"
+#include "bann2_buttons.h"
 
-#include <QString>
-#include <QList>
+#include <QWidget>
 
-/// Forward Declarations
-class Keypad;
-class device;
-class QDomNode;
+class AntintrusionDevice;
+class QLabel;
 
 
-class BannSingleLeft : public Bann2Buttons
+class AntintrusionZone : public Bann2Buttons
 {
 Q_OBJECT
-protected:
-	enum States
-	{
-		PARTIAL_ON,
-		PARTIAL_OFF,
-	};
 
-	BannSingleLeft();
-	void initBanner(const QString &_left_on, const QString &_left_off,
-			States init_state, const QString &banner_text);
-	void setState(States new_state);
-
-private:
-	QString left_on, left_off;
-};
-
-
-
-// TODO: quick replacement for zonaAnti, to be cleaned up
-class AntintrusionZone : public BannSingleLeft
-{
-Q_OBJECT
 public:
-	AntintrusionZone(const QString &name, const QString &_where);
-	void inizializza(bool forza = false);
-	bool isActive();
-
-public slots:
-	void status_changed(QList<device_status*>);
-	void toggleParzializza();
-	void abilitaParz(bool ab);
-	void clearChanged();
-	int getIndex();
-
-private:
-	void setParzializzaOn(bool parz);
-	void updateButtonState();
-
-	bool already_changed;
-	bool is_on, is_partial;
-	device *dev;
-	QString where;
-	QString left_disabled_on, left_disabled_off;
+	AntintrusionZone(int zone, QString descr);
+	void setPartialization(bool partialized);
+	void enablePartialization(bool enabled);
+	bool isPartialized() const;
 
 signals:
-	void partChanged(AntintrusionZone *);
-};
-
-
-// This class is made to manage the anti-intrusion system.
-// By this banner is possible to change the (dis)activation state of the system from the visualized one.
-// If there is an alarm queue it also possible to acces a page describing the it.
-class impAnti : public bann3ButLab
-{
-Q_OBJECT
-public:
-	impAnti(QWidget *parent, QString IconOn, QString IconOff, QString IconInfo, QString IconActive);
-
-public slots:
-	void status_changed(QList<device_status*>);
-	void partChanged(AntintrusionZone *);
-	void setZona(AntintrusionZone *);
-	int getIsActive(int zona);
-	void ToSendParz(bool s);
-	void openAckRx();
-	void openNakRx();
-	void inizializza(bool forza = false);
-
-signals:
-	void impiantoInserito();
-	void abilitaParz(bool);
-	void clearChanged();
-	void clearAlarms();
-
-private:
-	static const int MAX_ZONE = 8;
-	Keypad *tasti;
-	AntintrusionZone *le_zone[MAX_ZONE];
-	bool send_part_msg;
-	bool part_msg_sent;
-	bool inserting;
-	QString passwd;
-	device *dev;
+	void requestPartialization(int zone_number, bool partialize);
 
 private slots:
-	void Inserisci();
-	void Disinserisci();
-	void Insert1();
-	void Insert2();
-	void Insert3();
-	void DeInsert();
+	void leftClicked();
+
+private:
+	QString left_on, left_off, disabled_left_on, disabled_left_off;
+	int zone_number;
+	bool partialized;
+	bool partialization_enabled;
+};
+
+
+
+class BannAntintrusion : public Bann2Buttons
+{
+Q_OBJECT
+public:
+	BannAntintrusion(QWidget *parent = 0);
+
+	// Update the icons to respect the state of the system
+	void setState(bool on);
+
+	// Show/hide the button to see the alarm list
+	void showAlarmsButton(bool show);
+
+signals:
+	void showAlarms();
+	void toggleActivation();
+
+private:
+	QString turn_on, turn_off, state_on, state_off;
 };
 
 #endif

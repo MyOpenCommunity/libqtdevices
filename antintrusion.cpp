@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -20,650 +20,149 @@
 
 
 #include "antintrusion.h"
-#include "keypad.h"
-#include "bann_antintrusion.h"
-#include "xml_functions.h" // getChildren, getTextChild
-#include "alarmpage.h"
-#include "btmain.h" // bt_global::btmain
-#include "pagestack.h"
-#include "navigation_bar.h"
-#include "btbutton.h"
 #include "main.h" // ANTIINTRUSION
-#include "skinmanager.h"
-#include "icondispatcher.h"
+#include "xml_functions.h" // getTextChild, getChildren
+#include "bann_antintrusion.h"
+#include "btbutton.h"
+#include "antintrusion_device.h"
+#include "keypad.h" // KeypadWithState
+#include "devices_cache.h"
 
-#include <openmsg.h>
-
-#include <QDateTime>
+#include <QHBoxLayout>
 #include <QDebug>
-#include <QDomNode>
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QSignalMapper>
-#include <QVariant> // setProperty
-
-
-enum
-{
-#ifdef CONFIG_TS_3_5
-	ZONANTINTRUS = 23,
-	IMPIANTINTRUS = 24,
-#else
-	ITEM_ANTINTRUSION_ZONE = 13001,
-#endif
-};
-
-static int alarm_serial_id = 0;
+#include <QVariant>
 
 
 Antintrusion::Antintrusion(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
-
 	skin_cid = bt_global::skin->getCidState();
 
-	tasti = NULL;
-	impianto = 0;
-	forward_button = 0;
+	dev = bt_global::add_device_to_cache(new AntintrusionDevice);
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 
-	alarmTexts[0] = tr("technical");
-	alarmTexts[1] = tr("intrusion");
-	alarmTexts[2] = tr("tamper");
-	alarmTexts[3] = tr("anti-panic");
+	antintrusion_system = new BannAntintrusion;
+	connect(antintrusion_system, SIGNAL(toggleActivation()), SLOT(toggleActivation()));
 
+	action = NONE;
+	QWidget *top_widget;
 	top_widget = new QWidget;
 
-	alarms = new AlarmList;
-	connect(alarms, SIGNAL(Closed()), SLOT(showPage()));
+	QHBoxLayout *layout = new QHBoxLayout(top_widget);
+	layout->setContentsMargins(18, 0, 20, 10);
+	layout->setSpacing(5);
+	layout->addWidget(antintrusion_system);
+	layout->addStretch(1);
 
-#ifdef LAYOUT_TS_3_5
-	// TODO: we introduce a double dependency to customize the image of the forward
-	// button and to obtain a reference of it (to show/hide the button).
-	// We can do better!
-
-	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("partial"));
-	buildPage(new BannerContent, nav_bar, QString(), top_widget);
-	forward_button = nav_bar->forward_button;
-#else
-	buildPage(getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT, top_widget);
+#ifdef LAYOUT_TOUCHX
+	partial_button = new BtButton(bt_global::skin->getImage("partial"));
+	layout->addWidget(partial_button);
 #endif
 
-	connect(this, SIGNAL(abilitaParz(bool)), SLOT(IsParz(bool)));
-	connect(this, SIGNAL(forwardClick()), SLOT(Parzializza()));
+	QList<int> states;
+	for (int i = 0; i < NUM_ZONES; ++i)
+	{
+		int state = -1;
+		if (zones[i] != 0)
+			state = (zones[i]->isPartialized() ? 1 : 0);
 
-	curr_alarm = -1;
-	loadItems(config_node);
-	Q_ASSERT_X(impianto, "Antintrusion::Antintrusion", "Impianto not found on the configuration file!");
-	connect(this, SIGNAL(Closed()), SLOT(requestZoneStatus()));
-	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)),
-			SLOT(requestStatusIfCurrentWidget(Page*)));
-	subscribe_monitor(5);
+		states.append(state);
+	}
 
-	checkAlarmCount();
+	keypad = new KeypadWithState(QList<int>());
+	updateKeypadStates();
+	keypad->setMode(Keypad::HIDDEN);
+	connect(keypad, SIGNAL(Closed()), SLOT(showPage()));
+	connect(keypad, SIGNAL(accept()), SLOT(doAction()));
+	connect(keypad, SIGNAL(accept()), SLOT(showPage()));
+}
+
+void Antintrusion::updateKeypadStates()
+{
+	QList<int> states;
+	for (int i = 0; i < NUM_ZONES; ++i)
+	{
+		int state = -1;
+		if (zones[i] != 0)
+			state = (zones[i]->isPartialized() ? 1 : 0);
+
+		states.append(state);
+	}
+	keypad->setStates(states);
 }
 
 int Antintrusion::sectionId() const
+
 {
 	return ANTIINTRUSION;
 }
 
-void Antintrusion::createImpianto(const QString &descr)
+void Antintrusion::loadZones(const QDomNode &config_node)
 {
-	// We have to use a layout for the top_widget, in order to define an appropriate
-	// sizeHint (needed by the main layout added to the Page)
-	// An alternative is to define a custom widget that rimplement the sizeHint method.
-	QHBoxLayout *l = new QHBoxLayout(top_widget);
-	l->setSpacing(10);
-	int mleft, mright;
-	page_content->layout()->getContentsMargins(&mleft, NULL, &mright, NULL);
-	l->setContentsMargins(mleft, 0, mright, 10);
-
-	impianto = new impAnti(top_widget,
-			       bt_global::skin->getImage("on"),
-			       bt_global::skin->getImage("off"),
-			       bt_global::skin->getImage("info"),
-			       bt_global::skin->getImage("alarm_state"));
-	impianto->setText(descr);
-	impianto->Draw();
-#ifdef CONFIG_TS_3_5
-	impianto->setId(IMPIANTINTRUS); // can probably be removed
-#endif
-	l->addWidget(impianto);
-
-	connect(impianto, SIGNAL(impiantoInserito()), SLOT(plantInserted()));
-	connect(impianto, SIGNAL(abilitaParz(bool)), SIGNAL(abilitaParz(bool)));
-	connect(impianto, SIGNAL(clearChanged()), SIGNAL(clearChanged()));
-	connect(impianto, SIGNAL(pageClosed()), SLOT(showPage()));
-	connect(impianto, SIGNAL(sxClick()), SLOT(showAlarms()));
-
-	connect(this, SIGNAL(partChanged(AntintrusionZone*)), impianto, SLOT(partChanged(AntintrusionZone*)));
-
-#ifdef LAYOUT_TS_10
-	forward_button = new BtButton;
-	forward_button->setImage(bt_global::skin->getImage("partial"));
-	// remove the alignment after rewriting impAnti as a new style banner
-	l->addWidget(forward_button, 0, Qt::AlignTop);
-	connect(forward_button, SIGNAL(clicked()), SIGNAL(forwardClick()));
-#endif
-}
-
-void Antintrusion::loadItems(const QDomNode &config_node)
-{
-#ifndef CONFIG_TS_3_5
-	createImpianto("");
-#endif
+	for (int i = 0; i < NUM_ZONES; ++i)
+		zones[i] = 0;
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		SkinContext cxt(getTextChild(item, "cid").toInt());
-
-		int id = getTextChild(item, "id").toInt();
-		QString descr = getTextChild(item, "descr");
-
-		banner *b;
-
-#ifdef CONFIG_TS_3_5
-		if (id == IMPIANTINTRUS)
-			createImpianto(descr);
-		else
-		if (id == ZONANTINTRUS)
-#else
-		if (id == ITEM_ANTINTRUSION_ZONE)
-#endif
-		{
-			int id_zone = getTextChild(item, "where").mid(1).toInt();
-			zones[id_zone - 1] = descr;
-			b = new AntintrusionZone(descr, getTextChild(item, "where"));
-#if 0
-			b = new zonaAnti(this, descr, getTextChild(item, "where"),
-					 bt_global::skin->getImage("zone"),
-					 bt_global::skin->getImage("alarm_off"),
-					 bt_global::skin->getImage("alarm_on"));
-			b->setText(descr);
-			b->setId(id);
-			b->Draw();
-#endif
-			page_content->appendBanner(b);
-			connect(this, SIGNAL(abilitaParz(bool)), b, SLOT(abilitaParz(bool)));
-			connect(this, SIGNAL(clearChanged()), b, SLOT(clearChanged()));
-			connect(b, SIGNAL(partChanged(AntintrusionZone*)), SIGNAL(partChanged(AntintrusionZone*)));
-			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-			// We assume that the antintrusion impianto came before all the zones
-			Q_ASSERT_X(impianto, "Antintrusion::loadItems", "Found a zone before the impianto!");
-			impianto->setZona((AntintrusionZone *)b);
-		}
-		else
-			Q_ASSERT_X(false, "Antintrusion::loadItems", qPrintable(QString("Type of item %1 not handled!").arg(id)));
+		int zone_number = getTextChild(item, "where").mid(1).toInt();
+		AntintrusionZone *b = new AntintrusionZone(zone_number, getTextChild(item, "descr"));
+		connect(b, SIGNAL(requestPartialization(int,bool)), dev, SLOT(partializeZone(int,bool)));
+		page_content->appendBanner(b);
+		zones[zone_number - 1] = b;
 	}
 }
 
-void Antintrusion::showPage()
+void Antintrusion::toggleActivation()
 {
-	checkAlarmCount();
-	Page::showPage();
+	action = ACTIVE;
+	updateKeypadStates();
+	keypad->showPage();
 }
 
-void Antintrusion::plantInserted()
+void Antintrusion::partialize()
 {
-	clearAlarms();
+	action = PARTIALIZE;
+	updateKeypadStates();
+	keypad->showPage();
 }
 
-Antintrusion::~Antintrusion()
+void Antintrusion::doAction()
 {
-	clearAlarms();
-}
-
-void Antintrusion::IsParz(bool ab)
-{
-	qDebug("Antintrusion::IsParz(%d)", ab);
-
-	if (ab)
-		forward_button->show();
-	else
-		forward_button->hide();
-}
-
-void Antintrusion::Parzializza()
-{
-	qDebug("Antintrusion::Parzializza()");
-	int s[MAX_ZONE];
-	for (int i = 0; i < MAX_ZONE; i++)
-		s[i] = impianto->getIsActive(i);
-
-	if (tasti)
-		delete tasti;
-	tasti = new KeypadWithState(s);
-	connect(tasti, SIGNAL(Closed()), SLOT(showPage()));
-	connect(tasti, SIGNAL(accept()), SLOT(Parz()));
-	connect(tasti, SIGNAL(accept()), SLOT(showPage()));
-	tasti->setMode(Keypad::HIDDEN);
-	tasti->showPage();
-}
-
-void Antintrusion::Parz()
-{
-	qDebug("Antintrusion::Parz()");
-	QString pwd = tasti->getText();
-	if (!pwd.isEmpty())
-	{
-		QString f = "*5*50#" + pwd + "#";
-		for (int i = 0; i < MAX_ZONE; i++)
-			f += impianto->getIsActive(i) ? "0" : "1";
-		f += "*0##";
-		qDebug() << "sending part frame" << f;
-		sendFrame(f);
-		impianto->ToSendParz(false);
-	}
-	connect(&request_timer, SIGNAL(timeout()), SLOT(request()));
-	request_timer.start(5000);
-}
-
-void Antintrusion::checkAlarmCount()
-{
-	qDebug("checkAlarmCount %d %d", allarmi.size(), alarms->alarmCount());
-	// the first condition is for TS 3.5'', the second for TS 10''
-	if (!allarmi.isEmpty() || alarms->alarmCount() != 0)
-		impianto->mostra(BannerOld::BUT1);
-	else
-		impianto->nascondi(BannerOld::BUT1);
-}
-
-void Antintrusion::inizializza()
-{
-	BannerPage::inizializza();
-
-	impianto->inizializza();
-	connect(impianto, SIGNAL(clearAlarms()), this, SLOT(doClearAlarms()));
-}
-
-void Antintrusion::manageFrame(OpenMsg &msg)
-{
-	int what = msg.what();
-
-	if (what == 12 || what == 15 || what == 16 || what == 17)
-	{
-		AlarmPage::altype t = AlarmPage::TECNICO;
-
-		if (what == 12)
-			t = AlarmPage::TECNICO;
-		else if (what == 15)
-			t = AlarmPage::INTRUSIONE;
-		else if (what == 16)
-			t = AlarmPage::MANOMISSIONE;
-		else if (what == 17)
-			t = AlarmPage::PANIC;
-
-		int zona = QString(msg.Extract_dove()).mid(1).toInt();
-
-		addAlarm(alarmTexts[t], t, zona);
-	}
-}
-
-void Antintrusion::addAlarm(QString descr, int t, int zona)
-{
-	bt_global::skin->setCidState(skin_cid);
-
-	QString alarm_description = descr;
-	QString zone_description;
-	if (t == AlarmPage::TECNICO)
-		zone_description = QString("AUX:%1").arg(zona);
-	else if (zona <= 8)
-		zone_description = zones[zona - 1];
-	else
-		zone_description = QString(tr("Z%1")).arg(zona);
-
-	QDateTime now = QDateTime::currentDateTime();
-
-	int alarm_id = ++alarm_serial_id;
-	AlarmPage *curr = new AlarmPage(static_cast<AlarmPage::altype>(t), alarm_description, zone_description, now, alarm_id);
-	allarmi.append(curr);
-	connect(curr, SIGNAL(Next()), SLOT(nextAlarm()));
-	connect(curr, SIGNAL(Prev()), SLOT(prevAlarm()));
-	connect(curr, SIGNAL(Delete()), SLOT(deleteAlarm()));
-	connect(curr, SIGNAL(showHomePage()), SLOT(showHomePage()));
-	connect(curr, SIGNAL(showAlarmList()), SLOT(showAlarms()));
-	connect(curr, SIGNAL(destroyed(QObject*)), SLOT(cleanupAlarmPage(QObject*)));
-
-	// The current alarm is the last alarm inserted
-	curr_alarm = allarmi.size() - 1;
-
-	alarms->addAlarm(t, alarm_description, zone_description, now, alarm_id);
-	bt_global::btmain->makeActive();
-	curr->showPage();
-	checkAlarmCount();
-}
-
-void Antintrusion::showHomePage()
-{
-	bt_global::page_stack.clear();
-	bt_global::btmain->showHomePage();
-}
-
-void Antintrusion::nextAlarm()
-{
-	qDebug("antiintrusione::nextAlarm()");
-	Q_ASSERT_X(curr_alarm >= 0 && curr_alarm < allarmi.size(), "Antintrusion::nextAlarm",
-		qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(curr_alarm).arg(allarmi.size())));
-
-	if (++curr_alarm >= allarmi.size())
-		curr_alarm = 0;
-
-	allarmi.at(curr_alarm)->showPage();
-}
-
-void Antintrusion::prevAlarm()
-{
-	qDebug("antiintrusione::prevAlarm()");
-	Q_ASSERT_X(curr_alarm >= 0 && curr_alarm < allarmi.size(), "Antintrusion::prevAlarm",
-		qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(curr_alarm).arg(allarmi.size())));
-	if (--curr_alarm < 0)
-		curr_alarm = allarmi.size() - 1;
-
-	allarmi.at(curr_alarm)->showPage();
-}
-
-void Antintrusion::deleteAlarm()
-{
-	Q_ASSERT_X(curr_alarm >= 0 && curr_alarm < allarmi.size(), "Antintrusion::deleteAlarm",
-		qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(curr_alarm).arg(allarmi.size())));
-	AlarmPage *to_die = allarmi.takeAt(curr_alarm);
-	// In this case the user has seen the alarm and delete it directly from the AlarmPage,
-	// so we want to delete also the entry from the AlarmList. We do that using a global
-	// static alarm id.
-	alarms->removeAlarm(to_die->alarm_id);
-	to_die->deleteLater();
-
-	if (allarmi.isEmpty())
-	{
-		curr_alarm = -1;
-		checkAlarmCount();
-		return;
-	}
-	else if (curr_alarm >= allarmi.size())
-		curr_alarm = allarmi.size() - 1;
-
-	allarmi.at(curr_alarm)->showPage();
-}
-
-void Antintrusion::cleanupAlarmPage(QObject *page)
-{
-	if (curr_alarm >= 0 && allarmi.at(curr_alarm) == page)
-		curr_alarm -= 1;
-	allarmi.removeOne(static_cast<AlarmPage*>(page));
-	if (curr_alarm < 0)
-		curr_alarm = allarmi.size() - 1;
-}
-
-#ifdef LAYOUT_TS_3_5
-
-void Antintrusion::showAlarms()
-{
-	qDebug("antiintrusione::showAlarms()");
-	if (allarmi.isEmpty())
+	QString password = keypad->getText();
+	if (password.isEmpty())
 		return;
 
-	curr_alarm = allarmi.size() - 1;
-	allarmi.at(curr_alarm)->showPage();
-}
-
-#else
-
-void Antintrusion::showAlarms()
-{
-	bt_global::page_stack.clear();
-	alarms->showPage();
-}
-
-#endif
-
-void Antintrusion::doClearAlarms()
-{
-	clearAlarms();
-}
-
-void Antintrusion::clearAlarms()
-{
-	qDebug("antiintrusione::clearAlarms()");
-	while (!allarmi.isEmpty())
+	switch (action)
 	{
-		AlarmPage *a = allarmi.takeFirst();
-		a->deleteLater();
+	case ACTIVE:
+		dev->toggleActivation(password);
+		break;
+	case PARTIALIZE:
+		dev->setPartialization(password);
+		break;
+	default:
+		qWarning() << "Antintrusion::doAction() Unknown action " << action;
 	}
-	alarms->removeAll(); // we want to clean up the alarm list
-	curr_alarm = -1;
+	keypad->resetText();
 }
 
-void Antintrusion::requestZoneStatus()
+void Antintrusion::valueReceived(const DeviceValues &values_list)
 {
-	qDebug("Request zone status");
-	for (int i = 1; i <= 8; ++i)
-		sendFrame(QString("*#5*#%1##").arg(i));
-}
-
-void Antintrusion::request()
-{
-	request_timer.stop();
-	disconnect(&request_timer, SIGNAL(timeout()), this, SLOT(request()));
-	sendInit("*#5*0##");
-}
-
-void Antintrusion::requestStatusIfCurrentWidget(Page *curr)
-{
-	// We can't use currentPage() because at the time when startscreensaver
-	// is emitted the currentPage is the screensaver page.
-	if (curr == this)
-		requestZoneStatus();
-}
-
-
-// keep the same order as the altype enum in alarmpage.h
-static const char *alarm_icons[] = { "technic_alarm", "intrusion_alarm", "tamper_alarm", "panic_alarm" };
-
-AlarmItems::AlarmItems()
-{
-	for (int i = 0; i < 4; ++i)
-		icons.append(bt_global::skin->getImage(alarm_icons[i]));
-
-	connect(&mapper, SIGNAL(mapped(QWidget *)), SLOT(removeAlarm(QWidget *)));
-}
-
-void AlarmItems::addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date, int alarm_id)
-{
-	QWidget *alarm = new QWidget(this);
-	alarm->setProperty("alarm_id", alarm_id);
-	QHBoxLayout *l = new QHBoxLayout(alarm);
-
-	// alarm type icon
-	QLabel *icon = new QLabel;
-	icon->setPixmap(*bt_global::icons_cache.getIcon(icons[type]));
-
-	// alarm description
-	QLabel *s = new QLabel(description);
-	s->setAlignment(Qt::AlignTop|Qt::AlignLeft);
-
-	// alarm zone
-	QLabel *z = new QLabel(zone);
-	z->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
-
-	QLabel *d = new QLabel(date.toString("dd/MM/yyyy\nhh:mm:ss"));
-	d->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
-
-	// delete button
-	BtButton *trash = new BtButton(bt_global::skin->getImage("alarm_del"));
-
-	l->addWidget(icon);
-	l->addWidget(s, 1);
-	l->addWidget(z, 1);
-	l->addWidget(d, 1);
-	l->addWidget(trash);
-
-	alarms.append(alarm);
-	mapper.setMapping(trash, alarm);
-	connect(trash, SIGNAL(clicked()), &mapper, SLOT(map()));
-
-	need_update = true;
-	if (isVisible())
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
 	{
-		prepareLayout();
-		updateLayout(alarms);
-	}
-}
-
-void AlarmItems::removeAll()
-{
-	while (!alarms.isEmpty())
-		removeWidgetAlarm(0);
-}
-
-void AlarmItems::removeAlarm(QWidget *item)
-{
-	int i = 0;
-	foreach (QWidget *a, alarms)
-	{
-		if (a == item)
+		switch (it.key())
 		{
-			removeWidgetAlarm(i);
-			break;
-		}
-
-		++i;
-	}
-}
-
-void AlarmItems::removeAlarm(int alarm_id)
-{
-	int i = 0;
-	foreach (QWidget *a, alarms)
-	{
-		if (a->property("alarm_id").toInt() == alarm_id)
+		case AntintrusionDevice::DIM_SYSTEM_INSERTED:
 		{
-			removeWidgetAlarm(i);
-			break;
+			bool inserted = it.value().toBool();
+			for (int i = 0; i < NUM_ZONES; ++i)
+				if (zones[i])
+					zones[i]->enablePartialization(!inserted);
 		}
-
-		++i;
+		break;
+		}
+		++it;
 	}
-}
-
-void AlarmItems::removeWidgetAlarm(int index)
-{
-	alarms[index]->hide();
-	alarms[index]->deleteLater();
-	alarms.removeAt(index);
-
-	need_update = true;
-	if (isVisible())
-		drawContent();
-}
-
-void AlarmItems::prepareLayout()
-{
-	QGridLayout *l = qobject_cast<QGridLayout*>(layout());
-	QLayoutItem *child;
-
-	while ((child = l->takeAt(0)) != 0)
-		if (QWidget *w = child->widget())
-			w->hide();
-	pages.clear();
-
-	ScrollableContent::prepareLayout(alarms, 1);
-
-	// add alarms to the layout
-	for (int i = 0; i < pages.size() - 1; ++i)
-	{
-		int base = pages[i];
-		for (int j = 0; base + j < pages[i + 1]; ++j)
-			l->addWidget(alarms.at(base + j), j, 0);
-	}
-
-	l->setRowStretch(l->rowCount(), 1);
-}
-
-void AlarmItems::drawContent()
-{
-	if (need_update)
-		prepareLayout();
-	if (current_page >= pageCount())
-		current_page = pageCount() - 1;
-	updateLayout(alarms);
-}
-
-int AlarmItems::alarmCount()
-{
-	return alarms.count();
-}
-
-
-AlarmList::AlarmList()
-{
-	QWidget *header = new QWidget;
-	QHBoxLayout *l = new QHBoxLayout(header);
-
-	QLabel *t = new QLabel(tr("Alarm type"));
-	t->setAlignment(Qt::AlignHCenter);
-	l->addWidget(t, 1);
-
-	QLabel *z = new QLabel(tr("Zone"));
-	z->setAlignment(Qt::AlignHCenter);
-	l->addWidget(z, 1);
-
-	QLabel *d = new QLabel(tr("Date & Hour"));
-	d->setAlignment(Qt::AlignLeft);
-	l->addWidget(d, 1);
-
-	alarms = new AlarmItems;
-
-	PageTitleWidget *title_widget = 0;
-#ifdef LAYOUT_TS_10
-	title_widget = new PageTitleWidget(tr("Alarms"), SMALL_TITLE_HEIGHT);
-
-	connect(alarms, SIGNAL(contentScrolled(int, int)),
-		title_widget, SLOT(setCurrentPage(int, int)));
-#endif
-	NavigationBar *nav_bar = new NavigationBar;
-	buildPage(alarms, nav_bar, header, title_widget);
-
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
-	connect(this, SIGNAL(Closed()), alarms, SLOT(resetIndex()));
-	connect(nav_bar, SIGNAL(upClick()), alarms, SLOT(pgUp()));
-	connect(nav_bar, SIGNAL(downClick()), alarms, SLOT(pgDown()));
-	connect(alarms, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
-}
-
-int AlarmList::sectionId() const
-{
-	return ANTIINTRUSION;
-}
-
-void AlarmList::activateLayout()
-{
-	if (page_content)
-		page_content->updateGeometry();
-
-	Page::activateLayout();
-
-	if (page_content)
-		page_content->drawContent();
-}
-
-void AlarmList::addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date, int alarm_id)
-{
-	alarms->addAlarm(type, description, zone, date, alarm_id);
-}
-
-int AlarmList::alarmCount()
-{
-	return alarms->alarmCount();
-}
-
-void AlarmList::removeAlarm(int alarm_id)
-{
-	alarms->removeAlarm(alarm_id);
-}
-
-void AlarmList::removeAll()
-{
-	alarms->removeAll();
 }
 

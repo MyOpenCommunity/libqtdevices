@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -22,26 +22,16 @@
 #ifndef ANTINTRUSION_H
 #define ANTINTRUSION_H
 
-#include "frame_receiver.h"
-#include "page.h"
 #include "bannerpage.h"
-#include "scrollablepage.h" // ScrollableContent
 #include "skinmanager.h" // SkinManager::CidState
+#include "antintrusion_device.h" // NUM_ZONES, AntintrusionDevice
 
-#include <QString>
-#include <QTimer>
-#include <QList>
-#include <QSignalMapper>
-
-class impAnti;
-class AntintrusionZone;
 class BtButton;
-class Keypad;
-class AlarmPage;
+class BannAntintrusion;
+class KeypadWithState;
+class AntintrusionZone;
 class QDomNode;
-class QWidget;
-class AlarmList;
-class QDateTime;
+
 
 /*!
 	\defgroup Antintrusion Antintrusion
@@ -49,151 +39,40 @@ class QDateTime;
 	Allows the user to control the anti-intrusion system, enabling or disabling
 	the alarm, partializing or inserting the zones and displaying the alarm history.
 */
-
-// The old antintrusion class
-class Antintrusion : public BannerPage, FrameReceiver
+class Antintrusion : public BannerPage
 {
 Q_OBJECT
 public:
 	Antintrusion(const QDomNode &config_node);
-	~Antintrusion();
-	virtual void inizializza();
-	virtual void manageFrame(OpenMsg &msg);
 
 	virtual int sectionId() const;
 
-	virtual void showPage();
-
-public slots:
-	void Parzializza();
-	void Parz();
-	void IsParz(bool);
-
-/*!
-  \brief if there are no allarms in the queue the button in the plant area which give the possibility to see the queue is hidden
-*/
-	void checkAlarmCount();
-/*!
-  \brief Invoked when next alarm must be displayed
-*/
-	void nextAlarm();
-/*!
-  \brief Invoked when prev alarm must be displayed
-*/
-	void prevAlarm();
-/*!
-  \brief Invoked when current alarm must be deleted
-*/
-	void deleteAlarm();
-/*!
-  \brief Invoked when alarm list must be shown
-*/
-	void showAlarms();
-/*!
-  \brief clear alarm list
-*/
-	void doClearAlarms();
-	void request();
-
-signals:
-/*!
-  \brief enable/disable area partialization enable events
-*/
-	void abilitaParz(bool ab);
-/*!
-  \brief part. changed events
-*/
-	void partChanged(AntintrusionZone *);
-/*!
-  \brief clear changed flags
-*/
-	void clearChanged();
+private slots:
+	void partialize();
+	void toggleActivation();
+	void doAction();
+	void valueReceived(const DeviceValues &values_list);
 
 private:
-	void createImpianto(const QString &description);
+	enum Action
+	{
+		NONE = 0,
+		ACTIVE,
+		PARTIALIZE
+	};
 
-private:
-/*!
-  \param <impianto> alarm plant
-*/
-	impAnti* impianto;
-	QWidget* top_widget;
-/*!
-  \param <allarmi> alarm's queue
-*/
-	QList<AlarmPage*> allarmi;
-	AlarmList *alarms;
-	int curr_alarm;
-/*!
-  \param <alarmTexts[altype]> text for a given alarm
-*/
-	QString alarmTexts[4];
-	QString zones[8];
-	Keypad *tasti;
-	static const int MAX_ZONE = 8;
-	QTimer request_timer;
-	BtButton *forward_button; // the forward button of the navigation bar
 	SkinManager::CidState skin_cid;
+	BtButton *partial_button;
+	AntintrusionDevice *dev;
+	BannAntintrusion *antintrusion_system;
+	KeypadWithState *keypad;
+	Action action;
+	AntintrusionZone *zones[NUM_ZONES];
 
-	void loadItems(const QDomNode &config_node);
-
-	void clearAlarms();
-	void addAlarm(QString descr, int t, int zona);
-
-private slots:
-	void showHomePage();
-	void requestZoneStatus();
-	void requestStatusIfCurrentWidget(Page *curr);
-	void plantInserted();
-	void cleanupAlarmPage(QObject *page);
+	void loadZones(const QDomNode &config_node);
+	void updateKeypadStates();
 };
 
 
-// The content of the AlarmList page.
-class AlarmItems : public ScrollableContent
-{
-Q_OBJECT
-public:
-	AlarmItems();
+#endif
 
-	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date, int alarm_id);
-	int alarmCount();
-	void removeAlarm(int alarm_id);
-	void removeAll();
-
-	void drawContent();
-	void prepareLayout();
-
-private slots:
-	void removeAlarm(QWidget *);
-
-private:
-	QList<QWidget*> alarms;
-	QStringList icons;
-	QSignalMapper mapper;
-	void removeWidgetAlarm(int index);
-};
-
-
-// The page that shows the list of the alarms received.
-class AlarmList : public Page
-{
-Q_OBJECT
-public:
-	typedef AlarmItems ContentType;
-
-	AlarmList();
-
-	void addAlarm(int type, const QString &description, const QString &zone, const QDateTime &date, int alarm_id);
-	void removeAlarm(int alarm_id);
-	void removeAll();
-	int alarmCount();
-
-	virtual void activateLayout();
-	virtual int sectionId() const;
-
-private:
-	AlarmItems *alarms;
-};
-
-#endif // ANTINTRUSION_H
