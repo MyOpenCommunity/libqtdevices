@@ -22,7 +22,8 @@
 #include <QFont>
 #include <QButtonGroup>
 #include <QXmlStreamWriter>
-
+#include <QFileInfo>
+#include <QDir>
 
 #define MESSAGES_MAX 10
 #define MESSAGES_FILENAME "cfg/extra/4/messages.xml"
@@ -77,13 +78,13 @@ MessageList::MessageList(QWidget *parent, int rows_per_page) :
 
 void MessageList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
 {
-	QFont font = bt_global::font->get(FontManager::TEXT);
+	const QFont &font = bt_global::font->get(FontManager::TEXT);
 
 	// top level widget (to set background using stylesheet)
-	QWidget *boxWidget = new QWidget;
-	boxWidget->setFixedHeight(68);
+	QWidget *box_widget = new QWidget;
+	box_widget->setFixedHeight(68);
 
-	QHBoxLayout *box = new QHBoxLayout(boxWidget);
+	QHBoxLayout *box = new QHBoxLayout(box_widget);
 	box->setContentsMargins(5, 5, 5, 5);
 
 	// centered file name and description
@@ -105,7 +106,7 @@ void MessageList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int
 	box->addWidget(btn, 0, Qt::AlignRight);
 
 	buttons_group->addButton(btn, id_btn);
-	layout->addWidget(boxWidget);
+	layout->addWidget(box_widget);
 }
 
 
@@ -192,9 +193,7 @@ AlertMessagePage::AlertMessagePage(const QString &date, const QString &text)
 	buttons_layout->addStretch(1);
 	box_layout->addSpacing(5);
 	box_layout->addLayout(buttons_layout);
-
 	PageTitleWidget *title_widget = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
-
 	buildPage(content, static_cast<AbstractNavigationBar*>(0), 0, title_widget);
 }
 
@@ -405,6 +404,13 @@ void MessagesListPage::deleteMessage()
 
 void MessagesListPage::saveMessages()
 {
+	QString dirname = QFileInfo(MESSAGES_FILENAME).absolutePath();
+	if (!QDir(dirname).exists() && !QDir().mkpath(dirname))
+	{
+		qWarning() << "Unable to create the directory" << dirname << "for scs messages";
+		return;
+	}
+
 	QString tmp_filename = QString(MESSAGES_FILENAME) + ".new";
 	QFile f(tmp_filename);
 	if (!f.open(QIODevice::WriteOnly | QIODevice::Text))
