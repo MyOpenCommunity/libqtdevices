@@ -1722,6 +1722,11 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<cid>10102</cid>
 		<img_link_icon>videocitofonia/piintercompiano.png</img_link_icon>
 	</item>
+	<!-- Guard unit -->
+	<item>
+		<cid>19004</cid>
+		<img_link_icon>videocitofonia/cdp.png</img_link_icon>
+	</item>
 	<item>
 		<!--
 		SCS Messages

@@ -40,10 +40,11 @@ enum GlobalFields
 	NAME,
 	PI_ADDRESS,
 	PI_MODE,
+	GUARD_UNIT_ADDRESS,
 	AMPLIFIER_ADDRESS,
 	SOURCE_ADDRESS,
 	TS_NUMBER,
-	INIT_COMPLETE
+	INIT_COMPLETE,
 };
 
 namespace bt_global { extern QHash<GlobalFields, QString> *config; }

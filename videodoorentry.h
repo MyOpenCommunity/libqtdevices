@@ -60,7 +60,11 @@ public:
 	virtual int sectionId() const;
 	static bool ring_exclusion;
 
+private slots:
+	void callGuardUnit();
+
 private:
+	EntryphoneDevice *dev;
 	VideoDoorEntry(); // available only for BtMain
 	void loadItems(const QDomNode &config_node);
 };
@@ -74,7 +78,7 @@ class VideoControl : public IconPage
 {
 Q_OBJECT
 public:
-	VideoControl(const QDomNode &config_node);
+	VideoControl(const QDomNode &config_node, EntryphoneDevice *dev);
 
 private slots:
 	void cameraOn(QString where);
@@ -128,7 +132,7 @@ class Intercom : public IconPage
 {
 Q_OBJECT
 public:
-	Intercom(const QDomNode &config_node);
+	Intercom(const QDomNode &config_node, EntryphoneDevice *dev);
 
 private:
 	QSignalMapper *mapper_ext_intercom;
