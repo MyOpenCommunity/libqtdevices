@@ -554,6 +554,8 @@ void BtMain::loadConfiguration()
 #endif
 	connect(window_container->homeWindow(), SIGNAL(showHomePage()), Home, SLOT(showPage()));
 	connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), Home, SLOT(showSectionPage(int)));
+	connect(Home, SIGNAL(iconStateChanged(int,StateButton::Status)), window_container->homeWindow(),
+		SLOT(iconStateChanged(int,StateButton::Status)));
 
 	QDomNode home_node = getChildWithName(gui_node, "homepage");
 	if (getTextChild(home_node, "isdefined").toInt())

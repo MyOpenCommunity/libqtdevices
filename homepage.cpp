@@ -89,3 +89,19 @@ void HomePage::showSectionPage(int page_id)
 	bt_global::btmain->page_list[page_id]->showPage();
 #endif
 }
+
+void HomePage::changeIconState(StateButton::Status st)
+{
+	QHashIterator<int, Page*> it(bt_global::btmain->page_list);
+	int page_id = -1;
+	while (it.hasNext())
+	{
+		it.next();
+		if (it.value() == sender())
+			page_id = it.key();
+	}
+
+	if (page_id != -1)
+		emit iconStateChanged(page_id, st);
+}
+

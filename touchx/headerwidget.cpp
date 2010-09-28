@@ -553,11 +553,15 @@ void HeaderNavigationBar::loadItems(const QDomNode &config_node, Page *s)
 		QDomNode page_node = getPageNodeFromPageId(page_id);
 		int id = getTextChild(page_node, "id").toInt();
 
-		navigation->addButton(id, page_id, bt_global::skin->getImage("top_navigation_button"));
+		QString icon = bt_global::skin->getImage("top_navigation_button");
+		QString icon_on;
+		if (bt_global::skin->exists("top_navigation_button_on"))
+			icon_on = bt_global::skin->getImage("top_navigation_button_on");
+		navigation->addButton(id, page_id, icon, icon_on);
 	}
 
 	// add link to settings
-	BtButton *link = navigation->createButton(settings->sectionId(), bt_global::skin->getImage("settings_icon"));
+	StateButton *link = navigation->createButton(settings->sectionId(), bt_global::skin->getImage("settings_icon"));
 	connect(link, SIGNAL(clicked()), SLOT(showSettings()));
 }
 
@@ -579,7 +583,6 @@ void HeaderNavigationBar::showSettings()
 	settings->showPage();
 }
 
-
 void HeaderNavigationBar::setCurrentSection(int section_id)
 {
 	navigation->setCurrentSection(section_id);
@@ -599,14 +602,12 @@ HeaderNavigationWidget::HeaderNavigationWidget()
 	button_layout = new QHBoxLayout;
 	button_layout->setContentsMargins(0, 13, 0, 12);
 
-	left = new BtButton;
+	left = new BtButton(bt_global::skin->getImage("left"));
 	left->setAutoRepeat(true);
-	left->setImage(bt_global::skin->getImage("left"));
 	connect(left, SIGNAL(clicked()), SLOT(scrollLeft()));
 
-	right = new BtButton;
+	right = new BtButton(bt_global::skin->getImage("right"));
 	right->setAutoRepeat(true);
-	right->setImage(bt_global::skin->getImage("right"));
 	connect(right, SIGNAL(clicked()), SLOT(scrollRight()));
 
 	main_layout->addWidget(left, 0, Qt::AlignVCenter);
@@ -623,10 +624,12 @@ void HeaderNavigationWidget::showEvent(QShowEvent *e)
 	QWidget::showEvent(e);
 }
 
-BtButton *HeaderNavigationWidget::createButton(int section_id, const QString &icon)
+StateButton *HeaderNavigationWidget::createButton(int section_id, const QString &icon, const QString &icon_on)
 {
-	BtButton *link = new BtButton;
-	link->setImage(icon);
+	StateButton *link = new StateButton;
+	link->setOffImage(icon);
+	if (!icon_on.isEmpty())
+		link->setOnImage(icon_on);
 	buttons.append(link);
 
 	QLabel *active = new QLabel;
@@ -641,9 +644,9 @@ BtButton *HeaderNavigationWidget::createButton(int section_id, const QString &ic
 	return link;
 }
 
-void HeaderNavigationWidget::addButton(int section_id, int page_id, const QString &icon)
+void HeaderNavigationWidget::addButton(int section_id, int page_id, const QString &icon, const QString &icon_on)
 {
-	BtButton *link = createButton(section_id, icon);
+	StateButton *link = createButton(section_id, icon, icon_on);
 
 	mapper->setMapping(link, page_id);
 	connect(link, SIGNAL(clicked()), mapper, SLOT(map()));
@@ -759,6 +762,12 @@ void HeaderNavigationWidget::setCurrentSection(int section_id)
 	selected_section_id = section_id;
 }
 
+void HeaderNavigationWidget::changeIconState(int page_id, StateButton::Status st)
+{
+	if (StateButton *b = qobject_cast<StateButton*>(mapper->mapping(page_id)))
+		b->setStatus(st);
+}
+
 
 HeaderWidget::HeaderWidget(TrayBar *tray_bar)
 {
@@ -835,3 +844,9 @@ void HeaderWidget::sectionChanged(int section_id)
 	qDebug() << "new section = " << section_id;
 	top_nav_bar->setCurrentSection(section_id);
 }
+
+void HeaderWidget::iconStateChanged(int page_id, StateButton::Status st)
+{
+	top_nav_bar->navigation->changeIconState(page_id, st);
+}
+

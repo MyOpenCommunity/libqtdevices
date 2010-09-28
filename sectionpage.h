@@ -41,8 +41,11 @@ protected:
 
 	void loadItems(const QDomNode &config_node);
 
-	virtual void addPage(Page *page, const QString &label, const QString &icon_name, const QString &icon_name_on = QString(),
+	void addPage(Page *page, const QString &label, const QString &icon_name, const QString &icon_name_on = QString(),
 		int x = 0, int y = 0);
+
+protected slots:
+	virtual void changeIconState(StateButton::Status st) {}
 };
 
 #endif // SECTION_PAGE_H

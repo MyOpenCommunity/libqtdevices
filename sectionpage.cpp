@@ -66,8 +66,12 @@ void SectionPage::addPage(Page *page, const QString &label, const QString &icon_
 
 	// NOTE: indexOfSignal doesn't work with the normal signature of a signal, that is "2<methodname>".
 	// Removing the prefix of the signals (the 2) it works fine with Qt 4.5
+
 	if (page->metaObject()->indexOfSignal(SIGNAL(changeIconState(StateButton::Status)) + 1) != -1)
+	{
 		connect(page, SIGNAL(changeIconState(StateButton::Status)), b, SLOT(setStatus(StateButton::Status)));
+		connect(page, SIGNAL(changeIconState(StateButton::Status)), SLOT(changeIconState(StateButton::Status)));
+	}
 }
 
 void SectionPage::loadItems(const QDomNode &config_node)
