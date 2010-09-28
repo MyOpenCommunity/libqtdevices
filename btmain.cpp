@@ -432,15 +432,21 @@ void BtMain::loadGlobalConfig()
 	setConfigValue(n, "modello", (*config)[MODEL]);
 	setConfigValue(n, "nome", (*config)[NAME]);
 
-	QDomNode vde_node = getConfElement("setup/vdes/communication");
-	if (!vde_node.isNull())
+	QDomNode vde_node = getConfElement("setup/vdes");
+	QString guard_addr;
+	setConfigValue(vde_node, "guardunits/item", guard_addr);
+	if (!guard_addr.isEmpty())
+		(*config)[GUARD_UNIT_ADDRESS] = "3" + guard_addr;
+
+	QDomNode vde_pi_node = getChildWithName(vde_node, "communication");
+	if (!vde_pi_node.isNull())
 	{
-		QString address = getTextChild(vde_node, "address");
-		QString dev = getTextChild(vde_node, "dev");
+		QString address = getTextChild(vde_pi_node, "address");
+		QString dev = getTextChild(vde_pi_node, "dev");
 		if (!address.isNull())
 			(*config)[PI_ADDRESS] = dev + address;
 
-		(*config)[PI_MODE] = getTextChild(vde_node, "mode");
+		(*config)[PI_MODE] = getTextChild(vde_pi_node, "mode");
 	}
 	else
 		(*config)[PI_MODE] = QString();
@@ -548,6 +554,8 @@ void BtMain::loadConfiguration()
 #endif
 	connect(window_container->homeWindow(), SIGNAL(showHomePage()), Home, SLOT(showPage()));
 	connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), Home, SLOT(showSectionPage(int)));
+	connect(Home, SIGNAL(iconStateChanged(int,StateButton::Status)), window_container->homeWindow(),
+		SLOT(iconStateChanged(int,StateButton::Status)));
 
 	QDomNode home_node = getChildWithName(gui_node, "homepage");
 	if (getTextChild(home_node, "isdefined").toInt())

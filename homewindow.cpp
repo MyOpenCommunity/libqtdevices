@@ -118,6 +118,11 @@ HomeWindow::HomeWindow()
 	connect(&bt_global::page_stack, SIGNAL(sectionChanged(int)), SLOT(currentSectionChanged(int)));
 }
 
+void HomeWindow::iconStateChanged(int page_id, StateButton::Status st)
+{
+	header_widget->iconStateChanged(page_id, st);
+}
+
 void HomeWindow::aboutToHideEvent()
 {
 	central_widget->currentPage()->aboutToHideEvent();

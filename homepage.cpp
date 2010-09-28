@@ -86,8 +86,22 @@ void HomePage::showSectionPage(int page_id)
 #ifdef CONFIG_BTOUCH
 	qFatal("Can't be implemented with old config, and not necessary on BTouch anyway");
 #else
-	// TODO: a section page can be built only once, so pass as argument the id instead of the page_id!
-	int id = getTextChild(getPageNodeFromPageId(page_id), "id").toInt();
-	bt_global::btmain->page_list[id]->showPage();
+	bt_global::btmain->page_list[page_id]->showPage();
 #endif
 }
+
+void HomePage::changeIconState(StateButton::Status st)
+{
+	QHashIterator<int, Page*> it(bt_global::btmain->page_list);
+	int page_id = -1;
+	while (it.hasNext())
+	{
+		it.next();
+		if (it.value() == sender())
+			page_id = it.key();
+	}
+
+	if (page_id != -1)
+		emit iconStateChanged(page_id, st);
+}
+

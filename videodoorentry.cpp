@@ -54,7 +54,8 @@ enum Pages
 	VIDEO_CONTROL_MENU = 10001,  /*!< Video control menu */
 	INTERCOM_MENU = 10002,       /*!< Intercom menu */
 	INTERNAL_INTERCOM = 10101,
-	EXTERNAL_INTERCOM = 10102
+	EXTERNAL_INTERCOM = 10102,
+	GUARD_UNIT = 19004,
 };
 
 #ifdef LAYOUT_TOUCHX
@@ -99,7 +100,7 @@ void VideoDoorEntry::loadDevices(const QDomNode &config_node)
 
 VideoDoorEntry::VideoDoorEntry()
 {
-	EntryphoneDevice *dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS],
+	dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS],
 		(*bt_global::config)[PI_MODE]));
 
 	// These pages are showed only after the receiving of a call frame, so we
@@ -112,6 +113,10 @@ VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
+
+	dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS],
+		(*bt_global::config)[PI_MODE]));
+
 	loadItems(config_node);
 }
 
@@ -122,6 +127,8 @@ int VideoDoorEntry::sectionId() const
 
 void VideoDoorEntry::loadItems(const QDomNode &config_node)
 {
+	VCTCallPage *call_page = 0;
+
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
@@ -132,11 +139,19 @@ void VideoDoorEntry::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case INTERCOM_MENU:
-			p = new Intercom(page_node);
+			p = new Intercom(page_node, dev);
 			break;
 		case VIDEO_CONTROL_MENU:
-			p = new VideoControl(page_node);
+			if (!call_page)
+				call_page = new VCTCallPage(dev);
+			p = new VideoControl(page_node, dev);
 			break;
+		case GUARD_UNIT:
+		{
+			BtButton *btn = addButton(getTextChild(item, "descr"), bt_global::skin->getImage("link_icon"));
+			connect(btn, SIGNAL(clicked()), SLOT(callGuardUnit()));
+			break;
+		}
 		default:
 			qFatal("Unhandled page id %d in VideoDoorEntry::loadItems", id);
 		};
@@ -151,22 +166,24 @@ void VideoDoorEntry::loadItems(const QDomNode &config_node)
 	}
 }
 
+void VideoDoorEntry::callGuardUnit()
+{
+	dev->cameraOn((*bt_global::config)[GUARD_UNIT_ADDRESS]);
+}
 
-VideoControl::VideoControl(const QDomNode &config_node)
+VideoControl::VideoControl(const QDomNode &config_node, EntryphoneDevice *d)
 {
 	// we must have only one entryphone device since we need to remember some state
-	dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS],
-		(*bt_global::config)[PI_MODE]));
+	dev = d;
 
 	mapper = new QSignalMapper(this);
 	connect(mapper, SIGNAL(mapped(QString)), SLOT(cameraOn(QString)));
 
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
-	call_page = new VCTCallPage(dev);
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		SkinContext ctx(getTextChild(item, "cid").toInt());
-		BtButton *btn = addButton(getTextChild(item, "descr"), bt_global::skin->getImage("link_icon"), 0, 0);
+		BtButton *btn = addButton(getTextChild(item, "descr"), bt_global::skin->getImage("link_icon"));
 		connect(btn, SIGNAL(clicked()), mapper, SLOT(map()));
 
 		QDomNode addresses = getElement(item, "addresses");
@@ -442,11 +459,8 @@ void IntercomCallPage::floorCallFinished()
 }
 
 
-Intercom::Intercom(const QDomNode &config_node)
+Intercom::Intercom(const QDomNode &config_node, EntryphoneDevice *dev)
 {
-	EntryphoneDevice *dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS],
-		(*bt_global::config)[PI_MODE]));
-
 	mapper_int_intercom = new QSignalMapper(this);
 	mapper_ext_intercom = new QSignalMapper(this);
 	connect(mapper_int_intercom, SIGNAL(mapped(QString)), dev, SLOT(internalIntercomCall(QString)));

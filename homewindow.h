@@ -23,6 +23,7 @@
 #define HOMEWINDOW_H
 
 #include "window.h"
+#include "state_button.h" // StateButton::Status
 
 #include <QWidget>
 #include <QHash>
@@ -82,6 +83,7 @@ signals:
 public slots:
 	void centralWidgetChanged(int index);
 	void currentSectionChanged(int section_id);
+	void iconStateChanged(int page_id, StateButton::Status st);
 
 private slots:
 	void aboutToChangePage();

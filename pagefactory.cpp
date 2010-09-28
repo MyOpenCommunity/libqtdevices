@@ -130,7 +130,7 @@ Page *getPage(int page_id)
 		qFatal("Page %d not handled!", id);
 	}
 
-	bt_global::btmain->page_list[id] = page;
+	bt_global::btmain->page_list[page_id] = page;
 	return page;
 }
 

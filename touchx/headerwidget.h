@@ -25,6 +25,7 @@
 #include "page.h" // StyledWidget
 #include "device.h" // DeviceValues
 #include "main.h" // TemperatureScale
+#include "state_button.h" // StateButton::Status
 
 #include <QLabel>
 
@@ -201,9 +202,10 @@ Q_OBJECT
 public:
 	HeaderNavigationWidget();
 
-	void addButton(int section_id, int page_id, const QString &icon);
-	BtButton *createButton(int section_id, const QString &icon);
+	void addButton(int section_id, int page_id, const QString &icon, const QString &icon_on = QString());
+	StateButton *createButton(int section_id, const QString &icon, const QString &icon_on = QString());
 	void setCurrentSection(int section_id);
+	void changeIconState(int page_id, StateButton::Status st);
 
 public slots:
 	void scrollLeft();
@@ -223,7 +225,7 @@ private:
 	int current_index, selected_section_id, visible_buttons;
 	bool need_update;
 	QList<int> section_ids;
-	QList<QWidget *> buttons, selected;
+	QList<QWidget*> buttons, selected;
 	QHBoxLayout *button_layout;
 	BtButton *left, *right;
 	QSignalMapper *mapper;
@@ -240,6 +242,7 @@ public:
 
 	void loadItems(const QDomNode &config_node, Page *settings);
 	void setCurrentSection(int section_id);
+	HeaderNavigationWidget *navigation;
 
 signals:
 	void showHomePage();
@@ -252,7 +255,6 @@ private slots:
 	void pageSelected(int page_id);
 
 private:
-	HeaderNavigationWidget *navigation;
 	Page *settings;
 };
 
@@ -267,6 +269,7 @@ public:
 	void sectionChanged(int section_id);
 
 	void loadConfiguration(const QDomNode &homepage_node, const QDomNode &infobar_node);
+	void iconStateChanged(int page_id, StateButton::Status st);
 
 signals:
 	void showHomePage();

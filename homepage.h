@@ -23,6 +23,7 @@
 #define HOME_PAGE_H
 
 #include "sectionpage.h"
+#include "state_button.h" // StateButton::Status
 
 #include <QString>
 
@@ -50,6 +51,12 @@ public:
 
 public slots:
 	void showSectionPage(int page_id);
+
+signals:
+	void iconStateChanged(int page_id, StateButton::Status st);
+
+protected slots:
+	void changeIconState(StateButton::Status st);
 
 private:
 	TemperatureViewer *temp_viewer;

@@ -62,16 +62,20 @@ void StateButton::setStatus(StateButton::Status st)
 	switch (status)
 	{
 	case DISABLED:
-		BtButton::setPixmap(disabled_pixmap);
+		if (!disabled_pixmap.isNull())
+			BtButton::setPixmap(disabled_pixmap);
 		disable();
 		break;
 	case ON:
-		BtButton::setPixmap(on_pixmap);
-		BtButton::setPressedPixmap(pressed_on_pixmap);
+		if (!on_pixmap.isNull())
+			BtButton::setPixmap(on_pixmap);
+		if (!pressed_on_pixmap.isNull())
+			BtButton::setPressedPixmap(pressed_on_pixmap);
 		enable();
 		break;
 	case OFF:
 	default:
+		// We assume that the initial image is always present
 		BtButton::setPixmap(off_pixmap);
 		BtButton::setPressedPixmap(pressed_off_pixmap);
 		enable();
