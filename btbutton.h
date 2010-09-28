@@ -54,14 +54,14 @@ public:
 
 	void enableBeep(bool enable);
 
+	// The sizeHint method is required to obtain a layout management that work fine.
+	virtual QSize sizeHint() const;
+
 protected:
 	virtual void mousePressEvent(QMouseEvent *event);
 	virtual void mouseReleaseEvent(QMouseEvent *event);
 	virtual void paintEvent(QPaintEvent *e);
 	virtual bool event(QEvent *e);
-
-	// The sizeHint method is required to obtain a layout management that work fine.
-	virtual QSize sizeHint() const;
 
 	// Helper function to load the pressed image for an icon; if not present,
 	// returns a null QPixmap
