@@ -179,8 +179,7 @@ void BannerContent::drawContent()
 		QLayoutItem *vertical_separator = l->itemAtPosition(0, 1);
 		l->removeItem(vertical_separator);
 		vertical_separator->layout()->itemAt(0)->widget()->setVisible(show_vertical_bar);
-		l->addItem(vertical_separator, 0, 1,
-			   (pages[current_page + 1] - pages[current_page] + 1) / 2, 1);
+		l->addItem(vertical_separator, 0, 1, (pages[current_page + 1] - pages[current_page] + 1) / 2, 1);
 
 		// We want the columns with the same size, so we assign a minimum size.
 		// Note that in this phase (during the building of the page), the Qt functions
