@@ -253,19 +253,17 @@ BtMain::BtMain(int openserver_reconnection_time)
 			QString host = getTextChild(item, "address");
 			int port = getTextChild(item, "port").toInt();
 			monitors[id] = new Client(Client::MONITOR, host, port);
-			clients[id].first = new Client(Client::COMMAND, host, port);
-			clients[id].second = new Client(Client::REQUEST, host, port);
+			clients[id].command = new Client(Client::COMMAND, host, port);
+			clients[id].request = new Client(Client::REQUEST, host, port);
 		}
 
 	// If it is not defined a main openserver, the main openserver is the local openserver
 	if (!clients.contains(MAIN_OPENSERVER))
 	{
 		monitors[MAIN_OPENSERVER] = new Client(Client::MONITOR);
-		clients[MAIN_OPENSERVER].first = new Client(Client::COMMAND);
-		clients[MAIN_OPENSERVER].second = new Client(Client::REQUEST);
+		clients[MAIN_OPENSERVER].command = new Client(Client::COMMAND);
+		clients[MAIN_OPENSERVER].request = new Client(Client::REQUEST);
 	}
-
-	client_supervisor = 0;
 
 #if DEBUG
 	bool debug = true;
@@ -279,12 +277,18 @@ BtMain::BtMain(int openserver_reconnection_time)
 		// receive frames from the client SUPERVISOR. To mantain the code clean (and
 		// because we have not to distinguish the input channel) we forward the frame
 		// received from the SUPERVISOR to the MONITOR.
-		client_supervisor = new Client(Client::SUPERVISOR);
+		Client *client_supervisor = new Client(Client::SUPERVISOR);
 		client_supervisor->forwardFrame(monitors[MAIN_OPENSERVER]);
+
+		// The supervisor socket is opened only in two cases: when the GUI in in debug
+		// mode in order to receive the frames sent using a client like PyCo
+		// or when we have the videocall ip enabled. In both situations, the openserver
+		// is the local one, so we manage only this case.
+		clients[MAIN_OPENSERVER].supervisor = client_supervisor;
 	}
 
-	banner::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
-	Page::setClients(clients[MAIN_OPENSERVER].first, clients[MAIN_OPENSERVER].second);
+	banner::setClients(clients[MAIN_OPENSERVER].command, clients[MAIN_OPENSERVER].request);
+	Page::setClients(clients[MAIN_OPENSERVER].command, clients[MAIN_OPENSERVER].request);
 	FrameReceiver::setClientsMonitor(monitors);
 	device::setClients(clients);
 
@@ -394,12 +398,13 @@ BtMain::~BtMain()
 	delete bt_global::skin;
 	delete bt_global::font;
 
-	QMutableHashIterator<int, QPair<Client*, Client*> > it(clients);
+	QMutableHashIterator<int,Clients> it(clients);
 	while (it.hasNext())
 	{
 		it.next();
-		delete it.value().first;
-		delete it.value().second;
+		delete it.value().command;
+		delete it.value().request;
+		delete it.value().supervisor;
 	}
 
 	QMutableHashIterator<int, Client*> mit(monitors);
@@ -408,7 +413,6 @@ BtMain::~BtMain()
 		mit.next();
 		delete mit.value();
 	}
-	delete client_supervisor;
 }
 
 void BtMain::loadGlobalConfig()

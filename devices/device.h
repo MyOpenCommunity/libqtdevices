@@ -32,6 +32,7 @@
 
 class device_status;
 class frame_interpreter;
+class Clients;
 class Client;
 class OpenMsg;
 
@@ -51,7 +52,7 @@ class OpenServerManager : public QObject
 {
 Q_OBJECT
 public:
-	OpenServerManager(int oid, Client *monitor, Client *command, Client *request);
+	OpenServerManager(int oid, Client *monitor, Client *supervisor, Client *command, Client *request);
 	bool isConnected();
 
 	// The interval (in seconds) to retry the connection with the openserver.
@@ -69,7 +70,7 @@ private slots:
 	void handleConnectionDown();
 
 private:
-	Client *monitor, *command, *request;
+	Client *monitor, *supervisor, *command, *request;
 	int openserver_id;
 	bool is_connected;
 	QBasicTimer connection_timer;
@@ -93,7 +94,7 @@ public:
 	virtual QString get_key();
 	virtual ~device() {}
 
-	static void setClients(const QHash<int, QPair<Client*, Client*> > &c);
+	static void setClients(const QHash<int, Clients> &c);
 
 	// The following method can be reimplemented in order to parse the incoming
 	// frames (from the client monitor). However, if the specific device can be
@@ -173,7 +174,7 @@ private slots:
 	void emitCompressedFrame(int what);
 
 private:
-	static QHash<int, QPair<Client*, Client*> > clients;
+	static QHash<int, Clients> clients;
 	static QHash<int, OpenServerManager*> openservers;
 
 	mutable QHash<int, QPair<QTimer*, QString> > compressed_frames;
