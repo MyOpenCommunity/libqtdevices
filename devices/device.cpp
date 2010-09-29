@@ -24,6 +24,7 @@
 #include "bttime.h"
 #include "frame_functions.h" // createDimensionFrame, createCommandFrame
 #include "devices_cache.h" // bt_global::devices_cache
+#include "btmain.h" // Clients
 
 #include <openmsg.h>
 
@@ -32,26 +33,31 @@
 #define COMPRESSION_TIMEOUT 1000
 
 // Inizialization of static member
-QHash<int, QPair<Client*, Client*> > device::clients;
+QHash<int, Clients> device::clients;
 QHash<int, OpenServerManager*> device::openservers;
 
 
 int OpenServerManager::reconnection_time = 30;
 
 
-OpenServerManager::OpenServerManager(int oid, Client *m, Client *c, Client *r)
+OpenServerManager::OpenServerManager(int oid, Client *m, Client *s, Client *c, Client *r)
 {
 	openserver_id = oid;
 	monitor = m;
+	supervisor = s;
 	command = c;
 	request = r;
-	is_connected = monitor->isConnected() && command->isConnected() && request->isConnected();
-	connect(monitor, SIGNAL(connectionUp()), SLOT(handleConnectionUp()));
-	connect(command, SIGNAL(connectionUp()), SLOT(handleConnectionUp()));
-	connect(request, SIGNAL(connectionUp()), SLOT(handleConnectionUp()));
-	connect(monitor, SIGNAL(connectionDown()), SLOT(handleConnectionDown()));
-	connect(command, SIGNAL(connectionDown()), SLOT(handleConnectionDown()));
-	connect(request, SIGNAL(connectionDown()), SLOT(handleConnectionDown()));
+	is_connected = monitor->isConnected() && command->isConnected() && request->isConnected() &&
+		(!supervisor || supervisor->isConnected());
+
+	foreach(Client *client, QList<Client*>() << monitor << command << request << supervisor)
+	{
+		if (client)
+		{
+			connect(client, SIGNAL(connectionUp()), SLOT(handleConnectionUp()));
+			connect(client, SIGNAL(connectionDown()), SLOT(handleConnectionDown()));
+		}
+	}
 	if (!is_connected)
 		connection_timer.start(reconnection_time * 1000, this);
 }
@@ -67,6 +73,8 @@ void OpenServerManager::handleConnectionDown()
 			command->disconnectFromHost();
 		if (request->isConnected())
 			request->disconnectFromHost();
+		if (supervisor && supervisor->isConnected())
+			supervisor->disconnectFromHost();
 
 		is_connected = false;
 		emit connectionDown();
@@ -79,6 +87,8 @@ void OpenServerManager::timerEvent(QTimerEvent*)
 	monitor->connectToHost();
 	command->connectToHost();
 	request->connectToHost();
+	if (supervisor)
+		supervisor->connectToHost();
 	connection_timer.start(reconnection_time * 1000, this);
 }
 
@@ -89,7 +99,8 @@ void OpenServerManager::handleConnectionUp()
 
 	if (!is_connected)
 	{
-		is_connected = monitor->isConnected() && command->isConnected() && request->isConnected();
+		is_connected = monitor->isConnected() && command->isConnected() && request->isConnected() &&
+			(!supervisor || supervisor->isConnected());
 		if (is_connected)
 		{
 			qDebug("OpenServerManager::connectionUp for openserver [%d]", openserver_id);
@@ -125,7 +136,7 @@ OpenServerManager *device::getManager(int openserver_id)
 	if (!openservers.contains(openserver_id))
 	{
 		openservers[openserver_id] = new OpenServerManager(openserver_id, clients_monitor[openserver_id],
-			clients[openserver_id].first, clients[openserver_id].second);
+			clients[openserver_id].supervisor, clients[openserver_id].command, clients[openserver_id].request);
 	}
 
 	return openservers[openserver_id];
@@ -167,23 +178,23 @@ void device::delayFrames(bool delay)
 
 void device::sendFrame(QString frame) const
 {
-	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].first, "device::sendFrame",
+	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].command, "device::sendFrame",
 			   qPrintable(QString("Client COMMAND not set for id: %1!").arg(openserver_id)));
-	clients[openserver_id].first->sendFrameOpen(frame, Client::DELAY_IF_REQUESTED);
+	clients[openserver_id].command->sendFrameOpen(frame, Client::DELAY_IF_REQUESTED);
 }
 
 void device::sendFrameNow(QString frame) const
 {
-	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].first, "device::sendFrame",
+	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].command, "device::sendFrame",
 			   qPrintable(QString("Client COMMAND not set for id: %1!").arg(openserver_id)));
-	clients[openserver_id].first->sendFrameOpen(frame, Client::DELAY_NONE);
+	clients[openserver_id].command->sendFrameOpen(frame, Client::DELAY_NONE);
 }
 
 void device::sendCommandFrame(int openserver_id, const QString &frame)
 {
-	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].first, "device::sendFrame",
+	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].command, "device::sendFrame",
 			   qPrintable(QString("Client COMMAND not set for id: %1!").arg(openserver_id)));
-	clients[openserver_id].first->sendFrameOpen(frame, Client::DELAY_NONE);
+	clients[openserver_id].command->sendFrameOpen(frame, Client::DELAY_NONE);
 }
 
 void device::sendCompressedFrame(QString frame) const
@@ -222,16 +233,16 @@ void device::emitCompressedFrame(int what)
 
 void device::sendInit(QString frame) const
 {
-	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].second, "device::sendInit",
+	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].request, "device::sendInit",
 		qPrintable(QString("Client REQUEST not set for id: %1!").arg(openserver_id)));
-	clients[openserver_id].second->sendFrameOpen(frame, Client::DELAY_IF_REQUESTED);
+	clients[openserver_id].request->sendFrameOpen(frame, Client::DELAY_IF_REQUESTED);
 }
 
 void device::sendInitNow(QString frame) const
 {
-	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].second, "device::sendInit",
+	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].request, "device::sendInit",
 		qPrintable(QString("Client REQUEST not set for id: %1!").arg(openserver_id)));
-	clients[openserver_id].second->sendFrameOpen(frame, Client::DELAY_NONE);
+	clients[openserver_id].request->sendFrameOpen(frame, Client::DELAY_NONE);
 }
 
 void device::sendCommand(QString what, QString _where) const
@@ -262,7 +273,7 @@ void device::sendRequest(int what) const
 	sendRequest(QString::number(what));
 }
 
-void device::setClients(const QHash<int, QPair<Client*, Client*> > &c)
+void device::setClients(const QHash<int, Clients> &c)
 {
 	clients = c;
 }

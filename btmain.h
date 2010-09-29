@@ -70,6 +70,15 @@ private:
 };
 
 
+struct Clients
+{
+	Client *command;
+	Client *request;
+	Client *supervisor;
+	Clients() { command = request = supervisor = 0; }
+};
+
+
 /**
  * This is the main class of the touchscreen interface. It loads the configuration,
  * establishes the connection with the openserver(s) and manage the global objects.
@@ -127,14 +136,8 @@ private slots:
 	void handleSignal(int signal_number);
 
 private:
-	QHash<int, QPair<Client*, Client*> > clients;
+	QHash<int, Clients> clients;
 	QHash<int, Client*> monitors;
-
-	// The supervisor socket is opened only in two cases: when the GUI in in debug
-	// mode in order to receive the frames sent using a client like the jClientOpen
-	// or when we have the videocall ip enabled. In both situations, the openserver
-	// is the local one, so we manage only this case.
-	Client *client_supervisor;
 
 	QHash<int, Page*> page_list;
 	QTime *boot_time;
