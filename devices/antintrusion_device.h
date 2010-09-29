@@ -53,11 +53,13 @@ public:
 		DIM_ZONE_PARTIALIZED = 18,
 		DIM_ZONE_INSERTED = 11,
 		DIM_INTRUSION_ALARM = 15,
-		DIM_MANOMISSION_ALARM = 16,
+		DIM_TAMPER_ALARM = 16,
 		DIM_ANTIPANIC_ALARM = 17,
 		DIM_TECHNICAL_ALARM = 12,
 		DIM_RESET_TECHNICAL_ALARM = 13,
 	};
+
+	virtual void init() { requestStatus(); }
 
 public slots:
 	// Partialize or activate a zone (the zones are numbered from 1 to 8)

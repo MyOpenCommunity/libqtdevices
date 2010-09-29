@@ -25,12 +25,15 @@
 #include "bannerpage.h"
 #include "skinmanager.h" // SkinManager::CidState
 #include "antintrusion_device.h" // NUM_ZONES, AntintrusionDevice
+#include "itemlist.h"
 
 class BtButton;
 class BannAntintrusion;
 class KeypadWithState;
 class AntintrusionZone;
 class QDomNode;
+class AlarmPage;
+
 
 
 /*!
@@ -39,13 +42,90 @@ class QDomNode;
 	Allows the user to control the anti-intrusion system, enabling or disabling
 	the alarm, partializing or inserting the zones and displaying the alarm history.
 */
+
+
+/**
+ * The content of the AlarmListPage
+ */
+class AlarmList : public ItemList
+{
+Q_OBJECT
+public:
+	AlarmList(QWidget *parent, int rows_per_page) : ItemList(parent, rows_per_page) {}
+
+	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
+};
+
+
+/**
+ * The page that show the list of the alarms
+ */
+class AlarmListPage : public Page
+{
+Q_OBJECT
+public:
+	typedef AlarmList ContentType;
+	AlarmListPage();
+	virtual void showPage();
+
+	void newAlarm(const QString &zone_description, int alarm_id, int alarm_type, int zone);
+	void removeAlarm(int alarm_id);
+	void removeAll();
+	int alarmCount();
+	int alarmId(int alarm_type, int zone);
+
+private slots:
+	void removeAlarmItem(int index);
+
+private:
+	bool need_update;
+};
+
+
+/**
+ * This class manages the alarms
+ */
+class AlarmManager : public QObject
+{
+Q_OBJECT
+public:
+	AlarmManager(SkinManager::CidState cid, QObject *parent = 0);
+	void newAlarm(int alarm_type, int zone, const QString &zone_description);
+	void removeAlarm(int alarm_type, int zone);
+	int alarmCount();
+
+public slots:
+	void showAlarmList();
+
+signals:
+	void alarmListClosed();
+
+private slots:
+	void nextAlarm();
+	void prevAlarm();
+	void deleteAlarm();
+	void showHomePage();
+	void alarmDestroyed(QObject *);
+
+private:
+	int current_alarm;
+	static int alarm_serial_id;
+	SkinManager::CidState skin_cid;
+	QList<AlarmPage*> alarm_pages;
+	AlarmListPage *alarm_list;
+};
+
+
+/**
+ * The main page of the antintrusion section
+ */
 class Antintrusion : public BannerPage
 {
 Q_OBJECT
 public:
 	Antintrusion(const QDomNode &config_node);
-
 	virtual int sectionId() const;
+	virtual void showPage();
 
 private slots:
 	void partialize();
@@ -61,13 +141,13 @@ private:
 		PARTIALIZE
 	};
 
-	SkinManager::CidState skin_cid;
 	BtButton *partial_button;
 	AntintrusionDevice *dev;
 	BannAntintrusion *antintrusion_system;
 	KeypadWithState *keypad;
 	Action action;
 	AntintrusionZone *zones[NUM_ZONES];
+	AlarmManager *alarm_manager;
 
 	void loadZones(const QDomNode &config_node);
 	void updateKeypadStates();

@@ -30,6 +30,9 @@ class AntintrusionDevice;
 class QLabel;
 
 
+/**
+ * A banner for a zone of the antintrusion system
+ */
 class AntintrusionZone : public Bann2Buttons
 {
 Q_OBJECT
@@ -39,6 +42,7 @@ public:
 	void setPartialization(bool partialized);
 	void enablePartialization(bool enabled);
 	bool isPartialized() const;
+	QString zoneDescription() const;
 
 signals:
 	void requestPartialization(int zone_number, bool partialize);
@@ -48,13 +52,16 @@ private slots:
 
 private:
 	QString left_on, left_off, disabled_left_on, disabled_left_off;
+	QString zone_description;
 	int zone_number;
 	bool partialized;
 	bool partialization_enabled;
 };
 
 
-
+/**
+ * The banner used to controls the system of antintrusion
+ */
 class BannAntintrusion : public Bann2Buttons
 {
 Q_OBJECT

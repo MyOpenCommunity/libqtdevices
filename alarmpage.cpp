@@ -36,30 +36,27 @@
 #include <QPainter>
 #include <QDateTime>
 
-// keep the same order as the altype enum in alarmpage.h
-static const char *alarm_icons[] = { "technic_alarm_page", "intrusion_alarm_page", "tamper_alarm_page", "panic_alarm_page" };
 
 #ifdef LAYOUT_TS_3_5
 
-AlarmPage::AlarmPage(altype t, const QString &d, const QString &zone, const QDateTime &time, int id)
+AlarmPage::AlarmPage(const QString &icon, const QString &d, const QString &zone, int id)
 {
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("alarm_del"));
 	QWidget *content = new QWidget;
 	buildPage(content, nav_bar);
 
 	QString descr = d;
+	QDateTime time = QDateTime::currentDateTime();
 	QString hhmm = time.toString("hh:mm");
 	QString ddMM = time.toString("dd.MM");
 
 	descr += QString("\n%1   %2    %3").arg(hhmm).arg(ddMM).arg(zone);
 
-	QString icon_name = bt_global::skin->getImage(alarm_icons[t]);
-
 	QVBoxLayout *l = new QVBoxLayout(content);
 	l->setContentsMargins(0, 20, 0, 30);
 	l->setSpacing(10);
 	image = new QLabel;
-	image->setPixmap(*bt_global::icons_cache.getIcon(icon_name));
+	image->setPixmap(*bt_global::icons_cache.getIcon(icon));
 	image->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	l->addWidget(image);
 
@@ -122,17 +119,18 @@ QWidget *AlarmPageData::createPart(const QString &background, const QString &cap
 }
 
 
-AlarmPage::AlarmPage(altype t, const QString &description, const QString &zone, const QDateTime &time, int id)
+AlarmPage::AlarmPage(const QString &icon, const QString &description, const QString &zone, int id)
 {
 	QLabel *title = new QLabel(description);
 	title->setAlignment(Qt::AlignHCenter);
 	title->setFont(bt_global::font->get(FontManager::TITLE));
 
 	QLabel *i = new QLabel;
-	i->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage(alarm_icons[t])));
+	i->setPixmap(*bt_global::icons_cache.getIcon(icon));
 
+	QDateTime time = QDateTime::currentDateTime();
 	QWidget *d = new AlarmPageData(QStringList() << tr("Hour") << tr("Date") << tr("Zone"),
-				       QStringList() << time.toString("hh:mm") << time.toString("dd/MM") << zone);
+			QStringList() << time.toString("hh:mm") << time.toString("dd/MM") << zone);
 
 	BtButton *home = new BtButton(bt_global::skin->getImage("go_home"));
 	BtButton *list = new BtButton(bt_global::skin->getImage("info"));
@@ -156,6 +154,11 @@ AlarmPage::AlarmPage(altype t, const QString &description, const QString &zone, 
 }
 
 #endif
+
+int AlarmPage::alarmId() const
+{
+	return alarm_id;
+}
 
 void AlarmPage::showPage()
 {

@@ -27,22 +27,345 @@
 #include "antintrusion_device.h"
 #include "keypad.h" // KeypadWithState
 #include "devices_cache.h"
+#include "alarmpage.h"
+#include "btmain.h" // makeActive
+#include "pagestack.h"
+#include "icondispatcher.h" // bt_global::icons_cache
+#include "navigation_bar.h"
 
 #include <QHBoxLayout>
 #include <QDebug>
 #include <QVariant>
+#include <QDateTime>
+#include <QLabel>
+#include <QButtonGroup>
+
+
+int AlarmManager::alarm_serial_id = 0;
+
+
+enum {
+	ITEM_ICON = 0,
+	BUTTON_ICON = 1
+};
+
+
+namespace
+{
+
+	QString getAlarmDescription(int alarm_type)
+	{
+		switch (alarm_type)
+		{
+		case AntintrusionDevice::DIM_ANTIPANIC_ALARM:
+			return QT_TRANSLATE_NOOP("Antintrusion", "anti-panic");
+		case AntintrusionDevice::DIM_TAMPER_ALARM:
+			return QT_TRANSLATE_NOOP("Antintrusion", "tamper");
+		case AntintrusionDevice::DIM_INTRUSION_ALARM:
+			return QT_TRANSLATE_NOOP("Antintrusion", "intrusion");
+		case AntintrusionDevice::DIM_TECHNICAL_ALARM:
+			return QT_TRANSLATE_NOOP("Antintrusion", "technical");
+		default:
+			return QString();
+		}
+	}
+
+	QString getAlarmTagname(int alarm_type)
+	{
+		switch (alarm_type)
+		{
+		case AntintrusionDevice::DIM_ANTIPANIC_ALARM:
+			return "panic_alarm";
+		case AntintrusionDevice::DIM_TAMPER_ALARM:
+			return "tamper_alarm";
+		case AntintrusionDevice::DIM_INTRUSION_ALARM:
+			return "intrusion_alarm";
+		case AntintrusionDevice::DIM_TECHNICAL_ALARM:
+			return "technic_alarm";
+		default:
+			return QString();
+		}
+	}
+}
+
+void AlarmList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
+{
+	QWidget *box_widget = new QWidget;
+	QHBoxLayout *box = new QHBoxLayout(box_widget);
+
+	const QDateTime &date = item.data.toList().at(0).toDateTime();
+
+	QLabel *label_icon = new QLabel;
+	label_icon->setPixmap(*bt_global::icons_cache.getIcon(item.icons[ITEM_ICON]));
+
+	QLabel *label_desc = new QLabel(item.description);
+	label_desc->setAlignment(Qt::AlignTop|Qt::AlignLeft);
+
+	QLabel *label_zone = new QLabel(item.name);
+	label_zone->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
+
+	QLabel *label_date = new QLabel(date.toString("dd/MM/yyyy\nhh:mm:ss"));
+	label_date->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
+
+	// delete button
+	BtButton *trash = new BtButton(item.icons[BUTTON_ICON]);
+	buttons_group->addButton(trash, id_btn);
+
+	box->addWidget(label_icon);
+	box->addWidget(label_desc, 1);
+	box->addWidget(label_zone, 1);
+	box->addWidget(label_date, 1);
+	box->addWidget(trash);
+
+	layout->addWidget(box_widget);
+}
+
+
+AlarmListPage::AlarmListPage()
+{
+	QWidget *header = new QWidget;
+	QHBoxLayout *layout = new QHBoxLayout(header);
+
+	QLabel *label_type = new QLabel(tr("Alarm type"));
+	label_type->setAlignment(Qt::AlignHCenter);
+	layout->addWidget(label_type, 1);
+
+	QLabel *label_zone = new QLabel(tr("Zone"));
+	label_zone->setAlignment(Qt::AlignHCenter);
+	layout->addWidget(label_zone, 1);
+
+	QLabel *label_date = new QLabel(tr("Date & Hour"));
+	label_date->setAlignment(Qt::AlignLeft);
+	layout->addWidget(label_date, 1);
+
+	PageTitleWidget *title = new PageTitleWidget(tr("Alarms"), SMALL_TITLE_HEIGHT);
+	NavigationBar *nav_bar = new NavigationBar;
+	AlarmList *item_list = new AlarmList(0, 4);
+
+	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
+	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(nextItem()));
+
+	connect(item_list, SIGNAL(contentScrolled(int, int)), title, SLOT(setCurrentPage(int, int)));
+	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+
+	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(removeAlarmItem(int)));
+
+	buildPage(item_list, nav_bar, header, title);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	need_update = false;
+}
+
+void AlarmListPage::removeAlarmItem(int index)
+{
+	page_content->removeItem(index);
+	page_content->showList();
+}
+
+void AlarmListPage::removeAll()
+{
+	for (int i = 0; i < page_content->itemCount(); ++i)
+		page_content->removeItem(i);
+
+	page_content->showList();
+}
+
+void AlarmListPage::showPage()
+{
+	if (need_update)
+		page_content->showList();
+	need_update = false;
+	Page::showPage();
+}
+
+int AlarmListPage::alarmId(int alarm_type, int zone)
+{
+	for (int i = 0; i < page_content->itemCount(); ++i)
+	{
+		const QList<QVariant> &data = page_content->item(i).data.toList();
+		if (data.at(2).toInt() == alarm_type && data.at(3).toInt() == zone)
+			return data.at(1).toInt();
+	}
+	return -1;
+}
+
+void AlarmListPage::newAlarm(const QString &zone_description, int alarm_id, int alarm_type, int zone)
+{
+	QString icon = bt_global::skin->getImage(getAlarmTagname(alarm_type));
+	QString description = getAlarmDescription(alarm_type);
+	QList<QVariant> data;
+	data.append(QDateTime::currentDateTime());
+	data.append(alarm_id);
+	data.append(alarm_type);
+	data.append(zone);
+	ItemList::ItemInfo info(zone_description, description, QStringList() << icon << bt_global::skin->getImage("alarm_del"), data);
+	page_content->insertItem(page_content->itemCount(), info);
+	need_update = true;
+}
+
+int AlarmListPage::alarmCount()
+{
+	return page_content->itemCount();
+}
+
+void AlarmListPage::removeAlarm(int alarm_id)
+{
+	for (int i = 0; i < page_content->itemCount(); ++i)
+	{
+		const ItemList::ItemInfo &item = page_content->item(i);
+		if (item.data.toList().at(1).toInt() == alarm_id)
+		{
+			page_content->removeItem(i);
+			return;
+		}
+	}
+}
+
+
+AlarmManager::AlarmManager(SkinManager::CidState cid, QObject *parent) : QObject(parent)
+{
+	skin_cid = cid;
+	current_alarm = -1;
+	alarm_list = new AlarmListPage;
+	connect(alarm_list, SIGNAL(Closed()), SIGNAL(alarmListClosed()));
+}
+
+int AlarmManager::alarmCount()
+{
+	return alarm_list->alarmCount();
+}
+
+void AlarmManager::newAlarm(int alarm_type, int zone, const QString &zone_description)
+{
+	if (alarm_list->alarmId(alarm_type, zone) != -1)
+	{
+		qDebug() << "Skip duplicated alarm for zone:" << zone << "type:" << alarm_type;
+		return;
+	}
+	qDebug() << "New alarm for zone:" << zone << "type:" << alarm_type;
+
+	bt_global::skin->setCidState(skin_cid);
+	QString page_icon = bt_global::skin->getImage(getAlarmTagname(alarm_type) + "_page");
+
+	int alarm_id = ++alarm_serial_id;
+	AlarmPage *alarm = new AlarmPage(page_icon, getAlarmDescription(alarm_type), zone_description, alarm_id);
+
+	connect(alarm, SIGNAL(Next()), SLOT(nextAlarm()));
+	connect(alarm, SIGNAL(Prev()), SLOT(prevAlarm()));
+	connect(alarm, SIGNAL(Delete()), SLOT(deleteAlarm()));
+	connect(alarm, SIGNAL(showHomePage()), SLOT(showHomePage()));
+	connect(alarm, SIGNAL(destroyed(QObject*)), SLOT(alarmDestroyed(QObject*)));
+	connect(alarm, SIGNAL(showAlarmList()), SLOT(showAlarmList()));
+
+	alarm_pages.append(alarm);
+
+	alarm_list->newAlarm(zone_description, alarm_id, alarm_type, zone);
+
+	// The current alarm is the last alarm inserted
+	current_alarm = alarm_pages.size() - 1;
+
+	bt_global::btmain->makeActive();
+	alarm->showPage();
+}
+
+void AlarmManager::removeAlarm(int alarm_type, int zone)
+{
+	int alarm_id = alarm_list->alarmId(alarm_type, zone);
+	foreach (AlarmPage *page, alarm_pages)
+	{
+		if (page->alarmId() == alarm_id)
+		{
+			page->deleteLater();
+			break;
+		}
+	}
+	alarm_list->removeAlarm(alarm_id);
+}
+
+void AlarmManager::nextAlarm()
+{
+	Q_ASSERT_X(current_alarm >= 0 && current_alarm < alarm_pages.size(), "AlarmManager::nextAlarm",
+		qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(current_alarm).arg(alarm_pages.size())));
+
+	if (++current_alarm >= alarm_pages.size())
+		current_alarm = 0;
+
+	alarm_pages.at(current_alarm)->showPage();
+}
+
+void AlarmManager::prevAlarm()
+{
+	Q_ASSERT_X(current_alarm >= 0 && current_alarm < alarm_pages.size(), "AlarmManager::prevAlarm",
+		qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(current_alarm).arg(alarm_pages.size())));
+
+	if (--current_alarm < 0)
+		current_alarm = alarm_pages.size() - 1;
+
+	alarm_pages.at(current_alarm)->showPage();
+}
+
+void AlarmManager::deleteAlarm()
+{
+	Q_ASSERT_X(current_alarm >= 0 && current_alarm < alarm_pages.size(), "AlarmManager::deleteAlarm",
+		qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(current_alarm).arg(alarm_pages.size())));
+
+	// the page is removed from the alarm_pages in the alarmDestroyed slot
+	AlarmPage *to_die = alarm_pages.at(current_alarm);
+
+	// In this case the user has seen the alarm and delete it directly from the AlarmPage,
+	// so we want to delete also the entry from the AlarmList. We do that using a global
+	// static alarm id.
+	alarm_list->removeAlarm(to_die->alarmId());
+	to_die->deleteLater();
+}
+
+void AlarmManager::showHomePage()
+{
+	bt_global::page_stack.clear();
+	bt_global::btmain->showHomePage();
+}
+
+#ifdef LAYOUT_BTOUCH
+
+void AlarmManager::showAlarmList()
+{
+	if (alarm_pages.isEmpty())
+		return;
+
+	current_alarm = alarm_pages.size() - 1;
+	alarm_pages.at(current_alarm)->showPage();
+}
+
+#else
+
+void AlarmManager::showAlarmList()
+{
+	bt_global::page_stack.clear();
+	alarm_list->showPage();
+}
+
+#endif
+
+void AlarmManager::alarmDestroyed(QObject *page)
+{
+	alarm_pages.removeOne(static_cast<AlarmPage*>(page));
+	--current_alarm;
+}
 
 
 Antintrusion::Antintrusion(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
-	skin_cid = bt_global::skin->getCidState();
 
 	dev = bt_global::add_device_to_cache(new AntintrusionDevice);
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 
+	alarm_manager = new AlarmManager(bt_global::skin->getCidState(), this);
+	connect(alarm_manager, SIGNAL(alarmListClosed()), SLOT(showPage()));
+
 	antintrusion_system = new BannAntintrusion;
+	antintrusion_system->showAlarmsButton(false);
 	connect(antintrusion_system, SIGNAL(toggleActivation()), SLOT(toggleActivation()));
+	connect(antintrusion_system, SIGNAL(showAlarms()), alarm_manager, SLOT(showAlarmList()));
 
 	action = NONE;
 	QWidget *top_widget;
@@ -75,6 +398,13 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	connect(keypad, SIGNAL(Closed()), SLOT(showPage()));
 	connect(keypad, SIGNAL(accept()), SLOT(doAction()));
 	connect(keypad, SIGNAL(accept()), SLOT(showPage()));
+
+}
+
+void Antintrusion::showPage()
+{
+	antintrusion_system->showAlarmsButton(alarm_manager->alarmCount() > 0);
+	BannerPage::showPage();
 }
 
 void Antintrusion::updateKeypadStates()
@@ -159,10 +489,39 @@ void Antintrusion::valueReceived(const DeviceValues &values_list)
 			for (int i = 0; i < NUM_ZONES; ++i)
 				if (zones[i])
 					zones[i]->enablePartialization(!inserted);
+			break;
 		}
-		break;
+		case AntintrusionDevice::DIM_ZONE_INSERTED:
+		case AntintrusionDevice::DIM_ZONE_PARTIALIZED:
+		{
+			int zone = it.value().toInt();
+			if (zone > 0 && zone <= NUM_ZONES)
+				zones[zone - 1]->setPartialization(it.key() == AntintrusionDevice::DIM_ZONE_PARTIALIZED);
+			break;
+		}
+		case AntintrusionDevice::DIM_ANTIPANIC_ALARM:
+		case AntintrusionDevice::DIM_INTRUSION_ALARM:
+		case AntintrusionDevice::DIM_TAMPER_ALARM:
+		case AntintrusionDevice::DIM_TECHNICAL_ALARM:
+		{
+			int zone = it.value().toInt();
+			QString zone_description;
+			if (it.key() == AntintrusionDevice::DIM_TECHNICAL_ALARM)
+				zone_description = QString("AUX:%1").arg(zone);
+			else if (zone > 0 && zone <= NUM_ZONES && zones[zone - 1])
+				zone_description = zones[zone - 1]->zoneDescription();
+			else
+				zone_description = QString(tr("Z%1")).arg(zone);
+
+			alarm_manager->newAlarm(it.key(), zone, zone_description);
+			break;
+		}
+		case AntintrusionDevice::DIM_RESET_TECHNICAL_ALARM:
+			alarm_manager->removeAlarm(AntintrusionDevice::DIM_TECHNICAL_ALARM, it.value().toInt());
+			break;
 		}
 		++it;
 	}
 }
+
 

@@ -109,9 +109,9 @@ void TestAntintrusionDevice::receiveIntrusionAlarm()
 	t.checkSignals("*5*15*#0##", 0);
 }
 
-void TestAntintrusionDevice::receiveManomissionAlarm()
+void TestAntintrusionDevice::receiveTamperAlarm()
 {
-	DeviceTester t(dev, AntintrusionDevice::DIM_MANOMISSION_ALARM);
+	DeviceTester t(dev, AntintrusionDevice::DIM_TAMPER_ALARM);
 	t.check("*5*16*#7##", 7);
 	t.check("*5*16*#12##", 12);
 	// invalid zones

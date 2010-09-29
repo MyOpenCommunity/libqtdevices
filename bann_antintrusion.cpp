@@ -23,7 +23,7 @@
 #include "icondispatcher.h" // getIcon
 #include "skinmanager.h"
 #include "btbutton.h"
-
+#include "labels.h"
 
 #include <QLayout>
 
@@ -34,6 +34,7 @@ AntintrusionZone::AntintrusionZone(int zone, QString descr)
 	zone_number = zone;
 	partialized = false;
 	partialization_enabled = true;
+	zone_description = descr;
 	left_off = bt_global::skin->getImage(QString("zone%1_part_off").arg(zone));
 	left_on = bt_global::skin->getImage(QString("zone%1_part_on").arg(zone));
 	disabled_left_off = bt_global::skin->getImage(QString("zone%1_disabled_part_off").arg(zone));
@@ -41,6 +42,11 @@ AntintrusionZone::AntintrusionZone(int zone, QString descr)
 
 	initBanner(left_off, QString(), descr);
 	connect(left_button, SIGNAL(clicked()), SLOT(leftClicked()));
+}
+
+QString AntintrusionZone::zoneDescription() const
+{
+	return zone_description;
 }
 
 void AntintrusionZone::leftClicked()

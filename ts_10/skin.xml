@@ -45,6 +45,7 @@ MessagePage QLabel#Date {  background-color: gray; }
 MessagePage QLabel#Text { background-color: #000000; }
 AlertMessagePage QLabel#Date {  background-color: gray; }
 AlertMessagePage QLabel#Text { background-color: #000000; }
+AlarmList > QWidget {  background-image: url(); }
 	</css>
 	<common>
 		<img_back>navigazione/back.png</img_back>

@@ -41,7 +41,7 @@ private slots:
 	void receiveZonePartialized();
 	void receiveZoneInserted();
 	void receiveIntrusionAlarm();
-	void receiveManomissionAlarm();
+	void receiveTamperAlarm();
 	void receiveAntipanicAlarm();
 	void receiveTechnicalAlarm();
 	void receiveResetTechnicalAlarm();

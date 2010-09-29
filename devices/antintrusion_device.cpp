@@ -40,9 +40,10 @@ enum RequestDimension
 
 namespace
 {
-	inline int zoneNumber(std::string where)
+	int zoneNumber(std::string where)
 	{
-		return QString::fromStdString(where).mid(1).toInt();
+		QString w = QString::fromStdString(where);
+		return QString("#") == w.at(0) ? w.mid(1).toInt(): -1;
 	}
 }
 
@@ -99,7 +100,7 @@ bool AntintrusionDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		int zone = zoneNumber(msg.whereFull());
 		if ((what == DIM_ANTIPANIC_ALARM && zone == 9) || // the antipanic can arrive only on the 9th zone
 			(what == DIM_INTRUSION_ALARM && zone >= 1 && zone <= NUM_ZONES) || // normal zones
-			(what == DIM_MANOMISSION_ALARM && zone >= 0 && zone < 16) || // zones and special zones
+			(what == DIM_TAMPER_ALARM && zone >= 0 && zone < 16) || // zones and special zones
 			((what == DIM_TECHNICAL_ALARM || what == DIM_RESET_TECHNICAL_ALARM) && zone >= 1 && zone < 16)) // auxiliaries
 			values_list[what] = zone;
 	}
