@@ -41,9 +41,8 @@ class EnergyData : public BannerPage
 Q_OBJECT
 public:
 	EnergyData(const QDomNode &config_node);
-
-	virtual void showPage();
 	virtual int sectionId() const;
+	virtual void showPage();
 
 private slots:
 	void systemTimeChanged();
@@ -79,7 +78,6 @@ class EditEnergyCost : public BannerPage
 Q_OBJECT
 public:
 	EditEnergyCost();
-
 	void addRate(int rate_id);
 
 signals:
@@ -109,6 +107,8 @@ public:
 	static void toggleCurrencyView();
 	static bool isCurrencyView();
 	void systemTimeChanged();
+
+	virtual int sectionId() const;
 
 public slots:
 	void toggleCurrency();

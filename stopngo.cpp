@@ -28,6 +28,8 @@
 #include "xml_functions.h" // getTextChild
 #include "state_button.h"
 #include "navigation_bar.h"
+#include "energy_management.h" // EnergyManagement::isBuilt
+#include "main.h" // ENERGY_MANAGEMENT, SUPERVISION
 
 #include <QVBoxLayout>
 #include <QLabel>
@@ -124,6 +126,11 @@ StopAndGoMenu::StopAndGoMenu(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
+int StopAndGoMenu::sectionId() const
+{
+	return EnergyManagement::isBuilt() ? ENERGY_MANAGEMENT : SUPERVISION;
+}
+
 void StopAndGoMenu::showPage()
 {
 	if (next_page)
@@ -213,6 +220,11 @@ StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device) :
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
+int StopAndGoPage::sectionId() const
+{
+	return EnergyManagement::isBuilt() ? ENERGY_MANAGEMENT : SUPERVISION;
+}
+
 void StopAndGoPage::valueReceived(const DeviceValues &values_list)
 {
 	if (!values_list.contains(StopAndGoDevice::DIM_AUTORESET_DISACTIVE))
@@ -263,6 +275,11 @@ StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *
 	buildPage(content, nav_bar, title, TITLE_HEIGHT);
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+}
+
+int StopAndGoPlusPage::sectionId() const
+{
+	return EnergyManagement::isBuilt() ? ENERGY_MANAGEMENT : SUPERVISION;
 }
 
 void StopAndGoPlusPage::valueReceived(const DeviceValues &values_list)
@@ -341,6 +358,11 @@ StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevic
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 };
+
+int StopAndGoBTestPage::sectionId() const
+{
+	return EnergyManagement::isBuilt() ? ENERGY_MANAGEMENT : SUPERVISION;
+}
 
 void StopAndGoBTestPage::valueReceived(const DeviceValues &values_list)
 {

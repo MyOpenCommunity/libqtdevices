@@ -136,6 +136,7 @@ public:
 	EnergyView(QString measure, QString energy_type, QString address, int mode, int rate_id,
 		   int currency_decimals, EnergyTable *_table, EnergyGraph *_graph);
 	~EnergyView();
+	virtual int sectionId() const;
 
 	virtual void cleanUp();
 	void systemTimeChanged();

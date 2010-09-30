@@ -143,6 +143,11 @@ LoadDiagnosticPage::LoadDiagnosticPage(const QDomNode &config_node)
 	devices.squeeze();
 }
 
+int LoadDiagnosticPage::sectionId() const
+{
+	return EnergyManagement::isBuilt() ? ENERGY_MANAGEMENT : SUPERVISION;
+}
+
 void LoadDiagnosticPage::showEvent(QShowEvent *)
 {
 	foreach (const LoadsDevice *d, devices)

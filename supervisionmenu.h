@@ -40,7 +40,6 @@ class SupervisionMenu : public BannerPage
 Q_OBJECT
 public:
 	SupervisionMenu(const QDomNode &config_node);
-
 	virtual int sectionId() const;
 
 public slots:
@@ -59,6 +58,7 @@ class LoadDiagnosticPage : public BannerPage
 Q_OBJECT
 public:
 	LoadDiagnosticPage(const QDomNode &config_node);
+	virtual int sectionId() const;
 
 protected:
 	void showEvent(QShowEvent *);
