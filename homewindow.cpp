@@ -120,7 +120,9 @@ HomeWindow::HomeWindow()
 
 void HomeWindow::iconStateChanged(int page_id, StateButton::Status st)
 {
+#ifdef LAYOUT_TOUCHX
 	header_widget->iconStateChanged(page_id, st);
+#endif
 }
 
 void HomeWindow::aboutToHideEvent()

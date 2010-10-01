@@ -35,6 +35,8 @@ class StateButton;
 class NavigationBar;
 
 
+#define DIM_BUT 80
+
 /**
  * \class IconPage
  *

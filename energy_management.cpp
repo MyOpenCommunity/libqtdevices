@@ -80,7 +80,7 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 		pos -= QPoint(69, 79);
 
 		addPage(new EnergyCost, getTextChild(conf_node, "descr"),
-			bt_global::skin->getImage("currency_exchange"), pos.x(), pos.y());
+			bt_global::skin->getImage("currency_exchange"), QString(), pos.x(), pos.y());
 #else
 		Page *page = new EnergyCost;
 		BtButton *b = new BtButton(bt_global::skin->getImage("currency_exchange"));
