@@ -45,6 +45,9 @@ public:
 
 	MultimediaPlayerButtons(Type type);
 
+	void showPrevButton(bool show);
+	void showNextButton(bool show);
+
 public slots:
 	// update the icon of the play button
 	void started();
@@ -65,11 +68,11 @@ private slots:
 	void playToggled(bool playing);
 
 private:
-	BtButton *getButton(const QString &icon, const char *destination);
-
-private:
+	BtButton *prev_button, *next_button, *stop_button, *rewind_button, *forward_button;
 	StateButton *play_button;
 	QString play_icon, pause_icon;
+
+	BtButton *getButton(const QString &icon, const char *destination);
 };
 
 #endif // MULTIMEDIA_BUTTONS_H

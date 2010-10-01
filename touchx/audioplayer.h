@@ -51,6 +51,8 @@ public:
 	static QVector<AudioPlayerPage *> audioPlayerPages();
 
 	virtual int sectionId() const;
+	void showNextButton(bool show);
+	void showPrevButton(bool show);
 
 protected:
 	QString currentFileName(int index) const;
@@ -78,6 +80,7 @@ private slots:
 
 private:
 	AudioPlayerPage(MediaType type);
+	MultimediaPlayerButtons *player_buttons;
 
 	MediaType type;
 	QLabel *description_top, *description_bottom, *track, *elapsed;

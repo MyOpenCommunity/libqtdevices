@@ -60,6 +60,16 @@ AudioPlayerPage *AudioPlayerPage::getAudioPlayerPage(MediaType type)
 	return audioplayer_pages[type];
 }
 
+void AudioPlayerPage::showPrevButton(bool show)
+{
+	player_buttons->showPrevButton(show);
+}
+
+void AudioPlayerPage::showNextButton(bool show)
+{
+	player_buttons->showNextButton(show);
+}
+
 QVector<AudioPlayerPage *>AudioPlayerPage::audioPlayerPages()
 {
 	return audioplayer_pages;
@@ -115,17 +125,17 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 		connect(goto_sounddiff, SIGNAL(clicked()), SLOT(gotoSoundDiffusion()));
 	}
 
-	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(type == IP_RADIO ? MultimediaPlayerButtons::IPRADIO_PAGE : MultimediaPlayerButtons::AUDIO_PAGE);
-	connectMultimediaButtons(buttons);
+	player_buttons = new MultimediaPlayerButtons(type == IP_RADIO ? MultimediaPlayerButtons::IPRADIO_PAGE : MultimediaPlayerButtons::AUDIO_PAGE);
+	connectMultimediaButtons(player_buttons);
 
-	connect(buttons, SIGNAL(previous()), SLOT(resetLoopCheck()));
-	connect(buttons, SIGNAL(next()), SLOT(resetLoopCheck()));
+	connect(player_buttons, SIGNAL(previous()), SLOT(resetLoopCheck()));
+	connect(player_buttons, SIGNAL(next()), SLOT(resetLoopCheck()));
 
 	// a radio channel is without an end. If mplayer has finished maybe there is an error.
 	const char *done_slot = (type == IP_RADIO) ? SLOT(quit()) : SLOT(next());
 	connect(player, SIGNAL(mplayerDone()), done_slot);
 
-	l_btn->addWidget(buttons);
+	l_btn->addWidget(player_buttons);
 	l_btn->addStretch(0);
 	if (goto_sounddiff)
 		l_btn->addWidget(goto_sounddiff);
