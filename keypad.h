@@ -106,6 +106,8 @@ public:
 private:
 	QList<QLabel*> states;
 	QHBoxLayout *states_layout;
+
+	void drawStates(const QList<int> &s);
 };
 
 

@@ -200,43 +200,6 @@ void Keypad::resetText()
 }
 
 
-// KeypadWithState implementation
-
-#ifdef LAYOUT_TS_3_5
-
-KeypadWithState::KeypadWithState(int s[8])
-{
-	QHBoxLayout *l = new QHBoxLayout;
-	l->setContentsMargins(5, 5, 5, 5);
-	l->setSpacing(2);
-
-	QFont aFont = bt_global::font->get(FontManager::TEXT);
-
-	for (int i = 0; i < 8; i++)
-	{
-		QLabel *state = new QLabel;
-
-		state->setFont(aFont);
-		state->setAlignment(Qt::AlignCenter);
-
-		if (s[i] == -1)
-		{
-			state->setText("-");
-		}
-		else
-		{
-			state->setProperty("ActiveState", bool(s[i]));
-			state->setText(QString::number(i + 1));
-		}
-
-		l->addWidget(state);
-	}
-
-	insertLayout(l);
-}
-
-#else
-
 KeypadWithState::KeypadWithState(const QList<int> &s)
 {
 	states_layout = new QHBoxLayout;
@@ -261,7 +224,31 @@ void KeypadWithState::setStates(const QList<int> &s)
 	}
 
 	states.clear();
+	drawStates(s);
+}
 
+void KeypadWithState::drawStates(const QList<int> &s)
+{
+#ifdef LAYOUT_TS_3_5
+	QFont aFont = bt_global::font->get(FontManager::TEXT);
+
+	for (int i = 0; i < s.size(); ++i)
+	{
+		QLabel *state = new QLabel;
+		state->setFont(aFont);
+		state->setAlignment(Qt::AlignCenter);
+
+		if (s[i] == -1)
+			state->setText("-");
+		else
+		{
+			state->setProperty("ActiveState", bool(s[i]));
+			state->setText(QString::number(i + 1));
+		}
+
+		states_layout->addWidget(state);
+	}
+#else
 	for (int i = 0; i < s.size(); ++i)
 	{
 		QLabel *state = 0;
@@ -278,40 +265,9 @@ void KeypadWithState::setStates(const QList<int> &s)
 		}
 		states.append(state);
 	}
-}
-
-/*
-KeypadWithState::KeypadWithState(int s[8])
-{
-	QHBoxLayout *l = new QHBoxLayout;
-	l->setContentsMargins(5, 5, 5, 5);
-	l->setSpacing(5);
-	l->setAlignment(Qt::AlignHCenter);
-
-	for (int i = 0; i < 8; i++)
-	{
-		if (s[i] == -1)
-			continue;
-
-		QLabel *state = new QLabel;
-		QString icon = bt_global::skin->getImage("small_" + QString::number(i + 1));
-
-		if (s[i])
-			icon = getBostikName(icon, "on");
-		else
-			icon = getBostikName(icon, "off");
-		state->setPixmap(*bt_global::icons_cache.getIcon(icon));
-
-		l->addWidget(state);
-	}
-
-	insertLayout(l);
-}
-*/
 #endif
+}
 
-
-// KeypadWindow implementation
 
 KeypadWindow::KeypadWindow(Keypad::Type type)
 {
