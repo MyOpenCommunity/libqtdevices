@@ -422,6 +422,11 @@ bool EnergyInterface::loadItems(const QDomNode &config_node)
 	return is_any_interface_enabled;
 }
 
+int EnergyInterface::sectionId() const
+{
+	return EnergyManagement::isBuilt() ? ENERGY_MANAGEMENT : ENERGY_DATA;
+}
+
 void EnergyInterface::systemTimeChanged()
 {
 	for (int i = 0; i < views.size(); ++i)

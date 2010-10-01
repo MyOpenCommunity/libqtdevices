@@ -34,6 +34,8 @@
 #include "bann_energy.h"
 #include "bann2_buttons.h" // Bann2Buttons
 #include "btmain.h" // bt_global::btmain
+#include "energy_management.h" // EnergyManagement::isBuilt
+#include "main.h" // ENERGY_MANAGEMENT, ENERGY_DATA
 
 #include <QDebug>
 #include <QLabel>
@@ -517,6 +519,11 @@ void EnergyView::showPage()
 	showPageFromTable();
 
 	is_current_page = true;
+}
+
+int EnergyView::sectionId() const
+{
+	return EnergyManagement::isBuilt() ? ENERGY_MANAGEMENT : ENERGY_DATA;
 }
 
 void EnergyView::showPageFromTable()

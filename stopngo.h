@@ -67,6 +67,7 @@ class StopAndGoMenu : public BannerPage
 Q_OBJECT
 public:
 	StopAndGoMenu(const QDomNode &config_node);
+	virtual int sectionId() const;
 
 	virtual void showPage();
 
@@ -88,6 +89,7 @@ class StopAndGoPage : public Page
 Q_OBJECT
 public:
 	StopAndGoPage(const QString &title, StopAndGoDevice *device);
+	virtual int sectionId() const;
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);
@@ -110,6 +112,7 @@ class StopAndGoPlusPage : public Page
 Q_OBJECT
 public:
 	StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *device);
+	virtual int sectionId() const;
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);
@@ -135,6 +138,7 @@ class StopAndGoBTestPage : public Page
 Q_OBJECT
 public:
 	StopAndGoBTestPage(const QString &title, StopAndGoBTestDevice *device);
+	virtual int sectionId() const;
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);
