@@ -177,6 +177,8 @@ AlertMessagePage::AlertMessagePage(const QString &date, const QString &text)
 	buttons_layout->setSpacing(20);
 	buttons_layout->setContentsMargins(0, 0, 0, 0);
 	buttons_layout->addStretch(1);
+	_date = date;
+	_text = text;
 
 	QWidget *content = buildMessagePage(box_layout, new QLabel(tr("New Message")), new QLabel(date), new QLabel(text));
 
@@ -319,9 +321,21 @@ void MessagesListPage::newMessage(const DeviceValues &values_list)
 	// delete the last message if the number of messages is > MESSAGES_MAX
 	if (count > MESSAGES_MAX)
 	{
+		// We have to search if exists an alert page which has the same text and
+		// the same date, in order to delete it.
+		const ItemList::ItemInfo &item = page_content->item(count - 1);
+
+		for (int i = 0; i < alert_pages.size(); ++i)
+		{
+			if (alert_pages[i]->date() == item.name && alert_pages[i]->text() == item.description)
+			{
+				AlertMessagePage *page = alert_pages.takeAt(i);
+				page->deleteLater();
+				break;
+			}
+		}
+
 		page_content->removeItem(count - 1);
-		AlertMessagePage *page = alert_pages.takeAt(count - 1);
-		page->deleteLater();
 	}
 
 	QString date = DateConversions::formatDateTimeConfig(message.datetime);

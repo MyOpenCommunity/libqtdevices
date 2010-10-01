@@ -90,6 +90,8 @@ Q_OBJECT
 public:
 	AlertMessagePage(const QString &date, const QString &text);
 	virtual int sectionId() const;
+	QString date() const { return _date; }
+	QString text() const { return _text; }
 
 public slots:
 	virtual void cleanUp() { deleteLater(); }
@@ -98,6 +100,9 @@ signals:
 	void goHome();
 	void goMessagesList();
 	void deleteMessage();
+
+private:
+	QString _date, _text;
 };
 
 
