@@ -275,6 +275,11 @@ void IntercomCallPage::cleanUp()
 		bt_global::audio_states->removeState(AudioStates::SCS_INTERCOM_CALL);
 		volume->disable();
 	}
+	else if (bt_global::audio_states->contains(AudioStates::IP_INTERCOM_CALL))
+	{
+		bt_global::audio_states->removeState(AudioStates::IP_INTERCOM_CALL);
+		volume->disable();
+	}
 
 	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
 	{
@@ -330,6 +335,11 @@ void IntercomCallPage::handleClose()
 		bt_global::audio_states->removeState(AudioStates::SCS_INTERCOM_CALL);
 		volume->disable();
 	}
+	else if (bt_global::audio_states->contains(AudioStates::IP_INTERCOM_CALL))
+	{
+		bt_global::audio_states->removeState(AudioStates::IP_INTERCOM_CALL);
+		volume->disable();
+	}
 
 	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
 	{
@@ -353,7 +363,10 @@ void IntercomCallPage::toggleCall()
 	else
 	{
 		dev->answerCall();
-		bt_global::audio_states->toState(AudioStates::SCS_INTERCOM_CALL);
+		if (dev->ipCall())
+			bt_global::audio_states->toState(AudioStates::IP_INTERCOM_CALL);
+		else
+			bt_global::audio_states->toState(AudioStates::SCS_INTERCOM_CALL);
 		mute_button->setStatus(StateButton::OFF);
 		volume->enable();
 	}
@@ -423,7 +436,10 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 			if (!call_active)
 			{
 				call_active = true;
-				bt_global::audio_states->toState(AudioStates::SCS_INTERCOM_CALL);
+				if (dev->ipCall())
+					bt_global::audio_states->toState(AudioStates::IP_INTERCOM_CALL);
+				else
+					bt_global::audio_states->toState(AudioStates::SCS_INTERCOM_CALL);
 				mute_button->setStatus(StateButton::OFF);
 				volume->enable();
 			}

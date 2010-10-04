@@ -762,12 +762,12 @@ void AudioStateMachine::stateIpVideoCallExited()
 
 void AudioStateMachine::stateIpIntercomCallEntered()
 {
-
+	qDebug() << "AudioStateMachine::stateIpIntercomCallEntered";
 }
 
 void AudioStateMachine::stateIpIntercomCallExited()
 {
-
+	qDebug() << "AudioStateMachine::stateIpIntercomCallExited";
 }
 
 void AudioStateMachine::stateAlarmToSpeakerEntered()

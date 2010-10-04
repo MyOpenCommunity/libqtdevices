@@ -304,8 +304,14 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	}
 
 	case ANSWER_CALL:
+	{
+		ip_call = msg.whatArgN(0) > 1000;
+		if ((ip_call && vct_mode != IP_MODE) || (!ip_call && vct_mode != SCS_MODE))
+			qWarning() << "The incoming call has a different mode than the configured one";
+
 		values_list[ANSWER_CALL] = true;
 		break;
+	}
 
 	case END_OF_CALL:
 		if (msg.whatArgN(1) == 3) // with mmtype == 3 we have to stop the video
