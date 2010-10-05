@@ -80,6 +80,9 @@ private:
 	AudioPlayerPage(MediaType type);
 
 	MediaType type;
+	bool stream_url_exist;
+	bool stream_title_exist;
+
 	QLabel *description_top, *description_bottom, *track, *elapsed;
 	// icon in tray bar
 	static BtButton *tray_icon;
