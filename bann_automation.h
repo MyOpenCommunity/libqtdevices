@@ -131,15 +131,15 @@ private:
 };
 
 
-class PPTStat : public BannerOld
+class PPTStat : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	PPTStat(QString where, int openserver_id);
+	PPTStat(QString description, QString where, int openserver_id);
 
 private:
-	PPTStatDevice *dev;
 	QString img_open, img_close;
+
 private slots:
 	void valueReceived(const DeviceValues &values_list);
 };
