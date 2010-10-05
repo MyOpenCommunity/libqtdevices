@@ -419,6 +419,9 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 		case EntryphoneDevice::VCT_TYPE:
 		{
 			bool new_status = (it.value().toInt() == EntryphoneDevice::AUDIO_VIDEO);
+			if (dev->ipCall())
+				new_status = false;
+
 			bool old_status = call_status->video_enabled;
 
 			call_status->video_enabled = new_status;
