@@ -325,21 +325,21 @@ void AudioPlayerPage::refreshPlayInfo(const QMap<QString, QString> &attrs)
 	}
 	else if (type == IP_RADIO)
 	{
-		 if (attrs.contains("stream_url"))
-                 {
-                         stream_url_exist = true;
-			 description_top->setText(attrs["stream_url"]);
-		 }
-                 if (!stream_url_exist)
-                         description_top->setText(tr("Information not available"));
-		 
-                 if (attrs.contains("stream_title"))
-                 {
-                         stream_title_exist = true;
-			 description_bottom->setText(attrs["stream_title"]);
+		if (attrs.contains("stream_url"))
+		{
+			stream_url_exist = true;
+			description_top->setText(attrs["stream_url"]);
 		}
-                if (!stream_title_exist)
-                         description_bottom->setText(tr("Information not available"));
+		if (!stream_url_exist)
+			description_top->setText(tr("Information not available"));
+
+		if (attrs.contains("stream_title"))
+		{
+			stream_title_exist = true;
+			description_bottom->setText(attrs["stream_title"]);
+		}
+		if (!stream_title_exist)
+			description_bottom->setText(tr("Information not available"));
 	}
 
 	if (type == LOCAL_FILE && attrs.contains("total_time") && attrs.contains("current_time"))
@@ -370,7 +370,7 @@ void AudioPlayerPage::gotoSoundDiffusion()
 
 void AudioPlayerPage::playerStarted()
 {
-        stream_url_exist = false;
+	stream_url_exist = false;
 	stream_title_exist = false;
 	MultimediaSectionPage::current_player = this;
 	tray_icon->setVisible(true);
