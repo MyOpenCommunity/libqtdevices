@@ -61,9 +61,9 @@ void TestDevice::initTestDevice()
 	monitors[0] = client_monitor;
 	FrameReceiver::setClientsMonitor(monitors);
 
-	QHash<int, QPair<Client*, Client*> > clients;
-	clients[0].first = client_command;
-	clients[0].second = client_request;
+	QHash<int, Clients> clients;
+	clients[0].command = client_command;
+	clients[0].request = client_request;
 	device::setClients(clients);
 }
 

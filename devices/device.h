@@ -32,12 +32,19 @@
 
 class device_status;
 class frame_interpreter;
-class Clients;
 class Client;
 class OpenMsg;
 
 typedef QHash<int, QVariant> DeviceValues;
 
+
+struct Clients
+{
+	Client *command;
+	Client *request;
+	Client *supervisor;
+	Clients() { command = request = supervisor = 0; }
+};
 
 /**
  * This class manage the logic of disconnection/reconnection with the openserver.

@@ -27,6 +27,8 @@
 #include <QPair>
 #include <QDateTime>
 
+#include "device.h" // Clients
+
 class Version;
 class HomePage;
 class Client;
@@ -67,15 +69,6 @@ private:
 	static long parent_pid;
 	static int signalfd[2];
 	QSocketNotifier *snSignal;
-};
-
-
-struct Clients
-{
-	Client *command;
-	Client *request;
-	Client *supervisor;
-	Clients() { command = request = supervisor = 0; }
 };
 
 

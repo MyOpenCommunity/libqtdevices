@@ -24,7 +24,6 @@
 #include "bttime.h"
 #include "frame_functions.h" // createDimensionFrame, createCommandFrame
 #include "devices_cache.h" // bt_global::devices_cache
-#include "btmain.h" // Clients
 
 #include <openmsg.h>
 
