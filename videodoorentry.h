@@ -121,6 +121,7 @@ private:
 	ItemTuning *volume;
 	bool call_active;
 	int ringtone;
+	bool already_closed;
 };
 
 

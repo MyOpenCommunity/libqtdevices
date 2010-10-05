@@ -47,6 +47,7 @@
 #include <QSignalMapper>
 #include <QDebug>
 #include <QLabel>
+#include <QApplication> // QApplication::processEvents
 
 
 enum Pages
@@ -154,7 +155,7 @@ void VideoDoorEntry::loadItems(const QDomNode &config_node)
 		}
 		default:
 			qFatal("Unhandled page id %d in VideoDoorEntry::loadItems", id);
-		};
+		}
 
 		if (p)
 		{
@@ -203,6 +204,7 @@ IntercomCallPage::IntercomCallPage(EntryphoneDevice *d)
 {
 	dev = d;
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+	already_closed = false;
 	SkinContext ctx(666);
 
 	QGridLayout *layout = new QGridLayout(this);
@@ -213,7 +215,8 @@ IntercomCallPage::IntercomCallPage(EntryphoneDevice *d)
 	BtButton *back = new BtButton;
 	back->setImage(bt_global::skin->getImage("back"));
 	connect(back, SIGNAL(clicked()), dev, SLOT(endCall()));
-	connect(back, SIGNAL(clicked()), SLOT(handleClose()));
+	if (dev->vctMode() == EntryphoneDevice::SCS_MODE)
+		connect(back, SIGNAL(clicked()), SLOT(handleClose()));
 	layout->addWidget(back, 0, 0, 1, 1, Qt::AlignBottom);
 
 	QGridLayout *buttons_layout = new QGridLayout;
@@ -262,31 +265,15 @@ void IntercomCallPage::cleanUp()
 	// button. In this case, we have to send the end of call (even if is an
 	// autoswitch call).
 	dev->endCall();
-	bt_global::btmain->vde_call_active = false;
 
-	disconnect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), this, SLOT(playRingtone()));
-	disconnect(bt_global::display, SIGNAL(directScreenAccessStopped()), this, SLOT(showPage()));
-
-	if (bt_global::audio_states->contains(AudioStates::MUTE))
-		bt_global::audio_states->removeState(AudioStates::MUTE);
-
-	if (bt_global::audio_states->contains(AudioStates::SCS_INTERCOM_CALL))
+	already_closed = true;
+	if (dev->vctMode() == EntryphoneDevice::IP_MODE) // See the comment on VctCallPage::cleanUp
 	{
-		bt_global::audio_states->removeState(AudioStates::SCS_INTERCOM_CALL);
-		volume->disable();
+		while (call_active) // We wait for the END_OF_CALL
+			QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 	}
-	else if (bt_global::audio_states->contains(AudioStates::IP_INTERCOM_CALL))
-	{
-		bt_global::audio_states->removeState(AudioStates::IP_INTERCOM_CALL);
-		volume->disable();
-	}
-
-	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
-	{
-		bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
-		bt_global::ringtones->stopRingtone();
-	}
-
+	else
+		handleClose();
 }
 
 void IntercomCallPage::showPageAfterCall()
@@ -331,37 +318,35 @@ void IntercomCallPage::handleClose()
 		bt_global::audio_states->removeState(AudioStates::MUTE);
 
 	if (bt_global::audio_states->contains(AudioStates::SCS_INTERCOM_CALL))
-	{
 		bt_global::audio_states->removeState(AudioStates::SCS_INTERCOM_CALL);
-		volume->disable();
-	}
 	else if (bt_global::audio_states->contains(AudioStates::IP_INTERCOM_CALL))
-	{
 		bt_global::audio_states->removeState(AudioStates::IP_INTERCOM_CALL);
-		volume->disable();
-	}
 
 	if (bt_global::audio_states->contains(AudioStates::PLAY_VDE_RINGTONE))
 	{
 		bt_global::audio_states->removeState(AudioStates::PLAY_VDE_RINGTONE);
 		bt_global::ringtones->stopRingtone();
 	}
-	emit Closed();
+
+	if (!already_closed)
+		emit Closed();
+
+	already_closed = false;
 }
 
 void IntercomCallPage::toggleCall()
 {
 	bool connected = call_accept->getStatus();
-	call_accept->setStatus(!connected);
 
 	if (connected)
 	{
-		mute_button->setStatus(StateButton::DISABLED);
 		dev->endCall();
-		handleClose();
+		if (dev->vctMode() == EntryphoneDevice::SCS_MODE)
+			handleClose();
 	}
 	else
 	{
+		call_accept->setStatus(!connected);
 		dev->answerCall();
 		if (dev->ipCall())
 			bt_global::audio_states->toState(AudioStates::IP_INTERCOM_CALL);
