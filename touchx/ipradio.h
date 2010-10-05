@@ -37,6 +37,9 @@ public:
 	// returns all the radio URLs
 	QStringList radioUrls();
 
+public slots:
+	virtual void showPage();
+
 private:
 	void loadItems(const QDomNode &config_node);
 

@@ -121,6 +121,8 @@ WebcamListPage::WebcamListPage(const QDomNode &config_node)
 	layout()->setContentsMargins(0, 5, 25, 10);
 	loadWebcams(config_node);
 	webcam_page = new WebcamPage;
+	if (page_content->itemCount() == 1)
+		webcam_page->displayNavigationButtons(false);
 	connect(webcam_page, SIGNAL(Closed()), SLOT(showPage()));
 	connect(webcam_page, SIGNAL(reloadImage()), SLOT(reloadImage()));
 	connect(webcam_page, SIGNAL(prevImage()), SLOT(prevImage()));

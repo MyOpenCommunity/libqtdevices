@@ -30,27 +30,29 @@ MultimediaPlayerButtons::MultimediaPlayerButtons(Type type)
 {
 	bool is_window = type == IMAGE_WINDOW || type == VIDEO_WINDOW;
 
-	QHBoxLayout *l = new QHBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(is_window ? 0 : 5);
+	QHBoxLayout *buttons_layout = new QHBoxLayout(this);
+	buttons_layout->setContentsMargins(0, 0, 0, 0);
+	buttons_layout->setSpacing(is_window ? 0 : 5);
 
 	play_icon = bt_global::skin->getImage("start");
 	pause_icon = bt_global::skin->getImage("pause");
 
-	BtButton *prev = getButton("previous", SIGNAL(previous()));
-	BtButton *next = getButton("next", SIGNAL(next()));
-	BtButton *stop = getButton("stop", SIGNAL(stop()));
+	prev_button = getButton("previous", SIGNAL(previous()));
+	next_button = getButton("next", SIGNAL(next()));
+	stop_button = getButton("stop", SIGNAL(stop()));
+
+	forward_button = 0;
+	rewind_button = 0;
 	BtButton *screen = NULL;
 
 	if (type != AUDIO_PAGE && type != IPRADIO_PAGE)
 		screen = getButton(is_window ? "nofullscreen" : "fullscreen",
 				   is_window ? SIGNAL(noFullScreen()) : SIGNAL(fullScreen()));
 
-	BtButton *forward = NULL, *rewind = NULL;
 	if (type == VIDEO_PAGE || type == VIDEO_WINDOW || type == AUDIO_PAGE)
 	{
-		forward = getButton("skip_forward", SIGNAL(seekForward()));
-		rewind = getButton("skip_back", SIGNAL(seekBack()));
+		forward_button = getButton("skip_forward", SIGNAL(seekForward()));
+		rewind_button = getButton("skip_back", SIGNAL(seekBack()));
 	}
 
 	play_button = new StateButton;
@@ -61,16 +63,26 @@ MultimediaPlayerButtons::MultimediaPlayerButtons(Type type)
 	play_button->setStatus(false);
 	connect(play_button, SIGNAL(clicked(bool)), SLOT(playToggled(bool)));
 
-	l->addWidget(prev);
-	if (rewind)
-		l->addWidget(rewind);
-	l->addWidget(play_button);
-	l->addWidget(stop);
-	if (forward)
-		l->addWidget(forward);
-	l->addWidget(next);
+	buttons_layout->addWidget(prev_button);
+	if (rewind_button)
+		buttons_layout->addWidget(rewind_button);
+	buttons_layout->addWidget(play_button);
+	buttons_layout->addWidget(stop_button);
+	if (forward_button)
+		buttons_layout->addWidget(forward_button);
+	buttons_layout->addWidget(next_button);
 	if (screen)
-		l->addWidget(screen);
+		buttons_layout->addWidget(screen);
+}
+
+void MultimediaPlayerButtons::showPrevButton(bool show)
+{
+	prev_button->setVisible(show);
+}
+
+void MultimediaPlayerButtons::showNextButton(bool show)
+{
+	next_button->setVisible(show);
 }
 
 BtButton *MultimediaPlayerButtons::getButton(const QString &icon, const char *destination)

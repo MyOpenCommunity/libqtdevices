@@ -318,6 +318,8 @@ HomepageIPRadioLink::HomepageIPRadioLink(const QString &description, const QStri
 
 void HomepageIPRadioLink::playRadio()
 {
+	player->showPrevButton(false);
+	player->showNextButton(false);
 	player->playAudioFiles(QStringList() << url, 0);
 }
 

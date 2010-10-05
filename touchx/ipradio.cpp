@@ -35,8 +35,14 @@ IPRadioPage::IPRadioPage(const QDomNode &config_node)
 
 	buildPage(4, getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT);
 	loadItems(config_node);
-
 	connect(page_content, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
+}
+
+void IPRadioPage::showPage()
+{
+	player->showPrevButton(page_content->itemCount() > 1);
+	player->showNextButton(page_content->itemCount() > 1);
+	ItemListPage::showPage();
 }
 
 void IPRadioPage::loadItems(const QDomNode &config_node)
