@@ -62,6 +62,7 @@ namespace Volumes
 		MICROPHONE,
 		MM_SOURCE,
 		MM_AMPLIFIER,
+		INTERCOMIP,
 		COUNT // an invalid element, used only to calculate the size
 	};
 }
@@ -763,11 +764,17 @@ void AudioStateMachine::stateIpVideoCallExited()
 void AudioStateMachine::stateIpIntercomCallEntered()
 {
 	qDebug() << "AudioStateMachine::stateIpIntercomCallEntered";
+
+	activateIpVCTAudio();
+	current_audio_path = Volumes::INTERCOMIP;
+	changeVolumePath(Volumes::INTERCOMIP);
 }
 
 void AudioStateMachine::stateIpIntercomCallExited()
 {
 	qDebug() << "AudioStateMachine::stateIpIntercomCallExited";
+
+	disactivateIpVCTAudio();
 }
 
 void AudioStateMachine::stateAlarmToSpeakerEntered()
