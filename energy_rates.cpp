@@ -93,7 +93,7 @@ EnergyRate EnergyRates::getRate(int rate_id) const
 	if (rate_id == INVALID_RATE)
 		return invalid_rate;
 
-	Q_ASSERT_X(rates.contains(rate_id), "EnergyRates::rate", "missing rate");
+	Q_ASSERT_X(rates.contains(rate_id), "EnergyRates::rate", qPrintable(QString("missing rate %1").arg(rate_id)));
 
 	return rates[rate_id];
 }
