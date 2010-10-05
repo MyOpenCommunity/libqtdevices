@@ -184,6 +184,22 @@ void TestEntryphoneDevice::receiveIncomingCall()
 	t.check(frame, static_cast<int>(EntryphoneDevice::AUDIO_VIDEO));
 }
 
+void TestEntryphoneDevice::receiveIncomingIpCall()
+{
+	EntryphoneDevice::VctMode old_mode = dev->vct_mode;
+	dev->vct_mode = EntryphoneDevice::IP_MODE;
+
+	int kind = 1001;
+	int mmtype = 4;
+	int caller_address = 21;
+	DeviceTester t(dev, EntryphoneDevice::VCT_CALL, DeviceTester::MULTIPLE_VALUES);
+	QString frame = QString("*8*1#%1#%2#%3*%4##").arg(kind).arg(mmtype).arg(caller_address).arg(dev->where);
+	t.check(frame, static_cast<int>(EntryphoneDevice::AUDIO_VIDEO));
+	QCOMPARE(dev->caller_address, QString::number(caller_address));
+	QCOMPARE(dev->master_caller_address, QString::number(caller_address));
+	dev->vct_mode = old_mode;
+}
+
 void TestEntryphoneDevice::receiveAutoswitchCall()
 {
 	int kind = 5;

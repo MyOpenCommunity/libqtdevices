@@ -57,6 +57,7 @@ private slots:
 	void sendMoveRightRelease();
 
 	void receiveIncomingCall();
+	void receiveIncomingIpCall();
 	void receiveAutoswitchCall();
 	void receiveAudioCall();
 	void receiveCallerAddress1();
