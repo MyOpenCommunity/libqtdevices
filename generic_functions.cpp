@@ -36,9 +36,12 @@
 #include <QDateTime>
 #include <QProcess>
 #include <QImageReader>
+#include <QTimer>
 
 #include <fcntl.h>
 #include <stdio.h> // rename
+
+#define DELAYED_WRITE_INTERVAL 3000
 
 namespace
 {
@@ -168,10 +171,7 @@ QString getPressName(QString name)
 }
 
 
-/**
- * Changes a value in conf.xml file atomically.
- * It works on a temporary file and then moves that file on conf.xml with a call to ::rename().
- */
+// reads the configuration file into a document
 bool prepareWriteCfgFile(QDomDocument &doc, const QString &filename)
 {
 	QFile config_file(filename);
@@ -188,6 +188,7 @@ bool prepareWriteCfgFile(QDomDocument &doc, const QString &filename)
 	return true;
 }
 
+// writes the configuratio to a temporary file and then renames it to the definitive name
 bool writeCfgFile(const QDomDocument &doc, const QString &filename)
 {
 	const QString tmp_filename = "cfg/appoggio.xml";
@@ -224,30 +225,13 @@ bool writeCfgFile(const QDomDocument &doc, const QString &filename)
 	return false;
 }
 
-/**
- * Changes a value in conf.xml file atomically.
- * It works on a temporary file and then moves that file on conf.xml with a call to ::rename().
- */
-#ifdef CONFIG_BTOUCH
-bool setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
-#else
-bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filename)
-#endif
+// updates a single configuration item in the given document
+void doSetCfgValue(QDomDocument &doc, QMap<QString, QString> data, int item_id, int serial_number)
 {
-	if (!bt_global::config->contains(INIT_COMPLETE))
-	{
-		qDebug() << "Not writing to configuration during init";
-
-		return true;
-	}
-
-	QDomDocument doc("config_document");
-	if (!prepareWriteCfgFile(doc, filename))
-		return false;
-
 #ifdef CONFIG_BTOUCH
 	QDomNode n = findXmlNode(doc, QRegExp(".*"), item_id, serial_number);
 #else
+	Q_UNUSED(serial_number);
 	QDomElement gui = getElement(doc.documentElement(), "gui");
 	QDomNode n;
 
@@ -270,25 +254,11 @@ bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filena
 		// To replace the text of the element
 		el.replaceChild(doc.createTextNode(it.value()), el.firstChild());
 	}
-
-	return writeCfgFile(doc, filename);
 }
 
-
-// TODO rewrite setCfgValue using setGlobalCfgValue when removing CONFIG_BTOUCH
-bool setGlobalCfgValue(const QString &root_name, QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename)
+// updates a global configuration item in the given document
+void doSetGlobalCfgValue(QDomDocument &doc, const QString &root_name, QMap<QString, QString> data, const QString &tag_name, int id_value)
 {
-	if (!bt_global::config->contains(INIT_COMPLETE))
-	{
-		qDebug() << "Not writing to configuration during init";
-
-		return true;
-	}
-
-	QDomDocument doc("config_document");
-	if (!prepareWriteCfgFile(doc, filename))
-		return false;
-
 	QDomNode root_node = getElement(doc.documentElement(), root_name);
 
 	QDomNode n = findXmlNode(root_node, QRegExp(".*"), tag_name, id_value);
@@ -304,41 +274,213 @@ bool setGlobalCfgValue(const QString &root_name, QMap<QString, QString> data, co
 		// To replace the text of the element
 		el.replaceChild(doc.createTextNode(it.value()), el.firstChild());
 	}
-
-	return writeCfgFile(doc, filename);
 }
 
+// queues configuration files writes and only performs them in batch after some time
+class DelayedConfigWrite : public QTimer
+{
+Q_OBJECT
+
+	// holds the values for a single configuration item
+	struct ItemValue
+	{
+		QMap<QString, QString> data;
+		int item_id;
+		int serial_number; // BTOUCH_CONFIG only used with old config file
+
+		ItemValue(QMap<QString, QString> _data, int _item_id, int _serial_number) :
+			data(_data), item_id(_item_id), serial_number(_serial_number) {}
+
+		bool isSameItem(const ItemValue &other)
+		{
+			return item_id == other.item_id && serial_number == other.serial_number;
+		}
+	};
+
+	// holds the values for a global configuration item
+	struct GlobalValue
+	{
+		QString root_name;
+		QMap<QString, QString> data;
+		QString tag_name;
+		int id_value;
+
+		GlobalValue(const QString &_root_name, QMap<QString, QString> _data, const QString &_tag_name, int _id_value) :
+			root_name(_root_name), data(_data), tag_name(_tag_name), id_value(_id_value) {}
+
+		bool isSameItem(const GlobalValue &other)
+		{
+			return root_name == other.root_name && tag_name == other.tag_name && id_value == other.id_value;
+		}
+	};
+
+	// update list for a configuration file
+	struct FileQueue
+	{
+		QList<ItemValue> item_values;
+		QList<GlobalValue> global_values;
+	};
+
+public:
+	DelayedConfigWrite();
+
+	// enqueue configuration values update and restart the write timer
+	void queueCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename);
+	void queueGlobalValue(const QString &root_name, QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename);
+
+private slots:
+	void writeConfig();
+
+private:
+	QHash<QString, FileQueue> queued_actions;
+};
+
+Q_GLOBAL_STATIC(DelayedConfigWrite, delayed_config);
+
+DelayedConfigWrite::DelayedConfigWrite()
+{
+	connect(this, SIGNAL(timeout()), SLOT(writeConfig()));
+	setInterval(DELAYED_WRITE_INTERVAL);
+	setSingleShot(true);
+}
+
+// adds a new value to the write queue, merging updates to the same configuration item
+template<class T>
+void addValue(QList<T> &array, const T &value)
+{
+	for (int i = 0; i < array.size(); ++i)
+	{
+		if (array[i].isSameItem(value))
+		{
+			foreach (QString key, value.data.keys())
+				array[i].data[key] = value.data[key];
+
+			return;
+		}
+	}
+
+	array.append(value);
+}
+
+void DelayedConfigWrite::queueCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
+{
+	addValue(queued_actions[filename].item_values, ItemValue(data, item_id, serial_number));
+	start();
+}
+
+void DelayedConfigWrite::queueGlobalValue(const QString &root_name, QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename)
+{
+	addValue(queued_actions[filename].global_values, GlobalValue(root_name, data, tag_name, id_value));
+	start();
+}
+
+void DelayedConfigWrite::writeConfig()
+{
+#ifdef DEBUG
+	QTime t;
+	t.start();
+#endif
+
+	foreach (QString filename, queued_actions.keys())
+	{
+		const FileQueue &values = queued_actions[filename];
+
+		qDebug() << "Writing" << values.global_values.size() << "global values," << values.item_values.size() << "item value to" << filename;
+
+		QDomDocument doc("config_document");
+		if (!prepareWriteCfgFile(doc, filename))
+		{
+			qWarning("Error writing to %s", qPrintable(filename));
+			continue;
+		}
+
+		foreach (GlobalValue val, queued_actions[filename].global_values)
+			doSetGlobalCfgValue(doc, val.root_name, val.data, val.tag_name, val.id_value);
+
+		foreach (ItemValue val, queued_actions[filename].item_values)
+			doSetCfgValue(doc, val.data, val.item_id, val.serial_number);
+
+		if (!writeCfgFile(doc, filename))
+		{
+			qWarning("Error writing to %s", qPrintable(filename));
+			continue;
+		}
+	}
+
+	queued_actions.clear();
+
+#ifdef DEBUG
+	qDebug() << "Writing configuration in:" << t.elapsed() << "ms";
+#endif
+}
+
+/**
+ * Changes a value in conf.xml file atomically.
+ * It works on a temporary file and then moves that file on conf.xml with a call to ::rename().
+ */
+#ifdef CONFIG_BTOUCH
+void setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
+#else
+void setCfgValue(QMap<QString, QString> data, int item_id, const QString &filename)
+#endif
+{
+	if (!bt_global::config->contains(INIT_COMPLETE))
+	{
+		qDebug() << "Not writing to configuration during init";
+
+		return;
+	}
+
+#ifdef CONFIG_BTOUCH
+	delayed_config()->queueCfgValue(data, item_id, serial_number, filename);
+#else
+	delayed_config()->queueCfgValue(data, item_id, -1, filename);
+#endif
+}
+
+// TODO rewrite setCfgValue using setGlobalCfgValue when removing CONFIG_BTOUCH
+void setGlobalCfgValue(const QString &root_name, QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename)
+{
+	if (!bt_global::config->contains(INIT_COMPLETE))
+	{
+		qDebug() << "Not writing to configuration during init";
+
+		return;
+	}
+
+	delayed_config()->queueGlobalValue(root_name, data, tag_name, id_value, filename);
+}
 
 #ifdef CONFIG_BTOUCH
 
-bool setCfgValue(QString field, QString value, int item_id, int num_item, const QString &filename)
+void setCfgValue(QString field, QString value, int item_id, int num_item, const QString &filename)
 {
 	QMap<QString, QString> m;
 	m[field] = value;
-	return setCfgValue(m, item_id, num_item, filename);
+	setCfgValue(m, item_id, num_item, filename);
 }
 
-bool setCfgValue(QString field, int value, int item_id, int num_item, const QString &filename)
+void setCfgValue(QString field, int value, int item_id, int num_item, const QString &filename)
 {
 	QMap<QString, QString> m;
 	m[field] = QString::number(value);
-	return setCfgValue(m, item_id, num_item, filename);
+	setCfgValue(m, item_id, num_item, filename);
 }
 
 #else
 
-bool setCfgValue(QString field, QString value, int item_id, const QString &filename)
+void setCfgValue(QString field, QString value, int item_id, const QString &filename)
 {
 	QMap<QString, QString> m;
 	m[field] = value;
-	return setCfgValue(m, item_id, filename);
+	setCfgValue(m, item_id, filename);
 }
 
-bool setCfgValue(QString field, int value, int item_id, const QString &filename)
+void setCfgValue(QString field, int value, int item_id, const QString &filename)
 {
 	QMap<QString, QString> m;
 	m[field] = QString::number(value);
-	return setCfgValue(m, item_id, filename);
+	setCfgValue(m, item_id, filename);
 }
 
 #endif
@@ -482,3 +624,5 @@ bool checkImageLoad(const QString &path)
 
 	return true;
 }
+
+#include "generic_functions.moc"
