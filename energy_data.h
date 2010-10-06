@@ -80,17 +80,17 @@ public:
 	EditEnergyCost();
 	void addRate(int rate_id);
 
-signals:
-	void prodValueChanged(float);
-	void consValueChanged(float);
+	// TODO remove after configurator is fixed (see comment in .cpp)
+	virtual void showPage();
 
 private slots:
 	void saveRates();
 	void resetRates();
 
 private:
-	// TODO CONFIG_BTOUCH
+	// TODO remove after configurator is fixed
 	int production_count, consumption_count;
+	bool initialized;
 };
 
 

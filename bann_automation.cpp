@@ -259,28 +259,22 @@ void InterblockedActuatorGroup::sendStop()
 }
 
 
-PPTStat::PPTStat(QString where, int openserver_id) : BannerOld(0)
+PPTStat::PPTStat(QString description, QString where, int openserver_id) : Bann2Buttons(0)
 {
-	dev = bt_global::add_device_to_cache(new PPTStatDevice(where, openserver_id));
+	device *dev = bt_global::add_device_to_cache(new PPTStatDevice(where, openserver_id));
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	setOpenserverConnection(dev);
-
-	// This banner shows only an icon in central position and a text below.
-	addItem(ICON, (banner_width - BUT_DIM * 2) / 2, 0, BUT_DIM*2 ,BUT_DIM);
-	addItem(TEXT, 0, BUT_DIM, banner_width, banner_height - BUT_DIM);
 
 	img_open = bt_global::skin->getImage("pptstat_open");
 	img_close = bt_global::skin->getImage("pptstat_close");
 
-	if (!img_open.isEmpty())
-		SetIcons(2, img_open);
-	Draw();
+	// This banner shows only an icon in central position and a text below.
+	initBanner(QString(), img_open, QString(), description);
 }
 
 void PPTStat::valueReceived(const DeviceValues &status_list)
 {
 	bool st = status_list[PPTStatDevice::DIM_STATUS].toBool();
-	SetIcons(2, st ? img_close : img_open);
-	Draw();
+	setBackgroundImage(st ? img_close : img_open);
 }
 

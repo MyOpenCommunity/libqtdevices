@@ -95,6 +95,8 @@ public:
 	void saveRate();
 	void resetRate();
 
+	int getRateId();
+
 private:
 	void updateLabel();
 
