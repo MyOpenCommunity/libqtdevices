@@ -22,7 +22,7 @@
 #include "bann_videodoorentry.h"
 #include "device_status.h"
 #include "deviceold.h"
-#include "main.h" // MAX_WIDTH, MAX_HEIGHT, IMG_PATH
+#include "main.h" // IMG_PATH
 #include "btmain.h" // bt_global::btmain
 #include "devices_cache.h" // bt_global::devices_cache
 #include "btbutton.h"
@@ -42,6 +42,9 @@ call_notifier *postoExt::unknown_notifier = NULL;
 
 #define BUT4TL_DIM 60
 #define ICO4TL_DIM 120
+
+#define MAX_WIDTH 240
+#define MAX_HEIGHT 320
 
 
 bann4tasLab::bann4tasLab(QWidget *parent) : BannerOld(parent)

@@ -73,91 +73,54 @@ QDomNode getHomepageNode();
 // See getElement
 QDomElement getConfElement(QString path);
 
-/*! \def MY_FILE_CFG_DEFAULT
- *  The default configuration file
- */
-#define MY_FILE_CFG_DEFAULT        "cfg/stack_open.xml"
-/*! \def MY_FILE_USER_CFG_DEFAULT
- *  The user-configurationFile name if not specified in stack_open.xml
- */
-#define MY_FILE_USER_CFG_DEFAULT   "cfg/conf.xml"
-/*! \def MY_PARSER_DEFAUL
- *  The default parser
- */
-#define MY_PARSER_DEFAULT          "bin/bt_xmlparser"
-/*! \def MY_FILE_LOG_DEFAULT
- *  The logFile name if not specified in stack_open.xml
- */
-#define MY_FILE_LOG_DEFAULT        "log/BTouch.log"
+// The default configuration file for BTouch and other processes
+#define MY_FILE_CFG_DEFAULT "cfg/stack_open.xml"
 
-/*! \def IMG_PATH
- *  Define path for Icons
- */
+// The configuration file for BTouch
+#define MY_FILE_USER_CFG_DEFAULT "cfg/conf.xml"
+
+// The default xml parser (not used by BTouch)
+#define MY_PARSER_DEFAULT "bin/bt_xmlparser"
+
+// The log filename if not specified in stack_open.xml
+#define MY_FILE_LOG_DEFAULT "log/BTouch.log"
+
+// The base path for the images
 #ifndef IMG_PATH
-#define IMG_PATH                    "cfg/extra/1/skin/"
+#define IMG_PATH "cfg/extra/1/skin/"
 #endif
 
-/*! \def SOUND_PATH
- *  Define path for Sounds
- */
-#define SOUND_PATH                    "cfg/extra/10/"
-/*! \def EXTRA_FILE
- *  Define xml file that contains extras (for istance fonts color and fonts background)
- */
-#define EXTRA_FILE                  "cfg/extra/1/extra.xml"
-/*! \def SKIN_FILE
- *  Define the css file that contains the styles for the application
- */
-#define SKIN_FILE                  "cfg/extra/1/skin.xml"
-/*! \def VERBOSITY_LEVEL_DEFAULT
- * The default verbosity level
- */
-/*! \def RINGTONE_FILE
- *  Define the css file that contains the ringtones
- */
-#define RINGTONE_FILE                  "cfg/extra/2/ringtones.xml"
+// The path for sounds
+#define SOUND_PATH "cfg/extra/10/"
 
-#define MY_FILE_CFG_FONT        "cfg/extra/3/font_%1.xml"
-/*! \def MY_FILE_CFG_FONT
- *  The font configuration file
- */
-#define VERBOSITY_LEVEL_DEFAULT    0
-/*! \def VERBOSITY_LEVEL_DEFAUL
- *  It defines the starting path for mediaserver
- */
-#ifndef MEDIASERVER_PATH
-#define MEDIASERVER_PATH            "/home/bticino/mediaserver/"
-#endif
-/*! \def FILE_CHANGE_CONF
- *  The file to generate when changing the user-configurationFile to avoid beinf resetted from bt_processi
- */
-#define FILE_CHANGE_CONF           "BTOUCH_CHANGE_CONF"
-/*! \def FILE_WDT
- *  The file name to create for software watchdog
- */
-#define FILE_WDT                   "/var/tmp/bticino/bt_wd/BTouch_qws"
+// The css file that contains the styles for the application
+#define SKIN_FILE "cfg/extra/1/skin.xml"
 
-#define LANGUAGE_FILE_TMPL        "cfg/extra/2/btouch_%s.qm"
-/*! \def LANGUAGE_FILE_TMPL
- *  The template path to find the language file.
- */
-#define DEFAULT_LANGUAGE          "en"
-/*! \def DEFAULT_LANGUAGE
- *  Default language used in BTouch
- */
+// The default verbosity level
+#define VERBOSITY_LEVEL_DEFAULT 0
 
-/*! \def MAX_WIDTH
- *  Maximum width of the screen
- */
-#define MAX_WIDTH                  240
-/*! \def MAX_HEIGHT
- *  Maximum height of the screen
- */
-#define MAX_HEIGHT                 320
+// The xml file that contains the ringtones
+#define RINGTONE_FILE "cfg/extra/5/ringtones.xml"
 
-/// The simbol of temperature degrees
+// The font configuration file
+#define MY_FILE_CFG_FONT "cfg/extra/3/font_%1.xml"
+
+// The file to generate when changing the configuration file to avoid being resetted from bt_processi
+#define FILE_CHANGE_CONF "BTOUCH_CHANGE_CONF"
+
+// The file name to create for software watchdog
+#define FILE_WDT "/var/tmp/bticino/bt_wd/BTouch_qws"
+
+// The template path to find the language file.
+#define LANGUAGE_FILE_TMPL "cfg/extra/2/btouch_%s.qm"
+
+// The default language used in the GUI
+#define DEFAULT_LANGUAGE "en"
+
+// The simbol of temperature degrees
 #define TEMP_DEGREES "\272"
 
+// The delay to use in the starting phase to avoid bottlenecks in the scs bus.
 #define TS_NUMBER_FRAME_DELAY 500
 
 
