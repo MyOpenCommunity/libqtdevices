@@ -25,6 +25,7 @@
 #include <openmsg.h>
 
 #include <QDebug>
+#include <QTimer>
 
 
 enum RequestDimension
@@ -37,6 +38,7 @@ enum RequestDimension
 
 #define WHERE_CENTRAL "0"
 
+#define STATUS_REQUEST_DELAY_SECS 5
 
 namespace
 {
@@ -47,10 +49,16 @@ namespace
 	}
 }
 
+
 AntintrusionDevice::AntintrusionDevice(int openserver_id) : device("5", WHERE_CENTRAL, openserver_id)
 {
 	for (int i = 0; i < NUM_ZONES; ++i)
 		zones[i] = false;
+
+	status_request_timer = new QTimer(this);
+	status_request_timer->setSingleShot(true);
+	status_request_timer->setInterval(STATUS_REQUEST_DELAY_SECS * 1000);
+	connect(status_request_timer, SIGNAL(timeout()), SLOT(requestStatus()));
 }
 
 void AntintrusionDevice::toggleActivation(const QString &password)
@@ -65,6 +73,7 @@ void AntintrusionDevice::setPartialization(const QString &password)
 		zones_mask += zones[i] ? "1" : "0";
 
 	sendCommand(QString::number(REQ_PARTIALIZATION) + "#" + password + "#" + zones_mask);
+	status_request_timer->start();
 }
 
 void AntintrusionDevice::partializeZone(int num_zone, bool partialize)

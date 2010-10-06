@@ -26,6 +26,8 @@
 
 #define NUM_ZONES 8
 
+class QTimer;
+
 
 /*
  * This class manages the antintrusion system.
@@ -42,8 +44,6 @@ public:
 	// This method set the antintrusion system in order to exclude some zones
 	// from the "list of zones watched"
 	void setPartialization(const QString &password);
-
-	void requestStatus();
 
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
@@ -65,8 +65,11 @@ public slots:
 	// Partialize or activate a zone (the zones are numbered from 1 to 8)
 	void partializeZone(int num_zone, bool partialize);
 
+	void requestStatus();
+
 private:
 	bool zones[NUM_ZONES];
+	QTimer *status_request_timer;
 };
 
 #endif
