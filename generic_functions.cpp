@@ -37,6 +37,7 @@
 #include <QProcess>
 #include <QImageReader>
 #include <QTimer>
+#include <QtConcurrentRun>
 
 #include <fcntl.h>
 #include <stdio.h> // rename
@@ -332,6 +333,9 @@ private slots:
 	void writeConfig();
 
 private:
+	static void asyncWriteConfig(QHash<QString, FileQueue> queued_actions);
+
+private:
 	QHash<QString, FileQueue> queued_actions;
 };
 
@@ -376,6 +380,15 @@ void DelayedConfigWrite::queueGlobalValue(const QString &root_name, QMap<QString
 
 void DelayedConfigWrite::writeConfig()
 {
+	QtConcurrent::run(asyncWriteConfig, queued_actions);
+	queued_actions.clear();
+}
+
+void DelayedConfigWrite::asyncWriteConfig(QHash<QString, FileQueue> queued_actions)
+{
+	static QMutex avoid_mayhem;
+	QMutexLocker locker(&avoid_mayhem);
+
 #ifdef DEBUG
 	QTime t;
 	t.start();
@@ -406,8 +419,6 @@ void DelayedConfigWrite::writeConfig()
 			continue;
 		}
 	}
-
-	queued_actions.clear();
 
 #ifdef DEBUG
 	qDebug() << "Writing configuration in:" << t.elapsed() << "ms";
