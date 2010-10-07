@@ -84,6 +84,12 @@
 #endif
 
 
+/*!
+	\namespace bt_global
+	\brief Encapsulates all the global objects.
+*/
+
+
 namespace
 {
 	void setConfigValue(QDomNode root, QString path, QString &dest)
