@@ -155,6 +155,10 @@ bool SkinManager::exists(QString name)
 	\a name is the tagname used in the code and also specified in the skin xml
 	file withouth the prefix 'img_'. If \a name is not found an empty string is
 	returned.
+
+	All the contexts set through addToContext are searched from the last inserted
+	to the first one, so if a tagname is found in more contexts the image path
+	of the last context is returned.
 */
 QString SkinManager::getImage(QString name)
 {
