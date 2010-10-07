@@ -37,14 +37,16 @@ namespace
 {
 	QWidget *buildMessagePage(QVBoxLayout *box_layout, QLabel *new_message_label, QLabel *date_label, QLabel *message_label)
 	{
+		const QFont &font = bt_global::font->get(FontManager::TEXT);
+
 		QWidget *content = new QWidget;
 		content->setContentsMargins(10, 0, 10, 10);
-		content->setFont(bt_global::font->get(FontManager::TEXT));
 		content->setLayout(box_layout);
 
 		box_layout->setSpacing(0);
 
 		new_message_label->setFixedHeight(30);
+		new_message_label->setFont(font);
 		box_layout->addWidget(new_message_label, 0, Qt::AlignHCenter);
 		box_layout->addSpacing(5);
 
@@ -52,12 +54,14 @@ namespace
 		date_label->setMargin(5);
 		date_label->setFixedHeight(30);
 		date_label->setAlignment(Qt::AlignRight);
+		date_label->setFont(font);
 		box_layout->addWidget(date_label);
 
 		message_label->setMargin(10);
 		message_label->setObjectName("Text");
 		message_label->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 		message_label->setWordWrap(true);
+		message_label->setFont(font);
 		box_layout->addWidget(message_label);
 
 		box_layout->addSpacing(5);
@@ -113,10 +117,11 @@ void MessageList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int
 
 DeleteMessagesPage::DeleteMessagesPage()
 {
+	const QFont &font = bt_global::font->get(FontManager::TEXT);
 	QWidget *content = new QWidget;
-	content->setFont(bt_global::font->get(FontManager::TEXT));
 	content->setContentsMargins(10, 10, 30, 35);
 	PageTitleWidget *title_widget = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
+	title_widget->setFont(font);
 	NavigationBar *nav_bar = new NavigationBar;
 
 	nav_bar->displayScrollButtons(false);
@@ -130,6 +135,7 @@ DeleteMessagesPage::DeleteMessagesPage()
 	box_text->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 	box_text->setWordWrap(true);
 	box_text->setText(tr("Are you sure to delete all messages?"));
+	box_text->setFont(font);
 	layout->addWidget(box_text);
 
 	BtButton *ok_button = new BtButton(bt_global::skin->getImage("ok"));
