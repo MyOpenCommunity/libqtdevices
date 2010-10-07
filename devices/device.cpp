@@ -31,14 +31,39 @@
 
 #define COMPRESSION_TIMEOUT 1000
 
+
+/*!
+	\class OpenServerManager
+	\brief Class that manages the logic of connection/disconnection/reconnection
+	to the openserver.
+
+	Basically, with an openserver you have 3 socket connections open: the monitor,
+	the command and the request. When one of these fall down all the objects
+	connected with that openserver must to be notify with the signal connectionDown.
+
+	In this case we have to retry the connection after
+	\a OpenServerManager::reconnection_time seconds.
+
+	Also in the case of a successfully reconnection the application must to be
+	notified about the event.
+ */
+
+
 // Inizialization of static member
 QHash<int, Clients> device::clients;
 QHash<int, OpenServerManager*> device::openservers;
 
 
+//! The interval (in seconds) to retry the connection with the openserver.
 int OpenServerManager::reconnection_time = 30;
 
+/*!
+	\brief Constructor
 
+	Constructs a new \a OpenServerManager giving the openserver id, and the
+	\a OpenClient instances for the monitor (\a m), supervisor (\a s, optional),
+	command (\a c) and request (\a r) ports.
+ */
 OpenServerManager::OpenServerManager(int oid, Client *m, Client *s, Client *c, Client *r)
 {
 	openserver_id = oid;
@@ -61,6 +86,16 @@ OpenServerManager::OpenServerManager(int oid, Client *m, Client *s, Client *c, C
 		connection_timer.start(reconnection_time * 1000, this);
 }
 
+/*!
+	\fn OpenServerManager::connectionUp()
+	\brief emitted when all the OpenClient are successfully connected.
+ */
+
+/*!
+	\fn OpenServerManager::connectionDown()
+	\brief emitted when all the OpenClient are successfully disconnected.
+ */
+
 void OpenServerManager::handleConnectionDown()
 {
 	if (is_connected)
@@ -81,6 +116,12 @@ void OpenServerManager::handleConnectionDown()
 	}
 }
 
+/*!
+	\brief Reconnect the \a OpenClient instances.
+
+	Try to reconnect all instances of OpenClient after
+	\a OpenServerManager::reconnection_time.
+ */
 void OpenServerManager::timerEvent(QTimerEvent*)
 {
 	monitor->connectToHost();
@@ -109,6 +150,10 @@ void OpenServerManager::handleConnectionUp()
 	}
 }
 
+/*!
+	\brief Returns true if the \a OpenClient instances are connected, false
+	otherwise.
+ */
 bool OpenServerManager::isConnected()
 {
 	return is_connected;
