@@ -284,7 +284,10 @@ void ScreenSaver::setSlideshowInterval(int interval)
  */
 
 
-
+/*!
+	\class ScreenSaverBalls
+	\brief The concrete class that represent a screensaver with 'balls'.
+ */
 ScreenSaverBalls::ScreenSaverBalls() : ScreenSaver(120)
 {
 }
@@ -389,7 +392,10 @@ void ScreenSaverBalls::refresh()
 	}
 }
 
-
+/*!
+	\class ScreenSaverLine
+	\brief The concrete class that represent a screensaver with a scrolling line.
+ */
 ScreenSaverLine::ScreenSaverLine() : ScreenSaver(150)
 {
 	line = 0;
@@ -406,11 +412,18 @@ void ScreenSaverLine::start(Window *w)
 	line->show();
 }
 
+/*!
+	\brief Method to customize the inner widget displayed by the \a ScreenSaver.
+ */
 void ScreenSaverLine::customizeLine()
 {
 	setLineHeight(6);
 }
 
+/*!
+	\brief Method to resize the innter widget displayed by the \a ScreenSaver to
+	the given height.
+ */
 void ScreenSaverLine::setLineHeight(int height)
 {
 	line->resize(window->width(), height);
@@ -447,17 +460,29 @@ void ScreenSaverLine::refresh()
 	line->move(0, y);
 }
 
+/*!
+	\brief Method to set the style of the inner widget displayed by the
+	\a ScreenSaver when it is moving down to up.
+ */
 QString ScreenSaverLine::styleDownToUp()
 {
 	return "* {background-color:#000000; color:#FFFFFF; }";
 }
 
+/*!
+	\brief Method to set the style of the inner widget displayed by the
+	\a ScreenSaver when it is moving up to down.
+ */
 QString ScreenSaverLine::styleUpToDown()
 {
 	return "* {background-color:#FFFFFF; color:#000000; }";
 }
 
-
+/*!
+	\class ScreenSaverTime
+	\brief The concrete class that represent a screensaver with a scrolling line and a
+	time clock inside.
+ */
 void ScreenSaverTime::customizeLine()
 {
 	setLineHeight(30);
@@ -470,6 +495,12 @@ void ScreenSaverTime::customizeLine()
 	line->setLayout(layout);
 }
 
+
+/*!
+	\class ScreenSaverText
+	\brief The concrete class that represent a screensaver with a scrolling line and a
+	text inside.
+ */
 void ScreenSaverText::customizeLine()
 {
 	setLineHeight(30);
@@ -479,6 +510,10 @@ void ScreenSaverText::customizeLine()
 }
 
 
+/*!
+	\class ScreenSaverSlideshow
+	\brief The concrete class that represent a slideshow	 screensaver.
+ */
 ScreenSaverSlideshow::ScreenSaverSlideshow() :
 	ScreenSaver(slideshow_timeout)
 {
@@ -596,6 +631,10 @@ ScreenSaverSlideshow::~ScreenSaverSlideshow()
 }
 
 
+/*!
+	\class ScreenSaverDeform
+	\brief The concrete class that represent a deformer screensaver.
+ */
 ScreenSaverDeform::ScreenSaverDeform() : ScreenSaver(500)
 {
 	radius = 30;
