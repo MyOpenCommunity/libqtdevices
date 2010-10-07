@@ -44,9 +44,6 @@ class QDomNode;
 class ImageIterator;
 
 
-/**
- * This abstract class is the interface of all screensavers.
- */
 class ScreenSaver : protected Window
 {
 Q_OBJECT
@@ -86,7 +83,6 @@ private:
 };
 
 
-/// The factory method that build the screensaver of type 'ScreenSaver::Type'
 ScreenSaver *getScreenSaver(ScreenSaver::Type type);
 
 

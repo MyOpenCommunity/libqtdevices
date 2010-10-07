@@ -82,6 +82,59 @@ namespace
 	}
 }
 
+/*!
+	\class ScreenSaver
+	\brief Base class for all screensavers.
+
+	\par
+	To create a new screensaver, the \a type() and the \a refresh() method must
+	be reimplemented and a new entry must be added to the \a ScreenSaver::Type
+	enum.
+
+	\par
+	A \a ScreenSaver is a \a Window subclass. It can be started using the
+	\a start() method which takes the \a Window the screensaver is
+	running on as parameter. The screensaver can be stopped by calling
+	the \a stop() method. To check if the screensaver is currently running the
+	method \a isRunning() can be used.
+
+	\par
+	The refresh interval can be set by the \a setRefreshInterval() method.
+ */
+
+/*!
+	\enum ScreenSaver::Type
+	Screensaver types.
+
+	\var ScreenSaver::Type ScreenSaver::NONE
+	no screensaver
+
+	\var ScreenSaver::Type ScreenSaver::LINES
+	single line that goes up and down
+
+	\var ScreenSaver::Type ScreenSaver::BALLS
+	many balls on screen
+
+	\var ScreenSaver::Type ScreenSaver::TIME
+	a single line with a clock inside
+
+	\var ScreenSaver::Type ScreenSaver::TEXT
+	a line with a text
+
+	\var ScreenSaver::Type ScreenSaver::SLIDESHOW
+	image slideshow
+
+	\var ScreenSaver::Type ScreenSaver::DEFORM
+	the deformer
+*/
+
+/*!
+	Instantiate a screensaver.
+
+	This factory method returns an instance of the screensaver specified by
+	\a type.
+	If \a type doesn't exists dies with a \a qFatal().
+ */
 ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 {
 	switch (type)
@@ -106,11 +159,18 @@ ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 	return 0; // Only to silent warning from compiler
 }
 
-// Definition of static member
+//! Screensaver text
 QString ScreenSaver::text;
+
+//! Slideshow screensaver timeout between different images
 int ScreenSaver::slideshow_timeout;
 
 
+/*!
+	Constructor
+
+	Should be called by \a ScreenSaver subclasses that need periodical refreshes.
+ */
 ScreenSaver::ScreenSaver(int refresh_time)
 {
 	window = 0;
@@ -119,21 +179,39 @@ ScreenSaver::ScreenSaver(int refresh_time)
 	connect(timer, SIGNAL(timeout()), SLOT(refresh()));
 }
 
+/*!
+	Starts to periodically call the \a refresh() method.
+
+	\sa ScreenSaver::refresh(), ScreenSaver()
+ */
 void ScreenSaver::startRefresh()
 {
 	timer->start();
 }
 
+/*!
+	Stops to periodically call the \a refresh() method.
+ */
 void ScreenSaver::stopRefresh()
 {
 	timer->stop();
 }
 
+/*!
+	Sets the interval at with call the \a refersh() method.
+
+	\sa ScreenSaver::refresh(), ScreenSaver()
+ */
 void ScreenSaver::setRefreshInterval(int msecs)
 {
 	timer->setInterval(msecs);
 }
 
+/*!
+	Shows the screensaver and starts the updates.
+
+	\a w is the \a Window the screensaver will be started on.
+ */
 void ScreenSaver::start(Window *w)
 {
 	bt_global::page_stack.showUserWindow(this);
@@ -141,6 +219,11 @@ void ScreenSaver::start(Window *w)
 	timer->start();
 }
 
+/*!
+	Stops the screensaver.
+
+	Updates are stopped and the \a Closed() signal is emitted.
+ */
 void ScreenSaver::stop()
 {
 	window = 0;
@@ -148,11 +231,29 @@ void ScreenSaver::stop()
 	emit Closed(); // for PageStack to catch
 }
 
+/*!
+	Returns true if the screensaver is currently running.
+ */
 bool ScreenSaver::isRunning()
 {
 	return window != 0;
 }
 
+/*!
+	\fn ScreenSaver::type()
+	Returns the ScreenSaver::Type of the screensaver
+
+	Must be reimplemented into subclasses.
+ */
+
+/*!
+	Init the static members
+
+	Read the configuration node \a config_node and sets the screensaver static
+	members.
+
+	\sa ScreenSaver::text, ScreenSaver::slideshow_timeout
+ */
 void ScreenSaver::initData(const QDomNode &config_node)
 {
 	text = getTextChild(config_node, "text");
@@ -163,10 +264,21 @@ void ScreenSaver::initData(const QDomNode &config_node)
 #endif
 }
 
+/*!
+	Sets the interval between two images into the slideshow screensaver.
+ */
 void ScreenSaver::setSlideshowInterval(int interval)
 {
 	slideshow_timeout = interval;
 }
+
+/*!
+	\fn ScreenSaver::refresh()
+	Refreshes the screensaver.
+
+	Must be reimplemented into subclasses to perform state update operations.
+ */
+
 
 
 ScreenSaverBalls::ScreenSaverBalls() : ScreenSaver(120)
