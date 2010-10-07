@@ -86,19 +86,16 @@ namespace
 	\class ScreenSaver
 	\brief Base class for all screensavers.
 
-	\par
 	To create a new screensaver, the \a type() and the \a refresh() method must
 	be reimplemented and a new entry must be added to the \a ScreenSaver::Type
 	enum.
 
-	\par
 	A \a ScreenSaver is a \a Window subclass. It can be started using the
 	\a start() method which takes the \a Window the screensaver is
 	running on as parameter. The screensaver can be stopped by calling
 	the \a stop() method. To check if the screensaver is currently running the
 	method \a isRunning() can be used.
 
-	\par
 	The refresh interval can be set by the \a setRefreshInterval() method.
  */
 
@@ -129,7 +126,7 @@ namespace
 */
 
 /*!
-	Instantiate a screensaver.
+	\brief Instantiate a screensaver.
 
 	This factory method returns an instance of the screensaver specified by
 	\a type.
@@ -167,7 +164,7 @@ int ScreenSaver::slideshow_timeout;
 
 
 /*!
-	Constructor
+	\brief Constructor
 
 	Should be called by \a ScreenSaver subclasses that need periodical refreshes.
  */
@@ -180,7 +177,7 @@ ScreenSaver::ScreenSaver(int refresh_time)
 }
 
 /*!
-	Starts to periodically call the \a refresh() method.
+	\brief Starts to periodically call the \a refresh() method.
 
 	\sa ScreenSaver::refresh(), ScreenSaver()
  */
@@ -190,7 +187,7 @@ void ScreenSaver::startRefresh()
 }
 
 /*!
-	Stops to periodically call the \a refresh() method.
+	\brief Stops to periodically call the \a refresh() method.
  */
 void ScreenSaver::stopRefresh()
 {
@@ -198,7 +195,7 @@ void ScreenSaver::stopRefresh()
 }
 
 /*!
-	Sets the interval at with call the \a refersh() method.
+	\brief Sets the interval at with call the \a refersh() method.
 
 	\sa ScreenSaver::refresh(), ScreenSaver()
  */
@@ -208,7 +205,7 @@ void ScreenSaver::setRefreshInterval(int msecs)
 }
 
 /*!
-	Shows the screensaver and starts the updates.
+	\brief Shows the screensaver and starts the updates.
 
 	\a w is the \a Window the screensaver will be started on.
  */
@@ -220,7 +217,7 @@ void ScreenSaver::start(Window *w)
 }
 
 /*!
-	Stops the screensaver.
+	\brief Stops the screensaver.
 
 	Updates are stopped and the \a Closed() signal is emitted.
  */
@@ -232,7 +229,7 @@ void ScreenSaver::stop()
 }
 
 /*!
-	Returns true if the screensaver is currently running.
+	\brief Returns true if the screensaver is currently running.
  */
 bool ScreenSaver::isRunning()
 {
@@ -241,13 +238,13 @@ bool ScreenSaver::isRunning()
 
 /*!
 	\fn ScreenSaver::type()
-	Returns the ScreenSaver::Type of the screensaver
+	\brief Returns the ScreenSaver::Type of the screensaver
 
 	Must be reimplemented into subclasses.
  */
 
 /*!
-	Init the static members
+	\brief Init the static members
 
 	Read the configuration node \a config_node and sets the screensaver static
 	members.
@@ -265,7 +262,7 @@ void ScreenSaver::initData(const QDomNode &config_node)
 }
 
 /*!
-	Sets the interval between two images into the slideshow screensaver.
+	\brief Sets the interval between two images into the slideshow screensaver.
  */
 void ScreenSaver::setSlideshowInterval(int interval)
 {
@@ -274,7 +271,7 @@ void ScreenSaver::setSlideshowInterval(int interval)
 
 /*!
 	\fn ScreenSaver::refresh()
-	Refreshes the screensaver.
+	\brief Refreshes the screensaver.
 
 	Must be reimplemented into subclasses to perform state update operations.
  */
