@@ -76,29 +76,31 @@ QString getPressName(QString name);
  * As a convenience, the function is a no-op during constructions and configuration loading
  * and starts actually writing to the file just before page initialization
  *
+ * Note that the actual file writes are batched and performed some time after the set[Global]CfgValue call.
+ *
  * \param item_id the unique id of the object
  * \param num_item the serial number of the object
  */
 #ifdef CONFIG_BTOUCH
 
-bool setCfgValue(QMap<QString, QString> data, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
+void setCfgValue(QMap<QString, QString> data, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
 // Some convenient overloads for the above function
-bool setCfgValue(QString field, QString value, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
-bool setCfgValue(QString field, int value, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
+void setCfgValue(QString field, QString value, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
+void setCfgValue(QString field, int value, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
 #else
 
-bool setCfgValue(QMap<QString, QString> data, int item_id, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
+void setCfgValue(QMap<QString, QString> data, int item_id, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
 // Some convenient overloads for the above function
-bool setCfgValue(QString field, QString value, int item_id, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
-bool setCfgValue(QString field, int value, int item_id, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
+void setCfgValue(QString field, QString value, int item_id, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
+void setCfgValue(QString field, int value, int item_id, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
 #endif
 
 // sets config values for nodes that do not have an id. We have to specify a root node to avoid duplicates.
-bool setGlobalCfgValue(const QString &root_name, QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
+void setGlobalCfgValue(const QString &root_name, QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
 
 int localVolumeToAmplifier(int vol);

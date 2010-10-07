@@ -55,9 +55,9 @@ TestScenEvoDevicesCond::TestScenEvoDevicesCond()
 	monitors[0] = client_monitor;
 	FrameReceiver::setClientsMonitor(monitors);
 
-	QHash<int, QPair<Client*, Client*> > clients;
-	client_command = clients[0].first = server->connectCommand();
-	client_request = clients[0].second = server->connectRequest();
+	QHash<int, Clients> clients;
+	client_command = clients[0].command = server->connectCommand();
+	client_request = clients[0].request = server->connectRequest();
 	device::setClients(clients);
 
 	mock_display = new DeviceConditionDisplayMock;
