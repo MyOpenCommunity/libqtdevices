@@ -155,66 +155,6 @@ public:
 #endif
 
 
-//! SUPERVISION MCI status
-class device_status_mci : public device_status {
- private:
- public:
-   enum {
-     MCI_STATUS_INDEX = 0,
-     MCI_AUTOTEST_FREQ_INDEX = 1,
-   } ind;
-   device_status_mci(); 
-   //~device_status_mci();
-	 bool GetMciStatusBit(int bit);
-	 int GetMciAutotestFreq();
-	 bool SetMciStatus(int s);
-	 bool SetMciAutotestFreq(int s);
-};
-
-//! Amplifier status
-class device_status_amplifier : public device_status {
-public:
-	enum {
-		ON_OFF_INDEX = 0,
-		AUDIO_LEVEL_INDEX  = 1,
-	} ind;
-	device_status_amplifier();
-};
-
-//! Radio status
-class device_status_radio : public device_status {
-public:
-	enum {
-		FREQ_INDEX = 0,
-		STAZ_INDEX,
-		RDS0_INDEX,
-		RDS1_INDEX,
-		RDS2_INDEX,
-		RDS3_INDEX,
-		RDS4_INDEX,
-		RDS5_INDEX,
-		RDS6_INDEX,
-		RDS7_INDEX
-	} ind;
-	device_status_radio();
-};
-
-//! Sound matrix
-class device_status_sound_matr : public device_status {
-public:
-	enum {
-		AMB1_INDEX = 0,
-		AMB2_INDEX,
-		AMB3_INDEX,
-		AMB4_INDEX,
-		AMB5_INDEX,
-		AMB6_INDEX,
-		AMB7_INDEX,
-		AMB8_INDEX
-	} ind;
-	device_status_sound_matr();
-};
-
 //! Doorphone status
 class device_status_doorphone : public device_status {
 public:
