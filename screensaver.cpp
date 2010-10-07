@@ -102,25 +102,32 @@ namespace
 /*!
 	\enum ScreenSaver::Type
 	Screensaver types.
-
+*/
+/*!
 	\var ScreenSaver::Type ScreenSaver::NONE
 	no screensaver
-
+*/
+/*!
 	\var ScreenSaver::Type ScreenSaver::LINES
 	single line that goes up and down
-
+*/
+/*!
 	\var ScreenSaver::Type ScreenSaver::BALLS
 	many balls on screen
-
+*/
+/*!
 	\var ScreenSaver::Type ScreenSaver::TIME
 	a single line with a clock inside
-
+*/
+/*!
 	\var ScreenSaver::Type ScreenSaver::TEXT
 	a line with a text
-
+*/
+/*!
 	\var ScreenSaver::Type ScreenSaver::SLIDESHOW
 	image slideshow
-
+*/
+/*!
 	\var ScreenSaver::Type ScreenSaver::DEFORM
 	the deformer
 */
