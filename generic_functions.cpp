@@ -278,7 +278,7 @@ void doSetGlobalCfgValue(QDomDocument &doc, const QString &root_name, QMap<QStri
 }
 
 // queues configuration files writes and only performs them in batch after some time
-class DelayedConfigWrite : public QTimer
+class DelayedConfigWrite : public QTimer // this class should be derived from QObject
 {
 Q_OBJECT
 
@@ -341,6 +341,7 @@ private:
 
 Q_GLOBAL_STATIC(DelayedConfigWrite, delayed_config);
 
+
 DelayedConfigWrite::DelayedConfigWrite()
 {
 	connect(this, SIGNAL(timeout()), SLOT(writeConfig()));
@@ -386,7 +387,7 @@ void DelayedConfigWrite::writeConfig()
 
 void DelayedConfigWrite::asyncWriteConfig(QHash<QString, FileQueue> queued_actions)
 {
-	static QMutex avoid_mayhem;
+	static QMutex avoid_mayhem; // just to avoid multiple executions of asyncWriteConfig
 	QMutexLocker locker(&avoid_mayhem);
 
 #ifdef DEBUG
