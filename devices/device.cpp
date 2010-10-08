@@ -29,8 +29,6 @@
 
 #include <QDebug>
 
-#define COMPRESSION_TIMEOUT 1000
-
 
 /*!
 	\class OpenServerManager
@@ -241,21 +239,21 @@ void device::sendCommandFrame(int openserver_id, const QString &frame)
 	clients[openserver_id].command->sendFrameOpen(frame, Client::DELAY_NONE);
 }
 
-void device::sendCompressedFrame(QString frame) const
+void device::sendCompressedFrame(QString frame, int compression_timeout) const
 {
 	OpenMsg msg(frame.toStdString());
 
 	int what = msg.what();
 	if (compressed_frames.contains(what))
 	{
-		compressed_frames[what].first->start();
+		compressed_frames[what].first->start(compression_timeout);
 		compressed_frames[what].second = frame;
 	}
 	else
 	{
 		QTimer *timeout = new QTimer(const_cast<device*>(this));
 		timeout->setSingleShot(true);
-		timeout->start(COMPRESSION_TIMEOUT);
+		timeout->start(compression_timeout);
 
 		connect(timeout, SIGNAL(timeout()), &frame_compressor_mapper, SLOT(map()));
 		frame_compressor_mapper.setMapping(timeout, what);

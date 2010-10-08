@@ -82,6 +82,9 @@ friend class BtMain;
 Q_OBJECT
 
 public:
+	// default timeout value for compressed frames
+	static const int COMPRESSION_TIMEOUT = 1000;
+
 	// Init device: send messages to initialize data. Every device should
 	// re-implement this method, in order to update the related graphic object
 	// with the right value.
@@ -138,8 +141,8 @@ public slots:
 
 	// queues the frame to be emitted after a time interval; if another compressed
 	// frame with the same "what" is sent before the timeout, the first frame is
-	// discarded and the timeout restarted
-	void sendCompressedFrame(QString frame) const;
+	// discarded and the timer restarted with the new timeout value
+	void sendCompressedFrame(QString frame, int compression_timeout = COMPRESSION_TIMEOUT) const;
 
 protected:
 	// The costructor is protected only to make device abstract.
