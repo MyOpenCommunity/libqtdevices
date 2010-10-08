@@ -29,10 +29,18 @@
 #include <QTimer>
 #include <QTime>
 
+/*!
+	\def OPENSERVER_ADDR
+	The default openserver address
+*/
 #ifndef OPENSERVER_ADDR
 #define OPENSERVER_ADDR "127.0.0.1"
 #endif
 
+/*!
+	\def OPENSERVER_PORT
+	The default openserver port
+*/
 #define OPENSERVER_PORT 20000
 
 // The id for the main openserver
@@ -41,20 +49,15 @@
 class FrameReceiver;
 
 
-/**
- * This class manages the socket communication throught the application and the openserver.
- *
- * Clients of type MONITOR/SUPERVISOR can be used to receive frames from openserver while
- * clients of types COMMAND or REQUEST can be used to send frames to the openserver.
- */
 class Client : public QObject
 {
 friend class OpenServerMock;
 friend class TestScenEvoDevicesCond;
 Q_OBJECT
-Q_ENUMS(Type) // the enum Type should be the first (or you have to modify the use of QMetaEnum)
+Q_ENUMS(Type)
 
 public:
+	 // the enum Type should be the first (or you have to modify the use of QMetaEnum)
 	enum Type
 	{
 		MONITOR = 0,
@@ -69,10 +72,9 @@ public:
 		DELAY_IF_REQUESTED
 	};
 
-	Client(Type t, const QString &_host=OPENSERVER_ADDR, unsigned _port=0);
-	void sendFrameOpen(const QString &frame_open, FrameDelay delay=DELAY_IF_REQUESTED);
+	Client(Type t, const QString &_host = OPENSERVER_ADDR, unsigned _port = 0);
+	void sendFrameOpen(const QString &frame_open, FrameDelay delay = DELAY_IF_REQUESTED);
 
-	// This methods should be used for a FrameReceiver that wants to receive frames
 	void subscribe(FrameReceiver *obj, int who);
 	void unsubscribe(FrameReceiver *obj);
 
@@ -83,7 +85,6 @@ public:
 	void flush() { sendDelayedFrames(); sendFrames(); socket->flush(); }
 #endif
 
-	// Used to forward the frames received from a Client to another (for ex: SUPERTVISOR -> MONITOR)
 	void forwardFrame(Client *c);
 
 	static void delayFrames(bool delay);
@@ -96,9 +97,9 @@ signals:
 	void connectionUp();
 	void connectionDown();
 
-	//! Openwebnet ack received
+	// Openwebnet ack received
 	void openAckRx();
-	//! Openwebnet nak received
+	// Openwebnet nak received
 	void openNakRx();
 
 private slots:
@@ -155,7 +156,7 @@ private:
 	void manageFrame(QByteArray frame);
 	QByteArray readFromServer();
 
-	//! Wait for ack (returns 0 on ack, -1 on nak or when socket is a monitor socket)
+	// Wait for ack (returns 0 on ack, -1 on nak or when socket is a monitor socket)
 	int socketWaitForAck();
 
 	void dispatchFrame(QString frame);

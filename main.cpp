@@ -42,6 +42,26 @@
 
 #include <signal.h>
 
+/*!
+	\mainpage
+
+	\section overview A global overview of the User Interface
+	In the BTicino home automation system also called My Home the UI, from now
+	called BTouch, has a key role in the control of all the functionalities of
+	the system.
+
+	BTouch was originally designed to run in the 3.5'' touchscreen of My Home.
+	After long development now it can run also in the 10'' touchscreen and with
+	some limitation under X86.
+
+	The architecture of both the systems are almost the same, with an embedded
+	Linux as operating system and a set of BTicino processes to control the
+	home.
+	The main of these processes is the Openserver, which talks to the others
+	and delivers the information from and to the BTouch, using the openwebnet
+	protocol.
+*/
+
 
 /// The struct that contain the general configuration values
 struct GeneralConfig

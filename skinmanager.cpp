@@ -30,7 +30,6 @@
 
 /*!
 	\class SkinManager
-
 	\brief A global class to load and get stylesheet and images path defined in a skin
 	xml file.
 
@@ -94,7 +93,7 @@ SkinManager::SkinManager(QString filename)
 }
 
 /*!
-	Returns the stylesheet reads from the skin xml file.
+	\brief Returns the stylesheet reads from the skin xml file.
 */
 QString SkinManager::getStyle()
 {
@@ -195,7 +194,6 @@ void SkinManager::setCidState(const CidState &state)
 
 /*!
 	\class SkinContext
-
 	\brief An helper class for SkinManager.
 
 	A simply wrapper around the SkinManager::addToContext() and
@@ -205,7 +203,7 @@ void SkinManager::setCidState(const CidState &state)
 
 
 /*!
-	\brief Create the object and add the \x cid to the context
+	\brief Create the object and add the \a cid to the context.
 */
 SkinContext::SkinContext(int cid)
 {
