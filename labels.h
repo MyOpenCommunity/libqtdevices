@@ -48,6 +48,8 @@ public:
 
 	void setScrollingText(const QString &text);
 
+	virtual QSize minimumSizeHint() const;
+
 protected:
 using QLabel::setText;
 	void paintEvent(QPaintEvent *e);
