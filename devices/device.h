@@ -74,7 +74,6 @@ private:
 };
 
 
-// send frames with a delay, removing frames with a duplicate what
 class FrameCompressor : public QObject
 {
 friend class TestDevice;
@@ -82,14 +81,9 @@ Q_OBJECT
 public:
 	FrameCompressor();
 
-	// queues the frame to be emitted after a time interval; if another compressed
-	// frame with the same "what" is sent before the timeout, the first frame is
-	// discarded and the timer restarted with the new timeout value; when the timer
-	// expires, the sendFrame() signal is emitted
 	void sendCompressedFrame(QString frame, int compression_timeout) const;
 
 signals:
-	// emitted when it is time to send the frame
 	void sendFrame(QString frame);
 
 private slots:
@@ -100,8 +94,8 @@ private:
 	void flushCompressedFrames();
 
 private:
-	mutable QHash<int, QPair<QTimer*, QString> > compressed_frames;
-	mutable QSignalMapper compressor_mapper;
+	QHash<int, QPair<QTimer*, QString> > compressed_frames;
+	QSignalMapper compressor_mapper;
 };
 
 
