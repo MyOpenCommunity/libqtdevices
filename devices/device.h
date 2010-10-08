@@ -94,8 +94,8 @@ private:
 	void flushCompressedFrames();
 
 private:
-	QHash<int, QPair<QTimer*, QString> > compressed_frames;
-	QSignalMapper compressor_mapper;
+	mutable QHash<int, QPair<QTimer*, QString> > compressed_frames;
+	mutable QSignalMapper compressor_mapper;
 };
 
 
