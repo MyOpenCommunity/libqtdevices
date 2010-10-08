@@ -56,6 +56,7 @@ public:
 
 public slots:
 	void requestICMState();
+	void requestCompressedICMState();
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);

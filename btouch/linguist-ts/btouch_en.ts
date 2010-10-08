@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="en" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
         <source>always</source>
-        <translation>immer</translation>
+        <translation>always</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation>Mon-Fr</translation>
+        <translation>mon-fri</translation>
     </message>
     <message>
         <source>once</source>
-        <translation>ein Mal</translation>
+        <translation>once</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation>Sam-Son</translation>
+        <translation>sat-sun</translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
         <source>anti-panic</source>
-        <translation>Antipanik</translation>
+        <translation>anti-panic</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation>Einbruch</translation>
+        <translation>Intrusion</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation>Aufbruch</translation>
+        <translation>tamper</translation>
     </message>
     <message>
         <source>technical</source>
-        <translation>Technik</translation>
+        <translation>technical</translation>
     </message>
 </context>
 <context>
     <name>BrightnessPage</name>
     <message>
         <source>High brightness</source>
-        <translation>Hohe Helligkeit</translation>
+        <translation>High brightness</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation>Niedrige Helligkeit</translation>
+        <translation>Low brightness</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation>Normale Helligkeit</translation>
+        <translation>Normal brightness</translation>
     </message>
     <message>
         <source>Off</source>
@@ -62,87 +62,107 @@
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation>Klicken Sie auf das Fadenkreuz</translation>
+        <translation>Click the crosshair</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation>Klicken Sie auf die OK-Taste</translation>
+        <translation>Click the OK button</translation>
     </message>
 </context>
 <context>
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>helligkeit</translation>
+        <translation>Brightness</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation>Kalibrierung</translation>
+        <translation>Calibration</translation>
     </message>
     <message>
         <source>Clean Screen</source>
-        <translation>Bildschirm reinigen</translation>
+        <translation>Clean Screen</translation>
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation>Bildschirmschoner</translation>
+        <translation>Screen Saver</translation>
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
-        <translation>Verbrauch</translation>
+        <translation>Consumption</translation>
+    </message>
+    <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>Electricity</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>Gas</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>Heating/Cooling</translation>
     </message>
     <message>
         <source>Production</source>
-        <translation>Produktion</translation>
+        <translation>Production</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>Water</translation>
     </message>
 </context>
 <context>
     <name>EnergyView</name>
     <message>
         <source>/days</source>
-        <translation>/Tage</translation>
+        <translation>/days</translation>
     </message>
     <message>
         <source>/hours</source>
-        <translation>/Stunden</translation>
+        <translation>/hours</translation>
     </message>
     <message>
         <source>/months</source>
-        <translation>/Monate</translation>
+        <translation>/months</translation>
     </message>
     <message>
         <source>Cumulative</source>
-        <translation>Kumulativ</translation>
+        <translation>Cumulative</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation>Aktuell</translation>
+        <translation>Current</translation>
     </message>
     <message>
         <source>Daily Average</source>
-        <translation>Tagesdurchschnitt</translation>
+        <translation>Daily Average</translation>
     </message>
     <message>
         <source>Day</source>
-        <translation>Tag</translation>
+        <translation>Day</translation>
     </message>
     <message>
         <source>Hour</source>
-        <translation>Stunde</translation>
+        <translation>Hour</translation>
     </message>
     <message>
         <source>Month</source>
-        <translation>Monat</translation>
+        <translation>Month</translation>
     </message>
 </context>
 <context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
-        <translation>Manuell</translation>
+        <translation>Manual</translation>
     </message>
 </context>
 <context>
@@ -172,7 +192,22 @@
     </message>
     <message>
         <source>Subnet mask</source>
-        <translation>Subnet Mask</translation>
+        <translation>Subnet mask</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>DATE/TIME             </translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation>The stored data will be deleted.
+OK to confirm.</translation>
     </message>
 </context>
 <context>
@@ -183,30 +218,30 @@
     </message>
     <message>
         <source>Artist:</source>
-        <translation>Künstler:</translation>
+        <translation>Artist:</translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation>Dauer:</translation>
+        <translation>Length:</translation>
     </message>
     <message>
         <source>of</source>
-        <translation>von</translation>
+        <translation>of</translation>
     </message>
     <message>
         <source>Track:</source>
-        <translation>Musikst.:</translation>
+        <translation>Track:</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
         <source>Balance</source>
-        <translation>Ausgleich</translation>
+        <translation>Balance</translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation>Teif</translation>
+        <translation>Bass</translation>
     </message>
     <message>
         <source>Loud</source>
@@ -214,7 +249,7 @@
     </message>
     <message>
         <source>Treble</source>
-        <translation>Hoch</translation>
+        <translation>Treble</translation>
     </message>
 </context>
 <context>
@@ -248,10 +283,6 @@
         <translation>Pop</translation>
     </message>
     <message>
-        <source>Preset</source>
-        <translation>Preset</translation>
-    </message>
-    <message>
         <source>Rock</source>
         <translation>Rock</translation>
     </message>
@@ -263,24 +294,24 @@
         <source>Techno</source>
         <translation>Techno</translation>
     </message>
+    <message>
+        <source>User</source>
+        <translation>User</translation>
+    </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
-        <translation>Bälle</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>Lupe</translation>
+        <translation>Balls</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>Linie</translation>
+        <translation>Line</translation>
     </message>
     <message>
         <source>No screensaver</source>
-        <translation>Kein Bildschirmschoner</translation>
+        <translation>No Screensaver</translation>
     </message>
     <message>
         <source>Text</source>
@@ -288,14 +319,14 @@
     </message>
     <message>
         <source>Time</source>
-        <translation>Zeit</translation>
+        <translation>Hour</translation>
     </message>
 </context>
 <context>
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
-        <translation>Radio IP</translation>
+        <translation>IP radio</translation>
     </message>
     <message>
         <source>Servers</source>
@@ -303,14 +334,71 @@
     </message>
 </context>
 <context>
+    <name>SplitMode</name>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Automatic</translation>
+    </message>
+    <message>
+        <source>COOLING</source>
+        <translation>Cooling</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>Dry</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation>Fan</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>Heating</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>Swing</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Automatic</translation>
+    </message>
+    <message>
+        <source>HIGH</source>
+        <translation>High</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>Low</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>Medium</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>Silent</translation>
+    </message>
+</context>
+<context>
     <name>StopngoPage</name>
     <message>
         <source>Enable</source>
-        <translation>Freigeben</translation>
+        <translation>Enable</translation>
     </message>
     <message>
         <source>Self-test</source>
-        <translation>Auto Test</translation>
+        <translation>Self-test</translation>
     </message>
     <message>
         <source>Test</source>
@@ -321,22 +409,22 @@
     <name>TimePeriodSelection</name>
     <message>
         <source>Last 12 months</source>
-        <translation>Die letzten 12 Monate</translation>
+        <translation>Last 12 months</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
         <source>Door lock</source>
-        <translation>Öffnen</translation>
+        <translation>Door lock</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation>Treppenlicht</translation>
+        <translation>Staircase light</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation>Unbekannt</translation>
+        <translation>Unknown</translation>
     </message>
 </context>
 <context>

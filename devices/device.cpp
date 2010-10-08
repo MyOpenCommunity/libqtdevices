@@ -29,8 +29,6 @@
 
 #include <QDebug>
 
-#define COMPRESSION_TIMEOUT 1000
-
 
 /*!
 	\class OpenServerManager
@@ -161,6 +159,79 @@ bool OpenServerManager::isConnected()
 
 
 /*!
+	\class FrameCompressor
+	\brief Incapsulate the logic of compresse frames
+
+	Could happen that for some reasons is requested to send many frames
+	with the same "what". To avoid to flood the openserver, you can use the
+	this class which sends only the last frame of the same "what"
+	in a time interval.
+ */
+
+/*!
+	\fn FrameCompressor::sendFrame()
+	\brief emitted when it is time to send the frame
+ */
+
+/*!
+	\brief Constructor
+ */
+FrameCompressor::FrameCompressor()
+{
+	connect(&compressor_mapper, SIGNAL(mapped(int)), SLOT(emitCompressedFrame(int)));
+}
+
+/*!
+	\brief Sends only one frame of the same "what" into a time interval
+
+	Queues the frame to be emitted after a time interval; if another compressed
+	frame with the same "what" is sent before the timeout, the first frame is
+	discarded and the timeout restarted.
+ */
+void FrameCompressor::sendCompressedFrame(QString frame, int compression_timeout) const
+{
+	OpenMsg msg(frame.toStdString());
+
+	int what = msg.what();
+	if (compressed_frames.contains(what))
+	{
+		// replaces the old frame and restarts the timer
+		compressed_frames[what].first->start(compression_timeout);
+		compressed_frames[what].second = frame;
+	}
+	else
+	{
+		// creates a new timer for the what and sets up the signal mapper
+		QTimer *timeout = new QTimer(const_cast<FrameCompressor*>(this));
+		timeout->setSingleShot(true);
+		timeout->start(compression_timeout);
+
+		connect(timeout, SIGNAL(timeout()), &compressor_mapper, SLOT(map()));
+		compressor_mapper.setMapping(timeout, what);
+		compressed_frames[what] = qMakePair(timeout, frame);
+	}
+}
+
+void FrameCompressor::emitCompressedFrame(int what)
+{
+	qDebug() << "Emitting compressed frame for" << what;
+
+	Q_ASSERT_X(compressed_frames.contains(what), "FrameCompressor::emitCompressedFrame", "tried to emit a frame twice");
+
+	compressed_frames[what].first->deleteLater();
+	emit sendFrame(compressed_frames[what].second);
+
+	compressed_frames.remove(what);
+}
+
+void FrameCompressor::flushCompressedFrames()
+{
+	foreach (int what, compressed_frames.keys())
+		emitCompressedFrame(what);
+}
+
+
+/*!
 	\class device
 	\brief Base abstract class for all devices.
 
@@ -217,6 +288,11 @@ bool OpenServerManager::isConnected()
  */
 
 /*!
+	\var device::COMPRESSION_TIMEOUT
+	\brief default timeout value for compressed frames
+ */
+
+/*!
 	\brief Constructor
 
 	Construct a new device with the given \a who, \a where and \a Open Server id.
@@ -225,6 +301,7 @@ bool OpenServerManager::isConnected()
 	\note The default openserver id should be keep in sync with the define
 	MAIN_OPENSERVER.
  */
+
 device::device(QString _who, QString _where, int oid) : FrameReceiver(oid)
 {
 	who = _who;
@@ -236,7 +313,8 @@ device::device(QString _who, QString _where, int oid) : FrameReceiver(oid)
 
 	connect(manager, SIGNAL(connectionUp()), SIGNAL(connectionUp()));
 	connect(manager, SIGNAL(connectionDown()), SIGNAL(connectionDown()));
-	connect(&compressor_mapper, SIGNAL(mapped(int)), SLOT(emitCompressedFrame(int)));
+	connect(&frame_compressor, SIGNAL(sendFrame(QString)), SLOT(sendFrame(QString)));
+	connect(&request_compressor, SIGNAL(sendFrame(QString)), SLOT(sendInit(QString)));
 }
 
 OpenServerManager *device::getManager(int openserver_id)
@@ -409,48 +487,34 @@ void device::sendCommandFrame(int openserver_id, const QString &frame)
 	clients[openserver_id].command->sendFrameOpen(frame, Client::DELAY_NONE);
 }
 
-
 /*!
-	\brief Sends only one frame of the same "what" into a time interval
+	\brief Sends only one frame of the same "what" into a time interval on
+	COMMAND port.
 
 	Queues the frame to be emitted after a time interval; if another compressed
 	frame with the same "what" is sent before the timeout, the first frame is
 	discarded and the timeout restarted.
 
-	\sa sendFrame()
+	\sa sendFrame(), FrameCompressor
  */
-void device::sendCompressedFrame(QString frame) const
+void device::sendCompressedFrame(QString frame, int compression_timeout) const
 {
-	OpenMsg msg(frame.toStdString());
-
-	int what = msg.what();
-	if (compressed_frames.contains(what))
-	{
-		compressed_frames[what].first->start();
-		compressed_frames[what].second = frame;
-	}
-	else
-	{
-		QTimer *timeout = new QTimer(const_cast<device*>(this));
-		timeout->setSingleShot(true);
-		timeout->start(COMPRESSION_TIMEOUT);
-
-		connect(timeout, SIGNAL(timeout()), &compressor_mapper, SLOT(map()));
-		compressor_mapper.setMapping(timeout, what);
-		compressed_frames[what] = qMakePair(timeout, frame);
-	}
+	frame_compressor.sendCompressedFrame(frame, compression_timeout);
 }
 
-void device::emitCompressedFrame(int what)
+/*!
+	\brief Sends only one frame of the same "what" into a time interval on
+	REQUEST port.
+
+	Queues the frame to be emitted after a time interval; if another compressed
+	frame with the same "what" is sent before the timeout, the first frame is
+	discarded and the timeout restarted.
+
+	\sa sendInit(), FrameCompressor
+ */
+void device::sendCompressedInit(QString frame, int compression_timeout) const
 {
-	qDebug() << "Emitting compressed frame" << where << what;
-
-	Q_ASSERT_X(compressed_frames.contains(what), "device::emitCompressedFrame", "tried to emit a frame twice");
-
-	compressed_frames[what].first->deleteLater();
-	sendFrame(compressed_frames[what].second);
-
-	compressed_frames.remove(what);
+	request_compressor.sendCompressedFrame(frame, compression_timeout);
 }
 
 /*!

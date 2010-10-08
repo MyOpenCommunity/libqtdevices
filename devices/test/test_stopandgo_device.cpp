@@ -45,6 +45,7 @@ void TestStopAndGoDevice::cleanup()
 void TestStopAndGoDevice::sendAutoResetActivation()
 {
 	dev->sendAutoResetActivation();
+	flushCompressedFrames(dev);
 
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*18*26*%1##").arg(WHERE));
@@ -56,6 +57,7 @@ void TestStopAndGoDevice::sendAutoResetActivation()
 void TestStopAndGoDevice::sendAutoResetDisactivation()
 {
 	dev->sendAutoResetDisactivation();
+	flushCompressedFrames(dev);
 
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*18*27*%1##").arg(WHERE));
@@ -140,6 +142,7 @@ void TestStopAndGoPlusDevice::cleanup()
 void TestStopAndGoPlusDevice::sendClose()
 {
 	plus->sendClose();
+	flushCompressedFrames(dev);
 
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*18*21*%1##").arg(WHERE));
@@ -151,6 +154,7 @@ void TestStopAndGoPlusDevice::sendClose()
 void TestStopAndGoPlusDevice::sendOpen()
 {
 	plus->sendOpen();
+	flushCompressedFrames(dev);
 
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*18*22*%1##").arg(WHERE));
@@ -162,6 +166,7 @@ void TestStopAndGoPlusDevice::sendOpen()
 void TestStopAndGoPlusDevice::sendTrackingSystemActivation()
 {
 	plus->sendTrackingSystemActivation();
+	flushCompressedFrames(dev);
 
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*18*28*%1##").arg(WHERE));
@@ -173,6 +178,7 @@ void TestStopAndGoPlusDevice::sendTrackingSystemActivation()
 void TestStopAndGoPlusDevice::sendTrackingSystemDisactivation()
 {
 	plus->sendTrackingSystemDisactivation();
+	flushCompressedFrames(dev);
 
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*18*29*%1##").arg(WHERE));
@@ -197,6 +203,7 @@ void TestStopAndGoBTestDevice::cleanup()
 void TestStopAndGoBTestDevice::sendDiffSelftestActivation()
 {
 	btest->sendDiffSelftestActivation();
+	flushCompressedFrames(dev);
 
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*18*23*%1##").arg(WHERE));
@@ -208,6 +215,7 @@ void TestStopAndGoBTestDevice::sendDiffSelftestActivation()
 void TestStopAndGoBTestDevice::sendDiffSelftestDisactivation()
 {
 	btest->sendDiffSelftestDisactivation();
+	flushCompressedFrames(dev);
 
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*18*24*%1##").arg(WHERE));

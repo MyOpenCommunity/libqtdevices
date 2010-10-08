@@ -1,166 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="hu" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
         <source>always</source>
-        <translation>一直</translation>
+        <translation>mindig</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation>週一至週五</translation>
+        <translation>hétfő-péntek</translation>
     </message>
     <message>
         <source>once</source>
-        <translation>一次</translation>
+        <translation>egyszer</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation>週六至週日</translation>
+        <translation>szombat-vasárnap</translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
         <source>anti-panic</source>
-        <translation>免驚慌</translation>
+        <translation>pánik elleni</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation>侵入</translation>
+        <translation>Behatolás</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation>防拆</translation>
+        <translation>befolyás</translation>
     </message>
     <message>
         <source>technical</source>
-        <translation>技術</translation>
+        <translation>műszaki</translation>
     </message>
 </context>
 <context>
     <name>BrightnessPage</name>
     <message>
         <source>High brightness</source>
-        <translation>高等亮度</translation>
+        <translation>Magas fényerősség</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation>低等亮度</translation>
+        <translation>Alacsony fényerősség</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation>正常亮度</translation>
+        <translation>Normál fényerő</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation>關閉</translation>
+        <translation>Ki</translation>
     </message>
 </context>
 <context>
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation>按一下十字</translation>
+        <translation>Kattintson a célkeresztre</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation>點擊OK按鈕</translation>
+        <translation>Kattintson az OK gombra</translation>
     </message>
 </context>
 <context>
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>亮度</translation>
+        <translation>Fényerő</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation>校準</translation>
+        <translation>Kalibrálás</translation>
     </message>
     <message>
         <source>Clean Screen</source>
-        <translation>清除螢幕</translation>
+        <translation>Képernyőtisztítás</translation>
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation>螢幕保護程式</translation>
+        <translation>Képernyőkímélő</translation>
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
-        <translation>消耗</translation>
+        <translation>Fogyasztás</translation>
+    </message>
+    <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>Villamos energia</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>Gáz</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>Fűtés/Hűtés</translation>
     </message>
     <message>
         <source>Production</source>
-        <translation>發電</translation>
+        <translation>Termelés</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>Víz</translation>
     </message>
 </context>
 <context>
     <name>EnergyView</name>
     <message>
         <source>/days</source>
-        <translation>/日</translation>
+        <translation>/nap</translation>
     </message>
     <message>
         <source>/hours</source>
-        <translation>/小時</translation>
+        <translation>/óra</translation>
     </message>
     <message>
         <source>/months</source>
-        <translation>/月</translation>
+        <translation>/hónap</translation>
     </message>
     <message>
         <source>Cumulative</source>
-        <translation>纍加</translation>
+        <translation>Teljes fogyasztás</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation>當前</translation>
+        <translation>Jelenlegi fogyasztás</translation>
     </message>
     <message>
         <source>Daily Average</source>
-        <translation>日平均</translation>
+        <translation>Napi átlag</translation>
     </message>
     <message>
         <source>Day</source>
-        <translation>天</translation>
+        <translation>Nap</translation>
     </message>
     <message>
         <source>Hour</source>
-        <translation>小時</translation>
+        <translation>Óra</translation>
     </message>
     <message>
         <source>Month</source>
-        <translation>月</translation>
+        <translation>Hónap</translation>
     </message>
 </context>
 <context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
-        <translation>手動</translation>
+        <translation>Kézi</translation>
     </message>
 </context>
 <context>
     <name>Keypad</name>
     <message>
         <source>PASSWORD:</source>
-        <translation>密碼:</translation>
+        <translation>JELSZÓ:</translation>
     </message>
 </context>
 <context>
     <name>LanSettings</name>
     <message>
         <source>DNS</source>
-        <translation>域名系統</translation>
+        <translation>DNS</translation>
     </message>
     <message>
         <source>Gateway</source>
-        <translation>通信閘</translation>
+        <translation>Átjáró</translation>
     </message>
     <message>
         <source>IP</source>
@@ -172,225 +192,293 @@
     </message>
     <message>
         <source>Subnet mask</source>
-        <translation>子網路遮罩</translation>
+        <translation>Alhálózati maszk</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>DÁTUM/IDŐ</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">A tárolt adatok törlésre kerülnek.
+Meg az OK gombot.</translation>
     </message>
 </context>
 <context>
     <name>MediaPlayWindow</name>
     <message>
         <source>Album:</source>
-        <translation>專輯:</translation>
+        <translation>Album:</translation>
     </message>
     <message>
         <source>Artist:</source>
-        <translation>藝術家:</translation>
+        <translation>Előadó:</translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation>長度:</translation>
+        <translation>Hossz:</translation>
     </message>
     <message>
         <source>of</source>
-        <translation>在</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Track:</source>
-        <translation>曲目表:</translation>
+        <translation>Dal:</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
         <source>Balance</source>
-        <translation>平衡</translation>
+        <translation>Balansz</translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation>低音</translation>
+        <translation>Basszus</translation>
     </message>
     <message>
         <source>Loud</source>
-        <translation>響亮</translation>
+        <translation>Mély</translation>
     </message>
     <message>
         <source>Treble</source>
-        <translation>高音</translation>
+        <translation>Magas</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifierPreset</name>
     <message>
         <source>Classical</source>
-        <translation>古典</translation>
+        <translation>Klasszikus</translation>
     </message>
     <message>
         <source>Dance</source>
-        <translation>舞曲</translation>
+        <translation>Dance</translation>
     </message>
     <message>
         <source>Full Bass</source>
-        <translation>重低音</translation>
+        <translation>Teljes basszus</translation>
     </message>
     <message>
         <source>Full Treble</source>
-        <translation>重高音</translation>
+        <translation>Teljes magas</translation>
     </message>
     <message>
         <source>Normal</source>
-        <translation>正常</translation>
+        <translation>Normál</translation>
     </message>
     <message>
         <source>Party</source>
-        <translation>宴會</translation>
+        <translation>Parti</translation>
     </message>
     <message>
         <source>Pop</source>
-        <translation>流行</translation>
-    </message>
-    <message>
-        <source>Preset</source>
-        <translation>預設</translation>
+        <translation>Pop</translation>
     </message>
     <message>
         <source>Rock</source>
-        <translation>搖滾</translation>
+        <translation>Rock</translation>
     </message>
     <message>
         <source>Soft</source>
-        <translation>輕音樂</translation>
+        <translation>Szoft</translation>
     </message>
     <message>
         <source>Techno</source>
-        <translation>Techno音樂</translation>
+        <translation>Techno</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation>Felhasználó</translation>
     </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
-        <translation>球式螢幕保護程式</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>變形式螢幕保護程式</translation>
+        <translation>Labdák</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>線條</translation>
+        <translation>Vonal</translation>
     </message>
     <message>
         <source>No screensaver</source>
-        <translation>無螢幕保護程式</translation>
+        <translation>Nincs képernyőkímélő</translation>
     </message>
     <message>
         <source>Text</source>
-        <translation>文字内容</translation>
+        <translation>Szöveg</translation>
     </message>
     <message>
         <source>Time</source>
-        <translation>時間</translation>
+        <translation>Óra</translation>
     </message>
 </context>
 <context>
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
-        <translation>IP廣播</translation>
+        <translation>IP rádió</translation>
     </message>
     <message>
         <source>Servers</source>
-        <translation>服務器</translation>
+        <translation>Szerverek</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>Hűtés</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>Páramentesítés</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>Fűtés</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation>Ventilátor</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Automata</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>Lengés</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>Magas</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>Alacsony</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>Közepes</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>Csendes</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Automata</translation>
     </message>
 </context>
 <context>
     <name>StopngoPage</name>
     <message>
         <source>Enable</source>
-        <translation>啓動</translation>
+        <translation>Engedélyezés</translation>
     </message>
     <message>
         <source>Self-test</source>
-        <translation>自測</translation>
+        <translation>Önellenőrzés</translation>
     </message>
     <message>
         <source>Test</source>
-        <translation>測試</translation>
+        <translation>Teszt</translation>
     </message>
 </context>
 <context>
     <name>TimePeriodSelection</name>
     <message>
         <source>Last 12 months</source>
-        <translation>最後12個月</translation>
+        <translation>Utolsó 12 hónap</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
         <source>Door lock</source>
-        <translation>門鎖</translation>
+        <translation>Ajtózár</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation>樓梯燈</translation>
+        <translation>Lépcsőház világítás</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation>未知</translation>
+        <translation>Ismeretlen</translation>
     </message>
 </context>
 <context>
     <name>device_condition</name>
     <message>
         <source>OFF</source>
-        <translation>關閉</translation>
+        <translation>OFF</translation>
     </message>
 </context>
 <context>
     <name>device_condition_aux</name>
     <message>
         <source>OFF</source>
-        <translation>關閉</translation>
+        <translation>OFF</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation>開啟</translation>
+        <translation>ON</translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming</name>
     <message>
         <source>OFF</source>
-        <translation>關閉</translation>
+        <translation>OFF</translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming_100</name>
     <message>
         <source>OFF</source>
-        <translation>關閉</translation>
+        <translation>OFF</translation>
     </message>
 </context>
 <context>
     <name>device_condition_light_status</name>
     <message>
         <source>OFF</source>
-        <translation>關閉</translation>
+        <translation>OFF</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation>開啟</translation>
+        <translation>ON</translation>
     </message>
 </context>
 <context>
     <name>device_condition_volume</name>
     <message>
         <source>OFF</source>
-        <translation>關閉</translation>
+        <translation>OFF</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation>開啟</translation>
+        <translation>ON</translation>
     </message>
 </context>
 </TS>

@@ -23,6 +23,7 @@
 #include "fontmanager.h" // bt_global::font
 #include "btbutton.h"
 #include "icondispatcher.h" // icons_cache
+#include "labels.h" // ScrollingLabel
 
 #include <QButtonGroup>
 #include <QLayout>
@@ -78,8 +79,8 @@ void ItemList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id
 
 	// centered file name and description
 	QVBoxLayout *labels = new QVBoxLayout;
-	QLabel *name = new QLabel(item.name);
-	QLabel *description = new QLabel(item.description);
+	QLabel *name = new ScrollingLabel(item.name);
+	QLabel *description = new ScrollingLabel(item.description);
 	name->setFont(font);
 	description->setFont(font);
 

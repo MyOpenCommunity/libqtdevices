@@ -37,6 +37,7 @@
 #include "audiostatemachine.h"
 #include "pagestack.h" // bt_global::page_stack
 #include "multimedia.h"
+#include "labels.h" // ScrollingLabel
 
 #include <QGridLayout>
 #include <QLabel>
@@ -100,8 +101,8 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 
 	bg->setPixmap(bt_global::skin->getImage("audioplayer_background"));
 
-	description_top = new QLabel;
-	description_bottom = new QLabel;
+	description_top = new ScrollingLabel;
+	description_bottom = new ScrollingLabel;
 	description_top->setFont(bt_global::font->get(FontManager::PLAYER_TITLE));
 	description_bottom->setFont(bt_global::font->get(FontManager::PLAYER_AUTHOR));
 

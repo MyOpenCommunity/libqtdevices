@@ -1,155 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="hr" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
         <source>always</source>
-        <translation>sempre</translation>
+        <translation>uvijek</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation>lun-ven</translation>
+        <translation>pon-pet</translation>
     </message>
     <message>
         <source>once</source>
-        <translation>una volta</translation>
+        <translation>jedanput</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation>sab-dom</translation>
+        <translation>sub-ned</translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
         <source>anti-panic</source>
-        <translation>antipanico</translation>
+        <translation>protiv panike</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation>Intrusione</translation>
+        <translation>Nedopušteni ulazak</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation>manomissione</translation>
+        <translation>nedopušteno manipuliranje</translation>
     </message>
     <message>
         <source>technical</source>
-        <translation>tecnico</translation>
+        <translation>tehnički</translation>
     </message>
 </context>
 <context>
     <name>BrightnessPage</name>
     <message>
         <source>High brightness</source>
-        <translation>Luminosità Alta</translation>
+        <translation>Visoka jačina osvjetljenja</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation>Luminosità Bassa</translation>
+        <translation>Niska jačina osvjetljenja</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation>Luminosità Normale</translation>
+        <translation>Normalna jačina osvjetljenja</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation>Off</translation>
+        <translation>Isključeno</translation>
     </message>
 </context>
 <context>
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation>Premere la croce</translation>
+        <translation>Klikni ciljnik</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation>Premere il pulsante OK</translation>
+        <translation>Klikni gumb OK</translation>
     </message>
 </context>
 <context>
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>Luminosità</translation>
+        <translation>Jačina osvjetljenja</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation>Calibrazione</translation>
+        <translation>Kalibracija</translation>
     </message>
     <message>
         <source>Clean Screen</source>
-        <translation>Pulisci Schermo</translation>
+        <translation>Čist zaslon</translation>
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation>Salva Schermo</translation>
+        <translation>Čuvar zaslona</translation>
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
-        <translation>Consumo</translation>
+        <translation>Potrošnja</translation>
+    </message>
+    <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>Struja</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>Gorivo</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>Grijanje/hlađenje</translation>
     </message>
     <message>
         <source>Production</source>
-        <translation>Produzione</translation>
+        <translation>Produkcija</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>Voda</translation>
     </message>
 </context>
 <context>
     <name>EnergyView</name>
     <message>
         <source>/days</source>
-        <translation>/giorni</translation>
+        <translation>/dani</translation>
     </message>
     <message>
         <source>/hours</source>
-        <translation>/ore</translation>
+        <translation>/sati</translation>
     </message>
     <message>
         <source>/months</source>
-        <translation>/mesi</translation>
+        <translation>/mjeseci</translation>
     </message>
     <message>
         <source>Cumulative</source>
-        <translation>Cumulativo</translation>
+        <translation>Kumulativno</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation>Attuale</translation>
+        <translation>Trenutno</translation>
     </message>
     <message>
         <source>Daily Average</source>
-        <translation>Media Giornaliera</translation>
+        <translation>Dnevni prosjek</translation>
     </message>
     <message>
         <source>Day</source>
-        <translation>Giorno</translation>
+        <translation>Dan</translation>
     </message>
     <message>
         <source>Hour</source>
-        <translation>Ora</translation>
+        <translation>Sat</translation>
     </message>
     <message>
         <source>Month</source>
-        <translation>Mese</translation>
+        <translation>Mjesec</translation>
     </message>
 </context>
 <context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
-        <translation>Manuale</translation>
+        <translation>Priručnik</translation>
     </message>
 </context>
 <context>
     <name>Keypad</name>
     <message>
         <source>PASSWORD:</source>
-        <translation>PASSWORD:</translation>
+        <translation>LOZINKA:</translation>
     </message>
 </context>
 <context>
@@ -160,7 +180,7 @@
     </message>
     <message>
         <source>Gateway</source>
-        <translation>Gateway</translation>
+        <translation>Pristupnik</translation>
     </message>
     <message>
         <source>IP</source>
@@ -172,7 +192,22 @@
     </message>
     <message>
         <source>Subnet mask</source>
-        <translation>Subnet mask</translation>
+        <translation>Maska podmreže</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>DATUM/SAT</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">Pohranjeni podaci će biti izbrisani.
+U redu za potvrdu.</translation>
     </message>
 </context>
 <context>
@@ -183,61 +218,61 @@
     </message>
     <message>
         <source>Artist:</source>
-        <translation>Artista:</translation>
+        <translation>Izvođač:</translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation>Durata:</translation>
+        <translation>Duljina:</translation>
     </message>
     <message>
         <source>of</source>
-        <translation>di</translation>
+        <translation>od</translation>
     </message>
     <message>
         <source>Track:</source>
-        <translation>Brano:</translation>
+        <translation>Zapis:</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
         <source>Balance</source>
-        <translation>Bilanciamento</translation>
+        <translation>Balans</translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation>Bassi</translation>
+        <translation>Bas</translation>
     </message>
     <message>
         <source>Loud</source>
-        <translation>Loud</translation>
+        <translation>Glasno</translation>
     </message>
     <message>
         <source>Treble</source>
-        <translation>Alti</translation>
+        <translation>Treble</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifierPreset</name>
     <message>
         <source>Classical</source>
-        <translation>Classical</translation>
+        <translation>Klasika</translation>
     </message>
     <message>
         <source>Dance</source>
-        <translation>Dance</translation>
+        <translation>Ples</translation>
     </message>
     <message>
         <source>Full Bass</source>
-        <translation>Full Bass</translation>
+        <translation>Puni bas</translation>
     </message>
     <message>
         <source>Full Treble</source>
-        <translation>Full Treble</translation>
+        <translation>Puni treble</translation>
     </message>
     <message>
         <source>Normal</source>
-        <translation>Normale</translation>
+        <translation>Normalno</translation>
     </message>
     <message>
         <source>Party</source>
@@ -248,95 +283,148 @@
         <translation>Pop</translation>
     </message>
     <message>
-        <source>Preset</source>
-        <translation>Preset</translation>
-    </message>
-    <message>
         <source>Rock</source>
         <translation>Rock</translation>
     </message>
     <message>
         <source>Soft</source>
-        <translation>Soft</translation>
+        <translation>Nježno</translation>
     </message>
     <message>
         <source>Techno</source>
-        <translation>Techno</translation>
+        <translation>Tehno</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation>Korisnik</translation>
     </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
-        <translation>Bolle</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>Deform</translation>
+        <translation>Bal</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>Linea</translation>
+        <translation>Linija</translation>
     </message>
     <message>
         <source>No screensaver</source>
-        <translation>No Screensaver</translation>
+        <translation>Nema čuvara zaslona</translation>
     </message>
     <message>
         <source>Text</source>
-        <translation>Testo</translation>
+        <translation>Tekst</translation>
     </message>
     <message>
         <source>Time</source>
-        <translation>Tempo</translation>
+        <translation>Sat</translation>
     </message>
 </context>
 <context>
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
-        <translation>Radio IP</translation>
+        <translation>IP radio</translation>
     </message>
     <message>
         <source>Servers</source>
-        <translation>Servers</translation>
+        <translation>Poslužitelji</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>Hlađenje</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>Suh</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>Grijanje</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation>Ventilator</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Automatski</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>Okretanje</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>Visina</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>Nisko </translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>Medij</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>Tiho</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Automatski</translation>
     </message>
 </context>
 <context>
     <name>StopngoPage</name>
     <message>
         <source>Enable</source>
-        <translation>Abilita</translation>
+        <translation>Omogući</translation>
     </message>
     <message>
         <source>Self-test</source>
-        <translation>Autotest</translation>
+        <translation>Samoispitivanje</translation>
     </message>
     <message>
         <source>Test</source>
-        <translation>Verifica</translation>
+        <translation>Ispitivanje</translation>
     </message>
 </context>
 <context>
     <name>TimePeriodSelection</name>
     <message>
         <source>Last 12 months</source>
-        <translation>Ultimi 12 mesi</translation>
+        <translation>Posljednjih 12 mjeseci</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
         <source>Door lock</source>
-        <translation>Serratura</translation>
+        <translation>Brava na vratima</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation>Luce scala</translation>
+        <translation>Stubišno svjetlo</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation>Sconosciuto</translation>
+        <translation>Nepoznato</translation>
     </message>
 </context>
 <context>

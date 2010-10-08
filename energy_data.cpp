@@ -276,7 +276,10 @@ EditEnergyCost::EditEnergyCost()
 void EditEnergyCost::showPage()
 {
 	if (initialized)
+	{
 		BannerPage::showPage();
+		return;
+	}
 
 	for (int i = 0; i < page_content->bannerCount(); ++i)
 	{

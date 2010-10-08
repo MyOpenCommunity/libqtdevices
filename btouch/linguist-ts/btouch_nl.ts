@@ -1,155 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="nl" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
         <source>always</source>
-        <translation>πάντοτε</translation>
+        <translation>altijd</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation>δευ-παρ</translation>
+        <translation>maan-vrij</translation>
     </message>
     <message>
         <source>once</source>
-        <translation>μια φορά</translation>
+        <translation>een keer</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation>σαβ-κυρ</translation>
+        <translation>za-zon</translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
         <source>anti-panic</source>
-        <translation>αντι-πανικού</translation>
+        <translation>paniek</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation>παρείσφρυση</translation>
+        <translation>Inbraak</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation>παρέμβλημα</translation>
+        <translation>sabotage</translation>
     </message>
     <message>
         <source>technical</source>
-        <translation>τεχνική</translation>
+        <translation>technisch</translation>
     </message>
 </context>
 <context>
     <name>BrightnessPage</name>
     <message>
         <source>High brightness</source>
-        <translation>Υψηλή φωτεινότητα</translation>
+        <translation>Hoge helderheid</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation>Αδύναμη φωτεινότητα</translation>
+        <translation>Lage helderheid</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation>κανονικός φωτισμός</translation>
+        <translation>Normale lichtsterkte</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation>Απενεργοποίηση</translation>
+        <translation>Off</translation>
     </message>
 </context>
 <context>
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation>Κάντε κλικ στο σταυρόνημα</translation>
+        <translation>Klik op het kruisje</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation>Κάντε κλικ στο κουμπί OK</translation>
+        <translation>Klik op de knop OK</translation>
     </message>
 </context>
 <context>
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>φωτεινότητα</translation>
+        <translation>Lichtsterkte</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation>Βαθμονόμηση</translation>
+        <translation>Kalibrering</translation>
     </message>
     <message>
         <source>Clean Screen</source>
-        <translation>Καθαρισμός οθόνης</translation>
+        <translation>Reinig Scherm</translation>
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation>Πρόγραμμα προστασίας οθόνης</translation>
+        <translation>Screensaver</translation>
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
-        <translation>Κατανάλωση</translation>
+        <translation>Verbruik</translation>
+    </message>
+    <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>Elektriciteit</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>Gas</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>Verwarming/Koeling</translation>
     </message>
     <message>
         <source>Production</source>
-        <translation>Παραγωγή</translation>
+        <translation>Productie</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>Water</translation>
     </message>
 </context>
 <context>
     <name>EnergyView</name>
     <message>
         <source>/days</source>
-        <translation>/ημέρες</translation>
+        <translation>/dagen</translation>
     </message>
     <message>
         <source>/hours</source>
-        <translation>/ώρες</translation>
+        <translation>/uren</translation>
     </message>
     <message>
         <source>/months</source>
-        <translation>/μήνες</translation>
+        <translation>/maanden</translation>
     </message>
     <message>
         <source>Cumulative</source>
-        <translation>Αθροιστική (κατανάλωση)</translation>
+        <translation>Cumulatief</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation>Ρεύμα</translation>
+        <translation>Huidig</translation>
     </message>
     <message>
         <source>Daily Average</source>
-        <translation>Ημερήσιος μέσος όρος</translation>
+        <translation>Dagelijks gemiddelde</translation>
     </message>
     <message>
         <source>Day</source>
-        <translation>Ημέρα</translation>
+        <translation>Dag</translation>
     </message>
     <message>
         <source>Hour</source>
-        <translation>Ώρα</translation>
+        <translation>Uur</translation>
     </message>
     <message>
         <source>Month</source>
-        <translation>Μήνας</translation>
+        <translation>Maand</translation>
     </message>
 </context>
 <context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
-        <translation>Χειροκίνητο</translation>
+        <translation>Manueel</translation>
     </message>
 </context>
 <context>
     <name>Keypad</name>
     <message>
         <source>PASSWORD:</source>
-        <translation>ΚΩΔΙΚΟΣ:</translation>
+        <translation>PASSWORD:</translation>
     </message>
 </context>
 <context>
@@ -160,7 +180,7 @@
     </message>
     <message>
         <source>Gateway</source>
-        <translation>Πύλη</translation>
+        <translation>Gateway</translation>
     </message>
     <message>
         <source>IP</source>
@@ -172,171 +192,239 @@
     </message>
     <message>
         <source>Subnet mask</source>
-        <translation>Μάσκα υποδικτύου</translation>
+        <translation>Subnet mask</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>DATUM/UUR</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">De opgeslagen gegevens worden verwijderd.
+OK om te bevestigen.</translation>
     </message>
 </context>
 <context>
     <name>MediaPlayWindow</name>
     <message>
         <source>Album:</source>
-        <translation>ΆΛΜΠΟΥΜ</translation>
+        <translation>Album:</translation>
     </message>
     <message>
         <source>Artist:</source>
-        <translation>Καλλιτέχνης:</translation>
+        <translation>Artiest:</translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation>Διάρκεια:</translation>
+        <translation>Tijdsd.:</translation>
     </message>
     <message>
         <source>of</source>
-        <translation></translation>
+        <translation>van</translation>
     </message>
     <message>
         <source>Track:</source>
-        <translation>Ίχνος:</translation>
+        <translation>Tune:</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
         <source>Balance</source>
-        <translation>Ισοστάθμιση</translation>
+        <translation>Balansregeling</translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation>Μπάσα</translation>
+        <translation>Lage</translation>
     </message>
     <message>
         <source>Loud</source>
-        <translation>Δυνατά</translation>
+        <translation>Loud</translation>
     </message>
     <message>
         <source>Treble</source>
-        <translation>Πρίμα</translation>
+        <translation>Hoge</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifierPreset</name>
     <message>
         <source>Classical</source>
-        <translation>Κλασσική</translation>
+        <translation>Classical</translation>
     </message>
     <message>
         <source>Dance</source>
-        <translation>Χορός</translation>
+        <translation>Dance</translation>
     </message>
     <message>
         <source>Full Bass</source>
-        <translation>Πλήρη μπάσα</translation>
+        <translation>Full Bass</translation>
     </message>
     <message>
         <source>Full Treble</source>
-        <translation>Μπάσα στο φουλ</translation>
+        <translation>Full Treble</translation>
     </message>
     <message>
         <source>Normal</source>
-        <translation>Κανονικό</translation>
+        <translation>Normaal</translation>
     </message>
     <message>
         <source>Party</source>
-        <translation>Πάρτι</translation>
+        <translation>Party</translation>
     </message>
     <message>
         <source>Pop</source>
-        <translation>Ποπ</translation>
-    </message>
-    <message>
-        <source>Preset</source>
-        <translation>Πρίμα στο φουλ</translation>
+        <translation>Pop</translation>
     </message>
     <message>
         <source>Rock</source>
-        <translation>Ροκ</translation>
+        <translation>Rock</translation>
     </message>
     <message>
         <source>Soft</source>
-        <translation>Απαλή</translation>
+        <translation>Soft</translation>
     </message>
     <message>
         <source>Techno</source>
-        <translation>Τέχνο</translation>
+        <translation>Techno</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation>Gebruiker</translation>
     </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
-        <translation>Μπίλιες</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>Παραμόρφωση</translation>
+        <translation>Ballen</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>Γραμμή</translation>
+        <translation>Lijn</translation>
     </message>
     <message>
         <source>No screensaver</source>
-        <translation>Δεν υπάρχει πρόγραμμα προστασίας της οθόνης</translation>
+        <translation>Geen Screensaver</translation>
     </message>
     <message>
         <source>Text</source>
-        <translation>Κείμενο</translation>
+        <translation>Tekst</translation>
     </message>
     <message>
         <source>Time</source>
-        <translation>Χρόνος</translation>
+        <translation>Uur</translation>
     </message>
 </context>
 <context>
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
-        <translation>IP Ράδιο</translation>
+        <translation>Radio IP</translation>
     </message>
     <message>
         <source>Servers</source>
-        <translation>Διακομιστές</translation>
+        <translation>Servers</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>Koeling</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>Droog</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>Verwarming</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation>Ventilator</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Automatisch</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>Swing</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>Hoog</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>Low</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>Medium</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>Geruisloos</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Automatisch</translation>
     </message>
 </context>
 <context>
     <name>StopngoPage</name>
     <message>
         <source>Enable</source>
-        <translation>Ενεργοποίηση</translation>
+        <translation>Activeren</translation>
     </message>
     <message>
         <source>Self-test</source>
-        <translation>Αυτοδοκιμασία</translation>
+        <translation>Autotest</translation>
     </message>
     <message>
         <source>Test</source>
-        <translation>Δοκιμασία</translation>
+        <translation>Nazicht</translation>
     </message>
 </context>
 <context>
     <name>TimePeriodSelection</name>
     <message>
         <source>Last 12 months</source>
-        <translation>Οι τελευταίοι 12 μήνες</translation>
+        <translation>Laatste 12 maanden</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
         <source>Door lock</source>
-        <translation>Κλειδωμένη πόρτα</translation>
+        <translation>Slot</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation>Φως της σκάλας</translation>
+        <translation>Licht trapzaal</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation>Άγνωστος</translation>
+        <translation>Onbekend</translation>
     </message>
 </context>
 <context>
