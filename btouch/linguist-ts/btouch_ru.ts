@@ -1,155 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="ru" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
         <source>always</source>
-        <translation>always</translation>
+        <translation>всегда</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation>mon-fri</translation>
+        <translation>пон-пят</translation>
     </message>
     <message>
         <source>once</source>
-        <translation>once</translation>
+        <translation>однажды</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation>sat-sun</translation>
+        <translation>суб-воскр</translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
         <source>anti-panic</source>
-        <translation>anti-panic</translation>
+        <translation>срочный вызов</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation>Intrusion</translation>
+        <translation>Вторжение</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation>tamper</translation>
+        <translation>самозащита</translation>
     </message>
     <message>
         <source>technical</source>
-        <translation>technical</translation>
+        <translation>технич.тревога</translation>
     </message>
 </context>
 <context>
     <name>BrightnessPage</name>
     <message>
         <source>High brightness</source>
-        <translation>High brightness</translation>
+        <translation>Сильная яркость</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation>Low brightness</translation>
+        <translation>Слабая яркость</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation>Normal brightness</translation>
+        <translation>Нормальная яркость </translation>
     </message>
     <message>
         <source>Off</source>
-        <translation>Off</translation>
+        <translation>Выкл.</translation>
     </message>
 </context>
 <context>
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation>Click the crosshair</translation>
+        <translation>Нажмите crosshair</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation>Click the OK button</translation>
+        <translation>Нажмите кнопку ОК</translation>
     </message>
 </context>
 <context>
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>brightness</translation>
+        <translation>Яркость</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation>Calibration</translation>
+        <translation>Калибровка</translation>
     </message>
     <message>
         <source>Clean Screen</source>
-        <translation>Clean Screen</translation>
+        <translation>Почистить экран</translation>
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation>Screen Saver</translation>
+        <translation>Заставка экрана</translation>
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
-        <translation>Consumption</translation>
+        <translation>Потребление</translation>
+    </message>
+    <message>
+        <source>DHW</source>
+        <translation>Снабжение горячей водой</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>Электричество</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>Газ</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>Отопление / охлаждение</translation>
     </message>
     <message>
         <source>Production</source>
-        <translation>Production</translation>
+        <translation>Производство</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>Вода</translation>
     </message>
 </context>
 <context>
     <name>EnergyView</name>
     <message>
         <source>/days</source>
-        <translation>/days</translation>
+        <translation>/дней</translation>
     </message>
     <message>
         <source>/hours</source>
-        <translation>/hours</translation>
+        <translation>/часов</translation>
     </message>
     <message>
         <source>/months</source>
-        <translation>/months</translation>
+        <translation>/месяцев</translation>
     </message>
     <message>
         <source>Cumulative</source>
-        <translation>Cumulative</translation>
+        <translation>Накопительная</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation>Current</translation>
+        <translation>Текущая</translation>
     </message>
     <message>
         <source>Daily Average</source>
-        <translation>Daily Average</translation>
+        <translation>Среднедневная</translation>
     </message>
     <message>
         <source>Day</source>
-        <translation>Day</translation>
+        <translation>День</translation>
     </message>
     <message>
         <source>Hour</source>
-        <translation>Hour</translation>
+        <translation>Час</translation>
     </message>
     <message>
         <source>Month</source>
-        <translation>Month</translation>
+        <translation>Месяц</translation>
     </message>
 </context>
 <context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
-        <translation>Manual</translation>
+        <translation>Ручной</translation>
     </message>
 </context>
 <context>
     <name>Keypad</name>
     <message>
         <source>PASSWORD:</source>
-        <translation>PASSWORD:</translation>
+        <translation>ПАРОЛЬ:</translation>
     </message>
 </context>
 <context>
@@ -160,7 +180,7 @@
     </message>
     <message>
         <source>Gateway</source>
-        <translation>Gateway</translation>
+        <translation>Портал</translation>
     </message>
     <message>
         <source>IP</source>
@@ -172,171 +192,239 @@
     </message>
     <message>
         <source>Subnet mask</source>
-        <translation>Subnet mask</translation>
+        <translation>Маска подсети</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>ДАТА/ВРЕМЯ</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">Сохраненные данные будут удалены.
+OK для подтверждения.</translation>
     </message>
 </context>
 <context>
     <name>MediaPlayWindow</name>
     <message>
         <source>Album:</source>
-        <translation>Album:</translation>
+        <translation>Альбом:</translation>
     </message>
     <message>
         <source>Artist:</source>
-        <translation>Artist:</translation>
+        <translation>Артист:</translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation>Length:</translation>
+        <translation>Время:</translation>
     </message>
     <message>
         <source>of</source>
-        <translation>of</translation>
+        <translation>из</translation>
     </message>
     <message>
         <source>Track:</source>
-        <translation>Track:</translation>
+        <translation>Дорожка:</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
         <source>Balance</source>
-        <translation>Balance</translation>
+        <translation>Баланс</translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation>Bass</translation>
+        <translation>Низкие</translation>
     </message>
     <message>
         <source>Loud</source>
-        <translation>Loud</translation>
+        <translation>Громко</translation>
     </message>
     <message>
         <source>Treble</source>
-        <translation>Treble</translation>
+        <translation>Высокие</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifierPreset</name>
     <message>
         <source>Classical</source>
-        <translation>Classical</translation>
+        <translation>Классический</translation>
     </message>
     <message>
         <source>Dance</source>
-        <translation>Dance</translation>
+        <translation>Танцевальный</translation>
     </message>
     <message>
         <source>Full Bass</source>
-        <translation>Full Bass</translation>
+        <translation>Низкие</translation>
     </message>
     <message>
         <source>Full Treble</source>
-        <translation>Full Treble</translation>
+        <translation>Высокие</translation>
     </message>
     <message>
         <source>Normal</source>
-        <translation>Normal</translation>
+        <translation>Нормальный</translation>
     </message>
     <message>
         <source>Party</source>
-        <translation>Party</translation>
+        <translation>Вечеринка</translation>
     </message>
     <message>
         <source>Pop</source>
-        <translation>Pop</translation>
-    </message>
-    <message>
-        <source>Preset</source>
-        <translation>Preset</translation>
+        <translation>Поп</translation>
     </message>
     <message>
         <source>Rock</source>
-        <translation>Rock</translation>
+        <translation>Рок</translation>
     </message>
     <message>
         <source>Soft</source>
-        <translation>Soft</translation>
+        <translation>Спокойный</translation>
     </message>
     <message>
         <source>Techno</source>
-        <translation>Techno</translation>
+        <translation>Техно</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation>Пользователь</translation>
     </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
-        <translation>Balls</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>Deform</translation>
+        <translation>Шарики</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>Line</translation>
+        <translation>Линия</translation>
     </message>
     <message>
         <source>No screensaver</source>
-        <translation>No Screensaver</translation>
+        <translation>Нет заставки экрана</translation>
     </message>
     <message>
         <source>Text</source>
-        <translation>Text</translation>
+        <translation>Текст</translation>
     </message>
     <message>
         <source>Time</source>
-        <translation>Time</translation>
+        <translation>Час</translation>
     </message>
 </context>
 <context>
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
-        <translation>IP radio</translation>
+        <translation>IP-radio</translation>
     </message>
     <message>
         <source>Servers</source>
-        <translation>Servers</translation>
+        <translation>Серверы</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>Охлаждение</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>Поглощение влаги</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>Отопление</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation>Вентиляция</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Автоматическая</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>Качание</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>Высокая</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>Низкая</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>Средний</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>Бесшумный</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Автоматическая</translation>
     </message>
 </context>
 <context>
     <name>StopngoPage</name>
     <message>
         <source>Enable</source>
-        <translation>Enable</translation>
+        <translation>Активировать</translation>
     </message>
     <message>
         <source>Self-test</source>
-        <translation>Self-test</translation>
+        <translation>Самоанализ</translation>
     </message>
     <message>
         <source>Test</source>
-        <translation>Test</translation>
+        <translation>Тест</translation>
     </message>
 </context>
 <context>
     <name>TimePeriodSelection</name>
     <message>
         <source>Last 12 months</source>
-        <translation>Last 12 months</translation>
+        <translation>Последние 12 месяцев</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
         <source>Door lock</source>
-        <translation>Door lock</translation>
+        <translation>Замок</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation>Staircase light</translation>
+        <translation>Свет лестница</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation>Unknown</translation>
+        <translation>Неизвестный</translation>
     </message>
 </context>
 <context>

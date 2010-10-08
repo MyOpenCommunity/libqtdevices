@@ -1,166 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="sl" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
         <source>always</source>
-        <translation>一直</translation>
+        <translation>vedno</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation>周一至周五</translation>
+        <translation>pon-pet</translation>
     </message>
     <message>
         <source>once</source>
-        <translation>一次</translation>
+        <translation>enkrat</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation>周六至周日</translation>
+        <translation>sob-ned</translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
         <source>anti-panic</source>
-        <translation>免惊慌</translation>
+        <translation>proti paniki</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation>侵入</translation>
+        <translation>Vdor</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation>防拆</translation>
+        <translation>nedovoljen poseg</translation>
     </message>
     <message>
         <source>technical</source>
-        <translation>技术</translation>
+        <translation>tehničen</translation>
     </message>
 </context>
 <context>
     <name>BrightnessPage</name>
     <message>
         <source>High brightness</source>
-        <translation>高等亮度</translation>
+        <translation>Močna osvetlitev</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation>低等亮度</translation>
+        <translation>Šibka osvetlitev</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation>正常亮度</translation>
+        <translation>Normalna osvetlitev</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation>关闭</translation>
+        <translation>Izklop</translation>
     </message>
 </context>
 <context>
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation>按一下十字</translation>
+        <translation>Klik na kurzor</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation>点击OK按钮</translation>
+        <translation>Klik na gumb OK</translation>
     </message>
 </context>
 <context>
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>亮度</translation>
+        <translation>Osvetlitev</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation>校准</translation>
+        <translation>Umerjanje</translation>
     </message>
     <message>
         <source>Clean Screen</source>
-        <translation>清除屏幕</translation>
+        <translation>Izbriši zaslon</translation>
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation>屏幕保护程序</translation>
+        <translation>Ohranjevalnik zaslona</translation>
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
-        <translation>消耗</translation>
+        <translation>Poraba</translation>
+    </message>
+    <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>Elektrika</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>Plin</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>Gretje/Hlajenje</translation>
     </message>
     <message>
         <source>Production</source>
-        <translation>发电</translation>
+        <translation>Proizvodnja</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>Voda</translation>
     </message>
 </context>
 <context>
     <name>EnergyView</name>
     <message>
         <source>/days</source>
-        <translation>/日</translation>
+        <translation>/dni</translation>
     </message>
     <message>
         <source>/hours</source>
-        <translation>/小时</translation>
+        <translation>/ur</translation>
     </message>
     <message>
         <source>/months</source>
-        <translation>/月</translation>
+        <translation>/mesecev</translation>
     </message>
     <message>
         <source>Cumulative</source>
-        <translation>累加</translation>
+        <translation>Zbirni</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation>当前</translation>
+        <translation>Trenuten</translation>
     </message>
     <message>
         <source>Daily Average</source>
-        <translation>日平均</translation>
+        <translation>Dnevno povprečje</translation>
     </message>
     <message>
         <source>Day</source>
-        <translation>天</translation>
+        <translation>Dan</translation>
     </message>
     <message>
         <source>Hour</source>
-        <translation>小时</translation>
+        <translation>Ura</translation>
     </message>
     <message>
         <source>Month</source>
-        <translation>月</translation>
+        <translation>Mesec</translation>
     </message>
 </context>
 <context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
-        <translation>手动</translation>
+        <translation>Ročni</translation>
     </message>
 </context>
 <context>
     <name>Keypad</name>
     <message>
         <source>PASSWORD:</source>
-        <translation>密码:</translation>
+        <translation>GESLO:</translation>
     </message>
 </context>
 <context>
     <name>LanSettings</name>
     <message>
         <source>DNS</source>
-        <translation>域名系统</translation>
+        <translation>DNS</translation>
     </message>
     <message>
         <source>Gateway</source>
-        <translation>网关</translation>
+        <translation>Vrata</translation>
     </message>
     <message>
         <source>IP</source>
@@ -172,225 +192,293 @@
     </message>
     <message>
         <source>Subnet mask</source>
-        <translation>子网掩码</translation>
+        <translation>Maska podomrežja</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>DATUM/URA</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">Shranjeni podatki se bodo izbrisali.
+OK za potrditev.</translation>
     </message>
 </context>
 <context>
     <name>MediaPlayWindow</name>
     <message>
         <source>Album:</source>
-        <translation>专辑:</translation>
+        <translation>Album:</translation>
     </message>
     <message>
         <source>Artist:</source>
-        <translation>艺术家:</translation>
+        <translation>Umetnik:</translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation>长度:</translation>
+        <translation>Dolžina:</translation>
     </message>
     <message>
         <source>of</source>
-        <translation>在</translation>
+        <translation>od</translation>
     </message>
     <message>
         <source>Track:</source>
-        <translation>曲目表:</translation>
+        <translation>Posnetek:</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
         <source>Balance</source>
-        <translation>平衡</translation>
+        <translation>Ravnotežje</translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation>低音</translation>
+        <translation>Nizki toni</translation>
     </message>
     <message>
         <source>Loud</source>
-        <translation>响亮</translation>
+        <translation>Glasno</translation>
     </message>
     <message>
         <source>Treble</source>
-        <translation>高音</translation>
+        <translation>Visoki toni</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifierPreset</name>
     <message>
         <source>Classical</source>
-        <translation>古典</translation>
+        <translation>Klasično</translation>
     </message>
     <message>
         <source>Dance</source>
-        <translation>舞曲</translation>
+        <translation>Ples</translation>
     </message>
     <message>
         <source>Full Bass</source>
-        <translation>重低音</translation>
+        <translation>Najnižji toni</translation>
     </message>
     <message>
         <source>Full Treble</source>
-        <translation>重高音</translation>
+        <translation>Najvišji toni</translation>
     </message>
     <message>
         <source>Normal</source>
-        <translation>正常</translation>
+        <translation>Normalno</translation>
     </message>
     <message>
         <source>Party</source>
-        <translation>宴会</translation>
+        <translation>Zabava</translation>
     </message>
     <message>
         <source>Pop</source>
-        <translation>流行</translation>
-    </message>
-    <message>
-        <source>Preset</source>
-        <translation>预设</translation>
+        <translation>Pop</translation>
     </message>
     <message>
         <source>Rock</source>
-        <translation>摇滚</translation>
+        <translation>Rock</translation>
     </message>
     <message>
         <source>Soft</source>
-        <translation>轻音乐</translation>
+        <translation>Mehek</translation>
     </message>
     <message>
         <source>Techno</source>
-        <translation>Techno音乐</translation>
+        <translation>Tehno</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation>Uporabnik</translation>
     </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
-        <translation>球式屏幕保护程序</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>变形式屏幕保护程序</translation>
+        <translation>Kroglice</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>线条</translation>
+        <translation>Linija</translation>
     </message>
     <message>
         <source>No screensaver</source>
-        <translation>无屏幕保护程序</translation>
+        <translation>Brez ohranjevalnika zaslona</translation>
     </message>
     <message>
         <source>Text</source>
-        <translation>文字内容</translation>
+        <translation>Besedilo</translation>
     </message>
     <message>
         <source>Time</source>
-        <translation>时间</translation>
+        <translation>Ura</translation>
     </message>
 </context>
 <context>
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
-        <translation>IP广播</translation>
+        <translation>IP radio</translation>
     </message>
     <message>
         <source>Servers</source>
-        <translation>服务器</translation>
+        <translation>Strežniki</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>Hlajenje</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>Suh</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>Gretje</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation>Ventilacija</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Avtomatična</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>Nihanje</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>Visoka</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>Nizka</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>Srednji</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>Tih</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Avtomatična</translation>
     </message>
 </context>
 <context>
     <name>StopngoPage</name>
     <message>
         <source>Enable</source>
-        <translation>启动</translation>
+        <translation>Omogoči</translation>
     </message>
     <message>
         <source>Self-test</source>
-        <translation>自测</translation>
+        <translation>Samotestiranje</translation>
     </message>
     <message>
         <source>Test</source>
-        <translation>测试</translation>
+        <translation>Preskus</translation>
     </message>
 </context>
 <context>
     <name>TimePeriodSelection</name>
     <message>
         <source>Last 12 months</source>
-        <translation>最后12个月</translation>
+        <translation>Zadnjih 12 mesecev</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
         <source>Door lock</source>
-        <translation>门锁</translation>
+        <translation>Zaklepanje vrat</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation>楼梯灯</translation>
+        <translation>Osvetlitev stopnišča</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation>未知</translation>
+        <translation>Neznan</translation>
     </message>
 </context>
 <context>
     <name>device_condition</name>
     <message>
         <source>OFF</source>
-        <translation>关闭</translation>
+        <translation>OFF</translation>
     </message>
 </context>
 <context>
     <name>device_condition_aux</name>
     <message>
         <source>OFF</source>
-        <translation>关闭</translation>
+        <translation>OFF</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation>开启</translation>
+        <translation>ON</translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming</name>
     <message>
         <source>OFF</source>
-        <translation>关闭</translation>
+        <translation>OFF</translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming_100</name>
     <message>
         <source>OFF</source>
-        <translation>关闭</translation>
+        <translation>OFF</translation>
     </message>
 </context>
 <context>
     <name>device_condition_light_status</name>
     <message>
         <source>OFF</source>
-        <translation>关闭</translation>
+        <translation>OFF</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation>开启</translation>
+        <translation>ON</translation>
     </message>
 </context>
 <context>
     <name>device_condition_volume</name>
     <message>
         <source>OFF</source>
-        <translation>关闭</translation>
+        <translation>OFF</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation>开启</translation>
+        <translation>ON</translation>
     </message>
 </context>
 </TS>
