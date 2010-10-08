@@ -175,7 +175,7 @@ private:
 	static QHash<int, OpenServerManager*> openservers;
 
 	mutable QHash<int, QPair<QTimer*, QString> > compressed_frames;
-	mutable QSignalMapper compressor_mapper;
+	mutable QSignalMapper frame_compressor_mapper;
 };
 
 #endif //__DEVICE_H__

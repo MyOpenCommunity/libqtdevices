@@ -172,7 +172,7 @@ device::device(QString _who, QString _where, int oid) : FrameReceiver(oid)
 
 	connect(manager, SIGNAL(connectionUp()), SIGNAL(connectionUp()));
 	connect(manager, SIGNAL(connectionDown()), SIGNAL(connectionDown()));
-	connect(&compressor_mapper, SIGNAL(mapped(int)), SLOT(emitCompressedFrame(int)));
+	connect(&frame_compressor_mapper, SIGNAL(mapped(int)), SLOT(emitCompressedFrame(int)));
 }
 
 OpenServerManager *device::getManager(int openserver_id)
@@ -257,8 +257,8 @@ void device::sendCompressedFrame(QString frame) const
 		timeout->setSingleShot(true);
 		timeout->start(COMPRESSION_TIMEOUT);
 
-		connect(timeout, SIGNAL(timeout()), &compressor_mapper, SLOT(map()));
-		compressor_mapper.setMapping(timeout, what);
+		connect(timeout, SIGNAL(timeout()), &frame_compressor_mapper, SLOT(map()));
+		frame_compressor_mapper.setMapping(timeout, what);
 		compressed_frames[what] = qMakePair(timeout, frame);
 	}
 }
