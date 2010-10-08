@@ -119,8 +119,8 @@ void OpenServerManager::handleConnectionDown()
 /*!
 	\brief Reconnect the \a OpenClient instances.
 
-	Try to reconnect all instances of OpenClient after
-	\a OpenServerManager::reconnection_time.
+	Try to reconnect all instances of OpenClient every
+	\a OpenServerManager::reconnection_time if connection is down.
  */
 void OpenServerManager::timerEvent(QTimerEvent*)
 {
