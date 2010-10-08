@@ -102,10 +102,12 @@ namespace
 /*!
 	\var Client::Type Client::REQUEST
 	Used to send frames to the openserver.
+	\note the frames sent during the programmation of a scenario module are not
+	delivered.
 */
 /*!
 	\var Client::Type Client::SUPERVISOR
-	Used to receive frames from the video ip system or from the socket NOTIFY.
+	Used to receive frames that came from the socket NOTIFY.
 */
 
 /*!
