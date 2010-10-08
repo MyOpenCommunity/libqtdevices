@@ -26,6 +26,7 @@
 #include "favoriteswidget.h"
 #endif
 
+#include "homepage.h"
 #include "hardware_functions.h"
 #include "skinmanager.h"
 #include "main.h" // getHomepageNode
@@ -156,7 +157,8 @@ void HomeWindow::centralWidgetChanged(int index)
 	if (qobject_cast<Page *>(central_widget->widget(index)))
 	{
 		Page *p = static_cast<Page *>(central_widget->widget(index));
-		header_widget->centralPageChanged(p->sectionId(), p->pageType());
+		bool is_homepage = (qobject_cast<HomePage*>(p) != 0);
+		header_widget->centralPageChanged(p->sectionId(), is_homepage);
 		// force a relayout, because changing the central page might change
 		// the window header size; see also the comment in PageContainer::showPage()
 		layout()->activate();

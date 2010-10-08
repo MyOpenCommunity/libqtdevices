@@ -94,14 +94,6 @@ public:
 	static const int SMALL_TITLE_HEIGHT = 35;
 	static const int TINY_TITLE_HEIGHT = 20;
 
-	// Indicates subsystem pagetype. For now it is used in touchx top_nav_bar
-	// TODO: is this the same as pagSecLiv in main.h?
-	enum PageType
-	{
-		NONE = 0,
-		HOMEPAGE,
-	};
-
 	/**
 	 * Type definition for content.
 	 *
@@ -113,10 +105,6 @@ public:
 	~Page();
 	/// Obsolete: don't use it in new code
 	virtual void inizializza();
-
-	// Defaults to NONE, reimplement to change page type.
-	// TODO: This should really be pure virtual
-	virtual PageType pageType();
 
 	/**
 	 * Page id of the first page of a section.

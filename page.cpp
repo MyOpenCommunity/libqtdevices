@@ -263,11 +263,6 @@ void Page::startTransition()
 	page_container->startTransition(this);
 }
 
-Page::PageType Page::pageType()
-{
-	return NONE;
-}
-
 int Page::sectionId() const
 {
 	return NO_SECTION;

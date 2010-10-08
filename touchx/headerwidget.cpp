@@ -819,25 +819,18 @@ void HeaderWidget::loadConfiguration(const QDomNode &homepage_node, const QDomNo
 	header_info->loadItems(infobar_node, settings);
 }
 
-void HeaderWidget::centralPageChanged(int section_id, Page::PageType type)
+void HeaderWidget::centralPageChanged(int section_id, bool is_homepage)
 {
-	qDebug() << "new central widget = " << type << " id " << section_id;
-	switch (type)
-	{
-	case Page::HOMEPAGE:
-		header_logo->setControlsVisible(false);
-		top_nav_bar->hide();
-		header_logo->show();
-		header_info->show();
-		break;
-	default:
-		header_logo->setControlsVisible(true);
+	qDebug() << "new central widget = " << " id " << section_id;
+
+	header_logo->setControlsVisible(!is_homepage);
+	top_nav_bar->setVisible(!is_homepage);
+	header_logo->show();
+	header_info->setVisible(is_homepage);
+
+	if (!is_homepage)
 		top_nav_bar->setCurrentSection(section_id);
-		top_nav_bar->show();
-		header_logo->show();
-		header_info->hide();
-		break;
-	}
+
 	updateGeometry();
 }
 

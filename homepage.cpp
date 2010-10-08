@@ -76,11 +76,6 @@ void HomePage::loadItems(const QDomNode &config_node)
 #endif
 }
 
-Page::PageType HomePage::pageType()
-{
-	return HOMEPAGE;
-}
-
 void HomePage::showSectionPage(int page_id)
 {
 #ifdef CONFIG_BTOUCH

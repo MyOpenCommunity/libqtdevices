@@ -265,7 +265,7 @@ class HeaderWidget : public QWidget
 Q_OBJECT
 public:
 	HeaderWidget(TrayBar *tray_bar);
-	void centralPageChanged(int section_id, Page::PageType);
+	void centralPageChanged(int section_id, bool is_homepage);
 	void sectionChanged(int section_id);
 
 	void loadConfiguration(const QDomNode &homepage_node, const QDomNode &infobar_node);

@@ -47,8 +47,6 @@ Q_OBJECT
 public:
 	HomePage(const QDomNode &config_node);
 
-	virtual PageType pageType();
-
 public slots:
 	void showSectionPage(int page_id);
 
