@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="es" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
         <source>always</source>
-        <translation>altijd</translation>
+        <translation>siempre</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation>maan-vrij</translation>
+        <translation>lun-ven</translation>
     </message>
     <message>
         <source>once</source>
-        <translation>een keer</translation>
+        <translation>una vez</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation>za-zon</translation>
+        <translation>sab-dom</translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
         <source>anti-panic</source>
-        <translation>paniek</translation>
+        <translation>antipánico</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation>Inbraak</translation>
+        <translation>Antirrobo</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation>sabotage</translation>
+        <translation>manipulación</translation>
     </message>
     <message>
         <source>technical</source>
-        <translation>technisch</translation>
+        <translation>técnica</translation>
     </message>
 </context>
 <context>
     <name>BrightnessPage</name>
     <message>
         <source>High brightness</source>
-        <translation>Hoge helderheid</translation>
+        <translation>Alta luminosidad</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation>Lage helderheid</translation>
+        <translation>Baja luminosidad</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation>Normale lichtsterkte</translation>
+        <translation>Luminosidad normal</translation>
     </message>
     <message>
         <source>Off</source>
@@ -62,87 +62,107 @@
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation>Klik op het kruisje</translation>
+        <translation>Haga clic en el puntero de</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation>Klik op de knop OK</translation>
+        <translation>Haga clic en el botón OK</translation>
     </message>
 </context>
 <context>
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>lichtsterkte</translation>
+        <translation>Luminosidad</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation>Kalibrering</translation>
+        <translation>Calibrado</translation>
     </message>
     <message>
         <source>Clean Screen</source>
-        <translation>Reinig Scherm</translation>
+        <translation>Limpiar pantalla</translation>
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation>Screensaver</translation>
+        <translation>Salvapantallas</translation>
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
-        <translation>Verbruik</translation>
+        <translation>Consumo</translation>
+    </message>
+    <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>Electricidad</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>Gas</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>Calefacción/Aire acondicionado</translation>
     </message>
     <message>
         <source>Production</source>
-        <translation>Productie</translation>
+        <translation>Producción</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>Agua</translation>
     </message>
 </context>
 <context>
     <name>EnergyView</name>
     <message>
         <source>/days</source>
-        <translation>/dagen</translation>
+        <translation>/días</translation>
     </message>
     <message>
         <source>/hours</source>
-        <translation>/uren</translation>
+        <translation>/horas</translation>
     </message>
     <message>
         <source>/months</source>
-        <translation>/maanden</translation>
+        <translation>/meses</translation>
     </message>
     <message>
         <source>Cumulative</source>
-        <translation>Cumulatief</translation>
+        <translation>Cumulativo</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation>Huidig</translation>
+        <translation>Actual</translation>
     </message>
     <message>
         <source>Daily Average</source>
-        <translation>Dagelijks gemiddelde</translation>
+        <translation>Media diaria</translation>
     </message>
     <message>
         <source>Day</source>
-        <translation>Dag</translation>
+        <translation>Día</translation>
     </message>
     <message>
         <source>Hour</source>
-        <translation>Uur</translation>
+        <translation>Hora</translation>
     </message>
     <message>
         <source>Month</source>
-        <translation>Maand</translation>
+        <translation>Mes</translation>
     </message>
 </context>
 <context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
-        <translation>Manueel</translation>
+        <translation>Manual</translation>
     </message>
 </context>
 <context>
@@ -160,7 +180,7 @@
     </message>
     <message>
         <source>Gateway</source>
-        <translation>Gateway</translation>
+        <translation>Puerta de enlace</translation>
     </message>
     <message>
         <source>IP</source>
@@ -172,41 +192,56 @@
     </message>
     <message>
         <source>Subnet mask</source>
-        <translation>Subnet mask</translation>
+        <translation>Máscara subred</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>Fecha/Hora</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">Los datos almacenados serán borrados.
+Haga clic en Aceptar para confirmar.</translation>
     </message>
 </context>
 <context>
     <name>MediaPlayWindow</name>
     <message>
         <source>Album:</source>
-        <translation>Album:</translation>
+        <translation>Álbum:</translation>
     </message>
     <message>
         <source>Artist:</source>
-        <translation>Artiest:</translation>
+        <translation>Artista:</translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation>Tijdsd.:</translation>
+        <translation>Duración:</translation>
     </message>
     <message>
         <source>of</source>
-        <translation>van</translation>
+        <translation>de</translation>
     </message>
     <message>
         <source>Track:</source>
-        <translation>Tune:</translation>
+        <translation>Tema:</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
         <source>Balance</source>
-        <translation>Balansregeling</translation>
+        <translation>Balanceado</translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation>Lage</translation>
+        <translation>Bajos</translation>
     </message>
     <message>
         <source>Loud</source>
@@ -214,7 +249,7 @@
     </message>
     <message>
         <source>Treble</source>
-        <translation>Hoge</translation>
+        <translation>Altos</translation>
     </message>
 </context>
 <context>
@@ -237,7 +272,7 @@
     </message>
     <message>
         <source>Normal</source>
-        <translation>Normaal</translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <source>Party</source>
@@ -246,10 +281,6 @@
     <message>
         <source>Pop</source>
         <translation>Pop</translation>
-    </message>
-    <message>
-        <source>Preset</source>
-        <translation>Preset</translation>
     </message>
     <message>
         <source>Rock</source>
@@ -261,52 +292,109 @@
     </message>
     <message>
         <source>Techno</source>
-        <translation>Techno</translation>
+        <translation>Tecno</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation>Usuario</translation>
     </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
-        <translation>Ballen</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>Vervorming</translation>
+        <translation>Bolas</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>Lijn</translation>
+        <translation>Línea</translation>
     </message>
     <message>
         <source>No screensaver</source>
-        <translation>Geen Screensaver</translation>
+        <translation>No Salvapantalla</translation>
     </message>
     <message>
         <source>Text</source>
-        <translation>Tekst</translation>
+        <translation>Texto</translation>
     </message>
     <message>
         <source>Time</source>
-        <translation>Tijd</translation>
+        <translation>Hora</translation>
     </message>
 </context>
 <context>
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
-        <translation>Radio IP</translation>
+        <translation>IP radio</translation>
     </message>
     <message>
         <source>Servers</source>
-        <translation>Servers</translation>
+        <translation>Servidores</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>Refrigeración</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>Deshumidificador</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>Calefacción</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation>Ventilador</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Automático</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>Oscilación</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>Alta</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>Baja</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>Media</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>Silencioso</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Automático</translation>
     </message>
 </context>
 <context>
     <name>StopngoPage</name>
     <message>
         <source>Enable</source>
-        <translation>Activeren</translation>
+        <translation>Habilitar</translation>
     </message>
     <message>
         <source>Self-test</source>
@@ -314,29 +402,29 @@
     </message>
     <message>
         <source>Test</source>
-        <translation>Nazicht</translation>
+        <translation>Verificar</translation>
     </message>
 </context>
 <context>
     <name>TimePeriodSelection</name>
     <message>
         <source>Last 12 months</source>
-        <translation>Laatste 12 maanden</translation>
+        <translation>Últimos 12 meses</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
         <source>Door lock</source>
-        <translation>Slot</translation>
+        <translation>Cerradura</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation>Licht trapzaal</translation>
+        <translation>Luz escalera</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation>Onbekend</translation>
+        <translation>Desconocido</translation>
     </message>
 </context>
 <context>

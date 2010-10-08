@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="fr" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
         <source>always</source>
-        <translation>دوماً</translation>
+        <translation>toujours</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation>اثنين-ثلاثاء</translation>
+        <translation>lun-ven</translation>
     </message>
     <message>
         <source>once</source>
-        <translation>مرة</translation>
+        <translation>une fois</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation>سبت-أحد</translation>
+        <translation>sam-dim</translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
         <source>anti-panic</source>
-        <translation>ضد ال</translation>
+        <translation>anti-panique</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation>تطفل</translation>
+        <translation>Intrusion</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation>عبثي</translation>
+        <translation>sabotage</translation>
     </message>
     <message>
         <source>technical</source>
-        <translation>تقني</translation>
+        <translation>technique</translation>
     </message>
 </context>
 <context>
     <name>BrightnessPage</name>
     <message>
         <source>High brightness</source>
-        <translation>درجة سطوع عالية</translation>
+        <translation>Luminosité élevée</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation>درجة سطوع منخفضة</translation>
+        <translation>Luminosité faible</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation>درجة سطوع عادية</translation>
+        <translation>Luminosité normale</translation>
     </message>
     <message>
         <source>Off</source>
@@ -62,281 +62,369 @@
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation>انقر على الشارت باستخدام رمز التقاطع</translation>
+        <translation>Cliquez sur la croix</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation>انقر على زر موافق</translation>
+        <translation>Cliquez sur le bouton OK</translation>
     </message>
 </context>
 <context>
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>سطوع</translation>
+        <translation>Luminosité</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation>المعايرة</translation>
+        <translation>Calibrage</translation>
     </message>
     <message>
         <source>Clean Screen</source>
-        <translation>مسح الشاشة</translation>
+        <translation>Nettoyer écran</translation>
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation>شاشة التوقف</translation>
+        <translation>Ecran de veille</translation>
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
-        <translation>الاستهلاك</translation>
+        <translation>Consommation</translation>
+    </message>
+    <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>Électricité</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>Gaz</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>Chauffage/Climatisation</translation>
     </message>
     <message>
         <source>Production</source>
-        <translation>الاستهلاك</translation>
+        <translation>Production</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>Eau</translation>
     </message>
 </context>
 <context>
     <name>EnergyView</name>
     <message>
         <source>/days</source>
-        <translation>/أيام</translation>
+        <translation>/jours</translation>
     </message>
     <message>
         <source>/hours</source>
-        <translation>/ساعات</translation>
+        <translation>/heures</translation>
     </message>
     <message>
         <source>/months</source>
-        <translation>/أشهر</translation>
+        <translation>/mois</translation>
     </message>
     <message>
         <source>Cumulative</source>
-        <translation>الطاقة التراكمية</translation>
+        <translation>Cumulatif</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation>حالي</translation>
+        <translation>Actuel</translation>
     </message>
     <message>
         <source>Daily Average</source>
-        <translation>المتوسط اليومي</translation>
+        <translation>Moyenne journalière</translation>
     </message>
     <message>
         <source>Day</source>
-        <translation>اليوم</translation>
+        <translation>Jour</translation>
     </message>
     <message>
         <source>Hour</source>
-        <translation>ساعة</translation>
+        <translation>Heure</translation>
     </message>
     <message>
         <source>Month</source>
-        <translation>شهر</translation>
+        <translation>Mois</translation>
     </message>
 </context>
 <context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
-        <translation>يدوياً</translation>
+        <translation>Manuel</translation>
     </message>
 </context>
 <context>
     <name>Keypad</name>
     <message>
         <source>PASSWORD:</source>
-        <translation>كلمة مرور:</translation>
+        <translation>PASSWORD:</translation>
     </message>
 </context>
 <context>
     <name>LanSettings</name>
     <message>
         <source>DNS</source>
-        <translation>نظام أسماء المجالات (DNS)</translation>
+        <translation>DNS</translation>
     </message>
     <message>
         <source>Gateway</source>
-        <translation>بوابة</translation>
+        <translation>Passerelle</translation>
     </message>
     <message>
         <source>IP</source>
-        <translation>بروتوكول الإنترنت</translation>
+        <translation>IP</translation>
     </message>
     <message>
         <source>Mac</source>
-        <translation>نظام التشغيل Mac</translation>
+        <translation>Mac</translation>
     </message>
     <message>
         <source>Subnet mask</source>
-        <translation>قناع الشبكة التحتية</translation>
+        <translation>Masque ss-réseau</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>DATE/HEURE</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">Les données enregistrées seront effacées.
+Cliquez sur OK pour confirmer.</translation>
     </message>
 </context>
 <context>
     <name>MediaPlayWindow</name>
     <message>
         <source>Album:</source>
-        <translation>الألبوم:</translation>
+        <translation>Album:</translation>
     </message>
     <message>
         <source>Artist:</source>
-        <translation>الفنان:</translation>
+        <translation>Auteur:</translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation>الطول:</translation>
+        <translation>Durée:</translation>
     </message>
     <message>
         <source>of</source>
-        <translation>من</translation>
+        <translation>de</translation>
     </message>
     <message>
         <source>Track:</source>
-        <translation>السكة:</translation>
+        <translation>Morceau:</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
         <source>Balance</source>
-        <translation>ميزان</translation>
+        <translation>Balance</translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation>باس</translation>
+        <translation>Graves</translation>
     </message>
     <message>
         <source>Loud</source>
-        <translation>عالي</translation>
+        <translation>Grave</translation>
     </message>
     <message>
         <source>Treble</source>
-        <translation>ترابل</translation>
+        <translation>Aigus</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifierPreset</name>
     <message>
         <source>Classical</source>
-        <translation>كلاسيك</translation>
+        <translation>Classique</translation>
     </message>
     <message>
         <source>Dance</source>
-        <translation>دانس</translation>
+        <translation>Dance</translation>
     </message>
     <message>
         <source>Full Bass</source>
-        <translation>فول باس</translation>
+        <translation>Grave max.</translation>
     </message>
     <message>
         <source>Full Treble</source>
-        <translation>فول ترابل</translation>
+        <translation>Aigus max.</translation>
     </message>
     <message>
         <source>Normal</source>
-        <translation>عادي</translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <source>Party</source>
-        <translation>بارتي</translation>
+        <translation>Party</translation>
     </message>
     <message>
         <source>Pop</source>
-        <translation>بوب</translation>
-    </message>
-    <message>
-        <source>Preset</source>
-        <translation>تعيين مسبق</translation>
+        <translation>Pop</translation>
     </message>
     <message>
         <source>Rock</source>
-        <translation>روك</translation>
+        <translation>Rock</translation>
     </message>
     <message>
         <source>Soft</source>
-        <translation>سوفت</translation>
+        <translation>Soft</translation>
     </message>
     <message>
         <source>Techno</source>
-        <translation>صوت Techno</translation>
+        <translation>Techno</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation>Utilisateur</translation>
     </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
-        <translation>كرات</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>تشويه</translation>
+        <translation>Balles</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>خط</translation>
+        <translation>Ligne</translation>
     </message>
     <message>
         <source>No screensaver</source>
-        <translation>لا توجد شاشة توقف</translation>
+        <translation>Pas d&apos;économiseur d&apos;écran</translation>
     </message>
     <message>
         <source>Text</source>
-        <translation>نص</translation>
+        <translation>Texte</translation>
     </message>
     <message>
         <source>Time</source>
-        <translation>الوقت</translation>
+        <translation>Heure</translation>
     </message>
 </context>
 <context>
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
-        <translation>راديو IP</translation>
+        <translation>Radio IP</translation>
     </message>
     <message>
         <source>Servers</source>
-        <translation>الملقم</translation>
+        <translation>Serveurs</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>Refroidissement</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>Déshumidificateur</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>Chauffage</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation>Ventilation</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Automatique</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>Oscillation</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>Haute</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>Basse</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>Moyenne</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>Silencieux</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Automatique</translation>
     </message>
 </context>
 <context>
     <name>StopngoPage</name>
     <message>
         <source>Enable</source>
-        <translation>تمكين</translation>
+        <translation>En service</translation>
     </message>
     <message>
         <source>Self-test</source>
-        <translation>اختبار ذاتي</translation>
+        <translation>Autotest</translation>
     </message>
     <message>
         <source>Test</source>
-        <translation>اختبار</translation>
+        <translation>Contrôle</translation>
     </message>
 </context>
 <context>
     <name>TimePeriodSelection</name>
     <message>
         <source>Last 12 months</source>
-        <translation>الأشهر الاثني عشر الأخيرة</translation>
+        <translation>12 derniers mois</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
         <source>Door lock</source>
-        <translation>قفل الباب</translation>
+        <translation>Serrure</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation>ضوء السلم</translation>
+        <translation>Lum. Escaliers</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation>غير محدد</translation>
+        <translation>Inconnu</translation>
     </message>
 </context>
 <context>

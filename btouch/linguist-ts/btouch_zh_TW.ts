@@ -1,166 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="zh_TW" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
         <source>always</source>
-        <translation>herzaman</translation>
+        <translation>一直</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation>pzt-cum</translation>
+        <translation>週一至週五</translation>
     </message>
     <message>
         <source>once</source>
-        <translation>bir kere</translation>
+        <translation>一次</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation>cts-pzr</translation>
+        <translation>週六至週日</translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
         <source>anti-panic</source>
-        <translation>panik önleme</translation>
+        <translation>免驚慌</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation>İzinsiz giriş</translation>
+        <translation>侵入</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation>kurcalama</translation>
+        <translation>防拆</translation>
     </message>
     <message>
         <source>technical</source>
-        <translation>teknik</translation>
+        <translation>技術</translation>
     </message>
 </context>
 <context>
     <name>BrightnessPage</name>
     <message>
         <source>High brightness</source>
-        <translation>Parlaklık yüksek</translation>
+        <translation>高等亮度</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation>Parlaklık düşük</translation>
+        <translation>低等亮度</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation>Normal parlaklık</translation>
+        <translation>正常亮度</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation>Kapalı</translation>
+        <translation>關閉</translation>
     </message>
 </context>
 <context>
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation>Artıya tıkla</translation>
+        <translation>按一下十字</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation>OK butonuna tıkla</translation>
+        <translation>點擊OK按鈕</translation>
     </message>
 </context>
 <context>
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>parlaklık</translation>
+        <translation>亮度</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation>Ayar</translation>
+        <translation>校準</translation>
     </message>
     <message>
         <source>Clean Screen</source>
-        <translation>Ekranı temizle</translation>
+        <translation>清除螢幕</translation>
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation>Ekran Koruyucu</translation>
+        <translation>螢幕保護程式</translation>
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
-        <translation>Tüketim</translation>
+        <translation>消耗</translation>
+    </message>
+    <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>電</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>燃氣</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>加熱/製冷</translation>
     </message>
     <message>
         <source>Production</source>
-        <translation>Üretim</translation>
+        <translation>發電</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>水</translation>
     </message>
 </context>
 <context>
     <name>EnergyView</name>
     <message>
         <source>/days</source>
-        <translation>/gün</translation>
+        <translation>/日</translation>
     </message>
     <message>
         <source>/hours</source>
-        <translation>/saat</translation>
+        <translation>/小時</translation>
     </message>
     <message>
         <source>/months</source>
-        <translation>/ay</translation>
+        <translation>/月</translation>
     </message>
     <message>
         <source>Cumulative</source>
-        <translation>Kümülatif toplam</translation>
+        <translation>纍加</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation>Mevcut durum</translation>
+        <translation>當前</translation>
     </message>
     <message>
         <source>Daily Average</source>
-        <translation>Günlük Ortalama</translation>
+        <translation>日平均</translation>
     </message>
     <message>
         <source>Day</source>
-        <translation>Gün</translation>
+        <translation>天</translation>
     </message>
     <message>
         <source>Hour</source>
-        <translation>Saat</translation>
+        <translation>小時</translation>
     </message>
     <message>
         <source>Month</source>
-        <translation>Ay</translation>
+        <translation>月</translation>
     </message>
 </context>
 <context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
-        <translation>Manuel</translation>
+        <translation>手動</translation>
     </message>
 </context>
 <context>
     <name>Keypad</name>
     <message>
         <source>PASSWORD:</source>
-        <translation>ŞİFRE:</translation>
+        <translation>密碼:</translation>
     </message>
 </context>
 <context>
     <name>LanSettings</name>
     <message>
         <source>DNS</source>
-        <translation>DNS</translation>
+        <translation>域名系統</translation>
     </message>
     <message>
         <source>Gateway</source>
-        <translation>Ağ geçidi</translation>
+        <translation>通信閘</translation>
     </message>
     <message>
         <source>IP</source>
@@ -172,225 +192,293 @@
     </message>
     <message>
         <source>Subnet mask</source>
-        <translation>Alt ağ maskesi</translation>
+        <translation>子網路遮罩</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>日期/時間</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">存儲的數據將被刪除.
+確定以確認.</translation>
     </message>
 </context>
 <context>
     <name>MediaPlayWindow</name>
     <message>
         <source>Album:</source>
-        <translation>Albüm:</translation>
+        <translation>專輯:</translation>
     </message>
     <message>
         <source>Artist:</source>
-        <translation>Sanatçı:</translation>
+        <translation>藝術家:</translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation>Uzunluk:</translation>
+        <translation>長度:</translation>
     </message>
     <message>
         <source>of</source>
-        <translation></translation>
+        <translation>在</translation>
     </message>
     <message>
         <source>Track:</source>
-        <translation>Parça:</translation>
+        <translation>曲目表:</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
         <source>Balance</source>
-        <translation>Balans</translation>
+        <translation>平衡</translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation>Bass</translation>
+        <translation>低音</translation>
     </message>
     <message>
         <source>Loud</source>
-        <translation>Loud</translation>
+        <translation>響亮</translation>
     </message>
     <message>
         <source>Treble</source>
-        <translation>Tiz</translation>
+        <translation>高音</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifierPreset</name>
     <message>
         <source>Classical</source>
-        <translation>Klasik</translation>
+        <translation>古典</translation>
     </message>
     <message>
         <source>Dance</source>
-        <translation>Dans</translation>
+        <translation>舞曲</translation>
     </message>
     <message>
         <source>Full Bass</source>
-        <translation>Tam Bas</translation>
+        <translation>重低音</translation>
     </message>
     <message>
         <source>Full Treble</source>
-        <translation>Tam Tiz</translation>
+        <translation>重高音</translation>
     </message>
     <message>
         <source>Normal</source>
-        <translation>Normal</translation>
+        <translation>正常</translation>
     </message>
     <message>
         <source>Party</source>
-        <translation>Parti</translation>
+        <translation>宴會</translation>
     </message>
     <message>
         <source>Pop</source>
-        <translation>Pop</translation>
-    </message>
-    <message>
-        <source>Preset</source>
-        <translation>Ön ayar</translation>
+        <translation>流行</translation>
     </message>
     <message>
         <source>Rock</source>
-        <translation>Rock</translation>
+        <translation>搖滾</translation>
     </message>
     <message>
         <source>Soft</source>
-        <translation>Soft</translation>
+        <translation>輕音樂</translation>
     </message>
     <message>
         <source>Techno</source>
-        <translation>Tekno</translation>
+        <translation>Techno音樂</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation>用戶</translation>
     </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
-        <translation>Toplar</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>Deforme</translation>
+        <translation>球式螢幕保護程式</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>Hat</translation>
+        <translation>線條</translation>
     </message>
     <message>
         <source>No screensaver</source>
-        <translation>Ekran koruyucu yok</translation>
+        <translation>無螢幕保護程式</translation>
     </message>
     <message>
         <source>Text</source>
-        <translation>Metin</translation>
+        <translation>文字内容</translation>
     </message>
     <message>
         <source>Time</source>
-        <translation>Süre</translation>
+        <translation>小時</translation>
     </message>
 </context>
 <context>
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
-        <translation>Radyo IP</translation>
+        <translation>IP廣播</translation>
     </message>
     <message>
         <source>Servers</source>
-        <translation>Sunucular</translation>
+        <translation>服務器</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>降溫</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>去濕</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>暖氣</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>關閉</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation>吹風</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>自動</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>擺風</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>高</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>低</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>中</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>安靜</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>自動</translation>
     </message>
 </context>
 <context>
     <name>StopngoPage</name>
     <message>
         <source>Enable</source>
-        <translation>İzin ver</translation>
+        <translation>啓動</translation>
     </message>
     <message>
         <source>Self-test</source>
-        <translation>Oto-test</translation>
+        <translation>自測</translation>
     </message>
     <message>
         <source>Test</source>
-        <translation>Test</translation>
+        <translation>測試</translation>
     </message>
 </context>
 <context>
     <name>TimePeriodSelection</name>
     <message>
         <source>Last 12 months</source>
-        <translation>Son 12 ay</translation>
+        <translation>最後12個月</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
         <source>Door lock</source>
-        <translation>Kapı kilidi</translation>
+        <translation>門鎖</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation>Merdiven lambası</translation>
+        <translation>樓梯燈</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation>Bilinmeyen</translation>
+        <translation>未知</translation>
     </message>
 </context>
 <context>
     <name>device_condition</name>
     <message>
         <source>OFF</source>
-        <translation>OFF (KAPALI)</translation>
+        <translation>關閉</translation>
     </message>
 </context>
 <context>
     <name>device_condition_aux</name>
     <message>
         <source>OFF</source>
-        <translation>OFF (KAPALI)</translation>
+        <translation>關閉</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation>ON (AÇIK)</translation>
+        <translation>開啟</translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming</name>
     <message>
         <source>OFF</source>
-        <translation>OFF (KAPALI)</translation>
+        <translation>關閉</translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming_100</name>
     <message>
         <source>OFF</source>
-        <translation>OFF (KAPALI)</translation>
+        <translation>關閉</translation>
     </message>
 </context>
 <context>
     <name>device_condition_light_status</name>
     <message>
         <source>OFF</source>
-        <translation>OFF (KAPALI)</translation>
+        <translation>關閉</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation>ON (AÇIK)</translation>
+        <translation>開啟</translation>
     </message>
 </context>
 <context>
     <name>device_condition_volume</name>
     <message>
         <source>OFF</source>
-        <translation>OFF (KAPALI)</translation>
+        <translation>關閉</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation>ON (AÇIK)</translation>
+        <translation>開啟</translation>
     </message>
 </context>
 </TS>

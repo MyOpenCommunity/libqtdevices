@@ -1,141 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="tr" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
         <source>always</source>
-        <translation>toujours</translation>
+        <translation>herzaman</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation>lun-ven</translation>
+        <translation>pzt-cum</translation>
     </message>
     <message>
         <source>once</source>
-        <translation>une fois</translation>
+        <translation>bir kere</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation>sam-dim</translation>
+        <translation>cts-pzr</translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
         <source>anti-panic</source>
-        <translation>anti-panique</translation>
+        <translation>panik önleme</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation>Intrusion</translation>
+        <translation>İzinsiz giriş</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation>sabotage</translation>
+        <translation>kurcalama</translation>
     </message>
     <message>
         <source>technical</source>
-        <translation>technique</translation>
+        <translation>teknik</translation>
     </message>
 </context>
 <context>
     <name>BrightnessPage</name>
     <message>
         <source>High brightness</source>
-        <translation>Luminosité élevée</translation>
+        <translation>Parlaklık yüksek</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation>Luminosité faible</translation>
+        <translation>Parlaklık düşük</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation>Luminosité normale</translation>
+        <translation>Normal parlaklık</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation>Off</translation>
+        <translation>Kapalı</translation>
     </message>
 </context>
 <context>
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation>Cliquez sur la croix</translation>
+        <translation>Artıya tıkla</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation>Cliquez sur le bouton OK</translation>
+        <translation>OK butonuna tıkla</translation>
     </message>
 </context>
 <context>
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>luminosité</translation>
+        <translation>Parlaklık</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation>Calibrage</translation>
+        <translation>Ayar</translation>
     </message>
     <message>
         <source>Clean Screen</source>
-        <translation>Nettoyer écran</translation>
+        <translation>Ekranı temizle</translation>
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation>Ecran de veille</translation>
+        <translation>Ekran Koruyucu</translation>
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
-        <translation>Consommation</translation>
+        <translation>Tüketim</translation>
+    </message>
+    <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>Elektrik</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>Gaz</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>Isıtma/Soğutma</translation>
     </message>
     <message>
         <source>Production</source>
-        <translation>Production</translation>
+        <translation>Üretim</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>Su</translation>
     </message>
 </context>
 <context>
     <name>EnergyView</name>
     <message>
         <source>/days</source>
-        <translation>/jours</translation>
+        <translation>/gün</translation>
     </message>
     <message>
         <source>/hours</source>
-        <translation>/heures</translation>
+        <translation>/saat</translation>
     </message>
     <message>
         <source>/months</source>
-        <translation>/mois</translation>
+        <translation>/ay</translation>
     </message>
     <message>
         <source>Cumulative</source>
-        <translation>Cumulatif</translation>
+        <translation>Kümülatif toplam</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation>Actuel</translation>
+        <translation>Mevcut durum</translation>
     </message>
     <message>
         <source>Daily Average</source>
-        <translation>Moyenne journalière</translation>
+        <translation>Günlük Ortalama</translation>
     </message>
     <message>
         <source>Day</source>
-        <translation>Jour</translation>
+        <translation>Gün</translation>
     </message>
     <message>
         <source>Hour</source>
-        <translation>Heure</translation>
+        <translation>Saat</translation>
     </message>
     <message>
         <source>Month</source>
-        <translation>Mois</translation>
+        <translation>Ay</translation>
     </message>
 </context>
 <context>
@@ -149,7 +169,7 @@
     <name>Keypad</name>
     <message>
         <source>PASSWORD:</source>
-        <translation>PASSWORD:</translation>
+        <translation>ŞİFRE:</translation>
     </message>
 </context>
 <context>
@@ -160,7 +180,7 @@
     </message>
     <message>
         <source>Gateway</source>
-        <translation>Passerelle</translation>
+        <translation>Ağ geçidi</translation>
     </message>
     <message>
         <source>IP</source>
@@ -172,68 +192,83 @@
     </message>
     <message>
         <source>Subnet mask</source>
-        <translation>Masque ss-réseau</translation>
+        <translation>Alt ağ maskesi</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>TARİH/SAAT</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">Saklanan veriler silinecektir.
+Onaylamak için OK.</translation>
     </message>
 </context>
 <context>
     <name>MediaPlayWindow</name>
     <message>
         <source>Album:</source>
-        <translation>Album:</translation>
+        <translation>Albüm:</translation>
     </message>
     <message>
         <source>Artist:</source>
-        <translation>Auteur:</translation>
+        <translation>Sanatçı:</translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation>Durée:</translation>
+        <translation>Uzunluk:</translation>
     </message>
     <message>
         <source>of</source>
-        <translation>de</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Track:</source>
-        <translation>Morceau:</translation>
+        <translation>Parça:</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
         <source>Balance</source>
-        <translation>Balance</translation>
+        <translation>Balans</translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation>Graves</translation>
+        <translation>Bass</translation>
     </message>
     <message>
         <source>Loud</source>
-        <translation>Grave</translation>
+        <translation>Loud</translation>
     </message>
     <message>
         <source>Treble</source>
-        <translation>Aigus</translation>
+        <translation>Tiz</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifierPreset</name>
     <message>
         <source>Classical</source>
-        <translation>Classique</translation>
+        <translation>Klasik</translation>
     </message>
     <message>
         <source>Dance</source>
-        <translation>Dance</translation>
+        <translation>Dans</translation>
     </message>
     <message>
         <source>Full Bass</source>
-        <translation>Grave max.</translation>
+        <translation>Tam Bas</translation>
     </message>
     <message>
         <source>Full Treble</source>
-        <translation>Aigus max.</translation>
+        <translation>Tam Tiz</translation>
     </message>
     <message>
         <source>Normal</source>
@@ -241,15 +276,11 @@
     </message>
     <message>
         <source>Party</source>
-        <translation>Party</translation>
+        <translation>Parti</translation>
     </message>
     <message>
         <source>Pop</source>
         <translation>Pop</translation>
-    </message>
-    <message>
-        <source>Preset</source>
-        <translation>Preset</translation>
     </message>
     <message>
         <source>Rock</source>
@@ -261,136 +292,193 @@
     </message>
     <message>
         <source>Techno</source>
-        <translation>Techno</translation>
+        <translation>Tekno</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation>Kullanıcı</translation>
     </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
-        <translation>Balles</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>Déformation</translation>
+        <translation>Toplar</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>Ligne</translation>
+        <translation>Hat</translation>
     </message>
     <message>
         <source>No screensaver</source>
-        <translation>Pas d&apos;économiseur d&apos;écran</translation>
+        <translation>Ekran koruyucu yok</translation>
     </message>
     <message>
         <source>Text</source>
-        <translation>Texte</translation>
+        <translation>Metin</translation>
     </message>
     <message>
         <source>Time</source>
-        <translation>Temps</translation>
+        <translation>Saat</translation>
     </message>
 </context>
 <context>
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
-        <translation>Radio IP</translation>
+        <translation>Radyo IP</translation>
     </message>
     <message>
         <source>Servers</source>
-        <translation>Serveurs</translation>
+        <translation>Sunucular</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>Soğutma</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>Nem Giderici</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>Isıtma</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>OFF (KAPALI)</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation>Havalandırma</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Otomatik</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>Salınım</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>Yüksek</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>Düşük</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>Ortam</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>Sessiz</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Otomatik</translation>
     </message>
 </context>
 <context>
     <name>StopngoPage</name>
     <message>
         <source>Enable</source>
-        <translation>En service</translation>
+        <translation>İzin ver</translation>
     </message>
     <message>
         <source>Self-test</source>
-        <translation>Autotest</translation>
+        <translation>Oto-test</translation>
     </message>
     <message>
         <source>Test</source>
-        <translation>Contrôle</translation>
+        <translation>Test</translation>
     </message>
 </context>
 <context>
     <name>TimePeriodSelection</name>
     <message>
         <source>Last 12 months</source>
-        <translation>12 derniers mois</translation>
+        <translation>Son 12 ay</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
         <source>Door lock</source>
-        <translation>Serrure</translation>
+        <translation>Kapı kilidi</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation>Lum. Escaliers</translation>
+        <translation>Merdiven lambası</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation>Inconnu</translation>
+        <translation>Bilinmeyen</translation>
     </message>
 </context>
 <context>
     <name>device_condition</name>
     <message>
         <source>OFF</source>
-        <translation>OFF</translation>
+        <translation>OFF (KAPALI)</translation>
     </message>
 </context>
 <context>
     <name>device_condition_aux</name>
     <message>
         <source>OFF</source>
-        <translation>OFF</translation>
+        <translation>OFF (KAPALI)</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation>ON</translation>
+        <translation>ON (AÇIK)</translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming</name>
     <message>
         <source>OFF</source>
-        <translation>OFF</translation>
+        <translation>OFF (KAPALI)</translation>
     </message>
 </context>
 <context>
     <name>device_condition_dimming_100</name>
     <message>
         <source>OFF</source>
-        <translation>OFF</translation>
+        <translation>OFF (KAPALI)</translation>
     </message>
 </context>
 <context>
     <name>device_condition_light_status</name>
     <message>
         <source>OFF</source>
-        <translation>OFF</translation>
+        <translation>OFF (KAPALI)</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation>ON</translation>
+        <translation>ON (AÇIK)</translation>
     </message>
 </context>
 <context>
     <name>device_condition_volume</name>
     <message>
         <source>OFF</source>
-        <translation>OFF</translation>
+        <translation>OFF (KAPALI)</translation>
     </message>
     <message>
         <source>ON</source>
-        <translation>ON</translation>
+        <translation>ON (AÇIK)</translation>
     </message>
 </context>
 </TS>

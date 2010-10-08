@@ -1,155 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="pt" sourcelanguage="en">
 <context>
     <name>AlarmClock</name>
     <message>
         <source>always</source>
-        <translation>zawsze</translation>
+        <translation>sempre</translation>
     </message>
     <message>
         <source>mon-fri</source>
-        <translation>pon-pia</translation>
+        <translation>2ª-6ª</translation>
     </message>
     <message>
         <source>once</source>
-        <translation>raz</translation>
+        <translation>uma vez</translation>
     </message>
     <message>
         <source>sat-sun</source>
-        <translation>sob-nie</translation>
+        <translation>sab-dom</translation>
     </message>
 </context>
 <context>
     <name>Antintrusion</name>
     <message>
         <source>anti-panic</source>
-        <translation>anty-panika</translation>
+        <translation>antipânico</translation>
     </message>
     <message>
         <source>intrusion</source>
-        <translation>wtargnięcie</translation>
+        <translation>Intrusão</translation>
     </message>
     <message>
         <source>tamper</source>
-        <translation>ingerencja</translation>
+        <translation>modificação</translation>
     </message>
     <message>
         <source>technical</source>
-        <translation>techniczne</translation>
+        <translation>técnico</translation>
     </message>
 </context>
 <context>
     <name>BrightnessPage</name>
     <message>
         <source>High brightness</source>
-        <translation>Wysoka jasność</translation>
+        <translation>Luminosidade alta</translation>
     </message>
     <message>
         <source>Low brightness</source>
-        <translation>Niska jasność</translation>
+        <translation>Luminosidade baixa</translation>
     </message>
     <message>
         <source>Normal brightness</source>
-        <translation>Jasność standardowa</translation>
+        <translation>Luminosidade normal</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation>Wył.</translation>
+        <translation>Off</translation>
     </message>
 </context>
 <context>
     <name>Calibrate</name>
     <message>
         <source>Click the crosshair</source>
-        <translation>Kliknij krzyżyk</translation>
+        <translation>Clique na cruz</translation>
     </message>
     <message>
         <source>Click the OK button</source>
-        <translation>Kliknij przycisk OK</translation>
+        <translation>Clique no botão OK</translation>
     </message>
 </context>
 <context>
     <name>DisplayPage</name>
     <message>
         <source>Brightness</source>
-        <translation>jasność</translation>
+        <translation>Luminosidade</translation>
     </message>
     <message>
         <source>Calibration</source>
-        <translation>Kalibracja</translation>
+        <translation>Calibração</translation>
     </message>
     <message>
         <source>Clean Screen</source>
-        <translation>Czysty ekran</translation>
+        <translation>Limpe ecrã</translation>
     </message>
     <message>
         <source>Screen Saver</source>
-        <translation>Wygaszacz ekranu</translation>
+        <translation>Protecção de ecrã</translation>
     </message>
 </context>
 <context>
-    <name>EnergyCost</name>
+    <name>EditEnergyCost</name>
     <message>
         <source>Consumption</source>
-        <translation>Pobór</translation>
+        <translation>Consumo</translation>
+    </message>
+    <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>Electricidade</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>Gás</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>Aquecimento/Arrefecimento</translation>
     </message>
     <message>
         <source>Production</source>
-        <translation>Produkcja</translation>
+        <translation>Produção</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>Água</translation>
     </message>
 </context>
 <context>
     <name>EnergyView</name>
     <message>
         <source>/days</source>
-        <translation>/dni</translation>
+        <translation>/dias</translation>
     </message>
     <message>
         <source>/hours</source>
-        <translation>/godziny</translation>
+        <translation>/horas</translation>
     </message>
     <message>
         <source>/months</source>
-        <translation>/miesiące</translation>
+        <translation>/meses</translation>
     </message>
     <message>
         <source>Cumulative</source>
-        <translation>Łącznie</translation>
+        <translation>Cumulativo</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation>Prąd</translation>
+        <translation>Actual</translation>
     </message>
     <message>
         <source>Daily Average</source>
-        <translation>Średnia dzienna</translation>
+        <translation>Média diária</translation>
     </message>
     <message>
         <source>Day</source>
-        <translation>Dzień</translation>
+        <translation>Dia</translation>
     </message>
     <message>
         <source>Hour</source>
-        <translation>Godzina</translation>
+        <translation>Hora</translation>
     </message>
     <message>
         <source>Month</source>
-        <translation>Miesiąc</translation>
+        <translation>Mês</translation>
     </message>
 </context>
 <context>
     <name>FSBannManual</name>
     <message>
         <source>Manual</source>
-        <translation>Ręczny</translation>
+        <translation>Manual</translation>
     </message>
 </context>
 <context>
     <name>Keypad</name>
     <message>
         <source>PASSWORD:</source>
-        <translation>HASŁO:</translation>
+        <translation>PASSWORD:</translation>
     </message>
 </context>
 <context>
@@ -160,7 +180,7 @@
     </message>
     <message>
         <source>Gateway</source>
-        <translation>Wejście</translation>
+        <translation>Gateway</translation>
     </message>
     <message>
         <source>IP</source>
@@ -172,84 +192,95 @@
     </message>
     <message>
         <source>Subnet mask</source>
-        <translation>Maska podsieci</translation>
+        <translation>Máscara sub-rede</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>Data/Hora</translation>
+    </message>
+</context>
+<context>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation type="unfinished">Os dados armazenados serão apagados.
+OK para confirmar.</translation>
     </message>
 </context>
 <context>
     <name>MediaPlayWindow</name>
     <message>
         <source>Album:</source>
-        <translation>Album:</translation>
+        <translation>Álbum:</translation>
     </message>
     <message>
         <source>Artist:</source>
-        <translation>Artysta:</translation>
+        <translation>Artista:</translation>
     </message>
     <message>
         <source>Length:</source>
-        <translation>Długość:</translation>
+        <translation>Duração:</translation>
     </message>
     <message>
         <source>of</source>
-        <translation></translation>
+        <translation>de</translation>
     </message>
     <message>
         <source>Track:</source>
-        <translation>Utwór:</translation>
+        <translation>Melodia:</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifier</name>
     <message>
         <source>Balance</source>
-        <translation>Balans</translation>
+        <translation>Balanceamento</translation>
     </message>
     <message>
         <source>Bass</source>
-        <translation>Basy</translation>
+        <translation>Baixos</translation>
     </message>
     <message>
         <source>Loud</source>
-        <translation>Głośny</translation>
+        <translation>Loud</translation>
     </message>
     <message>
         <source>Treble</source>
-        <translation>Soprany</translation>
+        <translation>Altos</translation>
     </message>
 </context>
 <context>
     <name>PowerAmplifierPreset</name>
     <message>
         <source>Classical</source>
-        <translation>Klasyczna</translation>
+        <translation>Clássico</translation>
     </message>
     <message>
         <source>Dance</source>
-        <translation>Dance</translation>
+        <translation>Dança</translation>
     </message>
     <message>
         <source>Full Bass</source>
-        <translation>Pełne basy</translation>
+        <translation>Full Bass</translation>
     </message>
     <message>
         <source>Full Treble</source>
-        <translation>Pełne soprany</translation>
+        <translation>Full Treble</translation>
     </message>
     <message>
         <source>Normal</source>
-        <translation>Normalny</translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <source>Party</source>
-        <translation>Party</translation>
+        <translation>Festa</translation>
     </message>
     <message>
         <source>Pop</source>
         <translation>Pop</translation>
-    </message>
-    <message>
-        <source>Preset</source>
-        <translation>Nastawianie</translation>
     </message>
     <message>
         <source>Rock</source>
@@ -257,86 +288,143 @@
     </message>
     <message>
         <source>Soft</source>
-        <translation>Miękki</translation>
+        <translation>Soft</translation>
     </message>
     <message>
         <source>Techno</source>
-        <translation>Techno</translation>
+        <translation>Tecno</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation>Utilitário</translation>
     </message>
 </context>
 <context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
-        <translation>Piłki</translation>
-    </message>
-    <message>
-        <source>Deform</source>
-        <translation>Deformacja</translation>
+        <translation>Bolas</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>Linia</translation>
+        <translation>Linha</translation>
     </message>
     <message>
         <source>No screensaver</source>
-        <translation>Bez wygaszacza ekranu</translation>
+        <translation>Não Screensaver</translation>
     </message>
     <message>
         <source>Text</source>
-        <translation>Tekst</translation>
+        <translation>Texto</translation>
     </message>
     <message>
         <source>Time</source>
-        <translation>Czas</translation>
+        <translation>Hora</translation>
     </message>
 </context>
 <context>
     <name>SourceChoice</name>
     <message>
         <source>IP Radio</source>
-        <translation>Radio IP</translation>
+        <translation>Rádio IP</translation>
     </message>
     <message>
         <source>Servers</source>
-        <translation>Serwery</translation>
+        <translation>Servers</translation>
+    </message>
+</context>
+<context>
+    <name>SplitMode</name>
+    <message>
+        <source>COOLING</source>
+        <translation>Arrefecimento</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>Desumidificador</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>Aquecimento</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation>Ventilação</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Automática</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>Oscilação</translation>
+    </message>
+</context>
+<context>
+    <name>SplitSpeed</name>
+    <message>
+        <source>HIGH</source>
+        <translation>Alta</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>Baixa</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>Média</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>Silenciosa</translation>
+    </message>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>Automática</translation>
     </message>
 </context>
 <context>
     <name>StopngoPage</name>
     <message>
         <source>Enable</source>
-        <translation>Uaktywnij</translation>
+        <translation>Habilita</translation>
     </message>
     <message>
         <source>Self-test</source>
-        <translation>Auto-test</translation>
+        <translation>Autoteste</translation>
     </message>
     <message>
         <source>Test</source>
-        <translation>Test</translation>
+        <translation>Verificação</translation>
     </message>
 </context>
 <context>
     <name>TimePeriodSelection</name>
     <message>
         <source>Last 12 months</source>
-        <translation>Ostatnich 12 miesięcy</translation>
+        <translation>Últimos 12 meses</translation>
     </message>
 </context>
 <context>
     <name>call_notifier</name>
     <message>
         <source>Door lock</source>
-        <translation>Zamek drzwi</translation>
+        <translation>Fechadura</translation>
     </message>
     <message>
         <source>Staircase light</source>
-        <translation>Oświetlenie schodów</translation>
+        <translation>Luz escada</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation>Nieznany</translation>
+        <translation>Desconhecido</translation>
     </message>
 </context>
 <context>
