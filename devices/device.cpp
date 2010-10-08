@@ -34,7 +34,7 @@
 
 /*!
 	\class OpenServerManager
-	\brief Class that manages the logic of connection/disconnection/reconnection
+	\brief Manages the logic of connection/disconnection/reconnection
 	to the openserver.
 
 	Basically, with an openserver you have 3 socket connections open: the monitor,
