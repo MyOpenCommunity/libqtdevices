@@ -132,7 +132,7 @@ private:
 private:
 	// only one of center_icon/center_label is created, depending on which initBanner() is called
 	TextOnImageLabel *center_icon;
-	QLabel *center_label;
+	ScrollingLabel *center_label;
 	ScrollingLabel *description;
 };
 

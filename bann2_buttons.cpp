@@ -85,7 +85,11 @@ void Bann2Buttons::createBanner()
 
 	QGridLayout *l = new QGridLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
+#ifdef LAYOUT_TOUCHX
+	l->setSpacing(5);
+#else
 	l->setSpacing(0);
+#endif
 	l->addWidget(left_button, 0, 0, Qt::AlignLeft);
 	l->setColumnStretch(0, 1);
 	// central widget added in initBanner()
@@ -101,7 +105,7 @@ void Bann2Buttons::createBanner()
 void Bann2Buttons::initBanner(const QString &left, const QString &right, const QString &banner_text,
 	FontManager::Type text_font, const QString &banner_description, FontManager::Type description_font)
 {
-	center_label = new QLabel;
+	center_label = new ScrollingLabel;
 	static_cast<QGridLayout*>(layout())->addWidget(center_label, 0, 1, Qt::AlignCenter);
 
 	initButton(left_button, left);
@@ -111,7 +115,7 @@ void Bann2Buttons::initBanner(const QString &left, const QString &right, const Q
 		QGridLayout *l = static_cast<QGridLayout*>(layout());
 		l->setColumnStretch(2, 0);
 	}
-	center_label->setText(banner_text);
+	center_label->setScrollingText(banner_text);
 	QFont central_font = bt_global::font->get(text_font);
 
 	center_label->setFont(central_font);
@@ -143,7 +147,7 @@ void Bann2Buttons::setCentralText(const QString &t)
 	if (center_icon)
 		center_icon->setInternalText(t);
 	else
-		center_label->setText(t);
+		center_label->setScrollingText(t);
 }
 
 void Bann2Buttons::setDescriptionText(const QString &t)

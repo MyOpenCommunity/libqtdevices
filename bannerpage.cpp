@@ -173,5 +173,15 @@ void BannerContent::drawContent()
 		vertical_separator->layout()->itemAt(0)->widget()->setVisible(show_vertical_bar);
 		l->addItem(vertical_separator, 0, 1,
 			   (pages[current_page + 1] - pages[current_page]) / 2, 1);
+
+		// We want the columns with the same size, so we assign a minimum size.
+		// Note that in this phase (during the building of the page), the Qt functions
+		// to get the size of the margins and vertical bar are not working.
+		int total_width = contentsRect().width();
+		if (show_vertical_bar)
+			total_width -= 20; // the width of the vertical bar?
+
+		l->setColumnMinimumWidth(0, total_width / 2);
+		l->setColumnMinimumWidth(2, total_width / 2);
 	}
 }
