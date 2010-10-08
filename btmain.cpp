@@ -702,15 +702,19 @@ void BtMain::unrollPages()
 	if (page_container->currentPage() != pagDefault && page_container->currentPage() != version)
 		while (page_container->currentPage() != Home)
 		{
-			page_container->currentPage()->cleanUp();
-			page_container->currentPage()->forceClosed();
+			Page *curr = page_container->currentPage();
+			if (curr)
+			{
+				curr->cleanUp();
+				curr->forceClosed();
+			}
 			++seq_pages;
 			// To avoid infinite loop, we assume that the application
 			// can have a maximum number of sequential pages in the
 			// navigation equal to 50.
 			if (seq_pages > 50)
 			{
-				qWarning() << "Maximum number of sequential pages reached with" << page_container->currentPage();
+				qWarning() << "Maximum number of sequential pages reached with" << curr;
 				break;
 			}
 		}

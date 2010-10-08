@@ -69,7 +69,7 @@ Q_OBJECT
 public:
 	HomeWindow();
 	PageContainer *centralLayout();
-	Page *currentPage();
+
 
 	void loadConfiguration();
 	TrayBar *tray_bar;

@@ -128,7 +128,8 @@ void HomeWindow::iconStateChanged(int page_id, StateButton::Status st)
 
 void HomeWindow::aboutToHideEvent()
 {
-	central_widget->currentPage()->aboutToHideEvent();
+	if (Page *curr = central_widget->currentPage())
+		curr->aboutToHideEvent();
 }
 
 void HomeWindow::aboutToChangePage()
@@ -176,10 +177,5 @@ void HomeWindow::currentSectionChanged(int section_id)
 PageContainer *HomeWindow::centralLayout()
 {
 	return central_widget;
-}
-
-Page *HomeWindow::currentPage()
-{
-	return central_widget->currentPage();
 }
 

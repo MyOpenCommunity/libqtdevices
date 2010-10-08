@@ -26,7 +26,7 @@
 
 #include <QDebug>
 #include <QLayout>
-
+#include <QTimer>
 
 namespace
 {
@@ -76,7 +76,8 @@ void PageContainer::setCurrentPage(Page *p)
 void PageContainer::showPage(Page *p)
 {
 	emit currentChanging(indexOf(p));
-	currentPage()->aboutToHideEvent();
+	if (Page *curr = currentPage())
+		curr->aboutToHideEvent();
 
 	if (transition_widget && !block_transitions)
 	{
@@ -120,7 +121,7 @@ void PageContainer::startTransition(Page *p)
 Page *PageContainer::currentPage()
 {
 	// if we are in the middle of a transition, we use the previous page as the current page
-	return prev_page ? prev_page : static_cast<Page*>(currentWidget());
+	return prev_page ? prev_page : qobject_cast<Page*>(currentWidget());
 }
 
 void PageContainer::blockTransitions(bool block)
