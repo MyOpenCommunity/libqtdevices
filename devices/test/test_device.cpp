@@ -86,4 +86,6 @@ void TestDevice::flushCompressedFrames(device *dev)
 {
 	foreach (int what, dev->compressed_frames.keys())
 		dev->emitCompressedFrame(what);
+	foreach (int what, dev->compressed_requests.keys())
+		dev->emitCompressedInit(what);
 }
