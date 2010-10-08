@@ -171,6 +171,7 @@ device::device(QString _who, QString _where, int oid) : FrameReceiver(oid)
 	connect(manager, SIGNAL(connectionUp()), SIGNAL(connectionUp()));
 	connect(manager, SIGNAL(connectionDown()), SIGNAL(connectionDown()));
 	connect(&frame_compressor_mapper, SIGNAL(mapped(int)), SLOT(emitCompressedFrame(int)));
+	connect(&request_compressor_mapper, SIGNAL(mapped(int)), SLOT(emitCompressedInit(int)));
 }
 
 OpenServerManager *device::getManager(int openserver_id)
@@ -261,6 +262,28 @@ void device::sendCompressedFrame(QString frame, int compression_timeout) const
 	}
 }
 
+void device::sendCompressedInit(QString frame, int compression_timeout) const
+{
+	OpenMsg msg(frame.toStdString());
+
+	int what = msg.what();
+	if (compressed_requests.contains(what))
+	{
+		compressed_requests[what].first->start(compression_timeout);
+		compressed_requests[what].second = frame;
+	}
+	else
+	{
+		QTimer *timeout = new QTimer(const_cast<device*>(this));
+		timeout->setSingleShot(true);
+		timeout->start(compression_timeout);
+
+		connect(timeout, SIGNAL(timeout()), &request_compressor_mapper, SLOT(map()));
+		request_compressor_mapper.setMapping(timeout, what);
+		compressed_requests[what] = qMakePair(timeout, frame);
+	}
+}
+
 void device::emitCompressedFrame(int what)
 {
 	qDebug() << "Emitting compressed frame" << where << what;
@@ -271,6 +294,18 @@ void device::emitCompressedFrame(int what)
 	sendFrame(compressed_frames[what].second);
 
 	compressed_frames.remove(what);
+}
+
+void device::emitCompressedInit(int what)
+{
+	qDebug() << "Emitting compressed requests" << where << what;
+
+	Q_ASSERT_X(compressed_requests.contains(what), "device::emitCompressedInit", "tried to emit a frame twice");
+
+	compressed_requests[what].first->deleteLater();
+	sendInit(compressed_requests[what].second);
+
+	compressed_requests.remove(what);
 }
 
 void device::sendInit(QString frame) const
