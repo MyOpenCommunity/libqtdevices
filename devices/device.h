@@ -82,73 +82,44 @@ friend class BtMain;
 Q_OBJECT
 
 public:
-	// Init device: send messages to initialize data. Every device should
-	// re-implement this method, in order to update the related graphic object
-	// with the right value.
 	virtual void init() { }
 
-	//! Returns cache key
 	virtual QString get_key();
 	virtual ~device() {}
 
 	static void setClients(const QHash<int, Clients> &c);
 
-	// The following method can be reimplemented in order to parse the incoming
-	// frames (from the client monitor). However, if the specific device can be
-	// subclassed, reimplement the parseFrame method in order to avoid a double
-	// valueReceived signal.
 	virtual void manageFrame(OpenMsg &msg);
 
 	bool isConnected();
 	int openserverId();
 	static void initDevices();
 
-	// Send (without delay) a frame to the openserver with the given id
 	static void sendCommandFrame(int openserver_id, const QString &frame);
 
-	// Set this flag to delay the frames sent using the sendFrame/sendInit methods.
 	static void delayFrames(bool delay);
 
 signals:
-	// TODO: Old Status changed, to be removed asap.
 	void status_changed(QList<device_status*>);
 
-	/// The valueReceived signal, used to inform that a dimension of device
-	/// has changed or a new command has received. For some devices, more than
-	/// one dimension can change at the same time, so the int is used as an enum
-	/// to recognize the dimensions.
-	/// Note that using an int is a design choice. In this way the signal is
-	/// generic (so the connections can be made in a generic way) and the enum
-	/// can be specific for a device, avoiding the coupling between abstract
-	/// and concrete device class.
 	void valueReceived(const DeviceValues &values_list);
 
 	void connectionUp();
 	void connectionDown();
 
 public slots:
-	// The following methods send frames to the openserver, using the COMMAND or the REQUEST
-	// channel. The frame can be really sent after a delay.
 	void sendFrame(QString frame) const;
 	void sendInit(QString frame) const;
 
-	// As the previous method, without delay.
 	void sendFrameNow(QString frame) const;
 	void sendInitNow(QString frame) const;
 
-	// queues the frame to be emitted after a time interval; if another compressed
-	// frame with the same "what" is sent before the timeout, the first frame is
-	// discarded and the timeout restarted
 	void sendCompressedFrame(QString frame) const;
 
 protected:
-	// The costructor is protected only to make device abstract.
-	// NOTE: the default openserver id should be keep in sync with the define MAIN_OPENSERVER
 	device(QString who, QString where, int openserver_id = 0);
 
-	//! The system of the device
 	QString who;
-	//! The address of the device
 	QString where;
 
 	int openserver_id;
@@ -159,9 +130,6 @@ protected:
 	void sendRequest(QString what) const;
 	void sendRequest(int what) const;
 
-	// This should be the preferred way to parse the incoming frames (see the comment
-	// above regarding the manageFrame method). Return true if the argument frame
-	// was recognized and processed.
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list) { return false; }
 
 private:
