@@ -86,9 +86,6 @@ private:
 ScreenSaver *getScreenSaver(ScreenSaver::Type type);
 
 
-/**
- * The concrete class that represent a screensaver with a scrolling line.
- */
 class ScreenSaverLine : public ScreenSaver
 {
 Q_OBJECT
@@ -116,9 +113,6 @@ private:
 };
 
 
-/**
- * The concrete class that represent a screensaver with 'balls'.
- */
 class ScreenSaverBalls : public ScreenSaver
 {
 Q_OBJECT
@@ -143,10 +137,6 @@ private:
 };
 
 
-/**
- * The concrete class that represent a screensaver with a scrolling line and a
- *.time clock inside.
- */
 class ScreenSaverTime : public ScreenSaverLine
 {
 Q_OBJECT
@@ -157,10 +147,6 @@ protected:
 };
 
 
-/**
- * The concrete class that represent a screensaver with a scrolling line and a
- *.text inside.
- */
 class ScreenSaverText : public ScreenSaverLine
 {
 Q_OBJECT
@@ -205,9 +191,6 @@ private slots:
 };
 
 
-/**
- * The concrete class that represent a deformer screensaver.
- */
 class ScreenSaverDeform : public ScreenSaver
 {
 Q_OBJECT

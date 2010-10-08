@@ -46,15 +46,6 @@ struct Clients
 	Clients() { command = request = supervisor = 0; }
 };
 
-/**
- * This class manage the logic of disconnection/reconnection with the openserver.
- * Basically, with an openserver you have 3 socket connections open: the monitor,
- * the command and the request. When one of these fall down all the objects
- * connected with that openserver must to be notify with the signal connectionDown.
- * In this case we have to retry the connection after "reconnection_time" seconds.
- * Also in the case of a successfully reconnection the application must to be
- * notified about the event.
- */
 class OpenServerManager : public QObject
 {
 Q_OBJECT
@@ -62,7 +53,6 @@ public:
 	OpenServerManager(int oid, Client *monitor, Client *supervisor, Client *command, Client *request);
 	bool isConnected();
 
-	// The interval (in seconds) to retry the connection with the openserver.
 	static int reconnection_time;
 
 signals:
