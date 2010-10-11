@@ -260,7 +260,7 @@ StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *
 											   this, SLOT(switchAutoReset())));
 	buttons_layout->addStretch();
 	buttons_layout->addLayout(getCommandButton(tracking_button, "tracking_enabled",
-											   "tracking_disabled", tr("Enable"),
+											   "tracking_disabled", tr("Test"),
 											   this, SLOT(switchTracking())));
 	layout->addLayout(buttons_layout);
 
