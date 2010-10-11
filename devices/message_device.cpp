@@ -44,18 +44,22 @@ enum
 };
 
 
-/**
- * checksum
+/*!
+ * \struct Message
+ * \brief Structure used as container for date and message text.
+ */
+
+
+/*!
+ * \internal
+ * \namespace MessageDevicePrivate
  *
- * Function to calculate the checksum of a message.
- * The sum is performed on bytes, not characters.
+ * \brief Function to calculate the checksum of a message.
+ * \note The sum is performed on bytes, not characters.
  *
  * CHK2 = (1 + B1 + B2 + ... + Bn) mod 256
  * CHK1 = [nxB1 + (n-1)xB2 + (n-2)xB3 + ... + Bn + n] mod 256
  * CHK = (CHK1 CHK2)
- *
- * \param string: the string to calculate the checksum of
- * \return the \a string checksum
  */
 int MessageDevicePrivate::checksum(const QString &string)
 {
@@ -82,14 +86,11 @@ int MessageDevicePrivate::checksum(const QString &string)
 	return (chk1 << 8) | chk2;
 }
 
-/**
- * parseMessage
+/*!
+ * \internal
+ * \namespace MessageDevicePrivate
  *
- * Function to create a message from a raw string.
- *
- * \param raw_message the raw string from which create the \a Message structure
- * \return a valid \a Message structure if the parsing goes well, an invalid
- *         \a Message structure (invalid datetime and empty text) otherwise
+ * \brief Function to create a message from a raw string.
  */
 Message MessageDevicePrivate::parseMessage(const QString &raw_message)
 {
@@ -108,6 +109,22 @@ Message MessageDevicePrivate::parseMessage(const QString &raw_message)
 
 using namespace MessageDevicePrivate;
 
+/*!
+ * \class MessageDevice
+ *
+ * \brief Class for messaging management from SCS and CDP (via open).
+ *
+ * \section dimensions Dimensions
+ * \li DIM_MESSAGE: the received message
+ *
+ * \note Only for receiving.
+ *
+ * \sa \ref device-dimensions
+ */
+
+/*!
+ * \brief Constructor
+ */
 MessageDevice::MessageDevice(int openserver_id) :
 	device("8", "", openserver_id)
 {
@@ -116,23 +133,23 @@ MessageDevice::MessageDevice(int openserver_id) :
 	connect(&timer, SIGNAL(timeout()), SLOT(timeout()));
 }
 
-/**
- * parseFrame
- *
+/*!
  * Message protocol description:
- * * begin
- * * param (ignored)
- * * continue (could arrive many times)
- * * checksum
- * * end
+ * \li begin
+ * \li param (ignored)
+ * \li continue (could arrive many times)
+ * \li checksum
+ * \li end
  *
- * Note:
- * * Only one message a time can be processed, if the device receives a begin
+ * \note Only one message a time can be processed, if the device receives a begin
  *   request while is processing one message, it responds with a busy response
  *   to the caller.
- * * If the device doesn't receive a request every 3 seconds after the begin,
+ *
+ * \note If the device doesn't receive a request every 3 seconds after the begin,
  *   it sends a timeout response to the caller containing the number of bytes
  *   received.
+ *
+ * \sa device::parseFrame()
  */
 bool MessageDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {

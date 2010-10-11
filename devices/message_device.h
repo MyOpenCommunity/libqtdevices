@@ -27,11 +27,7 @@
 #include <QTimer>
 #include <QDateTime>
 
-/**
- * Message
- *
- * Structure used as container for date and message text.
- */
+
 struct Message
 {
 	QDateTime datetime;
@@ -45,12 +41,6 @@ inline bool operator==(const Message &m1, const Message &m2)
 }
 
 
-/**
- * MessageDevicePrivate namespace
- *
- * The variables and the functions that resides in this namespace
- * should be into the implementation, but are here to make easier to test them.
- */
 namespace MessageDevicePrivate
 {
 	static const int TIMEOUT = 5000;
@@ -59,12 +49,7 @@ namespace MessageDevicePrivate
 	Message parseMessage(const QString &raw_message);
 }
 
-/**
- * MessageDevice
- *
- * Class for messaging management from SCS and CDP (via open).
- * Only for receiving (for now).
- */
+
 class MessageDevice : public device
 {
 friend class TestMessageDevice;
