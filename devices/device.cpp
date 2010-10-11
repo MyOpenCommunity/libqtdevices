@@ -249,6 +249,13 @@ void FrameCompressor::flushCompressedFrames()
 	When a new frame is received (and handled if you are overloading the
 	\a parseFrame() method) the \a valueReceived() signal is emitted.
 
+	\section device-dimensions Device dimensions
+	The argument of the \a valueReceived signal is a DeviceValues, which is a
+	typedef for \a QHash<int, QVariant>.
+
+	Each item of this data structure is a \a "dimension" and indicates a
+	different value produced by the device.
+
 	\section sending Frame sending
 
 	There are many methods to send frames. Depending on what you want to do, you
@@ -269,7 +276,7 @@ void FrameCompressor::flushCompressedFrames()
 	in a time interval.
 
 	\sa manageFrame(), parseFrame(), sendFrame(), sendFrameNow(), sendInit(),
-	sendInitNow(), sendCompressedFrame(), delayFrames()
+	sendInitNow(), sendCompressedFrame(), delayFrames(), valueReceived()
  */
 
 /*!
@@ -431,6 +438,8 @@ void device::delayFrames(bool delay)
 	generic (so the connections can be made in a generic way) and the enum
 	can be specific for a device, avoiding the coupling between abstract
 	and concrete device class.
+
+	\sa \ref device-dimensions
  */
 
 /*!
