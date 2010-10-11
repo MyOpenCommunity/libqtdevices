@@ -1929,4 +1929,11 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_autocheck_enabled>supervisioneimpianto/autoteston.png</img_autocheck_enabled>
 		<img_autocheck_disabled>supervisioneimpianto/autotestoff.png</img_autocheck_disabled>
 	</item>
+	<item>
+		<!--
+		Logo screensaver
+		-->
+		<cid>12345</cid>
+		<img_screensaver_logo>screensaver/logo.png</img_screensaver_logo>
+	</item>
 </style>
