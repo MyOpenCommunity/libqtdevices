@@ -74,6 +74,37 @@ private:
 };
 
 
+// send frames with a delay, removing frames with a duplicate what
+class FrameCompressor : public QObject
+{
+friend class TestDevice;
+Q_OBJECT
+public:
+	FrameCompressor();
+
+	// queues the frame to be emitted after a time interval; if another compressed
+	// frame with the same "what" is sent before the timeout, the first frame is
+	// discarded and the timer restarted with the new timeout value; when the timer
+	// expires, the sendFrame() signal is emitted
+	void sendCompressedFrame(QString frame, int compression_timeout) const;
+
+signals:
+	// emitted when it is time to send the frame
+	void sendFrame(QString frame);
+
+private slots:
+	void emitCompressedFrame(int what);
+
+private:
+	// used by the tests
+	void flushCompressedFrames();
+
+private:
+	mutable QHash<int, QPair<QTimer*, QString> > compressed_frames;
+	mutable QSignalMapper compressor_mapper;
+};
+
+
 //! Generic device
 class device : public QObject, FrameReceiver
 {
@@ -82,6 +113,9 @@ friend class BtMain;
 Q_OBJECT
 
 public:
+	// default timeout value for compressed frames
+	static const int COMPRESSION_TIMEOUT = 1000;
+
 	// Init device: send messages to initialize data. Every device should
 	// re-implement this method, in order to update the related graphic object
 	// with the right value.
@@ -138,8 +172,9 @@ public slots:
 
 	// queues the frame to be emitted after a time interval; if another compressed
 	// frame with the same "what" is sent before the timeout, the first frame is
-	// discarded and the timeout restarted
-	void sendCompressedFrame(QString frame) const;
+	// discarded and the timer restarted with the new timeout value
+	void sendCompressedFrame(QString frame, int compression_timeout = COMPRESSION_TIMEOUT) const;
+	void sendCompressedInit(QString frame, int compression_timeout = COMPRESSION_TIMEOUT) const;
 
 protected:
 	// The costructor is protected only to make device abstract.
@@ -167,15 +202,11 @@ protected:
 private:
 	static OpenServerManager *getManager(int openserver_id);
 
-private slots:
-	void emitCompressedFrame(int what);
-
 private:
 	static QHash<int, Clients> clients;
 	static QHash<int, OpenServerManager*> openservers;
 
-	mutable QHash<int, QPair<QTimer*, QString> > compressed_frames;
-	mutable QSignalMapper compressor_mapper;
+	FrameCompressor frame_compressor, request_compressor;
 };
 
 #endif //__DEVICE_H__

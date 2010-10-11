@@ -18,6 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 #include "stopandgo_device.h"
+#include "frame_functions.h" // createDimensionFrame
 
 #include "openmsg.h"
 
@@ -86,18 +87,23 @@ void StopAndGoDevice::init()
 void StopAndGoDevice::sendAutoResetActivation()
 {
 	sendCommand(StopAndGoCommands::AUTO_RESET_ACTIVATION);
-	requestICMState();
+	requestCompressedICMState();
 }
 
 void StopAndGoDevice::sendAutoResetDisactivation()
 {
 	sendCommand(StopAndGoCommands::AUTO_RESET_DISACTIVATION);
-	requestICMState();
+	requestCompressedICMState();
 }
 
 void StopAndGoDevice::requestICMState()
 {
 	sendRequest(StopAndGoRequests::ICM_STATE);
+}
+
+void StopAndGoDevice::requestCompressedICMState()
+{
+	sendCompressedInit(createDimensionFrame(who, QString::number(StopAndGoRequests::ICM_STATE), where));
 }
 
 bool StopAndGoDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
@@ -129,25 +135,25 @@ StopAndGoPlusDevice::StopAndGoPlusDevice(const QString &where, int openserver_id
 void StopAndGoPlusDevice::sendTrackingSystemActivation()
 {
 	sendCommand(StopAndGoCommands::TRACKING_SYSTEM_ACTIVATION);
-	requestICMState();
+	requestCompressedICMState();
 }
 
 void StopAndGoPlusDevice::sendTrackingSystemDisactivation()
 {
 	sendCommand(StopAndGoCommands::TRACKING_SYSTEM_DISACTIVATION);
-	requestICMState();
+	requestCompressedICMState();
 }
 
 void StopAndGoPlusDevice::sendClose()
 {
 	sendCommand(StopAndGoCommands::CLOSE);
-	requestICMState();
+	requestCompressedICMState();
 }
 
 void StopAndGoPlusDevice::sendOpen()
 {
 	sendCommand(StopAndGoCommands::OPEN);
-	requestICMState();
+	requestCompressedICMState();
 }
 
 
@@ -166,13 +172,13 @@ void StopAndGoBTestDevice::init()
 void StopAndGoBTestDevice::sendDiffSelftestActivation()
 {
 	sendCommand(StopAndGoCommands::DIFF_SELFTEST_ACTIVATION);
-	requestICMState();
+	requestCompressedICMState();
 }
 
 void StopAndGoBTestDevice::sendDiffSelftestDisactivation()
 {
 	sendCommand(StopAndGoCommands::DIFF_SELFTEST_DISACTIVATION);
-	requestICMState();
+	requestCompressedICMState();
 }
 
 void StopAndGoBTestDevice::sendSelftestFreq(int days)
