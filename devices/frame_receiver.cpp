@@ -26,23 +26,61 @@
 QHash<int, Client*> FrameReceiver::clients_monitor;
 
 
+/*!
+ * \class FrameReceiver
+ * \brief FrameReceiver provide a common interface for objects that would manage
+ * frames from a socket
+ *
+ * To receive a frame the \a subscribe_monitor() method must be called with the
+ * right \a "who" as parameter.
+ *
+ * The method \a manageFrame() must be defined in subclasses to define the
+ * the object behviour when a frame arrives.
+ */
+
+/*!
+ * \brief Constructor
+ *
+ * \note the default openserver id should be keep in sync with the define
+ * MAIN_OPENSERVER
+ */
 FrameReceiver::FrameReceiver(int oid)
 {
 	subscribed = false;
 	openserver_id = oid;
 }
 
+/*!
+ * \brief Destructor
+ */
 FrameReceiver::~FrameReceiver()
 {
 	if (subscribed)
 		clients_monitor[openserver_id]->unsubscribe(this);
 }
 
+/*!
+ * \brief Set the monitors
+ */
 void FrameReceiver::setClientsMonitor(const QHash<int, Client*> &monitors)
 {
 	clients_monitor = monitors;
 }
 
+/*!
+ * \fn FrameReceiver::manageFrame(OpenMsg &msg)
+ * \brief Manages frames from the OpenServer
+ *
+ * This method is called every time that a frame with the \a "who" subscribed
+ * arrive from the OpenServer.
+ */
+
+/*!
+ * \brief Register to the monitor for receive frames
+ *
+ * Every child that would receive a frame for a \a "who" must subscribe itself
+ * calling this method (unregistration is not needed).
+ */
 void FrameReceiver::subscribe_monitor(int who)
 {
 	Q_ASSERT_X(clients_monitor.contains(openserver_id), "FrameReceiver::subscribe_monitor",
@@ -50,4 +88,3 @@ void FrameReceiver::subscribe_monitor(int who)
 	clients_monitor[openserver_id]->subscribe(this, who);
 	subscribed = true;
 }
-
