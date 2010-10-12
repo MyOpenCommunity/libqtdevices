@@ -49,23 +49,6 @@ namespace StopAndGoRequests
 	};
 }
 
-int masc2int(const QString &masc)
-{
-	int length = masc.length();
-
-	Q_ASSERT_X(length != (STATUS_BITS + 1), "masc2int", "masc must be STATUS_BITS + 1 long");
-
-	int result = 0;
-
-	for (int i = 0; i < length; i++)
-	{
-		int value = masc[i].digitValue();
-		result = (value << (STATUS_BITS - i - 1)) | result;
-	}
-
-	return result;
-}
-
 bool getStatusValue(int status, int fields)
 {
 	int result = status & fields;
@@ -114,10 +97,10 @@ bool StopAndGoDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	if (static_cast<int>(msg.what()) == StopAndGoRequests::ICM_STATE)
 	{
 		const QString status = QString::fromStdString(msg.whatArg(0));
-		int i = 0;
+		int i = STATUS_BITS;
 
 		foreach (const QChar &c, status)
-			values_list[i++] = static_cast<bool>(c.digitValue());
+			values_list[--i] = static_cast<bool>(c.digitValue());
 
 		return true;
 	}

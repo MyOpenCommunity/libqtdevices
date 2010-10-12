@@ -100,6 +100,17 @@ void TestStopAndGoDevice::receiveICMState()
 
 	for (int i = 0; i < 13; i++)
 		QVERIFY(values[i].toBool());
+
+	values.clear();
+	OpenMsg autoreset_request(QString("*#18*%1*250*0000010000000##").arg(WHERE).toStdString());
+
+	managed = dev->parseFrame(autoreset_request, values);
+
+	QVERIFY(managed);
+
+	for (int i = 0; i < 13; i++)
+		// only DIM_AUTORESET_DISACTIVE must be set
+		QCOMPARE(values[i].toBool(), i == StopAndGoDevice::DIM_AUTORESET_DISACTIVE);
 }
 
 void TestStopAndGoDevice::testSingleState()
@@ -109,7 +120,7 @@ void TestStopAndGoDevice::testSingleState()
 		DeviceValues values;
 		QVERIFY(values.isEmpty());
 
-		int val = 0b1000000000000 >> i;
+		int val = 0b1000000000000 >> (13 - i - 1);
 
 		OpenMsg request(QString("*#18*%1*250*%2##").arg(WHERE).arg(val, 13, 2, QChar('0')).toStdString());
 
