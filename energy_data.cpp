@@ -245,7 +245,6 @@ EditEnergyCost::EditEnergyCost()
 	buildPage(new BannerContent, nav_bar);
 
 	production_count = consumption_count = 0;
-	initialized = false;
 
 	connect(nav_bar, SIGNAL(backClick()), SLOT(resetRates()));
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(saveRates()));
@@ -267,7 +266,7 @@ EditEnergyCost::EditEnergyCost()
 #endif
 
 	production_count = consumption_count = 0;
-
+	initialized = false;
 }
 
 // TODO remove after configurator is fixed
@@ -316,7 +315,8 @@ void EditEnergyCost::addRate(int rate_id)
 
 	BannEnergyCost *b = new BannEnergyCost(rate_id, bt_global::skin->getImage("minus"),
 					       bt_global::skin->getImage("plus"),
-					       rate.description);
+					       // TODO use rate.description after the configuration is fixed
+					       " ");
 
 	page_content->appendBanner(b);
 }
