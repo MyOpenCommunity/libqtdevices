@@ -29,6 +29,8 @@
 #include <QVariant>
 #include <QFontMetrics>
 
+#define VERTICAL_BAR_WIDTH 20
+
 
 BannerPage::BannerPage(QWidget *parent) : ScrollablePage(parent)
 {
@@ -151,7 +153,7 @@ void BannerContent::drawContent()
 			QFont label_font = bt_global::font->get(FontManager::BANNERDESCRIPTION);
 			QVBoxLayout *bar_layout = new QVBoxLayout;
 			bar_layout->addWidget(vertical_bar, 1);
-			bar_layout->addItem(new QSpacerItem(20, QFontMetrics(label_font).height()));
+			bar_layout->addItem(new QSpacerItem(VERTICAL_BAR_WIDTH, QFontMetrics(label_font).height()));
 
 			// add the vertical bar to the layout
 			l->addLayout(bar_layout, 0, 1);
@@ -179,7 +181,7 @@ void BannerContent::drawContent()
 		// to get the size of the margins and vertical bar are not working.
 		int total_width = contentsRect().width();
 		if (show_vertical_bar)
-			total_width -= 20; // the width of the vertical bar?
+			total_width -= VERTICAL_BAR_WIDTH;
 
 		l->setColumnMinimumWidth(0, total_width / 2);
 		l->setColumnMinimumWidth(2, total_width / 2);
