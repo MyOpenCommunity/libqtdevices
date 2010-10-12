@@ -81,6 +81,7 @@ signals:
 public slots:
 	void nextItem();
 	void prevItem();
+	void clear();
 
 protected slots:
 	void clicked(int item);

@@ -57,6 +57,8 @@ MultimediaFileListPage::MultimediaFileListPage(const QStringList &filters)
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 	connect(this, SIGNAL(fileClicked(int)), SLOT(startPlayback(int)));
 
+	connect(this, SIGNAL(Closed()), item_list, SLOT(clear()));
+
 	PageTitleWidget *title_widget = new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT);
 	connect(item_list, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
 
@@ -233,12 +235,20 @@ void MultimediaFileListPage::unmount()
 	MountWatcher::getWatcher().unmount(getRootPath());
 }
 
+void MultimediaFileListPage::cleanUp()
+{
+	page_content->clear();
+}
+
 void MultimediaFileListPage::showPage()
 {
 	if (getRootPath().isEmpty())
 		emit Closed();
-	else
+	// do not reload the file list unless it is empty
+	else if (page_content->itemCount() == 0)
 		FileSelector::showPage();
+	else
+		Selector::showPage();
 }
 
 // TODO remove showPageNoReload, and only try to reload the file list if it is empty

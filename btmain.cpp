@@ -926,6 +926,10 @@ void BtMain::freeze(bool b)
 
 	if (!frozen)
 	{
+		// set last_event_time first to avoid re-freezing if one of the actions
+		// below re-enters the event loop
+		last_event_time = now();
+
 		// in this case the screeensaver is not running, to reduce power consumption,
 		// but the state is as if it were
 		if (bt_global::display->currentState() == DISPLAY_OFF)
@@ -941,7 +945,6 @@ void BtMain::freeze(bool b)
 			screensaver->stop();
 		}
 
-		last_event_time = now();
 		bt_global::display->setState(DISPLAY_OPERATIVE);
 
 		if (pwdOn)

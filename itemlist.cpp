@@ -163,6 +163,12 @@ unsigned ItemList::getCurrentPage()
 	return current_page;
 }
 
+void ItemList::clear()
+{
+	setList(QList<ItemInfo>());
+	showList();
+}
+
 void ItemList::nextItem()
 {
 	current_page += 1;

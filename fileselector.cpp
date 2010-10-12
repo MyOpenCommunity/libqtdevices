@@ -156,6 +156,7 @@ void FileSelector::setRootPath(const QString &start_path)
 	root_path = start_path;
 	current_dir.setPath(start_path);
 	level = 0;
+	pages_indexes.clear();
 }
 
 bool FileSelector::browseDirectory(QString new_path)

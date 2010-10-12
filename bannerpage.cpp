@@ -29,6 +29,8 @@
 #include <QVariant>
 #include <QFontMetrics>
 
+#define VERTICAL_BAR_WIDTH 20
+
 
 BannerPage::BannerPage(QWidget *parent) : ScrollablePage(parent)
 {
@@ -151,7 +153,7 @@ void BannerContent::drawContent()
 			QFont label_font = bt_global::font->get(FontManager::BANNERDESCRIPTION);
 			QVBoxLayout *bar_layout = new QVBoxLayout;
 			bar_layout->addWidget(vertical_bar, 1);
-			bar_layout->addItem(new QSpacerItem(20, QFontMetrics(label_font).height()));
+			bar_layout->addItem(new QSpacerItem(VERTICAL_BAR_WIDTH, QFontMetrics(label_font).height()));
 
 			// add the vertical bar to the layout
 			l->addLayout(bar_layout, 0, 1);
@@ -160,9 +162,9 @@ void BannerContent::drawContent()
 
 	updateLayout(items);
 
-	// resize the vertical separator to span all completely filled rows
-	// and ignore the last row if it only contains a single item; pages with only
-	// one item need to be handled as a special case because QGridLayout does not
+	// resize the vertical separator to span all rows that contain a banner, except for
+	// the case when there is a single banner in the page; the latter case
+	// needs to be handled as a special case because QGridLayout does not
 	// support items wiht colspan 0
 	bool show_vertical_bar = columns == 2 && pages[current_page + 1] - pages[current_page] >= 2;
 
@@ -172,14 +174,14 @@ void BannerContent::drawContent()
 		l->removeItem(vertical_separator);
 		vertical_separator->layout()->itemAt(0)->widget()->setVisible(show_vertical_bar);
 		l->addItem(vertical_separator, 0, 1,
-			   (pages[current_page + 1] - pages[current_page]) / 2, 1);
+			   (pages[current_page + 1] - pages[current_page] + 1) / 2, 1);
 
 		// We want the columns with the same size, so we assign a minimum size.
 		// Note that in this phase (during the building of the page), the Qt functions
 		// to get the size of the margins and vertical bar are not working.
 		int total_width = contentsRect().width();
 		if (show_vertical_bar)
-			total_width -= 20; // the width of the vertical bar?
+			total_width -= VERTICAL_BAR_WIDTH;
 
 		l->setColumnMinimumWidth(0, total_width / 2);
 		l->setColumnMinimumWidth(2, total_width / 2);
