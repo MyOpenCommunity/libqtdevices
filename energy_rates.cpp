@@ -67,7 +67,7 @@ void EnergyRates::loadRates()
 		rate.id = getTextChild(item, "rate_id").toInt();
 		// TODO use this after the configurator is fixed (see comment in energy_data.cpp)
 		// rate.description = getTextChild(item, "descr");
-		rate.description = " ";
+		rate.description = "";
 		rate.currency_name = getTextChild(item, "name");
 		rate.mode = getTextChild(item, "mode").toInt();
 		rate.is_production = getTextChild(item, "type").toInt() == 1;
