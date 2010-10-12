@@ -78,40 +78,47 @@ AlarmPage::AlarmPage(altype t, const QString &d, const QString &zone, const QDat
 
 #else
 
-class AlarmPageData : public QLabel
+class AlarmPageData : public QWidget
 {
 public:
 	AlarmPageData(QStringList captions, QStringList values);
 
-protected:
-	virtual void paintEvent(QPaintEvent *e);
-
 private:
-	QStringList captions, values;
+	QWidget *createPart(const QString &background, const QString &caption, const QString &value);
 };
 
-AlarmPageData::AlarmPageData(QStringList _captions, QStringList _values)
+AlarmPageData::AlarmPageData(QStringList captions, QStringList values)
 {
-	captions = _captions;
-	values = _values;
-
-	setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("alarm_info")));
 	setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+
+	QLayout *l = new QHBoxLayout(this);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
+
+	l->addWidget(createPart("alarm_info_hour", captions[0], values[0]));
+	l->addWidget(createPart("alarm_info_date", captions[1], values[1]));
+	l->addWidget(createPart("alarm_info_zone", captions[2], values[2]));
 }
 
-void AlarmPageData::paintEvent(QPaintEvent *e)
+QWidget *AlarmPageData::createPart(const QString &background, const QString &caption, const QString &value)
 {
-	QLabel::paintEvent(e);
+	QLabel *back = new QLabel;
 
-	QPainter p(this);
+	QVBoxLayout *l = new QVBoxLayout(back);
+	l->setContentsMargins(0, 0, 0, 0);
+	l->setSpacing(0);
 
-	int w = width() / 3, h = height() / 2;
+	back->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage(background)));
 
-	for (int i = 0; i< 3; ++i)
-		p.drawText(QRect(w * i, 0, w, h), Qt::AlignCenter, captions[i]);
+	QLabel *c = new QLabel(caption), *v = new QLabel(value);
 
-	for (int i = 0; i< 3; ++i)
-		p.drawText(QRect(w * i, h, w, h), Qt::AlignCenter, values[i]);
+	c->setAlignment(Qt::AlignCenter);
+	v->setAlignment(Qt::AlignCenter);
+
+	l->addWidget(c);
+	l->addWidget(v);
+
+	return back;
 }
 
 
@@ -124,8 +131,8 @@ AlarmPage::AlarmPage(altype t, const QString &description, const QString &zone, 
 	QLabel *i = new QLabel;
 	i->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage(alarm_icons[t])));
 
-	QLabel *d = new AlarmPageData(QStringList() << "Hour" << "Date" << "Zone",
-				      QStringList() << time.toString("hh:mm") << time.toString("dd/MM") << zone);
+	QWidget *d = new AlarmPageData(QStringList() << "Hour" << "Date" << "Zone",
+				       QStringList() << time.toString("hh:mm") << time.toString("dd/MM") << zone);
 
 	BtButton *home = new BtButton(bt_global::skin->getImage("go_home"));
 	BtButton *list = new BtButton(bt_global::skin->getImage("info"));
@@ -138,9 +145,9 @@ AlarmPage::AlarmPage(altype t, const QString &description, const QString &zone, 
 	l->addWidget(title, 0, 1, 1, 3);
 	l->addWidget(d, 1, 1, 1, 3);
 
-	l->addWidget(home, 2, 1);
-	l->addWidget(list, 2, 2);
-	l->addWidget(trash, 2, 3);
+	l->addWidget(home, 2, 1, Qt::AlignHCenter);
+	l->addWidget(list, 2, 2, Qt::AlignHCenter);
+	l->addWidget(trash, 2, 3, Qt::AlignHCenter);
 
 	connect(home, SIGNAL(clicked()), SIGNAL(showHomePage()));
 	connect(list, SIGNAL(clicked()), SIGNAL(showAlarmList()));

@@ -1360,7 +1360,9 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 
 		<!-- alarm page -->
 		<img_go_home>home/home.png</img_go_home>
-		<img_alarm_info>home/alarmpopupinfo.png</img_alarm_info>
+		<img_alarm_info_hour>home/alarmpopupinfo1.png</img_alarm_info_hour>
+		<img_alarm_info_date>home/alarmpopupinfo2.png</img_alarm_info_date>
+		<img_alarm_info_zone>home/alarmpopupinfo3.png</img_alarm_info_zone>
 
 		<img_technic_alarm_page>home/imgallarmetecnico.png</img_technic_alarm_page>
 		<img_intrusion_alarm_page>home/imgallarmeantintrusione.png</img_intrusion_alarm_page>
