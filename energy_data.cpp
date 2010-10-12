@@ -249,6 +249,7 @@ EditEnergyCost::EditEnergyCost()
 	connect(nav_bar, SIGNAL(backClick()), SLOT(resetRates()));
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(saveRates()));
 #else
+	initialized = false;
 	QWidget *main = new QWidget;
 	QVBoxLayout *l = new QVBoxLayout(main);
 	l->setContentsMargins(5, 5, 25, 47);
@@ -279,7 +280,6 @@ void EditEnergyCost::showPage()
 		BannerPage::showPage();
 		return;
 	}
-
 	for (int i = 0; i < page_content->bannerCount(); ++i)
 	{
 		BannEnergyCost *b = static_cast<BannEnergyCost *>(page_content->getBanner(i));
