@@ -97,10 +97,10 @@ bool StopAndGoDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	if (static_cast<int>(msg.what()) == StopAndGoRequests::ICM_STATE)
 	{
 		const QString status = QString::fromStdString(msg.whatArg(0));
-		int i = 0;
+		int i = STATUS_BITS;
 
 		foreach (const QChar &c, status)
-			values_list[i++] = static_cast<bool>(c.digitValue());
+			values_list[--i] = static_cast<bool>(c.digitValue());
 
 		return true;
 	}

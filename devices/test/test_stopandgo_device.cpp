@@ -109,7 +109,7 @@ void TestStopAndGoDevice::testSingleState()
 		DeviceValues values;
 		QVERIFY(values.isEmpty());
 
-		int val = 0b1000000000000 >> i;
+		int val = 0b1000000000000 >> (13 - i - 1);
 
 		OpenMsg request(QString("*#18*%1*250*%2##").arg(WHERE).arg(val, 13, 2, QChar('0')).toStdString());
 
