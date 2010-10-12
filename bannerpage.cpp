@@ -162,9 +162,9 @@ void BannerContent::drawContent()
 
 	updateLayout(items);
 
-	// resize the vertical separator to span all completely filled rows
-	// and ignore the last row if it only contains a single item; pages with only
-	// one item need to be handled as a special case because QGridLayout does not
+	// resize the vertical separator to span all rows that contain a banner, except for
+	// the case when there is a single banner in the page; the latter case
+	// needs to be handled as a special case because QGridLayout does not
 	// support items wiht colspan 0
 	bool show_vertical_bar = columns == 2 && pages[current_page + 1] - pages[current_page] >= 2;
 
@@ -174,7 +174,7 @@ void BannerContent::drawContent()
 		l->removeItem(vertical_separator);
 		vertical_separator->layout()->itemAt(0)->widget()->setVisible(show_vertical_bar);
 		l->addItem(vertical_separator, 0, 1,
-			   (pages[current_page + 1] - pages[current_page]) / 2, 1);
+			   (pages[current_page + 1] - pages[current_page] + 1) / 2, 1);
 
 		// We want the columns with the same size, so we assign a minimum size.
 		// Note that in this phase (during the building of the page), the Qt functions
