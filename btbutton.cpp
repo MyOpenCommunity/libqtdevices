@@ -30,11 +30,67 @@
 #include <QPainter>
 
 
+/*!
+	\class BtButton
+	\brief Custom button with an image and a sound.
+
+	The \a BtButton class defines a custom button that displays an image for its
+	"normal" state, and optionally one for the "pressed" state. It can play a
+	sound when it is clicked, too.
+
+	The button image can be set in constructor or using the \a setImage()
+	method. By default, the button tries to load the icon for the "pressed"
+	state, appending "p" to the path of the icon. If this isn't the wanted
+	behaviour, you can create a button without setting any icon, than call the
+	\a setImage() method using BtButton::NO_FLAG as second parameter.
+
+	If you have QPixmap instances instead of paths, you can use the
+	\a setPixmap() and \a setPressedPixmap() methods.
+
+	\sa setImage(), BtButton::IconFlag
+ */
+
+
+/*!
+	\enum BtButton::IconFlag
+	Flags to control the \a setImage() behaviour.
+ */
+/*!
+	\var BtButton::IconFlag BtButton::NO_FLAG
+	Do not try to load the pressed image
+ */
+
+/*!
+	\var BtButton::IconFlag BtButton::LOAD_PRESSED_ICON
+	Try to load the pressed image
+ */
+
+/*!
+	\var BtButton::pixmap
+	The pixmap to show when the button is in normal state
+ */
+
+/*!
+	\var BtButton::pressed_pixmap;
+	The pixmap to show when the button is down
+ */
+
+
+/*!
+	\brief Constructor
+ */
 BtButton::BtButton(QWidget *parent) : QPushButton(parent)
 {
 	initButton();
 }
 
+/*!
+	\brief Constructor
+
+	Constructs a new BtButton with the given icon_path.
+
+	\sa setImage(), setPressedImage()
+ */
 BtButton::BtButton(QString icon_path, QWidget *parent) : QPushButton(parent)
 {
 	initButton();
@@ -48,6 +104,9 @@ void BtButton::initButton()
 	beep_enabled = true;
 }
 
+/*!
+	\brief Enables or disables beep when the button is clicked.
+ */
 void BtButton::enableBeep(bool enable)
 {
 	beep_enabled = enable;
@@ -60,6 +119,12 @@ QSize BtButton::sizeHint() const
 	return QSize();
 }
 
+/*!
+	\brief Helper function to load the image for the "pressed" state.
+
+	It tries to load the image for the "pressed" state returns an invalid
+	QPixmap on error, the QPixmap containing the loaded image otherwise.
+ */
 QPixmap BtButton::loadPressedImage(const QString &icon_path)
 {
 	QString pressed_name = getPressName(icon_path);
@@ -69,6 +134,17 @@ QPixmap BtButton::loadPressedImage(const QString &icon_path)
 		return QPixmap();
 }
 
+/*!
+	\brief Helper function to load the image for the "normal" state.
+
+	It tries to load the image for the "normal" state returns an invalid
+	QPixmap on error, the QPixmap containing the loaded image otherwise.
+
+	Depending on the value of \a f, this method tries to load the "pressed"
+	state image (the default) or not.
+
+	\sa BtButton::IconFlag, loadPressedImage()
+ */
 void BtButton::setImage(const QString &icon_path, IconFlag f)
 {
 	setPixmap(*bt_global::icons_cache.getIcon(icon_path));
@@ -81,11 +157,21 @@ void BtButton::setImage(const QString &icon_path, IconFlag f)
 	}
 }
 
+/*!
+	\brief Sets the image for the "pressed" state
+
+	\sa setPressedPixmap()
+ */
 void BtButton::setPressedImage(const QString &pressed_icon)
 {
 	setPressedPixmap(*bt_global::icons_cache.getIcon(pressed_icon));
 }
 
+/*!
+	\brief Sets the pixmap for the "pressed" state
+
+	\sa setPressedImage(), loadPressedImage()
+ */
 void BtButton::setPressedPixmap(const QPixmap &p)
 {
 	pressed_pixmap = p;
@@ -93,6 +179,11 @@ void BtButton::setPressedPixmap(const QPixmap &p)
 		setIcon(pressed_pixmap);
 }
 
+/*!
+	\brief Sets the pixmap for the "normal" state
+
+	\sa setImage()
+ */
 void BtButton::setPixmap(const QPixmap &p)
 {
 	bool need_update = (pixmap.toImage() != p.toImage());
@@ -179,11 +270,17 @@ void BtButton::paintEvent(QPaintEvent *e)
 #endif
 }
 
+/*!
+	\brief Sets the button enabled
+ */
 void BtButton::enable()
 {
 	is_enabled = true;
 }
 
+/*!
+	\brief Sets the button disabled
+ */
 void BtButton::disable()
 {
 	is_enabled = false;

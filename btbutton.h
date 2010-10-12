@@ -37,12 +37,6 @@ public:
 	BtButton(QWidget *parent = 0);
 	BtButton(QString icon_path, QWidget *parent = 0);
 
-	/**
-	 * Loads an icon into the button.
-	 * \param icon_path The full path of the icon to be loaded
-	 * \param f Flags defined in IconFlag. If LOAD_PRESSED_ICON, call setPressedIcon
-	 * with parameter icon_path + "p".
-	 */
 	void setImage(const QString &icon_path, IconFlag f = LOAD_PRESSED_ICON);
 	void setPressedImage(const QString &pressed_icon);
 
@@ -63,14 +57,9 @@ protected:
 	virtual void paintEvent(QPaintEvent *e);
 	virtual bool event(QEvent *e);
 
-	// Helper function to load the pressed image for an icon; if not present,
-	// returns a null QPixmap
 	QPixmap loadPressedImage(const QString &icon_path);
 
-	/// The pixmap to show when the button is in normal state
 	QPixmap pixmap;
-
-	/// The pixmap to show when the button is down
 	QPixmap pressed_pixmap;
 
 private:
