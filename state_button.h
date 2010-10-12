@@ -56,11 +56,6 @@ using BtButton::setImage;
 
 	Status getStatus() { return status; }
 
-	// Set the button as a 'on-off button'. This means that the button is almost
-	// a toggle button, but instead of changes status when the button is pressed
-	// down, changes its status manually, calling the 'setStatus' method.
-	// In this case, you can retrieve the current status using the 'getStatus'
-	// method.
 	void setOnOff();
 
 public slots:
@@ -80,6 +75,5 @@ private:
 	Status status;
 	bool is_on_off; // a flag that mark if the button is a on-off button
 };
-
 
 #endif // STATE_BUTTON_H
