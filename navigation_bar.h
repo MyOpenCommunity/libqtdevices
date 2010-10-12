@@ -27,10 +27,6 @@
 class BtButton;
 
 
-/**
- * The abstract version of the navigation bar, that defines only the dimension
- * and the positioning of its buttons.
- */
 class AbstractNavigationBar : public QWidget
 {
 protected:
@@ -40,9 +36,6 @@ protected:
 };
 
 
-/**
- * The navigation bar, used to navigate through pages
- */
 class NavigationBar : public AbstractNavigationBar
 {
 Q_OBJECT

@@ -27,11 +27,36 @@
 
 static const int buttons_dim = 60;
 
+
+/**
+	\class AbstractNaviagationBar
+	\brief Abstract base class for navigation bars
+
+	Defines the dimension and the positioning of its buttons.
+
+	It provides the method \a createButton() which creates, moves to the right
+	position and connect to the given slot a \a BtButton with the given icon.
+
+	\sa createButton()
+ */
+
+/*!
+	\brief Constructor
+ */
 AbstractNavigationBar::AbstractNavigationBar(QWidget *parent) : QWidget(parent)
 {
 	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 }
 
+/*!
+	\brief Creates a button into the NavigationBar
+
+	Returns a new BtButton instance with the given \a icon, connected to
+	the given signal (which will be forwarded by the navigation bar) and
+	positioned into the right position on the navigation bar.
+
+	\sa BtButton
+ */
 BtButton *AbstractNavigationBar::createButton(QString icon, const char *signal, int pos)
 {
 	if (!icon.isNull())
@@ -61,7 +86,23 @@ QSize AbstractNavigationBar::sizeHint() const
 #endif
 }
 
+/*!
+	\class NavigationBar
+	\brief Represent a bar used to navigate between pages
 
+	When you instantiate a new NavigationBar, you can pass to the constructor
+	the names of the icons for the default buttons it provides.
+	If the path is empty, the corresponding button isn't created.
+ */
+
+/*!
+	\brief Constructor
+
+	Constructs a new NavigationBar and its default buttons if the corresponding
+	icons are provided (icon names are not empty).
+
+	\sa AbstractNavigationBar::createButton()
+ */
 NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up_icon, QString back_icon, QWidget *parent) :
 	AbstractNavigationBar(parent)
 {
@@ -81,9 +122,31 @@ NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up
 #endif
 }
 
+/*!
+	\brief Shows or hides the scoll buttons
+ */
 void NavigationBar::displayScrollButtons(bool display)
 {
 	down_button->setVisible(display);
 	up_button->setVisible(display);
 }
 
+/*!
+	\fn void NavigationBar::backClick()
+	\brief Signal emitted when the back button is clicked
+ */
+
+/*!
+	\fn void NavigationBar::upClick()
+	\brief Signal emitted when the up button is clicked
+ */
+
+/*!
+	\fn void NavigationBar::downClick()
+	\brief Signal emitted when the down button is clicked
+ */
+
+/*!
+	\fn void NavigationBar::forwardClick()
+	\brief Signal emitted when the forward button is clicked
+ */
