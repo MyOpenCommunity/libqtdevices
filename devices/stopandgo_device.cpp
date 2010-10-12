@@ -49,23 +49,6 @@ namespace StopAndGoRequests
 	};
 }
 
-int masc2int(const QString &masc)
-{
-	int length = masc.length();
-
-	Q_ASSERT_X(length != (STATUS_BITS + 1), "masc2int", "masc must be STATUS_BITS + 1 long");
-
-	int result = 0;
-
-	for (int i = 0; i < length; i++)
-	{
-		int value = masc[i].digitValue();
-		result = (value << (STATUS_BITS - i - 1)) | result;
-	}
-
-	return result;
-}
-
 bool getStatusValue(int status, int fields)
 {
 	int result = status & fields;
