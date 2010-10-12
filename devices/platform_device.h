@@ -32,14 +32,6 @@ class BtTime;
 class QDate;
 
 
-/**
- * \class PlatformDevice
- *
- * This class represent a device for managing lan settings. It has a method to
- * activate/deactivate the lan, and some methods to obtain information about
- * actual settings. When a request of information is done, the response is sent
- * through the signal valueReceived.
- */
 class PlatformDevice : public device
 {
 Q_OBJECT
