@@ -43,6 +43,8 @@ public:
 	// only wanted file types.
 	MultimediaFileListPage(const QStringList &filters = QStringList());
 
+	void cleanUp();
+
 public slots:
 	virtual void nextItem();
 	virtual void prevItem();
