@@ -35,7 +35,8 @@
 	To switch work mode, you can use the \a setOnOff() method.
 
 	Image for the various states can be set using the \a setOnImage(),
-	\a setOffImage() and \a setDisabledImage() methods.
+	\a setOffImage() and \a setDisabledImage() methods the pressed versions are
+	automatically set with the same behaviour of \a BtButton ones.
 
 	\sa setOnOff(), setStatus(), \a setOnImage(), \a setOffImage(),
 	\a setDisabledImage()
