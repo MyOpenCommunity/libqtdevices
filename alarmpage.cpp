@@ -131,7 +131,7 @@ AlarmPage::AlarmPage(altype t, const QString &description, const QString &zone, 
 	QLabel *i = new QLabel;
 	i->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage(alarm_icons[t])));
 
-	QWidget *d = new AlarmPageData(QStringList() << "Hour" << "Date" << "Zone",
+	QWidget *d = new AlarmPageData(QStringList() << tr("Hour") << tr("Date") << tr("Zone"),
 				       QStringList() << time.toString("hh:mm") << time.toString("dd/MM") << zone);
 
 	BtButton *home = new BtButton(bt_global::skin->getImage("go_home"));
