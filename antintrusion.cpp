@@ -156,6 +156,8 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
+		SkinContext cxt(getTextChild(item, "cid").toInt());
+
 		int id = getTextChild(item, "id").toInt();
 		QString descr = getTextChild(item, "descr");
 
