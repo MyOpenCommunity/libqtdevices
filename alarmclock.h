@@ -248,6 +248,7 @@ signals:
 
 class AlarmClockTimeFreq : public Page
 {
+Q_OBJECT
 public:
 	AlarmClockTimeFreq(AlarmClock *alarm_page);
 
