@@ -32,7 +32,6 @@ class QDate;
 class QDateTime;
 
 
-// Enum to identify various file types
 enum MultimediaFileType
 {
 	UNKNOWN = -1,
@@ -42,28 +41,12 @@ enum MultimediaFileType
 	IMAGE = 3
 };
 
-/*!
- * getFileExtensions
- *
- * This function return a list of the recognized file types associated to \a type.
- */
 QStringList getFileExtensions(MultimediaFileType type);
 
-/*!
- * getFileFilter
- *
- * This function return a list of file filter expressions associated to \a type.
- */
 QStringList getFileFilter(MultimediaFileType type);
-
 
 QString getBostikName(const QString &name, const QString &suffix);
 
- /*!
-  \brief Transform a image file name into a pressed one.
-
-  Return the filename of a image '.png' converted into a "p.png" file name.
-*/
 QString getPressName(QString name);
 
 

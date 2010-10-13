@@ -96,6 +96,40 @@ namespace
 	}
 }
 
+/*!
+	\enum MultimediaFileType
+	Filesystem types
+ */
+
+/*!
+	\var MultimediaFileType UNKNOWN
+	Unknown filetype
+ */
+
+/*!
+	\var MultimediaFileType DIRECTORY
+	Directory
+ */
+
+/*!
+	\var MultimediaFileType AUDIO
+	Audio filetype
+ */
+
+/*!
+	\var MultimediaFileType VIDEO
+	Video filetype
+ */
+
+/*!
+	\var MultimediaFileType IMAGE
+	Image filetype
+ */
+
+
+/*!
+	\brief Returns a list of the recognized file types associated to "type".
+ */
 QStringList getFileExtensions(MultimediaFileType type)
 {
 	QStringList exts;
@@ -128,6 +162,9 @@ QStringList getFileExtensions(MultimediaFileType type)
 	return exts;
 }
 
+/*!
+	\brief Returns a list of file filter expressions associated to "type".
+ */
 QStringList getFileFilter(MultimediaFileType type)
 {
 	QStringList filters;
@@ -157,6 +194,9 @@ QStringList getFileFilter(MultimediaFileType type)
 	return filters;
 }
 
+/*!
+	\brief Concatenate "suffix" to the part of "name" preceding the dot (.)
+ */
 QString getBostikName(const QString &name, const QString &suffix)
 {
 	int pos = name.indexOf(".");
@@ -166,6 +206,13 @@ QString getBostikName(const QString &name, const QString &suffix)
 	return QString();
 }
 
+/*!
+	\brief Transform a image file name into a pressed one.
+
+	Returns the filename of a image '.png' converted into a "p.png" file name.
+
+	\sa getBostikName()
+*/
 QString getPressName(QString name)
 {
 	return getBostikName(name, "p");
