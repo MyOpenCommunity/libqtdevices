@@ -71,8 +71,8 @@ QDomElement getElement(const QDomNode &root, const QString &path)
 	\brief Looks for a child node by a regexp and "id" child node
 	\overload QDomNode getChildWithId(const QDomNode &parent, const QRegExp &node_regexp, int id)
 
-	Returns the node child of "parent" that match the "regexp" and have an
-	attribute with id "id".
+	Returns the node child of "parent" that match the "regexp" and has a child
+	with id "id".
 	If the node is not found returns an invalid node.
  */
 QDomNode getChildWithId(const QDomNode &parent, const QRegExp &node_regexp, int id)
