@@ -1342,8 +1342,6 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<cid>13000</cid>
 		<img_partial>antintrusione/parzializzazioneon.png</img_partial>
-		<img_partial_on>antintrusione/parzializzaon.png</img_partial_on>
-		<img_partial_off>antintrusione/parzializzaoff.png</img_partial_off>
 		<img_alarm_partial_on>antintrusione/parzializzaonp.png</img_alarm_partial_on>
 		<img_alarm_partial_off>antintrusione/parzializzaoffp.png</img_alarm_partial_off>
 		<img_alarm_state>antintrusione/imgantifurto.png</img_alarm_state>
@@ -1368,6 +1366,47 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_intrusion_alarm_page>home/imgallarmeantintrusione.png</img_intrusion_alarm_page>
 		<img_tamper_alarm_page>home/imgallarmemanomissione.png</img_tamper_alarm_page>
 		<img_panic_alarm_page>home/imgallarmeantipanico.png</img_panic_alarm_page>
+	</item>
+	<!-- Antintrusion zones 1-8 -->
+	<item>
+		<cid>13001</cid>
+		<img_partial_on>antintrusione/parzializza1on.png</img_partial_on>
+		<img_partial_off>antintrusione/parzializza1off.png</img_partial_off>
+	</item>
+	<item>
+		<cid>13002</cid>
+		<img_partial_on>antintrusione/parzializza2on.png</img_partial_on>
+		<img_partial_off>antintrusione/parzializza2off.png</img_partial_off>
+	</item>
+	<item>
+		<cid>13003</cid>
+		<img_partial_on>antintrusione/parzializza3on.png</img_partial_on>
+		<img_partial_off>antintrusione/parzializza3off.png</img_partial_off>
+	</item>
+	<item>
+		<cid>13004</cid>
+		<img_partial_on>antintrusione/parzializza4on.png</img_partial_on>
+		<img_partial_off>antintrusione/parzializza4off.png</img_partial_off>
+	</item>
+	<item>
+		<cid>13005</cid>
+		<img_partial_on>antintrusione/parzializza5on.png</img_partial_on>
+		<img_partial_off>antintrusione/parzializza5off.png</img_partial_off>
+	</item>
+	<item>
+		<cid>13006</cid>
+		<img_partial_on>antintrusione/parzializza6on.png</img_partial_on>
+		<img_partial_off>antintrusione/parzializza6off.png</img_partial_off>
+	</item>
+	<item>
+		<cid>13007</cid>
+		<img_partial_on>antintrusione/parzializza7on.png</img_partial_on>
+		<img_partial_off>antintrusione/parzializza7off.png</img_partial_off>
+	</item>
+	<item>
+		<cid>13008</cid>
+		<img_partial_on>antintrusione/parzializza8on.png</img_partial_on>
+		<img_partial_off>antintrusione/parzializza8off.png</img_partial_off>
 	</item>
 	<!-- thermal menu banners -->
 	<!-- TODO unify 4 zones and 99 zones sections -->
