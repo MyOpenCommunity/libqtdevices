@@ -101,7 +101,7 @@ bool getBeep();
 */
 unsigned long getTimePress();
 
-#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TS_10)
 class QDateTime;
 
 // stores the time of the last click for getTimePress()

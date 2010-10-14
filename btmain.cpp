@@ -100,7 +100,7 @@ namespace
 	}
 
 
-#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TS_10)
 
 	// used to store the time of the last click; used by the screen saver code
 	// on x86
@@ -237,7 +237,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	bt_global::sound = new SoundPlayer;
 	bt_global::ringtones = new RingtonesManager(RINGTONE_FILE);
 
-#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TS_10)
 	// save last click time for the screen saver
 	qApp->installEventFilter(new LastClickTime);
 	// avoid calibration starting at every boot
@@ -785,7 +785,7 @@ void BtMain::checkScreensaver()
 {
 	rearmWDT();
 
-#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TS_10)
 	// detect when the user adjusts date/time
 	// TODO add frame parsing to PlatformDevice to detect when date/time really changes
 	QDateTime curr = QDateTime::currentDateTime();
@@ -808,7 +808,7 @@ void BtMain::checkScreensaver()
 		return;
 
 	ScreenSaver::Type target_screensaver = bt_global::display->currentScreenSaver();
-#ifdef BT_HARDWARE_BTOUCH
+#ifdef BT_HARDWARE_TS_3_5
 	// When the brightness is set to off in the old hardware the display
 	// is not really off, so it is required to use a screensaver to protect
 	// the display, even if the screensaver is not visible.

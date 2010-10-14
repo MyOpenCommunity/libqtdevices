@@ -18,7 +18,7 @@ isEmpty(TEST_ARCH) {
 	DEFINES += BT_HARDWARE_X11
 }
 else {
-	DEFINES += BT_HARDWARE_TOUCHX
+	DEFINES += BT_HARDWARE_TS_10
 
 	HEADERS += QWSMOUSE/qmouselinuxtp_qws.h QWSMOUSE/qmouse_qws.h
 	SOURCES += QWSMOUSE/qmouselinuxtp_qws.cpp QWSMOUSE/qmouse_qws.cpp

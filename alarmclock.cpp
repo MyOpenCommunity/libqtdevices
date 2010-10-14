@@ -275,7 +275,7 @@ void AlarmClock::checkAlarm()
 			if (type == BUZZER)
 			{
 				bt_global::audio_states->toState(AudioStates::ALARM_TO_SPEAKER);
-#ifdef BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TS_10
 				aumVolTimer = new QTimer(this);
 				aumVolTimer->start(5000);
 				connect(aumVolTimer, SIGNAL(timeout()), SLOT(wavAlarm()));
@@ -420,7 +420,7 @@ void AlarmClock::stopAlarm()
 
 	qDebug("Stopping alarm clock");
 	aumVolTimer->stop();
-#ifdef BT_HARDWARE_BTOUCH
+#ifdef BT_HARDWARE_TS_3_5
 	if (type == BUZZER)
 		setBeep(buzAbilOld);
 #endif

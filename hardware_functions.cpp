@@ -22,7 +22,7 @@
 #include "hardware_functions.h"
 #include "generic_functions.h" // smartExecute
 #include "main.h"
-#ifdef BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TS_10
 #include "audiostatemachine.h"
 #include "mediaplayer.h"
 #endif
@@ -113,7 +113,7 @@ static void writeValueToFd(int fd, int value)
 	write(fd, str.constData(), str.length());
 }
 
-#ifdef BT_HARDWARE_BTOUCH
+#ifdef BT_HARDWARE_TS_3_5
 void setBrightnessLevel(int level)
 {
 	int hardware_level;
@@ -220,7 +220,7 @@ void setBacklight(bool b)
 		}
 	}
 
-#ifdef BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TS_10
 	if (b)
 	{
 		QStringList args_contrast;
@@ -231,7 +231,7 @@ void setBacklight(bool b)
 }
 
 
-#ifdef BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TS_10
 
 bool buzzer_enabled = false;
 
@@ -341,7 +341,7 @@ void setOrientation(QString orientation)
 
 void beep(int t)
 {
-#ifdef BT_HARDWARE_BTOUCH
+#ifdef BT_HARDWARE_TS_3_5
 	if (QFile::exists("/proc/sys/dev/btweb/buzzer"))
 	{
 		int fd = open("/proc/sys/dev/btweb/buzzer", O_WRONLY);
@@ -353,7 +353,7 @@ void beep(int t)
 			close(fd);
 		}
 	}
-#else // BT_HARDWARE_TOUCHX
+#else // BT_HARDWARE_TS_10
 	if (buzzer_enabled && bt_global::audio_states->currentState() == AudioStates::BEEP_ON && QFile::exists(SOUND_PATH "beep.wav"))
 		bt_global::sound->play(SOUND_PATH "beep.wav");
 #endif
@@ -364,7 +364,7 @@ void beep()
 	beep(50);
 }
 
-#ifdef BT_HARDWARE_BTOUCH
+#ifdef BT_HARDWARE_TS_3_5
 
 unsigned long getTimePress()
 {
@@ -501,7 +501,7 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 
 void setVctVideoValue(const QString &command, const QString &value)
 {
-#ifdef BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TS_10
 	QProcess::startDetached("/home/bticino/bin/set_videocom",
 		QStringList() << command << value);
 #endif
@@ -509,7 +509,7 @@ void setVctVideoValue(const QString &command, const QString &value)
 
 void initMultimedia()
 {
-#ifdef BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TS_10
 	smartExecute("/bin/init_audio_system");
 	smartExecute("/bin/init_video_system");
 #endif

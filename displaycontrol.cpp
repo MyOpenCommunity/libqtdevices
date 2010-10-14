@@ -29,7 +29,7 @@ DisplayControl::DisplayControl()
 	forced_operative_mode = false;
 	direct_screen_access = 0;
 
-#ifdef BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TS_10
 	operative_brightness = 1; // a low brightness for the touch 10''
 	setInactiveBrightness(BRIGHTNESS_LOW);
 #else
