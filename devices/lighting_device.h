@@ -59,9 +59,7 @@ public:
 
 	virtual void init();
 	void turnOn();
-	void turnOn(int speed);
 	void turnOff();
-	void turnOff(int speed);
 	void fixedTiming(int value);
 	void variableTiming(int h, int m, int s);
 
@@ -116,6 +114,8 @@ public:
 			PullStateManager::FrameChecker checker = NULL);
 
 	virtual void init();
+	void turnOn(int speed);
+	void turnOff(int speed);
 	void increaseLevel100(int delta, int speed);
 	void decreaseLevel100(int delta, int speed);
 
