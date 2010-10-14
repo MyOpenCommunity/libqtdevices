@@ -134,7 +134,7 @@ void AlarmClock::saveAndActivate()
 	else
 		data["alarmset"] = QString::number(freq);
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	setCfgValue(data, id, serNum);
 #else
 	setCfgValue(data, item_id);
@@ -199,7 +199,7 @@ void AlarmClock::setActive(bool a)
 		}
 	}
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	setCfgValue("enabled", active, id, serNum);
 #else
 	setCfgValue("enabled", active, item_id);

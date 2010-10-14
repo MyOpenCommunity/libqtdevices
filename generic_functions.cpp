@@ -276,7 +276,7 @@ bool writeCfgFile(const QDomDocument &doc, const QString &filename)
 // updates a single configuration item in the given document
 void doSetCfgValue(QDomDocument &doc, QMap<QString, QString> data, int item_id, int serial_number)
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	QDomNode n = findXmlNode(doc, QRegExp(".*"), item_id, serial_number);
 #else
 	Q_UNUSED(serial_number);
@@ -334,7 +334,7 @@ Q_OBJECT
 	{
 		QMap<QString, QString> data;
 		int item_id;
-		int serial_number; // BTOUCH_CONFIG only used with old config file
+		int serial_number; // CONFIG_TS_3_5 only used with old config file
 
 		ItemValue(QMap<QString, QString> _data, int _item_id, int _serial_number) :
 			data(_data), item_id(_item_id), serial_number(_serial_number) {}
@@ -477,7 +477,7 @@ void DelayedConfigWrite::asyncWriteConfig(QHash<QString, FileQueue> queued_actio
  * Changes a value in conf.xml file atomically.
  * It works on a temporary file and then moves that file on conf.xml with a call to ::rename().
  */
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 void setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
 #else
 void setCfgValue(QMap<QString, QString> data, int item_id, const QString &filename)
@@ -490,14 +490,14 @@ void setCfgValue(QMap<QString, QString> data, int item_id, const QString &filena
 		return;
 	}
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	delayed_config()->queueCfgValue(data, item_id, serial_number, filename);
 #else
 	delayed_config()->queueCfgValue(data, item_id, -1, filename);
 #endif
 }
 
-// TODO rewrite setCfgValue using setGlobalCfgValue when removing CONFIG_BTOUCH
+// TODO rewrite setCfgValue using setGlobalCfgValue when removing CONFIG_TS_3_5
 void setGlobalCfgValue(const QString &root_name, QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename)
 {
 	if (!bt_global::config->contains(INIT_COMPLETE))
@@ -510,7 +510,7 @@ void setGlobalCfgValue(const QString &root_name, QMap<QString, QString> data, co
 	delayed_config()->queueGlobalValue(root_name, data, tag_name, id_value, filename);
 }
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 
 void setCfgValue(QString field, QString value, int item_id, int num_item, const QString &filename)
 {

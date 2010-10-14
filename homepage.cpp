@@ -45,7 +45,7 @@ HomePage::HomePage(const QDomNode &config_node) : SectionPage(config_node)
 // Load only the item that is not a section page (which is loaded by SectionPage)
 void HomePage::loadItems(const QDomNode &config_node)
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
@@ -78,7 +78,7 @@ void HomePage::loadItems(const QDomNode &config_node)
 
 void HomePage::showSectionPage(int page_id)
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	qFatal("Can't be implemented with old config, and not necessary on BTouch anyway");
 #else
 	bt_global::btmain->page_list[page_id]->showPage();

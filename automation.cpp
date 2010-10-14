@@ -32,7 +32,7 @@
 #include <QDebug>
 #include <QList>
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 enum BannerType
 {
 	SECURE_AUTOMATIC_ACTUATOR = 8,
@@ -118,7 +118,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 	case ACTUATOR_GROUP:
 	{
 		QStringList addresses;
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		foreach (const QDomNode &el, getChildren(item_node, "element"))
 			addresses << getTextChild(el, "where");
 #else
@@ -130,7 +130,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		break;
 	case GATE_LIGHTING_ACT:
 	{
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		QStringList sl = getTextChild(item_node, "time").split("*");
 		Q_ASSERT_X(sl.size() == 3, "Automation::getBanner", "time leaf must have 3 fields");
 		BtTime t(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
@@ -143,7 +143,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		break;
 	case GATE_VCT_ACT:
 	{
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		where = getTextChild(item_node, "dev") + getTextChild(item_node, "where");
 #else
 		QDomNode addresses = getElement(item_node, "addresses");

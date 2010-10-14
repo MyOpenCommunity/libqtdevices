@@ -50,7 +50,7 @@
 
 Page *getPage(int page_id)
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	QDomNode page_node = getPageNode(page_id);
 	int id = page_id;
 #else

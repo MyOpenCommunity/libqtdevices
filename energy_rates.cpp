@@ -55,7 +55,7 @@ void EnergyRates::loadRates()
 	if (!rates.isEmpty())
 		return;
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	const QDomNode &conf_node = getConfElement("displaypages/rate_info");
 #else
 	const QDomNode &conf_node = getConfElement("tariff_setting/rate_info");
@@ -129,7 +129,7 @@ void EnergyRates::setRate(const EnergyRate &new_rate)
 
 	map["tariff"] = loc.toString(new_rate.rate, 'f', 3);
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	QString root_name = "displaypages";
 #else
 	QString root_name = "tariff_setting";

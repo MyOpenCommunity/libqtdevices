@@ -31,7 +31,7 @@
 #include <QDebug>
 #include <QList>
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 // configuration values for old configuration files
 enum BannerType
 {
@@ -99,7 +99,7 @@ namespace
 	QList<QString> getAddresses(QDomNode item, QList<int> *start_values = 0, QList<int> *stop_values = 0)
 	{
 		QList<QString> l;
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		foreach (const QDomNode &el, getChildren(item, "element"))
 		{
 			l.append(getTextChild(el, "where"));
@@ -109,7 +109,7 @@ namespace
 			l.append(el.toElement().text());
 #endif
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 			if (start_values)
 				start_values->append(getTextChild(el, "softstart").toInt());
 			if (stop_values)
@@ -126,7 +126,7 @@ namespace
 
 	QList<BtTime> getTimes(const QDomNode &item)
 	{
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		QDomNode times_node = item;
 #else
 		QDomNode times_node = getElement(item, "times");
@@ -204,7 +204,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 	case DIMMER100_GROUP:
 	{
 		QList<int> start, stop;
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		QList<QString> addresses = getAddresses(item_node, &start, &stop);
 #else
 		QList<QString> addresses = getAddresses100(item_node, &start, &stop);
@@ -215,7 +215,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 	case TEMP_LIGHT_FIXED:
 	{
 		int t;
-	#ifdef CONFIG_BTOUCH
+	#ifdef CONFIG_TS_3_5
 		// I think conf.xml will have only one node for time in this banner, however
 		// such node is indicated as "timeX", so I'm using the following overkill code
 		// to be safe

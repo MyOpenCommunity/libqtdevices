@@ -134,7 +134,7 @@ void ToggleBeep::toggleBeep()
 	setBeep(beep_on);
 	button->setStatus(beep_on);
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	setCfgValue("value", beep_on, SUONO);
 #else
 	setCfgValue("enabled", beep_on, item_id);

@@ -44,7 +44,7 @@
 
 enum
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	LOAD_WITH_CU=80,
 	LOAD_WITHOUT_CU=81,
 #else
@@ -92,7 +92,7 @@ namespace
 	bool isRateEnabled(const QDomNode &n)
 	{
 		int tmp;
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		if (tryConvert(n, "rate/ab", &tmp))
 #else
 		if (tryConvert(n, "rate/enabled", &tmp))

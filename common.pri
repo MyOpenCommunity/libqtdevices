@@ -24,7 +24,7 @@ TRGT_NAME = BTouch
 contains(CONF_FILE, touchx) {
 	message(Using TouchX config file.)
 } else {
-	DEFINES += CONFIG_BTOUCH
+	DEFINES += CONFIG_TS_3_5
 	message(Using BTouch config file.)
 }
 

@@ -45,7 +45,7 @@ typedef AdvancedAirConditioningDevice::Velocity Velocity;
 
 enum BannerType
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	AIR_SPLIT=74,                                 /*!< AIR conditioning single split (basic) */
 	AIR_GENERAL=75,                               /*!< AIR conditioning general split (basic) */
 	AIR_SPLIT_ADV=77,                             /*!< AIR conditioning single split (advanced) */
@@ -122,7 +122,7 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	int id = getTextChild(item_node, "id").toInt();
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	QString descr = getTextChild(item_node, "descr");
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	bool has_commands = !getChildren(item_node, "cmd").isEmpty();
 	QDomNode linked_page = item_node;
 #else
@@ -218,7 +218,7 @@ void AirConditioning::loadItems(const QDomNode &config_node)
 SplitPage::SplitPage(const QDomNode &config_node, AirConditioningDevice *d)
 {
 	dev = d;
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	int off_button = getElement(config_node, "off/list").text().toInt();
 #else
 	int off_button = getElement(config_node, "off/presence").text().toInt();
@@ -254,7 +254,7 @@ SplitPage::SplitPage(const QDomNode &config_node, AirConditioningDevice *d)
 
 void SplitPage::loadScenarios(const QDomNode &config_node)
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 #else
 	foreach (const QDomNode &scenario, getChildren(getPageNodeFromChildNode(config_node, "lnk_pageID"), "item"))
@@ -275,7 +275,7 @@ void SplitPage::setDeviceOff()
 AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirConditioningDevice *d)
 {
 	single_page = 0;
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	int off_button = getElement(config_node, "off/list").text().toInt();
 #else
 	int off_button = getElement(config_node, "off/presence").text().toInt();
@@ -333,7 +333,7 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirCo
 		SLOT(splitValuesChanged(const AirConditionerStatus &)));
 	page_content->appendBanner(bann);
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 #else
 	foreach (const QDomNode &scenario, getChildren(getPageNodeFromChildNode(config_node, "lnk_pageID"), "item"))
@@ -465,7 +465,7 @@ AirConditionerStatus SplitSettings::getCurrentStatus()
 void SplitSettings::readModeConfig(const QDomNode &mode_node, int init_mode)
 {
 	QList <int> modes;
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	foreach (const QDomNode &val, getChildren(mode_node, "val"))
 		modes.append(val.toElement().text().toInt());
 #else
@@ -490,14 +490,14 @@ void SplitSettings::readTempConfig(const QDomNode &temp_node, int init_temp)
 void SplitSettings::readSpeedConfig(const QDomNode &speed_node)
 {
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	if (getTextChild(speed_node, "val1").toInt() != -1)
 #else
 	if (getTextChild(speed_node, "presence").toInt())
 #endif
 	{
 		QList <int> speeds;
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		foreach (const QDomNode &val, getChildren(speed_node, "val"))
 			speeds.append(val.toElement().text().toInt());
 #else
@@ -515,7 +515,7 @@ void SplitSettings::readSpeedConfig(const QDomNode &speed_node)
 
 void SplitSettings::readSwingConfig(const QDomNode &swing_node)
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	if (getTextChild(swing_node, "val1").toInt() != -1)
 #else
 	if (getTextChild(swing_node, "presence").toInt())
@@ -586,14 +586,14 @@ GeneralSplitPage::GeneralSplitPage(const QDomNode &config_node)
 
 void GeneralSplitPage::loadScenarios(const QDomNode &config_node)
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 #else
 	foreach (const QDomNode &scenario, getChildren(config_node, "item"))
 #endif
 	{
 		GeneralSplitScenario *b = new GeneralSplitScenario(getTextChild(scenario, "descr"));
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		foreach (const QDomNode &split, getChildren(scenario, "split"))
 #else
 		foreach (const QDomNode &split, getChildren(getElement(scenario, "splits"), "item"))
@@ -617,14 +617,14 @@ AdvancedGeneralSplitPage::AdvancedGeneralSplitPage(const QDomNode &config_node)
 
 void AdvancedGeneralSplitPage::loadScenarios(const QDomNode &config_node)
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
 #else
 	foreach (const QDomNode &scenario, getChildren(config_node, "item"))
 #endif
 	{
 		GeneralSplitScenario *b = new GeneralSplitScenario(getTextChild(scenario, "descr"));
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		foreach (const QDomNode &split, getChildren(scenario, "split"))
 #else
 		foreach (const QDomNode &split, getChildren(getElement(scenario, "splits"), "item"))

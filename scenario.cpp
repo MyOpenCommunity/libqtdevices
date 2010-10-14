@@ -33,7 +33,7 @@
 #include <QDebug>
 #include <QList>
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 enum BannerType
 {
 	BANN_SCENARIO = 4,
@@ -89,7 +89,7 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 		QString action;
 		bool enabled;
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		int item_id = 0;
 		QDomNode time_node = getChildWithName(item_node, "condH");
 
@@ -130,7 +130,7 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 			actions << QString();
 
 		QStringList names;
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		// these must be in the order: unable, start, stop, disable (the same given by actions above)
 		names << "unable" << "start" << "stop" << "disable";
 		for (int i = 0; i < names.size(); ++i)

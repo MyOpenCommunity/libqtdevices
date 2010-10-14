@@ -372,7 +372,7 @@ static QString status_icons_ids[ThermalDevice::ST_COUNT] =
 	"regulator_weekend", "regulator_program", "regulator_scenario", "regulator_holiday"
 };
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 
 void parseBTouchProgramList(QDomNode conf_root, QString season, QString what, QMap<QString, QString> &entries)
 {
@@ -421,7 +421,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	for (int i = 0; i < ThermalDevice::ST_COUNT; ++i)
 		status_icons.append(bt_global::skin->getImage(status_icons_ids[i]));
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	// parse program/scenario list
 	if (n.nodeName().contains(QRegExp("item(\\d\\d?)")) == 0)
 	{
@@ -708,7 +708,7 @@ void PageTermoReg4z::createSettingsItem(QDomNode item, SettingsPage *settings, T
 	}
 }
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 
 void PageTermoReg4z::createSettingsMenu(QDomNode regulator_node)
 {
@@ -791,7 +791,7 @@ void PageTermoReg99z::createSettingsItem(QDomNode item, SettingsPage *settings, 
 	}
 }
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 
 void PageTermoReg99z::createSettingsMenu(QDomNode regulator_node)
 {

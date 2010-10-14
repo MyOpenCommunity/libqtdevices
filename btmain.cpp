@@ -511,11 +511,11 @@ void BtMain::loadConfiguration()
 			qWarning("setup node not found on xml config file!");
 	}
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	QDomNode display_node = getChildWithId(getPageNode(SETTINGS), QRegExp("item\\d{1,2}"), DISPLAY);
 #endif
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	if (!display_node.isNull())
 	{
 		QDomElement n = getElement(display_node, "brightness/level");
@@ -525,7 +525,7 @@ void BtMain::loadConfiguration()
 #endif
 
 	ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	if (!display_node.isNull())
 	{
 		QDomElement screensaver_node = getElement(display_node, "screensaver");
@@ -541,7 +541,7 @@ void BtMain::loadConfiguration()
 
 	window_container->homeWindow()->loadConfiguration();
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	QDomNode gui_node = getConfElement("displaypages");
 	QDomNode pagemenu_home = getChildWithId(gui_node, QRegExp("pagemenu(\\d{1,2}|)"), 0);
 	// homePage must be built after the loading of the configuration,

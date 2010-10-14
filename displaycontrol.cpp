@@ -85,7 +85,7 @@ void DisplayControl::setInactiveBrightness(BrightnessLevel level)
 	inactive_brightness = level;
 	updateBrightnessData();
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	setCfgValue("brightness/level", level, DISPLAY);
 #endif
 }
@@ -161,7 +161,7 @@ void DisplayControl::setScreenSaver(ScreenSaver::Type t)
 {
 	// TODO find the correct place to save the information
 	// in TouchX it's saved inside ScreensaverPage, probably it can be done also on BTouch
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	setCfgValue("screensaver/type", t, DISPLAY);
 #endif
 	current_screensaver = t;

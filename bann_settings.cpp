@@ -205,7 +205,7 @@ void impBeep::toggleBeep()
 	setBeep(beep_on);
 	left_button->setStatus(beep_on);
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	setCfgValue("value", beep_on, SUONO);
 #else
 	setCfgValue("enabled", beep_on, item_id);
@@ -229,7 +229,7 @@ void bannContrast::done()
 	int c = getContrast();
 
 	setContrast(c);
-	setCfgValue("value", c, item_id); // TODO check if "value" is correct when removing CONFIG_BTOUCH
+	setCfgValue("value", c, item_id); // TODO check if "value" is correct when removing CONFIG_TS_3_5
 }
 
 
@@ -290,7 +290,7 @@ void impPassword::requestPasswdOn()
 void impPassword::toggleActivation()
 {
 	active = !active;
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	setCfgValue("enabled", QString::number(active), item_id);
 #else
 	setCfgValue("actived", active, item_id);
@@ -421,7 +421,7 @@ void impPassword::savePassword(const QString &passwd)
 	if (!passwd.isEmpty())
 	{
 		password = passwd;
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		setCfgValue("value", password, item_id);
 #else
 		setCfgValue("password", password, item_id);

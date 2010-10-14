@@ -206,7 +206,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	connect(dev, SIGNAL(valueReceived(const DeviceValues&)), SLOT(valueReceived(const DeviceValues&)));
 
 	// Set the network to the initial status
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	saved_status = getTextChild(config_node, "value").toInt();
 	item_id = 0;
 #else
@@ -276,7 +276,7 @@ void LanSettings::valueReceived(const DeviceValues &values_list)
 			if (lan_status != saved_status)
 			{
 				saved_status = lan_status;
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 				setCfgValue("value", lan_status, LANSETTINGS);
 #else
 				setCfgValue("enable", lan_status, item_id);

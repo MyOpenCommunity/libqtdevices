@@ -64,7 +64,7 @@ QString getPressName(QString name);
  * \param item_id the unique id of the object
  * \param num_item the serial number of the object
  */
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 
 void setCfgValue(QMap<QString, QString> data, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
@@ -96,7 +96,7 @@ int scsToLocalVolume(int vol);
  */
 namespace DateConversions
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	const char separator = '.';
 #else
 	const char separator = '/';

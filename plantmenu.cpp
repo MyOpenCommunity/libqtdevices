@@ -39,7 +39,7 @@
 
 enum
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	TERMO_99Z = 66,
 	TERMO_4Z = 68,
 	TERMO_99Z_PROBE = 22,
@@ -79,7 +79,7 @@ NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_central
 	QString where_composed;
 	if (id != fs_4z_thermal_regulator && id != fs_99z_thermal_regulator && !simple_address.isEmpty())
 		where_composed = simple_address + "#" + ind_centrale;
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	QDomNode page_node = n;
 #else
 	QDomNode page_node = getPageNodeFromChildNode(n, "lnk_pageID");
@@ -166,7 +166,7 @@ int PlantMenu::sectionId() const
 	return THERMALREGULATION;
 }
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 void PlantMenu::loadItems(const QDomNode &conf)
 {
 	QDomNode thermr_address = conf.namedItem("ind_centrale");
@@ -267,7 +267,7 @@ void PlantMenu::loadItems(const QDomNode &config_node)
 		case TERMO_4Z:
 			pg = addMenuItem(item, icon, fs_4z_thermal_regulator);
 			break;
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		case TERMO_99Z_PROBE:
 			pg = addMenuItem(item, icon, fs_99z_probe);
 			break;

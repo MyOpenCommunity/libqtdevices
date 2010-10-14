@@ -46,7 +46,7 @@
 
 enum
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	ZONANTINTRUS = 23,
 	IMPIANTINTRUS = 24,
 #else
@@ -126,7 +126,7 @@ void Antintrusion::createImpianto(const QString &descr)
 			       bt_global::skin->getImage("alarm_state"));
 	impianto->setText(descr);
 	impianto->Draw();
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	impianto->setId(IMPIANTINTRUS); // can probably be removed
 #endif
 	l->addWidget(impianto);
@@ -150,7 +150,7 @@ void Antintrusion::createImpianto(const QString &descr)
 
 void Antintrusion::loadItems(const QDomNode &config_node)
 {
-#ifndef CONFIG_BTOUCH
+#ifndef CONFIG_TS_3_5
 	createImpianto("");
 #endif
 
@@ -163,7 +163,7 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 
 		banner *b;
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		if (id == IMPIANTINTRUS)
 			createImpianto(descr);
 		else

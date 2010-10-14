@@ -63,7 +63,7 @@ int SupervisionMenu::sectionId() const
 
 void SupervisionMenu::loadItems(const QDomNode &config_node)
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	foreach (const QDomNode &node, getChildren(config_node, ""))
 	{
 		if (!node.nodeName().startsWith("class") && node.nodeName() != "load")
@@ -82,7 +82,7 @@ void SupervisionMenu::loadItems(const QDomNode &config_node)
 
 		page_content->appendBanner(b);
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		QDomNode page_node = node;
 #else
 		QDomNode page_node = getPageNodeFromChildNode(node, "lnk_pageID");
