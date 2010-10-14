@@ -104,19 +104,9 @@ void LightingDevice::turnOn()
 	sendCommand(LIGHT_ON);
 }
 
-void LightingDevice::turnOn(int speed)
-{
-	sendCommand(QString("%1#%2").arg(LIGHT_ON).arg(speed));
-}
-
 void LightingDevice::turnOff()
 {
 	sendCommand(LIGHT_OFF);
-}
-
-void LightingDevice::turnOff(int speed)
-{
-	sendCommand(QString("%1#%2").arg(LIGHT_OFF).arg(speed));
 }
 
 void LightingDevice::fixedTiming(int value)
@@ -397,6 +387,16 @@ void Dimmer100Device::init()
 void Dimmer100Device::delayedLevelRequest()
 {
 	requestDimmer100Status();
+}
+
+void Dimmer100Device::turnOn(int speed)
+{
+	sendCommand(QString("%1#%2").arg(LIGHT_ON).arg(speed));
+}
+
+void Dimmer100Device::turnOff(int speed)
+{
+	sendCommand(QString("%1#%2").arg(LIGHT_OFF).arg(speed));
 }
 
 void Dimmer100Device::increaseLevel100(int delta, int speed)
