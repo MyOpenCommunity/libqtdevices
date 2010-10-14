@@ -94,7 +94,7 @@ signals:
 
 
 /**
- * The navigation bar for the Energy view, that have (on BTouch) custom buttons
+ * The navigation bar for the Energy view, that have (on TS 3.5'') custom buttons
  * to toggle the currency mode and to show the table of energy data.
  */
 class EnergyViewNavigation : public AbstractNavigationBar

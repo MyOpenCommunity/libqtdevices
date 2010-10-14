@@ -647,7 +647,7 @@ QString PageTermoReg::lookupProgramDescription(QString season, QString what, int
 
 void PageTermoReg::createButtonsBanners(SettingsPage *settings, ThermalDevice *dev)
 {
-	// TODO: when we have the small button icons for BTouch,
+	// TODO: when we have the small button icons for TS 3.5'',
 	//       remove the code to create the two separate banners
 #ifdef LAYOUT_TS_10
 	// off_antifreeze banner

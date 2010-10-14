@@ -112,8 +112,8 @@ NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up
 	up_button = createButton(up_icon, SIGNAL(upClick()), 2);
 	forward_button = createButton(forward_icon, SIGNAL(forwardClick()), 3);
 #else
-	// TODO: Btouch code expects the forward button to be in the navigation
-	// bar; in TouchX the button is mostly in the page (except for a delete
+	// TODO: TS 3.5'' code expects the forward button to be in the navigation
+	// bar; in TS 10'' the button is mostly in the page (except for a delete
 	// button in a couple of pages)
 	forward_button = createButton(forward_icon, SIGNAL(forwardClick()), 0);
 	up_button = createButton(up_icon, SIGNAL(upClick()), 1);

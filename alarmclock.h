@@ -63,7 +63,7 @@ public:
 */
 	enum Freq
 	{
-		// values used by BTouch
+		// values used by TS 3.5''
 		SEMPRE = 1,  /*!< Always -> every day*/
 		ONCE = 0,  /*!< Once -> only at the first occurrence of the time selected after the alarm set was setted*/
 		FERIALI = 2,  /*!< Week days -> only from monday to friday*/

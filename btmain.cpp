@@ -478,7 +478,7 @@ void BtMain::loadGlobalConfig()
 		(*config)[TS_NUMBER] = QString::number(0);
 	}
 
-	// TouchX source and amplifier addresses
+	// TS 10'' source and amplifier addresses
 	setConfigValue(scs_node, "coordinate_scs/my_mmaddress", (*config)[SOURCE_ADDRESS]);
 	setConfigValue(scs_node, "coordinate_scs/my_maaddress", (*config)[AMPLIFIER_ADDRESS]);
 

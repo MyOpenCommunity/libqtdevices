@@ -262,7 +262,7 @@ void Antintrusion::Parz()
 void Antintrusion::checkAlarmCount()
 {
 	qDebug("checkAlarmCount %d %d", allarmi.size(), alarms->alarmCount());
-	// the first condition is for BTouch, the second for TouchX
+	// the first condition is for TS 3.5'', the second for TS 10''
 	if (!allarmi.isEmpty() || alarms->alarmCount() != 0)
 		impianto->mostra(BannerOld::BUT1);
 	else

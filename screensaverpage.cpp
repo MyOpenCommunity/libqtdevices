@@ -66,7 +66,7 @@ ScreenSaverPage::ScreenSaverPage(const QDomNode &conf_node) :
 	addBanner(SingleChoice::createBanner(tr("No screensaver")), ScreenSaver::NONE);
 	addBanner(SingleChoice::createBanner(tr("Time")), ScreenSaver::TIME);
 	addBanner(SingleChoice::createBanner(tr("Text")), ScreenSaver::TEXT);
-	// TODO: these types will be available on BTouch only
+	// TODO: these types will be available on TS 3.5'' only
 #ifdef LAYOUT_TS_3_5
 	addBanner(SingleChoice::createBanner(tr("Line")), ScreenSaver::LINES);
 	addBanner(SingleChoice::createBanner(tr("Balls")), ScreenSaver::BALLS);
@@ -131,7 +131,7 @@ void ScreenSaverPage::bannerSelected(int id)
 	}
 
 	bt_global::display->setScreenSaver(static_cast<ScreenSaver::Type>(id));
-	// TODO review when porting the code to BTouch
+	// TODO review when porting the code to TS 3.5''
 #ifdef BT_HARDWARE_TS_3_5
 	if (id == ScreenSaver::NONE)
 		bt_global::display->setInactiveBrightness(BRIGHTNESS_OFF);

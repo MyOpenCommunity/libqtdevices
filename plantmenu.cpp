@@ -335,7 +335,7 @@ NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, Thermal
 
 ThermalNavigation::ThermalNavigation(QWidget *parent) : AbstractNavigationBar(parent)
 {
-	// For now, it used only in BTouch code.
+	// For now, it used only in TS 3.5'' code.
 #ifdef LAYOUT_TS_3_5
 	createButton(bt_global::skin->getImage("back"), SIGNAL(backClick()), 0);
 	createButton(bt_global::skin->getImage("ok"), SIGNAL(forwardClick()), 3);

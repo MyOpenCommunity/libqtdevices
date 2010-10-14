@@ -40,7 +40,7 @@ public:
 
 	// TODO: need to split SUBTITLE and SMALLTEXT
 	//
-	// TITLE: title of the page (used for all TouchX pages, and for a couple of BTouch pages)
+	// TITLE: title of the page (used for all TS 10'' pages, and for a couple of TS 3.5'' pages)
 	// SUBTITLE: AUX source, load deactivation time, external/non-controlled probe
 	//           RDS radio, version page, load management current consumption,
 	//           load management "force on" confirmation page, energy management date selection

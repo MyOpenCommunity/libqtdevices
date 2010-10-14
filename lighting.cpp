@@ -115,7 +115,7 @@ namespace
 			if (stop_values)
 				stop_values->append(getTextChild(el, "softstop").toInt());
 #else
-			Q_ASSERT_X(start_values == NULL && stop_values == NULL, "getAddresses", "Use getAddresses100 for dimmer100 group on TouchX");
+			Q_ASSERT_X(start_values == NULL && stop_values == NULL, "getAddresses", "Use getAddresses100 for dimmer100 group on TS 10''");
 #endif
 		}
 

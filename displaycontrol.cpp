@@ -160,7 +160,7 @@ DisplayStatus DisplayControl::currentState()
 void DisplayControl::setScreenSaver(ScreenSaver::Type t)
 {
 	// TODO find the correct place to save the information
-	// in TouchX it's saved inside ScreensaverPage, probably it can be done also on BTouch
+	// in TS 10'' it's saved inside ScreensaverPage, probably it can be done also on TS 3.5''
 #ifdef CONFIG_TS_3_5
 	setCfgValue("screensaver/type", t, DISPLAY);
 #endif

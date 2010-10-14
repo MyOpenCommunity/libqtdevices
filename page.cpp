@@ -219,7 +219,7 @@ void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationB
 #endif
 
 	// the top_widget (if present) is a widget that must be at the top of the page,
-	// limiting the height (so even the navigation) of the main_widget; for TouchX
+	// limiting the height (so even the navigation) of the main_widget; for TS 10''
 	// it must be between the title and the central_widget
 
 #ifdef LAYOUT_TS_10
@@ -243,7 +243,7 @@ void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationB
 	if (top_widget)
 		l->addWidget(top_widget);
 
-	Q_ASSERT_X(title_widget == NULL, "Page::buildPage", "BTouch pages can't have a title");
+	Q_ASSERT_X(title_widget == NULL, "Page::buildPage", "TS 3.5'' pages can't have a title");
 	l->addWidget(main_widget, 1);
 	l->addWidget(nav_bar);
 #endif
@@ -297,13 +297,13 @@ void Page::addBottomWidget(QWidget *bottom)
 #ifdef LAYOUT_TS_10
 	QLayout *main = layout();
 	QVBoxLayout *l = qobject_cast<QVBoxLayout *>(static_cast<QLayout *>(main->itemAt(1)));
-	Q_ASSERT_X(l, "Page::addBottomWidget", "Touchx layout()->itemAt(1) is not a QVBoxLayout, fix buildPage()!");
+	Q_ASSERT_X(l, "Page::addBottomWidget", "TS 10'' layout()->itemAt(1) is not a QVBoxLayout, fix buildPage()!");
 	l->addWidget(bottom, 0, Qt::AlignCenter);
 #else
 	// take into account nav_bar
 	// TODO: test it.
 	//l->insertWidget(l->count() - 2, bottom);
-	qFatal("Page::addBottomWidget is not implemented for BTouch");
+	qFatal("Page::addBottomWidget is not implemented for TS 3.5''");
 #endif
 }
 
@@ -441,7 +441,7 @@ void Page::aboutToHideEvent()
 /*!
 	\brief Return the section id of the page.
 
-	This function identifies a section; on TouchX it's used to highlight the
+	This function identifies a section; on TS 10'' it's used to highlight the
 	current section on thesection bar at the top of the page.
 	Internal pages of a section can return NO_SECTION.
 */

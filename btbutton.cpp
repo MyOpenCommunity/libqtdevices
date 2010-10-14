@@ -250,11 +250,11 @@ void BtButton::mouseReleaseEvent(QMouseEvent *event)
 void BtButton::paintEvent(QPaintEvent *e)
 {
 #ifdef LAYOUT_TS_3_5
-	// TODO keep default behaviour for BTouch
+	// TODO keep default behaviour for TS 3.5''
 	QPushButton::paintEvent(e);
 #else
 	// the default QStyle implementation shifts the pushed button
-	// some pixel to the right/bottom, and for the TouchX we do not want
+	// some pixel to the right/bottom, and for the TS 10'' we do not want
 	// that for buttons that have a separate "pressed" icon, BUT if there
 	// isn't a separate pressed image set, we want the default behaviour
 	if (isDown() && pressed_pixmap.isNull())

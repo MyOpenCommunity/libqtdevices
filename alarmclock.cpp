@@ -61,7 +61,7 @@
 AlarmNavigation::AlarmNavigation(bool forwardButton, QWidget *parent)
 	: AbstractNavigationBar(parent)
 {
-	// For now, it used only in BTouch code.
+	// For now, it used only in TS 3.5'' code.
 #ifdef LAYOUT_TS_3_5
 	createButton(bt_global::skin->getImage("ok"), SIGNAL(okClicked()), 0);
 	if (forwardButton)
@@ -331,7 +331,7 @@ void AlarmClock::sounddiffusionAlarm()
 	if (conta2min == 0)
 	{
 #ifdef LAYOUT_TS_10
-		// TODO fix sound diffusion for BTouch
+		// TODO fix sound diffusion for TS 3.5''
 		dev->startAlarm(SoundDiffusionPage::isMultichannel(), sorgente, stazione, volSveglia);
 #endif
 		conta2min = 9;
@@ -546,7 +546,7 @@ void AlarmClockSoundDiff::showPage()
 
 	difson->showPage();
 #else
-	Q_ASSERT_X(false, "AlarmClockSoundDiff::showPage", "No sound diffusion alarm clock for BTouch yet");
+	Q_ASSERT_X(false, "AlarmClockSoundDiff::showPage", "No sound diffusion alarm clock for TS 3.5'' yet");
 #endif
 }
 

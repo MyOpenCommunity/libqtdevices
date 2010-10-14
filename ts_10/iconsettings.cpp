@@ -430,7 +430,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			int timeout = getTextChild(item, "timeout").toInt() / 1000;
 			int blank = getTextChild(item, "blankscreen").toInt() / 1000;
 			bt_global::btmain->setScreenSaverTimeouts(timeout, blank == 0 ? 0 : timeout + blank);
-			// Screensaver data is not correctly initialized (in BtMain) when using touchx conf file
+			// Screensaver data is not correctly initialized (in BtMain) when using TS 10'' conf file
 			ScreenSaver::initData(item);
 			p = new ScreenSaverPage(item);
 			break;
@@ -516,7 +516,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 // TODO: password item in conf file hasn't its own page; this has two consequences:
 // 1. I need to parse here the conf file
 // 2. I can't use Settings::getBanner() because I don't have the correct item_node to pass to it (and xml tags
-//    are different from the ones used in btouch conf anyway).
+//    are different from the ones used in TS 3.5'' conf anyway).
 PasswordPage::PasswordPage(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());

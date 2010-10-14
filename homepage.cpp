@@ -79,7 +79,7 @@ void HomePage::loadItems(const QDomNode &config_node)
 void HomePage::showSectionPage(int page_id)
 {
 #ifdef CONFIG_TS_3_5
-	qFatal("Can't be implemented with old config, and not necessary on BTouch anyway");
+	qFatal("Can't be implemented with old config, and not necessary on TS 3.5'' anyway");
 #else
 	bt_global::btmain->page_list[page_id]->showPage();
 #endif
