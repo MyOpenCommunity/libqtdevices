@@ -42,8 +42,6 @@ void LogoScreenSaver::start(Window *w)
 	ScreenSaver::start(w);
 	initLogoRect();
 	showWindow();
-	refresh();
-	raise();
 }
 
 void LogoScreenSaver::paintEvent(QPaintEvent *e)
@@ -62,6 +60,7 @@ void LogoScreenSaver::refresh()
 		logo_speed.ry() = -logo_speed.y();
 
 	logo_rect.translate(logo_speed);
+	update();
 }
 
 void LogoScreenSaver::initLogoRect()

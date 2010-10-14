@@ -28,6 +28,7 @@
 #include "pagestack.h"
 #include "generic_functions.h" // checkImageLoad, getFileFilter
 #include "imageselectionhandler.h"
+#include "logoscreensaver.h"
 
 #include <QVBoxLayout>
 #include <QDomNode>
@@ -99,6 +100,8 @@ ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 		return new ScreenSaverSlideshow;
 	case ScreenSaver::DEFORM:
 		return new ScreenSaverDeform;
+	case ScreenSaver::LOGO:
+		return new LogoScreenSaver;
 	case ScreenSaver::NONE:
 		return 0;
 	default:
