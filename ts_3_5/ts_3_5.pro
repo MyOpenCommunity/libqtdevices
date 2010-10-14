@@ -50,7 +50,7 @@ TRANSLATIONS += linguist-ts/btouch_ar.ts \
 		linguist-ts/btouch_pl.ts \
 		linguist-ts/btouch_tr.ts
 
-# Add SOURCES and HEADERS with BTouch-specific source files
+# Add SOURCES and HEADERS with TS 3.5''-specific source files
 
 HEADERS += displaypage.h \
 	brightnesspage.h \

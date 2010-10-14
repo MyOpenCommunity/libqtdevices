@@ -11,16 +11,15 @@ TEMPLATE = app
 # CONF_FILE = btouch|touchx
 # before including this file in the project
 
-# Change target name, to something like BTouch.arm or BTouch.x86.touchx
+# Change target name, to something like BTouch.arm or BTouch.x86
 TRGT_SUFFIX =
 
 contains(LAYOUT, touchx) {
 	DEFINES += LAYOUT_TOUCHX
-	TRGT_NAME = TouchX
 } else {
 	DEFINES += LAYOUT_BTOUCH
-	TRGT_NAME = BTouch
 }
+TRGT_NAME = BTouch
 
 contains(CONF_FILE, touchx) {
 	message(Using TouchX config file.)
