@@ -1934,6 +1934,6 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		Logo screensaver
 		-->
 		<cid>12345</cid>
-		<img_screensaver_logo>screensaver/logo.png</img_screensaver_logo>
+		<img_screensaver_logo>screensaver.png</img_screensaver_logo>
 	</item>
 </style>
