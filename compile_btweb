@@ -36,7 +36,7 @@ fi
 
 if [ "$MACHINE" = "MMT" ]
 then
-  cd touchx
+  cd ts_10
   export QTDIR=$QTDIR
   export QMAKESPEC=$QMAKESPEC
   export PATH=$PATH:$CROSS_LIB1
