@@ -40,7 +40,7 @@ BtButton *getButton(QString img, QWidget *parent, bool autorepeat)
 	return btn;
 }
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 
 QLabel *getLabel(QString text = "")
 {
@@ -80,7 +80,7 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, DisplayType type)
 		main_layout->addWidget(btn3, 0, 4);
 	}
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	hour = getLabel();
 	main_layout->addWidget(hour, 1, 0);
 
@@ -200,7 +200,7 @@ void BtTimeEdit::decSec()
 
 void BtTimeEdit::displayTime()
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	hour->setText(QString("%1").arg(_time.hour(), 2, 10, QChar('0')));
 	minute->setText(QString("%1").arg(_time.minute(), 2, 10, QChar('0')));
 
@@ -247,7 +247,7 @@ BtDateEdit::BtDateEdit(QWidget *parent)
 	main_layout->addWidget(btn_top_center, 0, 2);
 	main_layout->addWidget(btn_top_right, 0, 4);
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	day = getLabel();
 	main_layout->addWidget(day, 1, fmt == USA_DATE ? 2 : 0);
 
@@ -326,7 +326,7 @@ void BtDateEdit::setDate(const QDate &d)
 
 void BtDateEdit::displayDate()
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	year->setText(QString("%1").arg(_date.year(), 4, 10, QChar('0')));
 	month->setText(QString("%1").arg(_date.month(), 2, 10, QChar('0')));
 	day->setText(QString("%1").arg(_date.day(), 2, 10, QChar('0')));

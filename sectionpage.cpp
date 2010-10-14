@@ -55,7 +55,7 @@ void SectionPage::addPage(Page *page, const QString &label, const QString &icon_
 	if (!icon_name_on.isEmpty())
 		b->setOnImage(icon_name_on);
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	b->setGeometry(x, y, DIM_BUT, DIM_BUT);
 #else
 	Q_ASSERT_X(page_content, "SectionPage::addButton", "The SectionPage must have the page_content!");

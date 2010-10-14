@@ -130,7 +130,7 @@ LoadManagement::LoadManagement(const QDomNode &config_node) :
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	EnergyRates::energy_rates.loadRates();
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	QString title = getTextChild(config_node, "descr");
 #endif
 
@@ -140,7 +140,7 @@ LoadManagement::LoadManagement(const QDomNode &config_node) :
 		Page *costs = new EnergyCost;
 		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 		NavigationBar *nav = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 		buildPage(new BannerContent, nav);
 		connect(this, SIGNAL(forwardClick()), costs, SLOT(showPage()));
@@ -168,7 +168,7 @@ LoadManagement::LoadManagement(const QDomNode &config_node) :
 	}
 	else
 	{
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 		buildPage();
 #else
 		buildPage(title, TITLE_HEIGHT);
@@ -244,7 +244,7 @@ ConfirmationPage::ConfirmationPage(const QString &text)
 	QWidget *content = NULL;
 	QLabel *label = new QLabel(text);
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
 
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(accept()));
@@ -303,7 +303,7 @@ LoadDataContent::LoadDataContent(int _currency_decimals, int _rate_id)
 	connect(second_period, SIGNAL(rightClicked()), &mapper, SLOT(map()));
 	mapper.setMapping(second_period, SECOND_PERIOD);
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	first_period->layout()->setSpacing(5);
 	second_period->layout()->setSpacing(5);
 #endif
@@ -433,7 +433,7 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 	int decimals = getDecimals(config_node);
 	content = new LoadDataContent(decimals, rate_id);
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	NavigationBar *nav_bar = new NavigationBar(forward_button);
 	connect(nav_bar, SIGNAL(forwardClick()), content, SLOT(toggleCurrencyView()));
 #else
@@ -458,12 +458,12 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	buildPage(content, nav_bar, "", 0, top);
 #else
 	QWidget *container = new QWidget;
 	QVBoxLayout *vlayout = new QVBoxLayout;
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	vlayout->addWidget(content, 2);
 #else
 	vlayout->addWidget(content, 2, Qt::AlignHCenter);
@@ -543,7 +543,7 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node, LoadsDev
 
 	QWidget *top = buildTitle(getDescriptionWithPriority(config_node));
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
 	// TODO: cancel user selection?
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(sendDeactivateDevice()));
@@ -556,7 +556,7 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node, LoadsDev
 
 	deactivation_time = new DeactivationTime(BtTime(2, 30, 0));
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	QWidget *content = new QWidget;
 	QHBoxLayout *banner_layout = new QHBoxLayout;
 	banner_layout->addStretch();

@@ -40,7 +40,7 @@
 Keypad::Keypad(bool back_button)
 {
 	// TODO extract the keypad to a widget and use it in both page and window
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 	buildPage(new QWidget, nav_bar);
@@ -92,7 +92,7 @@ Keypad::Keypad(bool back_button)
 
 	// digits, ok, cancel buttons
 	QGridLayout *k = new QGridLayout;
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	k->setAlignment(Qt::AlignHCenter);
 	k->setSpacing(20);
 #endif
@@ -120,7 +120,7 @@ Keypad::Keypad(bool back_button)
 	topLayout->setColumnStretch(0, 1);
 	topLayout->setColumnStretch(2, 1);
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	topLayout->setSpacing(0);
 #else
 	topLayout->setSpacing(15);
@@ -202,7 +202,7 @@ void Keypad::resetText()
 
 // KeypadWithState implementation
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 
 KeypadWithState::KeypadWithState(int s[8])
 {
@@ -280,7 +280,7 @@ KeypadWindow::KeypadWindow(Keypad::Type type)
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	l->addWidget(keypad, 1);
 #else
 	l->addWidget(keypad, 1, Qt::AlignCenter);

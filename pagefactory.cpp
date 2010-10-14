@@ -24,7 +24,7 @@
 #include "xml_functions.h" // getPageNode
 #include "btmain.h" // bt_global::btmain
 #include "videodoorentry.h"
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 #include "multimedia.h"
 #include "multimedia_filelist.h"
 #include "messages.h"
@@ -93,7 +93,7 @@ Page *getPage(int page_id)
 	case EVOLVED_SCENARIOS:
 		page = new Scenario(page_node);
 		break;
-#ifndef LAYOUT_TOUCHX
+#ifndef LAYOUT_TS_10
 	case SETTINGS:
 		page = new Settings(page_node);
 		break;
@@ -110,7 +110,7 @@ Page *getPage(int page_id)
 	case ENERGY_DATA:
 		page = new EnergyData(page_node);
 		break;
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	case MULTIMEDIA:
 		page = new MultimediaSectionPage(page_node, MultimediaSectionPage::ITEMS_ALL, new MultimediaFileListPage);
 		break;

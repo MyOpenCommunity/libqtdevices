@@ -175,7 +175,7 @@ private:
 	int volSveglia[AMPLI_NUM];
 	bool active;
 	QTimer *minuTimer,*aumVolTimer;
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	AlarmClockTime *alarm_time;
 	AlarmClockFreq *alarm_type;
 #else

@@ -336,7 +336,7 @@ NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, Thermal
 ThermalNavigation::ThermalNavigation(QWidget *parent) : AbstractNavigationBar(parent)
 {
 	// For now, it used only in BTouch code.
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	createButton(bt_global::skin->getImage("back"), SIGNAL(backClick()), 0);
 	createButton(bt_global::skin->getImage("ok"), SIGNAL(forwardClick()), 3);
 #endif
@@ -353,7 +353,7 @@ NavigationPage::NavigationPage()
 
 NavigationBar *NavigationPage::createNavigationBar(const QString &icon, int title_height)
 {
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	nav_bar = new NavigationBar(icon);
 #else
 	nav_bar = new NavigationBar();
@@ -390,7 +390,7 @@ PageSimpleProbe::PageSimpleProbe(QDomNode n, TemperatureScale scale)
 	setTemperature(1235);
 
 	createNavigationBar(bt_global::skin->getImage("probe_manual"));
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	toggle_mode = nav_bar->forward_button;
 #else
 	toggle_mode = new BtButton;
@@ -449,7 +449,7 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	btn_minus->hide();
 	btn_minus->setAutoRepeat(true);
 	connect(btn_minus, SIGNAL(clicked()), SLOT(decSetpoint()));
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	hbox->addStretch(1);
 #endif
 	hbox->addWidget(btn_minus);
@@ -472,7 +472,7 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	btn_plus->setAutoRepeat(true);
 	connect(btn_plus, SIGNAL(clicked()), SLOT(incSetpoint()));
 	hbox->addWidget(btn_plus);
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	hbox->addStretch(1);
 #endif
 
@@ -494,7 +494,7 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 
 	main_layout.addLayout(&bottom_icons);
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	bottom_icons.addWidget(toggle_mode);
 	bottom_icons.setContentsMargins(0, 0, 0, 60);
 #endif
@@ -600,7 +600,7 @@ void PageProbe::updateControlState()
 	local_temp_label->setVisible(!isOff && !isAntigelo && local_temp != "0");
 	icon_off->setVisible(isOff);
 	icon_antifreeze->setVisible(isAntigelo);
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	toggle_mode->setVisible(probe_type == THERMO_Z99 && !isOff && !isAntigelo);
 #else
 	// TODO needs to be checked after ticket #17 is resolved

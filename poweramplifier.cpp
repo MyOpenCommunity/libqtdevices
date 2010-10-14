@@ -140,7 +140,7 @@ void BannPowerAmplifier::valueReceived(const DeviceValues &values_list)
 			// so we use the following formula.
 			int level = scsToLocalVolume(volume);
 			// TODO remove after aligning image names
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 			Q_ASSERT_X(level > 0, "BannPowerAmplifier::valueReceived", "Received volume is not in range 0-31");
 #else
 			Q_ASSERT_X(level >= 0, "BannPowerAmplifier::valueReceived", "Received volume is not in range 0-31");

@@ -51,7 +51,7 @@ void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QSt
 BtButton *IconPage::addButton(const QString &label, const QString& icon_path, int x, int y)
 {
 	BtButton *b = new BtButton(icon_path, this);
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	b->setGeometry(x, y, DIM_BUT, DIM_BUT);
 #else
 	Q_ASSERT_X(page_content, "IconPage::addButton", "The IconPage must have the page_content!");

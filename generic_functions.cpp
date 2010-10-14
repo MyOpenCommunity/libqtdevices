@@ -544,7 +544,7 @@ void setCfgValue(QString field, int value, int item_id, const QString &filename)
 
 #endif
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 
 int localVolumeToAmplifier(int vol)
 {
@@ -556,7 +556,7 @@ int localVolumeToAmplifier(int vol)
 int scsToLocalVolume(int vol)
 {
 	// TODO remove after aligning image names
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	if (vol < 0 || vol > 31)
 		return -1;
 

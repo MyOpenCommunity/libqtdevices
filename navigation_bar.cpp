@@ -67,7 +67,7 @@ BtButton *AbstractNavigationBar::createButton(QString icon, const char *signal, 
 			b->setImage(icon); // for retrocompatibility
 		else
 			b->setImage(bt_global::skin->getImage(icon));
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 		b->setGeometry(buttons_dim * pos, 0, buttons_dim, buttons_dim);
 #else
 		b->setGeometry(13, 60 + buttons_dim * pos, buttons_dim, buttons_dim);
@@ -79,7 +79,7 @@ BtButton *AbstractNavigationBar::createButton(QString icon, const char *signal, 
 
 QSize AbstractNavigationBar::sizeHint() const
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	return QSize(75, 355);
 #else
 	return QSize(buttons_dim * 4, buttons_dim);
@@ -106,7 +106,7 @@ QSize AbstractNavigationBar::sizeHint() const
 NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up_icon, QString back_icon, QWidget *parent) :
 	AbstractNavigationBar(parent)
 {
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	back_button = createButton(back_icon, SIGNAL(backClick()), 0);
 	down_button = createButton(down_icon, SIGNAL(downClick()), 1);
 	up_button = createButton(up_icon, SIGNAL(upClick()), 2);

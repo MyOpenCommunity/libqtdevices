@@ -157,7 +157,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	box_text = new Text2Column;
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	box_text->setStyleSheet("background-color:#f0f0f0; color:#000000;");
 	box_text->setFrameStyle(QFrame::Panel | QFrame::Raised);
 	box_text->setLineWidth(3);

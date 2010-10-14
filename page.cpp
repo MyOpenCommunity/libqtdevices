@@ -212,7 +212,7 @@ Page::~Page()
 void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationBar *nav_bar, QWidget *top_widget, QWidget *title_widget)
 {
 	QBoxLayout *l;
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	l = new QHBoxLayout(this);
 #else
 	l = new QVBoxLayout(this);
@@ -222,7 +222,7 @@ void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationB
 	// limiting the height (so even the navigation) of the main_widget; for TouchX
 	// it must be between the title and the central_widget
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	// TODO add an API to set the page title and to set the page count
 	//      and current page number
 	if (nav_bar)
@@ -275,7 +275,7 @@ void Page::buildPage(QWidget *content, AbstractNavigationBar *nav_bar, const QSt
 {
 	QLabel *page_title = 0;
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	page_title = new QLabel(label);
 	page_title->setFont(bt_global::font->get(FontManager::TITLE));
 	page_title->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
@@ -294,7 +294,7 @@ void Page::buildPage(QWidget *content, AbstractNavigationBar *nav_bar, const QSt
 */
 void Page::addBottomWidget(QWidget *bottom)
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	QLayout *main = layout();
 	QVBoxLayout *l = qobject_cast<QVBoxLayout *>(static_cast<QLayout *>(main->itemAt(1)));
 	Q_ASSERT_X(l, "Page::addBottomWidget", "Touchx layout()->itemAt(1) is not a QVBoxLayout, fix buildPage()!");

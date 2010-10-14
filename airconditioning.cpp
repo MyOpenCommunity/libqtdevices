@@ -224,7 +224,7 @@ SplitPage::SplitPage(const QDomNode &config_node, AirConditioningDevice *d)
 	int off_button = getElement(config_node, "off/presence").text().toInt();
 #endif
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	NavigationBar *nav_bar;
 
 	if (off_button) // show the off button
@@ -281,7 +281,7 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 	int off_button = getElement(config_node, "off/presence").text().toInt();
 #endif
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	NavigationBar *nav_bar;
 
 	if (off_button) // show the off button
@@ -384,7 +384,7 @@ void AdvancedSplitPage::showPage()
 
 SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config_node)
 {
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
 	nav_bar->displayScrollButtons(false);
 	buildPage(new BannerContent, nav_bar, getTextChild(config_node, "descr"));
@@ -418,7 +418,7 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	QDomNode swing_node = getChildWithName(config_node, "fan_swing");
 	readSwingConfig(swing_node);
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	page_content->appendBanner(mode);
 	page_content->appendBanner(temperature);
 	if (speed)

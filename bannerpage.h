@@ -76,7 +76,7 @@ class BannerContent : public ScrollableContent
 {
 Q_OBJECT
 public:
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	BannerContent(QWidget *parent=0);
 #else
 	BannerContent(QWidget *parent=0, int columns=2);

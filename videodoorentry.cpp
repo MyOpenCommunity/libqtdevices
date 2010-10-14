@@ -29,7 +29,7 @@
 #include "navigation_bar.h"
 #include "entryphone_device.h"
 #include "devices_cache.h" // bt_global::add_device_to_cache
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 #include "vctcall.h"
 #endif
 #include "generic_functions.h" //getBostikName
@@ -59,12 +59,12 @@ enum Pages
 	GUARD_UNIT = 19004,
 };
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 bool VideoDoorEntry::ring_exclusion = false;
 #endif
 
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
 {
 	buildPage();

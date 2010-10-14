@@ -61,7 +61,7 @@ public:
 	// PLAYER_INFO: current track and elapsed time
 	// AUDIO_SOURCE_TEXT: source description text for aux/multimedia/radio banner
 	// AUDIO_SOURCE_DESCRIPTION: descriptive text, displayed under the source description
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	enum Type
 	{
 		TITLE = 0,

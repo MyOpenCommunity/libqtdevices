@@ -28,7 +28,7 @@
 #include <QLabel>
 #include <QHBoxLayout>
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 
 #define BAN3BUT_SPACING 5
 #define BAN3BUT_BUT_DIM 50

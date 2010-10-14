@@ -127,7 +127,7 @@ private slots:
 /**
  * The page of the settings (also known as custom page) for an advanced scenario.
  */
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 class SplitSettings : public BannerPage
 #else
 class SplitSettings : public Page

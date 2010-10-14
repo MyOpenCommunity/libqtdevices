@@ -33,7 +33,7 @@
 #include "media_device.h" // AlarmSoundDiffDevice
 #include "navigation_bar.h"
 #include "generic_functions.h" // getBostikName
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 #include "sounddiffusionpage.h" // alarmClockPage
 #endif
 #include "audiostatemachine.h"
@@ -62,7 +62,7 @@ AlarmNavigation::AlarmNavigation(bool forwardButton, QWidget *parent)
 	: AbstractNavigationBar(parent)
 {
 	// For now, it used only in BTouch code.
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	createButton(bt_global::skin->getImage("ok"), SIGNAL(okClicked()), 0);
 	if (forwardButton)
 		createButton(bt_global::skin->getImage("forward"), SIGNAL(forwardClicked()), 3);
@@ -85,7 +85,7 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, QList<bool> 
 	for (uchar idx = 0; idx < AMPLI_NUM; idx++)
 		volSveglia[idx] = -1;
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	alarm_time = new AlarmClockTime(this);
 	alarm_type = new AlarmClockFreq(this);
 #else
@@ -258,7 +258,7 @@ void AlarmClock::checkAlarm()
 	QDateTime actualDateTime = QDateTime::currentDateTime();
 
 	bool ring_alarm = false;
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	if (freq == SEMPRE || freq == ONCE ||
 		(freq == FERIALI && actualDateTime.date().dayOfWeek() < 6) ||
 		(freq == FESTIVI && actualDateTime.date().dayOfWeek() > 5))
@@ -330,7 +330,7 @@ void AlarmClock::sounddiffusionAlarm()
 {
 	if (conta2min == 0)
 	{
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 		// TODO fix sound diffusion for BTouch
 		dev->startAlarm(SoundDiffusionPage::isMultichannel(), sorgente, stazione, volSveglia);
 #endif
@@ -537,7 +537,7 @@ AlarmClockSoundDiff::AlarmClockSoundDiff(AlarmClock *alarm_page)
 
 void AlarmClockSoundDiff::showPage()
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	Page *difson = SoundDiffusionPage::alarmClockPage();
 	disconnect(difson, SIGNAL(Closed()), 0, 0);
 	disconnect(difson, SIGNAL(saveVolumes()), 0, 0);

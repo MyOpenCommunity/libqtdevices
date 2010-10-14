@@ -173,7 +173,7 @@ void ThermalMenu::showPage()
 }
 
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 
 ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 {

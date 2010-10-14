@@ -249,7 +249,7 @@ void BtButton::mouseReleaseEvent(QMouseEvent *event)
 
 void BtButton::paintEvent(QPaintEvent *e)
 {
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	// TODO keep default behaviour for BTouch
 	QPushButton::paintEvent(e);
 #else

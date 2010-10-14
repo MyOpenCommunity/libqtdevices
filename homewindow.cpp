@@ -21,7 +21,7 @@
 
 #include "homewindow.h"
 #include "page.h"
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 #include "headerwidget.h"
 #include "favoriteswidget.h"
 #endif
@@ -69,7 +69,7 @@ HomeWindow::HomeWindow()
 	favorites_widget = 0;
 	central_widget = 0;
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	QDomNode pagemenu_home = getHomepageNode();
 	int favourites_pageid = getTextChild(pagemenu_home, "h_lnk_pageID").toInt();
 	QDomNode favourites_node = getPageNodeFromPageId(favourites_pageid);
@@ -121,7 +121,7 @@ HomeWindow::HomeWindow()
 
 void HomeWindow::iconStateChanged(int page_id, StateButton::Status st)
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	header_widget->iconStateChanged(page_id, st);
 #endif
 }
@@ -139,7 +139,7 @@ void HomeWindow::aboutToChangePage()
 
 void HomeWindow::loadConfiguration()
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	QDomNode pagemenu_home = getHomepageNode();
 	QDomNode favourites_node = getPageNodeFromChildNode(pagemenu_home, "h_lnk_pageID");
 	QDomNode infobar_node = getPageNodeFromChildNode(favourites_node, "h_lnk_pageID");
@@ -153,7 +153,7 @@ void HomeWindow::loadConfiguration()
 
 void HomeWindow::centralWidgetChanged(int index)
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	// the check on header_widget shouldn't fail, but I don't want to rely on this...
 	if (qobject_cast<Page *>(central_widget->widget(index)))
 	{
@@ -169,7 +169,7 @@ void HomeWindow::centralWidgetChanged(int index)
 
 void HomeWindow::currentSectionChanged(int section_id)
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	header_widget->sectionChanged(section_id);
 #endif
 }

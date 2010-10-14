@@ -77,7 +77,7 @@
 #define SCREENSAVER_CHECK 2000
 #define WD_THREAD_INTERVAL 5000
 
-#if LAYOUT_BTOUCH
+#if LAYOUT_TS_3_5
 #define TS_NUM_BASE_ADDRESS 0x300
 #else
 #define TS_NUM_BASE_ADDRESS 0x700
@@ -336,7 +336,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	screensaver_time = 60;
 	screenoff_time = 120;
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	// We want to set the stylesheet for the version page, but we have to wait
 	// after all the pages are built in order to set the dynamic properties _before_
 	// applying the styles. As an exception, we set the styles for the version page
@@ -359,7 +359,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 		qDebug() << "No pointer calibration file, calibrating";
 
 		alreadyCalibrated = true;
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 		Calibration *cal = new Calibration(true);
 #else
 		Calibration *cal = new Calibration;
@@ -367,7 +367,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 		cal->showWindow();
 		connect(cal, SIGNAL(Closed()), SLOT(waitBeforeInit()));
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 		connect(cal, SIGNAL(Closed()), version, SLOT(showPage()));
 #else
 		connect(cal, SIGNAL(Closed()), loading, SLOT(showWindow()));
@@ -382,7 +382,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 		cal->showWindow();
 		connect(cal, SIGNAL(Closed()), SLOT(waitBeforeInit()));
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 		connect(cal, SIGNAL(Closed()), version, SLOT(showPage()));
 #else
 		connect(cal, SIGNAL(Closed()), loading, SLOT(showWindow()));
@@ -652,7 +652,7 @@ void BtMain::myMain()
 		qDebug() << "Boot time" << boot_time->elapsed() << "last press" << static_cast<int>(getTimePress()) * 1000;
 
 		alreadyCalibrated = true;
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 		Calibration *cal = new Calibration(true);
 #else
 		Calibration *cal = new Calibration;
@@ -865,7 +865,7 @@ void BtMain::checkScreensaver()
 			// TODO move the code until the end of the block to PageStack and/or ScreenSaver
 			Page *prev_page = page_container->currentPage();
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 			page_container->blockTransitions(true);
 			if (pagDefault)
 			{

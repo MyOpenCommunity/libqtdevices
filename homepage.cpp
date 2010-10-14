@@ -34,7 +34,7 @@
 
 HomePage::HomePage(const QDomNode &config_node) : SectionPage(config_node)
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	page_content->layout()->setContentsMargins(25, 35, 100, 0);
 	page_content->layout()->setSpacing(25);
 #endif

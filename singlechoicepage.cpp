@@ -31,7 +31,7 @@
 
 SingleChoicePage::SingleChoicePage(const QString &title)
 {
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	buildPage(new SingleChoiceContent, new NavigationBar("ok"), title);
 #else
 	buildPage(new SingleChoiceContent, new NavigationBar, title);
@@ -76,7 +76,7 @@ CheckableBanner::CheckableBanner(const QString &text, const QString &right_icon)
 	: Bann2StateButtons(0)
 {
 	initBanner(bt_global::skin->getImage("unchecked"), right_icon, text);
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	layout()->setContentsMargins(0, 0, 0, 10);
 #endif
 	left_button->setOnOff();

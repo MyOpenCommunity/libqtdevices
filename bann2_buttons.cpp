@@ -85,7 +85,7 @@ void Bann2Buttons::createBanner()
 
 	QGridLayout *l = new QGridLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	l->setSpacing(5);
 #else
 	l->setSpacing(0);
@@ -302,7 +302,7 @@ Bann2CentralButtons::Bann2CentralButtons(bool spaced_buttons) : BannerNew(0)
 	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 	QGridLayout *l = new QGridLayout;
 	l->setContentsMargins(0, 0, 0, 0);
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	l->setSpacing(spaced_buttons ? 5 : 0);
 #else
 	l->setSpacing(0);

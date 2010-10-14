@@ -359,7 +359,7 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 	QVBoxLayout *l = new QVBoxLayout(main_widget);
 	QHBoxLayout *b = new QHBoxLayout;
 	l->setContentsMargins(0, 0, 0, 0);
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	b->setContentsMargins(18, 0, 17, 0);
 #endif
 	BannerContent *content = new BannerContent;

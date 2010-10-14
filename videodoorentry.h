@@ -37,7 +37,7 @@ class QDomNode;
 class QSignalMapper;
 
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 
 class VideoDoorEntry : public BannerPage
 {
@@ -186,6 +186,6 @@ protected:
 };
 
 
-#endif // #ifdef LAYOUT_BTOUCH
+#endif // #ifdef LAYOUT_TS_3_5
 
 #endif

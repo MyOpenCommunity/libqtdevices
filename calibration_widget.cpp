@@ -96,7 +96,7 @@ CalibrationWidget::CalibrationWidget(bool minimal)
 	connect(bottomright_button, SIGNAL(clicked()), bottomright_button, SLOT(hide()));
 	connect(bottomright_button, SIGNAL(clicked()), SLOT(endCalibration()));
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	logo.load(bt_global::skin->getImage("logo"));
 #endif
 
@@ -190,7 +190,7 @@ void CalibrationWidget::paintEvent(QPaintEvent*)
 	int text_height = 30;
 	int text_width = 150;
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	int total_height = logo.height() + text_height;
 	p.drawPixmap((width() - logo.width()) / 2, (height() - total_height) / 2, logo);
 

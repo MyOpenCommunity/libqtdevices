@@ -338,7 +338,7 @@ void impPassword::checkPasswd()
 		{
 			qDebug() << "password errata doveva essere " << password;
 			// only beep on error on BTouch
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 			sb = getBeep();
 			setBeep(true);
 			beep(200);

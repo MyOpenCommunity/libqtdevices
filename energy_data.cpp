@@ -128,7 +128,7 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 	{
 		Page *costs = new EnergyCost;
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 		NavigationBar *nav = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 		buildPage(new BannerContent, nav, getTextChild(config_node, "descr"));
 
@@ -240,7 +240,7 @@ void EnergyCost::showPage()
 
 EditEnergyCost::EditEnergyCost()
 {
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
 	buildPage(new BannerContent, nav_bar);
 
@@ -349,7 +349,7 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node, bool edit_rates, b
 {
 	BtButton *edit_costs = 0;
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 	if (edit_rates && EnergyRates::energy_rates.hasRates())
 	{

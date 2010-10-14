@@ -51,7 +51,7 @@ void BannerPage::buildPage(QWidget *main_widget, BannerContent *content, Navigat
 	const QString &title, int title_height, QWidget *top_widget)
 {
 	PageTitleWidget *title_widget = 0;
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	title_widget = new PageTitleWidget(title, title_height);
 #endif
 
@@ -67,14 +67,14 @@ void BannerPage::buildPage(const QString &title, int title_height, QWidget *top_
 
 
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 BannerContent::BannerContent(QWidget *parent) : ScrollableContent(parent), columns(1)
 #else
 BannerContent::BannerContent(QWidget *parent, int _columns) : ScrollableContent(parent), columns(_columns)
 #endif
 {
 	QGridLayout *l = static_cast<QGridLayout *>(layout());
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
 #else
