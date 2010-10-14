@@ -47,7 +47,7 @@ class QBoxLayout;
 
 
 /*!
-	\defgroup Messages Messages.
+	\defgroup Messages Messages
 
 	The section allow the user to read and delete scs messages from
 	the Guard Unit.
@@ -321,7 +321,7 @@ int AlertMessagePage::sectionId() const
 	\brief Shows a list of scs messages, read from an xml file.
 
 	This class loads the list of messages and handles the requests performed
-	by the other Messages classes. It also change the state of the icon displayed
+	by the other \ref Messages classes. It also change the state of the icon displayed
 	in the homepage and in the toolbar box.
 */
 
