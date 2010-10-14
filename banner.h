@@ -133,6 +133,10 @@ private:
 };
 
 
+/*
+	The old banner class. Uses a fixed positioning sistem and it should not be
+	used in the new code. Note that the documentation can be also out of date.
+*/
 class BannerOld : public banner
 {
 Q_OBJECT
