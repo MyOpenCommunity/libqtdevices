@@ -61,11 +61,8 @@ public:
 	void setData(const QString &date, const QString &text, bool read);
 
 signals:
-	// Request to show the next message
 	void nextMessage();
-	// Request to show the previous message
 	void prevMessage();
-	// Request to delete the current message
 	void deleteMessage();
 
 private:

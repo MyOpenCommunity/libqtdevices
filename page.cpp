@@ -321,7 +321,7 @@ void Page::activateLayout()
 }
 
 /*!
-	\brief Reimplement this to send frames for the page during the initialization.
+	\brief Send frames for the page during the initialization.
 
 	\deprecated Don't use it in new code.
 
@@ -350,8 +350,8 @@ void Page::setCurrentPage()
 }
 
 /*!
-	\brief Reimplement this to perform some operations that should be done when 
-	we exit from the page.
+	\brief Perform some operations that should be done when the user exits from
+	the page.
 
 	\internal We cannot use the hideEvent method because that event trigger even
 	if we go in a next page.

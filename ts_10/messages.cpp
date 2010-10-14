@@ -26,16 +26,41 @@
 #include <QDir>
 #include <QTimer>
 
+
+/*!
+	\ingroup Messages
+	\def MESSAGES_MAX
+	The maximum number of messages saved.
+*/
 #define MESSAGES_MAX 10
+
+/*!
+	\ingroup Messages
+	\def MESSAGES_FILENAME
+	The file where the messages are stored.
+*/
 #define MESSAGES_FILENAME "cfg/extra/4/messages.xml"
+
 #define DATE_FORMAT_AS_STRING "yyyy/MM/dd HH:mm"
 
 class QBoxLayout;
 
 
 /*!
- * \defgroup Messages Messages
- */
+	\defgroup Messages Messages
+
+	The section allow the user to read and delete scs messages from
+	the Guard Unit.
+	A popup is displayed using the AlertMessagePage class when a new message
+	arrives. That message is appended to the list of messages and saved in the
+	MESSAGES_FILENAME file, up to MESSAGES_MAX.
+
+	The MessagesListPage is used to display the list of messages while the
+	MessagePage displays a single message and the DeleteMessagesPage can be
+	used to delete all the messages.
+	The icons for the section, displayed in the homepage and in the toolbar box,
+	can be different depending on there are unread messages or not.
+*/
 
 
 namespace
@@ -84,8 +109,9 @@ enum {
 /*!
 	\ingroup Messages
 	\class MessageList
-	\brief The message list.
+	\brief The content of the page that shows a message list.
 */
+
 MessageList::MessageList(QWidget *parent, int rows_per_page) :
 		ItemList(parent, rows_per_page)
 {
@@ -130,6 +156,7 @@ void MessageList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int
 	\class DeleteMessagesPage
 	\brief The page used to ask if delete all the messages or not.
 */
+
 DeleteMessagesPage::DeleteMessagesPage()
 {
 	const QFont &font = bt_global::font->get(FontManager::TEXT);
@@ -159,12 +186,18 @@ DeleteMessagesPage::DeleteMessagesPage()
 	layout->addWidget(ok_button, 0, Qt::AlignRight);
 }
 
+/*!
+	\fn DeleteMessagesPage::deleteAll()
+	\brief Request to delete all the messages.
+*/
+
 
 /*!
 	\ingroup Messages
 	\class MessagePage
-	\brief The page used to show a message.
+	\brief Shows an scs message.
 */
+
 MessagePage::MessagePage()
 {
 	date_label = new QLabel;
@@ -187,6 +220,9 @@ MessagePage::MessagePage()
 	buildPage(content, nav_bar, 0, title_widget);
 }
 
+/*!
+	\brief Set the content of message displayed from the page.
+*/
 void MessagePage::setData(const QString &date, const QString &text, bool already_read)
 {
 	date_label->setText(date);
@@ -194,12 +230,29 @@ void MessagePage::setData(const QString &date, const QString &text, bool already
 	message_label->setText(text);
 }
 
+/*!
+	\fn MessagePage::nextMessage()
+	\brief Request to show the next message.
+*/
+
+/*!
+	\fn MessagePage::prevMessage()
+	\brief Request to show the previous message.
+*/
+
+/*!
+	\fn MessagePage::deleteMessage()
+	\brief Request to delete the current message.
+*/
+
+
 
 /*!
 	\ingroup Messages
-	\class MessagePage
+	\class AlertMessagePage
 	\brief The popup page for an scs message.
 */
+
 AlertMessagePage::AlertMessagePage(const QString &date, const QString &text)
 {
 	QVBoxLayout *box_layout = new QVBoxLayout;
@@ -236,12 +289,42 @@ int AlertMessagePage::sectionId() const
 	return MESSAGES;
 }
 
+/*!
+	\fn AlertMessagePage::goHome()
+	\brief Request to display the homepage.
+*/
+
+/*!
+	\fn AlertMessagePage::goMessagesList()
+	\brief Request to display the messages list.
+*/
+
+/*!
+	\fn AlertMessagePage::deleteMessage()
+	\brief Request to delete the message.
+*/
+
+/*!
+	\fn AlertMessagePage::date() const
+	\brief Return the message date.
+*/
+
+/*!
+	\fn AlertMessagePage::text() const
+	\brief Return the message text.
+*/
+
 
 /*!
 	\ingroup Messages
 	\class MessagesListPage
 	\brief Shows a list of scs messages, read from an xml file.
+
+	This class loads the list of messages and handles the requests performed
+	by the other \ref Messages classes. It also change the state of the icon displayed
+	in the homepage and in the toolbar box.
 */
+
 MessagesListPage::MessagesListPage(const QDomNode &config_node)
 {
 	Q_UNUSED(config_node)
@@ -280,7 +363,7 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 	current_index = -1;
 	need_update = true;
 	unread_messages = false;
-	// The signal changeIconState must emit after the construction of the page,
+	// The signal changeIconState must be emitted after the construction of the page,
 	// so we use this little trick.
 	QTimer::singleShot(0, this, SLOT(checkForUnread()));
 }
