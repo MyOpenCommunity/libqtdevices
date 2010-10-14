@@ -117,6 +117,18 @@ bool AutomationDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 }
 
 
+/*!
+	\class PPTStatDevice
+	\brief Actuator status device (TODO).
+
+	Allows reading the actuator status (TODO).
+
+	\section dimensions Dimensions
+	\startdim
+	\dim{DIM_STATUS,bool,,The actuator (TODO) status.}
+	\enddim
+*/
+
 PPTStatDevice::PPTStatDevice(QString address, int openserver_id) :
 	device(QString("25"), address, openserver_id)
 {
@@ -127,6 +139,11 @@ void PPTStatDevice::init()
 	requestStatus();
 }
 
+/*!
+	\brief Requests a status update.
+
+	It should never be necessary to call this function explicitly.
+ */
 void PPTStatDevice::requestStatus() const
 {
 	sendRequest(QString());
