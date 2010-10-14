@@ -33,7 +33,7 @@
 #define STATUS_REQUEST_DELAY 1000
 
 
-/**
+/*!
 	\class PlatformDevice
 	\brief This class represent a device for managing system settings.
 
@@ -47,15 +47,17 @@
 	signal valueReceived.
 
 	\section dimensions Dimensions
-	\li DIM_STATUS: Network status
-	\li DIM_IP: Ip address
-	\li DIM_NETMASK: Network mask
-	\li DIM_MACADDR: Mac address
-	\li DIM_GATEWAY: Gateway
-	\li DIM_DNS1: Primary DNS
-	\li DIM_DNS2: Secondary DNS
-	\li DIM_FW_VERS: Firmware version
-	\li DIM_KERN_VERS: Kernel version
+	\startdim
+	\dim{DIM_STATUS,bool,,Network status\, true if the network is enabled\, false otherwise.}
+	\dim{DIM_IP,QString,,Ip address}
+	\dim{DIM_NETMASK,QString,,Network mask}
+	\dim{DIM_MACADDR,QString,,MAC address}
+	\dim{DIM_GATEWAY,QString,,Gateway}
+	\dim{DIM_DNS1,QString,,Primary DNS}
+	\dim{DIM_DNS2,QString,,Secondary DNS}
+	\dim{DIM_FW_VERS,QString,,Firmware version}
+	\dim{DIM_KERN_VERS,QString,,Kernel version}
+	\enddim
 */
 
 /*!
