@@ -35,6 +35,26 @@ enum RequestDimension
 };
 
 
+/*!
+	\class AutomationDevice
+	\brief A device for managing automation actuators.
+
+	The metods allow to move up, move down and stop an automation actuator.
+
+	After sending the up/down commands, the device keeps on moving until it
+	reaches the full up/down state or a stop command is received.
+
+	\section dimensions Dimensions
+	\startdim
+	\dim{DIM_STOP,no value,,The actuator stopped.}
+	\dim{DIM_UP,no value,,The actuator started moving upwards.}
+	\dim{DIM_DOWN,no value,,The actuator started moving downwards.}
+	\enddim
+*/
+
+/*!
+	\brief Constructor
+ */
 AutomationDevice::AutomationDevice(QString where, PullMode m, int openserver_id, int pull_delay) :
 	PullDevice(QString("2"), where, m, openserver_id, pull_delay)
 {
@@ -45,21 +65,35 @@ void AutomationDevice::init()
 	requestStatus();
 }
 
+/*!
+	\brief Start moving the actuator upwards.
+ */
 void AutomationDevice::goUp()
 {
 	sendCommand(DIM_UP);
 }
 
+/*!
+	\brief Start moving the actuator downwards.
+ */
 void AutomationDevice::goDown()
 {
 	sendCommand(DIM_DOWN);
 }
 
+/*!
+	\brief Stops the actuator.
+ */
 void AutomationDevice::stop()
 {
 	sendCommand(DIM_STOP);
 }
 
+/*!
+	\brief Requests a status update.
+
+	It should never be necessary to call this function explicitly.
+ */
 void AutomationDevice::requestStatus()
 {
 	sendRequest(QString());
