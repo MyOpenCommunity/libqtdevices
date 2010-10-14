@@ -7,25 +7,25 @@
 TEMPLATE = app
 
 # You have to define:
-# LAYOUT = btouch|touchx
-# CONF_FILE = btouch|touchx
+# LAYOUT = ts_3_5|ts_10
+# CONF_FILE = ts_3_5|ts_10
 # before including this file in the project
 
 # Change target name, to something like BTouch.arm or BTouch.x86
 TRGT_SUFFIX =
 
-contains(LAYOUT, touchx) {
+contains(LAYOUT, ts_10) {
 	DEFINES += LAYOUT_TS_10
 } else {
 	DEFINES += LAYOUT_TS_3_5
 }
 TRGT_NAME = BTouch
 
-contains(CONF_FILE, touchx) {
-	message(Using TouchX config file.)
+contains(CONF_FILE, ts_10) {
+	message(Using TS 10\'\' config file.)
 } else {
 	DEFINES += CONFIG_TS_3_5
-	message(Using BTouch config file.)
+	message(Using TS 3.5\'\' config file.)
 }
 
 

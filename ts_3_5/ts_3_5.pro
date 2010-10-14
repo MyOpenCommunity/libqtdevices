@@ -5,8 +5,8 @@
 # for the BTicino touchscreen 3.5''. It shares large pieces of code with
 # the BTicino touchscreen 10'' code.
 
-LAYOUT = btouch
-CONF_FILE = btouch
+LAYOUT = ts_3_5
+CONF_FILE = ts_3_5
 
 # Test architecture depending on the compiler used.
 # In this case we are searching for the substring 'arm'

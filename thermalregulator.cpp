@@ -374,7 +374,7 @@ static QString status_icons_ids[ThermalDevice::ST_COUNT] =
 
 #ifdef CONFIG_TS_3_5
 
-void parseBTouchProgramList(QDomNode conf_root, QString season, QString what, QMap<QString, QString> &entries)
+void parseTS35ProgramList(QDomNode conf_root, QString season, QString what, QMap<QString, QString> &entries)
 {
 	QDomElement program = getElement(conf_root, season + "/" + what);
 	// The leaves we are looking for start with either "p" or "s"
@@ -393,7 +393,7 @@ void parseBTouchProgramList(QDomNode conf_root, QString season, QString what, QM
 
 #else
 
-void parseTouchXProgramList(QDomNode page, QMap<QString, QString> &entries)
+void parseTS10ProgramList(QDomNode page, QMap<QString, QString> &entries)
 {
 	int index_summer = 0, index_winter = 0;
 	foreach (const QDomNode &node, getChildren(page, "item"))
@@ -428,10 +428,10 @@ PageTermoReg::PageTermoReg(QDomNode n)
 		qFatal("[TERMO] WeeklyMenu:wrong node in config file");
 	}
 
-	parseBTouchProgramList(n, "summer", "prog", programs);
-	parseBTouchProgramList(n, "winter", "prog", programs);
-	parseBTouchProgramList(n, "summer", "scen", scenarios);
-	parseBTouchProgramList(n, "winter", "scen", scenarios);
+	parseTS35ProgramList(n, "summer", "prog", programs);
+	parseTS35ProgramList(n, "winter", "prog", programs);
+	parseTS35ProgramList(n, "summer", "scen", scenarios);
+	parseTS35ProgramList(n, "winter", "scen", scenarios);
 #else
 	// parse program/scenario list
 	foreach (const QDomNode &item, getChildren(getPageNodeFromChildNode(n, "h_lnk_pageID"), "item"))
@@ -439,9 +439,9 @@ PageTermoReg::PageTermoReg(QDomNode n)
 		int id = getTextChild(item, "id").toInt();
 
 		if (id == BANNER_PROGRAMS) // programs
-			parseTouchXProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), programs);
+			parseTS10ProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), programs);
 		else if (id == BANNER_SCENARIOS) // scenarios
-			parseTouchXProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), scenarios);
+			parseTS10ProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), scenarios);
 	}
 #endif
 
