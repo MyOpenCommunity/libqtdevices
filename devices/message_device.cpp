@@ -110,8 +110,8 @@ Message MessageDevicePrivate::parseMessage(const QString &raw_message)
 using namespace MessageDevicePrivate;
 
 /*!
+	\ingroup Messages
 	\class MessageDevice
-
 	\brief Class for messaging management from SCS and CDP (via open).
 
 	\section dimensions Dimensions

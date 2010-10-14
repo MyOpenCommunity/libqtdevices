@@ -33,6 +33,11 @@
 class QBoxLayout;
 
 
+/*!
+ * \defgroup Messages Messages
+ */
+
+
 namespace
 {
 	QWidget *buildMessagePage(QVBoxLayout *box_layout, QLabel *new_message_label, QLabel *date_label, QLabel *message_label)
@@ -76,6 +81,11 @@ enum {
 };
 
 
+/*!
+	\ingroup Messages
+	\class MessageList
+	\brief The message list.
+*/
 MessageList::MessageList(QWidget *parent, int rows_per_page) :
 		ItemList(parent, rows_per_page)
 {
@@ -115,6 +125,11 @@ void MessageList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int
 }
 
 
+/*!
+	\ingroup Messages
+	\class DeleteMessagesPage
+	\brief The page used to ask if delete all the messages or not.
+*/
 DeleteMessagesPage::DeleteMessagesPage()
 {
 	const QFont &font = bt_global::font->get(FontManager::TEXT);
@@ -145,6 +160,11 @@ DeleteMessagesPage::DeleteMessagesPage()
 }
 
 
+/*!
+	\ingroup Messages
+	\class MessagePage
+	\brief The page used to show a message.
+*/
 MessagePage::MessagePage()
 {
 	date_label = new QLabel;
@@ -175,6 +195,11 @@ void MessagePage::setData(const QString &date, const QString &text, bool already
 }
 
 
+/*!
+	\ingroup Messages
+	\class MessagePage
+	\brief The popup page for an scs message.
+*/
 AlertMessagePage::AlertMessagePage(const QString &date, const QString &text)
 {
 	QVBoxLayout *box_layout = new QVBoxLayout;
@@ -212,6 +237,11 @@ int AlertMessagePage::sectionId() const
 }
 
 
+/*!
+	\ingroup Messages
+	\class MessagesListPage
+	\brief Shows a list of scs messages, read from an xml file.
+*/
 MessagesListPage::MessagesListPage(const QDomNode &config_node)
 {
 	Q_UNUSED(config_node)

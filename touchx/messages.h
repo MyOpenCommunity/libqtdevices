@@ -32,9 +32,7 @@ class QString;
 class QLabel;
 class QDomNode;
 
-/**
- * The message list
- */
+
 class MessageList : public ItemList
 {
 public:
@@ -44,9 +42,7 @@ protected:
 	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
 };
 
-/**
- * The page used to ask if delete all the messages or not.
- */
+
 class DeleteMessagesPage : public Page
 {
 Q_OBJECT
@@ -57,9 +53,6 @@ signals:
 };
 
 
-/**
- * The page used to show a message.
- */
 class MessagePage : public Page
 {
 Q_OBJECT
@@ -81,9 +74,6 @@ private:
 };
 
 
-/**
- * The page used to show an alarm message.
- */
 class AlertMessagePage : public Page
 {
 Q_OBJECT
@@ -106,9 +96,6 @@ private:
 };
 
 
-/**
- * This class show a list of scs messages, read from an xml file.
- */
 class MessagesListPage : public Page
 {
 Q_OBJECT
