@@ -60,13 +60,6 @@ enum FrameHandled
 	FRAME_MAYBE_HANDLED,
 };
 
-/**
- * Check if the address found in a frame is valid for the device.
- *
- * Frame address must be environment or general. Addresses must be complete, ie
- * must have a+pf and extension part (if any).
- * \return true if msg_where includes the device, false otherwise.
- */
 AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_where);
 
 
@@ -75,22 +68,11 @@ class PullStateManager
 friend class TestLightingDevice;
 friend class TestPullManager;
 public:
-	// this function acts as a filter for frames; the return value can be:
-	//
-	// FRAME_NOT_HANDLED: the pull/not pull algorithm is not run for this frame
-	// FRAME_HANDLED: the frame is considered for the pull/non pull algorithm
-	// FRAME_MAYBE_HANDLED: the device might react to the frame (in this case
-	//                      it is in non pull mode, and an "advanced" device) or
-	//                      it might not react (in this case the pull mode is unknown)
 	typedef FrameHandled (*FrameChecker)(OpenMsg &msg);
 	typedef QPair<bool, FrameHandled> CheckResult;
 
 	PullStateManager(PullMode m, AdvancedMode adv = PULL_ADVANCED_UNKNOWN, FrameChecker checker = NULL);
-	/**
-	 * Logic for the state manager.
-	 * Return true if a point-to-point status frame is needed to choose device's mode, false
-	 * if no request frame must be sent.
-	 */
+
 	CheckResult moreFrameNeeded(OpenMsg &msg, bool is_environment);
 	PullMode getPullMode();
 	void setStatusRequested(bool status);
@@ -110,16 +92,6 @@ private:
 };
 
 
-/*
- * Class to encapsulate PULL mode discovering behaviour.
- *
- * Derived classes must reimplement the two pure virtual functions
- * parseFrame(): function called for every received frame. Derived classes must parse the frame and put the
- *    results into the DeviceValues.
- * requestPullStatus(): send a status request to the device. This can be reimplemented depending on device
- *    necessities.
- * Derived classes MUST NOT reimplement manageFrame(), as they will override PULL mode discovery logic
- */
 class PullDevice : public device
 {
 friend class TestLightingDevice;
@@ -144,3 +116,5 @@ private:
 	QTimer delayed_request;
 };
 #endif // PULLDEVICE_H
+
+/*! \file */ /* otherwise doxygen does not generate documentation for enums */
