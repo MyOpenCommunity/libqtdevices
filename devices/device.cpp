@@ -235,7 +235,7 @@ void FrameCompressor::flushCompressedFrames()
 	\class device
 	\brief Base abstract class for all devices.
 
-	In order to create a new device you must subclass the \device class.
+	In order to create a new device you must subclass the \a device class.
 
 	\section handling Frame handling
 
@@ -557,7 +557,7 @@ void device::sendInitNow(QString frame) const
 }
 
 /*!
-	\breif Sends a frame on the COMMAND port with the given \a what and \a where.
+	\brief Sends a frame on the COMMAND port with the given \a what and \a where.
  */
 void device::sendCommand(QString what, QString _where) const
 {
@@ -581,7 +581,7 @@ void device::sendCommand(int what) const
 }
 
 /*!
-	\breif Sends a frame on the REQUEST port with the given \a what.
+	\brief Sends a frame on the REQUEST port with the given \a what.
  */
 void device::sendRequest(QString what) const
 {
