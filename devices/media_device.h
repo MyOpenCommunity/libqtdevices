@@ -88,6 +88,7 @@ private:
 
 
 /*!
+	\ingroup SoundDiffusion
 	\class SourceDevice
 	\brief Device to control an SCS source.
 
@@ -205,6 +206,7 @@ private slots:
 
 
 /*!
+	\ingroup SoundDiffusion
 	\class RadioSourceDevice
 	\brief Device to control the RDS radio.
 
@@ -300,6 +302,7 @@ private:
 
 
 /*!
+	\ingroup SoundDiffusion
 	\class VirtualSourceDevice
 	\brief The local sound diffusion source.
 
@@ -349,7 +352,7 @@ protected:
 };
 
 
-/**
+/*!
  * This class represents an amplifier device, that can be used to reproduce audio
  * from various kind of sources inside an area.
  */

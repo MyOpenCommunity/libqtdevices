@@ -48,6 +48,10 @@
 #include <QtDebug>
 #include <QStackedWidget>
 
+/*!
+	\defgroup SoundDiffusion Sound Diffusion
+ */
+
 #define TEMPORARY_OFF_TIMEOUT 1000
 
 bool SoundDiffusionPage::is_multichannel = false;
