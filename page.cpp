@@ -97,8 +97,8 @@ void PageTitleWidget::setCurrentPage(int current, int total)
 	look at Window.
 
 	A page is composed of:
-	\li a navigation bar, used to navigate the content of the page, close it and
-		sometimes to execute special functions.
+	\li an AbstractNavigationBar, usually used to navigate the content of the page,
+		close it and sometimes to execute special functions.
 	\li a main widget, a QWidget displayed in the central area of the page.
 		Often is the same object than the content.
 	\li a content, a QWidget container for \c items, that can be banners, icons
@@ -120,7 +120,7 @@ void PageTitleWidget::setCurrentPage(int current, int total)
 
 	Pages are shown with the showPage() method and must emit the Closed() signal
 	when they are closed. Generally the Closed() signal will be emitted when the
-	user presses the back button on the navigation bar.
+	user presses the back button on the NavigationBar.
  */
 
 /*!
@@ -144,7 +144,7 @@ void PageTitleWidget::setCurrentPage(int current, int total)
 
 /*!
 	\fn Page::forwardClick()
-	\brief Emitted when the forward button of the navigation bar is clicked.
+	\brief Emitted when the forward button of the NavigationBar is clicked.
 */
 
 /*!
