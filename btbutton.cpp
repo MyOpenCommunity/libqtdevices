@@ -31,12 +31,13 @@
 
 
 /*!
+	\ingroup Core
 	\class BtButton
-	\brief Custom button with an image and a sound.
+	\brief Custom button with an image and no borders.
 
-	The \a BtButton class defines a custom button that displays an image for its
-	"normal" state, and optionally one for the "pressed" state. It can play a
-	sound when it is clicked, too.
+	Defines a custom button that displays an image for its "normal" state, and
+	optionally one for the "pressed" state. It can play a sound when it is
+	clicked, too.
 
 	The button image can be set in constructor or using the \a setImage()
 	method. By default, the button tries to load the icon for the "pressed"
@@ -135,7 +136,7 @@ QPixmap BtButton::loadPressedImage(const QString &icon_path)
 }
 
 /*!
-	\brief Helper function to load the image for the "normal" state.
+	\brief Sets the image for the "normal" state.
 
 	It tries to load the image for the "normal" state returns an invalid
 	QPixmap on error, the QPixmap containing the loaded image otherwise.

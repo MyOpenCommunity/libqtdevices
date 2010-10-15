@@ -25,6 +25,7 @@
 
 
 /*!
+	\ingroup Core
 	\class StateButton
 	\brief A tri-state button that can be on, off, disabled; each state
 	uses a different icon.

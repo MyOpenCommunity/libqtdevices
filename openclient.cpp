@@ -66,8 +66,8 @@ namespace
 }
 
 /*!
+	\ingroup Core
 	\class Client
-
 	\brief Manages the communication between the application and a specified openserver.
 
 	%Clients of types Client::MONITOR / Client::SUPERVISOR can be used to receive

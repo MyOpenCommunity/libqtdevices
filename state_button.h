@@ -29,10 +29,6 @@
 class QString;
 
 
-/**
- * A tri-state button that can be on, off, disabled; each state
- * uses a different icon.
- */
 class StateButton : public BtButton
 {
 Q_OBJECT
@@ -48,8 +44,6 @@ using BtButton::setImage;
 
 	StateButton(QWidget *parent = 0);
 
-	// Set the image for the three states.  Automatically uses
-	// getBostikName to set the pressed button image.
 	void setOnImage(const QString &path);
 	void setOffImage(const QString &path);
 	void setDisabledImage(const QString &path);
