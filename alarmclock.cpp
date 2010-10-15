@@ -575,7 +575,7 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 	alarm_icon = bt_global::skin->getImage("alarm_icon");
 
 	QLabel *descr = new QLabel;
-	descr->setText(tr("Set Time\nHour & Minute\nDay"));
+	descr->setText(tr("Set Time-Hour & Minute-Day"));
 	descr->setAlignment(Qt::AlignHCenter);
 
 	edit = new BtTimeEdit(this);

@@ -56,7 +56,7 @@ ScenEvoManager::ScenEvoManager(ScenEvoTimeCondition *time_cond, ScenEvoDeviceCon
 	left_box->addWidget(left_image, 0, Qt::AlignHCenter);
 
 	QLabel *left_descr = new QLabel;
-	left_descr->setText(tr("Time Conditions\nHour & Minute"));
+	left_descr->setText(tr("Time Conditions-Hour & Minute"));
 	left_box->addWidget(left_descr, 0, Qt::AlignHCenter);
 	left_box->addStretch(1);
 
