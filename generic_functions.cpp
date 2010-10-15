@@ -129,7 +129,7 @@ namespace
 
 /*!
 	\ingroup Core
-	\brief Returns a list of the recognized file types associated to "type".
+	\brief Returns a list of the recognized file types associated to \a type.
  */
 QStringList getFileExtensions(MultimediaFileType type)
 {
@@ -165,7 +165,7 @@ QStringList getFileExtensions(MultimediaFileType type)
 
 /*!
 	\ingroup Core
-	\brief Returns a list of file filter expressions associated to "type".
+	\brief Returns a list of file filter expressions associated to \a type.
  */
 QStringList getFileFilter(MultimediaFileType type)
 {
@@ -198,7 +198,7 @@ QStringList getFileFilter(MultimediaFileType type)
 
 /*!
 	\ingroup Core
-	\brief Concatenate "suffix" to the part of "name" preceding the dot (.)
+	\brief Concatenate \a suffix to the part of \a name preceding the dot (.).
  */
 QString getBostikName(const QString &name, const QString &suffix)
 {
@@ -213,7 +213,8 @@ QString getBostikName(const QString &name, const QString &suffix)
 	\ingroup Core
 	\brief Transform a image file name into a pressed one.
 
-	Returns the filename of a image '.png' converted into a "p.png" file name.
+	Returns the filename of a image "image.png" converted into a "imagep.png"
+	file name.
 
 	\sa getBostikName()
 */
@@ -603,7 +604,7 @@ int scsToLocalVolume(int vol)
 
 /*!
 	\ingroup Core
-	\brief Converts "date" to a QString object according to the date format read
+	\brief Converts \a date to a QString object according to the date format read
 	from configuration.
  */
 QString DateConversions::formatDateConfig(const QDate &date, char separator)
@@ -617,7 +618,7 @@ QString DateConversions::formatDateConfig(const QDate &date, char separator)
 
 /*!
 	\ingroup Core
-	\brief Converts "datetime" to a QString object according to the datetime
+	\brief Converts \a datetime to a QString object according to the datetime
 	format read from configuration.
  */
 QString DateConversions::formatDateTimeConfig(const QDateTime &datetime, char separator)
@@ -627,7 +628,7 @@ QString DateConversions::formatDateTimeConfig(const QDateTime &datetime, char se
 
 /*!
 	\ingroup Core
-	\brief Converts "date" into a QDate object using the format read from the
+	\brief Converts \a date into a QDate object using the format read from the
 	configuration.
  */
 QDate DateConversions::getDateConfig(const QString &date, char separator)
@@ -643,7 +644,7 @@ QDate DateConversions::getDateConfig(const QString &date, char separator)
 
 /*!
 	\ingroup Core
-	\brief Converts "datetime" into a QDateTime object using the format read
+	\brief Converts \a datetime into a QDateTime object using the format read
 	from the configuration.
  */
 QDateTime DateConversions::getDateTimeConfig(const QString &datetime, char separator)
