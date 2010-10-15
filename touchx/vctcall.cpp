@@ -51,8 +51,8 @@
 #define BOTTOM_SPACING 15
 
 const QString video_grabber_path = "/home/bticino/bin/rsize";
-const QString video_grabber_normal_args = "20 160 0";
-const QString video_grabber_fullscreen_args = "5 12 1";
+const QString video_grabber_normal_args = "20 160 0 0 0";
+const QString video_grabber_fullscreen_args = "5 12 1 0 0";
 
 
 namespace VCTCallPrivate
