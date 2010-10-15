@@ -24,7 +24,8 @@
 
 
 /*!
-	\brief Tests if "msg" is in the form *who*what*where##
+	\ingroup Core
+	\brief Tests if \a msg is in the form *who*what*where##
  */
 bool isCommandFrame(OpenMsg &msg)
 {
@@ -32,7 +33,8 @@ bool isCommandFrame(OpenMsg &msg)
 }
 
 /*!
-	\brief Tests if "msg" is in the form *#who*where*dimension##
+	\ingroup Core
+	\brief Tests if \a msg is in the form *#who*where*dimension##
  */
 bool isDimensionFrame(OpenMsg &msg)
 {
@@ -40,7 +42,8 @@ bool isDimensionFrame(OpenMsg &msg)
 }
 
 /*!
-	\brief Tests if "msg" is in the form *#who*where*#dimension*val1*..*valn##
+	\ingroup Core
+	\brief Tests if \a msg is in the form *#who*where*#dimension*val1*..*valn##
  */
 bool isWriteDimensionFrame(OpenMsg &msg)
 {
@@ -48,7 +51,8 @@ bool isWriteDimensionFrame(OpenMsg &msg)
 }
 
 /*!
-	\brief Tests if "msg" is in the form *#who*where##
+	\ingroup Core
+	\brief Tests if \a msg is in the form *#who*where##
  */
 bool isStatusRequestFrame(OpenMsg &msg)
 {
@@ -56,6 +60,7 @@ bool isStatusRequestFrame(OpenMsg &msg)
 }
 
 /*!
+	\ingroup Core
 	\brief Returns a string in the form *who*what*where##
  */
 QString createCommandFrame(QString who, QString what, QString where)
@@ -64,6 +69,7 @@ QString createCommandFrame(QString who, QString what, QString where)
 }
 
 /*!
+	\ingroup Core
 	\brief Returns a string in the form *#who*where*dimension##
  */
 QString createDimensionFrame(QString who, QString what, QString where)
@@ -72,6 +78,7 @@ QString createDimensionFrame(QString who, QString what, QString where)
 }
 
 /*!
+	\ingroup Core
 	\brief Returns a string in the form *#who*where*#dimension*val1*..*valn##
  */
 QString createWriteDimensionFrame(QString who, QString what, QString where)
@@ -80,6 +87,7 @@ QString createWriteDimensionFrame(QString who, QString what, QString where)
 }
 
 /*!
+	\ingroup Core
 	\brief Returns a string in the form *#who*where##
  */
 QString createStatusRequestFrame(QString who, QString where)
