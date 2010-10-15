@@ -342,7 +342,7 @@ void PullStateManager::setStatusRequested(bool status)
 
 /**
 	\class PullDevice
-	\brief This is a base class for lighting and automation devices.
+	\brief A base class for lighting and automation devices.
 
 	This class provides some common functionality needed for all pull/non-pull devices;
 	it is not meant to be used directly and adds no public functions.
