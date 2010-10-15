@@ -52,11 +52,7 @@ protected:
 	virtual void requestPullStatus();
 };
 
-/**
- * \class PPTStatDevice
- *
- * This class represent a device for managing the PPTStat
- */
+
 class PPTStatDevice : public device
 {
 Q_OBJECT

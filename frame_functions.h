@@ -27,6 +27,12 @@ class OpenMsg;
 
 /*!
 	\ingroup Core
+	\defgroup FrameFunctions Frame functions
+*/
+
+/*!
+	\ingroup Core
+	\ingroup FrameFunctions
 	\brief Tests if \a msg is in the form *who*what*where##
 */
 bool isCommandFrame(OpenMsg &msg);

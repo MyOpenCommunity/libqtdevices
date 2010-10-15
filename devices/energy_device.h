@@ -35,9 +35,8 @@ namespace EnergyConversions
 {
 	enum EnergyTypology
 	{
-		DEFAULT_ENERGY,            // default conversion, divide number by 10
-		ELECTRICITY,               // specific conversion for electricity, divide by 1000
-		OTHER_ENERGY,              // conversion for other current energy value
+		ELECTRICITY,               // conversion for electricity
+		OTHER_ENERGY,              // conversion for other energy types
 	};
 
 	double convertToRawData(qint64 bt_bus_data, EnergyTypology type);
@@ -103,29 +102,20 @@ private:
 };
 
 
-/**
- * This class parses the incoming frames for who = 18 (Energy Management) and sends
- * updates to widgets through valueReceived() signal.
+/*
  * The main assumptions on the incoming frames are that:
  *  - the frames for a graph arrive in order;
  *  - if a graph frame stream is interrupted, no other frames for that stream will arrive later
  *      (ie, there can't be 'holes' in the stream);
  *  - if a stream is interrupted and the last value of the last frame is the high byte
  *      (ie, we can't reconstruct the complete value), nothing must be visualized for that value.
- *
- * The measure unit for the various energy types is always:
- * electricity: watt
- * water: liters
- * gas: dm3 (liters)
- * dhw: cal
- * heating/cooling: cal
  */
 class EnergyDevice : public device
 {
 friend class TestEnergyDevice;
 Q_OBJECT
 public:
-	EnergyDevice(QString where, int _mode);
+	EnergyDevice(QString where, int mode);
 
 	// The request methods, used to request an information
 	void requestCumulativeDay(QDate date) const;
@@ -244,4 +234,6 @@ typedef QPair<QDate, qint64> EnergyValue;
 Q_DECLARE_METATYPE(EnergyValue);
 
 #endif // ENERGY_DEVICE_H
+
+/*! \file */ /* otherwise doxygen does not generate documentation for typedefs */
 

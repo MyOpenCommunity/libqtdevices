@@ -1,4 +1,4 @@
-/* 
+enum/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -41,6 +41,63 @@ enum RequestCurrent
 	REQ_CURRENT_MODE_4 = 1132,
 	REQ_CURRENT_MODE_5 = 1132,
 };
+
+/*!
+	\struct GraphData
+	\brief Contains multiple values composing a graph.
+ */
+/*!
+	\var GraphData::graph
+	\brief The graph data.
+
+	The keys always start at 1
+	\li EnergyDevice::DAILY_AVERAGE, EnergyDevice::CUMULATIVE_DAY: the key is the hour of the day
+	\li EnergyDevice::CUMULATIVE_MONTH: the key is the day of the month
+	\li EnergyDevice::CUMULATIVE_YEAR: key 12 contains the value for the current month, lower keys contain the value for previous months
+ */
+/*!
+	\var GraphData::date
+	\brief The date the data refers to.
+
+	The interpretation varies depending on graph data type
+	\li EnergyDevice::DAILY_AVERAGE, EnergyDevice::CUMULATIVE_DAY: the day the data refers to.
+	\li EnergyDevice::CUMULATIVE_MONTH: teh first day of the month the data refers to.
+	\li EnergyDevice::CUMULATIVE_YEAR: not relevant.
+ */
+/*!
+	\var GraphData::type
+	\brief Type of data contained in the graph.
+
+	\see EnergyDevice
+ */
+
+/*!
+	\typedef EnergyValue
+	\brief Consumption value for the given date.
+
+	\see EnergyDevice
+ */
+
+/*!
+	\enum EnergyDevice::GraphType
+	\brief The type of graph in status notifications.
+ */
+/*!
+	\var EnergyDevice::GraphType EnergyDevice::CUMULATIVE_DAY
+	Consumption for each hour in a day.
+ */
+/*!
+	\var EnergyDevice::GraphType EnergyDevice::CUMULATIVE_MONTH
+	Total consumption for each day in a month.
+ */
+/*!
+	\var EnergyDevice::GraphType EnergyDevice::CUMULATIVE_YEAR
+	Total consumption for each month in a year.
+ */
+/*!
+	\var EnergyDevice::GraphType EnergyDevice::DAILY_AVERAGE
+	Average consumption for each hour in a day (computed over a month).
+ */
 
 /*
  * in the new frames the measure unit is:
@@ -93,7 +150,10 @@ enum RequestDimension
 	REQ_CUMULATIVE_MONTH_GRAPH_32BIT  = 59,   // request graph data for cumulative month (32 bit frames)
 };
 
-
+/*!
+	\class AutomaticUpdates
+	\brief Internal.
+ */
 AutomaticUpdates::AutomaticUpdates(QString _where, int _mode, device *_dev)
 {
 	dev = _dev;
@@ -283,11 +343,56 @@ void AutomaticUpdates::handleAutomaticUpdate(OpenMsg &msg)
 }
 
 
-EnergyDevice::EnergyDevice(QString where, int _mode) :
+/*!
+	\class EnergyDevice
+	\brief A device to read energy/water/gas/heating consumption data.
+
+	Consumption values are expressed using different using dipending on the energy type:
+	\li Electricity: watt
+	\li Water: liters
+	\li Gas: dm3 (liters)
+	\li Hot water: calories
+	\li Heating/cooling: calories
+
+	\section dimensions Dimensions
+	\startdim
+	\dim{DIM_CURRENT,::EnergyValue,,Instantaneous consumption.}
+	\dim{DIM_CUMULATIVE_YEAR,::EnergyValue,,Total consumption over the last year (current month and the previous 11 months).}
+	\dim{DIM_CUMULATIVE_MONTH,::EnergyValue,,Total consumption over a month.}
+	\dim{DIM_CUMULATIVE_DAY,::EnergyValue,,Total consumption over a day.}
+	\dim{DIM_DAILY_AVERAGE_GRAPH,GraphData,,Average consumption for each hour in a day (computed over a month).}
+	\dim{DIM_DAY_GRAPH,GraphData,,Consumption for each hour in a day.}
+	\dim{DIM_CUMULATIVE_MONTH_GRAPH,GraphData,,Total consumption for each day in a month.}
+	\dim{DIM_CUMULATIVE_YEAR_GRAPH,GraphData,,Total consumption for each month in the last year (current month and the previous 11 months)}
+	\dim{DIM_MONTLY_AVERAGE,::EnergyValue,,Average consumption value for the days in a month.}
+	\enddim
+
+	After requesting a status update for a specific measure, it is not unusual that status updates for multiple measures
+	will be delivered; the exact number and type of status updates depends on the physical device model.
+
+	\section FrameOrdering Frame ordering problems
+
+	\a requestCumulativeMonthGraph() must be the last in a sequence of request frames, otherwise the physical device might not send
+	back all the requested data (depending on the device model).
+ */
+
+/*!
+	\brief Constructor
+	\param where device address
+	\param mode measure type (electricty, water, ...)
+
+	The mapping for the \a mode parameter is:
+	\li 1: electricity
+	\li 2: water
+	\li 3: gas
+	\li 4: hot water
+	\li 5: heating/conditioning
+ */
+EnergyDevice::EnergyDevice(QString where, int mode) :
 	device(QString("18"), where),
-	current_updates(where, _mode, this)
+	current_updates(where, mode, this)
 {
-	scaling_factor_old_frames = _mode == 1 ? 100 : 1;
+	scaling_factor_old_frames = mode == 1 ? 100 : 1;
 	pending_graph_request = 0;
 	has_new_frames = false;
 
@@ -315,6 +420,9 @@ void EnergyDevice::sendRequest(QString what) const
 	sendInit(req);
 }
 
+/*!
+	\brief Request total consumption over a day (\a DIM_CUMULATIVE_DAY).
+ */
 void EnergyDevice::requestCumulativeDay(QDate date) const
 {
 	if (date == QDate::currentDate())
@@ -323,6 +431,9 @@ void EnergyDevice::requestCumulativeDay(QDate date) const
 		requestCumulativeDayGraph(date);
 }
 
+/*!
+	\brief Request total consumption over the last 12 months (\a DIM_CUMULATIVE_YEAR).
+ */
 void EnergyDevice::requestCumulativeYear() const
 {
 	// measure DIM_CUMULATIVE_YEAR (51) returns the grand total, not the yearly total,
@@ -330,31 +441,66 @@ void EnergyDevice::requestCumulativeYear() const
 	requestCumulativeYearGraph();
 }
 
+/*!
+	\brief Request the instantaneous consumption.
+ */
 void EnergyDevice::requestCurrent() const
 {
 	current_updates.requestCurrent();
 }
 
+/*!
+	\brief Request the instantaneous consumption and (for some actuator types) the start of periodic updates.
+ */
 void EnergyDevice::requestCurrentUpdate()
 {
 	current_updates.requestCurrentUpdate();
 }
 
+/*!
+	\brief Request automatic updates for the instantaneous consumption.
+
+	After this function is called the device starts sending automatic updates for the instantaneous consumption.
+
+	If \a requestCurrentUpdateStart() is called multiple times (for example by different graphic items)
+	the automatic updates stop only after \a requestCurrentUpdateStop() is called the same number of times.
+ */
 void EnergyDevice::requestCurrentUpdateStart()
 {
 	current_updates.requestCurrentUpdateStart();
 }
 
+/*!
+	\brief Stop automatic updates for the instantaneous consumption.
+
+	Note that, to avoid excessive traffic on the SCS bus in case of repeated calls to
+	\a requestCurrentUpdateStart()/\a requestCurrentUpdateStop(), automatic upates are stopped
+	about 100 msec after this function is called.
+
+	\see requestCurrentUpdateStart()
+ */
 void EnergyDevice::requestCurrentUpdateStop()
 {
 	current_updates.requestCurrentUpdateStop();
 }
 
+/*!
+	\brief Stop automatic updates directly.
+
+	Called after \a requestCurrentUpdateStop(), forces the update stop to be processed
+	immedialty.  This is only required to avoid some frame ordering problems.
+
+	\see requestCurrentUpdateStop()
+	\see \ref FrameOrdering
+ */
 void EnergyDevice::flushCurrentUpdateStop()
 {
 	current_updates.flushCurrentUpdateStop();
 }
 
+/*!
+	\brief Request graph of average consumption for each hour in a day (\a DIM_DAILY_AVERAGE_GRAPH).
+ */
 void EnergyDevice::requestDailyAverageGraph(QDate date) const
 {
 	if (!has_new_frames)
@@ -379,6 +525,9 @@ void EnergyDevice::requestDailyAverageGraph16Bit(QDate date) const
 		.arg(date.month()), where));
 }
 
+/*!
+	\brief Request average consumption value for the days in a month (\a DIM_MONTLY_AVERAGE).
+ */
 void EnergyDevice::requestMontlyAverage(QDate date) const
 {
 	if (!has_new_frames)
@@ -387,6 +536,9 @@ void EnergyDevice::requestMontlyAverage(QDate date) const
 		requestDailyAverageGraph16Bit(date);
 }
 
+/*!
+	\brief Request graph of consumption for each hour in a day (\a DIM_DAY_GRAPH).
+ */
 void EnergyDevice::requestCumulativeDayGraph(QDate date) const
 {
 	if (!has_new_frames)
@@ -411,6 +563,9 @@ void EnergyDevice::requestCumulativeDayGraph16Bit(QDate date) const
 		.arg(date.month()).arg(date.day()), where));
 }
 
+/*!
+	\brief Request graph of total consumption for each day in a month and the graph of average consumption for each hour in a day (\a DIM_CUMULATIVE_MONTH_GRAPH, \a DIM_DAILY_AVERAGE_GRAPH).
+ */
 void EnergyDevice::requestCumulativeMonthGraph(QDate date) const
 {
 	if (!has_new_frames)
@@ -441,6 +596,9 @@ void EnergyDevice::requestCumulativeMonthGraph32Bit(QDate date) const
 		.arg(date.month()), where));
 }
 
+/*!
+	\brief Request total consumption over a month (\a DIM_CUMULATIVE_MONTH).
+ */
 void EnergyDevice::requestCumulativeMonth(QDate date) const
 {
 	QDate curr = QDate::currentDate();
@@ -454,6 +612,9 @@ void EnergyDevice::requestCumulativeMonth(QDate date) const
 	}
 }
 
+/*!
+	\brief Request total consumption over the last 12 months (\a DIM_CUMULATIVE_YEAR).
+ */
 void EnergyDevice::requestCumulativeYearGraph() const
 {
 	QDate curr = QDate::currentDate();
@@ -875,14 +1036,39 @@ QDate EnergyDevice::getDateFromFrame(OpenMsg &msg)
 	return QDate::currentDate();
 }
 
+/*!
+	\namespace EnergyConversions
+	\brief Functions to convert energy values for display.
+ */
+
+/*!
+	\enum ::EnergyConversions::EnergyTypology
+	\brief The type of graph in status notifications.
+ */
+/*!
+	\var EnergyConversions::EnergyTypology EnergyConversions::EnergyTypology::ELECTRICITY
+	\brief Conversion factor for electricity.
+
+	\see EnergyConversions::convertToRawData()
+	\see EnergyConversions::convertToMoney()
+ */
+/*!
+	\var EnergyConversions::EnergyTypology EnergyConversions::EnergyTypology::OTHER_ENERGY
+	\brief Conversion factor for all other energy types.
+
+	\see EnergyConversions::convertToRawData()
+	\see EnergyConversions::convertToMoney()
+ */
+
+
+/*!
+	\brief Converts a measure to the units used for display.
+ */
 double EnergyConversions::convertToRawData(qint64 bt_bus_data, EnergyConversions::EnergyTypology type)
 {
 	double factor;
 	switch (type)
 	{
-	case DEFAULT_ENERGY:
-		factor = 10.;
-		break;
 	case ELECTRICITY:
 		factor = 1000.;
 		break;
@@ -893,6 +1079,11 @@ double EnergyConversions::convertToRawData(qint64 bt_bus_data, EnergyConversions
 	return bt_bus_data / factor;
 }
 
+/*!
+	\brief Converts from the units used for display to the corresponding cost.
+
+	\see EnergyRate
+ */
 double EnergyConversions::convertToMoney(double raw_data, float money_factor)
 {
 	return raw_data * money_factor;

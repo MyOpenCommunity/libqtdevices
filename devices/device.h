@@ -212,7 +212,7 @@ private:
 
 	\sa manageFrame(), parseFrame(), sendFrame(), sendFrameNow(), sendInit(),
 	sendInitNow(), sendCompressedFrame(), delayFrames(), valueReceived()
- */
+*/
 class device : public QObject, FrameReceiver
 {
 friend class TestDevice;
