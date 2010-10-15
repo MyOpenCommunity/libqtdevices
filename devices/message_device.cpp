@@ -112,7 +112,7 @@ using namespace MessageDevicePrivate;
 /*!
 	\ingroup Messages
 	\class MessageDevice
-	\brief Class for messaging management from SCS and CDP (via open).
+	\brief Manages messages from Guard Unit.
 
 	\section dimensions Dimensions
 	\startdim

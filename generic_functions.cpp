@@ -586,7 +586,17 @@ int scsToLocalVolume(int vol)
 #endif
 }
 
+/*!
+	\var DateConversions::separator
+	\brief The default separator used in dates
 
+	It corresponds to '.' on the 3.5" touchscreen, '/' on the 10" one.
+ */
+
+/*!
+	\brief Converts "date" to a QString object according to the date format read
+	from configuration.
+ */
 QString DateConversions::formatDateConfig(const QDate &date, char separator)
 {
 	QString format = getDateFormat(separator);
@@ -596,11 +606,19 @@ QString DateConversions::formatDateConfig(const QDate &date, char separator)
 	return date.toString(format);
 }
 
+/*!
+	\brief Converts "datetime" to a QString object according to the datetime
+	format read from configuration.
+ */
 QString DateConversions::formatDateTimeConfig(const QDateTime &datetime, char separator)
 {
 	return DateConversions::formatDateConfig(datetime.date(), separator) + datetime.time().toString(" HH:mm");
 }
 
+/*!
+	\brief Converts "date" into a QDate object using the format read from the
+	configuration.
+ */
 QDate DateConversions::getDateConfig(const QString &date, char separator)
 {
 	QString format = getDateFormat(separator);
@@ -612,6 +630,10 @@ QDate DateConversions::getDateConfig(const QString &date, char separator)
 	return QDate::fromString(date, format).addYears(100);
 }
 
+/*!
+	\brief Converts "datetime" into a QDateTime object using the format read
+	from the configuration.
+ */
 QDateTime DateConversions::getDateTimeConfig(const QString &datetime, char separator)
 {
 	QString format = getDateFormat(separator);
