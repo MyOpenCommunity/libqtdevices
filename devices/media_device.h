@@ -353,8 +353,23 @@ protected:
 
 
 /*!
- * This class represents an amplifier device, that can be used to reproduce audio
- * from various kind of sources inside an area.
+	\ingroup SoundDiffusion
+	\class AmplifierDevice
+	\brief Device to control an SCS amplifier.
+
+	Can be used to turn on/turn off the amplifier and change its volume.
+
+	\section dimensions Dimensions
+	\startdim
+	\dim{DIM_STATUS,bool,,Device status.}
+	\dim{DIM_VOLUME,int,,Amplifer volume (1-31).}
+	\enddim
+
+	Instantiating the correct class for an amplifier device is tricky because the
+	local amplifier must be handled separately even for environment/global amplfiers.
+
+	After calling \a setVirtualAmplifierWhere(), \a createDevice() will always create
+	the correct device instance for a given point-to-point, anvironment or general address.
  */
 class AmplifierDevice : public device
 {
@@ -368,44 +383,118 @@ public:
 		DIM_VOLUME = 1,
 	};
 
-	/*
-	 * this function transparently handles device creation for normal amplifier
-	 * devices (either SCS or virtual) and for general and area commands; it will
-	 * automatically handle the virtual amplifier and add the created device to the
-	 * device cache.
-	 *
-	 * passing <area><point> as the where (eg. 18, 23) will create a device for a single amplifier
-	 * passing #<area> as the where (es. #4) will create an area command
-	 * passing "0" as the where will create a general command
+	/*!
+		\brief Amplfier device factory
+
+		Transparently handles device creation for normal amplifier
+		devices (either SCS or virtual) and for general and area commands; it will
+		automatically handle the virtual amplifier and add the created device to the
+		device cache.
+
+		The \a where parameter can be:
+		\li <area><point> (ex. \c 18, \c 23) will create a device for a single amplifier
+		\li \#<area> (ex. \#4) will create an area command
+		\li \c "0" will create a general command
+
+		If the touchscreen is configured as an SCS amplifier, \a setVirtualAmplifierWhere()
+		must be called before instantiating any amplifier.
 	 */
 	static AmplifierDevice *createDevice(const QString &where);
 
+	/*!
+		\brief Set the where address of the local amplifier.
+
+		\see createDevice()
+	 */
 	static void setVirtualAmplifierWhere(const QString &where);
+
+	/*!
+		\brief Must be called during initialization to set the sound diffusion type.
+	 */
 	static void setIsMultichannel(bool is_multichannel);
 
 	virtual void init();
 
+	/*!
+		\brief Request amplifier on/off status.
+
+		It should never be necessary to call this function explicitly.
+	 */
 	void requestStatus() const;
+
+	/*!
+		\brief Request amplifier volume.
+
+		It should never be necessary to call this function explicitly.
+	 */
 	void requestVolume() const;
+
+	/*!
+		\brief Turn on the amplifier.
+	 */
 	virtual void turnOn();
+
+	/*!
+		\brief Turn on the amplifier.
+	 */
 	virtual void turnOff();
+
+	/*!
+		\brief Increase amplifier volume by 1 (up to 31).
+	 */
 	virtual void volumeUp();
+
+	/*!
+		\brief Decrease amplifier volume by 1 (down to 1).
+	 */
 	virtual void volumeDown();
+
+	/*!
+		\brief Set amplifier volume to the specified level (1-31).
+	 */
 	virtual void setVolume(int volume);
 
+	/*!
+		\brief True if this is a general address (\c 0).
+	 */
 	static bool isGeneralAddress(const QString &where);
+
+	/*!
+		\brief True if thsi is an area address (\c \#area).
+	 */
 	static bool isAreaAddress(const QString &where);
+
+	/*!
+		\brief Returns the area of a point-to-point address or area address.
+	 */
 	static QString getAmplifierArea(const QString &where);
+
+	/*!
+		\brief Returns the sound diffusion area for this device.
+	 */
 	QString getArea() const { return area; }
+
+	/*!
+		\brief Returns the sound diffusion point for this device inside the device area.
+	 */
 	QString getPoint() const { return point; }
 
 protected:
-	// passing "0" as the where creates a device commanding all amplifiers
-	// passing "#<area>" as the where creates a device commanding all amplifiers in an area
+	/*!
+		\brief Constructor
+
+		The \a where can be \c 0 for a general device, \c \#a for an area device
+		of a 2-digit number for a point-to-point device.
+
+		Note that an \a AmplifierDevice will never affect the local amplfier.
+	 */
 	AmplifierDevice(QString where, int openserver_id = 0);
 
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
+	/*!
+		\brief Returns whether a frame must be interpreted by the device.
+	 */
 	bool checkAddressIsForMe(OpenMsg &msg);
 
 private:
