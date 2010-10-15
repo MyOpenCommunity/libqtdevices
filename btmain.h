@@ -47,9 +47,7 @@ class QTime;
 class QSocketNotifier;
 
 
-/**
- * This class manages the unix signals used on the BTouch hardware.
- */
+
 class SignalsHandler : public QObject
 {
 Q_OBJECT
@@ -72,10 +70,6 @@ private:
 };
 
 
-/**
- * This is the main class of the touchscreen interface. It loads the configuration,
- * establishes the connection with the openserver(s) and manage the global objects.
- */
 class BtMain : public QObject
 {
 Q_OBJECT

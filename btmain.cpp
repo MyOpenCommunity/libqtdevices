@@ -83,6 +83,12 @@
 #define TS_NUM_BASE_ADDRESS 0x700
 #endif
 
+/*!
+	\defgroup Core Core
+
+	Contains defines, functions and classes that are not related to a specific
+	section.
+*/
 
 /*!
 	\namespace bt_global
@@ -172,6 +178,11 @@ namespace
 int SignalsHandler::signalfd[2];
 long SignalsHandler::parent_pid = 0;
 
+/*!
+	\ingroup Core
+	\class SignalsHandler
+	\brief Manages the unix signals used on the BTicino hardware.
+*/
 
 SignalsHandler::SignalsHandler()
 {
@@ -212,6 +223,15 @@ void SignalsHandler::signalHandler(int signal_number)
 	::write(signalfd[0], &tmp, sizeof(tmp)); // write something, in order to "activate" the notifier
 }
 
+
+/*!
+	\ingroup Core
+	\class BtMain
+	\brief The main class of the BTouch interface.
+
+	It loads the configuration and loads corresponding objects, establishes
+	the connection with the openserver(s) and manages the global objects.
+*/
 
 BtMain::BtMain(int openserver_reconnection_time)
 {

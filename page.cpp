@@ -86,6 +86,7 @@ void PageTitleWidget::setCurrentPage(int current, int total)
 
 
 /*!
+	\ingroup Core
 	\class Page
 	\brief Base class for application pages
 
