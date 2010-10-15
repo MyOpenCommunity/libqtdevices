@@ -52,21 +52,35 @@ namespace Ringtones
 	};
 }
 
+/*!
+	\ingroup Core
+	\brief %Loads and play ringtones.
 
+	%Loads the ringtones defined in an xml file, sets a ringtone for a
+	Ringtones::Type and plays/stops a ringtone.
+*/
 class RingtonesManager : public QObject
 {
 Q_OBJECT
 public:
 	RingtonesManager(QString ringtone_file);
 
+	/*!
+		\brief Play the current ringtone set for the given ringtone type \a t.
+	*/
 	void playRingtone(Ringtones::Type t);
 
 	// play the ringtone set for the given id
 	void playRingtone(int ring);
 
-	// stops playing a ringtone, if any
+	/*!
+		\brief stops playing a ringtone, if any
+	*/
 	void stopRingtone();
 
+	/*!
+		Sets a new ringtone for the given ringtone type \a t.
+	*/
 	void setRingtone(Ringtones::Type t, int item_id, int ring);
 
 	// Ringtones starts from 1 to... ringtones_number

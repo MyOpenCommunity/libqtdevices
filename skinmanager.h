@@ -26,24 +26,88 @@
 #include <QHash>
 #include <QString>
 
+/*!
+	\ingroup Core
+	\brief %Loads and get stylesheet and images path defined in a skin xml file.
 
+	To get images path, you often should set (adding or removing cid) the
+	\em explicit context using addToContext() / removeFromContext() or the helper
+	class SkinContext before getting them. An \em implicit context, which can be
+	used to retrieve common images, is always set.
+	You can also check if a tagname is defined using the exists() method, and
+	save/restore the current context using getCidState() and setCidState().
+
+	For the stylesheet the method getStyle() is provided to get the string that
+	contains the global style to apply.
+
+	This class is designed to use as a global object, through the bt_global
+	namespace.
+*/
 class SkinManager
 {
 public:
+	/*!
+		Synonym for QList<int>
+	*/
 	typedef QList<int> CidState;
 
+	/*!
+		\brief %Loads the stylesheet and tagnames from the skin configuration file.
+	*/
 	SkinManager(QString filename);
+
+	/*!
+		\brief Returns the stylesheet reads from the skin xml file.
+	*/
 	QString getStyle();
 
+
+	/*!
+		\brief Add a cid to the skin context.
+
+		Most of the time, you have no need to use this function directly, because
+		you can use the wrapper SkinContext.
+	*/
 	void addToContext(int cid);
+
+	/*!
+		\brief Remove a cid to the skin context.
+
+		\sa addToContext
+	*/
 	void removeFromContext();
 
+	/*!
+		\brief Check if an explicit context is set.
+	*/
 	bool hasContext();
 
+	/*!
+		\brief Returns the full image path.
+
+		\a name is the tagname used in the code and also specified in the skin xml
+		file withouth the prefix 'img_'. If \a name is not found an empty string is
+		returned.
+
+		All the contexts set through addToContext() are searched from the last inserted
+		to the first one, so if a tagname is found in more contexts the image path
+		of the last context is returned.
+	*/
 	QString getImage(QString name);
 
+	/*!
+		\brief Check if a \a name is defined in the skin xml file.
+	*/
 	bool exists(QString name);
+
+	/*!
+		\brief Return the whole skin context.
+	*/
 	CidState getCidState();
+
+	/*!
+		\brief Set the whole skin context.
+	*/
 	void setCidState(const CidState &state);
 
 private:
@@ -53,11 +117,25 @@ private:
 };
 
 
+/*!
+	\ingroup Core
+	\brief An helper class for SkinManager.
 
+	A simply wrapper around the SkinManager::addToContext() and
+	SkinManager::removeFromContext(), useful to avoid the explicit remove calls
+	from the context.
+*/
 class SkinContext
 {
 public:
+	/*!
+		\brief Create the object and add the \a cid to the context.
+	*/
 	SkinContext(int cid);
+
+	/*!
+		\brief Destroy the object and remove the previously added cid from the context.
+	*/
 	~SkinContext();
 };
 

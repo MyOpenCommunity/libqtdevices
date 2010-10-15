@@ -96,41 +96,6 @@ namespace
 	}
 }
 
-/*!
-	\enum MultimediaFileType
-	Filesystem types
- */
-
-/*!
-	\var MultimediaFileType UNKNOWN
-	Unknown filetype
- */
-
-/*!
-	\var MultimediaFileType DIRECTORY
-	Directory
- */
-
-/*!
-	\var MultimediaFileType AUDIO
-	Audio filetype
- */
-
-/*!
-	\var MultimediaFileType VIDEO
-	Video filetype
- */
-
-/*!
-	\var MultimediaFileType IMAGE
-	Image filetype
- */
-
-
-/*!
-	\ingroup Core
-	\brief Returns a list of the recognized file types associated to "type".
- */
 QStringList getFileExtensions(MultimediaFileType type)
 {
 	QStringList exts;
@@ -163,10 +128,6 @@ QStringList getFileExtensions(MultimediaFileType type)
 	return exts;
 }
 
-/*!
-	\ingroup Core
-	\brief Returns a list of file filter expressions associated to "type".
- */
 QStringList getFileFilter(MultimediaFileType type)
 {
 	QStringList filters;
@@ -196,10 +157,6 @@ QStringList getFileFilter(MultimediaFileType type)
 	return filters;
 }
 
-/*!
-	\ingroup Core
-	\brief Concatenate "suffix" to the part of "name" preceding the dot (.)
- */
 QString getBostikName(const QString &name, const QString &suffix)
 {
 	int pos = name.indexOf(".");
@@ -209,19 +166,10 @@ QString getBostikName(const QString &name, const QString &suffix)
 	return QString();
 }
 
-/*!
-	\ingroup Core
-	\brief Transform a image file name into a pressed one.
-
-	Returns the filename of a image '.png' converted into a "p.png" file name.
-
-	\sa getBostikName()
-*/
 QString getPressName(QString name)
 {
 	return getBostikName(name, "p");
 }
-
 
 // reads the configuration file into a document
 bool prepareWriteCfgFile(QDomDocument &doc, const QString &filename)
@@ -477,13 +425,6 @@ void DelayedConfigWrite::asyncWriteConfig(QHash<QString, FileQueue> queued_actio
 #endif
 }
 
-/**
-	\ingroup Core
-	\brief Changes a value in conf.xml file atomically.
-
-	It works on a temporary file and then moves that file on conf.xml with a
-	call to ::rename().
- */
 #ifdef CONFIG_TS_3_5
 void setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
 #else
@@ -558,16 +499,24 @@ int localVolumeToAmplifier(int vol)
 	return qRound(vol * 31 / 8.0);
 }
 
+int scsToLocalVolume(int vol)
+{
+	if (vol < 0 || vol > 31)
+		return -1;
+
+	return qRound(vol * 8 / 31.0);
+}
+
 #endif
 
-int scsToLocalVolume(int vol)
+int scsToGraphicalVolume(int vol)
 {
 	// TODO remove after aligning image names
 #ifdef LAYOUT_TS_10
 	if (vol < 0 || vol > 31)
 		return -1;
 
-	return qRound(vol * 8 / 31.0);
+	return vol * 8 / 31;
 #else
 	if (vol < 0)
 		return -1;
@@ -593,19 +542,6 @@ int scsToLocalVolume(int vol)
 #endif
 }
 
-/*!
-	\ingroup Core
-	\var DateConversions::separator
-	\brief The default separator used in dates
-
-	It corresponds to '.' on the 3.5" touchscreen, '/' on the 10" one.
- */
-
-/*!
-	\ingroup Core
-	\brief Converts "date" to a QString object according to the date format read
-	from configuration.
- */
 QString DateConversions::formatDateConfig(const QDate &date, char separator)
 {
 	QString format = getDateFormat(separator);
@@ -615,21 +551,11 @@ QString DateConversions::formatDateConfig(const QDate &date, char separator)
 	return date.toString(format);
 }
 
-/*!
-	\ingroup Core
-	\brief Converts "datetime" to a QString object according to the datetime
-	format read from configuration.
- */
 QString DateConversions::formatDateTimeConfig(const QDateTime &datetime, char separator)
 {
 	return DateConversions::formatDateConfig(datetime.date(), separator) + datetime.time().toString(" HH:mm");
 }
 
-/*!
-	\ingroup Core
-	\brief Converts "date" into a QDate object using the format read from the
-	configuration.
- */
 QDate DateConversions::getDateConfig(const QString &date, char separator)
 {
 	QString format = getDateFormat(separator);
@@ -641,11 +567,6 @@ QDate DateConversions::getDateConfig(const QString &date, char separator)
 	return QDate::fromString(date, format).addYears(100);
 }
 
-/*!
-	\ingroup Core
-	\brief Converts "datetime" into a QDateTime object using the format read
-	from the configuration.
- */
 QDateTime DateConversions::getDateTimeConfig(const QString &datetime, char separator)
 {
 	QString format = getDateFormat(separator);

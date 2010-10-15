@@ -27,32 +27,102 @@
 #include <QString>
 
 
+/*!
+	\ingroup Core
+	\brief Looks for a child node with the given name
+
+	Returns the node child of \a parent with name \a name.
+	If the node is not found returns an invalid node.
+*/
 QDomNode getChildWithName(const QDomNode &parent, const QString &name);
 
+/*!
+	\ingroup Core
+	\brief Looks for a child element by path.
+
+	Returns the element located in \a path starting from \a root.
+	If the element is not found returns an invalid element.
+
+	\note Path must omit the root node, have "/" as node separator and not have
+	a trailing separator.
+	(Example: "setup/generale/clock/dateformat")
+*/
 QDomElement getElement(const QDomNode &root, const QString &path);
 
+/*!
+	\ingroup Core
+	\brief Looks for a child node by a regexp and \a id child node.
+
+	Returns the node child of \a parent that match the \a regexp and has a child
+	with \a id.
+	If the node is not found returns an invalid node.
+*/
 QDomNode getChildWithId(const QDomNode &parent, const QRegExp &node_regexp, int id);
 
+/*!
+	\ingroup Core
+	\brief Looks for a child node by a regexp and a child node.
+
+	Returns the node child of \a parent that match the \a regexp and has a child
+	with name \a idName and value \a id.
+	If the node is not found returns an invalid node.
+*/
 QDomNode getChildWithId(const QDomNode &parent, const QRegExp &node_regexp, const QString &idName, int id);
 
+/*!
+	\ingroup Core
+	\brief Looks for a text node child of \a root.
+
+	This function is a wrapper around getChildWithName().
+	Returns the text of child if present, a null QString otherwise.
+*/
 QString getTextChild(const QDomNode &parent, const QString &name);
 
+/*!
+	\ingroup Core
+	\brief Return a list of children of node \a parent whose name start with \a name.
+*/
 QList<QDomNode> getChildren(const QDomNode &parent, const QString &name);
 
+/*!
+	\ingroup Core
+	\brief Looks for a node by parent and child.
+
+	Returns a node that is descendent of the node \a root and have a child
+	\a tag_name with a \a value.
+	If the node is not found returns an invalid node.
+*/
 QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, const QString &tag_name, int id, int& serial_number);
 
+/*!
+	\ingroup Core
+	\brief Looks for a node by parent and child.
+
+	This is an overloaded member function, provided for convenience.
+*/
 inline QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, const QString &tag_name, int id)
 {
 	int serial_number = 1;
 	return findXmlNode(root, node_regexp, tag_name, id, serial_number);
 }
 
-// Some convenient overloads for the above function
+/*!
+	\ingroup Core
+	\brief Looks for a node by parent and child.
+
+	This is an overloaded member function, provided for convenience.
+*/
 inline QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, int id, int& serial_number)
 {
 	return findXmlNode(root, node_regexp, "id", id, serial_number);
 }
 
+/*!
+	\ingroup Core
+	\brief Looks for a node by parent and child.
+
+	This is an overloaded member function, provided for convenience.
+*/
 inline QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, int id)
 {
 	int serial_number = 1;

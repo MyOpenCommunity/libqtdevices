@@ -47,7 +47,10 @@ class QTime;
 class QSocketNotifier;
 
 
-
+/*!
+	\ingroup Core
+	\brief Manages the unix signals used on the BTicino hardware.
+*/
 class SignalsHandler : public QObject
 {
 Q_OBJECT
@@ -70,6 +73,13 @@ private:
 };
 
 
+/*!
+	\ingroup Core
+	\brief The main class of the BTouch interface.
+
+	It loads the configuration and loads corresponding objects, establishes
+	the connection with the openserver(s) and manages the global objects.
+*/
 class BtMain : public QObject
 {
 Q_OBJECT

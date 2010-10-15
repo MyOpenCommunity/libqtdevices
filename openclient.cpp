@@ -65,73 +65,11 @@ namespace
 	}
 }
 
-/*!
-	\ingroup Core
-	\class Client
-	\brief Manages the communication between the application and a specified openserver.
 
-	%Clients of types Client::MONITOR / Client::SUPERVISOR can be used to receive
-	frames while clients of types Client::COMMAND or Client::REQUEST can be used
-	to send frames to the openserver.
-
-	Each client when created tries to connect itself to the specified openserver,
-	but you can connect or disconnect in every moment using the connectToHost()
-	and disconnectFromHost() methods. The signal connectionUp() notify when
-	the connection is established, while the connectionDown() is emitted when
-	the connection is lost (but not after the call of the disconnectFromHost
-	method).
-
-	To send a frame use the sendFrameOpen() method.
-
-	To receive a frame you have to inherit from the FrameReceiver class and
-	subscribe the derived object for a who.
-*/
-
-/*!
-	\enum Client::Type
-	Defines the type of the client.
-*/
-/*!
-	\var Client::Type Client::MONITOR
-	Used to receive frames from almost all systems.
-*/
-/*!
-	\var Client::Type Client::COMMAND
-	Used to send frames to the openserver.
-*/
-/*!
-	\var Client::Type Client::REQUEST
-	Used to send frames to the openserver.
-	\note the frames sent during the programmation of a scenario module are not
-	delivered.
-*/
-/*!
-	\var Client::Type Client::SUPERVISOR
-	Used to receive frames that came from the socket NOTIFY.
-*/
-
-/*!
-	\enum Client::FrameDelay
-	Defines the type of the delay that can used while sent frames.
-*/
-/*!
-	\var Client::FrameDelay Client::DELAY_NONE
-	No delay allowed
-*/
-/*!
-	\var Client::FrameDelay Client::DELAY_IF_REQUESTED
-	Delay if the requested from delayFrames()
-*/
 
 
 bool Client::delay_frames = false;
 
-/*!
-	\brief Constructor
-
-	It builds a new Client of Client::Type \a t and connect it to the openserver
-	having the given \a host and \a port.
-*/
 Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host)
 {
 	QMetaEnum e = staticMetaObject.enumerator(0);
@@ -163,9 +101,6 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 	delayed_frame_timer.setInterval(FRAME_TIMEOUT_MSECS + (*bt_global::config)[TS_NUMBER].toInt() * TS_NUMBER_FRAME_DELAY);
 }
 
-/*!
-	\brief Check if the client is connected
-*/
 bool Client::isConnected()
 {
 	// The openserver closes the connection for sockets of type REQUEST/COMMAND
@@ -214,9 +149,6 @@ void Client::socketConnected()
 		send_on_connected.clear();
 }
 
-/*!
-	\brief delay the frames that are allowed to \sa sendFrameOpen()
-*/
 void Client::delayFrames(bool delay)
 {
 	delay_frames = delay;
@@ -281,12 +213,6 @@ bool Client::sendFrames(const QList<QByteArray> &to_send)
 	return true;
 }
 
-/*!
-	\brief Send a frame to the openserver.
-
-	Send a \a frame_open. The frame is sent immediately if \a delay is FrameDelay::DELAY_NONE,
-	othewise can be delayed depending on the status set via delayFrames()
-*/
 void Client::sendFrameOpen(const QString &frame_open, FrameDelay delay)
 {
 	QByteArray frame = frame_open.toLatin1();
@@ -308,15 +234,6 @@ void Client::sendFrameOpen(const QString &frame_open, FrameDelay delay)
 		timer.start();
 }
 
-/*!
-	\fn Client::connectionDown()
-
-	\brief Notifies when the connection is lost.
-*/
-
-/*!
-	\brief Disconnect from the openserver
-*/
 void Client::disconnectFromHost()
 {
 	qDebug() << "Client::disconnectFromHost()" << qPrintable(description);
@@ -324,15 +241,6 @@ void Client::disconnectFromHost()
 	is_connected = false;
 }
 
-/*!
-	\fn Client::connectionUp()
-
-	\brief Notifies when the connection is established.
-*/
-
-/*!
-	\brief Connect to the openserver
-*/
 void Client::connectToHost()
 {
 	qDebug() << "Client::connectToHost()" << qPrintable(description);
@@ -383,9 +291,6 @@ void Client::manageFrame(QByteArray frame)
 	}
 }
 
-/*!
-	\brief Forward the frames received from a Client object to another one.
-*/
 void Client::forwardFrame(Client *c)
 {
 	to_forward = c;
@@ -411,19 +316,11 @@ void Client::dispatchFrame(QString frame)
 	delay_frames = false;
 }
 
-/*!
-	\brief Request to receive frames having \a who.
-
-	Note that a FrameReceiver can ask to receive frames for one or more who.
-*/
 void Client::subscribe(FrameReceiver *obj, int who)
 {
 	subscribe_list[who].append(obj);
 }
 
-/*!
-	\brief Request to not receive frames anymore.
-*/
 void Client::unsubscribe(FrameReceiver *obj)
 {
 	// A frame receiver can be subscribed for one or more "who".

@@ -25,14 +25,52 @@
 
 class OpenMsg;
 
+/*!
+	\ingroup Core
+	\brief Tests if \a msg is in the form *who*what*where##
+*/
 bool isCommandFrame(OpenMsg &msg);
+
+/*!
+	\ingroup Core
+	\brief Tests if \a msg is in the form *#who*where*dimension##
+*/
 bool isDimensionFrame(OpenMsg &msg);
+
+/*!
+	\ingroup Core
+	\brief Tests if \a msg is in the form *#who*where*#dimension*val1*..*valn##
+*/
 bool isWriteDimensionFrame(OpenMsg &msg);
+
+/*!
+	\ingroup Core
+	\brief Tests if \a msg is in the form *#who*where##
+*/
 bool isStatusRequestFrame(OpenMsg &msg);
 
+/*!
+	\ingroup Core
+	\brief Returns a string in the form *who*what*where##
+*/
 QString createCommandFrame(QString who, QString what, QString where);
+
+/*!
+	\ingroup Core
+	\brief Returns a string in the form *#who*where*dimension##
+*/
 QString createDimensionFrame(QString who, QString dimension, QString where);
+
+/*!
+	\ingroup Core
+	\brief Returns a string in the form *#who*where*#dimension*val1*..*valn##
+*/
 QString createWriteDimensionFrame(QString who, QString dimension, QString where);
+
+/*!
+	\ingroup Core
+	\brief Returns a string in the form *#who*where##
+*/
 QString createStatusRequestFrame(QString who, QString where);
 
 

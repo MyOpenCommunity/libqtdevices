@@ -28,36 +28,12 @@
 static const int buttons_dim = 60;
 
 
-/*!
-	\ingroup Core
-	\class AbstractNavigationBar
-	\brief Abstract base class for navigation bar.
 
-	Defines the dimension and the positioning of its buttons.
-
-	It provides the method \a createButton() which creates, moves to the right
-	position and connect to the given slot a \a BtButton with the given icon.
-
-	\sa createButton()
- */
-
-/*!
-	\brief Constructor
- */
 AbstractNavigationBar::AbstractNavigationBar(QWidget *parent) : QWidget(parent)
 {
 	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 }
 
-/*!
-	\brief Creates a button into the NavigationBar
-
-	Returns a new BtButton instance with the given \a icon that will be emit
-	the given signal when the user click the button and position it into the
-	right position on the navigation bar.
-
-	\sa BtButton
- */
 BtButton *AbstractNavigationBar::createButton(QString icon, const char *signal, int pos)
 {
 	if (!icon.isNull())
@@ -87,28 +63,7 @@ QSize AbstractNavigationBar::sizeHint() const
 #endif
 }
 
-/*!
-	\ingroup Core
-	\class NavigationBar
-	\brief Represent a bar used to navigate between pages.
 
-	A navigation bar is composed by four buttons, usually with the following meaning:
-	\li a back button, to close the page and turn back to the previous one;
-	\li an up button, to scroll up the content of the page;
-	\li a down button, to scroll down the content of the page;
-	\li a forward button, which has a custom behaviour.
-
-	\sa Page
- */
-
-/*!
-	\brief Constructor
-
-	Constructs a new NavigationBar and its default buttons if the corresponding
-	tagnames are provided (tagnames are not empty).
-
-	\sa AbstractNavigationBar::createButton()
- */
 NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up_icon, QString back_icon, QWidget *parent) :
 	AbstractNavigationBar(parent)
 {
@@ -128,31 +83,10 @@ NavigationBar::NavigationBar(QString forward_icon, QString down_icon, QString up
 #endif
 }
 
-/*!
-	\brief Shows or hides the scroll buttons
- */
 void NavigationBar::displayScrollButtons(bool display)
 {
 	down_button->setVisible(display);
 	up_button->setVisible(display);
 }
 
-/*!
-	\fn void NavigationBar::backClick()
-	\brief Signal emitted when the back button is clicked
- */
 
-/*!
-	\fn void NavigationBar::upClick()
-	\brief Signal emitted when the up button is clicked
- */
-
-/*!
-	\fn void NavigationBar::downClick()
-	\brief Signal emitted when the down button is clicked
- */
-
-/*!
-	\fn void NavigationBar::forwardClick()
-	\brief Signal emitted when the forward button is clicked
- */

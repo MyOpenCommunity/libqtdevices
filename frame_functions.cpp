@@ -23,73 +23,41 @@
 #include <openmsg.h>
 
 
-/*!
-	\ingroup Core
-	\brief Tests if \a msg is in the form *who*what*where##
- */
 bool isCommandFrame(OpenMsg &msg)
 {
 	return msg.IsNormalFrame();
 }
 
-/*!
-	\ingroup Core
-	\brief Tests if \a msg is in the form *#who*where*dimension##
- */
 bool isDimensionFrame(OpenMsg &msg)
 {
 	return msg.IsMeasureFrame();
 }
 
-/*!
-	\ingroup Core
-	\brief Tests if \a msg is in the form *#who*where*#dimension*val1*..*valn##
- */
 bool isWriteDimensionFrame(OpenMsg &msg)
 {
 	return msg.IsWriteFrame();
 }
 
-/*!
-	\ingroup Core
-	\brief Tests if \a msg is in the form *#who*where##
- */
 bool isStatusRequestFrame(OpenMsg &msg)
 {
 	return msg.IsStateFrame();
 }
 
-/*!
-	\ingroup Core
-	\brief Returns a string in the form *who*what*where##
- */
 QString createCommandFrame(QString who, QString what, QString where)
 {
 	return QString("*%1*%2*%3##").arg(who).arg(what).arg(where);
 }
 
-/*!
-	\ingroup Core
-	\brief Returns a string in the form *#who*where*dimension##
- */
 QString createDimensionFrame(QString who, QString what, QString where)
 {
 	return QString("*#%1*%2*%3##").arg(who).arg(where).arg(what);
 }
 
-/*!
-	\ingroup Core
-	\brief Returns a string in the form *#who*where*#dimension*val1*..*valn##
- */
 QString createWriteDimensionFrame(QString who, QString what, QString where)
 {
 	return QString("*#%1*%2*#%3##").arg(who).arg(where).arg(what);
 }
 
-/*!
-	\ingroup Core
-	\brief Returns a string in the form *#who*where##
- */
 QString createStatusRequestFrame(QString who, QString where)
 {
 	return QString("*#%1*%2##").arg(who).arg(where);

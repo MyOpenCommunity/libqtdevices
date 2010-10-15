@@ -28,37 +28,6 @@
 #include <QFile>
 
 
-
-
-/*!
-	\ingroup Core
-	\class SkinManager
-	\brief %Loads and get stylesheet and images path defined in a skin xml file.
-
-	To get images path, you often should set (adding or removing cid) the
-	\em explicit context using addToContext() / removeFromContext() or the helper
-	class SkinContext before getting them. An \em implicit context, which can be
-	used to retrieve common images, is always set.
-	You can also check if a tagname is defined using the exists() method, and
-	save/restore the current context using getCidState() and setCidState().
-
-	For the stylesheet the method getStyle() is provided to get the string that
-	contains the global style to apply.
-
-	This class is designed to use as a global object, through the bt_global
-	namespace.
-*/
-
-/*!
-	\typedef SkinManager::CidState
-
-	Synonym for QList<int>
-*/
-
-
-/*!
-	\brief %Loads the stylesheet and tagnames from the skin configuration file.
-*/
 SkinManager::SkinManager(QString filename)
 {
 	if (QFile::exists(filename))
@@ -94,47 +63,27 @@ SkinManager::SkinManager(QString filename)
 		qWarning("SkinManager: no skin file called %s", qPrintable(filename));
 }
 
-/*!
-	\brief Returns the stylesheet reads from the skin xml file.
-*/
 QString SkinManager::getStyle()
 {
 	return style;
 }
 
-/*!
-	\brief Add a cid to the skin context.
-
-	Most of the time, you have no need to use this function directly, because
-	you can use the wrapper SkinContext.
-*/
 void SkinManager::addToContext(int cid)
 {
 	Q_ASSERT_X(cid >=0, "SkinManager::addToContext", "Invalid cid context");
 	cid_lookup_list.append(cid);
 }
 
-/*!
-	\brief Remove a cid to the skin context.
-
-	\sa addToContext
-*/
 void SkinManager::removeFromContext()
 {
 	cid_lookup_list.removeLast();
 }
 
-/*!
-	\brief Check if an explicit context is set.
-*/
 bool SkinManager::hasContext()
 {
 	return !cid_lookup_list.isEmpty();
 }
 
-/*!
-	\brief Check if a \a name is defined in the skin xml file.
-*/
 bool SkinManager::exists(QString name)
 {
 	for (int i = cid_lookup_list.size() - 1; i >= 0; --i)
@@ -150,17 +99,6 @@ bool SkinManager::exists(QString name)
 	return false;
 }
 
-/*!
-	\brief Returns the full image path.
-
-	\a name is the tagname used in the code and also specified in the skin xml
-	file withouth the prefix 'img_'. If \a name is not found an empty string is
-	returned.
-
-	All the contexts set through addToContext are searched from the last inserted
-	to the first one, so if a tagname is found in more contexts the image path
-	of the last context is returned.
-*/
 QString SkinManager::getImage(QString name)
 {
 	for (int i = cid_lookup_list.size() - 1; i >= 0; --i)
@@ -177,46 +115,23 @@ QString SkinManager::getImage(QString name)
 	return QString("");
 }
 
-/*!
-	\brief Return the whole skin context.
-*/
 SkinManager::CidState SkinManager::getCidState()
 {
 	return cid_lookup_list;
 }
 
-/*!
-	\brief Set the whole skin context.
-*/
 void SkinManager::setCidState(const CidState &state)
 {
 	cid_lookup_list = state;
 }
 
 
-/*!
-	\ingroup Core
-	\class SkinContext
-	\brief An helper class for SkinManager.
-
-	A simply wrapper around the SkinManager::addToContext() and
-	SkinManager::removeFromContext(), useful to avoid the explicit remove calls
-	from the context.
-*/
-
-
-/*!
-	\brief Create the object and add the \a cid to the context.
-*/
 SkinContext::SkinContext(int cid)
 {
 	Q_ASSERT_X(bt_global::skin, "SkinContext::SkinContext", "SkinManager not yet built!");
 	bt_global::skin->addToContext(cid);
 }
 
-/*!
-	\brief Destroy the object and remove the previously added cid from the context.
-*/
 SkinContext::~SkinContext()
 {
 	bt_global::skin->removeFromContext();

@@ -85,101 +85,6 @@ void PageTitleWidget::setCurrentPage(int current, int total)
 }
 
 
-/*!
-	\ingroup Core
-	\class Page
-	\brief Base class for application pages
-
-	A Page is a widget that will be shown in the PageContainer. In general, pages
-	are not meant to be full screen widgets; they just occupy the main part of
-	the screen space, like on the touchcreen 10. However, they can be full screen
-	on low resolution hardware, like the touchscreen 3.5. For full screen widgets,
-	look at Window.
-
-	A page is composed of:
-	\li an AbstractNavigationBar, usually used to navigate the content of the page,
-		close it and sometimes to execute special functions.
-	\li a main widget, a QWidget displayed in the central area of the page.
-		Often is the same object than the content.
-	\li a content, a QWidget container for \c items, that can be banners, icons
-		or whatever you want which contains also the logic to paginate the items.
-	\li a top widget (optional), an header of the page that is always shown at
-		the top of the page, ie. it will not scroll up/down like the rest of the
-		content.
-
-	All the logic about the \c life of the page should be placed in the page itself
-	and \b not in the content.
-
-	Use the buildPage() methods to create a page with the correct layout for the
-	hardware.
-
-	You can access the page content using the page_content macro. Page content
-	can be any widget you like; as such, you need to define its type into the
-	public part of your class. In this way, you can handle the pointer without
-	doing any cast.
-
-	Pages are shown with the showPage() method and must emit the Closed() signal
-	when they are closed. Generally the Closed() signal will be emitted when the
-	user presses the back button on the NavigationBar.
- */
-
-/*!
-	\typedef QWidget Page::ContentType
-	\brief Defines the type of the content.
-
-	Allows type-safe access to the content from page subclasses using the
-	page_content macro; to return a different QWidget subtype add a:
-
-	\code
-	typedef TYPE ContentType;
-	\endcode
-
-	inside the page subclass (see BannerPage for an example).
-*/
-
-/*!
-	\fn Page::Closed()
-	\brief Emitted when the page is closed
-*/
-
-/*!
-	\fn Page::forwardClick()
-	\brief Emitted when the forward button of the NavigationBar is clicked.
-*/
-
-/*!
-	\var Page::__content
-	\warning Do not use this member, use the type safe macro page_content instead.
-	\sa Page::ContentType
-*/
-
-/*!
-	\fn Page::content(P *)
-	\warning Do not use this method, use the type safe macro page_content instead.
-	\sa Page::ContentType
-*/
-
-/*!
-	\var Page::TITLE_HEIGHT
-	\brief The normal title height used in standard pages.
-*/
-
-/*!
-	\var Page::SMALL_TITLE_HEIGHT
-	\brief The small title height used in standard pages.
-*/
-
-/*!
-	\var Page::TINY_TITLE_HEIGHT
-	\brief The tiny title height used in standard pages.
-*/
-
-/*!
-	\brief Constuctor
-
-	Build the page and add it to the PageContainer if the parent widget is not
-	specified.
-*/
 Page::Page(QWidget *parent) : StyledWidget(parent)
 {
 	Q_ASSERT_X(page_container, "Page::Page", "PageContainer not set!");
@@ -200,16 +105,6 @@ Page::~Page()
 		page_container->removeWidget(this);
 }
 
-/*!
-	\brief Build the correct page layout for the hardware type.
-
-	Pages for the touchscreen 3.5 are created with the main widget at the top
-	and the navigation bar at the bottom, while pages for the touchscreen 10''
-	are created with navigation bar on the left a main widget on the right.
-	In the latter case, an optional top_widget can be used to have an header
-	that is always shown at the top of the page and a title_widget to have
-	a page title.
-*/
 void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationBar *nav_bar, QWidget *top_widget, QWidget *title_widget)
 {
 	QBoxLayout *l;
@@ -254,24 +149,11 @@ void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationB
 	__content = content;
 }
 
-/*!
-	\brief Build the correct page layout for the hardware type.
-
-	This is an overloaded member function, provided for convenience, which uses
-	the content also as the main widget.
-*/
 void Page::buildPage(QWidget *content, AbstractNavigationBar *nav_bar, QWidget *top_widget, QWidget *title_widget)
 {
 	buildPage(content, content, nav_bar, top_widget, title_widget);
 }
 
-/*!
-	\brief Build the correct page layout for the hardware type.
-
-	This is an overloaded member function, provided for convenience, which uses
-	the content also as the main widget and for the touchscreen 10 define a page
-	title with label as  \a text and \a label_height as height.
-*/
 void Page::buildPage(QWidget *content, AbstractNavigationBar *nav_bar, const QString& label, int label_height, QWidget *top_widget)
 {
 	QLabel *page_title = 0;
@@ -287,12 +169,6 @@ void Page::buildPage(QWidget *content, AbstractNavigationBar *nav_bar, const QSt
 	buildPage(content, content, nav_bar, top_widget, page_title);
 }
 
-/*!
-	\brief Insert a widget at the bottom of the page.
-
-	\deprecated Don't use it, build the page using a main widget that contains a content
-	and the desired bottom widget.
-*/
 void Page::addBottomWidget(QWidget *bottom)
 {
 #ifdef LAYOUT_TS_10
@@ -308,9 +184,6 @@ void Page::addBottomWidget(QWidget *bottom)
 #endif
 }
 
-/*!
-	\brief Set up the layout for the page before starting a page transition
-*/
 void Page::activateLayout()
 {
 	QLayout *main_layout = layout();
@@ -321,20 +194,6 @@ void Page::activateLayout()
 	}
 }
 
-/*!
-	\brief Send frames for the page during the initialization.
-
-	\deprecated Don't use it in new code.
-
-	\sa sendFrame()
-*/
-void Page::inizializza()
-{
-}
-
-/*!
-	\brief Set the page container that contains all the pages.
-*/
 void Page::setPageContainer(PageContainer *container)
 {
 	page_container = container;
@@ -350,20 +209,6 @@ void Page::setCurrentPage()
 	page_container->setCurrentPage(this);
 }
 
-/*!
-	\brief Perform some operations that should be done when the user exits from
-	the page.
-
-	\internal We cannot use the hideEvent method because that event trigger even
-	if we go in a next page.
-*/
-void Page::cleanUp()
-{
-}
-
-/*!
-	\brief Make the page the current page showed in the PageContainer.
-*/
 void Page::showPage()
 {
 	page_container->showPage(this);
@@ -381,42 +226,25 @@ void Page::showPage()
 #endif
 }
 
-/*!
-	\brief send frames using the Client::COMMAND channel.
-
-	\deprecated Don't use it in new code. If you need to send frames, use a device.
-*/
 void Page::sendFrame(QString frame) const
 {
 	Q_ASSERT_X(client_comandi, "Page::sendFrame", "Client comandi not set!");
 	client_comandi->sendFrameOpen(frame);
 }
 
-/*!
-	\brief send frames using the Client::REQUEST channel.
-
-	\deprecated Don't use it in new code. If you need to send frames, use a device.
-*/
 void Page::sendInit(QString frame) const
 {
 	Q_ASSERT_X(client_richieste, "Page::sendInit", "Client richieste not set!");
 	client_richieste->sendFrameOpen(frame);
 }
 
-/*!
-	\brief Se the clients used to send frames for all pages.
-
-	\deprecated This method is required by sendFrame() and sendInit(), will be removed.
-*/
 void Page::setClients(Client *command, Client *request)
 {
 	client_comandi = command;
 	client_richieste = request;
 }
 
-/*!
-	\brief Close the page.
-*/
+
 void Page::forceClosed()
 {
 	emit Closed();
@@ -432,20 +260,6 @@ void Page::startTransition()
 	page_container->startTransition(this);
 }
 
-/*!
-	\brief An hook called right before the page is hidden by showPage() or by showWindow().
-*/
-void Page::aboutToHideEvent()
-{
-}
-
-/*!
-	\brief Return the section id of the page.
-
-	This function identifies a section; on TS 10'' it's used to highlight the
-	current section on thesection bar at the top of the page.
-	Internal pages of a section can return NO_SECTION.
-*/
 int Page::sectionId() const
 {
 	return NO_SECTION;
