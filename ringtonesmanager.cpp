@@ -31,6 +31,15 @@
 #include <QDir>
 
 
+/*!
+	\ingroup Core
+	\class RingtonesManager
+	\brief %Loads and play ringtones.
+
+	%Loads the ringtones defined in an xml file, sets a ringtone for a
+	Ringtones::Type and plays/stops a ringtone.
+*/
+
 
 RingtonesManager::RingtonesManager(QString ringtone_file)
 {
@@ -54,6 +63,9 @@ RingtonesManager::RingtonesManager(QString ringtone_file)
 	connect(sound_player, SIGNAL(soundFinished()), this, SIGNAL(ringtoneFinished()));
 }
 
+/*!
+	\brief Play the current ringtone set for the given ringtone type \a t.
+*/
 void RingtonesManager::playRingtone(Ringtones::Type t)
 {
 	if (!type_to_ringtone.contains(t))
@@ -81,6 +93,9 @@ void RingtonesManager::stopRingtone()
 	sound_player->stop();
 }
 
+/*!
+	Sets a new ringtone for the given ringtone type \a t.
+*/
 void RingtonesManager::setRingtone(Ringtones::Type t, int item_id, int ring)
 {
 	Q_ASSERT_X(ringtone_to_file.contains(ring), "RingtonesManager::setRingtone",
