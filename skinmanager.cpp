@@ -28,10 +28,12 @@
 #include <QFile>
 
 
+
+
 /*!
+	\ingroup Core
 	\class SkinManager
-	\brief A global class to load and get stylesheet and images path defined in a skin
-	xml file.
+	\brief %Loads and get stylesheet and images path defined in a skin xml file.
 
 	To get images path, you often should set (adding or removing cid) the
 	\em explicit context using addToContext() / removeFromContext() or the helper
@@ -193,6 +195,7 @@ void SkinManager::setCidState(const CidState &state)
 
 
 /*!
+	\ingroup Core
 	\class SkinContext
 	\brief An helper class for SkinManager.
 
