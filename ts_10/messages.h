@@ -32,7 +32,41 @@ class QString;
 class QLabel;
 class QDomNode;
 
+/*!
+	\ingroup Messages
+	\def MESSAGES_MAX
+	The maximum number of messages saved.
+*/
+#define MESSAGES_MAX 10
 
+/*!
+	\ingroup Messages
+	\def MESSAGES_FILENAME
+	The file where the messages are stored.
+*/
+#define MESSAGES_FILENAME "cfg/extra/4/messages.xml"
+
+/*!
+	\defgroup Messages Messages
+
+	The section allow the user to read and delete scs messages from
+	the Guard Unit.
+	A popup is displayed using the AlertMessagePage class when a new message
+	arrives. That message is appended to the list of messages and saved in the
+	MESSAGES_FILENAME file, up to MESSAGES_MAX.
+
+	The MessagesListPage is used to display the list of messages while the
+	MessagePage displays a single message and the DeleteMessagesPage can be
+	used to delete all the messages.
+	The icons for the section, displayed in the homepage and in the toolbar box,
+	can be different depending on there are unread messages or not.
+*/
+
+
+/*!
+	\ingroup Messages
+	\brief The content of the page that shows a message list.
+*/
 class MessageList : public ItemList
 {
 public:
@@ -43,26 +77,51 @@ protected:
 };
 
 
+/*!
+	\ingroup Messages
+	\brief The page used to ask if delete all the messages or not.
+*/
 class DeleteMessagesPage : public Page
 {
 Q_OBJECT
 public:
 	DeleteMessagesPage();
 signals:
+	/*!
+		\brief Request to delete all the messages.
+	*/
 	void deleteAll();
 };
 
-
+/*!
+	\ingroup Messages
+	\brief Shows an scs message.
+*/
 class MessagePage : public Page
 {
 Q_OBJECT
 public:
 	MessagePage();
+
+	/*!
+		\brief Set the content of message displayed from the page.
+	*/
 	void setData(const QString &date, const QString &text, bool read);
 
 signals:
+	/*!
+		\brief Request to show the next message.
+	*/
 	void nextMessage();
+
+	/*!
+		\brief Request to show the previous message.
+	*/
 	void prevMessage();
+
+	/*!
+		\brief Request to delete the current message.
+	*/
 	void deleteMessage();
 
 private:
@@ -71,21 +130,44 @@ private:
 };
 
 
+/*!
+	\ingroup Messages
+	\brief The popup page for an scs message.
+*/
 class AlertMessagePage : public Page
 {
 Q_OBJECT
 public:
 	AlertMessagePage(const QString &date, const QString &text);
 	virtual int sectionId() const;
+
+	/*!
+		\brief Return the message date.
+	*/
 	QString date() const { return _date; }
+
+	/*!
+		\brief Return the message text.
+	*/
 	QString text() const { return _text; }
 
 public slots:
 	virtual void cleanUp() { deleteLater(); }
 
 signals:
+	/*!
+		\brief Request to display the homepage.
+	*/
 	void goHome();
+
+	/*!
+		\brief Request to display the messages list.
+	*/
 	void goMessagesList();
+
+	/*!
+		\brief Request to delete the message.
+	*/
 	void deleteMessage();
 
 private:
@@ -93,6 +175,14 @@ private:
 };
 
 
+/*!
+	\ingroup Messages
+	\brief Shows a list of scs messages, read from an xml file.
+
+	This class loads the list of messages and handles the requests performed
+	by the other \ref Messages classes. It also change the state of the icon displayed
+	in the homepage and in the toolbar box.
+*/
 class MessagesListPage : public Page
 {
 Q_OBJECT

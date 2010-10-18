@@ -89,7 +89,6 @@ private:
 
 /*!
 	\ingroup SoundDiffusion
-	\class SourceDevice
 	\brief Device to control an SCS source.
 
 	Can be used to turn on/turn off the source on a sound diffusion area and go to
@@ -100,7 +99,7 @@ private:
 	\dim{DIM_TRACK,int,,Current track/memorized radio station.}
 	\dim{DIM_AREAS_UPDATED,no value,,The source was turned on/off on some SCS area; see \a SourceDevice::isActive(QString) const.}
 	\enddim
- */
+*/
 class SourceDevice : public device
 {
 friend class TestSourceDevice;
@@ -119,30 +118,30 @@ public:
 	/*!
 		\brief Constructor
 		\param source_id SCS source id (1-4), not the OpenWebNet where.
-	 */
+	*/
 	SourceDevice(QString source_id, int openserver_id = 0);
 
 	virtual void init();
 
 	/*!
 		\brief Returns the SCS id of the source (the value passed to the constructor, not the OpenWebNet where).
-	 */
+	*/
 	QString getSourceId() const { return source_id; }
 
 	/*!
 		\brief Must be called during initialization to set the sound diffusion type.
-	 */
+	*/
 	static void setIsMultichannel(bool is_multichannel);
 
 public slots:
 	/*!
 		\brief Go to the next track/memorized radio station.
-	 */
+	*/
 	virtual void nextTrack();
 
 	/*!
 		\brief Go to previous track/memorized radio station.
-	 */
+	*/
 	virtual void prevTrack();
 
 	/*!
@@ -150,47 +149,47 @@ public slots:
 
 		For monochannel sound diffusion, always use \c "0" for the area.  For multichannel sound
 		diffusion use values from \c "1" to \c "8".
-	 */
+	*/
 	virtual void turnOn(QString area);
 
 	/*!
 		\brief Request the current track/memorized radio station.
-	 */
+	*/
 	void requestTrack() const;
 
 public:
 	/*!
-		\brief Returns \a true if the source is active in the specified sound diffusion area.
+		\brief Returns true if the source is active in the specified sound diffusion area.
 
 		For monochannel sound diffusion, always use \c "0" for the area.  For multichannel sound
 		diffusion use values from \c "1" to \c "8".
-	 */
+	*/
 	bool isActive(QString area) const;
 
 	/*!
-		\brief Returns \a true if the source is active on any sound diffusion area.
-	 */
+		\brief Returns true if the source is active on any sound diffusion area.
+	*/
 	bool isActive() const;
 
 protected:
 	/*!
 		\brief Sound diffusione multimedia type.
-	 */
+	*/
 	int mmtype;
 
 	/*!
 		\brief Sound diffusion source id (1-4).
-	 */
+	*/
 	QString source_id;
 
 	/*!
 		\brief Sound diffusione areas the source is active in.
-	 */
+	*/
 	QSet<QString> active_areas;
 
 	/*!
 		\brief Whether the installed sound diffusion system is monochannel or multichannel.
-	 */
+	*/
 	static bool is_multichannel;
 
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
@@ -207,10 +206,9 @@ private slots:
 
 /*!
 	\ingroup SoundDiffusion
-	\class RadioSourceDevice
 	\brief Device to control the RDS radio.
 
-	Can be used to tune the radio and to receive RDS updates.  The radio can memorize
+	Can be used to tune the radio and to receive RDS updates. The radio can memorize
 	up to 5 stations.
 
 	\section dimensions Dimensions
@@ -218,7 +216,7 @@ private slots:
 	\dim{DIM_FREQUENCY,int,,Radio frequency (in MHz * 100).}
 	\dim{DIM_RDS,QString,,The RDS radio text.}
 	\enddim
- */
+*/
 class RadioSourceDevice : public SourceDevice
 {
 friend class TestRadioSourceDevice;
@@ -233,14 +231,14 @@ public:
 	/*!
 		\brief Constructor
 		\param source_id SCS source id (1-4), not the OpenWebNet where.
-	 */
+	*/
 	RadioSourceDevice(QString source_id, int openserver_id = 0);
 
 	virtual void init();
 
 	/*!
 		\brief Whether the device must automatically send RDS text updates.
-	 */
+	*/
 	bool rdsUpdates() const { return rds_updates; }
 
 public slots:
@@ -250,7 +248,7 @@ public slots:
 		If \a value is empty, the radio uses automatic search to find the next radio station.
 
 		If \a value is not empty, the frequency is moved down by \a value * 0.05 MHz.
-	 */
+	*/
 	void frequenceUp(QString value = QString());
 
 	/*!
@@ -259,32 +257,32 @@ public slots:
 		If \a value is empty, the radio uses automatic search to find the next radio station.
 
 		If \a value is not empty, the frequency is moved up by \a value * 0.05 MHz.
-	 */
+	*/
 	void frequenceDown(QString value = QString());
 
 	/*!
 		\brief Store the current frequency in the specified station slot (1-5).
-	 */
+	*/
 	void saveStation(QString station) const;
 
 	/*!
 		\brief Tune the radio to a saved station (1-5).
-	 */
+	*/
 	void setStation(QString station) const;
 
 	/*!
 		\brief Request current radio frequency.
-	 */
+	*/
 	void requestFrequency() const;
 
 	/*!
 		\brief Start sending automatic updates for the RDS text.
-	 */
+	*/
 	void requestStartRDS();
 
 	/*!
 		\brief Stop sending automatic updates for the RDS text.
-	 */
+	*/
 	void requestStopRDS();
 
 protected:
@@ -303,7 +301,6 @@ private:
 
 /*!
 	\ingroup SoundDiffusion
-	\class VirtualSourceDevice
 	\brief The local sound diffusion source.
 
 	This device manages SCS commands sent from the GUI/SCS to the local source.
@@ -316,7 +313,7 @@ private:
 	\dim{REQ_PREV_TRACK,no value,,Command: go to previous track.}
 	\dim{DIM_SELF_REQUEST,bool,,Flag value: when \a true the command was sent by the GUI; when \a false it was received from the SCS bus.}
 	\enddim
- */
+*/
 class VirtualSourceDevice : public SourceDevice
 {
 Q_OBJECT
@@ -332,7 +329,7 @@ public:
 	/*!
 		\brief Constructor
 		\param source_id SCS source id (1-4), not the OpenWebNet where.
-	 */
+	*/
 	VirtualSourceDevice(QString address, int openserver_id = 0);
 
 	virtual void nextTrack();
@@ -344,7 +341,7 @@ public:
 		\param is_multichannel Whether sound diffusion is monochannel or multichannel.
 		\param source_addr The SCS source id (1-4) of the local source (not the OpenWebNet where).
 		\param ampli_addr The SCS address of the local amplifier (not the OpenWebNet where).
-	 */
+	*/
 	static QString createMediaInitFrame(bool is_multichannel, const QString &source_addr, const QString &ampli_addr);
 
 protected:
@@ -354,7 +351,6 @@ protected:
 
 /*!
 	\ingroup SoundDiffusion
-	\class AmplifierDevice
 	\brief Device to control an SCS amplifier.
 
 	Can be used to turn on/turn off the amplifier and change its volume.
@@ -368,9 +364,9 @@ protected:
 	Instantiating the correct class for an amplifier device is tricky because the
 	local amplifier must be handled separately even for environment/global amplfiers.
 
-	After calling \a setVirtualAmplifierWhere(), \a createDevice() will always create
+	After calling setVirtualAmplifierWhere(), createDevice() will always create
 	the correct device instance for a given point-to-point, anvironment or general address.
- */
+*/
 class AmplifierDevice : public device
 {
 friend class TestAlarmSoundDiffDevice;
@@ -398,19 +394,19 @@ public:
 
 		If the touchscreen is configured as an SCS amplifier, \a setVirtualAmplifierWhere()
 		must be called before instantiating any amplifier.
-	 */
+	*/
 	static AmplifierDevice *createDevice(const QString &where);
 
 	/*!
 		\brief Set the where address of the local amplifier.
 
-		\see createDevice()
-	 */
+		\sa createDevice()
+	*/
 	static void setVirtualAmplifierWhere(const QString &where);
 
 	/*!
 		\brief Must be called during initialization to set the sound diffusion type.
-	 */
+	*/
 	static void setIsMultichannel(bool is_multichannel);
 
 	virtual void init();
@@ -419,64 +415,64 @@ public:
 		\brief Request amplifier on/off status.
 
 		It should never be necessary to call this function explicitly.
-	 */
+	*/
 	void requestStatus() const;
 
 	/*!
 		\brief Request amplifier volume.
 
 		It should never be necessary to call this function explicitly.
-	 */
+	*/
 	void requestVolume() const;
 
 	/*!
 		\brief Turn on the amplifier.
-	 */
+	*/
 	virtual void turnOn();
 
 	/*!
 		\brief Turn on the amplifier.
-	 */
+	*/
 	virtual void turnOff();
 
 	/*!
 		\brief Increase amplifier volume by 1 (up to 31).
-	 */
+	*/
 	virtual void volumeUp();
 
 	/*!
 		\brief Decrease amplifier volume by 1 (down to 1).
-	 */
+	*/
 	virtual void volumeDown();
 
 	/*!
 		\brief Set amplifier volume to the specified level (1-31).
-	 */
+	*/
 	virtual void setVolume(int volume);
 
 	/*!
 		\brief True if this is a general address (\c 0).
-	 */
+	*/
 	static bool isGeneralAddress(const QString &where);
 
 	/*!
 		\brief True if thsi is an area address (\c \#area).
-	 */
+	*/
 	static bool isAreaAddress(const QString &where);
 
 	/*!
 		\brief Returns the area of a point-to-point address or area address.
-	 */
+	*/
 	static QString getAmplifierArea(const QString &where);
 
 	/*!
 		\brief Returns the sound diffusion area for this device.
-	 */
+	*/
 	QString getArea() const { return area; }
 
 	/*!
 		\brief Returns the sound diffusion point for this device inside the device area.
-	 */
+	*/
 	QString getPoint() const { return point; }
 
 protected:
@@ -487,14 +483,14 @@ protected:
 		of a 2-digit number for a point-to-point device.
 
 		Note that an \a AmplifierDevice will never affect the local amplfier.
-	 */
+	*/
 	AmplifierDevice(QString where, int openserver_id = 0);
 
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 	/*!
 		\brief Returns whether a frame must be interpreted by the device.
-	 */
+	*/
 	bool checkAddressIsForMe(OpenMsg &msg);
 
 private:

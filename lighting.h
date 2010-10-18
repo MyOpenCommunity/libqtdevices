@@ -30,6 +30,11 @@ class QDomNode;
 class banner;
 
 
+/*!
+	\defgroup Lighting Lighting
+*/
+
+
 class Lighting : public BannerPage
 {
 Q_OBJECT
