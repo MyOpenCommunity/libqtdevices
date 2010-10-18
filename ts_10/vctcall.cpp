@@ -26,7 +26,7 @@
 #include "hardware_functions.h" // setVctContrast
 #include "displaycontrol.h" // bt_global::display
 #include "icondispatcher.h"
-#include "entryphone_device.h"
+#include "videodoorentry_device.h"
 #include "xml_functions.h"
 #include "bann2_buttons.h"
 #include "items.h" // ItemTuning
@@ -97,7 +97,7 @@ StateButton *getButton(const QString &image_path)
 }
 
 
-CameraMove::CameraMove(EntryphoneDevice *dev)
+CameraMove::CameraMove(VideoDoorEntryDevice *dev)
 {
 	up = getButton(bt_global::skin->getImage("arrow_up"));
 	connect(up, SIGNAL(pressed()), dev, SLOT(moveUpPress()));
@@ -203,7 +203,7 @@ void VCTCallStatus::resetStatus()
 
 
 
-VCTCall::VCTCall(EntryphoneDevice *d, FormatVideo f)
+VCTCall::VCTCall(VideoDoorEntryDevice *d, FormatVideo f)
 {
 	format = f;
 	dev = d;
@@ -334,7 +334,7 @@ void VCTCall::toggleCall()
 	else
 	{
 		// Se the comment about the IP calls on VCTCall::endCall
-		if (dev->vctMode() == EntryphoneDevice::SCS_MODE)
+		if (dev->vctMode() == VideoDoorEntryDevice::SCS_MODE)
 			handleClose();
 		else
 			endCall();
@@ -378,8 +378,8 @@ void VCTCall::stopVideo()
 void VCTCall::valueReceived(const DeviceValues &values_list)
 {
 	if (!call_status->call_active)
-		if (!values_list.contains(EntryphoneDevice::VCT_CALL) &&
-			!values_list.contains(EntryphoneDevice::AUTO_VCT_CALL))
+		if (!values_list.contains(VideoDoorEntryDevice::VCT_CALL) &&
+			!values_list.contains(VideoDoorEntryDevice::AUTO_VCT_CALL))
 		{
 			return;
 		}
@@ -389,22 +389,22 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 	{
 		switch (it.key())
 		{
-		case EntryphoneDevice::VCT_CALL:
-		case EntryphoneDevice::AUTO_VCT_CALL:
+		case VideoDoorEntryDevice::VCT_CALL:
+		case VideoDoorEntryDevice::AUTO_VCT_CALL:
 			if (dev->ipCall())
 				call_status->video_enabled = false;
 			else
-				call_status->video_enabled = (it.value().toInt() == EntryphoneDevice::AUDIO_VIDEO);
-			if (call_status->stopped && it.key() == EntryphoneDevice::VCT_CALL)
+				call_status->video_enabled = (it.value().toInt() == VideoDoorEntryDevice::AUDIO_VIDEO);
+			if (call_status->stopped && it.key() == VideoDoorEntryDevice::VCT_CALL)
 				resumeVideo();
 			else
 				emit incomingCall();
 			call_status->call_active = true;
 			break;
-		case EntryphoneDevice::CALLER_ADDRESS:
+		case VideoDoorEntryDevice::CALLER_ADDRESS:
 			emit callerAddress();
 			break;
-		case EntryphoneDevice::END_OF_CALL:
+		case VideoDoorEntryDevice::END_OF_CALL:
 			stopVideo();
 			cleanAudioStates();
 			call_status->resetStatus();
@@ -412,13 +412,13 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			bt_global::btmain->makeActive();
 			emit callClosed();
 			break;
-		case EntryphoneDevice::STOP_VIDEO:
+		case VideoDoorEntryDevice::STOP_VIDEO:
 			call_status->stopped = true;
 			stopVideo();
 			break;
-		case EntryphoneDevice::VCT_TYPE:
+		case VideoDoorEntryDevice::VCT_TYPE:
 		{
-			bool new_status = (it.value().toInt() == EntryphoneDevice::AUDIO_VIDEO);
+			bool new_status = (it.value().toInt() == VideoDoorEntryDevice::AUDIO_VIDEO);
 			if (dev->ipCall())
 				new_status = false;
 
@@ -436,7 +436,7 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			}
 			break;
 		}
-		case EntryphoneDevice::MOVING_CAMERA:
+		case VideoDoorEntryDevice::MOVING_CAMERA:
 			call_status->move_enabled = it.value().toBool();
 			camera->setMoveEnabled(call_status->move_enabled);
 			break;
@@ -488,7 +488,7 @@ void VCTCall::endCall()
 	// We close the page and change the audio state only for the SCS call. For
 	// the IP call, after sent the END_OF_CALL frame, we have to wait an incoming
 	// END_OF_CALL frame to avoid problems for the underlying audio system.
-	if (dev->vctMode() == EntryphoneDevice::SCS_MODE)
+	if (dev->vctMode() == VideoDoorEntryDevice::SCS_MODE)
 	{
 		stopVideo();
 		cleanAudioStates();
@@ -503,7 +503,7 @@ void VCTCall::handleClose()
 }
 
 
-VCTCallPage::VCTCallPage(EntryphoneDevice *d)
+VCTCallPage::VCTCallPage(VideoDoorEntryDevice *d)
 {
 	dev = d;
 	already_closed = false;
@@ -568,17 +568,17 @@ VCTCallPage::~VCTCallPage()
 void VCTCallPage::backClicked()
 {
 	vct_call->endCall();
-	if (dev->vctMode() == EntryphoneDevice::SCS_MODE)
+	if (dev->vctMode() == VideoDoorEntryDevice::SCS_MODE)
 		handleClose();
 }
 
 void VCTCallPage::valueReceived(const DeviceValues &values_list)
 {
-	if (values_list.contains(EntryphoneDevice::RINGTONE))
+	if (values_list.contains(VideoDoorEntryDevice::RINGTONE))
 	{
 		bool ring_exclusion = VideoDoorEntry::ring_exclusion;
 
-		ringtone = values_list[EntryphoneDevice::RINGTONE].toInt();
+		ringtone = values_list[VideoDoorEntryDevice::RINGTONE].toInt();
 		if (ringtone == Ringtones::PE1 || ringtone == Ringtones::PE2 ||
 			ringtone == Ringtones::PE3 || ringtone == Ringtones::PE4)
 		{
@@ -614,7 +614,7 @@ void VCTCallPage::cleanUp()
 	// trick to obtain the same result (the page is closed and the script audio were
 	// called only after the incoming END_OF_CALL frame).
 	// TODO: we can do better refactor the pagestack!
-	if (dev->vctMode() == EntryphoneDevice::IP_MODE)
+	if (dev->vctMode() == VideoDoorEntryDevice::IP_MODE)
 	{
 		while (vct_call->call_status->call_active) // We wait for the callClosed()
 			QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
@@ -747,7 +747,7 @@ void VCTCallPage::hideEvent(QHideEvent *)
 }
 
 
-VCTCallWindow::VCTCallWindow(EntryphoneDevice *d)
+VCTCallWindow::VCTCallWindow(VideoDoorEntryDevice *d)
 {
 	vct_call = new VCTCall(d, VCTCall::FULLSCREEN_VIDEO);
 	vct_call->disable();

@@ -19,40 +19,39 @@
  */
 
 
-#include "test_entryphone_device.h"
+#include "test_videodoorentry_device.h"
 #include "openserver_mock.h"
 #include "device_tester.h"
 
 #include <openclient.h>
 #include <openmsg.h>
-#include <entryphone_device.h>
+#include <videodoorentry_device.h>
 
 #include <QtTest/QtTest>
 
-void TestEntryphoneDevice::initTestCase()
+void TestVideoDoorEntryDevice::initTestCase()
 {
-	dev = new EntryphoneDevice("11", "0");
+	dev = new VideoDoorEntryDevice("11", "0");
 }
 
-void TestEntryphoneDevice::cleanupTestCase()
+void TestVideoDoorEntryDevice::cleanupTestCase()
 {
 	delete dev;
 }
 
-void TestEntryphoneDevice::init()
+void TestVideoDoorEntryDevice::init()
 {
 	dev->resetCallState();
 }
 
-void TestEntryphoneDevice::simulateIncomingCall(int kind, int mmtype)
+void TestVideoDoorEntryDevice::simulateIncomingCall(int kind, int mmtype)
 {
 	QString incoming_call = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
-	// I HATE YOU OpenMsg!
 	OpenMsg msg(incoming_call.toStdString());
 	dev->manageFrame(msg);
 }
 
-void TestEntryphoneDevice::simulateCallerAddress(int kind, int mmtype, QString where)
+void TestVideoDoorEntryDevice::simulateCallerAddress(int kind, int mmtype, QString where)
 {
 	QString frame = QString("*8*9#%1#%2*%3##").arg(kind).arg(mmtype).arg(where);
 
@@ -60,7 +59,7 @@ void TestEntryphoneDevice::simulateCallerAddress(int kind, int mmtype, QString w
 	dev->manageFrame(msg);
 }
 
-void TestEntryphoneDevice::simulateRearmSession(int kind, int mmtype, QString where)
+void TestVideoDoorEntryDevice::simulateRearmSession(int kind, int mmtype, QString where)
 {
 	QString frame = QString("*8*40#%1#%2*%3##").arg(kind).arg(mmtype).arg(where);
 
@@ -68,7 +67,7 @@ void TestEntryphoneDevice::simulateRearmSession(int kind, int mmtype, QString wh
 	dev->manageFrame(msg);
 }
 
-void TestEntryphoneDevice::sendAnswerCall()
+void TestVideoDoorEntryDevice::sendAnswerCall()
 {
 	// ringtone 1
 	int kind = 1;
@@ -85,7 +84,7 @@ void TestEntryphoneDevice::sendAnswerCall()
 	QCOMPARE(server->frameCommand(), QString("*8*2#%1#%2*%3##").arg(kind).arg(mmtype).arg(dev->where));
 }
 
-void TestEntryphoneDevice::sendEndCall()
+void TestVideoDoorEntryDevice::sendEndCall()
 {
 	// ringtone 1
 	int kind = 1;
@@ -103,16 +102,16 @@ void TestEntryphoneDevice::sendEndCall()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestEntryphoneDevice::sendInitVctProcess()
+void TestVideoDoorEntryDevice::sendInitVctProcess()
 {
-	EntryphoneDevice::VctMode old_mode = dev->vct_mode;
-	dev->vct_mode = EntryphoneDevice::SCS_MODE;
+	VideoDoorEntryDevice::VctMode old_mode = dev->vct_mode;
+	dev->vct_mode = VideoDoorEntryDevice::SCS_MODE;
 	// call type accepted, 1 = scs bus only
 	dev->initVctProcess();
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*8*37#%1*%2##").arg(1).arg(dev->where));
 
-	dev->vct_mode = EntryphoneDevice::IP_MODE;
+	dev->vct_mode = VideoDoorEntryDevice::IP_MODE;
 	// call type accepted, 1 = scs bus only
 	dev->initVctProcess();
 	client_command->flush();
@@ -122,7 +121,7 @@ void TestEntryphoneDevice::sendInitVctProcess()
 	dev->vct_mode = old_mode;
 }
 
-void TestEntryphoneDevice::sendCameraOn()
+void TestVideoDoorEntryDevice::sendCameraOn()
 {
 	QString where_camera = "20";
 	dev->cameraOn(where_camera);
@@ -131,7 +130,7 @@ void TestEntryphoneDevice::sendCameraOn()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestEntryphoneDevice::sendStairLightActivate()
+void TestVideoDoorEntryDevice::sendStairLightActivate()
 {
 	dev->stairLightActivate();
 	client_command->flush();
@@ -139,7 +138,7 @@ void TestEntryphoneDevice::sendStairLightActivate()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestEntryphoneDevice::sendStairLightRelease()
+void TestVideoDoorEntryDevice::sendStairLightRelease()
 {
 	dev->stairLightRelease();
 	client_command->flush();
@@ -147,7 +146,7 @@ void TestEntryphoneDevice::sendStairLightRelease()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestEntryphoneDevice::sendOpenLock()
+void TestVideoDoorEntryDevice::sendOpenLock()
 {
 	int kind = 1;
 	int mmtype = 4;
@@ -161,7 +160,7 @@ void TestEntryphoneDevice::sendOpenLock()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestEntryphoneDevice::sendReleaseLock()
+void TestVideoDoorEntryDevice::sendReleaseLock()
 {
 	int kind = 1;
 	int mmtype = 4;
@@ -175,50 +174,50 @@ void TestEntryphoneDevice::sendReleaseLock()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestEntryphoneDevice::receiveIncomingCall()
+void TestVideoDoorEntryDevice::receiveIncomingCall()
 {
 	int kind = 1;
 	int mmtype = 4;
-	DeviceTester t(dev, EntryphoneDevice::VCT_CALL, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester t(dev, VideoDoorEntryDevice::VCT_CALL, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
-	t.check(frame, static_cast<int>(EntryphoneDevice::AUDIO_VIDEO));
+	t.check(frame, static_cast<int>(VideoDoorEntryDevice::AUDIO_VIDEO));
 }
 
-void TestEntryphoneDevice::receiveIncomingIpCall()
+void TestVideoDoorEntryDevice::receiveIncomingIpCall()
 {
-	EntryphoneDevice::VctMode old_mode = dev->vct_mode;
-	dev->vct_mode = EntryphoneDevice::IP_MODE;
+	VideoDoorEntryDevice::VctMode old_mode = dev->vct_mode;
+	dev->vct_mode = VideoDoorEntryDevice::IP_MODE;
 
 	int kind = 1001;
 	int mmtype = 4;
 	int caller_address = 21;
-	DeviceTester t(dev, EntryphoneDevice::VCT_CALL, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester t(dev, VideoDoorEntryDevice::VCT_CALL, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*8*1#%1#%2#%3*%4##").arg(kind).arg(mmtype).arg(caller_address).arg(dev->where);
-	t.check(frame, static_cast<int>(EntryphoneDevice::AUDIO_VIDEO));
+	t.check(frame, static_cast<int>(VideoDoorEntryDevice::AUDIO_VIDEO));
 	QCOMPARE(dev->caller_address, QString::number(caller_address));
 	QCOMPARE(dev->master_caller_address, QString::number(caller_address));
 	dev->vct_mode = old_mode;
 }
 
-void TestEntryphoneDevice::receiveAutoswitchCall()
+void TestVideoDoorEntryDevice::receiveAutoswitchCall()
 {
 	int kind = 5;
 	int mmtype = 4;
-	DeviceTester t(dev, EntryphoneDevice::AUTO_VCT_CALL, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester t(dev, VideoDoorEntryDevice::AUTO_VCT_CALL, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
-	t.check(frame, static_cast<int>(EntryphoneDevice::AUDIO_VIDEO));
+	t.check(frame, static_cast<int>(VideoDoorEntryDevice::AUDIO_VIDEO));
 }
 
-void TestEntryphoneDevice::receiveAudioCall()
+void TestVideoDoorEntryDevice::receiveAudioCall()
 {
 	int kind = 5;
 	int mmtype = 2;
-	DeviceTester t(dev, EntryphoneDevice::AUTO_VCT_CALL, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester t(dev, VideoDoorEntryDevice::AUTO_VCT_CALL, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
-	t.check(frame, static_cast<int>(EntryphoneDevice::ONLY_AUDIO));
+	t.check(frame, static_cast<int>(VideoDoorEntryDevice::ONLY_AUDIO));
 }
 
-void TestEntryphoneDevice::receiveFloorCall()
+void TestVideoDoorEntryDevice::receiveFloorCall()
 {
 	int kind = 1;
 	int mmtype = 4;
@@ -226,32 +225,32 @@ void TestEntryphoneDevice::receiveFloorCall()
 
 	kind = 13;
 	mmtype = 2;
-	DeviceTester t(dev, EntryphoneDevice::RINGTONE);
+	DeviceTester t(dev, VideoDoorEntryDevice::RINGTONE);
 	QString frame = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
 	t.simulateIncomingFrames(QStringList() << frame);
 	QCOMPARE(dev->kind, 1);
 	QCOMPARE(dev->mmtype, 4);
 }
 
-void TestEntryphoneDevice::receiveAnswerCall()
+void TestVideoDoorEntryDevice::receiveAnswerCall()
 {
 	int kind = 1;
 	int mmtype = 4;
-	DeviceTester t(dev, EntryphoneDevice::ANSWER_CALL);
+	DeviceTester t(dev, VideoDoorEntryDevice::ANSWER_CALL);
 	QString frame = QString("*8*2#%1#%2*%3##").arg(kind).arg(mmtype).arg(dev->where);
 	t.check(frame, true);
 }
 
-void TestEntryphoneDevice::receiveStopVideo()
+void TestVideoDoorEntryDevice::receiveStopVideo()
 {
 	int kind = 1;
 	int mmtype = 3;
-	DeviceTester t(dev, EntryphoneDevice::STOP_VIDEO);
+	DeviceTester t(dev, VideoDoorEntryDevice::STOP_VIDEO);
 	QString frame = QString("*8*3#%1#%2*%3##").arg(kind).arg(mmtype).arg(dev->where);
 	t.check(frame, true);
 }
 
-void TestEntryphoneDevice::receiveCallerAddress1()
+void TestVideoDoorEntryDevice::receiveCallerAddress1()
 {
 	int kind = 1;
 	int mmtype = 4;
@@ -263,21 +262,21 @@ void TestEntryphoneDevice::receiveCallerAddress1()
 	QCOMPARE(dev->master_caller_address, caller_addr);
 }
 
-void TestEntryphoneDevice::receiveCallerAddress2()
+void TestVideoDoorEntryDevice::receiveCallerAddress2()
 {
 	int kind = 1;
 	int mmtype = 4;
 	QString caller_addr = "20";
 	simulateIncomingCall(kind, mmtype);
 
-	DeviceTester t1(dev, EntryphoneDevice::CALLER_ADDRESS, DeviceTester::MULTIPLE_VALUES);
-	DeviceTester t2(dev, EntryphoneDevice::MOVING_CAMERA, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester t1(dev, VideoDoorEntryDevice::CALLER_ADDRESS, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester t2(dev, VideoDoorEntryDevice::MOVING_CAMERA, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*8*9#%1#%2*%3##").arg(kind).arg(mmtype).arg(caller_addr);
 	t1.check(frame, true);
 	t2.check(frame, false);
 }
 
-void TestEntryphoneDevice::receiveCallerAddress3()
+void TestVideoDoorEntryDevice::receiveCallerAddress3()
 {
 	int kind = 101;
 	int mmtype = 4;
@@ -285,22 +284,22 @@ void TestEntryphoneDevice::receiveCallerAddress3()
 	simulateIncomingCall(kind, mmtype);
 	QString frame = QString("*8*9#%1#%2*%3##").arg(kind).arg(mmtype).arg(caller_addr);
 
-	DeviceTester t1(dev, EntryphoneDevice::CALLER_ADDRESS, DeviceTester::MULTIPLE_VALUES);
-	DeviceTester t2(dev, EntryphoneDevice::MOVING_CAMERA, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester t1(dev, VideoDoorEntryDevice::CALLER_ADDRESS, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester t2(dev, VideoDoorEntryDevice::MOVING_CAMERA, DeviceTester::MULTIPLE_VALUES);
 	t1.check(frame, true);
 	t2.check(frame, true);
 }
 
-void TestEntryphoneDevice::receiveEndOfCall()
+void TestVideoDoorEntryDevice::receiveEndOfCall()
 {
 	int kind = 1;
 	int mmtype = 4;
-	DeviceTester t(dev, EntryphoneDevice::END_OF_CALL);
+	DeviceTester t(dev, VideoDoorEntryDevice::END_OF_CALL);
 	QString frame = QString("*8*3#%1#%2*%3##").arg(kind).arg(mmtype).arg(dev->where);
 	t.check(frame, true);
 }
 
-void TestEntryphoneDevice::receiveRearmSession()
+void TestVideoDoorEntryDevice::receiveRearmSession()
 {
 	int kind = 1;
 	int mmtype = 4;
@@ -314,7 +313,7 @@ void TestEntryphoneDevice::receiveRearmSession()
 	QCOMPARE(dev->master_caller_address, master_caller_addr);
 }
 
-void TestEntryphoneDevice::sendCycleExternalUnits()
+void TestVideoDoorEntryDevice::sendCycleExternalUnits()
 {
 	int kind = 1;
 	int mmtype = 4;
@@ -328,7 +327,7 @@ void TestEntryphoneDevice::sendCycleExternalUnits()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestEntryphoneDevice::sendInternalIntercomCall()
+void TestVideoDoorEntryDevice::sendInternalIntercomCall()
 {
 	QString where = "16";
 	QCOMPARE(dev->is_calling, false);
@@ -339,7 +338,7 @@ void TestEntryphoneDevice::sendInternalIntercomCall()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestEntryphoneDevice::sendExternalIntercomCall()
+void TestVideoDoorEntryDevice::sendExternalIntercomCall()
 {
 	QString where = "16";
 	QCOMPARE(dev->is_calling, false);
@@ -350,7 +349,7 @@ void TestEntryphoneDevice::sendExternalIntercomCall()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestEntryphoneDevice::sendMoveUpPress()
+void TestVideoDoorEntryDevice::sendMoveUpPress()
 {
 	int kind = 101;
 	int mmtype = 4;
@@ -364,7 +363,7 @@ void TestEntryphoneDevice::sendMoveUpPress()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestEntryphoneDevice::sendMoveUpRelease()
+void TestVideoDoorEntryDevice::sendMoveUpRelease()
 {
 	int kind = 101;
 	int mmtype = 4;
@@ -378,7 +377,7 @@ void TestEntryphoneDevice::sendMoveUpRelease()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestEntryphoneDevice::sendMoveDownPress()
+void TestVideoDoorEntryDevice::sendMoveDownPress()
 {
 	int kind = 101;
 	int mmtype = 4;
@@ -392,7 +391,7 @@ void TestEntryphoneDevice::sendMoveDownPress()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestEntryphoneDevice::sendMoveDownRelease()
+void TestVideoDoorEntryDevice::sendMoveDownRelease()
 {
 	int kind = 101;
 	int mmtype = 4;
@@ -406,7 +405,7 @@ void TestEntryphoneDevice::sendMoveDownRelease()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestEntryphoneDevice::sendMoveLeftPress()
+void TestVideoDoorEntryDevice::sendMoveLeftPress()
 {
 	int kind = 101;
 	int mmtype = 4;
@@ -420,7 +419,7 @@ void TestEntryphoneDevice::sendMoveLeftPress()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestEntryphoneDevice::sendMoveLeftRelease()
+void TestVideoDoorEntryDevice::sendMoveLeftRelease()
 {
 	int kind = 101;
 	int mmtype = 4;
@@ -434,7 +433,7 @@ void TestEntryphoneDevice::sendMoveLeftRelease()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestEntryphoneDevice::sendMoveRightPress()
+void TestVideoDoorEntryDevice::sendMoveRightPress()
 {
 	int kind = 101;
 	int mmtype = 4;
@@ -448,7 +447,7 @@ void TestEntryphoneDevice::sendMoveRightPress()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
-void TestEntryphoneDevice::sendMoveRightRelease()
+void TestVideoDoorEntryDevice::sendMoveRightRelease()
 {
 	int kind = 101;
 	int mmtype = 4;

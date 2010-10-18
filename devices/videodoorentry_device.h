@@ -19,8 +19,8 @@
  */
 
 
-#ifndef ENTRYPHONE_DEVICE_H
-#define ENTRYPHONE_DEVICE_H
+#ifndef VIDEODOOR_ENTRY_DEVICE_H
+#define VIDEODOOR_ENTRY_DEVICE_H
 
 #include "device.h"
 
@@ -39,9 +39,9 @@ class OpenMsg;
  * In this state, the device must check the 'where' field of incoming frames with its own address.
  */
 
-class EntryphoneDevice : public device
+class VideoDoorEntryDevice : public device
 {
-friend class TestEntryphoneDevice;
+friend class TestVideoDoorEntryDevice;
 Q_OBJECT
 public:
 	enum Type
@@ -77,7 +77,7 @@ public:
 		IP_MODE
 	};
 
-	EntryphoneDevice(const QString &where, QString mode = QString(), int openserver_id = 0);
+	VideoDoorEntryDevice(const QString &where, QString mode = QString(), int openserver_id = 0);
 
 	void answerCall() const;
 	void initVctProcess();
@@ -121,4 +121,4 @@ private:
 	VctMode vct_mode;
 };
 
-#endif //ENTRYPHONE_DEVICE_H
+#endif //VIDEODOOR_ENTRY_DEVICE_H

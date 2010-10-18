@@ -28,7 +28,7 @@
 #include <QWidget>
 
 class VCTCallPage;
-class EntryphoneDevice;
+class VideoDoorEntryDevice;
 class StateButton;
 class ItemTuning;
 class RingExclusion;
@@ -64,7 +64,7 @@ private slots:
 	void callGuardUnit();
 
 private:
-	EntryphoneDevice *dev;
+	VideoDoorEntryDevice *dev;
 	VideoDoorEntry(); // available only for BtMain
 	void loadItems(const QDomNode &config_node);
 };
@@ -78,7 +78,7 @@ class VideoControl : public IconPage
 {
 Q_OBJECT
 public:
-	VideoControl(const QDomNode &config_node, EntryphoneDevice *dev);
+	VideoControl(const QDomNode &config_node, VideoDoorEntryDevice *dev);
 
 private slots:
 	void cameraOn(QString where);
@@ -86,7 +86,7 @@ private slots:
 private:
 	VCTCallPage *call_page;
 	QSignalMapper *mapper;
-	EntryphoneDevice *dev;
+	VideoDoorEntryDevice *dev;
 };
 
 
@@ -97,7 +97,7 @@ class IntercomCallPage : public Page
 {
 Q_OBJECT
 public:
-	IntercomCallPage(EntryphoneDevice *d);
+	IntercomCallPage(VideoDoorEntryDevice *d);
 	virtual int sectionId() const;
 
 public slots:
@@ -115,7 +115,7 @@ private slots:
 	void floorCallFinished();
 
 private:
-	EntryphoneDevice *dev;
+	VideoDoorEntryDevice *dev;
 	StateButton *call_accept;
 	StateButton *mute_button;
 	ItemTuning *volume;
@@ -133,7 +133,7 @@ class Intercom : public IconPage
 {
 Q_OBJECT
 public:
-	Intercom(const QDomNode &config_node, EntryphoneDevice *dev);
+	Intercom(const QDomNode &config_node, VideoDoorEntryDevice *dev);
 
 private:
 	QSignalMapper *mapper_ext_intercom;

@@ -19,7 +19,7 @@
  */
 
 
-#include "entryphone_device.h"
+#include "videodoorentry_device.h"
 #include "frame_functions.h" // createCommandFrame
 #include "ringtonesmanager.h"
 #include "openclient.h" // MAIN_OPENSERVER
@@ -49,7 +49,7 @@ enum
 };
 
 
-EntryphoneDevice::EntryphoneDevice(const QString &where, QString mode, int openserver_id) :
+VideoDoorEntryDevice::VideoDoorEntryDevice(const QString &where, QString mode, int openserver_id) :
 	device(QString("8"), where, openserver_id)
 {
 	// invalid values
@@ -64,13 +64,13 @@ EntryphoneDevice::EntryphoneDevice(const QString &where, QString mode, int opens
 		vct_mode = SCS_MODE;
 }
 
-void EntryphoneDevice::answerCall() const
+void VideoDoorEntryDevice::answerCall() const
 {
 	QString what = QString("%1#%2#%3").arg(ANSWER_CALL).arg(kind).arg(mmtype);
 	sendCommand(what);
 }
 
-void EntryphoneDevice::internalIntercomCall(QString _where)
+void VideoDoorEntryDevice::internalIntercomCall(QString _where)
 {
 	kind = 6;
 	mmtype = 2;
@@ -80,7 +80,7 @@ void EntryphoneDevice::internalIntercomCall(QString _where)
 	sendCommand(what, _where);
 }
 
-void EntryphoneDevice::externalIntercomCall(QString _where)
+void VideoDoorEntryDevice::externalIntercomCall(QString _where)
 {
 	kind = 7;
 	mmtype = 2;
@@ -90,23 +90,23 @@ void EntryphoneDevice::externalIntercomCall(QString _where)
 	sendCommand(what, _where);
 }
 
-void EntryphoneDevice::cameraOn(QString _where) const
+void VideoDoorEntryDevice::cameraOn(QString _where) const
 {
 	QString what = QString("%1#%2").arg(AUTOSWITCHING).arg(where);
 	sendCommand(what, _where);
 }
 
-void EntryphoneDevice::stairLightActivate() const
+void VideoDoorEntryDevice::stairLightActivate() const
 {
 	sendCommand(STAIRCASE_ACTIVATE);
 }
 
-void EntryphoneDevice::stairLightRelease() const
+void VideoDoorEntryDevice::stairLightRelease() const
 {
 	sendCommand(STAIRCASE_RELEASE);
 }
 
-void EntryphoneDevice::openLock() const
+void VideoDoorEntryDevice::openLock() const
 {
 	if (is_calling)
 		sendCommand(QString::number(OPEN_LOCK), caller_address);
@@ -114,7 +114,7 @@ void EntryphoneDevice::openLock() const
 		sendCommand(QString::number(OPEN_LOCK));
 }
 
-void EntryphoneDevice::releaseLock() const
+void VideoDoorEntryDevice::releaseLock() const
 {
 	if (is_calling)
 		sendCommand(QString::number(RELEASE_LOCK), caller_address);
@@ -122,7 +122,7 @@ void EntryphoneDevice::releaseLock() const
 		sendCommand(QString::number(RELEASE_LOCK));
 }
 
-void EntryphoneDevice::cycleExternalUnits() const
+void VideoDoorEntryDevice::cycleExternalUnits() const
 {
 	// Cycling on the external units configured means send a specific frame to
 	// the first unit that we turn on, no matter what is the current camera
@@ -130,7 +130,7 @@ void EntryphoneDevice::cycleExternalUnits() const
 	sendCommand(QString("%1#%2").arg(CYCLE_EXT_UNIT).arg(where), master_caller_address);
 }
 
-void EntryphoneDevice::endCall()
+void VideoDoorEntryDevice::endCall()
 {
 	QString what = QString("%1#%2#%3").arg(END_OF_CALL).arg(kind).arg(mmtype);
 	sendFrame(createCommandFrame(who, what, QString(END_ALL_CALLS) + where));
@@ -143,7 +143,7 @@ void EntryphoneDevice::endCall()
 		resetCallState();
 }
 
-void EntryphoneDevice::initVctProcess()
+void VideoDoorEntryDevice::initVctProcess()
 {
 	if (vct_mode != NONE)
 	{
@@ -153,59 +153,59 @@ void EntryphoneDevice::initVctProcess()
 	}
 }
 
-void EntryphoneDevice::cameraMovePress(int move_type) const
+void VideoDoorEntryDevice::cameraMovePress(int move_type) const
 {
 	QString what = QString("%1#%2").arg(move_type).arg(1);
 	sendCommand(what, caller_address);
 }
 
-void EntryphoneDevice::cameraMoveRelease(int move_type) const
+void VideoDoorEntryDevice::cameraMoveRelease(int move_type) const
 {
 	QString what = QString("%1#%2").arg(move_type).arg(2);
 	sendCommand(what, caller_address);
 }
 
-void EntryphoneDevice::moveUpPress() const
+void VideoDoorEntryDevice::moveUpPress() const
 {
 	cameraMovePress(MOVE_UP);
 }
 
-void EntryphoneDevice::moveUpRelease() const
+void VideoDoorEntryDevice::moveUpRelease() const
 {
 	cameraMoveRelease(MOVE_UP);
 }
 
-void EntryphoneDevice::moveDownPress() const
+void VideoDoorEntryDevice::moveDownPress() const
 {
 	cameraMovePress(MOVE_DOWN);
 }
 
-void EntryphoneDevice::moveDownRelease() const
+void VideoDoorEntryDevice::moveDownRelease() const
 {
 	cameraMoveRelease(MOVE_DOWN);
 }
 
-void EntryphoneDevice::moveLeftPress() const
+void VideoDoorEntryDevice::moveLeftPress() const
 {
 	cameraMovePress(MOVE_LEFT);
 }
 
-void EntryphoneDevice::moveLeftRelease() const
+void VideoDoorEntryDevice::moveLeftRelease() const
 {
 	cameraMoveRelease(MOVE_LEFT);
 }
 
-void EntryphoneDevice::moveRightPress() const
+void VideoDoorEntryDevice::moveRightPress() const
 {
 	cameraMovePress(MOVE_RIGHT);
 }
 
-void EntryphoneDevice::moveRightRelease() const
+void VideoDoorEntryDevice::moveRightRelease() const
 {
 	cameraMoveRelease(MOVE_RIGHT);
 }
 
-bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
+bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	int what = msg.what();
 	if (what == SILENCE_MM_AMPLI || what == RESTORE_MM_AMPLI)
@@ -222,7 +222,7 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	{
 	case CALL:
 	{
-		Q_ASSERT_X(msg.whatSubArgCnt() < 2, "EntryphoneDevice::parseFrame",
+		Q_ASSERT_X(msg.whatSubArgCnt() < 2, "VideoDoorEntryDevice::parseFrame",
 			"Incomplete open frame received");
 
 		ip_call = msg.whatArgN(0) > 1000;
@@ -264,7 +264,7 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			values_list[RINGTONE] = Ringtones::FLOORCALL;
 			return true;
 		default:
-			qWarning("Kind not supported by EntryphoneDevice, skip frame");
+			qWarning("Kind not supported by VideoDoorEntryDevice, skip frame");
 			return false;
 		}
 
@@ -293,7 +293,7 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	{
 		caller_address = QString::fromStdString(ip_call ? msg.whatArg(2) : msg.whereFull());
 
-		Q_ASSERT_X(msg.whatSubArgCnt() < 2, "EntryphoneDevice::parseFrame",
+		Q_ASSERT_X(msg.whatSubArgCnt() < 2, "VideoDoorEntryDevice::parseFrame",
 			"Incomplete open frame received");
 		kind = msg.whatArgN(0);
 		mmtype = msg.whatArgN(1);
@@ -333,7 +333,7 @@ bool EntryphoneDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	return true;
 }
 
-void EntryphoneDevice::resetCallState()
+void VideoDoorEntryDevice::resetCallState()
 {
 	is_calling = false;
 	ip_call = false;
