@@ -55,7 +55,7 @@
 	\enddim
 
 	\sa \ref device-dimensions
- */
+*/
 class StopAndGoDevice : public device
 {
 friend class TestStopAndGoDevice;
@@ -85,7 +85,7 @@ public:
 
 		Creates a new StopAndGoDevice with the given \a where and
 		\a openserver_id.
-	 */
+	*/
 	explicit StopAndGoDevice(const QString &where, int openserver_id = 0);
 
 	virtual void init();
@@ -103,11 +103,11 @@ public:
 public slots:
 	/*!
 		\brief Requests the state of the systems check module.
-	 */
+	*/
 	void requestICMState();
 	/*!
 		\brief Request the state fo the system check module (compressed version).
-	 */
+	*/
 	void requestCompressedICMState();
 
 protected:
@@ -125,7 +125,7 @@ protected:
 	sendTrackingSystemDisactivation()) the system tracking.
 
 	\sa StopAndGoDevice
- */
+*/
 class StopAndGoPlusDevice : public StopAndGoDevice
 {
 Q_OBJECT
@@ -134,21 +134,21 @@ public:
 
 	/*!
 		\brief Activates the system tracking.
-	 */
+	*/
 	void sendTrackingSystemActivation();
 	/*!
 		\brief Disactivate the system tracking.
-	 */
+	*/
 	void sendTrackingSystemDisactivation();
 
 public slots:
 	/*!
 		\brief Closes the system.
-	 */
+	*/
 	void sendClose();
 	/*!
 		\brief Opens the system.
-	 */
+	*/
 	void sendOpen();
 };
 
@@ -169,7 +169,7 @@ public slots:
 	\enddim
 
 	\sa \ref device-dimensions, StopAndGoDevice
- */
+*/
 class StopAndGoBTestDevice : public StopAndGoDevice
 {
 friend class TestStopAndGoBTestDevice;
@@ -188,11 +188,11 @@ public:
 
 	/*!
 		\brief Activates the automatic test of the differential.
-	 */
+	*/
 	void sendDiffSelftestActivation();
 	/*!
 		\brief Disactivates the automatic test of the differential.
-	 */
+	*/
 	void sendDiffSelftestDisactivation();
 
 public slots:
@@ -201,12 +201,12 @@ public slots:
 		is performed at.
 
 		\note Valid values are between 1 and 180.
-	 */
+	*/
 	void sendSelftestFreq(int days);
 	/*!
 		\brief Requests the frequency in days the automatic test for the
 		differential is performed at.
-	 */
+	*/
 	void requestSelftestFreq();
 
 protected:
