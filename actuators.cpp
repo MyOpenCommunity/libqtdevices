@@ -23,7 +23,7 @@
 #include "btbutton.h"
 #include "devices_cache.h" // bt_global::devices_cache
 #include "lighting_device.h" // LightingDevice
-#include "entryphone_device.h" // EntryphoneDevice
+#include "videodoorentry_device.h"
 #include "skinmanager.h" //skin
 
 #include <QDebug>
@@ -85,7 +85,7 @@ ButtonActuator::ButtonActuator(const QString &descr, const QString &_where, int 
 		break;
 	case VCT_LOCK:
 	case VCT_STAIRLIGHT:
-		dev = bt_global::add_device_to_cache(new EntryphoneDevice(where, QString(), openserver_id));
+		dev = bt_global::add_device_to_cache(new VideoDoorEntryDevice(where, QString(), openserver_id));
 		break;
 	default:
 		Q_ASSERT_X(false, "ButtonActuator::ButtonActuator", "Type of actuator unknown!");
@@ -101,7 +101,7 @@ void ButtonActuator::activate()
 		(static_cast<LightingDevice*>(dev))->turnOn();
 	else
 	{
-		EntryphoneDevice *d = static_cast<EntryphoneDevice*>(dev);
+		VideoDoorEntryDevice *d = static_cast<VideoDoorEntryDevice*>(dev);
 		if (type == VCT_LOCK)
 			d->openLock();
 		else
@@ -115,7 +115,7 @@ void ButtonActuator::deactivate()
 		(static_cast<LightingDevice*>(dev))->turnOff();
 	else
 	{
-		EntryphoneDevice *d = static_cast<EntryphoneDevice*>(dev);
+		VideoDoorEntryDevice *d = static_cast<VideoDoorEntryDevice*>(dev);
 		if (type == VCT_LOCK)
 			d->releaseLock();
 		else

@@ -30,7 +30,7 @@
 #include <QProcess>
 
 
-class EntryphoneDevice;
+class VideoDoorEntryDevice;
 class ItemTuning;
 class QDomNode;
 class QHBoxLayout;
@@ -52,7 +52,7 @@ namespace VCTCallPrivate
 	{
 	Q_OBJECT
 	public:
-		CameraMove(EntryphoneDevice *dev);
+		CameraMove(VideoDoorEntryDevice *dev);
 		void setFullscreenEnabled(bool fs);
 		void setMoveEnabled(bool move);
 
@@ -98,7 +98,7 @@ namespace VCTCallPrivate
 			FULLSCREEN_VIDEO = 1,
 		};
 
-		VCTCall(EntryphoneDevice *d, FormatVideo f);
+		VCTCall(VideoDoorEntryDevice *d, FormatVideo f);
 		void refreshStatus();
 
 		// Start the video process, if it is not already running
@@ -147,7 +147,7 @@ namespace VCTCallPrivate
 	private:
 		FormatVideo format;
 		bool camera_settings_shown;
-		EntryphoneDevice *dev;
+		VideoDoorEntryDevice *dev;
 		QProcess video_grabber;
 	};
 
@@ -159,7 +159,7 @@ namespace VCTCallPrivate
 	{
 	Q_OBJECT
 	public:
-		VCTCallWindow(EntryphoneDevice *d);
+		VCTCallWindow(VideoDoorEntryDevice *d);
 
 	public slots:
 		virtual void showWindow();
@@ -190,7 +190,7 @@ class VCTCallPage : public Page
 {
 Q_OBJECT
 public:
-	VCTCallPage(EntryphoneDevice *d);
+	VCTCallPage(VideoDoorEntryDevice *d);
 	~VCTCallPage();
 
 	static void setHandsFree(bool on);
@@ -223,7 +223,7 @@ private:
 	int ringtone;
 	VCTCallPrivate::VCTCallWindow *window;
 	VCTCallPrivate::VCTCall *vct_call;
-	EntryphoneDevice *dev;
+	VideoDoorEntryDevice *dev;
 	bool already_closed;
 };
 

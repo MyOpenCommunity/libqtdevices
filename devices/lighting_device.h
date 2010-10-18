@@ -102,7 +102,7 @@ public:
 
 /*!
 	\brief Turn on the light for the given time, where \a h represents hours
-	(between 0 and 255), \m the minutes (between 0 and 59) and \a s the seconds
+	(between 0 and 255), \a m the minutes (between 0 and 59) and \a s the seconds
 	(between 0 and 59).
 
 	Use requestVariableTiming() to periodically request the remaining time.

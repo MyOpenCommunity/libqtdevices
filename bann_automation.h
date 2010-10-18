@@ -34,7 +34,7 @@ class device_status;
 class PPTStatDevice;
 class AutomationDevice;
 class LightingDevice;
-class EntryphoneDevice;
+class VideoDoorEntryDevice;
 class QDomNode;
 
 
@@ -96,7 +96,7 @@ private slots:
 
 private:
 	QString where;
-	EntryphoneDevice *dev;
+	VideoDoorEntryDevice *dev;
 };
 
 
