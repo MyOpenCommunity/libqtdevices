@@ -28,7 +28,6 @@
 
 class SoundPlayer;
 
-
 namespace Ringtones
 {
 	/*!
@@ -37,6 +36,8 @@ namespace Ringtones
 
 		A ringtone type defines a list of logical event for which a ringtone should
 		be played.
+
+		\sa VideoDoorEntryDevice
 	*/
 	enum Type
 	{

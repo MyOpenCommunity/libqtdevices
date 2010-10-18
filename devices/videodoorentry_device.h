@@ -47,21 +47,6 @@ class OpenMsg;
 	There are also several methods to control the movements of the camera, open
 	the door lock and switch on/off the staircase light.
 
-	\internal
-	The device has two states: not connected and connected.
-
-	Connected state:
-	The device switches to the connected state when a CALL frame arrives; in
-	this state, the field 'where' in incoming frames contains the address of
-	the sender, not the device own address.
-
-	Unconnected state:
-	The device switches to unconnected state when an END_OF_CALL frame arrives, or
-	the user refuses the call.
-	In this state, the device must check the 'where' field of incoming frames
-	with its own address.
-	\endinternal
-
 	\section VideoDoorEntryDevice-dimensions Dimensions
 	\startdim
 	\dim{VCT_CALL,VctType,,An incoming call.}
@@ -77,6 +62,20 @@ class OpenMsg;
 	\dim{RESTORE_MM_AMPLI,,,Restore the local amplifier if previously silenced.}
 	\dim{SILENCE_MM_AMPLI,,,Silence the local amplifier if present.}
 	\enddim
+
+	\internal
+	The device has two states: not connected and connected.
+
+	Connected state:
+	The device switches to the connected state when a CALL frame arrives; in
+	this state, the field 'where' in incoming frames contains the address of
+	the sender, not the device own address.
+
+	Unconnected state:
+	The device switches to unconnected state when an END_OF_CALL frame arrives, or
+	the user refuses the call.
+	In this state, the device must check the 'where' field of incoming frames
+	with its own address.
 */
 class VideoDoorEntryDevice : public device
 {

@@ -32,7 +32,8 @@ class OpenMsg;
 
 /*!
 	\ingroup Scenarios
-	\typedef QPair<bool, int> ScenarioProgrammingStatus
+	\brief The first parameter is true during the programmation of the scenario
+	module, while the second identifies the number of the scenario.
 */
 typedef QPair<bool, int> ScenarioProgrammingStatus;
 Q_DECLARE_METATYPE(ScenarioProgrammingStatus);
@@ -43,7 +44,7 @@ Q_DECLARE_METATYPE(ScenarioProgrammingStatus);
 
 	ScenarioDevice permits to start and stop the programming of a scenario
 	(startProgramming() and stopProgramming()), activate a previusly programmed
-	scenario (acrivateScenario()) and delete one or all scenarios
+	scenario (activateScenario()) and delete one or all scenarios
 	(deleteScenario() and deleteAll()).
 
 	To retrive the status of the scenarios you can use the requestStatus() method.
