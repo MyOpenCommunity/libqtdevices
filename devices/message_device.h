@@ -28,6 +28,10 @@
 #include <QDateTime>
 
 
+/*!
+	\ingroup Messages
+	\brief Structure used as container for date and message text.
+ */
 struct Message
 {
 	QDateTime datetime;
@@ -45,11 +49,42 @@ namespace MessageDevicePrivate
 {
 	static const int TIMEOUT = 5000;
 
+	/*!
+		\internal
+		\namespace MessageDevicePrivate
+
+		\brief Function to calculate the checksum of a message.
+		\note The sum is performed on bytes, not characters.
+
+		CHK2 = (1 + B1 + B2 + ... + Bn) mod 256
+		CHK1 = [nxB1 + (n-1)xB2 + (n-2)xB3 + ... + Bn + n] mod 256
+		CHK = (CHK1 CHK2)
+	 */
 	int checksum(const QString &string);
+
+	/*!
+		\internal
+		\namespace MessageDevicePrivate
+
+		\brief Function to create a message from a raw string.
+	 */
 	Message parseMessage(const QString &raw_message);
 }
 
+/*!
+	\ingroup Messages
+	\class MessageDevice
+	\brief Manages messages from Guard Unit.
 
+	\section MessageDevice-dimensions Dimensions
+	\startdim
+	\dim{DIM_MESSAGE,QString,,The received message}
+	\enddim
+
+	\note Only for receiving.
+
+	\sa \ref device-dimensions
+ */
 class MessageDevice : public device
 {
 friend class TestMessageDevice;
@@ -57,15 +92,42 @@ friend class TestMessageDevice;
 Q_OBJECT
 public:
 
+	/*!
+		\refdim{MessageDevice}
+	*/
 	enum Type
 	{
 		DIM_MESSAGE = 1,
 	};
 
+	/*!
+		\brief Constructor
+
+		Construct a new MessageDevice with the given \a openserver_id.
+	 */
 	explicit MessageDevice(int openserver_id = 0);
 
 protected:
+	/*!
+		\section protocol Message protocol description:
+		\li begin
+		\li param (ignored)
+		\li continue (could arrive many times)
+		\li checksum
+		\li end
+
+		\note Only one message a time can be processed, if the device receives
+			a begin request while is processing one message, it responds with a
+			busy response to the caller.
+
+		\note If the device doesn't receive a request every 3 seconds after the
+			begin, it sends a timeout response to the caller containing the
+			number of bytes received.
+
+		\sa device::parseFrame()
+	 */
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+
 
 private slots:
 	void timeout();
