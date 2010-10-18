@@ -130,6 +130,12 @@ class StopAndGoPlusDevice : public StopAndGoDevice
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructor
+
+		Creates a new StopAndGoPlusDevice with the given \a where and
+		\a openserver_id.
+	*/
 	explicit StopAndGoPlusDevice(const QString &where, int openserver_id = 0);
 
 	/*!
@@ -159,7 +165,7 @@ public slots:
 	This device extends the StopAndGoDevice permitting to enable or disable
 	(sendDiffSelftestActivation() and sendDiffSelftestDisactivation()) the
 	automatic test of the differential and to set the frequency of the test to
-	be performed at.
+	be performed at (sendSelftestFreq()).
 
 	\section dimensions Dimensions
 	In addition to the StopAndGoDevice dimensions the StopAndGoPlusDevice has:
@@ -182,6 +188,12 @@ public:
 		DIM_AUTOTEST_FREQ = 212
 	};
 
+	/*!
+		\brief Constructor
+
+		Creates a new StopAndGoBTestDevice with the given \a where and
+		\a openserver_id.
+	*/
 	explicit StopAndGoBTestDevice(const QString &where, int openserver_id = 0);
 
 	virtual void init();
