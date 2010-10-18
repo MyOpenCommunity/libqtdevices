@@ -26,35 +26,89 @@
 
 class OpenMsg;
 
+/*!
+	\defgroup Scenarios Scenarios
+*/
+
+/*!
+	\ingroup Scenarios
+	\typedef QPair<bool, int> ScenarioProgrammingStatus
+*/
 typedef QPair<bool, int> ScenarioProgrammingStatus;
 Q_DECLARE_METATYPE(ScenarioProgrammingStatus);
 
+/*!
+	\ingroup Scenarios
+	\brief Device for Scenarios system management.
 
+	ScenarioDevice permits to start and stop the programming of a scenario
+	(startProgramming() and stopProgramming()), activate a previusly programmed
+	scenario (acrivateScenario()) and delete one or all scenarios
+	(deleteScenario() and deleteAll()).
+
+	To retrive the status of the scenarios you can use the requestStatus() method.
+
+	\section ScenarioDevice-dimensions Dimensions
+	\startdim
+	\dim{DIM_START,ScenarioProgrammingStatus,,Scenario programming status.
+	When stops the ScenarioProgrammingStatus.first() is false. A DIM_START update
+	also means that the device is unlocked. }
+	\dim{DIM_LOCK,bool,,True if device is locked\, false otherwise.}
+	\enddim
+
+	\sa \ref device-dimensions
+*/
 class ScenarioDevice : public device
 {
 friend class TestScenarioDevice;
 public:
+	/*!
+		\refdim{ScenarioDevice}
+	*/
 	enum Type
 	{
-		DIM_START,     // scenario programming start (false when stops). A DIM_START update means
-		               // the device is also unlocked.
-		DIM_LOCK,      // device lock enabled (false when unlock)
+		DIM_START,
+		DIM_LOCK,
 	};
 
 	enum
 	{
-		ALL_SCENARIOS = -1,     // all scenarios (dummy value, must be different from legal values)
+		ALL_SCENARIOS = -1, /*!< All scenarios (dummy value, must be different from legal values) */
 	};
 
+	/*!
+		\brief Constructor.
+
+		Constructs a new ScenarioDevice with the given \a where and
+		\a openserver_id.
+	*/
 	ScenarioDevice(QString where, int openserver_id = 0);
 	virtual void init();
 
+	/*!
+		\brief Activates the scenario \a scen.
+	*/
 	void activateScenario(int scen);
+	/*!
+		\brief Starts the programming of scenario \a scen.
+	*/
 	void startProgramming(int scen);
+	/*!
+		\brief Stops the programming of scenario \a scen.
+	*/
 	void stopProgramming(int scen);
+	/*!
+		\brief Deletes all the scenarios.
+	*/
 	void deleteAll();
+	/*!
+		\brief Deletes the scenario \a scen.
+	*/
 	void deleteScenario(int scen);
 
+	/*!
+		\brief Requests the status of the device.
+	*/
 	void requestStatus();
 
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);

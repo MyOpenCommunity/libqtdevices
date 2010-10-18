@@ -37,7 +37,7 @@
 	After every command, you must send a state request to verify and syncronize
 	all the BTouch devices.
 
-	\section dimensions Dimensions
+	\section StopAndGoDevice-dimensions Dimensions
 	\startdim
 	\dim{DIM_OPENED,bool,,Opened}
 	\dim{DIM_FAULT,bool,,Fault}
@@ -62,7 +62,9 @@ friend class TestStopAndGoDevice;
 
 Q_OBJECT
 public:
-
+	/*!
+		\refdim{StopAndGoDevice}
+	*/
 	enum Type
 	{
 		DIM_OPENED = 0,
@@ -130,6 +132,12 @@ class StopAndGoPlusDevice : public StopAndGoDevice
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructor
+
+		Creates a new StopAndGoPlusDevice with the given \a where and
+		\a openserver_id.
+	*/
 	explicit StopAndGoPlusDevice(const QString &where, int openserver_id = 0);
 
 	/*!
@@ -159,9 +167,9 @@ public slots:
 	This device extends the StopAndGoDevice permitting to enable or disable
 	(sendDiffSelftestActivation() and sendDiffSelftestDisactivation()) the
 	automatic test of the differential and to set the frequency of the test to
-	be performed at.
+	be performed at (sendSelftestFreq()).
 
-	\section dimensions Dimensions
+	\section StopAndGoBTestDevice-dimensions Dimensions
 	In addition to the StopAndGoDevice dimensions the StopAndGoPlusDevice has:
 	\startdim
 	\dim{DIM_AUTOTEST_FREQ,int,1-180,The frequency in days the automatic test fo
@@ -176,12 +184,20 @@ friend class TestStopAndGoBTestDevice;
 
 Q_OBJECT
 public:
-
+	/*!
+		\refdim{StopAndGoBTestDevice}
+	*/
 	enum Type
 	{
 		DIM_AUTOTEST_FREQ = 212
 	};
 
+	/*!
+		\brief Constructor
+
+		Creates a new StopAndGoBTestDevice with the given \a where and
+		\a openserver_id.
+	*/
 	explicit StopAndGoBTestDevice(const QString &where, int openserver_id = 0);
 
 	virtual void init();

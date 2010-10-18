@@ -43,24 +43,6 @@ enum
 	COMMAND_TIMEOUT = 9016
 };
 
-
-/*!
-	\struct Message
-	\brief Structure used as container for date and message text.
- */
-
-
-/*!
-	\internal
-	\namespace MessageDevicePrivate
-
-	\brief Function to calculate the checksum of a message.
-	\note The sum is performed on bytes, not characters.
-
-	CHK2 = (1 + B1 + B2 + ... + Bn) mod 256
-	CHK1 = [nxB1 + (n-1)xB2 + (n-2)xB3 + ... + Bn + n] mod 256
-	CHK = (CHK1 CHK2)
- */
 int MessageDevicePrivate::checksum(const QString &string)
 {
 	QByteArray data;
@@ -86,12 +68,6 @@ int MessageDevicePrivate::checksum(const QString &string)
 	return (chk1 << 8) | chk2;
 }
 
-/*!
-	\internal
-	\namespace MessageDevicePrivate
-
-	\brief Function to create a message from a raw string.
- */
 Message MessageDevicePrivate::parseMessage(const QString &raw_message)
 {
 	Message message;
@@ -109,24 +85,6 @@ Message MessageDevicePrivate::parseMessage(const QString &raw_message)
 
 using namespace MessageDevicePrivate;
 
-/*!
-	\ingroup Messages
-	\class MessageDevice
-	\brief Manages messages from Guard Unit.
-
-	\section dimensions Dimensions
-	\startdim
-	\dim{DIM_MESSAGE,QString,,The received message}
-	\enddim
-
-	\note Only for receiving.
-
-	\sa \ref device-dimensions
- */
-
-/*!
-	\brief Constructor
- */
 MessageDevice::MessageDevice(int openserver_id) :
 	device("8", "", openserver_id)
 {
@@ -135,24 +93,6 @@ MessageDevice::MessageDevice(int openserver_id) :
 	connect(&timer, SIGNAL(timeout()), SLOT(timeout()));
 }
 
-/*!
-	\section protocol Message protocol description:
-	\li begin
-	\li param (ignored)
-	\li continue (could arrive many times)
-	\li checksum
-	\li end
-
-	\note Only one message a time can be processed, if the device receives a begin
-		request while is processing one message, it responds with a busy response
-		to the caller.
-
-	\note If the device doesn't receive a request every 3 seconds after the begin,
-		it sends a timeout response to the caller containing the number of bytes
-		received.
-
-	\sa device::parseFrame()
- */
 bool MessageDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	where = QString::number(msg.where());

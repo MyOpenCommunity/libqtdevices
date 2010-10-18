@@ -34,7 +34,7 @@ class QDate;
 
 /*!
 	\ingroup Core
-	\brief This class represent a device for managing system settings.
+	\brief Device for managing system settings.
 
 	%PlatformDevice has methods to set date setDate()
 	and time setTime(). These methods don't set the date and time locally
@@ -45,7 +45,7 @@ class QDate;
 	When a request of information is done, the response is sent through the
 	signal valueReceived().
 
-	\section dimensions Dimensions
+	\section PlatformDevice-dimensions Dimensions
 	\startdim
 	\dim{DIM_STATUS,bool,,Network status\, true if the network is enabled\, false otherwise.}
 	\dim{DIM_IP,QString,,Ip address}
@@ -129,6 +129,9 @@ public:
 
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
+	/*!
+		\refdim{PlatformDevice}
+	*/
 	enum Type
 	{
 		DIM_STATUS = 9,

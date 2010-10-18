@@ -32,22 +32,38 @@ class StopAndGoBTestDevice;
 class QDomNode;
 
 
-/**
- * BannStopAndGo
- *
- * Banner connected to a stop and go device.
- * It is composed by a central image, two optionals buttons and an optional
- * description.
- *
- * The central image automatically changes to reflect the device status.
- */
+/*!
+	\defgroup StopAndGo Stop&Go
+*/
+
+/*!
+	\ingroup StopAndGo
+	\brief Banner connected to a StopAndGoDevice.
+
+	It is composed by a central image, two optionals buttons and an optional
+	description.
+
+	\note The central image automatically changes to reflect the device status.
+*/
 class BannStopAndGo : public Bann2Buttons
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructor.
+
+		Creates a new BannStopAndGo with the given StopAndGoDevice \a dev,
+		left and right buttons using \a left and \a right tags, and with the
+		description \a descr.
+
+		\sa Bann2Buttons
+	*/
 	BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QString &right, const QString &descr = QString(), QWidget *parent = 0);
 
 public slots:
+	/*!
+		\brief Handles dimensions from device to reflect the device status.
+	*/
 	void valueReceived(const DeviceValues &values_list);
 
 private:
@@ -55,17 +71,24 @@ private:
 };
 
 
-/**
- * StopAndGoMenu
- *
- * This page list all the configured stop and go pages.
- * If there is only one stop and go page, this page isn't displayed and will
- * forward directly to the stop and go page.
- */
+/*!
+	\ingroup StopAndGo
+	\brief Lists all the configured stop and go pages.
+
+	If there is only one StopAndGoPage, this page isn't displayed and will
+	forward directly to the StopAndGoPage.
+*/
 class StopAndGoMenu : public BannerPage
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructor.
+
+		Construct a new StopAndGoMenu with the given \a config_node.
+
+		\sa BannerPage
+	*/
 	StopAndGoMenu(const QDomNode &config_node);
 	virtual int sectionId() const;
 
@@ -78,16 +101,25 @@ private:
 };
 
 
-/**
- * StopAndGoPage
- *
- * This page contains a banner which reflects the device status and a button
- * used to enable or disable the autoreset.
- */
+/*!
+	\ingroup StopAndGo
+	\brief Page for the StopAndGo.
+
+	Contains a banner which reflects the device status and a button
+	used to enable or disable the autoreset.
+*/
 class StopAndGoPage : public Page
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructor.
+
+		Construct a new StopAndGoPage with the given \a title and
+		\a device.
+
+		\sa Page
+	*/
 	StopAndGoPage(const QString &title, StopAndGoDevice *device);
 	virtual int sectionId() const;
 
@@ -101,16 +133,25 @@ private:
 };
 
 
-/**
- * StopAndGoPlusPage
- *
- * This page is like the StopAndGoPage, but in addiction, permits to open
- * and close, and track fails.
- */
+/*!
+	\ingroup StopAndGo
+	\brief Page for the StopAndGo Plus.
+
+	It's like the StopAndGoPage, but in addiction, permits to open
+	and close, and track fails.
+*/
 class StopAndGoPlusPage : public Page
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructor.
+
+		Construct a new StopAndGoPlusPage with the given \a title and
+		\a device.
+
+		\sa Page
+	*/
 	StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *device);
 	virtual int sectionId() const;
 
@@ -126,17 +167,26 @@ private:
 };
 
 
-/**
- * StopAndGoBTestPage
- *
- * This page is like the StopAndGoPage, but in addiction, permits to switch on
- * and off the self tests, and to set the interval in days to perform
- * the tests.
+/*!
+	\ingroup StopAndGo
+	\brief Page for the StopAndGo BTest.
+
+	It is like the StopAndGoPage, but in addiction, permits to switch on
+	and off the self tests, and to set the interval in days to perform
+	the tests at.
  */
 class StopAndGoBTestPage : public Page
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructor.
+
+		Construct a new StopAndGoBTestPage with the given \a title and
+		\a device.
+
+		\sa Page
+	*/
 	StopAndGoBTestPage(const QString &title, StopAndGoBTestDevice *device);
 	virtual int sectionId() const;
 
