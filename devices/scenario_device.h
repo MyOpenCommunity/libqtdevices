@@ -48,7 +48,7 @@ Q_DECLARE_METATYPE(ScenarioProgrammingStatus);
 
 	To retrive the status of the scenarios you can use the requestStatus() method.
 
-	\section dimensions Dimensions
+	\section ScenarioDevice-dimensions Dimensions
 	\startdim
 	\dim{DIM_START,ScenarioProgrammingStatus,,Scenario programming status.
 	When stops the ScenarioProgrammingStatus.first() is false. A DIM_START update
@@ -62,6 +62,9 @@ class ScenarioDevice : public device
 {
 friend class TestScenarioDevice;
 public:
+	/*!
+		\refdim{ScenarioDevice}
+	*/
 	enum Type
 	{
 		DIM_START,

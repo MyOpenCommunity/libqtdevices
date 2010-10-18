@@ -44,7 +44,7 @@
 	takes the period as a paremeter. The device can log two distinct periods.
 	To reset the counter, you can use the resetTotal() method.
 
-	\section dimensions Dimensions
+	\section LoadsDevice-dimensions Dimensions
 	\startdim
 	\dim{DIM_ENABLED,bool,,True if enabled\, false otherwise}
 	\dim{DIM_FORCED,bool,,True if forced\, false otherwise}
@@ -70,6 +70,9 @@ class LoadsDevice : public device
 friend class TestLoadsDevice;
 Q_OBJECT
 public:
+	/*!
+		\refdim{LoadsDevice}
+	*/
 	enum
 	{
 		DIM_ENABLED,
