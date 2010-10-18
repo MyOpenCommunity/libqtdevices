@@ -29,6 +29,9 @@
 class QDomNode;
 class banner;
 
+/*!
+	\defgroup Automation Automation
+*/
 
 class Automation : public BannerPage
 {

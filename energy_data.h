@@ -32,6 +32,9 @@ class EnergyView;
 class EnergyInterface;
 struct EnergyRate;
 
+/*!
+	\defgroup EnergyData EnergyData
+*/
 
 /**
  * The page that contains the families of energy.

@@ -33,6 +33,18 @@ int dimmerLevelTo100(int level);
 #define PULL_DELAY_DIMMER100   9000
 
 
+/*!
+	\ingroup Lighting
+	\brief Manages light actuators.
+
+	The metods allow to turn on/off the light and to turn on the light for a fixed time.
+
+	\section dimensions Dimensions
+	\startdim
+	\dim{DIM_DEVICE_ON,bool,,The light status.}
+	\dim{DIM_VARIABLE_TIMING,BtTime,,The remaining time for which the light will stay on.}
+	\enddim
+*/
 class LightingDevice : public PullDevice
 {
 friend class TestLightingDevice;
@@ -58,16 +70,62 @@ public:
 		       AdvancedMode adv = PULL_ADVANCED_UNKNOWN, PullStateManager::FrameChecker checker = &LightingDevice::isFrameHandled);
 
 	virtual void init();
+
+	/*!
+		\brief Turn on the light.
+	*/
 	void turnOn();
+
+	/*!
+		\brief Turn off the light.
+	*/
 	void turnOff();
+
+	/*!
+		\brief Turn on the light for the given time.
+		The mapping between \a value and the light time is as follows:
+		\li 0: 1 minute
+		\li 1: 2 minutes
+		\li 2: 3 minutes
+		\li 3: 4 minutes
+		\li 4: 5 minutes
+		\li 5: 15 minutes
+		\li 6: 30 seconds
+
+		Use requestVariableTiming() to periodically request the remaining time.
+		\sa variableTiming()
+	*/
 	void fixedTiming(int value);
+
+/*!
+	\brief Turn on the light for the given time, where \a h represents hours
+	(between 0 and 255), \m the minutes (between 0 and 59) and \a s the seconds
+	(between 0 and 59).
+
+	Use requestVariableTiming() to periodically request the remaining time.
+	\sa fixedTiming()
+*/
 	void variableTiming(int h, int m, int s);
 
+	/*!
+		\brief Requests a status update.
+
+		It should never be necessary to call this function explicitly.
+	*/
 	void requestStatus();
+
+	/*!
+		\brief Requests the remaining time for a timed light.
+	*/
 	void requestVariableTiming();
 
 	void setTimingBehaviour(Timed t);
 
+	/*!
+		\brief Used by the basic/advanced actuator detection.
+
+		\sa PullDevice
+	*/
 	static FrameHandled isFrameHandled(OpenMsg &msg);
 
 protected:
@@ -79,6 +137,24 @@ private:
 };
 
 
+/*!
+	\ingroup Lighting
+	\brief Manages a 10-level dimmer actuators.
+
+	The metods allow to increase/decrease the dimmer level.  Use LightingDevice
+	methods to turn on/off the dimmer.
+
+	\section dimensions Dimensions
+	\startdim
+	\dim{DIM_DIMMER_PROBLEM,no value,,Set if there is a problem with the dimmer.}
+	\dim{DIM_DIMMER_LEVEL,int,,The 10-level dimmer level (2-10).}
+	\enddim
+
+	When the status list contains the DIM_DIMMER_LEVEL dimension, it will always
+	contain the dimension DIM_DEVICE_ON with value \c true. The reverse holds nearly
+	all the time, (except for the case when the device is turned on with a
+	global/environment command before receiving any status update from the dimmer).
+*/
 class DimmerDevice : public LightingDevice
 {
 friend class TestDimmerDevice;
@@ -87,9 +163,21 @@ public:
 	DimmerDevice(QString where, PullMode pull = PULL_UNKNOWN, int openserver_id = 0, int pull_delay = PULL_DELAY_DIMMER10,
 		     AdvancedMode adv = PULL_ADVANCED_UNKNOWN, PullStateManager::FrameChecker checker = &DimmerDevice::isFrameHandled);
 
+	/*!
+		\brief Increase dimmer 10 level (also turns on the device).
+	*/
 	void increaseLevel();
+
+	/*!
+		\brief Decrease dimmer 10 level (also turns on the device).
+	*/
 	void decreaseLevel();
 
+	/*!
+		\brief Used by the basic/advanced actuator detection.
+
+		\see PullDevice
+	*/
 	static FrameHandled isFrameHandled(OpenMsg &msg);
 
 protected:
@@ -105,6 +193,22 @@ protected:
 };
 
 
+/*!
+	\ingroup Lighting
+	\brief Manages 100-level dimmer actuators.
+
+	The methods allow to turn on/off the actuator and increase/decrease the dimmer
+	level with a specified fade speed.
+
+	\section dimensions Dimensions
+	\startdim
+	\dim{DIM_DIMMER100_LEVEL,int,,The 100-level dimmer level (1-100).}
+	\dim{DIM_DIMMER100_SPEED,int,,The 100-level dimmer on/off speed.}
+	\enddim
+
+	When the status list contains the DIM_DIMMER100_LEVEL dimension, it will always
+	contain a DIM_DIMMER_LEVEL with a corresponding 10-level dimmer level (2-10).
+*/
 class Dimmer100Device : public DimmerDevice
 {
 friend class TestDimmer100Device;
@@ -114,11 +218,32 @@ public:
 			PullStateManager::FrameChecker checker = NULL);
 
 	virtual void init();
+
+	/*!
+		\brief Turn on the light with the given speed.
+	*/
 	void turnOn(int speed);
+
+	/*!
+		\brief Turn off the light with the given speed.
+	*/
 	void turnOff(int speed);
+
+	/*!
+		\brief Increase the dimmer level of the given \a delta and \a speed.
+	*/
 	void increaseLevel100(int delta, int speed);
+
+	/*!
+		\brief Decrease the dimmer level of the given \a delta and \a speed.
+	*/
 	void decreaseLevel100(int delta, int speed);
 
+	/*!
+		\brief Requests a status update.
+
+		It should never be necessary to call this function explicitly.
+	*/
 	void requestDimmer100Status();
 
 protected:

@@ -84,23 +84,6 @@ int dimmer100LevelTo10(int level)
 		return 10;
 }
 
-
-/*!
-	\class LightingDevice
-	\brief A device for managing light actuators.
-
-	The metods allow to turn on/off the light and to turn on the light for a fixed time.
-
-	\section dimensions Dimensions
-	\startdim
-	\dim{DIM_DEVICE_ON,bool,,The light status.}
-	\dim{DIM_VARIABLE_TIMING,BtTime,,The remaining time for which the light will stay on.}
-	\enddim
-*/
-
-/*!
-	\brief Constructor
- */
 LightingDevice::LightingDevice(QString where, PullMode pull, int openserver_id, int pull_delay, AdvancedMode adv, PullStateManager::FrameChecker checker) :
 	PullDevice(QString("1"), where, pull, openserver_id, pull_delay, adv, checker)
 {
@@ -114,37 +97,16 @@ void LightingDevice::init()
 		requestVariableTiming();
 }
 
-/*!
-	\brief Turn on the light.
- */
 void LightingDevice::turnOn()
 {
 	sendCommand(LIGHT_ON);
 }
 
-/*!
-	\brief Turn off the light.
- */
 void LightingDevice::turnOff()
 {
 	sendCommand(LIGHT_OFF);
 }
 
-/*!
-	\brief Turn on the light for the given time.
-	\param value between 0 and 6
-
-	The mapping between \a value and the light time is as follows:
-	\li 0: 1 minute
-	\li 1: 2 minutes
-	\li 2: 3 minutes
-	\li 3: 4 minutes
-	\li 4: 5 minutes
-	\li 5: 15 minutes
-	\li 6: 30 seconds
-
-	Use \a requestVariableTiming() to periodically request the remaining time.
- */
 void LightingDevice::fixedTiming(int value)
 {
 	int v = FIXED_TIMING_MIN + value;
@@ -152,14 +114,6 @@ void LightingDevice::fixedTiming(int value)
 		sendCommand(v);
 }
 
-/*!
-	\brief Turn on the light for the given time.
-	\param h hours between 0 and 255
-	\param m minutes between 0 and 59
-	\param s seconds between 0 and 59
-
-	Use \a requestVariableTiming() to periodically request the remaining time.
- */
 void LightingDevice::variableTiming(int h, int m, int s)
 {
 	if ((h >= 0 && h <= 255) && (m >= 0 && m <= 59) && (s >= 0 && s <= 59))
@@ -167,19 +121,11 @@ void LightingDevice::variableTiming(int h, int m, int s)
 			.arg(h).arg(m).arg(s), where));
 }
 
-/*!
-	\brief Requests a status update.
-
-	It should never be necessary to call this function explicitly.
- */
 void LightingDevice::requestStatus()
 {
 	sendRequest(QString());
 }
 
-/*!
-	\brief Requests the remaining time for a timed light.
- */
 void LightingDevice::requestVariableTiming()
 {
 	sendRequest(DIM_VARIABLE_TIMING);
@@ -195,11 +141,6 @@ void LightingDevice::setTimingBehaviour(Timed t)
 	timed_light = t;
 }
 
-/*!
-	\brief Used by the basic/advanced actuator detection.
-
-	\see PullDevice
- */
 FrameHandled LightingDevice::isFrameHandled(OpenMsg &msg)
 {
 	int what = msg.what();
@@ -261,28 +202,6 @@ bool LightingDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 }
 
 
-/*!
-	\class DimmerDevice
-	\brief A device for managing 10-level dimmer actuators.
-
-	The metods allow to increase/decrease the dimmer level.  Use \a LightingDevice
-	methods to turn on/off the dimmer.
-
-	\section dimensions Dimensions
-	\startdim
-	\dim{DIM_DIMMER_PROBLEM,no value,,Set if there is a problem with the dimmer.}
-	\dim{DIM_DIMMER_LEVEL,int,,The 10-level dimmer level (2-10).}
-	\enddim
-
-	When the status list contains the \a DIM_DIMMER_LEVEL dimension, it will always contain
-	the dimension \a DIM_DEVICE_ON with value \c true.  The reverse holds nearly all the time,
-	(except for the case when the device is turned on with a global/environment command before
-	receiving any status update from the dimmer).
-*/
-
-/*!
-	\brief Constructor
- */
 DimmerDevice::DimmerDevice(QString where, PullMode pull, int openserver_id, int pull_delay, AdvancedMode adv, PullStateManager::FrameChecker checker) :
 	LightingDevice(where, pull, openserver_id, pull_delay, adv, checker)
 {
@@ -299,27 +218,16 @@ void DimmerDevice::delayedLevelRequest()
 	requestStatus();
 }
 
-/*!
-	\brief Increase dimmer 10 level (also turns on the device).
- */
 void DimmerDevice::increaseLevel()
 {
 	sendCommand(DIMMER_INC);
 }
 
-/*!
-	\brief Decrease dimmer 10 level (also turns on the device).
- */
 void DimmerDevice::decreaseLevel()
 {
 	sendCommand(DIMMER_DEC);
 }
 
-/*!
-	\brief Used by the basic/advanced actuator detection.
-
-	\see PullDevice
- */
 FrameHandled DimmerDevice::isFrameHandled(OpenMsg &msg)
 {
 	if (LightingDevice::isFrameHandled(msg) == FRAME_HANDLED)
@@ -458,26 +366,6 @@ bool DimmerDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 }
 
 
-/*!
-	\class Dimmer100Device
-	\brief A device for managing 100-level dimmer actuators.
-
-	The methods allow to turn on/off the actuator and increase/decrease the dimmer level
-	with a specified fade speed
-
-	\section dimensions Dimensions
-	\startdim
-	\dim{DIM_DIMMER100_LEVEL,int,,The 100-level dimmer level (1-100).}
-	\dim{DIM_DIMMER100_SPEED,int,,The 100-level dimmer on/off speed.}
-	\enddim
-
-	When the status list contains the \a DIM_DIMMER100_LEVEL dimension, it will always contain
-	a \a DIM_DIMMER_LEVEL with a corresponding 10-level dimmer level (2-10).
-*/
-
-/*!
-	\brief Constructor
- */
 Dimmer100Device::Dimmer100Device(QString where, PullMode pull, int openserver_id, int pull_delay, PullStateManager::FrameChecker checker) :
 	DimmerDevice(where, pull, openserver_id, pull_delay, PULL_ADVANCED, checker)
 {
@@ -494,47 +382,26 @@ void Dimmer100Device::delayedLevelRequest()
 	requestDimmer100Status();
 }
 
-/*!
-	\brief Turn on the light with the given speed.
- */
 void Dimmer100Device::turnOn(int speed)
 {
 	sendCommand(QString("%1#%2").arg(LIGHT_ON).arg(speed));
 }
 
-/*!
-	\brief Turn off the light with the given speed.
- */
 void Dimmer100Device::turnOff(int speed)
 {
 	sendCommand(QString("%1#%2").arg(LIGHT_OFF).arg(speed));
 }
 
-/*!
-	\brief Increase the dimmer level.
-	\param delta level increase
-	\param speed fade-in speed
- */
 void Dimmer100Device::increaseLevel100(int delta, int speed)
 {
 	sendCommand(QString("%1#%2#%3").arg(DIMMER_INC).arg(delta).arg(speed));
 }
 
-/*!
-	\brief Decrease the dimmer level.
-	\param delta level decrease
-	\param speed fade-out speed
- */
 void Dimmer100Device::decreaseLevel100(int delta, int speed)
 {
 	sendCommand(QString("%1#%2#%3").arg(DIMMER_DEC).arg(delta).arg(speed));
 }
 
-/*!
-	\brief Requests a status update.
-
-	It should never be necessary to call this function explicitly.
- */
 void Dimmer100Device::requestDimmer100Status()
 {
 	sendRequest(DIMMER100_STATUS);
