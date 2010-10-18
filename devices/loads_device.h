@@ -62,6 +62,8 @@
 	\dim{DIM_CURRENT,int,,Current absorption value, expressed in Watt}
 	\dim{DIM_LOAD,LoadsDevice::LoadLevel,,Load level\, see LoadsDevice::LoadLevel}
 	\enddim
+
+	\sa \ref device-dimensions
 */
 class LoadsDevice : public device
 {
