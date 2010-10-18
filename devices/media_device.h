@@ -97,7 +97,7 @@ private:
 	\section SourceDevice-dimensions Dimensions
 	\startdim
 	\dim{DIM_TRACK,int,,Current track/memorized radio station.}
-	\dim{DIM_AREAS_UPDATED,no value,,The source was turned on/off on some SCS area; see \a SourceDevice::isActive(QString) const.}
+	\dim{DIM_AREAS_UPDATED,no value,,The source was turned on/off on some SCS area; see isActive().}
 	\enddim
 */
 class SourceDevice : public device
@@ -317,7 +317,7 @@ private:
 	\dim{REQ_SOURCE_OFF,no value,,Command: turn off the local source.}
 	\dim{REQ_NEXT_TRACK,no value,,Command: go to next track.}
 	\dim{REQ_PREV_TRACK,no value,,Command: go to previous track.}
-	\dim{DIM_SELF_REQUEST,bool,,Flag value: when \a true the command was sent by the GUI; when \a false it was received from the SCS bus.}
+	\dim{DIM_SELF_REQUEST,bool,,Flag value: when true the command was sent by the GUI; when false it was received from the SCS bus.}
 	\enddim
 */
 class VirtualSourceDevice : public SourceDevice
@@ -404,7 +404,7 @@ public:
 		\li \#<area> (ex. \#4) will create an area command
 		\li \c "0" will create a general command
 
-		If the touchscreen is configured as an SCS amplifier, \a setVirtualAmplifierWhere()
+		If the touchscreen is configured as an SCS amplifier, setVirtualAmplifierWhere()
 		must be called before instantiating any amplifier.
 	*/
 	static AmplifierDevice *createDevice(const QString &where);
@@ -494,7 +494,7 @@ protected:
 		The \a where can be \c 0 for a general device, \c \#a for an area device
 		of a 2-digit number for a point-to-point device.
 
-		Note that an \a AmplifierDevice will never affect the local amplfier.
+		Note that an AmplifierDevice will never affect the local amplfier.
 	*/
 	AmplifierDevice(QString where, int openserver_id = 0);
 

@@ -26,24 +26,66 @@
 
 class OpenMsg;
 
-/*
- * Controls entryphone functionality.
- * This device has two states: not connected and connected.
- *
- * Connected state:
- * The device switches to the connected state when a CALL frame arrives; in this state,
- * the field 'where' in incoming frames contains the address of the sender, not the device own address.
- *
- * Unconnected state:
- * The device switches to unconnected state when an END_OF_CALL frame arrives, or the user refuses the call.
- * In this state, the device must check the 'where' field of incoming frames with its own address.
- */
 
+/*!
+	\ingroup VideoDoorEntry
+	\brief Controls Video Door Entry functionalities.
+
+	This device can be used to control a Video Door Entry call or a Video Door Entry
+	actuator. While the latter is pretty simple, a Video Door Entry call can be
+	only Audio or AudioVideo (see VctType) and also SCS or IP (see VctMode).
+
+	Because not all of these differences can be abstracted (for example: in
+	the SCS videocall the process that captures the video must be handled manually
+	while in the IP videocall the same process is handled by the underlying
+	video process) this device provides info about the type through the
+	dimension VCT_TYPE and the mode through the methods ipCall() and vctMode().
+
+	The device can be used to switch on an external camera using the cameraOn()
+	method, or perform an intercom call using the methods internalIntercomCall()
+	and externalIntercomCall().
+	There are also several methods to control the movements of the camera, open
+	the door lock and switch on/off the staircase light.
+
+	\internal
+	The device has two states: not connected and connected.
+
+	Connected state:
+	The device switches to the connected state when a CALL frame arrives; in
+	this state, the field 'where' in incoming frames contains the address of
+	the sender, not the device own address.
+
+	Unconnected state:
+	The device switches to unconnected state when an END_OF_CALL frame arrives, or
+	the user refuses the call.
+	In this state, the device must check the 'where' field of incoming frames
+	with its own address.
+	\endinternal
+
+	\section VideoDoorEntryDevice-dimensions Dimensions
+	\startdim
+	\dim{VCT_CALL,VctType,,An incoming call.}
+	\dim{AUTO_VCT_CALL,VctType,,An incoming call caused by an autoswitch on of a camera.}
+	\dim{INTERCOM_CALL,VctType,,An incoming intercom call.}
+	\dim{ANSWER_CALL,,,Used only in the intercom calls\, when the other side of the communication answer to the call.}
+	\dim{END_OF_CALL,,,The other side has closed the call.}
+	\dim{RINGTONE,Ringtones::Type,,The type of the ringtone to play.}
+	\dim{MOVING_CAMERA,bool,,True if the camera support movements. }
+	\dim{CALLER_ADDRESS,QString,,The address of the caller.}
+	\dim{STOP_VIDEO,bool,,Stop the reproduction of the video.}
+	\dim{VCT_TYPE,VctType,,The type of the call.}
+	\dim{RESTORE_MM_AMPLI,,,Restore the local amplifier if previously silenced.}
+	\dim{SILENCE_MM_AMPLI,,,Silence the local amplifier if present.}
+	\enddim
+*/
 class VideoDoorEntryDevice : public device
 {
 friend class TestVideoDoorEntryDevice;
 Q_OBJECT
 public:
+	/*!
+		\refdim{VideoDoorEntryDevice}
+	*/
 	enum Type
 	{
 		VCT_CALL = 1,
@@ -64,45 +106,144 @@ public:
 		SILENCE_MM_AMPLI = 63,
 	};
 
+	/*!
+		\ingroup VideoDoorEntry
+		\brief The videocall type.
+	*/
 	enum VctType
 	{
-		AUDIO_VIDEO,
-		ONLY_AUDIO
+		AUDIO_VIDEO, /*!< Audio-video call. */
+		ONLY_AUDIO   /*!< Audio call */
 	};
 
+	/*!
+		\ingroup VideoDoorEntry
+		\brief The modality of the VideoDoorEntry system.
+	*/
 	enum VctMode
 	{
 		NONE = 0,
-		SCS_MODE,
-		IP_MODE
+		SCS_MODE, /*!< For scs videocalls */
+		IP_MODE   /*!< For ip videocalls */
 	};
 
 	VideoDoorEntryDevice(const QString &where, QString mode = QString(), int openserver_id = 0);
 
+	/*!
+		\brief Accept an incoming call.
+	*/
 	void answerCall() const;
+
+	/*!
+		\brief Initialize the Video Door Entry underlying system.
+
+		It should never be necessary to call this function explicitly.
+	*/
 	void initVctProcess();
 	virtual void init() { initVctProcess(); }
+
+	/*!
+		\brief Return true if the call is an ip one.
+		\sa VctMode
+	*/
 	bool ipCall() const { return ip_call; }
+
+	/*!
+		\brief Return the modality of the Video Door Entry system.
+	*/
 	VctMode vctMode() const { return vct_mode; }
 
 public slots:
+	/*!
+		\brief Close a call.
+	*/
 	void endCall();
-	void cameraOn(QString _where) const;
+
+	/*!
+		\brief Turn on a camera.
+
+		When the connection is established a signal valueReceived() containing
+		the dimension AUTO_VCT_CALL is emitted.
+	*/
+	void cameraOn(QString where) const;
+
+	/*!
+		\brief Switch on the stairlight.
+	*/
 	void stairLightActivate() const;
+
+	/*!
+		\brief Switch off the stairlight.
+	*/
 	void stairLightRelease() const;
+
+	/*!
+		\brief Activate a lock actuator.
+	*/
 	void openLock() const;
+
+	/*!
+		\brief Release a lock actuator.
+	*/
 	void releaseLock() const;
+
+	/*!
+		\brief Switch from a camera to another one.
+
+		Change the current camera watched. After this command, a valueReceived()
+		containing the dimensions VCT_TYPE and MOVING_CAMERA is emitted.
+		\sa cameraOn()
+	*/
 	void cycleExternalUnits() const;
-	void internalIntercomCall(QString _where); // an intercom between devices among the same SCS bus.
-	void externalIntercomCall(QString _where); // an intercom between devices in different SCS bus.
-	// Movements
+
+	/*!
+		\brief Perform an intercom call between devices among the same SCS bus.
+	*/
+	void internalIntercomCall(QString where);
+
+	/*!
+		\brief Perform an intercom call between devices in different SCS bus.
+	*/
+	void externalIntercomCall(QString where);
+
+	/*!
+		\brief If the camera support movements, start moving up the camera.
+	*/
 	void moveUpPress() const;
+
+	/*!
+		\brief If the camera support movements, stop moving up the camera.
+	*/
 	void moveUpRelease() const;
+
+	/*!
+		\brief If the camera support movements, start moving down the camera.
+	*/
 	void moveDownPress() const;
+
+	/*!
+		\brief If the camera support movements, stop moving down the camera.
+	*/
 	void moveDownRelease() const;
+
+	/*!
+		\brief If the camera support movements, start moving left the camera.
+	*/
 	void moveLeftPress() const;
+
+	/*!
+		\brief If the camera support movements, stop moving left the camera.
+	*/
 	void moveLeftRelease() const;
+
+	/*!
+		\brief If the camera support movements, start moving right the camera.
+	*/
 	void moveRightPress() const;
+
+	/*!
+		\brief If the camera support movements, stop moving right the camera.
+	*/
 	void moveRightRelease() const;
 
 protected:

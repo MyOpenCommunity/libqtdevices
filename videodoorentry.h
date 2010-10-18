@@ -36,6 +36,9 @@ class RingExclusionPage;
 class QDomNode;
 class QSignalMapper;
 
+/*!
+	\defgroup VideoDoorEntry VideoDoorEntry
+*/
 
 #ifdef LAYOUT_TS_3_5
 
