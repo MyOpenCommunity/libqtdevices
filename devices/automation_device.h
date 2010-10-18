@@ -38,7 +38,7 @@ class OpenMsg;
 	After sending the up/down commands, the device keeps on moving until it
 	reaches the full up/down state or a stop command is received.
 
-	\section dimensions Dimensions
+	\section AutomationDevice-dimensions Dimensions
 	\startdim
 	\dim{DIM_STOP,no value,,The actuator stopped.}
 	\dim{DIM_UP,no value,,The actuator started moving upwards.}
@@ -49,6 +49,9 @@ class AutomationDevice : public PullDevice
 {
 friend class TestAutomationDevice;
 public:
+	/*!
+		\refdim{AutomationDevice}
+	*/
 	enum Type
 	{
 		DIM_STOP = 0,
@@ -93,7 +96,7 @@ protected:
 
 	Allows reading the actuator status (TODO).
 
-	\section dimensions Dimensions
+	\section PPTStatDevice-dimensions Dimensions
 	\startdim
 	\dim{DIM_STATUS,bool,,The actuator (TODO) status.}
 	\enddim
@@ -112,7 +115,9 @@ public:
 	*/
 	void requestStatus() const;
 
-	// This enum is required to pass the information about the status with the valueReceived signal
+	/*!
+		\refdim{PPTStatDevice}
+	*/
 	enum Type
 	{
 		DIM_STATUS
