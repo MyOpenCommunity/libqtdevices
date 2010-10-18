@@ -94,7 +94,7 @@ private:
 	Can be used to turn on/turn off the source on a sound diffusion area and go to
 	previous/next track.
 
-	\section dimensions Dimensions
+	\section SourceDevice-dimensions Dimensions
 	\startdim
 	\dim{DIM_TRACK,int,,Current track/memorized radio station.}
 	\dim{DIM_AREAS_UPDATED,no value,,The source was turned on/off on some SCS area; see \a SourceDevice::isActive(QString) const.}
@@ -106,6 +106,9 @@ friend class TestSourceDevice;
 friend class TestVirtualSourceDevice;
 Q_OBJECT
 public:
+	/*!
+		\refdim{SourceDevice}
+	*/
 	enum
 	{
 		DIM_STATUS = 12,
@@ -211,7 +214,7 @@ private slots:
 	Can be used to tune the radio and to receive RDS updates. The radio can memorize
 	up to 5 stations.
 
-	\section dimensions Dimensions
+	\section RadioSourceDevice-dimensions Dimensions
 	\startdim
 	\dim{DIM_FREQUENCY,int,,Radio frequency (in MHz * 100).}
 	\dim{DIM_RDS,QString,,The RDS radio text.}
@@ -222,6 +225,9 @@ class RadioSourceDevice : public SourceDevice
 friend class TestRadioSourceDevice;
 Q_OBJECT
 public:
+	/*!
+		\refdim{RadioSourceDevice}
+	*/
 	enum
 	{
 		DIM_FREQUENCY = 5,
@@ -305,7 +311,7 @@ private:
 
 	This device manages SCS commands sent from the GUI/SCS to the local source.
 
-	\section dimensions Dimensions
+	\section VirtualSourceDevice-dimensions Dimensions
 	\startdim
 	\dim{REQ_SOURCE_ON,no value,,Command: turn on the local source.}
 	\dim{REQ_SOURCE_OFF,no value,,Command: turn off the local source.}
@@ -318,6 +324,9 @@ class VirtualSourceDevice : public SourceDevice
 {
 Q_OBJECT
 public:
+	/*!
+		\refdim{VirtualSourceDevice}
+	*/
 	enum
 	{
 		REQ_SOURCE_ON = 1,
@@ -355,7 +364,7 @@ protected:
 
 	Can be used to turn on/turn off the amplifier and change its volume.
 
-	\section dimensions Dimensions
+	\section AmplifierDevice-dimensions Dimensions
 	\startdim
 	\dim{DIM_STATUS,bool,,Device status.}
 	\dim{DIM_VOLUME,int,,Amplifer volume (1-31).}
@@ -373,6 +382,9 @@ friend class TestAlarmSoundDiffDevice;
 friend class TestAmplifierDevice;
 Q_OBJECT
 public:
+	/*!
+		\refdim{AmplifierDevice}
+	*/
 	enum
 	{
 		DIM_STATUS = 12,
