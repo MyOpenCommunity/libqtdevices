@@ -140,7 +140,7 @@ void VideoDoorEntry::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case INTERCOM_MENU:
-			p = new Intercom(page_node, dev);
+			p = new IntercomMenu(page_node, dev);
 			break;
 		case VIDEO_CONTROL_MENU:
 			if (!call_page)
@@ -460,7 +460,7 @@ void IntercomCallPage::floorCallFinished()
 }
 
 
-Intercom::Intercom(const QDomNode &config_node, VideoDoorEntryDevice *dev)
+IntercomMenu::IntercomMenu(const QDomNode &config_node, VideoDoorEntryDevice *dev)
 {
 	mapper_int_intercom = new QSignalMapper(this);
 	mapper_ext_intercom = new QSignalMapper(this);

@@ -49,7 +49,7 @@ class QDomNode;
 /*!
 	\defgroup Messages Messages
 
-	The section allow the user to read and delete scs messages from
+	The section allows the user to read and delete scs messages from
 	the Guard Unit.
 	A popup is displayed using the AlertMessagePage class when a new message
 	arrives. That message is appended to the list of messages and saved in the

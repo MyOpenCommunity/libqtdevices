@@ -38,7 +38,10 @@ class QSignalMapper;
 
 /*!
 	\defgroup VideoDoorEntry VideoDoorEntry
+
+	Allows the user to perform and receive video and intercom calls.
 */
+
 
 #ifdef LAYOUT_TS_3_5
 
@@ -54,6 +57,10 @@ private:
 
 #else
 
+/*!
+	\ingroup VideoDoorEntry
+	\brief The main menu of the %VideoDoorEntry system.
+*/
 class VideoDoorEntry : public IconPage
 {
 friend class BtMain;
@@ -73,10 +80,10 @@ private:
 };
 
 
-/**
- * The main class of an videdoorentry call, which shows a button for each external place,
- * allowing the user to call the place.
- */
+/*!
+	\ingroup VideoDoorEntry
+	\brief The menu that shows buttons to call external cameras.
+*/
 class VideoControl : public IconPage
 {
 Q_OBJECT
@@ -93,9 +100,10 @@ private:
 };
 
 
-/**
- * The page for an intercom call (that is only audio).
- */
+/*!
+	\ingroup VideoDoorEntry
+	\brief Shows page and controls for an intercom call.
+*/
 class IntercomCallPage : public Page
 {
 Q_OBJECT
@@ -128,15 +136,15 @@ private:
 };
 
 
-/**
- * The main class of an intercom call, which shows a button for each internal place,
- * allowing the user to call the place.
- */
-class Intercom : public IconPage
+/*!
+	\ingroup VideoDoorEntry
+	\brief The menu that show buttons to perform intercom calls.
+*/
+class IntercomMenu : public IconPage
 {
 Q_OBJECT
 public:
-	Intercom(const QDomNode &config_node, VideoDoorEntryDevice *dev);
+	IntercomMenu(const QDomNode &config_node, VideoDoorEntryDevice *dev);
 
 private:
 	QSignalMapper *mapper_ext_intercom;
@@ -144,10 +152,14 @@ private:
 };
 
 
-/**
- * The button (actually, the couple of buttons) that represents the professional
- * studio facility (automatically open the door on an incoming call)
- */
+/*!
+	\ingroup VideoDoorEntry
+	\brief Toggle the professional studio facility.
+
+	The button represents the professional studio facility, to open automatically
+	the door on an incoming call. Associated to the button there is an icon on
+	the Toolbar present if the functionality is on.
+*/
 class ProfessionalStudio : public IconButtonOnTray
 {
 Q_OBJECT
@@ -158,11 +170,14 @@ protected:
 	virtual void updateStatus();
 };
 
+ /*!
+	\ingroup VideoDoorEntry
+	\brief Toggle the hands free facility.
 
-/**
- * The button (actually, the couple of buttons) that represents the hands
- * free facility (automatically answer on an incoming call)
- */
+	The button represents the hands free facility, to automatically answer on
+	an incoming call. Associated to the button there is an icon on the Toolbar
+	present if the functionality is on.
+*/
 class HandsFree : public IconButtonOnTray
 {
 Q_OBJECT

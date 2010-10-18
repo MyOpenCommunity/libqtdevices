@@ -107,7 +107,6 @@ public:
 	};
 
 	/*!
-		\ingroup VideoDoorEntry
 		\brief The videocall type.
 	*/
 	enum VctType
@@ -117,7 +116,6 @@ public:
 	};
 
 	/*!
-		\ingroup VideoDoorEntry
 		\brief The modality of the VideoDoorEntry system.
 	*/
 	enum VctMode
