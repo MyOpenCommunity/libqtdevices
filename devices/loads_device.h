@@ -59,7 +59,7 @@
 	the one specified by DIM_PERIOD}
 	\dim{DIM_RESET_DATE,QDateTime,,Last reset of the counter for this time period.
 	Period refers to the one specified by DIM_PERIOD}
-	\dim{DIM_CURRENT,int,,Current absorption value, expressed in Watt}
+	\dim{DIM_CURRENT,int,,Current absorption value\, expressed in Watt}
 	\dim{DIM_LOAD,LoadsDevice::LoadLevel,,Load level\, see LoadsDevice::LoadLevel}
 	\enddim
 
