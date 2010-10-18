@@ -134,7 +134,7 @@ private:
 	\li Hot water: calories
 	\li Heating/cooling: calories
 
-	\section dimensions Dimensions
+	\section EnergyDevice-dimensions Dimensions
 	\startdim
 	\dim{DIM_CURRENT,::EnergyValue,,Instantaneous consumption.}
 	\dim{DIM_CUMULATIVE_YEAR,::EnergyValue,,Total consumption over the last year (current month and the previous 11 months).}
@@ -262,6 +262,9 @@ public:
 	*/
 	void flushCurrentUpdateStop();
 
+	/*!
+		\refdim{EnergyDevice}
+	*/
 	enum Type
 	{
 		DIM_CUMULATIVE_YEAR   = 51,

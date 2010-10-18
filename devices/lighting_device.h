@@ -39,7 +39,7 @@ int dimmerLevelTo100(int level);
 
 	The metods allow to turn on/off the light and to turn on the light for a fixed time.
 
-	\section dimensions Dimensions
+	\section LightingDevice-dimensions Dimensions
 	\startdim
 	\dim{DIM_DEVICE_ON,bool,,The light status.}
 	\dim{DIM_VARIABLE_TIMING,BtTime,,The remaining time for which the light will stay on.}
@@ -50,6 +50,9 @@ class LightingDevice : public PullDevice
 friend class TestLightingDevice;
 Q_OBJECT
 public:
+	/*!
+		\refdim{LightingDevice}
+	*/
 	enum Type
 	{
 		DIM_DEVICE_ON = 1,
