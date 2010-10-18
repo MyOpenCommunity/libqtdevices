@@ -75,7 +75,7 @@ void PageContainer::setCurrentPage(Page *p)
 
 void PageContainer::showPage(Page *p)
 {
-	emit currentChanging(indexOf(p));
+	emit currentChanging(p);
 	if (Page *curr = currentPage())
 		curr->aboutToHideEvent();
 

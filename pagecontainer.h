@@ -67,7 +67,7 @@ signals:
 	// be used by code that needs to know the new page before it is actually set;
 	// to know that the current page has already changed, use the currentChanged()
 	// signal from QStackedWidget
-	void currentChanging(int index);
+	void currentChanging(Page *p);
 
 private:
 	bool block_transitions;

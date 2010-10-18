@@ -84,7 +84,7 @@ HomeWindow::HomeWindow()
 	main_layout->addWidget(central_widget, 1, 0, 1, 1);
 	// using the currentChanging signal, we ensure that the page size is the correct one
 	// when showEvent is called
-	connect(central_widget, SIGNAL(currentChanging(int)), SLOT(centralWidgetChanged(int)));
+	connect(central_widget, SIGNAL(currentChanging(Page*)), SLOT(centralWidgetChanged(Page*)));
 	Page::setPageContainer(central_widget);
 
 	tray_bar = new TrayBar;
@@ -151,19 +151,14 @@ void HomeWindow::loadConfiguration()
 #endif
 }
 
-void HomeWindow::centralWidgetChanged(int index)
+void HomeWindow::centralWidgetChanged(Page *p)
 {
 #ifdef LAYOUT_TS_10
-	// the check on header_widget shouldn't fail, but I don't want to rely on this...
-	if (qobject_cast<Page *>(central_widget->widget(index)))
-	{
-		Page *p = static_cast<Page *>(central_widget->widget(index));
-		bool is_homepage = (qobject_cast<HomePage*>(p) != 0);
-		header_widget->centralPageChanged(p->sectionId(), is_homepage);
-		// force a relayout, because changing the central page might change
-		// the window header size; see also the comment in PageContainer::showPage()
-		layout()->activate();
-	}
+	bool is_homepage = (qobject_cast<HomePage*>(p) != 0);
+	header_widget->centralPageChanged(p->sectionId(), is_homepage);
+	// force a relayout, because changing the central page might change
+	// the window header size; see also the comment in PageContainer::showPage()
+	layout()->activate();
 #endif
 }
 

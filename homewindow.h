@@ -81,7 +81,7 @@ signals:
 	void showSectionPage(int page_id);
 
 public slots:
-	void centralWidgetChanged(int index);
+	void centralWidgetChanged(Page *p);
 	void currentSectionChanged(int section_id);
 	void iconStateChanged(int page_id, StateButton::Status st);
 
