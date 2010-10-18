@@ -51,7 +51,6 @@ namespace MessageDevicePrivate
 
 	/*!
 		\internal
-		\namespace MessageDevicePrivate
 
 		\brief Function to calculate the checksum of a message.
 		\note The sum is performed on bytes, not characters.
@@ -64,7 +63,6 @@ namespace MessageDevicePrivate
 
 	/*!
 		\internal
-		\namespace MessageDevicePrivate
 
 		\brief Function to create a message from a raw string.
 	 */
@@ -73,7 +71,6 @@ namespace MessageDevicePrivate
 
 /*!
 	\ingroup Messages
-	\class MessageDevice
 	\brief Manages messages from Guard Unit.
 
 	\section MessageDevice-dimensions Dimensions
