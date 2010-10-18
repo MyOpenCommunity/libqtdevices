@@ -38,10 +38,13 @@ class QDomNode;
 
 /*!
 	\ingroup StopAndGo
-	\brief Banner connected to a StopAndGoDevice.
+	\brief Banner that reflects the state of the systems check module.
 
 	It is composed by a central image, two optionals buttons and an optional
 	description.
+
+	The central image changes acording to the state of the systems check module
+	by the StopAndGoDevice passed as parameter in constructor.
 
 	\note The central image automatically changes to reflect the device status.
 */
