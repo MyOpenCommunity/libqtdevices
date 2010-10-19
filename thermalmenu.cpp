@@ -201,7 +201,7 @@ ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 	QLabel *icon = new QLabel;
 	icon->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("central_icon")));
 
-	l->addWidget(getLabel(tr("Zone")), 0, 1);
+	l->addWidget(getLabel(are_probes_external ? tr("Probe") : tr("Zone")), 0, 1);
 	l->addWidget(getLabel(tr("Temperature")), 0, 2);
 	l->addWidget(icon, 1, 0);
 	l->addWidget(banners, 1, 1, 2, 2);
