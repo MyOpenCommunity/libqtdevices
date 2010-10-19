@@ -29,7 +29,15 @@
 class QDomNode;
 class banner;
 
+/*!
+	\defgroup Scenarios Scenarios
+*/
 
+
+/*!
+	\ingroup Scenarios
+	\brief Loads all the scenario items.
+*/
 class Scenario : public BannerPage
 {
 Q_OBJECT

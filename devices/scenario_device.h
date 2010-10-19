@@ -26,9 +26,6 @@
 
 class OpenMsg;
 
-/*!
-	\defgroup Scenarios Scenarios
-*/
 
 /*!
 	\ingroup Scenarios

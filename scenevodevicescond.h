@@ -33,11 +33,17 @@ class QString;
 class QLabel;
 class BtButton;
 
-/**
- * This abstract class is an object that can be used to represent a device
- * condition. Inherit and reimplement the updateText method to format properly
- * the condition when its value changes.
- */
+
+/*!
+	\ingroup Scenarios
+	\brief An interface that can be used to represent graphically a device condition.
+
+	Inherit and reimplement the updateText() method to format properly the condition
+	when its value changes.
+
+	\internal This interface is required in order to execute unit tests on the
+	text drawed by the DeviceCondition.
+*/
 class DeviceConditionDisplayInterface
 {
 public:
@@ -46,11 +52,11 @@ public:
 
 
 
-/**
- * This widget is an abstract class that can be used to display a device condition
- * in a standard way (different depending on the underlying hardware). Reimplement
- * the updateText method to format properly the condition when its value changes.
- */
+/*!
+	\ingroup Scenarios
+	\brief Displays a device condition.
+	\sa DeviceConditionDisplayInterface
+*/
 class DeviceConditionDisplay : public QWidget, public DeviceConditionDisplayInterface
 {
 Q_OBJECT
@@ -67,10 +73,10 @@ protected:
 };
 
 
-/**
- * This class can be used to represent a device condition which can have only
- * the ON or the OFF status.
- */
+/*!
+	\ingroup Scenarios
+	\brief Displays a device condition which can have only the ON or the OFF status.
+*/
 class DeviceConditionDisplayOnOff : public DeviceConditionDisplay
 {
 Q_OBJECT
@@ -83,9 +89,10 @@ public slots:
 };
 
 
-/**
- * This class can be used for represent a dimming device condition.
- */
+/*!
+	\ingroup Scenarios
+	\brief Displays a dimming device condition.
+*/
 class DeviceConditionDisplayDimming : public DeviceConditionDisplay
 {
 Q_OBJECT
@@ -98,9 +105,10 @@ public slots:
 };
 
 
-/**
- * This class can be used for represent a volume device condition.
- */
+/*!
+	\ingroup Scenarios
+	\brief Displays a volume device condition.
+*/
 class DeviceConditionDisplayVolume : public DeviceConditionDisplay
 {
 Q_OBJECT
@@ -113,10 +121,11 @@ public slots:
 };
 
 
-/**
- * This class can be used for represent a temperature device condition
- * (in celsius or Fahrenheit, depending from the configuration).
- */
+ /*!
+	\ingroup Scenarios
+	\brief Displays a temperature device condition (Celsius or Fahrenheit,
+	depending on the configuration).
+*/
 class DeviceConditionDisplayTemperature : public DeviceConditionDisplay
 {
 Q_OBJECT
@@ -129,52 +138,73 @@ public slots:
 };
 
 
+/*!
+	\ingroup Scenarios
+	\brief Represents a device based condition, used in the improved scenarios.
 
-/**
- * This abstract class represents a device based condition, used in the evolved
- * scenarios. Every DeviceCondition has a condition that depends on the actual
- * device and can trigger the signal condSatisfied if the device status changes
- * and matches the condition set.
- */
+	Every DeviceCondition has a condition which depends on the actual (physical)
+	device and can triggers the signal condSatisfied() if the device status
+	changes and matches the condition previously set.
+*/
 class DeviceCondition : public QObject
 {
 friend class TestScenEvoDevicesCond;
 Q_OBJECT
 public:
+	/*!
+		\brief The types of the device conditions.
+	*/
 	enum Type
 	{
-		LIGHT = 1,
-		DIMMING = 2,
-		EXTERNAL_PROBE = 7,
-		PROBE = 3,
-		TEMPERATURE = 8,
-		AUX = 9,
-		AMPLIFIER = 4,
-		DIMMING100 = 6
+		LIGHT = 1,          /*!< A light based device condition. */
+		DIMMING = 2,        /*!< A dimmer based device condition. */
+		EXTERNAL_PROBE = 7, /*!< An external probe device condition. */
+		PROBE = 3,          /*!< A probe device condition. */
+		TEMPERATURE = 8,    /*!< A temperature device condition. */
+		AUX = 9,            /*!< An aux device condition. */
+		AMPLIFIER = 4,      /*!< An amplifier device condition. */
+		DIMMING100 = 6      /*!< A dimmer 100 device condition. */
 	};
 
-	//! Returns true when the condition is satisfied
+	/*!
+		\brief Returns true when the condition is satisfied
+	*/
 	bool isTrue();
 
-	// Return a textual representation of the condition
+	/*!
+		\brief Returns a textual representation of the condition.
+	*/
 	virtual QString getConditionAsString();
 
-	// Saves the current value as the condition
+	/*!
+		\brief Saves the current value as the condition.
+	*/
 	void save();
-	// Resets the current value to the condition
+
+	/*!
+		\brief Resets the current value to the condition.
+	*/
 	void reset();
 
 public slots:
-	//! Invoked when UP button is pressed
+	// Invoked when UP button is pressed
 	virtual void Up();
-	//! Invoked when DOWN button is pressed
+	// Invoked when DOWN button is pressed
 	virtual void Down();
 
 signals:
-	//! Emitted when the condition on device is satisfied
+	/*!
+		\brief Emitted when the condition on device is satisfied.
+	*/
 	void condSatisfied();
 
 protected:
+	/*!
+		\brief Constructor
+
+		Build the %DeviceCondition object and use the DeviceConditionDisplayInterface
+		\a cond_display object the draw the graphical representation.
+	*/
 	DeviceCondition(DeviceConditionDisplayInterface *cond_display);
 
 	// The method to update the descriptive text of the condition using the
@@ -187,27 +217,24 @@ protected:
 	// var properly.
 	virtual bool parseValues(const DeviceValues &values_list) = 0;
 
-	//! Returns min value
 	virtual int get_min();
-	//! Returns max value
 	virtual int get_max();
-	//! Returns step
 	virtual int get_step();
-	//! Sets condition value
+	// Sets condition value
 	void set_condition_value(int);
-	//! Translates trigger condition from open encoding to int and sets val
+	// Translates trigger condition from open encoding to int and sets val
 	virtual void set_condition_value(QString);
-	//! Gets condition value
+	// Gets condition value
 	virtual int get_condition_value();
-	//! Draws frame
+	// Draws frame
 	virtual void Draw() = 0;
 
-	//! Returns current value for condition
+	// Returns current value for condition
 	int get_current_value();
-	//! Sets current value for condition
+	// Sets current value for condition
 	int set_current_value(int);
 
-	//! True when condition is satisfied
+	// True when condition is satisfied
 	bool satisfied;
 
 	// Invoked when called the public methods save/reset
@@ -221,9 +248,9 @@ private slots:
 	void valueReceived(const DeviceValues &values_list);
 
 private:
-	//! Condition value
+	// Condition value
 	int cond_value;
-	//! Current value (displayed, not confirmed)
+	// Current value (displayed, not confirmed)
 	int current_value;
 
 	DeviceConditionDisplayInterface *condition_display;
@@ -235,6 +262,10 @@ private:
 };
 
 
+/*!
+	\ingroup Scenarios
+	\brief Represents a light based device condition.
+*/
 class DeviceConditionLight : public DeviceCondition
 {
 Q_OBJECT
@@ -245,13 +276,17 @@ public:
 protected:
 	virtual void Draw();
 	virtual int get_max();
-	//! Translates trigger condition from open encoding to int and sets val
+	// Translates trigger condition from open encoding to int and sets val
 	virtual void set_condition_value(QString);
 
 	virtual bool parseValues(const DeviceValues &values_list);
 };
 
 
+/*!
+	\ingroup Scenarios
+	\brief Represents a dimmer based device condition.
+*/
 class DeviceConditionDimming : public DeviceCondition
 {
 friend class TestScenEvoDevicesCond;
@@ -285,7 +320,7 @@ protected:
 	void set_current_value_max(int max);
 	QString get_current_value();
 
-	//! Translates trigger condition from open encoding to int and sets val
+	// Translates trigger condition from open encoding to int and sets val
 	virtual void set_condition_value(QString);
 
 	virtual bool parseValues(const DeviceValues &values_list);
@@ -298,6 +333,10 @@ private:
 };
 
 
+/*!
+	\ingroup Scenarios
+	\brief Represents a dimmer 100 based device condition.
+*/
 class DeviceConditionDimming100 : public DeviceCondition
 {
 friend class TestScenEvoDevicesCond;
@@ -313,9 +352,7 @@ public slots:
 	virtual void Down();
 
 protected:
-	//! Returns min value
 	int get_min();
-	//! Returns max value
 	virtual int get_max();
 	void set_condition_value_min(int);
 	int get_condition_value_min();
@@ -327,7 +364,6 @@ protected:
 	void set_current_value_max(int max);
 	QString get_current_value();
 
-	//! Translates trigger condition from open encoding to int and sets val
 	virtual void set_condition_value(QString);
 	virtual void Draw();
 
@@ -345,6 +381,10 @@ private:
 };
 
 
+/*!
+	\ingroup Scenarios
+	\brief Represents a volume based device condition.
+*/
 class DeviceConditionVolume : public DeviceCondition
 {
 friend class TestScenEvoDevicesCond;
@@ -386,6 +426,10 @@ private:
 };
 
 
+/*!
+	\ingroup Scenarios
+	\brief Represents a temperature based device condition.
+*/
 class DeviceConditionTemperature : public DeviceCondition
 {
 Q_OBJECT
@@ -403,13 +447,17 @@ protected:
 	virtual bool parseValues(const DeviceValues &values_list);
 
 private:
-	/// Maximum and minimum values for temperature conditions
+	// Maximum and minimum values for temperature conditions
 	int max_temp, min_temp;
 
 	TemperatureScale temp_scale;
 };
 
 
+/*!
+	\ingroup Scenarios
+	\brief Represents an aux based device condition.
+*/
 class DeviceConditionAux : public DeviceCondition
 {
 Q_OBJECT

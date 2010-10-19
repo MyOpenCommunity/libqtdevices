@@ -46,22 +46,22 @@ class QLabel;
 
 	The structure to represent a single item is the ItemList::ItemInfo structure.
 	You can set a list of this structure to the ItemList using the setList()
-	method. You can insert a single item, too, using the inserItem() method.
+	method. You can insert a single item, too, using the insertItem() method.
 	Items can be removed one a time using the removeItem() method or all together
 	using the clear() method.
-	To retrive or access directly an item, you can use the item() method.
-	The total number of items contained into the ItemList can be taked using the
+	To retrieve or access directly an item, you can use the item() method.
+	The total number of items contained into the ItemList can be taken using the
 	itemCount() method.
 
 	To customize the look&feel of the ItemInfo rappresentation on the ItemList,
 	you can reimplement the addHorizontalBanner() method.
- */
+*/
 class ItemList : public QWidget
 {
 Q_OBJECT
 public:
 	/*!
-		\brief Structure to rappresent an item.
+		\brief Structure to represent an item.
 
 		An item can have a name, a description a list of icons.
 		It has a QVariant field to store any kind of data the user wants.
@@ -116,7 +116,7 @@ public:
 		The successive items are moved forward.
 		If \a index is 0, the \a item is prepended to the list.
 		If \a index is \a itemCount(), the value is appended to the list.
-	 */
+	*/
 	void insertItem(int index, const ItemInfo &item);
 
 	/*!
@@ -138,7 +138,7 @@ signals:
 	/*!
 		\brief Emitted when the layout is updated.
 
-		\a display is true if scrolling is possible, false otherwise.
+		\a display is true if scrolling is needed, false otherwise.
 	*/
 	void displayScrollButtons(bool);
 
@@ -152,14 +152,14 @@ signals:
 
 public slots:
 	/*!
-		\brief Switchs to the next page.
+		\brief Switches to the next page.
 
 		\note If you are on the last page, it switches to the first one.
 	*/
 	void nextItem();
 
 	/*!
-		\brief Switchs to the previous page.
+		\brief Switches to the previous page.
 
 		\note If you are on the first page, it switches to the last one.
 	*/
@@ -188,7 +188,7 @@ protected:
 	int rows_per_page;
 
 	/*!
-		\brief Current page index
+		\brief Current page index.
 	*/
 	int current_page;
 
@@ -213,7 +213,7 @@ protected:
 
 		\note \a item.icons must contain at least 2 entries: one for the left
 		icon and one for the button.
-	 */
+	*/
 	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
 };
 
