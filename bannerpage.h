@@ -36,6 +36,14 @@ class BannerContent;
 /*!
 	\ingroup Core
 	\brief A page containing a list of banners.
+
+	The BannerPage is a ScrollablePage subclass, so if the content is to big
+	to be visualized in a single screen, it is paginated.
+
+	As in ScrollablePage, all the logic about banner arranging into the single
+	page is delegate to the content class, in this case the BannerContent class.
+
+	\sa ScrollableContent
 */
 class BannerPage : public ScrollablePage
 {
@@ -80,6 +88,21 @@ protected:
 /*!
 	\ingroup Core
 	\brief Manages a list of banner usually put inside a Page.
+
+	This class extends the ScrollableContent class, inhering all the logic about
+	pagination.
+
+	The drawContent() method is reimplemented to correctly arrange banners inside
+	the content and to optionally draw a separator between columns (depending on
+	the platform).
+
+	If you whant to append a banner to the content you can use the appendBanner()
+	method. You can get it back again using the getBanner() method.
+
+	The number of banners actually contained in content can be retrived using the
+	bannerCount() method.
+
+	\sa ScrollableContent
  */
 class BannerContent : public ScrollableContent
 {
