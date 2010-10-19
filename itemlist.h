@@ -116,7 +116,7 @@ public:
 		The successive items are moved forward.
 		If \a index is 0, the \a item is prepended to the list.
 		If \a index is \a itemCount(), the value is appended to the list.
-	 */
+	*/
 	void insertItem(int index, const ItemInfo &item);
 
 	/*!

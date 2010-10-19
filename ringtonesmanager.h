@@ -98,6 +98,5 @@ private:
 
 namespace bt_global { extern RingtonesManager *ringtones; }
 
-/*! \file */
 
 #endif // RINGTONESMANAGER_H

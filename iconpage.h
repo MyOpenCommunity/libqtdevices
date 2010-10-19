@@ -41,10 +41,10 @@ class NavigationBar;
 	\ingroup Core
 	\brief Shows a list of buttons.
 
-	The IconPage is a ScrollablePage subclass, so if the content is to big
+	The %IconPage is a ScrollablePage subclass, so if the content is to big
 	to be visualized in a single screen, it is paginated.
 
-	As in IconPage, all the logic about banner arranging into the single
+	As in ScrollablePage, all the logic about banner arranging into the single
 	page is delegate to the content class, in this case the IconContent class.
 
 	There are two methods for adding a button into the IconPage:
@@ -150,8 +150,8 @@ protected:
 
 /*!
 	\ingroup Core
-	\brief A base class for special state buttons that have a button "as shortcut"
-	in the tray icon, but only if the status is on.
+	\brief A base class for special state buttons that have an icon in the traybar,
+	but only if the status is on.
 
 	To abilitate/disabilitate the tray icon, tou can use the toggleActivation()
 	method.
@@ -191,14 +191,14 @@ protected:
 	/*!
 		\brief Updates the status of the button.
 
-		The defaut implementation shows or hides the tray icon depending on
+		The default implementation shows or hides the tray icon depending on
 		the button status.
 
 		\sa StateButton
 	*/
 	virtual void updateStatus();
 	/*!
-		\brief The tray button.
+		\brief The tray button (used as a simply icon).
 	*/
 	BtButton *tray_button;
 
