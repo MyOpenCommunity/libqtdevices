@@ -594,6 +594,7 @@ private:
 
 
 /*!
+	\ingroup SoundDiffusion
 	\brief Send command to multiple amplifier devices.
 
 	This class is instantiated by \a createAmplifier() if needed; there should be no need
@@ -633,6 +634,7 @@ private:
 
 
 /*!
+	\ingroup SoundDiffusion
 	\brief Controls the power amplifier.
 
 	Allows changing power amplifier equalization and setting it to one of the
