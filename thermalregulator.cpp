@@ -234,10 +234,6 @@ void PageManual::updateTemperature()
 
 void PageManual::valueReceived(const DeviceValues &values_list)
 {
-	// TODO check why only for 4-zone regulator
-	if (dev->type() != THERMO_Z4)
-		return;
-
 	if (!values_list.contains(ThermalDevice::DIM_TEMPERATURE))
 		return;
 
