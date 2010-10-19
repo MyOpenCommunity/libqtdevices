@@ -83,22 +83,53 @@ private:
 };
 
 
+/*!
+	\ingroup ThermalRegulation
+	\brief Manages temperature sensors associated to a zone.
+
+	For all zones, allows reading current temperature and the temperature offset
+	for the zone.
+
+	For zones with a fan coil allows changing the speed of the fan coil.
+
+	For the zones of a 99-zones central, allows changing zone mode
+	(manual, automatic, ...) and target temperature (for manual mode).
+
+	\section ControlledProbeDevice-dimensions Dimensions
+	\startdim
+	\dim{DIM_TEMPERATURE,int,,Temperature in BTicino 4-digit format.}
+	\dim{DIM_SETPOINT,int,,Target temperature for the zone in BTicino 4-digit format.}
+	\dim{DIM_STATUS,ControlledProbeDevice::ProbeStatus,,Zone setting set using the control unit.}
+	\dim{DIM_LOCAL_STATUS,ControlledProbeDevice::ProbeStatus,ControlledProbeDevice::ST_NORMAL / ControlledProbeDevice::ST_OFF / ControlledProbeDevice::ST_PROTECTION,
+	     Local setting of the zone (set using the physical knob on the probe.}
+	\dim{DIM_OFFSET,int,-3/+3,Local offset of the zone (set using the physical knob on the probe.}
+	\dim{DIM_FANCOIL_STATUS,int,1: min; 2:med; 3:max; 4:automatic,Fan coil speed.}
+	\enddim
+
+	All status updates contain DIM_STATUS, DIM_LOCAL_STATUS, DIM_OFFSET and (if != 0) DIM_SETPOINT.
+
+	\see ::bt2Celsius()
+	\see ::bt2Fahrenheit()
+ */
 class ControlledProbeDevice : public device
 {
 Q_OBJECT
 public:
 	enum ProbeType
 	{
-		NORMAL = 0,
-		FANCOIL = 1,
+		NORMAL = 0,  /*!< Zone without fan coil. */
+		FANCOIL = 1, /*!< Zone with fan coil. */
 	};
 
 	enum CentralType
 	{
-		CENTRAL_99ZONES = 0,
-		CENTRAL_4ZONES = 1,
+		CENTRAL_99ZONES = 0, /*!< Zone controlled by a 99-zone central. */
+		CENTRAL_4ZONES = 1,  /*!< Zone controlled by a 4-zone central. */
 	};
 
+	/*!
+		\refdim{ControlledProbeDevice}
+	 */
 	enum Type
 	{
 		DIM_FANCOIL_STATUS = 1,
@@ -111,23 +142,53 @@ public:
 
 	enum ProbeStatus
 	{
-		ST_NONE = 0,
-		ST_NORMAL = 0,
-		ST_MANUAL = 1,
-		ST_AUTO = 2,
-		ST_OFF = 3,
-		ST_PROTECTION = 4,
+		ST_NONE = 0,        /*!< No state received yet (only during initialization). */
+		ST_NORMAL = 0,      /*!< Only for DIM_LOCAL_STATUS: zone local offset set. */
+		ST_MANUAL = 1,      /*!< Manual mode. */
+		ST_AUTO = 2,        /*!< Automatic mode. */
+		ST_OFF = 3,         /*!< Zone off. */
+		ST_PROTECTION = 4,  /*!< Antifreeze mode. */
 	};
 
+	/*!
+		\brief Constructor
+		\param where complete probe address (probe#central, without leading #)
+		\param central controller address (without leading #)
+		\param simple_where probe address (without leading #)
+		\param central_type type of the controlling central
+		\param type probe with and without fancoil
+	 */
 	ControlledProbeDevice(QString where, QString central, QString simple_where, CentralType central_type, ProbeType type, int openserver_id = 0);
 
 	virtual void init() { requestStatus(); }
+
+	/*!
+		\brief Set zone in manual mode with the given target temperature (99-zone controller).
+	 */
 	void setManual(unsigned setpoint);
+
+	/*!
+		\brief Set zone in automatic mode (99-zone controller).
+	 */
 	void setAutomatic();
 
+	/*!
+		\brief Set fancoil speed.
+
+		Speeds:
+		\li 1: minimum
+		\li 2: medium
+		\li 3: maximum
+		\li 4: automatic
+	 */
 	void setFancoilSpeed(int speed);
 	void requestFancoilStatus();
 
+	/*!
+		\brief Request a status update.
+
+		It should never be necessary to call this function explicitly.
+	 */
 	void requestStatus();
 
 protected:
