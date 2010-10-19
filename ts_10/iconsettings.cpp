@@ -526,16 +526,40 @@ PasswordPage::PasswordPage(const QDomNode &config_node)
 	layout->setContentsMargins(0, 0, 0, TITLE_HEIGHT);
 
 	int item_id = getTextChild(config_node, "itemID").toInt();
-	banner *b = new impPassword(bt_global::skin->getImage("state_on"),
-		bt_global::skin->getImage("state_off"), bt_global::skin->getImage("edit"), QString(), item_id,
-		getTextChild(config_node, "password"), getTextChild(config_node, "actived").toInt());
-	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+	bool attiva = getTextChild(config_node, "actived").toInt();
+	PasswordChanger *changer = new PasswordChanger(item_id, getTextChild(config_node, "password"), attiva);
+	StateButton *left_button = new StateButton;
+	BtButton *right_button = new BtButton(bt_global::skin->getImage("edit"));
+
+	left_button->setOnOff();
+	left_button->setOffImage(bt_global::skin->getImage("state_off"));
+	left_button->setOnImage(bt_global::skin->getImage("state_on"));
+	left_button->setStatus(attiva);
+
+	connect(right_button, SIGNAL(clicked()), changer, SLOT(changePassword()));
+	connect(left_button, SIGNAL(clicked()), changer, SLOT(requestPasswdOn()));
+	connect(changer, SIGNAL(finished()), SLOT(showPage()));
+	connect(changer, SIGNAL(passwordActive(bool)), left_button, SLOT(setStatus(bool)));
+
+	QGridLayout *b = new QGridLayout;
+
+	QLabel *left_label = new QLabel(tr("Activate"));
+	QLabel *right_label = new QLabel(tr("Change"));
+
+	left_label->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
+	right_label->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
+
+	b->addWidget(left_button, 0, 0, Qt::AlignHCenter);
+	b->addWidget(right_button, 0, 2, Qt::AlignHCenter);
+	b->addWidget(left_label, 1, 0, Qt::AlignHCenter);
+	b->addWidget(right_label, 1, 2, Qt::AlignHCenter);
+	b->setColumnStretch(1, 1);
 
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
-	layout->addWidget(b, 1, 1);
+	layout->addLayout(b, 1, 1);
 	layout->setRowStretch(0, 1);
 	layout->setRowStretch(2, 1);
 	layout->setColumnStretch(0, 1);
