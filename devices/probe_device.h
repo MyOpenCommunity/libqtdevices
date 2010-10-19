@@ -25,25 +25,53 @@
 #include "device.h"
 
 
+/*!
+	\ingroup ThermalRegulation
+	\brief Manages extrenal temperature sensors and non-controlled zones.
+
+	It receives temperature updates from the various measurement-only sensors.
+
+	\section NonControlledProbeDevice-dimensions Dimensions
+	\startdim
+	\dim{DIM_TEMPERATURE,int,,Temperature in BTicino 4-digit format.}
+	\enddim
+
+	\see ::bt2Celsius()
+	\see ::bt2Fahrenheit()
+ */
 class NonControlledProbeDevice : public device
 {
 friend class TestNonControlledProbeDevice;
 friend class TestExternalProbeDevice;
 Q_OBJECT
 public:
+	/*!
+		\brief Probe type.
+	 */
 	enum ProbeType
 	{
-		INTERNAL = 0,
-		EXTERNAL = 1
+		INTERNAL = 0, /*!< Sensor for a non-controlled zone. */
+		EXTERNAL = 1, /*!< External, radio-operated sensor. */
 	};
 
+	/*!
+		\refdim{NonControlledProbeDevice}
+	 */
 	enum Type
 	{
 		DIM_TEMPERATURE = 1,
 	};
 
+	/*!
+		\brief Constructor.
+	 */
 	NonControlledProbeDevice(QString where, ProbeType type, int openserver_id = 0);
 
+	/*!
+		\brief Request a temperature update.
+
+		It should never be necessary to call this function explicitly.
+	 */
 	void requestStatus();
 	virtual void init() { requestStatus(); }
 
