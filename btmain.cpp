@@ -325,7 +325,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 
 	calibrating = false;
 	pagDefault = NULL;
-	Home = NULL;
+	home = NULL;
 	version = NULL;
 	alreadyCalibrated = false;
 	alarm_clock_on = false;
@@ -553,7 +553,7 @@ void BtMain::loadConfiguration()
 	// homePage must be built after the loading of the configuration,
 	// to ensure that values displayed (by homePage or its child pages)
 	// is in according with saved values.
-	Home = new HomePage(pagemenu_home);
+	home = new HomePage(pagemenu_home);
 
 	QString orientation = getTextChild(gui_node, "orientation");
 	if (!orientation.isNull())
@@ -562,7 +562,7 @@ void BtMain::loadConfiguration()
 	QDomNode gui_node = getConfElement("gui");
 	// TODO read the id from the <homepage> node
 	QDomNode pagemenu_home = getHomepageNode();
-	Home = new HomePage(pagemenu_home);
+	home = new HomePage(pagemenu_home);
 
 	QDomNode video_node = getPageNode(VIDEODOORENTRY);
 	// Touch X can receive calls even if the videodoorentry section is not
@@ -573,16 +573,16 @@ void BtMain::loadConfiguration()
 		(void) new VideoDoorEntry;
 
 #endif
-	connect(window_container->homeWindow(), SIGNAL(showHomePage()), Home, SLOT(showPage()));
-	connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), Home, SLOT(showSectionPage(int)));
-	connect(Home, SIGNAL(iconStateChanged(int,StateButton::Status)), window_container->homeWindow(),
+	connect(window_container->homeWindow(), SIGNAL(showHomePage()), home, SLOT(showPage()));
+	connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), home, SLOT(showSectionPage(int)));
+	connect(home, SIGNAL(iconStateChanged(int,StateButton::Status)), window_container->homeWindow(),
 		SLOT(iconStateChanged(int,StateButton::Status)));
 
 	QDomNode home_node = getChildWithName(gui_node, "homepage");
 	if (getTextChild(home_node, "isdefined").toInt())
 	{
 		int id_default = getTextChild(home_node, "id").toInt();
-		pagDefault = !id_default ? Home : getPage(id_default);
+		pagDefault = !id_default ? home : getPage(id_default);
 	}
 
 	// Transition effects are for now disabled!
@@ -599,7 +599,7 @@ void BtMain::init()
 	loadConfiguration();
 
 	if (pagDefault)
-		connect(pagDefault, SIGNAL(Closed()), Home, SLOT(showPage()));
+		connect(pagDefault, SIGNAL(Closed()), home, SLOT(showPage()));
 	// The stylesheet can contain some references to dynamic properties,
 	// so loading of css must be done after setting these properties (otherwise
 	// it might be necessary to force a stylesheet recomputation).
@@ -643,7 +643,7 @@ void BtMain::myMain()
 		disconnect(manager, 0, this, 0);
 	}
 
-	Home->inizializza();
+	home->inizializza();
 	if (version)
 		version->inizializza();
 
@@ -681,7 +681,7 @@ void BtMain::startGui()
 	// start the screensaver countdown when the home page is shown
 	last_event_time = now();
 
-	Home->showPage();
+	home->showPage();
 	// this needs to be after the showPage, and will be a no-op until transitions
 	// between windows are implemented
 	page_container->blockTransitions(false);
@@ -694,19 +694,19 @@ void BtMain::startGui()
 
 void BtMain::showHomePage()
 {
-	Home->showPage();
+	home->showPage();
 }
 
 Page *BtMain::homePage()
 {
-	return Home;
+	return home;
 }
 
 void BtMain::unrollPages()
 {
 	int seq_pages = 0;
 	if (page_container->currentPage() != pagDefault && page_container->currentPage() != version)
-		while (page_container->currentPage() != Home)
+		while (page_container->currentPage() != home)
 		{
 			Page *curr = page_container->currentPage();
 			if (curr)

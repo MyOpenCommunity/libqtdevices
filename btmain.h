@@ -138,7 +138,7 @@ private:
 
 	QHash<int, Page*> page_list;
 	QTime *boot_time;
-	HomePage *Home;
+	HomePage *home;
 	Page *pagDefault;
 
 	QTimer *screensaver_timer;
