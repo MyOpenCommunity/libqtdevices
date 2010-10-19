@@ -37,11 +37,22 @@ class NavigationBar;
 
 #define DIM_BUT 80
 
-/**
- * \class IconPage
- *
- * Show a list of buttons, each of them is automatically connected (in addPage method)
- * with the correspondent page through the slot 'showPage' and signal 'Closed'.
+/*!
+	\ingroup Core
+	\brief Shows a list of buttons.
+
+	The IconPage is a ScrollablePage subclass, so if the content is to big
+	to be visualized in a single screen, it is paginated.
+
+	As in IconPage, all the logic about banner arranging into the single
+	page is delegate to the content class, in this case the IconContent class.
+
+	There are two methods for adding a button into the IconPage:
+	\li by the addButton() method, which creates the button attach it to the
+		page and returns it
+	\li by the addPage() method, which creates the button, attach it to the page
+		and connect it to the corresponding page through the slot showPage() and
+		the Closed() signal.
  */
 class IconPage : public ScrollablePage
 {
@@ -51,27 +62,64 @@ public:
 	typedef IconContent ContentType;
 
 protected:
+	/*!
+		\brief Build an IconPage using the given \a content and \a nav_bar.
+
+		If \a label is not null, a PageTitleWidget is created and placed in the
+		right place.
+	*/
 	void buildPage(IconContent *content, NavigationBar *nav_bar, const QString &label = QString());
+
+	/*!
+		\brief Creates a button, puts it on the IconPage and connects it to \a page.
+	*/
 	void addPage(Page *page, const QString &label, const QString &iconName, int x = 0, int y = 0);
+
+	/*!
+		\brief Creates a button, puts it on the IconPage, and returns it.
+	*/
 	BtButton *addButton(const QString &label, const QString &iconName, int x = 0, int y = 0);
 };
 
 
-/**
- * The IconContent class manages a grid of buttons.
- */
+/*!
+	\ingroup Core
+	\brief Manages a grid of buttons.
+
+	This class extends the ScrollableContent class, inhering all the logic about
+	pagination.
+
+	The drawContent() method is reimplemented to correctly arrange buttons inside
+	the content.
+
+	To add a button to the IconContent you can use the addButton() method.
+	The addWidget() method permits to add a generic widget to the content.
+*/
 class IconContent : public ScrollableContent
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructor.
+
+		Creates a new IconContent with the given \a parent.
+	*/
 	IconContent(QWidget *parent = 0);
+
+	/*!
+		\brief Puts the \a button inside the content.
+
+		If label is not empty, creates a new ScrollingLabel as description for
+		the button placed below it.
+	*/
 	void addButton(QWidget *button, const QString &label = QString());
+
+	/*!
+		\brief Puts \a widget inside the content.
+	*/
 	void addWidget(QWidget *widget);
 
 protected:
-	// The drawContent is the place where this widget is actually drawed. In order
-	// to have a correct transition effect, this method is also called by the
-	// Page _before_ that the Page is showed.
 	virtual void drawContent();
 
 private:
@@ -79,14 +127,20 @@ private:
 };
 
 
-/**
- * Base class for IconPage buttons that aren't just links to pages but have some
- * special behaviour.  Provides an uniform layout.
- */
+/*!
+	\ingroup Core
+	\brief Base class for IconPage buttons that aren't just links to pages but have some
+	special behaviour. Provides an uniform layout.
+*/
 class IconPageButton : public QWidget
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructor.
+
+		Construct a new IconPageButton with the given \a label.
+	*/
 	IconPageButton(const QString &label);
 
 protected:
@@ -94,22 +148,58 @@ protected:
 };
 
 
-/**
- * A base class for special state buttons that have a button "as shortcut" in the
- * tray icon, but only if the status is on.
- */
+/*!
+	\ingroup Core
+	\brief A base class for special state buttons that have a button "as shortcut"
+	in the tray icon, but only if the status is on.
+
+	To abilitate/disabilitate the tray icon, tou can use the toggleActivation()
+	method.
+
+	It's possible to reimplement the updateStatus() method to provide a custom
+	behaviour. In the base class, this method simply shows or hides the tray
+	icon depending on the button status.
+
+	\sa StateButton, TrayBar
+*/
 class IconButtonOnTray : public IconPageButton
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructor.
+
+		Construct a new IconButtonOnTray with the given \a icon_on as on icon,
+		\a icon_off as off icon, \a tray_icon as tag for the tray icon, \a tray_id
+		as button id, \status as initial status and \a item_id as configuration id.
+	*/
 	IconButtonOnTray(const QString &label, const QString &icon_on, const QString &icon_off,
 		const QString &tray_icon, TrayBar::ButtonId tray_id, bool status=false, int item_id=-1);
 
 private slots:
+	/*!
+		\brief Sets the status of the button
+
+		The status is reflected to the tray icon visibility and saved on the
+		configuration.
+
+		\sa updateStatus()
+	*/
 	void toggleActivation();
 
 protected:
+	/*!
+		\brief Updates the status of the button.
+
+		The defaut implementation shows or hides the tray icon depending on
+		the button status.
+
+		\sa StateButton
+	*/
 	virtual void updateStatus();
+	/*!
+		\brief The tray button.
+	*/
 	BtButton *tray_button;
 
 private:
