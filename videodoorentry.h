@@ -40,6 +40,19 @@ class QSignalMapper;
 	\defgroup VideoDoorEntry VideoDoorEntry
 
 	Allows the user to perform and receive video and intercom calls.
+	There are two main classes:
+	\li the VCTCallPage that controls all the functionalities and aspects of a
+	video call;
+	\li the IntercomCallPage that does the same for the intercom calls.
+
+	The classes VideoDoorEntry, VideoControl and IntercomMenu allow the user to
+	navigate through the items configured in the Video Door Entry system.
+
+	The are also small classes that customize the behaviour of the system on an
+	incoming call:
+	\li the HandsFree to automatically answer;
+	\li the ProfessionalStudio to automatically open the door;
+	\li the RingtoneExclusion to exclude the bell.
 */
 
 
@@ -157,7 +170,7 @@ private:
 	\brief Toggle the professional studio facility.
 
 	The button represents the professional studio facility, to open automatically
-	the door on an incoming call. Associated to the button there is an icon on
+	the door on an incoming call. Associated with the button there is an icon on
 	the Toolbar present if the functionality is on.
 */
 class ProfessionalStudio : public IconButtonOnTray
@@ -175,7 +188,7 @@ protected:
 	\brief Toggle the hands free facility.
 
 	The button represents the hands free facility, to automatically answer on
-	an incoming call. Associated to the button there is an icon on the Toolbar
+	an incoming call. Associated with the button there is an icon on the Toolbar
 	present if the functionality is on.
 */
 class HandsFree : public IconButtonOnTray
@@ -189,10 +202,14 @@ protected:
 };
 
 
-/**
- * The button (actually, the couple of buttons) that represents the ringtone
- * exclusion.
- */
+/*!
+	\ingroup VideoDoorEntry
+	\brief Toggle the bell (or ringtone) for video/intercom calls.
+
+	The button represents the possibility of exclude the ringtone for intercom
+	or video calls. Associated with the button there is an icon on the Toolbar
+	present if the ringtone exclusion is on.
+*/
 class RingtoneExclusion : public IconButtonOnTray
 {
 Q_OBJECT

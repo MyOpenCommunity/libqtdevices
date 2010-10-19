@@ -367,7 +367,7 @@ protected:
 	\section AmplifierDevice-dimensions Dimensions
 	\startdim
 	\dim{DIM_STATUS,bool,,Device status.}
-	\dim{DIM_VOLUME,int,,Amplifer volume (1-31).}
+	\dim{DIM_VOLUME,int,1-31,Amplifer volume.}
 	\enddim
 
 	Instantiating the correct class for an amplifier device is tricky because the
@@ -530,7 +530,7 @@ private:
 	\dim{REQ_AMPLI_ON,bool,,Command to turn on/turn off the local amplifier.}
 	\dim{REQ_VOLUME_UP,int,,Command to increase amplifier volume (up to 31).}
 	\dim{REQ_VOLUME_DOWN,int,,Command to decrease amplifier volume (down to 1).}
-	\dim{REQ_SET_VOLUME,int,,Command to set amplifier level to the given value (1-31).}
+	\dim{REQ_SET_VOLUME,int,1-31,Command to set amplifier level to the given value.}
 	\dim{REQ_TEMPORARY_OFF,no value,,Switch off the local amplifier for 1 second.  Do not send notifications and react to other commands as if there was no state change.}
 	\dim{DIM_SELF_REQUEST,bool,,Flag value: when true the command was sent by the GUI; when false it was received from the SCS bus.}
 	\enddim
@@ -594,6 +594,7 @@ private:
 
 
 /*!
+	\ingroup SoundDiffusion
 	\brief Send command to multiple amplifier devices.
 
 	This class is instantiated by \a createAmplifier() if needed; there should be no need
@@ -633,6 +634,7 @@ private:
 
 
 /*!
+	\ingroup SoundDiffusion
 	\brief Controls the power amplifier.
 
 	Allows changing power amplifier equalization and setting it to one of the
@@ -640,11 +642,11 @@ private:
 
 	\section PowerAmplifierDevice-dimensions Dimensions
 	\startdim
-	\dim{DIM_TREBLE,int,,Treble equalization (-10/+10).}
-	\dim{DIM_BASS,int,,Bass equalization (-10/+10).}
-	\dim{DIM_BALANCE,int,,Balance value (-10 full left to +10 full right).}
+	\dim{DIM_TREBLE,int,-10/+10,Treble equalization.}
+	\dim{DIM_BASS,int,-10/+10,Bass equalization.}
+	\dim{DIM_BALANCE,int,-10 full left to +10 full right,Balance value.}
 	\dim{DIM_LOUD,bool,,Loudness flag.}
-	\dim{DIM_PRESET,int,,Current equalization preset (0-9: fixed presets; 10-19: custom presets).}
+	\dim{DIM_PRESET,int,0-9: fixed presets; 10-19: custom presets,Current equalization preset.}
 	\enddim
  */
 class PowerAmplifierDevice : public AmplifierDevice
