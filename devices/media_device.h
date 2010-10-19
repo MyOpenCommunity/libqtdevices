@@ -494,7 +494,8 @@ protected:
 		The \a where can be \c 0 for a general device, \c \#a for an area device
 		of a 2-digit number for a point-to-point device.
 
-		Note that an AmplifierDevice will never affect the local amplfier.
+		Note that an AmplifierDevice will never affect the local amplfier, use VirtualAmplifierDevice
+		to control the local amplifier.
 	*/
 	AmplifierDevice(QString where, int openserver_id = 0);
 
@@ -518,27 +519,63 @@ private:
 };
 
 
+/*!
+	\ingroup SoundDiffusion
+	\brief The local sound diffusion amplifier.
+
+	This device manages SCS commands sent from the GUI/SCS to the local amplifier.
+
+	\section VirtualAmplifierDevice-dimensions Dimensions
+	\startdim
+	\dim{REQ_AMPLI_ON,bool,,Command to turn on/turn off the local amplifier.}
+	\dim{REQ_VOLUME_UP,int,,Command to increase amplifier volume (up to 31).}
+	\dim{REQ_VOLUME_DOWN,int,,Command to decrease amplifier volume (down to 1).}
+	\dim{REQ_SET_VOLUME,int,,Command to set amplifier level to the given value (1-31).}
+	\dim{REQ_TEMPORARY_OFF,no value,,Switch off the local amplifier for 1 second.  Do not send notifications and react to other commands as if there was no state change.}
+	\dim{DIM_SELF_REQUEST,bool,,Flag value: when true the command was sent by the GUI; when false it was received from the SCS bus.}
+	\enddim
+*/
 class VirtualAmplifierDevice : public AmplifierDevice
 {
 Q_OBJECT
 public:
+	/*!
+		\refdim{VirtualAmplifierDevice}
+	*/
 	enum
 	{
-		REQ_AMPLI_ON = -2,       // set amplifier status: true = ON, false = OFF
-		REQ_VOLUME_UP = 3,       // raise volume, value is the step
-		REQ_VOLUME_DOWN = 4,     // decrease volume, value is the step
-		REQ_SET_VOLUME = -1,     // set volume to specified level (range: 1-32)
-		REQ_TEMPORARY_OFF = -3,  // temporary off of the amplifier
-		// boolean, set to true if the status update is from a command we sent ourselves
+		REQ_AMPLI_ON = -2,
+		REQ_VOLUME_UP = 3,
+		REQ_VOLUME_DOWN = 4,
+		REQ_SET_VOLUME = -1,
+		REQ_TEMPORARY_OFF = -3,
 		DIM_SELF_REQUEST = -4,
 	};
 
+	/*!
+		\brief Constructor
+
+		The \a where can only be a 2-digit number, and it must match the where
+		configured for the local amplifier.
+	*/
 	VirtualAmplifierDevice(const QString &where, int openserver_id = 0);
 
 	virtual void init();
 
-	// must be called every time status/volume is set to inform other devices on the bus
+	/*!
+		\brief Emit a status update that amplifier status changed.
+
+		Sends a status update frame to the bus and emits a \a valueReceived() signal
+		with dimensions \a DIM_STATUS and \a DIM_SELF_REQUEST.
+	 */
 	void updateStatus(bool status);
+
+	/*!
+		\brief Emit a status update that amplifier volume changed.
+
+		Sends a status update frame to the bus and emits a \a valueReceived() signal
+		with dimensions \a DIM_VOLUME and \a DIM_SELF_REQUEST.
+	 */
 	void updateVolume(int volume);
 
 	virtual void turnOn();
