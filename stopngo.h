@@ -34,6 +34,15 @@ class QDomNode;
 
 /*!
 	\defgroup StopAndGo Stop&Go
+
+	The section allow to manage the various Stop&Go systems configured.
+
+	The StopAndGoMenu present a list of BanStopAndGo which move to the
+	appropriate StopAndGoPage depending on the type of Stop&Go systems configured.
+	The page can be a StopAndGoPage, a StopAndGoPlusPage or a StopAndGoBTestPage.
+
+	The BannStopAndGo and the various StopAndGoPage operates in conjuction with
+	the StopAndGoDevice to reflect the system status and to operate on it.
 */
 
 /*!
