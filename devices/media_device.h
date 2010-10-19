@@ -632,24 +632,70 @@ private:
 };
 
 
-/**
- * This class represent a device for managing the power amplifier, an evolved
- * version of the amplifier.
+/*!
+	\brief Controls the power amplifier.
+
+	Allows changing power amplifier equalization and setting it to one of the
+	presets.
+
+	\section PowerAmplifierDevice-dimensions Dimensions
+	\startdim
+	\dim{DIM_TREBLE,int,,Treble equalization (-10/+10).}
+	\dim{DIM_BASS,int,,Bass equalization (-10/+10).}
+	\dim{DIM_BALANCE,int,,Balance value (-10 full left to +10 full right).}
+	\dim{DIM_LOUD,bool,,Loudness flag.}
+	\dim{DIM_PRESET,int,,Current equalization preset (0-9: fixed presets; 10-19: custom presets).}
+	\enddim
  */
 class PowerAmplifierDevice : public AmplifierDevice
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructor
+	 */
 	PowerAmplifierDevice(QString address, int openserver_id = 0);
 
 	virtual void init();
 
+	/*!
+		\brief Request amplifier treble equalization value.
+
+		It should never be necessary to call this function explicitly.
+	 */
 	void requestTreble() const;
+
+	/*!
+		\brief Request amplifier bass equalization value.
+
+		It should never be necessary to call this function explicitly.
+	 */
 	void requestBass() const;
+
+	/*!
+		\brief Request amplifier left/right balance value.
+
+		It should never be necessary to call this function explicitly.
+	 */
 	void requestBalance() const;
+
+	/*!
+		\brief Request the current preset of the amplifier.
+
+		It should never be necessary to call this function explicitly.
+	 */
 	void requestPreset() const;
+
+	/*!
+		\brief Request amplifier loudness on/off flag.
+
+		It should never be necessary to call this function explicitly.
+	 */
 	void requestLoud() const;
 
+	/*!
+		\refdim{PowerAmplifierDevice}
+	 */
 	enum
 	{
 		DIM_TREBLE = 2,
@@ -659,15 +705,54 @@ public:
 		DIM_LOUD = 20
 	};
 
+	/*!
+		\brief Increase treble equalization.
+	 */
 	void trebleUp() const;
+
+	/*!
+		\brief Decrease treble equalization.
+	 */
 	void trebleDown() const;
+
+	/*!
+		\brief Increase bass equalization.
+	 */
 	void bassUp() const;
+
+	/*!
+		\brief Decrease bass equalization.
+	 */
 	void bassDown() const;
+
+	/*!
+		\brief Move balance to the right.
+	 */
 	void balanceUp() const;
+
+	/*!
+		\brief Move balance to the left.
+	 */
 	void balanceDown() const;
+
+	/*!
+		\brief Switch to next preset equalization.
+	 */
 	void nextPreset() const;
+
+	/*!
+		\brief Switch to previous preset equalization.
+	 */
 	void prevPreset() const;
+
+	/*!
+		\brief Turn on loudness.
+	 */
 	void loudOn() const;
+
+	/*!
+		\brief Turn off loudness.
+	 */
 	void loudOff() const;
 
 protected:
