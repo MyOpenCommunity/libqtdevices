@@ -76,15 +76,26 @@ private:
 };
 
 
-/**
- * This banner represent an evolved scenario, that can do actions based on devices
- * and times based conditions.
- */
+/*!
+	\ingroup Scenarios
+	\brief Represents an improved scenario.
+
+	This banner allows the user to set and modify and improved scenario, that
+	can perform an action (sending a frame) depends on a device or/and a time
+	condition.
+*/
 class ScenarioEvolved : public Bann3Buttons
 {
 Q_OBJECT
 public:
-	ScenarioEvolved(int _item_id, QString descr, QString _action, bool _enabled,
+	/*!
+		\brief Constructor.
+
+		Given a ScenEvoTimeCondition \a tconf and a ScenEvoDeviceCondition \a dcond
+		build the %ScenarioEvolved banner that monitors the conditions in order
+		to perform the \a action argument when both the conditions are satisfied.
+	*/
+	ScenarioEvolved(int item_id, QString descr, QString action, bool enabled,
 		ScenEvoTimeCondition *tcond, ScenEvoDeviceCondition *dcond);
 
 public slots:

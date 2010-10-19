@@ -31,9 +31,10 @@
 class BtButton;
 class DeviceCondition;
 
-/**
- * This class is an abstract page that represent an evolved scenario condition.
- */
+/*!
+	\ingroup Scenarios
+	\brief An abstract page that represents an improved scenario condition.
+*/
 class ScenEvoCondition : public QWidget
 {
 Q_OBJECT
@@ -42,13 +43,25 @@ public:
 	int get_serial_number();
 
 public slots:
+	/*!
+		\brief Applies changes to the condition.
+	*/
 	virtual void Apply() = 0;
+
+	/*!
+		\brief Saves changes to the condition in the configuration file.
+	*/
 	virtual void save() = 0;
-	//! Reset condition (on cancel)
+
+	/*!
+		\brief Resets the condition, discarding changes.
+	*/
 	virtual void reset() = 0;
 
 signals:
-	//! After a status changed, a condition is satisfied
+	/*!
+		\brief Emitted when the related condition is satisfied.
+	*/
 	void condSatisfied();
 
 protected:
@@ -59,9 +72,10 @@ private:
 };
 
 
-/**
- * This class represent a time based evolved scenario condition.
- */
+/*!
+	\ingroup Scenarios
+	\brief Represents a time based evolved scenario condition.
+*/
 class ScenEvoTimeCondition : public ScenEvoCondition
 {
 Q_OBJECT
@@ -74,9 +88,7 @@ public slots:
 	virtual void reset();
 
 private slots:
-	//! Timer expired method
 	void scaduta();
-	//! Just setup qt timer (based on cond_time)
 	void setupTimer();
 
 private:
@@ -88,17 +100,26 @@ private:
 };
 
 
-/**
- * This class represent a device based evolved scenario condition.
- */
+/*!
+	\ingroup Scenarios
+	\brief Represents a device based evolved scenario condition.
+*/
 class ScenEvoDeviceCondition : public ScenEvoCondition
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructor.
+
+		Build the object, creating also the proper DeviceConditionDisplayInterface
+		and DeviceCondition objects, depending on the configuration.
+	*/
 	ScenEvoDeviceCondition(int item_id, const QDomNode &config_node);
 	~ScenEvoDeviceCondition();
 
-	//! Returns true when the condition is satisfied
+	/*!
+		\brief Returns true when the condition is satisfied.
+	*/
 	virtual bool isTrue();
 
 public slots:
@@ -107,7 +128,7 @@ public slots:
 	virtual void reset();
 
 private:
-	//! Specific device condition
+	// Specific device condition
 	DeviceCondition *device_cond;
 };
 
