@@ -37,6 +37,22 @@ class LoadsDevice;
 class BtTime;
 class QDate;
 
+/*!
+	\defgroup Loads Loads
+
+	This section allows the user to manage the loads monitoring system.
+
+	The LoadManagement class presents a list of banners each of which can switch
+	to the LoadDataPage and DeactivationTimePage depending on the configuration.
+
+	The classes LoadDataPage and DeactivationTimePage interact with the
+	LoadsDevice to work with the system.
+*/
+
+/*!
+	\ingroup Loads
+	\brief Section page that shows a list of BannLoadWithCU and BannLoadNoCU.
+*/
 class LoadManagement : public BannerPage
 {
 Q_OBJECT
@@ -51,7 +67,10 @@ private:
 	void loadItems(const QDomNode &config_node);
 };
 
-
+/*!
+	\ingroup Loads
+	\brief Page that shows a button to confirm a choice.
+*/
 class ConfirmationPage : public Page
 {
 Q_OBJECT
@@ -63,34 +82,19 @@ signals:
 	void cancel();
 };
 
-
+/*!
+	\ingroup Loads
+	\brief Content for the LoadDataPage that shows data about consuptions.
+*/
 class LoadDataContent : public QWidget
 {
 Q_OBJECT
 public:
-	/**
-	 * \param dec Number of decimals to display when in energy view
-	 * \param _rate_id Rate id to be used for economic data conversions
-	 */
 	LoadDataContent(int currency_decimals, int _rate_id = -1);
 
-	/**
-	 * Set text on consumption label
-	 */
 	void setConsumptionValue(int new_value);
 
-	/**
-	 * Update time frame for the given period.
-	 *
-	 * \param period Extracted from frame
-	 */
 	void updatePeriodDate(int period, const QDate &date, const BtTime &time);
-
-	/**
-	 * Update consuption value for the given period.
-	 *
-	 * \param period Extracted from frame
-	 */
 	void updatePeriodValue(int period, qint64 new_value);
 
 public slots:
@@ -113,6 +117,11 @@ signals:
 	void resetActuator(int);
 };
 
+/*!
+	\ingroup Loads
+	\brief Page that interacts with the LoadsDevice class and present the
+	LoadDataContent.
+*/
 class LoadDataPage : public Page
 {
 Q_OBJECT
@@ -135,8 +144,10 @@ private slots:
 	void reset();
 };
 
-
-
+/*!
+	\ingroup Loads
+	\brief
+*/
 class DeactivationTimePage : public Page
 {
 Q_OBJECT
