@@ -593,14 +593,27 @@ private:
 };
 
 
-/**
- * This class represent a group of amplifiers.  It is used to send general/environment
- * command to both normal SCS amplifiers and a virtual amplifier at the same time.
+/*!
+	\brief Send command to multiple amplifier devices.
+
+	This class is instantiated by \a createAmplifier() if needed; there should be no need
+	to use it directly.
+
+	Global and environment commands must act on both kinds of amplifiers at the same time, but
+	\a VirtualAmpliferDevice only controls the local amplifier and \a AmplifierDervice controls
+	any amplifier except the local amplifier.  Instances of this class containing both an
+	\a AmplifierDevice and a \a VirtualAmplifierDevice instance allow controlling both kinds of
+	amplifier using a single device instance.
+
+	This device does not have a where address and does not produce status updates.
  */
 class CompositeAmplifierDevice : public AmplifierDevice
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructs a device controlling the devices contained in the list.
+	 */
 	CompositeAmplifierDevice(const QList<AmplifierDevice*> &devices);
 
 	virtual QString get_key();
