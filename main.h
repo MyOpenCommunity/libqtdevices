@@ -147,7 +147,7 @@ enum Section
 	LOAD_MANAGEMENT = 18,                           /*!< Load management system */
 	/* Added to avoid compile problems... */
 	MULTIMEDIA = 26,
-	MESSAGES = 27,\
+	MESSAGES = 27,
 };
 #else
 enum Section
