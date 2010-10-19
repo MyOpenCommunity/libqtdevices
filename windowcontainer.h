@@ -31,21 +31,52 @@ class TransitionWidget;
 class QPixmap;
 
 
-// top level widget, contains the HomeWindow and other special widgets that
-// need to be shown full screen (for example the screen saver and transition widgets)
+
+/*!
+	\ingroup Core
+	\brief The top level widget and container for fullscreen widgets.
+
+*/
 class WindowContainer : public QStackedWidget
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Build the %WindowContainer with the given \a width and \a height.
+
+		Constuct the %WindowContainer setting also the Window::window_container
+		to itself and building thee HomeWindow. It also set the PageContainer
+		built inside the HomeWindow as the PageContainer for all the pages.
+	*/
 	WindowContainer(int width, int height);
+
 	PageContainer *centralLayout();
+
+	/*!
+		\brief Return the HomeWindow.
+	*/
 	HomeWindow *homeWindow();
+
+	/*!
+		\brief Return the current Window displayed.
+	*/
 	Window *currentWindow();
 
+	/*!
+		\brief Add a Window to the stack of the windows.
+	*/
 	void addWindow(Window *w);
+
+	/*!
+		\brief Set the Window \a w as the current window displayed.
+	*/
 	void showWindow(Window *w);
 
-	// NOTE: WindowContainer take the ownership of the TransitionWidget
+	/*!
+		\brief Install a widget for transitions.
+		\warning This method is unmantained, do not use.
+		\internal WindowContainer take the ownership of the TransitionWidget
+	*/
 	void installTransitionWidget(TransitionWidget *tr);
 
 	QPixmap grabHomeWindow();

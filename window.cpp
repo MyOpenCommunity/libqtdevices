@@ -33,11 +33,6 @@ Window::Window()
 	window_container->addWindow(this);
 }
 
-void Window::setWindowContainer(WindowContainer *container)
-{
-	window_container = container;
-}
-
 void Window::showWindow()
 {
 	window_container->showWindow(this);

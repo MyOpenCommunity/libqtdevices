@@ -204,6 +204,8 @@ public:
 public slots:
 	/*!
 		\brief Make the page the current page showed in the PageContainer.
+
+		Note that also the Window that contains the Page is shown too.
 	*/
 	virtual void showPage();
 
