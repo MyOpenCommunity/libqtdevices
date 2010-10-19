@@ -254,12 +254,12 @@ private:
 };
 
 
-class impPassword : public Bann2StateButtons
+class BannPassword : public Bann2StateButtons
 {
 Q_OBJECT
 public:
-	impPassword(QString icon_on, QString icon_off, QString icon_label, QString descr,
-		    int item_id, QString pwd, int attiva);
+	BannPassword(QString icon_on, QString icon_off, QString icon_label, QString descr,
+		     int item_id, QString pwd, int attiva);
 
 private:
 	PasswordChanger changer;

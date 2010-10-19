@@ -432,8 +432,8 @@ void PasswordChanger::restoreBeepState()
 }
 
 
-impPassword::impPassword(QString icon_on, QString icon_off, QString icon_label, QString descr,
-			 int _item_id, QString pwd, int attiva) :
+BannPassword::BannPassword(QString icon_on, QString icon_off, QString icon_label, QString descr,
+			   int _item_id, QString pwd, int attiva) :
        Bann2StateButtons(0), changer(_item_id, pwd, attiva)
 {
 	initBanner(icon_off, icon_label, descr);
