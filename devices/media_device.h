@@ -494,7 +494,8 @@ protected:
 		The \a where can be \c 0 for a general device, \c \#a for an area device
 		of a 2-digit number for a point-to-point device.
 
-		Note that an AmplifierDevice will never affect the local amplfier.
+		Note that an AmplifierDevice will never affect the local amplfier, use VirtualAmplifierDevice
+		to control the local amplifier.
 	*/
 	AmplifierDevice(QString where, int openserver_id = 0);
 
@@ -518,27 +519,63 @@ private:
 };
 
 
+/*!
+	\ingroup SoundDiffusion
+	\brief The local sound diffusion amplifier.
+
+	This device manages SCS commands sent from the GUI/SCS to the local amplifier.
+
+	\section VirtualAmplifierDevice-dimensions Dimensions
+	\startdim
+	\dim{REQ_AMPLI_ON,bool,,Command to turn on/turn off the local amplifier.}
+	\dim{REQ_VOLUME_UP,int,,Command to increase amplifier volume (up to 31).}
+	\dim{REQ_VOLUME_DOWN,int,,Command to decrease amplifier volume (down to 1).}
+	\dim{REQ_SET_VOLUME,int,,Command to set amplifier level to the given value (1-31).}
+	\dim{REQ_TEMPORARY_OFF,no value,,Switch off the local amplifier for 1 second.  Do not send notifications and react to other commands as if there was no state change.}
+	\dim{DIM_SELF_REQUEST,bool,,Flag value: when true the command was sent by the GUI; when false it was received from the SCS bus.}
+	\enddim
+*/
 class VirtualAmplifierDevice : public AmplifierDevice
 {
 Q_OBJECT
 public:
+	/*!
+		\refdim{VirtualAmplifierDevice}
+	*/
 	enum
 	{
-		REQ_AMPLI_ON = -2,       // set amplifier status: true = ON, false = OFF
-		REQ_VOLUME_UP = 3,       // raise volume, value is the step
-		REQ_VOLUME_DOWN = 4,     // decrease volume, value is the step
-		REQ_SET_VOLUME = -1,     // set volume to specified level (range: 1-32)
-		REQ_TEMPORARY_OFF = -3,  // temporary off of the amplifier
-		// boolean, set to true if the status update is from a command we sent ourselves
+		REQ_AMPLI_ON = -2,
+		REQ_VOLUME_UP = 3,
+		REQ_VOLUME_DOWN = 4,
+		REQ_SET_VOLUME = -1,
+		REQ_TEMPORARY_OFF = -3,
 		DIM_SELF_REQUEST = -4,
 	};
 
+	/*!
+		\brief Constructor
+
+		The \a where can only be a 2-digit number, and it must match the where
+		configured for the local amplifier.
+	*/
 	VirtualAmplifierDevice(const QString &where, int openserver_id = 0);
 
 	virtual void init();
 
-	// must be called every time status/volume is set to inform other devices on the bus
+	/*!
+		\brief Emit a status update that amplifier status changed.
+
+		Sends a status update frame to the bus and emits a \a valueReceived() signal
+		with dimensions \a DIM_STATUS and \a DIM_SELF_REQUEST.
+	 */
 	void updateStatus(bool status);
+
+	/*!
+		\brief Emit a status update that amplifier volume changed.
+
+		Sends a status update frame to the bus and emits a \a valueReceived() signal
+		with dimensions \a DIM_VOLUME and \a DIM_SELF_REQUEST.
+	 */
 	void updateVolume(int volume);
 
 	virtual void turnOn();
@@ -556,14 +593,27 @@ private:
 };
 
 
-/**
- * This class represent a group of amplifiers.  It is used to send general/environment
- * command to both normal SCS amplifiers and a virtual amplifier at the same time.
+/*!
+	\brief Send command to multiple amplifier devices.
+
+	This class is instantiated by \a createAmplifier() if needed; there should be no need
+	to use it directly.
+
+	Global and environment commands must act on both kinds of amplifiers at the same time, but
+	\a VirtualAmpliferDevice only controls the local amplifier and \a AmplifierDervice controls
+	any amplifier except the local amplifier.  Instances of this class containing both an
+	\a AmplifierDevice and a \a VirtualAmplifierDevice instance allow controlling both kinds of
+	amplifier using a single device instance.
+
+	This device does not have a where address and does not produce status updates.
  */
 class CompositeAmplifierDevice : public AmplifierDevice
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructs a device controlling the devices contained in the list.
+	 */
 	CompositeAmplifierDevice(const QList<AmplifierDevice*> &devices);
 
 	virtual QString get_key();
@@ -582,24 +632,70 @@ private:
 };
 
 
-/**
- * This class represent a device for managing the power amplifier, an evolved
- * version of the amplifier.
+/*!
+	\brief Controls the power amplifier.
+
+	Allows changing power amplifier equalization and setting it to one of the
+	presets.
+
+	\section PowerAmplifierDevice-dimensions Dimensions
+	\startdim
+	\dim{DIM_TREBLE,int,,Treble equalization (-10/+10).}
+	\dim{DIM_BASS,int,,Bass equalization (-10/+10).}
+	\dim{DIM_BALANCE,int,,Balance value (-10 full left to +10 full right).}
+	\dim{DIM_LOUD,bool,,Loudness flag.}
+	\dim{DIM_PRESET,int,,Current equalization preset (0-9: fixed presets; 10-19: custom presets).}
+	\enddim
  */
 class PowerAmplifierDevice : public AmplifierDevice
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructor
+	 */
 	PowerAmplifierDevice(QString address, int openserver_id = 0);
 
 	virtual void init();
 
+	/*!
+		\brief Request amplifier treble equalization value.
+
+		It should never be necessary to call this function explicitly.
+	 */
 	void requestTreble() const;
+
+	/*!
+		\brief Request amplifier bass equalization value.
+
+		It should never be necessary to call this function explicitly.
+	 */
 	void requestBass() const;
+
+	/*!
+		\brief Request amplifier left/right balance value.
+
+		It should never be necessary to call this function explicitly.
+	 */
 	void requestBalance() const;
+
+	/*!
+		\brief Request the current preset of the amplifier.
+
+		It should never be necessary to call this function explicitly.
+	 */
 	void requestPreset() const;
+
+	/*!
+		\brief Request amplifier loudness on/off flag.
+
+		It should never be necessary to call this function explicitly.
+	 */
 	void requestLoud() const;
 
+	/*!
+		\refdim{PowerAmplifierDevice}
+	 */
 	enum
 	{
 		DIM_TREBLE = 2,
@@ -609,15 +705,54 @@ public:
 		DIM_LOUD = 20
 	};
 
+	/*!
+		\brief Increase treble equalization.
+	 */
 	void trebleUp() const;
+
+	/*!
+		\brief Decrease treble equalization.
+	 */
 	void trebleDown() const;
+
+	/*!
+		\brief Increase bass equalization.
+	 */
 	void bassUp() const;
+
+	/*!
+		\brief Decrease bass equalization.
+	 */
 	void bassDown() const;
+
+	/*!
+		\brief Move balance to the right.
+	 */
 	void balanceUp() const;
+
+	/*!
+		\brief Move balance to the left.
+	 */
 	void balanceDown() const;
+
+	/*!
+		\brief Switch to next preset equalization.
+	 */
 	void nextPreset() const;
+
+	/*!
+		\brief Switch to previous preset equalization.
+	 */
 	void prevPreset() const;
+
+	/*!
+		\brief Turn on loudness.
+	 */
 	void loudOn() const;
+
+	/*!
+		\brief Turn off loudness.
+	 */
 	void loudOff() const;
 
 protected:
