@@ -51,8 +51,8 @@
 #define BOTTOM_SPACING 15
 
 const QString video_grabber_path = "/home/bticino/bin/rsize";
-const QString video_grabber_normal_args = "20 160 0";
-const QString video_grabber_fullscreen_args = "5 12 1";
+const QString video_grabber_normal_args = "20 160 0 0 0";
+const QString video_grabber_fullscreen_args = "5 12 1 0 0";
 
 
 namespace VCTCallPrivate
@@ -420,7 +420,13 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 		{
 			bool new_status = (it.value().toInt() == VideoDoorEntryDevice::AUDIO_VIDEO);
 			if (dev->ipCall())
-				new_status = false;
+			{
+				new_status = false; // Ip calls has always the video disabled.
+
+				// If we have already answer, we need to send again the answer.
+				if (bt_global::audio_states->contains(AudioStates::IP_VIDEO_CALL))
+					dev->answerCall();
+			}
 
 			bool old_status = call_status->video_enabled;
 
