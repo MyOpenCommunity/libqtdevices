@@ -880,7 +880,7 @@ void BtMain::checkScreensaver()
 			}
 			else
 			{
-				Home->showPage();
+				home->showPage();
 				// this makes the screen saver go back to prev_page
 				// when exited
 				bt_global::page_stack.currentPageChanged(prev_page);
