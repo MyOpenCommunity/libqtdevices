@@ -247,9 +247,7 @@ void bannVersion::showVers()
 }
 
 
-impPassword::impPassword(QString icon_on, QString icon_off, QString icon_label, QString descr,
-			 int _item_id, QString pwd, int attiva) :
-	Bann2StateButtons(0)
+PasswordChanger::PasswordChanger(int _item_id, QString pwd, int attiva)
 {
 	item_id = _item_id;
 	password = pwd;
@@ -264,30 +262,27 @@ impPassword::impPassword(QString icon_on, QString icon_off, QString icon_label, 
 		setStatus(CHECK_OLD_PASSWORD);
 		tasti->setMode(Keypad::HIDDEN);
 	}
-	initBanner(icon_off, icon_label, descr);
 
-	connect(right_button, SIGNAL(clicked()), tasti, SLOT(showPage()));
-	connect(left_button, SIGNAL(clicked()), SLOT(requestPasswdOn()));
 	connect(tasti, SIGNAL(Closed()), SIGNAL(pageClosed()));
 	connect(tasti, SIGNAL(Closed()), SLOT(resetState()));
 	connect(tasti, SIGNAL(accept()), SLOT(checkPasswd()));
 
 	active = (attiva == 1);
 	bt_global::btmain->setPassword(active, password);
-
-	left_button->setOnOff();
-	left_button->setOffImage(icon_off);
-	left_button->setOnImage(icon_on);
-	left_button->setStatus(active);
 }
 
-void impPassword::requestPasswdOn()
+void PasswordChanger::changePassword()
+{
+	tasti->showPage();
+}
+
+void PasswordChanger::requestPasswdOn()
 {
 	setStatus(ASK_PASSWORD);
 	tasti->showPage();
 }
 
-void impPassword::toggleActivation()
+void PasswordChanger::toggleActivation()
 {
 	active = !active;
 #ifdef CONFIG_TS_3_5
@@ -296,10 +291,10 @@ void impPassword::toggleActivation()
 	setCfgValue("actived", active, item_id);
 #endif
 	bt_global::btmain->setPassword(active, password);
-	left_button->setStatus(active);
+	emit passwordActive(active);
 }
 
-void impPassword::showEvent(QShowEvent *event)
+void PasswordChanger::showEvent(QShowEvent *event)
 {
 	// TODO: all this thing seems useless...
 	if (password.isEmpty())
@@ -314,14 +309,14 @@ void impPassword::showEvent(QShowEvent *event)
 	tasti->resetText();
 }
 
-void impPassword::resetState()
+void PasswordChanger::resetState()
 {
 	setStatus(CHECK_OLD_PASSWORD);
 	tasti->resetText();
 	tasti->showWrongPassword(false);
 }
 
-void impPassword::checkPasswd()
+void PasswordChanger::checkPasswd()
 {
 	QString c = tasti->getText();
 	tasti->resetText();
@@ -330,7 +325,7 @@ void impPassword::checkPasswd()
 	// TODO: understand what must be done when password is not set
 	case PASSWD_NOT_SET:
 		savePassword(c);
-		emit pageClosed();
+		emit finished();
 		break;
 
 	case CHECK_OLD_PASSWORD:
@@ -374,7 +369,7 @@ void impPassword::checkPasswd()
 		{
 			// save password and quit
 			savePassword(c);
-			emit pageClosed();
+			emit finished();
 		}
 		break;
 
@@ -383,7 +378,7 @@ void impPassword::checkPasswd()
 		{
 			toggleActivation();
 			setStatus(CHECK_OLD_PASSWORD);
-			emit pageClosed();
+			emit finished();
 		}
 		else
 			tasti->showWrongPassword(true);
@@ -391,7 +386,7 @@ void impPassword::checkPasswd()
 	}
 }
 
-void impPassword::setStatus(PasswdStatus _status)
+void PasswordChanger::setStatus(PasswdStatus _status)
 {
 	status = _status;
 
@@ -416,7 +411,7 @@ void impPassword::setStatus(PasswdStatus _status)
 	}
 }
 
-void impPassword::savePassword(const QString &passwd)
+void PasswordChanger::savePassword(const QString &passwd)
 {
 	if (!passwd.isEmpty())
 	{
@@ -431,9 +426,27 @@ void impPassword::savePassword(const QString &passwd)
 	}
 }
 
-void impPassword::restoreBeepState()
+void PasswordChanger::restoreBeepState()
 {
 	setBeep(sb);
+}
+
+
+impPassword::impPassword(QString icon_on, QString icon_off, QString icon_label, QString descr,
+			 int _item_id, QString pwd, int attiva) :
+       Bann2StateButtons(0), changer(_item_id, pwd, attiva)
+{
+	initBanner(icon_off, icon_label, descr);
+
+	left_button->setOnOff();
+	left_button->setOffImage(icon_off);
+	left_button->setOnImage(icon_on);
+	left_button->setStatus(attiva);
+
+	connect(right_button, SIGNAL(clicked()), &changer, SLOT(changePassword()));
+	connect(left_button, SIGNAL(clicked()), &changer, SLOT(requestPasswdOn()));
+	connect(&changer, SIGNAL(finished()), SIGNAL(pageClosed()));
+	connect(&changer, SIGNAL(passwordActive(bool)), left_button, SLOT(setStatus(bool)));
 }
 
 

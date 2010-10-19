@@ -176,25 +176,15 @@ private:
 
 
 /**
- * Enable/disable password on freeze and change password.
+ * Logic to enable/disable password on freeze and change password.
  */
-class impPassword : public Bann2StateButtons
+class PasswordChanger : public QObject
 {
 Q_OBJECT
 public:
-	impPassword(QString icon_on, QString icon_off, QString icon_label, QString descr,
-		    int item_id, QString pwd, int attiva);
+	PasswordChanger(int item_id, QString pwd, int attiva);
 
 public slots:
-	/**
-	 * Stops the error beep made when the password insertion is wrong
-	 */
-	void restoreBeepState();
-
-protected:
-	virtual void showEvent(QShowEvent *event);
-
-private slots:
 	/*
 	 * User tries to activate password checking on freeze.
 	 *
@@ -203,10 +193,35 @@ private slots:
 	 */
 	void requestPasswdOn();
 
+	/*!
+		\brief Ask for the current password, then the new one (with confirm).
+	 */
+	void changePassword();
+
+signals:
+	/*!
+		\brief Emitted when password check (de)activation or password change completes.
+	 */
+	void finished();
+
+	/*!
+		\brief Emitted when password check is activated/deactivated.
+	 */
+	void passwordActive(bool active);
+
+protected:
+	virtual void showEvent(QShowEvent *event);
+
+private slots:
 	// called on tasti::accept() (user has confirmed password entry)
 	void checkPasswd();
 	//
 	void resetState();
+
+	/**
+	 * Stops the error beep made when the password insertion is wrong
+	 */
+	void restoreBeepState();
 
 private:
 	/**
@@ -236,12 +251,18 @@ private:
 	Keypad *tasti;
 	bool sb;
 	int item_id;
+};
 
-signals:
-/*!
-  \brief  Emitted when the password is (dis)abilitated so BtMain knows if has to ask password or not
-*/
-	void activatePaswd(bool);
+
+class impPassword : public Bann2StateButtons
+{
+Q_OBJECT
+public:
+	impPassword(QString icon_on, QString icon_off, QString icon_label, QString descr,
+		    int item_id, QString pwd, int attiva);
+
+private:
+	PasswordChanger changer;
 };
 
 
