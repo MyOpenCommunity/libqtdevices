@@ -42,7 +42,7 @@ class ScrollableContent;
 	various component together.
 
 	All the logic about scrolling is delegated to the ScrollableContent class,
-	which is connected to the page navgiation bar.
+	which is connected to the page navigation bar.
 
 	\sa Page::buildPage(), ScrollableContent
  */

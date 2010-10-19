@@ -96,7 +96,7 @@ protected:
 	the content and to optionally draw a separator between columns (depending on
 	the platform).
 
-	If you whant to append a banner to the content you can use the appendBanner()
+	If you want to append a banner to the content you can use the appendBanner()
 	method. You can get it back again using the getBanner() method.
 
 	The number of banners actually contained in content can be retrived using the
