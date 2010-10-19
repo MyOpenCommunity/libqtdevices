@@ -150,7 +150,7 @@ private:
 	\section dimensions Dimensions
 	\startdim
 	\dim{DIM_DIMMER_PROBLEM,no value,,Set if there is a problem with the dimmer.}
-	\dim{DIM_DIMMER_LEVEL,int,,The 10-level dimmer level (2-10).}
+	\dim{DIM_DIMMER_LEVEL,int,2-10,The 10-level dimmer level.}
 	\enddim
 
 	When the status list contains the DIM_DIMMER_LEVEL dimension, it will always
@@ -205,7 +205,7 @@ protected:
 
 	\section dimensions Dimensions
 	\startdim
-	\dim{DIM_DIMMER100_LEVEL,int,,The 100-level dimmer level (1-100).}
+	\dim{DIM_DIMMER100_LEVEL,int,1-100,The 100-level dimmer level.}
 	\dim{DIM_DIMMER100_SPEED,int,,The 100-level dimmer on/off speed.}
 	\enddim
 
