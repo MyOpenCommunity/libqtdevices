@@ -155,7 +155,6 @@ HEADERS += actuators.h \
 	lighting.h \
 	loads.h \
 	load_management.h \
-	logoscreensaver.h \
 	main.h \
 	mediaplayer.h \
 	navigation_bar.h \
@@ -258,7 +257,6 @@ SOURCES += actuators.cpp \
 	lighting.cpp \
 	loads.cpp \
 	load_management.cpp \
-	logoscreensaver.cpp \
 	main.cpp \
 	mediaplayer.cpp \
 	navigation_bar.cpp \
@@ -297,4 +295,8 @@ SOURCES += actuators.cpp \
 	window.cpp \
 	windowcontainer.cpp \
 	xml_functions.cpp
+
+# Examples
+SOURCES += examples/logoscreensaver/logoscreensaver.cpp
+HEADERS += examples/logoscreensaver/logoscreensaver.h
 
