@@ -23,6 +23,7 @@
 #define SECTION_PAGE_H
 
 #include "iconpage.h"
+#include "state_button.h"
 
 class QDomNode;
 

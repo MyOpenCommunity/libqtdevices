@@ -450,8 +450,8 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<!-- Videodoorentry: Ringtone Exclusion -->
 	<item>
 		<cid>14253</cid>
-		<img_ringexclusion_on>setup/beepon.png</img_ringexclusion_on>
-		<img_ringexclusion_off>setup/beepoff.png</img_ringexclusion_off>
+		<img_ringexclusion_on>setup/ethon.png</img_ringexclusion_on>
+		<img_ringexclusion_off>setup/ethoff.png</img_ringexclusion_off>
 		<img_tray_ringexclusion>home/btnesclusionechiamataon.png</img_tray_ringexclusion>
 	</item>
 	<!-- Multimedia page links -->

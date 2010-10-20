@@ -52,11 +52,18 @@
 
 enum Pages
 {
-	VIDEO_CONTROL_MENU = 10001,  /*!< Video control menu */
-	INTERCOM_MENU = 10002,       /*!< Intercom menu */
+	VIDEO_CONTROL_MENU = 10001,  /* Video control menu */
+	INTERCOM_MENU = 10002,       /* Intercom menu */
 	INTERNAL_INTERCOM = 10101,
 	EXTERNAL_INTERCOM = 10102,
 	GUARD_UNIT = 19004,
+};
+
+enum ItemsSettings
+{
+	ITEM_HANDSFREE = 14251,
+	ITEM_PROF_STUDIO = 14252,
+	ITEM_RING_EXCLUSION = 14253,
 };
 
 #ifdef LAYOUT_TS_10
@@ -494,7 +501,48 @@ IntercomMenu::IntercomMenu(const QDomNode &config_node, VideoDoorEntryDevice *de
 }
 
 
-HandsFree::HandsFree(bool status, int item_id) : IconButtonOnTray(tr("Hands Free"),
+VctSettings::VctSettings(const QDomNode &config_node)
+{
+	SkinContext cxt(getTextChild(config_node, "cid").toInt());
+	buildPage(new BannerContent(0, 1), new NavigationBar, getTextChild(config_node, "descr"));
+	page_content->layout()->setSpacing(30);
+	page_content->layout()->setContentsMargins(18, 0, 207, 0);
+	loadItems(config_node);
+}
+
+void VctSettings::loadItems(const QDomNode &config_node)
+{
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		SkinContext cxt(getTextChild(item, "cid").toInt());
+		bool status = getTextChild(item, "enable").toInt();
+		banner *b = 0;
+
+		int id = getTextChild(item, "id").toInt();
+		int item_id = getTextChild(item, "itemID").toInt();
+
+		switch (id)
+		{
+		case ITEM_HANDSFREE:
+			b = new HandsFree(status, item_id);
+			break;
+		case ITEM_PROF_STUDIO:
+			b = new ProfessionalStudio(status, item_id);
+			break;
+		case ITEM_RING_EXCLUSION:
+			b = new RingtoneExclusion(status, item_id);
+			break;
+		default:
+			Q_ASSERT_X(false, "VctSettings::loadItems", qPrintable(QString("Unknown item %1").arg(id)));
+		}
+
+		if (b)
+			page_content->appendBanner(b);
+	}
+}
+
+
+HandsFree::HandsFree(bool status, int item_id) : BannOnTray(tr("Hands Free"),
 	"handsfree_on", "handsfree_off", "tray_handsfree", TrayBar::HANDS_FREE, status, item_id)
 {
 	updateStatus();
@@ -502,12 +550,12 @@ HandsFree::HandsFree(bool status, int item_id) : IconButtonOnTray(tr("Hands Free
 
 void HandsFree::updateStatus()
 {
-	IconButtonOnTray::updateStatus();
-	VCTCallPage::setHandsFree(button->getStatus() == StateButton::ON);
+	BannOnTray::updateStatus();
+	VCTCallPage::setHandsFree(left_button->getStatus() == StateButton::ON);
 }
 
 
-ProfessionalStudio::ProfessionalStudio(bool status, int item_id) : IconButtonOnTray(tr("Professional studio"),
+ProfessionalStudio::ProfessionalStudio(bool status, int item_id) : BannOnTray(tr("Professional studio"),
 	"profstudio_on", "profstudio_off", "tray_profstudio", TrayBar::PROF_STUDIO, status, item_id)
 {
 	updateStatus();
@@ -515,12 +563,12 @@ ProfessionalStudio::ProfessionalStudio(bool status, int item_id) : IconButtonOnT
 
 void ProfessionalStudio::updateStatus()
 {
-	IconButtonOnTray::updateStatus();
-	VCTCallPage::setProfStudio(button->getStatus() == StateButton::ON);
+	BannOnTray::updateStatus();
+	VCTCallPage::setProfStudio(left_button->getStatus() == StateButton::ON);
 }
 
 
-RingtoneExclusion::RingtoneExclusion(bool status, int item_id) : IconButtonOnTray(tr("Ringtone Exclusion"),
+RingtoneExclusion::RingtoneExclusion(bool status, int item_id) : BannOnTray(tr("Ringtone Exclusion"),
 	"ringexclusion_on", "ringexclusion_off", "tray_ringexclusion", TrayBar::RING_EXCLUSION, status, item_id)
 {
 	updateStatus();
@@ -528,8 +576,8 @@ RingtoneExclusion::RingtoneExclusion(bool status, int item_id) : IconButtonOnTra
 
 void RingtoneExclusion::updateStatus()
 {
-	IconButtonOnTray::updateStatus();
-	VideoDoorEntry::ring_exclusion = button->getStatus() == StateButton::ON;
+	BannOnTray::updateStatus();
+	VideoDoorEntry::ring_exclusion = left_button->getStatus() == StateButton::ON;
 }
 
 #endif

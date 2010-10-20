@@ -25,6 +25,7 @@
 #include "skinmanager.h" // bt_global::skin
 #include "generic_functions.h" // getBostikName
 #include "labels.h" // TextOnImageLabel
+#include "btmain.h" // bt_global::btmain
 
 #include <QWidget>
 #include <QLabel>
@@ -139,7 +140,14 @@ void Bann2Buttons::initBanner(const QString &left, const QString &center, const 
 void Bann2Buttons::setTextAlignment(Qt::Alignment align)
 {
 	if (center_label)
+	{
+		// Reset the alignment of the cell that contains the label if the requested
+		// label alignment not contains AlignHCenter.
+		if ((align & Qt::AlignHCenter) == 0)
+			static_cast<QGridLayout*>(layout())->itemAtPosition(0, 1)->setAlignment(0);
+
 		center_label->setAlignment(align);
+	}
 }
 
 void Bann2Buttons::setCentralText(const QString &t)
@@ -427,4 +435,36 @@ void BannLCDRange::emitValueChanged()
 	control_timer->stop();
 
 	emit valueChanged(lcd->intValue());
+}
+
+
+BannOnTray::BannOnTray(const QString &label, const QString &icon_on, const QString &icon_off,
+	const QString &tray_icon, TrayBar::ButtonId tray_id, bool status, int _item_id)
+{
+	initBanner(icon_off, QString(), label);
+	setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+
+	left_button->setOnOff();
+	left_button->setOffImage(bt_global::skin->getImage(icon_off));
+	left_button->setOnImage(bt_global::skin->getImage(icon_on));
+	left_button->setStatus(status);
+	connect(left_button, SIGNAL(clicked()), SLOT(toggleActivation()));
+
+	tray_button = new BtButton(bt_global::skin->getImage(tray_icon));
+	bt_global::btmain->trayBar()->addButton(tray_button, tray_id);
+
+	item_id = _item_id;
+}
+
+void BannOnTray::toggleActivation()
+{
+	left_button->setStatus(!left_button->getStatus());
+	if (item_id != -1)
+		setCfgValue("enable", left_button->getStatus(), item_id);
+	updateStatus();
+}
+
+void BannOnTray::updateStatus()
+{
+	tray_button->setVisible(left_button->getStatus() == StateButton::ON);
 }
