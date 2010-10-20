@@ -516,7 +516,7 @@ void PageTermoReg::createSettingsItem(QDomNode item, SettingsPage *settings, The
 		weekendSettings(item, settings, programs, _dev);
 		break;
 	default:
-		qFatal("Unhandled item in thermal regulator settings");
+		qFatal("Unhandled item %d in thermal regulator settings", id);
 		break;
 	}
 }
