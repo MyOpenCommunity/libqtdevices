@@ -501,6 +501,30 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_link_icon>multimediale/radiooverip.png</img_link_icon>
 		<img_ipradio_icon>multimediale/radiooveripmini.png</img_ipradio_icon>
 	</item>
+	<!-- air conditioning subsystem-->
+	<item>
+		<cid>4000</cid>
+		<img_central_icon>termoregolazione/airconditioning.png</img_central_icon>
+		<img_ok>termoregolazione/ok.png</img_ok>
+		<img_off>termoregolazione/off.png</img_off>
+		<img_air_general>termoregolazione/customairconditioning.png</img_air_general>
+		<img_air_single>termoregolazione/airconditioning.png</img_air_single>
+		<img_air_single_temp>termoregolazione/backtemperatura.png</img_air_single_temp>
+		<img_split_cmd>termoregolazione/edit.png</img_split_cmd>
+		<img_split_settings>termoregolazione/edit.png</img_split_settings>
+		<img_custom_button>termoregolazione/customairconditioning.png</img_custom_button>
+		<img_cycle_mode>termoregolazione/btnciclamod.png</img_cycle_mode>
+		<img_cycle_speed>termoregolazione/btnciclafancoil.png</img_cycle_speed>
+		<img_swing_on>termoregolazione/on.png</img_swing_on>
+		<img_swing_off>termoregolazione/off.png</img_swing_off>
+		<img_swing_on_checked>termoregolazione/autoon.png</img_swing_on_checked> <!-- WRONG ICON -->
+		<img_swing_off_checked>termoregolazione/statocentraleoff.png</img_swing_off_checked>
+		<img_split_cmd>termoregolazione/on.png</img_split_cmd>
+		<img_plus_disabled>termoregolazione/piup.png</img_plus_disabled>
+		<img_minus_disabled>termoregolazione/menop.png</img_minus_disabled>
+		<img_setstate_error>termoregolazione/airconditioning_error.png</img_setstate_error>
+	</item>
+
 	<!-- sound diffusion system -->
         <item>
 		<!-- multi sound diffusion ambient list -->
