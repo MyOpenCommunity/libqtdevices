@@ -158,18 +158,6 @@ signals:
 };
 
 
-#if 0
-
-class bannOnIcons : public BannerOld
-{
-Q_OBJECT
-public:
-	bannOnIcons(QWidget *parent);
-};
-
-#endif
-
-
 /*!
   \class bannBut2Icon
   \brief This is a class that describes a banner with a button on the right,
