@@ -19,16 +19,16 @@
  */
 
 
-#ifndef TEST_ENTRYPHONE_DEVICE_H
-#define TEST_ENTRYPHONE_DEVICE_H
+#ifndef TEST_VIDEODOORENTRY_DEVICE_H
+#define TEST_VIDEODOORENTRY_DEVICE_H
 
 #include "test_device.h"
 
-class EntryphoneDevice;
+class VideoDoorEntryDevice;
 class QString;
 
 
-class TestEntryphoneDevice : public TestDevice
+class TestVideoDoorEntryDevice : public TestDevice
 {
 Q_OBJECT
 private slots:
@@ -75,7 +75,7 @@ private:
 	void simulateCallerAddress(int kind, int mmtype, QString where);
 	void simulateRearmSession(int kind, int mmtype, QString where);
 
-	EntryphoneDevice *dev;
+	VideoDoorEntryDevice *dev;
 };
 
-#endif // TEST_ENTRYPHONE_DEVICE_H
+#endif // TEST_VIDEODOORENTRY_DEVICE_H

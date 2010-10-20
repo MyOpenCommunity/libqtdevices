@@ -72,7 +72,7 @@ private:
 	void displayTime();
 private:
 	BtTime _time;
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	QLabel *hour, *minute, *second;
 #else
 	QLCDNumber *num;
@@ -106,7 +106,7 @@ private:
 
 private:
 	/// display date set
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	QLabel *year, *month, *day;
 #else
 	QLCDNumber *date_display;

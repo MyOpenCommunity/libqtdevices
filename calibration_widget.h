@@ -85,7 +85,7 @@ private:
 
 	QString text; // the text that contains the instructions for the user
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	QPixmap logo;
 #endif
 	// Start to track the crosshair movement

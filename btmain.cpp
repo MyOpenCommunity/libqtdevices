@@ -77,12 +77,18 @@
 #define SCREENSAVER_CHECK 2000
 #define WD_THREAD_INTERVAL 5000
 
-#if LAYOUT_BTOUCH
+#if LAYOUT_TS_3_5
 #define TS_NUM_BASE_ADDRESS 0x300
 #else
 #define TS_NUM_BASE_ADDRESS 0x700
 #endif
 
+/*!
+	\defgroup Core Core
+
+	Contains defines, functions and classes that are not related to a specific
+	section.
+*/
 
 /*!
 	\namespace bt_global
@@ -100,7 +106,7 @@ namespace
 	}
 
 
-#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TS_10)
 
 	// used to store the time of the last click; used by the screen saver code
 	// on x86
@@ -237,7 +243,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	bt_global::sound = new SoundPlayer;
 	bt_global::ringtones = new RingtonesManager(RINGTONE_FILE);
 
-#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TS_10)
 	// save last click time for the screen saver
 	qApp->installEventFilter(new LastClickTime);
 	// avoid calibration starting at every boot
@@ -319,7 +325,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 
 	calibrating = false;
 	pagDefault = NULL;
-	Home = NULL;
+	home = NULL;
 	version = NULL;
 	alreadyCalibrated = false;
 	alarm_clock_on = false;
@@ -336,7 +342,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	screensaver_time = 60;
 	screenoff_time = 120;
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	// We want to set the stylesheet for the version page, but we have to wait
 	// after all the pages are built in order to set the dynamic properties _before_
 	// applying the styles. As an exception, we set the styles for the version page
@@ -359,7 +365,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 		qDebug() << "No pointer calibration file, calibrating";
 
 		alreadyCalibrated = true;
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 		Calibration *cal = new Calibration(true);
 #else
 		Calibration *cal = new Calibration;
@@ -367,7 +373,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 		cal->showWindow();
 		connect(cal, SIGNAL(Closed()), SLOT(waitBeforeInit()));
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 		connect(cal, SIGNAL(Closed()), version, SLOT(showPage()));
 #else
 		connect(cal, SIGNAL(Closed()), loading, SLOT(showWindow()));
@@ -382,7 +388,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 		cal->showWindow();
 		connect(cal, SIGNAL(Closed()), SLOT(waitBeforeInit()));
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 		connect(cal, SIGNAL(Closed()), version, SLOT(showPage()));
 #else
 		connect(cal, SIGNAL(Closed()), loading, SLOT(showWindow()));
@@ -478,7 +484,7 @@ void BtMain::loadGlobalConfig()
 		(*config)[TS_NUMBER] = QString::number(0);
 	}
 
-	// TouchX source and amplifier addresses
+	// TS 10'' source and amplifier addresses
 	setConfigValue(scs_node, "coordinate_scs/my_mmaddress", (*config)[SOURCE_ADDRESS]);
 	setConfigValue(scs_node, "coordinate_scs/my_maaddress", (*config)[AMPLIFIER_ADDRESS]);
 
@@ -511,11 +517,11 @@ void BtMain::loadConfiguration()
 			qWarning("setup node not found on xml config file!");
 	}
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	QDomNode display_node = getChildWithId(getPageNode(SETTINGS), QRegExp("item\\d{1,2}"), DISPLAY);
 #endif
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	if (!display_node.isNull())
 	{
 		QDomElement n = getElement(display_node, "brightness/level");
@@ -525,7 +531,7 @@ void BtMain::loadConfiguration()
 #endif
 
 	ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	if (!display_node.isNull())
 	{
 		QDomElement screensaver_node = getElement(display_node, "screensaver");
@@ -541,13 +547,13 @@ void BtMain::loadConfiguration()
 
 	window_container->homeWindow()->loadConfiguration();
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	QDomNode gui_node = getConfElement("displaypages");
 	QDomNode pagemenu_home = getChildWithId(gui_node, QRegExp("pagemenu(\\d{1,2}|)"), 0);
 	// homePage must be built after the loading of the configuration,
 	// to ensure that values displayed (by homePage or its child pages)
 	// is in according with saved values.
-	Home = new HomePage(pagemenu_home);
+	home = new HomePage(pagemenu_home);
 
 	QString orientation = getTextChild(gui_node, "orientation");
 	if (!orientation.isNull())
@@ -556,7 +562,7 @@ void BtMain::loadConfiguration()
 	QDomNode gui_node = getConfElement("gui");
 	// TODO read the id from the <homepage> node
 	QDomNode pagemenu_home = getHomepageNode();
-	Home = new HomePage(pagemenu_home);
+	home = new HomePage(pagemenu_home);
 
 	QDomNode video_node = getPageNode(VIDEODOORENTRY);
 	// Touch X can receive calls even if the videodoorentry section is not
@@ -567,16 +573,16 @@ void BtMain::loadConfiguration()
 		(void) new VideoDoorEntry;
 
 #endif
-	connect(window_container->homeWindow(), SIGNAL(showHomePage()), Home, SLOT(showPage()));
-	connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), Home, SLOT(showSectionPage(int)));
-	connect(Home, SIGNAL(iconStateChanged(int,StateButton::Status)), window_container->homeWindow(),
+	connect(window_container->homeWindow(), SIGNAL(showHomePage()), home, SLOT(showPage()));
+	connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), home, SLOT(showSectionPage(int)));
+	connect(home, SIGNAL(iconStateChanged(int,StateButton::Status)), window_container->homeWindow(),
 		SLOT(iconStateChanged(int,StateButton::Status)));
 
 	QDomNode home_node = getChildWithName(gui_node, "homepage");
 	if (getTextChild(home_node, "isdefined").toInt())
 	{
 		int id_default = getTextChild(home_node, "id").toInt();
-		pagDefault = !id_default ? Home : getPage(id_default);
+		pagDefault = !id_default ? home : getPage(id_default);
 	}
 
 	// Transition effects are for now disabled!
@@ -593,7 +599,7 @@ void BtMain::init()
 	loadConfiguration();
 
 	if (pagDefault)
-		connect(pagDefault, SIGNAL(Closed()), Home, SLOT(showPage()));
+		connect(pagDefault, SIGNAL(Closed()), home, SLOT(showPage()));
 	// The stylesheet can contain some references to dynamic properties,
 	// so loading of css must be done after setting these properties (otherwise
 	// it might be necessary to force a stylesheet recomputation).
@@ -637,7 +643,7 @@ void BtMain::myMain()
 		disconnect(manager, 0, this, 0);
 	}
 
-	Home->inizializza();
+	home->inizializza();
 	if (version)
 		version->inizializza();
 
@@ -652,7 +658,7 @@ void BtMain::myMain()
 		qDebug() << "Boot time" << boot_time->elapsed() << "last press" << static_cast<int>(getTimePress()) * 1000;
 
 		alreadyCalibrated = true;
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 		Calibration *cal = new Calibration(true);
 #else
 		Calibration *cal = new Calibration;
@@ -675,7 +681,7 @@ void BtMain::startGui()
 	// start the screensaver countdown when the home page is shown
 	last_event_time = now();
 
-	Home->showPage();
+	home->showPage();
 	// this needs to be after the showPage, and will be a no-op until transitions
 	// between windows are implemented
 	page_container->blockTransitions(false);
@@ -688,19 +694,19 @@ void BtMain::startGui()
 
 void BtMain::showHomePage()
 {
-	Home->showPage();
+	home->showPage();
 }
 
 Page *BtMain::homePage()
 {
-	return Home;
+	return home;
 }
 
 void BtMain::unrollPages()
 {
 	int seq_pages = 0;
 	if (page_container->currentPage() != pagDefault && page_container->currentPage() != version)
-		while (page_container->currentPage() != Home)
+		while (page_container->currentPage() != home)
 		{
 			Page *curr = page_container->currentPage();
 			if (curr)
@@ -785,7 +791,7 @@ void BtMain::checkScreensaver()
 {
 	rearmWDT();
 
-#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TOUCHX)
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TS_10)
 	// detect when the user adjusts date/time
 	// TODO add frame parsing to PlatformDevice to detect when date/time really changes
 	QDateTime curr = QDateTime::currentDateTime();
@@ -808,7 +814,7 @@ void BtMain::checkScreensaver()
 		return;
 
 	ScreenSaver::Type target_screensaver = bt_global::display->currentScreenSaver();
-#ifdef BT_HARDWARE_BTOUCH
+#ifdef BT_HARDWARE_TS_3_5
 	// When the brightness is set to off in the old hardware the display
 	// is not really off, so it is required to use a screensaver to protect
 	// the display, even if the screensaver is not visible.
@@ -865,7 +871,7 @@ void BtMain::checkScreensaver()
 			// TODO move the code until the end of the block to PageStack and/or ScreenSaver
 			Page *prev_page = page_container->currentPage();
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 			page_container->blockTransitions(true);
 			if (pagDefault)
 			{
@@ -874,7 +880,7 @@ void BtMain::checkScreensaver()
 			}
 			else
 			{
-				Home->showPage();
+				home->showPage();
 				// this makes the screen saver go back to prev_page
 				// when exited
 				bt_global::page_stack.currentPageChanged(prev_page);

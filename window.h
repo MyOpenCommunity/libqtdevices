@@ -27,18 +27,37 @@
 class WindowContainer;
 
 
+/*!
+	\ingroup Core
+	\brief Base class for fullscreen widgets.
+
+	A %Window behaves like a fullscreen Page. It is contained in a QStackedWidget
+	like container (the WindowContainer) and it can show itself using the
+	showWindow() method. When a page is about to hide, the aboutToHideEvent()
+	callback is called.
+	Every time that a %Window is closed, it should be emit the signal Closed().
+*/
 class Window : public StyledWidget
 {
+friend class WindowContainer;
 Q_OBJECT
 public:
+	/*!
+	\brief Constructor.
+
+	Build the window and add it to the WindowContainer
+	*/
 	Window();
 
-	static void setWindowContainer(WindowContainer *container);
-
-	/// Called right before the window is hidden by showWindow()
+	/*!
+		\brief A callback method called right before the window is hidden.
+	*/
 	virtual void aboutToHideEvent() {};
 
 public slots:
+	/*!
+		\brief Make the window the current window displayed.
+	*/
 	virtual void showWindow();
 
 signals:

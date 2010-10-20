@@ -33,7 +33,7 @@
 #include "test_scenario_device.h"
 #include "test_thermal_device.h"
 #include "test_pull_manager.h"
-#include "test_entryphone_device.h"
+#include "test_videodoorentry_device.h"
 #include "test_probe_device.h"
 #include "test_air_conditioning_device.h"
 #include "test_loads_device.h"
@@ -91,8 +91,8 @@ int main(int argc, char *argv[])
 	TestThermalDevice99Zones test_thermal_regulator_99zones_device;
 	test_list << &test_thermal_regulator_99zones_device;
 
-	TestEntryphoneDevice test_entryphone_device;
-	test_list << &test_entryphone_device;
+	TestVideoDoorEntryDevice test_videodoorentry_device;
+	test_list << &test_videodoorentry_device;
 
 	TestNonControlledProbeDevice test_non_controlled_probe_device;
 	test_list << &test_non_controlled_probe_device;

@@ -70,7 +70,7 @@ void ThermalMenu::createPlantMenu(QDomNode config, BannSinglePuls *bann)
 	single_page = sm;
 }
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 
 void ThermalMenu::loadBanners(const QDomNode &config_node)
 {
@@ -151,7 +151,7 @@ BannSinglePuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon)
 	return bp;
 }
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 
 void ThermalMenu::createProbeMenu(QDomNode config, BannSinglePuls *bann, bool external)
 {
@@ -173,7 +173,7 @@ void ThermalMenu::showPage()
 }
 
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 
 ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 {
@@ -201,7 +201,7 @@ ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 	QLabel *icon = new QLabel;
 	icon->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("central_icon")));
 
-	l->addWidget(getLabel(tr("Zone")), 0, 1);
+	l->addWidget(getLabel(are_probes_external ? tr("Probe") : tr("Zone")), 0, 1);
 	l->addWidget(getLabel(tr("Temperature")), 0, 2);
 	l->addWidget(icon, 1, 0);
 	l->addWidget(banners, 1, 1, 2, 2);
@@ -222,7 +222,7 @@ void ProbesPage::loadItems(const QDomNode &config_node, bool are_probes_external
 	{
 		QString addr = getTextChild(item, "where");
 		QString text = getTextChild(item, "descr");
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		if (are_probes_external)
 			addr += "00";
 #endif

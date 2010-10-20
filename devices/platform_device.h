@@ -32,6 +32,32 @@ class BtTime;
 class QDate;
 
 
+/*!
+	\ingroup Core
+	\brief Device for managing system settings.
+
+	%PlatformDevice has methods to set date setDate()
+	and time setTime(). These methods don't set the date and time locally
+	only, but syncronize all the devices on the bus, too.
+
+	It has also methods to retrive informations about network settings,
+	kernel and firmware versions.
+	When a request of information is done, the response is sent through the
+	signal valueReceived().
+
+	\section PlatformDevice-dimensions Dimensions
+	\startdim
+	\dim{DIM_STATUS,bool,,Network status\, true if the network is enabled\, false otherwise.}
+	\dim{DIM_IP,QString,,Ip address}
+	\dim{DIM_NETMASK,QString,,Network mask}
+	\dim{DIM_MACADDR,QString,,MAC address}
+	\dim{DIM_GATEWAY,QString,,Gateway}
+	\dim{DIM_DNS1,QString,,Primary DNS}
+	\dim{DIM_DNS2,QString,,Secondary DNS}
+	\dim{DIM_FW_VERS,QString,,Firmware version}
+	\dim{DIM_KERN_VERS,QString,,Kernel version}
+	\enddim
+*/
 class PlatformDevice : public device
 {
 Q_OBJECT
@@ -40,25 +66,72 @@ public:
 
 	virtual void init();
 
-	// date/time methods
+	/*!
+		\brief Sets the time
+
+		Sets the time locally and syncronizes the other devices on the bus to the
+		same time.
+	*/
 	void setTime(const BtTime &t);
+
+	/*!
+		\brief Sets the time
+
+		Sets the date locally and syncronizes the other devices on the bus to the
+		same date.
+	*/
 	void setDate(const QDate &d);
 
-	// lan management methods
+	/*!
+		\brief Enables or disables the LAN settings.
+	*/
 	void enableLan(bool enable);
 
-	// The request methods, used to request an information
+	/*!
+		\brief Requests the IP address.
+	*/
 	void requestIp() const;
+
+	/*!
+		\brief Requests the network mask.
+	*/
 	void requestNetmask() const;
+
+	/*!
+		\brief Requests the MAC address.
+	*/
 	void requestMacAddress() const;
+
+	/*!
+		\brief Requests the gateway.
+	*/
 	void requestGateway() const;
+
+	/*!
+		\brief Requests the primary DNS
+	*/
 	void requestDNS1() const;
+
+	/*!
+		\brief Requests the secondary DNS
+	*/
 	void requestDNS2() const;
+
+	/*!
+		\brief Requests the kernel version
+	*/
 	void requestKernelVersion() const;
+
+	/*!
+		\brief Requests the firmware version
+	*/
 	void requestFirmwareVersion() const;
 
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
+	/*!
+		\refdim{PlatformDevice}
+	*/
 	enum Type
 	{
 		DIM_STATUS = 9,

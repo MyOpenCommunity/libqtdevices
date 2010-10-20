@@ -29,7 +29,7 @@ DisplayControl::DisplayControl()
 	forced_operative_mode = false;
 	direct_screen_access = 0;
 
-#ifdef BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TS_10
 	operative_brightness = 1; // a low brightness for the touch 10''
 	setInactiveBrightness(BRIGHTNESS_LOW);
 #else
@@ -85,7 +85,7 @@ void DisplayControl::setInactiveBrightness(BrightnessLevel level)
 	inactive_brightness = level;
 	updateBrightnessData();
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	setCfgValue("brightness/level", level, DISPLAY);
 #endif
 }
@@ -160,8 +160,8 @@ DisplayStatus DisplayControl::currentState()
 void DisplayControl::setScreenSaver(ScreenSaver::Type t)
 {
 	// TODO find the correct place to save the information
-	// in TouchX it's saved inside ScreensaverPage, probably it can be done also on BTouch
-#ifdef CONFIG_BTOUCH
+	// in TS 10'' it's saved inside ScreensaverPage, probably it can be done also on TS 3.5''
+#ifdef CONFIG_TS_3_5
 	setCfgValue("screensaver/type", t, DISPLAY);
 #endif
 	current_screensaver = t;

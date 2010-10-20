@@ -1,3 +1,8 @@
+.memdoc em {
+	color: #602020;
+}
+
+
 /* The standard CSS for doxygen */
 
 body, table, div, p, dl {

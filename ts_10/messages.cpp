@@ -26,8 +26,7 @@
 #include <QDir>
 #include <QTimer>
 
-#define MESSAGES_MAX 10
-#define MESSAGES_FILENAME "cfg/extra/4/messages.xml"
+
 #define DATE_FORMAT_AS_STRING "yyyy/MM/dd HH:mm"
 
 class QBoxLayout;
@@ -250,7 +249,7 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 	current_index = -1;
 	need_update = true;
 	unread_messages = false;
-	// The signal changeIconState must emit after the construction of the page,
+	// The signal changeIconState must be emitted after the construction of the page,
 	// so we use this little trick.
 	QTimer::singleShot(0, this, SLOT(checkForUnread()));
 }

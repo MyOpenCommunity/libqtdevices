@@ -30,7 +30,7 @@
 #include <QProcess>
 
 
-class EntryphoneDevice;
+class VideoDoorEntryDevice;
 class ItemTuning;
 class QDomNode;
 class QHBoxLayout;
@@ -44,15 +44,14 @@ namespace VCTCallPrivate
 {
 	class VCTCallStatus;
 
-	/**
-	 * The pad to control the movements of the camera (if the camera support them)
-	 * and to show the video call page as a window.
-	 */
+	/*!
+		\brief The pad to control the movements of the camera and toggle the fullscreen mode.
+	*/
 	class CameraMove : public QWidget
 	{
 	Q_OBJECT
 	public:
-		CameraMove(EntryphoneDevice *dev);
+		CameraMove(VideoDoorEntryDevice *dev);
 		void setFullscreenEnabled(bool fs);
 		void setMoveEnabled(bool move);
 
@@ -64,10 +63,9 @@ namespace VCTCallPrivate
 	};
 
 
-	/**
-	 * The widget that contains the controls for the image of the video call (usually
-	 * placed on the right of the video area).
-	 */
+	/*!
+		\brief The widget that contains the controls for the image of the video call.
+	*/
 	class CameraImageControl : public QWidget
 	{
 	Q_OBJECT
@@ -84,10 +82,12 @@ namespace VCTCallPrivate
 	};
 
 
-	/**
-	 * This object encapsulates the common stuff between the VCTCallPage and VCTCallWindow.
-	 * Graphical objects are created here but placed by the page or the window.
-	 */
+	/*!
+		\brief This object encapsulates the common stuff between the VCTCallPage
+		and VCTCallWindow.
+
+		Graphical objects are created here but placed by the page or the window.
+	*/
 	class VCTCall : public QObject
 	{
 	Q_OBJECT
@@ -98,7 +98,7 @@ namespace VCTCallPrivate
 			FULLSCREEN_VIDEO = 1,
 		};
 
-		VCTCall(EntryphoneDevice *d, FormatVideo f);
+		VCTCall(VideoDoorEntryDevice *d, FormatVideo f);
 		void refreshStatus();
 
 		// Start the video process, if it is not already running
@@ -147,19 +147,18 @@ namespace VCTCallPrivate
 	private:
 		FormatVideo format;
 		bool camera_settings_shown;
-		EntryphoneDevice *dev;
+		VideoDoorEntryDevice *dev;
 		QProcess video_grabber;
 	};
 
-
-	/**
-	 * The window of the video call. It is showed only by the page.
-	 */
+	/*!
+		\brief The window of the video call. It is showed only by the page.
+	*/
 	class VCTCallWindow : public Window
 	{
 	Q_OBJECT
 	public:
-		VCTCallWindow(EntryphoneDevice *d);
+		VCTCallWindow(VideoDoorEntryDevice *d);
 
 	public slots:
 		virtual void showWindow();
@@ -182,15 +181,25 @@ namespace VCTCallPrivate
 
 }
 
-/**
- * The page of the video call. It is showed indirecly when a call frame came
- * from the Openserver.
- */
+
+/*!
+	\ingroup VideoDoorEntry
+	\brief The page for video calls.
+
+	This is the main class of the \ref VideoDoorEntry system, that manages the
+	audio-video parts of a videocall, handle the fullscreen mode, the
+	ProfessionalStudio and HandsFree facilities. A %VctCallPage is always shown
+	indirectly: even if we want to switch on a camera we actually request the
+	switch and wait for the call from the camera.
+	The page is also behaves like a popup-page: it breaks the navigation, the
+	screensaver or everything else (with the exception of the calibration, that
+	has the priority).
+*/
 class VCTCallPage : public Page
 {
 Q_OBJECT
 public:
-	VCTCallPage(EntryphoneDevice *d);
+	VCTCallPage(VideoDoorEntryDevice *d);
 	~VCTCallPage();
 
 	static void setHandsFree(bool on);
@@ -223,7 +232,7 @@ private:
 	int ringtone;
 	VCTCallPrivate::VCTCallWindow *window;
 	VCTCallPrivate::VCTCall *vct_call;
-	EntryphoneDevice *dev;
+	VideoDoorEntryDevice *dev;
 	bool already_closed;
 };
 

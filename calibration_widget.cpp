@@ -67,7 +67,7 @@ CalibrationWidget::CalibrationWidget(bool minimal)
 
 	QPoint *points = calibration_data.screenPoints;
 
-#ifdef BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TS_10
 	points[QWSPointerCalibrationData::TopLeft] = QPoint(cross_margin, cross_margin);
 	points[QWSPointerCalibrationData::BottomLeft] = QPoint(cross_margin, height - cross_margin);
 	points[QWSPointerCalibrationData::BottomRight] = QPoint(width - cross_margin, height - cross_margin);
@@ -96,7 +96,7 @@ CalibrationWidget::CalibrationWidget(bool minimal)
 	connect(bottomright_button, SIGNAL(clicked()), bottomright_button, SLOT(hide()));
 	connect(bottomright_button, SIGNAL(clicked()), SLOT(endCalibration()));
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	logo.load(bt_global::skin->getImage("logo"));
 #endif
 
@@ -190,7 +190,7 @@ void CalibrationWidget::paintEvent(QPaintEvent*)
 	int text_height = 30;
 	int text_width = 150;
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	int total_height = logo.height() + text_height;
 	p.drawPixmap((width() - logo.width()) / 2, (height() - total_height) / 2, logo);
 
@@ -360,7 +360,7 @@ bool CalibrationWidget::sanityCheck()
 		return false;
 	}
 
-#ifdef BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TS_10
 	// The y on the top (in raw device coordinates) must be greater than
 	// the y on the bottom
 	if (tl.y() < bl.y() || tr.y() < br.y())
@@ -374,7 +374,7 @@ bool CalibrationWidget::sanityCheck()
 		return false;
 	}
 
-#ifdef BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TS_10
 	if (qMin(qAbs(tl.x() - tr.x()), qAbs(bl.x() - br.x())) < MINUMUM_RAW_X_SIZE)
 	{
 		qDebug() << "Calibration: the points on the left are too close to the points on the right.";

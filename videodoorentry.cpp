@@ -27,9 +27,9 @@
 #include "skinmanager.h"
 #include "btbutton.h"
 #include "navigation_bar.h"
-#include "entryphone_device.h"
+#include "videodoorentry_device.h"
 #include "devices_cache.h" // bt_global::add_device_to_cache
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 #include "vctcall.h"
 #endif
 #include "generic_functions.h" //getBostikName
@@ -59,12 +59,12 @@ enum Pages
 	GUARD_UNIT = 19004,
 };
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 bool VideoDoorEntry::ring_exclusion = false;
 #endif
 
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
 {
 	buildPage();
@@ -101,7 +101,7 @@ void VideoDoorEntry::loadDevices(const QDomNode &config_node)
 
 VideoDoorEntry::VideoDoorEntry()
 {
-	dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS],
+	dev = bt_global::add_device_to_cache(new VideoDoorEntryDevice((*bt_global::config)[PI_ADDRESS],
 		(*bt_global::config)[PI_MODE]));
 
 	// These pages are showed only after the receiving of a call frame, so we
@@ -115,7 +115,7 @@ VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 
-	dev = bt_global::add_device_to_cache(new EntryphoneDevice((*bt_global::config)[PI_ADDRESS],
+	dev = bt_global::add_device_to_cache(new VideoDoorEntryDevice((*bt_global::config)[PI_ADDRESS],
 		(*bt_global::config)[PI_MODE]));
 
 	loadItems(config_node);
@@ -140,7 +140,7 @@ void VideoDoorEntry::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case INTERCOM_MENU:
-			p = new Intercom(page_node, dev);
+			p = new IntercomMenu(page_node, dev);
 			break;
 		case VIDEO_CONTROL_MENU:
 			if (!call_page)
@@ -172,9 +172,9 @@ void VideoDoorEntry::callGuardUnit()
 	dev->cameraOn((*bt_global::config)[GUARD_UNIT_ADDRESS]);
 }
 
-VideoControl::VideoControl(const QDomNode &config_node, EntryphoneDevice *d)
+VideoControl::VideoControl(const QDomNode &config_node, VideoDoorEntryDevice *d)
 {
-	// we must have only one entryphone device since we need to remember some state
+	// we must have only one videodoor entry device since we need to remember some state
 	dev = d;
 
 	mapper = new QSignalMapper(this);
@@ -200,7 +200,7 @@ void VideoControl::cameraOn(QString where)
 }
 
 
-IntercomCallPage::IntercomCallPage(EntryphoneDevice *d)
+IntercomCallPage::IntercomCallPage(VideoDoorEntryDevice *d)
 {
 	dev = d;
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
@@ -215,7 +215,7 @@ IntercomCallPage::IntercomCallPage(EntryphoneDevice *d)
 	BtButton *back = new BtButton;
 	back->setImage(bt_global::skin->getImage("back"));
 	connect(back, SIGNAL(clicked()), dev, SLOT(endCall()));
-	if (dev->vctMode() == EntryphoneDevice::SCS_MODE)
+	if (dev->vctMode() == VideoDoorEntryDevice::SCS_MODE)
 		connect(back, SIGNAL(clicked()), SLOT(handleClose()));
 	layout->addWidget(back, 0, 0, 1, 1, Qt::AlignBottom);
 
@@ -267,7 +267,7 @@ void IntercomCallPage::cleanUp()
 	dev->endCall();
 
 	already_closed = true;
-	if (dev->vctMode() == EntryphoneDevice::IP_MODE) // See the comment on VctCallPage::cleanUp
+	if (dev->vctMode() == VideoDoorEntryDevice::IP_MODE) // See the comment on VctCallPage::cleanUp
 	{
 		while (call_active) // We wait for the END_OF_CALL
 			QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
@@ -341,7 +341,7 @@ void IntercomCallPage::toggleCall()
 	if (connected)
 	{
 		dev->endCall();
-		if (dev->vctMode() == EntryphoneDevice::SCS_MODE)
+		if (dev->vctMode() == VideoDoorEntryDevice::SCS_MODE)
 			handleClose();
 	}
 	else
@@ -387,15 +387,15 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 	{
 		switch (it.key())
 		{
-		case EntryphoneDevice::INTERCOM_CALL:
+		case VideoDoorEntryDevice::INTERCOM_CALL:
 			call_active = true;
 			showPageIncomingCall();
 			break;
-		case EntryphoneDevice::RINGTONE:
+		case VideoDoorEntryDevice::RINGTONE:
 		{
 			bool ring_exclusion = VideoDoorEntry::ring_exclusion;
 
-			ringtone = static_cast<Ringtones::Type>(values_list[EntryphoneDevice::RINGTONE].toInt());
+			ringtone = static_cast<Ringtones::Type>(values_list[VideoDoorEntryDevice::RINGTONE].toInt());
 			if (ringtone == Ringtones::PI_INTERCOM || ringtone == Ringtones::PE_INTERCOM)
 			{
 				if (!ring_exclusion)
@@ -417,7 +417,7 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 			}
 			break;
 		}
-		case EntryphoneDevice::ANSWER_CALL:
+		case VideoDoorEntryDevice::ANSWER_CALL:
 			if (!call_active)
 			{
 				call_active = true;
@@ -429,7 +429,7 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 				volume->enable();
 			}
 			break;
-		case EntryphoneDevice::END_OF_CALL:
+		case VideoDoorEntryDevice::END_OF_CALL:
 			if (call_active)
 			{
 				call_active = false;
@@ -460,7 +460,7 @@ void IntercomCallPage::floorCallFinished()
 }
 
 
-Intercom::Intercom(const QDomNode &config_node, EntryphoneDevice *dev)
+IntercomMenu::IntercomMenu(const QDomNode &config_node, VideoDoorEntryDevice *dev)
 {
 	mapper_int_intercom = new QSignalMapper(this);
 	mapper_ext_intercom = new QSignalMapper(this);

@@ -30,6 +30,15 @@ class SoundPlayer;
 
 namespace Ringtones
 {
+	/*!
+		\ingroup Core
+		\brief The types of ringtones.
+
+		A ringtone type defines a list of logical event for which a ringtone should
+		be played.
+
+		\sa VideoDoorEntryDevice
+	*/
 	enum Type
 	{
 		PE1 = 1,
@@ -44,31 +53,35 @@ namespace Ringtones
 	};
 }
 
-/**
- * Manages ringtones globally.
- *
- * Load/store ringtone preferences from/to flash, play ringtones when needed.
- */
+/*!
+	\ingroup Core
+	\brief %Loads and play ringtones.
+
+	%Loads the ringtones defined in an xml file, sets a ringtone for a
+	Ringtones::Type and plays/stops a ringtone.
+*/
 class RingtonesManager : public QObject
 {
 Q_OBJECT
 public:
 	RingtonesManager(QString ringtone_file);
 
-	/**
-	 * Play the current ringtone set for the given ringtone type.
-	 */
+	/*!
+		\brief Play the current ringtone set for the given ringtone type \a t.
+	*/
 	void playRingtone(Ringtones::Type t);
 
 	// play the ringtone set for the given id
 	void playRingtone(int ring);
 
-	// stops playing a ringtone, if any
+	/*!
+		\brief stops playing a ringtone, if any
+	*/
 	void stopRingtone();
 
-	/**
-	 * Set a new ringtone for a given ringtone type.
-	 */
+	/*!
+		Sets a new ringtone for the given ringtone type \a t.
+	*/
 	void setRingtone(Ringtones::Type t, int item_id, int ring);
 
 	// Ringtones starts from 1 to... ringtones_number
@@ -84,5 +97,6 @@ private:
 };
 
 namespace bt_global { extern RingtonesManager *ringtones; }
+
 
 #endif // RINGTONESMANAGER_H

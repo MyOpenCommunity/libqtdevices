@@ -28,7 +28,7 @@ QHash<int, Client*> FrameReceiver::clients_monitor;
 
 /*!
  * \class FrameReceiver
- * \brief FrameReceiver provide a common interface for objects that would manage
+ * \brief Provides a common interface for objects that would manage
  * frames from a socket
  *
  * To receive a frame the \a subscribe_monitor() method must be called with the
@@ -60,7 +60,7 @@ FrameReceiver::~FrameReceiver()
 }
 
 /*!
- * \brief Set the monitors
+ * \brief Sets the monitors
  */
 void FrameReceiver::setClientsMonitor(const QHash<int, Client*> &monitors)
 {
@@ -72,7 +72,7 @@ void FrameReceiver::setClientsMonitor(const QHash<int, Client*> &monitors)
  * \brief Manages frames from the OpenServer
  *
  * This method is called every time that a frame with the \a "who" subscribed
- * arrive from the OpenServer.
+ * arrives from the OpenServer.
  */
 
 /*!

@@ -24,7 +24,7 @@
 #include "lighting.h"
 #include "automation.h"
 #include "scenario.h"
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 #include "iconsettings.h"
 #else
 #include "settings.h"
@@ -38,7 +38,7 @@ banner *getBanner(const QDomNode &item_node)
 	sections.append(&Automation::getBanner);
 	sections.append(&Lighting::getBanner);
 	sections.append(&Scenario::getBanner);
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	sections.append(&IconSettings::getBanner);
 #else
 	sections.append(&Settings::getBanner);

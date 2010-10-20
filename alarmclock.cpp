@@ -33,7 +33,7 @@
 #include "media_device.h" // AlarmSoundDiffDevice
 #include "navigation_bar.h"
 #include "generic_functions.h" // getBostikName
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 #include "sounddiffusionpage.h" // alarmClockPage
 #endif
 #include "audiostatemachine.h"
@@ -61,8 +61,8 @@
 AlarmNavigation::AlarmNavigation(bool forwardButton, QWidget *parent)
 	: AbstractNavigationBar(parent)
 {
-	// For now, it used only in BTouch code.
-#ifdef LAYOUT_BTOUCH
+	// For now, it used only in TS 3.5'' code.
+#ifdef LAYOUT_TS_3_5
 	createButton(bt_global::skin->getImage("ok"), SIGNAL(okClicked()), 0);
 	if (forwardButton)
 		createButton(bt_global::skin->getImage("forward"), SIGNAL(forwardClicked()), 3);
@@ -85,7 +85,7 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, QList<bool> 
 	for (uchar idx = 0; idx < AMPLI_NUM; idx++)
 		volSveglia[idx] = -1;
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	alarm_time = new AlarmClockTime(this);
 	alarm_type = new AlarmClockFreq(this);
 #else
@@ -134,7 +134,7 @@ void AlarmClock::saveAndActivate()
 	else
 		data["alarmset"] = QString::number(freq);
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	setCfgValue(data, id, serNum);
 #else
 	setCfgValue(data, item_id);
@@ -199,7 +199,7 @@ void AlarmClock::setActive(bool a)
 		}
 	}
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	setCfgValue("enabled", active, id, serNum);
 #else
 	setCfgValue("enabled", active, item_id);
@@ -258,7 +258,7 @@ void AlarmClock::checkAlarm()
 	QDateTime actualDateTime = QDateTime::currentDateTime();
 
 	bool ring_alarm = false;
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	if (freq == SEMPRE || freq == ONCE ||
 		(freq == FERIALI && actualDateTime.date().dayOfWeek() < 6) ||
 		(freq == FESTIVI && actualDateTime.date().dayOfWeek() > 5))
@@ -275,7 +275,7 @@ void AlarmClock::checkAlarm()
 			if (type == BUZZER)
 			{
 				bt_global::audio_states->toState(AudioStates::ALARM_TO_SPEAKER);
-#ifdef BT_HARDWARE_TOUCHX
+#ifdef BT_HARDWARE_TS_10
 				aumVolTimer = new QTimer(this);
 				aumVolTimer->start(5000);
 				connect(aumVolTimer, SIGNAL(timeout()), SLOT(wavAlarm()));
@@ -330,8 +330,8 @@ void AlarmClock::sounddiffusionAlarm()
 {
 	if (conta2min == 0)
 	{
-#ifdef LAYOUT_TOUCHX
-		// TODO fix sound diffusion for BTouch
+#ifdef LAYOUT_TS_10
+		// TODO fix sound diffusion for TS 3.5''
 		dev->startAlarm(SoundDiffusionPage::isMultichannel(), sorgente, stazione, volSveglia);
 #endif
 		conta2min = 9;
@@ -420,7 +420,7 @@ void AlarmClock::stopAlarm()
 
 	qDebug("Stopping alarm clock");
 	aumVolTimer->stop();
-#ifdef BT_HARDWARE_BTOUCH
+#ifdef BT_HARDWARE_TS_3_5
 	if (type == BUZZER)
 		setBeep(buzAbilOld);
 #endif
@@ -537,7 +537,7 @@ AlarmClockSoundDiff::AlarmClockSoundDiff(AlarmClock *alarm_page)
 
 void AlarmClockSoundDiff::showPage()
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	Page *difson = SoundDiffusionPage::alarmClockPage();
 	disconnect(difson, SIGNAL(Closed()), 0, 0);
 	disconnect(difson, SIGNAL(saveVolumes()), 0, 0);
@@ -546,7 +546,7 @@ void AlarmClockSoundDiff::showPage()
 
 	difson->showPage();
 #else
-	Q_ASSERT_X(false, "AlarmClockSoundDiff::showPage", "No sound diffusion alarm clock for BTouch yet");
+	Q_ASSERT_X(false, "AlarmClockSoundDiff::showPage", "No sound diffusion alarm clock for TS 3.5'' yet");
 #endif
 }
 

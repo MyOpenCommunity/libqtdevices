@@ -26,7 +26,7 @@
 #include "main.h" // LOADS
 
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 enum BannerType
 {
 	LOAD = 7,

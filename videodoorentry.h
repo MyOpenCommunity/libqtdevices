@@ -28,7 +28,7 @@
 #include <QWidget>
 
 class VCTCallPage;
-class EntryphoneDevice;
+class VideoDoorEntryDevice;
 class StateButton;
 class ItemTuning;
 class RingExclusion;
@@ -36,8 +36,27 @@ class RingExclusionPage;
 class QDomNode;
 class QSignalMapper;
 
+/*!
+	\defgroup VideoDoorEntry VideoDoorEntry
 
-#ifdef LAYOUT_BTOUCH
+	Allows the user to perform and receive video and intercom calls.
+	There are two main classes:
+	\li the VCTCallPage that controls all the functionalities and aspects of a
+	video call;
+	\li the IntercomCallPage that does the same for the intercom calls.
+
+	The classes VideoDoorEntry, VideoControl and IntercomMenu allow the user to
+	navigate through the items configured in the Video Door Entry system.
+
+	The are also small classes that customize the behaviour of the system on an
+	incoming call:
+	\li the HandsFree to automatically answer;
+	\li the ProfessionalStudio to automatically open the door;
+	\li the RingtoneExclusion to exclude the bell.
+*/
+
+
+#ifdef LAYOUT_TS_3_5
 
 class VideoDoorEntry : public BannerPage
 {
@@ -51,6 +70,10 @@ private:
 
 #else
 
+/*!
+	\ingroup VideoDoorEntry
+	\brief The main menu of the %VideoDoorEntry system.
+*/
 class VideoDoorEntry : public IconPage
 {
 friend class BtMain;
@@ -64,21 +87,21 @@ private slots:
 	void callGuardUnit();
 
 private:
-	EntryphoneDevice *dev;
+	VideoDoorEntryDevice *dev;
 	VideoDoorEntry(); // available only for BtMain
 	void loadItems(const QDomNode &config_node);
 };
 
 
-/**
- * The main class of an videdoorentry call, which shows a button for each external place,
- * allowing the user to call the place.
- */
+/*!
+	\ingroup VideoDoorEntry
+	\brief The menu that shows buttons to call external cameras.
+*/
 class VideoControl : public IconPage
 {
 Q_OBJECT
 public:
-	VideoControl(const QDomNode &config_node, EntryphoneDevice *dev);
+	VideoControl(const QDomNode &config_node, VideoDoorEntryDevice *dev);
 
 private slots:
 	void cameraOn(QString where);
@@ -86,18 +109,19 @@ private slots:
 private:
 	VCTCallPage *call_page;
 	QSignalMapper *mapper;
-	EntryphoneDevice *dev;
+	VideoDoorEntryDevice *dev;
 };
 
 
-/**
- * The page for an intercom call (that is only audio).
- */
+/*!
+	\ingroup VideoDoorEntry
+	\brief Shows page and controls for an intercom call.
+*/
 class IntercomCallPage : public Page
 {
 Q_OBJECT
 public:
-	IntercomCallPage(EntryphoneDevice *d);
+	IntercomCallPage(VideoDoorEntryDevice *d);
 	virtual int sectionId() const;
 
 public slots:
@@ -115,7 +139,7 @@ private slots:
 	void floorCallFinished();
 
 private:
-	EntryphoneDevice *dev;
+	VideoDoorEntryDevice *dev;
 	StateButton *call_accept;
 	StateButton *mute_button;
 	ItemTuning *volume;
@@ -125,15 +149,15 @@ private:
 };
 
 
-/**
- * The main class of an intercom call, which shows a button for each internal place,
- * allowing the user to call the place.
- */
-class Intercom : public IconPage
+/*!
+	\ingroup VideoDoorEntry
+	\brief The menu that show buttons to perform intercom calls.
+*/
+class IntercomMenu : public IconPage
 {
 Q_OBJECT
 public:
-	Intercom(const QDomNode &config_node, EntryphoneDevice *dev);
+	IntercomMenu(const QDomNode &config_node, VideoDoorEntryDevice *dev);
 
 private:
 	QSignalMapper *mapper_ext_intercom;
@@ -141,10 +165,14 @@ private:
 };
 
 
-/**
- * The button (actually, the couple of buttons) that represents the professional
- * studio facility (automatically open the door on an incoming call)
- */
+/*!
+	\ingroup VideoDoorEntry
+	\brief Toggle the professional studio facility.
+
+	The button represents the professional studio facility, to open automatically
+	the door on an incoming call. Associated with the button there is an icon on
+	the Toolbar present if the functionality is on.
+*/
 class ProfessionalStudio : public IconButtonOnTray
 {
 Q_OBJECT
@@ -155,11 +183,14 @@ protected:
 	virtual void updateStatus();
 };
 
+ /*!
+	\ingroup VideoDoorEntry
+	\brief Toggle the hands free facility.
 
-/**
- * The button (actually, the couple of buttons) that represents the hands
- * free facility (automatically answer on an incoming call)
- */
+	The button represents the hands free facility, to automatically answer on
+	an incoming call. Associated with the button there is an icon on the Toolbar
+	present if the functionality is on.
+*/
 class HandsFree : public IconButtonOnTray
 {
 Q_OBJECT
@@ -171,10 +202,14 @@ protected:
 };
 
 
-/**
- * The button (actually, the couple of buttons) that represents the ringtone
- * exclusion.
- */
+/*!
+	\ingroup VideoDoorEntry
+	\brief Toggle the bell (or ringtone) for video/intercom calls.
+
+	The button represents the possibility of exclude the ringtone for intercom
+	or video calls. Associated with the button there is an icon on the Toolbar
+	present if the ringtone exclusion is on.
+*/
 class RingtoneExclusion : public IconButtonOnTray
 {
 Q_OBJECT
@@ -186,6 +221,6 @@ protected:
 };
 
 
-#endif // #ifdef LAYOUT_BTOUCH
+#endif // #ifdef LAYOUT_TS_3_5
 
 #endif

@@ -96,7 +96,7 @@ PageManual::PageManual(ThermalDevice *_dev, TemperatureScale scale)
 	descr_label->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 
 	content.setLayout(&main_layout);
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	descr_label->setFixedHeight(TITLE_HEIGHT);
 
 	main_layout.setSpacing(10);
@@ -152,7 +152,7 @@ PageManual::PageManual(ThermalDevice *_dev, TemperatureScale scale)
 	main_layout.addLayout(hbox);
 	main_layout.addStretch();
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	ThermalNavigation *nav_bar = new ThermalNavigation;
 #else
 	QHBoxLayout *ok_layout = new QHBoxLayout;
@@ -234,10 +234,6 @@ void PageManual::updateTemperature()
 
 void PageManual::valueReceived(const DeviceValues &values_list)
 {
-	// TODO check why only for 4-zone regulator
-	if (dev->type() != THERMO_Z4)
-		return;
-
 	if (!values_list.contains(ThermalDevice::DIM_TEMPERATURE))
 		return;
 
@@ -264,7 +260,7 @@ PageManualTimed::PageManualTimed(ThermalDevice4Zones *_dev, TemperatureScale sca
 	dev(_dev)
 {
 	time_edit = new BtTimeEdit(this);
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	main_layout.insertWidget(2, time_edit, 0, Qt::AlignHCenter);
 #else
 	main_layout.insertWidget(2, time_edit);
@@ -372,9 +368,9 @@ static QString status_icons_ids[ThermalDevice::ST_COUNT] =
 	"regulator_weekend", "regulator_program", "regulator_scenario", "regulator_holiday"
 };
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 
-void parseBTouchProgramList(QDomNode conf_root, QString season, QString what, QMap<QString, QString> &entries)
+void parseTS35ProgramList(QDomNode conf_root, QString season, QString what, QMap<QString, QString> &entries)
 {
 	QDomElement program = getElement(conf_root, season + "/" + what);
 	// The leaves we are looking for start with either "p" or "s"
@@ -393,7 +389,7 @@ void parseBTouchProgramList(QDomNode conf_root, QString season, QString what, QM
 
 #else
 
-void parseTouchXProgramList(QDomNode page, QMap<QString, QString> &entries)
+void parseTS10ProgramList(QDomNode page, QMap<QString, QString> &entries)
 {
 	int index_summer = 0, index_winter = 0;
 	foreach (const QDomNode &node, getChildren(page, "item"))
@@ -421,17 +417,17 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	for (int i = 0; i < ThermalDevice::ST_COUNT; ++i)
 		status_icons.append(bt_global::skin->getImage(status_icons_ids[i]));
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	// parse program/scenario list
 	if (n.nodeName().contains(QRegExp("item(\\d\\d?)")) == 0)
 	{
 		qFatal("[TERMO] WeeklyMenu:wrong node in config file");
 	}
 
-	parseBTouchProgramList(n, "summer", "prog", programs);
-	parseBTouchProgramList(n, "winter", "prog", programs);
-	parseBTouchProgramList(n, "summer", "scen", scenarios);
-	parseBTouchProgramList(n, "winter", "scen", scenarios);
+	parseTS35ProgramList(n, "summer", "prog", programs);
+	parseTS35ProgramList(n, "winter", "prog", programs);
+	parseTS35ProgramList(n, "summer", "scen", scenarios);
+	parseTS35ProgramList(n, "winter", "scen", scenarios);
 #else
 	// parse program/scenario list
 	foreach (const QDomNode &item, getChildren(getPageNodeFromChildNode(n, "h_lnk_pageID"), "item"))
@@ -439,9 +435,9 @@ PageTermoReg::PageTermoReg(QDomNode n)
 		int id = getTextChild(item, "id").toInt();
 
 		if (id == BANNER_PROGRAMS) // programs
-			parseTouchXProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), programs);
+			parseTS10ProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), programs);
 		else if (id == BANNER_SCENARIOS) // scenarios
-			parseTouchXProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), scenarios);
+			parseTS10ProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), scenarios);
 	}
 #endif
 
@@ -454,7 +450,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 
 	mode_icon = getLabelWithPixmap(bt_global::skin->getImage("regulator"), this, Qt::AlignHCenter);
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	main_layout.setContentsMargins(40, 0, 40, 50);
 
 	BtButton *settings = new BtButton;
@@ -470,7 +466,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	main_layout.addWidget(mode_icon);
 	main_layout.addWidget(description_label);
 	main_layout.addWidget(season_icon, 0, Qt::AlignCenter);
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	main_layout.addLayout(hbox);
 #endif
 	main_layout.addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
@@ -647,9 +643,9 @@ QString PageTermoReg::lookupProgramDescription(QString season, QString what, int
 
 void PageTermoReg::createButtonsBanners(SettingsPage *settings, ThermalDevice *dev)
 {
-	// TODO: when we have the small button icons for BTouch,
+	// TODO: when we have the small button icons for TS 3.5'',
 	//       remove the code to create the two separate banners
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	// off_antifreeze banner
 	BannOffAntifreeze *off = new BannOffAntifreeze(settings, dev);
 	settings->appendBanner(off);
@@ -708,7 +704,7 @@ void PageTermoReg4z::createSettingsItem(QDomNode item, SettingsPage *settings, T
 	}
 }
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 
 void PageTermoReg4z::createSettingsMenu(QDomNode regulator_node)
 {
@@ -791,7 +787,7 @@ void PageTermoReg99z::createSettingsItem(QDomNode item, SettingsPage *settings, 
 	}
 }
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 
 void PageTermoReg99z::createSettingsMenu(QDomNode regulator_node)
 {
@@ -884,7 +880,7 @@ void PageTermoReg::holidaySettings(QDomNode n, SettingsPage *settings, QMap<QStr
 	BannSinglePuls *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_holiday"),
 							  getTextChild(n, "descr"));
 	connect(bann, SIGNAL(rightClick()), SLOT(holidaySettingsStart()));
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	if (!date_time_edit)
 		date_time_edit = createDateTimeEdit(settings);
 #else
@@ -903,7 +899,7 @@ void PageTermoReg::weekendSettings(QDomNode n, SettingsPage *settings, QMap<QStr
 	BannSinglePuls *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_weekend"),
 							  getTextChild(n, "descr"));
 	connect(bann, SIGNAL(rightClick()), SLOT(weekendSettingsStart()));
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	if (!date_time_edit)
 		date_time_edit = createDateTimeEdit(settings);
 #else
@@ -959,7 +955,7 @@ WeeklyMenu *PageTermoReg::createProgramChoice(SettingsPage *settings, QMap<QStri
 void PageTermoReg::holidaySettingsStart()
 {
 	weekendHolidayStatus = HOLIDAY;
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	date_time_edit->setTitle(holiday_title);
 	date_time_edit->showPage();
 #else
@@ -970,7 +966,7 @@ void PageTermoReg::holidaySettingsStart()
 void PageTermoReg::weekendSettingsStart()
 {
 	weekendHolidayStatus = WEEKEND;
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	date_time_edit->setTitle(weekend_title);
 	date_time_edit->showPage();
 #else
@@ -1004,7 +1000,7 @@ void PageTermoReg::timeSelected(BtTime t)
 
 void PageTermoReg::programCancelled()
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	date_time_edit->showPage();
 #else
 	time_edit->showPage();

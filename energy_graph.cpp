@@ -276,7 +276,7 @@ EnergyTable::EnergyTable(int n_dec)
 
 	table = new EnergyTableContent(n_dec);
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	QHBoxLayout *table_layout = new QHBoxLayout;
 	table_layout->setContentsMargins(110, 0, 110, 0);
 	table_layout->addWidget(table);

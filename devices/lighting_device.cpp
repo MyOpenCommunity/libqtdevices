@@ -84,8 +84,6 @@ int dimmer100LevelTo10(int level)
 		return 10;
 }
 
-
-
 LightingDevice::LightingDevice(QString where, PullMode pull, int openserver_id, int pull_delay, AdvancedMode adv, PullStateManager::FrameChecker checker) :
 	PullDevice(QString("1"), where, pull, openserver_id, pull_delay, adv, checker)
 {
@@ -104,19 +102,9 @@ void LightingDevice::turnOn()
 	sendCommand(LIGHT_ON);
 }
 
-void LightingDevice::turnOn(int speed)
-{
-	sendCommand(QString("%1#%2").arg(LIGHT_ON).arg(speed));
-}
-
 void LightingDevice::turnOff()
 {
 	sendCommand(LIGHT_OFF);
-}
-
-void LightingDevice::turnOff(int speed)
-{
-	sendCommand(QString("%1#%2").arg(LIGHT_OFF).arg(speed));
 }
 
 void LightingDevice::fixedTiming(int value)
@@ -126,10 +114,6 @@ void LightingDevice::fixedTiming(int value)
 		sendCommand(v);
 }
 
-// Limitations:
-// 0 <= h <= 255
-// 0 <= m <= 59
-// 0 <= s <= 59
 void LightingDevice::variableTiming(int h, int m, int s)
 {
 	if ((h >= 0 && h <= 255) && (m >= 0 && m <= 59) && (s >= 0 && s <= 59))
@@ -146,7 +130,6 @@ void LightingDevice::requestVariableTiming()
 {
 	sendRequest(DIM_VARIABLE_TIMING);
 }
-
 
 void LightingDevice::requestPullStatus()
 {
@@ -397,6 +380,16 @@ void Dimmer100Device::init()
 void Dimmer100Device::delayedLevelRequest()
 {
 	requestDimmer100Status();
+}
+
+void Dimmer100Device::turnOn(int speed)
+{
+	sendCommand(QString("%1#%2").arg(LIGHT_ON).arg(speed));
+}
+
+void Dimmer100Device::turnOff(int speed)
+{
+	sendCommand(QString("%1#%2").arg(LIGHT_OFF).arg(speed));
 }
 
 void Dimmer100Device::increaseLevel100(int delta, int speed)

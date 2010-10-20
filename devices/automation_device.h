@@ -26,13 +26,32 @@
 
 class OpenMsg;
 
-
 #define PULL_DELAY_AUTOMATION   6000
 
+
+/*!
+	\ingroup Automation
+	\brief A device for managing automation actuators.
+
+	The metods allow to move up, move down and stop an automation actuator.
+
+	After sending the up/down commands, the device keeps on moving until it
+	reaches the full up/down state or a stop command is received.
+
+	\section AutomationDevice-dimensions Dimensions
+	\startdim
+	\dim{DIM_STOP,no value,,The actuator stopped.}
+	\dim{DIM_UP,no value,,The actuator started moving upwards.}
+	\dim{DIM_DOWN,no value,,The actuator started moving downwards.}
+	\enddim
+*/
 class AutomationDevice : public PullDevice
 {
 friend class TestAutomationDevice;
 public:
+	/*!
+		\refdim{AutomationDevice}
+	*/
 	enum Type
 	{
 		DIM_STOP = 0,
@@ -42,9 +61,27 @@ public:
 
 	AutomationDevice(QString where, PullMode mode = PULL_UNKNOWN, int openserver_id = 0, int pull_delay = PULL_DELAY_AUTOMATION);
 	virtual void init();
+
+	/*!
+		\brief Start moving the actuator upwards.
+	*/
 	void goUp();
+
+	/*!
+		\brief Start moving the actuator downwards.
+	*/
 	void goDown();
+
+	/*!
+		\brief Stops the actuator.
+	*/
 	void stop();
+
+	/*!
+		\brief Requests a status update.
+
+		It should never be necessary to call this function explicitly.
+	*/
 	void requestStatus();
 
 protected:
@@ -52,20 +89,35 @@ protected:
 	virtual void requestPullStatus();
 };
 
-/**
- * \class PPTStatDevice
- *
- * This class represent a device for managing the PPTStat
- */
+
+/*!
+	\ingroup Automation
+	\brief Actuator status device (TODO).
+
+	Allows reading the actuator status (TODO).
+
+	\section PPTStatDevice-dimensions Dimensions
+	\startdim
+	\dim{DIM_STATUS,bool,,The actuator (TODO) status.}
+	\enddim
+*/
 class PPTStatDevice : public device
 {
 Q_OBJECT
 public:
 	PPTStatDevice(QString address, int openserver_id = 0);
 	virtual void init();
+
+	/*!
+		\brief Requests a status update.
+
+		It should never be necessary to call this function explicitly.
+	*/
 	void requestStatus() const;
 
-	// This enum is required to pass the information about the status with the valueReceived signal
+	/*!
+		\refdim{PPTStatDevice}
+	*/
 	enum Type
 	{
 		DIM_STATUS

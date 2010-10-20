@@ -33,61 +33,120 @@ class NavigationBar;
 class BannerContent;
 
 
-/**
- * \class BannerPage
- *
- * A page containing a list of banners.
- */
+/*!
+	\ingroup Core
+	\brief A page containing a list of banners.
+
+	The BannerPage is a ScrollablePage subclass, so if the content is to big
+	to be visualized in a single screen, it is paginated.
+
+	As in ScrollablePage, all the logic about banner arranging into the single
+	page is delegate to the content class, in this case the BannerContent class.
+
+	\sa ScrollableContent
+*/
 class BannerPage : public ScrollablePage
 {
 public:
 	// the type returned by page_content
 	typedef BannerContent ContentType;
 
+	/*!
+		\brief Constructor.
+
+		Constructs a new BannerPage with the given \a parent.
+	*/
 	BannerPage(QWidget *parent = 0);
 
 	virtual void inizializza();
 
 protected:
-	void buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title = QString(), QWidget *top_widget=0);
-	/**
-	 * Utility function to build a standard banner page.
-	 *
-	 * Connections are created between content and navigation bar, and between content and page.
-	 */
-	void buildPage(const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget = 0);
+	/*!
+		\brief Creates a page with a custom content that contains a BannerContent.
 
-	/**
-	 * Create a page with a custom content that contains a BannerContent.
-	 *
-	 * Some pages need to display some widgets around the content. Use this overload for such cases. Only the
-	 * BannerContent will scroll using the navigation bar, the other widgets will not move.
-	 * Connections are created between content and navigation bar, and between content and page.
+		Some pages need to display some widgets around the content. Use this overload for such cases. Only the
+		BannerContent will scroll using the navigation bar, the other widgets will not move.
+		Connections are created between content and navigation bar, and between content and page.
 	 */
 	void buildPage(QWidget *main_widget, BannerContent *content, NavigationBar *nav_bar,
 		const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget = 0);
+	/*!
+		\overload void buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title = QString(), QWidget *top_widget=0);
+	*/
+	void buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title = QString(), QWidget *top_widget=0);
+	/*!
+		\overload void buildPage(const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget = 0);
+		\brief Utility function to build a standard banner page.
+
+		Connections are created between content and navigation bar, and between
+		content and page.
+	 */
+	void buildPage(const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget = 0);
 };
 
 
-/**
- * The BannerContent class manage a list of banner usually put inside a Page.
+/*!
+	\ingroup Core
+	\brief Manages a list of banner usually put inside a Page.
+
+	This class extends the ScrollableContent class, inhering all the logic about
+	pagination.
+
+	The drawContent() method is reimplemented to correctly arrange banners inside
+	the content and to optionally draw a separator between columns (depending on
+	the platform).
+
+	If you want to append a banner to the content you can use the appendBanner()
+	method. You can get it back again using the getBanner() method.
+
+	The number of banners actually contained in content can be retrived using the
+	bannerCount() method.
+
+	\sa ScrollableContent
  */
 class BannerContent : public ScrollableContent
 {
 Q_OBJECT
 public:
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	BannerContent(QWidget *parent=0);
 #else
+	/*!
+		\brief Constructor.
+
+		Constructs a new BannerContent with the given \a parent and \a columns.
+
+		\note For the 3.5" the \a columns parameter does not exists because
+			  banners are always arranged in one column.
+	*/
 	BannerContent(QWidget *parent=0, int columns=2);
 #endif
 
+	/*!
+		\brief Appends \a b to the content.
+	*/
 	void appendBanner(banner *b);
+	/*!
+		\brief Returns the number of banners contained by the content.
+	*/
 	int bannerCount();
+	/*!
+		\brief Returns the banner at postion \a i;
+	*/
 	banner *getBanner(int i);
+
+	/*!
+		\brief Initialize all the banners contained in content.
+	*/
 	void initBanners();
 
 protected:
+	/*!
+		\brief Layouts the banners into the page.
+
+		On the 3.5" devices, the banners are arranged on one column only.
+		On the 10" devices they are arranged on more columns (usually two).
+	*/
 	void drawContent();
 
 private:

@@ -46,7 +46,7 @@
 
 enum
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	ZONANTINTRUS = 23,
 	IMPIANTINTRUS = 24,
 #else
@@ -77,7 +77,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	alarms = new AlarmList;
 	connect(alarms, SIGNAL(Closed()), SLOT(showPage()));
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	// TODO: we introduce a double dependency to customize the image of the forward
 	// button and to obtain a reference of it (to show/hide the button).
 	// We can do better!
@@ -126,7 +126,7 @@ void Antintrusion::createImpianto(const QString &descr)
 			       bt_global::skin->getImage("alarm_state"));
 	impianto->setText(descr);
 	impianto->Draw();
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	impianto->setId(IMPIANTINTRUS); // can probably be removed
 #endif
 	l->addWidget(impianto);
@@ -139,7 +139,7 @@ void Antintrusion::createImpianto(const QString &descr)
 
 	connect(this, SIGNAL(partChanged(AntintrusionZone*)), impianto, SLOT(partChanged(AntintrusionZone*)));
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	forward_button = new BtButton;
 	forward_button->setImage(bt_global::skin->getImage("partial"));
 	// remove the alignment after rewriting impAnti as a new style banner
@@ -150,7 +150,7 @@ void Antintrusion::createImpianto(const QString &descr)
 
 void Antintrusion::loadItems(const QDomNode &config_node)
 {
-#ifndef CONFIG_BTOUCH
+#ifndef CONFIG_TS_3_5
 	createImpianto("");
 #endif
 
@@ -163,7 +163,7 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 
 		banner *b;
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		if (id == IMPIANTINTRUS)
 			createImpianto(descr);
 		else
@@ -262,7 +262,7 @@ void Antintrusion::Parz()
 void Antintrusion::checkAlarmCount()
 {
 	qDebug("checkAlarmCount %d %d", allarmi.size(), alarms->alarmCount());
-	// the first condition is for BTouch, the second for TouchX
+	// the first condition is for TS 3.5'', the second for TS 10''
 	if (!allarmi.isEmpty() || alarms->alarmCount() != 0)
 		impianto->mostra(BannerOld::BUT1);
 	else
@@ -395,7 +395,7 @@ void Antintrusion::cleanupAlarmPage(QObject *page)
 		curr_alarm = allarmi.size() - 1;
 }
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 
 void Antintrusion::showAlarms()
 {
@@ -615,7 +615,7 @@ AlarmList::AlarmList()
 	alarms = new AlarmItems;
 
 	PageTitleWidget *title_widget = 0;
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	title_widget = new PageTitleWidget(tr("Alarms"), SMALL_TITLE_HEIGHT);
 
 	connect(alarms, SIGNAL(contentScrolled(int, int)),

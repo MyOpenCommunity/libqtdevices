@@ -134,7 +134,7 @@ void ToggleBeep::toggleBeep()
 	setBeep(beep_on);
 	button->setStatus(beep_on);
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	setCfgValue("value", beep_on, SUONO);
 #else
 	setCfgValue("enabled", beep_on, item_id);
@@ -430,7 +430,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			int timeout = getTextChild(item, "timeout").toInt() / 1000;
 			int blank = getTextChild(item, "blankscreen").toInt() / 1000;
 			bt_global::btmain->setScreenSaverTimeouts(timeout, blank == 0 ? 0 : timeout + blank);
-			// Screensaver data is not correctly initialized (in BtMain) when using touchx conf file
+			// Screensaver data is not correctly initialized (in BtMain) when using TS 10'' conf file
 			ScreenSaver::initData(item);
 			p = new ScreenSaverPage(item);
 			break;
@@ -516,7 +516,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 // TODO: password item in conf file hasn't its own page; this has two consequences:
 // 1. I need to parse here the conf file
 // 2. I can't use Settings::getBanner() because I don't have the correct item_node to pass to it (and xml tags
-//    are different from the ones used in btouch conf anyway).
+//    are different from the ones used in TS 3.5'' conf anyway).
 PasswordPage::PasswordPage(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
@@ -526,16 +526,40 @@ PasswordPage::PasswordPage(const QDomNode &config_node)
 	layout->setContentsMargins(0, 0, 0, TITLE_HEIGHT);
 
 	int item_id = getTextChild(config_node, "itemID").toInt();
-	banner *b = new impPassword(bt_global::skin->getImage("state_on"),
-		bt_global::skin->getImage("state_off"), bt_global::skin->getImage("edit"), QString(), item_id,
-		getTextChild(config_node, "password"), getTextChild(config_node, "actived").toInt());
-	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+	bool attiva = getTextChild(config_node, "actived").toInt();
+	PasswordChanger *changer = new PasswordChanger(item_id, getTextChild(config_node, "password"), attiva);
+	StateButton *left_button = new StateButton;
+	BtButton *right_button = new BtButton(bt_global::skin->getImage("edit"));
+
+	left_button->setOnOff();
+	left_button->setOffImage(bt_global::skin->getImage("state_off"));
+	left_button->setOnImage(bt_global::skin->getImage("state_on"));
+	left_button->setStatus(attiva);
+
+	connect(right_button, SIGNAL(clicked()), changer, SLOT(changePassword()));
+	connect(left_button, SIGNAL(clicked()), changer, SLOT(requestPasswdOn()));
+	connect(changer, SIGNAL(finished()), SLOT(showPage()));
+	connect(changer, SIGNAL(passwordActive(bool)), left_button, SLOT(setStatus(bool)));
+
+	QGridLayout *b = new QGridLayout;
+
+	QLabel *left_label = new QLabel(tr("Activate"));
+	QLabel *right_label = new QLabel(tr("Change"));
+
+	left_label->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
+	right_label->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
+
+	b->addWidget(left_button, 0, 0, Qt::AlignHCenter);
+	b->addWidget(right_button, 0, 2, Qt::AlignHCenter);
+	b->addWidget(left_label, 1, 0, Qt::AlignHCenter);
+	b->addWidget(right_label, 1, 2, Qt::AlignHCenter);
+	b->setColumnStretch(1, 1);
 
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
-	layout->addWidget(b, 1, 1);
+	layout->addLayout(b, 1, 1);
 	layout->setRowStretch(0, 1);
 	layout->setRowStretch(2, 1);
 	layout->setColumnStretch(0, 1);

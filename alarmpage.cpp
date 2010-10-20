@@ -39,7 +39,7 @@
 // keep the same order as the altype enum in alarmpage.h
 static const char *alarm_icons[] = { "technic_alarm_page", "intrusion_alarm_page", "tamper_alarm_page", "panic_alarm_page" };
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 
 AlarmPage::AlarmPage(altype t, const QString &d, const QString &zone, const QDateTime &time, int id)
 {

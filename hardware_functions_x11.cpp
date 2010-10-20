@@ -103,7 +103,7 @@ void setOrientation(QString orientation)
 void beep(int t)
 {
 	if (buzzer_enabled)
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 		bt_global::sound->play(SOUND_PATH "beep.wav");
 #else
 		QProcess::execute("beep");

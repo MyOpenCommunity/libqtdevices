@@ -33,7 +33,7 @@
 #include <QTimerEvent>
 
 #define PPTSCE_INTERVAL 1000
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 #define SCENARIO_EVOLUTO 38
 #endif
 
@@ -228,7 +228,7 @@ void ScenarioEvolved::toggleActivation()
 {
 	enabled = !enabled;
 	left_button->setImage(enabled ? enable_icon : disable_icon);
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	setCfgValue("enable", enabled, SCENARIO_EVOLUTO, serial_number);
 #else
 	setCfgValue("scen/status", enabled, item_id);

@@ -31,20 +31,40 @@
 
 class OpenMsg;
 
+
+/*!
+	\ingroup EnergyData
+	\brief Functions to convert energy values for display.
+*/
 namespace EnergyConversions
 {
+	/*!
+		\brief The type of graph in status notifications.
+
+		\sa convertToMoney()
+	*/
 	enum EnergyTypology
 	{
-		DEFAULT_ENERGY,            // default conversion, divide number by 10
-		ELECTRICITY,               // specific conversion for electricity, divide by 1000
-		OTHER_ENERGY,              // conversion for other current energy value
+		ELECTRICITY,   /*!< Conversion factor for electricity. */
+		OTHER_ENERGY,  /*!< Conversion factor for all other energy types. */
 	};
 
+	/*!
+		\brief Converts a measure to the units used for display.
+	*/
 	double convertToRawData(qint64 bt_bus_data, EnergyTypology type);
+
+
+	/*!
+		\brief Converts from the units used for display to the corresponding cost.
+
+		\sa EnergyRate
+	*/
 	double convertToMoney(double raw_data, float money_factor);
 }
 
 
+// Internal helper class used to handle automatic updates.
 class AutomaticUpdates : public QObject
 {
 friend class TestEnergyDevice;
@@ -103,45 +123,148 @@ private:
 };
 
 
-/**
- * This class parses the incoming frames for who = 18 (Energy Management) and sends
- * updates to widgets through valueReceived() signal.
- * The main assumptions on the incoming frames are that:
- *  - the frames for a graph arrive in order;
- *  - if a graph frame stream is interrupted, no other frames for that stream will arrive later
- *      (ie, there can't be 'holes' in the stream);
- *  - if a stream is interrupted and the last value of the last frame is the high byte
- *      (ie, we can't reconstruct the complete value), nothing must be visualized for that value.
- *
- * The measure unit for the various energy types is always:
- * electricity: watt
- * water: liters
- * gas: dm3 (liters)
- * dhw: cal
- * heating/cooling: cal
- */
+/*!
+	\ingroup EnergyData
+	\brief A device to read energy/water/gas/heating consumption data.
+
+	Consumption values are expressed using different using dipending on the energy type:
+	\li Electricity: watt
+	\li Water: liters
+	\li Gas: dm3 (liters)
+	\li Hot water: calories
+	\li Heating/cooling: calories
+
+	\section EnergyDevice-dimensions Dimensions
+	\startdim
+	\dim{DIM_CURRENT,::EnergyValue,,Instantaneous consumption.}
+	\dim{DIM_CUMULATIVE_YEAR,::EnergyValue,,Total consumption over the last year (current month and the previous 11 months).}
+	\dim{DIM_CUMULATIVE_MONTH,::EnergyValue,,Total consumption over a month.}
+	\dim{DIM_CUMULATIVE_DAY,::EnergyValue,,Total consumption over a day.}
+	\dim{DIM_DAILY_AVERAGE_GRAPH,GraphData,,Average consumption for each hour in a day (computed over a month).}
+	\dim{DIM_DAY_GRAPH,GraphData,,Consumption for each hour in a day.}
+	\dim{DIM_CUMULATIVE_MONTH_GRAPH,GraphData,,Total consumption for each day in a month.}
+	\dim{DIM_CUMULATIVE_YEAR_GRAPH,GraphData,,Total consumption for each month in the last year (current month and the previous 11 months)}
+	\dim{DIM_MONTLY_AVERAGE,::EnergyValue,,Average consumption value for the days in a month.}
+	\enddim
+
+	After requesting a status update for a specific measure, it is not unusual that
+	status updates for multiple measures will be delivered; the exact number and type
+	of status updates depends on the physical device model.
+
+	\section FrameOrdering Frame ordering problems
+
+	\a requestCumulativeMonthGraph() must be the last in a sequence of request frames,
+	otherwise the physical device might not send back all the requested data (depending
+	on the device model).
+*/
 class EnergyDevice : public device
 {
 friend class TestEnergyDevice;
 Q_OBJECT
 public:
-	EnergyDevice(QString where, int _mode);
+	/*!
+		\brief Constructor
 
-	// The request methods, used to request an information
+		Build an energy device using the given \a where and \a mode, where \a mode
+		is the measure type and can be:
+		\li 1: electricity
+		\li 2: water
+		\li 3: gas
+		\li 4: hot water
+		\li 5: heating/conditioning
+	*/
+	EnergyDevice(QString where, int mode);
+
+	/*!
+		\brief Request total consumption over a day (DIM_CUMULATIVE_DAY).
+	*/
 	void requestCumulativeDay(QDate date) const;
+
+	/*!
+		\brief Request the instantaneous consumption.
+	*/
 	void requestCurrent() const;
+
+	/*!
+		\brief Request total consumption over a month (DIM_CUMULATIVE_MONTH).
+	*/
 	void requestCumulativeMonth(QDate date) const;
+
+	/*!
+		\brief Request total consumption over the last 12 months (DIM_CUMULATIVE_YEAR).
+	*/
 	void requestCumulativeYear() const;
+
+	/*!
+		\brief Request graph of average consumption for each hour in a day (DIM_DAILY_AVERAGE_GRAPH).
+	*/
 	void requestDailyAverageGraph(QDate date) const;
+
+	/*!
+		\brief Request average consumption value for the days in a month (DIM_MONTLY_AVERAGE).
+	*/
 	void requestMontlyAverage(QDate date) const;
+
+	/*!
+		\brief Request graph of consumption for each hour in a day (DIM_DAY_GRAPH).
+	*/
 	void requestCumulativeDayGraph(QDate date) const;
+
+	/*!
+		\brief Request graph of total consumption for each day in a month and the
+		graph of average consumption for each hour in a day (DIM_CUMULATIVE_MONTH_GRAPH,
+		DIM_DAILY_AVERAGE_GRAPH).
+	*/
 	void requestCumulativeMonthGraph(QDate date) const;
+
+	/*!
+		\brief Request total consumption over the last 12 months (DIM_CUMULATIVE_YEAR).
+	*/
 	void requestCumulativeYearGraph() const;
+
+	/*!
+		\brief Request the instantaneous consumption and (for some actuator types)
+		the start of periodic updates.
+	*/
 	void requestCurrentUpdate();
+
+	/*!
+		\brief Request automatic updates for the instantaneous consumption.
+
+		After this function is called the device starts sending automatic updates
+		for the instantaneous consumption.
+
+		If requestCurrentUpdateStart() is called multiple times (for example by
+		different graphic items) the automatic updates stop only after
+		requestCurrentUpdateStop() is called the same number of times.
+	*/
 	void requestCurrentUpdateStart();
+
+	/*!
+		\brief Stop automatic updates for the instantaneous consumption.
+
+		Note that, to avoid excessive traffic on the SCS bus in case of repeated
+		calls to requestCurrentUpdateStart()/ requestCurrentUpdateStop(),
+		automatic upates are stopped about 100 msec after this function is called.
+
+		\sa requestCurrentUpdateStart()
+	*/
 	void requestCurrentUpdateStop();
+
+	/*!
+		\brief Stop automatic updates directly.
+
+		Called after requestCurrentUpdateStop(), forces the update stop to be processed
+		immedialty.  This is only required to avoid some frame ordering problems.
+
+		\sa requestCurrentUpdateStop()
+		\sa \ref FrameOrdering
+	*/
 	void flushCurrentUpdateStop();
 
+	/*!
+		\refdim{EnergyDevice}
+	*/
 	enum Type
 	{
 		DIM_CUMULATIVE_YEAR   = 51,
@@ -157,12 +280,15 @@ public:
 		DIM_MONTLY_AVERAGE, // as DIM_CURRENT, the value doesn't matter
 	};
 
+	/*!
+		\brief The type of graph in status notifications.
+	*/
 	enum GraphType
 	{
-		CUMULATIVE_DAY,
-		CUMULATIVE_MONTH,
-		CUMULATIVE_YEAR,
-		DAILY_AVERAGE
+		CUMULATIVE_DAY,   /*!< Consumption for each hour in a day. */
+		CUMULATIVE_MONTH, /*!< Total consumption for each day in a month. */
+		CUMULATIVE_YEAR,  /*!< Total consumption for each month in a year. */
+		DAILY_AVERAGE     /*!< Average consumption for each hour in a day (computed over a month). */
 	};
 
 protected:
@@ -221,11 +347,41 @@ private:
 };
 
 
+
+
+/*!
+	\ingroup EnergyData
+	\brief Contains multiple values composing a graph.
+*/
 struct GraphData
 {
 	GraphData() : type(EnergyDevice::CUMULATIVE_DAY) { }
+
+	/*!
+		\brief The graph data.
+
+		The keys always start at 1
+		\li EnergyDevice::DAILY_AVERAGE, EnergyDevice::CUMULATIVE_DAY: the key is the hour of the day
+		\li EnergyDevice::CUMULATIVE_MONTH: the key is the day of the month
+		\li EnergyDevice::CUMULATIVE_YEAR: key 12 contains the value for the current month, lower keys contain the value for previous months
+	*/
 	QMap<int, unsigned int> graph;
+
+	/*!
+		\brief The date the data refers to.
+
+		The interpretation varies depending on graph data type
+		\li EnergyDevice::DAILY_AVERAGE, EnergyDevice::CUMULATIVE_DAY: the day the data refers to.
+		\li EnergyDevice::CUMULATIVE_MONTH: teh first day of the month the data refers to.
+		\li EnergyDevice::CUMULATIVE_YEAR: not relevant.
+	*/
 	QDate date;
+
+	/*!
+		\brief Type of data contained in the graph.
+
+		\sa EnergyDevice
+	*/
 	EnergyDevice::GraphType type;
 	bool operator==(const GraphData &other) const
 	{
@@ -240,8 +396,16 @@ Q_DECLARE_METATYPE(GraphData)
 // QPair as a type known to QMetaType. We have also define a typedef
 // to avoid the limitation of the macro, that cannot handle correctly commas
 // inside its arguments.
+/*!
+	\ingroup EnergyData
+	\brief Consumption value for the given date.
+
+	\sa EnergyDevice
+*/
 typedef QPair<QDate, qint64> EnergyValue;
 Q_DECLARE_METATYPE(EnergyValue);
 
 #endif // ENERGY_DEVICE_H
+
+/*! \file */ /* otherwise doxygen does not generate documentation for typedefs */
 

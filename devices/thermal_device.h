@@ -34,6 +34,21 @@ enum thermo_type_t
 };
 
 
+/*!
+	\ingroup ThermalRegulation
+	\brief Common part of ThermalDevice4Zones and ThermalDevice99Zones
+
+	Operations and status updates common to 4-zone and 99-zone thermal regulator.
+
+	\section ThermalDevice-dimensions Dimensions
+	\startdim
+	\dim{DIM_STATUS,ThermalDevice::Status,,Thermal regulator mode.}
+	\dim{DIM_SEASON,ThermalDevice::Season,,Thermal regulator season.}
+	\dim{DIM_PROGRAM,int,,Program number; sent when DIM_STATUS is ST_PROGRAM or ST_WEEKEND; not available for ST_HOLIDAY.}
+	\dim{DIM_SCENARIO,int,,%Scenario number (99-zone); sent when DIM_STATUS is ST_SCENARIO.}
+	\dim{DIM_TEMPERATURE,int,,Temperature for manual modes in BTicino 4-digit format.}
+	\enddim
+ */
 class ThermalDevice : public device
 {
 friend class TestThermalDevice;
@@ -41,73 +56,99 @@ friend class TestThermalDevice4Zones;
 friend class TestThermalDevice99Zones;
 Q_OBJECT
 public:
-
+	/*!
+		\refdim{ThermalDevice}
+	 */
 	enum Type
 	{
-		DIM_STATUS = 0, // see Status enum
-		DIM_SEASON = 1, // see Season enum
-		DIM_PROGRAM = 2, // program number
-		DIM_SCENARIO = 3, // scenario number
-		DIM_TEMPERATURE = 4 // temperature
+		DIM_STATUS = 0,
+		DIM_SEASON = 1,
+		DIM_PROGRAM = 2,
+		DIM_SCENARIO = 3,
+		DIM_TEMPERATURE = 4,
 	};
 
 	enum Status
 	{
-		ST_OFF = 0,
-		ST_PROTECTION = 1,
-		ST_MANUAL = 2,
-		ST_MANUAL_TIMED = 3,
-		ST_WEEKEND = 4,
-		ST_PROGRAM = 5,
-		ST_SCENARIO = 6,
-		ST_HOLIDAY = 7,
-		ST_COUNT // must be the last
+		ST_OFF = 0,          /*!< Off. */
+		ST_PROTECTION = 1,   /*!< Antifreeze mode. */
+		ST_MANUAL = 2,       /*!< Manual temperature mode. */
+		ST_MANUAL_TIMED = 3, /*!< Timed manual temperature mode (4-zone). */
+		ST_WEEKEND = 4,      /*!< Week-end mode (preset program until a certain date). */
+		ST_PROGRAM = 5,      /*!< Preset program. */
+		ST_SCENARIO = 6,     /*!< Preset scenario (99-zone). */
+		ST_HOLIDAY = 7,      /*!< Antifreeze mode until a certain date, then switch to preset program. */
+		ST_COUNT,            /*!< Internal. */
 	};
 
 	enum Season
 	{
-		SE_SUMMER = 0,
-		SE_WINTER = 1
+		SE_SUMMER = 0,       /*!< Summer mode. */
+		SE_WINTER = 1,       /*!< Winter mode. */
 	};
 
 	virtual void init();
 
+	/*!
+		\brief Switch the termal regulator to off mode.
+	 */
 	void setOff();
+
+	/*!
+		\brief Switch to summer mode.
+	 */
 	void setSummer();
+
+	/*!
+		\brief Switch to winter mode.
+	 */
 	void setWinter();
+
+	/*!
+		\brief Switch to antifreeze mode.
+	 */
 	void setProtection();
+
+	/*!
+		\brief Switch to holiday mode.
+
+		Go to antifreeze mode until the specified date/time, then switch to the given program.
+	 */
 	void setHolidayDateTime(QDate date, BtTime time, int program);
 
-	/**
-	 * Function to set weekend mode (giorno festivo) with end date and time, and program to be executed at the end of weekend mode.
-	 * \param date The end date of weekend mode.
-	 * \param time The end time of weekend mode.
-	 * \param program The program to be executed at the end of weekend mode.
+	/*!
+		\brief Switch to weekend mode.
+
+		Run the given program until the specified date/time, then switch to the previously-selected weekly program.
 	 */
 	void setWeekendDateTime(QDate date, BtTime time, int program);
+
+	/*!
+		\brief Switch to preset program mode.
+	 */
 	void setWeekProgram(int program);
 
-	/**
-	 * Sends a frame to the thermal regulator to set the temperature in manual mode.
-	 * The frame sent is generic (not winter nor summer).
-	 * \param temperature The temperature to be set, ranges from 50 to 400, step is 5.
+	/*!
+		\brief Switch to manual mode.
+		\param temperature The temperature to be set in BTicino 4-digit format.
+
+		\see maximumTemp()
+		\see minimumTemp()
 	 */
 	void setManualTemp(unsigned temperature);
 
-	/**
-	 * Getter methods that return the maximum temperature allowed by the thermal regulator.
-	 * \return The maximum temperature allowed by the thermal regulator, in 10th of Celsius degrees.
+	/*!
+		\brief Maximum temperature allowed by the thermal regulator in BTicino 4-digit format.
 	 */
 	virtual unsigned maximumTemp() const = 0;
-	/**
-	 * Getter method that return the minimum temperature allowed by the thermal regulator.
-	 * \return The minimum temperature allowed by the thermal regulator , in 10th of Celsius degrees.
+
+	/*!
+		\brief Minimum temperature allowed by the thermal regulator in BTicino 4-digit format.
 	 */
 	virtual unsigned minimumTemp() const;
 
-	/**
-	 * Getter method for thermal regulator type.
-	 * \return The type of thermal regulator.
+	/*!
+		\brief Returns the type of thermal regulator (4-zone or 99-zone).
 	 */
 	virtual thermo_type_t type() const = 0;
 
@@ -145,17 +186,20 @@ private:
 Q_DECLARE_METATYPE(ThermalDevice::Season)
 Q_DECLARE_METATYPE(ThermalDevice::Status)
 
-
+/*!
+	\ingroup ThermalRegulation
+	\brief Manages 4-zone thermal regulator
+ */
 class ThermalDevice4Zones : public ThermalDevice
 {
 Q_OBJECT
 public:
 	ThermalDevice4Zones(QString where, int openserver_id = 0);
 
-	/**
-	 * Sets the temperature for a limited time.
-	 * \param temperature The temperature to be set
-	 * \param time The duration of the manual setting (24 hours max?)
+	/*!
+		\brief Switch to timed manual mode.
+		\param temperature The temperature to be set
+		\param time The duration of the manual setting (24 hours max)
 	 */
 	void setManualTempTimed(int temperature, BtTime time);
 
@@ -164,15 +208,18 @@ public:
 };
 
 
+/*!
+	\ingroup ThermalRegulation
+	\brief Manages 99-zone thermal regulator
+ */
 class ThermalDevice99Zones : public ThermalDevice
 {
 Q_OBJECT
 public:
 	ThermalDevice99Zones(QString where, int openserver_id = 0);
 
-	/**
-	 * Sets the scenario on the thermal regulator.
-	 * \param scenario The scenario to be activated (16 max).
+	/*!
+		\brief Switch to preset scenario mode.
 	 */
 	void setScenario(int scenario);
 

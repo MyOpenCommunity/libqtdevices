@@ -32,7 +32,7 @@
 #include "state_button.h"
 #include "bann_settings.h" // ScreensaverTiming
 #include "imageselectionhandler.h"
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 #include "multimedia.h" // FilesystemBrowseButton
 #endif
 #include "main.h" // getPageNode(), MULTIMEDIA
@@ -66,15 +66,15 @@ ScreenSaverPage::ScreenSaverPage(const QDomNode &conf_node) :
 	addBanner(SingleChoice::createBanner(tr("No screensaver")), ScreenSaver::NONE);
 	addBanner(SingleChoice::createBanner(tr("Time")), ScreenSaver::TIME);
 	addBanner(SingleChoice::createBanner(tr("Text")), ScreenSaver::TEXT);
-	// TODO: these types will be available on BTouch only
-#ifdef LAYOUT_BTOUCH
+	// TODO: these types will be available on TS 3.5'' only
+#ifdef LAYOUT_TS_3_5
 	addBanner(SingleChoice::createBanner(tr("Line")), ScreenSaver::LINES);
 	addBanner(SingleChoice::createBanner(tr("Balls")), ScreenSaver::BALLS);
 #endif
 	//addBanner(tr("Deform"), ScreenSaver::DEFORM); // the deform is for now unavailable!
 	// TODO maybe we want an OK button for touch 10 as well
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	CheckableBanner *b = SingleChoice::createBanner(tr("Slideshow"), bt_global::skin->getImage("change_settings"));
 	addBanner(b, ScreenSaver::SLIDESHOW);
 	Page *p = new MultimediaSectionPage(getPageNode(MULTIMEDIA),
@@ -131,14 +131,14 @@ void ScreenSaverPage::bannerSelected(int id)
 	}
 
 	bt_global::display->setScreenSaver(static_cast<ScreenSaver::Type>(id));
-	// TODO review when porting the code to BTouch
-#ifdef BT_HARDWARE_BTOUCH
+	// TODO review when porting the code to TS 3.5''
+#ifdef BT_HARDWARE_TS_3_5
 	if (id == ScreenSaver::NONE)
 		bt_global::display->setInactiveBrightness(BRIGHTNESS_OFF);
 #endif
 }
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 
 FileList::FileList(QWidget *parent, int rows_per_page) :
 		ItemList(parent, rows_per_page), sel_buttons(new QButtonGroup(this))

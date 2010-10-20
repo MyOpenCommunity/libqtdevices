@@ -51,7 +51,7 @@ private:
 	int item_id;
 };
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 
 /**
  * The file list

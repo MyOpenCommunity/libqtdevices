@@ -31,6 +31,10 @@
 #include <QString>
 
 
+/*!
+	\defgroup ThermalRegulation Temperature Control
+*/
+
 class ThermalMenu : public BannerPage
 {
 Q_OBJECT

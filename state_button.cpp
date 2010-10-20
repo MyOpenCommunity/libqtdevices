@@ -24,48 +24,6 @@
 #include "icondispatcher.h" // icons_cache
 
 
-/*!
-	\class StateButton
-	\brief A tri-state button that can be on, off, disabled; each state
-	uses a different icon.
-
-	StateButton has essentially to work modes: one in which the status is set
-	automatically when clicked, and one in which the status is set
-	programmatically, using the \a setStatus() method.
-	To switch work mode, you can use the \a setOnOff() method.
-
-	Image for the various states can be set using the \a setOnImage(),
-	\a setOffImage() and \a setDisabledImage() methods the pressed versions are
-	automatically set with the same behaviour of \a BtButton ones.
-
-	\sa setOnOff(), setStatus(), \a setOnImage(), \a setOffImage(),
-	\a setDisabledImage()
-*/
-
-/*!
-	\enum StateButton::Status
-	State button states
- */
-
-/*!
-	\var StateButton::Status StateButton::OFF
-	Button unchecked
- */
-
-/*!
-	\var StateButton::Status StateButton::ON
-	Button checked
- */
-
-/*!
-	\var StateButton::Status StateButton::DISABLED
-	Button disabled
- */
-
-
-/*!
-	\brief Constructor
- */
 StateButton::StateButton(QWidget *parent) : BtButton(parent)
 {
 	setStatus(OFF);
@@ -73,17 +31,11 @@ StateButton::StateButton(QWidget *parent) : BtButton(parent)
 	is_on_off = false;
 }
 
-/*!
-	\brief Sets the image for the "disabled" state
- */
 void StateButton::setDisabledImage(const QString &path)
 {
 	disabled_pixmap = *bt_global::icons_cache.getIcon(path);
 }
 
-/*!
-	\brief Sets the image for the "on" state
- */
 void StateButton::setOnImage(const QString &path)
 {
 	on_pixmap = *bt_global::icons_cache.getIcon(path);
@@ -94,9 +46,6 @@ void StateButton::setOnImage(const QString &path)
 	setStatus(getStatus());
 }
 
-/*!
-	\brief Sets the image for the "off" state
- */
 void StateButton::setOffImage(const QString &path)
 {
 	off_pixmap = *bt_global::icons_cache.getIcon(path);
@@ -107,18 +56,6 @@ void StateButton::setOffImage(const QString &path)
 	setStatus(getStatus());
 }
 
-/*!
-	\fn Status StateButton::getStatus()
-	\brief Returns the current \a Status of the button
-
-	\sa setStatus(), StateButton::Status
- */
-
-/*!
-	\brief Sets the status of the button
-
-	\sa StateButton::Status
- */
 void StateButton::setStatus(StateButton::Status st)
 {
 	status = st;
@@ -146,23 +83,6 @@ void StateButton::setStatus(StateButton::Status st)
 	}
 }
 
-/*!
-	\fn void StateButton::setStatus(bool st)
-	\brief Sets the status of the button
-
-	\overload void StateButton::setStatus(bool st)
- */
-
-/*!
-	\brief Set the button as a 'on-off button'.
-
-	This means that the button is almost a toggle button, but instead of changes
-	status when the button is pressed down, changes its status manually, calling
-	the \a setStatus() method.
-
-	In this case, you can retrieve the current status using the \a getStatus()
-	method.
- */
 void StateButton::setOnOff()
 {
 	is_on_off = true;

@@ -78,7 +78,7 @@ banner *Settings::getBanner(const QDomNode &item_node)
 		b = new bannOnDx(0, bt_global::skin->getImage("info"), new ChangeTime);
 		break;
 	case CONTRASTO:
-		// TODO CONTRASTO below needs to be changed when removing CONFIG_BTOUCH
+		// TODO CONTRASTO below needs to be changed when removing CONFIG_TS_3_5
 		b = new bannContrast(CONTRASTO, getTextChild(item_node, "value").toInt(),
 					 bt_global::skin->getImage("edit"));
 		break;
@@ -86,8 +86,8 @@ banner *Settings::getBanner(const QDomNode &item_node)
 		b = new bannOnDx(0, bt_global::skin->getImage("forward"), new DisplayPage(item_node));
 		break;
 	case PROTEZIONE:
-		// TODO PROTEZIONE below needs to be changed when removing CONFIG_BTOUCH
-		b = new impPassword(
+		// TODO PROTEZIONE below needs to be changed when removing CONFIG_TS_3_5
+		b = new BannPassword(
 			bt_global::skin->getImage("state_on"), bt_global::skin->getImage("state_off"),
 			bt_global::skin->getImage("edit"), getTextChild(item_node, "descr"), PROTEZIONE,
 			getTextChild(item_node, "value"), getTextChild(item_node, "enabled").toInt());

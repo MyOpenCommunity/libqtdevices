@@ -35,11 +35,11 @@ HEADERS += device_tester.h \
 	test_loads_device.h \
 	test_media_device.h \
 	test_energy_device.h \
-	test_entryphone_device.h \
 	test_pull_manager.h \
 	test_probe_device.h \
 	test_message_device.h \
 	test_stopandgo_device.h \
+	test_videodoorentry_device.h \
 	openserver_mock.h \
 	../../bttime.h \
 	../../openclient.h \
@@ -60,12 +60,12 @@ SOURCES += test_main.cpp \
 	test_loads_device.cpp \
 	test_media_device.cpp \
 	test_energy_device.cpp \
-	test_entryphone_device.cpp \
 	test_lighting_device.cpp \
 	test_pull_manager.cpp \
 	test_probe_device.cpp \
 	test_message_device.cpp \
 	test_stopandgo_device.cpp \
+	test_videodoorentry_device.cpp \
 	openserver_mock.cpp \
 	../../bttime.cpp \
 	../../openclient.cpp \

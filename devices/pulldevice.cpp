@@ -28,44 +28,6 @@
 #include <QDebug>
 #include <QString>
 
-/*
- * Pull/non-pull devices:
- * a pull device does not react to environment/general frames; at startup we do not
- * know if a specific HW device is pull or non-pull (no indication in the configuration
- * file)
- *
- * Pull/non pull discovery algorithmm:
- *
- * The device starts with unknown state (opening/closing/stopped) and unknown pull
- * mode (pull/non-pull)
- *
- * After receiving one point-to-point measure frame, the device state is set to the state
- * contained in the frame.
- *
- * When receiving an environment/generic frame, and if the device state is known,
- * we send a point-to-point status request for the device, because we want to know if
- * the device reacted to the environment/general frame.
- *
- * When receiving the point-to-point measure frame in answer to the previous request, if
- * the status is equal to the saved status it means that the device did not react to the
- * environment/generic frame (and so is a PULL device); if the status differs from the
- * saved status, then the device is a  NON-PULL device
- *
- *
- * If the environment/generic frame is received before any point-to-point frames (when
- * both status and mode are unknown), the device always requests the point to point state to:
- * - bootstrap the discovery process
- * - retrieve the status of the device
- *
- *
- * There is a twist in that some actuators may or may not react to some frames; for example
- * some advanced light actuators react to dimmer 100 on/off frames.  The FrameChecker is used
- * to handle this case; if it returns FRAME_NOT_HANDLED the frame is completely ignored; if it
- * returns FRAME_HANDLED the detection algorithm works as described above; when it returns
- * FRAME_MAYBE_HANDLED, the algorithm is run as above, but the pull state is changed only if it
- * is non pull (because we do not know if the device does not react to frames because it is in pull
- * mode or because it can't understand the frames).
- */
 
 /*
  * Split a where into a+pf part and address extension.
@@ -98,7 +60,6 @@ QString getEnvironment(const QString &w)
 
 	return QString();
 }
-
 
 AddressType checkAddressIsForMe(const QString &msg_where, const QString &dev_where)
 {
@@ -144,6 +105,8 @@ enum
 	                                // for normal frames and 100 to 200 for dimmer100 level frames).
 };
 
+
+
 PullStateManager::PullStateManager(PullMode m, AdvancedMode adv, FrameChecker checker)
 {
 	mode = m;
@@ -162,10 +125,6 @@ PullMode PullStateManager::getPullMode()
 	return mode;
 }
 
-/*
- * When ignoring the frame, return false so that the calling code doesn't generate useless
- * traffic on the bus.
- */
 PullStateManager::CheckResult PullStateManager::moreFrameNeeded(OpenMsg &msg, bool is_environment)
 {
 	FrameHandled handled = frame_checker ? frame_checker(msg) : FRAME_HANDLED;
@@ -248,6 +207,7 @@ PullStateManager::CheckResult PullStateManager::moreFrameNeeded(OpenMsg &msg, bo
 	return qMakePair(false, handled);
 }
 
+
 void PullStateManager::setStatusRequested(bool status)
 {
 	status_requested = status;
@@ -262,7 +222,6 @@ PullDevice::PullDevice(QString who, QString where, PullMode m, int openserver_id
 	delayed_request.setInterval(pull_delay + (*bt_global::config)[TS_NUMBER].toInt() * TS_NUMBER_FRAME_DELAY);
 	connect(&delayed_request, SIGNAL(timeout()), SLOT(delayedStatusRequest()));
 }
-
 
 void PullDevice::delayedStatusRequest()
 {
@@ -307,4 +266,3 @@ void PullDevice::manageFrame(OpenMsg &msg)
 	if (values_list.size() > 0)
 		emit valueReceived(values_list);
 }
-

@@ -113,7 +113,7 @@ void myMessageOutput(QtMsgType type, const char *msg)
 
 QDomNode getPageNode(int id)
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	QDomElement n = getConfElement("displaypages");
 #else
 	QDomElement n = getConfElement("gui");
@@ -125,7 +125,7 @@ QDomNode getPageNode(int id)
 	return getChildWithId(n, QRegExp("page(\\d{1,2}|vct|special|menu\\d{1,2}|)"), id);
 }
 
-#ifndef CONFIG_BTOUCH
+#ifndef CONFIG_TS_3_5
 QDomNode getPageNodeFromPageId(int pageid)
 {
 	QDomElement gui = getConfElement("gui");

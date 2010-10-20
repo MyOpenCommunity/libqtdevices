@@ -28,7 +28,7 @@
 
 #include <QLabel>
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 #define SCENARIO_EVOLUTO 38
 #endif
 
@@ -79,7 +79,7 @@ ScenEvoTimeCondition::ScenEvoTimeCondition(int _item_id, const QDomNode &config_
 	main_layout->setContentsMargins(0, 5, 0, 10);
 	main_layout->setSpacing(0);
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	QLabel *top_image = new QLabel;
 	top_image->setPixmap(bt_global::skin->getImage("watch"));
 	main_layout->addWidget(top_image, 0, Qt::AlignHCenter);
@@ -124,7 +124,7 @@ void ScenEvoTimeCondition::save()
 	qDebug("ScenEvoTimeCondition::save()");
 
 	QMap<QString, QString> data;
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	data["condH/hour"] = cond_time.toString("hh");
 	data["condH/minute"] = cond_time.toString("mm");
 	setCfgValue(data, SCENARIO_EVOLUTO, get_serial_number());
@@ -151,7 +151,7 @@ ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &con
 
 	QString trigger = getTextChild(config_node, "trigger");
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	int condition_type = getTextChild(config_node, "value").toInt();
 #else
 	int condition_type = getTextChild(config_node, "objectID").toInt();
@@ -218,7 +218,7 @@ void ScenEvoDeviceCondition::save()
 {
 	qDebug("ScenEvoDeviceCondition::save()");
 	QString s = device_cond->getConditionAsString();
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	setCfgValue("condDevice/trigger", s, SCENARIO_EVOLUTO, get_serial_number());
 #else
 	setCfgValue("scen/device/trigger", s, item_id);

@@ -33,7 +33,7 @@ WindowContainer::WindowContainer(int width, int height)
 	: transition_widget(0)
 {
 	// needs to be done before HomeWindow is constructed
-	Window::setWindowContainer(this);
+	Window::window_container = this;
 
 	main = new HomeWindow;
 

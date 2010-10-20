@@ -128,7 +128,7 @@ BannTemperature::BannTemperature(QString descr, NonControlledProbeDevice *dev)
 
 	QVBoxLayout *t = new QVBoxLayout(this);
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	descr_label->setFixedHeight(40);
 
 	QLabel *sep = new QLabel;

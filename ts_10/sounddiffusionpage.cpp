@@ -40,13 +40,17 @@
 #include "audiostatemachine.h"
 #include "labels.h" // ScrollingLabel
 #include "audioplayer.h"
-#include "entryphone_device.h"
+#include "videodoorentry_device.h"
 
 #include <QDomNode>
 #include <QGridLayout>
 #include <QLabel>
 #include <QtDebug>
 #include <QStackedWidget>
+
+/*!
+	\defgroup SoundDiffusion Sound Diffusion
+ */
 
 #define TEMPORARY_OFF_TIMEOUT 1000
 
@@ -359,7 +363,7 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 	QVBoxLayout *l = new QVBoxLayout(main_widget);
 	QHBoxLayout *b = new QHBoxLayout;
 	l->setContentsMargins(0, 0, 0, 0);
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	b->setContentsMargins(18, 0, 17, 0);
 #endif
 	BannerContent *content = new BannerContent;
@@ -634,7 +638,7 @@ LocalAmplifier::LocalAmplifier(QObject *parent) : QObject(parent)
 
 	if (!(*bt_global::config)[PI_ADDRESS].isEmpty())
 	{
-		EntryphoneDevice *vct_dev = new EntryphoneDevice((*bt_global::config)[PI_ADDRESS], (*bt_global::config)[PI_MODE]);
+		VideoDoorEntryDevice *vct_dev = new VideoDoorEntryDevice((*bt_global::config)[PI_ADDRESS], (*bt_global::config)[PI_MODE]);
 		vct_dev = bt_global::add_device_to_cache(vct_dev);
 		connect(vct_dev, SIGNAL(valueReceived(DeviceValues)), SLOT(vctValueReceived(DeviceValues)));
 	}
@@ -644,7 +648,7 @@ void LocalAmplifier::vctValueReceived(const DeviceValues &values_list)
 {
 	// Because the "silence frame" can arrive more times we simply ignore it if
 	// we have already silenced the local amplifier.
-	if (freezed_level == -1 && values_list.contains(EntryphoneDevice::SILENCE_MM_AMPLI))
+	if (freezed_level == -1 && values_list.contains(VideoDoorEntryDevice::SILENCE_MM_AMPLI))
 	{
 		//  We want the same behaviour than the actual amplifier
 		const int scs_silenced_level = 1;
@@ -659,7 +663,7 @@ void LocalAmplifier::vctValueReceived(const DeviceValues &values_list)
 		if (bt_global::audio_states->currentState() == AudioStates::PLAY_DIFSON)
 			bt_global::audio_states->setLocalAmplifierVolume(scsToLocalVolume(scs_silenced_level));
 	}
-	else if (freezed_level > -1 && values_list.contains(EntryphoneDevice::RESTORE_MM_AMPLI))
+	else if (freezed_level > -1 && values_list.contains(VideoDoorEntryDevice::RESTORE_MM_AMPLI))
 	{
 		if (bt_global::audio_states->currentState() != AudioStates::PLAY_DIFSON)
 			dev->updateVolume(0);

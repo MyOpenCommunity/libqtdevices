@@ -64,7 +64,7 @@ enum DateFormat
 
 QDomNode getPageNode(int id);
 
-#ifndef CONFIG_BTOUCH
+#ifndef CONFIG_TS_3_5
 QDomNode getPageNodeFromPageId(int pageid);
 QDomNode getPageNodeFromChildNode(QDomNode node, QString child_name);
 QDomNode getHomepageNode();
@@ -124,7 +124,7 @@ QDomElement getConfElement(QString path);
 #define TS_NUMBER_FRAME_DELAY 500
 
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 enum Section
 {
 	NO_SECTION = 0,
@@ -147,7 +147,7 @@ enum Section
 	LOAD_MANAGEMENT = 18,                           /*!< Load management system */
 	/* Added to avoid compile problems... */
 	MULTIMEDIA = 26,
-	MESSAGES = 27,\
+	MESSAGES = 27,
 };
 #else
 enum Section
@@ -195,7 +195,7 @@ enum ItemType
 	POSTO_ESTERNO=49,                             /*!< Posto esterno */
 	LANSETTINGS=72,                               /*!< LAN settings and information */
 	// for SpecialPage, HeaderWidget
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	TERMO_HOME_NC_EXTPROBE=57,                    /*!< Home page external not-controlled probe */
 	TERMO_HOME_NC_PROBE=58,                       /*!< Home page not-controlled probe */
 #else

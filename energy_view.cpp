@@ -127,7 +127,7 @@ namespace
 EnergyViewNavigation::EnergyViewNavigation()
 {
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	createButton(bt_global::skin->getImage("back"), SIGNAL(backClick()), 0);
 
 	table_button = createButton(bt_global::skin->getImage("table"), SIGNAL(showTable()), 2);
@@ -139,7 +139,7 @@ EnergyViewNavigation::EnergyViewNavigation()
 
 void EnergyViewNavigation::showTableButton(bool show)
 {
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	table_button->setVisible(show);
 #else
 	Q_ASSERT_X(false, "EnergyViewNavigation::showTableButton", "You can't call this on Touch X!");
@@ -148,7 +148,7 @@ void EnergyViewNavigation::showTableButton(bool show)
 
 void EnergyViewNavigation::showCurrencyButton(bool show)
 {
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	currency_button->setVisible(show);
 #else
 	Q_ASSERT_X(false, "EnergyViewNavigation::showCurrencyButton", "You can't call this on Touch X!");
@@ -167,7 +167,7 @@ TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 	QHBoxLayout *main_layout = new QHBoxLayout(this);
 	main_layout->setContentsMargins(0, 0, 0, 0);
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	main_layout->setSpacing(0);
 	back_period = getTrimmedButton(this, bt_global::skin->getImage("fast_backward"));
 	forw_period = getTrimmedButton(this, bt_global::skin->getImage("fast_forward"));
@@ -361,7 +361,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	QWidget *content = new QWidget;
 	QVBoxLayout *main_layout = new QVBoxLayout(content);
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	main_layout->setContentsMargins(0, 0, 0, 0);
 	main_layout->setSpacing(0);
 #else
@@ -385,7 +385,7 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	table = _table;
 	graph = _graph;
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	main_layout->addWidget(widget_container, 1);
 	connect(nav_bar, SIGNAL(toggleCurrency()), SLOT(toggleCurrency()));
 	connect(nav_bar, SIGNAL(showTable()), table, SLOT(showPage()));
@@ -786,7 +786,7 @@ void EnergyView::showGraph(int graph_type)
 
 void EnergyView::showTableButton(bool show)
 {
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	nav_bar->showTableButton(show);
 #else
 	table_button->setVisible(show);
@@ -795,7 +795,7 @@ void EnergyView::showTableButton(bool show)
 
 void EnergyView::showCurrencyButton(bool show)
 {
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	nav_bar->showCurrencyButton(show);
 #else
 	currency_button->setVisible(show);

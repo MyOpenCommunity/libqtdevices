@@ -35,7 +35,7 @@
 
 SectionPage::SectionPage(const QDomNode &config_node)
 {
-#ifndef CONFIG_BTOUCH
+#ifndef CONFIG_TS_3_5
 	// only show the back icon if there is a lnk_itemID to a banner
 	QString back_icon = getTextChild(config_node, "lnk_itemID").isEmpty() ? QString() : "back";
 	NavigationBar *nav_bar = new NavigationBar("", "scroll_down", "scroll_up", back_icon);
@@ -55,7 +55,7 @@ void SectionPage::addPage(Page *page, const QString &label, const QString &icon_
 	if (!icon_name_on.isEmpty())
 		b->setOnImage(icon_name_on);
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	b->setGeometry(x, y, DIM_BUT, DIM_BUT);
 #else
 	Q_ASSERT_X(page_content, "SectionPage::addButton", "The SectionPage must have the page_content!");
@@ -81,7 +81,7 @@ void SectionPage::loadItems(const QDomNode &config_node)
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		int id = getTextChild(item, "id").toInt();
 		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
 		int x = getTextChild(item, "left").toInt();

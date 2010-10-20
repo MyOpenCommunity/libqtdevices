@@ -23,7 +23,7 @@
 #include "xml_functions.h" // getChildWithId, getChildren
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // SkinContext, bt_global::skin
-#include "generic_functions.h" // scsToLocalVolume
+#include "generic_functions.h" // scsToGraphicalVolume
 #include "btbutton.h" // needed to directly connect button signals with slots
 #include "media_device.h"
 
@@ -138,9 +138,9 @@ void BannPowerAmplifier::valueReceived(const DeviceValues &values_list)
 			// We have to normalize the volume value (from 0 to 31) in a value
 			// that we can represent into the banner (that accept values from 0 to 8)
 			// so we use the following formula.
-			int level = scsToLocalVolume(volume);
+			int level = scsToGraphicalVolume(volume);
 			// TODO remove after aligning image names
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 			Q_ASSERT_X(level > 0, "BannPowerAmplifier::valueReceived", "Received volume is not in range 0-31");
 #else
 			Q_ASSERT_X(level >= 0, "BannPowerAmplifier::valueReceived", "Received volume is not in range 0-31");

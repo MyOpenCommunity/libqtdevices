@@ -35,7 +35,7 @@
 
 enum
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	CLASS_STOPNGO = 6001,
 	LOAD_DIAGNOSTIC = 6002
 #else
@@ -48,7 +48,7 @@ SupervisionMenu::SupervisionMenu(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	next_page = NULL;
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	buildPage();
 #else
 	buildPage(getTextChild(config_node, "descr"), TITLE_HEIGHT);
@@ -63,7 +63,7 @@ int SupervisionMenu::sectionId() const
 
 void SupervisionMenu::loadItems(const QDomNode &config_node)
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	foreach (const QDomNode &node, getChildren(config_node, ""))
 	{
 		if (!node.nodeName().startsWith("class") && node.nodeName() != "load")
@@ -82,7 +82,7 @@ void SupervisionMenu::loadItems(const QDomNode &config_node)
 
 		page_content->appendBanner(b);
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		QDomNode page_node = node;
 #else
 		QDomNode page_node = getPageNodeFromChildNode(node, "lnk_pageID");
@@ -123,7 +123,7 @@ void SupervisionMenu::showPage()
 
 LoadDiagnosticPage::LoadDiagnosticPage(const QDomNode &config_node)
 {
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	buildPage();
 #else
 	buildPage(getTextChild(config_node, "descr"), TITLE_HEIGHT);

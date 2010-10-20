@@ -103,7 +103,7 @@ public:
 private:
 	AirConditionerStatus status;
 	AdvancedAirConditioningDevice *dev;
-	QString conf_name; // CONFIG_BTOUCH remove
+	QString conf_name; // CONFIG_TS_3_5 remove
 
 private slots:
 	void onButtonClicked();

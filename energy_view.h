@@ -94,7 +94,7 @@ signals:
 
 
 /**
- * The navigation bar for the Energy view, that have (on BTouch) custom buttons
+ * The navigation bar for the Energy view, that have (on TS 3.5'') custom buttons
  * to toggle the currency mode and to show the table of energy data.
  */
 class EnergyViewNavigation : public AbstractNavigationBar
@@ -108,7 +108,7 @@ public:
 
 signals:
 	void backClick();
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	void toggleCurrency();
 	void showTable();
 
@@ -194,7 +194,7 @@ private:
 	bool update_after_ssaver;
 	bool is_current_page;
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	BtButton *table_button;
 	BtButton *currency_button;
 #endif

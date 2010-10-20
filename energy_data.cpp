@@ -117,7 +117,7 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
 	EnergyRates::energy_rates.loadRates();
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	QList<QDomNode> families = getChildren(config_node, "energy_type");
 #else
 	QList<QDomNode> families = getChildren(config_node, "item");
@@ -128,7 +128,7 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 	{
 		Page *costs = new EnergyCost;
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 		NavigationBar *nav = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 		buildPage(new BannerContent, nav, getTextChild(config_node, "descr"));
 
@@ -240,7 +240,7 @@ void EnergyCost::showPage()
 
 EditEnergyCost::EditEnergyCost()
 {
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
 	buildPage(new BannerContent, nav_bar);
 
@@ -349,7 +349,7 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node, bool edit_rates, b
 {
 	BtButton *edit_costs = 0;
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 	if (edit_rates && EnergyRates::energy_rates.hasRates())
 	{
@@ -404,7 +404,7 @@ bool EnergyInterface::loadItems(const QDomNode &config_node)
 	EnergyTable *table = new EnergyTable;
 	EnergyGraph *graph = new EnergyGraph;
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 #else
 	foreach (const QDomNode &item, getChildren(getPageNodeFromChildNode(config_node, "lnk_pageID"), "item"))
@@ -413,7 +413,7 @@ bool EnergyInterface::loadItems(const QDomNode &config_node)
 		int mode = getTextChild(item, "mode").toInt();
 		QString measure = getTextChild(item, "measure");
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 		bool is_currency_enabled = getElement(item, "rate/ab").text().toInt();
 		QString where = getTextChild(item, "address");
 #else

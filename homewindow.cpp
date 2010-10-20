@@ -21,7 +21,7 @@
 
 #include "homewindow.h"
 #include "page.h"
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 #include "headerwidget.h"
 #include "favoriteswidget.h"
 #endif
@@ -69,7 +69,7 @@ HomeWindow::HomeWindow()
 	favorites_widget = 0;
 	central_widget = 0;
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	QDomNode pagemenu_home = getHomepageNode();
 	int favourites_pageid = getTextChild(pagemenu_home, "h_lnk_pageID").toInt();
 	QDomNode favourites_node = getPageNodeFromPageId(favourites_pageid);
@@ -84,7 +84,7 @@ HomeWindow::HomeWindow()
 	main_layout->addWidget(central_widget, 1, 0, 1, 1);
 	// using the currentChanging signal, we ensure that the page size is the correct one
 	// when showEvent is called
-	connect(central_widget, SIGNAL(currentChanging(int)), SLOT(centralWidgetChanged(int)));
+	connect(central_widget, SIGNAL(currentChanging(Page*)), SLOT(centralWidgetChanged(Page*)));
 	Page::setPageContainer(central_widget);
 
 	tray_bar = new TrayBar;
@@ -121,7 +121,7 @@ HomeWindow::HomeWindow()
 
 void HomeWindow::iconStateChanged(int page_id, StateButton::Status st)
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	header_widget->iconStateChanged(page_id, st);
 #endif
 }
@@ -139,7 +139,7 @@ void HomeWindow::aboutToChangePage()
 
 void HomeWindow::loadConfiguration()
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	QDomNode pagemenu_home = getHomepageNode();
 	QDomNode favourites_node = getPageNodeFromChildNode(pagemenu_home, "h_lnk_pageID");
 	QDomNode infobar_node = getPageNodeFromChildNode(favourites_node, "h_lnk_pageID");
@@ -151,25 +151,20 @@ void HomeWindow::loadConfiguration()
 #endif
 }
 
-void HomeWindow::centralWidgetChanged(int index)
+void HomeWindow::centralWidgetChanged(Page *p)
 {
-#ifdef LAYOUT_TOUCHX
-	// the check on header_widget shouldn't fail, but I don't want to rely on this...
-	if (qobject_cast<Page *>(central_widget->widget(index)))
-	{
-		Page *p = static_cast<Page *>(central_widget->widget(index));
-		bool is_homepage = (qobject_cast<HomePage*>(p) != 0);
-		header_widget->centralPageChanged(p->sectionId(), is_homepage);
-		// force a relayout, because changing the central page might change
-		// the window header size; see also the comment in PageContainer::showPage()
-		layout()->activate();
-	}
+#ifdef LAYOUT_TS_10
+	bool is_homepage = (qobject_cast<HomePage*>(p) != 0);
+	header_widget->centralPageChanged(p->sectionId(), is_homepage);
+	// force a relayout, because changing the central page might change
+	// the window header size; see also the comment in PageContainer::showPage()
+	layout()->activate();
 #endif
 }
 
 void HomeWindow::currentSectionChanged(int section_id)
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	header_widget->sectionChanged(section_id);
 #endif
 }

@@ -48,7 +48,7 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	PageTitleWidget *title_widget = 0;
 #else
 	PageTitleWidget *title_widget = new PageTitleWidget(getTextChild(conf_node, "descr"), SMALL_TITLE_HEIGHT);
@@ -75,7 +75,7 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 	EnergyRates::energy_rates.loadRates();
 	if (rate_edit_displayed && EnergyRates::energy_rates.hasRates())
 	{
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 		QPoint pos = rect().bottomRight();
 		pos -= QPoint(69, 79);
 

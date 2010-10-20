@@ -34,7 +34,7 @@
 
 HomePage::HomePage(const QDomNode &config_node) : SectionPage(config_node)
 {
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	page_content->layout()->setContentsMargins(25, 35, 100, 0);
 	page_content->layout()->setSpacing(25);
 #endif
@@ -45,7 +45,7 @@ HomePage::HomePage(const QDomNode &config_node) : SectionPage(config_node)
 // Load only the item that is not a section page (which is loaded by SectionPage)
 void HomePage::loadItems(const QDomNode &config_node)
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
@@ -78,8 +78,8 @@ void HomePage::loadItems(const QDomNode &config_node)
 
 void HomePage::showSectionPage(int page_id)
 {
-#ifdef CONFIG_BTOUCH
-	qFatal("Can't be implemented with old config, and not necessary on BTouch anyway");
+#ifdef CONFIG_TS_3_5
+	qFatal("Can't be implemented with old config, and not necessary on TS 3.5'' anyway");
 #else
 	bt_global::btmain->page_list[page_id]->showPage();
 #endif

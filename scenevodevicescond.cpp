@@ -61,7 +61,7 @@ DeviceConditionDisplay::DeviceConditionDisplay(QWidget *parent, QString descr, Q
 	down_button->setImage(bt_global::skin->getImage("minus"));
 	connect(down_button, SIGNAL(clicked()), this, SIGNAL(downClicked()));
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	QHBoxLayout *top_layout = new QHBoxLayout;
 	top_layout->setContentsMargins(0, 0, 0, 0);
 	top_layout->setSpacing(0);

@@ -43,11 +43,11 @@
 
 #include <unistd.h>
 
-#ifdef BT_HARDWARE_BTOUCH
+#ifdef BT_HARDWARE_TS_3_5
 static const char *MPLAYER_FILENAME = "/usr/bin/mplayer";
 #elif BT_HARDWARE_X11
 static const char *MPLAYER_FILENAME = "mplayer";
-#else // BT_HARDWARE_TOUCHX
+#else // BT_HARDWARE_TS_10
 static const char *MPLAYER_FILENAME = "/home/bticino/cfg/extra/10/mplayer";
 #endif
 

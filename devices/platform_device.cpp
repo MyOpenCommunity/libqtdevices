@@ -33,34 +33,6 @@
 #define STATUS_REQUEST_DELAY 1000
 
 
-/**
-	\class PlatformDevice
-	\brief This class represent a device for managing system settings.
-
-	\a PlatformDevice has methods to set date (\a setDate())
-	and time (\a setTime()). These methods don't set the date and time locally
-	only, but syncronize all the devieces on the bus, too.
-
-	It has also methods to retrive informations about network settings,
-	kernel and firmware versions.
-	When a request of information is done, the response is sent through the
-	signal valueReceived.
-
-	\section dimensions Dimensions
-	\li DIM_STATUS: Network status
-	\li DIM_IP: Ip address
-	\li DIM_NETMASK: Network mask
-	\li DIM_MACADDR: Mac address
-	\li DIM_GATEWAY: Gateway
-	\li DIM_DNS1: Primary DNS
-	\li DIM_DNS2: Secondary DNS
-	\li DIM_FW_VERS: Firmware version
-	\li DIM_KERN_VERS: Kernel version
-*/
-
-/*!
-	\brief Constructor
- */
 PlatformDevice::PlatformDevice() : device(QString("13"), QString(""))
 {
 }
@@ -73,12 +45,6 @@ void PlatformDevice::init()
 	requestNetmask();
 }
 
-/*!
-	\brief Sets the time
-
-	Sets the time locally and syncronize the other devices on the bus to the
-	same time.
- */
 void PlatformDevice::setTime(const BtTime &t)
 {
 	QString f;
@@ -86,12 +52,6 @@ void PlatformDevice::setTime(const BtTime &t)
 	sendFrameNow(f);
 }
 
-/*!
-	\brief Sets the time
-
-	Sets the date locally and syncronize the other devices on the bus to the
-	same date.
- */
 void PlatformDevice::setDate(const QDate &d)
 {
 	QString f;
@@ -99,9 +59,6 @@ void PlatformDevice::setDate(const QDate &d)
 	sendFrameNow(f);
 }
 
-/*!
-	\brief Enables and disables the LAN settings
- */
 void PlatformDevice::enableLan(bool enable)
 {
 	int val = enable ? 1 : 0;
@@ -120,73 +77,47 @@ void PlatformDevice::sendRequest(int what) const
 	sendInitNow(createDimensionFrame(who, QString::number(what), where));
 }
 
-/*!
-	\brief Requests the status
- */
 void PlatformDevice::requestStatus() const
 {
 	sendRequest(DIM_STATUS);
 }
 
-/*!
-	\brief Requests the IP address
- */
 void PlatformDevice::requestIp() const
 {
 	sendRequest(DIM_IP);
 }
 
-/*!
-	\brief Requests the network mask
- */
 void PlatformDevice::requestNetmask() const
 {
 	sendRequest(DIM_NETMASK);
 }
 
-/*!
-	\brief Requests the MAC address
- */
 void PlatformDevice::requestMacAddress() const
 {
 	sendRequest(DIM_MACADDR);
 }
 
-/*!
-	\brief Requests the gateway
- */
 void PlatformDevice::requestGateway() const
 {
 	sendRequest(DIM_GATEWAY);
 }
 
-/*!
-	\brief Requests the primary DNS
- */
+
 void PlatformDevice::requestDNS1() const
 {
 	sendRequest(DIM_DNS1);
 }
 
-/*!
-	\brief Requests the secondary DNS
- */
 void PlatformDevice::requestDNS2() const
 {
 	sendRequest(DIM_DNS2);
 }
 
-/*!
-	\brief Requests the kernel version
- */
 void PlatformDevice::requestKernelVersion() const
 {
 	sendRequest(DIM_KERN_VERS);
 }
 
-/*!
-	\brief Requests the firmware version
- */
 void PlatformDevice::requestFirmwareVersion() const
 {
 	sendRequest(DIM_FW_VERS);

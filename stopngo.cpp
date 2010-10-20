@@ -115,7 +115,7 @@ void BannStopAndGo::valueReceived(const DeviceValues &values_list)
 
 StopAndGoMenu::StopAndGoMenu(const QDomNode &config_node)
 {
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 	buildPage();
 #else
 	buildPage(getTextChild(config_node, "descr"));

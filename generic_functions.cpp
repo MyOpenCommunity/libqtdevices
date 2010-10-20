@@ -96,40 +96,6 @@ namespace
 	}
 }
 
-/*!
-	\enum MultimediaFileType
-	Filesystem types
- */
-
-/*!
-	\var MultimediaFileType UNKNOWN
-	Unknown filetype
- */
-
-/*!
-	\var MultimediaFileType DIRECTORY
-	Directory
- */
-
-/*!
-	\var MultimediaFileType AUDIO
-	Audio filetype
- */
-
-/*!
-	\var MultimediaFileType VIDEO
-	Video filetype
- */
-
-/*!
-	\var MultimediaFileType IMAGE
-	Image filetype
- */
-
-
-/*!
-	\brief Returns a list of the recognized file types associated to "type".
- */
 QStringList getFileExtensions(MultimediaFileType type)
 {
 	QStringList exts;
@@ -162,9 +128,6 @@ QStringList getFileExtensions(MultimediaFileType type)
 	return exts;
 }
 
-/*!
-	\brief Returns a list of file filter expressions associated to "type".
- */
 QStringList getFileFilter(MultimediaFileType type)
 {
 	QStringList filters;
@@ -194,9 +157,6 @@ QStringList getFileFilter(MultimediaFileType type)
 	return filters;
 }
 
-/*!
-	\brief Concatenate "suffix" to the part of "name" preceding the dot (.)
- */
 QString getBostikName(const QString &name, const QString &suffix)
 {
 	int pos = name.indexOf(".");
@@ -206,18 +166,10 @@ QString getBostikName(const QString &name, const QString &suffix)
 	return QString();
 }
 
-/*!
-	\brief Transform a image file name into a pressed one.
-
-	Returns the filename of a image '.png' converted into a "p.png" file name.
-
-	\sa getBostikName()
-*/
 QString getPressName(QString name)
 {
 	return getBostikName(name, "p");
 }
-
 
 // reads the configuration file into a document
 bool prepareWriteCfgFile(QDomDocument &doc, const QString &filename)
@@ -276,7 +228,7 @@ bool writeCfgFile(const QDomDocument &doc, const QString &filename)
 // updates a single configuration item in the given document
 void doSetCfgValue(QDomDocument &doc, QMap<QString, QString> data, int item_id, int serial_number)
 {
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	QDomNode n = findXmlNode(doc, QRegExp(".*"), item_id, serial_number);
 #else
 	Q_UNUSED(serial_number);
@@ -334,7 +286,7 @@ Q_OBJECT
 	{
 		QMap<QString, QString> data;
 		int item_id;
-		int serial_number; // BTOUCH_CONFIG only used with old config file
+		int serial_number; // CONFIG_TS_3_5 only used with old config file
 
 		ItemValue(QMap<QString, QString> _data, int _item_id, int _serial_number) :
 			data(_data), item_id(_item_id), serial_number(_serial_number) {}
@@ -473,11 +425,7 @@ void DelayedConfigWrite::asyncWriteConfig(QHash<QString, FileQueue> queued_actio
 #endif
 }
 
-/**
- * Changes a value in conf.xml file atomically.
- * It works on a temporary file and then moves that file on conf.xml with a call to ::rename().
- */
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 void setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
 #else
 void setCfgValue(QMap<QString, QString> data, int item_id, const QString &filename)
@@ -490,14 +438,14 @@ void setCfgValue(QMap<QString, QString> data, int item_id, const QString &filena
 		return;
 	}
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 	delayed_config()->queueCfgValue(data, item_id, serial_number, filename);
 #else
 	delayed_config()->queueCfgValue(data, item_id, -1, filename);
 #endif
 }
 
-// TODO rewrite setCfgValue using setGlobalCfgValue when removing CONFIG_BTOUCH
+// TODO rewrite setCfgValue using setGlobalCfgValue when removing CONFIG_TS_3_5
 void setGlobalCfgValue(const QString &root_name, QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename)
 {
 	if (!bt_global::config->contains(INIT_COMPLETE))
@@ -510,7 +458,7 @@ void setGlobalCfgValue(const QString &root_name, QMap<QString, QString> data, co
 	delayed_config()->queueGlobalValue(root_name, data, tag_name, id_value, filename);
 }
 
-#ifdef CONFIG_BTOUCH
+#ifdef CONFIG_TS_3_5
 
 void setCfgValue(QString field, QString value, int item_id, int num_item, const QString &filename)
 {
@@ -544,23 +492,31 @@ void setCfgValue(QString field, int value, int item_id, const QString &filename)
 
 #endif
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 
 int localVolumeToAmplifier(int vol)
 {
 	return qRound(vol * 31 / 8.0);
 }
 
-#endif
-
 int scsToLocalVolume(int vol)
 {
-	// TODO remove after aligning image names
-#ifdef LAYOUT_TOUCHX
 	if (vol < 0 || vol > 31)
 		return -1;
 
 	return qRound(vol * 8 / 31.0);
+}
+
+#endif
+
+int scsToGraphicalVolume(int vol)
+{
+	// TODO remove after aligning image names
+#ifdef LAYOUT_TS_10
+	if (vol < 0 || vol > 31)
+		return -1;
+
+	return vol * 8 / 31;
 #else
 	if (vol < 0)
 		return -1;
@@ -585,7 +541,6 @@ int scsToLocalVolume(int vol)
 	return -1;
 #endif
 }
-
 
 QString DateConversions::formatDateConfig(const QDate &date, char separator)
 {

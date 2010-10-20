@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -42,6 +42,7 @@ enum RequestCurrent
 	REQ_CURRENT_MODE_5 = 1132,
 };
 
+
 /*
  * in the new frames the measure unit is:
  * electricity: watt
@@ -58,7 +59,6 @@ enum RequestCurrent
  * device we multiply these cumulative units by 100 in order to normalize the values
  * emitted by the device
  */
-
 
 namespace
 {
@@ -283,11 +283,11 @@ void AutomaticUpdates::handleAutomaticUpdate(OpenMsg &msg)
 }
 
 
-EnergyDevice::EnergyDevice(QString where, int _mode) :
+EnergyDevice::EnergyDevice(QString where, int mode) :
 	device(QString("18"), where),
-	current_updates(where, _mode, this)
+	current_updates(where, mode, this)
 {
-	scaling_factor_old_frames = _mode == 1 ? 100 : 1;
+	scaling_factor_old_frames = mode == 1 ? 100 : 1;
 	pending_graph_request = 0;
 	has_new_frames = false;
 
@@ -344,6 +344,7 @@ void EnergyDevice::requestCurrentUpdateStart()
 {
 	current_updates.requestCurrentUpdateStart();
 }
+
 
 void EnergyDevice::requestCurrentUpdateStop()
 {
@@ -461,6 +462,14 @@ void EnergyDevice::requestCumulativeYearGraph() const
 		requestCumulativeMonth(curr.addMonths(i * -1));
 }
 
+/*
+ * The main assumptions on the incoming frames are that:
+ *  - the frames for a graph arrive in order;
+ *  - if a graph frame stream is interrupted, no other frames for that stream will arrive later
+ *      (ie, there can't be 'holes' in the stream);
+ *  - if a stream is interrupted and the last value of the last frame is the high byte
+ *      (ie, we can't reconstruct the complete value), nothing must be visualized for that value.
+*/
 bool EnergyDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (where.toInt() != msg.where())
@@ -880,9 +889,6 @@ double EnergyConversions::convertToRawData(qint64 bt_bus_data, EnergyConversions
 	double factor;
 	switch (type)
 	{
-	case DEFAULT_ENERGY:
-		factor = 10.;
-		break;
 	case ELECTRICITY:
 		factor = 1000.;
 		break;

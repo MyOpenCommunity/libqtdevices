@@ -10,7 +10,6 @@ HEADERS += airconditioning_device.h \
 	deviceold.h \
 	device_status.h \
 	energy_device.h \
-	entryphone_device.h \
 	frame_interpreter.h \
 	frame_receiver.h \
 	lighting_device.h \
@@ -22,7 +21,8 @@ HEADERS += airconditioning_device.h \
 	pulldevice.h \
 	scenario_device.h \
 	stopandgo_device.h \
-	thermal_device.h
+	thermal_device.h \
+	videodoorentry_device.h
 
 SOURCES += airconditioning_device.cpp \
 	automation_device.cpp \
@@ -30,7 +30,6 @@ SOURCES += airconditioning_device.cpp \
 	deviceold.cpp \
 	device_status.cpp \
 	energy_device.cpp \
-	entryphone_device.cpp \
 	frame_interpreter.cpp \
 	frame_receiver.cpp \
 	lighting_device.cpp \
@@ -42,5 +41,6 @@ SOURCES += airconditioning_device.cpp \
 	pulldevice.cpp \
 	scenario_device.cpp \
 	stopandgo_device.cpp \
-	thermal_device.cpp
+	thermal_device.cpp \
+	videodoorentry_device.cpp
 

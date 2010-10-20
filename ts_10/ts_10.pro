@@ -2,11 +2,11 @@
 # Manual mantained!
 #
 # This project file is designed to compile the Graphical User Interface
-# for the BTicino touchscreen 3.5''. It shares large pieces of code with
-# the BTicino touchscreen 10'' code.
+# for the BTicino touchscreen 10''. It shares large pieces of code with
+# the BTicino touchscreen 3.5'' code.
 
-LAYOUT = btouch
-CONF_FILE = btouch
+LAYOUT = ts_10
+CONF_FILE = ts_10
 
 # Test architecture depending on the compiler used.
 # In this case we are searching for the substring 'arm'
@@ -14,17 +14,14 @@ TEST_ARCH = $$find(QMAKE_CXX,arm)
 
 isEmpty(TEST_ARCH) {
 	# x86
-	DEFINES += OPENSERVER_ADDR=\\\"btouch\\\"
+	DEFINES += OPENSERVER_ADDR=\\\"touchx\\\"
 	DEFINES += BT_HARDWARE_X11
 }
 else {
-	DEFINES += BT_HARDWARE_BTOUCH
-	INCLUDEPATH += QWSMOUSE
-	HEADERS += QWSMOUSE/qmouse_qws.h \
-		QWSMOUSE/qmouselinuxevent-2-6_qws.h
+	DEFINES += BT_HARDWARE_TS_10
 
-	SOURCES += QWSMOUSE/qmouse_qws.cpp \
-		QWSMOUSE/qmouselinuxevent-2-6_qws.cpp
+	HEADERS += QWSMOUSE/qmouselinuxtp_qws.h QWSMOUSE/qmouse_qws.h
+	SOURCES += QWSMOUSE/qmouselinuxtp_qws.cpp QWSMOUSE/qmouse_qws.cpp
 }
 
 VPATH = ../devices ..
@@ -50,16 +47,41 @@ TRANSLATIONS += linguist-ts/btouch_ar.ts \
 		linguist-ts/btouch_pl.ts \
 		linguist-ts/btouch_tr.ts
 
-# Add SOURCES and HEADERS with BTouch-specific source files
-
-HEADERS += displaypage.h \
-	brightnesspage.h \
+HEADERS += favoriteswidget.h \
+	headerwidget.h \
+	iconsettings.h \
+	messages.h \
+	mount_watcher.h \
+	multimedia.h \
+	multimedia_buttons.h \
+	multimedia_filelist.h \
+	ipradio.h \
 	scenevomanager.h \
-	settings.h
+	slideshow.h \
+	sounddiffusionpage.h \
+	vctcall.h \
+	mediaplayerpage.h \
+	videoplayer.h \
+	audioplayer.h \
+	webcam.h
 
-SOURCES += displaypage.cpp \
-	brightnesspage.cpp \
+
+SOURCES += favoriteswidget.cpp \
+	headerwidget.cpp \
+	iconsettings.cpp \
+	messages.cpp \
+	mount_watcher.cpp \
+	multimedia.cpp \
+	multimedia_buttons.cpp \
+	multimedia_filelist.cpp \
+	ipradio.cpp \
 	scenevomanager.cpp \
-	settings.cpp
+	slideshow.cpp \
+	sounddiffusionpage.cpp \
+	vctcall.cpp \
+	mediaplayerpage.cpp \
+	videoplayer.cpp \
+	audioplayer.cpp \
+	webcam.cpp
 
 OTHER_FILES = skin.xml
