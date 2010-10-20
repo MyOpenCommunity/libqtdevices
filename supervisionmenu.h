@@ -31,9 +31,18 @@
 class LoadsDevice;
 
 /*!
-  \class SupervisionMenu
-  \brief Class defining a list of devices groups part of the supervision family.
+	\defgroup Supervision
 
+	A container for the \ref StopAndGo and the \ref LoadDiagnostic subsections.
+*/
+
+
+/*!
+	\ingroup Supervision
+	\brief Contains banners for the \ref StopAndGo and \ref LoadDiagnostic subsections.
+
+	The page shows the banners if both subsections are defined, otherwise shows
+	directly the one defined.
 */
 class SupervisionMenu : public BannerPage
 {

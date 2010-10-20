@@ -24,6 +24,13 @@
 
 #include "sectionpage.h"
 
+/*!
+	\defgroup EnergyManagement Energy Management
+
+	The Energy Management section is only a container to group together energy
+	related sections, like \ref Supervision, \ref EnergyData and \ref LoadManagement.
+*/
+
 
 /**
  * A container for other sections energy-related (SupervisionMenu, EnergyData

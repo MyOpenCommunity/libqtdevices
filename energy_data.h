@@ -36,9 +36,14 @@ struct EnergyRate;
 	\defgroup EnergyData EnergyData
 */
 
-/**
- * The page that contains the families of energy.
- */
+
+/*!
+	\ingroup EnergyData
+	\brief Contains the families of energy.
+
+	Each family is represented by a banner, linked with the related EnergyInterface
+	page.
+*/
 class EnergyData : public BannerPage
 {
 Q_OBJECT
@@ -60,9 +65,14 @@ private:
 };
 
 
-/**
- * The page to set the related cost and incentive of an energy typology.
- */
+/*!
+	\ingroup EnergyData
+	\brief Allows the user to set cost and incentive for one or more energy
+	typologies.
+
+	The page displays a list of banner, one for each typology or show
+	directly the EditEnergyCost page if only one family is defined.
+*/
 class EnergyCost : public BannerPage
 {
 Q_OBJECT
@@ -76,6 +86,10 @@ private:
 };
 
 
+/*!
+	\ingroup EnergyData
+	\brief Sets the cost and incentive for an energy typology.
+*/
 class EditEnergyCost : public BannerPage
 {
 Q_OBJECT
@@ -97,9 +111,13 @@ private:
 };
 
 
-/**
- * A page container of interfaces banners.
- */
+/*!
+	\ingroup EnergyData
+	\brief Contains the interfaces for an energy typology.
+
+	The page shows a BannEnergyInterface banner for each interface or directly
+	the related EnergyView page if only one interface is defined.
+*/
 class EnergyInterface : public BannerPage
 {
 Q_OBJECT
