@@ -33,14 +33,15 @@
 #include <QHash>
 #include <QButtonGroup>
 
-typedef AdvancedAirConditioningDevice::AirConditionerStatus AirConditionerStatus;
+typedef AdvancedAirConditioningDevice::Status AirConditionerStatus;
 class NonControlledProbeDevice;
 class AdvancedSplitPage;
 
 
-/**
- * The banner for a split
- */
+/*!
+	\ingroup AirConditioning
+	\brief Controls a basic split.
+*/
 class SingleSplit : public Bann2Buttons
 {
 Q_OBJECT
@@ -58,13 +59,11 @@ private slots:
 	void setDeviceOff();
 };
 
-/**
- * Banner for an advanced split.
- *
- * This is mostly the same as SingleSplit, except for setSerNum() call (and a member and a ctor parameter,
- * but they're needed for setSerNum implementation).
- * Its sole purpose is support for saving the configuration for an advanced split in conf file.
- */
+
+/*!
+	\ingroup AirConditioning
+	\brief Controls an advanced split.
+*/
 class AdvancedSingleSplit : public SingleSplit
 {
 Q_OBJECT
@@ -77,9 +76,10 @@ private:
 };
 
 
-/**
- * The banner for managing the whole list of splits.
- */
+/*!
+	\ingroup AirConditioning
+	\brief Manages the whole list of splits.
+*/
 class GeneralSplit : public Bann2Buttons
 {
 Q_OBJECT
@@ -87,13 +87,19 @@ public:
 	GeneralSplit(QString descr, bool show_right_button);
 
 signals:
+	/*!
+		\brief Request to switch off the entire splits list.
+	*/
 	void sendGeneralOff();
 };
 
 
-/**
- * The banner for a scenario of a single split (configured as advanced)
- */
+/*!
+	\ingroup AirConditioning
+	\brief Represents a preconfigured scenario for an advanced split.
+
+	In this case, the scenario is a new AdvancedAirConditioningDevice::Status.
+*/
 class AdvancedSplitScenario : public Bann2Buttons
 {
 Q_OBJECT
@@ -109,10 +115,11 @@ private slots:
 	void onButtonClicked();
 };
 
-/**
- * Banner for the single button that accesses the custom page (no scenario).
- * This banner doesn't save on conf file.
- */
+/*!
+	\ingroup AirConditioning
+	\brief Allows the user to view and modify the AdvancedAirConditioningDevice::Status
+	of the split through the SplitSettings page.
+*/
 class CustomScenario : public Bann2Buttons
 {
 Q_OBJECT
@@ -120,6 +127,9 @@ public:
 	CustomScenario(AdvancedAirConditioningDevice *d);
 
 public slots:
+	/*!
+		Forward the changes to the related device.
+	*/
 	void splitValuesChanged(const AirConditionerStatus &st);
 
 private:
@@ -127,27 +137,30 @@ private:
 };
 
 
-/**
- * The banner that represent the temperature of the split
- */
+/*!
+	\ingroup AirConditioning
+	\brief Represents the temperature of the split.
+*/
 class SplitTemperature : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	/**
-	 * All values are assumed to be in the temperature scale set in conf.xml
-	 */
+	/*!
+		\brief Constructor
+
+		All values are assumed to be in the temperature scale set in the configuration
+		file.
+	*/
 	SplitTemperature(int init_temp, int level_max, int level_min, int step, int initial_mode);
 
-	/**
-	 * Set the current temperature. new_temp must be in celsius degrees.
-	 */
+	/*!
+		\brief Set the current temperature. \a new_temp_celsius must be in celsius degrees.
+	*/
 	void setTemperature(int new_temp_celsius);
 
-	/**
-	 * Return the current temperature in celsius degrees, so that external users don't need check
-	 * the temperature scale.
-	 */
+	/*!
+		\brief Return the current temperature in celsius degrees.
+	*/
 	int temperature();
 
 public slots:
@@ -169,9 +182,10 @@ private:
 };
 
 
-/**
- * The banner that represent the mode of the split
- */
+/*!
+	\ingroup AirConditioning
+	\brief Represents the mode of the split.
+*/
 class SplitMode : public BannStates
 {
 Q_OBJECT
@@ -186,9 +200,10 @@ signals:
 };
 
 
-/**
- * The banner that represent the speed of the split
- */
+/*!
+	\ingroup AirConditioning
+	\brief Represents the speed of the split.
+*/
 class SplitSpeed : public BannStates
 {
 Q_OBJECT
@@ -199,9 +214,10 @@ private:
 };
 
 
-/**
- * The banner that represent the swing of the split
- */
+/*!
+	\ingroup AirConditioning
+	\brief Represents the swing of the split.
+*/
 class SplitSwing : public Bann2StateButtons
 {
 Q_OBJECT
@@ -215,9 +231,12 @@ private:
 };
 
 
-/**
- * The banner for a scenario of a single split (configured as basic)
- */
+/*!
+	\ingroup AirConditioning
+	\brief Represents a preconfigured scenario for a basic split.
+
+	In this simple case, a scenario is just a 'what' to send to the connected device.
+*/
 class SplitScenario : public Bann2Buttons
 {
 Q_OBJECT
@@ -233,14 +252,21 @@ private slots:
 };
 
 
-/**
- * The banner for a scenario of a general split
- */
+/*!
+	\ingroup AirConditioning
+	\brief Represents a preconfigured scenario for a group of splits.
+
+	In this case, a scenario is composed by a list of <'what', device>.
+	When the button to trigger the scenario is pressed, for each device will be
+	send the related command. In this way the scenario can be used to control
+	a group of splits, even if each split requires a different command to set.
+*/
 class GeneralSplitScenario : public Bann2Buttons
 {
 Q_OBJECT
 public:
 	GeneralSplitScenario(QString descr);
+
 	void appendDevice(QString cmd, AirConditioningInterface *d);
 
 private:

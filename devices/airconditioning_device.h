@@ -24,33 +24,55 @@
 
 #include "device.h"
 
+/*!
+	\ingroup AirConditioning
+	\brief A common interface upon AirConditioningDevice and AdvancedAirConditioningDevice.
+*/
 class AirConditioningInterface
 {
 public:
+	/*!
+		\brief Switch off the split.
+	*/
 	virtual void turnOff() const = 0;
-	template<class T> QString commandToString(const T &info);
+
+	/*!
+		\brief Activate a scenario, sending a command \a what.
+	*/
 	virtual void activateScenario(const QString &what) const = 0;
 };
 
 
+/*!
+	\ingroup AirConditioning
+	\brief Manages the basic split device.
+*/
 class AirConditioningDevice : public device, public AirConditioningInterface
 {
 friend class TestAirConditioningDevice;
 Q_OBJECT
 public:
 	AirConditioningDevice(QString where, int openserver_id = 0);
-	void sendCommand(const QString &cmd) const;
 
+	/*!
+		\brief Set the 'what' command \a off_cmd to switch off the split.
+	*/
 	void setOffCommand(QString off_cmd);
+
 	virtual void turnOff() const;
 	virtual void activateScenario(const QString &what) const;
-	template<class T> QString commandToString(const T &info) { return info; };
 
 private:
 	QString off;
+
+	void sendCommand(const QString &cmd) const;
 };
 
 
+/*!
+	\ingroup AirConditioning
+	\brief Manages the advanced split device.
+*/
 class AdvancedAirConditioningDevice : public device, public AirConditioningInterface
 {
 friend class TestAdvancedAirConditioningDevice;
@@ -63,64 +85,89 @@ public:
 		DIM_SETSTATUS_ERROR,
 	};
 
+	/*!
+		\brief The mode of the split.
+	*/
 	enum Mode
 	{
-		MODE_OFF = 0,
-		MODE_WINTER = 1,
-		MODE_SUMMER = 2,
-		MODE_FAN = 3,
-		MODE_DEHUM = 4,
-		MODE_AUTO = 5
+		MODE_OFF = 0,    /*!< Switch off the split. */
+		MODE_WINTER = 1, /*!< Winter mode. */
+		MODE_SUMMER = 2, /*!< Summer mode. */
+		MODE_FAN = 3,    /*!< Fan mode. */
+		MODE_DEHUM = 4,  /*!< Dehumidification mode. */
+		MODE_AUTO = 5    /*!< Automatic mode */
 	};
 
-	// Velocity and swing sometimes may not be always present, we need a value to indicate this
+	/*!
+		\brief The velocity of the split.
+	*/
 	enum Velocity
 	{
-		VEL_AUTO = 0,
-		VEL_MIN = 1,
-		VEL_MED = 2,
-		VEL_MAX = 3,
-		VEL_SILENT = 4,
-		VEL_INVALID,           // none of the above values
+		VEL_AUTO = 0,     /*!< Automatic speed. */
+		VEL_MIN = 1,      /*!< Minimum speed. */
+		VEL_MED = 2,      /*!< Medium speed. */
+		VEL_MAX = 3,      /*!< Maximum speed. */
+		VEL_SILENT = 4,   /*!< A speed to minimize the noise of the split. */
+		VEL_INVALID,      /*!< None of the above values. */
 	};
 
+	/*!
+		\brief The swing of the split.
+	*/
 	enum Swing
 	{
-		SWING_OFF = 0,
-		SWING_ON = 1,
-		SWING_INVALID,        // none of the above values
+		SWING_OFF = 0,   /*!< Switch on the swing */
+		SWING_ON = 1,    /*!< Switch off the swing */
+		SWING_INVALID,   /*!< None of the above values. */
 	};
 
+	/*!
+		\brief The status for an advanced split.
 
-	struct AirConditionerStatus
+		It is identified by an AdvancedAirConditioningDevice::Mode, a temperature,
+		an AdvancedAirConditioningDevice::Velocity and an AdvancedAirConditioningDevice::Swing.
+	*/
+	struct Status
 	{
-		AirConditionerStatus() : mode(MODE_OFF) { }
-		AirConditionerStatus(Mode m, int t, Velocity v, Swing s) : mode(m), temp(t), vel(v), swing(s) { }
+		Status() : mode(MODE_OFF) { }
+		Status(Mode m, int t, Velocity v, Swing s) : mode(m), temp(t), vel(v), swing(s) { }
 		Mode mode;
 		int temp;
 		Velocity vel;
 		Swing swing;
 	};
 
+	/*!
+		\brief Request the status of the adavanced split.
+	*/
 	void requestStatus() const;
 
+	/*!
+		Set the status of the advanced split.
+	*/
 	void setStatus(Mode mode, int temp, Velocity vel, Swing swing) const;
-	void setStatus(AirConditionerStatus st) const;
+
+	/*!
+		Set the status of the advanced split.
+	*/
+	void setStatus(Status st) const;
+
+	/*!
+		\brief Switch off the split.
+	*/
 	virtual void turnOff() const;
 	virtual void activateScenario(const QString &what) const;
-	template<class T> QString commandToString(const T &info) { return statusToString(info); };
+
+	QString statusToString(const Status &st) const;
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
-
-private:
-	QString statusToString(const AirConditionerStatus &st) const;
 
 private:
 	// contains the "what" of the last set status command; used for error detection
 	mutable QString last_status_set;
 };
 
-Q_DECLARE_TYPEINFO(AdvancedAirConditioningDevice::AirConditionerStatus, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(AdvancedAirConditioningDevice::Status, Q_MOVABLE_TYPE);
 
 #endif // AIRCONDITIONING_DEVICE_H

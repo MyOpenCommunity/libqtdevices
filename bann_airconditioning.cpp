@@ -380,7 +380,7 @@ SplitScenario::SplitScenario(QString descr, QString cmd, AirConditioningDevice *
 
 void SplitScenario::sendScenarioCommand()
 {
-	dev->sendCommand(command);
+	dev->activateScenario(command);
 }
 
 

@@ -81,7 +81,7 @@ namespace MessageDevicePrivate
 	\note Only for receiving.
 
 	\sa \ref device-dimensions
- */
+*/
 class MessageDevice : public device
 {
 friend class TestMessageDevice;
