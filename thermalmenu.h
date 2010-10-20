@@ -33,50 +33,69 @@
 
 /*!
 	\defgroup ThermalRegulation Temperature Control
+
+	The temperature control section contains up to 4 subsections:
+	\li thermal regulator (PlantMenu)
+	\li air conditioning (AirConditioning)
+	\li external probes (ProbesPage)
+	\li non-controlled zones (ProbesPage)
+
+	External probes and non-controlled zones only display a list of probes with the measured temperature.
+
+	The \ref AirConditioning subsection is documented separately.
+
+	The thermal regulator subsection is used to program the thermal regulator and see the temperature
+	for all the controlled zones.
 */
 
+/*!
+	\ingroup ThermalRegulation
+	\brief Section page containing links to all thermal regulation pages.
+
+	Depending on the configuration, this page can contain links to the list of
+	external probes and non-controlled zones, to the air conditioning subsection
+	and to the thermal regulator page.
+ */
 class ThermalMenu : public BannerPage
 {
 Q_OBJECT
 public:
-	/**
-	 * 
-	 */
 	ThermalMenu(const QDomNode &config_node);
 
 	virtual int sectionId() const;
 
 public slots:
-	/**
-	 * Show ThermalMenu if there are two or more banners, show the only submenu below us
-	 * otherwise.
+	/*!
+		Show ThermalMenu if there are two or more banners, show the only submenu below us
+		otherwise.
 	 */
 	virtual void showPage();
 
 private:
 	BannSinglePuls *addMenuItem(QDomElement, QString);
-	/**
-	 * Create a banner list to show external and not controlled probes
-	 *
-	 * \param config    The node in the Dom tree that holds the `probe' section
-	 * \param bann      A pointer to the banner that gives access to the
-	 * subpage
-	 * \param external  True if the probe is external, false otherwise
+
+	/*!
+		Create a banner list to show external and non-controlled probes
+		\param config    The node in the Dom tree that holds the `probe' section
+		\param bann      A pointer to the banner that gives access to the subpage
+		\param external  True if the probe is external, false otherwise
 	 */
 	void createProbeMenu(QDomNode config, BannSinglePuls *bann, bool external);
 
 	void createPlantMenu(QDomNode config, BannSinglePuls *bann);
 	void loadBanners(const QDomNode &config_node);
 
-	/// do NOT setAutoDelete(true), since banners are children of
-	/// ThermalMenu and will be deleted by Qt
-
 	unsigned bann_number;
+
 	/// A reference to the only submenu below us
 	Page *single_page;
 };
 
 
+/*!
+	\ingroup ThermalRegulation
+	\brief Show a list of external probes or non-controlled zones.
+ */
 class ProbesPage : public BannerPage
 {
 Q_OBJECT

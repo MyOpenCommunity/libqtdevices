@@ -32,10 +32,9 @@ class NonControlledProbeDevice;
 class QLabel;
 
 
-/**
- * This banner shuts the thermal regulator off when clicked. Before using it, be sure to
- * set the address of the thermal regulator.
- * It displays a button in the center with icon "OFF".
+/*!
+	\ingroup ThermalRegulation
+	\brief Display a single centered button to turn off the thermal regulator.
  */
 class BannOff : public BannCenteredButton
 {
@@ -55,10 +54,9 @@ signals:
 };
 
 
-/**
- * This banner sets the thermal regulator in antifreeze protection. Be sure to set the
- * address of the device.
- * It displays one button at the center with icon antifreeze on it.
+/*!
+	\ingroup ThermalRegulation
+	\brief Display a single centered button to put the thermal regulator into antifreeze mode.
  */
 class BannAntifreeze : public BannCenteredButton
 {
@@ -78,9 +76,9 @@ signals:
 };
 
 
-/**
- * Banner with two buttons, one to set the thermal regulator to "off" and one
- * to set antifreeze mode.
+/*!
+	\ingroup ThermalRegulation
+	\brief Display two centered buttons to turn off and put into antifreeze mode the thermal regulator.
  */
 class BannOffAntifreeze : public Bann2CentralButtons
 {
@@ -101,10 +99,9 @@ private:
 };
 
 
-/**
- * This banner sets the thermal regulator in summer or winter status, depending on the
- * button pressed.
- * It displays two buttons at the center, one with the summer icon and one with the winter icon.
+/*!
+	\ingroup ThermalRegulation
+	\brief Display two centered buttons to change the summer/winter mode of the thermal regulator.
  */
 class BannSummerWinter : public Bann2CentralButtons
 {
@@ -124,11 +121,14 @@ signals:
 };
 
 
-/**
- * This banner emits a signal with an int, corresponding to the program set with setProgram(). Default
- * program is 1, so be sure to set the program you want to be set before using it.
- * It displays a not clickable image on the center, an ok button on the right and program description
- * below.
+/*!
+	\ingroup ThermalRegulation
+	\brief Allow choosing a program scenario.
+
+	This banner is used in WeeklyMenu and ScenarioMenu; when the right button is clicked
+	it emits the programNumber() signal.
+
+	Displays an image on the center, an ok button on the right and program description below.
  */
 class BannWeekly : public BannSinglePuls
 {
@@ -147,8 +147,9 @@ private:
 };
 
 
-/**
- * A banner to display the temperature for not controlled and external probes.
+/*!
+	\ingroup ThermalRegulation
+	\brief Display description and temperature for non-controlled zones and external probes.
  */
 class BannTemperature : public BannerNew
 {

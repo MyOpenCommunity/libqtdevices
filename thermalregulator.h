@@ -39,8 +39,14 @@ class BtTimeEdit;
 class BtDateEdit;
 
 
-/**
- *
+/*!
+	\ingroup ThermalRegulation
+	\brief Base class for the 4-zone and 99-zone thermal regulator pages.
+
+	Display zone state and a link to the settings menu.
+
+	Device state consists in: operation mode, label describing more information about mode
+	(for example, the program name), current season.
  */
 class PageTermoReg : public NavigationPage
 {
@@ -214,10 +220,10 @@ private:
 
 
 /**
- * Displays information about the thermal regulator device. Information may be: operation mode, label
- * describing more information about mode (for example, the program name), current season.
- * Operation mode and current season are icons and are always present. The label is optional and depends
- * on the active mode: it is present for manual (setpoint temperature) and week program (program name).
+	\ingroup ThermalRegulation
+	\brief 4-zone thermal regulator page.
+
+	The only addition to PageTermoReg is the timed manual mode in the settings menu.
  */
 class PageTermoReg4z : public PageTermoReg
 {
@@ -242,8 +248,10 @@ private slots:
 
 
 /**
- * The difference with PageTermoReg4z is in settings menu. 99 zones thermal regulators allow the user
- * to set the scenario and do not have a manual timed mode
+	\ingroup ThermalRegulation
+	\brief 99-zone thermal regulator page.
+
+	The only addition to PageTermoReg is the scenarios mode in the settings menu.
  */
 class PageTermoReg99z : public PageTermoReg
 {
@@ -268,6 +276,10 @@ private slots:
 };
 
 
+/*!
+	\ingroup ThermalRegulation
+	\brief %Page to set the thermal regulator to manual mode.
+ */
 class PageManual : public Page
 {
 Q_OBJECT
@@ -306,8 +318,9 @@ signals:
 };
 
 
-/**
- * A fullscreen banner to edit setpoint temperature and the duration of manual settings
+/*!
+	\ingroup ThermalRegulation
+	\brief %Page to set the thermal regulator to timed manual mode.
  */
 class PageManualTimed : public PageManual
 {
@@ -330,6 +343,12 @@ signals:
 };
 
 
+/*!
+	\ingroup ThermalRegulation
+	\brief %Page to choose the end date for weekend and holiday mode (TS 3.5'')
+
+	\see PageSetDateTime (for TS 10'')
+ */
 class PageSetDate : public Page
 {
 Q_OBJECT
@@ -347,6 +366,12 @@ private:
 };
 
 
+/*!
+	\ingroup ThermalRegulation
+	\brief %Page to choose the end time for weekend and holiday mode (TS 3.5'')
+
+	\see PageSetDateTime (for TS 10'')
+ */
 class PageSetTime : public Page
 {
 Q_OBJECT
@@ -364,12 +389,16 @@ private:
 };
 
 
-/**
- * A base class for submenus that allow to choose one program in a list. The list changes
- * when season changes (summer/winter).
- * This class emits a signal when a program is clicked. This signal should be used to close
- * the submenu and to take further action, for example sending a frame to the thermal regulator.
+/*!
+	\ingroup ThermalRegulation
+	\brief Base class for WeeklyMenu and ScenarioMenu
+
+	Contains the functions to create the list of banners and to recreate the
+	list when the season changes.
+
+	Emits a signal when a program is clicked.
  */
+// TODO remove WeeklyMenu and ScenarioMenu
 class ProgramMenu : public BannerPage
 {
 Q_OBJECT
@@ -391,9 +420,9 @@ signals:
 	void programClicked(int);
 };
 
-/**
- * This is a specialized version of ProgramMenu to select week programs. The list
- * of programs is read from DOM.
+/*!
+	\ingroup ThermalRegulation
+	\brief Display a list of programs.
  */
 class WeeklyMenu : public ProgramMenu
 {
@@ -404,9 +433,9 @@ public:
 	virtual void createWinterBanners();
 };
 
-/**
- * This is a specialized version of ProgramMenu to select scenarios. The list
- * of scenarios is read from DOM and updated when season changes
+/*!
+	\ingroup ThermalRegulation
+	\brief Display a list of scnearios.
  */
 class ScenarioMenu : public ProgramMenu
 {
