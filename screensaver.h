@@ -74,6 +74,7 @@ public:
 		TEXT,       /*!< a line with a text */
 		SLIDESHOW,  /*!< image slideshow */
 		DEFORM,     /*!< the deformer */
+		LOGO,       /*!< bouncing logo */
 	};
 
 	/*!
