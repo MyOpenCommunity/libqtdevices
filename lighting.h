@@ -32,9 +32,21 @@ class banner;
 
 /*!
 	\defgroup Lighting Lighting
-*/
 
+	SimpleActuator, Dimmer and Dimmer100 can ba used to control a single actuator;
+	LightGroup, DimmerGroup and Dimmer100Group control the corresponding actuator group.
 
+	Note that it's possible to use a SimpleActuator to control a 10-level or 100-level dimmer,
+	and that it's possible to insert a 10-level or 100-level dimmer in a light group (or
+	a 100-level dimmer in a 10-level dimmer group).
+
+	TempLight and TempLightVariable allow switching on a light (or dimmer) for a specified time.
+ */
+
+/*!
+	\ingroup Lighting
+	\brief Main lighting page
+ */
 class Lighting : public BannerPage
 {
 Q_OBJECT
