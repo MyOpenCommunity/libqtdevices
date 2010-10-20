@@ -28,7 +28,7 @@
 #include "pagestack.h"
 #include "generic_functions.h" // checkImageLoad, getFileFilter
 #include "imageselectionhandler.h"
-#include "logoscreensaver.h"
+#include "examples/logoscreensaver/logoscreensaver.h"
 
 #include <QVBoxLayout>
 #include <QDomNode>
