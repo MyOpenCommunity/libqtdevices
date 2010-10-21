@@ -146,29 +146,3 @@ IconPageButton::IconPageButton(const QString &label)
 	l->addWidget(lbl);
 }
 
-
-IconButtonOnTray::IconButtonOnTray(const QString &label, const QString &icon_on, const QString &icon_off,
-	const QString &tray_icon, TrayBar::ButtonId tray_id, bool status, int _item_id) : IconPageButton(label)
-{
-	button->setOffImage(bt_global::skin->getImage(icon_off));
-	button->setOnImage(bt_global::skin->getImage(icon_on));
-	connect(button, SIGNAL(clicked()), SLOT(toggleActivation()));
-	tray_button = new BtButton(bt_global::skin->getImage(tray_icon));
-	bt_global::btmain->trayBar()->addButton(tray_button, tray_id);
-	button->setStatus(status);
-	item_id = _item_id;
-}
-
-void IconButtonOnTray::toggleActivation()
-{
-	button->setStatus(!button->getStatus());
-	if (item_id != -1)
-		setCfgValue("enable", button->getStatus(), item_id);
-	updateStatus();
-}
-
-void IconButtonOnTray::updateStatus()
-{
-	tray_button->setVisible(button->getStatus() == StateButton::ON);
-}
-

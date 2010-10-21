@@ -763,9 +763,20 @@ protected:
 
 
 
-/**
- * The device for the aux
+/*!
+	\ingroup Scenarios
+	\ingroup Antintrusion
+	\brief Receive status updates from auxiliary command channel.
+
+	Receives status updates from technical alarms independently from
+	burglar alarm central unit status.
+
+	\section AuxDevice-dimensions Dimensions
+	\startdim
+	\dim{DIM_STATUS,bool,,Auxillary command status.}
+	\enddim
  */
+// TODO move this together with other antintrusion devices
 class AuxDevice : public device
 {
 friend class TestAuxDevice;
@@ -775,6 +786,9 @@ public:
 
 	virtual void init();
 
+	/*!
+		\refdim{AuxDevice}
+	 */
 	enum
 	{
 		DIM_STATUS // the value doesn't matter

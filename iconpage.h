@@ -23,7 +23,6 @@
 #define ICONPAGE_H
 
 #include "scrollablepage.h"
-#include "homewindow.h" // TrayBar
 
 #include <QButtonGroup>
 #include <QHash>
@@ -147,63 +146,5 @@ protected:
 	StateButton *button;
 };
 
-
-/*!
-	\ingroup Core
-	\brief A base class for special state buttons that have an icon in the traybar,
-	but only if the status is on.
-
-	To abilitate/disabilitate the tray icon, tou can use the toggleActivation()
-	method.
-
-	It's possible to reimplement the updateStatus() method to provide a custom
-	behaviour. In the base class, this method simply shows or hides the tray
-	icon depending on the button status.
-
-	\sa StateButton, TrayBar
-*/
-class IconButtonOnTray : public IconPageButton
-{
-Q_OBJECT
-public:
-	/*!
-		\brief Constructor.
-
-		Construct a new IconButtonOnTray with the given \a icon_on as on icon,
-		\a icon_off as off icon, \a tray_icon as tag for the tray icon, \a tray_id
-		as button id, \status as initial status and \a item_id as configuration id.
-	*/
-	IconButtonOnTray(const QString &label, const QString &icon_on, const QString &icon_off,
-		const QString &tray_icon, TrayBar::ButtonId tray_id, bool status=false, int item_id=-1);
-
-private slots:
-	/*!
-		\brief Sets the status of the button
-
-		The status is reflected to the tray icon visibility and saved on the
-		configuration.
-
-		\sa updateStatus()
-	*/
-	void toggleActivation();
-
-protected:
-	/*!
-		\brief Updates the status of the button.
-
-		The default implementation shows or hides the tray icon depending on
-		the button status.
-
-		\sa StateButton
-	*/
-	virtual void updateStatus();
-	/*!
-		\brief The tray button (used as a simply icon).
-	*/
-	BtButton *tray_button;
-
-private:
-	int item_id;
-};
 
 #endif // ICONPAGE_H

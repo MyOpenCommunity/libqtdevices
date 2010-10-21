@@ -263,7 +263,7 @@ PasswordChanger::PasswordChanger(int _item_id, QString pwd, int attiva)
 		tasti->setMode(Keypad::HIDDEN);
 	}
 
-	connect(tasti, SIGNAL(Closed()), SIGNAL(pageClosed()));
+	connect(tasti, SIGNAL(Closed()), SIGNAL(finished()));
 	connect(tasti, SIGNAL(Closed()), SLOT(resetState()));
 	connect(tasti, SIGNAL(accept()), SLOT(checkPasswd()));
 

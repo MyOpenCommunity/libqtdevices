@@ -76,9 +76,6 @@ enum
 	RINGTONE_MESSAGE = 14110,
 	PAGE_LANSETTINGS = 14008,
 	PAGE_VCTSETTINGS = 14010,
-	ITEM_HANDSFREE = 14251,
-	ITEM_PROF_STUDIO = 14252,
-	ITEM_RING_EXCLUSION = 14253,
 	// TODO ids?
 	PAGE_CALIBRATION_TEST = 1777777,
 };
@@ -481,19 +478,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			p = new BrightnessPage;
 			break;
 		case PAGE_VCTSETTINGS:
-			p = new IconSettings(page_node);
-			break;
-		case ITEM_HANDSFREE:
-			page_content->addWidget(new HandsFree(getTextChild(item, "enable").toInt(),
-				getTextChild(item, "itemID").toInt()));
-			break;
-		case ITEM_PROF_STUDIO:
-			page_content->addWidget(new ProfessionalStudio(getTextChild(item, "enable").toInt(),
-				getTextChild(item, "itemID").toInt()));
-			break;
-		case ITEM_RING_EXCLUSION:
-			page_content->addWidget(new RingtoneExclusion(getTextChild(item, "enable").toInt(),
-				getTextChild(item, "itemID").toInt()));
+			p = new VctSettings(page_node);
 			break;
 		default:
 			qFatal("Unhandled page id %d in IconSettings::loadItems", link_id);

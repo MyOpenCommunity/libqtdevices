@@ -31,6 +31,10 @@
 class AmplifierDevice;
 
 
+/*!
+	\ingroup SoundDiffusion
+	\brief Banner to control a single sound diffusion amplifier.
+ */
 class Amplifier : public BannLevel
 {
 Q_OBJECT
@@ -56,6 +60,10 @@ private:
 };
 
 
+/*!
+	\ingroup SoundDiffusion
+	\brief Banner to control a group of sound diffusion amplifiers.
+ */
 class AmplifierGroup : public BannLevel
 {
 Q_OBJECT

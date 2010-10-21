@@ -36,7 +36,7 @@ class banner;
 
 /*!
 	\ingroup Scenarios
-	\brief Loads all the scenario items.
+	\brief %Loads all the scenario items.
 */
 class Scenario : public BannerPage
 {

@@ -130,7 +130,7 @@ void ThermalMenu::loadBanners(const QDomNode &config_node)
 			p = new AirConditioning(page_node);
 			break;
 		default:
-			qFatal("Unhandled id in ThermalMenu::loadBanners");
+			qFatal("Unhandled id %d in ThermalMenu::loadBanners", id);
 		}
 		single_page = p;
 

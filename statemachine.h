@@ -42,6 +42,19 @@ public:
 };
 
 
+/*!
+	\ingroup Core
+	\brief Generic state machine
+
+	The state is handled as a stack; new states are pushed on top of the state stack.
+	When a new state is entered (or exited) the corresponding state change callback
+	is called.
+
+	For all state changes between different states, stateAboutToChange() is emitted
+	before a state transition and stateChanged() after the transition completes.
+	When pushing twice the same state on the stack, stateReentered() is emitted and
+	no callbacks are run.  In all cases, stateTransition() is emitted after the state change.
+ */
 class StateMachine : public QObject
 {
 	// private
@@ -58,74 +71,120 @@ Q_OBJECT
 public:
 	StateMachine();
 
-	// must be called to initialize the state machine; does not call any
-	// state callbacks
+	/*!
+		\brief Start the state machine.
+
+		Clears the state stack and adds the given state; does not call any
+		state callbacks
+	 */
 	virtual void start(int state);
 
-	// returns the current state
+	/*!
+		\brief Returns the current state.
+	 */
 	int currentState() const;
 
-	// returns true if the transition from the current state to
-	// new_state is a valid one
+	/*!
+		\brief Chechs whether it's possible to go from the current state to \a new_state.
+	 */
 	bool isTransitionAllowed(int new_state) const;
 
-	// moves the state machine to the given state; returns false if the
-	// transition is disallowed by some constraint
+	/*!
+		\brief Changes to the given state.
+
+		Adds the given state to the state stack if the state transition is allowed,
+		returns false otherwise.
+	 */
 	virtual bool toState(int state);
 
-	// removes the given state from the state stack; if the current state is
-	// the given state, it is equivalent to exitCurrentState, otherwise the state
-	// is removed from the state stack but no other actions are performed
+	/*!
+		\brief Removes a state from the state stack.
+
+		If the current state is \a state, performs a full state transition to
+		the state below it, otherwise the state is removed from the state stack
+		but no other actions are performed.
+	 */
 	void removeState(int state);
 
-	// adds a new state to the state machine; the optional entered and exited
-	// parameters are signals/slots that will be called when the state is entered
-	// or exited
+	/*!
+		\brief Add a new state to the state machine.
+
+		Usually called in the constructor, adds another state to the state machine.
+		The optional entered and exited parameters are signals/slots that will be
+		called when the state is entered or exited.
+	 */
 	void addState(int state, const char *entered = NULL, const char *exited = NULL);
 
-	// disallow any transition from the states in the source_states list to
-	// dest_state
+	/*!
+		Disallow any transition from the states in \a source_states list to
+		\a dest_state.
+	 */
 	void removeTransitions(const QList<int> &source_states, int dest_state);
 
-	// a more general form for removeTransitions(): the given constraint will be
-	// checked before performing a transition to dest_state
+	/*!
+		A more general form for removeTransitions(): the given constraint will be
+		checked before performing a transition to \a dest_state.
+	 */
 	void addTransitionConstraint(int dest_state, TransitionConstraint *constraint);
 
-	// return true if the state machine contains the argument state.
+	/*!
+		\brief True it the state stack contains \a state.
+	 */
 	bool contains(int state);
 
 signals:
-	// emitted before the state changes
+	/*!
+		\brief Emitted before the transition between different states.
+	 */
 	void stateAboutToChange(int old_state);
 
-	// emitted when the state transition is complete, after the entered/exited
-	// callbacks have been called
+	/*!
+		\brief Emitted after the transition between different states.
+
+	 */
 	void stateChanged(int new_state, int old_state);
 
-	// emitted when a state is reentered (it is pushed twice on the stack)
-	// new_state is guaranteed to be equal to old_state; it is passed twice to
-	// be compatible with stateChanged
+	/*!
+		\brief Emitted when a state is reentered (it is pushed twice on the stack).
+
+		\a new_state is guaranteed to be equal to \a old_state (it is passed twice to
+		be compatible with stateChanged()).
+	 */
 	void stateReentered(int new_state, int old_state);
 
-	// emitted every time a state is entered either from the same state or from a
-	// different state
+	/*!
+		\brief Emitted for every state transition, regardless the two states are equal or not.
+	 */
 	void stateTransition(int new_state, int old_state);
 
 protected:
-	// returns the number of states
+	/*!
+		\brief Number of states currently on the state stack.
+	 */
 	int stateCount();
 
-	// returns the state at the given position (0 is the bottom of the stack)
+	/*!
+		Returns the state at the given position in the state stack (0 is the bottom of the stack).
+	 */
 	int stateAt(int index);
 
-	// inserts the state in the middle of the stack, without performing any
-	// checks or emitting any signal; can't be used to push a state at the top
-	// of the stack
+	/*!
+		\brief Insert a state in the middle of the state stack.
+
+		Inserts the state in the middle of the stack, without performing any
+		checks or emitting any signal; can't be used to push a state at the top
+		of the stack.
+	 */
 	void insertState(int index, int state);
 
-	// called to change the state
+	/*!
+		\brief Called to perform the transition between different stacks.
+	 */
 	virtual void changeState(int new_state, int old_state);
 
+	/*!
+		\brief Call state transition callbacks when changing from \a old_state to \a new_state.
+	 */
 	void callStateCallbacks(int new_state, int old_state);
 
 private:

@@ -27,32 +27,27 @@
 #define VOLUME_MAX 8
 #define DEFAULT_VOLUME 3
 
+/*!
+	\brief States for AudioStateMachine
+ */
 namespace AudioStates
 {
-	/*
-	 * BEEP_ON, PLAY_RINGTONE, PLAY_VDE_RINGTONE, PLAY_FLOORCALL, ALARM_TO_SPEAKER
-	 *     have the same output path, but maybe different volumes
-	 * IDLE: power off the local amplifier
-	 * SCREENSAVER: like IDLE, only entered when there is a BEEP_ON state on the stack
-	 * PLAY_FROM_DIFSON_TO_SPEAKER, PLAY_MEDIA_TO_DIFSON can be active at the same time
-	 *     ALARM_TO_DIFSON is the same as the two states above
-	 */
 	enum
 	{
-		IDLE,
-		BEEP_ON,
-		MUTE,
-		PLAY_MEDIA_TO_SPEAKER,
-		PLAY_DIFSON,
-		PLAY_RINGTONE,
-		PLAY_VDE_RINGTONE,
-		PLAY_FLOORCALL,
-		SCS_VIDEO_CALL,
-		SCS_INTERCOM_CALL,
-		IP_VIDEO_CALL,
-		IP_INTERCOM_CALL,
-		ALARM_TO_SPEAKER,
-		SCREENSAVER,
+		IDLE,                  /*!< Base state, always on the stack (power off local amplifier). */
+		BEEP_ON,               /*!< Beep active (local amplifier on). */
+		MUTE,                  /*!< Videocall mute state. */
+		PLAY_MEDIA_TO_SPEAKER, /*!< Reproduce a media file using local speaker (no sound diffusion). */
+		PLAY_DIFSON,           /*!< Act as a sound diffusion source and/or amplifier. */
+		PLAY_RINGTONE,         /*!< Play a ringtone locally (used by ringtone settings page). */
+		PLAY_VDE_RINGTONE,     /*!< Play a ringtone during a videocall/intercom call. */
+		PLAY_FLOORCALL,        /*!< Play a ringtone during a fllor call. */
+		SCS_VIDEO_CALL,        /*!< SCS videocall active (use answered the call). */
+		SCS_INTERCOM_CALL,     /*!< SCS intercom active (use answered the call). */
+		IP_VIDEO_CALL,         /*!< IP videocall active (use answered the call). */
+		IP_INTERCOM_CALL,      /*!< IP intercom active (use answered the call). */
+		ALARM_TO_SPEAKER,      /*!< Alarm clock with ringtone. */
+		SCREENSAVER,           /*!< Screensaver/screen off is active (power off local amplifier). */
 	};
 }
 
@@ -60,63 +55,178 @@ namespace AudioStates
 class QTimer;
 
 
-// state machine for audio output
-//
-// to add a new state:
-// - add a new value to the enum below
-// - add the enter/exit handlers to the 'private slots' section
-// - call addState() in the constructor to register the state in the
-//   state machine
+/*!
+	\ingroup SoundDiffusion
+	\brief State manager for audio output paths.
+
+	When a state is entered the state machine runs all the programs required
+	to set up the output audio path and notifies interested parties when a state is about to
+	change and when the state transition is complete.
+
+	The audio state machine is organized as a stack of states; however states have different
+	priorities so when a state is added to the stack (calling the toState() method) it might not
+	be put at the top of the stack and hence will not become active until all higher-priority
+	states have been removed from the stack.
+
+	Some audio states (AudioStates::PLAY_MEDIA_TO_SPEAKER, AudioStates::PLAY_DIFSON) are tricky because they
+	are entered when either the local source/amplifier is active or the media player is reproducing, and they
+	also depend on whether the BTouch is configured as a sound diffusion source/amplifier.  These two stated are
+	added/removed to the state stack after calls to setLocalAmplifierStatus(), setMediaPlayerActive() and setLocalSourceStatus().
+
+	An additional complication is that not all state transition are synchronous: it's always good practice to call toState()
+	to start the transition and complete the work after receiving the stateChanged() signal.
+
+	When a program is accessing the	audio output device, it's necessary to wait for direct audio access to stop before
+	performing the state transition; it's the responsibility of classes that access the audio device to pause/stop playback
+	when receiving the stateAboutToChange() signal and to call setDirectAudioAccess() when starting/stopping/pausing playback.
+	It's vital that setDirectAudioAccess() is called with a \c false argument only after playback actually stops.
+
+	\section AudioStateMachine-newstate Adding a new state
+
+	To add a new state:
+	\li add a new value to the enum below
+	\li add the enter/exit handlers to the 'private slots' section
+	\li call addState() in the constructor to register the state in the state machine
+	\li modify toState() if it is necessary to add the state in a specific place in the state stack
+ */
 class AudioStateMachine : public StateMachine
 {
 Q_OBJECT
 public:
 	AudioStateMachine();
+
+	/*! \brief Called by the contructor. */
 	virtual void start(int state);
 
-	// this override might insert the state in the middle of the state stack instea
-	// of pushing it at the top; also, since the state change happens asynchronously,
-	// you need to use the stateAboutToChange()/stateChanged() to be notified
-	// when the transition completes
+	/*!
+		This override might insert the state in the middle of the state stack instead
+		of pushing it at the top; also, since state changes might happen asynchronously,
+		use stateAboutToChange()/stateChanged() to be notified when the transition completes.
+	 */
 	virtual bool toState(int state);
 
-	// Set and get the volume of the current state
+	/*!
+		\brief Set the physical volume for the current audio state.
+	 */
 	void setVolume(int value);
+
+	/*!
+		\brief Read the physical volume for the current audio state.
+	 */
 	int getVolume();
 
-	// wether this touch can act as a sound diffusion source/amplifier
+	/*!
+		\brief Whether the BTouch is configured to act as a sound diffusion source.
+	 */
 	bool isSource();
+
+	/*!
+		\brief Whether the BTouch is configured to act as a sound diffusion amplifier.
+	 */
 	bool isAmplifier();
 
-	// the source does not have a volume yet
+	/*!
+		\brief Set the local source status.
+
+		Changing local source status might add/remove AudioStates::PLAY_DIFSON state to the
+		state stack.  Must never be called unless isSource() is \c true.
+	 */
 	void setLocalSourceStatus(bool status);
+
+	/*!
+		\brief Whether the local source is currently active.
+	 */
 	bool getLocalSourceStatus();
 
-	// the amplifier volume/status
-	// note that the volume might be non-zero and the status true
-	// even when the amplifier is off, if the amplifier is off
-	// because the state machine is not PLAY_DIFSON
-	//
-	// the temporary off state of the amplifier does not change the sound diffusion
-	// state, and only affects the amplifier volume
+	/*!
+		\brief Local amplifier volume value.
+	 */
 	int getLocalAmplifierVolume();
+
+	/*!
+		\brief Set local amplifier volume value (1-31).
+	 */
 	void setLocalAmplifierVolume(int value);
+
+	/*!
+		\brief Whether local amplifier is active.
+
+		This function might return \c true when the physical amplifier is off
+		because the
+	 */
 	bool getLocalAmplifierStatus();
+
+	/*!
+		\brief Set local amplifier active status.
+
+		Changing local amplifier status might add/remove AudioStates::PLAY_DIFSON
+		state to the state stack.  Must never be called unless isAmplifier() is \c true.
+	 */
 	void setLocalAmplifierStatus(bool status);
+
+	/*!
+		\brief Set amplifier to temporary off mode.
+
+		Switch off the local amplifier without changing sound diffusion state.
+		Used when handling the "temporary off" command for the local amplifier.
+
+		\see VirtualAmplifierDevice
+	 */
 	void setLocalAmplifierTemporaryOff(bool off);
+
+	/*!
+		\brief Set local media player active status.
+
+		Changing local source status might add/remove AudioStates::PLAY_DIFSON or
+		AudioStates::PLAY_MEDIA_TO_SPEAKER state to the state stack
+		(depending on isSource() value).
+
+		Must be called when the player is started/stopped/paused.
+	 */
 	void setMediaPlayerActive(bool active);
+
+	/*!
+		Must be called when the media player is paused because of an audio
+		state machine change, and will be restarted when the audio state machine
+		reenters the correct state (setMediaPlayerActive() is \c false both for
+		normal pause and for temporary pause).
+	 */
 	void setMediaPlayerTemporaryPause(bool paused);
 
+	/*!
+		Returns whether AudioStates::PLAY_MEDIA_TO_SPEAKER or AudioStates::PLAY_DIFSON should
+		be present in the state stack.
+	 */
 	bool isSoundDiffusionActive();
 
-	// Call to notify watchers that some program (mplayer, sox, ...) is writing directly
-	// to the dsp; there can only be one such program active at a given time
+	/*!
+		\brief Update direct audio access state
+
+		Call to notify watchers that some program (mplayer, sox, ...) is writing directly
+		to the audio output device; there can only be one such program active at a given time.
+
+		Emits directAudioAccessStarted() / directAudioAccessStopped().
+
+		setDirectAudioAccess(true) must be called before audio playback actually starts and
+		setDirectAudioAccess(false) must be called after playback stops (not after sending the stop
+		command to the player).
+	 */
 	void setDirectAudioAccess(bool status);
+
+	/*!
+		\brief Returns whether some program is accessing the audio output.
+	 */
 	bool isDirectAudioAccess();
 
 signals:
-	// notify that some program (mplayer, sox, ...) is writing directly to the dsp
+	/*!
+		\brief Emitted when a program starts writing to the output device.
+	 */
 	void directAudioAccessStarted();
+
+	/*!
+		\brief Emitted after a program stops writing to the output device.
+	 */
 	void directAudioAccessStopped();
 
 #if !defined(BT_HARDWARE_X11)
