@@ -58,7 +58,7 @@ void XmlClient::parseData()
 	int end = buffer.indexOf(end_tag, start, Qt::CaseInsensitive);
 
 	// Get the data between the tags comprending them.
-	QString data = buffer.mid(start, end + ::strlen(end_tag) - start);
+	QString data = buffer.mid(start, end + QByteArray(end_tag).size() - start);
 
 	if (!data.isEmpty()) {
 		// Remove the useless data.
