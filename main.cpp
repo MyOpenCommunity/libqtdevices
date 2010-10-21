@@ -46,20 +46,95 @@
 	\mainpage
 
 	\section overview A global overview of the User Interface
-	In the BTicino home automation system also called My Home the UI, from now
-	called BTouch, has a key role in the control of all the functionalities of
-	the system.
+	BTouch is a touchscreen user interface for MyHome, BTicino home automation system;
+	it has a key role in the control of all its functionalities.
 
-	BTouch was originally designed to run in the 3.5'' touchscreen of My Home.
-	After long development now it can run also in the 10'' touchscreen and with
-	some limitation under X86.
+	BTouch can run in 3.5'' and 10'' touchscreens.  It's possible
+	to test the user interface on a Linux PC; see \ref overview-x86 for caveats
+	and limitations.
 
-	The architecture of both the systems are almost the same, with an embedded
-	Linux as operating system and a set of BTicino processes to control the
-	home.
-	The main of these processes is the Openserver, which talks to the others
-	and delivers the information from and to the BTouch, using the openwebnet
-	protocol.
+	\section overview-architecture System architecture
+
+	The base of the system is a customized GNU/Linux distribution; the BTicino-specific parts are:
+	\li subsystem-specific processes
+	\li BTouch (the GUI)
+	\li OpenServer
+
+	The OpenServer is the front-end to the home automation system: it provides an OpenWebNet interface
+	to communicate with the various physical devices (the actual communication is performed by the
+	subsystem-specific processes).
+
+	Inside the GUI, the communication with physical devices is abstracted by
+	\ref device subclasses that avoid the need to deal with OpenWebNet directly.
+
+	\section overview-gui GUI Overview
+
+	The top level GUI component is WindowContainer which manages all full-screen pages (password
+	keypad, screensaver, main application window, ...) all of which are Window subclasses.
+
+	HomeWindow is the main application page and contains HeaderWidget (containing the navigation bar
+	and the main page toolbars), FavouritesWidget (the lateral favourites column) and PageContainer
+	(containing the application pages).
+
+	In TS 3.5'' the basic structure is the same, but HeaderWidget and FavouritesWidget are not instantiated.
+
+	\section overview-page Page overview
+
+	Page is the base class for all content pages; most pages derive from BannerPage (for pages containing banners),
+	IconPage (for TS 10'' pages containing icons arranged in a grid).  It's also possible to derive directly from Page
+	when a more free-form layout is needed.
+
+	Using methods provided by Page, it's easy to write code that runs unchanged in both TS 3.5'' and TS 10'' (see NavigationBar
+	and Page::buildPage()).
+
+	Banners are the building blocks for most sections; in general terms a \ref banner is a rectangular widget that can be
+	used to present the status of a device, to interact with the device and to navigate to other pages.  Banners can be used
+	in isolation or presented in a menu using BannerPage.
+
+	\section overview-parsing Configuration parsing
+
+	Configuration parsing is handled recursively by GUI classes: global configuration parsing is handled in BTMain; configuration
+	parsing for the home page is handled by SectionPage which delegates the parsing of subsections to the GUI classes of the subsection
+	itself.
+
+	For sections that only contain banners (\ref Lighting, \ref Automation, \ref Scenarios, \ref Settings), ::getBanner() can be used
+	to obtain a banner instance given the configuration node.
+
+	\section overview-x86 Testing on Linux PC
+
+	BTouch can be run on Linux PCs (tested on 32-bit Linux, should work, but has not been tested, on 64-bit Linux and other Unix variants).
+
+	To test under Linux you need:
+	\li Qt4 embedded for your architecture
+	\li qvfb (can be built from Qt sources, but should be packaged in all distributions)
+	\li a network-connected touchscreen
+	\li BTicino common library for your architecture
+
+	Use the same build procedure documented for ARM cross-compilation (using the correct Qt embedded build and toolchain).
+
+	The GUI needs to connect to an OpenServer: you need to enable external connections in the configuration file (\c abilita_ip
+	node, under \c sicurezza).
+
+	Before running BTouch, launch qvfb and select the appropriate resolution.
+
+	To run BTouch use "LD_LIBRARY_PATH=/path/to/libcommon ./BTouch.x86 -qws"; you should see the interface displayed inside qvfb.
+
+	Most functions work without problems when run on PC; what does not work (or works only partially):
+	\li calibration is not implemented
+	\li using the PC as a sound diffusion source/amplifier is not possible
+	\li mplayer must be installed for local audio playback (\ref Multimedia section)
+	\li local video playback (\ref Multimedia section) works but the video is displayed
+	    full-screen, not in the BTouch interface
+	\li screen brightness does not change in freeze/screensaver mode
+	\li screen is not turned off after the blank screen timeout
+	\li state of videocalls can be controlled, but audio/video is not shown
+	\li the system should allow navigating an USB key from the multimedia section
+	    but will not mount/umount it
+
+	\section overview-test Unit tests
+
+	There are extensive unit test for \ref device and its subclasses (see "devices/test" subdirectory); some non-GUI
+	classes also have unit tests (see "test" subdirectory).  Use the execute_test.sh script to run the tests.
 */
 
 
