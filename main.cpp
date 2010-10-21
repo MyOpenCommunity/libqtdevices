@@ -78,6 +78,29 @@
 
 	In TS 3.5'' the basic structure is the same, but HeaderWidget and FavouritesWidget are not instantiated.
 
+	\section modules Modules
+
+	The GUI is logically composed by modules. Usually a module identifies a
+	section or application, but in general is a group of code that work together.
+	The list of the current modules is:
+	\li \ref Lighting
+	\li \ref Automation
+	\li \ref EnergyManagement
+	\li \ref EnergyData
+	\li \ref Supervision
+	\li \ref LoadManagement
+	\li \ref Antintrusion
+	\li \ref SoundDiffusion
+	\li \ref VideoDoorEntry
+	\li \ref Scenarios
+	\li \ref ThermalRegulation
+	\li \ref Messages
+	\li \ref Multimedia
+	\li \ref Core
+
+	Some modules have submodules, for example the \ref AirConditioning module is
+	a submodule of the \ref ThermalRegulation.
+
 	\section overview-page Page overview
 
 	Page is the base class for all content pages; most pages derive from BannerPage (for pages containing banners),
@@ -93,7 +116,7 @@
 
 	\section overview-parsing Configuration parsing
 
-	Configuration parsing is handled recursively by GUI classes: global configuration parsing is handled in BTMain; configuration
+	Configuration parsing is handled recursively by GUI classes: global configuration parsing is handled in BtMain; configuration
 	parsing for the home page is handled by SectionPage which delegates the parsing of subsections to the GUI classes of the subsection
 	itself.
 
