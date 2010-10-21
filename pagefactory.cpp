@@ -45,6 +45,7 @@
 #include "energy_management.h"
 #include "load_management.h"
 
+#include "examples/tcpbanner/banner/tcpbannerpage.h"
 
 #include <QObject>
 
@@ -126,6 +127,11 @@ Page *getPage(int page_id)
 	case LOAD_MANAGEMENT:
 		page = new LoadManagement(page_node);
 		break;
+
+	case TCP_BANNER_TEST:
+		page = new TcpBannerPage;
+		break;
+
 	default:
 		qFatal("Page %d not handled!", id);
 	}

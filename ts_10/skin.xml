@@ -1936,4 +1936,13 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<cid>12345</cid>
 		<img_screensaver_logo>screensaver.png</img_screensaver_logo>
 	</item>
+	<item>
+		<!--
+		TCP Banner Example</cid>
+		-->
+		<cid>55555</cid>
+		<img_link_icon>setup/ok.png</img_link_icon>
+		<img_dimmer>illuminazione/ondimmer.png</img_dimmer>
+		<img_dimmer_broken>illuminazione/brokendimmer.png</img_dimmer_broken>
+	</item>
 </style>

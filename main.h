@@ -172,6 +172,8 @@ enum Section
 	THERMALREGULATION_MULTI = -3,                   /*!< Thermoregulation system with one or more 4-zones plants */
 	ENERGY_MANAGEMENT = 15000,                      /*!< Energy management system */
 	ENERGY_DATA = 7000,                             /*!< Energy data system */
+
+	TCP_BANNER_TEST = 55555,
 };
 #endif
 
