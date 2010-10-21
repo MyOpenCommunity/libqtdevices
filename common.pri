@@ -192,6 +192,7 @@ HEADERS += actuators.h \
 	videodoorentry.h \
 	window.h \
 	windowcontainer.h \
+	xmlclient.h \
 	xml_functions.h
 
 SOURCES += actuators.cpp \
@@ -294,5 +295,6 @@ SOURCES += actuators.cpp \
 	videodoorentry.cpp \
 	window.cpp \
 	windowcontainer.cpp \
+	xmlclient.cpp \
 	xml_functions.cpp
 
