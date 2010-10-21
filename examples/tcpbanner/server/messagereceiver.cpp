@@ -47,7 +47,9 @@ void MessageReceiver::handleReadyRead()
 	QTcpSocket *socket = qobject_cast<QTcpSocket *>(sender());
 	if (socket && socket->canReadLine())
 	{
-		emit messageReceived(socket->readLine());
+		QString line = socket->readLine();
+		qDebug() << "Read" << line;
+		emit messageReceived(line);
 		socket->disconnectFromHost();
 		socket->deleteLater();
 	}
