@@ -27,9 +27,9 @@ class QTcpSocket;
 
 class XmlClient : public QObject
 {
-    Q_OBJECT
+Q_OBJECT
 public:
-    explicit XmlClient(QObject *parent = 0);
+	explicit XmlClient(QObject *parent = 0);
 
 	void connectToHost(const QString &address, int port);
 	void disconnectFromHost();
