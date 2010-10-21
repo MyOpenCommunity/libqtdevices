@@ -62,6 +62,18 @@ private:
 };
 
 
+/*!
+	\defgroup LoadDiagnostic Load Diagnostic
+
+	Allows the user to view the load status for each loads in the system, using
+	the LoadDiagnosticPage.
+*/
+
+
+/*!
+	\ingroup LoadDiagnostic
+	\brief Shows the list of the loads, using different icons to represent their status.
+*/
 class LoadDiagnosticPage : public BannerPage
 {
 Q_OBJECT

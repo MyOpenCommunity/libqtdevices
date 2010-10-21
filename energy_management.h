@@ -32,10 +32,10 @@
 */
 
 
-/**
- * A container for other sections energy-related (SupervisionMenu, EnergyData
- * and LoadManagement).
- */
+/*!
+	\ingroup EnergyManagement
+	\brief A container for other energy related sections.
+*/
 class EnergyManagement : public SectionPage
 {
 public:

@@ -33,7 +33,21 @@ class EnergyInterface;
 struct EnergyRate;
 
 /*!
-	\defgroup EnergyData EnergyData
+	\defgroup EnergyData Energy Data
+
+	The main function of the Energy Data is to show energy consumptions.
+
+	For this purpose, EnergyData contains the list of the families of energy defined,
+	while EnergyInterface contains the interfaces for a single family.
+	As usual, if the system contains only one family the EnergyData page is skippen,
+	and even the EnergyInterface if only one interface is defined.
+
+	Finally, the EnergyView shows graph data of the consumption using EnergyGraph
+	and tabular data using EnergyTable while uses banners to display cumulative
+	consumption of a day, a month or a year (in the last 12 month).
+
+	Another functionality of the system is to allow the user to set cost and
+	incentive for a family, using the EnergyCost and EditEnergyCost pages.
 */
 
 

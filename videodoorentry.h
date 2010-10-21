@@ -38,7 +38,7 @@ class QDomNode;
 class QSignalMapper;
 
 /*!
-	\defgroup VideoDoorEntry VideoDoorEntry
+	\defgroup VideoDoorEntry Video Door Entry
 
 	Allows the user to perform and receive video and intercom calls.
 	There are two main classes:

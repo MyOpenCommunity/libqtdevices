@@ -95,8 +95,8 @@ signals:
 
 /*!
 	\ingroup EnergyData
-	\group The custom navigation bar for the EnergyView, that shows buttons
-	to toggle the currency and show the EnergyTable tabular data.
+	\brief The custom navigation bar for the EnergyView, that shows buttons
+	to toggle the currency and to show the EnergyTable data.
 */
 class EnergyViewNavigation : public AbstractNavigationBar
 {
