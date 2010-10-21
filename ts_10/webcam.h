@@ -34,8 +34,9 @@ class QString;
 
 
 
-/**
- * The page that display a webcam image, plus some controls to reload/change image
+/*!
+	\ingroup Multimedia
+	\brief Display a webcam image, plus some controls to reload/change image
  */
 class WebcamPage : public Page
 {
@@ -62,8 +63,9 @@ private:
 };
 
 
-/**
- * This page shows the list of webcam, taking them from the configuration file.
+/*!
+	\ingroup Multimedia
+	\brief Shows the list of webcams taken from the configuration file.
  */
 class WebcamListPage : public Page
 {

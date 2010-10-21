@@ -76,6 +76,12 @@ private:
 };
 
 
+/*!
+	\ingroup Multimedia
+	\brief Display images in a slide show (either manual or automatic.
+
+	\see SlideshowWindow
+ */
 class SlideshowPage : public Page
 {
 Q_OBJECT
@@ -117,6 +123,12 @@ private:
 };
 
 
+/*!
+	\ingroup Multimedia
+	\brief Display images full-screen in a slide show (either manual or automatic.
+
+	\see SlideshowPage
+ */
 class SlideshowWindow : public Window
 {
 Q_OBJECT
