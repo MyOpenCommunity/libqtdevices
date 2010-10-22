@@ -90,7 +90,7 @@ void PdfPage::displayPdf(const QString &path)
 
 void PdfPage::scrollDown()
 {
-	if (y_offset + pdf_page->height() == pdf_image.height())
+	if (y_offset + pdf_page->height() == pdf_image.height() && current_page < pdf_document->numPages() - 1)
 	{
 		current_page += 1;
 
@@ -109,7 +109,7 @@ void PdfPage::scrollDown()
 
 void PdfPage::scrollUp()
 {
-	if (y_offset == 0)
+	if (y_offset == 0 && current_page > 1)
 	{
 		current_page -= 1;
 
