@@ -148,6 +148,8 @@ enum Section
 	/* Added to avoid compile problems... */
 	MULTIMEDIA = 26,
 	MESSAGES = 27,
+
+	TCP_BANNER_TEST = 55555,
 };
 #else
 enum Section
