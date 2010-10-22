@@ -117,6 +117,9 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 	if (root.tagName() != "OWNxml")
 		return response;
 
+	if (!parseHeader(getChildWithName(root, "Hdr")))
+		return response;
+
 	QDomNode command_container = getChildWithName(root, "Cmd");
 	if (command_container.isNull())
 		return response;
@@ -131,4 +134,27 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 	}
 
 	return response;
+}
+
+bool XmlDevice::parseHeader(const QDomNode &header_node)
+{
+	if (!sid.isEmpty() && !local_addr.isEmpty() && !server_addr.isEmpty())
+		return true;
+
+	QDomNode message_id = getChildWithName(header_node, "MsgID");
+	if (message_id.isNull())
+		return false;
+	sid = getTextChild(message_id, "SID");
+
+	QDomNode dest_address = getChildWithName(header_node, "Dst");
+	if (dest_address.isNull())
+		return false;
+	local_addr = getTextChild(dest_address, "IP");
+
+	QDomNode src_address = getChildWithName(header_node, "Src");
+	if (src_address.isNull())
+		return false;
+	server_addr = getTextChild(src_address, "IP");
+
+	return true;
 }

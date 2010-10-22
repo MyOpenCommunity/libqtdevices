@@ -32,6 +32,7 @@ public:
 	explicit TestXmlDevice();
 
 private slots:
+	void testHeader();
 	void testWelcome();
 	void testServerList();
 

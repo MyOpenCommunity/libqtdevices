@@ -60,9 +60,14 @@ private slots:
 
 private:
 	XmlResponse parseXml(const QString &xml);
+	bool parseHeader(const QDomNode &header_node);
 
 	XmlClient *xml_client;
 	QHash<QString, xmlHandler_ptr> xml_handlers;
+
+	QString sid;
+	QString local_addr;
+	QString server_addr;
 };
 
 #endif // XMLDEVICE_H
