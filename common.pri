@@ -299,12 +299,10 @@ SOURCES += actuators.cpp \
 # Examples
 
 # Screensaver
-INCLUDEPATH += examples/logoscreensaver
 SOURCES += examples/logoscreensaver/logoscreensaver.cpp
 HEADERS += examples/logoscreensaver/logoscreensaver.h
 
 # Banner
-INCLUDEPATH += examples/tcpbanner/banner
 SOURCES += examples/tcpbanner/banner/tcpdimmer.cpp \
 	examples/tcpbanner/banner/tcpstatebanner.cpp \
 	examples/tcpbanner/banner/tcpbannerpage.cpp
