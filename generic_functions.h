@@ -41,7 +41,8 @@ enum MultimediaFileType
 	DIRECTORY = 0, /*!< Directory */
 	AUDIO = 1,     /*!< Audio filetype */
 	VIDEO = 2,     /*!< Video filetype */
-	IMAGE = 3      /*!< Image filetype */
+	IMAGE = 3,     /*!< Image filetype */
+	PDF   = 4,     /*!< PDF filetype */
 };
 
 /*!
