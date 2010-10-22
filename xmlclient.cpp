@@ -30,7 +30,7 @@ const char *end_tag = "</OWNxml>";
 XmlClient::XmlClient(QObject *parent) :
 	QObject(parent), socket(new QTcpSocket(this))
 {
-	connect(socket, SIGNAL(readyRead()), SLOT(parseData()));
+	connect(socket, SIGNAL(readyRead()), SLOT(receiveData()));
 }
 
 void XmlClient::connectToHost(const QString &address, int port)
@@ -48,9 +48,18 @@ void XmlClient::sendCommand(const QString &command)
 	socket->write(command.toUtf8());
 }
 
+void XmlClient::receiveData()
+{
+	if (socket->bytesAvailable() <= 0)
+		return;
+
+	buffer.append(socket->readAll());
+
+	parseData();
+}
+
 void XmlClient::parseData()
 {
-
 	for (;;)
 	{
 		// Look for start and end tags.

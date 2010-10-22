@@ -27,6 +27,7 @@ VPATH = ..
 HEADERS += test_bttime.h \
 	test_imageselection.h \
 	test_scenevodevicescond.h \
+	test_xmlclient.h \
 	../devices/test/openserver_mock.h \
 	../btbutton.h \
 	../bttime.h \
@@ -42,12 +43,14 @@ HEADERS += test_bttime.h \
 	../scaleconversion.h \
 	../scenevodevicescond.h \
 	../skinmanager.h \
-	../xml_functions.h
+	../xml_functions.h \
+	../xmlclient.h
 
 SOURCES += test_main.cpp \
 	test_bttime.cpp \
 	test_imageselection.cpp \
 	test_scenevodevicescond.cpp \
+	test_xmlclient.cpp \
 	../devices/test/openserver_mock.cpp \
 	../btbutton.cpp \
 	../bttime.cpp \
@@ -63,6 +66,7 @@ SOURCES += test_main.cpp \
 	../scenevodevicescond.cpp \
 	../skinmanager.cpp \
 	../xml_functions.cpp \
+	../xmlclient.cpp \
 	../definitions.cpp
 
 include(../devices.pri)
