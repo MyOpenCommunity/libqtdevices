@@ -65,13 +65,13 @@ namespace
 }
 
 
-XmlDevice::XmlDevice() :
-	QObject(), xml_client(new XmlClient)
+XmlDevice::XmlDevice()
 {
+	xml_client = new XmlClient;
 	connect(xml_client, SIGNAL(dataReceived(QString)), SLOT(handleData(QString)));
 
-	xml_handlers.insert("WMsg", handle_welcome_message);
-	xml_handlers.insert("AW26C1", handle_upnp_server_list);
+	xml_handlers["WMsg"] = handle_welcome_message;
+	xml_handlers["AW26C1"] = handle_upnp_server_list;
 }
 
 XmlDevice::~XmlDevice()
@@ -127,7 +127,7 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 	if (xml_handlers.contains(command_name))
 	{
 		QPair<int, QVariant> result = xml_handlers[command_name](command);
-		response.insert(result.first, result.second);
+		response[result.first] = result.second;
 	}
 
 	return response;
