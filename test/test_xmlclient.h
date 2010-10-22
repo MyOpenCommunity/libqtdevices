@@ -17,38 +17,18 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-#ifndef XMLCLIENT_H
-#define XMLCLIENT_H
+#ifndef TESTXMLCLIENT_H
+#define TESTXMLCLIENT_H
 
 #include <QObject>
 
-class QTcpSocket;
-
-
-class XmlClient : public QObject
+class TestXmlClient : public QObject
 {
-friend class TestXmlClient;
-
 Q_OBJECT
-public:
-	explicit XmlClient(QObject *parent = 0);
-
-	void connectToHost(const QString &address, int port);
-	void disconnectFromHost();
-
-	void sendCommand(const QString &command);
-
-signals:
-	void dataReceived(const QString &data);
-
 private slots:
-	void receiveData();
-
-private:
-	void parseData();
-
-	QString buffer;
-	QTcpSocket *socket;
+	void testSimple();
+	void testDouble();
+	void testGarbage();
 };
 
-#endif // XMLCLIENT_H
+#endif // TESTXMLCLIENT_H
