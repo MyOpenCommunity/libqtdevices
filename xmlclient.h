@@ -23,7 +23,7 @@
 #include <QObject>
 
 #define DEFAULT_XML_SERVER_ADDRESS "127.0.0.1"
-#define DEFAULT_XML_SERVER_PORT 43210
+#define DEFAULT_XML_SERVER_PORT 12345
 
 class QTcpSocket;
 
