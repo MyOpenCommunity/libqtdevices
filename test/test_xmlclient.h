@@ -22,13 +22,23 @@
 
 #include <QObject>
 
+class XmlClient;
+
 class TestXmlClient : public QObject
 {
 Q_OBJECT
+public:
+	TestXmlClient();
+
 private slots:
+	void init();
+
 	void testSimple();
 	void testDouble();
 	void testGarbage();
+
+private:
+	XmlClient *client;
 };
 
 #endif // TESTXMLCLIENT_H

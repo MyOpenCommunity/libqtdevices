@@ -24,10 +24,18 @@
 
 #include "xmlclient.h"
 
+TestXmlClient::TestXmlClient()
+	: QObject(), client(new XmlClient)
+{
+}
+
+void TestXmlClient::init()
+{
+	client->buffer.clear();
+}
 
 void TestXmlClient::testSimple()
 {
-	XmlClient *client = new XmlClient;
 	QSignalSpy spy(client, SIGNAL(dataReceived(QString)));
 
 	QVERIFY(client->buffer.isEmpty());
@@ -39,13 +47,10 @@ void TestXmlClient::testSimple()
 	QList<QVariant> arguments = spy.takeFirst();
 
 	QCOMPARE(arguments.at(0).toString(), QString("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">Test</OWNxml>"));
-
-	client->deleteLater();
 }
 
 void TestXmlClient::testDouble()
 {
-	XmlClient *client = new XmlClient;
 	QSignalSpy spy(client, SIGNAL(dataReceived(QString)));
 
 	QVERIFY(client->buffer.isEmpty());
@@ -58,8 +63,6 @@ void TestXmlClient::testDouble()
 
 	for (int i = 0; i < spy.count(); ++i)
 		QCOMPARE(arguments.at(i).toString(), QString("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">Test</OWNxml>"));
-
-	client->deleteLater();
 }
 
 void TestXmlClient::testGarbage()
@@ -77,6 +80,4 @@ void TestXmlClient::testGarbage()
 
 	for (int i = 0; i < spy.count(); ++i)
 		QCOMPARE(arguments.at(i).toString(), QString("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">Test%1</OWNxml>").arg(i + 1));
-
-	client->deleteLater();
 }
