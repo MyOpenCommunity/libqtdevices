@@ -44,7 +44,7 @@ public:
 		RESP_SERVERLIST,
 	};
 
-	explicit XmlDevice();
+	XmlDevice();
 	~XmlDevice();
 
 	void requestUPnPServers();
