@@ -46,6 +46,7 @@
 #include "load_management.h"
 
 #include "examples/tcpbanner/banner/tcpbannerpage.h"
+#include "examples/pdf/pages/pdfpage.h"
 
 #include <QObject>
 
@@ -130,6 +131,10 @@ Page *getPage(int page_id)
 
 	case TCP_BANNER_TEST:
 		page = new TcpBannerPage;
+		break;
+
+	case PDF_DISPLAY_TEST:
+		page = new PdfPage;
 		break;
 
 	default:

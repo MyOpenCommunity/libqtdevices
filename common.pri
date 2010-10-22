@@ -309,3 +309,9 @@ SOURCES += examples/tcpbanner/banner/tcpdimmer.cpp \
 HEADERS += examples/tcpbanner/banner/tcpdimmer.h \
 	examples/tcpbanner/banner/tcpstatebanner.h \
 	examples/tcpbanner/banner/tcpbannerpage.h
+
+# Pdf
+INCLUDEPATH += ../examples/pdf/poppler-install/usr/bticino-examples-x86/include
+SOURCES += examples/pdf/pages/pdfpage.cpp
+HEADERS += examples/pdf/pages/pdfpage.h
+LIBS += -L../examples/pdf/poppler-install/usr/bticino-examples/lib -lpoppler-qt4 -lpoppler -lfontconfig -lfreetype -lexpat -lpng -lz

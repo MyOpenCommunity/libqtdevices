@@ -150,6 +150,7 @@ enum Section
 	MESSAGES = 27,
 
 	TCP_BANNER_TEST = 55555,
+	PDF_DISPLAY_TEST = 55556,
 };
 #else
 enum Section
@@ -176,6 +177,7 @@ enum Section
 	ENERGY_DATA = 7000,                             /*!< Energy data system */
 
 	TCP_BANNER_TEST = 55555,
+	PDF_DISPLAY_TEST = 55556,
 };
 #endif
 
