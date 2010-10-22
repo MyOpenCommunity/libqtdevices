@@ -193,6 +193,7 @@ HEADERS += actuators.h \
 	window.h \
 	windowcontainer.h \
 	xmlclient.h \
+	xmldevice.h \
 	xml_functions.h
 
 SOURCES += actuators.cpp \
@@ -296,5 +297,5 @@ SOURCES += actuators.cpp \
 	window.cpp \
 	windowcontainer.cpp \
 	xmlclient.cpp \
+	xmldevice.cpp \
 	xml_functions.cpp
-
