@@ -27,7 +27,9 @@
 #include "videoplayer.h"
 #include "audioplayer.h"
 #include "mount_watcher.h"
+#ifdef PDF_EXAMPLE
 #include "examples/pdf/pages/pdfpage.h"
+#endif
 
 #include <QLayout>
 #include <QDebug>
@@ -82,7 +84,9 @@ MultimediaFileListPage::MultimediaFileListPage(const QStringList &filters)
 	file_icons.append(bt_global::skin->getImage("audio_icon"));
 	file_icons.append(bt_global::skin->getImage("video_icon"));
 	file_icons.append(bt_global::skin->getImage("image_icon"));
+#ifdef PDF_EXAMPLE
 	file_icons.append(bt_global::skin->getImage("pdf_icon"));
+#endif
 
 	play_file = bt_global::skin->getImage("play_file");
 	browse_directory = bt_global::skin->getImage("browse_directory");
@@ -100,10 +104,12 @@ MultimediaFileListPage::MultimediaFileListPage(const QStringList &filters)
 	connect(this, SIGNAL(playAudioFiles(QList<QString>, unsigned)),
 		audioplayer, SLOT(playAudioFiles(QList<QString>, unsigned)));
 
+#ifdef PDF_EXAMPLE
 	pdfdisplay = new PdfPage;
 	connect(this, SIGNAL(displayPdf(QString)),
 		pdfdisplay, SLOT(displayPdf(QString)));
 	connect(pdfdisplay, SIGNAL(Closed()), SLOT(showPageNoReload()));
+#endif
 }
 
 bool MultimediaFileListPage::browseFiles(const QDir &directory, QList<QFileInfo> &files)
@@ -177,9 +183,11 @@ MultimediaFileType MultimediaFileListPage::fileType(const QFileInfo &file)
 		if (ext == extension)
 			return AUDIO;
 
+#ifdef PDF_EXAMPLE
 	foreach (const QString &extension, getFileExtensions(PDF))
 		if (ext == extension)
 			return PDF;
+#endif
 
 	return UNKNOWN;
 }

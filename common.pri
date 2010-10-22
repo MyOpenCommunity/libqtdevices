@@ -311,7 +311,20 @@ HEADERS += examples/tcpbanner/banner/tcpdimmer.h \
 	examples/tcpbanner/banner/tcpbannerpage.h
 
 # Pdf
-INCLUDEPATH += ../examples/pdf/poppler-install/usr/bticino-examples-x86/include
-SOURCES += examples/pdf/pages/pdfpage.cpp
-HEADERS += examples/pdf/pages/pdfpage.h
-LIBS += -L../examples/pdf/poppler-install/usr/bticino-examples/lib -lpoppler-qt4 -lpoppler -lfontconfig -lfreetype -lexpat -lpng -lz
+BUILD_PDF = no
+
+contains(BUILD_PDF, no) {
+	message(Skipping PDF display example.)
+} else {
+	isEmpty(TEST_ARCH) {
+		POPPLER_DIR=install-x86/usr/bticino-examples-x86
+	} else {
+		POPPLER_DIR=install/usr/bticino-examples
+	}
+
+	DEFINES += PDF_EXAMPLE
+	INCLUDEPATH += ../examples/pdf/poppler/$${POPPLER_DIR}/include
+	SOURCES += examples/pdf/pages/pdfpage.cpp
+	HEADERS += examples/pdf/pages/pdfpage.h
+	LIBS += -L../examples/pdf/poppler/$${POPPLER_DIR}/lib -lpoppler-qt4 -lpoppler -lfontconfig -lfreetype -lexpat -lpng -lz
+}
