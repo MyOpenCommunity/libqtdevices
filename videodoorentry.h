@@ -147,6 +147,7 @@ private:
 	bool call_active;
 	int ringtone;
 	bool already_closed;
+	void callStarted();
 };
 
 
