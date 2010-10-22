@@ -173,7 +173,6 @@ private:
 	it is not meant to be used directly and adds no public functions.
 
 	Derived classes must reimplement:
-	\list
 	\li parseFrame(): called for every received frame. Derived classes must parse
 	the frame and put the results into the DeviceValues.
 	\li requestPullStatus(): send a status request to the device. This can be
@@ -232,7 +231,6 @@ private:
 	stored in the device instance.
 
 	When receiving a global/environment command, there can be 3 cases:
-	\list
 	\li the frame is never handled by the physical device;
 	\li the frame is always handled by the physical device;
 	\li the frame is not handled by basic devices, but is handled by advanced ones.
