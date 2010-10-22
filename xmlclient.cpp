@@ -27,15 +27,16 @@ const char *start_tag = "<OWNxml";
 const char *end_tag = "</OWNxml>";
 
 
-XmlClient::XmlClient(QObject *parent) :
-	QObject(parent), socket(new QTcpSocket(this))
+XmlClient::XmlClient(const QString &address, int port, QObject *parent) :
+	QObject(parent), socket(new QTcpSocket(this)), xml_addr(address),
+	xml_port (port)
 {
 	connect(socket, SIGNAL(readyRead()), SLOT(receiveData()));
 }
 
-void XmlClient::connectToHost(const QString &address, int port)
+void XmlClient::connectToHost()
 {
-	socket->connectToHost(address, port);
+	socket->connectToHost(xml_addr, xml_port);
 }
 
 void XmlClient::disconnectFromHost()
