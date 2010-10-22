@@ -29,6 +29,7 @@
 #include "test_bttime.h"
 #include "test_imageselection.h"
 #include "test_xmlclient.h"
+#include "test_xmldevice.h"
 #include "main.h"
 
 
@@ -53,6 +54,9 @@ int main(int argc, char *argv[])
 
 	TestXmlClient test_xmlclient;
 	test_list << &test_xmlclient;
+
+	TestXmlDevice test_xmldevice;
+	test_list << &test_xmldevice;
 
 	QStringList arglist = app.arguments();
 	if (arglist.contains("--help"))
