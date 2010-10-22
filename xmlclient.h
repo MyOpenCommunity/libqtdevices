@@ -22,6 +22,9 @@
 
 #include <QObject>
 
+#define DEFAULT_XML_SERVER_ADDRESS "127.0.0.1"
+#define DEFAULT_XML_SERVER_PORT 43210
+
 class QTcpSocket;
 
 
@@ -31,9 +34,10 @@ friend class TestXmlClient;
 
 Q_OBJECT
 public:
-	explicit XmlClient(QObject *parent = 0);
+	explicit XmlClient(const QString &address = DEFAULT_XML_SERVER_ADDRESS,
+					   int port = DEFAULT_XML_SERVER_PORT, QObject *parent = 0);
 
-	void connectToHost(const QString &address, int port);
+	void connectToHost();
 	void disconnectFromHost();
 
 	void sendCommand(const QString &command);
@@ -47,8 +51,10 @@ private slots:
 private:
 	void parseData();
 
-	QString buffer;
 	QTcpSocket *socket;
+	QString xml_addr;
+	int xml_port;
+	QString buffer;
 };
 
 #endif // XMLCLIENT_H
