@@ -47,13 +47,6 @@ PdfPage::~PdfPage()
 	delete pdf_document;
 }
 
-// TODO remove showPage() and use displayPdf() from a file browser
-void PdfPage::showPage()
-{
-	Page::showPage();
-	displayPdf("/mnt/sda1/nehe.pdf");
-}
-
 void PdfPage::displayPage(int index)
 {
 	int label_width = pdf_page->width();
@@ -77,6 +70,8 @@ void PdfPage::displayPagePart()
 
 void PdfPage::displayPdf(const QString &path)
 {
+	showPage();
+
 	if (pdf_document)
 		delete pdf_document;
 

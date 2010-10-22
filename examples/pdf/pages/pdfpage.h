@@ -34,13 +34,12 @@ public:
 	PdfPage();
 	virtual ~PdfPage();
 
-	// load the PDF and display the first page
-	void displayPdf(const QString &path);
-
 	// display 0-based page of the current PDF file
 	void displayPage(int index);
 
-	virtual void showPage();
+public slots:
+	// load the PDF and display the first page
+	void displayPdf(const QString &path);
 
 private slots:
 	void scrollDown();
