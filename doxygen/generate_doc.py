@@ -3,7 +3,7 @@
 
 import os
 
-def replaceToc(filename):
+def fixQhp(filename):
     f = open(filename, 'r')
     out_lines = []
     line = f.readline()
@@ -12,18 +12,29 @@ def replaceToc(filename):
        out_lines.append(line)
        line = f.readline()
 
-    out_lines.append("    <toc>\n")
+    out_lines.append(line)
+
     out_lines.append("      <section title=\"BTouch\" ref=\"index.html\">\n")
     out_lines.append("      </section>\n")
-    out_lines.append("    </toc>\n")
 
     while line.strip() != "</toc>":
        line = f.readline()
-   
+
+    out_lines.append(line)
     line = f.readline()
+
+    while line.strip() != "<files>":
+       out_lines.append(line)
+       line = f.readline()
+
+    out_lines.append(line)
+    out_lines.append("      <file>myhome.jpg</file>\n")
+    line = f.readline()
+
     while line.strip() != "":
        out_lines.append(line)
        line = f.readline()
+
 
     f.close()
     f = open(filename, 'w+')
@@ -31,5 +42,9 @@ def replaceToc(filename):
     f.close()
 
 if __name__ == '__main__':
-    replaceToc('../doc/html/index.qhp')
+    os.system('doxygen btouch.cfg')
+    fixQhp('../doc/html/index.qhp')
+    os.system('cp myhome.jpg ../doc/html/')
     os.system('qhelpgenerator ../doc/html/index.qhp -o ../doc/btouch.qch')
+    os.system('rm ../doc/html/index.qhp')
+
