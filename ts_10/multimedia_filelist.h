@@ -32,6 +32,10 @@ class VideoPlayerPage;
 class AudioPlayerPage;
 
 
+/*!
+	\ingroup Multimedia
+	\brief Filesystem browser for multimedia files (audio/video/images).
+ */
 class MultimediaFileListPage : public FileSelector
 {
 Q_OBJECT

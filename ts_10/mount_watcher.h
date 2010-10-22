@@ -37,8 +37,17 @@ enum MountType
 };
 
 
-/**
- * Handles mounting/unmounting of USB/SD devices
+/*!
+	\ingroup Core
+	\ingroup Multimedia
+	\brief Manages mounting/unmounting of USB/SD devices.
+
+	Detects when an USB key or SD card is mounted/unmounted and
+	emits a signal to notify interested parties.
+
+	Also provides methods to mount/unmount a device.
+
+	For SD cards it also performs the automatic mounting when the device is inserted.
  */
 class MountWatcher : public QObject
 {

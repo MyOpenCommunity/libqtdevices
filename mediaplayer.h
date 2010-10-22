@@ -151,7 +151,7 @@ signals:
 };
 
 
-/**
+/*
  * This class exposes a simple interface to play/stop audio files.
  */
 class SoundPlayer : public QObject

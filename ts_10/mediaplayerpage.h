@@ -33,15 +33,16 @@ class MediaPlayer;
 class MultimediaPlayerButtons;
 
 
-/*
- * Base class for pages offering media player functionality.
- *
- * Defines standard handling for multimedia player buttons and manages a
- * (circular) playlist.
- *
- * If a subclass starts/stops the media player without using the methods provided
- * by MediaPlayerPage, it must take care of starting/stopping the refresh_data timer
- * and emitting the started()/stopped() signals.
+/*!
+	\ingroup Multimedia
+	\brief Base class for pages with media player functionality
+
+	Defines standard handling for multimedia player buttons and manages a
+	(circular) playlist.
+
+	If a subclass starts/stops the media player without using the methods provided
+	by %MediaPlayerPage, it must take care of starting/stopping the refresh_data timer
+	and emitting the started() / stopped() signals.
  */
 class MediaPlayerPage : public Page
 {

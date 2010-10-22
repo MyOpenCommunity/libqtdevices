@@ -31,9 +31,18 @@
 class LoadsDevice;
 
 /*!
-  \class SupervisionMenu
-  \brief Class defining a list of devices groups part of the supervision family.
+	\defgroup Supervision
 
+	A container for the \ref StopAndGo and the \ref LoadDiagnostic subsections.
+*/
+
+
+/*!
+	\ingroup Supervision
+	\brief Contains banners for the \ref StopAndGo and \ref LoadDiagnostic subsections.
+
+	The page shows the banners if both subsections are defined, otherwise shows
+	directly the one defined.
 */
 class SupervisionMenu : public BannerPage
 {
@@ -53,6 +62,18 @@ private:
 };
 
 
+/*!
+	\defgroup LoadDiagnostic Load Diagnostic
+
+	Allows the user to view the load status for each loads in the system, using
+	the LoadDiagnosticPage.
+*/
+
+
+/*!
+	\ingroup LoadDiagnostic
+	\brief Shows the list of the loads, using different icons to represent their status.
+*/
 class LoadDiagnosticPage : public BannerPage
 {
 Q_OBJECT

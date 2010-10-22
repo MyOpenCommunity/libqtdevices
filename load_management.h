@@ -38,20 +38,31 @@ class BtTime;
 class QDate;
 
 /*!
-	\defgroup Loads Loads
+	\defgroup LoadManagement Load Management
 
-	This section allows the user to manage the loads monitoring system.
+	Allows the user to manage the the loads. It work in two modes:
+	\li with a central unit;
+	\li without a central unit.
 
-	The LoadManagement class presents a list of banners each of which can switch
-	to the LoadDataPage and DeactivationTimePage depending on the configuration.
+	In both cases the LoadManagement class shows the list of the loads in the
+	system.
 
-	The classes LoadDataPage and DeactivationTimePage interact with the
-	LoadsDevice to work with the system.
+	In the first case, each load (represented by a BannLoadWithCU) has a priority.
+	When the central unit detects a system overload, the load with the last
+	priority is disabled. The user can force the reactivation of the detached
+	load, and can also remove loads from the control of the central unit for a
+	defined period using the DeactivationTimePage.
+	LoadDataPage shows current consumptions and power meters.
+
+	Without central unit the system can only be used to view the current
+	cunsumptions of a load (represented by a BannLoadNoCU) using LoadDataPage as
+	in the previous case.
 */
 
+
 /*!
-	\ingroup Loads
-	\brief Section page that shows a list of BannLoadWithCU and BannLoadNoCU.
+	\ingroup LoadManagement
+	\brief Shows a list of BannLoadWithCU and BannLoadNoCU.
 */
 class LoadManagement : public BannerPage
 {
@@ -67,9 +78,10 @@ private:
 	void loadItems(const QDomNode &config_node);
 };
 
+
 /*!
-	\ingroup Loads
-	\brief Page that shows a button to confirm a choice.
+	\ingroup LoadManagement
+	\brief Shows a button to confirm a choice.
 */
 class ConfirmationPage : public Page
 {
@@ -82,8 +94,9 @@ signals:
 	void cancel();
 };
 
+
 /*!
-	\ingroup Loads
+	\ingroup LoadManagement
 	\brief Content for the LoadDataPage that shows data about consuptions.
 */
 class LoadDataContent : public QWidget
@@ -117,10 +130,10 @@ signals:
 	void resetActuator(int);
 };
 
+
 /*!
-	\ingroup Loads
-	\brief Page that interacts with the LoadsDevice class and present the
-	LoadDataContent.
+	\ingroup LoadManagement
+	\brief Shows data consumptions and power meters of a load.
 */
 class LoadDataPage : public Page
 {
@@ -144,9 +157,10 @@ private slots:
 	void reset();
 };
 
+
 /*!
-	\ingroup Loads
-	\brief
+	\ingroup LoadManagement
+	\brief Set the deactivation time of a load.
 */
 class DeactivationTimePage : public Page
 {
@@ -162,5 +176,6 @@ private:
 	DeactivationTime *deactivation_time;
 	LoadsDevice *dev;
 };
+
 
 #endif // LOAD_MANAGEMENT_H

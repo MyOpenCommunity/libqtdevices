@@ -25,13 +25,11 @@
 #include "device.h"
 #include "energy_device.h" // for AutomaticUpdates
 
-/*!
-	\defgroup Loads Loads
-*/
 
 /*!
-	\ingroup Loads
-	\brief Device that controls the loads management system.
+	\ingroup LoadManagement
+	\ingroup LoadDiagnostic
+	\brief Device that controls the loads management/diagnostic system.
 
 	This device can be used to monitor the actual loads as well as log
 	consuptions on long periods.

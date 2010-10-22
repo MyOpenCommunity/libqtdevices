@@ -37,6 +37,11 @@ enum ActuatorType
 };
 
 
+/*!
+	\ingroup Automation
+	\ingroup Lighting
+	\brief Simple (on/off) actuator for lights and automation.
+ */
 class SingleActuator : public BannOnOffState
 {
 Q_OBJECT

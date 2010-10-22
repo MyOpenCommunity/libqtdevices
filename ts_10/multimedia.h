@@ -35,9 +35,12 @@ class SongSearch;
 class IPRadioPage;
 
 
-/*
- * Display a button that monitors the state of a mount point; when a device is
- * mounted, clcking the button browses the corresponding mount point.
+/*!
+	\ingroup Multimedia
+	\brief Button that monitors the state of a mount point
+
+	When the device is mounted, clcking the button browses the corresponding mount point
+	using the specified file selector.
  */
 class FileSystemBrowseButton : public IconPageButton
 {
@@ -61,8 +64,30 @@ private:
 };
 
 
-/*
- * Main page for the multimedia section.
+/*!
+	\defgroup Multimedia Multimedia
+
+	Allows access to multiemdia functionality of the touchscreen.  Users can
+	read RSS feeds (FeedManager), display images from webcams (WebcamPage),
+	listen to web radios (IPRadioPage),
+	browse files contained in an SD card or USB key (MultimediaFileListPage)
+	and display images (SlideshowPage), videos (VideoPlayerPage) and play
+	MP3 files (AudioPlayerPage).
+
+	Some multimedia classes are also used by the sound diffusion section
+	(SongSearch, MediaPlayer, AudioPlayerPage, MultimediaSectionPage,
+	MultimediaFileListPage, IPRadioPage) to implement local source playback.
+
+	Note that audio playback can be either local or through the sound diffusion
+	depending on touchscreen model and configuration.
+ */
+
+/*!
+	\ingroup Multimedia
+	\brief Main page of the multimedia section
+
+	It's also used by \ref SoundDiffusion (for the local source) and by \ref Settings
+	(for screensaver with slide-show).
  */
 class MultimediaSectionPage : public IconPage
 {
@@ -113,9 +138,13 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(MultimediaSectionPage::Items);
 
 
-/*
- * Search asynchronously for a web radio or mp3 to play; used when the touch is
- * turned on as a source and nothing is playing.
+/*!
+	\ingroup Multimedia
+	\ingroup SoundDiffusion
+	\brief Start playing one of the available multimedia audio sources.
+
+	Search asynchronously for a web radio or mp3 to play; used when the touch is
+	turned on as a source and nothing is playing.
  */
 class SongSearch : public QObject
 {

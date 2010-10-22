@@ -72,7 +72,7 @@ private slots:
 	void emitTimeChanged();
 
 private:
-	/**
+	/*
 	 * Changes the time period considered based on current status and the delta provided, ie.
 	 * if status is DAY then delta days are added to selection_date.
 	 * \param delta The number of days or months to be added to selection_date
@@ -93,10 +93,11 @@ signals:
 };
 
 
-/**
- * The navigation bar for the Energy view, that have (on TS 3.5'') custom buttons
- * to toggle the currency mode and to show the table of energy data.
- */
+/*!
+	\ingroup EnergyData
+	\brief The custom navigation bar for the EnergyView, that shows buttons
+	to toggle the currency and to show the EnergyTable data.
+*/
 class EnergyViewNavigation : public AbstractNavigationBar
 {
 Q_OBJECT
@@ -119,11 +120,20 @@ private:
 };
 
 
+/*!
+	\ingroup EnergyData
+	\brief Shows the consumption of an energy interface.
+
+	The page displays the banners for the total consumptions of a day, a month
+	or a year in the last 12 months.
+	In addition, it allows to view more detailed data using a EnergyGraph graph
+	or an EnergyTable table.
+*/
 class EnergyView : public Page
 {
 Q_OBJECT
 public:
-	/**
+	/*
 	 * \param measure Measure unit for this energy type
 	 * \param energy_type The energy type (will be the title of the page)
 	 * \param address Address of the corresponding device

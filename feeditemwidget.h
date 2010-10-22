@@ -29,6 +29,11 @@
 class QVBoxLayout;
 class QTextEdit;
 
+
+/*!
+	\ingroup Multimedia
+	\brief Display the HTML content for a feed item removing links and images.
+ */
 class FeedItemWidget : public QWidget
 {
 Q_OBJECT
