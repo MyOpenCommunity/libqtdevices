@@ -310,7 +310,7 @@ HEADERS += examples/tcpbanner/banner/tcpdimmer.h \
 	examples/tcpbanner/banner/tcpstatebanner.h \
 	examples/tcpbanner/banner/tcpbannerpage.h
 
-# Pdf
+# Pdf (see examples/pdf/README.txt)
 BUILD_PDF = no
 
 contains(BUILD_PDF, no) {
