@@ -69,14 +69,14 @@ void TestXmlClient::testGarbage()
 
 	QVERIFY(client->buffer.isEmpty());
 
-	client->buffer = "hbwtyjhwrthnahhq2<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">Test</OWNxml>rwg5h4qwhw6buh3dty jebjve<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">Test</OWNxml>erhytrhhergaerrgg";
+	client->buffer = "hbwtyjhwrthnahhq2<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">Test1</OWNxml>rwg5h4qwhw6buh3dty jebjve<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">Test2</OWNxml>erhytrhhergaerrgg";
 	client->parseData();
 
 	QCOMPARE(spy.count(), 2);
 	QList<QVariant> arguments = spy.takeFirst();
 
 	for (int i = 0; i < spy.count(); ++i)
-		QCOMPARE(arguments.at(i).toString(), QString("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">Test</OWNxml>"));
+		QCOMPARE(arguments.at(i).toString(), QString("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">Test%1</OWNxml>").arg(i + 1));
 
 	client->deleteLater();
 }
