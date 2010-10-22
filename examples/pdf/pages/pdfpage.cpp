@@ -35,7 +35,7 @@ PdfPage::PdfPage()
 
 	NavigationBar *nav_bar = new NavigationBar;
 
-	buildPage(pdf_page, nav_bar, "See the PDF!");
+	buildPage(pdf_page, nav_bar);
 
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	connect(nav_bar, SIGNAL(upClick()), SLOT(scrollUp()));
