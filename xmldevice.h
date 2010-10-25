@@ -61,6 +61,7 @@ private slots:
 private:
 	XmlResponse parseXml(const QString &xml);
 	bool parseHeader(const QDomNode &header_node);
+	QString buildCommand(const QString &command, const QString &argument = QString());
 
 	XmlClient *xml_client;
 	QHash<QString, xmlHandler_ptr> xml_handlers;

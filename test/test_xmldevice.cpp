@@ -141,3 +141,65 @@ void TestXmlDevice::testServerList()
 	for (int i = 0; i < servers.count(); ++i)
 		QCOMPARE(servers.at(i), QString("TestServer%1").arg(i + 1));
 }
+
+void TestXmlDevice::testBuildCommand()
+{
+	QString data("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+				 "<OWNxml xmlns=\"http://www.bticino.it/xopen/v1 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
+				 "	<Hdr>\n"
+				 "		<MsgID>\n"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>\n"
+				 "			<PID>0</PID>\n"
+				 "		</MsgID>\n"
+				 "		<Dst>\n"
+				 "			<IP>server_address</IP>\n"
+				 "		</Dst>\n"
+				 "		<Src>\n"
+				 "			<IP>local_address</IP>\n"
+				 "		</Src>\n"
+				 "	</Hdr>\n"
+				 "	<Cmd>\n"
+				 "		<command/>\n"
+				 "	</Cmd>\n"
+				 "</OWNxml>\n");
+
+	dev->sid = "1EFC3E00-2066-6C13-55D2-81D7D7DB0E62";
+	dev->local_addr = "local_address";
+	dev->server_addr = "server_address";
+
+	QString command = dev->buildCommand("command");
+
+	QCOMPARE(command, data);
+}
+
+void TestXmlDevice::testBuildCommandWithArg()
+{
+	QString data("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+				 "<OWNxml xmlns=\"http://www.bticino.it/xopen/v1 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
+				 "	<Hdr>\n"
+				 "		<MsgID>\n"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>\n"
+				 "			<PID>0</PID>\n"
+				 "		</MsgID>\n"
+				 "		<Dst>\n"
+				 "			<IP>server_address</IP>\n"
+				 "		</Dst>\n"
+				 "		<Src>\n"
+				 "			<IP>local_address</IP>\n"
+				 "		</Src>\n"
+				 "	</Hdr>\n"
+				 "	<Cmd>\n"
+				 "		<command>\n"
+				 "			<id>test_argument</id>\n"
+				 "		</command>\n"
+				 "	</Cmd>\n"
+				 "</OWNxml>\n");
+
+	dev->sid = "1EFC3E00-2066-6C13-55D2-81D7D7DB0E62";
+	dev->local_addr = "local_address";
+	dev->server_addr = "server_address";
+
+	QString command = dev->buildCommand("command", "test_argument");
+
+	QCOMPARE(command, data);
+}
