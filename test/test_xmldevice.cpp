@@ -294,6 +294,71 @@ void TestXmlDevice::testBrowseUpFail()
 	QCOMPARE(status, false);
 }
 
+void TestXmlDevice::testListItems()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
+				 "			<PID>4</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.195</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>192.168.1.110</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C6>"
+				 "			<directory>"
+				 "				<name>TestDirectory1</name>"
+				 "			</directory>"
+				 "			<directory>"
+				 "				<name>TestDirectory2</name>"
+				 "			</directory>"
+				 "			<track>"
+				 "				<name>TestTrack1</name>"
+				 "			</track>"
+				 "			<track>"
+				 "				<name>TestTrack2</name>"
+				 "			</track>"
+				 "		</AW26C6>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	QSignalSpy spy(dev, SIGNAL(responseReceived(XmlResponse)));
+	dev->handleData(data);
+
+	QCOMPARE(spy.count(), 1);
+
+	QList<QVariant> arguments = spy.takeFirst();
+
+	XmlResponse response = arguments.at(0).value<XmlResponse>();
+
+	QVERIFY(response.contains(XmlDevice::RESP_LISTITEMS));
+
+	XmlDevice::FilesystemEntries entries = response[XmlDevice::RESP_LISTITEMS]
+										   .value<XmlDevice::FilesystemEntries>();
+	QCOMPARE(entries.count(), 4);
+
+	for (int i = 0; i < entries.count(); ++i)
+	{
+		XmlDevice::FilesystemEntry entry = entries.at(i);
+		if (i < 2)
+		{
+			QCOMPARE(entry.type, XmlDevice::DIRECTORY);
+			QCOMPARE(entry.name, QString("TestDirectory%1").arg(i + 1));
+		}
+		else
+		{
+			QCOMPARE(entry.type, XmlDevice::TRACK);
+			QCOMPARE(entry.name, QString("TestTrack%1").arg(i - 1));
+		}
+	}
+}
+
 void TestXmlDevice::testBuildCommand()
 {
 	QString data("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"

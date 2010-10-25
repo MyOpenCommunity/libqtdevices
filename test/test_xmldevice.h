@@ -39,6 +39,7 @@ private slots:
 	void testChdir();
 	void testBrowseUpSuccess();
 	void testBrowseUpFail();
+	void testListItems();
 
 	void testBuildCommand();
 	void testBuildCommandWithArg();
