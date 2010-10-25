@@ -117,7 +117,12 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 	if (root.tagName() != "OWNxml")
 		return response;
 
-	if (!parseHeader(getChildWithName(root, "Hdr")))
+	/*
+		Parse the header if the sid or addresses are not set.
+		This should append only for the first message (the welcome).
+	*/
+	if ((sid.isEmpty() || local_addr.isEmpty() || server_addr.isEmpty()) &&
+		!parseHeader(getChildWithName(root, "Hdr")))
 		return response;
 
 	QDomNode command_container = getChildWithName(root, "Cmd");
@@ -138,9 +143,6 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 
 bool XmlDevice::parseHeader(const QDomNode &header_node)
 {
-	if (!sid.isEmpty() && !local_addr.isEmpty() && !server_addr.isEmpty())
-		return true;
-
 	QDomNode message_id = getChildWithName(header_node, "MsgID");
 	if (message_id.isNull())
 		return false;
