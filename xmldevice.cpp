@@ -88,6 +88,13 @@ namespace
 
 		return qMakePair<int,QVariant>(key, value);
 	}
+
+	QPair<int,QVariant> handle_browseup(const QDomNode &node)
+	{
+		bool value = getTextChild(node, "status_browse") == "browse_ok";
+
+		return qMakePair<int,QVariant>(XmlDevice::RESP_BROWSEUP, value);
+	}
 }
 
 
@@ -99,6 +106,7 @@ XmlDevice::XmlDevice()
 	xml_handlers["WMsg"] = handle_welcome_message;
 	xml_handlers["AW26C1"] = handle_upnp_server_list;
 	xml_handlers["AW26C2"] = handle_selection;
+	xml_handlers["AW26C7"] = handle_browseup;
 }
 
 XmlDevice::~XmlDevice()

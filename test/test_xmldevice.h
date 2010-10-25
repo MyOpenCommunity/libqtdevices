@@ -37,6 +37,8 @@ private slots:
 	void testServerList();
 	void testServerSelection();
 	void testChdir();
+	void testBrowseUpSuccess();
+	void testBrowseUpFail();
 
 	void testBuildCommand();
 	void testBuildCommandWithArg();

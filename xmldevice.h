@@ -45,6 +45,7 @@ public:
 		RESP_SERVERLIST,
 		RESP_SERVERSEL,
 		RESP_CHDIR,
+		RESP_BROWSEUP,
 	};
 
 	XmlDevice();
