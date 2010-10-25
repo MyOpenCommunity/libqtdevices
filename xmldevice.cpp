@@ -95,6 +95,33 @@ namespace
 
 		return qMakePair<int,QVariant>(XmlDevice::RESP_BROWSEUP, value);
 	}
+
+	QPair<int,QVariant> handle_listitems(const QDomNode &node)
+	{
+		XmlDevice::FilesystemEntries entries;
+		QDomNodeList nodes = node.childNodes();
+
+		for (int i = 0; i < nodes.size(); ++i)
+		{
+			QDomNode item = nodes.at(i);
+			XmlDevice::FilesystemEntry entry;
+			QDomElement element = item.toElement();
+
+			if (element.isNull())
+				continue;
+			if (element.tagName() == "directory")
+				entry.type = XmlDevice::DIRECTORY;
+			else if (element.tagName() == "track")
+				entry.type = XmlDevice::TRACK;
+			entry.name = getTextChild(item, "name");
+
+			entries.append(entry);
+		}
+		QVariant value;
+		value.setValue(entries);
+
+		return qMakePair<int,QVariant>(XmlDevice::RESP_LISTITEMS, value);
+	}
 }
 
 
@@ -107,6 +134,7 @@ XmlDevice::XmlDevice()
 	xml_handlers["AW26C1"] = handle_upnp_server_list;
 	xml_handlers["AW26C2"] = handle_selection;
 	xml_handlers["AW26C7"] = handle_browseup;
+	xml_handlers["AW26C6"] = handle_listitems;
 }
 
 XmlDevice::~XmlDevice()

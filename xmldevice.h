@@ -46,7 +46,23 @@ public:
 		RESP_SERVERSEL,
 		RESP_CHDIR,
 		RESP_BROWSEUP,
+		RESP_LISTITEMS,
 	};
+
+	enum FilesystemEntryType
+	{
+		DIRECTORY = 0,
+		TRACK
+	};
+
+	struct FilesystemEntry
+	{
+		FilesystemEntryType type;
+		QString name;
+	};
+
+	typedef QList<FilesystemEntry> FilesystemEntries;
+
 
 	XmlDevice();
 	~XmlDevice();
@@ -74,5 +90,7 @@ private:
 	QString local_addr;
 	QString server_addr;
 };
+
+Q_DECLARE_METATYPE(XmlDevice::FilesystemEntries);
 
 #endif // XMLDEVICE_H
