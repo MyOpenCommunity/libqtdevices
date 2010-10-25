@@ -40,9 +40,11 @@ Q_OBJECT
 public:
 	enum Type
 	{
-		RESP_WELCOME = 0,
+		RESP_INVALID = -1,
+		RESP_WELCOME,
 		RESP_SERVERLIST,
 		RESP_SERVERSEL,
+		RESP_CHDIR,
 	};
 
 	XmlDevice();

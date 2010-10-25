@@ -180,6 +180,44 @@ void TestXmlDevice::testServerSelection()
 	QCOMPARE(server, QString("TestServer"));
 }
 
+void TestXmlDevice::testChdir()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
+				 "			<PID>4</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.195</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>192.168.1.110</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C2>"
+				 "			<status_browse>browse_ok</status_browse>"
+				 "		</AW26C2>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	QSignalSpy spy(dev, SIGNAL(responseReceived(XmlResponse)));
+	dev->handleData(data);
+
+	QCOMPARE(spy.count(), 1);
+
+	QList<QVariant> arguments = spy.takeFirst();
+
+	XmlResponse response = arguments.at(0).value<XmlResponse>();
+
+	QVERIFY(response.contains(XmlDevice::RESP_CHDIR));
+
+	bool status = response[XmlDevice::RESP_CHDIR].toBool();
+	QCOMPARE(status, true);
+}
+
 void TestXmlDevice::testBuildCommand()
 {
 	QString data("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
