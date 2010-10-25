@@ -35,6 +35,7 @@ private slots:
 	void testHeader();
 	void testWelcome();
 	void testServerList();
+	void testServerSelection();
 
 	void testBuildCommand();
 	void testBuildCommandWithArg();

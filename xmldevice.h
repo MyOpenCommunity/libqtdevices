@@ -42,6 +42,7 @@ public:
 	{
 		RESP_WELCOME = 0,
 		RESP_SERVERLIST,
+		RESP_SERVERSEL,
 	};
 
 	XmlDevice();

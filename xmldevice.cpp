@@ -67,6 +67,13 @@ namespace
 
 		return qMakePair<int,QVariant>(XmlDevice::RESP_SERVERLIST, value);
 	}
+
+	QPair<int,QVariant> handle_upnp_server_selection(const QDomNode &node)
+	{
+		QString server = getTextChild(node, "current_server");
+
+		return qMakePair<int,QVariant>(XmlDevice::RESP_SERVERSEL, server);
+	}
 }
 
 
@@ -77,6 +84,7 @@ XmlDevice::XmlDevice()
 
 	xml_handlers["WMsg"] = handle_welcome_message;
 	xml_handlers["AW26C1"] = handle_upnp_server_list;
+	xml_handlers["AW26C2"] = handle_upnp_server_selection;
 }
 
 XmlDevice::~XmlDevice()
