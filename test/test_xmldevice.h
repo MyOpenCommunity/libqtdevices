@@ -36,6 +36,9 @@ private slots:
 	void testWelcome();
 	void testServerList();
 
+	void testBuildCommand();
+	void testBuildCommandWithArg();
+
 private:
 	XmlDevice *dev;
 };

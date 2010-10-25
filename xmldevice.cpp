@@ -26,25 +26,30 @@
 #include "xmlclient.h"
 #include "xml_functions.h"
 
-const char *xml_template =
-		"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-		"<OWNxml xmlns=\"http://www.bticino.it/xopen/v1 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-		"	<Hdr>"
-		"		<MsgID>"
-		"			<SID>%classid</SID>"
-		"			<PID>%seq</PID>"
-		"		</MsgID>"
-		"		<Dst>"
-		"			<IP>%ipaddr_dst</IP>"
-		"		</Dst>"
-		"		<Src>"
-		"			<IP>%ipaddr_src</IP>"
-		"		</Src>"
-		"	</Hdr>"
-		"	<Cmd>"
-		"		%basic_command"
-		"	</Cmd>"
-		"</OWNxml>";
+const char *command_template =
+		"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+		"<OWNxml xmlns=\"http://www.bticino.it/xopen/v1 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
+		"	<Hdr>\n"
+		"		<MsgID>\n"
+		"			<SID>%1</SID>\n"
+		"			<PID>%2</PID>\n"
+		"		</MsgID>\n"
+		"		<Dst>\n"
+		"			<IP>%3</IP>\n"
+		"		</Dst>\n"
+		"		<Src>\n"
+		"			<IP>%4</IP>\n"
+		"		</Src>\n"
+		"	</Hdr>\n"
+		"	<Cmd>\n"
+		"%5\n"
+		"	</Cmd>\n"
+		"</OWNxml>\n";
+
+const char *argument_template =
+		"		<%1>\n"
+		"			<id>%2</id>\n"
+		"		</%1>";
 
 namespace
 {
@@ -81,22 +86,22 @@ XmlDevice::~XmlDevice()
 
 void XmlDevice::requestUPnPServers()
 {
-
+	xml_client->sendCommand(buildCommand("RW26C1"));
 }
 
 void XmlDevice::select(const QString &name)
 {
-
+	xml_client->sendCommand(buildCommand("RW26C2", name));
 }
 
 void XmlDevice::browseUp()
 {
-
+	xml_client->sendCommand(buildCommand("CW26C7"));
 }
 
 void XmlDevice::listItems(int max_results)
 {
-
+	xml_client->sendCommand(buildCommand("CW26C6", QString::number(max_results)));
 }
 
 void XmlDevice::handleData(const QString &data)
@@ -159,4 +164,20 @@ bool XmlDevice::parseHeader(const QDomNode &header_node)
 	server_addr = getTextChild(src_address, "IP");
 
 	return true;
+}
+
+QString XmlDevice::buildCommand(const QString &command, const QString &argument)
+{
+	QString cmd;
+
+	if (!argument.isEmpty())
+		cmd = QString(argument_template).arg(command).arg(argument);
+	else
+		cmd = QString("\t\t<%1/>").arg(command);
+
+	return QString(command_template).arg(sid)
+									.arg(0)
+									.arg(server_addr)
+									.arg(local_addr)
+									.arg(cmd);
 }
