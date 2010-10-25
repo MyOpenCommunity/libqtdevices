@@ -18,9 +18,11 @@ dependencies; the scripts assume that:
 - archive files (in .tar.gz format) have been downloaded to
   examples/pdf/poppler/sources
 - the version numbers at the top op examples/pdf/poppler/scripts/Makefile
-  match the downloaded source arhcives
+  match the downloaded source archives
 - the ARM cross-compiler is in the PATH
-- Qt is installed in /lib/qt4lib (ARM) and /lib/qt4lib.x86 (x86)
+- Qt embedded is installed in /lib/qt4lib (ARM) and /lib/qt4lib.x86 (x86)
+  (note: this must be the same Qt used to build Poppler/Qt, hence it's
+   not possible to use distribution-provided Poppler)
 
 If that's true, running:
 
@@ -32,13 +34,14 @@ should build Poppler (x86) and Poppler and all its dependencies (ARM).
 
 Installation prefix is /usr/bticino-exmaples (hence the libraries are
 installed in /usr/bticino-exmaples/lib, which must be added to
-LD_LIBRARY_PATH).
+LD_LIBRARY_PATH).  It's also possible to run the example against an
+uninstalled library by setting LD_LIBRARY_PATH.
 
 For x86, the development packages for libpng and fontconfig must be
 installed for the build to complete.
 
 When using the provided scripts just changing BUILD_PDF to "yes" in
-common.prj should suffice for the example to build.  If You build
+common.pri should suffice for the example to build.  If You build
 Poppler manually, change INCLUDES and LIBS accordingly.
 
 Use this configuration item:
