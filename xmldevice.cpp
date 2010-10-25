@@ -68,11 +68,25 @@ namespace
 		return qMakePair<int,QVariant>(XmlDevice::RESP_SERVERLIST, value);
 	}
 
-	QPair<int,QVariant> handle_upnp_server_selection(const QDomNode &node)
+	QPair<int,QVariant> handle_selection(const QDomNode &node)
 	{
-		QString server = getTextChild(node, "current_server");
+		QDomElement element = node.childNodes().at(0).toElement();
+		QString tag_name = element.tagName();
+		int key = -1;
+		QVariant value;
 
-		return qMakePair<int,QVariant>(XmlDevice::RESP_SERVERSEL, server);
+		if (tag_name == "current_server")
+		{
+			key = XmlDevice::RESP_SERVERSEL;
+			value = getTextChild(node, "current_server");
+		}
+		else if (tag_name == "status_browse")
+		{
+			key = XmlDevice::RESP_CHDIR;
+			value = getTextChild(node, "status_browse") == "browse_ok";
+		}
+
+		return qMakePair<int,QVariant>(key, value);
 	}
 }
 
@@ -84,7 +98,7 @@ XmlDevice::XmlDevice()
 
 	xml_handlers["WMsg"] = handle_welcome_message;
 	xml_handlers["AW26C1"] = handle_upnp_server_list;
-	xml_handlers["AW26C2"] = handle_upnp_server_selection;
+	xml_handlers["AW26C2"] = handle_selection;
 }
 
 XmlDevice::~XmlDevice()
@@ -148,7 +162,8 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 	if (xml_handlers.contains(command_name))
 	{
 		QPair<int, QVariant> result = xml_handlers[command_name](command);
-		response[result.first] = result.second;
+		if (result.first != XmlDevice::RESP_INVALID)
+			response[result.first] = result.second;
 	}
 
 	return response;
