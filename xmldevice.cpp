@@ -96,27 +96,24 @@ namespace
 		return qMakePair<int,QVariant>(XmlResponses::BROWSE_UP, value);
 	}
 
+	FilesystemEntries getFilesystemEntries(const QDomNode &node, FilesystemEntry::Type item_type)
+	{
+		FilesystemEntries entries;
+
+		QList<QDomNode> items = getChildren(node, "name");
+		foreach (const QDomNode &item, items)
+			entries << FilesystemEntry(item.toElement().text(), item_type);
+
+		return entries;
+	}
+
 	QPair<int,QVariant> handle_listitems(const QDomNode &node)
 	{
 		FilesystemEntries entries;
-		QDomNodeList nodes = node.childNodes();
 
-		for (int i = 0; i < nodes.size(); ++i)
-		{
-			QDomNode item = nodes.at(i);
-			FilesystemEntry::Type type;
-			QDomElement element = item.toElement();
+		entries << getFilesystemEntries(getChildWithName(node, "directories"), FilesystemEntry::DIRECTORY);
+		entries << getFilesystemEntries(getChildWithName(node, "tracks"), FilesystemEntry::TRACK);
 
-			if (element.isNull())
-				continue;
-
-			if (element.tagName() == "directory")
-				type = FilesystemEntry::DIRECTORY;
-			else if (element.tagName() == "track")
-				type = FilesystemEntry::TRACK;
-
-			entries.append(FilesystemEntry(getTextChild(item, "name"), type));
-		}
 		QVariant value;
 		value.setValue(entries);
 
