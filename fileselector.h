@@ -28,8 +28,10 @@
 #include <QMap>
 #include <QList>
 #include <QFileInfo>
+#include <QLabel>
+#include <QTime>
 
-class QLabel;
+class FileSelectorWaitDialog;
 
 
 /*!
@@ -206,6 +208,10 @@ protected:
 	/// returns the page that should be displayed for the given directory
 	int displayedPage(const QDir &directory);
 
+protected:
+	void startOperation();
+	void operationCompleted();
+
 private:
 	/// Change the current dir, return false in case of error.
 	bool changePath(QString new_path);
@@ -226,7 +232,25 @@ private:
 	// The root path
 	QString root_path;
 
+	FileSelectorWaitDialog *working;
 	QMap<QString, unsigned>  pages_indexes;
+};
+
+
+class FileSelectorWaitDialog : public QLabel
+{
+Q_OBJECT
+public:
+	FileSelectorWaitDialog(Page *parent, int timeout);
+
+	void waitForTimeout();
+
+public slots:
+	void abort();
+
+private:
+	QTime elapsed;
+	int timeout;
 };
 
 #endif // FILE_SELECTOR_H
