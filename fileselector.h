@@ -27,7 +27,6 @@
 #include <QDir>
 #include <QMap>
 #include <QList>
-#include <QFileInfo>
 #include <QLabel>
 #include <QTime>
 
@@ -173,6 +172,7 @@ private:
  * Realize a common interface for all selector classes.
  *
  */
+// TODO remove?
 class Selector : public Page
 {
 Q_OBJECT
@@ -191,23 +191,24 @@ signals:
 };
 
 
-/**
- * \class FileSelector
- *
- * implements a File Selector Windows with methods to navigate and play files.
+/*!
+	\brief File navigation base class
+
+	Provides basic support for directory navigation.
+
+	Handling clicks on files and displaying file list is delegated to subclasses,
+	that must handle the TreeBrowser::listReceived() signal emitted by the TreeBrowser.
  */
 class FileSelector : public Selector
 {
 Q_OBJECT
 public:
-	FileSelector(unsigned rows_per_page, QString start_path);
+	FileSelector(TreeBrowser *browser);
 
 public slots:
-	QString getRootPath() const;
 	void itemIsClicked(int item);
 	void browseUp();
 	virtual void showPage();
-	virtual void showPageNoReload();
 	virtual void browse(const QString &start_path);
 
 #ifdef BT_HARDWARE_TS_10
@@ -219,26 +220,23 @@ signals:
 	void fileClicked(int item);
 
 protected:
-	/**
-	 * Browse current path, return false in case of error.  In case of success
-	 * populates the files list with the files found on the directory.
-	 */
-	virtual bool browseFiles(const QDir &directory, QList<QFileInfo> &files) = 0;
 	virtual int currentPage() = 0;
 
-	/// Use the given path as root path
 	void setRootPath(const QString &start_path);
-
-	/// Browse given path, return false in case of error.
-	bool browseDirectory(QString new_path);
+	QString getRootPath();
 
 	/// returns the list of currently displayed files
-	const QList<QFileInfo> &getFiles() const;
+	const QList<TreeBrowser::EntryInfo> &getFiles() const;
+
+	/// Must be called by subclasses before displaying the file/directory list
+	void setFiles(const QList<TreeBrowser::EntryInfo> &files);
 
 	/// returns the page that should be displayed for the given directory
 	int displayedPage(const QDir &directory);
 
 protected:
+	TreeBrowser *browser;
+
 	void startOperation();
 	void operationCompleted();
 
@@ -246,28 +244,16 @@ private:
 	/// Change the current dir, return false in case of error.
 	bool changePath(QString new_path);
 
-	QLabel *createWaitDialog();
-	void destroyWaitDialog(QLabel *l);
-
 private slots:
+	void directoryChanged();
+
 #ifdef BT_HARDWARE_TS_10
 	void unmounted(const QString &dir);
 #endif
 
 private:
-	/// The handler of current directory
-	QDir current_dir;
-
-	// set by browseFiles()
-	QList<QFileInfo> files_list;
-
-	// How many subdirs we are descending from root.
-	unsigned level;
-
-	// The root path
-	QString root_path;
-
 	FileSelectorWaitDialog *working;
+	QList<TreeBrowser::EntryInfo> files_list;
 	QMap<QString, unsigned>  pages_indexes;
 };
 
