@@ -111,6 +111,11 @@ public:
 	*/
 	ScrollableContent(QWidget *parent = 0);
 
+	/*!
+		\brief Returns the current page index.
+	*/
+	int currentPage() const;
+
 public slots:
 	/*!
 		\brief Shows the previous page of items.
