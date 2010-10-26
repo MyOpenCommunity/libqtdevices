@@ -37,32 +37,20 @@ class contdiff;
 class StateButton;
 
 
-/*!
-  \class bannAlarmClock
-  \brief This class is made to make alarm clock settings.
-
-*/
+// This class is made to make alarm clock settings.
 class bannAlarmClock : public Bann2StateButtons
 {
 Q_OBJECT
 public:
 	bannAlarmClock(int item_id, int hour, int minute, QString icon_on,
 		QString icon_off, QString icon_label, QString text, int enabled, int freq, int tipo);
-	/*!
-	\brief changes the abilitation af the alarm set
-	*/
 	void setAbil(bool);
-	/*!
-	\brief forces a eeprom read to initialyze alarm set settings
-	*/
 	void inizializza(bool forza = false);
 
 	virtual void setSerNum(int num);
 
 public slots:
-/*!
-\brief changes the alarm set abilitation
-*/
+	// changes the alarm set abilitation
 	void toggleAbil();
 	void setButtonIcon();
 
@@ -81,21 +69,13 @@ public:
 	bannAlarmClockIcon(int item_id, int hour, int minute, QString icon_on,
 		QString icon_off, QString icon_state, QString icon_edit, QString text,
 		int enabled, int tipo, QList<bool> days);
-	/*!
-	\brief changes the abilitation af the alarm set
-	*/
+
 	void setAbil(bool);
-	/*!
-	\brief forces a eeprom read to initialyze alarm set settings
-	*/
 	void inizializza(bool forza = false);
 
 	virtual void setSerNum(int num);
 
 public slots:
-/*!
-\brief changes the alarm set abilitation
-*/
 	void toggleAbil();
 	void setButtonIcon();
 
@@ -110,13 +90,6 @@ private slots:
 };
 
 
-/*!
-  \class calibration
-  \brief Calibrate the device
-
-*/
-// TODO: rimuovere questa classe, e usare direttamente bannOnDx! E' necessario intervenire su Calibrate
-// per modificare la gestione del grabMouse e del backup della vecchia calibrazione.
 class calibration : public bannOnDx
 {
 Q_OBJECT
@@ -129,11 +102,6 @@ signals:
 };
 
 
-/*!
-  \class setDataOra
-  \brief Beep (dis)abilitation
-
-*/
 class impBeep : public Bann2StateButtons
 {
 Q_OBJECT
@@ -174,10 +142,7 @@ private:
 };
 
 
-
-/**
- * Logic to enable/disable password on freeze and change password.
- */
+// Logic to enable/disable password on freeze and change password.
 class PasswordChanger : public QObject
 {
 Q_OBJECT
@@ -266,9 +231,7 @@ private:
 };
 
 
-/**
- * Banner to set ringtone for a specific function (ringtone 1-4 from external units, alarms etc.).
- */
+// Set ringtone for a specific function (ringtone 1-4 from external units, alarms etc.).
 class BannRingtone : public Bann2CentralButtons
 {
 Q_OBJECT
@@ -289,10 +252,9 @@ private:
 
 };
 
-/**
- * Set the time between screensaver frames.
- * For example, it can be the timeout between images in the slideshow.
- */
+
+// Set the time between screensaver frames.
+// For example, it can be the timeout between images in the slideshow.
 class ScreensaverTiming : public Bann2Buttons
 {
 Q_OBJECT

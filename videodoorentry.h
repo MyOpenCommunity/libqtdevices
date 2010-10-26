@@ -32,8 +32,6 @@ class VCTCallPage;
 class VideoDoorEntryDevice;
 class StateButton;
 class ItemTuning;
-class RingExclusion;
-class RingExclusionPage;
 class QDomNode;
 class QSignalMapper;
 
