@@ -46,6 +46,18 @@ inline void waitTimeCounter(const QTime& timer, int msec)
 }
 
 
+QList<TreeBrowser::EntryInfo> TreeBrowser::filterEntries(const QList<TreeBrowser::EntryInfo> &entries, QStringList file_filters)
+{
+	QList<TreeBrowser::EntryInfo> res;
+
+	foreach (const TreeBrowser::EntryInfo &item, entries)
+		if (item.is_directory || !file_filters.size() || QDir::match(file_filters, item.name))
+			res.append(item);
+
+	return res;
+}
+
+
 FileSelector::FileSelector(unsigned rows_per_page, QString start_path)
 {
 	setRootPath(start_path);

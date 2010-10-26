@@ -118,6 +118,8 @@ public:
 	 */
 	virtual QString pathKey() = 0;
 
+	static QList<TreeBrowser::EntryInfo> filterEntries(const QList<TreeBrowser::EntryInfo> &entries, QStringList file_filters);
+
 signals:
 	void directoryChanged();
 	void directoryChangeError();
