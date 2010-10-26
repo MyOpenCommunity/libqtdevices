@@ -22,7 +22,7 @@
 #ifndef IPRADIO_H
 #define IPRADIO_H
 
-#include "itemlistpage.h"
+#include "scrollablepage.h"
 
 class QDomNode;
 class AudioPlayerPage;
@@ -32,10 +32,12 @@ class AudioPlayerPage;
 	\ingroup Multimedia
 	\brief Shows the list of web radios taken from the configuration file.
  */
-class IPRadioPage : public ItemListPage
+class IPRadioPage : public ScrollablePage
 {
 Q_OBJECT
 public:
+	typedef class ItemList ContentType;
+
 	IPRadioPage(const QDomNode &config_node);
 
 	// returns all the radio URLs
