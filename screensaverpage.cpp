@@ -228,8 +228,6 @@ SlideshowSelector::SlideshowSelector() :
 
 	NavigationBar *nav_bar = new NavigationBar("eject");
 
-	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
-		SLOT(unmounted(const QString &)));
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(unmount()));
 	browse_directory = bt_global::skin->getImage("browse_directory");
 	selbutton_off = bt_global::skin->getImage("unchecked");
@@ -344,18 +342,6 @@ void SlideshowSelector::setSelection(const QString &path, bool selected)
 		handler->insertItem(path);
 	else
 		handler->removeItem(path);
-}
-
-void SlideshowSelector::unmounted(const QString &dir)
-{
-	if (dir == getRootPath() && isVisible())
-		emit Closed();
-	setRootPath("");
-}
-
-void SlideshowSelector::unmount()
-{
-	MountWatcher::getWatcher().unmount(getRootPath());
 }
 
 void SlideshowSelector::saveFileList()

@@ -21,6 +21,9 @@
 
 #include "fileselector.h"
 #include "icondispatcher.h"
+#ifdef BT_HARDWARE_TS_10
+#include "mount_watcher.h"
+#endif
 
 #include <QTime>
 #include <QDebug>
@@ -162,6 +165,12 @@ FileSelector::FileSelector(unsigned rows_per_page, QString start_path)
 
 	current_dir.setSorting(QDir::DirsFirst | QDir::Name);
 	current_dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable);
+
+#ifdef BT_HARDWARE_TS_10
+	// since this checks the root file path, it's OK to use it for all instances
+	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
+	        SLOT(unmounted(const QString &)));
+#endif
 }
 
 QString FileSelector::getRootPath() const
@@ -349,6 +358,26 @@ void FileSelector::operationCompleted()
 	working->waitForTimeout();
 	working = NULL;
 }
+
+#ifdef BT_HARDWARE_TS_10
+
+// methods for physical file systems
+void FileSelector::unmount()
+{
+	MountWatcher::getWatcher().unmount(getRootPath());
+}
+
+void FileSelector::unmounted(const QString &dir)
+{
+	if (dir == getRootPath())
+	{
+		setRootPath("");
+		if (isVisible())
+			emit Closed();
+	}
+}
+
+#endif
 
 
 FileSelectorWaitDialog::FileSelectorWaitDialog(Page *parent, int _timeout) :
