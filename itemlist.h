@@ -156,14 +156,14 @@ public slots:
 
 		\note If you are on the last page, it switches to the first one.
 	*/
-	void nextItem();
+	void pgDown();
 
 	/*!
 		\brief Switches to the previous page.
 
 		\note If you are on the first page, it switches to the last one.
 	*/
-	void prevItem();
+	void pgUp();
 
 	/*!
 		\brief Removes all the items.
@@ -203,7 +203,7 @@ protected:
 	/*!
 		\brief The calculated number of pages.
 	*/
-	int pageCount();
+	int pageCount() const;
 
 	/*!
 		\brief Creates the widget used to represent an item.

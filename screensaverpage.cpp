@@ -243,8 +243,8 @@ SlideshowSelector::SlideshowSelector() :
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
 	connect(this, SIGNAL(notifyExit()), SIGNAL(Closed()));
 	connect(this, SIGNAL(Closed()), SLOT(cleanUp()));
-	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
-	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(nextItem()));
+	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(pgUp()));
+	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(pgDown()));
 	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 
 	connect(item_list, SIGNAL(itemSelectionChanged(QString,bool)), SLOT(setSelection(QString,bool)));

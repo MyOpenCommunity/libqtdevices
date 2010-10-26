@@ -35,8 +35,8 @@ void ItemListPage::buildPage(int items, const QString &title, int title_height)
 	NavigationBar *nav_bar = new NavigationBar;
 
 	// scrolling
-	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
-	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(nextItem()));
+	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(pgUp()));
+	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(pgDown()));
 	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 
 	// current page

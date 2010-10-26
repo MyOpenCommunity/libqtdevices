@@ -169,7 +169,7 @@ void ItemList::clear()
 	showList();
 }
 
-void ItemList::nextItem()
+void ItemList::pgDown()
 {
 	current_page += 1;
 	// wrap around to the first page
@@ -178,7 +178,7 @@ void ItemList::nextItem()
 	showList();
 }
 
-void ItemList::prevItem()
+void ItemList::pgUp()
 {
 	current_page -= 1;
 	// wrap around to the last page
@@ -192,7 +192,7 @@ void ItemList::clicked(int item)
 	emit itemIsClicked(current_page * rows_per_page + item);
 }
 
-int ItemList::pageCount()
+int ItemList::pageCount() const
 {
 	return item_list.count() / rows_per_page +
 			(item_list.count() % rows_per_page ? 1 : 0);
