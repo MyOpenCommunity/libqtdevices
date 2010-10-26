@@ -426,7 +426,7 @@ bool EnergyInterface::loadItems(const QDomNode &config_node)
 		// check if any of the interfaces have currency enabled
 		is_any_interface_enabled |= is_currency_enabled;
 
-		next_page = new EnergyView(measure, energy_type, where, mode, rate_id, decimals, table, graph);
+		next_page = new EnergyView(measure, getTextChild(item, "descr"), where, mode, rate_id, decimals, table, graph);
 
 		EnergyDevice *dev = bt_global::add_device_to_cache(new EnergyDevice(where, mode));
 
