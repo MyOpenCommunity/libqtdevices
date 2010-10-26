@@ -119,13 +119,17 @@ public:
 	virtual QString pathKey() = 0;
 
 signals:
-	// TODO add a signal (errorOccurred(), or maybe one per function)
-	//      to handle function errors; also for timeouts
-
 	void directoryChanged();
+	void directoryChangeError();
+
 	void urlReceived(const QString &url);
+	void urlRetrieveError();
+
 	void allUrlsReceived(const QStringList &urls);
+	void allUrlsRetrieveError();
+
 	void listReceived(QList<TreeBrowser::EntryInfo> list);
+	void listRetrieveError();
 };
 
 inline bool operator ==(const TreeBrowser::EntryInfo &a, const TreeBrowser::EntryInfo &b)
