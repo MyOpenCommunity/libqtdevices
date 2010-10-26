@@ -227,7 +227,7 @@ void TestXmlDevice::testBrowseUpFail()
 				 "	</Hdr>"
 				 "	<Cmd>"
 				 "		<AW26C7>"
-				 "			<status_browse>already_ar_root</status_browse>"
+				 "			<status_browse>already_at_root</status_browse>"
 				 "		</AW26C7>"
 				 "	</Cmd>"
 				 "</OWNxml>");
