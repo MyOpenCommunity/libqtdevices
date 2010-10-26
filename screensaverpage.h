@@ -99,16 +99,15 @@ public:
 public slots:
 	virtual void nextItem();
 	virtual void prevItem();
-	virtual void showPage();
-	virtual void showPageNoReload();
 	virtual void cleanUp();
 
 protected:
-	virtual bool browseFiles(const QDir &directory, QList<QFileInfo> &files);
 	virtual int currentPage();
 
 private slots:
 	void setSelection(const QString &path, bool selected);
+	void displayFiles(const QList<TreeBrowser::EntryInfo> &list);
+	void urlListReceived(const QStringList &list);
 
 private:
 	void saveFileList();

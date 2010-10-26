@@ -158,164 +158,110 @@ QString DirectoryTreeBrowser::pathKey()
 }
 
 
-FileSelector::FileSelector(unsigned rows_per_page, QString start_path)
+FileSelector::FileSelector(TreeBrowser *_browser)
 {
-	setRootPath(start_path);
+	browser = _browser;
 	working = NULL;
 
-	current_dir.setSorting(QDir::DirsFirst | QDir::Name);
-	current_dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable);
+	connect(browser, SIGNAL(directoryChanged()), SLOT(directoryChanged()));
+
+	// maybe it's a bit harsh to close the navigation for all errors, but it's
+	// probably the safest choice
+	connect(browser, SIGNAL(directoryChangeError()), SIGNAL(Closed()));
+	connect(browser, SIGNAL(urlRetrieveError()), SIGNAL(Closed()));
+	connect(browser, SIGNAL(allUrlsRetrieveError()), SIGNAL(Closed()));
+	connect(browser, SIGNAL(listRetrieveError()), SIGNAL(Closed()));
 
 #ifdef BT_HARDWARE_TS_10
 	// since this checks the root file path, it's OK to use it for all instances
 	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
-	        SLOT(unmounted(const QString &)));
+		SLOT(unmounted(const QString &)));
 #endif
-}
-
-QString FileSelector::getRootPath() const
-{
-	return root_path;
 }
 
 void FileSelector::browse(const QString &dir)
 {
 	setRootPath(dir);
+
+	// showPage automatically refreshes the file list
 	showPage();
 }
 
-const QList<QFileInfo> &FileSelector::getFiles() const
+const QList<TreeBrowser::EntryInfo> &FileSelector::getFiles() const
 {
 	return files_list;
 }
 
-void FileSelector::showPageNoReload()
+void FileSelector::setFiles(const QList<TreeBrowser::EntryInfo> &files)
 {
-	Selector::showPage();
+	files_list = files;
 }
 
 void FileSelector::showPage()
 {
-	Selector::showPage();
-
-	QLabel *l = createWaitDialog();
-	QTime time_counter = startTimeCounter();
-
-	// refresh QDir information
-	current_dir.refresh();
-
-	if (!browseFiles(current_dir, files_list))
+	if (getRootPath().isEmpty())
 	{
-		waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
-		destroyWaitDialog(l);
-		emit notifyExit();
-		return;
+		// unmounted file system
+		emit Closed();
 	}
+	else if (files_list.size() == 0)
+	{
+		Selector::showPage();
 
-	waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
-	destroyWaitDialog(l);
+		// refresh directory information if the file list is empty
+		startOperation();
+		browser->getFileList();
+	}
+	else
+		Selector::showPage();
 }
 
 void FileSelector::itemIsClicked(int item)
 {
-	QLabel *l = createWaitDialog();
-	QTime time_counter = startTimeCounter();
+	const TreeBrowser::EntryInfo& clicked_element = files_list[item];
+	qDebug() << "[AUDIO] FileSelector::itemIsClicked " << item << "-> " << clicked_element.name;
 
-	const QFileInfo& clicked_element = files_list[item];
-	qDebug() << "[AUDIO] FileSelector::itemIsClicked " << item << "-> " << clicked_element.fileName();
-
-	if (!clicked_element.exists())
-		qWarning() << "[AUDIO] Error retrieving file: " << clicked_element.absoluteFilePath();
-
-	if (clicked_element.isDir())
+	if (clicked_element.is_directory)
 	{
-		++level;
-		if (!browseDirectory(clicked_element.absoluteFilePath()))
-		{
-			destroyWaitDialog(l);
-			emit notifyExit();
-			return;
-		}
+		startOperation();
+		browser->enterDirectory(clicked_element.name);
 	}
 	else
 	{
 		// save the info of old directory
-		pages_indexes[current_dir.absolutePath()] = currentPage();
+		pages_indexes[browser->pathKey()] = currentPage();
 
 		emit fileClicked(item);
 	}
-
-	waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
-	destroyWaitDialog(l);
 }
 
 void FileSelector::browseUp()
 {
-	if (level > 0)
+	if (!browser->isRoot())
 	{
-		--level;
-		QLabel *l = createWaitDialog();
-		QTime time_counter = startTimeCounter();
+		startOperation();
 
-		if (!browseDirectory(QFileInfo(current_dir, "..").absoluteFilePath()))
-		{
-			destroyWaitDialog(l);
-			emit notifyExit();
-			return;
-		}
-		waitTimeCounter(time_counter, MEDIASERVER_MSEC_WAIT_TIME);
-		destroyWaitDialog(l);
+		browser->exitDirectory();
 	}
 	else
-		emit notifyExit();
+		emit Closed();
+}
+
+void FileSelector::directoryChanged()
+{
+	browser->getFileList();
 }
 
 void FileSelector::setRootPath(const QString &start_path)
 {
-	root_path = start_path;
-	current_dir.setPath(start_path);
-	level = 0;
+	browser->setRootPath(start_path.split("/", QString::SkipEmptyParts));
 	pages_indexes.clear();
+	files_list.clear();
 }
 
-bool FileSelector::browseDirectory(QString new_path)
+QString FileSelector::getRootPath()
 {
-	QString old_path = current_dir.absolutePath();
-	if (changePath(new_path))
-	{
-		if (!browseFiles(current_dir, files_list))
-		{
-			qDebug() << "[AUDIO] empty directory: "<< new_path;
-			changePath(old_path);
-			--level;
-		}
-		return true;
-	}
-	else
-	{
-		qDebug() << "[AUDIO] browseFiles(): path '" << new_path << "%s' doesn't exist";
-		changePath(old_path);
-		--level;
-	}
-
-	return browseFiles(current_dir, files_list);
-}
-
-bool FileSelector::changePath(QString new_path)
-{
-	// if new_path is valid changes the path and run browseFiles()
-	if (QFileInfo(new_path).exists())
-	{
-		// save the info of old directory
-		pages_indexes[current_dir.absolutePath()] = currentPage();
-
-		QString new_path_string = QFileInfo(new_path).absoluteFilePath();
-		// change path
-		current_dir.setPath(new_path_string);
-		return true;
-	}
-
-	return false;
+	return "/" + browser->getRootPath().join("/");
 }
 
 int FileSelector::displayedPage(const QDir &directory)
@@ -324,24 +270,6 @@ int FileSelector::displayedPage(const QDir &directory)
 		return pages_indexes[directory.absolutePath()];
 	else
 		return 0;
-}
-
-void FileSelector::destroyWaitDialog(QLabel *l)
-{
-	l->hide();
-	l->deleteLater();
-}
-
-QLabel *FileSelector::createWaitDialog()
-{
-	QLabel* l = new QLabel(this);
-	l->setProperty("Loading", true);
-	l->setGeometry(geometry());
-
-	l->show();
-	qApp->processEvents();
-
-	return l;
 }
 
 void FileSelector::startOperation()
