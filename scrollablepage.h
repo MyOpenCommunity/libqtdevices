@@ -165,13 +165,13 @@ protected:
 		\note In order to have a correct transition effect, this method is also
 		called by the Page \b before that the Page is showed.
 	*/
-		virtual void drawContent() = 0;
+	virtual void drawContent() = 0;
 
 	/*!
 		\brief Returns the page count calculated by the number of items and
 		their size.
 	*/
-	int pageCount() const;
+	virtual int pageCount() const;
 
 protected:
 	/*!

@@ -148,7 +148,7 @@ FileList::FileList(QWidget *parent, int rows_per_page) :
 	connect(sel_buttons, SIGNAL(buttonClicked(int)), SLOT(checkButton(int)));
 }
 
-void FileList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
+void FileList::addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int id_btn)
 {
 	QFont font = bt_global::font->get(FontManager::TEXT);
 
@@ -196,7 +196,7 @@ void FileList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id
 		box->addSpacing(55);
 	}
 
-	layout->addWidget(boxWidget);
+	layout->addWidget(boxWidget, layout->rowCount(), 0);
 }
 
 void FileList::checkButton(int btn_id)
