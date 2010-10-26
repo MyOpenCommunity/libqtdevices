@@ -241,7 +241,6 @@ SlideshowSelector::SlideshowSelector() :
 	layout()->setContentsMargins(0, 5, 25, 10);
 
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
-	connect(this, SIGNAL(notifyExit()), SIGNAL(Closed()));
 	connect(this, SIGNAL(Closed()), SLOT(cleanUp()));
 	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(pgUp()));
 	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(pgDown()));
