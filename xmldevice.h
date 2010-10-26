@@ -33,6 +33,7 @@ typedef QHash<int, QVariant> XmlResponse;
 typedef QPair<int,QVariant> (*xmlHandler_ptr)(const QDomNode&);
 typedef QList<FilesystemEntry> FilesystemEntries;
 
+Q_DECLARE_METATYPE(XmlResponse);
 
 namespace XmlResponses
 {
@@ -74,6 +75,7 @@ Q_DECLARE_METATYPE(FilesystemEntries);
 class XmlDevice : public QObject
 {
 friend class TestXmlDevice;
+friend class XmlDeviceTester;
 
 Q_OBJECT
 public:

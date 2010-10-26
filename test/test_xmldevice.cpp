@@ -20,11 +20,9 @@
 #include "test_xmldevice.h"
 
 #include <QtTest>
-#include <QSignalSpy>
 
 #include "xmldevice.h"
-
-Q_DECLARE_METATYPE(XmlResponse)
+#include "xmldevice_tester.h"
 
 TestXmlDevice::TestXmlDevice() :
 	QObject(), dev(new XmlDevice)
@@ -126,21 +124,8 @@ void TestXmlDevice::testServerList()
 				 "	</Cmd>"
 				 "</OWNxml>");
 
-	QSignalSpy spy(dev, SIGNAL(responseReceived(XmlResponse)));
-	dev->handleData(data);
-
-	QCOMPARE(spy.count(), 1);
-
-	QList<QVariant> arguments = spy.takeFirst();
-
-	XmlResponse response = arguments.at(0).value<XmlResponse>();
-
-	QVERIFY(response.contains(XmlResponses::SERVER_LIST));
-
-	QStringList servers = response[XmlResponses::SERVER_LIST].toStringList();
-	QCOMPARE(servers.count(), 2);
-	for (int i = 0; i < servers.count(); ++i)
-		QCOMPARE(servers.at(i), QString("TestServer%1").arg(i + 1));
+	XmlDeviceTester t(dev, XmlResponses::SERVER_LIST);
+	t.check(data, QStringList() << "TestServer1" << "TestServer2");
 }
 
 void TestXmlDevice::testServerSelection()
@@ -166,19 +151,8 @@ void TestXmlDevice::testServerSelection()
 				 "	</Cmd>"
 				 "</OWNxml>");
 
-	QSignalSpy spy(dev, SIGNAL(responseReceived(XmlResponse)));
-	dev->handleData(data);
-
-	QCOMPARE(spy.count(), 1);
-
-	QList<QVariant> arguments = spy.takeFirst();
-
-	XmlResponse response = arguments.at(0).value<XmlResponse>();
-
-	QVERIFY(response.contains(XmlResponses::SERVER_SELECTION));
-
-	QString server = response[XmlResponses::SERVER_SELECTION].toString();
-	QCOMPARE(server, QString("TestServer"));
+	XmlDeviceTester t(dev, XmlResponses::SERVER_SELECTION);
+	t.check(data, QString("TestServer"));
 }
 
 void TestXmlDevice::testChdir()
@@ -204,19 +178,8 @@ void TestXmlDevice::testChdir()
 				 "	</Cmd>"
 				 "</OWNxml>");
 
-	QSignalSpy spy(dev, SIGNAL(responseReceived(XmlResponse)));
-	dev->handleData(data);
-
-	QCOMPARE(spy.count(), 1);
-
-	QList<QVariant> arguments = spy.takeFirst();
-
-	XmlResponse response = arguments.at(0).value<XmlResponse>();
-
-	QVERIFY(response.contains(XmlResponses::CHDIR));
-
-	bool status = response[XmlResponses::CHDIR].toBool();
-	QCOMPARE(status, true);
+	XmlDeviceTester t(dev, XmlResponses::CHDIR);
+	t.check(data, true);
 }
 
 void TestXmlDevice::testBrowseUpSuccess()
@@ -242,19 +205,8 @@ void TestXmlDevice::testBrowseUpSuccess()
 				 "	</Cmd>"
 				 "</OWNxml>");
 
-	QSignalSpy spy(dev, SIGNAL(responseReceived(XmlResponse)));
-	dev->handleData(data);
-
-	QCOMPARE(spy.count(), 1);
-
-	QList<QVariant> arguments = spy.takeFirst();
-
-	XmlResponse response = arguments.at(0).value<XmlResponse>();
-
-	QVERIFY(response.contains(XmlResponses::BROWSE_UP));
-
-	bool status = response[XmlResponses::BROWSE_UP].toBool();
-	QCOMPARE(status, true);
+	XmlDeviceTester t(dev, XmlResponses::BROWSE_UP);
+	t.check(data, true);
 }
 
 void TestXmlDevice::testBrowseUpFail()
@@ -280,19 +232,8 @@ void TestXmlDevice::testBrowseUpFail()
 				 "	</Cmd>"
 				 "</OWNxml>");
 
-	QSignalSpy spy(dev, SIGNAL(responseReceived(XmlResponse)));
-	dev->handleData(data);
-
-	QCOMPARE(spy.count(), 1);
-
-	QList<QVariant> arguments = spy.takeFirst();
-
-	XmlResponse response = arguments.at(0).value<XmlResponse>();
-
-	QVERIFY(response.contains(XmlResponses::BROWSE_UP));
-
-	bool status = response[XmlResponses::BROWSE_UP].toBool();
-	QCOMPARE(status, false);
+	XmlDeviceTester t(dev, XmlResponses::BROWSE_UP);
+	t.check(data, false);
 }
 
 void TestXmlDevice::testListItems()
@@ -329,35 +270,12 @@ void TestXmlDevice::testListItems()
 				 "	</Cmd>"
 				 "</OWNxml>");
 
-	QSignalSpy spy(dev, SIGNAL(responseReceived(XmlResponse)));
-	dev->handleData(data);
-
-	QCOMPARE(spy.count(), 1);
-
-	QList<QVariant> arguments = spy.takeFirst();
-
-	XmlResponse response = arguments.at(0).value<XmlResponse>();
-
-	QVERIFY(response.contains(XmlResponses::LIST_ITEMS));
-
-	FilesystemEntries entries = response[XmlResponses::LIST_ITEMS]
-										   .value<FilesystemEntries>();
-	QCOMPARE(entries.count(), 4);
-
-	for (int i = 0; i < entries.count(); ++i)
-	{
-		FilesystemEntry entry = entries.at(i);
-		if (i < 2)
-		{
-			QCOMPARE(entry.type, FilesystemEntry::DIRECTORY);
-			QCOMPARE(entry.name, QString("TestDirectory%1").arg(i + 1));
-		}
-		else
-		{
-			QCOMPARE(entry.type, FilesystemEntry::TRACK);
-			QCOMPARE(entry.name, QString("TestTrack%1").arg(i - 1));
-		}
-	}
+	XmlDeviceTester t(dev, XmlResponses::LIST_ITEMS);
+	t.check(data, FilesystemEntries() <<
+				  FilesystemEntry("TestDirectory1", FilesystemEntry::DIRECTORY) <<
+				  FilesystemEntry("TestDirectory2", FilesystemEntry::DIRECTORY) <<
+				  FilesystemEntry("TestTrack1", FilesystemEntry::TRACK) <<
+				  FilesystemEntry("TestTrack2", FilesystemEntry::TRACK));
 }
 
 void TestXmlDevice::testBuildCommand()

@@ -24,7 +24,8 @@ LIBS+= -L ../../common_files/lib/x86 -lcommon -lssl
 
 VPATH = ..
 
-HEADERS += test_bttime.h \
+HEADERS += xmldevice_tester.h \
+	test_bttime.h \
 	test_imageselection.h \
 	test_scenevodevicescond.h \
 	test_xmlclient.h \
@@ -48,7 +49,8 @@ HEADERS += test_bttime.h \
 	../xmlclient.h \
 	../xmldevice.h
 
-SOURCES += test_main.cpp \
+SOURCES += xmldevice_tester.cpp \
+	test_main.cpp \
 	test_bttime.cpp \
 	test_imageselection.cpp \
 	test_scenevodevicescond.cpp \
