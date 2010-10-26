@@ -142,6 +142,31 @@ inline bool operator ==(const TreeBrowser::EntryInfo &a, const TreeBrowser::Entr
 }
 
 
+/*!
+	\brief File system navigation for FileSelector
+ */
+class DirectoryTreeBrowser : public TreeBrowser
+{
+public:
+	DirectoryTreeBrowser();
+
+	virtual void setRootPath(const QStringList &root_path);
+	virtual QStringList getRootPath();
+	virtual void enterDirectory(const QString &name);
+	virtual void exitDirectory();
+	virtual void getFileUrl(const QString &file);
+	virtual void getAllFileUrls(const QStringList &files);
+	virtual void getFileList();
+	virtual bool isRoot();
+	virtual QString pathKey();
+
+private:
+	int level;
+	QDir current_dir;
+	QString root_path;
+};
+
+
 /**
  * \class Selector
  *
