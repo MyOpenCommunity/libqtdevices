@@ -216,8 +216,12 @@ void FileList::checkButton(int btn_id)
 
 
 SlideshowSelector::SlideshowSelector() :
-		FileSelector(4, "/"), handler(new ImageSelectionHandler(SLIDESHOW_FILENAME))
+	FileSelector(new DirectoryTreeBrowser),
+	handler(new ImageSelectionHandler(SLIDESHOW_FILENAME))
 {
+	connect(browser, SIGNAL(listReceived(QList<TreeBrowser::EntryInfo>)), SLOT(displayFiles(QList<TreeBrowser::EntryInfo>)));
+	connect(browser, SIGNAL(allUrlsReceived(QStringList)), SLOT(urlListReceived(QStringList)));
+
 	handler->setFileFilter(getFileFilter(IMAGE));
 
 	FileList *item_list = new FileList(0, 4);
@@ -228,8 +232,6 @@ SlideshowSelector::SlideshowSelector() :
 
 	NavigationBar *nav_bar = new NavigationBar("eject");
 
-	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
-		SLOT(unmounted(const QString &)));
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(unmount()));
 	browse_directory = bt_global::skin->getImage("browse_directory");
 	selbutton_off = bt_global::skin->getImage("unchecked");
@@ -253,84 +255,66 @@ SlideshowSelector::~SlideshowSelector()
 	delete handler;
 }
 
-void SlideshowSelector::nextItem()
-{
-	page_content->nextItem();
-}
-
-void SlideshowSelector::prevItem()
-{
-	page_content->prevItem();
-}
-
 void SlideshowSelector::cleanUp()
 {
 	saveFileList();
 }
 
-void SlideshowSelector::showPage()
+void SlideshowSelector::displayFiles(const QList<TreeBrowser::EntryInfo> &list)
 {
-	if (getRootPath().isEmpty())
-		emit Closed();
-	else
-		FileSelector::showPage();
-}
+	QList<TreeBrowser::EntryInfo> filtered = TreeBrowser::filterEntries(list, getFileFilter(IMAGE));
 
-void SlideshowSelector::showPageNoReload()
-{
-	if (getRootPath().isEmpty())
-		emit Closed();
-	else
-		Selector::showPage();
-}
+	// TODO better interface, maybe move clicked handling in subclass
+	setFiles(filtered);
 
-bool SlideshowSelector::browseFiles(const QDir &directory, QList<QFileInfo> &files)
-{
-	// Create fileslist from files
-	QList<QFileInfo> temp_files_list = directory.entryInfoList(getFileFilter(IMAGE));
-
-	if (temp_files_list.empty())
+	if (filtered.empty())
 	{
-		qDebug() << "[IMAGES] empty directory: " << directory.absolutePath();
-		return false;
+		qDebug() << "[IMAGES] empty directory";
+		browser->exitDirectory();
+		return;
 	}
 
-	files.clear();
+	QStringList names;
+	foreach (const TreeBrowser::EntryInfo &item, filtered)
+		names.append(item.name);
 
+	browser->getAllFileUrls(names);
+}
+
+void SlideshowSelector::urlListReceived(const QStringList &list)
+{
 	QList<ItemList::ItemInfo> names_list;
+	QList<TreeBrowser::EntryInfo> files = getFiles();
 
-	for (int i = 0; i < temp_files_list.size(); ++i)
+	for (int i = 0; i < files.size(); ++i)
 	{
-		const QFileInfo& f = temp_files_list.at(i);
-		if (f.fileName() == "." || f.fileName() == "..")
-			continue;
+		const TreeBrowser::EntryInfo& f = files.at(i);
 
 		QStringList icons;
 		icons << selbutton_on;
 		icons << selbutton_off;
 
 		QVariantMap metadata;
-		metadata.insert("selected", handler->isItemSelected(f.canonicalFilePath()));
+		metadata.insert("selected", handler->isItemSelected(list[i]));
 
-		if (f.isFile())
+		if (!f.is_directory)
 		{
 			metadata.insert("type", SlideshowSelector::FILE);
 		}
-		else if (f.isDir())
+		else
 		{
 			metadata.insert("type", SlideshowSelector::DIRECTORY);
 			icons << browse_directory;
 		}
 
-		ItemList::ItemInfo info(f.fileName(), f.canonicalFilePath(), icons, metadata);
+		ItemList::ItemInfo info(f.name, list[i], icons, metadata);
 		names_list.append(info);
-		files.append(f);
 	}
 
-	page_content->setList(names_list, displayedPage(directory));
+	page_content->setList(names_list, displayedPage(browser->pathKey()));
 	page_content->showList();
 
-	return true;
+	operationCompleted();
 }
 
 int SlideshowSelector::currentPage()
@@ -344,18 +328,6 @@ void SlideshowSelector::setSelection(const QString &path, bool selected)
 		handler->insertItem(path);
 	else
 		handler->removeItem(path);
-}
-
-void SlideshowSelector::unmounted(const QString &dir)
-{
-	if (dir == getRootPath() && isVisible())
-		emit Closed();
-	setRootPath("");
-}
-
-void SlideshowSelector::unmount()
-{
-	MountWatcher::getWatcher().unmount(getRootPath());
 }
 
 void SlideshowSelector::saveFileList()
