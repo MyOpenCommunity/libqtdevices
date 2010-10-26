@@ -80,7 +80,7 @@ MessageList::MessageList(QWidget *parent, int rows_per_page) :
 {
 }
 
-void MessageList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
+void MessageList::addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int id_btn)
 {
 	const QFont &font = bt_global::font->get(FontManager::TEXT);
 
@@ -110,7 +110,7 @@ void MessageList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int
 	box->addWidget(btn, 0, Qt::AlignRight);
 
 	buttons_group->addButton(btn, id_btn);
-	layout->addWidget(box_widget);
+	layout->addWidget(box_widget, layout->rowCount(), 0);
 }
 
 
