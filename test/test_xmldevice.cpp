@@ -367,7 +367,7 @@ void TestXmlDevice::testBuildCommand()
 				 "	<Hdr>\n"
 				 "		<MsgID>\n"
 				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>\n"
-				 "			<PID>0</PID>\n"
+				 "			<PID>1</PID>\n"
 				 "		</MsgID>\n"
 				 "		<Dst>\n"
 				 "			<IP>server_address</IP>\n"
@@ -382,6 +382,7 @@ void TestXmlDevice::testBuildCommand()
 				 "</OWNxml>\n");
 
 	dev->sid = "1EFC3E00-2066-6C13-55D2-81D7D7DB0E62";
+	dev->pid = "1";
 	dev->local_addr = "local_address";
 	dev->server_addr = "server_address";
 
@@ -397,7 +398,7 @@ void TestXmlDevice::testBuildCommandWithArg()
 				 "	<Hdr>\n"
 				 "		<MsgID>\n"
 				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>\n"
-				 "			<PID>0</PID>\n"
+				 "			<PID>1</PID>\n"
 				 "		</MsgID>\n"
 				 "		<Dst>\n"
 				 "			<IP>server_address</IP>\n"
@@ -414,6 +415,7 @@ void TestXmlDevice::testBuildCommandWithArg()
 				 "</OWNxml>\n");
 
 	dev->sid = "1EFC3E00-2066-6C13-55D2-81D7D7DB0E62";
+	dev->pid = "1";
 	dev->local_addr = "local_address";
 	dev->server_addr = "server_address";
 

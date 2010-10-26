@@ -231,7 +231,7 @@ QString XmlDevice::buildCommand(const QString &command, const QString &argument)
 		cmd = QString("\t\t<%1/>").arg(command);
 
 	return QString(command_template).arg(sid)
-									.arg(0)
+									.arg(pid)
 									.arg(server_addr)
 									.arg(local_addr)
 									.arg(cmd);
