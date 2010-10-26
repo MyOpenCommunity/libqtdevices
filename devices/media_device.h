@@ -32,16 +32,15 @@ class AmplifierDevice;
 class QTimer;
 
 
-/**
- * The device for the alarm clock when using the sound diffusion to reproduce
- * music from a source in multiple areas.
- */
+
+// The device for the alarm clock when using the sound diffusion to reproduce
+// music from a source in multiple areas.
 class AlarmSoundDiffDevice : public device
 {
 friend class TestAlarmSoundDiffDevice;
 Q_OBJECT
 public:
-	enum
+	enum Type
 	{
 		DIM_AMPLIFIER,
 		DIM_STATUS,
@@ -109,7 +108,7 @@ public:
 	/*!
 		\refdim{SourceDevice}
 	*/
-	enum
+	enum Type
 	{
 		DIM_STATUS = 12,
 		DIM_TRACK = 6,
@@ -228,7 +227,7 @@ public:
 	/*!
 		\refdim{RadioSourceDevice}
 	*/
-	enum
+	enum Type
 	{
 		DIM_FREQUENCY = 5,
 		DIM_RDS = 10,
@@ -327,7 +326,7 @@ public:
 	/*!
 		\refdim{VirtualSourceDevice}
 	*/
-	enum
+	enum Type
 	{
 		REQ_SOURCE_ON = 1,
 		REQ_SOURCE_OFF,
@@ -385,7 +384,7 @@ public:
 	/*!
 		\refdim{AmplifierDevice}
 	*/
-	enum
+	enum Type
 	{
 		DIM_STATUS = 12,
 		DIM_VOLUME = 1,
@@ -542,7 +541,7 @@ public:
 	/*!
 		\refdim{VirtualAmplifierDevice}
 	*/
-	enum
+	enum Type
 	{
 		REQ_AMPLI_ON = -2,
 		REQ_VOLUME_UP = 3,
@@ -698,7 +697,7 @@ public:
 	/*!
 		\refdim{PowerAmplifierDevice}
 	 */
-	enum
+	enum Type
 	{
 		DIM_TREBLE = 2,
 		DIM_BASS = 4,
@@ -789,7 +788,7 @@ public:
 	/*!
 		\refdim{AuxDevice}
 	 */
-	enum
+	enum Type
 	{
 		DIM_STATUS // the value doesn't matter
 	};

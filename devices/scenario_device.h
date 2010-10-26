@@ -69,7 +69,7 @@ public:
 		DIM_LOCK,
 	};
 
-	enum
+	enum ScenarioNumber
 	{
 		ALL_SCENARIOS = -1, /*!< All scenarios (dummy value, must be different from legal values) */
 	};

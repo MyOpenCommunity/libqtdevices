@@ -27,6 +27,10 @@
 #include <QMap>
 
 
+/*!
+	\ingroup Core
+	\brief Defines the standard levels of the brightness.
+*/
 enum BrightnessLevel
 {
 	BRIGHTNESS_OFF,
@@ -35,51 +39,132 @@ enum BrightnessLevel
 	BRIGHTNESS_HIGH
 };
 
+
+/*!
+	\ingroup Core
+	\brief The status of the display.
+*/
 enum DisplayStatus
 {
-	DISPLAY_OPERATIVE,
-	DISPLAY_FREEZED,
-	DISPLAY_SCREENSAVER,
-	DISPLAY_OFF
+	DISPLAY_OPERATIVE,    /*!< The normal status, when the user interact with the screen. */
+	DISPLAY_FREEZED,      /*!< The 'freeze' mode, when the touchscreen is disabled until a touch is performed. */
+	DISPLAY_SCREENSAVER,  /*!< During the screensaver. */
+	DISPLAY_OFF           /*!< The display is switch off. */
 };
 
-/*
- * This class is a global controller of the properties of display.
- */
+
+/*!
+	\ingroup Core
+	\brief The global controller of the properties of the display.
+
+	Controls the status of the display, setting the status using the setState() method or
+	retrieving it using the currentState() one.
+	Normally, the freezed status enter after a while that the screen is not touched,
+	but you can prevent this setting the forceOperativeMode(). The method
+	isForcedOperativeMode() can be used to know if the screen was forced.
+
+	There are also methods to set the level of the brightness, during the operative
+	state or one of the inative states, and methods to set or retrieve the current
+	screensaver type.
+	Finally, the method setDirectScreenAccess() can be used when an external
+	program has to write directly to the screen (to ensure that only one program
+	at a given time do that) while the methods isDirectScreenAccess() and the
+	signals directScreenAccessStarted(), directScreenAccessStopped() can be
+	used to know if any program had request the control of the screen.
+*/
 class DisplayControl : public QObject
 {
 Q_OBJECT
 friend class BtMain;
 public:
 	DisplayControl();
-	// Set the state of the display
+	/*!
+		\brief Set the state of the display
+	*/
 	void setState(DisplayStatus status);
+
+	/*!
+		\brief Retrieve the current state of the display.
+	*/
 	DisplayStatus currentState();
 
-	// Set the brightness to be used in operative mode. Valid values are from 1 (min) to 10 (max).
+	/*!
+		\brief Set the brightness to be used in operative mode.
+
+		Valid values are from 1 (min) to 10 (max).
+		\sa operativeBrightness()
+	*/
 	void setOperativeBrightness(int brightness);
+
+	/*!
+		\brief Retrieve the brightess used in the operative mode.
+		\sa setOperativeBrightness()
+	*/
 	int operativeBrightness();
 
-	// Methods to set the brightness used when the touchscreen is inactive (freezed or screensaver)
-	BrightnessLevel inactiveBrightness();
+	/*!
+		\brief Set the brightness used when the touchscreen is inactive (freezed or screensaver)
+		\sa inactiveBrightness()
+	*/
+
 	void setInactiveBrightness(BrightnessLevel level);
 
-	// Screensaver methods
+	/*!
+		\brief Retrieve the brightness used when the touchscreen is inactive.
+		\sa setInactiveBrightness()
+	*/
+	BrightnessLevel inactiveBrightness();
+
+	/*!
+		\brief Set the screensaver type.
+		\sa currentScreenSaver()
+	*/
 	void setScreenSaver(ScreenSaver::Type t);
+
+	/*!
+		\brief Retrieve the current screensaver type.
+		\sa setScreenSaver()
+	*/
 	ScreenSaver::Type currentScreenSaver();
 
-	// To force (or to remove the forcing) the display to run in the operative mode.
+	/*!
+		\brief Force the display (or remove the forcing) to run in the operative mode.
+		\sa DisplayStatus, isForcedOperativeMode()
+	*/
 	void forceOperativeMode(bool enable);
+
+	/*!
+		\brief Return true if the display is forced to run in the operative mode.
+		\sa forceOperativeMode(), DisplayStatus
+	*/
 	bool isForcedOperativeMode();
 
-	// Call to notify watchers that some program (mplayer, rsize, ...) is writing directly
-	// to the screen; typically there can only be one such program active at a given time
+	/*!
+		\brief Set that some process is writing directly to the screen.
+		This method is used to notify watchers that some process is writing
+		to the screen; typically there can only be one such program active at
+		a give time.
+		\sa isDirectScreenAccess(), directScreenAccessStarted(), directScreenAccessStopped()
+	*/
 	void setDirectScreenAccess(bool status);
+
+	/*!
+		\brief Return true if there is some program that is writing to the screen.
+		\sa directScreenAccessStarted(), directScreenAccessStopped(), setDirectScreenAccess()
+	*/
 	bool isDirectScreenAccess();
 
 signals:
-	// notify that some program (mplayer, rsize, ...) is writing directly to the screen
+	/*!
+		\brief Notifies that some program is writing directly to the screen.
+		\sa directScreenAccessStopped(), setDirectScreenAccess(), isDirectScreenAccess()
+	*/
 	void directScreenAccessStarted();
+
+	/*!
+		\brief Notifies that some program is not anymore writing directly to the screen.
+		\sa directScreenAccessStarted(), setDirectScreenAccess(), isDirectScreenAccess()
+	*/
 	void directScreenAccessStopped();
 
 private:

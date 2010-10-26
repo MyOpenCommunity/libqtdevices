@@ -111,10 +111,8 @@ signals:
 };
 
 
-/*!
-  \class bann4But
-  \brief This is a class that describes a banner with 4 buttons
-*/
+// Old and deprecated!
+// This is a class that describes a banner with 4 buttons
 class bann4But : public BannerOld
 {
 Q_OBJECT

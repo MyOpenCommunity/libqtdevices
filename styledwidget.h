@@ -24,8 +24,14 @@
 
 #include <QWidget>
 
-// according to Qt Style Sheets Reference, QWidget subclasses need
-// to reimplement paintEvent() in order for the style sheet to be applied
+
+/*!
+	\ingroup Core
+	\brief Ensure a correct visualizations of the style sheet.
+
+	According to Qt Style Sheets Reference, QWidget subclasses need to reimplement
+	paintEvent() in order for the style sheet to be applied
+*/
 class StyledWidget : public QWidget
 {
 public:

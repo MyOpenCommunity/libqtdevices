@@ -100,7 +100,6 @@ HEADERS += actuators.h \
 	antintrusion.h \
 	audiostatemachine.h \
 	automation.h \
-	aux.h \
 	bann1_button.h \
 	bann2_buttons.h \
 	bann3_buttons.h \
@@ -202,7 +201,6 @@ SOURCES += actuators.cpp \
 	bann_amplifiers.cpp \
 	antintrusion.cpp \
 	automation.cpp \
-	aux.cpp \
 	bann1_button.cpp \
 	bann2_buttons.cpp \
 	bann3_buttons.cpp \

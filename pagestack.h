@@ -29,8 +29,13 @@ class Page;
 class Window;
 
 
-// manages the stack of pages/window active on the screen and decides which
-// is the next window/page to be shown when the top page is closed/destroyed
+/*!
+	\ingroup Core
+	\brief Manages the stack of pages/window active on the screen.
+
+	Decides also which is the next window/page to be shown when the top page
+	is closed/destroyed.
+*/
 class PageStack : public QObject
 {
 	struct State

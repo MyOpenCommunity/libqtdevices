@@ -83,7 +83,7 @@ private:
 
 /*!
 	\ingroup ThermalRegulation
-	\brief Naviagtion bar with an OK button on the right and a "back" button on the left (only for TS 3.5'')
+	\brief Navigation bar with an OK button on the right and a "back" button on the left (only for TS 3.5'')
  */
 class ThermalNavigation : public AbstractNavigationBar
 {

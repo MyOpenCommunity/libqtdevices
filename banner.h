@@ -44,15 +44,9 @@ class QLabel;
 
 
 /*!
- * \class banner
- * \brief This is an abstract class that describes the general banner that is the general command line of the devices on the system.
- *
- * This class gives the methods for describing a general object giving the possibility to instantiate differet kind of object,
- * set/get the activation state, open address, background and foreground colors, and so on.
- * This class gives also the base pattern for interaction giving the basig signals/slots related to the buttons, openframe gestion etc.
- *
- */
-
+	\brief A rectangular widget that can be used to present the status of a device,
+	to interact with the device and to navigate to other pages.
+*/
 class banner : public QWidget
 {
 friend class BannerContent;
@@ -60,48 +54,60 @@ Q_OBJECT
 public:
 	banner(QWidget *parent);
 	virtual ~banner() {}
-
-	// TODO: only the setId method should be part of the public interface of the
-	// banner. The others following methods are only for compatibility. Remove
-	// them asap!
 	/*!
-	 *  \brief Sets the Id of the object controlled by the banner.
-	 */
+		\brief Sets the Id of the object controlled by the banner.
+		\warning Do not use in new code, this method will be removed.
+	*/
 	void setId(int);
 
 	/*!
-	 *  \brief Retrieves the Id of the object controlled by the banner.
-	 */
+		\brief Retrieves the Id of the object controlled by the banner.
+		\warning Do not use in new code, this method will be removed.
+	*/
 	int getId();
 
 	/*!
-	 *  \brief Sets the serial number of the banner.
-	 *
-	 *  The \a serial \a number is the progressive number among the total amount of similar banners present in the same subtree.
-	 *  It is quite usefull to discriminate, for instance, between different \a wide \a awake in the setting subtree
-	 */
+		\brief Sets the serial number of the banner.
+		\warning Do not use in new code, this method will be removed.
+	*/
 	virtual void setSerNum(int);
 
 	/*!
-	 *  \brief Retrieves the serial number of the banner.
-	 *
-	 *  The \a serial \a number is the progressive number among the total amount of similar banners present in the same subtree.
-	 *  It is quite usefull to discriminate, for instance, between different \a wide \a awake in the setting subtree
-	 */
+		\brief Retrieves the serial number of the banner.
+		\warning Do not use in new code, this method will be removed.
+	*/
 	int getSerNum();
 
+	/*!
+		\brief Set the clients used to send frames.
+	*/
 	static void setClients(Client *command, Client *request);
+
+	/*!
+		\brief Init the banner.
+		\warning The method should not be used, if you use a device, initialize it instead.
+	*/
 	virtual void inizializza(bool forza=false) {}
+
+	/*!
+		\brief Draw the content of the banner.
+		\warning Do not use in new code, this method will be removed.
+	*/
 	virtual void Draw() {}
+	/*!
+		\brief Set the text of the banner.
+		\warning Do not use in new code, this method will be removed.
+	*/
 	virtual void setText(const QString &) {}
-	virtual BtButton *customButton() { return 0; }
 
 public slots:
 	void connectionUp();
 	void connectionDown();
 
 signals:
-	/// Emitted when any of the linked pages is closed
+	/*!
+		\brief Emitted when any of the linked pages is closed.
+	*/
 	void pageClosed();
 
 protected slots:

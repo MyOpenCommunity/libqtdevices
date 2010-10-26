@@ -65,7 +65,6 @@ private:
 /********************* Specific class device children classes **********************/
 
 
-//! Doorphone device
 class doorphone_device : public DeviceOld
 {
 Q_OBJECT
@@ -74,7 +73,6 @@ public:
 	doorphone_device(QString, bool p=false, int g=-1);
 };
 
-//! ??
 class impanti_device : public DeviceOld
 {
 Q_OBJECT
@@ -83,7 +81,6 @@ public:
 	impanti_device(QString, bool p=false, int g=-1);
 };
 
-//! ??
 class zonanti_device : public DeviceOld
 {
 Q_OBJECT

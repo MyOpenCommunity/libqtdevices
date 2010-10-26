@@ -28,6 +28,10 @@
 class NavigationBar;
 
 
+/*!
+	\ingroup Core
+	\brief A generic page that has as the content an ItemList.
+*/
 class ItemListPage : public Page
 {
 Q_OBJECT

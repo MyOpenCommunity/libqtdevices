@@ -71,7 +71,7 @@ public:
 	/*!
 		\refdim{LoadsDevice}
 	*/
-	enum
+	enum Type
 	{
 		DIM_ENABLED,
 		DIM_FORCED,

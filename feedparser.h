@@ -28,10 +28,8 @@
 #include <qdatetime.h>
 #include <QList>
 
-/**
- * Holds relevant information for a single Item in a feed.
- * Some fields may be null strings.
- */
+// Holds relevant information for a single Item in a feed.
+// Some fields may be null strings.
 struct FeedItemInfo
 {
 	QString title;
@@ -41,16 +39,14 @@ struct FeedItemInfo
 };
 
 
-/**
- * Holds only relevant information about the feed.
- */
+// Holds only relevant information about the feed.
 struct FeedData
 {
-	/// Title of the feed
+	// Title of the feed
 	QString feed_title;
-	/// Last update time of the whole feed
+	// Last update time of the whole feed
 	QString feed_last_updated;
-	/// List of feed items
+	// List of feed items
 	QList<FeedItemInfo> entry_list;
 };
 

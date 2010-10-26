@@ -35,16 +35,22 @@ namespace DevicesCachePrivate
 }
 
 
+/*!
+	\ingroup Core
+	\brief The type of the initialization to be performed for the device.
+*/
 enum DevicesCacheInitType
 {
-	INIT,
-	NO_INIT
+	INIT,      /*!< The standard initialization. */
+	NO_INIT    /*!< Do not perform the initialization. */
 };
 
-/**
- * This class describes a cache that must be used for all the devices of the
- * application, to avoid wasting memory and ensure the proper initialization.
- */
+
+/*!
+	\ingroup Core
+	\brief Describes a cache for the devices.
+	\warning Do not use this class directly, instead use the add_device_to_cache() function.
+*/
 class DevicesCache
 {
 template<class T> friend T* DevicesCachePrivate::add_device_to_cache(T *device, DevicesCache &cache);
@@ -101,12 +107,21 @@ namespace bt_global
 	// The global declaration of devices_cache instance
 	extern DevicesCache devices_cache;
 
-	// Add an already created device to cache. The key is obtained using the methos
-	// get_key of the device, and usually is composed by openserver_id-who#where*className.
-	// Device added with the second parameters as NO_INIT we are not initialized
-	// through the init method.
-	// NOTE: be aware that the device argument can be destroyed if the device for
-	// the key already exists.
+	/*!
+		\ingroup Core
+		\brief Add an already created device to cache.
+
+		All the devices should be used this function, to avoid wasting memory and
+		to ensure the proper initialization. The key for the cache is obtained
+		using the method device::get_key()  and usually is composed by:
+		\code
+		openserver_id-who#where*class_name
+		\endcode
+		Devices added with second parameter as DevicesCacheInitType::NO_INIT
+		are not initialized through the device::init() method.
+		\warning be aware that the \a device argument can be destroyed if the device
+		for the key already exists.
+	*/
 	template<class T> T* add_device_to_cache(T *device, DevicesCacheInitType init = INIT)
 	{
 		using DevicesCachePrivate::add_device_to_cache;

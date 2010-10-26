@@ -43,14 +43,14 @@ class QWidget;
 class AlarmList;
 class QDateTime;
 
-
 /*!
-  \class Antintrusion
-  \brief This is a class that contains the alarm-plant, the zone's list and the alarm queue.
-  The plant is always kept on the top, the zones in the remaining lines. Alarm queue is active
-  only when there's some alarm pending (and it's possible from \a antintrusione object to access
-to \a alarm \a queue one though a button). When there's an alarm the alarm queue becomes automatically visible
+	\defgroup Antintrusion Antintrusion
+
+	Allows the user to control the anti-intrusion system, enabling or disabling
+	the alarm, partializing or insert the zones and show the alarms history.
 */
+
+// The old antintrusion class
 class Antintrusion : public BannerPage, FrameReceiver
 {
 Q_OBJECT
@@ -149,9 +149,7 @@ private slots:
 };
 
 
-/**
- * The content of the AlarmList page.
- */
+// The content of the AlarmList page.
 class AlarmItems : public ScrollableContent
 {
 Q_OBJECT
@@ -177,9 +175,7 @@ private:
 };
 
 
-/**
- * The page that shows the list of the alarms received.
- */
+// The page that shows the list of the alarms received.
 class AlarmList : public Page
 {
 Q_OBJECT
