@@ -31,11 +31,14 @@ class QString;
 class SingleChoiceContent;
 class CheckableBanner;
 
-/*
- * This abstract class is designed to provide a list of bannOnDx. Each of them
- * contains a toggle button that can be toggle in exclusive mode with the other
- * buttons.
- */
+
+/*!
+	\ingroup Core
+	\brief Manages a list of CheckableBanner.
+
+	This class manages a list of banners, each of them contains a toggle button
+	that can be toggle in exclusive mode, like a group of radio buttons.
+*/
 class SingleChoicePage : public BannerPage
 {
 Q_OBJECT
@@ -63,7 +66,9 @@ protected:
 };
 
 
-
+/*!
+	\brief A banner with a single on/off button on the left.
+*/
 class CheckableBanner : public Bann2StateButtons
 {
 public:

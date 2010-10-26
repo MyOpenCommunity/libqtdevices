@@ -42,7 +42,7 @@ private:
 };
 
 
-/**
+/*
  * This class contains an item like with two buttons (like a banner, but
  * without a fixed width) for tuning.
  */

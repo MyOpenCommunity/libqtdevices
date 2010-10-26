@@ -32,10 +32,9 @@ class AmplifierDevice;
 class QTimer;
 
 
-/**
- * The device for the alarm clock when using the sound diffusion to reproduce
- * music from a source in multiple areas.
- */
+
+// The device for the alarm clock when using the sound diffusion to reproduce
+// music from a source in multiple areas.
 class AlarmSoundDiffDevice : public device
 {
 friend class TestAlarmSoundDiffDevice;

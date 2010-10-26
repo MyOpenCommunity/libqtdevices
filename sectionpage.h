@@ -28,11 +28,10 @@
 class QDomNode;
 
 
-/**
- * \class SectionPage
- *
- * A subclass of IconPage that can be used to collect sections
- */
+/*!
+	\ingroup Core
+	\brief A base class for section pages.
+*/
 class SectionPage : public IconPage
 {
 Q_OBJECT

@@ -25,8 +25,12 @@
 class banner;
 class QDomNode;
 
-// The factory method that build the banner identified by the configuration node,
-// 0 if it can't build the banner
+/*!
+	\ingroup Core
+	\brief The factory method that builds the banner identified by the configuration node.
+
+	Returns 0 if it can't build the banner.
+*/
 banner *getBanner(const QDomNode &config_node);
 
 #endif // BANNERFACTORY_H

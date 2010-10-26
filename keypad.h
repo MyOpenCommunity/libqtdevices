@@ -29,9 +29,9 @@ class QLabel;
 class QGridLayout;
 
 /*!
-  \class Keypad
-  \brief This class is the implementation of a keypad intended for password inserting.
-
+	\ingroup Core
+	\ingroup Settings
+	\brief A numeric keypad intended for password inserting.
 */
 class Keypad : public Page
 {
@@ -39,24 +39,28 @@ Q_OBJECT
 public:
 	Keypad(bool back_button = true);
 
-/*! \enum Type
-  differentiate between encripted and clean mode
-*/
+	/*!
+		\brief Differentiate between encrypted and clean mode.
+	*/
 	enum Type
 	{
-		HIDDEN = 0,  /*!< When the code is composed the only a \a * is shown for each digit on the display */
-		CLEAN  /*!< When the code is composed the digits are shown on the display*/
+		HIDDEN = 0,  /*!< Do not show the digits inserted. */
+		CLEAN        /*!< Show the digits inserted. */
 	};
 
-/*!
-  \brief Selects the mode of operation (encripted or not).
-*/
+	/*!
+		\brief Selects the mode of operation (encrypted or not).
+	*/
 	void setMode(Type t);
 
-	/// Return the text inserted in the virtual Keyboard
+	/*!
+		\brief Return the text inserted in the virtual keypad.
+	*/
 	QString getText();
 
-	/// A function to reset the text inserted by virtual Keyboard.
+	/*!
+		\brief Reset the text inserted by virtual keypad.
+	*/
 	void resetText();
 
 	void showWrongPassword(bool is_visible);
@@ -89,7 +93,7 @@ signals:
 };
 
 
-//! Normal keyboard with a line containing 8 disabled buttons representing 8 status bits
+// Normal keyboard with a line containing 8 disabled buttons representing 8 status bits
 class KeypadWithState : public Keypad
 {
 Q_OBJECT

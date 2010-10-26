@@ -34,13 +34,9 @@ class QDomNode;
 
 
 /*!
-  \class HomePage
-  \brief This is the class used to implement the main page from which access to all
-  the subtree of the various bticino functions.
-
-  It can be composed of a date field, a time field, up to three temperatures, a number of BtButton and a special command. 
+	\ingroup Core
+	\brief The home page of both touchscreens.
 */
-
 class HomePage : public SectionPage
 {
 Q_OBJECT

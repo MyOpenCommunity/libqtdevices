@@ -32,7 +32,7 @@
 
 class frame_interpreter;
 
-//! Openwebnet where
+// Openwebnet where
 class openwebnet_where : private QString
 {
 private:
@@ -59,7 +59,7 @@ public:
 };
 
 
-//! Extended openwebnet class, adds some useful methods to base openwebnet
+// Extended openwebnet class, adds some useful methods to base openwebnet
 class openwebnet_ext : public openwebnet
 {
 public:
@@ -90,7 +90,7 @@ struct deferred_list_element {
 	device_status *ds;
 };
 
-//! Generic frame interpreter
+// Generic frame interpreter
 class frame_interpreter : public QObject {
 Q_OBJECT
 protected:
@@ -157,7 +157,7 @@ public slots:
 };
 
 
-//! Doorphone device frame interpreter
+// Doorphone device frame interpreter
 class frame_interpreter_doorphone_device : public frame_interpreter
 {
 Q_OBJECT
@@ -178,7 +178,7 @@ public slots:
 	virtual void handle_frame_handler(char *, QList<device_status*>);
 };
 
-//! Anti-intrusion system device frame interpreter
+// Anti-intrusion system device frame interpreter
 class frame_interpreter_impanti_device : public frame_interpreter
 {
 Q_OBJECT
@@ -197,7 +197,7 @@ public slots:
 	virtual void handle_frame_handler(char *, QList<device_status*>);
 };
 
-//! Anti-intrusion system device frame interpreter (single area)
+// Anti-intrusion system device frame interpreter (single area)
 class frame_interpreter_zonanti_device : public frame_interpreter
 {
 Q_OBJECT

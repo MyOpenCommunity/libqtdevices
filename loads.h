@@ -27,11 +27,7 @@
 
 class QDomNode;
 
-/*!
- * \class bannLoads
- * \brief This class is made to force an appliance.
- *
- */
+
 class bannLoads : public bannOnSx
 {
 Q_OBJECT

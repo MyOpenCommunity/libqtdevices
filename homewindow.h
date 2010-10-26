@@ -35,11 +35,10 @@ class Page;
 class BtButton;
 
 
-/**
- * This class manages the buttons placed on the top of the window, near the
- * logo. Buttons of these types have a global role, no matter what is the
- * current page/window.
- */
+/*!
+	\ingroup Core
+	\brief Manages the icons placed on the top of the window.
+*/
 class TrayBar : public QWidget
 {
 Q_OBJECT
@@ -61,8 +60,10 @@ private:
 };
 
 
-// controls the layout of "normal" pages; contains the stack of pages and the
-// header and favorites widgets
+/*!
+	\ingroup Core
+	\brief Contains and controls the stack of the pages, favourites and header widgets.
+*/
 class HomeWindow : public Window
 {
 Q_OBJECT

@@ -32,9 +32,7 @@ class Page;
 class WindowContainer;
 
 
-/**
- * This is the base (abstract) class for all transition widget.
- */
+// The base (abstract) class for all transition widget.
 class TransitionWidget : public QWidget
 {
 Q_OBJECT
@@ -71,9 +69,7 @@ private:
 };
 
 
-/**
- * Do a blend transition between two widgets
- */
+// Do a blend transition between two widgets
 class BlendingTransition : public TransitionWidget
 {
 Q_OBJECT
@@ -92,9 +88,7 @@ private:
 };
 
 
-/**
- * Do a mosaic transition between two widgets
- */
+// Do a mosaic transition between two widgets
 class MosaicTransition : public TransitionWidget
 {
 Q_OBJECT
