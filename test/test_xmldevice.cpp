@@ -95,7 +95,7 @@ void TestXmlDevice::testWelcome()
 
 	XmlResponse response = arguments.at(0).value<XmlResponse>();
 
-	QVERIFY(response.contains(XmlDevice::RESP_WELCOME));
+	QVERIFY(response.contains(XmlResponses::WELCOME));
 }
 
 void TestXmlDevice::testServerList()
@@ -135,9 +135,9 @@ void TestXmlDevice::testServerList()
 
 	XmlResponse response = arguments.at(0).value<XmlResponse>();
 
-	QVERIFY(response.contains(XmlDevice::RESP_SERVERLIST));
+	QVERIFY(response.contains(XmlResponses::SERVER_LIST));
 
-	QStringList servers = response[XmlDevice::RESP_SERVERLIST].toStringList();
+	QStringList servers = response[XmlResponses::SERVER_LIST].toStringList();
 	QCOMPARE(servers.count(), 2);
 	for (int i = 0; i < servers.count(); ++i)
 		QCOMPARE(servers.at(i), QString("TestServer%1").arg(i + 1));
@@ -175,9 +175,9 @@ void TestXmlDevice::testServerSelection()
 
 	XmlResponse response = arguments.at(0).value<XmlResponse>();
 
-	QVERIFY(response.contains(XmlDevice::RESP_SERVERSEL));
+	QVERIFY(response.contains(XmlResponses::SERVER_SELECTION));
 
-	QString server = response[XmlDevice::RESP_SERVERSEL].toString();
+	QString server = response[XmlResponses::SERVER_SELECTION].toString();
 	QCOMPARE(server, QString("TestServer"));
 }
 
@@ -213,9 +213,9 @@ void TestXmlDevice::testChdir()
 
 	XmlResponse response = arguments.at(0).value<XmlResponse>();
 
-	QVERIFY(response.contains(XmlDevice::RESP_CHDIR));
+	QVERIFY(response.contains(XmlResponses::CHDIR));
 
-	bool status = response[XmlDevice::RESP_CHDIR].toBool();
+	bool status = response[XmlResponses::CHDIR].toBool();
 	QCOMPARE(status, true);
 }
 
@@ -251,9 +251,9 @@ void TestXmlDevice::testBrowseUpSuccess()
 
 	XmlResponse response = arguments.at(0).value<XmlResponse>();
 
-	QVERIFY(response.contains(XmlDevice::RESP_BROWSEUP));
+	QVERIFY(response.contains(XmlResponses::BROWSE_UP));
 
-	bool status = response[XmlDevice::RESP_BROWSEUP].toBool();
+	bool status = response[XmlResponses::BROWSE_UP].toBool();
 	QCOMPARE(status, true);
 }
 
@@ -289,9 +289,9 @@ void TestXmlDevice::testBrowseUpFail()
 
 	XmlResponse response = arguments.at(0).value<XmlResponse>();
 
-	QVERIFY(response.contains(XmlDevice::RESP_BROWSEUP));
+	QVERIFY(response.contains(XmlResponses::BROWSE_UP));
 
-	bool status = response[XmlDevice::RESP_BROWSEUP].toBool();
+	bool status = response[XmlResponses::BROWSE_UP].toBool();
 	QCOMPARE(status, false);
 }
 
@@ -338,9 +338,9 @@ void TestXmlDevice::testListItems()
 
 	XmlResponse response = arguments.at(0).value<XmlResponse>();
 
-	QVERIFY(response.contains(XmlDevice::RESP_LISTITEMS));
+	QVERIFY(response.contains(XmlResponses::LIST_ITEMS));
 
-	XmlDevice::FilesystemEntries entries = response[XmlDevice::RESP_LISTITEMS]
+	XmlDevice::FilesystemEntries entries = response[XmlResponses::LIST_ITEMS]
 										   .value<XmlDevice::FilesystemEntries>();
 	QCOMPARE(entries.count(), 4);
 

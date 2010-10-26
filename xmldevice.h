@@ -32,22 +32,27 @@ typedef QHash<int, QVariant> XmlResponse;
 typedef QPair<int,QVariant> (*xmlHandler_ptr)(const QDomNode&);
 
 
+namespace XmlResponses
+{
+	enum Type
+	{
+		INVALID = -1,
+		WELCOME,
+		SERVER_LIST,
+		SERVER_SELECTION,
+		CHDIR,
+		BROWSE_UP,
+		LIST_ITEMS,
+	};
+}
+
+
 class XmlDevice : public QObject
 {
 friend class TestXmlDevice;
 
 Q_OBJECT
 public:
-	enum Type
-	{
-		RESP_INVALID = -1,
-		RESP_WELCOME,
-		RESP_SERVERLIST,
-		RESP_SERVERSEL,
-		RESP_CHDIR,
-		RESP_BROWSEUP,
-		RESP_LISTITEMS,
-	};
 
 	enum FilesystemEntryType
 	{

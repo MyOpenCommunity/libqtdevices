@@ -55,7 +55,7 @@ namespace
 {
 	QPair<int,QVariant> handle_welcome_message(const QDomNode &node)
 	{
-		return qMakePair<int,QVariant>(XmlDevice::RESP_WELCOME, QVariant());
+		return qMakePair<int,QVariant>(XmlResponses::WELCOME, QVariant());
 	}
 
 	QPair<int,QVariant> handle_upnp_server_list(const QDomNode &node)
@@ -65,7 +65,7 @@ namespace
 		for (uint i = 0; i < servers.length(); ++i)
 			value.append(getTextChild(servers.item(i), "name"));
 
-		return qMakePair<int,QVariant>(XmlDevice::RESP_SERVERLIST, value);
+		return qMakePair<int,QVariant>(XmlResponses::SERVER_LIST, value);
 	}
 
 	QPair<int,QVariant> handle_selection(const QDomNode &node)
@@ -77,12 +77,12 @@ namespace
 
 		if (tag_name == "current_server")
 		{
-			key = XmlDevice::RESP_SERVERSEL;
+			key = XmlResponses::SERVER_SELECTION;
 			value = getTextChild(node, "current_server");
 		}
 		else if (tag_name == "status_browse")
 		{
-			key = XmlDevice::RESP_CHDIR;
+			key = XmlResponses::CHDIR;
 			value = getTextChild(node, "status_browse") == "browse_ok";
 		}
 
@@ -93,7 +93,7 @@ namespace
 	{
 		bool value = getTextChild(node, "status_browse") == "browse_ok";
 
-		return qMakePair<int,QVariant>(XmlDevice::RESP_BROWSEUP, value);
+		return qMakePair<int,QVariant>(XmlResponses::BROWSE_UP, value);
 	}
 
 	QPair<int,QVariant> handle_listitems(const QDomNode &node)
@@ -120,7 +120,7 @@ namespace
 		QVariant value;
 		value.setValue(entries);
 
-		return qMakePair<int,QVariant>(XmlDevice::RESP_LISTITEMS, value);
+		return qMakePair<int,QVariant>(XmlResponses::LIST_ITEMS, value);
 	}
 }
 
@@ -193,7 +193,7 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 	if (xml_handlers.contains(command_name))
 	{
 		QPair<int, QVariant> result = xml_handlers[command_name](command);
-		if (result.first != XmlDevice::RESP_INVALID)
+		if (result.first != XmlResponses::INVALID)
 			response[result.first] = result.second;
 	}
 
