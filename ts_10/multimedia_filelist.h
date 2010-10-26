@@ -54,9 +54,6 @@ signals:
 	void displayVideos(QList<QString> images, unsigned element);
 	void playAudioFiles(QList<QString> images, unsigned element);
 
-protected:
-	virtual int currentPage();
-
 private:
 	static MultimediaFileType fileType(const QString &file);
 

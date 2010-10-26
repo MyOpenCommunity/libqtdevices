@@ -22,7 +22,7 @@
 #ifndef FILE_SELECTOR_H
 #define FILE_SELECTOR_H
 
-#include "page.h"
+#include "scrollablepage.h"
 
 #include <QDir>
 #include <QMap>
@@ -174,7 +174,7 @@ private:
 	Handling clicks on files and displaying file list is delegated to subclasses,
 	that must handle the TreeBrowser::listReceived() signal emitted by the TreeBrowser.
  */
-class FileSelector : public Page
+class FileSelector : public ScrollablePage
 {
 Q_OBJECT
 public:
@@ -195,8 +195,6 @@ signals:
 	void fileClicked(int item);
 
 protected:
-	virtual int currentPage() = 0;
-
 	void setRootPath(const QString &start_path);
 	QString getRootPath();
 
