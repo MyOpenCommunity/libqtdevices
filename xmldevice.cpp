@@ -211,6 +211,7 @@ bool XmlDevice::parseHeader(const QDomNode &header_node)
 	if (message_id.isNull())
 		return false;
 	sid = getTextChild(message_id, "SID");
+	pid = getTextChild(message_id, "PID");
 
 	QDomNode dest_address = getChildWithName(header_node, "Dst");
 	if (dest_address.isNull())

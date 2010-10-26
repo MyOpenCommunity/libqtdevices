@@ -39,7 +39,7 @@ void TestXmlDevice::testHeader()
 					"	<Hdr>"
 					"		<MsgID>"
 					"			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
-					"			<PID>0</PID>"
+					"			<PID>1</PID>"
 					"		</MsgID>"
 					"		<Dst>"
 					"			<IP>10.3.3.195</IP>"
@@ -58,6 +58,7 @@ void TestXmlDevice::testHeader()
 	dev->handleData(data);
 
 	QCOMPARE(dev->sid, QString("1EFC3E00-2066-6C13-55D2-81D7D7DB0E62"));
+	QCOMPARE(dev->pid, QString("1"));
 	QCOMPARE(dev->local_addr, QString("10.3.3.195"));
 	QCOMPARE(dev->server_addr, QString("192.168.1.110"));
 }

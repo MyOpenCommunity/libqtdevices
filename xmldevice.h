@@ -87,6 +87,7 @@ private:
 	QHash<QString, xmlHandler_ptr> xml_handlers;
 
 	QString sid;
+	QString pid;
 	QString local_addr;
 	QString server_addr;
 };
