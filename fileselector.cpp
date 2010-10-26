@@ -61,6 +61,7 @@ QList<TreeBrowser::EntryInfo> TreeBrowser::filterEntries(const QList<TreeBrowser
 FileSelector::FileSelector(unsigned rows_per_page, QString start_path)
 {
 	setRootPath(start_path);
+	working = NULL;
 
 	current_dir.setSorting(QDir::DirsFirst | QDir::Name);
 	current_dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot | QDir::Readable);
@@ -235,4 +236,46 @@ QLabel *FileSelector::createWaitDialog()
 	qApp->processEvents();
 
 	return l;
+}
+
+void FileSelector::startOperation()
+{
+	Q_ASSERT_X(working == NULL, "FileSelector::startOperation", "Multiple operations in progress");
+
+	working = new FileSelectorWaitDialog(this, MEDIASERVER_MSEC_WAIT_TIME);
+
+	connect(this, SIGNAL(Closed()), working, SLOT(abort()));
+}
+
+void FileSelector::operationCompleted()
+{
+	working->waitForTimeout();
+	working = NULL;
+}
+
+
+FileSelectorWaitDialog::FileSelectorWaitDialog(Page *parent, int _timeout) :
+	QLabel(parent), timeout(_timeout)
+{
+	elapsed = startTimeCounter();
+
+	setProperty("Loading", true);
+	setGeometry(parent->geometry());
+
+	show();
+	qApp->processEvents();
+}
+
+void FileSelectorWaitDialog::waitForTimeout()
+{
+	waitTimeCounter(elapsed, timeout);
+
+	hide();
+	deleteLater();
+}
+
+void FileSelectorWaitDialog::abort()
+{
+	hide();
+	deleteLater();
 }
