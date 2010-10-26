@@ -116,8 +116,6 @@ void TestXmlDevice::testServerList()
 				 "		<AW26C1>"
 				 "			<server>"
 				 "				<name>TestServer1</name>"
-				 "			</server>"
-				 "			<server>"
 				 "				<name>TestServer2</name>"
 				 "			</server>"
 				 "		</AW26C1>"
