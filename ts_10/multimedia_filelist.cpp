@@ -72,7 +72,6 @@ MultimediaFileListPage::MultimediaFileListPage(const QStringList &filters) :
 
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(unmount()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
-	connect(this, SIGNAL(notifyExit()), SIGNAL(Closed()));
 	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(pgUp()));
 	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(pgDown()));
 	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
