@@ -61,9 +61,9 @@ namespace
 	QPair<int,QVariant> handle_upnp_server_list(const QDomNode &node)
 	{
 		QStringList value;
-		QDomNodeList servers = node.childNodes();
-		for (uint i = 0; i < servers.length(); ++i)
-			value.append(getTextChild(servers.item(i), "name"));
+		QList<QDomNode> servers = getChildren(node.childNodes().at(0), "name");
+		for (int i = 0; i < servers.length(); ++i)
+			value.append(servers.at(i).toElement().text());
 
 		return qMakePair<int,QVariant>(XmlResponses::SERVER_LIST, value);
 	}
