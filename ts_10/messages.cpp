@@ -224,8 +224,8 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 
 	title = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("delete_all"));
-	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
-	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(nextItem()));
+	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(pgUp()));
+	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(pgDown()));
 	connect(nav_bar, SIGNAL(forwardClick()), delete_page, SLOT(showPage()));
 
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(showMessage(int)));

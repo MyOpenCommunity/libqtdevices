@@ -50,8 +50,8 @@ FeedManager::FeedManager(const QDomNode &conf_node)
 
 	connect(&parser, SIGNAL(feedReady()), SLOT(feedReady()));
 
-	connect(nav_bar, SIGNAL(upClick()), feeds, SLOT(prevItem()));
-	connect(nav_bar, SIGNAL(downClick()), feeds, SLOT(nextItem()));
+	connect(nav_bar, SIGNAL(upClick()), feeds, SLOT(pgUp()));
+	connect(nav_bar, SIGNAL(downClick()), feeds, SLOT(pgDown()));
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
 	connect(feeds, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
@@ -134,8 +134,8 @@ FeedItemList::FeedItemList()
 	feed_item = new FeedItem();
 
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
-	connect(nav_bar, SIGNAL(upClick()), feed_items, SLOT(prevItem()));
-	connect(nav_bar, SIGNAL(downClick()), feed_items, SLOT(nextItem()));
+	connect(nav_bar, SIGNAL(upClick()), feed_items, SLOT(pgUp()));
+	connect(nav_bar, SIGNAL(downClick()), feed_items, SLOT(pgDown()));
 
 	connect(feed_items, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 	connect(feed_items, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
