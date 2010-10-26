@@ -147,7 +147,6 @@ HEADERS += actuators.h \
 	iconwindow.h \
 	imageselectionhandler.h \
 	itemlist.h \
-	itemlistpage.h \
 	items.h \
 	keypad.h \
 	labels.h \
@@ -251,7 +250,6 @@ SOURCES += actuators.cpp \
 	iconwindow.cpp \
 	imageselectionhandler.cpp \
 	itemlist.cpp \
-	itemlistpage.cpp \
 	items.cpp \
 	keypad.cpp \
 	labels.cpp \
