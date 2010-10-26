@@ -74,8 +74,6 @@ private:
 
 private slots:
 	void startPlayback(int item);
-	void unmount();
-	void unmounted(const QString &path);
 
 private:
 	// icons for different file type

@@ -210,6 +210,11 @@ public slots:
 	virtual void showPageNoReload();
 	virtual void browse(const QString &start_path);
 
+#ifdef BT_HARDWARE_TS_10
+	// only meaningful for physical file systems
+	void unmount();
+#endif
+
 signals:
 	void fileClicked(int item);
 
@@ -243,6 +248,11 @@ private:
 
 	QLabel *createWaitDialog();
 	void destroyWaitDialog(QLabel *l);
+
+private slots:
+#ifdef BT_HARDWARE_TS_10
+	void unmounted(const QString &dir);
+#endif
 
 private:
 	/// The handler of current directory

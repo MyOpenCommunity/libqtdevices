@@ -109,8 +109,6 @@ protected:
 
 private slots:
 	void setSelection(const QString &path, bool selected);
-	void unmount();
-	void unmounted(const QString &path);
 
 private:
 	void saveFileList();
