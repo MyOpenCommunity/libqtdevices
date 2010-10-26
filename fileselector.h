@@ -166,31 +166,6 @@ private:
 };
 
 
-/**
- * \class Selector
- *
- * Realize a common interface for all selector classes.
- *
- */
-// TODO remove?
-class Selector : public Page
-{
-Q_OBJECT
-public:
-	Selector() {}
-
-public slots:
-	virtual void nextItem() = 0;
-	virtual void prevItem() = 0;
-
-	virtual void itemIsClicked(int item) = 0;
-	virtual void browseUp() = 0;
-
-signals:
-	virtual void notifyExit();
-};
-
-
 /*!
 	\brief File navigation base class
 
@@ -199,7 +174,7 @@ signals:
 	Handling clicks on files and displaying file list is delegated to subclasses,
 	that must handle the TreeBrowser::listReceived() signal emitted by the TreeBrowser.
  */
-class FileSelector : public Selector
+class FileSelector : public Page
 {
 Q_OBJECT
 public:

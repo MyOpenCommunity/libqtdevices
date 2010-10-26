@@ -218,16 +218,6 @@ int MultimediaFileListPage::currentPage()
 	return page_content->getCurrentPage();
 }
 
-void MultimediaFileListPage::nextItem()
-{
-	page_content->nextItem();
-}
-
-void MultimediaFileListPage::prevItem()
-{
-	page_content->prevItem();
-}
-
 void MultimediaFileListPage::cleanUp()
 {
 	page_content->clear();
