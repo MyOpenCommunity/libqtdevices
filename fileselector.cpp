@@ -206,14 +206,14 @@ void FileSelector::showPage()
 	}
 	else if (files_list.size() == 0)
 	{
-		Selector::showPage();
+		Page::showPage();
 
 		// refresh directory information if the file list is empty
 		startOperation();
 		browser->getFileList();
 	}
 	else
-		Selector::showPage();
+		Page::showPage();
 }
 
 void FileSelector::itemIsClicked(int item)

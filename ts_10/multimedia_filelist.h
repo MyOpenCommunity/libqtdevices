@@ -49,10 +49,6 @@ public:
 
 	void cleanUp();
 
-public slots:
-	virtual void nextItem();
-	virtual void prevItem();
-
 signals:
 	void displayImages(QList<QString> images, unsigned element);
 	void displayVideos(QList<QString> images, unsigned element);

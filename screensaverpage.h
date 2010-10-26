@@ -97,8 +97,6 @@ public:
 	~SlideshowSelector();
 
 public slots:
-	virtual void nextItem();
-	virtual void prevItem();
 	virtual void cleanUp();
 
 protected:

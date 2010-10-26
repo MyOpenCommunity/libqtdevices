@@ -255,16 +255,6 @@ SlideshowSelector::~SlideshowSelector()
 	delete handler;
 }
 
-void SlideshowSelector::nextItem()
-{
-	page_content->nextItem();
-}
-
-void SlideshowSelector::prevItem()
-{
-	page_content->prevItem();
-}
-
 void SlideshowSelector::cleanUp()
 {
 	saveFileList();
