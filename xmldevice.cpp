@@ -98,21 +98,21 @@ namespace
 
 	QPair<int,QVariant> handle_listitems(const QDomNode &node)
 	{
-		XmlDevice::FilesystemEntries entries;
+		FilesystemEntries entries;
 		QDomNodeList nodes = node.childNodes();
 
 		for (int i = 0; i < nodes.size(); ++i)
 		{
 			QDomNode item = nodes.at(i);
-			XmlDevice::FilesystemEntry entry;
+			FilesystemEntry entry;
 			QDomElement element = item.toElement();
 
 			if (element.isNull())
 				continue;
 			if (element.tagName() == "directory")
-				entry.type = XmlDevice::DIRECTORY;
+				entry.type = FilesystemEntry::DIRECTORY;
 			else if (element.tagName() == "track")
-				entry.type = XmlDevice::TRACK;
+				entry.type = FilesystemEntry::TRACK;
 			entry.name = getTextChild(item, "name");
 
 			entries.append(entry);

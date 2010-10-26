@@ -340,21 +340,21 @@ void TestXmlDevice::testListItems()
 
 	QVERIFY(response.contains(XmlResponses::LIST_ITEMS));
 
-	XmlDevice::FilesystemEntries entries = response[XmlResponses::LIST_ITEMS]
-										   .value<XmlDevice::FilesystemEntries>();
+	FilesystemEntries entries = response[XmlResponses::LIST_ITEMS]
+										   .value<FilesystemEntries>();
 	QCOMPARE(entries.count(), 4);
 
 	for (int i = 0; i < entries.count(); ++i)
 	{
-		XmlDevice::FilesystemEntry entry = entries.at(i);
+		FilesystemEntry entry = entries.at(i);
 		if (i < 2)
 		{
-			QCOMPARE(entry.type, XmlDevice::DIRECTORY);
+			QCOMPARE(entry.type, FilesystemEntry::DIRECTORY);
 			QCOMPARE(entry.name, QString("TestDirectory%1").arg(i + 1));
 		}
 		else
 		{
-			QCOMPARE(entry.type, XmlDevice::TRACK);
+			QCOMPARE(entry.type, FilesystemEntry::TRACK);
 			QCOMPARE(entry.name, QString("TestTrack%1").arg(i - 1));
 		}
 	}

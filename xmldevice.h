@@ -27,9 +27,11 @@
 
 class QDomNode;
 class XmlClient;
+struct FilesystemEntry;
 
 typedef QHash<int, QVariant> XmlResponse;
 typedef QPair<int,QVariant> (*xmlHandler_ptr)(const QDomNode&);
+typedef QList<FilesystemEntry> FilesystemEntries;
 
 
 namespace XmlResponses
@@ -47,28 +49,26 @@ namespace XmlResponses
 }
 
 
+struct FilesystemEntry
+{
+	enum Type
+	{
+		DIRECTORY = 0,
+		TRACK
+	};
+
+	FilesystemEntry::Type type;
+	QString name;
+};
+Q_DECLARE_METATYPE(FilesystemEntries);
+
+
 class XmlDevice : public QObject
 {
 friend class TestXmlDevice;
 
 Q_OBJECT
 public:
-
-	enum FilesystemEntryType
-	{
-		DIRECTORY = 0,
-		TRACK
-	};
-
-	struct FilesystemEntry
-	{
-		FilesystemEntryType type;
-		QString name;
-	};
-
-	typedef QList<FilesystemEntry> FilesystemEntries;
-
-
 	XmlDevice();
 	~XmlDevice();
 
@@ -96,7 +96,5 @@ private:
 	QString local_addr;
 	QString server_addr;
 };
-
-Q_DECLARE_METATYPE(XmlDevice::FilesystemEntries);
 
 #endif // XMLDEVICE_H
