@@ -57,9 +57,17 @@ struct FilesystemEntry
 		TRACK
 	};
 
-	FilesystemEntry::Type type;
+	FilesystemEntry(const QString n, FilesystemEntry::Type t) : name(n), type(t) {}
+
 	QString name;
+	FilesystemEntry::Type type;
 };
+
+inline bool operator ==(const FilesystemEntry &a, const FilesystemEntry &b)
+{
+	return a.name == b.name && a.type == b.type;
+}
+
 Q_DECLARE_METATYPE(FilesystemEntries);
 
 

@@ -104,18 +104,18 @@ namespace
 		for (int i = 0; i < nodes.size(); ++i)
 		{
 			QDomNode item = nodes.at(i);
-			FilesystemEntry entry;
+			FilesystemEntry::Type type;
 			QDomElement element = item.toElement();
 
 			if (element.isNull())
 				continue;
-			if (element.tagName() == "directory")
-				entry.type = FilesystemEntry::DIRECTORY;
-			else if (element.tagName() == "track")
-				entry.type = FilesystemEntry::TRACK;
-			entry.name = getTextChild(item, "name");
 
-			entries.append(entry);
+			if (element.tagName() == "directory")
+				type = FilesystemEntry::DIRECTORY;
+			else if (element.tagName() == "track")
+				type = FilesystemEntry::TRACK;
+
+			entries.append(FilesystemEntry(getTextChild(item, "name"), type));
 		}
 		QVariant value;
 		value.setValue(entries);
