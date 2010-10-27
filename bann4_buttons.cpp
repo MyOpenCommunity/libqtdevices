@@ -152,6 +152,14 @@ void Bann4Buttons::initBanner(const QString &right, const QString &center_right,
 	initLabel(text, banner_text, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 }
 
+void Bann4Buttons::setCentralSpacing(bool spaced)
+{
+	QGridLayout *l = static_cast<QGridLayout*>(layout());
+
+	l->itemAtPosition(0, 1)->setAlignment(spaced ? Qt::AlignHCenter : Qt::AlignRight);
+	l->itemAtPosition(0, 2)->setAlignment(spaced? Qt::AlignHCenter : Qt::AlignLeft);
+}
+
 
 BannLevel::BannLevel(QWidget *parent) :
 	BannerNew(parent)

@@ -74,7 +74,13 @@ protected:
 	void initBanner(const QString &right, const QString &center_right, const QString &center_left,
 		const QString &left, const QString &banner_text);
 
+	/*!
+		\brief Squash together central buttons
+	 */
+	void setCentralSpacing(bool spaced);
+
 	BtButton *right_button, *center_right_button, *center_left_button, *left_button;
+
 private:
 	ScrollingLabel *text;
 };
@@ -83,6 +89,7 @@ private:
 /*
  * A class to control the rate of signals emitted
  */
+// TODO use Bann4Buttons as the base class
 class BannLevel : public BannerNew
 {
 Q_OBJECT
