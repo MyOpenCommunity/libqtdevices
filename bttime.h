@@ -28,90 +28,96 @@
 class QTime;
 
 
+/*!
+	\ingroup Core
+	\brief A replacement for the standard QTime that can have custom limits
+	for hours, minutes and seconds.
+*/
 class BtTime
 {
 friend class TestBtTime;
 public:
-	/**
-	 * Constructs a BtTime with given hour, minute and second. The default value for
-	 * max_minutes and max_seconds is 60, 24 for max_hours.
-	 */
+	/*!
+		\brief Constructs a BtTime with given hour, minutes and seconds.
+
+		The default value for max_minutes and max_seconds is 60, 24 for max_hours.
+	*/
 	BtTime(int h, int m, int s);
 
-	/**
-	 * Defaults to hour = 0, minute = 0, second = 0, max_hours = 24, max_minutes = 60, max_seconds = 60
-	 */
+	/*!
+		\brief Constructs a BtTime with hour, minutes and seconds equal to 0.
+
+		The default value for max_minutes and max_seconds is 60, 24 for max_hours.
+	*/
 	BtTime();
 
-	/**
-	 * Takes hour, minute and second out of t, max_hours, max_minutes and max_seconds are the default values.
-	 */
+	/*!
+		\brief Constructs a BtBtime taking hour, minutes and seconds from the given \a t.
+
+		The default value for max_minutes and max_seconds is 60, 24 for max_hours.
+	*/
 	BtTime(const QTime &t);
 
-	/**
-	 * Set the maximum value for hours. The range of values allowed are then [0..max_hours-1]
-	 * Default value is 24.
-	 * \param max The maximum number of hours allowed.
-	 */
+	/*!
+		\brief Set the maximum value for hours.
+
+		The range of values allowed are then [0..\a max-1]. Default value is 24.
+	*/
 	void setMaxHours(int max);
 
-	/**
-	 * Set the maximum value for minutes. The range of values allowed are [0..max_minutes-1]
-	 * Default value is 60.
-	 * \param max The maximum number of minutes allowed.
-	 */
+	/*!
+		\brief Set the maximum value for minutes.
+
+		The range of values allowed are [0..\a max-1]. Default value is 60.
+	*/
 	void setMaxMinutes(int max);
 
-	/**
-	 * Set the maximum value for seconds. The range of values allowed are [0..max_seconds-1]
-	 * Default value is 60.
-	 * \param max The maximum number of seconds allowed.
-	 */
+	/*!
+		\brief Set the maximum value for seconds.
+
+		The range of values allowed are [0..\a max-1]. Default value is 60.
+	*/
 	void setMaxSeconds(int max);
 
-	/**
-	 * Returns a representation of time of the form h:mm:ss.
-	 * \return A time in string format
-	 */
+	/*!
+		\brief Returns a representation of time of the form h:mm:ss.
+	*/
 	QString toString() const;
 
-	/**
+	/* TODO: it should allow to add an arbitrary number of seconds.
 	 * Adds or subtracts a second to the current time and returns a new BtTime instance.
 	 * \param second Must be either 1 or -1
 	 * \return A new BtTime that is one second earlier or later.
 	 */
 	BtTime addSecond(int second) const;
 
-	/**
+	/* TODO: it should allow to add an arbitrary number of minutes.
 	 * Adds or subtracts a minute to the current time and returns a new BtTime instance.
 	 * \param minute Must be either 1 or -1
 	 * \return A new BtTime that is one minute earlier or later.
 	 */
 	BtTime addMinute(int minute) const;
 
-	/**
+	/* TODO: it should allow to add an arbitrary number of hours.
 	 * Adds or subtracts a hour to the current time and returns a new BtTime instance.
 	 * \param hour Must be either 1 or -1
 	 * \return A new BtTime that is one hour earlier or later.
 	 */
 	BtTime addHour(int hour) const;
 
-	/**
-	 * Getter method for hours.
-	 * \return Current hour.
-	 */
+	/*!
+		\brief Return the hours.
+	*/
 	int hour() const;
 
-	/**
-	 * Getter method for minutes.
-	 * \return Current minute.
-	 */
+	/*!
+		\brief Return the minutes.
+	*/
 	int minute() const;
 
-	/**
-	 * Getter method for seconds.
-	 * \return Current second.
-	 */
+	/*!
+		\brief Return the seconds.
+	*/
 	int second() const;
 
 private:

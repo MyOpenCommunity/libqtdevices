@@ -35,7 +35,10 @@ class QTimerEvent;
 class ScenarioDevice;
 
 
-
+/*!
+	\ingroup Scenarios
+	\brief Activate a scenario.
+*/
 class BannSimpleScenario : public Bann2Buttons
 {
 Q_OBJECT
@@ -51,6 +54,15 @@ private:
 };
 
 
+/*!
+	\ingroup Scenarios
+	\brief Manages a module scenario.
+
+	A module scenario is a physical device that can be used to send a set
+	of frames, that represent the scenario, to other physical devices.
+	This set of frames is stored in the module scenario itself, and it can be
+	changed reprogramming the module scenario.
+*/
 class ScenarioModule : public Bann4ButtonsIcon
 {
 Q_OBJECT
@@ -121,6 +133,15 @@ private:
 };
 
 
+/*!
+	\ingroup Scenarios
+	\brief Manages a scenario programmer.
+
+	A scenario programmer is a physical device that can be used to send a set
+	of frames, that represent the scenario, to other physical devices.
+	Unlike the module scenario, the scenario programmer cannot be reprogrammed,
+	but you can enable/disable the scenario and manually start/stop.
+*/
 class ScheduledScenario : public Bann4Buttons
 {
 Q_OBJECT
@@ -138,6 +159,16 @@ private:
 };
 
 
+/*!
+	\ingroup Scenarios
+	\brief Represents a scenario plus.
+
+	With the scenario plus there isn't a physical device that stores the frames
+	(like the module scenario), instead every single devices have to manage
+	the scenario plus frames in order to perform the scenario.
+
+	\sa PPTSceDevice
+*/
 class PPTSce : public Bann4Buttons
 {
 Q_OBJECT

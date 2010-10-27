@@ -21,8 +21,8 @@
 
 #include "feedparser.h"
 
-#include <qurl.h>
-#include <qdom.h>
+#include <QUrl>
+#include <QDomNode>
 #include <QDebug>
 
 

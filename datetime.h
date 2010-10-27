@@ -32,13 +32,15 @@
 class QLabel;
 class QLCDNumber;
 
-/**
- * A widget that emulates QTimeEdit
- *
- * This widget allows the user to edit a time value in the day, ie. between
- * 0:00 and 23:59. The current time set can be retrieved with the time() function.
- * The default value for time is 0:00.
- */
+
+/*!
+	\ingroup Core
+	\brief Emulates a QTimeEdit using a BtTime.
+
+	This widget allows the user to edit a time value in the day, ie. between
+	0:00 and 23:59. The current time set can be retrieved with the time() function.
+	The default value for time is 0:00.
+*/
 class BtTimeEdit : public QWidget
 {
 Q_OBJECT
@@ -51,16 +53,34 @@ public:
 
 	BtTimeEdit(QWidget *parent, DisplayType type = DISPLAY_MINUTES);
 
+	/*!
+		\brief Set the \a time on the widget.
+	*/
 	void setTime(const BtTime& time);
 
-	/**
-	 * Returns the time set on the widget.
-	 */
+	/*!
+		\brief Returns the time set on the widget.
+	*/
 	BtTime time();
 
+	/*!
+		\brief Set the maximum number of hours
+		\sa BtTime::setMaxHours()
+	*/
 	void setMaxHours(int hours);
+
+	/*!
+		\brief Set the maximum number of minutes.
+		\sa BtTime::setMaxMinutes()
+	*/
 	void setMaxMinutes(int minutes);
-	void setMaxSeconds(int minutes);
+
+	/*!
+		\brief Set the maximum number of seconds.
+		\sa BtTime::setMaxSeconds()
+	*/
+	void setMaxSeconds(int seconds);
+
 private slots:
 	void incHours();
 	void decHours();
@@ -80,7 +100,7 @@ private:
 	DisplayType _display_type;
 };
 
-/**
+/*
  * A widget that emulates QDateEdit
  *
  * The current date set can be retrived with the function date().
@@ -150,5 +170,6 @@ private:
 	BtDateEdit *date_edit;
 	BtTimeEdit *time_edit;
 };
+
 #endif // DATETIME_H
 

@@ -36,8 +36,8 @@ class CheckableBanner;
 	\ingroup Core
 	\brief Manages a list of CheckableBanner.
 
-	This class manages a list of banners, each of them contains a toggle button
-	that can be toggle in exclusive mode, like a group of radio buttons.
+	This class manages a list of \ref banner%s, each of them contains a toggle 
+	button that can be toggle in exclusive mode, like a group of radio buttons.
 */
 class SingleChoicePage : public BannerPage
 {
@@ -67,7 +67,7 @@ protected:
 
 
 /*!
-	\brief A banner with a single on/off button on the left.
+	\brief A \ref banner with a single on/off button on the left.
 */
 class CheckableBanner : public Bann2StateButtons
 {
@@ -83,7 +83,10 @@ namespace SingleChoice
 	CheckableBanner *createBanner(const QString &text, const QString &right_icon=QString());
 }
 
-
+/*!
+	\ingroup Core
+	\brief The content of the SingleChoicePage.
+*/
 class SingleChoiceContent : public BannerContent
 {
 Q_OBJECT
