@@ -30,7 +30,7 @@ class XmlClient;
 struct FilesystemEntry;
 
 typedef QHash<int, QVariant> XmlResponse;
-typedef QPair<int,QVariant> (*xmlHandler_ptr)(const QDomNode&);
+typedef QHash<int,QVariant> (*xmlHandler_ptr)(const QDomNode&);
 typedef QList<FilesystemEntry> FilesystemEntries;
 
 Q_DECLARE_METATYPE(XmlResponse);

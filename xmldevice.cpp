@@ -53,67 +53,68 @@ const char *argument_template =
 
 namespace
 {
-	QPair<int,QVariant> handle_welcome_message(const QDomNode &node)
+	QHash<int,QVariant> handle_welcome_message(const QDomNode &node)
 	{
-		return qMakePair<int,QVariant>(XmlResponses::WELCOME, QVariant());
+		QHash<int,QVariant> result;
+		result[XmlResponses::WELCOME] =  QVariant();
+
+		return result;
 	}
 
-	QPair<int,QVariant> handle_upnp_server_list(const QDomNode &node)
+	QHash<int,QVariant> handle_upnp_server_list(const QDomNode &node)
 	{
+		QHash<int,QVariant> result;
 		QStringList value;
-		QList<QDomNode> servers = getChildren(node.childNodes().at(0), "name");
+
+		QList<QDomNode> servers = getChildren(getElement(node, "server"), "name");
 		for (int i = 0; i < servers.length(); ++i)
 			value.append(servers.at(i).toElement().text());
 
-		return qMakePair<int,QVariant>(XmlResponses::SERVER_LIST, value);
+		result[XmlResponses::SERVER_LIST] = value;
+
+		return result;
 	}
 
-	QPair<int,QVariant> handle_selection(const QDomNode &node)
+	QHash<int,QVariant> handle_selection(const QDomNode &node)
 	{
-		QDomElement element = node.childNodes().at(0).toElement();
-		QString tag_name = element.tagName();
-		int key = -1;
-		QVariant value;
+		QHash<int,QVariant> result;
+
+		if (node.childNodes().size() != 1)
+			return result;
+
+		QString tag_name = node.childNodes().at(0).toElement().tagName();
 
 		if (tag_name == "current_server")
-		{
-			key = XmlResponses::SERVER_SELECTION;
-			value = getTextChild(node, "current_server");
-		}
+			result[XmlResponses::SERVER_SELECTION] = getTextChild(node, "current_server");
 		else if (tag_name == "status_browse")
-		{
-			key = XmlResponses::CHDIR;
-			value = getTextChild(node, "status_browse") == "browse_ok";
-		}
+			result[XmlResponses::CHDIR] = getTextChild(node, "status_browse") == "browse_ok";
 		else if (tag_name == "DIDL-Lite")
-		{
-			key = XmlResponses::TRACK_SELECTION;
-			value = getElement(node, "DIDL-Lite/item/res").text();
-		}
+			result[XmlResponses::TRACK_SELECTION] = getElement(node, "DIDL-Lite/item/res").text();
 
-		return qMakePair<int,QVariant>(key, value);
+		return result;
 	}
 
-	QPair<int,QVariant> handle_browseup(const QDomNode &node)
+	QHash<int,QVariant> handle_browseup(const QDomNode &node)
 	{
-		bool value = getTextChild(node, "status_browse") == "browse_ok";
+		QHash<int,QVariant> result;
+		result[XmlResponses::BROWSE_UP] = getTextChild(node, "status_browse") == "browse_ok";
 
-		return qMakePair<int,QVariant>(XmlResponses::BROWSE_UP, value);
+		return result;
 	}
 
 	FilesystemEntries getFilesystemEntries(const QDomNode &node, FilesystemEntry::Type item_type)
 	{
 		FilesystemEntries entries;
 
-		QList<QDomNode> items = getChildren(node, "name");
-		foreach (const QDomNode &item, items)
+		foreach (const QDomNode &item, getChildren(node, "name"))
 			entries << FilesystemEntry(item.toElement().text(), item_type);
 
 		return entries;
 	}
 
-	QPair<int,QVariant> handle_listitems(const QDomNode &node)
+	QHash<int,QVariant> handle_listitems(const QDomNode &node)
 	{
+		QHash<int,QVariant> result;
 		FilesystemEntries entries;
 
 		entries << getFilesystemEntries(getChildWithName(node, "directories"), FilesystemEntry::DIRECTORY);
@@ -121,8 +122,9 @@ namespace
 
 		QVariant value;
 		value.setValue(entries);
+		result[XmlResponses::LIST_ITEMS] = value;
 
-		return qMakePair<int,QVariant>(XmlResponses::LIST_ITEMS, value);
+		return result;
 	}
 }
 
@@ -186,18 +188,14 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 		return response;
 
 	QDomNode command_container = getChildWithName(root, "Cmd");
-	if (command_container.isNull())
+	if (command_container.isNull() || command_container.childNodes().size() != 1)
 		return response;
 
 	QDomNode command = command_container.childNodes().at(0);
 	QString command_name = command.toElement().tagName();
 
 	if (xml_handlers.contains(command_name))
-	{
-		QPair<int, QVariant> result = xml_handlers[command_name](command);
-		if (result.first != XmlResponses::INVALID)
-			response[result.first] = result.second;
-	}
+		response = xml_handlers[command_name](command);
 
 	return response;
 }
