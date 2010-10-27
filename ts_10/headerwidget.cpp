@@ -55,23 +55,6 @@ enum
 };
 
 
-// base class for date/time display widgets
-class PollingDisplayWidget : public QLabel
-{
-public:
-	PollingDisplayWidget();
-	~PollingDisplayWidget();
-
-protected:
-	void timerEvent(QTimerEvent *e);
-	void paintEvent(QPaintEvent *e);
-
-	virtual void paintLabel(QPainter &painter) = 0;
-
-private:
-	int timer_id;
-};
-
 PollingDisplayWidget::PollingDisplayWidget()
 {
 	timer_id = startTimer(7000);
@@ -96,61 +79,31 @@ void PollingDisplayWidget::timerEvent(QTimerEvent *e)
 }
 
 
-// helper widget, display time for internal pages
-class TimeDisplay : public PollingDisplayWidget
-{
-public:
-	TimeDisplay();
-
-protected:
-	virtual void paintLabel(QPainter &painter);
-};
-
-TimeDisplay::TimeDisplay()
+InnerPageTimeDisplay::InnerPageTimeDisplay()
 {
 	setFont(bt_global::font->get(FontManager::TEXT));
 	setPixmap(bt_global::skin->getImage("clock_background"));
 }
 
-void TimeDisplay::paintLabel(QPainter &painter)
+void InnerPageTimeDisplay::paintLabel(QPainter &painter)
 {
 	painter.drawText(rect().adjusted(0, 0, -3, -3), Qt::AlignRight|Qt::AlignVCenter,
 			 QTime::currentTime().toString("hh:mm"));
 }
 
 
-// helper widget, display date for internal pages
-class DateDisplay : public PollingDisplayWidget
-{
-public:
-	DateDisplay();
-
-protected:
-	virtual void paintLabel(QPainter &painter);
-};
-
-DateDisplay::DateDisplay()
+InnerPageDateDisplay::InnerPageDateDisplay()
 {
 	setFont(bt_global::font->get(FontManager::TEXT));
 	setPixmap(bt_global::skin->getImage("date_background"));
 }
 
-void DateDisplay::paintLabel(QPainter &painter)
+void InnerPageDateDisplay::paintLabel(QPainter &painter)
 {
 	painter.drawText(rect().adjusted(0, 0, -3, -3), Qt::AlignRight|Qt::AlignVCenter,
 			 DateConversions::formatDateConfig(QDate::currentDate(), '/'));
 }
 
-
-// helper widget, displays time in the homepage
-class HomepageTimeDisplay : public PollingDisplayWidget
-{
-public:
-	HomepageTimeDisplay();
-
-protected:
-	virtual void paintLabel(QPainter &painter);
-};
 
 HomepageTimeDisplay::HomepageTimeDisplay()
 {
@@ -164,16 +117,6 @@ void HomepageTimeDisplay::paintLabel(QPainter &painter)
 			 QTime::currentTime().toString("hh:mm"));
 }
 
-
-// helper widget, displays date in the homepage
-class HomepageDateDisplay : public PollingDisplayWidget
-{
-public:
-	HomepageDateDisplay();
-
-protected:
-	virtual void paintLabel(QPainter &painter);
-};
 
 HomepageDateDisplay::HomepageDateDisplay()
 {
@@ -378,12 +321,12 @@ void HeaderLogo::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case ITEM_DATE:
-			date_display = new DateDisplay;
+			date_display = new InnerPageDateDisplay;
 
 			l->addWidget(date_display);
 			break;
 		case ITEM_TIME:
-			time_display = new TimeDisplay;
+			time_display = new InnerPageTimeDisplay;
 
 			l->addWidget(time_display);
 			break;
