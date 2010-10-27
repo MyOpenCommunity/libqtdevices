@@ -233,7 +233,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_link_icon>setup/password.png</img_link_icon>
 		<img_state_on>setup/pswlockon.png</img_state_on>
 		<img_state_off>setup/pswlockoff.png</img_state_off>
-		<img_edit>setup/psw.png</img_edit>
+		<img_edit>setup/pswmod.png</img_edit>
 	</item>
 	<!-- screen saver button -->
 	<item>
@@ -263,9 +263,9 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 	<!-- lan settings button -->
 	<item>
 		<cid>14008</cid>
-		<img_link_icon>setup/aggiungiimg.png</img_link_icon>
-		<img_network_enable>setup/buzzer.png</img_network_enable>
-		<img_network_disable>setup/canc.png</img_network_disable>
+		<img_link_icon>setup/ethernet.png</img_link_icon>
+		<img_network_enable>setup/ethon.png</img_network_enable>
+		<img_network_disable>setup/ethoff.png</img_network_disable>
 	</item>
 	<!-- videodoorentry settings button -->
 	<item>
@@ -391,6 +391,12 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/videocitofonia.png</img_top_navigation_button>
 	</item>
 	<item>
+                <!-- Videodoorentry IP section -->
+                <cid>19</cid>
+		<img_link_icon>home/videocitofonia.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/videocitofonia.png</img_top_navigation_button>
+	</item>
+	<item>
 		<!-- Multimedia section -->
 		<cid>16</cid>
 		<img_link_icon>home/contenutimultimediali.png</img_link_icon>
@@ -422,7 +428,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_goto_sounddiffusion>multimediale/godiffusion.png</img_goto_sounddiffusion>
 		<img_tray_player>home/plays.png</img_tray_player>
 	</item>
-	<!-- Videodoorentry icon page -->
+	<!-- Videodoorentry SCS icon page -->
 	<!-- videocontrol link -->
 	<item>
 		<cid>10001</cid>
@@ -450,10 +456,30 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<!-- Videodoorentry: Ringtone Exclusion -->
 	<item>
 		<cid>14253</cid>
-		<img_ringexclusion_on>setup/ethon.png</img_ringexclusion_on>
-		<img_ringexclusion_off>setup/ethoff.png</img_ringexclusion_off>
+		<img_ringexclusion_on>setup/esclusione_chiamata_ons.png</img_ringexclusion_on>
+		<img_ringexclusion_off>setup/esclusione_chiamata_offs.png</img_ringexclusion_off>
 		<img_tray_ringexclusion>home/btnesclusionechiamataon.png</img_tray_ringexclusion>
 	</item>
+
+
+        <!-- Videodoorentry IP icon page -->
+        <!-- videocontrol link -->
+        <item>
+                <cid>19001</cid>
+                <img_link_icon>videocitofonia/videocontrollo.png</img_link_icon>
+        </item>
+        <!-- intercom link -->
+        <item>
+                <cid>19002</cid>
+                <img_link_icon>videocitofonia/postiinterni.png</img_link_icon>
+        </item>
+          <!-- cdp link -->
+        <item>  
+                <cid>19004</cid>
+                <img_link_icon>videocitofonia/cdp.png</img_link_icon>
+        </item>
+
+
 	<!-- Multimedia page links -->
 	<item>
 		<cid>16000</cid>
@@ -501,30 +527,6 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_link_icon>multimediale/radiooverip.png</img_link_icon>
 		<img_ipradio_icon>multimediale/radiooveripmini.png</img_ipradio_icon>
 	</item>
-	<!-- air conditioning subsystem-->
-	<item>
-		<cid>4000</cid>
-		<img_central_icon>termoregolazione/airconditioning.png</img_central_icon>
-		<img_ok>termoregolazione/ok.png</img_ok>
-		<img_off>termoregolazione/off.png</img_off>
-		<img_air_general>termoregolazione/customairconditioning.png</img_air_general>
-		<img_air_single>termoregolazione/airconditioning.png</img_air_single>
-		<img_air_single_temp>termoregolazione/backtemperatura.png</img_air_single_temp>
-		<img_split_cmd>termoregolazione/edit.png</img_split_cmd>
-		<img_split_settings>termoregolazione/edit.png</img_split_settings>
-		<img_custom_button>termoregolazione/customairconditioning.png</img_custom_button>
-		<img_cycle_mode>termoregolazione/btnciclamod.png</img_cycle_mode>
-		<img_cycle_speed>termoregolazione/btnciclafancoil.png</img_cycle_speed>
-		<img_swing_on>termoregolazione/on.png</img_swing_on>
-		<img_swing_off>termoregolazione/off.png</img_swing_off>
-		<img_swing_on_checked>termoregolazione/autoon.png</img_swing_on_checked> <!-- WRONG ICON -->
-		<img_swing_off_checked>termoregolazione/statocentraleoff.png</img_swing_off_checked>
-		<img_split_cmd>termoregolazione/on.png</img_split_cmd>
-		<img_plus_disabled>termoregolazione/piup.png</img_plus_disabled>
-		<img_minus_disabled>termoregolazione/menop.png</img_minus_disabled>
-		<img_setstate_error>termoregolazione/airconditioning_error.png</img_setstate_error>
-	</item>
-
 	<!-- sound diffusion system -->
         <item>
 		<!-- multi sound diffusion ambient list -->
@@ -1021,7 +1023,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
+		<img_amplifier>diffusione/imgamb1.png</img_amplifier>
 	</item>
 	<!-- ambient 2 (multi) -->
 	<item>
@@ -1029,7 +1031,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
+		<img_amplifier>diffusione/imgamb2.png</img_amplifier>
 	</item>
 	<!-- ambient 3 (multi) -->
 	<item>
@@ -1037,7 +1039,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
+		<img_amplifier>diffusione/imgamb3.png</img_amplifier>
 	</item>
 	<!-- ambient 4 (multi) -->
 	<item>
@@ -1045,7 +1047,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
+		<img_amplifier>diffusione/imgamb4.png</img_amplifier>
 	</item>
 	<!-- ambient 5 (multi) -->
 	<item>
@@ -1053,7 +1055,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
+		<img_amplifier>diffusione/imgamb5.png</img_amplifier>
 	</item>
 	<!-- ambient 6 (multi) -->
 	<item>
@@ -1061,7 +1063,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
+		<img_amplifier>diffusione/imgamb6.png</img_amplifier>
 	</item>
 	<!-- ambient 7 (multi) -->
 	<item>
@@ -1069,7 +1071,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
+		<img_amplifier>diffusione/imgamb7.png</img_amplifier>
 	</item>
 	<!-- ambient 8 (multi) -->
 	<item>
@@ -1077,7 +1079,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
+		<img_amplifier>diffusione/imgamb8.png</img_amplifier>
 	</item>
 	<!-- mono channel sound diffusion -->
 	<!-- sound diffusion page (mono sound diffusion) -->
@@ -1249,8 +1251,8 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 	<item>
 		<!-- ventilation -->
 		<!-- Notes:
-			In ON state, 'on' will be appended to 'img_actuator_state' icon.
-			In OFF state, 'off' will be appended.
+		     In ON state, 'on' will be appended to 'img_actuator_state' icon.
+		     In OFF state, 'off' will be appended.
 		-->
 		<cid>3007</cid>
 		<img_off>automazione/off.png</img_off>
@@ -1289,8 +1291,8 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<!-- ppt stat -->
 		<cid>3012</cid>
 		<!-- TODO: change me! -->
-		<img_pptstat_open>automazione/imgillumgrpon.png</img_pptstat_open>
-		<img_pptstat_close>automazione/imgillumgrpoff.png</img_pptstat_close>
+		<img_pptstat_open>automazione/pptstaton.png</img_pptstat_open>
+		<img_pptstat_close>automazione/pptstatoff.png</img_pptstat_close>
 	</item>
 	<item>
 		<!-- automation group -->
@@ -1306,6 +1308,21 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_on>illuminazione/on.png</img_on>
 		<img_lamp_group_on>automazione/imgillumgrpon.png</img_lamp_group_on>
 	</item>
+
+	<!-- automation banners IP-->
+	<item>
+		<!-- gate lighting/VCT IP -->
+		<cid>3015</cid>
+		<img_on>automazione/on.png</img_on>
+		<img_gate>automazione/imgcanc.png</img_gate>
+        </item>
+	<item>
+	<!-- door lock automation/VCT IP-->
+		<cid>3016</cid>
+		<img_on>automazione/on.png</img_on>
+		<img_action_icon>automazione/imgserraturaoff.png</img_action_icon>
+	</item>
+
 	<!-- lighting banners -->
 	<item>
 		<!-- simple light -->
@@ -1524,24 +1541,24 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
         <!-- central probe +3 (page 4 zones) -->
         <item>
                 <cid>8045</cid>
-		<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
-		<img_forward>termoregolazione/vai.png</img_forward>
+		        <img_central_icon>termoregolazione/imgzona.png</img_central_icon>
+                <img_forward>termoregolazione/vai.png</img_forward>
 
-		<img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
-		<img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
-		<img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
-		<img_probe_off>termoregolazione/imgoff.png</img_probe_off>
-		<img_minus>termoregolazione/meno.png</img_minus>
-		<img_plus>termoregolazione/piu.png</img_plus>
-		<img_fan_1_on>termoregolazione/fancoilminon.png</img_fan_1_on>
-		<img_fan_2_on>termoregolazione/fancoilmedon.png</img_fan_2_on>
-		<img_fan_3_on>termoregolazione/fancoilmaxon.png</img_fan_3_on>
-		<img_fan_4_on>termoregolazione/fancoilautoon.png</img_fan_4_on>
-		<img_fan_1_off>termoregolazione/fancoilminoff.png</img_fan_1_off>
-		<img_fan_2_off>termoregolazione/fancoilmedoff.png</img_fan_2_off>
-		<img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
-		<img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
-	</item>
+                <img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
+                <img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
+                <img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
+                <img_probe_off>termoregolazione/imgoff.png</img_probe_off>
+                <img_minus>termoregolazione/meno.png</img_minus>
+                <img_plus>termoregolazione/piu.png</img_plus>
+                <img_fan_1_on>termoregolazione/fancoilminon.png</img_fan_1_on>
+                <img_fan_2_on>termoregolazione/fancoilmedon.png</img_fan_2_on>
+                <img_fan_3_on>termoregolazione/fancoilmaxon.png</img_fan_3_on>
+                <img_fan_4_on>termoregolazione/fancoilautoon.png</img_fan_4_on>
+                <img_fan_1_off>termoregolazione/fancoilminoff.png</img_fan_1_off>
+                <img_fan_2_off>termoregolazione/fancoilmedoff.png</img_fan_2_off>
+                <img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
+                <img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
+        </item>
 	<!-- regulator page 4 zones -->
 	<item>
 		<cid>8301</cid>
@@ -1641,6 +1658,38 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_winter_program>termoregolazione/imgprogrammainvernooff.png</img_winter_program>
 		<img_summer_program>termoregolazione/imgprogrammaestateoff.png</img_summer_program>
 	</item>
+    
+    <!-- link air conditioning under termo -->
+    <item>
+        <cid>8005</cid>
+	    <img_central_icon>termoregolazione/airconditioning.png</img_central_icon>
+    </item>
+
+	<!-- air conditioning subsystem-->
+	<item>
+		<cid>4000</cid>
+		<img_central_icon>termoregolazione/airconditioning.png</img_central_icon>
+		<img_ok>termoregolazione/ok.png</img_ok>
+		<img_off>termoregolazione/off.png</img_off>
+		<img_air_general>termoregolazione/customairconditioning.png</img_air_general>
+		<img_air_single>termoregolazione/airconditioning.png</img_air_single>
+		<img_air_single_temp>termoregolazione/backtemperatura.png</img_air_single_temp>
+		<img_split_cmd>termoregolazione/edit.png</img_split_cmd>
+		<img_split_settings>termoregolazione/edit.png</img_split_settings>
+		<img_custom_button>termoregolazione/customairconditioning.png</img_custom_button>
+		<img_cycle_mode>termoregolazione/btnciclamod.png</img_cycle_mode>
+		<img_cycle_speed>termoregolazione/btnciclafancoil.png</img_cycle_speed>
+		<img_swing_on>termoregolazione/on.png</img_swing_on>
+		<img_swing_off>termoregolazione/off.png</img_swing_off>
+		<img_swing_on_checked>termoregolazione/autoon.png</img_swing_on_checked> <!-- WRONG ICON -->
+		<img_swing_off_checked>termoregolazione/statocentraleoff.png</img_swing_off_checked>
+		<img_split_cmd>termoregolazione/on.png</img_split_cmd>
+		<img_plus_disabled>termoregolazione/piup.png</img_plus_disabled>
+		<img_minus_disabled>termoregolazione/menop.png</img_minus_disabled>
+		<img_setstate_error>termoregolazione/airconditioning_error.png</img_setstate_error>
+	</item>
+
+	
 	<!-- scenario menu banners -->
 	<item>
 		<!--
@@ -1659,8 +1708,8 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_pptsce_on>scenari/startscenarioon.png</img_pptsce_on>
 		<img_pptsce_off>scenari/off.png</img_pptsce_off>
 		<!-- TODO: fixme! -->
-		<img_pptsce_increase>scenari/recscenario.png</img_pptsce_increase>
-		<img_pptsce_decrease>scenari/setscenarioon.png</img_pptsce_decrease>
+		<img_pptsce_increase>scenari/pptscedx.png</img_pptsce_increase>
+		<img_pptsce_decrease>scenari/pptscesx.png</img_pptsce_decrease>
 	</item>
 	<!-- evolved scenario menu banners -->
 	<item>
@@ -1768,7 +1817,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_fullscreen>videocitofonia/screenfull.png</img_fullscreen>
 		<img_connection>videocitofonia/inconnessione.png</img_connection>
 	</item>
-	<!-- Video control items -->
+	<!-- Video control items SCS -->
 	<!-- panel -->
 	<item>
 		<cid>10051</cid>
@@ -1788,10 +1837,26 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<cid>10102</cid>
 		<img_link_icon>videocitofonia/piintercompiano.png</img_link_icon>
 	</item>
-	<!-- Guard unit -->
+
+    <!-- Video control items IP-->
+        <!-- panel -->
 	<item>
-		<cid>19004</cid>
-		<img_link_icon>videocitofonia/cdp.png</img_link_icon>
+                <cid>19051</cid>
+                <img_link_icon>videocitofonia/pes0.png</img_link_icon>
+        </item>
+        <!-- camera -->
+        <item>
+                <cid>19052</cid>
+                <img_link_icon>videocitofonia/telecamera.png</img_link_icon>
+        </item>
+        <!-- Intercom items -->
+        <item>
+                <cid>19101</cid>
+                <img_link_icon>videocitofonia/piintercom.png</img_link_icon>
+        </item>
+        <item>
+                <cid>19102</cid>
+		<img_link_icon>videocitofonia/piintercompiano.png</img_link_icon>
 	</item>
 	<item>
 		<!--
@@ -1872,7 +1937,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<!-- Load Management -->
 		<cid>18</cid>
 		<img_link_icon>home/apploadmanagement.png</img_link_icon>
-		<img_top_navigation_button>barranavigazione/carichi.png</img_top_navigation_button>
+		<img_top_navigation_button>barranavigazione/loadmanagement.png</img_top_navigation_button>
 	</item>
 	<item>
 		<!--
@@ -1898,7 +1963,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_on>carichi/on.png</img_on>
 		<img_not_forced>loadmanagement/btnloadmanab.png</img_not_forced>
 		<img_forced>loadmanagement/btnloadmandis.png</img_forced>
-		<img_reset>messaggi/eliminatutti.png</img_reset>
+		<img_reset>loadmanagement/btnreset.png</img_reset>
 	</item>
 	<item>
 		<!--
@@ -1909,7 +1974,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<cid>18002</cid>
 		<img_load>loadmanagement/loadmanagement.png</img_load>
 		<img_empty_background>energia/backenergy.png</img_empty_background>
-		<img_reset>messaggi/eliminatutti.png</img_reset>
+		<img_reset>loadmanagement/btnreset.png</img_reset>
 	</item>
 	<item>
 		<!--
@@ -1952,5 +2017,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_close>supervisioneimpianto/off.png</img_close>
 		<img_autocheck_enabled>supervisioneimpianto/autoteston.png</img_autocheck_enabled>
 		<img_autocheck_disabled>supervisioneimpianto/autotestoff.png</img_autocheck_disabled>
+		<img_tracking_enabled>supervisioneimpianto/verificaimpiantoon.png</img_tracking_enabled>
+		<img_tracking_disabled>supervisioneimpianto/verificaimpiantooff.png</img_tracking_disabled>
 	</item>
 </style>
