@@ -24,7 +24,7 @@
 
 #include "bann2_buttons.h" // Bann2Buttons
 #include "bann3_buttons.h" // Bann3Buttons
-#include "bann4_buttons.h" // Bann4ButtonsIcon, bann4But
+#include "bann4_buttons.h" // Bann4ButtonsIcon, Bann4Buttons
 #include "device.h" // DeviceValues
 
 class PPTSceDevice;

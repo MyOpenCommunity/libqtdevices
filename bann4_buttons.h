@@ -64,7 +64,8 @@ private:
 	QString left_icon, left_alt, right_icon, right_alt;
 };
 
-// substitute for bann4But
+
+// Banner with 4 buttons and a descriptive label
 class Bann4Buttons : public BannerNew
 {
 Q_OBJECT
@@ -109,16 +110,5 @@ signals:
 	void center_left_clicked();
 	void center_right_clicked();
 };
-
-
-// Old and deprecated!
-// This is a class that describes a banner with 4 buttons
-class bann4But : public BannerOld
-{
-Q_OBJECT
-public:
-	bann4But(QWidget *);
-};
-
 
 #endif // BANN4_BUTTONS_H
