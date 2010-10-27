@@ -167,6 +167,7 @@ private:
 
 /*!
 	\ingroup VideoDoorEntry
+	\ingroup Settings
 	\brief Shows the items for the Video Door Entry settings.
 */
 class VctSettings : public BannerPage
@@ -182,6 +183,7 @@ private:
 
 /*!
 	\ingroup VideoDoorEntry
+	\ingroup Settings
 	\brief Toggle the professional studio facility.
 
 	The banner represents the professional studio facility, to open automatically
@@ -200,6 +202,7 @@ protected:
 
  /*!
 	\ingroup VideoDoorEntry
+	\ingroup Settings
 	\brief Toggle the hands free facility.
 
 	The banner represents the hands free facility, to automatically answer on
@@ -219,6 +222,7 @@ protected:
 
 /*!
 	\ingroup VideoDoorEntry
+	\ingroup Settings
 	\brief Toggle the bell (or ringtone) for video/intercom calls.
 
 	The banner represents the possibility of exclude the ringtone for intercom

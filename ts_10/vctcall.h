@@ -188,9 +188,11 @@ namespace VCTCallPrivate
 
 	This is the main class of the \ref VideoDoorEntry system, that manages the
 	audio-video parts of a videocall, handle the fullscreen mode, the
-	ProfessionalStudio and HandsFree facilities. A %VctCallPage is always shown
-	indirectly: even if we want to switch on a camera we actually request the
-	switch and wait for the call from the camera.
+	ProfessionalStudio and HandsFree facilities.
+
+	A %VctCallPage is always shown indirectly: even if we want to switch on a
+	camera we actually request the switch and wait for the call from the camera.
+
 	The page is also behaves like a popup-page: it breaks the navigation, the
 	screensaver or everything else (with the exception of the calibration, that
 	has the priority).

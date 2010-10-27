@@ -28,7 +28,7 @@ class ScenEvoTimeCondition;
 class ScenEvoDeviceCondition;
 
 
-/**
+/*
  * The graphical manager for the evolved scenarios page.
  */
 class ScenEvoManager : public Page

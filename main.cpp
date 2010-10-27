@@ -73,33 +73,35 @@
 	keypad, screensaver, main application window, ...) all of which are Window subclasses.
 
 	HomeWindow is the main application page and contains HeaderWidget (containing the navigation bar
-	and the main page toolbars), FavouritesWidget (the lateral favourites column) and PageContainer
+	and the main page toolbars), FavoritesWidget (the lateral favourites column) and PageContainer
 	(containing the application pages).
 
-	In TS 3.5'' the basic structure is the same, but HeaderWidget and FavouritesWidget are not instantiated.
+	In TS 3.5'' the basic structure is the same, but HeaderWidget and FavoritesWidget are not instantiated.
 
 	\section modules Modules
 
 	The GUI is logically composed by modules. Usually a module identifies a
 	section or application, but in general is a group of code that work together.
-	The list of the current modules is:
-	\li \ref Lighting
-	\li \ref Automation
-	\li \ref EnergyManagement
-	\li \ref EnergyData
-	\li \ref Supervision
-	\li \ref LoadManagement
-	\li \ref Antintrusion
-	\li \ref SoundDiffusion
-	\li \ref VideoDoorEntry
-	\li \ref Scenarios
-	\li \ref ThermalRegulation
-	\li \ref Messages
-	\li \ref Multimedia
-	\li \ref Core
+	The list of the current modules (and submodules) is:
 
-	Some modules have submodules, for example the \ref AirConditioning module is
-	a submodule of the \ref ThermalRegulation.
+	- \ref Antintrusion
+	- \ref Automation
+	- \ref Lighting
+	- \ref EnergyManagement
+	- \ref EnergyData
+	- \ref Supervision
+		- \ref StopAndGo
+		- \ref LoadDiagnostic
+	- \ref LoadManagement
+	- \ref SoundDiffusion
+	- \ref VideoDoorEntry
+	- \ref Scenarios
+	- \ref ThermalRegulation
+		- \ref AirConditioning
+	- \ref Messages
+	- \ref Multimedia
+	- \ref Core
+	- \ref Settings
 
 	\section overview-page Page overview
 
