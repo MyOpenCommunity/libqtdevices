@@ -23,7 +23,7 @@
 #define FEED_MANAGER_H
 
 #include "feedparser.h"
-#include "page.h"
+#include "scrollablepage.h"
 
 #include <QList>
 
@@ -55,7 +55,7 @@ struct FeedInfo
 	\ingroup Multimedia
 	\brief Shows the list of RSS feeds taken from the configuration file.
  */
-class FeedManager : public Page
+class FeedManager : public ScrollablePage
 {
 Q_OBJECT
 public:
@@ -87,7 +87,7 @@ private:
 	\ingroup Multimedia
 	\brief Displays the items of a single RSS feed.
  */
-class FeedItemList : public Page
+class FeedItemList : public ScrollablePage
 {
 Q_OBJECT
 public:

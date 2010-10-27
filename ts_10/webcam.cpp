@@ -106,19 +106,12 @@ WebcamListPage::WebcamListPage(const QDomNode &config_node)
 	current_image = -1;
 	ItemList *item_list = new ItemList(0, 4);
 
-	PageTitleWidget *title_widget = new PageTitleWidget(tr("Webcam"), SMALL_TITLE_HEIGHT);
-	NavigationBar *nav_bar = new NavigationBar;
-
-	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(pgUp()));
-	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(pgDown()));
-
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemSelected(int)));
-	connect(item_list, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
-	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 
-	buildPage(item_list, nav_bar, 0, title_widget);
-	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
+	buildPage(item_list, item_list, new NavigationBar, 0,
+		  new PageTitleWidget(tr("Webcam"), SMALL_TITLE_HEIGHT));
 	layout()->setContentsMargins(0, 5, 25, 10);
+
 	loadWebcams(config_node);
 	webcam_page = new WebcamPage;
 	if (page_content->itemCount() == 1)
