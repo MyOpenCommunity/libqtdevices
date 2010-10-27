@@ -151,19 +151,43 @@ signals:
 };
 
 
-/*
- * This class exposes a simple interface to play/stop audio files.
+/*!
+	\ingroup Core
+	\brief Simple interface for .wav file playback
  */
 class SoundPlayer : public QObject
 {
 Q_OBJECT
 public:
+	/*!
+		\brief A global instance is available in bt_global::sound
+
+		Instantiating a separate object is only necessary to detect when
+		playback finished using soundFinished() (since the soundFinished()
+		for the global instance might be triggered by any user of the global
+		instance).
+	 */
 	SoundPlayer(QObject *parent=0);
 
+	/*!
+		\brief Play a .wav
+
+		If a sound is playing it is stopped, but soundFinished() is not emitted.
+	 */
 	void play(const QString &path);
+
+	/*!
+		\brief Stops the currently-playing sound
+
+		Emits soundFinished() when the playback actually stops.
+	 */
 	void stop();
 
 signals:
+	/*!
+		This signal is not emitted when the currently-playing sound is stopped
+		by a call to play().
+	 */
 	void soundFinished();
 
 private slots:
