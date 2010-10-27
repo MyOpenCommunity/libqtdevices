@@ -129,7 +129,7 @@ Bann4Buttons::Bann4Buttons(QWidget *parent) :
 	text = new ScrollingLabel;
 	text->setAlignment(Qt::AlignHCenter);
 
-	QGridLayout *grid = new QGridLayout;
+	QGridLayout *grid = new QGridLayout(this);
 	grid->setContentsMargins(0, 0, 0, 0);
 	grid->setSpacing(0);
 	grid->addWidget(left_button, 0, 0);
@@ -139,11 +139,7 @@ Bann4Buttons::Bann4Buttons(QWidget *parent) :
 	for (int i = 0; i < grid->columnCount(); ++i)
 		grid->setColumnStretch(i, 1);
 
-	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	l->addLayout(grid);
-	l->addWidget(text);
+	grid->addWidget(text, 1, 0, 1, 4);
 }
 
 void Bann4Buttons::initBanner(const QString &right, const QString &center_right,
