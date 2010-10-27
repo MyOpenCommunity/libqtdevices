@@ -37,7 +37,7 @@ class BtButton;
 
 /*!
 	\ingroup Core
-	\brief Manages the icons placed on the top of the window.
+	\brief Manages the icons placed in the HeaderLogo, at the top of the window.
 */
 class TrayBar : public QWidget
 {
@@ -63,6 +63,13 @@ private:
 /*!
 	\ingroup Core
 	\brief Contains and controls the stack of the pages, favourites and header widgets.
+
+	Besides containing the widgets, it also handles the communications between the
+	header navigation/info widgets and the page container.
+
+	\see PageContainer
+	\see FavoritesWidget
+	\see HeaderWidget
 */
 class HomeWindow : public Window
 {
@@ -71,19 +78,38 @@ public:
 	HomeWindow();
 	PageContainer *centralLayout();
 
-
 	void loadConfiguration();
 	TrayBar *tray_bar;
 
 	virtual void aboutToHideEvent();
 
 signals:
+	/*!
+		\brief Emitted to show the home page
+	 */
 	void showHomePage();
+
+	/*!
+		\brief Emitted to show the specified section page
+	 */
 	void showSectionPage(int page_id);
 
 public slots:
+	/*!
+		\brief Changes header layout for home page or inner pages.
+	 */
 	void centralWidgetChanged(Page *p);
+
+	/*!
+		\brief Higlights the current section in the navigation bar.
+	 */
 	void currentSectionChanged(int section_id);
+
+	/*!
+		\brief Keeps the status of buttons in home page in sync to the state of buttons in the navigation bar.
+
+		Used by the \ref Messages section link.
+	 */
 	void iconStateChanged(int page_id, StateButton::Status st);
 
 private slots:

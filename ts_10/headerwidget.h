@@ -41,8 +41,99 @@ class AudioPlayerPage;
 class WebcamPage;
 
 
-// helper widgets, to display the temperature
+/*!
+	\ingroup Core
+	\brief Base class for date/time display widgets displayed in the page header.
+ */
+class PollingDisplayWidget : public QLabel
+{
+public:
+	PollingDisplayWidget();
+	~PollingDisplayWidget();
 
+protected:
+	void timerEvent(QTimerEvent *e);
+	void paintEvent(QPaintEvent *e);
+
+	virtual void paintLabel(QPainter &painter) = 0;
+
+private:
+	int timer_id;
+};
+
+
+/*!
+	\ingroup Core
+	\brief Display current time for internal pages.
+
+	\see HeaderLogo
+	\see HomepageTimeDisplay
+ */
+class InnerPageTimeDisplay : public PollingDisplayWidget
+{
+public:
+	InnerPageTimeDisplay();
+
+protected:
+	virtual void paintLabel(QPainter &painter);
+};
+
+
+/*!
+	\ingroup Core
+	\brief Display current date for internal pages.
+
+	\see HeaderLogo
+	\see HomepageDateDisplay
+ */
+class InnerPageDateDisplay : public PollingDisplayWidget
+{
+public:
+	InnerPageDateDisplay();
+
+protected:
+	virtual void paintLabel(QPainter &painter);
+};
+
+
+/*!
+	\ingroup Core
+	\brief Display current time for the home page.
+
+	\see HeaderInfo
+	\see InnerPageTimeDisplay
+ */
+class HomepageTimeDisplay : public PollingDisplayWidget
+{
+public:
+	HomepageTimeDisplay();
+
+protected:
+	virtual void paintLabel(QPainter &painter);
+};
+
+
+/*!
+	\ingroup Core
+	\brief Display current date for the home page.
+
+	\see HeaderInfo
+	\see InnerPageDateDisplay
+ */
+class HomepageDateDisplay : public PollingDisplayWidget
+{
+public:
+	HomepageDateDisplay();
+
+protected:
+	virtual void paintLabel(QPainter &painter);
+};
+
+
+/*!
+	\ingroup Core
+	\brief Base class to display the temperature from an external probe or non-controlled zone.
+ */
 class TemperatureDisplay : public QLabel
 {
 Q_OBJECT
@@ -57,6 +148,13 @@ protected:
 	TemperatureScale temp_scale;
 };
 
+
+/*!
+	\ingroup Core
+	\brief Display the temperature from an external probe or non-controlled zone.
+
+	Similar to InnerPageTemperatureDisplay, but used only for the home page.
+ */
 class HomepageTemperatureDisplay : public TemperatureDisplay
 {
 Q_OBJECT
@@ -67,6 +165,13 @@ protected:
 	void paintEvent(QPaintEvent *e);
 };
 
+
+/*!
+	\ingroup Core
+	\brief Display the temperature from an external probe or non-controlled zone.
+
+	Similar to HomepageTemperatureDisplay, but used only in internal pages.
+ */
 class InnerPageTemperatureDisplay : public TemperatureDisplay
 {
 Q_OBJECT
@@ -78,8 +183,12 @@ protected:
 };
 
 
-// Homepage link
+/*!
+	\ingroup Core
+	\brief Base class for feed/web radio/webcam links in home page.
 
+	Currently displayed in the HeaderInfo bar in the home page.
+ */
 class HomepageLink : public QWidget
 {
 Q_OBJECT
@@ -96,8 +205,13 @@ private slots:
 };
 
 
-// link to RSS feed
+/*!
+	\ingroup Core
+	\brief Link to an RSS feed.
 
+	Displayed in the homepage HeaderInfo.  When clicked, parses the feed and
+	displays feed items.
+ */
 class HomepageFeedLink : public HomepageLink
 {
 Q_OBJECT
@@ -118,8 +232,13 @@ private:
 };
 
 
-// link to IP radio
+/*!
+	\ingroup Core
+	\brief Link to a web radio
 
+	Displayed in the homepage HeaderInfo.  When clicked, starts playing the
+	configured web radio.
+ */
 class HomepageIPRadioLink : public HomepageLink
 {
 Q_OBJECT
@@ -135,8 +254,12 @@ private:
 };
 
 
-// link to Webcam
+/*!
+	\ingroup Core
+	\brief Link to an webcam.
 
+	Displayed in the homepage HeaderInfo.  When clicked, displays the webcam page.
+ */
 class HomepageWebcamLink : public HomepageLink
 {
 Q_OBJECT
@@ -153,8 +276,17 @@ private:
 };
 
 
-// topmost header, contains the BTicino logo and (on internal pages) the
-// clock and temperature display
+/*!
+	\ingroup Core
+	\brief Topmost page header.
+
+	Displays the logo and TrayBar and (in inner pages) date, time and temperature.
+
+	\see InnerPageTimeDisplay
+	\see InnerPageDateDisplay
+	\see InnerPageTemperatureDisplay
+	\see TrayBar
+ */
 class HeaderLogo : public StyledWidget
 {
 Q_OBJECT
@@ -162,6 +294,10 @@ public:
 	HeaderLogo(TrayBar *tray);
 
 	void loadItems(const QDomNode &config_node);
+
+	/*!
+		\brief Show date, time and temperature display.
+	 */
 	void setControlsVisible(bool visible);
 
 private:
@@ -170,9 +306,21 @@ private:
 };
 
 
-// only displayed on the home page, contains date, time and temperature
-// display, a link to the settings page and links to multimedia contents
-// (RSS feeds, web radio, web tv, web cams)
+/*!
+	\ingroup Core
+	\brief Informative bar displayed in the home page.
+
+	Always contains a link to the settings page; depending on the configuration
+	could display date, time and the temperature from a probe, and contain links
+	to various multimedia items.
+
+	\see HomepageTemperatureDisplay
+	\see HomepageDateDisplay
+	\see HomepageTimeDisplay
+	\see HomepageFeedLink
+	\see HomepageIPRadioLink
+	\see HomepageWebcamLink
+ */
 class HeaderInfo : public StyledWidget
 {
 Q_OBJECT
@@ -180,10 +328,20 @@ public:
 	HeaderInfo();
 
 	void loadItems(const QDomNode &config_node, Page *settings);
-	void createSettingsPage();
 
 signals:
+	/*!
+		\brief Emitted when the page linked to one of the home page links is closed.
+
+		Handled by HeaderWidget.
+	 */
 	void showHomePage();
+
+	/*!
+		\brief Emitted when the user clicks on one of the links (settings or multimedia items).
+
+		Handled by HeaderWidget.
+	 */
 	void aboutToChangePage();
 
 private slots:
@@ -194,8 +352,13 @@ private:
 };
 
 
-// helper class for HeaderNavigationBar, contains the scrollable list of links to
-// internal pages
+/*!
+	\ingroup Core
+	\brief Helper class for HeaderNavigationBar
+
+	Contains a scrollable list of links to internal pages (all the configured
+	sections plus the settings).
+ */
 class HeaderNavigationWidget : public QWidget
 {
 Q_OBJECT
@@ -207,10 +370,6 @@ public:
 	void setCurrentSection(int section_id);
 	void changeIconState(int page_id, StateButton::Status st);
 
-public slots:
-	void scrollLeft();
-	void scrollRight();
-
 signals:
 	void pageSelected(int page_id);
 
@@ -220,6 +379,10 @@ protected:
 private:
 	void drawContent();
 	QWidget *itemForIndex(int i);
+
+private slots:
+	void scrollLeft();
+	void scrollRight();
 
 private:
 	int current_index, selected_section_id, visible_buttons;
@@ -232,8 +395,15 @@ private:
 };
 
 
-// navigation bar shown in internal pages; contains a link to the home page
-// and a scrollable list of links to section pages
+/*!
+	\ingroup Core
+	\brief Navigation bar shown in internal pages.
+
+	Contains a link to the home page and a scrollable list of links to section
+	pages plus the settings page.
+
+	\see HeaderNavigationWidget
+ */
 class HeaderNavigationBar : public StyledWidget
 {
 Q_OBJECT
@@ -245,8 +415,25 @@ public:
 	HeaderNavigationWidget *navigation;
 
 signals:
+	/*!
+		\brief Emitted when the user clicks the home page link.
+
+		Handled by HeaderWidget.
+	 */
 	void showHomePage();
+
+	/*!
+		\brief Emitted when the user clicks one of the section icons.
+
+		Handled by HeaderWidget.
+	 */
 	void showSectionPage(int page_id);
+
+	/*!
+		\brief Emitted when the user clicks on one of the links (home page or section page).
+
+		Handled by HeaderWidget.
+	 */
 	void aboutToChangePage();
 
 private slots:
@@ -259,21 +446,50 @@ private:
 };
 
 
-// contains all the header widgets and shows/hides them as the central page changes
+/*!
+	\ingroup Core
+	\brief Container for all header widgets
+
+	Contains HeaderLogo, HeaderInfo and HeaderNavigationBar and shows/hides them
+	depending on the displayed page (home page or internal page).
+ */
 class HeaderWidget : public QWidget
 {
 Q_OBJECT
 public:
 	HeaderWidget(TrayBar *tray_bar);
+
+	/*!
+		\brief Called to change header layout for home/inner pages.
+	 */
 	void centralPageChanged(int section_id, bool is_homepage);
+
+	/*!
+		\brief Called to change the active section in the navigation bar.
+	 */
 	void sectionChanged(int section_id);
 
-	void loadConfiguration(const QDomNode &homepage_node, const QDomNode &infobar_node);
+	/*!
+		\brief Called to propagate state changes to the icons in the navigation bar.
+	 */
 	void iconStateChanged(int page_id, StateButton::Status st);
 
+	void loadConfiguration(const QDomNode &homepage_node, const QDomNode &infobar_node);
+
 signals:
+	/*!
+		\brief Display the home page
+	 */
 	void showHomePage();
+
+	/*!
+		\brief Display one of the section pages
+	 */
 	void showSectionPage(int page_id);
+
+	/*!
+		\brief Emitted before showSectionPage() and showHomePage()
+	 */
 	void aboutToChangePage();
 
 private:
