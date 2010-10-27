@@ -62,20 +62,16 @@ MultimediaFileListPage::MultimediaFileListPage(const QStringList &filters) :
 
 	connect(this, SIGNAL(Closed()), item_list, SLOT(clear()));
 
-	PageTitleWidget *title_widget = new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT);
-	connect(item_list, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
-
 	NavigationBar *nav_bar = new NavigationBar("eject");
 
-	buildPage(item_list, nav_bar, 0, title_widget);
+	buildPage(item_list, item_list, nav_bar, 0,
+		  new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT));
 	layout()->setContentsMargins(0, 5, 25, 10);
 
-	connect(nav_bar, SIGNAL(forwardClick()), SLOT(unmount()));
+	disconnect(nav_bar, SIGNAL(backClick()), 0, 0); // connected by buildPage()
+
+	connect(this, SIGNAL(forwardClick()), SLOT(unmount()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
-	connect(this, SIGNAL(notifyExit()), SIGNAL(Closed()));
-	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
-	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(nextItem()));
-	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 
 	// order here must match the order in enum Type
 	file_icons.append(bt_global::skin->getImage("directory_icon"));
@@ -211,11 +207,6 @@ void MultimediaFileListPage::urlListReceived(const QStringList &files)
 		emit displayVideos(files, last_clicked);
 	else if (last_clicked_type == AUDIO)
 		emit playAudioFiles(files, last_clicked);
-}
-
-int MultimediaFileListPage::currentPage()
-{
-	return page_content->getCurrentPage();
 }
 
 void MultimediaFileListPage::cleanUp()

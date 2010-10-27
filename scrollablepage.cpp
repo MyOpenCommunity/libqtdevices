@@ -150,3 +150,8 @@ int ScrollableContent::pageCount() const
 	return pages.size() - 1;
 }
 
+int ScrollableContent::currentPage() const
+{
+	return current_page;
+}
+

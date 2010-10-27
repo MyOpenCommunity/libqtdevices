@@ -22,16 +22,16 @@
 #ifndef ITEM_LIST_H
 #define ITEM_LIST_H
 
+#include "scrollablepage.h"
+
 #include <QList>
 #include <QString>
 #include <QStringList>
-#include <QWidget>
 #include <QVariant>
 
 
 class QButtonGroup;
-class QVBoxLayout;
-class QBoxLayout;
+class QGridLayout;
 class QLabel;
 
 /*!
@@ -56,7 +56,7 @@ class QLabel;
 	To customize the look&feel of the ItemInfo rappresentation on the ItemList,
 	you can reimplement the addHorizontalBanner() method.
 */
-class ItemList : public QWidget
+class ItemList : public ScrollableContent
 {
 Q_OBJECT
 public:
@@ -135,36 +135,7 @@ signals:
 	*/
 	void itemIsClicked(int item);
 
-	/*!
-		\brief Emitted when the layout is updated.
-
-		\a display is true if scrolling is needed, false otherwise.
-	*/
-	void displayScrollButtons(bool);
-
-	/*!
-		\brief Emitted when the content is scrolled.
-
-		\a current is the index of the current displayed page,
-		\a total is the total number of pages.
-	*/
-	void contentScrolled(int current, int total);
-
 public slots:
-	/*!
-		\brief Switches to the next page.
-
-		\note If you are on the last page, it switches to the first one.
-	*/
-	void nextItem();
-
-	/*!
-		\brief Switches to the previous page.
-
-		\note If you are on the first page, it switches to the last one.
-	*/
-	void prevItem();
-
 	/*!
 		\brief Removes all the items.
 	*/
@@ -182,18 +153,15 @@ protected slots:
 	void clicked(int item);
 
 protected:
+	virtual void drawContent();
+
+protected:
 	/*!
 		\brief The maximum number of rows a page can have.
 	*/
 	int rows_per_page;
 
-	/*!
-		\brief Current page index.
-	*/
-	int current_page;
-
 	QButtonGroup *buttons_group;
-	QVBoxLayout *main_layout;
 
 	/*!
 		\brief The list of items displayed.
@@ -203,7 +171,7 @@ protected:
 	/*!
 		\brief The calculated number of pages.
 	*/
-	int pageCount();
+	virtual int pageCount() const;
 
 	/*!
 		\brief Creates the widget used to represent an item.
@@ -214,7 +182,7 @@ protected:
 		\note \a item.icons must contain at least 2 entries: one for the left
 		icon and one for the button.
 	*/
-	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
+	virtual void addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int id_btn);
 };
 
 #endif

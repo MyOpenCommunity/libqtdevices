@@ -22,7 +22,7 @@
 #ifndef WEBCAM_LIST_H
 #define WEBCAM_LIST_H
 
-#include "page.h"
+#include "scrollablepage.h"
 #include "itemlist.h"
 
 class BtButton;
@@ -67,7 +67,7 @@ private:
 	\ingroup Multimedia
 	\brief Shows the list of webcams taken from the configuration file.
  */
-class WebcamListPage : public Page
+class WebcamListPage : public ScrollablePage
 {
 Q_OBJECT
 public:

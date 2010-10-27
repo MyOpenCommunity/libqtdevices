@@ -73,7 +73,7 @@ public:
 	MessageList(QWidget *parent, int rows_per_page);
 
 protected:
-	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
+	virtual void addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int id_btn);
 };
 
 

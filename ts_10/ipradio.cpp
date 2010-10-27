@@ -23,6 +23,8 @@
 #include "skinmanager.h"
 #include "xml_functions.h" // getTextChild, getChildren
 #include "audioplayer.h"
+#include "itemlist.h"
+#include "navigation_bar.h"
 
 #include <QLayout>
 
@@ -31,9 +33,14 @@ IPRadioPage::IPRadioPage(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 
+	ItemList *item_list = new ItemList(NULL, 4);
+
 	player = AudioPlayerPage::getAudioPlayerPage(AudioPlayerPage::IP_RADIO);
 
-	buildPage(4, getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT);
+	buildPage(item_list, item_list, new NavigationBar, NULL,
+		  new PageTitleWidget(getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT));
+	layout()->setContentsMargins(0, 5, 25, 10);
+
 	loadItems(config_node);
 	connect(page_content, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 }
@@ -42,7 +49,7 @@ void IPRadioPage::showPage()
 {
 	player->showPrevButton(page_content->itemCount() > 1);
 	player->showNextButton(page_content->itemCount() > 1);
-	ItemListPage::showPage();
+	ScrollablePage::showPage();
 }
 
 void IPRadioPage::loadItems(const QDomNode &config_node)

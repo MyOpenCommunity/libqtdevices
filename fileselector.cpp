@@ -206,14 +206,14 @@ void FileSelector::showPage()
 	}
 	else if (files_list.size() == 0)
 	{
-		Page::showPage();
+		ScrollablePage::showPage();
 
 		// refresh directory information if the file list is empty
 		startOperation();
 		browser->getFileList();
 	}
 	else
-		Page::showPage();
+		ScrollablePage::showPage();
 }
 
 void FileSelector::itemIsClicked(int item)
@@ -229,7 +229,7 @@ void FileSelector::itemIsClicked(int item)
 	else
 	{
 		// save the info of old directory
-		pages_indexes[browser->pathKey()] = currentPage();
+		pages_indexes[browser->pathKey()] = page_content->currentPage();
 
 		emit fileClicked(item);
 	}

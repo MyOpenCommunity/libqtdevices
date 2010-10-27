@@ -80,7 +80,7 @@ MessageList::MessageList(QWidget *parent, int rows_per_page) :
 {
 }
 
-void MessageList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
+void MessageList::addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int id_btn)
 {
 	const QFont &font = bt_global::font->get(FontManager::TEXT);
 
@@ -110,7 +110,7 @@ void MessageList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int
 	box->addWidget(btn, 0, Qt::AlignRight);
 
 	buttons_group->addButton(btn, id_btn);
-	layout->addWidget(box_widget);
+	layout->addWidget(box_widget, layout->rowCount(), 0);
 }
 
 
@@ -224,8 +224,8 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 
 	title = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("delete_all"));
-	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
-	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(nextItem()));
+	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(pgUp()));
+	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(pgDown()));
 	connect(nav_bar, SIGNAL(forwardClick()), delete_page, SLOT(showPage()));
 
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(showMessage(int)));

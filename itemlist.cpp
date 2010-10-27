@@ -45,21 +45,21 @@ ItemList::ItemInfo::ItemInfo(QString n, QString descr, QStringList i, QVariant d
 }
 
 
-ItemList::ItemList(QWidget *parent, int _rows_per_page)
-	: QWidget(parent)
+ItemList::ItemList(QWidget *parent, int _rows_per_page) :
+	ScrollableContent(parent)
 {
 	// Set the number of elements shown
 	rows_per_page = _rows_per_page;
-	current_page = 0;
 
-	main_layout = new QVBoxLayout(this);
+	QGridLayout *main_layout = static_cast<QGridLayout *>(layout());
+
 	main_layout->setContentsMargins(0, 5, 5, 0);
 	main_layout->setSpacing(3);
 	buttons_group = new QButtonGroup(this);
 	connect(buttons_group, SIGNAL(buttonClicked(int)), SLOT(clicked(int)));
 }
 
-void ItemList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
+void ItemList::addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int id_btn)
 {
 	Q_ASSERT_X(item.icons.size() >= 2, "ItemList::addHorizontalBox()", "too few icons to construct the horizontal box");
 
@@ -95,13 +95,22 @@ void ItemList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id
 	box->addWidget(btn, 0, Qt::AlignRight);
 
 	buttons_group->addButton(btn, id_btn);
-	layout->addWidget(boxWidget);
+	layout->addWidget(boxWidget, layout->rowCount(), 0);
+}
+
+void ItemList::drawContent()
+{
+	showList();
 }
 
 void ItemList::showList()
 {
+	need_update = false;
+
 	int start = current_page * rows_per_page;
 	int count = qMin(start + rows_per_page, item_list.count()) - start;
+
+	QGridLayout *main_layout = static_cast<QGridLayout *>(layout());
 
 	// Remove the old children of main_layout
 	while (QLayoutItem *child = main_layout->takeAt(0))
@@ -119,13 +128,14 @@ void ItemList::showList()
 
 	for (int i = 0; i < count; ++i)
 		addHorizontalBox(main_layout, item_list[start + i], i);
-	main_layout->addStretch();
+	main_layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Maximum, QSizePolicy::MinimumExpanding), main_layout->rowCount(), 0);
 }
 
 void ItemList::setList(QList<ItemInfo> items, int page)
 {
 	item_list = items;
 	current_page = page;
+	need_update = true;
 }
 
 ItemList::ItemInfo &ItemList::item(int index)
@@ -144,6 +154,7 @@ void ItemList::insertItem(int index, const ItemInfo &item)
 	Q_ASSERT_X(index >= 0 && index <= item_list.size(), "ItemList::insertItem", "index out of range");
 
 	item_list.insert(index, item);
+	need_update = true;
 }
 
 void ItemList::removeItem(int index)
@@ -156,6 +167,7 @@ void ItemList::removeItem(int index)
 
 	if (current_page < 0)
 		current_page = 0;
+	need_update = true;
 }
 
 unsigned ItemList::getCurrentPage()
@@ -169,30 +181,12 @@ void ItemList::clear()
 	showList();
 }
 
-void ItemList::nextItem()
-{
-	current_page += 1;
-	// wrap around to the first page
-	if (current_page >= pageCount())
-		current_page = 0;
-	showList();
-}
-
-void ItemList::prevItem()
-{
-	current_page -= 1;
-	// wrap around to the last page
-	if (current_page < 0)
-		current_page = pageCount() - 1;
-	showList();
-}
-
 void ItemList::clicked(int item)
 {
 	emit itemIsClicked(current_page * rows_per_page + item);
 }
 
-int ItemList::pageCount()
+int ItemList::pageCount() const
 {
 	return item_list.count() / rows_per_page +
 			(item_list.count() % rows_per_page ? 1 : 0);

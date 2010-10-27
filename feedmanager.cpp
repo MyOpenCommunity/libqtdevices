@@ -41,20 +41,15 @@
 FeedManager::FeedManager(const QDomNode &conf_node)
 {
 	ItemList *feeds = new ItemList(this, ROWS_PER_PAGE);
-	NavigationBar *nav_bar = new NavigationBar;
 
-	buildPage(feeds, nav_bar, getTextChild(conf_node, "descr"), SMALL_TITLE_HEIGHT);
+	buildPage(feeds, feeds, new NavigationBar, NULL,
+		  new PageTitleWidget(getTextChild(conf_node, "descr"), SMALL_TITLE_HEIGHT));
 	layout()->setContentsMargins(0, 5, 25, 10);
 
 	feed_items = new FeedItemList;
 
 	connect(&parser, SIGNAL(feedReady()), SLOT(feedReady()));
 
-	connect(nav_bar, SIGNAL(upClick()), feeds, SLOT(prevItem()));
-	connect(nav_bar, SIGNAL(downClick()), feeds, SLOT(nextItem()));
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
-
-	connect(feeds, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 	connect(feeds, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 
 	connect(feed_items, SIGNAL(Closed()), SLOT(feedClosed()));
@@ -126,20 +121,13 @@ FeedItemList::FeedItemList()
 
 	ItemList *feed_items = new ItemList(this, ROWS_PER_PAGE);
 	title_widget = new PageTitleWidget("", SMALL_TITLE_HEIGHT);
-	NavigationBar *nav_bar = new NavigationBar;
 
-	buildPage(feed_items, nav_bar, 0, title_widget);
+	buildPage(feed_items, feed_items, new NavigationBar, 0, title_widget);
 	layout()->setContentsMargins(0, 5, 25, 10);
 
 	feed_item = new FeedItem();
 
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
-	connect(nav_bar, SIGNAL(upClick()), feed_items, SLOT(prevItem()));
-	connect(nav_bar, SIGNAL(downClick()), feed_items, SLOT(nextItem()));
-
 	connect(feed_items, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
-	connect(feed_items, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
-	connect(feed_items, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
 
 	connect(feed_item, SIGNAL(Closed()), SLOT(showPage()));
 	connect(feed_item, SIGNAL(showPrev()), SLOT(showPrev()));

@@ -148,7 +148,7 @@ FileList::FileList(QWidget *parent, int rows_per_page) :
 	connect(sel_buttons, SIGNAL(buttonClicked(int)), SLOT(checkButton(int)));
 }
 
-void FileList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
+void FileList::addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int id_btn)
 {
 	QFont font = bt_global::font->get(FontManager::TEXT);
 
@@ -196,7 +196,7 @@ void FileList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id
 		box->addSpacing(55);
 	}
 
-	layout->addWidget(boxWidget);
+	layout->addWidget(boxWidget, layout->rowCount(), 0);
 }
 
 void FileList::checkButton(int btn_id)
@@ -227,9 +227,6 @@ SlideshowSelector::SlideshowSelector() :
 	FileList *item_list = new FileList(0, 4);
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 
-	PageTitleWidget *title_widget = new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT);
-	connect(item_list, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
-
 	NavigationBar *nav_bar = new NavigationBar("eject");
 
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(unmount()));
@@ -237,15 +234,14 @@ SlideshowSelector::SlideshowSelector() :
 	selbutton_off = bt_global::skin->getImage("unchecked");
 	selbutton_on = bt_global::skin->getImage("checked");
 
-	buildPage(item_list, nav_bar, 0, title_widget);
+	buildPage(item_list, item_list, nav_bar, 0,
+		  new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT));
 	layout()->setContentsMargins(0, 5, 25, 10);
 
+	disconnect(nav_bar, SIGNAL(backClick()), 0, 0); // connected by buildPage()
+
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
-	connect(this, SIGNAL(notifyExit()), SIGNAL(Closed()));
 	connect(this, SIGNAL(Closed()), SLOT(cleanUp()));
-	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
-	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(nextItem()));
-	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 
 	connect(item_list, SIGNAL(itemSelectionChanged(QString,bool)), SLOT(setSelection(QString,bool)));
 }
@@ -315,11 +311,6 @@ void SlideshowSelector::urlListReceived(const QStringList &list)
 	page_content->showList();
 
 	operationCompleted();
-}
-
-int SlideshowSelector::currentPage()
-{
-	return page_content->getCurrentPage();
 }
 
 void SlideshowSelector::setSelection(const QString &path, bool selected)

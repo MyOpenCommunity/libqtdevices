@@ -66,7 +66,7 @@ signals:
 	void itemSelectionChanged(const QString &path, bool selected);
 
 protected:
-	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
+	virtual void addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int id_btn);
 
 private slots:
 	void checkButton(int btn_id);
@@ -98,9 +98,6 @@ public:
 
 public slots:
 	virtual void cleanUp();
-
-protected:
-	virtual int currentPage();
 
 private slots:
 	void setSelection(const QString &path, bool selected);
