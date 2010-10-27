@@ -180,6 +180,42 @@ void TestXmlDevice::testChdir()
 	t.check(data, true);
 }
 
+void TestXmlDevice::testSelectTrack()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
+				 "			<PID>4</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.195</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>192.168.1.110</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C2>"
+				 "			 <DIDL-Lite xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\" xmlns:dlna=\"urn:schemas-dlna-org:metadata-1-0/\">"
+				 "				<item id=\"13\" parentID=\"0\" restricted=\"1\">"
+				 "					<res protocolInfo=\"http-get:*:audio/mpeg:DLNA.ORG_PS=1;DLNA.ORG_CI=0;DLNA.ORG_OP=00;DLNA.ORG_FLAGS=00000000000000000000000000000000;DLNA.ORG_PN=MP3\" size=\"2440262\" duration=\"0:02:29.000\">http://10.3.3.248:49153/files/13</res>"
+				 "					<upnp:class>object.item.audioItem.musicTrack</upnp:class>"
+				 "					<dc:title>Ship to Monkey Island</dc:title>"
+				 "					<upnp:artist>Michael Land</upnp:artist>"
+				 "					<upnp:album>The Secret of Monkey Island (game rip)</upnp:album>"
+				 "					<upnp:genre>Soundtrack</upnp:genre>"
+				 "				</item>"
+				 "			</DIDL-Lite>"
+				 "		</AW26C2>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::TRACK_SELECTION);
+	t.check(data, QString("http://10.3.3.248:49153/files/13"));
+}
+
 void TestXmlDevice::testBrowseUpSuccess()
 {
 	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""

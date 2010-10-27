@@ -44,6 +44,7 @@ namespace XmlResponses
 		SERVER_LIST,
 		SERVER_SELECTION,
 		CHDIR,
+		TRACK_SELECTION,
 		BROWSE_UP,
 		LIST_ITEMS,
 	};
