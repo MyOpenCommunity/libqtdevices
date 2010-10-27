@@ -85,6 +85,11 @@ namespace
 			key = XmlResponses::CHDIR;
 			value = getTextChild(node, "status_browse") == "browse_ok";
 		}
+		else if (tag_name == "DIDL-Lite")
+		{
+			key = XmlResponses::TRACK_SELECTION;
+			value = getElement(node, "DIDL-Lite/item/res").text();
+		}
 
 		return qMakePair<int,QVariant>(key, value);
 	}
