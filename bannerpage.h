@@ -35,7 +35,7 @@ class BannerContent;
 
 /*!
 	\ingroup Core
-	\brief A page containing a list of banners.
+	\brief A page containing a list of \ref banner%s.
 
 	The BannerPage is a ScrollablePage subclass, so if the content is to big
 	to be visualized in a single screen, it is paginated.

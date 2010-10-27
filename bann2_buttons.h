@@ -73,7 +73,7 @@ protected:
 
 /*!
 	\ingroup Core
-	\brief A banner with two buttons on the sides and a description in the center.
+	\brief A \ref banner with two buttons on the sides and a description in the center.
 
 	The %Bann2Buttons is the base class to choose for those banners that have
 	a description in the center and a button on the left or a button on the right
@@ -142,7 +142,7 @@ private:
 
 /*!
 	\ingroup Core
-	\brief A Bann2Buttons where the two buttons are StateButtons.
+	\brief A Bann2Buttons where the two buttons are StateButton%s.
 */
 class Bann2StateButtons : public Bann2Buttons
 {

@@ -29,7 +29,7 @@ class ScenEvoDeviceCondition;
 class BtButton;
 class QStackedLayout;
 
-/**
+/*
  * The graphical manager for the evolved scenarios page.
  */
 class ScenEvoManager : public Page

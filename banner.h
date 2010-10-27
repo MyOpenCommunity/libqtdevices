@@ -44,8 +44,8 @@ class QLabel;
 
 
 /*!
-	\brief A rectangular widget that can be used to present the status of a device,
-	to interact with the device and to navigate to other pages.
+	\brief A rectangular widget that can be used to present the status of a \ref device,
+	to interact with it and to navigate to other Page%s.
 */
 class banner : public QWidget
 {
