@@ -67,7 +67,7 @@ void AdvancedAirConditioningDevice::requestStatus() const
 	sendRequest(ADVANCED_SPLIT_DIM);
 }
 
-QString AdvancedAirConditioningDevice::statusToString(const AirConditionerStatus &st) const
+QString AdvancedAirConditioningDevice::statusToString(const Status &st) const
 {
 	QString what;
 
@@ -94,12 +94,12 @@ QString AdvancedAirConditioningDevice::statusToString(const AirConditionerStatus
 
 void AdvancedAirConditioningDevice::setStatus(Mode mode, int temp, Velocity vel, Swing swing) const
 {
-	AirConditionerStatus st(mode, temp, vel, swing);
+	Status st(mode, temp, vel, swing);
 	setStatus(st);
 }
 
 // overload for the above function, useful to pass all the parameters around packed together
-void AdvancedAirConditioningDevice::setStatus(AirConditionerStatus st) const
+void AdvancedAirConditioningDevice::setStatus(Status st) const
 {
 	QString what = statusToString(st);
 

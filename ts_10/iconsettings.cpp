@@ -76,9 +76,6 @@ enum
 	RINGTONE_MESSAGE = 14110,
 	PAGE_LANSETTINGS = 14008,
 	PAGE_VCTSETTINGS = 14010,
-	ITEM_HANDSFREE = 14251,
-	ITEM_PROF_STUDIO = 14252,
-	ITEM_RING_EXCLUSION = 14253,
 	// TODO ids?
 	PAGE_CALIBRATION_TEST = 1777777,
 };
@@ -481,19 +478,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 			p = new BrightnessPage;
 			break;
 		case PAGE_VCTSETTINGS:
-			p = new IconSettings(page_node);
-			break;
-		case ITEM_HANDSFREE:
-			page_content->addWidget(new HandsFree(getTextChild(item, "enable").toInt(),
-				getTextChild(item, "itemID").toInt()));
-			break;
-		case ITEM_PROF_STUDIO:
-			page_content->addWidget(new ProfessionalStudio(getTextChild(item, "enable").toInt(),
-				getTextChild(item, "itemID").toInt()));
-			break;
-		case ITEM_RING_EXCLUSION:
-			page_content->addWidget(new RingtoneExclusion(getTextChild(item, "enable").toInt(),
-				getTextChild(item, "itemID").toInt()));
+			p = new VctSettings(page_node);
 			break;
 		default:
 			qFatal("Unhandled page id %d in IconSettings::loadItems", link_id);
@@ -526,15 +511,15 @@ PasswordPage::PasswordPage(const QDomNode &config_node)
 	layout->setContentsMargins(0, 0, 0, TITLE_HEIGHT);
 
 	int item_id = getTextChild(config_node, "itemID").toInt();
-	bool attiva = getTextChild(config_node, "actived").toInt();
-	PasswordChanger *changer = new PasswordChanger(item_id, getTextChild(config_node, "password"), attiva);
+	bool active = getTextChild(config_node, "actived").toInt();
+	PasswordChanger *changer = new PasswordChanger(item_id, getTextChild(config_node, "password"), active);
 	StateButton *left_button = new StateButton;
 	BtButton *right_button = new BtButton(bt_global::skin->getImage("edit"));
 
 	left_button->setOnOff();
 	left_button->setOffImage(bt_global::skin->getImage("state_off"));
 	left_button->setOnImage(bt_global::skin->getImage("state_on"));
-	left_button->setStatus(attiva);
+	left_button->setStatus(active);
 
 	connect(right_button, SIGNAL(clicked()), changer, SLOT(changePassword()));
 	connect(left_button, SIGNAL(clicked()), changer, SLOT(requestPasswdOn()));

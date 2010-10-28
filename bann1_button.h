@@ -111,10 +111,8 @@ signals:
 };
 
 
-/*!
-  \class bannPuls
-  \brief This is a class that describes a banner with a button on the right, an icon in the center and a text on the bottom
-*/
+// A class that describes a banner with a button on the right, an icon in the center.
+// and a text on the bottom
 class bannPuls : public BannerOld
 {
 Q_OBJECT
@@ -128,10 +126,7 @@ signals:
 };
 
 
-/*!
-  \class bannOnDx
-  \brief This is a class that describes a banner with a button on the right and a text on the remaining area
-*/
+// Describes a banner with a button on the right and a text on the remaining area.
 class bannOnDx : public BannerOld
 {
 Q_OBJECT
@@ -143,10 +138,7 @@ signals:
 };
 
 
-/*!
-  \class bannOnSx
-  \brief This is a class that describes a banner with a button on the left and a text on the remaining area
-*/
+// describes a banner with a button on the left and a text on the remaining area.
 class bannOnSx : public BannerOld
 {
 Q_OBJECT
@@ -158,23 +150,7 @@ signals:
 };
 
 
-#if 0
-
-class bannOnIcons : public BannerOld
-{
-Q_OBJECT
-public:
-	bannOnIcons(QWidget *parent);
-};
-
-#endif
-
-
-/*!
-  \class bannBut2Icon
-  \brief This is a class that describes a banner with a button on the right,
-  two icons in the middle and some text below
-*/
+// A banner with a button on the right,two icons in the middle and some text below.
 class bannBut2Icon : public BannerOld
 {
 Q_OBJECT
@@ -183,10 +159,8 @@ public:
 };
 
 
-/**
- * A banner that encapsulates a list of states that can be cycled using a button
- * on the left. Every state has an id and a description.
- */
+// Encapsulates a list of states that can be cycled using a button on the left.
+// Every state has an id and a description.
 class BannStates : public BannerNew
 {
 Q_OBJECT

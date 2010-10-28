@@ -36,7 +36,18 @@ class PlatformDevice;
 class Text2Column;
 class ItemTuning;
 
+/*!
+	\defgroup Settings Settings
 
+	This section is always present and allows the user to controls various
+	aspects of the interface.
+*/
+
+
+/*!
+	\ingroup Settings
+	\brief The main page of the \ref Settings for the touchscreen 10''.
+*/
 class IconSettings : public IconPage
 {
 Q_OBJECT
@@ -61,9 +72,10 @@ private:
 };
 
 
-/**
- * The page where the user changes the ringtones related to main events
- */
+/*!
+	\ingroup Settings
+	\brief Allows the user to change the ringtone to play for each Ringtones::Type.
+*/
 class RingtonesPage : public ListPage
 {
 Q_OBJECT
@@ -77,9 +89,10 @@ private slots:
 };
 
 
-/**
- * The page where the user changes the volume of the ringtones.
- */
+/*!
+	\ingroup Settings
+	\brief Set the volume level for the Ringtones::PE1 ringtone.
+*/
 class VolumePage : public Page
 {
 Q_OBJECT
@@ -100,9 +113,10 @@ private:
 };
 
 
-/**
- * The page where the user can see the information about the software
- */
+/*!
+	\ingroup Settings
+	\brief Shows information about the software.
+*/
 class InfoPage : public Page
 {
 Q_OBJECT
@@ -118,6 +132,10 @@ private slots:
 };
 
 
+/*!
+	\ingroup Settings
+	\brief Allows the user to change the date/time of the touchscreen.
+*/
 class ChangeDateTime : public PageSetDateTime
 {
 Q_OBJECT
@@ -134,7 +152,10 @@ private slots:
 };
 
 
-// button to toggle on/off the beep sound
+/*!
+	\ingroup Settings
+	\brief Enable or disable the beep.
+*/
 class ToggleBeep : public IconPageButton
 {
 Q_OBJECT
@@ -149,6 +170,10 @@ private:
 };
 
 
+/*!
+	\ingroup Settings
+	\brief Allows the user to enable/disable the password, and to change it.
+*/
 class PasswordPage : public Page
 {
 Q_OBJECT
@@ -157,6 +182,10 @@ public:
 };
 
 
+/*!
+	\ingroup Settings
+	\brief Controls the brightness of the screen.
+*/
 class BrightnessPage : public Page
 {
 Q_OBJECT

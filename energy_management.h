@@ -24,11 +24,18 @@
 
 #include "sectionpage.h"
 
+/*!
+	\defgroup EnergyManagement Energy Management
 
-/**
- * A container for other sections energy-related (SupervisionMenu, EnergyData
- * and LoadManagement).
- */
+	The Energy Management section is only a container to group together energy
+	related sections, like \ref Supervision, \ref EnergyData and \ref LoadManagement.
+*/
+
+
+/*!
+	\ingroup EnergyManagement
+	\brief A container for other energy related sections.
+*/
 class EnergyManagement : public SectionPage
 {
 public:

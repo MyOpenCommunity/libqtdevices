@@ -33,8 +33,9 @@ class RadioInfo;
 class RadioPage;
 
 
-/**
- * The (abstract) base class for all the audio sources
+/*!
+	\ingroup SoundDiffusion
+	\brief The abstract base class for all the audio sources
  */
 class AudioSource : public BannerNew
 {
@@ -42,8 +43,8 @@ Q_OBJECT
 
 public:
 	// Method called when the source is hidden or showed. It differs from the
-	// standard hideEvent/showEvent because it refers to the container of the
-	// source banner.
+	// standard hideEvent/showEvent because it is called when the container
+	// of the banner is hidden/shown
 	virtual void sourceShowed() {}
 	virtual void sourceHidden() {}
 
@@ -73,8 +74,9 @@ private slots:
 };
 
 
-/**
- * Banner for aux sources.
+/*!
+	\ingroup SoundDiffusion
+	\brief Sound diffusion aux source (also used for other BTouch on the SCS bus).
  */
 class AuxSource : public AudioSource
 {
@@ -87,8 +89,9 @@ private:
 };
 
 
-/**
- * Banner for multimedia sources.
+/*!
+	\ingroup SoundDiffusion
+	\brief Sound diffusion multimedia source (local file system, web radio, ...)
  */
 class MediaSource : public AudioSource
 {
@@ -104,8 +107,9 @@ private:
 };
 
 
-/**
- * Banner for radio sources.
+/*!
+	\ingroup SoundDiffusion
+	\brief Sound diffusion RDS radio source.
  */
 class RadioSource : public AudioSource
 {

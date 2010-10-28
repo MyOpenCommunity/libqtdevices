@@ -36,8 +36,9 @@ class PowerAmplifierDevice;
 class QDomNode;
 class QWidget;
 
-/**
- * Handle graphical changes for amplifiers, On/Off states and volume changes.
+/*!
+	\ingroup SoundDiffusion
+	\brief Handle graphical changes for amplifiers, On/Off states and volume changes.
  */
 class AdjustVolume : public BannLevel
 {
@@ -64,11 +65,9 @@ private:
 };
 
 
-/**
- * \class BannPowerAmplifier
- *
- * The main banner of the power amplifier. It instantiate the device and manage
- * the link with the page of settings.
+/*!
+	\ingroup SoundDiffusion
+	\brief Banner to control a power amplifier.
  */
 class BannPowerAmplifier : public AdjustVolume
 {
@@ -89,11 +88,9 @@ private:
 };
 
 
-/**
- * \class PowerAmplifierPage
- *
- * The page of the settings of the power amplifier. It simply delegate the
- * functionality to the correct banner.
+/*!
+	\ingroup SoundDiffusion
+	\brief %Settings page for a power amplifier.
  */
 class PowerAmplifierPage : public BannerPage
 {
@@ -106,6 +103,10 @@ private:
 };
 
 
+/*!
+	\ingroup SoundDiffusion
+	\brief Banner to choose one of the preset equalizations for a power amplifier.
+ */
 class PowerAmplifierPreset : public Bann2Buttons
 {
 Q_OBJECT
@@ -125,6 +126,10 @@ private:
 };
 
 
+/*!
+	\ingroup SoundDiffusion
+	\brief Banner to change the treble equalization for a power amplifier.
+ */
 class PowerAmplifierTreble : public BannOnOff2Labels
 {
 Q_OBJECT
@@ -142,6 +147,10 @@ private:
 };
 
 
+/*!
+	\ingroup SoundDiffusion
+	\brief Banner to change the bass equalization for a power amplifier.
+ */
 class PowerAmplifierBass : public BannOnOff2Labels
 {
 Q_OBJECT
@@ -159,6 +168,10 @@ private:
 };
 
 
+/*!
+	\ingroup SoundDiffusion
+	\brief Banner to change left/right balance for a power amplifier.
+ */
 class PowerAmplifierBalance : public BannOnOffCombo
 {
 Q_OBJECT
@@ -176,6 +189,10 @@ private:
 };
 
 
+/*!
+	\ingroup SoundDiffusion
+	\brief Banner to toggle loudness for a power amplifier.
+ */
 class PowerAmplifierLoud : public BannOnOffState
 {
 Q_OBJECT

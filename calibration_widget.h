@@ -9,32 +9,54 @@ class BtButton;
 class QTimer;
 
 
-/**
- * The widget to calibrate the touchscreen. The procedure is composed by two
- * part: the actual calibration and a simple test with two buttons.
- * The new calibration is saved (into the calibration file) only if both the
- * part ends with success.
- */
+/*!
+	\ingroup Core
+	\ingroup Settings
+	\brief Performs the calibration of the touchscreen.
+
+	The calibration is a standard touchscreen procedure to reduce the noise of
+	a touchscreen. It consist in the definition of some values (stored in the
+	calibration file) that will be used to normalize the touch event.
+
+	This widget performs the actual calibration followed by a simple test with
+	to buttons to press.
+	The new calibration file is saved only if both of the parts end with success.
+*/
 class CalibrationWidget : public QWidget
 {
 Q_OBJECT
 public:
 	CalibrationWidget(bool minimal = false);
 
-	// Return true if the calibration file exists.
+	/*!
+		\brief Return true if the calibration file exists.
+	*/
 	static bool exists();
 
-	// Return true if the calibration file is valid
+	/*!
+		\brief Return true if the calibration file is valid.
+	*/
 	static bool isValid();
 
-	// Start or restart the calibration
+	/*!
+		\brief Start or restart the calibration.
+	*/
 	void startCalibration();
 
-	// Abort the changes and restore the old calibration file
+	/*!
+		\brief Abort the changes and restore the old calibration file.
+	*/
 	void rollbackCalibration();
 
 signals:
+	/*!
+		\brief Notify the end of the procedure.
+	*/
 	void calibrationEnded();
+
+	/*!
+		\brief Notify the start of the procedure.
+	*/
 	void calibrationStarted();
 
 protected:

@@ -32,12 +32,7 @@
 class QLabel;
 
 
-/**
- * \class Selector
- *
- * Realize a common interface for all selector classes.
- *
- */
+// Realize a common interface for all selector classes.
 class Selector : public Page
 {
 Q_OBJECT
@@ -56,11 +51,7 @@ signals:
 };
 
 
-/**
- * \class FileSelector
- *
- * implements a File Selector Windows with methods to navigate and play files.
- */
+// Implements a File Selector Windows with methods to navigate and play files.
 class FileSelector : public Selector
 {
 Q_OBJECT

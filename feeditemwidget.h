@@ -29,6 +29,11 @@
 class QVBoxLayout;
 class QTextEdit;
 
+
+/*!
+	\ingroup Multimedia
+	\brief Display the HTML content for a feed item removing links and images.
+ */
 class FeedItemWidget : public QWidget
 {
 Q_OBJECT
@@ -45,12 +50,11 @@ signals:
 	void showNext();
 
 private:
-	/**
-	 * Remove image tags from html. QTextBrowser doesn't load automatically images from the net
-	 * so we should reimplement this behaviour. Furthermore, if images were too big, we would need
-	 * horizonatal scroll bars.
-	 * \param html A text in html format
-	 */
+	/*!
+		Remove image tags from html. QTextBrowser doesn't load automatically images
+		from the net so we should reimplement this behaviour. Furthermore, if images
+		were too big, we would need horizonatal scroll bars.
+	*/
 	void removeImages(QString &html);
 
 	// remove <a> tags

@@ -32,9 +32,13 @@ class AudioPlayerPage;
 class VirtualSourceDevice;
 
 
-/*
- * Page that can be used to play both audio files (es. MP3) and ShoutCast
- * streams (for IP radio).
+/*!
+	\ingroup Multimedia
+	\brief Page for local audio playback with mplayer.
+
+	Can be used to play both audio files (es. MP3) and ShoutCast
+	streams (for IP radio).  it can play through sound diffusion or
+	using the local amplifier.
  */
 class AudioPlayerPage : public MediaPlayerPage
 {

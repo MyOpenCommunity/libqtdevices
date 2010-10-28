@@ -38,15 +38,19 @@ class QLabel;
 
 enum ThermalPageID
 {
-	fs_4z_thermal_regulator = 1,          // 4 zones thermal regulator device
-	fs_4z_probe,                          // 4 zones controlled probe
-	fs_4z_fancoil,                        // 4 zones controlled probe with fancoil
-	fs_99z_thermal_regulator,             // 99 zones thermal regulator device
-	fs_99z_probe,                         // 99 zones controlled probe
-	fs_99z_fancoil,                       // 99 zones controlled probe with fancoil
+	fs_4z_thermal_regulator = 1,          /*!< 4-zone thermal regulator device */
+	fs_4z_probe,                          /*!< 4-zone controlled probe */
+	fs_4z_fancoil,                        /*!< 4-zone controlled probe with fancoil */
+	fs_99z_thermal_regulator,             /*!< 99-zone thermal regulator device */
+	fs_99z_probe,                         /*!< 99-zone controlled probe */
+	fs_99z_fancoil,                       /*!< 99-zone controlled probe with fancoil */
 };
 
 
+/*!
+	\ingroup ThermalRegulation
+	\brief Contains links to the thermal regulator and to the controlled zones.
+ */
 class PlantMenu : public BannerPage
 {
 Q_OBJECT
@@ -77,9 +81,9 @@ private:
 };
 
 
-/**
- * Simple widget with an OK button on the right
- * and a "back" button on the left
+/*!
+	\ingroup ThermalRegulation
+	\brief Navigation bar with an OK button on the right and a "back" button on the left (only for TS 3.5'')
  */
 class ThermalNavigation : public AbstractNavigationBar
 {
@@ -93,8 +97,9 @@ signals:
 };
 
 
-/**
- * Base class for thermal menu subpages with a navigation bar at the bottom
+/*!
+	\ingroup ThermalRegulation
+	\brief Base class for thermal regulator and zone pages.
  */
 class NavigationPage : public Page
 {
@@ -120,10 +125,11 @@ protected:
 };
 
 
-/**
- * A base class for banners that represent a probe. It displays a label with zone name on top
- * and the measured temperature.
+/*!
+	\ingroup ThermalRegulation
+	\brief Base class for zone pages; displays zone description and temperature.
  */
+// TODO merge with PageProbe
 class PageSimpleProbe : public NavigationPage
 {
 Q_OBJECT
@@ -146,10 +152,12 @@ protected:
 };
 
 
-/**
- * Displays information about a probe controlled by a thermal regulator.
- * It has a label with setpoint temperature and local status. In case the status is
- * protection or off, it displays the relative icon.
+/*!
+	\ingroup ThermalRegulation
+	\brief Display information for a controlled zone.
+
+	Displays the target temperature (or an icon for antifreeze/off) and the
+	local offset.
  */
 class PageProbe : public PageSimpleProbe
 {
@@ -222,9 +230,9 @@ private slots:
 };
 
 
-/**
- * Displays information about a controlled probe with fancoil. In addition to PageProbe, it displays
- * at the bottom of the page 4 buttons to set the speed of fancoil.
+/*!
+	\ingroup ThermalRegulation
+	\brief Display information for a controlled zone with fancoil.
  */
 class PageFancoil : public PageProbe
 {

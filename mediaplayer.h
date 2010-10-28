@@ -32,67 +32,218 @@
 class QRect;
 
 
+/*!
+	\ingroup Multimedia
+	\ingroup SoundDiffusion
+	\brief Play audio/video files using MPlayer
+
+	After calling play() to reproduce an audio file, it's necessary to periodically
+	(every 2-3 seconds) call getPlayingInfo() to process MPlayer output.
+
+	Since the playback is handled by an external process, using one of the control
+	commands (play(), pause(), resume(), stop()) will not immediately affect the playback
+	state; for the commands starting/restarting the playback, the mplayerStarted() / mplayerResumed()
+	signals are emitted before the playback actually starts; likewise, for commands stopping/pausing
+	the playback, the mplayerPaused() / mplayerStopped() signals are emitted after the playback actually
+	starts.
+
+	Another tricky part of the API is the handling of pause states: see pause(), isPaused(), isPlaying(),
+	isReallyPaused() for an explanation.
+ */
 class MediaPlayer : public QObject
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructor.
+	 */
 	MediaPlayer(QObject *parent = 0);
 
-	/// Starts MPlayer playing a single track
+	/*!
+		\brief Start playing an audio file.
+
+		If \a write_output is \c false, there is no need to call getPlayingInfo() periodically,
+		and there is no way to get information for the playing audio track and no way to detect
+		when the playback pauses.
+
+		\see getPlayingInfo()
+	 */
 	bool play(QString track, bool write_output = true);
 
-	/// Starts MPlayer playing a video
+	/*!
+		\brief Start playing a video file.
+
+		If \a write_output is false, there is no need to call getVideoInfo() periodically,
+		and there is no way to get information for the playing vidoe and no way to detect
+		when the playback pauses.
+
+		When \a start_time is greater than 0, will start the playback at approximately
+		that time into the video track.
+
+		The \a geometry is in screen coordinates.
+
+		\see getVideoInfo()
+		\see playVideoFullScreen()
+	 */
 	bool playVideo(QString track, QRect geometry, int start_time, bool write_output = true);
+
+	/*!
+		\brief Start playing a video file full screen.
+
+		\see getVideoInfo()
+		\see playVideo()
+	 */
 	bool playVideoFullScreen(QString track, int start_time, bool write_output = true);
 
-	/// Pause playing of current song
+	/*!
+		\brief Pause playback.
+
+		Note that this only sends the pause command to MPlayer; to know when
+		the playback actually pauses, use the mplayerPaused() signal.
+
+		\see mplayerPaused()
+	 */
 	void pause();
 
-	/// Resume playing of current song
+	/*!
+		\brief Resume playback after a pause.
+
+		Note that this only sends the resume command to MPlayer; the actual playback
+		will start sometimes later.
+
+		\see mplayerResumed()
+	 */
 	void resume();
 
 	// TODO cleanly separate the logical player state from the physical MPlayer state
-	// (for things like the next-while-paused that are currently handled multiple
+	// (for things like the next-while-paused that are currently handled in multiple
 	// parts of the GUI code)
 
-	/// Stop and quit mplayer (waiting for mplayer to terminate)
+	/*!
+		\brief Stop playback and quit MPlayer.
+
+		Can also be called when there is no physical MPlayer running,
+		but isPaused() is \c true.
+	 */
 	void stop();
 
-	/// Similar to stop, but does not reset the paused state; must only be used
-	/// when mplayer is "logically" paused (for example if the user uses prev/next
-	/// while the player is paused)
+	/*!
+		\brief Stop playback and quit MPlayer.
+
+		Similar to stop, but does not reset the paused state; must only be used
+		when MPlayer is "logically" paused (for example if the user uses prev/next
+		while the player is paused).
+
+		\see stop()
+	 */
 	void quit();
 
-	/// Return true if player is currently playing
+	/*!
+		\brief \c true if player is playing
+
+		Note that this is a logical state: right after calling pause() (or resume())
+		isPlaying() return value reflects the just-invoked method, but MPlayer might
+		not have stopped (or restarted) playback yet.
+
+		\see isPaused()
+		\see isReallyPaused()
+	 */
 	bool isPlaying();
 
-	/// Wheather the player is on pause; due to the asynchronous nature of the communication
-	/// with MPlayer, isPaused() does not always coincide with current MPlayer state; isPaused()
-	/// returns the state MPlayer will have after it processes all pending commands; to detect when
-	/// MPlayer really pauses, use the mplayerPaused() signal.
+	/*!
+		\brief Whether the player is paused
+
+		Due to the asynchronous nature of the communication with MPlayer, isPaused()
+		does not always coincide with current MPlayer state; isPaused()
+		returns the state MPlayer will have after it processes all pending pause() / resume()
+		commands; to detect when MPlayer really pauses, use the mplayerPaused() signal or
+		isReallyPaused().
+	 */
 	bool isPaused() { return paused; }
 
-	/// Return true is player is really paused (it has completed processing of the pause command)
+	/*!
+		\brief Whether the player is paused
+
+		Returns physical player state.  Note that the value is updated when reading
+		MPlayer output, so there is a small delay between MPlayer pausing and the return
+		value becoming \c true.
+
+		\see isPaused()
+	 */
 	bool isReallyPaused() { return really_paused; }
 
-	/// Return true if music is playing or in pause
+	/*!
+		\brief Whether there is an active MPlayer instance.
+
+		This is \c true both for a playing and a paused MPlayer.
+	 */
 	bool isInstanceRunning();
 
-	/// Read the output from the PIPE and parse it to get INFO; if msecs_timeout
-	/// is greater than 0, waits for input to become available; if this metod is called
-	/// when the event loop is not running, you must use msecs_timeout > 0 or no output
-	/// will be ever read
+	/*!
+		\brief Process MPlayer output for audio tracks
+
+		Must be called regularly during playback to process MPlayer output,
+		otherwise playback will stop; it also returns information about the
+		playing track and update the playing/paused state.
+
+		If the event loop is not running, \a msecs_timeout must be greater than 0,
+		otherwise no output will ever be read.
+
+		Available tags for all tracks:
+		\li current_time: (MM:SS)
+
+		Available tags for audio files:
+		\li file_name: the file name
+		\li meta_title: track title, as written in ID3 tags
+		\li meta_artist: track author/performer, as written in ID3 tags
+		\li meta_album: track album, as written in ID3 tags
+		\li total_time: total track time, either from ID3 tags or guessed by the player
+
+		Available tags ShoutCast URLs:
+		\li stream_title: title of this stream
+		\li stream_url: URL of the stream (as reported in the stream itself)
+
+		\see getVideoInfo()
+	 */
 	QMap<QString, QString> getPlayingInfo(int msecs_timeout = 0);
 
+	/*!
+		\brief Process MPlayer output for audio tracks.
+
+		The only available tag is:
+		\li current_time: (MM:SS)
+
+		\see getPlayingInfo()
+	 */
 	QMap<QString, QString> getVideoInfo(int msecs_timeout = 0);
 
+	/*!
+		\brief Request audio track info
+
+		Request the information returned by getPlayingInfo() without starting
+		the playback.
+
+		Emits playingInfoUpdated() when the information becomes available.
+	 */
 	void requestInitialPlayingInfo(const QString &track);
+
+	/*!
+		\brief Request video track info
+
+		Request the information returned by getVideoInfo() without starting
+		the playback.
+
+		Emits playingInfoUpdated() when the information becomes available.
+	 */
 	void requestInitialVideoInfo(const QString &track);
 
-	/// Need to be public because called by signal handler
-	void sigChildReceived(int dead_pid, int status);
+	/*!
+		\brief Seek forward/backwards
 
-	/// moves the playback backward/forward by the given offset
+		Moves the playback backward/forward by the given offset.  Due to
+		limitations of various audio/video formats, the actual seek time will
+		rarely equal the offset.
+	 */
 	void seek(int seconds);
 
 private:
@@ -134,36 +285,78 @@ private slots:
 	void readStandardError();
 
 signals:
-	/// mplayer started the reproduction of the media
+	/*!
+		\brief Emitted before starting playback of a media file.
+	 */
 	void mplayerStarted();
-	/// mplayer paused the reproduction of the media
+
+	/*!
+		\brief Emitted after media playback pauses.
+	 */
 	void mplayerPaused();
-	/// mplayer resumed the reproduction of the media
+
+	/*!
+		\brief Emitted before media playback resumes after a pause.
+	 */
 	void mplayerResumed();
 
-	/// mplayer child process quit gracefully and done it's work.
+	/*!
+		\brief Playback completed successfully.
+	 */
 	void mplayerDone();
 
-	/// mplayer child process has been stopped (either by an error, by the GUI or by another process).
+	/*!
+		\brief Playback stopped by explicit request (GUI or other process) or by an error.
+	 */
 	void mplayerStopped();
 
+	/*!
+		\brief Information for a video/audio file.
+
+		Emitted by requestInitialVideoInfo() and requestInitialPlayingInfo().
+		\a info contains the same data returned by getPlayingInfo() and getVideoInfo().
+	 */
 	void playingInfoUpdated(const QMap<QString,QString> &info);
 };
 
 
-/**
- * This class exposes a simple interface to play/stop audio files.
+/*!
+	\ingroup Core
+	\brief Simple interface for .wav file playback
  */
 class SoundPlayer : public QObject
 {
 Q_OBJECT
 public:
+	/*!
+		\brief A global instance is available in bt_global::sound
+
+		Instantiating a separate object is only necessary to detect when
+		playback finished using soundFinished() (since the soundFinished()
+		for the global instance might be triggered by any user of the global
+		instance).
+	 */
 	SoundPlayer(QObject *parent=0);
 
+	/*!
+		\brief Play a .wav
+
+		If a sound is playing it is stopped, but soundFinished() is not emitted.
+	 */
 	void play(const QString &path);
+
+	/*!
+		\brief Stops the currently-playing sound
+
+		Emits soundFinished() when the playback actually stops.
+	 */
 	void stop();
 
 signals:
+	/*!
+		This signal is not emitted when the currently-playing sound is stopped
+		by a call to play().
+	 */
 	void soundFinished();
 
 private slots:

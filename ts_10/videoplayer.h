@@ -31,7 +31,10 @@ class QLabel;
 class VideoPlayerWindow;
 
 
-// page for video playback
+/*!
+	\ingroup Multimedia
+	\brief Page for video playback.
+ */
 class VideoPlayerPage : public MediaPlayerPage
 {
 Q_OBJECT
@@ -88,7 +91,10 @@ private:
 };
 
 
-// window for full screen video playback
+/*!
+	\ingroup Multimedia
+	\brief Window for full-screen video playback.
+ */
 class VideoPlayerWindow : public Window
 {
 Q_OBJECT

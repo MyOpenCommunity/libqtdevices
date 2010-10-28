@@ -47,6 +47,12 @@ enum DeviceType
 	DIMMER100_DEVICE = 2,
 };
 
+/*!
+	\ingroup Lighting
+	\brief Control a group of lights
+
+	Some of the lights can be 10-level or 100-level dimmers
+ */
 class LightGroup : public Bann2Buttons
 {
 Q_OBJECT
@@ -64,9 +70,6 @@ private:
 };
 
 
-/*
- * A derived class of BannLevel which handles all dimmer state changes (both levels and states).
- */
 class AdjustDimmer : public BannLevel
 {
 Q_OBJECT
@@ -92,6 +95,12 @@ private:
 };
 
 
+/*!
+	\ingroup Lighting
+	\brief Control a 10-level dimmer
+
+	Can also be used for a 100-level dimmer.
+ */
 class Dimmer : public AdjustDimmer
 {
 Q_OBJECT
@@ -111,6 +120,12 @@ private:
 };
 
 
+/*!
+	\ingroup Lighting
+	\brief Control a group of 10-level dimmers
+
+	Some of the dimmers can be 100-level dimmers
+ */
 class DimmerGroup : public BannLevel
 {
 Q_OBJECT
@@ -128,6 +143,10 @@ private:
 };
 
 
+/*!
+	\ingroup Lighting
+	\brief Control a 100-level dimmer
+ */
 class Dimmer100 : public AdjustDimmer
 {
 Q_OBJECT
@@ -149,6 +168,10 @@ private:
 };
 
 
+/*!
+	\ingroup Lighting
+	\brief Control a group of 100-level dimmers
+ */
 class Dimmer100Group : public BannLevel
 {
 Q_OBJECT
@@ -167,6 +190,10 @@ private:
 };
 
 
+/*!
+	\ingroup Lighting
+	\brief Temporary light with an hard-coded list of "on" times.
+ */
 class TempLight : public BannOnOff2Labels
 {
 Q_OBJECT
@@ -190,6 +217,10 @@ private slots:
 };
 
 
+/*!
+	\ingroup Lighting
+	\brief Temporary light with an user-configurable list of "on" times.
+ */
 class TempLightVariable : public TempLight
 {
 Q_OBJECT
@@ -202,6 +233,10 @@ protected slots:
 };
 
 
+/*!
+	\ingroup Lighting
+	\brief Temporary light with an user-configurable "on" time.
+ */
 class TempLightFixed : public BannOn2Labels
 {
 Q_OBJECT

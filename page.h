@@ -52,7 +52,8 @@ public slots:
 typedef QHash<int, QVariant> DeviceValues;
 
 
-#define page_content (content(this))
+#define page_content (static_cast<ContentType*>(__content))
+
 
 /*!
 	\ingroup Core
@@ -231,14 +232,6 @@ signals:
 	void forwardClick();
 
 protected:
-	/*!
-		\warning Do not use this method, use the type safe macro page_content instead.
-		\sa Page::ContentType
-	*/
-	template<class P> typename P::ContentType* content(P*)
-	{
-		return (typename P::ContentType*)__content;
-	}
 
 	/*!
 		\warning Do not use this member, use the type safe macro page_content instead.

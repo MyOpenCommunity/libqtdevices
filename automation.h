@@ -31,8 +31,16 @@ class banner;
 
 /*!
 	\defgroup Automation Automation
+
+	PPTStat monitors the state of dry contacts; GateLightingActuator and GateEntryphoneActuator control
+	the gate actuators for lighting and video door-entry system.  Use InterblockedActuator and
+	SecureInterblockedActuator to control all other automation actuators.
 */
 
+/*!
+	\ingroup Automation
+	\brief Main automation page
+ */
 class Automation : public BannerPage
 {
 Q_OBJECT

@@ -28,7 +28,10 @@
 #include <QHash>
 
 
-// information on a single energy rate
+/*!
+	\ingroup EnergyManagement
+	\brief Contains information on a single energy rate.
+*/
 struct EnergyRate
 {
 	bool isValid() const;
@@ -53,7 +56,10 @@ struct EnergyRate
 };
 
 
-// object to read the rate list from disk
+/*!
+	\ingroup EnergyManagement
+	\brief A logical object to load the rate list.
+*/
 class EnergyRates : public QObject
 {
 Q_OBJECT

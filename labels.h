@@ -34,9 +34,10 @@ class QMouseEvent;
 class QPixmap;
 
 
-/**
- * A label that scrolls its text one char at time from left to right.
- */
+/*!
+	\ingroup Core
+	\brief A label that scrolls its text one char at time from left to right.
+*/
 class ScrollingLabel : public QLabel
 {
 	Q_OBJECT
@@ -71,9 +72,10 @@ private:
 };
 
 
-/**
- * A label that can have both the text and a background image.
- */
+/*!
+	\ingroup Core
+	\brief A label that can have both the text and a background image.
+*/
 class TextOnImageLabel : public QLabel
 {
 Q_OBJECT

@@ -27,40 +27,20 @@ class QString;
 #include <QFont>
 #include <QHash>
 
-/**
- * \class FontManager
- *
- * This class load the list of font from an xml file. It is designed to use as
- * global object, through the "get" method used to obtain a font of "Type" category.
- */
+
+/*!
+	\ingroup Core
+	\brief The global manager of the fonts.
+
+	This class uses an xml file to load, for each value of the enumeration 
+	FontManager::Type, the font associated.
+	Use the method get() to retrieve the font for the given type.
+*/
 class FontManager
 {
 public:
 	FontManager(QString font_file);
 
-	// TODO: need to split SUBTITLE and SMALLTEXT
-	//
-	// TITLE: title of the page (used for all TS 10'' pages, and for a couple of TS 3.5'' pages)
-	// SUBTITLE: AUX source, load deactivation time, external/non-controlled probe
-	//           RDS radio, version page, load management current consumption,
-	//           load management "force on" confirmation page, energy management date selection
-	// TEXT: default text size
-	// BANNERTEXT: label text for banner labels aligned horizontally with the icons
-	// BANNERDESCRIPTION: descriptive text displayed under a banner (or an icon)
-	// SMALLTEXT: energy graph, energy table date, energy view date, lan settings text,
-	//            version page, RDS radio
-	// HOMEPAGEWIDGET: date/time/temperature display in home page
-	// PROBE_TEMPERATURE: current temperature of a thermal probe
-	// PROBE_SETPOINT: set point temperature of a thermal probe
-	// EXTERNAL_PROBE: description and temperature for external/non controlled probes
-	// REGULATOR_TEMPERATURE: current temperature of a thermal regulator
-	// REGULATOR_DESCRIPTION: description of a thermal regulator
-	// AIRCONDITIONING_TEMPERATURE: temperature measured by a split
-	// PLAYER_TITLE: song title (first line)
-	// PLAYER_AUTHOR: song author/info (second line)
-	// PLAYER_INFO: current track and elapsed time
-	// AUDIO_SOURCE_TEXT: source description text for aux/multimedia/radio banner
-	// AUDIO_SOURCE_DESCRIPTION: descriptive text, displayed under the source description
 #ifdef LAYOUT_TS_3_5
 	enum Type
 	{
@@ -90,39 +70,46 @@ public:
 		RADIO_ENVIRONMENT = TITLE,
 	};
 #else
+	/*!
+		\brief Font Types.
+	*/
 	enum Type
 	{
-		TITLE = 0,
-		SUBTITLE = 0, // TBD, same as TITLE for now
-		TEXT = 2,
-		BANNERTEXT = 4,
-		BANNERDESCRIPTION = 5,
-		SMALLTEXT = 2, // TBD, same as TEXT for now
-		HOMEPAGEWIDGET = 6,
+		TITLE = 0,                                        /*!< title of the page (used for all TS 10'' pages, and for a couple of TS 3.5'' pages) */
+		SUBTITLE = 0,                                     /*!< AUX source, load deactivation time, external/non-controlled probe
+		                                                       RDS radio, version page, load management current consumption,
+		                                                       load management "force on" confirmation page, energy management date selection */
+		TEXT = 2,                                         /*!< default text size */
+		BANNERTEXT = 4,                                   /*!< label text for banner labels aligned horizontally with the icons */
+		BANNERDESCRIPTION = 5,                            /*!< descriptive text displayed under a banner (or an icon) */
+		SMALLTEXT = 2,                                    /*!< energy graph, energy table date, energy view date, lan settings text,version page, RDS radio */
+		HOMEPAGEWIDGET = 6,                               /*!< date/time/temperature display in home page */
 		// thermal regulation
-		PROBE_TEMPERATURE = 7,
-		PROBE_SETPOINT = 8,
-		EXTERNAL_PROBE = 2,
-		REGULATOR_TEMPERATURE = 8,
-		REGULATOR_DESCRIPTION = 8,
-		AIRCONDITIONING_TEMPERATURE = 0,
+		PROBE_TEMPERATURE = 7,                            /*!< current temperature of a thermal probe */
+		PROBE_SETPOINT = 8,                               /*!< set point temperature of a thermal probe */
+		EXTERNAL_PROBE = 2,                               /*!< description and temperature for external/non controlled probes */
+		REGULATOR_TEMPERATURE = 8,                        /*!< current temperature of a thermal regulator */
+		REGULATOR_DESCRIPTION = 8,                        /*!< description of a thermal regulator */
+		AIRCONDITIONING_TEMPERATURE = 0,                  /*!< temperature measured by a split */
 		// date/time edit
-		DATE_TIME = 0,
+		DATE_TIME = 0,                                    /*!< labels in the date or time edit */
 		// audio source text
-		AUDIO_SOURCE_TEXT = BANNERTEXT,
-		AUDIO_SOURCE_DESCRIPTION = BANNERDESCRIPTION,
+		AUDIO_SOURCE_TEXT = BANNERTEXT,                   /*!< source description text for aux/multimedia/radio banner */
+		AUDIO_SOURCE_DESCRIPTION = BANNERDESCRIPTION,     /*!< descriptive text, displayed under the source description */
 		// rds radio
-		RADIO_NAME = TITLE,
-		RADIO_MEMORY_NUMBER = SMALLTEXT,
-		RADIO_STATION = SMALLTEXT,
-		RADIO_ENVIRONMENT = TITLE,
+		RADIO_NAME = TITLE,                               /*!< the name of the radio */
+		RADIO_MEMORY_NUMBER = SMALLTEXT,                  /*!< the number of the radio station */
+		RADIO_STATION = SMALLTEXT,                        /*!< the frequency of the radio station */
 		// audio player
-		PLAYER_TITLE = HOMEPAGEWIDGET,
-		PLAYER_AUTHOR = TITLE,
-		PLAYER_INFO = BANNERDESCRIPTION,
+		PLAYER_TITLE = HOMEPAGEWIDGET,                   /*!< song title (first line) */
+		PLAYER_AUTHOR = TITLE,                           /*!< song author/info (second line) */
+		PLAYER_INFO = BANNERDESCRIPTION,                 /*!< current track and elapsed time */
 	};
 #endif
 
+	/*!
+		\brief Return a reference to the font to use for the given \a t.
+	*/
 	const QFont& get(Type t);
 
 private:

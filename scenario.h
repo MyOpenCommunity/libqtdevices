@@ -31,12 +31,22 @@ class banner;
 
 /*!
 	\defgroup Scenarios Scenarios
+
+	Allows the user to controls a module scenario using the ModuleScenario class
+	or the scenario programmer using the ScheduledScenario class.
+
+	The BannSimpleScenario can be used to activate a scenario, while the scenario
+	plus can be controlled using the PPTSce class.
+
+	Finally, the improved scenario can be configured and controlled using
+	the ScenarioEvolved class and the related classes (ScenEvoCondition,
+	ScenEvoTimeCondition, ScenEvoDeviceCondition, etc..).
 */
 
 
 /*!
 	\ingroup Scenarios
-	\brief Loads all the scenario items.
+	\brief %Loads all the scenario items.
 */
 class Scenario : public BannerPage
 {

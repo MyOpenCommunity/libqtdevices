@@ -19,8 +19,8 @@
  */
 
 
-#ifndef IMPOSTA_TIME_H
-#define IMPOSTA_TIME_H
+#ifndef CHANGE_DATETIME_H
+#define CHANGE_DATETIME_H
 
 #include "page.h"
 
@@ -30,11 +30,7 @@ class ChangeDate;
 class PlatformDevice;
 
 
-/*!
-  \class ChangeTime
-  \brief This is the class used to set time.
-
-*/
+// Set the time
 class  ChangeTime : public Page
 {
 Q_OBJECT
@@ -63,11 +59,7 @@ private:
 };
 
 
-/*!
-  \class ChangeDate
-  \brief This is the class used to set time.
-
-*/
+// Set the date
 class  ChangeDate : public Page
 {
 Q_OBJECT
@@ -86,4 +78,4 @@ private:
 };
 
 
-#endif // IMPOSTA_TIME_H
+#endif // CHANGE_DATETIME_H

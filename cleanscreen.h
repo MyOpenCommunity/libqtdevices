@@ -30,7 +30,10 @@
 
 class QLabel;
 
-
+/*!
+	\ingroup Settings
+	\brief Draws a Window with a display timeout to allow the user to clean the touchscreen.
+*/
 class CleanScreen : public Window
 {
 Q_OBJECT
@@ -43,18 +46,18 @@ public slots:
 private:
 	void paintEvent(QPaintEvent *e);
 
-	/// Timer that controls show/hide of widget
+	// Timer that controls show/hide of widget
 	QTimer timer;
-	/// Timer that updates the widget every second
+	// Timer that updates the widget every second
 	//(see analog clock example)
 	QTimer secs_timer;
-	/// Wait time in seconds read from conf file
+	// Wait time in seconds read from conf file
 	int wait_time_sec;
-	/// Used to compute the remaining time of cleanscreen
+	// Used to compute the remaining time of cleanscreen
 	// We can't use QTime.elapsed() because its behaviour is undefined if the system
 	// date change after start()
 	int secs_counter;
-	/// labels to show remaining time and cleanscreen icon
+	// labels to show remaining time and cleanscreen icon
 	QLabel *time_label, *icon_label;
 
 private slots:

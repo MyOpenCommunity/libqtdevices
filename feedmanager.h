@@ -51,7 +51,10 @@ struct FeedInfo
 };
 
 
-// displays the list of RSS feeds
+/*!
+	\ingroup Multimedia
+	\brief Shows the list of RSS feeds taken from the configuration file.
+*/
 class FeedManager : public Page
 {
 Q_OBJECT
@@ -80,7 +83,10 @@ private:
 };
 
 
-// display the items of an RSS feed
+/*!
+	\ingroup Multimedia
+	\brief Displays the items of a single RSS feed.
+*/
 class FeedItemList : public Page
 {
 Q_OBJECT
@@ -106,7 +112,10 @@ private:
 };
 
 
-// display a single RSS news item
+/*!
+	\ingroup Multimedia
+	\brief Display a single RSS news item.
+*/
 class FeedItem : public Page
 {
 Q_OBJECT

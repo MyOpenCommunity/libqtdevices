@@ -69,7 +69,7 @@ void TestAirConditioningDevice::sendTurnOff()
 
 
 #define ADVANCED_AIR_COND_DIM 22
-typedef AdvancedAirConditioningDevice::AirConditionerStatus AirConditionerStatus;
+typedef AdvancedAirConditioningDevice::Status AirConditionerStatus;
 
 void TestAdvancedAirConditioningDevice::initTestCase()
 {

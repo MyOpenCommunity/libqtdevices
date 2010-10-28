@@ -28,7 +28,10 @@ class BtButton;
 class StateButton;
 
 
-// contains previous/next, play/pause/stop and fullscreen buttons
+/*!
+	\ingroup Multimedia
+	\brief Common playback functionality (play/pause/stop/next/previous).
+ */
 class MultimediaPlayerButtons : public QWidget
 {
 Q_OBJECT

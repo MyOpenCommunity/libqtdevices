@@ -24,6 +24,7 @@
 
 #include "bannerpage.h"
 #include "iconpage.h"
+#include "bann2_buttons.h"
 
 #include <QWidget>
 
@@ -31,13 +32,11 @@ class VCTCallPage;
 class VideoDoorEntryDevice;
 class StateButton;
 class ItemTuning;
-class RingExclusion;
-class RingExclusionPage;
 class QDomNode;
 class QSignalMapper;
 
 /*!
-	\defgroup VideoDoorEntry VideoDoorEntry
+	\defgroup VideoDoorEntry Video Door Entry
 
 	Allows the user to perform and receive video and intercom calls.
 	There are two main classes:
@@ -146,6 +145,7 @@ private:
 	bool call_active;
 	int ringtone;
 	bool already_closed;
+	void callStarted();
 };
 
 
@@ -167,13 +167,30 @@ private:
 
 /*!
 	\ingroup VideoDoorEntry
+	\ingroup Settings
+	\brief Shows the items for the Video Door Entry settings.
+*/
+class VctSettings : public BannerPage
+{
+Q_OBJECT
+public:
+	VctSettings(const QDomNode &config_node);
+
+private:
+	void loadItems(const QDomNode &config_node);
+};
+
+
+/*!
+	\ingroup VideoDoorEntry
+	\ingroup Settings
 	\brief Toggle the professional studio facility.
 
-	The button represents the professional studio facility, to open automatically
-	the door on an incoming call. Associated with the button there is an icon on
+	The banner represents the professional studio facility, to open automatically
+	the door on an incoming call. Associated with the banner there is an icon on
 	the Toolbar present if the functionality is on.
 */
-class ProfessionalStudio : public IconButtonOnTray
+class ProfessionalStudio : public BannOnTray
 {
 Q_OBJECT
 public:
@@ -185,13 +202,14 @@ protected:
 
  /*!
 	\ingroup VideoDoorEntry
+	\ingroup Settings
 	\brief Toggle the hands free facility.
 
-	The button represents the hands free facility, to automatically answer on
-	an incoming call. Associated with the button there is an icon on the Toolbar
+	The banner represents the hands free facility, to automatically answer on
+	an incoming call. Associated with the banner there is an icon on the Toolbar
 	present if the functionality is on.
 */
-class HandsFree : public IconButtonOnTray
+class HandsFree : public BannOnTray
 {
 Q_OBJECT
 public:
@@ -204,13 +222,14 @@ protected:
 
 /*!
 	\ingroup VideoDoorEntry
+	\ingroup Settings
 	\brief Toggle the bell (or ringtone) for video/intercom calls.
 
-	The button represents the possibility of exclude the ringtone for intercom
-	or video calls. Associated with the button there is an icon on the Toolbar
+	The banner represents the possibility of exclude the ringtone for intercom
+	or video calls. Associated with the banner there is an icon on the Toolbar
 	present if the ringtone exclusion is on.
 */
-class RingtoneExclusion : public IconButtonOnTray
+class RingtoneExclusion : public BannOnTray
 {
 Q_OBJECT
 public:

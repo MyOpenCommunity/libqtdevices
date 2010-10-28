@@ -24,14 +24,8 @@
 
 #include "page.h"
 
-/*!
-  \class Contrast
-  \brief This is a class that manage the contrast of the LCD. 
 
-  It occupies an etire page, shows a color bar in the middle and has three buttons
-  on the bottom to increase/decrease the contrast and to confirm the value chosen.
-*/
-
+// Manages the contrast of the touchscreen.
 class Contrast : public Page
 {
 Q_OBJECT

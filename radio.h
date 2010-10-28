@@ -34,9 +34,9 @@ class QLabel;
 class RadioSourceDevice;
 
 
-/**
- * The label that shows info about the Radio (the name, taken from the RDS system,
- * the frequency and the number of the channel).
+/*!
+	\ingroup SoundDiffusion
+	\brief Label that shows info about the Radio (name, frequency and channel number).
  */
 class RadioInfo : public QLabel
 {
@@ -66,8 +66,8 @@ private:
 
 
 /*!
- * \class RadioPage
- * \brief This class implements the management of the FM tuner specific page.
+	\ingroup SoundDiffusion
+	\brief Details page for RDS radio, linked from RadioSource.
  */
 class  RadioPage : public Page
 {

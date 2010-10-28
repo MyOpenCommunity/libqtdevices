@@ -33,72 +33,68 @@
 class QProcess;
 
 
-// Return the maximum width of the gui
+/*!
+	\ingroup Core
+	\brief Return the maximum width of the gui
+*/
 int maxWidth();
 
-// Return the maximum height of the gui
+/*!
+	\ingroup Core
+	\brief Return the maximum height of the gui
+*/
 int maxHeight();
 
- /*!
-  \brief Sets the contrast of the device.
+/*
+	Sets the contrast.
 
-  The contrast is set to the value of the first argument. If the second argument is TRUE also the configuration file is updated otherwise it isn't.
+	The contrast is set to the value of the first argument. If the second argument
+	is true also the configuration file is updated otherwise it isn't.
 */
 void setContrast(unsigned char value);
 
- /*!
-  \brief Gets the contrast of the device.
+/*
+	Gets the contrast of the device.
 */
 unsigned char getContrast();
 
-/**
- * Sets the backlight of the device on or off according to the value of the argument.
- * \param value If true, sets on the backlight.
- */
+/*!
+	\ingroup Core
+	\brief Sets the backlight of the device on or off according to the value of the argument.
+*/
 void setBacklight(bool value);
 
-/**
- * Sets the brightness level of the display.
- * \param level The new brightness level. Allowed values are 1 <= level <= 10
- * Using values outside this range yields no results.
- */
+/*!
+	\ingroup Core
+	\brief Sets the brightness level of the display.
+
+	The \a level is the new brightness level. Allowed values are 1 <= level <= 10.
+	Using values outside this range yields no results.
+*/
 void setBrightnessLevel(int level);
 
- /*!
-  \brief Gets the backlight state.
-*/
+// Gets the backlight state.
 bool getBacklight();
 
-/**
- * Enables the beep.
- * \param buzzer_enable Enables the beep for this execution of BTouch, without changing conf.xml.
- * \param write_to_conf Writes to config file the value passed in buzzer_enable.
- */
+// Enables the beep
 void setBeep(bool enable);
 
- /*!
-  \brief Sets the orientation of the device.
-*/
+// Sets the orientation of the device (used only for TS 3.5)
 void setOrientation(QString orientation);
 
- /*!
-  \brief Makes a system beep.
+/*!
+	\ingroup Core
+	\brief Makes a system beep.
 */
 void beep();
 
- /*!
-  \brief Makes a system beep and the argument represent the duration in ms.
-*/
+// Makes a system beep and the argument represent the duration in ms.
 void beep(int);
 
- /*!
-  \brief Retrieves if the beep is enabled or not.
-*/
+// Retrieves if the beep is enabled or not.
 bool getBeep();
 
- /*!
-  \brief Retrieves the time elapsed (in seconds) from last pressure of the device.
-*/
+// Retrieves the time elapsed (in seconds) from last pressure of the touchscreen.
 unsigned long getTimePress();
 
 #if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TS_10)
@@ -108,21 +104,22 @@ class QDateTime;
 void setTimePress(const QDateTime &press);
 #endif
 
- /*!
-  \brief WatchDog rearm.
+/*!
+	\ingroup Core
+	\brief Rearm the WatchDog software.
+
+	On the touchscreens 10'' and 3.5'' there is a watchdog software to ensure
+	that the software is actually running. Call this method to avoid a touchscreen
+	reboot.
 */
 void rearmWDT();
 
 void getName(char *name);
 
- /*!
-   \brief Reads alarm volume data
-*/
+// Reads alarm volume data.
 void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazione);
 
- /*!
-   \brief Stores alarm valume data
-*/
+// Stores alarm valume data.
 void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione);
 
 // Return the pair command, arguments to reproduce the audio file argument.

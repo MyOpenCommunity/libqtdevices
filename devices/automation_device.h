@@ -92,13 +92,13 @@ protected:
 
 /*!
 	\ingroup Automation
-	\brief Actuator status device (TODO).
+	\brief Dry contact status device.
 
-	Allows reading the actuator status (TODO).
+	Read the open/close status of dry contacts.
 
 	\section PPTStatDevice-dimensions Dimensions
 	\startdim
-	\dim{DIM_STATUS,bool,,The actuator (TODO) status.}
+	\dim{DIM_STATUS,bool,,Dry contact status.}
 	\enddim
 */
 class PPTStatDevice : public device

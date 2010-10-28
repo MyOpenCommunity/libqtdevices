@@ -38,6 +38,10 @@ class VideoDoorEntryDevice;
 class QDomNode;
 
 
+/*!
+	\ingroup Automation
+	\brief Banner to control a generic automation device
+ */
 class InterblockedActuator : public BannOpenClose
 {
 Q_OBJECT
@@ -55,14 +59,17 @@ private:
 	AutomationDevice *dev;
 };
 
-/**
- * Send open/close frame on button press and send stop on button release.
- *
- * Banner behaviour must change (both graphically and logically) depending on who was the origin of the action.
- * In case of update from bus, the icon must be STOP not pressed and a stop frame must be sent when the button
- * is clicked.
- * In case of command sent after the user pressed the touch screen, the icon must be STOP pressed and a stop
- * frame must be sent on button release.
+/*!
+	\ingroup Automation
+	\brief Banner to control a secure automation device (stops automatically when releasing the button)
+
+	Banner behaviour changes (both graphically and logically) depending on who was the origin of the action.
+
+	In case of update from bus, the icon is STOP (not pressed) and a stop frame must be sent when the button
+	is clicked.
+
+	In case of command sent after the user pressed the touch screen, the icon must be STOP (pressed) and a stop
+	frame must be sent after button release.
  */
 class SecureInterblockedActuator : public BannOpenClose
 {
@@ -85,6 +92,10 @@ private:
 };
 
 
+/*!
+	\ingroup Automation
+	\brief Banner to control the entry phone actuator from video door-entry system.
+ */
 class GateEntryphoneActuator : public BannSinglePuls
 {
 Q_OBJECT
@@ -100,6 +111,10 @@ private:
 };
 
 
+/*!
+	\ingroup Automation
+	\brief Banner to control the entry phone actuator from lighting system.
+ */
 class GateLightingActuator : public BannSinglePuls
 {
 Q_OBJECT
@@ -115,6 +130,10 @@ private:
 };
 
 
+/*!
+	\ingroup Automation
+	\brief Banner to control a group of automation devices.
+ */
 class InterblockedActuatorGroup : public Bann3Buttons
 {
 Q_OBJECT
@@ -131,6 +150,10 @@ private:
 };
 
 
+/*!
+	\ingroup Automation
+	\brief Banner display the state of dry contacts.
+ */
 class PPTStat : public Bann2Buttons
 {
 Q_OBJECT

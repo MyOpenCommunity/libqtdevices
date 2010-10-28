@@ -35,15 +35,15 @@ class QDomNode;
 /*!
 	\defgroup StopAndGo Stop&Go
 
-	The section allows to manage the various Stop&Go systems configured.
+	This subsection manages the Stop&Go systems configured, where each Stop&Go
+	controls an electrical grid.
 
-	The StopAndGoMenu presents a list of BanStopAndGo which move to the
-	appropriate StopAndGoPage depending on the type of Stop&Go systems configured.
-	The page can be a StopAndGoPage, a StopAndGoPlusPage or a StopAndGoBTestPage.
-
-	The BannStopAndGo and the various StopAndGoPage operates in conjuction with
-	the StopAndGoDevice to reflect the system status and to operate on it.
+	The StopAndGoMenu page presents a list of BannStopAndGo for each Stop&Go
+	system (that shows the status of the related system) and allow the user to
+	go to the dedicated page, that can be a StopAndGoPage, a StopAndGoPlusPage or a
+	StopAndGoBTestPage depending on the configuration.
 */
+
 
 /*!
 	\ingroup StopAndGo
@@ -52,8 +52,8 @@ class QDomNode;
 	It is composed by a central image, two optionals buttons and an optional
 	description.
 
-	The central image changes acording to the state of the systems check module
-	by the StopAndGoDevice passed as parameter in constructor.
+	The central image changes acording to the state of the related electrical
+	grid systems.
 
 	\note The central image automatically changes to reflect the device status.
 */
@@ -85,10 +85,10 @@ private:
 
 /*!
 	\ingroup StopAndGo
-	\brief Lists all the configured stop and go pages.
+	\brief Lists all the configured Stop&Go systems.
 
-	If there is only one StopAndGoPage, this page isn't displayed and will
-	forward directly to the StopAndGoPage.
+	If there is only one system, this page is not displayed and show directly
+	the StopAndGoPage dedicated for the system.
 */
 class StopAndGoMenu : public BannerPage
 {
@@ -98,8 +98,6 @@ public:
 		\brief Constructor.
 
 		Construct a new StopAndGoMenu with the given \a config_node.
-
-		\sa BannerPage
 	*/
 	StopAndGoMenu(const QDomNode &config_node);
 	virtual int sectionId() const;
@@ -115,10 +113,10 @@ private:
 
 /*!
 	\ingroup StopAndGo
-	\brief Page for the StopAndGo.
+	\brief Controls a Stop&Go system.
 
-	Contains a banner which reflects the device status and a button
-	used to enable or disable the autoreset.
+	Contains a banner which reflects the status of the system and a button
+	to enable or disable the automatic reset.
 */
 class StopAndGoPage : public Page
 {
@@ -129,8 +127,6 @@ public:
 
 		Construct a new StopAndGoPage with the given \a title and
 		\a device.
-
-		\sa Page
 	*/
 	StopAndGoPage(const QString &title, StopAndGoDevice *device);
 	virtual int sectionId() const;
@@ -147,10 +143,12 @@ private:
 
 /*!
 	\ingroup StopAndGo
-	\brief Page for the StopAndGo Plus.
+	\brief Controls a Stop&Go plus system.
 
-	It's like the StopAndGoPage, but in addiction, permits to open
-	and close, and track fails.
+	It is like the StopAndGoPage, but in addiction, permits to enable or disable
+	the system check.
+
+	\sa StopAndGoPage
 */
 class StopAndGoPlusPage : public Page
 {
@@ -161,8 +159,6 @@ public:
 
 		Construct a new StopAndGoPlusPage with the given \a title and
 		\a device.
-
-		\sa Page
 	*/
 	StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *device);
 	virtual int sectionId() const;
@@ -181,11 +177,12 @@ private:
 
 /*!
 	\ingroup StopAndGo
-	\brief Page for the StopAndGo BTest.
+	\brief Controls a Stop&Go BTest system.
 
-	It is like the StopAndGoPage, but in addiction, permits to switch on
-	and off the self tests, and to set the interval in days to perform
-	the tests at.
+	This page is very similar to the StopAndGoPlusPage one, but in addition
+	allow the user to set the number of days between tests.
+
+	\sa StopAndGoPlusPage
  */
 class StopAndGoBTestPage : public Page
 {
@@ -196,8 +193,6 @@ public:
 
 		Construct a new StopAndGoBTestPage with the given \a title and
 		\a device.
-
-		\sa Page
 	*/
 	StopAndGoBTestPage(const QString &title, StopAndGoBTestDevice *device);
 	virtual int sectionId() const;

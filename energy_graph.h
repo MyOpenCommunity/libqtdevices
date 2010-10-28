@@ -33,10 +33,12 @@
 class QLabel;
 
 
-/**
- * This widget draws a graph of the energy consumption. See EnergyTable for a
- * tabular representation.
- */
+
+/*!
+	\ingroup EnergyData
+	\brief Draws a graph of the energy consumption.
+	\sa EnergyTable for a tabular representation.
+*/
 class EnergyGraph : public QWidget
 {
 Q_OBJECT
@@ -134,10 +136,12 @@ private:
 	int pageCount();
 };
 
-/**
- * This widget show a table of the energy consumption. To a graphical representation
- * see the EnergyGraph widget.
- */
+
+/*!
+	\ingroup EnergyData
+	\brief Draws a table of the energy consumption.
+	\sa EnergyGraph to a graphical representation.
+*/
 class EnergyTable : public Page
 {
 Q_OBJECT

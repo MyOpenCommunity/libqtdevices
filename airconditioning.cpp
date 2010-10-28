@@ -639,7 +639,7 @@ void AdvancedGeneralSplitPage::loadScenarios(const QDomNode &config_node)
 			Velocity vel = v == -1 ? AdvancedAirConditioningDevice::VEL_INVALID : static_cast<Velocity>(v);
 			Swing swing = s == -1 ? AdvancedAirConditioningDevice::SWING_INVALID : static_cast<Swing>(s);
 			// this is ok, since general scenarios are taken from conf file and never change
-			b->appendDevice(dev->commandToString(AirConditionerStatus(m, t, vel, swing)),
+			b->appendDevice(dev->statusToString(AirConditionerStatus(m, t, vel, swing)),
 				bt_global::add_device_to_cache(dev));
 		}
 		page_content->appendBanner(b);

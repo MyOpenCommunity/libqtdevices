@@ -94,7 +94,7 @@ Page *getPage(int page_id)
 	case EVOLVED_SCENARIOS:
 		page = new Scenario(page_node);
 		break;
-#ifndef LAYOUT_TS_10
+#ifdef LAYOUT_TS_3_5
 	case SETTINGS:
 		page = new Settings(page_node);
 		break;

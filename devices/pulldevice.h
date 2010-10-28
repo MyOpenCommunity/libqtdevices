@@ -173,7 +173,6 @@ private:
 	it is not meant to be used directly and adds no public functions.
 
 	Derived classes must reimplement:
-	\list
 	\li parseFrame(): called for every received frame. Derived classes must parse
 	the frame and put the results into the DeviceValues.
 	\li requestPullStatus(): send a status request to the device. This can be
@@ -232,7 +231,6 @@ private:
 	stored in the device instance.
 
 	When receiving a global/environment command, there can be 3 cases:
-	\list
 	\li the frame is never handled by the physical device;
 	\li the frame is always handled by the physical device;
 	\li the frame is not handled by basic devices, but is handled by advanced ones.
@@ -264,7 +262,7 @@ protected:
 
 		Constructs a PullDevice of type \a m for the given \a who \a where
 		using \a pull_delay as a delay for status requests in basic/advanced
-		detection, \a sdv as the basic/advanced mode and \checker to classify
+		detection, \a sdv as the basic/advanced mode and \a checker to classify
 		incoming frames during detection.
 	 */
 	PullDevice(QString who, QString where, PullMode m, int openserver_id, int pull_delay, AdvancedMode adv = PULL_ADVANCED_UNKNOWN, PullStateManager::FrameChecker checker = NULL);

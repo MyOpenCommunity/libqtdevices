@@ -129,7 +129,7 @@ Bann4Buttons::Bann4Buttons(QWidget *parent) :
 	text = new ScrollingLabel;
 	text->setAlignment(Qt::AlignHCenter);
 
-	QGridLayout *grid = new QGridLayout;
+	QGridLayout *grid = new QGridLayout(this);
 	grid->setContentsMargins(0, 0, 0, 0);
 	grid->setSpacing(0);
 	grid->addWidget(left_button, 0, 0);
@@ -139,11 +139,7 @@ Bann4Buttons::Bann4Buttons(QWidget *parent) :
 	for (int i = 0; i < grid->columnCount(); ++i)
 		grid->setColumnStretch(i, 1);
 
-	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	l->addLayout(grid);
-	l->addWidget(text);
+	grid->addWidget(text, 1, 0, 1, 4);
 }
 
 void Bann4Buttons::initBanner(const QString &right, const QString &center_right,
@@ -154,6 +150,14 @@ void Bann4Buttons::initBanner(const QString &right, const QString &center_right,
 	initButton(center_left_button, center_left);
 	initButton(left_button, left);
 	initLabel(text, banner_text, bt_global::font->get(FontManager::BANNERDESCRIPTION));
+}
+
+void Bann4Buttons::setCentralSpacing(bool spaced)
+{
+	QGridLayout *l = static_cast<QGridLayout*>(layout());
+
+	l->itemAtPosition(0, 1)->setAlignment(spaced ? Qt::AlignHCenter : Qt::AlignRight);
+	l->itemAtPosition(0, 2)->setAlignment(spaced? Qt::AlignHCenter : Qt::AlignLeft);
 }
 
 
@@ -238,19 +242,3 @@ void BannLevel::startRightTimer()
 		timer.start();
 	}
 }
-
-
-bann4But::bann4But(QWidget *parent) : BannerOld(parent)
-{
-	// sx
-	addItem(BUT1,(banner_width/4-BAN4BUT_DIM)/2, 0, BAN4BUT_DIM , BAN4BUT_DIM);
-	// csx
-	addItem(BUT3, banner_width/4+(banner_width/4-BAN4BUT_DIM)/2, 0, BAN4BUT_DIM ,BAN4BUT_DIM);
-	// cdx
-	addItem(BUT4, banner_width/2+(banner_width/4-BAN4BUT_DIM)/2, 0, BAN4BUT_DIM, BAN4BUT_DIM);
-	// dx
-	addItem(BUT2, banner_width*3/4+(banner_width/4-BAN4BUT_DIM)/2, 0, BAN4BUT_DIM, BAN4BUT_DIM);
-	addItem(TEXT, 0, BAN4BUT_DIM, banner_width, banner_height-BAN4BUT_DIM);
-	Draw();
-}
-

@@ -188,7 +188,7 @@ void CalibrationWidget::paintEvent(QPaintEvent*)
 	p.fillRect(rect(), Qt::white);
 
 	int text_height = 30;
-	int text_width = 150;
+	int text_width = width();
 
 #ifdef LAYOUT_TS_3_5
 	int total_height = logo.height() + text_height;

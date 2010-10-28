@@ -214,7 +214,6 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		break;
 	case TEMP_LIGHT_FIXED:
 	{
-		int t;
 	#ifdef CONFIG_TS_3_5
 		// I think conf.xml will have only one node for time in this banner, however
 		// such node is indicated as "timeX", so I'm using the following overkill code
@@ -223,12 +222,11 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 		QStringList sl;
 		foreach (const QDomNode &tmp, children)
 			sl << tmp.toElement().text().split("*");
-
-		Q_ASSERT_X(sl.size() == 3, "Lighting::getBanner", "Fixed time must have exactly 3 fields");
-		t = sl[0].toInt() * 3600 + sl[1].toInt() * 60 + sl[2].toInt();
 	#else
-		t = getTextChild(item_node, "time").toInt();
+		QStringList sl = getTextChild(item_node, "time").split("*");
 	#endif
+		Q_ASSERT_X(sl.size() == 3, "Lighting::getBanner", "Fixed time must have exactly 3 fields");
+		int t = sl[0].toInt() * 3600 + sl[1].toInt() * 60 + sl[2].toInt();
 		DeviceType device_type = static_cast<DeviceType>(getTextChild(item_node, "device").toInt());
 		b = new TempLightFixed(t, descr, where, oid, device_type, getPullMode(item_node));
 	}

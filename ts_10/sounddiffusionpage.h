@@ -36,7 +36,37 @@ class VirtualSourceDevice;
 class ScrollingLabel;
 
 
+/*!
+	\defgroup SoundDiffusion Sound Diffusion
+
+	This section allows:
+	\li managing the sound diffusion sources (change the playing track/radio station, change radio tuning, play a local mp3 file, ...)
+	\li turning on a source on one or more areas
+	\li turning on and changing the volume of SCS amplifiers
+
+	The code in this section also manages the SCS commands for the local source/amplifiers.
+
+	For multichannel sound diffusion, SoundDiffusionPage displays the list of environments, linking to a
+	different SoundAmbient page for each environment.  Each SoundAmbient page contains a SoundSources instance
+	to display/change the active source and instances of Amplifier, AmplifierGroup and BannPowerAmplifier
+	to control the amplifiers.
+
+	For monochannel sound diffusion, SoundDiffusionPage is instantiated and linked to the homepage, but
+	is never shown to the user.
+
+	LocalSource and LocalAmplifier are non-user-visible classes that handle the commands received by
+	VirtualSourceDevice and VirtualAmplifierDevice and call the relevant AudioStateMachine methods to
+	perform the changes.
+
+	SoundAmbientAlarmPage and SoundDiffusionAlarmPage are variants of SoundAmbient and SoundDiffusionPage
+	for sound diffusion alarm clock.  SoundDiffusionAlarmPage does not contain a link to the special environment
+	and SoundAmbientAlarmPage only contains RDS and %Aux sources and has an OK button to save the sound diffusion
+	state for the alarm clock.
+ */
+
+
 // TODO: this should go to its own file if we need more banners
+// TODO: use Bann2Buttons directly
 class SoundAmbient : public BannerNew
 {
 Q_OBJECT
@@ -53,6 +83,10 @@ private:
 };
 
 
+/*!
+	\ingroup SoundDiffusion
+	\brief Source configuration data from configuration file.
+ */
 struct SourceDescription
 {
 	QString descr;
@@ -65,8 +99,12 @@ Q_DECLARE_TYPEINFO(SourceDescription, Q_MOVABLE_TYPE);
 
 
 
-/**
- * The widget container for the audio sources.
+/*!
+	\ingroup SoundDiffusion
+	\brief Contains one AudioSource subclass for each configured source, and the button to turn on the source.
+
+	There is a separate %SoundSources and AudioSource subclass instance for each environment; however,
+	source configuration pages (RDS radio details, multimedia source list) are shared by all environments.
  */
 class SoundSources : public QWidget
 {
@@ -90,8 +128,9 @@ private:
 };
 
 
-/**
- * Ambient page: has sources as top widget and amplifiers below
+/*!
+	\ingroup SoundDiffusion
+	\brief %Page for a sound diffusion environment; contains SoundSources as top widget and a list of amplifiers below it.
  */
 class SoundAmbientPage : public BannerPage
 {
@@ -119,8 +158,11 @@ private:
 };
 
 
-/**
- * Ambient page for the alarm clock: has sources as top widget and amplifiers below
+/*!
+	\ingroup SoundDiffusion
+	\brief %Page for a sound diffusion environment for alarm clock.
+
+	Only contains RDS radio and %Aux sources and has an OK button to save/activate alarm clock.
  */
 class SoundAmbientAlarmPage : public BannerPage
 {
@@ -142,11 +184,12 @@ private:
 };
 
 
-/**
- * General sound diffusion page. Shown only in multi sound diffusion.
- *
- * In practice this page is always created, even for mono sound diffusion, but
- * its showPage method skips directly to the only ambient page.
+/*!
+	\ingroup SoundDiffusion
+	\brief General sound diffusion page. Shown only in multi sound diffusion.
+
+	In practice this page is always created, even for mono sound diffusion, but
+	its showPage() method skips directly to the only ambient page.
  */
 class SoundDiffusionPage : public BannerPage
 {
@@ -175,10 +218,11 @@ private:
 };
 
 
-/**
- * General sound diffusion page for the alarm clock. Shown only in multi sound diffusion.
- *
- * The main difference from SoundDiffusionPage is that the special ambient is not shown.
+/*!
+	\ingroup SoundDiffusion
+	\brief General sound diffusion page for the alarm clock. Shown only in multi sound diffusion.
+
+	The main difference from SoundDiffusionPage is that the special ambient is not shown.
  */
 class SoundDiffusionAlarmPage : public BannerPage
 {
@@ -200,8 +244,11 @@ private:
 };
 
 
-/**
- * Handles the device logic for the local sound diffusion amplifier
+/*!
+	\ingroup SoundDiffusion
+	\brief Handles the device logic for the local sound diffusion amplifier
+
+	Instantiated during the parsing of the sound diffusion section.
  */
 class LocalAmplifier : public QObject
 {
@@ -224,7 +271,10 @@ private:
 };
 
 /**
- * Handles the device logic for the local sound diffusion source
+	\ingroup SoundDiffusion
+	\brief Handles the device logic for the local sound diffusion source.
+
+	Instantiated during the parsing of the sound diffusion section.
  */
 class LocalSource : public QObject
 {

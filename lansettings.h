@@ -39,7 +39,7 @@ class QTimer;
 namespace LanSettingsPrivate
 {
 
-	/**
+	/*
 	 * An helper class that tests the connection status, trying to download a list
 	 * of web pages from internet. It emits testFailed/testPassed to notify
 	 * the test result.
@@ -72,11 +72,7 @@ namespace LanSettingsPrivate
 };
 
 
-/**
- * \class Text2Column
- *
- * An utility class to show text in 2 column like a table.
- */
+// An utility class to show text in 2 column like a table.
 class Text2Column : public QFrame
 {
 Q_OBJECT
@@ -93,12 +89,10 @@ private:
 };
 
 
-/**
- * \class LanSettings
- *
- * This class is a page used to show lan settings and enable activation
- * (disactivation) of lan interface.
- */
+/*!
+	\ingroup Settings
+	\brief Shows lan settings and enable/disable the lan interface.
+*/
 class LanSettings : public Page
 {
 Q_OBJECT

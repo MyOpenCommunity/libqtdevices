@@ -515,7 +515,10 @@ void EnergyView::showPage()
 	// disconnect all slots: can't disconnect a single slot on multiple objects
 	disconnect(table, SIGNAL(Closed()), 0, 0);
 	connect(table, SIGNAL(Closed()), SLOT(showPageFromTable()));
-	time_period->forceDate(QDate::currentDate());
+	// do not force the date to today when reentering the page (for example from
+	// a screen saver)
+	if (!is_current_page)
+		time_period->forceDate(QDate::currentDate());
 	showPageFromTable();
 
 	is_current_page = true;

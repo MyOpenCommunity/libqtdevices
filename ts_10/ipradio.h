@@ -28,6 +28,10 @@ class QDomNode;
 class AudioPlayerPage;
 
 
+/*!
+	\ingroup Multimedia
+	\brief Shows the list of web radios taken from the configuration file.
+ */
 class IPRadioPage : public ItemListPage
 {
 Q_OBJECT

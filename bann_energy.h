@@ -34,15 +34,14 @@ class EnergyDevice;
 class LoadsDevice;
 
 
+/*!
+	\ingroup EnergyData
+	\brief Represents a single interface.
+*/
 class BannEnergyInterface : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	/**
-	 * \param rate_id the id of the rate in the rate_info tag
-	 * \param n_dec the number of decimals to show in the labels
-	 * \param is_electricity true if we are measuring electricity
-	 */
 	BannEnergyInterface(int rate_id, bool is_ele, const QString &description, EnergyDevice *d);
 	void setUnitMeasure(const QString &m);
 	void updateText();
@@ -68,8 +67,10 @@ private:
 };
 
 
-// displays the current consumption value for the device; when shown,
-// calls requestCurrentUpdateStart(), requestCurrentUpdateStop() when hidden
+/*!
+	\ingroup EnergyData
+	\brief Displays the current consumptions for an interface.
+*/
 class BannCurrentEnergy : public Bann2Buttons
 {
 public:
@@ -84,7 +85,10 @@ private:
 };
 
 
-// allows modifying the tariff for the given rate_id
+/*!
+	\ingroup EnergyData
+	\brief Allows modifying the tariff for a given family of energy.
+*/
 class BannEnergyCost : public Bann2Buttons
 {
 Q_OBJECT
@@ -110,8 +114,10 @@ private:
 };
 
 
-// displays the current load for an actuator (normal, close to limit,
-// above limit) using three icons
+/*!
+	\ingroup LoadDiagnostic
+	\brief Shows the status of a load (normal, close to limit, above limit)
+*/
 class BannLoadDiagnostic : public Bann2Buttons
 {
 Q_OBJECT
@@ -129,6 +135,10 @@ private:
 };
 
 
+/*!
+	\ingroup LoadManagement
+	\brief Represents a load when the \ref LoadManagement has not a central unit.
+*/
 class BannLoadNoCU : public Bann3ButtonsLabel
 {
 Q_OBJECT
@@ -138,6 +148,10 @@ public:
 };
 
 
+/*!
+	\ingroup LoadManagement
+	\brief Represents a load when the \ref LoadManagement has a central unit.
+*/
 class BannLoadWithCU : public Bann3ButtonsLabel
 {
 Q_OBJECT
@@ -163,7 +177,10 @@ signals:
 };
 
 
-
+/*!
+	\ingroup LoadManagement
+	\brief Sets the time of deactivation for a load.
+*/
 class DeactivationTime : public Bann2Buttons
 {
 Q_OBJECT

@@ -37,7 +37,7 @@ class SplitSpeed;
 class NonControlledProbeDevice;
 class GeneralSplit;
 
-typedef AdvancedAirConditioningDevice::AirConditionerStatus AirConditionerStatus;
+typedef AdvancedAirConditioningDevice::Status AirConditionerStatus;
 
 
 namespace AirConditioningAdvanced
@@ -63,8 +63,32 @@ namespace AirConditioningPrivate
 	};
 }
 
+/*!
+	\defgroup AirConditioning AirConditioning
 
-// The main page of the Air Conditioning
+	This module is a part of the \ref ThermalRegulation section.
+
+	It allows the user to controls, through the AirConditioning page, a list of
+	splits. That list is composed by basic splits (SingleSplit) or advanced splits
+	(AdvancedSingleSplit), plus a general (GeneralSplit) that can control a
+	group (even the entire group) of splits.
+
+	In the basic interface, for each split there is a SplitPage that contains
+	all the scenarios (SplitScenario) configured for the split plus the off
+	command.
+
+	The advanced interface is similar to the previous: it has a AdvancedSplitPage
+	for each advanced split that allows the user to set a scenario
+	(AdvancedSplitScenario) or switch off the split. In addition, it contains
+	a CustomScenario banner that permits to customize the scenario using the
+	SplitSettings page.
+*/
+
+/*!
+	\ingroup AirConditioning
+	\brief The main page, that contains banners for all the splits configured
+	and for the general, if present.
+*/
 class AirConditioning : public BannerPage
 {
 Q_OBJECT
@@ -80,10 +104,12 @@ private:
 	void loadItems(const QDomNode &config_node);
 };
 
-/**
- * The page for a split (basic) which contains all the scenarios configured for
- * that split.
- */
+
+/*!
+	\ingroup AirConditioning
+	\brief Contains all the scenarios (SplitScenario) configured for the related
+	split and an off button if configured.
+*/
 class SplitPage : public BannerPage
 {
 Q_OBJECT
@@ -99,10 +125,14 @@ private slots:
 };
 
 
-/**
- * The page for a split (advanced) which contains all the scenarios configured
- * for that split.
- */
+/*!
+	\ingroup AirConditioning
+	\brief Contains all the scenarios (AdvancedSplitScenario) configured for the
+	related advanced split and an off button if configured.
+
+	The page contains also a CustomScenario banner to view and modify the settings
+	of the split through the SplitSettings page.
+*/
 class AdvancedSplitPage : public BannerPage
 {
 Q_OBJECT
@@ -124,9 +154,10 @@ private slots:
 };
 
 
-/**
- * The page of the settings (also known as custom page) for an advanced scenario.
- */
+/*!
+	\ingroup AirConditioning
+	\brief Allows the user to set a custom AdvancedAirConditioningDevice::Status.
+*/
 #ifdef LAYOUT_TS_3_5
 class SplitSettings : public BannerPage
 #else
@@ -163,9 +194,10 @@ signals:
 };
 
 
-/**
- * The page for a general split which contains all the scenarios for that.
- */
+/*!
+	\ingroup AirConditioning
+	\brief Contains all the scenarios for the general that controls basic splits.
+*/
 class GeneralSplitPage : public BannerPage
 {
 Q_OBJECT
@@ -177,6 +209,10 @@ private:
 };
 
 
+/*!
+	\ingroup AirConditioning
+	\brief Contains all the scenarios for the general that controls advanced splits.
+*/
 class AdvancedGeneralSplitPage : public BannerPage
 {
 Q_OBJECT
@@ -188,6 +224,10 @@ private:
 };
 
 
+/*!
+	\ingroup AirConditioning
+	\brief A popup page that notifies a failure in a command sent to a split.
+*/
 class SplitErrorPage : public Page
 {
 Q_OBJECT

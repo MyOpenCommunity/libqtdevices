@@ -64,7 +64,8 @@ private:
 	QString left_icon, left_alt, right_icon, right_alt;
 };
 
-// substitute for bann4But
+
+// Banner with 4 buttons and a descriptive label
 class Bann4Buttons : public BannerNew
 {
 Q_OBJECT
@@ -73,7 +74,13 @@ protected:
 	void initBanner(const QString &right, const QString &center_right, const QString &center_left,
 		const QString &left, const QString &banner_text);
 
+	/*!
+		\brief Squash together central buttons
+	 */
+	void setCentralSpacing(bool spaced);
+
 	BtButton *right_button, *center_right_button, *center_left_button, *left_button;
+
 private:
 	ScrollingLabel *text;
 };
@@ -82,6 +89,7 @@ private:
 /*
  * A class to control the rate of signals emitted
  */
+// TODO use Bann4Buttons as the base class
 class BannLevel : public BannerNew
 {
 Q_OBJECT
@@ -109,18 +117,5 @@ signals:
 	void center_left_clicked();
 	void center_right_clicked();
 };
-
-
-/*!
-  \class bann4But
-  \brief This is a class that describes a banner with 4 buttons
-*/
-class bann4But : public BannerOld
-{
-Q_OBJECT
-public:
-	bann4But(QWidget *);
-};
-
 
 #endif // BANN4_BUTTONS_H
