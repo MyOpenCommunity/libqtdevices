@@ -187,6 +187,7 @@ HEADERS += actuators.h \
 	thermalregulator.h \
 	timescript.h \
 	transitionwidget.h \
+	upnpclientbrowser.h \
 	version.h \
 	videodoorentry.h \
 	window.h \
@@ -290,6 +291,7 @@ SOURCES += actuators.cpp \
 	thermalregulator.cpp \
 	timescript.cpp \
 	transitionwidget.cpp \
+	upnpclientbrowser.cpp \
 	version.cpp \
 	videodoorentry.cpp \
 	window.cpp \
