@@ -399,9 +399,9 @@ public:
 		device cache.
 
 		The \a where parameter can be:
-		\li <area><point> (ex. \c 18, \c 23) will create a device for a single amplifier
-		\li \#<area> (ex. \#4) will create an area command
-		\li \c "0" will create a general command
+		- <area><point> (ex. \c 18, \c 23) will create a device for a single amplifier
+		- \#<area> (ex. \#4) will create an area command
+		- \c "0" will create a general command
 
 		If the touchscreen is configured as an SCS amplifier, setVirtualAmplifierWhere()
 		must be called before instantiating any amplifier.

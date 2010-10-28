@@ -103,9 +103,9 @@ public:
 	/*!
 		Acts as a filter for frames; the return value can be:
 
-		\li FRAME_NOT_HANDLED: the pull/not pull algorithm is not run for this frame;
-		\li FRAME_HANDLED: the frame is considered for the pull/non pull algorithm;
-		\li FRAME_MAYBE_HANDLED: the device might react to the frame (in this case
+		- FRAME_NOT_HANDLED: the pull/not pull algorithm is not run for this frame;
+		- FRAME_HANDLED: the frame is considered for the pull/non pull algorithm;
+		- FRAME_MAYBE_HANDLED: the device might react to the frame (in this case
 		it is in non pull mode, and an "advanced" device) or it might not react
 		(in this case the pull mode is unknown).
 	*/
@@ -173,15 +173,15 @@ private:
 	it is not meant to be used directly and adds no public functions.
 
 	Derived classes must reimplement:
-	\li parseFrame(): called for every received frame. Derived classes must parse
+	- parseFrame(): called for every received frame. Derived classes must parse
 	the frame and put the results into the DeviceValues.
-	\li requestPullStatus(): send a status request to the device. This can be
+	- requestPullStatus(): send a status request to the device. This can be
 	reimplemented depending on device necessities.
 
 	Derived classes MUST NOT reimplement manageFrame(), as they will override
 	ADVANCED mode discovery logic.
 
-	\section1 Pull/non-pull devices
+	\section pull_nonpull Pull/non-pull devices
 
 	All physical devices react to commands sent directly to the device
 	(point-to-point commands) by executing the command and sending a status update.
@@ -197,7 +197,7 @@ private:
 	information is not specified in the configuration file for devices only used
 	to send frames (for example light/dimmer groups).
 
-	\section1 Basic/advanced devices
+	\section basic_advanced Basic/advanced devices
 
 	Light actuators and 10-level dimmers can come both basic and advanced variants;
 	basic devices only react to command frames for their exact device type while
@@ -212,7 +212,7 @@ private:
 	configuration file but must be inferred from the way the device reacts to
 	frames.
 
-	\section1 Determining basic/advanced device type
+	\section discover Determining basic advanced device type
 
 	This is only relevant for pull devices; non-pull devices will always be
 	created as basic (since pull physical devices do not react to global/environment
@@ -231,9 +231,9 @@ private:
 	stored in the device instance.
 
 	When receiving a global/environment command, there can be 3 cases:
-	\li the frame is never handled by the physical device;
-	\li the frame is always handled by the physical device;
-	\li the frame is not handled by basic devices, but is handled by advanced ones.
+	- the frame is never handled by the physical device;
+	- the frame is always handled by the physical device;
+	- the frame is not handled by basic devices, but is handled by advanced ones.
 
 	In the first case the frame is discarded, in the second is passed parseFrame().
 

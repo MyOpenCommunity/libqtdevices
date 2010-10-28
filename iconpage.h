@@ -47,9 +47,9 @@ class NavigationBar;
 	page is delegate to the content class, in this case the IconContent class.
 
 	There are two methods for adding a button into the IconPage:
-	\li by the addButton() method, which creates the button attach it to the
+	- by the addButton() method, which creates the button attach it to the
 		page and returns it
-	\li by the addPage() method, which creates the button, attach it to the page
+	- by the addPage() method, which creates the button, attach it to the page
 		and connect it to the corresponding page through the slot showPage() and
 		the Closed() signal.
  */

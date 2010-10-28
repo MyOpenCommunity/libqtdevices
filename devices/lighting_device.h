@@ -87,13 +87,13 @@ public:
 	/*!
 		\brief Turn on the light for the given time.
 		The mapping between \a value and the light time is as follows:
-		\li 0: 1 minute
-		\li 1: 2 minutes
-		\li 2: 3 minutes
-		\li 3: 4 minutes
-		\li 4: 5 minutes
-		\li 5: 15 minutes
-		\li 6: 30 seconds
+		- 0: 1 minute
+		- 1: 2 minutes
+		- 2: 3 minutes
+		- 3: 4 minutes
+		- 4: 5 minutes
+		- 5: 15 minutes
+		- 6: 30 seconds
 
 		Use requestVariableTiming() to periodically request the remaining time.
 		\sa variableTiming()

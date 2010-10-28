@@ -84,10 +84,10 @@ class QTimer;
 	\section AudioStateMachine-newstate Adding a new state
 
 	To add a new state:
-	\li add a new value to the enum below
-	\li add the enter/exit handlers to the 'private slots' section
-	\li call addState() in the constructor to register the state in the state machine
-	\li modify toState() if it is necessary to add the state in a specific place in the state stack
+	- add a new value to the enum below
+	- add the enter/exit handlers to the 'private slots' section
+	- call addState() in the constructor to register the state in the state machine
+	- modify toState() if it is necessary to add the state in a specific place in the state stack
  */
 class AudioStateMachine : public StateMachine
 {

@@ -107,11 +107,11 @@ public:
 protected:
 	/*!
 		\section protocol Message protocol description:
-		\li begin
-		\li param (ignored)
-		\li continue (could arrive many times)
-		\li checksum
-		\li end
+		- begin
+		- param (ignored)
+		- continue (could arrive many times)
+		- checksum
+		- end
 
 		\note Only one message a time can be processed, if the device receives
 			a begin request while is processing one message, it responds with a
