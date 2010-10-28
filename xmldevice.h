@@ -103,7 +103,10 @@ public:
 	~XmlDevice();
 
 	void requestUPnPServers();
-	void select(const QString &name);
+	void selectServer(const QString &server_name);
+	void chDir(const QString &dir);
+	void selectFile(const QString &file_tags);
+
 	void browseUp();
 	void listItems(int max_results);
 
@@ -115,6 +118,7 @@ private slots:
 	void handleData(const QString &data);
 
 private:
+	void select(const QString &name);
 	XmlResponse parseXml(const QString &xml);
 	bool parseHeader(const QDomNode &header_node);
 	QString buildCommand(const QString &command, const QString &argument = QString());

@@ -181,9 +181,19 @@ void XmlDevice::requestUPnPServers()
 	xml_client->sendCommand(buildCommand("RW26C1"));
 }
 
-void XmlDevice::select(const QString &name)
+void XmlDevice::selectServer(const QString &server_name)
 {
-	xml_client->sendCommand(buildCommand("RW26C2", name));
+	select(server_name);
+}
+
+void XmlDevice::chDir(const QString &dir)
+{
+	select(dir);
+}
+
+void XmlDevice::selectFile(const QString &file_tags)
+{
+	select(file_tags);
 }
 
 void XmlDevice::browseUp()
@@ -207,6 +217,11 @@ void XmlDevice::handleData(const QString &data)
 	}
 	else
 		emit responseReceived(response);
+}
+
+void XmlDevice::select(const QString &name)
+{
+	xml_client->sendCommand(buildCommand("RW26C2", name));
 }
 
 XmlResponse XmlDevice::parseXml(const QString &xml)
