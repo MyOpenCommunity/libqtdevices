@@ -179,7 +179,7 @@ XmlDevice::~XmlDevice()
 
 void XmlDevice::requestUPnPServers()
 {
-	xml_client->sendCommand(buildCommand("RW26C1"));
+	sendCommand(buildCommand("RW26C1"));
 }
 
 void XmlDevice::selectServer(const QString &server_name)
@@ -199,12 +199,12 @@ void XmlDevice::selectFile(const QString &file_tags)
 
 void XmlDevice::browseUp()
 {
-	xml_client->sendCommand(buildCommand("CW26C7"));
+	sendCommand(buildCommand("CW26C7"));
 }
 
 void XmlDevice::listItems(int max_results)
 {
-	xml_client->sendCommand(buildCommand("CW26C6", QString::number(max_results)));
+	sendCommand(buildCommand("CW26C6", QString::number(max_results)));
 }
 
 void XmlDevice::handleData(const QString &data)
@@ -239,7 +239,7 @@ void XmlDevice::sendCommand(const QString &message)
 
 void XmlDevice::select(const QString &name)
 {
-	xml_client->sendCommand(buildCommand("RW26C2", name));
+	sendCommand(buildCommand("RW26C2", name));
 }
 
 XmlResponse XmlDevice::parseXml(const QString &xml)
