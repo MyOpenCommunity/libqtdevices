@@ -42,7 +42,9 @@ enum MultimediaFileType
 	AUDIO = 1,     /*!< Audio filetype */
 	VIDEO = 2,     /*!< Video filetype */
 	IMAGE = 3,     /*!< Image filetype */
+#ifdef BUILD_EXAMPLES
 	PDF   = 4,     /*!< PDF filetype */
+#endif
 };
 
 /*!

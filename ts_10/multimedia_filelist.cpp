@@ -225,8 +225,10 @@ void MultimediaFileListPage::startPlayback(int item)
 		emit displayVideos(files, current);
 	else if (type == AUDIO)
 		emit playAudioFiles(files, current);
+#ifdef PDF_EXAMPLE
 	else if (type == PDF)
 		emit displayPdf(files[current]);
+#endif
 }
 
 int MultimediaFileListPage::currentPage()

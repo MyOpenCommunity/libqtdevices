@@ -149,7 +149,9 @@ enum Section
 	MULTIMEDIA = 26,
 	MESSAGES = 27,
 
+#ifdef BUILD_EXAMPLES
 	TCP_BANNER_TEST = 55555,
+#endif
 };
 #else
 enum Section
@@ -175,7 +177,9 @@ enum Section
 	ENERGY_MANAGEMENT = 15000,                      /*!< Energy management system */
 	ENERGY_DATA = 7000,                             /*!< Energy data system */
 
+#ifdef BUILD_EXAMPLES
 	TCP_BANNER_TEST = 55555,
+#endif
 };
 #endif
 

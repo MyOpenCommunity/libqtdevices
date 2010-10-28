@@ -30,8 +30,9 @@ class ItemList;
 class SlideshowPage;
 class VideoPlayerPage;
 class AudioPlayerPage;
+#ifdef PDF_EXAMPLE
 class PdfPage;
-
+#endif
 
 /*!
 	\ingroup Multimedia
@@ -60,7 +61,9 @@ signals:
 	void displayImages(QList<QString> images, unsigned element);
 	void displayVideos(QList<QString> images, unsigned element);
 	void playAudioFiles(QList<QString> images, unsigned element);
+#ifdef PDF_EXAMPLE
 	void displayPdf(QString file);
+#endif
 
 protected:
 	virtual bool browseFiles(const QDir &directory, QList<QFileInfo> &files);
@@ -93,7 +96,9 @@ private:
 	SlideshowPage *slideshow;
 	VideoPlayerPage *videoplayer;
 	AudioPlayerPage *audioplayer;
+#ifdef PDF_EXAMPLE
 	PdfPage *pdfdisplay;
+#endif
 };
 
 #endif // MULTIMEDIA_FILELIST_H

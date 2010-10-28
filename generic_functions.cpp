@@ -78,7 +78,9 @@ namespace
 	const char *audio_files[] = {"m3u", "mp3", "wav", "ogg", "wma", 0};
 	const char *video_files[] = {"mpg", "avi", "mp4", 0};
 	const char *image_files[] = {"png", "gif", "jpg", "jpeg", 0};
+#ifdef BUILD_EXAMPLES
 	const char *pdf_files[]   = {"pdf", 0};
+#endif
 
 	// transforms an extension to a pattern (es. "wav" -> "*.[wW][aA][vV]")
 	void addFilters(QStringList &filters, const char **extensions, int size)
@@ -113,9 +115,11 @@ QStringList getFileExtensions(MultimediaFileType type)
 	case IMAGE:
 		files = image_files;
 		break;
+#ifdef BUILD_EXAMPLES
 	case PDF:
 		files = pdf_files;
 		break;
+#endif
 	case UNKNOWN:
 	case DIRECTORY:
 		break;
@@ -151,9 +155,11 @@ QStringList getFileFilter(MultimediaFileType type)
 	case IMAGE:
 			files = image_files;
 		break;
+#ifdef BUILD_EXAMPLES
 	case PDF:
 			files = pdf_files;
 		break;
+#endif
 	default:
 		Q_ASSERT_X(false, "getFileFilter", qPrintable(QString("type %1 not handled").arg(type)));
 	}

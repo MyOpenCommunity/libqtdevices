@@ -405,7 +405,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<!-- Multimedia list icons -->
 		<img_eject>multimediale/umount.png</img_eject>
 		<img_image_icon>multimediale/fotomini.png</img_image_icon>
-		<img_pdf_icon>multimediale/fotomini.png</img_pdf_icon>
+		<img_pdf_icon>multimediale/fotomini.png</img_pdf_icon>  <!-- Pdf example -->
 		<img_audio_icon>multimediale/audiomini.png</img_audio_icon>
 		<img_video_icon>multimediale/videomini.png</img_video_icon>
 		<img_directory_icon>multimediale/cartellamini.png</img_directory_icon>
@@ -2023,14 +2023,14 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 	</item>
 	<item>
 		<!--
-		Logo screensaver
+		Logo screensaver exanoke
 		-->
 		<cid>12345</cid>
 		<img_screensaver_logo>screensaver.png</img_screensaver_logo>
 	</item>
 	<item>
 		<!--
-		TCP Banner Example</cid>
+		TCP Banner Example
 		-->
 		<cid>55555</cid>
 		<img_link_icon>setup/ok.png</img_link_icon>

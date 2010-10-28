@@ -72,7 +72,9 @@ public:
 		TEXT,       /*!< a line with a text */
 		SLIDESHOW,  /*!< image slideshow */
 		DEFORM,     /*!< the deformer */
+#ifdef BUILD_EXAMPLES
 		LOGO,       /*!< bouncing logo */
+#endif
 	};
 
 	/*!

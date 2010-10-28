@@ -44,7 +44,9 @@ enum
 	PAGE_WEB_CAM = 16004,
 	PAGE_RSS = 16003,
 	PAGE_SD = 16005,
+#ifdef BUILD_EXAMPLES
 	PAGE_PDF = 55556,
+#endif
 };
 
 SongSearch *MultimediaSectionPage::song_search = NULL;
@@ -186,6 +188,7 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 			}
 			break;
 		}
+#ifdef BUILD_EXAMPLES
 		case PAGE_PDF:
 		{
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM))
@@ -200,6 +203,7 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 			}
 			break;
 		}
+#endif
 		case PAGE_WEB_CAM:
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_WEBCAM))
 				p = new WebcamListPage(page_node);
