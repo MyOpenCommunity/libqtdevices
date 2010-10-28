@@ -27,8 +27,22 @@
 
 	\section modifying-gui Modifying the GUI
 
-	bla bla bla
-	See the \ref page-examples.
+	At the simplest level, the GUI can be cusotmized by changing its
+	appearance.  The font configuration files can be modified to change
+	size, weight and font face, as described in FontManager.  Similarly, editing
+	the \c skin.xml all icons and colors can be changed
+	without the need to actually modify the BTouch application; see SkinManager
+	for a description.
+
+	Changing images and font sizes can dramatically change the appearance
+	of the application; however, the only way to add new functionality is to write
+	C++ code that integrates with the existing GUI.  Using this approach it's
+	possible to add new types of banners, or even entire new sections.
+
+	The manual includes some examples that show various level of customization
+	(a new banner type, a new page, a new screensaver); see \ref page-examples
+	for a detailed explanation, and BTouch sources for the actual working code
+	of the examples.
 */
 
 /*!
