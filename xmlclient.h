@@ -21,6 +21,7 @@
 #define XMLCLIENT_H
 
 #include <QObject>
+#include <QAbstractSocket>
 
 #define DEFAULT_XML_SERVER_ADDRESS "127.0.0.1"
 #define DEFAULT_XML_SERVER_PORT 12345
@@ -40,13 +41,18 @@ public:
 	void connectToHost();
 	void disconnectFromHost();
 
+	bool isConnected() const;
+
 	void sendCommand(const QString &command);
 
 signals:
+	void connectionUp();
+	void connectionDown();
 	void dataReceived(const QString &data);
 
 private slots:
 	void receiveData();
+	void socketError();
 
 private:
 	void parseData();

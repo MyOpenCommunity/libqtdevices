@@ -20,7 +20,6 @@
 #include "xmlclient.h"
 
 #include <QTcpSocket>
-
 #include <QDebug>
 
 namespace
@@ -30,10 +29,14 @@ namespace
 }
 
 XmlClient::XmlClient(const QString &address, int port, QObject *parent) :
-	QObject(parent), socket(new QTcpSocket(this)), xml_addr(address),
-	xml_port (port)
+	QObject(parent), socket(new QTcpSocket(this)),
+	xml_addr(address), xml_port (port)
 {
+	connect(socket, SIGNAL(connected()), SIGNAL(connectionUp()));
+	connect(socket, SIGNAL(disconnected()), SIGNAL(connectionDown()));
 	connect(socket, SIGNAL(readyRead()), SLOT(receiveData()));
+	connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
+					SLOT(socketError()));
 }
 
 void XmlClient::connectToHost()
@@ -44,6 +47,11 @@ void XmlClient::connectToHost()
 void XmlClient::disconnectFromHost()
 {
 	socket->disconnectFromHost();
+}
+
+bool XmlClient::isConnected() const
+{
+	return socket->state() == QAbstractSocket::ConnectedState;
 }
 
 void XmlClient::sendCommand(const QString &command)

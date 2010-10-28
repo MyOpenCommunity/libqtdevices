@@ -163,6 +163,7 @@ XmlDevice::XmlDevice()
 {
 	xml_client = new XmlClient;
 	connect(xml_client, SIGNAL(dataReceived(QString)), SLOT(handleData(QString)));
+	connect(xml_client, SIGNAL(connectionUp()), SLOT(emptyMessageQueue()));
 
 	xml_handlers["WMsg"] = handle_welcome_message;
 	xml_handlers["AW26C1"] = handle_upnp_server_list;
@@ -217,6 +218,23 @@ void XmlDevice::handleData(const QString &data)
 	}
 	else
 		emit responseReceived(response);
+}
+
+void XmlDevice::emptyMessageQueue()
+{
+	while (!message_queue.isEmpty())
+		sendCommand(message_queue.takeFirst());
+}
+
+void XmlDevice::sendCommand(const QString &message)
+{
+	if (!xml_client->isConnected())
+	{
+		message_queue << message;
+		xml_client->connectToHost();
+	}
+	else
+		xml_client->sendCommand(message);
 }
 
 void XmlDevice::select(const QString &name)

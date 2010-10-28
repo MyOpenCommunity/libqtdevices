@@ -116,8 +116,10 @@ signals:
 
 private slots:
 	void handleData(const QString &data);
+	void emptyMessageQueue();
 
 private:
+	void sendCommand(const QString &command);
 	void select(const QString &name);
 	XmlResponse parseXml(const QString &xml);
 	bool parseHeader(const QDomNode &header_node);
@@ -125,6 +127,8 @@ private:
 
 	XmlClient *xml_client;
 	QHash<QString, xmlHandler_ptr> xml_handlers;
+
+	QList<QString> message_queue;
 
 	QString sid;
 	QString pid;
