@@ -33,12 +33,15 @@ public:
 
 	template<class T> void check(const QString &response, const T &result);
 
+	void checkError(const QString &response, int expected_error);
+
 	void simulateIncomingResponse(const QString &response);
 
 	QVariant getResult();
 
 private:
-	QSignalSpy spy;
+	QSignalSpy resp_spy;
+	QSignalSpy err_spy;
 	int response_type;
 	XmlDevice *dev;
 };

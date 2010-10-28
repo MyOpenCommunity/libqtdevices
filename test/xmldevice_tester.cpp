@@ -24,10 +24,23 @@
 
 
 XmlDeviceTester::XmlDeviceTester(XmlDevice *d, int resp_type)
-	: spy(d, SIGNAL(responseReceived(XmlResponse)))
+	: resp_spy(d, SIGNAL(responseReceived(XmlResponse))),
+	  err_spy(d, SIGNAL(error(int,int)))
 {
 	dev = d;
 	response_type = resp_type;
+}
+
+void XmlDeviceTester::checkError(const QString &response, int expected_error)
+{
+	simulateIncomingResponse(response);
+	Q_ASSERT_X(err_spy.count() > 0, "XmlDeviceTester::checkError", "XmlDeviceTester: No signal emitted!");
+	Q_ASSERT_X(err_spy.last().count() > 0, "XmlDeviceTester::checkError", "XmlDeviceTester: No arguments for the last signal emitted!");
+	int resp_arg = err_spy.last().at(0).toInt();
+
+	Q_ASSERT_X(resp_arg == response_type, "XmlDeviceTester::checkError", "Error for the wrong response.");
+
+	QCOMPARE(expected_error, err_spy.last().at(1).toInt());
 }
 
 void XmlDeviceTester::simulateIncomingResponse(const QString &response)
@@ -37,9 +50,9 @@ void XmlDeviceTester::simulateIncomingResponse(const QString &response)
 
 QVariant XmlDeviceTester::getResult()
 {
-	Q_ASSERT_X(spy.count() > 0, "XmlDeviceTester::getResult", "XmlDeviceTester: No signal emitted!");
-	Q_ASSERT_X(spy.last().count() > 0, "XmlDeviceTester::getResult", "XmlDeviceTester: No arguments for the last signal emitted!");
-	QVariant signal_arg = spy.last().at(0); // get the first argument from last signal
+	Q_ASSERT_X(resp_spy.count() > 0, "XmlDeviceTester::getResult", "XmlDeviceTester: No signal emitted!");
+	Q_ASSERT_X(resp_spy.last().count() > 0, "XmlDeviceTester::getResult", "XmlDeviceTester: No arguments for the last signal emitted!");
+	QVariant signal_arg = resp_spy.last().at(0); // get the first argument from last signal
 	if (signal_arg.canConvert<XmlResponse>())
 	{
 		XmlResponse response = signal_arg.value<XmlResponse>();

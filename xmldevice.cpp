@@ -66,7 +66,14 @@ namespace
 		QHash<int,QVariant> result;
 		QStringList value;
 
-		QList<QDomNode> servers = getChildren(getElement(node, "server"), "name");
+		QDomElement server_element = getElement(node, "server");
+		if (server_element.isNull())
+		{
+			result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_LIST, XmlError::PARSE));
+			return result;
+		}
+
+		QList<QDomNode> servers = getChildren(server_element, "name");
 		for (int i = 0; i < servers.length(); ++i)
 			value.append(servers.at(i).toElement().text());
 
@@ -79,17 +86,34 @@ namespace
 	{
 		QHash<int,QVariant> result;
 
-		if (node.childNodes().size() != 1)
-			return result;
-
 		QString tag_name = node.childNodes().at(0).toElement().tagName();
 
 		if (tag_name == "current_server")
-			result[XmlResponses::SERVER_SELECTION] = getTextChild(node, "current_server");
+		{
+			QString current_server = getTextChild(node, "current_server");
+			if (current_server.isEmpty())
+				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_SELECTION, XmlError::PARSE));
+			else
+				result[XmlResponses::SERVER_SELECTION] = current_server;
+		}
 		else if (tag_name == "status_browse")
-			result[XmlResponses::CHDIR] = getTextChild(node, "status_browse") == "browse_ok";
+		{
+			QString status_browse = getTextChild(node, "status_browse");
+			if (status_browse.isEmpty())
+				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::CHDIR, XmlError::PARSE));
+			else if (status_browse == "browse_ok")
+				result[XmlResponses::CHDIR] = true;
+			else
+				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::CHDIR, XmlError::BROWSING));
+		}
 		else if (tag_name == "DIDL-Lite")
-			result[XmlResponses::TRACK_SELECTION] = getElement(node, "DIDL-Lite/item/res").text();
+		{
+			QString track_url = getElement(node, "DIDL-Lite/item/res").text();
+			if (track_url.isEmpty())
+				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::TRACK_SELECTION, XmlError::PARSE));
+			else
+				result[XmlResponses::TRACK_SELECTION] = track_url;
+		}
 
 		return result;
 	}
@@ -97,8 +121,14 @@ namespace
 	QHash<int,QVariant> handle_browseup(const QDomNode &node)
 	{
 		QHash<int,QVariant> result;
-		result[XmlResponses::BROWSE_UP] = getTextChild(node, "status_browse") == "browse_ok";
 
+		QString status_browse = getTextChild(node, "status_browse");
+		if (status_browse.isEmpty())
+			result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::BROWSE_UP, XmlError::PARSE));
+		else if (status_browse == "browse_ok")
+			result[XmlResponses::BROWSE_UP] = true;
+		else
+			result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::BROWSE_UP, XmlError::BROWSING));
 		return result;
 	}
 
@@ -170,7 +200,12 @@ void XmlDevice::handleData(const QString &data)
 {
 	XmlResponse response = parseXml(data);
 
-	if (!response.isEmpty())
+	if (response.contains(XmlResponses::INVALID))
+	{
+		XmlError e = response[XmlResponses::INVALID].value<XmlError>();
+		emit error(e.response, e.code);
+	}
+	else
 		emit responseReceived(response);
 }
 
@@ -182,17 +217,32 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 
 	QDomElement root = doc.documentElement();
 	if (root.tagName() != "OWNxml")
+	{
+		response[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_LIST, XmlError::PARSE));
 		return response;
+	}
 
 	if (!parseHeader(getChildWithName(root, "Hdr")))
+	{
+		response[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_LIST, XmlError::PARSE));
 		return response;
+	}
 
 	QDomNode command_container = getChildWithName(root, "Cmd");
 	if (command_container.isNull() || command_container.childNodes().size() != 1)
+	{
+		response[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_LIST, XmlError::PARSE));
 		return response;
+	}
 
 	QDomNode command = command_container.childNodes().at(0);
 	QString command_name = command.toElement().tagName();
+
+	if (command_name.isEmpty())
+	{
+		response[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_LIST, XmlError::PARSE));
+		return response;
+	}
 
 	if (xml_handlers.contains(command_name))
 		response = xml_handlers[command_name](command);

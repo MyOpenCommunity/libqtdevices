@@ -267,7 +267,7 @@ void TestXmlDevice::testBrowseUpFail()
 				 "</OWNxml>");
 
 	XmlDeviceTester t(dev, XmlResponses::BROWSE_UP);
-	t.check(data, false);
+	t.checkError(data, XmlError::BROWSING);
 }
 
 void TestXmlDevice::testListItems()
