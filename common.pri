@@ -304,3 +304,6 @@ CONFIG(examples) {
 	message(Build examples)
 	include(examples.pri)
 }
+
+OTHER_FILES += main.doc
+OTHER_FILES += examples.doc

@@ -1,0 +1,132 @@
+/*!
+	\mainpage
+
+	\section overview A global overview of the User Interface
+	BTouch is a touchscreen user interface for MyHome, BTicino home automation system;
+	it has a key role in the control of all its functionalities.
+
+	BTouch can run in 3.5'' and 10'' touchscreens.  It's possible
+	to test the user interface on a Linux PC; see \ref page-x86 for caveats
+	and limitations.
+
+	\section overview-architecture System architecture
+
+	The base of the system is a customized GNU/Linux distribution; the BTicino-specific parts are:
+	\li subsystem-specific processes
+	\li BTouch (the GUI)
+	\li OpenServer
+
+	The OpenServer is the front-end to the home automation system: it provides an OpenWebNet interface
+	to communicate with the various physical devices (the actual communication is performed by the
+	subsystem-specific processes).
+
+	Inside the GUI, the communication with physical devices is abstracted by
+	\ref device subclasses that avoid the need to deal with OpenWebNet directly.
+
+	See the \ref page-gui to an explaination of how the GUI works.
+
+	\section modifying-gui Modifying the GUI
+
+	bla bla bla
+	See the \ref page-examples.
+*/
+
+/*!
+	\page page-x86 BTouch on Linux PC
+
+	BTouch can be run on Linux PCs (tested on 32-bit Linux, should work, but has not been tested,
+	on 64-bit Linux and other Unix variants).
+
+	To test under Linux you need:
+	- Qt4 embedded for your architecture
+	- qvfb (can be built from Qt sources, but should be packaged in all distributions)
+	- a network-connected touchscreen
+	- BTicino common library for your architecture
+
+	Use the same build procedure documented for ARM cross-compilation (using the correct Qt embedded build and toolchain).
+
+	The GUI needs to connect to an OpenServer: you need to enable external connections in the configuration file (\c abilita_ip
+	node, under \c sicurezza).
+
+	Before running BTouch, launch qvfb and select the appropriate resolution.
+
+	To run BTouch use "LD_LIBRARY_PATH=/path/to/libcommon ./BTouch.x86 -qws"; you should see the interface displayed inside qvfb.
+
+	Most functions work without problems when run on PC; what does not work (or works only partially):
+	- calibration is not implemented
+	- using the PC as a sound diffusion source/amplifier is not possible
+	- mplayer must be installed for local audio playback (\ref Multimedia section)
+	- local video playback (\ref Multimedia section) works but the video is displayed
+		full-screen, not in the BTouch interface
+	- screen brightness does not change in freeze/screensaver mode
+	- screen is not turned off after the blank screen timeout
+	- state of videocalls can be controlled, but audio/video is not shown
+	- the system should allow navigating an USB key from the multimedia section
+	  but will not mount/umount it
+*/
+
+/*!
+	\page page-gui GUI Overview
+
+	The top level GUI component is WindowContainer which manages all full-screen pages (password
+	keypad, screensaver, main application window, ...) all of which are Window subclasses.
+
+	HomeWindow is the main application page and contains HeaderWidget (containing the navigation bar
+	and the main page toolbars), FavoritesWidget (the lateral favourites column) and PageContainer
+	(containing the application pages).
+
+	In TS 3.5'' the basic structure is the same, but HeaderWidget and FavoritesWidget are not instantiated.
+
+	\section modules Modules
+
+	The GUI is logically composed by modules. Usually a module identifies a
+	section or application, but in general is a group of code that work together.
+	The list of the current modules (and submodules) is:
+
+	- \ref Antintrusion
+	- \ref Automation
+	- \ref Lighting
+	- \ref EnergyManagement
+	- \ref EnergyData
+	- \ref Supervision
+		- \ref StopAndGo
+		- \ref LoadDiagnostic
+	- \ref LoadManagement
+	- \ref SoundDiffusion
+	- \ref VideoDoorEntry
+	- \ref Scenarios
+	- \ref ThermalRegulation
+		- \ref AirConditioning
+	- \ref Messages
+	- \ref Multimedia
+	- \ref Core
+	- \ref Settings
+
+	\section overview-page Page overview
+
+	Page is the base class for all content pages; most pages derive from BannerPage (for pages containing banners),
+	IconPage (for TS 10'' pages containing icons arranged in a grid).  It's also possible to derive directly from Page
+	when a more free-form layout is needed.
+
+	Using methods provided by Page, it's easy to write code that runs unchanged in both TS 3.5'' and TS 10'' (see NavigationBar
+	and Page::buildPage()).
+
+	Banners are the building blocks for most sections; in general terms a \ref banner is a rectangular widget that can be
+	used to present the status of a device, to interact with the device and to navigate to other pages.  Banners can be used
+	in isolation or presented in a menu using BannerPage.
+
+	\section overview-parsing Configuration parsing
+
+	Configuration parsing is handled recursively by GUI classes: global configuration parsing is handled in BtMain; configuration
+	parsing for the home page is handled by SectionPage which delegates the parsing of subsections to the GUI classes of the subsection
+	itself.
+
+	For sections that only contain banners (\ref Lighting, \ref Automation, \ref Scenarios, \ref Settings), ::getBanner() can be used
+	to obtain a banner instance given the configuration node.
+
+	\section overview-test Unit tests
+
+	There are extensive unit test for \ref device and its subclasses (see "devices/test" subdirectory); some non-GUI
+	classes also have unit tests (see "test" subdirectory).  Use the execute_test.sh script to run the tests.
+*/
+

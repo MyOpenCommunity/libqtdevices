@@ -1,0 +1,177 @@
+/*!
+	\page page-examples BTouch examples
+
+	The examples below demostrate how to modify the source code of BTouch in order to add
+	new functionalities or change the default behaviour. The examples can be included in the BTouch
+	executable by running qmake as:
+	\code
+	qmake CONFIG+=examples
+	\endcode
+
+	The available examples are:
+	- \ref page-example-pdf
+	- \ref page-example-screensaver
+	- \ref page-example-message
+*/
+
+/*!
+	\page page-example-pdf The pdf viewer example
+
+	We want to add a new subsection of the multimedia section to navigate
+	a mounted file system (USB or SD) and display the contained PDF files.
+
+	LICENSE NOTE: this example uses the Poppler library, which is GPL, hence
+	the resulting binary must be redistributed under GPL terms.
+
+	To compile the example you need to recompile the Poppler library: detailed
+	instructions are in \c examples/pdf/README.txt; after compiling the example,
+	set \c BUILD_PDF to \c yes in \c examples.pri.
+
+	First, we need a page with a standard layout (navigation bar on the left, display
+	area on the right):
+	\dontinclude pdfpage.cpp
+	\skip PdfPage::PdfPage(
+	\until }
+
+	displayPdf() is called by the file system navigation page to load and display
+	a PDF file.
+	\skip PdfPage::displayPdf(
+	\until }
+
+	displayPage() renders the specified page into a QImage large as the display area
+	and displays it into the page content.
+	\skip PdfPage::displayPage(
+	\until }
+
+	scrollDown() scrolls down the displayed page; when at the bottom of the page,
+	it moves to the next page.
+	\skip PdfPage::scrollDown(
+	\until }
+	\until }
+	\until }
+
+	The new configuration node does not need any additional parameters; we only need to
+	choose a non-conflicting id for the new item; the \c cid is chosen to use the
+	existing USB icon; any \c cid defined in \c skin.xml will work:
+	\verbatim
+	  <item>
+	<square>0</square>
+	<id>55556</id>
+	<cid>16002</cid>
+	<itemID>5745934</itemID>
+	<descr>PDF</descr>
+	  </item>
+	\endverbatim
+
+	The configuration item is parsed in the \ref Multimedia section page;
+	first we define a new page id:
+	\dontinclude multimedia.cpp
+	\skip #ifdef BUILD_EXAMPLES
+	\until #endif
+
+	that is used in the MultimediaSectionPage::loadItems() method:
+	\skip case PAGE_PDF:
+	\until }
+	\until }
+	this example only browses an USB file system; use MOUNT_SD in the code
+	above to browse an SD card.
+
+	There are some other parts that need to be modified; the PDF type must be
+	defined in \c generic_functions.h
+	\dontinclude generic_functions.h
+	\skip #ifdef BUILD_EXAMPLES
+	\until #endif
+
+	and \c generic_functions.cpp must be modified accordingly:
+	\dontinclude generic_functions.cpp
+	\skip const char *image_files
+	\until #endif
+
+	to add PDF file handling in getFileExtensions()
+	\skip #ifdef BUILD_EXAMPLES
+	\until #endif
+
+	and in getFileFilter()
+	\skip #ifdef BUILD_EXAMPLES
+	\until #endif
+
+	The last class that needs changes is MultimediaFileListPage; first we need
+	to add the icon for PDF files to the icon list:
+	\dontinclude multimedia_filelist.cpp
+	\skip #ifdef PDF_EXAMPLE
+	\skip #endif
+	\skip #ifdef PDF_EXAMPLE
+	\until #endif
+
+	then we instantiate the PDF display page and set up signals so the file list
+	is shown again when the PDF page is closed
+	\skip #ifdef PDF_EXAMPLE
+	\until #endif
+
+	we add a new case for PDF files in MultimediaFileListPage::fileType()
+	\skip #ifdef PDF_EXAMPLE
+	\until #endif
+
+	and finally we emit the displayPdf() signal when a PDF file is clicked (the signal
+	is connected to the displayPdf() slot of PdfPage.
+	\skip #ifdef PDF_EXAMPLE
+	\until #endif
+*/
+
+/*!
+	\page page-example-screensaver The logo screeensaver example
+
+	We want to add a screensaver that shows a bouncing myhome logo.
+
+	The first thing to do is subclass the abstract class ScreenSaver.
+	As described in the documentation of the class, we have to reimplement the
+	ScreenSaver::type() and ScreenSaver::refresh() methods.
+
+	To show a MyHome logo moving on the screen, we redefine
+	the constructor to get and save the image from the SkinManager:
+	\dontinclude logoscreensaver.cpp
+	\skip LogoScreenSaver::LogoScreenSaver()
+	\until }
+
+	Now we have to place the logo on the screen. Because we have to re-place
+	the image every time that the screensaver starts, we redefine the
+	ScreenSaver::start() method:
+	\skip LogoScreenSaver::start
+	\until }
+
+	Note that the LogoScreenSaver class explicitly calls the Window::showWindow()
+	method. This is required because some screensavers (like the ScreenSaverLine)
+	don't show a window but instead draws over another window.
+
+	The positioning is done by the method initLogoRect():
+	\skip LogoScreenSaver::initLogoRect
+	\until }
+
+	The paintEvent() method, implicitly called by Qt, draws the
+	logo using its current position:
+
+	\skip LogoScreenSaver::paintEvent
+	\until }
+
+	Now, we have to change the current position of the logo, redefining the
+	ScreenSaver::refresh() method:
+	\skip LogoScreenSaver::refresh
+	\until }
+
+	The next step is to assign a proper type to our screensaver, adding the type
+	to the ScreenSaver::Type enumeration and reimplementing the type() method:
+	\skip LogoScreenSaver::type
+	\until }
+
+	The only thing left is to allow the user to choose the logo screensaver.
+	We do that by adding a new CheckableBanner in the ScreenSaverPage
+	constructor, associating it with the ScreenSaver::Type just added
+	\dontinclude screensaverpage.cpp
+	\skip #ifdef BUILD_EXAMPLES
+	\until #endif
+*/
+
+/*!
+	\page page-example-message Boh
+*/
+

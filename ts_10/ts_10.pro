@@ -84,4 +84,4 @@ SOURCES += favoriteswidget.cpp \
 	audioplayer.cpp \
 	webcam.cpp
 
-OTHER_FILES = skin.xml
+OTHER_FILES += skin.xml
