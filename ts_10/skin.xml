@@ -2007,7 +2007,8 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		TCP Banner
 		-->
 		<cid>55555</cid>
-		<img_link_icon>setup/ok.png</img_link_icon>
+		<img_link_icon>home/illuminazione.png</img_link_icon>
+		<img_top_navigation_button>barranavigazione/illuminazione.png</img_top_navigation_button>
 		<img_dimmer>illuminazione/ondimmer.png</img_dimmer>
 		<img_dimmer_broken>illuminazione/brokendimmer.png</img_dimmer_broken>
 	</item>
