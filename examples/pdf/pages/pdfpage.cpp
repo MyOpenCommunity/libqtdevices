@@ -47,6 +47,21 @@ PdfPage::~PdfPage()
 	delete pdf_document;
 }
 
+void PdfPage::displayPdf(const QString &path)
+{
+	showPage();
+
+	if (pdf_document)
+		delete pdf_document;
+
+	pdf_document = Poppler::Document::load(path);
+	if (!pdf_document)
+		return;
+
+	current_page = 0;
+	displayPage(current_page);
+}
+
 void PdfPage::displayPage(int index)
 {
 	int label_width = pdf_page->width();
@@ -66,21 +81,6 @@ void PdfPage::displayPage(int index)
 void PdfPage::displayPagePart()
 {
 	pdf_page->setPixmap(QPixmap::fromImage(pdf_image.copy(0, y_offset, pdf_page->width(), pdf_page->height())));
-}
-
-void PdfPage::displayPdf(const QString &path)
-{
-	showPage();
-
-	if (pdf_document)
-		delete pdf_document;
-
-	pdf_document = Poppler::Document::load(path);
-	if (!pdf_document)
-		return;
-
-	current_page = 0;
-	displayPage(current_page);
 }
 
 void PdfPage::scrollDown()

@@ -93,6 +93,106 @@
 
 /*!
 	\page page-example-pdf The pdf viewer example
+
+	We want to add a new subsection of the multimedia section to navigate
+	a mounted file system (USB or SD) and display the contained PDF files.
+
+	LICENSE NOTE: this example uses the Poppler library, which is GPL, hence
+	the resulting binary must be redistributed under GPL terms.
+
+	To compile the example you need to recompile the Poppler library: detailed
+	instructions are in \c examples/pdf/README.txt; after compiling the example,
+	set \c BUILD_PDF to \c yes in \c examples.pri.
+
+	First, we need a page with a standard layout (navigation bar on the left, display
+	area on the right):
+	\dontinclude pdfpage.cpp
+	\skip PdfPage::PdfPage(
+	\until }
+
+	displayPdf() is called by the file system navigation page to load and display
+	a PDF file.
+	\skip PdfPage::displayPdf(
+	\until }
+
+	displayPage() renders the specified page into a QImage large as the display area
+	and displays it into the page content.
+	\skip PdfPage::displayPage(
+	\until }
+
+	scrollDown() scrolls down the displayed page; when at the bottom of the page,
+	it moves to the next page.
+	\skip PdfPage::scrollDown(
+	\until }
+	\until }
+	\until }
+
+	The new configuration node does not need any additional parameters; we only need to
+	choose a non-conflicting id for the new item; the \c cid is chosen to use the
+	existing USB icon; any \c cid defined in \c skin.xml will work:
+	\verbatim
+      <item>
+	<square>0</square>
+	<id>55556</id>
+	<cid>16002</cid>
+	<itemID>5745934</itemID>
+	<descr>PDF</descr>
+      </item>
+	\endverbatim
+
+	The configuration item is parsed in the \ref Multimedia section page;
+	first we define a new page id:
+	\dontinclude multimedia.cpp
+	\skip #ifdef BUILD_EXAMPLES
+	\until #endif
+
+	that is used in the MultimediaSectionPage::loadItems() method:
+	\skip case PAGE_PDF:
+	\until }
+	\until }
+	this example only browses an USB file system; use MOUNT_SD in the code
+	above to browse an SD card.
+
+	There are some other parts that need to be modified; the PDF type must be
+	defined in \c generic_functions.h
+	\dontinclude generic_functions.h
+	\skip #ifdef BUILD_EXAMPLES
+	\until #endif
+
+	and \c generic_functions.cpp must be modified accordingly:
+	\dontinclude generic_functions.cpp
+	\skip const char *image_files
+	\until #endif
+
+	to add PDF file handling in getFileExtensions()
+	\skip #ifdef BUILD_EXAMPLES
+	\until #endif
+
+	and in getFileFilter()
+	\skip #ifdef BUILD_EXAMPLES
+	\until #endif
+
+	The last class that needs changes is MultimediaFileListPage; first we need
+	to add the icon for PDF files to the icon list:
+	\dontinclude multimedia_filelist.cpp
+	\skip #ifdef PDF_EXAMPLE
+	\skip #endif
+	\skip #ifdef PDF_EXAMPLE
+	\until #endif
+
+	then we instantiate the PDF display page and set up signals so the file list
+	is shown again when the PDF page is closed
+	\skip #ifdef PDF_EXAMPLE
+	\until #endif
+
+	we add a new case for PDF files in MultimediaFileListPage::fileType()
+	\skip #ifdef PDF_EXAMPLE
+	\until #endif
+
+	and finally we emit the displayPdf() signal when a PDF file is clicked (the signal
+	is connected to the displayPdf() slot of PdfPage.
+	\skip #ifdef PDF_EXAMPLE
+	\until #endif
 */
 
 /*!
