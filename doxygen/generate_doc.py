@@ -8,17 +8,29 @@ def fixQhp(filename):
     out_lines = []
     line = f.readline()
 
-    while line.strip() != "<toc>":
-       out_lines.append(line)
-       line = f.readline()
+#    while line.strip() != "<toc>":
+#       out_lines.append(line)
+#       line = f.readline()
 
-    out_lines.append(line)
+#    out_lines.append(line)
 
-    out_lines.append("      <section title=\"BTouch\" ref=\"index.html\">\n")
+#    out_lines.append("      <section title=\"BTouch\" ref=\"index.html\">\n")
+#    out_lines.append("      </section>\n")
+
+#    while line.strip() != "</toc>":
+#       line = f.readline()
+
+#    out_lines.append(line)
+#    line = f.readline()
+
+    while "Class Hierarchy" not in line.strip():
+	out_lines.append(line)
+	line = f.readline()
+
     out_lines.append("      </section>\n")
 
     while line.strip() != "</toc>":
-       line = f.readline()
+	line = f.readline()
 
     out_lines.append(line)
     line = f.readline()
