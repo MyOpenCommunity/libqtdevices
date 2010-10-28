@@ -77,9 +77,10 @@
 
 /*!
 	\page page-examples BTouch examples
-	The examples below demostrate how modify the source code of BTouch in order to add functionalities
-	or change the default behaviour. You can also compile the examples into the
-	BTouch code executing the qmake step in this way:
+
+	The examples below demostrate how to modify the source code of BTouch in order to add
+	new functionalities or change the default behaviour. The examples can be included in the BTouch
+	executable by running qmake as:
 	\code
 	qmake CONFIG += examples
 	\endcode
@@ -99,31 +100,31 @@
 
 	We want to add a screensaver that shows a bouncing myhome logo.
 
-	The first thing we have to do is subclass the abstract class ScreenSaver.
+	The first thing to do is subclass the abstract class ScreenSaver.
 	As described in the documentation of the class, we have to reimplement the
 	ScreenSaver::type() and ScreenSaver::refresh() methods.
 
-	We want to show a myhome logo moving on the screen, so we redefine
+	To show a MyHome logo moving on the screen, we redefine
 	the constructor to get and save the image from the SkinManager:
 	\dontinclude logoscreensaver.cpp
 	\skip LogoScreenSaver::LogoScreenSaver()
 	\until }
 
-	Now we have to place the logo on the screen. Because we have to re-placing
+	Now we have to place the logo on the screen. Because we have to re-place
 	the image every time that the screensaver starts, we redefine the
 	ScreenSaver::start() method:
 	\skip LogoScreenSaver::start
 	\until }
 
 	Note that the LogoScreenSaver class explicitly calls the Window::showWindow()
-	method. This is required because some screensavers (as the ScreenSaverLine)
-	doesn't show a window but instead draws over another window.
+	method. This is required because some screensavers (like the ScreenSaverLine)
+	doen't show a window but instead draws over another window.
 
-	The positioning is done by the method initLogoRect() defined as:
+	The positioning is done by the method initLogoRect():
 	\skip LogoScreenSaver::initLogoRect
 	\until }
 
-	The paintEvent, implicitly called by Qt, is the responsable of drawing the
+	The paintEvent() method, implicitly called by Qt, draws the
 	logo using its current position:
 
 	\skip LogoScreenSaver::paintEvent
@@ -134,13 +135,13 @@
 	\skip LogoScreenSaver::refresh
 	\until }
 
-	Now we have to assign a proper type to our screensaver, adding the type
+	The next step is to assign a proper type to our screensaver, adding the type
 	to the ScreenSaver::Type enumeration and reimplementing the type() method:
 	\skip LogoScreenSaver::type
 	\until }
 
 	The only thing left is to allow the user to choose the logo screensaver.
-	We do that adding a CheckableBanner for the logo choice in the ScreenSaverPage
+	We do that by adding a new CheckableBanner in the ScreenSaverPage
 	constructor, associating it with the ScreenSaver::Type just added
 	\dontinclude screensaverpage.cpp
 	\skip #ifdef BUILD_EXAMPLES
