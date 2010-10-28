@@ -262,7 +262,7 @@ protected:
 
 		Constructs a PullDevice of type \a m for the given \a who \a where
 		using \a pull_delay as a delay for status requests in basic/advanced
-		detection, \a sdv as the basic/advanced mode and \checker to classify
+		detection, \a sdv as the basic/advanced mode and \a checker to classify
 		incoming frames during detection.
 	 */
 	PullDevice(QString who, QString where, PullMode m, int openserver_id, int pull_delay, AdvancedMode adv = PULL_ADVANCED_UNKNOWN, PullStateManager::FrameChecker checker = NULL);
