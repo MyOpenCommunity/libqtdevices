@@ -31,6 +31,7 @@ class TcpStateBanner : public BannStates
 Q_OBJECT
 public:
 	TcpStateBanner(const QString &name, const QStringList &states);
+	void setConnectionParameters(const QString &host, int port);
 
 private slots:
 	void changeState(int state);
@@ -40,6 +41,8 @@ private:
 
 	QString name;
 	QStringList st;
+	QString host;
+	int port;
 };
 
 #endif

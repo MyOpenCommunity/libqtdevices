@@ -27,6 +27,7 @@ class TcpDimmer : public AdjustDimmer
 Q_OBJECT
 public:
 	TcpDimmer(const QString &name, const QString &descr);
+	void setConnectionParameters(const QString &host, int port);
 
 private slots:
 	void lightOn();
@@ -39,6 +40,8 @@ private:
 
 	QString name;
 	int light_value;
+	QString host;
+	int port;
 };
 
 #endif

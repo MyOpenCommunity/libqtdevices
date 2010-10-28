@@ -24,11 +24,6 @@
 #include "skinmanager.h"
 #include "btbutton.h"
 
-namespace
-{
-	const char *HOST = "localhost";
-	const int PORT = 12345;
-}
 
 TcpDimmer::TcpDimmer(const QString &banner_name, const QString &descr) :
 	AdjustDimmer(0), name(banner_name), light_value(0)
@@ -42,6 +37,12 @@ TcpDimmer::TcpDimmer(const QString &banner_name, const QString &descr) :
 	connect(left_button, SIGNAL(clicked()), SLOT(lightOff()));
 	connect(this, SIGNAL(center_left_clicked()), SLOT(decreaseLevel()));
 	connect(this, SIGNAL(center_right_clicked()), SLOT(increaseLevel()));
+}
+
+void TcpDimmer::setConnectionParameters(const QString &host, int port)
+{
+	this->host = host;
+	this->port = port;
 }
 
 void TcpDimmer::lightOn()
@@ -70,9 +71,12 @@ void TcpDimmer::decreaseLevel()
 
 void TcpDimmer::sendMessage(const QString &message)
 {
+	if (host.isEmpty() || port < 1024)
+		return;
+
 	QTcpSocket *socket = new QTcpSocket(this);
 
-	socket->connectToHost(HOST, PORT);
+	socket->connectToHost(host, port);
 	if (socket->waitForConnected())
 		qDebug() << "Connected";
 

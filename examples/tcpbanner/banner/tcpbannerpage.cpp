@@ -20,23 +20,42 @@
 #include "tcpbannerpage.h"
 
 #include <QStringList>
-
+#include <QHBoxLayout>
 
 #include "main.h"
+#include "navigation_bar.h"
 #include "tcpdimmer.h"
 #include "tcpstatebanner.h"
+
+namespace
+{
+	const char *TCP_BANNER_HOST = "localhost";
+	const int TCP_BANNER_PORT = 12345;
+}
 
 
 TcpBannerPage::TcpBannerPage(QWidget *parent)
 	: BannerPage(parent)
 {
-	buildPage(tr("TCP Banner example page"));
+	BannerContent *content = new BannerContent(0, 1);
 
-	TcpDimmer *dimmer = new TcpDimmer(tr("TCP Dimmer"), "Test TCP Dimmer");
-	page_content->appendBanner(dimmer);
+	// Container for banners
+	QWidget *container = new QWidget;
+	QHBoxLayout *layout = new QHBoxLayout(container);
+	layout->addStretch(1);
+	layout->addWidget(content);
+	layout->addStretch(1);
+
+	buildPage(container, content, new NavigationBar, tr("TCP Banner example page"));
+	setSpacing(20);
 
 	TcpStateBanner *state_banner = new TcpStateBanner("TCP State Banner", QStringList() << "State 1" << "State 2" << "State 3");
+	state_banner->setConnectionParameters(TCP_BANNER_HOST, TCP_BANNER_PORT);
 	page_content->appendBanner(state_banner);
+
+	TcpDimmer *dimmer = new TcpDimmer(tr("TCP Dimmer"), "Test TCP Dimmer");
+	dimmer->setConnectionParameters(TCP_BANNER_HOST, TCP_BANNER_PORT);
+	page_content->appendBanner(dimmer);
 }
 
 int TcpBannerPage::sectionId() const

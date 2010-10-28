@@ -24,12 +24,6 @@
 #include "skinmanager.h"
 
 
-namespace
-{
-	const char *HOST = "localhost";
-	const int PORT = 12345;
-}
-
 TcpStateBanner::TcpStateBanner(const QString &banner_name, const QStringList &states)
 	: BannStates(0), name(banner_name), st(states)
 {
@@ -40,6 +34,12 @@ TcpStateBanner::TcpStateBanner(const QString &banner_name, const QStringList &st
 	connect(this, SIGNAL(stateChanged(int)), SLOT(changeState(int)));
 }
 
+void TcpStateBanner::setConnectionParameters(const QString &host, int port)
+{
+	this->host = host;
+	this->port = port;
+}
+
 void TcpStateBanner::changeState(int state)
 {
 	sendMessage(name + ": " + st.at(state) + "\n");
@@ -47,9 +47,12 @@ void TcpStateBanner::changeState(int state)
 
 void TcpStateBanner::sendMessage(const QString &message)
 {
+	if (host.isEmpty() || port < 1024)
+		return;
+
 	QTcpSocket *socket = new QTcpSocket(this);
 
-	socket->connectToHost(HOST, PORT);
+	socket->connectToHost(host, port);
 	if (socket->waitForConnected())
 		qDebug() << "Connected";
 
