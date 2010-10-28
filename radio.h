@@ -110,6 +110,9 @@ private slots:
 	void previousStation();
 	void nextStation();
 
+	void playSaveSound(int new_state);
+	void saveSoundFinished();
+
 	/*!
 	 * \brief Changes the state to automatic search
 	 */

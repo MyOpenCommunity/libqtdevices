@@ -27,12 +27,17 @@
 #include "media_device.h" // RadioSourceDevice
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "btmain.h" // startscreensaver, stopscreensaver
+#include "mediaplayer.h" // bt_global::sound
+#include "audiostatemachine.h" // bt_global::audio_states
+#include "main.h" // SOUND_PATH
 
 #include <QLabel>
 #include <QDebug>
 #include <QVBoxLayout>
 #include <QStyleOption>
 #include <QPainter>
+#include <QFile>
+
 
 namespace
 {
@@ -306,6 +311,44 @@ void RadioPage::storeMemoryStation()
 {
 	qDebug("Storing frequency to memory station %d", memory_number);
 	dev->saveStation(QString::number(memory_number));
+
+#if defined(BT_HARDWARE_TS_10) || defined(BT_HARDWARE_X11)
+	int state = bt_global::audio_states->currentState();
+
+	if (!QFile::exists(SOUND_PATH "beep.wav"))
+		return;
+
+	// when in idle state, we need first to switch to a state where the local amplifier is on,
+	// and then remove it from the stack; when in beep state we can play the sound right away;
+	// do not try to play the beep when in different states
+	if (state == AudioStates::IDLE)
+	{
+		connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(playSaveSound(int)));
+		bt_global::audio_states->toState(AudioStates::BEEP_ON);
+	}
+	else if (state == AudioStates::BEEP_ON)
+		bt_global::sound->play(SOUND_PATH "beep.wav");
+#endif
+#if defined(BT_HARDWARE_TS_3_5)
+	beep();
+#endif
+}
+
+void RadioPage::playSaveSound(int new_state)
+{
+	// avoid problems in case of state-change races
+	if (new_state != AudioStates::BEEP_ON)
+		return;
+
+	disconnect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), this, SLOT(playSaveSound(int)));
+	connect(bt_global::sound, SIGNAL(soundFinished()), SLOT(saveSoundFinished()));
+	bt_global::sound->play(SOUND_PATH "beep.wav");
+}
+
+void RadioPage::saveSoundFinished()
+{
+	bt_global::audio_states->removeState(AudioStates::BEEP_ON);
+	disconnect(bt_global::sound, SIGNAL(soundFinished()), this, SLOT(saveSoundFinished()));
 }
 
 void RadioPage::setAuto()
