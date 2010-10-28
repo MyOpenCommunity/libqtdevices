@@ -46,20 +46,18 @@ class ImageIterator;
 
 /*!
 	\ingroup Core
-	\class ScreenSaver
 	\brief Base class for all screensavers.
 
 	To create a new screensaver, the \a type() and the \a refresh() method must
 	be reimplemented and a new entry must be added to the \a ScreenSaver::Type
 	enum.
 
-	A \a ScreenSaver is a \a Window subclass. It can be started using the
-	\a start() method which takes the \a Window the screensaver is
-	running on as parameter. The screensaver can be stopped by calling
-	the \a stop() method. To check if the screensaver is currently running the
-	method \a isRunning() can be used.
+	A ScreenSaver is a Window subclass. It can be started using the start()
+	method which takes the Window the screensaver is running on as parameter.
+	The screensaver can be stopped by calling the stop() method. To check if the
+	screensaver is currently running the method isRunning() can be used.
 
-	The refresh interval can be set by the \a setRefreshInterval() method.
+	The refresh interval can be set by the setRefreshInterval() method.
 */
 class ScreenSaver : protected Window
 {
@@ -80,7 +78,7 @@ public:
 	/*!
 		\brief Shows the screensaver and starts the updates.
 
-		\a w is the \a Window the screensaver will be started on.
+		\a w is the Window the screensaver will be started on.
 	*/
 	virtual void start(Window *w);
 
@@ -126,7 +124,7 @@ protected:
 	/*!
 		\brief Constructor
 
-		Should be called by \a ScreenSaver subclasses that need periodical refreshes.
+		Should be called by ScreenSaver subclasses that need periodical refreshes.
 	*/
 	ScreenSaver(int refresh_time);
 
@@ -168,15 +166,14 @@ private:
 
 	This factory method returns an instance of the screensaver specified by
 	\a type.
-	If \a type doesn't exists dies with a \a qFatal().
+	If \a type doesn't exists dies with a qFatal().
  */
 ScreenSaver *getScreenSaver(ScreenSaver::Type type);
 
 
 /*!
 	\ingroup Core
-	\class ScreenSaverLine
-	\brief The concrete class that represent a screensaver with a scrolling line.
+	\brief Represents a screensaver with a scrolling line.
 */
 class ScreenSaverLine : public ScreenSaver
 {
@@ -207,7 +204,7 @@ protected:
 	virtual QString styleUpToDown();
 
 	/*!
-		\brief Method to resize the innter widget displayed by the \a ScreenSaver to
+		\brief Method to resize the innter widget displayed by the ScreenSaver to
 		the given height.
 	*/
 	void setLineHeight(int height);
@@ -225,8 +222,7 @@ private:
 
 /*!
 	\ingroup Core
-	\class ScreenSaverBalls
-	\brief The concrete class that represent a screensaver with 'balls'.
+	\brief Represents a screensaver with bouncing 'balls'.
 */
 class ScreenSaverBalls : public ScreenSaver
 {
@@ -254,9 +250,7 @@ private:
 
 /*!
 	\ingroup Core
-	\class ScreenSaverTime
-	\brief The concrete class that represent a screensaver with a scrolling line and a
-	time clock inside.
+	\brief Represents a screensaver with a scrolling line and a time clock inside.
 */
 class ScreenSaverTime : public ScreenSaverLine
 {
@@ -267,11 +261,10 @@ protected:
 	virtual void customizeLine();
 };
 
+
 /*!
 	\ingroup Core
-	\class ScreenSaverText
-	\brief The concrete class that represent a screensaver with a scrolling line and a
-	text inside.
+	\brief Represents a screensaver with a scrolling line and a text inside.
 */
 class ScreenSaverText : public ScreenSaverLine
 {
