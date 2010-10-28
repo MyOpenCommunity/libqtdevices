@@ -2014,20 +2014,22 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_tracking_enabled>supervisioneimpianto/verificaimpiantoon.png</img_tracking_enabled>
 		<img_tracking_disabled>supervisioneimpianto/verificaimpiantooff.png</img_tracking_disabled>
 	</item>
+	<!-- Examples -->
 	<item>
 		<!--
-		Logo screensaver exanoke
+		Logo screensaver
 		-->
 		<cid>12345</cid>
 		<img_screensaver_logo>screensaver.png</img_screensaver_logo>
 	</item>
 	<item>
 		<!--
-		TCP Banner Example
+		TCP Banner
 		-->
 		<cid>55555</cid>
 		<img_link_icon>setup/ok.png</img_link_icon>
 		<img_dimmer>illuminazione/ondimmer.png</img_dimmer>
 		<img_dimmer_broken>illuminazione/brokendimmer.png</img_dimmer_broken>
 	</item>
+	<!-- End Examples -->
 </style>
