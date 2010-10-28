@@ -28,12 +28,15 @@
 class QDomNode;
 class XmlClient;
 struct FilesystemEntry;
+struct XmlError;
 
 typedef QHash<int, QVariant> XmlResponse;
 typedef QHash<int,QVariant> (*xmlHandler_ptr)(const QDomNode&);
 typedef QList<FilesystemEntry> FilesystemEntries;
 
+Q_DECLARE_METATYPE(XmlError);
 Q_DECLARE_METATYPE(XmlResponse);
+
 
 namespace XmlResponses
 {
@@ -49,6 +52,22 @@ namespace XmlResponses
 		LIST_ITEMS,
 	};
 }
+
+
+struct XmlError
+{
+	enum Code
+	{
+		PARSE = 0,
+		BROWSING,
+	};
+
+	XmlError() {}
+	XmlError(XmlResponses::Type r, XmlError::Code c) : response(r), code(c) {}
+
+	XmlResponses::Type response;
+	XmlError::Code code;
+};
 
 
 struct FilesystemEntry
@@ -90,6 +109,7 @@ public:
 
 signals:
 	void responseReceived(const XmlResponse &response);
+	void error(int response, int code);
 
 private slots:
 	void handleData(const QString &data);
