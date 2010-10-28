@@ -40,18 +40,4 @@ uninstalled library by setting LD_LIBRARY_PATH.
 For x86, the development packages for libpng and fontconfig must be
 installed for the build to complete.
 
-When using the provided scripts just changing BUILD_PDF to "yes" in
-common.pri should suffice for the example to build.  If You build
-Poppler manually, change INCLUDES and LIBS accordingly.
-
-Use this configuration item:
-
-      <item>
-        <square>0</square>
-        <id>55556</id>
-        <cid>16002</cid>
-        <itemID>unique id</itemID>
-        <descr>insert description</descr>
-      </item>
-
-to display the link in the Multimedia section.
+See the SDK documentation for further discussion of this example.
