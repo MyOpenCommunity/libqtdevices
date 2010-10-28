@@ -147,7 +147,7 @@ class PasswordChanger : public QObject
 {
 Q_OBJECT
 public:
-	PasswordChanger(int item_id, QString pwd, int attiva);
+	PasswordChanger(int item_id, QString pwd, bool check_active);
 
 public slots:
 	/*
@@ -224,7 +224,7 @@ class BannPassword : public Bann2StateButtons
 Q_OBJECT
 public:
 	BannPassword(QString icon_on, QString icon_off, QString icon_label, QString descr,
-		     int item_id, QString pwd, int attiva);
+			 int item_id, QString pwd, int attiva);
 
 private:
 	PasswordChanger changer;
