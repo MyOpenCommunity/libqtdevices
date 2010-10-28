@@ -65,6 +65,12 @@ void BannerPage::buildPage(const QString &title, int title_height, QWidget *top_
 	buildPage(content, content, new NavigationBar, title, title_height, top_widget);
 }
 
+void BannerPage::setSpacing(int spacing)
+{
+	Q_ASSERT_X(page_content != 0, "BannerPage::setSpacing()", "page_content is uninitialized.");
+
+	static_cast<QGridLayout *>(page_content->layout())->setVerticalSpacing(spacing);
+}
 
 
 #ifdef LAYOUT_TS_3_5

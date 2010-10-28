@@ -82,6 +82,13 @@ protected:
 		content and page.
 	 */
 	void buildPage(const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget = 0);
+
+	/*!
+		\brief Sets the vertical spacing between banners.
+
+		\warning You must call the buildPage() method before this one.
+	*/
+	void setSpacing(int spacing);
 };
 
 
