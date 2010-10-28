@@ -147,17 +147,17 @@ QStringList getFileFilter(MultimediaFileType type)
 	case DIRECTORY:
 		break;
 	case AUDIO:
-			files = audio_files;
+		files = audio_files;
 		break;
 	case VIDEO:
-			files = video_files;
+		files = video_files;
 		break;
 	case IMAGE:
-			files = image_files;
+		files = image_files;
 		break;
 #ifdef BUILD_EXAMPLES
 	case PDF:
-			files = pdf_files;
+		files = pdf_files;
 		break;
 #endif
 	default:
