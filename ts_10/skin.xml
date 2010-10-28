@@ -149,8 +149,8 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_forward_icon>multimediale/avanti.png</img_forward_icon>
 		<img_ipradio_icon>multimediale/radiooveripmini.png</img_ipradio_icon>
 
-                <!-- TODO duplicated in the multimedia section, move to
-                     common section -->
+		<!-- TODO duplicated in the multimedia section, move to
+			 common section -->
 		<img_previous>multimediale/precedente.png</img_previous>
 		<img_next>multimediale/successivo.png</img_next>
 		<img_start>multimediale/play.png</img_start>
@@ -391,8 +391,8 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_top_navigation_button>barranavigazione/videocitofonia.png</img_top_navigation_button>
 	</item>
 	<item>
-                <!-- Videodoorentry IP section -->
-                <cid>19</cid>
+		<!-- Videodoorentry IP section -->
+		<cid>19</cid>
 		<img_link_icon>home/videocitofonia.png</img_link_icon>
 		<img_top_navigation_button>barranavigazione/videocitofonia.png</img_top_navigation_button>
 	</item>
@@ -460,26 +460,22 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_ringexclusion_off>setup/esclusione_chiamata_offs.png</img_ringexclusion_off>
 		<img_tray_ringexclusion>home/btnesclusionechiamataon.png</img_tray_ringexclusion>
 	</item>
-
-
-        <!-- Videodoorentry IP icon page -->
-        <!-- videocontrol link -->
-        <item>
-                <cid>19001</cid>
-                <img_link_icon>videocitofonia/videocontrollo.png</img_link_icon>
-        </item>
-        <!-- intercom link -->
-        <item>
-                <cid>19002</cid>
-                <img_link_icon>videocitofonia/postiinterni.png</img_link_icon>
-        </item>
-          <!-- cdp link -->
-        <item>  
-                <cid>19004</cid>
-                <img_link_icon>videocitofonia/cdp.png</img_link_icon>
-        </item>
-
-
+	<!-- Videodoorentry IP icon page -->
+	<!-- videocontrol link -->
+	<item>
+			<cid>19001</cid>
+			<img_link_icon>videocitofonia/videocontrollo.png</img_link_icon>
+	</item>
+	<!-- intercom link -->
+	<item>
+			<cid>19002</cid>
+			<img_link_icon>videocitofonia/postiinterni.png</img_link_icon>
+	</item>
+	  <!-- cdp link -->
+	<item>
+			<cid>19004</cid>
+			<img_link_icon>videocitofonia/cdp.png</img_link_icon>
+	</item>
 	<!-- Multimedia page links -->
 	<item>
 		<cid>16000</cid>
@@ -528,12 +524,11 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_ipradio_icon>multimediale/radiooveripmini.png</img_ipradio_icon>
 	</item>
 	<!-- sound diffusion system -->
-        <item>
+	<item>
 		<!-- multi sound diffusion ambient list -->
 		<cid>12000</cid>
-
-                <!-- TODO duplicated in the multimedia section, move to
-                     common section -->
+		<!-- TODO duplicated in the multimedia section, move to
+			 common section -->
 		<img_previous>multimediale/precedente.png</img_previous>
 		<img_next>multimediale/successivo.png</img_next>
 		<img_start>multimediale/play.png</img_start>
@@ -694,321 +689,321 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_volume_active>diffusione/onvolamp.png</img_volume_active>
 		<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
 	</item>
-        <!-- amplifier normal ambient 2 (multi sound diffusion) -->
-        <item>
-                <cid>12160</cid>
-                <!--
-                Other images: on, off
-                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
-                -->
-                <img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
-                <img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
-                <img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
-                <img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
-        </item>
-        <!-- amplifier group normal ambient 2 (multi sound diffusion) -->
-        <item>
-                <cid>12161</cid>
-                <!--
-                Other images: on, off
-                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
-                -->
-                <img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
-                <img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
-                <img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
-                <img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
-        </item>
-        <!-- power amplifier normal ambient 2 -->
-        <item>
-                <cid>12162</cid>
-                <!--
-                other images: on, off, minus, plus
-                -->
-                <img_preset>diffusione/preset.png</img_preset>
-                <img_treble>diffusione/louds.png</img_treble>
-                <img_bass>diffusione/lows.png</img_bass>
-                <img_balance>diffusione/balance_0.png</img_balance>
-                <img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
-                <img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
-                <img_loud>diffusione/loud.png</img_loud>
-                <img_loud_on>diffusione/loud.png</img_loud_on>
-                <img_loud_off>diffusione/loud_off.png</img_loud_off>
-                <img_more>diffusione/more.png</img_more>
-                <img_less>diffusione/less.png</img_less>
-                <img_settings>diffusione/audiosetting.png</img_settings>
-                <img_volume_active>diffusione/onvolamp.png</img_volume_active>
-                <img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
-        </item>
-        <!-- amplifier normal ambient 3 (multi sound diffusion) -->
-        <item>
-                <cid>12170</cid>
-                <!--
-                Other images: on, off
-                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
-                -->
-                <img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
-                <img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
-                <img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
-                <img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
-        </item>
-        <!-- amplifier group normal ambient 3 (multi sound diffusion) -->
-        <item>
-                <cid>12171</cid>
-                <!--
-                Other images: on, off
-                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
-                -->
-                <img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
-                <img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
-                <img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
-                <img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
-        </item>
-        <!-- power amplifier normal ambient 3 -->
-        <item>
-                <cid>12172</cid>
-                <!--
-                other images: on, off, minus, plus
-                -->
-                <img_preset>diffusione/preset.png</img_preset>
-                <img_treble>diffusione/louds.png</img_treble>
-                <img_bass>diffusione/lows.png</img_bass>
-                <img_balance>diffusione/balance_0.png</img_balance>
-                <img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
-                <img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
-                <img_loud>diffusione/loud.png</img_loud>
-                <img_loud_on>diffusione/loud.png</img_loud_on>
-                <img_loud_off>diffusione/loud_off.png</img_loud_off>
-                <img_more>diffusione/more.png</img_more>
-                <img_less>diffusione/less.png</img_less>
-                <img_settings>diffusione/audiosetting.png</img_settings>
-                <img_volume_active>diffusione/onvolamp.png</img_volume_active>
-                <img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
-        </item>
-        <!-- amplifier normal ambient 4 (multi sound diffusion) -->
-        <item>
-                <cid>12180</cid>
-                <!--
-                Other images: on, off
-                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
-                -->
-                <img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
-                <img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
-                <img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
-                <img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
-        </item>
-        <!-- amplifier group normal ambient 4 (multi sound diffusion) -->
-        <item>
-                <cid>12181</cid>
-                <!--
-                Other images: on, off
-                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
-                -->
-                <img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
-                <img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
-                <img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
-                <img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
-        </item>
-        <!-- power amplifier normal ambient 4 -->
-        <item>
-                <cid>12182</cid>
-                <!--
-                other images: on, off, minus, plus
-                -->
-                <img_preset>diffusione/preset.png</img_preset>
-                <img_treble>diffusione/louds.png</img_treble>
-                <img_bass>diffusione/lows.png</img_bass>
-                <img_balance>diffusione/balance_0.png</img_balance>
-                <img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
-                <img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
-                <img_loud>diffusione/loud.png</img_loud>
-                <img_loud_on>diffusione/loud.png</img_loud_on>
-                <img_loud_off>diffusione/loud_off.png</img_loud_off>
-                <img_more>diffusione/more.png</img_more>
-                <img_less>diffusione/less.png</img_less>
-                <img_settings>diffusione/audiosetting.png</img_settings>
-                <img_volume_active>diffusione/onvolamp.png</img_volume_active>
-                <img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
-        </item>
-        <!-- amplifier normal ambient 5 (multi sound diffusion) -->
-        <item>
-                <cid>12190</cid>
-                <!--
-                Other images: on, off
-                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
-                -->
-                <img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
-                <img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
-                <img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
-                <img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
-        </item>
-        <!-- amplifier group normal ambient 5 (multi sound diffusion) -->
-        <item>
-                <cid>12191</cid>
-                <!--
-                Other images: on, off
-                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
-                -->
-                <img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
-                <img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
-                <img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
-                <img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
-        </item>
-        <!-- power amplifier normal ambient 5 -->
-        <item>
-                <cid>12192</cid>
-                <!--
-                other images: on, off, minus, plus
-                -->
-                <img_preset>diffusione/preset.png</img_preset>
-                <img_treble>diffusione/louds.png</img_treble>
-                <img_bass>diffusione/lows.png</img_bass>
-                <img_balance>diffusione/balance_0.png</img_balance>
-                <img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
-                <img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
-                <img_loud>diffusione/loud.png</img_loud>
-                <img_loud_on>diffusione/loud.png</img_loud_on>
-                <img_loud_off>diffusione/loud_off.png</img_loud_off>
-                <img_more>diffusione/more.png</img_more>
-                <img_less>diffusione/less.png</img_less>
-                <img_settings>diffusione/audiosetting.png</img_settings>
-                <img_volume_active>diffusione/onvolamp.png</img_volume_active>
-                <img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
-        </item>
-        <!-- amplifier normal ambient 6 (multi sound diffusion) -->
-        <item>
-                <cid>12200</cid>
-                <!--
-                Other images: on, off
-                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
-                -->
-                <img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
-                <img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
-                <img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
-                <img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
-        </item>
-        <!-- amplifier group normal ambient 6 (multi sound diffusion) -->
-        <item>
-                <cid>12201</cid>
-                <!--
-                Other images: on, off
-                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
-                -->
-                <img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
-                <img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
-                <img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
-                <img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
-        </item>
-        <!-- power amplifier normal ambient 6 -->
-        <item>
-                <cid>12202</cid>
-                <!--
-                other images: on, off, minus, plus
-                -->
-                <img_preset>diffusione/preset.png</img_preset>
-                <img_treble>diffusione/louds.png</img_treble>
-                <img_bass>diffusione/lows.png</img_bass>
-                <img_balance>diffusione/balance_0.png</img_balance>
-                <img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
-                <img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
-                <img_loud>diffusione/loud.png</img_loud>
-                <img_loud_on>diffusione/loud.png</img_loud_on>
-                <img_loud_off>diffusione/loud_off.png</img_loud_off>
-                <img_more>diffusione/more.png</img_more>
-                <img_less>diffusione/less.png</img_less>
-                <img_settings>diffusione/audiosetting.png</img_settings>
-                <img_volume_active>diffusione/onvolamp.png</img_volume_active>
-                <img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
-        </item>
-        <!-- amplifier normal ambient 7 (multi sound diffusion) -->
-        <item>
-                <cid>12210</cid>
-                <!--
-                Other images: on, off
-                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
-                -->
-                <img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
-                <img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
-                <img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
-                <img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
-        </item>
-        <!-- amplifier group normal ambient 7 (multi sound diffusion) -->
-        <item>
-                <cid>12211</cid>
-                <!--
-                Other images: on, off
-                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
-                -->
-                <img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
-                <img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
-                <img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
-                <img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
-        </item>
-        <!-- power amplifier normal ambient 7 -->
-        <item>
-                <cid>12212</cid>
-                <!--
-                other images: on, off, minus, plus
-                -->
-                <img_preset>diffusione/preset.png</img_preset>
-                <img_treble>diffusione/louds.png</img_treble>
-                <img_bass>diffusione/lows.png</img_bass>
-                <img_balance>diffusione/balance_0.png</img_balance>
-                <img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
-                <img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
-                <img_loud>diffusione/loud.png</img_loud>
-                <img_loud_on>diffusione/loud.png</img_loud_on>
-                <img_loud_off>diffusione/loud_off.png</img_loud_off>
-                <img_more>diffusione/more.png</img_more>
-                <img_less>diffusione/less.png</img_less>
-                <img_settings>diffusione/audiosetting.png</img_settings>
-                <img_volume_active>diffusione/onvolamp.png</img_volume_active>
-                <img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
-        </item>
-        <!-- amplifier normal ambient 8 (multi sound diffusion) -->
-        <item>
-                <cid>12220</cid>
-                <!--
-                Other images: on, off
-                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
-                -->
-                <img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
-                <img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
-                <img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
-                <img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
-        </item>
-        <!-- amplifier group normal ambient 8 (multi sound diffusion) -->
-        <item>
-                <cid>12221</cid>
-                <!--
-                Other images: on, off
-                Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
-                -->
-                <img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
-                <img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
-                <img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
-                <img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
-        </item>
-        <!-- power amplifier normal ambient 8 -->
-        <item>
-                <cid>12222</cid>
-                <!--
-                other images: on, off, minus, plus
-                -->
-                <img_preset>diffusione/preset.png</img_preset>
-                <img_treble>diffusione/louds.png</img_treble>
-                <img_bass>diffusione/lows.png</img_bass>
-                <img_balance>diffusione/balance_0.png</img_balance>
-                <img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
-                <img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
-                <img_loud>diffusione/loud.png</img_loud>
-                <img_loud_on>diffusione/loud.png</img_loud_on>
-                <img_loud_off>diffusione/loud_off.png</img_loud_off>
-                <img_more>diffusione/more.png</img_more>
-                <img_less>diffusione/less.png</img_less>
-                <img_settings>diffusione/audiosetting.png</img_settings>
-                <img_volume_active>diffusione/onvolamp.png</img_volume_active>
-                <img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
-        </item>
+	<!-- amplifier normal ambient 2 (multi sound diffusion) -->
+	<item>
+			<cid>12160</cid>
+			<!--
+			Other images: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+			-->
+			<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+			<img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+			<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+			<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+	</item>
+	<!-- amplifier group normal ambient 2 (multi sound diffusion) -->
+	<item>
+			<cid>12161</cid>
+			<!--
+			Other images: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+			-->
+			<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+			<img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
+			<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+			<img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
+	</item>
+	<!-- power amplifier normal ambient 2 -->
+	<item>
+			<cid>12162</cid>
+			<!--
+			other images: on, off, minus, plus
+			-->
+			<img_preset>diffusione/preset.png</img_preset>
+			<img_treble>diffusione/louds.png</img_treble>
+			<img_bass>diffusione/lows.png</img_bass>
+			<img_balance>diffusione/balance_0.png</img_balance>
+			<img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+			<img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+			<img_loud>diffusione/loud.png</img_loud>
+			<img_loud_on>diffusione/loud.png</img_loud_on>
+			<img_loud_off>diffusione/loud_off.png</img_loud_off>
+			<img_more>diffusione/more.png</img_more>
+			<img_less>diffusione/less.png</img_less>
+			<img_settings>diffusione/audiosetting.png</img_settings>
+			<img_volume_active>diffusione/onvolamp.png</img_volume_active>
+			<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+	</item>
+	<!-- amplifier normal ambient 3 (multi sound diffusion) -->
+	<item>
+			<cid>12170</cid>
+			<!--
+			Other images: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+			-->
+			<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+			<img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+			<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+			<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+	</item>
+	<!-- amplifier group normal ambient 3 (multi sound diffusion) -->
+	<item>
+			<cid>12171</cid>
+			<!--
+			Other images: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+			-->
+			<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+			<img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
+			<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+			<img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
+	</item>
+	<!-- power amplifier normal ambient 3 -->
+	<item>
+			<cid>12172</cid>
+			<!--
+			other images: on, off, minus, plus
+			-->
+			<img_preset>diffusione/preset.png</img_preset>
+			<img_treble>diffusione/louds.png</img_treble>
+			<img_bass>diffusione/lows.png</img_bass>
+			<img_balance>diffusione/balance_0.png</img_balance>
+			<img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+			<img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+			<img_loud>diffusione/loud.png</img_loud>
+			<img_loud_on>diffusione/loud.png</img_loud_on>
+			<img_loud_off>diffusione/loud_off.png</img_loud_off>
+			<img_more>diffusione/more.png</img_more>
+			<img_less>diffusione/less.png</img_less>
+			<img_settings>diffusione/audiosetting.png</img_settings>
+			<img_volume_active>diffusione/onvolamp.png</img_volume_active>
+			<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+	</item>
+	<!-- amplifier normal ambient 4 (multi sound diffusion) -->
+	<item>
+			<cid>12180</cid>
+			<!--
+			Other images: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+			-->
+			<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+			<img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+			<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+			<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+	</item>
+	<!-- amplifier group normal ambient 4 (multi sound diffusion) -->
+	<item>
+			<cid>12181</cid>
+			<!--
+			Other images: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+			-->
+			<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+			<img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
+			<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+			<img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
+	</item>
+	<!-- power amplifier normal ambient 4 -->
+	<item>
+			<cid>12182</cid>
+			<!--
+			other images: on, off, minus, plus
+			-->
+			<img_preset>diffusione/preset.png</img_preset>
+			<img_treble>diffusione/louds.png</img_treble>
+			<img_bass>diffusione/lows.png</img_bass>
+			<img_balance>diffusione/balance_0.png</img_balance>
+			<img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+			<img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+			<img_loud>diffusione/loud.png</img_loud>
+			<img_loud_on>diffusione/loud.png</img_loud_on>
+			<img_loud_off>diffusione/loud_off.png</img_loud_off>
+			<img_more>diffusione/more.png</img_more>
+			<img_less>diffusione/less.png</img_less>
+			<img_settings>diffusione/audiosetting.png</img_settings>
+			<img_volume_active>diffusione/onvolamp.png</img_volume_active>
+			<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+	</item>
+	<!-- amplifier normal ambient 5 (multi sound diffusion) -->
+	<item>
+			<cid>12190</cid>
+			<!--
+			Other images: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+			-->
+			<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+			<img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+			<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+			<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+	</item>
+	<!-- amplifier group normal ambient 5 (multi sound diffusion) -->
+	<item>
+			<cid>12191</cid>
+			<!--
+			Other images: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+			-->
+			<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+			<img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
+			<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+			<img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
+	</item>
+	<!-- power amplifier normal ambient 5 -->
+	<item>
+			<cid>12192</cid>
+			<!--
+			other images: on, off, minus, plus
+			-->
+			<img_preset>diffusione/preset.png</img_preset>
+			<img_treble>diffusione/louds.png</img_treble>
+			<img_bass>diffusione/lows.png</img_bass>
+			<img_balance>diffusione/balance_0.png</img_balance>
+			<img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+			<img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+			<img_loud>diffusione/loud.png</img_loud>
+			<img_loud_on>diffusione/loud.png</img_loud_on>
+			<img_loud_off>diffusione/loud_off.png</img_loud_off>
+			<img_more>diffusione/more.png</img_more>
+			<img_less>diffusione/less.png</img_less>
+			<img_settings>diffusione/audiosetting.png</img_settings>
+			<img_volume_active>diffusione/onvolamp.png</img_volume_active>
+			<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+	</item>
+	<!-- amplifier normal ambient 6 (multi sound diffusion) -->
+	<item>
+			<cid>12200</cid>
+			<!--
+			Other images: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+			-->
+			<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+			<img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+			<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+			<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+	</item>
+	<!-- amplifier group normal ambient 6 (multi sound diffusion) -->
+	<item>
+			<cid>12201</cid>
+			<!--
+			Other images: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+			-->
+			<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+			<img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
+			<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+			<img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
+	</item>
+	<!-- power amplifier normal ambient 6 -->
+	<item>
+			<cid>12202</cid>
+			<!--
+			other images: on, off, minus, plus
+			-->
+			<img_preset>diffusione/preset.png</img_preset>
+			<img_treble>diffusione/louds.png</img_treble>
+			<img_bass>diffusione/lows.png</img_bass>
+			<img_balance>diffusione/balance_0.png</img_balance>
+			<img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+			<img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+			<img_loud>diffusione/loud.png</img_loud>
+			<img_loud_on>diffusione/loud.png</img_loud_on>
+			<img_loud_off>diffusione/loud_off.png</img_loud_off>
+			<img_more>diffusione/more.png</img_more>
+			<img_less>diffusione/less.png</img_less>
+			<img_settings>diffusione/audiosetting.png</img_settings>
+			<img_volume_active>diffusione/onvolamp.png</img_volume_active>
+			<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+	</item>
+	<!-- amplifier normal ambient 7 (multi sound diffusion) -->
+	<item>
+			<cid>12210</cid>
+			<!--
+			Other images: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+			-->
+			<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+			<img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+			<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+			<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+	</item>
+	<!-- amplifier group normal ambient 7 (multi sound diffusion) -->
+	<item>
+			<cid>12211</cid>
+			<!--
+			Other images: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+			-->
+			<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+			<img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
+			<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+			<img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
+	</item>
+	<!-- power amplifier normal ambient 7 -->
+	<item>
+			<cid>12212</cid>
+			<!--
+			other images: on, off, minus, plus
+			-->
+			<img_preset>diffusione/preset.png</img_preset>
+			<img_treble>diffusione/louds.png</img_treble>
+			<img_bass>diffusione/lows.png</img_bass>
+			<img_balance>diffusione/balance_0.png</img_balance>
+			<img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+			<img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+			<img_loud>diffusione/loud.png</img_loud>
+			<img_loud_on>diffusione/loud.png</img_loud_on>
+			<img_loud_off>diffusione/loud_off.png</img_loud_off>
+			<img_more>diffusione/more.png</img_more>
+			<img_less>diffusione/less.png</img_less>
+			<img_settings>diffusione/audiosetting.png</img_settings>
+			<img_volume_active>diffusione/onvolamp.png</img_volume_active>
+			<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+	</item>
+	<!-- amplifier normal ambient 8 (multi sound diffusion) -->
+	<item>
+			<cid>12220</cid>
+			<!--
+			Other images: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+			-->
+			<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
+			<img_volume_off_left>diffusione/offvolampsxl.png</img_volume_off_left>
+			<img_volume_on_right>diffusione/onvolampdxl.png</img_volume_on_right>
+			<img_volume_off_right>diffusione/offvolampdxl.png</img_volume_off_right>
+	</item>
+	<!-- amplifier group normal ambient 8 (multi sound diffusion) -->
+	<item>
+			<cid>12221</cid>
+			<!--
+			Other images: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+			-->
+			<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
+			<img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
+			<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
+			<img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
+	</item>
+	<!-- power amplifier normal ambient 8 -->
+	<item>
+			<cid>12222</cid>
+			<!--
+			other images: on, off, minus, plus
+			-->
+			<img_preset>diffusione/preset.png</img_preset>
+			<img_treble>diffusione/louds.png</img_treble>
+			<img_bass>diffusione/lows.png</img_bass>
+			<img_balance>diffusione/balance_0.png</img_balance>
+			<img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
+			<img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
+			<img_loud>diffusione/loud.png</img_loud>
+			<img_loud_on>diffusione/loud.png</img_loud_on>
+			<img_loud_off>diffusione/loud_off.png</img_loud_off>
+			<img_more>diffusione/more.png</img_more>
+			<img_less>diffusione/less.png</img_less>
+			<img_settings>diffusione/audiosetting.png</img_settings>
+			<img_volume_active>diffusione/onvolamp.png</img_volume_active>
+			<img_volume_inactive>diffusione/offvolamp.png</img_volume_inactive>
+	</item>
 	<!-- special ambient -->
 	<item>
 		<cid>12020</cid>
@@ -1093,8 +1088,8 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_man_off>diffusione/manualeoff.png</img_man_off>
 		<img_details_display>diffusione/displaybig.png</img_details_display>
 
-                <!-- TODO duplicated in the multimedia section, move to
-                     common section -->
+		<!-- TODO duplicated in the multimedia section, move to
+			 common section -->
 		<img_start>multimediale/play.png</img_start>
 		<img_pause>multimediale/pause.png</img_pause>
 		<img_stop>multimediale/stop.png</img_stop>
@@ -1478,87 +1473,85 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 	<!-- central probe page 4 zones -->
 	<item>
 		<cid>8042</cid>
-		        <img_central_icon>termoregolazione/imgzona.png</img_central_icon>
-                <img_forward>termoregolazione/vai.png</img_forward>
+		<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
+		<img_forward>termoregolazione/vai.png</img_forward>
 
-                <img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
-                <img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
-                <img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
-                <img_probe_off>termoregolazione/imgoff.png</img_probe_off>
-                <img_minus>termoregolazione/meno.png</img_minus>
-                <img_plus>termoregolazione/piu.png</img_plus>
-                <img_fan_1_on>termoregolazione/fancoilminon.png</img_fan_1_on>
-                <img_fan_2_on>termoregolazione/fancoilmedon.png</img_fan_2_on>
-                <img_fan_3_on>termoregolazione/fancoilmaxon.png</img_fan_3_on>
-                <img_fan_4_on>termoregolazione/fancoilautoon.png</img_fan_4_on>
-                <img_fan_1_off>termoregolazione/fancoilminoff.png</img_fan_1_off>
-                <img_fan_2_off>termoregolazione/fancoilmedoff.png</img_fan_2_off>
-                <img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
-                <img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
-        </item>
-        <!-- central probe +1 (page 4 zones) -->
-        <item>
-                <cid>8043</cid>
-                        <img_central_icon>termoregolazione/imgzona.png</img_central_icon>
-                <img_forward>termoregolazione/vai.png</img_forward>
+		<img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
+		<img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
+		<img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
+		<img_probe_off>termoregolazione/imgoff.png</img_probe_off>
+		<img_minus>termoregolazione/meno.png</img_minus>
+		<img_plus>termoregolazione/piu.png</img_plus>
+		<img_fan_1_on>termoregolazione/fancoilminon.png</img_fan_1_on>
+		<img_fan_2_on>termoregolazione/fancoilmedon.png</img_fan_2_on>
+		<img_fan_3_on>termoregolazione/fancoilmaxon.png</img_fan_3_on>
+		<img_fan_4_on>termoregolazione/fancoilautoon.png</img_fan_4_on>
+		<img_fan_1_off>termoregolazione/fancoilminoff.png</img_fan_1_off>
+		<img_fan_2_off>termoregolazione/fancoilmedoff.png</img_fan_2_off>
+		<img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
+		<img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
+	</item>
+	<!-- central probe +1 (page 4 zones) -->
+	<item>
+		<cid>8043</cid>
+				<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
+		<img_forward>termoregolazione/vai.png</img_forward>
 
-                <img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
-                <img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
-                <img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
-                <img_probe_off>termoregolazione/imgoff.png</img_probe_off>
-                <img_minus>termoregolazione/meno.png</img_minus>
-                <img_plus>termoregolazione/piu.png</img_plus>
-                <img_fan_1_on>termoregolazione/fancoilminon.png</img_fan_1_on>
-                <img_fan_2_on>termoregolazione/fancoilmedon.png</img_fan_2_on>
-                <img_fan_3_on>termoregolazione/fancoilmaxon.png</img_fan_3_on>
-                <img_fan_4_on>termoregolazione/fancoilautoon.png</img_fan_4_on>
-                <img_fan_1_off>termoregolazione/fancoilminoff.png</img_fan_1_off>
-                <img_fan_2_off>termoregolazione/fancoilmedoff.png</img_fan_2_off>
-                <img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
-                <img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
-        </item>
-        <!-- central probe +2 (page 4 zones) -->
-        <item>
-                <cid>8044</cid>
-                        <img_central_icon>termoregolazione/imgzona.png</img_central_icon>
-                <img_forward>termoregolazione/vai.png</img_forward>
-
-                <img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
-                <img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
-                <img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
-                <img_probe_off>termoregolazione/imgoff.png</img_probe_off>
-                <img_minus>termoregolazione/meno.png</img_minus>
-                <img_plus>termoregolazione/piu.png</img_plus>
-                <img_fan_1_on>termoregolazione/fancoilminon.png</img_fan_1_on>
-                <img_fan_2_on>termoregolazione/fancoilmedon.png</img_fan_2_on>
-                <img_fan_3_on>termoregolazione/fancoilmaxon.png</img_fan_3_on>
-                <img_fan_4_on>termoregolazione/fancoilautoon.png</img_fan_4_on>
-                <img_fan_1_off>termoregolazione/fancoilminoff.png</img_fan_1_off>
-                <img_fan_2_off>termoregolazione/fancoilmedoff.png</img_fan_2_off>
-                <img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
-                <img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
-        </item>
-        <!-- central probe +3 (page 4 zones) -->
-        <item>
-                <cid>8045</cid>
-		        <img_central_icon>termoregolazione/imgzona.png</img_central_icon>
-                <img_forward>termoregolazione/vai.png</img_forward>
-
-                <img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
-                <img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
-                <img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
-                <img_probe_off>termoregolazione/imgoff.png</img_probe_off>
-                <img_minus>termoregolazione/meno.png</img_minus>
-                <img_plus>termoregolazione/piu.png</img_plus>
-                <img_fan_1_on>termoregolazione/fancoilminon.png</img_fan_1_on>
-                <img_fan_2_on>termoregolazione/fancoilmedon.png</img_fan_2_on>
-                <img_fan_3_on>termoregolazione/fancoilmaxon.png</img_fan_3_on>
-                <img_fan_4_on>termoregolazione/fancoilautoon.png</img_fan_4_on>
-                <img_fan_1_off>termoregolazione/fancoilminoff.png</img_fan_1_off>
-                <img_fan_2_off>termoregolazione/fancoilmedoff.png</img_fan_2_off>
-                <img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
-                <img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
-        </item>
+		<img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
+		<img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
+		<img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
+		<img_probe_off>termoregolazione/imgoff.png</img_probe_off>
+		<img_minus>termoregolazione/meno.png</img_minus>
+		<img_plus>termoregolazione/piu.png</img_plus>
+		<img_fan_1_on>termoregolazione/fancoilminon.png</img_fan_1_on>
+		<img_fan_2_on>termoregolazione/fancoilmedon.png</img_fan_2_on>
+		<img_fan_3_on>termoregolazione/fancoilmaxon.png</img_fan_3_on>
+		<img_fan_4_on>termoregolazione/fancoilautoon.png</img_fan_4_on>
+		<img_fan_1_off>termoregolazione/fancoilminoff.png</img_fan_1_off>
+		<img_fan_2_off>termoregolazione/fancoilmedoff.png</img_fan_2_off>
+		<img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
+		<img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
+	</item>
+	<!-- central probe +2 (page 4 zones) -->
+	<item>
+		<cid>8044</cid>
+		<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
+		<img_forward>termoregolazione/vai.png</img_forward>
+		<img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
+		<img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
+		<img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
+		<img_probe_off>termoregolazione/imgoff.png</img_probe_off>
+		<img_minus>termoregolazione/meno.png</img_minus>
+		<img_plus>termoregolazione/piu.png</img_plus>
+		<img_fan_1_on>termoregolazione/fancoilminon.png</img_fan_1_on>
+		<img_fan_2_on>termoregolazione/fancoilmedon.png</img_fan_2_on>
+		<img_fan_3_on>termoregolazione/fancoilmaxon.png</img_fan_3_on>
+		<img_fan_4_on>termoregolazione/fancoilautoon.png</img_fan_4_on>
+		<img_fan_1_off>termoregolazione/fancoilminoff.png</img_fan_1_off>
+		<img_fan_2_off>termoregolazione/fancoilmedoff.png</img_fan_2_off>
+		<img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
+		<img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
+	</item>
+	<!-- central probe +3 (page 4 zones) -->
+	<item>
+		<cid>8045</cid>
+		<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
+		<img_forward>termoregolazione/vai.png</img_forward>
+		<img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
+		<img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
+		<img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
+		<img_probe_off>termoregolazione/imgoff.png</img_probe_off>
+		<img_minus>termoregolazione/meno.png</img_minus>
+		<img_plus>termoregolazione/piu.png</img_plus>
+		<img_fan_1_on>termoregolazione/fancoilminon.png</img_fan_1_on>
+		<img_fan_2_on>termoregolazione/fancoilmedon.png</img_fan_2_on>
+		<img_fan_3_on>termoregolazione/fancoilmaxon.png</img_fan_3_on>
+		<img_fan_4_on>termoregolazione/fancoilautoon.png</img_fan_4_on>
+		<img_fan_1_off>termoregolazione/fancoilminoff.png</img_fan_1_off>
+		<img_fan_2_off>termoregolazione/fancoilmedoff.png</img_fan_2_off>
+		<img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
+		<img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
+	</item>
 	<!-- regulator page 4 zones -->
 	<item>
 		<cid>8301</cid>
@@ -1658,12 +1651,12 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_winter_program>termoregolazione/imgprogrammainvernooff.png</img_winter_program>
 		<img_summer_program>termoregolazione/imgprogrammaestateoff.png</img_summer_program>
 	</item>
-    
-    <!-- link air conditioning under termo -->
-    <item>
-        <cid>8005</cid>
-	    <img_central_icon>termoregolazione/airconditioning.png</img_central_icon>
-    </item>
+
+	<!-- link air conditioning under termo -->
+	<item>
+		<cid>8005</cid>
+		<img_central_icon>termoregolazione/airconditioning.png</img_central_icon>
+	</item>
 
 	<!-- air conditioning subsystem-->
 	<item>
@@ -1838,24 +1831,24 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_link_icon>videocitofonia/piintercompiano.png</img_link_icon>
 	</item>
 
-    <!-- Video control items IP-->
-        <!-- panel -->
+	<!-- Video control items IP-->
+	<!-- panel -->
 	<item>
-                <cid>19051</cid>
-                <img_link_icon>videocitofonia/pes0.png</img_link_icon>
-        </item>
-        <!-- camera -->
-        <item>
-                <cid>19052</cid>
-                <img_link_icon>videocitofonia/telecamera.png</img_link_icon>
-        </item>
-        <!-- Intercom items -->
-        <item>
-                <cid>19101</cid>
-                <img_link_icon>videocitofonia/piintercom.png</img_link_icon>
-        </item>
-        <item>
-                <cid>19102</cid>
+		<cid>19051</cid>
+		<img_link_icon>videocitofonia/pes0.png</img_link_icon>
+	</item>
+	<!-- camera -->
+	<item>
+		<cid>19052</cid>
+		<img_link_icon>videocitofonia/telecamera.png</img_link_icon>
+	</item>
+	<!-- Intercom items -->
+	<item>
+		<cid>19101</cid>
+		<img_link_icon>videocitofonia/piintercom.png</img_link_icon>
+	</item>
+	<item>
+		<cid>19102</cid>
 		<img_link_icon>videocitofonia/piintercompiano.png</img_link_icon>
 	</item>
 	<item>
