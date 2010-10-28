@@ -35,6 +35,30 @@ class QString;
 	This class uses an xml file to load, for each value of the enumeration 
 	FontManager::Type, the font associated.
 	Use the method get() to retrieve the font for the given type.
+
+	The mapping between the values in FontManager::Type and actual font types/sizes
+	is defined in XML font mapping files (one per language):
+	\verbatim
+<fontconfig>
+  <font>
+    <type>0</type>
+    <descr>TITLE</descr>
+    <family>arialuni</family>
+    <size>40</size>
+    <weight>75</weight>
+  </font>
+  ...
+</fontconfig>
+	\endverbatim
+
+	For every font definition in FontManager::Type there must be a
+	matching \c <font> entry with the same \c <type>.  The other
+	attributes describe the font associated with the entry.
+
+	\c <family> is the name of the font family; \c <size> is the
+	size in points (1/72th of an inch); \c <weight> can have any value
+	from 0 to 99, but there are some special values: 50 is for a normal
+	font weight, 75 for bold and 25 for a light font.
 */
 class FontManager
 {
@@ -76,8 +100,7 @@ public:
 	enum Type
 	{
 		TITLE = 0,                                        /*!< title of the page (used for all TS 10'' pages, and for a couple of TS 3.5'' pages) */
-		SUBTITLE = 0,                                     /*!< AUX source, load deactivation time, external/non-controlled probe
-		                                                       RDS radio, version page, load management current consumption,
+		SUBTITLE = 0,                                     /*!< load deactivation time, version page, load management current consumption,
 		                                                       load management "force on" confirmation page, energy management date selection */
 		TEXT = 2,                                         /*!< default text size */
 		BANNERTEXT = 4,                                   /*!< label text for banner labels aligned horizontally with the icons */
