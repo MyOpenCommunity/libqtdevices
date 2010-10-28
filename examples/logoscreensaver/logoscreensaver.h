@@ -38,7 +38,7 @@ public:
 	LogoScreenSaver();
 
 	virtual void start(Window *w);
-	virtual ScreenSaver::Type type() { return ScreenSaver::LOGO; }
+	virtual ScreenSaver::Type type();
 
 protected:
 	virtual void paintEvent(QPaintEvent *e);
