@@ -19,14 +19,13 @@
  */
 
 #include "logoscreensaver.h"
+#include "skinmanager.h"
 
 #include <QPainter>
 
-#include "skinmanager.h"
-
 
 LogoScreenSaver::LogoScreenSaver()
-	: ScreenSaver(500)
+	: ScreenSaver(50)
 {
 	SkinContext ctx(12345);
 

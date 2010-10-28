@@ -71,7 +71,7 @@ ScreenSaverPage::ScreenSaverPage(const QDomNode &conf_node) :
 	addBanner(SingleChoice::createBanner(tr("Line")), ScreenSaver::LINES);
 	addBanner(SingleChoice::createBanner(tr("Balls")), ScreenSaver::BALLS);
 #endif
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	addBanner(SingleChoice::createBanner(tr("Bouncing logo")), ScreenSaver::LOGO);
 #endif
 	//addBanner(tr("Deform"), ScreenSaver::DEFORM); // the deform is for now unavailable!

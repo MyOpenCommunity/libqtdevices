@@ -27,7 +27,10 @@
 
 class QPaintEvent;
 
-
+/*!
+	\ingroup Core
+	\brief Represents a screensaver with the myhome logo bouncing.
+*/
 class LogoScreenSaver : public ScreenSaver
 {
 Q_OBJECT
