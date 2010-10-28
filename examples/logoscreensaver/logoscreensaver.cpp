@@ -43,6 +43,15 @@ void LogoScreenSaver::start(Window *w)
 	showWindow();
 }
 
+void LogoScreenSaver::initLogoRect()
+{
+	int x = (window->width() - logo_pixmap.width()) / 2;
+	int y = (window->height() - logo_pixmap.height()) / 2;
+
+	logo_rect.moveTo(x, y);
+	logo_rect.setSize(logo_pixmap.size());
+}
+
 void LogoScreenSaver::paintEvent(QPaintEvent *e)
 {
 	QPainter painter(this);
@@ -62,11 +71,8 @@ void LogoScreenSaver::refresh()
 	update();
 }
 
-void LogoScreenSaver::initLogoRect()
+ScreenSaver::Type LogoScreenSaver::type()
 {
-	int x = (window->width() - logo_pixmap.width()) / 2;
-	int y = (window->height() - logo_pixmap.height()) / 2;
-
-	logo_rect.moveTo(x, y);
-	logo_rect.setSize(logo_pixmap.size());
+	return ScreenSaver::LOGO;
 }
+

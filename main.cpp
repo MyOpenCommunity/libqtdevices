@@ -50,7 +50,7 @@
 	it has a key role in the control of all its functionalities.
 
 	BTouch can run in 3.5'' and 10'' touchscreens.  It's possible
-	to test the user interface on a Linux PC; see \ref overview-x86 for caveats
+	to test the user interface on a Linux PC; see \ref page-x86 for caveats
 	and limitations.
 
 	\section overview-architecture System architecture
@@ -67,7 +67,126 @@
 	Inside the GUI, the communication with physical devices is abstracted by
 	\ref device subclasses that avoid the need to deal with OpenWebNet directly.
 
-	\section overview-gui GUI Overview
+	See the \ref page-gui to an explaination of how the GUI works.
+
+	\section modifying-gui Modifying the GUI
+
+	bla bla bla
+	See the \ref page-examples.
+*/
+
+/*!
+	\page page-examples BTouch examples
+	The examples below demostrate how modify the source code of BTouch in order to add functionalities
+	or change the default behaviour. You can also compile the examples into the
+	BTouch code executing the qmake step in this way:
+	\code
+	qmake CONFIG += examples
+	\endcode
+
+	The available examples are:
+	- \ref page-example-pdf
+	- \ref page-example-screensaver
+	- \ref page-example-message
+*/
+
+/*!
+	\page page-example-pdf The pdf viewer example
+*/
+
+/*!
+	\page page-example-screensaver The logo screeensaver example
+
+	We want to add a screensaver that shows a bouncing myhome logo.
+
+	The first thing we have to do is subclass the abstract class ScreenSaver.
+	As described in the documentation of the class, we have to reimplement the
+	ScreenSaver::type() and ScreenSaver::refresh() methods.
+
+	We want to show a myhome logo moving on the screen, so we redefine
+	the constructor to get and save the image from the SkinManager:
+	\dontinclude logoscreensaver.cpp
+	\skip LogoScreenSaver::LogoScreenSaver()
+	\until }
+
+	Now we have to place the logo on the screen. Because we have to re-placing
+	the image every time that the screensaver starts, we redefine the
+	ScreenSaver::start() method:
+	\skip LogoScreenSaver::start
+	\until }
+
+	Note that the LogoScreenSaver class explicitly calls the Window::showWindow()
+	method. This is required because some screensavers (as the ScreenSaverLine)
+	doesn't show a window but instead draws over another window.
+
+	The positioning is done by the method initLogoRect() defined as:
+	\skip LogoScreenSaver::initLogoRect
+	\until }
+
+	The paintEvent, implicitly called by Qt, is the responsable of drawing the
+	logo using its current position:
+
+	\skip LogoScreenSaver::paintEvent
+	\until }
+
+	Now, we have to change the current position of the logo, redefining the
+	ScreenSaver::refresh() method:
+	\skip LogoScreenSaver::refresh
+	\until }
+
+	Now we have to assign a proper type to our screensaver, adding the type
+	to the ScreenSaver::Type enumeration and reimplementing the type() method:
+	\skip LogoScreenSaver::type
+	\until }
+
+	The only thing left is to allow the user to choose the logo screensaver.
+	We do that adding a CheckableBanner for the logo choice in the ScreenSaverPage
+	constructor, associating it with the ScreenSaver::Type just added
+	\dontinclude screensaverpage.cpp
+	\skip #ifdef BUILD_EXAMPLES
+	\until #endif
+*/
+
+/*!
+	\page page-example-message Boh
+*/
+
+/*!
+	\page page-x86 BTouch on Linux PC
+
+	BTouch can be run on Linux PCs (tested on 32-bit Linux, should work, but has not been tested,
+	on 64-bit Linux and other Unix variants).
+
+	To test under Linux you need:
+	- Qt4 embedded for your architecture
+	- qvfb (can be built from Qt sources, but should be packaged in all distributions)
+	- a network-connected touchscreen
+	- BTicino common library for your architecture
+
+	Use the same build procedure documented for ARM cross-compilation (using the correct Qt embedded build and toolchain).
+
+	The GUI needs to connect to an OpenServer: you need to enable external connections in the configuration file (\c abilita_ip
+	node, under \c sicurezza).
+
+	Before running BTouch, launch qvfb and select the appropriate resolution.
+
+	To run BTouch use "LD_LIBRARY_PATH=/path/to/libcommon ./BTouch.x86 -qws"; you should see the interface displayed inside qvfb.
+
+	Most functions work without problems when run on PC; what does not work (or works only partially):
+	- calibration is not implemented
+	- using the PC as a sound diffusion source/amplifier is not possible
+	- mplayer must be installed for local audio playback (\ref Multimedia section)
+	- local video playback (\ref Multimedia section) works but the video is displayed
+		full-screen, not in the BTouch interface
+	- screen brightness does not change in freeze/screensaver mode
+	- screen is not turned off after the blank screen timeout
+	- state of videocalls can be controlled, but audio/video is not shown
+	- the system should allow navigating an USB key from the multimedia section
+	  but will not mount/umount it
+*/
+
+/*!
+	\page page-gui GUI Overview
 
 	The top level GUI component is WindowContainer which manages all full-screen pages (password
 	keypad, screensaver, main application window, ...) all of which are Window subclasses.
@@ -124,37 +243,6 @@
 
 	For sections that only contain banners (\ref Lighting, \ref Automation, \ref Scenarios, \ref Settings), ::getBanner() can be used
 	to obtain a banner instance given the configuration node.
-
-	\section overview-x86 Testing on Linux PC
-
-	BTouch can be run on Linux PCs (tested on 32-bit Linux, should work, but has not been tested, on 64-bit Linux and other Unix variants).
-
-	To test under Linux you need:
-	- Qt4 embedded for your architecture
-	- qvfb (can be built from Qt sources, but should be packaged in all distributions)
-	- a network-connected touchscreen
-	- BTicino common library for your architecture
-
-	Use the same build procedure documented for ARM cross-compilation (using the correct Qt embedded build and toolchain).
-
-	The GUI needs to connect to an OpenServer: you need to enable external connections in the configuration file (\c abilita_ip
-	node, under \c sicurezza).
-
-	Before running BTouch, launch qvfb and select the appropriate resolution.
-
-	To run BTouch use "LD_LIBRARY_PATH=/path/to/libcommon ./BTouch.x86 -qws"; you should see the interface displayed inside qvfb.
-
-	Most functions work without problems when run on PC; what does not work (or works only partially):
-	- calibration is not implemented
-	- using the PC as a sound diffusion source/amplifier is not possible
-	- mplayer must be installed for local audio playback (\ref Multimedia section)
-	- local video playback (\ref Multimedia section) works but the video is displayed
-	    full-screen, not in the BTouch interface
-	- screen brightness does not change in freeze/screensaver mode
-	- screen is not turned off after the blank screen timeout
-	- state of videocalls can be controlled, but audio/video is not shown
-	- the system should allow navigating an USB key from the multimedia section
-	  but will not mount/umount it
 
 	\section overview-test Unit tests
 
