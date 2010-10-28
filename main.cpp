@@ -130,10 +130,10 @@
 	BTouch can be run on Linux PCs (tested on 32-bit Linux, should work, but has not been tested, on 64-bit Linux and other Unix variants).
 
 	To test under Linux you need:
-	\li Qt4 embedded for your architecture
-	\li qvfb (can be built from Qt sources, but should be packaged in all distributions)
-	\li a network-connected touchscreen
-	\li BTicino common library for your architecture
+	- Qt4 embedded for your architecture
+	- qvfb (can be built from Qt sources, but should be packaged in all distributions)
+	- a network-connected touchscreen
+	- BTicino common library for your architecture
 
 	Use the same build procedure documented for ARM cross-compilation (using the correct Qt embedded build and toolchain).
 
@@ -145,16 +145,16 @@
 	To run BTouch use "LD_LIBRARY_PATH=/path/to/libcommon ./BTouch.x86 -qws"; you should see the interface displayed inside qvfb.
 
 	Most functions work without problems when run on PC; what does not work (or works only partially):
-	\li calibration is not implemented
-	\li using the PC as a sound diffusion source/amplifier is not possible
-	\li mplayer must be installed for local audio playback (\ref Multimedia section)
-	\li local video playback (\ref Multimedia section) works but the video is displayed
+	- calibration is not implemented
+	- using the PC as a sound diffusion source/amplifier is not possible
+	- mplayer must be installed for local audio playback (\ref Multimedia section)
+	- local video playback (\ref Multimedia section) works but the video is displayed
 	    full-screen, not in the BTouch interface
-	\li screen brightness does not change in freeze/screensaver mode
-	\li screen is not turned off after the blank screen timeout
-	\li state of videocalls can be controlled, but audio/video is not shown
-	\li the system should allow navigating an USB key from the multimedia section
-	    but will not mount/umount it
+	- screen brightness does not change in freeze/screensaver mode
+	- screen is not turned off after the blank screen timeout
+	- state of videocalls can be controlled, but audio/video is not shown
+	- the system should allow navigating an USB key from the multimedia section
+	  but will not mount/umount it
 
 	\section overview-test Unit tests
 

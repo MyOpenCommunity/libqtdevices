@@ -128,11 +128,11 @@ private:
 	\brief A device to read energy/water/gas/heating consumption data.
 
 	Consumption values are expressed using different using dipending on the energy type:
-	\li Electricity: watt
-	\li Water: liters
-	\li Gas: dm3 (liters)
-	\li Hot water: calories
-	\li Heating/cooling: calories
+	- Electricity: watt
+	- Water: liters
+	- Gas: dm3 (liters)
+	- Hot water: calories
+	- Heating/cooling: calories
 
 	\section EnergyDevice-dimensions Dimensions
 	\startdim
@@ -167,11 +167,11 @@ public:
 
 		Build an energy device using the given \a where and \a mode, where \a mode
 		is the measure type and can be:
-		\li 1: electricity
-		\li 2: water
-		\li 3: gas
-		\li 4: hot water
-		\li 5: heating/conditioning
+		- 1: electricity
+		- 2: water
+		- 3: gas
+		- 4: hot water
+		- 5: heating/conditioning
 	*/
 	EnergyDevice(QString where, int mode);
 
@@ -361,9 +361,9 @@ struct GraphData
 		\brief The graph data.
 
 		The keys always start at 1
-		\li EnergyDevice::DAILY_AVERAGE, EnergyDevice::CUMULATIVE_DAY: the key is the hour of the day
-		\li EnergyDevice::CUMULATIVE_MONTH: the key is the day of the month
-		\li EnergyDevice::CUMULATIVE_YEAR: key 12 contains the value for the current month, lower keys contain the value for previous months
+		- EnergyDevice::DAILY_AVERAGE, EnergyDevice::CUMULATIVE_DAY: the key is the hour of the day
+		- EnergyDevice::CUMULATIVE_MONTH: the key is the day of the month
+		- EnergyDevice::CUMULATIVE_YEAR: key 12 contains the value for the current month, lower keys contain the value for previous months
 	*/
 	QMap<int, unsigned int> graph;
 
@@ -371,9 +371,9 @@ struct GraphData
 		\brief The date the data refers to.
 
 		The interpretation varies depending on graph data type
-		\li EnergyDevice::DAILY_AVERAGE, EnergyDevice::CUMULATIVE_DAY: the day the data refers to.
-		\li EnergyDevice::CUMULATIVE_MONTH: teh first day of the month the data refers to.
-		\li EnergyDevice::CUMULATIVE_YEAR: not relevant.
+		- EnergyDevice::DAILY_AVERAGE, EnergyDevice::CUMULATIVE_DAY: the day the data refers to.
+		- EnergyDevice::CUMULATIVE_MONTH: teh first day of the month the data refers to.
+		- EnergyDevice::CUMULATIVE_YEAR: not relevant.
 	*/
 	QDate date;
 

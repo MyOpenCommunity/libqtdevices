@@ -66,13 +66,13 @@ typedef QHash<int, QVariant> DeviceValues;
 	look at Window.
 
 	A page is composed of:
-	\li an AbstractNavigationBar, usually used to navigate the content of the page,
+	- an AbstractNavigationBar, usually used to navigate the content of the page,
 		close it and sometimes to execute special functions.
-	\li a main widget, a QWidget displayed in the central area of the page.
+	- a main widget, a QWidget displayed in the central area of the page.
 		Often is the same object than the content.
-	\li a content, a QWidget container for \c items, that can be banners, icons
+	- a content, a QWidget container for \c items, that can be banners, icons
 		or whatever you want which contains also the logic to paginate the items.
-	\li a top widget (optional), an header of the page that is always shown at
+	- a top widget (optional), an header of the page that is always shown at
 		the top of the page, ie. it will not scroll up/down like the rest of the
 		content.
 

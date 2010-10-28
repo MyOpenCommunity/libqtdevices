@@ -31,7 +31,7 @@
 class LoadsDevice;
 
 /*!
-	\defgroup Supervision
+	\defgroup Supervision Supervision
 
 	A container for the \ref StopAndGo and the \ref LoadDiagnostic subsections.
 */

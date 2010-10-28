@@ -190,18 +190,18 @@ public:
 		otherwise no output will ever be read.
 
 		Available tags for all tracks:
-		\li current_time: (MM:SS)
+		- current_time: (MM:SS)
 
 		Available tags for audio files:
-		\li file_name: the file name
-		\li meta_title: track title, as written in ID3 tags
-		\li meta_artist: track author/performer, as written in ID3 tags
-		\li meta_album: track album, as written in ID3 tags
-		\li total_time: total track time, either from ID3 tags or guessed by the player
+		- file_name: the file name
+		- meta_title: track title, as written in ID3 tags
+		- meta_artist: track author/performer, as written in ID3 tags
+		- meta_album: track album, as written in ID3 tags
+		- total_time: total track time, either from ID3 tags or guessed by the player
 
 		Available tags ShoutCast URLs:
-		\li stream_title: title of this stream
-		\li stream_url: URL of the stream (as reported in the stream itself)
+		- stream_title: title of this stream
+		- stream_url: URL of the stream (as reported in the stream itself)
 
 		\see getVideoInfo()
 	 */
@@ -211,7 +211,7 @@ public:
 		\brief Process MPlayer output for audio tracks.
 
 		The only available tag is:
-		\li current_time: (MM:SS)
+		- current_time: (MM:SS)
 
 		\see getPlayingInfo()
 	 */

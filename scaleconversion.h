@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -53,9 +53,9 @@ float toCelsius(float temperature);
 	\brief  Convert a temperature in BTicino 4-digit format to a signed integer with precision of 1/10 of Celsius degree.
 
 	Bticino 4-digit format is \c sDDd
-	\li s: the sign digit, 1 means negative.
-	\li DD: the integral part of the temperature.
-	\li d: the decimal part of the temperature.
+	- s: the sign digit, 1 means negative.
+	- DD: the integral part of the temperature.
+	- d: the decimal part of the temperature.
 
 	For example, 1235 (that means -23.5 Celsius degrees) will be transformed as -235.
 

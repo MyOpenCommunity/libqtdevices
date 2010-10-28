@@ -52,9 +52,9 @@ struct Clients
 
 	Most of the time when you communicate with an openserver you have 3 socket
 	connections open:
-	\li the Client::MONITOR monitor;
-	\li the Client::COMMAND command;
-	\li the Client::REQUEST request.
+	- the Client::MONITOR monitor;
+	- the Client::COMMAND command;
+	- the Client::REQUEST request.
 
 	When one of these fall down all the objects connected with that openserver
 	must to be notify with the signal connectionDown().
@@ -175,8 +175,8 @@ private:
 	\section handling Frame handling
 
 	To parse incoming frames, there are two methods that you can overload:
-	\li manageFrame()
-	\li parseFrame()
+	- manageFrame()
+	- parseFrame()
 
 	The latter is the prefered one because can work as the former, and permits
 	a fine grain management of frame handling making the creation of device
@@ -196,8 +196,8 @@ private:
 	There are many methods to send frames. Depending on what you want to do, you
 	can use one of the following methods:
 
-	\li sendFrame() to send a frame on command port
-	\li sendInit() to send a frame on the request port
+	- sendFrame() to send a frame on command port
+	- sendInit() to send a frame on the request port
 
 	These frame are sent immediatelly (after a ~10 ms in truth) unless you
 	called delayFrames() with true as parameter.

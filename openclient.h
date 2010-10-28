@@ -30,6 +30,7 @@
 #include <QTime>
 
 /*!
+	\ingroup Core
 	\def OPENSERVER_ADDR
 	The default openserver address
 */
@@ -38,6 +39,7 @@
 #endif
 
 /*!
+	\ingroup Core
 	\def OPENSERVER_PORT
 	The default openserver port
 */
