@@ -23,9 +23,11 @@
 
 #include <QDebug>
 
-const char *start_tag = "<OWNxml";
-const char *end_tag = "</OWNxml>";
-
+namespace
+{
+	const char *START_TAG = "<OWNxml";
+	const char *END_TAG = "</OWNxml>";
+}
 
 XmlClient::XmlClient(const QString &address, int port, QObject *parent) :
 	QObject(parent), socket(new QTcpSocket(this)), xml_addr(address),
@@ -59,19 +61,25 @@ void XmlClient::receiveData()
 	parseData();
 }
 
+void XmlClient::socketError()
+{
+	if (!isConnected())
+		emit connectionDown();
+}
+
 void XmlClient::parseData()
 {
 	for (;;)
 	{
 		// Look for start and end tags.
-		int start = buffer.indexOf(start_tag, 0, Qt::CaseInsensitive);
-		int end = buffer.indexOf(end_tag, start, Qt::CaseInsensitive);
+		int start = buffer.indexOf(START_TAG, 0, Qt::CaseInsensitive);
+		int end = buffer.indexOf(END_TAG, start, Qt::CaseInsensitive);
 
 		if (start == -1 || end == -1)
 			break;
 
 		// Get the data between the tags comprending them.
-		QString data = buffer.mid(start, end + QByteArray(end_tag).length() - start);
+		QString data = buffer.mid(start, end + QByteArray(END_TAG).length() - start);
 
 		if (!data.isEmpty()) {
 			// Remove the useless data.
