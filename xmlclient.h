@@ -22,7 +22,11 @@
 
 #include <QObject>
 
+
+#ifndef XML_SERVER_ADDRESS
 #define XML_SERVER_ADDRESS "127.0.0.1"
+#endif
+
 #define XML_SERVER_PORT 12345
 
 class QTcpSocket;
