@@ -39,7 +39,7 @@ class ItemTuning;
 /*!
 	\defgroup Settings Settings
 
-	This section is always present and allows the user to controls various
+	This section is always present and allows the user to control various
 	aspects of the interface.
 */
 

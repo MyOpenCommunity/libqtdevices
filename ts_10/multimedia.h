@@ -41,8 +41,8 @@ class IPRadioPage;
 	Allows access to multimedia functionality of the touchscreen.  Users can
 	read RSS feeds (FeedManager), display images from webcams (WebcamPage),
 	listen to web radios (IPRadioPage),
-	browse files contained in an SD card or USB key (MultimediaFileListPage)
-	and display images (SlideshowPage), videos (VideoPlayerPage) and play
+	browse files contained in an SD card or USB key (MultimediaFileListPage),
+	display images (SlideshowPage), videos (VideoPlayerPage) and play
 	MP3 files (AudioPlayerPage).
 
 	Some multimedia classes are also used by the sound diffusion section

@@ -40,22 +40,22 @@ class QDate;
 /*!
 	\defgroup LoadManagement Load Management
 
-	Allows the user to manage the the loads. It work in two modes:
+	Allows the user to manage the electrical current loads. It works in two modes:
 	- with a central unit;
 	- without a central unit.
 
 	In both cases the LoadManagement class shows the list of the loads in the
 	system.
 
-	In the first case, each load (represented by a BannLoadWithCU) has a priority.
+	With a central unit, each load (represented by a BannLoadWithCU) has a priority.
 	When the central unit detects a system overload, the load with the last
-	priority is disabled. The user can force the reactivation of the detached
-	load, and can also remove loads from the control of the central unit for a
+	priority is disabled. The user can force the reactivation of the deactivated
+	load, and can also switch a load to manual mode for a
 	defined period using the DeactivationTimePage.
 	LoadDataPage shows current consumptions and power meters.
 
 	Without central unit the system can only be used to view the current
-	cunsumptions of a load (represented by a BannLoadNoCU) using LoadDataPage as
+	consumptions of a load (represented by a BannLoadNoCU) using LoadDataPage as
 	in the previous case.
 */
 

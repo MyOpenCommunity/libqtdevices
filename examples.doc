@@ -331,7 +331,7 @@
 	change the default openserver used by the BTouch.
 
 	To change the openserved used by a graphic item (ex. a \ref banner), simply add
-	an \c <openserver_id> node at the same level of the node defining the device address.
+	an \c \<openserver_id> node at the same level of the node defining the device address.
 	All graphic items that do not override the openserver will use the one with \c id 0.
 
 	For example, for a 100-level dimmer:
@@ -352,6 +352,6 @@
 
 	At the moment the only exception to this rule is the air conditioning split: since it
 	uses two separate devices (split and temperature probe) which have separate addresses and
-	can be on separate openserver, \c <openserver_id> is used for the split and
-	\c <openserver_id_probe> for the temperature probe.
+	can be on separate openserver, \c \<openserver_id> is used for the split and
+	\c \<openserver_id_probe> for the temperature probe.
 */

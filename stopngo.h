@@ -39,8 +39,8 @@ class QDomNode;
 	controls an electrical grid.
 
 	The StopAndGoMenu page presents a list of BannStopAndGo for each Stop&Go
-	system (that shows the status of the related system) and allow the user to
-	go to the dedicated page, that can be a StopAndGoPage, a StopAndGoPlusPage or a
+	system (that shows the status of the related system) and allows the user to
+	go to the dedicated page; this can be a StopAndGoPage, a StopAndGoPlusPage or a
 	StopAndGoBTestPage depending on the configuration.
 */
 

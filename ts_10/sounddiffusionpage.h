@@ -40,16 +40,16 @@ class ScrollingLabel;
 	\defgroup SoundDiffusion Sound Diffusion
 
 	This section allows:
-	- managing the sound diffusion sources (change the playing track/radio station, change radio tuning, play a local mp3 file, ...)
+	- managing sound diffusion sources (change the playing track/radio station, change radio tuning, play a local mp3 file, ...)
 	- turning on a source on one or more areas
 	- turning on and changing the volume of SCS amplifiers
 
-	The code in this section also manages the SCS commands for the local source/amplifiers.
+	The code in this section also manages the SCS commands for the local source/local amplifier.
 
 	For multichannel sound diffusion, SoundDiffusionPage displays the list of environments, linking to a
-	different SoundAmbient page for each environment.  Each SoundAmbient page contains a SoundSources instance
+	different SoundAmbientPage for each environment.  Each SoundAmbientPage contains a SoundSources instance
 	to display/change the active source and instances of Amplifier, AmplifierGroup and BannPowerAmplifier
-	to control the amplifiers.
+	to control the amplifiers for the environment.
 
 	For monochannel sound diffusion, SoundDiffusionPage is instantiated and linked to the homepage, but
 	is never shown to the user.
@@ -59,7 +59,7 @@ class ScrollingLabel;
 	perform the changes.
 
 	SoundAmbientAlarmPage and SoundDiffusionAlarmPage are variants of SoundAmbient and SoundDiffusionPage
-	for sound diffusion alarm clock.  SoundDiffusionAlarmPage does not contain a link to the special environment
+	for sound diffusion alarm clock.  SoundDiffusionAlarmPage does not contain the banner for the special environment
 	and SoundAmbientAlarmPage only contains RDS and %Aux sources and has an OK button to save the sound diffusion
 	state for the alarm clock.
  */

@@ -33,12 +33,13 @@ class banner;
 /*!
 	\defgroup Lighting Lighting
 
-	SimpleActuator, Dimmer and Dimmer100 can be used to control a single actuator;
-	LightGroup, DimmerGroup and Dimmer100Group control the corresponding actuator group.
+	SingleActuator, Dimmer and Dimmer100 can be used to control a single actuator for light, 10-level and 100-level dimmer;
+	LightGroup, DimmerGroup and Dimmer100Group control the corresponding actuator groups.
 
-	Note that it's possible to use a SimpleActuator to control a 10-level or 100-level dimmer,
+	Note that it's possible to use a SingleActuator to control a 10-level or 100-level dimmer,
 	and that it's possible to insert a 10-level or 100-level dimmer in a light group (or
-	a 100-level dimmer in a 10-level dimmer group).
+	a 100-level dimmer in a 10-level dimmer group).  Naturally, this does not allow access to
+	the full functionality of the actuator.
 
 	TempLight and TempLightVariable allow switching on a light (or dimmer) for a specified time.
  */

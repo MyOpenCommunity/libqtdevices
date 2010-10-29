@@ -86,7 +86,7 @@
 /*!
 	\defgroup Core Core
 
-	Contains defines, functions and classes that are not related to a specific
+	Contains constants, functions and classes that are not related to a specific
 	section.
 */
 

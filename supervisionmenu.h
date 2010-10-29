@@ -65,7 +65,7 @@ private:
 /*!
 	\defgroup LoadDiagnostic Load Diagnostic
 
-	Allows the user to view the load status for each loads in the system, using
+	Allows the user to view the load status for each load in the system, using
 	the LoadDiagnosticPage.
 */
 

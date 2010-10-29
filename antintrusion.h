@@ -47,7 +47,7 @@ class QDateTime;
 	\defgroup Antintrusion Antintrusion
 
 	Allows the user to control the anti-intrusion system, enabling or disabling
-	the alarm, partializing or insert the zones and show the alarms history.
+	the alarm, partializing or inserting the zones and displaying the alarm history.
 */
 
 // The old antintrusion class

@@ -40,16 +40,16 @@ class QSignalMapper;
 
 	Allows the user to perform and receive video and intercom calls.
 	There are two main classes:
-	- the VCTCallPage that controls all the functionalities and aspects of a
+	- VCTCallPage controls all the functionalities and aspects of a
 	video call;
-	- the IntercomCallPage that does the same for the intercom calls.
+	- IntercomCallPage does the same for the intercom calls.
 
 	The classes VideoDoorEntry, VideoControl and IntercomMenu allow the user to
 	navigate through the items configured in the Video Door Entry system.
 
-	The are also small classes that customize the behaviour of the system on an
+	The are also some small classes that customize the behaviour of the system on an
 	incoming call:
-	- the HandsFree to automatically answer;
+	- the HandsFree to answer automatically;
 	- the ProfessionalStudio to automatically open the door;
 	- the RingtoneExclusion to exclude the bell.
 */

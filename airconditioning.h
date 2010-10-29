@@ -64,21 +64,21 @@ namespace AirConditioningPrivate
 }
 
 /*!
-	\defgroup AirConditioning AirConditioning
+	\defgroup AirConditioning Air Conditioning
 
 	This module is a part of the \ref ThermalRegulation section.
 
-	It allows the user to controls, through the AirConditioning page, a list of
-	splits. That list is composed by basic splits (SingleSplit) or advanced splits
-	(AdvancedSingleSplit), plus a general (GeneralSplit) that can control a
-	group (even the entire group) of splits.
+	It allows the user to control, through the AirConditioning page, a list of
+	splits. The list is composed by basic splits (SingleSplit), advanced splits
+	(AdvancedSingleSplit) plus a general (GeneralSplit) that can control a
+	group of splits (even the entire group).
 
 	In the basic interface, for each split there is a SplitPage that contains
 	all the scenarios (SplitScenario) configured for the split plus the off
 	command.
 
-	The advanced interface is similar to the previous: it has a AdvancedSplitPage
-	for each advanced split that allows the user to set a scenario
+	The advanced interface is similar: for each split there is an AdvancedSplitPage
+	that allows the user to set a scenario
 	(AdvancedSplitScenario) or switch off the split. In addition, it contains
 	a CustomScenario banner that permits to customize the scenario using the
 	SplitSettings page.

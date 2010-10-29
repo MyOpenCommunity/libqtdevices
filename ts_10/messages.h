@@ -49,17 +49,17 @@ class QDomNode;
 /*!
 	\defgroup Messages Messages
 
-	The section allows the user to read and delete scs messages from
+	The section allows the user to read and delete messages coming from
 	the Guard Unit.
 	A popup is displayed using the AlertMessagePage class when a new message
-	arrives. That message is appended to the list of messages and saved in the
+	arrives. The message is alos appended to the list of messages and saved in the
 	MESSAGES_FILENAME file, up to MESSAGES_MAX.
 
 	The MessagesListPage is used to display the list of messages while the
 	MessagePage displays a single message and the DeleteMessagesPage can be
 	used to delete all the messages.
 	The icons for the section, displayed in the homepage and in the toolbar box,
-	can be different depending on there are unread messages or not.
+	will change to signal when there are unread messages.
 */
 
 

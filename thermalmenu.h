@@ -36,7 +36,7 @@
 
 	The temperature control section contains up to 4 subsections:
 	- thermal regulator (implemented by PlantMenu)
-	- air conditioning (implemented by AirConditioning, see also \ref AirConditioning section)
+	- air conditioning (implemented by AirConditioning, see also the \ref AirConditioning section)
 	- external probes (implemented by ProbesPage)
 	- non-controlled zones (implemented by ProbesPage)
 
@@ -44,8 +44,8 @@
 
 	The \ref AirConditioning subsection is documented separately.
 
-	The thermal regulator subsection is used to program the thermal regulator and see the temperature
-	for all the controlled zones.
+	The thermal regulator subsection is used to program the thermal regulator and check the temperature
+	for all controlled zones.
 */
 
 /*!
