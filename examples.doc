@@ -199,7 +199,7 @@
 	\skip TcpStateBanner::sendMessage
 	\until }
 
-	Now that we have created our custom banner, we can create the page that will contain them.
+	Now that we have created our custom banners, we can create the page that will contain them.
 	We want to arrange the banners into a single column, which is the default on the
 	TouchScreen 3.5", but not on the 10" one.
 
@@ -209,7 +209,6 @@
 	banner content between to stretches.
 	After that, it remains only to call the BannerPage::buildPage() method to layout
 	all the components in the right way.
-
 	The last step, is to instantiate our custom banners and add them to the content.
 	\dontinclude tcpbannerpage.cpp
 	\skip TcpBannerPage::TcpBannerPage(QWidget *parent)
