@@ -116,7 +116,7 @@ signals:
 
 private slots:
 	void handleData(const QString &data);
-	void emptyMessageQueue();
+	void sendMessageQueue();
 
 private:
 	void sendCommand(const QString &command);

@@ -18,13 +18,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 #include "xmldevice.h"
+#include "xmlclient.h"
+#include "xml_functions.h"
 
 #include <QDomDocument>
 #include <QStringList>
 #include <QDebug>
-
-#include "xmlclient.h"
-#include "xml_functions.h"
 
 const char *command_template =
 		"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
@@ -163,7 +162,7 @@ XmlDevice::XmlDevice()
 {
 	xml_client = new XmlClient;
 	connect(xml_client, SIGNAL(dataReceived(QString)), SLOT(handleData(QString)));
-	connect(xml_client, SIGNAL(connectionUp()), SLOT(emptyMessageQueue()));
+	connect(xml_client, SIGNAL(connectionUp()), SLOT(sendMessageQueue()));
 
 	xml_handlers["WMsg"] = handle_welcome_message;
 	xml_handlers["AW26C1"] = handle_upnp_server_list;
@@ -220,7 +219,7 @@ void XmlDevice::handleData(const QString &data)
 		emit responseReceived(response);
 }
 
-void XmlDevice::emptyMessageQueue()
+void XmlDevice::sendMessageQueue()
 {
 	while (!message_queue.isEmpty())
 		sendCommand(message_queue.takeFirst());
@@ -249,37 +248,24 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 	doc.setContent(xml);
 
 	QDomElement root = doc.documentElement();
-	if (root.tagName() != "OWNxml")
+
+	if (root.tagName() == "OWNxml" && parseHeader(getChildWithName(root, "Hdr")))
 	{
-		response[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_LIST, XmlError::PARSE));
-		return response;
+		QDomNode command_container = getChildWithName(root, "Cmd");
+		if (!command_container.isNull() && command_container.childNodes().size() == 1)
+		{
+			QDomNode command = command_container.childNodes().at(0);
+			QString command_name = command.toElement().tagName();
+
+			if (!command_name.isEmpty() && xml_handlers.contains(command_name))
+			{
+				response = xml_handlers[command_name](command);
+				return response;
+			}
+		}
 	}
 
-	if (!parseHeader(getChildWithName(root, "Hdr")))
-	{
-		response[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_LIST, XmlError::PARSE));
-		return response;
-	}
-
-	QDomNode command_container = getChildWithName(root, "Cmd");
-	if (command_container.isNull() || command_container.childNodes().size() != 1)
-	{
-		response[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_LIST, XmlError::PARSE));
-		return response;
-	}
-
-	QDomNode command = command_container.childNodes().at(0);
-	QString command_name = command.toElement().tagName();
-
-	if (command_name.isEmpty())
-	{
-		response[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_LIST, XmlError::PARSE));
-		return response;
-	}
-
-	if (xml_handlers.contains(command_name))
-		response = xml_handlers[command_name](command);
-
+	response[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_LIST, XmlError::PARSE));
 	return response;
 }
 
@@ -313,9 +299,5 @@ QString XmlDevice::buildCommand(const QString &command, const QString &argument)
 	else
 		cmd = QString("\t\t<%1/>").arg(command);
 
-	return QString(command_template).arg(sid)
-									.arg(pid)
-									.arg(server_addr)
-									.arg(local_addr)
-									.arg(cmd);
+	return QString(command_template).arg(sid).arg(pid).arg(server_addr).arg(local_addr).arg(cmd);
 }

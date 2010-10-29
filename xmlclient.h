@@ -21,10 +21,9 @@
 #define XMLCLIENT_H
 
 #include <QObject>
-#include <QAbstractSocket>
 
-#define DEFAULT_XML_SERVER_ADDRESS "127.0.0.1"
-#define DEFAULT_XML_SERVER_PORT 12345
+#define XML_SERVER_ADDRESS "127.0.0.1"
+#define XML_SERVER_PORT 12345
 
 class QTcpSocket;
 
@@ -36,8 +35,8 @@ friend class TestXmlClient;
 
 Q_OBJECT
 public:
-	explicit XmlClient(const QString &address = DEFAULT_XML_SERVER_ADDRESS,
-					   int port = DEFAULT_XML_SERVER_PORT, QObject *parent = 0);
+	explicit XmlClient(const QString &address = XML_SERVER_ADDRESS,
+					   int port = XML_SERVER_PORT, QObject *parent = 0);
 
 	void connectToHost();
 	void disconnectFromHost();

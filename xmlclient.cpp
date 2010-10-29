@@ -29,14 +29,15 @@ namespace
 }
 
 XmlClient::XmlClient(const QString &address, int port, QObject *parent) :
-	QObject(parent), socket(new QTcpSocket(this)),
-	xml_addr(address), xml_port (port)
+	QObject(parent)
 {
+	socket = new QTcpSocket(this);
+	xml_addr = address;
+	xml_port = port;
 	connect(socket, SIGNAL(connected()), SIGNAL(connectionUp()));
 	connect(socket, SIGNAL(disconnected()), SIGNAL(connectionDown()));
 	connect(socket, SIGNAL(readyRead()), SLOT(receiveData()));
-	connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
-					SLOT(socketError()));
+	connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(socketError()));
 }
 
 void XmlClient::connectToHost()
@@ -81,15 +82,18 @@ void XmlClient::parseData()
 	{
 		// Look for start and end tags.
 		int start = buffer.indexOf(START_TAG, 0, Qt::CaseInsensitive);
-		int end = buffer.indexOf(END_TAG, start, Qt::CaseInsensitive);
+		if (start == -1)
+			break;
 
-		if (start == -1 || end == -1)
+		int end = buffer.indexOf(END_TAG, start, Qt::CaseInsensitive);
+		if (end == -1)
 			break;
 
 		// Get the data between the tags comprending them.
 		QString data = buffer.mid(start, end + QByteArray(END_TAG).length() - start);
 
-		if (!data.isEmpty()) {
+		if (!data.isEmpty())
+		{
 			// Remove the useless data.
 			buffer = buffer.right(buffer.length() - end);
 			emit dataReceived(data.simplified());
