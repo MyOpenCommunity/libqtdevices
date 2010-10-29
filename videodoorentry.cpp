@@ -293,6 +293,7 @@ void IntercomCallPage::showPageAfterCall()
 	bt_global::btmain->vde_call_active = true;
 	call_accept->setStatus(true);
 	mute_button->setStatus(StateButton::DISABLED);
+	call_active = true;
 	showPage();
 }
 
@@ -310,6 +311,7 @@ void IntercomCallPage::showPageIncomingCall()
 	bt_global::btmain->vde_call_active = true;
 	call_accept->setStatus(false);
 	mute_button->setStatus(StateButton::DISABLED);
+	call_active = true;
 	showPage();
 }
 
@@ -355,13 +357,18 @@ void IntercomCallPage::toggleCall()
 	{
 		call_accept->setStatus(!connected);
 		dev->answerCall();
-		if (dev->ipCall())
-			bt_global::audio_states->toState(AudioStates::IP_INTERCOM_CALL);
-		else
-			bt_global::audio_states->toState(AudioStates::SCS_INTERCOM_CALL);
-		mute_button->setStatus(StateButton::OFF);
-		volume->enable();
+		callStarted();
 	}
+}
+
+void IntercomCallPage::callStarted()
+{
+	if (dev->ipCall())
+		bt_global::audio_states->toState(AudioStates::IP_INTERCOM_CALL);
+	else
+		bt_global::audio_states->toState(AudioStates::SCS_INTERCOM_CALL);
+	mute_button->setStatus(StateButton::OFF);
+	volume->enable();
 }
 
 void IntercomCallPage::toggleMute()
@@ -395,7 +402,6 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 		switch (it.key())
 		{
 		case VideoDoorEntryDevice::INTERCOM_CALL:
-			call_active = true;
 			showPageIncomingCall();
 			break;
 		case VideoDoorEntryDevice::RINGTONE:
@@ -425,16 +431,7 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 			break;
 		}
 		case VideoDoorEntryDevice::ANSWER_CALL:
-			if (!call_active)
-			{
-				call_active = true;
-				if (dev->ipCall())
-					bt_global::audio_states->toState(AudioStates::IP_INTERCOM_CALL);
-				else
-					bt_global::audio_states->toState(AudioStates::SCS_INTERCOM_CALL);
-				mute_button->setStatus(StateButton::OFF);
-				volume->enable();
-			}
+			callStarted();
 			break;
 		case VideoDoorEntryDevice::END_OF_CALL:
 			if (call_active)

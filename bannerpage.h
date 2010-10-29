@@ -35,7 +35,7 @@ class BannerContent;
 
 /*!
 	\ingroup Core
-	\brief A page containing a list of banners.
+	\brief A page containing a list of \ref banner%s.
 
 	The BannerPage is a ScrollablePage subclass, so if the content is to big
 	to be visualized in a single screen, it is paginated.
@@ -82,6 +82,13 @@ protected:
 		content and page.
 	 */
 	void buildPage(const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget = 0);
+
+	/*!
+		\brief Sets the vertical spacing between banners.
+
+		\warning You must call the buildPage() method before this one.
+	*/
+	void setSpacing(int spacing);
 };
 
 

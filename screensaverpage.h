@@ -34,6 +34,10 @@ class ImageSelectionHandler;
 class ScreensaverTiming;
 class SlideshowSelector;
 
+/*!
+	\ingroup Settings
+	\brief Allows the user to choose the ScreenSaver.
+*/
 class ScreenSaverPage : public SingleChoicePage
 {
 Q_OBJECT
@@ -76,7 +80,7 @@ private:
 };
 
 
-/**
+/*
  * SlideShowSelector
  *
  * Display the filesystem and permit to select images and directories.

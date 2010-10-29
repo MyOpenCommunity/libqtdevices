@@ -80,7 +80,7 @@ Q_OBJECT
 public:
 	AdvancedAirConditioningDevice(QString where, int openserver_id = 0);
 
-	enum
+	enum Error
 	{
 		DIM_SETSTATUS_ERROR,
 	};

@@ -115,7 +115,7 @@ private:
 /*!
 	\ingroup Multimedia
 	\brief Display a single RSS news item.
- */
+*/
 class FeedItem : public Page
 {
 Q_OBJECT

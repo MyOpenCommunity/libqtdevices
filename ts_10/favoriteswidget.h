@@ -27,7 +27,10 @@
 class QDomNode;
 
 
-// favorites widges, shown on the right, contains a list of banners
+/*!
+	\ingroup Core
+	\brief Displays a list of quickly-accessible banners on the right of the screen.
+ */
 class FavoritesWidget : public QWidget
 {
 Q_OBJECT

@@ -29,18 +29,10 @@
 #include <QTimer>
 #include <QTime>
 
-/*!
-	\def OPENSERVER_ADDR
-	The default openserver address
-*/
 #ifndef OPENSERVER_ADDR
 #define OPENSERVER_ADDR "127.0.0.1"
 #endif
 
-/*!
-	\def OPENSERVER_PORT
-	The default openserver port
-*/
 #define OPENSERVER_PORT 20000
 
 // The id for the main openserver

@@ -27,6 +27,11 @@
 class CalibrationWidget;
 
 
+/*!
+	\ingroup Core
+	\ingroup Settings
+	\brief Uses the CalibrationWidget to perform a fullscreen calibration.
+*/
 class Calibration : public Window
 {
 Q_OBJECT
@@ -51,9 +56,10 @@ private:
 
 
 
-/**
- * Simple page to test calibration results: draws a red dot for every mouse event
- */
+/*!
+	\ingroup Settings
+	\brief Tests calibration results: draws a red dot for every mouse event.
+*/
 class CalibrationTest : public Window
 {
 Q_OBJECT

@@ -247,7 +247,7 @@ void bannVersion::showVers()
 }
 
 
-PasswordChanger::PasswordChanger(int _item_id, QString pwd, int attiva)
+PasswordChanger::PasswordChanger(int _item_id, QString pwd, bool check_active)
 {
 	item_id = _item_id;
 	password = pwd;
@@ -267,7 +267,7 @@ PasswordChanger::PasswordChanger(int _item_id, QString pwd, int attiva)
 	connect(tasti, SIGNAL(Closed()), SLOT(resetState()));
 	connect(tasti, SIGNAL(accept()), SLOT(checkPasswd()));
 
-	active = (attiva == 1);
+	active = check_active;
 	bt_global::btmain->setPassword(active, password);
 }
 

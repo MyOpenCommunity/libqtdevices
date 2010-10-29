@@ -29,6 +29,7 @@
 class QTcpSocket;
 
 
+
 class XmlClient : public QObject
 {
 friend class TestXmlClient;

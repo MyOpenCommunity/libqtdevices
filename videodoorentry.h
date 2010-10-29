@@ -32,8 +32,6 @@ class VCTCallPage;
 class VideoDoorEntryDevice;
 class StateButton;
 class ItemTuning;
-class RingExclusion;
-class RingExclusionPage;
 class QDomNode;
 class QSignalMapper;
 
@@ -42,18 +40,18 @@ class QSignalMapper;
 
 	Allows the user to perform and receive video and intercom calls.
 	There are two main classes:
-	\li the VCTCallPage that controls all the functionalities and aspects of a
+	- the VCTCallPage that controls all the functionalities and aspects of a
 	video call;
-	\li the IntercomCallPage that does the same for the intercom calls.
+	- the IntercomCallPage that does the same for the intercom calls.
 
 	The classes VideoDoorEntry, VideoControl and IntercomMenu allow the user to
 	navigate through the items configured in the Video Door Entry system.
 
 	The are also small classes that customize the behaviour of the system on an
 	incoming call:
-	\li the HandsFree to automatically answer;
-	\li the ProfessionalStudio to automatically open the door;
-	\li the RingtoneExclusion to exclude the bell.
+	- the HandsFree to automatically answer;
+	- the ProfessionalStudio to automatically open the door;
+	- the RingtoneExclusion to exclude the bell.
 */
 
 
@@ -147,6 +145,7 @@ private:
 	bool call_active;
 	int ringtone;
 	bool already_closed;
+	void callStarted();
 };
 
 
@@ -168,6 +167,7 @@ private:
 
 /*!
 	\ingroup VideoDoorEntry
+	\ingroup Settings
 	\brief Shows the items for the Video Door Entry settings.
 */
 class VctSettings : public BannerPage
@@ -183,6 +183,7 @@ private:
 
 /*!
 	\ingroup VideoDoorEntry
+	\ingroup Settings
 	\brief Toggle the professional studio facility.
 
 	The banner represents the professional studio facility, to open automatically
@@ -201,6 +202,7 @@ protected:
 
  /*!
 	\ingroup VideoDoorEntry
+	\ingroup Settings
 	\brief Toggle the hands free facility.
 
 	The banner represents the hands free facility, to automatically answer on
@@ -220,6 +222,7 @@ protected:
 
 /*!
 	\ingroup VideoDoorEntry
+	\ingroup Settings
 	\brief Toggle the bell (or ringtone) for video/intercom calls.
 
 	The banner represents the possibility of exclude the ringtone for intercom

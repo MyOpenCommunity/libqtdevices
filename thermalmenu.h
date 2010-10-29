@@ -35,10 +35,10 @@
 	\defgroup ThermalRegulation Temperature Control
 
 	The temperature control section contains up to 4 subsections:
-	\li thermal regulator (implemented by PlantMenu)
-	\li air conditioning (implemented by AirConditioning, see also \ref AirConditioning section)
-	\li external probes (implemented by ProbesPage)
-	\li non-controlled zones (implemented by ProbesPage)
+	- thermal regulator (implemented by PlantMenu)
+	- air conditioning (implemented by AirConditioning, see also \ref AirConditioning section)
+	- external probes (implemented by ProbesPage)
+	- non-controlled zones (implemented by ProbesPage)
 
 	External probes and non-controlled zones only display a list of probes with the measured temperature.
 

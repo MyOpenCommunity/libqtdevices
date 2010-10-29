@@ -45,6 +45,9 @@
 #include "energy_management.h"
 #include "load_management.h"
 
+#ifdef BUILD_EXAMPLES
+#include "examples/tcpbanner/banner/tcpbannerpage.h"
+#endif
 
 #include <QObject>
 
@@ -93,7 +96,7 @@ Page *getPage(int page_id)
 	case EVOLVED_SCENARIOS:
 		page = new Scenario(page_node);
 		break;
-#ifndef LAYOUT_TS_10
+#ifdef LAYOUT_TS_3_5
 	case SETTINGS:
 		page = new Settings(page_node);
 		break;
@@ -126,6 +129,11 @@ Page *getPage(int page_id)
 	case LOAD_MANAGEMENT:
 		page = new LoadManagement(page_node);
 		break;
+#ifdef BUILD_EXAMPLES
+	case TCP_BANNER_TEST:
+		page = new TcpBannerPage;
+		break;
+#endif
 	default:
 		qFatal("Page %d not handled!", id);
 	}

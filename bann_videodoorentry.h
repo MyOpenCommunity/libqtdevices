@@ -38,11 +38,11 @@ class device_status;
 class doorphone_device;
 
 
-/*!
-\class bann4tasLab
-\brief This is a class that describes a banner with 4 buttons a label and a text under them.
-In this banner it is possible to have 4 buttons visible and the label hidden or two external buttons visible with the label and the central two buttons hidden
-*/
+
+
+// This is a class that describes a banner with 4 buttons a label and a text under them.
+// In this banner it is possible to have 4 buttons visible and the label hidden or two external buttons visible with the label
+// and the central two buttons hidden
 class bann4tasLab : public BannerOld
 {
 Q_OBJECT
@@ -51,40 +51,37 @@ public:
 };
 
 
-/*!
- * \class postoExt
- * \brief This class represents an outdoor station
- */
+// This class represents an outdoor station
 class postoExt : public bann4tasLab
 {
 Q_OBJECT
 public:
 	postoExt(QWidget *parent, QString d, QString Icona1, QString Icona2, QString Icona3, QString Icona4,
 		QString _where, QString light, QString key, QString unknown);
-	//! Read where
+	// Read where
 	void get_where(QString&);
-	//! Read description
+	// Read description
 	QString get_descr();
-	//! Get key mode
+	// Get key mode
 	bool get_key();
-	//! Get light mode
+	// Get light mode
 	bool get_light();
-	//! Get light icon name
+	// Get light icon name
 	void get_light_icon(QString&);
-	//! Get key icon name
+	// Get key icon name
 	void get_key_icon(QString&);
-	//! Cancel icon name
+	// Cancel icon name
 	void get_close_icon(QString&);
 public  slots:
-	//! Invoked when right button is pressed
+	// Invoked when right button is pressed
 	void stairlight_pressed();
-	//! Invoked when right button is released 
+	// Invoked when right button is released
 	void stairlight_released();
-	//! Invoked when left button is clicked
+	// Invoked when left button is clicked
 	void open_door_clicked();
-	//! Invoked when a frame has been captured by a call_notifier
+	// Invoked when a frame has been captured by a call_notifier
 	void frame_captured_handler(call_notifier *);
-	//! Invoked when a call_notifier window is closed
+	// Invoked when a call_notifier window is closed
 	void call_notifier_closed(call_notifier *);
 private:
 	QString where;
@@ -98,7 +95,7 @@ private:
 	static call_notifier_manager *cnm;
 	static call_notifier *unknown_notifier;
 signals:
-	//! Emitted when a frame is available
+	// Emitted when a frame is available
 	void frame_available(char *);
 };
 
@@ -194,27 +191,5 @@ private:
 
 };
 
-
-
-/**
- * The banner for the ring exclusion, used to silence the ringtone for an
- * incoming call (videocall or intercom)
- */
-class RingExclusion : public BannOnOffState
-{
-Q_OBJECT
-public:
-	RingExclusion();
-
-public slots:
-	void excludeRingOff();
-	void excludeRingOn();
-
-signals:
-	void statusChanged(bool on);
-
-private:
-	States curr_status;
-};
 
 #endif

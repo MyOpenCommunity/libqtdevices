@@ -28,11 +28,13 @@
 class QDomNode;
 
 
-/**
- * \class SectionPage
- *
- * A subclass of IconPage that can be used to collect sections
- */
+/*!
+	\ingroup Core
+	\brief A base class for pages that contain sections.
+
+	Using the getPage() factory function, this class creates an icon for each
+	section defined under the configuration node passed at the constructor.
+*/
 class SectionPage : public IconPage
 {
 Q_OBJECT

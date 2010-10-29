@@ -215,7 +215,7 @@ private slots:
 	void toggleCurrency();
 	void changeTimePeriod(int, QDate);
 	void showGraph(int graph_type);
-	void showBannerWidget();
+	void showBannerWidget(bool use_transition = true);
 	void backClick();
 	void valueReceived(const DeviceValues &values_list);
 	void rateChanged(int rate_id);

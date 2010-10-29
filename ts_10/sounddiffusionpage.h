@@ -40,9 +40,9 @@ class ScrollingLabel;
 	\defgroup SoundDiffusion Sound Diffusion
 
 	This section allows:
-	\li managing the sound diffusion sources (change the playing track/radio station, change radio tuning, play a local mp3 file, ...)
-	\li turning on a source on one or more areas
-	\li turning on and changing the volume of SCS amplifiers
+	- managing the sound diffusion sources (change the playing track/radio station, change radio tuning, play a local mp3 file, ...)
+	- turning on a source on one or more areas
+	- turning on and changing the volume of SCS amplifiers
 
 	The code in this section also manages the SCS commands for the local source/amplifiers.
 

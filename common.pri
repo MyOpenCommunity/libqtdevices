@@ -60,6 +60,11 @@ CONFIG(release,debug|release) {
 	message(*** Release build)
 	DEFINES += NO_QT_DEBUG_OUTPUT
 }
+
+CONFIG(examples) {
+	DEFINES += BUILD_EXAMPLES
+}
+
 DEFINES += QT_QWS_EBX BTWEB
 
 LIBS += -lssl
@@ -100,7 +105,6 @@ HEADERS += actuators.h \
 	antintrusion.h \
 	audiostatemachine.h \
 	automation.h \
-	aux.h \
 	bann1_button.h \
 	bann2_buttons.h \
 	bann3_buttons.h \
@@ -204,7 +208,6 @@ SOURCES += actuators.cpp \
 	bann_amplifiers.cpp \
 	antintrusion.cpp \
 	automation.cpp \
-	aux.cpp \
 	bann1_button.cpp \
 	bann2_buttons.cpp \
 	bann3_buttons.cpp \
@@ -299,3 +302,13 @@ SOURCES += actuators.cpp \
 	xmlclient.cpp \
 	xmldevice.cpp \
 	xml_functions.cpp
+
+
+CONFIG(examples) {
+	message(Build examples)
+	include(examples.pri)
+}
+
+OTHER_FILES += main.doc
+OTHER_FILES += examples.doc
+

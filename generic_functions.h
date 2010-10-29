@@ -32,34 +32,37 @@ class QDate;
 class QDateTime;
 
 
- /*!
+/*!
 	\brief Filesystem types.
- */
+*/
 enum MultimediaFileType
 {
 	UNKNOWN = -1,  /*!< Unknown filetype */
 	DIRECTORY = 0, /*!< Directory */
 	AUDIO = 1,     /*!< Audio filetype */
 	VIDEO = 2,     /*!< Video filetype */
-	IMAGE = 3      /*!< Image filetype */
+	IMAGE = 3,     /*!< Image filetype */
+#ifdef BUILD_EXAMPLES
+	PDF   = 4,     /*!< PDF filetype */
+#endif
 };
 
 /*!
 	\ingroup Core
 	\brief Returns a list of the recognized file types associated to \a type.
- */
+*/
 QStringList getFileExtensions(MultimediaFileType type);
 
 /*!
 	\ingroup Core
 	\brief Returns a list of file filter expressions associated to \a type.
- */
+*/
 QStringList getFileFilter(MultimediaFileType type);
 
 /*!
 	\ingroup Core
 	\brief Concatenate \a suffix to the part of \a name preceding the dot (.)
- */
+*/
 QString getBostikName(const QString &name, const QString &suffix);
 
 /*!

@@ -511,15 +511,15 @@ PasswordPage::PasswordPage(const QDomNode &config_node)
 	layout->setContentsMargins(0, 0, 0, TITLE_HEIGHT);
 
 	int item_id = getTextChild(config_node, "itemID").toInt();
-	bool attiva = getTextChild(config_node, "actived").toInt();
-	PasswordChanger *changer = new PasswordChanger(item_id, getTextChild(config_node, "password"), attiva);
+	bool active = getTextChild(config_node, "actived").toInt();
+	PasswordChanger *changer = new PasswordChanger(item_id, getTextChild(config_node, "password"), active);
 	StateButton *left_button = new StateButton;
 	BtButton *right_button = new BtButton(bt_global::skin->getImage("edit"));
 
 	left_button->setOnOff();
 	left_button->setOffImage(bt_global::skin->getImage("state_off"));
 	left_button->setOnImage(bt_global::skin->getImage("state_on"));
-	left_button->setStatus(attiva);
+	left_button->setStatus(active);
 
 	connect(right_button, SIGNAL(clicked()), changer, SLOT(changePassword()));
 	connect(left_button, SIGNAL(clicked()), changer, SLOT(requestPasswdOn()));

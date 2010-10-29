@@ -28,6 +28,10 @@
 #include <QHash>
 
 
+/*!
+	\ingroup Core
+	\brief Caches the icons loaded in order to perform a faster lookup for new requests.
+*/
 class IconDispatcher : public QObject
 {
 	Q_OBJECT
@@ -39,7 +43,7 @@ public:
 	QHash<QString, QPixmap*> cache;
 	~IconDispatcher();
 
-	/**
+	/*
 	 * IconDispatcher not only returns a pointer to a QPixmap object (using its internal QCache)
 	 * but also pre-loads the asked image in QPixmap.
 	 *

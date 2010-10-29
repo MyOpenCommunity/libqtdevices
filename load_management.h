@@ -41,8 +41,8 @@ class QDate;
 	\defgroup LoadManagement Load Management
 
 	Allows the user to manage the the loads. It work in two modes:
-	\li with a central unit;
-	\li without a central unit.
+	- with a central unit;
+	- without a central unit.
 
 	In both cases the LoadManagement class shows the list of the loads in the
 	system.

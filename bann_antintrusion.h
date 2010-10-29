@@ -86,50 +86,10 @@ signals:
 	void partChanged(AntintrusionZone *);
 };
 
-#if 0
 
-typedef class zonaAnti AntintrusionZone;
-
-/*!
- *  \class zonaAnti
- * \brief This class is made to manage an anti-intrusion zone.
- *
- * By this banner is possible to see if the zone is active or not in a certain moment.
- */
-class zonaAnti : public bannOnIcons
-{
-using banner::SetIcons; // import the set of overload of SetIcons from banner
-Q_OBJECT
-public:
-	zonaAnti(QWidget *parent, const QString &name, QString indirizzo, QString iconzona, QString IconDisactive, QString IconActive);
-	void inizializza(bool forza = false);
-	void Draw();
-public slots:
-	void status_changed(QList<device_status*>);
-	void ToggleParzializza();
-	void abilitaParz(bool);
-	void clearChanged();
-	int getIndex();
-private:
-	void SetIcons();
-	QString parzIName, sparzIName;
-	QString zonaAttiva;
-	QString zonaNonAttiva;
-	bool already_changed;
-	device *dev;
-signals:
-	void partChanged(AntintrusionZone *);
-};
-
-#endif
-
-/*!
- * \class impAnti
- * \brief This class is made to manage the anti-intrusion system.
- *
- * By this banner is possible to change the (dis)activation state of the system from the visualized one.
- * If there is an alarm queue it also possible to acces a page describing the it.
- */
+// This class is made to manage the anti-intrusion system.
+// By this banner is possible to change the (dis)activation state of the system from the visualized one.
+// If there is an alarm queue it also possible to acces a page describing the it.
 class impAnti : public bann3ButLab
 {
 Q_OBJECT

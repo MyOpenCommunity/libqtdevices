@@ -71,6 +71,10 @@ ScreenSaverPage::ScreenSaverPage(const QDomNode &conf_node) :
 	addBanner(SingleChoice::createBanner(tr("Line")), ScreenSaver::LINES);
 	addBanner(SingleChoice::createBanner(tr("Balls")), ScreenSaver::BALLS);
 #endif
+
+#ifdef BUILD_EXAMPLES
+	addBanner(SingleChoice::createBanner(tr("Bouncing logo")), ScreenSaver::LOGO);
+#endif
 	//addBanner(tr("Deform"), ScreenSaver::DEFORM); // the deform is for now unavailable!
 	// TODO maybe we want an OK button for touch 10 as well
 

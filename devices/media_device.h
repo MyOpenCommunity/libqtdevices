@@ -32,16 +32,15 @@ class AmplifierDevice;
 class QTimer;
 
 
-/**
- * The device for the alarm clock when using the sound diffusion to reproduce
- * music from a source in multiple areas.
- */
+
+// The device for the alarm clock when using the sound diffusion to reproduce
+// music from a source in multiple areas.
 class AlarmSoundDiffDevice : public device
 {
 friend class TestAlarmSoundDiffDevice;
 Q_OBJECT
 public:
-	enum
+	enum Type
 	{
 		DIM_AMPLIFIER,
 		DIM_STATUS,
@@ -109,7 +108,7 @@ public:
 	/*!
 		\refdim{SourceDevice}
 	*/
-	enum
+	enum Type
 	{
 		DIM_STATUS = 12,
 		DIM_TRACK = 6,
@@ -228,7 +227,7 @@ public:
 	/*!
 		\refdim{RadioSourceDevice}
 	*/
-	enum
+	enum Type
 	{
 		DIM_FREQUENCY = 5,
 		DIM_RDS = 10,
@@ -327,7 +326,7 @@ public:
 	/*!
 		\refdim{VirtualSourceDevice}
 	*/
-	enum
+	enum Type
 	{
 		REQ_SOURCE_ON = 1,
 		REQ_SOURCE_OFF,
@@ -335,10 +334,6 @@ public:
 		DIM_SELF_REQUEST,
 	};
 
-	/*!
-		\brief Constructor
-		\param source_id SCS source id (1-4), not the OpenWebNet where.
-	*/
 	VirtualSourceDevice(QString address, int openserver_id = 0);
 
 	virtual void nextTrack();
@@ -385,7 +380,7 @@ public:
 	/*!
 		\refdim{AmplifierDevice}
 	*/
-	enum
+	enum Type
 	{
 		DIM_STATUS = 12,
 		DIM_VOLUME = 1,
@@ -400,9 +395,9 @@ public:
 		device cache.
 
 		The \a where parameter can be:
-		\li <area><point> (ex. \c 18, \c 23) will create a device for a single amplifier
-		\li \#<area> (ex. \#4) will create an area command
-		\li \c "0" will create a general command
+		- \<area>\<point> (ex. \c 18, \c 23) will create a device for a single amplifier
+		- \#\<area> (ex. \#4) will create an area command
+		- \c "0" will create a general command
 
 		If the touchscreen is configured as an SCS amplifier, setVirtualAmplifierWhere()
 		must be called before instantiating any amplifier.
@@ -542,7 +537,7 @@ public:
 	/*!
 		\refdim{VirtualAmplifierDevice}
 	*/
-	enum
+	enum Type
 	{
 		REQ_AMPLI_ON = -2,
 		REQ_VOLUME_UP = 3,
@@ -698,7 +693,7 @@ public:
 	/*!
 		\refdim{PowerAmplifierDevice}
 	 */
-	enum
+	enum Type
 	{
 		DIM_TREBLE = 2,
 		DIM_BASS = 4,
@@ -789,7 +784,7 @@ public:
 	/*!
 		\refdim{AuxDevice}
 	 */
-	enum
+	enum Type
 	{
 		DIM_STATUS // the value doesn't matter
 	};

@@ -69,7 +69,7 @@ public:
 		DIM_LOCK,
 	};
 
-	enum
+	enum ScenarioNumber
 	{
 		ALL_SCENARIOS = -1, /*!< All scenarios (dummy value, must be different from legal values) */
 	};
@@ -116,17 +116,43 @@ private:
 };
 
 
+/*!
+	\ingroup Scenarios
+	\brief Manages a scenario plus.
+
+	This device can be used to send standard scenario frames that some physical
+	devices can interpret to perform the scenario.
+*/
 class PPTSceDevice : public device
 {
 Q_OBJECT
 public:
 	PPTSceDevice(QString address, int openserver_id = 0);
+
+	/*!
+		\brief Send the increase command.
+	*/
 	void increase() const;
+
+	/*!
+		\brief Send the decrease command.
+	*/
 	void decrease() const;
+
+	/*!
+		\brief Send the stop command.
+	*/
 	void stop() const;
 
 public slots:
+	/*!
+		\brief Send the turn on command.
+	*/
 	void turnOn() const;
+
+	/*!
+		\brief Send the turn off command.
+	*/
 	void turnOff() const;
 };
 

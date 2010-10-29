@@ -44,11 +44,7 @@ class AlarmSoundDiffDevice;
 class SingleChoiceContent;
 
 
-/*!
-  \class AlarmClock
-  \brief This class is the implementation af the alarm set.
-
-*/
+// The implementation af the alarm set.
 class AlarmClock : public Page
 {
 	friend class AlarmClockTime;
@@ -191,11 +187,7 @@ signals:
 };
 
 
-/*!
-  \class AlarmClockTime
-  \brief Used to set the alarm time.
-
-*/
+// Used to set the alarm time.
 class AlarmClockTime : public Page
 {
 Q_OBJECT
@@ -210,11 +202,7 @@ private:
 };
 
 
-/*!
-  \class AlarmClockFreq
-  \brief Used to set the alarm frequency.
-
-*/
+// Used to set the alarm frequency.
 class AlarmClockFreq : public Page
 {
 Q_OBJECT
@@ -266,11 +254,7 @@ private:
 };
 
 
-/*!
-  \class AlarmNavigation
-  \brief helper class for the bottom navigation bar.
-
-*/
+// Helper class for the bottom navigation bar.
 class AlarmNavigation : public AbstractNavigationBar
 {
 Q_OBJECT

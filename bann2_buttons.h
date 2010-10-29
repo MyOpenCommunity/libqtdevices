@@ -35,9 +35,7 @@ class StateButton;
 class ScrollingLabel;
 
 
-/*
- * Small base class for all 2 buttons banners that can have linked pages.
- */
+// Small base class for all 2 buttons banners that can have linked pages.
 class Bann2LinkedPages : public BannerNew
 {
 Q_OBJECT
@@ -73,38 +71,42 @@ protected:
  * avoiding BtButton interface duplication. All other elements are created private.
  */
 
-/**
- * Two buttons on the sides + description in the center.
- * Either button can be removed by giving an empty string as the icon parameter to initBanner()
- * Nicer replacement for bann2but, will replace also bannOnDx, bannOnSx
- * Now it can replace BannSinglePuls also.
- */
+/*!
+	\ingroup Core
+	\brief A \ref banner with two buttons on the sides and a description in the center.
+
+	The %Bann2Buttons is the base class to choose for those banners that have
+	a description in the center and a button on the left or a button on the right
+	(or both). Optionally, it can draw a description below the banner.
+*/
 class Bann2Buttons : public Bann2LinkedPages
 {
 Q_OBJECT
 public:
 	Bann2Buttons(QWidget *parent = 0);
 
-	/**
-	 * \param left icon path for the left button
-	 * \param right icon path for the right button
-	 * \param banner_text text of the label between the two buttons
-	 * \param banner_description text of the label below the banner; if empty, the label is deleted
-	 */
+	/*!
+		\brief Initialize the banner.
+
+		Uses \a left and \a right as icon path for the left/right button, \a banner_text
+		as the text of the label between the two buttons and a \a banner_description
+		as the text of the label below the banner.
+	*/
 	void initBanner(const QString &left, const QString &right, const QString &banner_text,
 		FontManager::Type text_font = FontManager::TEXT, const QString &banner_description = QString(),
 		FontManager::Type description_font = FontManager::BANNERDESCRIPTION);
 
-	/**
-	 * \param left icon path for the left button
-	 * \param center icon path for the banner background
-	 * \param right icon path for the right button
-	 * \param description text of the label below the banner; if empty, the label is deleted
-	 */
+	/*!
+		\brief Initialize the banner.
+
+		Uses \a left and \a right as icon path for the left/right button, \a center
+		as the path for the banner background and \a description as the text
+		of the label below the banner.
+	*/
 	void initBanner(const QString &left, const QString &center, const QString &right, const QString &description,
 			FontManager::Type description_font = FontManager::BANNERDESCRIPTION);
 
-	// can only be caller after initBanner()
+	// can only be called after initBanner()
 	void setTextAlignment(Qt::Alignment align);
 	void setCentralText(const QString &t);
 	void setDescriptionText(const QString &t);
@@ -138,9 +140,10 @@ private:
 };
 
 
-/**
- * A Bann2Buttons where the two buttons are StateButtons
- */
+/*!
+	\ingroup Core
+	\brief A Bann2Buttons where the two buttons are StateButton%s.
+*/
 class Bann2StateButtons : public Bann2Buttons
 {
 public:
@@ -151,9 +154,7 @@ protected:
 };
 
 
-/**
- * A class similar to the BannOnOffNew class that changes the state and thus the center icon.
- */
+// A class similar to the BannOnOffNew class that changes the state and thus the center icon.
 class BannOnOffState : public Bann2Buttons
 {
 Q_OBJECT
@@ -183,11 +184,8 @@ private:
 };
 
 
-/**
- * Banner with 2 buttons (left + right), a text on center-left, an icon on center-right and a text below.
- *
- * Has two states: ON and OFF
- */
+// Banner with 2 buttons (left + right), a text on center-left, an icon on center-right and a text below.
+// Has two states: ON and OFF
 class BannOnOff2Labels : public BannerNew
 {
 Q_OBJECT
@@ -199,7 +197,7 @@ protected:
 	};
 	BannOnOff2Labels(QWidget *parent);
 
-	/**
+	/*
 	 * \param left Left button icon path
 	 * \param _center Center icon path. Given path will be shown during ON state.
 	 * \param right Right button icon path
@@ -209,12 +207,12 @@ protected:
 	 */
 	void initBanner(const QString &left, const QString &_center_on, const QString &_center_off, const QString &right,
 		States init_state, const QString &banner_text, const QString &second_text);
-	/**
+	/*
 	 * Set the text between left button and center right icon
 	 */
 	void setCentralText(const QString &str);
 
-	/**
+	/*
 	 * Choose if secondary text should be shown in secondary color
 	 *
 	 * Set "SecondFgColor" property to bool value given as parameter. Actual text color will be set using
@@ -223,7 +221,7 @@ protected:
 	 */
 	void setCentralTextSecondaryColor(bool secondary);
 
-	/**
+	/*
 	 * Change banner state; this will change center right icon only.
 	 *
 	 * Icon for the OFF state will be deduced from the ON state icon, "off" will be appended to such path.
@@ -237,13 +235,13 @@ private:
 	QString center_on, center_off;
 };
 
-/**
+/*
  * Banner with 2 buttons on both sides, an icon on the center, a description below and three states.
  *
  * Banner behaviour on state changes:
- * \li STOP: 'normal' icon on buttons, 'base' icon on the center
- * \li CLOSING: 'normal' icon on right button, 'alternate' icon on left button, 'closing' icon on center
- * \li OPENING: 'normal' icon on left, 'alternate' icon on right, 'opening' icon on center
+ * STOP: 'normal' icon on buttons, 'base' icon on the center
+ * CLOSING: 'normal' icon on right button, 'alternate' icon on left button, 'closing' icon on center
+ * OPENING: 'normal' icon on left, 'alternate' icon on right, 'opening' icon on center
  *
  * See functions below for a description of 'normal', 'base', 'alternate' etc. terms.
  */
@@ -263,7 +261,7 @@ protected:
 	 * The 'real' banner constructor. Sets icons, initial state and banner text.
 	 * Since text is fixed, no interface function to manipulate it is given.
 	 */
-	/**
+	/*
 	 * \param left 'Normal' icon for left button
 	 * \param center 'Base' icon for center icon
 	 * \param right 'Normal' icon for right button
@@ -273,7 +271,7 @@ protected:
 	 */
 	void initBanner(QString left, QString center, QString right, QString lr_alternate,
 		States starting_state, QString banner_text);
-	/**
+	/*
 	 * Change banner state.
 	 *
 	 * Central icon is set to 'base' icon on STOP, 'base'+"c" on CLOSING, 'base'+"o" on OPENING. Eg.
@@ -295,7 +293,7 @@ private:
 	QLabel *text, *center_icon;
 };
 
-/**
+/*
  * Banner with two central buttons.
  *
  * By default the two buttons are separated by a space, but they can be stuck
@@ -305,12 +303,12 @@ class Bann2CentralButtons : public BannerNew
 {
 Q_OBJECT
 protected:
-	/**
+	/*
 	 * \param spaced_buttons add spacing between the two buttons
 	 */
 	Bann2CentralButtons(bool spaced_buttons = true);
 
-	/**
+	/*
 	 * \param banner_text description text under the banner; if empty the label is deleted
 	 */
 	void initBanner(const QString &left, const QString &right, const QString &banner_text);
@@ -321,7 +319,7 @@ private:
 };
 
 
-/**
+/*
  * Banner with a central LCD and two lateral buttons to change the value.
  *
  * This banner sends the signal valueChanged() after the user has stoped to use the controls.
@@ -385,7 +383,7 @@ public:
 
 		Construct a new BannOnTray with the given \a icon_on as on icon,
 		\a icon_off as off icon, \a tray_icon as tag for the tray icon, \a tray_id
-		as button id, \status as initial status and \a item_id as configuration id.
+		as button id, \a status as initial status and \a item_id as configuration id.
 	*/
 	BannOnTray(const QString &label, const QString &icon_on, const QString &icon_off,
 		const QString &tray_icon, TrayBar::ButtonId tray_id, bool status=false, int item_id=-1);

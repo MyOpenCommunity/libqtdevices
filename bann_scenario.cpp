@@ -342,6 +342,7 @@ PPTSce::PPTSce(const QString &descr, const QString &where, int openserver_id) : 
 	initBanner(bt_global::skin->getImage("pptsce_on"), bt_global::skin->getImage("pptsce_increase"),
 		bt_global::skin->getImage("pptsce_decrease"), bt_global::skin->getImage("pptsce_off"),
 		descr);
+	setCentralSpacing(false);
 
 	dev = bt_global::add_device_to_cache(new PPTSceDevice(where, openserver_id));
 	connect(left_button, SIGNAL(clicked()), dev, SLOT(turnOff()));

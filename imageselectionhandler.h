@@ -34,7 +34,7 @@ class QDirIterator;
 // default file name for slideshow saving
 #define SLIDESHOW_FILENAME "cfg/extra/slideshow_images.txt"
 
-/**
+/*
  * Iterator over images selected using ImageSelectionHandler
  */
 class ImageIterator
@@ -74,7 +74,7 @@ private:
 
 
 
-/**
+/*
  * Handles image selection/removal and saving to file
  */
 class ImageSelectionHandler

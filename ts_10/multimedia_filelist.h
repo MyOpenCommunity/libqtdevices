@@ -30,7 +30,9 @@ class ItemList;
 class SlideshowPage;
 class VideoPlayerPage;
 class AudioPlayerPage;
-
+#ifdef PDF_EXAMPLE
+class PdfPage;
+#endif
 
 /*!
 	\ingroup Multimedia
@@ -53,6 +55,9 @@ signals:
 	void displayImages(QList<QString> images, unsigned element);
 	void displayVideos(QList<QString> images, unsigned element);
 	void playAudioFiles(QList<QString> images, unsigned element);
+#ifdef PDF_EXAMPLE
+	void displayPdf(QString file);
+#endif
 
 private:
 	static MultimediaFileType fileType(const QString &file);
@@ -85,6 +90,10 @@ private:
 	// last clicked item (for files)
 	int last_clicked;
 	MultimediaFileType last_clicked_type;
+
+#ifdef PDF_EXAMPLE
+	PdfPage *pdfdisplay;
+#endif
 };
 
 #endif // MULTIMEDIA_FILELIST_H

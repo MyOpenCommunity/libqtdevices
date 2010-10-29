@@ -34,19 +34,19 @@ bool isCommandFrame(OpenMsg &msg);
 
 /*!
 	\ingroup Core
-	\brief Tests if \a msg is in the form *#who*where*dimension##
+	\brief Tests if \a msg is in the form *\#who*where*dimension##
 */
 bool isDimensionFrame(OpenMsg &msg);
 
 /*!
 	\ingroup Core
-	\brief Tests if \a msg is in the form *#who*where*#dimension*val1*..*valn##
+	\brief Tests if \a msg is in the form *\#who*where*\#dimension*val1*..*valn##
 */
 bool isWriteDimensionFrame(OpenMsg &msg);
 
 /*!
 	\ingroup Core
-	\brief Tests if \a msg is in the form *#who*where##
+	\brief Tests if \a msg is in the form *\#who*where##
 */
 bool isStatusRequestFrame(OpenMsg &msg);
 
@@ -58,19 +58,19 @@ QString createCommandFrame(QString who, QString what, QString where);
 
 /*!
 	\ingroup Core
-	\brief Returns a string in the form *#who*where*dimension##
+	\brief Returns a string in the form *\#who*where*dimension##
 */
 QString createDimensionFrame(QString who, QString dimension, QString where);
 
 /*!
 	\ingroup Core
-	\brief Returns a string in the form *#who*where*#dimension*val1*..*valn##
+	\brief Returns a string in the form *\#who*where*\#dimension*val1*..*valn##
 */
 QString createWriteDimensionFrame(QString who, QString dimension, QString where);
 
 /*!
 	\ingroup Core
-	\brief Returns a string in the form *#who*where##
+	\brief Returns a string in the form *\#who*where##
 */
 QString createStatusRequestFrame(QString who, QString where);
 

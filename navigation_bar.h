@@ -60,10 +60,10 @@ protected:
 	\brief Represents a bar used to navigate between pages.
 
 	A navigation bar is composed by four buttons, usually with the following meaning:
-	\li a back button, to close the page and turn back to the previous one;
-	\li an up button, to scroll up the content of the page;
-	\li a down button, to scroll down the content of the page;
-	\li a forward button, which has a custom behaviour.
+	- a back button, to close the page and turn back to the previous one;
+	- an up button, to scroll up the content of the page;
+	- a down button, to scroll down the content of the page;
+	- a forward button, which has a custom behaviour.
 
 	\sa Page
  */

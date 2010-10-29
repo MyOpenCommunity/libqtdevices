@@ -130,14 +130,9 @@ banner *Automation::getBanner(const QDomNode &item_node)
 		break;
 	case GATE_LIGHTING_ACT:
 	{
-#ifdef CONFIG_TS_3_5
 		QStringList sl = getTextChild(item_node, "time").split("*");
 		Q_ASSERT_X(sl.size() == 3, "Automation::getBanner", "time leaf must have 3 fields");
 		BtTime t(sl[0].toInt(), sl[1].toInt(), sl[2].toInt());
-#else
-		int seconds = getTextChild(item_node, "time").toInt();
-		BtTime t(seconds / 3600, (seconds / 60) % 60, seconds % 60);
-#endif
 		b = new GateLightingActuator(t, descr, where, oid, NOT_PULL);
 	}
 		break;

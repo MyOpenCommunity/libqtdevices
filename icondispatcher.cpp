@@ -26,9 +26,7 @@
 #include <QDebug>
 
 
-/*!  \def ICON_VUOTO
-  The file name for \a empty icon*/
-#define ICON_VUOTO  (IMG_PATH "btnempty.png")
+#define ICON_VUOTO (IMG_PATH "btnempty.png")
 
 
 IconDispatcher::~IconDispatcher()

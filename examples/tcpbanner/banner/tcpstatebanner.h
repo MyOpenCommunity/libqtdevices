@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -17,37 +17,32 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+#ifndef TCPSTATEBANNER_H
+#define TCPSTATEBANNER_H
+
+#include "bann1_button.h"
+#include <QStringList>
+
+class QTcpSocket;
 
 
-#ifndef AUX_H
-#define AUX_H
-
-#include "page.h"
-
-class QLabel;
-
-
-/*!
-  \class Aux
-  \brief This class implements the management of the aux source page
-
-  */
-class Aux : public Page
+class TcpStateBanner : public BannStates
 {
 Q_OBJECT
 public:
-	Aux(const QString &name, const QString &amb);
-	void setAmbDescr(const QString &);
+	TcpStateBanner(const QString &name, const QStringList &states);
+	void setConnectionParameters(const QString &host, int port);
 
-signals:
-	/*!
-	\brief Emitted when fwd button is pressed
-	*/
-	void Btnfwd();
+private slots:
+	void changeState(int state);
 
 private:
-	QLabel *amb_descr;
+	void sendMessage(const QString &message);
+
+	QString name;
+	QStringList st;
+	QString host;
+	int port;
 };
 
-
-#endif // AUX_H
+#endif

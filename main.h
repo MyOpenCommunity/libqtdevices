@@ -148,6 +148,10 @@ enum Section
 	/* Added to avoid compile problems... */
 	MULTIMEDIA = 26,
 	MESSAGES = 27,
+
+#ifdef BUILD_EXAMPLES
+	TCP_BANNER_TEST = 55555,
+#endif
 };
 #else
 enum Section
@@ -172,6 +176,10 @@ enum Section
 	THERMALREGULATION_MULTI = -3,                   /*!< Thermoregulation system with one or more 4-zones plants */
 	ENERGY_MANAGEMENT = 15000,                      /*!< Energy management system */
 	ENERGY_DATA = 7000,                             /*!< Energy data system */
+
+#ifdef BUILD_EXAMPLES
+	TCP_BANNER_TEST = 55555,
+#endif
 };
 #endif
 

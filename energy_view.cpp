@@ -515,7 +515,10 @@ void EnergyView::showPage()
 	// disconnect all slots: can't disconnect a single slot on multiple objects
 	disconnect(table, SIGNAL(Closed()), 0, 0);
 	connect(table, SIGNAL(Closed()), SLOT(showPageFromTable()));
-	time_period->forceDate(QDate::currentDate());
+	// do not force the date to today when reentering the page (for example from
+	// a screen saver)
+	if (!is_current_page)
+		time_period->forceDate(QDate::currentDate());
 	showPageFromTable();
 
 	is_current_page = true;
@@ -664,11 +667,7 @@ void EnergyView::cleanUp()
 	if (current_widget == BANNER_WIDGET)
 		return;
 
-	current_widget = BANNER_WIDGET;
-	showTableButton(false);
-	time_period->showCycleButton();
-	widget_container->setCurrentIndex(current_widget);
-	is_current_page = false;
+	showBannerWidget(false);
 }
 
 void EnergyView::screenSaverStarted(Page *prev_page)
@@ -686,10 +685,11 @@ void EnergyView::screenSaverStarted(Page *prev_page)
 			update_after_ssaver = true;
 
 		// When the screensaver starts and we are showing a table or a graph
-		// we want to move to the consumptions page (the graph part is done
-		// in the cleanUp method).
+		// we want to move to the consumptions page
 		if (prev_page == table)
 			table->forceClosed();
+		// we need to force it here because the screen saver might start on this page
+		showBannerWidget(false);
 	}
 }
 
@@ -802,14 +802,16 @@ void EnergyView::showCurrencyButton(bool show)
 #endif
 }
 
-void EnergyView::showBannerWidget()
+void EnergyView::showBannerWidget(bool use_transition)
 {
 	current_widget = BANNER_WIDGET;
-	prepareTransition();
+	if (use_transition)
+		prepareTransition();
 	showTableButton(false);
 	time_period->showCycleButton();
 	widget_container->setCurrentIndex(current_widget);
-	startTransition();
+	if (use_transition)
+		startTransition();
 }
 
 QWidget *EnergyView::buildBannerWidget()
