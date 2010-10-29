@@ -162,6 +162,9 @@ XmlDevice::XmlDevice()
 	xml_client = new XmlClient;
 	connect(xml_client, SIGNAL(dataReceived(QString)), SLOT(handleData(QString)));
 	connect(xml_client, SIGNAL(connectionUp()), SLOT(sendMessageQueue()));
+	connect(xml_client, SIGNAL(connectionDown()), SLOT(cleanSessionInfo()));
+
+	welcome_received = false;
 
 	xml_handlers["WMsg"] = handle_welcome_message;
 	xml_handlers["AW26C1"] = handle_upnp_server_list;
@@ -177,7 +180,7 @@ XmlDevice::~XmlDevice()
 
 void XmlDevice::requestUPnPServers()
 {
-	sendCommand(buildCommand("RW26C1"));
+	sendCommand("RW26C1");
 }
 
 void XmlDevice::selectServer(const QString &server_name)
@@ -197,12 +200,12 @@ void XmlDevice::selectFile(const QString &file_tags)
 
 void XmlDevice::browseUp()
 {
-	sendCommand(buildCommand("CW26C7"));
+	sendCommand("CW26C7");
 }
 
 void XmlDevice::listItems(int max_results)
 {
-	sendCommand(buildCommand("CW26C6", QString::number(max_results)));
+	sendCommand("CW26C6", QString::number(max_results));
 }
 
 void XmlDevice::handleData(const QString &data)
@@ -220,24 +223,44 @@ void XmlDevice::handleData(const QString &data)
 
 void XmlDevice::sendMessageQueue()
 {
+	if (!welcome_received)
+		return;
+
 	while (!message_queue.isEmpty())
-		sendCommand(message_queue.takeFirst());
+	{
+		QPair<QString,QString> command = message_queue.takeFirst();
+		sendCommand(command.first, command.second);
+	}
 }
 
-void XmlDevice::sendCommand(const QString &message)
+void XmlDevice::cleanSessionInfo()
+{
+	welcome_received = false;
+	sid.clear();
+	pid.clear();;
+	local_addr.clear();
+	server_addr.clear();
+}
+
+void XmlDevice::sendCommand(const QString &message, const QString &argument)
 {
 	if (!xml_client->isConnected())
 	{
-		message_queue << message;
+		// Saves the message and the argument.
+		// An alternative implementation could be to generate only the command
+		// body, and save it. Then when the connection comes up prepend the
+		// generated header. For that implementation the problem is the PID
+		// which changes with the responses.
+		message_queue << qMakePair<QString,QString>(message, argument);
 		xml_client->connectToHost();
 	}
 	else
-		xml_client->sendCommand(message);
+		xml_client->sendCommand(buildCommand(message, argument));
 }
 
 void XmlDevice::select(const QString &name)
 {
-	sendCommand(buildCommand("RW26C2", name));
+	sendCommand("RW26C2", name);
 }
 
 XmlResponse XmlDevice::parseXml(const QString &xml)
@@ -285,6 +308,12 @@ bool XmlDevice::parseHeader(const QDomNode &header_node)
 	if (src_address.isNull())
 		return false;
 	server_addr = getTextChild(src_address, "IP");
+
+	if (!welcome_received)
+	{
+		welcome_received = true;
+		sendMessageQueue();
+	}
 
 	return true;
 }
