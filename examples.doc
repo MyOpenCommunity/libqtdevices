@@ -1,6 +1,7 @@
 /*!
 	\page page-examples BTouch examples
 
+	\section btouch-code Modifying the BTouch code
 	The examples below demostrate how to modify the source code of BTouch in order to add
 	new functionalities or change the default behaviour. The examples can be included in the BTouch
 	executable by running qmake as:
@@ -12,7 +13,12 @@
 	- \ref page-example-pdf
 	- \ref page-example-screensaver
 	- \ref page-example-message
+
+	\section no-btouch-code Without modifying the BTouch code
+	- \ref page-icons
+	- \ref page-ext-openserver
 */
+
 
 /*!
 	\page page-example-pdf The pdf viewer example
@@ -178,7 +184,7 @@
 	to comunicate their state to a server via TCP.
 
 	First of all we will subclass a couple of different banners, then we will 
-	arrange	them into a custom BannerPage.
+	arrange them into a custom BannerPage.
 
 	Just for semplicity we have choosen to subclass the AdjustDimmer and the
 	BannStates classes.
@@ -223,12 +229,67 @@
 	choose a non-conflicting id for the new item:
 	\verbatim
 <item>
-  <square>0</square>
-  <id>55555</id>
-  <cid>55555</cid>
-  <itemID>99</itemID>
-  <lnk_pageID>100</lnk_pageID>
+	<square>0</square>
+	<id>55555</id>
+	<cid>55555</cid>
+	<itemID>99</itemID>
+	<lnk_pageID>100</lnk_pageID>
 </item>
 	\endverbatim
 */
 
+/*!
+	\page page-icons Change icons
+	This example shows how to modify the icons for an item.
+
+	In this case we choose a simple light, but is very similar for all items.
+
+	Each item defined in the configuration file has a \c cid associated that
+	points to another item that contains a set of tagnames in the \c skin.xml
+	file. To find the item in the configuration file, we can search for the
+	description of the item or for the \c id, that identifies the type of it.
+
+	In our case, the simple light has 2003 as \c id. Be aware that if there are
+	more simple light in our system you have more items with 2003 as \c id: in
+	this case you have to distinguish them by the description.
+
+	The item is something like this:
+	\verbatim
+	<item>
+		<square>1</square>
+		<id>2003</id>
+		<cid>2003</cid>
+		<itemID>1673</itemID>
+		<descr>Living Room Light</descr>
+		<where>14</where>
+		<pul>0</pul>
+	</item>
+	\endverbatim
+	Now that we have found the item, we note that the \c cid is 2003. We can
+	search the \c skin.xml file to find the item, that should be something like:
+	\verbatim
+	<item>
+		<!-- simple light -->
+		<cid>2003</cid>
+		<img_off>illuminazione/off.png</img_off>
+		<img_on>illuminazione/on.png</img_on>
+		<img_actuator_state>illuminazione/imglamp.png</img_actuator_state>
+	</item>
+	\endverbatim
+
+	We have two choices:
+	- modify directly the images under each tagname
+	- clone the item, in order to preserv the aspect of other simple lights.
+
+	In the latter case we have to choose another \c cid, that must to be unique in
+	the \c skin.xml file.
+
+	Finally we can change the configuration file, modifying the \c cid tag for
+	our item and adding the correspondent item to the \c skin.xml.
+
+	That's all!
+*/
+
+/*!
+	\page page-ext-openserver Connect to an external openserver
+*/
