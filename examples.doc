@@ -292,4 +292,66 @@
 
 /*!
 	\page page-ext-openserver Connect to an external openserver
+	This example shows how to send commands to an external openserver.
+
+	While most of the time the BTouch only communicates with the openserver
+	running on the touchscreen itself, it supports connecting to multiple openserver
+	instances running on different hardware devices.  Even if this
+	has been implemented for most \ref device subclasses, only some of the sections
+	support this at the configuration level: \ref Lighting, \ref Automation,
+	\ref AirConditioning, \ref Scenarios.
+
+	Controlling an external openserver requires two configuration steps: first the
+	openserver needs to be defined in the global configuration section, then the single
+	items must be configured to use the openserver.
+
+	The global list of openservers is defined in the \c setup/openserver node:
+	\verbatim
+	<?xml version='1.0' encoding='utf-8'?>
+	<configuratore>
+		<!-- ... -->
+		<setup>
+			<openserver>
+				<item>
+					<id>1</id>
+					<address>192.168.42.42</address>
+					<port>7777</port>
+				</item>
+				<item>
+					<!-- ... -->
+				</item>
+				<!-- ... -->
+			</openserver>
+			<!-- ... -->
+	\endverbatim
+
+	Apart from the address/port pair, each openserver is identified by an unique \c id.
+	If the \c id 0 is not defined explicitly, it's defined to be the address of the openserver
+	running on the touchscreen itself.  Defining the openserver entry with \c id 0 will
+	change the default openserver used by the BTouch.
+
+	To change the openserved used by a graphic item (ex. a \ref banner), simply add
+	an \c <openserver_id> node at the same level of the node defining the device address.
+	All graphic items that do not override the openserver will use the one with \c id 0.
+
+	For example, for a 100-level dimmer:
+	\verbatim
+	<item>
+		<square>1</square>
+		<id>2001</id>
+		<cid>2001</cid>
+		<itemID>36</itemID>
+		<descr>Dimmer 100 22</descr>
+		<where>22</where>
+		<openserver_id>1</openserver_id>
+		<softstart>2</softstart>
+		<softstop>2</softstop>
+		<pul>0</pul>
+	</item>
+	\endverbatim
+
+	At the moment the only exception to this rule is the air conditioning split: since it
+	uses two separate devices (split and temperature probe) which have separate addresses and
+	can be on separate openserver, \c <openserver_id> is used for the split and
+	\c <openserver_id_probe> for the temperature probe.
 */
