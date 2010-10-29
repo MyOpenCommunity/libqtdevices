@@ -242,15 +242,15 @@
 	\page page-icons Change icons
 	This example shows how to modify the icons for an item.
 
-	In this case we choose a simple light, but is very similar for all items.
+	While we show the case for a simple light actuator, the procedure is
+	similar for all item types and icons.
 
-	Each item defined in the configuration file has a \c cid associated that
-	points to another item that contains a set of tagnames in the \c skin.xml
-	file. To find the item in the configuration file, we can search for the
+	Each item defined in the configuration file (\c conf.xml) is associated to a \c cid
+	pointing to an item in \c skin.xml. To find the item in \c conf.xml file, we can search for the
 	description of the item or for the \c id, that identifies the type of it.
 
-	In our case, the simple light has 2003 as \c id. Be aware that if there are
-	more simple light in our system you have more items with 2003 as \c id: in
+	In our case, the simple light has \c id 2003. Be aware that if there is
+	more than one simple light in the system, there will be multiple items with \c id 2003: in
 	this case you have to distinguish them by the description.
 
 	The item is something like this:
@@ -265,7 +265,7 @@
 		<pul>0</pul>
 	</item>
 	\endverbatim
-	Now that we have found the item, we note that the \c cid is 2003. We can
+	Now that we found the item, we note that the \c cid is 2003. We can
 	search the \c skin.xml file to find the item, that should be something like:
 	\verbatim
 	<item>
