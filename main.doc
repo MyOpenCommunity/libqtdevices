@@ -12,9 +12,9 @@
 	\section overview-architecture System architecture
 
 	The base of the system is a customized GNU/Linux distribution; the BTicino-specific parts are:
-	\li subsystem-specific processes
-	\li BTouch (the GUI)
-	\li OpenServer
+	- subsystem-specific processes
+	- BTouch (the GUI)
+	- OpenServer
 
 	The OpenServer is the front-end to the home automation system: it provides an OpenWebNet interface
 	to communicate with the various physical devices (the actual communication is performed by the
@@ -59,10 +59,20 @@
 
 	Use the same build procedure documented for ARM cross-compilation (using the correct Qt embedded build and toolchain).
 
-	The GUI needs to connect to an OpenServer: you need to enable external connections in the configuration file (\c abilita_ip
-	node, under \c sicurezza).
+	The GUI needs to connect to an OpenServer, you need to do:
+	- enable external connections in the configuration file (\c abilita_ip
+	node, under \c sicurezza)
+	- change the address of the OpenServer used by BTouch, from the default \c 127.0.0.1 to
+	the right one. When building for x86, you can simply add a line like this to your
+	\c /etc/hosts:
+	\code
+	<your_address>       <touchscreen_name>
+	\endcode
+	Where \c \<touchscreen_name> is \c btouch_10 for the touchscreen 10'' and
+	btouch_3_5 for the 3.5 one.
 
-	Before running BTouch, launch qvfb and select the appropriate resolution.
+	Before running BTouch, launch qvfb and select the appropriate resolution, that
+	is 240x320 for the touchscreen 3.5'' and 800x480 for the 10'' one.
 
 	To run BTouch use "LD_LIBRARY_PATH=/path/to/libcommon ./BTouch.x86 -qws"; you should see the interface displayed inside qvfb.
 
