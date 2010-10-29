@@ -27,7 +27,7 @@
 
 	\section modifying-gui Modifying the GUI
 
-	At the simplest level, the GUI can be cusotmized by changing its
+	At the simplest level, the GUI can be customized by changing its
 	appearance.  The font configuration files can be modified to change
 	size, weight and font face, as described in FontManager.  Similarly, editing
 	the \c skin.xml all icons and colors can be changed

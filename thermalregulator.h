@@ -407,17 +407,17 @@ public:
 	virtual void createSummerBanners() = 0;
 	virtual void createWinterBanners() = 0;
 	void setSeason(ThermalDevice::Season new_season);
+
+signals:
+	void programClicked(int);
+
 protected:
 	QString summer_icon, winter_icon;
 	ThermalDevice::Season season;
 	QMap<QString, QString> descriptions;
-	/**
-	 * \param season Either "summer" or "winter"
-	 * \param what Either "prog" or "scen"
-	 */
+
 	void createSeasonBanner(QString season, QString icon);
-signals:
-	void programClicked(int);
+
 };
 
 /*!

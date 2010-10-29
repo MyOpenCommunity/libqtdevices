@@ -334,10 +334,6 @@ public:
 		DIM_SELF_REQUEST,
 	};
 
-	/*!
-		\brief Constructor
-		\param source_id SCS source id (1-4), not the OpenWebNet where.
-	*/
 	VirtualSourceDevice(QString address, int openserver_id = 0);
 
 	virtual void nextTrack();
@@ -399,8 +395,8 @@ public:
 		device cache.
 
 		The \a where parameter can be:
-		- <area><point> (ex. \c 18, \c 23) will create a device for a single amplifier
-		- \#<area> (ex. \#4) will create an area command
+		- \<area>\<point> (ex. \c 18, \c 23) will create a device for a single amplifier
+		- \#\<area> (ex. \#4) will create an area command
 		- \c "0" will create a general command
 
 		If the touchscreen is configured as an SCS amplifier, setVirtualAmplifierWhere()

@@ -52,11 +52,11 @@ class QString;
 	\endverbatim
 
 	For every font definition in FontManager::Type there must be a
-	matching \c <font> entry with the same \c <type>.  The other
+	matching \c \<font> entry with the same \c \<type>.  The other
 	attributes describe the font associated with the entry.
 
-	\c <family> is the name of the font family; \c <size> is the
-	size in points (1/72th of an inch); \c <weight> can have any value
+	\c \<family> is the name of the font family; \c \<size> is the
+	size in points (1/72th of an inch); \c \<weight> can have any value
 	from 0 to 99, but there are some special values: 50 is for a normal
 	font weight, 75 for bold and 25 for a light font.
 */
