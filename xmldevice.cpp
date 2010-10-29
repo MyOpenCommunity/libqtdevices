@@ -72,9 +72,8 @@ namespace
 			return result;
 		}
 
-		QList<QDomNode> servers = getChildren(server_element, "name");
-		for (int i = 0; i < servers.length(); ++i)
-			value.append(servers.at(i).toElement().text());
+		foreach (const QDomNode &server, getChildren(server_element, "name"))
+			value.append(server.toElement().text());
 
 		result[XmlResponses::SERVER_LIST] = value;
 
