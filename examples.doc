@@ -172,6 +172,64 @@
 */
 
 /*!
-	\page page-example-message Boh
+	\page page-example-message The TCP banners example
+
+	We want to add a new section containing two custom banners which are able
+	to comunicate their state to a server via TCP.
+
+	First of all we will subclass a couple of differnt banners, then we will 
+	arrange	them into a custom BannerPage.
+
+	Just for semplicity we have choosen to subclass the AdjustDimmer and the
+	BannStates classes.
+
+	In both cases in the constructor we initialize the banner and connect the specific signals
+	it emits with the appropriate slots.
+	\dontinclude tcpdimmer.cpp
+	\skip TcpDimmer::TcpDimmer
+	\until }
+
+	\dontinclude tcpstatebanner.cpp
+	\skip TcpStateBanner::TcpStateBanner
+	\until }
+
+	Those slots generates a message describing the actual state of the banner and call
+	the method to send data via TCP. It connects to the server, sends it the data and
+	disconnects from it.
+	\skip TcpStateBanner::sendMessage
+	\until }
+
+	Now that we have created our custom banner, we can create the page that will contain them.
+	We want to arrange the banners into a single column, which is the default on the
+	TouchScreen 3.5", but not on the 10" one.
+
+	We subclass the BannerPage class, and in the constructor, we create a new
+	BannerContent setting the number of columns to 1.
+	To make the banners centered on the page we have to create a container that layouts the
+	banner content between to stretches.
+	After that, it remains only to call the BannerPage::buildPage() method to layout
+	all the components in the right way.
+
+	The last step, is to instantiate our custom banners and add them to the content.
+	\dontinclude tcpbannerpage.cpp
+	\skip TcpBannerPage::TcpBannerPage(QWidget *parent)
+	\until }
+
+	Now we want that our new page is presented on the homepage as a section.
+	We have to the make the page return its section id:
+	\skip int TcpBannerPage::sectionId() const
+	\until } 
+
+	The new configuration node does not need any additional parameters; we only need to
+	choose a non-conflicting id for the new item:
+	\verbatim
+<item>
+  <square>0</square>
+  <id>55555</id>
+  <cid>55555</cid>
+  <itemID>99</itemID>
+  <lnk_pageID>100</lnk_pageID>
+</item>
+	\endverbatim
 */
 
