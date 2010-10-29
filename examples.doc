@@ -177,7 +177,7 @@
 	We want to add a new section containing two custom banners which are able
 	to comunicate their state to a server via TCP.
 
-	First of all we will subclass a couple of differnt banners, then we will 
+	First of all we will subclass a couple of different banners, then we will 
 	arrange	them into a custom BannerPage.
 
 	Just for semplicity we have choosen to subclass the AdjustDimmer and the
@@ -193,9 +193,9 @@
 	\skip TcpStateBanner::TcpStateBanner
 	\until }
 
-	Those slots generates a message describing the actual state of the banner and call
-	the method to send data via TCP. It connects to the server, sends it the data and
-	disconnects from it.
+	Those slots generate a message describing the actual state of the banner and call
+	the method to send data via TCP. The method simply enstabilish the connection to the
+	server and sends the data.
 	\skip TcpStateBanner::sendMessage
 	\until }
 
@@ -204,17 +204,17 @@
 	TouchScreen 3.5", but not on the 10" one.
 
 	We subclass the BannerPage class, and in the constructor, we create a new
-	BannerContent setting the number of columns to 1.
+	BannerContent, setting the number of columns to 1.
 	To make the banners centered on the page we have to create a container that layouts the
 	banner content between to stretches.
-	After that, it remains only to call the BannerPage::buildPage() method to layout
+	After that, it remains only to call the BannerPage::buildPage() method which layouts
 	all the components in the right way.
 	The last step, is to instantiate our custom banners and add them to the content.
 	\dontinclude tcpbannerpage.cpp
 	\skip TcpBannerPage::TcpBannerPage(QWidget *parent)
 	\until }
 
-	Now we want that our new page is presented on the homepage as a section.
+	Now we want our new page presented on the homepage as a section.
 	We have to the make the page return its section id:
 	\skip int TcpBannerPage::sectionId() const
 	\until } 
