@@ -48,6 +48,21 @@ class QSocketNotifier;
 
 
 /*!
+	\defgroup Core Core
+
+	Contains constants, functions and classes that are not related to a specific
+	section.
+
+	\sa \ref page-gui for an overview of the main classes of the Core module.
+*/
+
+
+/*!
+	\namespace bt_global
+	\brief Encapsulates all the global objects.
+*/
+
+/*!
 	\ingroup Core
 	\brief Manages the unix signals used on the BTicino hardware.
 */
