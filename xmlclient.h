@@ -33,6 +33,7 @@ class QTcpSocket;
 
 
 /*!
+	\ingroup Multimedia
 	\brief Manages the comunication between the application and the OpenXml server.
 
 	This class wraps a socket connected to an OpenXml server. The connection is
