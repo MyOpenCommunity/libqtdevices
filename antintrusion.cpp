@@ -324,7 +324,7 @@ void AlarmManager::showHomePage()
 	bt_global::btmain->showHomePage();
 }
 
-#ifdef LAYOUT_BTOUCH
+#ifdef LAYOUT_TS_3_5
 
 void AlarmManager::showAlarmList()
 {
@@ -377,7 +377,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	layout->addWidget(antintrusion_system);
 	layout->addStretch(1);
 
-#ifdef LAYOUT_TOUCHX
+#ifdef LAYOUT_TS_10
 	partial_button = new BtButton(bt_global::skin->getImage("partial"));
 	layout->addWidget(partial_button);
 #endif
