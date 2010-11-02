@@ -33,6 +33,7 @@
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "navigation_bar.h"
 
+#include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDebug>
 #include <QVariant>
@@ -368,8 +369,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	connect(antintrusion_system, SIGNAL(showAlarms()), alarm_manager, SLOT(showAlarmList()));
 
 	action = NONE;
-	QWidget *top_widget;
-	top_widget = new QWidget;
+	QWidget *top_widget = new QWidget;
 
 	QHBoxLayout *layout = new QHBoxLayout(top_widget);
 	layout->setContentsMargins(18, 0, 20, 10);
@@ -381,6 +381,19 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	partial_button = new BtButton(bt_global::skin->getImage("partial"));
 	layout->addWidget(partial_button);
 #endif
+
+	connect(partial_button, SIGNAL(clicked()), SLOT(partialize()));
+
+	BannerContent *content = new BannerContent;
+	QWidget *main_widget = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(main_widget);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(5);
+	main_layout->addWidget(top_widget);
+	main_layout->addWidget(content, 1);
+
+	buildPage(main_widget, content, new NavigationBar, getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT);
+	loadZones(config_node);
 
 	QList<int> states;
 	for (int i = 0; i < NUM_ZONES; ++i)
