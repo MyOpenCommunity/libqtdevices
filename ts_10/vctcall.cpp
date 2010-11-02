@@ -128,9 +128,9 @@ CameraMove::CameraMove(VideoDoorEntryDevice *dev)
 	main_layout->addWidget(down, 2, 1);
 }
 
-void CameraMove::setFullscreenEnabled(bool fs)
+void CameraMove::showFullScreenButton(bool show)
 {
-	fullscreen->setStatus(fs ? StateButton::OFF : StateButton::DISABLED);
+	fullscreen->setVisible(show);
 }
 
 void CameraMove::setMoveEnabled(bool move)
@@ -214,6 +214,7 @@ VCTCall::VCTCall(VideoDoorEntryDevice *d, FormatVideo f)
 
 	camera = new CameraMove(dev);
 	camera->setMoveEnabled(false);
+	camera->showFullScreenButton(dev->vctMode() == VideoDoorEntryDevice::SCS_MODE);
 
 	setup_vct_icon = bt_global::skin->getImage("setup_vct");
 	setup_vct = new BtButton();
