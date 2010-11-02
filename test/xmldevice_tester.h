@@ -17,31 +17,42 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+#ifndef XMLDEVICE_TESTER_H
+#define XMLDEVICE_TESTER_H
+
+#include <QtTest>
+#include <QSignalSpy>
+
+class XmlDevice;
 
 
-#ifndef ITEMLISTPAGE_H
-#define ITEMLISTPAGE_H
-
-#include "page.h"
-#include "itemlist.h"
-
-class NavigationBar;
-
-
-/*!
-	\ingroup Core
-	\brief A generic page that has as the content an ItemList.
-*/
-class ItemListPage : public Page
+class XmlDeviceTester
 {
-Q_OBJECT
 public:
-	ItemListPage();
+	XmlDeviceTester(XmlDevice *d, int resp_type);
 
-	typedef ItemList ContentType;
+	template<class T> void check(const QString &response, const T &result);
 
-protected:
-	void buildPage(int items, const QString &title, int title_height = TITLE_HEIGHT);
+	void checkError(const QString &response, int expected_error);
+
+	void simulateIncomingResponse(const QString &response);
+
+	QVariant getResult();
+
+private:
+	QSignalSpy resp_spy;
+	QSignalSpy err_spy;
+	int response_type;
+	XmlDevice *dev;
 };
 
-#endif // ITEMLISTPAGE_H
+template<class T> void XmlDeviceTester::check(const QString &response, const T &result)
+{
+	simulateIncomingResponse(response);
+
+	QVariant r = getResult();
+	QVERIFY2(r.canConvert<T>(), "Unable to convert the result in the proper type");
+	QCOMPARE(r.value<T>(), result);
+}
+
+#endif
