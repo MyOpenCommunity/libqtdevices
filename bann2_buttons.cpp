@@ -87,7 +87,8 @@ void Bann2Buttons::createBanner()
 	QGridLayout *l = new QGridLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 #ifdef LAYOUT_TS_10
-	l->setSpacing(5);
+	l->setHorizontalSpacing(5);
+	l->setVerticalSpacing(0);
 #else
 	l->setSpacing(0);
 #endif
