@@ -47,7 +47,7 @@ public slots:
 	virtual void browseUp() = 0;
 
 signals:
-	virtual void notifyExit();
+	void notifyExit();
 };
 
 
