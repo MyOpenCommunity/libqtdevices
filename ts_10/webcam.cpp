@@ -65,7 +65,7 @@ WebcamPage::WebcamPage()
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
-	page_title = new PageTitleWidget(tr(""), TINY_TITLE_HEIGHT);
+	page_title = new PageTitleWidget(tr(""), SMALL_TITLE_HEIGHT);
 	buildPage(content, nav_bar, 0, page_title);
 	http = new QHttp(this);
 	connect(http, SIGNAL(requestFinished(int,bool)), SLOT(downloadFinished(int, bool)));
