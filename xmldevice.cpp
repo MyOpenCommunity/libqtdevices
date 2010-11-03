@@ -23,6 +23,7 @@
 
 #include <QDomDocument>
 #include <QStringList>
+#include <QUuid>
 #include <QDebug>
 
 const char *command_template =
@@ -237,7 +238,7 @@ void XmlDevice::cleanSessionInfo()
 {
 	welcome_received = false;
 	sid.clear();
-	pid.clear();;
+	pid = 0;
 	local_addr.clear();
 	server_addr.clear();
 }
@@ -254,8 +255,10 @@ void XmlDevice::sendCommand(const QString &message, const QString &argument)
 		message_queue << qMakePair<QString,QString>(message, argument);
 		xml_client->connectToHost();
 	}
-	else
+	else {
+		++pid;
 		xml_client->sendCommand(buildCommand(message, argument));
+	}
 }
 
 void XmlDevice::select(const QString &name)
@@ -279,10 +282,18 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 			QDomNode command = command_container.childNodes().at(0);
 			QString command_name = command.toElement().tagName();
 
-			if (!command_name.isEmpty() && xml_handlers.contains(command_name))
+			if (!command_name.isEmpty())
 			{
-				response = xml_handlers[command_name](command);
-				return response;
+				if (command_name == "ACK" && parseAck(command))
+				{
+					response[XmlResponses::ACK] = true;
+					return response;
+				}
+				else if (xml_handlers.contains(command_name))
+				{
+					response = xml_handlers[command_name](command);
+					return response;
+				}
 			}
 		}
 	}
@@ -297,7 +308,7 @@ bool XmlDevice::parseHeader(const QDomNode &header_node)
 	if (message_id.isNull())
 		return false;
 	sid = getTextChild(message_id, "SID");
-	pid = getTextChild(message_id, "PID");
+	pid = getTextChild(message_id, "PID").toInt();
 
 	QDomNode dest_address = getChildWithName(header_node, "Dst");
 	if (dest_address.isNull())
@@ -313,6 +324,25 @@ bool XmlDevice::parseHeader(const QDomNode &header_node)
 	{
 		welcome_received = true;
 		sendMessageQueue();
+	}
+
+	return true;
+}
+
+/*
+	When we receive an ACK with RC == 200 we must regenerate the sid and
+	set the pid to 0.
+*/
+bool XmlDevice::parseAck(const QDomNode &ack)
+{
+	QString rc = getTextChild(ack, "RC");
+	if (rc.isEmpty())
+		return false;
+
+	if (rc == "200")
+	{
+		pid = 0;
+		sid = QUuid::createUuid().toString();
 	}
 
 	return true;

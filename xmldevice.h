@@ -50,6 +50,7 @@ namespace XmlResponses
 	enum Type
 	{
 		INVALID = -1,
+		ACK,
 		WELCOME,
 		SERVER_LIST,
 		SERVER_SELECTION,
@@ -265,6 +266,7 @@ private:
 	void select(const QString &name);
 	XmlResponse parseXml(const QString &xml);
 	bool parseHeader(const QDomNode &header_node);
+	bool parseAck(const QDomNode &ack);
 	QString buildCommand(const QString &command, const QString &argument = QString());
 
 	XmlClient *xml_client;
@@ -274,7 +276,7 @@ private:
 
 	bool welcome_received;
 	QString sid;
-	QString pid;
+	int pid;
 	QString local_addr;
 	QString server_addr;
 };

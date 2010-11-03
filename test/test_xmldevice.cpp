@@ -56,7 +56,7 @@ void TestXmlDevice::testHeader()
 	dev->handleData(data);
 
 	QCOMPARE(dev->sid, QString("1EFC3E00-2066-6C13-55D2-81D7D7DB0E62"));
-	QCOMPARE(dev->pid, QString("1"));
+	QCOMPARE(dev->pid, 1);
 	QCOMPARE(dev->local_addr, QString("10.3.3.195"));
 	QCOMPARE(dev->server_addr, QString("192.168.1.110"));
 }
@@ -308,6 +308,35 @@ void TestXmlDevice::testListItems()
 				  FilesystemEntry("TestTrack2", FilesystemEntry::TRACK));
 }
 
+void TestXmlDevice::testResetWithAck()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
+				 "			<PID>4</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.195</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>192.168.1.110</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<ACK>"
+				 "			<RC>200</RC>"
+				 "		</ACK>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::ACK);
+	t.check(data, true);
+	QVERIFY(dev->sid != QString("1EFC3E00-2066-6C13-55D2-81D7D7DB0E62"));
+	QCOMPARE(dev->pid, 0);
+}
+
 void TestXmlDevice::testBuildCommand()
 {
 	QString data("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
@@ -330,7 +359,7 @@ void TestXmlDevice::testBuildCommand()
 				 "</OWNxml>\n");
 
 	dev->sid = "1EFC3E00-2066-6C13-55D2-81D7D7DB0E62";
-	dev->pid = "1";
+	dev->pid = 1;
 	dev->local_addr = "local_address";
 	dev->server_addr = "server_address";
 
@@ -363,7 +392,7 @@ void TestXmlDevice::testBuildCommandWithArg()
 				 "</OWNxml>\n");
 
 	dev->sid = "1EFC3E00-2066-6C13-55D2-81D7D7DB0E62";
-	dev->pid = "1";
+	dev->pid = 1;
 	dev->local_addr = "local_address";
 	dev->server_addr = "server_address";
 
