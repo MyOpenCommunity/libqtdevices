@@ -33,6 +33,7 @@ class QTcpSocket;
 
 
 /*!
+	\ingroup Multimedia
 	\brief Manages the comunication between the application and the OpenXml server.
 
 	This class wraps a socket connected to an OpenXml server. The connection is
@@ -44,9 +45,12 @@ class QTcpSocket;
 
 	To send a command to the server you can use the sendCommand() method.
 
-	Every time a chunk of xml comes to the client, it is appended to a buffer
-	and parsed. If a valid response is found, the signal dataReceived() signal
+	If a valid response is found, the signal dataReceived() signal
 	is emitted with the response as argument.
+
+	\internal
+	Every time a chunk of xml comes to the client, it is appended to a buffer
+	and parsed.
 */
 class XmlClient : public QObject
 {
