@@ -1395,39 +1395,6 @@ AlarmList > QWidget {  background-image: url(); }
 		<img_tamper_alarm>antintrusione/imgallarmemanomissione.png</img_tamper_alarm>
 		<img_panic_alarm>antintrusione/imgallarmeantipanico.png</img_panic_alarm>
 
-		<img_zone1_part_on>antintrusione/parzializza1on.png</img_zone1_part_on>
-		<img_zone1_part_off>antintrusione/parzializza1off.png</img_zone1_part_off>
-		<img_zone1_disabled_part_on>antintrusione/parzializza1onP.png</img_zone1_disabled_part_on>
-		<img_zone1_disabled_part_off>antintrusione/parzializza1offP.png</img_zone1_disabled_part_off>
-		<img_zone2_part_on>antintrusione/parzializza2on.png</img_zone2_part_on>
-		<img_zone2_part_off>antintrusione/parzializza2off.png</img_zone2_part_off>
-		<img_zone2_disabled_part_on>antintrusione/parzializza2onP.png</img_zone2_disabled_part_on>
-		<img_zone2_disabled_part_off>antintrusione/parzializza2offP.png</img_zone2_disabled_part_off>
-		<img_zone3_part_on>antintrusione/parzializza3on.png</img_zone3_part_on>
-		<img_zone3_part_off>antintrusione/parzializza3off.png</img_zone3_part_off>
-		<img_zone3_disabled_part_on>antintrusione/parzializza3onP.png</img_zone3_disabled_part_on>
-		<img_zone3_disabled_part_off>antintrusione/parzializza3offP.png</img_zone3_disabled_part_off>
-		<img_zone4_part_on>antintrusione/parzializza4on.png</img_zone4_part_on>
-		<img_zone4_part_off>antintrusione/parzializza4off.png</img_zone4_part_off>
-		<img_zone4_disabled_part_on>antintrusione/parzializza4onP.png</img_zone4_disabled_part_on>
-		<img_zone4_disabled_part_off>antintrusione/parzializza4offP.png</img_zone4_disabled_part_off>
-		<img_zone5_part_on>antintrusione/parzializza5on.png</img_zone5_part_on>
-		<img_zone5_part_off>antintrusione/parzializza5off.png</img_zone5_part_off>
-		<img_zone5_disabled_part_on>antintrusione/parzializza5onP.png</img_zone5_disabled_part_on>
-		<img_zone5_disabled_part_off>antintrusione/parzializza5offP.png</img_zone5_disabled_part_off>
-		<img_zone6_part_on>antintrusione/parzializza6on.png</img_zone6_part_on>
-		<img_zone6_part_off>antintrusione/parzializza6off.png</img_zone6_part_off>
-		<img_zone6_disabled_part_on>antintrusione/parzializza6onP.png</img_zone6_disabled_part_on>
-		<img_zone6_disabled_part_off>antintrusione/parzializza6offP.png</img_zone6_disabled_part_off>
-		<img_zone7_part_on>antintrusione/parzializza7on.png</img_zone7_part_on>
-		<img_zone7_part_off>antintrusione/parzializza7off.png</img_zone7_part_off>
-		<img_zone7_disabled_part_on>antintrusione/parzializza7onP.png</img_zone7_disabled_part_on>
-		<img_zone7_disabled_part_off>antintrusione/parzializza7offP.png</img_zone7_disabled_part_off>
-		<img_zone8_part_on>antintrusione/parzializza8on.png</img_zone8_part_on>
-		<img_zone8_part_off>antintrusione/parzializza8off.png</img_zone8_part_off>
-		<img_zone8_disabled_part_on>antintrusione/parzializza8onP.png</img_zone8_disabled_part_on>
-		<img_zone8_disabled_part_off>antintrusione/parzializza8offP.png</img_zone8_disabled_part_off>
-
 		<!-- alarm page -->
 		<img_go_home>home/home.png</img_go_home>
 		<img_alarm_info_hour>home/alarmpopupinfo1.png</img_alarm_info_hour>

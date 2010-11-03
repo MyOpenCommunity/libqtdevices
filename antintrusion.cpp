@@ -446,6 +446,7 @@ void Antintrusion::loadZones(const QDomNode &config_node)
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
+		SkinContext cxt(getTextChild(item, "cid").toInt());
 		int zone_number = getTextChild(item, "where").mid(1).toInt();
 		AntintrusionZone *b = new AntintrusionZone(zone_number, getTextChild(item, "descr"));
 		connect(b, SIGNAL(requestPartialization(int,bool)), dev, SLOT(partializeZone(int,bool)));
