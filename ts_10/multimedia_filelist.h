@@ -51,12 +51,6 @@ public:
 
 	void cleanUp();
 
-public slots:
-	virtual void nextItem();
-	virtual void prevItem();
-	virtual void showPage();
-	virtual void showPageNoReload();
-
 signals:
 	void displayImages(QList<QString> images, unsigned element);
 	void displayVideos(QList<QString> images, unsigned element);
@@ -65,12 +59,8 @@ signals:
 	void displayPdf(QString file);
 #endif
 
-protected:
-	virtual bool browseFiles(const QDir &directory, QList<QFileInfo> &files);
-	virtual int currentPage();
-
 private:
-	static MultimediaFileType fileType(const QFileInfo &file);
+	static MultimediaFileType fileType(const QString &file);
 
 	// returns the files in the current directory with the same type as the "item"
 	// file; on return, type contains the file type and current is the index of the
@@ -79,8 +69,8 @@ private:
 
 private slots:
 	void startPlayback(int item);
-	void unmount();
-	void unmounted(const QString &path);
+	void displayFiles(const QList<TreeBrowser::EntryInfo> &list);
+	void urlListReceived(const QStringList &list);
 
 private:
 	// icons for different file type
@@ -96,6 +86,11 @@ private:
 	SlideshowPage *slideshow;
 	VideoPlayerPage *videoplayer;
 	AudioPlayerPage *audioplayer;
+
+	// last clicked item (for files)
+	int last_clicked;
+	MultimediaFileType last_clicked_type;
+
 #ifdef PDF_EXAMPLE
 	PdfPage *pdfdisplay;
 #endif

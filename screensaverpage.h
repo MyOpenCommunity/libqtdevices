@@ -70,7 +70,7 @@ signals:
 	void itemSelectionChanged(const QString &path, bool selected);
 
 protected:
-	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
+	virtual void addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int id_btn);
 
 private slots:
 	void checkButton(int btn_id);
@@ -101,20 +101,12 @@ public:
 	~SlideshowSelector();
 
 public slots:
-	virtual void nextItem();
-	virtual void prevItem();
-	virtual void showPage();
-	virtual void showPageNoReload();
 	virtual void cleanUp();
-
-protected:
-	virtual bool browseFiles(const QDir &directory, QList<QFileInfo> &files);
-	virtual int currentPage();
 
 private slots:
 	void setSelection(const QString &path, bool selected);
-	void unmount();
-	void unmounted(const QString &path);
+	void displayFiles(const QList<TreeBrowser::EntryInfo> &list);
+	void urlListReceived(const QStringList &list);
 
 private:
 	void saveFileList();

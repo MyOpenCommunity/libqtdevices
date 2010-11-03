@@ -151,7 +151,6 @@ HEADERS += actuators.h \
 	iconwindow.h \
 	imageselectionhandler.h \
 	itemlist.h \
-	itemlistpage.h \
 	items.h \
 	keypad.h \
 	labels.h \
@@ -192,10 +191,13 @@ HEADERS += actuators.h \
 	thermalregulator.h \
 	timescript.h \
 	transitionwidget.h \
+	treebrowser.h \
 	version.h \
 	videodoorentry.h \
 	window.h \
 	windowcontainer.h \
+	xmlclient.h \
+	xmldevice.h \
 	xml_functions.h
 
 SOURCES += actuators.cpp \
@@ -252,7 +254,6 @@ SOURCES += actuators.cpp \
 	iconwindow.cpp \
 	imageselectionhandler.cpp \
 	itemlist.cpp \
-	itemlistpage.cpp \
 	items.cpp \
 	keypad.cpp \
 	labels.cpp \
@@ -293,10 +294,13 @@ SOURCES += actuators.cpp \
 	thermalregulator.cpp \
 	timescript.cpp \
 	transitionwidget.cpp \
+	treebrowser.cpp \
 	version.cpp \
 	videodoorentry.cpp \
 	window.cpp \
 	windowcontainer.cpp \
+	xmlclient.cpp \
+	xmldevice.cpp \
 	xml_functions.cpp
 
 
@@ -307,3 +311,4 @@ CONFIG(examples) {
 
 OTHER_FILES += main.doc
 OTHER_FILES += examples.doc
+

@@ -15,6 +15,7 @@ TEST_ARCH = $$find(QMAKE_CXX,arm)
 isEmpty(TEST_ARCH) {
 	# x86
 	DEFINES += OPENSERVER_ADDR=\\\"btouch_10\\\"
+	DEFINES += XML_SERVER_ADDRESS=\\\"btouch_10\\\"
 	DEFINES += BT_HARDWARE_X11
 }
 else {

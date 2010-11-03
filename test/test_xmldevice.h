@@ -17,43 +17,36 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+#ifndef TESTXMLDEVICE_H
+#define TESTXMLDEVICE_H
+
+#include <QObject>
+
+class XmlDevice;
 
 
-#ifndef IPRADIO_H
-#define IPRADIO_H
-
-#include "scrollablepage.h"
-
-class QDomNode;
-class AudioPlayerPage;
-
-
-/*!
-	\ingroup Multimedia
-	\brief Shows the list of web radios taken from the configuration file.
- */
-class IPRadioPage : public ScrollablePage
+class TestXmlDevice : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-	typedef class ItemList ContentType;
-
-	IPRadioPage(const QDomNode &config_node);
-
-	// returns all the radio URLs
-	QStringList radioUrls();
-
-public slots:
-	virtual void showPage();
-
-private:
-	void loadItems(const QDomNode &config_node);
+	explicit TestXmlDevice();
 
 private slots:
-	void itemIsClicked(int index);
+	void testHeader();
+	void testWelcome();
+	void testServerList();
+	void testServerSelection();
+	void testChdir();
+	void testSelectTrack();
+	void testBrowseUpSuccess();
+	void testBrowseUpFail();
+	void testListItems();
+
+	void testBuildCommand();
+	void testBuildCommandWithArg();
 
 private:
-	AudioPlayerPage *player;
+	XmlDevice *dev;
 };
 
-#endif // IPRADIO_H
+#endif // TESTXMLDEVICE_H

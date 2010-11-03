@@ -53,31 +53,29 @@ void addFilters(QStringList &filters, const char **extensions, int size)
 	}
 }
 
-MultimediaFileListPage::MultimediaFileListPage(const QStringList &filters)
-	: FileSelector(4, "/"), file_filters(filters)
+MultimediaFileListPage::MultimediaFileListPage(const QStringList &filters) :
+	FileSelector(new DirectoryTreeBrowser),
+	file_filters(filters)
 {
+	connect(browser, SIGNAL(listReceived(QList<TreeBrowser::EntryInfo>)), SLOT(displayFiles(QList<TreeBrowser::EntryInfo>)));
+	connect(browser, SIGNAL(allUrlsReceived(QStringList)), SLOT(urlListReceived(QStringList)));
+
 	ItemList *item_list = new ItemList(0, 4);
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 	connect(this, SIGNAL(fileClicked(int)), SLOT(startPlayback(int)));
 
 	connect(this, SIGNAL(Closed()), item_list, SLOT(clear()));
 
-	PageTitleWidget *title_widget = new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT);
-	connect(item_list, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
-
 	NavigationBar *nav_bar = new NavigationBar("eject");
 
-	buildPage(item_list, nav_bar, 0, title_widget);
+	buildPage(item_list, item_list, nav_bar, 0,
+		  new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT));
 	layout()->setContentsMargins(0, 5, 25, 10);
 
-	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
-		SLOT(unmounted(const QString &)));
-	connect(nav_bar, SIGNAL(forwardClick()), SLOT(unmount()));
+	disconnect(nav_bar, SIGNAL(backClick()), 0, 0); // connected by buildPage()
+
+	connect(this, SIGNAL(forwardClick()), SLOT(unmount()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
-	connect(this, SIGNAL(notifyExit()), SIGNAL(Closed()));
-	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
-	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(nextItem()));
-	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 
 	// order here must match the order in enum Type
 	file_icons.append(bt_global::skin->getImage("directory_icon"));
@@ -94,7 +92,7 @@ MultimediaFileListPage::MultimediaFileListPage(const QStringList &filters)
 	slideshow = new SlideshowPage;
 	connect(this, SIGNAL(displayImages(QList<QString>, unsigned)),
 		slideshow, SLOT(displayImages(QList<QString>, unsigned)));
-	connect(slideshow, SIGNAL(Closed()), SLOT(showPageNoReload()));
+	connect(slideshow, SIGNAL(Closed()), SLOT(showPage()));
 
 	videoplayer = new VideoPlayerPage;
 	connect(this, SIGNAL(displayVideos(QList<QString>, unsigned)),
@@ -112,64 +110,61 @@ MultimediaFileListPage::MultimediaFileListPage(const QStringList &filters)
 #endif
 }
 
-bool MultimediaFileListPage::browseFiles(const QDir &directory, QList<QFileInfo> &files)
+void MultimediaFileListPage::displayFiles(const QList<TreeBrowser::EntryInfo> &list)
 {
-	// Create fileslist from files
-	QList<QFileInfo> temp_files_list = directory.entryInfoList(file_filters);
+	QList<TreeBrowser::EntryInfo> filtered = TreeBrowser::filterEntries(list, file_filters);
 
-	if (temp_files_list.empty())
+	// TODO better interface, maybe move clicked handling in subclass
+	setFiles(filtered);
+
+	if (filtered.empty())
 	{
-		qDebug() << "[AUDIO] empty directory: " << directory.absolutePath();
-		return false;
+		qDebug() << "[AUDIO] empty directory";
+		browser->exitDirectory();
+		return;
 	}
-
-	files.clear();
 
 	QList<ItemList::ItemInfo> names_list;
 
-	for (int i = 0; i < temp_files_list.size(); ++i)
+	for (int i = 0; i < filtered.size(); ++i)
 	{
-		const QFileInfo& f = temp_files_list.at(i);
-		if (f.fileName() == "." || f.fileName() == "..")
-			continue;
+		const TreeBrowser::EntryInfo& f = filtered.at(i);
 
 		QStringList icons;
 
-		if (f.isFile())
+		if (!f.is_directory)
 		{
-			MultimediaFileType t = fileType(f);
+			MultimediaFileType t = fileType(f.name);
 			if (t == UNKNOWN)
 				continue;
 
 			icons << file_icons[t];
 			icons << play_file;
 
-			ItemList::ItemInfo info(f.fileName(), QString(), icons);
+			ItemList::ItemInfo info(f.name, QString(), icons);
 
 			names_list.append(info);
-			files.append(f);
 		}
-		else if (f.isDir())
+		else
 		{
 			icons << file_icons[DIRECTORY];
 			icons << browse_directory;
 
-			ItemList::ItemInfo info(f.fileName(), QString(), icons);
+			ItemList::ItemInfo info(f.name, QString(), icons);
 
 			names_list.append(info);
-			files.append(f);
 		}
 	}
 
-	page_content->setList(names_list, displayedPage(directory));
+	page_content->setList(names_list, displayedPage(browser->pathKey()));
 	page_content->showList();
 
-	return true;
+	operationCompleted();
 }
 
-MultimediaFileType MultimediaFileListPage::fileType(const QFileInfo &file)
+MultimediaFileType MultimediaFileListPage::fileType(const QString &file)
 {
-	QString ext = file.suffix().toLower();
+	QString ext = QFileInfo(file).suffix().toLower();
 
 	foreach (const QString &extension, getFileExtensions(IMAGE))
 		if (ext == extension)
@@ -194,20 +189,20 @@ MultimediaFileType MultimediaFileListPage::fileType(const QFileInfo &file)
 
 QList<QString> MultimediaFileListPage::filterFileList(int item, MultimediaFileType &type, int &current)
 {
-	const QList<QFileInfo> &files_list = getFiles();
-	const QFileInfo &current_file = files_list[item];
+	const QList<TreeBrowser::EntryInfo> &files_list = getFiles();
+	const TreeBrowser::EntryInfo &current_file = files_list[item];
 	QList<QString> files;
 
-	type = fileType(current_file);
+	type = fileType(current_file.name);
 	for (int i = 0; i < files_list.size(); ++i)
 	{
-		const QFileInfo& fn = files_list[i];
-		if (fn.isDir() || fileType(fn) != type)
+		const TreeBrowser::EntryInfo& fn = files_list[i];
+		if (fn.is_directory || fileType(fn.name) != type)
 			continue;
 		if (fn == current_file)
 			current = files.size();
 
-		files.append(fn.absoluteFilePath());
+		files.append(fn.name);
 	}
 
 	return files;
@@ -215,70 +210,30 @@ QList<QString> MultimediaFileListPage::filterFileList(int item, MultimediaFileTy
 
 void MultimediaFileListPage::startPlayback(int item)
 {
-	MultimediaFileType type;
-	int current;
-	QList<QString> files = filterFileList(item, type, current);
+	startOperation();
+	QList<QString> files = filterFileList(item, last_clicked_type, last_clicked);
 
-	if (type == IMAGE)
-		emit displayImages(files, current);
-	else if (type == VIDEO)
-		emit displayVideos(files, current);
-	else if (type == AUDIO)
-		emit playAudioFiles(files, current);
+	browser->getAllFileUrls(files);
+}
+
+void MultimediaFileListPage::urlListReceived(const QStringList &files)
+{
+	operationCompleted();
+
+	if (last_clicked_type == IMAGE)
+		emit displayImages(files, last_clicked);
+	else if (last_clicked_type == VIDEO)
+		emit displayVideos(files, last_clicked);
+	else if (last_clicked_type == AUDIO)
+		emit playAudioFiles(files, last_clicked);
 #ifdef PDF_EXAMPLE
 	else if (type == PDF)
 		emit displayPdf(files[current]);
 #endif
 }
 
-int MultimediaFileListPage::currentPage()
-{
-	return page_content->getCurrentPage();
-}
-
-void MultimediaFileListPage::nextItem()
-{
-	page_content->nextItem();
-}
-
-void MultimediaFileListPage::prevItem()
-{
-	page_content->prevItem();
-}
-
-void MultimediaFileListPage::unmounted(const QString &dir)
-{
-	if (dir == getRootPath() && isVisible())
-		emit Closed();
-	setRootPath("");
-}
-
-void MultimediaFileListPage::unmount()
-{
-	MountWatcher::getWatcher().unmount(getRootPath());
-}
-
 void MultimediaFileListPage::cleanUp()
 {
 	page_content->clear();
-}
-
-void MultimediaFileListPage::showPage()
-{
-	if (getRootPath().isEmpty())
-		emit Closed();
-	// do not reload the file list unless it is empty
-	else if (page_content->itemCount() == 0)
-		FileSelector::showPage();
-	else
-		Selector::showPage();
-}
-
-// TODO remove showPageNoReload, and only try to reload the file list if it is empty
-void MultimediaFileListPage::showPageNoReload()
-{
-	if (getRootPath().isEmpty())
-		emit Closed();
-	else
-		Selector::showPage();
+	setFiles(QList<TreeBrowser::EntryInfo>());
 }

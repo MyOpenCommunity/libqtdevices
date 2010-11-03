@@ -32,6 +32,7 @@ class BannAntintrusion;
 class KeypadWithState;
 class AntintrusionZone;
 class QDomNode;
+class QBoxLayout;
 class AlarmPage;
 
 

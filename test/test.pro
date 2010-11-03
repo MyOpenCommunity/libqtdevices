@@ -24,9 +24,12 @@ LIBS+= -L ../../common_files/lib/x86 -lcommon -lssl
 
 VPATH = ..
 
-HEADERS += test_bttime.h \
+HEADERS += xmldevice_tester.h \
+	test_bttime.h \
 	test_imageselection.h \
 	test_scenevodevicescond.h \
+	test_xmlclient.h \
+	test_xmldevice.h \
 	../devices/test/openserver_mock.h \
 	../btbutton.h \
 	../bttime.h \
@@ -42,12 +45,17 @@ HEADERS += test_bttime.h \
 	../scaleconversion.h \
 	../scenevodevicescond.h \
 	../skinmanager.h \
-	../xml_functions.h
+	../xml_functions.h \
+	../xmlclient.h \
+	../xmldevice.h
 
-SOURCES += test_main.cpp \
+SOURCES += xmldevice_tester.cpp \
+	test_main.cpp \
 	test_bttime.cpp \
 	test_imageselection.cpp \
 	test_scenevodevicescond.cpp \
+	test_xmlclient.cpp \
+	test_xmldevice.cpp \
 	../devices/test/openserver_mock.cpp \
 	../btbutton.cpp \
 	../bttime.cpp \
@@ -63,6 +71,8 @@ SOURCES += test_main.cpp \
 	../scenevodevicescond.cpp \
 	../skinmanager.cpp \
 	../xml_functions.cpp \
+	../xmlclient.cpp \
+	../xmldevice.cpp \
 	../definitions.cpp
 
 include(../devices.pri)
