@@ -571,6 +571,7 @@ VCTCallPage::VCTCallPage(VideoDoorEntryDevice *d)
 		QHBoxLayout *video_layout = new QHBoxLayout;
 		video_layout->setContentsMargins(16, 0, 16, 0);
 		video_layout->setSpacing(0);
+		video_layout->addWidget(vct_call->video_box);
 		layout->addLayout(video_layout, 1, 0);
 	}
 	layout->addLayout(bottom, 2, 0, 1, 2, Qt::AlignLeft);
