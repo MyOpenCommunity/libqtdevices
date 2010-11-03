@@ -237,7 +237,6 @@ IntercomCallPage::IntercomCallPage(VideoDoorEntryDevice *d)
 
 	QString call_icon = bt_global::skin->getImage("call");
 	call_accept = new StateButton;
-	call_accept->setOnOff();
 	call_accept->setOffImage(getBostikName(call_icon, "off"));
 	call_accept->setOnImage(getBostikName(call_icon, "on"));
 	connect(call_accept, SIGNAL(clicked()), SLOT(toggleCall()));

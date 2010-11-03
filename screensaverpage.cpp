@@ -175,7 +175,6 @@ void FileList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id
 	// Create the selection button
 	StateButton *sel_button = new StateButton;
 	sel_button->setCheckable(true);
-	sel_button->setOnOff();
 	sel_button->setOffImage(item.icons[SELBUTTON_OFF]);
 	sel_button->setOnImage(item.icons[SELBUTTON_ON]);
 	sel_button->setChecked(metadata["selected"].toBool());

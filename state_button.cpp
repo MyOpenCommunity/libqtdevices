@@ -28,7 +28,6 @@ StateButton::StateButton(QWidget *parent) : BtButton(parent)
 {
 	setStatus(OFF);
 	connect(this, SIGNAL(toggled(bool)), SLOT(setStatus(bool)));
-	is_on_off = false;
 }
 
 void StateButton::setDisabledImage(const QString &path)
@@ -81,10 +80,5 @@ void StateButton::setStatus(StateButton::Status st)
 		enable();
 		break;
 	}
-}
-
-void StateButton::setOnOff()
-{
-	is_on_off = true;
 }
 

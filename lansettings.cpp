@@ -190,7 +190,6 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	main_layout->addLayout(label_layout);
 
 	toggle_btn = new StateButton;
-	toggle_btn->setOnOff();
 	toggle_btn->setOffImage(bt_global::skin->getImage("network_disable"));
 	toggle_btn->setOnImage(bt_global::skin->getImage("network_enable"));
 	lan_status = false; // This value must be keep in sync with the icon of toggle_btn.

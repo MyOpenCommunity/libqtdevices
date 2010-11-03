@@ -61,7 +61,6 @@ namespace
 		QVBoxLayout *button_layout = new QVBoxLayout;
 		button->setOnImage(bt_global::skin->getImage(on_image));
 		button->setOffImage(bt_global::skin->getImage(off_image));
-		button->setOnOff();
 		QObject::connect(button, SIGNAL(clicked()), obj, slot);
 		button_layout->addWidget(button, 0, Qt::AlignHCenter);
 
