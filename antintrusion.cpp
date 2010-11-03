@@ -125,34 +125,33 @@ void AlarmList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int i
 AlarmListPage::AlarmListPage()
 {
 	QWidget *header = new QWidget;
-	QHBoxLayout *layout = new QHBoxLayout(header);
+	QHBoxLayout *header_layout = new QHBoxLayout(header);
 
 	QLabel *label_type = new QLabel(tr("Alarm type"));
 	label_type->setAlignment(Qt::AlignHCenter);
-	layout->addWidget(label_type, 1);
+	header_layout->addWidget(label_type, 1);
 
 	QLabel *label_zone = new QLabel(tr("Zone"));
 	label_zone->setAlignment(Qt::AlignHCenter);
-	layout->addWidget(label_zone, 1);
+	header_layout->addWidget(label_zone, 1);
 
 	QLabel *label_date = new QLabel(tr("Date & Hour"));
 	label_date->setAlignment(Qt::AlignLeft);
-	layout->addWidget(label_date, 1);
+	header_layout->addWidget(label_date, 1);
 
 	PageTitleWidget *title = new PageTitleWidget(tr("Alarms"), SMALL_TITLE_HEIGHT);
-	NavigationBar *nav_bar = new NavigationBar;
 	AlarmList *item_list = new AlarmList(0, 4);
 
-	connect(nav_bar, SIGNAL(upClick()), item_list, SLOT(prevItem()));
-	connect(nav_bar, SIGNAL(downClick()), item_list, SLOT(nextItem()));
-
-	connect(item_list, SIGNAL(contentScrolled(int, int)), title, SLOT(setCurrentPage(int, int)));
-	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+	QWidget *main_widget = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(main_widget);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
+	main_layout->addWidget(header);
+	main_layout->addWidget(item_list, 1);
 
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(removeAlarmItem(int)));
 
-	buildPage(item_list, nav_bar, header, title);
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	buildPage(main_widget, item_list, new NavigationBar, 0, title);
 	need_update = false;
 }
 
@@ -175,7 +174,7 @@ void AlarmListPage::showPage()
 	if (need_update)
 		page_content->showList();
 	need_update = false;
-	Page::showPage();
+	ScrollablePage::showPage();
 }
 
 int AlarmListPage::alarmId(int alarm_type, int zone)

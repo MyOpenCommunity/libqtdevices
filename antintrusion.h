@@ -61,7 +61,7 @@ public:
 /**
  * The page that show the list of the alarms
  */
-class AlarmListPage : public Page
+class AlarmListPage : public ScrollablePage
 {
 Q_OBJECT
 public:
