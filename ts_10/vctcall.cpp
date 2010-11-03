@@ -227,7 +227,6 @@ VCTCall::VCTCall(VideoDoorEntryDevice *d, FormatVideo f)
 
 	QString call_icon = bt_global::skin->getImage("call");
 	call_accept = new StateButton;
-	call_accept->setOnOff();
 	call_accept->setOffImage(getBostikName(call_icon, "off"));
 	call_accept->setOnImage(getBostikName(call_icon, "on"));
 	connect(call_accept, SIGNAL(clicked()), SLOT(toggleCall()));
@@ -541,7 +540,10 @@ VCTCallPage::VCTCallPage(VideoDoorEntryDevice *d)
 	sidebar->addWidget(vct_call->image_control, 0, Qt::AlignCenter);
 	sidebar->addWidget(vct_call->setup_vct, 0, Qt::AlignCenter);
 
-	vct_call->video_box->setFixedSize(352, 240);
+	if (dev->vctMode() == VideoDoorEntryDevice::SCS_MODE)
+		vct_call->video_box->setFixedSize(352, 240);
+	else
+		vct_call->video_box->setFixedSize(320, 240);
 
 	BtButton *back = new BtButton(bt_global::skin->getImage("back"));
 	connect(back, SIGNAL(clicked()), SLOT(backClicked()));
@@ -561,7 +563,16 @@ VCTCallPage::VCTCallPage(VideoDoorEntryDevice *d)
 	QGridLayout *layout = new QGridLayout(this);
 	layout->addItem(new QSpacerItem(0, 0, QSizePolicy::Preferred, QSizePolicy::Expanding), 0, 0, 1, 1);
 	layout->addLayout(sidebar, 0, 1, 2, 1);
-	layout->addWidget(vct_call->video_box, 1, 0);
+
+	if (dev->vctMode() == VideoDoorEntryDevice::SCS_MODE)
+		layout->addWidget(vct_call->video_box, 1, 0);
+	else
+	{
+		QHBoxLayout *video_layout = new QHBoxLayout;
+		video_layout->setContentsMargins(16, 0, 16, 0);
+		video_layout->setSpacing(0);
+		layout->addLayout(video_layout, 1, 0);
+	}
 	layout->addLayout(bottom, 2, 0, 1, 2, Qt::AlignLeft);
 	layout->setContentsMargins(20, 0, 0, 20);
 	layout->setSpacing(10);

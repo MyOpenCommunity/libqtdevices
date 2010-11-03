@@ -445,7 +445,6 @@ BannOnTray::BannOnTray(const QString &label, const QString &icon_on, const QStri
 	initBanner(icon_off, QString(), label);
 	setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 
-	left_button->setOnOff();
 	left_button->setOffImage(bt_global::skin->getImage(icon_off));
 	left_button->setOnImage(bt_global::skin->getImage(icon_on));
 	left_button->setStatus(status);

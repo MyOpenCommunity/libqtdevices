@@ -611,7 +611,6 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 	{
 		StateButton *toggle = new StateButton;
 		toggle->setCheckable(true);
-		toggle->setOnOff();
 		toggle->setOffImage(bt_global::skin->getImage("day_off"));
 		toggle->setOnImage(bt_global::skin->getImage("day_on"));
 		toggle->setStatus(active[i]);

@@ -52,8 +52,8 @@ QString AntintrusionZone::zoneDescription() const
 
 void AntintrusionZone::leftClicked()
 {
-		emit requestPartialization(zone_number, !partialized);
-		setPartialization(!partialized);
+	emit requestPartialization(zone_number, !partialized);
+	setPartialization(!partialized);
 }
 
 void AntintrusionZone::enablePartialization(bool enabled)

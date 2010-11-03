@@ -161,6 +161,10 @@ private:
 };
 
 
+/*!
+	\ingroup Core
+	\brief UPnP navigation for FileSelector
+*/
 class UPnpClientBrowser : public TreeBrowser
 {
 Q_OBJECT

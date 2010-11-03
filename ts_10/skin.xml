@@ -1380,8 +1380,6 @@ AlarmList > QWidget {  background-image: url(); }
 	<item>
 		<cid>13000</cid>
 		<img_partial>antintrusione/parzializzazioneon.png</img_partial>
-		<img_alarm_partial_on>antintrusione/parzializzaonp.png</img_alarm_partial_on>
-		<img_alarm_partial_off>antintrusione/parzializzaoffp.png</img_alarm_partial_off>
 		<img_alarm_state_off>antintrusione/imgantifurtodis.png</img_alarm_state_off>
 		<img_alarm_state_on>antintrusione/imgantifurtoins.png</img_alarm_state_on>
 		<img_zone>antintrusione/imgamb.png</img_zone>

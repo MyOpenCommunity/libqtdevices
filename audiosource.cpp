@@ -38,7 +38,6 @@ AudioSource::AudioSource(const QString &_area, SourceDevice *_dev, Page *_detail
 	BannerNew(0)
 {
 	left_button = new StateButton;
-	left_button->setOnOff();
 	center_left_button = new BtButton;
 	center_right_button = new BtButton;
 	right_button = new BtButton;

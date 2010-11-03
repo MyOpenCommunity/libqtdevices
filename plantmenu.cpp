@@ -739,7 +739,6 @@ void PageFancoil::createFancoilButtons()
 		QString path = bt_global::skin->getImage(QString("fan_%1_off").arg(id + 1));
 		QString path_pressed = bt_global::skin->getImage(QString("fan_%1_on").arg(id + 1));
 		StateButton *btn = new StateButton(this);
-		btn->setOnOff();
 		btn->setOffImage(path);
 		btn->setOnImage(path_pressed);
 		btn->setCheckable(true);
