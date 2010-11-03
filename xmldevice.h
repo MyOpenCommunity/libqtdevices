@@ -129,7 +129,8 @@ struct FilesystemEntry
 		\brief Creates a new FilesystemEntry with the given name \a and the type
 		\a t.
 	*/
-	FilesystemEntry(const QString n, FilesystemEntry::Type t) : name(n), type(t) {}
+	FilesystemEntry(const QString n, FilesystemEntry::Type t, const QString &entry_url = QString())
+		: name(n), type(t), url(entry_url) {}
 
 	/*!
 		\brief The name of the entry.
@@ -140,6 +141,12 @@ struct FilesystemEntry
 		\brief The type of the entry.
 	*/
 	FilesystemEntry::Type type;
+
+	/*!
+		\brief The url of the entry
+		\note It's used only for FilesystenEntry::TRACK entries.
+	*/
+	QString url;
 };
 
 /*!

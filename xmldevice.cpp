@@ -135,8 +135,16 @@ namespace
 	{
 		FilesystemEntries entries;
 
-		foreach (const QDomNode &item, getChildren(node, "name"))
-			entries << FilesystemEntry(item.toElement().text(), item_type);
+		if (item_type == FilesystemEntry::DIRECTORY)
+		{
+			foreach (const QDomNode &item, getChildren(node, "name"))
+				entries << FilesystemEntry(item.toElement().text(), item_type);
+		}
+		else if (item_type == FilesystemEntry::TRACK)
+		{
+			foreach (const QDomNode &item, getChildren(node, "file"))
+				entries << FilesystemEntry(getElement(item, "DIDL-Lite/item/dc:title").text(), item_type, getElement(item, "DIDL-Lite/item/res").text());
+		}
 
 		return entries;
 	}
@@ -171,7 +179,7 @@ XmlDevice::XmlDevice()
 	xml_handlers["AW26C1"] = handle_upnp_server_list;
 	xml_handlers["AW26C2"] = handle_selection;
 	xml_handlers["AW26C7"] = handle_browseup;
-	xml_handlers["AW26C6"] = handle_listitems;
+	xml_handlers["AW26C15"] = handle_listitems;
 }
 
 XmlDevice::~XmlDevice()
@@ -206,7 +214,7 @@ void XmlDevice::browseUp()
 
 void XmlDevice::listItems(int max_results)
 {
-	sendCommand("CW26C6", QString::number(max_results));
+	sendCommand("RW26C15", QString::number(max_results));
 }
 
 void XmlDevice::handleData(const QString &data)
