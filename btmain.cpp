@@ -83,18 +83,6 @@
 #define TS_NUM_BASE_ADDRESS 0x700
 #endif
 
-/*!
-	\defgroup Core Core
-
-	Contains constants, functions and classes that are not related to a specific
-	section.
-*/
-
-/*!
-	\namespace bt_global
-	\brief Encapsulates all the global objects.
-*/
-
 
 namespace
 {

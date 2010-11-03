@@ -79,7 +79,6 @@ CheckableBanner::CheckableBanner(const QString &text, const QString &right_icon)
 #ifdef LAYOUT_TS_10
 	layout()->setContentsMargins(0, 0, 0, 10);
 #endif
-	left_button->setOnOff();
 	left_button->setCheckable(true);
 	left_button->setOffImage(bt_global::skin->getImage("unchecked"));
 	left_button->setOnImage(bt_global::skin->getImage("checked"));

@@ -57,22 +57,42 @@
 	- a network-connected touchscreen
 	- BTicino common library for your architecture
 
-	Use the same build procedure documented for ARM cross-compilation (using the correct Qt embedded build and toolchain).
+	Before doing that, you have to build Qt. Download an embedded version (at least the \c 4.5.0)
+	and configure it, running the configure:
+	\code
+	./configure -xplatform qws/linux-x86-g++ -embedded x86  -no-qt3support -prefix <your_qt_installation_path>
+	\endcode
+
+	After that you need to compile:
+	\code
+	make
+	\endcode
+
+	and install:
+	\code
+	sudo make install
+	\endcode
+
+	To compile the BTouch, you need to execute:
+	\code
+	<your_qt_installation_path>/bin/qmake
+	\endcode
+	in the subdir \c ts_10 of BTouch code and then launch \c make to build
+	the executable.
 
 	The GUI needs to connect to an OpenServer, you need to do:
 	- enable external connections in the configuration file (\c abilita_ip
 	node, under \c sicurezza)
 	- change the address of the OpenServer used by BTouch, from the default \c 127.0.0.1 to
-	the right one. When building for x86, you can simply add a line like this to your
-	\c /etc/hosts:
-	\code
+	the right one. When building for x86, simply add a line like this to your \c /etc/hosts:
+	\verbatim
 	<your_address>       <touchscreen_name>
-	\endcode
+	\endverbatim
 	Where \c \<touchscreen_name> is \c btouch_10 for the touchscreen 10'' and
-	btouch_3_5 for the 3.5 one.
+	btouch_3_5 for the 3.5'' one.
 
 	Before running BTouch, launch qvfb and select the appropriate resolution, that
-	is 240x320 for the touchscreen 3.5'' and 800x480 for the 10'' one.
+	is 240x320 for the touchscreen 3.5'' and 800x480 for the 10''.
 
 	To run BTouch use "LD_LIBRARY_PATH=/path/to/libcommon ./BTouch.x86 -qws"; you should see the interface displayed inside qvfb.
 
@@ -87,6 +107,9 @@
 	- state of videocalls can be controlled, but audio/video is not shown
 	- the system should allow navigating an USB key from the multimedia section
 	  but will not mount/umount it
+
+	Be aware that the touchscreens use a stripped down version of Qt (to minimize
+	the disk space) so some classes or widgets, like QComboBox, are not present.
 */
 
 /*!

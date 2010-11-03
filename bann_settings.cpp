@@ -47,7 +47,6 @@ bannAlarmClock::bannAlarmClock(int item_id, int hour, int minute, QString icon_o
 {
 	initBanner(icon_on, icon_label, text);
 
-	left_button->setOnOff();
 	left_button->setOnImage(icon_on);
 	left_button->setOffImage(icon_off);
 	left_button->setStatus(enabled == 1);
@@ -110,7 +109,6 @@ bannAlarmClockIcon::bannAlarmClockIcon(int item_id, int hour, int minute, QStrin
 	initBanner(icon_on, icon_state, icon_edit, enabled ? ON : OFF, text);
 
 	left_button = static_cast<StateButton *>(Bann2Buttons::left_button);
-	left_button->setOnOff();
 	left_button->setOnImage(icon_off);
 	left_button->setOffImage(icon_on);
 	left_button->setStatus(enabled == 1);
@@ -186,7 +184,6 @@ impBeep::impBeep(int _item_id, bool enabled, QString icon_on, QString icon_off, 
 {
 	initBanner(icon_on, QString(), text);
 
-	left_button->setOnOff();
 	left_button->setOffImage(icon_off);
 	left_button->setOnImage(icon_on);
 	left_button->setStatus(enabled);
@@ -438,7 +435,6 @@ BannPassword::BannPassword(QString icon_on, QString icon_off, QString icon_label
 {
 	initBanner(icon_off, icon_label, descr);
 
-	left_button->setOnOff();
 	left_button->setOffImage(icon_off);
 	left_button->setOnImage(icon_on);
 	left_button->setStatus(attiva);

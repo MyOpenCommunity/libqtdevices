@@ -81,11 +81,12 @@ AntintrusionZone::AntintrusionZone(const QString &name, const QString &_where) :
 {
 	where = _where;
 
+	QString on = bt_global::skin->getImage("partial_on");
+	QString off = bt_global::skin->getImage("partial_off");
 	QString zone = getZoneName(bt_global::skin->getImage("zone"), where);
-	initBanner(bt_global::skin->getImage("partial_on"), bt_global::skin->getImage("partial_off"),
-		   PARTIAL_OFF, name);
-	left_disabled_on = bt_global::skin->getImage("alarm_partial_on");
-	left_disabled_off = bt_global::skin->getImage("alarm_partial_off");
+	initBanner(on, off, PARTIAL_OFF, name);
+	left_disabled_on = getPressName(on);
+	left_disabled_off = getPressName(off);
 	is_on = false;
 	is_partial = true;
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleParzializza()));
