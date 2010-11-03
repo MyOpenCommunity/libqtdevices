@@ -516,7 +516,6 @@ PasswordPage::PasswordPage(const QDomNode &config_node)
 	StateButton *left_button = new StateButton;
 	BtButton *right_button = new BtButton(bt_global::skin->getImage("edit"));
 
-	left_button->setOnOff();
 	left_button->setOffImage(bt_global::skin->getImage("state_off"));
 	left_button->setOnImage(bt_global::skin->getImage("state_on"));
 	left_button->setStatus(active);
