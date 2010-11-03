@@ -29,24 +29,54 @@
 class QTimer;
 
 
-/*
- * This class manages the antintrusion system.
- */
+/*!
+	\ingroup Antintrusion
+	\brief Manages the burglar alarms system.
+
+	Can be used to activate/deactivate the system calling toggleActivation(),
+	receive alarms for standard zones, auxiliaries or special zones.
+	Standard zones can be partialized or inserted calling partializeZone() followed
+	by setPartialization().
+
+	\section AntintrusionDevice-dimensions Dimensions
+	\startdim
+	\dim{DIM_SYSTEM_INSERTED,bool,,System status\, true if the alarm is on.}
+	\dim{DIM_ZONE_PARTIALIZED,int,1 - 8, Notify that the zone has been partialized.}
+	\dim{DIM_ZONE_INSERTED,int,1 - 8, Notify that the zone has been inserted.}
+	\dim{DIM_INTRUSION_ALARM,int,1 - 8, An intrusion alarm has triggered on the zone.}
+	\dim{DIM_TAMPER_ALARM,int,0 - 16,A tamper alarm has triggered on the zone.}
+	\dim{DIM_ANTIPANIC_ALARM,int,9,An antipanic alarm has triggered on the zone.}
+	\dim{DIM_TECHNICAL_ALARM,int,1 - 16, A technical alarm has triggered on the zone.}
+	\dim{DIM_RESET_TECHNICAL_ALARM,int,1 - 16, Reset a previously triggered technical alarm.}
+	\enddim
+*/
 class AntintrusionDevice : public device
 {
 Q_OBJECT
 public:
 	AntintrusionDevice(int openserver_id = 0);
 
-	// Call this method to activate/disactivate the antintrusion system
+	/*!
+		\brief Activate/disactivate the system.
+
+		Requires the \a password of the system.
+	*/
 	void toggleActivation(const QString &password);
 
-	// This method set the antintrusion system in order to exclude some zones
-	// from the "list of zones watched"
+	/*!
+		\brief Activate the partialization of the zones.
+
+		Requires the \a password of the system.
+
+		\sa partializeZone();
+	*/
 	void setPartialization(const QString &password);
 
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
+	/*!
+		\refdim{AntintrusionDevice}
+	*/
 	enum Type
 	{
 		DIM_SYSTEM_INSERTED,
@@ -62,9 +92,14 @@ public:
 	virtual void init() { requestStatus(); }
 
 public slots:
-	// Partialize or activate a zone (the zones are numbered from 1 to 8)
+	/*!
+		\brief Partialize or activate the zone \a num_zone.
+	*/
 	void partializeZone(int num_zone, bool partialize);
 
+	/*!
+		\brief Request the status of the system and its zones.
+	*/
 	void requestStatus();
 
 private:

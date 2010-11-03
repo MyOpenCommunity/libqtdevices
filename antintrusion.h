@@ -40,14 +40,15 @@ class AlarmPage;
 /*!
 	\defgroup Antintrusion Antintrusion
 
-	Allows the user to control the anti-intrusion system, enabling or disabling
-	the alarm, partializing or inserting the zones and displaying the alarm history.
+
+	The Antintrusion class shows the standard zones and allows the user to control the
+	plant and partialize or insert a zone.
+
+	When a new alarm is triggered, the AlarmPage class is showed as popup and the
+	alarm is added to a list, displayed by the AlarmListPage class.
 */
 
 
-/**
- * The content of the AlarmListPage
- */
 class AlarmList : public ItemList
 {
 Q_OBJECT
@@ -58,9 +59,10 @@ public:
 };
 
 
-/**
- * The page that show the list of the alarms
- */
+/*!
+	\ingroup Antintrusion
+	\brief Shows the list of the alarms triggered.
+*/
 class AlarmListPage : public ScrollablePage
 {
 Q_OBJECT
@@ -83,9 +85,10 @@ private:
 };
 
 
-/**
- * This class manages the alarms
- */
+/*!
+	\ingroup Antintrusion
+	\brief Manages the list of the alarm triggered and the popup pages.
+*/
 class AlarmManager : public QObject
 {
 Q_OBJECT
@@ -117,9 +120,15 @@ private:
 };
 
 
-/**
- * The main page of the antintrusion section
- */
+
+/*!
+	\ingroup Antintrusion
+	\brief The main page of the burglar alarms system.
+
+	It shows the list of the standard zones, allows the user to activate / disactivate
+	the plant, partialize / insert a zone and manages the list of the alarms
+	triggered.
+*/
 class Antintrusion : public BannerPage
 {
 Q_OBJECT

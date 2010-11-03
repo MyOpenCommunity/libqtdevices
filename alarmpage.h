@@ -28,6 +28,10 @@ class QLabel;
 class QDateTime;
 
 
+/*!
+	\ingroup Antintrusion
+	\brief The popup page that represents a burglar alarm.
+*/
 class AlarmPage : public Page
 {
 Q_OBJECT

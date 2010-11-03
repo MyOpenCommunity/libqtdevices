@@ -30,9 +30,10 @@ class AntintrusionDevice;
 class QLabel;
 
 
-/**
- * A banner for a zone of the antintrusion system
- */
+/*!
+	\ingroup Antintrusion
+	\brief Represents a zone of the antintrusion system.
+*/
 class AntintrusionZone : public Bann2Buttons
 {
 Q_OBJECT
@@ -59,9 +60,10 @@ private:
 };
 
 
-/**
- * The banner used to controls the system of antintrusion
- */
+/*!
+	\ingroup Antintrusion
+	\brief Controls the antintrusion system.
+*/
 class BannAntintrusion : public Bann2Buttons
 {
 Q_OBJECT
