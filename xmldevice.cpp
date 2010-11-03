@@ -287,7 +287,7 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 		}
 	}
 
-	response[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_LIST, XmlError::PARSE));
+	response[XmlResponses::INVALID].setValue(XmlError(XmlResponses::INVALID, XmlError::PARSE));
 	return response;
 }
 
