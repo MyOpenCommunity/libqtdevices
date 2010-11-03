@@ -27,6 +27,8 @@
 #include <QFile>
 #include <QFontInfo>
 
+#define FONT_DEBUG 0
+
 
 namespace
 {
@@ -41,6 +43,7 @@ namespace
 		return text.toInt();
 	}
 }
+
 
 FontManager::FontManager(QString font_file)
 {
@@ -69,7 +72,7 @@ FontManager::FontManager(QString font_file)
 				f.setFamily(family);
 				f.setPointSize(size);
 				f.setWeight(weight);
-#if DEBUG
+#if FONT_DEBUG
 				qDebug() << qPrintable(QString("Font [requested] -> Family:%1 Point:%2 Pixel:%3 Weight:%4").arg(family).
 										arg(size).arg(f.pixelSize()).arg(weight));
 

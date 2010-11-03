@@ -87,7 +87,8 @@ void Bann2Buttons::createBanner()
 	QGridLayout *l = new QGridLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 #ifdef LAYOUT_TS_10
-	l->setSpacing(5);
+	l->setHorizontalSpacing(5);
+	l->setVerticalSpacing(0);
 #else
 	l->setSpacing(0);
 #endif
@@ -444,7 +445,6 @@ BannOnTray::BannOnTray(const QString &label, const QString &icon_on, const QStri
 	initBanner(icon_off, QString(), label);
 	setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 
-	left_button->setOnOff();
 	left_button->setOffImage(bt_global::skin->getImage(icon_off));
 	left_button->setOnImage(bt_global::skin->getImage(icon_on));
 	left_button->setStatus(status);

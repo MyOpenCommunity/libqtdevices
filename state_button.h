@@ -83,17 +83,6 @@ using BtButton::setImage;
 	*/
 	Status getStatus() { return status; }
 
-	/*!
-		\brief Set the button as a 'on-off button'.
-
-		This means that the button is almost a toggle button, but instead of changes
-		status when the button is pressed down, changes its status manually, calling
-		the setStatus() method.
-
-		In this case, you can retrieve the current status using getStatus().
-	*/
-	void setOnOff();
-
 public slots:
 	/*!
 		\brief Sets the status of the button.
@@ -124,7 +113,6 @@ private:
 private:
 	QPixmap disabled_pixmap, on_pixmap, pressed_on_pixmap, off_pixmap, pressed_off_pixmap;
 	Status status;
-	bool is_on_off; // a flag that mark if the button is a on-off button
 };
 
 #endif // STATE_BUTTON_H
