@@ -193,7 +193,7 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		{
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM))
 			{
-				FileSelector *browser = new MultimediaFileListPage(getFileFilter(PDF));
+				FileSelector *browser = new MultimediaFileListPage(DIRECTORY | PDF));
 				FileSystemBrowseButton *t = new FileSystemBrowseButton(MountWatcher::getWatcher(), browser,
 										       MOUNT_USB, descr,
 										       bt_global::skin->getImage("mounted"),
