@@ -50,6 +50,7 @@ namespace XmlResponses
 	enum Type
 	{
 		INVALID = -1,
+		ACK,
 		WELCOME,
 		SERVER_LIST,
 		SERVER_SELECTION,
@@ -128,7 +129,8 @@ struct FilesystemEntry
 		\brief Creates a new FilesystemEntry with the given name \a and the type
 		\a t.
 	*/
-	FilesystemEntry(const QString n, FilesystemEntry::Type t) : name(n), type(t) {}
+	FilesystemEntry(const QString n, FilesystemEntry::Type t, const QString &entry_url = QString())
+		: name(n), type(t), url(entry_url) {}
 
 	/*!
 		\brief The name of the entry.
@@ -139,6 +141,12 @@ struct FilesystemEntry
 		\brief The type of the entry.
 	*/
 	FilesystemEntry::Type type;
+
+	/*!
+		\brief The url of the entry
+		\note It's used only for FilesystenEntry::TRACK entries.
+	*/
+	QString url;
 };
 
 /*!
@@ -265,6 +273,7 @@ private:
 	void select(const QString &name);
 	XmlResponse parseXml(const QString &xml);
 	bool parseHeader(const QDomNode &header_node);
+	bool parseAck(const QDomNode &ack);
 	QString buildCommand(const QString &command, const QString &argument = QString());
 
 	XmlClient *xml_client;
@@ -274,7 +283,7 @@ private:
 
 	bool welcome_received;
 	QString sid;
-	QString pid;
+	int pid;
 	QString local_addr;
 	QString server_addr;
 };
