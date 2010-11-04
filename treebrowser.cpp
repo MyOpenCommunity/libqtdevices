@@ -137,6 +137,9 @@ UPnpClientBrowser::UPnpClientBrowser()
 {
 	dev = new XmlDevice();
 	level = 0;
+
+	connect(dev, SIGNAL(responseReceived(XmlResponse)), SLOT(handleResponse(XmlResponse)));
+	connect(dev, SIGNAL(error(int,int)), SLOT(handleError(int,int)));
 }
 
 UPnpClientBrowser::~UPnpClientBrowser()
