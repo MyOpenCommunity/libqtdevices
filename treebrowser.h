@@ -114,11 +114,6 @@ protected:
 	TreeBrowser() : filter_mask(ALL) {}
 
 	/*!
-		\brief Returns a MultimediaFileType recognized using \a pattern.
-	*/
-	virtual MultimediaFileType fileType(const QString &pattern) = 0;
-
-	/*!
 		\brief Mask to filter file listing results.
 	*/
 	int filter_mask;
@@ -153,7 +148,6 @@ public:
 	virtual void getFileList();
 	virtual bool isRoot();
 	virtual QString pathKey();
-	virtual MultimediaFileType fileType(const QString &pattern);
 
 private:
 	int level;
@@ -178,7 +172,6 @@ public:
 	virtual void getFileList();
 	virtual bool isRoot();
 	virtual QString pathKey();
-	virtual MultimediaFileType fileType(const QString &pattern);
 
 private slots:
 	void handleResponse(const XmlResponse &response);

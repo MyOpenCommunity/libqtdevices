@@ -138,13 +138,25 @@ namespace
 
 		QDomNode directories = getChildWithName(node, "directories");
 		foreach (const QDomNode &item, getChildren(directories, "name"))
-			entries << FilesystemEntry(item.toElement().text(), "directory", QString());
+			entries << FilesystemEntry(item.toElement().text(), DIRECTORY, QString());
 
 		QDomNode tracks = getChildWithName(node, "tracks");
 		foreach (const QDomNode &item, getChildren(tracks, "file"))
 		{
+			MultimediaFileType file_type = UNKNOWN;
+			QString upnp_class = getElement(item,"DIDL-Lite/item/upnp:class").text();
+
+			if (upnp_class.contains("audioItem"))
+				file_type = AUDIO;
+			else if (upnp_class.contains("videoItem"))
+				file_type = VIDEO;
+			else if (upnp_class.contains("imageItem"))
+				file_type = IMAGE;
+			else
+				file_type = UNKNOWN;
+
 			entries << FilesystemEntry(getElement(item, "DIDL-Lite/item/dc:title").text(),
-									   getElement(item,"DIDL-Lite/item/upnp:class").text(),
+									   file_type,
 									   getElement(item, "DIDL-Lite/item/res").text());
 		}
 
