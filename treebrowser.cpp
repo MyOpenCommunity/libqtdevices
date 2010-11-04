@@ -87,19 +87,6 @@ void DirectoryTreeBrowser::exitDirectory()
 	emit directoryChanged();
 }
 
-void DirectoryTreeBrowser::getFileUrl(const QString &file)
-{
-	QFileInfo path(current_dir, file);
-
-	if (!path.exists())
-	{
-		emit urlRetrieveError();
-		return;
-	}
-
-	emit urlReceived(path.absoluteFilePath());
-}
-
 void DirectoryTreeBrowser::getFileList()
 {
 	QList<QFileInfo> files_list = current_dir.entryInfoList();
@@ -183,12 +170,6 @@ void UPnpClientBrowser::exitDirectory()
 		dev->browseUp();
 }
 
-void UPnpClientBrowser::getFileUrl(const QString &file)
-{
-	if (!file.isEmpty())
-		dev->selectFile(file);
-}
-
 void UPnpClientBrowser::getFileList()
 {
 	dev->listItems(-1);
@@ -241,10 +222,6 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 			emit directoryChanged();
 			break;
 		case XmlResponses::TRACK_SELECTION:
-			{
-				QString url = response[key].toString();
-				emit urlReceived(url);
-			}
 			break;
 		case XmlResponses::BROWSE_UP:
 			--level;
@@ -284,7 +261,6 @@ void UPnpClientBrowser::handleError(int response, int code)
 		emit directoryChangeError();
 		break;
 	case XmlResponses::TRACK_SELECTION:
-		emit urlRetrieveError();
 		break;
 	default:
 		Q_ASSERT_X(false, "UPnpClientBrowser::handleResponse", "Unhandled resposne.");
