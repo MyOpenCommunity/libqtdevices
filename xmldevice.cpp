@@ -131,36 +131,51 @@ namespace
 		return result;
 	}
 
-	FilesystemEntries getFilesystemEntries(const QDomNode &node, FilesystemEntry::Type item_type)
-	{
-		FilesystemEntries entries;
-
-		if (item_type == FilesystemEntry::DIRECTORY)
-		{
-			foreach (const QDomNode &item, getChildren(node, "name"))
-				entries << FilesystemEntry(item.toElement().text(), item_type);
-		}
-		else if (item_type == FilesystemEntry::TRACK)
-		{
-			foreach (const QDomNode &item, getChildren(node, "file"))
-				entries << FilesystemEntry(getElement(item, "DIDL-Lite/item/dc:title").text(), item_type, getElement(item, "DIDL-Lite/item/res").text());
-		}
-
-		return entries;
-	}
-
 	QHash<int,QVariant> handle_listitems(const QDomNode &node)
 	{
 		QHash<int,QVariant> result;
 		FilesystemEntries entries;
 
-		entries << getFilesystemEntries(getChildWithName(node, "directories"), FilesystemEntry::DIRECTORY);
-		entries << getFilesystemEntries(getChildWithName(node, "tracks"), FilesystemEntry::TRACK);
+		QDomNode directories = getChildWithName(node, "directories");
+		foreach (const QDomNode &item, getChildren(directories, "name"))
+			entries << FilesystemEntry(item.toElement().text(), "directory", QString());
+
+		QDomNode tracks = getChildWithName(node, "tracks");
+		foreach (const QDomNode &item, getChildren(tracks, "file"))
+		{
+			entries << FilesystemEntry(getElement(item, "DIDL-Lite/item/dc:title").text(),
+									   getElement(item,"DIDL-Lite/item/upnp:class").text(),
+									   getElement(item, "DIDL-Lite/item/res").text());
+		}
 
 		QVariant value;
 		value.setValue(entries);
 		result[XmlResponses::LIST_ITEMS] = value;
 
+		return result;
+	}
+
+	QString uuidhex(uint data, int digits)
+	{
+		return QString::number(data, 16).rightJustified(digits, QLatin1Char('0'));
+	}
+
+	// Workaround for the lack of Quuid::toString()
+	QString uuid2str(const QUuid &uuid)
+	{
+		QString result;
+		QChar dash = QLatin1Char('-');
+		result = uuidhex(uuid.data1,8);
+		result += dash;
+		result += uuidhex(uuid.data2,4);
+		result += dash;
+		result += uuidhex(uuid.data3,4);
+		result += dash;
+		result += uuidhex(uuid.data4[0],2);
+		result += uuidhex(uuid.data4[1],2);
+		result += dash;
+		for (int i = 2; i < 8; i++)
+			result += uuidhex(uuid.data4[i],2);
 		return result;
 	}
 }
@@ -350,7 +365,7 @@ bool XmlDevice::parseAck(const QDomNode &ack)
 	if (rc == "200")
 	{
 		pid = 0;
-		sid = QUuid::createUuid().toString();
+		sid = uuid2str(QUuid::createUuid());
 	}
 
 	return true;

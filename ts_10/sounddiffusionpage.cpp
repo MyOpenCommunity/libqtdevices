@@ -164,7 +164,7 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 				if (!s.details)
 					s.details = new MultimediaSectionPage(getPageNode(MULTIMEDIA),
 									      MultimediaSectionPage::ITEMS_AUDIO,
-									      new MultimediaFileListPage(getFileFilter(AUDIO)));
+										  new MultimediaFileListPage(DIRECTORY | AUDIO));
 
 				VirtualSourceDevice *dev = bt_global::add_device_to_cache(new VirtualSourceDevice(s.where));
 

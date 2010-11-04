@@ -60,7 +60,6 @@ FileSelector::FileSelector(TreeBrowser *_browser)
 	// probably the safest choice
 	connect(browser, SIGNAL(directoryChangeError()), SIGNAL(Closed()));
 	connect(browser, SIGNAL(urlRetrieveError()), SIGNAL(Closed()));
-	connect(browser, SIGNAL(allUrlsRetrieveError()), SIGNAL(Closed()));
 	connect(browser, SIGNAL(listRetrieveError()), SIGNAL(Closed()));
 
 #ifdef BT_HARDWARE_TS_10
@@ -112,7 +111,7 @@ void FileSelector::itemIsClicked(int item)
 	const TreeBrowser::EntryInfo& clicked_element = files_list[item];
 	qDebug() << "[AUDIO] FileSelector::itemIsClicked " << item << "-> " << clicked_element.name;
 
-	if (clicked_element.is_directory)
+	if (clicked_element.type == DIRECTORY)
 	{
 		startOperation();
 		browser->enterDirectory(clicked_element.name);
