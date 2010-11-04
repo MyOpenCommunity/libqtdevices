@@ -45,7 +45,10 @@ enum MultimediaFileType
 #ifdef BUILD_EXAMPLES
 	PDF       = 0x20, /*!< PDF filetype */
 #endif
-	ALL       = UNKNOWN | DIRECTORY | AUDIO | VIDEO | IMAGE, /*!< All content */
+	ALL       = UNKNOWN | DIRECTORY | AUDIO | VIDEO | IMAGE /*!< All content */
+#ifdef BUILD_EXAMPLES
+				| PDF
+#endif
 };
 
 /*!
