@@ -122,14 +122,16 @@ struct FilesystemEntry
 	enum Type
 	{
 		DIRECTORY = 0, /*!< The entry is a directory */
-		TRACK          /*!< The entry is a track */
+		AUDIO,         /*!< The entry is an audio track */
+		VIDEO,         /*!< The entry is a video track */
+		IMAGE,         /*!< The entry is an image */
 	};
 
 	/*!
 		\brief Creates a new FilesystemEntry with the given name \a and the type
 		\a t.
 	*/
-	FilesystemEntry(const QString n, FilesystemEntry::Type t, const QString &entry_url = QString())
+	FilesystemEntry(const QString &n, const QString &t, const QString &entry_url = QString())
 		: name(n), type(t), url(entry_url) {}
 
 	/*!
@@ -140,7 +142,7 @@ struct FilesystemEntry
 	/*!
 		\brief The type of the entry.
 	*/
-	FilesystemEntry::Type type;
+	QString type;
 
 	/*!
 		\brief The url of the entry

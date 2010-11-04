@@ -186,7 +186,7 @@ void FileList::addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int i
 
 	// If the item represent a directory, creates the button to enter in it.
 	int type = metadata["type"].toInt();
-	if (type == SlideshowSelector::DIRECTORY)
+	if (type == DIRECTORY)
 	{
 		// button on the right
 		BtButton *btn = new BtButton;
@@ -222,8 +222,8 @@ SlideshowSelector::SlideshowSelector() :
 	FileSelector(new DirectoryTreeBrowser),
 	handler(new ImageSelectionHandler(SLIDESHOW_FILENAME))
 {
+	browser->setFilter(DIRECTORY | IMAGE);
 	connect(browser, SIGNAL(listReceived(QList<TreeBrowser::EntryInfo>)), SLOT(displayFiles(QList<TreeBrowser::EntryInfo>)));
-	connect(browser, SIGNAL(allUrlsReceived(QStringList)), SLOT(urlListReceived(QStringList)));
 
 	handler->setFileFilter(getFileFilter(IMAGE));
 
@@ -261,52 +261,40 @@ void SlideshowSelector::cleanUp()
 
 void SlideshowSelector::displayFiles(const QList<TreeBrowser::EntryInfo> &list)
 {
-	QList<TreeBrowser::EntryInfo> filtered = TreeBrowser::filterEntries(list, getFileFilter(IMAGE));
+	setFiles(list);
 
-	// TODO better interface, maybe move clicked handling in subclass
-	setFiles(filtered);
-
-	if (filtered.empty())
+	if (list.isEmpty())
 	{
+		if (browser->isRoot()) // Special case empty root directory
+		{
+			operationCompleted();
+			emit Closed();
+		}
 		qDebug() << "[IMAGES] empty directory";
 		browser->exitDirectory();
 		return;
 	}
 
-	QStringList names;
-	foreach (const TreeBrowser::EntryInfo &item, filtered)
-		names.append(item.name);
-
-	browser->getAllFileUrls(names);
-}
-
-void SlideshowSelector::urlListReceived(const QStringList &list)
-{
 	QList<ItemList::ItemInfo> names_list;
-	QList<TreeBrowser::EntryInfo> files = getFiles();
-
-	for (int i = 0; i < files.size(); ++i)
+	foreach (const TreeBrowser::EntryInfo &item, list)
 	{
-		const TreeBrowser::EntryInfo& f = files.at(i);
-
 		QStringList icons;
 		icons << selbutton_on;
 		icons << selbutton_off;
 
 		QVariantMap metadata;
-		metadata.insert("selected", handler->isItemSelected(list[i]));
+		metadata.insert("selected", handler->isItemSelected(item.url));
 
-		if (!f.is_directory)
+		if (item.type == DIRECTORY)
 		{
-			metadata.insert("type", SlideshowSelector::FILE);
-		}
-		else
-		{
-			metadata.insert("type", SlideshowSelector::DIRECTORY);
+			metadata.insert("type", DIRECTORY);
 			icons << browse_directory;
 		}
+		else
+			metadata.insert("type", IMAGE);
 
-		ItemList::ItemInfo info(f.name, list[i], icons, metadata);
+
+		ItemList::ItemInfo info(item.name, item.url, icons, metadata);
 		names_list.append(info);
 	}
 

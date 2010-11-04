@@ -89,12 +89,6 @@ class SlideshowSelector : public FileSelector
 {
 Q_OBJECT
 public:
-	enum EntryType
-	{
-		FILE = 0,
-		DIRECTORY
-	};
-
 	typedef FileList ContentType;
 
 	SlideshowSelector();
@@ -106,7 +100,6 @@ public slots:
 private slots:
 	void setSelection(const QString &path, bool selected);
 	void displayFiles(const QList<TreeBrowser::EntryInfo> &list);
-	void urlListReceived(const QStringList &list);
 
 private:
 	void saveFileList();

@@ -131,31 +131,22 @@ namespace
 		return result;
 	}
 
-	FilesystemEntries getFilesystemEntries(const QDomNode &node, FilesystemEntry::Type item_type)
-	{
-		FilesystemEntries entries;
-
-		if (item_type == FilesystemEntry::DIRECTORY)
-		{
-			foreach (const QDomNode &item, getChildren(node, "name"))
-				entries << FilesystemEntry(item.toElement().text(), item_type);
-		}
-		else if (item_type == FilesystemEntry::TRACK)
-		{
-			foreach (const QDomNode &item, getChildren(node, "file"))
-				entries << FilesystemEntry(getElement(item, "DIDL-Lite/item/dc:title").text(), item_type, getElement(item, "DIDL-Lite/item/res").text());
-		}
-
-		return entries;
-	}
-
 	QHash<int,QVariant> handle_listitems(const QDomNode &node)
 	{
 		QHash<int,QVariant> result;
 		FilesystemEntries entries;
 
-		entries << getFilesystemEntries(getChildWithName(node, "directories"), FilesystemEntry::DIRECTORY);
-		entries << getFilesystemEntries(getChildWithName(node, "tracks"), FilesystemEntry::TRACK);
+		QDomNode directories = getChildWithName(node, "directories");
+		foreach (const QDomNode &item, getChildren(directories, "name"))
+			entries << FilesystemEntry(item.toElement().text(), "directory", QString());
+
+		QDomNode tracks = getChildWithName(node, "tracks");
+		foreach (const QDomNode &item, getChildren(tracks, "file"))
+		{
+			entries << FilesystemEntry(getElement(item, "DIDL-Lite/item/dc:title").text(),
+									   getElement(item,"DIDL-Lite/item/upnp:class").text(),
+									   getElement(item, "DIDL-Lite/item/res").text());
+		}
 
 		QVariant value;
 		value.setValue(entries);

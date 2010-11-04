@@ -35,30 +35,11 @@
 #include <QDebug>
 
 
-
-
-#define ARRAY_SIZE(x) int(sizeof(x) / sizeof((x)[0]))
-
-// transforms an extension to a pattern (es. "wav" -> "*.[wW][aA][vV]")
-void addFilters(QStringList &filters, const char **extensions, int size)
+MultimediaFileListPage::MultimediaFileListPage(int filters) :
+	FileSelector(new DirectoryTreeBrowser)
 {
-	for (int i = 0; i < size; ++i)
-	{
-		QString pattern = "*.";
-
-		for (const char *c = extensions[i]; *c; ++c)
-			pattern += QString("[%1%2]").arg(QChar(*c)).arg(QChar::toUpper((unsigned short)*c));
-
-		filters.append(pattern);
-	}
-}
-
-MultimediaFileListPage::MultimediaFileListPage(const QStringList &filters) :
-	FileSelector(new DirectoryTreeBrowser),
-	file_filters(filters)
-{
+	browser->setFilter(filters);
 	connect(browser, SIGNAL(listReceived(QList<TreeBrowser::EntryInfo>)), SLOT(displayFiles(QList<TreeBrowser::EntryInfo>)));
-	connect(browser, SIGNAL(allUrlsReceived(QStringList)), SLOT(urlListReceived(QStringList)));
 
 	ItemList *item_list = new ItemList(0, 4);
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
@@ -78,12 +59,12 @@ MultimediaFileListPage::MultimediaFileListPage(const QStringList &filters) :
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
 
 	// order here must match the order in enum Type
-	file_icons.append(bt_global::skin->getImage("directory_icon"));
-	file_icons.append(bt_global::skin->getImage("audio_icon"));
-	file_icons.append(bt_global::skin->getImage("video_icon"));
-	file_icons.append(bt_global::skin->getImage("image_icon"));
+	file_icons.insert(DIRECTORY, bt_global::skin->getImage("directory_icon"));
+	file_icons.insert(AUDIO, bt_global::skin->getImage("audio_icon"));
+	file_icons.insert(VIDEO, bt_global::skin->getImage("video_icon"));
+	file_icons.insert(IMAGE, bt_global::skin->getImage("image_icon"));
 #ifdef PDF_EXAMPLE
-	file_icons.append(bt_global::skin->getImage("pdf_icon"));
+	file_icons.insert(bt_global::skin->getImage("pdf_icon"));
 #endif
 
 	play_file = bt_global::skin->getImage("play_file");
@@ -112,13 +93,15 @@ MultimediaFileListPage::MultimediaFileListPage(const QStringList &filters) :
 
 void MultimediaFileListPage::displayFiles(const QList<TreeBrowser::EntryInfo> &list)
 {
-	QList<TreeBrowser::EntryInfo> filtered = TreeBrowser::filterEntries(list, file_filters);
+	setFiles(list);
 
-	// TODO better interface, maybe move clicked handling in subclass
-	setFiles(filtered);
-
-	if (filtered.empty())
+	if (list.empty())
 	{
+		if (browser->isRoot()) // Special case empty root directory
+		{
+			operationCompleted();
+			emit Closed();
+		}
 		qDebug() << "[AUDIO] empty directory";
 		browser->exitDirectory();
 		return;
@@ -126,15 +109,15 @@ void MultimediaFileListPage::displayFiles(const QList<TreeBrowser::EntryInfo> &l
 
 	QList<ItemList::ItemInfo> names_list;
 
-	for (int i = 0; i < filtered.size(); ++i)
+	for (int i = 0; i < list.size(); ++i)
 	{
-		const TreeBrowser::EntryInfo& f = filtered.at(i);
+		const TreeBrowser::EntryInfo& f = list.at(i);
 
 		QStringList icons;
 
-		if (!f.is_directory)
+		if (f.type != DIRECTORY)
 		{
-			MultimediaFileType t = fileType(f.name);
+			MultimediaFileType t = f.type;
 			if (t == UNKNOWN)
 				continue;
 
@@ -162,70 +145,29 @@ void MultimediaFileListPage::displayFiles(const QList<TreeBrowser::EntryInfo> &l
 	operationCompleted();
 }
 
-MultimediaFileType MultimediaFileListPage::fileType(const QString &file)
-{
-	QString ext = QFileInfo(file).suffix().toLower();
-
-	foreach (const QString &extension, getFileExtensions(IMAGE))
-		if (ext == extension)
-			return IMAGE;
-
-	foreach (const QString &extension, getFileExtensions(VIDEO))
-		if (ext == extension)
-			return VIDEO;
-
-	foreach (const QString &extension, getFileExtensions(AUDIO))
-		if (ext == extension)
-			return AUDIO;
-
-#ifdef PDF_EXAMPLE
-	foreach (const QString &extension, getFileExtensions(PDF))
-		if (ext == extension)
-			return PDF;
-#endif
-
-	return UNKNOWN;
-}
-
-QList<QString> MultimediaFileListPage::filterFileList(int item, MultimediaFileType &type, int &current)
+void MultimediaFileListPage::startPlayback(int item)
 {
 	const QList<TreeBrowser::EntryInfo> &files_list = getFiles();
 	const TreeBrowser::EntryInfo &current_file = files_list[item];
-	QList<QString> files;
+	QList<QString> urls;
 
-	type = fileType(current_file.name);
 	for (int i = 0; i < files_list.size(); ++i)
 	{
 		const TreeBrowser::EntryInfo& fn = files_list[i];
-		if (fn.is_directory || fileType(fn.name) != type)
+		if (fn.type == DIRECTORY || fn.type != last_clicked_type)
 			continue;
 		if (fn == current_file)
-			current = files.size();
+			last_clicked = urls.size();
 
-		files.append(fn.name);
+		urls.append(fn.name);
 	}
 
-	return files;
-}
-
-void MultimediaFileListPage::startPlayback(int item)
-{
-	startOperation();
-	QList<QString> files = filterFileList(item, last_clicked_type, last_clicked);
-
-	browser->getAllFileUrls(files);
-}
-
-void MultimediaFileListPage::urlListReceived(const QStringList &files)
-{
-	operationCompleted();
-
 	if (last_clicked_type == IMAGE)
-		emit displayImages(files, last_clicked);
+		emit displayImages(urls, last_clicked);
 	else if (last_clicked_type == VIDEO)
-		emit displayVideos(files, last_clicked);
+		emit displayVideos(urls, last_clicked);
 	else if (last_clicked_type == AUDIO)
-		emit playAudioFiles(files, last_clicked);
+		emit playAudioFiles(urls, last_clicked);
 #ifdef PDF_EXAMPLE
 	else if (type == PDF)
 		emit displayPdf(files[current]);

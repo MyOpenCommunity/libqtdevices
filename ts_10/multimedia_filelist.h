@@ -47,7 +47,7 @@ public:
 	// Leave the filters parameter empty to not apply any filter,
 	// pass a QStringList (made with getFileFilter()) to display
 	// only wanted file types.
-	MultimediaFileListPage(const QStringList &filters = QStringList());
+	MultimediaFileListPage(int filters = ALL);
 
 	void cleanUp();
 
@@ -59,28 +59,16 @@ signals:
 	void displayPdf(QString file);
 #endif
 
-private:
-	static MultimediaFileType fileType(const QString &file);
-
-	// returns the files in the current directory with the same type as the "item"
-	// file; on return, type contains the file type and current is the index of the
-	// item in the output list
-	QList<QString> filterFileList(int item, MultimediaFileType &type, int &current);
-
 private slots:
 	void startPlayback(int item);
 	void displayFiles(const QList<TreeBrowser::EntryInfo> &list);
-	void urlListReceived(const QStringList &list);
 
 private:
 	// icons for different file type
-	QList<QString> file_icons;
+	QHash<int,QString> file_icons;
 
 	// button icons for files/directories
 	QString play_file, browse_directory;
-
-	// file filters
-	QStringList file_filters;
 
 	// pages to display video/images
 	SlideshowPage *slideshow;

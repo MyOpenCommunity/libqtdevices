@@ -37,14 +37,15 @@ class QDateTime;
 */
 enum MultimediaFileType
 {
-	UNKNOWN = -1,  /*!< Unknown filetype */
-	DIRECTORY = 0, /*!< Directory */
-	AUDIO = 1,     /*!< Audio filetype */
-	VIDEO = 2,     /*!< Video filetype */
-	IMAGE = 3,     /*!< Image filetype */
+	UNKNOWN   = 0x01, /*!< Unknown filetype */
+	DIRECTORY = 0x02, /*!< Directory */
+	AUDIO     = 0x04, /*!< Audio filetype */
+	VIDEO     = 0x08, /*!< Video filetype */
+	IMAGE     = 0x10, /*!< Image filetype */
 #ifdef BUILD_EXAMPLES
-	PDF   = 4,     /*!< PDF filetype */
+	PDF       = 0x20, /*!< PDF filetype */
 #endif
+	ALL       = UNKNOWN | DIRECTORY | AUDIO | VIDEO | IMAGE, /*!< All content */
 };
 
 /*!

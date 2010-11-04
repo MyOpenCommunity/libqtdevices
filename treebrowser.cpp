@@ -22,18 +22,23 @@
 #include <QList>
 #include <QStringList>
 
-
+/*
 QList<TreeBrowser::EntryInfo> TreeBrowser::filterEntries(const QList<TreeBrowser::EntryInfo> &entries, QStringList file_filters)
 {
 	QList<TreeBrowser::EntryInfo> res;
 
 	foreach (const TreeBrowser::EntryInfo &item, entries)
-		if (item.is_directory || !file_filters.size() || QDir::match(file_filters, item.name))
+		if (item.type == DIRECTORY || !file_filters.size() || QDir::match(file_filters, item.name))
 			res.append(item);
 
 	return res;
 }
+*/
 
+void TreeBrowser::setFilter(int mask)
+{
+	filter_mask = mask;
+}
 
 DirectoryTreeBrowser::DirectoryTreeBrowser()
 {
@@ -95,28 +100,17 @@ void DirectoryTreeBrowser::getFileUrl(const QString &file)
 	emit urlReceived(path.absoluteFilePath());
 }
 
-void DirectoryTreeBrowser::getAllFileUrls(const QStringList &files)
-{
-	QStringList urls;
-
-	foreach (QString file, files)
-	{
-		QFileInfo path(current_dir, file);
-
-		if (path.exists())
-			urls.append(path.absoluteFilePath());
-	}
-
-	emit allUrlsReceived(urls);
-}
-
 void DirectoryTreeBrowser::getFileList()
 {
 	QList<QFileInfo> files_list = current_dir.entryInfoList();
 	QList<EntryInfo> result;
 
 	foreach (const QFileInfo &item, files_list)
-		result.append(EntryInfo(item.fileName(), item.isDir()));
+	{
+		MultimediaFileType file_type = fileType(item.absoluteFilePath());
+		if (filter_mask & file_type)
+			result.append(EntryInfo(item.fileName(), file_type, item.absoluteFilePath()));
+	}
 
 	emit listReceived(result);
 }
@@ -129,6 +123,36 @@ bool DirectoryTreeBrowser::isRoot()
 QString DirectoryTreeBrowser::pathKey()
 {
 	return QString::number(level);
+}
+
+MultimediaFileType DirectoryTreeBrowser::fileType(const QString &pattern)
+{
+	QFileInfo file_info(pattern);
+
+	if (file_info.isDir())
+		return DIRECTORY;
+
+	QString ext = file_info.suffix().toLower();
+
+	foreach (const QString &extension, getFileExtensions(IMAGE))
+		if (ext == extension)
+			return IMAGE;
+
+	foreach (const QString &extension, getFileExtensions(VIDEO))
+		if (ext == extension)
+			return VIDEO;
+
+	foreach (const QString &extension, getFileExtensions(AUDIO))
+		if (ext == extension)
+			return AUDIO;
+
+#ifdef PDF_EXAMPLE
+	foreach (const QString &extension, getFileExtensions(PDF))
+		if (ext == extension)
+			return PDF;
+#endif
+
+	return UNKNOWN;
 }
 
 
@@ -165,12 +189,6 @@ void UPnpClientBrowser::getFileUrl(const QString &file)
 		dev->selectFile(file);
 }
 
-void UPnpClientBrowser::getAllFileUrls(const QStringList &files)
-{
-	// TODO: implement
-	return;
-}
-
 void UPnpClientBrowser::getFileList()
 {
 	dev->listItems(-1);
@@ -186,6 +204,21 @@ QString UPnpClientBrowser::pathKey()
 	return QString::number(level);
 }
 
+MultimediaFileType UPnpClientBrowser::fileType(const QString &pattern)
+{
+	if (pattern.contains("audioItem"))
+		return AUDIO;
+	else if (pattern.contains("videoItem"))
+		return VIDEO;
+	else if (pattern.contains("imageItem"))
+		return IMAGE;
+	else if (pattern.contains("directory"))
+		return DIRECTORY;
+
+	return UNKNOWN;
+}
+
+
 void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 {
 	foreach (int key, response.keys())
@@ -198,7 +231,7 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 			{
 				QList<TreeBrowser::EntryInfo> infos;
 				foreach (const QString &server, response[key].toStringList())
-					infos << TreeBrowser::EntryInfo(server, true);
+					infos << TreeBrowser::EntryInfo(server, DIRECTORY, QString());
 				emit listReceived(infos);
 			}
 			break;
@@ -221,7 +254,11 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 			{
 				QList<TreeBrowser::EntryInfo> infos;
 				foreach (const FilesystemEntry &entry, response[key].value<FilesystemEntries>())
-					infos << TreeBrowser::EntryInfo(entry.name, entry.type == FilesystemEntry::DIRECTORY);
+				{
+					MultimediaFileType file_type = fileType(entry.type);
+					if (filter_mask & file_type)
+						infos << TreeBrowser::EntryInfo(entry.name, file_type, entry.url);
+				}
 				emit listReceived(infos);
 			}
 			break;
