@@ -37,7 +37,7 @@ int dimmerLevelTo100(int level);
 	\ingroup Lighting
 	\brief Manages light actuators.
 
-	The metods allow to turn on/off the light and to turn on the light for a fixed time.
+	The methods allow to turn on/off the light and to turn on the light for a fixed time.
 
 	\section LightingDevice-dimensions Dimensions
 	\startdim

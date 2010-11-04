@@ -56,7 +56,7 @@ void TestXmlDevice::testHeader()
 	dev->handleData(data);
 
 	QCOMPARE(dev->sid, QString("1EFC3E00-2066-6C13-55D2-81D7D7DB0E62"));
-	QCOMPARE(dev->pid, QString("1"));
+	QCOMPARE(dev->pid, 1);
 	QCOMPARE(dev->local_addr, QString("10.3.3.195"));
 	QCOMPARE(dev->server_addr, QString("192.168.1.110"));
 }
@@ -287,16 +287,38 @@ void TestXmlDevice::testListItems()
 				 "		</Src>"
 				 "	</Hdr>"
 				 "	<Cmd>"
-				 "		<AW26C6>"
+				 "		<AW26C15>"
 				 "			<directories>"
 				 "				<name>TestDirectory1</name>"
 				 "				<name>TestDirectory2</name>"
 				 "			</directories>"
 				 "			<tracks>"
-				 "				<name>TestTrack1</name>"
-				 "				<name>TestTrack2</name>"
+				 "				<file>"
+				 "					<DIDL-Lite xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\" xmlns:dlna=\"urn:schemas-dlna-org:metadata-1-0/\">"
+				 "						<item id=\"13\" parentID=\"0\" restricted=\"1\">"
+				 "							<res protocolInfo=\"http-get:*:audio/mpeg:DLNA.ORG_PS=1;DLNA.ORG_CI=0;DLNA.ORG_OP=00;DLNA.ORG_FLAGS=00000000000000000000000000000000;DLNA.ORG_PN=MP3\" size=\"2440262\" duration=\"0:02:29.000\">http://10.3.3.248:49153/files/13</res>"
+				 "							<upnp:class>object.item.audioItem.musicTrack</upnp:class>"
+				 "							<dc:title>Ship to Monkey Island</dc:title>"
+				 "							<upnp:artist>Michael Land</upnp:artist>"
+				 "							<upnp:album>The Secret of Monkey Island (game rip)</upnp:album>"
+				 "							<upnp:genre>Soundtrack</upnp:genre>"
+				 "						</item>"
+				 "					</DIDL-Lite>"
+				 "				</file>"
+				 "				<file>"
+				 "					<DIDL-Lite xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\" xmlns:dlna=\"urn:schemas-dlna-org:metadata-1-0/\">"
+				 "						<item id=\"1\" parentID=\"0\" restricted=\"1\">"
+				 "							<res protocolInfo=\"http-get:*:audio/mpeg:DLNA.ORG_PS=1;DLNA.ORG_CI=0;DLNA.ORG_OP=00;DLNA.ORG_FLAGS=00000000000000000000000000000000;DLNA.ORG_PN=MP3\" size=\"2440262\" duration=\"0:03:19.000\">http://10.3.3.248:49153/files/1</res>"
+				 "							<upnp:class>object.item.audioItem.musicTrack</upnp:class>"
+				 "							<dc:title>Hammer Smashed Face</dc:title>"
+				 "							<upnp:artist>Cannibal Corpse</upnp:artist>"
+				 "							<upnp:album>Tomb Of The Mutilated</upnp:album>"
+				 "							<upnp:genre>Brutal Metal</upnp:genre>"
+				 "						</item>"
+				 "					</DIDL-Lite>"
+				 "				</file>"
 				 "			</tracks>"
-				 "		</AW26C6>"
+				 "		</AW26C15>"
 				 "	</Cmd>"
 				 "</OWNxml>");
 
@@ -304,8 +326,37 @@ void TestXmlDevice::testListItems()
 	t.check(data, FilesystemEntries() <<
 				  FilesystemEntry("TestDirectory1", FilesystemEntry::DIRECTORY) <<
 				  FilesystemEntry("TestDirectory2", FilesystemEntry::DIRECTORY) <<
-				  FilesystemEntry("TestTrack1", FilesystemEntry::TRACK) <<
-				  FilesystemEntry("TestTrack2", FilesystemEntry::TRACK));
+				  FilesystemEntry("Ship to Monkey Island", FilesystemEntry::TRACK, "http://10.3.3.248:49153/files/13") <<
+				  FilesystemEntry("Hammer Smashed Face", FilesystemEntry::TRACK, "http://10.3.3.248:49153/files/1"));
+}
+
+void TestXmlDevice::testResetWithAck()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
+				 "			<PID>4</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.195</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>192.168.1.110</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<ACK>"
+				 "			<RC>200</RC>"
+				 "		</ACK>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::ACK);
+	t.check(data, true);
+	QVERIFY(dev->sid != QString("1EFC3E00-2066-6C13-55D2-81D7D7DB0E62"));
+	QCOMPARE(dev->pid, 0);
 }
 
 void TestXmlDevice::testBuildCommand()
@@ -330,7 +381,7 @@ void TestXmlDevice::testBuildCommand()
 				 "</OWNxml>\n");
 
 	dev->sid = "1EFC3E00-2066-6C13-55D2-81D7D7DB0E62";
-	dev->pid = "1";
+	dev->pid = 1;
 	dev->local_addr = "local_address";
 	dev->server_addr = "server_address";
 
@@ -363,7 +414,7 @@ void TestXmlDevice::testBuildCommandWithArg()
 				 "</OWNxml>\n");
 
 	dev->sid = "1EFC3E00-2066-6C13-55D2-81D7D7DB0E62";
-	dev->pid = "1";
+	dev->pid = 1;
 	dev->local_addr = "local_address";
 	dev->server_addr = "server_address";
 
