@@ -42,27 +42,27 @@ void BannerPage::inizializza()
 		page_content->initBanners();
 }
 
-void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title, QWidget *top_widget)
+void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title)
 {
-	buildPage(content, content, nav_bar, title, TITLE_HEIGHT, top_widget);
+	buildPage(content, content, nav_bar, title, TITLE_HEIGHT);
 }
 
 void BannerPage::buildPage(QWidget *main_widget, BannerContent *content, NavigationBar *nav_bar,
-	const QString &title, int title_height, QWidget *top_widget)
+	const QString &title, int title_height)
 {
 	PageTitleWidget *title_widget = 0;
 #ifdef LAYOUT_TS_10
 	title_widget = new PageTitleWidget(title, title_height);
 #endif
 
-	ScrollablePage::buildPage(main_widget, content, nav_bar, top_widget, title_widget);
+	ScrollablePage::buildPage(main_widget, content, nav_bar, title_widget);
 }
 
-void BannerPage::buildPage(const QString &title, int title_height, QWidget *top_widget)
+void BannerPage::buildPage(const QString &title, int title_height)
 {
 	BannerContent *content = new BannerContent;
 
-	buildPage(content, content, new NavigationBar, title, title_height, top_widget);
+	buildPage(content, content, new NavigationBar, title, title_height);
 }
 
 void BannerPage::setSpacing(int spacing)

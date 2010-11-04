@@ -458,16 +458,17 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
-#ifdef LAYOUT_TS_3_5
-	buildPage(content, nav_bar, "", 0, top);
-#else
 	QWidget *container = new QWidget;
-	QVBoxLayout *vlayout = new QVBoxLayout;
+	QVBoxLayout *vlayout = new QVBoxLayout(container);
+	vlayout->setContentsMargins(0, 0, 0, 0);
+	vlayout->setSpacing(0);
+	vlayout->addWidget(top);
+
 #ifdef LAYOUT_TS_3_5
-	vlayout->addWidget(content, 2);
+	vlayout->addWidget(content, 1);
+
 #else
 	vlayout->addWidget(content, 2, Qt::AlignHCenter);
-#endif
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
 	buttons_layout->addStretch(2);
@@ -480,8 +481,8 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 	vlayout->addLayout(buttons_layout, 1);
 	container->setLayout(vlayout);
 
-	buildPage(container, nav_bar, "", 0, top);
 #endif
+	buildPage(container, nav_bar, "", 0);
 }
 
 void LoadDataPage::showEvent(QShowEvent *e)
@@ -556,14 +557,20 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node, LoadsDev
 
 	deactivation_time = new DeactivationTime(BtTime(2, 30, 0));
 
-#ifdef LAYOUT_TS_10
 	QWidget *content = new QWidget;
+
+	QVBoxLayout *main_layout = new QVBoxLayout(content);
+	main_layout->setSpacing(0);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->addWidget(top);
+
+#ifdef LAYOUT_TS_10
+
+	QVBoxLayout *vlayout = new QVBoxLayout;
 	QHBoxLayout *banner_layout = new QHBoxLayout;
 	banner_layout->addStretch();
 	banner_layout->addWidget(deactivation_time);
 	banner_layout->addStretch();
-
-	QVBoxLayout *vlayout = new QVBoxLayout;
 	vlayout->addLayout(banner_layout);
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
@@ -576,12 +583,13 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node, LoadsDev
 	buttons_layout->addWidget(ok_button, 1, Qt::AlignCenter);
 
 	vlayout->addLayout(buttons_layout);
-
-	content->setLayout(vlayout);
-	buildPage(content, nav_bar, "", 0, top);
+	main_layout->addLayout(vlayout, 1);
 #else
-	buildPage(deactivation_time, nav_bar, "", 0, top);
+	main_layout->addWidget(deactivation_time, 1);
 #endif
+
+	buildPage(content, nav_bar, "", 0);
+
 	dev = d;
 }
 

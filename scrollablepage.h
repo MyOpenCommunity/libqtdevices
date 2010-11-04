@@ -69,7 +69,7 @@ protected:
 		scroll \a content when the appropriate buttons are clicked.
 	*/
 	void buildPage(QWidget *main_widget, ScrollableContent *content, AbstractNavigationBar *nav_bar,
-		QWidget *top_widget = 0, PageTitleWidget *title_widget = 0);
+		PageTitleWidget *title_widget = 0);
 };
 
 

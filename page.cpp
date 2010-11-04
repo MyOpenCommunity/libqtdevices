@@ -105,7 +105,7 @@ Page::~Page()
 		page_container->removeWidget(this);
 }
 
-void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationBar *nav_bar, QWidget *top_widget, QWidget *title_widget)
+void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationBar *nav_bar, QWidget *title_widget)
 {
 	QBoxLayout *l;
 #ifdef LAYOUT_TS_10
@@ -113,10 +113,6 @@ void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationB
 #else
 	l = new QVBoxLayout(this);
 #endif
-
-	// the top_widget (if present) is a widget that must be at the top of the page,
-	// limiting the height (so even the navigation) of the main_widget; for TS 10''
-	// it must be between the title and the central_widget
 
 #ifdef LAYOUT_TS_10
 	// TODO add an API to set the page title and to set the page count
@@ -129,15 +125,11 @@ void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationB
 	pl->setSpacing(0);
 	if (title_widget)
 		pl->addWidget(title_widget);
-	if (top_widget)
-		pl->addWidget(top_widget);
 	pl->addWidget(main_widget, 1);
 
 	l->addLayout(pl, 1);
 
 #else
-	if (top_widget)
-		l->addWidget(top_widget);
 
 	Q_ASSERT_X(title_widget == NULL, "Page::buildPage", "TS 3.5'' pages can't have a title");
 	l->addWidget(main_widget, 1);
@@ -149,12 +141,12 @@ void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationB
 	__content = content;
 }
 
-void Page::buildPage(QWidget *content, AbstractNavigationBar *nav_bar, QWidget *top_widget, QWidget *title_widget)
+void Page::buildPage(QWidget *content, AbstractNavigationBar *nav_bar, QWidget *title_widget)
 {
-	buildPage(content, content, nav_bar, top_widget, title_widget);
+	buildPage(content, content, nav_bar, title_widget);
 }
 
-void Page::buildPage(QWidget *content, AbstractNavigationBar *nav_bar, const QString& label, int label_height, QWidget *top_widget)
+void Page::buildPage(QWidget *content, AbstractNavigationBar *nav_bar, const QString& label, int label_height)
 {
 	QLabel *page_title = 0;
 
@@ -166,7 +158,7 @@ void Page::buildPage(QWidget *content, AbstractNavigationBar *nav_bar, const QSt
 	page_title->setFixedHeight(label_height + 10);
 #endif
 
-	buildPage(content, content, nav_bar, top_widget, page_title);
+	buildPage(content, content, nav_bar, page_title);
 }
 
 void Page::addBottomWidget(QWidget *bottom)

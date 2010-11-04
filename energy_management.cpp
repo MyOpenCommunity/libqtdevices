@@ -53,7 +53,7 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 #else
 	PageTitleWidget *title_widget = new PageTitleWidget(getTextChild(conf_node, "descr"), SMALL_TITLE_HEIGHT);
 #endif
-	Page::buildPage(main_widget, content, nav_bar, 0, title_widget);
+	Page::buildPage(main_widget, content, nav_bar, title_widget);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
 	is_built = true;

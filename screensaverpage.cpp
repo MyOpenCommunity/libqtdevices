@@ -237,8 +237,7 @@ SlideshowSelector::SlideshowSelector() :
 	selbutton_off = bt_global::skin->getImage("unchecked");
 	selbutton_on = bt_global::skin->getImage("checked");
 
-	buildPage(item_list, item_list, nav_bar, 0,
-		  new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT));
+	buildPage(item_list, item_list, nav_bar, new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT));
 	layout()->setContentsMargins(0, 5, 25, 10);
 
 	disconnect(nav_bar, SIGNAL(backClick()), 0, 0); // connected by buildPage()

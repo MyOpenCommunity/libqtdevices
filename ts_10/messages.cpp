@@ -126,7 +126,7 @@ DeleteMessagesPage::DeleteMessagesPage()
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
 
-	buildPage(content, nav_bar, 0, title_widget);
+	buildPage(content, nav_bar, title_widget);
 
 	QVBoxLayout *layout = new QVBoxLayout(content);
 	QLabel *box_text = new QLabel;
@@ -163,7 +163,7 @@ MessagePage::MessagePage()
 	connect(nav_bar, SIGNAL(downClick()), this, SIGNAL(nextMessage()));
 	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
 
-	buildPage(content, nav_bar, 0, title_widget);
+	buildPage(content, nav_bar, title_widget);
 }
 
 void MessagePage::setData(const QString &date, const QString &text, bool already_read)
@@ -202,7 +202,7 @@ AlertMessagePage::AlertMessagePage(const QString &date, const QString &text)
 	box_layout->addSpacing(5);
 	box_layout->addLayout(buttons_layout);
 	PageTitleWidget *title_widget = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
-	buildPage(content, static_cast<AbstractNavigationBar*>(0), 0, title_widget);
+	buildPage(content, static_cast<AbstractNavigationBar*>(0), title_widget);
 }
 
 int AlertMessagePage::sectionId() const
@@ -232,7 +232,7 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 	connect(item_list, SIGNAL(contentScrolled(int, int)), title, SLOT(setCurrentPage(int, int)));
 	connect(item_list, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
 
-	buildPage(item_list, nav_bar, 0, title);
+	buildPage(item_list, nav_bar, title);
 	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
 	layout()->setContentsMargins(0, 5, 25, 10);
 	loadMessages(MESSAGES_FILENAME);

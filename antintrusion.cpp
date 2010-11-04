@@ -151,7 +151,7 @@ AlarmListPage::AlarmListPage()
 
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(removeAlarmItem(int)));
 
-	buildPage(main_widget, item_list, new NavigationBar, 0, title);
+	buildPage(main_widget, item_list, new NavigationBar, title);
 	need_update = false;
 }
 

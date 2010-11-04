@@ -41,9 +41,9 @@ void ScrollablePage::activateLayout()
 }
 
 
-void ScrollablePage::buildPage(QWidget *main_widget, ScrollableContent *content, AbstractNavigationBar *nav_bar, QWidget *top_widget, PageTitleWidget *title_widget)
+void ScrollablePage::buildPage(QWidget *main_widget, ScrollableContent *content, AbstractNavigationBar *nav_bar, PageTitleWidget *title_widget)
 {
-	Page::buildPage(main_widget, content, nav_bar, top_widget, title_widget);
+	Page::buildPage(main_widget, content, nav_bar, title_widget);
 	if (title_widget)
 		connect(content, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
 

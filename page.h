@@ -248,12 +248,10 @@ protected:
 		Pages for the touchscreen 3.5 are created with the \a main_widget at the
 		top and the \a nav_bar at the bottom, while pages for the touchscreen 10''
 		are created with the \a nav_bar on the left and the \a main_widget on the
-		right. In the latter case, an optional \a top_widget can be used to have
-		an header always shown at the top of the page and a \a title_widget to
+		right. In the latter case, an optional \a title_widget can be used to
 		have a page title.
 	*/
-	void buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationBar *nav_bar,
-		QWidget *top_widget = 0, QWidget *title_widget = 0);
+	void buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationBar *nav_bar, QWidget *title_widget = 0);
 
 	/*!
 		\brief Build the correct page layout for the hardware type.
@@ -261,8 +259,7 @@ protected:
 		This is an overloaded member function, provided for convenience, which uses
 		the \a content also as the \a main_widget.
 	*/
-	void buildPage(QWidget *content, AbstractNavigationBar *nav_bar, QWidget *top_widget = 0,
-		QWidget *title_widget = 0);
+	void buildPage(QWidget *content, AbstractNavigationBar *nav_bar, QWidget *title_widget = 0);
 
 	/*!
 		\brief Build the correct page layout for the hardware type.
@@ -272,7 +269,7 @@ protected:
 		a page title with label as \a text and \a label_height as height.
 	*/
 	void buildPage(QWidget *content, AbstractNavigationBar *nav_bar, const QString& label,
-		int label_height = TITLE_HEIGHT, QWidget *top_widget = 0);
+		int label_height = TITLE_HEIGHT);
 
 private:
 	static PageContainer *page_container;

@@ -44,7 +44,7 @@ void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QSt
 	{
 		title_widget = new PageTitleWidget(title, SMALL_TITLE_HEIGHT);
 	}
-	ScrollablePage::buildPage(content, content, nav_bar, 0, title_widget);
+	ScrollablePage::buildPage(content, content, nav_bar, title_widget);
 }
 
 

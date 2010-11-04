@@ -254,7 +254,14 @@ SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<Source
 		connect(top_widget, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 
-	buildPage(getTextChild(conf_node, "descr"), Page::TITLE_HEIGHT, top_widget);
+	BannerContent *content = new BannerContent;
+	QWidget *main_widget = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(main_widget);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
+	main_layout->addWidget(top_widget);
+	main_layout->addWidget(content, 1);
+	buildPage(main_widget, content, new NavigationBar, getTextChild(conf_node, "descr"), Page::TITLE_HEIGHT);
 	loadItems(conf_node);
 
 	connect(this, SIGNAL(Closed()), SLOT(clearCurrentAmbient()));

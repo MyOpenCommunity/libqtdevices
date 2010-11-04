@@ -398,7 +398,7 @@ PageSetDateTime::PageSetDateTime(const QString &extra_button_icon, bool allow_pa
 
 	NavigationBar *nav = new NavigationBar;
 	nav->displayScrollButtons(false);
-	buildPage(&content, nav, NULL, &title_widget);
+	buildPage(&content, nav, &title_widget);
 
 	connect(program, SIGNAL(clicked()), SLOT(performAction()));
 	connect(nav, SIGNAL(backClick()), SIGNAL(Closed()));

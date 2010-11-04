@@ -69,11 +69,11 @@ protected:
 		Connections are created between content and navigation bar, and between content and page.
 	 */
 	void buildPage(QWidget *main_widget, BannerContent *content, NavigationBar *nav_bar,
-		const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget = 0);
+		const QString &title = QString(), int title_height = TITLE_HEIGHT);
 	/*!
 		\overload void buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title = QString(), QWidget *top_widget=0);
 	*/
-	void buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title = QString(), QWidget *top_widget=0);
+	void buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title = QString());
 	/*!
 		\overload void buildPage(const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget = 0);
 		\brief Utility function to build a standard banner page.
@@ -81,7 +81,7 @@ protected:
 		Connections are created between content and navigation bar, and between
 		content and page.
 	 */
-	void buildPage(const QString &title = QString(), int title_height = TITLE_HEIGHT, QWidget *top_widget = 0);
+	void buildPage(const QString &title = QString(), int title_height = TITLE_HEIGHT);
 
 	/*!
 		\brief Sets the vertical spacing between banners.
