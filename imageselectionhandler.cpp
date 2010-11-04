@@ -26,7 +26,9 @@
 #include <QDebug>
 #include <QDir>
 #include <QDirIterator>
+#include <QTime>
 
+#define LOOP_TIMEOUT 2000
 
 namespace
 {
@@ -82,8 +84,19 @@ ImageIterator::ImageIterator(const QString &file_path)
 	foreach (const QString &path, loadTextFile(file_path))
 		paths << path;
 
+	// The file_path argument contains a list of directories or files.
+	// We want to iterate them in a cyclic way, so we use 2 iterator:
+	// an iterator to the current element of the list and, if the element
+	// is a directory, an iterator to its content.
 	list_iter = new QMutableLinkedListIterator<QString>(paths);
 	dir_iter = 0;
+
+	// We have 2 special cases we have to manage: if an element of the list
+	// of path is empty, we want to skip and remove it from the list or if
+	// is an empty directory we want to skip it.
+	// In the latter case, we use the time_counter to detect loops that we
+	// have when the list of path contains only one or more empty directories.
+	time_counter = new QTime;
 }
 
 QString ImageIterator::next()
@@ -100,10 +113,22 @@ QString ImageIterator::next()
 		}
 	}
 
+	if (!list_iter->hasNext() && !list_iter->hasPrevious())
+	{
+		qWarning() << "ImageIterator: no elements, force stop";
+		return QString();
+	}
+
 	if (!list_iter->hasNext())
 		list_iter->toFront();
 
 	QString path = list_iter->next();
+	if (path == loop_start_path && time_counter->elapsed() < LOOP_TIMEOUT)
+	{
+		qWarning() << "ImageIterator: loop detected, force stop";
+		loop_start_path = QString();
+		return QString();
+	}
 
 	QFileInfo fi(path);
 	if (fi.exists())
@@ -113,14 +138,21 @@ QString ImageIterator::next()
 		else
 		{
 			dir_iter = new QDirIterator(path, file_filters, QDir::Files | QDir::Readable, QDirIterator::Subdirectories);
-			return dir_iter->next();
+			if (loop_start_path.isNull())
+			{
+				loop_start_path = path;
+				time_counter->start();
+			}
+			return next();
 		}
 	}
-	// remove elements not found
 	else
+	{
+		// remove elements not found
 		list_iter->remove();
-
-	return QString();
+		qDebug() << "Skip invalid element:" << path;
+		return next();
+	}
 }
 
 void ImageIterator::setFileFilter(const QStringList &filters)
@@ -143,10 +175,6 @@ ImageIterator::~ImageIterator()
 	delete list_iter;
 }
 
-bool ImageIterator::hasNext() const
-{
-	return !paths.isEmpty();
-}
 
 
 ImageSelectionHandler::ImageSelectionHandler(const QString &file_path) :
