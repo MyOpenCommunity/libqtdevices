@@ -64,7 +64,7 @@ MultimediaFileListPage::MultimediaFileListPage(int filters) :
 	file_icons.insert(VIDEO, bt_global::skin->getImage("video_icon"));
 	file_icons.insert(IMAGE, bt_global::skin->getImage("image_icon"));
 #ifdef PDF_EXAMPLE
-	file_icons.insert(bt_global::skin->getImage("pdf_icon"));
+	file_icons.insert(PDF, bt_global::skin->getImage("pdf_icon"));
 #endif
 
 	play_file = bt_global::skin->getImage("play_file");
