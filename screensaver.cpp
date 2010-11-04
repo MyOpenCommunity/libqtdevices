@@ -428,17 +428,8 @@ void ScreenSaverSlideshow::refresh()
 {
 	QString img;
 
-	if (iter && iter->hasNext())
+	if (iter)
 		img = iter->next();
-	else
-	{
-		qDebug() << "no images, blank screen.";
-		stopRefresh();
-		current_image.fill(Qt::black);
-		next_image.fill(Qt::black);
-		update();
-		return;
-	}
 
 	if (!img.isEmpty())
 	{
@@ -463,9 +454,13 @@ void ScreenSaverSlideshow::refresh()
 	}
 	else
 	{
-		qWarning() << "image is empty: ";
-		refresh();
+		qDebug() << "no images, blank screen.";
+		stopRefresh();
+		current_image.fill(Qt::black);
+		next_image.fill(Qt::black);
+		update();
 	}
+
 }
 
 void ScreenSaverSlideshow::imageReady()
