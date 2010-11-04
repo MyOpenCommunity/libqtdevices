@@ -30,6 +30,7 @@
 #include <QLinkedList>
 
 class QDirIterator;
+class QTime;
 
 // default file name for slideshow saving
 #define SLIDESHOW_FILENAME "cfg/extra/slideshow_images.txt"
@@ -50,7 +51,6 @@ public:
 	/*
 	 * Return the next image found.
 	 *
-	 * Always use hasNext() first of call this function.
 	 * Call next on an empty iterator has an undefined behaviour.
 	 * \return Absolute file path of the image, empty string on errors.
 	 */
@@ -60,16 +60,14 @@ public:
 
 	~ImageIterator();
 
-	/*
-	 * Returns true if there are other elements to iterate on, false otherwise.
-	 */
-	bool hasNext() const;
 
 private:
 	QLinkedList<QString> paths;
 	QDirIterator *dir_iter;
 	QMutableLinkedListIterator<QString> *list_iter;
 	QStringList file_filters;
+	QString loop_start_path;
+	QTime *time_counter;
 };
 
 
