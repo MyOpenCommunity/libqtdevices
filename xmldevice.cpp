@@ -154,6 +154,30 @@ namespace
 
 		return result;
 	}
+
+	QString uuidhex(uint data, int digits)
+	{
+		return QString::number(data, 16).rightJustified(digits, QLatin1Char('0'));
+	}
+
+	// Workaround for the lack of Quuid::toString()
+	QString uuid2str(const QUuid &uuid)
+	{
+		QString result;
+		QChar dash = QLatin1Char('-');
+		result = uuidhex(uuid.data1,8);
+		result += dash;
+		result += uuidhex(uuid.data2,4);
+		result += dash;
+		result += uuidhex(uuid.data3,4);
+		result += dash;
+		result += uuidhex(uuid.data4[0],2);
+		result += uuidhex(uuid.data4[1],2);
+		result += dash;
+		for (int i = 2; i < 8; i++)
+			result += uuidhex(uuid.data4[i],2);
+		return result;
+	}
 }
 
 
@@ -341,7 +365,7 @@ bool XmlDevice::parseAck(const QDomNode &ack)
 	if (rc == "200")
 	{
 		pid = 0;
-		sid = QUuid::createUuid().toString();
+		sid = uuid2str(QUuid::createUuid());
 	}
 
 	return true;
