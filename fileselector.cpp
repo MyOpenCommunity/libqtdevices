@@ -58,9 +58,9 @@ FileSelector::FileSelector(TreeBrowser *_browser)
 
 	// maybe it's a bit harsh to close the navigation for all errors, but it's
 	// probably the safest choice
-	connect(browser, SIGNAL(directoryChangeError()), SIGNAL(Closed()));
-	connect(browser, SIGNAL(urlRetrieveError()), SIGNAL(Closed()));
-	connect(browser, SIGNAL(listRetrieveError()), SIGNAL(Closed()));
+	connect(browser, SIGNAL(directoryChangeError()), SLOT(handleError()));
+	connect(browser, SIGNAL(listRetrieveError()), SLOT(handleError()));
+	connect(browser, SIGNAL(genericError()), SLOT(handleError()));
 
 #ifdef BT_HARDWARE_TS_10
 	// since this checks the root file path, it's OK to use it for all instances
@@ -142,6 +142,12 @@ void FileSelector::directoryChanged()
 	browser->getFileList();
 }
 
+void FileSelector::handleError()
+{
+	operationCompleted();
+	emit Closed();
+}
+
 void FileSelector::setRootPath(const QString &start_path)
 {
 	browser->setRootPath(start_path.split("/", QString::SkipEmptyParts));
@@ -173,6 +179,9 @@ void FileSelector::startOperation()
 
 void FileSelector::operationCompleted()
 {
+	if (!working)
+		return;
+
 	working->waitForTimeout();
 	working = NULL;
 }

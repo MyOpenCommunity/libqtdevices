@@ -121,6 +121,7 @@ protected:
 signals:
 	void directoryChanged();
 	void directoryChangeError();
+	void genericError();
 
 	void listReceived(QList<TreeBrowser::EntryInfo> list);
 	void listRetrieveError();

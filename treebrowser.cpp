@@ -242,6 +242,9 @@ void UPnpClientBrowser::handleError(int response, int code)
 		break;
 	case XmlResponses::TRACK_SELECTION:
 		break;
+	case XmlResponses::INVALID:
+		emit genericError();
+		break;
 	default:
 		Q_ASSERT_X(false, "UPnpClientBrowser::handleResponse", "Unhandled resposne.");
 	}
