@@ -44,6 +44,7 @@ enum
 	PAGE_WEB_CAM = 16004,
 	PAGE_RSS = 16003,
 	PAGE_SD = 16005,
+	PAGE_UPNP = 16006,
 #ifdef BUILD_EXAMPLES
 	PAGE_PDF = 55556,
 #endif
@@ -188,6 +189,10 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 			}
 			break;
 		}
+		case PAGE_UPNP:
+			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_UPNP))
+				p = new MultimediaFileListPage(new UPnpClientBrowser, DIRECTORY | AUDIO);
+			break;
 #ifdef BUILD_EXAMPLES
 		case PAGE_PDF:
 		{

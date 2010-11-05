@@ -524,6 +524,11 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_link_icon>multimediale/radiooverip.png</img_link_icon>
 		<img_ipradio_icon>multimediale/radiooveripmini.png</img_ipradio_icon>
 	</item>
+	<!-- UPnP -->
+	<item>
+		<cid>16006</cid>
+		<img_link_icon>multimediale/radiooverip.png</img_link_icon>
+	</item>
 	<!-- sound diffusion system -->
 	<item>
 		<!-- multi sound diffusion ambient list -->
