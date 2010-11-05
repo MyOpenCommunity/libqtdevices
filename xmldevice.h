@@ -81,6 +81,7 @@ struct XmlError
 	{
 		PARSE = 0, /*!< Error during the parsing of the response's XML */
 		BROWSING,  /*!< Error during the browsing of the UPnP resource */
+		CLIENT,    /*!< Error in XmlClient */
 	};
 
 	/*!
@@ -254,6 +255,7 @@ signals:
 
 private slots:
 	void handleData(const QString &data);
+	void handleClientError();
 	void sendMessageQueue();
 	void cleanSessionInfo();
 

@@ -199,6 +199,7 @@ XmlDevice::XmlDevice()
 	connect(xml_client, SIGNAL(dataReceived(QString)), SLOT(handleData(QString)));
 	connect(xml_client, SIGNAL(connectionUp()), SLOT(sendMessageQueue()));
 	connect(xml_client, SIGNAL(connectionDown()), SLOT(cleanSessionInfo()));
+	connect(xml_client, SIGNAL(connectionDown()), SLOT(handleClientError()));
 
 	welcome_received = false;
 
@@ -255,6 +256,11 @@ void XmlDevice::handleData(const QString &data)
 	}
 	else
 		emit responseReceived(response);
+}
+
+void XmlDevice::handleClientError()
+{
+	emit error(XmlResponses::INVALID, XmlError::CLIENT);
 }
 
 void XmlDevice::sendMessageQueue()
