@@ -24,9 +24,9 @@
 
 namespace
 {
-	MultimediaFileType directoryFileType(const QString &pattern)
+	MultimediaFileType directoryFileType(const QString &file_path)
 	{
-		QFileInfo file_info(pattern);
+		QFileInfo file_info(file_path);
 
 		if (file_info.isDir())
 			return DIRECTORY;
