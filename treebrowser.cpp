@@ -165,7 +165,10 @@ void UPnpClientBrowser::exitDirectory()
 
 void UPnpClientBrowser::getFileList()
 {
-	dev->listItems(-1);
+	if (level == 0)
+		dev->requestUPnPServers();
+	else
+		dev->listItems();
 }
 
 bool UPnpClientBrowser::isRoot()

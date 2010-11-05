@@ -236,11 +236,8 @@ public:
 
 	/*!
 		\brief Requests the list of the items of the current directory.
-
-		\note if \a max_results is > 0 limits the result to the first
-		\a max_results items.
 	*/
-	void listItems(int max_results);
+	void listItems();
 
 signals:
 	/*!

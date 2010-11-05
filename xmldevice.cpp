@@ -239,9 +239,9 @@ void XmlDevice::browseUp()
 	sendCommand("CW26C7");
 }
 
-void XmlDevice::listItems(int max_results)
+void XmlDevice::listItems()
 {
-	sendCommand("RW26C15", QString::number(max_results));
+	sendCommand("RW26C15");
 }
 
 void XmlDevice::handleData(const QString &data)
