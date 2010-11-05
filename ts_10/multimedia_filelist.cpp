@@ -35,8 +35,8 @@
 #include <QDebug>
 
 
-MultimediaFileListPage::MultimediaFileListPage(int filters) :
-	FileSelector(new DirectoryTreeBrowser)
+MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters) :
+	FileSelector(browser)
 {
 	browser->setFilter(filters);
 	connect(browser, SIGNAL(listReceived(QList<TreeBrowser::EntryInfo>)), SLOT(displayFiles(QList<TreeBrowser::EntryInfo>)));
