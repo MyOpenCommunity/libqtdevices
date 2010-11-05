@@ -192,9 +192,10 @@ void StopAndGoMenu::loadItems(const QDomNode &config_node)
 }
 
 
-StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device) :
-	Page(), dev(device), autoreset_button(new StateButton)
+StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device)
 {
+	dev = device;
+	autoreset_button = new StateButton;
 	QWidget *content = new QWidget;
 	QVBoxLayout *layout = new QVBoxLayout;
 
@@ -241,9 +242,11 @@ void StopAndGoPage::switchAutoReset()
 }
 
 
-StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *device) :
-	Page(), dev(device), autoreset_button(new StateButton), tracking_button(new StateButton)
+StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *device)
 {
+	dev = device;
+	autoreset_button = new StateButton;
+	tracking_button = new StateButton;
 	QWidget *content = new QWidget;
 	QVBoxLayout *layout = new QVBoxLayout;
 
@@ -318,10 +321,12 @@ void StopAndGoPlusPage::switchTracking()
 }
 
 
-StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevice *device) :
-	Page(), dev(device), autoreset_button(new StateButton), autotest_button(new StateButton),
-	autotest_banner(new BannLCDRange)
+StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevice *device)
 {
+	dev = device;
+	autoreset_button = new StateButton;
+	autotest_button = new StateButton;
+	autotest_banner = new BannLCDRange;
 	QWidget *content = new QWidget;
 	QVBoxLayout *layout = new QVBoxLayout;
 
