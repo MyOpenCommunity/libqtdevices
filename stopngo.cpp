@@ -56,7 +56,7 @@ enum
 
 namespace
 {
-	QVBoxLayout* getCommandButton(StateButton *button, const QString &on_image, const QString &off_image, const QString &descr, QObject *obj, const char *slot)
+	QVBoxLayout* getCommandButton(StateButton *button, const QString &on_image, const QString &off_image, QLabel *label, QObject *obj, const char *slot)
 	{
 		QVBoxLayout *button_layout = new QVBoxLayout;
 		button->setOnImage(bt_global::skin->getImage(on_image));
@@ -64,12 +64,16 @@ namespace
 		QObject::connect(button, SIGNAL(clicked()), obj, slot);
 		button_layout->addWidget(button, 0, Qt::AlignHCenter);
 
-		QLabel *label = new QLabel(descr);
 		label->setAlignment(Qt::AlignHCenter);
 		label->setFont(bt_global::font->get(FontManager::BANNERDESCRIPTION));
 		button_layout->addWidget(label, Qt::AlignHCenter);
 
 		return button_layout;
+	}
+
+	QVBoxLayout* getCommandButton(StateButton *button, const QString &on_image, const QString &off_image, const QString &descr, QObject *obj, const char *slot)
+	{
+		return getCommandButton(button, on_image, off_image, new QLabel(descr), obj, slot);
 	}
 }
 
@@ -192,9 +196,10 @@ void StopAndGoMenu::loadItems(const QDomNode &config_node)
 }
 
 
-StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device) :
-	Page(), dev(device), autoreset_button(new StateButton)
+StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device)
 {
+	dev = device;
+	autoreset_button = new StateButton;
 	QWidget *content = new QWidget;
 	QVBoxLayout *layout = new QVBoxLayout;
 
@@ -241,9 +246,12 @@ void StopAndGoPage::switchAutoReset()
 }
 
 
-StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *device) :
-	Page(), dev(device), autoreset_button(new StateButton), tracking_button(new StateButton)
+StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *device)
 {
+	dev = device;
+	autoreset_button = new StateButton;
+	tracking_button = new StateButton;
+	tracking_label = new QLabel(tr("Test"));
 	QWidget *content = new QWidget;
 	QVBoxLayout *layout = new QVBoxLayout;
 
@@ -259,7 +267,7 @@ StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *
 											   this, SLOT(switchAutoReset())));
 	buttons_layout->addStretch();
 	buttons_layout->addLayout(getCommandButton(tracking_button, "tracking_enabled",
-											   "tracking_disabled", tr("Test"),
+											   "tracking_disabled", tracking_label,
 											   this, SLOT(switchTracking())));
 	layout->addLayout(buttons_layout);
 
@@ -295,10 +303,11 @@ void StopAndGoPlusPage::valueReceived(const DeviceValues &values_list)
 	tracking_button->setStatus(!values_list[StopAndGoDevice::DIM_TRACKING_DISACTIVE].toBool());
 
 	// Show the autotest button only if opened for cc between n or ground fail.
-	if (values_list[StopAndGoDevice::DIM_OPENED_LE_N].toBool() || values_list[StopAndGoDevice::DIM_OPENED_GROUND].toBool())
-		tracking_button->show();
-	else
-		tracking_button->hide();
+	bool show_track = values_list[StopAndGoDevice::DIM_OPENED_LE_N].toBool() ||
+		values_list[StopAndGoDevice::DIM_OPENED_GROUND].toBool();
+
+	tracking_button->setVisible(show_track);
+	tracking_label->setVisible(show_track);
 }
 
 void StopAndGoPlusPage::switchAutoReset()
@@ -318,10 +327,13 @@ void StopAndGoPlusPage::switchTracking()
 }
 
 
-StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevice *device) :
-	Page(), dev(device), autoreset_button(new StateButton), autotest_button(new StateButton),
-	autotest_banner(new BannLCDRange)
+StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevice *device)
 {
+	dev = device;
+	autoreset_button = new StateButton;
+	autotest_button = new StateButton;
+	autotest_label = new QLabel(tr("Self-test"));
+	autotest_banner = new BannLCDRange;
 	QWidget *content = new QWidget;
 	QVBoxLayout *layout = new QVBoxLayout;
 
@@ -335,7 +347,7 @@ StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevic
 											   this, SLOT(switchAutoReset())));
 	buttons_layout->addStretch();
 	buttons_layout->addLayout(getCommandButton(autotest_button, "autocheck_enabled",
-											   "autocheck_disabled", tr("Self-test"),
+											   "autocheck_disabled", autotest_label,
 											   this, SLOT(switchAutoTest())));
 	layout->addLayout(buttons_layout);
 
@@ -367,7 +379,11 @@ void StopAndGoBTestPage::valueReceived(const DeviceValues &values_list)
 {
 	// Show the autotest button only if closed.
 	if (values_list.contains(StopAndGoDevice::DIM_OPENED))
-		autotest_button->setVisible(!values_list[StopAndGoDevice::DIM_OPENED].toBool());
+	{
+		bool show = !values_list[StopAndGoDevice::DIM_OPENED].toBool();
+		autotest_button->setVisible(show);
+		autotest_label->setVisible(show);
+	}
 
 	if (values_list.contains(StopAndGoDevice::DIM_AUTORESET_DISACTIVE) &&
 		values_list.contains(StopAndGoDevice::DIM_AUTOTEST_DISACTIVE))

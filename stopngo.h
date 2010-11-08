@@ -172,6 +172,7 @@ private:
 	StopAndGoPlusDevice *dev;
 	StateButton *autoreset_button;
 	StateButton *tracking_button;
+	QLabel *tracking_label;
 };
 
 
@@ -206,6 +207,7 @@ private:
 	StopAndGoBTestDevice *dev;
 	StateButton *autoreset_button;
 	StateButton *autotest_button;
+	QLabel *autotest_label;
 	BannLCDRange *autotest_banner;
 };
 
