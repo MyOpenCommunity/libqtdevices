@@ -369,7 +369,7 @@ protected:
 	local amplifier must be handled separately even for environment/global amplfiers.
 
 	After calling setVirtualAmplifierWhere(), createDevice() will always create
-	the correct device instance for a given point-to-point, anvironment or general address.
+	the correct device instance for a given point-to-point, environment or general address.
 */
 class AmplifierDevice : public device
 {
@@ -387,7 +387,7 @@ public:
 	};
 
 	/*!
-		\brief Amplfier device factory
+		\brief Amplifier device factory
 
 		Transparently handles device creation for normal amplifier
 		devices (either SCS or virtual) and for general and area commands; it will
