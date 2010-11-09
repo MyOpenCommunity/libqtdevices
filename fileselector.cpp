@@ -55,6 +55,7 @@ FileSelector::FileSelector(TreeBrowser *_browser)
 	working = NULL;
 
 	connect(browser, SIGNAL(directoryChanged()), SLOT(directoryChanged()));
+	connect(this, SIGNAL(Closed()), this, SLOT(cleanUp()));
 
 	// maybe it's a bit harsh to close the navigation for all errors, but it's
 	// probably the safest choice
@@ -111,18 +112,16 @@ void FileSelector::itemIsClicked(int item)
 	const TreeBrowser::EntryInfo& clicked_element = files_list[item];
 	qDebug() << "[AUDIO] FileSelector::itemIsClicked " << item << "-> " << clicked_element.name;
 
+	// save the info of old directory
+	pages_indexes[browser->pathKey()] = page_content->currentPage();
+
 	if (clicked_element.type == DIRECTORY)
 	{
 		startOperation();
 		browser->enterDirectory(clicked_element.name);
 	}
 	else
-	{
-		// save the info of old directory
-		pages_indexes[browser->pathKey()] = page_content->currentPage();
-
 		emit fileClicked(item);
-	}
 }
 
 void FileSelector::browseUp()
@@ -160,10 +159,10 @@ QString FileSelector::getRootPath()
 	return "/" + browser->getRootPath().join("/");
 }
 
-int FileSelector::displayedPage(const QDir &directory)
+int FileSelector::displayedPage(const QString &directory)
 {
-	if (pages_indexes.contains(directory.absolutePath()))
-		return pages_indexes[directory.absolutePath()];
+	if (pages_indexes.contains(directory))
+		return pages_indexes[directory];
 	else
 		return 0;
 }

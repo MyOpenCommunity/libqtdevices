@@ -28,7 +28,7 @@
 
 const char *command_template =
 		"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-		"<OWNxml xmlns=\"http://www.bticino.it/xopen/v1 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
+		"<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
 		"	<Hdr>\n"
 		"		<MsgID>\n"
 		"			<SID>%1</SID>\n"
@@ -242,7 +242,9 @@ void XmlDevice::browseUp()
 
 void XmlDevice::listItems()
 {
-	sendCommand("RW26C15");
+	// The argument is here only for testing. This command should be able
+	// to run without arguments.
+	sendCommand("RW26C15", "10");
 }
 
 void XmlDevice::handleData(const QString &data)

@@ -188,6 +188,7 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 		switch (key)
 		{
 		case XmlResponses::WELCOME:
+		case XmlResponses::ACK:
 			break;
 		case XmlResponses::SERVER_LIST:
 			{
@@ -238,7 +239,13 @@ void UPnpClientBrowser::handleError(int response, int code)
 	case XmlResponses::SERVER_SELECTION:
 	case XmlResponses::CHDIR:
 	case XmlResponses::BROWSE_UP:
-		emit directoryChangeError();
+		if (level == 1)
+		{
+			--level;
+			emit directoryChanged();
+		}
+		else
+			emit directoryChangeError();
 		break;
 	case XmlResponses::TRACK_SELECTION:
 		break;

@@ -94,10 +94,6 @@ public:
 		END_OF_CALL = 3,
 		RINGTONE = 200, // the value doesn't matter
 		MOVING_CAMERA = 201, // the value doesn't matter
-		// The caller address should be an implementation detail of the device.
-		// However, this dirty klugde is required because for the professional
-		// studio functionality we have to use the caller_address, obtained
-		// from the homonymous frame.
 		CALLER_ADDRESS = 9,
 		STOP_VIDEO = 202, // the value doesn't matter
 		VCT_TYPE,  // the value doesn't matter
@@ -124,6 +120,14 @@ public:
 		IP_MODE   /*!< For ip videocalls */
 	};
 
+	/*!
+		\brief Constructor.
+
+		The \a where parameter can be the address of the touchscreen or the address of
+		an actuator/entrance panel, the \a mode parameter reflects one of the values in
+		the VctMode enum: a null QString means NONE, "1" means IP_MODE and everything
+		else stands for SCS_MODE.
+	*/
 	VideoDoorEntryDevice(const QString &where, QString mode = QString(), int openserver_id = 0);
 
 	/*!
@@ -245,6 +249,7 @@ public slots:
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+
 private:
 	void resetCallState();
 	void cameraMovePress(int move_type) const;
