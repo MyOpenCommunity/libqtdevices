@@ -88,6 +88,7 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 		pdfdisplay, SLOT(displayPdf(QString)));
 	connect(pdfdisplay, SIGNAL(Closed()), SLOT(showPageNoReload()));
 #endif
+	last_clicked_type = UNKNOWN;
 }
 
 void MultimediaFileListPage::displayFiles(const QList<TreeBrowser::EntryInfo> &list)
@@ -153,12 +154,14 @@ void MultimediaFileListPage::startPlayback(int item)
 	for (int i = 0; i < files_list.size(); ++i)
 	{
 		const TreeBrowser::EntryInfo& fn = files_list[i];
-		if (fn.type == DIRECTORY || fn.type != last_clicked_type)
+		if ((fn.type == DIRECTORY || fn.type != last_clicked_type) && last_clicked_type != UNKNOWN)
 			continue;
 		if (fn == current_file)
+		{
 			last_clicked = urls.size();
-
-		urls.append(fn.name);
+			last_clicked_type = fn.type;
+		}
+		urls.append(fn.url);
 	}
 
 	if (last_clicked_type == IMAGE)
