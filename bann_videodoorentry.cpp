@@ -47,6 +47,18 @@ call_notifier *postoExt::unknown_notifier = NULL;
 #define MAX_HEIGHT 320
 
 
+
+EntrancePanel::EntrancePanel(QString descr, QString where, bool light, bool key)
+{
+	initBanner(light ? bt_global::skin->getImage("entrance_panel_light") : QString(),
+		bt_global::skin->getImage("entrance_panel_right"),
+		bt_global::skin->getImage("entrance_panel_left"),
+		key ? bt_global::skin->getImage("entrance_panel_key") : QString(),
+		descr);
+	setCentralSpacing(false);
+}
+
+
 bann4tasLab::bann4tasLab(QWidget *parent) : BannerOld(parent)
 {
 	// sx

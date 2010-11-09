@@ -40,6 +40,15 @@ class doorphone_device;
 
 
 
+class EntrancePanel : public Bann4Buttons
+{
+Q_OBJECT
+public:
+	EntrancePanel(QString descr, QString where, bool light, bool key);
+
+};
+
+
 // This is a class that describes a banner with 4 buttons a label and a text under them.
 // In this banner it is possible to have 4 buttons visible and the label hidden or two external buttons visible with the label
 // and the central two buttons hidden

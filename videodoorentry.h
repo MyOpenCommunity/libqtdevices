@@ -64,7 +64,7 @@ public:
 	VideoDoorEntry(const QDomNode &config_node);
 
 private:
-	void loadDevices(const QDomNode &config_node);
+	void loadItems(const QDomNode &config_node);
 };
 
 #else

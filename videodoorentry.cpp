@@ -50,6 +50,11 @@
 #include <QApplication> // QApplication::processEvents
 
 
+enum Items
+{
+	ENTRANCE_PANEL = 49, // to be changed
+};
+
 enum Pages
 {
 	VIDEO_CONTROL_MENU = 10001,  /* Video control menu */
@@ -72,39 +77,37 @@ bool VideoDoorEntry::ring_exclusion = false;
 
 
 #ifdef LAYOUT_TS_3_5
+
 VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
 {
 	buildPage();
-	loadDevices(config_node);
+	loadItems(config_node);
 }
 
-void VideoDoorEntry::loadDevices(const QDomNode &config_node)
+void VideoDoorEntry::loadItems(const QDomNode &config_node)
 {
-	QString unknown = getTextChild(config_node, "unknown");
-
-	foreach (const QDomNode &device, getChildren(config_node, "device"))
+	foreach (const QDomNode &item_node, getChildren(config_node, "items"))
 	{
-		int id = getTextChild(device, "id").toInt();
-		if (id != POSTO_ESTERNO)
-			qFatal("Type of device not handled by VideoDoorEntry page!");
-		QString img1 = IMG_PATH + getTextChild(device, "cimg1");
-		QString img2 = IMG_PATH + getTextChild(device, "cimg2");
-		QString img3 = IMG_PATH + getTextChild(device, "cimg3");
-		QString img4 = IMG_PATH + getTextChild(device, "cimg4");
-		QString descr = getTextChild(device, "descr");
-		QString light = getTextChild(device, "light");
-		QString key = getTextChild(device, "key");
-		QString where = getTextChild(device, "where");
+		SkinContext ctx(getTextChild(item_node, "cid").toInt());
+		int id = getTextChild(item_node, "id").toInt();
+		if (id != ENTRANCE_PANEL)
+		{
+			qWarning() << "Unknown item id" << id << "for VideoDoorEntry";
+			continue;
+		}
 
-		banner *b = new postoExt(this, descr, img1, img2, img3, img4, where, light, key, unknown);
-		b->setText(descr);
-		b->setId(id);
+		QString descr = getTextChild(item_node, "descr");
+		bool light = getTextChild(item_node, "light").toInt() == 1;
+		bool key = getTextChild(item_node, "key").toInt() == 1;
+		QString where = getTextChild(item_node, "where");
+
+		banner *b = new EntrancePanel(descr, where, light, key);
 		b->Draw();
 		page_content->appendBanner(b);
 	}
 }
-#else
 
+#else
 
 VideoDoorEntry::VideoDoorEntry()
 {
