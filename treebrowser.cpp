@@ -22,18 +22,38 @@
 #include <QList>
 #include <QStringList>
 
-/*
-QList<TreeBrowser::EntryInfo> TreeBrowser::filterEntries(const QList<TreeBrowser::EntryInfo> &entries, QStringList file_filters)
+namespace
 {
-	QList<TreeBrowser::EntryInfo> res;
+	MultimediaFileType directoryFileType(const QString &file_path)
+	{
+		QFileInfo file_info(file_path);
 
-	foreach (const TreeBrowser::EntryInfo &item, entries)
-		if (item.type == DIRECTORY || !file_filters.size() || QDir::match(file_filters, item.name))
-			res.append(item);
+		if (file_info.isDir())
+			return DIRECTORY;
 
-	return res;
+		QString ext = file_info.suffix().toLower();
+
+		foreach (const QString &extension, getFileExtensions(IMAGE))
+			if (ext == extension)
+				return IMAGE;
+
+		foreach (const QString &extension, getFileExtensions(VIDEO))
+			if (ext == extension)
+				return VIDEO;
+
+		foreach (const QString &extension, getFileExtensions(AUDIO))
+			if (ext == extension)
+				return AUDIO;
+
+	#ifdef PDF_EXAMPLE
+		foreach (const QString &extension, getFileExtensions(PDF))
+			if (ext == extension)
+				return PDF;
+	#endif
+
+		return UNKNOWN;
+	}
 }
-*/
 
 void TreeBrowser::setFilter(int mask)
 {
@@ -94,7 +114,7 @@ void DirectoryTreeBrowser::getFileList()
 
 	foreach (const QFileInfo &item, files_list)
 	{
-		MultimediaFileType file_type = fileType(item.absoluteFilePath());
+		MultimediaFileType file_type = directoryFileType(item.absoluteFilePath());
 		if (filter_mask & file_type)
 			result.append(EntryInfo(item.fileName(), file_type, item.absoluteFilePath()));
 	}
@@ -112,41 +132,14 @@ QString DirectoryTreeBrowser::pathKey()
 	return QString::number(level);
 }
 
-MultimediaFileType DirectoryTreeBrowser::fileType(const QString &pattern)
-{
-	QFileInfo file_info(pattern);
-
-	if (file_info.isDir())
-		return DIRECTORY;
-
-	QString ext = file_info.suffix().toLower();
-
-	foreach (const QString &extension, getFileExtensions(IMAGE))
-		if (ext == extension)
-			return IMAGE;
-
-	foreach (const QString &extension, getFileExtensions(VIDEO))
-		if (ext == extension)
-			return VIDEO;
-
-	foreach (const QString &extension, getFileExtensions(AUDIO))
-		if (ext == extension)
-			return AUDIO;
-
-#ifdef PDF_EXAMPLE
-	foreach (const QString &extension, getFileExtensions(PDF))
-		if (ext == extension)
-			return PDF;
-#endif
-
-	return UNKNOWN;
-}
-
 
 UPnpClientBrowser::UPnpClientBrowser()
 {
 	dev = new XmlDevice();
 	level = 0;
+
+	connect(dev, SIGNAL(responseReceived(XmlResponse)), SLOT(handleResponse(XmlResponse)));
+	connect(dev, SIGNAL(error(int,int)), SLOT(handleError(int,int)));
 }
 
 UPnpClientBrowser::~UPnpClientBrowser()
@@ -172,7 +165,10 @@ void UPnpClientBrowser::exitDirectory()
 
 void UPnpClientBrowser::getFileList()
 {
-	dev->listItems(-1);
+	if (level == 0)
+		dev->requestUPnPServers();
+	else
+		dev->listItems();
 }
 
 bool UPnpClientBrowser::isRoot()
@@ -184,21 +180,6 @@ QString UPnpClientBrowser::pathKey()
 {
 	return QString::number(level);
 }
-
-MultimediaFileType UPnpClientBrowser::fileType(const QString &pattern)
-{
-	if (pattern.contains("audioItem"))
-		return AUDIO;
-	else if (pattern.contains("videoItem"))
-		return VIDEO;
-	else if (pattern.contains("imageItem"))
-		return IMAGE;
-	else if (pattern.contains("directory"))
-		return DIRECTORY;
-
-	return UNKNOWN;
-}
-
 
 void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 {
@@ -232,9 +213,8 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 				QList<TreeBrowser::EntryInfo> infos;
 				foreach (const FilesystemEntry &entry, response[key].value<FilesystemEntries>())
 				{
-					MultimediaFileType file_type = fileType(entry.type);
-					if (filter_mask & file_type)
-						infos << TreeBrowser::EntryInfo(entry.name, file_type, entry.url);
+					if (filter_mask & entry.type)
+						infos << TreeBrowser::EntryInfo(entry.name, entry.type, entry.url);
 				}
 				emit listReceived(infos);
 			}
@@ -261,6 +241,9 @@ void UPnpClientBrowser::handleError(int response, int code)
 		emit directoryChangeError();
 		break;
 	case XmlResponses::TRACK_SELECTION:
+		break;
+	case XmlResponses::INVALID:
+		emit genericError();
 		break;
 	default:
 		Q_ASSERT_X(false, "UPnpClientBrowser::handleResponse", "Unhandled resposne.");
