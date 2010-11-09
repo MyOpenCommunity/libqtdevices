@@ -1061,7 +1061,7 @@ CompositeAmplifierDevice::CompositeAmplifierDevice(const QList<AmplifierDevice *
 
 QString CompositeAmplifierDevice::get_key()
 {
-	return key;;
+	return key;
 }
 
 void CompositeAmplifierDevice::turnOn()
