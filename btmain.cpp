@@ -809,9 +809,8 @@ void BtMain::checkScreensaver()
 	if (bt_global::display->inactiveBrightness() == BRIGHTNESS_OFF)
 		target_screensaver = ScreenSaver::LINES;
 #endif
-
 	int time_press = getTimePress();
-	int time = qMin(time_press, int(now() - last_event_time));
+	int time = qMin(time_press, abs(int(now() - last_event_time)));
 
 	if (blankScreenTime() != 0 &&
 		((bt_global::display->currentState() == DISPLAY_SCREENSAVER && time >= blankScreenTime()) ||
@@ -831,7 +830,6 @@ void BtMain::checkScreensaver()
 		if (bt_global::display->currentState() != DISPLAY_SCREENSAVER)
 			bt_global::audio_states->toState(AudioStates::SCREENSAVER);
 		bt_global::display->setState(DISPLAY_OFF);
-
 	}
 	else if (time >= freezeTime() && getBacklight() && !frozen)
 	{

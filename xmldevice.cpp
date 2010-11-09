@@ -138,13 +138,25 @@ namespace
 
 		QDomNode directories = getChildWithName(node, "directories");
 		foreach (const QDomNode &item, getChildren(directories, "name"))
-			entries << FilesystemEntry(item.toElement().text(), "directory", QString());
+			entries << FilesystemEntry(item.toElement().text(), DIRECTORY, QString());
 
 		QDomNode tracks = getChildWithName(node, "tracks");
 		foreach (const QDomNode &item, getChildren(tracks, "file"))
 		{
+			MultimediaFileType file_type = UNKNOWN;
+			QString upnp_class = getElement(item,"DIDL-Lite/item/upnp:class").text();
+
+			if (upnp_class.contains("audioItem"))
+				file_type = AUDIO;
+			else if (upnp_class.contains("videoItem"))
+				file_type = VIDEO;
+			else if (upnp_class.contains("imageItem"))
+				file_type = IMAGE;
+			else
+				file_type = UNKNOWN;
+
 			entries << FilesystemEntry(getElement(item, "DIDL-Lite/item/dc:title").text(),
-									   getElement(item,"DIDL-Lite/item/upnp:class").text(),
+									   file_type,
 									   getElement(item, "DIDL-Lite/item/res").text());
 		}
 
@@ -187,6 +199,7 @@ XmlDevice::XmlDevice()
 	connect(xml_client, SIGNAL(dataReceived(QString)), SLOT(handleData(QString)));
 	connect(xml_client, SIGNAL(connectionUp()), SLOT(sendMessageQueue()));
 	connect(xml_client, SIGNAL(connectionDown()), SLOT(cleanSessionInfo()));
+	connect(xml_client, SIGNAL(connectionDown()), SLOT(handleClientError()));
 
 	welcome_received = false;
 
@@ -227,9 +240,9 @@ void XmlDevice::browseUp()
 	sendCommand("CW26C7");
 }
 
-void XmlDevice::listItems(int max_results)
+void XmlDevice::listItems()
 {
-	sendCommand("RW26C15", QString::number(max_results));
+	sendCommand("RW26C15");
 }
 
 void XmlDevice::handleData(const QString &data)
@@ -243,6 +256,11 @@ void XmlDevice::handleData(const QString &data)
 	}
 	else
 		emit responseReceived(response);
+}
+
+void XmlDevice::handleClientError()
+{
+	emit error(XmlResponses::INVALID, XmlError::CLIENT);
 }
 
 void XmlDevice::sendMessageQueue()

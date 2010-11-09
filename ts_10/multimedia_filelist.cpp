@@ -35,8 +35,8 @@
 #include <QDebug>
 
 
-MultimediaFileListPage::MultimediaFileListPage(int filters) :
-	FileSelector(new DirectoryTreeBrowser)
+MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters) :
+	FileSelector(browser)
 {
 	browser->setFilter(filters);
 	connect(browser, SIGNAL(listReceived(QList<TreeBrowser::EntryInfo>)), SLOT(displayFiles(QList<TreeBrowser::EntryInfo>)));
@@ -54,7 +54,6 @@ MultimediaFileListPage::MultimediaFileListPage(int filters) :
 
 	disconnect(nav_bar, SIGNAL(backClick()), 0, 0); // connected by buildPage()
 
-	connect(this, SIGNAL(forwardClick()), SLOT(unmount()));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
 
 	// order here must match the order in enum Type

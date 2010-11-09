@@ -20,8 +20,9 @@
 #ifndef XMLDEVICE_H
 #define XMLDEVICE_H
 
+#include "generic_functions.h"
+
 #include <QObject>
-//#include <QMetaType>
 #include <QHash>
 #include <QVariant>
 
@@ -80,6 +81,7 @@ struct XmlError
 	{
 		PARSE = 0, /*!< Error during the parsing of the response's XML */
 		BROWSING,  /*!< Error during the browsing of the UPnP resource */
+		CLIENT,    /*!< Error in XmlClient */
 	};
 
 	/*!
@@ -117,21 +119,10 @@ struct XmlError
 struct FilesystemEntry
 {
 	/*!
-		\brief Entry types.
-	*/
-	enum Type
-	{
-		DIRECTORY = 0, /*!< The entry is a directory */
-		AUDIO,         /*!< The entry is an audio track */
-		VIDEO,         /*!< The entry is a video track */
-		IMAGE,         /*!< The entry is an image */
-	};
-
-	/*!
 		\brief Creates a new FilesystemEntry with the given name \a and the type
 		\a t.
 	*/
-	FilesystemEntry(const QString &n, const QString &t, const QString &entry_url = QString())
+	FilesystemEntry(const QString &n, MultimediaFileType t, const QString &entry_url = QString())
 		: name(n), type(t), url(entry_url) {}
 
 	/*!
@@ -142,7 +133,7 @@ struct FilesystemEntry
 	/*!
 		\brief The type of the entry.
 	*/
-	QString type;
+	MultimediaFileType type;
 
 	/*!
 		\brief The url of the entry
@@ -246,11 +237,8 @@ public:
 
 	/*!
 		\brief Requests the list of the items of the current directory.
-
-		\note if \a max_results is > 0 limits the result to the first
-		\a max_results items.
 	*/
-	void listItems(int max_results);
+	void listItems();
 
 signals:
 	/*!
@@ -267,6 +255,7 @@ signals:
 
 private slots:
 	void handleData(const QString &data);
+	void handleClientError();
 	void sendMessageQueue();
 	void cleanSessionInfo();
 

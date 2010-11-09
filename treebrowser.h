@@ -40,7 +40,7 @@ public:
 	 */
 	struct EntryInfo
 	{
-		/// The name of the entry; can be passed to enterDirectory(), getFileUrl(), getAllFileUrls()
+		/// The name of the entry; can be passed to enterDirectory()
 		QString name;
 		MultimediaFileType type;
 		QString url;
@@ -76,13 +76,6 @@ public:
 		Emits directoryChanged() after the operation completes.
 	 */
 	virtual void exitDirectory() = 0;
-
-	/*!
-		\brief Requests the file URL for playback
-
-		Emits urlReceived() when the operation completes.
-	 */
-	virtual void getFileUrl(const QString &file) = 0;
 
 	/*!
 		\brief Retrieves the directory entries for all items in the current directory.
@@ -121,11 +114,6 @@ protected:
 	TreeBrowser() : filter_mask(ALL) {}
 
 	/*!
-		\brief Returns a MultimediaFileType recognized using \a pattern.
-	*/
-	virtual MultimediaFileType fileType(const QString &pattern) = 0;
-
-	/*!
 		\brief Mask to filter file listing results.
 	*/
 	int filter_mask;
@@ -133,9 +121,7 @@ protected:
 signals:
 	void directoryChanged();
 	void directoryChangeError();
-
-	void urlReceived(const QString &url);
-	void urlRetrieveError();
+	void genericError();
 
 	void listReceived(QList<TreeBrowser::EntryInfo> list);
 	void listRetrieveError();
@@ -160,11 +146,9 @@ public:
 	virtual QStringList getRootPath();
 	virtual void enterDirectory(const QString &name);
 	virtual void exitDirectory();
-	virtual void getFileUrl(const QString &file);
 	virtual void getFileList();
 	virtual bool isRoot();
 	virtual QString pathKey();
-	virtual MultimediaFileType fileType(const QString &pattern);
 
 private:
 	int level;
@@ -186,11 +170,9 @@ public:
 
 	virtual void enterDirectory(const QString &name);
 	virtual void exitDirectory();
-	virtual void getFileUrl(const QString &file);
 	virtual void getFileList();
 	virtual bool isRoot();
 	virtual QString pathKey();
-	virtual MultimediaFileType fileType(const QString &pattern);
 
 private slots:
 	void handleResponse(const XmlResponse &response);

@@ -167,6 +167,7 @@ void TextOnImageLabel::setInternalText(const QString &text)
 void TextOnImageLabel::setBackgroundImage(const QString &path)
 {
 	setPixmap(*bt_global::icons_cache.getIcon(path));
+	setMinimumSize(pixmap()->size());
 }
 
 void TextOnImageLabel::paintEvent(QPaintEvent *e)
