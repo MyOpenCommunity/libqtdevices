@@ -181,6 +181,12 @@ QString UPnpClientBrowser::pathKey()
 	return QString::number(level);
 }
 
+void UPnpClientBrowser::cleanUp()
+{
+	level = 0;
+	dev->reset();
+}
+
 void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 {
 	foreach (int key, response.keys())

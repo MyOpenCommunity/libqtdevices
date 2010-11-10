@@ -47,7 +47,7 @@ public:
 	// Leave the filters parameter empty to not apply any filter,
 	// pass a QStringList (made with getFileFilter()) to display
 	// only wanted file types.
-	MultimediaFileListPage(TreeBrowser *browser, int filters = ALL);
+	MultimediaFileListPage(TreeBrowser *browser, int filters = ALL, bool mount_enabled = true);
 
 	void cleanUp();
 

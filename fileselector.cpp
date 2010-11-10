@@ -78,6 +78,16 @@ void FileSelector::browse(const QString &dir)
 	showPage();
 }
 
+void FileSelector::cleanUp()
+{
+	if (working)
+	{
+		working->abort();
+		working = 0;
+	}
+	browser->cleanUp();
+}
+
 const QList<TreeBrowser::EntryInfo> &FileSelector::getFiles() const
 {
 	return files_list;

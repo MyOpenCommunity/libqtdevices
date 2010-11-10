@@ -210,6 +210,8 @@ public:
 	*/
 	~XmlDevice();
 
+	void reset();
+
 	/*!
 		\brief Requests the list of the UPnP servers.
 	*/
