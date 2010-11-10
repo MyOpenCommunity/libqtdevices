@@ -215,6 +215,11 @@ XmlDevice::~XmlDevice()
 	xml_client->deleteLater();
 }
 
+void XmlDevice::reset()
+{
+	// TODO: implement
+}
+
 void XmlDevice::requestUPnPServers()
 {
 	sendCommand("RW26C1");

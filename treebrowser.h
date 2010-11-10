@@ -100,6 +100,8 @@ public:
 	 */
 	virtual QString pathKey() = 0;
 
+	virtual void cleanUp() {}
+
 	/*!
 		\brief Sets \a mask to filter file listing results.
 
@@ -173,6 +175,7 @@ public:
 	virtual void getFileList();
 	virtual bool isRoot();
 	virtual QString pathKey();
+	virtual void cleanUp();
 
 private slots:
 	void handleResponse(const XmlResponse &response);

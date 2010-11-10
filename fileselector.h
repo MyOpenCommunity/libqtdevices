@@ -53,7 +53,7 @@ public slots:
 	void browseUp();
 	virtual void showPage();
 	virtual void browse(const QString &start_path);
-	virtual void cleanUp() { files_list.clear(); }
+	virtual void cleanUp();
 
 #ifdef BT_HARDWARE_TS_10
 	// only meaningful for physical file systems

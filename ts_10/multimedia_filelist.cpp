@@ -184,6 +184,8 @@ void MultimediaFileListPage::startPlayback(int item)
 
 void MultimediaFileListPage::cleanUp()
 {
+	FileSelector::cleanUp();
+
 	page_content->clear();
 	setFiles(QList<TreeBrowser::EntryInfo>());
 }
