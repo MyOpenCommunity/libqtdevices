@@ -45,6 +45,10 @@ private slots:
 	void testBuildCommand();
 	void testBuildCommandWithArg();
 
+	void testBadXml();
+	void testBadHeader();
+	void testUnhandledResponse();
+
 private:
 	XmlDevice *dev;
 };
