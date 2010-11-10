@@ -327,7 +327,7 @@ void TestXmlDevice::testResetWithAck()
 void TestXmlDevice::testBuildCommand()
 {
 	QString data("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-				 "<OWNxml xmlns=\"http://www.bticino.it/xopen/v1 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
+				 "<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
 				 "	<Hdr>\n"
 				 "		<MsgID>\n"
 				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>\n"
@@ -358,7 +358,7 @@ void TestXmlDevice::testBuildCommand()
 void TestXmlDevice::testBuildCommandWithArg()
 {
 	QString data("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-				 "<OWNxml xmlns=\"http://www.bticino.it/xopen/v1 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
+				 "<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
 				 "	<Hdr>\n"
 				 "		<MsgID>\n"
 				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>\n"
