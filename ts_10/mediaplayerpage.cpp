@@ -34,7 +34,7 @@ MediaPlayerPage::MediaPlayerPage() : refresh_data(this)
 	current_file = 0;
 
 	// terminate player when unmounted
-	connect(&MountWatcher::getWatcher(), SIGNAL(directoryMounted(QString,MountType)), SLOT(unmounted(QString)));
+	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(QString,MountType)), SLOT(unmounted(QString)));
 
 	// pause local playback when receiving a VCT call
 	connect(bt_global::audio_states, SIGNAL(stateAboutToChange(int)), SLOT(audioStateAboutToChange(int)));
