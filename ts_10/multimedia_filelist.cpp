@@ -51,8 +51,6 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	if (mount_enabled)
 	{
 		nav_bar = new NavigationBar("eject");
-		connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
-			SLOT(unmounted(const QString &)));
 		connect(nav_bar, SIGNAL(forwardClick()), SLOT(unmount()));
 	}
 	else
@@ -188,17 +186,4 @@ void MultimediaFileListPage::cleanUp()
 {
 	page_content->clear();
 	setFiles(QList<TreeBrowser::EntryInfo>());
-}
-
-void MultimediaFileListPage::unmounted(const QString &dir)
-{
-	if (dir == getRootPath() && isVisible())
-		emit Closed();
-	setRootPath("");
-}
-
-
-void MultimediaFileListPage::unmount()
-{
-	MountWatcher::getWatcher().unmount(getRootPath());
 }

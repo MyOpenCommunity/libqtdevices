@@ -62,8 +62,6 @@ signals:
 private slots:
 	void startPlayback(int item);
 	void displayFiles(const QList<TreeBrowser::EntryInfo> &list);
-	void unmount();
-	void unmounted(const QString &dir);
 
 private:
 	// icons for different file type
