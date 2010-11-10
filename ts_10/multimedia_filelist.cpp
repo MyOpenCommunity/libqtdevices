@@ -35,7 +35,7 @@
 #include <QDebug>
 
 
-MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters) :
+MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters, bool mount_enabled) :
 	FileSelector(browser)
 {
 	browser->setFilter(filters);
@@ -47,14 +47,22 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 
 	connect(this, SIGNAL(Closed()), item_list, SLOT(clear()));
 
-	NavigationBar *nav_bar = new NavigationBar("eject");
+	NavigationBar *nav_bar;
+	if (mount_enabled)
+	{
+		nav_bar = new NavigationBar("eject");
+		connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
+			SLOT(unmounted(const QString &)));
+		connect(nav_bar, SIGNAL(forwardClick()), SLOT(unmount()));
+	}
+	else
+		nav_bar = new NavigationBar;
 
 	buildPage(item_list, item_list, nav_bar, 0,
 		  new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT));
 	layout()->setContentsMargins(0, 5, 25, 10);
 
 	disconnect(nav_bar, SIGNAL(backClick()), 0, 0); // connected by buildPage()
-
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
 
 	// order here must match the order in enum Type
@@ -180,4 +188,17 @@ void MultimediaFileListPage::cleanUp()
 {
 	page_content->clear();
 	setFiles(QList<TreeBrowser::EntryInfo>());
+}
+
+void MultimediaFileListPage::unmounted(const QString &dir)
+{
+	if (dir == getRootPath() && isVisible())
+		emit Closed();
+	setRootPath("");
+}
+
+
+void MultimediaFileListPage::unmount()
+{
+	MountWatcher::getWatcher().unmount(getRootPath());
 }
