@@ -727,6 +727,7 @@ void BtMain::makeActive()
 		{
 			if (bt_global::display->currentState() != DISPLAY_FREEZED)
 			{
+				bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
 				emit stopscreensaver(); // emitted both in DISPLAY_OFF and DISPLAY_SCREENSAVER
 				if (screensaver && screensaver->isRunning())
 					screensaver->stop();
@@ -735,10 +736,7 @@ void BtMain::makeActive()
 			}
 		}
 		else
-		{
-			bt_global::display->setState(DISPLAY_OPERATIVE);
 			freeze(false);
-		}
 	}
 }
 
