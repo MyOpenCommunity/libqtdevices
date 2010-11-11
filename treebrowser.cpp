@@ -244,6 +244,8 @@ void UPnpClientBrowser::handleError(int response, int code)
 		break;
 	case XmlResponses::SERVER_SELECTION:
 	case XmlResponses::CHDIR:
+		emit directoryChangeError();
+		break;
 	case XmlResponses::BROWSE_UP:
 		if (level == 1)
 		{
