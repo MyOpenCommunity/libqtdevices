@@ -47,13 +47,13 @@ public:
 	// Leave the filters parameter empty to not apply any filter,
 	// pass a QStringList (made with getFileFilter()) to display
 	// only wanted file types.
-	MultimediaFileListPage(TreeBrowser *browser, int filters = ALL, bool mount_enabled = true);
+	MultimediaFileListPage(TreeBrowser *browser, int filters = EntryInfo::ALL, bool mount_enabled = true);
 
 	void cleanUp();
 
 private slots:
 	void startPlayback(int item);
-	void displayFiles(const QList<TreeBrowser::EntryInfo> &list);
+	void displayFiles(const EntryInfoList &list);
 
 private:
 	// icons for different file type
@@ -69,7 +69,7 @@ private:
 
 	// last clicked item (for files)
 	int last_clicked;
-	MultimediaFileType last_clicked_type;
+	EntryInfo::Type last_clicked_type;
 
 #ifdef PDF_EXAMPLE
 	PdfPage *pdfdisplay;

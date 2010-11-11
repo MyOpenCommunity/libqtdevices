@@ -25,9 +25,7 @@
 
 #include <QDir>
 #include <QString>
-#include <QHash>
 
-typedef QHash<QString,QString> Metadata;
 
 /*!
 	\ingroup Core
@@ -37,22 +35,6 @@ class TreeBrowser : public QObject
 {
 Q_OBJECT
 public:
-	/*!
-		\brief Information about a single entry in the file list
-	 */
-	struct EntryInfo
-	{
-		/// The name of the entry; can be passed to enterDirectory()
-		QString name;
-		MultimediaFileType type;
-		QString url;
-
-		Metadata metadata;
-
-		EntryInfo(const QString &_name, MultimediaFileType _type, const QString &_url, const Metadata &_metadata = Metadata())
-			: name(_name), type(_type), url(_url), metadata(_metadata) { }
-	};
-
 	/*!
 		\brief Set the root navigation path for the browser
 
@@ -117,7 +99,7 @@ protected:
 	/*!
 		\brief Constructor.
 	*/
-	TreeBrowser() : filter_mask(ALL) {}
+	TreeBrowser() : filter_mask(EntryInfo::ALL) {}
 
 	/*!
 		\brief Mask to filter file listing results.
@@ -129,14 +111,9 @@ signals:
 	void directoryChangeError();
 	void genericError();
 
-	void listReceived(QList<TreeBrowser::EntryInfo> list);
+	void listReceived(EntryInfoList list);
 	void listRetrieveError();
 };
-
-inline bool operator ==(const TreeBrowser::EntryInfo &a, const TreeBrowser::EntryInfo &b)
-{
-	return a.name == b.name && a.type == b.type;
-}
 
 
 /*!

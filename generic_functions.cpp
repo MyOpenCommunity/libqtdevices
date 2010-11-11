@@ -99,29 +99,29 @@ namespace
 	}
 }
 
-QStringList getFileExtensions(MultimediaFileType type)
+QStringList getFileExtensions(EntryInfo::Type type)
 {
 	QStringList exts;
 	const char **files = 0;
 
 	switch (type)
 	{
-	case AUDIO:
+	case EntryInfo::AUDIO:
 		files = audio_files;
 		break;
-	case VIDEO:
+	case EntryInfo::VIDEO:
 		files = video_files;
 		break;
-	case IMAGE:
+	case EntryInfo::IMAGE:
 		files = image_files;
 		break;
 #ifdef BUILD_EXAMPLES
-	case PDF:
+	case EntryInfo::PDF:
 		files = pdf_files;
 		break;
 #endif
-	case UNKNOWN:
-	case DIRECTORY:
+	case EntryInfo::UNKNOWN:
+	case EntryInfo::DIRECTORY:
 		break;
 	default:
 		Q_ASSERT_X(false, "getFileExtensions", qPrintable(QString("type %1 not handled").arg(type)));
@@ -136,27 +136,27 @@ QStringList getFileExtensions(MultimediaFileType type)
 	return exts;
 }
 
-QStringList getFileFilter(MultimediaFileType type)
+QStringList getFileFilter(EntryInfo::Type type)
 {
 	QStringList filters;
 	const char **files = 0;
 
 	switch (type)
 	{
-	case UNKNOWN:
-	case DIRECTORY:
+	case EntryInfo::UNKNOWN:
+	case EntryInfo::DIRECTORY:
 		break;
-	case AUDIO:
+	case EntryInfo::AUDIO:
 		files = audio_files;
 		break;
-	case VIDEO:
+	case EntryInfo::VIDEO:
 		files = video_files;
 		break;
-	case IMAGE:
+	case EntryInfo::IMAGE:
 		files = image_files;
 		break;
 #ifdef BUILD_EXAMPLES
-	case PDF:
+	case EntryInfo::PDF:
 		files = pdf_files;
 		break;
 #endif

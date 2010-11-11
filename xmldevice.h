@@ -23,7 +23,6 @@
 #include "generic_functions.h"
 
 #include <QObject>
-#include <QHash>
 #include <QVariant>
 
 class QDomNode;
@@ -33,8 +32,6 @@ struct XmlError;
 
 typedef QHash<int, QVariant> XmlResponse;
 typedef QHash<int,QVariant> (*xmlHandler_ptr)(const QDomNode&);
-typedef QList<UPnpEntry> UPnpEntries;
-typedef QHash<QString,QString> UPnpMetadata;
 
 Q_DECLARE_METATYPE(XmlError);
 Q_DECLARE_METATYPE(XmlResponse);
@@ -106,55 +103,6 @@ struct XmlError
 	*/
 	XmlError::Code code;
 };
-
-
-/*!
-	\ingroup Multimedia
-	\brief Abstraction of a single entry of an UPnP resource browsing result.
-
-	It has two fields:
-	- FilesystemEntry::name that refers to the name of the entry, which could be
-		the name of a directory or the tags of a track.
-	- FilesystemEntry::type that refers to the FilesystemEntry::Type of the entry.
-*/
-struct UPnpEntry
-{
-	/*!
-		\brief Creates a new FilesystemEntry with the given name \a and the type
-		\a t.
-	*/
-	UPnpEntry(const QString &n, MultimediaFileType t, const QString &entry_url = QString(), const UPnpMetadata &md = UPnpMetadata())
-		: name(n), type(t), url(entry_url), metadata(md) {}
-
-	/*!
-		\brief The name of the entry.
-	*/
-	QString name;
-
-	/*!
-		\brief The type of the entry.
-	*/
-	MultimediaFileType type;
-
-	/*!
-		\brief The url of the entry
-		\note It's used only for FilesystenEntry::TRACK entries.
-	*/
-	QString url;
-
-	UPnpMetadata metadata;
-};
-
-/*!
-	\brief Returns true if \a a and \b are equal, false otherwise.
-*/
-inline bool operator ==(const UPnpEntry &a, const UPnpEntry &b)
-{
-	return a.name == b.name && a.type == b.type;
-}
-
-Q_DECLARE_METATYPE(UPnpEntries);
-
 
 /*!
 	\ingroup Multimedia

@@ -99,7 +99,7 @@ public slots:
 
 private slots:
 	void setSelection(const QString &path, bool selected);
-	void displayFiles(const QList<TreeBrowser::EntryInfo> &list);
+	void displayFiles(const EntryInfoList &list);
 
 private:
 	void saveFileList();

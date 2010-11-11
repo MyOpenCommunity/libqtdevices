@@ -191,7 +191,7 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		}
 		case PAGE_UPNP:
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_UPNP))
-				p = new MultimediaFileListPage(new UPnpClientBrowser, DIRECTORY | AUDIO, false);
+				p = new MultimediaFileListPage(new UPnpClientBrowser, EntryInfo::DIRECTORY | EntryInfo::AUDIO, false);
 			break;
 #ifdef BUILD_EXAMPLES
 		case PAGE_PDF:
@@ -378,7 +378,7 @@ SongSearch::AsyncRes SongSearch::scanPath(const QString &path, bool * volatile t
 
 	dirs.setFilter(QDir::Dirs|QDir::NoDotAndDotDot);
 	files.setFilter(QDir::Files);
-	files.setNameFilters(getFileFilter(AUDIO));
+	files.setNameFilters(getFileFilter(EntryInfo::AUDIO));
 
 	queue << path;
 

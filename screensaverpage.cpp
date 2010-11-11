@@ -186,7 +186,7 @@ void FileList::addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int i
 
 	// If the item represent a directory, creates the button to enter in it.
 	int type = metadata["type"].toInt();
-	if (type == DIRECTORY)
+	if (type == EntryInfo::DIRECTORY)
 	{
 		// button on the right
 		BtButton *btn = new BtButton;
@@ -222,10 +222,10 @@ SlideshowSelector::SlideshowSelector() :
 	FileSelector(new DirectoryTreeBrowser),
 	handler(new ImageSelectionHandler(SLIDESHOW_FILENAME))
 {
-	browser->setFilter(DIRECTORY | IMAGE);
-	connect(browser, SIGNAL(listReceived(QList<TreeBrowser::EntryInfo>)), SLOT(displayFiles(QList<TreeBrowser::EntryInfo>)));
+	browser->setFilter(EntryInfo::DIRECTORY | EntryInfo::IMAGE);
+	connect(browser, SIGNAL(listReceived(EntryInfoList)), SLOT(displayFiles(EntryInfoList)));
 
-	handler->setFileFilter(getFileFilter(IMAGE));
+	handler->setFileFilter(getFileFilter(EntryInfo::IMAGE));
 
 	FileList *item_list = new FileList(0, 4);
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
@@ -259,7 +259,7 @@ void SlideshowSelector::cleanUp()
 	saveFileList();
 }
 
-void SlideshowSelector::displayFiles(const QList<TreeBrowser::EntryInfo> &list)
+void SlideshowSelector::displayFiles(const EntryInfoList &list)
 {
 	setFiles(list);
 
@@ -276,7 +276,7 @@ void SlideshowSelector::displayFiles(const QList<TreeBrowser::EntryInfo> &list)
 	}
 
 	QList<ItemList::ItemInfo> names_list;
-	foreach (const TreeBrowser::EntryInfo &item, list)
+	foreach (const EntryInfo &item, list)
 	{
 		QStringList icons;
 		icons << selbutton_on;
@@ -285,13 +285,13 @@ void SlideshowSelector::displayFiles(const QList<TreeBrowser::EntryInfo> &list)
 		QVariantMap metadata;
 		metadata.insert("selected", handler->isItemSelected(item.url));
 
-		if (item.type == DIRECTORY)
+		if (item.type == EntryInfo::DIRECTORY)
 		{
-			metadata.insert("type", DIRECTORY);
+			metadata.insert("type", EntryInfo::DIRECTORY);
 			icons << browse_directory;
 		}
 		else
-			metadata.insert("type", IMAGE);
+			metadata.insert("type", EntryInfo::IMAGE);
 
 
 		ItemList::ItemInfo info(item.name, item.url, icons, metadata);

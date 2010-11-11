@@ -27,41 +27,76 @@
 #include <QStringList>
 #include <QString>
 #include <QMap>
+#include <QHash>
+#include <QMetaType>
 
 class QDate;
 class QDateTime;
 
+// TODO: move elsewhere
+/*!
+	\ingroup Multimedia
+	\brief Abstraction of a single entry of an UPnP resource browsing result.
+*/
+struct EntryInfo
+{
+	typedef QHash<QString,QString> Metadata;
+
+	/*!
+		\brief EntryInfo types.
+	*/
+	enum Type
+	{
+		UNKNOWN   = 0x01, /*!< Unknown filetype */
+		DIRECTORY = 0x02, /*!< Directory */
+		AUDIO     = 0x04, /*!< Audio filetype */
+		VIDEO     = 0x08, /*!< Video filetype */
+		IMAGE     = 0x10, /*!< Image filetype */
+	#ifdef BUILD_EXAMPLES
+		PDF       = 0x20, /*!< PDF filetype */
+	#endif
+		ALL       = UNKNOWN | DIRECTORY | AUDIO | VIDEO | IMAGE /*!< All content */
+	#ifdef BUILD_EXAMPLES
+					| PDF
+	#endif
+	};
+
+	/// The name of the entry; can be passed to enterDirectory()
+	QString name;
+	EntryInfo::Type type;
+	QString url;
+
+	EntryInfo::Metadata metadata;
+
+	EntryInfo(const QString &_name, EntryInfo::Type _type, const QString &_url, const EntryInfo::Metadata &_metadata = EntryInfo::Metadata())
+		: name(_name), type(_type), url(_url), metadata(_metadata) { }
+};
 
 /*!
-	\brief Filesystem types.
+	\brief Returns true if \a a and \b are equal, false otherwise.
 */
-enum MultimediaFileType
+inline bool operator ==(const EntryInfo &a, const EntryInfo &b)
 {
-	UNKNOWN   = 0x01, /*!< Unknown filetype */
-	DIRECTORY = 0x02, /*!< Directory */
-	AUDIO     = 0x04, /*!< Audio filetype */
-	VIDEO     = 0x08, /*!< Video filetype */
-	IMAGE     = 0x10, /*!< Image filetype */
-#ifdef BUILD_EXAMPLES
-	PDF       = 0x20, /*!< PDF filetype */
-#endif
-	ALL       = UNKNOWN | DIRECTORY | AUDIO | VIDEO | IMAGE /*!< All content */
-#ifdef BUILD_EXAMPLES
-				| PDF
-#endif
-};
+	return a.name == b.name && a.type == b.type;
+}
+
+typedef QList<EntryInfo> EntryInfoList;
+
+Q_DECLARE_METATYPE(EntryInfoList);
+
+
 
 /*!
 	\ingroup Core
 	\brief Returns a list of the recognized file types associated to \a type.
 */
-QStringList getFileExtensions(MultimediaFileType type);
+QStringList getFileExtensions(EntryInfo::Type type);
 
 /*!
 	\ingroup Core
 	\brief Returns a list of file filter expressions associated to \a type.
 */
-QStringList getFileFilter(MultimediaFileType type);
+QStringList getFileFilter(EntryInfo::Type type);
 
 /*!
 	\ingroup Core

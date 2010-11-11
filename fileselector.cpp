@@ -88,12 +88,12 @@ void FileSelector::cleanUp()
 	browser->cleanUp();
 }
 
-const QList<TreeBrowser::EntryInfo> &FileSelector::getFiles() const
+const EntryInfoList &FileSelector::getFiles() const
 {
 	return files_list;
 }
 
-void FileSelector::setFiles(const QList<TreeBrowser::EntryInfo> &files)
+void FileSelector::setFiles(const EntryInfoList &files)
 {
 	files_list = files;
 }
@@ -119,13 +119,13 @@ void FileSelector::showPage()
 
 void FileSelector::itemIsClicked(int item)
 {
-	const TreeBrowser::EntryInfo& clicked_element = files_list[item];
+	const EntryInfo& clicked_element = files_list[item];
 	qDebug() << "[AUDIO] FileSelector::itemIsClicked " << item << "-> " << clicked_element.name;
 
 	// save the info of old directory
 	pages_indexes[browser->pathKey()] = page_content->currentPage();
 
-	if (clicked_element.type == DIRECTORY)
+	if (clicked_element.type == EntryInfo::DIRECTORY)
 	{
 		startOperation();
 		browser->enterDirectory(clicked_element.name);
