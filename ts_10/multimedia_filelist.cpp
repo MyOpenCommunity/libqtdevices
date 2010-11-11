@@ -76,22 +76,14 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	browse_directory = bt_global::skin->getImage("browse_directory");
 
 	slideshow = new SlideshowPage;
-	connect(this, SIGNAL(displayImages(QList<QString>, unsigned)),
-		slideshow, SLOT(displayImages(QList<QString>, unsigned)));
 	connect(slideshow, SIGNAL(Closed()), SLOT(showPage()));
 
 	videoplayer = new VideoPlayerPage;
-	connect(this, SIGNAL(displayVideos(QList<QString>, unsigned)),
-		videoplayer, SLOT(displayVideos(QList<QString>, unsigned)));
 
 	audioplayer = AudioPlayerPage::getAudioPlayerPage(AudioPlayerPage::LOCAL_FILE);
-	connect(this, SIGNAL(playAudioFiles(QList<QString>, unsigned)),
-		audioplayer, SLOT(playAudioFiles(QList<QString>, unsigned)));
 
 #ifdef PDF_EXAMPLE
 	pdfdisplay = new PdfPage;
-	connect(this, SIGNAL(displayPdf(QString)),
-		pdfdisplay, SLOT(displayPdf(QString)));
 	connect(pdfdisplay, SIGNAL(Closed()), SLOT(showPageNoReload()));
 #endif
 	last_clicked_type = UNKNOWN;
@@ -171,14 +163,14 @@ void MultimediaFileListPage::startPlayback(int item)
 	}
 
 	if (last_clicked_type == IMAGE)
-		emit displayImages(urls, last_clicked);
+		slideshow->displayImages(urls, last_clicked);
 	else if (last_clicked_type == VIDEO)
-		emit displayVideos(urls, last_clicked);
+		videoplayer->displayVideos(urls, last_clicked);
 	else if (last_clicked_type == AUDIO)
-		emit playAudioFiles(urls, last_clicked);
+		audioplayer->playAudioFiles(urls, last_clicked);
 #ifdef PDF_EXAMPLE
 	else if (type == PDF)
-		emit displayPdf(files[current]);
+		pdfdisplay->displayPdf(files[current]);
 #endif
 }
 

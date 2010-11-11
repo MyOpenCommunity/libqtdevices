@@ -51,14 +51,6 @@ public:
 
 	void cleanUp();
 
-signals:
-	void displayImages(QList<QString> images, unsigned element);
-	void displayVideos(QList<QString> images, unsigned element);
-	void playAudioFiles(QList<QString> images, unsigned element);
-#ifdef PDF_EXAMPLE
-	void displayPdf(QString file);
-#endif
-
 private slots:
 	void startPlayback(int item);
 	void displayFiles(const QList<TreeBrowser::EntryInfo> &list);
