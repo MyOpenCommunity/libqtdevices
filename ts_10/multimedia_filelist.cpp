@@ -147,7 +147,11 @@ void MultimediaFileListPage::startPlayback(int item)
 {
 	const EntryInfoList &files_list = getFiles();
 	const EntryInfo &current_file = files_list[item];
+
+	// For now we mantain both methods of passing data to the players,
+	// in the future we probabily use the EntryInfoList only.
 	QList<QString> urls;
+	EntryInfoList filtered;
 
 	for (int i = 0; i < files_list.size(); ++i)
 	{
@@ -159,6 +163,7 @@ void MultimediaFileListPage::startPlayback(int item)
 			last_clicked = urls.size();
 			last_clicked_type = fn.type;
 		}
+		filtered.append(fn);
 		urls.append(fn.url);
 	}
 
@@ -167,7 +172,7 @@ void MultimediaFileListPage::startPlayback(int item)
 	else if (last_clicked_type == EntryInfo::VIDEO)
 		videoplayer->displayVideos(urls, last_clicked);
 	else if (last_clicked_type == EntryInfo::AUDIO)
-		audioplayer->playAudioFiles(urls, last_clicked);
+		audioplayer->playAudioFiles(filtered, last_clicked);
 #ifdef PDF_EXAMPLE
 	else if (type == EntryInfo::PDF)
 		pdfdisplay->displayPdf(files[current]);
