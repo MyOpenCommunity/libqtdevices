@@ -200,7 +200,6 @@ enum ItemType
 	DATA=30,                                      /*!<  Date */
 	TEMPERATURA=31,                               /*!<  Temperature */
 	OROLOGIO=32,                                  /*!<  Clock */
-	POSTO_ESTERNO=49,                             /*!< Posto esterno */
 	LANSETTINGS=72,                               /*!< LAN settings and information */
 	// for SpecialPage, HeaderWidget
 #ifdef CONFIG_TS_3_5

@@ -110,9 +110,7 @@ void VideoDoorEntry::loadItems(const QDomNode &config_node)
 		EntrancePanel *b = new EntrancePanel(descr, where, light, key);
 		CallNotifierPage *p = new CallNotifierPage(descr, where, light, key);
 
-		QList<QObject*> items;
-		items << b << p;
-		foreach (QObject *obj, items)
+		foreach (QObject *obj, QList<QObject*>() << b << p)
 		{
 			connect(obj, SIGNAL(stairLightActivate(QString)), dev, SLOT(stairLightActivate(QString)));
 			connect(obj, SIGNAL(stairLightRelease(QString)), dev, SLOT(stairLightRelease(QString)));
@@ -146,6 +144,7 @@ void VideoDoorEntry::valueReceived(const DeviceValues &values_list)
 		++it;
 	}
 }
+
 
 CallNotifierPage::CallNotifierPage(QString descr, QString _where, bool light, bool key)
 {
@@ -185,6 +184,7 @@ CallNotifierPage::CallNotifierPage(QString descr, QString _where, bool light, bo
 		connect(b, SIGNAL(leftReleased()), SLOT(lockReleased()));
 		main_layout->addWidget(b);
 	}
+
 	main_layout->addStretch();
 
 	NavigationBar *nav_bar = new NavigationBar;
@@ -218,7 +218,6 @@ void CallNotifierPage::lockReleased()
 {
 	emit releaseLock(where);
 }
-
 
 #else
 
