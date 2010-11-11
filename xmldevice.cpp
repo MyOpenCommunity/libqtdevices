@@ -142,6 +142,10 @@ namespace
 				metadata[tag] = value;
 		}
 
+		QString duration = getElement(item, "DIDL-Lite/item/res").attribute("duration");
+		if (!duration.isEmpty())
+			metadata["total_time"] = duration;
+
 		return metadata;
 	}
 
