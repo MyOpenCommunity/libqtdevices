@@ -131,6 +131,20 @@ namespace
 		return result;
 	}
 
+	UPnpMetadata getMetadata(const QDomNode &item)
+	{
+		UPnpMetadata metadata;
+
+		foreach (const QString &tag, QStringList() << "title" << "artist" << "album")
+		{
+			QString value = getElement(item, QString("DIDL-Lite/item/%1:%2").arg(tag == "title" ? "dc" : "upnp").arg(tag)).text();
+			if (!value.isEmpty())
+				metadata[tag] = value;
+		}
+
+		return metadata;
+	}
+
 	QHash<int,QVariant> handle_listitems(const QDomNode &node)
 	{
 		QHash<int,QVariant> result;
@@ -155,9 +169,14 @@ namespace
 			else
 				file_type = UNKNOWN;
 
+			UPnpMetadata metadata;
+			if (file_type == AUDIO) // Maybe video, too?
+				metadata = getMetadata(item);
+
 			entries << UPnpEntry(getElement(item, "DIDL-Lite/item/dc:title").text(),
 									   file_type,
-									   getElement(item, "DIDL-Lite/item/res").text());
+									   getElement(item, "DIDL-Lite/item/res").text(),
+									   metadata);
 		}
 
 		QVariant value;

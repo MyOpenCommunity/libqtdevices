@@ -34,6 +34,7 @@ struct XmlError;
 typedef QHash<int, QVariant> XmlResponse;
 typedef QHash<int,QVariant> (*xmlHandler_ptr)(const QDomNode&);
 typedef QList<UPnpEntry> UPnpEntries;
+typedef QHash<QString,QString> UPnpMetadata;
 
 Q_DECLARE_METATYPE(XmlError);
 Q_DECLARE_METATYPE(XmlResponse);
@@ -122,8 +123,8 @@ struct UPnpEntry
 		\brief Creates a new FilesystemEntry with the given name \a and the type
 		\a t.
 	*/
-	UPnpEntry(const QString &n, MultimediaFileType t, const QString &entry_url = QString())
-		: name(n), type(t), url(entry_url) {}
+	UPnpEntry(const QString &n, MultimediaFileType t, const QString &entry_url = QString(), const UPnpMetadata &md = UPnpMetadata())
+		: name(n), type(t), url(entry_url), metadata(md) {}
 
 	/*!
 		\brief The name of the entry.
@@ -140,6 +141,8 @@ struct UPnpEntry
 		\note It's used only for FilesystenEntry::TRACK entries.
 	*/
 	QString url;
+
+	UPnpMetadata metadata;
 };
 
 /*!

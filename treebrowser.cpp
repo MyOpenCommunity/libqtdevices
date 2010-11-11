@@ -221,7 +221,7 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 				foreach (const UPnpEntry &entry, response[key].value<UPnpEntries>())
 				{
 					if (filter_mask & entry.type)
-						infos << TreeBrowser::EntryInfo(entry.name, entry.type, entry.url);
+						infos << TreeBrowser::EntryInfo(entry.name, entry.type, entry.url, entry.metadata);
 				}
 				emit listReceived(infos);
 			}
