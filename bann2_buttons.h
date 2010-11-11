@@ -113,7 +113,11 @@ public:
 
 signals:
 	void rightClicked();
+	void rightPressed();
+	void rightReleased();
 	void leftClicked();
+	void leftPressed();
+	void leftReleased();
 
 protected:
 	void setBackgroundImage(const QString &i);

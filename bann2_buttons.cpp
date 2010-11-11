@@ -101,7 +101,12 @@ void Bann2Buttons::createBanner()
 	l->addWidget(description, 1, 0, 1, 3);
 
 	connect(right_button, SIGNAL(clicked()), SIGNAL(rightClicked()));
+	connect(right_button, SIGNAL(pressed()), SIGNAL(rightPressed()));
+	connect(right_button, SIGNAL(released()), SIGNAL(rightReleased()));
+
 	connect(left_button, SIGNAL(clicked()), SIGNAL(leftClicked()));
+	connect(left_button, SIGNAL(pressed()), SIGNAL(leftPressed()));
+	connect(left_button, SIGNAL(released()), SIGNAL(leftReleased()));
 }
 
 void Bann2Buttons::initBanner(const QString &left, const QString &right, const QString &banner_text,
