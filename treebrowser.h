@@ -25,7 +25,9 @@
 
 #include <QDir>
 #include <QString>
+#include <QHash>
 
+typedef QHash<QString,QString> Metadata;
 
 /*!
 	\ingroup Core
@@ -45,8 +47,10 @@ public:
 		MultimediaFileType type;
 		QString url;
 
-		EntryInfo(const QString &_name, MultimediaFileType _type, const QString &_url)
-			: name(_name), type(_type), url(_url) { }
+		Metadata metadata;
+
+		EntryInfo(const QString &_name, MultimediaFileType _type, const QString &_url, const Metadata &_metadata = Metadata())
+			: name(_name), type(_type), url(_url), metadata(_metadata) { }
 	};
 
 	/*!
