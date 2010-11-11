@@ -134,11 +134,11 @@ namespace
 	QHash<int,QVariant> handle_listitems(const QDomNode &node)
 	{
 		QHash<int,QVariant> result;
-		FilesystemEntries entries;
+		UPnpEntries entries;
 
 		QDomNode directories = getChildWithName(node, "directories");
 		foreach (const QDomNode &item, getChildren(directories, "name"))
-			entries << FilesystemEntry(item.toElement().text(), DIRECTORY, QString());
+			entries << UPnpEntry(item.toElement().text(), DIRECTORY, QString());
 
 		QDomNode tracks = getChildWithName(node, "tracks");
 		foreach (const QDomNode &item, getChildren(tracks, "file"))
@@ -155,7 +155,7 @@ namespace
 			else
 				file_type = UNKNOWN;
 
-			entries << FilesystemEntry(getElement(item, "DIDL-Lite/item/dc:title").text(),
+			entries << UPnpEntry(getElement(item, "DIDL-Lite/item/dc:title").text(),
 									   file_type,
 									   getElement(item, "DIDL-Lite/item/res").text());
 		}

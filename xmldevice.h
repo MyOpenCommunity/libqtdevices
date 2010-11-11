@@ -28,12 +28,12 @@
 
 class QDomNode;
 class XmlClient;
-struct FilesystemEntry;
+struct UPnpEntry;
 struct XmlError;
 
 typedef QHash<int, QVariant> XmlResponse;
 typedef QHash<int,QVariant> (*xmlHandler_ptr)(const QDomNode&);
-typedef QList<FilesystemEntry> FilesystemEntries;
+typedef QList<UPnpEntry> UPnpEntries;
 
 Q_DECLARE_METATYPE(XmlError);
 Q_DECLARE_METATYPE(XmlResponse);
@@ -116,13 +116,13 @@ struct XmlError
 		the name of a directory or the tags of a track.
 	- FilesystemEntry::type that refers to the FilesystemEntry::Type of the entry.
 */
-struct FilesystemEntry
+struct UPnpEntry
 {
 	/*!
 		\brief Creates a new FilesystemEntry with the given name \a and the type
 		\a t.
 	*/
-	FilesystemEntry(const QString &n, MultimediaFileType t, const QString &entry_url = QString())
+	UPnpEntry(const QString &n, MultimediaFileType t, const QString &entry_url = QString())
 		: name(n), type(t), url(entry_url) {}
 
 	/*!
@@ -145,12 +145,12 @@ struct FilesystemEntry
 /*!
 	\brief Returns true if \a a and \b are equal, false otherwise.
 */
-inline bool operator ==(const FilesystemEntry &a, const FilesystemEntry &b)
+inline bool operator ==(const UPnpEntry &a, const UPnpEntry &b)
 {
 	return a.name == b.name && a.type == b.type;
 }
 
-Q_DECLARE_METATYPE(FilesystemEntries);
+Q_DECLARE_METATYPE(UPnpEntries);
 
 
 /*!

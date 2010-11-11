@@ -218,7 +218,7 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 		case XmlResponses::LIST_ITEMS:
 			{
 				QList<TreeBrowser::EntryInfo> infos;
-				foreach (const FilesystemEntry &entry, response[key].value<FilesystemEntries>())
+				foreach (const UPnpEntry &entry, response[key].value<UPnpEntries>())
 				{
 					if (filter_mask & entry.type)
 						infos << TreeBrowser::EntryInfo(entry.name, entry.type, entry.url);
