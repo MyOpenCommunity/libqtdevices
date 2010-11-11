@@ -24,7 +24,6 @@
 #include "btbutton.h"
 
 
-
 EntrancePanel::EntrancePanel(QString descr, QString _where, bool light, bool key)
 {
 	where = _where;

@@ -147,7 +147,6 @@ void VideoDoorEntry::valueReceived(const DeviceValues &values_list)
 	}
 }
 
-
 CallNotifierPage::CallNotifierPage(QString descr, QString _where, bool light, bool key)
 {
 	where = _where;
