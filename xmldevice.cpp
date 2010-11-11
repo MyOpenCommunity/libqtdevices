@@ -215,6 +215,11 @@ XmlDevice::~XmlDevice()
 	xml_client->deleteLater();
 }
 
+void XmlDevice::reset()
+{
+	// TODO: implement
+}
+
 void XmlDevice::requestUPnPServers()
 {
 	sendCommand("RW26C1");
@@ -313,7 +318,11 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 {
 	XmlResponse response;
 	QDomDocument doc;
-	doc.setContent(xml);
+	if (!doc.setContent(xml))
+	{
+		response[XmlResponses::INVALID].setValue(XmlError(XmlResponses::INVALID, XmlError::PARSE));
+		return response;
+	}
 
 	QDomElement root = doc.documentElement();
 
@@ -350,8 +359,14 @@ bool XmlDevice::parseHeader(const QDomNode &header_node)
 	QDomNode message_id = getChildWithName(header_node, "MsgID");
 	if (message_id.isNull())
 		return false;
+
 	sid = getTextChild(message_id, "SID");
-	pid = getTextChild(message_id, "PID").toInt();
+	bool ok;
+	pid = getTextChild(message_id, "PID").toInt(&ok);
+
+	if (sid.isEmpty() || !ok)
+		return false;
+
 
 	QDomNode dest_address = getChildWithName(header_node, "Dst");
 	if (dest_address.isNull())
@@ -362,6 +377,9 @@ bool XmlDevice::parseHeader(const QDomNode &header_node)
 	if (src_address.isNull())
 		return false;
 	server_addr = getTextChild(src_address, "IP");
+
+	if (local_addr.isEmpty() || server_addr.isEmpty())
+		return false;
 
 	if (!welcome_received)
 	{

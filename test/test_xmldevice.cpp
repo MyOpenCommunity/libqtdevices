@@ -327,7 +327,7 @@ void TestXmlDevice::testResetWithAck()
 void TestXmlDevice::testBuildCommand()
 {
 	QString data("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-				 "<OWNxml xmlns=\"http://www.bticino.it/xopen/v1 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
+				 "<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
 				 "	<Hdr>\n"
 				 "		<MsgID>\n"
 				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>\n"
@@ -358,7 +358,7 @@ void TestXmlDevice::testBuildCommand()
 void TestXmlDevice::testBuildCommandWithArg()
 {
 	QString data("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-				 "<OWNxml xmlns=\"http://www.bticino.it/xopen/v1 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
+				 "<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
 				 "	<Hdr>\n"
 				 "		<MsgID>\n"
 				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>\n"
@@ -386,4 +386,84 @@ void TestXmlDevice::testBuildCommandWithArg()
 	QString command = dev->buildCommand("command", "test_argument");
 
 	QCOMPARE(command, data);
+}
+
+void TestXmlDevice::testBadXml()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
+				 "			<PID>4</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.195</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>192.168.1.110</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C7>"
+				 "			<status_browse>browse_ok</status_browse>"
+				 "		</AW26C7>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::INVALID);
+	t.checkError(data, XmlError::PARSE);
+}
+
+void TestXmlDevice::testBadHeader()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
+				 "			<PID></PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.195</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP></IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C7>"
+				 "			<status_browse>browse_ok</status_browse>"
+				 "		</AW26C7>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::INVALID);
+	t.checkError(data, XmlError::PARSE);
+}
+
+void TestXmlDevice::testUnhandledResponse()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
+				 "			<PID>4</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.195</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>192.168.1.110</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<FOOBAR>"
+				 "			<foo>browse_ok</foo>"
+				 "		</FOOBAR>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::INVALID);
+	t.checkError(data, XmlError::PARSE);
 }

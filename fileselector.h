@@ -53,7 +53,7 @@ public slots:
 	void browseUp();
 	virtual void showPage();
 	virtual void browse(const QString &start_path);
-	virtual void cleanUp() { files_list.clear(); }
+	virtual void cleanUp();
 
 #ifdef BT_HARDWARE_TS_10
 	// only meaningful for physical file systems
@@ -76,11 +76,10 @@ protected:
 	/// returns the page that should be displayed for the given directory
 	int displayedPage(const QString &directory);
 
-protected:
-	TreeBrowser *browser;
-
 	void startOperation();
 	void operationCompleted();
+
+	TreeBrowser *browser;
 
 private:
 	/// Change the current dir, return false in case of error.
@@ -89,7 +88,6 @@ private:
 private slots:
 	void directoryChanged();
 	void handleError();
-
 #ifdef BT_HARDWARE_TS_10
 	void unmounted(const QString &dir);
 #endif
