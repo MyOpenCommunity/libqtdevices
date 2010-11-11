@@ -50,6 +50,14 @@
 #include <QApplication> // QApplication::processEvents
 
 
+#define CALL_NOTIFIER_TIMEOUT 30000
+
+
+enum Items
+{
+	ENTRANCE_PANEL = 49, // to be changed
+};
+
 enum Pages
 {
 	VIDEO_CONTROL_MENU = 10001,  /* Video control menu */
@@ -72,39 +80,148 @@ bool VideoDoorEntry::ring_exclusion = false;
 
 
 #ifdef LAYOUT_TS_3_5
+
 VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
 {
+	dev = bt_global::add_device_to_cache(new BasicVideoDoorEntryDevice((*bt_global::config)[PI_ADDRESS],
+		(*bt_global::config)[PI_MODE]));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	buildPage();
-	loadDevices(config_node);
+	loadItems(config_node);
 }
 
-void VideoDoorEntry::loadDevices(const QDomNode &config_node)
+void VideoDoorEntry::loadItems(const QDomNode &config_node)
 {
-	QString unknown = getTextChild(config_node, "unknown");
-
-	foreach (const QDomNode &device, getChildren(config_node, "device"))
+	foreach (const QDomNode &item_node, getChildren(config_node, "item"))
 	{
-		int id = getTextChild(device, "id").toInt();
-		if (id != POSTO_ESTERNO)
-			qFatal("Type of device not handled by VideoDoorEntry page!");
-		QString img1 = IMG_PATH + getTextChild(device, "cimg1");
-		QString img2 = IMG_PATH + getTextChild(device, "cimg2");
-		QString img3 = IMG_PATH + getTextChild(device, "cimg3");
-		QString img4 = IMG_PATH + getTextChild(device, "cimg4");
-		QString descr = getTextChild(device, "descr");
-		QString light = getTextChild(device, "light");
-		QString key = getTextChild(device, "key");
-		QString where = getTextChild(device, "where");
+		SkinContext ctx(getTextChild(item_node, "cid").toInt());
+		int id = getTextChild(item_node, "id").toInt();
+		if (id != ENTRANCE_PANEL)
+		{
+			qWarning() << "Unknown item id" << id << "for VideoDoorEntry";
+			continue;
+		}
 
-		banner *b = new postoExt(this, descr, img1, img2, img3, img4, where, light, key, unknown);
-		b->setText(descr);
-		b->setId(id);
-		b->Draw();
+		QString descr = getTextChild(item_node, "descr");
+		bool light = getTextChild(item_node, "light").toInt() == 1;
+		bool key = getTextChild(item_node, "key").toInt() == 1;
+		QString where = getTextChild(item_node, "where");
+
+		EntrancePanel *b = new EntrancePanel(descr, where, light, key);
+		CallNotifierPage *p = new CallNotifierPage(descr, where, light, key);
+
+		QList<QObject*> items;
+		items << b << p;
+		foreach (QObject *obj, items)
+		{
+			connect(obj, SIGNAL(stairLightActivate(QString)), dev, SLOT(stairLightActivate(QString)));
+			connect(obj, SIGNAL(stairLightRelease(QString)), dev, SLOT(stairLightRelease(QString)));
+			connect(obj, SIGNAL(openLock(QString)), dev, SLOT(openLock(QString)));
+			connect(obj, SIGNAL(releaseLock(QString)), dev, SLOT(releaseLock(QString)));
+		}
+
+		popup_pages[where] = p;
 		page_content->appendBanner(b);
 	}
-}
-#else
 
+	// The popup-page for unknown callers.
+	popup_pages[QString()] = new CallNotifierPage(tr("Unknown"), QString(), false, false);
+}
+
+void VideoDoorEntry::valueReceived(const DeviceValues &values_list)
+{
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
+	{
+		if (it.key() == VideoDoorEntryDevice::CALLER_ADDRESS)
+		{
+			QString where = it.value().toString();
+			if (!popup_pages.contains(where))
+				where = QString();
+
+			bt_global::btmain->makeActive();
+			bt_global::page_stack.showUserPage(popup_pages[where]);
+			popup_pages[where]->showPage();
+		}
+		++it;
+	}
+}
+
+
+CallNotifierPage::CallNotifierPage(QString descr, QString _where, bool light, bool key)
+{
+	where = _where;
+	timer = new QTimer(this);
+	timer->setSingleShot(true);
+	timer->setInterval(CALL_NOTIFIER_TIMEOUT);
+	connect(timer, SIGNAL(timeout()), SIGNAL(Closed()));
+
+	QWidget *content = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(content);
+	main_layout->setSpacing(20);
+	main_layout->setContentsMargins(0, 35, 0, 0);
+
+	QLabel *label = new QLabel(descr);
+	label->setFont(bt_global::font->get(FontManager::TEXT));
+	label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+
+	main_layout->addWidget(label);
+
+	if (light)
+	{
+		Bann2Buttons *b = new Bann2Buttons;
+		b->initBanner(bt_global::skin->getImage("entrance_panel_light"), QString(), tr("Staircase light"));
+		connect(b, SIGNAL(leftReleased()), timer, SLOT(start()));
+		connect(b, SIGNAL(leftPressed()), SLOT(lightPressed()));
+		connect(b, SIGNAL(leftReleased()), SLOT(lightReleased()));
+		main_layout->addWidget(b);
+	}
+
+	if (key)
+	{
+		Bann2Buttons *b = new Bann2Buttons;
+		b->initBanner(bt_global::skin->getImage("entrance_panel_key"), QString(), tr("Door lock"));
+		connect(b, SIGNAL(leftReleased()), timer, SLOT(start()));
+		connect(b, SIGNAL(leftPressed()), SLOT(lockPressed()));
+		connect(b, SIGNAL(leftReleased()), SLOT(lockReleased()));
+		main_layout->addWidget(b);
+	}
+	main_layout->addStretch();
+
+	NavigationBar *nav_bar = new NavigationBar;
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	nav_bar->displayScrollButtons(false);
+	buildPage(content, nav_bar);
+}
+
+void CallNotifierPage::showPage()
+{
+	timer->start();
+	Page::showPage();
+}
+
+void CallNotifierPage::lightPressed()
+{
+	emit stairLightActivate(where);
+}
+
+void CallNotifierPage::lightReleased()
+{
+	emit stairLightRelease(where);
+}
+
+void CallNotifierPage::lockPressed()
+{
+	emit openLock(where);
+}
+
+void CallNotifierPage::lockReleased()
+{
+	emit releaseLock(where);
+}
+
+
+#else
 
 VideoDoorEntry::VideoDoorEntry()
 {

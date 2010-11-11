@@ -521,4 +521,11 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_cycle_mode>btnCiclaMod.png</img_cycle_mode>
 		<img_setstate_error>airconditioning_error.png</img_setstate_error>
 	</item>
+	<item>
+		<!-- Temporary for videodoorentry entrance panel -->
+		<cid>1100</cid>
+		<img_entrance_panel_light>btnlucescale.png</img_entrance_panel_light>
+		<img_entrance_panel>imgPE.png</img_entrance_panel>
+		<img_entrance_panel_key>btnserratura.png</img_entrance_panel_key>
+	</item>
 </style>

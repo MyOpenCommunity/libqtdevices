@@ -48,20 +48,65 @@ enum
 	MOVE_RIGHT = 62,
 };
 
-
-VideoDoorEntryDevice::VideoDoorEntryDevice(const QString &where, QString mode, int openserver_id) :
+BasicVideoDoorEntryDevice::BasicVideoDoorEntryDevice(const QString &where, QString mode, int openserver_id) :
 	device(QString("8"), where, openserver_id)
 {
-	// invalid values
-	kind = mmtype = -1;
-	is_calling = false;
-
 	if (mode.isNull())
 		vct_mode = NONE;
 	else if (mode.toInt() == 1)
 		vct_mode = IP_MODE;
 	else
 		vct_mode = SCS_MODE;
+}
+
+void BasicVideoDoorEntryDevice::stairLightActivate(QString target_where) const
+{
+	sendCommand(QString::number(STAIRCASE_ACTIVATE), target_where);
+}
+
+void BasicVideoDoorEntryDevice::stairLightRelease(QString target_where) const
+{
+	sendCommand(QString::number(STAIRCASE_RELEASE), target_where);
+}
+
+void BasicVideoDoorEntryDevice::openLock(QString target_where) const
+{
+	sendCommand(QString::number(OPEN_LOCK), target_where);
+}
+
+void BasicVideoDoorEntryDevice::releaseLock(QString target_where) const
+{
+	sendCommand(QString::number(RELEASE_LOCK), target_where);
+}
+
+void BasicVideoDoorEntryDevice::initVctProcess()
+{
+	if (vct_mode != NONE)
+	{
+		int type = vct_mode == SCS_MODE ? 1 : 2;
+		QString what = QString("%1#%2").arg(READY).arg(type);
+		sendCommand(what);
+	}
+}
+
+bool BasicVideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
+{
+	if (static_cast<int>(msg.what()) == CALLER_ADDRESS)
+	{
+		values_list[CALLER_ADDRESS] = QString::fromStdString(msg.whereFull());
+		return true;
+	}
+
+	return false;
+}
+
+
+VideoDoorEntryDevice::VideoDoorEntryDevice(const QString &where, QString mode, int openserver_id) :
+	BasicVideoDoorEntryDevice(where, mode, openserver_id)
+{
+	// invalid values
+	kind = mmtype = -1;
+	is_calling = false;
 }
 
 void VideoDoorEntryDevice::answerCall() const
@@ -98,28 +143,22 @@ void VideoDoorEntryDevice::cameraOn(QString _where) const
 
 void VideoDoorEntryDevice::stairLightActivate() const
 {
-	sendCommand(STAIRCASE_ACTIVATE);
+	BasicVideoDoorEntryDevice::stairLightActivate(where);
 }
 
 void VideoDoorEntryDevice::stairLightRelease() const
 {
-	sendCommand(STAIRCASE_RELEASE);
+	BasicVideoDoorEntryDevice::stairLightRelease(where);
 }
 
 void VideoDoorEntryDevice::openLock() const
 {
-	if (is_calling)
-		sendCommand(QString::number(OPEN_LOCK), caller_address);
-	else
-		sendCommand(QString::number(OPEN_LOCK));
+	BasicVideoDoorEntryDevice::openLock(is_calling ? caller_address : where);
 }
 
 void VideoDoorEntryDevice::releaseLock() const
 {
-	if (is_calling)
-		sendCommand(QString::number(RELEASE_LOCK), caller_address);
-	else
-		sendCommand(QString::number(RELEASE_LOCK));
+	BasicVideoDoorEntryDevice::releaseLock(is_calling ? caller_address : where);
 }
 
 void VideoDoorEntryDevice::cycleExternalUnits() const
@@ -141,16 +180,6 @@ void VideoDoorEntryDevice::endCall()
 	// GUI/device point of view.
 	if (vct_mode == SCS_MODE)
 		resetCallState();
-}
-
-void VideoDoorEntryDevice::initVctProcess()
-{
-	if (vct_mode != NONE)
-	{
-		int type = vct_mode == SCS_MODE ? 1 : 2;
-		QString what = QString("%1#%2").arg(READY).arg(type);
-		sendCommand(what);
-	}
 }
 
 void VideoDoorEntryDevice::cameraMovePress(int move_type) const

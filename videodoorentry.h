@@ -27,9 +27,13 @@
 #include "bann2_buttons.h"
 
 #include <QWidget>
+#include <QHash>
+
 
 class VCTCallPage;
+class BasicVideoDoorEntryDevice;
 class VideoDoorEntryDevice;
+class CallNotifierPage;
 class StateButton;
 class ItemTuning;
 class QDomNode;
@@ -63,15 +67,56 @@ Q_OBJECT
 public:
 	VideoDoorEntry(const QDomNode &config_node);
 
+private slots:
+	void valueReceived(const DeviceValues &values_list);
+
 private:
-	void loadDevices(const QDomNode &config_node);
+	void loadItems(const QDomNode &config_node);
+	BasicVideoDoorEntryDevice *dev;
+	QHash<QString, CallNotifierPage*> popup_pages;
 };
+
+
+/*!
+	\ingroup VideoDoorEntry
+	\brief Notifies an incoming call.
+
+	This popup page is showed on touchscreen 3.5'' to notifies an incoming call
+	and to allows the user to switch on/off the stairlight and to open/close
+	the door.
+*/
+class CallNotifierPage : public Page
+{
+Q_OBJECT
+public:
+	CallNotifierPage(QString descr, QString where, bool light, bool key);
+
+	virtual void showPage();
+
+signals:
+	void stairLightActivate(QString where);
+	void stairLightRelease(QString where);
+	void openLock(QString where);
+	void releaseLock(QString where);
+
+private slots:
+	void lightPressed();
+	void lightReleased();
+	void lockPressed();
+	void lockReleased();
+
+private:
+	QTimer *timer;
+	QString where;
+};
+
 
 #else
 
 /*!
 	\ingroup VideoDoorEntry
 	\brief The main menu of the %VideoDoorEntry system.
+
 */
 class VideoDoorEntry : public IconPage
 {

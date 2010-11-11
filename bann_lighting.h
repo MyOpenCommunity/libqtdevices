@@ -33,7 +33,6 @@
 
 
 class device;
-class device_status;
 class openwebnet;
 class LightingDevice;
 class DimmerDevice;

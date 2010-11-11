@@ -30,8 +30,6 @@
 #include <QTimer>
 #include <QSignalMapper>
 
-class device_status;
-class frame_interpreter;
 class Client;
 class OpenMsg;
 
@@ -289,14 +287,6 @@ public:
 	static void delayFrames(bool delay);
 
 signals:
-	/*!
-		\brief Old status changed
-
-		\warning use valueReceived() instead.
-
-		\sa valueReceived()
-	 */
-	void status_changed(QList<device_status*>);
 
 	/*!
 		\brief Signal used to notify that a dimension of device has changed or a

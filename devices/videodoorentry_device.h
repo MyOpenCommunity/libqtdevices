@@ -25,6 +25,91 @@
 #include "device.h"
 
 class OpenMsg;
+class QString;
+
+
+/*!
+	\ingroup VideoDoorEntry
+	\brief Controls Video Door Entry functionalities for ts 3.5''.
+
+	This device is a simplified version of the VideoDoorEntryDevice, that can be
+	used on the touchscreen 3.5'' where only a subset of the video door entry
+	functionalities are exposed by the openserver.
+
+	It notifies incoming calls emitting the valueReceived() signal as usual,
+	and can be used to controls the lock door using the methods openLock() and
+	releaseLock() and to switch on/off the stair light using the methods
+	stairLightActivate() and stairLightRelease().
+
+	\section BasicVideoDoorEntryDevice-dimensions Dimensions
+	\startdim
+	\dim{CALLER_ADDRESS,QString,,The address of the caller.}
+	\enddim
+*/
+class BasicVideoDoorEntryDevice : public device
+{
+Q_OBJECT
+public:
+
+	/*!
+		\refdim{BasicVideoDoorEntryDevice}
+	*/
+	enum Type
+	{
+		CALLER_ADDRESS = 9,
+	};
+
+	/*!
+		\brief The modality of the video door entry system.
+	*/
+	enum VctMode
+	{
+		NONE = 0,
+		SCS_MODE, /*!< For scs videocalls */
+		IP_MODE   /*!< For ip videocalls */
+	};
+
+	BasicVideoDoorEntryDevice(const QString &where, QString mode = QString(), int openserver_id = 0);
+
+	/*!
+		\brief Initialize the Video Door Entry underlying system.
+
+		It should never be necessary to call this function explicitly.
+	*/
+	void initVctProcess();
+	virtual void init() { initVctProcess(); }
+
+	/*!
+		\brief Return the modality of the Video Door Entry system.
+	*/
+	VctMode vctMode() const { return vct_mode; }
+
+public slots:
+	/*!
+		\brief Switch on the stairlight.
+	*/
+	void stairLightActivate(QString target_where) const;
+
+	/*!
+		\brief Switch off the stairlight.
+	*/
+	void stairLightRelease(QString target_where) const;
+
+	/*!
+		\brief Activate a lock actuator.
+	*/
+	void openLock(QString target_where) const;
+
+	/*!
+		\brief Release a lock actuator.
+	*/
+	void releaseLock(QString target_where) const;
+
+protected:
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
+
+	VctMode vct_mode;
+};
 
 
 /*!
@@ -77,7 +162,7 @@ class OpenMsg;
 	In this state, the device must check the 'where' field of incoming frames
 	with its own address.
 */
-class VideoDoorEntryDevice : public device
+class VideoDoorEntryDevice : public BasicVideoDoorEntryDevice
 {
 friend class TestVideoDoorEntryDevice;
 Q_OBJECT
@@ -111,16 +196,6 @@ public:
 	};
 
 	/*!
-		\brief The modality of the VideoDoorEntry system.
-	*/
-	enum VctMode
-	{
-		NONE = 0,
-		SCS_MODE, /*!< For scs videocalls */
-		IP_MODE   /*!< For ip videocalls */
-	};
-
-	/*!
 		\brief Constructor.
 
 		The \a where parameter can be the address of the touchscreen or the address of
@@ -136,23 +211,10 @@ public:
 	void answerCall() const;
 
 	/*!
-		\brief Initialize the Video Door Entry underlying system.
-
-		It should never be necessary to call this function explicitly.
-	*/
-	void initVctProcess();
-	virtual void init() { initVctProcess(); }
-
-	/*!
 		\brief Return true if the call is an ip one.
 		\sa VctMode
 	*/
 	bool ipCall() const { return ip_call; }
-
-	/*!
-		\brief Return the modality of the Video Door Entry system.
-	*/
-	VctMode vctMode() const { return vct_mode; }
 
 public slots:
 	/*!
@@ -261,7 +323,6 @@ private:
 	QString master_caller_address;
 	bool is_calling;
 	bool ip_call;
-	VctMode vct_mode;
 };
 
 #endif //VIDEODOOR_ENTRY_DEVICE_H

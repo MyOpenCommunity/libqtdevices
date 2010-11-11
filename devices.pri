@@ -8,10 +8,7 @@ HEADERS += airconditioning_device.h \
 	antintrusion_device.h \
 	automation_device.h \
 	device.h \
-	deviceold.h \
-	device_status.h \
 	energy_device.h \
-	frame_interpreter.h \
 	frame_receiver.h \
 	lighting_device.h \
 	loads_device.h \
@@ -29,10 +26,7 @@ SOURCES += airconditioning_device.cpp \
 	antintrusion_device.cpp \
 	automation_device.cpp \
 	device.cpp \
-	deviceold.cpp \
-	device_status.cpp \
 	energy_device.cpp \
-	frame_interpreter.cpp \
 	frame_receiver.cpp \
 	lighting_device.cpp \
 	loads_device.cpp \

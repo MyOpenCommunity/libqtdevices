@@ -28,9 +28,7 @@
 #include "pulldevice.h" // DeviceValues, PullMode
 #include "bttime.h" // BtTime
 
-/// Forward Declarations
 class device;
-class device_status;
 class PPTStatDevice;
 class AutomationDevice;
 class LightingDevice;
