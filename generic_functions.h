@@ -36,7 +36,7 @@ class QDateTime;
 // TODO: move elsewhere
 /*!
 	\ingroup Multimedia
-	\brief Contains informations about a resource entry.
+	\brief Contains information about a resource entry.
 
 	This structure contains the name, the type, an optional url, and optional
 	metadata about a generic entry on filesystem or filesystem-structured
