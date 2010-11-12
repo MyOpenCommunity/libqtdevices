@@ -68,7 +68,7 @@ struct EntryInfo
 
 	EntryInfo::Metadata metadata;
 
-	EntryInfo(const QString &_name, EntryInfo::Type _type, const QString &_url, const EntryInfo::Metadata &_metadata = EntryInfo::Metadata())
+	EntryInfo(const QString &_name, EntryInfo::Type _type, const QString &_url = QString(), const EntryInfo::Metadata &_metadata = EntryInfo::Metadata())
 		: name(_name), type(_type), url(_url), metadata(_metadata) { }
 };
 
