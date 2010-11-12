@@ -36,7 +36,13 @@ class QDateTime;
 // TODO: move elsewhere
 /*!
 	\ingroup Multimedia
-	\brief Abstraction of a single entry of an UPnP resource browsing result.
+	\brief Contains informations about a resource entry.
+
+	This structure contains the name, the type, an optional url, and optional
+	metadata about a generic entry on filesystem or filesystem-structured
+	resources (like UPnP).
+
+	\sa TreeBrowser
 */
 struct EntryInfo
 {
@@ -61,13 +67,37 @@ struct EntryInfo
 	#endif
 	};
 
-	/// The name of the entry; can be passed to enterDirectory()
+	/*!
+		\brief The name of the entry.
+		\note Mandatory.
+	*/
 	QString name;
+
+	/*!
+		\brief The type of the entry.
+		\note Mandatory.
+	*/
 	EntryInfo::Type type;
+
+	/*!
+		\brief The url of the entry.
+		\note Optional.
+	*/
 	QString url;
 
+	/*!
+		\brief The metadata of the entry.
+		\note Optional.
+	*/
 	EntryInfo::Metadata metadata;
 
+	/*!
+		\brief Constructor.
+
+		Constructs a new EntryInfo with the given \a _name and \a _type.
+		Optionally you can pass it the url of the entry \a _url and the metadata
+		associated \a _metadata.
+	*/
 	EntryInfo(const QString &_name, EntryInfo::Type _type, const QString &_url = QString(), const EntryInfo::Metadata &_metadata = EntryInfo::Metadata())
 		: name(_name), type(_type), url(_url), metadata(_metadata) { }
 };
@@ -80,6 +110,9 @@ inline bool operator ==(const EntryInfo &a, const EntryInfo &b)
 	return a.name == b.name && a.type == b.type;
 }
 
+/*!
+	List of EntryInfo.
+*/
 typedef QList<EntryInfo> EntryInfoList;
 
 Q_DECLARE_METATYPE(EntryInfoList);

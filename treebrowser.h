@@ -86,6 +86,10 @@ public:
 	 */
 	virtual QString pathKey() = 0;
 
+	/*!
+		\brief Reset the state.
+		\note The default implementation does nothing.
+	*/
 	virtual void cleanUp() {}
 
 	/*!
@@ -107,11 +111,31 @@ protected:
 	int filter_mask;
 
 signals:
+	/*!
+		\brief Emitted after a successful directory change.
+	*/
 	void directoryChanged();
+
+	/*!
+		\brief Emitted when an error occours changing directory.
+	*/
 	void directoryChangeError();
+
+	/*!
+		\brief Emitted when a generic error occours.
+	*/
 	void genericError();
 
+	/*!
+		\brief Emitted after a successful entry listing.
+
+		\sa EntryInfoList, EntryInfo
+	*/
 	void listReceived(EntryInfoList list);
+
+	/*!
+		\brief Emitted when an error occours during entry listing.
+	*/
 	void listRetrieveError();
 };
 
