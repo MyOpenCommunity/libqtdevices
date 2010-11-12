@@ -288,11 +288,24 @@ void TestXmlDevice::testListItems()
 				 "</OWNxml>");
 
 	XmlDeviceTester t(dev, XmlResponses::LIST_ITEMS);
-	t.check(data, FilesystemEntries() <<
-				  FilesystemEntry("TestDirectory1", DIRECTORY) <<
-				  FilesystemEntry("TestDirectory2", DIRECTORY) <<
-				  FilesystemEntry("Ship to Monkey Island", AUDIO, "http://10.3.3.248:49153/files/13") <<
-				  FilesystemEntry("Hammer Smashed Face", AUDIO, "http://10.3.3.248:49153/files/1"));
+
+	EntryInfo::Metadata mt1;
+	mt1["title"] = "Ship to Monkey Island";
+	mt1["artist"] = "Michael Land";
+	mt1["album"] = "The Secret of Monkey Island (game rip)";
+	mt1["total_time_only"] = "0:02:29.000";
+
+	EntryInfo::Metadata mt2;
+	mt2["title"] = "Hammer Smashed Face";
+	mt2["artist"] = "Cannibal Corpse";
+	mt2["album"] = "Tomb Of The Mutilated";
+	mt2["total_time_only"] = "0:03:19.000";
+
+	t.check(data, EntryInfoList() <<
+			EntryInfo("TestDirectory1", EntryInfo::DIRECTORY) <<
+			EntryInfo("TestDirectory2", EntryInfo::DIRECTORY) <<
+			EntryInfo("Ship to Monkey Island", EntryInfo::AUDIO, "http://10.3.3.248:49153/files/13", mt1) <<
+			EntryInfo("Hammer Smashed Face", EntryInfo::AUDIO, "http://10.3.3.248:49153/files/1", mt2));
 }
 
 void TestXmlDevice::testResetWithAck()
