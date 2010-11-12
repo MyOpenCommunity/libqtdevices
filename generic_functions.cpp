@@ -99,6 +99,12 @@ namespace
 	}
 }
 
+EntryInfo::EntryInfo(const QString &_name, EntryInfo::Type _type, const QString &_url, const EntryInfo::Metadata &_metadata)
+	: name(_name), type(_type), url(_url), metadata(_metadata)
+{
+}
+
+
 QStringList getFileExtensions(EntryInfo::Type type)
 {
 	QStringList exts;

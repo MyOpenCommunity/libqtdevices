@@ -94,12 +94,11 @@ struct EntryInfo
 	/*!
 		\brief Constructor.
 
-		Constructs a new EntryInfo with the given \a _name and \a _type.
-		Optionally you can pass it the url of the entry \a _url and the metadata
-		associated \a _metadata.
+		Constructs a new EntryInfo with the given \a name and \a type.
+		Optionally you can pass it the url of the entry \a url and the metadata
+		associated \a metadata.
 	*/
-	EntryInfo(const QString &_name, EntryInfo::Type _type, const QString &_url = QString(), const EntryInfo::Metadata &_metadata = EntryInfo::Metadata())
-		: name(_name), type(_type), url(_url), metadata(_metadata) { }
+	EntryInfo(const QString &name, EntryInfo::Type type, const QString &url = QString(), const EntryInfo::Metadata &metadata = EntryInfo::Metadata());
 };
 
 /*!
