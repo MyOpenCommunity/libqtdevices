@@ -27,41 +27,109 @@
 #include <QStringList>
 #include <QString>
 #include <QMap>
+#include <QHash>
+#include <QMetaType>
 
 class QDate;
 class QDateTime;
 
+// TODO: move elsewhere
+/*!
+	\ingroup Multimedia
+	\brief Contains informations about a resource entry.
+
+	This structure contains the name, the type, an optional url, and optional
+	metadata about a generic entry on filesystem or filesystem-structured
+	resources (like UPnP).
+
+	\sa TreeBrowser
+*/
+struct EntryInfo
+{
+	typedef QHash<QString,QString> Metadata;
+
+	/*!
+		\brief EntryInfo types.
+	*/
+	enum Type
+	{
+		UNKNOWN   = 0x01, /*!< Unknown filetype */
+		DIRECTORY = 0x02, /*!< Directory */
+		AUDIO     = 0x04, /*!< Audio filetype */
+		VIDEO     = 0x08, /*!< Video filetype */
+		IMAGE     = 0x10, /*!< Image filetype */
+	#ifdef BUILD_EXAMPLES
+		PDF       = 0x20, /*!< PDF filetype */
+	#endif
+		ALL       = UNKNOWN | DIRECTORY | AUDIO | VIDEO | IMAGE /*!< All content */
+	#ifdef BUILD_EXAMPLES
+					| PDF
+	#endif
+	};
+
+	/*!
+		\brief The name of the entry.
+		\note Mandatory.
+	*/
+	QString name;
+
+	/*!
+		\brief The type of the entry.
+		\note Mandatory.
+	*/
+	EntryInfo::Type type;
+
+	/*!
+		\brief The url of the entry.
+		\note Optional.
+	*/
+	QString url;
+
+	/*!
+		\brief The metadata of the entry.
+		\note Optional.
+	*/
+	EntryInfo::Metadata metadata;
+
+	/*!
+		\brief Constructor.
+
+		Constructs a new EntryInfo with the given \a _name and \a _type.
+		Optionally you can pass it the url of the entry \a _url and the metadata
+		associated \a _metadata.
+	*/
+	EntryInfo(const QString &_name, EntryInfo::Type _type, const QString &_url = QString(), const EntryInfo::Metadata &_metadata = EntryInfo::Metadata())
+		: name(_name), type(_type), url(_url), metadata(_metadata) { }
+};
 
 /*!
-	\brief Filesystem types.
+	\brief Returns true if \a a and \b are equal, false otherwise.
 */
-enum MultimediaFileType
+inline bool operator ==(const EntryInfo &a, const EntryInfo &b)
 {
-	UNKNOWN   = 0x01, /*!< Unknown filetype */
-	DIRECTORY = 0x02, /*!< Directory */
-	AUDIO     = 0x04, /*!< Audio filetype */
-	VIDEO     = 0x08, /*!< Video filetype */
-	IMAGE     = 0x10, /*!< Image filetype */
-#ifdef BUILD_EXAMPLES
-	PDF       = 0x20, /*!< PDF filetype */
-#endif
-	ALL       = UNKNOWN | DIRECTORY | AUDIO | VIDEO | IMAGE /*!< All content */
-#ifdef BUILD_EXAMPLES
-				| PDF
-#endif
-};
+	return a.name == b.name && a.type == b.type;
+}
+
+/*!
+	List of EntryInfo.
+*/
+typedef QList<EntryInfo> EntryInfoList;
+
+Q_DECLARE_METATYPE(EntryInfoList);
+
+
 
 /*!
 	\ingroup Core
 	\brief Returns a list of the recognized file types associated to \a type.
 */
-QStringList getFileExtensions(MultimediaFileType type);
+QStringList getFileExtensions(EntryInfo::Type type);
 
 /*!
 	\ingroup Core
 	\brief Returns a list of file filter expressions associated to \a type.
 */
-QStringList getFileFilter(MultimediaFileType type);
+QStringList getFileFilter(EntryInfo::Type type);
 
 /*!
 	\ingroup Core

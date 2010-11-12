@@ -36,20 +36,6 @@ class TreeBrowser : public QObject
 Q_OBJECT
 public:
 	/*!
-		\brief Information about a single entry in the file list
-	 */
-	struct EntryInfo
-	{
-		/// The name of the entry; can be passed to enterDirectory()
-		QString name;
-		MultimediaFileType type;
-		QString url;
-
-		EntryInfo(const QString &_name, MultimediaFileType _type, const QString &_url)
-			: name(_name), type(_type), url(_url) { }
-	};
-
-	/*!
 		\brief Set the root navigation path for the browser
 
 		At the root, isRoot() return \c true, and exitDirectory() can't be called.
@@ -100,6 +86,10 @@ public:
 	 */
 	virtual QString pathKey() = 0;
 
+	/*!
+		\brief Reset the state.
+		\note The default implementation does nothing.
+	*/
 	virtual void cleanUp() {}
 
 	/*!
@@ -113,7 +103,7 @@ protected:
 	/*!
 		\brief Constructor.
 	*/
-	TreeBrowser() : filter_mask(ALL) {}
+	TreeBrowser() : filter_mask(EntryInfo::ALL) {}
 
 	/*!
 		\brief Mask to filter file listing results.
@@ -121,18 +111,33 @@ protected:
 	int filter_mask;
 
 signals:
+	/*!
+		\brief Emitted after a successful directory change.
+	*/
 	void directoryChanged();
+
+	/*!
+		\brief Emitted when an error occours changing directory.
+	*/
 	void directoryChangeError();
+
+	/*!
+		\brief Emitted when a generic error occours.
+	*/
 	void genericError();
 
-	void listReceived(QList<TreeBrowser::EntryInfo> list);
+	/*!
+		\brief Emitted after a successful entry listing.
+
+		\sa EntryInfoList, EntryInfo
+	*/
+	void listReceived(EntryInfoList list);
+
+	/*!
+		\brief Emitted when an error occours during entry listing.
+	*/
 	void listRetrieveError();
 };
-
-inline bool operator ==(const TreeBrowser::EntryInfo &a, const TreeBrowser::EntryInfo &b)
-{
-	return a.name == b.name && a.type == b.type;
-}
 
 
 /*!

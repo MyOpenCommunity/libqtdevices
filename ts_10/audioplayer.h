@@ -24,6 +24,7 @@
 
 #include "mediaplayerpage.h"
 #include "btbutton.h"
+#include "generic_functions.h"
 
 #include <QTime>
 
@@ -63,6 +64,7 @@ protected:
 
 public slots:
 	void playAudioFiles(QList<QString> files, unsigned element);
+	void playAudioFiles(EntryInfoList entries, unsigned element);
 	void playAudioFilesBackground(QList<QString> files, unsigned element);
 	virtual void previous();
 	virtual void next();
@@ -98,6 +100,10 @@ private:
 	int loop_starting_file; // the index of the song used to detect loop
 	int loop_total_time; // the total time used to detect a loop
 	QTime loop_time_counter; // used to count the time elapsed
+
+	// List of entry info, used only in this player for now, wish to port it
+	// on the others, too.
+	EntryInfoList entryinfo_list;
 };
 
 #endif

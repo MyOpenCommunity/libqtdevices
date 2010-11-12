@@ -131,33 +131,56 @@ namespace
 		return result;
 	}
 
+	EntryInfo::Metadata getMetadata(const QDomNode &item)
+	{
+		EntryInfo::Metadata metadata;
+
+		foreach (const QString &tag, QStringList() << "title" << "artist" << "album")
+		{
+			QString value = getElement(item, QString("DIDL-Lite/item/%1:%2").arg(tag == "title" ? "dc" : "upnp").arg(tag)).text();
+			if (!value.isEmpty())
+				metadata[tag] = value;
+		}
+
+		QString duration = getElement(item, "DIDL-Lite/item/res").attribute("duration");
+		if (!duration.isEmpty())
+			metadata["total_time"] = duration;
+
+		return metadata;
+	}
+
 	QHash<int,QVariant> handle_listitems(const QDomNode &node)
 	{
 		QHash<int,QVariant> result;
-		FilesystemEntries entries;
+		EntryInfoList entries;
 
 		QDomNode directories = getChildWithName(node, "directories");
 		foreach (const QDomNode &item, getChildren(directories, "name"))
-			entries << FilesystemEntry(item.toElement().text(), DIRECTORY, QString());
+			entries << EntryInfo(item.toElement().text(), EntryInfo::DIRECTORY, QString());
 
 		QDomNode tracks = getChildWithName(node, "tracks");
 		foreach (const QDomNode &item, getChildren(tracks, "file"))
 		{
-			MultimediaFileType file_type = UNKNOWN;
+			EntryInfo::Type file_type = EntryInfo::UNKNOWN;
 			QString upnp_class = getElement(item,"DIDL-Lite/item/upnp:class").text();
 
 			if (upnp_class.contains("audioItem"))
-				file_type = AUDIO;
+				file_type = EntryInfo::AUDIO;
 			else if (upnp_class.contains("videoItem"))
-				file_type = VIDEO;
+				file_type = EntryInfo::VIDEO;
 			else if (upnp_class.contains("imageItem"))
-				file_type = IMAGE;
+				file_type = EntryInfo::IMAGE;
 			else
-				file_type = UNKNOWN;
+				file_type = EntryInfo::UNKNOWN;
 
-			entries << FilesystemEntry(getElement(item, "DIDL-Lite/item/dc:title").text(),
+			EntryInfo::Metadata metadata;
+			if (file_type == EntryInfo::AUDIO) // Maybe video, too?
+				metadata = getMetadata(item);
+
+			entries << EntryInfo(getElement(item, "DIDL-Lite/item/dc:title").text(),
 									   file_type,
-									   getElement(item, "DIDL-Lite/item/res").text());
+									   getElement(item, "DIDL-Lite/item/res").text(),
+									   metadata);
 		}
 
 		QVariant value;

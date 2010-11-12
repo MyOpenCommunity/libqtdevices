@@ -68,10 +68,10 @@ protected:
 	QString getRootPath();
 
 	/// returns the list of currently displayed files
-	const QList<TreeBrowser::EntryInfo> &getFiles() const;
+	const EntryInfoList &getFiles() const;
 
 	/// Must be called by subclasses before displaying the file/directory list
-	void setFiles(const QList<TreeBrowser::EntryInfo> &files);
+	void setFiles(const EntryInfoList &files);
 
 	/// returns the page that should be displayed for the given directory
 	int displayedPage(const QString &directory);
@@ -94,7 +94,7 @@ private slots:
 
 private:
 	FileSelectorWaitDialog *working;
-	QList<TreeBrowser::EntryInfo> files_list;
+	EntryInfoList files_list;
 	QMap<QString, unsigned>  pages_indexes;
 };
 

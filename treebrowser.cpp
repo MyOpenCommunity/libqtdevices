@@ -24,34 +24,34 @@
 
 namespace
 {
-	MultimediaFileType directoryFileType(const QString &file_path)
+	EntryInfo::Type directoryFileType(const QString &file_path)
 	{
 		QFileInfo file_info(file_path);
 
 		if (file_info.isDir())
-			return DIRECTORY;
+			return EntryInfo::DIRECTORY;
 
 		QString ext = file_info.suffix().toLower();
 
-		foreach (const QString &extension, getFileExtensions(IMAGE))
+		foreach (const QString &extension, getFileExtensions(EntryInfo::IMAGE))
 			if (ext == extension)
-				return IMAGE;
+				return EntryInfo::IMAGE;
 
-		foreach (const QString &extension, getFileExtensions(VIDEO))
+		foreach (const QString &extension, getFileExtensions(EntryInfo::VIDEO))
 			if (ext == extension)
-				return VIDEO;
+				return EntryInfo::VIDEO;
 
-		foreach (const QString &extension, getFileExtensions(AUDIO))
+		foreach (const QString &extension, getFileExtensions(EntryInfo::AUDIO))
 			if (ext == extension)
-				return AUDIO;
+				return EntryInfo::AUDIO;
 
 	#ifdef PDF_EXAMPLE
-		foreach (const QString &extension, getFileExtensions(PDF))
+		foreach (const QString &extension, getFileExtensions(EntryInfo::PDF))
 			if (ext == extension)
-				return PDF;
+				return EntryInfo::PDF;
 	#endif
 
-		return UNKNOWN;
+		return EntryInfo::UNKNOWN;
 	}
 }
 
@@ -110,11 +110,11 @@ void DirectoryTreeBrowser::exitDirectory()
 void DirectoryTreeBrowser::getFileList()
 {
 	QList<QFileInfo> files_list = current_dir.entryInfoList();
-	QList<EntryInfo> result;
+	EntryInfoList result;
 
 	foreach (const QFileInfo &item, files_list)
 	{
-		MultimediaFileType file_type = directoryFileType(item.absoluteFilePath());
+		EntryInfo::Type file_type = directoryFileType(item.absoluteFilePath());
 		if (filter_mask & file_type)
 			result.append(EntryInfo(item.fileName(), file_type, item.absoluteFilePath()));
 	}
@@ -198,9 +198,9 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 			break;
 		case XmlResponses::SERVER_LIST:
 			{
-				QList<TreeBrowser::EntryInfo> infos;
+				EntryInfoList infos;
 				foreach (const QString &server, response[key].toStringList())
-					infos << TreeBrowser::EntryInfo(server, DIRECTORY, QString());
+					infos << EntryInfo(server, EntryInfo::DIRECTORY);
 				emit listReceived(infos);
 			}
 			break;
@@ -217,11 +217,11 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 			break;
 		case XmlResponses::LIST_ITEMS:
 			{
-				QList<TreeBrowser::EntryInfo> infos;
-				foreach (const FilesystemEntry &entry, response[key].value<FilesystemEntries>())
+				EntryInfoList infos;
+				foreach (const EntryInfo &entry, response[key].value<EntryInfoList>())
 				{
 					if (filter_mask & entry.type)
-						infos << TreeBrowser::EntryInfo(entry.name, entry.type, entry.url);
+						infos << entry;
 				}
 				emit listReceived(infos);
 			}
@@ -244,6 +244,8 @@ void UPnpClientBrowser::handleError(int response, int code)
 		break;
 	case XmlResponses::SERVER_SELECTION:
 	case XmlResponses::CHDIR:
+		emit directoryChangeError();
+		break;
 	case XmlResponses::BROWSE_UP:
 		if (level == 1)
 		{

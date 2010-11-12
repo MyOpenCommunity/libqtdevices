@@ -185,15 +185,12 @@ QString AudioPlayerPage::currentFileName(int index) const
 
 void AudioPlayerPage::startMPlayer(int index, int time)
 {
+	clearLabels();
+
 	if (type == IP_RADIO)
 	{
 		description_top->setText(tr("Loading..."));
 		description_bottom->setText(tr("Loading..."));
-	}
-	else
-	{
-		description_top->setText(tr(" "));
-		description_bottom->setText(tr(" "));
 	}
 
 	player->play(file_list[index], true);
@@ -234,6 +231,17 @@ void AudioPlayerPage::playAudioFiles(QList<QString> files, unsigned element)
 	loop_starting_file = -1;
 
 	displayMedia(current_file);
+}
+
+void AudioPlayerPage::playAudioFiles(EntryInfoList entries, unsigned element)
+{
+	entryinfo_list = entries;
+	QList<QString> files;
+
+	foreach (const EntryInfo &entry, entries)
+		files.append(entry.url);
+
+	playAudioFiles(files, element);
 }
 
 void AudioPlayerPage::resetLoopCheck()
@@ -312,17 +320,42 @@ static QString formatTime(const QString &mp_time, const QString &match_length = 
 
 void AudioPlayerPage::refreshPlayInfo(const QMap<QString, QString> &attrs)
 {
-	 if (type == LOCAL_FILE)
+	if (type == LOCAL_FILE)
 	{
+		EntryInfo::Metadata md;
+		if (!entryinfo_list.isEmpty() && current_file < entryinfo_list.size()) // Try to get metadata
+			md = entryinfo_list.at(current_file).metadata;
+
 		if (attrs.contains("meta_title"))
 			description_top->setText(attrs["meta_title"]);
+		else if (md.contains("title") && !md["title"].isEmpty())
+			description_top->setText(md["title"]);
 		else if (attrs.contains("file_name"))
 			description_top->setText(attrs["file_name"]);
 
 		if (attrs.contains("meta_artist"))
 			description_bottom->setText(attrs["meta_artist"]);
+		else if (md.contains("artist") && !md["artist"].isEmpty())
+			description_bottom->setText(md["artist"]);
 		else if (attrs.contains("meta_album"))
 			description_bottom->setText(attrs["meta_album"]);
+		else if (md.contains("album") && !md["album"].isEmpty())
+			description_bottom->setText(md["album"]);
+
+		QString total;
+		if (attrs.contains("total_time"))
+			total = formatTime(attrs["total_time"]);
+		else if (md.contains("total_time") && !md["total_time"].isEmpty())
+			total = formatTime(md["total_time"]);
+
+		QString current;
+		if (attrs.contains("current_time"))
+			current = formatTime(attrs["current_time"], total);
+		else if (attrs.contains("current_time_only"))
+			current = formatTime(attrs["current_time_only"], total);
+
+		if (!total.isEmpty() && !current.isEmpty())
+			elapsed->setText(current + " / " + total);
 	}
 	else if (type == IP_RADIO)
 	{
@@ -341,14 +374,6 @@ void AudioPlayerPage::refreshPlayInfo(const QMap<QString, QString> &attrs)
 		}
 		if (!stream_title_exist)
 			description_bottom->setText(tr("Information not available"));
-	}
-
-	if (type == LOCAL_FILE && attrs.contains("total_time") && attrs.contains("current_time"))
-	{
-		QString total = formatTime(attrs["total_time"]);
-		QString current = formatTime(attrs["current_time"], total);
-
-		elapsed->setText(current + " / " + total);
 	}
 }
 

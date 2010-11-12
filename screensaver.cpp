@@ -385,7 +385,7 @@ void ScreenSaverSlideshow::start(Window *w)
 {
 	setRefreshInterval(slideshow_timeout);
 	iter = new ImageIterator(SLIDESHOW_FILENAME);
-	iter->setFileFilter(getFileFilter(IMAGE));
+	iter->setFileFilter(getFileFilter(EntryInfo::IMAGE));
 	ScreenSaver::start(w);
 	showWindow();
 	next_image = QPixmap(width(), height());

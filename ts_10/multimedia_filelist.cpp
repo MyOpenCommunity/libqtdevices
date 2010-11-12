@@ -39,7 +39,7 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	FileSelector(browser)
 {
 	browser->setFilter(filters);
-	connect(browser, SIGNAL(listReceived(QList<TreeBrowser::EntryInfo>)), SLOT(displayFiles(QList<TreeBrowser::EntryInfo>)));
+	connect(browser, SIGNAL(listReceived(EntryInfoList)), SLOT(displayFiles(EntryInfoList)));
 
 	ItemList *item_list = new ItemList(0, 4);
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
@@ -63,40 +63,32 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
 
 	// order here must match the order in enum Type
-	file_icons.insert(DIRECTORY, bt_global::skin->getImage("directory_icon"));
-	file_icons.insert(AUDIO, bt_global::skin->getImage("audio_icon"));
-	file_icons.insert(VIDEO, bt_global::skin->getImage("video_icon"));
-	file_icons.insert(IMAGE, bt_global::skin->getImage("image_icon"));
+	file_icons.insert(EntryInfo::DIRECTORY, bt_global::skin->getImage("directory_icon"));
+	file_icons.insert(EntryInfo::AUDIO, bt_global::skin->getImage("audio_icon"));
+	file_icons.insert(EntryInfo::VIDEO, bt_global::skin->getImage("video_icon"));
+	file_icons.insert(EntryInfo::IMAGE, bt_global::skin->getImage("image_icon"));
 #ifdef PDF_EXAMPLE
-	file_icons.insert(PDF, bt_global::skin->getImage("pdf_icon"));
+	file_icons.insert(EntryInfo::PDF, bt_global::skin->getImage("pdf_icon"));
 #endif
 
 	play_file = bt_global::skin->getImage("play_file");
 	browse_directory = bt_global::skin->getImage("browse_directory");
 
 	slideshow = new SlideshowPage;
-	connect(this, SIGNAL(displayImages(QList<QString>, unsigned)),
-		slideshow, SLOT(displayImages(QList<QString>, unsigned)));
 	connect(slideshow, SIGNAL(Closed()), SLOT(showPage()));
 
 	videoplayer = new VideoPlayerPage;
-	connect(this, SIGNAL(displayVideos(QList<QString>, unsigned)),
-		videoplayer, SLOT(displayVideos(QList<QString>, unsigned)));
 
 	audioplayer = AudioPlayerPage::getAudioPlayerPage(AudioPlayerPage::LOCAL_FILE);
-	connect(this, SIGNAL(playAudioFiles(QList<QString>, unsigned)),
-		audioplayer, SLOT(playAudioFiles(QList<QString>, unsigned)));
 
 #ifdef PDF_EXAMPLE
 	pdfdisplay = new PdfPage;
-	connect(this, SIGNAL(displayPdf(QString)),
-		pdfdisplay, SLOT(displayPdf(QString)));
 	connect(pdfdisplay, SIGNAL(Closed()), SLOT(showPageNoReload()));
 #endif
-	last_clicked_type = UNKNOWN;
+	last_clicked_type = EntryInfo::UNKNOWN;
 }
 
-void MultimediaFileListPage::displayFiles(const QList<TreeBrowser::EntryInfo> &list)
+void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 {
 	setFiles(list);
 
@@ -116,14 +108,14 @@ void MultimediaFileListPage::displayFiles(const QList<TreeBrowser::EntryInfo> &l
 
 	for (int i = 0; i < list.size(); ++i)
 	{
-		const TreeBrowser::EntryInfo& f = list.at(i);
+		const EntryInfo& f = list.at(i);
 
 		QStringList icons;
 
-		if (f.type != DIRECTORY)
+		if (f.type != EntryInfo::DIRECTORY)
 		{
-			MultimediaFileType t = f.type;
-			if (t == UNKNOWN)
+			EntryInfo::Type t = f.type;
+			if (t == EntryInfo::UNKNOWN)
 				continue;
 
 			icons << file_icons[t];
@@ -135,7 +127,7 @@ void MultimediaFileListPage::displayFiles(const QList<TreeBrowser::EntryInfo> &l
 		}
 		else
 		{
-			icons << file_icons[DIRECTORY];
+			icons << file_icons[EntryInfo::DIRECTORY];
 			icons << browse_directory;
 
 			ItemList::ItemInfo info(f.name, QString(), icons);
@@ -152,32 +144,37 @@ void MultimediaFileListPage::displayFiles(const QList<TreeBrowser::EntryInfo> &l
 
 void MultimediaFileListPage::startPlayback(int item)
 {
-	const QList<TreeBrowser::EntryInfo> &files_list = getFiles();
-	const TreeBrowser::EntryInfo &current_file = files_list[item];
+	const EntryInfoList &files_list = getFiles();
+	const EntryInfo &current_file = files_list[item];
+
+	// For now we mantain both methods of passing data to the players,
+	// in the future we probabily use the EntryInfoList only.
 	QList<QString> urls;
+	EntryInfoList filtered;
 
 	for (int i = 0; i < files_list.size(); ++i)
 	{
-		const TreeBrowser::EntryInfo& fn = files_list[i];
-		if ((fn.type == DIRECTORY || fn.type != last_clicked_type) && last_clicked_type != UNKNOWN)
+		const EntryInfo& fn = files_list[i];
+		if ((fn.type == EntryInfo::DIRECTORY || fn.type != last_clicked_type) && last_clicked_type != EntryInfo::UNKNOWN)
 			continue;
 		if (fn == current_file)
 		{
 			last_clicked = urls.size();
 			last_clicked_type = fn.type;
 		}
+		filtered.append(fn);
 		urls.append(fn.url);
 	}
 
-	if (last_clicked_type == IMAGE)
-		emit displayImages(urls, last_clicked);
-	else if (last_clicked_type == VIDEO)
-		emit displayVideos(urls, last_clicked);
-	else if (last_clicked_type == AUDIO)
-		emit playAudioFiles(urls, last_clicked);
+	if (last_clicked_type == EntryInfo::IMAGE)
+		slideshow->displayImages(urls, last_clicked);
+	else if (last_clicked_type == EntryInfo::VIDEO)
+		videoplayer->displayVideos(urls, last_clicked);
+	else if (last_clicked_type == EntryInfo::AUDIO)
+		audioplayer->playAudioFiles(filtered, last_clicked);
 #ifdef PDF_EXAMPLE
-	else if (type == PDF)
-		emit displayPdf(files[current]);
+	else if (type == EntryInfo::PDF)
+		pdfdisplay->displayPdf(files[current]);
 #endif
 }
 
@@ -186,5 +183,5 @@ void MultimediaFileListPage::cleanUp()
 	FileSelector::cleanUp();
 
 	page_content->clear();
-	setFiles(QList<TreeBrowser::EntryInfo>());
+	setFiles(EntryInfoList());
 }
