@@ -187,7 +187,7 @@ ScenarioEvolved::ScenarioEvolved(int _item_id, QString descr, QString _action, b
 		connect(device_cond, SIGNAL(condSatisfied()), SLOT(trigOnStatusChanged()));
 	}
 
-	ScenEvoManager *p = new ScenEvoManager(time_cond, device_cond);
+	ScenEvoManager *p = new ScenEvoManager(descr, time_cond, device_cond);
 	connectButtonToPage(right_button, p);
 	connect(p, SIGNAL(reset()), SLOT(reset()));
 	connect(p, SIGNAL(save()), SLOT(save()));

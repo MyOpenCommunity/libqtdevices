@@ -1699,11 +1699,11 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_start>scenarievoluti/startbig.png</img_start>
 		<img_program>scenarievoluti/progscen.png</img_program>
 		<img_watch>scenarievoluti/imgora.png</img_watch>
-		<img_light>imgluce.png</img_light>
-		<img_dimmer>imgdimmer.png</img_dimmer>
-		<img_amplifier>imgdiffsonora.png</img_amplifier>
-		<img_aux>imgausiliario.png</img_aux>
-		<img_probe>imgtermo.png</img_probe>
+		<img_light>scenarievoluti/start.png</img_light>
+		<img_dimmer>scenarievoluti/start.png</img_dimmer>
+		<img_amplifier>scenarievoluti/start.png</img_amplifier>
+		<img_aux>scenarievoluti/start.png</img_aux>
+		<img_probe>scenarievoluti/start.png</img_probe>
 	</item>
 	<!-- settings banners -->
 	<item>
