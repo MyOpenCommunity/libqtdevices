@@ -119,8 +119,7 @@ namespace VCTCallPrivate
 		QLabel *video_box;
 		QString setup_vct_icon;
 
-		StateButton *mute_button, *stairlight, *unlock_door, *call_accept;
-		BtButton *cycle;
+		StateButton *mute_button, *stairlight, *unlock_door, *call_accept, *cycle;
 		QString mute_icon;
 		ItemTuning *volume;
 		static VCTCallStatus *call_status;
@@ -132,7 +131,7 @@ namespace VCTCallPrivate
 	signals:
 		void callClosed();
 		void incomingCall();
-		void callerAddress();
+		void callerAddress(QString address);
 
 	private slots:
 		void valueReceived(const DeviceValues &values_list);
@@ -222,7 +221,7 @@ private slots:
 	void handleClose();
 	void enterFullScreen();
 	void exitFullScreen();
-	void callerAddress();
+	void callerAddress(QString address);
 	void showVCTWindow();
 	void valueReceived(const DeviceValues &values_list);
 	void playRingtone();
