@@ -45,13 +45,11 @@ FeedItemWidget::FeedItemWidget(QWidget *parent) : QWidget(parent)
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
 	buttons_layout->addStretch();
 
-	BtButton *prev_button = new BtButton;
-	prev_button->setImage(bt_global::skin->getImage("previous"));
+	BtButton *prev_button = new BtButton(bt_global::skin->getImage("previous"));
 	connect(prev_button, SIGNAL(clicked()), SIGNAL(showPrev()));
 	buttons_layout->addWidget(prev_button);
 
-	BtButton *next_button = new BtButton;
-	next_button->setImage(bt_global::skin->getImage("next"));
+	BtButton *next_button = new BtButton(bt_global::skin->getImage("next"));
 	connect(next_button, SIGNAL(clicked()), SIGNAL(showNext()));
 	buttons_layout->addWidget(next_button);
 
