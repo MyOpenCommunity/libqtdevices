@@ -31,6 +31,8 @@
 class QString;
 class QLabel;
 class QDomNode;
+class QScrollArea;
+
 
 /*!
 	\ingroup Messages
@@ -93,6 +95,105 @@ signals:
 	void deleteAll();
 };
 
+
+/*!
+	\ingroup Messages
+	\brief The content of a MessagePage / AlertMessagePage.
+
+	Contains the logic to scroll up/down the content, return to the home page
+	or to the message list, delete a single message and change the message itself.
+*/
+class MessageContent : public QWidget
+{
+Q_OBJECT
+public:
+	MessageContent();
+	/*!
+		\brief Show or hide the button to return to the home page.
+		\sa goHome()
+	*/
+	void showHomeButton(bool show);
+
+	/*!
+		\brief Show or hide the button to return to the message list.
+		\sa goMessagesList()
+	*/
+	void showMessageListButton(bool show);
+
+	/*!
+		\brief Show or hide the label that notifies that the message is new.
+	*/
+	void showNewMessageLabel(bool show);
+
+	/*!
+		\brief Show or hide the button to go to the next message.
+	*/
+	void showNextButton(bool show);
+
+	/*!
+		\brief Show or hide the button to go to the previous message.
+	*/
+	void showPrevButton(bool show);
+
+	/*!
+		\brief Set the date of the message displayed.
+	*/
+	void setDate(const QString &date);
+
+	/*!
+		\brief Set the text of the message displayed.
+	*/
+	void setMessage(const QString &message);
+
+public slots:
+	/*!
+		\brief Scroll up the content of the message, if the message is too long.
+	*/
+	void scrollUp();
+
+	/*!
+		\brief Scroll down the content of the message, if the message is too long.
+	*/
+	void scrollDown();
+
+signals:
+	/*!
+		\brief Emitted when the user clicks the home button.
+		\sa showHomeButton()
+	*/
+	void goHome();
+
+	/*!
+		\brief Emitted when the user clicks the message list button.
+		\sa showMessageListButton()
+	*/
+	void goMessagesList();
+
+	/*!
+		\brief Emitted when the user clicks the delete button.
+	*/
+	void deleteMessage();
+
+	/*!
+		\brief Emitted when the user clicks the previous button.
+		\sa showPrevButton()
+	*/
+	void prevMessage();
+
+	/*!
+		\brief Emitted when the user clicks the next button.
+		\sa showNextButton()
+	*/
+	void nextMessage();
+
+private:
+	BtButton *go_home_button, *go_message_list_button, *prev_button, *next_button;
+	QLabel *date_label, *message_label, *new_message_label;
+	QScrollArea *text_area;
+};
+
+
+
 /*!
 	\ingroup Messages
 	\brief Shows an scs message.
@@ -101,6 +202,9 @@ class MessagePage : public Page
 {
 Q_OBJECT
 public:
+
+	typedef MessageContent ContentType;
+
 	MessagePage();
 
 	/*!
@@ -138,6 +242,8 @@ class AlertMessagePage : public Page
 {
 Q_OBJECT
 public:
+	typedef MessageContent ContentType;
+
 	AlertMessagePage(const QString &date, const QString &text);
 	virtual int sectionId() const;
 
