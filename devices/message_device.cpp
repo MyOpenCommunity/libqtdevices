@@ -113,9 +113,9 @@ bool MessageDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			return false;
 		}
 
-		if (cdp_where.isEmpty())
+		if (guardunit_where.isEmpty())
 		{
-			cdp_where = caller_where;
+			guardunit_where = caller_where;
 			sendReady();
 			timer.start();
 		}
@@ -171,7 +171,7 @@ void MessageDevice::timeout()
 
 void MessageDevice::sendReady()
 {
-	sendCommand(QString::number(COMMAND_READY), QString("%1#00#%2").arg(cdp_where).arg(where));
+	sendCommand(QString::number(COMMAND_READY), QString("%1#00#%2").arg(guardunit_where).arg(where));
 
 }
 
@@ -182,12 +182,12 @@ void MessageDevice::sendBusy(const QString &caller_where)
 
 void MessageDevice::sendWrongChecksum(const QString &message_id)
 {
-	sendCommand(QString("%1#%2").arg(COMMAND_WRONG_CHECKSUM).arg(message_id), QString("%1#00#%2").arg(cdp_where).arg(where));
+	sendCommand(QString("%1#%2").arg(COMMAND_WRONG_CHECKSUM).arg(message_id), QString("%1#00#%2").arg(guardunit_where).arg(where));
 }
 
 void MessageDevice::sendTimeout()
 {
-	sendCommand(QString("%1#%2").arg(COMMAND_TIMEOUT).arg(message.size()), QString("%1#00#%2").arg(cdp_where).arg(where));
+	sendCommand(QString("%1#%2").arg(COMMAND_TIMEOUT).arg(message.size()), QString("%1#00#%2").arg(guardunit_where).arg(where));
 }
 
 void MessageDevice::resetTimer()
@@ -199,6 +199,6 @@ void MessageDevice::resetTimer()
 void MessageDevice::cleanup()
 {
 	timer.stop();
-	cdp_where.clear();
+	guardunit_where.clear();
 	message.clear();
 }

@@ -138,7 +138,7 @@ private:
 	void resetTimer();
 	void cleanup();
 
-	QString cdp_where;
+	QString guardunit_where;
 	QString message;
 	QTimer timer;
 };

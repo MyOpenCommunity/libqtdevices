@@ -72,7 +72,7 @@ void TestMessageDevice::testParseMessage()
 void TestMessageDevice::sendReady()
 {
 	dev->where = "165";
-	dev->cdp_where = "350";
+	dev->guardunit_where = "350";
 	dev->sendReady();
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*8*9013*350#00#165##"));
@@ -89,7 +89,7 @@ void TestMessageDevice::sendBusy()
 void TestMessageDevice::sendWrongChecksum()
 {
 	dev->where = "165";
-	dev->cdp_where = "350";
+	dev->guardunit_where = "350";
 	dev->sendWrongChecksum("ID_MESSAGE");
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*8*9015#ID_MESSAGE*350#00#165##"));
@@ -98,7 +98,7 @@ void TestMessageDevice::sendWrongChecksum()
 void TestMessageDevice::sendTimeout()
 {
 	dev->where = "165";
-	dev->cdp_where = "350";
+	dev->guardunit_where = "350";
 	dev->message = "test";
 	dev->sendTimeout();
 	client_command->flush();
@@ -107,7 +107,7 @@ void TestMessageDevice::sendTimeout()
 
 void TestMessageDevice::connectFailed()
 {
-	QVERIFY(dev->cdp_where.isEmpty());
+	QVERIFY(dev->guardunit_where.isEmpty());
 	QVERIFY(dev->message.isEmpty());
 	QVERIFY(!dev->timer.isActive());
 
@@ -116,19 +116,19 @@ void TestMessageDevice::connectFailed()
 	client_command->flush();
 
 	QCOMPARE(server->frameCommand(), QString("*8*9013*350#00#165##"));
-	QCOMPARE(dev->cdp_where, QString("350"));
+	QCOMPARE(dev->guardunit_where, QString("350"));
 
 	OpenMsg other_begin_msg("*8*9012#1001*165#00#666##");
 	dev->manageFrame(other_begin_msg);
 	client_command->flush();
 
 	QCOMPARE(server->frameCommand(), QString("*8*9014*666#00#165##"));
-	QCOMPARE(dev->cdp_where, QString("350"));
+	QCOMPARE(dev->guardunit_where, QString("350"));
 }
 
 void TestMessageDevice::receiveCompleteMessage()
 {
-	QVERIFY(dev->cdp_where.isEmpty());
+	QVERIFY(dev->guardunit_where.isEmpty());
 	QVERIFY(dev->message.isEmpty());
 	QVERIFY(!dev->timer.isActive());
 
@@ -137,14 +137,14 @@ void TestMessageDevice::receiveCompleteMessage()
 	client_command->flush();
 
 	QCOMPARE(server->frameCommand(), QString("*8*9013*350#00#165##"));
-	QCOMPARE(dev->cdp_where, QString("350"));
+	QCOMPARE(dev->guardunit_where, QString("350"));
 
 
 	OpenMsg param_msg("*#8*165#00#350*#9001*1*2***10**##");
 	dev->manageFrame(param_msg);
 	client_command->flush();
 
-	QVERIFY(!dev->cdp_where.isEmpty());
+	QVERIFY(!dev->guardunit_where.isEmpty());
 
 
 	OpenMsg continue_msg("*#8*165#00#350*#9002*14*48*56*47*48*51*47*49*48*32*49*55*58*51*50*15*113*117*97*108*115*105*97*115*105*32*99*111*115*97##");
@@ -159,7 +159,7 @@ void TestMessageDevice::receiveCompleteMessage()
 	client_command->flush();
 
 	// Verify that the cleanup is not performed
-	QVERIFY(!dev->cdp_where.isEmpty());
+	QVERIFY(!dev->guardunit_where.isEmpty());
 	QVERIFY(!dev->message.isEmpty());
 	QVERIFY(dev->timer.isActive());
 
@@ -172,7 +172,7 @@ void TestMessageDevice::receiveCompleteMessage()
 
 void TestMessageDevice::receiveWrongChecksum()
 {
-	QVERIFY(dev->cdp_where.isEmpty());
+	QVERIFY(dev->guardunit_where.isEmpty());
 	QVERIFY(dev->message.isEmpty());
 	QVERIFY(!dev->timer.isActive());
 
@@ -181,14 +181,14 @@ void TestMessageDevice::receiveWrongChecksum()
 	client_command->flush();
 
 	QCOMPARE(server->frameCommand(), QString("*8*9013*350#00#165##"));
-	QCOMPARE(dev->cdp_where, QString("350"));
+	QCOMPARE(dev->guardunit_where, QString("350"));
 
 
 	OpenMsg param_msg("*#8*165#00#350*#9001*1*2***10**##");
 	dev->manageFrame(param_msg);
 	client_command->flush();
 
-	QVERIFY(!dev->cdp_where.isEmpty());
+	QVERIFY(!dev->guardunit_where.isEmpty());
 
 
 	OpenMsg continue_msg("*#8*165#00#350*#9002*14*48*56*47*48*51*47*49*48*32*49*55*58*51*50*15*113*117*97*108*115*105*97*115*105*32*99*111*115*97##");
@@ -205,14 +205,14 @@ void TestMessageDevice::receiveWrongChecksum()
 	QCOMPARE(server->frameCommand(), QString("*8*9015#12345*350#00#165##"));
 
 	// Verify that the cleanup is performed
-	QVERIFY(dev->cdp_where.isEmpty());
+	QVERIFY(dev->guardunit_where.isEmpty());
 	QVERIFY(dev->message.isEmpty());
 	QVERIFY(!dev->timer.isActive());
 }
 
 void TestMessageDevice::receiveTimeout()
 {
-	QVERIFY(dev->cdp_where.isEmpty());
+	QVERIFY(dev->guardunit_where.isEmpty());
 	QVERIFY(dev->message.isEmpty());
 	QVERIFY(!dev->timer.isActive());
 
@@ -221,7 +221,7 @@ void TestMessageDevice::receiveTimeout()
 	client_command->flush();
 
 	QCOMPARE(server->frameCommand(), QString("*8*9013*350#00#165##"));
-	QCOMPARE(dev->cdp_where, QString("350"));
+	QCOMPARE(dev->guardunit_where, QString("350"));
 	QVERIFY(dev->message.isEmpty());
 	QVERIFY(dev->timer.isActive());
 
@@ -230,7 +230,7 @@ void TestMessageDevice::receiveTimeout()
 	QCOMPARE(server->frameCommand(), QString("*8*9016#0*350#00#165##"));
 
 	// Verify that the cleanup is performed
-	QVERIFY(dev->cdp_where.isEmpty());
+	QVERIFY(dev->guardunit_where.isEmpty());
 	QVERIFY(dev->message.isEmpty());
 	QVERIFY(!dev->timer.isActive());
 }
@@ -238,7 +238,7 @@ void TestMessageDevice::receiveTimeout()
 void TestMessageDevice::receiveBeginMessage()
 {
 	// where#lev#00..
-	QVERIFY(dev->cdp_where.isEmpty());
+	QVERIFY(dev->guardunit_where.isEmpty());
 	QVERIFY(dev->message.isEmpty());
 	QVERIFY(!dev->timer.isActive());
 
@@ -246,11 +246,11 @@ void TestMessageDevice::receiveBeginMessage()
 	dev->manageFrame(begin_msg);
 	client_command->flush();
 
-	QCOMPARE(dev->cdp_where, QString("350"));
+	QCOMPARE(dev->guardunit_where, QString("350"));
 
 	dev->cleanup();
 	// where#00..
-	QVERIFY(dev->cdp_where.isEmpty());
+	QVERIFY(dev->guardunit_where.isEmpty());
 	QVERIFY(dev->message.isEmpty());
 	QVERIFY(!dev->timer.isActive());
 
@@ -258,6 +258,6 @@ void TestMessageDevice::receiveBeginMessage()
 	dev->manageFrame(begin_msg2);
 	client_command->flush();
 
-	QCOMPARE(dev->cdp_where, QString("350"));
+	QCOMPARE(dev->guardunit_where, QString("350"));
 }
 
