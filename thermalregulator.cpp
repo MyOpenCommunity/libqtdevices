@@ -856,7 +856,7 @@ void PageTermoReg::manualSelected(unsigned temp)
 
 void PageTermoReg::weekSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev)
 {
-	program_menu = new WeeklyMenu(0, programs, getTextChild(n, "descr"));
+	program_menu = new WeeklyMenu(programs, getTextChild(n, "descr"));
 
 	BannSinglePuls *weekly = new BannSinglePuls(settings);
 	weekly->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_program"),
@@ -946,7 +946,7 @@ PageSetTime *PageTermoReg::createTimeEdit(SettingsPage *settings)
 
 WeeklyMenu *PageTermoReg::createProgramChoice(SettingsPage *settings, QMap<QString, QString> programs, device *dev)
 {
-	WeeklyMenu *program_choice = new WeeklyMenu(0, programs);
+	WeeklyMenu *program_choice = new WeeklyMenu(programs);
 	connect(program_choice, SIGNAL(programClicked(int)), SLOT(weekendHolidaySettingsEnd(int)));
 	connect(program_choice, SIGNAL(Closed()), SLOT(programCancelled()));
 	return program_choice;
@@ -1042,7 +1042,7 @@ void PageTermoReg4z::manualTimedSelected(BtTime time, int temp)
 
 void PageTermoReg99z::scenarioSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev)
 {
-	scenario_menu = new ScenarioMenu(0, scenarios, getTextChild(n, "descr"));
+	scenario_menu = new ScenarioMenu(scenarios, getTextChild(n, "descr"));
 
 	BannSinglePuls *scenario = new BannSinglePuls(settings);
 	scenario->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_scenario"),
@@ -1061,8 +1061,7 @@ void PageTermoReg99z::scenarioSelected(int scenario)
 }
 
 
-ProgramMenu::ProgramMenu(QWidget *parent, QMap<QString, QString> _descriptions, QString title)
-	: BannerPage(parent)
+ProgramMenu::ProgramMenu(QMap<QString, QString> _descriptions, QString title)
 {
 	descriptions = _descriptions;
 	buildPage(title);
@@ -1114,8 +1113,8 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString icon)
 	}
 }
 
-WeeklyMenu::WeeklyMenu(QWidget *parent, QMap<QString, QString> programs, QString title)
-	: ProgramMenu(parent, programs, title)
+WeeklyMenu::WeeklyMenu(QMap<QString, QString> programs, QString title)
+	: ProgramMenu(programs, title)
 {
 	summer_icon = bt_global::skin->getImage("summer_program");
 	winter_icon = bt_global::skin->getImage("winter_program");
@@ -1133,8 +1132,8 @@ void WeeklyMenu::createWinterBanners()
 	createSeasonBanner("winter", winter_icon);
 }
 
-ScenarioMenu::ScenarioMenu(QWidget *parent, QMap<QString, QString> scenarios, QString title)
-	: ProgramMenu(parent, scenarios, title)
+ScenarioMenu::ScenarioMenu(QMap<QString, QString> scenarios, QString title)
+	: ProgramMenu(scenarios, title)
 {
 	summer_icon = bt_global::skin->getImage("summer_scenario");
 	winter_icon = bt_global::skin->getImage("winter_scenario");
