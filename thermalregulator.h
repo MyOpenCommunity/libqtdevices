@@ -404,8 +404,7 @@ class ProgramMenu : public BannerPage
 Q_OBJECT
 public:
 	ProgramMenu(QMap<QString, QString> descriptions, QString title);
-	virtual void createSummerBanners() = 0;
-	virtual void createWinterBanners() = 0;
+
 	void setSeason(ThermalDevice::Season new_season);
 
 signals:
@@ -417,6 +416,8 @@ protected:
 	QMap<QString, QString> descriptions;
 
 	void createSeasonBanner(QString season, QString icon);
+	virtual void createSummerBanners() = 0;
+	virtual void createWinterBanners() = 0;
 
 };
 
@@ -429,6 +430,8 @@ class WeeklyMenu : public ProgramMenu
 Q_OBJECT
 public:
 	WeeklyMenu(QMap<QString, QString> programs, QString title = "");
+
+protected:
 	virtual void createSummerBanners();
 	virtual void createWinterBanners();
 };
@@ -442,6 +445,8 @@ class ScenarioMenu : public ProgramMenu
 Q_OBJECT
 public:
 	ScenarioMenu(QMap<QString, QString> scenarios, QString title = "");
+
+protected:
 	virtual void createSummerBanners();
 	virtual void createWinterBanners();
 };

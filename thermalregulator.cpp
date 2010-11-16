@@ -1090,26 +1090,39 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString icon)
 	if (page_content->bannerCount() == 0)
 		create_banner = true;
 
-	for (int index = 0; ; ++index)
+	QMapIterator<QString, QString> it(descriptions);
+	while (it.hasNext())
 	{
-		QString key = season + QString::number(index + 1);
-		if (!descriptions.contains(key))
-			break;
+		it.next();
+		if (!it.key().startsWith(season))
+			continue;
 
+		int program_number = it.key().mid(season.length()).toInt();
 		BannWeekly *bp = 0;
 		if (create_banner)
 		{
-			bp = new BannWeekly(this, index + 1);
+			bp = new BannWeekly(this, program_number);
 			page_content->appendBanner(bp);
 			connect(bp, SIGNAL(programNumber(int)), SIGNAL(programClicked(int)));
 		}
-		if (index >= page_content->bannerCount())
+		else
 		{
-			qWarning("ProgramMenu::createSeasonBanner: updating a menu with different number of programs between summer and winter");
-			break;
+			for (int i = 0; i < page_content->bannerCount(); ++i)
+			{
+				BannWeekly *b = static_cast<BannWeekly*>(page_content->getBanner(i));
+				if (b->getProgramNumber() == program_number)
+				{
+					bp = b;
+					break;
+				}
+			}
 		}
-		bp = static_cast<BannWeekly*>(page_content->getBanner(index));
-		bp->initBanner(bt_global::skin->getImage("ok"), icon, descriptions[key]);
+		if (!bp)
+		{
+			qWarning() << "No BannWeekly found for program" << program_number;
+			continue;
+		}
+		bp->initBanner(bt_global::skin->getImage("ok"), icon, it.value());
 	}
 }
 
