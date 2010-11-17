@@ -1706,11 +1706,11 @@ AlarmList > QWidget {  background-image: url(); }
 		<img_start>scenarievoluti/startbig.png</img_start>
 		<img_program>scenarievoluti/progscen.png</img_program>
 		<img_watch>scenarievoluti/imgora.png</img_watch>
-		<img_light>imgluce.png</img_light>
-		<img_dimmer>imgdimmer.png</img_dimmer>
-		<img_amplifier>imgdiffsonora.png</img_amplifier>
-		<img_aux>imgausiliario.png</img_aux>
-		<img_probe>imgtermo.png</img_probe>
+		<img_light>scenarievoluti/start.png</img_light>
+		<img_dimmer>scenarievoluti/start.png</img_dimmer>
+		<img_amplifier>scenarievoluti/start.png</img_amplifier>
+		<img_aux>scenarievoluti/start.png</img_aux>
+		<img_probe>scenarievoluti/start.png</img_probe>
 	</item>
 	<!-- settings banners -->
 	<item>
@@ -1847,6 +1847,8 @@ AlarmList > QWidget {  background-image: url(); }
 		<img_delete_all>navigazione/eliminatutti.png</img_delete_all>
 		<img_delete>antintrusione/elimina.png</img_delete>
 		<img_go_message_list>home/storicomessaggi.png</img_go_message_list>
+		<img_previous>multimediale/precedente.png</img_previous>
+		<img_next>multimediale/successivo.png</img_next>
 	</item>
 	<item>
 		<!--

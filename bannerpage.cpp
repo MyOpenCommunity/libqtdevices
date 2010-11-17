@@ -123,6 +123,15 @@ void BannerContent::appendBanner(banner *b)
 		}
 }
 
+void BannerContent::clear()
+{
+	for (int i = 0; i < banner_list.size(); ++i)
+		banner_list[i]->deleteLater();
+	banner_list.clear();
+	pages.clear();
+	current_page = 0;
+}
+
 void BannerContent::drawContent()
 {
 	QGridLayout *l = qobject_cast<QGridLayout*>(layout());

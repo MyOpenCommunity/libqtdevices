@@ -66,12 +66,14 @@
 #include <QThreadPool>
 #include <QSocketNotifier>
 #include <QtConcurrentRun>
+#include <QMouseEvent>
 
 #include <sys/types.h>
 #include <sys/socket.h> // socketpair
 #include <unistd.h> // write
 #include <signal.h> // SIGUSR2, SIGTERM
 
+#define DEBUG_MOUSEPRESS 0
 
 // delay between two consecutive screensaver checks
 #define SCREENSAVER_CHECK 2000
@@ -82,6 +84,7 @@
 #else
 #define TS_NUM_BASE_ADDRESS 0x700
 #endif
+
 
 
 namespace
@@ -120,6 +123,22 @@ namespace
 
 	bool LastClickTime::eventFilter(QObject *obj, QEvent *ev)
 	{
+
+#if DEBUG_MOUSEPRESS
+		if (ev->type() == QEvent::MouseButtonPress)
+		{
+			QWidget *content = new QWidget;
+			content->setWindowFlags(Qt::FramelessWindowHint);
+			content->show();
+			content->raise();
+			content->setFixedSize(3, 3);
+			content->setStyleSheet("*{background-color: red}");
+			QMouseEvent *me = static_cast<QMouseEvent*>(ev);
+			content->move(me->globalPos());
+			QTimer::singleShot(10000, content, SLOT(deleteLater()));
+		}
+#endif
+
 		// Save last click time
 		if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick)
 		{
@@ -899,7 +918,7 @@ bool BtMain::eventFilter(QObject *obj, QEvent *ev)
 {
 	// Discard the mouse press and mouse double click
 	if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick ||
-	    ev->type() == QEvent::MouseMove || ev->type() == QEvent::Enter || ev->type() == QEvent::Leave)
+		ev->type() == QEvent::MouseMove || ev->type() == QEvent::Enter || ev->type() == QEvent::Leave)
 		return true;
 
 	if (ev->type() != QEvent::MouseButtonRelease)

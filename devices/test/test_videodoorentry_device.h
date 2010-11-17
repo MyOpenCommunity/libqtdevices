@@ -65,8 +65,11 @@ private slots:
 	void receiveCallerAddress3();
 	void receiveRearmSession();
 	void receiveStopVideo();
+	void receiveUnconnectedStopVideo();
 	void receiveEndOfCall();
-	void receiveAnswerCall();
+	void receiveUnconnectedEndOfCall();
+	void receiveAnswer();
+	void receiveUnconnectedAnswer();
 	void receiveFloorCall();
 
 private:

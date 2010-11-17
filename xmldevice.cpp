@@ -100,7 +100,7 @@ namespace
 			QString status_browse = getTextChild(node, "status_browse");
 			if (status_browse.isEmpty())
 				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::CHDIR, XmlError::PARSE));
-			else if (status_browse == "browse_ok")
+			else if (status_browse == "browse_okay")
 				result[XmlResponses::CHDIR] = true;
 			else
 				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::CHDIR, XmlError::BROWSING));
@@ -124,7 +124,7 @@ namespace
 		QString status_browse = getTextChild(node, "status_browse");
 		if (status_browse.isEmpty())
 			result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::BROWSE_UP, XmlError::PARSE));
-		else if (status_browse == "browse_ok")
+		else if (status_browse == "browse_okay")
 			result[XmlResponses::BROWSE_UP] = true;
 		else
 			result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::BROWSE_UP, XmlError::BROWSING));

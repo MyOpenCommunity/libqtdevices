@@ -39,12 +39,17 @@
 #include "multimedia.h"
 #include "labels.h" // ScrollingLabel
 
+#include <QFontMetrics>
 #include <QGridLayout>
 #include <QLabel>
 #include <QVariant> // for setProperty
 
 // The timeout for a single item in msec
 #define LOOP_TIMEOUT 2000
+
+// Max characters displayed together in the title
+#define MAX_TITLE_CHARS 32
+
 
 QVector<AudioPlayerPage *> AudioPlayerPage::audioplayer_pages(MAX_MEDIA_TYPE, 0);
 
@@ -101,9 +106,14 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 
 	bg->setPixmap(bt_global::skin->getImage("audioplayer_background"));
 
+
+	QFont title_font = bt_global::font->get(FontManager::PLAYER_TITLE);
+	QFontMetrics fm(title_font);
 	description_top = new ScrollingLabel;
+	description_top->setFont(title_font);
+	description_top->setMaximumWidth(fm.averageCharWidth() * MAX_TITLE_CHARS);
+
 	description_bottom = new ScrollingLabel;
-	description_top->setFont(bt_global::font->get(FontManager::PLAYER_TITLE));
 	description_bottom->setFont(bt_global::font->get(FontManager::PLAYER_AUTHOR));
 
 	track = new QLabel;

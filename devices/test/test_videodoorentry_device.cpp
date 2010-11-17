@@ -232,22 +232,42 @@ void TestVideoDoorEntryDevice::receiveFloorCall()
 	QCOMPARE(dev->mmtype, 4);
 }
 
-void TestVideoDoorEntryDevice::receiveAnswerCall()
+void TestVideoDoorEntryDevice::receiveAnswer()
+{
+	int kind = 1;
+	int mmtype = 4;
+	simulateIncomingCall(kind, mmtype);
+	DeviceTester t(dev, VideoDoorEntryDevice::ANSWER_CALL);
+	QString frame = QString("*8*2#%1#%2*%3##").arg(kind).arg(mmtype).arg(dev->where);
+	t.check(frame, true);
+}
+
+void TestVideoDoorEntryDevice::receiveUnconnectedAnswer()
 {
 	int kind = 1;
 	int mmtype = 4;
 	DeviceTester t(dev, VideoDoorEntryDevice::ANSWER_CALL);
 	QString frame = QString("*8*2#%1#%2*%3##").arg(kind).arg(mmtype).arg(dev->where);
-	t.check(frame, true);
+	t.checkSignals(frame, 0);
 }
 
 void TestVideoDoorEntryDevice::receiveStopVideo()
 {
 	int kind = 1;
 	int mmtype = 3;
+	simulateIncomingCall(kind, 4);
 	DeviceTester t(dev, VideoDoorEntryDevice::STOP_VIDEO);
 	QString frame = QString("*8*3#%1#%2*%3##").arg(kind).arg(mmtype).arg(dev->where);
 	t.check(frame, true);
+}
+
+void TestVideoDoorEntryDevice::receiveUnconnectedStopVideo()
+{
+	int kind = 1;
+	int mmtype = 3;
+	DeviceTester t(dev, VideoDoorEntryDevice::STOP_VIDEO);
+	QString frame = QString("*8*3#%1#%2*%3##").arg(kind).arg(mmtype).arg(dev->where);
+	t.checkSignals(frame, 0);
 }
 
 void TestVideoDoorEntryDevice::receiveCallerAddress1()
@@ -294,9 +314,19 @@ void TestVideoDoorEntryDevice::receiveEndOfCall()
 {
 	int kind = 1;
 	int mmtype = 4;
+	simulateIncomingCall(kind, mmtype);
 	DeviceTester t(dev, VideoDoorEntryDevice::END_OF_CALL);
 	QString frame = QString("*8*3#%1#%2*%3##").arg(kind).arg(mmtype).arg(dev->where);
 	t.check(frame, true);
+}
+
+void TestVideoDoorEntryDevice::receiveUnconnectedEndOfCall()
+{
+	int kind = 1;
+	int mmtype = 4;
+	DeviceTester t(dev, VideoDoorEntryDevice::END_OF_CALL);
+	QString frame = QString("*8*3#%1#%2*%3##").arg(kind).arg(mmtype).arg(dev->where);
+	t.checkSignals(frame, 0);
 }
 
 void TestVideoDoorEntryDevice::receiveRearmSession()

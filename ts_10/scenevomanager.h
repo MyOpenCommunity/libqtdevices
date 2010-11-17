@@ -35,7 +35,7 @@ class ScenEvoManager : public Page
 {
 Q_OBJECT
 public:
-	ScenEvoManager(ScenEvoTimeCondition *time_cond, ScenEvoDeviceCondition *device_cond);
+	ScenEvoManager(QString title, ScenEvoTimeCondition *time_cond, ScenEvoDeviceCondition *device_cond);
 
 signals:
 	void reset();
