@@ -129,10 +129,13 @@ bool MessageDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			resetTimer();
 		else // end message
 		{
-			QVariant dim_message;
-			dim_message.setValue(parseMessage(message));
-			values_list[DIM_MESSAGE] = dim_message;
-			cleanup();
+			if (!message.isEmpty())
+			{
+				QVariant dim_message;
+				dim_message.setValue(parseMessage(message));
+				values_list[DIM_MESSAGE] = dim_message;
+				cleanup();
+			}
 		}
 		break;
 
