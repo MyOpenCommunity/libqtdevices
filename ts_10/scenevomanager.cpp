@@ -25,27 +25,25 @@
 #include "btbutton.h"
 #include "scenevocond.h"
 #include "navigation_bar.h"
+#include "fontmanager.h"
 
 #include <QGridLayout>
 #include <QDebug>
 #include <QLabel>
 
 
-ScenEvoManager::ScenEvoManager(ScenEvoTimeCondition *time_cond, ScenEvoDeviceCondition *device_cond)
+ScenEvoManager::ScenEvoManager(QString title, ScenEvoTimeCondition *time_cond, ScenEvoDeviceCondition *device_cond)
 {
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
-	buildPage(new QWidget, nav_bar);
+	buildPage(new QWidget, nav_bar, title, TINY_TITLE_HEIGHT);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(reset()));
 
-	QVBoxLayout *main_layout = new QVBoxLayout(page_content);
+
+	QGridLayout *main_layout = new QGridLayout(page_content);
 	main_layout->setContentsMargins(30, 30, 30, 30);
 	main_layout->setSpacing(0);
-
-	QHBoxLayout *first_row = new QHBoxLayout;
-	first_row->setContentsMargins(0, 0, 0, 0);
-	first_row->setSpacing(5);
 
 	QVBoxLayout *left_box = new QVBoxLayout;
 	left_box->setContentsMargins(0, 0, 0, 0);
@@ -56,32 +54,38 @@ ScenEvoManager::ScenEvoManager(ScenEvoTimeCondition *time_cond, ScenEvoDeviceCon
 	left_box->addWidget(left_image, 0, Qt::AlignHCenter);
 
 	QLabel *left_descr = new QLabel;
+	left_descr->setFont(bt_global::font->get(FontManager::TEXT));
 	left_descr->setText(tr("Time Conditions-Hour & Minute"));
 	left_box->addWidget(left_descr, 0, Qt::AlignHCenter);
-	left_box->addStretch(1);
 
-	first_row->addLayout(left_box);
-	first_row->addStretch(1);
+	main_layout->addLayout(left_box, 0, 0, 1, 1, Qt::AlignLeft);
 
 	if (time_cond)
-		first_row->addWidget(time_cond);
-
-	main_layout->addLayout(first_row);
-	main_layout->addStretch(1);
-
-	QHBoxLayout *second_row = new QHBoxLayout;
-	second_row->setContentsMargins(0, 0, 0, 0);
-	second_row->setSpacing(5);
+		main_layout->addWidget(time_cond, 0, 1, 2, 1, Qt::AlignRight | Qt::AlignTop);
 
 	if (device_cond)
-		second_row->addWidget(device_cond);
+	{
+		QGridLayout *device_layout = new QGridLayout;
+		device_layout->setContentsMargins(0, 0, 0, 0);
+		device_layout->setSpacing(20);
+		QLabel *label_icon = new QLabel;
+		label_icon->setPixmap(*bt_global::icons_cache.getIcon(device_cond->getIcon()));
+		label_icon->setFixedSize(label_icon->pixmap()->size());
 
-	second_row->addStretch(1);
+		QLabel *label_text = new QLabel;
+		label_text->setFont(bt_global::font->get(FontManager::TEXT));
+		label_text->setText(device_cond->getDescription());
+		device_layout->addWidget(label_icon, 0, 0);
+		device_layout->addWidget(label_text, 0, 1);
+		device_layout->addWidget(device_cond, 1, 0, 1, 2);
+
+		main_layout->addLayout(device_layout, 1, 0, 2, 1, Qt::AlignBottom | Qt::AlignLeft);
+	}
+
 	BtButton *ok = new BtButton;
 	ok->setImage(bt_global::skin->getImage("ok"));
 	connect(ok, SIGNAL(clicked()), SIGNAL(Closed()));
 	connect(ok, SIGNAL(clicked()), SIGNAL(save()));
-	second_row->addWidget(ok);
-	main_layout->addLayout(second_row);
+	main_layout->addWidget(ok, 2, 1, 1, 1, Qt::AlignRight | Qt::AlignBottom);
 }
 

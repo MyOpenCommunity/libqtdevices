@@ -249,7 +249,7 @@ VCTCall::VCTCall(VideoDoorEntryDevice *d, FormatVideo f)
 	connect(unlock_door, SIGNAL(pressed()), dev, SLOT(openLock()));
 	connect(unlock_door, SIGNAL(released()), dev, SLOT(releaseLock()));
 
-	cycle = new BtButton(bt_global::skin->getImage("cycle"));
+	cycle = getButton(bt_global::skin->getImage("cycle"));
 	connect(cycle, SIGNAL(clicked()), dev, SLOT(cycleExternalUnits()));
 	connect(&video_grabber, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(finished(int,QProcess::ExitStatus)));
 	disable();
@@ -402,7 +402,7 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			call_status->call_active = true;
 			break;
 		case VideoDoorEntryDevice::CALLER_ADDRESS:
-			emit callerAddress();
+			emit callerAddress(it.value().toString());
 			break;
 		case VideoDoorEntryDevice::END_OF_CALL:
 			stopVideo();
@@ -524,7 +524,7 @@ VCTCallPage::VCTCallPage(VideoDoorEntryDevice *d)
 
 	connect(vct_call, SIGNAL(callClosed()), SLOT(handleClose()));
 	connect(vct_call, SIGNAL(incomingCall()), SLOT(incomingCall()));
-	connect(vct_call, SIGNAL(callerAddress()), SLOT(callerAddress()));
+	connect(vct_call, SIGNAL(callerAddress(QString)), SLOT(callerAddress(QString)));
 
 	window = new VCTCallWindow(d);
 	connect(window, SIGNAL(Closed()), SLOT(handleClose()));
@@ -538,12 +538,22 @@ VCTCallPage::VCTCallPage(VideoDoorEntryDevice *d)
 	sidebar->addStretch(1);
 	sidebar->addWidget(vct_call->camera, 0, Qt::AlignCenter);
 	sidebar->addWidget(vct_call->image_control, 0, Qt::AlignCenter);
-	sidebar->addWidget(vct_call->setup_vct, 0, Qt::AlignCenter);
+
 
 	if (dev->vctMode() == VideoDoorEntryDevice::SCS_MODE)
+	{
 		vct_call->video_box->setFixedSize(352, 240);
+		sidebar->addWidget(vct_call->setup_vct, 0, Qt::AlignCenter);
+	}
 	else
+	{
+		// In ip mode we cannot modify the image, so we hide the button and
+		// replace it with a spacer.
+		vct_call->setup_vct->hide();
+		sidebar->addSpacing(vct_call->setup_vct->height());
+
 		vct_call->video_box->setFixedSize(320, 240);
+	}
 
 	BtButton *back = new BtButton(bt_global::skin->getImage("back"));
 	connect(back, SIGNAL(clicked()), SLOT(backClicked()));
@@ -723,12 +733,22 @@ void VCTCallPage::incomingCall()
 	repaint();
 }
 
-void VCTCallPage::callerAddress()
+void VCTCallPage::callerAddress(QString address)
 {
 	if (VCTCall::call_status->prof_studio) // we want to open the door
 	{
 		dev->openLock();
 		dev->releaseLock();
+	}
+
+	if (address == (*bt_global::config)[GUARD_UNIT_ADDRESS])
+	{
+		vct_call->call_status->move_enabled = false;
+		vct_call->camera->setMoveEnabled(false);
+
+		vct_call->stairlight->setStatus(StateButton::DISABLED);
+		vct_call->unlock_door->setStatus(StateButton::DISABLED);
+		vct_call->cycle->setStatus(StateButton::DISABLED);
 	}
 }
 

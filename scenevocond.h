@@ -122,6 +122,9 @@ public:
 	*/
 	virtual bool isTrue();
 
+	QString getDescription() { return description; }
+	QString getIcon() { return icon; }
+
 public slots:
 	virtual void save();
 	virtual void Apply();
@@ -130,6 +133,8 @@ public slots:
 private:
 	// Specific device condition
 	DeviceCondition *device_cond;
+
+	QString description, icon;
 };
 
 

@@ -25,49 +25,13 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QTimer>
+#include <QScrollArea>
+#include <QScrollBar>
 
 
 #define DATE_FORMAT_AS_STRING "yyyy/MM/dd HH:mm"
 
 class QBoxLayout;
-
-
-namespace
-{
-	QWidget *buildMessagePage(QVBoxLayout *box_layout, QLabel *new_message_label, QLabel *date_label, QLabel *message_label)
-	{
-		const QFont &font = bt_global::font->get(FontManager::TEXT);
-
-		QWidget *content = new QWidget;
-		content->setContentsMargins(10, 0, 10, 10);
-		content->setLayout(box_layout);
-
-		box_layout->setSpacing(0);
-
-		new_message_label->setFixedHeight(30);
-		new_message_label->setFont(font);
-		box_layout->addWidget(new_message_label, 0, Qt::AlignHCenter);
-		box_layout->addSpacing(5);
-
-		date_label->setObjectName("Date");
-		date_label->setMargin(5);
-		date_label->setFixedHeight(30);
-		date_label->setAlignment(Qt::AlignRight);
-		date_label->setFont(font);
-		box_layout->addWidget(date_label);
-
-		message_label->setMargin(10);
-		message_label->setObjectName("Text");
-		message_label->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-		message_label->setWordWrap(true);
-		message_label->setFont(font);
-		box_layout->addWidget(message_label);
-
-		box_layout->addSpacing(5);
-
-		return content;
-	}
-}
 
 
 enum {
@@ -144,65 +108,179 @@ DeleteMessagesPage::DeleteMessagesPage()
 }
 
 
-MessagePage::MessagePage()
+MessageContent::MessageContent()
 {
 	date_label = new QLabel;
 	message_label = new QLabel;
 	new_message_label = new QLabel;
-	QVBoxLayout *box_layout = new QVBoxLayout;
 
-	QWidget *content = buildMessagePage(box_layout, new_message_label, date_label, message_label);
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(10, 0, 10, 10);
+	main_layout->setSpacing(0);
 
-	BtButton *delete_button = new BtButton(bt_global::skin->getImage("delete"));
-	connect(delete_button, SIGNAL(clicked()), this, SIGNAL(deleteMessage()));
-	box_layout->addWidget(delete_button, 0, Qt::AlignHCenter);
+	const QFont &font = bt_global::font->get(FontManager::TEXT);
 
-	PageTitleWidget *title_widget = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
-	NavigationBar *nav_bar = new NavigationBar;
-	connect(nav_bar, SIGNAL(upClick()), this, SIGNAL(prevMessage()));
-	connect(nav_bar, SIGNAL(downClick()), this, SIGNAL(nextMessage()));
-	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
+	new_message_label->setFixedHeight(30);
+	new_message_label->setFont(font);
+	main_layout->addWidget(new_message_label, 0, Qt::AlignHCenter);
+	main_layout->addSpacing(5);
 
-	buildPage(content, nav_bar, 0, title_widget);
-}
+	date_label->setObjectName("Date");
+	date_label->setMargin(5);
+	date_label->setFixedHeight(30);
+	date_label->setAlignment(Qt::AlignRight);
+	date_label->setFont(font);
+	main_layout->addWidget(date_label);
 
-void MessagePage::setData(const QString &date, const QString &text, bool already_read)
-{
-	date_label->setText(date);
-	new_message_label->setText(!already_read ? tr("New Message") : "");
-	message_label->setText(text);
-}
+	message_label->setMargin(10);
+	message_label->setObjectName("Text");
+	message_label->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+	message_label->setWordWrap(true);
+	message_label->setFont(font);
 
+	text_area = new QScrollArea;
+	text_area->setFrameShape(QFrame::NoFrame);
+	text_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	text_area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	text_area->setWidgetResizable(true);
+	text_area->setWidget(message_label);
+	main_layout->addWidget(text_area);
 
-AlertMessagePage::AlertMessagePage(const QString &date, const QString &text)
-{
-	QVBoxLayout *box_layout = new QVBoxLayout;
+	main_layout->addSpacing(5);
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
 	buttons_layout->setSpacing(20);
 	buttons_layout->setContentsMargins(0, 0, 0, 0);
+
 	buttons_layout->addStretch(1);
-	_date = date;
-	_text = text;
 
-	QWidget *content = buildMessagePage(box_layout, new QLabel(tr("New Message")), new QLabel(date), new QLabel(text));
-
-	BtButton *go_home_button = new BtButton(bt_global::skin->getImage("go_home"));
+	go_home_button = new BtButton(bt_global::skin->getImage("go_home"));
 	connect(go_home_button, SIGNAL(clicked()), this, SIGNAL(goHome()));
 	buttons_layout->addWidget(go_home_button);
 
-	BtButton *go_message_list_button = new BtButton(bt_global::skin->getImage("go_message_list"));
+	go_message_list_button = new BtButton(bt_global::skin->getImage("go_message_list"));
 	connect(go_message_list_button, SIGNAL(clicked()), this, SIGNAL(goMessagesList()));
 	buttons_layout->addWidget(go_message_list_button);
 
 	BtButton *delete_button = new BtButton(bt_global::skin->getImage("delete"));
 	connect(delete_button, SIGNAL(clicked()), this, SIGNAL(deleteMessage()));
 	buttons_layout->addWidget(delete_button);
+
 	buttons_layout->addStretch(1);
-	box_layout->addSpacing(5);
-	box_layout->addLayout(buttons_layout);
+
+	QHBoxLayout *right_layout = new QHBoxLayout;
+	right_layout->setSpacing(10);
+	right_layout->setContentsMargins(0, 0, 0, 0);
+
+	prev_button = new BtButton(bt_global::skin->getImage("previous"));
+	connect(prev_button, SIGNAL(clicked()), SIGNAL(prevMessage()));
+	right_layout->addWidget(prev_button);
+
+	next_button = new BtButton(bt_global::skin->getImage("next"));
+	connect(next_button, SIGNAL(clicked()), SIGNAL(nextMessage()));
+	right_layout->addWidget(next_button);
+	buttons_layout->addLayout(right_layout);
+
+	main_layout->addLayout(buttons_layout);
+}
+
+void MessageContent::scrollUp()
+{
+	QScrollBar *vbar = text_area->verticalScrollBar();
+	vbar->setValue(vbar->value() - vbar->pageStep());
+}
+
+void MessageContent::scrollDown()
+{
+	QScrollBar *vbar = text_area->verticalScrollBar();
+	vbar->setValue(vbar->value() + vbar->pageStep());
+}
+
+void MessageContent::showHomeButton(bool show)
+{
+	go_home_button->setVisible(show);
+}
+
+void MessageContent::showMessageListButton(bool show)
+{
+	go_message_list_button->setVisible(show);
+}
+
+void MessageContent::showNewMessageLabel(bool show)
+{
+	new_message_label->setText(show ? tr("New Message") : "");
+}
+
+void MessageContent::showPrevButton(bool show)
+{
+	prev_button->setVisible(show);
+}
+
+void MessageContent::showNextButton(bool show)
+{
+	next_button->setVisible(show);
+}
+
+void MessageContent::setDate(const QString &date)
+{
+	date_label->setText(date);
+}
+
+void MessageContent::setMessage(const QString &message)
+{
+	message_label->setText(message);
+	text_area->verticalScrollBar()->setValue(0);
+}
+
+
+MessagePage::MessagePage()
+{
+	MessageContent *content = new MessageContent;
+	content->showHomeButton(false);
+	content->showMessageListButton(false);
+	connect(content, SIGNAL(deleteMessage()), this, SIGNAL(deleteMessage()));
+	connect(content, SIGNAL(prevMessage()), this, SIGNAL(prevMessage()));
+	connect(content, SIGNAL(nextMessage()), this, SIGNAL(nextMessage()));
+
 	PageTitleWidget *title_widget = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
-	buildPage(content, static_cast<AbstractNavigationBar*>(0), 0, title_widget);
+	NavigationBar *nav_bar = new NavigationBar;
+	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(upClick()), content, SLOT(scrollUp()));
+	connect(nav_bar, SIGNAL(downClick()), content, SLOT(scrollDown()));
+
+	buildPage(content, nav_bar, 0, title_widget);
+}
+
+void MessagePage::setData(const QString &date, const QString &text, bool already_read)
+{
+	page_content->setDate(date);
+	page_content->showNewMessageLabel(!already_read);
+	page_content->setMessage(text);
+}
+
+
+AlertMessagePage::AlertMessagePage(const QString &date, const QString &text)
+{
+	_date = date;
+	_text = text;
+
+	MessageContent *content = new MessageContent;
+	content->setDate(date);
+	content->setMessage(text);
+	content->showNewMessageLabel(true);
+	content->showPrevButton(false);
+	content->showNextButton(false);
+	connect(content, SIGNAL(goHome()), this, SIGNAL(goHome()));
+	connect(content, SIGNAL(goMessagesList()), this, SIGNAL(goMessagesList()));
+	connect(content, SIGNAL(deleteMessage()), this, SIGNAL(deleteMessage()));
+
+	PageTitleWidget *title_widget = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
+
+	NavigationBar *nav_bar = new NavigationBar(QString(), "scroll_down", "scroll_up", QString());
+	connect(nav_bar, SIGNAL(upClick()), content, SLOT(scrollUp()));
+	connect(nav_bar, SIGNAL(downClick()), content, SLOT(scrollDown()));
+
+	buildPage(content, nav_bar, 0, title_widget);
 }
 
 int AlertMessagePage::sectionId() const
