@@ -236,9 +236,11 @@ Q_OBJECT
 public:
 	PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device);
 	virtual ThermalDevice *dev();
+
 protected:
 	virtual void createSettingsMenu(QDomNode regulator_node);
 	void createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice4Zones *dev);
+
 private:
 	/**
 	 * Utility function to create the submenu for timed manual operation mode.
@@ -247,6 +249,7 @@ private:
 	void timedManualSettings(QDomNode n, SettingsPage *settings, ThermalDevice4Zones *dev);
 
 	ThermalDevice4Zones *_dev;
+
 private slots:
 	void manualTimedSelected(BtTime time, int temp);
 };
@@ -289,13 +292,13 @@ class PageManual : public Page
 {
 Q_OBJECT
 public:
-	PageManual(ThermalDevice *_dev, TemperatureScale scale = CELSIUS);
+	PageManual(ThermalDevice *d, TemperatureScale scale = CELSIUS);
 
 public slots:
 	void valueReceived(const DeviceValues &values_list);
 
-protected:
-	void updateTemperature();
+signals:
+	void temperatureSelected(unsigned);
 
 protected slots:
 	virtual void performAction();
@@ -303,9 +306,10 @@ protected slots:
 protected:
 	QWidget content;
 	QVBoxLayout main_layout;
-	/// The setpoint temperature set on the interface. The scale is given by temp_scale
+	// The setpoint temperature set on the interface. The scale is given by temp_scale
 	int temp;
 	TemperatureScale temp_scale;
+	void updateTemperature();
 
 private:
 	QLabel *temp_label;
@@ -318,8 +322,6 @@ private slots:
 	void incSetpoint();
 	void decSetpoint();
 
-signals:
-	void temperatureSelected(unsigned);
 };
 
 
@@ -331,7 +333,7 @@ class PageManualTimed : public PageManual
 {
 Q_OBJECT
 public:
-	PageManualTimed(ThermalDevice4Zones *_dev, TemperatureScale scale = CELSIUS);
+	PageManualTimed(ThermalDevice4Zones *dev, TemperatureScale scale = CELSIUS);
 	void setMaxHours(int max);
 	void setMaxMinutes(int max);
 
@@ -339,8 +341,7 @@ protected slots:
 	virtual void performAction();
 
 private:
-	ThermalDevice4Zones *dev;
-	/// TimeEdit widget
+	// TimeEdit widget
 	BtTimeEdit *time_edit;
 
 signals:
