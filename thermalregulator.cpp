@@ -1080,10 +1080,14 @@ void ProgramMenu::setSeason(ThermalDevice::Season new_season)
 		switch (season)
 		{
 		case ThermalDevice::SE_SUMMER:
+			page_content->clear();
 			createSummerBanners();
+			page_content->drawContent();
 			break;
 		case ThermalDevice::SE_WINTER:
+			page_content->clear();
 			createWinterBanners();
+			page_content->drawContent();
 			break;
 		}
 	}
@@ -1091,10 +1095,6 @@ void ProgramMenu::setSeason(ThermalDevice::Season new_season)
 
 void ProgramMenu::createSeasonBanner(const QString season, const QString icon)
 {
-	bool create_banner = false;
-	if (page_content->bannerCount() == 0)
-		create_banner = true;
-
 	for (int i = 0; i < descriptions.size(); ++i)
 	{
 		const QString &key = descriptions[i].first;
@@ -1103,37 +1103,25 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString icon)
 			continue;
 
 		int program_number = key.mid(season.length()).toInt();
-		BannWeekly *bp = 0;
-		if (create_banner)
-		{
-			bp = new BannWeekly(this, program_number);
-			page_content->appendBanner(bp);
-			connect(bp, SIGNAL(programNumber(int)), SIGNAL(programClicked(int)));
-		}
-		else
-		{
-			for (int i = 0; i < page_content->bannerCount(); ++i)
-			{
-				BannWeekly *b = static_cast<BannWeekly*>(page_content->getBanner(i));
-				if (b->getProgramNumber() == program_number)
-				{
-					bp = b;
-					break;
-				}
-			}
-		}
-		if (!bp)
-		{
-			qWarning() << "No BannWeekly found for program" << program_number;
-			continue;
-		}
+		BannWeekly *bp = new BannWeekly(program_number);
+		page_content->appendBanner(bp);
+		connect(bp, SIGNAL(programNumber(int)), SIGNAL(programClicked(int)));
 		bp->initBanner(bt_global::skin->getImage("ok"), icon, value);
 	}
 }
 
+void ProgramMenu::createSummerBanners()
+{
+	createSeasonBanner(SUMMER_PREFIX, summer_icon);
+}
 
-WeeklyMenu::WeeklyMenu(ProgramEntries programs, QString title)
-	: ProgramMenu(programs, title)
+void ProgramMenu::createWinterBanners()
+{
+	createSeasonBanner(WINTER_PREFIX, winter_icon);
+}
+
+
+WeeklyMenu::WeeklyMenu(ProgramEntries programs, QString title) : ProgramMenu(programs, title)
 {
 	summer_icon = bt_global::skin->getImage("summer_program");
 	winter_icon = bt_global::skin->getImage("winter_program");
@@ -1141,18 +1129,8 @@ WeeklyMenu::WeeklyMenu(ProgramEntries programs, QString title)
 	createSummerBanners();
 }
 
-void WeeklyMenu::createSummerBanners()
-{
-	createSeasonBanner(SUMMER_PREFIX, summer_icon);
-}
 
-void WeeklyMenu::createWinterBanners()
-{
-	createSeasonBanner(WINTER_PREFIX, winter_icon);
-}
-
-ScenarioMenu::ScenarioMenu(ProgramEntries scenarios, QString title)
-	: ProgramMenu(scenarios, title)
+ScenarioMenu::ScenarioMenu(ProgramEntries scenarios, QString title) : ProgramMenu(scenarios, title)
 {
 	summer_icon = bt_global::skin->getImage("summer_scenario");
 	winter_icon = bt_global::skin->getImage("winter_scenario");
@@ -1160,13 +1138,3 @@ ScenarioMenu::ScenarioMenu(ProgramEntries scenarios, QString title)
 	createSummerBanners();
 }
 
-void ScenarioMenu::createSummerBanners()
-{
-	createSeasonBanner(SUMMER_PREFIX, summer_icon);
-
-}
-
-void ScenarioMenu::createWinterBanners()
-{
-	createSeasonBanner(WINTER_PREFIX, winter_icon);
-}

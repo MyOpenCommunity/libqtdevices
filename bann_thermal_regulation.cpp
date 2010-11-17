@@ -105,8 +105,7 @@ void BannSummerWinter::setWinter()
 }
 
 
-BannWeekly::BannWeekly(QWidget *parent, int _index)
-	: BannSinglePuls(parent)
+BannWeekly::BannWeekly(int _index) : BannSinglePuls(0)
 {
 	index = _index;
 	connect(right_button, SIGNAL(clicked()), SLOT(performAction()));

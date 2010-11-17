@@ -421,10 +421,11 @@ protected:
 	ThermalDevice::Season season;
 	ProgramEntries descriptions;
 
-	void createSeasonBanner(QString season, QString icon);
-	virtual void createSummerBanners() = 0;
-	virtual void createWinterBanners() = 0;
+	void createSummerBanners();
+	void createWinterBanners();
 
+private:
+	void createSeasonBanner(QString season, QString icon);
 };
 
 /*!
@@ -436,10 +437,6 @@ class WeeklyMenu : public ProgramMenu
 Q_OBJECT
 public:
 	WeeklyMenu(ProgramEntries programs, QString title = "");
-
-protected:
-	virtual void createSummerBanners();
-	virtual void createWinterBanners();
 };
 
 /*!
@@ -451,10 +448,6 @@ class ScenarioMenu : public ProgramMenu
 Q_OBJECT
 public:
 	ScenarioMenu(ProgramEntries scenarios, QString title = "");
-
-protected:
-	virtual void createSummerBanners();
-	virtual void createWinterBanners();
 };
 
 #endif // THERMAL_REGULATOR_H

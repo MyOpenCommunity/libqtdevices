@@ -133,12 +133,14 @@ public:
 		\brief Appends \a b to the content.
 	*/
 	void appendBanner(banner *b);
+
 	/*!
 		\brief Returns the number of banners contained by the content.
 	*/
 	int bannerCount();
+
 	/*!
-		\brief Returns the banner at postion \a i;
+		\brief Returns the banner at position \a i;
 	*/
 	banner *getBanner(int i);
 
@@ -147,7 +149,11 @@ public:
 	*/
 	void initBanners();
 
-protected:
+	/*!
+		\brief Clear the content and destroy the all the banners contained in content.
+	*/
+	void clear();
+
 	/*!
 		\brief Layouts the banners into the page.
 
