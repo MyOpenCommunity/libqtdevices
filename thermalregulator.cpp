@@ -43,11 +43,14 @@ enum
 	BANNER_MANUAL_MODE = 8103,
 	BANNER_WEEKEND_MODE = 8104,
 	BANNER_HOLIDAY_MODE = 8105,
-
-	WINTER_PROGRAM_CID = 8201,
-	WINTER_SCENARIO_CID = 8251,
+	WINTER_PROGRAM = 8201,
+	SUMMER_PROGRAM = 8202,
+	WINTER_SCENARIO = 8251,
+	SUMMER_SCENARIO = 8252,
 };
 
+#define SUMMER_PREFIX "summer"
+#define WINTER_PREFIX "winter"
 
 namespace
 {
@@ -370,7 +373,7 @@ static QString status_icons_ids[ThermalDevice::ST_COUNT] =
 
 #ifdef CONFIG_TS_3_5
 
-void parseTS35ProgramList(QDomNode conf_root, QString season, QString what, QMap<QString, QString> &entries)
+void parseTS35ProgramList(QDomNode conf_root, QString season, QString what, ProgramEntries &entries)
 {
 	QDomElement program = getElement(conf_root, season + "/" + what);
 	// The leaves we are looking for start with either "p" or "s"
@@ -383,25 +386,29 @@ void parseTS35ProgramList(QDomNode conf_root, QString season, QString what, QMap
 		if (node.isElement())
 			text = node.toElement().text();
 
-		entries[season + QString::number(++index)] = text;
+		entries.append(qMakePair(season + QString::number(++index), text));
 	}
 }
 
 #else
 
-void parseTS10ProgramList(QDomNode page, QMap<QString, QString> &entries)
+void parseTS10ProgramList(QDomNode page, ProgramEntries &entries)
 {
-	int index_summer = 0, index_winter = 0;
 	foreach (const QDomNode &node, getChildren(page, "item"))
 	{
-		int cid = getTextChild(node, "cid").toInt();
+		int id = getTextChild(node, "id").toInt();
 		QString text = getTextChild(node, "descr");
 
-		// TODO: must change config file to have different ID for winter/summer items
-		if (cid == WINTER_PROGRAM_CID || cid == WINTER_SCENARIO_CID)
-			entries["winter" + QString::number(++index_winter)] = text;
+		QString prefix;
+		if (id == WINTER_PROGRAM || id == WINTER_SCENARIO)
+			prefix = WINTER_PREFIX;
+		else if (id == SUMMER_PROGRAM || id == SUMMER_SCENARIO)
+			prefix = SUMMER_PREFIX;
+
+		if (prefix.isNull())
+			qWarning() << "Unknown id" << id << "for thermal regulator programs/scenarios";
 		else
-			entries["summer" + QString::number(++index_summer)] = text;
+			entries.append(qMakePair(prefix + getTextChild(node, "num"), text));
 	}
 }
 
@@ -424,10 +431,10 @@ PageTermoReg::PageTermoReg(QDomNode n)
 		qFatal("[TERMO] WeeklyMenu:wrong node in config file");
 	}
 
-	parseTS35ProgramList(n, "summer", "prog", programs);
-	parseTS35ProgramList(n, "winter", "prog", programs);
-	parseTS35ProgramList(n, "summer", "scen", scenarios);
-	parseTS35ProgramList(n, "winter", "scen", scenarios);
+	parseTS35ProgramList(n, SUMMER_PREFIX, "prog", programs);
+	parseTS35ProgramList(n, WINTER_PREFIX, "prog", programs);
+	parseTS35ProgramList(n, SUMMER_PREFIX, "scen", scenarios);
+	parseTS35ProgramList(n, WINTER_PREFIX, "scen", scenarios);
 #else
 	// parse program/scenario list
 	foreach (const QDomNode &item, getChildren(getPageNodeFromChildNode(n, "h_lnk_pageID"), "item"))
@@ -573,10 +580,10 @@ void PageTermoReg::valueReceived(const DeviceValues &values_list)
 			switch (season)
 			{
 			case ThermalDevice::SE_SUMMER:
-				description = lookupProgramDescription("summer", "scen", scenario);
+				description = lookupProgramDescription(SUMMER_PREFIX, "scen", scenario);
 				break;
 			case ThermalDevice::SE_WINTER:
-				description = lookupProgramDescription("winter", "scen", scenario);
+				description = lookupProgramDescription(WINTER_PREFIX, "scen", scenario);
 				break;
 			}
 			showDescription(description);
@@ -590,10 +597,10 @@ void PageTermoReg::valueReceived(const DeviceValues &values_list)
 			switch (season)
 			{
 			case ThermalDevice::SE_SUMMER:
-				description = lookupProgramDescription("summer", "prog", scenario);
+				description = lookupProgramDescription(SUMMER_PREFIX, "prog", scenario);
 				break;
 			case ThermalDevice::SE_WINTER:
-				description = lookupProgramDescription("winter", "prog", scenario);
+				description = lookupProgramDescription(WINTER_PREFIX, "prog", scenario);
 				break;
 			}
 			showDescription(description);
@@ -630,15 +637,15 @@ QString PageTermoReg::lookupProgramDescription(QString season, QString what, int
 	Q_ASSERT_X(what == "prog" || what == "scen", "PageTermoReg::lookupProgramDescription",
 		"'what' must be either 'prog' or 'scen'");
 
-	const QMap<QString, QString> &map = what == "prog" ? programs : scenarios;
+	ProgramEntries &entries = what == "prog" ? programs : scenarios;
 	QString key = season + QString::number(program_number);
-	if (!map.contains(key))
+
+	for (int i = 0; i < entries.size(); ++i)
 	{
-		qDebug() << "Missing description for program" << key;
-		return "";
+		if (entries[i].first == key)
+			return entries[i].second;
 	}
-	else
-		return map[key];
+	qDebug() << "Missing description for program" << key;
 }
 
 void PageTermoReg::createButtonsBanners(SettingsPage *settings, ThermalDevice *dev)
@@ -854,9 +861,9 @@ void PageTermoReg::manualSelected(unsigned temp)
 	showPage();
 }
 
-void PageTermoReg::weekSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev)
+void PageTermoReg::weekSettings(QDomNode n, SettingsPage *settings, ProgramEntries programs, ThermalDevice *dev)
 {
-	program_menu = new WeeklyMenu(0, programs, getTextChild(n, "descr"));
+	program_menu = new WeeklyMenu(programs, getTextChild(n, "descr"));
 
 	BannSinglePuls *weekly = new BannSinglePuls(settings);
 	weekly->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_program"),
@@ -874,7 +881,7 @@ void PageTermoReg::weekProgramSelected(int program)
 	showPage();
 }
 
-void PageTermoReg::holidaySettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev)
+void PageTermoReg::holidaySettings(QDomNode n, SettingsPage *settings, ProgramEntries programs, ThermalDevice *dev)
 {
 	holiday_title = getTextChild(n, "descr");
 	BannSinglePuls *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_holiday"),
@@ -893,7 +900,7 @@ void PageTermoReg::holidaySettings(QDomNode n, SettingsPage *settings, QMap<QStr
 		program_choice = createProgramChoice(settings, programs, dev);
 }
 
-void PageTermoReg::weekendSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev)
+void PageTermoReg::weekendSettings(QDomNode n, SettingsPage *settings, ProgramEntries programs, ThermalDevice *dev)
 {
 	weekend_title = getTextChild(n, "descr");
 	BannSinglePuls *bann = createHolidayWeekendBanner(settings, bt_global::skin->getImage("regulator_weekend"),
@@ -944,9 +951,9 @@ PageSetTime *PageTermoReg::createTimeEdit(SettingsPage *settings)
 	return time_edit;
 }
 
-WeeklyMenu *PageTermoReg::createProgramChoice(SettingsPage *settings, QMap<QString, QString> programs, device *dev)
+WeeklyMenu *PageTermoReg::createProgramChoice(SettingsPage *settings, ProgramEntries programs, device *dev)
 {
-	WeeklyMenu *program_choice = new WeeklyMenu(0, programs);
+	WeeklyMenu *program_choice = new WeeklyMenu(programs);
 	connect(program_choice, SIGNAL(programClicked(int)), SLOT(weekendHolidaySettingsEnd(int)));
 	connect(program_choice, SIGNAL(Closed()), SLOT(programCancelled()));
 	return program_choice;
@@ -1040,9 +1047,9 @@ void PageTermoReg4z::manualTimedSelected(BtTime time, int temp)
 	showPage();
 }
 
-void PageTermoReg99z::scenarioSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev)
+void PageTermoReg99z::scenarioSettings(QDomNode n, SettingsPage *settings, ProgramEntries scenarios, ThermalDevice99Zones *dev)
 {
-	scenario_menu = new ScenarioMenu(0, scenarios, getTextChild(n, "descr"));
+	scenario_menu = new ScenarioMenu(scenarios, getTextChild(n, "descr"));
 
 	BannSinglePuls *scenario = new BannSinglePuls(settings);
 	scenario->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("regulator_scenario"),
@@ -1061,8 +1068,7 @@ void PageTermoReg99z::scenarioSelected(int scenario)
 }
 
 
-ProgramMenu::ProgramMenu(QWidget *parent, QMap<QString, QString> _descriptions, QString title)
-	: BannerPage(parent)
+ProgramMenu::ProgramMenu(ProgramEntries _descriptions, QString title)
 {
 	descriptions = _descriptions;
 	buildPage(title);
@@ -1091,31 +1097,45 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString icon)
 	if (page_content->bannerCount() == 0)
 		create_banner = true;
 
-	for (int index = 0; ; ++index)
+	for (int i = 0; i < descriptions.size(); ++i)
 	{
-		QString key = season + QString::number(index + 1);
-		if (!descriptions.contains(key))
-			break;
+		const QString &key = descriptions[i].first;
+		const QString &value = descriptions[i].second;
+		if (!key.startsWith(season))
+			continue;
 
+		int program_number = key.mid(season.length()).toInt();
 		BannWeekly *bp = 0;
 		if (create_banner)
 		{
-			bp = new BannWeekly(this, index + 1);
+			bp = new BannWeekly(this, program_number);
 			page_content->appendBanner(bp);
 			connect(bp, SIGNAL(programNumber(int)), SIGNAL(programClicked(int)));
 		}
-		if (index >= page_content->bannerCount())
+		else
 		{
-			qWarning("ProgramMenu::createSeasonBanner: updating a menu with different number of programs between summer and winter");
-			break;
+			for (int i = 0; i < page_content->bannerCount(); ++i)
+			{
+				BannWeekly *b = static_cast<BannWeekly*>(page_content->getBanner(i));
+				if (b->getProgramNumber() == program_number)
+				{
+					bp = b;
+					break;
+				}
+			}
 		}
-		bp = static_cast<BannWeekly*>(page_content->getBanner(index));
-		bp->initBanner(bt_global::skin->getImage("ok"), icon, descriptions[key]);
+		if (!bp)
+		{
+			qWarning() << "No BannWeekly found for program" << program_number;
+			continue;
+		}
+		bp->initBanner(bt_global::skin->getImage("ok"), icon, value);
 	}
 }
 
-WeeklyMenu::WeeklyMenu(QWidget *parent, QMap<QString, QString> programs, QString title)
-	: ProgramMenu(parent, programs, title)
+
+WeeklyMenu::WeeklyMenu(ProgramEntries programs, QString title)
+	: ProgramMenu(programs, title)
 {
 	summer_icon = bt_global::skin->getImage("summer_program");
 	winter_icon = bt_global::skin->getImage("winter_program");
@@ -1125,16 +1145,16 @@ WeeklyMenu::WeeklyMenu(QWidget *parent, QMap<QString, QString> programs, QString
 
 void WeeklyMenu::createSummerBanners()
 {
-	createSeasonBanner("summer", summer_icon);
+	createSeasonBanner(SUMMER_PREFIX, summer_icon);
 }
 
 void WeeklyMenu::createWinterBanners()
 {
-	createSeasonBanner("winter", winter_icon);
+	createSeasonBanner(WINTER_PREFIX, winter_icon);
 }
 
-ScenarioMenu::ScenarioMenu(QWidget *parent, QMap<QString, QString> scenarios, QString title)
-	: ProgramMenu(parent, scenarios, title)
+ScenarioMenu::ScenarioMenu(ProgramEntries scenarios, QString title)
+	: ProgramMenu(scenarios, title)
 {
 	summer_icon = bt_global::skin->getImage("summer_scenario");
 	winter_icon = bt_global::skin->getImage("winter_scenario");
@@ -1144,11 +1164,11 @@ ScenarioMenu::ScenarioMenu(QWidget *parent, QMap<QString, QString> scenarios, QS
 
 void ScenarioMenu::createSummerBanners()
 {
-	createSeasonBanner("summer", summer_icon);
+	createSeasonBanner(SUMMER_PREFIX, summer_icon);
 
 }
 
 void ScenarioMenu::createWinterBanners()
 {
-	createSeasonBanner("winter", winter_icon);
+	createSeasonBanner(WINTER_PREFIX, winter_icon);
 }

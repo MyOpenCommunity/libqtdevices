@@ -25,6 +25,8 @@
 #include "plantmenu.h" // NavigationPage
 #include "bttime.h"
 
+#include <QList>
+#include <QPair>
 #include <QDate>
 
 class SettingsPage;
@@ -37,6 +39,9 @@ class ProgramMenu;
 class ScenarioMenu;
 class BtTimeEdit;
 class BtDateEdit;
+
+
+typedef QList<QPair<QString, QString> > ProgramEntries;
 
 
 /*!
@@ -87,13 +92,13 @@ protected:
 	 * Utility function to create the submenu to set the weekly program in thermal
 	 * regulator device.
 	 */
-	void weekSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
+	void weekSettings(QDomNode n, SettingsPage *settings, ProgramEntries programs, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create the submenu to set the scenario program in thermal
 	 * regulator device.
 	 */
-	void scenarioSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev);
+	void scenarioSettings(QDomNode n, SettingsPage *settings, ProgramEntries scenarios, ThermalDevice99Zones *dev);
 
 	/**
 	 * Utility function to create the submenu to set manually the temperature
@@ -104,12 +109,12 @@ protected:
 	/**
 	 * Utility function to create the submenu for holiday settings.
 	 */
-	void holidaySettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
+	void holidaySettings(QDomNode n, SettingsPage *settings, ProgramEntries programs, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create the submenu for weekend settings.
 	 */
-	void weekendSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> programs, ThermalDevice *dev);
+	void weekendSettings(QDomNode n, SettingsPage *settings, ProgramEntries programs, ThermalDevice *dev);
 
 	/**
 	 * Utility function to create off, antifreeze and summer/winter banners.
@@ -120,7 +125,7 @@ protected:
 	SettingsPage *settings;
 
 	/// list of programs/scenarios defined in the configuration
-	QMap<QString, QString> programs, scenarios;
+	ProgramEntries programs, scenarios;
 
 	TemperatureScale temp_scale;
 
@@ -198,7 +203,7 @@ private:
 	PageSetDate *createDateEdit(SettingsPage *settings);
 	PageSetTime *createTimeEdit(SettingsPage *settings);
 	PageSetDateTime *createDateTimeEdit(SettingsPage *settings);
-	WeeklyMenu *createProgramChoice(SettingsPage *settings, QMap<QString, QString> programs, device *dev);
+	WeeklyMenu *createProgramChoice(SettingsPage *settings, ProgramEntries programs, device *dev);
 
 	/// Label and string that may be visualized
 	QLabel *description_label;
@@ -266,7 +271,7 @@ protected:
 	void createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice99Zones *dev);
 
 private:
-	void scenarioSettings(QDomNode n, SettingsPage *settings, QMap<QString, QString> scenarios, ThermalDevice99Zones *dev);
+	void scenarioSettings(QDomNode n, SettingsPage *settings, ProgramEntries scenarios, ThermalDevice99Zones *dev);
 
 	ThermalDevice99Zones *_dev;
 	ScenarioMenu *scenario_menu;
@@ -403,9 +408,8 @@ class ProgramMenu : public BannerPage
 {
 Q_OBJECT
 public:
-	ProgramMenu(QWidget *parent, QMap<QString, QString> descriptions, QString title);
-	virtual void createSummerBanners() = 0;
-	virtual void createWinterBanners() = 0;
+	ProgramMenu(ProgramEntries descriptions, QString title);
+
 	void setSeason(ThermalDevice::Season new_season);
 
 signals:
@@ -414,9 +418,11 @@ signals:
 protected:
 	QString summer_icon, winter_icon;
 	ThermalDevice::Season season;
-	QMap<QString, QString> descriptions;
+	ProgramEntries descriptions;
 
 	void createSeasonBanner(QString season, QString icon);
+	virtual void createSummerBanners() = 0;
+	virtual void createWinterBanners() = 0;
 
 };
 
@@ -428,20 +434,24 @@ class WeeklyMenu : public ProgramMenu
 {
 Q_OBJECT
 public:
-	WeeklyMenu(QWidget *parent, QMap<QString, QString> programs, QString title = "");
+	WeeklyMenu(ProgramEntries programs, QString title = "");
+
+protected:
 	virtual void createSummerBanners();
 	virtual void createWinterBanners();
 };
 
 /*!
 	\ingroup ThermalRegulation
-	\brief Display a list of scnearios.
+	\brief Display a list of scenarios.
  */
 class ScenarioMenu : public ProgramMenu
 {
 Q_OBJECT
 public:
-	ScenarioMenu(QWidget *parent, QMap<QString, QString> scenarios, QString title = "");
+	ScenarioMenu(ProgramEntries scenarios, QString title = "");
+
+protected:
 	virtual void createSummerBanners();
 	virtual void createWinterBanners();
 };

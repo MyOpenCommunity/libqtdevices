@@ -136,6 +136,8 @@ Q_OBJECT
 public:
 	BannWeekly(QWidget *parent, int index);
 
+	int getProgramNumber() { return index; }
+
 private slots:
 	void performAction();
 
