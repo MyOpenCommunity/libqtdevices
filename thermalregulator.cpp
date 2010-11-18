@@ -91,9 +91,11 @@ void SettingsPage::resetIndex()
 }
 
 
-PageManual::PageManual(ThermalDevice *_dev, TemperatureScale scale)
-	: temp_scale(scale), dev(_dev), setpoint_delta(5)
+PageManual::PageManual(ThermalDevice *d, TemperatureScale scale)
 {
+	temp_scale = scale;
+	dev = d;
+	setpoint_delta = 5;
 	QLabel *descr_label = new QLabel(tr("Manual"));
 	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
@@ -258,9 +260,7 @@ void PageManual::valueReceived(const DeviceValues &values_list)
 	updateTemperature();
 }
 
-PageManualTimed::PageManualTimed(ThermalDevice4Zones *_dev, TemperatureScale scale)
-	: PageManual(_dev, scale),
-	dev(_dev)
+PageManualTimed::PageManualTimed(ThermalDevice4Zones *dev, TemperatureScale scale) : PageManual(dev, scale)
 {
 	time_edit = new BtTimeEdit(this);
 #ifdef LAYOUT_TS_10
@@ -269,8 +269,7 @@ PageManualTimed::PageManualTimed(ThermalDevice4Zones *_dev, TemperatureScale sca
 	main_layout.insertWidget(2, time_edit);
 #endif
 
-	connect(dev, SIGNAL(valueReceived(DeviceValues)),
-		SLOT(valueReceived(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
 void PageManualTimed::performAction()
@@ -288,7 +287,7 @@ void PageManualTimed::performAction()
 		qWarning("BannManual::performAction: unknown scale, defaulting to celsius");
 		bt_temp = celsius2Bt(temp);
 	}
-	emit(timeAndTempSelected(time_edit->time(), bt_temp));
+	emit timeAndTempSelected(time_edit->time(), bt_temp);
 }
 
 void PageManualTimed::setMaxHours(int max)
@@ -645,7 +644,8 @@ QString PageTermoReg::lookupProgramDescription(QString season, QString what, int
 		if (entries[i].first == key)
 			return entries[i].second;
 	}
-	qDebug() << "Missing description for program" << key;
+	qWarning() << "Missing description for program" << key;
+	return QString();
 }
 
 void PageTermoReg::createButtonsBanners(SettingsPage *settings, ThermalDevice *dev)
@@ -686,8 +686,7 @@ PageTermoReg4z::PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device)
 	: PageTermoReg(n)
 {
 	_dev = device;
-	connect(_dev, SIGNAL(valueReceived(DeviceValues)),
-		SLOT(valueReceived(DeviceValues)));
+	connect(_dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	createSettingsMenu(n);
 }
 
@@ -757,8 +756,7 @@ PageTermoReg99z::PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device)
 {
 	scenario_menu = 0;
 	_dev = device;
-	connect(_dev, SIGNAL(valueReceived(DeviceValues)),
-		SLOT(valueReceived(DeviceValues)));
+	connect(_dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	createSettingsMenu(n);
 }
 
@@ -1082,10 +1080,14 @@ void ProgramMenu::setSeason(ThermalDevice::Season new_season)
 		switch (season)
 		{
 		case ThermalDevice::SE_SUMMER:
+			page_content->clear();
 			createSummerBanners();
+			page_content->drawContent();
 			break;
 		case ThermalDevice::SE_WINTER:
+			page_content->clear();
 			createWinterBanners();
+			page_content->drawContent();
 			break;
 		}
 	}
@@ -1093,10 +1095,6 @@ void ProgramMenu::setSeason(ThermalDevice::Season new_season)
 
 void ProgramMenu::createSeasonBanner(const QString season, const QString icon)
 {
-	bool create_banner = false;
-	if (page_content->bannerCount() == 0)
-		create_banner = true;
-
 	for (int i = 0; i < descriptions.size(); ++i)
 	{
 		const QString &key = descriptions[i].first;
@@ -1105,37 +1103,25 @@ void ProgramMenu::createSeasonBanner(const QString season, const QString icon)
 			continue;
 
 		int program_number = key.mid(season.length()).toInt();
-		BannWeekly *bp = 0;
-		if (create_banner)
-		{
-			bp = new BannWeekly(this, program_number);
-			page_content->appendBanner(bp);
-			connect(bp, SIGNAL(programNumber(int)), SIGNAL(programClicked(int)));
-		}
-		else
-		{
-			for (int i = 0; i < page_content->bannerCount(); ++i)
-			{
-				BannWeekly *b = static_cast<BannWeekly*>(page_content->getBanner(i));
-				if (b->getProgramNumber() == program_number)
-				{
-					bp = b;
-					break;
-				}
-			}
-		}
-		if (!bp)
-		{
-			qWarning() << "No BannWeekly found for program" << program_number;
-			continue;
-		}
+		BannWeekly *bp = new BannWeekly(program_number);
+		page_content->appendBanner(bp);
+		connect(bp, SIGNAL(programNumber(int)), SIGNAL(programClicked(int)));
 		bp->initBanner(bt_global::skin->getImage("ok"), icon, value);
 	}
 }
 
+void ProgramMenu::createSummerBanners()
+{
+	createSeasonBanner(SUMMER_PREFIX, summer_icon);
+}
 
-WeeklyMenu::WeeklyMenu(ProgramEntries programs, QString title)
-	: ProgramMenu(programs, title)
+void ProgramMenu::createWinterBanners()
+{
+	createSeasonBanner(WINTER_PREFIX, winter_icon);
+}
+
+
+WeeklyMenu::WeeklyMenu(ProgramEntries programs, QString title) : ProgramMenu(programs, title)
 {
 	summer_icon = bt_global::skin->getImage("summer_program");
 	winter_icon = bt_global::skin->getImage("winter_program");
@@ -1143,18 +1129,8 @@ WeeklyMenu::WeeklyMenu(ProgramEntries programs, QString title)
 	createSummerBanners();
 }
 
-void WeeklyMenu::createSummerBanners()
-{
-	createSeasonBanner(SUMMER_PREFIX, summer_icon);
-}
 
-void WeeklyMenu::createWinterBanners()
-{
-	createSeasonBanner(WINTER_PREFIX, winter_icon);
-}
-
-ScenarioMenu::ScenarioMenu(ProgramEntries scenarios, QString title)
-	: ProgramMenu(scenarios, title)
+ScenarioMenu::ScenarioMenu(ProgramEntries scenarios, QString title) : ProgramMenu(scenarios, title)
 {
 	summer_icon = bt_global::skin->getImage("summer_scenario");
 	winter_icon = bt_global::skin->getImage("winter_scenario");
@@ -1162,13 +1138,3 @@ ScenarioMenu::ScenarioMenu(ProgramEntries scenarios, QString title)
 	createSummerBanners();
 }
 
-void ScenarioMenu::createSummerBanners()
-{
-	createSeasonBanner(SUMMER_PREFIX, summer_icon);
-
-}
-
-void ScenarioMenu::createWinterBanners()
-{
-	createSeasonBanner(WINTER_PREFIX, winter_icon);
-}

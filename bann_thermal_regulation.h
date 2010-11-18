@@ -134,7 +134,7 @@ class BannWeekly : public BannSinglePuls
 {
 Q_OBJECT
 public:
-	BannWeekly(QWidget *parent, int index);
+	BannWeekly(int index);
 
 	int getProgramNumber() { return index; }
 

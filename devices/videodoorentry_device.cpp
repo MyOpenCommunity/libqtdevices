@@ -55,6 +55,7 @@ VideoDoorEntryDevice::VideoDoorEntryDevice(const QString &where, QString mode, i
 	// invalid values
 	kind = mmtype = -1;
 	is_calling = false;
+	ip_call = false;
 
 	if (mode.isNull())
 		vct_mode = NONE;
@@ -214,8 +215,10 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		return true;
 	}
 
-	if (!is_calling && QString::fromStdString(msg.whereFull()) != where)
-		return false;
+	// We want parse all frames if we are in connected state, and only the CALL
+	// frame if we are in unconnected state.
+	if (!is_calling && (QString::fromStdString(msg.whereFull()) != where || what != CALL))
+			return false;
 
 
 	switch (what)
@@ -264,7 +267,7 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			values_list[RINGTONE] = Ringtones::FLOORCALL;
 			return true;
 		default:
-			qWarning("Kind not supported by VideoDoorEntryDevice, skip frame");
+			qWarning() << "Kind" << msg.whatArgN(0) << "not supported by VideoDoorEntryDevice, skip frame";
 			return false;
 		}
 
@@ -288,7 +291,7 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		if (kind_val != 5)
 			values_list[CALLER_ADDRESS] = master_caller_address;
 	}
-		// manage the other things like in the rearm session case
+	// manage the other things like in the rearm session case
 	case REARM_SESSION:
 	{
 		caller_address = QString::fromStdString(ip_call ? msg.whatArg(2) : msg.whereFull());

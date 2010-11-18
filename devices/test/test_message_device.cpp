@@ -208,6 +208,9 @@ void TestMessageDevice::receiveWrongChecksum()
 	QVERIFY(dev->guardunit_where.isEmpty());
 	QVERIFY(dev->message.isEmpty());
 	QVERIFY(!dev->timer.isActive());
+
+	DeviceTester tst(dev, MessageDevice::DIM_MESSAGE, DeviceTester::ONE_VALUE);
+	tst.checkSignals("*8*9001*165#00#350##", 0);
 }
 
 void TestMessageDevice::receiveTimeout()
