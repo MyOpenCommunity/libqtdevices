@@ -238,6 +238,7 @@ private:
 	QString center_on, center_off;
 };
 
+
 /*
  * Banner with 2 buttons on both sides, an icon on the center, a description below and three states.
  *
@@ -248,7 +249,7 @@ private:
  *
  * See functions below for a description of 'normal', 'base', 'alternate' etc. terms.
  */
-class BannOpenClose : public BannerNew
+class BannOpenClose : public Bann2Buttons
 {
 Q_OBJECT
 protected:
@@ -284,17 +285,13 @@ protected:
 	 */
 	void setState(States new_state);
 
-	BtButton *left_button, *right_button;
-
 private:
-	void loadIcons(QString _left, QString _center, QString _right, QString _lr_alternate);
-
 	QString left, center, right;
 	// alternative icon for left *and* right buttons. If buttons need different
 	// icons, we need to split it.
 	QString alternate;
-	QLabel *text, *center_icon;
 };
+
 
 /*
  * Banner with two central buttons.

@@ -1082,12 +1082,14 @@ void ProgramMenu::setSeason(ThermalDevice::Season new_season)
 		case ThermalDevice::SE_SUMMER:
 			page_content->clear();
 			createSummerBanners();
-			page_content->drawContent();
+			if (isVisible())
+				page_content->drawContent();
 			break;
 		case ThermalDevice::SE_WINTER:
 			page_content->clear();
 			createWinterBanners();
-			page_content->drawContent();
+			if (isVisible())
+				page_content->drawContent();
 			break;
 		}
 	}

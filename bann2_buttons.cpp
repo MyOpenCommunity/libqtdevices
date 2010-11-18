@@ -184,42 +184,20 @@ Bann2StateButtons::Bann2StateButtons(QWidget *parent) :
 }
 
 
-BannOpenClose::BannOpenClose(QWidget *parent) :
-	BannerNew(parent)
+BannOpenClose::BannOpenClose(QWidget *parent) : Bann2Buttons(parent)
 {
-	left_button = new BtButton;
-	right_button = new BtButton;
-	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
-	center_icon = new QLabel;
-
-	QHBoxLayout *hbox = new QHBoxLayout;
-	hbox->setContentsMargins(0, 0, 0, 0);
-	hbox->setSpacing(0);
-	hbox->addWidget(left_button, 0, Qt::AlignLeft);
-	hbox->addWidget(center_icon, 1, Qt::AlignHCenter);
-	hbox->addWidget(right_button, 0, Qt::AlignRight);
-
-	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	l->addLayout(hbox);
-	l->addWidget(text);
 }
 
-void BannOpenClose::initBanner(QString left, QString center, QString right, QString lr_alternate,
+
+void BannOpenClose::initBanner(QString _left, QString _center, QString _right, QString lr_alternate,
 	States starting_state, QString banner_text)
 {
-	loadIcons(left, center, right, lr_alternate);
-	setState(starting_state);
-	text->setText(banner_text);
-}
-
-void BannOpenClose::loadIcons(QString _left, QString _center, QString _right, QString _alternate)
-{
-	right = _right;
 	left =_left;
 	center = _center;
-	alternate = _alternate;
+	right = _right;
+	alternate = lr_alternate;
+	Bann2Buttons::initBanner(left, center, right, banner_text);
+	setState(starting_state);
 }
 
 void BannOpenClose::setState(States new_state)
@@ -227,17 +205,17 @@ void BannOpenClose::setState(States new_state)
 	switch (new_state)
 	{
 	case STOP:
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center));
+		setBackgroundImage(center);
 		left_button->setImage(left);
 		right_button->setImage(right);
 		break;
 	case OPENING:
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center, "o")));
+		setBackgroundImage(getBostikName(center, "o"));
 		right_button->setImage(alternate);
 		left_button->setImage(left);
 		break;
 	case CLOSING:
-		center_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center, "c")));
+		setBackgroundImage(getBostikName(center, "c"));
 		right_button->setImage(right);
 		left_button->setImage(alternate);
 		break;
@@ -300,9 +278,11 @@ void BannOnOff2Labels::setState(States new_state)
 	{
 	case ON:
 		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_on));
+		center_icon->setMinimumSize(center_icon->pixmap()->size());
 		break;
 	case OFF:
 		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_off));
+		center_icon->setMinimumSize(center_icon->pixmap()->size());
 		break;
 	}
 }

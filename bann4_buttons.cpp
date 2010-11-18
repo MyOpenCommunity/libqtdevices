@@ -67,6 +67,7 @@ void Bann4ButtonsIcon::initBanner(const QString &_right, const QString &_right_a
 	center_left_button->setImage(_c_left);
 	center_right_button->setImage(_c_right);
 	center_icon->setPixmap(*bt_global::icons_cache.getIcon(_center));
+	center_icon->setMinimumSize(center_icon->pixmap()->size());
 	text->setText(banner_text);
 
 	left_icon = _left;
