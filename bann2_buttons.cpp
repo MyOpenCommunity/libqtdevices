@@ -273,9 +273,11 @@ void BannOnOff2Labels::setState(States new_state)
 	{
 	case ON:
 		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_on));
+		center_icon->setMinimumSize(center_icon->pixmap()->size());
 		break;
 	case OFF:
 		center_icon->setPixmap(*bt_global::icons_cache.getIcon(center_off));
+		center_icon->setMinimumSize(center_icon->pixmap()->size());
 		break;
 	}
 }
