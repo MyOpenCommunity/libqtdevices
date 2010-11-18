@@ -80,6 +80,10 @@ void ScrollableContent::showEvent(QShowEvent *e)
 
 void ScrollableContent::prepareLayout(QList<QWidget *> items, int columns)
 {
+	// NOTE: at the beginning the height of the content is not the right one
+	// so the pages values can be wrong. Call this method after that the content
+	// is diplayed to avoid that.
+
 	QGridLayout *l = static_cast<QGridLayout *>(layout());
 	QList<int> total_height;
 	int area_height = contentsRect().height();
