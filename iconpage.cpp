@@ -100,6 +100,7 @@ void IconContent::addButton(QWidget *button, const QString &label)
 
 void IconContent::addWidget(QWidget *widget)
 {
+	need_update = true;
 	items.append(widget);
 	widget->hide();
 }

@@ -140,6 +140,17 @@ signals:
 	*/
 	void contentScrolled(int current, int total);
 
+	/*!
+		\brief The drawContent is the place where the content is actually drawn.
+
+		When reimplemented into a subclass, this method is expected to arrange
+		the children into the single page.
+
+		\note In order to have a correct transition effect, this method is also
+		called by the Page \b before that the Page is showed.
+	*/
+	virtual void drawContent() = 0;
+
 protected:
 	void showEvent(QShowEvent *e);
 
@@ -157,17 +168,6 @@ protected:
 	void updateLayout(QList<QWidget *> items);
 
 	/*!
-		\brief The drawContent is the place where the content is actually drawn.
-
-		When reimplemented into a subclass, this method is expected to arrange
-		the children into the single page.
-
-		\note In order to have a correct transition effect, this method is also
-		called by the Page \b before that the Page is showed.
-	*/
-	virtual void drawContent() = 0;
-
-	/*!
 		\brief Returns the page count calculated by the number of items and
 		their size.
 	*/
@@ -175,7 +175,7 @@ protected:
 
 protected:
 	/*!
-		\brief Flag to avoid useless call to drawContent.
+		\brief Flag that indicates if call to drawContent during the showEvent callback.
 	*/
 	bool need_update;
 	/*!
