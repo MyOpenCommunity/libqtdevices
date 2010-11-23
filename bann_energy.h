@@ -27,7 +27,6 @@
 #include "energy_rates.h"  // EnergyRate
 #include "device.h"        // DeviceValues
 #include "bttime.h" // BtTime
-#include "device.h"        // DeviceValues
 
 struct EnergyRate;
 class EnergyDevice;
