@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -64,6 +64,7 @@ private slots:
 	void receiveCallerAddress2();
 	void receiveCallerAddress3();
 	void receiveRearmSession();
+	void receiveRearmSession2();
 	void receiveStopVideo();
 	void receiveUnconnectedStopVideo();
 	void receiveEndOfCall();

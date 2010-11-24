@@ -143,6 +143,8 @@ namespace VCTCallPrivate
 		void resumeVideo();
 		void cleanAudioStates();
 
+		void cycleClicked();
+
 	private:
 		FormatVideo format;
 		bool camera_settings_shown;

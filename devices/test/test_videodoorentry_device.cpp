@@ -59,14 +59,6 @@ void TestVideoDoorEntryDevice::simulateCallerAddress(int kind, int mmtype, QStri
 	dev->manageFrame(msg);
 }
 
-void TestVideoDoorEntryDevice::simulateRearmSession(int kind, int mmtype, QString where)
-{
-	QString frame = QString("*8*40#%1#%2*%3##").arg(kind).arg(mmtype).arg(where);
-
-	OpenMsg msg(frame.toStdString());
-	dev->manageFrame(msg);
-}
-
 void TestVideoDoorEntryDevice::sendAnswerCall()
 {
 	// ringtone 1
@@ -337,7 +329,27 @@ void TestVideoDoorEntryDevice::receiveRearmSession()
 	QString master_caller_addr = "21";
 	simulateIncomingCall(kind, mmtype);
 	simulateCallerAddress(kind, mmtype, master_caller_addr);
-	simulateRearmSession(kind, mmtype, caller_addr);
+
+	DeviceTester t(dev, VideoDoorEntryDevice::VCT_TYPE, DeviceTester::MULTIPLE_VALUES);
+	QString frame = QString("*8*40#%1#%2*%3##").arg(kind).arg(mmtype).arg(caller_addr);
+	t.check(frame, static_cast<int>(VideoDoorEntryDevice::AUDIO_VIDEO));
+
+	QCOMPARE(dev->caller_address, caller_addr);
+	QCOMPARE(dev->master_caller_address, master_caller_addr);
+}
+
+void TestVideoDoorEntryDevice::receiveRearmSession2()
+{
+	int kind = 1;
+	int mmtype = 2;
+	QString caller_addr = "20";
+	QString master_caller_addr = "21";
+	simulateIncomingCall(kind, mmtype);
+	simulateCallerAddress(kind, mmtype, master_caller_addr);
+
+	DeviceTester t(dev, VideoDoorEntryDevice::VCT_TYPE, DeviceTester::MULTIPLE_VALUES);
+	QString frame = QString("*8*40#%1#%2*%3##").arg(kind).arg(mmtype).arg(caller_addr);
+	t.check(frame, static_cast<int>(VideoDoorEntryDevice::ONLY_AUDIO));
 
 	QCOMPARE(dev->caller_address, caller_addr);
 	QCOMPARE(dev->master_caller_address, master_caller_addr);
