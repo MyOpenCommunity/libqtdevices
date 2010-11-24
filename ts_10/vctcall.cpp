@@ -250,9 +250,16 @@ VCTCall::VCTCall(VideoDoorEntryDevice *d, FormatVideo f)
 	connect(unlock_door, SIGNAL(released()), dev, SLOT(releaseLock()));
 
 	cycle = getButton(bt_global::skin->getImage("cycle"));
-	connect(cycle, SIGNAL(clicked()), dev, SLOT(cycleExternalUnits()));
+	connect(cycle, SIGNAL(clicked()), SLOT(cycleClicked()));
 	connect(&video_grabber, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(finished(int,QProcess::ExitStatus)));
 	disable();
+}
+
+void VCTCall::cycleClicked()
+{
+	dev->cycleExternalUnits();
+	call_status->stopped = true;
+	stopVideo();
 }
 
 void VCTCall::enable()
@@ -275,6 +282,7 @@ void VCTCall::disable()
 
 void VCTCall::finished(int exitcode, QProcess::ExitStatus exitstatus)
 {
+	// Called even when we terminate the video process
 	Q_UNUSED(exitcode)
 	Q_UNUSED(exitstatus)
 	bt_global::display->setDirectScreenAccess(false);
@@ -438,7 +446,7 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			else if ((!old_status || call_status->stopped) && new_status)
 			{
 				call_status->stopped = false;
-				startVideo();
+				resumeVideo();
 			}
 			break;
 		}

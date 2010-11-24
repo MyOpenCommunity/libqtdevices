@@ -304,7 +304,10 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		// or not.
 		int kind_m = kind % 1000;
 		values_list[MOVING_CAMERA] = (kind_m >= 101 && kind_m <= 105);
-		values_list[VCT_TYPE] = (mmtype == 2 ? ONLY_AUDIO : AUDIO_VIDEO);
+
+		// The type of videocall can change only when I change the camera observed.
+		if (what == REARM_SESSION)
+			values_list[VCT_TYPE] = (mmtype == 2 ? ONLY_AUDIO : AUDIO_VIDEO);
 		break;
 	}
 
