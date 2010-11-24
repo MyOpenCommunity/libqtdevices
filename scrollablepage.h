@@ -111,6 +111,17 @@ public:
 	*/
 	ScrollableContent(QWidget *parent = 0);
 
+	/*!
+		\brief The drawContent is the place where the content is actually drawn.
+
+		When reimplemented into a subclass, this method is expected to arrange
+		the children into the single page.
+
+		\note In order to have a correct transition effect, this method is also
+		called by the Page \b before that the Page is showed.
+	*/
+	virtual void drawContent() = 0;
+
 public slots:
 	/*!
 		\brief Shows the previous page of items.
@@ -140,16 +151,6 @@ signals:
 	*/
 	void contentScrolled(int current, int total);
 
-	/*!
-		\brief The drawContent is the place where the content is actually drawn.
-
-		When reimplemented into a subclass, this method is expected to arrange
-		the children into the single page.
-
-		\note In order to have a correct transition effect, this method is also
-		called by the Page \b before that the Page is showed.
-	*/
-	virtual void drawContent() = 0;
 
 protected:
 	void showEvent(QShowEvent *e);
