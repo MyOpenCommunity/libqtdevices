@@ -118,7 +118,6 @@ public:
 	*/
 	void addWidget(QWidget *widget);
 
-protected:
 	virtual void drawContent();
 
 private:
