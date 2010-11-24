@@ -1082,6 +1082,10 @@ void ProgramMenu::setSeason(ThermalDevice::Season new_season)
 		case ThermalDevice::SE_SUMMER:
 			page_content->clear();
 			createSummerBanners();
+			// Because the drawContent must be called when the content has the
+			// right size we call it only if the page is visible. The showEvent
+			// callback is responsible to call the drawContent if the page is
+			// hidden.
 			if (isVisible())
 				page_content->drawContent();
 			break;

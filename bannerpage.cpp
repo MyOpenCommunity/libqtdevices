@@ -112,6 +112,7 @@ banner *BannerContent::getBanner(int i)
 
 void BannerContent::appendBanner(banner *b)
 {
+	need_update = true;
 	banner_list.append(b);
 	b->hide();
 
