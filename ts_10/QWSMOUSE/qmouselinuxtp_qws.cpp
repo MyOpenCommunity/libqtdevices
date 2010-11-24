@@ -62,69 +62,6 @@
 #include <termios.h>
 
 
-#define GET_SECOND_LAST
-#define NO_MOVE_VERIFY
-
-/*
-#if defined(QT_QWS_IPAQ)
-#define QT_QWS_IPAQ_RAW
-typedef struct {
-    unsigned short pressure;
-    unsigned short x;
-    unsigned short y;
-    unsigned short pad;
-} TS_EVENT;
-#elif defined(QT_QWS_EBX)
-#define QT_QWS_EBX_RAW
-#ifndef QT_QWS_SHARP
-typedef struct {
-        unsigned short pressure;
-        unsigned short x;
-        unsigned short y;
-        unsigned short pad;
-} TS_EVENT;
-#else
-typedef struct {
-       long y;
-       long x;
-       long pressure;
-       long long millisecs;
-} TS_EVENT;
-#define QT_QWS_TP_SAMPLE_SIZE 10
-#define QT_QWS_TP_MINIMUM_SAMPLES 2
-#define QT_QWS_TP_PRESSURE_THRESHOLD 500
-#define QT_QWS_TP_MOVE_LIMIT 50
-#define QT_QWS_TP_JITTER_LIMIT 2
-#endif
-//BONF
-#elif defined( QT_QWS_SHARP_LH7x)
- typedef struct {
-         unsigned short pressure;
-         unsigned short x;
-         unsigned short y;
-         unsigned short pad;
-  } TS_EVENT;
-
-
-#define QT_QWS_TP_PRESSURE_THRESHOLD 1
-
-//ORIGINALE #define QT_QWS_TP_PRESSURE_THRESHOLD 500
-//ORIGINALE #define QT_QWS_TP_MOVE_LIMIT 25
-#define QT_QWS_TP_MOVE_LIMIT 500
-
-#define QT_QWS_TP_SAMPLE_SIZE 5
-//ENDBONF
-#else
-typedef struct {
-    unsigned short pressure;
-    unsigned short x;
-    unsigned short y;
-    unsigned short pad;
-} TS_EVENT;
-#endif
-*/
-
-
 
 typedef struct
 {
@@ -134,25 +71,6 @@ typedef struct
     unsigned short pad;
 } TS_EVENT;
 
-#ifndef QT_QWS_TP_SAMPLE_SIZE
-#define QT_QWS_TP_SAMPLE_SIZE 3
-#endif
-
-#ifndef QT_QWS_TP_MINIMUM_SAMPLES
-#define QT_QWS_TP_MINIMUM_SAMPLES 3
-#endif
-
-#ifndef QT_QWS_TP_PRESSURE_THRESHOLD
-#define QT_QWS_TP_PRESSURE_THRESHOLD 1
-#endif
-
-#ifndef QT_QWS_TP_MOVE_LIMIT
-#define QT_QWS_TP_MOVE_LIMIT 2
-#endif
-
-#ifndef QT_QWS_TP_JITTER_LIMIT
-#define QT_QWS_TP_JITTER_LIMIT 2
-#endif
 
 
 
@@ -201,7 +119,7 @@ QWSLinuxTPMouseHandler::~QWSLinuxTPMouseHandler ()
 }
 
 QWSLinuxTPMouseHandlerPrivate::QWSLinuxTPMouseHandlerPrivate ( QWSLinuxTPMouseHandler *h )
-    : samples ( QT_QWS_TP_SAMPLE_SIZE ), currSample ( 0 ), lastSample ( 0 ),
+    : samples ( 30 ), currSample ( 0 ), lastSample ( 0 ),
     numSamples ( 0 ), skipCount ( 0 ), handler ( h )
 {
     if (mouseFD < 0)
@@ -262,6 +180,7 @@ QWSLinuxTPMouseHandlerPrivate::~QWSLinuxTPMouseHandlerPrivate ()
 
 void QWSLinuxTPMouseHandlerPrivate::readMouseData()
 {
+	QPoint mousePos;
     if (!qt_screen)
         return;
 
@@ -283,121 +202,36 @@ void QWSLinuxTPMouseHandlerPrivate::readMouseData()
     // perhaps we shouldn't be reading EVERY SAMPLE.
     while (mouseIdx - idx >= (int) sizeof (TS_EVENT))
     {
+       // qCritical("MouseReadData");
         uchar *mb = mouseBuf + idx;
         data = (TS_EVENT *) mb;
 
-
-        if (data->pressure >= QT_QWS_TP_PRESSURE_THRESHOLD)
+       // qCritical("pressure : %d", data->pressure);
+       // qCritical("x : %d", data->x);
+       // qCritical("y : %d", data->y);
+        if (data->pressure)
         {
-            samples[currSample] = QPoint (data->x, data->y);
-
-            numSamples++;
-            if (numSamples >= QT_QWS_TP_MINIMUM_SAMPLES)
-            {
-#ifndef GET_SECOND_LAST
-                int sampleCount = qMin ((int) numSamples + 1, samples.count ());
-#endif
-                // average the rest
-                QPoint mousePos = QPoint (0, 0);
-                QPoint totalMousePos = oldTotalMousePos;
-
-
-                // avoid first sample
-                if (currSample)
-                    totalMousePos += samples[currSample];
-
-                if ((int) numSamples >= samples.count ())
-                    totalMousePos -= samples[lastSample];
-
-#ifdef GET_SECOND_LAST
-                if (currSample > 0)
-                    mousePos = samples[currSample - 1];
-                else
-                    mousePos = samples[1];
-#else
-                mousePos = totalMousePos / (sampleCount - 1);
-#endif
-
-                // si trova in qmouse_qws.cpp
-                mousePos = handler->transform (mousePos);
-
-                if (!waspressed)
-                    oldmouse = mousePos;
-                QPoint dp = mousePos - oldmouse;
-#ifdef NO_MOVE_VERIFY
-                int dxSqr = dp.x () * dp.x ();
-                int dySqr = dp.y () * dp.y ();
-
-                if ( dxSqr + dySqr < ( QT_QWS_TP_MOVE_LIMIT * QT_QWS_TP_MOVE_LIMIT ) )
-#endif
+		mousePos = handler->transform (QPoint (data->x, data->y));
+		oldmouse = mousePos;
+                if(!waspressed)
                 {
-                    if (waspressed)
-                    {
-#ifdef NO_MOVE_VERIFY
-                        if ( ( dxSqr + dySqr > ( QT_QWS_TP_JITTER_LIMIT * QT_QWS_TP_JITTER_LIMIT ) ) || skipCount > 3 )
-#endif
-                        {
-                            handler->mouseChanged (mousePos, Qt::LeftButton);
-                            oldmouse = mousePos;
-                            //qCritical("Sample at x:<%d> and y:<%d>", oldmouse.x(), oldmouse.y());
-                            skipCount = 0;
-                        }
-#ifdef NO_MOVE_VERIFY
-                        else
-                        {
-                            //qCritical ("Skip ");
-                            skipCount++;
-                        }
-#endif
-                    }
-                    else
-                    {
-                        handler->mouseChanged (mousePos, Qt::LeftButton);
-                        oldmouse = mousePos;
-                        waspressed = true;
-                        //qCritical("Pressed at x:<%d> and y:<%d>", oldmouse.x(), oldmouse.y());
-                    }
-
-                    // save recuring information
-                    currSample++;
-                    if ((int) numSamples >= samples.count ())
-                        lastSample++;
-                    oldTotalMousePos = totalMousePos;
+		handler->mouseChanged (mousePos, Qt::LeftButton);
+                    // si trova in qmouse_qws.cpp
+                   // qCritical("Pressed at x:<%d> and y:<%d>", oldmouse.x(), oldmouse.y());
+                    waspressed = true;
                 }
-#ifdef NO_MOVE_VERIFY
                 else
-                {
-                    //qCritical ("Skip Samples");
-                    numSamples--;	// don't use this sample, it was bad.
-                }
-#endif
-            }
-            else
-            {
-                // build up the average
-                oldTotalMousePos += samples[currSample];
-                currSample++;
-            }
-            if ( (int) currSample >= samples.count() ) {
-                currSample = 0;
-            }
-            if ((int) lastSample >= samples.count ())
-                lastSample = 0;
-        }			// pressure
+		{
+		handler->mouseChanged (mousePos, Qt::LeftButton || Qt::NoButton);
+                   // qCritical("Sample at x:<%d> and y:<%d>", mousePos.x(), mousePos.y());
+		}
+        }
         else
         {
-            currSample = 0;
-            lastSample = 0;
-            numSamples = 0;
-            skipCount = 0;
-            oldTotalMousePos = QPoint (0, 0);
-            if (waspressed)
-            {
-                handler->mouseChanged (oldmouse, 0);
-                //qCritical("Released at x:<%d> and y:<%d>", oldmouse.x(), oldmouse.y());
+                handler->mouseChanged (oldmouse, Qt::NoButton);
+               // qCritical("Released at x:<%d> and y:<%d>", oldmouse.x(), oldmouse.y());
                 oldmouse = QPoint (-100, -100);
                 waspressed = false;
-            }
         }
         idx += sizeof (TS_EVENT);
     }
