@@ -251,13 +251,13 @@ EditEnergyCost::EditEnergyCost()
 #else
 	QWidget *main = new QWidget;
 	QVBoxLayout *l = new QVBoxLayout(main);
-	l->setContentsMargins(5, 5, 25, 47);
+	l->setContentsMargins(5, 5, 25, 18);
 
 	BannerContent *content = new BannerContent;
 	BtButton *save = new BtButton(bt_global::skin->getImage("ok"));
 
 	l->addWidget(content, 1);
-	l->addWidget(save, 0, Qt::AlignRight);
+	l->addWidget(save, 0, Qt::AlignRight | Qt::AlignBottom);
 
 	buildPage(main, content, new NavigationBar);
 

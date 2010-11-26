@@ -105,7 +105,7 @@ PageManual::PageManual(ThermalDevice *d, TemperatureScale scale)
 	descr_label->setFixedHeight(TITLE_HEIGHT);
 
 	main_layout.setSpacing(10);
-	main_layout.setContentsMargins(30, 0, 30, 30);
+	main_layout.setContentsMargins(30, 0, 30, 18);
 #else
 	main_layout.setSpacing(0);
 	main_layout.setContentsMargins(0, 0, 0, 10);
@@ -138,8 +138,7 @@ PageManual::PageManual(ThermalDevice *d, TemperatureScale scale)
 	temp_label->setProperty("SecondFgColor", true);
 	QHBoxLayout *hbox = new QHBoxLayout();
 
-	BtButton *btn = new BtButton(this);
-	btn->setImage(bt_global::skin->getImage("minus"));
+	BtButton *btn = new BtButton(bt_global::skin->getImage("minus"));
 	btn->setAutoRepeat(true);
 	connect(btn, SIGNAL(clicked()), this, SLOT(decSetpoint()));
 	hbox->addWidget(btn);
@@ -148,8 +147,7 @@ PageManual::PageManual(ThermalDevice *d, TemperatureScale scale)
 	hbox->addWidget(temp_label);
 
 	hbox->addStretch(1);
-	btn = new BtButton(this);
-	btn->setImage(bt_global::skin->getImage("plus"));
+	btn = new BtButton(bt_global::skin->getImage("plus"));
 	btn->setAutoRepeat(true);
 	connect(btn, SIGNAL(clicked()), this, SLOT(incSetpoint()));
 	hbox->addWidget(btn);
@@ -161,10 +159,8 @@ PageManual::PageManual(ThermalDevice *d, TemperatureScale scale)
 	ThermalNavigation *nav_bar = new ThermalNavigation;
 #else
 	QHBoxLayout *ok_layout = new QHBoxLayout;
-	BtButton *ok = new BtButton;
-	ok->setImage(bt_global::skin->getImage("ok"));
-
-	ok_layout->addWidget(ok, 0, Qt::AlignRight);
+	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
+	ok_layout->addWidget(ok, 0, Qt::AlignRight | Qt::AlignBottom);
 
 	main_layout.addLayout(ok_layout);
 
