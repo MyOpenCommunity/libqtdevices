@@ -34,6 +34,8 @@
 #include <QTextCodec>
 #include <QDomNode>
 #include <QString>
+#include <QColor>
+#include <QBrush>
 
 #define TIMESTAMP
 #ifdef TIMESTAMP
@@ -192,6 +194,7 @@ int main(int argc, char **argv)
 	GeneralConfig general_config;
 	QApplication a(argc, argv);
 	QWSServer::setCursorVisible(false);
+	QWSServer::instance()->setBackground(QColor("black"));
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8")); // force the locale as UTF8
 
 #if DEBUG
