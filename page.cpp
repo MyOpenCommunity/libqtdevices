@@ -135,6 +135,9 @@ void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationB
 
 	l->addLayout(pl, 1);
 
+	l->setContentsMargins(13, 5, 0, 10);
+	l->setSpacing(0);
+
 #else
 	if (top_widget)
 		l->addWidget(top_widget);
@@ -142,9 +145,11 @@ void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationB
 	Q_ASSERT_X(title_widget == NULL, "Page::buildPage", "TS 3.5'' pages can't have a title");
 	l->addWidget(main_widget, 1);
 	l->addWidget(nav_bar);
-#endif
+
 	l->setContentsMargins(0, 5, 0, 10);
 	l->setSpacing(0);
+
+#endif
 
 	__content = content;
 }
