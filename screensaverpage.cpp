@@ -239,7 +239,7 @@ SlideshowSelector::SlideshowSelector() :
 	selbutton_on = bt_global::skin->getImage("checked");
 
 	buildPage(item_list, nav_bar, 0, title_widget);
-	layout()->setContentsMargins(0, 5, 25, 10);
+	layout()->setContentsMargins(13, 5, 25, 10);
 
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
 	connect(this, SIGNAL(notifyExit()), SIGNAL(Closed()));

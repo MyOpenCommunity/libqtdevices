@@ -44,7 +44,7 @@ FeedManager::FeedManager(const QDomNode &conf_node)
 	NavigationBar *nav_bar = new NavigationBar;
 
 	buildPage(feeds, nav_bar, getTextChild(conf_node, "descr"), SMALL_TITLE_HEIGHT);
-	layout()->setContentsMargins(0, 5, 25, 10);
+	layout()->setContentsMargins(13, 5, 25, 10);
 
 	feed_items = new FeedItemList;
 
@@ -129,7 +129,7 @@ FeedItemList::FeedItemList()
 	NavigationBar *nav_bar = new NavigationBar;
 
 	buildPage(feed_items, nav_bar, 0, title_widget);
-	layout()->setContentsMargins(0, 5, 25, 10);
+	layout()->setContentsMargins(13, 5, 25, 10);
 
 	feed_item = new FeedItem();
 

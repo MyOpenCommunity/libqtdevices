@@ -426,27 +426,27 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	if (swing)
 		page_content->appendBanner(swing);
 #else
-	BtButton *ok = new BtButton;
-	ok->setImage(bt_global::skin->getImage("ok"));
+	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
 
 	connect(ok, SIGNAL(clicked()), SLOT(acceptChanges()));
 	connect(ok, SIGNAL(clicked()), SIGNAL(Closed()));
 
 	QGridLayout *l = new QGridLayout(page_content);
-	l->setContentsMargins(0, 0, 25, 35);
+	l->setContentsMargins(0, 0, 25, 18);
 	l->setSpacing(10);
 
 	for (int i = 0; i < 8; ++i)
 		l->setColumnStretch(i, 1);
 	l->setRowStretch(4, 1);
 
-	l->addWidget(temperature, 0, 2, 1, 4);
-	l->addWidget(mode, 1, 1, 1, 4);
+
+	l->addWidget(mode, 0, 1, 1, 4);
+	l->addWidget(temperature, 1, 1, 1, 4);
 	if (speed)
 		l->addWidget(speed, 2, 1, 1, 4);
 	if (swing)
 		l->addWidget(swing, 3, 1, 2, 4, Qt::AlignTop);
-	l->addWidget(ok, 4, 7, 2, 1, Qt::AlignRight|Qt::AlignBottom);
+	l->addWidget(ok, 4, 7, 2, 1, Qt::AlignRight | Qt::AlignBottom);
 #endif
 }
 

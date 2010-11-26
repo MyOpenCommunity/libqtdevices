@@ -181,7 +181,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 
 	QWidget *content = new QWidget;
 	QVBoxLayout *main_layout = new QVBoxLayout(content);
-	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setContentsMargins(0, 0, 0, 18);
 	main_layout->setSpacing(0);
 
 	QHBoxLayout *label_layout = new QHBoxLayout;
