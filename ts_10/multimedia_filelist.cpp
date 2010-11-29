@@ -68,7 +68,7 @@ MultimediaFileListPage::MultimediaFileListPage(const QStringList &filters)
 	NavigationBar *nav_bar = new NavigationBar("eject");
 
 	buildPage(item_list, nav_bar, 0, title_widget);
-	layout()->setContentsMargins(0, 5, 25, 10);
+	layout()->setContentsMargins(13, 5, 25, 10);
 
 	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
 		SLOT(unmounted(const QString &)));
