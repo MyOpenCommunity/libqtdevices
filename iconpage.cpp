@@ -47,7 +47,6 @@ void IconPage::buildPage(IconContent *content, NavigationBar *nav_bar, const QSt
 	ScrollablePage::buildPage(content, content, nav_bar, title_widget);
 }
 
-
 BtButton *IconPage::addButton(const QString &label, const QString& icon_path, int x, int y)
 {
 	BtButton *b = new BtButton(icon_path, this);
@@ -67,6 +66,7 @@ void IconPage::addPage(Page *page, const QString &label, const QString &iconName
 	connect(b, SIGNAL(clicked()), page, SLOT(showPage()));
 	connect(page, SIGNAL(Closed()), this, SLOT(showPage()));
 }
+
 
 IconContent::IconContent(QWidget *parent) : ScrollableContent(parent)
 {

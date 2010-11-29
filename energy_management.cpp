@@ -41,7 +41,7 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 
 	QWidget *main_widget = new QWidget;
 	QVBoxLayout *main_layout = new QVBoxLayout(main_widget);
-	main_layout->setContentsMargins(5, 5, 25, 47);
+	main_layout->setContentsMargins(5, 5, 25, 18);
 	IconContent *content = new IconContent;
 	main_layout->addWidget(content, 1);
 
@@ -86,7 +86,7 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 		BtButton *b = new BtButton(bt_global::skin->getImage("currency_exchange"));
 		connect(b, SIGNAL(clicked()), page, SLOT(showPage()));
 		connect(page, SIGNAL(Closed()), this, SLOT(showPage()));
-		main_layout->addWidget(b, 0, Qt::AlignRight);
+		main_layout->addWidget(b, 0, Qt::AlignRight | Qt::AlignBottom);
 #endif
 	}
 }

@@ -312,7 +312,7 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 
 	buildPage(item_list, nav_bar, title);
 	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
-	layout()->setContentsMargins(0, 5, 25, 10);
+	layout()->setContentsMargins(13, 5, 25, 10);
 	loadMessages(MESSAGES_FILENAME);
 
 	message_page = new MessagePage;

@@ -39,7 +39,7 @@ class SectionPage : public IconPage
 {
 Q_OBJECT
 protected:
-	SectionPage(const QDomNode &config_node);
+	SectionPage(const QDomNode &config_node, bool show_nav_bar = true);
 	SectionPage();
 
 	void loadItems(const QDomNode &config_node);

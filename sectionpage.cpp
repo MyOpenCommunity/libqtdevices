@@ -33,12 +33,17 @@
 #include <QDebug>
 
 
-SectionPage::SectionPage(const QDomNode &config_node)
+SectionPage::SectionPage(const QDomNode &config_node, bool show_nav_bar)
 {
 #ifndef CONFIG_TS_3_5
-	// only show the back icon if there is a lnk_itemID to a banner
-	QString back_icon = getTextChild(config_node, "lnk_itemID").isEmpty() ? QString() : "back";
-	NavigationBar *nav_bar = new NavigationBar("", "scroll_down", "scroll_up", back_icon);
+	NavigationBar *nav_bar = 0;
+	if (show_nav_bar)
+	{
+		// only show the back icon if there is a lnk_itemID to a banner
+		QString back_icon = getTextChild(config_node, "lnk_itemID").isEmpty() ? QString() : "back";
+		nav_bar = new NavigationBar("", "scroll_down", "scroll_up", back_icon);
+	}
+
 	buildPage(new IconContent, nav_bar);
 #endif
 	loadItems(config_node);

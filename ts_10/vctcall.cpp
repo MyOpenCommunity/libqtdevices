@@ -282,6 +282,7 @@ void VCTCall::disable()
 
 void VCTCall::finished(int exitcode, QProcess::ExitStatus exitstatus)
 {
+	qDebug() << "rsize terminated";
 	// Called even when we terminate the video process
 	Q_UNUSED(exitcode)
 	Q_UNUSED(exitstatus)
@@ -372,6 +373,7 @@ void VCTCall::startVideo()
 		else // fullscreeen
 			args = video_grabber_fullscreen_args;
 
+		qDebug() << "start rsize";
 		video_grabber.start(video_grabber_path + " " + args);
 		bt_global::display->setDirectScreenAccess(true);
 	}
@@ -380,7 +382,10 @@ void VCTCall::startVideo()
 void VCTCall::stopVideo()
 {
 	if (call_status->video_enabled && video_grabber.state() != QProcess::NotRunning)
+	{
+		qDebug() << "terminate rsize";
 		video_grabber.terminate();
+	}
 }
 
 void VCTCall::valueReceived(const DeviceValues &values_list)

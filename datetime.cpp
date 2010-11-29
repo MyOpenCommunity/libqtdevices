@@ -380,8 +380,7 @@ PageSetDateTime::PageSetDateTime(const QString &extra_button_icon, bool allow_pa
 {
 	content.setLayout(&main_layout);
 
-	BtButton *program = new BtButton(this);
-	program->setImage(extra_button_icon);
+	BtButton *program = new BtButton(extra_button_icon);
 
 	date_edit = new BtDateEdit(this);
 	date_edit->setAllowPastDates(allow_past_dates);
@@ -393,8 +392,9 @@ PageSetDateTime::PageSetDateTime(const QString &extra_button_icon, bool allow_pa
 	top_layout.setSpacing(20);
 
 	main_layout.addLayout(&top_layout);
-	main_layout.addWidget(program, 1, Qt::AlignRight|Qt::AlignVCenter);
-	main_layout.setContentsMargins(40, 0, 40, 0);
+	// Align the program button with the back button of the nav bar
+	main_layout.addWidget(program, 1, Qt::AlignRight|Qt::AlignBottom);
+	main_layout.setContentsMargins(40, 0, 40, 18);
 
 	NavigationBar *nav = new NavigationBar;
 	nav->displayScrollButtons(false);

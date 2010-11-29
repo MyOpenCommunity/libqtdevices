@@ -109,7 +109,7 @@ WebcamListPage::WebcamListPage(const QDomNode &config_node)
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemSelected(int)));
 
 	buildPage(item_list, item_list, new NavigationBar, new PageTitleWidget(tr("Webcam"), SMALL_TITLE_HEIGHT));
-	layout()->setContentsMargins(0, 5, 25, 10);
+	layout()->setContentsMargins(13, 5, 25, 10);
 
 	loadWebcams(config_node);
 	webcam_page = new WebcamPage;

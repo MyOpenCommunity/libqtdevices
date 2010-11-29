@@ -32,10 +32,12 @@
 #include <QLayout>
 
 
-HomePage::HomePage(const QDomNode &config_node) : SectionPage(config_node)
+HomePage::HomePage(const QDomNode &config_node) : SectionPage(config_node, false)
 {
 #ifdef LAYOUT_TS_10
-	page_content->layout()->setContentsMargins(25, 35, 100, 0);
+	// TODO: the following margins uses empirical values to align the content
+	// in the center of the page. We can do better!
+	page_content->layout()->setContentsMargins(55, 35, 100, 0);
 	page_content->layout()->setSpacing(25);
 #endif
 	temp_viewer = new TemperatureViewer(this);

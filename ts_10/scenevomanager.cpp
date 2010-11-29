@@ -42,7 +42,7 @@ ScenEvoManager::ScenEvoManager(QString title, ScenEvoTimeCondition *time_cond, S
 
 
 	QGridLayout *main_layout = new QGridLayout(page_content);
-	main_layout->setContentsMargins(30, 30, 30, 30);
+	main_layout->setContentsMargins(30, 30, 30, 18);
 	main_layout->setSpacing(0);
 
 	QVBoxLayout *left_box = new QVBoxLayout;
@@ -82,8 +82,8 @@ ScenEvoManager::ScenEvoManager(QString title, ScenEvoTimeCondition *time_cond, S
 		main_layout->addLayout(device_layout, 1, 0, 2, 1, Qt::AlignBottom | Qt::AlignLeft);
 	}
 
-	BtButton *ok = new BtButton;
-	ok->setImage(bt_global::skin->getImage("ok"));
+	// The ok button should be aligned with the back button of the nav bar.
+	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
 	connect(ok, SIGNAL(clicked()), SIGNAL(Closed()));
 	connect(ok, SIGNAL(clicked()), SIGNAL(save()));
 	main_layout->addWidget(ok, 2, 1, 1, 1, Qt::AlignRight | Qt::AlignBottom);

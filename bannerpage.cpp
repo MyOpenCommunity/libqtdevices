@@ -84,7 +84,10 @@ BannerContent::BannerContent(QWidget *parent, int _columns) : ScrollableContent(
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
 #else
-	l->setContentsMargins(18, 0, 17, 0);
+	// TODO: the following margins uses empirical values to align the banners
+	// in the center of the content (delimited by the navigation bar on the left
+	// and the favorites on the right). We can do better!
+	l->setContentsMargins(10, 0, 22, 0);
 	l->setHorizontalSpacing(0);
 	l->setVerticalSpacing(5);
 #endif
