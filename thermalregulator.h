@@ -292,7 +292,7 @@ class PageManual : public Page
 {
 Q_OBJECT
 public:
-	PageManual(ThermalDevice *d, TemperatureScale scale = CELSIUS);
+	PageManual(ThermalDevice *d, TemperatureScale scale, QString descr);
 
 public slots:
 	void valueReceived(const DeviceValues &values_list);
@@ -333,7 +333,7 @@ class PageManualTimed : public PageManual
 {
 Q_OBJECT
 public:
-	PageManualTimed(ThermalDevice4Zones *dev, TemperatureScale scale = CELSIUS);
+	PageManualTimed(ThermalDevice4Zones *dev, TemperatureScale scale, QString descr);
 	void setMaxHours(int max);
 	void setMaxMinutes(int max);
 
