@@ -91,26 +91,26 @@ void SettingsPage::resetIndex()
 }
 
 
-PageManual::PageManual(ThermalDevice *d, TemperatureScale scale)
+PageManual::PageManual(ThermalDevice *d, TemperatureScale scale, QString descr)
 {
 	temp_scale = scale;
 	dev = d;
 	setpoint_delta = 5;
-	QLabel *descr_label = new QLabel(tr("Manual"));
-	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
-	descr_label->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 
 	content.setLayout(&main_layout);
 #ifdef LAYOUT_TS_10
-	descr_label->setFixedHeight(TITLE_HEIGHT);
-
 	main_layout.setSpacing(10);
 	main_layout.setContentsMargins(30, 0, 30, 18);
 #else
 	main_layout.setSpacing(0);
 	main_layout.setContentsMargins(0, 0, 0, 10);
-#endif
+
+	QLabel *descr_label = new QLabel(descr);
+	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
+	descr_label->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
+
 	main_layout.addWidget(descr_label);
+#endif
 
 	switch (temp_scale)
 	{
@@ -158,6 +158,7 @@ PageManual::PageManual(ThermalDevice *d, TemperatureScale scale)
 
 #ifdef LAYOUT_TS_3_5
 	ThermalNavigation *nav_bar = new ThermalNavigation;
+	buildPage(&content, nav_bar);
 #else
 	QHBoxLayout *ok_layout = new QHBoxLayout;
 	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
@@ -169,14 +170,14 @@ PageManual::PageManual(ThermalDevice *d, TemperatureScale scale)
 
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
+
+	buildPage(&content, nav_bar, new PageTitleWidget(descr, TITLE_HEIGHT));
 #endif
-	buildPage(&content, nav_bar);
 
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(performAction()));
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
-	connect(dev, SIGNAL(valueReceived(DeviceValues)),
-		SLOT(valueReceived(DeviceValues)));
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 
 	updateTemperature();
 }
@@ -257,7 +258,7 @@ void PageManual::valueReceived(const DeviceValues &values_list)
 	updateTemperature();
 }
 
-PageManualTimed::PageManualTimed(ThermalDevice4Zones *dev, TemperatureScale scale) : PageManual(dev, scale)
+PageManualTimed::PageManualTimed(ThermalDevice4Zones *dev, TemperatureScale scale, QString descr) : PageManual(dev, scale, descr)
 {
 	time_edit = new BtTimeEdit(this);
 #ifdef LAYOUT_TS_10
@@ -835,7 +836,7 @@ void PageTermoReg99z::createSettingsMenu(QDomNode regulator_node)
 //
 void PageTermoReg::manualSettings(QDomNode n, SettingsPage *settings, ThermalDevice *dev)
 {
-	PageManual *manual_page = new PageManual(dev, temp_scale);
+	PageManual *manual_page = new PageManual(dev, temp_scale, getTextChild(n, "descr"));
 
 	// manual banner
 	BannSinglePuls *manual = new BannSinglePuls(settings);
@@ -1022,7 +1023,7 @@ void PageTermoReg::weekendHolidaySettingsEnd(int program)
 
 void PageTermoReg4z::timedManualSettings(QDomNode n, SettingsPage *settings, ThermalDevice4Zones *dev)
 {
-	PageManualTimed *timed_manual_page = new PageManualTimed(dev, temp_scale);
+	PageManualTimed *timed_manual_page = new PageManualTimed(dev, temp_scale, getTextChild(n, "descr"));
 	timed_manual_page->setMaxHours(25);
 
 	// timed manual banner
