@@ -342,6 +342,7 @@ void RadioPage::playSaveSound(int new_state)
 
 	disconnect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), this, SLOT(playSaveSound(int)));
 	connect(bt_global::sound, SIGNAL(soundFinished()), SLOT(saveSoundFinished()));
+	usleep(400000);
 	bt_global::sound->play(SOUND_PATH "beep.wav");
 }
 

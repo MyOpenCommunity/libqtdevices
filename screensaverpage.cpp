@@ -239,7 +239,7 @@ SlideshowSelector::SlideshowSelector() :
 
 	buildPage(item_list, item_list, nav_bar, 0,
 		  new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT));
-	layout()->setContentsMargins(0, 5, 25, 10);
+	layout()->setContentsMargins(13, 5, 25, 10);
 
 	disconnect(nav_bar, SIGNAL(backClick()), 0, 0); // connected by buildPage()
 

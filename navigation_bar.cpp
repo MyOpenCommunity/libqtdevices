@@ -26,7 +26,7 @@
 #include <QFileInfo>
 
 static const int buttons_dim = 60;
-
+static const int top_margin = 92;
 
 
 AbstractNavigationBar::AbstractNavigationBar(QWidget *parent) : QWidget(parent)
@@ -47,7 +47,7 @@ BtButton *AbstractNavigationBar::createButton(QString icon, const char *signal, 
 #ifdef LAYOUT_TS_3_5
 		b->setGeometry(buttons_dim * pos, 0, buttons_dim, buttons_dim);
 #else
-		b->setGeometry(13, 60 + buttons_dim * pos, buttons_dim, buttons_dim);
+		b->setGeometry(0, top_margin + buttons_dim * pos, buttons_dim, buttons_dim);
 #endif
 		return b;
 	}
@@ -57,7 +57,7 @@ BtButton *AbstractNavigationBar::createButton(QString icon, const char *signal, 
 QSize AbstractNavigationBar::sizeHint() const
 {
 #ifdef LAYOUT_TS_10
-	return QSize(75, 355);
+	return QSize(buttons_dim, buttons_dim * 4 + top_margin);
 #else
 	return QSize(buttons_dim * 4, buttons_dim);
 #endif

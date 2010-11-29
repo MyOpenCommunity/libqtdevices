@@ -215,12 +215,11 @@ IntercomCallPage::IntercomCallPage(VideoDoorEntryDevice *d)
 	SkinContext ctx(666);
 
 	QGridLayout *layout = new QGridLayout(this);
-	layout->setContentsMargins(10, 0, 0, 15);
+	layout->setContentsMargins(13, 0, 0, 28);
 	layout->setSpacing(5);
 	layout->setColumnStretch(1, 1);
 
-	BtButton *back = new BtButton;
-	back->setImage(bt_global::skin->getImage("back"));
+	BtButton *back = new BtButton(bt_global::skin->getImage("back"));
 	connect(back, SIGNAL(clicked()), dev, SLOT(endCall()));
 	if (dev->vctMode() == VideoDoorEntryDevice::SCS_MODE)
 		connect(back, SIGNAL(clicked()), SLOT(handleClose()));

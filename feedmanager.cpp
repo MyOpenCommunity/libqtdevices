@@ -44,7 +44,7 @@ FeedManager::FeedManager(const QDomNode &conf_node)
 
 	buildPage(feeds, feeds, new NavigationBar, NULL,
 		  new PageTitleWidget(getTextChild(conf_node, "descr"), SMALL_TITLE_HEIGHT));
-	layout()->setContentsMargins(0, 5, 25, 10);
+	layout()->setContentsMargins(13, 5, 25, 10);
 
 	feed_items = new FeedItemList;
 
@@ -123,7 +123,7 @@ FeedItemList::FeedItemList()
 	title_widget = new PageTitleWidget("", SMALL_TITLE_HEIGHT);
 
 	buildPage(feed_items, feed_items, new NavigationBar, 0, title_widget);
-	layout()->setContentsMargins(0, 5, 25, 10);
+	layout()->setContentsMargins(13, 5, 25, 10);
 
 	feed_item = new FeedItem();
 

@@ -105,7 +105,7 @@ PageManual::PageManual(ThermalDevice *d, TemperatureScale scale)
 	descr_label->setFixedHeight(TITLE_HEIGHT);
 
 	main_layout.setSpacing(10);
-	main_layout.setContentsMargins(30, 0, 30, 30);
+	main_layout.setContentsMargins(30, 0, 30, 18);
 #else
 	main_layout.setSpacing(0);
 	main_layout.setContentsMargins(0, 0, 0, 10);
@@ -136,23 +136,22 @@ PageManual::PageManual(ThermalDevice *d, TemperatureScale scale)
 	temp_label->setFont(bt_global::font->get(FontManager::REGULATOR_TEMPERATURE));
 	temp_label->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	temp_label->setProperty("SecondFgColor", true);
-	QHBoxLayout *hbox = new QHBoxLayout();
+	QHBoxLayout *hbox = new QHBoxLayout;
+	hbox->setSpacing(20);
 
-	BtButton *btn = new BtButton(this);
-	btn->setImage(bt_global::skin->getImage("minus"));
-	btn->setAutoRepeat(true);
-	connect(btn, SIGNAL(clicked()), this, SLOT(decSetpoint()));
-	hbox->addWidget(btn);
+	BtButton *minus_btn = new BtButton(bt_global::skin->getImage("minus"));
+	minus_btn->setAutoRepeat(true);
+	connect(minus_btn, SIGNAL(clicked()), this, SLOT(decSetpoint()));
+
+	BtButton *plus_btn = new BtButton(bt_global::skin->getImage("plus"));
+	plus_btn->setAutoRepeat(true);
+	connect(plus_btn, SIGNAL(clicked()), this, SLOT(incSetpoint()));
+
 	hbox->addStretch(1);
-
+	hbox->addWidget(minus_btn);
 	hbox->addWidget(temp_label);
-
+	hbox->addWidget(plus_btn);
 	hbox->addStretch(1);
-	btn = new BtButton(this);
-	btn->setImage(bt_global::skin->getImage("plus"));
-	btn->setAutoRepeat(true);
-	connect(btn, SIGNAL(clicked()), this, SLOT(incSetpoint()));
-	hbox->addWidget(btn);
 
 	main_layout.addLayout(hbox);
 	main_layout.addStretch();
@@ -161,10 +160,8 @@ PageManual::PageManual(ThermalDevice *d, TemperatureScale scale)
 	ThermalNavigation *nav_bar = new ThermalNavigation;
 #else
 	QHBoxLayout *ok_layout = new QHBoxLayout;
-	BtButton *ok = new BtButton;
-	ok->setImage(bt_global::skin->getImage("ok"));
-
-	ok_layout->addWidget(ok, 0, Qt::AlignRight);
+	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
+	ok_layout->addWidget(ok, 0, Qt::AlignRight | Qt::AlignBottom);
 
 	main_layout.addLayout(ok_layout);
 

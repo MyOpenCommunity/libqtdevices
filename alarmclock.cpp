@@ -585,7 +585,7 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 	QGridLayout *days = new QGridLayout;
 	QVBoxLayout *icon_label = new QVBoxLayout;
 
-	main->setContentsMargins(25, 0, 25, 15);
+	main->setContentsMargins(25, 0, 25, 18);
 	main->setSpacing(15);
 	top->setSpacing(20);
 	days->setSpacing(5);
@@ -630,7 +630,7 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 
 	main->addLayout(top);
 	main->addLayout(days);
-	main->addWidget(ok, 0, Qt::AlignRight);
+	main->addWidget(ok, 0, Qt::AlignRight | Qt::AlignBottom);
 }
 
 QTime AlarmClockTimeFreq::getAlarmTime() const

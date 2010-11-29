@@ -260,11 +260,11 @@ ConfirmationPage::ConfirmationPage(const QString &text)
 
 	content = new QWidget;
 	QGridLayout *l = new QGridLayout(content);
-	l->setContentsMargins(5, 5, 25, 47);
+	l->setContentsMargins(5, 5, 25, 18);
 	l->setColumnStretch(0, 1);
 
 	l->addWidget(label, 0, 0);
-	l->addWidget(ok, 1, 1);
+	l->addWidget(ok, 1, 1, Qt::AlignBottom);
 #endif
 
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(cancel()));
@@ -462,12 +462,10 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 	buildPage(content, nav_bar, "", 0, top);
 #else
 	QWidget *container = new QWidget;
-	QVBoxLayout *vlayout = new QVBoxLayout;
-#ifdef LAYOUT_TS_3_5
-	vlayout->addWidget(content, 2);
-#else
-	vlayout->addWidget(content, 2, Qt::AlignHCenter);
-#endif
+	QVBoxLayout *vlayout = new QVBoxLayout(container);
+	vlayout->setSpacing(0);
+	vlayout->setContentsMargins(0, 0, 0, 18);
+	vlayout->addWidget(content, 1, Qt::AlignHCenter);
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
 	buttons_layout->addStretch(2);
@@ -477,8 +475,7 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 		connect(currency_button, SIGNAL(clicked()), content, SLOT(toggleCurrencyView()));
 		buttons_layout->addWidget(currency_button, 1, Qt::AlignCenter);
 	}
-	vlayout->addLayout(buttons_layout, 1);
-	container->setLayout(vlayout);
+	vlayout->addLayout(buttons_layout);
 
 	buildPage(container, nav_bar, "", 0, top);
 #endif
@@ -558,26 +555,28 @@ DeactivationTimePage::DeactivationTimePage(const QDomNode &config_node, LoadsDev
 
 #ifdef LAYOUT_TS_10
 	QWidget *content = new QWidget;
+	QVBoxLayout *vlayout = new QVBoxLayout(content);
+	vlayout->setSpacing(0);
+	vlayout->setContentsMargins(5, 5, 25, 18);
+
 	QHBoxLayout *banner_layout = new QHBoxLayout;
 	banner_layout->addStretch();
 	banner_layout->addWidget(deactivation_time);
 	banner_layout->addStretch();
 
-	QVBoxLayout *vlayout = new QVBoxLayout;
-	vlayout->addLayout(banner_layout);
+	vlayout->addLayout(banner_layout, 1);
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
-	buttons_layout->addStretch(2);
+	buttons_layout->addStretch(1);
 
 	BtButton *ok_button = new BtButton(bt_global::skin->getImage("ok"));
 	connect(ok_button, SIGNAL(clicked()), SLOT(sendDeactivateDevice()));
 	connect(ok_button, SIGNAL(clicked()), SIGNAL(Closed()));
 
-	buttons_layout->addWidget(ok_button, 1, Qt::AlignCenter);
+	buttons_layout->addWidget(ok_button, 0, Qt::AlignCenter | Qt::AlignBottom);
 
 	vlayout->addLayout(buttons_layout);
 
-	content->setLayout(vlayout);
 	buildPage(content, nav_bar, "", 0, top);
 #else
 	buildPage(deactivation_time, nav_bar, "", 0, top);
