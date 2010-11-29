@@ -47,12 +47,16 @@ void ScrollablePage::buildPage(QWidget *main_widget, ScrollableContent *content,
 	if (title_widget)
 		connect(content, SIGNAL(contentScrolled(int, int)), title_widget, SLOT(setCurrentPage(int, int)));
 
-	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
-	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(forwardClick()));
-	connect(nav_bar, SIGNAL(upClick()), content, SLOT(pgUp()));
-	connect(nav_bar, SIGNAL(downClick()), content, SLOT(pgDown()));
-	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+
+	if (nav_bar)
+	{
+		connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+		connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(forwardClick()));
+		connect(nav_bar, SIGNAL(upClick()), content, SLOT(pgUp()));
+		connect(nav_bar, SIGNAL(downClick()), content, SLOT(pgDown()));
+		connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+	}
 }
 
 
