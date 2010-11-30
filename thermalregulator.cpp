@@ -679,158 +679,6 @@ void PageTermoReg::showSettingsMenu()
 	settings->showPage();
 }
 
-
-PageTermoReg4z::PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device)
-	: PageTermoReg(n)
-{
-	_dev = device;
-	connect(_dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
-	createSettingsMenu(n);
-}
-
-ThermalDevice *PageTermoReg4z::dev()
-{
-	return _dev;
-}
-
-void PageTermoReg4z::createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice4Zones *_dev)
-{
-	int id = getTextChild(item, "id").toInt();
-
-	switch (id)
-	{
-	case BANNER_MANUAL_TIMED_MODE:
-		timedManualSettings(item, settings, _dev);
-		break;
-	default:
-		PageTermoReg::createSettingsItem(item, settings, _dev);
-		break;
-	}
-}
-
-#ifdef CONFIG_TS_3_5
-
-void PageTermoReg4z::createSettingsMenu(QDomNode regulator_node)
-{
-	QDomNode n = regulator_node;
-	QDomNode dummy;
-
-	settings = new SettingsPage(n);
-	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
-
-	weekSettings(dummy, settings, programs, _dev);
-	manualSettings(dummy, settings, _dev);
-
-	timedManualSettings(dummy, settings, _dev);
-
-	holidaySettings(dummy, settings, programs, _dev);
-
-	weekendSettings(dummy, settings, programs, _dev);
-
-	createButtonsBanners(settings, _dev);
-}
-
-#else
-
-void PageTermoReg4z::createSettingsMenu(QDomNode regulator_node)
-{
-	QDomNode n = getPageNodeFromChildNode(regulator_node, "h_lnk_pageID");
-	SkinContext context(getTextChild(n, "cid").toInt());
-
-	settings = new SettingsPage(n);
-	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
-
-	foreach (const QDomNode &item, getChildren(n, "item"))
-		createSettingsItem(item, settings, _dev);
-
-	// these do not have items
-	createButtonsBanners(settings, _dev);
-}
-
-#endif
-
-PageTermoReg99z::PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device)
-	: PageTermoReg(n)
-{
-	scenario_menu = 0;
-	_dev = device;
-	connect(_dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
-	createSettingsMenu(n);
-}
-
-ThermalDevice *PageTermoReg99z::dev()
-{
-	return _dev;
-}
-
-void PageTermoReg99z::setSeason(ThermalDevice::Season new_season)
-{
-	if (new_season == ThermalDevice::SE_SUMMER || new_season == ThermalDevice::SE_WINTER)
-	{
-		if (scenario_menu)
-			scenario_menu->setSeason(new_season);
-	}
-	else
-		qWarning("Received season is not SUMMER or WINTER, ignoring");
-	PageTermoReg::setSeason(new_season);
-}
-
-void PageTermoReg99z::createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice99Zones *_dev)
-{
-	int id = getTextChild(item, "id").toInt();
-
-	switch (id)
-	{
-	case BANNER_SCENARIOS:
-		scenarioSettings(item, settings, scenarios, _dev);
-		break;
-	default:
-		PageTermoReg::createSettingsItem(item, settings, _dev);
-		break;
-	}
-}
-
-#ifdef CONFIG_TS_3_5
-
-void PageTermoReg99z::createSettingsMenu(QDomNode regulator_node)
-{
-	QDomNode n = regulator_node;
-	QDomNode dummy;
-
-	settings = new SettingsPage(n);
-	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
-
-	weekSettings(dummy, settings, programs, _dev);
-	manualSettings(dummy, settings, _dev);
-
-	scenarioSettings(dummy, settings, scenarios, _dev);
-
-	holidaySettings(dummy, settings, programs, _dev);
-
-	weekendSettings(dummy, settings, programs, _dev);
-
-	createButtonsBanners(settings, _dev);
-}
-
-#else
-
-void PageTermoReg99z::createSettingsMenu(QDomNode regulator_node)
-{
-	QDomNode n = getPageNodeFromChildNode(regulator_node, "h_lnk_pageID");
-	SkinContext context(getTextChild(n, "cid").toInt());
-
-	settings = new SettingsPage(n);
-	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
-
-	foreach (const QDomNode &item, getChildren(n, "item"))
-		createSettingsItem(item, settings, _dev);
-
-	// these do not have items
-	createButtonsBanners(settings, _dev);
-}
-
-#endif
-
 //
 // ------------- Utility functions to create thermal regulator settings menus -------------------
 //
@@ -1021,6 +869,76 @@ void PageTermoReg::weekendHolidaySettingsEnd(int program)
 	showPage();
 }
 
+
+PageTermoReg4z::PageTermoReg4z(QDomNode n, ThermalDevice4Zones *device)
+	: PageTermoReg(n)
+{
+	_dev = device;
+	connect(_dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+	createSettingsMenu(n);
+}
+
+ThermalDevice *PageTermoReg4z::dev()
+{
+	return _dev;
+}
+
+void PageTermoReg4z::createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice4Zones *_dev)
+{
+	int id = getTextChild(item, "id").toInt();
+
+	switch (id)
+	{
+	case BANNER_MANUAL_TIMED_MODE:
+		timedManualSettings(item, settings, _dev);
+		break;
+	default:
+		PageTermoReg::createSettingsItem(item, settings, _dev);
+		break;
+	}
+}
+
+#ifdef CONFIG_TS_3_5
+
+void PageTermoReg4z::createSettingsMenu(QDomNode regulator_node)
+{
+	QDomNode n = regulator_node;
+	QDomNode dummy;
+
+	settings = new SettingsPage(n);
+	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
+
+	weekSettings(dummy, settings, programs, _dev);
+	manualSettings(dummy, settings, _dev);
+
+	timedManualSettings(dummy, settings, _dev);
+
+	holidaySettings(dummy, settings, programs, _dev);
+
+	weekendSettings(dummy, settings, programs, _dev);
+
+	createButtonsBanners(settings, _dev);
+}
+
+#else
+
+void PageTermoReg4z::createSettingsMenu(QDomNode regulator_node)
+{
+	QDomNode n = getPageNodeFromChildNode(regulator_node, "h_lnk_pageID");
+	SkinContext context(getTextChild(n, "cid").toInt());
+
+	settings = new SettingsPage(n);
+	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
+
+	foreach (const QDomNode &item, getChildren(n, "item"))
+		createSettingsItem(item, settings, _dev);
+
+	// these do not have items
+	createButtonsBanners(settings, _dev);
+}
+
+#endif
+
 void PageTermoReg4z::timedManualSettings(QDomNode n, SettingsPage *settings, ThermalDevice4Zones *dev)
 {
 	PageManualTimed *timed_manual_page = new PageManualTimed(dev, temp_scale, getTextChild(n, "descr"));
@@ -1042,6 +960,89 @@ void PageTermoReg4z::manualTimedSelected(BtTime time, int temp)
 	_dev->setManualTempTimed(temp, time);
 	showPage();
 }
+
+
+PageTermoReg99z::PageTermoReg99z(QDomNode n, ThermalDevice99Zones *device)
+	: PageTermoReg(n)
+{
+	scenario_menu = 0;
+	_dev = device;
+	connect(_dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+	createSettingsMenu(n);
+}
+
+ThermalDevice *PageTermoReg99z::dev()
+{
+	return _dev;
+}
+
+void PageTermoReg99z::setSeason(ThermalDevice::Season new_season)
+{
+	if (new_season == ThermalDevice::SE_SUMMER || new_season == ThermalDevice::SE_WINTER)
+	{
+		if (scenario_menu)
+			scenario_menu->setSeason(new_season);
+	}
+	else
+		qWarning("Received season is not SUMMER or WINTER, ignoring");
+	PageTermoReg::setSeason(new_season);
+}
+
+void PageTermoReg99z::createSettingsItem(QDomNode item, SettingsPage *settings, ThermalDevice99Zones *_dev)
+{
+	int id = getTextChild(item, "id").toInt();
+
+	switch (id)
+	{
+	case BANNER_SCENARIOS:
+		scenarioSettings(item, settings, scenarios, _dev);
+		break;
+	default:
+		PageTermoReg::createSettingsItem(item, settings, _dev);
+		break;
+	}
+}
+
+#ifdef CONFIG_TS_3_5
+
+void PageTermoReg99z::createSettingsMenu(QDomNode regulator_node)
+{
+	QDomNode n = regulator_node;
+	QDomNode dummy;
+
+	settings = new SettingsPage(n);
+	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
+
+	weekSettings(dummy, settings, programs, _dev);
+	manualSettings(dummy, settings, _dev);
+
+	scenarioSettings(dummy, settings, scenarios, _dev);
+
+	holidaySettings(dummy, settings, programs, _dev);
+
+	weekendSettings(dummy, settings, programs, _dev);
+
+	createButtonsBanners(settings, _dev);
+}
+
+#else
+
+void PageTermoReg99z::createSettingsMenu(QDomNode regulator_node)
+{
+	QDomNode n = getPageNodeFromChildNode(regulator_node, "h_lnk_pageID");
+	SkinContext context(getTextChild(n, "cid").toInt());
+
+	settings = new SettingsPage(n);
+	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
+
+	foreach (const QDomNode &item, getChildren(n, "item"))
+		createSettingsItem(item, settings, _dev);
+
+	// these do not have items
+	createButtonsBanners(settings, _dev);
+}
+
+#endif
 
 void PageTermoReg99z::scenarioSettings(QDomNode n, SettingsPage *settings, ProgramEntries scenarios, ThermalDevice99Zones *dev)
 {
