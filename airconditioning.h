@@ -144,7 +144,7 @@ public:
 	virtual void showPage();
 
 private:
-	void loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d);
+	void loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d, QString descr);
 	AdvancedAirConditioningDevice *dev;
 	Page *single_page, *error_page;
 
@@ -166,7 +166,7 @@ class SplitSettings : public Page
 {
 Q_OBJECT
 public:
-	SplitSettings(const QDomNode &values_node, const QDomNode &config_node);
+	SplitSettings(const QDomNode &values_node, const QDomNode &config_node, QString descr);
 	AirConditionerStatus getCurrentStatus();
 
 protected:

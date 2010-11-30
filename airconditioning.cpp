@@ -309,7 +309,7 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 #endif
 
 	dev = d;
-	loadScenarios(config_node, d);
+	loadScenarios(config_node, d, getTextChild(config_node, "descr"));
 
 	error_page = new SplitErrorPage(bt_global::skin->getImage("setstate_error"));
 	connect(d, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
@@ -323,12 +323,12 @@ void AdvancedSplitPage::valueReceived(const DeviceValues &values_list)
 	error_page->showPage();
 }
 
-void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d)
+void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d, QString descr)
 {
 	int id = getTextChild(config_node, "id").toInt();
 	CustomScenario *bann = new CustomScenario(d);
 	QDomNode params = getChildWithName(config_node, "par");
-	SplitSettings *split = new SplitSettings(QDomNode(), params);
+	SplitSettings *split = new SplitSettings(QDomNode(), params, descr);
 	connect(split, SIGNAL(splitSettingsChanged(const AirConditionerStatus &)), bann,
 		SLOT(splitValuesChanged(const AirConditionerStatus &)));
 	page_content->appendBanner(bann);
@@ -382,19 +382,19 @@ void AdvancedSplitPage::showPage()
 
 
 
-SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config_node)
+SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config_node, QString descr)
 {
 #ifdef LAYOUT_TS_3_5
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
 	nav_bar->displayScrollButtons(false);
-	buildPage(new BannerContent, nav_bar, getTextChild(config_node, "descr"));
+	buildPage(new BannerContent, nav_bar, descr);
 
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(acceptChanges()));
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
 #else
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
-	buildPage(new QWidget, nav_bar, getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT);
+	buildPage(new QWidget, nav_bar, descr, SMALL_TITLE_HEIGHT);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 #endif
 	connect(nav_bar, SIGNAL(backClick()), SLOT(resetChanges()));
