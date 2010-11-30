@@ -64,16 +64,6 @@ namespace
 }
 
 
-// Helper page for the settings list
-class SettingsPage : public BannerPage
-{
-public:
-	SettingsPage(QDomNode node, QWidget *parent = 0);
-
-	void appendBanner(banner *b);
-	void resetIndex();
-};
-
 SettingsPage::SettingsPage(QDomNode n, QWidget *parent)
 	: BannerPage(parent)
 {
@@ -930,11 +920,11 @@ void PageTermoReg4z::createSettingsMenu(QDomNode regulator_node)
 	settings = new SettingsPage(n);
 	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
 
-	foreach (const QDomNode &item, getChildren(n, "item"))
-		createSettingsItem(item, settings, _dev);
-
 	// these do not have items
 	createButtonsBanners(settings, _dev);
+
+	foreach (const QDomNode &item, getChildren(n, "item"))
+		createSettingsItem(item, settings, _dev);
 }
 
 #endif
@@ -1035,11 +1025,11 @@ void PageTermoReg99z::createSettingsMenu(QDomNode regulator_node)
 	settings = new SettingsPage(n);
 	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
 
-	foreach (const QDomNode &item, getChildren(n, "item"))
-		createSettingsItem(item, settings, _dev);
-
 	// these do not have items
 	createButtonsBanners(settings, _dev);
+
+	foreach (const QDomNode &item, getChildren(n, "item"))
+		createSettingsItem(item, settings, _dev);
 }
 
 #endif
