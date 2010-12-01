@@ -144,7 +144,7 @@ public:
 	virtual void showPage();
 
 private:
-	void loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d, QString descr);
+	void loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d);
 	AdvancedAirConditioningDevice *dev;
 	Page *single_page, *error_page;
 

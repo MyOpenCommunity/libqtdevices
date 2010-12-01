@@ -275,11 +275,20 @@ void SplitPage::setDeviceOff()
 AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirConditioningDevice *d)
 {
 	single_page = 0;
+	dev = d;
+
 #ifdef CONFIG_TS_3_5
 	int off_button = getElement(config_node, "off/list").text().toInt();
 #else
 	int off_button = getElement(config_node, "off/presence").text().toInt();
 #endif
+
+	QString descr = getTextChild(config_node, "descr");
+	CustomScenario *custom = new CustomScenario(dev);
+	QDomNode params = getChildWithName(config_node, "par");
+	SplitSettings *split = new SplitSettings(QDomNode(), params, descr);
+	connect(split, SIGNAL(splitSettingsChanged(const AirConditionerStatus &)), custom,
+		SLOT(splitValuesChanged(const AirConditionerStatus &)));
 
 #ifdef LAYOUT_TS_3_5
 	NavigationBar *nav_bar;
@@ -292,24 +301,53 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 	else
 		nav_bar = new NavigationBar;
 
-	buildPage(new BannerContent, nav_bar, getTextChild(config_node, "descr"));
+	page_content->appendBanner(custom);
+	buildPage(new BannerContent, nav_bar, descr);
+
+
 #else
 	BannerContent *banners = new BannerContent;
 	static_cast<QGridLayout *>(banners->layout())->setVerticalSpacing(20);
-	buildPage(banners, new NavigationBar, getTextChild(config_node, "descr"));
+
+	QWidget *main_widget = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(main_widget);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(30);
+
+	QHBoxLayout *top_layout = new QHBoxLayout;
+	top_layout->setContentsMargins(135, 0, 0, 0);
+	top_layout->setSpacing(40);
+	top_layout->addWidget(custom);
+
+	main_layout->addLayout(top_layout);
+	main_layout->addWidget(banners);
 
 	if (off_button) // show the off button
 	{
-		Bann2Buttons *b = new Bann2Buttons;
-		b->initBanner(bt_global::skin->getImage("off"), QString(), tr("Off"));
-		page_content->appendBanner(b);
-
-		connect(b, SIGNAL(leftClicked()), SLOT(setDeviceOff()));
+		BtButton *off = new BtButton(bt_global::skin->getImage("off"));
+		connect(off, SIGNAL(clicked()), SLOT(setDeviceOff()));
+		top_layout->addWidget(off);
 	}
+
+	top_layout->addStretch(1);
+	buildPage(main_widget, banners, new NavigationBar, descr, SMALL_TITLE_HEIGHT);
+
 #endif
 
-	dev = d;
-	loadScenarios(config_node, d, getTextChild(config_node, "descr"));
+	loadScenarios(config_node, dev);
+
+	// skip showing scenario page (_this_ page) if we haven't scenarios.
+	if (page_content->bannerCount() == 0)
+	{
+		single_page = split;
+		connect(single_page, SIGNAL(Closed()), SIGNAL(Closed()));
+	}
+	else
+	{
+		custom->connectRightButton(split);
+		connect(custom, SIGNAL(pageClosed()), SLOT(showPage()));
+	}
+
 
 	error_page = new SplitErrorPage(bt_global::skin->getImage("setstate_error"));
 	connect(d, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
@@ -323,15 +361,9 @@ void AdvancedSplitPage::valueReceived(const DeviceValues &values_list)
 	error_page->showPage();
 }
 
-void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d, QString descr)
+void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirConditioningDevice *d)
 {
 	int id = getTextChild(config_node, "id").toInt();
-	CustomScenario *bann = new CustomScenario(d);
-	QDomNode params = getChildWithName(config_node, "par");
-	SplitSettings *split = new SplitSettings(QDomNode(), params, descr);
-	connect(split, SIGNAL(splitSettingsChanged(const AirConditionerStatus &)), bann,
-		SLOT(splitValuesChanged(const AirConditionerStatus &)));
-	page_content->appendBanner(bann);
 
 #ifdef CONFIG_TS_3_5
 	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
@@ -339,22 +371,11 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirCo
 	foreach (const QDomNode &scenario, getChildren(getPageNodeFromChildNode(config_node, "lnk_pageID"), "item"))
 #endif
 	{
-		AdvancedSplitScenario *b = new AdvancedSplitScenario(AirConditioningAdvanced::parseSettings(scenario), getTextChild(scenario, "descr"), d);
+		AdvancedSplitScenario *b = new AdvancedSplitScenario(AirConditioningAdvanced::parseSettings(scenario),
+			getTextChild(scenario, "descr"), d);
 		b->setId(id);
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		page_content->appendBanner(b);
-	}
-
-	// skip showing scenario page (_this_ page) if we have only the custom button
-	if (page_content->bannerCount() == 1)
-	{
-		single_page = split;
-		connect(single_page, SIGNAL(Closed()), SIGNAL(Closed()));
-	}
-	else
-	{
-		bann->connectRightButton(split);
-		connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 }
 
