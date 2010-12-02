@@ -443,12 +443,14 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 
 			bool old_status = call_status->video_enabled;
 
-			call_status->video_enabled = new_status;
 			// Switch from a camera with video to a camera without video
 			if (old_status && !new_status)
 				stopVideo();
+
+			call_status->video_enabled = new_status;
+
 			// Switch from a camera without video to a camera with video
-			else if ((!old_status || call_status->stopped) && new_status)
+			if ((!old_status || call_status->stopped) && new_status)
 			{
 				call_status->stopped = false;
 				resumeVideo();

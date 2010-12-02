@@ -30,8 +30,9 @@
 
 
 
-ScenEvoManager::ScenEvoManager(ScenEvoTimeCondition *time_cond, ScenEvoDeviceCondition *device_cond)
+ScenEvoManager::ScenEvoManager(QString title, ScenEvoTimeCondition *time_cond, ScenEvoDeviceCondition *device_cond)
 {
+	Q_UNUSED(title)
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	main_layout->setContentsMargins(0, 5, 0, 10);
 	main_layout->setSpacing(0);

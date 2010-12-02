@@ -166,7 +166,7 @@ class SplitSettings : public Page
 {
 Q_OBJECT
 public:
-	SplitSettings(const QDomNode &values_node, const QDomNode &config_node);
+	SplitSettings(const QDomNode &values_node, const QDomNode &config_node, QString descr);
 	AirConditionerStatus getCurrentStatus();
 
 protected:
