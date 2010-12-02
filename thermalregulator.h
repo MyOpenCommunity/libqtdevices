@@ -284,6 +284,18 @@ private slots:
 };
 
 
+// Helper page for the settings list
+class SettingsPage : public BannerPage
+{
+Q_OBJECT
+public:
+	SettingsPage(QDomNode node, QWidget *parent = 0);
+
+	void appendBanner(banner *b);
+	void resetIndex();
+};
+
+
 /*!
 	\ingroup ThermalRegulation
 	\brief %Page to set the thermal regulator to manual mode.
