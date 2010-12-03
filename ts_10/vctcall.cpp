@@ -743,6 +743,11 @@ void VCTCallPage::incomingCall()
 {
 	bt_global::btmain->vde_call_active = true;
 	vct_call->refreshStatus();
+	// Restore the 'normal' status of these buttons, that can be disabled when
+	// calling the guard unit.
+	vct_call->stairlight->setStatus(StateButton::OFF);
+	vct_call->unlock_door->setStatus(StateButton::OFF);
+	vct_call->cycle->setStatus(StateButton::OFF);
 
 	showPage();
 	repaint();
