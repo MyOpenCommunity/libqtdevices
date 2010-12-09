@@ -172,7 +172,7 @@ void TestXmlDevice::testChdir()
 				 "	</Hdr>"
 				 "	<Cmd>"
 				 "		<AW26C2>"
-				 "			<status_browse>browse_ok</status_browse>"
+				 "			<status_browse>browse_okay</status_browse>"
 				 "		</AW26C2>"
 				 "	</Cmd>"
 				 "</OWNxml>");
@@ -199,7 +199,7 @@ void TestXmlDevice::testBrowseUpSuccess()
 				 "	</Hdr>"
 				 "	<Cmd>"
 				 "		<AW26C7>"
-				 "			<status_browse>browse_ok</status_browse>"
+				 "			<status_browse>browse_okay</status_browse>"
 				 "		</AW26C7>"
 				 "	</Cmd>"
 				 "</OWNxml>");

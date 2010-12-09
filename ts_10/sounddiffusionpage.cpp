@@ -128,7 +128,7 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 {
 	QHBoxLayout *l = new QHBoxLayout(this);
 	l->setContentsMargins(10, 0, 17, 10);
-	l->setSpacing(5);
+	l->setSpacing(10);
 
 	BtButton *cycle = new BtButton(bt_global::skin->getImage("cycle"));
 	sources = new QStackedWidget;

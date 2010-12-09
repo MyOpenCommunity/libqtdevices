@@ -42,6 +42,7 @@
 #define BANNBUT2ICON_ICON_DIM_X 60
 #define BANNBUT2ICON_ICON_DIM_Y 60
 
+
 BannSinglePuls::BannSinglePuls(QWidget *parent) :
 	BannerNew(parent)
 {
@@ -162,10 +163,13 @@ void BannOn2Labels::setState(States new_state)
 	{
 	case ON:
 		right_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center_right, "on")));
+		right_icon->setMinimumSize(right_icon->pixmap()->size());
 		break;
 	case OFF:
 		left_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center_left, "0")));
+		left_icon->setMinimumSize(left_icon->pixmap()->size());
 		right_icon->setPixmap(*bt_global::icons_cache.getIcon(getBostikName(center_right, "off")));
+		right_icon->setMinimumSize(right_icon->pixmap()->size());
 		break;
 	}
 }

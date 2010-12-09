@@ -270,9 +270,7 @@ void XmlDevice::browseUp()
 
 void XmlDevice::listItems()
 {
-	// The argument is here only for testing. This command should be able
-	// to run without arguments.
-	sendCommand("RW26C15", "10");
+	sendCommand("RW26C15", "0"); // 0 means all the items.
 }
 
 void XmlDevice::handleData(const QString &data)
