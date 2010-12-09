@@ -64,6 +64,7 @@ private:
 // this can be a generic class
 class ListPage : public BannerPage
 {
+Q_OBJECT
 public:
 	ListPage(const QDomNode &config_node);
 

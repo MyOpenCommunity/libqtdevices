@@ -59,6 +59,7 @@ namespace
 	QVBoxLayout* getCommandButton(StateButton *button, const QString &on_image, const QString &off_image, QLabel *label, QObject *obj, const char *slot)
 	{
 		QVBoxLayout *button_layout = new QVBoxLayout;
+		button_layout->setSpacing(5);
 		button->setOnImage(bt_global::skin->getImage(on_image));
 		button->setOffImage(bt_global::skin->getImage(off_image));
 		QObject::connect(button, SIGNAL(clicked()), obj, slot);
@@ -148,6 +149,11 @@ void StopAndGoMenu::loadItems(const QDomNode &config_node)
 	foreach (const QDomNode &item, items)
 	{
 		int id = getTextChild(item, "id").toInt();
+		// BannStopAndGo is the same for the StopAndGoMenu and the related stop & go
+		// pages. We have to differentiate the icons for the various kind of
+		// stop&go, but only in the StopAndGoMenu. So we add the context before
+		// creating the banners and remove it before creating the pages.
+		bt_global::skin->addToContext(getTextChild(item, "cid").toInt());
 		QString descr = getTextChild(item, "descr");
 		QString where = getTextChild(item, "where");
 		BannStopAndGo *banner = 0;
@@ -159,6 +165,7 @@ void StopAndGoMenu::loadItems(const QDomNode &config_node)
 			{
 				StopAndGoDevice *dev = bt_global::add_device_to_cache(new StopAndGoDevice(where));
 				banner = new BannStopAndGo(dev, "", "forward", descr);
+				bt_global::skin->removeFromContext();
 				p = new StopAndGoPage(descr, dev);
 			}
 			break;
@@ -166,6 +173,7 @@ void StopAndGoMenu::loadItems(const QDomNode &config_node)
 			{
 				StopAndGoPlusDevice *dev = bt_global::add_device_to_cache(new StopAndGoPlusDevice(where));
 				banner = new BannStopAndGo(dev, "", "forward", descr);
+				bt_global::skin->removeFromContext();
 				p = new StopAndGoPlusPage(descr, dev);
 			}
 			break;
@@ -173,6 +181,7 @@ void StopAndGoMenu::loadItems(const QDomNode &config_node)
 			{
 				StopAndGoBTestDevice *dev = bt_global::add_device_to_cache(new StopAndGoBTestDevice(where));
 				banner = new BannStopAndGo(dev, "", "forward", descr);
+				bt_global::skin->removeFromContext();
 				p = new StopAndGoBTestPage(descr, dev);
 			}
 			break;
@@ -253,15 +262,16 @@ StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *
 	tracking_button = new StateButton;
 	tracking_label = new QLabel(tr("Test"));
 	QWidget *content = new QWidget;
-	QVBoxLayout *layout = new QVBoxLayout;
+	QVBoxLayout *layout = new QVBoxLayout(content);
+	layout->setSpacing(40);
 
 	BannStopAndGo *status_banner = new BannStopAndGo(dev, "close", "open");
 	connect(status_banner, SIGNAL(leftClicked()), dev, SLOT(sendClose()));
 	connect(status_banner, SIGNAL(rightClicked()), dev, SLOT(sendOpen()));
 	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
-	layout->addSpacing(30);
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
+	buttons_layout->setContentsMargins(124, 0, 126, 0);
 	buttons_layout->addLayout(getCommandButton(autoreset_button, "autoreset_enabled",
 											   "autoreset_disabled", tr("Enable"),
 											   this, SLOT(switchAutoReset())));
@@ -270,10 +280,7 @@ StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *
 											   "tracking_disabled", tracking_label,
 											   this, SLOT(switchTracking())));
 	layout->addLayout(buttons_layout);
-
 	layout->addStretch();
-
-	content->setLayout(layout);
 
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
@@ -335,13 +342,14 @@ StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevic
 	autotest_label = new QLabel(tr("Self-test"));
 	autotest_banner = new BannLCDRange;
 	QWidget *content = new QWidget;
-	QVBoxLayout *layout = new QVBoxLayout;
+	QVBoxLayout *layout = new QVBoxLayout(content);
 
 	BannStopAndGo *status_banner = new BannStopAndGo(dev, "", "");
 	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
 	layout->addSpacing(30);
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
+	buttons_layout->setContentsMargins(156, 0, 151, 0);
 	buttons_layout->addLayout(getCommandButton(autoreset_button, "autoreset_enabled",
 											   "autoreset_disabled", tr("Enable"),
 											   this, SLOT(switchAutoReset())));
@@ -352,8 +360,6 @@ StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevic
 	layout->addLayout(buttons_layout);
 
 	layout->addStretch();
-
-	content->setLayout(layout);
 
 	autotest_banner->setRange(1, 180);
 	autotest_banner->setNumDigits(3);

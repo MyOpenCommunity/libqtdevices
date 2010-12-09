@@ -1994,6 +1994,20 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_tracking_enabled>supervisioneimpianto/verificaimpiantoon.png</img_tracking_enabled>
 		<img_tracking_disabled>supervisioneimpianto/verificaimpiantooff.png</img_tracking_disabled>
 	</item>
+	<item>
+		<!--
+		Stop & Go plus Banners
+		-->
+		<cid>6102</cid>
+		<img_status_closed>supervisioneimpianto/S_G_Plus.png</img_status_closed>
+	</item>
+	<item>
+		<!--
+		Stop & Go BTest Banners
+		-->
+		<cid>6103</cid>
+		<img_status_closed>supervisioneimpianto/S_G_BTest.png</img_status_closed>
+	</item>
 	<!-- Examples -->
 	<item>
 		<!--

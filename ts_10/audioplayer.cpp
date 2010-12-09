@@ -129,6 +129,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	l_bg->addWidget(elapsed, 2, 1, Qt::AlignVCenter|Qt::AlignRight);
 
 	QHBoxLayout *l_btn = new QHBoxLayout;
+	l_btn->setContentsMargins(2, 0, 2, 0);
 	BtButton *goto_sounddiff = NULL;
 	if (bt_global::audio_states->isSource())
 	{
@@ -161,6 +162,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	}
 
 	QVBoxLayout *l = new QVBoxLayout(content);
+	l->setContentsMargins(10, 0, 25, 0);
 	l->addWidget(bg, 1, Qt::AlignCenter);
 	l->addLayout(l_btn, 1);
 	if (volume)
