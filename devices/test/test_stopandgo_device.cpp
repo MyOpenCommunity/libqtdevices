@@ -156,7 +156,7 @@ void TestStopAndGoPlusDevice::sendClose()
 	flushCompressedFrames(dev);
 
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*18*21*%1##").arg(WHERE));
+	QCOMPARE(server->frameCommand(), QString("*18*22*%1##").arg(WHERE));
 
 	client_request->flush();
 	QCOMPARE(server->frameRequest(), QString("*#18*%1*250##").arg(WHERE));
@@ -168,7 +168,7 @@ void TestStopAndGoPlusDevice::sendOpen()
 	flushCompressedFrames(dev);
 
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*18*22*%1##").arg(WHERE));
+	QCOMPARE(server->frameCommand(), QString("*18*21*%1##").arg(WHERE));
 
 	client_request->flush();
 	QCOMPARE(server->frameRequest(), QString("*#18*%1*250##").arg(WHERE));
