@@ -89,6 +89,7 @@ private:
 	MediaType type;
 	bool stream_url_exist;
 	bool stream_title_exist;
+	bool filename_exist;
 
 	QLabel *description_top, *description_bottom, *track, *elapsed;
 	// icon in tray bar

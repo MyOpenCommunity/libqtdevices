@@ -341,7 +341,12 @@ void AudioPlayerPage::refreshPlayInfo(const QMap<QString, QString> &attrs)
 			stream_url_exist = true;
 			description_top->setText(attrs["stream_url"]);
 		}
-		if (!stream_url_exist)
+		else if (attrs.contains("file_name"))
+		{
+			filename_exist = true;
+			description_top->setText(attrs["file_name"]);
+		}
+		if (!stream_url_exist && !filename_exist)
 			description_top->setText(tr("Information not available"));
 
 		if (attrs.contains("stream_title"))
@@ -383,6 +388,7 @@ void AudioPlayerPage::playerStarted()
 {
 	stream_url_exist = false;
 	stream_title_exist = false;
+	filename_exist = false;
 	MultimediaSectionPage::current_player = this;
 	tray_icon->setVisible(true);
 }
