@@ -39,6 +39,9 @@
 #include <QFile>
 
 
+#define REQUEST_FREQUENCY_TIME 1000
+#define MEMORY_PRESS_TIME 3000
+
 namespace
 {
 
@@ -177,8 +180,7 @@ void RadioInfo::setRadioName(const QString &rds)
 }
 
 
-#define REQUEST_FREQUENCY_TIME 1000
-#define MEMORY_PRESS_TIME 3000
+
 
 RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &amb)
 {
@@ -223,15 +225,14 @@ QWidget *RadioPage::createContent()
 	// tuning control, manual/auto buttons
 	minus_button = new BtButton(bt_global::skin->getImage("minus"));
 	plus_button = new BtButton(bt_global::skin->getImage("plus"));
-	auto_button = new BtButton;
-	manual_button = new BtButton;
 
 	manual_off = bt_global::skin->getImage("man_off");
 	manual_on = bt_global::skin->getImage("man_on");
 	auto_off = bt_global::skin->getImage("auto_off");
 	auto_on = bt_global::skin->getImage("auto_on");
-	manual_button->setImage(manual_off);
-	auto_button->setImage(auto_on);
+
+	auto_button = new BtButton(auto_on);
+	manual_button = new BtButton(manual_off);
 
 	connect(auto_button, SIGNAL(clicked()), SLOT(setAuto()));
 	connect(manual_button, SIGNAL(clicked()), SLOT(setManual()));
@@ -244,7 +245,7 @@ QWidget *RadioPage::createContent()
 	connect(prev_station, SIGNAL(clicked()), SLOT(previousStation()));
 
 	QGridLayout *tuning = new QGridLayout;
-	tuning->setContentsMargins(0, 0, 0, 0);
+	tuning->setContentsMargins(0, 0, 19, 0);
 	tuning->setSpacing(0);
 	tuning->addWidget(composeButtons(minus_button, plus_button), 0, 0);
 	tuning->setColumnStretch(1, 1);
@@ -260,9 +261,7 @@ QWidget *RadioPage::createContent()
 	memory->addStretch(1);
 	for (int i = 0; i < 5; ++i)
 	{
-		BtButton *b = new BtButton;
-		QString str = QString("num_%1").arg(i + 1);
-		b->setImage(bt_global::skin->getImage(str));
+		BtButton *b = new BtButton(bt_global::skin->getImage(QString("num_%1").arg(i + 1)));
 		buttons << b;
 		// Each button must be associated with the memory location, which go 1-5 instead of 0-4
 		button_group.addButton(b, i + 1);

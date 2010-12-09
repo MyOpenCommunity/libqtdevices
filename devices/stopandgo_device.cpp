@@ -28,8 +28,8 @@ namespace StopAndGoCommands
 {
 	enum
 	{
-		CLOSE = 21,
-		OPEN = 22,
+		CLOSE = 22,
+		OPEN = 21,
 		DIFF_SELFTEST_ACTIVATION = 23,
 		DIFF_SELFTEST_DISACTIVATION = 24,
 		AUTO_RESET_ACTIVATION = 26,
