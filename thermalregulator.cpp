@@ -89,7 +89,7 @@ PageManual::PageManual(ThermalDevice *d, TemperatureScale scale, QString descr)
 
 	content.setLayout(&main_layout);
 #ifdef LAYOUT_TS_10
-	main_layout.setSpacing(10);
+	main_layout.setSpacing(8);
 	main_layout.setContentsMargins(30, 0, 30, 18);
 #else
 	main_layout.setSpacing(0);

@@ -586,7 +586,7 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 	QVBoxLayout *icon_label = new QVBoxLayout;
 
 	main->setContentsMargins(25, 0, 25, 18);
-	main->setSpacing(15);
+	main->setSpacing(12);
 	top->setSpacing(20);
 	days->setSpacing(5);
 
