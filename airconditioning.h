@@ -178,8 +178,8 @@ private slots:
 
 private:
 	void readBannerValues();
-	void readModeConfig(const QDomNode &mode_node, int init_mode);
-	void readTempConfig(const QDomNode &temp_node, int init_temp);
+	void readModeConfig(const QDomNode &mode_node);
+	void readTempConfig(const QDomNode &temp_node);
 	void readSwingConfig(const QDomNode &swing_node);
 	void readSpeedConfig(const QDomNode &speed_node);
 	void sendUpdatedValues();

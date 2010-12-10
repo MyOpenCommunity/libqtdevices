@@ -69,6 +69,7 @@ namespace
 		QDomElement server_element = getElement(node, "server");
 		if (server_element.isNull())
 		{
+			qWarning() << "handle_upnp_server_list: server node not found";
 			result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_LIST, XmlError::PARSE));
 			return result;
 		}
@@ -91,7 +92,10 @@ namespace
 		{
 			QString current_server = getTextChild(node, "current_server");
 			if (current_server.isEmpty())
+			{
+				qWarning() << "handle_selection: current_server not found";
 				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_SELECTION, XmlError::PARSE));
+			}
 			else
 				result[XmlResponses::SERVER_SELECTION] = current_server;
 		}
@@ -99,17 +103,26 @@ namespace
 		{
 			QString status_browse = getTextChild(node, "status_browse");
 			if (status_browse.isEmpty())
+			{
+				qWarning() << "handle_selection: status_browse not found";
 				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::CHDIR, XmlError::PARSE));
+			}
 			else if (status_browse == "browse_okay")
 				result[XmlResponses::CHDIR] = true;
 			else
+			{
+				qWarning() << "handle_selection: status_browse unknown";
 				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::CHDIR, XmlError::BROWSING));
+			}
 		}
 		else if (tag_name == "DIDL-Lite")
 		{
 			QString track_url = getElement(node, "DIDL-Lite/item/res").text();
 			if (track_url.isEmpty())
+			{
+				qWarning() << "handle_selection: didl tags not found";
 				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::TRACK_SELECTION, XmlError::PARSE));
+			}
 			else
 				result[XmlResponses::TRACK_SELECTION] = track_url;
 		}
@@ -123,11 +136,17 @@ namespace
 
 		QString status_browse = getTextChild(node, "status_browse");
 		if (status_browse.isEmpty())
+		{
+			qWarning() << "handle_browseup: status_browse not found";
 			result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::BROWSE_UP, XmlError::PARSE));
+		}
 		else if (status_browse == "browse_okay")
 			result[XmlResponses::BROWSE_UP] = true;
 		else
+		{
+			qWarning() << "handle_browseup: status_browse unknown";
 			result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::BROWSE_UP, XmlError::BROWSING));
+		}
 		return result;
 	}
 
@@ -367,9 +386,14 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 					response = xml_handlers[command_name](command);
 					return response;
 				}
+				qWarning() << "XmlDevice::parseXml: ack or command invalid";
 			}
+			else
+				qWarning() << "XmlDevice::parseXml: command name not found";
 		}
 	}
+	else
+		qWarning() << "XmlDevice::parseXml: bad xml header";
 
 	response[XmlResponses::INVALID].setValue(XmlError(XmlResponses::INVALID, XmlError::PARSE));
 	return response;
