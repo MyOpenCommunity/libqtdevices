@@ -421,8 +421,10 @@ SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config
 	connect(nav_bar, SIGNAL(backClick()), SLOT(resetChanges()));
 
 	AirConditionerStatus st = AirConditioningAdvanced::parseSettings(values_node);
+	// We ignore the current temperature, because the configuration file doesn't
+	// specify it. In the readTempConfig method we set the current temperature
+	// as the minimum allowed.
 	current_mode = st.mode;
-	current_temp = st.temp;
 	current_fan_speed = st.vel;
 	current_swing = st.swing;
 
@@ -496,6 +498,7 @@ void SplitSettings::readModeConfig(const QDomNode &mode_node)
 void SplitSettings::readTempConfig(const QDomNode &temp_node)
 {
 	int min = getTextChild(temp_node, "min").toInt();
+	current_temp = min;
 	int max = getTextChild(temp_node, "max").toInt();
 	int step = getTextChild(temp_node, "step").toInt();
 
