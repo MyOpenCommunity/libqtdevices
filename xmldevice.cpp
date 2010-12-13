@@ -307,6 +307,7 @@ void XmlDevice::handleData(const QString &data)
 
 void XmlDevice::handleClientError()
 {
+	qWarning() << "XmlDevice::handleClientError: connection lost";
 	emit error(XmlResponses::INVALID, XmlError::CLIENT);
 }
 
@@ -360,6 +361,7 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 	QDomDocument doc;
 	if (!doc.setContent(xml))
 	{
+		qWarning() << "XmlDevice::parseXml: invalid xml";
 		response[XmlResponses::INVALID].setValue(XmlError(XmlResponses::INVALID, XmlError::PARSE));
 		return response;
 	}
