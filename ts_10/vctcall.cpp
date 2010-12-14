@@ -557,7 +557,7 @@ VCTCallPage::VCTCallPage(VideoDoorEntryDevice *d)
 
 	if (dev->vctMode() == VideoDoorEntryDevice::SCS_MODE)
 	{
-		vct_call->video_box->setFixedSize(352, 240);
+		vct_call->video_box->setFixedSize(344, 240);
 		sidebar->addWidget(vct_call->setup_vct, 0, Qt::AlignCenter);
 	}
 	else
