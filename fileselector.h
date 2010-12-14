@@ -88,6 +88,8 @@ private:
 private slots:
 	void directoryChanged();
 	void handleError();
+	void screenSaverStarted(Page *curr);
+
 #ifdef BT_HARDWARE_TS_10
 	void unmounted(const QString &dir);
 #endif

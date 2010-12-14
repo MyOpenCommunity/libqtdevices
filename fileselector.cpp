@@ -21,6 +21,8 @@
 
 #include "fileselector.h"
 #include "icondispatcher.h"
+#include "btmain.h" // bt_global::btmain
+
 #ifdef BT_HARDWARE_TS_10
 #include "mount_watcher.h"
 #endif
@@ -56,6 +58,7 @@ FileSelector::FileSelector(TreeBrowser *_browser)
 
 	connect(browser, SIGNAL(directoryChanged()), SLOT(directoryChanged()));
 	connect(this, SIGNAL(Closed()), this, SLOT(cleanUp()));
+	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)), SLOT(screenSaverStarted(Page*)));
 
 	// maybe it's a bit harsh to close the navigation for all errors, but it's
 	// probably the safest choice
@@ -68,6 +71,15 @@ FileSelector::FileSelector(TreeBrowser *_browser)
 	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
 		SLOT(unmounted(const QString &)));
 #endif
+}
+
+void FileSelector::screenSaverStarted(Page *curr)
+{
+	if (curr == this && working)
+	{
+		working->abort();
+		working = 0;
+	}
 }
 
 void FileSelector::browse(const QString &dir)
