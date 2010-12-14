@@ -25,6 +25,13 @@
 #include <QStringList>
 #include <QUuid>
 #include <QDebug>
+#include <QDir>
+#include <QTime>
+
+// Set 1 to this define to dump the content of the responses from openxmlserver.
+#define DUMP_OPENXML 0
+#define DUMP_DIR "/home/bticino/cfg/extra/0"
+
 
 const char *command_template =
 		"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
@@ -370,6 +377,19 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 
 	if (root.tagName() == "OWNxml" && parseHeader(getChildWithName(root, "Hdr")))
 	{
+
+#if DUMP_OPENXML
+		QDir dump_dir(DUMP_DIR);
+		if (!dump_dir.exists())
+			dump_dir.mkpath(DUMP_DIR);
+
+		QString filename(QTime::currentTime().toString("hh.mm.ss.zzz_") + QString::number(pid) + ".xml");
+		QFile file(QString(DUMP_DIR) + "/" + filename);
+		file.open(QIODevice::WriteOnly);
+		file.write(xml.toUtf8());
+		file.close();
+#endif
+
 		QDomNode command_container = getChildWithName(root, "Cmd");
 		if (!command_container.isNull() && command_container.childNodes().size() == 1)
 		{
