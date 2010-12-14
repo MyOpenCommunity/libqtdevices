@@ -1788,6 +1788,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_arrow_left>videocitofonia/arrsx.png</img_arrow_left>
 		<img_arrow_right>videocitofonia/arrdx.png</img_arrow_right>
 		<img_fullscreen>videocitofonia/screenfull.png</img_fullscreen>
+		<img_normalscreen>videocitofonia/screen.png</img_normalscreen>
 		<img_connection>videocitofonia/inconnessione.png</img_connection>
 	</item>
 	<!-- Video control items SCS -->
