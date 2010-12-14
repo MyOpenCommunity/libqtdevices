@@ -1,715 +1,774 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="en_US">
 <context>
-<name>AdvancedSplitPage</name>
-<message>
-<source>Off</source>
-<translation>关闭</translation>
-</message>
+    <name>AdvancedSplitPage</name>
+    <message>
+        <source>Off</source>
+        <translation>关闭</translation>
+    </message>
 </context>
 <context>
-<name>AlarmClockFreq</name>
-<message>
-<source>always</source>
-<translation>一直</translation>
-</message>
-<message>
-<source>mon-fri</source>
-<translation>周一至周五</translation>
-</message>
-<message>
-<source>once</source>
-<translation>一次</translation>
-</message>
-<message>
-<source>sat-sun</source>
-<translation>周六至周日</translation>
-</message>
+    <name>AlarmClockFreq</name>
+    <message>
+        <source>always</source>
+        <translation>一直</translation>
+    </message>
+    <message>
+        <source>mon-fri</source>
+        <translation>周一至周五</translation>
+    </message>
+    <message>
+        <source>once</source>
+        <translation>一次</translation>
+    </message>
+    <message>
+        <source>sat-sun</source>
+        <translation>周六至周日</translation>
+    </message>
 </context>
 <context>
-<name>AlarmClockTimeFreq</name>
-<message>
-<source>Fri</source>
-<translation>星期五</translation>
-</message>
-<message>
-<source>Mon</source>
-<translation>星期一</translation>
-</message>
-<message>
-<source>Sat</source>
-<translation>星期六</translation>
-</message>
-<message>
-<source>Set TimeHour &amp; MinuteDay</source>
-<translation>设置\n 小时 &amp; 分钟\n 日期</translation>
-</message>
-<message>
-<source>Sun</source>
-<translation>星期日</translation>
-</message>
-<message>
-<source>Thu</source>
-<translation>星期四</translation>
-</message>
-<message>
-<source>Tue</source>
-<translation>星期二</translation>
-</message>
-<message>
-<source>Wake up</source>
-<translation>叫醒</translation>
-</message>
-<message>
-<source>Wed</source>
-<translation>星期三</translation>
-</message>
+    <name>AlarmClockTimeFreq</name>
+    <message>
+        <source>Fri</source>
+        <translation>星期五</translation>
+    </message>
+    <message>
+        <source>Mon</source>
+        <translation>星期一</translation>
+    </message>
+    <message>
+        <source>Sat</source>
+        <translation>星期六</translation>
+    </message>
+    <message>
+        <source>Set Time-Hour &amp; Minute-Day</source>
+        <translation>设置
+小时 &amp; 分钟
+日期</translation>
+    </message>
+    <message>
+        <source>Sun</source>
+        <translation>星期日</translation>
+    </message>
+    <message>
+        <source>Thu</source>
+        <translation>星期四</translation>
+    </message>
+    <message>
+        <source>Tue</source>
+        <translation>星期二</translation>
+    </message>
+    <message>
+        <source>Wake up</source>
+        <translation>叫醒</translation>
+    </message>
+    <message>
+        <source>Wed</source>
+        <translation>星期三</translation>
+    </message>
 </context>
 <context>
-<name>AlarmList</name>
-<message>
-<source>Alarm type</source>
-<translation>警报类型</translation>
-</message>
-<message>
-<source>Alarms</source>
-<translation>报警</translation>
-</message>
-<message>
-<source>Date &amp; Hour</source>
-<translation>日期和小时</translation>
-</message>
-<message>
-<source>Zone</source>
-<translation>区</translation>
-</message>
+    <name>AlarmList</name>
+    <message>
+        <source>Alarm type</source>
+        <translation>警报类型</translation>
+    </message>
+    <message>
+        <source>Alarms</source>
+        <translation>报警</translation>
+    </message>
+    <message>
+        <source>Date &amp; Hour</source>
+        <translation>日期和小时</translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation>区</translation>
+    </message>
 </context>
 <context>
-<name>AlertMessagePage</name>
-<message>
-<source>Messages</source>
-<translation>信息</translation>
-</message>
-<message>
-<source>New Message</source>
-<translation>新信息</translation>
-</message>
+    <name>AlarmPage</name>
+    <message>
+        <source>Date</source>
+        <translation>日期</translation>
+    </message>
+    <message>
+        <source>Hour</source>
+        <translation>小时</translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation>区</translation>
+    </message>
 </context>
 <context>
-<name>Antintrusion</name>
-<message>
-<source>anti-panic</source>
-<translation>免惊慌</translation>
-</message>
-<message>
-<source>intrusion</source>
-<translation>侵入</translation>
-</message>
-<message>
-<source>tamper</source>
-<translation>防拆</translation>
-</message>
-<message>
-<source>technical</source>
-<translation>技术</translation>
-</message>
-<message>
-<source>Z%1</source>
-<translation>Z%1</translation>
-</message>
+    <name>AlertMessagePage</name>
+    <message>
+        <source>Messages</source>
+        <translation>信息</translation>
+    </message>
+    <message>
+        <source>New Message</source>
+        <translation>新信息</translation>
+    </message>
 </context>
 <context>
-<name>AudioPlayerPage</name>
-<message>
-<source> </source>
-<translation> </translation>
-</message>
-<message>
-<source>Information not available</source>
-<translation>信息不可用</translation>
-</message>
-<message>
-<source>Loading...</source>
-<translation>加载...</translation>
-</message>
-<message>
-<source>Track: %1 / %2</source>
-<translation>音轨：％1 / ％2</translation>
-</message>
-<message>
-<source>Volume</source>
-<translation>音量</translation>
-</message>
+    <name>Antintrusion</name>
+    <message>
+        <source>anti-panic</source>
+        <translation>免惊慌</translation>
+    </message>
+    <message>
+        <source>intrusion</source>
+        <translation>侵入</translation>
+    </message>
+    <message>
+        <source>tamper</source>
+        <translation>防拆</translation>
+    </message>
+    <message>
+        <source>technical</source>
+        <translation>技术</translation>
+    </message>
+    <message>
+        <source>Z%1</source>
+        <translation>Z%1</translation>
+    </message>
 </context>
 <context>
-<name>BrightnessPage</name>
-<message>
-<source>Brightness</source>
-<translation>亮度</translation>
-</message>
+    <name>AudioPlayerPage</name>
+    <message>
+        <source> </source>
+        <translation> </translation>
+    </message>
+    <message>
+        <source>Information not available</source>
+        <translation>信息不可用</translation>
+    </message>
+    <message>
+        <source>Loading...</source>
+        <translation>加载...</translation>
+    </message>
+    <message>
+        <source>Track: %1 / %2</source>
+        <translation>音轨：％1 / ％2</translation>
+    </message>
+    <message>
+        <source>Volume</source>
+        <translation>音量</translation>
+    </message>
 </context>
 <context>
-<name>CalibrationWidget</name>
-<message>
-<source>Click the crosshair</source>
-<translation>按一下十字</translation>
-</message>
-<message>
-<source>Click the OK button</source>
-<translation>点击OK按钮</translation>
-</message>
+    <name>BrightnessPage</name>
+    <message>
+        <source>Brightness</source>
+        <translation>亮度</translation>
+    </message>
 </context>
 <context>
-<name>call_notifier</name>
-<message>
-<source>Door lock</source>
-<translation>门锁</translation>
-</message>
-<message>
-<source>Staircase light</source>
-<translation>楼梯灯</translation>
-</message>
-<message>
-<source>Unknown</source>
-<translation>未知</translation>
-</message>
+    <name>CalibrationWidget</name>
+    <message>
+        <source>Click the crosshair</source>
+        <translation>按一下十字</translation>
+    </message>
+    <message>
+        <source>Click the OK button</source>
+        <translation>点击OK按钮</translation>
+    </message>
 </context>
 <context>
-<name>DeleteMessagesPage</name>
-<message>
-<source>Are you sure to delete all messages?</source>
-<translation>确定要删除所有信息吗？</translation>
-</message>
-<message>
-<source>Messages</source>
-<translation>信息</translation>
-</message>
+    <name>call_notifier</name>
+    <message>
+        <source>Door lock</source>
+        <translation>门锁</translation>
+    </message>
+    <message>
+        <source>Staircase light</source>
+        <translation>楼梯灯</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>未知</translation>
+    </message>
 </context>
 <context>
-<name>DeviceConditionDisplayDimming</name>
-<message>
-<source>OFF</source>
-<translation>关闭</translation>
-</message>
+    <name>DeleteMessagesPage</name>
+    <message>
+        <source>Are you sure to delete all messages?</source>
+        <translation>确定要删除所有信息吗？</translation>
+    </message>
+    <message>
+        <source>Messages</source>
+        <translation>信息</translation>
+    </message>
 </context>
 <context>
-<name>DeviceConditionDisplayOnOff</name>
-<message>
-<source>OFF</source>
-<translation>关闭</translation>
-</message>
-<message>
-<source>ON</source>
-<translation>开启</translation>
-</message>
+    <name>DeviceConditionDisplayDimming</name>
+    <message>
+        <source>OFF</source>
+        <translation>关闭</translation>
+    </message>
 </context>
 <context>
-<name>DeviceConditionDisplayVolume</name>
-<message>
-<source>OFF</source>
-<translation>关闭</translation>
-</message>
-<message>
-<source>ON</source>
-<translation>开启</translation>
-</message>
+    <name>DeviceConditionDisplayOnOff</name>
+    <message>
+        <source>OFF</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <source>ON</source>
+        <translation>开启</translation>
+    </message>
 </context>
 <context>
-<name>EditEnergyCost</name>
-<message>
-<source>Consumption</source>
-<translation>消耗</translation>
-</message>
-<message>
-<source>DHW</source>
-<translation>DHW</translation>
-</message>
-<message>
-<source>Electricity</source>
-<translation>电</translation>
-</message>
-<message>
-<source>Gas</source>
-<translation>燃气</translation>
-</message>
-<message>
-<source>Heating/Cooling</source>
-<translation>加热/制冷</translation>
-</message>
-<message>
-<source>Production</source>
-<translation>发电</translation>
-</message>
-<message>
-<source>Water</source>
-<translation>水</translation>
-</message>
+    <name>DeviceConditionDisplayVolume</name>
+    <message>
+        <source>OFF</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <source>ON</source>
+        <translation>开启</translation>
+    </message>
 </context>
 <context>
-<name>EnergyView</name>
-<message>
-<source>/days</source>
-<translation>/日</translation>
-</message>
-<message>
-<source>/hours</source>
-<translation>/小时</translation>
-</message>
-<message>
-<source>/months</source>
-<translation>/月</translation>
-</message>
-<message>
-<source>Cumulative</source>
-<translation>累加</translation>
-</message>
-<message>
-<source>Current</source>
-<translation>当前</translation>
-</message>
-<message>
-<source>Daily Average</source>
-<translation>日平均</translation>
-</message>
-<message>
-<source>Day</source>
-<translation>天</translation>
-</message>
-<message>
-<source>Hour</source>
-<translation>小时</translation>
-</message>
-<message>
-<source>Month</source>
-<translation>月</translation>
-</message>
+    <name>EditEnergyCost</name>
+    <message>
+        <source>Consumption</source>
+        <translation>消耗</translation>
+    </message>
+    <message>
+        <source>DHW</source>
+        <translation>DHW</translation>
+    </message>
+    <message>
+        <source>Electricity</source>
+        <translation>电</translation>
+    </message>
+    <message>
+        <source>Gas</source>
+        <translation>燃气</translation>
+    </message>
+    <message>
+        <source>Heating/Cooling</source>
+        <translation>加热/制冷</translation>
+    </message>
+    <message>
+        <source>Production</source>
+        <translation>发电</translation>
+    </message>
+    <message>
+        <source>Water</source>
+        <translation>水</translation>
+    </message>
 </context>
 <context>
-<name>HandsFree</name>
-<message>
-<source>Hands Free</source>
-<translation>免提</translation>
-</message>
+    <name>EnergyView</name>
+    <message>
+        <source>/days</source>
+        <translation>/日</translation>
+    </message>
+    <message>
+        <source>/hours</source>
+        <translation>/小时</translation>
+    </message>
+    <message>
+        <source>/months</source>
+        <translation>/月</translation>
+    </message>
+    <message>
+        <source>Cumulative</source>
+        <translation>累加</translation>
+    </message>
+    <message>
+        <source>Current</source>
+        <translation>当前</translation>
+    </message>
+    <message>
+        <source>Daily Average</source>
+        <translation>日平均</translation>
+    </message>
+    <message>
+        <source>Day</source>
+        <translation>天</translation>
+    </message>
+    <message>
+        <source>Hour</source>
+        <translation>小时</translation>
+    </message>
+    <message>
+        <source>Month</source>
+        <translation>月</translation>
+    </message>
 </context>
 <context>
-<name>impPassword</name>
-<message>
-<source>Check password:</source>
-<translation>验证密码：</translation>
-</message>
-<message>
-<source>New password:</source>
-<translation>新密码：</translation>
-</message>
-<message>
-<source>Old password:</source>
-<translation>旧密码：</translation>
-</message>
-<message>
-<source>Verify password:</source>
-<translation>检验密码：</translation>
-</message>
+    <name>FeedItemList</name>
+    <message>
+        <source>Title unknown</source>
+        <translation>题目未知　</translation>
+    </message>
 </context>
 <context>
-<name>InfoPage</name>
-<message>
-<source>Address N.</source>
-<translation>内部单元地址</translation>
-</message>
-<message>
-<source>Firmware version</source>
-<translation>固件版本</translation>
-</message>
-<message>
-<source>Kernel version</source>
-<translation>内核版本</translation>
-</message>
-<message>
-<source>Model</source>
-<translation>模型</translation>
-</message>
-<message>
-<source>T.S. N.</source>
-<translation>触摸屏序号</translation>
-</message>
+    <name>FeedItemWidget</name>
+    <message>
+        <source>No description</source>
+        <translation>没有描述</translation>
+    </message>
 </context>
 <context>
-<name>Keypad</name>
-<message>
-<source>PASSWORD:</source>
-<translation>密码:</translation>
-</message>
-<message>
-<source>Wrong password</source>
-<translation>密码错误 </translation>
-</message>
+    <name>HandsFree</name>
+    <message>
+        <source>Hands Free</source>
+        <translation>免提</translation>
+    </message>
 </context>
 <context>
-<name>LanSettings</name>
-<message>
-<source>Connection Status</source>
-<translation>连接状态</translation>
-</message>
-<message>
-<source>DNS</source>
-<translation>域名系统</translation>
-</message>
-<message>
-<source>Down</source>
-<translation>下</translation>
-</message>
-<message>
-<source>Gateway</source>
-<translation>网关</translation>
-</message>
-<message>
-<source>IP</source>
-<translation>IP</translation>
-</message>
-<message>
-<source>Mac</source>
-<translation>Mac</translation>
-</message>
-<message>
-<source>Subnet mask</source>
-<translation>子网掩码</translation>
-</message>
-<message>
-<source>Up</source>
-<translation>上</translation>
-</message>
+    <name>InfoPage</name>
+    <message>
+        <source>Address N.</source>
+        <translation>内部单元地址</translation>
+    </message>
+    <message>
+        <source>Firmware version</source>
+        <translation>固件版本</translation>
+    </message>
+    <message>
+        <source>Kernel version</source>
+        <translation>内核版本</translation>
+    </message>
+    <message>
+        <source>Model</source>
+        <translation>模型</translation>
+    </message>
+    <message>
+        <source>T.S. N.</source>
+        <translation>触摸屏序号</translation>
+    </message>
 </context>
 <context>
-<name>LoadDataContent</name>
-<message>
-<source>date/time</source>
-<translation>日期/时间</translation>
-</message>
+    <name>Keypad</name>
+    <message>
+        <source>PASSWORD:</source>
+        <translation>密码:</translation>
+    </message>
+    <message>
+        <source>Wrong password</source>
+        <translation>密码错误 </translation>
+    </message>
 </context>
 <context>
-<name>LoadDataPage</name>
-<message>
-<source>Text-Confirm-LoadDataPage</source>
-<translation>存储数据将被删除。\n OK确认。</translation>
-</message>
+    <name>LanSettings</name>
+    <message>
+        <source>Connection Status</source>
+        <translation>连接状态</translation>
+    </message>
+    <message>
+        <source>DNS</source>
+        <translation>域名系统</translation>
+    </message>
+    <message>
+        <source>Down</source>
+        <translation>下</translation>
+    </message>
+    <message>
+        <source>Gateway</source>
+        <translation>网关</translation>
+    </message>
+    <message>
+        <source>IP</source>
+        <translation>IP</translation>
+    </message>
+    <message>
+        <source>Mac</source>
+        <translation>Mac</translation>
+    </message>
+    <message>
+        <source>Subnet mask</source>
+        <translation>子网掩码</translation>
+    </message>
+    <message>
+        <source>Up</source>
+        <translation>上</translation>
+    </message>
 </context>
 <context>
-<name>MessagePage</name>
-<message>
-<source>Messages</source>
-<translation>信息</translation>
-</message>
-<message>
-<source>New Message</source>
-<translation>新信息</translation>
-</message>
+    <name>LoadDataContent</name>
+    <message>
+        <source>date/time</source>
+        <translation>日期/时间</translation>
+    </message>
 </context>
 <context>
-<name>MessagesListPage</name>
-<message>
-<source>Messages</source>
-<translation>信息</translation>
-</message>
+    <name>LoadDataPage</name>
+    <message>
+        <source>Text-Confirm-LoadDataPage</source>
+        <translation>存储数据将被删除。
+OK确认。</translation>
+    </message>
 </context>
 <context>
-<name>MultimediaFileListPage</name>
-<message>
-<source>Folder</source>
-<translation>文件夹</translation>
-</message>
+    <name>MessageContent</name>
+    <message>
+        <source>New Message</source>
+        <translation>新信息</translation>
+    </message>
 </context>
 <context>
-<name>PageManual</name>
-<message>
-<source>Manual</source>
-<translation>手动</translation>
-</message>
+    <name>MessagePage</name>
+    <message>
+        <source>Messages</source>
+        <translation>信息</translation>
+    </message>
+    <message>
+        <source>New Message</source>
+        <translation>新信息</translation>
+    </message>
 </context>
 <context>
-<name>PowerAmplifierPage</name>
-<message>
-<source>Balance</source>
-<translation>平衡</translation>
-</message>
-<message>
-<source>Bass</source>
-<translation>低音</translation>
-</message>
-<message>
-<source>Loud</source>
-<translation>响亮</translation>
-</message>
-<message>
-<source>Treble</source>
-<translation>高音</translation>
-</message>
+    <name>MessagesListPage</name>
+    <message>
+        <source>Messages</source>
+        <translation>信息</translation>
+    </message>
 </context>
 <context>
-<name>PowerAmplifierPreset</name>
-<message>
-<source>Classical</source>
-<translation>古典</translation>
-</message>
-<message>
-<source>Dance</source>
-<translation>舞曲</translation>
-</message>
-<message>
-<source>Full Bass</source>
-<translation>重低音</translation>
-</message>
-<message>
-<source>Full Treble</source>
-<translation>重高音</translation>
-</message>
-<message>
-<source>Normal</source>
-<translation>正常</translation>
-</message>
-<message>
-<source>Party</source>
-<translation>宴会</translation>
-</message>
-<message>
-<source>Pop</source>
-<translation>流行</translation>
-</message>
-<message>
-<source>Rock</source>
-<translation>摇滚</translation>
-</message>
-<message>
-<source>Soft</source>
-<translation>轻音乐</translation>
-</message>
-<message>
-<source>Techno</source>
-<translation>Techno音乐</translation>
-</message>
-<message>
-<source>User</source>
-<translation>用户</translation>
-</message>
+    <name>MultimediaFileListPage</name>
+    <message>
+        <source>Folder</source>
+        <translation>文件夹</translation>
+    </message>
 </context>
 <context>
-<name>ProbesPage</name>
-<message>
-<source>Temperature</source>
-<translation>温度</translation>
-</message>
-<message>
-<source>Zone</source>
-<translation>传感器</translation>
-</message>
+    <name>PageManual</name>
+    <message>
+        <source>Manual</source>
+        <translation>手动</translation>
+    </message>
 </context>
 <context>
-<name>ProfessionalStudio</name>
-<message>
-<source>Professional studio</source>
-<translation>专业工作室</translation>
-</message>
+    <name>PasswordChanger</name>
+    <message>
+        <source>Check password:</source>
+        <translation>验证密码：</translation>
+    </message>
+    <message>
+        <source>New password:</source>
+        <translation>新密码：</translation>
+    </message>
+    <message>
+        <source>Old password:</source>
+        <translation>旧密码：</translation>
+    </message>
+    <message>
+        <source>Verify password:</source>
+        <translation>检验密码：</translation>
+    </message>
 </context>
 <context>
-<name>RadioInfo</name>
-<message>
-<source>Channel: %1</source>
-<translation>通道：％1</translation>
-</message>
-<message>
-<source>FM %1</source>
-<translation>FM%1</translation>
-</message>
+    <name>PasswordPage</name>
+    <message>
+        <source>Activate</source>
+        <translation>激活</translation>
+    </message>
+    <message>
+        <source>Change</source>
+        <translation>更改</translation>
+    </message>
 </context>
 <context>
-<name>RadioPage</name>
-<message>
-<source>RDS Radio</source>
-<translation>RDS广播</translation>
-</message>
+    <name>PowerAmplifierPage</name>
+    <message>
+        <source>Balance</source>
+        <translation>平衡</translation>
+    </message>
+    <message>
+        <source>Bass</source>
+        <translation>低音</translation>
+    </message>
+    <message>
+        <source>Loud</source>
+        <translation>响亮</translation>
+    </message>
+    <message>
+        <source>Treble</source>
+        <translation>高音</translation>
+    </message>
 </context>
 <context>
-<name>RingExclusion</name>
-<message>
-<source>Ring exclusion</source>
-<translation>关闭铃声</translation>
-</message>
+    <name>PowerAmplifierPreset</name>
+    <message>
+        <source>Classical</source>
+        <translation>古典</translation>
+    </message>
+    <message>
+        <source>Dance</source>
+        <translation>舞曲</translation>
+    </message>
+    <message>
+        <source>Full Bass</source>
+        <translation>重低音</translation>
+    </message>
+    <message>
+        <source>Full Treble</source>
+        <translation>重高音</translation>
+    </message>
+    <message>
+        <source>Normal</source>
+        <translation>正常</translation>
+    </message>
+    <message>
+        <source>Party</source>
+        <translation>宴会</translation>
+    </message>
+    <message>
+        <source>Pop</source>
+        <translation>流行</translation>
+    </message>
+    <message>
+        <source>Rock</source>
+        <translation>摇滚</translation>
+    </message>
+    <message>
+        <source>Soft</source>
+        <translation>轻音乐</translation>
+    </message>
+    <message>
+        <source>Techno</source>
+        <translation>Techno音乐</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation>用户</translation>
+    </message>
 </context>
 <context>
-<name>ScenEvoManager</name>
-<message>
-<source>Time ConditionsHour &amp; Minute</source>
-<translation>时间条件\n 小时&amp;分钟</translation>
-</message>
+    <name>ProbesPage</name>
+    <message>
+        <source>Probe</source>
+        <translation>传感器</translation>
+    </message>
+    <message>
+        <source>Temperature</source>
+        <translation>温度</translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation>区</translation>
+    </message>
 </context>
 <context>
-<name>ScreenSaverPage</name>
-<message>
-<source>Balls</source>
-<translation>小球</translation>
-</message>
-<message>
-<source>Line</source>
-<translation>线条</translation>
-</message>
-<message>
-<source>No screensaver</source>
-<translation>无屏幕保护程序</translation>
-</message>
-<message>
-<source>Slideshow</source>
-<translation>幻灯片播放</translation>
-</message>
-<message>
-<source>Slideshow timeout</source>
-<translation>幻灯片播放暂停</translation>
-</message>
-<message>
-<source>Text</source>
-<translation>文字内容</translation>
-</message>
-<message>
-<source>Time</source>
-<translation>小时</translation>
-</message>
+    <name>ProfessionalStudio</name>
+    <message>
+        <source>Professional studio</source>
+        <translation>专业工作室</translation>
+    </message>
 </context>
 <context>
-<name>ScreensaverTiming</name>
-<message>
-<source> sec</source>
-<translation>秒</translation>
-</message>
+    <name>RadioInfo</name>
+    <message>
+        <source>Channel: %1</source>
+        <translation>通道：％1</translation>
+    </message>
+    <message>
+        <source>FM %1</source>
+        <translation>FM%1</translation>
+    </message>
 </context>
 <context>
-<name>SlideshowSelector</name>
-<message>
-<source>Folder</source>
-<translation>文件夹</translation>
-</message>
+    <name>RadioPage</name>
+    <message>
+        <source>RDS Radio</source>
+        <translation>RDS广播</translation>
+    </message>
 </context>
 <context>
-<name>SplitMode</name>
-<message>
-<source>AUTOMATIC</source>
-<translation>自动</translation>
-</message>
-<message>
-<source>COOLING</source>
-<translation>降温</translation>
-</message>
-<message>
-<source>DRY</source>
-<translation>去湿</translation>
-</message>
-<message>
-<source>FAN</source>
-<translation>风扇</translation>
-</message>
-<message>
-<source>HEATING</source>
-<translation>暖气</translation>
-</message>
-<message>
-<source>OFF</source>
-<translation>关闭</translation>
-</message>
+    <name>RingtoneExclusion</name>
+    <message>
+        <source>Ringtone Exclusion</source>
+        <translation>关闭铃声</translation>
+    </message>
 </context>
 <context>
-<name>SplitPage</name>
-<message>
-<source>Off</source>
-<translation>关闭</translation>
-</message>
+    <name>ScenEvoManager</name>
+    <message>
+        <source>Time Conditions-Hour &amp; Minute</source>
+        <translation>时间条件
+小时&amp;分钟</translation>
+    </message>
 </context>
 <context>
-<name>SplitSettings</name>
-<message>
-<source>SWING</source>
-<translation>摆风</translation>
-</message>
+    <name>ScreenSaverPage</name>
+    <message>
+        <source>Balls</source>
+        <translation>小球</translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation>线条</translation>
+    </message>
+    <message>
+        <source>No screensaver</source>
+        <translation>无屏幕保护程序</translation>
+    </message>
+    <message>
+        <source>Slideshow</source>
+        <translation>幻灯片播放</translation>
+    </message>
+    <message>
+        <source>Slideshow timeout</source>
+        <translation>幻灯片播放暂停</translation>
+    </message>
+    <message>
+        <source>Text</source>
+        <translation>文字内容</translation>
+    </message>
+    <message>
+        <source>Time</source>
+        <translation>小时</translation>
+    </message>
 </context>
 <context>
-<name>SplitSpeed</name>
-<message>
-<source>AUTOMATIC</source>
-<translation>自动</translation>
-</message>
-<message>
-<source>HIGH</source>
-<translation>高</translation>
-</message>
-<message>
-<source>LOW</source>
-<translation>低</translation>
-</message>
-<message>
-<source>MEDIUM</source>
-<translation>中</translation>
-</message>
-<message>
-<source>SILENT</source>
-<translation>安静</translation>
-</message>
+    <name>ScreensaverTiming</name>
+    <message>
+        <source> sec</source>
+        <translation>秒</translation>
+    </message>
 </context>
 <context>
-<name>StopAndGoBTestPage</name>
-<message>
-<source>Enable</source>
-<translation>启动</translation>
-</message>
-<message>
-<source>Self-test</source>
-<translation>自测</translation>
-</message>
+    <name>SlideshowSelector</name>
+    <message>
+        <source>Folder</source>
+        <translation>文件夹</translation>
+    </message>
 </context>
 <context>
-<name>StopAndGoPage</name>
-<message>
-<source>Enable</source>
-<translation>启动</translation>
-</message>
+    <name>SplitMode</name>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>自动</translation>
+    </message>
+    <message>
+        <source>COOLING</source>
+        <translation>降温</translation>
+    </message>
+    <message>
+        <source>DRY</source>
+        <translation>去湿</translation>
+    </message>
+    <message>
+        <source>FAN</source>
+        <translation>风扇</translation>
+    </message>
+    <message>
+        <source>HEATING</source>
+        <translation>暖气</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation>关闭</translation>
+    </message>
 </context>
 <context>
-<name>StopAndGoPlusPage</name>
-<message>
-<source>Enable</source>
-<translation>启动</translation>
-</message>
+    <name>SplitPage</name>
+    <message>
+        <source>Off</source>
+        <translation>关闭</translation>
+    </message>
 </context>
 <context>
-<name>TimePeriodSelection</name>
-<message>
-<source>Last 12 months</source>
-<translation>最后12个月</translation>
-</message>
+    <name>SplitSettings</name>
+    <message>
+        <source>SWING</source>
+        <translation>摆风</translation>
+    </message>
 </context>
 <context>
-<name>VCTCallPrivate::CameraImageControl</name>
-<message>
-<source>Brightness</source>
-<translation>亮度</translation>
-</message>
-<message>
-<source>Color</source>
-<translation>颜色</translation>
-</message>
-<message>
-<source>Contrast</source>
-<translation>对比</translation>
-</message>
+    <name>SplitSpeed</name>
+    <message>
+        <source>AUTOMATIC</source>
+        <translation>自动</translation>
+    </message>
+    <message>
+        <source>HIGH</source>
+        <translation>高</translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation>低</translation>
+    </message>
+    <message>
+        <source>MEDIUM</source>
+        <translation>中</translation>
+    </message>
+    <message>
+        <source>SILENT</source>
+        <translation>安静</translation>
+    </message>
 </context>
 <context>
-<name>VolumePage</name>
-<message>
-<source>Volume</source>
-<translation>音量</translation>
-</message>
+    <name>StopAndGoBTestPage</name>
+    <message>
+        <source>Enable</source>
+        <translation>启动</translation>
+    </message>
+    <message>
+        <source>Self-test</source>
+        <translation>自测</translation>
+    </message>
 </context>
 <context>
-<name>WebcamListPage</name>
-<message>
-<source>Webcam</source>
-<translation>网络摄像头</translation>
-</message>
+    <name>StopAndGoPage</name>
+    <message>
+        <source>Enable</source>
+        <translation>启动</translation>
+    </message>
 </context>
-</TS>
+<context>
+    <name>StopAndGoPlusPage</name>
+    <message>
+        <source>Enable</source>
+        <translation>启动</translation>
+    </message>
+    <message>
+        <source>Test</source>
+        <translation>测试</translation>
+    </message>
+</context>
+<context>
+    <name>TimePeriodSelection</name>
+    <message>
+        <source>Last 12 months</source>
+        <translation>最后12个月</translation>
+    </message>
+</context>
+<context>
+    <name>VCTCallPrivate::CameraImageControl</name>
+    <message>
+        <source>Brightness</source>
+        <translation>亮度</translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation>颜色</translation>
+    </message>
+    <message>
+        <source>Contrast</source>
+        <translation>对比</translation>
+    </message>
+</context>
+<context>
+    <name>VolumePage</name>
+    <message>
+        <source>Volume</source>
+        <translation>音量</translation>
+    </message>
+</context>
+<context>
+    <name>WebcamListPage</name>
+    <message>
+        <source>Webcam</source>
+        <translation>网络摄像头</translation>
+    </message>
+</context>
+</TS>
