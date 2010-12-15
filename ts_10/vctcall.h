@@ -51,7 +51,7 @@ namespace VCTCallPrivate
 	{
 	Q_OBJECT
 	public:
-		CameraMove(VideoDoorEntryDevice *dev);
+		CameraMove(VideoDoorEntryDevice *dev, bool is_fullscreen);
 		void showFullScreenButton(bool show);
 		void setMoveEnabled(bool move);
 

@@ -62,9 +62,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Set Time
-Hour &amp; Minute
-Day</source>
+        <source>Set Time-Hour &amp; Minute-Day</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -88,11 +86,22 @@ Day</source>
     </message>
 </context>
 <context>
-    <name>AlertMessagePage</name>
+    <name>AlarmPage</name>
     <message>
-        <source>New Message</source>
+        <source>Hour</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AlertMessagePage</name>
     <message>
         <source>Messages</source>
         <translation type="unfinished"></translation>
@@ -137,6 +146,10 @@ Day</source>
     </message>
     <message>
         <source>Track: %1 / %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Information not available</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -201,14 +214,6 @@ Day</source>
 <context>
     <name>EditEnergyCost</name>
     <message>
-        <source>Production</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Consumption</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Electricity</source>
         <translation type="unfinished"></translation>
     </message>
@@ -226,6 +231,14 @@ Day</source>
     </message>
     <message>
         <source>Heating/Cooling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Production</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Consumption</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -269,6 +282,20 @@ Day</source>
     </message>
 </context>
 <context>
+    <name>FeedItemList</name>
+    <message>
+        <source>Title unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FeedItemWidget</name>
+    <message>
+        <source>No description</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>HandsFree</name>
     <message>
         <source>Hands Free</source>
@@ -301,11 +328,11 @@ Day</source>
 <context>
     <name>Keypad</name>
     <message>
-        <source>PASSWORD:</source>
+        <source>Wrong password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Wrong password</source>
+        <source>PASSWORD:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -359,13 +386,16 @@ Day</source>
     </message>
 </context>
 <context>
+    <name>MessageContent</name>
+    <message>
+        <source>New Message</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MessagePage</name>
     <message>
         <source>Messages</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New Message</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -387,6 +417,36 @@ Day</source>
     <name>PageManual</name>
     <message>
         <source>Manual</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PasswordChanger</name>
+    <message>
+        <source>Old password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Verify password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PasswordPage</name>
+    <message>
+        <source>Activate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -466,6 +526,10 @@ Day</source>
         <source>Temperature</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Probe</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ProfessionalStudio</name>
@@ -493,17 +557,16 @@ Day</source>
     </message>
 </context>
 <context>
-    <name>RingExclusion</name>
+    <name>RingtoneExclusion</name>
     <message>
-        <source>Ring exclusion</source>
+        <source>Ringtone Exclusion</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>ScenEvoManager</name>
     <message>
-        <source>Time Conditions
-Hour &amp; Minute</source>
+        <source>Time Conditions-Hour &amp; Minute</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -511,14 +574,6 @@ Hour &amp; Minute</source>
     <name>ScreenSaverPage</name>
     <message>
         <source>No screensaver</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Balls</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -530,11 +585,23 @@ Hour &amp; Minute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Balls</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Slideshow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Slideshow timeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bouncing logo</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -596,6 +663,10 @@ Hour &amp; Minute</source>
 <context>
     <name>SplitSpeed</name>
     <message>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>LOW</source>
         <translation type="unfinished"></translation>
     </message>
@@ -609,10 +680,6 @@ Hour &amp; Minute</source>
     </message>
     <message>
         <source>SILENT</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>AUTOMATIC</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -638,6 +705,21 @@ Hour &amp; Minute</source>
     <name>StopAndGoPlusPage</name>
     <message>
         <source>Enable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Test</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TcpBannerPage</name>
+    <message>
+        <source>TCP Banner example page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TCP Dimmer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -678,6 +760,13 @@ Hour &amp; Minute</source>
     </message>
 </context>
 <context>
+    <name>WebcamPage</name>
+    <message>
+        <source></source>
+        <translation></translation>
+    </message>
+</context>
+<context>
     <name>call_notifier</name>
     <message>
         <source>Unknown</source>
@@ -689,25 +778,6 @@ Hour &amp; Minute</source>
     </message>
     <message>
         <source>Door lock</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>impPassword</name>
-    <message>
-        <source>Old password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Verify password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Check password:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -97,7 +97,7 @@ StateButton *getButton(const QString &image_path)
 }
 
 
-CameraMove::CameraMove(VideoDoorEntryDevice *dev)
+CameraMove::CameraMove(VideoDoorEntryDevice *dev, bool is_fullscreen)
 {
 	up = getButton(bt_global::skin->getImage("arrow_up"));
 	connect(up, SIGNAL(pressed()), dev, SLOT(moveUpPress()));
@@ -115,7 +115,7 @@ CameraMove::CameraMove(VideoDoorEntryDevice *dev)
 	connect(right, SIGNAL(pressed()), dev, SLOT(moveRightPress()));
 	connect(right, SIGNAL(released()), dev, SLOT(moveRightRelease()));
 
-	fullscreen = getButton(bt_global::skin->getImage("fullscreen"));
+	fullscreen = getButton(bt_global::skin->getImage(is_fullscreen ? "normalscreen" : "fullscreen"));
 	connect(fullscreen, SIGNAL(clicked()), this, SIGNAL(toggleFullScreen()));
 
 	QGridLayout *main_layout = new QGridLayout(this);
@@ -212,7 +212,7 @@ VCTCall::VCTCall(VideoDoorEntryDevice *d, FormatVideo f)
 
 	image_control = new CameraImageControl;
 
-	camera = new CameraMove(dev);
+	camera = new CameraMove(dev, format == FULLSCREEN_VIDEO);
 	camera->setMoveEnabled(false);
 	camera->showFullScreenButton(dev->vctMode() == VideoDoorEntryDevice::SCS_MODE);
 
@@ -557,7 +557,7 @@ VCTCallPage::VCTCallPage(VideoDoorEntryDevice *d)
 
 	if (dev->vctMode() == VideoDoorEntryDevice::SCS_MODE)
 	{
-		vct_call->video_box->setFixedSize(352, 240);
+		vct_call->video_box->setFixedSize(344, 240);
 		sidebar->addWidget(vct_call->setup_vct, 0, Qt::AlignCenter);
 	}
 	else
