@@ -69,6 +69,9 @@ namespace VCTCallPrivate
 		bool call_active;
 		bool move_enabled;
 		bool video_enabled;
+		ItemTuningStatus color_status;
+		ItemTuningStatus brightness_status;
+		ItemTuningStatus contrast_status;
 
 		VCTCallStatus();
 
@@ -161,54 +164,24 @@ void CameraMove::setMoveEnabled(bool move)
 }
 
 
-CameraImageControl::CameraImageControl(QWidget *parent) :
-	QWidget(parent)
+CameraImageControl::CameraImageControl()
 {
 	QVBoxLayout *l = new QVBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
 	brightness = new ItemTuning(tr("Brightness"), bt_global::skin->getImage("brightness"));
-	connect(brightness, SIGNAL(valueChanged(int)), SLOT(setBrightness(int)));
 	l->addWidget(brightness, 1, Qt::AlignHCenter);
 
 	contrast = new ItemTuning(tr("Contrast"), bt_global::skin->getImage("contrast"));
-	connect(contrast, SIGNAL(valueChanged(int)), SLOT(setContrast(int)));
 	l->addWidget(contrast, 1, Qt::AlignHCenter);
 
 	color = new ItemTuning(tr("Color"), bt_global::skin->getImage("color"));
-	connect(color, SIGNAL(valueChanged(int)), SLOT(setColor(int)));
 	l->addWidget(color, 1, Qt::AlignHCenter);
 
 	int default_level = 4;
 	brightness->setLevel(default_level);
 	contrast->setLevel(default_level);
 	color->setLevel(default_level);
-}
-
-void CameraImageControl::setVideoDefaults()
-{
-	int default_level = 4;
-	setBrightness(default_level);
-	setContrast(default_level);
-	setColor(default_level);
-}
-
-void CameraImageControl::setContrast(int value)
-{
-	static const QString contrast_command("1");
-	setVctVideoValue(contrast_command, QString::number(value));
-}
-
-void CameraImageControl::setColor(int value)
-{
-	static const QString color_command("2");
-	setVctVideoValue(color_command, QString::number(value));
-}
-
-void CameraImageControl::setBrightness(int value)
-{
-	static const QString brightness_command("3");
-	setVctVideoValue(brightness_command, QString::number(value));
 }
 
 
@@ -220,6 +193,9 @@ VCTCall::VCTCall(VideoDoorEntryDevice *d, FormatVideo f)
 	SkinContext ctx(666);
 
 	image_control = new CameraImageControl;
+	connect(image_control->brightness, SIGNAL(valueChanged(int)), SLOT(changeBrightness(int)));
+	connect(image_control->color, SIGNAL(valueChanged(int)), SLOT(changeColor(int)));
+	connect(image_control->contrast, SIGNAL(valueChanged(int)), SLOT(changeContrast(int)));
 
 	camera = new CameraMove(dev, format == FULLSCREEN_VIDEO);
 	camera->setMoveEnabled(false);
@@ -266,7 +242,10 @@ VCTCall::VCTCall(VideoDoorEntryDevice *d, FormatVideo f)
 
 void VCTCall::setVideoDefaults()
 {
-	image_control->setVideoDefaults();
+	int default_level = 4;
+	changeBrightness(default_level);
+	changeContrast(default_level);
+	changeColor(default_level);
 }
 
 void VCTCall::cycleClicked()
@@ -309,12 +288,37 @@ void VCTCall::changeVolume(int value)
 	bt_global::audio_states->setVolume(value);
 }
 
+void VCTCall::changeContrast(int value)
+{
+	call_status->contrast_status = image_control->contrast->getStatus();
+	static const QString contrast_command("1");
+	setVctVideoValue(contrast_command, QString::number(value));
+}
+
+void VCTCall::changeColor(int value)
+{
+	call_status->color_status = image_control->color->getStatus();
+	static const QString color_command("2");
+	setVctVideoValue(color_command, QString::number(value));
+}
+
+void VCTCall::changeBrightness(int value)
+{
+	call_status->brightness_status = image_control->brightness->getStatus();
+	static const QString brightness_command("3");
+	setVctVideoValue(brightness_command, QString::number(value));
+}
+
 void VCTCall::refreshStatus()
 {
 	call_accept->setStatus(call_status->connected);
 	volume->setStatus(call_status->volume_status);
 	mute_button->setStatus(call_status->mute);
 	camera->setMoveEnabled(call_status->move_enabled);
+
+	image_control->brightness->setStatus(call_status->brightness_status);
+	image_control->color->setStatus(call_status->color_status);
+	image_control->contrast->setStatus(call_status->contrast_status);
 }
 
 void VCTCall::toggleMute()
@@ -548,6 +552,7 @@ VCTCallPage::VCTCallPage(VideoDoorEntryDevice *d)
 
 	// We assume that the VCTCall::call_status is previously built.
 	vct_call = new VCTCall(d, VCTCall::NORMAL_VIDEO);
+
 	vct_call->setVideoDefaults();
 	vct_call->enable();
 	VCTCall::call_status->volume_status = vct_call->volume->getStatus();
