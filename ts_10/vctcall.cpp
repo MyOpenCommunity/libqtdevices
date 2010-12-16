@@ -159,12 +159,23 @@ CameraImageControl::CameraImageControl(QWidget *parent) :
 	color = new ItemTuning(tr("Color"), bt_global::skin->getImage("color"));
 	connect(color, SIGNAL(valueChanged(int)), SLOT(setColor(int)));
 	l->addWidget(color, 1, Qt::AlignHCenter);
+
+	int default_level = 4;
+	brightness->setLevel(default_level);
+	contrast->setLevel(default_level);
+	color->setLevel(default_level);
+}
+
+void CameraImageControl::setVideoDefaults()
+{
+	int default_level = 4;
+	setBrightness(default_level);
+	setContrast(default_level);
+	setColor(default_level);
 }
 
 void CameraImageControl::setContrast(int value)
 {
-	// TODO: original code set this value into a global struct which at some point is written to
-	// /dev/nvram...what should we do?
 	static const QString contrast_command("1");
 	setVctVideoValue(contrast_command, QString::number(value));
 }
@@ -253,6 +264,11 @@ VCTCall::VCTCall(VideoDoorEntryDevice *d, FormatVideo f)
 	connect(cycle, SIGNAL(clicked()), SLOT(cycleClicked()));
 	connect(&video_grabber, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(finished(int,QProcess::ExitStatus)));
 	disable();
+}
+
+void VCTCall::setVideoDefaults()
+{
+	image_control->setVideoDefaults();
 }
 
 void VCTCall::cycleClicked()
@@ -534,6 +550,7 @@ VCTCallPage::VCTCallPage(VideoDoorEntryDevice *d)
 
 	// We assume that the VCTCall::call_status is previously built.
 	vct_call = new VCTCall(d, VCTCall::NORMAL_VIDEO);
+	vct_call->setVideoDefaults();
 	vct_call->enable();
 	VCTCall::call_status->volume_status = vct_call->volume->getStatus();
 

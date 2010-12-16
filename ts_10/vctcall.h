@@ -71,6 +71,7 @@ namespace VCTCallPrivate
 	Q_OBJECT
 	public:
 		CameraImageControl(QWidget *parent = 0);
+		void setVideoDefaults();
 
 	private slots:
 		void setBrightness(int value);
@@ -111,6 +112,9 @@ namespace VCTCallPrivate
 		// enable/disable methods to ensure that.
 		void enable();
 		void disable();
+
+		// Set the default params (for color, contrast and brightness) for the video
+		void setVideoDefaults();
 
 		// Common graphical objects
 		BtButton *setup_vct;
