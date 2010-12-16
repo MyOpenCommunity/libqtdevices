@@ -87,13 +87,32 @@ namespace VCTCallPrivate
 using namespace VCTCallPrivate;
 
 
-
 StateButton *getButton(const QString &image_path)
 {
 	StateButton *btn = new StateButton;
 	btn->setOffImage(image_path);
 	btn->setDisabledImage(getBostikName(image_path, "dis"));
 	return btn;
+}
+
+
+VCTCallStatus::VCTCallStatus()
+{
+	// Hands free and Professional studio are initialized here, see the comment
+	// above regarding the resetStatus() method.
+	hands_free = false;
+	prof_studio = false;
+	video_enabled = true;
+	resetStatus();
+}
+
+void VCTCallStatus::resetStatus()
+{
+	connected = false;
+	stopped = false;
+	mute = StateButton::DISABLED;
+	call_active = false;
+	move_enabled = false;
 }
 
 
@@ -191,27 +210,6 @@ void CameraImageControl::setBrightness(int value)
 	static const QString brightness_command("3");
 	setVctVideoValue(brightness_command, QString::number(value));
 }
-
-
-VCTCallStatus::VCTCallStatus()
-{
-	// Hands free and Professional studio are initialized here, see the comment
-	// above regarding the resetStatus() method.
-	hands_free = false;
-	prof_studio = false;
-	video_enabled = true;
-	resetStatus();
-}
-
-void VCTCallStatus::resetStatus()
-{
-	connected = false;
-	stopped = false;
-	mute = StateButton::DISABLED;
-	call_active = false;
-	move_enabled = false;
-}
-
 
 
 VCTCall::VCTCall(VideoDoorEntryDevice *d, FormatVideo f)
