@@ -31,6 +31,7 @@
 #include "state_button.h"
 #include "generic_functions.h" // getFileFilter
 #include "audioplayer.h"
+#include "hardware_functions.h"
 
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
@@ -51,6 +52,7 @@ enum
 
 SongSearch *MultimediaSectionPage::song_search = NULL;
 Page *MultimediaSectionPage::current_player = 0;
+bool MultimediaSectionPage::usb_initialized = false;
 
 
 FileSystemBrowseButton::FileSystemBrowseButton(MountWatcher &watch, FileSelector *_browser,
@@ -105,6 +107,11 @@ MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, Multim
 				"MultimediaSectionPage::MultimediaSectionPage",
 				"ITEMS_FILESYSTEM == true && browser == 0");
 
+	if (!usb_initialized)
+	{
+		usbHotplug();
+		usb_initialized = true;
+	}
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 
 	showed_items = items;

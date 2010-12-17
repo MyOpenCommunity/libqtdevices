@@ -134,6 +134,7 @@ private:
 
 	// used by playSomethingRandomly()
 	static SongSearch *song_search;
+	static bool usb_initialized;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(MultimediaSectionPage::Items);
