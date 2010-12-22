@@ -288,8 +288,7 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	{
 		master_caller_address = QString::fromStdString(ip_call ? msg.whatArg(2) : msg.whereFull());
 		int kind_val = msg.whatArgN(0) % 100;
-		if (kind_val != 5)
-			values_list[CALLER_ADDRESS] = master_caller_address;
+		values_list[CALLER_ADDRESS] = QString::number(master_caller_address.toInt() * (kind_val == 5 ? -1 : 1));
 	}
 	// manage the other things like in the rearm session case
 	case REARM_SESSION:

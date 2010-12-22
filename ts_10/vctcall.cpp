@@ -775,13 +775,16 @@ void VCTCallPage::incomingCall()
 
 void VCTCallPage::callerAddress(QString address)
 {
-	if (VCTCall::call_status->prof_studio) // we want to open the door
+	int addr = address.toInt();
+
+	// we want to open the door (only if the call does not come from an autoswitch)
+	if (VCTCall::call_status->prof_studio && addr > 0)
 	{
 		dev->openLock();
 		dev->releaseLock();
 	}
 
-	if (address == (*bt_global::config)[GUARD_UNIT_ADDRESS])
+	if (qAbs(addr) == (*bt_global::config)[GUARD_UNIT_ADDRESS].toInt())
 	{
 		vct_call->call_status->move_enabled = false;
 		vct_call->camera->setMoveEnabled(false);
