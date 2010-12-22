@@ -113,7 +113,7 @@ signals:
 	void downClick();
 
 protected:
-	NavigationBar *createNavigationBar(const QString &forwardicon = QString(), int title_height = TITLE_HEIGHT);
+	NavigationBar *createNavigationBar(const QString &forward_icon = QString(), const QString& title = QString(), int title_height = TITLE_HEIGHT);
 
 protected:
 	/// Content widget

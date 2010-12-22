@@ -148,11 +148,10 @@ void TemperatureDisplay::valueReceived(const DeviceValues &values_list)
 	switch (temp_scale)
 	{
 		case CELSIUS:
-			label = celsiusString(temperature);
+			label = celsiusString(bt2Celsius(temperature));
 			break;
 		case FAHRENHEIT:
-			// we don't have a direct conversion from celsius degrees to farhrenheit degrees
-			label = fahrenheitString(bt2Fahrenheit(celsius2Bt(temperature)));
+			label = fahrenheitString(bt2Fahrenheit(temperature));
 			break;
 		default:
 			qWarning("TemperatureDisplay: unknown scale");

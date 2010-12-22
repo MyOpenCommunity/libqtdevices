@@ -183,11 +183,37 @@ void TestVideoDoorEntryDevice::receiveIncomingIpCall()
 	int kind = 1001;
 	int mmtype = 4;
 	int caller_address = 21;
-	DeviceTester t(dev, VideoDoorEntryDevice::VCT_CALL, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*8*1#%1#%2#%3*%4##").arg(kind).arg(mmtype).arg(caller_address).arg(dev->where);
-	t.check(frame, static_cast<int>(VideoDoorEntryDevice::AUDIO_VIDEO));
+
+	DeviceTester tv(dev, VideoDoorEntryDevice::VCT_CALL, DeviceTester::MULTIPLE_VALUES);
+	tv.check(frame, static_cast<int>(VideoDoorEntryDevice::AUDIO_VIDEO));
 	QCOMPARE(dev->caller_address, QString::number(caller_address));
 	QCOMPARE(dev->master_caller_address, QString::number(caller_address));
+
+	DeviceTester tc(dev, VideoDoorEntryDevice::CALLER_ADDRESS, DeviceTester::MULTIPLE_VALUES);
+	tc.check(frame, "21");
+
+	dev->vct_mode = old_mode;
+}
+
+void TestVideoDoorEntryDevice::receiveIncomingIpCall2()
+{
+	VideoDoorEntryDevice::VctMode old_mode = dev->vct_mode;
+	dev->vct_mode = VideoDoorEntryDevice::IP_MODE;
+
+	int kind = 1005;
+	int mmtype = 2;
+	int caller_address = 21;
+	QString frame = QString("*8*1#%1#%2#%3*%4##").arg(kind).arg(mmtype).arg(caller_address).arg(dev->where);
+
+	DeviceTester tv(dev, VideoDoorEntryDevice::AUTO_VCT_CALL, DeviceTester::MULTIPLE_VALUES);
+	tv.check(frame, static_cast<int>(VideoDoorEntryDevice::ONLY_AUDIO));
+	QCOMPARE(dev->caller_address, QString::number(caller_address));
+	QCOMPARE(dev->master_caller_address, QString::number(caller_address));
+
+	DeviceTester tc(dev, VideoDoorEntryDevice::CALLER_ADDRESS, DeviceTester::MULTIPLE_VALUES);
+	tc.check(frame, "-21");
+
 	dev->vct_mode = old_mode;
 }
 

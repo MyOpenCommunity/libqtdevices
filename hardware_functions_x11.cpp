@@ -189,6 +189,11 @@ void initMultimedia()
 {
 }
 
+void usbHotplug()
+{
+
+}
+
 QPair <QString, QStringList> getAudioCmdLine(const QString &audio_path)
 {
 	return qMakePair(QString("mplayer"), QStringList(audio_path));

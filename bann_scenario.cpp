@@ -339,14 +339,14 @@ void ScheduledScenario::disable()
 
 PPTSce::PPTSce(const QString &descr, const QString &where, int openserver_id) : Bann4Buttons(0)
 {
-	initBanner(bt_global::skin->getImage("pptsce_on"), bt_global::skin->getImage("pptsce_increase"),
-		bt_global::skin->getImage("pptsce_decrease"), bt_global::skin->getImage("pptsce_off"),
+	initBanner(bt_global::skin->getImage("pptsce_off"), bt_global::skin->getImage("pptsce_increase"),
+		bt_global::skin->getImage("pptsce_decrease"), bt_global::skin->getImage("pptsce_on"),
 		descr);
 	setCentralSpacing(false);
 
 	dev = bt_global::add_device_to_cache(new PPTSceDevice(where, openserver_id));
-	connect(left_button, SIGNAL(clicked()), dev, SLOT(turnOff()));
-	connect(right_button, SIGNAL(clicked()), dev, SLOT(turnOn()));
+	connect(left_button, SIGNAL(clicked()), dev, SLOT(turnOn()));
+	connect(right_button, SIGNAL(clicked()), dev, SLOT(turnOff()));
 
 	// For csx e cdx buttons we have to send a frame every X mseconds when the
 	// button is down and send another frame when the button is raised.

@@ -43,15 +43,6 @@ enum
 	STOP_AND_GO_BTEST = 6103,
 };
 
-enum
-{
-	STATUS_CLOSED = 0,
-	STATUS_OPENED,
-	STATUS_LOCKED,
-	STATUS_FAIL,
-	STATUS_GROUND_FAIL,
-	STATUS_VMAX
-};
 
 
 namespace
@@ -82,6 +73,7 @@ namespace
 BannStopAndGo::BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QString &right, const QString &descr, QWidget *parent) :
 	Bann2Buttons(parent)
 {
+	using namespace StopAndGo;
 	status_icons[STATUS_CLOSED] = bt_global::skin->getImage("status_closed");
 	status_icons[STATUS_OPENED] = bt_global::skin->getImage("status_opened");
 	status_icons[STATUS_LOCKED] = bt_global::skin->getImage("status_locked");
@@ -94,25 +86,36 @@ BannStopAndGo::BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QS
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
+void BannStopAndGo::showButtons(bool show)
+{
+	left_button->setVisible(show);
+	right_button->setVisible(show);
+}
+
 void BannStopAndGo::valueReceived(const DeviceValues &values_list)
 {
+	using namespace StopAndGo;
+	StopAndGo::Status st;
 	QString icon;
 
 	if (!values_list[StopAndGoDevice::DIM_OPENED].toBool())
-		icon = status_icons[STATUS_CLOSED];
+		st = STATUS_CLOSED;
 	else
 	{
 		if (values_list[StopAndGoDevice::DIM_LOCKED].toBool())
-			icon = status_icons[STATUS_LOCKED];
+			st = STATUS_LOCKED;
 		else if (values_list[StopAndGoDevice::DIM_OPENED_LE_N].toBool())
-			icon = status_icons[STATUS_FAIL];
+			st = STATUS_FAIL;
 		else if (values_list[StopAndGoDevice::DIM_OPENED_GROUND].toBool())
-			icon = status_icons[STATUS_GROUND_FAIL];
+			st = STATUS_GROUND_FAIL;
 		else if (values_list[StopAndGoDevice::DIM_OPENED_VMAX].toBool())
-			icon = status_icons[STATUS_VMAX];
+			st = STATUS_VMAX;
 		else
-			icon = status_icons[STATUS_OPENED];
+			st = STATUS_OPENED;
 	}
+
+	emit statusChanged(st);
+	icon = status_icons[st];
 	setBackgroundImage(icon);
 }
 
@@ -265,7 +268,8 @@ StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *
 	QVBoxLayout *layout = new QVBoxLayout(content);
 	layout->setSpacing(40);
 
-	BannStopAndGo *status_banner = new BannStopAndGo(dev, "close", "open");
+	status_banner = new BannStopAndGo(dev, "close", "open");
+	connect(status_banner, SIGNAL(statusChanged(StopAndGo::Status)), SLOT(statusChanged(StopAndGo::Status)));
 	connect(status_banner, SIGNAL(leftClicked()), dev, SLOT(sendClose()));
 	connect(status_banner, SIGNAL(rightClicked()), dev, SLOT(sendOpen()));
 	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
@@ -289,6 +293,12 @@ StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *
 	buildPage(content, nav_bar, title, TITLE_HEIGHT);
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+}
+
+void StopAndGoPlusPage::statusChanged(StopAndGo::Status st)
+{
+	bool show = (st == StopAndGo::STATUS_OPENED || st == StopAndGo::STATUS_CLOSED || st == StopAndGo::STATUS_VMAX);
+	status_banner->showButtons(show);
 }
 
 int StopAndGoPlusPage::sectionId() const
@@ -343,6 +353,7 @@ StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevic
 	autotest_banner = new BannLCDRange;
 	QWidget *content = new QWidget;
 	QVBoxLayout *layout = new QVBoxLayout(content);
+	layout->setContentsMargins(5, 5, 5, 17);
 
 	BannStopAndGo *status_banner = new BannStopAndGo(dev, "", "");
 	layout->addWidget(status_banner, 0, Qt::AlignHCenter);

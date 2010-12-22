@@ -35,7 +35,6 @@ private slots:
 	void initTestCase();
 	void cleanupTestCase();
 	void init();
-
 	void sendAnswerCall();
 	void sendEndCall();
 	void sendInitVctProcess();
@@ -55,9 +54,9 @@ private slots:
 	void sendMoveLeftRelease();
 	void sendMoveRightPress();
 	void sendMoveRightRelease();
-
 	void receiveIncomingCall();
 	void receiveIncomingIpCall();
+	void receiveIncomingIpCall2();
 	void receiveAutoswitchCall();
 	void receiveAudioCall();
 	void receiveCallerAddress1();
