@@ -353,6 +353,7 @@ StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevic
 	autotest_banner = new BannLCDRange;
 	QWidget *content = new QWidget;
 	QVBoxLayout *layout = new QVBoxLayout(content);
+	layout->setContentsMargins(5, 5, 5, 17);
 
 	BannStopAndGo *status_banner = new BannStopAndGo(dev, "", "");
 	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
