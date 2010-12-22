@@ -141,7 +141,6 @@ public:
 		It should never be necessary to call this function explicitly.
 	*/
 	void initVctProcess();
-	virtual void init() { initVctProcess(); }
 
 	/*!
 		\brief Return true if the call is an ip one.

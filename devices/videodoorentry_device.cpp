@@ -23,6 +23,7 @@
 #include "frame_functions.h" // createCommandFrame
 #include "ringtonesmanager.h"
 #include "openclient.h" // MAIN_OPENSERVER
+#include "devices_cache.h"
 
 #include <openmsg.h>
 #include <QDebug>
@@ -63,6 +64,7 @@ VideoDoorEntryDevice::VideoDoorEntryDevice(const QString &where, QString mode, i
 		vct_mode = IP_MODE;
 	else
 		vct_mode = SCS_MODE;
+	initVctProcess();
 }
 
 void VideoDoorEntryDevice::answerCall() const
@@ -150,7 +152,10 @@ void VideoDoorEntryDevice::initVctProcess()
 	{
 		int type = vct_mode == SCS_MODE ? 1 : 2;
 		QString what = QString("%1#%2").arg(READY).arg(type);
-		sendCommand(what);
+
+		// We use this method instead of using the "init()" in order to send the frame
+		// before the frames sent by the other devices.
+		bt_global::devices_cache.addInitCommandFrame(MAIN_OPENSERVER, createCommandFrame(who, what, where));
 	}
 }
 
