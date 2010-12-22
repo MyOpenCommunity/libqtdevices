@@ -351,10 +351,10 @@ NavigationPage::NavigationPage()
 	main_layout.setContentsMargins(0, 0, 0, 0);
 }
 
-NavigationBar *NavigationPage::createNavigationBar(const QString &icon, int title_height)
+NavigationBar *NavigationPage::createNavigationBar(const QString &forward_icon, const QString &title, int title_height)
 {
 #ifdef LAYOUT_TS_3_5
-	nav_bar = new NavigationBar(icon);
+	nav_bar = new NavigationBar(forward_icon);
 #else
 	nav_bar = new NavigationBar();
 #endif
@@ -363,7 +363,7 @@ NavigationBar *NavigationPage::createNavigationBar(const QString &icon, int titl
 	connect(nav_bar, SIGNAL(upClick()), SIGNAL(upClick()));
 	connect(nav_bar, SIGNAL(downClick()), SIGNAL(downClick()));
 
-	buildPage(&content, nav_bar, "", title_height);
+	buildPage(&content, nav_bar, title, title_height);
 
 	return nav_bar;
 }

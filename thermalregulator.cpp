@@ -445,16 +445,15 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	mode_icon = getLabelWithPixmap(bt_global::skin->getImage("regulator"), this, Qt::AlignHCenter);
 
 #ifdef LAYOUT_TS_10
-	main_layout.setContentsMargins(40, 0, 40, 50);
+	main_layout.setContentsMargins(40, 0, 40, 17);
 
-	BtButton *settings = new BtButton;
-	settings->setImage(bt_global::skin->getImage("settings"));
+	BtButton *settings = new BtButton(bt_global::skin->getImage("settings"));
 	connect(settings, SIGNAL(clicked()), SLOT(showSettingsMenu()));
 
 	QHBoxLayout *hbox = new QHBoxLayout;
 
-	hbox->addStretch(2);
-	hbox->addWidget(settings, 1, Qt::AlignCenter);
+	hbox->addStretch();
+	hbox->addWidget(settings);
 #endif
 
 	main_layout.addWidget(mode_icon);
@@ -473,7 +472,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	program_menu = 0;
 	temp_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 
-	createNavigationBar(bt_global::skin->getImage("settings"), SMALL_TITLE_HEIGHT);
+	createNavigationBar(bt_global::skin->getImage("settings"), getTextChild(n, "descr"), SMALL_TITLE_HEIGHT);
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
 
 	hideDescription();
