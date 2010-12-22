@@ -52,7 +52,7 @@ Q_OBJECT
 public:
 	ItemTuning(QString text, QString icon, QWidget *parent=0);
 
-	ItemTuningStatus getStatus();
+	ItemTuningStatus getStatus() const;
 	void setStatus(const ItemTuningStatus &st);
 	void setLevel(int level);
 	int level();

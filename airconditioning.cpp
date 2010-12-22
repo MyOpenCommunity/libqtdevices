@@ -320,7 +320,7 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 	top_layout->addWidget(custom);
 
 	main_layout->addLayout(top_layout);
-	main_layout->addWidget(banners);
+	main_layout->addWidget(banners, 1);
 
 	if (off_button) // show the off button
 	{

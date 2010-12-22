@@ -515,6 +515,13 @@ void initMultimedia()
 #endif
 }
 
+void usbHotplug()
+{
+#ifdef BT_HARDWARE_TS_10
+	smartExecute("/sbin/hotplug add 1");
+#endif
+}
+
 QPair <QString, QStringList> getAudioCmdLine(const QString &audio_path)
 {
 	return qMakePair(QString("/bin/sox"), QStringList() << "-w" << "-c" << "2"

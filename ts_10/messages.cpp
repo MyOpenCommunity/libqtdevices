@@ -82,7 +82,7 @@ DeleteMessagesPage::DeleteMessagesPage()
 {
 	const QFont &font = bt_global::font->get(FontManager::TEXT);
 	QWidget *content = new QWidget;
-	content->setContentsMargins(10, 10, 30, 35);
+
 	PageTitleWidget *title_widget = new PageTitleWidget(tr("Messages"), SMALL_TITLE_HEIGHT);
 	title_widget->setFont(font);
 	NavigationBar *nav_bar = new NavigationBar;
@@ -93,6 +93,7 @@ DeleteMessagesPage::DeleteMessagesPage()
 	buildPage(content, nav_bar, title_widget);
 
 	QVBoxLayout *layout = new QVBoxLayout(content);
+	layout->setContentsMargins(10, 10, 30, 17);
 	QLabel *box_text = new QLabel;
 	box_text->setMargin(10);
 	box_text->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -104,7 +105,7 @@ DeleteMessagesPage::DeleteMessagesPage()
 	BtButton *ok_button = new BtButton(bt_global::skin->getImage("ok"));
 	connect(ok_button, SIGNAL(clicked()), this, SIGNAL(deleteAll()));
 	connect(ok_button, SIGNAL(clicked()), this, SIGNAL(Closed()));
-	layout->addWidget(ok_button, 0, Qt::AlignRight);
+	layout->addWidget(ok_button, 0, Qt::AlignRight | Qt::AlignBottom);
 }
 
 

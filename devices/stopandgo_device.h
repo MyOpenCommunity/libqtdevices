@@ -26,7 +26,7 @@
 	\ingroup StopAndGo
 	\brief Device to manage the Stop&Go system.
 
-	You can use this device to retrive the state of the systems check module and
+	You can use this device to retrieve the state of the systems check module and
 	activate or disactivate the automatic reset.
 
 	To request the state of the system check module you can use the

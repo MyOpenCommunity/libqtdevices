@@ -70,7 +70,7 @@ ItemTuning::ItemTuning(QString text, QString icon, QWidget *parent) : QWidget(pa
 	connect(this, SIGNAL(valueChanged(int)), this, SLOT(changeIcons()));
 }
 
-ItemTuningStatus ItemTuning::getStatus()
+ItemTuningStatus ItemTuning::getStatus() const
 {
 	ItemTuningStatus st;
 	st.current_level = current_level;

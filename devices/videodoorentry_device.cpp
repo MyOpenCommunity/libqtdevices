@@ -23,6 +23,7 @@
 #include "frame_functions.h" // createCommandFrame
 #include "ringtonesmanager.h"
 #include "openclient.h" // MAIN_OPENSERVER
+#include "devices_cache.h"
 
 #include <openmsg.h>
 #include <QDebug>
@@ -57,6 +58,7 @@ BasicVideoDoorEntryDevice::BasicVideoDoorEntryDevice(const QString &where, QStri
 		vct_mode = IP_MODE;
 	else
 		vct_mode = SCS_MODE;
+	initVctProcess();
 }
 
 void BasicVideoDoorEntryDevice::stairLightActivate(QString target_where) const
@@ -85,7 +87,10 @@ void BasicVideoDoorEntryDevice::initVctProcess()
 	{
 		int type = vct_mode == SCS_MODE ? 1 : 2;
 		QString what = QString("%1#%2").arg(READY).arg(type);
-		sendCommand(what);
+
+		// We use this method instead of using the "init()" in order to send the frame
+		// before the frames sent by the other devices.
+		bt_global::devices_cache.addInitCommandFrame(MAIN_OPENSERVER, createCommandFrame(who, what, where));
 	}
 }
 
@@ -317,8 +322,7 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	{
 		master_caller_address = QString::fromStdString(ip_call ? msg.whatArg(2) : msg.whereFull());
 		int kind_val = msg.whatArgN(0) % 100;
-		if (kind_val != 5)
-			values_list[CALLER_ADDRESS] = master_caller_address;
+		values_list[CALLER_ADDRESS] = QString::number(master_caller_address.toInt() * (kind_val == 5 ? -1 : 1));
 	}
 	// manage the other things like in the rearm session case
 	case REARM_SESSION:

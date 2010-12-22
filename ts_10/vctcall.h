@@ -32,6 +32,7 @@
 
 class VideoDoorEntryDevice;
 class ItemTuning;
+class ItemTuningStatus;
 class QDomNode;
 class QHBoxLayout;
 class QLabel;
@@ -51,7 +52,7 @@ namespace VCTCallPrivate
 	{
 	Q_OBJECT
 	public:
-		CameraMove(VideoDoorEntryDevice *dev);
+		CameraMove(VideoDoorEntryDevice *dev, bool is_fullscreen);
 		void showFullScreenButton(bool show);
 		void setMoveEnabled(bool move);
 
@@ -70,15 +71,14 @@ namespace VCTCallPrivate
 	{
 	Q_OBJECT
 	public:
-		CameraImageControl(QWidget *parent = 0);
+		CameraImageControl();
 
-	private slots:
-		void setBrightness(int value);
-		void setColor(int value);
-		void setContrast(int value);
-
-	private:
 		ItemTuning *contrast, *brightness, *color;
+
+	signals:
+		void brightnessChanged(int value);
+		void colorChanged(int value);
+		void contrastChanged(int value);
 	};
 
 
@@ -112,6 +112,8 @@ namespace VCTCallPrivate
 		void enable();
 		void disable();
 
+		void setVideoDefaults();
+
 		// Common graphical objects
 		BtButton *setup_vct;
 		CameraMove *camera;
@@ -139,10 +141,12 @@ namespace VCTCallPrivate
 		void handleClose();
 		void toggleMute();
 		void changeVolume(int value);
+		void changeBrightness(int value);
+		void changeColor(int value);
+		void changeContrast(int value);
 		void finished(int exitcode, QProcess::ExitStatus exitstatus);
 		void resumeVideo();
 		void cleanAudioStates();
-
 		void cycleClicked();
 
 	private:

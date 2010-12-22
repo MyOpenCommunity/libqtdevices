@@ -123,7 +123,7 @@ AlarmList > QWidget {  background-image: url(); }
 	<!-- Home page temperature display, non controlled -->
 	<item>
 		<cid>208</cid>
-		<img_background>home/displaytermo.png</img_background>
+		<img_background>home/displaytermoest.png</img_background>
 	</item>
 	<!-- Home page rss link -->
 	<item>
@@ -1518,6 +1518,27 @@ AlarmList > QWidget {  background-image: url(); }
 		<img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
 		<img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
 	</item>
+	<!-- central probe +2 (page 4 zones) -->
+	<item>
+	<cid>8044</cid>
+		<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
+		<img_forward>termoregolazione/vai.png</img_forward>
+
+		<img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
+		<img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
+		<img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
+		<img_probe_off>termoregolazione/imgoff.png</img_probe_off>
+		<img_minus>termoregolazione/meno.png</img_minus>
+		<img_plus>termoregolazione/piu.png</img_plus>
+		<img_fan_1_on>termoregolazione/fancoilminon.png</img_fan_1_on>
+		<img_fan_2_on>termoregolazione/fancoilmedon.png</img_fan_2_on>
+		<img_fan_3_on>termoregolazione/fancoilmaxon.png</img_fan_3_on>
+		<img_fan_4_on>termoregolazione/fancoilautoon.png</img_fan_4_on>
+		<img_fan_1_off>termoregolazione/fancoilminoff.png</img_fan_1_off>
+		<img_fan_2_off>termoregolazione/fancoilmedoff.png</img_fan_2_off>
+		<img_fan_3_off>termoregolazione/fancoilmaxoff.png</img_fan_3_off>
+		<img_fan_4_off>termoregolazione/fancoilautooff.png</img_fan_4_off>
+	</item>
 	<!-- central probe +3 (page 4 zones) -->
 	<item>
 		<cid>8045</cid>
@@ -1660,8 +1681,8 @@ AlarmList > QWidget {  background-image: url(); }
 		<img_cycle_mode>termoregolazione/btnciclamod.png</img_cycle_mode>
 		<img_cycle_speed>termoregolazione/btnciclafancoil.png</img_cycle_speed>
 		<img_swing_on>termoregolazione/on.png</img_swing_on>
-		<img_swing_off>termoregolazione/off.png</img_swing_off>
-		<img_swing_on_checked>termoregolazione/autoon.png</img_swing_on_checked> <!-- WRONG ICON -->
+		<img_swing_off>termoregolazione/statocentraleon.png</img_swing_off>
+		<img_swing_on_checked>diffusione/onon.png</img_swing_on_checked>
 		<img_swing_off_checked>termoregolazione/statocentraleoff.png</img_swing_off_checked>
 		<img_split_cmd>termoregolazione/on.png</img_split_cmd>
 		<img_plus_disabled>termoregolazione/piup.png</img_plus_disabled>
@@ -1706,11 +1727,11 @@ AlarmList > QWidget {  background-image: url(); }
 		<img_start>scenarievoluti/startbig.png</img_start>
 		<img_program>scenarievoluti/progscen.png</img_program>
 		<img_watch>scenarievoluti/imgora.png</img_watch>
-		<img_light>scenarievoluti/start.png</img_light>
-		<img_dimmer>scenarievoluti/start.png</img_dimmer>
-		<img_amplifier>scenarievoluti/start.png</img_amplifier>
-		<img_aux>scenarievoluti/start.png</img_aux>
-		<img_probe>scenarievoluti/start.png</img_probe>
+		<img_light>scenarievoluti/imgluce.png</img_light>
+		<img_dimmer>scenarievoluti/imgdimmer.png</img_dimmer>
+		<img_amplifier>scenarievoluti/imgdiffsonora.png</img_amplifier>
+		<img_aux>scenarievoluti/imgausiliario.png</img_aux>
+		<img_probe>scenarievoluti/imgtermo.png</img_probe>
 	</item>
 	<!-- settings banners -->
 	<item>
@@ -1738,28 +1759,34 @@ AlarmList > QWidget {  background-image: url(); }
 		<img_next_ring>setup/onsuonpe3dx.png</img_next_ring>
 	</item>
 	<item>
-		<!-- ringtone: intercom -->
+		<!-- ringtone: intercom int -->
 		<cid>14105</cid>
 		<img_prev_ring>setup/onsuoninterinternosx.png</img_prev_ring>
 		<img_next_ring>setup/onsuoninterinternodx.png</img_next_ring>
 	</item>
 	<item>
-		<!-- ringtone: interflat (?) -->
+		<!-- ringtone: intercom ext -->
 		<cid>14106</cid>
 		<img_prev_ring>setup/onsuoninteresternosx.png</img_prev_ring>
 		<img_next_ring>setup/onsuoninteresternodx.png</img_next_ring>
 	</item>
 	<item>
-		<!-- ringtone: door bell -->
+		<!-- ringtone: call to floor -->
 		<cid>14107</cid>
 		<img_prev_ring>setup/onsuonchiamatapianosx.png</img_prev_ring>
 		<img_next_ring>setup/onsuonchiamatapianodx.png</img_next_ring>
 	</item>
 	<item>
-		<!-- ringtone: misc -->
+		<!-- ringtone: alarm message -->
 		<cid>14109</cid>
 		<img_prev_ring>setup/onsuonallarmesx.png</img_prev_ring>
 		<img_next_ring>setup/onsuonallarmedx.png</img_next_ring>
+	</item>
+	<item>
+		<!-- ringtone: message -->
+		<cid>14110</cid>
+		<img_prev_ring>setup/onsuonmessaggisx.png</img_prev_ring>
+		<img_next_ring>setup/onsuonmessaggidx.png</img_next_ring>
 	</item>
 	<!-- alarm clock -->
 	<item>
@@ -1795,6 +1822,7 @@ AlarmList > QWidget {  background-image: url(); }
 		<img_arrow_left>videocitofonia/arrsx.png</img_arrow_left>
 		<img_arrow_right>videocitofonia/arrdx.png</img_arrow_right>
 		<img_fullscreen>videocitofonia/screenfull.png</img_fullscreen>
+		<img_normalscreen>videocitofonia/screen.png</img_normalscreen>
 		<img_connection>videocitofonia/inconnessione.png</img_connection>
 	</item>
 	<!-- Video control items SCS -->
@@ -2006,14 +2034,16 @@ AlarmList > QWidget {  background-image: url(); }
 		Stop & Go plus Banners
 		-->
 		<cid>6102</cid>
-		<img_status_closed>supervisioneimpianto/S_G_Plus.png</img_status_closed>
+		<img_status_closed>supervisioneimpianto/sng_plus.png</img_status_closed>
+		<img_status_opened>supervisioneimpianto/sng_plus_aperto.png</img_status_opened>
 	</item>
 	<item>
 		<!--
 		Stop & Go BTest Banners
 		-->
 		<cid>6103</cid>
-		<img_status_closed>supervisioneimpianto/S_G_BTest.png</img_status_closed>
+		<img_status_closed>supervisioneimpianto/sng_btest.png</img_status_closed>
+		<img_status_opened>supervisioneimpianto/sng_btest_aperto.png</img_status_opened>
 	</item>
 	<!-- Examples -->
 	<item>

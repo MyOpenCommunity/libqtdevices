@@ -131,4 +131,7 @@ void setVctVideoValue(const QString &command, const QString &value);
 // init multimedia playback
 void initMultimedia();
 
+// mount usb devices at boot (if present)
+void usbHotplug();
+
 #endif // HARDWARE_FUNCTIONS_H

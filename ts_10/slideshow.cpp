@@ -399,6 +399,9 @@ void SlideshowWindow::displayNoFullScreen()
 	bool active = controller->slideshowActive();
 	controller->stopSlideshow();
 	page->displayImages(image_list, controller->currentImage());
+	// We have to remove the window from the stack, automatically done when
+	// we close using the signal Closed()
+	bt_global::page_stack.closeWindow(this);
 
 	if (async_load)
 		async_load->deleteLater();

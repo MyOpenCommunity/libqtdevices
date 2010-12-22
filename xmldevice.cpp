@@ -21,6 +21,7 @@
 #include "xmlclient.h"
 #include "xml_functions.h"
 
+#include <QTextDocument> // Qt::escape
 #include <QDomDocument>
 #include <QStringList>
 #include <QUuid>
@@ -239,6 +240,20 @@ namespace
 			result += uuidhex(uuid.data4[i],2);
 		return result;
 	}
+
+	// An utility function to dump the xml into a file
+	void dump_xml(const QString &xml, const QString &sid, int pid)
+	{
+		QDir dump_dir(DUMP_DIR);
+		if (!dump_dir.exists())
+			dump_dir.mkpath(DUMP_DIR);
+
+		QString filename(QTime::currentTime().toString("hh.mm.ss.zzz_") + sid + "_" + QString::number(pid) + ".xml");
+		QFile file(QString(DUMP_DIR) + "/" + filename);
+		file.open(QIODevice::WriteOnly);
+		file.write(xml.toUtf8());
+		file.close();
+	}
 }
 
 
@@ -379,15 +394,7 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 	{
 
 #if DUMP_OPENXML
-		QDir dump_dir(DUMP_DIR);
-		if (!dump_dir.exists())
-			dump_dir.mkpath(DUMP_DIR);
-
-		QString filename(QTime::currentTime().toString("hh.mm.ss.zzz_") + QString::number(pid) + ".xml");
-		QFile file(QString(DUMP_DIR) + "/" + filename);
-		file.open(QIODevice::WriteOnly);
-		file.write(xml.toUtf8());
-		file.close();
+		dump_xml(xml, sid, pid);
 #endif
 
 		QDomNode command_container = getChildWithName(root, "Cmd");
@@ -408,7 +415,13 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 					response = xml_handlers[command_name](command);
 					return response;
 				}
-				qWarning() << "XmlDevice::parseXml: ack or command invalid";
+
+				if (command_name == "NACK")
+					qWarning() << "XmlDevice::parseXml: nack received";
+				else if (command_name == "ACK")
+					qWarning() << "XmlDevice::parseXml: ack invalid";
+				else
+					qWarning() << "XmlDevice::parseXml: unknown command name:" << command_name;
 			}
 			else
 				qWarning() << "XmlDevice::parseXml: command name not found";
@@ -481,9 +494,14 @@ QString XmlDevice::buildCommand(const QString &command, const QString &argument)
 	QString cmd;
 
 	if (!argument.isEmpty())
-		cmd = QString(argument_template).arg(command).arg(argument);
+		cmd = QString(argument_template).arg(command).arg(Qt::escape(argument));
 	else
 		cmd = QString("\t\t<%1/>").arg(command);
 
-	return QString(command_template).arg(sid).arg(pid).arg(server_addr).arg(local_addr).arg(cmd);
+	QString xml = QString(command_template).arg(sid).arg(pid).arg(server_addr).arg(local_addr).arg(cmd);
+
+#if DUMP_OPENXML
+	dump_xml(xml, sid, pid);
+#endif
+	return xml;
 }

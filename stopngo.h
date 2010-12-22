@@ -45,6 +45,19 @@ class QDomNode;
 */
 
 
+namespace StopAndGo
+{
+	enum Status
+	{
+		STATUS_CLOSED = 0,
+		STATUS_OPENED,
+		STATUS_LOCKED,
+		STATUS_FAIL,
+		STATUS_GROUND_FAIL,
+		STATUS_VMAX
+	};
+}
+
 /*!
 	\ingroup StopAndGo
 	\brief Banner that reflects the state of the systems check module.
@@ -72,11 +85,20 @@ public:
 	*/
 	BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QString &right, const QString &descr = QString(), QWidget *parent = 0);
 
+	/*!
+		\brief Show/hide left / right buttons.
+		\note Call this method only if both the buttons are set.
+	*/
+	void showButtons(bool show);
+
 public slots:
 	/*!
 		\brief Handles dimensions from device to reflect the device status.
 	*/
 	void valueReceived(const DeviceValues &values_list);
+
+signals:
+	void statusChanged(StopAndGo::Status);
 
 private:
 	QMap<int, QString> status_icons;
@@ -167,12 +189,14 @@ private slots:
 	void valueReceived(const DeviceValues &values_list);
 	void switchAutoReset();
 	void switchTracking();
+	void statusChanged(StopAndGo::Status st);
 
 private:
 	StopAndGoPlusDevice *dev;
 	StateButton *autoreset_button;
 	StateButton *tracking_button;
 	QLabel *tracking_label;
+	BannStopAndGo *status_banner;
 };
 
 

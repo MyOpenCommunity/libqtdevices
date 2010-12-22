@@ -78,7 +78,7 @@ private:
 
 /*!
 	\ingroup Multimedia
-	\brief Display images in a slide show (either manual or automatic.
+	\brief Display images in a slide show (either manual or automatic).
 
 	\see SlideshowWindow
  */

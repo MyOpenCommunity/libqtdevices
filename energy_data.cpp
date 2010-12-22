@@ -380,7 +380,7 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node, bool edit_rates, b
 		connect(edit_costs, SIGNAL(clicked()), costs, SLOT(showPage()));
 		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
 	}
-	buildPage(main, content, new NavigationBar, getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT);
+	buildPage(main, content, new NavigationBar, getTextChild(config_node, "descr"));
 #endif
 
 	bool show_currency_button = loadItems(config_node);

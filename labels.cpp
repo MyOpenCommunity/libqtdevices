@@ -61,7 +61,7 @@ QSize ScrollingLabel::minimumSizeHint() const
 {
 	// this is required for the label to work correctly when inserted in a grid
 	// layout and the colspan is > 0 and the layout size is < the maximum text width
-	return QSize(50, QLabel::sizeHint().height());
+	return QSize(30, QLabel::sizeHint().height());
 }
 
 void ScrollingLabel::setScrollingText(const QString &text)
