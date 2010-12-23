@@ -75,27 +75,33 @@ void PageContainer::setCurrentPage(Page *p)
 
 void PageContainer::showPage(Page *p)
 {
-	emit currentChanging(p);
-	if (Page *curr = currentPage())
-		curr->aboutToHideEvent();
-
-	if (transition_widget && !block_transitions)
+	// the current page can be the same, but we have also to call the showWindow()
+	// on the parent window because it can be hidden (for example when we move from
+	// the VctCallWindow to the VctCallPage).
+	if (currentPage() != p)
 	{
-		prev_page = currentPage();
+		emit currentChanging(p);
+		if (Page *curr = currentPage())
+			curr->aboutToHideEvent();
 
-		transition_widget->prepareTransition();
+		if (transition_widget && !block_transitions)
+		{
+			prev_page = currentPage();
 
-		// Before grab the screenshot of the next page, we have to ensure that its
-		// visualization is correct and that it is shown.
-		setCurrentWidget(p);
-		// fixVisualization must be after setCurrentWidget, because setCurrentWidget
-		// might cause the window header to change size, and fixVisualization must
-		// run with the correct page size
-		fixVisualization(p, size());
-		startTransition(p);
+			transition_widget->prepareTransition();
+
+			// Before grab the screenshot of the next page, we have to ensure that its
+			// visualization is correct and that it is shown.
+			setCurrentWidget(p);
+			// fixVisualization must be after setCurrentWidget, because setCurrentWidget
+			// might cause the window header to change size, and fixVisualization must
+			// run with the correct page size
+			fixVisualization(p, size());
+			startTransition(p);
+		}
+		else
+			setCurrentPage(p);
 	}
-	else
-		setCurrentPage(p);
 
 	// This makes showPage() always show the HomeWindow as a side effect.
 	// If this is removed, the code in vctcall.cpp, slideshow.cpp, pagestack.cpp
