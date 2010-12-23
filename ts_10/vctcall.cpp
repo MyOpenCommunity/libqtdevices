@@ -431,9 +431,14 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			else
 				emit incomingCall();
 			call_status->call_active = true;
+			if (values_list.contains(VideoDoorEntryDevice::CALLER_ADDRESS))
+				emit callerAddress(values_list[VideoDoorEntryDevice::CALLER_ADDRESS].toString());
 			break;
 		case VideoDoorEntryDevice::CALLER_ADDRESS:
-			emit callerAddress(it.value().toString());
+			// We must manage the callerAddress after the incoming call.
+			if (!values_list.contains(VideoDoorEntryDevice::VCT_CALL) &&
+				!values_list.contains(VideoDoorEntryDevice::AUTO_VCT_CALL))
+				emit callerAddress(it.value().toString());
 			break;
 		case VideoDoorEntryDevice::END_OF_CALL:
 			stopVideo();
