@@ -23,10 +23,16 @@
 #include "transitionwidget.h"
 #include "page.h"
 #include "window.h"
+#include "btmain.h" // bt_global::btmain
+
+#ifdef LAYOUT_TS_10
+#include "vctcall.h"
+#endif
 
 #include <QDebug>
 #include <QLayout>
 #include <QTimer>
+
 
 namespace
 {
@@ -82,7 +88,13 @@ void PageContainer::showPage(Page *p)
 	{
 		emit currentChanging(p);
 		if (Page *curr = currentPage())
+		{
 			curr->aboutToHideEvent();
+#ifdef LAYOUT_TS_10
+			if (bt_global::btmain->vde_call_active && qobject_cast<VCTCallPage*>(curr))
+				qobject_cast<VCTCallPage*>(curr)->closeCall();
+#endif
+		}
 
 		if (transition_widget && !block_transitions)
 		{

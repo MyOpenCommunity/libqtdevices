@@ -634,6 +634,15 @@ VCTCallPage::~VCTCallPage()
 	delete VCTCall::call_status;
 }
 
+void VCTCallPage::closeCall()
+{
+	cleanUp();
+	if (!isVisible()) // If the page is not visible, we are in fullscreen mode.
+		bt_global::page_stack.closeWindow(window);
+
+	bt_global::page_stack.closePage(this);
+}
+
 void VCTCallPage::backClicked()
 {
 	vct_call->endCall();
@@ -766,7 +775,6 @@ void VCTCallPage::setProfStudio(bool on)
 
 void VCTCallPage::incomingCall()
 {
-	bt_global::btmain->vde_call_active = true;
 	vct_call->refreshStatus();
 	// Restore the 'normal' status of these buttons, that can be disabled when
 	// calling the guard unit.
@@ -776,6 +784,7 @@ void VCTCallPage::incomingCall()
 
 	showPage();
 	repaint();
+	bt_global::btmain->vde_call_active = true;
 }
 
 void VCTCallPage::callerAddress(QString address)
