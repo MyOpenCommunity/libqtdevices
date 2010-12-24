@@ -28,6 +28,7 @@
 #include "skinmanager.h"
 #include "audiostatemachine.h"
 #include "pagestack.h"
+#include "fontmanager.h" // bt_global::font
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -54,6 +55,8 @@ VideoPlayerPage::VideoPlayerPage()
 	video = new QLabel;
 	video->setFixedSize(320, 240);
 	video->setStyleSheet("background: black");
+	video->setFont(bt_global::font->get(FontManager::TEXT));
+	video->setAlignment(Qt::AlignCenter);
 
 	v->addStretch(1);
 	v->addWidget(video);
@@ -119,6 +122,14 @@ void VideoPlayerPage::displayMedia(int index)
 	title->setText(QFileInfo(file_list[index]).fileName());
 	current_file = index;
 	current_time = 0;
+
+	if (!player->checkVideoResolution(file_list[index]))
+	{
+		qWarning() << "VideoPlayerPage::displayMedia -> Video resolution too high";
+		video->setText(tr("Video not supported"));
+		return;
+	}
+	video->setText(QString());
 
 	QTimer::singleShot(0, this, SLOT(startMPlayer()));
 }
