@@ -91,6 +91,8 @@ void PageContainer::showPage(Page *p)
 		{
 			curr->aboutToHideEvent();
 #ifdef LAYOUT_TS_10
+			// We want to close the call if some events (like a new scs message
+			// or an alarm) trigger a showPage.
 			if (bt_global::btmain->vde_call_active && qobject_cast<VCTCallPage*>(curr))
 				qobject_cast<VCTCallPage*>(curr)->closeCall();
 #endif
