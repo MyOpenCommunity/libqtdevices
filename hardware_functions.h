@@ -134,4 +134,7 @@ void initMultimedia();
 // mount usb devices at boot (if present)
 void usbHotplug();
 
+// Dump (on the debug channel) some statistic about the status of the memory
+void dumpSystemMemory();
+
 #endif // HARDWARE_FUNCTIONS_H

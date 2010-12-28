@@ -528,3 +528,18 @@ QPair <QString, QStringList> getAudioCmdLine(const QString &audio_path)
 		<< "-s" << "-t" << "wav" << audio_path << "-t" << "ossdsp" << "/dev/dsp1");
 }
 
+void dumpSystemMemory()
+{
+#ifdef BT_HARDWARE_TS_10
+	QFile f("/proc/meminfo");
+	if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+		return;
+
+	qDebug() << "----------------------- SYSTEM MEMORY -----------------------";
+	// We are interested in the first two lines
+	qDebug() << f.readLine().constData();
+	qDebug() << f.readLine().constData();
+	qDebug() << "-------------------------------------------------------------";
+#endif
+}
+

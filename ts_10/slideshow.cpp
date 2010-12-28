@@ -26,6 +26,7 @@
 #include "labels.h" // ImageLabel
 #include "pagestack.h"
 #include "generic_functions.h" // checkImageLoad
+#include "hardware_functions.h" // dumpSystemMemory
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -37,6 +38,8 @@
 #define SLIDESHOW_TIMEOUT 10000
 #define BUTTONS_TIMEOUT 5000
 
+// Enable/disable the dump of the memory before and after the loading of the images
+#define TRACK_MEMORY 0
 
 namespace
 {
@@ -192,6 +195,11 @@ void SlideshowPage::displayImages(QList<QString> images, unsigned element)
 
 void SlideshowPage::showImage(int index)
 {
+#if TRACK_MEMORY
+	qDebug() << "SlideshowPage::showImage before loading the image";
+	dumpSystemMemory();
+#endif
+
 	if (async_load)
 		async_load->deleteLater();
 
@@ -208,6 +216,12 @@ void SlideshowPage::imageReady()
 	qDebug() << "Image loading complete";
 
 	image->setPixmap(QPixmap::fromImage(async_load->result()));
+
+#if TRACK_MEMORY
+	qDebug() << "SlideshowPage::imageReady after loading the image";
+	dumpSystemMemory();
+#endif
+
 	title->setText(QFileInfo(image_list[controller->currentImage()]).fileName());
 	async_load->deleteLater();
 }
@@ -342,6 +356,11 @@ void SlideshowWindow::displayImages(QList<QString> images, unsigned element)
 
 void SlideshowWindow::showImage(int index)
 {
+#if TRACK_MEMORY
+	qDebug() << "SlideshowWindow::showImage before loading the image";
+	dumpSystemMemory();
+#endif
+
 	if (async_load)
 		async_load->deleteLater();
 
@@ -358,6 +377,12 @@ void SlideshowWindow::imageReady()
 	qDebug() << "Image loading complete";
 
 	image->setPixmap(QPixmap::fromImage(async_load->result()));
+
+#if TRACK_MEMORY
+	qDebug() << "SlideshowWindow::imageReady after loading the image";
+	dumpSystemMemory();
+#endif
+
 	async_load->deleteLater();
 }
 
