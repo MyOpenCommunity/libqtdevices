@@ -123,15 +123,8 @@ void VideoPlayerPage::displayMedia(int index)
 	current_file = index;
 	current_time = 0;
 
-	if (!player->checkVideoResolution(file_list[index]))
-	{
-		qWarning() << "VideoPlayerPage::displayMedia -> Video resolution too high";
-		video->setText(tr("Video not supported"));
-		return;
-	}
-	video->setText(QString());
-
-	QTimer::singleShot(0, this, SLOT(startMPlayer()));
+	if (checkVideo(file_list[index]))
+		QTimer::singleShot(0, this, SLOT(startMPlayer()));
 }
 
 void VideoPlayerPage::displayVideos(QList<QString> videos, unsigned element)
@@ -206,8 +199,9 @@ void VideoPlayerPage::previous()
 
 	if (player->isPaused())
 	{
-		player->requestInitialVideoInfo(currentFileName(current_file));
 		title->setText(QFileInfo(file_list[current_file]).fileName());
+		if (checkVideo(file_list[current_file]))
+			player->requestInitialVideoInfo(currentFileName(current_file));
 	}
 	else
 		displayMedia(current_file);
@@ -219,11 +213,26 @@ void VideoPlayerPage::next()
 
 	if (player->isPaused())
 	{
-		player->requestInitialVideoInfo(currentFileName(current_file));
 		title->setText(QFileInfo(file_list[current_file]).fileName());
+		if (checkVideo(file_list[current_file]))
+			player->requestInitialVideoInfo(currentFileName(current_file));
 	}
 	else
 		displayMedia(current_file);
+}
+
+bool VideoPlayerPage::checkVideo(QString track)
+{
+	QString text;
+	if (!player->checkVideoResolution(track))
+	{
+		qWarning() << "VideoPlayerPage::next -> Video resolution too high";
+		text = tr("Video not supported");
+	}
+
+	emit videoLabelUpdated(text);
+	video->setText(text);
+	return text.isNull();
 }
 
 void VideoPlayerPage::resume()
@@ -257,7 +266,8 @@ void VideoPlayerPage::displayFullScreen(bool fs)
 		showPage();
 	}
 
-	QTimer::singleShot(0, this, SLOT(startMPlayer()));
+	if (checkVideo(file_list[current_file]))
+		QTimer::singleShot(0, this, SLOT(startMPlayer()));
 }
 
 QRect VideoPlayerPage::playbackGeometry()
@@ -306,12 +316,22 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *_page, MediaPlayer *player
 	if (volume)
 		control_layout->addWidget(volume);
 
-	QGridLayout *window_layout = new QGridLayout(this);
+	video = new QLabel;
+	video->setFont(bt_global::font->get(FontManager::TEXT));
+	video->setAlignment(Qt::AlignCenter);
+
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->addWidget(video);
+
+	QGridLayout *window_layout = new QGridLayout(video);
 	window_layout->setContentsMargins(0, 0, 0, 0);
 	window_layout->setColumnStretch(0, 1);
 	window_layout->setColumnStretch(2, 1);
 	window_layout->setRowStretch(0, 1);
 	window_layout->addWidget(controls, 1, 1);
+
+	connect(page, SIGNAL(videoLabelUpdated(QString)), SLOT(updateVideoLabel(QString)));
 
 	// signals for navigation and to start/stop playback
 	connect(buttons, SIGNAL(previous()), page, SLOT(previous()));
@@ -352,6 +372,11 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *_page, MediaPlayer *player
 		connect(volume, SIGNAL(valueChanged(int)), SLOT(showButtons()));
 		connect(volume, SIGNAL(valueChanged(int)), SLOT(setVolume(int)));
 	}
+}
+
+void VideoPlayerWindow::updateVideoLabel(QString text)
+{
+	video->setText(text);
 }
 
 void VideoPlayerWindow::mouseReleaseEvent(QMouseEvent *e)
