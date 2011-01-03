@@ -444,7 +444,6 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	main_layout.addLayout(hbox);
 
 	local_temp_label = new QLabel(this);
-
 	local_temp_label->setFont(bt_global::font->get(FontManager::TEXT));
 	local_temp_label->setAlignment(Qt::AlignHCenter);
 
@@ -455,13 +454,14 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 
 	// layout for the control buttons and fancoil icons
 	bottom_icons.setAlignment(Qt::AlignHCenter);
-	bottom_icons.setSpacing(10);
-
 	main_layout.addLayout(&bottom_icons);
 
 #ifdef LAYOUT_TS_10
+	bottom_icons.setSpacing(10);
 	bottom_icons.addWidget(toggle_mode);
 	bottom_icons.setContentsMargins(0, 0, 0, 60);
+#else
+	bottom_icons.setSpacing(0);
 #endif
 
 	switch (temp_scale)
