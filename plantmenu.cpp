@@ -77,7 +77,7 @@ NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_central
 	NavigationPage *p = 0;
 	QString simple_address = getTextChild(n, "where");
 	QString where_composed;
-	if (id != fs_4z_thermal_regulator && id != fs_99z_thermal_regulator && !simple_address.isEmpty())
+	if (id != FS_4Z_THERMAL_REGULATOR && id != FS_99Z_THERMAL_REGULATOR && !simple_address.isEmpty())
 		where_composed = simple_address + "#" + ind_centrale;
 #ifdef CONFIG_TS_3_5
 	QDomNode page_node = n;
@@ -88,7 +88,7 @@ NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_central
 	ThermalDevice *thermal_device = 0;
 	switch (id)
 	{
-	case fs_4z_probe:
+	case FS_4Z_PROBE:
 	{
 		ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(where_composed,
 			ind_centrale, simple_address, ControlledProbeDevice::CENTRAL_4ZONES, ControlledProbeDevice::NORMAL, openserver_id));
@@ -99,7 +99,7 @@ NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_central
 		p = new PageProbe(n, dev, thermal_device, scale);
 	}
 		break;
-	case fs_99z_probe:
+	case FS_99Z_PROBE:
 	{
 		ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(simple_address,
 			ind_centrale, simple_address, ControlledProbeDevice::CENTRAL_99ZONES, ControlledProbeDevice::NORMAL, openserver_id));
@@ -109,7 +109,7 @@ NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_central
 		p = new PageProbe(n, dev, thermal_device, scale);
 	}
 		break;
-	case fs_4z_fancoil:
+	case FS_4Z_FANCOIL:
 	{
 		ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(where_composed,
 			ind_centrale, simple_address, ControlledProbeDevice::CENTRAL_4ZONES, ControlledProbeDevice::FANCOIL, openserver_id));
@@ -119,7 +119,7 @@ NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_central
 		p = new PageFancoil(n, dev, thermal_device, scale);
 	}
 		break;
-	case fs_99z_fancoil:
+	case FS_99Z_FANCOIL:
 	{
 		ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(simple_address,
 			ind_centrale, simple_address, ControlledProbeDevice::CENTRAL_99ZONES, ControlledProbeDevice::FANCOIL, openserver_id));
@@ -129,11 +129,11 @@ NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_central
 		p = new PageFancoil(n, dev, thermal_device, scale);
 	}
 		break;
-	case fs_4z_thermal_regulator:
+	case FS_4Z_THERMAL_REGULATOR:
 		thermal_device = bt_global::add_device_to_cache(new ThermalDevice4Zones(QString("0#") + ind_centrale, openserver_id));
 		p = new PageTermoReg4z(page_node, static_cast<ThermalDevice4Zones*>(thermal_device));
 		break;
-	case fs_99z_thermal_regulator:
+	case FS_99Z_THERMAL_REGULATOR:
 		thermal_device = bt_global::add_device_to_cache(new ThermalDevice99Zones(ind_centrale, openserver_id));
 		p = new PageTermoReg99z(page_node, static_cast<ThermalDevice99Zones*>(thermal_device));
 		break;
@@ -189,22 +189,22 @@ void PlantMenu::loadItems(const QDomNode &conf)
 			switch (id)
 			{
 				case TERMO_99Z:
-					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), fs_99z_thermal_regulator);
+					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), FS_99Z_THERMAL_REGULATOR);
 					break;
 				case TERMO_4Z:
-					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), fs_4z_thermal_regulator);
+					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), FS_4Z_THERMAL_REGULATOR);
 					break;
 				case TERMO_99Z_PROBE:
-					pg = addMenuItem(n, bt_global::skin->getImage("zone"), fs_99z_probe);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), FS_99Z_PROBE);
 					break;
 				case TERMO_99Z_PROBE_FANCOIL:
-					pg = addMenuItem(n, bt_global::skin->getImage("zone"), fs_99z_fancoil);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), FS_99Z_FANCOIL);
 					break;
 				case TERMO_4Z_PROBE:
-					pg = addMenuItem(n, bt_global::skin->getImage("zone"), fs_4z_probe);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), FS_4Z_PROBE);
 					break;
 				case TERMO_4Z_PROBE_FANCOIL:
-					pg = addMenuItem(n, bt_global::skin->getImage("zone"), fs_4z_fancoil);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), FS_4Z_FANCOIL);
 					break;
 			}
 
@@ -262,30 +262,30 @@ void PlantMenu::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case TERMO_99Z:
-			pg = addMenuItem(item, icon, fs_99z_thermal_regulator);
+			pg = addMenuItem(item, icon, FS_99Z_THERMAL_REGULATOR);
 			break;
 		case TERMO_4Z:
-			pg = addMenuItem(item, icon, fs_4z_thermal_regulator);
+			pg = addMenuItem(item, icon, FS_4Z_THERMAL_REGULATOR);
 			break;
 #ifdef CONFIG_TS_3_5
 		case TERMO_99Z_PROBE:
-			pg = addMenuItem(item, icon, fs_99z_probe);
+			pg = addMenuItem(item, icon, FS_99Z_PROBE);
 			break;
 		case TERMO_99Z_PROBE_FANCOIL:
-			pg = addMenuItem(item, icon, fs_99z_fancoil);
+			pg = addMenuItem(item, icon, FS_99Z_FANCOIL);
 			break;
 		case TERMO_4Z_PROBE:
-			pg = addMenuItem(item, icon, fs_4z_probe);
+			pg = addMenuItem(item, icon, FS_4Z_PROBE);
 			break;
 		case TERMO_4Z_PROBE_FANCOIL:
-			pg = addMenuItem(item, icon, fs_4z_fancoil);
+			pg = addMenuItem(item, icon, FS_4Z_FANCOIL);
 			break;
 #else
 		case TERMO_99Z_PROBE:
-			pg = addMenuItem(item, icon, fancoil ? fs_99z_fancoil : fs_99z_probe);
+			pg = addMenuItem(item, icon, fancoil ? FS_99Z_FANCOIL : FS_99Z_PROBE);
 			break;
 		case TERMO_4Z_PROBE:
-			pg = addMenuItem(item, icon, fancoil ? fs_4z_fancoil : fs_4z_probe);
+			pg = addMenuItem(item, icon, fancoil ? FS_4Z_FANCOIL : FS_4Z_PROBE);
 			break;
 #endif
 		}
@@ -393,8 +393,7 @@ PageSimpleProbe::PageSimpleProbe(QDomNode n, TemperatureScale scale)
 #ifdef LAYOUT_TS_3_5
 	toggle_mode = nav_bar->forward_button;
 #else
-	toggle_mode = new BtButton;
-	toggle_mode->setImage(bt_global::skin->getImage("probe_manual"));
+	toggle_mode = new BtButton(bt_global::skin->getImage("probe_manual"));
 #endif
 
 	toggle_mode->hide();
@@ -444,8 +443,7 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 
-	btn_minus = new BtButton(this);
-	btn_minus->setImage(bt_global::skin->getImage("minus"));
+	btn_minus = new BtButton(bt_global::skin->getImage("minus"));
 	btn_minus->hide();
 	btn_minus->setAutoRepeat(true);
 	connect(btn_minus, SIGNAL(clicked()), SLOT(decSetpoint()));
@@ -466,8 +464,7 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	hbox->addWidget(icon_off, 1, Qt::AlignCenter);
 
 	hbox->addWidget(setpoint_label, 1, Qt::AlignVCenter);
-	btn_plus = new BtButton(this);
-	btn_plus->setImage(bt_global::skin->getImage("plus"));
+	btn_plus = new BtButton(bt_global::skin->getImage("plus"));
 	btn_plus->hide();
 	btn_plus->setAutoRepeat(true);
 	connect(btn_plus, SIGNAL(clicked()), SLOT(incSetpoint()));

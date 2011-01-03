@@ -38,12 +38,12 @@ class QLabel;
 
 enum ThermalPageID
 {
-	fs_4z_thermal_regulator = 1,          /*!< 4-zone thermal regulator device */
-	fs_4z_probe,                          /*!< 4-zone controlled probe */
-	fs_4z_fancoil,                        /*!< 4-zone controlled probe with fancoil */
-	fs_99z_thermal_regulator,             /*!< 99-zone thermal regulator device */
-	fs_99z_probe,                         /*!< 99-zone controlled probe */
-	fs_99z_fancoil,                       /*!< 99-zone controlled probe with fancoil */
+	FS_4Z_THERMAL_REGULATOR = 1,          /*!< 4-zone thermal regulator device */
+	FS_4Z_PROBE,                          /*!< 4-zone controlled probe */
+	FS_4Z_FANCOIL,                        /*!< 4-zone controlled probe with fancoil */
+	FS_99Z_THERMAL_REGULATOR,             /*!< 99-zone thermal regulator device */
+	FS_99Z_PROBE,                         /*!< 99-zone controlled probe */
+	FS_99Z_FANCOIL,                       /*!< 99-zone controlled probe with fancoil */
 };
 
 
@@ -115,7 +115,6 @@ signals:
 protected:
 	NavigationBar *createNavigationBar(const QString &forward_icon = QString(), const QString& title = QString(), int title_height = TITLE_HEIGHT);
 
-protected:
 	/// Content widget
 	QWidget content;
 	/// Global layout for the content
@@ -142,7 +141,6 @@ public slots:
 protected:
 	void setTemperature(unsigned temp);
 
-protected:
 	/// Measured temperature label and string
 	QLabel *temp_label;
 	/// Temperature scale
@@ -168,10 +166,11 @@ public:
 
 public slots:
 	virtual void valueReceived(const DeviceValues &values_list);
+
 protected:
 	void updatePointLabel();
 	void updateControlState();
-protected:
+
 	/// Setpoint temperature. The scale of the temperature may be Celsius or Fahrenheit, depending on the value
 	/// of PageSimpleProbe::temp_scale. Units represent 1/10 of degree, for example -23.5 Celsius degrees
 	/// are represented as -235 if temp_scale == CELSIUS, or -103 if temp_scale == FAHRENHEIT
@@ -191,6 +190,7 @@ protected:
 	QHBoxLayout bottom_icons;
 
 	ControlledProbeDevice *dev;
+
 private:
 	/**
 	 * Called when it's needed to set the device to manual operation. A conversion to Celsius degrees is done if needed.
@@ -241,8 +241,10 @@ public:
 	PageFancoil(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
 		TemperatureScale scale = CELSIUS);
 	virtual void valueReceived(const DeviceValues &values_list);
+
 protected:
 	void setFancoilStatus(int status);
+
 private:
 	/**
 	 * Creates fancoil buttons and loads icons
@@ -252,6 +254,7 @@ private:
 	/// A mapping between speed values and fancoil buttons
 	QMap<int, int> speed_to_btn_tbl;
 	QMap<int, int> btn_to_speed_tbl;
+
 private slots:
 	void handleFancoilButtons(int pressedButton);
 };

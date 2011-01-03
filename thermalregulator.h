@@ -349,15 +349,15 @@ public:
 	void setMaxHours(int max);
 	void setMaxMinutes(int max);
 
+signals:
+	void timeAndTempSelected(BtTime, int);
+
 protected slots:
 	virtual void performAction();
 
 private:
 	// TimeEdit widget
 	BtTimeEdit *time_edit;
-
-signals:
-	void timeAndTempSelected(BtTime, int);
 };
 
 
@@ -373,10 +373,13 @@ Q_OBJECT
 public:
 	PageSetDate();
 	QDate date();
+
 signals:
 	void dateSelected(QDate);
+
 private slots:
 	void performAction();
+
 private:
 	QWidget content;
 	QVBoxLayout main_layout;
@@ -396,10 +399,13 @@ Q_OBJECT
 public:
 	PageSetTime();
 	BtTime time();
+
 signals:
 	void timeSelected(BtTime);
+
 private slots:
 	void performAction();
+
 private:
 	QWidget content;
 	QVBoxLayout main_layout;
