@@ -25,7 +25,7 @@
 #include "bannerpage.h"
 #include "navigation_bar.h" // AbstractNavigationBar
 #include "main.h" // TemperatureScale
-#include "thermal_device.h" // thermo_type_t
+#include "thermal_device.h" // ThermoType
 
 #include <QVBoxLayout>
 #include <QButtonGroup>
@@ -135,8 +135,7 @@ class PageProbe : public NavigationPage
 {
 Q_OBJECT
 public:
-	PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
-		TemperatureScale scale = CELSIUS);
+	PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg, TemperatureScale scale = CELSIUS);
 
 public slots:
 	virtual void valueReceived(const DeviceValues &values_list);
@@ -173,15 +172,15 @@ private:
 
 	void setTemperature(unsigned temp);
 
-	enum probe_status
+	enum ProbeStatus
 	{
 		AUTOMATIC,
 		MANUAL
 	};
 
-	bool isOff, isAntigelo;
-	probe_status status;
-	thermo_type_t probe_type;
+	bool is_off, is_antifreeze;
+	ProbeStatus status;
+	ThermoType probe_type;
 	QString probe_icon_auto, probe_icon_manual;
 
 	/// The delta of temperature (in 1/10 of degrees) when the user presses on plus or minus

@@ -397,8 +397,6 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	toggle_mode = new BtButton(bt_global::skin->getImage("probe_manual"));
 #endif
 
-	toggle_mode->hide();
-
 	probe_icon_auto = bt_global::skin->getImage("probe_auto");
 	probe_icon_manual = bt_global::skin->getImage("probe_manual");
 
@@ -488,8 +486,8 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	}
 
 	local_temp = "0";
-	isOff = false;
-	isAntigelo = false;
+	is_off = false;
+	is_antifreeze = false;
 
 	updatePointLabel();
 	updateControlState();
@@ -561,16 +559,15 @@ void PageProbe::updatePointLabel()
 
 void PageProbe::updateControlState()
 {
-	btn_minus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
-	btn_plus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
-	setpoint_label->setVisible(!isOff && !isAntigelo);
-	local_temp_label->setVisible(!isOff && !isAntigelo && local_temp != "0");
-	icon_off->setVisible(isOff);
-	icon_antifreeze->setVisible(isAntigelo);
+	btn_minus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !is_off && !is_antifreeze);
+	btn_plus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !is_off && !is_antifreeze);
+	setpoint_label->setVisible(!is_off && !is_antifreeze);
+	local_temp_label->setVisible(!is_off && !is_antifreeze && local_temp != "0");
+	icon_off->setVisible(is_off);
+	icon_antifreeze->setVisible(is_antifreeze);
 #ifdef LAYOUT_TS_3_5
-	toggle_mode->setVisible(probe_type == THERMO_Z99 && !isOff && !isAntigelo);
+	toggle_mode->setVisible(probe_type == THERMO_Z99 && !is_off && !is_antifreeze);
 #else
-	// TODO needs to be checked after ticket #17 is resolved
 	toggle_mode->setVisible(probe_type == THERMO_Z99);
 #endif
 	local_temp_label->setText(local_temp);
@@ -642,8 +639,8 @@ void PageProbe::valueReceived(const DeviceValues &values_list)
 		{
 			int off = values_list[ControlledProbeDevice::DIM_OFFSET].toInt();
 
-			isOff = false;
-			isAntigelo = false;
+			is_off = false;
+			is_antifreeze = false;
 			if (off != 0)
 				local_temp.sprintf("%+d", off);
 			else
@@ -652,14 +649,14 @@ void PageProbe::valueReceived(const DeviceValues &values_list)
 		else if (stat == ControlledProbeDevice::ST_OFF)
 		{
 			local_temp = "0";
-			isOff = true;
-			isAntigelo = false;
+			is_off = true;
+			is_antifreeze = false;
 		}
 		else if (stat == ControlledProbeDevice::ST_PROTECTION)
 		{
 			local_temp = "0";
-			isOff = false;
-			isAntigelo = true;
+			is_off = false;
+			is_antifreeze = true;
 		}
 
 		update = true;
@@ -680,13 +677,13 @@ void PageProbe::valueReceived(const DeviceValues &values_list)
 			update = true;
 			break;
 		case ControlledProbeDevice::ST_PROTECTION:
-			isOff = false;
-			isAntigelo = true;
+			is_off = false;
+			is_antifreeze = true;
 			update = true;
 			break;
 		case ControlledProbeDevice::ST_OFF:
-			isOff = true;
-			isAntigelo = false;
+			is_off = true;
+			is_antifreeze = false;
 			update = true;
 			break;
 		default:
