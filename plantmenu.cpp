@@ -369,9 +369,10 @@ NavigationBar *NavigationPage::createNavigationBar(const QString &forward_icon, 
 }
 
 
-PageSimpleProbe::PageSimpleProbe(QDomNode n, TemperatureScale scale)
-	: temp_scale(scale)
+PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg, TemperatureScale scale) : setpoint_delta(5)
 {
+	temp_scale = scale;
+	delta_setpoint = false;
 	QLabel *descr_label = new QLabel(getTextChild(n, "descr"));
 	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignHCenter);
@@ -397,38 +398,7 @@ PageSimpleProbe::PageSimpleProbe(QDomNode n, TemperatureScale scale)
 #endif
 
 	toggle_mode->hide();
-}
 
-void PageSimpleProbe::setTemperature(unsigned temp)
-{
-	switch (temp_scale)
-	{
-	case CELSIUS:
-		temp_label->setText(celsiusString(bt2Celsius(temp)));
-		break;
-	case FAHRENHEIT:
-		temp_label->setText(fahrenheitString(bt2Fahrenheit(temp)));
-		break;
-	default:
-		qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
-		temp_label->setText(celsiusString(temp));
-	}
-}
-
-void PageSimpleProbe::valueReceived(const DeviceValues &values_list)
-{
-	if (!values_list.contains(ControlledProbeDevice::DIM_TEMPERATURE))
-		return;
-
-	setTemperature(values_list[ControlledProbeDevice::DIM_TEMPERATURE].toInt());
-}
-
-
-PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
-	TemperatureScale scale) : PageSimpleProbe(n, scale),
-	delta_setpoint(false),
-	setpoint_delta(5)
-{
 	probe_icon_auto = bt_global::skin->getImage("probe_auto");
 	probe_icon_manual = bt_global::skin->getImage("probe_manual");
 
@@ -606,6 +576,22 @@ void PageProbe::updateControlState()
 	local_temp_label->setText(local_temp);
 }
 
+void PageProbe::setTemperature(unsigned temp)
+{
+	switch (temp_scale)
+	{
+	case CELSIUS:
+		temp_label->setText(celsiusString(bt2Celsius(temp)));
+		break;
+	case FAHRENHEIT:
+		temp_label->setText(fahrenheitString(bt2Fahrenheit(temp)));
+		break;
+	default:
+		qWarning("PageProbe: unknown temperature scale, defaulting to celsius");
+		temp_label->setText(celsiusString(temp));
+	}
+}
+
 void PageProbe::valueReceived(const DeviceValues &values_list)
 {
 	bool update = false;
@@ -712,7 +698,8 @@ void PageProbe::valueReceived(const DeviceValues &values_list)
 	if (update)
 		updateControlState();
 
-	PageSimpleProbe::valueReceived(values_list);
+	if (values_list.contains(ControlledProbeDevice::DIM_TEMPERATURE))
+		setTemperature(values_list[ControlledProbeDevice::DIM_TEMPERATURE].toInt());
 }
 
 

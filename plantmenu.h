@@ -126,38 +126,12 @@ protected:
 
 /*!
 	\ingroup ThermalRegulation
-	\brief Base class for zone pages; displays zone description and temperature.
- */
-// TODO merge with PageProbe
-class PageSimpleProbe : public NavigationPage
-{
-Q_OBJECT
-public:
-	PageSimpleProbe(QDomNode n, TemperatureScale scale = CELSIUS);
-
-public slots:
-	virtual void valueReceived(const DeviceValues &values_list);
-
-protected:
-	void setTemperature(unsigned temp);
-
-	/// Measured temperature label and string
-	QLabel *temp_label;
-	/// Temperature scale
-	TemperatureScale temp_scale;
-	// button to toggle manual/automatic mode
-	BtButton *toggle_mode;
-};
-
-
-/*!
-	\ingroup ThermalRegulation
 	\brief Display information for a controlled zone.
 
 	Displays the target temperature (or an icon for antifreeze/off) and the
 	local offset.
  */
-class PageProbe : public PageSimpleProbe
+class PageProbe : public NavigationPage
 {
 Q_OBJECT
 public:
@@ -197,6 +171,8 @@ private:
 	 */
 	void setDeviceToManual();
 
+	void setTemperature(unsigned temp);
+
 	enum probe_status
 	{
 		AUTOMATIC,
@@ -214,6 +190,13 @@ private:
 	int minimum_manual_temp;
 	/// The maximum temperature that can be set with manual operation
 	int maximum_manual_temp;
+
+	/// Measured temperature label and string
+	QLabel *temp_label;
+	/// Temperature scale
+	TemperatureScale temp_scale;
+	// button to toggle manual/automatic mode
+	BtButton *toggle_mode;
 
 private slots:
 	void changeStatus();
