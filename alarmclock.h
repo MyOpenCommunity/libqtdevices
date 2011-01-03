@@ -54,46 +54,36 @@ class AlarmClock : public Page
 
 Q_OBJECT
 public:
-/*! \enum  Freq
-  Differentiate the alarm set frequencies of operation
-*/
+	// The alarm set frequencies of operation
 	enum Freq
 	{
 		// values used by TS 3.5''
-		SEMPRE = 1,  /*!< Always -> every day*/
-		ONCE = 0,  /*!< Once -> only at the first occurrence of the time selected after the alarm set was setted*/
-		FERIALI = 2,  /*!< Week days -> only from monday to friday*/
-		FESTIVI = 3,  /*!< Festive days -> only on Sunday and Saturday*/
-		NESSUNO = 50  /*!< Never*/
+		ALWAYS = 1,    // Every day
+		ONCE = 0,      // Only at the first occurrence of the time selected after the alarm set was setted
+		WEEKDAYS = 2,  // From monday to friday
+		HOLIDAYS = 3,  // On Sunday and Saturday
+		NEVER = 50     // Never
 	};
 
-/*! \enum Type
-  Differentiate the alarm set type
-*/
+	// The alarm set type
 	enum Type
 	{
-		BUZZER = 0,  /*!< The buzzer sounds and backlight flashes*/
-		DI_SON = 1  /*!< The sound diffusion system is used*/
+		BUZZER = 0, // The buzzer sounds and backlight flashes
+		DI_SON = 1  // The sound diffusion system is used
 	};
 
 	AlarmClock(int id, int item_id, Type t, Freq f, QList<bool> days, int hour, int minute);
 
-/*!
-  \brief Reads from the eeprom the alarm set state.
-*/
+	// Reads from the eeprom the alarm set state.
 	void inizializza();
 
-/*!
-  \brief Sets the number of the actual instance of this class among all the alarm set present in the project.
-*/
+	// Sets the number of the actual instance of this class among all the alarm set present in the project.
 	void setSerNum(int);
 
-/*!
-  \brief Sets the alarm set (dis)active.
-*/
+	// Sets the alarm set (dis)active.
 	void setActive(bool);
 
-	/**
+	/*
 	 * Returns the active state of the alarm clock. When alarm clock type is ONCE, this method
 	 * returns false as soon as the alarm clock fires.
 	 * \return True if the alarm clock is set, false otherwise.
@@ -101,17 +91,16 @@ public:
 	bool isActive();
 
 public slots:
-/*!
-  \brief Show the frequency (once-always-mon/fri-sat-sun).
-*/
+	// Show the frequency (once-always-mon/fri-sat-sun).
 	void showTypePage();
 
-/*!
-  \brief Show the sound diffusion page.
-*/
+	// Show the sound diffusion page.
 	void showSoundDiffPage();
 
 	void valueReceived(const DeviceValues &values_list);
+
+signals:
+	void alarmClockFired();
 
 protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
@@ -120,39 +109,25 @@ private slots:
 	void saveVolumes();
 	void resetVolumes();
 
-/*!
-  \brief Draws the first page for alarm set setting and initializes some connections.
-*/
+	// Draws the first page for alarm set setting and initializes some connections.
 	virtual void showPage();
 
-/*!
-  \brief Executed when the alarm set sequency is closed to save the data and adjust sound diffusion page if necessary.
-*/
+	// Executed when the alarm set sequency is closed to save the data and adjust sound diffusion page if necessary.
 	void saveAndActivate();
 
-/*!
-  \brief Executed every minute when alarm set is active to detect if it's time to make the alarm ser start.
-*/
+	// Executed every minute when alarm set is active to detect if it's time to make the alarm ser start.
 	void checkAlarm();
 
-/*!
-  \brief Executed every three seconds to increase the soud volume during \a sound \a diffusion \a alarm \a set starting up.
-*/
+	// Executed every three seconds to increase the soud volume during sound diffusion alarm set starting up.
 	void sounddiffusionAlarm();
 
-/*!
-  \brief Executed every 100 ms to manage the \a buzzer  \a alarm \a set.
-*/
+	// Executed every 100 ms to manage the buzzer alarm set.
 	void buzzerAlarm();
 
-/*!
-  \brief Executed every 5 s to manage the \a wav  \a alarm \a set.
-*/
+	// Executed every 5 s to manage the wav alarm set.
 	void wavAlarm();
 
-/*!
-  \brief Stops the alarm set.
-*/
+	// Stops the alarm set.
 	void stopAlarm();
 
 	// called if the alarm times out
@@ -163,7 +138,8 @@ private:
 	Type type;
 	Freq freq;
 	QList<bool> days;
-	uchar conta2min,sorgente,stazione, aggiornaDatiEEprom;
+	uchar conta2min,sorgente,stazione;
+	bool update_eeprom;
 	int serNum;
 	bool buzAbilOld;
 	unsigned int contaBuzzer;
@@ -182,8 +158,7 @@ private:
 	AlarmSoundDiffDevice *dev;
 	AmplifierDevice *general;
 
-signals:
-	void alarmClockFired();
+
 };
 
 

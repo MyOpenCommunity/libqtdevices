@@ -114,9 +114,7 @@ bannAlarmClockIcon::bannAlarmClockIcon(int item_id, int hour, int minute, QStrin
 	left_button->setStatus(enabled == 1);
 
 	alarm_clock = new AlarmClock(SET_SVEGLIA_SINGLEPAGE, item_id,
-				     static_cast<AlarmClock::Type>(tipo),
-				     AlarmClock::NESSUNO,
-				     days, hour, minute);
+		static_cast<AlarmClock::Type>(tipo), AlarmClock::NEVER, days, hour, minute);
 	alarm_clock->setSerNum(getSerNum());
 	alarm_clock->hide();
 

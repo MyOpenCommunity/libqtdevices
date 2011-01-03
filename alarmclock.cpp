@@ -145,7 +145,7 @@ void AlarmClock::saveAndActivate()
 
 void AlarmClock::showSoundDiffPage()
 {
-	aggiornaDatiEEprom = 1;
+	update_eeprom = true;
 	sorgente = 1;
 	stazione = 0;
 	dev->setReceiveFrames(true);
@@ -160,9 +160,9 @@ void AlarmClock::saveVolumes()
 	dev->setReceiveFrames(false);
 	general->turnOff();
 
-	if (aggiornaDatiEEprom)
+	if (update_eeprom)
 		setAlarmVolumes(serNum-1, volSveglia, sorgente, stazione);
-	aggiornaDatiEEprom = 0;
+	update_eeprom = false;
 	showPage();
 }
 
@@ -170,7 +170,7 @@ void AlarmClock::resetVolumes()
 {
 	dev->setReceiveFrames(false);
 	general->turnOff();
-	aggiornaDatiEEprom = 0;
+	update_eeprom = false;
 	showPage();
 }
 
@@ -259,9 +259,9 @@ void AlarmClock::checkAlarm()
 
 	bool ring_alarm = false;
 #ifdef LAYOUT_TS_3_5
-	if (freq == SEMPRE || freq == ONCE ||
-		(freq == FERIALI && actualDateTime.date().dayOfWeek() < 6) ||
-		(freq == FESTIVI && actualDateTime.date().dayOfWeek() > 5))
+	if (freq == ALWAYS || freq == ONCE ||
+		(freq == WEEKDAYS && actualDateTime.date().dayOfWeek() < 6) ||
+		(freq == HOLIDAYS && actualDateTime.date().dayOfWeek() > 5))
 		ring_alarm = true;
 #else
 	if (days[actualDateTime.date().dayOfWeek() - 1])
@@ -300,11 +300,11 @@ void AlarmClock::checkAlarm()
 					qWarning() << "Invalid source data for alarm, failed to start";
 			}
 			else
-				qFatal("Unknown sveglia type!");
+				qFatal("Unknown alarm clock type!");
 
 			// When the alarm ring we have to put the light on (like in the
 			// operative mode) but with a screen "locked" (like in the freezed
-			// mode). We do that with an event filter.
+			// mode). We do that using an event filter.
 			bt_global::btmain->freeze(false); // To stop a screensaver, if running
 			bt_global::display->forceOperativeMode(true); // Prevent the screeensaver start
 			qApp->installEventFilter(this);
@@ -495,9 +495,9 @@ AlarmClockFreq::AlarmClockFreq(AlarmClock *alarm_page)
 
 	content = new SingleChoiceContent;
 	content->addBanner(SingleChoice::createBanner(tr("once")), AlarmClock::ONCE);
-	content->addBanner(SingleChoice::createBanner(tr("always")), AlarmClock::SEMPRE);
-	content->addBanner(SingleChoice::createBanner(tr("mon-fri")), AlarmClock::FERIALI);
-	content->addBanner(SingleChoice::createBanner(tr("sat-sun")), AlarmClock::FESTIVI);
+	content->addBanner(SingleChoice::createBanner(tr("always")), AlarmClock::ALWAYS);
+	content->addBanner(SingleChoice::createBanner(tr("mon-fri")), AlarmClock::WEEKDAYS);
+	content->addBanner(SingleChoice::createBanner(tr("sat-sun")), AlarmClock::HOLIDAYS);
 
 	connect(content, SIGNAL(bannerSelected(int)),
 		SLOT(setSelection(int)));
@@ -642,7 +642,7 @@ QTime AlarmClockTimeFreq::getAlarmTime() const
 
 AlarmClock::Freq AlarmClockTimeFreq::getAlarmFreq() const
 {
-	return AlarmClock::NESSUNO;
+	return AlarmClock::NEVER;
 }
 
 QList<bool> AlarmClockTimeFreq::getAlarmDays() const
