@@ -189,6 +189,7 @@ void SlideshowPage::displayImages(QList<QString> images, unsigned element)
 {
 	controller->initialize(images.size(), element);
 	image_list = images;
+	image->setPixmap(QPixmap());
 	showImage(element);
 	showPage();
 }
