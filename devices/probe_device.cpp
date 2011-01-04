@@ -26,6 +26,7 @@
 
 #include <QVariant>
 #include <QtDebug>
+#include <QString>
 
 enum what_t
 {
@@ -126,7 +127,17 @@ void ControlledProbeDevice::setManual(unsigned setpoint)
 void ControlledProbeDevice::setAutomatic()
 {
 	set_point = -1;
-	sendFrame(createCommandFrame(who, "311", where));
+	sendFrame(createCommandFrame(who, QString::number(GEN_AUTOMATIC), where));
+}
+
+void ControlledProbeDevice::setOff()
+{
+	sendCommand(GEN_OFF);
+}
+
+void ControlledProbeDevice::setProtection()
+{
+	sendCommand(PROT_GENERIC);
 }
 
 void ControlledProbeDevice::setFancoilSpeed(int speed)

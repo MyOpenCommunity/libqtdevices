@@ -31,7 +31,9 @@
 #include "state_button.h"
 #include "scaleconversion.h"
 #include "icondispatcher.h"
+#include "state_button.h"
 
+#include <QHBoxLayout>
 #include <QVariant>
 #include <QRegExp>
 #include <QLabel>
@@ -373,41 +375,39 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 {
 	temp_scale = scale;
 	delta_setpoint = false;
+	status = AUTOMATIC;
+	probe_type = thermo_reg->type();
+
+	dev = _dev;
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+
+	main_layout.setAlignment(Qt::AlignHCenter);
+
+#ifdef LAYOUT_TS_3_5
 	QLabel *descr_label = new QLabel(getTextChild(n, "descr"));
 	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignHCenter);
 
 	main_layout.addWidget(descr_label);
-	main_layout.setContentsMargins(0, 0, 0, 0);
-	main_layout.setSpacing(0);
-
-	temp_label = new QLabel(this);
-	temp_label->setFont(bt_global::font->get(FontManager::PROBE_TEMPERATURE));
-	temp_label->setAlignment(Qt::AlignHCenter);
-
-	main_layout.addWidget(temp_label);
-	main_layout.setAlignment(Qt::AlignHCenter);
-
-	setTemperature(1235);
 
 	createNavigationBar(bt_global::skin->getImage("probe_manual"));
-#ifdef LAYOUT_TS_3_5
-	toggle_mode = nav_bar->forward_button;
-#else
-	toggle_mode = new BtButton(bt_global::skin->getImage("probe_manual"));
-#endif
 
 	probe_icon_auto = bt_global::skin->getImage("probe_auto");
 	probe_icon_manual = bt_global::skin->getImage("probe_manual");
 
-	status = AUTOMATIC;
-	probe_type = thermo_reg->type();
-
-	dev = _dev;
-
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+	toggle_mode = nav_bar->forward_button;
 	connect(toggle_mode, SIGNAL(clicked()), SLOT(changeStatus()));
-	//install compressor
+#else
+	main_layout.setContentsMargins(0, 0, 0, 17);
+	createNavigationBar(QString(), getTextChild(n, "descr"));
+#endif
+
+	temp_label = new QLabel(this);
+	temp_label->setFont(bt_global::font->get(FontManager::PROBE_TEMPERATURE));
+	temp_label->setAlignment(Qt::AlignHCenter);
+	setTemperature(1235);
+
+	main_layout.addWidget(temp_label);
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 
@@ -425,11 +425,13 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	setpoint_label->setAlignment(Qt::AlignHCenter);
 	setpoint_label->setProperty("SecondFgColor", true);
 
+#ifdef LAYOUT_TS_3_5
 	icon_antifreeze = getLabelWithPixmap(bt_global::skin->getImage("probe_antifreeze"), this, Qt::AlignHCenter);
 	hbox->addWidget(icon_antifreeze, 1, Qt::AlignCenter);
 
 	icon_off = getLabelWithPixmap(bt_global::skin->getImage("probe_off"), this, Qt::AlignHCenter);
 	hbox->addWidget(icon_off, 1, Qt::AlignCenter);
+#endif
 
 	hbox->addWidget(setpoint_label, 1, Qt::AlignVCenter);
 	btn_plus = new BtButton(bt_global::skin->getImage("plus"));
@@ -452,17 +454,51 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	// avoid moving of fancoil buttons bar
 	main_layout.addStretch();
 
-	// layout for the control buttons and fancoil icons
-	bottom_icons.setAlignment(Qt::AlignHCenter);
-	main_layout.addLayout(&bottom_icons);
+	bottom_icons = new QHBoxLayout;
 
 #ifdef LAYOUT_TS_10
-	bottom_icons.setSpacing(10);
-	bottom_icons.addWidget(toggle_mode);
-	bottom_icons.setContentsMargins(0, 0, 0, 60);
+	if (probe_type == THERMO_Z99)
+	{
+		auto_mode = new StateButton;
+		auto_mode->setOffImage(bt_global::skin->getImage("probe_auto_off"));
+		auto_mode->setOnImage(bt_global::skin->getImage("probe_auto_on"));
+		connect(auto_mode, SIGNAL(clicked()), dev, SLOT(setAutomatic()));
+
+		manual_mode = new StateButton;
+		manual_mode->setOffImage(bt_global::skin->getImage("probe_manual_off"));
+		manual_mode->setOnImage(bt_global::skin->getImage("probe_manual_on"));
+		connect(manual_mode, SIGNAL(clicked()), SLOT(setDeviceToManual()));
+
+		antifreeze_mode = new StateButton;
+		antifreeze_mode->setOffImage(bt_global::skin->getImage("probe_antifreeze_off"));
+		antifreeze_mode->setOnImage(bt_global::skin->getImage("probe_antifreeze_on"));
+		connect(antifreeze_mode, SIGNAL(clicked()), dev, SLOT(setProtection()));
+
+		off_mode = new StateButton;
+		off_mode->setOffImage(bt_global::skin->getImage("probe_off_off"));
+		off_mode->setOnImage(bt_global::skin->getImage("probe_off_on"));
+		connect(off_mode, SIGNAL(clicked()), dev, SLOT(setOff()));
+
+		// layout for the control buttons
+		QHBoxLayout *control_icons = new QHBoxLayout;
+		control_icons->setSpacing(10);
+		control_icons->addWidget(off_mode);
+		control_icons->addWidget(antifreeze_mode);
+		control_icons->addWidget(auto_mode);
+		control_icons->addWidget(manual_mode);
+		control_icons->setContentsMargins(0, 0, 0, 5);
+		control_icons->setAlignment(Qt::AlignHCenter);
+
+		main_layout.addLayout(control_icons);
+	}
+	bottom_icons->setSpacing(10);
 #else
-	bottom_icons.setSpacing(0);
+	bottom_icons->setSpacing(0);
 #endif
+
+	// layout for fancoil icons
+	bottom_icons->setAlignment(Qt::AlignHCenter);
+	main_layout.addLayout(bottom_icons);
 
 	switch (temp_scale)
 	{
@@ -563,12 +599,19 @@ void PageProbe::updateControlState()
 	btn_plus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !is_off && !is_antifreeze);
 	setpoint_label->setVisible(!is_off && !is_antifreeze);
 	local_temp_label->setVisible(!is_off && !is_antifreeze && local_temp != "0");
-	icon_off->setVisible(is_off);
-	icon_antifreeze->setVisible(is_antifreeze);
+
 #ifdef LAYOUT_TS_3_5
 	toggle_mode->setVisible(probe_type == THERMO_Z99 && !is_off && !is_antifreeze);
+	icon_off->setVisible(is_off);
+	icon_antifreeze->setVisible(is_antifreeze);
 #else
-	toggle_mode->setVisible(probe_type == THERMO_Z99);
+	if (probe_type == THERMO_Z99)
+	{
+		manual_mode->setStatus(status == MANUAL);
+		auto_mode->setStatus(status == AUTOMATIC);
+		antifreeze_mode->setStatus(is_antifreeze);
+		off_mode->setStatus(is_off);
+	}
 #endif
 	local_temp_label->setText(local_temp);
 }
@@ -668,12 +711,10 @@ void PageProbe::valueReceived(const DeviceValues &values_list)
 		{
 		case ControlledProbeDevice::ST_MANUAL:
 			status = MANUAL;
-			toggle_mode->setImage(probe_icon_auto);
 			update = true;
 			break;
 		case ControlledProbeDevice::ST_AUTO:
 			status = AUTOMATIC;
-			toggle_mode->setImage(probe_icon_manual);
 			update = true;
 			break;
 		case ControlledProbeDevice::ST_PROTECTION:
@@ -724,7 +765,7 @@ void PageFancoil::createFancoilButtons()
 		btn->setOnImage(path_pressed);
 		btn->setCheckable(true);
 
-		bottom_icons.addWidget(btn);
+		bottom_icons->addWidget(btn);
 		fancoil_buttons.addButton(btn, id);
 
 		speed_to_btn_tbl[(id + 1) % 4] = id;

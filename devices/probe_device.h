@@ -163,16 +163,6 @@ public:
 	virtual void init() { requestStatus(); }
 
 	/*!
-		\brief Set zone in manual mode with the given target temperature (99-zone controller).
-	 */
-	void setManual(unsigned setpoint);
-
-	/*!
-		\brief Set zone in automatic mode (99-zone controller).
-	 */
-	void setAutomatic();
-
-	/*!
 		\brief Set fancoil speed.
 
 		Speeds:
@@ -190,6 +180,27 @@ public:
 		It should never be necessary to call this function explicitly.
 	 */
 	void requestStatus();
+
+public slots:
+	/*!
+		\brief Set zone in manual mode with the given target temperature (99-zone controller).
+	*/
+	void setManual(unsigned setpoint);
+
+	/*!
+		\brief Set zone in automatic mode (99-zone controller).
+	*/
+	void setAutomatic();
+
+	/*!
+		\brief Set zone to antifreeze mode (99-zone controller).
+	*/
+	void setProtection();
+
+	/*!
+		\brief Set zone to off mode (99-zone controller).
+	*/
+	void setOff();
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);

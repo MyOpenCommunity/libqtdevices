@@ -33,7 +33,9 @@
 class NavigationPage;
 class ControlledProbeDevice;
 class ThermalDevice;
+class StateButton;
 class QLabel;
+class QHBoxLayout;
 
 
 enum ThermalPageID
@@ -154,22 +156,16 @@ protected:
 	bool delta_setpoint;
 
 	BtButton *btn_minus, *btn_plus;
-	QLabel *icon_off, *icon_antifreeze;
 	// setpoint e' la temperatura impostata mentre la rotellina e' `locale'
 	// le impostazioni per il locale (rotellina) sono nella specifica del protocollo,
 	// ie. 0 = (rotella su) 0, 1 = 1, ... , 11 = -1, 12 = -2, 13 = -3, 4 = Off, 5 = Antigelo
 	QString local_temp;
 	QLabel *local_temp_label;
-	QHBoxLayout bottom_icons;
+	QHBoxLayout *bottom_icons;
 
 	ControlledProbeDevice *dev;
 
 private:
-	/**
-	 * Called when it's needed to set the device to manual operation. A conversion to Celsius degrees is done if needed.
-	 */
-	void setDeviceToManual();
-
 	void setTemperature(unsigned temp);
 
 	enum ProbeStatus
@@ -181,7 +177,6 @@ private:
 	bool is_off, is_antifreeze;
 	ProbeStatus status;
 	ThermoType probe_type;
-	QString probe_icon_auto, probe_icon_manual;
 
 	/// The delta of temperature (in 1/10 of degrees) when the user presses on plus or minus
 	const unsigned setpoint_delta;
@@ -194,10 +189,24 @@ private:
 	QLabel *temp_label;
 	/// Temperature scale
 	TemperatureScale temp_scale;
+
+#ifdef LAYOUT_TS_3_5
 	// button to toggle manual/automatic mode
 	BtButton *toggle_mode;
+	QString probe_icon_auto, probe_icon_manual;
+
+	QLabel *icon_off, *icon_antifreeze;
+#else
+	StateButton *manual_mode, *auto_mode, *antifreeze_mode, *off_mode;
+#endif
 
 private slots:
+
+	/**
+	 * Called when it's needed to set the device to manual operation. A conversion to Celsius degrees is done if needed.
+	 */
+	void setDeviceToManual();
+
 	void changeStatus();
 
 	/**
