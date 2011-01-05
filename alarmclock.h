@@ -47,11 +47,6 @@ class SingleChoiceContent;
 // The implementation af the alarm set.
 class AlarmClock : public Page
 {
-	friend class AlarmClockTime;
-	friend class AlarmClockFreq;
-	friend class AlarmClockTimeFreq;
-	friend class AlarmClockSoundDiff;
-
 Q_OBJECT
 public:
 	// The alarm set frequencies of operation
@@ -69,7 +64,7 @@ public:
 	enum Type
 	{
 		BUZZER = 0, // The buzzer sounds and backlight flashes
-		DI_SON = 1  // The sound diffusion system is used
+		SOUND_DIFF = 1  // The sound diffusion system is used
 	};
 
 	AlarmClock(int id, int item_id, Type t, Freq f, int days, int hour, int minute);
@@ -157,8 +152,6 @@ private:
 	AlarmClockSoundDiff *alarm_sound_diff;
 	AlarmSoundDiffDevice *dev;
 	AmplifierDevice *general;
-
-
 };
 
 
@@ -167,10 +160,13 @@ class AlarmClockTime : public Page
 {
 Q_OBJECT
 public:
-	AlarmClockTime(AlarmClock *alarm_page);
+	AlarmClockTime(QTime alarm_time);
 
 	QTime getAlarmTime() const;
 	void setActive(bool active) {}
+
+signals:
+	void okClicked();
 
 private:
 	BtTimeEdit *edit;
@@ -182,10 +178,13 @@ class AlarmClockFreq : public Page
 {
 Q_OBJECT
 public:
-	AlarmClockFreq(AlarmClock *alarm_page);
+	AlarmClockFreq(AlarmClock::Type type, AlarmClock::Freq freq);
 
 	AlarmClock::Freq getAlarmFreq() const;
 	QList<bool> getAlarmDays() const;
+
+signals:
+	void okClicked();
 
 private slots:
 	void setSelection(int freq);
@@ -200,8 +199,6 @@ class AlarmClockSoundDiff : public Page
 {
 Q_OBJECT
 public:
-	AlarmClockSoundDiff(AlarmClock *alarm_page);
-
 	virtual void showPage();
 
 signals:
@@ -213,13 +210,17 @@ class AlarmClockTimeFreq : public Page
 {
 Q_OBJECT
 public:
-	AlarmClockTimeFreq(AlarmClock *alarm_page);
+	AlarmClockTimeFreq(QTime alarm_time, AlarmClock::Type type, QList<bool> days);
 
 	QTime getAlarmTime() const;
 	AlarmClock::Freq getAlarmFreq() const;
 	QList<bool> getAlarmDays() const;
 
 	void setActive(bool active);
+
+signals:
+	void okClicked();
+	void showSoundDiffusion();
 
 private:
 	BtTimeEdit *edit;
