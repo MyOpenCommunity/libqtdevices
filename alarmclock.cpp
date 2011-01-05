@@ -113,14 +113,14 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, int days_act
 		// when confirming the sound diffusion status, also save and activate the alarm
 		connect(alarm_sound_diff, SIGNAL(saveVolumes()), SLOT(saveVolumes()));
 		connect(alarm_sound_diff, SIGNAL(saveVolumes()), SLOT(saveAndActivate()));
+
+		dev = bt_global::add_device_to_cache(new AlarmSoundDiffDevice());
+		general = AmplifierDevice::createDevice("0");
+
+		connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 	}
 	else
 		alarm_sound_diff = NULL;
-
-	dev = bt_global::add_device_to_cache(new AlarmSoundDiffDevice());
-	general = AmplifierDevice::createDevice("0");
-
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
 void AlarmClock::showPage()
