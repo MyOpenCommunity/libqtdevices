@@ -80,6 +80,7 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, int days_act
 	minuTimer = NULL;
 	freq = f;
 	type = t;
+	active = false;
 
 	for (int i = 0; i < 7; ++i)
 	{
