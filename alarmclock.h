@@ -86,9 +86,6 @@ public:
 	bool isActive();
 
 public slots:
-	// Show the frequency (once-always-mon/fri-sat-sun).
-	void showTypePage();
-
 	// Show the sound diffusion page.
 	void showSoundDiffPage();
 

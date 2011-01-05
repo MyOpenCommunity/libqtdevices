@@ -93,10 +93,11 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, int days_act
 
 #ifdef LAYOUT_TS_3_5
 	alarm_time_page = new AlarmClockTime(alarm_time);
-	connect(alarm_time_page, SIGNAL(forwardClick()), this, SLOT(showTypePage()));
+	alarm_type_page = new AlarmClockFreq(type, freq);
+
+	connect(alarm_time_page, SIGNAL(forwardClick()), alarm_type_page, SLOT(showPage()));
 	connect(alarm_time_page, SIGNAL(okClicked()), this, SLOT(saveAndActivate()));
 
-	alarm_type_page = new AlarmClockFreq(type, freq);
 	connect(alarm_type_page, SIGNAL(forwardClick()), SLOT(showSoundDiffPage()));
 	connect(alarm_type_page, SIGNAL(okClicked()), SLOT(saveAndActivate()));
 #else
@@ -126,11 +127,6 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, int days_act
 void AlarmClock::showPage()
 {
 	alarm_time_page->showPage();
-}
-
-void AlarmClock::showTypePage()
-{
-	alarm_type_page->showPage();
 }
 
 void AlarmClock::saveAndActivate()
