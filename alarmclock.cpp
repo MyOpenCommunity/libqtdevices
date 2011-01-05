@@ -71,7 +71,7 @@ AlarmNavigation::AlarmNavigation(bool forwardButton, QWidget *parent)
 
 // AlarmClock implementation
 
-AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, QList<bool> active, int hour, int minute)
+AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, int days_active, int hour, int minute)
 {
 	id = config_id;
 	item_id = _item_id;
@@ -80,7 +80,12 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, QList<bool> 
 	minuTimer = NULL;
 	freq = f;
 	type = t;
-	days = active;
+
+	for (int i = 0; i < 7; ++i)
+	{
+		int mask = 1 << (6 - i);
+		days.append((days_active & mask) ? true : false);
+	}
 
 	for (uchar idx = 0; idx < AMPLI_NUM; idx++)
 		volSveglia[idx] = -1;

@@ -72,7 +72,7 @@ public:
 		DI_SON = 1  // The sound diffusion system is used
 	};
 
-	AlarmClock(int id, int item_id, Type t, Freq f, QList<bool> days, int hour, int minute);
+	AlarmClock(int id, int item_id, Type t, Freq f, int days, int hour, int minute);
 
 	// Reads from the eeprom the alarm set state.
 	void inizializza();
