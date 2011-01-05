@@ -56,7 +56,6 @@
 #include <unistd.h>
 
 
-// Alarmnavigation implementation
 
 AlarmNavigation::AlarmNavigation(bool forwardButton, QWidget *parent)
 	: AbstractNavigationBar(parent)
@@ -69,23 +68,22 @@ AlarmNavigation::AlarmNavigation(bool forwardButton, QWidget *parent)
 #endif
 }
 
-// AlarmClock implementation
 
-AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, int days_active, int hour, int minute)
+AlarmClock::AlarmClock(int config_id, int _item_id, Type type, Freq freq, int days_active, int hour, int minute)
 {
 	id = config_id;
 	item_id = _item_id;
 	aumVolTimer = NULL;
 	alarm_time = QTime(hour, minute);
 	minuTimer = NULL;
-	freq = f;
-	type = t;
+	alarm_freq = freq;
+	alarm_type = type;
 	active = false;
 
 	for (int i = 0; i < 7; ++i)
 	{
 		int mask = 1 << (6 - i);
-		days.append((days_active & mask) ? true : false);
+		alarm_days.append((days_active & mask) ? true : false);
 	}
 
 	for (int i = 0; i < AMPLI_NUM; i++)
@@ -93,7 +91,7 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, int days_act
 
 #ifdef LAYOUT_TS_3_5
 	alarm_time_page = new AlarmClockTime(alarm_time);
-	alarm_type_page = new AlarmClockFreq(type, freq);
+	alarm_type_page = new AlarmClockFreq(alarm_type, alarm_freq);
 
 	connect(alarm_time_page, SIGNAL(forwardClick()), alarm_type_page, SLOT(showPage()));
 	connect(alarm_time_page, SIGNAL(okClicked()), this, SLOT(saveAndActivate()));
@@ -101,13 +99,13 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, int days_act
 	connect(alarm_type_page, SIGNAL(forwardClick()), SLOT(showSoundDiffPage()));
 	connect(alarm_type_page, SIGNAL(okClicked()), SLOT(saveAndActivate()));
 #else
-	alarm_time_page = alarm_type_page = new AlarmClockTimeFreq(alarm_time, type, days);
+	alarm_time_page = alarm_type_page = new AlarmClockTimeFreq(alarm_time, alarm_type, alarm_days);
 	connect(alarm_time_page, SIGNAL(Closed()), SIGNAL(Closed()));
 	connect(alarm_time_page, SIGNAL(okClicked()), SLOT(saveAndActivate()));
 	connect(alarm_time_page, SIGNAL(showSoundDiffusion()), SLOT(showSoundDiffPage()));
 #endif
 
-	if (type == SOUND_DIFF)
+	if (alarm_type == SOUND_DIFF)
 	{
 		alarm_sound_diff = new AlarmClockSoundDiff;
 		connect(alarm_sound_diff, SIGNAL(Closed()), SLOT(resetVolumes()));
@@ -133,8 +131,8 @@ void AlarmClock::saveAndActivate()
 {
 	setActive(true);
 	alarm_time = alarm_time_page->getAlarmTime();
-	freq = alarm_type_page->getAlarmFreq();
-	days = alarm_type_page->getAlarmDays();
+	alarm_freq = alarm_type_page->getAlarmFreq();
+	alarm_days = alarm_type_page->getAlarmDays();
 
 	QMap<QString, QString> data;
 	data["hour"] = alarm_time.toString("hh");
@@ -143,12 +141,12 @@ void AlarmClock::saveAndActivate()
 	{
 		int active = 0;
 		for (int i = 0; i < 7; ++i)
-			if (days[i])
+			if (alarm_days[i])
 				active |= 1 << (6 - i);
 		data["days"] = QString::number(active);
 	}
 	else
-		data["alarmset"] = QString::number(freq);
+		data["alarmset"] = QString::number(alarm_freq);
 
 #ifdef CONFIG_TS_3_5
 	setCfgValue(data, id, serial_number);
@@ -271,24 +269,24 @@ void AlarmClock::checkAlarm()
 	if (!active)
 		return;
 
-	QDateTime actualDateTime = QDateTime::currentDateTime();
+	QDateTime current = QDateTime::currentDateTime();
 
 	bool ring_alarm = false;
 #ifdef LAYOUT_TS_3_5
-	if (freq == ALWAYS || freq == ONCE ||
-		(freq == WEEKDAYS && actualDateTime.date().dayOfWeek() < 6) ||
-		(freq == HOLIDAYS && actualDateTime.date().dayOfWeek() > 5))
+	if (alarm_freq == ALWAYS || alarm_freq == ONCE ||
+		(alarm_freq == WEEKDAYS && current.date().dayOfWeek() < 6) ||
+		(alarm_freq == HOLIDAYS && current.date().dayOfWeek() > 5))
 		ring_alarm = true;
 #else
-	if (days[actualDateTime.date().dayOfWeek() - 1])
+	if (alarm_days[current.date().dayOfWeek() - 1])
 		ring_alarm = true;
 #endif
 
 	if (ring_alarm)
 	{
-		if ((actualDateTime.time() >= alarm_time) && (alarm_time.secsTo(actualDateTime.time())<60))
+		if ((current.time() >= alarm_time) && (alarm_time.secsTo(current.time())<60))
 		{
-			if (type == BUZZER)
+			if (alarm_type == BUZZER)
 			{
 				bt_global::audio_states->toState(AudioStates::ALARM_TO_SPEAKER);
 #ifdef BT_HARDWARE_TS_10
@@ -303,7 +301,7 @@ void AlarmClock::checkAlarm()
 				contaBuzzer = 0;
 				conta2min = 0;
 			}
-			else if (type == SOUND_DIFF)
+			else if (alarm_type == SOUND_DIFF)
 			{
 				if (dev->isValid(sorgente, stazione, alarm_volumes))
 				{
@@ -328,13 +326,13 @@ void AlarmClock::checkAlarm()
 
 			qDebug("Starting alarm clock");
 
-			if (freq == ONCE)
+			if (alarm_freq == ONCE)
 				setActive(false);
 		}
 	}
 
 	if (active)
-		minuTimer->start((60-actualDateTime.time().second())*1000);
+		minuTimer->start((60-current.time().second())*1000);
 }
 
 bool AlarmClock::isActive()
@@ -418,7 +416,7 @@ void AlarmClock::alarmTimeout()
 	delete aumVolTimer;
 	aumVolTimer = NULL;
 
-	if (type == BUZZER)
+	if (alarm_type == BUZZER)
 		bt_global::audio_states->removeState(AudioStates::ALARM_TO_SPEAKER);
 
 	// restore display state
@@ -440,7 +438,7 @@ void AlarmClock::stopAlarm()
 	if (type == BUZZER)
 		setBeep(buzAbilOld);
 #endif
-	if (type == BUZZER)
+	if (alarm_type == BUZZER)
 		bt_global::audio_states->removeState(AudioStates::ALARM_TO_SPEAKER);
 
 	delete aumVolTimer;
@@ -460,7 +458,6 @@ void AlarmClock::inizializza()
 	getAlarmVolumes(serial_number-1, alarm_volumes, &sorgente, &stazione);
 }
 
-// AlarmClockTime implementation
 
 AlarmClockTime::AlarmClockTime(QTime alarm_time)
 {
@@ -503,7 +500,6 @@ QTime AlarmClockTime::getAlarmTime() const
 	return QTime(t.hour(), t.minute());
 }
 
-// AlarmClockFreq implementation
 
 AlarmClockFreq::AlarmClockFreq(AlarmClock::Type type, AlarmClock::Freq freq)
 {
@@ -539,7 +535,7 @@ QList<bool> AlarmClockFreq::getAlarmDays() const
 	return QList<bool>();
 }
 
-// AlarmClockSoundDiff
+
 void AlarmClockSoundDiff::showPage()
 {
 #ifdef LAYOUT_TS_10
@@ -555,7 +551,6 @@ void AlarmClockSoundDiff::showPage()
 #endif
 }
 
-// AlarmClockTimeFreq implementation
 
 AlarmClockTimeFreq::AlarmClockTimeFreq(QTime alarm_time, AlarmClock::Type type, QList<bool> active)
 {

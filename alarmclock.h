@@ -67,7 +67,7 @@ public:
 		SOUND_DIFF = 1  // The sound diffusion system is used
 	};
 
-	AlarmClock(int id, int item_id, Type t, Freq f, int days, int hour, int minute);
+	AlarmClock(int id, int item_id, Type type, Freq freq, int days, int hour, int minute);
 
 	// Reads from the eeprom the alarm set state.
 	void inizializza();
@@ -127,15 +127,18 @@ private slots:
 
 private:
 	int id, item_id;
-	Type type;
-	Freq freq;
-	QList<bool> days;
 	uchar conta2min,sorgente,stazione;
 	bool update_eeprom;
 	int serial_number;
 	bool buzAbilOld;
 	unsigned int contaBuzzer;
+
+	// The variables which represent an alarm.
+	QList<bool> alarm_days;
+	Type alarm_type;
+	Freq alarm_freq;
 	QTime alarm_time;
+
 	int alarm_volumes[AMPLI_NUM];
 	bool active;
 	QTimer *minuTimer,*aumVolTimer;
