@@ -140,19 +140,19 @@ private:
 	QList<bool> days;
 	uchar conta2min,sorgente,stazione;
 	bool update_eeprom;
-	int serNum;
+	int serial_number;
 	bool buzAbilOld;
 	unsigned int contaBuzzer;
-	QTime alarmTime;
-	int volSveglia[AMPLI_NUM];
+	QTime alarm_time;
+	int alarm_volumes[AMPLI_NUM];
 	bool active;
 	QTimer *minuTimer,*aumVolTimer;
 #ifdef LAYOUT_TS_3_5
-	AlarmClockTime *alarm_time;
-	AlarmClockFreq *alarm_type;
+	AlarmClockTime *alarm_time_page;
+	AlarmClockFreq *alarm_type_page;
 #else
-	AlarmClockTimeFreq *alarm_time;
-	AlarmClockTimeFreq *alarm_type;
+	AlarmClockTimeFreq *alarm_time_page;
+	AlarmClockTimeFreq *alarm_type_page;
 #endif
 	AlarmClockSoundDiff *alarm_sound_diff;
 	AlarmSoundDiffDevice *dev;

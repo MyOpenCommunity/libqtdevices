@@ -76,7 +76,7 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, int days_act
 	id = config_id;
 	item_id = _item_id;
 	aumVolTimer = NULL;
-	alarmTime = QTime(hour, minute);
+	alarm_time = QTime(hour, minute);
 	minuTimer = NULL;
 	freq = f;
 	type = t;
@@ -89,13 +89,13 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, int days_act
 	}
 
 	for (uchar idx = 0; idx < AMPLI_NUM; idx++)
-		volSveglia[idx] = -1;
+		alarm_volumes[idx] = -1;
 
 #ifdef LAYOUT_TS_3_5
-	alarm_time = new AlarmClockTime(this);
-	alarm_type = new AlarmClockFreq(this);
+	alarm_time_page = new AlarmClockTime(this);
+	alarm_type_page = new AlarmClockFreq(this);
 #else
-	alarm_time = alarm_type = new AlarmClockTimeFreq(this);
+	alarm_time_page = alarm_type_page = new AlarmClockTimeFreq(this);
 #endif
 
 	if (type == DI_SON)
@@ -111,24 +111,24 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type t, Freq f, int days_act
 
 void AlarmClock::showPage()
 {
-	alarm_time->showPage();
+	alarm_time_page->showPage();
 }
 
 void AlarmClock::showTypePage()
 {
-	alarm_type->showPage();
+	alarm_type_page->showPage();
 }
 
 void AlarmClock::saveAndActivate()
 {
 	setActive(true);
-	alarmTime = alarm_time->getAlarmTime();
-	freq = alarm_type->getAlarmFreq();
-	days = alarm_type->getAlarmDays();
+	alarm_time = alarm_time_page->getAlarmTime();
+	freq = alarm_type_page->getAlarmFreq();
+	days = alarm_type_page->getAlarmDays();
 
 	QMap<QString, QString> data;
-	data["hour"] = alarmTime.toString("hh");
-	data["minute"] = alarmTime.toString("mm");
+	data["hour"] = alarm_time.toString("hh");
+	data["minute"] = alarm_time.toString("mm");
 	if (id == SET_SVEGLIA_SINGLEPAGE)
 	{
 		int active = 0;
@@ -141,7 +141,7 @@ void AlarmClock::saveAndActivate()
 		data["alarmset"] = QString::number(freq);
 
 #ifdef CONFIG_TS_3_5
-	setCfgValue(data, id, serNum);
+	setCfgValue(data, id, serial_number);
 #else
 	setCfgValue(data, item_id);
 #endif
@@ -156,7 +156,7 @@ void AlarmClock::showSoundDiffPage()
 	stazione = 0;
 	dev->setReceiveFrames(true);
 	for (unsigned idx = 0; idx < AMPLI_NUM; idx++)
-		volSveglia[idx] = -1;
+		alarm_volumes[idx] = -1;
 
 	alarm_sound_diff->showPage();
 }
@@ -167,7 +167,7 @@ void AlarmClock::saveVolumes()
 	general->turnOff();
 
 	if (update_eeprom)
-		setAlarmVolumes(serNum-1, volSveglia, sorgente, stazione);
+		setAlarmVolumes(serial_number-1, alarm_volumes, sorgente, stazione);
 	update_eeprom = false;
 	showPage();
 }
@@ -182,7 +182,7 @@ void AlarmClock::resetVolumes()
 
 void AlarmClock::setActive(bool a)
 {
-	alarm_time->setActive(a);
+	alarm_time_page->setActive(a);
 
 	active = a;
 	if (active)
@@ -206,7 +206,7 @@ void AlarmClock::setActive(bool a)
 	}
 
 #ifdef CONFIG_TS_3_5
-	setCfgValue("enabled", active, id, serNum);
+	setCfgValue("enabled", active, id, serial_number);
 #else
 	setCfgValue("enabled", active, item_id);
 #endif
@@ -223,10 +223,10 @@ void AlarmClock::valueReceived(const DeviceValues &values_list)
 		{
 			int volume = values_list[AlarmSoundDiffDevice::DIM_VOLUME].toInt();
 
-			volSveglia[amplifier] = volume;
+			alarm_volumes[amplifier] = volume;
 		}
 		else
-			volSveglia[amplifier] = -1;
+			alarm_volumes[amplifier] = -1;
 	}
 
 	if (values_list.contains(AlarmSoundDiffDevice::DIM_SOURCE))
@@ -276,7 +276,7 @@ void AlarmClock::checkAlarm()
 
 	if (ring_alarm)
 	{
-		if ((actualDateTime.time() >= alarmTime) && (alarmTime.secsTo(actualDateTime.time())<60))
+		if ((actualDateTime.time() >= alarm_time) && (alarm_time.secsTo(actualDateTime.time())<60))
 		{
 			if (type == BUZZER)
 			{
@@ -295,7 +295,7 @@ void AlarmClock::checkAlarm()
 			}
 			else if (type == DI_SON)
 			{
-				if (dev->isValid(sorgente, stazione, volSveglia))
+				if (dev->isValid(sorgente, stazione, alarm_volumes))
 				{
 					aumVolTimer = new QTimer(this);
 					aumVolTimer->start(3000);
@@ -338,7 +338,7 @@ void AlarmClock::sounddiffusionAlarm()
 	{
 #ifdef LAYOUT_TS_10
 		// TODO fix sound diffusion for TS 3.5''
-		dev->startAlarm(SoundDiffusionPage::isMultichannel(), sorgente, stazione, volSveglia);
+		dev->startAlarm(SoundDiffusionPage::isMultichannel(), sorgente, stazione, alarm_volumes);
 #endif
 		conta2min = 9;
 	}
@@ -348,13 +348,13 @@ void AlarmClock::sounddiffusionAlarm()
 	{
 		for (int idx = 0; idx < AMPLI_NUM; idx++)
 		{
-			if (volSveglia[idx] >= conta2min)
+			if (alarm_volumes[idx] >= conta2min)
 				dev->setVolume(idx, conta2min);
 		}
 	}
 	else if (conta2min > 49)
 	{
-		dev->stopAlarm(sorgente, volSveglia);
+		dev->stopAlarm(sorgente, alarm_volumes);
 
 		// must reset forceOperativeMode before stopAlarm(), otherwise video playback
 		// will not restart correctly
@@ -442,12 +442,12 @@ void AlarmClock::stopAlarm()
 
 void AlarmClock::setSerNum(int s)
 {
-	serNum = s;
+	serial_number = s;
 }
 
 void AlarmClock::inizializza()
 {
-	getAlarmVolumes(serNum-1, volSveglia, &sorgente, &stazione);
+	getAlarmVolumes(serial_number-1, alarm_volumes, &sorgente, &stazione);
 }
 
 // AlarmClockTime implementation
@@ -460,7 +460,7 @@ AlarmClockTime::AlarmClockTime(AlarmClock *alarm_page)
 	icon->setPixmap(bt_global::skin->getImage("alarm_icon"));
 
 	edit = new BtTimeEdit(this);
-	edit->setTime(alarm_page->alarmTime);
+	edit->setTime(alarm_page->alarm_time);
 
 	QWidget *content = new QWidget;
 	QVBoxLayout *l = new QVBoxLayout(content);
@@ -585,7 +585,7 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 	descr->setAlignment(Qt::AlignHCenter);
 
 	edit = new BtTimeEdit(this);
-	edit->setTime(alarm_page->alarmTime);
+	edit->setTime(alarm_page->alarm_time);
 
 	QHBoxLayout *top = new QHBoxLayout;
 	QGridLayout *days = new QGridLayout;
