@@ -587,7 +587,7 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(AlarmClock *alarm_page)
 
 	main->setContentsMargins(25, 0, 25, 18);
 	main->setSpacing(12);
-	top->setSpacing(20);
+	top->setSpacing(5);
 	days->setSpacing(5);
 
 	icon_label->addWidget(alarm_label, 0, Qt::AlignTop|Qt::AlignHCenter);
