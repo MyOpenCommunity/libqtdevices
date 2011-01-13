@@ -518,7 +518,7 @@ void initMultimedia()
 void usbHotplug()
 {
 #ifdef BT_HARDWARE_TS_10
-	smartExecute("/sbin/hotplug add 1");
+	system ("/sbin/hotplug add 3");
 #endif
 }
 
