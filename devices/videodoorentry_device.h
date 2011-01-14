@@ -56,7 +56,7 @@ class OpenMsg;
 	\dim{END_OF_CALL,,,The other side has closed the call.}
 	\dim{RINGTONE,Ringtones::Type,,The type of the ringtone to play.}
 	\dim{MOVING_CAMERA,bool,,True if the camera support movements. }
-	\dim{CALLER_ADDRESS,QString,,The address of the caller. A negative address means that it comes from an autoswitch call. }
+	\dim{CALLER_ADDRESS,QString,,The address of the caller. An address prepended by the symbol @ means that it comes from an autoswitch call. }
 	\dim{STOP_VIDEO,bool,,Stop the reproduction of the video.}
 	\dim{VCT_TYPE,VctType,,The type of the call.}
 	\dim{RESTORE_MM_AMPLI,,,Restore the local amplifier if previously silenced.}

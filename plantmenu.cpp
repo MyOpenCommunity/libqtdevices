@@ -607,8 +607,8 @@ void PageProbe::updateControlState()
 #else
 	if (probe_type == THERMO_Z99)
 	{
-		manual_mode->setStatus(status == MANUAL);
-		auto_mode->setStatus(status == AUTOMATIC);
+		manual_mode->setStatus(status == MANUAL && !is_off && !is_antifreeze);
+		auto_mode->setStatus(status == AUTOMATIC && !is_off && !is_antifreeze);
 		antifreeze_mode->setStatus(is_antifreeze);
 		off_mode->setStatus(is_off);
 	}
