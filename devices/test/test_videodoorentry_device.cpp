@@ -213,7 +213,7 @@ void TestVideoDoorEntryDevice::receiveIncomingIpCall2()
 	QCOMPARE(dev->master_caller_address, QString::number(caller_address));
 
 	DeviceTester tc(dev, VideoDoorEntryDevice::CALLER_ADDRESS, DeviceTester::MULTIPLE_VALUES);
-	tc.check(frame, "-21");
+	tc.check(frame, "@21");
 
 	dev->vct_mode = old_mode;
 }
