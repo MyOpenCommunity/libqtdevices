@@ -63,6 +63,7 @@ public slots:
 
 signals:
 	void videoLabelUpdated(QString);
+	void enablePlaybackButtons(bool);
 
 protected:
 	virtual QString currentFileName(int index) const;

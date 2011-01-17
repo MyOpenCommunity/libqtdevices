@@ -63,6 +63,7 @@ VideoPlayerPage::VideoPlayerPage()
 	v->addStretch(1);
 
 	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::VIDEO_PAGE);
+	connect(this, SIGNAL(enablePlaybackButtons(bool)), buttons, SLOT(enablePlaybackButtons(bool)));
 	connectMultimediaButtons(buttons);
 
 	// handle mplayer termination
@@ -93,6 +94,7 @@ VideoPlayerPage::VideoPlayerPage()
 
 	connect(player, SIGNAL(playingInfoUpdated(QMap<QString,QString>)), SLOT(refreshPlayInfo(QMap<QString,QString>)));
 	connect(&refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
+
 }
 
 VideoPlayerPage::~VideoPlayerPage()
@@ -224,12 +226,15 @@ void VideoPlayerPage::next()
 bool VideoPlayerPage::checkVideo(QString track)
 {
 	QString text;
-	if (!player->checkVideoResolution(track))
+	bool supported = player->checkVideoResolution(track);
+
+	if (!supported)
 	{
 		qWarning() << "VideoPlayerPage::next -> Video resolution too high";
 		text = tr("Video not supported");
 	}
 
+	emit enablePlaybackButtons(supported);
 	emit videoLabelUpdated(text);
 	video->setText(text);
 	return text.isNull();
@@ -303,6 +308,7 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *_page, MediaPlayer *player
 	controls->hide();
 
 	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::VIDEO_WINDOW);
+	connect(page, SIGNAL(enablePlaybackButtons(bool)), buttons, SLOT(enablePlaybackButtons(bool)));
 
 	ItemTuning *volume = 0;
 	// if the touch is a sound diffusion source do not display the volume control

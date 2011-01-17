@@ -56,6 +56,9 @@ public slots:
 	void started();
 	void stopped();
 
+	// Enable or disable the playback buttons (play, stop, rewind, forward)
+	void enablePlaybackButtons(bool enable);
+
 signals:
 	void play();
 	void pause();
@@ -71,11 +74,12 @@ private slots:
 	void playToggled(bool playing);
 
 private:
-	BtButton *prev_button, *next_button, *stop_button, *rewind_button, *forward_button;
-	StateButton *play_button;
+	BtButton *prev_button, *next_button;
+	StateButton *play_button, *stop_button, *rewind_button, *forward_button;
 	QString play_icon, pause_icon;
 
 	BtButton *getButton(const QString &icon, const char *destination);
+	StateButton *getStateButton(const QString &icon, const QString &icon_disabled, const char *destination);
 };
 
 #endif // MULTIMEDIA_BUTTONS_H
