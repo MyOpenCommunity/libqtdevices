@@ -95,6 +95,7 @@ MultimediaFileListPage::MultimediaFileListPage(const QStringList &filters)
 	connect(this, SIGNAL(displayImages(QList<QString>, unsigned)),
 		slideshow, SLOT(displayImages(QList<QString>, unsigned)));
 	connect(slideshow, SIGNAL(Closed()), SLOT(showPageNoReload()));
+	connect(slideshow, SIGNAL(cleanedUp()), SLOT(cleanUp()));
 
 	videoplayer = new VideoPlayerPage;
 	connect(this, SIGNAL(displayVideos(QList<QString>, unsigned)),

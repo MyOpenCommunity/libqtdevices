@@ -98,6 +98,9 @@ public slots:
 
 	virtual void cleanUp();
 
+signals:
+	void cleanedUp();
+
 protected:
 	// kills the slideshow timer
 	void hideEvent(QHideEvent *event);

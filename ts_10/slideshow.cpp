@@ -246,6 +246,7 @@ void SlideshowPage::cleanUp()
 	// clicks on the heeder widget and it works only because the cleanUp is
 	// performed before closing the page (so also before the hideEvent).
 	controller->stopSlideshow();
+	emit cleanedUp();
 }
 
 void SlideshowPage::hideEvent(QHideEvent *)
