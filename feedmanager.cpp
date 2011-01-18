@@ -149,7 +149,7 @@ void FeedItemList::setFeedInfo(int page, const FeedData &feed_data)
 		if (data.entry_list[i].title.isEmpty())
 			data.entry_list[i].title = tr("Title unknown");
 
-		ItemList::ItemInfo item(data.entry_list[i].title, data.entry_list[i].last_updated, icons);
+		ItemList::ItemInfo item(data.entry_list[i].title.trimmed(), data.entry_list[i].last_updated, icons);
 		item_list.append(item);
 	}
 	title_widget->setTitle(data.feed_title);

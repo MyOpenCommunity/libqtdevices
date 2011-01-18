@@ -358,7 +358,7 @@ unsigned ThermalDevice4Zones::maximumTemp() const
 	return 350;
 }
 
-thermo_type_t ThermalDevice4Zones::type() const
+ThermoType ThermalDevice4Zones::type() const
 {
 	return THERMO_Z4;
 }
@@ -381,7 +381,7 @@ unsigned ThermalDevice99Zones::maximumTemp() const
 	return 400;
 }
 
-thermo_type_t ThermalDevice99Zones::type() const
+ThermoType ThermalDevice99Zones::type() const
 {
 	return THERMO_Z99;
 }

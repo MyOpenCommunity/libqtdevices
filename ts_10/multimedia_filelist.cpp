@@ -77,6 +77,7 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 
 	slideshow = new SlideshowPage;
 	connect(slideshow, SIGNAL(Closed()), SLOT(showPage()));
+	connect(slideshow, SIGNAL(cleanedUp()), SLOT(cleanUp()));
 
 	videoplayer = new VideoPlayerPage;
 

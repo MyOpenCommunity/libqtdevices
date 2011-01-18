@@ -31,6 +31,10 @@
 
 class QRect;
 
+// the max size allowed for videos.
+#define MAX_VIDEO_WIDTH 320
+#define MAX_VIDEO_HEIGHT 240
+
 
 /*!
 	\ingroup Multimedia
@@ -245,6 +249,11 @@ public:
 		rarely equal the offset.
 	 */
 	void seek(int seconds);
+
+	/*!
+		\brief Return true if the video has a resolution less than the max allowed.
+	*/
+	bool checkVideoResolution(QString track);
 
 private:
 	// there can only be a single MPlayer instance running, because only one

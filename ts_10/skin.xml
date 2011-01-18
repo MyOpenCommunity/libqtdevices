@@ -417,10 +417,15 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<img_previous>multimediale/precedente.png</img_previous>
 		<img_next>multimediale/successivo.png</img_next>
 		<img_start>multimediale/play.png</img_start>
+		<img_start_disabled>multimediale/playdis.png</img_start_disabled>
 		<img_pause>multimediale/pause.png</img_pause>
 		<img_stop>multimediale/stop.png</img_stop>
+		<img_stop_disabled>multimediale/stopdis.png</img_stop_disabled>
 		<img_skip_forward>multimediale/avanti.png</img_skip_forward>
+		<img_skip_forward_disabled>multimediale/avantidis.png</img_skip_forward_disabled>
 		<img_skip_back>multimediale/indietro.png</img_skip_back>
+		<img_skip_back_disabled>multimediale/indietrodis.png</img_skip_back_disabled>
+
 		<img_fullscreen>multimediale/screenfull.png</img_fullscreen>
 		<img_nofullscreen>multimediale/screen.png</img_nofullscreen>
 		<img_volume>diffusione/onvolamp.png</img_volume>
@@ -1608,9 +1613,14 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 		<cid>8010</cid>
 		<img_central_icon>termoregolazione/imgzona.png</img_central_icon>
 		<img_forward>termoregolazione/vai.png</img_forward>
-
-		<img_probe_auto>termoregolazione/autooff.png</img_probe_auto>
-		<img_probe_manual>termoregolazione/manualeoff.png</img_probe_manual>
+		<img_probe_auto_off>termoregolazione/autooff.png</img_probe_auto_off>
+		<img_probe_manual_off>termoregolazione/manualeoff.png</img_probe_manual_off>
+		<img_probe_off_off>termoregolazione/statocentraleon.png</img_probe_off_off>
+		<img_probe_antifreeze_off>termoregolazione/antigelooff.png</img_probe_antifreeze_off>
+		<img_probe_antifreeze_on>termoregolazione/antigeloonp.png</img_probe_antifreeze_on>
+		<img_probe_off_on>termoregolazione/statocentraleoffp.png</img_probe_off_on>
+		<img_probe_auto_on>termoregolazione/autoonp.png</img_probe_auto_on>
+		<img_probe_manual_on>termoregolazione/manualeonp.png</img_probe_manual_on>
 		<img_probe_antifreeze>termoregolazione/imgantigelo.png</img_probe_antifreeze>
 		<img_probe_off>termoregolazione/imgoff.png</img_probe_off>
 		<img_minus>termoregolazione/meno.png</img_minus>

@@ -25,7 +25,7 @@
 #include "bannerpage.h"
 #include "navigation_bar.h" // AbstractNavigationBar
 #include "main.h" // TemperatureScale
-#include "thermal_device.h" // thermo_type_t
+#include "thermal_device.h" // ThermoType
 
 #include <QVBoxLayout>
 #include <QButtonGroup>
@@ -33,17 +33,19 @@
 class NavigationPage;
 class ControlledProbeDevice;
 class ThermalDevice;
+class StateButton;
 class QLabel;
+class QHBoxLayout;
 
 
 enum ThermalPageID
 {
-	fs_4z_thermal_regulator = 1,          /*!< 4-zone thermal regulator device */
-	fs_4z_probe,                          /*!< 4-zone controlled probe */
-	fs_4z_fancoil,                        /*!< 4-zone controlled probe with fancoil */
-	fs_99z_thermal_regulator,             /*!< 99-zone thermal regulator device */
-	fs_99z_probe,                         /*!< 99-zone controlled probe */
-	fs_99z_fancoil,                       /*!< 99-zone controlled probe with fancoil */
+	FS_4Z_THERMAL_REGULATOR = 1,          /*!< 4-zone thermal regulator device */
+	FS_4Z_PROBE,                          /*!< 4-zone controlled probe */
+	FS_4Z_FANCOIL,                        /*!< 4-zone controlled probe with fancoil */
+	FS_99Z_THERMAL_REGULATOR,             /*!< 99-zone thermal regulator device */
+	FS_99Z_PROBE,                         /*!< 99-zone controlled probe */
+	FS_99Z_FANCOIL,                       /*!< 99-zone controlled probe with fancoil */
 };
 
 
@@ -115,7 +117,6 @@ signals:
 protected:
 	NavigationBar *createNavigationBar(const QString &forward_icon = QString(), const QString& title = QString(), int title_height = TITLE_HEIGHT);
 
-protected:
 	/// Content widget
 	QWidget content;
 	/// Global layout for the content
@@ -127,51 +128,24 @@ protected:
 
 /*!
 	\ingroup ThermalRegulation
-	\brief Base class for zone pages; displays zone description and temperature.
- */
-// TODO merge with PageProbe
-class PageSimpleProbe : public NavigationPage
-{
-Q_OBJECT
-public:
-	PageSimpleProbe(QDomNode n, TemperatureScale scale = CELSIUS);
-
-public slots:
-	virtual void valueReceived(const DeviceValues &values_list);
-
-protected:
-	void setTemperature(unsigned temp);
-
-protected:
-	/// Measured temperature label and string
-	QLabel *temp_label;
-	/// Temperature scale
-	TemperatureScale temp_scale;
-	// button to toggle manual/automatic mode
-	BtButton *toggle_mode;
-};
-
-
-/*!
-	\ingroup ThermalRegulation
 	\brief Display information for a controlled zone.
 
 	Displays the target temperature (or an icon for antifreeze/off) and the
 	local offset.
  */
-class PageProbe : public PageSimpleProbe
+class PageProbe : public NavigationPage
 {
 Q_OBJECT
 public:
-	PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
-		TemperatureScale scale = CELSIUS);
+	PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg, TemperatureScale scale = CELSIUS);
 
 public slots:
 	virtual void valueReceived(const DeviceValues &values_list);
+
 protected:
 	void updatePointLabel();
 	void updateControlState();
-protected:
+
 	/// Setpoint temperature. The scale of the temperature may be Celsius or Fahrenheit, depending on the value
 	/// of PageSimpleProbe::temp_scale. Units represent 1/10 of degree, for example -23.5 Celsius degrees
 	/// are represented as -235 if temp_scale == CELSIUS, or -103 if temp_scale == FAHRENHEIT
@@ -182,31 +156,27 @@ protected:
 	bool delta_setpoint;
 
 	BtButton *btn_minus, *btn_plus;
-	QLabel *icon_off, *icon_antifreeze;
 	// setpoint e' la temperatura impostata mentre la rotellina e' `locale'
 	// le impostazioni per il locale (rotellina) sono nella specifica del protocollo,
 	// ie. 0 = (rotella su) 0, 1 = 1, ... , 11 = -1, 12 = -2, 13 = -3, 4 = Off, 5 = Antigelo
 	QString local_temp;
 	QLabel *local_temp_label;
-	QHBoxLayout bottom_icons;
+	QHBoxLayout *bottom_icons;
 
 	ControlledProbeDevice *dev;
-private:
-	/**
-	 * Called when it's needed to set the device to manual operation. A conversion to Celsius degrees is done if needed.
-	 */
-	void setDeviceToManual();
 
-	enum probe_status
+private:
+	void setTemperature(unsigned temp);
+
+	enum ProbeStatus
 	{
 		AUTOMATIC,
 		MANUAL
 	};
 
-	bool isOff, isAntigelo;
-	probe_status status;
-	thermo_type_t probe_type;
-	QString probe_icon_auto, probe_icon_manual;
+	bool is_off, is_antifreeze;
+	ProbeStatus status;
+	ThermoType probe_type;
 
 	/// The delta of temperature (in 1/10 of degrees) when the user presses on plus or minus
 	const unsigned setpoint_delta;
@@ -215,7 +185,28 @@ private:
 	/// The maximum temperature that can be set with manual operation
 	int maximum_manual_temp;
 
+	/// Measured temperature label and string
+	QLabel *temp_label;
+	/// Temperature scale
+	TemperatureScale temp_scale;
+
+#ifdef LAYOUT_TS_3_5
+	// button to toggle manual/automatic mode
+	BtButton *toggle_mode;
+	QString probe_icon_auto, probe_icon_manual;
+
+	QLabel *icon_off, *icon_antifreeze;
+#else
+	StateButton *manual_mode, *auto_mode, *antifreeze_mode, *off_mode;
+#endif
+
 private slots:
+
+	/**
+	 * Called when it's needed to set the device to manual operation. A conversion to Celsius degrees is done if needed.
+	 */
+	void setDeviceToManual();
+
 	void changeStatus();
 
 	/**
@@ -241,8 +232,10 @@ public:
 	PageFancoil(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
 		TemperatureScale scale = CELSIUS);
 	virtual void valueReceived(const DeviceValues &values_list);
+
 protected:
 	void setFancoilStatus(int status);
+
 private:
 	/**
 	 * Creates fancoil buttons and loads icons
@@ -252,6 +245,7 @@ private:
 	/// A mapping between speed values and fancoil buttons
 	QMap<int, int> speed_to_btn_tbl;
 	QMap<int, int> btn_to_speed_tbl;
+
 private slots:
 	void handleFancoilButtons(int pressedButton);
 };

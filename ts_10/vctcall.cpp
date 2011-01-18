@@ -431,9 +431,14 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			else
 				emit incomingCall();
 			call_status->call_active = true;
+			if (values_list.contains(VideoDoorEntryDevice::CALLER_ADDRESS))
+				emit callerAddress(values_list[VideoDoorEntryDevice::CALLER_ADDRESS].toString());
 			break;
 		case VideoDoorEntryDevice::CALLER_ADDRESS:
-			emit callerAddress(it.value().toString());
+			// We must manage the callerAddress after the incoming call.
+			if (!values_list.contains(VideoDoorEntryDevice::VCT_CALL) &&
+				!values_list.contains(VideoDoorEntryDevice::AUTO_VCT_CALL))
+				emit callerAddress(it.value().toString());
 			break;
 		case VideoDoorEntryDevice::END_OF_CALL:
 			stopVideo();
@@ -629,6 +634,15 @@ VCTCallPage::~VCTCallPage()
 	delete VCTCall::call_status;
 }
 
+void VCTCallPage::closeCall()
+{
+	cleanUp();
+	if (!isVisible()) // If the page is not visible, we are in fullscreen mode.
+		bt_global::page_stack.closeWindow(window);
+
+	bt_global::page_stack.closePage(this);
+}
+
 void VCTCallPage::backClicked()
 {
 	vct_call->endCall();
@@ -761,7 +775,6 @@ void VCTCallPage::setProfStudio(bool on)
 
 void VCTCallPage::incomingCall()
 {
-	bt_global::btmain->vde_call_active = true;
 	vct_call->refreshStatus();
 	// Restore the 'normal' status of these buttons, that can be disabled when
 	// calling the guard unit.
@@ -771,20 +784,28 @@ void VCTCallPage::incomingCall()
 
 	showPage();
 	repaint();
+	bt_global::btmain->vde_call_active = true;
 }
 
 void VCTCallPage::callerAddress(QString address)
 {
-	int addr = address.toInt();
+	QString addr = address;
+	bool is_autoswitch = false;
+
+	if (address.at(0) == '@')
+	{
+		addr = addr.mid(1);
+		is_autoswitch = true;
+	}
 
 	// we want to open the door (only if the call does not come from an autoswitch)
-	if (VCTCall::call_status->prof_studio && addr > 0)
+	if (VCTCall::call_status->prof_studio && !is_autoswitch)
 	{
 		dev->openLock();
 		dev->releaseLock();
 	}
 
-	if (qAbs(addr) == (*bt_global::config)[GUARD_UNIT_ADDRESS].toInt())
+	if (addr == (*bt_global::config)[GUARD_UNIT_ADDRESS])
 	{
 		vct_call->call_status->move_enabled = false;
 		vct_call->camera->setMoveEnabled(false);

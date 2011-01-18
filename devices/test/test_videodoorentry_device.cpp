@@ -22,6 +22,7 @@
 #include "test_videodoorentry_device.h"
 #include "openserver_mock.h"
 #include "device_tester.h"
+#include "devices_cache.h" // bt_global::device_cache
 
 #include <openclient.h>
 #include <openmsg.h>
@@ -100,14 +101,14 @@ void TestVideoDoorEntryDevice::sendInitVctProcess()
 	dev->vct_mode = VideoDoorEntryDevice::SCS_MODE;
 	// call type accepted, 1 = scs bus only
 	dev->initVctProcess();
-	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*8*37#%1*%2##").arg(1).arg(dev->where));
+	QVERIFY(bt_global::devices_cache.init_frames[0].contains(QString("*8*37#%1*%2##").arg(1).arg(dev->where)));
+	bt_global::devices_cache.init_frames[0].clear();
 
 	dev->vct_mode = VideoDoorEntryDevice::IP_MODE;
 	// call type accepted, 1 = scs bus only
 	dev->initVctProcess();
-	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*8*37#%1*%2##").arg(2).arg(dev->where));
+	QVERIFY(bt_global::devices_cache.init_frames[0].contains(QString("*8*37#%1*%2##").arg(2).arg(dev->where)));
+	bt_global::devices_cache.init_frames[0].clear();
 
 	// Restore the default status for the tests
 	dev->vct_mode = old_mode;
@@ -212,7 +213,7 @@ void TestVideoDoorEntryDevice::receiveIncomingIpCall2()
 	QCOMPARE(dev->master_caller_address, QString::number(caller_address));
 
 	DeviceTester tc(dev, VideoDoorEntryDevice::CALLER_ADDRESS, DeviceTester::MULTIPLE_VALUES);
-	tc.check(frame, "-21");
+	tc.check(frame, "@21");
 
 	dev->vct_mode = old_mode;
 }

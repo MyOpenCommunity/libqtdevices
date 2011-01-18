@@ -518,7 +518,7 @@ void initMultimedia()
 void usbHotplug()
 {
 #ifdef BT_HARDWARE_TS_10
-	smartExecute("/sbin/hotplug add 1");
+	system ("/sbin/hotplug add 3");
 #endif
 }
 
@@ -526,5 +526,20 @@ QPair <QString, QStringList> getAudioCmdLine(const QString &audio_path)
 {
 	return qMakePair(QString("/bin/sox"), QStringList() << "-w" << "-c" << "2"
 		<< "-s" << "-t" << "wav" << audio_path << "-t" << "ossdsp" << "/dev/dsp1");
+}
+
+void dumpSystemMemory()
+{
+#ifdef BT_HARDWARE_TS_10
+	QFile f("/proc/meminfo");
+	if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+		return;
+
+	qDebug() << "----------------------- SYSTEM MEMORY -----------------------";
+	// We are interested in the first two lines
+	qDebug() << f.readLine().constData();
+	qDebug() << f.readLine().constData();
+	qDebug() << "-------------------------------------------------------------";
+#endif
 }
 

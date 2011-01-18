@@ -137,22 +137,23 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 #else
 		QWidget *main = new QWidget;
 		QVBoxLayout *l = new QVBoxLayout(main);
-		l->setContentsMargins(5, 5, 25, 47);
+		l->setContentsMargins(0, 0, 0, 0);
 
 		BannerContent *content = new BannerContent;
-		BtButton *edit_costs = new BtButton(bt_global::skin->getImage("currency_exchange"));
-
 		l->addWidget(content, 1);
-		l->addWidget(edit_costs, 0, Qt::AlignRight);
 
-		buildPage(main, content, new NavigationBar, getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT);
+		BtButton *edit_costs = new BtButton(bt_global::skin->getImage("currency_exchange"));
+		l->addWidget(edit_costs, 0, Qt::AlignRight);
 
 		connect(edit_costs, SIGNAL(clicked()), costs, SLOT(showPage()));
 		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
+
+		buildPage(main, content, new NavigationBar, getTextChild(config_node, "descr"));
 #endif
 	}
 	else
 		buildPage(getTextChild(config_node, "descr"));
+
 
 	foreach (const QDomNode& type, families)
 	{
@@ -367,7 +368,7 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node, bool edit_rates, b
 #else
 	QWidget *main = new QWidget;
 	QVBoxLayout *l = new QVBoxLayout(main);
-	l->setContentsMargins(5, 5, 25, 47);
+	l->setContentsMargins(0, 0, 0, 0);
 
 	BannerContent *content = new BannerContent;
 	l->addWidget(content, 1);
@@ -381,6 +382,7 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node, bool edit_rates, b
 		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
 	}
 	buildPage(main, content, new NavigationBar, getTextChild(config_node, "descr"));
+
 #endif
 
 	bool show_currency_button = loadItems(config_node);
