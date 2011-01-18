@@ -262,6 +262,12 @@ int IntercomCallPage::sectionId() const
 	return VIDEODOORENTRY;
 }
 
+void IntercomCallPage::closeCall()
+{
+	cleanUp();
+	bt_global::page_stack.closePage(this);
+}
+
 void IntercomCallPage::cleanUp()
 {
 	// the cleanUp is performed when we exit from the page using an external
@@ -286,11 +292,11 @@ void IntercomCallPage::showPageAfterCall()
 	// in the active status.
 	bt_global::page_stack.showUserPage(this);
 	bt_global::btmain->makeActive();
-	bt_global::btmain->vde_call_active = true;
 	call_accept->setStatus(true);
 	mute_button->setStatus(StateButton::DISABLED);
-	call_active = true;
 	showPage();
+	call_active = true;
+	bt_global::btmain->vde_call_active = true;
 }
 
 void IntercomCallPage::showPageIncomingCall()
@@ -304,11 +310,11 @@ void IntercomCallPage::showPageIncomingCall()
 
 	bt_global::page_stack.showUserPage(this);
 	bt_global::btmain->makeActive();
-	bt_global::btmain->vde_call_active = true;
 	call_accept->setStatus(false);
 	mute_button->setStatus(StateButton::DISABLED);
-	call_active = true;
 	showPage();
+	call_active = true;
+	bt_global::btmain->vde_call_active = true;
 }
 
 void IntercomCallPage::handleClose()

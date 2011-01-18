@@ -27,6 +27,7 @@
 
 #ifdef LAYOUT_TS_10
 #include "vctcall.h"
+#include "videodoorentry.h"
 #endif
 
 #include <QDebug>
@@ -93,8 +94,13 @@ void PageContainer::showPage(Page *p)
 #ifdef LAYOUT_TS_10
 			// We want to close the call if some events (like a new scs message
 			// or an alarm) trigger a showPage.
-			if (bt_global::btmain->vde_call_active && qobject_cast<VCTCallPage*>(curr))
-				qobject_cast<VCTCallPage*>(curr)->closeCall();
+			if (bt_global::btmain->vde_call_active)
+			{
+				if (VCTCallPage *p = qobject_cast<VCTCallPage*>(curr))
+					p->closeCall();
+				else if (IntercomCallPage *p = qobject_cast<IntercomCallPage*>(curr))
+					p->closeCall();
+			}
 #endif
 		}
 

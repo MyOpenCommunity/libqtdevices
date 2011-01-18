@@ -126,6 +126,7 @@ Q_OBJECT
 public:
 	IntercomCallPage(VideoDoorEntryDevice *d);
 	virtual int sectionId() const;
+	void closeCall();
 
 public slots:
 	virtual void cleanUp();
