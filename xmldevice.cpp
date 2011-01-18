@@ -242,13 +242,15 @@ namespace
 	}
 
 	// An utility function to dump the xml into a file
-	void dump_xml(const QString &xml, const QString &sid, int pid)
+	void dump_xml(const QString &xml, const QString &sid, int pid, bool is_request)
 	{
 		QDir dump_dir(DUMP_DIR);
 		if (!dump_dir.exists())
 			dump_dir.mkpath(DUMP_DIR);
 
-		QString filename(QTime::currentTime().toString("hh.mm.ss.zzz_") + sid + "_" + QString::number(pid) + ".xml");
+
+		QString filename(QTime::currentTime().toString("hh.mm.ss.z_") + sid.left(7) +
+			(is_request ? "_REQ_": "_RESP_") + QString::number(pid) + ".xml");
 		QFile file(QString(DUMP_DIR) + "/" + filename);
 		file.open(QIODevice::WriteOnly);
 		file.write(xml.toUtf8());
@@ -394,7 +396,7 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 	{
 
 #if DUMP_OPENXML
-		dump_xml(xml, sid, pid);
+		dump_xml(xml, sid, pid, false);
 #endif
 
 		QDomNode command_container = getChildWithName(root, "Cmd");
@@ -501,7 +503,7 @@ QString XmlDevice::buildCommand(const QString &command, const QString &argument)
 	QString xml = QString(command_template).arg(sid).arg(pid).arg(server_addr).arg(local_addr).arg(cmd);
 
 #if DUMP_OPENXML
-	dump_xml(xml, sid, pid);
+	dump_xml(xml, sid, pid, true);
 #endif
 	return xml;
 }

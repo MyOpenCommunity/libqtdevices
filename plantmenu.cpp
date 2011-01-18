@@ -31,7 +31,9 @@
 #include "state_button.h"
 #include "scaleconversion.h"
 #include "icondispatcher.h"
+#include "state_button.h"
 
+#include <QHBoxLayout>
 #include <QVariant>
 #include <QRegExp>
 #include <QLabel>
@@ -77,7 +79,7 @@ NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_central
 	NavigationPage *p = 0;
 	QString simple_address = getTextChild(n, "where");
 	QString where_composed;
-	if (id != fs_4z_thermal_regulator && id != fs_99z_thermal_regulator && !simple_address.isEmpty())
+	if (id != FS_4Z_THERMAL_REGULATOR && id != FS_99Z_THERMAL_REGULATOR && !simple_address.isEmpty())
 		where_composed = simple_address + "#" + ind_centrale;
 #ifdef CONFIG_TS_3_5
 	QDomNode page_node = n;
@@ -88,7 +90,7 @@ NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_central
 	ThermalDevice *thermal_device = 0;
 	switch (id)
 	{
-	case fs_4z_probe:
+	case FS_4Z_PROBE:
 	{
 		ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(where_composed,
 			ind_centrale, simple_address, ControlledProbeDevice::CENTRAL_4ZONES, ControlledProbeDevice::NORMAL, openserver_id));
@@ -99,7 +101,7 @@ NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_central
 		p = new PageProbe(n, dev, thermal_device, scale);
 	}
 		break;
-	case fs_99z_probe:
+	case FS_99Z_PROBE:
 	{
 		ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(simple_address,
 			ind_centrale, simple_address, ControlledProbeDevice::CENTRAL_99ZONES, ControlledProbeDevice::NORMAL, openserver_id));
@@ -109,7 +111,7 @@ NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_central
 		p = new PageProbe(n, dev, thermal_device, scale);
 	}
 		break;
-	case fs_4z_fancoil:
+	case FS_4Z_FANCOIL:
 	{
 		ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(where_composed,
 			ind_centrale, simple_address, ControlledProbeDevice::CENTRAL_4ZONES, ControlledProbeDevice::FANCOIL, openserver_id));
@@ -119,7 +121,7 @@ NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_central
 		p = new PageFancoil(n, dev, thermal_device, scale);
 	}
 		break;
-	case fs_99z_fancoil:
+	case FS_99Z_FANCOIL:
 	{
 		ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(simple_address,
 			ind_centrale, simple_address, ControlledProbeDevice::CENTRAL_99ZONES, ControlledProbeDevice::FANCOIL, openserver_id));
@@ -129,11 +131,11 @@ NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_central
 		p = new PageFancoil(n, dev, thermal_device, scale);
 	}
 		break;
-	case fs_4z_thermal_regulator:
+	case FS_4Z_THERMAL_REGULATOR:
 		thermal_device = bt_global::add_device_to_cache(new ThermalDevice4Zones(QString("0#") + ind_centrale, openserver_id));
 		p = new PageTermoReg4z(page_node, static_cast<ThermalDevice4Zones*>(thermal_device));
 		break;
-	case fs_99z_thermal_regulator:
+	case FS_99Z_THERMAL_REGULATOR:
 		thermal_device = bt_global::add_device_to_cache(new ThermalDevice99Zones(ind_centrale, openserver_id));
 		p = new PageTermoReg99z(page_node, static_cast<ThermalDevice99Zones*>(thermal_device));
 		break;
@@ -189,22 +191,22 @@ void PlantMenu::loadItems(const QDomNode &conf)
 			switch (id)
 			{
 				case TERMO_99Z:
-					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), fs_99z_thermal_regulator);
+					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), FS_99Z_THERMAL_REGULATOR);
 					break;
 				case TERMO_4Z:
-					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), fs_4z_thermal_regulator);
+					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), FS_4Z_THERMAL_REGULATOR);
 					break;
 				case TERMO_99Z_PROBE:
-					pg = addMenuItem(n, bt_global::skin->getImage("zone"), fs_99z_probe);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), FS_99Z_PROBE);
 					break;
 				case TERMO_99Z_PROBE_FANCOIL:
-					pg = addMenuItem(n, bt_global::skin->getImage("zone"), fs_99z_fancoil);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), FS_99Z_FANCOIL);
 					break;
 				case TERMO_4Z_PROBE:
-					pg = addMenuItem(n, bt_global::skin->getImage("zone"), fs_4z_probe);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), FS_4Z_PROBE);
 					break;
 				case TERMO_4Z_PROBE_FANCOIL:
-					pg = addMenuItem(n, bt_global::skin->getImage("zone"), fs_4z_fancoil);
+					pg = addMenuItem(n, bt_global::skin->getImage("zone"), FS_4Z_FANCOIL);
 					break;
 			}
 
@@ -262,30 +264,30 @@ void PlantMenu::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case TERMO_99Z:
-			pg = addMenuItem(item, icon, fs_99z_thermal_regulator);
+			pg = addMenuItem(item, icon, FS_99Z_THERMAL_REGULATOR);
 			break;
 		case TERMO_4Z:
-			pg = addMenuItem(item, icon, fs_4z_thermal_regulator);
+			pg = addMenuItem(item, icon, FS_4Z_THERMAL_REGULATOR);
 			break;
 #ifdef CONFIG_TS_3_5
 		case TERMO_99Z_PROBE:
-			pg = addMenuItem(item, icon, fs_99z_probe);
+			pg = addMenuItem(item, icon, FS_99Z_PROBE);
 			break;
 		case TERMO_99Z_PROBE_FANCOIL:
-			pg = addMenuItem(item, icon, fs_99z_fancoil);
+			pg = addMenuItem(item, icon, FS_99Z_FANCOIL);
 			break;
 		case TERMO_4Z_PROBE:
-			pg = addMenuItem(item, icon, fs_4z_probe);
+			pg = addMenuItem(item, icon, FS_4Z_PROBE);
 			break;
 		case TERMO_4Z_PROBE_FANCOIL:
-			pg = addMenuItem(item, icon, fs_4z_fancoil);
+			pg = addMenuItem(item, icon, FS_4Z_FANCOIL);
 			break;
 #else
 		case TERMO_99Z_PROBE:
-			pg = addMenuItem(item, icon, fancoil ? fs_99z_fancoil : fs_99z_probe);
+			pg = addMenuItem(item, icon, fancoil ? FS_99Z_FANCOIL : FS_99Z_PROBE);
 			break;
 		case TERMO_4Z_PROBE:
-			pg = addMenuItem(item, icon, fancoil ? fs_4z_fancoil : fs_4z_probe);
+			pg = addMenuItem(item, icon, fancoil ? FS_4Z_FANCOIL : FS_4Z_PROBE);
 			break;
 #endif
 		}
@@ -369,83 +371,47 @@ NavigationBar *NavigationPage::createNavigationBar(const QString &forward_icon, 
 }
 
 
-PageSimpleProbe::PageSimpleProbe(QDomNode n, TemperatureScale scale)
-	: temp_scale(scale)
+PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg, TemperatureScale scale) : setpoint_delta(5)
 {
+	temp_scale = scale;
+	delta_setpoint = false;
+	status = AUTOMATIC;
+	probe_type = thermo_reg->type();
+
+	dev = _dev;
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+
+	main_layout.setAlignment(Qt::AlignHCenter);
+
+#ifdef LAYOUT_TS_3_5
 	QLabel *descr_label = new QLabel(getTextChild(n, "descr"));
 	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignHCenter);
 
 	main_layout.addWidget(descr_label);
-	main_layout.setContentsMargins(0, 0, 0, 0);
-	main_layout.setSpacing(0);
+
+	createNavigationBar(bt_global::skin->getImage("probe_manual"));
+
+	probe_icon_auto = bt_global::skin->getImage("probe_auto");
+	probe_icon_manual = bt_global::skin->getImage("probe_manual");
+
+	toggle_mode = nav_bar->forward_button;
+	connect(toggle_mode, SIGNAL(clicked()), SLOT(changeStatus()));
+#else
+	main_layout.setContentsMargins(0, 0, 0, 17);
+	createNavigationBar(QString(), getTextChild(n, "descr"));
+#endif
 
 	temp_label = new QLabel(this);
 	temp_label->setFont(bt_global::font->get(FontManager::PROBE_TEMPERATURE));
 	temp_label->setAlignment(Qt::AlignHCenter);
-
-	main_layout.addWidget(temp_label);
-	main_layout.setAlignment(Qt::AlignHCenter);
-
 	setTemperature(1235);
 
-	createNavigationBar(bt_global::skin->getImage("probe_manual"));
-#ifdef LAYOUT_TS_3_5
-	toggle_mode = nav_bar->forward_button;
-#else
-	toggle_mode = new BtButton;
-	toggle_mode->setImage(bt_global::skin->getImage("probe_manual"));
-#endif
-
-	toggle_mode->hide();
-}
-
-void PageSimpleProbe::setTemperature(unsigned temp)
-{
-	switch (temp_scale)
-	{
-	case CELSIUS:
-		temp_label->setText(celsiusString(bt2Celsius(temp)));
-		break;
-	case FAHRENHEIT:
-		temp_label->setText(fahrenheitString(bt2Fahrenheit(temp)));
-		break;
-	default:
-		qWarning("BannSimpleProbe: unknown temperature scale, defaulting to celsius");
-		temp_label->setText(celsiusString(temp));
-	}
-}
-
-void PageSimpleProbe::valueReceived(const DeviceValues &values_list)
-{
-	if (!values_list.contains(ControlledProbeDevice::DIM_TEMPERATURE))
-		return;
-
-	setTemperature(values_list[ControlledProbeDevice::DIM_TEMPERATURE].toInt());
-}
-
-
-PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
-	TemperatureScale scale) : PageSimpleProbe(n, scale),
-	delta_setpoint(false),
-	setpoint_delta(5)
-{
-	probe_icon_auto = bt_global::skin->getImage("probe_auto");
-	probe_icon_manual = bt_global::skin->getImage("probe_manual");
-
-	status = AUTOMATIC;
-	probe_type = thermo_reg->type();
-
-	dev = _dev;
-
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
-	connect(toggle_mode, SIGNAL(clicked()), SLOT(changeStatus()));
-	//install compressor
+	main_layout.addWidget(temp_label);
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 
-	btn_minus = new BtButton(this);
-	btn_minus->setImage(bt_global::skin->getImage("minus"));
+	btn_minus = new BtButton(bt_global::skin->getImage("minus"));
 	btn_minus->hide();
 	btn_minus->setAutoRepeat(true);
 	connect(btn_minus, SIGNAL(clicked()), SLOT(decSetpoint()));
@@ -459,15 +425,16 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	setpoint_label->setAlignment(Qt::AlignHCenter);
 	setpoint_label->setProperty("SecondFgColor", true);
 
+#ifdef LAYOUT_TS_3_5
 	icon_antifreeze = getLabelWithPixmap(bt_global::skin->getImage("probe_antifreeze"), this, Qt::AlignHCenter);
 	hbox->addWidget(icon_antifreeze, 1, Qt::AlignCenter);
 
 	icon_off = getLabelWithPixmap(bt_global::skin->getImage("probe_off"), this, Qt::AlignHCenter);
 	hbox->addWidget(icon_off, 1, Qt::AlignCenter);
+#endif
 
 	hbox->addWidget(setpoint_label, 1, Qt::AlignVCenter);
-	btn_plus = new BtButton(this);
-	btn_plus->setImage(bt_global::skin->getImage("plus"));
+	btn_plus = new BtButton(bt_global::skin->getImage("plus"));
 	btn_plus->hide();
 	btn_plus->setAutoRepeat(true);
 	connect(btn_plus, SIGNAL(clicked()), SLOT(incSetpoint()));
@@ -479,7 +446,6 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	main_layout.addLayout(hbox);
 
 	local_temp_label = new QLabel(this);
-
 	local_temp_label->setFont(bt_global::font->get(FontManager::TEXT));
 	local_temp_label->setAlignment(Qt::AlignHCenter);
 
@@ -488,16 +454,51 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	// avoid moving of fancoil buttons bar
 	main_layout.addStretch();
 
-	// layout for the control buttons and fancoil icons
-	bottom_icons.setAlignment(Qt::AlignHCenter);
-	bottom_icons.setSpacing(10);
-
-	main_layout.addLayout(&bottom_icons);
+	bottom_icons = new QHBoxLayout;
 
 #ifdef LAYOUT_TS_10
-	bottom_icons.addWidget(toggle_mode);
-	bottom_icons.setContentsMargins(0, 0, 0, 60);
+	if (probe_type == THERMO_Z99)
+	{
+		auto_mode = new StateButton;
+		auto_mode->setOffImage(bt_global::skin->getImage("probe_auto_off"));
+		auto_mode->setOnImage(bt_global::skin->getImage("probe_auto_on"));
+		connect(auto_mode, SIGNAL(clicked()), dev, SLOT(setAutomatic()));
+
+		manual_mode = new StateButton;
+		manual_mode->setOffImage(bt_global::skin->getImage("probe_manual_off"));
+		manual_mode->setOnImage(bt_global::skin->getImage("probe_manual_on"));
+		connect(manual_mode, SIGNAL(clicked()), SLOT(setDeviceToManual()));
+
+		antifreeze_mode = new StateButton;
+		antifreeze_mode->setOffImage(bt_global::skin->getImage("probe_antifreeze_off"));
+		antifreeze_mode->setOnImage(bt_global::skin->getImage("probe_antifreeze_on"));
+		connect(antifreeze_mode, SIGNAL(clicked()), dev, SLOT(setProtection()));
+
+		off_mode = new StateButton;
+		off_mode->setOffImage(bt_global::skin->getImage("probe_off_off"));
+		off_mode->setOnImage(bt_global::skin->getImage("probe_off_on"));
+		connect(off_mode, SIGNAL(clicked()), dev, SLOT(setOff()));
+
+		// layout for the control buttons
+		QHBoxLayout *control_icons = new QHBoxLayout;
+		control_icons->setSpacing(10);
+		control_icons->addWidget(off_mode);
+		control_icons->addWidget(antifreeze_mode);
+		control_icons->addWidget(auto_mode);
+		control_icons->addWidget(manual_mode);
+		control_icons->setContentsMargins(0, 0, 0, 5);
+		control_icons->setAlignment(Qt::AlignHCenter);
+
+		main_layout.addLayout(control_icons);
+	}
+	bottom_icons->setSpacing(10);
+#else
+	bottom_icons->setSpacing(0);
 #endif
+
+	// layout for fancoil icons
+	bottom_icons->setAlignment(Qt::AlignHCenter);
+	main_layout.addLayout(bottom_icons);
 
 	switch (temp_scale)
 	{
@@ -521,8 +522,8 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	}
 
 	local_temp = "0";
-	isOff = false;
-	isAntigelo = false;
+	is_off = false;
+	is_antifreeze = false;
 
 	updatePointLabel();
 	updateControlState();
@@ -594,19 +595,41 @@ void PageProbe::updatePointLabel()
 
 void PageProbe::updateControlState()
 {
-	btn_minus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
-	btn_plus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !isOff && !isAntigelo);
-	setpoint_label->setVisible(!isOff && !isAntigelo);
-	local_temp_label->setVisible(!isOff && !isAntigelo && local_temp != "0");
-	icon_off->setVisible(isOff);
-	icon_antifreeze->setVisible(isAntigelo);
+	btn_minus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !is_off && !is_antifreeze);
+	btn_plus->setVisible(status == MANUAL && probe_type == THERMO_Z99 && !is_off && !is_antifreeze);
+	setpoint_label->setVisible(!is_off && !is_antifreeze);
+	local_temp_label->setVisible(!is_off && !is_antifreeze && local_temp != "0");
+
 #ifdef LAYOUT_TS_3_5
-	toggle_mode->setVisible(probe_type == THERMO_Z99 && !isOff && !isAntigelo);
+	toggle_mode->setVisible(probe_type == THERMO_Z99 && !is_off && !is_antifreeze);
+	icon_off->setVisible(is_off);
+	icon_antifreeze->setVisible(is_antifreeze);
 #else
-	// TODO needs to be checked after ticket #17 is resolved
-	toggle_mode->setVisible(probe_type == THERMO_Z99);
+	if (probe_type == THERMO_Z99)
+	{
+		manual_mode->setStatus(status == MANUAL && !is_off && !is_antifreeze);
+		auto_mode->setStatus(status == AUTOMATIC && !is_off && !is_antifreeze);
+		antifreeze_mode->setStatus(is_antifreeze);
+		off_mode->setStatus(is_off);
+	}
 #endif
 	local_temp_label->setText(local_temp);
+}
+
+void PageProbe::setTemperature(unsigned temp)
+{
+	switch (temp_scale)
+	{
+	case CELSIUS:
+		temp_label->setText(celsiusString(bt2Celsius(temp)));
+		break;
+	case FAHRENHEIT:
+		temp_label->setText(fahrenheitString(bt2Fahrenheit(temp)));
+		break;
+	default:
+		qWarning("PageProbe: unknown temperature scale, defaulting to celsius");
+		temp_label->setText(celsiusString(temp));
+	}
 }
 
 void PageProbe::valueReceived(const DeviceValues &values_list)
@@ -659,8 +682,8 @@ void PageProbe::valueReceived(const DeviceValues &values_list)
 		{
 			int off = values_list[ControlledProbeDevice::DIM_OFFSET].toInt();
 
-			isOff = false;
-			isAntigelo = false;
+			is_off = false;
+			is_antifreeze = false;
 			if (off != 0)
 				local_temp.sprintf("%+d", off);
 			else
@@ -669,14 +692,14 @@ void PageProbe::valueReceived(const DeviceValues &values_list)
 		else if (stat == ControlledProbeDevice::ST_OFF)
 		{
 			local_temp = "0";
-			isOff = true;
-			isAntigelo = false;
+			is_off = true;
+			is_antifreeze = false;
 		}
 		else if (stat == ControlledProbeDevice::ST_PROTECTION)
 		{
 			local_temp = "0";
-			isOff = false;
-			isAntigelo = true;
+			is_off = false;
+			is_antifreeze = true;
 		}
 
 		update = true;
@@ -688,22 +711,20 @@ void PageProbe::valueReceived(const DeviceValues &values_list)
 		{
 		case ControlledProbeDevice::ST_MANUAL:
 			status = MANUAL;
-			toggle_mode->setImage(probe_icon_auto);
 			update = true;
 			break;
 		case ControlledProbeDevice::ST_AUTO:
 			status = AUTOMATIC;
-			toggle_mode->setImage(probe_icon_manual);
 			update = true;
 			break;
 		case ControlledProbeDevice::ST_PROTECTION:
-			isOff = false;
-			isAntigelo = true;
+			is_off = false;
+			is_antifreeze = true;
 			update = true;
 			break;
 		case ControlledProbeDevice::ST_OFF:
-			isOff = true;
-			isAntigelo = false;
+			is_off = true;
+			is_antifreeze = false;
 			update = true;
 			break;
 		default:
@@ -715,7 +736,8 @@ void PageProbe::valueReceived(const DeviceValues &values_list)
 	if (update)
 		updateControlState();
 
-	PageSimpleProbe::valueReceived(values_list);
+	if (values_list.contains(ControlledProbeDevice::DIM_TEMPERATURE))
+		setTemperature(values_list[ControlledProbeDevice::DIM_TEMPERATURE].toInt());
 }
 
 
@@ -743,7 +765,7 @@ void PageFancoil::createFancoilButtons()
 		btn->setOnImage(path_pressed);
 		btn->setCheckable(true);
 
-		bottom_icons.addWidget(btn);
+		bottom_icons->addWidget(btn);
 		fancoil_buttons.addButton(btn, id);
 
 		speed_to_btn_tbl[(id + 1) % 4] = id;

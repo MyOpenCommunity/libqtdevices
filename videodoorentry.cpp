@@ -223,24 +223,26 @@ void CallNotifierPage::lockReleased()
 
 VideoDoorEntry::VideoDoorEntry()
 {
-	dev = bt_global::add_device_to_cache(new VideoDoorEntryDevice((*bt_global::config)[PI_ADDRESS],
-		(*bt_global::config)[PI_MODE]));
-
-	// These pages are showed only after the receiving of a call frame, so we
-	// don't store any pointer to these. The destruction is provided by the PageContainer.
-	(void) new IntercomCallPage(dev);
-	(void) new VCTCallPage(dev);
+	createVctElements();
 }
 
 VideoDoorEntry::VideoDoorEntry(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
+	createVctElements();
 
+	loadItems(config_node);
+}
+
+void VideoDoorEntry::createVctElements()
+{
+	// We create all the stuff required to answer the incoming video/intercom calls.
 	dev = bt_global::add_device_to_cache(new VideoDoorEntryDevice((*bt_global::config)[PI_ADDRESS],
 		(*bt_global::config)[PI_MODE]));
 
-	loadItems(config_node);
+	intercom_page = new IntercomCallPage(dev);
+	vct_page = new VCTCallPage(dev);
 }
 
 int VideoDoorEntry::sectionId() const
@@ -250,8 +252,6 @@ int VideoDoorEntry::sectionId() const
 
 void VideoDoorEntry::loadItems(const QDomNode &config_node)
 {
-	VCTCallPage *call_page = 0;
-
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
@@ -262,11 +262,9 @@ void VideoDoorEntry::loadItems(const QDomNode &config_node)
 		switch (id)
 		{
 		case INTERCOM_MENU:
-			p = new IntercomMenu(page_node, dev);
+			p = new IntercomMenu(page_node, dev, intercom_page);
 			break;
 		case VIDEO_CONTROL_MENU:
-			if (!call_page)
-				call_page = new VCTCallPage(dev);
 			p = new VideoControl(page_node, dev);
 			break;
 		case GUARD_UNIT:
@@ -379,6 +377,12 @@ int IntercomCallPage::sectionId() const
 	return VIDEODOORENTRY;
 }
 
+void IntercomCallPage::closeCall()
+{
+	cleanUp();
+	bt_global::page_stack.closePage(this);
+}
+
 void IntercomCallPage::cleanUp()
 {
 	// the cleanUp is performed when we exit from the page using an external
@@ -403,11 +407,11 @@ void IntercomCallPage::showPageAfterCall()
 	// in the active status.
 	bt_global::page_stack.showUserPage(this);
 	bt_global::btmain->makeActive();
-	bt_global::btmain->vde_call_active = true;
 	call_accept->setStatus(true);
 	mute_button->setStatus(StateButton::DISABLED);
-	call_active = true;
 	showPage();
+	call_active = true;
+	bt_global::btmain->vde_call_active = true;
 }
 
 void IntercomCallPage::showPageIncomingCall()
@@ -421,11 +425,11 @@ void IntercomCallPage::showPageIncomingCall()
 
 	bt_global::page_stack.showUserPage(this);
 	bt_global::btmain->makeActive();
-	bt_global::btmain->vde_call_active = true;
 	call_accept->setStatus(false);
 	mute_button->setStatus(StateButton::DISABLED);
-	call_active = true;
 	showPage();
+	call_active = true;
+	bt_global::btmain->vde_call_active = true;
 }
 
 void IntercomCallPage::handleClose()
@@ -577,14 +581,12 @@ void IntercomCallPage::floorCallFinished()
 }
 
 
-IntercomMenu::IntercomMenu(const QDomNode &config_node, VideoDoorEntryDevice *dev)
+IntercomMenu::IntercomMenu(const QDomNode &config_node, VideoDoorEntryDevice *dev, IntercomCallPage *call_page)
 {
 	mapper_int_intercom = new QSignalMapper(this);
 	mapper_ext_intercom = new QSignalMapper(this);
 	connect(mapper_int_intercom, SIGNAL(mapped(QString)), dev, SLOT(internalIntercomCall(QString)));
 	connect(mapper_ext_intercom, SIGNAL(mapped(QString)), dev, SLOT(externalIntercomCall(QString)));
-
-	IntercomCallPage *call_page = new IntercomCallPage(dev);
 
 	buildPage(new IconContent, new NavigationBar, getTextChild(config_node, "descr"));
 	foreach (const QDomNode &item, getChildren(config_node, "item"))

@@ -55,6 +55,9 @@ void WindowContainer::addWindow(Window *w)
 
 void WindowContainer::showWindow(Window *w)
 {
+	if (currentWindow() == w)
+		return;
+
 	// during calibration, do not display new window/pages; the page stack
 	// will ensure that we return to the correct page after calibration
 	if (BtMain::isCalibrating())

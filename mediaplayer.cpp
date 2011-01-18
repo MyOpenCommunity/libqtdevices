@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -52,11 +52,15 @@ static const char *MPLAYER_FILENAME = "/home/bticino/cfg/extra/10/mplayer";
 #endif
 
 
+// The timeout for extracting info using media player.
+#define MPLAYER_INFO_TIMEOUT_SECS 5
+
+
 namespace
 {
 	QMap<QString, QString> getAudioDataSearchMap()
 	{
-		/// Define Search Data Map
+		// Define Search Data Map
 		QMap<QString, QString> data_search;
 		data_search["file_name"]    = "Playing [^\\n]*([^/\\n]+)\\.\\n";
 		data_search["meta_title"]   = "Title: ([^\\n]*)\\n";
@@ -76,7 +80,7 @@ namespace
 
 	QMap<QString,QString> getVideoDataSearchMap()
 	{
-		/// Define Search Data Map
+		// Define Search Data Map
 		QMap<QString, QString> data_search;
 		data_search["current_time"] = "A:\\s+(\\d+\\.\\d+)\\s+";
 
@@ -85,12 +89,11 @@ namespace
 
 	QMap<QString,QString> parsePlayerOutput(const QString &raw_data, QMap<QString,QString> data_search)
 	{
-		/// Create output Map
+		// Create output Map
 		QMap<QString, QString> info_data;
 
-		/// Parse RAW data to get info
-		QMap<QString, QString>::ConstIterator it;
-		for (it = data_search.begin(); it != data_search.end(); ++it)
+		// Parse RAW data to get info
+		for (QMap<QString, QString>::const_iterator it = data_search.begin(); it != data_search.end(); ++it)
 		{
 			QRegExp rx(it.value());
 
@@ -101,35 +104,51 @@ namespace
 		return info_data;
 	}
 
-	QMap<QString, QString> startFakePlayer(const QString &track, QMap<QString,QString> data_search)
+	QMap<QString, QString> extractMPlayerInfo(QList<QString> mplayer_args, QMap<QString,QString> data_search,
+		QSet<QString> required_keys)
 	{
-		qDebug() << "Started fake player";
-		QList<QString> args;
-		args << "-nolirc" << "-ao" << "null" << "-vo" << "null" << track;
+		QTime time_guard;
+		time_guard.start();
+
 		QProcess fake_player;
-		fake_player.start(MPLAYER_FILENAME, args);
+		fake_player.start(MPLAYER_FILENAME, mplayer_args);
 		fake_player.waitForStarted(300);
 
 		QMap<QString, QString> info_data;
 		QString raw_data;
-		bool wait = true;
-		while (wait)
+
+
+		while (true)
 		{
 			fake_player.waitForReadyRead(300);
 			raw_data.append(fake_player.readAll());
 
 			info_data = parsePlayerOutput(raw_data, data_search);
 
-			// Wait until the current time info because it's the last, always present
-			// info of the mplayer output.
-			if (!info_data["current_time"].isEmpty())
-				wait = false;
+			bool find_all = true;
+			foreach (const QString &key, required_keys)
+				if (!info_data.contains(key))
+					find_all = false;
+
+			if (find_all || time_guard.elapsed() > MPLAYER_INFO_TIMEOUT_SECS * 1000)
+				break;
+
 		}
 		fake_player.terminate();
 		fake_player.waitForFinished(300);
 
 		return info_data;
 	}
+
+	QMap<QString, QString> startFakePlayer(const QString &track, QMap<QString,QString> data_search)
+	{
+		QList<QString> args;
+		args << "-nolirc" << "-ao" << "null" << "-vo" << "null" << track;
+		// We want to wait until the current time info because it's the last, always present
+		// info of the mplayer output.
+		return extractMPlayerInfo(args, data_search, QSet<QString>() << "current_time");
+	}
+
 }
 
 
@@ -155,6 +174,27 @@ void MediaPlayer::readStandardError()
 	QByteArray error = mplayer_proc.readAllStandardError();
 	if (!error.isEmpty())
 		qWarning() << "MediaPlayer::error: " << error;
+}
+
+bool MediaPlayer::checkVideoResolution(QString track)
+{
+	QList<QString> args;
+	args << "-identify" << "-vo" << "/dev/null" << "-frames" << "1" << track;
+	QMap<QString, QString> data_search;
+	data_search["resolution"] = "VIDEO:\\s+[^\\n\\r]+\\s+(\\d+x\\d+)";
+	QMap<QString, QString> info = extractMPlayerInfo(args, data_search, QSet<QString>() << "resolution");
+
+	if (!info.contains("resolution"))
+	{
+		qWarning() << "Unknown resolution";
+		return false;
+	}
+
+	QStringList res = info["resolution"].split('x');
+	int width = res[0].toInt();
+	int height = res[1].toInt();
+
+	return width <= MAX_VIDEO_WIDTH && height <= MAX_VIDEO_HEIGHT;
 }
 
 bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool write_output)
@@ -465,7 +505,6 @@ void MediaPlayer::infoReceived()
 	if (info_watcher)
 	{
 		QMap<QString, QString> info = info_watcher->result();
-		qDebug() << "Received track info:" << info;
 		emit playingInfoUpdated(info);
 
 		info_watcher->deleteLater();

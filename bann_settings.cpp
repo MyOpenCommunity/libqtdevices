@@ -51,10 +51,8 @@ bannAlarmClock::bannAlarmClock(int item_id, int hour, int minute, QString icon_o
 	left_button->setOffImage(icon_off);
 	left_button->setStatus(enabled == 1);
 
-	alarm_clock = new AlarmClock(SET_SVEGLIA, item_id,
-				     static_cast<AlarmClock::Type>(tipo),
-				     static_cast<AlarmClock::Freq>(freq), QList<bool>(),
-				     hour, minute);
+	alarm_clock = new AlarmClock(SET_SVEGLIA, item_id, static_cast<AlarmClock::Type>(tipo),
+		static_cast<AlarmClock::Freq>(freq), 0, hour, minute);
 	alarm_clock->setSerNum(getSerNum());
 	alarm_clock->hide();
 
@@ -103,7 +101,7 @@ void bannAlarmClock::inizializza(bool forza)
 
 
 bannAlarmClockIcon::bannAlarmClockIcon(int item_id, int hour, int minute, QString icon_on,
-				       QString icon_off, QString icon_state, QString icon_edit, QString text, int enabled, int tipo, QList<bool> days) :
+					   QString icon_off, QString icon_state, QString icon_edit, QString text, int enabled, int tipo, int days) :
 	BannOnOffState(0, static_cast<StateButton*>(0))
 {
 	initBanner(icon_on, icon_state, icon_edit, enabled ? ON : OFF, text);
@@ -114,9 +112,7 @@ bannAlarmClockIcon::bannAlarmClockIcon(int item_id, int hour, int minute, QStrin
 	left_button->setStatus(enabled == 1);
 
 	alarm_clock = new AlarmClock(SET_SVEGLIA_SINGLEPAGE, item_id,
-				     static_cast<AlarmClock::Type>(tipo),
-				     AlarmClock::NESSUNO,
-				     days, hour, minute);
+		static_cast<AlarmClock::Type>(tipo), AlarmClock::NEVER, days, hour, minute);
 	alarm_clock->setSerNum(getSerNum());
 	alarm_clock->hide();
 

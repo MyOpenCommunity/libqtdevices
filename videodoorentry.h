@@ -32,6 +32,7 @@
 
 class VCTCallPage;
 class BasicVideoDoorEntryDevice;
+class IntercomCallPage;
 class VideoDoorEntryDevice;
 class CallNotifierPage;
 class StateButton;
@@ -132,8 +133,11 @@ private slots:
 
 private:
 	VideoDoorEntryDevice *dev;
+	VCTCallPage *vct_page;
+	IntercomCallPage *intercom_page;
 	VideoDoorEntry(); // available only for BtMain
 	void loadItems(const QDomNode &config_node);
+	void createVctElements();
 };
 
 
@@ -167,6 +171,7 @@ Q_OBJECT
 public:
 	IntercomCallPage(VideoDoorEntryDevice *d);
 	virtual int sectionId() const;
+	void closeCall();
 
 public slots:
 	virtual void cleanUp();
@@ -202,7 +207,7 @@ class IntercomMenu : public IconPage
 {
 Q_OBJECT
 public:
-	IntercomMenu(const QDomNode &config_node, VideoDoorEntryDevice *dev);
+	IntercomMenu(const QDomNode &config_node, VideoDoorEntryDevice *dev, IntercomCallPage *call_page);
 
 private:
 	QSignalMapper *mapper_ext_intercom;

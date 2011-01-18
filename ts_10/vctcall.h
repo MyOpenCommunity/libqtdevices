@@ -215,6 +215,8 @@ public:
 	virtual int sectionId() const;
 	virtual void showPage();
 
+	void closeCall();
+
 public slots:
 	virtual void cleanUp();
 

@@ -34,12 +34,9 @@ MultimediaPlayerButtons::MultimediaPlayerButtons(Type type)
 	buttons_layout->setContentsMargins(0, 0, 0, 0);
 	buttons_layout->setSpacing(is_window ? 0 : 5);
 
-	play_icon = bt_global::skin->getImage("start");
-	pause_icon = bt_global::skin->getImage("pause");
-
 	prev_button = getButton("previous", SIGNAL(previous()));
 	next_button = getButton("next", SIGNAL(next()));
-	stop_button = getButton("stop", SIGNAL(stop()));
+	stop_button = getStateButton("stop", "stop_disabled", SIGNAL(stop()));
 
 	forward_button = 0;
 	rewind_button = 0;
@@ -51,15 +48,16 @@ MultimediaPlayerButtons::MultimediaPlayerButtons(Type type)
 
 	if (type == VIDEO_PAGE || type == VIDEO_WINDOW || type == AUDIO_PAGE)
 	{
-		forward_button = getButton("skip_forward", SIGNAL(seekForward()));
-		rewind_button = getButton("skip_back", SIGNAL(seekBack()));
+		forward_button = getStateButton("skip_forward", "skip_forward_disabled", SIGNAL(seekForward()));
+		rewind_button = getStateButton("skip_back", "skip_back_disabled", SIGNAL(seekBack()));
 	}
 
 	play_button = new StateButton;
-	play_button->setOffImage(play_icon);
-	play_button->setOnImage(pause_icon);
+	play_button->setOffImage(bt_global::skin->getImage("start"));
+	play_button->setDisabledImage(bt_global::skin->getImage("start_disabled"));
+	play_button->setOnImage(bt_global::skin->getImage("pause"));
 	play_button->setCheckable(true);
-	play_button->setStatus(false);
+	play_button->setStatus(StateButton::OFF);
 	connect(play_button, SIGNAL(clicked(bool)), SLOT(playToggled(bool)));
 
 	buttons_layout->addWidget(prev_button);
@@ -84,11 +82,29 @@ void MultimediaPlayerButtons::showNextButton(bool show)
 	next_button->setVisible(show);
 }
 
+void MultimediaPlayerButtons::enablePlaybackButtons(bool enable)
+{
+	play_button->setStatus(enable ? StateButton::OFF : StateButton::DISABLED);
+	stop_button->setStatus(enable ? StateButton::OFF : StateButton::DISABLED);
+	rewind_button->setStatus(enable ? StateButton::OFF : StateButton::DISABLED);
+	forward_button->setStatus(enable ? StateButton::OFF : StateButton::DISABLED);
+}
+
 BtButton *MultimediaPlayerButtons::getButton(const QString &icon, const char *destination)
 {
 	BtButton *button = new BtButton;
 	button->setImage(bt_global::skin->getImage(icon));
-	QObject::connect(button, SIGNAL(clicked()), destination);
+	connect(button, SIGNAL(clicked()), destination);
+
+	return button;
+}
+
+StateButton *MultimediaPlayerButtons::getStateButton(const QString &icon, const QString &icon_disabled, const char *destination)
+{
+	StateButton *button = new StateButton;
+	button->setOffImage(bt_global::skin->getImage(icon));
+	button->setDisabledImage(bt_global::skin->getImage(icon_disabled));
+	connect(button, SIGNAL(clicked()), destination);
 
 	return button;
 }
@@ -103,13 +119,13 @@ void MultimediaPlayerButtons::playToggled(bool playing)
 
 void MultimediaPlayerButtons::started()
 {
-	play_button->setStatus(true);
+	play_button->setStatus(StateButton::ON);
 	play_button->setChecked(true);
 }
 
 void MultimediaPlayerButtons::stopped()
 {
-	play_button->setStatus(false);
+	play_button->setStatus(StateButton::OFF);
 	play_button->setChecked(false);
 }
 

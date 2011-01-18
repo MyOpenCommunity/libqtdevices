@@ -27,7 +27,7 @@
 class BtTime;
 
 
-enum thermo_type_t
+enum ThermoType
 {
 	THERMO_Z99,  // 99 zones thermal regulator
 	THERMO_Z4,   // 4 zones thermal regulator
@@ -150,7 +150,7 @@ public:
 	/*!
 		\brief Returns the type of thermal regulator (4-zone or 99-zone).
 	 */
-	virtual thermo_type_t type() const = 0;
+	virtual ThermoType type() const = 0;
 
 protected:
 	ThermalDevice(QString where, int openserver_id);
@@ -204,7 +204,7 @@ public:
 	void setManualTempTimed(int temperature, BtTime time);
 
 	virtual unsigned maximumTemp() const;
-	virtual thermo_type_t type() const;
+	virtual ThermoType type() const;
 };
 
 
@@ -224,7 +224,7 @@ public:
 	void setScenario(int scenario);
 
 	virtual unsigned maximumTemp() const;
-	virtual thermo_type_t type() const;
+	virtual ThermoType type() const;
 };
 
 #endif // THERMAL_DEVICE_H

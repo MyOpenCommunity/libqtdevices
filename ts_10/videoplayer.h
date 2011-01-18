@@ -57,20 +57,18 @@ public:
 	void temporaryPauseOnHide();
 	void resumePlayOnShow();
 
-protected:
-	virtual QString currentFileName(int index) const;
-	virtual void previous();
-	virtual void next();
-
 public slots:
 	// displays the page and stores the video list for playback
 	void displayVideos(QList<QString> videos, unsigned element);
 
-private:
-	// the position/size where to play the video
-	QRect playbackGeometry();
-	void displayMedia(int index);
-	void displayFullScreen(bool fullscreen);
+signals:
+	void videoLabelUpdated(QString);
+	void enablePlaybackButtons(bool);
+
+protected:
+	virtual QString currentFileName(int index) const;
+	virtual void previous();
+	virtual void next();
 
 private slots:
 	void startMPlayer();
@@ -84,6 +82,12 @@ private slots:
 	void videoPlaybackStopped();
 
 private:
+	// the position/size where to play the video
+	QRect playbackGeometry();
+	void displayMedia(int index);
+	void displayFullScreen(bool fullscreen);
+	bool checkVideo(QString track);
+
 	QLabel *title, *video;
 	VideoPlayerWindow *window;
 	int current_time;
@@ -113,8 +117,10 @@ protected:
 private slots:
 	void showButtons();
 	void setVolume(int value);
+	void updateVideoLabel(QString text);
 
 private:
+	QLabel *video;
 	QWidget *controls;
 	QTimer controls_timer;
 	VideoPlayerPage *page;
