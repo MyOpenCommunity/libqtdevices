@@ -75,7 +75,7 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type type, Freq freq, int da
 	item_id = _item_id;
 	aumVolTimer = NULL;
 	alarm_time = QTime(hour, minute);
-	minuTimer = NULL;
+	ring_alarm_timer = NULL;
 	alarm_freq = freq;
 	alarm_type = type;
 	active = false;
@@ -195,21 +195,21 @@ void AlarmClock::setActive(bool a)
 	active = a;
 	if (active)
 	{
-		if (!minuTimer)
+		if (!ring_alarm_timer)
 		{
-			minuTimer = new QTimer(this);
-			minuTimer->start(200);
-			connect(minuTimer,SIGNAL(timeout()), this,SLOT(checkAlarm()));
+			ring_alarm_timer = new QTimer(this);
+			ring_alarm_timer->start(200);
+			connect(ring_alarm_timer, SIGNAL(timeout()), this, SLOT(checkAlarm()));
 		}
 	}
 	else
 	{
-		if (minuTimer)
+		if (ring_alarm_timer)
 		{
-			minuTimer->stop();
-			disconnect(minuTimer,SIGNAL(timeout()), this,SLOT(checkAlarm()));
-			delete minuTimer;
-			minuTimer = NULL;
+			ring_alarm_timer->stop();
+			disconnect(ring_alarm_timer, SIGNAL(timeout()), this, SLOT(checkAlarm()));
+			delete ring_alarm_timer;
+			ring_alarm_timer = NULL;
 		}
 	}
 
@@ -284,7 +284,7 @@ void AlarmClock::checkAlarm()
 
 	if (ring_alarm)
 	{
-		if ((current.time() >= alarm_time) && (alarm_time.secsTo(current.time())<60))
+		if ((current.time() >= alarm_time) && (alarm_time.secsTo(current.time()) < 60))
 		{
 			if (alarm_type == BUZZER)
 			{
@@ -332,7 +332,7 @@ void AlarmClock::checkAlarm()
 	}
 
 	if (active)
-		minuTimer->start((60-current.time().second())*1000);
+		ring_alarm_timer->start((60 - current.time().second()) * 1000);
 }
 
 bool AlarmClock::isActive()
