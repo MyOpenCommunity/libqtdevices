@@ -141,7 +141,10 @@ void bannAlarmClockIcon::handleClose()
 void bannAlarmClockIcon::setButtonIcon()
 {
 	if (!alarm_clock->isActive())
+	{
 		left_button->setStatus(false);
+		setState(OFF);
+	}
 }
 
 void bannAlarmClockIcon::setAbil(bool b)

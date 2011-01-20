@@ -272,6 +272,8 @@ void AlarmClock::checkAlarm()
 	QDateTime current = QDateTime::currentDateTime();
 
 	bool ring_alarm = false;
+	bool ring_once = false;
+
 #ifdef LAYOUT_TS_3_5
 	if (alarm_freq == ALWAYS || alarm_freq == ONCE ||
 		(alarm_freq == WEEKDAYS && current.date().dayOfWeek() < 6) ||
@@ -280,6 +282,21 @@ void AlarmClock::checkAlarm()
 #else
 	if (alarm_days[current.date().dayOfWeek() - 1])
 		ring_alarm = true;
+	else
+	{
+		// If the user enter a time without a day, ring the alarm once the current
+		// day (or the next, if the time entered is before the current time) at
+		// the established time.
+		ring_once = true;
+		ring_alarm = true;
+
+		for (int i = 0; i < alarm_days.length(); ++i)
+			if (alarm_days[i])
+			{
+				ring_alarm = false;
+				break;
+			}
+	}
 #endif
 
 	if (ring_alarm)
@@ -326,7 +343,7 @@ void AlarmClock::checkAlarm()
 
 			qDebug("Starting alarm clock");
 
-			if (alarm_freq == ONCE)
+			if (alarm_freq == ONCE || ring_once)
 				setActive(false);
 		}
 	}
