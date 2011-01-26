@@ -594,6 +594,7 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(QTime alarm_time, AlarmClock::Type type, 
 	QLabel *descr = new QLabel;
 	descr->setText(tr("Set Time-Hour & Minute-Day"));
 	descr->setAlignment(Qt::AlignHCenter);
+	descr->setFont(bt_global::font->get(FontManager::TEXT));
 
 	edit = new BtTimeEdit(this);
 	edit->setTime(alarm_time);
