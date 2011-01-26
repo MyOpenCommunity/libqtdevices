@@ -443,11 +443,22 @@ void MessagesListPage::newMessage(const DeviceValues &values_list)
 	connect(page, SIGNAL(goHome()), SLOT(goHome()));
 	connect(page, SIGNAL(goMessagesList()), SLOT(goMessagesList()));
 	connect(page, SIGNAL(deleteMessage()), SLOT(deleteAlertMessage()));
+	connect(page, SIGNAL(destroyed()), SLOT(cleanUpAlert()));
 
 	alert_pages.prepend(page);
 	bt_global::btmain->makeActive();
 	bt_global::page_stack.showUserPage(page);
 	page->showPage();
+}
+
+void MessagesListPage::cleanUpAlert()
+{
+	foreach (AlertMessagePage *page, alert_pages)
+		if (page == sender())
+		{
+			alert_pages.removeOne(page);
+			break;
+		}
 }
 
 void MessagesListPage::showMessage(int index)

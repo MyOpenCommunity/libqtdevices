@@ -334,8 +334,10 @@ private slots:
 	// Slots for the AlarmMessagePage
 	void goHome();
 	void goMessagesList();
+	void cleanUpAlert();
 
 	void checkForUnread();
+
 };
 
 
