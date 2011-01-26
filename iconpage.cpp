@@ -84,7 +84,7 @@ void IconContent::addButton(QWidget *button, const QString &label)
 	QVBoxLayout *l = new QVBoxLayout(w);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->addWidget(button, 0, Qt::AlignHCenter);
-	l->setSpacing(5);
+	l->setSpacing(2);
 
 	if (!label.isEmpty())
 	{
@@ -142,7 +142,7 @@ IconPageButton::IconPageButton(const QString &label)
 
 	QVBoxLayout *l = new QVBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(5);
+	l->setSpacing(2);
 	l->addWidget(button, 0, Qt::AlignHCenter);
 	l->addWidget(lbl);
 }
