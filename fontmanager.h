@@ -121,8 +121,8 @@ public:
 		AUDIO_SOURCE_DESCRIPTION = BANNERDESCRIPTION,     /*!< descriptive text, displayed under the source description */
 		// rds radio
 		RADIO_NAME = TITLE,                               /*!< the name of the radio */
-		RADIO_MEMORY_NUMBER = SMALLTEXT,                  /*!< the number of the radio station */
-		RADIO_STATION = SMALLTEXT,                        /*!< the frequency of the radio station */
+		RADIO_MEMORY_NUMBER = 3,                          /*!< the number of the radio station */
+		RADIO_STATION = 3,                                /*!< the frequency of the radio station */
 		// audio player
 		PLAYER_TITLE = HOMEPAGEWIDGET,                   /*!< song title (first line) */
 		PLAYER_AUTHOR = TITLE,                           /*!< song author/info (second line) */
