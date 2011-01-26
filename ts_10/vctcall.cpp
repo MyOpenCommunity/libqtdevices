@@ -912,7 +912,6 @@ void VCTCallWindow::hideEvent(QHideEvent *)
 
 void VCTCallWindow::fullScreenExit()
 {
-	bt_global::page_stack.closeWindow(this);
 	vct_call->stopVideo();
 	connect(bt_global::display, SIGNAL(directScreenAccessStopped()), SLOT(showVCTPage()));
 }
@@ -921,6 +920,7 @@ void VCTCallWindow::showVCTPage()
 {
 	disconnect(bt_global::display, SIGNAL(directScreenAccessStopped()), this, SLOT(showVCTPage()));
 	vct_call->disable();
+	bt_global::page_stack.closeWindow(this);
 	emit exitFullScreen();
 }
 

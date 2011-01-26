@@ -75,7 +75,7 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type type, Freq freq, int da
 	item_id = _item_id;
 	aumVolTimer = NULL;
 	alarm_time = QTime(hour, minute);
-	minuTimer = NULL;
+	ring_alarm_timer = NULL;
 	alarm_freq = freq;
 	alarm_type = type;
 	active = false;
@@ -195,21 +195,21 @@ void AlarmClock::setActive(bool a)
 	active = a;
 	if (active)
 	{
-		if (!minuTimer)
+		if (!ring_alarm_timer)
 		{
-			minuTimer = new QTimer(this);
-			minuTimer->start(200);
-			connect(minuTimer,SIGNAL(timeout()), this,SLOT(checkAlarm()));
+			ring_alarm_timer = new QTimer(this);
+			ring_alarm_timer->start(200);
+			connect(ring_alarm_timer, SIGNAL(timeout()), this, SLOT(checkAlarm()));
 		}
 	}
 	else
 	{
-		if (minuTimer)
+		if (ring_alarm_timer)
 		{
-			minuTimer->stop();
-			disconnect(minuTimer,SIGNAL(timeout()), this,SLOT(checkAlarm()));
-			delete minuTimer;
-			minuTimer = NULL;
+			ring_alarm_timer->stop();
+			disconnect(ring_alarm_timer, SIGNAL(timeout()), this, SLOT(checkAlarm()));
+			delete ring_alarm_timer;
+			ring_alarm_timer = NULL;
 		}
 	}
 
@@ -272,6 +272,8 @@ void AlarmClock::checkAlarm()
 	QDateTime current = QDateTime::currentDateTime();
 
 	bool ring_alarm = false;
+	bool ring_once = false;
+
 #ifdef LAYOUT_TS_3_5
 	if (alarm_freq == ALWAYS || alarm_freq == ONCE ||
 		(alarm_freq == WEEKDAYS && current.date().dayOfWeek() < 6) ||
@@ -280,11 +282,26 @@ void AlarmClock::checkAlarm()
 #else
 	if (alarm_days[current.date().dayOfWeek() - 1])
 		ring_alarm = true;
+	else
+	{
+		// If the user enter a time without a day, ring the alarm once the current
+		// day (or the next, if the time entered is before the current time) at
+		// the established time.
+		ring_once = true;
+		ring_alarm = true;
+
+		for (int i = 0; i < alarm_days.length(); ++i)
+			if (alarm_days[i])
+			{
+				ring_alarm = false;
+				break;
+			}
+	}
 #endif
 
 	if (ring_alarm)
 	{
-		if ((current.time() >= alarm_time) && (alarm_time.secsTo(current.time())<60))
+		if ((current.time() >= alarm_time) && (alarm_time.secsTo(current.time()) < 60))
 		{
 			if (alarm_type == BUZZER)
 			{
@@ -326,13 +343,13 @@ void AlarmClock::checkAlarm()
 
 			qDebug("Starting alarm clock");
 
-			if (alarm_freq == ONCE)
+			if (alarm_freq == ONCE || ring_once)
 				setActive(false);
 		}
 	}
 
 	if (active)
-		minuTimer->start((60-current.time().second())*1000);
+		ring_alarm_timer->start((60 - current.time().second()) * 1000);
 }
 
 bool AlarmClock::isActive()
@@ -577,6 +594,7 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(QTime alarm_time, AlarmClock::Type type, 
 	QLabel *descr = new QLabel;
 	descr->setText(tr("Set Time-Hour & Minute-Day"));
 	descr->setAlignment(Qt::AlignHCenter);
+	descr->setFont(bt_global::font->get(FontManager::TEXT));
 
 	edit = new BtTimeEdit(this);
 	edit->setTime(alarm_time);

@@ -39,7 +39,7 @@
 #include <QDebug>
 #include <QLabel>
 
-
+#ifdef LAYOUT_TS_3_5
 
 bannAlarmClock::bannAlarmClock(int item_id, int hour, int minute, QString icon_on,
 			       QString icon_off, QString icon_label, QString text, int enabled, int tipo, int freq) :
@@ -99,6 +99,7 @@ void bannAlarmClock::inizializza(bool forza)
 	alarm_clock->inizializza();
 }
 
+#else
 
 bannAlarmClockIcon::bannAlarmClockIcon(int item_id, int hour, int minute, QString icon_on,
 					   QString icon_off, QString icon_state, QString icon_edit, QString text, int enabled, int tipo, int days) :
@@ -140,7 +141,10 @@ void bannAlarmClockIcon::handleClose()
 void bannAlarmClockIcon::setButtonIcon()
 {
 	if (!alarm_clock->isActive())
+	{
 		left_button->setStatus(false);
+		setState(OFF);
+	}
 }
 
 void bannAlarmClockIcon::setAbil(bool b)
@@ -160,8 +164,7 @@ void bannAlarmClockIcon::inizializza(bool forza)
 	BannOnOffState::inizializza(forza);
 	alarm_clock->inizializza();
 }
-
-
+#endif
 
 calibration::calibration(QWidget *parent, QString icon) : bannOnDx(parent)
 {

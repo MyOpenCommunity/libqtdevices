@@ -141,7 +141,7 @@ private:
 
 	int alarm_volumes[AMPLI_NUM];
 	bool active;
-	QTimer *minuTimer,*aumVolTimer;
+	QTimer *ring_alarm_timer, *aumVolTimer;
 #ifdef LAYOUT_TS_3_5
 	AlarmClockTime *alarm_time_page;
 	AlarmClockFreq *alarm_type_page;

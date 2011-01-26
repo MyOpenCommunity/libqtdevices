@@ -36,6 +36,7 @@ class Contrast;
 class contdiff;
 class StateButton;
 
+#ifdef LAYOUT_TS_3_5
 
 // This class is made to make alarm clock settings.
 class bannAlarmClock : public Bann2StateButtons
@@ -61,6 +62,7 @@ private slots:
 	void handleClose();
 };
 
+#else
 
 class bannAlarmClockIcon : public BannOnOffState
 {
@@ -89,6 +91,7 @@ private slots:
 	void handleClose();
 };
 
+#endif
 
 class calibration : public bannOnDx
 {
