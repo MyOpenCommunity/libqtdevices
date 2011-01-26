@@ -101,12 +101,15 @@ void AlarmList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int i
 
 	QLabel *label_desc = new QLabel(item.description);
 	label_desc->setAlignment(Qt::AlignTop|Qt::AlignLeft);
+	label_desc->setFont(bt_global::font->get(FontManager::TEXT));
 
 	QLabel *label_zone = new QLabel(item.name);
 	label_zone->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
+	label_zone->setFont(bt_global::font->get(FontManager::TEXT));
 
 	QLabel *label_date = new QLabel(date.toString("dd/MM/yyyy\nhh:mm:ss"));
 	label_date->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
+	label_date->setFont(bt_global::font->get(FontManager::TEXT));
 
 	// delete button
 	BtButton *trash = new BtButton(item.icons[BUTTON_ICON]);
