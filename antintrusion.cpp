@@ -480,13 +480,16 @@ void AlarmItems::addAlarm(int type, const QString &description, const QString &z
 
 	// alarm description
 	QLabel *s = new QLabel(description);
+	s->setFont(bt_global::font->get(FontManager::TEXT));
 	s->setAlignment(Qt::AlignTop|Qt::AlignLeft);
 
 	// alarm zone
 	QLabel *z = new QLabel(zone);
+	z->setFont(bt_global::font->get(FontManager::TEXT));
 	z->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 
 	QLabel *d = new QLabel(date.toString("dd/MM/yyyy\nhh:mm:ss"));
+	d->setFont(bt_global::font->get(FontManager::TEXT));
 	d->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 
 	// delete button
@@ -601,14 +604,17 @@ AlarmList::AlarmList()
 	QHBoxLayout *l = new QHBoxLayout(header);
 
 	QLabel *t = new QLabel(tr("Alarm type"));
+	t->setFont(bt_global::font->get(FontManager::TEXT));
 	t->setAlignment(Qt::AlignHCenter);
 	l->addWidget(t, 1);
 
 	QLabel *z = new QLabel(tr("Zone"));
+	z->setFont(bt_global::font->get(FontManager::TEXT));
 	z->setAlignment(Qt::AlignHCenter);
 	l->addWidget(z, 1);
 
 	QLabel *d = new QLabel(tr("Date & Hour"));
+	d->setFont(bt_global::font->get(FontManager::TEXT));
 	d->setAlignment(Qt::AlignLeft);
 	l->addWidget(d, 1);
 

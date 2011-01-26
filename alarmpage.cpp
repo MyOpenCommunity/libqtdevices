@@ -110,10 +110,13 @@ QWidget *AlarmPageData::createPart(const QString &background, const QString &cap
 
 	back->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage(background)));
 
-	QLabel *c = new QLabel(caption), *v = new QLabel(value);
-
+	QLabel *c = new QLabel(caption);
 	c->setAlignment(Qt::AlignCenter);
+	c->setFont(bt_global::font->get(FontManager::TEXT));
+
+	QLabel *v = new QLabel(value);
 	v->setAlignment(Qt::AlignCenter);
+	v->setFont(bt_global::font->get(FontManager::TEXT));
 
 	l->addWidget(c);
 	l->addWidget(v);
