@@ -638,7 +638,14 @@ void VCTCallPage::closeCall()
 {
 	cleanUp();
 	if (!isVisible()) // If the page is not visible, we are in fullscreen mode.
+	{
+		// Beacause the page and the window doesn't share the same vctcall (and
+		// thus the same QProcess instance) we have to call the vctcall->stopVideo()
+		// of the window (called inside the cleanUp) in order to terminate the
+		// rsize process.
+		window->cleanUp();
 		bt_global::page_stack.closeWindow(window);
+	}
 
 	bt_global::page_stack.closePage(this);
 }
@@ -712,6 +719,7 @@ void VCTCallPage::handleClose()
 		bt_global::ringtones->stopRingtone();
 	}
 
+	vct_call->stopVideo();
 	bt_global::btmain->vde_call_active = false;
 	vct_call->enable();
 	if (!already_closed)
@@ -783,7 +791,6 @@ void VCTCallPage::incomingCall()
 	vct_call->cycle->setStatus(StateButton::OFF);
 
 	showPage();
-	repaint();
 	bt_global::btmain->vde_call_active = true;
 }
 
@@ -834,19 +841,13 @@ void VCTCallPage::showPage()
 	// can't start if the vct page is still on the top of the stack.
 	bt_global::btmain->makeActive();
 	Page::showPage();
-}
 
-void VCTCallPage::showEvent(QShowEvent *)
-{
+	// We must start the video after draw the page
+	repaint();
 	// TODO the check should never be necessary (the window is never shown
 	//      during calibration)
 	if (!BtMain::isCalibrating())
 		vct_call->startVideo();
-}
-
-void VCTCallPage::hideEvent(QHideEvent *)
-{
-	vct_call->stopVideo();
 }
 
 
@@ -895,19 +896,13 @@ void VCTCallWindow::showWindow()
 	vct_call->refreshStatus();
 	bt_global::page_stack.showUserWindow(this);
 	Window::showWindow();
-}
 
-void VCTCallWindow::showEvent(QShowEvent *)
-{
+	// We must start the video after draw the window
+	repaint();
 	// TODO the check should never be necessary (the window is never shown
 	//      during calibration)
 	if (!BtMain::isCalibrating())
 		vct_call->startVideo();
-}
-
-void VCTCallWindow::hideEvent(QHideEvent *)
-{
-	vct_call->stopVideo();
 }
 
 void VCTCallWindow::fullScreenExit()
@@ -920,8 +915,8 @@ void VCTCallWindow::showVCTPage()
 {
 	disconnect(bt_global::display, SIGNAL(directScreenAccessStopped()), this, SLOT(showVCTPage()));
 	vct_call->disable();
-	bt_global::page_stack.closeWindow(this);
 	emit exitFullScreen();
+	bt_global::page_stack.closeWindow(this);
 }
 
 void VCTCallWindow::handleClose()
@@ -929,4 +924,10 @@ void VCTCallWindow::handleClose()
 	vct_call->stopVideo();
 	vct_call->disable();
 	emit Closed();
+}
+
+void VCTCallWindow::cleanUp()
+{
+	vct_call->stopVideo();
+	vct_call->disable();
 }

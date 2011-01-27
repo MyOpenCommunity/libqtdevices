@@ -164,16 +164,13 @@ namespace VCTCallPrivate
 	Q_OBJECT
 	public:
 		VCTCallWindow(VideoDoorEntryDevice *d);
+		void cleanUp();
 
 	public slots:
 		virtual void showWindow();
 
 	signals:
 		void exitFullScreen();
-
-	protected:
-		void showEvent(QShowEvent *);
-		void hideEvent(QHideEvent *);
 
 	private slots:
 		void handleClose();
@@ -219,10 +216,6 @@ public:
 
 public slots:
 	virtual void cleanUp();
-
-protected:
-	virtual void showEvent(QShowEvent *);
-	virtual void hideEvent(QHideEvent *);
 
 private slots:
 	void incomingCall();
