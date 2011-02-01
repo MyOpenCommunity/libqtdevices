@@ -63,7 +63,11 @@ void MessageList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int
 	name->setFont(font);
 	labels->addWidget(name, 1);
 
-	QLabel *description = new QLabel(item.description);
+	QString desc = item.description;
+	if (desc.contains("\n"))
+		desc = desc.split("\n")[0] + "... ";
+
+	QLabel *description = new QLabel(desc);
 	description->setFont(font);
 	labels->addWidget(description, 1);
 
