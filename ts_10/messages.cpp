@@ -396,7 +396,7 @@ int MessagesListPage::sectionId() const
 
 void MessagesListPage::newMessage(const DeviceValues &values_list)
 {
-	Q_ASSERT_X(values_list[MessageDevice::DIM_MESSAGE].canConvert<Message>(), "MessageListPage::newMessage", "conversion error");
+	Q_ASSERT_X(values_list[MessageDevice::DIM_MESSAGE].canConvert<Message>(), "MessagesListPage::newMessage", "conversion error");
 	bt_global::skin->setCidState(skin_cid);
 	Message message = values_list[MessageDevice::DIM_MESSAGE].value<Message>();
 
