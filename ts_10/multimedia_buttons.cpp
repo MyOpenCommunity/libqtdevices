@@ -92,8 +92,7 @@ void MultimediaPlayerButtons::enablePlaybackButtons(bool enable)
 
 BtButton *MultimediaPlayerButtons::getButton(const QString &icon, const char *destination)
 {
-	BtButton *button = new BtButton;
-	button->setImage(bt_global::skin->getImage(icon));
+	BtButton *button = new BtButton(bt_global::skin->getImage(icon));
 	connect(button, SIGNAL(clicked()), destination);
 
 	return button;
