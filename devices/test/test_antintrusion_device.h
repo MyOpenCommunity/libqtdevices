@@ -38,6 +38,7 @@ private slots:
 	void testSetPartialization();
 
 	void receiveSystemInserted();
+	void receiveSystemMaintenance();
 	void receiveZonePartialized();
 	void receiveZoneInserted();
 	void receiveIntrusionAlarm();

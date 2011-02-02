@@ -104,7 +104,9 @@ bool AntintrusionDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		if (zone >= 1 && zone <= NUM_ZONES)
 			values_list[what] = zone;
 	}
-	else // alarms
+	else if (what == DIM_ANTIPANIC_ALARM || what == DIM_INTRUSION_ALARM ||
+				what == DIM_TAMPER_ALARM || what == DIM_TECHNICAL_ALARM ||
+				what == DIM_RESET_TECHNICAL_ALARM) // alarms
 	{
 		int zone = zoneNumber(msg.whereFull());
 		if ((what == DIM_ANTIPANIC_ALARM && zone == 9) || // the antipanic can arrive only on the 9th zone

@@ -79,6 +79,12 @@ void TestAntintrusionDevice::receiveSystemInserted()
 	t.check("*5*9*0##", false);
 }
 
+void TestAntintrusionDevice::receiveSystemMaintenance()
+{
+	DeviceTester t(dev, AntintrusionDevice::DIM_SYSTEM_INSERTED); // the dimension doesn't matter.
+	t.checkSignals("*5*0*##", 0);
+}
+
 void TestAntintrusionDevice::receiveZonePartialized()
 {
 	DeviceTester t(dev, AntintrusionDevice::DIM_ZONE_PARTIALIZED);
@@ -147,5 +153,4 @@ void TestAntintrusionDevice::receiveResetTechnicalAlarm()
 	t.checkSignals("*5*13*#0##", 0);
 	t.checkSignals("*5*13*#16##", 0);
 }
-
 
