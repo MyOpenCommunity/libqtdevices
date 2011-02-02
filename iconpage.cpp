@@ -72,7 +72,7 @@ IconContent::IconContent(QWidget *parent) : ScrollableContent(parent)
 {
 	QGridLayout *l = static_cast<QGridLayout *>(layout());
 	l->setContentsMargins(CONTENT_MARGIN, 0, CONTENT_MARGIN, 0);
-	l->setSpacing(0);
+	l->setSpacing(4);
 	l->setColumnStretch(4, 1);
 }
 
@@ -84,7 +84,7 @@ void IconContent::addButton(QWidget *button, const QString &label)
 	QVBoxLayout *l = new QVBoxLayout(w);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->addWidget(button, 0, Qt::AlignHCenter);
-	l->setSpacing(2);
+	l->setSpacing(0);
 
 	if (!label.isEmpty())
 	{
@@ -142,7 +142,7 @@ IconPageButton::IconPageButton(const QString &label)
 
 	QVBoxLayout *l = new QVBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(2);
+	l->setSpacing(0);
 	l->addWidget(button, 0, Qt::AlignHCenter);
 	l->addWidget(lbl);
 }
