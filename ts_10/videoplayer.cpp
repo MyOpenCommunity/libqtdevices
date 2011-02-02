@@ -66,8 +66,9 @@ VideoPlayerPage::VideoPlayerPage()
 	connect(this, SIGNAL(enablePlaybackButtons(bool)), buttons, SLOT(enablePlaybackButtons(bool)));
 	connectMultimediaButtons(buttons);
 
-	// handle mplayer termination
-	connect(player, SIGNAL(mplayerDone()), SLOT(next()));
+	// handle mplayer termination. We want to execute the next thing to do after
+	// update the gui (for both page and window), se we use a Queued Connection.
+	connect(player, SIGNAL(mplayerDone()), this, SLOT(next()), Qt::QueuedConnection);
 
 	l->addWidget(title, 0, Qt::AlignHCenter);
 	l->addLayout(v, 1);

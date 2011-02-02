@@ -63,7 +63,11 @@ void MessageList::addHorizontalBox(QGridLayout *layout, const ItemInfo &item, in
 	name->setFont(font);
 	labels->addWidget(name, 1);
 
-	QLabel *description = new QLabel(item.description);
+	QString desc = item.description;
+	if (desc.contains("\n"))
+		desc = desc.split("\n")[0] + "... ";
+
+	QLabel *description = new QLabel(desc);
 	description->setFont(font);
 	labels->addWidget(description, 1);
 
@@ -396,7 +400,7 @@ int MessagesListPage::sectionId() const
 
 void MessagesListPage::newMessage(const DeviceValues &values_list)
 {
-	Q_ASSERT_X(values_list[MessageDevice::DIM_MESSAGE].canConvert<Message>(), "MessageListPage::newMessage", "conversion error");
+	Q_ASSERT_X(values_list[MessageDevice::DIM_MESSAGE].canConvert<Message>(), "MessagesListPage::newMessage", "conversion error");
 	bt_global::skin->setCidState(skin_cid);
 	Message message = values_list[MessageDevice::DIM_MESSAGE].value<Message>();
 
