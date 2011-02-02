@@ -308,7 +308,7 @@ void Antintrusion::addAlarm(QString descr, int t, int zona)
 	QString zone_description;
 	if (t == AlarmPage::TECNICO)
 		zone_description = QString("AUX:%1").arg(zona);
-	else if (zona <= 8)
+	else if (zona > 0 && zona <= 8)
 		zone_description = zones[zona - 1];
 	else
 		zone_description = QString(tr("Z%1")).arg(zona);
