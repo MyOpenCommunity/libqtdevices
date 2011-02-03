@@ -66,8 +66,8 @@ protected:
 	SourceDevice *dev;
 	Page *details;
 
-	StateButton *left_button;
-	BtButton *center_left_button, *center_right_button, *right_button;
+	StateButton *left_button, *center_left_button, *center_right_button;
+	BtButton *right_button;
 
 private slots:
 	void valueReceivedAudioSource(const DeviceValues &values_list);
