@@ -54,10 +54,6 @@ const char *command_template =
 		"	</Cmd>\n"
 		"</OWNxml>\n";
 
-const char *argument_template =
-		"		<%1>\n"
-		"			<id>%2</id>\n"
-		"		</%1>";
 
 namespace
 {
@@ -313,7 +309,10 @@ void XmlDevice::browseUp()
 
 void XmlDevice::listItems()
 {
-	sendCommand("RW26C15", "0"); // 0 means all the items.
+	XmlArguments arg;
+	arg["rank"] = QString("1");
+	arg["delta"] = QString("10");
+	sendCommand("RW26C15", arg);
 }
 
 void XmlDevice::handleData(const QString &data)
@@ -342,7 +341,7 @@ void XmlDevice::sendMessageQueue()
 
 	while (!message_queue.isEmpty())
 	{
-		QPair<QString,QString> command = message_queue.takeFirst();
+		QPair<QString,XmlArguments> command = message_queue.takeFirst();
 		sendCommand(command.first, command.second);
 	}
 }
@@ -356,7 +355,7 @@ void XmlDevice::cleanSessionInfo()
 	server_addr.clear();
 }
 
-void XmlDevice::sendCommand(const QString &message, const QString &argument)
+void XmlDevice::sendCommand(const QString &message, const XmlArguments &arguments)
 {
 	if (!xml_client->isConnected())
 	{
@@ -365,18 +364,20 @@ void XmlDevice::sendCommand(const QString &message, const QString &argument)
 		// body, and save it. Then when the connection comes up prepend the
 		// generated header. For that implementation the problem is the PID
 		// which changes with the responses.
-		message_queue << qMakePair<QString,QString>(message, argument);
+		message_queue << qMakePair<QString, XmlArguments>(message, arguments);
 		xml_client->connectToHost();
 	}
 	else {
 		++pid;
-		xml_client->sendCommand(buildCommand(message, argument));
+		xml_client->sendCommand(buildCommand(message, arguments));
 	}
 }
 
 void XmlDevice::select(const QString &name)
 {
-	sendCommand("RW26C2", name);
+	XmlArguments arg;
+	arg["id"] = name;
+	sendCommand("RW26C2", arg);
 }
 
 XmlResponse XmlDevice::parseXml(const QString &xml)
@@ -491,12 +492,21 @@ bool XmlDevice::parseAck(const QDomNode &ack)
 	return true;
 }
 
-QString XmlDevice::buildCommand(const QString &command, const QString &argument)
+QString XmlDevice::buildCommand(const QString &command, const XmlArguments &arguments)
 {
 	QString cmd;
 
-	if (!argument.isEmpty())
-		cmd = QString(argument_template).arg(command).arg(Qt::escape(argument));
+	if (!arguments.isEmpty())
+	{
+		cmd = QString("		<%1>\n").arg(command);
+		QHashIterator<QString, QString> it(arguments);
+		while (it.hasNext())
+		{
+			it.next();
+			cmd += QString("			<%1>%2</%1>\n").arg(it.key()).arg(Qt::escape(it.value()));
+		}
+		cmd += QString("		</%1>").arg(command);
+	}
 	else
 		cmd = QString("\t\t<%1/>").arg(command);
 

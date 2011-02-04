@@ -396,7 +396,9 @@ void TestXmlDevice::testBuildCommandWithArg()
 	dev->local_addr = "local_address";
 	dev->server_addr = "server_address";
 
-	QString command = dev->buildCommand("command", "test_argument");
+	XmlArguments arg;
+	arg["id"] = "test_argument";
+	QString command = dev->buildCommand("command", arg);
 
 	QCOMPARE(command, data);
 }

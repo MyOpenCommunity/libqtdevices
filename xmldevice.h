@@ -24,6 +24,7 @@
 
 #include <QObject>
 #include <QVariant>
+#include <QHash>
 
 class QDomNode;
 class XmlClient;
@@ -32,6 +33,8 @@ struct XmlError;
 
 typedef QHash<int, QVariant> XmlResponse;
 typedef QHash<int,QVariant> (*xmlHandler_ptr)(const QDomNode&);
+
+typedef QHash<QString, QString> XmlArguments;
 
 Q_DECLARE_METATYPE(XmlError);
 Q_DECLARE_METATYPE(XmlResponse);
@@ -213,17 +216,17 @@ private slots:
 	void cleanSessionInfo();
 
 private:
-	void sendCommand(const QString &command, const QString &argument = QString());
+	void sendCommand(const QString &command, const XmlArguments &arguments = XmlArguments());
 	void select(const QString &name);
 	XmlResponse parseXml(const QString &xml);
 	bool parseHeader(const QDomNode &header_node);
 	bool parseAck(const QDomNode &ack);
-	QString buildCommand(const QString &command, const QString &argument = QString());
+	QString buildCommand(const QString &command, const XmlArguments &arguments = XmlArguments());
 
 	XmlClient *xml_client;
 	QHash<QString, xmlHandler_ptr> xml_handlers;
 
-	QList<QPair<QString, QString> > message_queue;
+	QList<QPair<QString, XmlArguments> > message_queue;
 
 	bool welcome_received;
 	QString sid;
