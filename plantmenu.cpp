@@ -90,41 +90,38 @@ namespace
 		{
 		case FS_4Z_PROBE:
 		{
-			ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(where_composed,
-				ind_centrale, simple_address, ControlledProbeDevice::CENTRAL_4ZONES, ControlledProbeDevice::NORMAL, openserver_id));
-
 			QString thermr_where = QString("0#") + ind_centrale;
 
+			ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(where_composed,
+				thermr_where, simple_address, ControlledProbeDevice::CENTRAL_4ZONES, ControlledProbeDevice::NORMAL, openserver_id));
 			thermal_device = bt_global::add_device_to_cache(new ThermalDevice4Zones(thermr_where, openserver_id));
 			p = new PageProbe(n, dev, thermal_device, scale);
 			break;
 		}
 		case FS_99Z_PROBE:
 		{
-			ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(simple_address,
-				ind_centrale, simple_address, ControlledProbeDevice::CENTRAL_99ZONES, ControlledProbeDevice::NORMAL, openserver_id));
-
 			QString thermr_where = ind_centrale;
+
+			ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(simple_address,
+				thermr_where, simple_address, ControlledProbeDevice::CENTRAL_99ZONES, ControlledProbeDevice::NORMAL, openserver_id));
 			thermal_device = bt_global::add_device_to_cache(new ThermalDevice99Zones(thermr_where, openserver_id));
 			p = new PageProbe(n, dev, thermal_device, scale);
 			break;
 		}
 		case FS_4Z_FANCOIL:
 		{
-			ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(where_composed,
-				ind_centrale, simple_address, ControlledProbeDevice::CENTRAL_4ZONES, ControlledProbeDevice::FANCOIL, openserver_id));
-
 			QString thermr_where = QString("0#") + ind_centrale;
+			ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(where_composed,
+				thermr_where, simple_address, ControlledProbeDevice::CENTRAL_4ZONES, ControlledProbeDevice::FANCOIL, openserver_id));
 			thermal_device = bt_global::add_device_to_cache(new ThermalDevice4Zones(thermr_where, openserver_id));
 			p = new PageFancoil(n, dev, thermal_device, scale);
 			break;
 		}
 		case FS_99Z_FANCOIL:
 		{
-			ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(simple_address,
-				ind_centrale, simple_address, ControlledProbeDevice::CENTRAL_99ZONES, ControlledProbeDevice::FANCOIL, openserver_id));
-
 			QString thermr_where = ind_centrale;
+			ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(simple_address,
+				thermr_where, simple_address, ControlledProbeDevice::CENTRAL_99ZONES, ControlledProbeDevice::FANCOIL, openserver_id));
 			thermal_device = bt_global::add_device_to_cache(new ThermalDevice99Zones(thermr_where, openserver_id));
 			p = new PageFancoil(n, dev, thermal_device, scale);
 			break;

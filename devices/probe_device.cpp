@@ -28,6 +28,9 @@
 #include <QtDebug>
 #include <QString>
 
+
+#define REQUEST_SETPOINT 10000
+
 enum what_t
 {
 	// probe
@@ -105,12 +108,14 @@ ControlledProbeDevice::ControlledProbeDevice(QString where, QString central, QSt
 	simple_where = _simple_where;
 	type = _type;
 	central_type = _central_type;
+	central_where = QString("#") + central;
 	has_central_info = false;
 	new_request_allowed = true;
 	local_offset = 0;
 	local_status = ST_NORMAL;
 	status = ST_NONE;
 	set_point = -1;
+	setpoint_need_update = false;
 
 	connect(&new_request_timer, SIGNAL(timeout()), SLOT(timeoutElapsed()));
 }
@@ -183,12 +188,24 @@ bool ControlledProbeDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		return true;
 	}
 
-	if (simple_where.toInt() != msg.where())
-		return false;
-
 	int what = msg.what();
 
-	qDebug() << "Full where" << where_full << "what" << what;
+	if (central_type == CENTRAL_4ZONES && QString::fromStdString(msg.whereFull()) == central_where)
+	{
+		if (what == WIN_MANUAL || what == SUM_MANUAL || what == GEN_MANUAL)
+		{
+			// The 4 zones central has a bug for which, when a probe has the same
+			// address of the central, it doesn't send the frame that notifies a change
+			// of the setpoint temperature (SETPOINT_ADJUSTED).
+			// So, when the central is switched in manual mode, we re-ask the probe
+			// status if the setpoint temperature frame doesn't arrive.
+			setpoint_need_update = true;
+			QTimer::singleShot(REQUEST_SETPOINT, this, SLOT(requestSetpoint()));
+		}
+	}
+
+	if (simple_where.toInt() != msg.where())
+		return false;
 
 	switch (what)
 	{
@@ -276,6 +293,7 @@ bool ControlledProbeDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		values_list[DIM_SETPOINT] = set_point = msg.whatArgN(0);
 		break;
 	case SETPOINT_ADJUSTED:
+		setpoint_need_update = false;
 		if (local_status == ST_NORMAL)
 			values_list[DIM_SETPOINT] = set_point = msg.whatArgN(0) - local_offset * 10;
 		break;
@@ -317,6 +335,12 @@ bool ControlledProbeDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	}
 
 	return false;
+}
+
+void ControlledProbeDevice::requestSetpoint()
+{
+	if (setpoint_need_update)
+		requestStatus();
 }
 
 void ControlledProbeDevice::timeoutElapsed()
