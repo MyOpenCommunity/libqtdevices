@@ -31,7 +31,7 @@
 
 // Set 1 to this define to dump the content of the responses from openxmlserver.
 #define DUMP_OPENXML 0
-#define DUMP_DIR "/home/bticino/cfg/extra/0"
+#define DUMP_DIR "cfg/extra/0"
 
 
 const char *command_template =
