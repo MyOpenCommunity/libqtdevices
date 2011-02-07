@@ -27,11 +27,68 @@
 #include "audiostatemachine.h"
 
 
+FileListManager::FileListManager()
+{
+	index = -1;
+	total_files = -1;
+}
+
+void FileListManager::setList(const QList<QString> &files)
+{
+	files_list = files;
+	total_files = files.size();
+	index = 0;
+}
+
+QString FileListManager::currentFile()
+{
+	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
+	return files_list[index];
+}
+
+QString FileListManager::nextFile()
+{
+	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
+	++index;
+	if (index > total_files)
+		index = 0;
+	return currentFile();
+}
+
+QString FileListManager::previousFile()
+{
+	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
+	--index;
+	if (index < 0)
+		index = total_files - 1;
+	return currentFile();
+}
+
+int FileListManager::currentIndex()
+{
+	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
+	return index;
+}
+
+void FileListManager::setCurrentIndex(int i)
+{
+	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
+	Q_ASSERT_X(index >= 0 && index < total_files, "FileListManager::setCurrentIndex", "index out of range");
+	index = i;
+}
+
+int FileListManager::totalFiles()
+{
+	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
+	return total_files;
+}
+
+
+
 MediaPlayerPage::MediaPlayerPage() : refresh_data(this)
 {
 	player = new MediaPlayer(this);
 	temporary_pause = false;
-	current_file = 0;
 
 	// terminate player when unmounted
 	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(QString,MountType)), SLOT(unmounted(QString)));
@@ -100,23 +157,20 @@ void MediaPlayerPage::resume()
 	if (player->isInstanceRunning())
 		player->resume();
 	else
-		displayMedia(current_file);
+		startPlayback();
+
 }
 
 void MediaPlayerPage::previous()
 {
 	player->quit();
-	current_file -= 1;
-	if (current_file < 0)
-		current_file = total_files - 1;
+	list_manager->previousFile();
 }
 
 void MediaPlayerPage::next()
 {
 	player->quit();
-	current_file += 1;
-	if (current_file >= total_files)
-		current_file = 0;
+	list_manager->nextFile();
 }
 
 void MediaPlayerPage::seekForward()
@@ -136,7 +190,7 @@ void MediaPlayerPage::videoPlaybackTerminated()
 
 void MediaPlayerPage::unmounted(const QString &dir)
 {
-	if (player->isInstanceRunning() && file_list[current_file].startsWith(dir))
+	if (player->isInstanceRunning() && list_manager->currentFile().startsWith(dir))
 		stop();
 }
 

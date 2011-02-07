@@ -84,6 +84,8 @@ QVector<AudioPlayerPage *>AudioPlayerPage::audioPlayerPages()
 AudioPlayerPage::AudioPlayerPage(MediaType t)
 {
 	type = t;
+	list_manager = new FileListManager;
+
 	// Sometimes it happens that mplayer can't reproduce a song or a web radio,
 	// for example because the network is down. In this case the mplayer exits
 	// immediately with the signal mplayerDone (== everything ok). Since the
@@ -190,12 +192,7 @@ int AudioPlayerPage::sectionId() const
 	return MULTIMEDIA;
 }
 
-QString AudioPlayerPage::currentFileName(int index) const
-{
-	return file_list[index];
-}
-
-void AudioPlayerPage::startMPlayer(int index, int time)
+void AudioPlayerPage::startMPlayer(QString filename, int time)
 {
 	clearLabels();
 
@@ -205,14 +202,16 @@ void AudioPlayerPage::startMPlayer(int index, int time)
 		description_bottom->setText(tr("Loading..."));
 	}
 
-	player->play(file_list[index], true);
+	player->play(filename, true);
 	refresh_data.start(MPLAYER_POLLING);
 }
 
-void AudioPlayerPage::displayMedia(int index)
+void AudioPlayerPage::startPlayback()
 {
+	int index = list_manager->currentIndex();
+	int total_files = list_manager->totalFiles();
 	track->setText(tr("Track: %1 / %2").arg(index + 1).arg(total_files));
-	startMPlayer(index, 0);
+	startMPlayer(list_manager->currentFile(), 0);
 }
 
 void AudioPlayerPage::clearLabels()
@@ -224,25 +223,23 @@ void AudioPlayerPage::clearLabels()
 
 void AudioPlayerPage::playAudioFilesBackground(QList<QString> files, unsigned element)
 {
-	current_file = element;
-	total_files = files.size();
-	file_list = files;
+	list_manager->setList(files);
+	list_manager->setCurrentIndex(element);
 
 	loop_starting_file = -1;
 
-	displayMedia(current_file);
+	startPlayback();
 }
 
 void AudioPlayerPage::playAudioFiles(QList<QString> files, unsigned element)
 {
-	current_file = element;
-	total_files = files.size();
-	file_list = files;
-	showPage();
+	list_manager->setList(files);
+	list_manager->setCurrentIndex(element);
 
+	showPage();
 	loop_starting_file = -1;
 
-	displayMedia(current_file);
+	startPlayback();
 }
 
 void AudioPlayerPage::playAudioFiles(EntryInfoList entries, unsigned element)
@@ -267,10 +264,13 @@ void AudioPlayerPage::previous()
 	clearLabels();
 	MediaPlayerPage::previous();
 	if (player->isPaused())
-		player->requestInitialPlayingInfo(currentFileName(current_file));
+		player->requestInitialPlayingInfo(list_manager->currentFile());
 	else
-		displayMedia(current_file);
-	track->setText(tr("Track: %1 / %2").arg(current_file + 1).arg(total_files));
+		startPlayback();
+
+	int index = list_manager->currentIndex();
+	int total_files = list_manager->totalFiles();
+	track->setText(tr("Track: %1 / %2").arg(index + 1).arg(total_files));
 }
 
 void AudioPlayerPage::quit()
@@ -283,11 +283,12 @@ void AudioPlayerPage::next()
 {
 	if (loop_starting_file == -1)
 	{
-		loop_starting_file = current_file;
-		loop_total_time = total_files * LOOP_TIMEOUT;
+		loop_starting_file = list_manager->currentIndex();
+		loop_total_time = list_manager->totalFiles() * LOOP_TIMEOUT;
+
 		loop_time_counter.start();
 	}
-	else if (loop_starting_file == current_file)
+	else if (loop_starting_file == list_manager->currentIndex())
 	{
 		if (loop_time_counter.elapsed() < loop_total_time)
 		{
@@ -306,10 +307,13 @@ void AudioPlayerPage::next()
 	clearLabels();
 	MediaPlayerPage::next();
 	if (player->isPaused())
-		player->requestInitialPlayingInfo(currentFileName(current_file));
+		player->requestInitialPlayingInfo(list_manager->currentFile());
 	else
-		displayMedia(current_file);
-	track->setText(tr("Track: %1 / %2").arg(current_file + 1).arg(total_files));
+		startPlayback();
+
+	int index = list_manager->currentIndex();
+	int total_files = list_manager->totalFiles();
+	track->setText(tr("Track: %1 / %2").arg(index + 1).arg(total_files));
 }
 
 // strips the decimal dot from the time returned by mplayer; if match_length is passed,
@@ -335,8 +339,8 @@ void AudioPlayerPage::refreshPlayInfo(const QMap<QString, QString> &attrs)
 	if (type == LOCAL_FILE)
 	{
 		EntryInfo::Metadata md;
-		if (!entryinfo_list.isEmpty() && current_file < entryinfo_list.size()) // Try to get metadata
-			md = entryinfo_list.at(current_file).metadata;
+		if (!entryinfo_list.isEmpty() && list_manager->currentIndex() < entryinfo_list.size()) // Try to get metadata
+			md = entryinfo_list.at(list_manager->currentIndex()).metadata;
 
 		if (attrs.contains("meta_title"))
 			description_top->setText(attrs["meta_title"]);

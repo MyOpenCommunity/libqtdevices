@@ -60,7 +60,7 @@ public:
 	void showPrevButton(bool show);
 
 protected:
-	QString currentFileName(int index) const;
+	virtual void startPlayback();
 
 public slots:
 	void playAudioFiles(QList<QString> files, unsigned element);
@@ -70,8 +70,7 @@ public slots:
 	virtual void next();
 
 private:
-	void startMPlayer(int index, int time);
-	void displayMedia(int index);
+	void startMPlayer(QString filename, int time);
 	void clearLabels();
 
 private slots:

@@ -33,6 +33,30 @@ class MediaPlayer;
 class MultimediaPlayerButtons;
 
 
+class FileListManager : public QObject
+{
+Q_OBJECT
+public:
+	FileListManager();
+	QString currentFile();
+
+	// Incrementa il file corrente e ne restituisce il nome
+	QString nextFile();
+	QString previousFile();
+
+	int currentIndex();
+	void setCurrentIndex(int i);
+	int totalFiles();
+
+	void setList(const QList<QString> &files);
+
+private:
+	int index, total_files;
+	QList<QString> files_list;
+};
+
+
+
 /*!
 	\ingroup Multimedia
 	\brief Base class for pages with media player functionality
@@ -64,9 +88,7 @@ protected:
 	// reproduce the i-th media object inside file_list
 	//
 	// must emit started() and start the refresh_data timer
-	virtual void displayMedia(int index) = 0;
-
-	virtual QString currentFileName(int index) const = 0;
+	virtual void startPlayback() = 0;
 
 public slots:
 	// standard player functionality
@@ -87,8 +109,6 @@ public slots:
 
 protected:
 	// media objects handled by the page
-	int current_file, total_files;
-	QList<QString> file_list;
 
 	MediaPlayer *player;
 
@@ -98,6 +118,8 @@ protected:
 	// set to true when the player is paused due to a audio state change (es. vct call)
 	// or (for video player) due to a page change (es. alarm)
 	bool temporary_pause;
+
+	FileListManager *list_manager;
 
 private slots:
 	void unmounted(const QString &path);

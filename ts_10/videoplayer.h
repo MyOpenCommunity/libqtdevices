@@ -66,7 +66,7 @@ signals:
 	void enablePlaybackButtons(bool);
 
 protected:
-	virtual QString currentFileName(int index) const;
+	virtual void startPlayback();
 	virtual void previous();
 	virtual void next();
 
@@ -84,7 +84,6 @@ private slots:
 private:
 	// the position/size where to play the video
 	QRect playbackGeometry();
-	void displayMedia(int index);
 	void displayFullScreen(bool fullscreen);
 	bool checkVideo(QString track);
 
