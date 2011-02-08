@@ -20,13 +20,17 @@
 
 
 #include "thermal_device.h"
-#include "bttime.h"
 #include "frame_functions.h" // createWriteDimensionFrame
 
 #include "openmsg.h"
 
 #include <QDebug>
 #include <QDate>
+
+// The time (in milliseconds) between the frame witch set the temperature
+// (in manual mode) and the end time frame.
+int ThermalDevice4Zones::temp_timed_delay = 200;
+
 
 enum what_t
 {
@@ -345,12 +349,17 @@ void ThermalDevice4Zones::setManualTempTimed(int temperature, BtTime time)
 	what.sprintf("%d#%04d#2", GENERIC_MANUAL_TIMED, temperature);
 
 	sendCommand(what);
+	end_time = time;
+	QTimer::singleShot(temp_timed_delay, this, SLOT(setEndTime())); // the second frame is delayed.
+}
 
+void ThermalDevice4Zones::setEndTime()
+{
 	// Second frame: set end time
-	QString what2;
-	what2.sprintf("%d*%02d*%02d", MANUAL_TIMED_END, time.hour(), time.minute());
+	QString what;
+	what.sprintf("%d*%02d*%02d", MANUAL_TIMED_END, end_time.hour(), end_time.minute());
 
-	sendWriteRequest(what2);
+	sendWriteRequest(what);
 }
 
 unsigned ThermalDevice4Zones::maximumTemp() const

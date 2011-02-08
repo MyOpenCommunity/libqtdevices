@@ -23,8 +23,7 @@
 #define THERMAL_DEVICE_H
 
 #include "device.h"
-
-class BtTime;
+#include "bttime.h"
 
 
 enum ThermoType
@@ -193,6 +192,7 @@ Q_DECLARE_METATYPE(ThermalDevice::Status)
 class ThermalDevice4Zones : public ThermalDevice
 {
 Q_OBJECT
+friend class TestThermalDevice4Zones;
 public:
 	ThermalDevice4Zones(QString where, int openserver_id = 0);
 
@@ -205,6 +205,13 @@ public:
 
 	virtual unsigned maximumTemp() const;
 	virtual ThermoType type() const;
+
+private slots:
+	void setEndTime();
+
+private:
+	BtTime end_time;
+	static int temp_timed_delay;
 };
 
 

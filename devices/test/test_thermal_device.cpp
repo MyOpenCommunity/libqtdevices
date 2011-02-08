@@ -299,7 +299,9 @@ void TestThermalDevice4Zones::cleanupTestCase()
 
 void TestThermalDevice4Zones::sendSetManualTempTimed()
 {
+	ThermalDevice4Zones::temp_timed_delay = 0;
 	dev->setManualTempTimed(20, BtTime(13, 5, 0));
+	QCoreApplication::processEvents(); // to process the QTimer::singleShot
 	client_command->flush();
 	QString cmd1 = QString("*4*312#0020#2") +
 		       "*" + dev->where +
