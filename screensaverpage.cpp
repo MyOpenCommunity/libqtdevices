@@ -283,7 +283,7 @@ void SlideshowSelector::displayFiles(const EntryInfoList &list)
 		icons << selbutton_off;
 
 		QVariantMap metadata;
-		metadata.insert("selected", handler->isItemSelected(item.url));
+		metadata.insert("selected", handler->isItemSelected(item.path));
 
 		if (item.type == EntryInfo::DIRECTORY)
 		{
@@ -294,7 +294,7 @@ void SlideshowSelector::displayFiles(const EntryInfoList &list)
 			metadata.insert("type", EntryInfo::IMAGE);
 
 
-		ItemList::ItemInfo info(item.name, item.url, icons, metadata);
+		ItemList::ItemInfo info(item.name, item.path, icons, metadata);
 		names_list.append(info);
 	}
 

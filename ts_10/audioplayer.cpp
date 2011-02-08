@@ -248,7 +248,7 @@ void AudioPlayerPage::playAudioFiles(EntryInfoList entries, unsigned element)
 	QList<QString> files;
 
 	foreach (const EntryInfo &entry, entries)
-		files.append(entry.url);
+		files.append(entry.path);
 
 	playAudioFiles(files, element);
 }

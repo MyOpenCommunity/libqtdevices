@@ -200,7 +200,7 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 			{
 				EntryInfoList infos;
 				foreach (const QString &server, response[key].toStringList())
-					infos << EntryInfo(server, EntryInfo::DIRECTORY);
+					infos << EntryInfo(server, EntryInfo::DIRECTORY, QString());
 				emit listReceived(infos);
 			}
 			break;

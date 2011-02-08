@@ -165,7 +165,7 @@ void MultimediaFileListPage::startPlayback(int item)
 			last_clicked_type = fn.type;
 		}
 		filtered.append(fn);
-		urls.append(fn.url);
+		urls.append(fn.path);
 	}
 
 	if (last_clicked_type == EntryInfo::IMAGE)
@@ -176,7 +176,7 @@ void MultimediaFileListPage::startPlayback(int item)
 		audioplayer->playAudioFiles(filtered, last_clicked);
 #ifdef PDF_EXAMPLE
 	else if (type == EntryInfo::PDF)
-		pdfdisplay->displayPdf(current_file.url);
+		pdfdisplay->displayPdf(current_file.path);
 #endif
 }
 
