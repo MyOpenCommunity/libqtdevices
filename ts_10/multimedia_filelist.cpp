@@ -176,7 +176,7 @@ void MultimediaFileListPage::startPlayback(int item)
 		audioplayer->playAudioFiles(filtered, last_clicked);
 #ifdef PDF_EXAMPLE
 	else if (type == EntryInfo::PDF)
-		pdfdisplay->displayPdf(files[current]);
+		pdfdisplay->displayPdf(current_file.url);
 #endif
 }
 
