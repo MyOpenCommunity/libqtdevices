@@ -35,19 +35,21 @@
 #include <QDebug>
 
 
+
+
 MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters, bool mount_enabled) :
 	FileSelector(browser)
 {
 	browser->setFilter(filters);
 	connect(browser, SIGNAL(listReceived(EntryInfoList)), SLOT(displayFiles(EntryInfoList)));
 
-	ItemList *item_list = new ItemList(0, 4);
+	rows_per_page = 4;
+	ItemList *item_list = new ItemList(0, rows_per_page);
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 	connect(this, SIGNAL(fileClicked(int)), SLOT(startPlayback(int)));
 
 	connect(this, SIGNAL(Closed()), item_list, SLOT(clear()));
 
-	NavigationBar *nav_bar;
 	if (mount_enabled)
 	{
 		nav_bar = new NavigationBar("eject");
@@ -56,12 +58,24 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	else
 		nav_bar = new NavigationBar;
 
-	buildPage(item_list, item_list, nav_bar, 0,
-		  new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT));
-	layout()->setContentsMargins(13, 5, 25, 10);
+	title_widget = new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT);
 
-	disconnect(nav_bar, SIGNAL(backClick()), 0, 0); // connected by buildPage()
-	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
+	if (qobject_cast<UPnpClientBrowser*>(browser))
+	{
+		Page::buildPage(item_list, item_list, nav_bar, 0, title_widget);
+
+		connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
+		connect(nav_bar, SIGNAL(upClick()), SLOT(upnpPgUp()));
+		connect(nav_bar, SIGNAL(downClick()), SLOT(upnpPgDown()));
+	}
+	else
+	{
+		buildPage(item_list, item_list, nav_bar, 0, title_widget);
+		disconnect(nav_bar, SIGNAL(backClick()), 0, 0); // connected by buildPage()
+		connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
+	}
+
+	layout()->setContentsMargins(13, 5, 25, 10);
 
 	// order here must match the order in enum Type
 	file_icons.insert(EntryInfo::DIRECTORY, bt_global::skin->getImage("directory_icon"));
@@ -90,8 +104,28 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	last_clicked_type = EntryInfo::UNKNOWN;
 }
 
+void MultimediaFileListPage::upnpPgUp()
+{
+	(qobject_cast<UPnpClientBrowser*>(browser))->getPreviousFileList();
+}
+
+void MultimediaFileListPage::upnpPgDown()
+{
+	(qobject_cast<UPnpClientBrowser*>(browser))->getNextFileList();
+}
+
 void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 {
+	if (UPnpClientBrowser *b = qobject_cast<UPnpClientBrowser*>(browser))
+	{
+		nav_bar->displayScrollButtons(b->getNumElements() > rows_per_page);
+
+		int current_page = (b->getStartingElement() - 1) / rows_per_page;
+		int total_pages =(b->getNumElements() - 1) / rows_per_page + 1;
+
+		title_widget->setCurrentPage(current_page, total_pages);
+	}
+
 	setFiles(list);
 
 	if (list.empty())

@@ -184,6 +184,8 @@ public:
 
 	void getPreviousFileList();
 	void getNextFileList();
+	int getNumElements();
+	int getStartingElement();
 
 private slots:
 	void handleResponse(const XmlResponse &response);

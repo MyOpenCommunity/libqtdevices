@@ -17,9 +17,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 #include "treebrowser.h"
 
 #include <QList>
+#include <QDebug>
 #include <QStringList>
 
 #define ELEMENTS_DISPLAYED 4
@@ -189,7 +191,7 @@ void UPnpClientBrowser::getPreviousFileList()
 
 void UPnpClientBrowser::getNextFileList()
 {
-	if (starting_element + ELEMENTS_DISPLAYED >= num_elements)
+	if (starting_element + ELEMENTS_DISPLAYED > num_elements)
 		return;
 
 	starting_element += ELEMENTS_DISPLAYED;
@@ -198,6 +200,16 @@ void UPnpClientBrowser::getNextFileList()
 		emit listReceived(cached_elements.mid(starting_element -1, ELEMENTS_DISPLAYED));
 	else
 		dev->listItems(starting_element, ELEMENTS_DISPLAYED);
+}
+
+int UPnpClientBrowser::getNumElements()
+{
+	return num_elements;
+}
+
+int UPnpClientBrowser::getStartingElement()
+{
+	return starting_element;
 }
 
 bool UPnpClientBrowser::isRoot()
@@ -250,16 +262,16 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 			break;
 		case XmlResponses::LIST_ITEMS:
 			{
-				cached_elements.clear();
+				EntryInfoList infos;
 				const UPnpEntryList& list = response[key].value<UPnpEntryList>();
 				num_elements = list.total;
 				starting_element = list.start;
 				foreach (const EntryInfo &entry, list.entries)
 				{
 					if (filter_mask & entry.type)
-						cached_elements << entry;
+						infos << entry;
 				}
-				emit listReceived(cached_elements.mid(starting_element - 1, ELEMENTS_DISPLAYED));
+				emit listReceived(infos);
 			}
 			break;
 		default:
