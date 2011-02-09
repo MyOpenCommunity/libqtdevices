@@ -28,7 +28,6 @@
 
 class QDomNode;
 class XmlClient;
-struct UPnpEntry;
 struct XmlError;
 
 typedef QHash<int, QVariant> XmlResponse;
@@ -38,6 +37,16 @@ typedef QHash<QString, QString> XmlArguments;
 
 Q_DECLARE_METATYPE(XmlError);
 Q_DECLARE_METATYPE(XmlResponse);
+
+
+struct UPnpEntryList
+{
+	unsigned int start;
+	unsigned int total;
+	EntryInfoList entries;
+};
+
+Q_DECLARE_METATYPE(UPnpEntryList);
 
 
 namespace XmlResponses
@@ -194,7 +203,7 @@ public:
 	/*!
 		\brief Requests the list of the items of the current directory.
 	*/
-	void listItems();
+	void listItems(unsigned int starting_element, unsigned int max_elements);
 
 signals:
 	/*!

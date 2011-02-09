@@ -182,6 +182,9 @@ public:
 	virtual QString pathKey();
 	virtual void cleanUp();
 
+	void getPreviousFileList();
+	void getNextFileList();
+
 private slots:
 	void handleResponse(const XmlResponse &response);
 	void handleError(int response, int code);
@@ -189,6 +192,10 @@ private slots:
 private:
 	XmlDevice *dev;
 	int level;
+
+	int starting_element;
+	int num_elements;
+	EntryInfoList cached_elements;
 };
 
 #endif // TREEBROWSER_H

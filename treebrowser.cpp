@@ -22,6 +22,8 @@
 #include <QList>
 #include <QStringList>
 
+#define ELEMENTS_DISPLAYED 4
+
 namespace
 {
 	EntryInfo::Type directoryFileType(const QString &file_path)
@@ -136,6 +138,7 @@ QString DirectoryTreeBrowser::pathKey()
 UPnpClientBrowser::UPnpClientBrowser()
 {
 	dev = new XmlDevice();
+	starting_element = 1;
 	level = 0;
 
 	connect(dev, SIGNAL(responseReceived(XmlResponse)), SLOT(handleResponse(XmlResponse)));
@@ -168,7 +171,33 @@ void UPnpClientBrowser::getFileList()
 	if (level == 0)
 		dev->requestUPnPServers();
 	else
-		dev->listItems();
+		dev->listItems(1, ELEMENTS_DISPLAYED);
+}
+
+void UPnpClientBrowser::getPreviousFileList()
+{
+	if (starting_element - ELEMENTS_DISPLAYED < 1)
+		return;
+
+	starting_element -= ELEMENTS_DISPLAYED;
+
+	if (level == 0)
+		emit listReceived(cached_elements.mid(starting_element -1, ELEMENTS_DISPLAYED));
+	else
+		dev->listItems(starting_element, ELEMENTS_DISPLAYED);
+}
+
+void UPnpClientBrowser::getNextFileList()
+{
+	if (starting_element + ELEMENTS_DISPLAYED >= num_elements)
+		return;
+
+	starting_element += ELEMENTS_DISPLAYED;
+
+	if (level == 0)
+		emit listReceived(cached_elements.mid(starting_element -1, ELEMENTS_DISPLAYED));
+	else
+		dev->listItems(starting_element, ELEMENTS_DISPLAYED);
 }
 
 bool UPnpClientBrowser::isRoot()
@@ -198,10 +227,14 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 			break;
 		case XmlResponses::SERVER_LIST:
 			{
-				EntryInfoList infos;
+				cached_elements.clear();
 				foreach (const QString &server, response[key].toStringList())
-					infos << EntryInfo(server, EntryInfo::DIRECTORY, QString());
-				emit listReceived(infos);
+					cached_elements << EntryInfo(server, EntryInfo::DIRECTORY, QString());
+
+				num_elements = cached_elements.size();
+				starting_element = 1;
+
+				emit listReceived(cached_elements.mid(starting_element - 1, ELEMENTS_DISPLAYED));
 			}
 			break;
 		case XmlResponses::SERVER_SELECTION:
@@ -217,13 +250,16 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 			break;
 		case XmlResponses::LIST_ITEMS:
 			{
-				EntryInfoList infos;
-				foreach (const EntryInfo &entry, response[key].value<EntryInfoList>())
+				cached_elements.clear();
+				const UPnpEntryList& list = response[key].value<UPnpEntryList>();
+				num_elements = list.total;
+				starting_element = list.start;
+				foreach (const EntryInfo &entry, list.entries)
 				{
 					if (filter_mask & entry.type)
-						infos << entry;
+						cached_elements << entry;
 				}
-				emit listReceived(infos);
+				emit listReceived(cached_elements.mid(starting_element - 1, ELEMENTS_DISPLAYED));
 			}
 			break;
 		default:

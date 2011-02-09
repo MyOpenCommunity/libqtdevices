@@ -175,11 +175,13 @@ namespace
 	QHash<int,QVariant> handle_listitems(const QDomNode &node)
 	{
 		QHash<int,QVariant> result;
-		EntryInfoList entries;
+		UPnpEntryList list;
 
+		list.total = getTextChild(node, "total").toUInt();
+		list.start = getTextChild(node, "rank").toUInt();
 		QDomNode directories = getChildWithName(node, "directories");
 		foreach (const QDomNode &item, getChildren(directories, "name"))
-			entries << EntryInfo(item.toElement().text(), EntryInfo::DIRECTORY, QString());
+			list.entries << EntryInfo(item.toElement().text(), EntryInfo::DIRECTORY, QString());
 
 		QDomNode tracks = getChildWithName(node, "tracks");
 		foreach (const QDomNode &item, getChildren(tracks, "file"))
@@ -200,14 +202,12 @@ namespace
 			if (file_type == EntryInfo::AUDIO) // Maybe video, too?
 				metadata = getMetadata(item);
 
-			entries << EntryInfo(getElement(item, "DIDL-Lite/item/dc:title").text(),
-									   file_type,
-									   getElement(item, "DIDL-Lite/item/res").text(),
-									   metadata);
+			list.entries << EntryInfo(getElement(item, "DIDL-Lite/item/dc:title").text(),
+				file_type, getElement(item, "DIDL-Lite/item/res").text(), metadata);
 		}
 
 		QVariant value;
-		value.setValue(entries);
+		value.setValue(list);
 		result[XmlResponses::LIST_ITEMS] = value;
 
 		return result;
@@ -307,11 +307,11 @@ void XmlDevice::browseUp()
 	sendCommand("CW26C7");
 }
 
-void XmlDevice::listItems()
+void XmlDevice::listItems(unsigned int starting_element, unsigned int max_elements)
 {
 	XmlArguments arg;
-	arg["rank"] = QString("1");
-	arg["delta"] = QString("10");
+	arg["rank"] = QString::number(starting_element);
+	arg["delta"] = QString::number(max_elements);
 	sendCommand("RW26C15", arg);
 }
 
