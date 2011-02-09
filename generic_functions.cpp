@@ -100,7 +100,7 @@ namespace
 }
 
 EntryInfo::EntryInfo(const QString &_name, EntryInfo::Type _type, const QString &_path, const EntryInfo::Metadata &_metadata)
-	: name(_name), type(_type), path(path), metadata(_metadata)
+	: name(_name), type(_type), path(_path), metadata(_metadata)
 {
 }
 
