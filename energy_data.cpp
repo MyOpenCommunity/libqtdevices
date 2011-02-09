@@ -137,7 +137,7 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 #else
 		QWidget *main = new QWidget;
 		QVBoxLayout *l = new QVBoxLayout(main);
-		l->setContentsMargins(0, 0, 0, 0);
+		l->setContentsMargins(0, 0, 25, 18);
 
 		BannerContent *content = new BannerContent;
 		l->addWidget(content, 1);
@@ -152,7 +152,10 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 #endif
 	}
 	else
+	{
 		buildPage(getTextChild(config_node, "descr"));
+		layout()->setContentsMargins(13, 5, 25, 18);
+	}
 
 
 	foreach (const QDomNode& type, families)
@@ -368,7 +371,7 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node, bool edit_rates, b
 #else
 	QWidget *main = new QWidget;
 	QVBoxLayout *l = new QVBoxLayout(main);
-	l->setContentsMargins(0, 0, 0, 0);
+	l->setContentsMargins(0, 0, 25, 18);
 
 	BannerContent *content = new BannerContent;
 	l->addWidget(content, 1);
