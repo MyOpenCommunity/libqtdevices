@@ -25,6 +25,7 @@
 #include "openclient.h"
 
 #include <energy_device.h>
+#include <platform_device.h>
 #include <openmsg.h>
 
 #include <QtTest/QtTest>
@@ -42,8 +43,8 @@ namespace QTest
 		return qstrdup(ba.data());
 	}
 
-        template<> char *toString(const GraphData &value)
-        {
+	template<> char *toString(const GraphData &value)
+	{
 		QStringList gdata;
 		QList<int> keys = value.graph.keys();
 
@@ -56,7 +57,7 @@ namespace QTest
 		ba += QString::number(value.type) + ", " + toString(value.date) + ", (" + gdata.join(", ") + ")";
 		ba += ")";
 		return qstrdup(ba.data());
-        }
+	}
 }
 
 namespace
@@ -110,12 +111,50 @@ void TestEnergyDevice::sendRequestCumulativeDayGraph8Bit()
 	QCOMPARE(server->frameCommand(), req);
 }
 
+void TestEnergyDevice::sendRequestCumulativeDayGraph8BitOldPic()
+{
+	dev->has_old_pic = true;
+	dev->requestCumulativeDayGraph8Bit(QDate(2009, 1, 9));
+	client_command->flush();
+	QString req(QString("*#18*%1*56#1#9##").arg(where));
+	QCOMPARE(server->frameCommand(), req);
+	dev->has_old_pic = false;
+}
+
 void TestEnergyDevice::sendRequestCumulativeMonthGraph8Bit()
 {
 	dev->requestCumulativeMonthGraph8Bit(QDate(2009, 1, 9));
 	client_command->flush();
 	QString req(QString("*18*56#1*%1##").arg(where));
 	QCOMPARE(server->frameCommand(), req);
+}
+
+void TestEnergyDevice::sendRequestCumulativeMonthGraph8BitOldPic()
+{
+	dev->has_old_pic = true;
+	dev->requestCumulativeMonthGraph8Bit(QDate(2009, 1, 9));
+	client_command->flush();
+	QString req(QString("*#18*%1*510#1##").arg(where));
+	QCOMPARE(server->frameCommand(), req);
+	dev->has_old_pic = false;
+}
+
+void TestEnergyDevice::sendRequestDailyAverageGraph8Bit()
+{
+	dev->requestDailyAverageGraph8Bit(QDate(2009, 1, 9));
+	client_command->flush();
+	QString req(QString("*18*53#1*%1##").arg(where));
+	QCOMPARE(server->frameCommand(), req);
+}
+
+void TestEnergyDevice::sendRequestDailyAverageGraph8BitOldPic()
+{
+	dev->has_old_pic = true;
+	dev->requestDailyAverageGraph8Bit(QDate(2009, 1, 9));
+	client_command->flush();
+	QString req(QString("*#18*%1*57#1##").arg(where));
+	QCOMPARE(server->frameCommand(), req);
+	dev->has_old_pic = false;
 }
 
 void TestEnergyDevice::sendRequestDailyAverageGraph16Bit()
@@ -126,6 +165,16 @@ void TestEnergyDevice::sendRequestDailyAverageGraph16Bit()
 	QCOMPARE(server->frameCommand(), req);
 }
 
+void TestEnergyDevice::sendRequestDailyAverageGraph16BitOldPic()
+{
+	dev->has_old_pic = true;
+	dev->requestDailyAverageGraph16Bit(QDate(2009, 1, 9));
+	client_command->flush();
+	QString req(QString("*#18*%1*512#1##").arg(where));
+	QCOMPARE(server->frameCommand(), req);
+	dev->has_old_pic = false;
+}
+
 void TestEnergyDevice::sendRequestCumulativeDayGraph16Bit()
 {
 	dev->requestCumulativeDayGraph16Bit(QDate(2009, 1, 9));
@@ -134,12 +183,32 @@ void TestEnergyDevice::sendRequestCumulativeDayGraph16Bit()
 	QCOMPARE(server->frameCommand(), req);
 }
 
+void TestEnergyDevice::sendRequestCumulativeDayGraph16BitOldPic()
+{
+	dev->has_old_pic = true;
+	dev->requestCumulativeDayGraph16Bit(QDate(2009, 1, 9));
+	client_command->flush();
+	QString req(QString("*#18*%1*511#1#9##").arg(where));
+	QCOMPARE(server->frameCommand(), req);
+	dev->has_old_pic = false;
+}
+
 void TestEnergyDevice::sendRequestCumulativeMonthGraph32Bit()
 {
 	dev->requestCumulativeMonthGraph32Bit(QDate(2009, 1, 9));
 	client_command->flush();
 	QString req(QString("*18*59#1*%1##").arg(where));
 	QCOMPARE(server->frameCommand(), req);
+}
+
+void TestEnergyDevice::sendRequestCumulativeMonthGraph32BitOldPic()
+{
+	dev->has_old_pic = true;
+	dev->requestCumulativeMonthGraph32Bit(QDate(2009, 1, 9));
+	client_command->flush();
+	QString req(QString("*#18*%1*513#1##").arg(where));
+	QCOMPARE(server->frameCommand(), req);
+	dev->has_old_pic = false;
 }
 
 void TestEnergyDevice::sendRequestCumulativeYearGraph()
@@ -847,6 +916,16 @@ void TestEnergyDevice::testUpdateStop()
 	upd->requestCurrentUpdateStop();
 	upd->stoppingTimeout();
 	QCOMPARE(upd->update_count, 0);
+}
+
+void TestEnergyDevice::receivePic()
+{
+	dev->has_old_pic = false;
+	OpenMsg pic_msg("*#13**20*22*40*05##");
+	dev->platform_dev->manageFrame(pic_msg);
+
+	QCOMPARE(dev->has_old_pic, true);
+	dev->has_old_pic = false;
 }
 
 // TODO energy tests:

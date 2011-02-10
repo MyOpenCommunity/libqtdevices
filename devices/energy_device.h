@@ -30,6 +30,7 @@
 #include <QVariant>
 
 class OpenMsg;
+class PlatformDevice;
 
 
 /*!
@@ -295,6 +296,8 @@ protected:
 	bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 private:
+	bool has_old_pic;
+	PlatformDevice *platform_dev;
 	void requestCumulativeDayGraph8Bit(QDate date) const;
 	void requestCumulativeDayGraph16Bit(QDate date) const;
 	void requestCumulativeMonthGraph8Bit(QDate date) const;
@@ -325,7 +328,6 @@ private:
 
 	QDate getDateFromFrame(OpenMsg &msg);
 
-private:
 	// scaling factor to be applied to data from 8 bit graph frames so they
 	// have the same scale as current measure and 16/32 bit graph frames
 	int scaling_factor_old_frames;
@@ -344,6 +346,9 @@ private:
 	mutable QStringList buffer_frame;
 
 	QMap<int, unsigned int> buffer_year_data; // a buffer used to store the graph data
+
+private slots:
+	void platformValueReceived(const DeviceValues &values_list);
 };
 
 

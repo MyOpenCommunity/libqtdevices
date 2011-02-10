@@ -41,6 +41,7 @@ void PlatformDevice::init()
 {
 	requestFirmwareVersion();
 	requestKernelVersion();
+	requestPicVersion();
 	requestIp();
 	requestNetmask();
 }
@@ -123,6 +124,11 @@ void PlatformDevice::requestFirmwareVersion() const
 	sendRequest(DIM_FW_VERS);
 }
 
+void PlatformDevice::requestPicVersion() const
+{
+	sendRequest(DIM_PIC_VERS);
+}
+
 bool PlatformDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 
@@ -133,7 +139,7 @@ bool PlatformDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	if (what == DIM_MACADDR || what == DIM_IP || what == DIM_NETMASK ||
 		what == DIM_GATEWAY || what == DIM_DNS1 || what == DIM_DNS2 ||
-		what == DIM_STATUS || what == DIM_KERN_VERS || what == DIM_FW_VERS)
+		what == DIM_STATUS || what == DIM_KERN_VERS || what == DIM_FW_VERS || what == DIM_PIC_VERS)
 	{
 		qDebug("PlatformDevice::parseFrame -> frame read:%s", msg.frame_open);
 
@@ -158,6 +164,9 @@ bool PlatformDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			break;
 		case DIM_FW_VERS:
 			v.setValue(extractVersionValues(msg));
+			break;
+		case DIM_PIC_VERS:
+			v.setValue(msg.whatArgN(0));
 			break;
 		default:
 		{

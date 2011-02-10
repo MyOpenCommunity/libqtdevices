@@ -127,6 +127,11 @@ public:
 	*/
 	void requestFirmwareVersion() const;
 
+	/*!
+		\brief Requests the PIC version
+	*/
+	void requestPicVersion() const;
+
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 	/*!
@@ -140,9 +145,10 @@ public:
 		DIM_MACADDR = 12,
 		DIM_FW_VERS = 16,                 // firmware version
 		DIM_KERN_VERS = 23,               // kernel version
+		DIM_PIC_VERS = 20,
 		DIM_GATEWAY = 50,
 		DIM_DNS1 = 51,
-		DIM_DNS2 = 52
+		DIM_DNS2 = 52,
 	};
 
 public slots:
