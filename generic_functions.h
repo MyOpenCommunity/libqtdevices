@@ -98,6 +98,12 @@ struct EntryInfo
 		Optionally you can pass the \a metadata associated with the entry.
 	*/
 	EntryInfo(const QString &name, EntryInfo::Type type, const QString &path, const EntryInfo::Metadata &metadata = EntryInfo::Metadata());
+	EntryInfo();
+
+	bool isNull();
+
+private:
+	bool is_null;
 };
 
 /*!

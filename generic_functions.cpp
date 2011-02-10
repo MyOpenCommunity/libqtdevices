@@ -102,6 +102,17 @@ namespace
 EntryInfo::EntryInfo(const QString &_name, EntryInfo::Type _type, const QString &_path, const EntryInfo::Metadata &_metadata)
 	: name(_name), type(_type), path(_path), metadata(_metadata)
 {
+	is_null = false;
+}
+
+EntryInfo::EntryInfo()
+{
+	is_null = true;
+}
+
+bool EntryInfo::isNull()
+{
+	return is_null;
 }
 
 
