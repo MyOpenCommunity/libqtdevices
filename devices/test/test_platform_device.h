@@ -43,6 +43,7 @@ private slots:
 	void receiveDns2();
 	void receiveFirmwareVersion();
 	void receiveKernelVersion();
+	void receivePicVersion();
 
 	void sendSetDate();
 	void sendSetTime();
