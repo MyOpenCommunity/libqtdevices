@@ -23,6 +23,7 @@
 #define MEDIAPLAYERPAGE_H
 
 #include "page.h"
+#include "generic_functions.h" // EntryInfoList
 
 #include <QTimer>
 #include <QList>
@@ -33,26 +34,42 @@ class MediaPlayer;
 class MultimediaPlayerButtons;
 
 
-class FileListManager : public QObject
+class ListManager
 {
-Q_OBJECT
+public:
+	virtual QString currentFilePath() = 0;
+
+	virtual QString nextFilePath() = 0;
+	virtual QString previousFilePath() = 0;
+
+	virtual int currentIndex() = 0;
+	virtual int totalFiles() = 0;
+
+	virtual EntryInfo::Metadata currentMeta() = 0;
+};
+
+
+class FileListManager : public ListManager
+{
 public:
 	FileListManager();
-	QString currentFile();
+	virtual QString currentFilePath();
 
-	// Incrementa il file corrente e ne restituisce il nome
-	QString nextFile();
-	QString previousFile();
+	virtual QString nextFilePath();
+	virtual QString previousFilePath();
 
-	int currentIndex();
+	virtual int currentIndex();
+	virtual int totalFiles();
+
+	virtual EntryInfo::Metadata currentMeta();
+
+	// FileListManager specific methods
 	void setCurrentIndex(int i);
-	int totalFiles();
-
-	void setList(const QList<QString> &files);
+	void setList(const EntryInfoList &files);
 
 private:
 	int index, total_files;
-	QList<QString> files_list;
+	EntryInfoList files_list;
 };
 
 
@@ -119,7 +136,7 @@ protected:
 	// or (for video player) due to a page change (es. alarm)
 	bool temporary_pause;
 
-	FileListManager *list_manager;
+	ListManager *list_manager;
 
 private slots:
 	void unmounted(const QString &path);

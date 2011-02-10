@@ -56,6 +56,56 @@ QVector<AudioPlayerPage *> AudioPlayerPage::audioplayer_pages(MAX_MEDIA_TYPE, 0)
 BtButton *AudioPlayerPage::tray_icon = 0;
 
 
+
+QString UPnpListManager::currentFilePath()
+{
+	Q_ASSERT_X(!current_file.isNull(), "UPnpListManager::currentFilePath", "Called with current_file not initialized!");
+	return current_file.path;
+}
+
+QString UPnpListManager::nextFilePath()
+{
+	// TODO: implement
+	return current_file.path;
+}
+
+QString UPnpListManager::previousFilePath()
+{
+	// TODO: implement
+	return current_file.path;
+}
+
+int UPnpListManager::currentIndex()
+{
+	return index;
+}
+
+int UPnpListManager::totalFiles()
+{
+	return total_files;
+}
+
+void UPnpListManager::setCurrentIndex(int i)
+{
+	index = i;
+}
+
+void UPnpListManager::setTotalFiles(int n)
+{
+	total_files = n;
+}
+
+void UPnpListManager::setStartingFile(EntryInfo starting_file)
+{
+	current_file = starting_file;
+}
+
+EntryInfo::Metadata UPnpListManager::currentMeta()
+{
+	return current_file.metadata;
+}
+
+
 AudioPlayerPage *AudioPlayerPage::getAudioPlayerPage(MediaType type)
 {
 	Q_ASSERT_X(type < MAX_MEDIA_TYPE, "AudioPlayerPage::getAudioPlayerPage", "invalid type");
@@ -84,7 +134,10 @@ QVector<AudioPlayerPage *>AudioPlayerPage::audioPlayerPages()
 AudioPlayerPage::AudioPlayerPage(MediaType t)
 {
 	type = t;
-	list_manager = new FileListManager;
+	if (type == AudioPlayerPage::UPNP_FILE)
+		list_manager = new UPnpListManager;
+	else
+		list_manager = new FileListManager;
 
 	// Sometimes it happens that mplayer can't reproduce a song or a web radio,
 	// for example because the network is down. In this case the mplayer exits
@@ -211,7 +264,7 @@ void AudioPlayerPage::startPlayback()
 	int index = list_manager->currentIndex();
 	int total_files = list_manager->totalFiles();
 	track->setText(tr("Track: %1 / %2").arg(index + 1).arg(total_files));
-	startMPlayer(list_manager->currentFile(), 0);
+	startMPlayer(list_manager->currentFilePath(), 0);
 }
 
 void AudioPlayerPage::clearLabels()
@@ -223,18 +276,31 @@ void AudioPlayerPage::clearLabels()
 
 void AudioPlayerPage::playAudioFilesBackground(QList<QString> files, unsigned element)
 {
-	list_manager->setList(files);
-	list_manager->setCurrentIndex(element);
+	Q_ASSERT_X(type != AudioPlayerPage::UPNP_FILE, "AudioPlayerPage::playAudioFilesBackground",
+		"The function must not be called with type UPNP_FILE!");
+	FileListManager *lm = static_cast<FileListManager*>(list_manager);
+
+	EntryInfoList entries;
+	foreach (const QString &filename, files)
+		entries << EntryInfo(filename, EntryInfo::AUDIO, filename);
+
+	lm->setList(entries);
+	lm->setCurrentIndex(element);
 
 	loop_starting_file = -1;
 
 	startPlayback();
 }
 
-void AudioPlayerPage::playAudioFiles(QList<QString> files, unsigned element)
+void AudioPlayerPage::playAudioFile(EntryInfo starting_file, int file_index, int num_files)
 {
-	list_manager->setList(files);
-	list_manager->setCurrentIndex(element);
+	Q_ASSERT_X(type == AudioPlayerPage::UPNP_FILE, "AudioPlayerPage::playAudioFile",
+		"The function must be called with type UPNP_FILE!");
+
+	UPnpListManager *um = static_cast<UPnpListManager*>(list_manager);
+	um->setStartingFile(starting_file);
+	um->setCurrentIndex(file_index);
+	um->setTotalFiles(num_files);
 
 	showPage();
 	loop_starting_file = -1;
@@ -242,15 +308,31 @@ void AudioPlayerPage::playAudioFiles(QList<QString> files, unsigned element)
 	startPlayback();
 }
 
+void AudioPlayerPage::playAudioFiles(QList<QString> files, unsigned element)
+{
+	Q_ASSERT_X(type != AudioPlayerPage::UPNP_FILE, "AudioPlayerPage::playAudioFiles",
+		"The function must not be called with type UPNP_FILE!");
+
+	EntryInfoList entries;
+	foreach (const QString &filename, files)
+		entries << EntryInfo(filename, EntryInfo::AUDIO, filename);
+
+	playAudioFiles(entries, element);
+}
+
 void AudioPlayerPage::playAudioFiles(EntryInfoList entries, unsigned element)
 {
 	entryinfo_list = entries;
-	QList<QString> files;
 
-	foreach (const EntryInfo &entry, entries)
-		files.append(entry.path);
+	FileListManager *lm = static_cast<FileListManager*>(list_manager);
 
-	playAudioFiles(files, element);
+	lm->setList(entries);
+	lm->setCurrentIndex(element);
+
+	showPage();
+	loop_starting_file = -1;
+
+	startPlayback();
 }
 
 void AudioPlayerPage::resetLoopCheck()
@@ -264,7 +346,7 @@ void AudioPlayerPage::previous()
 	clearLabels();
 	MediaPlayerPage::previous();
 	if (player->isPaused())
-		player->requestInitialPlayingInfo(list_manager->currentFile());
+		player->requestInitialPlayingInfo(list_manager->currentFilePath());
 	else
 		startPlayback();
 
@@ -307,7 +389,7 @@ void AudioPlayerPage::next()
 	clearLabels();
 	MediaPlayerPage::next();
 	if (player->isPaused())
-		player->requestInitialPlayingInfo(list_manager->currentFile());
+		player->requestInitialPlayingInfo(list_manager->currentFilePath());
 	else
 		startPlayback();
 
@@ -336,11 +418,9 @@ static QString formatTime(const QString &mp_time, const QString &match_length = 
 
 void AudioPlayerPage::refreshPlayInfo(const QMap<QString, QString> &attrs)
 {
-	if (type == LOCAL_FILE)
+	if (type == LOCAL_FILE || type == UPNP_FILE)
 	{
-		EntryInfo::Metadata md;
-		if (!entryinfo_list.isEmpty() && list_manager->currentIndex() < entryinfo_list.size()) // Try to get metadata
-			md = entryinfo_list.at(list_manager->currentIndex()).metadata;
+		EntryInfo::Metadata md = list_manager->currentMeta();
 
 		if (attrs.contains("meta_title"))
 			description_top->setText(attrs["meta_title"]);

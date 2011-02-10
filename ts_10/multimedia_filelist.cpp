@@ -35,8 +35,6 @@
 #include <QDebug>
 
 
-
-
 MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters, bool mount_enabled) :
 	FileSelector(browser)
 {
@@ -67,12 +65,16 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 		connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
 		connect(nav_bar, SIGNAL(upClick()), SLOT(upnpPgUp()));
 		connect(nav_bar, SIGNAL(downClick()), SLOT(upnpPgDown()));
+
+		audioplayer = AudioPlayerPage::getAudioPlayerPage(AudioPlayerPage::UPNP_FILE);
 	}
 	else
 	{
 		buildPage(item_list, item_list, nav_bar, 0, title_widget);
 		disconnect(nav_bar, SIGNAL(backClick()), 0, 0); // connected by buildPage()
 		connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
+
+		audioplayer = AudioPlayerPage::getAudioPlayerPage(AudioPlayerPage::LOCAL_FILE);
 	}
 
 	layout()->setContentsMargins(13, 5, 25, 10);
@@ -94,8 +96,6 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	connect(slideshow, SIGNAL(cleanedUp()), SLOT(cleanUp()));
 
 	videoplayer = new VideoPlayerPage;
-
-	audioplayer = AudioPlayerPage::getAudioPlayerPage(AudioPlayerPage::LOCAL_FILE);
 
 #ifdef PDF_EXAMPLE
 	pdfdisplay = new PdfPage;
@@ -135,7 +135,7 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 			operationCompleted();
 			emit Closed();
 		}
-		qDebug() << "[AUDIO] empty directory";
+		qDebug() << "MultimediaFileListPage: empty directory";
 		browser->exitDirectory();
 		return;
 	}
@@ -183,6 +183,13 @@ void MultimediaFileListPage::startPlayback(int item)
 	const EntryInfoList &files_list = getFiles();
 	const EntryInfo &current_file = files_list[item];
 
+	if (UPnpClientBrowser *b = qobject_cast<UPnpClientBrowser*>(browser))
+	{
+		// For now, we manage only the audio files using the upnp client.
+		audioplayer->playAudioFile(current_file, item + b->getStartingElement() - 1, b->getNumElements());
+		return;
+	}
+
 	// For now we mantain both methods of passing data to the players,
 	// in the future we probabily use the EntryInfoList only.
 	QList<QString> urls;
@@ -205,7 +212,7 @@ void MultimediaFileListPage::startPlayback(int item)
 	if (last_clicked_type == EntryInfo::IMAGE)
 		slideshow->displayImages(urls, last_clicked);
 	else if (last_clicked_type == EntryInfo::VIDEO)
-		videoplayer->displayVideos(urls, last_clicked);
+		videoplayer->displayVideos(files_list, last_clicked);
 	else if (last_clicked_type == EntryInfo::AUDIO)
 		audioplayer->playAudioFiles(filtered, last_clicked);
 #ifdef PDF_EXAMPLE

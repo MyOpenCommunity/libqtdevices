@@ -33,35 +33,35 @@ FileListManager::FileListManager()
 	total_files = -1;
 }
 
-void FileListManager::setList(const QList<QString> &files)
+void FileListManager::setList(const EntryInfoList &files)
 {
 	files_list = files;
 	total_files = files.size();
 	index = 0;
 }
 
-QString FileListManager::currentFile()
+QString FileListManager::currentFilePath()
 {
 	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
-	return files_list[index];
+	return files_list[index].path;
 }
 
-QString FileListManager::nextFile()
+QString FileListManager::nextFilePath()
 {
 	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
 	++index;
 	if (index > total_files)
 		index = 0;
-	return currentFile();
+	return currentFilePath();
 }
 
-QString FileListManager::previousFile()
+QString FileListManager::previousFilePath()
 {
 	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
 	--index;
 	if (index < 0)
 		index = total_files - 1;
-	return currentFile();
+	return currentFilePath();
 }
 
 int FileListManager::currentIndex()
@@ -83,6 +83,10 @@ int FileListManager::totalFiles()
 	return total_files;
 }
 
+EntryInfo::Metadata FileListManager::currentMeta()
+{
+	return EntryInfo::Metadata();
+}
 
 
 MediaPlayerPage::MediaPlayerPage() : refresh_data(this)
@@ -164,13 +168,13 @@ void MediaPlayerPage::resume()
 void MediaPlayerPage::previous()
 {
 	player->quit();
-	list_manager->previousFile();
+	list_manager->previousFilePath();
 }
 
 void MediaPlayerPage::next()
 {
 	player->quit();
-	list_manager->nextFile();
+	list_manager->nextFilePath();
 }
 
 void MediaPlayerPage::seekForward()
@@ -190,7 +194,7 @@ void MediaPlayerPage::videoPlaybackTerminated()
 
 void MediaPlayerPage::unmounted(const QString &dir)
 {
-	if (player->isInstanceRunning() && list_manager->currentFile().startsWith(dir))
+	if (player->isInstanceRunning() && list_manager->currentFilePath().startsWith(dir))
 		stop();
 }
 

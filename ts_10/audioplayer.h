@@ -33,6 +33,32 @@ class AudioPlayerPage;
 class VirtualSourceDevice;
 
 
+
+
+class UPnpListManager : public ListManager
+{
+public:
+	virtual QString currentFilePath();
+
+	virtual QString nextFilePath();
+	virtual QString previousFilePath();
+
+	virtual int currentIndex();
+	virtual int totalFiles();
+
+	virtual EntryInfo::Metadata currentMeta();
+
+	// UPnpListManager specific methods
+	void setStartingFile(EntryInfo starting_file);
+	void setCurrentIndex(int i);
+	void setTotalFiles(int n);
+
+private:
+	int index, total_files;
+	EntryInfo current_file;
+};
+
+
 /*!
 	\ingroup Multimedia
 	\brief Page for local audio playback with mplayer.
@@ -49,6 +75,7 @@ public:
 	{
 		LOCAL_FILE,
 		IP_RADIO,
+		UPNP_FILE,
 		MAX_MEDIA_TYPE
 	};
 
@@ -63,6 +90,8 @@ protected:
 	virtual void startPlayback();
 
 public slots:
+	void playAudioFile(EntryInfo starting_file, int file_index, int num_files);
+
 	void playAudioFiles(QList<QString> files, unsigned element);
 	void playAudioFiles(EntryInfoList entries, unsigned element);
 	void playAudioFilesBackground(QList<QString> files, unsigned element);

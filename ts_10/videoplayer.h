@@ -59,7 +59,7 @@ public:
 
 public slots:
 	// displays the page and stores the video list for playback
-	void displayVideos(QList<QString> videos, unsigned element);
+	void displayVideos(const EntryInfoList &videos, unsigned element);
 
 signals:
 	void videoLabelUpdated(QString);

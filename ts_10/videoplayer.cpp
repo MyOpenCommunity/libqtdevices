@@ -112,25 +112,27 @@ void VideoPlayerPage::showPage()
 void VideoPlayerPage::startMPlayer()
 {
 	if (fullscreen)
-		player->playVideoFullScreen(list_manager->currentFile(), current_time);
+		player->playVideoFullScreen(list_manager->currentFilePath(), current_time);
 	else
-		player->playVideo(list_manager->currentFile(), playbackGeometry(), current_time);
+		player->playVideo(list_manager->currentFilePath(), playbackGeometry(), current_time);
 	refresh_data.start(MPLAYER_POLLING);
 }
 
 void VideoPlayerPage::startPlayback()
 {
-	title->setText(QFileInfo(list_manager->currentFile()).fileName());
+	title->setText(QFileInfo(list_manager->currentFilePath()).fileName());
 	current_time = 0;
 
-	if (checkVideo(list_manager->currentFile()))
+	if (checkVideo(list_manager->currentFilePath()))
 		QTimer::singleShot(0, this, SLOT(startMPlayer()));
 }
 
-void VideoPlayerPage::displayVideos(QList<QString> videos, unsigned element)
+void VideoPlayerPage::displayVideos(const EntryInfoList &videos, unsigned element)
 {
-	list_manager->setList(videos);
-	list_manager->setCurrentIndex(element);
+	FileListManager *lm = static_cast<FileListManager*>(list_manager);
+
+	lm->setList(videos);
+	lm->setCurrentIndex(element);
 	showPage();
 
 	startPlayback();
@@ -193,9 +195,10 @@ void VideoPlayerPage::previous()
 
 	if (player->isPaused())
 	{
-		title->setText(QFileInfo(list_manager->currentFile()).fileName());
-		if (checkVideo(list_manager->currentFile()))
-			player->requestInitialVideoInfo(list_manager->currentFile());
+		QString file_path = list_manager->currentFilePath();
+		title->setText(QFileInfo(file_path).fileName());
+		if (checkVideo(file_path))
+			player->requestInitialVideoInfo(file_path);
 	}
 	else
 		startPlayback();
@@ -207,10 +210,10 @@ void VideoPlayerPage::next()
 
 	if (player->isPaused())
 	{
-
-		title->setText(QFileInfo(list_manager->currentFile()).fileName());
-		if (checkVideo(list_manager->currentFile()))
-			player->requestInitialVideoInfo(list_manager->currentFile());
+		QString file_path = list_manager->currentFilePath();
+		title->setText(QFileInfo(file_path).fileName());
+		if (checkVideo(file_path))
+			player->requestInitialVideoInfo(file_path);
 	}
 	else
 		startPlayback();
@@ -264,7 +267,7 @@ void VideoPlayerPage::displayFullScreen(bool fs)
 		showPage();
 	}
 
-	if (checkVideo(list_manager->currentFile()))
+	if (checkVideo(list_manager->currentFilePath()))
 		QTimer::singleShot(0, this, SLOT(startMPlayer()));
 }
 
