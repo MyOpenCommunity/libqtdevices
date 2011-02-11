@@ -43,6 +43,8 @@
 VideoPlayerPage::VideoPlayerPage()
 {
 	list_manager = new FileListManager;
+	connect(list_manager, SIGNAL(currentFileChanged()), SLOT(currentFileChanged()));
+
 	QWidget *content = new QWidget;
 	QVBoxLayout *l = new QVBoxLayout(content);
 	QHBoxLayout *v = new QHBoxLayout;
@@ -189,25 +191,8 @@ void VideoPlayerPage::resumePlayOnShow()
 	temporary_pause = false;
 }
 
-void VideoPlayerPage::previous()
+void VideoPlayerPage::currentFileChanged()
 {
-	MediaPlayerPage::previous();
-
-	if (player->isPaused())
-	{
-		QString file_path = list_manager->currentFilePath();
-		title->setText(QFileInfo(file_path).fileName());
-		if (checkVideo(file_path))
-			player->requestInitialVideoInfo(file_path);
-	}
-	else
-		startPlayback();
-}
-
-void VideoPlayerPage::next()
-{
-	MediaPlayerPage::next();
-
 	if (player->isPaused())
 	{
 		QString file_path = list_manager->currentFilePath();

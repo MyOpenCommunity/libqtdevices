@@ -67,8 +67,6 @@ signals:
 
 protected:
 	virtual void startPlayback();
-	virtual void previous();
-	virtual void next();
 
 private slots:
 	void startMPlayer();
@@ -80,6 +78,7 @@ private slots:
 	void videoPlaybackTerminated();
 	void videoPlaybackStarted();
 	void videoPlaybackStopped();
+	void currentFileChanged();
 
 private:
 	// the position/size where to play the video

@@ -52,6 +52,7 @@ void FileListManager::nextFile()
 	++index;
 	if (index > total_files)
 		index = 0;
+	emit currentFileChanged();
 }
 
 void FileListManager::previousFile()
@@ -60,6 +61,7 @@ void FileListManager::previousFile()
 	--index;
 	if (index < 0)
 		index = total_files - 1;
+	emit currentFileChanged();
 }
 
 int FileListManager::currentIndex()

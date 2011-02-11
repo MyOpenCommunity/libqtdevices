@@ -35,7 +35,7 @@ class VirtualSourceDevice;
 
 
 
-class UPnpListManager : public QObject, public ListManager
+class UPnpListManager : public ListManager
 {
 Q_OBJECT
 public:
@@ -101,8 +101,6 @@ public slots:
 	void playAudioFiles(QList<QString> files, unsigned element);
 	void playAudioFiles(EntryInfoList entries, unsigned element);
 	void playAudioFilesBackground(QList<QString> files, unsigned element);
-	virtual void previous();
-	virtual void next();
 
 private:
 	void startMPlayer(QString filename, int time);
@@ -118,6 +116,7 @@ private slots:
 	void quit();
 	void resetLoopCheck();
 	void mplayerDone();
+	void currentFileChanged();
 
 private:
 	AudioPlayerPage(MediaType type);

@@ -73,16 +73,23 @@ QString UPnpListManager::currentFilePath()
 void UPnpListManager::handleResponse(const XmlResponse &response)
 {
 	if (response.contains(XmlResponses::TRACK_SELECTION))
+	{
 		current_file = response[XmlResponses::TRACK_SELECTION].value<EntryInfo>();
+		emit currentFileChanged();
+	}
 }
 
 void UPnpListManager::nextFile()
 {
+	if (++index >= total_files)
+		index = 0;
 	dev->nextFile();
 }
 
 void UPnpListManager::previousFile()
 {
+	if (--index < 1)
+		index = total_files - 1;
 	dev->previousFile();
 }
 
@@ -150,6 +157,8 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 		list_manager = new UPnpListManager;
 	else
 		list_manager = new FileListManager;
+
+	connect(list_manager, SIGNAL(currentFileChanged()), SLOT(currentFileChanged()));
 
 	// Sometimes it happens that mplayer can't reproduce a song or a web radio,
 	// for example because the network is down. In this case the mplayer exits
@@ -353,30 +362,15 @@ void AudioPlayerPage::resetLoopCheck()
 	loop_starting_file = -1;
 }
 
-void AudioPlayerPage::previous()
-{
-	clearLabels();
-	MediaPlayerPage::previous();
-	if (player->isPaused())
-		player->requestInitialPlayingInfo(list_manager->currentFilePath());
-	else
-		startPlayback();
-
-	int index = list_manager->currentIndex();
-	int total_files = list_manager->totalFiles();
-	track->setText(tr("Track: %1 / %2").arg(index + 1).arg(total_files));
-}
-
 void AudioPlayerPage::quit()
 {
 	stop();
 	playerStopped();
 }
 
-void AudioPlayerPage::next()
+void AudioPlayerPage::currentFileChanged()
 {
 	clearLabels();
-	MediaPlayerPage::next();
 	if (player->isPaused())
 		player->requestInitialPlayingInfo(list_manager->currentFilePath());
 	else

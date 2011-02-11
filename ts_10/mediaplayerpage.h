@@ -34,8 +34,9 @@ class MediaPlayer;
 class MultimediaPlayerButtons;
 
 
-class ListManager
+class ListManager : public QObject
 {
+Q_OBJECT
 public:
 	virtual QString currentFilePath() = 0;
 
@@ -46,6 +47,9 @@ public:
 	virtual int totalFiles() = 0;
 
 	virtual EntryInfo::Metadata currentMeta() = 0;
+
+signals:
+	void currentFileChanged();
 };
 
 
