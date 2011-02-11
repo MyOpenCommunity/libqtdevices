@@ -117,6 +117,7 @@ private slots:
 	void playerStopped();
 	void quit();
 	void resetLoopCheck();
+	void mplayerDone();
 
 private:
 	AudioPlayerPage(MediaType type);

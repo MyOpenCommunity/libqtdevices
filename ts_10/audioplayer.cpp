@@ -211,7 +211,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	connect(player_buttons, SIGNAL(next()), SLOT(resetLoopCheck()));
 
 	// a radio channel is without an end. If mplayer has finished maybe there is an error.
-	const char *done_slot = (type == IP_RADIO) ? SLOT(quit()) : SLOT(next());
+	const char *done_slot = (type == IP_RADIO) ? SLOT(quit()) : SLOT(mplayerDone());
 	connect(player, SIGNAL(mplayerDone()), done_slot);
 
 	l_btn->addWidget(player_buttons);
@@ -375,6 +375,20 @@ void AudioPlayerPage::quit()
 
 void AudioPlayerPage::next()
 {
+	clearLabels();
+	MediaPlayerPage::next();
+	if (player->isPaused())
+		player->requestInitialPlayingInfo(list_manager->currentFilePath());
+	else
+		startPlayback();
+
+	int index = list_manager->currentIndex();
+	int total_files = list_manager->totalFiles();
+	track->setText(tr("Track: %1 / %2").arg(index + 1).arg(total_files));
+}
+
+void AudioPlayerPage::mplayerDone()
+{
 	if (loop_starting_file == -1)
 	{
 		loop_starting_file = list_manager->currentIndex();
@@ -397,17 +411,7 @@ void AudioPlayerPage::next()
 			loop_time_counter.start();
 		}
 	}
-
-	clearLabels();
-	MediaPlayerPage::next();
-	if (player->isPaused())
-		player->requestInitialPlayingInfo(list_manager->currentFilePath());
-	else
-		startPlayback();
-
-	int index = list_manager->currentIndex();
-	int total_files = list_manager->totalFiles();
-	track->setText(tr("Track: %1 / %2").arg(index + 1).arg(total_files));
+	next();
 }
 
 // strips the decimal dot from the time returned by mplayer; if match_length is passed,
