@@ -26,14 +26,12 @@
 #include "generic_functions.h" // EntryInfoList
 
 #include <QTimer>
-#include <QList>
-#include <QString>
-
 
 class MediaPlayer;
 class MultimediaPlayerButtons;
 
 
+// The interface for the manager of a list of 'files'.
 class ListManager : public QObject
 {
 Q_OBJECT
@@ -53,6 +51,9 @@ signals:
 };
 
 
+// Implements the ListManager interface for files or virtual radio ip item.
+// All the items in a directory/album are loaded at the beginning, without regarding
+// the number of item displayed.
 class FileListManager : public ListManager
 {
 public:

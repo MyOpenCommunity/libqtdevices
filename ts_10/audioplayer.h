@@ -23,18 +23,21 @@
 #define AUDIOPLAYER_H
 
 #include "mediaplayerpage.h"
-#include "btbutton.h"
-#include "generic_functions.h"
 #include "xmldevice.h"
+#include "generic_functions.h" // EntryInfo
 
 #include <QTime>
 
 class QLabel;
+class BtButton;
 class AudioPlayerPage;
 class VirtualSourceDevice;
 
 
-
+// Implements the ListManager interface for files retrieved from upnp.
+// The items in a directory/album are loaded in using the XmlDevice, and
+// only the items to display are requested to the upnp server, in order to
+// improve the performance.
 class UPnpListManager : public ListManager
 {
 Q_OBJECT
