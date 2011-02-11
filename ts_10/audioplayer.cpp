@@ -38,6 +38,7 @@
 #include "pagestack.h" // bt_global::page_stack
 #include "multimedia.h"
 #include "labels.h" // ScrollingLabel
+#include "xmldevice.h"
 
 #include <QFontMetrics>
 #include <QGridLayout>
@@ -57,22 +58,35 @@ BtButton *AudioPlayerPage::tray_icon = 0;
 
 
 
+UPnpListManager::UPnpListManager()
+{
+	dev = bt_global::xml_device;
+	connect(dev, SIGNAL(responseReceived(XmlResponse)), SLOT(handleResponse(XmlResponse)));
+}
+
 QString UPnpListManager::currentFilePath()
 {
 	Q_ASSERT_X(!current_file.isNull(), "UPnpListManager::currentFilePath", "Called with current_file not initialized!");
 	return current_file.path;
 }
 
-QString UPnpListManager::nextFilePath()
+void UPnpListManager::handleResponse(const XmlResponse &response)
 {
-	// TODO: implement
-	return current_file.path;
+	if (response.contains(XmlResponses::TRACK_SELECTION))
+	{
+		// TODO: extract the metadata!
+		current_file.path = response[XmlResponses::TRACK_SELECTION].toString();
+	}
 }
 
-QString UPnpListManager::previousFilePath()
+void UPnpListManager::nextFile()
 {
-	// TODO: implement
-	return current_file.path;
+	dev->nextFile();
+}
+
+void UPnpListManager::previousFile()
+{
+	dev->previousFile();
 }
 
 int UPnpListManager::currentIndex()

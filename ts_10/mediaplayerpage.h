@@ -39,8 +39,8 @@ class ListManager
 public:
 	virtual QString currentFilePath() = 0;
 
-	virtual QString nextFilePath() = 0;
-	virtual QString previousFilePath() = 0;
+	virtual void nextFile() = 0;
+	virtual void previousFile() = 0;
 
 	virtual int currentIndex() = 0;
 	virtual int totalFiles() = 0;
@@ -55,8 +55,8 @@ public:
 	FileListManager();
 	virtual QString currentFilePath();
 
-	virtual QString nextFilePath();
-	virtual QString previousFilePath();
+	virtual void nextFile();
+	virtual void previousFile();
 
 	virtual int currentIndex();
 	virtual int totalFiles();

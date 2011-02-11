@@ -25,6 +25,7 @@
 #include "mediaplayerpage.h"
 #include "btbutton.h"
 #include "generic_functions.h"
+#include "xmldevice.h"
 
 #include <QTime>
 
@@ -34,14 +35,15 @@ class VirtualSourceDevice;
 
 
 
-
-class UPnpListManager : public ListManager
+class UPnpListManager : public QObject, public ListManager
 {
+Q_OBJECT
 public:
+	UPnpListManager();
 	virtual QString currentFilePath();
 
-	virtual QString nextFilePath();
-	virtual QString previousFilePath();
+	virtual void nextFile();
+	virtual void previousFile();
 
 	virtual int currentIndex();
 	virtual int totalFiles();
@@ -53,9 +55,13 @@ public:
 	void setCurrentIndex(int i);
 	void setTotalFiles(int n);
 
+private slots:
+	void handleResponse(const XmlResponse &response);
+
 private:
 	int index, total_files;
 	EntryInfo current_file;
+	XmlDevice *dev;
 };
 
 

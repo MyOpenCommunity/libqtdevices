@@ -196,6 +196,16 @@ public:
 	void selectFile(const QString &file_tags);
 
 	/*!
+		\brief Requests the selection of the previous file (cyclic)
+	*/
+	void previousFile();
+
+	/*!
+		\brief Request the selection of the next file (cyclic)
+	*/
+	void nextFile();
+
+	/*!
 		\brief Requests to exit from the current directory.
 	*/
 	void browseUp();

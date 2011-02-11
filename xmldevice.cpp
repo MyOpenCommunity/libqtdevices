@@ -274,6 +274,8 @@ XmlDevice::XmlDevice()
 	xml_handlers["AW26C2"] = handle_selection;
 	xml_handlers["AW26C7"] = handle_browseup;
 	xml_handlers["AW26C15"] = handle_listitems;
+	xml_handlers["AW26C11"] = handle_selection;
+	xml_handlers["AW26C10"] = handle_selection;
 }
 
 XmlDevice::~XmlDevice()
@@ -304,6 +306,16 @@ void XmlDevice::chDir(const QString &dir)
 void XmlDevice::selectFile(const QString &file_tags)
 {
 	select(file_tags);
+}
+
+void XmlDevice::previousFile()
+{
+	sendCommand("CW26C11");
+}
+
+void XmlDevice::nextFile()
+{
+	sendCommand("CW26C10");
 }
 
 void XmlDevice::browseUp()

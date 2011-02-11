@@ -46,22 +46,20 @@ QString FileListManager::currentFilePath()
 	return files_list[index].path;
 }
 
-QString FileListManager::nextFilePath()
+void FileListManager::nextFile()
 {
 	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
 	++index;
 	if (index > total_files)
 		index = 0;
-	return currentFilePath();
 }
 
-QString FileListManager::previousFilePath()
+void FileListManager::previousFile()
 {
 	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
 	--index;
 	if (index < 0)
 		index = total_files - 1;
-	return currentFilePath();
 }
 
 int FileListManager::currentIndex()
@@ -168,13 +166,13 @@ void MediaPlayerPage::resume()
 void MediaPlayerPage::previous()
 {
 	player->quit();
-	list_manager->previousFilePath();
+	list_manager->previousFile();
 }
 
 void MediaPlayerPage::next()
 {
 	player->quit();
-	list_manager->nextFilePath();
+	list_manager->nextFile();
 }
 
 void MediaPlayerPage::seekForward()
