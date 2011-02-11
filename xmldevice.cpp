@@ -179,6 +179,7 @@ namespace
 
 		list.total = getTextChild(node, "total").toUInt();
 		list.start = getTextChild(node, "rank").toUInt();
+
 		QDomNode directories = getChildWithName(node, "directories");
 		foreach (const QDomNode &item, getChildren(directories, "name"))
 			list.entries << EntryInfo(item.toElement().text(), EntryInfo::DIRECTORY, QString());
@@ -253,6 +254,9 @@ namespace
 		file.close();
 	}
 }
+
+
+XmlDevice *bt_global::xml_device = 0;
 
 
 XmlDevice::XmlDevice()

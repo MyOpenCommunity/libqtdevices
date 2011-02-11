@@ -244,4 +244,9 @@ private:
 	QString server_addr;
 };
 
+// NOTE: this is a temporary solution. At some point in the future the openxml
+// should be used for most of the system, so we will need a different approach.
+namespace bt_global { extern XmlDevice *xml_device; }
+
+
 #endif // XMLDEVICE_H

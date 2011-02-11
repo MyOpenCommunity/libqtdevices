@@ -139,7 +139,7 @@ QString DirectoryTreeBrowser::pathKey()
 
 UPnpClientBrowser::UPnpClientBrowser()
 {
-	dev = new XmlDevice();
+	dev = bt_global::xml_device;
 	starting_element = 1;
 	level = 0;
 
