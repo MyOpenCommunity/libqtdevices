@@ -46,6 +46,12 @@ struct UPnpEntryList
 	EntryInfoList entries;
 };
 
+inline bool operator==(const UPnpEntryList &a, const UPnpEntryList &b)
+{
+	return a.start == b.start && a.total == b.total && a.entries == b.entries;
+}
+
+
 Q_DECLARE_METATYPE(UPnpEntryList);
 
 
