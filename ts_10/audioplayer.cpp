@@ -56,6 +56,27 @@ QVector<AudioPlayerPage *> AudioPlayerPage::audioplayer_pages(MAX_MEDIA_TYPE, 0)
 
 BtButton *AudioPlayerPage::tray_icon = 0;
 
+namespace
+{
+	// strips the decimal dot from the time returned by mplayer; if length is passed,
+	// the result is left-padded with "00:" until length
+	QString formatTime(const QString &mp_time, int length = 0)
+	{
+		QString res = mp_time;
+		int dot = mp_time.indexOf('.');
+
+		// strip decimal point
+		if (dot > 0)
+			res = mp_time.left(dot);
+
+		// left-pad with "00:"
+		if (length > 0)
+			while (res.length() < length)
+				res = "00:" + res;
+
+		return res;
+	}
+}
 
 
 UPnpListManager::UPnpListManager()
@@ -406,24 +427,6 @@ void AudioPlayerPage::mplayerDone()
 	next();
 }
 
-// strips the decimal dot from the time returned by mplayer; if match_length is passed,
-// the result is left-padded with "00:" to match match_length length
-static QString formatTime(const QString &mp_time, const QString &match_length = QString())
-{
-	QString res = mp_time;
-	int dot = mp_time.indexOf('.');
-
-	// strip decimal point
-	if (dot > 0)
-		res = mp_time.left(dot);
-
-	// left-pad with "00:"
-	while (res.length() < match_length.length())
-		res = "00:" + res;
-
-	return res;
-}
-
 void AudioPlayerPage::refreshPlayInfo(const QMap<QString, QString> &attrs)
 {
 	if (type == LOCAL_FILE || type == UPNP_FILE)
@@ -447,16 +450,18 @@ void AudioPlayerPage::refreshPlayInfo(const QMap<QString, QString> &attrs)
 			description_bottom->setText(md["album"]);
 
 		QString total;
-		if (attrs.contains("total_time"))
-			total = formatTime(attrs["total_time"]);
-		else if (md.contains("total_time") && !md["total_time"].isEmpty())
+		// mplayer sometimes shows a wrong duration: we give the precedence to
+		// the duration from upnp if present.
+		if (md.contains("total_time") && !md["total_time"].isEmpty())
 			total = formatTime(md["total_time"]);
+		else if (attrs.contains("total_time"))
+			total = formatTime(attrs["total_time"]);
 
 		QString current;
 		if (attrs.contains("current_time"))
-			current = formatTime(attrs["current_time"], total);
+			current = formatTime(attrs["current_time"], total.length());
 		else if (attrs.contains("current_time_only"))
-			current = formatTime(attrs["current_time_only"], total);
+			current = formatTime(attrs["current_time_only"], total.length());
 
 		if (!total.isEmpty() && !current.isEmpty())
 			elapsed->setText(current + " / " + total);
