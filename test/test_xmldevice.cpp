@@ -218,7 +218,13 @@ void TestXmlDevice::testTrackSelection()
 				 "</OWNxml>");
 
 	XmlDeviceTester t(dev, XmlResponses::TRACK_SELECTION);
-	t.check(data, QString("http://10.3.3.245:49152/content/media/object_id/202/res_id/0/ext/file.mp3"));
+	EntryInfo::Metadata mt;
+	mt["title"] = "Morenita";
+	mt["artist"] = "Gloria Estefan";
+	mt["album"] = "90 Millas";
+	mt["total_time"] = "0:04:13.000";
+	EntryInfo entry("Morenita", EntryInfo::AUDIO, "http://10.3.3.245:49152/content/media/object_id/202/res_id/0/ext/file.mp3", mt);
+	t.check(data, entry);
 }
 
 void TestXmlDevice::testBrowseUpSuccess()
@@ -335,13 +341,13 @@ void TestXmlDevice::testListItems()
 	mt1["title"] = "Ship to Monkey Island";
 	mt1["artist"] = "Michael Land";
 	mt1["album"] = "The Secret of Monkey Island (game rip)";
-	mt1["total_time_only"] = "0:02:29.000";
+	mt1["total_time"] = "0:02:29.000";
 
 	EntryInfo::Metadata mt2;
 	mt2["title"] = "Hammer Smashed Face";
 	mt2["artist"] = "Cannibal Corpse";
 	mt2["album"] = "Tomb Of The Mutilated";
-	mt2["total_time_only"] = "0:03:19.000";
+	mt2["total_time"] = "0:03:19.000";
 
 	UPnpEntryList list;
 	list.total = 16;

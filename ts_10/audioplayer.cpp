@@ -73,10 +73,7 @@ QString UPnpListManager::currentFilePath()
 void UPnpListManager::handleResponse(const XmlResponse &response)
 {
 	if (response.contains(XmlResponses::TRACK_SELECTION))
-	{
-		// TODO: extract the metadata!
-		current_file.path = response[XmlResponses::TRACK_SELECTION].toString();
-	}
+		current_file = response[XmlResponses::TRACK_SELECTION].value<EntryInfo>();
 }
 
 void UPnpListManager::nextFile()
@@ -111,6 +108,7 @@ void UPnpListManager::setTotalFiles(int n)
 
 void UPnpListManager::setStartingFile(EntryInfo starting_file)
 {
+	dev->selectFile(starting_file.name);
 	current_file = starting_file;
 }
 

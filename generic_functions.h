@@ -111,7 +111,7 @@ private:
 */
 inline bool operator ==(const EntryInfo &a, const EntryInfo &b)
 {
-	return a.name == b.name && a.type == b.type;
+	return a.name == b.name && a.type == b.type && a.path == b.path && a.metadata == b.metadata;
 }
 
 /*!
@@ -119,6 +119,7 @@ inline bool operator ==(const EntryInfo &a, const EntryInfo &b)
 */
 typedef QList<EntryInfo> EntryInfoList;
 
+Q_DECLARE_METATYPE(EntryInfo);
 Q_DECLARE_METATYPE(EntryInfoList);
 
 
