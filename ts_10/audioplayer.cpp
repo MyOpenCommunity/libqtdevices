@@ -343,8 +343,6 @@ void AudioPlayerPage::playAudioFiles(QList<QString> files, unsigned element)
 
 void AudioPlayerPage::playAudioFiles(EntryInfoList entries, unsigned element)
 {
-	entryinfo_list = entries;
-
 	FileListManager *lm = static_cast<FileListManager*>(list_manager);
 
 	lm->setList(entries);

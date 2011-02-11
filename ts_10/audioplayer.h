@@ -135,10 +135,6 @@ private:
 	int loop_starting_file; // the index of the song used to detect loop
 	int loop_total_time; // the total time used to detect a loop
 	QTime loop_time_counter; // used to count the time elapsed
-
-	// List of entry info, used only in this player for now, wish to port it
-	// on the others, too.
-	EntryInfoList entryinfo_list;
 };
 
 #endif
