@@ -248,16 +248,16 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 		case XmlResponses::ACK:
 			break;
 		case XmlResponses::SERVER_LIST:
-			{
-				cached_elements.clear();
-				foreach (const QString &server, response[key].toStringList())
-					cached_elements << EntryInfo(server, EntryInfo::DIRECTORY, QString());
+		{
+			cached_elements.clear();
+			foreach (const QString &server, response[key].toStringList())
+				cached_elements << EntryInfo(server, EntryInfo::DIRECTORY, QString());
 
-				num_elements = cached_elements.size();
-				level = 0;
+			num_elements = cached_elements.size();
+			level = 0;
 
-				emit listReceived(cached_elements.mid(starting_element - 1, ELEMENTS_DISPLAYED));
-			}
+			emit listReceived(cached_elements.mid(starting_element - 1, ELEMENTS_DISPLAYED));
+		}
 			break;
 		case XmlResponses::SERVER_SELECTION:
 		case XmlResponses::CHDIR:
@@ -271,18 +271,18 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 			emit directoryChanged();
 			break;
 		case XmlResponses::LIST_ITEMS:
+		{
+			EntryInfoList infos;
+			const UPnpEntryList& list = response[key].value<UPnpEntryList>();
+			num_elements = list.total;
+			starting_element = list.start;
+			foreach (const EntryInfo &entry, list.entries)
 			{
-				EntryInfoList infos;
-				const UPnpEntryList& list = response[key].value<UPnpEntryList>();
-				num_elements = list.total;
-				starting_element = list.start;
-				foreach (const EntryInfo &entry, list.entries)
-				{
-					if (filter_mask & entry.type)
-						infos << entry;
-				}
-				emit listReceived(infos);
+				if (filter_mask & entry.type)
+					infos << entry;
 			}
+			emit listReceived(infos);
+		}
 			break;
 		default:
 			Q_ASSERT_X(false, "UPnpClientBrowser::handleResponse", "Unhandled resposne.");
