@@ -55,6 +55,9 @@ public:
 
 	void cleanUp();
 
+protected:
+	virtual int currentPage();
+
 private slots:
 	void startPlayback(int item);
 	void displayFiles(const EntryInfoList &list);

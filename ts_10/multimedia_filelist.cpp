@@ -107,27 +107,25 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 void MultimediaFileListPage::upnpPgUp()
 {
 	(qobject_cast<UPnpClientBrowser*>(browser))->getPreviousFileList();
+	resetDisplayedPage();
 }
 
 void MultimediaFileListPage::upnpPgDown()
 {
 	(qobject_cast<UPnpClientBrowser*>(browser))->getNextFileList();
+	resetDisplayedPage();
+}
+
+int MultimediaFileListPage::currentPage()
+{
+	if (UPnpClientBrowser *b = qobject_cast<UPnpClientBrowser*>(browser))
+		return (b->getStartingElement() - 1) / rows_per_page;
+
+	return FileSelector::currentPage();
 }
 
 void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 {
-	if (UPnpClientBrowser *b = qobject_cast<UPnpClientBrowser*>(browser))
-	{
-		nav_bar->displayScrollButtons(b->getNumElements() > rows_per_page);
-
-		int current_page = (b->getStartingElement() - 1) / rows_per_page;
-		int total_pages =(b->getNumElements() - 1) / rows_per_page + 1;
-
-		title_widget->setCurrentPage(current_page, total_pages);
-	}
-
-	setFiles(list);
-
 	if (list.empty())
 	{
 		if (browser->isRoot()) // Special case empty root directory
@@ -140,12 +138,34 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 		return;
 	}
 
+	int page_index = displayedPage(browser->pathKey());
+
+	if (UPnpClientBrowser *b = qobject_cast<UPnpClientBrowser*>(browser))
+	{
+		if (page_index != 0 && b->getStartingElement() == 1)
+		{
+			b->getFileList(page_index * rows_per_page + 1);
+			resetDisplayedPage();
+			return;
+		}
+
+		page_index = 0;
+
+		nav_bar->displayScrollButtons(b->getNumElements() > rows_per_page);
+
+		int current_page = (b->getStartingElement() - 1) / rows_per_page;
+		int total_pages =(b->getNumElements() - 1) / rows_per_page + 1;
+
+		title_widget->setCurrentPage(current_page, total_pages);
+	}
+
+	setFiles(list);
+
 	QList<ItemList::ItemInfo> names_list;
 
 	for (int i = 0; i < list.size(); ++i)
 	{
 		const EntryInfo& f = list.at(i);
-
 		QStringList icons;
 
 		if (f.type != EntryInfo::DIRECTORY)
@@ -156,23 +176,18 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 
 			icons << file_icons[t];
 			icons << play_file;
-
-			ItemList::ItemInfo info(f.name, QString(), icons);
-
-			names_list.append(info);
 		}
 		else
 		{
 			icons << file_icons[EntryInfo::DIRECTORY];
 			icons << browse_directory;
-
-			ItemList::ItemInfo info(f.name, QString(), icons);
-
-			names_list.append(info);
 		}
+
+		ItemList::ItemInfo info(f.name, QString(), icons);
+		names_list.append(info);
 	}
 
-	page_content->setList(names_list, displayedPage(browser->pathKey()));
+	page_content->setList(names_list, page_index);
 	page_content->showList();
 
 	operationCompleted();

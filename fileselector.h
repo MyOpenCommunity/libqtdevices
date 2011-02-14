@@ -79,6 +79,10 @@ protected:
 	void startOperation();
 	void operationCompleted();
 
+	virtual int currentPage();
+
+	void resetDisplayedPage();
+
 	TreeBrowser *browser;
 
 private:
@@ -97,7 +101,7 @@ private slots:
 private:
 	FileSelectorWaitDialog *working;
 	EntryInfoList files_list;
-	QMap<QString, unsigned>  pages_indexes;
+	QHash<QString, unsigned>  pages_indexes;
 };
 
 

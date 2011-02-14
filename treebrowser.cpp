@@ -164,16 +164,26 @@ void UPnpClientBrowser::exitDirectory()
 {
 	if (level == 0)
 		return;
+
+	if (level == 1)
+		dev->requestUPnPServers();
 	else
 		dev->browseUp();
 }
 
 void UPnpClientBrowser::getFileList()
 {
+	getFileList(1);
+}
+
+void UPnpClientBrowser::getFileList(int s)
+{
+	starting_element = s;
+
 	if (level == 0)
 		dev->requestUPnPServers();
 	else
-		dev->listItems(1, ELEMENTS_DISPLAYED);
+		dev->listItems(starting_element, ELEMENTS_DISPLAYED);
 }
 
 void UPnpClientBrowser::getPreviousFileList()
@@ -244,7 +254,7 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 					cached_elements << EntryInfo(server, EntryInfo::DIRECTORY, QString());
 
 				num_elements = cached_elements.size();
-				starting_element = 1;
+				level = 0;
 
 				emit listReceived(cached_elements.mid(starting_element - 1, ELEMENTS_DISPLAYED));
 			}

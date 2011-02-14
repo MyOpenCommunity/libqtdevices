@@ -135,7 +135,7 @@ void FileSelector::itemIsClicked(int item)
 	qDebug() << "[AUDIO] FileSelector::itemIsClicked " << item << "-> " << clicked_element.name;
 
 	// save the info of old directory
-	pages_indexes[browser->pathKey()] = page_content->currentPage();
+	pages_indexes[browser->pathKey()] = currentPage();
 
 	if (clicked_element.type == EntryInfo::DIRECTORY)
 	{
@@ -146,12 +146,21 @@ void FileSelector::itemIsClicked(int item)
 		emit fileClicked(item);
 }
 
+void FileSelector::resetDisplayedPage()
+{
+	pages_indexes.remove(browser->pathKey());
+}
+
+int FileSelector::currentPage()
+{
+	return page_content->currentPage();
+}
+
 void FileSelector::browseUp()
 {
 	if (!browser->isRoot())
 	{
 		startOperation();
-
 		browser->exitDirectory();
 	}
 	else
