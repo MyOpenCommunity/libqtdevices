@@ -196,6 +196,7 @@ private:
 	XmlDevice *dev;
 	int level;
 
+	// To manage the 'lazy' loading of the elements
 	int starting_element;
 	int num_elements;
 	EntryInfoList cached_elements;

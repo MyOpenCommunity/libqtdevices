@@ -107,6 +107,9 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 void MultimediaFileListPage::upnpPgUp()
 {
 	(qobject_cast<UPnpClientBrowser*>(browser))->getPreviousFileList();
+	// The following reset is required only when we turn back from the song
+	// played, beacause we save the current page index in the
+	// FileSelector::itemIsClicked() but we don't call the displayFiles as usually.
 	resetDisplayedPage();
 }
 
@@ -133,7 +136,7 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 			operationCompleted();
 			emit Closed();
 		}
-		qDebug() << "MultimediaFileListPage: empty directory";
+		qDebug() << "MultimediaFileListPage::displayFiles -> empty directory";
 		browser->exitDirectory();
 		return;
 	}
@@ -142,6 +145,10 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 
 	if (UPnpClientBrowser *b = qobject_cast<UPnpClientBrowser*>(browser))
 	{
+		// When we browse up to a directory, we want to show the directory
+		// previously selected. Because the UPnpClientBrowser has an asyncronous
+		// api, we have to wait the listReiceved signal before request the right
+		// page index.
 		if (page_index != 0 && b->getStartingElement() == 1)
 		{
 			b->getFileList(page_index * rows_per_page + 1);
