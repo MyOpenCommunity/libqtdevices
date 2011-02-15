@@ -406,8 +406,8 @@ void MessagesListPage::newMessage(const DeviceValues &values_list)
 
 	int count = page_content->itemCount();
 
-	// delete the last message if the number of messages is > MESSAGES_MAX
-	if (count > MESSAGES_MAX)
+	// delete the last message if the number of messages is => MESSAGES_MAX
+	if (count >= MESSAGES_MAX)
 	{
 		// We have to search if exists an alert page which has the same text and
 		// the same date, in order to delete it.
