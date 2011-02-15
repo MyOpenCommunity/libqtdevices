@@ -406,8 +406,8 @@ void MessagesListPage::newMessage(const DeviceValues &values_list)
 
 	int count = page_content->itemCount();
 
-	// delete the last message if the number of messages is > MESSAGES_MAX
-	if (count > MESSAGES_MAX)
+	// delete the last message if the number of messages is => MESSAGES_MAX
+	if (count >= MESSAGES_MAX)
 	{
 		// We have to search if exists an alert page which has the same text and
 		// the same date, in order to delete it.
@@ -469,14 +469,20 @@ void MessagesListPage::showMessage(int index)
 {
 	current_index = index;
 	ItemList::ItemInfo &item = page_content->item(index);
-	message_page->setData(item.name, item.description, item.data.toBool());
+
 	if (!item.data.toBool())
 	{
 		item.data = true;
 		need_update = true;
 		saveMessages();
 	}
+
+	// For some weird reason if we set the data of the message before showing
+	// the page the QScrollBar::minimum and QScrollBar::maximum have wrong
+	// values. As result, the message content can scroll even if the message
+	// is short or don't scroll if the message is long.
 	message_page->showPage();
+	message_page->setData(item.name, item.description, item.data.toBool());
 }
 
 void MessagesListPage::showPrevMessage()
