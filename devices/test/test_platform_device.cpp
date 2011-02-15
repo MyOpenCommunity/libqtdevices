@@ -83,6 +83,12 @@ void TestPlatformDevice::receiveDns2()
 	t.check("*#13**52*208*67*220*220*##", "208.67.220.220");
 }
 
+void TestPlatformDevice::receivePicVersion()
+{
+	DeviceTester t(dev, PlatformDevice::DIM_PIC_VERS);
+	t.check("*#13**20*22*40*05##", "22");
+}
+
 void TestPlatformDevice::sendSetDate()
 {
 	dev->setDate(QDate(2010, 11, 12));

@@ -181,6 +181,52 @@ void TestXmlDevice::testChdir()
 	t.check(data, true);
 }
 
+
+void TestXmlDevice::testTrackSelection()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
+				 "			<PID>4</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.195</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>192.168.1.110</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C2>"
+						 "<DIDL-Lite xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\" xmlns:dlna=\"urn:schemas-dlna-org:metadata-1-0/\"> "
+							 "<item id=\"202\" parentID=\"135\" restricted=\"1\"> "
+								 "<dc:title>Morenita</dc:title> "
+								 "<upnp:class>object.item.audioItem.musicTrack</upnp:class> "
+								 "<upnp:artist>Gloria Estefan</upnp:artist> "
+								 "<upnp:album>90 Millas</upnp:album> "
+								 "<dc:date>2007-01-01</dc:date> "
+								 "<upnp:genre>Pop</upnp:genre> "
+								 "<dc:description>Morenita - Gloria Estefan</dc:description> "
+								 "<upnp:originalTrackNumber>13</upnp:originalTrackNumber> "
+								 "<res protocolInfo=\"http-get:*:audio/mpeg:*\" size=\"6362567\" bitrate=\"25600\" duration=\"0:04:13.000\" sampleFrequency=\"44100\" nrAudioChannels=\"2\">http://10.3.3.245:49152/content/media/object_id/202/res_id/0/ext/file.mp3</res> "
+							 "</item> "
+						 "</DIDL-Lite> "
+				 "		</AW26C2>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::TRACK_SELECTION);
+	EntryInfo::Metadata mt;
+	mt["title"] = "Morenita";
+	mt["artist"] = "Gloria Estefan";
+	mt["album"] = "90 Millas";
+	mt["total_time"] = "0:04:13.000";
+	EntryInfo entry("Morenita", EntryInfo::AUDIO, "http://10.3.3.245:49152/content/media/object_id/202/res_id/0/ext/file.mp3", mt);
+	t.check(data, entry);
+}
+
 void TestXmlDevice::testBrowseUpSuccess()
 {
 	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
@@ -253,6 +299,8 @@ void TestXmlDevice::testListItems()
 				 "	</Hdr>"
 				 "	<Cmd>"
 				 "		<AW26C15>"
+				 "			<total>16</total>"
+				 "			<rank>1</rank>"
 				 "			<directories>"
 				 "				<name>TestDirectory1</name>"
 				 "				<name>TestDirectory2</name>"
@@ -293,19 +341,22 @@ void TestXmlDevice::testListItems()
 	mt1["title"] = "Ship to Monkey Island";
 	mt1["artist"] = "Michael Land";
 	mt1["album"] = "The Secret of Monkey Island (game rip)";
-	mt1["total_time_only"] = "0:02:29.000";
+	mt1["total_time"] = "0:02:29.000";
 
 	EntryInfo::Metadata mt2;
 	mt2["title"] = "Hammer Smashed Face";
 	mt2["artist"] = "Cannibal Corpse";
 	mt2["album"] = "Tomb Of The Mutilated";
-	mt2["total_time_only"] = "0:03:19.000";
+	mt2["total_time"] = "0:03:19.000";
 
-	t.check(data, EntryInfoList() <<
-			EntryInfo("TestDirectory1", EntryInfo::DIRECTORY) <<
-			EntryInfo("TestDirectory2", EntryInfo::DIRECTORY) <<
-			EntryInfo("Ship to Monkey Island", EntryInfo::AUDIO, "http://10.3.3.248:49153/files/13", mt1) <<
-			EntryInfo("Hammer Smashed Face", EntryInfo::AUDIO, "http://10.3.3.248:49153/files/1", mt2));
+	UPnpEntryList list;
+	list.total = 16;
+	list.start = 1;
+	list.entries << EntryInfo("TestDirectory1", EntryInfo::DIRECTORY, QString());
+	list.entries << EntryInfo("TestDirectory2", EntryInfo::DIRECTORY, QString());
+	list.entries << EntryInfo("Ship to Monkey Island", EntryInfo::AUDIO, "http://10.3.3.248:49153/files/13", mt1);
+	list.entries << EntryInfo("Hammer Smashed Face", EntryInfo::AUDIO, "http://10.3.3.248:49153/files/1", mt2);
+	t.check(data, list);
 }
 
 void TestXmlDevice::testResetWithAck()
@@ -396,7 +447,9 @@ void TestXmlDevice::testBuildCommandWithArg()
 	dev->local_addr = "local_address";
 	dev->server_addr = "server_address";
 
-	QString command = dev->buildCommand("command", "test_argument");
+	XmlArguments arg;
+	arg["id"] = "test_argument";
+	QString command = dev->buildCommand("command", arg);
 
 	QCOMPARE(command, data);
 }

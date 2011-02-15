@@ -30,9 +30,13 @@ class ItemList;
 class SlideshowPage;
 class VideoPlayerPage;
 class AudioPlayerPage;
+class NavigationBar;
+
 #ifdef PDF_EXAMPLE
 class PdfPage;
 #endif
+
+
 
 /*!
 	\ingroup Multimedia
@@ -51,9 +55,15 @@ public:
 
 	void cleanUp();
 
+protected:
+	virtual int currentPage();
+
 private slots:
 	void startPlayback(int item);
 	void displayFiles(const EntryInfoList &list);
+
+	void upnpPgUp();
+	void upnpPgDown();
 
 private:
 	// icons for different file type
@@ -70,6 +80,11 @@ private:
 	// last clicked item (for files)
 	int last_clicked;
 	EntryInfo::Type last_clicked_type;
+
+	int rows_per_page;
+
+	NavigationBar *nav_bar;
+	PageTitleWidget *title_widget;
 
 #ifdef PDF_EXAMPLE
 	PdfPage *pdfdisplay;

@@ -23,14 +23,49 @@
 #define AUDIOPLAYER_H
 
 #include "mediaplayerpage.h"
-#include "btbutton.h"
-#include "generic_functions.h"
+#include "xmldevice.h"
+#include "generic_functions.h" // EntryInfo
 
 #include <QTime>
 
 class QLabel;
+class BtButton;
 class AudioPlayerPage;
 class VirtualSourceDevice;
+
+
+// Implements the ListManager interface for files retrieved from upnp.
+// The items in a directory/album are loaded in using the XmlDevice, and
+// only the items to display are requested to the upnp server, in order to
+// improve the performance.
+class UPnpListManager : public ListManager
+{
+Q_OBJECT
+public:
+	UPnpListManager();
+	virtual QString currentFilePath();
+
+	virtual void nextFile();
+	virtual void previousFile();
+
+	virtual int currentIndex();
+	virtual int totalFiles();
+
+	virtual EntryInfo::Metadata currentMeta();
+
+	// UPnpListManager specific methods
+	void setStartingFile(EntryInfo starting_file);
+	void setCurrentIndex(int i);
+	void setTotalFiles(int n);
+
+private slots:
+	void handleResponse(const XmlResponse &response);
+
+private:
+	int index, total_files;
+	EntryInfo current_file;
+	XmlDevice *dev;
+};
 
 
 /*!
@@ -49,6 +84,7 @@ public:
 	{
 		LOCAL_FILE,
 		IP_RADIO,
+		UPNP_FILE,
 		MAX_MEDIA_TYPE
 	};
 
@@ -60,18 +96,17 @@ public:
 	void showPrevButton(bool show);
 
 protected:
-	QString currentFileName(int index) const;
+	virtual void startPlayback();
 
 public slots:
+	void playAudioFile(EntryInfo starting_file, int file_index, int num_files);
+
 	void playAudioFiles(QList<QString> files, unsigned element);
 	void playAudioFiles(EntryInfoList entries, unsigned element);
 	void playAudioFilesBackground(QList<QString> files, unsigned element);
-	virtual void previous();
-	virtual void next();
 
 private:
-	void startMPlayer(int index, int time);
-	void displayMedia(int index);
+	void startMPlayer(QString filename, int time);
 	void clearLabels();
 
 private slots:
@@ -83,6 +118,8 @@ private slots:
 	void playerStopped();
 	void quit();
 	void resetLoopCheck();
+	void mplayerDone();
+	void currentFileChanged();
 
 private:
 	AudioPlayerPage(MediaType type);
@@ -101,10 +138,6 @@ private:
 	int loop_starting_file; // the index of the song used to detect loop
 	int loop_total_time; // the total time used to detect a loop
 	QTime loop_time_counter; // used to count the time elapsed
-
-	// List of entry info, used only in this player for now, wish to port it
-	// on the others, too.
-	EntryInfoList entryinfo_list;
 };
 
 #endif

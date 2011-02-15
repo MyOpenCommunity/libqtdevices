@@ -23,14 +23,60 @@
 #define MEDIAPLAYERPAGE_H
 
 #include "page.h"
+#include "generic_functions.h" // EntryInfoList
 
 #include <QTimer>
-#include <QList>
-#include <QString>
-
 
 class MediaPlayer;
 class MultimediaPlayerButtons;
+
+
+// The interface for the manager of a list of 'files'.
+class ListManager : public QObject
+{
+Q_OBJECT
+public:
+	virtual QString currentFilePath() = 0;
+
+	virtual void nextFile() = 0;
+	virtual void previousFile() = 0;
+
+	virtual int currentIndex() = 0;
+	virtual int totalFiles() = 0;
+
+	virtual EntryInfo::Metadata currentMeta() = 0;
+
+signals:
+	void currentFileChanged();
+};
+
+
+// Implements the ListManager interface for files or virtual radio ip item.
+// All the items in a directory/album are loaded at the beginning, without regarding
+// the number of item displayed.
+class FileListManager : public ListManager
+{
+public:
+	FileListManager();
+	virtual QString currentFilePath();
+
+	virtual void nextFile();
+	virtual void previousFile();
+
+	virtual int currentIndex();
+	virtual int totalFiles();
+
+	virtual EntryInfo::Metadata currentMeta();
+
+	// FileListManager specific methods
+	void setCurrentIndex(int i);
+	void setList(const EntryInfoList &files);
+
+private:
+	int index, total_files;
+	EntryInfoList files_list;
+};
+
 
 
 /*!
@@ -64,9 +110,7 @@ protected:
 	// reproduce the i-th media object inside file_list
 	//
 	// must emit started() and start the refresh_data timer
-	virtual void displayMedia(int index) = 0;
-
-	virtual QString currentFileName(int index) const = 0;
+	virtual void startPlayback() = 0;
 
 public slots:
 	// standard player functionality
@@ -87,8 +131,6 @@ public slots:
 
 protected:
 	// media objects handled by the page
-	int current_file, total_files;
-	QList<QString> file_list;
 
 	MediaPlayer *player;
 
@@ -98,6 +140,8 @@ protected:
 	// set to true when the player is paused due to a audio state change (es. vct call)
 	// or (for video player) due to a page change (es. alarm)
 	bool temporary_pause;
+
+	ListManager *list_manager;
 
 private slots:
 	void unmounted(const QString &path);

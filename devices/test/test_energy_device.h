@@ -38,7 +38,9 @@ private slots:
 	void cleanup();
 
 	void sendRequestCumulativeDayGraph8Bit();
+	void sendRequestCumulativeDayGraph8BitOldPic();
 	void sendRequestCumulativeMonthGraph8Bit();
+	void sendRequestCumulativeMonthGraph8BitOldPic();
 	void sendRequestCumulativeYearGraph();
 	void sendRequestCumulativeMonth();
 	void sendRequestCumulativeMonth2();
@@ -46,9 +48,14 @@ private slots:
 	void sendRequestCurrent2();
 	void sendRequestCurrent3();
 	void sendRequestCurrent4();
+	void sendRequestDailyAverageGraph8Bit();
+	void sendRequestDailyAverageGraph8BitOldPic();
 	void sendRequestDailyAverageGraph16Bit();
+	void sendRequestDailyAverageGraph16BitOldPic();
 	void sendRequestCumulativeDayGraph16Bit();
+	void sendRequestCumulativeDayGraph16BitOldPic();
 	void sendRequestCumulativeMonthGraph32Bit();
+	void sendRequestCumulativeMonthGraph32BitOldPic();
 
 	void receiveCumulativeDay();
 	void receiveCumulativeDay2();
@@ -92,8 +99,10 @@ private slots:
 
 	void testUpdateStartPolling();
 	void testUpdateStartAutomatic();
-
 	void testUpdateStop();
+
+	// pic
+	void receivePic();
 
 private:
 	AutomaticUpdates *upd;

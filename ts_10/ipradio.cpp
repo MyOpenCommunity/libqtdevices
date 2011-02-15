@@ -39,7 +39,7 @@ IPRadioPage::IPRadioPage(const QDomNode &config_node)
 
 	buildPage(item_list, item_list, new NavigationBar,
 		new PageTitleWidget(getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT));
-	layout()->setContentsMargins(0, 5, 25, 10);
+	layout()->setContentsMargins(13, 5, 25, 10);
 
 	loadItems(config_node);
 	connect(page_content, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));

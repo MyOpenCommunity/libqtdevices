@@ -40,10 +40,11 @@
 #define BUTTONS_TIMEOUT 5000
 
 
-// VideoPlayerPage implementation
-
 VideoPlayerPage::VideoPlayerPage()
 {
+	list_manager = new FileListManager;
+	connect(list_manager, SIGNAL(currentFileChanged()), SLOT(currentFileChanged()));
+
 	QWidget *content = new QWidget;
 	QVBoxLayout *l = new QVBoxLayout(content);
 	QHBoxLayout *v = new QHBoxLayout;
@@ -95,7 +96,6 @@ VideoPlayerPage::VideoPlayerPage()
 
 	connect(player, SIGNAL(playingInfoUpdated(QMap<QString,QString>)), SLOT(refreshPlayInfo(QMap<QString,QString>)));
 	connect(&refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
-
 }
 
 VideoPlayerPage::~VideoPlayerPage()
@@ -114,30 +114,30 @@ void VideoPlayerPage::showPage()
 void VideoPlayerPage::startMPlayer()
 {
 	if (fullscreen)
-		player->playVideoFullScreen(file_list[current_file], current_time);
+		player->playVideoFullScreen(list_manager->currentFilePath(), current_time);
 	else
-		player->playVideo(file_list[current_file], playbackGeometry(), current_time);
+		player->playVideo(list_manager->currentFilePath(), playbackGeometry(), current_time);
 	refresh_data.start(MPLAYER_POLLING);
 }
 
-void VideoPlayerPage::displayMedia(int index)
+void VideoPlayerPage::startPlayback()
 {
-	title->setText(QFileInfo(file_list[index]).fileName());
-	current_file = index;
+	title->setText(QFileInfo(list_manager->currentFilePath()).fileName());
 	current_time = 0;
 
-	if (checkVideo(file_list[index]))
+	if (checkVideo(list_manager->currentFilePath()))
 		QTimer::singleShot(0, this, SLOT(startMPlayer()));
 }
 
-void VideoPlayerPage::displayVideos(QList<QString> videos, unsigned element)
+void VideoPlayerPage::displayVideos(const EntryInfoList &videos, unsigned element)
 {
-	current_file = element;
-	total_files = videos.size();
-	file_list = videos;
+	FileListManager *lm = static_cast<FileListManager*>(list_manager);
+
+	lm->setList(videos);
+	lm->setCurrentIndex(element);
 	showPage();
 
-	displayMedia(current_file);
+	startPlayback();
 }
 
 void VideoPlayerPage::videoPlaybackTerminated()
@@ -168,11 +168,6 @@ void VideoPlayerPage::aboutToHideEvent()
 	temporaryPauseOnHide();
 }
 
-QString VideoPlayerPage::currentFileName(int index) const
-{
-	return file_list[index];
-}
-
 void VideoPlayerPage::temporaryPauseOnHide()
 {
 	if (!player->isPlaying())
@@ -196,32 +191,17 @@ void VideoPlayerPage::resumePlayOnShow()
 	temporary_pause = false;
 }
 
-void VideoPlayerPage::previous()
+void VideoPlayerPage::currentFileChanged()
 {
-	MediaPlayerPage::previous();
-
 	if (player->isPaused())
 	{
-		title->setText(QFileInfo(file_list[current_file]).fileName());
-		if (checkVideo(file_list[current_file]))
-			player->requestInitialVideoInfo(currentFileName(current_file));
+		QString file_path = list_manager->currentFilePath();
+		title->setText(QFileInfo(file_path).fileName());
+		if (checkVideo(file_path))
+			player->requestInitialVideoInfo(file_path);
 	}
 	else
-		displayMedia(current_file);
-}
-
-void VideoPlayerPage::next()
-{
-	MediaPlayerPage::next();
-
-	if (player->isPaused())
-	{
-		title->setText(QFileInfo(file_list[current_file]).fileName());
-		if (checkVideo(file_list[current_file]))
-			player->requestInitialVideoInfo(currentFileName(current_file));
-	}
-	else
-		displayMedia(current_file);
+		startPlayback();
 }
 
 bool VideoPlayerPage::checkVideo(QString track)
@@ -272,7 +252,7 @@ void VideoPlayerPage::displayFullScreen(bool fs)
 		showPage();
 	}
 
-	if (checkVideo(file_list[current_file]))
+	if (checkVideo(list_manager->currentFilePath()))
 		QTimer::singleShot(0, this, SLOT(startMPlayer()));
 }
 
@@ -299,7 +279,6 @@ void VideoPlayerPage::refreshPlayInfo()
 }
 
 
-// VideoPlayerWindow implementation
 VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *_page, MediaPlayer *player)
 	: controls_timer(this)
 {

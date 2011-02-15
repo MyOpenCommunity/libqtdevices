@@ -197,6 +197,9 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 			break;
 		}
 		case PAGE_UPNP:
+			if (!bt_global::xml_device)
+				bt_global::xml_device = new XmlDevice;
+
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_UPNP))
 				p = new MultimediaFileListPage(new UPnpClientBrowser, EntryInfo::DIRECTORY | EntryInfo::AUDIO, false);
 			break;

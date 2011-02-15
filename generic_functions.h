@@ -38,9 +38,9 @@ class QDateTime;
 	\ingroup Multimedia
 	\brief Contains information about a resource entry.
 
-	This structure contains the name, the type, an optional url, and optional
-	metadata about a generic entry on filesystem or filesystem-structured
-	resources (like UPnP).
+	This structure contains the name, the type, the path (witch can be a path on
+	the filesystem or an url), and optional metadata about a generic entry on
+	filesystem or filesystem-structured resources (like UPnP).
 
 	\sa TreeBrowser
 */
@@ -80,10 +80,10 @@ struct EntryInfo
 	EntryInfo::Type type;
 
 	/*!
-		\brief The url of the entry.
-		\note Optional.
+		\brief The path of the entry.
+		\note Mandatory.
 	*/
-	QString url;
+	QString path;
 
 	/*!
 		\brief The metadata of the entry.
@@ -94,11 +94,16 @@ struct EntryInfo
 	/*!
 		\brief Constructor.
 
-		Constructs a new EntryInfo with the given \a name and \a type.
-		Optionally you can pass it the url of the entry \a url and the metadata
-		associated \a metadata.
+		Constructs a new EntryInfo with the given \a name,\a type and path.
+		Optionally you can pass the \a metadata associated with the entry.
 	*/
-	EntryInfo(const QString &name, EntryInfo::Type type, const QString &url = QString(), const EntryInfo::Metadata &metadata = EntryInfo::Metadata());
+	EntryInfo(const QString &name, EntryInfo::Type type, const QString &path, const EntryInfo::Metadata &metadata = EntryInfo::Metadata());
+	EntryInfo();
+
+	bool isNull();
+
+private:
+	bool is_null;
 };
 
 /*!
@@ -106,7 +111,7 @@ struct EntryInfo
 */
 inline bool operator ==(const EntryInfo &a, const EntryInfo &b)
 {
-	return a.name == b.name && a.type == b.type;
+	return a.name == b.name && a.type == b.type && a.path == b.path && a.metadata == b.metadata;
 }
 
 /*!
@@ -114,6 +119,7 @@ inline bool operator ==(const EntryInfo &a, const EntryInfo &b)
 */
 typedef QList<EntryInfo> EntryInfoList;
 
+Q_DECLARE_METATYPE(EntryInfo);
 Q_DECLARE_METATYPE(EntryInfoList);
 
 

@@ -31,7 +31,7 @@
 
 // Set 1 to this define to dump the content of the responses from openxmlserver.
 #define DUMP_OPENXML 0
-#define DUMP_DIR "/home/bticino/cfg/extra/0"
+#define DUMP_DIR "cfg/extra/0"
 
 
 const char *command_template =
@@ -54,13 +54,44 @@ const char *command_template =
 		"	</Cmd>\n"
 		"</OWNxml>\n";
 
-const char *argument_template =
-		"		<%1>\n"
-		"			<id>%2</id>\n"
-		"		</%1>";
 
 namespace
 {
+	EntryInfo::Metadata getMetadata(const QDomNode &item)
+	{
+		EntryInfo::Metadata metadata;
+
+		foreach (const QString &tag, QStringList() << "title" << "artist" << "album")
+		{
+			QString value = getElement(item, QString("DIDL-Lite/item/%1:%2").arg(tag == "title" ? "dc" : "upnp").arg(tag)).text();
+			if (!value.isEmpty())
+				metadata[tag] = value;
+		}
+
+		QString duration = getElement(item, "DIDL-Lite/item/res").attribute("duration");
+		if (!duration.isEmpty())
+			metadata["total_time"] = duration;
+
+		return metadata;
+	}
+
+	EntryInfo::Type getFileType(const QDomNode &item)
+	{
+		EntryInfo::Type file_type = EntryInfo::UNKNOWN;
+		QString upnp_class = getElement(item, "DIDL-Lite/item/upnp:class").text();
+
+		if (upnp_class.contains("audioItem"))
+			file_type = EntryInfo::AUDIO;
+		else if (upnp_class.contains("videoItem"))
+			file_type = EntryInfo::VIDEO;
+		else if (upnp_class.contains("imageItem"))
+			file_type = EntryInfo::IMAGE;
+		else
+			file_type = EntryInfo::UNKNOWN;
+
+		return file_type;
+	}
+
 	QHash<int,QVariant> handle_welcome_message(const QDomNode &node)
 	{
 		QHash<int,QVariant> result;
@@ -132,7 +163,20 @@ namespace
 				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::TRACK_SELECTION, XmlError::PARSE));
 			}
 			else
-				result[XmlResponses::TRACK_SELECTION] = track_url;
+			{
+				EntryInfo::Type file_type = getFileType(node);
+
+				EntryInfo::Metadata metadata;
+				if (file_type == EntryInfo::AUDIO)
+					metadata = getMetadata(node);
+
+				EntryInfo entry(getElement(node, "DIDL-Lite/item/dc:title").text(),
+					file_type, getElement(node, "DIDL-Lite/item/res").text(), metadata);
+
+				QVariant value;
+				value.setValue(entry);
+				result[XmlResponses::TRACK_SELECTION] = value;
+			}
 		}
 
 		return result;
@@ -158,60 +202,33 @@ namespace
 		return result;
 	}
 
-	EntryInfo::Metadata getMetadata(const QDomNode &item)
-	{
-		EntryInfo::Metadata metadata;
-
-		foreach (const QString &tag, QStringList() << "title" << "artist" << "album")
-		{
-			QString value = getElement(item, QString("DIDL-Lite/item/%1:%2").arg(tag == "title" ? "dc" : "upnp").arg(tag)).text();
-			if (!value.isEmpty())
-				metadata[tag] = value;
-		}
-
-		QString duration = getElement(item, "DIDL-Lite/item/res").attribute("duration");
-		if (!duration.isEmpty())
-			metadata["total_time"] = duration;
-
-		return metadata;
-	}
-
 	QHash<int,QVariant> handle_listitems(const QDomNode &node)
 	{
 		QHash<int,QVariant> result;
-		EntryInfoList entries;
+		UPnpEntryList list;
+
+		list.total = getTextChild(node, "total").toUInt();
+		list.start = getTextChild(node, "rank").toUInt();
 
 		QDomNode directories = getChildWithName(node, "directories");
 		foreach (const QDomNode &item, getChildren(directories, "name"))
-			entries << EntryInfo(item.toElement().text(), EntryInfo::DIRECTORY, QString());
+			list.entries << EntryInfo(item.toElement().text(), EntryInfo::DIRECTORY, QString());
 
 		QDomNode tracks = getChildWithName(node, "tracks");
 		foreach (const QDomNode &item, getChildren(tracks, "file"))
 		{
-			EntryInfo::Type file_type = EntryInfo::UNKNOWN;
-			QString upnp_class = getElement(item,"DIDL-Lite/item/upnp:class").text();
-
-			if (upnp_class.contains("audioItem"))
-				file_type = EntryInfo::AUDIO;
-			else if (upnp_class.contains("videoItem"))
-				file_type = EntryInfo::VIDEO;
-			else if (upnp_class.contains("imageItem"))
-				file_type = EntryInfo::IMAGE;
-			else
-				file_type = EntryInfo::UNKNOWN;
+			EntryInfo::Type file_type = getFileType(item);
 
 			EntryInfo::Metadata metadata;
 			if (file_type == EntryInfo::AUDIO) // Maybe video, too?
 				metadata = getMetadata(item);
 
-			entries << EntryInfo(getElement(item, "DIDL-Lite/item/dc:title").text(),
-									   file_type,
-									   getElement(item, "DIDL-Lite/item/res").text(),
-									   metadata);
+			list.entries << EntryInfo(getElement(item, "DIDL-Lite/item/dc:title").text(),
+				file_type, getElement(item, "DIDL-Lite/item/res").text(), metadata);
 		}
 
 		QVariant value;
-		value.setValue(entries);
+		value.setValue(list);
 		result[XmlResponses::LIST_ITEMS] = value;
 
 		return result;
@@ -259,6 +276,9 @@ namespace
 }
 
 
+XmlDevice *bt_global::xml_device = 0;
+
+
 XmlDevice::XmlDevice()
 {
 	xml_client = new XmlClient;
@@ -274,6 +294,8 @@ XmlDevice::XmlDevice()
 	xml_handlers["AW26C2"] = handle_selection;
 	xml_handlers["AW26C7"] = handle_browseup;
 	xml_handlers["AW26C15"] = handle_listitems;
+	xml_handlers["AW26C11"] = handle_selection;
+	xml_handlers["AW26C10"] = handle_selection;
 }
 
 XmlDevice::~XmlDevice()
@@ -306,14 +328,27 @@ void XmlDevice::selectFile(const QString &file_tags)
 	select(file_tags);
 }
 
+void XmlDevice::previousFile()
+{
+	sendCommand("CW26C11");
+}
+
+void XmlDevice::nextFile()
+{
+	sendCommand("CW26C10");
+}
+
 void XmlDevice::browseUp()
 {
 	sendCommand("CW26C7");
 }
 
-void XmlDevice::listItems()
+void XmlDevice::listItems(unsigned int starting_element, unsigned int max_elements)
 {
-	sendCommand("RW26C15", "0"); // 0 means all the items.
+	XmlArguments arg;
+	arg["rank"] = QString::number(starting_element);
+	arg["delta"] = QString::number(max_elements);
+	sendCommand("RW26C15", arg);
 }
 
 void XmlDevice::handleData(const QString &data)
@@ -342,7 +377,7 @@ void XmlDevice::sendMessageQueue()
 
 	while (!message_queue.isEmpty())
 	{
-		QPair<QString,QString> command = message_queue.takeFirst();
+		QPair<QString,XmlArguments> command = message_queue.takeFirst();
 		sendCommand(command.first, command.second);
 	}
 }
@@ -356,7 +391,7 @@ void XmlDevice::cleanSessionInfo()
 	server_addr.clear();
 }
 
-void XmlDevice::sendCommand(const QString &message, const QString &argument)
+void XmlDevice::sendCommand(const QString &message, const XmlArguments &arguments)
 {
 	if (!xml_client->isConnected())
 	{
@@ -365,18 +400,20 @@ void XmlDevice::sendCommand(const QString &message, const QString &argument)
 		// body, and save it. Then when the connection comes up prepend the
 		// generated header. For that implementation the problem is the PID
 		// which changes with the responses.
-		message_queue << qMakePair<QString,QString>(message, argument);
+		message_queue << qMakePair<QString, XmlArguments>(message, arguments);
 		xml_client->connectToHost();
 	}
 	else {
 		++pid;
-		xml_client->sendCommand(buildCommand(message, argument));
+		xml_client->sendCommand(buildCommand(message, arguments));
 	}
 }
 
 void XmlDevice::select(const QString &name)
 {
-	sendCommand("RW26C2", name);
+	XmlArguments arg;
+	arg["id"] = name;
+	sendCommand("RW26C2", arg);
 }
 
 XmlResponse XmlDevice::parseXml(const QString &xml)
@@ -491,12 +528,21 @@ bool XmlDevice::parseAck(const QDomNode &ack)
 	return true;
 }
 
-QString XmlDevice::buildCommand(const QString &command, const QString &argument)
+QString XmlDevice::buildCommand(const QString &command, const XmlArguments &arguments)
 {
 	QString cmd;
 
-	if (!argument.isEmpty())
-		cmd = QString(argument_template).arg(command).arg(Qt::escape(argument));
+	if (!arguments.isEmpty())
+	{
+		cmd = QString("		<%1>\n").arg(command);
+		QHashIterator<QString, QString> it(arguments);
+		while (it.hasNext())
+		{
+			it.next();
+			cmd += QString("			<%1>%2</%1>\n").arg(it.key()).arg(Qt::escape(it.value()));
+		}
+		cmd += QString("		</%1>").arg(command);
+	}
 	else
 		cmd = QString("\t\t<%1/>").arg(command);
 

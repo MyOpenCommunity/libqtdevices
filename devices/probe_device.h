@@ -153,12 +153,12 @@ public:
 	/*!
 		\brief Constructor
 		\param where complete probe address (probe#central, without leading #)
-		\param central controller address (without leading #)
+		\param central_where complete central address
 		\param simple_where probe address (without leading #)
 		\param central_type type of the controlling central
 		\param type probe with and without fancoil
 	 */
-	ControlledProbeDevice(QString where, QString central, QString simple_where, CentralType central_type, ProbeType type, int openserver_id = 0);
+	ControlledProbeDevice(QString where, QString central_where, QString simple_where, CentralType central_type, ProbeType type, int openserver_id = 0);
 
 	virtual void init() { requestStatus(); }
 
@@ -207,6 +207,7 @@ protected:
 
 private slots:
 	void timeoutElapsed();
+	void requestSetpoint();
 
 private:
 	QString simple_where;
@@ -214,6 +215,8 @@ private:
 	CentralType central_type;
 	bool has_central_info, new_request_allowed;
 	QTimer new_request_timer;
+	QString central_where;
+	bool setpoint_need_update;
 
 	// device state
 	ProbeStatus status;

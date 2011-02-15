@@ -20,21 +20,39 @@
 #ifndef XMLDEVICE_H
 #define XMLDEVICE_H
 
-#include "generic_functions.h"
+#include "generic_functions.h" // EntryInfoList
 
 #include <QObject>
 #include <QVariant>
+#include <QHash>
 
 class QDomNode;
 class XmlClient;
-struct UPnpEntry;
 struct XmlError;
 
 typedef QHash<int, QVariant> XmlResponse;
 typedef QHash<int,QVariant> (*xmlHandler_ptr)(const QDomNode&);
 
+typedef QHash<QString, QString> XmlArguments;
+
 Q_DECLARE_METATYPE(XmlError);
 Q_DECLARE_METATYPE(XmlResponse);
+
+
+struct UPnpEntryList
+{
+	unsigned int start;
+	unsigned int total;
+	EntryInfoList entries;
+};
+
+inline bool operator==(const UPnpEntryList &a, const UPnpEntryList &b)
+{
+	return a.start == b.start && a.total == b.total && a.entries == b.entries;
+}
+
+
+Q_DECLARE_METATYPE(UPnpEntryList);
 
 
 namespace XmlResponses
@@ -184,6 +202,16 @@ public:
 	void selectFile(const QString &file_tags);
 
 	/*!
+		\brief Requests the selection of the previous file (cyclic)
+	*/
+	void previousFile();
+
+	/*!
+		\brief Request the selection of the next file (cyclic)
+	*/
+	void nextFile();
+
+	/*!
 		\brief Requests to exit from the current directory.
 	*/
 	void browseUp();
@@ -191,7 +219,7 @@ public:
 	/*!
 		\brief Requests the list of the items of the current directory.
 	*/
-	void listItems();
+	void listItems(unsigned int starting_element, unsigned int max_elements);
 
 signals:
 	/*!
@@ -213,17 +241,17 @@ private slots:
 	void cleanSessionInfo();
 
 private:
-	void sendCommand(const QString &command, const QString &argument = QString());
+	void sendCommand(const QString &command, const XmlArguments &arguments = XmlArguments());
 	void select(const QString &name);
 	XmlResponse parseXml(const QString &xml);
 	bool parseHeader(const QDomNode &header_node);
 	bool parseAck(const QDomNode &ack);
-	QString buildCommand(const QString &command, const QString &argument = QString());
+	QString buildCommand(const QString &command, const XmlArguments &arguments = XmlArguments());
 
 	XmlClient *xml_client;
 	QHash<QString, xmlHandler_ptr> xml_handlers;
 
-	QList<QPair<QString, QString> > message_queue;
+	QList<QPair<QString, XmlArguments> > message_queue;
 
 	bool welcome_received;
 	QString sid;
@@ -231,5 +259,10 @@ private:
 	QString local_addr;
 	QString server_addr;
 };
+
+// NOTE: this is a temporary solution. At some point in the future the openxml
+// should be used for most of the system, so we will need a different approach.
+namespace bt_global { extern XmlDevice *xml_device; }
+
 
 #endif // XMLDEVICE_H

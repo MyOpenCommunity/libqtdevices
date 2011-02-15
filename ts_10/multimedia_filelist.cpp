@@ -41,13 +41,13 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	browser->setFilter(filters);
 	connect(browser, SIGNAL(listReceived(EntryInfoList)), SLOT(displayFiles(EntryInfoList)));
 
-	ItemList *item_list = new ItemList(0, 4);
+	rows_per_page = 4;
+	ItemList *item_list = new ItemList(0, rows_per_page);
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 	connect(this, SIGNAL(fileClicked(int)), SLOT(startPlayback(int)));
 
 	connect(this, SIGNAL(Closed()), item_list, SLOT(clear()));
 
-	NavigationBar *nav_bar;
 	if (mount_enabled)
 	{
 		nav_bar = new NavigationBar("eject");
@@ -56,11 +56,28 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	else
 		nav_bar = new NavigationBar;
 
-	buildPage(item_list, item_list, nav_bar, new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT));
-	layout()->setContentsMargins(13, 5, 25, 10);
+	title_widget = new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT);
 
-	disconnect(nav_bar, SIGNAL(backClick()), 0, 0); // connected by buildPage()
-	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
+	if (qobject_cast<UPnpClientBrowser*>(browser))
+	{
+		Page::buildPage(item_list, item_list, nav_bar, title_widget);
+
+		connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
+		connect(nav_bar, SIGNAL(upClick()), SLOT(upnpPgUp()));
+		connect(nav_bar, SIGNAL(downClick()), SLOT(upnpPgDown()));
+
+		audioplayer = AudioPlayerPage::getAudioPlayerPage(AudioPlayerPage::UPNP_FILE);
+	}
+	else
+	{
+		buildPage(item_list, item_list, nav_bar, title_widget);
+		disconnect(nav_bar, SIGNAL(backClick()), 0, 0); // connected by buildPage()
+		connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
+
+		audioplayer = AudioPlayerPage::getAudioPlayerPage(AudioPlayerPage::LOCAL_FILE);
+	}
+
+	layout()->setContentsMargins(13, 5, 25, 10);
 
 	// order here must match the order in enum Type
 	file_icons.insert(EntryInfo::DIRECTORY, bt_global::skin->getImage("directory_icon"));
@@ -80,8 +97,6 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 
 	videoplayer = new VideoPlayerPage;
 
-	audioplayer = AudioPlayerPage::getAudioPlayerPage(AudioPlayerPage::LOCAL_FILE);
-
 #ifdef PDF_EXAMPLE
 	pdfdisplay = new PdfPage;
 	connect(pdfdisplay, SIGNAL(Closed()), SLOT(showPageNoReload()));
@@ -89,10 +104,31 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	last_clicked_type = EntryInfo::UNKNOWN;
 }
 
+void MultimediaFileListPage::upnpPgUp()
+{
+	(qobject_cast<UPnpClientBrowser*>(browser))->getPreviousFileList();
+	// The following reset is required only when we turn back from the song
+	// played, beacause we save the current page index in the
+	// FileSelector::itemIsClicked() but we don't call the displayFiles as usually.
+	resetDisplayedPage();
+}
+
+void MultimediaFileListPage::upnpPgDown()
+{
+	(qobject_cast<UPnpClientBrowser*>(browser))->getNextFileList();
+	resetDisplayedPage();
+}
+
+int MultimediaFileListPage::currentPage()
+{
+	if (UPnpClientBrowser *b = qobject_cast<UPnpClientBrowser*>(browser))
+		return (b->getStartingElement() - 1) / rows_per_page;
+
+	return FileSelector::currentPage();
+}
+
 void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 {
-	setFiles(list);
-
 	if (list.empty())
 	{
 		if (browser->isRoot()) // Special case empty root directory
@@ -100,17 +136,43 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 			operationCompleted();
 			emit Closed();
 		}
-		qDebug() << "[AUDIO] empty directory";
+		qDebug() << "MultimediaFileListPage::displayFiles -> empty directory";
 		browser->exitDirectory();
 		return;
 	}
+
+	int page_index = displayedPage(browser->pathKey());
+
+	if (UPnpClientBrowser *b = qobject_cast<UPnpClientBrowser*>(browser))
+	{
+		// When we browse up to a directory, we want to show the directory
+		// previously selected. Because the UPnpClientBrowser has an asyncronous
+		// api, we have to wait the listReiceved signal before request the right
+		// page index.
+		if (page_index != 0 && b->getStartingElement() == 1)
+		{
+			b->getFileList(page_index * rows_per_page + 1);
+			resetDisplayedPage();
+			return;
+		}
+
+		page_index = 0;
+
+		nav_bar->displayScrollButtons(b->getNumElements() > rows_per_page);
+
+		int current_page = (b->getStartingElement() - 1) / rows_per_page;
+		int total_pages =(b->getNumElements() - 1) / rows_per_page + 1;
+
+		title_widget->setCurrentPage(current_page, total_pages);
+	}
+
+	setFiles(list);
 
 	QList<ItemList::ItemInfo> names_list;
 
 	for (int i = 0; i < list.size(); ++i)
 	{
 		const EntryInfo& f = list.at(i);
-
 		QStringList icons;
 
 		if (f.type != EntryInfo::DIRECTORY)
@@ -121,23 +183,18 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 
 			icons << file_icons[t];
 			icons << play_file;
-
-			ItemList::ItemInfo info(f.name, QString(), icons);
-
-			names_list.append(info);
 		}
 		else
 		{
 			icons << file_icons[EntryInfo::DIRECTORY];
 			icons << browse_directory;
-
-			ItemList::ItemInfo info(f.name, QString(), icons);
-
-			names_list.append(info);
 		}
+
+		ItemList::ItemInfo info(f.name, QString(), icons);
+		names_list.append(info);
 	}
 
-	page_content->setList(names_list, displayedPage(browser->pathKey()));
+	page_content->setList(names_list, page_index);
 	page_content->showList();
 
 	operationCompleted();
@@ -147,6 +204,13 @@ void MultimediaFileListPage::startPlayback(int item)
 {
 	const EntryInfoList &files_list = getFiles();
 	const EntryInfo &current_file = files_list[item];
+
+	if (UPnpClientBrowser *b = qobject_cast<UPnpClientBrowser*>(browser))
+	{
+		// For now, we manage only the audio files using the upnp client.
+		audioplayer->playAudioFile(current_file, item + b->getStartingElement() - 1, b->getNumElements());
+		return;
+	}
 
 	// For now we mantain both methods of passing data to the players,
 	// in the future we probabily use the EntryInfoList only.
@@ -164,18 +228,18 @@ void MultimediaFileListPage::startPlayback(int item)
 			last_clicked_type = fn.type;
 		}
 		filtered.append(fn);
-		urls.append(fn.url);
+		urls.append(fn.path);
 	}
 
 	if (last_clicked_type == EntryInfo::IMAGE)
 		slideshow->displayImages(urls, last_clicked);
 	else if (last_clicked_type == EntryInfo::VIDEO)
-		videoplayer->displayVideos(urls, last_clicked);
+		videoplayer->displayVideos(files_list, last_clicked);
 	else if (last_clicked_type == EntryInfo::AUDIO)
 		audioplayer->playAudioFiles(filtered, last_clicked);
 #ifdef PDF_EXAMPLE
 	else if (type == EntryInfo::PDF)
-		pdfdisplay->displayPdf(files[current]);
+		pdfdisplay->displayPdf(current_file.path);
 #endif
 }
 

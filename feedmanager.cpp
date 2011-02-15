@@ -159,8 +159,10 @@ void FeedItemList::setFeedInfo(int page, const FeedData &feed_data)
 void FeedItemList::itemIsClicked(int item)
 {
 	current_shown_item = item;
-	feed_item->setInfo(data.feed_title, data.entry_list[item]);
+	// The showPage must be before setting the info: see MessagesListPage::showMessage
+	// for details.
 	feed_item->showPage();
+	feed_item->setInfo(data.feed_title, data.entry_list[item]);
 }
 
 void FeedItemList::showPrev()

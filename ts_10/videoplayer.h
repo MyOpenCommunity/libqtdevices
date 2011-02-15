@@ -59,16 +59,14 @@ public:
 
 public slots:
 	// displays the page and stores the video list for playback
-	void displayVideos(QList<QString> videos, unsigned element);
+	void displayVideos(const EntryInfoList &videos, unsigned element);
 
 signals:
 	void videoLabelUpdated(QString);
 	void enablePlaybackButtons(bool);
 
 protected:
-	virtual QString currentFileName(int index) const;
-	virtual void previous();
-	virtual void next();
+	virtual void startPlayback();
 
 private slots:
 	void startMPlayer();
@@ -80,11 +78,11 @@ private slots:
 	void videoPlaybackTerminated();
 	void videoPlaybackStarted();
 	void videoPlaybackStopped();
+	void currentFileChanged();
 
 private:
 	// the position/size where to play the video
 	QRect playbackGeometry();
-	void displayMedia(int index);
 	void displayFullScreen(bool fullscreen);
 	bool checkVideo(QString track);
 

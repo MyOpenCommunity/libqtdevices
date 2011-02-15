@@ -17,10 +17,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 #include "treebrowser.h"
 
 #include <QList>
+#include <QDebug>
 #include <QStringList>
+
+#define ELEMENTS_DISPLAYED 4
 
 namespace
 {
@@ -135,7 +139,8 @@ QString DirectoryTreeBrowser::pathKey()
 
 UPnpClientBrowser::UPnpClientBrowser()
 {
-	dev = new XmlDevice();
+	dev = bt_global::xml_device;
+	starting_element = 1;
 	level = 0;
 
 	connect(dev, SIGNAL(responseReceived(XmlResponse)), SLOT(handleResponse(XmlResponse)));
@@ -159,16 +164,62 @@ void UPnpClientBrowser::exitDirectory()
 {
 	if (level == 0)
 		return;
+
+	if (level == 1)
+		dev->requestUPnPServers();
 	else
 		dev->browseUp();
 }
 
 void UPnpClientBrowser::getFileList()
 {
+	getFileList(1);
+}
+
+void UPnpClientBrowser::getFileList(int s)
+{
+	starting_element = s;
+
 	if (level == 0)
 		dev->requestUPnPServers();
 	else
-		dev->listItems();
+		dev->listItems(starting_element, ELEMENTS_DISPLAYED);
+}
+
+void UPnpClientBrowser::getPreviousFileList()
+{
+	if (starting_element - ELEMENTS_DISPLAYED < 1)
+		return;
+
+	starting_element -= ELEMENTS_DISPLAYED;
+
+	if (level == 0)
+		emit listReceived(cached_elements.mid(starting_element -1, ELEMENTS_DISPLAYED));
+	else
+		dev->listItems(starting_element, ELEMENTS_DISPLAYED);
+}
+
+void UPnpClientBrowser::getNextFileList()
+{
+	if (starting_element + ELEMENTS_DISPLAYED > num_elements)
+		return;
+
+	starting_element += ELEMENTS_DISPLAYED;
+
+	if (level == 0)
+		emit listReceived(cached_elements.mid(starting_element -1, ELEMENTS_DISPLAYED));
+	else
+		dev->listItems(starting_element, ELEMENTS_DISPLAYED);
+}
+
+int UPnpClientBrowser::getNumElements()
+{
+	return num_elements;
+}
+
+int UPnpClientBrowser::getStartingElement()
+{
+	return starting_element;
 }
 
 bool UPnpClientBrowser::isRoot()
@@ -197,12 +248,16 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 		case XmlResponses::ACK:
 			break;
 		case XmlResponses::SERVER_LIST:
-			{
-				EntryInfoList infos;
-				foreach (const QString &server, response[key].toStringList())
-					infos << EntryInfo(server, EntryInfo::DIRECTORY);
-				emit listReceived(infos);
-			}
+		{
+			cached_elements.clear();
+			foreach (const QString &server, response[key].toStringList())
+				cached_elements << EntryInfo(server, EntryInfo::DIRECTORY, QString());
+
+			num_elements = cached_elements.size();
+			level = 0;
+
+			emit listReceived(cached_elements.mid(starting_element - 1, ELEMENTS_DISPLAYED));
+		}
 			break;
 		case XmlResponses::SERVER_SELECTION:
 		case XmlResponses::CHDIR:
@@ -216,15 +271,18 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 			emit directoryChanged();
 			break;
 		case XmlResponses::LIST_ITEMS:
+		{
+			EntryInfoList infos;
+			const UPnpEntryList& list = response[key].value<UPnpEntryList>();
+			num_elements = list.total;
+			starting_element = list.start;
+			foreach (const EntryInfo &entry, list.entries)
 			{
-				EntryInfoList infos;
-				foreach (const EntryInfo &entry, response[key].value<EntryInfoList>())
-				{
-					if (filter_mask & entry.type)
-						infos << entry;
-				}
-				emit listReceived(infos);
+				if (filter_mask & entry.type)
+					infos << entry;
 			}
+			emit listReceived(infos);
+		}
 			break;
 		default:
 			Q_ASSERT_X(false, "UPnpClientBrowser::handleResponse", "Unhandled resposne.");

@@ -38,6 +38,7 @@
 #include "pagestack.h" // bt_global::page_stack
 #include "multimedia.h"
 #include "labels.h" // ScrollingLabel
+#include "xmldevice.h"
 
 #include <QFontMetrics>
 #include <QGridLayout>
@@ -54,6 +55,95 @@
 QVector<AudioPlayerPage *> AudioPlayerPage::audioplayer_pages(MAX_MEDIA_TYPE, 0);
 
 BtButton *AudioPlayerPage::tray_icon = 0;
+
+namespace
+{
+	// strips the decimal dot from the time returned by mplayer; if length is passed,
+	// the result is left-padded with "00:" until length
+	QString formatTime(const QString &mp_time, int length = 0)
+	{
+		QString res = mp_time;
+		int dot = mp_time.indexOf('.');
+
+		// strip decimal point
+		if (dot > 0)
+			res = mp_time.left(dot);
+
+		// left-pad with "00:"
+		if (length > 0)
+			while (res.length() < length)
+				res = "00:" + res;
+
+		return res;
+	}
+}
+
+
+UPnpListManager::UPnpListManager()
+{
+	dev = bt_global::xml_device;
+	connect(dev, SIGNAL(responseReceived(XmlResponse)), SLOT(handleResponse(XmlResponse)));
+}
+
+QString UPnpListManager::currentFilePath()
+{
+	Q_ASSERT_X(!current_file.isNull(), "UPnpListManager::currentFilePath", "Called with current_file not initialized!");
+	return current_file.path;
+}
+
+void UPnpListManager::handleResponse(const XmlResponse &response)
+{
+	if (response.contains(XmlResponses::TRACK_SELECTION))
+	{
+		current_file = response[XmlResponses::TRACK_SELECTION].value<EntryInfo>();
+		emit currentFileChanged();
+	}
+}
+
+void UPnpListManager::nextFile()
+{
+	if (++index >= total_files)
+		index = 0;
+	dev->nextFile();
+}
+
+void UPnpListManager::previousFile()
+{
+	if (--index < 1)
+		index = total_files - 1;
+	dev->previousFile();
+}
+
+int UPnpListManager::currentIndex()
+{
+	return index;
+}
+
+int UPnpListManager::totalFiles()
+{
+	return total_files;
+}
+
+void UPnpListManager::setCurrentIndex(int i)
+{
+	index = i;
+}
+
+void UPnpListManager::setTotalFiles(int n)
+{
+	total_files = n;
+}
+
+void UPnpListManager::setStartingFile(EntryInfo starting_file)
+{
+	dev->selectFile(starting_file.name);
+	current_file = starting_file;
+}
+
+EntryInfo::Metadata UPnpListManager::currentMeta()
+{
+	return current_file.metadata;
+}
 
 
 AudioPlayerPage *AudioPlayerPage::getAudioPlayerPage(MediaType type)
@@ -84,6 +174,13 @@ QVector<AudioPlayerPage *>AudioPlayerPage::audioPlayerPages()
 AudioPlayerPage::AudioPlayerPage(MediaType t)
 {
 	type = t;
+	if (type == AudioPlayerPage::UPNP_FILE)
+		list_manager = new UPnpListManager;
+	else
+		list_manager = new FileListManager;
+
+	connect(list_manager, SIGNAL(currentFileChanged()), SLOT(currentFileChanged()));
+
 	// Sometimes it happens that mplayer can't reproduce a song or a web radio,
 	// for example because the network is down. In this case the mplayer exits
 	// immediately with the signal mplayerDone (== everything ok). Since the
@@ -144,7 +241,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	connect(player_buttons, SIGNAL(next()), SLOT(resetLoopCheck()));
 
 	// a radio channel is without an end. If mplayer has finished maybe there is an error.
-	const char *done_slot = (type == IP_RADIO) ? SLOT(quit()) : SLOT(next());
+	const char *done_slot = (type == IP_RADIO) ? SLOT(quit()) : SLOT(mplayerDone());
 	connect(player, SIGNAL(mplayerDone()), done_slot);
 
 	l_btn->addWidget(player_buttons);
@@ -190,12 +287,7 @@ int AudioPlayerPage::sectionId() const
 	return MULTIMEDIA;
 }
 
-QString AudioPlayerPage::currentFileName(int index) const
-{
-	return file_list[index];
-}
-
-void AudioPlayerPage::startMPlayer(int index, int time)
+void AudioPlayerPage::startMPlayer(QString filename, int time)
 {
 	clearLabels();
 
@@ -205,14 +297,16 @@ void AudioPlayerPage::startMPlayer(int index, int time)
 		description_bottom->setText(tr("Loading..."));
 	}
 
-	player->play(file_list[index], true);
+	player->play(filename, true);
 	refresh_data.start(MPLAYER_POLLING);
 }
 
-void AudioPlayerPage::displayMedia(int index)
+void AudioPlayerPage::startPlayback()
 {
+	int index = list_manager->currentIndex();
+	int total_files = list_manager->totalFiles();
 	track->setText(tr("Track: %1 / %2").arg(index + 1).arg(total_files));
-	startMPlayer(index, 0);
+	startMPlayer(list_manager->currentFilePath(), 0);
 }
 
 void AudioPlayerPage::clearLabels()
@@ -224,36 +318,61 @@ void AudioPlayerPage::clearLabels()
 
 void AudioPlayerPage::playAudioFilesBackground(QList<QString> files, unsigned element)
 {
-	current_file = element;
-	total_files = files.size();
-	file_list = files;
+	Q_ASSERT_X(type != AudioPlayerPage::UPNP_FILE, "AudioPlayerPage::playAudioFilesBackground",
+		"The function must not be called with type UPNP_FILE!");
+	FileListManager *lm = static_cast<FileListManager*>(list_manager);
+
+	EntryInfoList entries;
+	foreach (const QString &filename, files)
+		entries << EntryInfo(filename, EntryInfo::AUDIO, filename);
+
+	lm->setList(entries);
+	lm->setCurrentIndex(element);
 
 	loop_starting_file = -1;
 
-	displayMedia(current_file);
+	startPlayback();
+}
+
+void AudioPlayerPage::playAudioFile(EntryInfo starting_file, int file_index, int num_files)
+{
+	Q_ASSERT_X(type == AudioPlayerPage::UPNP_FILE, "AudioPlayerPage::playAudioFile",
+		"The function must be called with type UPNP_FILE!");
+
+	UPnpListManager *um = static_cast<UPnpListManager*>(list_manager);
+	um->setStartingFile(starting_file);
+	um->setCurrentIndex(file_index);
+	um->setTotalFiles(num_files);
+
+	showPage();
+	loop_starting_file = -1;
+
+	startPlayback();
 }
 
 void AudioPlayerPage::playAudioFiles(QList<QString> files, unsigned element)
 {
-	current_file = element;
-	total_files = files.size();
-	file_list = files;
-	showPage();
+	Q_ASSERT_X(type != AudioPlayerPage::UPNP_FILE, "AudioPlayerPage::playAudioFiles",
+		"The function must not be called with type UPNP_FILE!");
 
-	loop_starting_file = -1;
+	EntryInfoList entries;
+	foreach (const QString &filename, files)
+		entries << EntryInfo(filename, EntryInfo::AUDIO, filename);
 
-	displayMedia(current_file);
+	playAudioFiles(entries, element);
 }
 
 void AudioPlayerPage::playAudioFiles(EntryInfoList entries, unsigned element)
 {
-	entryinfo_list = entries;
-	QList<QString> files;
+	FileListManager *lm = static_cast<FileListManager*>(list_manager);
 
-	foreach (const EntryInfo &entry, entries)
-		files.append(entry.url);
+	lm->setList(entries);
+	lm->setCurrentIndex(element);
 
-	playAudioFiles(files, element);
+	showPage();
+	loop_starting_file = -1;
+
+	startPlayback();
 }
 
 void AudioPlayerPage::resetLoopCheck()
@@ -262,32 +381,35 @@ void AudioPlayerPage::resetLoopCheck()
 	loop_starting_file = -1;
 }
 
-void AudioPlayerPage::previous()
-{
-	clearLabels();
-	MediaPlayerPage::previous();
-	if (player->isPaused())
-		player->requestInitialPlayingInfo(currentFileName(current_file));
-	else
-		displayMedia(current_file);
-	track->setText(tr("Track: %1 / %2").arg(current_file + 1).arg(total_files));
-}
-
 void AudioPlayerPage::quit()
 {
 	stop();
 	playerStopped();
 }
 
-void AudioPlayerPage::next()
+void AudioPlayerPage::currentFileChanged()
+{
+	clearLabels();
+	if (player->isPaused())
+		player->requestInitialPlayingInfo(list_manager->currentFilePath());
+	else
+		startPlayback();
+
+	int index = list_manager->currentIndex();
+	int total_files = list_manager->totalFiles();
+	track->setText(tr("Track: %1 / %2").arg(index + 1).arg(total_files));
+}
+
+void AudioPlayerPage::mplayerDone()
 {
 	if (loop_starting_file == -1)
 	{
-		loop_starting_file = current_file;
-		loop_total_time = total_files * LOOP_TIMEOUT;
+		loop_starting_file = list_manager->currentIndex();
+		loop_total_time = list_manager->totalFiles() * LOOP_TIMEOUT;
+
 		loop_time_counter.start();
 	}
-	else if (loop_starting_file == current_file)
+	else if (loop_starting_file == list_manager->currentIndex())
 	{
 		if (loop_time_counter.elapsed() < loop_total_time)
 		{
@@ -302,41 +424,14 @@ void AudioPlayerPage::next()
 			loop_time_counter.start();
 		}
 	}
-
-	clearLabels();
-	MediaPlayerPage::next();
-	if (player->isPaused())
-		player->requestInitialPlayingInfo(currentFileName(current_file));
-	else
-		displayMedia(current_file);
-	track->setText(tr("Track: %1 / %2").arg(current_file + 1).arg(total_files));
-}
-
-// strips the decimal dot from the time returned by mplayer; if match_length is passed,
-// the result is left-padded with "00:" to match match_length length
-static QString formatTime(const QString &mp_time, const QString &match_length = QString())
-{
-	QString res = mp_time;
-	int dot = mp_time.indexOf('.');
-
-	// strip decimal point
-	if (dot > 0)
-		res = mp_time.left(dot);
-
-	// left-pad with "00:"
-	while (res.length() < match_length.length())
-		res = "00:" + res;
-
-	return res;
+	next();
 }
 
 void AudioPlayerPage::refreshPlayInfo(const QMap<QString, QString> &attrs)
 {
-	if (type == LOCAL_FILE)
+	if (type == LOCAL_FILE || type == UPNP_FILE)
 	{
-		EntryInfo::Metadata md;
-		if (!entryinfo_list.isEmpty() && current_file < entryinfo_list.size()) // Try to get metadata
-			md = entryinfo_list.at(current_file).metadata;
+		EntryInfo::Metadata md = list_manager->currentMeta();
 
 		if (attrs.contains("meta_title"))
 			description_top->setText(attrs["meta_title"]);
@@ -355,16 +450,18 @@ void AudioPlayerPage::refreshPlayInfo(const QMap<QString, QString> &attrs)
 			description_bottom->setText(md["album"]);
 
 		QString total;
-		if (attrs.contains("total_time"))
-			total = formatTime(attrs["total_time"]);
-		else if (md.contains("total_time") && !md["total_time"].isEmpty())
+		// mplayer sometimes shows a wrong duration: we give the precedence to
+		// the duration from upnp if present.
+		if (md.contains("total_time") && !md["total_time"].isEmpty())
 			total = formatTime(md["total_time"]);
+		else if (attrs.contains("total_time"))
+			total = formatTime(attrs["total_time"]);
 
 		QString current;
 		if (attrs.contains("current_time"))
-			current = formatTime(attrs["current_time"], total);
+			current = formatTime(attrs["current_time"], total.length());
 		else if (attrs.contains("current_time_only"))
-			current = formatTime(attrs["current_time_only"], total);
+			current = formatTime(attrs["current_time_only"], total.length());
 
 		if (!total.isEmpty() && !current.isEmpty())
 			elapsed->setText(current + " / " + total);

@@ -38,10 +38,9 @@ AudioSource::AudioSource(const QString &_area, SourceDevice *_dev, Page *_detail
 	BannerNew(0)
 {
 	left_button = new StateButton;
-	center_left_button = new BtButton;
-	center_right_button = new BtButton;
+	center_left_button = new StateButton;
+	center_right_button = new StateButton;
 	right_button = new BtButton;
-
 	details = _details;
 	area = _area;
 	dev = _dev;
@@ -59,8 +58,8 @@ void AudioSource::initBanner(const QString &left_on, const QString &left_off, co
 {
 	left_button->setOnImage(left_on);
 	left_button->setOffImage(left_off);
-	initButton(center_left_button, center_left);
-	initButton(center_right_button, center_right);
+	center_left_button->setOffImage(center_left);
+	center_right_button->setOffImage(center_right);
 	initButton(right_button, right);
 }
 
@@ -153,8 +152,16 @@ RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, RadioPage 
 {
 	radio_info = new RadioInfo(bt_global::skin->getImage("source_background"), area, dev);
 
-	initBanner(bt_global::skin->getImage("turned_on"), bt_global::skin->getImage("turn_on"), bt_global::skin->getImage("previous"),
-		   bt_global::skin->getImage("next"), bt_global::skin->getImage("details"));
+	initBanner(bt_global::skin->getImage("turned_on"), bt_global::skin->getImage("turn_on"),
+		bt_global::skin->getImage("previous"), bt_global::skin->getImage("next"),
+		bt_global::skin->getImage("details"));
+
+	center_left_button->setDisabledImage(bt_global::skin->getImage("previous_disabled"));
+	center_right_button->setDisabledImage(bt_global::skin->getImage("next_disabled"));
+	center_left_button->setStatus(StateButton::DISABLED);
+	center_left_button->disable();
+	center_right_button->setStatus(StateButton::DISABLED);
+	center_right_button->disable();
 
 	QHBoxLayout *hbox = new QHBoxLayout(this);
 	hbox->setContentsMargins(0, 0, 0, 0);
@@ -181,6 +188,20 @@ void RadioSource::showDetails()
 void RadioSource::sourceStateChanged(bool active)
 {
 	right_button->setVisible(active);
+	if (active)
+	{
+		center_left_button->setStatus(StateButton::OFF);
+		center_left_button->enable();
+		center_right_button->setStatus(StateButton::OFF);
+		center_right_button->enable();
+	}
+	else
+	{
+		center_left_button->setStatus(StateButton::DISABLED);
+		center_left_button->disable();
+		center_right_button->setStatus(StateButton::DISABLED);
+		center_right_button->disable();
+	}
 }
 
 void RadioSource::sourceHidden()
