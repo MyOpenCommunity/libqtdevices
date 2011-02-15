@@ -111,6 +111,8 @@ int SingleChoiceContent::checkedId() const
 
 void SingleChoiceContent::setCheckedId(int id)
 {
+	Q_ASSERT_X(buttons.button(id),"SingleChoiceContent::setCheckedId",
+		qPrintable(QString("Button not defined: %1").arg(id)));
 	buttons.button(id)->setChecked(true);
 }
 
