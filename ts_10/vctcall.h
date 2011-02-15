@@ -154,6 +154,8 @@ namespace VCTCallPrivate
 		bool camera_settings_shown;
 		VideoDoorEntryDevice *dev;
 		QProcess video_grabber;
+
+		void activateAudio();
 	};
 
 	/*!
