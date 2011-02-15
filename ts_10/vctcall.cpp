@@ -341,6 +341,19 @@ void VCTCall::toggleMute()
 	}
 }
 
+void VCTCall::activateAudio()
+{
+	if (dev->ipCall())
+		bt_global::audio_states->toState(AudioStates::IP_VIDEO_CALL);
+	else
+		bt_global::audio_states->toState(AudioStates::SCS_VIDEO_CALL);
+	volume->enable();
+
+	call_status->connected = true;
+	call_status->mute = StateButton::OFF;
+	refreshStatus();
+}
+
 void VCTCall::toggleCall()
 {
 	if (!call_status->connected)
@@ -348,15 +361,6 @@ void VCTCall::toggleCall()
 		if (call_status->stopped)
 			resumeVideo();
 		dev->answerCall();
-		if (dev->ipCall())
-			bt_global::audio_states->toState(AudioStates::IP_VIDEO_CALL);
-		else
-			bt_global::audio_states->toState(AudioStates::SCS_VIDEO_CALL);
-		volume->enable();
-
-		call_status->connected = true;
-		call_status->mute = StateButton::OFF;
-		refreshStatus();
 	}
 	else
 	{
@@ -483,6 +487,10 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 		case VideoDoorEntryDevice::MOVING_CAMERA:
 			call_status->move_enabled = it.value().toBool();
 			camera->setMoveEnabled(call_status->move_enabled);
+			break;
+		case VideoDoorEntryDevice::ANSWER_CALL:
+			if (!call_status->connected)
+				activateAudio();
 			break;
 		}
 		++it;
