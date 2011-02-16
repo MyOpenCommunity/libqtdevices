@@ -359,7 +359,6 @@ void IntercomCallPage::toggleCall()
 	{
 		call_accept->setStatus(!connected);
 		dev->answerCall();
-		callStarted();
 	}
 }
 
@@ -398,6 +397,9 @@ void IntercomCallPage::changeVolume(int value)
 
 void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 {
+	if (!call_active && !values_list.contains(VideoDoorEntryDevice::INTERCOM_CALL))
+		return;
+
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())
 	{
@@ -436,13 +438,10 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 			callStarted();
 			break;
 		case VideoDoorEntryDevice::END_OF_CALL:
-			if (call_active)
-			{
-				call_active = false;
-				handleClose();
-				// Reset the timers for the freeze/screensaver.
-				bt_global::btmain->makeActive();
-			}
+			call_active = false;
+			handleClose();
+			// Reset the timers for the freeze/screensaver.
+			bt_global::btmain->makeActive();
 			break;
 		}
 		++it;
