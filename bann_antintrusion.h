@@ -69,21 +69,20 @@ public slots:
 	void status_changed(QList<device_status*>);
 	void toggleParzializza();
 	void abilitaParz(bool ab);
-	void clearChanged();
 	int getIndex();
 
 private:
 	void setParzializzaOn(bool parz);
 	void updateButtonState();
 
-	bool already_changed;
 	bool is_on, is_partial;
 	device *dev;
 	QString where;
 	QString left_disabled_on, left_disabled_off;
 
 signals:
-	void partChanged(AntintrusionZone *);
+	void partChanged();
+	void partReset();
 };
 
 
@@ -98,7 +97,8 @@ public:
 
 public slots:
 	void status_changed(QList<device_status*>);
-	void partChanged(AntintrusionZone *);
+	void partChanged();
+	void partReset();
 	void setZona(AntintrusionZone *);
 	int getIsActive(int zona);
 	void ToSendParz(bool s);

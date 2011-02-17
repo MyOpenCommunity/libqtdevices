@@ -137,7 +137,8 @@ void Antintrusion::createImpianto(const QString &descr)
 	connect(impianto, SIGNAL(pageClosed()), SLOT(showPage()));
 	connect(impianto, SIGNAL(sxClick()), SLOT(showAlarms()));
 
-	connect(this, SIGNAL(partChanged(AntintrusionZone*)), impianto, SLOT(partChanged(AntintrusionZone*)));
+	connect(this, SIGNAL(partChanged()), impianto, SLOT(partChanged()));
+	connect(this, SIGNAL(partReset()), impianto, SLOT(partReset()));
 
 #ifdef LAYOUT_TS_10
 	forward_button = new BtButton;
@@ -186,8 +187,8 @@ void Antintrusion::loadItems(const QDomNode &config_node)
 #endif
 			page_content->appendBanner(b);
 			connect(this, SIGNAL(abilitaParz(bool)), b, SLOT(abilitaParz(bool)));
-			connect(this, SIGNAL(clearChanged()), b, SLOT(clearChanged()));
-			connect(b, SIGNAL(partChanged(AntintrusionZone*)), SIGNAL(partChanged(AntintrusionZone*)));
+			connect(b, SIGNAL(partChanged()), SIGNAL(partChanged()));
+			connect(b, SIGNAL(partReset()), SIGNAL(partReset()));
 			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 			// We assume that the antintrusion impianto came before all the zones
 			Q_ASSERT_X(impianto, "Antintrusion::loadItems", "Found a zone before the impianto!");

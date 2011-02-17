@@ -103,7 +103,10 @@ signals:
 /*!
   \brief part. changed events
 */
-	void partChanged(AntintrusionZone *);
+	void partChanged();
+
+	// Reset a partialization change.
+	void partReset();
 /*!
   \brief clear changed flags
 */
