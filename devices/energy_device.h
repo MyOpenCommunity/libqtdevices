@@ -320,7 +320,7 @@ private:
 	// The following fill* methods are special methods that handle the case when a single
 	// value or a graph value needs to be calculated from other values.
 	void fillYearGraphData(DeviceValues &values_list, OpenMsg &msg);
-	void fillYearTotalData(DeviceValues &values_list, OpenMsg &msg);
+	void fillYearTotalData(DeviceValues &values_list);
 	void fillMonthlyAverage(DeviceValues &values_list, OpenMsg &msg);
 	void fillCumulativeDay(DeviceValues &values_list, QString frame9, QString frame10);
 
