@@ -42,6 +42,7 @@ private slots:
 	void testBrowseUpFail();
 	void testListItems();
 	void testResetWithAck();
+	void testSetContextSuccess();
 
 	void testBuildCommand();
 	void testBuildCommandWithArg();

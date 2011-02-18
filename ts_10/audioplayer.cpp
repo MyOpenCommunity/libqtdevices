@@ -35,7 +35,6 @@
 #include "media_device.h"
 #include "devices_cache.h"
 #include "audiostatemachine.h"
-#include "pagestack.h" // bt_global::page_stack
 #include "multimedia.h"
 #include "labels.h" // ScrollingLabel
 #include "xmldevice.h"

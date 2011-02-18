@@ -30,6 +30,7 @@
 class QDomNode;
 class StateButton;
 class MultimediaFileListPage;
+class FileSelectorFactory;
 class FileSelector;
 class SongSearch;
 class IPRadioPage;
@@ -109,10 +110,11 @@ public:
 	// The FileSelector passed here, should be deleted by this class
 	// if the configuration doesn't support filesystem (usb and sd).
 	MultimediaSectionPage(const QDomNode &config_node,
-						  MultimediaSectionPage::Items items = MultimediaSectionPage::ITEMS_ALL,
-						  FileSelector *browser = 0,
+						  MultimediaSectionPage::Items items,
+						  FileSelectorFactory *f,
 						  const QString &title = QString());
 
+	~MultimediaSectionPage();
 	virtual int sectionId() const;
 
 	static void playSomethingRandomly();
@@ -131,7 +133,7 @@ private:
 	FileSelector *browser;
 	bool delete_browser;
 	BtButton *play_button;
-
+	FileSelectorFactory *factory;
 
 	// used by playSomethingRandomly()
 	static SongSearch *song_search;

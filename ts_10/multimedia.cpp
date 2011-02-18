@@ -56,9 +56,8 @@ Page *MultimediaSectionPage::current_player = 0;
 bool MultimediaSectionPage::usb_initialized = false;
 
 
-FileSystemBrowseButton::FileSystemBrowseButton(MountWatcher &watch, FileSelector *_browser,
-					       MountType _type, const QString &label,
-					       const QString &icon_mounted, const QString &icon_unmounted) :
+FileSystemBrowseButton::FileSystemBrowseButton(MountWatcher &watch, FileSelector *_browser, MountType _type,
+	const QString &label, const QString &icon_mounted, const QString &icon_unmounted) :
 	IconPageButton(label)
 {
 	type = _type;
@@ -84,6 +83,7 @@ void FileSystemBrowseButton::mounted(const QString &path, MountType t)
 
 	button->setStatus(StateButton::ON);
 	directory = path;
+	browser->setRootPath(directory);
 }
 
 void FileSystemBrowseButton::unmounted(const QString &path, MountType t)
@@ -97,16 +97,15 @@ void FileSystemBrowseButton::unmounted(const QString &path, MountType t)
 
 void FileSystemBrowseButton::browse()
 {
-	browser->browse(directory);
+	browser->showPage();
 }
 
 
 
-MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, MultimediaSectionPage::Items items, FileSelector *selector, const QString &title)
+MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, MultimediaSectionPage::Items items, FileSelectorFactory *f, const QString &title)
 {
-	Q_ASSERT_X(items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM) && selector != 0,
-				"MultimediaSectionPage::MultimediaSectionPage",
-				"ITEMS_FILESYSTEM == true && browser == 0");
+	Q_ASSERT_X(items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM),
+		"MultimediaSectionPage::MultimediaSectionPage", "ITEMS_FILESYSTEM == true");
 
 	if (!usb_initialized)
 	{
@@ -115,9 +114,8 @@ MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, Multim
 	}
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 
+	factory = f;
 	showed_items = items;
-	delete_browser = true;
-	browser = selector;
 
 	QString descr;
 	if (title.isEmpty())
@@ -128,12 +126,15 @@ MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, Multim
 	NavigationBar *nav_bar = new NavigationBar("play_file");
 	buildPage(new IconContent, nav_bar, descr);
 	loadItems(config_node);
-	if (delete_browser)
-		browser->deleteLater();
 
 	play_button = nav_bar->forward_button;
 	connect(play_button, SIGNAL(clicked()), SLOT(gotoPlayerPage()));
 	play_button->hide();
+}
+
+MultimediaSectionPage::~MultimediaSectionPage()
+{
+	delete factory;
 }
 
 void MultimediaSectionPage::showEvent(QShowEvent *)
@@ -179,13 +180,12 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		{
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM))
 			{
-				FileSystemBrowseButton *t = new FileSystemBrowseButton(MountWatcher::getWatcher(), browser,
-										       item_id == PAGE_USB ? MOUNT_USB : MOUNT_SD, descr,
-										       bt_global::skin->getImage("mounted"),
-										       bt_global::skin->getImage("unmounted"));
+				FileSelector *selector = factory->getFileSelector();
+				FileSystemBrowseButton *t = new FileSystemBrowseButton(MountWatcher::getWatcher(), selector,
+					item_id == PAGE_USB ? MOUNT_USB : MOUNT_SD, descr, bt_global::skin->getImage("mounted"),
+					bt_global::skin->getImage("unmounted"));
 				page_content->addWidget(t);
-				connect(browser, SIGNAL(Closed()), this, SLOT(showPage()));
-				delete_browser = false;
+				connect(selector, SIGNAL(Closed()), this, SLOT(showPage()));
 
 				sources.append(item_id);
 
@@ -208,8 +208,8 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		{
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM))
 			{
-				FileSelector *browser = new MultimediaFileListPage(DIRECTORY | PDF));
-				FileSystemBrowseButton *t = new FileSystemBrowseButton(MountWatcher::getWatcher(), browser,
+				FileSelector *selector = new MultimediaFileListPage(DIRECTORY | PDF));
+				FileSystemBrowseButton *t = new FileSystemBrowseButton(MountWatcher::getWatcher(), selector,
 										       MOUNT_USB, descr,
 										       bt_global::skin->getImage("mounted"),
 										       bt_global::skin->getImage("unmounted"));

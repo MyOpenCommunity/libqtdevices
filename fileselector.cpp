@@ -82,14 +82,6 @@ void FileSelector::screenSaverStarted(Page *curr)
 	}
 }
 
-void FileSelector::browse(const QString &dir)
-{
-	setRootPath(dir);
-
-	// showPage automatically refreshes the file list
-	showPage();
-}
-
 void FileSelector::cleanUp()
 {
 	if (working)
@@ -97,7 +89,6 @@ void FileSelector::cleanUp()
 		working->abort();
 		working = 0;
 	}
-	browser->cleanUp();
 }
 
 const EntryInfoList &FileSelector::getFiles() const
@@ -132,7 +123,7 @@ void FileSelector::showPage()
 void FileSelector::itemIsClicked(int item)
 {
 	const EntryInfo& clicked_element = files_list[item];
-	qDebug() << "[AUDIO] FileSelector::itemIsClicked " << item << "-> " << clicked_element.name;
+	qDebug() << "FileSelector::itemIsClicked " << item << "-> " << clicked_element.name;
 
 	// save the info of old directory
 	pages_indexes[browser->pathKey()] = currentPage();
@@ -161,10 +152,21 @@ void FileSelector::browseUp()
 	if (!browser->isRoot())
 	{
 		startOperation();
+		resetDisplayedPage();
 		browser->exitDirectory();
 	}
 	else
 		emit Closed();
+}
+
+void FileSelector::pageDown()
+{
+	pages_indexes[browser->pathKey()] = currentPage();
+}
+
+void FileSelector::pageUp()
+{
+	pages_indexes[browser->pathKey()] = currentPage();
 }
 
 void FileSelector::directoryChanged()
@@ -175,6 +177,8 @@ void FileSelector::directoryChanged()
 void FileSelector::handleError()
 {
 	operationCompleted();
+	pages_indexes.clear();
+	files_list.clear();
 	emit Closed();
 }
 
@@ -203,7 +207,6 @@ void FileSelector::startOperation()
 	Q_ASSERT_X(working == NULL, "FileSelector::startOperation", "Multiple operations in progress");
 
 	working = new FileSelectorWaitDialog(this, MEDIASERVER_MSEC_WAIT_TIME);
-
 	connect(this, SIGNAL(Closed()), working, SLOT(abort()));
 }
 

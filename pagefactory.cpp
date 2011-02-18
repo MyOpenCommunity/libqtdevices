@@ -115,7 +115,8 @@ Page *getPage(int page_id)
 		break;
 #ifdef LAYOUT_TS_10
 	case MULTIMEDIA:
-		page = new MultimediaSectionPage(page_node, MultimediaSectionPage::ITEMS_ALL, new MultimediaFileListPage(new DirectoryTreeBrowser));
+		page = new MultimediaSectionPage(page_node, MultimediaSectionPage::ITEMS_ALL,
+			new MultimediaFileListFactory(TreeBrowser::DIRECTORY));
 		break;
 	case MESSAGES:
 		page = new MessagesListPage(page_node);

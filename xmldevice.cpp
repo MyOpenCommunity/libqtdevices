@@ -182,24 +182,34 @@ namespace
 		return result;
 	}
 
-	QHash<int,QVariant> handle_browseup(const QDomNode &node)
+	QHash<int,QVariant> handle_browsing(const QDomNode &node, const QString cmdname, XmlResponses::Type cmdtype)
 	{
 		QHash<int,QVariant> result;
 
 		QString status_browse = getTextChild(node, "status_browse");
 		if (status_browse.isEmpty())
 		{
-			qWarning() << "handle_browseup: status_browse not found";
-			result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::BROWSE_UP, XmlError::PARSE));
+			qWarning() << QString("%1: status_browse not found").arg(cmdname);
+			result[XmlResponses::INVALID].setValue(XmlError(cmdtype, XmlError::PARSE));
 		}
 		else if (status_browse == "browse_okay")
-			result[XmlResponses::BROWSE_UP] = true;
+			result[cmdtype] = true;
 		else
 		{
-			qWarning() << "handle_browseup: status_browse unknown";
-			result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::BROWSE_UP, XmlError::BROWSING));
+			qWarning() << QString("%1: status_browse unknown").arg(cmdname);
+			result[XmlResponses::INVALID].setValue(XmlError(cmdtype, XmlError::BROWSING));
 		}
 		return result;
+	}
+
+	QHash<int,QVariant> handle_browseup(const QDomNode &node)
+	{
+		return handle_browsing(node, "handle_browseup", XmlResponses::BROWSE_UP);
+	}
+
+	QHash<int,QVariant> handle_setcontext(const QDomNode &node)
+	{
+		return handle_browsing(node, "handle_setcontext", XmlResponses::SET_CONTEXT);
 	}
 
 	QHash<int,QVariant> handle_listitems(const QDomNode &node)
@@ -296,6 +306,7 @@ XmlDevice::XmlDevice()
 	xml_handlers["AW26C15"] = handle_listitems;
 	xml_handlers["AW26C11"] = handle_selection;
 	xml_handlers["AW26C10"] = handle_selection;
+	xml_handlers["AW26C16"] = handle_setcontext;
 }
 
 XmlDevice::~XmlDevice()
@@ -341,6 +352,14 @@ void XmlDevice::nextFile()
 void XmlDevice::browseUp()
 {
 	sendCommand("CW26C7");
+}
+
+void XmlDevice::setContext(const QString &server, const QStringList &path)
+{
+	XmlArguments arg;
+	arg["server"] = server;
+	arg["path"] = path.join("/");
+	sendCommand("CW26C16", arg);
 }
 
 void XmlDevice::listItems(unsigned int starting_element, unsigned int max_elements)

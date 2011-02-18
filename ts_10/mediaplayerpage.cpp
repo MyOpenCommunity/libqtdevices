@@ -23,7 +23,6 @@
 #include "mediaplayer.h"
 #include "multimedia_buttons.h"
 #include "mount_watcher.h"
-#include "pagestack.h"
 #include "audiostatemachine.h"
 
 
@@ -107,13 +106,6 @@ MediaPlayerPage::MediaPlayerPage() : refresh_data(this)
 	connect(player, SIGNAL(mplayerDone()), SLOT(playbackStopped()));
 	connect(player, SIGNAL(mplayerStopped()), SLOT(playbackStopped()));
 	connect(player, SIGNAL(mplayerPaused()), SLOT(playbackStopped()));
-}
-
-void MediaPlayerPage::showPage()
-{
-	bt_global::page_stack.showUserPage(this);
-
-	Page::showPage();
 }
 
 bool MediaPlayerPage::isPlayerInstanceRunning() const

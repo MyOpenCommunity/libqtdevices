@@ -111,6 +111,13 @@ private:
 	QString selbutton_off;
 };
 
+
+class SlideshowSelectorFactory : public FileSelectorFactory
+{
+public:
+	virtual FileSelector* getFileSelector();
+};
+
 #endif
 
 #endif // SCREENSAVERPAGE_H

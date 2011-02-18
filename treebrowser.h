@@ -35,6 +35,13 @@ class TreeBrowser : public QObject
 {
 Q_OBJECT
 public:
+
+	enum Types
+	{
+		DIRECTORY,
+		UPNP
+	};
+
 	/*!
 		\brief Set the root navigation path for the browser
 
@@ -86,11 +93,6 @@ public:
 	 */
 	virtual QString pathKey() = 0;
 
-	/*!
-		\brief Reset the state.
-		\note The default implementation does nothing.
-	*/
-	virtual void cleanUp() {}
 
 	/*!
 		\brief Sets \a mask to filter file listing results.
@@ -98,6 +100,14 @@ public:
 		\note The \a mask must be a bitwise-OR between MultimediaFileTypes values.
 	*/
 	void setFilter(int mask);
+
+	/*!
+		\brief Set the list of albums/directories as the context
+
+		This command is a shortcut to re-enter in a directory or album even
+		if is inside others directories/albums.
+	*/
+	virtual void setContext(const QStringList &context) = 0;
 
 protected:
 	/*!
@@ -156,6 +166,7 @@ public:
 	virtual void getFileList();
 	virtual bool isRoot();
 	virtual QString pathKey();
+	void setContext(const QStringList &context);
 
 private:
 	int level;
@@ -180,13 +191,15 @@ public:
 	virtual void getFileList();
 	virtual bool isRoot();
 	virtual QString pathKey();
-	virtual void cleanUp();
+	void setContext(const QStringList &context);
 
+	// Specific UPnpClientBrowser methods
 	void getPreviousFileList();
 	void getNextFileList();
 	int getNumElements();
 	int getStartingElement();
 	void getFileList(int starting_element);
+
 
 private slots:
 	void handleResponse(const XmlResponse &response);
@@ -195,6 +208,7 @@ private slots:
 private:
 	XmlDevice *dev;
 	int level;
+	int context_new_level;
 
 	// To manage the 'lazy' loading of the elements
 	int starting_element;

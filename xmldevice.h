@@ -75,6 +75,7 @@ namespace XmlResponses
 		TRACK_SELECTION,
 		BROWSE_UP,
 		LIST_ITEMS,
+		SET_CONTEXT,
 	};
 }
 
@@ -220,6 +221,11 @@ public:
 		\brief Requests the list of the items of the current directory.
 	*/
 	void listItems(unsigned int starting_element, unsigned int max_elements);
+
+	/*!
+		\brief Set the navigation path.
+	*/
+	void setContext(const QString &server, const QStringList &path);
 
 signals:
 	/*!
