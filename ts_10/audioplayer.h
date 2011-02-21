@@ -42,7 +42,7 @@ class UPnpListManager : public ListManager
 {
 Q_OBJECT
 public:
-	UPnpListManager();
+	UPnpListManager(XmlDevice *dev);
 	virtual QString currentFilePath();
 
 	virtual void nextFile();

@@ -79,6 +79,12 @@ void DirectoryTreeBrowser::setRootPath(const QStringList &path)
 	level = 0;
 }
 
+void DirectoryTreeBrowser::reset()
+{
+	level = 0;
+	current_dir.setPath(root_path);
+}
+
 QStringList DirectoryTreeBrowser::getRootPath()
 {
 	return root_path.split("/", QString::SkipEmptyParts);
@@ -152,9 +158,9 @@ void DirectoryTreeBrowser::setContext(const QStringList &context)
 }
 
 
-UPnpClientBrowser::UPnpClientBrowser()
+UPnpClientBrowser::UPnpClientBrowser(XmlDevice *d)
 {
-	dev = bt_global::xml_device;
+	dev = d;
 	starting_element = 1;
 	level = 0;
 
@@ -162,9 +168,10 @@ UPnpClientBrowser::UPnpClientBrowser()
 	connect(dev, SIGNAL(error(int,int)), SLOT(handleError(int,int)));
 }
 
-UPnpClientBrowser::~UPnpClientBrowser()
+void UPnpClientBrowser::reset()
 {
-	dev->deleteLater();
+	level = 0;
+	starting_element = 1;
 }
 
 void UPnpClientBrowser::enterDirectory(const QString &name)
@@ -264,10 +271,13 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 
 			num_elements = cached_elements.size();
 			level = 0;
+			EntryInfoList entry_list;
 
-			emit listReceived(cached_elements.mid(starting_element - 1, ELEMENTS_DISPLAYED));
-		}
+			if (num_elements > 0)
+				entry_list = cached_elements.mid(starting_element - 1, ELEMENTS_DISPLAYED);
+			emit listReceived(entry_list);
 			break;
+		}
 		case XmlResponses::SERVER_SELECTION:
 		case XmlResponses::CHDIR:
 			++level;
@@ -291,8 +301,8 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 					infos << entry;
 			}
 			emit listReceived(infos);
-		}
 			break;
+		}
 		case XmlResponses::SET_CONTEXT:
 			level = context_new_level;
 			emit directoryChanged();
@@ -314,11 +324,17 @@ void UPnpClientBrowser::handleError(int response, int code)
 		emit listRetrieveError();
 		break;
 	case XmlResponses::SERVER_SELECTION:
+	case XmlResponses::SET_CONTEXT:
 	case XmlResponses::CHDIR:
-		emit directoryChangeError();
+		if (code == XmlError::BROWSING)
+			emit directoryChangeError();
+		else // XmlError::SERVER_DOWN
+			emit genericError();
 		break;
 	case XmlResponses::BROWSE_UP:
-		if (level == 1)
+		if (code == XmlError::SERVER_DOWN)
+			emit genericError();
+		else if (level == 1)
 		{
 			--level;
 			emit directoryChanged();
@@ -326,7 +342,6 @@ void UPnpClientBrowser::handleError(int response, int code)
 		else
 			emit directoryChangeError();
 		break;
-	case XmlResponses::SET_CONTEXT:
 	case XmlResponses::TRACK_SELECTION:
 		break;
 	case XmlResponses::INVALID:

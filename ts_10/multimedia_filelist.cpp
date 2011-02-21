@@ -114,7 +114,7 @@ void MultimediaFileListPage::audioPageClosed()
 		navigation_context = playing_navigation_context;
 		pages_indexes = playing_pages_indexes;
 		// the directoryChanged signal trigger a call to the displayFiles
-		browser->setContext(navigation_context);
+		browser->setContext(l);
 	}
 	else
 	{
@@ -169,7 +169,9 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 		if (browser->isRoot()) // Special case empty root directory
 		{
 			operationCompleted();
+			browser->reset();
 			emit Closed();
+			return;
 		}
 		qDebug() << "MultimediaFileListPage::displayFiles -> empty directory";
 		browser->exitDirectory();
@@ -262,6 +264,8 @@ void MultimediaFileListPage::startPlayback(int item)
 		// Because the are many instances of MultimediaFileListPage and only
 		// one per type of AudioPlayerPage we have to connect the last with
 		// the right MultimediaFileListPage instance.
+
+		disconnect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed())); // avoid multiple connect
 		connect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
 		return;
 	}
@@ -325,7 +329,7 @@ FileSelector* MultimediaFileListFactory::getFileSelector()
 		b = new DirectoryTreeBrowser;
 		break;
 	case TreeBrowser::UPNP:
-		b = new UPnpClientBrowser;
+		b = new UPnpClientBrowser(bt_global::xml_device);
 		break;
 	default:
 		Q_ASSERT(qPrintable(QString("MultimediaFileListFactory::getFileSelector -> cannot create browser of unknown type %d").arg(type)));

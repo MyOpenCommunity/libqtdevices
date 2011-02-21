@@ -78,9 +78,9 @@ namespace
 }
 
 
-UPnpListManager::UPnpListManager()
+UPnpListManager::UPnpListManager(XmlDevice *d)
 {
-	dev = bt_global::xml_device;
+	dev = d;
 	connect(dev, SIGNAL(responseReceived(XmlResponse)), SLOT(handleResponse(XmlResponse)));
 }
 
@@ -174,7 +174,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 {
 	type = t;
 	if (type == AudioPlayerPage::UPNP_FILE)
-		list_manager = new UPnpListManager;
+		list_manager = new UPnpListManager(bt_global::xml_device);
 	else
 		list_manager = new FileListManager;
 

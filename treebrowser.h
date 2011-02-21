@@ -109,6 +109,13 @@ public:
 	*/
 	virtual void setContext(const QStringList &context) = 0;
 
+	/*!
+		\brief Reset the status of the browser
+
+		This command can ben used to re-start the navigation from the beginning.
+	*/
+	virtual void reset() = 0;
+
 protected:
 	/*!
 		\brief Constructor.
@@ -166,7 +173,8 @@ public:
 	virtual void getFileList();
 	virtual bool isRoot();
 	virtual QString pathKey();
-	void setContext(const QStringList &context);
+	virtual void setContext(const QStringList &context);
+	virtual void reset();
 
 private:
 	int level;
@@ -182,16 +190,17 @@ private:
 class UPnpClientBrowser : public TreeBrowser
 {
 Q_OBJECT
+friend class TestUPnpClientBrowser;
 public:
-	UPnpClientBrowser();
-	~UPnpClientBrowser();
+	UPnpClientBrowser(XmlDevice *dev);
 
 	virtual void enterDirectory(const QString &name);
 	virtual void exitDirectory();
 	virtual void getFileList();
 	virtual bool isRoot();
 	virtual QString pathKey();
-	void setContext(const QStringList &context);
+	virtual void setContext(const QStringList &context);
+	virtual void reset();
 
 	// Specific UPnpClientBrowser methods
 	void getPreviousFileList();

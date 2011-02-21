@@ -60,9 +60,7 @@ FileSelector::FileSelector(TreeBrowser *_browser)
 	connect(this, SIGNAL(Closed()), this, SLOT(cleanUp()));
 	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)), SLOT(screenSaverStarted(Page*)));
 
-	// maybe it's a bit harsh to close the navigation for all errors, but it's
-	// probably the safest choice
-	connect(browser, SIGNAL(directoryChangeError()), SLOT(handleError()));
+	connect(browser, SIGNAL(directoryChangeError()), SLOT(directoryChangeError()));
 	connect(browser, SIGNAL(listRetrieveError()), SLOT(handleError()));
 	connect(browser, SIGNAL(genericError()), SLOT(handleError()));
 
@@ -179,7 +177,13 @@ void FileSelector::handleError()
 	operationCompleted();
 	pages_indexes.clear();
 	files_list.clear();
+	browser->reset();
 	emit Closed();
+}
+
+void FileSelector::directoryChangeError()
+{
+	browser->getFileList();
 }
 
 void FileSelector::setRootPath(const QString &start_path)

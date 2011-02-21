@@ -25,10 +25,16 @@
 #include "xmldevice_tester.h"
 #include "generic_functions.h"
 
-TestXmlDevice::TestXmlDevice() :
-	QObject(), dev(new XmlDevice)
+
+void TestXmlDevice::initTestCase()
 {
 	qRegisterMetaType<XmlResponse>("XmlResponse");
+	dev = new XmlDevice;
+}
+
+void TestXmlDevice::cleanupTestCase()
+{
+	delete dev;
 }
 
 void TestXmlDevice::testHeader()
@@ -154,6 +160,33 @@ void TestXmlDevice::testServerSelection()
 	t.check(data, QString("TestServer"));
 }
 
+void TestXmlDevice::testServerSelectionNoAnswer()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
+				 "			<PID>4</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.195</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>192.168.1.110</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C2>"
+				 "			<current_server>no_answer_has_been_received</current_server>"
+				 "		</AW26C2>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::SERVER_SELECTION);
+	t.checkError(data, XmlError::SERVER_DOWN);
+}
+
 void TestXmlDevice::testChdir()
 {
 	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
@@ -181,6 +214,32 @@ void TestXmlDevice::testChdir()
 	t.check(data, true);
 }
 
+void TestXmlDevice::testChdirFail()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
+				 "			<PID>4</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.195</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>192.168.1.110</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C2>"
+				 "			<status_browse>server_down</status_browse>"
+				 "		</AW26C2>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::CHDIR);
+	t.checkError(data, XmlError::SERVER_DOWN);
+}
 
 void TestXmlDevice::testTrackSelection()
 {
@@ -307,6 +366,62 @@ void TestXmlDevice::testSetContextSuccess()
 
 	XmlDeviceTester t(dev, XmlResponses::SET_CONTEXT);
 	t.check(data, true);
+}
+
+void TestXmlDevice::testSetContextFail1()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
+				 "			<PID>4</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.195</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>192.168.1.110</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C16>"
+				 "		<current_server>MediaTomb</current_server>"
+				 "		<status_browse>no_such_directory</status_browse>"
+				 "		</AW26C16>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::SET_CONTEXT);
+	t.checkError(data, XmlError::BROWSING);
+}
+
+void TestXmlDevice::testSetContextFail2()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
+				 "			<PID>4</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.195</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>192.168.1.110</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C16>"
+				 "		<current_server>MediaTomb</current_server>"
+				 "		<status_browse>server_down</status_browse>"
+				 "		</AW26C16>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::SET_CONTEXT);
+	t.checkError(data, XmlError::SERVER_DOWN);
 }
 
 void TestXmlDevice::testListItems()

@@ -201,7 +201,10 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 				bt_global::xml_device = new XmlDevice;
 
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_UPNP))
-				p = new MultimediaFileListPage(new UPnpClientBrowser, EntryInfo::DIRECTORY | EntryInfo::AUDIO, false);
+			{
+				MultimediaFileListFactory f(TreeBrowser::UPNP, EntryInfo::DIRECTORY | EntryInfo::AUDIO, false);
+				p = f.getFileSelector();
+			}
 			break;
 #ifdef BUILD_EXAMPLES
 		case PAGE_PDF:

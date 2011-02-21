@@ -91,6 +91,7 @@ protected slots:
 private slots:
 	void directoryChanged();
 	void handleError();
+	void directoryChangeError();
 	void screenSaverStarted(Page *curr);
 
 #ifdef BT_HARDWARE_TS_10

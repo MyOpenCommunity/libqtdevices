@@ -135,6 +135,8 @@ namespace
 				qWarning() << "handle_selection: current_server not found";
 				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_SELECTION, XmlError::PARSE));
 			}
+			else if (current_server == "no_answer_has_been_received")
+				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_SELECTION, XmlError::SERVER_DOWN));
 			else
 				result[XmlResponses::SERVER_SELECTION] = current_server;
 		}
@@ -148,6 +150,8 @@ namespace
 			}
 			else if (status_browse == "browse_okay")
 				result[XmlResponses::CHDIR] = true;
+			else if (status_browse == "server_down")
+				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::CHDIR, XmlError::SERVER_DOWN));
 			else
 			{
 				qWarning() << "handle_selection: status_browse unknown";
@@ -194,6 +198,10 @@ namespace
 		}
 		else if (status_browse == "browse_okay")
 			result[cmdtype] = true;
+		else if (status_browse == "server_down")
+			result[XmlResponses::INVALID].setValue(XmlError(cmdtype, XmlError::SERVER_DOWN));
+		else if (status_browse == "no_such_directory" || status_browse == "already_at_root")
+			result[XmlResponses::INVALID].setValue(XmlError(cmdtype, XmlError::BROWSING));
 		else
 		{
 			qWarning() << QString("%1: status_browse unknown").arg(cmdname);

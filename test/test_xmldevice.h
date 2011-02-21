@@ -27,22 +27,27 @@ class XmlDevice;
 
 class TestXmlDevice : public QObject
 {
-    Q_OBJECT
-public:
-	explicit TestXmlDevice();
+Q_OBJECT
 
 private slots:
+	void initTestCase();
+	void cleanupTestCase();
+
 	void testHeader();
 	void testWelcome();
 	void testServerList();
 	void testServerSelection();
+	void testServerSelectionNoAnswer();
 	void testChdir();
+	void testChdirFail();
 	void testTrackSelection();
 	void testBrowseUpSuccess();
 	void testBrowseUpFail();
 	void testListItems();
 	void testResetWithAck();
 	void testSetContextSuccess();
+	void testSetContextFail1();
+	void testSetContextFail2();
 
 	void testBuildCommand();
 	void testBuildCommandWithArg();
