@@ -90,7 +90,6 @@ AntintrusionZone::AntintrusionZone(const QString &name, const QString &_where) :
 	is_on = false;
 	is_partial = true;
 	connect(left_button, SIGNAL(clicked()), SLOT(toggleParzializza()));
-	already_changed = false;
 
 	dev = bt_global::add_device_to_cache(new zonanti_device(where));
 	// Get status changed events back
@@ -102,7 +101,6 @@ AntintrusionZone::AntintrusionZone(const QString &name, const QString &_where) :
 void AntintrusionZone::status_changed(QList<device_status *> sl)
 {
 	stat_var curr_status(stat_var::ON_OFF);
-	bool aggiorna = false;
 	qDebug("AntintusionZone::status_changed()");
 
 	for (int i = 0; i < sl.size(); ++i)
@@ -120,26 +118,19 @@ void AntintrusionZone::status_changed(QList<device_status *> sl)
 			{
 				setParzializzaOn(true);
 				qDebug("new status = %d", s);
-				aggiorna = true;
 			}
 			else if (is_on && !s)
 			{
 				setParzializzaOn(false);
 				qDebug("new status = %d", s);
-				aggiorna = true;
 			}
+			emit partReset();
 		}
 			break;
 		default:
 			qDebug("device status of unknown type (%d)", ds->get_type());
 			break;
 		}
-	}
-
-	if (aggiorna && !already_changed)
-	{
-		already_changed = true;
-		emit partChanged(this);
 	}
 }
 
@@ -175,16 +166,7 @@ void AntintrusionZone::toggleParzializza()
 {
 	qDebug("AntintusionZone::toggleParzializza()");
 	setParzializzaOn(!is_on);
-	if (!already_changed)
-	{
-		already_changed = true;
-		emit partChanged(this);
-	}
-}
-
-void AntintrusionZone::clearChanged()
-{
-	already_changed = false;
+	emit partChanged();
 }
 
 int AntintrusionZone::getIndex()
@@ -273,7 +255,6 @@ void impAnti::status_changed(QList<device_status*> sl)
 				aggiorna=1;
 				qDebug("IMPIANTO DISINSERITO !!");
 				emit abilitaParz(true);
-				emit clearChanged();
 				send_part_msg = false;
 			}
 			break;
@@ -298,8 +279,6 @@ int impAnti::getIsActive(int zona)
 void impAnti::ToSendParz(bool s)
 {
 	send_part_msg = s;
-	if (!send_part_msg)
-		emit clearChanged();
 }
 
 void impAnti::Inserisci()
@@ -421,10 +400,16 @@ void impAnti::setZona(AntintrusionZone *za)
 		le_zone[index] = za;
 }
 
-void impAnti::partChanged(AntintrusionZone *za)
+void impAnti::partChanged()
 {
 	qDebug("impAnti::partChanged");
 	send_part_msg = true;
+}
+
+void impAnti::partReset()
+{
+	qDebug("impAnti::partReset");
+	send_part_msg = false;
 }
 
 void impAnti::inizializza(bool forza)

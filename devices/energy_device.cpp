@@ -629,7 +629,7 @@ bool EnergyDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		{
 			fillYearGraphData(values_list, msg);
 			// this uses buffer_year_data filled by fillYearGraphData above
-			fillYearTotalData(values_list, msg);
+			fillYearTotalData(values_list);
 
 			// with the old frames, the cumulative month is also used to compute the
 			// average value; with the new frames the average is filled using the 16 bit
@@ -707,6 +707,9 @@ void EnergyDevice::fillMonthlyAverage(DeviceValues &values_list, OpenMsg &msg)
 	if (static_cast<int>(msg.what()) == _DIM_CUMULATIVE_MONTH)
 	{
 		QDate date = getDateFromFrame(msg);
+		// See the comment in EnergyDevice::fillYearGraphData
+		if (date.month() == QDate::currentDate().month())
+			return;
 		average = qRound(1.0 * val / date.daysInMonth());
 	}
 	else
@@ -724,6 +727,14 @@ void EnergyDevice::fillYearGraphData(DeviceValues &values_list, OpenMsg &msg)
 	if (static_cast<int>(msg.what()) != DIM_CUMULATIVE_MONTH)
 	{
 		int month_distance = msg.whatSubArgN(1) - current.month();
+		// Normally, the current month value is inside a frame that have
+		// DIM_CUMULATIVE_MONTH as what. However can happen that we receive
+		// the current month in a frame with _DIM_CUMULATIVE_MONTH what.
+		// In this case, we discard the frame because the right value is
+		// inside the frame with DIM_CUMULATIVE_MONTH what.
+		if (month_distance == 0)
+			return;
+
 		index = month_distance < 0 ? month_distance + 12 : month_distance;
 	}
 	buffer_year_data[index] = msg.whatArg(0) == "4294967295" ? 0 : whatArgU(msg, 0);
@@ -735,7 +746,7 @@ void EnergyDevice::fillYearGraphData(DeviceValues &values_list, OpenMsg &msg)
 	values_list[DIM_CUMULATIVE_YEAR_GRAPH] = v_graph;
 }
 
-void EnergyDevice::fillYearTotalData(DeviceValues &values_list, OpenMsg &msg)
+void EnergyDevice::fillYearTotalData(DeviceValues &values_list)
 {
 	qint64 total = 0;
 	for (int i = 1; i < 13; ++i)
