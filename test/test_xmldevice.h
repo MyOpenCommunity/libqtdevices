@@ -44,6 +44,7 @@ private slots:
 	void testBrowseUpSuccess();
 	void testBrowseUpFail();
 	void testListItems();
+	void testListItemsFail();
 	void testResetWithAck();
 	void testSetContextSuccess();
 	void testSetContextFail1();

@@ -230,6 +230,14 @@ namespace
 	QHash<int,QVariant> handle_listitems(const QDomNode &node)
 	{
 		QHash<int,QVariant> result;
+
+		QString status_browse = getTextChild(node, "status_browse");
+		if (status_browse == "server_down")
+		{
+			result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::LIST_ITEMS, XmlError::SERVER_DOWN));
+			return result;
+		}
+
 		UPnpEntryList list;
 
 		list.total = getTextChild(node, "total").toUInt();
