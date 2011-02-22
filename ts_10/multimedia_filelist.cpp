@@ -270,6 +270,7 @@ void MultimediaFileListPage::startPlayback(int item)
 
 	const EntryInfoList &files_list = getFiles();
 	const EntryInfo &current_file = files_list[item];
+	last_clicked_type = current_file.type;
 
 	if (UPnpClientBrowser *b = qobject_cast<UPnpClientBrowser*>(browser))
 	{
@@ -296,13 +297,13 @@ void MultimediaFileListPage::startPlayback(int item)
 	for (int i = 0; i < files_list.size(); ++i)
 	{
 		const EntryInfo& fn = files_list[i];
+		// If the last clicked item is not of type unknown we want only the items
+		// (not directory) with the same type.
 		if ((fn.type == EntryInfo::DIRECTORY || fn.type != last_clicked_type) && last_clicked_type != EntryInfo::UNKNOWN)
 			continue;
 		if (fn == current_file)
-		{
 			last_clicked = urls.size();
-			last_clicked_type = fn.type;
-		}
+
 		filtered.append(fn);
 		urls.append(fn.path);
 	}
