@@ -135,7 +135,7 @@ namespace
 				qWarning() << "handle_selection: current_server not found";
 				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_SELECTION, XmlError::PARSE));
 			}
-			else if (current_server == "no_answer_has_been_received")
+			else if (current_server == "no_answer_has_been_received" || current_server == "server_down")
 				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_SELECTION, XmlError::SERVER_DOWN));
 			else
 				result[XmlResponses::SERVER_SELECTION] = current_server;

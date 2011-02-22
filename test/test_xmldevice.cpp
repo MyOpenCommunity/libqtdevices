@@ -160,6 +160,33 @@ void TestXmlDevice::testServerSelection()
 	t.check(data, QString("TestServer"));
 }
 
+void TestXmlDevice::testServerSelectionFail()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
+				 "			<PID>4</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.195</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>192.168.1.110</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C2>"
+				 "			<current_server>server_down</current_server>"
+				 "		</AW26C2>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::SERVER_SELECTION);
+	t.checkError(data, XmlError::SERVER_DOWN);
+}
+
 void TestXmlDevice::testServerSelectionNoAnswer()
 {
 	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""

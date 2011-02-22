@@ -318,6 +318,7 @@ void UPnpClientBrowser::handleError(int response, int code)
 	switch (response)
 	{
 	case XmlResponses::WELCOME:
+		emit genericError();
 		break;
 	case XmlResponses::SERVER_LIST:
 	case XmlResponses::LIST_ITEMS:
@@ -328,7 +329,7 @@ void UPnpClientBrowser::handleError(int response, int code)
 	case XmlResponses::CHDIR:
 		if (code == XmlError::BROWSING)
 			emit directoryChangeError();
-		else // XmlError::SERVER_DOWN
+		else
 			emit genericError();
 		break;
 	case XmlResponses::BROWSE_UP:

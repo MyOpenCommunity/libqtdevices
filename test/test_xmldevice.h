@@ -37,6 +37,7 @@ private slots:
 	void testWelcome();
 	void testServerList();
 	void testServerSelection();
+	void testServerSelectionFail();
 	void testServerSelectionNoAnswer();
 	void testChdir();
 	void testChdirFail();
