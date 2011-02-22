@@ -343,6 +343,7 @@ void UPnpClientBrowser::handleError(int response, int code)
 			emit directoryChangeError();
 		break;
 	case XmlResponses::TRACK_SELECTION:
+		emit genericError();
 		break;
 	case XmlResponses::INVALID:
 		emit genericError();

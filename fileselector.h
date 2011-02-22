@@ -31,7 +31,8 @@
 #include <QTime>
 
 class FileSelectorWaitDialog;
-
+class QShowEvent;
+class QHideEvent;
 
 /*!
 	\ingroup Core
@@ -80,6 +81,9 @@ protected:
 
 	TreeBrowser *browser;
 	QHash<QString, unsigned>  pages_indexes;
+
+	virtual void showEvent(QShowEvent *);
+	virtual void hideEvent(QHideEvent *);
 
 protected slots:
 	virtual void itemIsClicked(int item);

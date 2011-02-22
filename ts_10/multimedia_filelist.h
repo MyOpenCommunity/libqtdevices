@@ -69,6 +69,7 @@ private slots:
 	void displayFiles(const EntryInfoList &list);
 
 	void audioPageClosed();
+	void loopDetected();
 
 private:
 	// icons for different file type

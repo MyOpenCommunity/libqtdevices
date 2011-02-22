@@ -54,6 +54,9 @@ inline void waitTimeCounter(const QTime& timer, int msec)
 FileSelector::FileSelector(TreeBrowser *_browser)
 {
 	browser = _browser;
+	// block signals from the browser waiting a showPage()
+	browser->blockSignals(true);
+
 	working = NULL;
 
 	connect(browser, SIGNAL(directoryChanged()), SLOT(directoryChanged()));
@@ -69,6 +72,16 @@ FileSelector::FileSelector(TreeBrowser *_browser)
 	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
 		SLOT(unmounted(const QString &)));
 #endif
+}
+
+void FileSelector::hideEvent(QHideEvent *)
+{
+	browser->blockSignals(true);
+}
+
+void FileSelector::showEvent(QShowEvent *)
+{
+	browser->blockSignals(false);
 }
 
 void FileSelector::screenSaverStarted(Page *curr)

@@ -140,6 +140,13 @@ namespace
 			else
 				result[XmlResponses::SERVER_SELECTION] = current_server;
 		}
+		// NOTE: the command RW26C2 (and the answer AW26C2) is the same to select a directory,
+		// a server or a file to play. But BTouch has to do different things, so we represent it with:
+		// - a selection of a directory with the value CHDIR;
+		// - a selection of a file with TRACK_SELECTION;
+		// - a selection of a server with SERVER_SELECTION.
+		// Unfortunately the answers for the first two cases can be the same if the server is offline,
+		// so can happen that we request to select a file and the xmldevice responses with a CHDIR answer.
 		else if (tag_name == "status_browse")
 		{
 			QString status_browse = getTextChild(node, "status_browse");

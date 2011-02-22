@@ -82,6 +82,7 @@ UPnpListManager::UPnpListManager(XmlDevice *d)
 {
 	dev = d;
 	connect(dev, SIGNAL(responseReceived(XmlResponse)), SLOT(handleResponse(XmlResponse)));
+	connect(dev, SIGNAL(error(int,int)), SLOT(handleError(int,int)));
 }
 
 QString UPnpListManager::currentFilePath()
@@ -97,6 +98,12 @@ void UPnpListManager::handleResponse(const XmlResponse &response)
 		current_file = response[XmlResponses::TRACK_SELECTION].value<EntryInfo>();
 		emit currentFileChanged();
 	}
+}
+
+void UPnpListManager::handleError(int response, int code)
+{
+	if ((response == XmlResponses::CHDIR || response == XmlResponses::TRACK_SELECTION) && code == XmlError::SERVER_DOWN)
+		emit serverDown();
 }
 
 void UPnpListManager::nextFile()
@@ -174,9 +181,16 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 {
 	type = t;
 	if (type == AudioPlayerPage::UPNP_FILE)
-		list_manager = new UPnpListManager(bt_global::xml_device);
+	{
+		UPnpListManager* upnp = new UPnpListManager(bt_global::xml_device);
+		connect(upnp, SIGNAL(serverDown()), SLOT(quit()));
+		list_manager = upnp;
+	}
 	else
 		list_manager = new FileListManager;
+
+	// block signals from list manager waiting a showPage()
+	list_manager->blockSignals(true);
 
 	connect(list_manager, SIGNAL(currentFileChanged()), SLOT(currentFileChanged()));
 
@@ -279,6 +293,16 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 
 	connect(player, SIGNAL(mplayerStarted()), SLOT(playerStarted()));
 	connect(player, SIGNAL(mplayerStopped()), SLOT(playerStopped()));
+}
+
+void AudioPlayerPage::hideEvent(QHideEvent *)
+{
+	list_manager->blockSignals(true);
+}
+
+void AudioPlayerPage::showEvent(QShowEvent *)
+{
+	list_manager->blockSignals(false);
 }
 
 int AudioPlayerPage::sectionId() const
@@ -413,7 +437,9 @@ void AudioPlayerPage::mplayerDone()
 		if (loop_time_counter.elapsed() < loop_total_time)
 		{
 			qWarning() << "MediaPlayer: loop detected, force stop";
-			quit();
+			player->stop();
+			playerStopped();
+			emit loopDetected();
 			return;
 		}
 		else

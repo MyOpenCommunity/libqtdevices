@@ -58,8 +58,12 @@ public:
 	void setCurrentIndex(int i);
 	void setTotalFiles(int n);
 
+signals:
+	void serverDown();
+
 private slots:
 	void handleResponse(const XmlResponse &response);
+	void handleError(int response, int code);
 
 private:
 	int index, total_files;
@@ -95,8 +99,13 @@ public:
 	void showNextButton(bool show);
 	void showPrevButton(bool show);
 
+signals:
+	void loopDetected();
+
 protected:
 	virtual void startPlayback();
+	virtual void showEvent(QShowEvent *);
+	virtual void hideEvent(QHideEvent *);
 
 public slots:
 	void playAudioFile(EntryInfo starting_file, int file_index, int num_files);

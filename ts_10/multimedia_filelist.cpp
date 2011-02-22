@@ -114,13 +114,27 @@ void MultimediaFileListPage::audioPageClosed()
 		navigation_context = playing_navigation_context;
 		pages_indexes = playing_pages_indexes;
 		// the directoryChanged signal trigger a call to the displayFiles
-		browser->setContext(l);
+		browser->setContext(navigation_context);
 	}
 	else
 	{
 		disconnect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
+		setFiles(EntryInfoList()); // force the refresh of the file list.
 		showPage();
 	}
+}
+
+void MultimediaFileListPage::loopDetected()
+{
+	disconnect(audioplayer, SIGNAL(Closed()), this, SLOT(loopDetected()));
+	if (UPnpClientBrowser *b = qobject_cast<UPnpClientBrowser*>(browser))
+	{
+		operationCompleted();
+		b->reset();
+		emit Closed();
+		return;
+	}
+	showPage();
 }
 
 void MultimediaFileListPage::itemIsClicked(int item)
@@ -265,8 +279,12 @@ void MultimediaFileListPage::startPlayback(int item)
 		// one per type of AudioPlayerPage we have to connect the last with
 		// the right MultimediaFileListPage instance.
 
-		disconnect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed())); // avoid multiple connect
+		// disconnect & connect to avoid multiple connect
+		disconnect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
 		connect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
+
+		disconnect(audioplayer, SIGNAL(loopDetected()), this, SLOT(loopDetected()));
+		connect(audioplayer, SIGNAL(loopDetected()), this, SLOT(loopDetected()));
 		return;
 	}
 
@@ -296,7 +314,14 @@ void MultimediaFileListPage::startPlayback(int item)
 	else if (last_clicked_type == EntryInfo::AUDIO)
 	{
 		audioplayer->playAudioFiles(filtered, last_clicked);
+
+		disconnect(audioplayer, SIGNAL(loopDetected()), this, SLOT(loopDetected()));
+		connect(audioplayer, SIGNAL(loopDetected()), this, SLOT(loopDetected()));
+
+		disconnect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed())); // avoid multiple connect
 		connect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
+
+
 	}
 #ifdef PDF_EXAMPLE
 	else if (type == EntryInfo::PDF)
