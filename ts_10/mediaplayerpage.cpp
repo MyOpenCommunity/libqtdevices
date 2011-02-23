@@ -49,7 +49,7 @@ void FileListManager::nextFile()
 {
 	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
 	++index;
-	if (index > total_files)
+	if (index >= total_files)
 		index = 0;
 	emit currentFileChanged();
 }
