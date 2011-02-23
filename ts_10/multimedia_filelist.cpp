@@ -39,7 +39,10 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	FileSelector(browser)
 {
 	browser->setFilter(filters);
-	connect(browser, SIGNAL(listReceived(EntryInfoList)), SLOT(displayFiles(EntryInfoList)));
+
+	// See the comment in MultimediaFileListPage::pageUp() method
+	qRegisterMetaType<EntryInfoList>("EntryInfoList");
+	connect(browser, SIGNAL(listReceived(EntryInfoList)), this, SLOT(displayFiles(EntryInfoList)), Qt::QueuedConnection);
 
 	rows_per_page = 4;
 	ItemList *item_list = new ItemList(0, rows_per_page);
@@ -156,6 +159,14 @@ void MultimediaFileListPage:: browseUp()
 
 void MultimediaFileListPage::pageUp()
 {
+	// The getPreviousFileList() method updates the starting element, used
+	// in currentPage() and called by the FileSelector::pageUp() method to
+	// update the displayedPage().
+	// Due to that the displayFiles() method must be called after call both
+	// methods, so we need an asynchronous connection to manage properly
+	// the case when the response is immediately (for example when we ask
+	// the list of the upnp servers).
+
 	if (UPnpClientBrowser *b = qobject_cast<UPnpClientBrowser*>(browser))
 		b->getPreviousFileList();
 	FileSelector::pageUp();
