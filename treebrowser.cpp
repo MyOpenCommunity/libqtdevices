@@ -270,6 +270,7 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 				cached_elements << EntryInfo(server, EntryInfo::DIRECTORY, QString());
 
 			num_elements = cached_elements.size();
+			starting_element = 1;
 			level = 0;
 			EntryInfoList entry_list;
 
