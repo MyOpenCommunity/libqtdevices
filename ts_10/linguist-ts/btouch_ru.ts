@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>AdvancedSplitPage</name>
-    <message>
-        <source>Off</source>
-        <translation>Выкл.</translation>
-    </message>
-</context>
-<context>
     <name>AlarmClockFreq</name>
     <message>
         <source>always</source>
@@ -108,10 +101,6 @@
         <source>Messages</source>
         <translation>Сообщения</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>Новое сообщение</translation>
-    </message>
 </context>
 <context>
     <name>Antintrusion</name>
@@ -175,21 +164,6 @@
     <message>
         <source>Click the OK button</source>
         <translation>Нажмите кнопку ОК</translation>
-    </message>
-</context>
-<context>
-    <name>call_notifier</name>
-    <message>
-        <source>Door lock</source>
-        <translation>Замок</translation>
-    </message>
-    <message>
-        <source>Staircase light</source>
-        <translation>Свет лестница</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation>Неизвестный</translation>
     </message>
 </context>
 <context>
@@ -420,10 +394,6 @@ OK для подтверждения.</translation>
         <source>Messages</source>
         <translation>Сообщения</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>Новое сообщение</translation>
-    </message>
 </context>
 <context>
     <name>MessagesListPage</name>
@@ -437,13 +407,6 @@ OK для подтверждения.</translation>
     <message>
         <source>Folder</source>
         <translation>Папка</translation>
-    </message>
-</context>
-<context>
-    <name>PageManual</name>
-    <message>
-        <source>Manual</source>
-        <translation>Ручной</translation>
     </message>
 </context>
 <context>
@@ -758,6 +721,13 @@ OK для подтверждения.</translation>
     </message>
 </context>
 <context>
+    <name>VideoPlayerPage</name>
+    <message>
+        <source>Video not supported</source>
+        <translation>Видео не поддерживается</translation>
+    </message>
+</context>
+<context>
     <name>VolumePage</name>
     <message>
         <source>Volume</source>
@@ -769,6 +739,21 @@ OK для подтверждения.</translation>
     <message>
         <source>Webcam</source>
         <translation>Веб-камера</translation>
+    </message>
+</context>
+<context>
+    <name>call_notifier</name>
+    <message>
+        <source>Door lock</source>
+        <translation>Замок</translation>
+    </message>
+    <message>
+        <source>Staircase light</source>
+        <translation>Свет лестница</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Неизвестный</translation>
     </message>
 </context>
 </TS>

@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>AdvancedSplitPage</name>
-    <message>
-        <source>Off</source>
-        <translation>关闭</translation>
-    </message>
-</context>
-<context>
     <name>AlarmClockFreq</name>
     <message>
         <source>always</source>
@@ -108,10 +101,6 @@
         <source>Messages</source>
         <translation>信息</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>新信息</translation>
-    </message>
 </context>
 <context>
     <name>Antintrusion</name>
@@ -175,21 +164,6 @@
     <message>
         <source>Click the OK button</source>
         <translation>点击OK按钮</translation>
-    </message>
-</context>
-<context>
-    <name>call_notifier</name>
-    <message>
-        <source>Door lock</source>
-        <translation>门锁</translation>
-    </message>
-    <message>
-        <source>Staircase light</source>
-        <translation>楼梯灯</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation>未知</translation>
     </message>
 </context>
 <context>
@@ -420,10 +394,6 @@ OK确认。</translation>
         <source>Messages</source>
         <translation>信息</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>新信息</translation>
-    </message>
 </context>
 <context>
     <name>MessagesListPage</name>
@@ -437,13 +407,6 @@ OK确认。</translation>
     <message>
         <source>Folder</source>
         <translation>文件夹</translation>
-    </message>
-</context>
-<context>
-    <name>PageManual</name>
-    <message>
-        <source>Manual</source>
-        <translation>手动</translation>
     </message>
 </context>
 <context>
@@ -758,6 +721,13 @@ OK确认。</translation>
     </message>
 </context>
 <context>
+    <name>VideoPlayerPage</name>
+    <message>
+        <source>Video not supported</source>
+        <translation>视频未得到支持</translation>
+    </message>
+</context>
+<context>
     <name>VolumePage</name>
     <message>
         <source>Volume</source>
@@ -769,6 +739,21 @@ OK确认。</translation>
     <message>
         <source>Webcam</source>
         <translation>网络摄像头</translation>
+    </message>
+</context>
+<context>
+    <name>call_notifier</name>
+    <message>
+        <source>Door lock</source>
+        <translation>门锁</translation>
+    </message>
+    <message>
+        <source>Staircase light</source>
+        <translation>楼梯灯</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>未知</translation>
     </message>
 </context>
 </TS>

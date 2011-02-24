@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>AdvancedSplitPage</name>
-    <message>
-        <source>Off</source>
-        <translation>Off</translation>
-    </message>
-</context>
-<context>
     <name>AlarmClockFreq</name>
     <message>
         <source>always</source>
@@ -108,10 +101,6 @@ Tag</translation>
         <source>Messages</source>
         <translation>Meldungen</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>Neue Nachricht</translation>
-    </message>
 </context>
 <context>
     <name>Antintrusion</name>
@@ -175,21 +164,6 @@ Tag</translation>
     <message>
         <source>Click the OK button</source>
         <translation>Klicken Sie auf die OK-Taste</translation>
-    </message>
-</context>
-<context>
-    <name>call_notifier</name>
-    <message>
-        <source>Door lock</source>
-        <translation>Öffnen</translation>
-    </message>
-    <message>
-        <source>Staircase light</source>
-        <translation>Treppenlicht</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation>Unbekannt</translation>
     </message>
 </context>
 <context>
@@ -420,10 +394,6 @@ OK zur Bestätigung.</translation>
         <source>Messages</source>
         <translation>Meldungen</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>Neue Nachricht</translation>
-    </message>
 </context>
 <context>
     <name>MessagesListPage</name>
@@ -437,13 +407,6 @@ OK zur Bestätigung.</translation>
     <message>
         <source>Folder</source>
         <translation>Ordner</translation>
-    </message>
-</context>
-<context>
-    <name>PageManual</name>
-    <message>
-        <source>Manual</source>
-        <translation>Manuell</translation>
     </message>
 </context>
 <context>
@@ -758,6 +721,13 @@ Stunden &amp; Minuten</translation>
     </message>
 </context>
 <context>
+    <name>VideoPlayerPage</name>
+    <message>
+        <source>Video not supported</source>
+        <translation>Video nicht unterstützt</translation>
+    </message>
+</context>
+<context>
     <name>VolumePage</name>
     <message>
         <source>Volume</source>
@@ -769,6 +739,21 @@ Stunden &amp; Minuten</translation>
     <message>
         <source>Webcam</source>
         <translation>Webcam</translation>
+    </message>
+</context>
+<context>
+    <name>call_notifier</name>
+    <message>
+        <source>Door lock</source>
+        <translation>Öffnen</translation>
+    </message>
+    <message>
+        <source>Staircase light</source>
+        <translation>Treppenlicht</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Unbekannt</translation>
     </message>
 </context>
 </TS>
