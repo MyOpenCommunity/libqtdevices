@@ -240,7 +240,7 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 		title_widget->setCurrentPage(current_page, total_pages);
 	}
 
-	setFiles(list);
+	EntryInfoList filtered_list;
 
 	QList<ItemList::ItemInfo> names_list;
 
@@ -266,8 +266,10 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 
 		ItemList::ItemInfo info(f.name, QString(), icons);
 		names_list.append(info);
+		filtered_list.append(f);
 	}
 
+	setFiles(filtered_list);
 	page_content->setList(names_list, page_index);
 	page_content->showList();
 
