@@ -370,11 +370,20 @@ void Antintrusion::deleteAlarm()
 		qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(curr_alarm).arg(allarmi.size())));
 
 	AlarmPage *to_die = allarmi.takeAt(curr_alarm);
+
 	// In this case the user has seen the alarm and delete it directly from the AlarmPage,
 	// so we want to delete also the entry from the AlarmList. We do that using a global
 	// static alarm id.
 	alarms->removeAlarm(to_die->alarm_id);
-	to_die->disconnect(); // we don't want that the destroyed signal trigger a cleanupAlarmPage calls
+
+	// On the touch 10'' hardware can happen that, sending and receiving continuously alarms
+	// the delete() signal arrives more times (producing a double call to this method) or
+	// the cleanupAlarmPage method is also called after deleteAlarm().
+	// As consequence, the curr_alarm index became -1 when all the alarms are deleted.
+	// To avoid that, we disconnect the Antrintrusion page from the AlarmPage (but we can't
+	// disconnect all the signals from AlarmPage because every popup needs to be removed
+	// from the PageStack).
+	disconnect(to_die, 0, this, 0);
 	to_die->deleteLater();
 
 	if (allarmi.isEmpty())
