@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>AdvancedSplitPage</name>
-    <message>
-        <source>Off</source>
-        <translation>Off</translation>
-    </message>
-</context>
-<context>
     <name>AlarmClockFreq</name>
     <message>
         <source>always</source>
@@ -108,10 +101,6 @@ Day</translation>
         <source>Messages</source>
         <translation>Messages</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>New Message</translation>
-    </message>
 </context>
 <context>
     <name>Antintrusion</name>
@@ -175,21 +164,6 @@ Day</translation>
     <message>
         <source>Click the OK button</source>
         <translation>Click the OK button</translation>
-    </message>
-</context>
-<context>
-    <name>call_notifier</name>
-    <message>
-        <source>Door lock</source>
-        <translation>Door lock</translation>
-    </message>
-    <message>
-        <source>Staircase light</source>
-        <translation>Staircase light</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation>Unknown</translation>
     </message>
 </context>
 <context>
@@ -420,10 +394,6 @@ OK to confirm.</translation>
         <source>Messages</source>
         <translation>Messages</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>New Message</translation>
-    </message>
 </context>
 <context>
     <name>MessagesListPage</name>
@@ -437,13 +407,6 @@ OK to confirm.</translation>
     <message>
         <source>Folder</source>
         <translation>Folder</translation>
-    </message>
-</context>
-<context>
-    <name>PageManual</name>
-    <message>
-        <source>Manual</source>
-        <translation>Manual</translation>
     </message>
 </context>
 <context>
@@ -758,6 +721,13 @@ Hour &amp; Minute</translation>
     </message>
 </context>
 <context>
+    <name>VideoPlayerPage</name>
+    <message>
+        <source>Video not supported</source>
+        <translation>Video not supported</translation>
+    </message>
+</context>
+<context>
     <name>VolumePage</name>
     <message>
         <source>Volume</source>
@@ -769,6 +739,21 @@ Hour &amp; Minute</translation>
     <message>
         <source>Webcam</source>
         <translation>Webcam</translation>
+    </message>
+</context>
+<context>
+    <name>call_notifier</name>
+    <message>
+        <source>Door lock</source>
+        <translation>Door lock</translation>
+    </message>
+    <message>
+        <source>Staircase light</source>
+        <translation>Staircase light</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Unknown</translation>
     </message>
 </context>
 </TS>

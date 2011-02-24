@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>AdvancedSplitPage</name>
-    <message>
-        <source>Off</source>
-        <translation>Off</translation>
-    </message>
-</context>
-<context>
     <name>AlarmClockFreq</name>
     <message>
         <source>always</source>
@@ -108,10 +101,6 @@
         <source>Messages</source>
         <translation>الرسائل</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>رسالة جديدة</translation>
-    </message>
 </context>
 <context>
     <name>Antintrusion</name>
@@ -175,21 +164,6 @@
     <message>
         <source>Click the OK button</source>
         <translation>انقر على زر موافق</translation>
-    </message>
-</context>
-<context>
-    <name>call_notifier</name>
-    <message>
-        <source>Door lock</source>
-        <translation>قفل الباب</translation>
-    </message>
-    <message>
-        <source>Staircase light</source>
-        <translation>ضوء السلم</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation>غير محدد</translation>
     </message>
 </context>
 <context>
@@ -420,10 +394,6 @@
         <source>Messages</source>
         <translation>الرسائل</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>رسالة جديدة</translation>
-    </message>
 </context>
 <context>
     <name>MessagesListPage</name>
@@ -437,13 +407,6 @@
     <message>
         <source>Folder</source>
         <translation>حافظة</translation>
-    </message>
-</context>
-<context>
-    <name>PageManual</name>
-    <message>
-        <source>Manual</source>
-        <translation>يدوياً</translation>
     </message>
 </context>
 <context>
@@ -758,6 +721,13 @@
     </message>
 </context>
 <context>
+    <name>VideoPlayerPage</name>
+    <message>
+        <source>Video not supported</source>
+        <translation>مدعوم غير الفيديو</translation>
+    </message>
+</context>
+<context>
     <name>VolumePage</name>
     <message>
         <source>Volume</source>
@@ -769,6 +739,21 @@
     <message>
         <source>Webcam</source>
         <translation>الكاميرا</translation>
+    </message>
+</context>
+<context>
+    <name>call_notifier</name>
+    <message>
+        <source>Door lock</source>
+        <translation>قفل الباب</translation>
+    </message>
+    <message>
+        <source>Staircase light</source>
+        <translation>ضوء السلم</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>غير محدد</translation>
     </message>
 </context>
 </TS>

@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>AdvancedSplitPage</name>
-    <message>
-        <source>Off</source>
-        <translation>Isključeno</translation>
-    </message>
-</context>
-<context>
     <name>AlarmClockFreq</name>
     <message>
         <source>always</source>
@@ -108,10 +101,6 @@ Dan</translation>
         <source>Messages</source>
         <translation>Poruke</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>Nova poruka</translation>
-    </message>
 </context>
 <context>
     <name>Antintrusion</name>
@@ -175,21 +164,6 @@ Dan</translation>
     <message>
         <source>Click the OK button</source>
         <translation>Klikni gumb OK</translation>
-    </message>
-</context>
-<context>
-    <name>call_notifier</name>
-    <message>
-        <source>Door lock</source>
-        <translation>Brava na vratima</translation>
-    </message>
-    <message>
-        <source>Staircase light</source>
-        <translation>Stubišno svjetlo</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation>Nepoznato</translation>
     </message>
 </context>
 <context>
@@ -420,10 +394,6 @@ OK za potvrdu.</translation>
         <source>Messages</source>
         <translation>Poruke</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>Nova poruka</translation>
-    </message>
 </context>
 <context>
     <name>MessagesListPage</name>
@@ -437,13 +407,6 @@ OK za potvrdu.</translation>
     <message>
         <source>Folder</source>
         <translation>Folder</translation>
-    </message>
-</context>
-<context>
-    <name>PageManual</name>
-    <message>
-        <source>Manual</source>
-        <translation>Priručnik</translation>
     </message>
 </context>
 <context>
@@ -758,6 +721,13 @@ Sat &amp; Minuta</translation>
     </message>
 </context>
 <context>
+    <name>VideoPlayerPage</name>
+    <message>
+        <source>Video not supported</source>
+        <translation>Video nije podržana</translation>
+    </message>
+</context>
+<context>
     <name>VolumePage</name>
     <message>
         <source>Volume</source>
@@ -769,6 +739,21 @@ Sat &amp; Minuta</translation>
     <message>
         <source>Webcam</source>
         <translation>Web-kamera</translation>
+    </message>
+</context>
+<context>
+    <name>call_notifier</name>
+    <message>
+        <source>Door lock</source>
+        <translation>Brava na vratima</translation>
+    </message>
+    <message>
+        <source>Staircase light</source>
+        <translation>Stubišno svjetlo</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Nepoznato</translation>
     </message>
 </context>
 </TS>
