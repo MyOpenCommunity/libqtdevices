@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>AdvancedSplitPage</name>
-    <message>
-        <source>Off</source>
-        <translation>Off</translation>
-    </message>
-</context>
-<context>
     <name>AlarmClockFreq</name>
     <message>
         <source>always</source>
@@ -108,10 +101,6 @@ Dag instellen</translation>
         <source>Messages</source>
         <translation>Bericht</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>Nieuw Bericht</translation>
-    </message>
 </context>
 <context>
     <name>Antintrusion</name>
@@ -175,21 +164,6 @@ Dag instellen</translation>
     <message>
         <source>Click the OK button</source>
         <translation>Klik op de knop OK</translation>
-    </message>
-</context>
-<context>
-    <name>call_notifier</name>
-    <message>
-        <source>Door lock</source>
-        <translation>Slot</translation>
-    </message>
-    <message>
-        <source>Staircase light</source>
-        <translation>Licht trapzaal</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation>Onbekend</translation>
     </message>
 </context>
 <context>
@@ -420,10 +394,6 @@ OK ter bevestiging.</translation>
         <source>Messages</source>
         <translation>Bericht</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>Nieuw Bericht</translation>
-    </message>
 </context>
 <context>
     <name>MessagesListPage</name>
@@ -437,13 +407,6 @@ OK ter bevestiging.</translation>
     <message>
         <source>Folder</source>
         <translation>Dossier</translation>
-    </message>
-</context>
-<context>
-    <name>PageManual</name>
-    <message>
-        <source>Manual</source>
-        <translation>Manueel</translation>
     </message>
 </context>
 <context>
@@ -758,6 +721,13 @@ Uur &amp; Minuut</translation>
     </message>
 </context>
 <context>
+    <name>VideoPlayerPage</name>
+    <message>
+        <source>Video not supported</source>
+        <translation>Video niet ondersteund</translation>
+    </message>
+</context>
+<context>
     <name>VolumePage</name>
     <message>
         <source>Volume</source>
@@ -769,6 +739,21 @@ Uur &amp; Minuut</translation>
     <message>
         <source>Webcam</source>
         <translation>Webcam</translation>
+    </message>
+</context>
+<context>
+    <name>call_notifier</name>
+    <message>
+        <source>Door lock</source>
+        <translation>Slot</translation>
+    </message>
+    <message>
+        <source>Staircase light</source>
+        <translation>Licht trapzaal</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Onbekend</translation>
     </message>
 </context>
 </TS>

@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>AdvancedSplitPage</name>
-    <message>
-        <source>Off</source>
-        <translation>Απενεργοποίηση</translation>
-    </message>
-</context>
-<context>
     <name>AlarmClockFreq</name>
     <message>
         <source>always</source>
@@ -108,10 +101,6 @@
         <source>Messages</source>
         <translation>Μηνύματα</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>Νέο Μήνυμα</translation>
-    </message>
 </context>
 <context>
     <name>Antintrusion</name>
@@ -175,21 +164,6 @@
     <message>
         <source>Click the OK button</source>
         <translation>Κάντε κλικ στο κουμπί OK</translation>
-    </message>
-</context>
-<context>
-    <name>call_notifier</name>
-    <message>
-        <source>Door lock</source>
-        <translation>Κλειδωμένη πόρτα</translation>
-    </message>
-    <message>
-        <source>Staircase light</source>
-        <translation>Φως της σκάλας</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation>Άγνωστος</translation>
     </message>
 </context>
 <context>
@@ -420,10 +394,6 @@ OK για επιβεβαίωση.</translation>
         <source>Messages</source>
         <translation>Μηνύματα</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>Νέο Μήνυμα</translation>
-    </message>
 </context>
 <context>
     <name>MessagesListPage</name>
@@ -437,13 +407,6 @@ OK για επιβεβαίωση.</translation>
     <message>
         <source>Folder</source>
         <translation>Φάκελος</translation>
-    </message>
-</context>
-<context>
-    <name>PageManual</name>
-    <message>
-        <source>Manual</source>
-        <translation>Χειροκίνητο</translation>
     </message>
 </context>
 <context>
@@ -758,6 +721,13 @@ OK για επιβεβαίωση.</translation>
     </message>
 </context>
 <context>
+    <name>VideoPlayerPage</name>
+    <message>
+        <source>Video not supported</source>
+        <translation>Βίντεο δεν υποστηρίζονται</translation>
+    </message>
+</context>
+<context>
     <name>VolumePage</name>
     <message>
         <source>Volume</source>
@@ -769,6 +739,21 @@ OK για επιβεβαίωση.</translation>
     <message>
         <source>Webcam</source>
         <translation>Webcam κάμερα</translation>
+    </message>
+</context>
+<context>
+    <name>call_notifier</name>
+    <message>
+        <source>Door lock</source>
+        <translation>Κλειδωμένη πόρτα</translation>
+    </message>
+    <message>
+        <source>Staircase light</source>
+        <translation>Φως της σκάλας</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Άγνωστος</translation>
     </message>
 </context>
 </TS>

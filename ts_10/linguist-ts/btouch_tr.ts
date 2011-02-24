@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>AdvancedSplitPage</name>
-    <message>
-        <source>Off</source>
-        <translation>Kapalı</translation>
-    </message>
-</context>
-<context>
     <name>AlarmClockFreq</name>
     <message>
         <source>always</source>
@@ -108,10 +101,6 @@ Gün ayarla</translation>
         <source>Messages</source>
         <translation>İletiler</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>Yeni Mesaj</translation>
-    </message>
 </context>
 <context>
     <name>Antintrusion</name>
@@ -175,21 +164,6 @@ Gün ayarla</translation>
     <message>
         <source>Click the OK button</source>
         <translation>OK butonuna tıkla</translation>
-    </message>
-</context>
-<context>
-    <name>call_notifier</name>
-    <message>
-        <source>Door lock</source>
-        <translation>Kapı kilidi</translation>
-    </message>
-    <message>
-        <source>Staircase light</source>
-        <translation>Merdiven lambası</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation>Bilinmeyen</translation>
     </message>
 </context>
 <context>
@@ -420,10 +394,6 @@ Onaylamak için OK.</translation>
         <source>Messages</source>
         <translation>İletiler</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>Yeni Mesaj</translation>
-    </message>
 </context>
 <context>
     <name>MessagesListPage</name>
@@ -437,13 +407,6 @@ Onaylamak için OK.</translation>
     <message>
         <source>Folder</source>
         <translation>Klasör</translation>
-    </message>
-</context>
-<context>
-    <name>PageManual</name>
-    <message>
-        <source>Manual</source>
-        <translation>Manuel</translation>
     </message>
 </context>
 <context>
@@ -758,6 +721,13 @@ Saat &amp; Dakika</translation>
     </message>
 </context>
 <context>
+    <name>VideoPlayerPage</name>
+    <message>
+        <source>Video not supported</source>
+        <translation>Video desteklenmiyor</translation>
+    </message>
+</context>
+<context>
     <name>VolumePage</name>
     <message>
         <source>Volume</source>
@@ -769,6 +739,21 @@ Saat &amp; Dakika</translation>
     <message>
         <source>Webcam</source>
         <translation>Web Kamera</translation>
+    </message>
+</context>
+<context>
+    <name>call_notifier</name>
+    <message>
+        <source>Door lock</source>
+        <translation>Kapı kilidi</translation>
+    </message>
+    <message>
+        <source>Staircase light</source>
+        <translation>Merdiven lambası</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Bilinmeyen</translation>
     </message>
 </context>
 </TS>

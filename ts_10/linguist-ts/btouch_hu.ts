@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>AdvancedSplitPage</name>
-    <message>
-        <source>Off</source>
-        <translation>Ki</translation>
-    </message>
-</context>
-<context>
     <name>AlarmClockFreq</name>
     <message>
         <source>always</source>
@@ -108,10 +101,6 @@ nap beállítása</translation>
         <source>Messages</source>
         <translation>Üzenetek</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>Új üzenet</translation>
-    </message>
 </context>
 <context>
     <name>Antintrusion</name>
@@ -175,21 +164,6 @@ nap beállítása</translation>
     <message>
         <source>Click the OK button</source>
         <translation>Kattintson az OK gombra</translation>
-    </message>
-</context>
-<context>
-    <name>call_notifier</name>
-    <message>
-        <source>Door lock</source>
-        <translation>Ajtózár</translation>
-    </message>
-    <message>
-        <source>Staircase light</source>
-        <translation>Lépcsőház világítás</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation>Ismeretlen</translation>
     </message>
 </context>
 <context>
@@ -420,10 +394,6 @@ Megerősítés OK gombbal.</translation>
         <source>Messages</source>
         <translation>Üzenetek</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>Új üzenet</translation>
-    </message>
 </context>
 <context>
     <name>MessagesListPage</name>
@@ -437,13 +407,6 @@ Megerősítés OK gombbal.</translation>
     <message>
         <source>Folder</source>
         <translation>Mappa</translation>
-    </message>
-</context>
-<context>
-    <name>PageManual</name>
-    <message>
-        <source>Manual</source>
-        <translation>Kézi</translation>
     </message>
 </context>
 <context>
@@ -758,6 +721,13 @@ Megerősítés OK gombbal.</translation>
     </message>
 </context>
 <context>
+    <name>VideoPlayerPage</name>
+    <message>
+        <source>Video not supported</source>
+        <translation>Nem támogatott videó</translation>
+    </message>
+</context>
+<context>
     <name>VolumePage</name>
     <message>
         <source>Volume</source>
@@ -769,6 +739,21 @@ Megerősítés OK gombbal.</translation>
     <message>
         <source>Webcam</source>
         <translation>Webkamera</translation>
+    </message>
+</context>
+<context>
+    <name>call_notifier</name>
+    <message>
+        <source>Door lock</source>
+        <translation>Ajtózár</translation>
+    </message>
+    <message>
+        <source>Staircase light</source>
+        <translation>Lépcsőház világítás</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Ismeretlen</translation>
     </message>
 </context>
 </TS>

@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0">
 <context>
-    <name>AdvancedSplitPage</name>
-    <message>
-        <source>Off</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>AlarmClockFreq</name>
     <message>
         <source>once</source>
@@ -414,13 +407,6 @@
     </message>
 </context>
 <context>
-    <name>PageManual</name>
-    <message>
-        <source>Manual</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>PasswordChanger</name>
     <message>
         <source>Old password:</source>
@@ -742,6 +728,13 @@
     </message>
     <message>
         <source>Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VideoPlayerPage</name>
+    <message>
+        <source>Video not supported</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

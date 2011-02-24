@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>AdvancedSplitPage</name>
-    <message>
-        <source>Off</source>
-        <translation>Izklop</translation>
-    </message>
-</context>
-<context>
     <name>AlarmClockFreq</name>
     <message>
         <source>always</source>
@@ -108,10 +101,6 @@ Dan</translation>
         <source>Messages</source>
         <translation>Sporočila</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>Novo sporočilo</translation>
-    </message>
 </context>
 <context>
     <name>Antintrusion</name>
@@ -175,21 +164,6 @@ Dan</translation>
     <message>
         <source>Click the OK button</source>
         <translation>Klik na gumb OK</translation>
-    </message>
-</context>
-<context>
-    <name>call_notifier</name>
-    <message>
-        <source>Door lock</source>
-        <translation>Zaklepanje vrat</translation>
-    </message>
-    <message>
-        <source>Staircase light</source>
-        <translation>Osvetlitev stopnišča</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation>Neznan</translation>
     </message>
 </context>
 <context>
@@ -420,10 +394,6 @@ OK za potrditev.</translation>
         <source>Messages</source>
         <translation>Sporočila</translation>
     </message>
-    <message>
-        <source>New Message</source>
-        <translation>Novo sporočilo</translation>
-    </message>
 </context>
 <context>
     <name>MessagesListPage</name>
@@ -437,13 +407,6 @@ OK za potrditev.</translation>
     <message>
         <source>Folder</source>
         <translation>Mapa</translation>
-    </message>
-</context>
-<context>
-    <name>PageManual</name>
-    <message>
-        <source>Manual</source>
-        <translation>Ročni</translation>
     </message>
 </context>
 <context>
@@ -627,7 +590,6 @@ Ura &amp; Minuta</translation>
         <source>Time</source>
         <translation>Ura</translation>
     </message>
-</context>
 <context>
     <name>ScreensaverTiming</name>
     <message>
@@ -758,6 +720,13 @@ Ura &amp; Minuta</translation>
     </message>
 </context>
 <context>
+    <name>VideoPlayerPage</name>
+    <message>
+        <source>Video not supported</source>
+        <translation>Video ni podprt</translation>
+    </message>
+</context>
+<context>
     <name>VolumePage</name>
     <message>
         <source>Volume</source>
@@ -769,6 +738,21 @@ Ura &amp; Minuta</translation>
     <message>
         <source>Webcam</source>
         <translation>Spletna kamera</translation>
+    </message>
+</context>
+<context>
+    <name>call_notifier</name>
+    <message>
+        <source>Door lock</source>
+        <translation>Zaklepanje vrat</translation>
+    </message>
+    <message>
+        <source>Staircase light</source>
+        <translation>Osvetlitev stopnišča</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Neznan</translation>
     </message>
 </context>
 </TS>
