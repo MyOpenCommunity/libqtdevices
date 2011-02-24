@@ -292,6 +292,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	}
 
 	connect(player, SIGNAL(mplayerStarted()), SLOT(playerStarted()));
+	connect(player, SIGNAL(mplayerStopped()), SLOT(refreshPlayInfo()));
 	connect(player, SIGNAL(mplayerStopped()), SLOT(playerStopped()));
 }
 
