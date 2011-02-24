@@ -368,11 +368,13 @@ void Antintrusion::deleteAlarm()
 {
 	Q_ASSERT_X(curr_alarm >= 0 && curr_alarm < allarmi.size(), "Antintrusion::deleteAlarm",
 		qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(curr_alarm).arg(allarmi.size())));
+
 	AlarmPage *to_die = allarmi.takeAt(curr_alarm);
 	// In this case the user has seen the alarm and delete it directly from the AlarmPage,
 	// so we want to delete also the entry from the AlarmList. We do that using a global
 	// static alarm id.
 	alarms->removeAlarm(to_die->alarm_id);
+	to_die->disconnect(); // we don't want that the destroyed signal trigger a cleanupAlarmPage calls
 	to_die->deleteLater();
 
 	if (allarmi.isEmpty())
