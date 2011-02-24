@@ -224,6 +224,7 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 			else
 			{
 				qWarning() << "MultimediaFileListPage::displayFiles -> Loop detected!";
+				resetDisplayedPage();
 				b->getFileList();
 				return;
 			}

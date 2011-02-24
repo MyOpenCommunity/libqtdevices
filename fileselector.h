@@ -84,6 +84,7 @@ protected:
 
 	virtual void showEvent(QShowEvent *);
 	virtual void hideEvent(QHideEvent *);
+	void resetDisplayedPage();
 
 protected slots:
 	virtual void itemIsClicked(int item);
@@ -105,7 +106,6 @@ private slots:
 private:
 	/// Change the current dir, return false in case of error.
 	bool changePath(QString new_path);
-	void resetDisplayedPage();
 
 	FileSelectorWaitDialog *working;
 	EntryInfoList files_list;
