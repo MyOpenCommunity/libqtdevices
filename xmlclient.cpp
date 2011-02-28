@@ -20,13 +20,16 @@
 #include "xmlclient.h"
 
 #include <QTcpSocket>
+#include <QByteArray>
 #include <QDebug>
+
 
 namespace
 {
 	const char *START_TAG = "<OWNxml";
 	const char *END_TAG = "</OWNxml>";
 }
+
 
 XmlClient::XmlClient(const QString &address, int port, QObject *parent) :
 	QObject(parent)
@@ -65,7 +68,9 @@ void XmlClient::receiveData()
 	if (socket->bytesAvailable() <= 0)
 		return;
 
-	buffer.append(socket->readAll());
+	QByteArray ba = socket->readAll();
+	// the xml read is utf8, we need to preserve that.
+	buffer.append(QString::fromUtf8(ba.constData(), ba.size()));
 
 	parseData();
 }
