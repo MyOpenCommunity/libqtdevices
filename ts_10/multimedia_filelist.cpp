@@ -189,8 +189,20 @@ int MultimediaFileListPage::currentPage()
 
 void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 {
+	int page_index = displayedPage(browser->pathKey());
+
 	if (list.empty())
 	{
+		if (page_index != 0)
+		{
+			// If we are requested the page n.X but that page does not exists
+			// anymore(which can happen especially on upnp directories) the list
+			// is empty, so we reset the page number.
+			resetDisplayedPage();
+			browser->getFileList();
+			return;
+		}
+
 		if (browser->isRoot()) // Special case empty root directory
 		{
 			operationCompleted();
@@ -204,8 +216,6 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 	}
 
 	static int loop_counter = 0;
-
-	int page_index = displayedPage(browser->pathKey());
 
 	if (UPnpClientBrowser *b = qobject_cast<UPnpClientBrowser*>(browser))
 	{
