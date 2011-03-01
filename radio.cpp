@@ -42,6 +42,8 @@
 #define REQUEST_FREQUENCY_TIME 1000
 #define MEMORY_PRESS_TIME 3000
 
+int RadioPage::save_sound_delay = 900;
+
 namespace
 {
 
@@ -322,33 +324,37 @@ void RadioPage::storeMemoryStation()
 	// do not try to play the beep when in different states
 	if (state == AudioStates::IDLE)
 	{
-		connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(playSaveSound(int)));
+		connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(enterBeepState(int)));
 		bt_global::audio_states->toState(AudioStates::BEEP_ON);
 	}
 	else if (state == AudioStates::BEEP_ON)
-		bt_global::sound->play(SOUND_PATH "beep.wav");
+		QTimer::singleShot(save_sound_delay, this, SLOT(playSaveSound()));
 #endif
 #if defined(BT_HARDWARE_TS_3_5)
 	beep();
 #endif
 }
 
-void RadioPage::playSaveSound(int new_state)
+void RadioPage::enterBeepState(int new_state)
 {
 	// avoid problems in case of state-change races
 	if (new_state != AudioStates::BEEP_ON)
 		return;
 
-	disconnect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), this, SLOT(playSaveSound(int)));
-	connect(bt_global::sound, SIGNAL(soundFinished()), SLOT(saveSoundFinished()));
-	usleep(400000);
+	disconnect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), this, SLOT(enterBeepState(int)));
+	connect(bt_global::sound, SIGNAL(soundFinished()), SLOT(exitBeepState()));
+	QTimer::singleShot(save_sound_delay, this, SLOT(playSaveSound()));
+}
+
+void RadioPage::playSaveSound()
+{
 	bt_global::sound->play(SOUND_PATH "beep.wav");
 }
 
-void RadioPage::saveSoundFinished()
+void RadioPage::exitBeepState()
 {
 	bt_global::audio_states->removeState(AudioStates::BEEP_ON);
-	disconnect(bt_global::sound, SIGNAL(soundFinished()), this, SLOT(saveSoundFinished()));
+	disconnect(bt_global::sound, SIGNAL(soundFinished()), this, SLOT(exitBeepState()));
 }
 
 void RadioPage::setAuto()
