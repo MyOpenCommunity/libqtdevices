@@ -115,7 +115,7 @@ void UPnpListManager::nextFile()
 
 void UPnpListManager::previousFile()
 {
-	if (--index < 1)
+	if (--index < 0)
 		index = total_files - 1;
 	dev->previousFile();
 }
