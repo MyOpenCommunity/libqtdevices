@@ -54,8 +54,6 @@ inline void waitTimeCounter(const QTime& timer, int msec)
 FileSelector::FileSelector(TreeBrowser *_browser)
 {
 	browser = _browser;
-	// block signals from the browser waiting a showPage()
-	browser->blockSignals(true);
 
 	working = NULL;
 
@@ -72,16 +70,6 @@ FileSelector::FileSelector(TreeBrowser *_browser)
 	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
 		SLOT(unmounted(const QString &)));
 #endif
-}
-
-void FileSelector::hideEvent(QHideEvent *)
-{
-	browser->blockSignals(true);
-}
-
-void FileSelector::showEvent(QShowEvent *)
-{
-	browser->blockSignals(false);
 }
 
 void FileSelector::screenSaverStarted(Page *curr)
@@ -187,11 +175,16 @@ void FileSelector::directoryChanged()
 
 void FileSelector::handleError()
 {
-	operationCompleted();
-	pages_indexes.clear();
-	files_list.clear();
-	browser->reset();
-	emit Closed();
+	// An error can arrive even if the page currently showed is the player page.
+	// In this case, we ignore the error, and we manage the error in that page.
+	if (isVisible())
+	{
+		operationCompleted();
+		pages_indexes.clear();
+		files_list.clear();
+		browser->reset();
+		emit Closed();
+	}
 }
 
 void FileSelector::directoryChangeError()

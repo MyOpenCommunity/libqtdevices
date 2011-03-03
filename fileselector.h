@@ -82,8 +82,6 @@ protected:
 	TreeBrowser *browser;
 	QHash<QString, unsigned>  pages_indexes;
 
-	virtual void showEvent(QShowEvent *);
-	virtual void hideEvent(QHideEvent *);
 	void resetDisplayedPage();
 
 protected slots:

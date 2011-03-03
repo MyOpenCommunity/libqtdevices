@@ -104,8 +104,6 @@ signals:
 
 protected:
 	virtual void startPlayback();
-	virtual void showEvent(QShowEvent *);
-	virtual void hideEvent(QHideEvent *);
 
 public slots:
 	void playAudioFile(EntryInfo starting_file, int file_index, int num_files);
@@ -129,6 +127,7 @@ private slots:
 	void resetLoopCheck();
 	void mplayerDone();
 	void currentFileChanged();
+	void handleServerDown();
 
 private:
 	AudioPlayerPage(MediaType type);

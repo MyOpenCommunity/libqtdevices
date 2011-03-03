@@ -189,9 +189,6 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	else
 		list_manager = new FileListManager;
 
-	// block signals from list manager waiting a showPage()
-	list_manager->blockSignals(true);
-
 	connect(list_manager, SIGNAL(currentFileChanged()), SLOT(currentFileChanged()));
 
 	// Sometimes it happens that mplayer can't reproduce a song or a web radio,
@@ -296,16 +293,6 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	connect(player, SIGNAL(mplayerStopped()), SLOT(playerStopped()));
 }
 
-void AudioPlayerPage::hideEvent(QHideEvent *)
-{
-	list_manager->blockSignals(true);
-}
-
-void AudioPlayerPage::showEvent(QShowEvent *)
-{
-	list_manager->blockSignals(false);
-}
-
 int AudioPlayerPage::sectionId() const
 {
 	return MULTIMEDIA;
@@ -403,6 +390,14 @@ void AudioPlayerPage::resetLoopCheck()
 {
 	// avoid the loop-detection code kicking in
 	loop_starting_file = -1;
+}
+
+void AudioPlayerPage::handleServerDown()
+{
+	playerStopped();
+
+	if (isVisible())
+		emit Closed();
 }
 
 void AudioPlayerPage::quit()
