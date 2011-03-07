@@ -21,11 +21,11 @@
 
 #include "audiostatemachine.h"
 #include "hardware_functions.h" // DEV_E2
-#include "generic_functions.h" // smartExecute, silentExecute
+#include "generic_functions.h" // smartExecute
 #include "main.h" // bt_global::config
 
-#include <QtConcurrentRun>
 #include <QProcess>
+#include <QDebug>
 #include <QTimer>
 #include <QTime>
 #include <QFile>
@@ -35,13 +35,10 @@
 
 
 // The address used to save information in the e2 memory.
-#define E2_BASE_CONF_ZARLINK 11694
 #define E2_BASE_INIT 11671
 #define E2_BASE_VOLUMES 11685
 
-// The keys used to update the e2, the eeprom memory where is stored the zarlink
-// configuration and the volumes.
-#define ZARLINK_KEY 0x63
+// The keys used to update the e2, the eeprom memory where is stored the volumes.
 #define VOLUME_KEY 0x5b
 
 #define VOLUME_TIMER_SECS 5
@@ -72,47 +69,6 @@ namespace
 {
 	// The global container for volumes.
 	QByteArray volumes(Volumes::COUNT, DEFAULT_VOLUME);
-
-	// Init the echo canceller, updating (if needed) the configuration. This function
-	// MUST be called in a separate thread, in order to avoid the freeze of the ui.
-	void initEchoCanceller()
-	{
-		char init = 0;
-		bool need_reset = false;
-
-		int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
-		if (eeprom == -1)
-		{
-			qWarning() << "Unable to open E2 device";
-			return;
-		}
-		lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
-		read(eeprom, &init, 1);
-
-		if (init != ZARLINK_KEY) // different versions, update the zarlink configuration
-		{
-			for (int i = 0; i < 5; ++i)
-			{
-				if (!silentExecute("/home/bticino/bin/zarlink 0400 0001 CONF /home/bticino/cfg/zle38004.cr"))
-				{
-					init = ZARLINK_KEY;
-					lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
-					write(eeprom, &init, 1);
-					need_reset = true;
-					break;
-				}
-				usleep(500000);
-			}
-		}
-
-		silentExecute(QString("echo %1 > /home/bticino/cfg/vers_conf_zarlink").arg(init));
-		if (need_reset)
-		{
-			silentExecute("echo 0 > /proc/sys/dev/btweb/reset_ZL1");
-			usleep(100000);
-			silentExecute("echo 1 > /proc/sys/dev/btweb/reset_ZL1");
-		}
-	}
 
 	void initVolumes()
 	{
@@ -326,7 +282,6 @@ AudioStateMachine::AudioStateMachine()
 
 void AudioStateMachine::start(int state)
 {
-	QtConcurrent::run(initEchoCanceller);
 	initVolumes();
 	disactivateVCTAudio();
 

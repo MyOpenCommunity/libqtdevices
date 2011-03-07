@@ -32,7 +32,7 @@
 #ifdef LAYOUT_TS_10
 #include "vctcall.h"
 #endif
-#include "generic_functions.h" //getBostikName
+#include "generic_functions.h" //getBostikName, silentExecute
 #include "items.h" // ItemTuning
 #include "displaycontrol.h" // bt_global::display
 #include "hardware_functions.h" // setVolume
@@ -48,6 +48,17 @@
 #include <QDebug>
 #include <QLabel>
 #include <QApplication> // QApplication::processEvents
+#include <QtConcurrentRun>
+
+#include <fcntl.h> // open
+
+
+// The address used to save information in the e2 memory.
+#define E2_BASE_CONF_ZARLINK 11694
+
+// The keys used to update the e2, the eeprom memory where is stored the zarlink
+// configuration.
+#define ZARLINK_KEY 0x63
 
 
 enum Pages
@@ -126,6 +137,8 @@ void VideoDoorEntry::createVctElements()
 	dev = bt_global::add_device_to_cache(new VideoDoorEntryDevice((*bt_global::config)[PI_ADDRESS],
 		(*bt_global::config)[PI_MODE]));
 
+	(void)new EchoCanceller(dev->vctMode());
+
 	intercom_page = new IntercomCallPage(dev);
 	vct_page = new VCTCallPage(dev);
 }
@@ -176,6 +189,66 @@ void VideoDoorEntry::callGuardUnit()
 {
 	dev->cameraOn((*bt_global::config)[GUARD_UNIT_ADDRESS]);
 }
+
+
+EchoCanceller::EchoCanceller(VideoDoorEntryDevice::VctMode mode)
+{
+#ifdef BT_HARDWARE_TS_10
+	if (mode == VideoDoorEntryDevice::SCS_MODE)
+		QtConcurrent::run(EchoCanceller::initScs);
+	else
+		QtConcurrent::run(EchoCanceller::initIp);
+#endif
+}
+
+// Init the echo canceller, updating (if needed) the configuration. We call in a separate
+// thread, in order to avoid the freeze of the ui.
+void EchoCanceller::initScs()
+{
+	qDebug() << "EchoCanceller::initScs";
+	char init = 0;
+	bool need_reset = false;
+
+	int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
+	if (eeprom == -1)
+	{
+		qWarning() << "Unable to open E2 device";
+		return;
+	}
+	lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
+	read(eeprom, &init, 1);
+
+	if (init != ZARLINK_KEY) // different versions, update the zarlink configuration
+	{
+		for (int i = 0; i < 5; ++i)
+		{
+			if (!silentExecute("/home/bticino/bin/zarlink 0400 0001 CONF /home/bticino/cfg/zle38004.cr"))
+			{
+				init = ZARLINK_KEY;
+				lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
+				write(eeprom, &init, 1);
+				need_reset = true;
+				break;
+			}
+			// We don't care about blocking the UI, because we are in a separate thread.
+			usleep(500000);
+		}
+	}
+
+	silentExecute(QString("echo %1 > /home/bticino/cfg/vers_conf_zarlink").arg(init));
+	if (need_reset)
+	{
+		silentExecute("echo 0 > /proc/sys/dev/btweb/reset_ZL1");
+		usleep(100000);
+		silentExecute("echo 1 > /proc/sys/dev/btweb/reset_ZL1");
+	}
+}
+
+void EchoCanceller::initIp()
+{
+	qDebug() << "EchoCanceller::initIp";
+}
+
 
 VideoControl::VideoControl(const QDomNode &config_node, VideoDoorEntryDevice *d)
 {
