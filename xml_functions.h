@@ -32,9 +32,12 @@
 	\brief Looks for a child node with the given name
 
 	Returns the node child of \a parent with name \a name.
-	If the node is not found returns an invalid node.
+	If the node is not found returns an null node.
 */
-QDomNode getChildWithName(const QDomNode &parent, const QString &name);
+inline QDomNode getChildWithName(const QDomNode &parent, const QString &name)
+{
+	return parent.namedItem(name);
+}
 
 /*!
 	\ingroup Core
