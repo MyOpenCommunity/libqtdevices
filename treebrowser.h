@@ -154,6 +154,11 @@ signals:
 		\brief Emitted when an error occours during entry listing.
 	*/
 	void listRetrieveError();
+
+	/*!
+		\brief Emitted when we try to change the current directory but the new dir is empty.
+	*/
+	void emptyDirectory();
 };
 
 

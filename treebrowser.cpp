@@ -332,6 +332,8 @@ void UPnpClientBrowser::handleError(int response, int code)
 	case XmlResponses::CHDIR:
 		if (code == XmlError::BROWSING)
 			emit directoryChangeError();
+		else if (code == XmlError::EMPTY_CONTENT)
+			emit emptyDirectory();
 		else
 			emit genericError();
 		break;

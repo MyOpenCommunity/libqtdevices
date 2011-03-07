@@ -133,6 +133,34 @@ void TestXmlDevice::testServerList()
 	t.check(data, QStringList() << "TestServer1" << "TestServer2");
 }
 
+void TestXmlDevice::testServerListEmpty()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>3CE7FD63-DEFE-41CA-AB5C-14C502A84E40</SID>"
+				 "			<PID>3</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.245</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>10.3.3.98</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C1>"
+				 "			<server>"
+				 "			</server>"
+				 "		</AW26C1>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::SERVER_LIST);
+	t.check(data, QStringList());
+}
+
 void TestXmlDevice::testServerSelection()
 {
 	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
@@ -160,7 +188,7 @@ void TestXmlDevice::testServerSelection()
 	t.check(data, QString("TestServer"));
 }
 
-void TestXmlDevice::testServerSelectionFail()
+void TestXmlDevice::testServerSelectionServerDown()
 {
 	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
 				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
@@ -178,13 +206,40 @@ void TestXmlDevice::testServerSelectionFail()
 				 "	</Hdr>"
 				 "	<Cmd>"
 				 "		<AW26C2>"
-				 "			<current_server>server_down</current_server>"
+				 "			<error>no server loaded: selected server down</error>"
 				 "		</AW26C2>"
 				 "	</Cmd>"
 				 "</OWNxml>");
 
 	XmlDeviceTester t(dev, XmlResponses::SERVER_SELECTION);
 	t.checkError(data, XmlError::SERVER_DOWN);
+}
+
+void TestXmlDevice::testServerSelectionEmpty()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
+				 "			<PID>4</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.195</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>192.168.1.110</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C2>"
+				 "			<error>GMediaServer on lithium is empty</error>"
+				 "		</AW26C2>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::SERVER_SELECTION);
+	t.checkError(data, XmlError::EMPTY_CONTENT);
 }
 
 void TestXmlDevice::testServerSelectionNoAnswer()
@@ -241,7 +296,34 @@ void TestXmlDevice::testChdir()
 	t.check(data, true);
 }
 
-void TestXmlDevice::testChdirFail()
+void TestXmlDevice::testChdirServerDown()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1CE5A46E-D2C0-4789-8D58-8A4D364B938E</SID>"
+				 "			<PID>3</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.245</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>10.3.3.98</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C2>"
+				 "			<error>browse failed: current server down</error>"
+				 "		</AW26C2>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::CHDIR);
+	t.checkError(data, XmlError::SERVER_DOWN);
+}
+
+void TestXmlDevice::testChdirEmpty()
 {
 	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
 				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
@@ -259,13 +341,13 @@ void TestXmlDevice::testChdirFail()
 				 "	</Hdr>"
 				 "	<Cmd>"
 				 "		<AW26C2>"
-				 "			<status_browse>server_down</status_browse>"
+				 "			<status_browse>empty_directory</status_browse>"
 				 "		</AW26C2>"
 				 "	</Cmd>"
 				 "</OWNxml>");
 
 	XmlDeviceTester t(dev, XmlResponses::CHDIR);
-	t.checkError(data, XmlError::SERVER_DOWN);
+	t.checkError(data, XmlError::EMPTY_CONTENT);
 }
 
 void TestXmlDevice::testTrackSelection()
@@ -311,6 +393,175 @@ void TestXmlDevice::testTrackSelection()
 	mt["total_time"] = "0:04:13.000";
 	EntryInfo entry("Morenita", EntryInfo::AUDIO, "http://10.3.3.245:49152/content/media/object_id/202/res_id/0/ext/file.mp3", mt);
 	t.check(data, entry);
+}
+
+void TestXmlDevice::testTrackSelectionServerDown()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1CE5A46E-D2C0-4789-8D58-8A4D364B938E</SID>"
+				 "			<PID>3</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.245</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>10.3.3.98</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C2>"
+				 "			<error>track not loaded: current server down</error>"
+				 "		</AW26C2>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::TRACK_SELECTION);
+	t.checkError(data, XmlError::SERVER_DOWN);
+}
+
+void TestXmlDevice::testNextTrack()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"> "
+				"	<Hdr> "
+				"		<MsgID> "
+				"			<SID>11AC3214-F65E-4C7A-980E-1585C35C4244</SID> "
+				"			<PID>3</PID> "
+				"		</MsgID> "
+				"		<Dst> "
+				"			<IP>10.3.3.245</IP> "
+				"		</Dst> "
+				"		<Src> "
+				"			<IP>10.3.3.98</IP> "
+				"		</Src> "
+				"	</Hdr> "
+				"	<Cmd> "
+				"		<AW26C10> "
+				"			<DIDL-Lite xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\" xmlns:dlna=\"urn:schemas-dlna-org:metadata-1-0/\"> "
+				"				<item id=\"5361\" parentID=\"5276\" restricted=\"1\"> "
+				"					<dc:title>Lo Nuestro</dc:title> "
+				"					<upnp:class>object.item.audioItem.musicTrack</upnp:class> "
+				"					<upnp:artist>Gloria Estefan</upnp:artist> "
+				"					<upnp:album>90 Millas</upnp:album> "
+				"					<dc:date>2007-01-01</dc:date> "
+				"					<upnp:genre>Pop</upnp:genre> "
+				"					<dc:description>www.SonidoMP3.net</dc:description> "
+				"					<upnp:originalTrackNumber>3</upnp:originalTrackNumber> "
+				"					<res protocolInfo=\"http-get:*:audio/mpeg:*\" size=\"6119008\" bitrate=\"24576\" duration=\"0:04:14.000\" sampleFrequency=\"44100\" nrAudioChannels=\"2\">http://10.3.3.245:50000/content/media/object_id/5361/res_id/0/ext/file.mp3</res> "
+				"				</item> "
+				"			</DIDL-Lite> "
+				"		</AW26C10> "
+				"	</Cmd> "
+				"</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::TRACK_SELECTION);
+	EntryInfo::Metadata mt;
+	mt["title"] = "Lo Nuestro";
+	mt["artist"] = "Gloria Estefan";
+	mt["album"] = "90 Millas";
+	mt["total_time"] = "0:04:14.000";
+	EntryInfo entry("Lo Nuestro", EntryInfo::AUDIO, "http://10.3.3.245:50000/content/media/object_id/5361/res_id/0/ext/file.mp3", mt);
+	t.check(data, entry);
+}
+
+void TestXmlDevice::testNextTrackServerDown()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1CE5A46E-D2C0-4789-8D58-8A4D364B938E</SID>"
+				 "			<PID>3</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.245</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>10.3.3.98</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C10>"
+				 "			<error>track not loaded: current server down</error>"
+				 "		</AW26C10>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::TRACK_SELECTION);
+	t.checkError(data, XmlError::SERVER_DOWN);
+}
+
+void TestXmlDevice::testPrevTrack()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"> "
+				"	<Hdr> "
+				"		<MsgID> "
+				"			<SID>11AC3214-F65E-4C7A-980E-1585C35C4244</SID> "
+				"			<PID>3</PID> "
+				"		</MsgID> "
+				"		<Dst> "
+				"			<IP>10.3.3.245</IP> "
+				"		</Dst> "
+				"		<Src> "
+				"			<IP>10.3.3.98</IP> "
+				"		</Src> "
+				"	</Hdr> "
+				"	<Cmd> "
+				"		<AW26C11> "
+				"			<DIDL-Lite xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\" xmlns:dlna=\"urn:schemas-dlna-org:metadata-1-0/\"> "
+				"				<item id=\"5361\" parentID=\"5276\" restricted=\"1\"> "
+				"					<dc:title>Lo Nuestro</dc:title> "
+				"					<upnp:class>object.item.audioItem.musicTrack</upnp:class> "
+				"					<upnp:artist>Gloria Estefan</upnp:artist> "
+				"					<upnp:album>90 Millas</upnp:album> "
+				"					<dc:date>2007-01-01</dc:date> "
+				"					<upnp:genre>Pop</upnp:genre> "
+				"					<dc:description>www.SonidoMP3.net</dc:description> "
+				"					<upnp:originalTrackNumber>3</upnp:originalTrackNumber> "
+				"					<res protocolInfo=\"http-get:*:audio/mpeg:*\" size=\"6119008\" bitrate=\"24576\" duration=\"0:04:14.000\" sampleFrequency=\"44100\" nrAudioChannels=\"2\">http://10.3.3.245:50000/content/media/object_id/5361/res_id/0/ext/file.mp3</res> "
+				"				</item> "
+				"			</DIDL-Lite> "
+				"		</AW26C11> "
+				"	</Cmd> "
+				"</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::TRACK_SELECTION);
+	EntryInfo::Metadata mt;
+	mt["title"] = "Lo Nuestro";
+	mt["artist"] = "Gloria Estefan";
+	mt["album"] = "90 Millas";
+	mt["total_time"] = "0:04:14.000";
+	EntryInfo entry("Lo Nuestro", EntryInfo::AUDIO, "http://10.3.3.245:50000/content/media/object_id/5361/res_id/0/ext/file.mp3", mt);
+	t.check(data, entry);
+}
+
+void TestXmlDevice::testPrevTrackServerDown()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1CE5A46E-D2C0-4789-8D58-8A4D364B938E</SID>"
+				 "			<PID>3</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.245</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>10.3.3.98</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C11>"
+				 "			<error>track not loaded: current server down</error>"
+				 "		</AW26C11>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::TRACK_SELECTION);
+	t.checkError(data, XmlError::SERVER_DOWN);
 }
 
 void TestXmlDevice::testBrowseUpSuccess()
@@ -367,6 +618,33 @@ void TestXmlDevice::testBrowseUpFail()
 	t.checkError(data, XmlError::BROWSING);
 }
 
+void TestXmlDevice::testBrowseUpServerDown()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1EFC3E00-2066-6C13-55D2-81D7D7DB0E62</SID>"
+				 "			<PID>4</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.195</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>192.168.1.110</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C7>"
+				 "			<error>browse failed: current server down</error>"
+				 "		</AW26C7>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::BROWSE_UP);
+	t.checkError(data, XmlError::SERVER_DOWN);
+}
+
 void TestXmlDevice::testSetContextSuccess()
 {
 	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
@@ -385,8 +663,8 @@ void TestXmlDevice::testSetContextSuccess()
 				 "	</Hdr>"
 				 "	<Cmd>"
 				 "		<AW26C16>"
-				"		<current_server>MediaTomb</current_server>"
-				 "		<status_browse>browse_okay</status_browse>"
+				"			<current_server>MediaTomb</current_server>"
+				 "			<status_browse>browse_okay</status_browse>"
 				 "		</AW26C16>"
 				 "	</Cmd>"
 				 "</OWNxml>");
@@ -395,7 +673,7 @@ void TestXmlDevice::testSetContextSuccess()
 	t.check(data, true);
 }
 
-void TestXmlDevice::testSetContextFail1()
+void TestXmlDevice::testSetContextFail()
 {
 	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
 				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
@@ -413,8 +691,8 @@ void TestXmlDevice::testSetContextFail1()
 				 "	</Hdr>"
 				 "	<Cmd>"
 				 "		<AW26C16>"
-				 "		<current_server>MediaTomb</current_server>"
-				 "		<status_browse>no_such_directory</status_browse>"
+				 "			<current_server>MediaTomb</current_server>"
+				 "			<status_browse>no_such_directory</status_browse>"
 				 "		</AW26C16>"
 				 "	</Cmd>"
 				 "</OWNxml>");
@@ -423,7 +701,7 @@ void TestXmlDevice::testSetContextFail1()
 	t.checkError(data, XmlError::BROWSING);
 }
 
-void TestXmlDevice::testSetContextFail2()
+void TestXmlDevice::testSetContextServerDown()
 {
 	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
 				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
@@ -441,8 +719,7 @@ void TestXmlDevice::testSetContextFail2()
 				 "	</Hdr>"
 				 "	<Cmd>"
 				 "		<AW26C16>"
-				 "		<current_server>MediaTomb</current_server>"
-				 "		<status_browse>server_down</status_browse>"
+				 "			<error>no server loaded: selected server down</error>"
 				 "		</AW26C16>"
 				 "	</Cmd>"
 				 "</OWNxml>");
@@ -529,7 +806,7 @@ void TestXmlDevice::testListItems()
 	t.check(data, list);
 }
 
-void TestXmlDevice::testListItemsFail()
+void TestXmlDevice::testListItemsServerDown()
 {
 	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
 				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
@@ -547,7 +824,7 @@ void TestXmlDevice::testListItemsFail()
 				 "	</Hdr>"
 				 "	<Cmd>"
 				 "		<AW26C15>"
-				 "			<status_browse>server_down</status_browse>"
+				 "			<error>detailed ls failed: current server down</error>"
 				 "		</AW26C15>"
 				 "	</Cmd>"
 				 "</OWNxml>");

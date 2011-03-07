@@ -63,6 +63,7 @@ FileSelector::FileSelector(TreeBrowser *_browser)
 
 	connect(browser, SIGNAL(directoryChangeError()), SLOT(directoryChangeError()));
 	connect(browser, SIGNAL(listRetrieveError()), SLOT(handleError()));
+	connect(browser, SIGNAL(emptyDirectory()), SLOT(emptyDirectory()));
 	connect(browser, SIGNAL(genericError()), SLOT(handleError()));
 
 #ifdef BT_HARDWARE_TS_10
@@ -185,6 +186,13 @@ void FileSelector::handleError()
 		browser->reset();
 		emit Closed();
 	}
+}
+
+void FileSelector::emptyDirectory()
+{
+	// Because the bt_contropoint process does not change the directory if it
+	// is empty we only re-show the page.
+	operationCompleted();
 }
 
 void FileSelector::directoryChangeError()

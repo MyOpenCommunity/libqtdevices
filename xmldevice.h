@@ -96,10 +96,11 @@ struct XmlError
 	*/
 	enum Code
 	{
-		PARSE = 0,   /*!< Error during the parsing of the response's XML */
-		BROWSING,    /*!< Error during the browsing of the UPnP resource */
-		SERVER_DOWN, /*!< The upnp server is down */
-		CLIENT,      /*!< Error in XmlClient */
+		PARSE = 0,     /*!< Error during the parsing of the response's XML */
+		BROWSING,      /*!< Error during the browsing of the UPnP resource */
+		SERVER_DOWN,   /*!< The upnp server is down */
+		EMPTY_CONTENT, /*!< The content that we want to browse (a server or an album) is empty.*/
+		CLIENT,        /*!< Error in XmlClient */
 	};
 
 	/*!

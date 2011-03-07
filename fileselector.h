@@ -95,6 +95,7 @@ private slots:
 	void directoryChanged();
 	void handleError();
 	void directoryChangeError();
+	void emptyDirectory();
 	void screenSaverStarted(Page *curr);
 
 #ifdef BT_HARDWARE_TS_10

@@ -102,7 +102,7 @@ void UPnpListManager::handleResponse(const XmlResponse &response)
 
 void UPnpListManager::handleError(int response, int code)
 {
-	if ((response == XmlResponses::CHDIR || response == XmlResponses::TRACK_SELECTION) && code == XmlError::SERVER_DOWN)
+	if (response == XmlResponses::TRACK_SELECTION && code == XmlError::SERVER_DOWN)
 		emit serverDown();
 }
 
@@ -183,7 +183,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	if (type == AudioPlayerPage::UPNP_FILE)
 	{
 		UPnpListManager* upnp = new UPnpListManager(bt_global::xml_device);
-		connect(upnp, SIGNAL(serverDown()), SLOT(quit()));
+		connect(upnp, SIGNAL(serverDown()), SLOT(handleServerDown()));
 		list_manager = upnp;
 	}
 	else
