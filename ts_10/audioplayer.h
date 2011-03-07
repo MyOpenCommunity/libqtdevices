@@ -101,6 +101,7 @@ public:
 
 signals:
 	void loopDetected();
+	void playerExited();
 
 protected:
 	virtual void startPlayback();

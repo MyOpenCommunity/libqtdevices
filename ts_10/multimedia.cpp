@@ -52,7 +52,7 @@ enum
 };
 
 SongSearch *MultimediaSectionPage::song_search = NULL;
-Page *MultimediaSectionPage::current_player = 0;
+AudioPlayerPage *MultimediaSectionPage::current_player = 0;
 bool MultimediaSectionPage::usb_initialized = false;
 
 
@@ -140,6 +140,20 @@ MultimediaSectionPage::~MultimediaSectionPage()
 void MultimediaSectionPage::showEvent(QShowEvent *)
 {
 	play_button->setVisible(current_player != 0);
+	if (current_player)
+		connect(current_player, SIGNAL(playerExited()), this, SLOT(currentPlayerExited()));
+}
+
+void MultimediaSectionPage::hideEvent(QHideEvent *)
+{
+	if (current_player)
+		disconnect(current_player, SIGNAL(playerExited()), this, SLOT(currentPlayerExited()));
+}
+
+void MultimediaSectionPage::currentPlayerExited()
+{
+	play_button->setVisible(false);
+	disconnect(current_player, SIGNAL(playerExited()), this, SLOT(currentPlayerExited()));
 }
 
 void MultimediaSectionPage::gotoPlayerPage()

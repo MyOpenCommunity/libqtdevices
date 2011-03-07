@@ -545,6 +545,9 @@ void AudioPlayerPage::playerStopped()
 		return;
 
 	if (MultimediaSectionPage::current_player == this)
+	{
+		emit playerExited();
 		MultimediaSectionPage::current_player = 0;
+	}
 	tray_icon->setVisible(false);
 }

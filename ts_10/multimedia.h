@@ -34,6 +34,7 @@ class FileSelectorFactory;
 class FileSelector;
 class SongSearch;
 class IPRadioPage;
+class AudioPlayerPage;
 
 
 /*!
@@ -118,13 +119,15 @@ public:
 	virtual int sectionId() const;
 
 	static void playSomethingRandomly();
-	static Page *current_player;
+	static AudioPlayerPage *current_player;
 
 protected:
 	virtual void showEvent(QShowEvent *);
+	virtual void hideEvent(QHideEvent *);
 
 private slots:
 	void gotoPlayerPage();
+	void currentPlayerExited();
 
 private:
 	void loadItems(const QDomNode &config_node);
