@@ -58,7 +58,8 @@
 
 // The keys used to update the e2, the eeprom memory where is stored the zarlink
 // configuration.
-#define ZARLINK_KEY 0x63
+#define ZARLINK_KEY 0x71
+#define ZARLINK_KEY_IP 0x81
 
 
 enum Pages
@@ -195,9 +196,15 @@ EchoCanceller::EchoCanceller(VideoDoorEntryDevice::VctMode mode)
 {
 #ifdef BT_HARDWARE_TS_10
 	if (mode == VideoDoorEntryDevice::SCS_MODE)
+	{
+//		printf("SCS MODE \n");
 		QtConcurrent::run(EchoCanceller::initScs);
+	}
 	else
+	{
+//		printf("IP MODE \n");
 		QtConcurrent::run(EchoCanceller::initIp);
+	}
 #endif
 }
 
@@ -220,9 +227,9 @@ void EchoCanceller::initScs()
 
 	if (init != ZARLINK_KEY) // different versions, update the zarlink configuration
 	{
-		for (int i = 0; i < 5; ++i)
+		for (int i = 0; i < 10; ++i)
 		{
-			if (!silentExecute("/home/bticino/bin/zarlink 0400 0001 CONF /home/bticino/cfg/zle38004.cr"))
+			if (system("/home/bticino/bin/zarlink 0400 0001 CONF /home/bticino/cfg/zle38004_scs.cr > /dev/null 2>&1") != -1)
 			{
 				init = ZARLINK_KEY;
 				lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
@@ -231,7 +238,7 @@ void EchoCanceller::initScs()
 				break;
 			}
 			// We don't care about blocking the UI, because we are in a separate thread.
-			usleep(500000);
+			usleep(1500000);
 		}
 	}
 
@@ -247,6 +254,100 @@ void EchoCanceller::initScs()
 void EchoCanceller::initIp()
 {
 	qDebug() << "EchoCanceller::initIp";
+	char init = 0;
+	bool need_reset = false;
+
+	system("echo 1 > /proc/sys/dev/btweb/reset_ZL2");
+	usleep(200000);
+
+	int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
+	if (eeprom == -1)
+	{
+		qWarning() << "Unable to open E2 device";
+		return;
+	}
+	lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
+	read(eeprom, &init, 1);
+
+	if (init != ZARLINK_KEY_IP) // different versions, update the zarlink configuration
+	{
+		for (int i = 0; i < 10; ++i)
+		{
+			if (system("/home/bticino/bin/zarlink 0400 0001 CONF /home/bticino/cfg/zle38004_ip.cr > /dev/null 2>&1") != -1)
+			{
+				init = ZARLINK_KEY_IP;
+				lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
+				write(eeprom, &init, 1);
+				need_reset = true;
+				break;
+			}
+			// We don't care about blocking the UI, because we are in a separate thread.
+			usleep(1500000);
+		}
+	}
+
+	silentExecute(QString("echo %1 > /home/bticino/cfg/vers_conf_zarlink").arg(init));
+	if (need_reset)
+	{
+		silentExecute("echo 0 > /proc/sys/dev/btweb/reset_ZL1");
+		usleep(100000);
+		silentExecute("echo 1 > /proc/sys/dev/btweb/reset_ZL1");
+		usleep(100000);
+		silentExecute("echo 0 > /proc/sys/dev/btweb/reset_ZL2");
+		usleep(100000);
+		silentExecute("echo 1 > /proc/sys/dev/btweb/reset_ZL2");
+	}
+
+	//In IP always do these initializations
+	usleep(200000);
+	// Activate LOOPBACK
+	system("/home/bticino/bin/zarlink2 05E8 2d4b WR > /dev/null 2>&1");
+	usleep(100000);
+	system("/home/bticino/bin/zarlink2 044D 9C05 WR > /dev/null 2>&1");
+	usleep(100000);
+	system("/home/bticino/bin/zarlink2 0529 7fff WR > /dev/null 2>&1");
+	usleep(100000);
+	system("/home/bticino/bin/zarlink2 0472 7fff WR > /dev/null 2>&1");
+	usleep(100000);
+	system("/home/bticino/bin/zarlink2 0473 7fff WR > /dev/null 2>&1");
+	usleep(100000);
+
+	system("/home/bticino/bin/zarlink2 0451 1f40 WR > /dev/null 2>&1");
+	usleep(100000);
+	system("/home/bticino/bin/zarlink2 0453 7fff WR > /dev/null 2>&1");
+	usleep(100000);
+
+	system("/home/bticino/bin/zarlink2 0474 7fff WR > /dev/null 2>&1");
+	usleep(100000);
+
+	system("/home/bticino/bin/zarlink2 044a 7e00 WR > /dev/null 2>&1");
+	usleep(100000);
+	system("/home/bticino/bin/zarlink2 044b 1072 WR > /dev/null 2>&1");
+	usleep(100000);
+	system("/home/bticino/bin/zarlink2 047b 0072 WR > /dev/null 2>&1");
+	usleep(100000);
+	system("/home/bticino/bin/zarlink2 04d0 0003 WR > /dev/null 2>&1");
+	usleep(100000);
+	system("/home/bticino/bin/zarlink2 04d5 0004 WR > /dev/null 2>&1");
+	usleep(100000);
+	system("/home/bticino/bin/zarlink2 0420 210c WR > /dev/null 2>&1");
+
+	usleep(200000);
+	system("/home/bticino/bin/zarlink2 0401 4800 WR > /dev/null 2>&1");
+	usleep(100000);
+	system("/home/bticino/bin/zarlink2 0400 0206 WR > /dev/null 2>&1");
+	usleep(100000);
+
+	system("/home/bticino/bin/zarlink 04D0 0004 WR > /dev/null 2>&1");
+	usleep(100000);
+	system("/home/bticino/bin/zarlink 0420 210C WR > /dev/null 2>&1");
+	usleep(100000);
+	system("/home/bticino/bin/zarlink 0401 4800 WR > /dev/null 2>&1");
+	usleep(100000);
+	system("/home/bticino/bin/zarlink 0400 0206 WR > /dev/null 2>&1");
+	usleep(100000);
+	system("/devmem2/devmem2 0x41000030 w 0x08 check > /dev/null 2>&1");
+	usleep(100000);
 }
 
 
