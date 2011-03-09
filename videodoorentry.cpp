@@ -58,8 +58,8 @@
 
 // The keys used to update the e2, the eeprom memory where is stored the zarlink
 // configuration.
-#define ZARLINK_KEY 0x71
-#define ZARLINK_KEY_IP 0x81
+#define ZARLINK_KEY 0x72
+#define ZARLINK_KEY_IP 0x82
 
 
 enum Pages
@@ -222,24 +222,36 @@ void EchoCanceller::initScs()
 		qWarning() << "Unable to open E2 device";
 		return;
 	}
-	lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
-	read(eeprom, &init, 1);
+	char readValue = '\0';
+	do
+	{
+		lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
+		read(eeprom, &init, 1);
+		//printf("\nLETTURA CONF ZARLINK <%d>\n", init);
+		if(readValue == init)
+			break;
+		readValue = init;
+	}while(1);
 
 	if (init != ZARLINK_KEY) // different versions, update the zarlink configuration
 	{
-		for (int i = 0; i < 10; ++i)
+		do
 		{
-			if (system("/home/bticino/bin/zarlink 0400 0001 CONF /home/bticino/cfg/zle38004_scs.cr > /dev/null 2>&1") != -1)
+			int dummy = system("/home/bticino/bin/zarlink 0400 0001 CONF /home/bticino/cfg/zle38004_scs.cr > /dev/null 2>&1");
+			//printf("\ndummy scs <%d>\n", dummy);
+			if (dummy == 0)
 			{
+				//printf("\nprog zarlink scs ok\n");
 				init = ZARLINK_KEY;
 				lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
 				write(eeprom, &init, 1);
 				need_reset = true;
 				break;
 			}
+			//printf("\nerrore prog zarlink scs\n");
 			// We don't care about blocking the UI, because we are in a separate thread.
 			usleep(1500000);
-		}
+		}while(1);
 	}
 
 	silentExecute(QString("echo %1 > /home/bticino/cfg/vers_conf_zarlink").arg(init));
@@ -266,24 +278,36 @@ void EchoCanceller::initIp()
 		qWarning() << "Unable to open E2 device";
 		return;
 	}
-	lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
-	read(eeprom, &init, 1);
+	char readValue = '\0';
+	do
+	{
+		lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
+		read(eeprom, &init, 1);
+		//printf("\nLETTURA CONF ZARLINK IP <%d>\n", init);
+		if(readValue == init)
+			break;
+		readValue = init;
+	}while(1);
 
 	if (init != ZARLINK_KEY_IP) // different versions, update the zarlink configuration
 	{
-		for (int i = 0; i < 10; ++i)
+		do
 		{
-			if (system("/home/bticino/bin/zarlink 0400 0001 CONF /home/bticino/cfg/zle38004_ip.cr > /dev/null 2>&1") != -1)
+			int dummy = system("/home/bticino/bin/zarlink 0400 0001 CONF /home/bticino/cfg/zle38004_ip.cr > /dev/null 2>&1");
+			//printf("\ndummy ip <%d>\n", dummy);
+			if (dummy == 0)
 			{
+				//printf("\nprog zarlink ip ok\n");
 				init = ZARLINK_KEY_IP;
 				lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
 				write(eeprom, &init, 1);
 				need_reset = true;
 				break;
 			}
+			//printf("\nerrore prog zarlink ip\n");
 			// We don't care about blocking the UI, because we are in a separate thread.
 			usleep(1500000);
-		}
+		}while(1);
 	}
 
 	silentExecute(QString("echo %1 > /home/bticino/cfg/vers_conf_zarlink").arg(init));
